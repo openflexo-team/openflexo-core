@@ -40,7 +40,6 @@
 package org.openflexo.fml.controller.validation;
 
 import java.awt.event.KeyEvent;
-import java.util.EventObject;
 
 import javax.swing.Icon;
 import javax.swing.KeyStroke;
@@ -69,20 +68,17 @@ public class ValidateActionizer extends ActionInitializer<ValidateAction, FMLObj
 	}
 
 	@Override
-	protected FlexoActionFinalizer<ValidateAction> getDefaultFinalizer() {
-		return new FlexoActionFinalizer<ValidateAction>() {
-			@Override
-			public boolean run(EventObject e, ValidateAction action) {
-				FMLValidationReport virtualModelReport = (FMLValidationReport) fmlTAController
-						.getValidationReport(action.getFocusedObject().getDeclaringVirtualModel());
-				try {
-					virtualModelReport.revalidate(action.getFocusedObject());
-				} catch (InterruptedException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
-				return true;
+	protected FlexoActionFinalizer<ValidateAction, FMLObject, FlexoObject> getDefaultFinalizer() {
+		return (e, action) -> {
+			FMLValidationReport virtualModelReport = (FMLValidationReport) fmlTAController
+					.getValidationReport(action.getFocusedObject().getDeclaringVirtualModel());
+			try {
+				virtualModelReport.revalidate(action.getFocusedObject());
+			} catch (InterruptedException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
 			}
+			return true;
 		};
 	}
 
@@ -92,7 +88,7 @@ public class ValidateActionizer extends ActionInitializer<ValidateAction, FMLObj
 	}
 
 	@Override
-	protected Icon getEnabledIcon(FlexoActionFactory actionType) {
+	protected Icon getEnabledIcon(FlexoActionFactory<ValidateAction, FMLObject, FlexoObject> actionType) {
 		return IconLibrary.VALID_ICON;
 	}
 }

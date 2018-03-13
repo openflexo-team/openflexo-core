@@ -38,7 +38,6 @@
 
 package org.openflexo.fml.controller.action;
 
-import java.util.EventObject;
 import java.util.logging.Logger;
 
 import org.openflexo.components.wizard.Wizard;
@@ -61,31 +60,24 @@ public class AddParentFlexoConceptInitializer extends ActionInitializer<AddParen
 	}
 
 	@Override
-	protected FlexoActionInitializer<AddParentFlexoConcept> getDefaultInitializer() {
-		return new FlexoActionInitializer<AddParentFlexoConcept>() {
-			@Override
-			public boolean run(EventObject e, AddParentFlexoConcept action) {
-				Wizard wizard = new AddParentFlexoConceptWizard(action, getController());
-				WizardDialog dialog = new WizardDialog(wizard, getController());
-				dialog.showDialog();
-				if (dialog.getStatus() != Status.VALIDATED) {
-					// Operation cancelled
-					return false;
-				}
-				return true;
+	protected FlexoActionInitializer<AddParentFlexoConcept, FlexoConcept, FMLObject> getDefaultInitializer() {
+		return (e, action) -> {
+			Wizard wizard = new AddParentFlexoConceptWizard(action, getController());
+			WizardDialog dialog = new WizardDialog(wizard, getController());
+			dialog.showDialog();
+			if (dialog.getStatus() != Status.VALIDATED) {
+				// Operation cancelled
+				return false;
 			}
+			return true;
 		};
 	}
 
 	@Override
-	protected FlexoActionFinalizer<AddParentFlexoConcept> getDefaultFinalizer() {
-		return new FlexoActionFinalizer<AddParentFlexoConcept>() {
-			@Override
-			public boolean run(EventObject e, AddParentFlexoConcept action) {
-				// getController().setCurrentEditedObjectAsModuleView(action.getNewModelSlot(), getController().VIEW_POINT_PERSPECTIVE);
-				return true;
-			}
+	protected FlexoActionFinalizer<AddParentFlexoConcept, FlexoConcept, FMLObject> getDefaultFinalizer() {
+		return (e, action) -> {
+			// getController().setCurrentEditedObjectAsModuleView(action.getNewModelSlot(), getController().VIEW_POINT_PERSPECTIVE);
+			return true;
 		};
 	}
-
 }

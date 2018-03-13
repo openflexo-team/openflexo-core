@@ -40,14 +40,13 @@ package org.openflexo.fml.controller.action;
 
 import java.awt.HeadlessException;
 import java.awt.event.KeyEvent;
-import java.util.EventObject;
 import java.util.logging.Logger;
 
 import javax.swing.Icon;
 import javax.swing.KeyStroke;
 
-import org.openflexo.foundation.action.FlexoActionInitializer;
 import org.openflexo.foundation.action.FlexoActionFactory;
+import org.openflexo.foundation.action.FlexoActionInitializer;
 import org.openflexo.foundation.action.copypaste.AbstractCopyAction.InvalidSelectionException;
 import org.openflexo.foundation.fml.FlexoConceptObject;
 import org.openflexo.foundation.fml.action.DeleteFlexoConceptObjects;
@@ -66,26 +65,19 @@ public class DeleteFlexoConceptObjectsInitializer
 	}
 
 	@Override
-	protected FlexoActionInitializer<DeleteFlexoConceptObjects> getDefaultInitializer() {
-		return new FlexoActionInitializer<DeleteFlexoConceptObjects>() {
-			@Override
-			public boolean run(EventObject e, DeleteFlexoConceptObjects action) {
-				try {
-					if (action.getObjectsToDelete().size() > 1) {
-						return FlexoController
-								.confirm(action.getLocales().localizedForKey("would_you_really_like_to_delete_those_objects_?"));
-					}
-					else {
-						return FlexoController
-								.confirm(action.getLocales().localizedForKey("would_you_really_like_to_delete_this_object_?"));
-					}
-				} catch (HeadlessException e1) {
-					e1.printStackTrace();
-					return false;
-				} catch (InvalidSelectionException e1) {
-					e1.printStackTrace();
-					return false;
+	protected FlexoActionInitializer<DeleteFlexoConceptObjects, FlexoConceptObject, FlexoConceptObject> getDefaultInitializer() {
+		return (e, action) -> {
+			try {
+				if (action.getObjectsToDelete().size() > 1) {
+					return FlexoController.confirm(action.getLocales().localizedForKey("would_you_really_like_to_delete_those_objects_?"));
 				}
+				return FlexoController.confirm(action.getLocales().localizedForKey("would_you_really_like_to_delete_this_object_?"));
+			} catch (HeadlessException e1) {
+				e1.printStackTrace();
+				return false;
+			} catch (InvalidSelectionException e1) {
+				e1.printStackTrace();
+				return false;
 			}
 		};
 	}

@@ -38,7 +38,6 @@
 
 package org.openflexo.fml.controller.action;
 
-import java.util.EventObject;
 import java.util.logging.Logger;
 
 import javax.swing.Icon;
@@ -72,36 +71,30 @@ public class CreateFlexoBehaviourInitializer extends ActionInitializer<CreateFle
 	}
 
 	@Override
-	protected FlexoActionInitializer<CreateFlexoBehaviour> getDefaultInitializer() {
-		return new FlexoActionInitializer<CreateFlexoBehaviour>() {
-			@Override
-			public boolean run(EventObject e, CreateFlexoBehaviour action) {
-				Wizard wizard = new CreateFlexoBehaviourWizard(action, getController());
-				WizardDialog dialog = new WizardDialog(wizard, getController());
-				dialog.showDialog();
-				if (dialog.getStatus() != Status.VALIDATED) {
-					// Operation cancelled
-					return false;
-				}
-				return true;
-				// return instanciateAndShowDialog(action, VPMCst.CREATE_FLEXO_BEHAVIOUR_DIALOG_FIB);
+	protected FlexoActionInitializer<CreateFlexoBehaviour, FlexoConceptObject, FMLObject> getDefaultInitializer() {
+		return (e, action) -> {
+			Wizard wizard = new CreateFlexoBehaviourWizard(action, getController());
+			WizardDialog dialog = new WizardDialog(wizard, getController());
+			dialog.showDialog();
+			if (dialog.getStatus() != Status.VALIDATED) {
+				// Operation cancelled
+				return false;
 			}
+			return true;
+			// return instanciateAndShowDialog(action, VPMCst.CREATE_FLEXO_BEHAVIOUR_DIALOG_FIB);
 		};
 	}
 
 	@Override
-	protected FlexoActionFinalizer<CreateFlexoBehaviour> getDefaultFinalizer() {
-		return new FlexoActionFinalizer<CreateFlexoBehaviour>() {
-			@Override
-			public boolean run(EventObject e, CreateFlexoBehaviour action) {
-				// getController().setCurrentEditedObjectAsModuleView(action.getNewModelSlot(), getController().VIEW_POINT_PERSPECTIVE);
-				return true;
-			}
+	protected FlexoActionFinalizer<CreateFlexoBehaviour, FlexoConceptObject, FMLObject> getDefaultFinalizer() {
+		return (e, action) -> {
+			// getController().setCurrentEditedObjectAsModuleView(action.getNewModelSlot(), getController().VIEW_POINT_PERSPECTIVE);
+			return true;
 		};
 	}
 
 	@Override
-	protected Icon getEnabledIcon(FlexoActionFactory actionType) {
+	protected Icon getEnabledIcon(FlexoActionFactory<CreateFlexoBehaviour, FlexoConceptObject, FMLObject> actionType) {
 		if (actionType == CreateFlexoBehaviour.createActionSchemeType) {
 			return FMLIconLibrary.ACTION_SCHEME_ICON;
 		}

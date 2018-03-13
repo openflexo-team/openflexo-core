@@ -69,8 +69,8 @@ public class CreateProjectInitializer extends ActionInitializer<CreateProject, R
 	}
 
 	@Override
-	protected FlexoActionInitializer<CreateProject> getDefaultInitializer() {
-		return new FlexoActionInitializer<CreateProject>() {
+	protected FlexoActionInitializer<CreateProject, RepositoryFolder<FlexoProjectResource<?>, ?>, FlexoObject> getDefaultInitializer() {
+		return new FlexoActionInitializer<CreateProject, RepositoryFolder<FlexoProjectResource<?>, ?>, FlexoObject>() {
 			@Override
 			public boolean run(EventObject e, CreateProject action) {
 				Progress.forceHideTaskBar();
@@ -88,8 +88,8 @@ public class CreateProjectInitializer extends ActionInitializer<CreateProject, R
 	}
 
 	@Override
-	protected FlexoActionFinalizer<CreateProject> getDefaultFinalizer() {
-		return new FlexoActionFinalizer<CreateProject>() {
+	protected FlexoActionFinalizer<CreateProject, RepositoryFolder<FlexoProjectResource<?>, ?>, FlexoObject> getDefaultFinalizer() {
+		return new FlexoActionFinalizer<CreateProject, RepositoryFolder<FlexoProjectResource<?>, ?>, FlexoObject>() {
 			@Override
 			public boolean run(EventObject e, CreateProject action) {
 				return true;

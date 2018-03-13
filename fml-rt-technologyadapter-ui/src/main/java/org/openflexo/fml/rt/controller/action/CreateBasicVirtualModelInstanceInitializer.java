@@ -47,9 +47,9 @@ import org.openflexo.components.wizard.Wizard;
 import org.openflexo.components.wizard.WizardDialog;
 import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.FlexoObject;
+import org.openflexo.foundation.action.FlexoActionFactory;
 import org.openflexo.foundation.action.FlexoActionFinalizer;
 import org.openflexo.foundation.action.FlexoActionInitializer;
-import org.openflexo.foundation.action.FlexoActionFactory;
 import org.openflexo.foundation.action.FlexoExceptionHandler;
 import org.openflexo.foundation.action.NotImplementedException;
 import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstance;
@@ -73,45 +73,39 @@ public class CreateBasicVirtualModelInstanceInitializer
 	}
 
 	@Override
-	protected FlexoActionInitializer<CreateBasicVirtualModelInstance> getDefaultInitializer() {
-		return new FlexoActionInitializer<CreateBasicVirtualModelInstance>() {
+	protected FlexoActionInitializer<CreateBasicVirtualModelInstance, FlexoObject, FlexoObject> getDefaultInitializer() {
+		return new FlexoActionInitializer<CreateBasicVirtualModelInstance, FlexoObject, FlexoObject>() {
 			@Override
 			public boolean run(EventObject e, CreateBasicVirtualModelInstance action) {
 				if (action.skipChoosePopup()) {
 					return true;
 				}
-				else {
-					if (action.getFocusedObject() instanceof FMLRTVirtualModelInstance
-							&& ((FMLRTVirtualModelInstance) action.getFocusedObject()).getVirtualModel() != null) {
-						// @Brutal
-						// TODO: Instead of doing this, it would be better to handle resources in wizard FIB
-						((FMLRTVirtualModelInstance) action.getFocusedObject()).getVirtualModel().loadContainedVirtualModelsWhenUnloaded();
-					}
-					Wizard wizard = new CreateBasicVirtualModelInstanceWizard(action, getController());
-					WizardDialog dialog = new WizardDialog(wizard, getController());
-					dialog.showDialog();
-					if (dialog.getStatus() != Status.VALIDATED) {
-						// Operation cancelled
-						return false;
-					}
-					return true;
+				if (action.getFocusedObject() instanceof FMLRTVirtualModelInstance
+						&& ((FMLRTVirtualModelInstance) action.getFocusedObject()).getVirtualModel() != null) {
+					// @Brutal
+					// TODO: Instead of doing this, it would be better to handle resources in wizard FIB
+					((FMLRTVirtualModelInstance) action.getFocusedObject()).getVirtualModel().loadContainedVirtualModelsWhenUnloaded();
 				}
-
+				Wizard wizard = new CreateBasicVirtualModelInstanceWizard(action, getController());
+				WizardDialog dialog = new WizardDialog(wizard, getController());
+				dialog.showDialog();
+				if (dialog.getStatus() != Status.VALIDATED) {
+					// Operation cancelled
+					return false;
+				}
+				return true;
 			}
 		};
 	}
 
 	@Override
-	protected FlexoActionFinalizer<CreateBasicVirtualModelInstance> getDefaultFinalizer() {
-		return new FlexoActionFinalizer<CreateBasicVirtualModelInstance>() {
-			@Override
-			public boolean run(EventObject e, CreateBasicVirtualModelInstance action) {
-				// getController().setCurrentEditedObjectAsModuleView(action.getNewVirtualModelInstance());
-				if (action.openAfterCreation()) {
-					getController().selectAndFocusObject(action.getNewVirtualModelInstance());
-				}
-				return true;
+	protected FlexoActionFinalizer<CreateBasicVirtualModelInstance, FlexoObject, FlexoObject> getDefaultFinalizer() {
+		return (e, action) -> {
+			// getController().setCurrentEditedObjectAsModuleView(action.getNewVirtualModelInstance());
+			if (action.openAfterCreation()) {
+				getController().selectAndFocusObject(action.getNewVirtualModelInstance());
 			}
+			return true;
 		};
 	}
 
@@ -130,7 +124,7 @@ public class CreateBasicVirtualModelInstanceInitializer
 	}
 
 	@Override
-	protected Icon getEnabledIcon(FlexoActionFactory actionType) {
+	protected Icon getEnabledIcon(FlexoActionFactory<CreateBasicVirtualModelInstance, FlexoObject, FlexoObject> actionType) {
 		return IconFactory.getImageIcon(FMLRTIconLibrary.VIRTUAL_MODEL_INSTANCE_ICON, IconLibrary.NEW_MARKER);
 	}
 

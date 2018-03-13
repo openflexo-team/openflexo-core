@@ -48,24 +48,24 @@ import javax.swing.KeyStroke;
 import org.openflexo.FlexoCst;
 import org.openflexo.action.InspectAction;
 import org.openflexo.foundation.FlexoObject;
-import org.openflexo.foundation.action.FlexoActionFinalizer;
 import org.openflexo.foundation.action.FlexoActionFactory;
+import org.openflexo.foundation.action.FlexoActionFinalizer;
 import org.openflexo.icon.IconLibrary;
 import org.openflexo.view.controller.ActionInitializer;
 import org.openflexo.view.controller.ControllerActionInitializer;
 
 public class InspectActionizer extends ActionInitializer<InspectAction, FlexoObject, FlexoObject> {
 
-	private static final java.util.logging.Logger logger = org.openflexo.logging.FlexoLogger.getLogger(InspectActionizer.class.getPackage()
-			.getName());
+	private static final java.util.logging.Logger logger = org.openflexo.logging.FlexoLogger
+			.getLogger(InspectActionizer.class.getPackage().getName());
 
 	public InspectActionizer(ControllerActionInitializer actionInitializer) {
 		super(InspectAction.actionType, actionInitializer);
 	}
 
 	@Override
-	protected FlexoActionFinalizer<InspectAction> getDefaultFinalizer() {
-		return new FlexoActionFinalizer<InspectAction>() {
+	protected FlexoActionFinalizer<InspectAction, FlexoObject, FlexoObject> getDefaultFinalizer() {
+		return new FlexoActionFinalizer<InspectAction, FlexoObject, FlexoObject>() {
 			@Override
 			public boolean run(EventObject e, InspectAction action) {
 				getController().showInspector();

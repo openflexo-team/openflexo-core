@@ -38,16 +38,15 @@
 
 package org.openflexo.fml.controller.action;
 
-import java.util.EventObject;
 import java.util.logging.Logger;
 
 import javax.swing.Icon;
 
 import org.openflexo.components.wizard.Wizard;
 import org.openflexo.components.wizard.WizardDialog;
+import org.openflexo.foundation.action.FlexoActionFactory;
 import org.openflexo.foundation.action.FlexoActionFinalizer;
 import org.openflexo.foundation.action.FlexoActionInitializer;
-import org.openflexo.foundation.action.FlexoActionFactory;
 import org.openflexo.foundation.fml.FMLObject;
 import org.openflexo.foundation.fml.action.CreateTopLevelVirtualModel;
 import org.openflexo.foundation.fml.rm.VirtualModelResource;
@@ -69,38 +68,32 @@ public class CreateTopLevelVirtualModelInitializer
 	}
 
 	@Override
-	protected FlexoActionInitializer<CreateTopLevelVirtualModel> getDefaultInitializer() {
-		return new FlexoActionInitializer<CreateTopLevelVirtualModel>() {
-			@Override
-			public boolean run(EventObject e, CreateTopLevelVirtualModel action) {
-
-				Wizard wizard = new CreateTopLevelVirtualModelWizard(action, getController());
-				WizardDialog dialog = new WizardDialog(wizard, getController());
-				dialog.showDialog();
-				if (dialog.getStatus() != Status.VALIDATED) {
-					// Operation cancelled
-					return false;
-				}
-				return true;
-				// return instanciateAndShowDialog(action, VPMCst.CREATE_VIEW_POINT_DIALOG_FIB);
+	protected FlexoActionInitializer<CreateTopLevelVirtualModel, RepositoryFolder<VirtualModelResource, ?>, FMLObject> getDefaultInitializer() {
+		return (e, action) -> {
+			Wizard wizard = new CreateTopLevelVirtualModelWizard(action, getController());
+			WizardDialog dialog = new WizardDialog(wizard, getController());
+			dialog.showDialog();
+			if (dialog.getStatus() != Status.VALIDATED) {
+				// Operation cancelled
+				return false;
 			}
+			return true;
+			// return instanciateAndShowDialog(action, VPMCst.CREATE_VIEW_POINT_DIALOG_FIB);
 		};
 	}
 
 	@Override
-	protected FlexoActionFinalizer<CreateTopLevelVirtualModel> getDefaultFinalizer() {
-		return new FlexoActionFinalizer<CreateTopLevelVirtualModel>() {
-			@Override
-			public boolean run(EventObject e, CreateTopLevelVirtualModel action) {
-				action.getNewVirtualModel().setAuthor(getController().getApplicationContext().getGeneralPreferences().getUserName());
-				getController().selectAndFocusObject(action.getNewVirtualModel());
-				return true;
-			}
+	protected FlexoActionFinalizer<CreateTopLevelVirtualModel, RepositoryFolder<VirtualModelResource, ?>, FMLObject> getDefaultFinalizer() {
+		return (e, action) -> {
+			action.getNewVirtualModel().setAuthor(getController().getApplicationContext().getGeneralPreferences().getUserName());
+			getController().selectAndFocusObject(action.getNewVirtualModel());
+			return true;
 		};
 	}
 
 	@Override
-	protected Icon getEnabledIcon(FlexoActionFactory actionType) {
+	protected Icon getEnabledIcon(
+			FlexoActionFactory<CreateTopLevelVirtualModel, RepositoryFolder<VirtualModelResource, ?>, FMLObject> actionType) {
 		return IconFactory.getImageIcon(FMLIconLibrary.VIRTUAL_MODEL_ICON, IconLibrary.NEW_MARKER);
 	}
 

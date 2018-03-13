@@ -70,8 +70,8 @@ public class NavigationSchemeActionInitializer
 	}
 
 	@Override
-	protected FlexoActionInitializer<NavigationSchemeAction> getDefaultInitializer() {
-		return new FlexoActionInitializer<NavigationSchemeAction>() {
+	protected FlexoActionInitializer<NavigationSchemeAction, FlexoConceptInstance, VirtualModelInstanceObject> getDefaultInitializer() {
+		return new FlexoActionInitializer<NavigationSchemeAction, FlexoConceptInstance, VirtualModelInstanceObject>() {
 			@Override
 			public boolean run(EventObject e, NavigationSchemeAction action) {
 				if (!action.evaluateCondition()) {
@@ -95,21 +95,18 @@ public class NavigationSchemeActionInitializer
 	}
 
 	@Override
-	protected FlexoActionFinalizer<NavigationSchemeAction> getDefaultFinalizer() {
-		return new FlexoActionFinalizer<NavigationSchemeAction>() {
-			@Override
-			public boolean run(EventObject e, NavigationSchemeAction action) {
-				if (action.getTargetObject() != null) {
-					// Editor will handle switch to right module and perspective, and select target object
-					System.out.println("-------------> Du coup, focus sur " + action.getTargetObject());
-					FlexoObject targetObject = action.getTargetObject();
-					focusOnTargetObject(targetObject, action);
-					// getEditor().focusOn(targetObject, (FlexoNature) action.getFlexoBehaviour().getDisplayNature(targetObject));
-					return true;
-				}
-				else {
-					return false;
-				}
+	protected FlexoActionFinalizer<NavigationSchemeAction, FlexoConceptInstance, VirtualModelInstanceObject> getDefaultFinalizer() {
+		return (e, action) -> {
+			if (action.getTargetObject() != null) {
+				// Editor will handle switch to right module and perspective, and select target object
+				System.out.println("-------------> Du coup, focus sur " + action.getTargetObject());
+				FlexoObject targetObject = action.getTargetObject();
+				focusOnTargetObject(targetObject, action);
+				// getEditor().focusOn(targetObject, (FlexoNature) action.getFlexoBehaviour().getDisplayNature(targetObject));
+				return true;
+			}
+			else {
+				return false;
 			}
 		};
 	}
@@ -133,7 +130,7 @@ public class NavigationSchemeActionInitializer
 	}
 
 	@Override
-	protected Icon getEnabledIcon(FlexoActionFactory actionType) {
+	protected Icon getEnabledIcon(FlexoActionFactory<NavigationSchemeAction, FlexoConceptInstance, VirtualModelInstanceObject> actionType) {
 		return FMLIconLibrary.NAVIGATION_SCHEME_ICON;
 	}
 

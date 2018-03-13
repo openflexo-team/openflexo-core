@@ -41,7 +41,12 @@ package org.openflexo.foundation.action;
 
 import java.util.EventObject;
 
-public interface FlexoActionInitializer<A extends FlexoAction> extends FlexoActionRunnable<A> {
+import org.openflexo.foundation.FlexoObject;
 
+@FunctionalInterface
+public interface FlexoActionInitializer<A extends FlexoAction<A, T1, T2>, T1 extends FlexoObject, T2 extends FlexoObject>
+		extends FlexoActionRunnable<A, T1, T2> {
+
+	@Override
 	boolean run(EventObject event, A action);
 }

@@ -69,8 +69,8 @@ public class SynchronizationSchemeActionInitializer
 	}
 
 	@Override
-	protected FlexoActionInitializer<SynchronizationSchemeAction> getDefaultInitializer() {
-		return new FlexoActionInitializer<SynchronizationSchemeAction>() {
+	protected FlexoActionInitializer<SynchronizationSchemeAction, VirtualModelInstance<?, ?>, VirtualModelInstanceObject> getDefaultInitializer() {
+		return new FlexoActionInitializer<SynchronizationSchemeAction, VirtualModelInstance<?, ?>, VirtualModelInstanceObject>() {
 			@Override
 			public boolean run(EventObject e, SynchronizationSchemeAction action) {
 				getController().willExecute(action);
@@ -85,13 +85,10 @@ public class SynchronizationSchemeActionInitializer
 	}
 
 	@Override
-	protected FlexoActionFinalizer<SynchronizationSchemeAction> getDefaultFinalizer() {
-		return new FlexoActionFinalizer<SynchronizationSchemeAction>() {
-			@Override
-			public boolean run(EventObject e, SynchronizationSchemeAction action) {
-				getController().hasExecuted(action);
-				return true;
-			}
+	protected FlexoActionFinalizer<SynchronizationSchemeAction, VirtualModelInstance<?, ?>, VirtualModelInstanceObject> getDefaultFinalizer() {
+		return (e, action) -> {
+			getController().hasExecuted(action);
+			return true;
 		};
 	}
 
@@ -110,7 +107,8 @@ public class SynchronizationSchemeActionInitializer
 	}
 
 	@Override
-	protected Icon getEnabledIcon(FlexoActionFactory actionType) {
+	protected Icon getEnabledIcon(
+			FlexoActionFactory<SynchronizationSchemeAction, VirtualModelInstance<?, ?>, VirtualModelInstanceObject> actionType) {
 		return FMLIconLibrary.SYNCHRONIZATION_SCHEME_ICON;
 	}
 

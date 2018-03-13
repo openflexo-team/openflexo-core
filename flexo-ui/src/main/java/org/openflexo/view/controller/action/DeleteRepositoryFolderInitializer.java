@@ -45,9 +45,9 @@ import java.util.logging.Logger;
 import javax.swing.Icon;
 
 import org.openflexo.foundation.action.DeleteRepositoryFolder;
+import org.openflexo.foundation.action.FlexoActionFactory;
 import org.openflexo.foundation.action.FlexoActionFinalizer;
 import org.openflexo.foundation.action.FlexoActionInitializer;
-import org.openflexo.foundation.action.FlexoActionFactory;
 import org.openflexo.foundation.resource.RepositoryFolder;
 import org.openflexo.icon.IconLibrary;
 import org.openflexo.view.controller.ActionInitializer;
@@ -63,8 +63,8 @@ public class DeleteRepositoryFolderInitializer extends ActionInitializer<DeleteR
 	}
 
 	@Override
-	protected FlexoActionInitializer<DeleteRepositoryFolder> getDefaultInitializer() {
-		return new FlexoActionInitializer<DeleteRepositoryFolder>() {
+	protected FlexoActionInitializer<DeleteRepositoryFolder, RepositoryFolder, RepositoryFolder> getDefaultInitializer() {
+		return new FlexoActionInitializer<DeleteRepositoryFolder, RepositoryFolder, RepositoryFolder>() {
 			@Override
 			public boolean run(EventObject e, DeleteRepositoryFolder action) {
 				return FlexoController
@@ -74,8 +74,8 @@ public class DeleteRepositoryFolderInitializer extends ActionInitializer<DeleteR
 	}
 
 	@Override
-	protected FlexoActionFinalizer<DeleteRepositoryFolder> getDefaultFinalizer() {
-		return new FlexoActionFinalizer<DeleteRepositoryFolder>() {
+	protected FlexoActionFinalizer<DeleteRepositoryFolder, RepositoryFolder, RepositoryFolder> getDefaultFinalizer() {
+		return new FlexoActionFinalizer<DeleteRepositoryFolder, RepositoryFolder, RepositoryFolder>() {
 			@Override
 			public boolean run(EventObject e, DeleteRepositoryFolder action) {
 				return true;

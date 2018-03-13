@@ -46,8 +46,10 @@ import java.util.EventObject;
 import javax.swing.Icon;
 import javax.swing.JFileChooser;
 
-import org.openflexo.foundation.action.FlexoActionInitializer;
+import org.openflexo.foundation.FlexoObject;
+import org.openflexo.foundation.FlexoProject;
 import org.openflexo.foundation.action.FlexoActionFactory;
+import org.openflexo.foundation.action.FlexoActionInitializer;
 import org.openflexo.icon.IconLibrary;
 import org.openflexo.toolbox.FileUtils;
 import org.openflexo.view.FlexoFrame;
@@ -59,7 +61,7 @@ import org.openflexo.view.controller.FlexoController;
  * @author gpolet
  * 
  */
-public class ProjectExcelExportInitializer extends ActionInitializer {
+public class ProjectExcelExportInitializer extends ActionInitializer<ProjectExcelExportAction, FlexoProject, FlexoObject> {
 
 	/**
 	 * @param actionType
@@ -75,9 +77,9 @@ public class ProjectExcelExportInitializer extends ActionInitializer {
 	 * @see org.openflexo.view.controller.ActionInitializer#getDefaultInitializer()
 	 */
 	@Override
-	protected FlexoActionInitializer<ProjectExcelExportAction> getDefaultInitializer() {
+	protected FlexoActionInitializer<ProjectExcelExportAction, FlexoProject, FlexoObject> getDefaultInitializer() {
 
-		return new FlexoActionInitializer<ProjectExcelExportAction>() {
+		return new FlexoActionInitializer<ProjectExcelExportAction, FlexoProject, FlexoObject>() {
 
 			@Override
 			public boolean run(EventObject event, ProjectExcelExportAction action) {
@@ -123,7 +125,7 @@ public class ProjectExcelExportInitializer extends ActionInitializer {
 	}
 
 	@Override
-	protected Icon getEnabledIcon(FlexoActionFactory actionType) {
+	protected Icon getEnabledIcon(FlexoActionFactory<ProjectExcelExportAction, FlexoProject, FlexoObject> actionType) {
 		return IconLibrary.BIG_EXCEL_ICON;
 	}
 

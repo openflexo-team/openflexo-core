@@ -63,8 +63,8 @@ public class AddRepositoryFolderInitializer extends ActionInitializer<AddReposit
 	}
 
 	@Override
-	protected FlexoActionInitializer<AddRepositoryFolder> getDefaultInitializer() {
-		return new FlexoActionInitializer<AddRepositoryFolder>() {
+	protected FlexoActionInitializer<AddRepositoryFolder, RepositoryFolder, RepositoryFolder> getDefaultInitializer() {
+		return new FlexoActionInitializer<AddRepositoryFolder, RepositoryFolder, RepositoryFolder>() {
 			@Override
 			public boolean run(EventObject e, AddRepositoryFolder action) {
 				if (action.getFocusedObject() != null) {
@@ -98,8 +98,8 @@ public class AddRepositoryFolderInitializer extends ActionInitializer<AddReposit
 	}
 
 	@Override
-	protected FlexoActionFinalizer<AddRepositoryFolder> getDefaultFinalizer() {
-		return new FlexoActionFinalizer<AddRepositoryFolder>() {
+	protected FlexoActionFinalizer<AddRepositoryFolder, RepositoryFolder, RepositoryFolder> getDefaultFinalizer() {
+		return new FlexoActionFinalizer<AddRepositoryFolder, RepositoryFolder, RepositoryFolder>() {
 			@Override
 			public boolean run(EventObject e, AddRepositoryFolder action) {
 				// Update ProjectBrowser (normally it should be done with a
@@ -129,7 +129,7 @@ public class AddRepositoryFolderInitializer extends ActionInitializer<AddReposit
 	}
 
 	@Override
-	protected Icon getEnabledIcon(FlexoActionFactory actionType) {
+	protected Icon getEnabledIcon(FlexoActionFactory<AddRepositoryFolder, RepositoryFolder, RepositoryFolder> actionType) {
 		return IconLibrary.FOLDER_ICON;
 	}
 

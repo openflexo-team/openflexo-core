@@ -38,13 +38,12 @@
 
 package org.openflexo.fml.controller.action;
 
-import java.util.EventObject;
 import java.util.logging.Logger;
 
 import javax.swing.Icon;
 
-import org.openflexo.foundation.action.FlexoActionInitializer;
 import org.openflexo.foundation.action.FlexoActionFactory;
+import org.openflexo.foundation.action.FlexoActionInitializer;
 import org.openflexo.foundation.fml.FMLObject;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.action.DeleteVirtualModel;
@@ -63,13 +62,9 @@ public class DeleteVirtualModelInitializer extends ActionInitializer<DeleteVirtu
 	}
 
 	@Override
-	protected FlexoActionInitializer<DeleteVirtualModel> getDefaultInitializer() {
-		return new FlexoActionInitializer<DeleteVirtualModel>() {
-			@Override
-			public boolean run(EventObject e, DeleteVirtualModel action) {
-				return FlexoController.confirm(action.getLocales().localizedForKey("would_you_really_like_to_delete_this_virtual_model"));
-			}
-		};
+	protected FlexoActionInitializer<DeleteVirtualModel, VirtualModel, FMLObject> getDefaultInitializer() {
+		return (e, action) -> FlexoController
+				.confirm(action.getLocales().localizedForKey("would_you_really_like_to_delete_this_virtual_model"));
 	}
 
 	@Override

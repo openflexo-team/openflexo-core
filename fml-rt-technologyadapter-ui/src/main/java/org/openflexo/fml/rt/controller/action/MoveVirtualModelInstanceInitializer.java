@@ -58,8 +58,8 @@ public class MoveVirtualModelInstanceInitializer
 	}
 
 	@Override
-	protected FlexoActionInitializer<MoveVirtualModelInstance> getDefaultInitializer() {
-		return new FlexoActionInitializer<MoveVirtualModelInstance>() {
+	protected FlexoActionInitializer<MoveVirtualModelInstance, VirtualModelInstance<?, ?>, VirtualModelInstance<?, ?>> getDefaultInitializer() {
+		return new FlexoActionInitializer<MoveVirtualModelInstance, VirtualModelInstance<?, ?>, VirtualModelInstance<?, ?>>() {
 			@Override
 			public boolean run(EventObject e, MoveVirtualModelInstance action) {
 				return true;
@@ -68,13 +68,7 @@ public class MoveVirtualModelInstanceInitializer
 	}
 
 	@Override
-	protected FlexoActionFinalizer<MoveVirtualModelInstance> getDefaultFinalizer() {
-		return new FlexoActionFinalizer<MoveVirtualModelInstance>() {
-			@Override
-			public boolean run(EventObject e, MoveVirtualModelInstance action) {
-				return true;
-			}
-		};
+	protected FlexoActionFinalizer<MoveVirtualModelInstance, VirtualModelInstance<?, ?>, VirtualModelInstance<?, ?>> getDefaultFinalizer() {
+		return (e, action) -> true;
 	}
-
 }

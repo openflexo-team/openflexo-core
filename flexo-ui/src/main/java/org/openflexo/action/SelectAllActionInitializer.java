@@ -61,8 +61,8 @@ public class SelectAllActionInitializer extends ActionInitializer<SelectAllActio
 	}
 
 	@Override
-	protected FlexoActionInitializer<SelectAllAction> getDefaultInitializer() {
-		return new FlexoActionInitializer<SelectAllAction>() {
+	protected FlexoActionInitializer<SelectAllAction, FlexoObject, FlexoObject> getDefaultInitializer() {
+		return new FlexoActionInitializer<SelectAllAction, FlexoObject, FlexoObject>() {
 			@Override
 			public boolean run(EventObject e, SelectAllAction action) {
 				return true;
@@ -71,26 +71,23 @@ public class SelectAllActionInitializer extends ActionInitializer<SelectAllActio
 	}
 
 	@Override
-	protected FlexoActionFinalizer<SelectAllAction> getDefaultFinalizer() {
-		return new FlexoActionFinalizer<SelectAllAction>() {
-			@Override
-			public boolean run(EventObject e, SelectAllAction action) {
-				System.out.println("Select all with " + action.getFocusedObject());
-				/*DiagramElement<?> container = action.getFocusedObject();
-				if (action.getFocusedObject() instanceof DiagramConnector) {
-					container = ((DiagramConnector) action.getFocusedObject()).getParent();
-				} else if (action.getFocusedObject() instanceof DiagramShape
-						&& ((DiagramShape) action.getFocusedObject()).getChilds().size() == 0) {
-					container = ((DiagramShape) action.getFocusedObject()).getParent();
-				}
-				if (container != null) {
-					getControllerActionInitializer().getVESelectionManager().setSelectedObjects(container.getChilds());
-					return true;
-				} else {
-					return false;
-				}*/
-				return false;
+	protected FlexoActionFinalizer<SelectAllAction, FlexoObject, FlexoObject> getDefaultFinalizer() {
+		return (e, action) -> {
+			System.out.println("Select all with " + action.getFocusedObject());
+			/*DiagramElement<?> container = action.getFocusedObject();
+			if (action.getFocusedObject() instanceof DiagramConnector) {
+				container = ((DiagramConnector) action.getFocusedObject()).getParent();
+			} else if (action.getFocusedObject() instanceof DiagramShape
+					&& ((DiagramShape) action.getFocusedObject()).getChilds().size() == 0) {
+				container = ((DiagramShape) action.getFocusedObject()).getParent();
 			}
+			if (container != null) {
+				getControllerActionInitializer().getVESelectionManager().setSelectedObjects(container.getChilds());
+				return true;
+			} else {
+				return false;
+			}*/
+			return false;
 		};
 	}
 

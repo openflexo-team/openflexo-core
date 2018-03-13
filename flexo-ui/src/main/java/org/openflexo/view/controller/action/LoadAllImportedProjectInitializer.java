@@ -59,8 +59,8 @@ public class LoadAllImportedProjectInitializer extends ActionInitializer<LoadAll
 	}
 
 	@Override
-	protected FlexoActionInitializer<LoadAllImportedProject> getDefaultInitializer() {
-		return new FlexoActionInitializer<LoadAllImportedProject>() {
+	protected FlexoActionInitializer<LoadAllImportedProject, FlexoProjectObject, FlexoProjectObject> getDefaultInitializer() {
+		return new FlexoActionInitializer<LoadAllImportedProject, FlexoProjectObject, FlexoProjectObject>() {
 			@Override
 			public boolean run(EventObject e, LoadAllImportedProject action) {
 				return true;
@@ -69,8 +69,8 @@ public class LoadAllImportedProjectInitializer extends ActionInitializer<LoadAll
 	}
 
 	@Override
-	protected FlexoActionFinalizer<LoadAllImportedProject> getDefaultFinalizer() {
-		return new FlexoActionFinalizer<LoadAllImportedProject>() {
+	protected FlexoActionFinalizer<LoadAllImportedProject, FlexoProjectObject, FlexoProjectObject> getDefaultFinalizer() {
+		return new FlexoActionFinalizer<LoadAllImportedProject, FlexoProjectObject, FlexoProjectObject>() {
 			@Override
 			public boolean run(EventObject e, LoadAllImportedProject action) {
 				return true;

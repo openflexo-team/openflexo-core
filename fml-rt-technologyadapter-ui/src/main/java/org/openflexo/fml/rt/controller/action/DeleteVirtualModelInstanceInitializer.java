@@ -44,9 +44,9 @@ import java.util.logging.Logger;
 import javax.swing.Icon;
 
 import org.openflexo.foundation.FlexoObject;
+import org.openflexo.foundation.action.FlexoActionFactory;
 import org.openflexo.foundation.action.FlexoActionFinalizer;
 import org.openflexo.foundation.action.FlexoActionInitializer;
-import org.openflexo.foundation.action.FlexoActionFactory;
 import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.action.DeleteVirtualModelInstance;
 import org.openflexo.icon.IconLibrary;
@@ -64,8 +64,8 @@ public class DeleteVirtualModelInstanceInitializer
 	}
 
 	@Override
-	protected FlexoActionInitializer<DeleteVirtualModelInstance> getDefaultInitializer() {
-		return new FlexoActionInitializer<DeleteVirtualModelInstance>() {
+	protected FlexoActionInitializer<DeleteVirtualModelInstance, FMLRTVirtualModelInstance, FlexoObject> getDefaultInitializer() {
+		return new FlexoActionInitializer<DeleteVirtualModelInstance, FMLRTVirtualModelInstance, FlexoObject>() {
 			@Override
 			public boolean run(EventObject e, DeleteVirtualModelInstance action) {
 				return FlexoController.confirm(action.getLocales().localizedForKey("really_delete_this_virtual_model_instance_?"));
@@ -74,17 +74,12 @@ public class DeleteVirtualModelInstanceInitializer
 	}
 
 	@Override
-	protected FlexoActionFinalizer<DeleteVirtualModelInstance> getDefaultFinalizer() {
-		return new FlexoActionFinalizer<DeleteVirtualModelInstance>() {
-			@Override
-			public boolean run(EventObject e, DeleteVirtualModelInstance action) {
-				return true;
-			}
-		};
+	protected FlexoActionFinalizer<DeleteVirtualModelInstance, FMLRTVirtualModelInstance, FlexoObject> getDefaultFinalizer() {
+		return (e, action) -> true;
 	}
 
 	@Override
-	protected Icon getEnabledIcon(FlexoActionFactory actionType) {
+	protected Icon getEnabledIcon(FlexoActionFactory<DeleteVirtualModelInstance, FMLRTVirtualModelInstance, FlexoObject> actionType) {
 		return IconLibrary.DELETE_ICON;
 	}
 

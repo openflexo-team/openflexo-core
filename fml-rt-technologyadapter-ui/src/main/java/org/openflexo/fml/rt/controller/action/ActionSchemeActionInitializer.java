@@ -68,8 +68,8 @@ public class ActionSchemeActionInitializer extends ActionInitializer<ActionSchem
 	}
 
 	@Override
-	protected FlexoActionInitializer<ActionSchemeAction> getDefaultInitializer() {
-		return new FlexoActionInitializer<ActionSchemeAction>() {
+	protected FlexoActionInitializer<ActionSchemeAction, FlexoConceptInstance, VirtualModelInstanceObject> getDefaultInitializer() {
+		return new FlexoActionInitializer<ActionSchemeAction, FlexoConceptInstance, VirtualModelInstanceObject>() {
 			@Override
 			public boolean run(EventObject e, ActionSchemeAction action) {
 				getController().willExecute(action);
@@ -96,13 +96,10 @@ public class ActionSchemeActionInitializer extends ActionInitializer<ActionSchem
 	}
 
 	@Override
-	protected FlexoActionFinalizer<ActionSchemeAction> getDefaultFinalizer() {
-		return new FlexoActionFinalizer<ActionSchemeAction>() {
-			@Override
-			public boolean run(EventObject e, ActionSchemeAction action) {
-				getController().hasExecuted(action);
-				return true;
-			}
+	protected FlexoActionFinalizer<ActionSchemeAction, FlexoConceptInstance, VirtualModelInstanceObject> getDefaultFinalizer() {
+		return (e, action) -> {
+			getController().hasExecuted(action);
+			return true;
 		};
 	}
 
@@ -121,7 +118,7 @@ public class ActionSchemeActionInitializer extends ActionInitializer<ActionSchem
 	}
 
 	@Override
-	protected Icon getEnabledIcon(FlexoActionFactory actionType) {
+	protected Icon getEnabledIcon(FlexoActionFactory<ActionSchemeAction, FlexoConceptInstance, VirtualModelInstanceObject> actionType) {
 		return FMLIconLibrary.ACTION_SCHEME_ICON;
 	}
 

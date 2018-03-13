@@ -166,7 +166,7 @@ public abstract class ActionInitializer<A extends FlexoAction<A, T1, T2>, T1 ext
 	 * 
 	 * @return null
 	 */
-	protected FlexoActionInitializer<A> getDefaultInitializer() {
+	protected FlexoActionInitializer<A, T1, T2> getDefaultInitializer() {
 		return null;
 	}
 
@@ -176,7 +176,7 @@ public abstract class ActionInitializer<A extends FlexoAction<A, T1, T2>, T1 ext
 	 * 
 	 * @return null
 	 */
-	protected FlexoActionFinalizer<A> getDefaultFinalizer() {
+	protected FlexoActionFinalizer<A, T1, T2> getDefaultFinalizer() {
 		return null;
 	}
 
@@ -228,7 +228,7 @@ public abstract class ActionInitializer<A extends FlexoAction<A, T1, T2>, T1 ext
 	 * 
 	 * @return null
 	 */
-	protected Icon getEnabledIcon(FlexoActionFactory<?, ?, ?> actionFactory) {
+	protected Icon getEnabledIcon(FlexoActionFactory<A, T1, T2> actionFactory) {
 		return null;
 	}
 
@@ -240,11 +240,11 @@ public abstract class ActionInitializer<A extends FlexoAction<A, T1, T2>, T1 ext
 	 * 
 	 * @return null
 	 */
-	protected Icon getDisabledIcon(FlexoActionFactory<?, ?, ?> actionFactory) {
+	protected Icon getDisabledIcon(FlexoActionFactory<A, T1, T2> actionFactory) {
 		return null;
 	}
 
-	public LocalizedDelegate getModuleLocales(FlexoAction<?, ?, ?> action) {
+	public LocalizedDelegate getModuleLocales(FlexoAction<A, T1, T2> action) {
 		if (action != null) {
 			if (action.getServiceManager() instanceof ApplicationContext) {
 				return ((ApplicationContext) action.getServiceManager()).getModuleLoader().getActiveModule().getLocales();
@@ -256,7 +256,7 @@ public abstract class ActionInitializer<A extends FlexoAction<A, T1, T2>, T1 ext
 		return FlexoLocalization.getMainLocalizer();
 	}
 
-	public LocalizedDelegate getActionLocales(FlexoAction<?, ?, ?> action) {
+	public LocalizedDelegate getActionLocales(FlexoAction<A, T1, T2> action) {
 		if (action != null) {
 			return action.getLocales();
 		}

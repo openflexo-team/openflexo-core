@@ -44,9 +44,9 @@ import java.util.logging.Logger;
 import javax.swing.Icon;
 
 import org.openflexo.foundation.FlexoObject;
+import org.openflexo.foundation.action.FlexoActionFactory;
 import org.openflexo.foundation.action.FlexoActionFinalizer;
 import org.openflexo.foundation.action.FlexoActionInitializer;
-import org.openflexo.foundation.action.FlexoActionFactory;
 import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.action.OpenVirtualModelInstance;
 import org.openflexo.icon.FMLRTIconLibrary;
@@ -66,8 +66,8 @@ public class OpenVirtualModelInstanceInitializer
 	}
 
 	@Override
-	protected FlexoActionInitializer<OpenVirtualModelInstance> getDefaultInitializer() {
-		return new FlexoActionInitializer<OpenVirtualModelInstance>() {
+	protected FlexoActionInitializer<OpenVirtualModelInstance, FMLRTVirtualModelInstance, FlexoObject> getDefaultInitializer() {
+		return new FlexoActionInitializer<OpenVirtualModelInstance, FMLRTVirtualModelInstance, FlexoObject>() {
 			@Override
 			public boolean run(EventObject e, OpenVirtualModelInstance action) {
 				return true;
@@ -77,22 +77,19 @@ public class OpenVirtualModelInstanceInitializer
 	}
 
 	@Override
-	protected FlexoActionFinalizer<OpenVirtualModelInstance> getDefaultFinalizer() {
-		return new FlexoActionFinalizer<OpenVirtualModelInstance>() {
-			@Override
-			public boolean run(EventObject e, OpenVirtualModelInstance action) {
+	protected FlexoActionFinalizer<OpenVirtualModelInstance, FMLRTVirtualModelInstance, FlexoObject> getDefaultFinalizer() {
+		return (e, action) -> {
 
-				/*TechnologyPerspective<?> perspective = getController().getFMLRTTechnologyAdapterController()
-						.getTechnologyPerspective(getController());
-				getController().setCurrentEditedObjectAsModuleView(action.getFocusedObject(), perspective);*/
-				getController().setCurrentEditedObjectAsModuleView(action.getFocusedObject());
-				return true;
-			}
+			/*TechnologyPerspective<?> perspective = getController().getFMLRTTechnologyAdapterController()
+					.getTechnologyPerspective(getController());
+			getController().setCurrentEditedObjectAsModuleView(action.getFocusedObject(), perspective);*/
+			getController().setCurrentEditedObjectAsModuleView(action.getFocusedObject());
+			return true;
 		};
 	}
 
 	@Override
-	protected Icon getEnabledIcon(FlexoActionFactory actionType) {
+	protected Icon getEnabledIcon(FlexoActionFactory<OpenVirtualModelInstance, FMLRTVirtualModelInstance, FlexoObject> actionType) {
 		return IconFactory.getImageIcon(FMLRTIconLibrary.VIRTUAL_MODEL_INSTANCE_ICON, IconLibrary.IMPORT);
 	}
 

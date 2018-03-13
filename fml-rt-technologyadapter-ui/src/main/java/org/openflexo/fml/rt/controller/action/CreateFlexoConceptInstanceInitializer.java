@@ -46,9 +46,9 @@ import javax.swing.Icon;
 import org.openflexo.components.wizard.Wizard;
 import org.openflexo.components.wizard.WizardDialog;
 import org.openflexo.foundation.FlexoObject;
+import org.openflexo.foundation.action.FlexoActionFactory;
 import org.openflexo.foundation.action.FlexoActionFinalizer;
 import org.openflexo.foundation.action.FlexoActionInitializer;
-import org.openflexo.foundation.action.FlexoActionFactory;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.action.CreateFlexoConceptInstance;
 import org.openflexo.gina.controller.FIBController.Status;
@@ -68,8 +68,8 @@ public class CreateFlexoConceptInstanceInitializer
 	}
 
 	@Override
-	protected FlexoActionInitializer<CreateFlexoConceptInstance> getDefaultInitializer() {
-		return new FlexoActionInitializer<CreateFlexoConceptInstance>() {
+	protected FlexoActionInitializer<CreateFlexoConceptInstance, FlexoConceptInstance, FlexoObject> getDefaultInitializer() {
+		return new FlexoActionInitializer<CreateFlexoConceptInstance, FlexoConceptInstance, FlexoObject>() {
 			@Override
 			public boolean run(EventObject e, CreateFlexoConceptInstance action) {
 				Wizard wizard = new CreateFlexoConceptInstanceWizard(action, getController());
@@ -85,17 +85,12 @@ public class CreateFlexoConceptInstanceInitializer
 	}
 
 	@Override
-	protected FlexoActionFinalizer<CreateFlexoConceptInstance> getDefaultFinalizer() {
-		return new FlexoActionFinalizer<CreateFlexoConceptInstance>() {
-			@Override
-			public boolean run(EventObject e, CreateFlexoConceptInstance action) {
-				return true;
-			}
-		};
+	protected FlexoActionFinalizer<CreateFlexoConceptInstance, FlexoConceptInstance, FlexoObject> getDefaultFinalizer() {
+		return (e, action) -> true;
 	}
 
 	@Override
-	protected Icon getEnabledIcon(FlexoActionFactory actionType) {
+	protected Icon getEnabledIcon(FlexoActionFactory<CreateFlexoConceptInstance, FlexoConceptInstance, FlexoObject> actionType) {
 		return IconFactory.getImageIcon(FMLRTIconLibrary.FLEXO_CONCEPT_INSTANCE_ICON, IconLibrary.NEW_MARKER);
 	}
 

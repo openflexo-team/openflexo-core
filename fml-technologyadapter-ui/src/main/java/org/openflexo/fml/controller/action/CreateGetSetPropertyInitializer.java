@@ -38,16 +38,15 @@
 
 package org.openflexo.fml.controller.action;
 
-import java.util.EventObject;
 import java.util.logging.Logger;
 
 import javax.swing.Icon;
 
 import org.openflexo.components.wizard.Wizard;
 import org.openflexo.components.wizard.WizardDialog;
+import org.openflexo.foundation.action.FlexoActionFactory;
 import org.openflexo.foundation.action.FlexoActionFinalizer;
 import org.openflexo.foundation.action.FlexoActionInitializer;
-import org.openflexo.foundation.action.FlexoActionFactory;
 import org.openflexo.foundation.fml.FMLObject;
 import org.openflexo.foundation.fml.FlexoConceptObject;
 import org.openflexo.foundation.fml.action.CreateGetSetProperty;
@@ -65,36 +64,30 @@ public class CreateGetSetPropertyInitializer extends ActionInitializer<CreateGet
 	}
 
 	@Override
-	protected FlexoActionInitializer<CreateGetSetProperty> getDefaultInitializer() {
-		return new FlexoActionInitializer<CreateGetSetProperty>() {
-			@Override
-			public boolean run(EventObject e, CreateGetSetProperty action) {
-				Wizard wizard = new CreateGetSetPropertyWizard(action, getController());
-				WizardDialog dialog = new WizardDialog(wizard, getController());
-				dialog.showDialog();
-				if (dialog.getStatus() != Status.VALIDATED) {
-					// Operation cancelled
-					return false;
-				}
-				return true;
-				// return instanciateAndShowDialog(action, VPMCst.CREATE_FLEXO_ROLE_DIALOG_FIB);
+	protected FlexoActionInitializer<CreateGetSetProperty, FlexoConceptObject, FMLObject> getDefaultInitializer() {
+		return (e, action) -> {
+			Wizard wizard = new CreateGetSetPropertyWizard(action, getController());
+			WizardDialog dialog = new WizardDialog(wizard, getController());
+			dialog.showDialog();
+			if (dialog.getStatus() != Status.VALIDATED) {
+				// Operation cancelled
+				return false;
 			}
+			return true;
+			// return instanciateAndShowDialog(action, VPMCst.CREATE_FLEXO_ROLE_DIALOG_FIB);
 		};
 	}
 
 	@Override
-	protected FlexoActionFinalizer<CreateGetSetProperty> getDefaultFinalizer() {
-		return new FlexoActionFinalizer<CreateGetSetProperty>() {
-			@Override
-			public boolean run(EventObject e, CreateGetSetProperty action) {
-				// getController().setCurrentEditedObjectAsModuleView(action.getNewModelSlot(), getController().VIEW_POINT_PERSPECTIVE);
-				return true;
-			}
+	protected FlexoActionFinalizer<CreateGetSetProperty, FlexoConceptObject, FMLObject> getDefaultFinalizer() {
+		return (e, action) -> {
+			// getController().setCurrentEditedObjectAsModuleView(action.getNewModelSlot(), getController().VIEW_POINT_PERSPECTIVE);
+			return true;
 		};
 	}
 
 	@Override
-	protected Icon getEnabledIcon(FlexoActionFactory actionType) {
+	protected Icon getEnabledIcon(FlexoActionFactory<CreateGetSetProperty, FlexoConceptObject, FMLObject> actionType) {
 		return FMLIconLibrary.GET_SET_PROPERTY_ICON;
 	}
 

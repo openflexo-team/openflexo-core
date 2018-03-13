@@ -38,14 +38,13 @@
 
 package org.openflexo.fml.controller.action;
 
-import java.util.EventObject;
 import java.util.logging.Logger;
 
 import javax.swing.Icon;
 
+import org.openflexo.foundation.action.FlexoActionFactory;
 import org.openflexo.foundation.action.FlexoActionFinalizer;
 import org.openflexo.foundation.action.FlexoActionInitializer;
-import org.openflexo.foundation.action.FlexoActionFactory;
 import org.openflexo.foundation.fml.FMLObject;
 import org.openflexo.foundation.fml.action.AddReturnStatement;
 import org.openflexo.foundation.fml.editionaction.AssignableAction;
@@ -62,31 +61,23 @@ public class AddReturnStatementActionInitializer extends ActionInitializer<AddRe
 	}
 
 	@Override
-	protected FlexoActionInitializer<AddReturnStatement> getDefaultInitializer() {
-		return new FlexoActionInitializer<AddReturnStatement>() {
-			@Override
-			public boolean run(EventObject e, AddReturnStatement action) {
-				return true;
-
-			}
-		};
+	protected FlexoActionInitializer<AddReturnStatement, AssignableAction<?>, FMLObject> getDefaultInitializer() {
+		return (e, action) -> true;
 	}
 
 	@Override
-	protected FlexoActionFinalizer<AddReturnStatement> getDefaultFinalizer() {
-		return new FlexoActionFinalizer<AddReturnStatement>() {
-			@Override
-			public boolean run(EventObject e, AddReturnStatement action) {
-				// getController().setCurrentEditedObjectAsModuleView(action.getNewEditionAction(),
-				// getController().getCurrentPerspective());
-				getController().selectAndFocusObject(action.getReturnStatement());
-				return true;
-			}
+	protected FlexoActionFinalizer<AddReturnStatement, AssignableAction<?>, FMLObject> getDefaultFinalizer() {
+		return (e, action) -> {
+			// getController().setCurrentEditedObjectAsModuleView(action.getNewEditionAction(),
+			// getController().getCurrentPerspective());
+			getController().selectAndFocusObject(action.getReturnStatement());
+			return true;
 		};
+
 	}
 
 	@Override
-	protected Icon getEnabledIcon(FlexoActionFactory actionType) {
+	protected Icon getEnabledIcon(FlexoActionFactory<AddReturnStatement, AssignableAction<?>, FMLObject> actionType) {
 		return FMLIconLibrary.FLEXO_CONCEPT_ACTION_ICON;
 	}
 

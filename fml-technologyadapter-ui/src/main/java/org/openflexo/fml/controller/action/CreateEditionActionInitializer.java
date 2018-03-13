@@ -38,16 +38,15 @@
 
 package org.openflexo.fml.controller.action;
 
-import java.util.EventObject;
 import java.util.logging.Logger;
 
 import javax.swing.Icon;
 
 import org.openflexo.components.wizard.Wizard;
 import org.openflexo.components.wizard.WizardDialog;
+import org.openflexo.foundation.action.FlexoActionFactory;
 import org.openflexo.foundation.action.FlexoActionFinalizer;
 import org.openflexo.foundation.action.FlexoActionInitializer;
-import org.openflexo.foundation.action.FlexoActionFactory;
 import org.openflexo.foundation.fml.FMLObject;
 import org.openflexo.foundation.fml.action.CreateEditionAction;
 import org.openflexo.foundation.fml.controlgraph.FMLControlGraph;
@@ -67,38 +66,32 @@ public class CreateEditionActionInitializer extends ActionInitializer<CreateEdit
 	}
 
 	@Override
-	protected FlexoActionInitializer<CreateEditionAction> getDefaultInitializer() {
-		return new FlexoActionInitializer<CreateEditionAction>() {
-			@Override
-			public boolean run(EventObject e, CreateEditionAction action) {
-				Wizard wizard = new CreateEditionActionWizard(action, getController());
-				WizardDialog dialog = new WizardDialog(wizard, getController());
-				dialog.showDialog();
-				if (dialog.getStatus() != Status.VALIDATED) {
-					// Operation cancelled
-					return false;
-				}
-				return true;
-				// return instanciateAndShowDialog(action, CREATE_EDITION_ACTION_DIALOG_FIB);
+	protected FlexoActionInitializer<CreateEditionAction, FMLControlGraph, FMLObject> getDefaultInitializer() {
+		return (e, action) -> {
+			Wizard wizard = new CreateEditionActionWizard(action, getController());
+			WizardDialog dialog = new WizardDialog(wizard, getController());
+			dialog.showDialog();
+			if (dialog.getStatus() != Status.VALIDATED) {
+				// Operation cancelled
+				return false;
 			}
+			return true;
+			// return instanciateAndShowDialog(action, CREATE_EDITION_ACTION_DIALOG_FIB);
 		};
 	}
 
 	@Override
-	protected FlexoActionFinalizer<CreateEditionAction> getDefaultFinalizer() {
-		return new FlexoActionFinalizer<CreateEditionAction>() {
-			@Override
-			public boolean run(EventObject e, CreateEditionAction action) {
-				// getController().setCurrentEditedObjectAsModuleView(action.getNewEditionAction(),
-				// getController().getCurrentPerspective());
-				getController().selectAndFocusObject(action.getNewEditionAction());
-				return true;
-			}
+	protected FlexoActionFinalizer<CreateEditionAction, FMLControlGraph, FMLObject> getDefaultFinalizer() {
+		return (e, action) -> {
+			// getController().setCurrentEditedObjectAsModuleView(action.getNewEditionAction(),
+			// getController().getCurrentPerspective());
+			getController().selectAndFocusObject(action.getNewEditionAction());
+			return true;
 		};
 	}
 
 	@Override
-	protected Icon getEnabledIcon(FlexoActionFactory actionType) {
+	protected Icon getEnabledIcon(FlexoActionFactory<CreateEditionAction, FMLControlGraph, FMLObject> actionType) {
 		return FMLIconLibrary.FLEXO_CONCEPT_ACTION_ICON;
 	}
 

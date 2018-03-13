@@ -38,16 +38,15 @@
 
 package org.openflexo.fml.controller.action;
 
-import java.util.EventObject;
 import java.util.logging.Logger;
 
 import javax.swing.Icon;
 
 import org.openflexo.components.wizard.Wizard;
 import org.openflexo.components.wizard.WizardDialog;
+import org.openflexo.foundation.action.FlexoActionFactory;
 import org.openflexo.foundation.action.FlexoActionFinalizer;
 import org.openflexo.foundation.action.FlexoActionInitializer;
-import org.openflexo.foundation.action.FlexoActionFactory;
 import org.openflexo.foundation.fml.FMLObject;
 import org.openflexo.foundation.fml.FlexoConceptObject;
 import org.openflexo.foundation.fml.action.CreateFlexoConceptInstanceRole;
@@ -66,34 +65,26 @@ public class CreateFlexoConceptInstanceRoleInitializer
 	}
 
 	@Override
-	protected FlexoActionInitializer<CreateFlexoConceptInstanceRole> getDefaultInitializer() {
-		return new FlexoActionInitializer<CreateFlexoConceptInstanceRole>() {
-			@Override
-			public boolean run(EventObject e, CreateFlexoConceptInstanceRole action) {
-				Wizard wizard = new CreateFlexoConceptInstanceRoleWizard(action, getController());
-				WizardDialog dialog = new WizardDialog(wizard, getController());
-				dialog.showDialog();
-				if (dialog.getStatus() != Status.VALIDATED) {
-					// Operation cancelled
-					return false;
-				}
-				return true;
+	protected FlexoActionInitializer<CreateFlexoConceptInstanceRole, FlexoConceptObject, FMLObject> getDefaultInitializer() {
+		return (e, action) -> {
+			Wizard wizard = new CreateFlexoConceptInstanceRoleWizard(action, getController());
+			WizardDialog dialog = new WizardDialog(wizard, getController());
+			dialog.showDialog();
+			if (dialog.getStatus() != Status.VALIDATED) {
+				// Operation cancelled
+				return false;
 			}
+			return true;
 		};
 	}
 
 	@Override
-	protected FlexoActionFinalizer<CreateFlexoConceptInstanceRole> getDefaultFinalizer() {
-		return new FlexoActionFinalizer<CreateFlexoConceptInstanceRole>() {
-			@Override
-			public boolean run(EventObject e, CreateFlexoConceptInstanceRole action) {
-				return true;
-			}
-		};
+	protected FlexoActionFinalizer<CreateFlexoConceptInstanceRole, FlexoConceptObject, FMLObject> getDefaultFinalizer() {
+		return (e, action) -> true;
 	}
 
 	@Override
-	protected Icon getEnabledIcon(FlexoActionFactory actionType) {
+	protected Icon getEnabledIcon(FlexoActionFactory<CreateFlexoConceptInstanceRole, FlexoConceptObject, FMLObject> actionType) {
 		return FMLIconLibrary.FLEXO_ROLE_ICON;
 	}
 

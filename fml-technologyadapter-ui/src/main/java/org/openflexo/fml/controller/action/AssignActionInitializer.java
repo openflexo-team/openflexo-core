@@ -38,16 +38,15 @@
 
 package org.openflexo.fml.controller.action;
 
-import java.util.EventObject;
 import java.util.logging.Logger;
 
 import javax.swing.Icon;
 
 import org.openflexo.components.wizard.Wizard;
 import org.openflexo.components.wizard.WizardDialog;
+import org.openflexo.foundation.action.FlexoActionFactory;
 import org.openflexo.foundation.action.FlexoActionFinalizer;
 import org.openflexo.foundation.action.FlexoActionInitializer;
-import org.openflexo.foundation.action.FlexoActionFactory;
 import org.openflexo.foundation.fml.FMLObject;
 import org.openflexo.foundation.fml.action.AssignAction;
 import org.openflexo.foundation.fml.editionaction.AssignableAction;
@@ -65,39 +64,31 @@ public class AssignActionInitializer extends ActionInitializer<AssignAction, Ass
 	}
 
 	@Override
-	protected FlexoActionInitializer<AssignAction> getDefaultInitializer() {
-		return new FlexoActionInitializer<AssignAction>() {
-			@Override
-			public boolean run(EventObject e, AssignAction action) {
-
-				Wizard wizard = new AssignActionWizard(action, getController());
-				WizardDialog dialog = new WizardDialog(wizard, getController());
-				dialog.showDialog();
-				if (dialog.getStatus() != Status.VALIDATED) {
-					// Operation cancelled
-					return false;
-				}
-				return true;
-
+	protected FlexoActionInitializer<AssignAction, AssignableAction<?>, FMLObject> getDefaultInitializer() {
+		return (e, action) -> {
+			Wizard wizard = new AssignActionWizard(action, getController());
+			WizardDialog dialog = new WizardDialog(wizard, getController());
+			dialog.showDialog();
+			if (dialog.getStatus() != Status.VALIDATED) {
+				// Operation cancelled
+				return false;
 			}
+			return true;
 		};
 	}
 
 	@Override
-	protected FlexoActionFinalizer<AssignAction> getDefaultFinalizer() {
-		return new FlexoActionFinalizer<AssignAction>() {
-			@Override
-			public boolean run(EventObject e, AssignAction action) {
-				// getController().setCurrentEditedObjectAsModuleView(action.getNewEditionAction(),
-				// getController().getCurrentPerspective());
-				getController().selectAndFocusObject(action.getDeclarationAction());
-				return true;
-			}
+	protected FlexoActionFinalizer<AssignAction, AssignableAction<?>, FMLObject> getDefaultFinalizer() {
+		return (e, action) -> {
+			// getController().setCurrentEditedObjectAsModuleView(action.getNewEditionAction(),
+			// getController().getCurrentPerspective());
+			getController().selectAndFocusObject(action.getDeclarationAction());
+			return true;
 		};
 	}
 
 	@Override
-	protected Icon getEnabledIcon(FlexoActionFactory actionType) {
+	protected Icon getEnabledIcon(FlexoActionFactory<AssignAction, AssignableAction<?>, FMLObject> actionType) {
 		return FMLIconLibrary.FLEXO_CONCEPT_ACTION_ICON;
 	}
 

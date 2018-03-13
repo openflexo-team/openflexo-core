@@ -84,7 +84,7 @@ public class ImportProjectInitializer extends ActionInitializer<ImportProject, F
 	}
 
 	@Override
-	protected FlexoActionFinalizer<ImportProject> getDefaultFinalizer() {
+	protected FlexoActionFinalizer<ImportProject, FlexoProjectObject, FlexoProjectObject> getDefaultFinalizer() {
 		return (event, action) -> {
 			if (action.hasActionExecutionSucceeded()) {
 				FlexoController.notify(action.getLocales().localizedForKey("successfully_imported_project") + " "
@@ -95,7 +95,7 @@ public class ImportProjectInitializer extends ActionInitializer<ImportProject, F
 	}
 
 	@Override
-	protected FlexoActionInitializer<ImportProject> getDefaultInitializer() {
+	protected FlexoActionInitializer<ImportProject, FlexoProjectObject, FlexoProjectObject> getDefaultInitializer() {
 		return (e, action) -> {
 			if (!(getController().getApplicationContext() instanceof InteractiveApplicationContext)) {
 				return false;
@@ -105,8 +105,7 @@ public class ImportProjectInitializer extends ActionInitializer<ImportProject, F
 				return true;
 			}
 			ProjectChooserComponent chooser = new ProjectChooserComponent(FlexoFrame.getActiveFrame(),
-					getController().getApplicationContext()) {
-			};
+					getController().getApplicationContext()) {};
 			while (true) {
 				if (chooser.showOpenDialog() == JFileChooser.APPROVE_OPTION && chooser.getSelectedFile() != null) {
 					FlexoEditor editor = null;
@@ -152,7 +151,7 @@ public class ImportProjectInitializer extends ActionInitializer<ImportProject, F
 	}
 
 	@Override
-	protected Icon getEnabledIcon(FlexoActionFactory actionType) {
+	protected Icon getEnabledIcon(FlexoActionFactory<ImportProject, FlexoProjectObject, FlexoProjectObject> actionType) {
 		return IconLibrary.IMPORT_ICON;
 	}
 

@@ -38,16 +38,15 @@
 
 package org.openflexo.fml.controller.action;
 
-import java.util.EventObject;
 import java.util.logging.Logger;
 
 import javax.swing.Icon;
 
 import org.openflexo.components.wizard.Wizard;
 import org.openflexo.components.wizard.WizardDialog;
+import org.openflexo.foundation.action.FlexoActionFactory;
 import org.openflexo.foundation.action.FlexoActionFinalizer;
 import org.openflexo.foundation.action.FlexoActionInitializer;
-import org.openflexo.foundation.action.FlexoActionFactory;
 import org.openflexo.foundation.fml.FMLObject;
 import org.openflexo.foundation.fml.FlexoConceptObject;
 import org.openflexo.foundation.fml.action.CreateTechnologyRole;
@@ -65,34 +64,26 @@ public class CreateTechnologyRoleInitializer extends ActionInitializer<CreateTec
 	}
 
 	@Override
-	protected FlexoActionInitializer<CreateTechnologyRole> getDefaultInitializer() {
-		return new FlexoActionInitializer<CreateTechnologyRole>() {
-			@Override
-			public boolean run(EventObject e, CreateTechnologyRole action) {
-				Wizard wizard = new CreateTechnologyRoleWizard(action, getController());
-				WizardDialog dialog = new WizardDialog(wizard, getController());
-				dialog.showDialog();
-				if (dialog.getStatus() != Status.VALIDATED) {
-					// Operation cancelled
-					return false;
-				}
-				return true;
+	protected FlexoActionInitializer<CreateTechnologyRole, FlexoConceptObject, FMLObject> getDefaultInitializer() {
+		return (e, action) -> {
+			Wizard wizard = new CreateTechnologyRoleWizard(action, getController());
+			WizardDialog dialog = new WizardDialog(wizard, getController());
+			dialog.showDialog();
+			if (dialog.getStatus() != Status.VALIDATED) {
+				// Operation cancelled
+				return false;
 			}
+			return true;
 		};
 	}
 
 	@Override
-	protected FlexoActionFinalizer<CreateTechnologyRole> getDefaultFinalizer() {
-		return new FlexoActionFinalizer<CreateTechnologyRole>() {
-			@Override
-			public boolean run(EventObject e, CreateTechnologyRole action) {
-				return true;
-			}
-		};
+	protected FlexoActionFinalizer<CreateTechnologyRole, FlexoConceptObject, FMLObject> getDefaultFinalizer() {
+		return (e, action) -> true;
 	}
 
 	@Override
-	protected Icon getEnabledIcon(FlexoActionFactory actionType) {
+	protected Icon getEnabledIcon(FlexoActionFactory<CreateTechnologyRole, FlexoConceptObject, FMLObject> actionType) {
 		return FMLIconLibrary.FLEXO_ROLE_ICON;
 	}
 

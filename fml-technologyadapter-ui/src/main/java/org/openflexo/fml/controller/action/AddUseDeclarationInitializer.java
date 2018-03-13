@@ -38,7 +38,6 @@
 
 package org.openflexo.fml.controller.action;
 
-import java.util.EventObject;
 import java.util.logging.Logger;
 
 import javax.swing.Icon;
@@ -66,39 +65,33 @@ public class AddUseDeclarationInitializer extends ActionInitializer<AddUseDeclar
 	}
 
 	@Override
-	protected FlexoActionInitializer<AddUseDeclaration> getDefaultInitializer() {
-		return new FlexoActionInitializer<AddUseDeclaration>() {
-			@Override
-			public boolean run(EventObject e, AddUseDeclaration action) {
-				Wizard wizard = new AddUseDeclarationWizard(action, getController());
-				WizardDialog dialog = new WizardDialog(wizard, getController());
-				dialog.showDialog();
-				if (dialog.getStatus() != Status.VALIDATED) {
-					// Operation cancelled
-					return false;
-				}
-				return true;
-			}
-		};
-	}
-
-	@Override
-	protected FlexoActionFinalizer<AddUseDeclaration> getDefaultFinalizer() {
-		return new FlexoActionFinalizer<AddUseDeclaration>() {
-			@Override
-			public boolean run(EventObject e, AddUseDeclaration action) {
-				if (action.getModelSlotTechnologyAdapter() != null) {
-					TechnologyAdapterService taService = getController().getApplicationContext().getTechnologyAdapterService();
-					taService.activateTechnologyAdapter(action.getModelSlotTechnologyAdapter(), true);
-					return true;
-				}
+	protected FlexoActionInitializer<AddUseDeclaration, VirtualModel, FMLObject> getDefaultInitializer() {
+		return (e, action) -> {
+			Wizard wizard = new AddUseDeclarationWizard(action, getController());
+			WizardDialog dialog = new WizardDialog(wizard, getController());
+			dialog.showDialog();
+			if (dialog.getStatus() != Status.VALIDATED) {
+				// Operation cancelled
 				return false;
 			}
+			return true;
 		};
 	}
 
 	@Override
-	protected Icon getEnabledIcon(FlexoActionFactory actionType) {
+	protected FlexoActionFinalizer<AddUseDeclaration, VirtualModel, FMLObject> getDefaultFinalizer() {
+		return (e, action) -> {
+			if (action.getModelSlotTechnologyAdapter() != null) {
+				TechnologyAdapterService taService = getController().getApplicationContext().getTechnologyAdapterService();
+				taService.activateTechnologyAdapter(action.getModelSlotTechnologyAdapter(), true);
+				return true;
+			}
+			return false;
+		};
+	}
+
+	@Override
+	protected Icon getEnabledIcon(FlexoActionFactory<AddUseDeclaration, VirtualModel, FMLObject> actionType) {
 		return FMLIconLibrary.MODEL_SLOT_ICON;
 	}
 

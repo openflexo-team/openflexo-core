@@ -47,9 +47,9 @@ import javax.swing.KeyStroke;
 
 import org.openflexo.FlexoCst;
 import org.openflexo.foundation.FlexoObject;
+import org.openflexo.foundation.action.FlexoActionFactory;
 import org.openflexo.foundation.action.FlexoActionFinalizer;
 import org.openflexo.foundation.action.FlexoActionInitializer;
-import org.openflexo.foundation.action.FlexoActionFactory;
 import org.openflexo.foundation.action.copypaste.CopyAction;
 import org.openflexo.icon.IconLibrary;
 import org.openflexo.view.controller.ActionInitializer;
@@ -66,8 +66,8 @@ public class CopyActionInitializer extends ActionInitializer<CopyAction, FlexoOb
 	}
 
 	@Override
-	protected FlexoActionInitializer<CopyAction> getDefaultInitializer() {
-		return new FlexoActionInitializer<CopyAction>() {
+	protected FlexoActionInitializer<CopyAction, FlexoObject, FlexoObject> getDefaultInitializer() {
+		return new FlexoActionInitializer<CopyAction, FlexoObject, FlexoObject>() {
 			@Override
 			public boolean run(EventObject e, CopyAction action) {
 				logger.info("Copy initializer");
@@ -77,20 +77,17 @@ public class CopyActionInitializer extends ActionInitializer<CopyAction, FlexoOb
 	}
 
 	@Override
-	protected FlexoActionFinalizer<CopyAction> getDefaultFinalizer() {
-		return new FlexoActionFinalizer<CopyAction>() {
-			@Override
-			public boolean run(EventObject e, CopyAction action) {
-				logger.info("Copy finalizer");
-				getControllerActionInitializer().getController().setInfoMessage(
-						"Copied " + action.getClipboard().getLeaderClipboard().getOriginalContents().length + " objects", true);
-				return true;
-			}
+	protected FlexoActionFinalizer<CopyAction, FlexoObject, FlexoObject> getDefaultFinalizer() {
+		return (e, action) -> {
+			logger.info("Copy finalizer");
+			getControllerActionInitializer().getController()
+					.setInfoMessage("Copied " + action.getClipboard().getLeaderClipboard().getOriginalContents().length + " objects", true);
+			return true;
 		};
 	}
 
 	@Override
-	protected Icon getEnabledIcon(FlexoActionFactory actionType) {
+	protected Icon getEnabledIcon(FlexoActionFactory<CopyAction, FlexoObject, FlexoObject> actionType) {
 		return IconLibrary.COPY_ICON;
 	}
 

@@ -70,8 +70,8 @@ public class LoadResourceActionInitializer extends ActionInitializer<LoadResourc
 	}
 
 	@Override
-	protected FlexoActionInitializer<LoadResourceAction> getDefaultInitializer() {
-		return new FlexoActionInitializer<LoadResourceAction>() {
+	protected FlexoActionInitializer<LoadResourceAction, FlexoObject, FlexoObject> getDefaultInitializer() {
+		return new FlexoActionInitializer<LoadResourceAction, FlexoObject, FlexoObject>() {
 			@Override
 			public boolean run(EventObject e, LoadResourceAction action) {
 				return true;
@@ -80,8 +80,8 @@ public class LoadResourceActionInitializer extends ActionInitializer<LoadResourc
 	}
 
 	@Override
-	protected FlexoActionFinalizer<LoadResourceAction> getDefaultFinalizer() {
-		return new FlexoActionFinalizer<LoadResourceAction>() {
+	protected FlexoActionFinalizer<LoadResourceAction, FlexoObject, FlexoObject> getDefaultFinalizer() {
+		return new FlexoActionFinalizer<LoadResourceAction, FlexoObject, FlexoObject>() {
 			@Override
 			public boolean run(EventObject e, LoadResourceAction action) {
 				try {

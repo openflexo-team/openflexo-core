@@ -38,16 +38,15 @@
 
 package org.openflexo.fml.controller.action;
 
-import java.util.EventObject;
 import java.util.logging.Logger;
 
 import javax.swing.Icon;
 
 import org.openflexo.components.wizard.Wizard;
 import org.openflexo.components.wizard.WizardDialog;
+import org.openflexo.foundation.action.FlexoActionFactory;
 import org.openflexo.foundation.action.FlexoActionFinalizer;
 import org.openflexo.foundation.action.FlexoActionInitializer;
-import org.openflexo.foundation.action.FlexoActionFactory;
 import org.openflexo.foundation.fml.FMLObject;
 import org.openflexo.foundation.fml.action.CreateInspectorEntry;
 import org.openflexo.foundation.fml.inspector.FlexoConceptInspector;
@@ -64,37 +63,30 @@ public class CreateInspectorEntryInitializer extends ActionInitializer<CreateIns
 	}
 
 	@Override
-	protected FlexoActionInitializer<CreateInspectorEntry> getDefaultInitializer() {
-		return new FlexoActionInitializer<CreateInspectorEntry>() {
-			@Override
-			public boolean run(EventObject e, CreateInspectorEntry action) {
-				Wizard wizard = new CreateInspectorEntryWizard(action, getController());
-				WizardDialog dialog = new WizardDialog(wizard, getController());
-				dialog.showDialog();
-				if (dialog.getStatus() != Status.VALIDATED) {
-					// Operation cancelled
-					return false;
-				}
-				return true;
+	protected FlexoActionInitializer<CreateInspectorEntry, FlexoConceptInspector, FMLObject> getDefaultInitializer() {
+		return (e, action) -> {
+			Wizard wizard = new CreateInspectorEntryWizard(action, getController());
+			WizardDialog dialog = new WizardDialog(wizard, getController());
+			dialog.showDialog();
+			if (dialog.getStatus() != Status.VALIDATED) {
+				// Operation cancelled
+				return false;
 			}
+			return true;
 		};
 	}
 
 	@Override
-	protected FlexoActionFinalizer<CreateInspectorEntry> getDefaultFinalizer() {
-		return new FlexoActionFinalizer<CreateInspectorEntry>() {
-			@Override
-			public boolean run(EventObject e, CreateInspectorEntry action) {
-				// getController().setCurrentEditedObjectAsModuleView(action.getNewModelSlot(), getController().VIEW_POINT_PERSPECTIVE);
-				return true;
-			}
+	protected FlexoActionFinalizer<CreateInspectorEntry, FlexoConceptInspector, FMLObject> getDefaultFinalizer() {
+		return (e, action) -> {
+			// getController().setCurrentEditedObjectAsModuleView(action.getNewModelSlot(), getController().VIEW_POINT_PERSPECTIVE);
+			return true;
 		};
 	}
 
 	@Override
-	protected Icon getEnabledIcon(FlexoActionFactory actionType) {
+	protected Icon getEnabledIcon(FlexoActionFactory<CreateInspectorEntry, FlexoConceptInspector, FMLObject> actionType) {
 		// return FMLIconLibrary.FLEXO_CONCEPT_PARAMETER_ICON;
 		return null;
 	}
-
 }

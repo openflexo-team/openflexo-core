@@ -38,7 +38,6 @@
 
 package org.openflexo.fml.controller.action;
 
-import java.util.EventObject;
 import java.util.logging.Logger;
 
 import javax.swing.Icon;
@@ -66,40 +65,34 @@ public class CreateModelSlotInitializer extends ActionInitializer<CreateModelSlo
 	}
 
 	@Override
-	protected FlexoActionInitializer<CreateModelSlot> getDefaultInitializer() {
-		return new FlexoActionInitializer<CreateModelSlot>() {
-			@Override
-			public boolean run(EventObject e, CreateModelSlot action) {
-				Wizard wizard = new CreateModelSlotWizard(action, getController());
-				WizardDialog dialog = new WizardDialog(wizard, getController());
-				dialog.showDialog();
-				if (dialog.getStatus() != Status.VALIDATED) {
-					// Operation cancelled
-					return false;
-				}
-				return true;
-			}
-		};
-	}
-
-	@Override
-	protected FlexoActionFinalizer<CreateModelSlot> getDefaultFinalizer() {
-		return new FlexoActionFinalizer<CreateModelSlot>() {
-			@Override
-			public boolean run(EventObject e, CreateModelSlot action) {
-				if (action.getNewModelSlot() != null) {
-					TechnologyAdapterService taService = getController().getApplicationContext().getTechnologyAdapterService();
-					taService.activateTechnologyAdapter(action.getNewModelSlot().getModelSlotTechnologyAdapter(), true);
-					getController().selectAndFocusObject(action.getNewModelSlot());
-					return true;
-				}
+	protected FlexoActionInitializer<CreateModelSlot, FlexoConceptObject, FMLObject> getDefaultInitializer() {
+		return (e, action) -> {
+			Wizard wizard = new CreateModelSlotWizard(action, getController());
+			WizardDialog dialog = new WizardDialog(wizard, getController());
+			dialog.showDialog();
+			if (dialog.getStatus() != Status.VALIDATED) {
+				// Operation cancelled
 				return false;
 			}
+			return true;
 		};
 	}
 
 	@Override
-	protected Icon getEnabledIcon(FlexoActionFactory actionType) {
+	protected FlexoActionFinalizer<CreateModelSlot, FlexoConceptObject, FMLObject> getDefaultFinalizer() {
+		return (e, action) -> {
+			if (action.getNewModelSlot() != null) {
+				TechnologyAdapterService taService = getController().getApplicationContext().getTechnologyAdapterService();
+				taService.activateTechnologyAdapter(action.getNewModelSlot().getModelSlotTechnologyAdapter(), true);
+				getController().selectAndFocusObject(action.getNewModelSlot());
+				return true;
+			}
+			return false;
+		};
+	}
+
+	@Override
+	protected Icon getEnabledIcon(FlexoActionFactory<CreateModelSlot, FlexoConceptObject, FMLObject> actionType) {
 		return FMLIconLibrary.MODEL_SLOT_ICON;
 	}
 

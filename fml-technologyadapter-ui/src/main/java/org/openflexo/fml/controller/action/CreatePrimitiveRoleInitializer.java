@@ -38,16 +38,15 @@
 
 package org.openflexo.fml.controller.action;
 
-import java.util.EventObject;
 import java.util.logging.Logger;
 
 import javax.swing.Icon;
 
 import org.openflexo.components.wizard.Wizard;
 import org.openflexo.components.wizard.WizardDialog;
+import org.openflexo.foundation.action.FlexoActionFactory;
 import org.openflexo.foundation.action.FlexoActionFinalizer;
 import org.openflexo.foundation.action.FlexoActionInitializer;
-import org.openflexo.foundation.action.FlexoActionFactory;
 import org.openflexo.foundation.fml.FMLObject;
 import org.openflexo.foundation.fml.FlexoConceptObject;
 import org.openflexo.foundation.fml.action.CreatePrimitiveRole;
@@ -65,34 +64,26 @@ public class CreatePrimitiveRoleInitializer extends ActionInitializer<CreatePrim
 	}
 
 	@Override
-	protected FlexoActionInitializer<CreatePrimitiveRole> getDefaultInitializer() {
-		return new FlexoActionInitializer<CreatePrimitiveRole>() {
-			@Override
-			public boolean run(EventObject e, CreatePrimitiveRole action) {
-				Wizard wizard = new CreatePrimitiveRoleWizard(action, getController());
-				WizardDialog dialog = new WizardDialog(wizard, getController());
-				dialog.showDialog();
-				if (dialog.getStatus() != Status.VALIDATED) {
-					// Operation cancelled
-					return false;
-				}
-				return true;
+	protected FlexoActionInitializer<CreatePrimitiveRole, FlexoConceptObject, FMLObject> getDefaultInitializer() {
+		return (e, action) -> {
+			Wizard wizard = new CreatePrimitiveRoleWizard(action, getController());
+			WizardDialog dialog = new WizardDialog(wizard, getController());
+			dialog.showDialog();
+			if (dialog.getStatus() != Status.VALIDATED) {
+				// Operation cancelled
+				return false;
 			}
+			return true;
 		};
 	}
 
 	@Override
-	protected FlexoActionFinalizer<CreatePrimitiveRole> getDefaultFinalizer() {
-		return new FlexoActionFinalizer<CreatePrimitiveRole>() {
-			@Override
-			public boolean run(EventObject e, CreatePrimitiveRole action) {
-				return true;
-			}
-		};
+	protected FlexoActionFinalizer<CreatePrimitiveRole, FlexoConceptObject, FMLObject> getDefaultFinalizer() {
+		return (e, action) -> true;
 	}
 
 	@Override
-	protected Icon getEnabledIcon(FlexoActionFactory actionType) {
+	protected Icon getEnabledIcon(FlexoActionFactory<CreatePrimitiveRole, FlexoConceptObject, FMLObject> actionType) {
 		return FMLIconLibrary.FLEXO_ROLE_ICON;
 	}
 

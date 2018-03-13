@@ -38,16 +38,15 @@
 
 package org.openflexo.fml.controller.action;
 
-import java.util.EventObject;
 import java.util.logging.Logger;
 
 import javax.swing.Icon;
 
 import org.openflexo.components.wizard.Wizard;
 import org.openflexo.components.wizard.WizardDialog;
+import org.openflexo.foundation.action.FlexoActionFactory;
 import org.openflexo.foundation.action.FlexoActionFinalizer;
 import org.openflexo.foundation.action.FlexoActionInitializer;
-import org.openflexo.foundation.action.FlexoActionFactory;
 import org.openflexo.foundation.fml.FMLObject;
 import org.openflexo.foundation.fml.FlexoBehaviourObject;
 import org.openflexo.foundation.fml.action.CreateGenericBehaviourParameter;
@@ -66,35 +65,29 @@ public class CreateGenericBehaviourParameterInitializer
 	}
 
 	@Override
-	protected FlexoActionInitializer<CreateGenericBehaviourParameter> getDefaultInitializer() {
-		return new FlexoActionInitializer<CreateGenericBehaviourParameter>() {
-			@Override
-			public boolean run(EventObject e, CreateGenericBehaviourParameter action) {
-				Wizard wizard = new CreateGenericBehaviourParameterWizard(action, getController());
-				WizardDialog dialog = new WizardDialog(wizard, getController());
-				dialog.showDialog();
-				if (dialog.getStatus() != Status.VALIDATED) {
-					// Operation cancelled
-					return false;
-				}
-				return true;
+	protected FlexoActionInitializer<CreateGenericBehaviourParameter, FlexoBehaviourObject, FMLObject> getDefaultInitializer() {
+		return (e, action) -> {
+			Wizard wizard = new CreateGenericBehaviourParameterWizard(action, getController());
+			WizardDialog dialog = new WizardDialog(wizard, getController());
+			dialog.showDialog();
+			if (dialog.getStatus() != Status.VALIDATED) {
+				// Operation cancelled
+				return false;
 			}
+			return true;
 		};
 	}
 
 	@Override
-	protected FlexoActionFinalizer<CreateGenericBehaviourParameter> getDefaultFinalizer() {
-		return new FlexoActionFinalizer<CreateGenericBehaviourParameter>() {
-			@Override
-			public boolean run(EventObject e, CreateGenericBehaviourParameter action) {
-				// getController().setCurrentEditedObjectAsModuleView(action.getNewModelSlot(), getController().VIEW_POINT_PERSPECTIVE);
-				return true;
-			}
+	protected FlexoActionFinalizer<CreateGenericBehaviourParameter, FlexoBehaviourObject, FMLObject> getDefaultFinalizer() {
+		return (e, action) -> {
+			// getController().setCurrentEditedObjectAsModuleView(action.getNewModelSlot(), getController().VIEW_POINT_PERSPECTIVE);
+			return true;
 		};
 	}
 
 	@Override
-	protected Icon getEnabledIcon(FlexoActionFactory actionType) {
+	protected Icon getEnabledIcon(FlexoActionFactory<CreateGenericBehaviourParameter, FlexoBehaviourObject, FMLObject> actionType) {
 		return FMLIconLibrary.FLEXO_CONCEPT_PARAMETER_ICON;
 	}
 

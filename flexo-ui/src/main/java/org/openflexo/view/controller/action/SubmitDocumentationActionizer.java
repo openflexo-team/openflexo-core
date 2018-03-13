@@ -49,9 +49,9 @@ import org.openflexo.drm.DocItemAction;
 import org.openflexo.drm.action.SubmitVersion;
 import org.openflexo.drm.ui.SubmitNewVersionPopup;
 import org.openflexo.foundation.FlexoObject;
+import org.openflexo.foundation.action.FlexoActionFactory;
 import org.openflexo.foundation.action.FlexoActionFinalizer;
 import org.openflexo.foundation.action.FlexoActionInitializer;
-import org.openflexo.foundation.action.FlexoActionFactory;
 import org.openflexo.icon.IconLibrary;
 import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.localization.Language;
@@ -70,8 +70,8 @@ public class SubmitDocumentationActionizer extends ActionInitializer<SubmitDocum
 	}
 
 	@Override
-	protected FlexoActionInitializer<SubmitDocumentationAction> getDefaultInitializer() {
-		return new FlexoActionInitializer<SubmitDocumentationAction>() {
+	protected FlexoActionInitializer<SubmitDocumentationAction, FlexoObject, FlexoObject> getDefaultInitializer() {
+		return new FlexoActionInitializer<SubmitDocumentationAction, FlexoObject, FlexoObject>() {
 			@Override
 			public boolean run(EventObject e, SubmitDocumentationAction anAction) {
 				DocItem docItem;
@@ -152,8 +152,8 @@ public class SubmitDocumentationActionizer extends ActionInitializer<SubmitDocum
 	}
 
 	@Override
-	protected FlexoActionFinalizer<SubmitDocumentationAction> getDefaultFinalizer() {
-		return new FlexoActionFinalizer<SubmitDocumentationAction>() {
+	protected FlexoActionFinalizer<SubmitDocumentationAction, FlexoObject, FlexoObject> getDefaultFinalizer() {
+		return new FlexoActionFinalizer<SubmitDocumentationAction, FlexoObject, FlexoObject>() {
 			@Override
 			public boolean run(EventObject e, SubmitDocumentationAction action) {
 				if (action.getContext() != null && action.getContext() instanceof SubmitVersion) {
