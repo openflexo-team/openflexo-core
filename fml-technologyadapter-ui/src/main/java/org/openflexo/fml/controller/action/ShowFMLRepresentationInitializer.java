@@ -60,7 +60,7 @@ public class ShowFMLRepresentationInitializer extends ActionInitializer<ShowFMLR
 	}
 
 	@Override
-	protected FlexoActionInitializer<ShowFMLRepresentation> getDefaultInitializer() {
+	protected FlexoActionInitializer<ShowFMLRepresentation, FMLObject, FMLObject> getDefaultInitializer() {
 		return (e, action) -> instanciateAndShowDialog(action, SHOW_FML_REPRESENTATION_DIALOG_FIB);
 	}
 }
