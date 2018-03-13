@@ -74,7 +74,7 @@ public class LoadAllImportedProject extends FlexoAction<LoadAllImportedProject, 
 		FlexoObjectImpl.addActionForClass(actionType, FlexoProject.class);
 	}
 
-	public LoadAllImportedProject(FlexoProjectObject focusedObject, Vector<FlexoProjectObject> globalSelection, FlexoEditor editor) {
+	private LoadAllImportedProject(FlexoProjectObject focusedObject, Vector<FlexoProjectObject> globalSelection, FlexoEditor editor) {
 		super(actionType, focusedObject, globalSelection, editor);
 	}
 

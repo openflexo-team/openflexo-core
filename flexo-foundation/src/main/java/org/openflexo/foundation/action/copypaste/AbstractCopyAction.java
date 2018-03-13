@@ -151,7 +151,7 @@ public abstract class AbstractCopyAction<A extends AbstractCopyAction<A>> extend
 
 	};
 
-	AbstractCopyAction(AbstractCopyActionType<A> actionType, FlexoObject focusedObject, Vector<FlexoObject> globalSelection,
+	protected AbstractCopyAction(AbstractCopyActionType<A> actionType, FlexoObject focusedObject, Vector<FlexoObject> globalSelection,
 			FlexoEditor editor) {
 		super(actionType, focusedObject, globalSelection, editor);
 	}

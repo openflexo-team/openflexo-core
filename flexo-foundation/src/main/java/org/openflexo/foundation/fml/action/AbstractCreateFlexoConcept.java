@@ -85,7 +85,8 @@ public abstract class AbstractCreateFlexoConcept<A extends FlexoAction<A, T1, T2
 	public static final String PARENT_FLEXO_CONCEPT_ENTRIES = "parentFlexoConceptEntries";
 	public static final String PROPERTIES_ENTRIES = "propertiesEntries";
 
-	AbstractCreateFlexoConcept(FlexoActionFactory<A, T1, T2> actionType, T1 focusedObject, Vector<T2> globalSelection, FlexoEditor editor) {
+	protected AbstractCreateFlexoConcept(FlexoActionFactory<A, T1, T2> actionType, T1 focusedObject, Vector<T2> globalSelection,
+			FlexoEditor editor) {
 		super(actionType, focusedObject, globalSelection, editor);
 		parentFlexoConceptEntries = new ArrayList<>();
 		propertiesEntries = new ArrayList<>();

@@ -83,7 +83,7 @@ public class DeleteVirtualModel extends FlexoAction<DeleteVirtualModel, VirtualM
 		FlexoObjectImpl.addActionForClass(DeleteVirtualModel.actionType, VirtualModel.class);
 	}
 
-	DeleteVirtualModel(VirtualModel focusedObject, Vector<FMLObject> globalSelection, FlexoEditor editor) {
+	private DeleteVirtualModel(VirtualModel focusedObject, Vector<FMLObject> globalSelection, FlexoEditor editor) {
 		super(actionType, focusedObject, globalSelection, editor);
 	}
 
@@ -99,16 +99,16 @@ public class DeleteVirtualModel extends FlexoAction<DeleteVirtualModel, VirtualM
 
 		// Then handle the resource
 		VirtualModelResource virtualModelResource = (VirtualModelResource) getFocusedObject().getResource();
-		VirtualModelResource containerResource = virtualModelResource.getContainer();
-		if (containerResource != null) {
-			containerResource.getVirtualModel().removeFromVirtualModels(getFocusedObject());
-		}
-
-		// Delete the VirtualModel itself
-		getFocusedObject().delete();
-
-		// Delete the resource and notify container
 		if (virtualModelResource != null) {
+			VirtualModelResource containerResource = virtualModelResource.getContainer();
+			if (containerResource != null) {
+				containerResource.getVirtualModel().removeFromVirtualModels(getFocusedObject());
+			}
+
+			// Delete the VirtualModel itself
+			getFocusedObject().delete();
+
+			// Delete the resource and notify container
 			virtualModelResource.delete();
 			if (containerResource != null) {
 				containerResource.notifyContentsRemoved(virtualModelResource);

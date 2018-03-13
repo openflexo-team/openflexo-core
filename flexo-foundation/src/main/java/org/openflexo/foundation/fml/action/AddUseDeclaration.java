@@ -89,7 +89,7 @@ public class AddUseDeclaration extends FlexoAction<AddUseDeclaration, VirtualMod
 		FlexoObjectImpl.addActionForClass(AddUseDeclaration.actionType, VirtualModel.class);
 	}
 
-	AddUseDeclaration(VirtualModel focusedObject, Vector<FMLObject> globalSelection, FlexoEditor editor) {
+	private AddUseDeclaration(VirtualModel focusedObject, Vector<FMLObject> globalSelection, FlexoEditor editor) {
 		super(actionType, focusedObject, globalSelection, editor);
 	}
 

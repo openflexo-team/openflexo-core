@@ -97,7 +97,7 @@ public class DeclareNewVariableAction extends FlexoAction<DeclareNewVariableActi
 	private DeclarationAction<?> declarationAction;
 	private String newVariableName;
 
-	DeclareNewVariableAction(AssignableAction<?> focusedObject, Vector<FMLObject> globalSelection, FlexoEditor editor) {
+	private DeclareNewVariableAction(AssignableAction<?> focusedObject, Vector<FMLObject> globalSelection, FlexoEditor editor) {
 		super(actionType, focusedObject, globalSelection, editor);
 	}
 

@@ -80,7 +80,7 @@ public class RemoveImportedProject extends FlexoAction<RemoveImportedProject, Fl
 
 	private String projectToRemoveURI;
 
-	public RemoveImportedProject(FlexoProjectObject focusedObject, Vector<FlexoProjectObject> globalSelection, FlexoEditor editor) {
+	private RemoveImportedProject(FlexoProjectObject focusedObject, Vector<FlexoProjectObject> globalSelection, FlexoEditor editor) {
 		super(actionType, focusedObject, globalSelection, editor);
 	}
 

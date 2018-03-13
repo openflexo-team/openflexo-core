@@ -112,7 +112,8 @@ public class CreateProject extends FlexoAction<CreateProject, RepositoryFolder<F
 
 	private Class<? extends ProjectNature> projectNatureClass;
 
-	CreateProject(RepositoryFolder<FlexoProjectResource<?>, ?> focusedObject, Vector<FlexoObject> globalSelection, FlexoEditor editor) {
+	private CreateProject(RepositoryFolder<FlexoProjectResource<?>, ?> focusedObject, Vector<FlexoObject> globalSelection,
+			FlexoEditor editor) {
 		super(actionType, focusedObject, globalSelection, editor);
 	}
 
@@ -208,11 +209,8 @@ public class CreateProject extends FlexoAction<CreateProject, RepositoryFolder<F
 				}
 				return baseURI + getBaseName() + FlexoProjectResourceFactory.PROJECT_SUFFIX;
 			}
-			else {
-				return FlexoProjectResourceImpl.buildProjectURI(getBaseName());
-			}
+			return FlexoProjectResourceImpl.buildProjectURI(getBaseName());
 		}
-
 		return newProjectURI;
 	}
 

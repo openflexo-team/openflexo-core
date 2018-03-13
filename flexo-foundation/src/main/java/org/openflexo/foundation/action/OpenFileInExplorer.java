@@ -83,7 +83,7 @@ public class OpenFileInExplorer extends FlexoAction<OpenFileInExplorer, FlexoPro
 
 	private File fileToOpen;
 
-	public OpenFileInExplorer(FlexoProjectObject focusedObject, Vector<FlexoProjectObject> globalSelection, FlexoEditor editor) {
+	private OpenFileInExplorer(FlexoProjectObject focusedObject, Vector<FlexoProjectObject> globalSelection, FlexoEditor editor) {
 		super(actionType, focusedObject, globalSelection, editor);
 	}
 

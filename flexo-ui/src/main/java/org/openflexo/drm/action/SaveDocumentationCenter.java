@@ -75,7 +75,7 @@ public class SaveDocumentationCenter extends FlexoAction<SaveDocumentationCenter
 
 	};
 
-	SaveDocumentationCenter(DRMObject focusedObject, Vector<DRMObject> globalSelection, FlexoEditor editor) {
+	private SaveDocumentationCenter(DRMObject focusedObject, Vector<DRMObject> globalSelection, FlexoEditor editor) {
 		super(actionType, focusedObject, globalSelection, editor);
 	}
 

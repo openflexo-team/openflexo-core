@@ -103,7 +103,7 @@ public class CreateExpressionProperty extends AbstractCreateFlexoProperty<Create
 
 	private ExpressionProperty<?> newExpressionProperty;
 
-	CreateExpressionProperty(FlexoConceptObject focusedObject, Vector<FMLObject> globalSelection, FlexoEditor editor) {
+	private CreateExpressionProperty(FlexoConceptObject focusedObject, Vector<FMLObject> globalSelection, FlexoEditor editor) {
 		super(actionType, focusedObject, globalSelection, editor);
 	}
 

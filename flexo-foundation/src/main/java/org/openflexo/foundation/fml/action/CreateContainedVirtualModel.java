@@ -105,7 +105,7 @@ public class CreateContainedVirtualModel extends AbstractCreateVirtualModel<Crea
 
 	// private boolean createsOntology = false;
 
-	CreateContainedVirtualModel(VirtualModel focusedObject, Vector<FMLObject> globalSelection, FlexoEditor editor) {
+	private CreateContainedVirtualModel(VirtualModel focusedObject, Vector<FMLObject> globalSelection, FlexoEditor editor) {
 		super(actionType, focusedObject, globalSelection, editor);
 	}
 

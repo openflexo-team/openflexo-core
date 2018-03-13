@@ -153,7 +153,7 @@ public class PasteAction extends FlexoAction<PasteAction, FlexoObject, FlexoObje
 	private List<FlexoObject> pastedObjects = null;
 	private Event event;
 
-	PasteAction(PasteActionType actionType, FlexoObject focusedObject, Vector<FlexoObject> globalSelection, FlexoEditor editor) {
+	private PasteAction(PasteActionType actionType, FlexoObject focusedObject, Vector<FlexoObject> globalSelection, FlexoEditor editor) {
 		super(actionType, focusedObject, globalSelection, editor);
 	}
 
@@ -171,7 +171,7 @@ public class PasteAction extends FlexoAction<PasteAction, FlexoObject, FlexoObje
 			Object pasted = paste();
 			pastedObjects = new ArrayList<>();
 			if (pasted instanceof List) {
-				pastedObjects.addAll((List) pasted);
+				pastedObjects.addAll((List<FlexoObject>) pasted);
 			}
 			else if (pasted instanceof FlexoObject) {
 				pastedObjects.add((FlexoObject) pasted);

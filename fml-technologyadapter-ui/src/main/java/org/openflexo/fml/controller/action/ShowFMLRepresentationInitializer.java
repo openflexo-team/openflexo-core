@@ -38,7 +38,6 @@
 
 package org.openflexo.fml.controller.action;
 
-import java.util.EventObject;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.action.FlexoActionInitializer;
@@ -61,14 +60,7 @@ public class ShowFMLRepresentationInitializer extends ActionInitializer<ShowFMLR
 	}
 
 	@Override
-	protected FlexoActionInitializer<ShowFMLRepresentation> getDefaultInitializer() {
-		return new FlexoActionInitializer<ShowFMLRepresentation>() {
-			@Override
-			public boolean run(EventObject e, ShowFMLRepresentation action) {
-				return instanciateAndShowDialog(action, SHOW_FML_REPRESENTATION_DIALOG_FIB);
-			}
-
-		};
+	protected FlexoActionInitializer<ShowFMLRepresentation, FMLObject, FMLObject> getDefaultInitializer() {
+		return (e, action) -> instanciateAndShowDialog(action, SHOW_FML_REPRESENTATION_DIALOG_FIB);
 	}
-
 }

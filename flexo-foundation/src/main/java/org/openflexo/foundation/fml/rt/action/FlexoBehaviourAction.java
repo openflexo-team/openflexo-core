@@ -109,7 +109,7 @@ public abstract class FlexoBehaviourAction<A extends FlexoBehaviourAction<A, FB,
 	 * @param globalSelection
 	 * @param editor
 	 */
-	public FlexoBehaviourAction(FlexoBehaviourActionFactory<A, FB, O> actionFactory, O focusedObject,
+	protected FlexoBehaviourAction(FlexoBehaviourActionFactory<A, FB, O> actionFactory, O focusedObject,
 			List<VirtualModelInstanceObject> globalSelection, FlexoEditor editor) {
 		super(actionFactory, focusedObject, globalSelection, editor);
 		variables = new Hashtable<>();
@@ -268,7 +268,7 @@ public abstract class FlexoBehaviourAction<A extends FlexoBehaviourAction<A, FB,
 	}
 
 	public FlexoResourceCenter<?> getResourceCenter() {
-		if (getFocusedObject() instanceof VirtualModelInstanceObject) {
+		if (getFocusedObject() != null) {
 			return ((VirtualModelInstanceObject) getFocusedObject()).getResourceCenter();
 		}
 		return null;

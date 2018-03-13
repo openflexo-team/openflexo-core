@@ -160,7 +160,7 @@ public class CreateEditionAction extends FlexoAction<CreateEditionAction, FMLCon
 		}
 	}
 
-	CreateEditionAction(FMLControlGraph focusedObject, Vector<FMLObject> globalSelection, FlexoEditor editor) {
+	private CreateEditionAction(FMLControlGraph focusedObject, Vector<FMLObject> globalSelection, FlexoEditor editor) {
 		super(actionType, focusedObject, globalSelection, editor);
 
 		availableActions = new ArrayList<>();
@@ -352,7 +352,7 @@ public class CreateEditionAction extends FlexoAction<CreateEditionAction, FMLCon
 				return getAssignation() + " = " + baseEditionAction.getStringRepresentation();
 			}
 			else if (isVariableDeclaration()) {
-				return TypeUtils.simpleRepresentation(((AssignableAction) baseEditionAction).getAssignableType()) + " "
+				return TypeUtils.simpleRepresentation(((AssignableAction<?>) baseEditionAction).getAssignableType()) + " "
 						+ getDeclarationVariableName() + " = " + baseEditionAction.getStringRepresentation();
 			}
 			else if (isAddToListAction()) {
@@ -674,9 +674,7 @@ public class CreateEditionAction extends FlexoAction<CreateEditionAction, FMLCon
 		if (getVirtualModel() != null) {
 			return getVirtualModel().getModelSlots();
 		}
-		else {
-			return null;
-		}
+		return null;
 	}
 
 	private static Type getAssignableType() {
@@ -733,21 +731,17 @@ public class CreateEditionAction extends FlexoAction<CreateEditionAction, FMLCon
 	}
 
 	private String getBaseVariableName() {
-
 		if (getBaseEditionAction() instanceof AssignableAction) {
-			Type assignableType = ((AssignableAction) getBaseEditionAction()).getAssignableType();
+			Type assignableType = ((AssignableAction<?>) getBaseEditionAction()).getAssignableType();
 			String typeAsString = TypeUtils.simpleRepresentation(assignableType);
 			if (assignableType instanceof Class) {
 				if (typeAsString.startsWith("a") || typeAsString.startsWith("e") || typeAsString.startsWith("i")
 						|| typeAsString.startsWith("o") || typeAsString.startsWith("u")) {
 					return "an" + typeAsString.substring(0, 1).toUpperCase() + typeAsString.substring(1);
 				}
-				else {
-					return "a" + typeAsString.substring(0, 1).toUpperCase() + typeAsString.substring(1);
-				}
+				return "a" + typeAsString.substring(0, 1).toUpperCase() + typeAsString.substring(1);
 			}
 		}
-
 		return "variable";
 	}
 

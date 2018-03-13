@@ -74,7 +74,7 @@ public abstract class AbstractCreateFlexoProperty<A extends AbstractCreateFlexoP
 	private DataBinding<?> defaultValue;
 	private DataBinding<?> container;
 
-	AbstractCreateFlexoProperty(FlexoActionFactory<A, FlexoConceptObject, FMLObject> actionType, FlexoConceptObject focusedObject,
+	protected AbstractCreateFlexoProperty(FlexoActionFactory<A, FlexoConceptObject, FMLObject> actionType, FlexoConceptObject focusedObject,
 			Vector<FMLObject> globalSelection, FlexoEditor editor) {
 		super(actionType, focusedObject, globalSelection, editor);
 	}

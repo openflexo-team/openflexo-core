@@ -94,7 +94,7 @@ public class AddReturnStatement extends FlexoAction<AddReturnStatement, Assignab
 
 	private ReturnStatement<?> returnStatement;
 
-	AddReturnStatement(AssignableAction<?> focusedObject, Vector<FMLObject> globalSelection, FlexoEditor editor) {
+	private AddReturnStatement(AssignableAction<?> focusedObject, Vector<FMLObject> globalSelection, FlexoEditor editor) {
 		super(actionType, focusedObject, globalSelection, editor);
 	}
 
