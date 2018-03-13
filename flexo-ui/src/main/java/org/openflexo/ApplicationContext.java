@@ -64,7 +64,6 @@ import org.openflexo.foundation.resource.JarResourceCenter;
 import org.openflexo.foundation.task.FlexoTaskManager;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.utils.ProjectLoadingHandler;
-import org.openflexo.gina.swing.editor.JFIBEditor;
 import org.openflexo.module.ModuleLoader;
 import org.openflexo.prefs.AdvancedPrefs;
 import org.openflexo.prefs.ApplicationFIBLibraryService;
@@ -132,7 +131,7 @@ public abstract class ApplicationContext extends DefaultFlexoServiceManager {
 
 	}
 
-	private JFIBEditor applicationFIBEditor;
+	// Unused private JFIBEditor applicationFIBEditor;
 
 	public ApplicationData getApplicationData() {
 		return applicationData;

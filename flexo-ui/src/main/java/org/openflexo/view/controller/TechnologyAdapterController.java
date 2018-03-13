@@ -219,11 +219,12 @@ public abstract class TechnologyAdapterController<TA extends TechnologyAdapter> 
 	 * From a technical point of view, we first initialize inspectors and then actions
 	 */
 	public void activate(FlexoModule<?> module) {
-		if (module.getFlexoController() != null) {
-			initializeInspectors(module.getFlexoController());
-			initializeActions(module.getFlexoController().getControllerActionInitializer());
+		FlexoController controller = module.getFlexoController();
+		if (controller != null) {
+			initializeInspectors(controller);
+			initializeActions(controller.getControllerActionInitializer());
 			if (module.activateAdvancedActions(getTechnologyAdapter())) {
-				initializeAdvancedActions(module.getFlexoController().getControllerActionInitializer());
+				initializeAdvancedActions(controller.getControllerActionInitializer());
 			}
 		}
 	}

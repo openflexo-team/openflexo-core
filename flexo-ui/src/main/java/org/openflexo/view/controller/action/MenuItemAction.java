@@ -119,6 +119,7 @@ public class MenuItemAction<A extends FlexoAction<A, T1, T2>, T1 extends FlexoOb
 		return editor;
 	}
 
+	@SuppressWarnings("unchecked")
 	public T1 getFocusedObject() {
 		if (actionSource != null) {
 			return (T1) actionSource.getFocusedObject();
@@ -126,6 +127,7 @@ public class MenuItemAction<A extends FlexoAction<A, T1, T2>, T1 extends FlexoOb
 		return focusedObject;
 	}
 
+	@SuppressWarnings("unchecked")
 	public Vector<T2> getGlobalSelection() {
 		if (actionSource != null) {
 			return (Vector<T2>) actionSource.getGlobalSelection();

@@ -97,7 +97,7 @@ public class FMLRTIconLibrary extends IconLibrary {
 
 	public static ImageIcon iconForObject(VirtualModelInstanceObject object) {
 		if (object instanceof ModelSlotInstance) {
-			return FMLIconLibrary.iconForObject(((ModelSlotInstance) object).getModelSlot());
+			return FMLIconLibrary.iconForObject(((ModelSlotInstance<?, ?>) object).getModelSlot());
 		}
 		else if (object instanceof FMLRTVirtualModelInstance) {
 			if (((FMLRTVirtualModelInstance) object).getVirtualModel() != null
@@ -107,7 +107,8 @@ public class FMLRTIconLibrary extends IconLibrary {
 			return VIRTUAL_MODEL_INSTANCE_ICON;
 		}
 		else if (object instanceof VirtualModelInstance) {
-			TechnologyAdapterController<?> tac = getTechnologyAdapterController(((VirtualModelInstance) object).getTechnologyAdapter());
+			TechnologyAdapterController<?> tac = getTechnologyAdapterController(
+					((VirtualModelInstance<?, ?>) object).getTechnologyAdapter());
 			if (tac != null) {
 				return tac.getIconForTechnologyObject((VirtualModelInstance<?, ?>) object);
 			}

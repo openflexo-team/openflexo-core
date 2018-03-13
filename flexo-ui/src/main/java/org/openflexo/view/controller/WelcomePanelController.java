@@ -46,8 +46,6 @@ import org.openflexo.ApplicationData;
 import org.openflexo.components.NewProjectComponent;
 import org.openflexo.components.OpenProjectComponent;
 import org.openflexo.foundation.nature.ProjectNature;
-import org.openflexo.foundation.nature.ProjectNatureService;
-import org.openflexo.foundation.task.FlexoTaskManager;
 import org.openflexo.foundation.utils.OperationCancelledException;
 import org.openflexo.foundation.utils.ProjectInitializerException;
 import org.openflexo.foundation.utils.ProjectLoadingCancelledException;
@@ -80,22 +78,23 @@ public class WelcomePanelController extends FlexoFIBController {
 		return (InteractiveProjectLoader) getDataObject().getApplicationContext().getProjectLoader();
 	}
 
+	/* Unused
 	private FlexoTaskManager getTaskManager() {
 		return getDataObject().getApplicationContext().getTaskManager();
 	}
-
+	
 	private ProjectNatureService getProjectNatureService() {
 		return getDataObject().getApplicationContext().getProjectNatureService();
 	}
+	*/
 
 	public void exit() {
 		try {
 			getModuleLoader().quit(false);
-		} catch (OperationCancelledException e) {
-		}
+		} catch (OperationCancelledException e) {}
 	}
 
-	public void openModule(Module module) {
+	public void openModule(Module<?> module) {
 		hide();
 		try {
 			getModuleLoader().switchToModule(module);
@@ -107,14 +106,14 @@ public class WelcomePanelController extends FlexoFIBController {
 		}
 	}
 
-	public void openProject(Module module) throws ProjectLoadingCancelledException, ProjectInitializerException {
+	public void openProject(Module<?> module) throws ProjectLoadingCancelledException, ProjectInitializerException {
 		File projectDirectory = OpenProjectComponent.getProjectDirectory(getDataObject().getApplicationContext());
 		if (projectDirectory != null) {
 			openProject(projectDirectory, module);
 		}
 	}
 
-	public void openProject(File projectDirectory, Module module) throws ProjectLoadingCancelledException, ProjectInitializerException {
+	public void openProject(File projectDirectory, Module<?> module) throws ProjectLoadingCancelledException, ProjectInitializerException {
 		if (projectDirectory == null)
 			return;
 
@@ -134,7 +133,7 @@ public class WelcomePanelController extends FlexoFIBController {
 
 	}
 
-	public void newProject(Module module) throws IOException, ProjectInitializerException {
+	public void newProject(Module<?> module) throws IOException, ProjectInitializerException {
 		File projectDirectory;
 		projectDirectory = NewProjectComponent.getProjectDirectory(getDataObject().getApplicationContext());
 		if (projectDirectory == null) {

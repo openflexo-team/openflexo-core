@@ -400,9 +400,7 @@ public interface DeleteFlexoConceptInstance<VMI extends VirtualModelInstance<VMI
 				if (action.getFlexoConceptType() == null) {
 					return new ValidationError<>(this, action, "delete_flexo_concept_action_doesn't_define_any_flexo_concept");
 				}
-				else {
-					return new ValidationError<>(this, action, "delete_flexo_concept_action_doesn't_define_any_deletion_scheme");
-				}
+				return new ValidationError<>(this, action, "delete_flexo_concept_action_doesn't_define_any_deletion_scheme");
 			}
 			return null;
 		}

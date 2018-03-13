@@ -95,7 +95,7 @@ public class TestFlexoConceptInstanceType extends OpenflexoProjectAtRunTimeTestC
 	public static AbstractProperty<FlexoConceptInstanceType> property4InB;
 	public static FlexoConceptInstanceRole property4InC;
 
-	static FlexoProject project;
+	static FlexoProject<?> project;
 	static FMLRTVirtualModelInstance newView;
 	static FMLRTVirtualModelInstance vmi;
 	static FlexoConceptInstance a;
@@ -412,8 +412,6 @@ public class TestFlexoConceptInstanceType extends OpenflexoProjectAtRunTimeTestC
 		assertTrue(flexoConceptC.getDeclaredProperties().contains(property4InC));
 
 		assertSame(property4InC, flexoConceptC.getAccessibleProperty("property4"));
-
-		assertTrue(property4InC instanceof FlexoConceptInstanceRole);
 
 		assertEquals(FlexoConceptInstanceType.getFlexoConceptInstanceType(flexoConceptB), property4InC.getType());
 		assertEquals(FlexoConceptInstanceType.getFlexoConceptInstanceType(flexoConceptB), property4InC.getResultingType());

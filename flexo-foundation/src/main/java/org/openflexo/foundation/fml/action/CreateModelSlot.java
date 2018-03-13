@@ -126,7 +126,7 @@ public class CreateModelSlot extends AbstractCreateFlexoProperty<CreateModelSlot
 			newModelSlot = technologyAdapter.makeModelSlot(getModelSlotClass(), getFlexoConcept());
 			newModelSlot.setName(modelSlotName);
 			if (newModelSlot instanceof FMLRTModelSlot) {
-				((FMLRTModelSlot) newModelSlot).setAccessedVirtualModelResource(vmRes);
+				((FMLRTModelSlot<?, ?>) newModelSlot).setAccessedVirtualModelResource(vmRes);
 
 			}
 			else if (newModelSlot instanceof TypeAwareModelSlot) {

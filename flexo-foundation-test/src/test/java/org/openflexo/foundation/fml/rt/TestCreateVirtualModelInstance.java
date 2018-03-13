@@ -230,7 +230,7 @@ public class TestCreateVirtualModelInstance extends OpenflexoProjectAtRunTimeTes
 
 		log("testReloadProject()");
 
-		FlexoProject oldProject = project;
+		FlexoProject<?> oldProject = project;
 
 		instanciateTestServiceManager();
 		resourceCenter = makeNewDirectoryResourceCenter();

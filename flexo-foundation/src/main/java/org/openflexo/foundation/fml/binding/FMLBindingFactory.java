@@ -92,19 +92,17 @@ public class FMLBindingFactory extends JavaBindingFactory {
 	public static final String FLEXO_CONCEPT_INSTANCE = "flexoConceptInstance";
 	@Deprecated
 	public static final String VIRTUAL_MODEL_INSTANCE = "virtualModelInstance";
-	@Deprecated
-	public static final String VIEW = "view";
 	public static final String RESOURCE_CENTER = "resourceCenter";
 
 	private final Map<IBindingPathElement, Map<Object, SimplePathElement>> storedBindingPathElements;
-	private final VirtualModel virtualModel;
+	// Unused private final VirtualModel virtualModel;
 
 	private final Map<IBindingPathElement, BehavioursForConcepts> flexoBehaviourPathElements;
 
 	public FMLBindingFactory(VirtualModel virtualModel) {
 		storedBindingPathElements = new HashMap<>();
 		flexoBehaviourPathElements = new HashMap<>();
-		this.virtualModel = virtualModel;
+		// Unused this.virtualModel = virtualModel;
 	}
 
 	protected SimplePathElement getSimplePathElement(Object object, IBindingPathElement parent) {
@@ -164,7 +162,7 @@ public class FMLBindingFactory extends JavaBindingFactory {
 			Type pType = parent.getType();
 
 			if (pType instanceof TechnologySpecificType) {
-				TechnologySpecificType parentType = (TechnologySpecificType) pType;
+				TechnologySpecificType<?> parentType = (TechnologySpecificType<?>) pType;
 				TechnologyAdapter ta = parentType.getSpecificTechnologyAdapter();
 				if (ta != null) {
 					TechnologyAdapterBindingFactory bf = ta.getTechnologyAdapterBindingFactory();
@@ -254,10 +252,8 @@ public class FMLBindingFactory extends JavaBindingFactory {
 			// In all other cases, consider it using Java rules
 			return super.getAccessibleSimplePathElements(parent);
 		}
-		else {
-			logger.warning("Trying to find accessible path elements for a NULL parent");
-			return Collections.EMPTY_LIST;
-		}
+		logger.warning("Trying to find accessible path elements for a NULL parent");
+		return Collections.EMPTY_LIST;
 	}
 
 	@Override

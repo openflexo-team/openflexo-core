@@ -110,8 +110,9 @@ public abstract class AbstractCreateFlexoRole<A extends AbstractCreateFlexoRole<
 
 	@Override
 	protected final String getDefaultPropertyName() {
-		if (getModelSlot() != null && getFlexoRoleClass() != null) {
-			return getModelSlot().defaultFlexoRoleName(getFlexoRoleClass());
+		ModelSlot<?> ms = getModelSlot();
+		if (ms != null && getFlexoRoleClass() != null) {
+			return ms.defaultFlexoRoleName(getFlexoRoleClass());
 		}
 		return "role";
 	}
@@ -251,9 +252,6 @@ public abstract class AbstractCreateFlexoRole<A extends AbstractCreateFlexoRole<
 		if (getModelSlot() != null) {
 			return getModelSlot().getModelSlotTechnologyAdapter();
 		}
-		else {
-			return getFlexoConcept().getOwningVirtualModel().getTechnologyAdapter();
-		}
+		return getFlexoConcept().getOwningVirtualModel().getTechnologyAdapter();
 	}
-
 }

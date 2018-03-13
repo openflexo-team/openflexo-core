@@ -187,7 +187,7 @@ public abstract class OpenflexoTestCase {
 	}
 
 	public static class FlexoTestEditor extends DefaultFlexoEditor {
-		public FlexoTestEditor(FlexoProject project, FlexoServiceManager sm) {
+		public FlexoTestEditor(FlexoProject<?> project, FlexoServiceManager sm) {
 			super(project, sm);
 		}
 
@@ -293,7 +293,7 @@ public abstract class OpenflexoTestCase {
 	protected static FlexoResourceCenterService getNewResourceCenter(String name) {
 		try {
 			ModelFactory factory = new ModelFactory(FSBasedResourceCenterEntry.class);
-			FSBasedResourceCenterEntry entry = factory.newInstance(FSBasedResourceCenterEntry.class);
+			FSBasedResourceCenterEntry<?> entry = factory.newInstance(FSBasedResourceCenterEntry.class);
 			entry.setDirectory(FileUtils.createTempDirectory(name, "ResourceCenter"));
 			List<ResourceCenterEntry<?>> rcList = new ArrayList<>();
 			rcList.add(entry);

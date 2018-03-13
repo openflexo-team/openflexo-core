@@ -94,7 +94,7 @@ public interface DeleteAction<T extends FlexoObject> extends EditionAction, Assi
 			return out.toString();
 		}
 
-		public Object getDeclaredObject(FlexoBehaviourAction action) {
+		public Object getDeclaredObject(FlexoBehaviourAction<?, ?, ?> action) {
 			try {
 				return getObject().getBindingValue(action);
 			} catch (TypeMismatchException e) {
