@@ -91,7 +91,7 @@ public class AddParentFlexoConcept extends FlexoAction<AddParentFlexoConcept, Fl
 
 	private final List<ParentFlexoConceptEntry> parentFlexoConceptEntries;
 
-	AddParentFlexoConcept(FlexoConcept focusedObject, Vector<FMLObject> globalSelection, FlexoEditor editor) {
+	private AddParentFlexoConcept(FlexoConcept focusedObject, Vector<FMLObject> globalSelection, FlexoEditor editor) {
 		super(actionType, focusedObject, globalSelection, editor);
 		parentFlexoConceptEntries = new ArrayList<>();
 		for (FlexoConcept parentConcept : getFocusedObject().getParentFlexoConcepts()) {

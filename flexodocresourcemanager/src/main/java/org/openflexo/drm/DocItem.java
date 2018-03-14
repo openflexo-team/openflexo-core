@@ -165,18 +165,12 @@ public class DocItem extends DRMObject {
 	 */
 	@Override
 	public boolean delete(Object... context) {
-		Enumeration<DocItem> en = ((Vector<DocItem>) embeddingChildItems.clone()).elements();
-		while (en.hasMoreElements()) {
-			en.nextElement().delete();
-		}
-		en = ((Vector<DocItem>) relatedToItems.clone()).elements();
-		while (en.hasMoreElements()) {
-			en.nextElement().removeFromRelatedToItems(this);
-		}
-		en = ((Vector<DocItem>) inheritanceChildItems.clone()).elements();
-		while (en.hasMoreElements()) {
-			en.nextElement().removeFromInheritanceChildItems(this);
-		}
+		for (DocItem it : embeddingChildItems)
+			it.delete();
+		for (DocItem it : relatedToItems)
+			it.removeFromRelatedToItems(this);
+		for (DocItem it : inheritanceChildItems)
+			it.removeFromInheritanceChildItems(this);
 		if (embeddingParentItem != null) {
 			embeddingParentItem.removeFromEmbeddingChildItems(this);
 		}
@@ -600,9 +594,7 @@ public class DocItem extends DRMObject {
 				}
 				return string1.compareTo(string2);
 			}
-			else {
-				return docItem1.getIdentifier().compareTo(docItem2.getIdentifier());
-			}
+			return docItem1.getIdentifier().compareTo(docItem2.getIdentifier());
 		}
 
 	}

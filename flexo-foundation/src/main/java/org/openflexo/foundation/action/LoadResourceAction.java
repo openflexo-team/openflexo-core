@@ -88,7 +88,7 @@ public class LoadResourceAction extends FlexoAction<LoadResourceAction, FlexoObj
 		FlexoObjectImpl.addActionForClass(LoadResourceAction.actionType, FlexoObject.class);
 	}
 
-	LoadResourceAction(FlexoObject focusedObject, Vector<FlexoObject> globalSelection, FlexoEditor editor) {
+	private LoadResourceAction(FlexoObject focusedObject, Vector<FlexoObject> globalSelection, FlexoEditor editor) {
 		super(actionType, focusedObject, globalSelection, editor);
 	}
 

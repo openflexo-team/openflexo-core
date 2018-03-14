@@ -76,7 +76,8 @@ public abstract class TransformationAction<A extends TransformationAction<A, T1,
 	 * @param globalSelection
 	 * @param editor
 	 */
-	TransformationAction(FlexoActionFactory<A, T1, T2> actionType, T1 focusedObject, Vector<T2> globalSelection, FlexoEditor editor) {
+	protected TransformationAction(FlexoActionFactory<A, T1, T2> actionType, T1 focusedObject, Vector<T2> globalSelection,
+			FlexoEditor editor) {
 		super(actionType, focusedObject, globalSelection, editor);
 	}
 

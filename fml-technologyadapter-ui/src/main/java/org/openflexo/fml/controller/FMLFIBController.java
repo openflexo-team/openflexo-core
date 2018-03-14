@@ -576,18 +576,14 @@ public class FMLFIBController extends FlexoFIBController {
 		if (action instanceof TechnologySpecificAction) {
 			TechnologyAdapter technologyAdapter = ((TechnologySpecificAction<?, ?>) action).getModelSlotTechnologyAdapter();
 			if (technologyAdapter != null) {
-				TechnologyAdapterController<?> taController = getFlexoController().getTechnologyAdapterController(technologyAdapter);
+				TechnologyAdapterController<?> taController = FlexoController.getTechnologyAdapterController(technologyAdapter);
 				return taController.getFIBPanelForObject(action);
 			}
-			else
-				// No specific TechnologyAdapter, lookup in generic libraries
-				return getFIBPanelForObject(action);
-		}
-		else {
 			// No specific TechnologyAdapter, lookup in generic libraries
 			return getFIBPanelForObject(action);
 		}
-
+		// No specific TechnologyAdapter, lookup in generic libraries
+		return getFIBPanelForObject(action);
 	}
 
 	public Resource fibForFlexoBehaviour(FlexoBehaviour flexoBehaviour) {
@@ -691,7 +687,7 @@ public class FMLFIBController extends FlexoFIBController {
 			if (issue.getValidationReport().getRootObject() instanceof VirtualModel) {
 				vmToRevalidate = (VirtualModel) issue.getValidationReport().getRootObject();
 			}
-			IssueFixing fixing = new IssueFixing((ProblemIssue<?, ?>) issue, getFlexoController());
+			IssueFixing<?, ?> fixing = new IssueFixing<>((ProblemIssue<?, ?>) issue, getFlexoController());
 			FixIssueDialog dialog = new FixIssueDialog(fixing, getFlexoController());
 			dialog.showDialog();
 			if (dialog.getStatus() == Status.VALIDATED) {

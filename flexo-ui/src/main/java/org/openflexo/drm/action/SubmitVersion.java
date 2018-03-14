@@ -49,6 +49,7 @@ import org.openflexo.drm.DocItemVersion;
 import org.openflexo.drm.DocResourceManager;
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoObject.FlexoObjectImpl;
+import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.action.FlexoAction;
 import org.openflexo.foundation.action.FlexoActionFactory;
 import org.openflexo.prefs.PreferencesService;
@@ -90,31 +91,32 @@ public class SubmitVersion extends FlexoAction<SubmitVersion, DocItem, DocItem> 
 	private DocItemAction _newAction;
 	private String _note;
 
-	SubmitVersion(DocItem focusedObject, Vector<DocItem> globalSelection, FlexoEditor editor) {
+	private SubmitVersion(DocItem focusedObject, Vector<DocItem> globalSelection, FlexoEditor editor) {
 		super(actionType, focusedObject, globalSelection, editor);
 	}
 
 	@Override
 	protected void doAction(Object context) {
 		if (getVersion() != null) {
-
-			DocItemAction lastAction = getDocItem().getLastActionForLanguage(
-					getEditor().getServiceManager().getService(PreferencesService.class).getGeneralPreferences().getLanguage());
+			FlexoServiceManager sm = getEditor().getServiceManager();
+			DocItemAction lastAction = getDocItem()
+					.getLastActionForLanguage(sm.getService(PreferencesService.class).getGeneralPreferences().getLanguage());
 			if (lastAction == null) {
 				logger.info("SubmitVersion");
 				_newAction = DocItemAction.createSubmitAction(getVersion(), getAuthor(), getDocItem().getDocResourceCenter());
 				_newAction.setNote(getNote());
 				getDocItem().addToActions(_newAction);
 				getDocItem().addToVersions(getVersion());
-				DocResourceManager drm = getEditor().getServiceManager().getService(DocResourceManager.class);
+				DocResourceManager drm = sm.getService(DocResourceManager.class);
 				drm.getSessionSubmissions().addToSubmissionActions(_newAction);
-			} else {
+			}
+			else {
 				logger.info("ReviewVersion");
 				_newAction = DocItemAction.createReviewAction(getVersion(), getAuthor(), getDocItem().getDocResourceCenter());
 				_newAction.setNote(getNote());
 				getDocItem().addToActions(_newAction);
 				getDocItem().addToVersions(getVersion());
-				DocResourceManager drm = getEditor().getServiceManager().getService(DocResourceManager.class);
+				DocResourceManager drm = sm.getService(DocResourceManager.class);
 				drm.getSessionSubmissions().addToSubmissionActions(_newAction);
 			}
 		}

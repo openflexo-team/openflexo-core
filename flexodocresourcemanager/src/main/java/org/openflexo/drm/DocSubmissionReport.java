@@ -54,7 +54,7 @@ public class DocSubmissionReport extends DRMObject {
 		_submissionActions = new Vector<>();
 	}
 
-	public Vector getSubmissionActions() {
+	public Vector<?> getSubmissionActions() {
 		return _submissionActions;
 	}
 

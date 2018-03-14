@@ -58,7 +58,7 @@ import org.openflexo.foundation.fml.rt.VirtualModelInstanceObject;
  * @author sylvain
  * 
  * @param <A>
- *            type of {@link AbstractActionSchemeAction} beeing executed
+ *            type of {@link AbstractActionSchemeAction} being executed
  * @param <FB>
  *            type of {@link AbstractActionScheme}
  * @param <O>

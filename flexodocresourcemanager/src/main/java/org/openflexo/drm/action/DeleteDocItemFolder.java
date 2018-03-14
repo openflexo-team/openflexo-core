@@ -54,34 +54,34 @@ import org.openflexo.foundation.action.FlexoActionFactory;
  * @author gpolet
  * 
  */
-public class DeleteDocItemFolder extends FlexoAction {
+public class DeleteDocItemFolder extends FlexoAction<DeleteDocItemFolder, FlexoObject, FlexoObject> {
 
 	private static final Logger logger = Logger.getLogger(DeleteDocItemFolder.class.getPackage().getName());
 
-	public static FlexoActionFactory actionType = new FlexoActionFactory("delete", FlexoActionFactory.editGroup,
-			FlexoActionFactory.DELETE_ACTION_TYPE) {
+	public static FlexoActionFactory<DeleteDocItemFolder, FlexoObject, FlexoObject> actionType = new FlexoActionFactory<DeleteDocItemFolder, FlexoObject, FlexoObject>(
+			"delete", FlexoActionFactory.editGroup, FlexoActionFactory.DELETE_ACTION_TYPE) {
 
 		/**
 		 * Factory method
 		 */
 		@Override
-		public FlexoAction makeNewAction(FlexoObject focusedObject, Vector globalSelection, FlexoEditor editor) {
+		public DeleteDocItemFolder makeNewAction(FlexoObject focusedObject, Vector<FlexoObject> globalSelection, FlexoEditor editor) {
 			return new DeleteDocItemFolder(focusedObject, globalSelection, editor);
 		}
 
 		@Override
-		public boolean isVisibleForSelection(FlexoObject object, Vector globalSelection) {
+		public boolean isVisibleForSelection(FlexoObject object, Vector<FlexoObject> globalSelection) {
 			return true;
 		}
 
 		@Override
-		public boolean isEnabledForSelection(FlexoObject object, Vector globalSelection) {
+		public boolean isEnabledForSelection(FlexoObject object, Vector<FlexoObject> globalSelection) {
 			return object != null || globalSelection != null && globalSelection.size() > 0;
 		}
 
 	};
 
-	DeleteDocItemFolder(FlexoObject focusedObject, Vector<?> globalSelection, FlexoEditor editor) {
+	private DeleteDocItemFolder(FlexoObject focusedObject, Vector<FlexoObject> globalSelection, FlexoEditor editor) {
 		super(actionType, focusedObject, globalSelection, editor);
 	}
 

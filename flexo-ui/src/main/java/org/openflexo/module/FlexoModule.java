@@ -450,8 +450,7 @@ public abstract class FlexoModule<M extends FlexoModule<M>> implements DataFlexo
 			if (quitIfNoModuleLeft) {
 				try {
 					getModuleLoader().quit(false);
-				} catch (OperationCancelledException e) {
-				}
+				} catch (OperationCancelledException e) {}
 			}
 		}
 

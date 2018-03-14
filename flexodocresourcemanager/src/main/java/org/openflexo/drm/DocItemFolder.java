@@ -112,16 +112,10 @@ public class DocItemFolder extends DRMObject {
 	 */
 	@Override
 	public boolean delete(Object... context) {
-		Enumeration<DocItemFolder> en = ((Vector<DocItemFolder>) childFolders.clone()).elements();
-		while (en.hasMoreElements()) {
-			DocItemFolder f = en.nextElement();
+		for (DocItemFolder f : childFolders)
 			f.delete();
-		}
-		Enumeration<DocItem> en1 = ((Vector<DocItem>) items.clone()).elements();
-		while (en1.hasMoreElements()) {
-			DocItem it = en1.nextElement();
+		for (DocItem it : items)
 			it.delete();
-		}
 		if (getFolder() != null) {
 			getFolder().removeFromChildFolders(this);
 		}
@@ -216,9 +210,6 @@ public class DocItemFolder extends DRMObject {
 	}
 
 	public Vector<DocItem> getItems() {
-		if (isSerializing()) {
-			return getOrderedItems();
-		}
 		return items;
 	}
 
@@ -274,9 +265,6 @@ public class DocItemFolder extends DRMObject {
 	}
 
 	public Vector<DocItemFolder> getChildFolders() {
-		if (isSerializing()) {
-			return getOrderedChildFolders();
-		}
 		return childFolders;
 	}
 

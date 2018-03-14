@@ -122,7 +122,7 @@ public class TestFlexoConceptInheritance extends OpenflexoProjectAtRunTimeTestCa
 	public static PrimitiveRole<String> property5InD;
 	public static PrimitiveRole<String> property9InD;
 
-	static FlexoProject project;
+	static FlexoProject<?> project;
 	static FMLRTVirtualModelInstance newView;
 	static FMLRTVirtualModelInstance vmi;
 	static FlexoConceptInstance a;

@@ -113,9 +113,7 @@ public interface DeclarationAction<T> extends AbstractAssignationAction<T> {
 				return getHeaderContext() + getDeclarationTypeAsString() + " " + getVariableName() + " = "
 						+ getAssignableAction().getStringRepresentation();
 			}
-			else {
-				return getHeaderContext() + getDeclarationTypeAsString() + " " + getVariableName() + " = ???";
-			}
+			return getHeaderContext() + getDeclarationTypeAsString() + " " + getVariableName() + " = ???";
 		}
 
 		@Override
@@ -123,9 +121,7 @@ public interface DeclarationAction<T> extends AbstractAssignationAction<T> {
 			if (getAssignableAction() != null) {
 				return TypeUtils.simpleRepresentation(getAssignableAction().getAssignableType());
 			}
-			else {
-				return "null";
-			}
+			return "null";
 		}
 
 		@Override
@@ -133,11 +129,8 @@ public interface DeclarationAction<T> extends AbstractAssignationAction<T> {
 			if (getAssignableAction() != null) {
 				return TypeUtils.fullQualifiedRepresentation(getAssignableAction().getAssignableType());
 			}
-			else {
-				return "null";
-			}
+			return "null";
 		}
-
 	}
 
 	// @DefineValidationRule

@@ -63,8 +63,8 @@ public class FIBParametersRetrieverWidget extends FIBJPanel<FlexoBehaviourAction
 
 	private ApplicationContext applicationContext;
 
-	public FIBParametersRetrieverWidget(FlexoBehaviourAction action) {
-		super((new ParametersRetriever(action, null)).makeFIB(false, false), action, FlexoLocalization.getMainLocalizer());
+	public FIBParametersRetrieverWidget(FlexoBehaviourAction<?, ?, ?> action) {
+		super((new ParametersRetriever<>(action, null)).makeFIB(false, false), action, FlexoLocalization.getMainLocalizer());
 	}
 
 	public ApplicationContext getApplicationContext() {
@@ -98,9 +98,9 @@ public class FIBParametersRetrieverWidget extends FIBJPanel<FlexoBehaviourAction
 
 	@Override
 	public void fireEditedObjectChanged() {
-		FlexoBehaviourAction action = getEditedObject();
+		FlexoBehaviourAction<?, ?, ?> action = getEditedObject();
 		if (action != null) {
-			fibComponent = (new ParametersRetriever(action, applicationContext)).makeFIB(false, false);
+			fibComponent = (new ParametersRetriever<>(action, applicationContext)).makeFIB(false, false);
 			controller = makeFIBController(fibComponent, localizer);
 			fibView = (JFIBView<?, ?>) controller.buildView(fibComponent, null, true);
 			removeAll();

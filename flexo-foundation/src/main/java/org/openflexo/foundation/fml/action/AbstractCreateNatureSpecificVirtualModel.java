@@ -114,7 +114,6 @@ public abstract class AbstractCreateNatureSpecificVirtualModel<A extends Abstrac
 		return null;
 	}
 
-
 	public boolean isNewVirtualModelNameValid() {
 		if (StringUtils.isEmpty(newVirtualModelName)) {
 			return false;
@@ -125,7 +124,7 @@ public abstract class AbstractCreateNatureSpecificVirtualModel<A extends Abstrac
 			}
 		}
 		else if (getFocusedObject() instanceof RepositoryFolder) {
-			if (((RepositoryFolder) getFocusedObject()).getResourceWithName(newVirtualModelName) != null) {
+			if (((RepositoryFolder<?, ?>) getFocusedObject()).getResourceWithName(newVirtualModelName) != null) {
 				return false;
 			}
 		}
@@ -157,7 +156,7 @@ public abstract class AbstractCreateNatureSpecificVirtualModel<A extends Abstrac
 
 	public String getNewVirtualModelURI() {
 		if (newVirtualModelURI == null && getFocusedObject() instanceof RepositoryFolder) {
-			String baseURI = ((RepositoryFolder) getFocusedObject()).getDefaultBaseURI();
+			String baseURI = ((RepositoryFolder<?, ?>) getFocusedObject()).getDefaultBaseURI();
 			if (!baseURI.endsWith("/")) {
 				baseURI = baseURI + "/";
 			}

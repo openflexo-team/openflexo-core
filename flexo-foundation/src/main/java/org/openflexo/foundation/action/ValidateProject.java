@@ -79,11 +79,11 @@ public class ValidateProject extends FlexoAction<ValidateProject, FlexoProjectOb
 		// FlexoObject.addActionForClass(ValidateProject.actionType, FlexoProject.class);
 	}
 
-	ValidateProject(FlexoProjectObject focusedObject, Vector<FlexoProjectObject> globalSelection, FlexoEditor editor) {
+	private ValidateProject(FlexoProjectObject focusedObject, Vector<FlexoProjectObject> globalSelection, FlexoEditor editor) {
 		super(actionType, focusedObject, globalSelection, editor);
 	}
 
-	public FlexoProject getProject() {
+	public FlexoProject<?> getProject() {
 		return getFocusedObject().getProject();
 	}
 

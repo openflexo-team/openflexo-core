@@ -87,7 +87,7 @@ public class ValidateAction extends FlexoGUIAction<ValidateAction, FMLObject, Fl
 		FlexoObjectImpl.addActionForClass(ValidateAction.actionType, FMLObject.class);
 	}
 
-	ValidateAction(FMLObject focusedObject, Vector<FlexoObject> globalSelection, FlexoEditor editor) {
+	private ValidateAction(FMLObject focusedObject, Vector<FlexoObject> globalSelection, FlexoEditor editor) {
 		super(actionType, focusedObject, globalSelection, editor);
 		// logger.info("InspectAction with "+editor);
 	}

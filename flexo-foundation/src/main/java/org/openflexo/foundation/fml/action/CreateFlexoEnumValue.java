@@ -88,7 +88,7 @@ public class CreateFlexoEnumValue extends FlexoAction<CreateFlexoEnumValue, Flex
 
 	private FlexoEnumValue newValue;
 
-	CreateFlexoEnumValue(FlexoEnum focusedObject, Vector<FMLObject> globalSelection, FlexoEditor editor) {
+	private CreateFlexoEnumValue(FlexoEnum focusedObject, Vector<FMLObject> globalSelection, FlexoEditor editor) {
 		super(actionType, focusedObject, globalSelection, editor);
 
 	}

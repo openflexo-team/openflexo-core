@@ -124,9 +124,9 @@ public class CreateFlexoConceptInstanceRole extends AbstractCreateFlexoRole<Crea
 	protected void doAction(Object context) throws NotImplementedException, InvalidParameterException {
 		// logger.info("Add flexo role, flexoRoleClass=" + flexoRoleClass);
 		// logger.info("modelSlot = " + getModelSlot());
-
-		if (getModelSlot() != null) {
-			newFlexoRole = getModelSlot().makeFlexoRole(FlexoConceptInstanceRole.class);
+		ModelSlot<?> ms = getModelSlot();
+		if (ms != null) {
+			newFlexoRole = ms.makeFlexoRole(FlexoConceptInstanceRole.class);
 		}
 		else {
 			FMLModelFactory factory = getFocusedObject().getFMLModelFactory();
@@ -156,13 +156,12 @@ public class CreateFlexoConceptInstanceRole extends AbstractCreateFlexoRole<Crea
 	}
 
 	public VirtualModel getModelSlotVirtualModel() {
-		if (getModelSlot() == null || !useModelSlot) {
+		FMLRTModelSlot<?, ?> ms = getModelSlot();
+		if (ms == null || !useModelSlot) {
 			return getFlexoConcept().getVirtualModel();
 		}
-		else {
-			if (getModelSlot().getAccessedVirtualModelResource() != null) {
-				return getModelSlot().getAccessedVirtualModelResource().getVirtualModel();
-			}
+		if (ms.getAccessedVirtualModelResource() != null) {
+			return ms.getAccessedVirtualModelResource().getVirtualModel();
 		}
 		return null;
 	}
@@ -205,7 +204,7 @@ public class CreateFlexoConceptInstanceRole extends AbstractCreateFlexoRole<Crea
 				return flexoConcept.getOwningVirtualModel().getModelSlots(FMLRTModelSlot.class).get(0);
 			}
 			// Trying to find the most adapted model slot
-			for (FMLRTModelSlot ms : flexoConcept.getOwningVirtualModel().getModelSlots(FMLRTModelSlot.class)) {
+			for (FMLRTModelSlot<?, ?> ms : flexoConcept.getOwningVirtualModel().getModelSlots(FMLRTModelSlot.class)) {
 				if (ms.getAccessedVirtualModel() != null) {
 					if (ms.getAccessedVirtualModel().getFlexoConcepts().contains(getFlexoConceptInstanceType())) {
 						return ms;
@@ -228,7 +227,7 @@ public class CreateFlexoConceptInstanceRole extends AbstractCreateFlexoRole<Crea
 
 	public void setFlexoConceptInstanceType(FlexoConcept flexoConceptInstanceType) {
 		// The default model slot may change
-		FMLRTModelSlot oldModelSlot = getModelSlot();
+		FMLRTModelSlot<?, ?> oldModelSlot = getModelSlot();
 		this.flexoConceptInstanceType = flexoConceptInstanceType;
 		defaultModelSlot = retrieveDefaultModelSlot();
 		getPropertyChangeSupport().firePropertyChange("modelSlot", oldModelSlot, getModelSlot());

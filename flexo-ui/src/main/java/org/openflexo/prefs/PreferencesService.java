@@ -70,7 +70,7 @@ import org.openflexo.view.FlexoFrame;
  * 
  * @author sguerin
  */
-public class PreferencesService extends FlexoServiceImpl implements FlexoService, HasPropertyChangeSupport {
+public class PreferencesService extends FlexoServiceImpl implements HasPropertyChangeSupport {
 
 	private static final Logger logger = Logger.getLogger(PreferencesService.class.getPackage().getName());
 
@@ -106,13 +106,13 @@ public class PreferencesService extends FlexoServiceImpl implements FlexoService
 		managePreferences(GeneralPreferences.class, getFlexoPreferences());
 		managePreferences(PresentationPreferences.class, getFlexoPreferences());
 		managePreferences(AdvancedPrefs.class, getFlexoPreferences());
-
-		for (FlexoService service : getServiceManager().getRegisteredServices()) {
+		ApplicationContext ac = getServiceManager();
+		for (FlexoService service : ac.getRegisteredServices()) {
 			initializePreferencesForService(service);
 		}
 
-		if (getServiceManager().getModuleLoader() != null) {
-			for (Module<?> m : getServiceManager().getModuleLoader().getKnownModules()) {
+		if (ac.getModuleLoader() != null) {
+			for (Module<?> m : ac.getModuleLoader().getKnownModules()) {
 				initializePreferencesForModule(m);
 			}
 		}
@@ -161,7 +161,7 @@ public class PreferencesService extends FlexoServiceImpl implements FlexoService
 		logger.fine("PreferencesService received notification " + notification + " from " + caller);
 		if (caller instanceof FlexoResourceCenterService) {
 			if (notification instanceof ResourceCenterAdded && !readOnly()) {
-				FlexoResourceCenter addedFlexoResourceCenter = ((ResourceCenterAdded) notification).getAddedResourceCenter();
+				FlexoResourceCenter<?> addedFlexoResourceCenter = ((ResourceCenterAdded) notification).getAddedResourceCenter();
 				if (!(addedFlexoResourceCenter instanceof FlexoProject)) {
 					getResourceCenterPreferences().ensureResourceEntryIsPresent(addedFlexoResourceCenter.getResourceCenterEntry());
 				}

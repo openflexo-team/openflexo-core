@@ -114,7 +114,7 @@ public class ApproveVersion extends FlexoAction<ApproveVersion, DocItem, DocItem
 		return _versionsThatCanBeApproved;
 	}
 
-	ApproveVersion(DocItem focusedObject, Vector<DocItem> globalSelection, FlexoEditor editor) {
+	private ApproveVersion(DocItem focusedObject, Vector<DocItem> globalSelection, FlexoEditor editor) {
 		super(actionType, focusedObject, globalSelection, editor);
 	}
 

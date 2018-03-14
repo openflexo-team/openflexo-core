@@ -187,9 +187,7 @@ public class AbstractCreationSchemeAction<A extends AbstractCreationSchemeAction
 			if (getContainer() != null) {
 				return getVirtualModelInstance().makeNewFlexoConceptInstance(getFlexoConcept(), getContainer());
 			}
-			else {
-				return getVirtualModelInstance().makeNewFlexoConceptInstance(getFlexoConcept());
-			}
+			return getVirtualModelInstance().makeNewFlexoConceptInstance(getFlexoConcept());
 		}
 		else {
 			logger.warning("Could not create new FlexoConceptInstance because creation scheme refers to null FlexoConcept");

@@ -207,7 +207,7 @@ public class FlexoBehaviourPathElement extends FunctionPathElement implements Pr
 
 				if (context instanceof FlexoBehaviourAction) {
 					actionSchemeAction = (AbstractActionSchemeAction<?, ?, ?>) actionType
-							.makeNewEmbeddedAction(fci.getVirtualModelInstance(), null, (FlexoBehaviourAction) context);
+							.makeNewEmbeddedAction(fci.getVirtualModelInstance(), null, (FlexoBehaviourAction<?, ?, ?>) context);
 				}
 				else {
 					FlexoEditor editor = null;

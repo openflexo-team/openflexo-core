@@ -87,12 +87,10 @@ public class CreateFlexoConceptInstance extends FlexoAction<CreateFlexoConceptIn
 				}
 				return false;
 			}
-			else {
-				if (object.getFlexoConcept() != null) {
-					return object.getFlexoConcept().getEmbeddedFlexoConcepts().size() > 0;
-				}
-				return false;
+			if (object.getFlexoConcept() != null) {
+				return object.getFlexoConcept().getEmbeddedFlexoConcepts().size() > 0;
 			}
+			return false;
 		}
 
 		@Override

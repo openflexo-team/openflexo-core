@@ -193,7 +193,8 @@ public interface AbstractAddFlexoConceptInstance<FCI extends FlexoConceptInstanc
 				container = new DataBinding<>(this, FlexoConceptInstance.class, DataBinding.BindingDefinitionType.GET);
 				container.setBindingName("container");
 				container.setDeclaredType(getFlexoConceptType() != null && getFlexoConceptType().getContainerFlexoConcept() != null
-						? getFlexoConceptType().getContainerFlexoConcept().getInstanceType() : FlexoConceptInstance.class);
+						? getFlexoConceptType().getContainerFlexoConcept().getInstanceType()
+						: FlexoConceptInstance.class);
 			}
 			return container;
 		}
@@ -204,7 +205,8 @@ public interface AbstractAddFlexoConceptInstance<FCI extends FlexoConceptInstanc
 				aContainer.setOwner(this);
 				aContainer.setBindingName("container");
 				aContainer.setDeclaredType(getFlexoConceptType() != null && getFlexoConceptType().getContainerFlexoConcept() != null
-						? getFlexoConceptType().getContainerFlexoConcept().getInstanceType() : FlexoConceptInstance.class);
+						? getFlexoConceptType().getContainerFlexoConcept().getInstanceType()
+						: FlexoConceptInstance.class);
 				aContainer.setBindingDefinitionType(DataBinding.BindingDefinitionType.GET);
 			}
 			this.container = aContainer;
@@ -493,10 +495,8 @@ public interface AbstractAddFlexoConceptInstance<FCI extends FlexoConceptInstanc
 				return creationSchemeAction.hasActionExecutionSucceeded();
 
 			}
-			else {
-				logger.warning("Unexpected: " + evaluationContext);
-				return false;
-			}
+			logger.warning("Unexpected: " + evaluationContext);
+			return false;
 		}
 
 		protected abstract FCI makeNewFlexoConceptInstance(RunTimeEvaluationContext evaluationContext) throws FlexoException;
@@ -506,9 +506,7 @@ public interface AbstractAddFlexoConceptInstance<FCI extends FlexoConceptInstanc
 			if (getFlexoConcept() != null) {
 				return FlexoConceptInstanceType.getFlexoConceptInstanceType(getFlexoConceptType());
 			}
-			else {
-				return FlexoConceptInstanceType.UNDEFINED_FLEXO_CONCEPT_INSTANCE_TYPE;
-			}
+			return FlexoConceptInstanceType.UNDEFINED_FLEXO_CONCEPT_INSTANCE_TYPE;
 		}
 
 		@Override

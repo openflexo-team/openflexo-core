@@ -689,10 +689,8 @@ public interface MatchFlexoConceptInstance extends FMLRTAction<FlexoConceptInsta
 
 				return matchingFlexoConceptInstance;
 			}
-			else {
-				logger.warning("Unexpected: " + evaluationContext);
-				return null;
-			}
+			logger.warning("Unexpected: " + evaluationContext);
+			return null;
 			/*} finally {
 				long endTime = System.currentTimeMillis();
 				System.out.println("MatchFlexoConceptInstance: " + (endTime - startTime) + "ms [creation took " + (time5 - time4)
@@ -720,7 +718,8 @@ public interface MatchFlexoConceptInstance extends FMLRTAction<FlexoConceptInsta
 				container = new DataBinding<>(this, FlexoConceptInstance.class, DataBinding.BindingDefinitionType.GET);
 				container.setBindingName("container");
 				container.setDeclaredType(getFlexoConceptType() != null && getFlexoConceptType().getContainerFlexoConcept() != null
-						? getFlexoConceptType().getContainerFlexoConcept().getInstanceType() : FlexoConceptInstance.class);
+						? getFlexoConceptType().getContainerFlexoConcept().getInstanceType()
+						: FlexoConceptInstance.class);
 			}
 			return container;
 		}
@@ -731,7 +730,8 @@ public interface MatchFlexoConceptInstance extends FMLRTAction<FlexoConceptInsta
 				aContainer.setOwner(this);
 				aContainer.setBindingName("container");
 				aContainer.setDeclaredType(getFlexoConceptType() != null && getFlexoConceptType().getContainerFlexoConcept() != null
-						? getFlexoConceptType().getContainerFlexoConcept().getInstanceType() : FlexoConceptInstance.class);
+						? getFlexoConceptType().getContainerFlexoConcept().getInstanceType()
+						: FlexoConceptInstance.class);
 				aContainer.setBindingDefinitionType(DataBinding.BindingDefinitionType.GET);
 			}
 			this.container = aContainer;
@@ -753,9 +753,7 @@ public interface MatchFlexoConceptInstance extends FMLRTAction<FlexoConceptInsta
 				if (action.getFlexoConceptType() == null) {
 					return new ValidationError<>(this, action, "match_flexo_concept_action_doesn't_define_any_flexo_concept");
 				}
-				else {
-					return new ValidationError<>(this, action, "match_flexo_concept_action_doesn't_define_any_creation_scheme");
-				}
+				return new ValidationError<>(this, action, "match_flexo_concept_action_doesn't_define_any_creation_scheme");
 			}
 			return null;
 		}

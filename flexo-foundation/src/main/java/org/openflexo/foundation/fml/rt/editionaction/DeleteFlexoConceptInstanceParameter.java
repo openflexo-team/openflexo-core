@@ -99,7 +99,7 @@ public interface DeleteFlexoConceptInstanceParameter extends FlexoBehaviourObjec
 	// TODO: PAMELA
 	public void setParam(FlexoBehaviourParameter param);
 
-	public Object evaluateParameterValue(FlexoBehaviourAction action);
+	public Object evaluateParameterValue(FlexoBehaviourAction<?, ?, ?> action);
 
 	@Override
 	public DeleteFlexoConceptInstanceParameterBindingModel getBindingModel();
@@ -168,7 +168,7 @@ public interface DeleteFlexoConceptInstanceParameter extends FlexoBehaviourObjec
 		}
 
 		@Override
-		public Object evaluateParameterValue(FlexoBehaviourAction action) {
+		public Object evaluateParameterValue(FlexoBehaviourAction<?, ?, ?> action) {
 			if (getValue() == null || getValue().isUnset()) {
 				/*logger.info("Binding for " + param.getName() + " is not set");
 				if (param instanceof URIParameter) {

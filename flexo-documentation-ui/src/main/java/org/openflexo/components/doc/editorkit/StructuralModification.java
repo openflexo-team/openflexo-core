@@ -178,25 +178,23 @@ class StructuralModification<D extends FlexoDocument<D, TA>, TA extends Technolo
 			FlexoStyledDocument.logger.warning("Unexpected null run");
 			return;
 		}
-		else {
-			if (newR.run == null) {
-				newR.run = newR.runElement.lookupDocObject();
-				if (newR.run != null) {
-					System.out.println("Tiens j'ai quand meme trouve le run: " + newR.run);
-				}
+		if (newR.run == null) {
+			newR.run = newR.runElement.lookupDocObject();
+			if (newR.run != null) {
+				System.out.println("Tiens j'ai quand meme trouve le run: " + newR.run);
 			}
-			if (newR.run == null) {
-				System.out.println("Tiens faut creer un nouveau run pour " + oldR.run.getParagraph());
+		}
+		if (newR.run == null) {
+			System.out.println("Tiens faut creer un nouveau run pour " + oldR.run.getParagraph());
+		}
+		else if (newR.run == oldR.run) {
+			String newText = newR.getText();
+			if (newText.endsWith("\n")) {
+				newText = newText.substring(0, newText.length() - 1);
 			}
-			else if (newR.run == oldR.run) {
-				String newText = newR.getText();
-				if (newText.endsWith("\n")) {
-					newText = newText.substring(0, newText.length() - 1);
-				}
-				if (newR.run instanceof FlexoTextRun) {
-					System.out.println("Mise a jour du run " + newR.run + " avec " + newText);
-					((FlexoTextRun<?, ?>) newR.run).setText(newText);
-				}
+			if (newR.run instanceof FlexoTextRun) {
+				System.out.println("Mise a jour du run " + newR.run + " avec " + newText);
+				((FlexoTextRun<?, ?>) newR.run).setText(newText);
 			}
 		}
 	}

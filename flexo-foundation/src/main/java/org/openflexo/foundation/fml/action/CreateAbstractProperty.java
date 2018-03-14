@@ -70,7 +70,8 @@ public class CreateAbstractProperty extends AbstractCreateFlexoProperty<CreateAb
 	private static final Logger logger = Logger.getLogger(CreateAbstractProperty.class.getPackage().getName());
 
 	public static FlexoActionFactory<CreateAbstractProperty, FlexoConceptObject, FMLObject> actionType = new FlexoActionFactory<CreateAbstractProperty, FlexoConceptObject, FMLObject>(
-			"create_abstract_property", FlexoActionFactory.newPropertyMenu, FlexoActionFactory.defaultGroup, FlexoActionFactory.ADD_ACTION_TYPE) {
+			"create_abstract_property", FlexoActionFactory.newPropertyMenu, FlexoActionFactory.defaultGroup,
+			FlexoActionFactory.ADD_ACTION_TYPE) {
 
 		/**
 		 * Factory method
@@ -102,7 +103,7 @@ public class CreateAbstractProperty extends AbstractCreateFlexoProperty<CreateAb
 
 	private AbstractProperty<?> newAbstractProperty;
 
-	CreateAbstractProperty(FlexoConceptObject focusedObject, Vector<FMLObject> globalSelection, FlexoEditor editor) {
+	private CreateAbstractProperty(FlexoConceptObject focusedObject, Vector<FMLObject> globalSelection, FlexoEditor editor) {
 		super(actionType, focusedObject, globalSelection, editor);
 	}
 

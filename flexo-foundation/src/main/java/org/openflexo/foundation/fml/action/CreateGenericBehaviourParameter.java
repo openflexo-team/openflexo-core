@@ -109,7 +109,7 @@ public class CreateGenericBehaviourParameter extends FlexoAction<CreateGenericBe
 
 	private FlexoBehaviourParameter newParameter;
 
-	CreateGenericBehaviourParameter(FlexoBehaviourObject focusedObject, Vector<FMLObject> globalSelection, FlexoEditor editor) {
+	private CreateGenericBehaviourParameter(FlexoBehaviourObject focusedObject, Vector<FMLObject> globalSelection, FlexoEditor editor) {
 		super(actionType, focusedObject, globalSelection, editor);
 
 	}

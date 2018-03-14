@@ -113,7 +113,7 @@ public class RefuseVersion extends FlexoAction<RefuseVersion, DocItem, DocItem> 
 		return _versionsThatCanBeApproved;
 	}
 
-	RefuseVersion(DocItem focusedObject, Vector<DocItem> globalSelection, FlexoEditor editor) {
+	private RefuseVersion(DocItem focusedObject, Vector<DocItem> globalSelection, FlexoEditor editor) {
 		super(actionType, focusedObject, globalSelection, editor);
 	}
 

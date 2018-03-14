@@ -100,15 +100,13 @@ public class AddToAction extends FlexoAction<AddToAction, AssignableAction<?>, F
 	private AddToListAction<?> addToListAction;
 	private DataBinding<List<?>> list;
 
-	AddToAction(AssignableAction<?> focusedObject, Vector<FMLObject> globalSelection, FlexoEditor editor) {
+	private AddToAction(AssignableAction<?> focusedObject, Vector<FMLObject> globalSelection, FlexoEditor editor) {
 		super(actionType, focusedObject, globalSelection, editor);
 	}
 
 	@Override
 	protected void doAction(Object context) throws FlexoException {
-
 		addToListAction = getFocusedObject().addToList((DataBinding) getList());
-
 	}
 
 	@Override

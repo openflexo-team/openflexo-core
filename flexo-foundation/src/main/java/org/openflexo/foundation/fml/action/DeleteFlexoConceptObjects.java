@@ -93,7 +93,7 @@ public class DeleteFlexoConceptObjects extends FlexoAction<DeleteFlexoConceptObj
 		FlexoObjectImpl.addActionForClass(DeleteFlexoConceptObjects.actionType, FlexoConceptObject.class);
 	}
 
-	DeleteFlexoConceptObjects(FlexoConceptObject focusedObject, Vector<FlexoConceptObject> globalSelection, FlexoEditor editor) {
+	private DeleteFlexoConceptObjects(FlexoConceptObject focusedObject, Vector<FlexoConceptObject> globalSelection, FlexoEditor editor) {
 		super(actionType, focusedObject, globalSelection, editor);
 	}
 

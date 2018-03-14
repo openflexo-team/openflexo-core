@@ -338,7 +338,7 @@ public abstract class AbstractDocItemView extends JPanel {
 		return (Language) languageCB.getSelectedItem();
 	}
 
-	public FlexoProject getProject() {
+	public FlexoProject<?> getProject() {
 		if (_controller != null) {
 			return _controller.getProject();
 		}
@@ -699,7 +699,7 @@ public abstract class AbstractDocItemView extends JPanel {
 		}
 
 		public DocItemAction getCurrentAction() {
-			return (DocItemAction) actionList.getSelectedValue();
+			return actionList.getSelectedValue();
 		}
 
 		public void setCurrentAction(DocItemAction currentAction) {

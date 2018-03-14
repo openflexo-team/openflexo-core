@@ -412,14 +412,14 @@ public class FlexoFIBController extends FIBController implements GraphicalFlexoO
 		return ARROW_BOTTOM;
 	}
 
-	public void importProject(FlexoProject project) {
+	public void importProject(FlexoProject<?> project) {
 		// TODO: reimplement this properly when project will be a FlexoProjectObject
 		// ImportProject importProject = ImportProject.actionType.makeNewAction(project, null, getEditor());
 		ImportProject importProject = ImportProject.actionType.makeNewAction(null, null, getEditor());
 		importProject.doAction();
 	}
 
-	public void unimportProject(FlexoProject project, List<FlexoProjectReference> references) {
+	public void unimportProject(FlexoProject<?> project, List<FlexoProjectReference> references) {
 		for (FlexoProjectReference ref : references) {
 			// TODO: reimplement this properly when project will be a FlexoProjectObject
 			// RemoveImportedProject removeProject = RemoveImportedProject.actionType.makeNewAction(project, null, getEditor());
@@ -616,12 +616,13 @@ public class FlexoFIBController extends FIBController implements GraphicalFlexoO
 		return localSelectionManager;
 	}
 
+	// Notice that T should extends FlexoObject but as we do not want that gina depends on foundation, it is not done
 	@Override
 	public <T> void updateSelection(FIBSelectable<T> widget, List<T> oldSelection, List<T> newSelection) {
 		super.updateSelection(widget, oldSelection, newSelection);
 		if (localSelectionManager != null) {
 			isLocalSelectionManagerUpdating = true;
-			localSelectionManager.setSelectedObjects((List) newSelection);
+			localSelectionManager.setSelectedObjects((List<FlexoObject>) newSelection);
 			isLocalSelectionManagerUpdating = false;
 		}
 	}

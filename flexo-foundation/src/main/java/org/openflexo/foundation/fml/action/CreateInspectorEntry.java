@@ -111,7 +111,7 @@ public class CreateInspectorEntry extends FlexoAction<CreateInspectorEntry, Flex
 
 	private InspectorEntry newEntry;
 
-	CreateInspectorEntry(FlexoConceptInspector focusedObject, Vector<FMLObject> globalSelection, FlexoEditor editor) {
+	private CreateInspectorEntry(FlexoConceptInspector focusedObject, Vector<FMLObject> globalSelection, FlexoEditor editor) {
 		super(actionType, focusedObject, globalSelection, editor);
 
 	}

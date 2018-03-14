@@ -99,15 +99,13 @@ public class AssignAction extends FlexoAction<AssignAction, AssignableAction<?>,
 	private AssignationAction<?> assignationAction;
 	private DataBinding<?> assignation;
 
-	AssignAction(AssignableAction<?> focusedObject, Vector<FMLObject> globalSelection, FlexoEditor editor) {
+	protected AssignAction(AssignableAction<?> focusedObject, Vector<FMLObject> globalSelection, FlexoEditor editor) {
 		super(actionType, focusedObject, globalSelection, editor);
 	}
 
 	@Override
 	protected void doAction(Object context) throws FlexoException {
-
 		assignationAction = getFocusedObject().assignTo((DataBinding) getAssignation());
-
 	}
 
 	@Override
@@ -123,7 +121,6 @@ public class AssignAction extends FlexoAction<AssignAction, AssignableAction<?>,
 			assignation = new DataBinding<>(this, Object.class, DataBinding.BindingDefinitionType.GET_SET);
 			assignation.setBindingName("assignation");
 			assignation.setMandatory(true);
-
 		}
 		return assignation;
 	}

@@ -61,7 +61,8 @@ public abstract class CreateFMLControlledDocumentVirtualModelInstance<A extends 
 		private final FMLControlledDocumentContainerNature<?> nature;
 
 		public CreateFMLControlledDocumentVirtualModelInstanceActionType(FMLControlledDocumentContainerNature<?> nature) {
-			super("create_fml_controlled_document", FlexoActionFactory.newMenu, FlexoActionFactory.defaultGroup, FlexoActionFactory.ADD_ACTION_TYPE);
+			super("create_fml_controlled_document", FlexoActionFactory.newMenu, FlexoActionFactory.defaultGroup,
+					FlexoActionFactory.ADD_ACTION_TYPE);
 			this.nature = nature;
 		}
 
@@ -95,9 +96,6 @@ public abstract class CreateFMLControlledDocumentVirtualModelInstance<A extends 
 		if (virtualModel.hasNature(getVirtualModelNature())) {
 			return true;
 		}
-		else {
-			return false;
-		}
+		return false;
 	}
-
 }

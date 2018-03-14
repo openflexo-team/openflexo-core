@@ -81,7 +81,7 @@ public class DeleteVirtualModelInstance extends FlexoAction<DeleteVirtualModelIn
 		FlexoObjectImpl.addActionForClass(DeleteVirtualModelInstance.actionType, FMLRTVirtualModelInstance.class);
 	}
 
-	DeleteVirtualModelInstance(FMLRTVirtualModelInstance focusedObject, Vector<FlexoObject> globalSelection, FlexoEditor editor) {
+	private DeleteVirtualModelInstance(FMLRTVirtualModelInstance focusedObject, Vector<FlexoObject> globalSelection, FlexoEditor editor) {
 		super(actionType, focusedObject, globalSelection, editor);
 	}
 

@@ -106,7 +106,7 @@ public interface BehaviourParameter<T extends FlexoConceptObject> extends FlexoB
 	// TODO: PAMELA
 	public void setParam(FlexoBehaviourParameter param);
 
-	public Object evaluateParameterValue(FlexoBehaviourAction action);
+	public Object evaluateParameterValue(FlexoBehaviourAction<?, ?, ?> action);
 
 	@Override
 	public BehaviourParameterBindingModel getBindingModel();
@@ -165,7 +165,7 @@ public interface BehaviourParameter<T extends FlexoConceptObject> extends FlexoB
 		}
 
 		@Override
-		public Object evaluateParameterValue(FlexoBehaviourAction action) {
+		public Object evaluateParameterValue(FlexoBehaviourAction<?, ?, ?> action) {
 			if (getValue() == null || getValue().isUnset()) {
 				/*logger.info("Binding for " + param.getName() + " is not set");
 				if (param instanceof URIParameter) {
@@ -257,8 +257,7 @@ public interface BehaviourParameter<T extends FlexoConceptObject> extends FlexoB
 			if (object.getParam().getIsRequired()) {
 				return super.applyValidation(object);
 			}
-			else
-				return null;
+			return null;
 		}
 
 	}

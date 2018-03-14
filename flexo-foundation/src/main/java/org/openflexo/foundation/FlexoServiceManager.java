@@ -183,6 +183,7 @@ public abstract class FlexoServiceManager {
 	public void hasActivated(TechnologyAdapter technologyAdapter) {
 	}
 
+	@SuppressWarnings("unchecked")
 	public <S extends FlexoService> S getService(Class<S> serviceClass) {
 		for (FlexoService s : registeredServices) {
 			if (serviceClass.isAssignableFrom(s.getClass())) {
@@ -246,8 +247,7 @@ public abstract class FlexoServiceManager {
 		return getService(ScreenshotService.class);
 	}
 
-	public class ServiceRegistered implements ServiceNotification {
-	}
+	public class ServiceRegistered implements ServiceNotification {}
 
 	/**
 	 * Notification of a TechnologyAdapter that has been activated
