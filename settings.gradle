@@ -11,4 +11,5 @@ include 'flexo-test-resources',
         'flexodocresourcecenter',
         'fml-parser',
         'fml-technologyadapter-ui',
-        'fml-rt-technologyadapter-ui'
+        'fml-rt-technologyadapter-ui',
+        'fml-cli'
