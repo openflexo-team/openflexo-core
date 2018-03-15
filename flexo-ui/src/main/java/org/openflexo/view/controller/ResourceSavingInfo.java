@@ -45,10 +45,7 @@ import java.util.logging.Logger;
 import org.openflexo.foundation.resource.FlexoResource;
 import org.openflexo.foundation.resource.ResourceManager;
 import org.openflexo.foundation.resource.SaveResourceException;
-import org.openflexo.foundation.utils.FlexoProgressFactory;
-import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.logging.FlexoLogger;
-import org.openflexo.toolbox.IProgress;
 
 public class ResourceSavingInfo {
 
@@ -75,7 +72,7 @@ public class ResourceSavingInfo {
 		return entries;
 	}
 
-	public void saveSelectedResources(FlexoProgressFactory progressFactory) {
+	public void saveSelectedResources() {
 		List<ResourceSavingEntryInfo> resourcesToSave = new ArrayList<ResourceSavingEntryInfo>();
 		for (ResourceSavingEntryInfo e : entries) {
 			if (e.saveThisResource()) {
@@ -83,26 +80,16 @@ public class ResourceSavingInfo {
 			}
 		}
 
-		IProgress progress = null;
-		if (progressFactory != null) {
-			progress = progressFactory.makeFlexoProgress(FlexoLocalization.getMainLocalizer().localizedForKey("saving_resources"),
-					resourcesToSave.size());
-		}
 		for (ResourceSavingEntryInfo e : entries) {
 			if (e.saveThisResource()) {
 				try {
 					logger.info("Saving " + e.resource);
-					e.saveModified(progress);
+					e.saveModified(null);
 				} catch (SaveResourceException e1) {
 					logger.warning("Could not save resource " + e.resource);
 					e1.printStackTrace();
 				}
 			}
 		}
-
-		if (progress != null) {
-			progress.hideWindow();
-		}
-
 	}
 }

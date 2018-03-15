@@ -54,7 +54,6 @@ import org.openflexo.foundation.fml.rt.logging.FMLConsole;
 import org.openflexo.foundation.nature.FlexoNature;
 import org.openflexo.foundation.resource.FlexoResource;
 import org.openflexo.foundation.resource.ResourceUpdateHandler;
-import org.openflexo.foundation.utils.FlexoProgressFactory;
 
 /**
  * Default implementation of {@link FlexoEditor}
@@ -64,10 +63,6 @@ import org.openflexo.foundation.utils.FlexoProgressFactory;
  *
  */
 public class DefaultFlexoEditor implements FlexoEditor {
-
-	private static final java.util.logging.Logger logger = org.openflexo.logging.FlexoLogger
-			.getLogger(DefaultFlexoEditor.class.getPackage().getName());
-
 	private final FlexoProject<?> project;
 	private final FlexoServiceManager serviceManager;
 	private final ResourceUpdateHandler resourceUpdateHandler;
@@ -116,12 +111,6 @@ public class DefaultFlexoEditor implements FlexoEditor {
 	@Override
 	public boolean performResourceScanning() {
 		return true;
-	}
-
-	@Override
-	public FlexoProgressFactory getFlexoProgressFactory() {
-		// Only interactive editor have a progress window
-		return null;
 	}
 
 	/**

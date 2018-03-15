@@ -46,7 +46,6 @@ import org.openflexo.ApplicationContext;
 import org.openflexo.foundation.resource.ResourceManager;
 import org.openflexo.foundation.resource.SaveResourceExceptionList;
 import org.openflexo.foundation.resource.SaveResourcePermissionDeniedException;
-import org.openflexo.foundation.utils.FlexoProgressFactory;
 import org.openflexo.gina.swing.utils.JFIBDialog;
 import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.rm.Resource;
@@ -94,9 +93,8 @@ public class ReviewUnsavedDialog extends JFIBDialog<ResourceSavingInfo> {
 		return resourceManager;
 	}
 
-	public void saveSelection(FlexoProgressFactory progressFactory)
-			throws SaveResourceExceptionList, SaveResourcePermissionDeniedException {
-		getData().saveSelectedResources(progressFactory);
+	public void saveSelection() throws SaveResourceExceptionList, SaveResourcePermissionDeniedException {
+		getData().saveSelectedResources();
 		// _reviewUnsavedModel.saveSelected();
 		getResourceManager().deleteFilesToBeDeleted();
 	}

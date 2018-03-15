@@ -52,7 +52,6 @@ import org.openflexo.foundation.fml.rt.FMLRunTimeEngine;
 import org.openflexo.foundation.fml.rt.logging.FMLConsole;
 import org.openflexo.foundation.nature.FlexoNature;
 import org.openflexo.foundation.resource.ResourceUpdateHandler;
-import org.openflexo.foundation.utils.FlexoProgressFactory;
 
 /**
  * A {@link FlexoEditor} represents the run-time environment where a user is interacting with a {@link FlexoProject}<br>
@@ -94,14 +93,6 @@ public interface FlexoEditor {
 	 * @return
 	 */
 	public FlexoServiceManager getServiceManager();
-
-	/**
-	 * Return progress factory for this {@link FlexoEditor}<br>
-	 * (deprecated)
-	 * 
-	 * @return
-	 */
-	public FlexoProgressFactory getFlexoProgressFactory();
 
 	/**
 	 * Return {@link ResourceUpdateHandler} for this {@link FlexoEditor}<br>
