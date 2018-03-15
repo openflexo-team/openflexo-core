@@ -44,6 +44,7 @@ import java.util.logging.Logger;
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoObject.FlexoObjectImpl;
 import org.openflexo.foundation.resource.RepositoryFolder;
+import org.openflexo.foundation.resource.ResourceRepository;
 
 public class AddRepositoryFolder extends FlexoAction<AddRepositoryFolder, RepositoryFolder, RepositoryFolder> {
 
@@ -88,7 +89,8 @@ public class AddRepositoryFolder extends FlexoAction<AddRepositoryFolder, Reposi
 	protected void doAction(Object context) throws InvalidParametersException {
 		logger.info("Add view folder");
 		if (getFocusedObject() != null) {
-			newFolder = getFocusedObject().getResourceRepository().createNewFolder(getNewFolderName(), getFocusedObject());
+			ResourceRepository<?, ?> rr = getFocusedObject().getResourceRepository();
+			newFolder = rr.createNewFolder(getNewFolderName(), getFocusedObject());
 		}
 		else {
 			throw new InvalidParametersException("unable to create view folder: no focused object supplied");

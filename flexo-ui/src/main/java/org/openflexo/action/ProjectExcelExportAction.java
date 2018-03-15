@@ -52,23 +52,24 @@ import org.openflexo.foundation.action.FlexoGUIAction;
  * @author gpolet
  * 
  */
-public class ProjectExcelExportAction extends FlexoGUIAction<ProjectExcelExportAction, FlexoProject, FlexoObject> {
+public class ProjectExcelExportAction extends FlexoGUIAction<ProjectExcelExportAction, FlexoProject<?>, FlexoObject> {
 
-	public static final FlexoActionFactory<ProjectExcelExportAction, FlexoProject, FlexoObject> actionType = new FlexoActionFactory<ProjectExcelExportAction, FlexoProject, FlexoObject>(
+	public static final FlexoActionFactory<ProjectExcelExportAction, FlexoProject<?>, FlexoObject> actionType = new FlexoActionFactory<ProjectExcelExportAction, FlexoProject<?>, FlexoObject>(
 			"project_excel_export", FlexoActionFactory.docGroup) {
 
 		@Override
-		public boolean isEnabledForSelection(FlexoProject object, Vector<FlexoObject> globalSelection) {
+		public boolean isEnabledForSelection(FlexoProject<?> object, Vector<FlexoObject> globalSelection) {
 			return true;
 		}
 
 		@Override
-		public boolean isVisibleForSelection(FlexoProject object, Vector<FlexoObject> globalSelection) {
+		public boolean isVisibleForSelection(FlexoProject<?> object, Vector<FlexoObject> globalSelection) {
 			return true;
 		}
 
 		@Override
-		public ProjectExcelExportAction makeNewAction(FlexoProject focusedObject, Vector<FlexoObject> globalSelection, FlexoEditor editor) {
+		public ProjectExcelExportAction makeNewAction(FlexoProject<?> focusedObject, Vector<FlexoObject> globalSelection,
+				FlexoEditor editor) {
 			return new ProjectExcelExportAction(focusedObject, globalSelection, editor);
 		}
 
@@ -84,7 +85,7 @@ public class ProjectExcelExportAction extends FlexoGUIAction<ProjectExcelExportA
 	 * @param globalSelection
 	 * @param editor
 	 */
-	protected ProjectExcelExportAction(FlexoProject focusedObject, Vector<FlexoObject> globalSelection, FlexoEditor editor) {
+	protected ProjectExcelExportAction(FlexoProject<?> focusedObject, Vector<FlexoObject> globalSelection, FlexoEditor editor) {
 		super(actionType, focusedObject, globalSelection, editor);
 	}
 

@@ -60,6 +60,7 @@ import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.localization.LocalizedDelegate;
 import org.openflexo.module.FlexoModule;
+import org.openflexo.module.ModuleLoader;
 import org.openflexo.module.ModuleLoadingException;
 
 /**
@@ -77,14 +78,14 @@ import org.openflexo.module.ModuleLoadingException;
 @SuppressWarnings("serial")
 public class MenuItemAction<A extends FlexoAction<A, T1, T2>, T1 extends FlexoObject, T2 extends FlexoObject> extends AbstractAction {
 
-	private FlexoActionSource actionSource;
+	private FlexoActionSource<T1, T2> actionSource;
 	private FlexoActionFactory<A, T1, T2> actionFactory;
 
 	private T1 focusedObject;
 	private Vector<T2> globalSelection;
 	private FlexoEditor editor;
 
-	public MenuItemAction(FlexoActionFactory<A, T1, T2> actionFactory, FlexoActionSource actionSource) {
+	public MenuItemAction(FlexoActionFactory<A, T1, T2> actionFactory, FlexoActionSource<T1, T2> actionSource) {
 		super();
 		this.actionSource = actionSource;
 		this.actionFactory = actionFactory;
@@ -119,15 +120,13 @@ public class MenuItemAction<A extends FlexoAction<A, T1, T2>, T1 extends FlexoOb
 		return editor;
 	}
 
-	@SuppressWarnings("unchecked")
 	public T1 getFocusedObject() {
 		if (actionSource != null) {
-			return (T1) actionSource.getFocusedObject();
+			return actionSource.getFocusedObject();
 		}
 		return focusedObject;
 	}
 
-	@SuppressWarnings("unchecked")
 	public Vector<T2> getGlobalSelection() {
 		if (actionSource != null) {
 			return (Vector<T2>) actionSource.getGlobalSelection();
@@ -139,8 +138,8 @@ public class MenuItemAction<A extends FlexoAction<A, T1, T2>, T1 extends FlexoOb
 		if (getModuleClass() != null) {
 			FlexoModule<?> module;
 			try {
-				module = ((ApplicationContext) getEditor().getServiceManager()).getModuleLoader()
-						.getModuleInstance((Class) getModuleClass());
+				ModuleLoader moduleLoader = ((ApplicationContext) getEditor().getServiceManager()).getModuleLoader();
+				module = moduleLoader.getModuleInstance((Class) getModuleClass());
 				return module.getLocales();
 			} catch (ModuleLoadingException e) {
 				// TODO Auto-generated catch block

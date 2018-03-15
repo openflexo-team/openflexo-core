@@ -44,6 +44,7 @@ import java.util.logging.Logger;
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoObject.FlexoObjectImpl;
 import org.openflexo.foundation.resource.RepositoryFolder;
+import org.openflexo.foundation.resource.ResourceRepository;
 
 public class DeleteRepositoryFolder extends FlexoAction<DeleteRepositoryFolder, RepositoryFolder, RepositoryFolder> {
 
@@ -86,7 +87,8 @@ public class DeleteRepositoryFolder extends FlexoAction<DeleteRepositoryFolder, 
 		logger.info("Delete view folder");
 
 		if (getFocusedObject() != null) {
-			getFocusedObject().getResourceRepository().deleteFolder(getFocusedObject());
+			ResourceRepository<?, ?> rr = getFocusedObject().getResourceRepository();
+			rr.deleteFolder(getFocusedObject());
 		}
 		else {
 			throw new InvalidParametersException("unable to create view folder: no focused object supplied");

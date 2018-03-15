@@ -97,7 +97,7 @@ public class LoadResourceAction extends FlexoAction<LoadResourceAction, FlexoObj
 		if (getFocusedObject() instanceof FlexoResource) {
 
 			if (getFocusedObject() instanceof FlexoProjectResource) {
-				FlexoProjectResource<Object> prjResource = (FlexoProjectResource) getFocusedObject();
+				FlexoProjectResource<Object> prjResource = (FlexoProjectResource<Object>) getFocusedObject();
 				Object serializationArtefact = prjResource.getIODelegate().getSerializationArtefact();
 				Object projectDirectory = prjResource.getDelegateResourceCenter().getContainer(serializationArtefact);
 				try {

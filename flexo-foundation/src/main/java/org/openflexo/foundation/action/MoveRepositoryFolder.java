@@ -104,7 +104,7 @@ public class MoveRepositoryFolder extends FlexoAction<MoveRepositoryFolder, Repo
 		return folder;
 	};
 
-	public void setFolder(RepositoryFolder folder) {
+	public void setFolder(RepositoryFolder<?, ?> folder) {
 		this.folder = folder;
 	}
 
