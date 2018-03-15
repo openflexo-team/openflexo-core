@@ -64,6 +64,7 @@ import org.openflexo.model.factory.EditingContext;
 import org.openflexo.model.factory.EditingContextImpl;
 import org.openflexo.model.factory.ModelFactory;
 import org.openflexo.model.factory.ProxyMethodHandler;
+import org.openflexo.toolbox.StringUtils;
 
 /**
  * The {@link FlexoEditingContext} represents the {@link EditingContext} for the whole application<br>
@@ -353,6 +354,17 @@ public class FlexoEditingContext extends EditingContextImpl implements FlexoServ
 	@Override
 	public Status getStatus() {
 		return status;
+	}
+
+	/**
+	 * Return indicating general status of this FlexoService<br>
+	 * This is the display value of 'service <service> status' as given in FML command-line interpreter
+	 * 
+	 * @return
+	 */
+	@Override
+	public String getDisplayableStatus() {
+		return getServiceName() + StringUtils.buildWhiteSpaceIndentation(30 - getServiceName().length()) + getStatus();
 	}
 
 	private List<ServiceOperation<?>> availableServiceOperations = null;

@@ -40,6 +40,7 @@
 package org.openflexo.foundation;
 
 import java.util.Collection;
+import java.util.List;
 
 import org.openflexo.toolbox.StringUtils;
 
@@ -93,6 +94,14 @@ public interface FlexoService {
 	public Status getStatus();
 
 	/**
+	 * Return indicating general status of this FlexoService<br>
+	 * This is the display value of 'service <service> status' as given in FML command-line interpreter
+	 * 
+	 * @return
+	 */
+	public String getDisplayableStatus();
+
+	/**
 	 * Return collection of all available {@link ServiceOperation} available for this {@link FlexoService}
 	 * 
 	 * @return
@@ -135,11 +144,13 @@ public interface FlexoService {
 	 */
 	public static interface ServiceOperation<S extends FlexoService> {
 
-		public abstract String getActionName();
+		public abstract String getOperationName();
 
-		public abstract String usage(FlexoService service);
+		public abstract String usage(S service);
 
 		public abstract String description();
+
+		public List<String> getOptions();
 
 		public void execute(S service, Object... options);
 	}
@@ -155,7 +166,7 @@ public interface FlexoService {
 		}
 
 		@Override
-		public String getActionName() {
+		public String getOperationName() {
 			return "usage";
 		}
 
@@ -170,12 +181,17 @@ public interface FlexoService {
 		}
 
 		@Override
+		public List<String> getOptions() {
+			return null;
+		}
+
+		@Override
 		public void execute(FlexoService service, Object... options) {
 			System.out.println("Usage: ");
-			for (ServiceOperation<?> serviceAction : service.getAvailableServiceOperations()) {
-				System.out.println(" " + serviceAction.usage(service)
-						+ StringUtils.buildWhiteSpaceIndentation(30 - serviceAction.usage(service).length()) + " : "
-						+ serviceAction.description());
+			for (ServiceOperation serviceOperation : service.getAvailableServiceOperations()) {
+				System.out.println(" " + serviceOperation.usage(service)
+						+ StringUtils.buildWhiteSpaceIndentation(30 - serviceOperation.usage(service).length()) + " : "
+						+ serviceOperation.description());
 			}
 		}
 	}
@@ -185,7 +201,7 @@ public interface FlexoService {
 		}
 
 		@Override
-		public String getActionName() {
+		public String getOperationName() {
 			return "status";
 		}
 
@@ -200,9 +216,13 @@ public interface FlexoService {
 		}
 
 		@Override
+		public List<String> getOptions() {
+			return null;
+		}
+
+		@Override
 		public void execute(FlexoService service, Object... options) {
-			System.out.println(service.getServiceName() + StringUtils.buildWhiteSpaceIndentation(30 - service.getServiceName().length())
-					+ service.getStatus());
+			System.out.println(service.getDisplayableStatus());
 		}
 	}
 
@@ -211,7 +231,7 @@ public interface FlexoService {
 		}
 
 		@Override
-		public String getActionName() {
+		public String getOperationName() {
 			return "start";
 		}
 
@@ -223,6 +243,11 @@ public interface FlexoService {
 		@Override
 		public String description() {
 			return "start service";
+		}
+
+		@Override
+		public List<String> getOptions() {
+			return null;
 		}
 
 		@Override
@@ -241,7 +266,7 @@ public interface FlexoService {
 		}
 
 		@Override
-		public String getActionName() {
+		public String getOperationName() {
 			return "stop";
 		}
 
@@ -253,6 +278,11 @@ public interface FlexoService {
 		@Override
 		public String description() {
 			return "stop service";
+		}
+
+		@Override
+		public List<String> getOptions() {
+			return null;
 		}
 
 		@Override

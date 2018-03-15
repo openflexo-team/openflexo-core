@@ -41,11 +41,11 @@ package org.openflexo.foundation;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.openflexo.localization.LocalizedDelegate;
+import org.openflexo.toolbox.StringUtils;
 
 /**
  * Abstract base implementation of a {@link FlexoService}
@@ -84,6 +84,17 @@ public abstract class FlexoServiceImpl extends FlexoObservable implements FlexoS
 		return status;
 	}
 
+	/**
+	 * Return indicating general status of this FlexoService<br>
+	 * This is the display value of 'service <service> status' as given in FML command-line interpreter
+	 * 
+	 * @return
+	 */
+	@Override
+	public String getDisplayableStatus() {
+		return getServiceName() + StringUtils.buildWhiteSpaceIndentation(30 - getServiceName().length()) + getStatus();
+	}
+
 	public LocalizedDelegate getLocales() {
 		return getServiceManager().getLocalizationService().getFlexoLocalizer();
 	}
@@ -103,7 +114,7 @@ public abstract class FlexoServiceImpl extends FlexoObservable implements FlexoS
 		status = Status.Stopped;
 	}
 
-	private List<ServiceOperation<?>> availableServiceOperations = null;
+	private Collection<ServiceOperation<?>> availableServiceOperations = null;
 
 	/**
 	 * Return collection of all available {@link ServiceOperation} available for this {@link FlexoService}
@@ -111,14 +122,19 @@ public abstract class FlexoServiceImpl extends FlexoObservable implements FlexoS
 	 * @return
 	 */
 	@Override
-	public Collection<ServiceOperation<?>> getAvailableServiceOperations() {
+	public final Collection<ServiceOperation<?>> getAvailableServiceOperations() {
 		if (availableServiceOperations == null) {
-			availableServiceOperations = new ArrayList<>();
-			availableServiceOperations.add(HELP_ON_SERVICE);
-			availableServiceOperations.add(DISPLAY_SERVICE_STATUS);
-			availableServiceOperations.add(START_SERVICE);
-			availableServiceOperations.add(STOP_SERVICE);
+			availableServiceOperations = makeAvailableServiceOperations();
 		}
+		return availableServiceOperations;
+	}
+
+	protected Collection<ServiceOperation<?>> makeAvailableServiceOperations() {
+		availableServiceOperations = new ArrayList<>();
+		availableServiceOperations.add(HELP_ON_SERVICE);
+		availableServiceOperations.add(DISPLAY_SERVICE_STATUS);
+		availableServiceOperations.add(START_SERVICE);
+		availableServiceOperations.add(STOP_SERVICE);
 		return availableServiceOperations;
 	}
 

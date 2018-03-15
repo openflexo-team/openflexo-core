@@ -493,6 +493,17 @@ public class VirtualModelLibrary extends DefaultFlexoObject implements FlexoServ
 		return status;
 	}
 
+	/**
+	 * Return indicating general status of this FlexoService<br>
+	 * This is the display value of 'service <service> status' as given in FML command-line interpreter
+	 * 
+	 * @return
+	 */
+	@Override
+	public String getDisplayableStatus() {
+		return getServiceName() + StringUtils.buildWhiteSpaceIndentation(30 - getServiceName().length()) + getStatus();
+	}
+
 	private List<ServiceOperation<?>> availableServiceOperations = null;
 
 	/**

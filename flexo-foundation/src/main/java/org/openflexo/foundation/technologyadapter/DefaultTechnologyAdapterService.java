@@ -582,4 +582,14 @@ public abstract class DefaultTechnologyAdapterService extends FlexoServiceImpl i
 		return null;
 	}
 
+	@Override
+	public String getDisplayableStatus() {
+		StringBuffer sb = new StringBuffer();
+		sb.append(super.getDisplayableStatus() + " with " + getTechnologyAdapters().size() + " technology adapters");
+		for (TechnologyAdapter ta : getTechnologyAdapters()) {
+			sb.append("\n > " + ta.getName() + " status: " + (ta.isActivated() ? "ACTIVATED" : "INACTIVE"));
+		}
+		return sb.toString();
+	}
+
 }

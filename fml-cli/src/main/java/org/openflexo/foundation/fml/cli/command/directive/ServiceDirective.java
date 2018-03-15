@@ -39,6 +39,9 @@
 
 package org.openflexo.foundation.fml.cli.command.directive;
 
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.FlexoService;
@@ -46,7 +49,9 @@ import org.openflexo.foundation.FlexoService.ServiceOperation;
 import org.openflexo.foundation.fml.cli.CommandInterpreter;
 import org.openflexo.foundation.fml.cli.command.Directive;
 import org.openflexo.foundation.fml.cli.command.DirectiveDeclaration;
+import org.openflexo.foundation.fml.cli.parser.node.APathDirectiveOption;
 import org.openflexo.foundation.fml.cli.parser.node.AServiceDirective;
+import org.openflexo.foundation.fml.cli.parser.node.PDirectiveOption;
 
 /**
  * Represents #service directive in FML command-line interpreter
@@ -79,6 +84,7 @@ public class ServiceDirective<S extends FlexoService> extends Directive {
 	private S service;
 	private ServiceOperation<S> serviceOperation;
 	private String invalidCommandReason = null;
+	private List options = new ArrayList<>();
 
 	@SuppressWarnings("unchecked")
 	public ServiceDirective(AServiceDirective node, CommandInterpreter commandInterpreter) {
@@ -88,13 +94,30 @@ public class ServiceDirective<S extends FlexoService> extends Directive {
 
 		if (service != null) {
 			for (ServiceOperation<?> action : service.getAvailableServiceOperations()) {
-				if (action.getActionName().equals(node.getAction().getText())) {
+				if (action.getOperationName().equals(node.getAction().getText())) {
 					serviceOperation = (ServiceOperation<S>) action;
 					break;
 				}
 			}
 			if (serviceOperation == null) {
-				invalidCommandReason = "Action " + node.getAction().getText() + " not found for service " + service.getServiceName();
+				invalidCommandReason = "Operation " + node.getAction().getText() + " not found for service " + service.getServiceName();
+			}
+			else {
+				// options
+				if (serviceOperation.getOptions() != null) {
+					if (serviceOperation.getOptions().size() != node.getOptions().size()) {
+						invalidCommandReason = "Operation " + node.getAction().getText() + " cannot be processed: wrong arguments number";
+					}
+					else {
+						int index = 0;
+						for (PDirectiveOption pDirectiveOption : node.getOptions()) {
+							String optionType = serviceOperation.getOptions().get(index);
+							Object optionValue = makeOption(pDirectiveOption, optionType);
+							options.add(optionValue);
+							index++;
+						}
+					}
+				}
 			}
 
 			/*System.out.println("Service: " + service);
@@ -109,9 +132,18 @@ public class ServiceDirective<S extends FlexoService> extends Directive {
 		}
 	}
 
+	private Object makeOption(PDirectiveOption pDirectiveOption, String optionType) {
+		if (optionType.equals("<path>") && pDirectiveOption instanceof APathDirectiveOption) {
+			return new File(getCommandInterpreter().getWorkingDirectory(),
+					retrievePath(((APathDirectiveOption) pDirectiveOption).getPath()));
+		}
+		return pDirectiveOption.toString();
+	}
+
 	@Override
 	public boolean isValid() {
-		return service != null && serviceOperation != null;
+		return service != null && serviceOperation != null
+				&& (serviceOperation.getOptions() == null || serviceOperation.getOptions().size() == options.size());
 	}
 
 	@Override
@@ -121,6 +153,6 @@ public class ServiceDirective<S extends FlexoService> extends Directive {
 
 	@Override
 	public void execute() {
-		serviceOperation.execute(service);
+		serviceOperation.execute(service, options.toArray(new Object[options.size()]));
 	}
 }

@@ -483,9 +483,9 @@ public class CommandInterpreter extends PropertyChangedSupportDefaultImplementat
 			if (service != null) {
 				List<String> returned = new ArrayList<>();
 				for (ServiceOperation<?> serviceOperation : service.getAvailableServiceOperations()) {
-					if (serviceOperation.getActionName().startsWith(currentToken)) {
+					if (serviceOperation.getOperationName().startsWith(currentToken)) {
 						returned.add(startingBuffer.substring(0, startingBuffer.length() - currentToken.length())
-								+ serviceOperation.getActionName());
+								+ serviceOperation.getOperationName());
 					}
 				}
 				return returned;
