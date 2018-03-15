@@ -355,23 +355,23 @@ public class FlexoEditingContext extends EditingContextImpl implements FlexoServ
 		return status;
 	}
 
-	private List<ServiceAction<?>> availableServiceActions = null;
+	private List<ServiceOperation<?>> availableServiceOperations = null;
 
 	/**
-	 * Return collection of all available {@link ServiceAction} available for this {@link FlexoService}
+	 * Return collection of all available {@link ServiceOperation} available for this {@link FlexoService}
 	 * 
 	 * @return
 	 */
 	@Override
-	public Collection<ServiceAction<?>> getAvailableServiceActions() {
-		if (availableServiceActions == null) {
-			availableServiceActions = new ArrayList<>();
-			availableServiceActions.add(HELP_ON_SERVICE);
-			availableServiceActions.add(DISPLAY_SERVICE_STATUS);
-			availableServiceActions.add(START_SERVICE);
-			availableServiceActions.add(STOP_SERVICE);
+	public Collection<ServiceOperation<?>> getAvailableServiceOperations() {
+		if (availableServiceOperations == null) {
+			availableServiceOperations = new ArrayList<>();
+			availableServiceOperations.add(HELP_ON_SERVICE);
+			availableServiceOperations.add(DISPLAY_SERVICE_STATUS);
+			availableServiceOperations.add(START_SERVICE);
+			availableServiceOperations.add(STOP_SERVICE);
 		}
-		return availableServiceActions;
+		return availableServiceOperations;
 	}
 
 }

@@ -37,7 +37,7 @@ import org.jboss.jreadline.console.ConsoleOutput;
 import org.jboss.jreadline.edit.actions.Operation;
 import org.jboss.jreadline.util.ANSI;
 import org.openflexo.foundation.FlexoService;
-import org.openflexo.foundation.FlexoService.ServiceAction;
+import org.openflexo.foundation.FlexoService.ServiceOperation;
 import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.fml.cli.command.AbstractCommand;
 import org.openflexo.foundation.fml.cli.command.DeclareDirective;
@@ -482,10 +482,10 @@ public class CommandInterpreter extends PropertyChangedSupportDefaultImplementat
 			}
 			if (service != null) {
 				List<String> returned = new ArrayList<>();
-				for (ServiceAction<?> serviceAction : service.getAvailableServiceActions()) {
-					if (serviceAction.getActionName().startsWith(currentToken)) {
+				for (ServiceOperation<?> serviceOperation : service.getAvailableServiceOperations()) {
+					if (serviceOperation.getActionName().startsWith(currentToken)) {
 						returned.add(startingBuffer.substring(0, startingBuffer.length() - currentToken.length())
-								+ serviceAction.getActionName());
+								+ serviceOperation.getActionName());
 					}
 				}
 				return returned;

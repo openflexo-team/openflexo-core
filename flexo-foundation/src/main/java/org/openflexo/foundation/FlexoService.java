@@ -93,11 +93,11 @@ public interface FlexoService {
 	public Status getStatus();
 
 	/**
-	 * Return collection of all available {@link ServiceAction} available for this {@link FlexoService}
+	 * Return collection of all available {@link ServiceOperation} available for this {@link FlexoService}
 	 * 
 	 * @return
 	 */
-	public Collection<ServiceAction<?>> getAvailableServiceActions();
+	public Collection<ServiceOperation<?>> getAvailableServiceOperations();
 
 	/**
 	 * Receives a new {@link ServiceNotification} broadcasted from the {@link FlexoServiceManager}
@@ -127,13 +127,13 @@ public interface FlexoService {
 	}
 
 	/**
-	 * Represent an action which is available for a FlexoService<br>
+	 * Represent an operation which is available for a FlexoService<br>
 	 * Such action is callable and executable with options
 	 * 
 	 * @author sylvain
 	 *
 	 */
-	public static interface ServiceAction<S extends FlexoService> {
+	public static interface ServiceOperation<S extends FlexoService> {
 
 		public abstract String getActionName();
 
@@ -149,7 +149,7 @@ public interface FlexoService {
 	public static StartService START_SERVICE = new StartService();
 	public static StopService STOP_SERVICE = new StopService();
 
-	public static class HelpOnService implements ServiceAction<FlexoService> {
+	public static class HelpOnService implements ServiceOperation<FlexoService> {
 
 		private HelpOnService() {
 		}
@@ -172,7 +172,7 @@ public interface FlexoService {
 		@Override
 		public void execute(FlexoService service, Object... options) {
 			System.out.println("Usage: ");
-			for (ServiceAction<?> serviceAction : service.getAvailableServiceActions()) {
+			for (ServiceOperation<?> serviceAction : service.getAvailableServiceOperations()) {
 				System.out.println(" " + serviceAction.usage(service)
 						+ StringUtils.buildWhiteSpaceIndentation(30 - serviceAction.usage(service).length()) + " : "
 						+ serviceAction.description());
@@ -180,7 +180,7 @@ public interface FlexoService {
 		}
 	}
 
-	public static class DisplayServiceStatus implements ServiceAction<FlexoService> {
+	public static class DisplayServiceStatus implements ServiceOperation<FlexoService> {
 		private DisplayServiceStatus() {
 		}
 
@@ -206,7 +206,7 @@ public interface FlexoService {
 		}
 	}
 
-	public static class StartService implements ServiceAction<FlexoService> {
+	public static class StartService implements ServiceOperation<FlexoService> {
 		private StartService() {
 		}
 
@@ -236,7 +236,7 @@ public interface FlexoService {
 		}
 	}
 
-	public static class StopService implements ServiceAction<FlexoService> {
+	public static class StopService implements ServiceOperation<FlexoService> {
 		private StopService() {
 		}
 

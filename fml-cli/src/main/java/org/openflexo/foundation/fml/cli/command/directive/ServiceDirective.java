@@ -42,7 +42,7 @@ package org.openflexo.foundation.fml.cli.command.directive;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.FlexoService;
-import org.openflexo.foundation.FlexoService.ServiceAction;
+import org.openflexo.foundation.FlexoService.ServiceOperation;
 import org.openflexo.foundation.fml.cli.CommandInterpreter;
 import org.openflexo.foundation.fml.cli.command.Directive;
 import org.openflexo.foundation.fml.cli.command.DirectiveDeclaration;
@@ -77,7 +77,7 @@ public class ServiceDirective<S extends FlexoService> extends Directive {
 	private static final Logger logger = Logger.getLogger(ServiceDirective.class.getPackage().getName());
 
 	private S service;
-	private ServiceAction<S> serviceAction;
+	private ServiceOperation<S> serviceOperation;
 	private String invalidCommandReason = null;
 
 	@SuppressWarnings("unchecked")
@@ -87,18 +87,18 @@ public class ServiceDirective<S extends FlexoService> extends Directive {
 		service = getCommandInterpreter().getServiceManager().getService(node.getServiceName().getText());
 
 		if (service != null) {
-			for (ServiceAction<?> action : service.getAvailableServiceActions()) {
+			for (ServiceOperation<?> action : service.getAvailableServiceOperations()) {
 				if (action.getActionName().equals(node.getAction().getText())) {
-					serviceAction = (ServiceAction<S>) action;
+					serviceOperation = (ServiceOperation<S>) action;
 					break;
 				}
 			}
-			if (serviceAction == null) {
+			if (serviceOperation == null) {
 				invalidCommandReason = "Action " + node.getAction().getText() + " not found for service " + service.getServiceName();
 			}
 
 			/*System.out.println("Service: " + service);
-			System.out.println("Action: " + serviceAction);
+			System.out.println("Action: " + serviceOperation);
 			for (PDirectiveOption pDirectiveOption : node.getOptions()) {
 				System.out.println(" > " + pDirectiveOption);
 			}*/
@@ -111,7 +111,7 @@ public class ServiceDirective<S extends FlexoService> extends Directive {
 
 	@Override
 	public boolean isValid() {
-		return service != null && serviceAction != null;
+		return service != null && serviceOperation != null;
 	}
 
 	@Override
@@ -121,6 +121,6 @@ public class ServiceDirective<S extends FlexoService> extends Directive {
 
 	@Override
 	public void execute() {
-		serviceAction.execute(service);
+		serviceOperation.execute(service);
 	}
 }
