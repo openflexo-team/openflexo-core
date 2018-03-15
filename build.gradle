@@ -5,13 +5,13 @@ buildscript {
     }
     dependencies {
         classpath group: 'org.openflexo', name: 'buildplugin', version: '+'
-        classpath group: 'org.openflexo', name: 'buildconfig', version: '1.9.0-SNAPSHOT'
+        classpath group: 'org.openflexo', name: 'buildconfig', version: '2.0.0-SNAPSHOT'
         classpath 'org.anarres.gradle:gradle-sablecc-plugin:[1.0.4,)'
     }
 }
 
 apply plugin: 'org.openflexo.buildconfig'
-allprojects { version = "1.9.0-SNAPSHOT" }
+allprojects { version = "2.0.0-SNAPSHOT" }
 
 task gitPull(type: Exec) {
     description 'Pulls git.'
