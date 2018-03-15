@@ -2,6 +2,7 @@ dependencies {
   // openflexo dep
   compile project(':flexo-foundation')
   // external dep
+  compile group: 'org.jboss.jreadline', name: 'jreadline', version: '0.20'
 
   // testing dep
   testCompile project(':flexo-foundation-test')
