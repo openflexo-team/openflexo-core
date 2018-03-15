@@ -64,10 +64,10 @@ public class DefaultLocalizationService extends FlexoServiceImpl implements Loca
 
 	private boolean automaticSaving = true;
 
-	/*@Override
-	public void receiveNotification(FlexoService caller, ServiceNotification notification) {
-		super.receiveNotification(caller, notification);
-	}*/
+	@Override
+	public String getServiceName() {
+		return "LocalizationService";
+	}
 
 	@Override
 	public void initialize() {
@@ -93,6 +93,9 @@ public class DefaultLocalizationService extends FlexoServiceImpl implements Loca
 		System.out.println("flexoLocalizer.getParent().getParent()=" + flexoLocalizer.getParent().getParent());*/
 
 		FlexoLocalization.initWith(flexoLocalizer);
+
+		status = Status.Started;
+
 	}
 
 	@Override

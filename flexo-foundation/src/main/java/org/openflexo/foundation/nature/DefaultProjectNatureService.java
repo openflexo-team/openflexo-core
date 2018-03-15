@@ -151,8 +151,14 @@ public abstract class DefaultProjectNatureService extends FlexoServiceImpl imple
 	}
 
 	@Override
+	public String getServiceName() {
+		return "ProjectNatureService";
+	}
+
+	@Override
 	public void initialize() {
 		loadAvailableProjectNatureFactories();
+		status = Status.Started;
 	}
 
 }

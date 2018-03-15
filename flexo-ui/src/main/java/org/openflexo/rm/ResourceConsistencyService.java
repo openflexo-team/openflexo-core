@@ -78,6 +78,11 @@ public class ResourceConsistencyService extends FlexoServiceImpl {
 	}
 
 	@Override
+	public String getServiceName() {
+		return "ResourceConsistencyService";
+	}
+
+	@Override
 	public void initialize() {
 		// Initialize current conflicted resource set
 		conflictedResourceSets = getConflictedResourceSets();
@@ -85,6 +90,8 @@ public class ResourceConsistencyService extends FlexoServiceImpl {
 		informOfConflictedResourceSets(conflictedResourceSets);
 
 		vmiWithoutVM = new ArrayList<>();
+
+		status = Status.Started;
 	}
 
 	/**

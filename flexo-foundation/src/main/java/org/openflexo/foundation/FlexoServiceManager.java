@@ -193,6 +193,16 @@ public abstract class FlexoServiceManager {
 		return null;
 	}
 
+	@SuppressWarnings("unchecked")
+	public <S extends FlexoService> S getService(String serviceName) {
+		for (FlexoService s : registeredServices) {
+			if (s.getServiceName().equals(serviceName)) {
+				return (S) s;
+			}
+		}
+		return null;
+	}
+
 	public List<FlexoService> getRegisteredServices() {
 		return registeredServices;
 	}
@@ -247,7 +257,8 @@ public abstract class FlexoServiceManager {
 		return getService(ScreenshotService.class);
 	}
 
-	public class ServiceRegistered implements ServiceNotification {}
+	public class ServiceRegistered implements ServiceNotification {
+	}
 
 	/**
 	 * Notification of a TechnologyAdapter that has been activated

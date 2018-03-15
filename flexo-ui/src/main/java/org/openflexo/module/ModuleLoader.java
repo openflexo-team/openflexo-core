@@ -125,6 +125,11 @@ public class ModuleLoader extends FlexoServiceImpl implements FlexoService, HasP
 		return (ApplicationContext) super.getServiceManager();
 	}
 
+	@Override
+	public String getServiceName() {
+		return "ModuleLoader";
+	}
+
 	private Map<Class<? extends Module>, Module<?>> knownModules;
 
 	/**
@@ -420,7 +425,7 @@ public class ModuleLoader extends FlexoServiceImpl implements FlexoService, HasP
 	public LoadModuleTask switchToModule(final Module<?> module) throws ModuleLoadingException {
 
 		if (!SwingUtilities.isEventDispatchThread()) {
-			//System.out.println("DELAYED: switch to module: " + module);
+			// System.out.println("DELAYED: switch to module: " + module);
 			SwingUtilities.invokeLater(new Runnable() {
 				@Override
 				public void run() {
@@ -433,19 +438,19 @@ public class ModuleLoader extends FlexoServiceImpl implements FlexoService, HasP
 			});
 			return null;
 		}
-		//System.out.println("Switch to module: " + module);
+		// System.out.println("Switch to module: " + module);
 		if (ignoreSwitch || activeModule != null && activeModule.getModule() == module) {
-			//System.out.println("Ignored : switch to module: " + module);
+			// System.out.println("Ignored : switch to module: " + module);
 			return null;
 		}
 
 		if (module.isLoaded()) {
-			//System.out.println("Perform switch to module: " + module);
+			// System.out.println("Perform switch to module: " + module);
 			performSwitchToModule(module);
 			return null;
 		}
 		else {
-			//System.out.println("Load module and perform switch to module: " + module);
+			// System.out.println("Load module and perform switch to module: " + module);
 			LoadModuleTask task = new LoadModuleTask(this, module);
 			getServiceManager().getTaskManager().scheduleExecution(task);
 			return task;
@@ -611,5 +616,6 @@ public class ModuleLoader extends FlexoServiceImpl implements FlexoService, HasP
 		for (Module<?> module : getKnownModules()) {
 			module.initialize();
 		}
+		status = Status.Started;
 	}
 }

@@ -125,6 +125,11 @@ public abstract class DefaultResourceCenterService extends FlexoServiceImpl impl
 	public DefaultResourceCenterService() {
 	}
 
+	@Override
+	public String getServiceName() {
+		return "ResourceCenterService";
+	}
+
 	/**
 	 * Return the {@link FlexoProjectResourceFactory}
 	 * 
@@ -479,6 +484,8 @@ public abstract class DefaultResourceCenterService extends FlexoServiceImpl impl
 				getServiceManager().notify(this, new DefaultPackageResourceCenterIsNotInstalled());
 			}
 		}
+
+		status = Status.Started;
 
 	}
 

@@ -40,6 +40,7 @@ package org.openflexo.foundation;
 
 import java.awt.Event;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -75,6 +76,8 @@ import org.openflexo.model.factory.ProxyMethodHandler;
 public class FlexoEditingContext extends EditingContextImpl implements FlexoService {
 
 	protected static final Logger logger = Logger.getLogger(FlexoEditingContext.class.getPackage().getName());
+
+	protected Status status = Status.Registered;
 
 	private FlexoServiceManager serviceManager;
 	private FlexoUndoManager undoManager;
@@ -121,6 +124,11 @@ public class FlexoEditingContext extends EditingContextImpl implements FlexoServ
 	}
 
 	@Override
+	public String getServiceName() {
+		return "FlexoEditingContext";
+	}
+
+	@Override
 	public void initialize() {
 		logger.info("Initialized FlexoEditingContext...");
 		undoManager = new FlexoUndoManager(this);
@@ -132,6 +140,7 @@ public class FlexoEditingContext extends EditingContextImpl implements FlexoServ
 		FlexoObjectImpl.addActionForClass(pasteActionType, FlexoObject.class);
 		selectAllActionType = new SelectAllActionType(this);
 		FlexoObjectImpl.addActionForClass(selectAllActionType, FlexoObject.class);
+		status = Status.Started;
 	}
 
 	@Override
@@ -338,6 +347,31 @@ public class FlexoEditingContext extends EditingContextImpl implements FlexoServ
 		FlexoObjectImpl.removeActionFromClass(cutActionType, FlexoObject.class);
 		FlexoObjectImpl.removeActionFromClass(pasteActionType, FlexoObject.class);
 		FlexoObjectImpl.removeActionFromClass(selectAllActionType, FlexoObject.class);
+		status = Status.Stopped;
+	}
+
+	@Override
+	public Status getStatus() {
+		return status;
+	}
+
+	private List<ServiceAction<?>> availableServiceActions = null;
+
+	/**
+	 * Return collection of all available {@link ServiceAction} available for this {@link FlexoService}
+	 * 
+	 * @return
+	 */
+	@Override
+	public Collection<ServiceAction<?>> getAvailableServiceActions() {
+		if (availableServiceActions == null) {
+			availableServiceActions = new ArrayList<>();
+			availableServiceActions.add(HELP_ON_SERVICE);
+			availableServiceActions.add(DISPLAY_SERVICE_STATUS);
+			availableServiceActions.add(START_SERVICE);
+			availableServiceActions.add(STOP_SERVICE);
+		}
+		return availableServiceActions;
 	}
 
 }

@@ -236,12 +236,18 @@ public abstract class DefaultTechnologyAdapterService extends FlexoServiceImpl i
 	}
 
 	@Override
+	public String getServiceName() {
+		return "TechnologyAdapterService";
+	}
+
+	@Override
 	public void initialize() {
 		availableFlexoRoleTypes = new HashMap<>();
 		availableEditionActionTypes = new HashMap<>();
 		availableFetchRequestActionTypes = new HashMap<>();
 		availableFlexoBehaviourTypes = new HashMap<>();
 		loadAvailableTechnologyAdapters();
+		status = Status.Started;
 	}
 
 	/**

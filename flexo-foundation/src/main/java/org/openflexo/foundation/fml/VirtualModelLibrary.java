@@ -82,10 +82,16 @@ public class VirtualModelLibrary extends DefaultFlexoObject implements FlexoServ
 
 	private FlexoServiceManager serviceManager;
 
+	protected Status status = Status.Registered;
+
 	public VirtualModelLibrary() {
 		super();
 		map = new Hashtable<>();
+	}
 
+	@Override
+	public String getServiceName() {
+		return "VirtualModelLibrary";
 	}
 
 	/**
@@ -460,6 +466,7 @@ public class VirtualModelLibrary extends DefaultFlexoObject implements FlexoServ
 					}
 				}
 			}
+			status = Status.Started;
 		}
 	}
 
@@ -478,12 +485,31 @@ public class VirtualModelLibrary extends DefaultFlexoObject implements FlexoServ
 	public void stop() {
 		// TODO Auto-generated method stub
 		logger.warning("STOP Method for service should be overriden in each service [" + this.getClass().getCanonicalName() + "]");
-
+		status = Status.Stopped;
 	}
 
-	/*public void delete(ViewPoint viewPoint) {
-		logger.info("Remove viewpoint " + viewPoint);
-		unregisterViewPoint(viewPoint.getResource());
-	}*/
+	@Override
+	public Status getStatus() {
+		return status;
+	}
+
+	private List<ServiceAction<?>> availableServiceActions = null;
+
+	/**
+	 * Return collection of all available {@link ServiceAction} available for this {@link FlexoService}
+	 * 
+	 * @return
+	 */
+	@Override
+	public Collection<ServiceAction<?>> getAvailableServiceActions() {
+		if (availableServiceActions == null) {
+			availableServiceActions = new ArrayList<>();
+			availableServiceActions.add(HELP_ON_SERVICE);
+			availableServiceActions.add(DISPLAY_SERVICE_STATUS);
+			availableServiceActions.add(START_SERVICE);
+			availableServiceActions.add(STOP_SERVICE);
+		}
+		return availableServiceActions;
+	}
 
 }

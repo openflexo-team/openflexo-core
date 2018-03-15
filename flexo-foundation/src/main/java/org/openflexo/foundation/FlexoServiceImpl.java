@@ -39,6 +39,9 @@
 
 package org.openflexo.foundation;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -56,22 +59,29 @@ public abstract class FlexoServiceImpl extends FlexoObservable implements FlexoS
 
 	private FlexoServiceManager serviceManager;
 
+	protected Status status = Status.Registered;
+
 	@Override
 	public void receiveNotification(FlexoService caller, ServiceNotification notification) {
 		if (logger.isLoggable(Level.FINE)) {
-			logger.fine(
-					getClass().getSimpleName() + " service received notification " + notification + " from " + caller);
+			logger.fine(getClass().getSimpleName() + " service received notification " + notification + " from " + caller);
 		}
 	}
 
 	@Override
 	public void register(FlexoServiceManager serviceManager) {
 		this.serviceManager = serviceManager;
+		status = Status.Registered;
 	}
 
 	@Override
 	public FlexoServiceManager getServiceManager() {
 		return serviceManager;
+	}
+
+	@Override
+	public Status getStatus() {
+		return status;
 	}
 
 	public LocalizedDelegate getLocales() {
@@ -89,8 +99,27 @@ public abstract class FlexoServiceImpl extends FlexoObservable implements FlexoS
 	 */
 	@Override
 	public void stop() {
-		logger.warning("STOP Method for service should be overriden in each service ["
-				+ this.getClass().getCanonicalName() + "]");
+		logger.warning("STOP Method for service should be overriden in each service [" + this.getClass().getCanonicalName() + "]");
+		status = Status.Stopped;
+	}
+
+	private List<ServiceAction<?>> availableServiceActions = null;
+
+	/**
+	 * Return collection of all available {@link ServiceAction} available for this {@link FlexoService}
+	 * 
+	 * @return
+	 */
+	@Override
+	public Collection<ServiceAction<?>> getAvailableServiceActions() {
+		if (availableServiceActions == null) {
+			availableServiceActions = new ArrayList<>();
+			availableServiceActions.add(HELP_ON_SERVICE);
+			availableServiceActions.add(DISPLAY_SERVICE_STATUS);
+			availableServiceActions.add(START_SERVICE);
+			availableServiceActions.add(STOP_SERVICE);
+		}
+		return availableServiceActions;
 	}
 
 }

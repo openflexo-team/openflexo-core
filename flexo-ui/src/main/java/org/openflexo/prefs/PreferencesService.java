@@ -100,6 +100,11 @@ public class PreferencesService extends FlexoServiceImpl implements HasPropertyC
 	}
 
 	@Override
+	public String getServiceName() {
+		return "PreferencesService";
+	}
+
+	@Override
 	public void initialize() {
 		resource = FlexoPreferencesResourceImpl.makePreferencesResource(getServiceManager());
 		getFlexoPreferences().setPreferencesService(this);
@@ -120,6 +125,7 @@ public class PreferencesService extends FlexoServiceImpl implements HasPropertyC
 		managePreferences(LoggingPreferences.class, getFlexoPreferences());
 		managePreferences(BugReportPreferences.class, getFlexoPreferences());
 
+		status = Status.Started;
 	}
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })

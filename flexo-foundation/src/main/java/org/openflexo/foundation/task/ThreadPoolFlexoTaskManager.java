@@ -111,9 +111,15 @@ public class ThreadPoolFlexoTaskManager extends FlexoServiceImpl implements Flex
 	}
 
 	@Override
+	public String getServiceName() {
+		return "ThreadPoolFlexoTaskManager";
+	}
+
+	@Override
 	public void initialize() {
 		// Nothing to do
 		logger.info("FlexoTaskManager has been initialized");
+		status = Status.Started;
 	}
 
 	@Override
