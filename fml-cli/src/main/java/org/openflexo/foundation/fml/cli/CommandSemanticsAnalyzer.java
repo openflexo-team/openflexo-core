@@ -64,6 +64,7 @@ import org.openflexo.connie.expr.UnaryOperatorExpression;
 import org.openflexo.foundation.fml.cli.command.AbstractCommand;
 import org.openflexo.foundation.fml.cli.command.directive.CdDirective;
 import org.openflexo.foundation.fml.cli.command.directive.ExitDirective;
+import org.openflexo.foundation.fml.cli.command.directive.HelpDirective;
 import org.openflexo.foundation.fml.cli.command.directive.LsDirective;
 import org.openflexo.foundation.fml.cli.command.directive.PwdDirective;
 import org.openflexo.foundation.fml.cli.command.directive.ServiceDirective;
@@ -96,6 +97,7 @@ import org.openflexo.foundation.fml.cli.parser.node.AFalseConstant;
 import org.openflexo.foundation.fml.cli.parser.node.AFunctionTerm;
 import org.openflexo.foundation.fml.cli.parser.node.AGtExprExpr;
 import org.openflexo.foundation.fml.cli.parser.node.AGteExprExpr;
+import org.openflexo.foundation.fml.cli.parser.node.AHelpDirective;
 import org.openflexo.foundation.fml.cli.parser.node.AIdentifierTypeReferencePath;
 import org.openflexo.foundation.fml.cli.parser.node.ALogFuncFunction;
 import org.openflexo.foundation.fml.cli.parser.node.ALsDirective;
@@ -687,5 +689,11 @@ class CommandSemanticsAnalyzer extends DepthFirstAdapter {
 	public void outAServiceDirective(AServiceDirective node) {
 		super.outAServiceDirective(node);
 		registerCommand(node, new ServiceDirective(node, commandInterpreter));
+	}
+
+	@Override
+	public void outAHelpDirective(AHelpDirective node) {
+		super.outAHelpDirective(node);
+		registerCommand(node, new HelpDirective(node, commandInterpreter));
 	}
 }

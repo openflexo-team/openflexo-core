@@ -82,6 +82,7 @@ Tokens
  chars_value = ''' (not_hyphen2)* ''';
  
  // directives
+ help = 'help';
  pwd = 'pwd';
  ls = 'ls';
  cd = 'cd';
@@ -108,6 +109,7 @@ Productions
   {fml_command} fml_command;
 
  directive =
+  {help} help |
   {pwd} pwd |
   {ls} ls |
   {cd} cd path |
@@ -123,16 +125,10 @@ Productions
   {file_name} file_name |
   {identifier} identifier |
   {dot} dot |
-  //{dot_identifier} dot path |
   {path} file_name div path |
   {dot_path} dot div path |
   {double_dot} double_dot |
   {double_dot_path} double_dot div path;
-
- //file_name = 
- // {dot} dot |
- // {identifier} identifier |
- // {tail} identifier dot file_name;
 
  fml_command =
   {expr} expr |

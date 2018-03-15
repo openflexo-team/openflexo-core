@@ -44,27 +44,36 @@ import java.util.logging.Logger;
 import org.openflexo.foundation.fml.cli.CommandInterpreter;
 import org.openflexo.foundation.fml.cli.command.Directive;
 import org.openflexo.foundation.fml.cli.command.DirectiveDeclaration;
-import org.openflexo.foundation.fml.cli.parser.node.APwdDirective;
+import org.openflexo.foundation.fml.cli.parser.node.AHelpDirective;
+import org.openflexo.toolbox.StringUtils;
 
 /**
- * Represents #pwd directive in FML command-line interpreter
+ * Represents #exit directive in FML command-line interpreter
  * 
- * Usage: #pwd
+ * Usage: #exit
  * 
  * @author sylvain
  * 
  */
-@DirectiveDeclaration(keyword = "pwd", usage = "pwd", description = "Print working directory", syntax = "pwd")
-public class PwdDirective extends Directive {
+@DirectiveDeclaration(keyword = "help", usage = "help", description = "Display this help", syntax = "help")
+public class HelpDirective extends Directive {
 
-	private static final Logger logger = Logger.getLogger(PwdDirective.class.getPackage().getName());
+	private static final Logger logger = Logger.getLogger(HelpDirective.class.getPackage().getName());
 
-	public PwdDirective(APwdDirective node, CommandInterpreter commandInterpreter) {
+	public HelpDirective(AHelpDirective node, CommandInterpreter commandInterpreter) {
 		super(node, commandInterpreter);
 	}
 
 	@Override
 	public void execute() {
-		System.out.println(getCommandInterpreter().getWorkingDirectory().getAbsolutePath());
+		for (Class<? extends Directive> directiveClass : getCommandInterpreter().getAvailableDirectives()) {
+			String usage = directiveClass.getAnnotation(DirectiveDeclaration.class).usage();
+			String description = directiveClass.getAnnotation(DirectiveDeclaration.class).description();
+			displayDirectiveHelp(usage, description);
+		}
+	}
+
+	private void displayDirectiveHelp(String usage, String description) {
+		System.out.println(usage + StringUtils.buildWhiteSpaceIndentation(40 - usage.length()) + ": " + description);
 	}
 }

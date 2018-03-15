@@ -156,12 +156,12 @@ public interface FlexoService {
 
 		@Override
 		public String getActionName() {
-			return "help";
+			return "usage";
 		}
 
 		@Override
 		public String usage(FlexoService service) {
-			return "service " + service.getServiceName() + " help";
+			return "service " + service.getServiceName() + " usage";
 		}
 
 		@Override

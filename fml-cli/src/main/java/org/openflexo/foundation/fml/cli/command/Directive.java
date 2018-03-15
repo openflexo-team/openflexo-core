@@ -43,6 +43,13 @@ import java.io.File;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.fml.cli.CommandInterpreter;
+import org.openflexo.foundation.fml.cli.command.directive.CdDirective;
+import org.openflexo.foundation.fml.cli.command.directive.ExitDirective;
+import org.openflexo.foundation.fml.cli.command.directive.HelpDirective;
+import org.openflexo.foundation.fml.cli.command.directive.LsDirective;
+import org.openflexo.foundation.fml.cli.command.directive.PwdDirective;
+import org.openflexo.foundation.fml.cli.command.directive.ServiceDirective;
+import org.openflexo.foundation.fml.cli.command.directive.ServicesDirective;
 import org.openflexo.foundation.fml.cli.parser.node.ADotPath;
 import org.openflexo.foundation.fml.cli.parser.node.ADotPathPath;
 import org.openflexo.foundation.fml.cli.parser.node.ADoubleDotPath;
@@ -59,6 +66,9 @@ import org.openflexo.foundation.fml.cli.parser.node.PPath;
  * @author sylvain
  * 
  */
+@DeclareDirectives({ @DeclareDirective(value = HelpDirective.class), @DeclareDirective(CdDirective.class),
+		@DeclareDirective(PwdDirective.class), @DeclareDirective(LsDirective.class), @DeclareDirective(ExitDirective.class),
+		@DeclareDirective(ServicesDirective.class), @DeclareDirective(ServiceDirective.class) })
 public abstract class Directive extends AbstractCommand {
 
 	private static final Logger logger = Logger.getLogger(Directive.class.getPackage().getName());

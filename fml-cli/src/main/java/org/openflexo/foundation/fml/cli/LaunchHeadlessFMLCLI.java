@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 
+import org.jboss.jreadline.console.settings.Settings;
 import org.openflexo.foundation.DefaultFlexoServiceManager;
 import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.fml.FMLTechnologyAdapter;
@@ -141,11 +142,20 @@ public class LaunchHeadlessFMLCLI {
 			centerService.addToResourceCenters(center);
 		}
 
+		// Settings.getInstance().setAnsiConsole(false);
+		Settings.getInstance().setReadInputrc(false);
+		// Settings.getInstance().setHistoryDisabled(true);
+		// Settings.getInstance().setHistoryPersistent(false);
+
 		CommandInterpreter ci = new CommandInterpreter(serviceManager, System.in, System.out, new File(System.getProperty("user.dir")));
 
-		try {
-			ci.start();
-		} catch (Exception e) {
+		// try {
+		ci.start();
+
+		System.out.println("Exiting application...");
+		System.exit(0);
+
+		/*} catch (Exception e) {
 			System.out.println("Caught an Exception :");
 			e.printStackTrace();
 			try {
@@ -153,7 +163,7 @@ public class LaunchHeadlessFMLCLI {
 				int c = System.in.read();
 			} catch (IOException xx) {
 			}
-		}
+		}*/
 
 	}
 

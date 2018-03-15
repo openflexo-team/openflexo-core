@@ -44,6 +44,7 @@ import java.util.logging.Logger;
 
 import org.openflexo.foundation.fml.cli.CommandInterpreter;
 import org.openflexo.foundation.fml.cli.command.Directive;
+import org.openflexo.foundation.fml.cli.command.DirectiveDeclaration;
 import org.openflexo.foundation.fml.cli.parser.node.ALsDirective;
 
 /**
@@ -54,6 +55,7 @@ import org.openflexo.foundation.fml.cli.parser.node.ALsDirective;
  * @author sylvain
  * 
  */
+@DirectiveDeclaration(keyword = "ls", usage = "ls", description = "List working directory contents", syntax = "ls <path>")
 public class LsDirective extends Directive {
 
 	private static final Logger logger = Logger.getLogger(LsDirective.class.getPackage().getName());

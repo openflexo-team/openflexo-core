@@ -45,6 +45,7 @@ import org.openflexo.foundation.FlexoService;
 import org.openflexo.foundation.FlexoService.ServiceAction;
 import org.openflexo.foundation.fml.cli.CommandInterpreter;
 import org.openflexo.foundation.fml.cli.command.Directive;
+import org.openflexo.foundation.fml.cli.command.DirectiveDeclaration;
 import org.openflexo.foundation.fml.cli.parser.node.AServiceDirective;
 
 /**
@@ -66,6 +67,11 @@ import org.openflexo.foundation.fml.cli.parser.node.AServiceDirective;
  * @author sylvain
  * 
  */
+@DirectiveDeclaration(
+		keyword = "service",
+		usage = "service <service> operation [options]",
+		description = "Execute operation of a given service, type service <service_name> usage to get help",
+		syntax = "service <service> <operation>")
 public class ServiceDirective<S extends FlexoService> extends Directive {
 
 	private static final Logger logger = Logger.getLogger(ServiceDirective.class.getPackage().getName());

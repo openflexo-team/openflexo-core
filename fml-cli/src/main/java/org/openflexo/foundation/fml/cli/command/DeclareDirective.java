@@ -3,7 +3,7 @@
  * Copyright (c) 2013-2014, Openflexo
  * Copyright (c) 2011-2012, AgileBirds
  * 
- * This file is part of Connie-core, a component of the software infrastructure 
+ * This file is part of Pamela-core, a component of the software infrastructure 
  * developed at Openflexo.
  * 
  * 
@@ -37,34 +37,18 @@
  * 
  */
 
-package org.openflexo.foundation.fml.cli.command.directive;
+package org.openflexo.foundation.fml.cli.command;
 
-import java.util.logging.Logger;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Inherited;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
-import org.openflexo.foundation.fml.cli.CommandInterpreter;
-import org.openflexo.foundation.fml.cli.command.Directive;
-import org.openflexo.foundation.fml.cli.command.DirectiveDeclaration;
-import org.openflexo.foundation.fml.cli.parser.node.APwdDirective;
+@Retention(RetentionPolicy.RUNTIME)
+@Inherited
+@Target(value = ElementType.TYPE)
+public @interface DeclareDirective {
 
-/**
- * Represents #pwd directive in FML command-line interpreter
- * 
- * Usage: #pwd
- * 
- * @author sylvain
- * 
- */
-@DirectiveDeclaration(keyword = "pwd", usage = "pwd", description = "Print working directory", syntax = "pwd")
-public class PwdDirective extends Directive {
-
-	private static final Logger logger = Logger.getLogger(PwdDirective.class.getPackage().getName());
-
-	public PwdDirective(APwdDirective node, CommandInterpreter commandInterpreter) {
-		super(node, commandInterpreter);
-	}
-
-	@Override
-	public void execute() {
-		System.out.println(getCommandInterpreter().getWorkingDirectory().getAbsolutePath());
-	}
+	Class<? extends Directive> value();
 }

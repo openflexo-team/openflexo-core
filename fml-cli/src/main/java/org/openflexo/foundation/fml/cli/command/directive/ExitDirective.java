@@ -43,6 +43,7 @@ import java.util.logging.Logger;
 
 import org.openflexo.foundation.fml.cli.CommandInterpreter;
 import org.openflexo.foundation.fml.cli.command.Directive;
+import org.openflexo.foundation.fml.cli.command.DirectiveDeclaration;
 import org.openflexo.foundation.fml.cli.parser.node.AExitDirective;
 
 /**
@@ -53,6 +54,7 @@ import org.openflexo.foundation.fml.cli.parser.node.AExitDirective;
  * @author sylvain
  * 
  */
+@DirectiveDeclaration(keyword = "exit", usage = "exit", description = "Exit FML command-line interpreter", syntax = "exit")
 public class ExitDirective extends Directive {
 
 	private static final Logger logger = Logger.getLogger(ExitDirective.class.getPackage().getName());
@@ -63,7 +65,6 @@ public class ExitDirective extends Directive {
 
 	@Override
 	public void execute() {
-		System.out.println("Exiting...");
-		System.exit(0);
+		getCommandInterpreter().stop();
 	}
 }

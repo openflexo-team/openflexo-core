@@ -45,16 +45,18 @@ import java.util.logging.Logger;
 
 import org.openflexo.foundation.fml.cli.CommandInterpreter;
 import org.openflexo.foundation.fml.cli.command.Directive;
+import org.openflexo.foundation.fml.cli.command.DirectiveDeclaration;
 import org.openflexo.foundation.fml.cli.parser.node.ACdDirective;
 
 /**
  * Represents #cd directive in FML command-line interpreter
  * 
- * Usage: #cd directory
+ * Usage: cd <directory>
  * 
  * @author sylvain
  * 
  */
+@DirectiveDeclaration(keyword = "cd", usage = "cd <directory>", description = "Change working directory", syntax = "cd <path>")
 public class CdDirective extends Directive {
 
 	private static final Logger logger = Logger.getLogger(CdDirective.class.getPackage().getName());
@@ -89,11 +91,11 @@ public class CdDirective extends Directive {
 		if (getNewDirectory() == null) {
 			return "No directory";
 		}
-		else if (!getNewDirectory().isDirectory()) {
-			return getNewDirectory().getName() + " is not a directory";
-		}
 		else if (!getNewDirectory().exists()) {
 			return "Cannot find directory: " + getNewDirectory().getName();
+		}
+		else if (!getNewDirectory().isDirectory()) {
+			return getNewDirectory().getName() + " is not a directory";
 		}
 		return null;
 	}

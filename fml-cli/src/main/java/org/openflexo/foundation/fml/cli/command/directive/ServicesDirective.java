@@ -44,6 +44,7 @@ import java.util.logging.Logger;
 import org.openflexo.foundation.FlexoService;
 import org.openflexo.foundation.fml.cli.CommandInterpreter;
 import org.openflexo.foundation.fml.cli.command.Directive;
+import org.openflexo.foundation.fml.cli.command.DirectiveDeclaration;
 import org.openflexo.foundation.fml.cli.parser.node.AServicesDirective;
 import org.openflexo.toolbox.StringUtils;
 
@@ -57,6 +58,11 @@ import org.openflexo.toolbox.StringUtils;
  * @author sylvain
  * 
  */
+@DirectiveDeclaration(
+		keyword = "services",
+		usage = "services",
+		description = "List registered services and their status",
+		syntax = "services")
 public class ServicesDirective extends Directive {
 
 	private static final Logger logger = Logger.getLogger(ServicesDirective.class.getPackage().getName());
