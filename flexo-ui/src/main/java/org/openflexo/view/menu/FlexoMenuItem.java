@@ -58,12 +58,10 @@ import javax.swing.KeyStroke;
 
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoObject;
-import org.openflexo.foundation.action.FlexoActionFactory;
 import org.openflexo.foundation.action.FlexoActionSource;
 import org.openflexo.logging.FlexoLogger;
 import org.openflexo.selection.SelectionManager;
 import org.openflexo.view.controller.FlexoController;
-import org.openflexo.view.controller.action.MenuItemAction;
 
 /**
  * Give a shortcut to the item and register the action near the FlexoMainController
@@ -71,17 +69,14 @@ import org.openflexo.view.controller.action.MenuItemAction;
  * @author benoit
  */
 @SuppressWarnings("serial")
-public class FlexoMenuItem extends JMenuItem implements FlexoActionSource, PropertyChangeListener {
+public class FlexoMenuItem extends JMenuItem implements FlexoActionSource<FlexoObject, FlexoObject>, PropertyChangeListener {
 
 	@SuppressWarnings("unused")
 	private static final Logger logger = FlexoLogger.getLogger(FlexoMenuItem.class.getPackage().getName());
 
 	private final FlexoController _controller;
 
-	private FlexoActionFactory<?, ?, ?> actionType;
-
 	public FlexoMenuItem(FlexoController controller, String unlocalizedMenuName) {
-		super();
 		_controller = controller;
 		_controller.getPropertyChangeSupport().addPropertyChangeListener(this);
 		setText(controller.getModuleLocales().localizedForKey(unlocalizedMenuName, this));
@@ -109,27 +104,6 @@ public class FlexoMenuItem extends JMenuItem implements FlexoActionSource, Prope
 		setIcon(icon);
 	}
 
-	public FlexoMenuItem(FlexoActionFactory<?, ?, ?> actionType, KeyStroke accelerator, Icon icon, FlexoController controller) {
-		this(actionType, controller);
-		setIcon(icon);
-		if (accelerator != null) {
-			setAccelerator(accelerator);
-		}
-	}
-
-	public FlexoMenuItem(FlexoActionFactory<?, ?, ?> actionType, Icon icon, FlexoController controller) {
-		this(actionType, controller);
-		setIcon(icon);
-	}
-
-	public FlexoMenuItem(FlexoActionFactory<?, ?, ?> actionType, FlexoController controller) {
-		super();
-		this.actionType = actionType;
-		_controller = controller;
-		setAction(new MenuItemAction<>(actionType, this));
-		setText(controller.getModuleLocales().localizedForKey(actionType.getUnlocalizedName(), this));
-	}
-
 	@Override
 	public FlexoObject getFocusedObject() {
 		return _controller.getSelectionManager().getLastSelectedObject();
@@ -145,23 +119,8 @@ public class FlexoMenuItem extends JMenuItem implements FlexoActionSource, Prope
 		return _controller.getEditor();
 	}
 
-	private SelectionManager getSelectionManager() {
+	protected SelectionManager getSelectionManager() {
 		return _controller.getSelectionManager();
-	}
-
-	/**
-	 * 
-	 */
-	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public void itemWillShow() {
-		if (actionType instanceof FlexoActionFactory && getSelectionManager() != null) {
-			if (getFocusedObject() == null || getFocusedObject().getActionList().indexOf(actionType) > -1) {
-				setEnabled(((FlexoActionFactory) actionType).isEnabled(getFocusedObject(), getGlobalSelection()));
-			}
-			else {
-				setEnabled(false);
-			}
-		}
 	}
 
 	@Override
