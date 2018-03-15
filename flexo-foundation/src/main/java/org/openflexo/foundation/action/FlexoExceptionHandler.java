@@ -40,9 +40,10 @@
 package org.openflexo.foundation.action;
 
 import org.openflexo.foundation.FlexoException;
+import org.openflexo.foundation.FlexoObject;
 
-public interface FlexoExceptionHandler<A extends FlexoAction> {
-
+@FunctionalInterface
+public interface FlexoExceptionHandler<A extends FlexoAction<A, T1, T2>, T1 extends FlexoObject, T2 extends FlexoObject> {
 	/**
 	 * Handles any {@link FlexoException} that may have occurred during the execution of the action.
 	 * 

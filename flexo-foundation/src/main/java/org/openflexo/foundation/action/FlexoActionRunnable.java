@@ -43,7 +43,7 @@ import java.util.EventObject;
 
 import org.openflexo.foundation.FlexoObject;
 
+@FunctionalInterface
 public interface FlexoActionRunnable<A extends FlexoAction<A, T1, T2>, T1 extends FlexoObject, T2 extends FlexoObject> {
-
 	boolean run(EventObject event, A action);
 }
