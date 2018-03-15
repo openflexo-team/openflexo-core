@@ -40,13 +40,12 @@ package org.openflexo.fml.controller.action;
 
 import java.awt.HeadlessException;
 import java.awt.event.KeyEvent;
-import java.util.logging.Logger;
 
 import javax.swing.Icon;
 import javax.swing.KeyStroke;
 
 import org.openflexo.foundation.action.FlexoActionFactory;
-import org.openflexo.foundation.action.FlexoActionInitializer;
+import org.openflexo.foundation.action.FlexoActionRunnable;
 import org.openflexo.foundation.action.copypaste.AbstractCopyAction.InvalidSelectionException;
 import org.openflexo.foundation.fml.FlexoConceptObject;
 import org.openflexo.foundation.fml.action.DeleteFlexoConceptObjects;
@@ -57,15 +56,12 @@ import org.openflexo.view.controller.FlexoController;
 
 public class DeleteFlexoConceptObjectsInitializer
 		extends ActionInitializer<DeleteFlexoConceptObjects, FlexoConceptObject, FlexoConceptObject> {
-
-	private static final Logger logger = Logger.getLogger(ControllerActionInitializer.class.getPackage().getName());
-
 	public DeleteFlexoConceptObjectsInitializer(ControllerActionInitializer actionInitializer) {
 		super(DeleteFlexoConceptObjects.actionType, actionInitializer);
 	}
 
 	@Override
-	protected FlexoActionInitializer<DeleteFlexoConceptObjects, FlexoConceptObject, FlexoConceptObject> getDefaultInitializer() {
+	protected FlexoActionRunnable<DeleteFlexoConceptObjects, FlexoConceptObject, FlexoConceptObject> getDefaultInitializer() {
 		return (e, action) -> {
 			try {
 				if (action.getObjectsToDelete().size() > 1) {
@@ -83,7 +79,7 @@ public class DeleteFlexoConceptObjectsInitializer
 	}
 
 	@Override
-	protected Icon getEnabledIcon(FlexoActionFactory actionType) {
+	protected Icon getEnabledIcon(FlexoActionFactory<DeleteFlexoConceptObjects, FlexoConceptObject, FlexoConceptObject> actionType) {
 		return IconLibrary.DELETE_ICON;
 	}
 

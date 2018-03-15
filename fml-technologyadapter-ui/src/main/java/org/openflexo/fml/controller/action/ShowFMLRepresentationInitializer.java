@@ -38,9 +38,7 @@
 
 package org.openflexo.fml.controller.action;
 
-import java.util.logging.Logger;
-
-import org.openflexo.foundation.action.FlexoActionInitializer;
+import org.openflexo.foundation.action.FlexoActionRunnable;
 import org.openflexo.foundation.fml.FMLObject;
 import org.openflexo.foundation.fml.action.ShowFMLRepresentation;
 import org.openflexo.rm.Resource;
@@ -49,9 +47,6 @@ import org.openflexo.view.controller.ActionInitializer;
 import org.openflexo.view.controller.ControllerActionInitializer;
 
 public class ShowFMLRepresentationInitializer extends ActionInitializer<ShowFMLRepresentation, FMLObject, FMLObject> {
-
-	private static final Logger logger = Logger.getLogger(ControllerActionInitializer.class.getPackage().getName());
-
 	public static Resource SHOW_FML_REPRESENTATION_DIALOG_FIB = ResourceLocator
 			.locateResource("Fib/Dialog/ShowFMLRepresentationDialog.fib");
 
@@ -60,7 +55,7 @@ public class ShowFMLRepresentationInitializer extends ActionInitializer<ShowFMLR
 	}
 
 	@Override
-	protected FlexoActionInitializer<ShowFMLRepresentation, FMLObject, FMLObject> getDefaultInitializer() {
+	protected FlexoActionRunnable<ShowFMLRepresentation, FMLObject, FMLObject> getDefaultInitializer() {
 		return (e, action) -> instanciateAndShowDialog(action, SHOW_FML_REPRESENTATION_DIALOG_FIB);
 	}
 }

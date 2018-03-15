@@ -39,43 +39,13 @@
 
 package org.openflexo.view.controller.action;
 
-import java.util.EventObject;
-import java.util.logging.Logger;
-
 import org.openflexo.foundation.FlexoProjectObject;
-import org.openflexo.foundation.action.FlexoActionFinalizer;
-import org.openflexo.foundation.action.FlexoActionInitializer;
 import org.openflexo.foundation.action.LoadAllImportedProject;
 import org.openflexo.view.controller.ActionInitializer;
 import org.openflexo.view.controller.ControllerActionInitializer;
 
 public class LoadAllImportedProjectInitializer extends ActionInitializer<LoadAllImportedProject, FlexoProjectObject, FlexoProjectObject> {
-
-	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(LoadAllImportedProjectInitializer.class.getPackage().getName());
-
 	public LoadAllImportedProjectInitializer(ControllerActionInitializer actionInitializer) {
 		super(LoadAllImportedProject.actionType, actionInitializer);
 	}
-
-	@Override
-	protected FlexoActionInitializer<LoadAllImportedProject, FlexoProjectObject, FlexoProjectObject> getDefaultInitializer() {
-		return new FlexoActionInitializer<LoadAllImportedProject, FlexoProjectObject, FlexoProjectObject>() {
-			@Override
-			public boolean run(EventObject e, LoadAllImportedProject action) {
-				return true;
-			}
-		};
-	}
-
-	@Override
-	protected FlexoActionFinalizer<LoadAllImportedProject, FlexoProjectObject, FlexoProjectObject> getDefaultFinalizer() {
-		return new FlexoActionFinalizer<LoadAllImportedProject, FlexoProjectObject, FlexoProjectObject>() {
-			@Override
-			public boolean run(EventObject e, LoadAllImportedProject action) {
-				return true;
-			}
-		};
-	}
-
 }

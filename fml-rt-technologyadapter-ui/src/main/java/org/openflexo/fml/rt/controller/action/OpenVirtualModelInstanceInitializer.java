@@ -38,15 +38,11 @@
 
 package org.openflexo.fml.rt.controller.action;
 
-import java.util.EventObject;
-import java.util.logging.Logger;
-
 import javax.swing.Icon;
 
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.action.FlexoActionFactory;
-import org.openflexo.foundation.action.FlexoActionFinalizer;
-import org.openflexo.foundation.action.FlexoActionInitializer;
+import org.openflexo.foundation.action.FlexoActionRunnable;
 import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.action.OpenVirtualModelInstance;
 import org.openflexo.icon.FMLRTIconLibrary;
@@ -57,27 +53,12 @@ import org.openflexo.view.controller.ControllerActionInitializer;
 
 public class OpenVirtualModelInstanceInitializer
 		extends ActionInitializer<OpenVirtualModelInstance, FMLRTVirtualModelInstance, FlexoObject> {
-
-	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(ControllerActionInitializer.class.getPackage().getName());
-
 	public OpenVirtualModelInstanceInitializer(ControllerActionInitializer actionInitializer) {
 		super(OpenVirtualModelInstance.actionType, actionInitializer);
 	}
 
 	@Override
-	protected FlexoActionInitializer<OpenVirtualModelInstance, FMLRTVirtualModelInstance, FlexoObject> getDefaultInitializer() {
-		return new FlexoActionInitializer<OpenVirtualModelInstance, FMLRTVirtualModelInstance, FlexoObject>() {
-			@Override
-			public boolean run(EventObject e, OpenVirtualModelInstance action) {
-				return true;
-			}
-
-		};
-	}
-
-	@Override
-	protected FlexoActionFinalizer<OpenVirtualModelInstance, FMLRTVirtualModelInstance, FlexoObject> getDefaultFinalizer() {
+	protected FlexoActionRunnable<OpenVirtualModelInstance, FMLRTVirtualModelInstance, FlexoObject> getDefaultFinalizer() {
 		return (e, action) -> {
 
 			/*TechnologyPerspective<?> perspective = getController().getFMLRTTechnologyAdapterController()

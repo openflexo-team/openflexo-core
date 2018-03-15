@@ -38,15 +38,12 @@
 
 package org.openflexo.fml.controller.action;
 
-import java.util.logging.Logger;
-
 import javax.swing.Icon;
 
 import org.openflexo.components.wizard.Wizard;
 import org.openflexo.components.wizard.WizardDialog;
 import org.openflexo.foundation.action.FlexoActionFactory;
-import org.openflexo.foundation.action.FlexoActionFinalizer;
-import org.openflexo.foundation.action.FlexoActionInitializer;
+import org.openflexo.foundation.action.FlexoActionRunnable;
 import org.openflexo.foundation.fml.FMLObject;
 import org.openflexo.foundation.fml.FlexoConceptObject;
 import org.openflexo.foundation.fml.action.CreateFlexoEnum;
@@ -58,15 +55,12 @@ import org.openflexo.view.controller.ActionInitializer;
 import org.openflexo.view.controller.ControllerActionInitializer;
 
 public class CreateFlexoEnumInitializer extends ActionInitializer<CreateFlexoEnum, FlexoConceptObject, FMLObject> {
-
-	private static final Logger logger = Logger.getLogger(ControllerActionInitializer.class.getPackage().getName());
-
 	public CreateFlexoEnumInitializer(ControllerActionInitializer actionInitializer) {
 		super(CreateFlexoEnum.actionType, actionInitializer);
 	}
 
 	@Override
-	protected FlexoActionInitializer<CreateFlexoEnum, FlexoConceptObject, FMLObject> getDefaultInitializer() {
+	protected FlexoActionRunnable<CreateFlexoEnum, FlexoConceptObject, FMLObject> getDefaultInitializer() {
 		return (e, action) -> {
 			action.setDefineSomeBehaviours(true);
 			Wizard wizard = new CreateFlexoEnumWizard(action, getController());
@@ -82,7 +76,7 @@ public class CreateFlexoEnumInitializer extends ActionInitializer<CreateFlexoEnu
 	}
 
 	@Override
-	protected FlexoActionFinalizer<CreateFlexoEnum, FlexoConceptObject, FMLObject> getDefaultFinalizer() {
+	protected FlexoActionRunnable<CreateFlexoEnum, FlexoConceptObject, FMLObject> getDefaultFinalizer() {
 		return (e, action) -> {
 			if (action.switchNewlyCreatedFlexoConcept) {
 				getController().setCurrentEditedObjectAsModuleView(action.getNewFlexoConcept());

@@ -38,15 +38,12 @@
 
 package org.openflexo.fml.controller.action;
 
-import java.util.logging.Logger;
-
 import javax.swing.Icon;
 
 import org.openflexo.components.wizard.Wizard;
 import org.openflexo.components.wizard.WizardDialog;
 import org.openflexo.foundation.action.FlexoActionFactory;
-import org.openflexo.foundation.action.FlexoActionFinalizer;
-import org.openflexo.foundation.action.FlexoActionInitializer;
+import org.openflexo.foundation.action.FlexoActionRunnable;
 import org.openflexo.foundation.fml.FMLObject;
 import org.openflexo.foundation.fml.FlexoConceptObject;
 import org.openflexo.foundation.ontology.fml.action.CreateIndividualRole;
@@ -57,14 +54,12 @@ import org.openflexo.view.controller.ControllerActionInitializer;
 
 public class CreateIndividualRoleInitializer extends ActionInitializer<CreateIndividualRole, FlexoConceptObject, FMLObject> {
 
-	private static final Logger logger = Logger.getLogger(ControllerActionInitializer.class.getPackage().getName());
-
 	public CreateIndividualRoleInitializer(ControllerActionInitializer actionInitializer) {
 		super(CreateIndividualRole.actionType, actionInitializer);
 	}
 
 	@Override
-	protected FlexoActionInitializer<CreateIndividualRole, FlexoConceptObject, FMLObject> getDefaultInitializer() {
+	protected FlexoActionRunnable<CreateIndividualRole, FlexoConceptObject, FMLObject> getDefaultInitializer() {
 		return (e, action) -> {
 			Wizard wizard = new CreateIndividualRoleWizard(action, getController());
 			WizardDialog dialog = new WizardDialog(wizard, getController());
@@ -75,11 +70,6 @@ public class CreateIndividualRoleInitializer extends ActionInitializer<CreateInd
 			}
 			return true;
 		};
-	}
-
-	@Override
-	protected FlexoActionFinalizer<CreateIndividualRole, FlexoConceptObject, FMLObject> getDefaultFinalizer() {
-		return (e, action) -> true;
 	}
 
 	@Override

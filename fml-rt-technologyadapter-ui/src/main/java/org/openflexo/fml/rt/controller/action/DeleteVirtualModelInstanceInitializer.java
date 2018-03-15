@@ -38,15 +38,11 @@
 
 package org.openflexo.fml.rt.controller.action;
 
-import java.util.EventObject;
-import java.util.logging.Logger;
-
 import javax.swing.Icon;
 
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.action.FlexoActionFactory;
-import org.openflexo.foundation.action.FlexoActionFinalizer;
-import org.openflexo.foundation.action.FlexoActionInitializer;
+import org.openflexo.foundation.action.FlexoActionRunnable;
 import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.action.DeleteVirtualModelInstance;
 import org.openflexo.icon.IconLibrary;
@@ -56,26 +52,13 @@ import org.openflexo.view.controller.FlexoController;
 
 public class DeleteVirtualModelInstanceInitializer
 		extends ActionInitializer<DeleteVirtualModelInstance, FMLRTVirtualModelInstance, FlexoObject> {
-
-	private static final Logger logger = Logger.getLogger(ControllerActionInitializer.class.getPackage().getName());
-
 	public DeleteVirtualModelInstanceInitializer(ControllerActionInitializer actionInitializer) {
 		super(DeleteVirtualModelInstance.actionType, actionInitializer);
 	}
 
 	@Override
-	protected FlexoActionInitializer<DeleteVirtualModelInstance, FMLRTVirtualModelInstance, FlexoObject> getDefaultInitializer() {
-		return new FlexoActionInitializer<DeleteVirtualModelInstance, FMLRTVirtualModelInstance, FlexoObject>() {
-			@Override
-			public boolean run(EventObject e, DeleteVirtualModelInstance action) {
-				return FlexoController.confirm(action.getLocales().localizedForKey("really_delete_this_virtual_model_instance_?"));
-			}
-		};
-	}
-
-	@Override
-	protected FlexoActionFinalizer<DeleteVirtualModelInstance, FMLRTVirtualModelInstance, FlexoObject> getDefaultFinalizer() {
-		return (e, action) -> true;
+	protected FlexoActionRunnable<DeleteVirtualModelInstance, FMLRTVirtualModelInstance, FlexoObject> getDefaultInitializer() {
+		return (e, action) -> FlexoController.confirm(action.getLocales().localizedForKey("really_delete_this_virtual_model_instance_?"));
 	}
 
 	@Override

@@ -38,18 +38,15 @@
 
 package org.openflexo.fml.rt.controller.action;
 
-import java.util.EventObject;
 import java.util.logging.Logger;
 
 import javax.swing.Icon;
 
 import org.openflexo.components.wizard.Wizard;
 import org.openflexo.components.wizard.WizardDialog;
-import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.action.FlexoActionFactory;
-import org.openflexo.foundation.action.FlexoActionFinalizer;
-import org.openflexo.foundation.action.FlexoActionInitializer;
+import org.openflexo.foundation.action.FlexoActionRunnable;
 import org.openflexo.foundation.action.FlexoExceptionHandler;
 import org.openflexo.foundation.action.NotImplementedException;
 import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstance;
@@ -73,33 +70,30 @@ public class CreateBasicVirtualModelInstanceInitializer
 	}
 
 	@Override
-	protected FlexoActionInitializer<CreateBasicVirtualModelInstance, FlexoObject, FlexoObject> getDefaultInitializer() {
-		return new FlexoActionInitializer<CreateBasicVirtualModelInstance, FlexoObject, FlexoObject>() {
-			@Override
-			public boolean run(EventObject e, CreateBasicVirtualModelInstance action) {
-				if (action.skipChoosePopup()) {
-					return true;
-				}
-				if (action.getFocusedObject() instanceof FMLRTVirtualModelInstance
-						&& ((FMLRTVirtualModelInstance) action.getFocusedObject()).getVirtualModel() != null) {
-					// @Brutal
-					// TODO: Instead of doing this, it would be better to handle resources in wizard FIB
-					((FMLRTVirtualModelInstance) action.getFocusedObject()).getVirtualModel().loadContainedVirtualModelsWhenUnloaded();
-				}
-				Wizard wizard = new CreateBasicVirtualModelInstanceWizard(action, getController());
-				WizardDialog dialog = new WizardDialog(wizard, getController());
-				dialog.showDialog();
-				if (dialog.getStatus() != Status.VALIDATED) {
-					// Operation cancelled
-					return false;
-				}
+	protected FlexoActionRunnable<CreateBasicVirtualModelInstance, FlexoObject, FlexoObject> getDefaultInitializer() {
+		return (e, action) -> {
+			if (action.skipChoosePopup()) {
 				return true;
 			}
+			if (action.getFocusedObject() instanceof FMLRTVirtualModelInstance
+					&& ((FMLRTVirtualModelInstance) action.getFocusedObject()).getVirtualModel() != null) {
+				// @Brutal
+				// TODO: Instead of doing this, it would be better to handle resources in wizard FIB
+				((FMLRTVirtualModelInstance) action.getFocusedObject()).getVirtualModel().loadContainedVirtualModelsWhenUnloaded();
+			}
+			Wizard wizard = new CreateBasicVirtualModelInstanceWizard(action, getController());
+			WizardDialog dialog = new WizardDialog(wizard, getController());
+			dialog.showDialog();
+			if (dialog.getStatus() != Status.VALIDATED) {
+				// Operation cancelled
+				return false;
+			}
+			return true;
 		};
 	}
 
 	@Override
-	protected FlexoActionFinalizer<CreateBasicVirtualModelInstance, FlexoObject, FlexoObject> getDefaultFinalizer() {
+	protected FlexoActionRunnable<CreateBasicVirtualModelInstance, FlexoObject, FlexoObject> getDefaultFinalizer() {
 		return (e, action) -> {
 			// getController().setCurrentEditedObjectAsModuleView(action.getNewVirtualModelInstance());
 			if (action.openAfterCreation()) {
@@ -110,16 +104,13 @@ public class CreateBasicVirtualModelInstanceInitializer
 	}
 
 	@Override
-	protected FlexoExceptionHandler<CreateBasicVirtualModelInstance> getDefaultExceptionHandler() {
-		return new FlexoExceptionHandler<CreateBasicVirtualModelInstance>() {
-			@Override
-			public boolean handleException(FlexoException exception, CreateBasicVirtualModelInstance action) {
-				if (exception instanceof NotImplementedException) {
-					FlexoController.notify(action.getLocales().localizedForKey("not_implemented_yet"));
-					return true;
-				}
-				return false;
+	protected FlexoExceptionHandler<CreateBasicVirtualModelInstance, FlexoObject, FlexoObject> getDefaultExceptionHandler() {
+		return (exception, action) -> {
+			if (exception instanceof NotImplementedException) {
+				FlexoController.notify(action.getLocales().localizedForKey("not_implemented_yet"));
+				return true;
 			}
+			return false;
 		};
 	}
 

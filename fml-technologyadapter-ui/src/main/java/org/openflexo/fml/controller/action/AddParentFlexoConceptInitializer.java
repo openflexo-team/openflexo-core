@@ -38,12 +38,9 @@
 
 package org.openflexo.fml.controller.action;
 
-import java.util.logging.Logger;
-
 import org.openflexo.components.wizard.Wizard;
 import org.openflexo.components.wizard.WizardDialog;
-import org.openflexo.foundation.action.FlexoActionFinalizer;
-import org.openflexo.foundation.action.FlexoActionInitializer;
+import org.openflexo.foundation.action.FlexoActionRunnable;
 import org.openflexo.foundation.fml.FMLObject;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.action.AddParentFlexoConcept;
@@ -52,15 +49,12 @@ import org.openflexo.view.controller.ActionInitializer;
 import org.openflexo.view.controller.ControllerActionInitializer;
 
 public class AddParentFlexoConceptInitializer extends ActionInitializer<AddParentFlexoConcept, FlexoConcept, FMLObject> {
-
-	private static final Logger logger = Logger.getLogger(ControllerActionInitializer.class.getPackage().getName());
-
 	public AddParentFlexoConceptInitializer(ControllerActionInitializer actionInitializer) {
 		super(AddParentFlexoConcept.actionType, actionInitializer);
 	}
 
 	@Override
-	protected FlexoActionInitializer<AddParentFlexoConcept, FlexoConcept, FMLObject> getDefaultInitializer() {
+	protected FlexoActionRunnable<AddParentFlexoConcept, FlexoConcept, FMLObject> getDefaultInitializer() {
 		return (e, action) -> {
 			Wizard wizard = new AddParentFlexoConceptWizard(action, getController());
 			WizardDialog dialog = new WizardDialog(wizard, getController());
@@ -74,7 +68,7 @@ public class AddParentFlexoConceptInitializer extends ActionInitializer<AddParen
 	}
 
 	@Override
-	protected FlexoActionFinalizer<AddParentFlexoConcept, FlexoConcept, FMLObject> getDefaultFinalizer() {
+	protected FlexoActionRunnable<AddParentFlexoConcept, FlexoConcept, FMLObject> getDefaultFinalizer() {
 		return (e, action) -> {
 			// getController().setCurrentEditedObjectAsModuleView(action.getNewModelSlot(), getController().VIEW_POINT_PERSPECTIVE);
 			return true;

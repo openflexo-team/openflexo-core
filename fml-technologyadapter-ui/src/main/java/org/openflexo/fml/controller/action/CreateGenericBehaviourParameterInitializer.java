@@ -38,15 +38,12 @@
 
 package org.openflexo.fml.controller.action;
 
-import java.util.logging.Logger;
-
 import javax.swing.Icon;
 
 import org.openflexo.components.wizard.Wizard;
 import org.openflexo.components.wizard.WizardDialog;
 import org.openflexo.foundation.action.FlexoActionFactory;
-import org.openflexo.foundation.action.FlexoActionFinalizer;
-import org.openflexo.foundation.action.FlexoActionInitializer;
+import org.openflexo.foundation.action.FlexoActionRunnable;
 import org.openflexo.foundation.fml.FMLObject;
 import org.openflexo.foundation.fml.FlexoBehaviourObject;
 import org.openflexo.foundation.fml.action.CreateGenericBehaviourParameter;
@@ -57,15 +54,12 @@ import org.openflexo.view.controller.ControllerActionInitializer;
 
 public class CreateGenericBehaviourParameterInitializer
 		extends ActionInitializer<CreateGenericBehaviourParameter, FlexoBehaviourObject, FMLObject> {
-
-	private static final Logger logger = Logger.getLogger(ControllerActionInitializer.class.getPackage().getName());
-
 	public CreateGenericBehaviourParameterInitializer(ControllerActionInitializer actionInitializer) {
 		super(CreateGenericBehaviourParameter.actionType, actionInitializer);
 	}
 
 	@Override
-	protected FlexoActionInitializer<CreateGenericBehaviourParameter, FlexoBehaviourObject, FMLObject> getDefaultInitializer() {
+	protected FlexoActionRunnable<CreateGenericBehaviourParameter, FlexoBehaviourObject, FMLObject> getDefaultInitializer() {
 		return (e, action) -> {
 			Wizard wizard = new CreateGenericBehaviourParameterWizard(action, getController());
 			WizardDialog dialog = new WizardDialog(wizard, getController());
@@ -79,7 +73,7 @@ public class CreateGenericBehaviourParameterInitializer
 	}
 
 	@Override
-	protected FlexoActionFinalizer<CreateGenericBehaviourParameter, FlexoBehaviourObject, FMLObject> getDefaultFinalizer() {
+	protected FlexoActionRunnable<CreateGenericBehaviourParameter, FlexoBehaviourObject, FMLObject> getDefaultFinalizer() {
 		return (e, action) -> {
 			// getController().setCurrentEditedObjectAsModuleView(action.getNewModelSlot(), getController().VIEW_POINT_PERSPECTIVE);
 			return true;

@@ -41,7 +41,6 @@ package org.openflexo.action;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.EventObject;
 
 import javax.swing.Icon;
 import javax.swing.JFileChooser;
@@ -49,7 +48,7 @@ import javax.swing.JFileChooser;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.FlexoProject;
 import org.openflexo.foundation.action.FlexoActionFactory;
-import org.openflexo.foundation.action.FlexoActionInitializer;
+import org.openflexo.foundation.action.FlexoActionRunnable;
 import org.openflexo.icon.IconLibrary;
 import org.openflexo.toolbox.FileUtils;
 import org.openflexo.view.FlexoFrame;
@@ -61,8 +60,7 @@ import org.openflexo.view.controller.FlexoController;
  * @author gpolet
  * 
  */
-public class ProjectExcelExportInitializer extends ActionInitializer<ProjectExcelExportAction, FlexoProject, FlexoObject> {
-
+public class ProjectExcelExportInitializer extends ActionInitializer<ProjectExcelExportAction, FlexoProject<?>, FlexoObject> {
 	/**
 	 * @param actionType
 	 * @param controllerActionInitializer
@@ -77,55 +75,49 @@ public class ProjectExcelExportInitializer extends ActionInitializer<ProjectExce
 	 * @see org.openflexo.view.controller.ActionInitializer#getDefaultInitializer()
 	 */
 	@Override
-	protected FlexoActionInitializer<ProjectExcelExportAction, FlexoProject, FlexoObject> getDefaultInitializer() {
-
-		return new FlexoActionInitializer<ProjectExcelExportAction, FlexoProject, FlexoObject>() {
-
-			@Override
-			public boolean run(EventObject event, ProjectExcelExportAction action) {
-				JFileChooser chooser = new JFileChooser();
-				chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
-				chooser.setSelectedFile(new File(System.getProperty("user.home"), action.getFocusedObject().getProjectName() + ".csv"));
-				int ret = chooser.showSaveDialog(FlexoFrame.getActiveFrame());
-				if (ret == JFileChooser.APPROVE_OPTION) {
-					// action.getFocusedObject().getStatistics().refresh();
-					// String s = action.getFocusedObject().getStatistics().excel();
-					// TODO !
-					String s = null;
-					File out = chooser.getSelectedFile();
-					if (!out.getName().endsWith(".csv")) {
-						out = new File(out.getAbsolutePath() + ".csv");
-					}
-					boolean doIt = false;
-					if (out.exists()) {
-						if (FlexoController.confirm(action.getLocales().localizedForKey("the_file") + " " + out.getName() + " "
-								+ action.getLocales().localizedForKey("already_exists") + "\n"
-								+ action.getLocales().localizedForKey("do_you_want_to_replace_it?"))) {
-							doIt = true; // the file exists but the user has confirmed the replacement
-						}
-					}
-					else {
-						doIt = true; // the file does not exist
-					}
-					if (doIt) {
-						try {
-							FileUtils.saveToFile(out, s);
-							return true;
-						} catch (IOException e) {
-							e.printStackTrace();
-							FlexoController.showError(action.getLocales().localizedForKey("export_failed"));
-							return false;
-						}
+	protected FlexoActionRunnable<ProjectExcelExportAction, FlexoProject<?>, FlexoObject> getDefaultInitializer() {
+		return (e, action) -> {
+			JFileChooser chooser = new JFileChooser();
+			chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+			chooser.setSelectedFile(new File(System.getProperty("user.home"), action.getFocusedObject().getProjectName() + ".csv"));
+			int ret = chooser.showSaveDialog(FlexoFrame.getActiveFrame());
+			if (ret == JFileChooser.APPROVE_OPTION) {
+				// action.getFocusedObject().getStatistics().refresh();
+				// String s = action.getFocusedObject().getStatistics().excel();
+				// TODO !
+				String s = null;
+				File out = chooser.getSelectedFile();
+				if (!out.getName().endsWith(".csv")) {
+					out = new File(out.getAbsolutePath() + ".csv");
+				}
+				boolean doIt = false;
+				if (out.exists()) {
+					if (FlexoController.confirm(action.getLocales().localizedForKey("the_file") + " " + out.getName() + " "
+							+ action.getLocales().localizedForKey("already_exists") + "\n"
+							+ action.getLocales().localizedForKey("do_you_want_to_replace_it?"))) {
+						doIt = true; // the file exists but the user has confirmed the replacement
 					}
 				}
-				return false;
+				else {
+					doIt = true; // the file does not exist
+				}
+				if (doIt) {
+					try {
+						FileUtils.saveToFile(out, s);
+						return true;
+					} catch (IOException ex) {
+						ex.printStackTrace();
+						FlexoController.showError(action.getLocales().localizedForKey("export_failed"));
+						return false;
+					}
+				}
 			}
-
+			return false;
 		};
 	}
 
 	@Override
-	protected Icon getEnabledIcon(FlexoActionFactory<ProjectExcelExportAction, FlexoProject, FlexoObject> actionType) {
+	protected Icon getEnabledIcon(FlexoActionFactory<ProjectExcelExportAction, FlexoProject<?>, FlexoObject> actionType) {
 		return IconLibrary.BIG_EXCEL_ICON;
 	}
 

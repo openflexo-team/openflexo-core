@@ -38,15 +38,12 @@
 
 package org.openflexo.fml.controller.action;
 
-import java.util.logging.Logger;
-
 import javax.swing.Icon;
 
 import org.openflexo.components.wizard.Wizard;
 import org.openflexo.components.wizard.WizardDialog;
 import org.openflexo.foundation.action.FlexoActionFactory;
-import org.openflexo.foundation.action.FlexoActionFinalizer;
-import org.openflexo.foundation.action.FlexoActionInitializer;
+import org.openflexo.foundation.action.FlexoActionRunnable;
 import org.openflexo.foundation.fml.FMLObject;
 import org.openflexo.foundation.fml.FlexoConceptObject;
 import org.openflexo.foundation.fml.action.CreateFlexoBehaviour;
@@ -56,9 +53,6 @@ import org.openflexo.view.controller.ActionInitializer;
 import org.openflexo.view.controller.ControllerActionInitializer;
 
 public class CreateFlexoBehaviourInitializer extends ActionInitializer<CreateFlexoBehaviour, FlexoConceptObject, FMLObject> {
-
-	private static final Logger logger = Logger.getLogger(ControllerActionInitializer.class.getPackage().getName());
-
 	public CreateFlexoBehaviourInitializer(ControllerActionInitializer actionInitializer) {
 		super(CreateFlexoBehaviour.actionType, actionInitializer);
 		actionInitializer.registerInitializer(CreateFlexoBehaviour.createCreationSchemeType, this);
@@ -71,7 +65,7 @@ public class CreateFlexoBehaviourInitializer extends ActionInitializer<CreateFle
 	}
 
 	@Override
-	protected FlexoActionInitializer<CreateFlexoBehaviour, FlexoConceptObject, FMLObject> getDefaultInitializer() {
+	protected FlexoActionRunnable<CreateFlexoBehaviour, FlexoConceptObject, FMLObject> getDefaultInitializer() {
 		return (e, action) -> {
 			Wizard wizard = new CreateFlexoBehaviourWizard(action, getController());
 			WizardDialog dialog = new WizardDialog(wizard, getController());
@@ -86,7 +80,7 @@ public class CreateFlexoBehaviourInitializer extends ActionInitializer<CreateFle
 	}
 
 	@Override
-	protected FlexoActionFinalizer<CreateFlexoBehaviour, FlexoConceptObject, FMLObject> getDefaultFinalizer() {
+	protected FlexoActionRunnable<CreateFlexoBehaviour, FlexoConceptObject, FMLObject> getDefaultFinalizer() {
 		return (e, action) -> {
 			// getController().setCurrentEditedObjectAsModuleView(action.getNewModelSlot(), getController().VIEW_POINT_PERSPECTIVE);
 			return true;

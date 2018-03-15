@@ -39,7 +39,6 @@
 package org.openflexo.action;
 
 import java.awt.event.KeyEvent;
-import java.util.EventObject;
 import java.util.Vector;
 import java.util.logging.Logger;
 
@@ -50,8 +49,7 @@ import org.openflexo.FlexoCst;
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.action.FlexoActionFactory;
-import org.openflexo.foundation.action.FlexoActionFinalizer;
-import org.openflexo.foundation.action.FlexoActionInitializer;
+import org.openflexo.foundation.action.FlexoActionRunnable;
 import org.openflexo.foundation.action.FlexoActionVisibleCondition;
 import org.openflexo.foundation.action.copypaste.PasteAction;
 import org.openflexo.icon.IconLibrary;
@@ -69,19 +67,16 @@ public class PasteActionInitializer extends ActionInitializer<PasteAction, Flexo
 	}
 
 	@Override
-	protected FlexoActionInitializer<PasteAction, FlexoObject, FlexoObject> getDefaultInitializer() {
-		return new FlexoActionInitializer<PasteAction, FlexoObject, FlexoObject>() {
-			@Override
-			public boolean run(EventObject e, PasteAction action) {
-				logger.info("Paste initializer");
-				// getControllerActionInitializer().getController().getSelectionManager().setSelectedObjects(null);
-				return true;
-			}
+	protected FlexoActionRunnable<PasteAction, FlexoObject, FlexoObject> getDefaultInitializer() {
+		return (e, action) -> {
+			logger.info("Paste initializer");
+			// getControllerActionInitializer().getController().getSelectionManager().setSelectedObjects(null);
+			return true;
 		};
 	}
 
 	@Override
-	protected FlexoActionFinalizer<PasteAction, FlexoObject, FlexoObject> getDefaultFinalizer() {
+	protected FlexoActionRunnable<PasteAction, FlexoObject, FlexoObject> getDefaultFinalizer() {
 		return (e, action) -> {
 			logger.info("Paste finalizer");
 			if (action.getPastedObjects() != null) {

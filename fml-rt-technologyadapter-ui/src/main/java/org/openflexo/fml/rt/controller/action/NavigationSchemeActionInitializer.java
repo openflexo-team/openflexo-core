@@ -38,16 +38,11 @@
 
 package org.openflexo.fml.rt.controller.action;
 
-import java.util.EventObject;
-import java.util.logging.Logger;
-
 import javax.swing.Icon;
 
-import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.action.FlexoActionFactory;
-import org.openflexo.foundation.action.FlexoActionFinalizer;
-import org.openflexo.foundation.action.FlexoActionInitializer;
+import org.openflexo.foundation.action.FlexoActionRunnable;
 import org.openflexo.foundation.action.FlexoExceptionHandler;
 import org.openflexo.foundation.action.NotImplementedException;
 import org.openflexo.foundation.fml.NavigationScheme;
@@ -62,40 +57,33 @@ import org.openflexo.view.controller.ParametersRetriever;
 
 public class NavigationSchemeActionInitializer
 		extends ActionInitializer<NavigationSchemeAction, FlexoConceptInstance, VirtualModelInstanceObject> {
-
-	private static final Logger logger = Logger.getLogger(ControllerActionInitializer.class.getPackage().getName());
-
 	public NavigationSchemeActionInitializer(ControllerActionInitializer actionInitializer) {
 		super(NavigationSchemeAction.class, actionInitializer);
 	}
 
 	@Override
-	protected FlexoActionInitializer<NavigationSchemeAction, FlexoConceptInstance, VirtualModelInstanceObject> getDefaultInitializer() {
-		return new FlexoActionInitializer<NavigationSchemeAction, FlexoConceptInstance, VirtualModelInstanceObject>() {
-			@Override
-			public boolean run(EventObject e, NavigationSchemeAction action) {
-				if (!action.evaluateCondition()) {
-					return false;
-				}
-
-				getController().willExecute(action);
-
-				// First retrieve parameters
-
-				ParametersRetriever<NavigationScheme> parameterRetriever = new ParametersRetriever<>(action,
-						getController() != null ? getController().getApplicationContext() : null);
-				if (action.escapeParameterRetrievingWhenValid && parameterRetriever.isSkipable()) {
-					return true;
-				}
-				getController().hasExecuted(action);
-				return parameterRetriever.retrieveParameters();
-
+	protected FlexoActionRunnable<NavigationSchemeAction, FlexoConceptInstance, VirtualModelInstanceObject> getDefaultInitializer() {
+		return (e, action) -> {
+			if (!action.evaluateCondition()) {
+				return false;
 			}
+
+			getController().willExecute(action);
+
+			// First retrieve parameters
+
+			ParametersRetriever<NavigationScheme> parameterRetriever = new ParametersRetriever<>(action,
+					getController() != null ? getController().getApplicationContext() : null);
+			if (action.escapeParameterRetrievingWhenValid && parameterRetriever.isSkipable()) {
+				return true;
+			}
+			getController().hasExecuted(action);
+			return parameterRetriever.retrieveParameters();
 		};
 	}
 
 	@Override
-	protected FlexoActionFinalizer<NavigationSchemeAction, FlexoConceptInstance, VirtualModelInstanceObject> getDefaultFinalizer() {
+	protected FlexoActionRunnable<NavigationSchemeAction, FlexoConceptInstance, VirtualModelInstanceObject> getDefaultFinalizer() {
 		return (e, action) -> {
 			if (action.getTargetObject() != null) {
 				// Editor will handle switch to right module and perspective, and select target object
@@ -105,9 +93,7 @@ public class NavigationSchemeActionInitializer
 				// getEditor().focusOn(targetObject, (FlexoNature) action.getFlexoBehaviour().getDisplayNature(targetObject));
 				return true;
 			}
-			else {
-				return false;
-			}
+			return false;
 		};
 	}
 
@@ -116,16 +102,13 @@ public class NavigationSchemeActionInitializer
 	}
 
 	@Override
-	protected FlexoExceptionHandler<NavigationSchemeAction> getDefaultExceptionHandler() {
-		return new FlexoExceptionHandler<NavigationSchemeAction>() {
-			@Override
-			public boolean handleException(FlexoException exception, NavigationSchemeAction action) {
-				if (exception instanceof NotImplementedException) {
-					FlexoController.notify(action.getLocales().localizedForKey("not_implemented_yet"));
-					return true;
-				}
-				return false;
+	protected FlexoExceptionHandler<NavigationSchemeAction, FlexoConceptInstance, VirtualModelInstanceObject> getDefaultExceptionHandler() {
+		return (exception, action) -> {
+			if (exception instanceof NotImplementedException) {
+				FlexoController.notify(action.getLocales().localizedForKey("not_implemented_yet"));
+				return true;
 			}
+			return false;
 		};
 	}
 

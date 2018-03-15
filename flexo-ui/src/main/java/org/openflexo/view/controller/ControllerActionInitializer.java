@@ -221,6 +221,7 @@ public class ControllerActionInitializer implements EditorProvider {
 		new CreateProjectInitializer(this);
 	}
 
+	@SuppressWarnings("unchecked")
 	public <A extends FlexoAction<A, T1, T2>, T1 extends FlexoObject, T2 extends FlexoObject> ActionInitializer<A, T1, T2> getActionInitializer(
 			A action) {
 		if (action == null) {

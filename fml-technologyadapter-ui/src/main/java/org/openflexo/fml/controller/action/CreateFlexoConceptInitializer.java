@@ -38,15 +38,12 @@
 
 package org.openflexo.fml.controller.action;
 
-import java.util.logging.Logger;
-
 import javax.swing.Icon;
 
 import org.openflexo.components.wizard.Wizard;
 import org.openflexo.components.wizard.WizardDialog;
 import org.openflexo.foundation.action.FlexoActionFactory;
-import org.openflexo.foundation.action.FlexoActionFinalizer;
-import org.openflexo.foundation.action.FlexoActionInitializer;
+import org.openflexo.foundation.action.FlexoActionRunnable;
 import org.openflexo.foundation.fml.FMLObject;
 import org.openflexo.foundation.fml.FlexoConceptObject;
 import org.openflexo.foundation.fml.action.CreateFlexoConcept;
@@ -58,15 +55,12 @@ import org.openflexo.view.controller.ActionInitializer;
 import org.openflexo.view.controller.ControllerActionInitializer;
 
 public class CreateFlexoConceptInitializer extends ActionInitializer<CreateFlexoConcept, FlexoConceptObject, FMLObject> {
-
-	private static final Logger logger = Logger.getLogger(ControllerActionInitializer.class.getPackage().getName());
-
 	public CreateFlexoConceptInitializer(ControllerActionInitializer actionInitializer) {
 		super(CreateFlexoConcept.actionType, actionInitializer);
 	}
 
 	@Override
-	protected FlexoActionInitializer<CreateFlexoConcept, FlexoConceptObject, FMLObject> getDefaultInitializer() {
+	protected FlexoActionRunnable<CreateFlexoConcept, FlexoConceptObject, FMLObject> getDefaultInitializer() {
 		return (e, action) -> {
 			action.setDefineSomeBehaviours(true);
 			Wizard wizard = new CreateFlexoConceptWizard(action, getController());
@@ -82,7 +76,7 @@ public class CreateFlexoConceptInitializer extends ActionInitializer<CreateFlexo
 	}
 
 	@Override
-	protected FlexoActionFinalizer<CreateFlexoConcept, FlexoConceptObject, FMLObject> getDefaultFinalizer() {
+	protected FlexoActionRunnable<CreateFlexoConcept, FlexoConceptObject, FMLObject> getDefaultFinalizer() {
 		return (e, action) -> {
 			action.getNewFlexoConcept().setAuthor(getController().getApplicationContext().getGeneralPreferences().getUserName());
 			if (action.switchNewlyCreatedFlexoConcept) {

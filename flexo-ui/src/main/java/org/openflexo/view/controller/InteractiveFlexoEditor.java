@@ -60,8 +60,7 @@ import org.openflexo.foundation.action.FlexoAction;
 import org.openflexo.foundation.action.FlexoAction.ExecutionStatus;
 import org.openflexo.foundation.action.FlexoActionEnableCondition;
 import org.openflexo.foundation.action.FlexoActionFactory;
-import org.openflexo.foundation.action.FlexoActionFinalizer;
-import org.openflexo.foundation.action.FlexoActionInitializer;
+import org.openflexo.foundation.action.FlexoActionRunnable;
 import org.openflexo.foundation.action.FlexoActionVisibleCondition;
 import org.openflexo.foundation.action.FlexoExceptionHandler;
 import org.openflexo.foundation.action.FlexoUndoManager;
@@ -217,7 +216,7 @@ public class InteractiveFlexoEditor extends DefaultFlexoEditor {
 			EventObject event) {
 		ActionInitializer<A, T1, T2> actionInitializer = getActionInitializer(action);
 		if (actionInitializer != null) {
-			FlexoActionInitializer<A, T1, T2> initializer = actionInitializer.getDefaultInitializer();
+			FlexoActionRunnable<A, T1, T2> initializer = actionInitializer.getDefaultInitializer();
 			if (initializer != null) {
 				return initializer.run(event, action);
 			}
@@ -234,7 +233,7 @@ public class InteractiveFlexoEditor extends DefaultFlexoEditor {
 			EventObject event) {
 		ActionInitializer<A, ?, ?> actionInitializer = getActionInitializer(action);
 		if (actionInitializer != null) {
-			FlexoActionFinalizer<A, ?, ?> finalizer = actionInitializer.getDefaultFinalizer();
+			FlexoActionRunnable<A, ?, ?> finalizer = actionInitializer.getDefaultFinalizer();
 			if (finalizer != null) {
 				finalizer.run(event, action);
 			}
@@ -245,7 +244,7 @@ public class InteractiveFlexoEditor extends DefaultFlexoEditor {
 			FlexoException exception, final A action) {
 		actionHasBeenPerformed(action, false); // Action failed
 		ProgressWindow.hideProgressWindow();
-		FlexoExceptionHandler<A> exceptionHandler = null;
+		FlexoExceptionHandler<A, ?, ?> exceptionHandler = null;
 		ActionInitializer<A, ?, ?> actionInitializer = getActionInitializer(action);
 		if (actionInitializer != null) {
 			exceptionHandler = actionInitializer.getDefaultExceptionHandler();
@@ -289,11 +288,6 @@ public class InteractiveFlexoEditor extends DefaultFlexoEditor {
 	@Override
 	public boolean performResourceScanning() {
 		return true;
-	}
-
-	@Override
-	public FlexoProgressFactory getFlexoProgressFactory() {
-		return _progressFactory;
 	}
 
 	public boolean isTestEditor() {
@@ -423,7 +417,7 @@ public class InteractiveFlexoEditor extends DefaultFlexoEditor {
 	@Override
 	public <A extends FlexoAction<A, T1, T2>, T1 extends FlexoObject, T2 extends FlexoObject> Icon getDisabledIconFor(
 			FlexoActionFactory<A, T1, T2> actionFactory) {
-		ActionInitializer actionInitializer = getActionInitializer(actionFactory);
+		ActionInitializer<A, T1, T2> actionInitializer = getActionInitializer(actionFactory);
 		if (actionInitializer != null) {
 			return actionInitializer.getDisabledIcon(actionFactory);
 		}

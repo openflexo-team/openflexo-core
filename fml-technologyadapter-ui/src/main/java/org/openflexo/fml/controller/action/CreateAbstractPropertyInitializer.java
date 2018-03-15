@@ -38,15 +38,12 @@
 
 package org.openflexo.fml.controller.action;
 
-import java.util.logging.Logger;
-
 import javax.swing.Icon;
 
 import org.openflexo.components.wizard.Wizard;
 import org.openflexo.components.wizard.WizardDialog;
 import org.openflexo.foundation.action.FlexoActionFactory;
-import org.openflexo.foundation.action.FlexoActionFinalizer;
-import org.openflexo.foundation.action.FlexoActionInitializer;
+import org.openflexo.foundation.action.FlexoActionRunnable;
 import org.openflexo.foundation.fml.FMLObject;
 import org.openflexo.foundation.fml.FlexoConceptObject;
 import org.openflexo.foundation.fml.action.CreateAbstractProperty;
@@ -56,15 +53,12 @@ import org.openflexo.view.controller.ActionInitializer;
 import org.openflexo.view.controller.ControllerActionInitializer;
 
 public class CreateAbstractPropertyInitializer extends ActionInitializer<CreateAbstractProperty, FlexoConceptObject, FMLObject> {
-
-	private static final Logger logger = Logger.getLogger(ControllerActionInitializer.class.getPackage().getName());
-
 	public CreateAbstractPropertyInitializer(ControllerActionInitializer actionInitializer) {
 		super(CreateAbstractProperty.actionType, actionInitializer);
 	}
 
 	@Override
-	protected FlexoActionInitializer<CreateAbstractProperty, FlexoConceptObject, FMLObject> getDefaultInitializer() {
+	protected FlexoActionRunnable<CreateAbstractProperty, FlexoConceptObject, FMLObject> getDefaultInitializer() {
 		return (e, action) -> {
 			Wizard wizard = new CreateAbstractPropertyWizard(action, getController());
 			WizardDialog dialog = new WizardDialog(wizard, getController());
@@ -79,7 +73,7 @@ public class CreateAbstractPropertyInitializer extends ActionInitializer<CreateA
 	}
 
 	@Override
-	protected FlexoActionFinalizer<CreateAbstractProperty, FlexoConceptObject, FMLObject> getDefaultFinalizer() {
+	protected FlexoActionRunnable<CreateAbstractProperty, FlexoConceptObject, FMLObject> getDefaultFinalizer() {
 		return (e, action) -> {
 			// getController().setCurrentEditedObjectAsModuleView(action.getNewModelSlot(), getController().VIEW_POINT_PERSPECTIVE);
 			return true;

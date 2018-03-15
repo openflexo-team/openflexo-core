@@ -38,15 +38,12 @@
 
 package org.openflexo.fml.controller.action;
 
-import java.util.logging.Logger;
-
 import javax.swing.Icon;
 
 import org.openflexo.components.wizard.Wizard;
 import org.openflexo.components.wizard.WizardDialog;
 import org.openflexo.foundation.action.FlexoActionFactory;
-import org.openflexo.foundation.action.FlexoActionFinalizer;
-import org.openflexo.foundation.action.FlexoActionInitializer;
+import org.openflexo.foundation.action.FlexoActionRunnable;
 import org.openflexo.foundation.fml.FMLObject;
 import org.openflexo.foundation.fml.FlexoConceptObject;
 import org.openflexo.foundation.fml.action.CreateExpressionProperty;
@@ -56,15 +53,12 @@ import org.openflexo.view.controller.ActionInitializer;
 import org.openflexo.view.controller.ControllerActionInitializer;
 
 public class CreateExpressionPropertyInitializer extends ActionInitializer<CreateExpressionProperty, FlexoConceptObject, FMLObject> {
-
-	private static final Logger logger = Logger.getLogger(ControllerActionInitializer.class.getPackage().getName());
-
 	public CreateExpressionPropertyInitializer(ControllerActionInitializer actionInitializer) {
 		super(CreateExpressionProperty.actionType, actionInitializer);
 	}
 
 	@Override
-	protected FlexoActionInitializer<CreateExpressionProperty, FlexoConceptObject, FMLObject> getDefaultInitializer() {
+	protected FlexoActionRunnable<CreateExpressionProperty, FlexoConceptObject, FMLObject> getDefaultInitializer() {
 		return (e, action) -> {
 			Wizard wizard = new CreateExpressionPropertyWizard(action, getController());
 			WizardDialog dialog = new WizardDialog(wizard, getController());
@@ -78,7 +72,7 @@ public class CreateExpressionPropertyInitializer extends ActionInitializer<Creat
 	}
 
 	@Override
-	protected FlexoActionFinalizer<CreateExpressionProperty, FlexoConceptObject, FMLObject> getDefaultFinalizer() {
+	protected FlexoActionRunnable<CreateExpressionProperty, FlexoConceptObject, FMLObject> getDefaultFinalizer() {
 		return (e, action) -> {
 			// getController().setCurrentEditedObjectAsModuleView(action.getNewModelSlot(), getController().VIEW_POINT_PERSPECTIVE);
 			return true;

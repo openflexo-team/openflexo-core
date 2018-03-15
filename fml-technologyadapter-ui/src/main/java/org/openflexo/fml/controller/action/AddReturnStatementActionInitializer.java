@@ -38,13 +38,10 @@
 
 package org.openflexo.fml.controller.action;
 
-import java.util.logging.Logger;
-
 import javax.swing.Icon;
 
 import org.openflexo.foundation.action.FlexoActionFactory;
-import org.openflexo.foundation.action.FlexoActionFinalizer;
-import org.openflexo.foundation.action.FlexoActionInitializer;
+import org.openflexo.foundation.action.FlexoActionRunnable;
 import org.openflexo.foundation.fml.FMLObject;
 import org.openflexo.foundation.fml.action.AddReturnStatement;
 import org.openflexo.foundation.fml.editionaction.AssignableAction;
@@ -54,19 +51,12 @@ import org.openflexo.view.controller.ControllerActionInitializer;
 
 public class AddReturnStatementActionInitializer extends ActionInitializer<AddReturnStatement, AssignableAction<?>, FMLObject> {
 
-	private static final Logger logger = Logger.getLogger(ControllerActionInitializer.class.getPackage().getName());
-
 	public AddReturnStatementActionInitializer(ControllerActionInitializer actionInitializer) {
 		super(AddReturnStatement.actionType, actionInitializer);
 	}
 
 	@Override
-	protected FlexoActionInitializer<AddReturnStatement, AssignableAction<?>, FMLObject> getDefaultInitializer() {
-		return (e, action) -> true;
-	}
-
-	@Override
-	protected FlexoActionFinalizer<AddReturnStatement, AssignableAction<?>, FMLObject> getDefaultFinalizer() {
+	protected FlexoActionRunnable<AddReturnStatement, AssignableAction<?>, FMLObject> getDefaultFinalizer() {
 		return (e, action) -> {
 			// getController().setCurrentEditedObjectAsModuleView(action.getNewEditionAction(),
 			// getController().getCurrentPerspective());

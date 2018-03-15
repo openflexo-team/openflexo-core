@@ -38,15 +38,10 @@
 
 package org.openflexo.fml.rt.controller.action;
 
-import java.util.EventObject;
-import java.util.logging.Logger;
-
 import javax.swing.Icon;
 
-import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.action.FlexoActionFactory;
-import org.openflexo.foundation.action.FlexoActionFinalizer;
-import org.openflexo.foundation.action.FlexoActionInitializer;
+import org.openflexo.foundation.action.FlexoActionRunnable;
 import org.openflexo.foundation.action.FlexoExceptionHandler;
 import org.openflexo.foundation.action.NotImplementedException;
 import org.openflexo.foundation.fml.SynchronizationScheme;
@@ -61,31 +56,25 @@ import org.openflexo.view.controller.ParametersRetriever;
 
 public class SynchronizationSchemeActionInitializer
 		extends ActionInitializer<SynchronizationSchemeAction, VirtualModelInstance<?, ?>, VirtualModelInstanceObject> {
-
-	private static final Logger logger = Logger.getLogger(ControllerActionInitializer.class.getPackage().getName());
-
 	public SynchronizationSchemeActionInitializer(ControllerActionInitializer actionInitializer) {
 		super(SynchronizationSchemeAction.class, actionInitializer);
 	}
 
 	@Override
-	protected FlexoActionInitializer<SynchronizationSchemeAction, VirtualModelInstance<?, ?>, VirtualModelInstanceObject> getDefaultInitializer() {
-		return new FlexoActionInitializer<SynchronizationSchemeAction, VirtualModelInstance<?, ?>, VirtualModelInstanceObject>() {
-			@Override
-			public boolean run(EventObject e, SynchronizationSchemeAction action) {
-				getController().willExecute(action);
-				ParametersRetriever<SynchronizationScheme> parameterRetriever = new ParametersRetriever<>(action,
-						getController() != null ? getController().getApplicationContext() : null);
-				if (action.escapeParameterRetrievingWhenValid && parameterRetriever.isSkipable()) {
-					return true;
-				}
-				return parameterRetriever.retrieveParameters();
+	protected FlexoActionRunnable<SynchronizationSchemeAction, VirtualModelInstance<?, ?>, VirtualModelInstanceObject> getDefaultInitializer() {
+		return (e, action) -> {
+			getController().willExecute(action);
+			ParametersRetriever<SynchronizationScheme> parameterRetriever = new ParametersRetriever<>(action,
+					getController() != null ? getController().getApplicationContext() : null);
+			if (action.escapeParameterRetrievingWhenValid && parameterRetriever.isSkipable()) {
+				return true;
 			}
+			return parameterRetriever.retrieveParameters();
 		};
 	}
 
 	@Override
-	protected FlexoActionFinalizer<SynchronizationSchemeAction, VirtualModelInstance<?, ?>, VirtualModelInstanceObject> getDefaultFinalizer() {
+	protected FlexoActionRunnable<SynchronizationSchemeAction, VirtualModelInstance<?, ?>, VirtualModelInstanceObject> getDefaultFinalizer() {
 		return (e, action) -> {
 			getController().hasExecuted(action);
 			return true;
@@ -93,16 +82,13 @@ public class SynchronizationSchemeActionInitializer
 	}
 
 	@Override
-	protected FlexoExceptionHandler<SynchronizationSchemeAction> getDefaultExceptionHandler() {
-		return new FlexoExceptionHandler<SynchronizationSchemeAction>() {
-			@Override
-			public boolean handleException(FlexoException exception, SynchronizationSchemeAction action) {
-				if (exception instanceof NotImplementedException) {
-					FlexoController.notify(action.getLocales().localizedForKey("not_implemented_yet"));
-					return true;
-				}
-				return false;
+	protected FlexoExceptionHandler<SynchronizationSchemeAction, VirtualModelInstance<?, ?>, VirtualModelInstanceObject> getDefaultExceptionHandler() {
+		return (exception, action) -> {
+			if (exception instanceof NotImplementedException) {
+				FlexoController.notify(action.getLocales().localizedForKey("not_implemented_yet"));
+				return true;
 			}
+			return false;
 		};
 	}
 

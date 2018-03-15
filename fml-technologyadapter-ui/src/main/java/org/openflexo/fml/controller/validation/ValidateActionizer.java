@@ -48,7 +48,7 @@ import org.openflexo.FlexoCst;
 import org.openflexo.fml.controller.FMLTechnologyAdapterController;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.action.FlexoActionFactory;
-import org.openflexo.foundation.action.FlexoActionFinalizer;
+import org.openflexo.foundation.action.FlexoActionRunnable;
 import org.openflexo.foundation.fml.FMLObject;
 import org.openflexo.foundation.fml.FMLValidationReport;
 import org.openflexo.icon.IconLibrary;
@@ -68,7 +68,7 @@ public class ValidateActionizer extends ActionInitializer<ValidateAction, FMLObj
 	}
 
 	@Override
-	protected FlexoActionFinalizer<ValidateAction, FMLObject, FlexoObject> getDefaultFinalizer() {
+	protected FlexoActionRunnable<ValidateAction, FMLObject, FlexoObject> getDefaultFinalizer() {
 		return (e, action) -> {
 			FMLValidationReport virtualModelReport = (FMLValidationReport) fmlTAController
 					.getValidationReport(action.getFocusedObject().getDeclaringVirtualModel());

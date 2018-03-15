@@ -38,15 +38,12 @@
 
 package org.openflexo.fml.controller.action;
 
-import java.util.logging.Logger;
-
 import javax.swing.Icon;
 
 import org.openflexo.components.wizard.Wizard;
 import org.openflexo.components.wizard.WizardDialog;
 import org.openflexo.foundation.action.FlexoActionFactory;
-import org.openflexo.foundation.action.FlexoActionFinalizer;
-import org.openflexo.foundation.action.FlexoActionInitializer;
+import org.openflexo.foundation.action.FlexoActionRunnable;
 import org.openflexo.foundation.fml.FMLObject;
 import org.openflexo.foundation.fml.action.CreateInspectorEntry;
 import org.openflexo.foundation.fml.inspector.FlexoConceptInspector;
@@ -55,15 +52,12 @@ import org.openflexo.view.controller.ActionInitializer;
 import org.openflexo.view.controller.ControllerActionInitializer;
 
 public class CreateInspectorEntryInitializer extends ActionInitializer<CreateInspectorEntry, FlexoConceptInspector, FMLObject> {
-
-	private static final Logger logger = Logger.getLogger(ControllerActionInitializer.class.getPackage().getName());
-
 	public CreateInspectorEntryInitializer(ControllerActionInitializer actionInitializer) {
 		super(CreateInspectorEntry.actionType, actionInitializer);
 	}
 
 	@Override
-	protected FlexoActionInitializer<CreateInspectorEntry, FlexoConceptInspector, FMLObject> getDefaultInitializer() {
+	protected FlexoActionRunnable<CreateInspectorEntry, FlexoConceptInspector, FMLObject> getDefaultInitializer() {
 		return (e, action) -> {
 			Wizard wizard = new CreateInspectorEntryWizard(action, getController());
 			WizardDialog dialog = new WizardDialog(wizard, getController());
@@ -77,7 +71,7 @@ public class CreateInspectorEntryInitializer extends ActionInitializer<CreateIns
 	}
 
 	@Override
-	protected FlexoActionFinalizer<CreateInspectorEntry, FlexoConceptInspector, FMLObject> getDefaultFinalizer() {
+	protected FlexoActionRunnable<CreateInspectorEntry, FlexoConceptInspector, FMLObject> getDefaultFinalizer() {
 		return (e, action) -> {
 			// getController().setCurrentEditedObjectAsModuleView(action.getNewModelSlot(), getController().VIEW_POINT_PERSPECTIVE);
 			return true;

@@ -39,39 +39,23 @@
 package org.openflexo.action;
 
 import java.awt.event.KeyEvent;
-import java.util.EventObject;
-import java.util.logging.Logger;
 
 import javax.swing.KeyStroke;
 
 import org.openflexo.FlexoCst;
 import org.openflexo.foundation.FlexoObject;
-import org.openflexo.foundation.action.FlexoActionFinalizer;
-import org.openflexo.foundation.action.FlexoActionInitializer;
+import org.openflexo.foundation.action.FlexoActionRunnable;
 import org.openflexo.foundation.action.SelectAllAction;
 import org.openflexo.view.controller.ActionInitializer;
 import org.openflexo.view.controller.ControllerActionInitializer;
 
 public class SelectAllActionInitializer extends ActionInitializer<SelectAllAction, FlexoObject, FlexoObject> {
-
-	private static final Logger logger = Logger.getLogger(ControllerActionInitializer.class.getPackage().getName());
-
 	public SelectAllActionInitializer(ControllerActionInitializer actionInitializer) {
 		super(actionInitializer.getEditingContext().getSelectAllActionType(), actionInitializer);
 	}
 
 	@Override
-	protected FlexoActionInitializer<SelectAllAction, FlexoObject, FlexoObject> getDefaultInitializer() {
-		return new FlexoActionInitializer<SelectAllAction, FlexoObject, FlexoObject>() {
-			@Override
-			public boolean run(EventObject e, SelectAllAction action) {
-				return true;
-			}
-		};
-	}
-
-	@Override
-	protected FlexoActionFinalizer<SelectAllAction, FlexoObject, FlexoObject> getDefaultFinalizer() {
+	protected FlexoActionRunnable<SelectAllAction, FlexoObject, FlexoObject> getDefaultFinalizer() {
 		return (e, action) -> {
 			System.out.println("Select all with " + action.getFocusedObject());
 			/*DiagramElement<?> container = action.getFocusedObject();

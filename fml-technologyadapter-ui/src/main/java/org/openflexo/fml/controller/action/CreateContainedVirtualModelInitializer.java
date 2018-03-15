@@ -38,15 +38,12 @@
 
 package org.openflexo.fml.controller.action;
 
-import java.util.logging.Logger;
-
 import javax.swing.Icon;
 
 import org.openflexo.components.wizard.Wizard;
 import org.openflexo.components.wizard.WizardDialog;
 import org.openflexo.foundation.action.FlexoActionFactory;
-import org.openflexo.foundation.action.FlexoActionFinalizer;
-import org.openflexo.foundation.action.FlexoActionInitializer;
+import org.openflexo.foundation.action.FlexoActionRunnable;
 import org.openflexo.foundation.fml.FMLObject;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.action.CreateContainedVirtualModel;
@@ -58,15 +55,12 @@ import org.openflexo.view.controller.ActionInitializer;
 import org.openflexo.view.controller.ControllerActionInitializer;
 
 public class CreateContainedVirtualModelInitializer extends ActionInitializer<CreateContainedVirtualModel, VirtualModel, FMLObject> {
-
-	private static final Logger logger = Logger.getLogger(ControllerActionInitializer.class.getPackage().getName());
-
 	public CreateContainedVirtualModelInitializer(ControllerActionInitializer actionInitializer) {
 		super(CreateContainedVirtualModel.actionType, actionInitializer);
 	}
 
 	@Override
-	protected FlexoActionInitializer<CreateContainedVirtualModel, VirtualModel, FMLObject> getDefaultInitializer() {
+	protected FlexoActionRunnable<CreateContainedVirtualModel, VirtualModel, FMLObject> getDefaultInitializer() {
 		return (e, action) -> {
 			Wizard wizard = new CreateContainedVirtualModelWizard(action, getController());
 			WizardDialog dialog = new WizardDialog(wizard, getController());
@@ -81,7 +75,7 @@ public class CreateContainedVirtualModelInitializer extends ActionInitializer<Cr
 	}
 
 	@Override
-	protected FlexoActionFinalizer<CreateContainedVirtualModel, VirtualModel, FMLObject> getDefaultFinalizer() {
+	protected FlexoActionRunnable<CreateContainedVirtualModel, VirtualModel, FMLObject> getDefaultFinalizer() {
 		return (e, action) -> {
 			action.getNewVirtualModel().setAuthor(getController().getApplicationContext().getGeneralPreferences().getUserName());
 			getController().selectAndFocusObject(action.getNewVirtualModel());

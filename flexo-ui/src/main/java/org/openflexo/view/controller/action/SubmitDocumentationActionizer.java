@@ -50,8 +50,7 @@ import org.openflexo.drm.action.SubmitVersion;
 import org.openflexo.drm.ui.SubmitNewVersionPopup;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.action.FlexoActionFactory;
-import org.openflexo.foundation.action.FlexoActionFinalizer;
-import org.openflexo.foundation.action.FlexoActionInitializer;
+import org.openflexo.foundation.action.FlexoActionRunnable;
 import org.openflexo.icon.IconLibrary;
 import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.localization.Language;
@@ -70,8 +69,8 @@ public class SubmitDocumentationActionizer extends ActionInitializer<SubmitDocum
 	}
 
 	@Override
-	protected FlexoActionInitializer<SubmitDocumentationAction, FlexoObject, FlexoObject> getDefaultInitializer() {
-		return new FlexoActionInitializer<SubmitDocumentationAction, FlexoObject, FlexoObject>() {
+	protected FlexoActionRunnable<SubmitDocumentationAction, FlexoObject, FlexoObject> getDefaultInitializer() {
+		return new FlexoActionRunnable<SubmitDocumentationAction, FlexoObject, FlexoObject>() {
 			@Override
 			public boolean run(EventObject e, SubmitDocumentationAction anAction) {
 				DocItem docItem;
@@ -152,23 +151,19 @@ public class SubmitDocumentationActionizer extends ActionInitializer<SubmitDocum
 	}
 
 	@Override
-	protected FlexoActionFinalizer<SubmitDocumentationAction, FlexoObject, FlexoObject> getDefaultFinalizer() {
-		return new FlexoActionFinalizer<SubmitDocumentationAction, FlexoObject, FlexoObject>() {
-			@Override
-			public boolean run(EventObject e, SubmitDocumentationAction action) {
-				if (action.getContext() != null && action.getContext() instanceof SubmitVersion) {
-					((SubmitVersion) action.getContext()).doAction();
-					FlexoController
-							.notify(FlexoLocalization.getMainLocalizer().localizedForKey("submission_has_been_successfully_recorded"));
-					return true;
-				}
-				return false;
+	protected FlexoActionRunnable<SubmitDocumentationAction, FlexoObject, FlexoObject> getDefaultFinalizer() {
+		return (e, action) -> {
+			if (action.getContext() != null && action.getContext() instanceof SubmitVersion) {
+				((SubmitVersion) action.getContext()).doAction();
+				FlexoController.notify(FlexoLocalization.getMainLocalizer().localizedForKey("submission_has_been_successfully_recorded"));
+				return true;
 			}
+			return false;
 		};
 	}
 
 	@Override
-	protected Icon getEnabledIcon(FlexoActionFactory actionType) {
+	protected Icon getEnabledIcon(FlexoActionFactory<SubmitDocumentationAction, FlexoObject, FlexoObject> actionType) {
 		return IconLibrary.HELP_ICON;
 	}
 }

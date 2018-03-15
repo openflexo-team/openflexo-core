@@ -38,12 +38,10 @@
 
 package org.openflexo.fml.controller.action;
 
-import java.util.logging.Logger;
-
 import javax.swing.Icon;
 
 import org.openflexo.foundation.action.FlexoActionFactory;
-import org.openflexo.foundation.action.FlexoActionInitializer;
+import org.openflexo.foundation.action.FlexoActionRunnable;
 import org.openflexo.foundation.fml.FMLObject;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.action.DeleteVirtualModel;
@@ -53,22 +51,18 @@ import org.openflexo.view.controller.ControllerActionInitializer;
 import org.openflexo.view.controller.FlexoController;
 
 public class DeleteVirtualModelInitializer extends ActionInitializer<DeleteVirtualModel, VirtualModel, FMLObject> {
-
-	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(ControllerActionInitializer.class.getPackage().getName());
-
 	public DeleteVirtualModelInitializer(ControllerActionInitializer actionInitializer) {
 		super(DeleteVirtualModel.actionType, actionInitializer);
 	}
 
 	@Override
-	protected FlexoActionInitializer<DeleteVirtualModel, VirtualModel, FMLObject> getDefaultInitializer() {
+	protected FlexoActionRunnable<DeleteVirtualModel, VirtualModel, FMLObject> getDefaultInitializer() {
 		return (e, action) -> FlexoController
 				.confirm(action.getLocales().localizedForKey("would_you_really_like_to_delete_this_virtual_model"));
 	}
 
 	@Override
-	protected Icon getEnabledIcon(FlexoActionFactory actionType) {
+	protected Icon getEnabledIcon(FlexoActionFactory<DeleteVirtualModel, VirtualModel, FMLObject> actionType) {
 		return IconLibrary.DELETE_ICON;
 	}
 

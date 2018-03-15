@@ -39,15 +39,13 @@
 
 package org.openflexo.view.controller.action;
 
-import java.util.EventObject;
 import java.util.logging.Logger;
 
 import javax.swing.Icon;
 
 import org.openflexo.foundation.action.AddRepositoryFolder;
 import org.openflexo.foundation.action.FlexoActionFactory;
-import org.openflexo.foundation.action.FlexoActionFinalizer;
-import org.openflexo.foundation.action.FlexoActionInitializer;
+import org.openflexo.foundation.action.FlexoActionRunnable;
 import org.openflexo.foundation.resource.RepositoryFolder;
 import org.openflexo.icon.IconLibrary;
 import org.openflexo.view.controller.ActionInitializer;
@@ -63,68 +61,62 @@ public class AddRepositoryFolderInitializer extends ActionInitializer<AddReposit
 	}
 
 	@Override
-	protected FlexoActionInitializer<AddRepositoryFolder, RepositoryFolder, RepositoryFolder> getDefaultInitializer() {
-		return new FlexoActionInitializer<AddRepositoryFolder, RepositoryFolder, RepositoryFolder>() {
-			@Override
-			public boolean run(EventObject e, AddRepositoryFolder action) {
-				if (action.getFocusedObject() != null) {
-					String newFolderName = null;
-					while (newFolderName == null) {
-						/*newFolderName = FlexoController.askForStringMatchingPattern(
-								FlexoLocalization.localizedForKey("enter_name_for_the_new_folder"),
-								Pattern.compile(FileUtils.GOOD_CHARACTERS_REG_EXP + "+"),
-								FlexoLocalization.localizedForKey("folder_name_cannot_contain_:_\\_\"_:_*_?_<_>_/"));*/
-						newFolderName = FlexoController.askForString(action.getLocales().localizedForKey("enter_name_for_the_new_folder"));
-						if (newFolderName == null) {
-							return false;
-						}
-						if (newFolderName.trim().length() == 0) {
-							FlexoController.showError(action.getLocales().localizedForKey("a_folder_name_cannot_be_empty"));
-							return false;
-						}
-						if (action.getFocusedObject().getFolderNamed(newFolderName) != null) {
-							FlexoController.notify(action.getLocales().localizedForKey("there_is_already_a_folder_with that name"));
-							newFolderName = null;
-						}
+	protected FlexoActionRunnable<AddRepositoryFolder, RepositoryFolder, RepositoryFolder> getDefaultInitializer() {
+		return (e, action) -> {
+			if (action.getFocusedObject() != null) {
+				String newFolderName = null;
+				while (newFolderName == null) {
+					/*newFolderName = FlexoController.askForStringMatchingPattern(
+							FlexoLocalization.localizedForKey("enter_name_for_the_new_folder"),
+							Pattern.compile(FileUtils.GOOD_CHARACTERS_REG_EXP + "+"),
+							FlexoLocalization.localizedForKey("folder_name_cannot_contain_:_\\_\"_:_*_?_<_>_/"));*/
+					newFolderName = FlexoController.askForString(action.getLocales().localizedForKey("enter_name_for_the_new_folder"));
+					if (newFolderName == null) {
+						return false;
 					}
-					action.setNewFolderName(newFolderName);
-					return true;
+					if (newFolderName.trim().length() == 0) {
+						FlexoController.showError(action.getLocales().localizedForKey("a_folder_name_cannot_be_empty"));
+						return false;
+					}
+					if (action.getFocusedObject().getFolderNamed(newFolderName) != null) {
+						FlexoController.notify(action.getLocales().localizedForKey("there_is_already_a_folder_with that name"));
+						newFolderName = null;
+					}
 				}
-				else {
-					return false;
-				}
+				action.setNewFolderName(newFolderName);
+				return true;
+			}
+			else {
+				return false;
 			}
 		};
 	}
 
 	@Override
-	protected FlexoActionFinalizer<AddRepositoryFolder, RepositoryFolder, RepositoryFolder> getDefaultFinalizer() {
-		return new FlexoActionFinalizer<AddRepositoryFolder, RepositoryFolder, RepositoryFolder>() {
-			@Override
-			public boolean run(EventObject e, AddRepositoryFolder action) {
-				// Update ProjectBrowser (normally it should be done with a
-				// notification)
-				// TODO: do it properly with a notification
-				/*if (action.getInvoker() instanceof JTree) {
-					Component current = (JTree) action.getInvoker();
-					while (current != null) {
-						if (current instanceof BrowserView) {
-							((BrowserView) current).getBrowser().update();
-							return true;
-						}
-						current = current.getParent();
+	protected FlexoActionRunnable<AddRepositoryFolder, RepositoryFolder, RepositoryFolder> getDefaultFinalizer() {
+		return (e, action) -> {
+			// Update ProjectBrowser (normally it should be done with a
+			// notification)
+			// TODO: do it properly with a notification
+			/*if (action.getInvoker() instanceof JTree) {
+				Component current = (JTree) action.getInvoker();
+				while (current != null) {
+					if (current instanceof BrowserView) {
+						((BrowserView) current).getBrowser().update();
+						return true;
 					}
-				}*/
-				if (getController().getApplicationContext().getPresentationPreferences().hideEmptyFolders()
-						&& action.getNewFolder().getResources().size() == 0) {
-					if (FlexoController.confirmWithWarning(
-							getController().getApplicationContext().getLocalizationService().getFlexoLocalizer().localizedForKey(
-									"<html>your_preferences_hide_empty_folder<br>would_you_like_to_show_empty_folders_?<br>you_can_change_this_option_in_presentation_preferences</html>"))) {
-						getController().getApplicationContext().getPresentationPreferences().setHideEmptyFolders(false);
-					}
+					current = current.getParent();
 				}
-				return true;
+			}*/
+			if (getController().getApplicationContext().getPresentationPreferences().hideEmptyFolders()
+					&& action.getNewFolder().getResources().size() == 0) {
+				if (FlexoController.confirmWithWarning(
+						getController().getApplicationContext().getLocalizationService().getFlexoLocalizer().localizedForKey(
+								"<html>your_preferences_hide_empty_folder<br>would_you_like_to_show_empty_folders_?<br>you_can_change_this_option_in_presentation_preferences</html>"))) {
+					getController().getApplicationContext().getPresentationPreferences().setHideEmptyFolders(false);
+				}
 			}
+			return true;
 		};
 	}
 

@@ -38,15 +38,12 @@
 
 package org.openflexo.fml.controller.action;
 
-import java.util.logging.Logger;
-
 import javax.swing.Icon;
 
 import org.openflexo.components.wizard.Wizard;
 import org.openflexo.components.wizard.WizardDialog;
 import org.openflexo.foundation.action.FlexoActionFactory;
-import org.openflexo.foundation.action.FlexoActionFinalizer;
-import org.openflexo.foundation.action.FlexoActionInitializer;
+import org.openflexo.foundation.action.FlexoActionRunnable;
 import org.openflexo.foundation.fml.FMLObject;
 import org.openflexo.foundation.fml.action.CreateEditionAction;
 import org.openflexo.foundation.fml.controlgraph.FMLControlGraph;
@@ -56,9 +53,6 @@ import org.openflexo.view.controller.ActionInitializer;
 import org.openflexo.view.controller.ControllerActionInitializer;
 
 public class CreateEditionActionInitializer extends ActionInitializer<CreateEditionAction, FMLControlGraph, FMLObject> {
-
-	private static final Logger logger = Logger.getLogger(ControllerActionInitializer.class.getPackage().getName());
-
 	// public static Resource CREATE_EDITION_ACTION_DIALOG_FIB = ResourceLocator.locateResource("Fib/Dialog/CreateEditionActionDialog.fib");
 
 	public CreateEditionActionInitializer(ControllerActionInitializer actionInitializer) {
@@ -66,7 +60,7 @@ public class CreateEditionActionInitializer extends ActionInitializer<CreateEdit
 	}
 
 	@Override
-	protected FlexoActionInitializer<CreateEditionAction, FMLControlGraph, FMLObject> getDefaultInitializer() {
+	protected FlexoActionRunnable<CreateEditionAction, FMLControlGraph, FMLObject> getDefaultInitializer() {
 		return (e, action) -> {
 			Wizard wizard = new CreateEditionActionWizard(action, getController());
 			WizardDialog dialog = new WizardDialog(wizard, getController());
@@ -81,7 +75,7 @@ public class CreateEditionActionInitializer extends ActionInitializer<CreateEdit
 	}
 
 	@Override
-	protected FlexoActionFinalizer<CreateEditionAction, FMLControlGraph, FMLObject> getDefaultFinalizer() {
+	protected FlexoActionRunnable<CreateEditionAction, FMLControlGraph, FMLObject> getDefaultFinalizer() {
 		return (e, action) -> {
 			// getController().setCurrentEditedObjectAsModuleView(action.getNewEditionAction(),
 			// getController().getCurrentPerspective());

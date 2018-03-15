@@ -39,8 +39,6 @@
 
 package org.openflexo.action;
 
-import java.util.logging.Logger;
-
 import javax.swing.Icon;
 import javax.swing.JFileChooser;
 
@@ -49,8 +47,7 @@ import org.openflexo.components.ProjectChooserComponent;
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoProjectObject;
 import org.openflexo.foundation.action.FlexoActionFactory;
-import org.openflexo.foundation.action.FlexoActionFinalizer;
-import org.openflexo.foundation.action.FlexoActionInitializer;
+import org.openflexo.foundation.action.FlexoActionRunnable;
 import org.openflexo.foundation.action.FlexoExceptionHandler;
 import org.openflexo.foundation.action.ImportProject;
 import org.openflexo.foundation.resource.ProjectImportLoopException;
@@ -65,15 +62,12 @@ import org.openflexo.view.controller.ControllerActionInitializer;
 import org.openflexo.view.controller.FlexoController;
 
 public class ImportProjectInitializer extends ActionInitializer<ImportProject, FlexoProjectObject, FlexoProjectObject> {
-
-	private static final Logger logger = Logger.getLogger(ControllerActionInitializer.class.getPackage().getName());
-
 	public ImportProjectInitializer(ControllerActionInitializer actionInitializer) {
 		super(ImportProject.actionType, actionInitializer);
 	}
 
 	@Override
-	protected FlexoExceptionHandler<ImportProject> getDefaultExceptionHandler() {
+	protected FlexoExceptionHandler<ImportProject, FlexoProjectObject, FlexoProjectObject> getDefaultExceptionHandler() {
 		return (exception, action) -> {
 			if (action.getThrownException() instanceof ProjectImportLoopException) {
 				FlexoController.notify(action.getLocales().localizedForKey("project_already_imported") + " "
@@ -84,7 +78,7 @@ public class ImportProjectInitializer extends ActionInitializer<ImportProject, F
 	}
 
 	@Override
-	protected FlexoActionFinalizer<ImportProject, FlexoProjectObject, FlexoProjectObject> getDefaultFinalizer() {
+	protected FlexoActionRunnable<ImportProject, FlexoProjectObject, FlexoProjectObject> getDefaultFinalizer() {
 		return (event, action) -> {
 			if (action.hasActionExecutionSucceeded()) {
 				FlexoController.notify(action.getLocales().localizedForKey("successfully_imported_project") + " "
@@ -95,7 +89,7 @@ public class ImportProjectInitializer extends ActionInitializer<ImportProject, F
 	}
 
 	@Override
-	protected FlexoActionInitializer<ImportProject, FlexoProjectObject, FlexoProjectObject> getDefaultInitializer() {
+	protected FlexoActionRunnable<ImportProject, FlexoProjectObject, FlexoProjectObject> getDefaultInitializer() {
 		return (e, action) -> {
 			if (!(getController().getApplicationContext() instanceof InteractiveApplicationContext)) {
 				return false;

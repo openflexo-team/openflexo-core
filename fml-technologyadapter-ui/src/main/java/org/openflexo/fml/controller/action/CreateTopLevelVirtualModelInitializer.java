@@ -38,15 +38,12 @@
 
 package org.openflexo.fml.controller.action;
 
-import java.util.logging.Logger;
-
 import javax.swing.Icon;
 
 import org.openflexo.components.wizard.Wizard;
 import org.openflexo.components.wizard.WizardDialog;
 import org.openflexo.foundation.action.FlexoActionFactory;
-import org.openflexo.foundation.action.FlexoActionFinalizer;
-import org.openflexo.foundation.action.FlexoActionInitializer;
+import org.openflexo.foundation.action.FlexoActionRunnable;
 import org.openflexo.foundation.fml.FMLObject;
 import org.openflexo.foundation.fml.action.CreateTopLevelVirtualModel;
 import org.openflexo.foundation.fml.rm.VirtualModelResource;
@@ -60,15 +57,12 @@ import org.openflexo.view.controller.ControllerActionInitializer;
 
 public class CreateTopLevelVirtualModelInitializer
 		extends ActionInitializer<CreateTopLevelVirtualModel, RepositoryFolder<VirtualModelResource, ?>, FMLObject> {
-
-	private static final Logger logger = Logger.getLogger(ControllerActionInitializer.class.getPackage().getName());
-
 	public CreateTopLevelVirtualModelInitializer(ControllerActionInitializer actionInitializer) {
 		super(CreateTopLevelVirtualModel.actionType, actionInitializer);
 	}
 
 	@Override
-	protected FlexoActionInitializer<CreateTopLevelVirtualModel, RepositoryFolder<VirtualModelResource, ?>, FMLObject> getDefaultInitializer() {
+	protected FlexoActionRunnable<CreateTopLevelVirtualModel, RepositoryFolder<VirtualModelResource, ?>, FMLObject> getDefaultInitializer() {
 		return (e, action) -> {
 			Wizard wizard = new CreateTopLevelVirtualModelWizard(action, getController());
 			WizardDialog dialog = new WizardDialog(wizard, getController());
@@ -83,7 +77,7 @@ public class CreateTopLevelVirtualModelInitializer
 	}
 
 	@Override
-	protected FlexoActionFinalizer<CreateTopLevelVirtualModel, RepositoryFolder<VirtualModelResource, ?>, FMLObject> getDefaultFinalizer() {
+	protected FlexoActionRunnable<CreateTopLevelVirtualModel, RepositoryFolder<VirtualModelResource, ?>, FMLObject> getDefaultFinalizer() {
 		return (e, action) -> {
 			action.getNewVirtualModel().setAuthor(getController().getApplicationContext().getGeneralPreferences().getUserName());
 			getController().selectAndFocusObject(action.getNewVirtualModel());
