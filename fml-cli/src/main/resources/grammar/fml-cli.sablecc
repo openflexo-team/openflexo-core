@@ -28,6 +28,7 @@ Helpers
  any        = [0 .. 0xffff];
  not_hyphen = [any - '"' ];
  not_hyphen2 = [any - ''' ];
+ file_char = upper_case | lower_case | digit | '_' | '-' | '.';
 
 Tokens
  dollar = '$';
@@ -93,6 +94,8 @@ Tokens
  
  identifier = letter (letter | digit)*;
  
+ file_name = file_char (file_char)*;
+ 
  blank = (' ' | 13 | 10)+;
 
 Ignored Tokens
@@ -117,12 +120,19 @@ Productions
   {number} number;
 
  path =
+  {file_name} file_name |
   {identifier} identifier |
-  {path} identifier div path |
   {dot} dot |
+  //{dot_identifier} dot path |
+  {path} file_name div path |
   {dot_path} dot div path |
   {double_dot} double_dot |
   {double_dot_path} double_dot div path;
+
+ //file_name = 
+ // {dot} dot |
+ // {identifier} identifier |
+ // {tail} identifier dot file_name;
 
  fml_command =
   {expr} expr |

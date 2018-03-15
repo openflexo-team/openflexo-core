@@ -47,6 +47,7 @@ import org.openflexo.foundation.fml.cli.parser.node.ADotPath;
 import org.openflexo.foundation.fml.cli.parser.node.ADotPathPath;
 import org.openflexo.foundation.fml.cli.parser.node.ADoubleDotPath;
 import org.openflexo.foundation.fml.cli.parser.node.ADoubleDotPathPath;
+import org.openflexo.foundation.fml.cli.parser.node.AFileNamePath;
 import org.openflexo.foundation.fml.cli.parser.node.AIdentifierPath;
 import org.openflexo.foundation.fml.cli.parser.node.APathPath;
 import org.openflexo.foundation.fml.cli.parser.node.Node;
@@ -66,6 +67,16 @@ public abstract class Directive extends AbstractCommand {
 		super(node, commandInterpreter);
 	}
 
+	/*protected String retrieveFileName(PFileName fileName) {
+		if (fileName instanceof AIdentifierFileName) {
+			return ((AIdentifierFileName) fileName).getIdentifier().getText();
+		}
+		else if (fileName instanceof ATailFileName) {
+			return ((ATailFileName) fileName).getIdentifier().getText() + "." + retrieveFileName(((ATailFileName) fileName).getFileName());
+		}
+		return null;
+	}*/
+
 	protected String retrievePath(PPath path) {
 		if (path instanceof ADoubleDotPath) {
 			return "..";
@@ -79,11 +90,14 @@ public abstract class Directive extends AbstractCommand {
 		else if (path instanceof ADotPathPath) {
 			return "." + File.separator + retrievePath(((ADotPathPath) path).getPath());
 		}
+		else if (path instanceof AFileNamePath) {
+			return ((AFileNamePath) path).getFileName().getText();
+		}
 		else if (path instanceof AIdentifierPath) {
 			return ((AIdentifierPath) path).getIdentifier().getText();
 		}
 		else if (path instanceof APathPath) {
-			return ((APathPath) path).getIdentifier().getText() + File.separator + retrievePath(((APathPath) path).getPath());
+			return ((APathPath) path).getFileName().getText() + File.separator + retrievePath(((APathPath) path).getPath());
 		}
 		return null;
 	}
