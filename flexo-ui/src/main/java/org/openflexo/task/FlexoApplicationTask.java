@@ -104,14 +104,8 @@ public abstract class FlexoApplicationTask extends FlexoTask {
 	protected synchronized void finishedExecution() {
 		super.finishedExecution();
 
-		if (getTaskStatus() == TaskStatus.EXCEPTION_THROWN) {
-			SwingUtilities.invokeLater(new Runnable() {
-				@Override
-				public void run() {
-					notifyThrownException(getThrownException());
-				}
-			});
-		}
+		if (getTaskStatus() == TaskStatus.EXCEPTION_THROWN)
+			SwingUtilities.invokeLater(() -> notifyThrownException(getThrownException()));
 	}
 
 	// Please override to get better user feedback

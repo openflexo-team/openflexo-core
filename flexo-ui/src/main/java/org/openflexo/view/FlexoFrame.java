@@ -47,7 +47,6 @@ import java.awt.Toolkit;
 import java.awt.Window;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
-import java.awt.event.ComponentListener;
 import java.awt.event.MouseListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -85,7 +84,7 @@ import org.openflexo.view.controller.model.ControllerModel;
  * @author sguerin
  */
 
-public final class FlexoFrame extends JFrame implements FlexoActionSource, PropertyChangeListener {
+public final class FlexoFrame extends JFrame implements FlexoActionSource<FlexoObject, FlexoObject>, PropertyChangeListener {
 
 	// private FlexoModule<?>
 
@@ -117,7 +116,7 @@ public final class FlexoFrame extends JFrame implements FlexoActionSource, Prope
 
 	private List<FlexoRelativeWindow> _displayedRelativeWindows;
 
-	private ComponentListener windowResizeListener;
+	// Unused private ComponentListener windowResizeListener;
 
 	private MouseListener mouseListener;
 
@@ -189,12 +188,7 @@ public final class FlexoFrame extends JFrame implements FlexoActionSource, Prope
 	}
 
 	private static void disposeDefaultFrameWhenPossible() {
-		SwingUtilities.invokeLater(new Runnable() {
-			@Override
-			public void run() {
-				disposeDefaultFrame();
-			}
-		});
+		SwingUtilities.invokeLater(() -> disposeDefaultFrame());
 	}
 
 	private static void disposeDefaultFrame() {
@@ -283,8 +277,7 @@ public final class FlexoFrame extends JFrame implements FlexoActionSource, Prope
 		 * Listeners
 		 */
 		addWindowListener(windowListener = new FlexoModuleWindowListener());
-		addComponentListener(windowResizeListener = new ComponentAdapter() {
-
+		addComponentListener(new ComponentAdapter() { // Unused windowResizeListener =
 			@Override
 			public void componentMoved(ComponentEvent e) {
 				saveBoundsInPreferenceWhenPossible();
@@ -527,20 +520,17 @@ public final class FlexoFrame extends JFrame implements FlexoActionSource, Prope
 			return;
 		}
 
-		boundsSaver = new Thread(new Runnable() {
-			@Override
-			public void run() {
-				boolean go = true;
-				while (go) {
-					try {
-						go = false;
-						Thread.sleep(1000);
-					} catch (InterruptedException e) {
-						go = true;// interruption is used to reset sleep.
-					}
+		boundsSaver = new Thread(() -> {
+			boolean go = true;
+			while (go) {
+				try {
+					go = false;
+					Thread.sleep(1000);
+				} catch (InterruptedException e) {
+					go = true;// interruption is used to reset sleep.
 				}
-				saveBoundsInPreference();
 			}
+			saveBoundsInPreference();
 		});
 		boundsSaver.start();
 	}

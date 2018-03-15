@@ -132,15 +132,12 @@ public abstract class FlexoConceptView<EP extends FlexoConcept> extends FIBModul
 	@Override
 	public void willShow() {
 		super.willShow();
-		SwingUtilities.invokeLater(new Runnable() {
-			@Override
-			public void run() {
-				if (getFIBView("FlexoConceptBrowser") instanceof JFIBBrowserWidget) {
-					JFIBBrowserWidget<FMLObject> browser = (JFIBBrowserWidget<FMLObject>) getFIBView("FlexoConceptBrowser");
-					browser.performExpand(getRepresentedObject().getStructuralFacet());
-					browser.performExpand(getRepresentedObject().getBehaviouralFacet());
-					browser.performExpand(getRepresentedObject().getInnerConceptsFacet());
-				}
+		SwingUtilities.invokeLater(() -> {
+			if (getFIBView("FlexoConceptBrowser") instanceof JFIBBrowserWidget) {
+				JFIBBrowserWidget<FMLObject> browser = (JFIBBrowserWidget<FMLObject>) getFIBView("FlexoConceptBrowser");
+				browser.performExpand(getRepresentedObject().getStructuralFacet());
+				browser.performExpand(getRepresentedObject().getBehaviouralFacet());
+				browser.performExpand(getRepresentedObject().getInnerConceptsFacet());
 			}
 		});
 	}

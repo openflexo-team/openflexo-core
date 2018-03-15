@@ -139,15 +139,12 @@ public class MainPaneTopBar extends JMenuBar {
 				public void actionPerformed(ActionEvent e) {
 					// We activate the module LATER
 					// to let the window manager to handle all events BEFORE to perform the switch
-					SwingUtilities.invokeLater(new Runnable() {
-						@Override
-						public void run() {
-							try {
-								model.getModuleLoader().switchToModule(module);
-							} catch (ModuleLoadingException e1) {
-								e1.printStackTrace();
-								FlexoController.notify(e1.getLocalizedMessage());
-							}
+					SwingUtilities.invokeLater(() -> {
+						try {
+							model.getModuleLoader().switchToModule(module);
+						} catch (ModuleLoadingException e1) {
+							e1.printStackTrace();
+							FlexoController.notify(e1.getLocalizedMessage());
 						}
 					});
 				}

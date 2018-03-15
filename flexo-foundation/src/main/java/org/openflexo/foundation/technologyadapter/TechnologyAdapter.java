@@ -302,16 +302,11 @@ public abstract class TechnologyAdapter extends FlexoObservable {
 		}
 	}
 
-	protected void resourceCenterHasBeenInitialized(FlexoResourceCenter<?> rc) {
+	private void updateRepository(FlexoResourceCenter<?> rc) {
 		// Call it to update the current repositories
 		if (!SwingUtilities.isEventDispatchThread()) {
-			SwingUtilities.invokeLater(new Runnable() {
-				@Override
-				public void run() {
-					// Call it to update the current repositories
-					notifyRepositoryStructureChanged();
-				}
-			});
+			SwingUtilities.invokeLater(() -> notifyRepositoryStructureChanged());
+			// Call it to update the current repositories
 		}
 		else {
 			// Call it to update the current repositories
@@ -319,21 +314,12 @@ public abstract class TechnologyAdapter extends FlexoObservable {
 		}
 	}
 
+	protected void resourceCenterHasBeenInitialized(FlexoResourceCenter<?> rc) {
+		updateRepository(rc);
+	}
+
 	private void resourceCenterHasBeenRemoved(FlexoResourceCenter<?> rc) {
-		// Call it to update the current repositories
-		if (!SwingUtilities.isEventDispatchThread()) {
-			SwingUtilities.invokeLater(new Runnable() {
-				@Override
-				public void run() {
-					// Call it to update the current repositories
-					notifyRepositoryStructureChanged();
-				}
-			});
-		}
-		else {
-			// Call it to update the current repositories
-			notifyRepositoryStructureChanged();
-		}
+		updateRepository(rc);
 	}
 
 	/**

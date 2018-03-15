@@ -585,17 +585,13 @@ public class ToolsMenu extends FlexoMenu {
 			if (getController().getApplicationContext().getBugReportService() == null
 					|| !getController().getApplicationContext().getBugReportService().isInitialized()) {
 				// not loaded yet, wait for the BugReportService to be activated
-				SwingUtilities.invokeLater(new Runnable() {
-					@Override
-					public void run() {
-						try {
-							Thread.sleep(100);
-						} catch (InterruptedException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
-						actionPerformed(null);
+				SwingUtilities.invokeLater(() -> {
+					try {
+						Thread.sleep(100);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
 					}
+					actionPerformed(null);
 				});
 			}
 			else {
@@ -734,8 +730,7 @@ public class ToolsMenu extends FlexoMenu {
 		public TimeTravelAction() {
 			super();
 			setEnabled(false);
-			if (getController().getProject() == null) {
-			}
+			if (getController().getProject() == null) {}
 		}
 
 		@Override

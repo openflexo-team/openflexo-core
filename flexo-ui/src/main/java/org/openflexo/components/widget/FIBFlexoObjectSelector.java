@@ -164,14 +164,11 @@ public abstract class FIBFlexoObjectSelector<T extends FlexoObject> extends Text
 			@Override
 			public void keyPressed(KeyEvent e) {
 				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-					SwingUtilities.invokeLater(new Runnable() {
-						@Override
-						public void run() {
-							updateMatchingValues();
-							if (matchingValues.size() > 0) {
-								setSelectedValue(matchingValues.get(0));
-								apply();
-							}
+					SwingUtilities.invokeLater(() -> {
+						updateMatchingValues();
+						if (matchingValues.size() > 0) {
+							setSelectedValue(matchingValues.get(0));
+							apply();
 						}
 					});
 				}
@@ -207,12 +204,9 @@ public abstract class FIBFlexoObjectSelector<T extends FlexoObject> extends Text
 				}
 				// updateMatchingValues();
 				if (requestFocus) {
-					SwingUtilities.invokeLater(new Runnable() {
-						@Override
-						public void run() {
-							getTextField().requestFocusInWindow();
-							getTextField().select(selectionStart, selectionEnd);
-						}
+					SwingUtilities.invokeLater(() -> {
+						getTextField().requestFocusInWindow();
+						getTextField().select(selectionStart, selectionEnd);
 					});
 				}
 
@@ -347,13 +341,10 @@ public abstract class FIBFlexoObjectSelector<T extends FlexoObject> extends Text
 		}
 		logger.fine("Objects matching with " + getFilteredName() + " found " + matchingValues.size() + " values");
 
-		SwingUtilities.invokeLater(new Runnable() {
-			@Override
-			public void run() {
-				pcSupport.firePropertyChange("matchingValues", oldMatchingValues, getMatchingValues());
-				if (matchingValues.size() == 1) {
-					setSelectedValue(matchingValues.get(0));
-				}
+		SwingUtilities.invokeLater(() -> {
+			pcSupport.firePropertyChange("matchingValues", oldMatchingValues, getMatchingValues());
+			if (matchingValues.size() == 1) {
+				setSelectedValue(matchingValues.get(0));
 			}
 		});
 

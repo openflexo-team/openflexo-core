@@ -221,12 +221,9 @@ public class ThreadPoolFlexoTaskManager extends FlexoServiceImpl implements Flex
 
 	@Override
 	public void shutdownAndExecute(final Runnable r) {
-		Thread t = new Thread(new Runnable() {
-			@Override
-			public void run() {
-				shutdownAndWait();
-				r.run();
-			}
+		Thread t = new Thread(() -> {
+			shutdownAndWait();
+			r.run();
 		}, "Shutdown");
 		t.start();
 	}

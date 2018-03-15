@@ -314,13 +314,9 @@ public class SelectionManagingDianaEditor<M extends FlexoObject> extends JDianaI
 		}
 		// SGU: Following code is used to force request focus when a click has been performed
 		// We do this to get keyboard accelerators to work again after having switched to an other component getting the focus
-		SwingUtilities.invokeLater(new Runnable() {
-			@Override
-			public void run() {
-				getDrawingView().requestFocus();
-				getDrawingView().requestFocusInWindow();
-			}
+		SwingUtilities.invokeLater(() -> {
+			getDrawingView().requestFocus();
+			getDrawingView().requestFocusInWindow();
 		});
 	}
-
 }

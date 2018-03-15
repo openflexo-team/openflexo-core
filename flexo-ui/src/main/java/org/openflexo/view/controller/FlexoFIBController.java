@@ -189,12 +189,7 @@ public class FlexoFIBController extends FIBController implements GraphicalFlexoO
 			return;
 		}
 		if (!SwingUtilities.isEventDispatchThread()) {
-			SwingUtilities.invokeLater(new Runnable() {
-				@Override
-				public void run() {
-					update(o, dataModification);
-				}
-			});
+			SwingUtilities.invokeLater(() -> update(o, dataModification));
 			return;
 		}
 

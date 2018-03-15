@@ -57,12 +57,17 @@ import javax.swing.SwingUtilities;
 import org.apache.commons.io.IOUtils;
 import org.openflexo.foundation.FlexoProject;
 import org.openflexo.foundation.FlexoService;
+import org.openflexo.foundation.FlexoService.ServiceNotification;
 import org.openflexo.foundation.FlexoServiceImpl;
 import org.openflexo.foundation.FlexoServiceManager.ServiceRegistered;
 import org.openflexo.foundation.FlexoServiceManager.TechnologyAdapterHasBeenActivated;
 import org.openflexo.foundation.FlexoServiceManager.TechnologyAdapterHasBeenDisactivated;
 import org.openflexo.foundation.project.FlexoProjectResource;
 import org.openflexo.foundation.project.FlexoProjectResourceFactory;
+import org.openflexo.foundation.resource.DefaultResourceCenterService.DefaultPackageResourceCenterIsNotInstalled;
+import org.openflexo.foundation.resource.DefaultResourceCenterService.ResourceCenterAdded;
+import org.openflexo.foundation.resource.DefaultResourceCenterService.ResourceCenterListShouldBeStored;
+import org.openflexo.foundation.resource.DefaultResourceCenterService.ResourceCenterRemoved;
 import org.openflexo.foundation.resource.FileIODelegate.FileHasBeenWrittenOnDiskNotification;
 import org.openflexo.foundation.resource.FileIODelegate.WillDeleteFileOnDiskNotification;
 import org.openflexo.foundation.resource.FileIODelegate.WillRenameFileOnDiskNotification;
@@ -348,13 +353,8 @@ public abstract class DefaultResourceCenterService extends FlexoServiceImpl impl
 	protected void resourceCenterHasBeenInitialized(FlexoResourceCenter<?> rc) {
 		// Call it to update the current repositories
 		if (!SwingUtilities.isEventDispatchThread()) {
-			SwingUtilities.invokeLater(new Runnable() {
-				@Override
-				public void run() {
-					// Call it to update the current repositories
-					notifyRepositoryStructureChanged();
-				}
-			});
+			SwingUtilities.invokeLater(() -> notifyRepositoryStructureChanged());
+			// Call it to update the current repositories
 		}
 		else {
 			// Call it to update the current repositories
@@ -456,8 +456,7 @@ public abstract class DefaultResourceCenterService extends FlexoServiceImpl impl
 	 * @author sylvain
 	 * 
 	 */
-	public class ResourceCenterListShouldBeStored implements ServiceNotification {
-	}
+	public class ResourceCenterListShouldBeStored implements ServiceNotification {}
 
 	@Override
 	public void initialize() {
@@ -488,8 +487,7 @@ public abstract class DefaultResourceCenterService extends FlexoServiceImpl impl
 	 * @author sylvain
 	 * 
 	 */
-	public class DefaultPackageResourceCenterIsNotInstalled implements ServiceNotification {
-	}
+	public class DefaultPackageResourceCenterIsNotInstalled implements ServiceNotification {}
 
 	private static void notifyWillWrite(File fileBeeingAdded, FileSystemBasedResourceCenter rc) {
 		File rootDirectory = rc.getRootDirectory();

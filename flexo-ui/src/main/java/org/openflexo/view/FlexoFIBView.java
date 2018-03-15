@@ -292,22 +292,19 @@ public class FlexoFIBView extends JPanel implements GraphicalFlexoObserver, HasP
 			lastSchedule = System.currentTimeMillis();
 			if (!invokeLaterScheduled) {
 				invokeLaterScheduled = true;
-				Thread invokeLaterThread = new Thread(new Runnable() {
-					@Override
-					public void run() {
-						while (System.currentTimeMillis() < lastSchedule + aggregationTimeOut) {
-							// We need to wait
-							try {
-								Thread.sleep(aggregationTimeOut);
-							} catch (InterruptedException e) {
-								e.printStackTrace();
-							}
+				Thread invokeLaterThread = new Thread(() -> {
+					while (System.currentTimeMillis() < lastSchedule + aggregationTimeOut) {
+						// We need to wait
+						try {
+							Thread.sleep(aggregationTimeOut);
+						} catch (InterruptedException e) {
+							e.printStackTrace();
 						}
-						synchronized (FlexoFIBView.this) {
-							invokeLaterScheduled = false;
-						}
-						r.run();
 					}
+					synchronized (FlexoFIBView.this) {
+						invokeLaterScheduled = false;
+					}
+					r.run();
 				}, "InvokeLaterThread");
 				invokeLaterThread.start();
 			}

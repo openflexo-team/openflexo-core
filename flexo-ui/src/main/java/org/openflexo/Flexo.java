@@ -313,12 +313,7 @@ public class Flexo {
 		};*/
 		// Before starting the UI, we need to initialize localization
 		FlexoApplication.initialize(applicationContext);
-		SwingUtilities.invokeLater(new Runnable() {
-			@Override
-			public void run() {
-				initFlexo(applicationContext, splashWindow2);
-			}
-		});
+		SwingUtilities.invokeLater(() -> initFlexo(applicationContext, splashWindow2));
 		try {
 			DenaliSecurityProvider.insertSecurityProvider();
 		} catch (Exception e) {

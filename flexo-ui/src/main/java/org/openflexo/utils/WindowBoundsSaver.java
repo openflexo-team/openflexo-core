@@ -92,25 +92,17 @@ public class WindowBoundsSaver implements ComponentListener {
 			return;
 		}
 
-		boundsSaver = new Thread(new Runnable() {
-			/**
-			 * Overrides run
-			 * 
-			 * @see java.lang.Runnable#run()
-			 */
-			@Override
-			public void run() {
-				boolean go = true;
-				while (go) {
-					try {
-						go = false;
-						Thread.sleep(800);
-					} catch (InterruptedException e) {
-						go = true;// interruption is used to reset sleep.
-					}
+		boundsSaver = new Thread(() -> {
+			boolean go = true;
+			while (go) {
+				try {
+					go = false;
+					Thread.sleep(800);
+				} catch (InterruptedException e) {
+					go = true;// interruption is used to reset sleep.
 				}
-				saveBoundsInPreference();
 			}
+			saveBoundsInPreference();
 		});
 		boundsSaver.start();
 	}

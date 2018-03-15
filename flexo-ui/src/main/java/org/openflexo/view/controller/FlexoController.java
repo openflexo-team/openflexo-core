@@ -1450,12 +1450,7 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 		if (!SwingUtilities.isEventDispatchThread()) {
 			final Holder<Boolean> returned = new Holder<>();
 			try {
-				SwingUtilities.invokeAndWait(new Runnable() {
-					@Override
-					public void run() {
-						returned.value = _handleWSException(e);
-					}
-				});
+				SwingUtilities.invokeAndWait(() -> returned.value = _handleWSException(e));
 			} catch (InvocationTargetException e1) {
 				e1.printStackTrace();
 				return false;
@@ -2133,7 +2128,7 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 		// FlexoLocalization.getMainLocalizer());
 		if (dialog.getStatus() == Status.VALIDATED) {
 			try {
-				dialog.saveSelection(getEditor().getFlexoProgressFactory());
+				dialog.saveSelection();
 			} catch (SaveResourcePermissionDeniedException e) {
 				e.printStackTrace();
 			} catch (SaveResourceExceptionList e) {
@@ -2176,26 +2171,23 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 
 			if (temporary) {
 				this.tempInfoMessage = infoMessage;
-				final Thread t = new Thread(new Runnable() {
-					@Override
-					public void run() {
-						// Unused String localTempInfoMessage = infoMessage;
-						// System.out.println("START " + localTempInfoMessage + " temporaryThreadCount=" + temporaryThreadCount);
-						try {
-							Thread.sleep(FlexoCst.TEMPORARY_MESSAGE_PERSISTENCY);
-						} catch (InterruptedException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
-						temporaryThreadCount--;
-						// System.out.println("END " + tempInfoMessage + " temporaryThreadCount=" + temporaryThreadCount);
-						if (temporaryThreadCount == 0) {
-							// System.out.println("Back to " + infoMessage);
-							tempInfoMessage = null;
-							for (JLabel label : infoLabels) {
-								// System.out.println("Setting again label to " + getInfoMessage());
-								label.setText(getInfoMessage());
-							}
+				final Thread t = new Thread(() -> {
+					// Unused String localTempInfoMessage = infoMessage;
+					// System.out.println("START " + localTempInfoMessage + " temporaryThreadCount=" + temporaryThreadCount);
+					try {
+						Thread.sleep(FlexoCst.TEMPORARY_MESSAGE_PERSISTENCY);
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					temporaryThreadCount--;
+					// System.out.println("END " + tempInfoMessage + " temporaryThreadCount=" + temporaryThreadCount);
+					if (temporaryThreadCount == 0) {
+						// System.out.println("Back to " + infoMessage);
+						tempInfoMessage = null;
+						for (JLabel label : infoLabels) {
+							// System.out.println("Setting again label to " + getInfoMessage());
+							label.setText(getInfoMessage());
 						}
 					}
 				});

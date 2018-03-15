@@ -593,17 +593,13 @@ public interface VirtualModelInstance<VMI extends VirtualModelInstance<VMI, TA>,
 				return;
 			}
 			willNotifyAllRootFlexoConceptInstancesMayHaveChanged = true;
-			SwingUtilities.invokeLater(new Runnable() {
-				@Override
-				public void run() {
-					if (!isDeleted()) {
-						getPropertyChangeSupport().firePropertyChange("allRootFlexoConceptInstances",
-								(lastNotifiedRootFlexoConceptInstances != null ? new ArrayList<>(lastNotifiedRootFlexoConceptInstances)
-										: null),
-								new ArrayList<>(getAllRootFlexoConceptInstances()));
-						lastNotifiedRootFlexoConceptInstances = new ArrayList<>(getAllRootFlexoConceptInstances());
-						willNotifyAllRootFlexoConceptInstancesMayHaveChanged = false;
-					}
+			SwingUtilities.invokeLater(() -> {
+				if (!isDeleted()) {
+					getPropertyChangeSupport().firePropertyChange("allRootFlexoConceptInstances",
+							(lastNotifiedRootFlexoConceptInstances != null ? new ArrayList<>(lastNotifiedRootFlexoConceptInstances) : null),
+							new ArrayList<>(getAllRootFlexoConceptInstances()));
+					lastNotifiedRootFlexoConceptInstances = new ArrayList<>(getAllRootFlexoConceptInstances());
+					willNotifyAllRootFlexoConceptInstancesMayHaveChanged = false;
 				}
 			});
 		}
