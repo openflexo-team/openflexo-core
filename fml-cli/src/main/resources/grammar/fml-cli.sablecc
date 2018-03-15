@@ -47,11 +47,13 @@ Tokens
  or2 = '||';
  eq = '=';
  eq2 = '==';
+ assign = ':=';
  neq = '!=';
  not = '!';
  l_par = '(';
  r_par = ')';
  dot = '.';
+ double_dot = '..';
  comma = ',';
  if_token = '?';
  else_token = ':';
@@ -77,13 +79,55 @@ Tokens
  | ['0' .. '9']+ '.' ['0' .. '9']+ 'E' '-' ['0' .. '9']+;
  string_value = '"' (not_hyphen)* '"';
  chars_value = ''' (not_hyphen2)* ''';
+ 
+ // directives
+ pwd = 'pwd';
+ ls = 'ls';
+ cd = 'cd';
+ services = 'services';
+ service = 'service';
+ exit = 'exit';
+ 
+ // commands
+ context = 'context';
+ 
  identifier = letter (letter | digit)*;
+ 
  blank = (' ' | 13 | 10)+;
 
 Ignored Tokens
  blank;
  
 Productions
+
+ command =
+  {directive} directive |
+  {fml_command} fml_command;
+
+ directive =
+  {pwd} pwd |
+  {ls} ls |
+  {cd} cd path |
+  {services} services |
+  {service} service [service_name]:identifier [action]:identifier [options]:directive_option* |
+  {exit} exit;
+
+ directive_option = 
+  {path} path |
+  {number} number;
+
+ path =
+  {identifier} identifier |
+  {path} identifier div path |
+  {dot} dot |
+  {dot_path} dot div path |
+  {double_dot} double_dot |
+  {double_dot_path} double_dot div path;
+
+ fml_command =
+  {expr} expr |
+  {assignation} identifier assign expr;
+ 
  expr =
   {expr2} expr2 |
   {cond_expr} [condition]:expr if_token [then]:expr2 else_token [else]:expr2 |
