@@ -69,12 +69,16 @@ import org.openflexo.foundation.fml.cli.command.directive.LsDirective;
 import org.openflexo.foundation.fml.cli.command.directive.PwdDirective;
 import org.openflexo.foundation.fml.cli.command.directive.ServiceDirective;
 import org.openflexo.foundation.fml.cli.command.directive.ServicesDirective;
+import org.openflexo.foundation.fml.cli.command.fml.FMLAssignation;
+import org.openflexo.foundation.fml.cli.command.fml.FMLContextCommand;
+import org.openflexo.foundation.fml.cli.command.fml.FMLExpression;
 import org.openflexo.foundation.fml.cli.parser.analysis.DepthFirstAdapter;
 import org.openflexo.foundation.fml.cli.parser.node.AAcosFuncFunction;
 import org.openflexo.foundation.fml.cli.parser.node.AAddExprExpr2;
 import org.openflexo.foundation.fml.cli.parser.node.AAnd2ExprExpr3;
 import org.openflexo.foundation.fml.cli.parser.node.AAndExprExpr3;
 import org.openflexo.foundation.fml.cli.parser.node.AAsinFuncFunction;
+import org.openflexo.foundation.fml.cli.parser.node.AAssignationFmlCommand;
 import org.openflexo.foundation.fml.cli.parser.node.AAtanFuncFunction;
 import org.openflexo.foundation.fml.cli.parser.node.ABasicTypeReference;
 import org.openflexo.foundation.fml.cli.parser.node.ABindingTerm;
@@ -83,6 +87,7 @@ import org.openflexo.foundation.fml.cli.parser.node.ACdDirective;
 import org.openflexo.foundation.fml.cli.parser.node.ACharsValueTerm;
 import org.openflexo.foundation.fml.cli.parser.node.ACondExprExpr;
 import org.openflexo.foundation.fml.cli.parser.node.AConstantNumber;
+import org.openflexo.foundation.fml.cli.parser.node.AContextFmlCommand;
 import org.openflexo.foundation.fml.cli.parser.node.ACosFuncFunction;
 import org.openflexo.foundation.fml.cli.parser.node.ADecimalNumberNumber;
 import org.openflexo.foundation.fml.cli.parser.node.ADivExprExpr3;
@@ -92,6 +97,7 @@ import org.openflexo.foundation.fml.cli.parser.node.AExitDirective;
 import org.openflexo.foundation.fml.cli.parser.node.AExpFuncFunction;
 import org.openflexo.foundation.fml.cli.parser.node.AExpr2Expr;
 import org.openflexo.foundation.fml.cli.parser.node.AExpr3Expr2;
+import org.openflexo.foundation.fml.cli.parser.node.AExprFmlCommand;
 import org.openflexo.foundation.fml.cli.parser.node.AExprTerm;
 import org.openflexo.foundation.fml.cli.parser.node.AFalseConstant;
 import org.openflexo.foundation.fml.cli.parser.node.AFunctionTerm;
@@ -149,7 +155,7 @@ import org.openflexo.foundation.fml.cli.parser.node.TStringValue;
  * @author sylvain
  * 
  */
-class CommandSemanticsAnalyzer extends DepthFirstAdapter {
+public class CommandSemanticsAnalyzer extends DepthFirstAdapter {
 
 	private final Map<Node, Expression> expressionNodes;
 	private AbstractCommand command;
@@ -173,7 +179,7 @@ class CommandSemanticsAnalyzer extends DepthFirstAdapter {
 		this.command = command;
 	}
 
-	protected Expression getExpression(Node n) {
+	public Expression getExpression(Node n) {
 		if (n != null) {
 			Expression returned = expressionNodes.get(n);
 			if (returned == null) {
@@ -655,6 +661,8 @@ class CommandSemanticsAnalyzer extends DepthFirstAdapter {
 		registerExpressionNode(node, getExpression(node.getExpr()));
 	}
 
+	// DIRECTIVES
+
 	@Override
 	public void outAPwdDirective(APwdDirective node) {
 		super.outAPwdDirective(node);
@@ -695,5 +703,25 @@ class CommandSemanticsAnalyzer extends DepthFirstAdapter {
 	public void outAHelpDirective(AHelpDirective node) {
 		super.outAHelpDirective(node);
 		registerCommand(node, new HelpDirective(node, commandInterpreter));
+	}
+
+	// COMMANDS
+
+	@Override
+	public void outAContextFmlCommand(AContextFmlCommand node) {
+		super.outAContextFmlCommand(node);
+		registerCommand(node, new FMLContextCommand(node, commandInterpreter, this));
+	}
+
+	@Override
+	public void outAAssignationFmlCommand(AAssignationFmlCommand node) {
+		super.outAAssignationFmlCommand(node);
+		registerCommand(node, new FMLAssignation(node, commandInterpreter, this));
+	}
+
+	@Override
+	public void outAExprFmlCommand(AExprFmlCommand node) {
+		super.outAExprFmlCommand(node);
+		registerCommand(node, new FMLExpression(node, commandInterpreter, this));
 	}
 }

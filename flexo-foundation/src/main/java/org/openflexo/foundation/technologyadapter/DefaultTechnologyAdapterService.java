@@ -40,6 +40,7 @@
 package org.openflexo.foundation.technologyadapter;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Hashtable;
@@ -590,6 +591,49 @@ public abstract class DefaultTechnologyAdapterService extends FlexoServiceImpl i
 			sb.append("\n > " + ta.getName() + " status: " + (ta.isActivated() ? "ACTIVATED" : "INACTIVE"));
 		}
 		return sb.toString();
+	}
+
+	@Override
+	protected Collection<ServiceOperation<?>> makeAvailableServiceOperations() {
+		Collection<ServiceOperation<?>> returned = super.makeAvailableServiceOperations();
+		returned.add(ACTIVATE_TA);
+		return returned;
+	}
+
+	public static ActivateTechnologyAdapter ACTIVATE_TA = new ActivateTechnologyAdapter();
+
+	public static class ActivateTechnologyAdapter implements ServiceOperation<TechnologyAdapterService> {
+		private ActivateTechnologyAdapter() {
+		}
+
+		@Override
+		public String getOperationName() {
+			return "activate";
+		}
+
+		@Override
+		public String usage(TechnologyAdapterService service) {
+			return "service " + service.getServiceName() + " activate <ta>";
+		}
+
+		@Override
+		public String description() {
+			return "activate technology adapter";
+		}
+
+		@Override
+		public List<String> getOptions() {
+			return Arrays.asList("<ta>");
+		}
+
+		@Override
+		public void execute(TechnologyAdapterService service, Object... options) {
+			if (options.length > 0) {
+				TechnologyAdapter ta = (TechnologyAdapter) options[0];
+				System.out.println("Activate TA " + ta);
+				service.activateTechnologyAdapter(ta, true);
+			}
+		}
 	}
 
 }

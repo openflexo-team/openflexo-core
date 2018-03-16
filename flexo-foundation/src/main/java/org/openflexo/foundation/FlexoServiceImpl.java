@@ -45,7 +45,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.openflexo.localization.LocalizedDelegate;
-import org.openflexo.toolbox.StringUtils;
 
 /**
  * Abstract base implementation of a {@link FlexoService}
@@ -92,7 +91,7 @@ public abstract class FlexoServiceImpl extends FlexoObservable implements FlexoS
 	 */
 	@Override
 	public String getDisplayableStatus() {
-		return getServiceName() + StringUtils.buildWhiteSpaceIndentation(30 - getServiceName().length()) + getStatus();
+		return getServiceName() + " " + getStatus();
 	}
 
 	public LocalizedDelegate getLocales() {

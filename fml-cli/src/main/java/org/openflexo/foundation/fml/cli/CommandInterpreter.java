@@ -24,9 +24,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintStream;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.StringTokenizer;
 
 import org.jboss.jreadline.complete.CompleteOperation;
@@ -36,21 +39,34 @@ import org.jboss.jreadline.console.ConsoleCommand;
 import org.jboss.jreadline.console.ConsoleOutput;
 import org.jboss.jreadline.edit.actions.Operation;
 import org.jboss.jreadline.util.ANSI;
+import org.openflexo.connie.Bindable;
+import org.openflexo.connie.BindingFactory;
+import org.openflexo.connie.BindingModel;
+import org.openflexo.connie.BindingVariable;
+import org.openflexo.connie.DataBinding;
+import org.openflexo.connie.binding.SettableBindingEvaluationContext;
+import org.openflexo.connie.java.JavaBindingFactory;
+import org.openflexo.connie.type.TypeUtils;
 import org.openflexo.foundation.FlexoService;
 import org.openflexo.foundation.FlexoService.ServiceOperation;
 import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.fml.cli.command.AbstractCommand;
+import org.openflexo.foundation.fml.cli.command.DeclareCommand;
+import org.openflexo.foundation.fml.cli.command.DeclareCommands;
 import org.openflexo.foundation.fml.cli.command.DeclareDirective;
 import org.openflexo.foundation.fml.cli.command.DeclareDirectives;
 import org.openflexo.foundation.fml.cli.command.Directive;
 import org.openflexo.foundation.fml.cli.command.DirectiveDeclaration;
+import org.openflexo.foundation.fml.cli.command.FMLCommand;
+import org.openflexo.foundation.fml.cli.command.FMLCommandDeclaration;
+import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.toolbox.PropertyChangedSupportDefaultImplementation;
 
 /**
  * This class is an "interactive" BASIC environment. You can think of it as BASIC debug mode. Using the streams you passed in to create the
  * object, it hosts an interactive session allowing the user to enter BASIC programs, run them, save them, and load them.
  */
-public class CommandInterpreter extends PropertyChangedSupportDefaultImplementation {
+public class CommandInterpreter extends PropertyChangedSupportDefaultImplementation implements Bindable, SettableBindingEvaluationContext {
 
 	private File workingDirectory;
 	private FlexoServiceManager serviceManager;
@@ -61,6 +77,10 @@ public class CommandInterpreter extends PropertyChangedSupportDefaultImplementat
 	private Console console;
 	private ConsoleCommand consoleCommand;
 	// char data[] = new char[256];
+
+	private BindingModel bindingModel = new BindingModel();
+
+	private JavaBindingFactory JAVA_BINDING_FACTORY = new JavaBindingFactory();
 
 	/**
 	 * Create a new command interpreter attached to the passed in streams.
@@ -379,6 +399,23 @@ public class CommandInterpreter extends PropertyChangedSupportDefaultImplementat
 		return availableDirectives;
 	}
 
+	private List<Class<? extends FMLCommand>> availableCommands = null;
+
+	public List<Class<? extends FMLCommand>> getAvailableCommands() {
+		if (availableCommands == null) {
+			availableCommands = new ArrayList<>();
+			if (FMLCommand.class.isAnnotationPresent(DeclareCommands.class)) {
+				DeclareCommands allCommands = FMLCommand.class.getAnnotation(DeclareCommands.class);
+				for (DeclareCommand declareCommand : allCommands.value()) {
+					if (!availableCommands.contains(declareCommand.value())) {
+						availableCommands.add(declareCommand.value());
+					}
+				}
+			}
+		}
+		return availableCommands;
+	}
+
 	private List<String> tokenize(String startingBuffer) {
 		List<String> returned = new ArrayList<>();
 		StringTokenizer st = new StringTokenizer(startingBuffer);
@@ -405,9 +442,13 @@ public class CommandInterpreter extends PropertyChangedSupportDefaultImplementat
 					commands.add(keyword);
 				}
 			}
-			// if (!startingBuffer.endsWith(" ")) {
+			for (Class<? extends FMLCommand> commandClass : getAvailableCommands()) {
+				String keyword = commandClass.getAnnotation(FMLCommandDeclaration.class).keyword();
+				if (keyword.startsWith(tokens.get(0))) {
+					commands.add(keyword);
+				}
+			}
 			return commands;
-			// }
 		}
 
 		DirectiveDeclaration directiveClassDeclaration = null;
@@ -421,6 +462,13 @@ public class CommandInterpreter extends PropertyChangedSupportDefaultImplementat
 			return getAvailableCompletion(directiveClassDeclaration, startingBuffer);
 		}
 		else {
+			FMLCommandDeclaration commandClassDeclaration = null;
+			for (Class<? extends FMLCommand> commandClass : getAvailableCommands()) {
+				String keyword = commandClass.getAnnotation(FMLCommandDeclaration.class).keyword();
+				if (keyword.equals(tokens.get(0))) {
+					commandClassDeclaration = commandClass.getAnnotation(FMLCommandDeclaration.class);
+				}
+			}
 			return Collections.emptyList();
 		}
 	}
@@ -492,7 +540,67 @@ public class CommandInterpreter extends PropertyChangedSupportDefaultImplementat
 			}
 		}
 
+		if (expectedTokenSyntax.equals("<ta>")) {
+			List<String> returned = new ArrayList<>();
+			for (TechnologyAdapter ta : serviceManager.getTechnologyAdapterService().getTechnologyAdapters()) {
+				if (ta.getClass().getSimpleName().startsWith(currentToken)) {
+					returned.add(
+							startingBuffer.substring(0, startingBuffer.length() - currentToken.length()) + ta.getClass().getSimpleName());
+				}
+			}
+			return returned;
+		}
+
 		return Collections.emptyList();
+	}
+
+	@Override
+	public BindingFactory getBindingFactory() {
+		return JAVA_BINDING_FACTORY;
+	}
+
+	@Override
+	public BindingModel getBindingModel() {
+		return bindingModel;
+	}
+
+	@Override
+	public Object getValue(BindingVariable variable) {
+		return values.get(variable);
+	}
+
+	@Override
+	public void setValue(Object value, BindingVariable variable) {
+		if (value != null) {
+			values.put(variable, value);
+		}
+		else {
+			values.remove(variable);
+		}
+	}
+
+	@Override
+	public void notifiedBindingChanged(DataBinding<?> dataBinding) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void notifiedBindingDecoded(DataBinding<?> dataBinding) {
+		// TODO Auto-generated method stub
+
+	}
+
+	private Map<BindingVariable, Object> values = new HashMap<>();
+
+	public void declareVariable(String variableName, Type type, Object value) {
+		System.out.println(variableName + "<-" + value + "[" + TypeUtils.simpleRepresentation(type) + "]");
+		BindingVariable variable = getBindingModel().getBindingVariableNamed(variableName);
+		if (variable == null) {
+			variable = new BindingVariable(variableName, type);
+			getBindingModel().addToBindingVariables(variable);
+		}
+		setValue(value, variable);
 	}
 
 }

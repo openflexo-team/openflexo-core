@@ -28,7 +28,7 @@ Helpers
  any        = [0 .. 0xffff];
  not_hyphen = [any - '"' ];
  not_hyphen2 = [any - ''' ];
- file_char = upper_case | lower_case | digit | '_' | '-' | '.';
+ file_char = upper_case | lower_case | digit | '_' | '.';
 
 Tokens
  dollar = '$';
@@ -131,6 +131,7 @@ Productions
   {double_dot_path} double_dot div path;
 
  fml_command =
+  {context} context |
   {expr} expr |
   {assignation} identifier assign expr;
  

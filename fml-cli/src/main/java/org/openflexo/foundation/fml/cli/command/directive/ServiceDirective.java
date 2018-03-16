@@ -52,6 +52,7 @@ import org.openflexo.foundation.fml.cli.command.DirectiveDeclaration;
 import org.openflexo.foundation.fml.cli.parser.node.APathDirectiveOption;
 import org.openflexo.foundation.fml.cli.parser.node.AServiceDirective;
 import org.openflexo.foundation.fml.cli.parser.node.PDirectiveOption;
+import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 
 /**
  * Represents #service directive in FML command-line interpreter
@@ -76,7 +77,7 @@ import org.openflexo.foundation.fml.cli.parser.node.PDirectiveOption;
 		keyword = "service",
 		usage = "service <service> operation [options]",
 		description = "Execute operation of a given service, type service <service_name> usage to get help",
-		syntax = "service <service> <operation>")
+		syntax = "service <service> <operation> <ta>")
 public class ServiceDirective<S extends FlexoService> extends Directive {
 
 	private static final Logger logger = Logger.getLogger(ServiceDirective.class.getPackage().getName());
@@ -136,6 +137,17 @@ public class ServiceDirective<S extends FlexoService> extends Directive {
 		if (optionType.equals("<path>") && pDirectiveOption instanceof APathDirectiveOption) {
 			return new File(getCommandInterpreter().getWorkingDirectory(),
 					retrievePath(((APathDirectiveOption) pDirectiveOption).getPath()));
+		}
+		if (optionType.equals("<ta>") && pDirectiveOption instanceof APathDirectiveOption) {
+			String taName = retrievePath(((APathDirectiveOption) pDirectiveOption).getPath());
+			System.out.println("tiens je dois decoder " + taName);
+
+			for (TechnologyAdapter ta : getCommandInterpreter().getServiceManager().getTechnologyAdapterService().getTechnologyAdapters()) {
+				if (ta.getClass().getSimpleName().equals(taName)) {
+					System.out.println("trouve " + ta);
+					return ta;
+				}
+			}
 		}
 		return pDirectiveOption.toString();
 	}

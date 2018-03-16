@@ -3,7 +3,7 @@
  * Copyright (c) 2013-2014, Openflexo
  * Copyright (c) 2011-2012, AgileBirds
  * 
- * This file is part of Connie-core, a component of the software infrastructure 
+ * This file is part of Pamela-core, a component of the software infrastructure 
  * developed at Openflexo.
  * 
  * 
@@ -39,38 +39,16 @@
 
 package org.openflexo.foundation.fml.cli.command;
 
-import java.util.logging.Logger;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Inherited;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
-import org.openflexo.foundation.fml.cli.CommandInterpreter;
-import org.openflexo.foundation.fml.cli.command.fml.FMLAssignation;
-import org.openflexo.foundation.fml.cli.command.fml.FMLContextCommand;
-import org.openflexo.foundation.fml.cli.command.fml.FMLExpression;
-import org.openflexo.foundation.fml.cli.parser.node.Node;
-import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
+@Retention(RetentionPolicy.RUNTIME)
+@Inherited
+@Target(value = ElementType.TYPE)
+public @interface DeclareCommands {
 
-/**
- * Represents an FML command in command-line interpreter
- * 
- * @author sylvain
- * 
- */
-@DeclareCommands({ @DeclareCommand(FMLContextCommand.class), @DeclareCommand(FMLExpression.class), @DeclareCommand(FMLAssignation.class) })
-public abstract class FMLCommand extends AbstractCommand {
-
-	private static final Logger logger = Logger.getLogger(FMLCommand.class.getPackage().getName());
-
-	public FMLCommand(Node node, CommandInterpreter commandInterpreter, FlexoConceptInstance fci) {
-		super(node, commandInterpreter);
-	}
-
-	@Override
-	public boolean isValid() {
-		return true;
-	}
-
-	@Override
-	public String invalidCommandReason() {
-		return null;
-	}
-
+	DeclareCommand[] value();
 }

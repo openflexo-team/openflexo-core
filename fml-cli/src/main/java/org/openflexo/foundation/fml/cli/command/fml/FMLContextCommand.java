@@ -37,54 +37,42 @@
  * 
  */
 
-package org.openflexo.foundation.fml.cli.command.directive;
+package org.openflexo.foundation.fml.cli.command.fml;
 
 import java.util.logging.Logger;
 
+import org.openflexo.connie.BindingVariable;
+import org.openflexo.connie.type.TypeUtils;
 import org.openflexo.foundation.fml.cli.CommandInterpreter;
-import org.openflexo.foundation.fml.cli.command.Directive;
-import org.openflexo.foundation.fml.cli.command.DirectiveDeclaration;
+import org.openflexo.foundation.fml.cli.CommandSemanticsAnalyzer;
 import org.openflexo.foundation.fml.cli.command.FMLCommand;
 import org.openflexo.foundation.fml.cli.command.FMLCommandDeclaration;
-import org.openflexo.foundation.fml.cli.parser.node.AHelpDirective;
-import org.openflexo.toolbox.StringUtils;
+import org.openflexo.foundation.fml.cli.parser.node.AContextFmlCommand;
 
 /**
- * Represents #exit directive in FML command-line interpreter
+ * Represents context command in FML command-line interpreter<br>
+ * Display current evaluation context
  * 
- * Usage: #exit
+ * Usage: context
  * 
  * @author sylvain
  * 
  */
-@DirectiveDeclaration(keyword = "help", usage = "help", description = "Display this help", syntax = "help")
-public class HelpDirective extends Directive {
+@FMLCommandDeclaration(keyword = "context", usage = "context", description = "Display current evaluation context", syntax = "context")
+public class FMLContextCommand extends FMLCommand {
 
-	private static final Logger logger = Logger.getLogger(HelpDirective.class.getPackage().getName());
+	private static final Logger logger = Logger.getLogger(FMLContextCommand.class.getPackage().getName());
 
-	public HelpDirective(AHelpDirective node, CommandInterpreter commandInterpreter) {
-		super(node, commandInterpreter);
+	public FMLContextCommand(AContextFmlCommand node, CommandInterpreter commandInterpreter, CommandSemanticsAnalyzer analyser) {
+		super(node, commandInterpreter, null);
 	}
 
 	@Override
 	public void execute() {
-		for (Class<? extends Directive> directiveClass : getCommandInterpreter().getAvailableDirectives()) {
-			String usage = directiveClass.getAnnotation(DirectiveDeclaration.class).usage();
-			String description = directiveClass.getAnnotation(DirectiveDeclaration.class).description();
-			displayDirectiveHelp(usage, description);
+		for (int i = 0; i < getCommandInterpreter().getBindingModel().getBindingVariablesCount(); i++) {
+			BindingVariable bv = getCommandInterpreter().getBindingModel().getBindingVariableAt(i);
+			System.out.println("[" + TypeUtils.simpleRepresentation(bv.getType()) + "] " + bv.getVariableName() + "="
+					+ getCommandInterpreter().getValue(bv));
 		}
-		for (Class<? extends FMLCommand> fmlCommandClass : getCommandInterpreter().getAvailableCommands()) {
-			String usage = fmlCommandClass.getAnnotation(FMLCommandDeclaration.class).usage();
-			String description = fmlCommandClass.getAnnotation(FMLCommandDeclaration.class).description();
-			displayFMLCommandHelp(usage, description);
-		}
-	}
-
-	private void displayDirectiveHelp(String usage, String description) {
-		System.out.println(usage + StringUtils.buildWhiteSpaceIndentation(40 - usage.length()) + ": " + description);
-	}
-
-	private void displayFMLCommandHelp(String usage, String description) {
-		System.out.println(usage + StringUtils.buildWhiteSpaceIndentation(40 - usage.length()) + ": " + description);
 	}
 }
