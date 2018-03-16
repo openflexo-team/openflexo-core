@@ -46,31 +46,32 @@ import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.fml.cli.CommandInterpreter;
 import org.openflexo.foundation.fml.cli.command.Directive;
 import org.openflexo.foundation.fml.cli.command.DirectiveDeclaration;
-import org.openflexo.foundation.fml.cli.parser.node.ALoadDirective;
+import org.openflexo.foundation.fml.cli.parser.node.ADisplayDirective;
+import org.openflexo.foundation.fml.rm.VirtualModelResource;
 import org.openflexo.foundation.resource.FlexoResource;
 import org.openflexo.foundation.resource.ResourceLoadingCancelledException;
 
 /**
- * Represents load resource directive in FML command-line interpreter
+ * Represents display resource directive in FML command-line interpreter
  * 
- * Usage: load <resource> where <resource> represents a resource
+ * Usage: display <resource> where <resource> represents a resource
  * 
  * @author sylvain
  * 
  */
 @DirectiveDeclaration(
-		keyword = "load",
-		usage = "load <resource>",
-		description = "Load resource denoted by supplied resource uri",
-		syntax = "load <resource>")
-public class LoadResource extends Directive {
+		keyword = "display",
+		usage = "display <resource>",
+		description = "Display resource denoted by supplied resource uri",
+		syntax = "display <resource>")
+public class DisplayResource extends Directive {
 
 	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(LoadResource.class.getPackage().getName());
+	private static final Logger logger = Logger.getLogger(DisplayResource.class.getPackage().getName());
 
 	private FlexoResource<?> resource;
 
-	public LoadResource(ALoadDirective node, CommandInterpreter commandInterpreter) {
+	public DisplayResource(ADisplayDirective node, CommandInterpreter commandInterpreter) {
 		super(node, commandInterpreter);
 		resource = getResource(node.getResourceUri().getText());
 	}
@@ -81,19 +82,21 @@ public class LoadResource extends Directive {
 
 	@Override
 	public void execute() {
-		if (resource.isLoaded()) {
-			System.out.println("Resource " + resource.getURI() + " already loaded");
-		}
-		else {
+		if (!resource.isLoaded()) {
 			try {
 				resource.loadResourceData(null);
-				System.out.println("Loaded " + resource.getURI() + ".");
 			} catch (FileNotFoundException e) {
 				System.err.println("Cannot find resource " + resource.getURI());
 			} catch (ResourceLoadingCancelledException e) {
 			} catch (FlexoException e) {
 				System.err.println("Cannot load resource " + resource.getURI() + " : " + e.getMessage());
 			}
+		}
+		if (resource instanceof VirtualModelResource) {
+			System.out.println(((VirtualModelResource) resource).getVirtualModel().getFMLRepresentation());
+		}
+		else {
+			System.err.println("No textual renderer for such data.");
 		}
 	}
 }
