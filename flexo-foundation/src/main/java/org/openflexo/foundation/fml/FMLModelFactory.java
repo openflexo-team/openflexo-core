@@ -38,13 +38,11 @@
 
 package org.openflexo.foundation.fml;
 
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
 import org.openflexo.connie.DataBinding;
-import org.openflexo.fge.FGEModelFactoryImpl;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.PamelaResourceModelFactory;
@@ -101,12 +99,12 @@ import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterService;
 import org.openflexo.foundation.technologyadapter.UseModelSlotDeclaration;
 import org.openflexo.foundation.utils.FlexoObjectReferenceConverter;
+import org.openflexo.model.ModelContextLibrary;
 import org.openflexo.model.converter.DataBindingConverter;
 import org.openflexo.model.converter.FlexoVersionConverter;
 import org.openflexo.model.converter.RelativePathResourceConverter;
 import org.openflexo.model.converter.TypeConverter;
 import org.openflexo.model.exceptions.ModelDefinitionException;
-import org.openflexo.model.factory.DeserializationPolicy;
 import org.openflexo.model.factory.EditingContext;
 import org.openflexo.model.factory.ModelFactory;
 
@@ -121,7 +119,8 @@ import org.openflexo.model.factory.ModelFactory;
 // because this is required for the FlexoConceptPreviewComponent to retrieve a FMLModelFactory
 // which extends FGEModelFactory interface (required by DIANA).
 // A better solution would be to implements composition in ModelFactory, instead of classic java inheritance
-public class FMLModelFactory extends FGEModelFactoryImpl implements PamelaResourceModelFactory<VirtualModelResource> {
+// extends FGEModelFactoryImpl
+public class FMLModelFactory extends ModelFactory implements PamelaResourceModelFactory<VirtualModelResource> {
 
 	protected static final Logger logger = Logger.getLogger(FMLModelFactory.class.getPackage().getName());
 
@@ -143,20 +142,11 @@ public class FMLModelFactory extends FGEModelFactoryImpl implements PamelaResour
 		this(virtualModelResource, serviceManager, serviceManager.getTechnologyAdapterService());
 	}
 
-	@Override
-	public Object deserialize(InputStream is, DeserializationPolicy policy) throws Exception {
-		// System.out.println("******** deserialize FMLModelFactory " + Integer.toHexString(hashCode()) + " for " + virtualModelResource
-		// + " in thread " + Thread.currentThread() + " is=" + is);
-		return super.deserialize(is, policy);
-	}
-
 	public FMLModelFactory(VirtualModelResource virtualModelResource, FlexoServiceManager serviceManager,
 			TechnologyAdapterService taService) throws ModelDefinitionException {
-
-		super(virtualModelResource != null
+		super(ModelContextLibrary.getCompoundModelContext(virtualModelResource != null
 				? retrieveTechnologySpecificClasses(virtualModelResource.getResourceDataClass(), virtualModelResource.getUsedModelSlots())
-				: retrieveTechnologySpecificClasses(taService != null ? taService : serviceManager.getTechnologyAdapterService()));
-
+				: retrieveTechnologySpecificClasses(taService != null ? taService : serviceManager.getTechnologyAdapterService())));
 		// System.out.println("******** Initialize FMLModelFactory " + Integer.toHexString(hashCode()) + " for " + virtualModelResource
 		// + " in thread " + Thread.currentThread());
 		this.serviceManager = serviceManager;

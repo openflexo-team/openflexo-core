@@ -2,12 +2,6 @@ dependencies {
   // openflexo dep
   compile flexoLocalization()
 
-  // TODO: following dependancies need to be removed
-  // compile ginaApi()
-  // compile dianaApi()
-  compile diana()
-
-
   // external dep
   compile group: 'org.eclipse.jgit', name: 'org.eclipse.jgit', version: '4.3.1.201605051710-r'
   compile group: 'com.google.inject', name: 'guice', version: '4.1.0'
