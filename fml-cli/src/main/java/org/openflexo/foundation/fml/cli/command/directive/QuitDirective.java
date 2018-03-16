@@ -39,61 +39,33 @@
 
 package org.openflexo.foundation.fml.cli.command.directive;
 
-import java.io.FileNotFoundException;
 import java.util.logging.Logger;
 
-import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.fml.cli.CommandInterpreter;
 import org.openflexo.foundation.fml.cli.command.Directive;
 import org.openflexo.foundation.fml.cli.command.DirectiveDeclaration;
-import org.openflexo.foundation.fml.cli.parser.node.ALoadDirective;
-import org.openflexo.foundation.resource.FlexoResource;
-import org.openflexo.foundation.resource.ResourceLoadingCancelledException;
+import org.openflexo.foundation.fml.cli.parser.node.AQuitDirective;
 
 /**
- * Represents load resource directive in FML command-line interpreter
+ * Represents quit directive in FML command-line interpreter
  * 
- * Usage: load <resource> where <resource> represents a resource
+ * Usage: quit
  * 
  * @author sylvain
  * 
  */
-@DirectiveDeclaration(
-		keyword = "load",
-		usage = "load <resource>",
-		description = "Load resource denoted by supplied resource uri",
-		syntax = "load <resource>")
-public class LoadResource extends Directive {
+@DirectiveDeclaration(keyword = "quit", usage = "quit", description = "Quit FML command-line interpreter", syntax = "quit")
+public class QuitDirective extends Directive {
 
 	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(LoadResource.class.getPackage().getName());
+	private static final Logger logger = Logger.getLogger(QuitDirective.class.getPackage().getName());
 
-	private FlexoResource<?> resource;
-
-	public LoadResource(ALoadDirective node, CommandInterpreter commandInterpreter) {
+	public QuitDirective(AQuitDirective node, CommandInterpreter commandInterpreter) {
 		super(node, commandInterpreter);
-		resource = getResource(node.getResourceUri().getText());
-	}
-
-	public FlexoResource<?> getResource() {
-		return resource;
 	}
 
 	@Override
 	public void execute() {
-		if (resource.isLoaded()) {
-			System.out.println("Resource " + resource.getURI() + " already loaded");
-		}
-		else {
-			try {
-				resource.loadResourceData(null);
-				System.out.println("Loaded " + resource.getURI() + ".");
-			} catch (FileNotFoundException e) {
-				System.err.println("Cannot find resource " + resource.getURI());
-			} catch (ResourceLoadingCancelledException e) {
-			} catch (FlexoException e) {
-				System.err.println("Cannot load resource " + resource.getURI() + " : " + e.getMessage());
-			}
-		}
+		getCommandInterpreter().stop();
 	}
 }

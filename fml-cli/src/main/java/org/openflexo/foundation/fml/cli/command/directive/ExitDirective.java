@@ -47,14 +47,20 @@ import org.openflexo.foundation.fml.cli.command.DirectiveDeclaration;
 import org.openflexo.foundation.fml.cli.parser.node.AExitDirective;
 
 /**
- * Represents #exit directive in FML command-line interpreter
+ * Represents exit directive in FML command-line interpreter<br>
  * 
- * Usage: #exit
+ * Forget focused object and switch back to top-level
+ * 
+ * Usage: exit
  * 
  * @author sylvain
  * 
  */
-@DirectiveDeclaration(keyword = "exit", usage = "exit", description = "Exit FML command-line interpreter", syntax = "exit")
+@DirectiveDeclaration(
+		keyword = "exit",
+		usage = "exit",
+		description = "Exit current focused object or quit if no focused object",
+		syntax = "exit")
 public class ExitDirective extends Directive {
 
 	@SuppressWarnings("unused")
@@ -66,6 +72,11 @@ public class ExitDirective extends Directive {
 
 	@Override
 	public void execute() {
-		getCommandInterpreter().stop();
+		if (getCommandInterpreter().getFocusedObject() == null) {
+			getCommandInterpreter().stop();
+		}
+		else {
+			getCommandInterpreter().setFocusedObject(null);
+		}
 	}
 }

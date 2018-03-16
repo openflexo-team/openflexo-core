@@ -64,12 +64,15 @@ import org.openflexo.connie.expr.UnaryOperatorExpression;
 import org.openflexo.foundation.fml.cli.command.AbstractCommand;
 import org.openflexo.foundation.fml.cli.command.directive.ActivateTA;
 import org.openflexo.foundation.fml.cli.command.directive.CdDirective;
+import org.openflexo.foundation.fml.cli.command.directive.DisplayResource;
+import org.openflexo.foundation.fml.cli.command.directive.EnterDirective;
 import org.openflexo.foundation.fml.cli.command.directive.ExitDirective;
 import org.openflexo.foundation.fml.cli.command.directive.HelpDirective;
 import org.openflexo.foundation.fml.cli.command.directive.LoadResource;
 import org.openflexo.foundation.fml.cli.command.directive.LsDirective;
 import org.openflexo.foundation.fml.cli.command.directive.OpenProject;
 import org.openflexo.foundation.fml.cli.command.directive.PwdDirective;
+import org.openflexo.foundation.fml.cli.command.directive.QuitDirective;
 import org.openflexo.foundation.fml.cli.command.directive.ResourcesDirective;
 import org.openflexo.foundation.fml.cli.command.directive.ServiceDirective;
 import org.openflexo.foundation.fml.cli.command.directive.ServicesDirective;
@@ -95,7 +98,9 @@ import org.openflexo.foundation.fml.cli.parser.node.AConstantNumber;
 import org.openflexo.foundation.fml.cli.parser.node.AContextFmlCommand;
 import org.openflexo.foundation.fml.cli.parser.node.ACosFuncFunction;
 import org.openflexo.foundation.fml.cli.parser.node.ADecimalNumberNumber;
+import org.openflexo.foundation.fml.cli.parser.node.ADisplayDirective;
 import org.openflexo.foundation.fml.cli.parser.node.ADivExprExpr3;
+import org.openflexo.foundation.fml.cli.parser.node.AEnterDirective;
 import org.openflexo.foundation.fml.cli.parser.node.AEq2ExprExpr;
 import org.openflexo.foundation.fml.cli.parser.node.AEqExprExpr;
 import org.openflexo.foundation.fml.cli.parser.node.AExitDirective;
@@ -130,6 +135,7 @@ import org.openflexo.foundation.fml.cli.parser.node.APiConstant;
 import org.openflexo.foundation.fml.cli.parser.node.APowerExprExpr3;
 import org.openflexo.foundation.fml.cli.parser.node.APreciseNumberNumber;
 import org.openflexo.foundation.fml.cli.parser.node.APwdDirective;
+import org.openflexo.foundation.fml.cli.parser.node.AQuitDirective;
 import org.openflexo.foundation.fml.cli.parser.node.AResourcesDirective;
 import org.openflexo.foundation.fml.cli.parser.node.AScientificNotationNumberNumber;
 import org.openflexo.foundation.fml.cli.parser.node.AServiceDirective;
@@ -690,12 +696,6 @@ public class CommandSemanticsAnalyzer extends DepthFirstAdapter {
 	}
 
 	@Override
-	public void outAExitDirective(AExitDirective node) {
-		super.outAExitDirective(node);
-		registerCommand(node, new ExitDirective(node, commandInterpreter));
-	}
-
-	@Override
 	public void outAServicesDirective(AServicesDirective node) {
 		super.outAServicesDirective(node);
 		registerCommand(node, new ServicesDirective(node, commandInterpreter));
@@ -730,6 +730,30 @@ public class CommandSemanticsAnalyzer extends DepthFirstAdapter {
 	public void outALoadDirective(ALoadDirective node) {
 		super.outALoadDirective(node);
 		registerCommand(node, new LoadResource(node, commandInterpreter));
+	}
+
+	@Override
+	public void outADisplayDirective(ADisplayDirective node) {
+		super.outADisplayDirective(node);
+		registerCommand(node, new DisplayResource(node, commandInterpreter));
+	}
+
+	@Override
+	public void outAEnterDirective(AEnterDirective node) {
+		super.outAEnterDirective(node);
+		registerCommand(node, new EnterDirective(node, commandInterpreter));
+	}
+
+	@Override
+	public void outAExitDirective(AExitDirective node) {
+		super.outAExitDirective(node);
+		registerCommand(node, new ExitDirective(node, commandInterpreter));
+	}
+
+	@Override
+	public void outAQuitDirective(AQuitDirective node) {
+		super.outAQuitDirective(node);
+		registerCommand(node, new QuitDirective(node, commandInterpreter));
 	}
 
 	@Override

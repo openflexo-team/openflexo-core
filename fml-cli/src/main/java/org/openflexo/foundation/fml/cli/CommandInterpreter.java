@@ -47,9 +47,12 @@ import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.binding.SettableBindingEvaluationContext;
 import org.openflexo.connie.java.JavaBindingFactory;
 import org.openflexo.connie.type.TypeUtils;
+import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.FlexoService;
 import org.openflexo.foundation.FlexoService.ServiceOperation;
 import org.openflexo.foundation.FlexoServiceManager;
+import org.openflexo.foundation.fml.FlexoConcept;
+import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.cli.command.AbstractCommand;
 import org.openflexo.foundation.fml.cli.command.DeclareCommand;
 import org.openflexo.foundation.fml.cli.command.DeclareCommands;
@@ -59,19 +62,25 @@ import org.openflexo.foundation.fml.cli.command.Directive;
 import org.openflexo.foundation.fml.cli.command.DirectiveDeclaration;
 import org.openflexo.foundation.fml.cli.command.FMLCommand;
 import org.openflexo.foundation.fml.cli.command.FMLCommandDeclaration;
+import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
+import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.foundation.resource.FlexoResource;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.toolbox.PropertyChangedSupportDefaultImplementation;
 
 /**
- * This class is an "interactive" BASIC environment. You can think of it as BASIC debug mode. Using the streams you passed in to create the
- * object, it hosts an interactive session allowing the user to enter BASIC programs, run them, save them, and load them.
+ * FML command-line interpreter<br>
+ * 
+ * An interpreter must be instantiated using a {@link FlexoServiceManager}
+ * 
  */
 public class CommandInterpreter extends PropertyChangedSupportDefaultImplementation implements Bindable, SettableBindingEvaluationContext {
 
 	private File workingDirectory;
 	private FlexoServiceManager serviceManager;
+
+	private FlexoObject focusedObject;
 
 	@SuppressWarnings("unused")
 	private DataInputStream inStream;
@@ -82,6 +91,7 @@ public class CommandInterpreter extends PropertyChangedSupportDefaultImplementat
 	// char data[] = new char[256];
 
 	private BindingModel bindingModel = new BindingModel();
+	private BindingVariable focusedBV;
 
 	private JavaBindingFactory JAVA_BINDING_FACTORY = new JavaBindingFactory();
 
@@ -372,7 +382,7 @@ public class CommandInterpreter extends PropertyChangedSupportDefaultImplementat
 	}
 
 	private String getPrompt() {
-		return workingDirectory.getName() + " > ";
+		return (getFocusedObject() != null ? CLIUtils.renderObject(getFocusedObject()) + "@" : "") + workingDirectory.getName() + " > ";
 	}
 
 	public FlexoServiceManager getServiceManager() {
@@ -612,6 +622,9 @@ public class CommandInterpreter extends PropertyChangedSupportDefaultImplementat
 
 	@Override
 	public Object getValue(BindingVariable variable) {
+		if (variable == focusedBV) {
+			return focusedObject;
+		}
 		return values.get(variable);
 	}
 
@@ -647,6 +660,47 @@ public class CommandInterpreter extends PropertyChangedSupportDefaultImplementat
 			getBindingModel().addToBindingVariables(variable);
 		}
 		setValue(value, variable);
+	}
+
+	/**
+	 * Return object on which we are currently working
+	 * 
+	 * @return
+	 */
+	public FlexoObject getFocusedObject() {
+		return focusedObject;
+	}
+
+	public void setFocusedObject(FlexoObject focusedObject) {
+		if ((focusedObject == null && this.focusedObject != null) || (focusedObject != null && !focusedObject.equals(this.focusedObject))) {
+			FlexoObject oldValue = this.focusedObject;
+			this.focusedObject = focusedObject;
+			getPropertyChangeSupport().firePropertyChange("focusedObject", oldValue, focusedObject);
+			if (focusedObject != null) {
+				if (focusedBV == null) {
+					focusedBV = new BindingVariable("this", FlexoObject.class);
+					getBindingModel().addToBindingVariables(focusedBV);
+				}
+				if (focusedObject instanceof VirtualModel) {
+					focusedBV.setType(VirtualModel.class);
+				}
+				else if (focusedObject instanceof FlexoConcept) {
+					focusedBV.setType(FlexoConcept.class);
+				}
+				else if (focusedObject instanceof VirtualModelInstance) {
+					focusedBV.setType(VirtualModelInstance.class);
+				}
+				else if (focusedObject instanceof FlexoConceptInstance) {
+					focusedBV.setType(FlexoConceptInstance.class);
+				}
+			}
+			else { // focusedObject=null
+				if (focusedBV != null) {
+					getBindingModel().removeFromBindingVariables(focusedBV);
+					focusedBV = null;
+				}
+			}
+		}
 	}
 
 }

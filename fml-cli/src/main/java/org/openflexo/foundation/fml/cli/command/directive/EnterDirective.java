@@ -39,40 +39,52 @@
 
 package org.openflexo.foundation.fml.cli.command.directive;
 
-import java.io.FileNotFoundException;
 import java.util.logging.Logger;
 
-import org.openflexo.foundation.FlexoException;
+import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.fml.cli.CommandInterpreter;
 import org.openflexo.foundation.fml.cli.command.Directive;
 import org.openflexo.foundation.fml.cli.command.DirectiveDeclaration;
-import org.openflexo.foundation.fml.cli.parser.node.ALoadDirective;
+import org.openflexo.foundation.fml.cli.parser.node.AEnterDirective;
+import org.openflexo.foundation.fml.cli.parser.node.AResourceEnterDirective;
+import org.openflexo.foundation.fml.cli.parser.node.PEnterDirective;
+import org.openflexo.foundation.fml.rm.VirtualModelResource;
+import org.openflexo.foundation.fml.rt.rm.AbstractVirtualModelInstanceResource;
 import org.openflexo.foundation.resource.FlexoResource;
-import org.openflexo.foundation.resource.ResourceLoadingCancelledException;
 
 /**
- * Represents load resource directive in FML command-line interpreter
+ * Represents enter directive in FML command-line interpreter
  * 
- * Usage: load <resource> where <resource> represents a resource
+ * Usage: enter <resource>|<expression> where <resource> represents a resource or <expression> represent an expression pointing on the
+ * object in which to enter
  * 
  * @author sylvain
  * 
  */
 @DirectiveDeclaration(
-		keyword = "load",
-		usage = "load <resource>",
-		description = "Load resource denoted by supplied resource uri",
-		syntax = "load <resource>")
-public class LoadResource extends Directive {
+		keyword = "enter",
+		usage = "enter <resource>|<expression>",
+		description = "Enter in a given object, denoted by a resource or an expression",
+		syntax = "enter <resource>")
+public class EnterDirective extends Directive {
 
 	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(LoadResource.class.getPackage().getName());
+	private static final Logger logger = Logger.getLogger(EnterDirective.class.getPackage().getName());
 
 	private FlexoResource<?> resource;
+	private FlexoObject object;
 
-	public LoadResource(ALoadDirective node, CommandInterpreter commandInterpreter) {
+	public EnterDirective(AEnterDirective node, CommandInterpreter commandInterpreter) {
 		super(node, commandInterpreter);
-		resource = getResource(node.getResourceUri().getText());
+
+		PEnterDirective enterDirective = node.getEnterDirective();
+
+		if (enterDirective instanceof AResourceEnterDirective) {
+			resource = getResource(((AResourceEnterDirective) enterDirective).getResourceUri().getText());
+		}
+		else {
+			// object
+		}
 	}
 
 	public FlexoResource<?> getResource() {
@@ -81,19 +93,18 @@ public class LoadResource extends Directive {
 
 	@Override
 	public void execute() {
-		if (resource.isLoaded()) {
-			System.out.println("Resource " + resource.getURI() + " already loaded");
+		if (getResource() instanceof VirtualModelResource) {
+			object = ((VirtualModelResource) getResource()).getVirtualModel();
+		}
+		if (getResource() instanceof AbstractVirtualModelInstanceResource) {
+			object = ((AbstractVirtualModelInstanceResource) getResource()).getVirtualModelInstance();
+		}
+		if (object != null) {
+			System.out.println("Entering in context " + object);
+			getCommandInterpreter().setFocusedObject(object);
 		}
 		else {
-			try {
-				resource.loadResourceData(null);
-				System.out.println("Loaded " + resource.getURI() + ".");
-			} catch (FileNotFoundException e) {
-				System.err.println("Cannot find resource " + resource.getURI());
-			} catch (ResourceLoadingCancelledException e) {
-			} catch (FlexoException e) {
-				System.err.println("Cannot load resource " + resource.getURI() + " : " + e.getMessage());
-			}
+			System.err.println("Cannot access denoted context");
 		}
 	}
 }
