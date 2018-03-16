@@ -52,6 +52,7 @@ import org.openflexo.foundation.fml.cli.parser.node.Node;
  */
 public abstract class AbstractCommand {
 
+	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(AbstractCommand.class.getPackage().getName());
 
 	private Node node;

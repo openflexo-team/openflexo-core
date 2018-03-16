@@ -60,6 +60,7 @@ import org.openflexo.toolbox.StringUtils;
 @DirectiveDeclaration(keyword = "help", usage = "help", description = "Display this help", syntax = "help")
 public class HelpDirective extends Directive {
 
+	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(HelpDirective.class.getPackage().getName());
 
 	public HelpDirective(AHelpDirective node, CommandInterpreter commandInterpreter) {

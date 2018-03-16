@@ -39,55 +39,63 @@
 
 package org.openflexo.foundation.fml.cli.command.directive;
 
-import java.io.File;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.fml.cli.CommandInterpreter;
 import org.openflexo.foundation.fml.cli.command.Directive;
 import org.openflexo.foundation.fml.cli.command.DirectiveDeclaration;
-import org.openflexo.foundation.fml.cli.parser.node.ALsDirective;
-import org.openflexo.toolbox.StringUtils;
+import org.openflexo.foundation.fml.cli.parser.node.AActivateTaDirective;
+import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 
 /**
- * Represents #ls directive in FML command-line interpreter
+ * Represents activate TA directive in FML command-line interpreter
  * 
- * Usage: #ls
+ * Allows to activate TechnologyAdapter
+ * 
+ * Usage: activate <ta>
  * 
  * @author sylvain
  * 
  */
-@DirectiveDeclaration(keyword = "ls", usage = "ls", description = "List working directory contents", syntax = "ls <path>")
-public class LsDirective extends Directive {
+@DirectiveDeclaration(keyword = "activate", usage = "activate <ta>", description = "Activate technology adapter", syntax = "activate <ta>")
+public class ActivateTA extends Directive {
 
 	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(LsDirective.class.getPackage().getName());
+	private static final Logger logger = Logger.getLogger(ActivateTA.class.getPackage().getName());
 
-	public LsDirective(ALsDirective node, CommandInterpreter commandInterpreter) {
+	private TechnologyAdapter technologyAdapter;
+
+	public ActivateTA(AActivateTaDirective node, CommandInterpreter commandInterpreter) {
 		super(node, commandInterpreter);
+
+		technologyAdapter = getTechnologyAdapter(node.getTechnologyAdapter().getText());
+	}
+
+	public TechnologyAdapter getTechnologyAdapter() {
+		return technologyAdapter;
+	}
+
+	@Override
+	public boolean isValid() {
+		return technologyAdapter != null;
+	}
+
+	@Override
+	public String invalidCommandReason() {
+		if (technologyAdapter == null) {
+			return "Technology adapter not found";
+		}
+		return null;
 	}
 
 	@Override
 	public void execute() {
-		int maxLength = 0;
-		for (File f : getCommandInterpreter().getWorkingDirectory().listFiles()) {
-			String name = getFileName(f);
-			if (name.length() > maxLength) {
-				maxLength = name.length();
-			}
+		if (!getTechnologyAdapter().isActivated()) {
+			getCommandInterpreter().getServiceManager().getTechnologyAdapterService().activateTechnologyAdapter(getTechnologyAdapter(),
+					true);
 		}
-		int cols = 4;
-		int i = 0;
-		for (File f : getCommandInterpreter().getWorkingDirectory().listFiles()) {
-			String name = getFileName(f);
-			System.out.print(name + StringUtils.buildWhiteSpaceIndentation(maxLength - name.length() + 1));
-			i++;
-			if (i % cols == 0) {
-				System.out.println();
-			}
+		else {
+			System.out.println("Technology adapter " + getTechnologyAdapter().getIdentifier() + " is already activated");
 		}
-		if (i % cols != 0) {
-			System.out.println();
-		}
-
 	}
 }

@@ -39,55 +39,61 @@
 
 package org.openflexo.foundation.fml.cli.command.directive;
 
-import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.logging.Logger;
 
+import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.fml.cli.CommandInterpreter;
 import org.openflexo.foundation.fml.cli.command.Directive;
 import org.openflexo.foundation.fml.cli.command.DirectiveDeclaration;
-import org.openflexo.foundation.fml.cli.parser.node.ALsDirective;
-import org.openflexo.toolbox.StringUtils;
+import org.openflexo.foundation.fml.cli.parser.node.ALoadDirective;
+import org.openflexo.foundation.resource.FlexoResource;
+import org.openflexo.foundation.resource.ResourceLoadingCancelledException;
 
 /**
- * Represents #ls directive in FML command-line interpreter
+ * Represents load resource directive in FML command-line interpreter
  * 
- * Usage: #ls
+ * Usage: load <resource> where <resource_uri> represents a resource
  * 
  * @author sylvain
  * 
  */
-@DirectiveDeclaration(keyword = "ls", usage = "ls", description = "List working directory contents", syntax = "ls <path>")
-public class LsDirective extends Directive {
+@DirectiveDeclaration(
+		keyword = "load",
+		usage = "load <resource>",
+		description = "Load resource denoted by supplied resource uri",
+		syntax = "load <resource>")
+public class LoadResource extends Directive {
 
 	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(LsDirective.class.getPackage().getName());
+	private static final Logger logger = Logger.getLogger(LoadResource.class.getPackage().getName());
 
-	public LsDirective(ALsDirective node, CommandInterpreter commandInterpreter) {
+	private FlexoResource<?> resource;
+
+	public LoadResource(ALoadDirective node, CommandInterpreter commandInterpreter) {
 		super(node, commandInterpreter);
+		resource = getResource(node.getResourceUri().getText());
+	}
+
+	public FlexoResource<?> getResource() {
+		return resource;
 	}
 
 	@Override
 	public void execute() {
-		int maxLength = 0;
-		for (File f : getCommandInterpreter().getWorkingDirectory().listFiles()) {
-			String name = getFileName(f);
-			if (name.length() > maxLength) {
-				maxLength = name.length();
+		System.out.println("Loading resource " + resource);
+		if (resource.isLoaded()) {
+			System.out.println("Resource " + resource.getURI() + " already loaded");
+		}
+		else {
+			try {
+				resource.loadResourceData(null);
+			} catch (FileNotFoundException e) {
+				System.err.println("Cannot find resource " + resource.getURI());
+			} catch (ResourceLoadingCancelledException e) {
+			} catch (FlexoException e) {
+				System.err.println("Cannot load resource " + resource.getURI() + " : " + e.getMessage());
 			}
 		}
-		int cols = 4;
-		int i = 0;
-		for (File f : getCommandInterpreter().getWorkingDirectory().listFiles()) {
-			String name = getFileName(f);
-			System.out.print(name + StringUtils.buildWhiteSpaceIndentation(maxLength - name.length() + 1));
-			i++;
-			if (i % cols == 0) {
-				System.out.println();
-			}
-		}
-		if (i % cols != 0) {
-			System.out.println();
-		}
-
 	}
 }

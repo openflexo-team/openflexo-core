@@ -59,6 +59,7 @@ import org.openflexo.foundation.fml.cli.parser.node.ACdDirective;
 @DirectiveDeclaration(keyword = "cd", usage = "cd <directory>", description = "Change working directory", syntax = "cd <path>")
 public class CdDirective extends Directive {
 
+	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(CdDirective.class.getPackage().getName());
 
 	private String path;

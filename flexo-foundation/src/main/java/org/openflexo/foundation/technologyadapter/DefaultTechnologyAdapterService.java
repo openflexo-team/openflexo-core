@@ -80,6 +80,7 @@ import org.openflexo.foundation.task.FlexoTask;
 import org.openflexo.foundation.task.Progress;
 import org.openflexo.model.exceptions.ModelDefinitionException;
 import org.openflexo.model.factory.ModelFactory;
+import org.openflexo.toolbox.StringUtils;
 
 /**
  * Default implementation for {@link ProjectNatureService}
@@ -588,7 +589,9 @@ public abstract class DefaultTechnologyAdapterService extends FlexoServiceImpl i
 		StringBuffer sb = new StringBuffer();
 		sb.append(super.getDisplayableStatus() + " with " + getTechnologyAdapters().size() + " technology adapters");
 		for (TechnologyAdapter ta : getTechnologyAdapters()) {
-			sb.append("\n > " + ta.getName() + " status: " + (ta.isActivated() ? "ACTIVATED" : "INACTIVE"));
+			sb.append("\n" + ta.getIdentifier() + StringUtils.buildWhiteSpaceIndentation(8 - ta.getIdentifier().length()) + " "
+					+ ta.getName() + StringUtils.buildWhiteSpaceIndentation(30 - ta.getName().length()) + " status: "
+					+ (ta.isActivated() ? "ACTIVATED" : "INACTIVE"));
 		}
 		return sb.toString();
 	}

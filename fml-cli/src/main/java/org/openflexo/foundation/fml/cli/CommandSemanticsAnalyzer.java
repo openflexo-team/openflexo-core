@@ -62,11 +62,15 @@ import org.openflexo.connie.expr.Expression;
 import org.openflexo.connie.expr.TypeReference;
 import org.openflexo.connie.expr.UnaryOperatorExpression;
 import org.openflexo.foundation.fml.cli.command.AbstractCommand;
+import org.openflexo.foundation.fml.cli.command.directive.ActivateTA;
 import org.openflexo.foundation.fml.cli.command.directive.CdDirective;
 import org.openflexo.foundation.fml.cli.command.directive.ExitDirective;
 import org.openflexo.foundation.fml.cli.command.directive.HelpDirective;
+import org.openflexo.foundation.fml.cli.command.directive.LoadResource;
 import org.openflexo.foundation.fml.cli.command.directive.LsDirective;
+import org.openflexo.foundation.fml.cli.command.directive.OpenProject;
 import org.openflexo.foundation.fml.cli.command.directive.PwdDirective;
+import org.openflexo.foundation.fml.cli.command.directive.ResourcesDirective;
 import org.openflexo.foundation.fml.cli.command.directive.ServiceDirective;
 import org.openflexo.foundation.fml.cli.command.directive.ServicesDirective;
 import org.openflexo.foundation.fml.cli.command.fml.FMLAssignation;
@@ -74,6 +78,7 @@ import org.openflexo.foundation.fml.cli.command.fml.FMLContextCommand;
 import org.openflexo.foundation.fml.cli.command.fml.FMLExpression;
 import org.openflexo.foundation.fml.cli.parser.analysis.DepthFirstAdapter;
 import org.openflexo.foundation.fml.cli.parser.node.AAcosFuncFunction;
+import org.openflexo.foundation.fml.cli.parser.node.AActivateTaDirective;
 import org.openflexo.foundation.fml.cli.parser.node.AAddExprExpr2;
 import org.openflexo.foundation.fml.cli.parser.node.AAnd2ExprExpr3;
 import org.openflexo.foundation.fml.cli.parser.node.AAndExprExpr3;
@@ -105,6 +110,7 @@ import org.openflexo.foundation.fml.cli.parser.node.AGtExprExpr;
 import org.openflexo.foundation.fml.cli.parser.node.AGteExprExpr;
 import org.openflexo.foundation.fml.cli.parser.node.AHelpDirective;
 import org.openflexo.foundation.fml.cli.parser.node.AIdentifierTypeReferencePath;
+import org.openflexo.foundation.fml.cli.parser.node.ALoadDirective;
 import org.openflexo.foundation.fml.cli.parser.node.ALogFuncFunction;
 import org.openflexo.foundation.fml.cli.parser.node.ALsDirective;
 import org.openflexo.foundation.fml.cli.parser.node.ALtExprExpr;
@@ -116,6 +122,7 @@ import org.openflexo.foundation.fml.cli.parser.node.ANeqExprExpr;
 import org.openflexo.foundation.fml.cli.parser.node.ANotExprExpr3;
 import org.openflexo.foundation.fml.cli.parser.node.ANullConstant;
 import org.openflexo.foundation.fml.cli.parser.node.ANumberTerm;
+import org.openflexo.foundation.fml.cli.parser.node.AOpenDirective;
 import org.openflexo.foundation.fml.cli.parser.node.AOr2ExprExpr2;
 import org.openflexo.foundation.fml.cli.parser.node.AOrExprExpr2;
 import org.openflexo.foundation.fml.cli.parser.node.AParameteredTypeReference;
@@ -123,6 +130,7 @@ import org.openflexo.foundation.fml.cli.parser.node.APiConstant;
 import org.openflexo.foundation.fml.cli.parser.node.APowerExprExpr3;
 import org.openflexo.foundation.fml.cli.parser.node.APreciseNumberNumber;
 import org.openflexo.foundation.fml.cli.parser.node.APwdDirective;
+import org.openflexo.foundation.fml.cli.parser.node.AResourcesDirective;
 import org.openflexo.foundation.fml.cli.parser.node.AScientificNotationNumberNumber;
 import org.openflexo.foundation.fml.cli.parser.node.AServiceDirective;
 import org.openflexo.foundation.fml.cli.parser.node.AServicesDirective;
@@ -693,10 +701,35 @@ public class CommandSemanticsAnalyzer extends DepthFirstAdapter {
 		registerCommand(node, new ServicesDirective(node, commandInterpreter));
 	}
 
+	@SuppressWarnings("rawtypes")
 	@Override
 	public void outAServiceDirective(AServiceDirective node) {
 		super.outAServiceDirective(node);
 		registerCommand(node, new ServiceDirective(node, commandInterpreter));
+	}
+
+	@Override
+	public void outAActivateTaDirective(AActivateTaDirective node) {
+		super.outAActivateTaDirective(node);
+		registerCommand(node, new ActivateTA(node, commandInterpreter));
+	}
+
+	@Override
+	public void outAResourcesDirective(AResourcesDirective node) {
+		super.outAResourcesDirective(node);
+		registerCommand(node, new ResourcesDirective(node, commandInterpreter));
+	}
+
+	@Override
+	public void outAOpenDirective(AOpenDirective node) {
+		super.outAOpenDirective(node);
+		registerCommand(node, new OpenProject(node, commandInterpreter));
+	}
+
+	@Override
+	public void outALoadDirective(ALoadDirective node) {
+		super.outALoadDirective(node);
+		registerCommand(node, new LoadResource(node, commandInterpreter));
 	}
 
 	@Override

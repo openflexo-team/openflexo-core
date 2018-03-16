@@ -712,7 +712,7 @@ public abstract class DefaultResourceCenterService extends FlexoServiceImpl impl
 		StringBuffer sb = new StringBuffer();
 		sb.append(super.getDisplayableStatus() + " with " + getResourceCenters().size() + " resource centers");
 		for (FlexoResourceCenter<?> rc : getResourceCenters()) {
-			sb.append("\n > " + rc.getDisplayableName() + " with " + rc.getAllResources().size() + " resources");
+			sb.append("\n[" + rc.getDefaultBaseURI() + "] with " + rc.getAllResources().size() + " resources");
 		}
 		return sb.toString();
 	}

@@ -65,6 +65,7 @@ import org.openflexo.toolbox.StringUtils;
 		syntax = "services")
 public class ServicesDirective extends Directive {
 
+	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(ServicesDirective.class.getPackage().getName());
 
 	public ServicesDirective(AServicesDirective node, CommandInterpreter commandInterpreter) {

@@ -57,6 +57,7 @@ import org.openflexo.foundation.fml.cli.parser.node.AExitDirective;
 @DirectiveDeclaration(keyword = "exit", usage = "exit", description = "Exit FML command-line interpreter", syntax = "exit")
 public class ExitDirective extends Directive {
 
+	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(ExitDirective.class.getPackage().getName());
 
 	public ExitDirective(AExitDirective node, CommandInterpreter commandInterpreter) {

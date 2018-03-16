@@ -57,7 +57,8 @@ import org.openflexo.foundation.fml.cli.parser.parser.Parser;
  */
 public class CommandParser {
 
-	private static final Logger LOGGER = Logger.getLogger(CommandParser.class.getPackage().getName());
+	@SuppressWarnings("unused")
+	private static final Logger logger = Logger.getLogger(CommandParser.class.getPackage().getName());
 
 	/**
 	 * This is the method to invoke to perform a parsing. Syntactic and (some) semantics analyzer are performed and returned value is an

@@ -59,6 +59,8 @@ import org.openflexo.foundation.fml.cli.command.Directive;
 import org.openflexo.foundation.fml.cli.command.DirectiveDeclaration;
 import org.openflexo.foundation.fml.cli.command.FMLCommand;
 import org.openflexo.foundation.fml.cli.command.FMLCommandDeclaration;
+import org.openflexo.foundation.resource.FlexoResource;
+import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.toolbox.PropertyChangedSupportDefaultImplementation;
 
@@ -71,6 +73,7 @@ public class CommandInterpreter extends PropertyChangedSupportDefaultImplementat
 	private File workingDirectory;
 	private FlexoServiceManager serviceManager;
 
+	@SuppressWarnings("unused")
 	private DataInputStream inStream;
 	private PrintStream outStream;
 
@@ -226,8 +229,8 @@ public class CommandInterpreter extends PropertyChangedSupportDefaultImplementat
 	public void start() throws IOException {
 		// LexicalTokenizer lt = new LexicalTokenizer(data);
 		// Program pgm = new Program();
-		DataInputStream dis = inStream;
-		String lineData;
+		// DataInputStream dis = inStream;
+		// String lineData;
 
 		outStream.println("FML command-line interpreter, (c) 2018 Openflexo.");
 		outStream.println("Ready.");
@@ -360,6 +363,14 @@ public class CommandInterpreter extends PropertyChangedSupportDefaultImplementat
 		}
 	}
 
+	public Console getConsole() {
+		return console;
+	}
+
+	public ConsoleCommand getConsoleCommand() {
+		return consoleCommand;
+	}
+
 	private String getPrompt() {
 		return workingDirectory.getName() + " > ";
 	}
@@ -462,6 +473,7 @@ public class CommandInterpreter extends PropertyChangedSupportDefaultImplementat
 			return getAvailableCompletion(directiveClassDeclaration, startingBuffer);
 		}
 		else {
+			@SuppressWarnings("unused")
 			FMLCommandDeclaration commandClassDeclaration = null;
 			for (Class<? extends FMLCommand> commandClass : getAvailableCommands()) {
 				String keyword = commandClass.getAnnotation(FMLCommandDeclaration.class).keyword();
@@ -543,9 +555,43 @@ public class CommandInterpreter extends PropertyChangedSupportDefaultImplementat
 		if (expectedTokenSyntax.equals("<ta>")) {
 			List<String> returned = new ArrayList<>();
 			for (TechnologyAdapter ta : serviceManager.getTechnologyAdapterService().getTechnologyAdapters()) {
-				if (ta.getClass().getSimpleName().startsWith(currentToken)) {
-					returned.add(
-							startingBuffer.substring(0, startingBuffer.length() - currentToken.length()) + ta.getClass().getSimpleName());
+				if (ta.getIdentifier().startsWith(currentToken)) {
+					returned.add(startingBuffer.substring(0, startingBuffer.length() - currentToken.length()) + ta.getIdentifier());
+				}
+			}
+			return returned;
+		}
+
+		if (expectedTokenSyntax.equals("<rc>")) {
+			String utileToken = currentToken;
+			if (utileToken.startsWith("[")) {
+				utileToken = utileToken.substring(1);
+			}
+			List<String> returned = new ArrayList<>();
+			for (FlexoResourceCenter<?> rc : serviceManager.getResourceCenterService().getResourceCenters()) {
+				if (rc.getDefaultBaseURI().startsWith(utileToken)) {
+					returned.add(startingBuffer.substring(0, startingBuffer.length() - currentToken.length()) + "[" + rc.getDefaultBaseURI()
+							+ "]");
+				}
+			}
+			return returned;
+		}
+
+		if (expectedTokenSyntax.equals("<resource>")) {
+			String utileToken = currentToken;
+			if (utileToken.startsWith("[")) {
+				utileToken = utileToken.substring(1);
+			}
+			List<String> returned = new ArrayList<>();
+			for (FlexoResourceCenter<?> rc : serviceManager.getResourceCenterService().getResourceCenters()) {
+				for (FlexoResource<?> r : rc.getAllResources()) {
+					if (r.getURI().startsWith(utileToken)) {
+						returned.add(startingBuffer.substring(0, startingBuffer.length() - currentToken.length()) + "[" + r.getURI() + "]");
+					}
+					/*if (r.getName().startsWith(utileToken)) {
+						returned.add(
+								startingBuffer.substring(0, startingBuffer.length() - currentToken.length()) + "[" + r.getName() + "]");
+					}*/
 				}
 			}
 			return returned;

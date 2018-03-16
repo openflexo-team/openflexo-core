@@ -39,7 +39,6 @@
 
 package org.openflexo.foundation.fml.cli.command.directive;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
@@ -49,10 +48,8 @@ import org.openflexo.foundation.FlexoService.ServiceOperation;
 import org.openflexo.foundation.fml.cli.CommandInterpreter;
 import org.openflexo.foundation.fml.cli.command.Directive;
 import org.openflexo.foundation.fml.cli.command.DirectiveDeclaration;
-import org.openflexo.foundation.fml.cli.parser.node.APathDirectiveOption;
 import org.openflexo.foundation.fml.cli.parser.node.AServiceDirective;
 import org.openflexo.foundation.fml.cli.parser.node.PDirectiveOption;
-import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 
 /**
  * Represents #service directive in FML command-line interpreter
@@ -80,14 +77,15 @@ import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 		syntax = "service <service> <operation> <ta>")
 public class ServiceDirective<S extends FlexoService> extends Directive {
 
+	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(ServiceDirective.class.getPackage().getName());
 
 	private S service;
 	private ServiceOperation<S> serviceOperation;
 	private String invalidCommandReason = null;
-	private List options = new ArrayList<>();
+	private List<?> options = new ArrayList<>();
 
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public ServiceDirective(AServiceDirective node, CommandInterpreter commandInterpreter) {
 		super(node, commandInterpreter);
 
@@ -114,7 +112,7 @@ public class ServiceDirective<S extends FlexoService> extends Directive {
 						for (PDirectiveOption pDirectiveOption : node.getOptions()) {
 							String optionType = serviceOperation.getOptions().get(index);
 							Object optionValue = makeOption(pDirectiveOption, optionType);
-							options.add(optionValue);
+							((List) options).add(optionValue);
 							index++;
 						}
 					}
@@ -131,25 +129,6 @@ public class ServiceDirective<S extends FlexoService> extends Directive {
 		else {
 			invalidCommandReason = "Service " + node.getServiceName().getText() + " not found";
 		}
-	}
-
-	private Object makeOption(PDirectiveOption pDirectiveOption, String optionType) {
-		if (optionType.equals("<path>") && pDirectiveOption instanceof APathDirectiveOption) {
-			return new File(getCommandInterpreter().getWorkingDirectory(),
-					retrievePath(((APathDirectiveOption) pDirectiveOption).getPath()));
-		}
-		if (optionType.equals("<ta>") && pDirectiveOption instanceof APathDirectiveOption) {
-			String taName = retrievePath(((APathDirectiveOption) pDirectiveOption).getPath());
-			System.out.println("tiens je dois decoder " + taName);
-
-			for (TechnologyAdapter ta : getCommandInterpreter().getServiceManager().getTechnologyAdapterService().getTechnologyAdapters()) {
-				if (ta.getClass().getSimpleName().equals(taName)) {
-					System.out.println("trouve " + ta);
-					return ta;
-				}
-			}
-		}
-		return pDirectiveOption.toString();
 	}
 
 	@Override

@@ -57,6 +57,7 @@ import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 @DeclareCommands({ @DeclareCommand(FMLContextCommand.class), @DeclareCommand(FMLExpression.class), @DeclareCommand(FMLAssignation.class) })
 public abstract class FMLCommand extends AbstractCommand {
 
+	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(FMLCommand.class.getPackage().getName());
 
 	public FMLCommand(Node node, CommandInterpreter commandInterpreter, FlexoConceptInstance fci) {

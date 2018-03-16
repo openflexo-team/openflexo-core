@@ -43,11 +43,15 @@ import java.io.File;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.fml.cli.CommandInterpreter;
+import org.openflexo.foundation.fml.cli.command.directive.ActivateTA;
 import org.openflexo.foundation.fml.cli.command.directive.CdDirective;
 import org.openflexo.foundation.fml.cli.command.directive.ExitDirective;
 import org.openflexo.foundation.fml.cli.command.directive.HelpDirective;
+import org.openflexo.foundation.fml.cli.command.directive.LoadResource;
 import org.openflexo.foundation.fml.cli.command.directive.LsDirective;
+import org.openflexo.foundation.fml.cli.command.directive.OpenProject;
 import org.openflexo.foundation.fml.cli.command.directive.PwdDirective;
+import org.openflexo.foundation.fml.cli.command.directive.ResourcesDirective;
 import org.openflexo.foundation.fml.cli.command.directive.ServiceDirective;
 import org.openflexo.foundation.fml.cli.command.directive.ServicesDirective;
 import org.openflexo.foundation.fml.cli.parser.node.ADotPath;
@@ -56,9 +60,17 @@ import org.openflexo.foundation.fml.cli.parser.node.ADoubleDotPath;
 import org.openflexo.foundation.fml.cli.parser.node.ADoubleDotPathPath;
 import org.openflexo.foundation.fml.cli.parser.node.AFileNamePath;
 import org.openflexo.foundation.fml.cli.parser.node.AIdentifierPath;
+import org.openflexo.foundation.fml.cli.parser.node.APathDirectiveOption;
 import org.openflexo.foundation.fml.cli.parser.node.APathPath;
 import org.openflexo.foundation.fml.cli.parser.node.Node;
+import org.openflexo.foundation.fml.cli.parser.node.PDirectiveOption;
 import org.openflexo.foundation.fml.cli.parser.node.PPath;
+import org.openflexo.foundation.fml.rm.VirtualModelResourceFactory;
+import org.openflexo.foundation.fml.rt.rm.FMLRTVirtualModelInstanceResourceFactory;
+import org.openflexo.foundation.project.FlexoProjectResourceFactory;
+import org.openflexo.foundation.resource.FlexoResource;
+import org.openflexo.foundation.resource.FlexoResourceCenter;
+import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 
 /**
  * Represents a directive in FML command-line interpreter
@@ -68,9 +80,11 @@ import org.openflexo.foundation.fml.cli.parser.node.PPath;
  */
 @DeclareDirectives({ @DeclareDirective(value = HelpDirective.class), @DeclareDirective(CdDirective.class),
 		@DeclareDirective(PwdDirective.class), @DeclareDirective(LsDirective.class), @DeclareDirective(ExitDirective.class),
-		@DeclareDirective(ServicesDirective.class), @DeclareDirective(ServiceDirective.class) })
+		@DeclareDirective(ServicesDirective.class), @DeclareDirective(ServiceDirective.class), @DeclareDirective(ActivateTA.class),
+		@DeclareDirective(ResourcesDirective.class), @DeclareDirective(OpenProject.class), @DeclareDirective(LoadResource.class) })
 public abstract class Directive extends AbstractCommand {
 
+	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(Directive.class.getPackage().getName());
 
 	public Directive(Node node, CommandInterpreter commandInterpreter) {
@@ -120,6 +134,68 @@ public abstract class Directive extends AbstractCommand {
 	@Override
 	public String invalidCommandReason() {
 		return null;
+	}
+
+	protected String getFileName(File f) {
+		if (f == null) {
+			return null;
+		}
+		if (f.isDirectory() && !f.getName().endsWith(VirtualModelResourceFactory.FML_SUFFIX)
+				&& !f.getName().endsWith(FMLRTVirtualModelInstanceResourceFactory.FML_RT_SUFFIX)
+				&& !f.getName().endsWith(FlexoProjectResourceFactory.PROJECT_SUFFIX)) {
+			return f.getName() + File.separator;
+		}
+		return f.getName();
+	}
+
+	protected TechnologyAdapter getTechnologyAdapter(String technologyAdapterName) {
+		for (TechnologyAdapter ta : getCommandInterpreter().getServiceManager().getTechnologyAdapterService().getTechnologyAdapters()) {
+			if (ta.getIdentifier().equals(technologyAdapterName)) {
+				return ta;
+			}
+		}
+		return null;
+	}
+
+	protected FlexoResourceCenter<?> getResourceCenter(String rcURI) {
+		if (rcURI.startsWith("[")) {
+			rcURI = rcURI.substring(1);
+		}
+		if (rcURI.endsWith("]")) {
+			rcURI = rcURI.substring(0, rcURI.length() - 1);
+		}
+		for (FlexoResourceCenter<?> rc : getCommandInterpreter().getServiceManager().getResourceCenterService().getResourceCenters()) {
+			if (rc.getDefaultBaseURI().equals(rcURI)) {
+				return rc;
+			}
+		}
+		return null;
+	}
+
+	protected FlexoResource<?> getResource(String resourceURI) {
+		if (resourceURI.startsWith("[")) {
+			resourceURI = resourceURI.substring(1);
+		}
+		if (resourceURI.endsWith("]")) {
+			resourceURI = resourceURI.substring(0, resourceURI.length() - 1);
+		}
+		return getCommandInterpreter().getServiceManager().getResourceManager().getResource(resourceURI);
+	}
+
+	protected Object makeOption(PDirectiveOption pDirectiveOption, String optionType) {
+		if (optionType.equals("<path>") && pDirectiveOption instanceof APathDirectiveOption) {
+			return new File(getCommandInterpreter().getWorkingDirectory(),
+					retrievePath(((APathDirectiveOption) pDirectiveOption).getPath()));
+		}
+		if (optionType.equals("<ta>") && pDirectiveOption instanceof APathDirectiveOption) {
+			String taName = retrievePath(((APathDirectiveOption) pDirectiveOption).getPath());
+			for (TechnologyAdapter ta : getCommandInterpreter().getServiceManager().getTechnologyAdapterService().getTechnologyAdapters()) {
+				if (ta.getClass().getSimpleName().equals(taName)) {
+					return ta;
+				}
+			}
+		}
+		return pDirectiveOption.toString();
 	}
 
 }
