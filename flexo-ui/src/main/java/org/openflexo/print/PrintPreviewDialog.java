@@ -49,7 +49,8 @@ import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-import org.openflexo.fge.ScreenshotBuilder;
+
+import org.openflexo.diana.ScreenshotBuilder;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.toolbox.FileUtils;

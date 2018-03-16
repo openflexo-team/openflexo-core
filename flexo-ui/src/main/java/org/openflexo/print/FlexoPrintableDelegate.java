@@ -58,7 +58,7 @@ import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.openflexo.fge.swing.graphics.DrawUtils;
+import org.openflexo.diana.swing.graphics.DrawUtils;
 
 public class FlexoPrintableDelegate implements Printable, Pageable {
 
