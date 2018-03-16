@@ -18,7 +18,6 @@
 
 package org.openflexo.foundation.fml.cli;
 
-import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.VirtualModel;
 
@@ -33,7 +32,7 @@ public class CLIUtils {
 	 * @param object
 	 * @return
 	 */
-	public static String renderObject(FlexoObject object) {
+	public static String renderObject(Object object) {
 		if (object instanceof VirtualModel) {
 			return ((VirtualModel) object).getName() + ".fml";
 		}

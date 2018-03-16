@@ -43,6 +43,7 @@ import java.util.logging.Logger;
 
 import org.openflexo.connie.BindingVariable;
 import org.openflexo.connie.type.TypeUtils;
+import org.openflexo.foundation.fml.cli.CLIUtils;
 import org.openflexo.foundation.fml.cli.CommandInterpreter;
 import org.openflexo.foundation.fml.cli.CommandSemanticsAnalyzer;
 import org.openflexo.foundation.fml.cli.command.FMLCommand;
@@ -72,7 +73,7 @@ public class FMLContextCommand extends FMLCommand {
 		for (int i = 0; i < getCommandInterpreter().getBindingModel().getBindingVariablesCount(); i++) {
 			BindingVariable bv = getCommandInterpreter().getBindingModel().getBindingVariableAt(i);
 			System.out.println("[" + TypeUtils.simpleRepresentation(bv.getType()) + "] " + bv.getVariableName() + "="
-					+ getCommandInterpreter().getValue(bv));
+					+ CLIUtils.renderObject(getCommandInterpreter().getValue(bv)));
 		}
 	}
 }
