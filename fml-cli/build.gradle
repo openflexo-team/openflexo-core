@@ -31,3 +31,12 @@ sourceSets {
 tasks.withType(Test) {
 	jvmArgs += ["-Djava.awt.headless=true"]
 }
+
+apply plugin: 'application'
+mainClassName = "org.openflexo.foundation.fml.cli.LaunchHeadlessFMLCLI"
+
+run {
+   standardInput = System.in
+}
+# use with gradle --no-daemon --console plain fml-cli:run -q
+
