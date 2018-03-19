@@ -158,6 +158,7 @@ Tokens
   caret = '^';
   caret_assign = '^=';
   colon = ':';
+  dollar = '$';
   emark = '!';
   eq = '==';
   gt = '>';
@@ -185,6 +186,9 @@ Tokens
   tilde = '~';
   ushr = '>>>';
   ushr_assign = '>>>=';
+  if_token = '?';
+  else_token = ':';
+  
 
   // keywords
 
@@ -256,6 +260,19 @@ Tokens
 
   string_literal = '"' string_character* '"';
 
+   // Math
+   
+  pi = 'pi';
+  cos = 'cos';
+  acos = 'acos';
+  sin = 'sin';
+  asin = 'asin';
+  tan = 'tan';
+  atan = 'atan';
+  log = 'log';
+  exp = 'exp';
+  sqrt = 'sqrt';
+
    // identifier
 
   identifier = java_letter java_letter_or_digit*;
@@ -325,9 +342,9 @@ Productions
     //{array_initializer} element_value_array_initializer |
     {annotation}        annotation;
 
-  element_values =
+  /*element_values =
     {one}                       element_value |
-    {many} element_values comma element_value;
+    {many} element_values comma element_value;*/
     
   /*element_value_array_initializer =
     l_brc element_values? comma? r_brc;*/
@@ -335,7 +352,93 @@ Productions
   additional_identifier =
     dot identifier;
 
+  literal =
+    {integer}        integer_literal |
+    {floating_point} floating_point_literal |
+    {boolean}        boolean_literal |
+    {character}      character_literal |
+    {string}         string_literal |
+    {null}           null_literal;
+
   boolean_literal =
     {true}  true |
     {false} false;
+
+ expr =
+  {expr2} expr2 |
+  {cond_expr} [condition]:expr if_token [then]:expr2 else_token [else]:expr2 |
+  {eq_expr} [left]:expr assign [right]:expr2 |
+  {eq2_expr} [left]:expr eq [right]:expr2 |
+  {neq_expr} [left]:expr neq [right]:expr2 |
+  {lt_expr} [left]:expr lt [right]:expr2 |
+  {gt_expr} [left]:expr gt [right]:expr2 |
+  {lte_expr} [left]:expr lteq [right]:expr2 |
+  {gte_expr} [left]:expr gteq [right]:expr2 ;
+
+ expr2 =
+  {expr3} expr3 |
+  {or_expr} [left]:expr2 bar [right]:expr3 |
+  {or2_expr} [left]:expr2 bar_bar [right]:expr3 |
+  {add_expr} [left]:expr2 plus [right]:expr3 |
+  {sub_expr} [left]:expr2 minus [right]:expr3;
+  
+ expr3 =
+  {term} term |
+  {and_expr} [left]:expr3 amp [right]:term |
+  {and2_expr} [left]:expr3 amp_amp [right]:term |
+  {mult_expr} [left]:expr3 star [right]:term |
+  {div_expr} [left]:expr3 slash [right]:term |
+  {mod_expr} [left]:expr3 percent [right]:term |
+  {power_expr} [left]:expr3 caret [right]:term |
+  {not_expr} emark term;
+
+ type_reference = 
+  {basic} dollar type_reference_path |
+  {parametered} dollar type_reference_path type_reference_arg_list;
+
+ type_reference_path = 
+  {identifier} identifier |
+  {tail} identifier dot type_reference_path;
+
+ type_reference_arg_list = 
+   lt type_reference [type_reference_additional_args]:type_reference_additional_arg* gt;
+
+ type_reference_additional_arg = 
+  comma type_reference;
+
+ call = 
+  identifier arg_list ;
+
+ arg_list = 
+  {empty_list} l_par r_par |
+  {non_empty_list} l_par expr [additional_args]:additional_arg* r_par;
+
+ additional_arg = 
+  comma expr;
+
+ binding = 
+  {identifier} identifier |
+  {call} call |
+  {tail1} identifier dot binding |
+  {tail2} call dot binding;
+
+  function =
+    {cos_func} cos l_par expr2 r_par |
+    {acos_func} acos l_par expr2 r_par |
+    {sin_func} sin l_par expr2 r_par |
+    {asin_func} asin l_par expr2 r_par |
+    {tan_func} tan l_par expr2 r_par |
+    {atan_func} atan l_par expr2 r_par |
+    {exp_func} exp l_par expr2 r_par |
+    {log_func} log l_par expr2 r_par |
+    {sqrt_func} sqrt l_par expr2 r_par;
+
+  term =
+    {negative} minus term |
+    {literal} literal |
+    {function} function |
+    {binding} binding |
+    {expr} l_par expr r_par |
+    {cast} l_par type_reference r_par term;
+ 
 
