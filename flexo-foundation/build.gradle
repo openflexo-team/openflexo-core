@@ -1,6 +1,8 @@
 dependencies {
   // openflexo dep
   compile flexoLocalization()
+  // Still to be removed
+  compile flexoGraphicUtils()
 
   // external dep
   compile group: 'org.eclipse.jgit', name: 'org.eclipse.jgit', version: '4.3.1.201605051710-r'

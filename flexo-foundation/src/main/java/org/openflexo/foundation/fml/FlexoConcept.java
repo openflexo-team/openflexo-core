@@ -94,6 +94,7 @@ import org.openflexo.model.validation.ValidationWarning;
 import org.openflexo.rm.BasicResourceImpl.LocatorNotFoundException;
 import org.openflexo.rm.FileResourceImpl;
 import org.openflexo.rm.Resource;
+import org.openflexo.swing.ImageUtils;
 import org.openflexo.toolbox.StringUtils;
 
 /**
@@ -185,7 +186,6 @@ public interface FlexoConcept extends VirtualModelObject {
 	@PastingPoint
 	public void addToEmbeddedFlexoConcepts(FlexoConcept aFlexoConcept);
 
-	@Remover(EMBEDDED_FLEXO_CONCEPT_KEY)
 	public void removeFromEmbeddedFlexoConcepts(FlexoConcept aFlexoConcept);
 
 	public List<FlexoBehaviour> getDeclaredFlexoBehaviours();
@@ -1945,7 +1945,6 @@ public interface FlexoConcept extends VirtualModelObject {
 			getPropertyChangeSupport().firePropertyChange("smallIcon", null, getSmallIcon());
 		}
 
-		/*
 		@Override
 		public ImageIcon getBigIcon() {
 			if (bigIcon == null && getBigIconResource() != null && getBigIconResource().exists()) {
@@ -1953,7 +1952,7 @@ public interface FlexoConcept extends VirtualModelObject {
 			}
 			return bigIcon;
 		}
-		
+
 		@Override
 		public ImageIcon getMediumIcon() {
 			if (mediumIcon == null && getMediumIconResource() != null && getMediumIconResource().exists()) {
@@ -1961,7 +1960,7 @@ public interface FlexoConcept extends VirtualModelObject {
 			}
 			return mediumIcon;
 		}
-		
+
 		@Override
 		public ImageIcon getSmallIcon() {
 			if (smallIcon == null && getSmallIconResource() != null && getSmallIconResource().exists()) {
@@ -1969,7 +1968,6 @@ public interface FlexoConcept extends VirtualModelObject {
 			}
 			return smallIcon;
 		}
-		*/
 	}
 
 	@DefineValidationRule
