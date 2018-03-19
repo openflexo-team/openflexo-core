@@ -402,31 +402,17 @@ Productions
     {double} double;
  
   type_arguments =
-    {gt}   lt actual_type_argument_list gt /*|
-    {shr}  lt actual_type_argument_list_shr shr |
-    {ushr} lt actual_type_argument_list_ushr ushr*/;
+    lt type_argument_list gt;
  
   actual_type_argument =
     {primitive} primitive_type |
-    {reference} dot_identifier /*[type_components]:type_component* */ type_arguments?/* |
+    {reference} dot_identifier type_arguments? /* |
     {wildcard}  wildcard*/;
  
-  actual_type_argument_list =
+  type_argument_list =
     {one}                                  actual_type_argument |
-    {many} actual_type_argument_list comma actual_type_argument;
+    {many} type_argument_list comma actual_type_argument;
 
-  /*actual_type_argument_list_shr =
-    {one}                                  actual_type_argument_shr |
-    {many} actual_type_argument_list comma actual_type_argument_shr;
-
-  actual_type_argument_list_ushr =
-    {one}                                  actual_type_argument_ushr |
-    {many} actual_type_argument_list comma actual_type_argument_ushr;
-
-  actual_type_argument_list_ushr_no_gt =
-    {one}                                  actual_type_argument_ushr_no_gt |
-    {many} actual_type_argument_list comma actual_type_argument_ushr_no_gt;*/
- 
   literal =
     {integer}        integer_literal |
     {floating_point} floating_point_literal |
