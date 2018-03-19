@@ -11,7 +11,7 @@ import [http://www.openflexo.org/Tests/OWL/Ontology1.owl] as Ontology1;
 @AnnotationWithFloat(2.562332)
 @AnnotationWithFloat2(value=7.872323)
 @URI([http://www.openflexo.org/Tests/FML/Test1])
-VirtualModel Test1VM /*extends Test2VM,ViewPoint1.AnOtherVM*/ {
+VirtualModel Test1VM {
 
 
 }

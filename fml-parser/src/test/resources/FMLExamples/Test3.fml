@@ -1,25 +1,25 @@
 use org.openflexo.technologyadapter.owl.OWLTechnologyAdapter as OWL;
 
-import http://www.openflexo.org/Tests/ViewPoints/ViewPoint1 as ViewPoint1;
-import http://www.openflexo.org/Tests/OWL/Ontology1.owl as Ontology1;
+import [http://www.openflexo.org/Tests/ViewPoints/ViewPoint1] as ViewPoint1;
+import [http://www.openflexo.org/Tests/OWL/Ontology1.owl] as Ontology1;
 
-@Version("1.1")
-@Author("Sylvain")
-@Description("This is a description of VirtualModel")
-
-@URI("http://openflexo.org/test/Tes1VM.fml"
+@URI([http://openflexo.org/test/Test1VM.fml])
 public VirtualModel Test1VM extends Test2VM,ViewPoint1.AnOtherVM {
 
 	@Description("This model slot points to an ontology, which import here ontology with uri Ontology1")
-	OWL::OWLModelSlot<OWLOntology> ontology (importOntology=FML::Resource<OWLOntology>(uri=Ontology1));
-	
+	public OWL::OWLModelSlot<OWLOntology> ontology1;
+
+	public OWL::OWLModelSlot<OWLOntology> ontology2 (aStringParameter="foo",anIntParameter=2);
+
+	public OWL::OWLModelSlot<OWLOntology> ontology3 (importOntology=FML::getResource<OWLOntology>(uri=Ontology1));
+
 	@Version("1.2")
 	@Description("This is the first concept")
-	public FlexoConcept Concept1 {
+	public static FlexoConcept Concept1 {
 		
-		public PrimitiveRole<int> v1;
-		public PrimitiveRole<int> v2;
-		public Expression<int> sum = v1+v2;
+		/*public*/ //PrimitiveRole<int> v1;
+		/*public*/ //PrimitiveRole<int> v2;
+		/*public Expression<int> sum = v1+v2;
 		public GetSet<int> c (
 			get: {
 				return v1+v2:
@@ -38,7 +38,7 @@ public VirtualModel Test1VM extends Test2VM,ViewPoint1.AnOtherVM {
 		}
 		void action:helloWorld() {
 			print(“Hello World !”);
-		}
+		}*/
 	}
 	
 

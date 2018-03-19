@@ -1,21 +1,15 @@
-package http://www.openflexo.org/Tests/FML/Test1;
-
 use org.openflexo.technologyadapter.owl.OWLTechnologyAdapter as OWL;
 
-import http://www.openflexo.org/Tests/ViewPoints/ViewPoint1 as ViewPoint1;
-import http://www.openflexo.org/Tests/OWL/Ontology1.owl as Ontology1;
-
-//Declare a new VirtualModel
-//URI of VirtualModel is computed from namespace and virtualmodel name
-//URI of VirtualModel is here http://www.openflexo.org/Tests/FML/Test1/Test1VM.fml
+import [http://www.openflexo.org/Tests/ViewPoints/ViewPoint1] as ViewPoint1;
+import [http://www.openflexo.org/Tests/OWL/Ontology1.owl] as Ontology1;
 
 @Version("1.1")
 @Author("Sylvain")
 @Description("This is a description of VirtualModel")
+@URI([http://www.openflexo.org/Tests/FML/Test1])
+VirtualModel Test1VM extends Test2VM,ViewPoint1.AnOtherVM {
 
-public VirtualModel Test1VM extends Test2VM,ViewPoint1.AnOtherVM {
-
-	@Description("This model slot points to an ontology, which import here ontology with uri Ontology1")
+	/*@Description("This model slot points to an ontology, which import here ontology with uri Ontology1")
 	OWL::OWLModelSlot<OWLOntology> ontology (importOntology=FML::Resource<OWLOntology>(uri=Ontology1));
 	
 	@Version("1.2")
@@ -46,6 +40,6 @@ public VirtualModel Test1VM extends Test2VM,ViewPoint1.AnOtherVM {
 	@Description("This is the second concept")
 	FlexoConcept Concept2 {
 		Role individual as OWL::OWLIndividualRole(type=Ontology1.Type2);
-	}
+	}*/
 
 }

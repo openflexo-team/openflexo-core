@@ -64,10 +64,10 @@ public class TestFMLParser extends OpenflexoTestCase {
 		testFMLCompilationUnit(ResourceLocator.locateResource("FMLExamples/TestAnnotations.fml"));
 	}
 
-	/*@Test
+	@Test
 	public void test0() {
 		testFMLCompilationUnit(ResourceLocator.locateResource("FMLExamples/Test0.fml"));
-	}*/
+	}
 
 	/*@Test
 	public void test1() {
@@ -79,10 +79,10 @@ public class TestFMLParser extends OpenflexoTestCase {
 		testFMLCompilationUnit(ResourceLocator.locateResource("FMLExamples/Test2.fml"));
 	}*/
 
-	/*@Test
+	@Test
 	public void test3() {
 		testFMLCompilationUnit(ResourceLocator.locateResource("FMLExamples/Test3.fml"));
-	}*/
+	}
 
 	private static void testFMLCompilationUnit(Resource fileResource) {
 		try {

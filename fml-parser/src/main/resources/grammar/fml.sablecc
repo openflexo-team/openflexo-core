@@ -302,18 +302,36 @@ Productions
 
   import_declaration = import uri as identifier semi;
 
-  virtual_model_declaration = [annotations]:annotation* virtual_model identifier l_brc  r_brc;
+  virtual_model_declaration = [annotations]:annotation* visibility? static? virtual_model identifier super? l_brc [concept_body_declarations]:concept_body_declaration* r_brc;
 
-  flexo_concept_declaration = [annotations]:annotation* flexo_concept identifier l_brc  r_brc;
+  flexo_concept_declaration = [annotations]:annotation* visibility? static? flexo_concept identifier super? l_brc  r_brc;
 
-  modifier =
+  concept_body_declaration =
+    {model_slot} model_slot_declaration |
+    {flexo_concept} flexo_concept_declaration;
+
+  super =
+    extends super_type_list;
+
+  super_type_list =
+    {one} dot_identifier |
+    {many} super_type_list comma dot_identifier;
+
+/*  modifier =
     {abstract}     abstract |
     {annotation}   annotation |
     {final}        final |
     {private}      private |
     {protected}    protected |
     {public}       public |
-    {static}       static;
+    {static}       static;*/
+
+  visibility =
+    {private}      private |
+    {protected}    protected |
+    {public}       public;
+  
+  // Annotations
   
   annotation =
     {normal_annotation}         normal_annotation |
@@ -333,9 +351,70 @@ Productions
     identifier assign expression;
 
   element_value_pairs =
-    {one}                            element_value_pair |
+    {one} element_value_pair |
     {many} element_value_pairs comma element_value_pair;
 
+  // FML elements
+
+  fml_element_configuration =
+    l_par element_value_pairs? r_par;
+ 
+  // Properties
+ 
+  model_slot_declaration = [annotations]:annotation* visibility? static? ta_identifier lt dot_identifier gt identifier fml_element_configuration? semi;
+ 
+  // Types
+  
+  type =
+    {primitive} primitive_type |
+    {java_class} dot_identifier |
+    {parameterized_type} dot_identifier type_arguments;
+    
+  primitive_type =
+    {numeric} numeric_type |
+    {boolean} boolean;
+  
+  numeric_type =
+    {integral} integral_type |
+    {floating} floating_point_type;
+  
+   integral_type =
+    {byte}  byte |
+    {short} short |
+    {int}   int |
+    {long}  long |
+    {char}  char;
+
+  floating_point_type =
+    {float}  float |
+    {double} double;
+ 
+  type_arguments =
+    {gt}   lt actual_type_argument_list gt /*|
+    {shr}  lt actual_type_argument_list_shr shr |
+    {ushr} lt actual_type_argument_list_ushr ushr*/;
+ 
+  actual_type_argument =
+    {primitive} primitive_type |
+    {reference} dot_identifier /*[type_components]:type_component* */ type_arguments?/* |
+    {wildcard}  wildcard*/;
+ 
+  actual_type_argument_list =
+    {one}                                  actual_type_argument |
+    {many} actual_type_argument_list comma actual_type_argument;
+
+  /*actual_type_argument_list_shr =
+    {one}                                  actual_type_argument_shr |
+    {many} actual_type_argument_list comma actual_type_argument_shr;
+
+  actual_type_argument_list_ushr =
+    {one}                                  actual_type_argument_ushr |
+    {many} actual_type_argument_list comma actual_type_argument_ushr;
+
+  actual_type_argument_list_ushr_no_gt =
+    {one}                                  actual_type_argument_ushr_no_gt |
+    {many} actual_type_argument_list comma actual_type_argument_ushr_no_gt;*/
+ 
   literal =
     {integer}        integer_literal |
     {floating_point} floating_point_literal |
@@ -428,6 +507,7 @@ Productions
     {literal} literal |
     {function} function |
     {binding} binding |
+    {ta_data} ta_identifier lt dot_identifier gt fml_element_configuration? |
     {expr} l_par expression r_par |
     {cast} l_par type_reference r_par term;
  
