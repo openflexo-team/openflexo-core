@@ -336,23 +336,6 @@ Productions
     {one}                            element_value_pair |
     {many} element_value_pairs comma element_value_pair;
 
-  /*element_value =
-    //{conditional}       conditional_expression |
-    {identifier}        dot_identifier |
-    //{array_initializer} element_value_array_initializer |
-    {annotation}        annotation;
-*/
-
-  /*element_values =
-    {one}                       element_value |
-    {many} element_values comma element_value;*/
-    
-  /*element_value_array_initializer =
-    l_brc element_values? comma? r_brc;*/
-
-  /*additional_identifier =
-    dot identifier;*/
-
   literal =
     {integer}        integer_literal |
     {floating_point} floating_point_literal |
@@ -366,67 +349,67 @@ Productions
     {false} false;
 
   assignation_expression = 
-   {eq_expr} [left]:dot_identifier assign [right]:expr;
+    {eq_expr} [left]:dot_identifier assign [right]:expr;
     
- expr =
-  {expr2} expr2 |
-  {cond_expr} [condition]:expr if_token [then]:expr2 else_token [else]:expr2 |
-  {eq_expr} [left]:expr eq [right]:expr2 |
-  {neq_expr} [left]:expr neq [right]:expr2 |
-  {lt_expr} [left]:expr lt [right]:expr2 |
-  {gt_expr} [left]:expr gt [right]:expr2 |
-  {lte_expr} [left]:expr lteq [right]:expr2 |
-  {gte_expr} [left]:expr gteq [right]:expr2 ;
+  expr =
+    {expr2} expr2 |
+    {cond_expr} [condition]:expr if_token [then]:expr2 else_token [else]:expr2 |
+    {eq_expr} [left]:expr eq [right]:expr2 |
+    {neq_expr} [left]:expr neq [right]:expr2 |
+    {lt_expr} [left]:expr lt [right]:expr2 |
+    {gt_expr} [left]:expr gt [right]:expr2 |
+    {lte_expr} [left]:expr lteq [right]:expr2 |
+    {gte_expr} [left]:expr gteq [right]:expr2 ;
 
- expr2 =
-  {expr3} expr3 |
-  {or_expr} [left]:expr2 bar [right]:expr3 |
-  {or2_expr} [left]:expr2 bar_bar [right]:expr3 |
-  {add_expr} [left]:expr2 plus [right]:expr3 |
-  {sub_expr} [left]:expr2 minus [right]:expr3;
+  expr2 =
+    {expr3} expr3 |
+    {or_expr} [left]:expr2 bar [right]:expr3 |
+    {or2_expr} [left]:expr2 bar_bar [right]:expr3 |
+    {add_expr} [left]:expr2 plus [right]:expr3 |
+    {sub_expr} [left]:expr2 minus [right]:expr3;
   
- expr3 =
-  {term} term |
-  {and_expr} [left]:expr3 amp [right]:term |
-  {and2_expr} [left]:expr3 amp_amp [right]:term |
-  {mult_expr} [left]:expr3 star [right]:term |
-  {div_expr} [left]:expr3 slash [right]:term |
-  {mod_expr} [left]:expr3 percent [right]:term |
-  {power_expr} [left]:expr3 caret [right]:term |
-  {not_expr} emark term;
+  expr3 =
+    {term} term |
+    {and_expr} [left]:expr3 amp [right]:term |
+    {and2_expr} [left]:expr3 amp_amp [right]:term |
+    {mult_expr} [left]:expr3 star [right]:term |
+    {div_expr} [left]:expr3 slash [right]:term |
+    {mod_expr} [left]:expr3 percent [right]:term |
+    {power_expr} [left]:expr3 caret [right]:term |
+    {not_expr} emark term;
 
- type_reference = 
-  {basic} dollar type_reference_path |
-  {parametered} dollar type_reference_path type_reference_arg_list;
+  type_reference = 
+    {basic} dollar type_reference_path |
+    {parametered} dollar type_reference_path type_reference_arg_list;
 
- type_reference_path = 
-  {identifier} identifier |
-  {tail} identifier dot type_reference_path;
+  type_reference_path = 
+    {identifier} identifier |
+    {tail} identifier dot type_reference_path;
 
- type_reference_arg_list = 
-   lt type_reference [type_reference_additional_args]:type_reference_additional_arg* gt;
+  type_reference_arg_list = 
+    lt type_reference [type_reference_additional_args]:type_reference_additional_arg* gt;
 
- type_reference_additional_arg = 
-  comma type_reference;
+  type_reference_additional_arg = 
+    comma type_reference;
 
- call = 
-  identifier arg_list ;
+  call = 
+    identifier arg_list ;
 
- arg_list = 
-  {empty_list} l_par r_par |
-  {non_empty_list} l_par expr [additional_args]:additional_arg* r_par;
+  arg_list = 
+    {empty_list} l_par r_par |
+    {non_empty_list} l_par expr [additional_args]:additional_arg* r_par;
 
- additional_arg = 
-  comma expr;
+  additional_arg = 
+    comma expr;
 
- dot_identifier =
-  {identifier} identifier |
-  {tail} identifier dot dot_identifier;
+  dot_identifier =
+    {identifier} identifier |
+    {tail} identifier dot dot_identifier;
 
- binding = 
-  {dot_identifier} dot_identifier |
-  {call} call |
-  {tail} call dot binding;
+  binding = 
+    {dot_identifier} dot_identifier |
+    {call} call |
+    {tail} call dot binding;
 
   function =
     {cos_func} cos l_par expr2 r_par |
