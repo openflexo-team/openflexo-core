@@ -175,17 +175,17 @@ Tokens
   plus_assign = '+=';
   plus_plus = '++';
   qmark = '?';
-  shl = '<<';
-  shl_assign = '<<=';
-  shr = '>>';
-  shr_assign = '>>=';
+  //shl = '<<';
+  //shl_assign = '<<=';
+  //shr = '>>';
+  //shr_assign = '>>=';
   slash = '/';
   slash_assign = '/=';
   star = '*';
   star_assign = '*=';
   tilde = '~';
-  ushr = '>>>';
-  ushr_assign = '>>>=';
+  //ushr = '>>>';
+  //ushr_assign = '>>>=';
   if_token = '?';
   else_token = ':';
   
@@ -241,7 +241,7 @@ Tokens
   import = 'import';   
   flexo_concept = 'FlexoConcept';   
  
-   // literals
+  // literals
 
   character_literal = ''' (single_character | escape_sequence) ''';
 
@@ -307,7 +307,7 @@ Productions
   flexo_concept_declaration = [annotations]:annotation* visibility? static? flexo_concept identifier super? l_brc  r_brc;
 
   concept_body_declaration =
-    {model_slot} model_slot_declaration |
+    {property} property_declaration |
     {flexo_concept} flexo_concept_declaration;
 
   super =
@@ -361,7 +361,19 @@ Productions
  
   // Properties
  
-  model_slot_declaration = [annotations]:annotation* visibility? static? ta_identifier lt dot_identifier gt identifier fml_element_configuration? semi;
+  property_declaration =
+    {primitive_role_declaration} primitive_role_declaration |
+    {role_declaration} role_declaration;
+ 
+  primitive_role_declaration =
+    {primitive} [annotations]:annotation* visibility? primitive_type identifier semi |
+    {java_role_declaration} java_role_declaration ;
+  
+  java_role_declaration =
+    [annotations]:annotation* visibility? type identifier semi;
+  
+  role_declaration =
+    [annotations]:annotation* visibility? ta_identifier lt dot_identifier gt identifier fml_element_configuration? semi;
  
   // Types
   

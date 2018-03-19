@@ -1,0 +1,26 @@
+use org.openflexo.technologyadapter.owl.OWLTechnologyAdapter as OWL;
+
+import [http://www.openflexo.org/Tests/ViewPoints/ViewPoint1] as ViewPoint1;
+import [http://www.openflexo.org/Tests/OWL/Ontology1.owl] as Ontology1;
+
+@URI([http://www.openflexo.org/Tests/FML/Test1])
+public VirtualModel Test1VM {
+
+	public int a;
+	public float c;
+	public double d;
+	public byte e;
+	public char f;
+	public short g;
+	public long h;
+	public boolean i;
+	
+	public String aString;
+	public String aDate;
+
+    public java.util.List<java.lang.String> aList;
+    public java.util.List<java.util.List<java.lang.String>> aListOfList;
+    public java.util.List<java.util.List<java.util.List<java.lang.String>>> aListOfListOfList;
+    public java.util.Map<String,Object>> aMap;
+    public java.util.Map<java.lang.String,java.lang.Object>> anOtherMap;
+}
