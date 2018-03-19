@@ -327,20 +327,21 @@ Productions
     at dot_identifier;
 
   single_element_annotation =
-    at dot_identifier l_par expr2 r_par;
+    at dot_identifier l_par expr r_par;
 
   element_value_pair =
-    identifier assign expr2;
+    identifier assign expr;
 
   element_value_pairs =
     {one}                            element_value_pair |
     {many} element_value_pairs comma element_value_pair;
 
-  element_value =
+  /*element_value =
     //{conditional}       conditional_expression |
     {identifier}        dot_identifier |
     //{array_initializer} element_value_array_initializer |
     {annotation}        annotation;
+*/
 
   /*element_values =
     {one}                       element_value |
@@ -364,11 +365,13 @@ Productions
     {true}  true |
     {false} false;
 
+  assignation_expression = 
+   {eq_expr} [left]:dot_identifier assign [right]:expr;
+    
  expr =
   {expr2} expr2 |
   {cond_expr} [condition]:expr if_token [then]:expr2 else_token [else]:expr2 |
-  {eq_expr} [left]:expr assign [right]:expr2 |
-  {eq2_expr} [left]:expr eq [right]:expr2 |
+  {eq_expr} [left]:expr eq [right]:expr2 |
   {neq_expr} [left]:expr neq [right]:expr2 |
   {lt_expr} [left]:expr lt [right]:expr2 |
   {gt_expr} [left]:expr gt [right]:expr2 |
