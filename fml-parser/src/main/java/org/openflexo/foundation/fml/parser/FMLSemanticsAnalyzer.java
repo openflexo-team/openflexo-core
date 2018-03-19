@@ -109,8 +109,7 @@ class FMLSemanticsAnalyzer extends DepthFirstAdapter {
 	@Override
 	public void outAUseDeclaration(AUseDeclaration node) {
 		super.outAUseDeclaration(node);
-		System.out.println("Tiens, un use: " + node + " ta=" + node.getTechnologyAdapter()
-				+ node.getTechnologyAdapterAdditionalIdentifiers() + " id=" + node.getTaId());
+		System.out.println("Tiens, un use: " + node + " ta=" + node.getTechnologyAdapter() + " id=" + node.getTaId());
 	}
 
 	@Override

@@ -327,10 +327,10 @@ Productions
     at dot_identifier;
 
   single_element_annotation =
-    at dot_identifier l_par expr r_par;
+    at dot_identifier l_par expression r_par;
 
   element_value_pair =
-    identifier assign expr;
+    identifier assign expression;
 
   element_value_pairs =
     {one}                            element_value_pair |
@@ -342,24 +342,25 @@ Productions
     {boolean}        boolean_literal |
     {character}      character_literal |
     {string}         string_literal |
-    {null}           null_literal;
+    {null}           null_literal |
+    {uri}            uri;
 
   boolean_literal =
     {true}  true |
     {false} false;
 
   assignation_expression = 
-    {eq_expr} [left]:dot_identifier assign [right]:expr;
+    {eq_expr} [left]:dot_identifier assign [right]:expression;
     
-  expr =
+  expression =
     {expr2} expr2 |
-    {cond_expr} [condition]:expr if_token [then]:expr2 else_token [else]:expr2 |
-    {eq_expr} [left]:expr eq [right]:expr2 |
-    {neq_expr} [left]:expr neq [right]:expr2 |
-    {lt_expr} [left]:expr lt [right]:expr2 |
-    {gt_expr} [left]:expr gt [right]:expr2 |
-    {lte_expr} [left]:expr lteq [right]:expr2 |
-    {gte_expr} [left]:expr gteq [right]:expr2 ;
+    {cond_expr} [condition]:expression if_token [then]:expr2 else_token [else]:expr2 |
+    {eq_expr} [left]:expr2 eq [right]:expr2 |
+    {neq_expr} [left]:expr2 neq [right]:expr2 |
+    {lt_expr} [left]:expr2 lt [right]:expr2 |
+    {gt_expr} [left]:expr2 gt [right]:expr2 |
+    {lte_expr} [left]:expr2 lteq [right]:expr2 |
+    {gte_expr} [left]:expr2 gteq [right]:expr2 ;
 
   expr2 =
     {expr3} expr3 |
@@ -397,10 +398,10 @@ Productions
 
   arg_list = 
     {empty_list} l_par r_par |
-    {non_empty_list} l_par expr [additional_args]:additional_arg* r_par;
+    {non_empty_list} l_par expression [additional_args]:additional_arg* r_par;
 
   additional_arg = 
-    comma expr;
+    comma expression;
 
   dot_identifier =
     {identifier} identifier |
@@ -427,7 +428,7 @@ Productions
     {literal} literal |
     {function} function |
     {binding} binding |
-    {expr} l_par expr r_par |
+    {expr} l_par expression r_par |
     {cast} l_par type_reference r_par term;
  
 
