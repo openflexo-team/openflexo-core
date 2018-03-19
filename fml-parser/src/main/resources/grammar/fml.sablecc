@@ -298,7 +298,7 @@ Productions
 
   compilation_unit = [use_declarations]:use_declaration* [import_declarations]:import_declaration* virtual_model_declaration;
 
-  use_declaration = use [technology_adapter]:identifier [technology_adapter_additional_identifiers]:additional_identifier* as [ta_id]:identifier semi;
+  use_declaration = use [technology_adapter]:dot_identifier as [ta_id]:identifier semi;
 
   import_declaration = import uri as identifier semi;
 
@@ -321,16 +321,16 @@ Productions
     {single_element_annotation} single_element_annotation;
 
   normal_annotation =
-    at identifier [additional_identifiers]:additional_identifier* l_par element_value_pairs? r_par;
+    at dot_identifier l_par element_value_pairs? r_par;
 
   marker_annotation =
-    at identifier [additional_identifiers]:additional_identifier*;
+    at dot_identifier;
 
   single_element_annotation =
-    at identifier [additional_identifiers]:additional_identifier* l_par element_value r_par;
+    at dot_identifier l_par expr2 r_par;
 
   element_value_pair =
-    identifier assign element_value;
+    identifier assign expr2;
 
   element_value_pairs =
     {one}                            element_value_pair |
@@ -338,7 +338,7 @@ Productions
 
   element_value =
     //{conditional}       conditional_expression |
-    {identifier}        identifier [additional_identifiers]:additional_identifier* |
+    {identifier}        dot_identifier |
     //{array_initializer} element_value_array_initializer |
     {annotation}        annotation;
 
@@ -349,8 +349,8 @@ Productions
   /*element_value_array_initializer =
     l_brc element_values? comma? r_brc;*/
 
-  additional_identifier =
-    dot identifier;
+  /*additional_identifier =
+    dot identifier;*/
 
   literal =
     {integer}        integer_literal |
@@ -416,11 +416,14 @@ Productions
  additional_arg = 
   comma expr;
 
- binding = 
+ dot_identifier =
   {identifier} identifier |
+  {tail} identifier dot dot_identifier;
+
+ binding = 
+  {dot_identifier} dot_identifier |
   {call} call |
-  {tail1} identifier dot binding |
-  {tail2} call dot binding;
+  {tail} call dot binding;
 
   function =
     {cos_func} cos l_par expr2 r_par |
