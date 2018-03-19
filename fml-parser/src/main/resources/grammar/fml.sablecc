@@ -98,7 +98,7 @@ Helpers
   java_letter = unicode_letter | '$' | '_';
   java_letter_or_digit = unicode_letter | unicode_digit | '$' | '_';
 
-  url_letter_or_digit = unicode_letter | unicode_digit | '$' | '_' | '.' | '/';
+  uri_letter_or_digit = unicode_letter | unicode_digit | '$' | '_' | '.' | '/';
 
   non_zero_digit = ['1'..'9'];
   digit = ['0'..'9'];
@@ -268,10 +268,9 @@ Tokens
   documentation_comment =    '/**' '*'* (not_star_not_slash not_star* '*'+)* '/';
   end_of_line_comment = '//' input_character* line_terminator?;
 
-  uri = 'http://' unicode_letter (url_letter_or_digit)*;
+  uri = '[http://' unicode_letter (uri_letter_or_digit)* ']';
   ta_identifier = (java_letter*) '::' (java_letter*);
  
-
 Ignored Tokens
   white_space,
   traditional_comment,
@@ -280,17 +279,11 @@ Ignored Tokens
  
 Productions
 
-  compilation_unit = package_declaration? [use_declarations]:use_declaration* [import_declarations]:import_declaration* main_declaration;
-
-  package_declaration = package uri semi;
+  compilation_unit = [use_declarations]:use_declaration* [import_declarations]:import_declaration* virtual_model_declaration;
 
   use_declaration = use [technology_adapter]:identifier [technology_adapter_additional_identifiers]:additional_identifier* as [ta_id]:identifier semi;
 
   import_declaration = import uri as identifier semi;
-
-  main_declaration =
-    {virtual_model}	virtual_model_declaration |
-    {flexo_concept}	flexo_concept_declaration;    
 
   virtual_model_declaration = [annotations]:annotation* virtual_model identifier l_brc  r_brc;
 
@@ -331,6 +324,13 @@ Productions
     {identifier}        identifier [additional_identifiers]:additional_identifier* |
     //{array_initializer} element_value_array_initializer |
     {annotation}        annotation;
+
+  element_values =
+    {one}                       element_value |
+    {many} element_values comma element_value;
+    
+  /*element_value_array_initializer =
+    l_brc element_values? comma? r_brc;*/
 
   additional_identifier =
     dot identifier;

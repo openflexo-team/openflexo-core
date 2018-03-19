@@ -45,17 +45,9 @@ import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.fml.FMLObject;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.parser.analysis.DepthFirstAdapter;
-import org.openflexo.foundation.fml.parser.node.ABlock;
-import org.openflexo.foundation.fml.parser.node.AFlexoBehaviourDeclaration;
 import org.openflexo.foundation.fml.parser.node.AFlexoConceptDeclaration;
-import org.openflexo.foundation.fml.parser.node.AFlexoRoleDeclaration;
 import org.openflexo.foundation.fml.parser.node.AImportDeclaration;
-import org.openflexo.foundation.fml.parser.node.ANamespaceDeclaration;
-import org.openflexo.foundation.fml.parser.node.APrimitiveFormalArgument;
-import org.openflexo.foundation.fml.parser.node.AReferenceFormalArgument;
-import org.openflexo.foundation.fml.parser.node.ATechnologySpecificFormalArgument;
 import org.openflexo.foundation.fml.parser.node.AUseDeclaration;
-import org.openflexo.foundation.fml.parser.node.AViewpointDeclaration;
 import org.openflexo.foundation.fml.parser.node.AVirtualModelDeclaration;
 import org.openflexo.foundation.fml.parser.node.Node;
 import org.openflexo.model.exceptions.ModelDefinitionException;
@@ -115,12 +107,6 @@ class FMLSemanticsAnalyzer extends DepthFirstAdapter {
 	}
 
 	@Override
-	public void outANamespaceDeclaration(ANamespaceDeclaration node) {
-		super.outANamespaceDeclaration(node);
-		System.out.println("Tiens, un namespace: " + node);
-	}
-
-	@Override
 	public void outAUseDeclaration(AUseDeclaration node) {
 		super.outAUseDeclaration(node);
 		System.out.println("Tiens, un use: " + node + " ta=" + node.getTechnologyAdapter()
@@ -137,12 +123,6 @@ class FMLSemanticsAnalyzer extends DepthFirstAdapter {
 	public void outAVirtualModelDeclaration(AVirtualModelDeclaration node) {
 		super.outAVirtualModelDeclaration(node);
 		handleVirtualModel(node);
-	}
-
-	@Override
-	public void outAViewpointDeclaration(AViewpointDeclaration node) {
-		super.outAViewpointDeclaration(node);
-		System.out.println("Tiens, un ViewPointDeclaration: " + node);
 		System.out.println("Annotations = " + node.getAnnotations());
 	}
 
@@ -153,41 +133,41 @@ class FMLSemanticsAnalyzer extends DepthFirstAdapter {
 		System.out.println("Annotations du FlexoConcept = " + node.getAnnotations());
 	}
 
-	@Override
+	/*@Override
 	public void outAFlexoRoleDeclaration(AFlexoRoleDeclaration node) {
 		super.outAFlexoRoleDeclaration(node);
 		System.out.println("Tiens, un FlexoRoleDeclaration: " + node);
 		System.out.println("Annotations du FlexoRole = " + node.getAnnotations());
 	}
-
+	
 	@Override
 	public void outAFlexoBehaviourDeclaration(AFlexoBehaviourDeclaration node) {
 		super.outAFlexoBehaviourDeclaration(node);
 		System.out.println("Tiens, un FlexoBehaviourDeclaration: " + node);
 		System.out.println("Annotations du FlexoBehaviour = " + node.getAnnotations());
 	}
-
+	
 	@Override
 	public void outAPrimitiveFormalArgument(APrimitiveFormalArgument node) {
 		super.outAPrimitiveFormalArgument(node);
 		System.out.println("arg1:" + node);
 	}
-
+	
 	@Override
 	public void outAReferenceFormalArgument(AReferenceFormalArgument node) {
 		super.outAReferenceFormalArgument(node);
 		System.out.println("arg2:" + node);
 	}
-
+	
 	@Override
 	public void outATechnologySpecificFormalArgument(ATechnologySpecificFormalArgument node) {
 		super.outATechnologySpecificFormalArgument(node);
 		System.out.println("arg3:" + node);
 	}
-
+	
 	@Override
 	public void outABlock(ABlock node) {
 		super.outABlock(node);
 		System.out.println("########## BLOCK:" + node);
-	}
+	}*/
 }

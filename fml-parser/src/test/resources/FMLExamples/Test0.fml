@@ -1,5 +1,4 @@
-// This is the global namespace uri of compilation unit
-namespace http://openflexo.org/test;
+package http://www.openflexo.org/Tests/FML/Test1;
 
 use org.openflexo.technologyadapter.owl.OWLTechnologyAdapter as OWL;
 
@@ -8,39 +7,33 @@ import http://www.openflexo.org/Tests/OWL/Ontology1.owl as Ontology1;
 
 //Declare a new VirtualModel
 //URI of VirtualModel is computed from namespace and virtualmodel name
-//URI is here http://www.openflexo.org/Tests/FML/Test1/Test1VM
+//URI of VirtualModel is here http://www.openflexo.org/Tests/FML/Test1/Test1VM.fml
 
 @Version("1.1")
 @Author("Sylvain")
 @Description("This is a description of VirtualModel")
 
-VirtualModel Test1VM extends Test2VM,ViewPoint1.AnOtherVM {
+public VirtualModel Test1VM extends Test2VM,ViewPoint1.AnOtherVM {
 
-	ModelSlot ontology as OWL::OWLModelSlot(importOntology=Ontology1);
-
+	@Description("This model slot points to an ontology, which import here ontology with uri Ontology1")
+	OWL::OWLModelSlot<OWLOntology> ontology (importOntology=FML::Resource<OWLOntology>(uri=Ontology1));
+	
 	@Version("1.2")
 	@Description("This is the first concept")
-	FlexoConcept Concept1 {
+	public FlexoConcept Concept1 {
 		
 		@Description("This is the description of the role")
-		Role individual as OWL::OWLIndividualRole(type=Ontology1.Type1);
+		Role individual as OWL::OWLIndividualRole<>(type=Ontology1.Type1);
 
-		FML::CreationScheme create(OWL::IndividualOfClass(type=Ontology1.Type1) anIndividual) {
+		create:(OWL::IndividualOfClass(type=Ontology1.Type1) anIndividual) {
 			individual = anIndividual;
 		}
-
-		FML::DeletionScheme delete() {
-			
-			//OWL::OWLIndividualOfClass(type=Ontology1.Type1) monType = ontology::CreateOWLIndividual(type=Ontology.Type1);
-			
-			/*for (OWL::OWLIndividualOfClass(type=Ontology1.Type1) unIndividual : ontology.AllIndividualsOfType(OWL::OWLIndividualOfClass(type=Ontology1.Type1))) {
-				// du code
-			}*/
-			
-			//ontology::deleteAction(individual); // equ to ontology::deleteAction(object=individual);
+		
+		delete:() {
+			individual.OWL::DeleteOWLIndividual();
 		}
 
-		FML::ActionScheme action(int anInteger, SomeClass anOtherArgument) {
+		void action:domething(int anInteger, SomeClass anOtherArgument) {
 			i = 6;
 			bidule=machin;
 			this.bidule=machin;
@@ -52,7 +45,7 @@ VirtualModel Test1VM extends Test2VM,ViewPoint1.AnOtherVM {
 	@Version("1.2")
 	@Description("This is the second concept")
 	FlexoConcept Concept2 {
-		Role individual as OWL::OWLIndividual(type=Ontology1.Type2);
+		Role individual as OWL::OWLIndividualRole(type=Ontology1.Type2);
 	}
 
 }

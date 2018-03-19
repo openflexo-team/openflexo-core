@@ -41,7 +41,6 @@ package org.openflexo.foundation.fml.parser;
 import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.fml.FMLModelFactory;
 import org.openflexo.foundation.fml.VirtualModel;
-import org.openflexo.foundation.fml.parser.node.AModelSlotDeclaration;
 import org.openflexo.foundation.fml.parser.node.AVirtualModelDeclaration;
 import org.openflexo.model.exceptions.ModelDefinitionException;
 
@@ -79,12 +78,12 @@ class VirtualModelSemanticsAnalyzer extends FMLObjectSemanticsAnalyzer<AVirtualM
 		defaultOut(node);
 	}
 
-	@Override
+	/*@Override
 	public void outAModelSlotDeclaration(AModelSlotDeclaration node) {
 		super.outAModelSlotDeclaration(node);
 		System.out.println("******** Tiens, un ModelSlotDeclaration: " + node + " pour le VM " + getNode().getIdentifier());
 		System.out.println("line=" + node.getModelslot().getLine());
 		System.out.println("pos=" + node.getModelslot().getPos());
-
-	}
+	
+	}*/
 }

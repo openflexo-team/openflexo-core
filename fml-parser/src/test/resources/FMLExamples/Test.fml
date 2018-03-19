@@ -1,0 +1,12 @@
+use org.openflexo.technologyadapter.owl.OWLTechnologyAdapter as OWL;
+
+import [http://www.openflexo.org/Tests/ViewPoints/ViewPoint1] as ViewPoint1;
+import [http://www.openflexo.org/Tests/OWL/Ontology1.owl] as Ontology1;
+
+//@URI([http://www.openflexo.org/Tests/FML/Test1])
+@Author(name=toto)
+//@OtherAnnotation(name="titi")
+/*public*/ VirtualModel Test1VM /*extends Test2VM,ViewPoint1.AnOtherVM*/ {
+
+
+}
