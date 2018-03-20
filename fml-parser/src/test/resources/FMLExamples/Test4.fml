@@ -60,7 +60,7 @@ public VirtualModel ProcessDiagram {
 	}  
 
 	abstract FlexoConcept TransitionReceiverGR extends AbstractActivityGR {  		  
-		abstract FML::Instance<TransitionEmitter> activity;
+		abstract FML::Instance<TransitionReceiver> activity;
 	}  
 
 	public FlexoConcept ActivityGR extends TransitionEmitterGR,TransitionReceiverGR {
