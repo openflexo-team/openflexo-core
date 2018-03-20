@@ -556,10 +556,11 @@ Productions
     {initializer} identifier assign expression;
 
   statement =
-    // {no_trail}   statement_without_trailing_substatement |
+    {no_trail}   statement_without_trailing_substatement |
     {if}         if_then_statement |
     {if_else}    if_then_else_statement |
-    {while_loop} while_statement;
+    {while_loop} while_statement |
+    {for_loop}   for_statement;
 
   statement_without_trailing_substatement =
     {block}                  block |
@@ -613,3 +614,16 @@ Productions
 
   while_statement =
     while l_par expression r_par statement;
+
+  for_statement =
+    {basic_for}    basic_for_statement |
+    {enhanced_for} enhanced_for_statement;
+  
+  basic_for_statement =
+    {empty}      for l_par for_init? [semi1]:semi [semi2]:semi for_update? r_par statement |
+    {expression} for l_par for_init? [semi1]:semi expression [semi2]:semi for_update? r_par statement;
+
+  enhanced_for_statement =
+    for l_par type identifier colon expression r_par statement;
+
+  
