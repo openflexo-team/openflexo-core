@@ -561,7 +561,7 @@ Productions
     {if_else}    if_then_else_statement |
     {while_loop} while_statement;
 
-/*  statement_without_trailing_substatement =
+  statement_without_trailing_substatement =
     {block}                  block |
     {empty_statement}        empty_statement |
     {expression_statement}   expression_statement |
@@ -571,17 +571,16 @@ Productions
     semi;
 
   expression_statement =
- //   statement_expression semi;
-    expression semi;*/
-
+    statement_expression semi;
+ 
   statement_expression =
     {assignment}        assignation_expression/* |
     {method_invocation} method_invocation |
     {instance_creation} class_instance_creation_expression*/;
 
-/*  return_statement =
+  return_statement =
     {empty}      return semi |
-    {expression} return expression semi;*/
+    {expression} return expression semi;
 
   if_then_statement =
     if l_par expression r_par statement;
@@ -590,7 +589,7 @@ Productions
     if l_par expression r_par statement_no_short_if else statement;
 
   statement_no_short_if =
-    //{statement_without_trailing_substatement} statement_without_trailing_substatement |
+    {statement_without_trailing_substatement} statement_without_trailing_substatement |
     {if_then_else_statement_no_short_if}      if_then_else_statement_no_short_if |
     {while_statement_no_short_if}             while_statement_no_short_if |
     {for_statement_no_short_if}               for_statement_no_short_if;
