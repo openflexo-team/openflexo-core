@@ -38,7 +38,6 @@
 
 package org.openflexo.fml.rt.controller;
 
-import java.awt.Event;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -86,15 +85,15 @@ public class VirtualModelInstancePasteHandler extends FlexoPasteHandler<VirtualM
 
 	@Override
 	public PastingContext<VirtualModelInstance<?, ?>> retrievePastingContext(FlexoObject focusedObject, List<FlexoObject> globalSelection,
-			FlexoClipboard clipboard, Event event) {
+			FlexoClipboard clipboard) {
 
 		if (focusedObject instanceof FMLRTVirtualModelInstance) {
-			return new HeterogeneousPastingContext((VirtualModelInstance<?, ?>) focusedObject, event);
+			return new HeterogeneousPastingContext((VirtualModelInstance<?, ?>) focusedObject);
 
 		}
 
 		if (focusedObject instanceof FlexoConceptInstance) {
-			return new HeterogeneousPastingContext(((FlexoConceptInstance) focusedObject).getVirtualModelInstance(), event);
+			return new HeterogeneousPastingContext(((FlexoConceptInstance) focusedObject).getVirtualModelInstance());
 
 		}
 
@@ -157,8 +156,8 @@ public class VirtualModelInstancePasteHandler extends FlexoPasteHandler<VirtualM
 
 		private FlexoClipboard clipboard;
 
-		public HeterogeneousPastingContext(VirtualModelInstance<?, ?> holder, Event event) {
-			super(holder, event);
+		public HeterogeneousPastingContext(VirtualModelInstance<?, ?> holder) {
+			super(holder);
 			// modelSlotClipboards = new HashMap<ModelSlotInstance<?, ?>, Clipboard>();
 		}
 

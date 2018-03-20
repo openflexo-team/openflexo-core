@@ -38,7 +38,6 @@
 
 package org.openflexo.fml.controller;
 
-import java.awt.Event;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -72,7 +71,7 @@ public class FlexoBehaviourPasteHandler extends FlexoPasteHandler<FlexoBehaviour
 
 	@Override
 	public PastingContext<FlexoBehaviour> retrievePastingContext(FlexoObject focusedObject, List<FlexoObject> globalSelection,
-			FlexoClipboard clipboard, Event event) {
+			FlexoClipboard clipboard) {
 
 		// Wrong focused type
 		if (!(focusedObject instanceof FlexoBehaviourObject)) {
@@ -80,7 +79,7 @@ public class FlexoBehaviourPasteHandler extends FlexoPasteHandler<FlexoBehaviour
 		}
 		// Paste a FlexoBehaviourParameter from a FlexoBehaviourParameter
 		if (focusedObject instanceof FlexoBehaviourParameter) {
-			return new DefaultPastingContext<>(((FlexoBehaviourParameter) focusedObject).getFlexoBehaviour(), event);
+			return new DefaultPastingContext<>(((FlexoBehaviourParameter) focusedObject).getFlexoBehaviour());
 		}
 
 		return null;

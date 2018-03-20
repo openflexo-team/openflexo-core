@@ -38,7 +38,6 @@
 
 package org.openflexo.fml.controller;
 
-import java.awt.Event;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -88,19 +87,19 @@ public class VirtualModelPasteHandler extends FlexoPasteHandler<VirtualModel> {
 
 	@Override
 	public PastingContext<VirtualModel> retrievePastingContext(FlexoObject focusedObject, List<FlexoObject> globalSelection,
-			FlexoClipboard clipboard, Event event) {
+			FlexoClipboard clipboard) {
 
 		if (clipboard.getLeaderClipboard().isSingleObject()
 				&& (clipboard.getLeaderClipboard().getSingleContents() instanceof FlexoConcept)) {
 
 			if (focusedObject instanceof VirtualModelResource) {
 				// In this case, FlexoConcept will be pasted as a FlexoConcept in a VirtualModel
-				return new DefaultPastingContext<>(((VirtualModelResource) focusedObject).getVirtualModel(), event);
+				return new DefaultPastingContext<>(((VirtualModelResource) focusedObject).getVirtualModel());
 			}
 
 			if (focusedObject instanceof FlexoConceptObject) {
 				// In this case, FlexoConcept will be pasted as a FlexoConcept in a VirtualModel
-				return new DefaultPastingContext<>(((FlexoConceptObject) focusedObject).getOwningVirtualModel(), event);
+				return new DefaultPastingContext<>(((FlexoConceptObject) focusedObject).getOwningVirtualModel());
 			}
 		}
 

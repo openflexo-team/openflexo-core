@@ -1,6 +1,5 @@
 package org.openflexo.foundation.action.copypaste;
 
-import java.awt.Event;
 import java.util.List;
 
 import org.openflexo.foundation.FlexoObject;
@@ -52,9 +51,9 @@ public abstract class FlexoPasteHandler<T extends FlexoObject> implements PasteH
 	 * Default implementation of {@link PastingContext} retrieving
 	 */
 	@Override
-	public PastingContext<T> retrievePastingContext(FlexoObject focusedObject, List<FlexoObject> globalSelection, FlexoClipboard clipboard,
-			Event event) {
-		return new DefaultPastingContext(focusedObject, event);
+	public PastingContext<T> retrievePastingContext(FlexoObject focusedObject, List<FlexoObject> globalSelection,
+			FlexoClipboard clipboard) {
+		return new DefaultPastingContext(focusedObject);
 	}
 
 	/**

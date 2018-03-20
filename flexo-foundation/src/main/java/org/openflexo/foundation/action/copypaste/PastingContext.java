@@ -1,7 +1,5 @@
 package org.openflexo.foundation.action.copypaste;
 
-import java.awt.Event;
-
 import org.openflexo.foundation.FlexoObject;
 
 /**
@@ -19,14 +17,6 @@ public interface PastingContext<T extends FlexoObject> {
 	 * @return
 	 */
 	public T getPastingPointHolder();
-
-	/**
-	 * Return the (not required) {@link java.awt.Event} from which originate the paste operation<br>
-	 * (might be null)
-	 * 
-	 * @return
-	 */
-	public Event getEvent();
 
 	public String getPasteProperty(String key);
 

@@ -38,7 +38,6 @@
 
 package org.openflexo.fml.controller;
 
-import java.awt.Event;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -71,11 +70,11 @@ public class FlexoConceptPasteHandler extends FlexoPasteHandler<FlexoConcept> {
 
 	@Override
 	public PastingContext<FlexoConcept> retrievePastingContext(FlexoObject focusedObject, List<FlexoObject> globalSelection,
-			FlexoClipboard clipboard, Event event) {
+			FlexoClipboard clipboard) {
 
 		if (focusedObject instanceof FlexoConceptObject) {
 			// In this case, FlexoConcept will be contained in another FlexoConcept
-			return new DefaultPastingContext<>(((FlexoConceptObject) focusedObject).getFlexoConcept(), event);
+			return new DefaultPastingContext<>(((FlexoConceptObject) focusedObject).getFlexoConcept());
 		}
 
 		return null;
