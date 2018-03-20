@@ -173,7 +173,7 @@ public class TestVirtualModelInstanceIndexes extends OpenflexoProjectAtRunTimeTe
 		assertTrue(((VirtualModelResource) virtualModel.getResource()).getIODelegate().exists());
 
 		assertEquals(viewPoint, virtualModel.getContainerVirtualModel());
-		assertEquals(virtualModel, virtualModel.getVirtualModel());
+		assertEquals(virtualModel, virtualModel.getDeclaringVirtualModel());
 		// assertEquals(null, newVirtualModel.getOwningVirtualModel());
 
 		assertEquals(viewPoint, virtualModel.getContainerVirtualModel());
@@ -207,7 +207,7 @@ public class TestVirtualModelInstanceIndexes extends OpenflexoProjectAtRunTimeTe
 
 		assertNotNull(flexoConcept);
 
-		assertEquals(virtualModel, flexoConcept.getVirtualModel());
+		assertEquals(virtualModel, flexoConcept.getOwner());
 		assertEquals(virtualModel, flexoConcept.getOwningVirtualModel());
 		assertEquals(flexoConcept, flexoConcept.getFlexoConcept());
 		assertEquals(virtualModel, flexoConcept.getResourceData());
@@ -316,7 +316,7 @@ public class TestVirtualModelInstanceIndexes extends OpenflexoProjectAtRunTimeTe
 
 		assertNotNull(flexoConceptA);
 
-		assertEquals(virtualModel, flexoConceptA.getVirtualModel());
+		assertEquals(virtualModel, flexoConceptA.getOwner());
 		assertEquals(virtualModel, flexoConceptA.getOwningVirtualModel());
 		assertEquals(flexoConceptA, flexoConceptA.getFlexoConcept());
 		assertEquals(virtualModel, flexoConceptA.getResourceData());

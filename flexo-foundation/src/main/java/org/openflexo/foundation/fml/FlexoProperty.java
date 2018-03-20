@@ -196,9 +196,9 @@ public abstract interface FlexoProperty<T> extends FlexoConceptObject {
 
 		// private static final Logger logger = Logger.getLogger(FlexoRole.class.getPackage().getName());
 
-		private PropertyChangeSupport pcSupport;
+		// Unused private PropertyChangeSupport pcSupport;
 
-		private ModelSlot<?> modelSlot;
+		// Unused private ModelSlot<?> modelSlot;
 
 		private Type resultingType;
 
@@ -259,9 +259,7 @@ public abstract interface FlexoProperty<T> extends FlexoConceptObject {
 			if (getFlexoConcept() != null) {
 				return getFlexoConcept().getURI() + "." + getPropertyName();
 			}
-			else {
-				return null;
-			}
+			return null;
 		}
 
 		@Override
@@ -280,7 +278,8 @@ public abstract interface FlexoProperty<T> extends FlexoConceptObject {
 					+ (getFlexoConcept() != null
 							? getFlexoConcept().getName() + "/"
 									+ (getFlexoConcept().getOwningVirtualModel() != null
-											? getFlexoConcept().getOwningVirtualModel().getName() : "null")
+											? getFlexoConcept().getOwningVirtualModel().getName()
+											: "null")
 							: "null")
 					+ "][" + Integer.toHexString(hashCode()) + "]";
 		}
@@ -333,9 +332,7 @@ public abstract interface FlexoProperty<T> extends FlexoConceptObject {
 			if (getCardinality().isMultipleCardinality()) {
 				return new ParameterizedTypeImpl(List.class, getType());
 			}
-			else {
-				return getType();
-			}
+			return getType();
 		}
 
 		@Override
@@ -566,9 +563,9 @@ public abstract interface FlexoProperty<T> extends FlexoConceptObject {
 					return new ValidationWarning<>(this, property, "property_($validable.propertyName)_shadows_an_other_property");
 				}
 			}
-			if (property.getFlexoConcept().getVirtualModel() != null
-					&& property.getFlexoConcept().getVirtualModel() != property.getFlexoConcept()) {
-				if (property.getFlexoConcept().getVirtualModel().getAccessibleProperty(property.getName()) != null) {
+			VirtualModel vm = property.getFlexoConcept().getOwner();
+			if (vm != null && vm != property.getFlexoConcept()) {
+				if (vm.getAccessibleProperty(property.getName()) != null) {
 					return new ValidationWarning<>(this, property, "property_($validable.propertyName)_shadows_an_other_property");
 				}
 			}

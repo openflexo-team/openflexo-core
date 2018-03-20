@@ -107,7 +107,7 @@ public class TestCreateVirtualModel extends OpenflexoTestCase {
 		assertTrue(newVirtualModelResource.getDirectory() != null);
 		assertTrue(newVirtualModelResource.getIODelegate().exists());
 
-		assertEquals(newViewPoint, newViewPoint.getVirtualModel());
+		assertEquals(newViewPoint, newViewPoint.getDeclaringVirtualModel());
 		assertEquals(null, newViewPoint.getContainerVirtualModel());
 		assertEquals(newViewPoint, newViewPoint.getFlexoConcept());
 		assertEquals(newViewPoint, newViewPoint.getResourceData());
@@ -174,7 +174,7 @@ public class TestCreateVirtualModel extends OpenflexoTestCase {
 		assertNotNull(retrievedVPResource);
 
 		VirtualModel reloadedViewPoint = retrievedVPResource.getVirtualModel();
-		assertEquals(reloadedViewPoint, reloadedViewPoint.getVirtualModel());
+		assertEquals(reloadedViewPoint, reloadedViewPoint.getDeclaringVirtualModel());
 		assertEquals(null, reloadedViewPoint.getContainerVirtualModel());
 		assertEquals(reloadedViewPoint, reloadedViewPoint.getFlexoConcept());
 		assertEquals(reloadedViewPoint, reloadedViewPoint.getResourceData());
@@ -183,7 +183,7 @@ public class TestCreateVirtualModel extends OpenflexoTestCase {
 		assertNotNull(reloadedVirtualModel);
 
 		assertEquals(reloadedViewPoint, reloadedVirtualModel.getContainerVirtualModel());
-		assertEquals(reloadedVirtualModel, reloadedVirtualModel.getVirtualModel());
+		assertEquals(reloadedVirtualModel, reloadedVirtualModel.getDeclaringVirtualModel());
 		assertEquals(reloadedVirtualModel, reloadedVirtualModel.getFlexoConcept());
 		assertEquals(reloadedVirtualModel, reloadedVirtualModel.getResourceData());
 

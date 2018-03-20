@@ -116,7 +116,7 @@ import org.openflexo.toolbox.StringUtils;
 @Imports({ @Import(FlexoConceptStructuralFacet.class), @Import(FlexoConceptBehaviouralFacet.class), @Import(InnerConceptsFacet.class),
 		@Import(DeleteFlexoConceptInstanceParameter.class) })
 @XMLElement
-public interface VirtualModel extends FlexoConcept, VirtualModelObject, FlexoMetaModel<VirtualModel>, ResourceData<VirtualModel>,
+public interface VirtualModel extends FlexoConcept, FlexoConceptObject, FlexoMetaModel<VirtualModel>, ResourceData<VirtualModel>,
 		TechnologyObject<FMLTechnologyAdapter>, Validable {
 
 	public static final String RESOURCE = "resource";
@@ -952,10 +952,12 @@ public interface VirtualModel extends FlexoConcept, VirtualModelObject, FlexoMet
 
 		// Developper's note: we implement here VirtualModelObject API
 		// Do not consider getOwningVirtualModel()
+		/*
 		@Override
 		public VirtualModel getVirtualModel() {
 			return this;
 		}
+		*/
 
 		@Override
 		public Object getObject(String objectURI) {

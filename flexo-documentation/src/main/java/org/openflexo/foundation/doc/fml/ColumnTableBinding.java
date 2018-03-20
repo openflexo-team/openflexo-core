@@ -45,7 +45,6 @@ import org.openflexo.connie.BindingModel;
 import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.DataBinding.BindingDefinitionType;
 import org.openflexo.foundation.doc.FlexoDocument;
-import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoConceptObject;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
@@ -184,14 +183,5 @@ public interface ColumnTableBinding<D extends FlexoDocument<D, TA>, TA extends T
 			}
 			return null;
 		}
-
-		@Override
-		public VirtualModel getVirtualModel() {
-			if (getFlexoConcept() != null) {
-				return getFlexoConcept().getVirtualModel();
-			}
-			return null;
-		}
-
 	}
 }

@@ -158,7 +158,7 @@ public class CreateFlexoConceptInstanceRole extends AbstractCreateFlexoRole<Crea
 	public VirtualModel getModelSlotVirtualModel() {
 		FMLRTModelSlot<?, ?> ms = getModelSlot();
 		if (ms == null || !useModelSlot) {
-			return getFlexoConcept().getVirtualModel();
+			return getFlexoConcept().getOwner();
 		}
 		if (ms.getAccessedVirtualModelResource() != null) {
 			return ms.getAccessedVirtualModelResource().getVirtualModel();

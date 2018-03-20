@@ -54,6 +54,8 @@ import org.openflexo.connie.exception.TypeMismatchException;
 import org.openflexo.connie.expr.BinaryOperatorExpression;
 import org.openflexo.connie.expr.BooleanBinaryOperator;
 import org.openflexo.connie.expr.Expression;
+import org.openflexo.foundation.fml.FMLObject.BindingIsRequiredAndMustBeValid;
+import org.openflexo.foundation.fml.FMLObject.BindingIsRequiredAndMustBeValid.UndefinedRequiredBindingIssue;
 import org.openflexo.foundation.fml.FMLRepresentationContext;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoConceptInstanceType;
@@ -62,6 +64,7 @@ import org.openflexo.foundation.fml.VirtualModelInstanceType;
 import org.openflexo.foundation.fml.annotations.FML;
 import org.openflexo.foundation.fml.binding.FetchRequestConditionSelectedBindingVariable;
 import org.openflexo.foundation.fml.editionaction.FetchRequest;
+import org.openflexo.foundation.fml.editionaction.FetchRequest.FetchRequestImpl;
 import org.openflexo.foundation.fml.editionaction.FetchRequestCondition;
 import org.openflexo.foundation.fml.rt.FMLRTModelSlot;
 import org.openflexo.foundation.fml.rt.FMLRTTechnologyAdapter;
@@ -69,6 +72,7 @@ import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
 import org.openflexo.foundation.fml.rt.VirtualModelInstance;
+import org.openflexo.foundation.fml.rt.editionaction.SelectFlexoConceptInstance.SelectFlexoConceptInstanceMustAddressAFlexoConceptType;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.logging.FlexoLogger;
 import org.openflexo.model.annotations.DefineValidationRule;
@@ -531,7 +535,7 @@ public interface SelectFlexoConceptInstance<VMI extends VirtualModelInstance<VMI
 			else {
 				DataBinding<VirtualModelInstance<?, ?>> binding = getBinding(object);
 				if (binding.getAnalyzedType() instanceof VirtualModelInstanceType && object.getFlexoConceptType() != null) {
-					if (object.getFlexoConceptType().getVirtualModel() != ((VirtualModelInstanceType) binding.getAnalyzedType())
+					if (object.getFlexoConceptType().getOwner() != ((VirtualModelInstanceType) binding.getAnalyzedType())
 							.getVirtualModel()) {
 						returned = new ValidationError(this, object, "incompatible_virtual_model_type");
 
@@ -544,7 +548,7 @@ public interface SelectFlexoConceptInstance<VMI extends VirtualModelInstance<VMI
 
 						for (FMLRTModelSlot ms : object.getOwningVirtualModel().getModelSlots(FMLRTModelSlot.class)) {
 							// System.out.println("modelSlot " + ms + " vm=" + ms.getAddressedVirtualModel());
-							if (object.getFlexoConceptType().getVirtualModel().isAssignableFrom(ms.getAccessedVirtualModel())) {
+							if (object.getFlexoConceptType().getOwner().isAssignableFrom(ms.getAccessedVirtualModel())) {
 								((ValidationError) returned).addToFixProposals(new UseFMLRTModelSlot(ms));
 							}
 						}
@@ -553,7 +557,7 @@ public interface SelectFlexoConceptInstance<VMI extends VirtualModelInstance<VMI
 							for (FMLRTModelSlot ms : ((VirtualModel) object.getRootOwner().getFlexoConcept())
 									.getModelSlots(FMLRTModelSlot.class)) {
 								// System.out.println("modelSlot " + ms + " vm=" + ms.getAddressedVirtualModel());
-								if (object.getFlexoConceptType().getVirtualModel().isAssignableFrom(ms.getAccessedVirtualModel())) {
+								if (object.getFlexoConceptType().getOwner().isAssignableFrom(ms.getAccessedVirtualModel())) {
 									((ValidationError) returned).addToFixProposals(new UseFMLRTModelSlot(ms));
 								}
 							}

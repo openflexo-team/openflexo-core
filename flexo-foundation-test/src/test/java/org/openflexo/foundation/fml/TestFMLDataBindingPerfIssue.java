@@ -148,7 +148,7 @@ public class TestFMLDataBindingPerfIssue extends OpenflexoTestCase {
 		assertTrue(((VirtualModelResource) topVirtualModel.getResource()).getDirectory() != null);
 		assertTrue(((VirtualModelResource) topVirtualModel.getResource()).getIODelegate().exists());
 
-		assertEquals(topVirtualModel, topVirtualModel.getVirtualModel());
+		assertEquals(topVirtualModel, topVirtualModel.getDeclaringVirtualModel());
 		assertEquals(null, topVirtualModel.getContainerVirtualModel());
 		assertEquals(topVirtualModel, topVirtualModel.getFlexoConcept());
 		assertEquals(topVirtualModel, topVirtualModel.getResourceData());

@@ -160,7 +160,7 @@ public class TestFMLDataBindingAnalysing extends OpenflexoTestCase {
 		assertTrue(((VirtualModelResource) topVirtualModel.getResource()).getDirectory() != null);
 		assertTrue(((VirtualModelResource) topVirtualModel.getResource()).getIODelegate().exists());
 
-		assertEquals(topVirtualModel, topVirtualModel.getVirtualModel());
+		assertEquals(topVirtualModel, topVirtualModel.getDeclaringVirtualModel());
 		assertEquals(null, topVirtualModel.getContainerVirtualModel());
 		assertEquals(topVirtualModel, topVirtualModel.getFlexoConcept());
 		assertEquals(topVirtualModel, topVirtualModel.getResourceData());
@@ -224,8 +224,8 @@ public class TestFMLDataBindingAnalysing extends OpenflexoTestCase {
 
 		assertNotNull(flexoConceptA);
 
-		assertEquals(topVirtualModel, flexoConceptA.getVirtualModel().getContainerVirtualModel());
-		assertEquals(virtualModel, flexoConceptA.getVirtualModel());
+		assertEquals(topVirtualModel, flexoConceptA.getOwner().getContainerVirtualModel());
+		assertEquals(virtualModel, flexoConceptA.getOwner());
 		assertEquals(virtualModel, flexoConceptA.getOwningVirtualModel());
 		assertEquals(flexoConceptA, flexoConceptA.getFlexoConcept());
 		assertEquals(virtualModel, flexoConceptA.getResourceData());

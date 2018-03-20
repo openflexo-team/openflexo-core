@@ -120,7 +120,7 @@ public class TestDeleteAction extends OpenflexoProjectAtRunTimeTestCase {
 		assertTrue(((VirtualModelResource) virtualModel.getResource()).getIODelegate().exists());
 
 		assertEquals(viewPoint, virtualModel.getContainerVirtualModel());
-		assertEquals(virtualModel, virtualModel.getVirtualModel());
+		assertEquals(virtualModel, virtualModel.getDeclaringVirtualModel());
 		assertEquals(virtualModel, virtualModel.getFlexoConcept());
 		assertEquals(virtualModel, virtualModel.getResourceData());
 
@@ -132,7 +132,7 @@ public class TestDeleteAction extends OpenflexoProjectAtRunTimeTestCase {
 
 		assertNotNull(flexoConcept);
 
-		assertEquals(virtualModel, flexoConcept.getVirtualModel());
+		assertEquals(virtualModel, flexoConcept.getOwner());
 		assertEquals(virtualModel, flexoConcept.getOwningVirtualModel());
 		assertEquals(flexoConcept, flexoConcept.getFlexoConcept());
 		assertEquals(virtualModel, flexoConcept.getResourceData());

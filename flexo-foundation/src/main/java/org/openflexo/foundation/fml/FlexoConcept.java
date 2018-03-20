@@ -56,6 +56,11 @@ import org.openflexo.connie.Bindable;
 import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.type.TypeUtils;
 import org.openflexo.foundation.fml.FMLRepresentationContext.FMLRepresentationOutput;
+import org.openflexo.foundation.fml.FlexoConcept.FlexoConceptImpl;
+import org.openflexo.foundation.fml.FlexoConcept.FlexoConceptShouldHaveDeletionScheme;
+import org.openflexo.foundation.fml.FlexoConcept.FlexoConceptShouldHaveDeletionScheme.CreateDefaultDeletionScheme;
+import org.openflexo.foundation.fml.FlexoConcept.FlexoConceptShouldHaveFlexoBehaviours;
+import org.openflexo.foundation.fml.FlexoConcept.NonAbstractFlexoConceptShouldHaveProperties;
 import org.openflexo.foundation.fml.FlexoConceptBehaviouralFacet.FlexoConceptBehaviouralFacetImpl;
 import org.openflexo.foundation.fml.FlexoConceptStructuralFacet.FlexoConceptStructuralFacetImpl;
 import org.openflexo.foundation.fml.action.CreateFlexoBehaviour;
@@ -115,7 +120,7 @@ import org.openflexo.toolbox.StringUtils;
 @ImplementationClass(FlexoConcept.FlexoConceptImpl.class)
 @XMLElement
 @Imports({ @Import(FlexoEvent.class), @Import(FlexoEnum.class) })
-public interface FlexoConcept extends VirtualModelObject {
+public interface FlexoConcept extends FlexoConceptObject {
 
 	@PropertyIdentifier(type = VirtualModel.class)
 	public static final String OWNER_KEY = "owner";
@@ -699,11 +704,6 @@ public interface FlexoConcept extends VirtualModelObject {
 		private ImageIcon smallIcon;
 
 		@Override
-		public VirtualModel getVirtualModel() {
-			return getOwner();
-		}
-
-		@Override
 		public final boolean hasNature(FlexoConceptNature nature) {
 			return nature.hasNature(this);
 		}
@@ -900,8 +900,9 @@ public interface FlexoConcept extends VirtualModelObject {
 					}
 				}
 
-				if (getVirtualModel() != null && getVirtualModel() != this) {
-					for (FlexoProperty<?> p : getVirtualModel().getAccessibleProperties()) {
+				VirtualModel owner = getOwner();
+				if (owner != null && owner != this) {
+					for (FlexoProperty<?> p : owner.getAccessibleProperties()) {
 						if (getDeclaredProperty(p.getPropertyName()) == null) {
 							// This property is inherited but not overriden
 							// We check that we don't have this property yet

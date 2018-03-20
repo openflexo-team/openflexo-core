@@ -223,27 +223,8 @@ public interface ModelSlot<RD extends ResourceData<RD> & TechnologyObject<?>> ex
 		private List<Class<? extends InspectorEntry>> availableInspectorEntryTypes;*/
 
 		@Override
-		public VirtualModel getVirtualModel() {
-			if (getFlexoConcept() instanceof VirtualModel) {
-				return (VirtualModel) getFlexoConcept();
-			}
-			if (getFlexoConcept() != null) {
-				return getFlexoConcept().getOwner();
-			}
-			return null;
-		}
-
-		@Override
 		public ModelSlot<RD> getModelSlot() {
 			return this;
-		}
-
-		@Override
-		public String getURI() {
-			if (getVirtualModel() != null) {
-				return getVirtualModel().getURI() + "." + getName();
-			}
-			return null;
 		}
 
 		/**
@@ -258,11 +239,6 @@ public interface ModelSlot<RD extends ResourceData<RD> & TechnologyObject<?>> ex
 		public <PR extends FlexoRole<?>> PR makeFlexoRole(Class<PR> flexoRoleClass) {
 			FMLModelFactory factory = getFMLModelFactory();
 			return factory.newInstance(flexoRoleClass);
-		}
-
-		@Override
-		public VirtualModel getOwningVirtualModel() {
-			return getVirtualModel();
 		}
 
 		@Override
@@ -518,6 +494,16 @@ public interface ModelSlot<RD extends ResourceData<RD> & TechnologyObject<?>> ex
 		@Override
 		public boolean isReadOnly() {
 			return false;
+		}
+
+		private VirtualModel getVirtualModel() {
+			if (getFlexoConcept() instanceof VirtualModel) {
+				return (VirtualModel) getFlexoConcept();
+			}
+			if (getFlexoConcept() != null) {
+				return getFlexoConcept().getOwner();
+			}
+			return null;
 		}
 
 		@Override
