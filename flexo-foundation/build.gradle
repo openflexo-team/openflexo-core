@@ -2,7 +2,8 @@ dependencies {
   // openflexo dep
   compile flexoLocalization()
   // Still to be removed
-  compile flexoGraphicUtils()
+  compile flexoGraphicUtils() // used for icon mgt in FlexoConcept
+  compile diana() // used by FMLModelFactory which inherit from FGEModelFactoryImpl
 
   // external dep
   compile group: 'org.eclipse.jgit', name: 'org.eclipse.jgit', version: '4.3.1.201605051710-r'

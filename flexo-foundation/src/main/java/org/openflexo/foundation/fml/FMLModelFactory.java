@@ -43,6 +43,7 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import org.openflexo.connie.DataBinding;
+import org.openflexo.diana.FGEModelFactoryImpl;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.PamelaResourceModelFactory;
@@ -99,7 +100,6 @@ import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterService;
 import org.openflexo.foundation.technologyadapter.UseModelSlotDeclaration;
 import org.openflexo.foundation.utils.FlexoObjectReferenceConverter;
-import org.openflexo.model.ModelContextLibrary;
 import org.openflexo.model.converter.DataBindingConverter;
 import org.openflexo.model.converter.FlexoVersionConverter;
 import org.openflexo.model.converter.RelativePathResourceConverter;
@@ -119,8 +119,7 @@ import org.openflexo.model.factory.ModelFactory;
 // because this is required for the FlexoConceptPreviewComponent to retrieve a FMLModelFactory
 // which extends FGEModelFactory interface (required by DIANA).
 // A better solution would be to implements composition in ModelFactory, instead of classic java inheritance
-// extends FGEModelFactoryImpl
-public class FMLModelFactory extends ModelFactory implements PamelaResourceModelFactory<VirtualModelResource> {
+public class FMLModelFactory extends FGEModelFactoryImpl implements PamelaResourceModelFactory<VirtualModelResource> {
 
 	protected static final Logger logger = Logger.getLogger(FMLModelFactory.class.getPackage().getName());
 
@@ -144,9 +143,9 @@ public class FMLModelFactory extends ModelFactory implements PamelaResourceModel
 
 	public FMLModelFactory(VirtualModelResource virtualModelResource, FlexoServiceManager serviceManager,
 			TechnologyAdapterService taService) throws ModelDefinitionException {
-		super(ModelContextLibrary.getCompoundModelContext(virtualModelResource != null
+		super(virtualModelResource != null
 				? retrieveTechnologySpecificClasses(virtualModelResource.getResourceDataClass(), virtualModelResource.getUsedModelSlots())
-				: retrieveTechnologySpecificClasses(taService != null ? taService : serviceManager.getTechnologyAdapterService())));
+				: retrieveTechnologySpecificClasses(taService != null ? taService : serviceManager.getTechnologyAdapterService()));
 		// System.out.println("******** Initialize FMLModelFactory " + Integer.toHexString(hashCode()) + " for " + virtualModelResource
 		// + " in thread " + Thread.currentThread());
 		this.serviceManager = serviceManager;
