@@ -1,0 +1,156 @@
+use org.openflexo.technologyadapter.diagram.TypedDiagramModelSlot as Diagram;
+
+import java.lang.*;
+import java.util.*;
+import ["http://openflexo.org/modellers/resources/BPMN"] as BPMN;
+import ["http://openflexo.org/modellers/resources/BPMN/FML/BPMNEditor.fml"] as BPMNEditor.fml;
+import ["http://openflexo.org/modellers/resources/BPMN/FML/BPMNEditor.fml/BPMNModel.fml"] as BPMNModel.fml;
+import [BPMN:"ProcessDiagram.diagramspecification"] as ProcessDiagram.diagramspecification;
+
+@URI(["http://openflexo.org/modellers/resources/BPMN/FML/BPMNEditor.fml/ProcessDiagram.fml"])
+@Author("Sylvain Guérin")
+@Description("An example of VirtualModel used as a diagram editor")
+public VirtualModel ProcessDiagram {
+
+	@Description("This ModelSlot contractalize the connection to a diagram conform to ProcessDiagram.diagramspecification")
+	public unique Diagram::DiagramModelSlot<Diagram> diagram (
+			metamodel=FML::Resource<DiagramSpecification>(uri=[BPMN:"ProcessDiagram.diagramspecification"]),
+			initializeWithContents=true,
+			templateDiagramReference=[BPMN:"ProcessDiagram.diagramspecification":"ExampleDiagram.diagram"],
+			bindings={
+					Diagram::FMLDiagramPaletteElementBinding("Activity",drop:dropActivityGRAtTopLevel()),
+					Diagram::FMLDiagramPaletteElementBinding("Begin",drop:dropBeginActivityGRAtTopLevel()),
+					Diagram::FMLDiagramPaletteElementBinding("Condition",drop:dropGatewayGRAtTopLevel()),
+					Diagram::FMLDiagramPaletteElementBinding("End",drop:dropEndActivityGRAtTopLevel())});
+
+	public unique FML:Instance<Process> process;
+	public multiple FML:Instance<Activity> someActivitiesToHighlight;
+	
+	create:createNewProcess(String name) {
+		diagram = Diagram::CreateDiagram (
+				diagramName=parameters.name,
+				resourceCenter=this.resourceCenter,
+				relativePath="/Diagrams");
+		process = new Process:create(parameters.name,null);
+	}
+
+	create:createNewSubProcess(String name, FML:Instance<Process> parentProcess) {
+		diagram = Diagram::CreateDiagram (
+				diagramName=parameters.name,
+				resourceCenter=this.resourceCenter,
+				relativePath="/Diagrams");
+		process = new Process:create(parameters.name,parentProcess);
+	}
+
+	FML:Instance<ProcessDiagram> action:newSubProcess(String processName) {
+		return new ProcessDiagram:createNewSubProcess(parameters.processName,this.process);
+	}
+	
+	void delete:() {
+		diagram.Diagram::deleteDiagram();
+	}
+	
+	abstract FlexoConcept AbstractActivityGR {  
+		abstract DiagramShape shape;
+		abstract FML::Instance<AbstractActivity> activity;
+	}  
+
+	abstract FlexoConcept TransitionEmitterGR extends AbstractActivityGR {  		  
+		abstract FML::Instance<TransitionEmitter> activity;
+	}  
+
+	abstract FlexoConcept TransitionReceiverGR extends AbstractActivityGR {  		  
+		abstract FML::Instance<TransitionEmitter> activity;
+	}  
+
+	public FlexoConcept ActivityGR extends TransitionEmitterGR,TransitionReceiverGR {
+		
+		public Diagram::ShapeRole<DiagramShape> shape (
+				container = container.diagram,
+				metamodel = [ExampleDiagram.diagram#Shape125]
+				specifications={
+						Diagram::GraphicalElementSpecification("label",activity.activityName)});
+		
+		public FML::Instance<Activity> activity;
+		
+		drop(target=topLevel):dropActivityGRAtTopLevel() {
+			shape = diagram.Diagram::AddShape(container=topLevel);
+			activity = new Activity:create("Activity");
+		}
+       
+	}
+	
+	public FlexoConcept BeginActivityGR extends TransitionEmitterGR {
+		
+		public Diagram::ShapeRole<DiagramShape> shape (
+				container = container.diagram,
+				metamodel = [ExampleDiagram.diagram#Shape37]
+				specifications={
+						Diagram::GraphicalElementSpecification("label",activity.activityName)});
+		
+		public FML::Instance<BeginActivity> activity;
+		
+		drop(target=topLevel):dropBeginActivityGRAtTopLevel() {
+			shape = diagram.Diagram::AddShape(container=topLevel);
+			activity = new BeginActivity:create();
+		}
+       
+	}
+	
+	public FlexoConcept EndActivityGR extends TransitionReceiverGR {
+		
+		public Diagram::ShapeRole<DiagramShape> shape (
+				container = container.diagram,
+				metamodel = [ExampleDiagram.diagram#Shape37]
+				specifications={
+						Diagram::GraphicalElementSpecification("label",activity.activityName)});
+		
+		public FML::Instance<EndActivity> activity;
+		
+		drop(target=topLevel):dropEndActivityGRAtTopLevel() {
+			shape = diagram.Diagram::AddShape(container=topLevel);
+			activity = new EndActivity:create();
+		}
+       
+	}
+	
+	public FlexoConcept GatewayGR extends TransitionEmitterGR,TransitionReceiverGR {
+		
+		public Diagram::ShapeRole<DiagramShape> shape (
+				container = container.diagram,
+				metamodel = [ExampleDiagram.diagram#Shape151]
+				specifications={
+						Diagram::GraphicalElementSpecification("label",activity.activityName)});
+		
+		public FML::Instance<Gateway> activity;
+		
+		drop(target=topLevel):dropGatewayGRAtTopLevel() {
+			shape = diagram.Diagram::AddShape(container=topLevel);
+			activity = new Gateway:create("condition ?");
+		}
+       
+	}
+	
+	public FlexoConcept TransitionGR {
+		
+		public Diagram::ConnectorRole<DiagramConnector> connector (
+				container = container.diagram,
+				metamodel = [ExampleDiagram.diagram#Connector17]
+				specifications={
+						Diagram::GraphicalElementSpecification("label","transition")});
+		
+		public FML::Instance<Transition> transition;
+		
+		link(fromTarget=TransitionEmitterGR,
+			 toTarget=TransitionReceiverGR):linkEmitterGRToReceiverGR()  {
+			connector = diagram.Diagram::AddConnector(
+					fromShape=fromTarget.shape,
+					toShape=toTarget.shape);
+		    transition = new Transition:create(fromTarget.activity,toTarget.activity);      
+		    fromTarget.activity.outTransitions.add(transition)      
+		    toTarget.activity.inTransitions.add(transition)    
+		}
+       
+	}
+	
+}

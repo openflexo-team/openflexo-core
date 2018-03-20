@@ -1,7 +1,7 @@
 use org.openflexo.technologyadapter.owl.OWLTechnologyAdapter as OWL;
 
-import [http://www.openflexo.org/Tests/ViewPoints/ViewPoint1] as ViewPoint1;
-import [http://www.openflexo.org/Tests/OWL/Ontology1.owl] as Ontology1;
+import ["http://www.openflexo.org/Tests/ViewPoints/ViewPoint1.fml"] as ViewPoint1.fml;
+import ["http://www.openflexo.org/Tests/OWL/Ontology1.owl"] as Ontology1.owl;
 
 @SimpleAnnotation
 @AnnotationWithString("tutu")
@@ -10,7 +10,7 @@ import [http://www.openflexo.org/Tests/OWL/Ontology1.owl] as Ontology1;
 @AnnotationWithInteger2(value=7)
 @AnnotationWithFloat(2.562332)
 @AnnotationWithFloat2(value=7.872323)
-@URI([http://www.openflexo.org/Tests/FML/Test1])
+@URI(["http://www.openflexo.org/Tests/FML/Test1.fml"])
 VirtualModel Test1VM {
 
 

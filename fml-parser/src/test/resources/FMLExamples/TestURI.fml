@@ -1,0 +1,17 @@
+use org.openflexo.technologyadapter.owl.OWLTechnologyAdapter as OWL;
+
+import ["http://www.openflexo.org/Tests/ViewPoints/ViewPoint1.fml"] as ViewPoint1.fml;
+import ["http://www.openflexo.org/Tests/OWL/Ontology1.owl"] as Ontology1.owl;
+
+@URI(["http://openflexo.org/test/TestURI.fml"])
+public VirtualModel TestURI  {
+
+	// We only test here URI encoding: this has no meaning
+	public OWL::OWLModelSlot<OWLOntology> ontology1 (
+			uri1=["http://www.openflexo.org/Tests/OWL/Ontology1.owl"],
+			uri2=[Ontology1.owl],
+			uri3=[Ontology1.owl:"Foo"],
+			uri4=[Ontology1.owl:"Foo":"Foo2"],
+			uri5=[Ontology1.owl:"Foo":"Foo2":"Foo3"]);
+
+}

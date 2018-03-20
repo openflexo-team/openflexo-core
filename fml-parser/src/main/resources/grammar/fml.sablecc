@@ -240,6 +240,7 @@ Tokens
   as = 'as';
   import = 'import';   
   flexo_concept = 'FlexoConcept';   
+  fml_expression = 'FML::Expression';   
  
   // literals
 
@@ -285,7 +286,8 @@ Tokens
   documentation_comment =    '/**' '*'* (not_star_not_slash not_star* '*'+)* '/';
   end_of_line_comment = '//' input_character* line_terminator?;
 
-  uri = '[http://' unicode_letter (uri_letter_or_digit)* ']';
+  //uri = '[http://' unicode_letter (uri_letter_or_digit)* ']';
+  static_uri = '[' '"' string_character* '"' ']';
   ta_identifier = (java_letter*) '::' (java_letter*);
  
 Ignored Tokens
@@ -300,11 +302,11 @@ Productions
 
   use_declaration = use [technology_adapter]:dot_identifier as [ta_id]:identifier semi;
 
-  import_declaration = import uri as identifier semi;
+  import_declaration = import static_uri as dot_identifier semi;
 
   virtual_model_declaration = [annotations]:annotation* visibility? static? virtual_model identifier super? l_brc [concept_body_declarations]:concept_body_declaration* r_brc;
 
-  flexo_concept_declaration = [annotations]:annotation* visibility? static? flexo_concept identifier super? l_brc  r_brc;
+  flexo_concept_declaration = [annotations]:annotation* visibility? static? flexo_concept identifier super? l_brc [concept_body_declarations]:concept_body_declaration* r_brc;
 
   concept_body_declaration =
     {property} property_declaration |
@@ -363,6 +365,7 @@ Productions
  
   property_declaration =
     {primitive_role_declaration} primitive_role_declaration |
+    {expression_property_declaration} expression_property_declaration |
     {role_declaration} role_declaration;
  
   primitive_role_declaration =
@@ -374,6 +377,9 @@ Productions
   
   role_declaration =
     [annotations]:annotation* visibility? ta_identifier lt dot_identifier gt identifier fml_element_configuration? semi;
+ 
+  expression_property_declaration =
+    [annotations]:annotation* visibility? fml_expression lt type gt identifier assign expression semi;
  
   // Types
   
@@ -422,6 +428,19 @@ Productions
     {null}           null_literal |
     {uri}            uri;
 
+  // Encodes a URI, under the forms:
+  // - ["http://anUri"]
+  // - [NameSpace]
+  // - [NameSpace:"aString"]
+  // - [NameSpace:"aString":"anOtherString"]
+  uri =
+    {static_uri} static_uri |
+    {uri} l_bkt dot_identifier uri_suffix_list? r_bkt;
+
+  uri_suffix_list =
+    {string_literal} colon string_literal |
+    {uri_suffix_list} colon string_literal uri_suffix_list;
+  
   boolean_literal =
     {true}  true |
     {false} false;
