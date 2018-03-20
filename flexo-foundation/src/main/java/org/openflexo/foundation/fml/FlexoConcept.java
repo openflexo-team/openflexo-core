@@ -186,6 +186,7 @@ public interface FlexoConcept extends VirtualModelObject {
 	@PastingPoint
 	public void addToEmbeddedFlexoConcepts(FlexoConcept aFlexoConcept);
 
+	@Remover(EMBEDDED_FLEXO_CONCEPT_KEY)
 	public void removeFromEmbeddedFlexoConcepts(FlexoConcept aFlexoConcept);
 
 	public List<FlexoBehaviour> getDeclaredFlexoBehaviours();
