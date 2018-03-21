@@ -56,11 +56,6 @@ import org.openflexo.connie.Bindable;
 import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.type.TypeUtils;
 import org.openflexo.foundation.fml.FMLRepresentationContext.FMLRepresentationOutput;
-import org.openflexo.foundation.fml.FlexoConcept.FlexoConceptImpl;
-import org.openflexo.foundation.fml.FlexoConcept.FlexoConceptShouldHaveDeletionScheme;
-import org.openflexo.foundation.fml.FlexoConcept.FlexoConceptShouldHaveDeletionScheme.CreateDefaultDeletionScheme;
-import org.openflexo.foundation.fml.FlexoConcept.FlexoConceptShouldHaveFlexoBehaviours;
-import org.openflexo.foundation.fml.FlexoConcept.NonAbstractFlexoConceptShouldHaveProperties;
 import org.openflexo.foundation.fml.FlexoConceptBehaviouralFacet.FlexoConceptBehaviouralFacetImpl;
 import org.openflexo.foundation.fml.FlexoConceptStructuralFacet.FlexoConceptStructuralFacetImpl;
 import org.openflexo.foundation.fml.action.CreateFlexoBehaviour;
@@ -2015,7 +2010,7 @@ public interface FlexoConcept extends FlexoConceptObject {
 		public ValidationIssue<FlexoConceptShouldHaveDeletionScheme, FlexoConcept> applyValidation(FlexoConcept flexoConcept) {
 			if (!flexoConcept.isAbstract() && !(flexoConcept instanceof FlexoEnum) && flexoConcept.getDeletionSchemes().size() == 0) {
 				CreateDefaultDeletionScheme fixProposal = new CreateDefaultDeletionScheme(flexoConcept);
-				return new ValidationWarning<>(this, flexoConcept, "non_abstract_flexo_concept_($validable.name)_has_no_deletion_scheme",
+				return new ValidationWarning(this, flexoConcept, "non_abstract_flexo_concept_($validable.name)_has_no_deletion_scheme",
 						fixProposal);
 			}
 			return null;
