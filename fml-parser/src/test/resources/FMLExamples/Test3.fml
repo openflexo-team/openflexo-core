@@ -6,13 +6,13 @@ import ["http://www.openflexo.org/Tests/OWL/Ontology1.owl"] as Ontology1.owl;
 @URI(["http://openflexo.org/test/Test3VM.fml"])
 public VirtualModel Test3VM extends Test2VM,ViewPoint1.AnOtherVM {
 
-	@Description("This model slot points to an ontology, which import here ontology with uri Ontology1")
 	public OWL::OWLModelSlot<OWLOntology> ontology1;
 
 	public OWL::OWLModelSlot<OWLOntology> ontology2 (
 			aStringParameter="foo",
 			anIntParameter=2);
 
+	@Description("This model slot points to an ontology, which import here ontology with uri Ontology1")
 	public OWL::OWLModelSlot<OWLOntology> ontology3 (
 			importOntology=FML::Resource<OWLOntology>(uri=[Ontology1.owl]));
 

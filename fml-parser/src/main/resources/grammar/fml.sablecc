@@ -241,6 +241,11 @@ Tokens
   import = 'import';   
   flexo_concept = 'FlexoConcept';   
   fml_expression = 'FML::Expression';   
+  fml_get_set = 'FML::GetSet';   
+  one = 'one';   
+  maybe = 'maybe';   
+  many = 'many';   
+  some = 'some'; 
  
   // literals
 
@@ -302,7 +307,16 @@ Productions
 
   use_declaration = use [technology_adapter]:dot_identifier as [ta_id]:identifier semi;
 
-  import_declaration = import static_uri as dot_identifier semi;
+  import_declaration = 
+   	{java_import_declaration} java_import_declaration |
+  	{resource_import_declaration} resource_import_declaration;
+
+  resource_import_declaration = 
+  	import uri as dot_identifier semi;
+
+  java_import_declaration = 
+  	{simple} import dot_identifier semi /* |
+  	{wilcard} import dot_identifier dot star semi*/;
 
   virtual_model_declaration = [annotations]:annotation* visibility? static? virtual_model identifier super? l_brc [concept_body_declarations]:concept_body_declaration* r_brc;
 
@@ -319,15 +333,6 @@ Productions
   super_type_list =
     {one} dot_identifier |
     {many} super_type_list comma dot_identifier;
-
-/*  modifier =
-    {abstract}     abstract |
-    {annotation}   annotation |
-    {final}        final |
-    {private}      private |
-    {protected}    protected |
-    {public}       public |
-    {static}       static;*/
 
   visibility =
     {private}      private |
@@ -370,15 +375,21 @@ Productions
     {role_declaration} role_declaration;
  
   primitive_role_declaration =
-    {primitive} [annotations]:annotation* visibility? primitive_type identifier semi |
+    {primitive} [annotations]:annotation* visibility? cardinality? primitive_type identifier semi |
     {java_role_declaration} java_role_declaration ;
   
   java_role_declaration =
-    [annotations]:annotation* visibility? type identifier semi;
+    [annotations]:annotation* visibility? /*cardinality?*/ type identifier semi;
   
   role_declaration =
-    [annotations]:annotation* visibility? ta_identifier lt dot_identifier gt identifier fml_element_configuration? semi;
+    [annotations]:annotation* visibility? cardinality? ta_identifier lt dot_identifier gt identifier fml_element_configuration? semi;
  
+  cardinality =
+    {one}   one |
+    {maybe} maybe |
+    {many}  many |
+    {some}  some;
+  
   expression_property_declaration =
     [annotations]:annotation* visibility? fml_expression lt type gt identifier assign expression semi;
  
@@ -412,7 +423,12 @@ Productions
   type =
     {primitive} primitive_type |
     {java_class} dot_identifier |
-    {parameterized_type} dot_identifier type_arguments;
+    {parameterized_type} dot_identifier type_arguments |
+    {ta_type} ta_type;
+
+  ta_type =
+    {primitive} ta_identifier lt primitive_type gt |
+    {identifier} ta_identifier lt dot_identifier gt;
     
   primitive_type =
     {numeric} numeric_type |

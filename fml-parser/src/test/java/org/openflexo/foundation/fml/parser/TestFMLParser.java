@@ -94,6 +94,11 @@ public class TestFMLParser extends OpenflexoTestCase {
 		testFMLCompilationUnit(ResourceLocator.locateResource("FMLExamples/Test3.fml"));
 	}
 
+	@Test
+	public void test4() {
+		testFMLCompilationUnit(ResourceLocator.locateResource("FMLExamples/Test4-test.fml"));
+	}
+
 	private static void testFMLCompilationUnit(Resource fileResource) {
 		try {
 			FMLParser.parse(((FileResourceImpl) fileResource).getFile(), serviceManager);

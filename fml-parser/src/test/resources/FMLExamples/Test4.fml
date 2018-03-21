@@ -23,8 +23,8 @@ public VirtualModel ProcessDiagram {
 					Diagram::FMLDiagramPaletteElementBinding("Condition",drop:dropGatewayGRAtTopLevel()),
 					Diagram::FMLDiagramPaletteElementBinding("End",drop:dropEndActivityGRAtTopLevel())});
 
-	public unique FML:Instance<Process> process;
-	public multiple FML:Instance<Activity> someActivitiesToHighlight;
+	public one FML::Instance<Process> process;
+	public many FML::Instance<Activity> someActivitiesToHighlight;
 	
 	create:createNewProcess(String name) {
 		diagram = Diagram::CreateDiagram (
@@ -42,7 +42,7 @@ public VirtualModel ProcessDiagram {
 		process = new Process:create(parameters.name,parentProcess);
 	}
 
-	FML:Instance<ProcessDiagram> action:newSubProcess(String processName) {
+	FML::Instance<ProcessDiagram> action:newSubProcess(String processName) {
 		return new ProcessDiagram:createNewSubProcess(parameters.processName,this.process);
 	}
 	

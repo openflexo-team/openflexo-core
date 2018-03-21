@@ -46,7 +46,8 @@ import org.openflexo.foundation.fml.FMLObject;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.parser.analysis.DepthFirstAdapter;
 import org.openflexo.foundation.fml.parser.node.AFlexoConceptDeclaration;
-import org.openflexo.foundation.fml.parser.node.AImportDeclaration;
+import org.openflexo.foundation.fml.parser.node.AResourceImportDeclaration;
+import org.openflexo.foundation.fml.parser.node.ASimpleJavaImportDeclaration;
 import org.openflexo.foundation.fml.parser.node.AUseDeclaration;
 import org.openflexo.foundation.fml.parser.node.AVirtualModelDeclaration;
 import org.openflexo.foundation.fml.parser.node.Node;
@@ -113,9 +114,15 @@ class FMLSemanticsAnalyzer extends DepthFirstAdapter {
 	}
 
 	@Override
-	public void outAImportDeclaration(AImportDeclaration node) {
-		super.outAImportDeclaration(node);
-		System.out.println("Tiens, un import: " + node);
+	public void outASimpleJavaImportDeclaration(ASimpleJavaImportDeclaration node) {
+		super.outASimpleJavaImportDeclaration(node);
+		System.out.println("Tiens, un java import: " + node);
+	}
+
+	@Override
+	public void outAResourceImportDeclaration(AResourceImportDeclaration node) {
+		super.outAResourceImportDeclaration(node);
+		System.out.println("Tiens, un resource import: " + node);
 	}
 
 	@Override
