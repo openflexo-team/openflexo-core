@@ -507,6 +507,7 @@ Productions
   expr2 =
     {expr3} expr3 |
     {new_instance_expression} new_instance_expression |
+    {ta_edition_action_expression} ta_edition_action_expression |
     {or_expr} [left]:expr2 bar [right]:expr3 |
     {or2_expr} [left]:expr2 bar_bar [right]:expr3 |
     {add_expr} [left]:expr2 plus [right]:expr3 |
@@ -521,6 +522,10 @@ Productions
     {mod_expr} [left]:expr3 percent [right]:term |
     {power_expr} [left]:expr3 caret [right]:term |
     {not_expr} emark term;
+
+  ta_edition_action_expression =
+    {unqualified} ta_identifier arg_list |
+    {qualified} ta_identifier qualified_arg_list;
 
   new_instance_expression =
     {basic} new identifier arg_list |
@@ -629,13 +634,9 @@ Productions
  
   statement_expression =
     {assignment} assignation_expression |
-    {expression} expr2 |
-    {ta_edition_action_expression} ta_edition_action_expression /*|
+    {expression} expr2 /*|
+    {ta_edition_action_expression} ta_edition_action_expression |
     {instance_creation} class_instance_creation_expression*/;
-
-  ta_edition_action_expression =
-    {unqualified} ta_identifier arg_list |
-    {qualified} ta_identifier qualified_arg_list;
 
   qualified_arg_list = 
     {empty_list} l_par r_par |

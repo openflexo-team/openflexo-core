@@ -13,7 +13,7 @@ import [BPMN:"ProcessDiagram.diagramspecification"] as ProcessDiagram.diagramspe
 public VirtualModel ProcessDiagram {
 
 	@Description("This ModelSlot contractalize the connection to a diagram conform to ProcessDiagram.diagramspecification")
-	public unique Diagram::DiagramModelSlot<Diagram> diagram (
+	public maybe Diagram::DiagramModelSlot<Diagram> diagram (
 			metamodel=FML::Resource<DiagramSpecification>(uri=[BPMN:"ProcessDiagram.diagramspecification"]),
 			initializeWithContents=true,
 			templateDiagramReference=[BPMN:"ProcessDiagram.diagramspecification":"ExampleDiagram.diagram"],
@@ -24,7 +24,7 @@ public VirtualModel ProcessDiagram {
 					Diagram::FMLDiagramPaletteElementBinding("End",drop:dropEndActivityGRAtTopLevel())});
 
 	public one FML::Instance<Process> process;
-	public many FML::Instance<Activity> someActivitiesToHighlight;
+	public some FML::Instance<Activity> someActivitiesToHighlight;
 	
 	create:createNewProcess(String name) {
 		diagram = Diagram::CreateDiagram (
@@ -34,7 +34,7 @@ public VirtualModel ProcessDiagram {
 		process = new Process:create(parameters.name,null);
 	}
 
-	create:createNewSubProcess(String name, FML:Instance<Process> parentProcess) {
+	create:createNewSubProcess(String name, FML::Instance<Process> parentProcess) {
 		diagram = Diagram::CreateDiagram (
 				diagramName=parameters.name,
 				resourceCenter=this.resourceCenter,
