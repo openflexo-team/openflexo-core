@@ -306,11 +306,4 @@ public abstract class FlexoResourceFactory<R extends FlexoResource<RD>, RD exten
 	 */
 	@Override
 	public abstract <I> boolean isValidArtefact(I serializationArtefact, FlexoResourceCenter<I> resourceCenter);
-
-	/* (non-Javadoc)
-	 * @see org.openflexo.foundation.resource.IFlexoResourceFactory#getConvertableArtefact(I, org.openflexo.foundation.resource.FlexoResourceCenter)
-	 */
-	@Override
-	public abstract <I> I getConvertableArtefact(I serializationArtefact, FlexoResourceCenter<I> resourceCenter);
-
 }

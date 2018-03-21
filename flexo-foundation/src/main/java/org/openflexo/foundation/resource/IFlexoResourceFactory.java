@@ -114,6 +114,7 @@ public interface IFlexoResourceFactory<R extends FlexoResource<RD>, RD extends R
 	 * @param resourceCenter
 	 * @return
 	 */
-	<I> I getConvertableArtefact(I serializationArtefact, FlexoResourceCenter<I> resourceCenter);
-
+	default <I> I getConvertableArtefact(I serializationArtefact, FlexoResourceCenter<I> resourceCenter) {
+		return null;
+	}
 }
