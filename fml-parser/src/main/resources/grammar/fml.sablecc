@@ -406,8 +406,8 @@ Productions
   // Behaviours
   
   flexo_behaviour_declaration = 
-    {default} [annotations]:annotation* visibility? behaviour_return_type? [behaviour_category]:identifier colon flexo_behaviour_arguments_declaration? flexo_behaviour_body |
-    {named} [annotations]:annotation* visibility? behaviour_return_type? [behaviour_category]:identifier colon [behaviour_name]:identifier flexo_behaviour_arguments_declaration? flexo_behaviour_body;  
+    {default} [annotations]:annotation* visibility? behaviour_return_type? [behaviour_category]:identifier fml_element_configuration? colon flexo_behaviour_arguments_declaration? flexo_behaviour_body |
+    {named} [annotations]:annotation* visibility? behaviour_return_type? [behaviour_category]:identifier fml_element_configuration? colon [behaviour_name]:identifier flexo_behaviour_arguments_declaration? flexo_behaviour_body;  
  
   flexo_behaviour_arguments_declaration =
     l_par formal_arguments_list? r_par;

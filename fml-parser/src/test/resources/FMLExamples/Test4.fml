@@ -1,7 +1,8 @@
 use org.openflexo.technologyadapter.diagram.TypedDiagramModelSlot as Diagram;
 
-import java.lang.*;
-import java.util.*;
+import java.lang.Object;
+import java.util.List;
+
 import ["http://openflexo.org/modellers/resources/BPMN"] as BPMN;
 import ["http://openflexo.org/modellers/resources/BPMN/FML/BPMNEditor.fml"] as BPMNEditor.fml;
 import ["http://openflexo.org/modellers/resources/BPMN/FML/BPMNEditor.fml/BPMNModel.fml"] as BPMNModel.fml;
@@ -23,8 +24,9 @@ public VirtualModel ProcessDiagram {
 					Diagram::FMLDiagramPaletteElementBinding("Condition",dropGatewayGRAtTopLevel()),
 					Diagram::FMLDiagramPaletteElementBinding("End",dropEndActivityGRAtTopLevel())});
 
+
 	public one FML::Instance<Process> process;
-	public some FML::Instance<Activity> someActivitiesToHighlight;
+	public many FML::Instance<Activity> someActivitiesToHighlight;
 	
 	create:createNewProcess(String name) {
 		diagram = Diagram::CreateDiagram (
@@ -47,7 +49,7 @@ public VirtualModel ProcessDiagram {
 	}
 	
 	void delete:() {
-		Diagram::deleteDiagram(diagram);
+		Diagram::DeleteDiagram(diagram);
 	}
 	
 	abstract FlexoConcept AbstractActivityGR {  
@@ -74,7 +76,7 @@ public VirtualModel ProcessDiagram {
 		public FML::Instance<Activity> activity;
 		
 		drop(target=topLevel):dropActivityGRAtTopLevel() {
-			shape = diagram.Diagram::AddShape(container=topLevel);
+			shape = Diagram::AddShape(container=diagram);
 			activity = new Activity:create("Activity");
 		}
        
@@ -91,7 +93,7 @@ public VirtualModel ProcessDiagram {
 		public FML::Instance<BeginActivity> activity;
 		
 		drop(target=topLevel):dropBeginActivityGRAtTopLevel() {
-			shape = diagram.Diagram::AddShape(container=topLevel);
+			shape = Diagram::AddShape(container=diagram);
 			activity = new BeginActivity:create();
 		}
        
@@ -108,7 +110,7 @@ public VirtualModel ProcessDiagram {
 		public FML::Instance<EndActivity> activity;
 		
 		drop(target=topLevel):dropEndActivityGRAtTopLevel() {
-			shape = diagram.Diagram::AddShape(container=topLevel);
+			shape = Diagram::AddShape(container=diagram);
 			activity = new EndActivity:create();
 		}
        
@@ -125,7 +127,7 @@ public VirtualModel ProcessDiagram {
 		public FML::Instance<Gateway> activity;
 		
 		drop(target=topLevel):dropGatewayGRAtTopLevel() {
-			shape = diagram.Diagram::AddShape(container=topLevel);
+			shape = Diagram::AddShape(container=diagram);
 			activity = new Gateway:create("condition ?");
 		}
        
@@ -143,14 +145,16 @@ public VirtualModel ProcessDiagram {
 		
 		link(fromTarget=TransitionEmitterGR.concept,
 			 toTarget=TransitionReceiverGR.concept):linkEmitterGRToReceiverGR()  {
-			connector = diagram.Diagram::AddConnector(
+			connector = Diagram::AddConnector(
+					container=diagram,
 					fromShape=fromTarget.shape,
 					toShape=toTarget.shape);
 		    transition = new Transition:create(fromTarget.activity,toTarget.activity);      
-		    fromTarget.activity.outTransitions.add(transition)      
-		    toTarget.activity.inTransitions.add(transition)    
+		    fromTarget.activity.outTransitions.add(transition);      
+		    toTarget.activity.inTransitions.add(transition);    
 		}
        
 	}
 	
+
 }
