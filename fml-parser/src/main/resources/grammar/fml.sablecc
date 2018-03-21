@@ -310,6 +310,7 @@ Productions
 
   concept_body_declaration =
     {property} property_declaration |
+    {flexo_behaviour_declaration} flexo_behaviour_declaration |
     {flexo_concept} flexo_concept_declaration;
 
   super =
@@ -380,6 +381,31 @@ Productions
  
   expression_property_declaration =
     [annotations]:annotation* visibility? fml_expression lt type gt identifier assign expression semi;
+ 
+  // Behaviours
+  
+  flexo_behaviour_declaration = 
+    {default} [annotations]:annotation* visibility? behaviour_return_type? [behaviour_category]:identifier colon flexo_behaviour_arguments_declaration? flexo_behaviour_body |
+    {named} [annotations]:annotation* visibility? behaviour_return_type? [behaviour_category]:identifier colon [behaviour_name]:identifier flexo_behaviour_arguments_declaration? flexo_behaviour_body;  
+ 
+  flexo_behaviour_arguments_declaration =
+    l_par formal_arguments_list? r_par;
+    
+  formal_arguments_list =
+    {one} formal_argument |
+    {many} formal_arguments_list comma formal_argument;
+  
+  formal_argument =
+  	type identifier;
+ 
+  flexo_behaviour_body =
+    {block} block |
+    {empty} semi;
+ 
+  behaviour_return_type =
+    {void} void |
+    {type} type;
+  
  
   // Types
   
@@ -494,7 +520,7 @@ Productions
     comma type_reference;
 
   call = 
-    identifier arg_list ;
+    dot_identifier arg_list ;
 
   arg_list = 
     {empty_list} l_par r_par |
@@ -575,8 +601,8 @@ Productions
     statement_expression semi;
  
   statement_expression =
-    {assignment}        assignation_expression/* |
-    {method_invocation} method_invocation |
+    {assignment} assignation_expression |
+    {expression} expr2 /*|
     {instance_creation} class_instance_creation_expression*/;
 
   return_statement =

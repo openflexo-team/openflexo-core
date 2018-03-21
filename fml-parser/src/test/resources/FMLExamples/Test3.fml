@@ -37,11 +37,13 @@ public VirtualModel Test3VM extends Test2VM,ViewPoint1.AnOtherVM {
 				v1 = v;
 				v2 = 0;
 			}
-		);
+		);*/
 		
 		create:init(int aV1, int aV2) {
 			v1 = aV1;
 			v2 = aV2;
+			foo;
+			foo.executeMethod(aV1);
 		}
 		
 		render: {
@@ -50,7 +52,18 @@ public VirtualModel Test3VM extends Test2VM,ViewPoint1.AnOtherVM {
 		
 		void action:helloWorld() {
 			print("Hello World !");
-		}*/
+		}
+		
+		public action:toto(int a, String s) {
+			for (String anItem : someItems) {
+				print("item: "+anItem);
+			}
+			int i;
+			while (i < 10) {
+				print("i="+i);
+				i = i+1;
+			}
+		}
 		
 	}
 	
