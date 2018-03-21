@@ -318,9 +318,9 @@ Productions
   	{simple} import dot_identifier semi /* |
   	{wilcard} import dot_identifier dot star semi*/;
 
-  virtual_model_declaration = [annotations]:annotation* visibility? static? virtual_model identifier super? l_brc [concept_body_declarations]:concept_body_declaration* r_brc;
+  virtual_model_declaration = [annotations]:annotation* visibility? static? abstract? virtual_model identifier super? l_brc [concept_body_declarations]:concept_body_declaration* r_brc;
 
-  flexo_concept_declaration = [annotations]:annotation* visibility? static? flexo_concept identifier super? l_brc [concept_body_declarations]:concept_body_declaration* r_brc;
+  flexo_concept_declaration = [annotations]:annotation* visibility? static? abstract? flexo_concept identifier super? l_brc [concept_body_declarations]:concept_body_declaration* r_brc;
 
   concept_body_declaration =
     {property} property_declaration |
@@ -356,11 +356,16 @@ Productions
     at dot_identifier l_par expression r_par;
 
   element_value_pair =
-    identifier assign expression;
+    {unique} identifier assign expression |
+    {multiple} identifier assign l_brc element_value_list? r_brc;
 
   element_value_pairs =
     {one} element_value_pair |
     {many} element_value_pairs comma element_value_pair;
+
+  element_value_list =
+    {one} expression |
+    {many} element_value_list comma expression;
 
   // FML elements
 
@@ -371,6 +376,7 @@ Productions
  
   property_declaration =
     {primitive_role_declaration} primitive_role_declaration |
+    {abstract_property_declaration} abstract_property_declaration |
     {expression_property_declaration} expression_property_declaration |
     {role_declaration} role_declaration;
  
@@ -390,6 +396,9 @@ Productions
     {many}  many |
     {some}  some;
   
+  abstract_property_declaration =
+    [annotations]:annotation* visibility? abstract type identifier semi;
+ 
   expression_property_declaration =
     [annotations]:annotation* visibility? fml_expression lt type gt identifier assign expression semi;
  

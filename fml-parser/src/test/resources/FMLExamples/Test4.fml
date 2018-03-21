@@ -18,10 +18,10 @@ public VirtualModel ProcessDiagram {
 			initializeWithContents=true,
 			templateDiagramReference=[BPMN:"ProcessDiagram.diagramspecification":"ExampleDiagram.diagram"],
 			bindings={
-					Diagram::FMLDiagramPaletteElementBinding("Activity",drop:dropActivityGRAtTopLevel()),
-					Diagram::FMLDiagramPaletteElementBinding("Begin",drop:dropBeginActivityGRAtTopLevel()),
-					Diagram::FMLDiagramPaletteElementBinding("Condition",drop:dropGatewayGRAtTopLevel()),
-					Diagram::FMLDiagramPaletteElementBinding("End",drop:dropEndActivityGRAtTopLevel())});
+					Diagram::FMLDiagramPaletteElementBinding("Activity",dropActivityGRAtTopLevel()),
+					Diagram::FMLDiagramPaletteElementBinding("Begin",dropBeginActivityGRAtTopLevel()),
+					Diagram::FMLDiagramPaletteElementBinding("Condition",dropGatewayGRAtTopLevel()),
+					Diagram::FMLDiagramPaletteElementBinding("End",dropEndActivityGRAtTopLevel())});
 
 	public one FML::Instance<Process> process;
 	public some FML::Instance<Activity> someActivitiesToHighlight;
@@ -47,7 +47,7 @@ public VirtualModel ProcessDiagram {
 	}
 	
 	void delete:() {
-		diagram.Diagram::deleteDiagram();
+		Diagram::deleteDiagram(diagram);
 	}
 	
 	abstract FlexoConcept AbstractActivityGR {  
@@ -141,8 +141,8 @@ public VirtualModel ProcessDiagram {
 		
 		public FML::Instance<Transition> transition;
 		
-		link(fromTarget=TransitionEmitterGR,
-			 toTarget=TransitionReceiverGR):linkEmitterGRToReceiverGR()  {
+		link(fromTarget=TransitionEmitterGR.concept,
+			 toTarget=TransitionReceiverGR.concept):linkEmitterGRToReceiverGR()  {
 			connector = diagram.Diagram::AddConnector(
 					fromShape=fromTarget.shape,
 					toShape=toTarget.shape);
