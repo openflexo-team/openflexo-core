@@ -506,6 +506,7 @@ Productions
 
   expr2 =
     {expr3} expr3 |
+    {new_instance_expression} new_instance_expression |
     {or_expr} [left]:expr2 bar [right]:expr3 |
     {or2_expr} [left]:expr2 bar_bar [right]:expr3 |
     {add_expr} [left]:expr2 plus [right]:expr3 |
@@ -521,6 +522,10 @@ Productions
     {power_expr} [left]:expr3 caret [right]:term |
     {not_expr} emark term;
 
+  new_instance_expression =
+    {basic} new identifier arg_list |
+    {fml} new [concept]:identifier colon [behaviour_name]:identifier arg_list;
+ 
   type_reference = 
     {basic} dollar type_reference_path |
     {parametered} dollar type_reference_path type_reference_arg_list;
@@ -638,7 +643,7 @@ Productions
 
   qualified_additional_arg = 
     comma assignation_expression;
-
+ 
   return_statement =
     {empty}      return semi |
     {expression} return expression semi;

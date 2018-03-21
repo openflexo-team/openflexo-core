@@ -3,7 +3,7 @@ use org.openflexo.technologyadapter.diagram.TypedDiagramModelSlot as Diagram;
 @URI(["http://openflexo.org/test/TestExpressionsAndEditionActions.fml"])
 public VirtualModel TestExpressionsAndEditionActions  {
 
-	void action:testEditionActions() {
+	void action:testExpressions() {
 	
 		true;
 		1;
@@ -18,6 +18,8 @@ public VirtualModel TestExpressionsAndEditionActions  {
 		this;
 		this.property;
 		this.call(1,2);
+		new Object();
+		new String("toto");
 	}
 
 	void action:testEditionActions() {
