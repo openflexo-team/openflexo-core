@@ -1,0 +1,41 @@
+use org.openflexo.technologyadapter.diagram.TypedDiagramModelSlot as Diagram;
+
+@URI(["http://openflexo.org/test/TestExpressionsAndEditionActions.fml"])
+public VirtualModel TestExpressionsAndEditionActions  {
+
+	void action:testEditionActions() {
+	
+		true;
+		1;
+		1+2;
+		aVariable;
+		an.expression.with.a.path;
+		an.expression.with.one.path;
+		an.expression.with.many.path;
+		anObject.call(1,null);
+		aString.substring(1,8);
+		a.call.with.arguments(1,2,"foo");
+		this;
+		this.property;
+		this.call(1,2);
+	}
+
+	void action:testEditionActions() {
+		
+		// An EditionAction with no arguments
+		Diagram::AnEditionAction();
+
+		// An EditionAction with an implicit argument
+		Diagram::AnEditionAction(diagram);
+
+		// An EditionAction with 3 implicit arguments
+		Diagram::AnEditionAction(diagram,1,"coucou");
+		
+		// An EditionAction with 1 explicit arguments
+		Diagram::AnEditionAction(receiver=diagram);
+
+		// An EditionAction with 1 explicit arguments
+		Diagram::AnEditionAction(receiver=diagram,anInt=1,aString="toto");
+	}
+
+}

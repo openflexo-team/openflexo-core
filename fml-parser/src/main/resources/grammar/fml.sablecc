@@ -546,8 +546,14 @@ Productions
     comma expression;
 
   dot_identifier =
+    {identifier} allowed_identifier_in_binding |
+    {tail} allowed_identifier_in_binding dot dot_identifier;
+
+  allowed_identifier_in_binding =
     {identifier} identifier |
-    {tail} identifier dot dot_identifier;
+    {many} many |
+    {one} one |
+    {this} this;
 
   binding = 
     {dot_identifier} dot_identifier |
@@ -618,8 +624,20 @@ Productions
  
   statement_expression =
     {assignment} assignation_expression |
-    {expression} expr2 /*|
+    {expression} expr2 |
+    {ta_edition_action_expression} ta_edition_action_expression /*|
     {instance_creation} class_instance_creation_expression*/;
+
+  ta_edition_action_expression =
+    {unqualified} ta_identifier arg_list |
+    {qualified} ta_identifier qualified_arg_list;
+
+  qualified_arg_list = 
+    {empty_list} l_par r_par |
+    {non_empty_list} l_par assignation_expression [additional_args]:qualified_additional_arg* r_par;
+
+  qualified_additional_arg = 
+    comma assignation_expression;
 
   return_statement =
     {empty}      return semi |
