@@ -50,10 +50,8 @@ import org.openflexo.foundation.PamelaResourceModelFactory;
 import org.openflexo.foundation.action.FlexoUndoManager;
 import org.openflexo.foundation.fml.annotations.DeclareEditionActions;
 import org.openflexo.foundation.fml.annotations.DeclareFetchRequests;
-import org.openflexo.foundation.fml.annotations.DeclareFlexoBehaviourParameters;
 import org.openflexo.foundation.fml.annotations.DeclareFlexoBehaviours;
 import org.openflexo.foundation.fml.annotations.DeclareFlexoRoles;
-import org.openflexo.foundation.fml.annotations.DeclareInspectorEntries;
 import org.openflexo.foundation.fml.controlgraph.ConditionalAction;
 import org.openflexo.foundation.fml.controlgraph.EmptyControlGraph;
 import org.openflexo.foundation.fml.controlgraph.FMLControlGraph;
@@ -255,12 +253,6 @@ public class FMLModelFactory extends FGEModelFactoryImpl implements PamelaResour
 				classes.add(behaviourClass);
 			}
 		}
-		DeclareFlexoBehaviourParameters fbpDeclarations = modelSlotClass.getAnnotation(DeclareFlexoBehaviourParameters.class);
-		if (fbpDeclarations != null) {
-			for (Class<? extends FlexoBehaviourParameter> behaviourParameterClass : fbpDeclarations.value()) {
-				classes.add(behaviourParameterClass);
-			}
-		}
 		DeclareEditionActions eaDeclarations = modelSlotClass.getAnnotation(DeclareEditionActions.class);
 		if (eaDeclarations != null) {
 			for (Class<? extends EditionAction> editionActionClass : eaDeclarations.value()) {
@@ -271,12 +263,6 @@ public class FMLModelFactory extends FGEModelFactoryImpl implements PamelaResour
 		if (frDeclarations != null) {
 			for (Class<? extends FetchRequest> fetchRequestClass : frDeclarations.value()) {
 				classes.add(fetchRequestClass);
-			}
-		}
-		DeclareInspectorEntries ieDeclarations = modelSlotClass.getAnnotation(DeclareInspectorEntries.class);
-		if (ieDeclarations != null) {
-			for (Class<? extends InspectorEntry> entryClass : ieDeclarations.value()) {
-				classes.add(entryClass);
 			}
 		}
 	}
