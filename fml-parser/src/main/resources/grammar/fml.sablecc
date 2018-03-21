@@ -175,6 +175,7 @@ Tokens
   plus_assign = '+=';
   plus_plus = '++';
   qmark = '?';
+  sharp = '#';
   //shl = '<<';
   //shl_assign = '<<=';
   //shr = '>>';
@@ -488,7 +489,9 @@ Productions
   // - [NameSpace:"aString":"anOtherString"]
   uri =
     {static_uri} static_uri |
-    {uri} l_bkt dot_identifier uri_suffix_list? r_bkt;
+    {uri} l_bkt dot_identifier uri_suffix_list? r_bkt |
+    {static_object_reference} l_bkt string_literal sharp [object_identifier]:identifier r_bkt |
+    {object_reference} l_bkt dot_identifier uri_suffix_list? sharp [object_identifier]:identifier r_bkt;
 
   uri_suffix_list =
     {string_literal} colon string_literal |

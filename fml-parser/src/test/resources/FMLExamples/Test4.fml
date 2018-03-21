@@ -67,7 +67,7 @@ public VirtualModel ProcessDiagram {
 		
 		public Diagram::ShapeRole<DiagramShape> shape (
 				container = container.diagram,
-				metamodel = [ExampleDiagram.diagram#Shape125]
+				metamodel = [ExampleDiagram.diagram#Shape125],
 				specifications={
 						Diagram::GraphicalElementSpecification("label",activity.activityName)});
 		
@@ -84,7 +84,7 @@ public VirtualModel ProcessDiagram {
 		
 		public Diagram::ShapeRole<DiagramShape> shape (
 				container = container.diagram,
-				metamodel = [ExampleDiagram.diagram#Shape37]
+				metamodel = [ExampleDiagram.diagram#Shape37],
 				specifications={
 						Diagram::GraphicalElementSpecification("label",activity.activityName)});
 		
@@ -101,7 +101,7 @@ public VirtualModel ProcessDiagram {
 		
 		public Diagram::ShapeRole<DiagramShape> shape (
 				container = container.diagram,
-				metamodel = [ExampleDiagram.diagram#Shape37]
+				metamodel = [ExampleDiagram.diagram#Shape37],
 				specifications={
 						Diagram::GraphicalElementSpecification("label",activity.activityName)});
 		
@@ -118,7 +118,7 @@ public VirtualModel ProcessDiagram {
 		
 		public Diagram::ShapeRole<DiagramShape> shape (
 				container = container.diagram,
-				metamodel = [ExampleDiagram.diagram#Shape151]
+				metamodel = [ExampleDiagram.diagram#Shape151],
 				specifications={
 						Diagram::GraphicalElementSpecification("label",activity.activityName)});
 		
@@ -135,7 +135,7 @@ public VirtualModel ProcessDiagram {
 		
 		public Diagram::ConnectorRole<DiagramConnector> connector (
 				container = container.diagram,
-				metamodel = [ExampleDiagram.diagram#Connector17]
+				metamodel = [ExampleDiagram.diagram#Connector17],
 				specifications={
 						Diagram::GraphicalElementSpecification("label","transition")});
 		
