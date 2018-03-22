@@ -79,8 +79,14 @@ public abstract class DefaultScreenshotService extends FlexoServiceImpl implemen
 	}
 
 	@Override
+	public String getServiceName() {
+		return "ScreenshotService";
+	}
+
+	@Override
 	public void initialize() {
 		registeredDelegates = new HashMap<>();
+		status = Status.Started;
 	}
 
 	@Override

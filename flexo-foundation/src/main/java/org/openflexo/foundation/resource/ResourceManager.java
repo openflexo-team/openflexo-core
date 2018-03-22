@@ -118,8 +118,14 @@ public class ResourceManager extends FlexoServiceImpl implements ReferenceOwner 
 	}
 
 	@Override
+	public String getServiceName() {
+		return "ResourceManager";
+	}
+
+	@Override
 	public void initialize() {
 		logger.info("Initialized ResourceManager...");
+		status = Status.Started;
 	}
 
 	// It should be synchronized has the same resource could be registered several times in different threads

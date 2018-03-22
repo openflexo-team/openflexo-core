@@ -39,6 +39,7 @@
 package org.openflexo.foundation;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -62,6 +63,7 @@ import org.openflexo.model.factory.EditingContext;
 import org.openflexo.model.factory.EditingContextImpl;
 import org.openflexo.model.factory.ModelFactory;
 import org.openflexo.model.factory.ProxyMethodHandler;
+import org.openflexo.toolbox.StringUtils;
 
 /**
  * The {@link FlexoEditingContext} represents the {@link EditingContext} for the whole application<br>
@@ -74,6 +76,8 @@ import org.openflexo.model.factory.ProxyMethodHandler;
 public class FlexoEditingContext extends EditingContextImpl implements FlexoService {
 
 	protected static final Logger logger = Logger.getLogger(FlexoEditingContext.class.getPackage().getName());
+
+	protected Status status = Status.Registered;
 
 	private FlexoServiceManager serviceManager;
 	private FlexoUndoManager undoManager;
@@ -120,6 +124,11 @@ public class FlexoEditingContext extends EditingContextImpl implements FlexoServ
 	}
 
 	@Override
+	public String getServiceName() {
+		return "FlexoEditingContext";
+	}
+
+	@Override
 	public void initialize() {
 		logger.info("Initialized FlexoEditingContext...");
 		undoManager = new FlexoUndoManager(this);
@@ -131,6 +140,7 @@ public class FlexoEditingContext extends EditingContextImpl implements FlexoServ
 		FlexoObjectImpl.addActionForClass(pasteActionType, FlexoObject.class);
 		selectAllActionType = new SelectAllActionType(this);
 		FlexoObjectImpl.addActionForClass(selectAllActionType, FlexoObject.class);
+		status = Status.Started;
 	}
 
 	@Override
@@ -336,6 +346,42 @@ public class FlexoEditingContext extends EditingContextImpl implements FlexoServ
 		FlexoObjectImpl.removeActionFromClass(cutActionType, FlexoObject.class);
 		FlexoObjectImpl.removeActionFromClass(pasteActionType, FlexoObject.class);
 		FlexoObjectImpl.removeActionFromClass(selectAllActionType, FlexoObject.class);
+		status = Status.Stopped;
+	}
+
+	@Override
+	public Status getStatus() {
+		return status;
+	}
+
+	/**
+	 * Return indicating general status of this FlexoService<br>
+	 * This is the display value of 'service <service> status' as given in FML command-line interpreter
+	 * 
+	 * @return
+	 */
+	@Override
+	public String getDisplayableStatus() {
+		return getServiceName() + StringUtils.buildWhiteSpaceIndentation(30 - getServiceName().length()) + getStatus();
+	}
+
+	private List<ServiceOperation<?>> availableServiceOperations = null;
+
+	/**
+	 * Return collection of all available {@link ServiceOperation} available for this {@link FlexoService}
+	 * 
+	 * @return
+	 */
+	@Override
+	public Collection<ServiceOperation<?>> getAvailableServiceOperations() {
+		if (availableServiceOperations == null) {
+			availableServiceOperations = new ArrayList<>();
+			availableServiceOperations.add(HELP_ON_SERVICE);
+			availableServiceOperations.add(DISPLAY_SERVICE_STATUS);
+			availableServiceOperations.add(START_SERVICE);
+			availableServiceOperations.add(STOP_SERVICE);
+		}
+		return availableServiceOperations;
 	}
 
 }

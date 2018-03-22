@@ -199,8 +199,14 @@ public class FlexoServerInstanceManager extends FlexoServiceImpl {
 	}
 
 	@Override
+	public String getServiceName() {
+		return "FlexoServerInstanceManager";
+	}
+
+	@Override
 	public void initialize() {
 		logger.info("Initialized FlexoServerInstanceManager service");
+		status = Status.Started;
 	}
 
 }

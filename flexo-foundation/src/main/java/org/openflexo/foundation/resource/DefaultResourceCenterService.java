@@ -47,6 +47,8 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLDecoder;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.List;
@@ -128,6 +130,11 @@ public abstract class DefaultResourceCenterService extends FlexoServiceImpl impl
 	private FlexoProjectResourceFactory<?> flexoProjectResourceFactory;
 
 	public DefaultResourceCenterService() {
+	}
+
+	@Override
+	public String getServiceName() {
+		return "ResourceCenterService";
 	}
 
 	/**
@@ -479,6 +486,8 @@ public abstract class DefaultResourceCenterService extends FlexoServiceImpl impl
 			}
 		}
 
+		status = Status.Started;
+
 	}
 
 	/**
@@ -694,6 +703,66 @@ public abstract class DefaultResourceCenterService extends FlexoServiceImpl impl
 	@Override
 	public void setDevMode(boolean devMode) {
 		this.devMode = devMode;
+	}
+
+	@Override
+	public String getDisplayableStatus() {
+		StringBuffer sb = new StringBuffer();
+		sb.append(super.getDisplayableStatus() + " with " + getResourceCenters().size() + " resource centers");
+		for (FlexoResourceCenter<?> rc : getResourceCenters()) {
+			sb.append("\n[" + rc.getDefaultBaseURI() + "] with " + rc.getAllResources().size() + " resources");
+		}
+		return sb.toString();
+	}
+
+	@Override
+	protected Collection<ServiceOperation<?>> makeAvailableServiceOperations() {
+		Collection<ServiceOperation<?>> returned = super.makeAvailableServiceOperations();
+		returned.add(ADD_RC);
+		return returned;
+	}
+
+	public static AddResourceCenter ADD_RC = new AddResourceCenter();
+
+	public static class AddResourceCenter implements ServiceOperation<FlexoResourceCenterService> {
+		private AddResourceCenter() {
+		}
+
+		@Override
+		public String getOperationName() {
+			return "add_rc";
+		}
+
+		@Override
+		public String usage(FlexoResourceCenterService service) {
+			return "service " + service.getServiceName() + " add_rc <path>";
+		}
+
+		@Override
+		public String description() {
+			return "add a resource center denoted by supplied path";
+		}
+
+		@Override
+		public List<String> getOptions() {
+			return Arrays.asList("<path>");
+		}
+
+		@Override
+		public void execute(FlexoResourceCenterService service, Object... options) {
+			if (options.length > 0) {
+				File directory = (File) options[0];
+				System.out.println("Add ResourceCenter from directory " + directory);
+				DirectoryResourceCenter newRC;
+				try {
+					newRC = DirectoryResourceCenter.instanciateNewDirectoryResourceCenter(directory, service);
+					service.addToResourceCenters(newRC);
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		}
 	}
 
 }

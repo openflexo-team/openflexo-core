@@ -40,6 +40,7 @@
 package org.openflexo.foundation.technologyadapter;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Hashtable;
@@ -79,6 +80,7 @@ import org.openflexo.foundation.task.FlexoTask;
 import org.openflexo.foundation.task.Progress;
 import org.openflexo.model.exceptions.ModelDefinitionException;
 import org.openflexo.model.factory.ModelFactory;
+import org.openflexo.toolbox.StringUtils;
 
 /**
  * Default implementation for {@link ProjectNatureService}
@@ -236,12 +238,18 @@ public abstract class DefaultTechnologyAdapterService extends FlexoServiceImpl i
 	}
 
 	@Override
+	public String getServiceName() {
+		return "TechnologyAdapterService";
+	}
+
+	@Override
 	public void initialize() {
 		availableFlexoRoleTypes = new HashMap<>();
 		availableEditionActionTypes = new HashMap<>();
 		availableFetchRequestActionTypes = new HashMap<>();
 		availableFlexoBehaviourTypes = new HashMap<>();
 		loadAvailableTechnologyAdapters();
+		status = Status.Started;
 	}
 
 	/**
@@ -574,6 +582,61 @@ public abstract class DefaultTechnologyAdapterService extends FlexoServiceImpl i
 			}
 		}
 		return null;
+	}
+
+	@Override
+	public String getDisplayableStatus() {
+		StringBuffer sb = new StringBuffer();
+		sb.append(super.getDisplayableStatus() + " with " + getTechnologyAdapters().size() + " technology adapters");
+		for (TechnologyAdapter ta : getTechnologyAdapters()) {
+			sb.append("\n" + ta.getIdentifier() + StringUtils.buildWhiteSpaceIndentation(8 - ta.getIdentifier().length()) + " "
+					+ ta.getName() + StringUtils.buildWhiteSpaceIndentation(30 - ta.getName().length()) + " status: "
+					+ (ta.isActivated() ? "ACTIVATED" : "INACTIVE"));
+		}
+		return sb.toString();
+	}
+
+	@Override
+	protected Collection<ServiceOperation<?>> makeAvailableServiceOperations() {
+		Collection<ServiceOperation<?>> returned = super.makeAvailableServiceOperations();
+		returned.add(ACTIVATE_TA);
+		return returned;
+	}
+
+	public static ActivateTechnologyAdapter ACTIVATE_TA = new ActivateTechnologyAdapter();
+
+	public static class ActivateTechnologyAdapter implements ServiceOperation<TechnologyAdapterService> {
+		private ActivateTechnologyAdapter() {
+		}
+
+		@Override
+		public String getOperationName() {
+			return "activate";
+		}
+
+		@Override
+		public String usage(TechnologyAdapterService service) {
+			return "service " + service.getServiceName() + " activate <ta>";
+		}
+
+		@Override
+		public String description() {
+			return "activate technology adapter";
+		}
+
+		@Override
+		public List<String> getOptions() {
+			return Arrays.asList("<ta>");
+		}
+
+		@Override
+		public void execute(TechnologyAdapterService service, Object... options) {
+			if (options.length > 0) {
+				TechnologyAdapter ta = (TechnologyAdapter) options[0];
+				System.out.println("Activate TA " + ta);
+				service.activateTechnologyAdapter(ta, true);
+			}
+		}
 	}
 
 }

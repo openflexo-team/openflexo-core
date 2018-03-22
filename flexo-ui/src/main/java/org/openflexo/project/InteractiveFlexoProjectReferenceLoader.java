@@ -183,7 +183,13 @@ public class InteractiveFlexoProjectReferenceLoader extends FlexoServiceImpl imp
 	}
 
 	@Override
+	public String getServiceName() {
+		return "FlexoProjectReferenceLoader";
+	}
+
+	@Override
 	public void initialize() {
+		status = Status.Started;
 	}
 
 }

@@ -112,6 +112,11 @@ public class DocResourceManager extends FlexoServiceImpl {
 		return (ApplicationContext) super.getServiceManager();
 	}
 
+	@Override
+	public String getServiceName() {
+		return "DocResourceManager";
+	}
+
 	private FlexoEditor _editor;
 
 	private void load(IProgress progress) {
@@ -592,6 +597,7 @@ public class DocResourceManager extends FlexoServiceImpl {
 		}
 		drcResource = DocResourceCenterResourceImpl.retrieveDocResourceCenterResource(this, null);
 		load(null);
+		status = Status.Started;
 	}
 
 	public DRMModelFactory getDRMModelFactory() {

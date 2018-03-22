@@ -2,6 +2,7 @@ dependencies {
   // openflexo dep
   compile project(':flexo-foundation')
   // external dep
+  compile group: 'org.jboss.jreadline', name: 'jreadline', version: '0.20'
 
   // testing dep
   testCompile project(':flexo-foundation-test')
@@ -30,3 +31,13 @@ sourceSets {
 tasks.withType(Test) {
 	jvmArgs += ["-Djava.awt.headless=true"]
 }
+
+// use with gradle --no-daemon --console plain fml-cli:run -q
+apply plugin: 'application'
+mainClassName = "org.openflexo.foundation.fml.cli.LaunchHeadlessFMLCLI"
+
+run {
+    jvmArgs += ["-Djava.awt.headless=true"]
+    standardInput = System.in
+}
+

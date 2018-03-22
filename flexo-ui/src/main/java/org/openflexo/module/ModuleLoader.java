@@ -125,6 +125,11 @@ public class ModuleLoader extends FlexoServiceImpl implements FlexoService, HasP
 		return (ApplicationContext) super.getServiceManager();
 	}
 
+	@Override
+	public String getServiceName() {
+		return "ModuleLoader";
+	}
+
 	private Map<Class<? extends Module>, Module<?>> knownModules;
 
 	/**
@@ -605,5 +610,6 @@ public class ModuleLoader extends FlexoServiceImpl implements FlexoService, HasP
 		for (Module<?> module : getKnownModules()) {
 			module.initialize();
 		}
+		status = Status.Started;
 	}
 }

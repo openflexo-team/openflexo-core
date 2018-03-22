@@ -82,10 +82,16 @@ public class VirtualModelLibrary extends DefaultFlexoObject implements FlexoServ
 
 	private FlexoServiceManager serviceManager;
 
+	protected Status status = Status.Registered;
+
 	public VirtualModelLibrary() {
 		super();
 		map = new Hashtable<>();
+	}
 
+	@Override
+	public String getServiceName() {
+		return "VirtualModelLibrary";
 	}
 
 	/**
@@ -460,6 +466,7 @@ public class VirtualModelLibrary extends DefaultFlexoObject implements FlexoServ
 					}
 				}
 			}
+			status = Status.Started;
 		}
 	}
 
@@ -478,12 +485,42 @@ public class VirtualModelLibrary extends DefaultFlexoObject implements FlexoServ
 	public void stop() {
 		// TODO Auto-generated method stub
 		logger.warning("STOP Method for service should be overriden in each service [" + this.getClass().getCanonicalName() + "]");
-
+		status = Status.Stopped;
 	}
 
-	/*public void delete(ViewPoint viewPoint) {
-		logger.info("Remove viewpoint " + viewPoint);
-		unregisterViewPoint(viewPoint.getResource());
-	}*/
+	@Override
+	public Status getStatus() {
+		return status;
+	}
+
+	/**
+	 * Return indicating general status of this FlexoService<br>
+	 * This is the display value of 'service <service> status' as given in FML command-line interpreter
+	 * 
+	 * @return
+	 */
+	@Override
+	public String getDisplayableStatus() {
+		return getServiceName() + StringUtils.buildWhiteSpaceIndentation(30 - getServiceName().length()) + getStatus();
+	}
+
+	private List<ServiceOperation<?>> availableServiceOperations = null;
+
+	/**
+	 * Return collection of all available {@link ServiceOperation} available for this {@link FlexoService}
+	 * 
+	 * @return
+	 */
+	@Override
+	public Collection<ServiceOperation<?>> getAvailableServiceOperations() {
+		if (availableServiceOperations == null) {
+			availableServiceOperations = new ArrayList<>();
+			availableServiceOperations.add(HELP_ON_SERVICE);
+			availableServiceOperations.add(DISPLAY_SERVICE_STATUS);
+			availableServiceOperations.add(START_SERVICE);
+			availableServiceOperations.add(STOP_SERVICE);
+		}
+		return availableServiceOperations;
+	}
 
 }

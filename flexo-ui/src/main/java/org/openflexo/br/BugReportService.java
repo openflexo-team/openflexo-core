@@ -97,8 +97,6 @@ public class BugReportService extends FlexoServiceImpl {
 	// private File userProjectFile;
 	private List<JIRAProject> projects;
 
-	private boolean isInitialized = false;
-
 	public BugReportService() {
 	}
 
@@ -106,9 +104,10 @@ public class BugReportService extends FlexoServiceImpl {
 		return projects;
 	}
 
-	/*public void setProjects(List<JIRAProject> projects) {
-		this.projects = projects;
-	}*/
+	@Override
+	public String getServiceName() {
+		return "BugReportService";
+	}
 
 	@Override
 	public ApplicationContext getServiceManager() {
@@ -286,7 +285,7 @@ public class BugReportService extends FlexoServiceImpl {
 			e.printStackTrace();
 		}
 
-		isInitialized = true;
+		status = Status.Started;
 
 		// loadProjectVersions();
 
@@ -331,7 +330,7 @@ public class BugReportService extends FlexoServiceImpl {
 	}
 
 	public boolean isInitialized() {
-		return isInitialized;
+		return status == Status.Started;
 	}
 
 	private JIRAProject parseProject(JIRAProject p) {

@@ -24,10 +24,12 @@ Helpers
  upper_case = ['A' .. 'Z'] | [0x00c0 .. 0x00dd] | 0x20ac;
  lower_case = ['a' .. 'z'] | [0x00e0 .. 0x00fd] | 0x20ac;
  digit = ['0'..'9'];
- letter = upper_case | lower_case | '_' ;
+ letter = upper_case | lower_case | '_' | '@';
  any        = [0 .. 0xffff];
  not_hyphen = [any - '"' ];
  not_hyphen2 = [any - ''' ];
+ file_char = upper_case | lower_case | digit | '_' | '.';
+ uri_char = upper_case | lower_case | digit | '_' | '.' | '/';
 
 Tokens
  dollar = '$';
@@ -47,11 +49,15 @@ Tokens
  or2 = '||';
  eq = '=';
  eq2 = '==';
+ assign = ':=';
  neq = '!=';
  not = '!';
  l_par = '(';
  r_par = ')';
+ l_bra = '[';
+ r_bra = ']';
  dot = '.';
+ double_dot = '..';
  comma = ',';
  if_token = '?';
  else_token = ':';
@@ -77,13 +83,87 @@ Tokens
  | ['0' .. '9']+ '.' ['0' .. '9']+ 'E' '-' ['0' .. '9']+;
  string_value = '"' (not_hyphen)* '"';
  chars_value = ''' (not_hyphen2)* ''';
+ 
+ // directives
+ help = 'help';
+ pwd = 'pwd';
+ ls = 'ls';
+ cd = 'cd';
+ services = 'services';
+ service = 'service';
+ activate = 'activate';
+ resources = 'resources';
+ open = 'open';
+ load = 'load';
+ display = 'display';
+ enter = 'enter';
+ exit = 'exit';
+ quit = 'quit';
+ 
+ // commands
+ context = 'context';
+ 
  identifier = letter (letter | digit)*;
+ 
+ file_name = file_char (file_char)*;
+ 
+ resource_uri = '[http://' (uri_char)* ']';
+ 
  blank = (' ' | 13 | 10)+;
 
 Ignored Tokens
  blank;
  
 Productions
+
+ command =
+  {directive} directive |
+  {fml_command} fml_command;
+
+ directive =
+  {help} help |
+  {pwd} pwd |
+  {ls} ls |
+  {cd} cd path |
+  {services} services |
+  {service} service [service_name]:identifier [action]:identifier [options]:directive_option* |
+  {activate_ta} activate [technology_adapter]:identifier |
+  {resources} resources_directive |
+  {open} open path |
+  {load} load resource_uri |
+  {display} display resource_uri |
+  {enter} enter_directive |
+  {exit} exit |
+  {quit} quit;
+
+ resources_directive =
+  {exhaustive} resources |
+  {ta} resources [technology_adapter]:identifier |
+  {rc} resources mult [resource_center]:resource_uri |
+  {ta_rc} resources [technology_adapter]:identifier [resource_center]:resource_uri;
+
+ enter_directive =
+  {resource} enter resource_uri |
+  {object} enter binding;
+
+ directive_option = 
+  {path} path |
+  {number} number;
+
+ path =
+  {file_name} file_name |
+  {identifier} identifier |
+  {dot} dot |
+  {path} file_name div path |
+  {dot_path} dot div path |
+  {double_dot} double_dot |
+  {double_dot_path} double_dot div path;
+
+ fml_command =
+  {context} context |
+  {expr} expr |
+  {assignation} identifier assign expr;
+ 
  expr =
   {expr2} expr2 |
   {cond_expr} [condition]:expr if_token [then]:expr2 else_token [else]:expr2 |

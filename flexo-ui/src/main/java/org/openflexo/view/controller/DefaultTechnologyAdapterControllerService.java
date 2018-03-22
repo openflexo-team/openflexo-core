@@ -268,6 +268,11 @@ public abstract class DefaultTechnologyAdapterControllerService extends FlexoSer
 	}
 
 	@Override
+	public String getServiceName() {
+		return "TechnologyAdapterControllerService";
+	}
+
+	@Override
 	public void initialize() {
 		loadAvailableTechnologyAdapterControllers();
 		for (TechnologyAdapter ta : getServiceManager().getTechnologyAdapterService().getTechnologyAdapters()) {
@@ -278,6 +283,7 @@ public abstract class DefaultTechnologyAdapterControllerService extends FlexoSer
 				}
 			}
 		}
+		status = Status.Started;
 	}
 
 	/**

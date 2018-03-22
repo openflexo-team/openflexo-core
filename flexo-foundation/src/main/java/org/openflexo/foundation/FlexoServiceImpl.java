@@ -39,6 +39,8 @@
 
 package org.openflexo.foundation;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -56,22 +58,40 @@ public abstract class FlexoServiceImpl extends FlexoObservable implements FlexoS
 
 	private FlexoServiceManager serviceManager;
 
+	protected Status status = Status.Registered;
+
 	@Override
 	public void receiveNotification(FlexoService caller, ServiceNotification notification) {
 		if (logger.isLoggable(Level.FINE)) {
-			logger.fine(
-					getClass().getSimpleName() + " service received notification " + notification + " from " + caller);
+			logger.fine(getClass().getSimpleName() + " service received notification " + notification + " from " + caller);
 		}
 	}
 
 	@Override
 	public void register(FlexoServiceManager serviceManager) {
 		this.serviceManager = serviceManager;
+		status = Status.Registered;
 	}
 
 	@Override
 	public FlexoServiceManager getServiceManager() {
 		return serviceManager;
+	}
+
+	@Override
+	public Status getStatus() {
+		return status;
+	}
+
+	/**
+	 * Return indicating general status of this FlexoService<br>
+	 * This is the display value of 'service <service> status' as given in FML command-line interpreter
+	 * 
+	 * @return
+	 */
+	@Override
+	public String getDisplayableStatus() {
+		return getServiceName() + " " + getStatus();
 	}
 
 	public LocalizedDelegate getLocales() {
@@ -89,8 +109,32 @@ public abstract class FlexoServiceImpl extends FlexoObservable implements FlexoS
 	 */
 	@Override
 	public void stop() {
-		logger.warning("STOP Method for service should be overriden in each service ["
-				+ this.getClass().getCanonicalName() + "]");
+		logger.warning("STOP Method for service should be overriden in each service [" + this.getClass().getCanonicalName() + "]");
+		status = Status.Stopped;
+	}
+
+	private Collection<ServiceOperation<?>> availableServiceOperations = null;
+
+	/**
+	 * Return collection of all available {@link ServiceOperation} available for this {@link FlexoService}
+	 * 
+	 * @return
+	 */
+	@Override
+	public final Collection<ServiceOperation<?>> getAvailableServiceOperations() {
+		if (availableServiceOperations == null) {
+			availableServiceOperations = makeAvailableServiceOperations();
+		}
+		return availableServiceOperations;
+	}
+
+	protected Collection<ServiceOperation<?>> makeAvailableServiceOperations() {
+		availableServiceOperations = new ArrayList<>();
+		availableServiceOperations.add(HELP_ON_SERVICE);
+		availableServiceOperations.add(DISPLAY_SERVICE_STATUS);
+		availableServiceOperations.add(START_SERVICE);
+		availableServiceOperations.add(STOP_SERVICE);
+		return availableServiceOperations;
 	}
 
 }

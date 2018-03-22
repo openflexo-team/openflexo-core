@@ -654,7 +654,13 @@ public class ProjectLoader extends FlexoServiceImpl {
 	}
 
 	@Override
+	public String getServiceName() {
+		return "ProjectLoader";
+	}
+
+	@Override
 	public void initialize() {
+		status = Status.Started;
 	}
 
 	/*public ModelFactory getModelFactory() {
