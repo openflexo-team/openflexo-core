@@ -99,8 +99,8 @@ public abstract class KVCFlexoObject /*extends KVCObject*/{
 		encoder._addConverter(CGVersionIdentifier.converter);
 		encoder._addConverter(Duration.converter);
 		encoder._addConverter(DataBinding.CONVERTER);
-		encoder._addConverter(FGEUtils.DEPRECATED_POINT_CONVERTER);
-		encoder._addConverter(FGEUtils.DEPRECATED_RECT_POLYLIN_CONVERTER);
+		encoder._addConverter(DianaUtils.DEPRECATED_POINT_CONVERTER);
+		encoder._addConverter(DianaUtils.DEPRECATED_RECT_POLYLIN_CONVERTER);
 	}*/
 
 	/*@Override

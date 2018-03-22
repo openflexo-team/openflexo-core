@@ -48,17 +48,17 @@ import java.util.logging.Logger;
 import javax.swing.SwingUtilities;
 
 import org.openflexo.diana.Drawing;
-import org.openflexo.diana.FGEModelFactory;
-import org.openflexo.diana.FGEUtils;
+import org.openflexo.diana.DianaModelFactory;
+import org.openflexo.diana.DianaUtils;
 import org.openflexo.diana.Drawing.DrawingTreeNode;
 import org.openflexo.diana.control.MouseClickControlAction;
 import org.openflexo.diana.control.MouseControlContext;
 import org.openflexo.diana.control.actions.MouseClickControlActionImpl;
 import org.openflexo.diana.control.actions.MouseClickControlImpl;
-import org.openflexo.diana.geom.FGEPoint;
+import org.openflexo.diana.geom.DianaPoint;
 import org.openflexo.diana.swing.JDianaInteractiveEditor;
 import org.openflexo.diana.swing.control.SwingToolFactory;
-import org.openflexo.diana.swing.view.JFGEView;
+import org.openflexo.diana.swing.view.JDianaView;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.model.factory.EditingContext;
 import org.openflexo.toolbox.ToolBox;
@@ -76,7 +76,7 @@ public class SelectionManagingDianaEditor<M extends FlexoObject> extends JDianaI
 
 	private SelectionManager _selectionManager;
 
-	public SelectionManagingDianaEditor(Drawing<M> drawing, SelectionManager selectionManager, FGEModelFactory factory,
+	public SelectionManagingDianaEditor(Drawing<M> drawing, SelectionManager selectionManager, DianaModelFactory factory,
 			SwingToolFactory toolFactory) {
 		super(drawing, factory, toolFactory);
 		_selectionManager = selectionManager;
@@ -215,7 +215,7 @@ public class SelectionManagingDianaEditor<M extends FlexoObject> extends JDianaI
 				public boolean handleClick(DrawingTreeNode<?, ?> node, SelectionManagingDianaEditor<?> controller,
 						MouseControlContext context) {
 
-					JFGEView<?, ?> view = controller.getDrawingView().viewForNode(node);
+					JDianaView<?, ?> view = controller.getDrawingView().viewForNode(node);
 
 					Point newPoint = getPointInView(node, controller, context);
 					controller.setLastSelectedNode(node);
@@ -302,9 +302,9 @@ public class SelectionManagingDianaEditor<M extends FlexoObject> extends JDianaI
 	}
 
 	@Override
-	public void setLastClickedPoint(FGEPoint lastClickedPoint, DrawingTreeNode<?, ?> node) {
+	public void setLastClickedPoint(DianaPoint lastClickedPoint, DrawingTreeNode<?, ?> node) {
 		super.setLastClickedPoint(lastClickedPoint, node);
-		FGEPoint unnormalizedPoint = FGEUtils.convertNormalizedPoint(node, lastClickedPoint, getDrawing().getRoot());
+		DianaPoint unnormalizedPoint = DianaUtils.convertNormalizedPoint(node, lastClickedPoint, getDrawing().getRoot());
 		if (_selectionManager instanceof MouseSelectionManager) {
 			((MouseSelectionManager) _selectionManager)
 					.setLastClickedPoint(new Point((int) unnormalizedPoint.getX(), (int) unnormalizedPoint.getY()));
