@@ -36,24 +36,37 @@
  * 
  */
 
-package org.openflexo.foundation.fml.parser;
+package org.openflexo.foundation.fml.parser.ir;
+
+import org.openflexo.foundation.fml.PropertyCardinality;
+import org.openflexo.foundation.fml.parser.node.AManyCardinality;
+import org.openflexo.foundation.fml.parser.node.AMaybeCardinality;
+import org.openflexo.foundation.fml.parser.node.AOneCardinality;
+import org.openflexo.foundation.fml.parser.node.ASomeCardinality;
+import org.openflexo.foundation.fml.parser.node.PCardinality;
 
 /**
- * Thrown when some input failed to parse
+ * This class implements some utils used in semantics analyzing context<br>
  * 
  * @author sylvain
- *
+ * 
  */
-@SuppressWarnings("serial")
-public class ParseException extends Exception {
+public class SemanticsAnalyzingUtils {
 
-	/**
-	 * Constructs a new parse exception with the specified detail message.
-	 * 
-	 * @param message
-	 *            the detail message. The detail message is saved for later retrieval by the {@link #getMessage()} method.
-	 */
-	public ParseException(String message) {
-		super(message);
+	static PropertyCardinality makeCardinality(PCardinality cardinality) {
+		if (cardinality instanceof AMaybeCardinality) {
+			return PropertyCardinality.ZeroOne;
+		}
+		else if (cardinality instanceof AOneCardinality) {
+			return PropertyCardinality.One;
+		}
+		else if (cardinality instanceof AManyCardinality) {
+			return PropertyCardinality.ZeroMany;
+		}
+		else if (cardinality instanceof ASomeCardinality) {
+			return PropertyCardinality.OneMany;
+		}
+		return null;
 	}
+
 }

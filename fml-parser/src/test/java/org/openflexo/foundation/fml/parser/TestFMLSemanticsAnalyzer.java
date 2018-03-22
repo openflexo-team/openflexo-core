@@ -1,6 +1,6 @@
 /**
  * 
- * Copyright (c) 2014, Openflexo
+ * Copyright (c) 2014-2015, Openflexo
  * 
  * This file is part of Fml-parser, a component of the software infrastructure 
  * developed at Openflexo.
@@ -38,22 +38,39 @@
 
 package org.openflexo.foundation.fml.parser;
 
-/**
- * Thrown when some input failed to parse
- * 
- * @author sylvain
- *
- */
-@SuppressWarnings("serial")
-public class ParseException extends Exception {
+import static org.junit.Assert.fail;
 
-	/**
-	 * Constructs a new parse exception with the specified detail message.
-	 * 
-	 * @param message
-	 *            the detail message. The detail message is saved for later retrieval by the {@link #getMessage()} method.
-	 */
-	public ParseException(String message) {
-		super(message);
+import org.junit.BeforeClass;
+import org.junit.Test;
+import org.openflexo.foundation.test.OpenflexoTestCase;
+import org.openflexo.rm.FileResourceImpl;
+import org.openflexo.rm.Resource;
+import org.openflexo.rm.ResourceLocator;
+
+public class TestFMLSemanticsAnalyzer extends OpenflexoTestCase {
+
+	@BeforeClass
+	public static void initServiceManager() {
+		instanciateTestServiceManager();
+	}
+
+	@Test
+	public void testBasicFMLModel() {
+		testFMLCompilationUnit(ResourceLocator.locateResource("FMLExamples/BasicFMLModel.fml"));
+	}
+
+	private static void testFMLCompilationUnit(Resource fileResource) {
+		try {
+			FMLCompilationUnit compilationUnit = FMLParser.parse(((FileResourceImpl) fileResource).getFile(), serviceManager);
+
+			System.out.println("Pretty-print de ce qui est parse:");
+			System.out.println("rootNode=" + compilationUnit.getRootNode());
+			System.out.println("vm=" + compilationUnit.getVirtualModel());
+			System.out.println(compilationUnit.getVirtualModel().getFMLRepresentation());
+
+		} catch (ParseException e) {
+			e.printStackTrace();
+			fail();
+		}
 	}
 }

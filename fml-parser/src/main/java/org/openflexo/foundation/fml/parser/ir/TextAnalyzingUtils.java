@@ -36,45 +36,36 @@
  * 
  */
 
-package org.openflexo.foundation.fml.parser;
+package org.openflexo.foundation.fml.parser.ir;
 
-import org.openflexo.foundation.FlexoServiceManager;
-import org.openflexo.foundation.fml.FMLObject;
-import org.openflexo.foundation.fml.VirtualModel;
-import org.openflexo.foundation.fml.parser.node.Node;
+import org.openflexo.foundation.fml.parser.node.AIdentifierDotIdentifier;
+import org.openflexo.foundation.fml.parser.node.ATailDotIdentifier;
+import org.openflexo.foundation.fml.parser.node.PDotIdentifier;
 
 /**
- * This class implements the semantics analyzer for a parsed FMLObject.<br>
- * Its main purpose is to structurally build a binding from a parsed AST.<br>
- * No semantics nor type checking is performed at this stage
+ * This class implements some utils to convert node to String<br>
  * 
  * @author sylvain
  * 
  */
-public abstract class FMLObjectSemanticsAnalyzer<N extends Node, T extends FMLObject> extends FMLSemanticsAnalyzer {
+public class TextAnalyzingUtils {
 
-	private final N node;
-	private final FMLSemanticsAnalyzer parentAnalyser;
-
-	public FMLObjectSemanticsAnalyzer(N node, FMLSemanticsAnalyzer parentAnalyser, FlexoServiceManager serviceManager) {
-		// System.out.println(">>>> node=" + node + " of " + node.getClass());
-		super(parentAnalyser.getVirtualModel(), serviceManager);
-		this.node = node;
-		this.parentAnalyser = parentAnalyser;
-	}
-
-	public N getNode() {
-		return node;
-	}
-
-	public abstract T makeFMLObject();
-
-	@Override
-	public VirtualModel getVirtualModel() {
-		if (parentAnalyser != null) {
-			System.out.println("Moi: " + this + " et lui " + parentAnalyser);
-			return parentAnalyser.getVirtualModel();
+	static String asText(PDotIdentifier dotIdentifier) {
+		PDotIdentifier current = dotIdentifier;
+		String returned = null;
+		while (current != null) {
+			String identifier = null;
+			if (current instanceof AIdentifierDotIdentifier) {
+				identifier = ((AIdentifierDotIdentifier) current).getAllowedIdentifierInBinding().toString().trim();
+				current = null;
+			}
+			else if (current instanceof ATailDotIdentifier) {
+				identifier = ((ATailDotIdentifier) current).getAllowedIdentifierInBinding().toString().trim();
+				current = ((ATailDotIdentifier) current).getDotIdentifier();
+			}
+			returned = (returned != null ? returned + "." : "") + identifier;
 		}
-		return super.getVirtualModel();
+		return returned;
 	}
+
 }

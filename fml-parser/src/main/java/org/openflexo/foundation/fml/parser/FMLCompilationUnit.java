@@ -38,6 +38,180 @@
 
 package org.openflexo.foundation.fml.parser;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.StringReader;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.openflexo.foundation.fml.VirtualModel;
+import org.openflexo.foundation.fml.parser.ir.IRCompilationUnitNode;
+import org.openflexo.toolbox.StringUtils;
+
 public class FMLCompilationUnit {
+
+	private List<String> rawData;
+	private IRCompilationUnitNode rootNode;
+
+	private List<String> javaImports;
+
+	public FMLCompilationUnit() {
+		rawData = new ArrayList<>();
+		javaImports = new ArrayList<>();
+	}
+
+	public IRCompilationUnitNode getRootNode() {
+		return rootNode;
+	}
+
+	protected void setRootNode(IRCompilationUnitNode rootNode) {
+		this.rootNode = rootNode;
+	}
+
+	public VirtualModel getVirtualModel() {
+		return rootNode.getFMLObject();
+	}
+
+	public void setRawContents(String someContents) {
+		rawData.clear();
+		BufferedReader rdr = new BufferedReader(new StringReader(someContents));
+		for (;;) {
+			String line = null;
+			try {
+				line = rdr.readLine();
+				if (line == null) {
+					break;
+				}
+				rawData.add(line);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
+	public void addToJavaImports(String javaImport) {
+		if (!javaImports.contains(javaImport)) {
+			System.out.println("> On importe " + javaImport);
+			javaImports.add(javaImport);
+		}
+	}
+
+	public List<String> getJavaImports() {
+		return javaImports;
+	}
+
+	private String getLineMarker(int lineNb, int maxLineNb) {
+		int maxLength = ("" + maxLineNb).length();
+		String lAsString = "" + lineNb;
+		return "[" + StringUtils.buildWhiteSpaceIndentation(maxLength - lAsString.length()) + lAsString + "]";
+	}
+
+	public void printRawContents() {
+		int lineNb = 1;
+		for (String line : rawData) {
+			System.out.println(getLineMarker(lineNb, rawData.size() - 1) + " " + line);
+			lineNb++;
+		}
+	}
+
+	public class Fragment {
+		private int beginLine = -1;
+		private int beginCol = -1;
+		private int endLine = -1;
+		private int endCol = -1;
+
+		public Fragment(int beginLine, int beginCol, int endLine, int endCol) {
+			super();
+			this.beginLine = beginLine;
+			this.beginCol = beginCol;
+			this.endLine = endLine;
+			this.endCol = endCol;
+
+			if (endCol == 1) {
+				this.endLine = endLine - 1;
+				this.endCol = rawData.get(this.endLine - 1).length();
+			}
+			else {
+				this.endCol = endCol - 1;
+			}
+		}
+
+		public int getBeginLine() {
+			return beginLine;
+		}
+
+		public int getBeginCol() {
+			return beginCol;
+		}
+
+		public int getEndLine() {
+			return endLine;
+		}
+
+		public int getEndCol() {
+			return endCol;
+		}
+
+		@Override
+		public String toString() {
+			return "Fragment [" + beginLine + ":" + beginCol + "]-[" + endLine + ":" + endCol + "]";
+
+		}
+
+		public void printFragment() {
+
+			for (int lineNb = getBeginLine(); lineNb <= getEndLine(); lineNb++) {
+				String line = lineNb <= rawData.size() ? rawData.get(lineNb - 1) : null;
+				if (line == null) {
+					System.out.println("Zut alors, je sais pas quoi faire pour " + lineNb + " endCol=" + getEndCol());
+					continue;
+				}
+				if (getBeginLine() == getEndLine()) {
+					System.out.println(getLineMarker(lineNb, rawData.size() - 1) + " "
+							+ StringUtils.buildWhiteSpaceIndentation(getBeginCol() - 1) + line.substring(getBeginCol() - 1, getEndCol()));
+				}
+				else {
+					if (lineNb == getBeginLine()) {
+						System.out.println(getLineMarker(lineNb, rawData.size() - 1) + " "
+								+ StringUtils.buildWhiteSpaceIndentation(getBeginCol() - 1) + line.substring(getBeginCol() - 1));
+					}
+					else if (lineNb == getEndLine()) {
+						System.out.println(getLineMarker(lineNb, rawData.size() - 1) + " " + line.substring(0, getEndCol()));
+					}
+					else {
+						System.out.println(getLineMarker(lineNb, rawData.size() - 1) + " " + line);
+					}
+				}
+			}
+		}
+
+		public String getText() {
+			StringBuffer returned = new StringBuffer();
+			for (int lineNb = getBeginLine(); lineNb <= getEndLine(); lineNb++) {
+				String line = lineNb <= rawData.size() ? rawData.get(lineNb - 1) : null;
+				if (line == null) {
+					continue;
+				}
+				if (getBeginLine() == getEndLine()) {
+					returned.append(line.substring(getBeginCol() - 1, getEndCol()));
+				}
+				else {
+					if (lineNb == getBeginLine()) {
+						returned.append(line.substring(getBeginCol() - 1));
+						returned.append(StringUtils.LINE_SEPARATOR);
+					}
+					else if (lineNb == getEndLine()) {
+						returned.append(line.substring(0, getEndCol()));
+					}
+					else {
+						returned.append(line);
+						returned.append(StringUtils.LINE_SEPARATOR);
+					}
+				}
+			}
+			return returned.toString();
+		}
+
+	}
 
 }

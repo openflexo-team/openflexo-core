@@ -386,7 +386,8 @@ Productions
     {java_role_declaration} java_role_declaration ;
   
   java_role_declaration =
-    [annotations]:annotation* visibility? /*cardinality?*/ type identifier semi;
+    {java_class}         [annotations]:annotation* visibility? /*cardinality?*/ dot_identifier identifier semi |
+    {parameterized_type} [annotations]:annotation* visibility? /*cardinality?*/ dot_identifier type_arguments identifier semi;
   
   role_declaration =
     [annotations]:annotation* visibility? cardinality? ta_identifier lt dot_identifier gt identifier fml_element_configuration? semi;
@@ -445,7 +446,7 @@ Productions
     {boolean} boolean;
   
   numeric_type =
-    {integral} integral_type |
+    {integral} Hop, on enregistre |
     {floating} floating_point_type;
   
    integral_type =
@@ -464,7 +465,7 @@ Productions
  
   actual_type_argument =
     {primitive} primitive_type |
-    {reference} dot_identifier type_arguments? /* |
+    {java_type} dot_identifier type_arguments? /* |
     {wildcard}  wildcard*/;
  
   type_argument_list =

@@ -36,24 +36,22 @@
  * 
  */
 
-package org.openflexo.foundation.fml.parser;
+package org.openflexo.foundation.fml.parser.ir;
 
-/**
- * Thrown when some input failed to parse
- * 
- * @author sylvain
- *
- */
-@SuppressWarnings("serial")
-public class ParseException extends Exception {
+import org.openflexo.foundation.fml.FMLObject;
+import org.openflexo.foundation.fml.parser.FMLSemanticsAnalyzer;
+import org.openflexo.foundation.fml.parser.node.ASimpleJavaImportDeclaration;
 
-	/**
-	 * Constructs a new parse exception with the specified detail message.
-	 * 
-	 * @param message
-	 *            the detail message. The detail message is saved for later retrieval by the {@link #getMessage()} method.
-	 */
-	public ParseException(String message) {
-		super(message);
+public class IRJavaImportNode extends IRNode<FMLObject, ASimpleJavaImportDeclaration> {
+
+	public IRJavaImportNode(ASimpleJavaImportDeclaration node, FMLSemanticsAnalyzer semanticsAnalyzer) {
+		super(node, semanticsAnalyzer);
 	}
+
+	@Override
+	FMLObject buildFMLObject() {
+		getSemanticsAnalyzer().getFMLCompilationUnit().addToJavaImports(TextAnalyzingUtils.asText(getNode().getDotIdentifier()));
+		return null;
+	}
+
 }

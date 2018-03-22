@@ -38,19 +38,26 @@
 
 package org.openflexo.foundation.fml.parser;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.Stack;
 
 import org.openflexo.foundation.FlexoServiceManager;
-import org.openflexo.foundation.fml.FMLObject;
-import org.openflexo.foundation.fml.VirtualModel;
+import org.openflexo.foundation.fml.FMLModelFactory;
 import org.openflexo.foundation.fml.parser.analysis.DepthFirstAdapter;
+import org.openflexo.foundation.fml.parser.ir.IRCompilationUnitNode;
+import org.openflexo.foundation.fml.parser.ir.IRFlexoConceptNode;
+import org.openflexo.foundation.fml.parser.ir.IRJavaImportNode;
+import org.openflexo.foundation.fml.parser.ir.IRJavaRoleNode;
+import org.openflexo.foundation.fml.parser.ir.IRNode;
+import org.openflexo.foundation.fml.parser.ir.IRPrimitiveRoleNode;
+import org.openflexo.foundation.fml.parser.ir.IRVirtualModelNode;
 import org.openflexo.foundation.fml.parser.node.AFlexoConceptDeclaration;
+import org.openflexo.foundation.fml.parser.node.AJavaRoleDeclarationPrimitiveRoleDeclaration;
+import org.openflexo.foundation.fml.parser.node.APrimitivePrimitiveRoleDeclaration;
 import org.openflexo.foundation.fml.parser.node.AResourceImportDeclaration;
 import org.openflexo.foundation.fml.parser.node.ASimpleJavaImportDeclaration;
 import org.openflexo.foundation.fml.parser.node.AUseDeclaration;
 import org.openflexo.foundation.fml.parser.node.AVirtualModelDeclaration;
-import org.openflexo.foundation.fml.parser.node.Node;
+import org.openflexo.foundation.fml.parser.node.Start;
 import org.openflexo.model.exceptions.ModelDefinitionException;
 
 /**
@@ -59,121 +66,139 @@ import org.openflexo.model.exceptions.ModelDefinitionException;
  * @author sylvain
  * 
  */
-class FMLSemanticsAnalyzer extends DepthFirstAdapter {
+public class FMLSemanticsAnalyzer extends DepthFirstAdapter {
 
-	private final VirtualModel virtualModel;
+	private final FMLModelFactory factory;
+	private final FMLCompilationUnit fmlCompilationUnit;
+	// private VirtualModel virtualModel;
 	private final FlexoServiceManager serviceManager;
-	private final Map<Node, FMLObject> parsedFMLObjects;
+	private final FMLSyntaxAnalyzer syntaxAnalyzer;
+	private IRCompilationUnitNode rootNode;
 
-	public FMLSemanticsAnalyzer(VirtualModel viewPoint, FlexoServiceManager serviceManager) {
-		this.virtualModel = viewPoint;
+	public FMLSemanticsAnalyzer(FMLCompilationUnit fmlCompilationUnit, FMLSyntaxAnalyzer syntaxAnalyzer, FlexoServiceManager serviceManager)
+			throws ModelDefinitionException {
+		this.fmlCompilationUnit = fmlCompilationUnit;
+		this.syntaxAnalyzer = syntaxAnalyzer;
 		this.serviceManager = serviceManager;
-		parsedFMLObjects = new HashMap<>();
+		factory = new FMLModelFactory(null, serviceManager);
+		// System.out.println("----------> New FMLSemanticsAnalyzer " + getClass().getSimpleName());
+		// Thread.dumpStack();
 	}
 
-	public VirtualModel getVirtualModel() {
-		return virtualModel;
+	public FMLModelFactory getFactory() {
+		return factory;
+	}
+
+	public FMLSyntaxAnalyzer getSyntaxAnalyzer() {
+		return syntaxAnalyzer;
 	}
 
 	public FlexoServiceManager getServiceManager() {
 		return serviceManager;
 	}
 
-	public FMLCompilationUnit getCompilationUnit() {
-		return null;
+	public FMLCompilationUnit getFMLCompilationUnit() {
+		return fmlCompilationUnit;
 	}
 
-	private void registerVirtualModel(AVirtualModelDeclaration node, VirtualModel vm) {
-		// TODO
-		parsedFMLObjects.put(node, vm);
+	@Override
+	public void inStart(Start node) {
+		super.inStart(node);
+		rootNode = new IRCompilationUnitNode(node, this);
+		irNodeStack = new Stack<>();
+		irNodeStack.push(rootNode);
 	}
 
-	private VirtualModel handleVirtualModel(AVirtualModelDeclaration node) {
-		System.out.println("Tiens, un VirtualModelDeclaration: " + node);
-		System.out.println("Name = " + node.getIdentifier());
-		System.out.println("Annotations = " + node.getAnnotations());
+	public IRCompilationUnitNode getRootNode() {
+		return rootNode;
+	}
 
-		try {
-			VirtualModelSemanticsAnalyzer vmsa = new VirtualModelSemanticsAnalyzer(node, this, serviceManager);
-			node.apply(vmsa);
-			VirtualModel vm = vmsa.makeFMLObject();
-			registerVirtualModel(node, vm);
-			return vm;
-		} catch (ModelDefinitionException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
+	Stack<IRNode<?, ?>> irNodeStack;
 
-		return null;
+	private IRNode<?, ?> pushIRNode(IRNode<?, ?> node) {
+		IRNode<?, ?> current = irNodeStack.peek();
+		current.addToChilren(node);
+		irNodeStack.push(node);
+		return node;
+	}
+
+	private IRNode<?, ?> popIRNode() {
+		IRNode<?, ?> current = irNodeStack.pop();
+		current.makeFMLObject();
+		return current;
 	}
 
 	@Override
 	public void outAUseDeclaration(AUseDeclaration node) {
 		super.outAUseDeclaration(node);
-		System.out.println("Tiens, un use: " + node + " ta=" + node.getTechnologyAdapter() + " id=" + node.getTaId());
+		// System.out.println("-------------> Tiens, un use: " + node + " ta=" + node.getTechnologyAdapter() + " id=" + node.getTaId());
+	}
+
+	@Override
+	public void inASimpleJavaImportDeclaration(ASimpleJavaImportDeclaration node) {
+		super.inASimpleJavaImportDeclaration(node);
+		pushIRNode(new IRJavaImportNode(node, this));
 	}
 
 	@Override
 	public void outASimpleJavaImportDeclaration(ASimpleJavaImportDeclaration node) {
 		super.outASimpleJavaImportDeclaration(node);
-		System.out.println("Tiens, un java import: " + node);
+		popIRNode();
 	}
 
 	@Override
 	public void outAResourceImportDeclaration(AResourceImportDeclaration node) {
 		super.outAResourceImportDeclaration(node);
-		System.out.println("Tiens, un resource import: " + node);
+		// System.out.println("-------------> Tiens, un resource import: " + node);
+	}
+
+	@Override
+	public void inAVirtualModelDeclaration(AVirtualModelDeclaration node) {
+		super.inAVirtualModelDeclaration(node);
+		pushIRNode(new IRVirtualModelNode(node, this));
 	}
 
 	@Override
 	public void outAVirtualModelDeclaration(AVirtualModelDeclaration node) {
 		super.outAVirtualModelDeclaration(node);
-		handleVirtualModel(node);
-		System.out.println("Annotations = " + node.getAnnotations());
+		IRVirtualModelNode virtualModelNode = (IRVirtualModelNode) popIRNode();
+		rootNode.setVirtualModelNode(virtualModelNode);
+	}
+
+	@Override
+	public void inAFlexoConceptDeclaration(AFlexoConceptDeclaration node) {
+		super.inAFlexoConceptDeclaration(node);
+		pushIRNode(new IRFlexoConceptNode(node, this));
 	}
 
 	@Override
 	public void outAFlexoConceptDeclaration(AFlexoConceptDeclaration node) {
 		super.outAFlexoConceptDeclaration(node);
-		System.out.println("Tiens, un FlexoConceptDeclaration: " + node);
-		System.out.println("Annotations du FlexoConcept = " + node.getAnnotations());
+		popIRNode();
 	}
 
-	/*@Override
-	public void outAFlexoRoleDeclaration(AFlexoRoleDeclaration node) {
-		super.outAFlexoRoleDeclaration(node);
-		System.out.println("Tiens, un FlexoRoleDeclaration: " + node);
-		System.out.println("Annotations du FlexoRole = " + node.getAnnotations());
-	}
-	
 	@Override
-	public void outAFlexoBehaviourDeclaration(AFlexoBehaviourDeclaration node) {
-		super.outAFlexoBehaviourDeclaration(node);
-		System.out.println("Tiens, un FlexoBehaviourDeclaration: " + node);
-		System.out.println("Annotations du FlexoBehaviour = " + node.getAnnotations());
+	public void inAJavaRoleDeclarationPrimitiveRoleDeclaration(AJavaRoleDeclarationPrimitiveRoleDeclaration node) {
+		super.inAJavaRoleDeclarationPrimitiveRoleDeclaration(node);
+		pushIRNode(new IRJavaRoleNode(node, this));
 	}
-	
+
 	@Override
-	public void outAPrimitiveFormalArgument(APrimitiveFormalArgument node) {
-		super.outAPrimitiveFormalArgument(node);
-		System.out.println("arg1:" + node);
+	public void outAJavaRoleDeclarationPrimitiveRoleDeclaration(AJavaRoleDeclarationPrimitiveRoleDeclaration node) {
+		super.outAJavaRoleDeclarationPrimitiveRoleDeclaration(node);
+		popIRNode();
 	}
-	
+
 	@Override
-	public void outAReferenceFormalArgument(AReferenceFormalArgument node) {
-		super.outAReferenceFormalArgument(node);
-		System.out.println("arg2:" + node);
+	public void inAPrimitivePrimitiveRoleDeclaration(APrimitivePrimitiveRoleDeclaration node) {
+		super.inAPrimitivePrimitiveRoleDeclaration(node);
+		pushIRNode(new IRPrimitiveRoleNode(node, this));
 	}
-	
+
 	@Override
-	public void outATechnologySpecificFormalArgument(ATechnologySpecificFormalArgument node) {
-		super.outATechnologySpecificFormalArgument(node);
-		System.out.println("arg3:" + node);
+	public void outAPrimitivePrimitiveRoleDeclaration(APrimitivePrimitiveRoleDeclaration node) {
+		super.outAPrimitivePrimitiveRoleDeclaration(node);
+		popIRNode();
 	}
-	
-	@Override
-	public void outABlock(ABlock node) {
-		super.outABlock(node);
-		System.out.println("########## BLOCK:" + node);
-	}*/
+
 }

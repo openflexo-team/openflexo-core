@@ -36,24 +36,17 @@
  * 
  */
 
-package org.openflexo.foundation.fml.parser;
+package org.openflexo.foundation.fml.parser.ir;
 
-/**
- * Thrown when some input failed to parse
- * 
- * @author sylvain
- *
- */
-@SuppressWarnings("serial")
-public class ParseException extends Exception {
+import org.openflexo.foundation.fml.FlexoProperty;
+import org.openflexo.foundation.fml.parser.FMLSemanticsAnalyzer;
+import org.openflexo.foundation.fml.parser.node.Node;
 
-	/**
-	 * Constructs a new parse exception with the specified detail message.
-	 * 
-	 * @param message
-	 *            the detail message. The detail message is saved for later retrieval by the {@link #getMessage()} method.
-	 */
-	public ParseException(String message) {
-		super(message);
+public abstract class IRFlexoPropertyNode<O extends FlexoProperty<?>, N extends Node> extends IRNode<O, N> {
+
+	public IRFlexoPropertyNode(N node, FMLSemanticsAnalyzer semanticsAnalyzer) {
+		super(node, semanticsAnalyzer);
+
 	}
+
 }

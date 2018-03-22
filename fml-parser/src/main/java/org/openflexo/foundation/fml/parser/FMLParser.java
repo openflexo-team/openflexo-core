@@ -48,6 +48,7 @@ import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.fml.parser.lexer.Lexer;
 import org.openflexo.foundation.fml.parser.node.Start;
 import org.openflexo.foundation.fml.parser.parser.Parser;
+import org.openflexo.toolbox.FileUtils;
 
 /**
  * This class provides the parsing service for FML. This includes syntaxic and semantics analyzer.<br>
@@ -61,7 +62,8 @@ import org.openflexo.foundation.fml.parser.parser.Parser;
  */
 public class FMLParser {
 
-	private static final Logger LOGGER = Logger.getLogger(FMLParser.class.getPackage().getName());
+	@SuppressWarnings("unused")
+	private static final Logger logger = Logger.getLogger(FMLParser.class.getPackage().getName());
 
 	/**
 	 * This is the method to invoke to perform a parsing. Syntaxic and (some) semantics analyzer are performed and returned value is an
@@ -76,6 +78,12 @@ public class FMLParser {
 		try (FileReader in = new FileReader(inputFile)) {
 			System.out.println("Parsing: " + inputFile);
 
+			FMLCompilationUnit fmlCompilationUnit = new FMLCompilationUnit();
+			String rawContents = FileUtils.fileContents(inputFile);
+			// System.out.println("Initial rawContents= [" + rawContents + "]");
+			fmlCompilationUnit.setRawContents(rawContents);
+			fmlCompilationUnit.printRawContents();
+
 			// Create a Parser instance.
 			Parser p = new Parser(new Lexer(new PushbackReader(new BufferedReader(in), 1024)));
 
@@ -83,13 +91,19 @@ public class FMLParser {
 			Start tree = p.parse();
 
 			// Apply the semantics analyzer.
-			FMLSemanticsAnalyzer t = new FMLSemanticsAnalyzer(null, serviceManager);
-			tree.apply(t);
+			FMLSyntaxAnalyzer syntaxAnalyzer = new FMLSyntaxAnalyzer(fmlCompilationUnit, serviceManager);
+			tree.apply(syntaxAnalyzer);
 
-			return t.getCompilationUnit();
+			// Apply the semantics analyzer.
+			FMLSemanticsAnalyzer semanticsAnalyzer = new FMLSemanticsAnalyzer(fmlCompilationUnit, syntaxAnalyzer, serviceManager);
+			tree.apply(semanticsAnalyzer);
+			fmlCompilationUnit.setRootNode(semanticsAnalyzer.getRootNode());
+
+			return fmlCompilationUnit;
+
 		} catch (Exception e) {
 			e.printStackTrace();
-			throw new ParseException(e.getMessage() + " while parsing " + inputFile);
+			throw new ParseException("Unexpected exception : " + e.getMessage() + " while parsing " + inputFile);
 		}
 	}
 

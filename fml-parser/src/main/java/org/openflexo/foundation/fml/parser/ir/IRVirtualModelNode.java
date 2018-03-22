@@ -1,6 +1,6 @@
 /**
  * 
- * Copyright (c) 2014-2015, Openflexo
+ * Copyright (c) 2014, Openflexo
  * 
  * This file is part of Fml-parser, a component of the software infrastructure 
  * developed at Openflexo.
@@ -36,54 +36,38 @@
  * 
  */
 
-package org.openflexo.foundation.fml.parser;
+package org.openflexo.foundation.fml.parser.ir;
 
-import org.openflexo.foundation.FlexoServiceManager;
-import org.openflexo.foundation.fml.FMLModelFactory;
 import org.openflexo.foundation.fml.VirtualModel;
+import org.openflexo.foundation.fml.parser.FMLSemanticsAnalyzer;
 import org.openflexo.foundation.fml.parser.node.AVirtualModelDeclaration;
-import org.openflexo.model.exceptions.ModelDefinitionException;
 
-/**
- * This class implements the semantics analyzer for a parsed VirtualModel.<br>
- * Its main purpose is to structurally build a binding from a parsed AST.<br>
- * No semantics nor type checking is performed at this stage
- * 
- * @author sylvain
- * 
- */
-class VirtualModelSemanticsAnalyzer extends FMLObjectSemanticsAnalyzer<AVirtualModelDeclaration, VirtualModel> {
+public class IRVirtualModelNode extends IRNode<VirtualModel, AVirtualModelDeclaration> {
 
-	private final FMLModelFactory factory;
-
-	public VirtualModelSemanticsAnalyzer(AVirtualModelDeclaration node, FMLSemanticsAnalyzer parentAnalyser,
-			FlexoServiceManager serviceManager) throws ModelDefinitionException {
-		super(node, parentAnalyser, serviceManager);
-		factory = new FMLModelFactory(null, serviceManager);
+	public IRVirtualModelNode(AVirtualModelDeclaration node, FMLSemanticsAnalyzer semanticsAnalyzer) {
+		super(node, semanticsAnalyzer);
 	}
 
 	@Override
-	public VirtualModel makeFMLObject() {
-		VirtualModel vm = factory.newVirtualModel();
+	VirtualModel buildFMLObject() {
+		VirtualModel vm = getSemanticsAnalyzer().getFactory().newVirtualModel();
+		vm.initializeDeserialization(getSemanticsAnalyzer().getFactory());
+		vm.setName(getNode().getIdentifier().getText());
 		/*try {
 			vm = VirtualModelImpl.newVirtualModel(getNode().getIdentifier().getText(), getViewPoint());
 		} catch (SaveResourceException e) {
 			e.printStackTrace();
 		}*/
+		// System.out.println("******** Hop je cree un nouveau VirtualModel " + getNode().getIdentifier().getText());
+		// getFragment().printFragment();
+
+		for (IRNode<?, ?> childNode : getChildren()) {
+			if (childNode instanceof IRFlexoConceptNode) {
+				vm.addToFlexoConcepts(((IRFlexoConceptNode) childNode).getFMLObject());
+			}
+		}
+
 		return vm;
 	}
 
-	@Override
-	public void outAVirtualModelDeclaration(AVirtualModelDeclaration node) {
-		defaultOut(node);
-	}
-
-	/*@Override
-	public void outAModelSlotDeclaration(AModelSlotDeclaration node) {
-		super.outAModelSlotDeclaration(node);
-		System.out.println("******** Tiens, un ModelSlotDeclaration: " + node + " pour le VM " + getNode().getIdentifier());
-		System.out.println("line=" + node.getModelslot().getLine());
-		System.out.println("pos=" + node.getModelslot().getPos());
-	
-	}*/
 }

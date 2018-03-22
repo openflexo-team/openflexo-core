@@ -1,0 +1,32 @@
+use org.openflexo.technologyadapter.owl.OWLTechnologyAdapter as OWL;
+
+import java.lang.String;
+import java.util.List;
+import java.util.Map;
+
+import ["http://openflexo.org/a/path"] as XXX;
+
+@Author("Sylvain")
+@Description("Description of this VirtualModel")
+@URI(["http://www.openflexo.org/Tests/FML/BasicFMLModel.fml"])
+public VirtualModel BasicFMLModel {
+
+	// This is a comment
+	
+	/*
+	 * An third comment
+	 */
+	// Another comment
+	public FlexoConcept Concept1 {
+		
+		// Comment on variable a
+		public int a;
+		// Comment on variable b
+		public maybe int b;
+		// Comment on variable c
+		public /*maybe*/ String c;
+		public /*maybe*/ java.lang.String c;
+		public Map<String,List<String>> d;
+		public xxx.yyy.ThisTypeDoesNotExist e;
+	}
+}

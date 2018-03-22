@@ -38,14 +38,19 @@
 
 package org.openflexo.foundation.fml.parser;
 
+import org.openflexo.foundation.fml.parser.FMLCompilationUnit.Fragment;
+import org.openflexo.foundation.fml.parser.node.Node;
+
 /**
- * Thrown when some input failed to parse
+ * Thrown when some input failed semantics analysing
  * 
  * @author sylvain
  *
  */
 @SuppressWarnings("serial")
-public class ParseException extends Exception {
+public class SemanticsException extends Exception {
+
+	private Fragment fragmentInError;
 
 	/**
 	 * Constructs a new parse exception with the specified detail message.
@@ -53,7 +58,16 @@ public class ParseException extends Exception {
 	 * @param message
 	 *            the detail message. The detail message is saved for later retrieval by the {@link #getMessage()} method.
 	 */
-	public ParseException(String message) {
+	public SemanticsException(String message, Node node, FMLSemanticsAnalyzer analyzer) {
 		super(message);
+		int beginLine = analyzer.getSyntaxAnalyzer().getBeginLine(node);
+		int beginCol = analyzer.getSyntaxAnalyzer().getBeginColumn(node);
+		int endLine = analyzer.getSyntaxAnalyzer().getEndLine(node);
+		int endCol = analyzer.getSyntaxAnalyzer().getEndColumn(node);
+		fragmentInError = analyzer.getFMLCompilationUnit().new Fragment(beginLine, beginCol, endLine, endCol);
+	}
+
+	public Fragment getFragmentInError() {
+		return fragmentInError;
 	}
 }

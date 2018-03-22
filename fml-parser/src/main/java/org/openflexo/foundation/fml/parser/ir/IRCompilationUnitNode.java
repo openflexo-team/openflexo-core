@@ -36,24 +36,54 @@
  * 
  */
 
-package org.openflexo.foundation.fml.parser;
+package org.openflexo.foundation.fml.parser.ir;
 
-/**
- * Thrown when some input failed to parse
- * 
- * @author sylvain
- *
- */
-@SuppressWarnings("serial")
-public class ParseException extends Exception {
+import java.util.HashMap;
+import java.util.Map;
 
-	/**
-	 * Constructs a new parse exception with the specified detail message.
-	 * 
-	 * @param message
-	 *            the detail message. The detail message is saved for later retrieval by the {@link #getMessage()} method.
-	 */
-	public ParseException(String message) {
-		super(message);
+import org.openflexo.foundation.fml.FMLObject;
+import org.openflexo.foundation.fml.VirtualModel;
+import org.openflexo.foundation.fml.parser.FMLSemanticsAnalyzer;
+import org.openflexo.foundation.fml.parser.node.Node;
+import org.openflexo.foundation.fml.parser.node.Start;
+
+public class IRCompilationUnitNode extends IRNode<VirtualModel, Start> {
+
+	private IRVirtualModelNode virtualModelNode;
+	private final Map<Node, FMLObject> parsedFMLObjects;
+
+	public IRCompilationUnitNode(Start node, FMLSemanticsAnalyzer semanticsAnalyzer) {
+		super(node, semanticsAnalyzer);
+		parsedFMLObjects = new HashMap<>();
+	}
+
+	public IRVirtualModelNode getVirtualModelNode() {
+		return virtualModelNode;
+	}
+
+	public void setVirtualModelNode(IRVirtualModelNode virtualModelNode) {
+		this.virtualModelNode = virtualModelNode;
+	}
+
+	@Override
+	VirtualModel buildFMLObject() {
+		// Done in the IRVirtualModelNode
+		return null;
+	}
+
+	@Override
+	public VirtualModel getFMLObject() {
+		if (getVirtualModelNode() != null) {
+			return getVirtualModelNode().getFMLObject();
+		}
+		return super.getFMLObject();
+	}
+
+	protected void registerFMLObject(FMLObject fmlObject, Node node) {
+		parsedFMLObjects.put(node, fmlObject);
+	}
+
+	protected FMLObject getParsedFMLObject(Node node) {
+		return parsedFMLObjects.get(node);
 	}
 }
