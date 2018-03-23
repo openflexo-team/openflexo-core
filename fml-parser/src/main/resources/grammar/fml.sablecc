@@ -386,8 +386,8 @@ Productions
     {java_role_declaration} java_role_declaration ;
   
   java_role_declaration =
-    {java_class}         [annotations]:annotation* visibility? /*cardinality?*/ dot_identifier identifier semi |
-    {parameterized_type} [annotations]:annotation* visibility? /*cardinality?*/ dot_identifier type_arguments identifier semi;
+    {java_class}         [annotations]:annotation* visibility? cardinality? dot_identifier identifier semi |
+    {parameterized_type} [annotations]:annotation* visibility? cardinality? dot_identifier type_arguments identifier semi;
   
   role_declaration =
     [annotations]:annotation* visibility? cardinality? ta_identifier lt dot_identifier gt identifier fml_element_configuration? semi;
@@ -574,8 +574,8 @@ Productions
 
   allowed_identifier_in_binding =
     {identifier} identifier |
-    {many} many |
-    {one} one |
+ //   {many} many |
+ //   {one} one |
     {this} this;
 
   binding = 

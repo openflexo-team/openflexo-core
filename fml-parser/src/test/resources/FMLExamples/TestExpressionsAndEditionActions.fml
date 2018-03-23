@@ -10,8 +10,6 @@ public VirtualModel TestExpressionsAndEditionActions  {
 		1+2;
 		aVariable;
 		an.expression.with.a.path;
-		an.expression.with.one.path;
-		an.expression.with.many.path;
 		anObject.call(1,null);
 		aString.substring(1,8);
 		a.call.with.arguments(1,2,"foo");
