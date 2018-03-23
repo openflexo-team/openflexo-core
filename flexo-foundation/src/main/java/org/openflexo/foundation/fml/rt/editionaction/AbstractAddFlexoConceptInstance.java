@@ -51,7 +51,6 @@ import org.openflexo.connie.exception.NullReferenceException;
 import org.openflexo.connie.exception.TypeMismatchException;
 import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.fml.CreationScheme;
-import org.openflexo.foundation.fml.FMLRepresentationContext;
 import org.openflexo.foundation.fml.FlexoBehaviourParameter;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoConceptInstanceRole;
@@ -193,8 +192,7 @@ public interface AbstractAddFlexoConceptInstance<FCI extends FlexoConceptInstanc
 				container = new DataBinding<>(this, FlexoConceptInstance.class, DataBinding.BindingDefinitionType.GET);
 				container.setBindingName("container");
 				container.setDeclaredType(getFlexoConceptType() != null && getFlexoConceptType().getContainerFlexoConcept() != null
-						? getFlexoConceptType().getContainerFlexoConcept().getInstanceType()
-						: FlexoConceptInstance.class);
+						? getFlexoConceptType().getContainerFlexoConcept().getInstanceType() : FlexoConceptInstance.class);
 			}
 			return container;
 		}
@@ -205,8 +203,7 @@ public interface AbstractAddFlexoConceptInstance<FCI extends FlexoConceptInstanc
 				aContainer.setOwner(this);
 				aContainer.setBindingName("container");
 				aContainer.setDeclaredType(getFlexoConceptType() != null && getFlexoConceptType().getContainerFlexoConcept() != null
-						? getFlexoConceptType().getContainerFlexoConcept().getInstanceType()
-						: FlexoConceptInstance.class);
+						? getFlexoConceptType().getContainerFlexoConcept().getInstanceType() : FlexoConceptInstance.class);
 				aContainer.setBindingDefinitionType(DataBinding.BindingDefinitionType.GET);
 			}
 			this.container = aContainer;
@@ -523,13 +520,13 @@ public interface AbstractAddFlexoConceptInstance<FCI extends FlexoConceptInstanc
 			return super.getStringRepresentation();
 		}
 
-		@Override
+		/*@Override
 		public String getFMLRepresentation(FMLRepresentationContext context) {
 			if (getFlexoConceptType() != null && getCreationScheme() != null) {
 				return getFlexoConceptType().getName() + "." + getCreationScheme().getName() + "(" + getParameterValuesAsString() + ")";
 			}
 			return super.getFMLRepresentation(context);
-		}
+		}*/
 
 		protected String getParameterValuesAsString() {
 			StringBuffer returned = new StringBuffer();

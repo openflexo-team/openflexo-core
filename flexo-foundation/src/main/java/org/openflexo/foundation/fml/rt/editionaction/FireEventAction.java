@@ -41,8 +41,6 @@ package org.openflexo.foundation.fml.rt.editionaction;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.FlexoException;
-import org.openflexo.foundation.fml.FMLRepresentationContext;
-import org.openflexo.foundation.fml.FMLRepresentationContext.FMLRepresentationOutput;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoEvent;
 import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstance;
@@ -79,12 +77,12 @@ public interface FireEventAction<VMI extends VirtualModelInstance<VMI, ?>>
 			return "fireEvent " + (getEventType() != null ? getEventType().getName() : "null");
 		}
 
-		@Override
+		/*@Override
 		public String getFMLRepresentation(FMLRepresentationContext context) {
 			FMLRepresentationOutput out = new FMLRepresentationOutput(context);
 			out.append(getStringRepresentation(), context);
 			return out.toString();
-		}
+		}*/
 
 		@Override
 		public FlexoEvent getEventType() {

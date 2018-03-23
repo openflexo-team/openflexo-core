@@ -45,8 +45,6 @@ import java.util.Vector;
 import java.util.logging.Logger;
 
 import org.openflexo.connie.type.ParameterizedTypeImpl;
-import org.openflexo.foundation.fml.FMLRepresentationContext;
-import org.openflexo.foundation.fml.FMLRepresentationContext.FMLRepresentationOutput;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
 import org.openflexo.foundation.resource.ResourceData;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
@@ -103,25 +101,6 @@ public abstract interface FetchRequest<MS extends ModelSlot<RD>, RD extends Reso
 			extends TechnologySpecificActionDefiningReceiverImpl<MS, RD, List<T>> implements FetchRequest<MS, RD, T> {
 
 		private static final Logger logger = Logger.getLogger(FetchRequest.class.getPackage().getName());
-
-		protected String getWhereClausesFMLRepresentation(FMLRepresentationContext context) {
-			if (getConditions().size() > 0) {
-				StringBuffer sb = new StringBuffer();
-				sb.append("where=");
-				if (getConditions().size() > 1) {
-					sb.append("(");
-				}
-				boolean isFirst = true;
-				for (FetchRequestCondition c : getConditions()) {
-					sb.append(c.getCondition().toString() + (isFirst ? "" : " and "));
-				}
-				if (getConditions().size() > 1) {
-					sb.append(")");
-				}
-				return sb.toString();
-			}
-			return null;
-		}
 
 		@Override
 		public Type getIteratorType() {
@@ -185,11 +164,31 @@ public abstract interface FetchRequest<MS extends ModelSlot<RD>, RD extends Reso
 			}
 		}
 
+		/*protected String getWhereClausesFMLRepresentation(FMLRepresentationContext context) {
+			if (getConditions().size() > 0) {
+				StringBuffer sb = new StringBuffer();
+				sb.append("where=");
+				if (getConditions().size() > 1) {
+					sb.append("(");
+				}
+				boolean isFirst = true;
+				for (FetchRequestCondition c : getConditions()) {
+					sb.append(c.getCondition().toString() + (isFirst ? "" : " and "));
+				}
+				if (getConditions().size() > 1) {
+					sb.append(")");
+				}
+				return sb.toString();
+			}
+			return null;
+		}
+		
+		
 		@Override
 		public String getParametersStringRepresentation() {
 			return "(" + getWhereClausesFMLRepresentation(null) + ")";
 		}
-
+		
 		@Override
 		public String getFMLRepresentation(FMLRepresentationContext context) {
 			FMLRepresentationOutput out = new FMLRepresentationOutput(context);
@@ -197,7 +196,7 @@ public abstract interface FetchRequest<MS extends ModelSlot<RD>, RD extends Reso
 					+ getImplementedInterface().getSimpleName()
 					+ (getConditions().size() > 0 ? " " + getWhereClausesFMLRepresentation(context) : "()"), context);
 			return out.toString();
-		}
+		}*/
 
 	}
 }

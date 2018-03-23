@@ -39,6 +39,7 @@
 package org.openflexo.foundation.fml.parser.ir;
 
 import org.openflexo.foundation.fml.FMLObject;
+import org.openflexo.foundation.fml.parser.FMLPrettyPrintContext;
 import org.openflexo.foundation.fml.parser.FMLSemanticsAnalyzer;
 import org.openflexo.foundation.fml.parser.node.ASimpleJavaImportDeclaration;
 
@@ -54,4 +55,8 @@ public class IRJavaImportNode extends IRNode<FMLObject, ASimpleJavaImportDeclara
 		return null;
 	}
 
+	@Override
+	public String getFMLPrettyPrint(FMLPrettyPrintContext context) {
+		return "import;";
+	}
 }

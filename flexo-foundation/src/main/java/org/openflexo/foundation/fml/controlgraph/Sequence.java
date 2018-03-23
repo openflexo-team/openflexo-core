@@ -46,8 +46,6 @@ import org.openflexo.connie.BindingModel;
 import org.openflexo.connie.type.ExplicitNullType;
 import org.openflexo.connie.type.TypeUtils;
 import org.openflexo.foundation.FlexoException;
-import org.openflexo.foundation.fml.FMLRepresentationContext;
-import org.openflexo.foundation.fml.FMLRepresentationContext.FMLRepresentationOutput;
 import org.openflexo.foundation.fml.editionaction.AssignableAction;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext.ReturnException;
@@ -64,7 +62,6 @@ import org.openflexo.model.annotations.XMLElement;
 import org.openflexo.model.validation.ValidationError;
 import org.openflexo.model.validation.ValidationIssue;
 import org.openflexo.model.validation.ValidationRule;
-import org.openflexo.toolbox.StringUtils;
 
 /**
  * Encodes a sequence as a sequential definition of two control graphs
@@ -222,7 +219,7 @@ public interface Sequence extends FMLControlGraph, FMLControlGraphOwner {
 			return returned;
 		}
 
-		@Override
+		/*@Override
 		public String getFMLRepresentation(FMLRepresentationContext context) {
 			FMLRepresentationOutput out = new FMLRepresentationOutput(context);
 			boolean isFirst = true;
@@ -236,7 +233,7 @@ public interface Sequence extends FMLControlGraph, FMLControlGraphOwner {
 				isFirst = false;
 			}
 			return out.toString();
-		}
+		}*/
 
 		@Override
 		public Object execute(RunTimeEvaluationContext evaluationContext) throws ReturnException, FlexoException {
@@ -339,7 +336,7 @@ public interface Sequence extends FMLControlGraph, FMLControlGraphOwner {
 
 			if (sequence.getControlGraph1() == null) {
 				System.err.println("Missing control graph for " + sequence);
-				System.err.println(sequence.getRootOwner().getFMLRepresentation());
+				System.err.println(sequence.getRootOwner().getStringRepresentation());
 				return new ValidationError<>(this, sequence, "missing_control_graph_(first_statement)");
 			}
 			return null;
@@ -357,7 +354,7 @@ public interface Sequence extends FMLControlGraph, FMLControlGraphOwner {
 
 			if (sequence.getControlGraph2() == null) {
 				System.err.println("Missing control graph for " + sequence);
-				System.err.println(sequence.getRootOwner().getFMLRepresentation());
+				System.err.println(sequence.getRootOwner().getStringRepresentation());
 				return new ValidationError<>(this, sequence, "missing_control_graph_(second_statement)");
 			}
 			return null;
@@ -384,7 +381,7 @@ public interface Sequence extends FMLControlGraph, FMLControlGraphOwner {
 					&& !TypeUtils.isTypeAssignableFrom(inferedType1, inferedType2)
 					&& !TypeUtils.isTypeAssignableFrom(inferedType2, inferedType1)) {
 				System.out.println("Types are not compatible in:");
-				System.out.println(sequence.getFMLRepresentation());
+				System.out.println(sequence.getStringRepresentation());
 				return new ValidationError<>(this, sequence, "types_are_not_compatible (" + TypeUtils.simpleRepresentation(inferedType1)
 						+ " and " + TypeUtils.simpleRepresentation(inferedType2) + ")");
 			}

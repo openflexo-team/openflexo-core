@@ -36,50 +36,34 @@
  * 
  */
 
-package org.openflexo.foundation.fml;
+package org.openflexo.foundation.fml.parser;
 
-import java.util.HashMap;
 import java.util.StringTokenizer;
 
 import org.openflexo.toolbox.StringUtils;
 
-public class FMLRepresentationContext {
+public class FMLPrettyPrintContext {
 
 	private static int INDENTATION = 2;
-	// private int currentIndentation = 0;
-	private final HashMap<String, FMLObject> nameSpaces;
 
-	public FMLRepresentationContext() {
-		// currentIndentation = 0;
-		nameSpaces = new HashMap<>();
+	public FMLPrettyPrintContext() {
 	}
 
-	public void addToNameSpaces(FMLObject object) {
-		nameSpaces.put(object.getURI(), object);
-	}
-
-	/*public int getCurrentIndentation() {
-		return currentIndentation;
-	}*/
-
-	public FMLRepresentationContext makeSubContext() {
-		FMLRepresentationContext returned = new FMLRepresentationContext();
-		for (String uri : nameSpaces.keySet()) {
-			returned.nameSpaces.put(uri, nameSpaces.get(uri));
-		}
-		// returned.currentIndentation = currentIndentation + 1;
+	public FMLPrettyPrintContext makeSubContext() {
+		FMLPrettyPrintContext returned = new FMLPrettyPrintContext();
 		return returned;
 	}
 
+	// TODO: rename to FMLPrettyPrintOutput
 	public static class FMLRepresentationOutput {
 
 		StringBuffer sb;
 
-		public FMLRepresentationOutput(FMLRepresentationContext aContext) {
+		public FMLRepresentationOutput(FMLPrettyPrintContext aContext) {
 			sb = new StringBuffer();
 		}
 
-		public void append(String s, FMLRepresentationContext context) {
+		public void append(String s, FMLPrettyPrintContext context) {
 			append(s, context, 0);
 		}
 
@@ -87,7 +71,7 @@ public class FMLRepresentationContext {
 			sb.append(StringUtils.LINE_SEPARATOR);
 		}
 
-		public void append(String s, FMLRepresentationContext context, int indentation) {
+		public void append(String s, FMLPrettyPrintContext context, int indentation) {
 			if (s == null) {
 				return;
 			}
@@ -124,7 +108,7 @@ public class FMLRepresentationContext {
 		}
 
 		/*public void append(FMLObject o) {
-			FMLRepresentationContext subContext = context.makeSubContext();
+			FMLPrettyPrintContext subContext = context.makeSubContext();
 			String lr = o.getFMLRepresentation(subContext);
 			for (int i = 0; i < StringUtils.linesNb(lr); i++) {
 				String l = StringUtils.extractStringFromLine(lr, i);

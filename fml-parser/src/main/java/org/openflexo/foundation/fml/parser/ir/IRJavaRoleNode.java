@@ -44,6 +44,7 @@ import org.openflexo.connie.type.PrimitiveType;
 import org.openflexo.foundation.fml.FlexoRole;
 import org.openflexo.foundation.fml.PrimitiveRole;
 import org.openflexo.foundation.fml.PropertyCardinality;
+import org.openflexo.foundation.fml.parser.FMLPrettyPrintContext;
 import org.openflexo.foundation.fml.parser.FMLSemanticsAnalyzer;
 import org.openflexo.foundation.fml.parser.SemanticsException;
 import org.openflexo.foundation.fml.parser.node.AJavaClassJavaRoleDeclaration;
@@ -105,4 +106,9 @@ public class IRJavaRoleNode extends IRNode<FlexoRole<?>, AJavaRoleDeclarationPri
 		return null;
 	}
 
+	@Override
+	public String getFMLPrettyPrint(FMLPrettyPrintContext context) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

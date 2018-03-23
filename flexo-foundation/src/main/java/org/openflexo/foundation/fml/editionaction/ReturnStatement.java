@@ -42,8 +42,6 @@ import java.lang.reflect.Type;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.FlexoException;
-import org.openflexo.foundation.fml.FMLRepresentationContext;
-import org.openflexo.foundation.fml.FMLRepresentationContext.FMLRepresentationOutput;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext.ReturnException;
 import org.openflexo.model.annotations.ImplementationClass;
@@ -64,7 +62,7 @@ import org.openflexo.model.annotations.XMLElement;
 @XMLElement
 public interface ReturnStatement<T> extends AbstractAssignationAction<T> {
 
-	public static abstract class ReturnActionImpl<T> extends AbstractAssignationActionImpl<T>implements ReturnStatement<T> {
+	public static abstract class ReturnActionImpl<T> extends AbstractAssignationActionImpl<T> implements ReturnStatement<T> {
 
 		private static final Logger logger = Logger.getLogger(ReturnStatement.class.getPackage().getName());
 
@@ -79,12 +77,12 @@ public interface ReturnStatement<T> extends AbstractAssignationAction<T> {
 			throw new ReturnException(value);
 		}
 
-		@Override
+		/*@Override
 		public String getFMLRepresentation(FMLRepresentationContext context) {
 			FMLRepresentationOutput out = new FMLRepresentationOutput(context);
 			out.append("return " + (getAssignableAction() != null ? getAssignableAction().getFMLRepresentation() : "") + ";", context);
 			return out.toString();
-		}
+		}*/
 
 		@Override
 		public String getStringRepresentation() {

@@ -38,11 +38,15 @@
 
 package org.openflexo.foundation.fml.parser.ir;
 
+import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.VirtualModel;
+import org.openflexo.foundation.fml.parser.FMLPrettyPrintContext;
+import org.openflexo.foundation.fml.parser.FMLPrettyPrintContext.FMLRepresentationOutput;
 import org.openflexo.foundation.fml.parser.FMLSemanticsAnalyzer;
 import org.openflexo.foundation.fml.parser.node.AVirtualModelDeclaration;
+import org.openflexo.toolbox.StringUtils;
 
-public class IRVirtualModelNode extends IRNode<VirtualModel, AVirtualModelDeclaration> {
+public class IRVirtualModelNode extends IRAbstractFlexoConceptNode<VirtualModel, AVirtualModelDeclaration> {
 
 	public IRVirtualModelNode(AVirtualModelDeclaration node, FMLSemanticsAnalyzer semanticsAnalyzer) {
 		super(node, semanticsAnalyzer);
@@ -68,6 +72,52 @@ public class IRVirtualModelNode extends IRNode<VirtualModel, AVirtualModelDeclar
 		}
 
 		return vm;
+	}
+
+	@Override
+	protected String getAnnotationHeader(FMLPrettyPrintContext context) {
+		String returned = super.getAnnotationHeader(context);
+		if (getFMLObject() instanceof VirtualModel) {
+			FMLRepresentationOutput out = new FMLRepresentationOutput(context);
+			out.append(returned, context);
+			out.append("@Version(\"" + getFMLObject().getVersion() + "\")" + StringUtils.LINE_SEPARATOR, context);
+			return out.toString();
+		}
+		return returned;
+	}
+
+	protected String getFMLDeclaredConcepts(FMLPrettyPrintContext context) {
+		FMLRepresentationOutput out = new FMLRepresentationOutput(context);
+		if (getFMLObject().getFlexoConcepts().size() > 0) {
+			out.append(StringUtils.LINE_SEPARATOR, context);
+			for (FlexoConcept ep : getFMLObject().getFlexoConcepts()) {
+				IRNode<FlexoConcept, ?> conceptNode = getRootNode().getNode(getFMLObject());
+				out.append(conceptNode.getFMLPrettyPrint(context), context, 1);
+				out.append(StringUtils.LINE_SEPARATOR, context);
+			}
+		}
+		return out.toString();
+	}
+
+	@Override
+	public String getFMLPrettyPrint(FMLPrettyPrintContext context) {
+		FMLRepresentationOutput out = new FMLRepresentationOutput(context);
+
+		out.append(getAnnotationHeader(context), context);
+		out.append(StringUtils.LINE_SEPARATOR, context);
+
+		out.append("public model " + getFMLObject().getName() + getExtends(context), context);
+		out.append(" {" + StringUtils.LINE_SEPARATOR, context);
+
+		out.append(getFMLDeclaredProperties(context), context);
+
+		out.append(getFMLDeclaredBehaviours(context), context);
+
+		out.append(getFMLDeclaredConcepts(context), context);
+
+		out.append("}" + StringUtils.LINE_SEPARATOR, context);
+
+		return out.toString();
 	}
 
 }

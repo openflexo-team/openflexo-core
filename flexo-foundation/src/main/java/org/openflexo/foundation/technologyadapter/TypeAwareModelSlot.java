@@ -41,8 +41,6 @@ package org.openflexo.foundation.technologyadapter;
 import java.util.logging.Logger;
 
 import org.apache.commons.lang3.reflect.TypeUtils;
-import org.openflexo.foundation.fml.FMLRepresentationContext;
-import org.openflexo.foundation.fml.FMLRepresentationContext.FMLRepresentationOutput;
 import org.openflexo.foundation.fml.rt.AbstractVirtualModelInstanceModelFactory;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.TypeAwareModelSlotInstance;
@@ -232,7 +230,7 @@ public interface TypeAwareModelSlot<M extends FlexoModel<M, MM> & TechnologyObje
 			return out.toString();
 		}*/
 
-		@Override
+		/*@Override
 		protected String getFMLAnnotation(FMLRepresentationContext context) {
 			FMLRepresentationOutput out = new FMLRepresentationOutput(context);
 			out.append("@" + getImplementedInterface().getSimpleName() + "(metamodel=" + '"' + getMetaModelURI() + '"' + ",cardinality="
@@ -242,7 +240,7 @@ public interface TypeAwareModelSlot<M extends FlexoModel<M, MM> & TechnologyObje
 				out.append("@Key", context);
 			}
 			return out.toString();
-		}
+		}*/
 
 		@Override
 		public abstract String getURIForObject(M model, Object o);

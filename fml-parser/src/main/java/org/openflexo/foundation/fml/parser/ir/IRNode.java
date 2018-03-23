@@ -45,6 +45,7 @@ import java.util.logging.Logger;
 import org.openflexo.foundation.fml.FMLObject;
 import org.openflexo.foundation.fml.parser.FMLCompilationUnit;
 import org.openflexo.foundation.fml.parser.FMLCompilationUnit.Fragment;
+import org.openflexo.foundation.fml.parser.FMLPrettyPrintContext;
 import org.openflexo.foundation.fml.parser.FMLSemanticsAnalyzer;
 import org.openflexo.foundation.fml.parser.FMLSyntaxAnalyzer;
 import org.openflexo.foundation.fml.parser.SemanticsException;
@@ -84,7 +85,7 @@ public abstract class IRNode<O extends FMLObject, N extends Node> {
 		System.out.println("--------> Created new FMLObject " + fmlObject);
 		if (semanticsAnalyzer.getRootNode() != null) {
 			System.out.println("################# Hop, on enregistre " + fmlObject + " pour " + node.getClass().getSimpleName());
-			semanticsAnalyzer.getRootNode().registerFMLObject(fmlObject, node);
+			semanticsAnalyzer.getRootNode().registerFMLObject(fmlObject, this);
 		}
 		return fmlObject;
 	}
@@ -160,6 +161,22 @@ public abstract class IRNode<O extends FMLObject, N extends Node> {
 	protected void fireSemanticsException(SemanticsException e) {
 		System.err.println("SemanticsException at position " + e.getFragmentInError() + " " + e.getFragmentInError().getText() + " : "
 				+ e.getMessage());
+	}
+
+	// Voir du cote de GeneratorFormatter pour formatter tout ca
+	public abstract String getFMLPrettyPrint(FMLPrettyPrintContext context);
+
+	private String prettyPrint;
+
+	public final String getFMLPrettyPrint() {
+		if (prettyPrint == null) {
+			prettyPrint = getFMLPrettyPrint(new FMLPrettyPrintContext());
+		}
+		return prettyPrint;
+	}
+
+	public void clearFMLPrettyPrint() {
+		prettyPrint = null;
 	}
 
 }

@@ -42,6 +42,7 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.logging.Logger;
 
 import org.openflexo.connie.type.ParameterizedTypeImpl;
 import org.openflexo.connie.type.PrimitiveType;
@@ -56,13 +57,17 @@ import org.openflexo.foundation.fml.parser.node.AFloatFloatingPointType;
 import org.openflexo.foundation.fml.parser.node.AFloatingNumericType;
 import org.openflexo.foundation.fml.parser.node.AIntIntegralType;
 import org.openflexo.foundation.fml.parser.node.AIntegralNumericType;
+import org.openflexo.foundation.fml.parser.node.AJavaClassType;
 import org.openflexo.foundation.fml.parser.node.AJavaTypeActualTypeArgument;
 import org.openflexo.foundation.fml.parser.node.ALongIntegralType;
 import org.openflexo.foundation.fml.parser.node.AManyTypeArgumentList;
 import org.openflexo.foundation.fml.parser.node.ANumericPrimitiveType;
 import org.openflexo.foundation.fml.parser.node.AOneTypeArgumentList;
+import org.openflexo.foundation.fml.parser.node.AParameterizedTypeType;
 import org.openflexo.foundation.fml.parser.node.APrimitiveActualTypeArgument;
+import org.openflexo.foundation.fml.parser.node.APrimitiveType;
 import org.openflexo.foundation.fml.parser.node.AShortIntegralType;
+import org.openflexo.foundation.fml.parser.node.ATaTypeType;
 import org.openflexo.foundation.fml.parser.node.ATypeArguments;
 import org.openflexo.foundation.fml.parser.node.PActualTypeArgument;
 import org.openflexo.foundation.fml.parser.node.PDotIdentifier;
@@ -70,6 +75,8 @@ import org.openflexo.foundation.fml.parser.node.PFloatingPointType;
 import org.openflexo.foundation.fml.parser.node.PIntegralType;
 import org.openflexo.foundation.fml.parser.node.PNumericType;
 import org.openflexo.foundation.fml.parser.node.PPrimitiveType;
+import org.openflexo.foundation.fml.parser.node.PTaType;
+import org.openflexo.foundation.fml.parser.node.PType;
 import org.openflexo.foundation.fml.parser.node.PTypeArgumentList;
 import org.openflexo.foundation.fml.parser.node.PTypeArguments;
 
@@ -80,6 +87,9 @@ import org.openflexo.foundation.fml.parser.node.PTypeArguments;
  * 
  */
 public class TypeAnalyzingUtils {
+
+	@SuppressWarnings("unused")
+	static final Logger logger = Logger.getLogger(TypeAnalyzingUtils.class.getPackage().getName());
 
 	static PrimitiveType getPrimitiveType(Type javaType) {
 		if (TypeUtils.isLong(javaType)) {
@@ -159,6 +169,29 @@ public class TypeAnalyzingUtils {
 		else if (typeArg instanceof APrimitiveActualTypeArgument) {
 			return makeJavaType(((APrimitiveActualTypeArgument) typeArg).getPrimitiveType());
 		}
+		return null;
+	}
+
+	static Type makeType(PType type, FMLSemanticsAnalyzer analyzer) throws SemanticsException {
+		if (type instanceof APrimitiveType) {
+			return makeJavaType(((APrimitiveType) type).getPrimitiveType());
+		}
+		else if (type instanceof AJavaClassType) {
+			return makeJavaType(((AJavaClassType) type).getDotIdentifier(), analyzer);
+		}
+		else if (type instanceof AParameterizedTypeType) {
+			return makeJavaType(((AParameterizedTypeType) type).getDotIdentifier(), ((AParameterizedTypeType) type).getTypeArguments(),
+					analyzer);
+		}
+		else if (type instanceof ATaTypeType) {
+			return makeTAType(((ATaTypeType) type).getTaType(), analyzer);
+		}
+		return null;
+	}
+
+	static Type makeTAType(PTaType taType, FMLSemanticsAnalyzer analyzer) {
+		// TODO
+		logger.warning("makeTAType() not implemented yet");
 		return null;
 	}
 

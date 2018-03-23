@@ -38,62 +38,17 @@
 
 package org.openflexo.foundation.fml.parser.ir;
 
-import org.openflexo.foundation.fml.FlexoBehaviour;
 import org.openflexo.foundation.fml.FlexoConcept;
-import org.openflexo.foundation.fml.FlexoProperty;
+import org.openflexo.foundation.fml.parser.FMLPrettyPrintContext;
+import org.openflexo.foundation.fml.parser.FMLPrettyPrintContext.FMLRepresentationOutput;
 import org.openflexo.foundation.fml.parser.FMLSemanticsAnalyzer;
-import org.openflexo.foundation.fml.parser.node.AFlexoBehaviourDeclarationConceptBodyDeclaration;
-import org.openflexo.foundation.fml.parser.node.AFlexoConceptConceptBodyDeclaration;
 import org.openflexo.foundation.fml.parser.node.AFlexoConceptDeclaration;
-import org.openflexo.foundation.fml.parser.node.APropertyConceptBodyDeclaration;
-import org.openflexo.foundation.fml.parser.node.PConceptBodyDeclaration;
+import org.openflexo.toolbox.StringUtils;
 
-public class IRFlexoConceptNode extends IRNode<FlexoConcept, AFlexoConceptDeclaration> {
+public class IRFlexoConceptNode extends IRAbstractFlexoConceptNode<FlexoConcept, AFlexoConceptDeclaration> {
 
 	public IRFlexoConceptNode(AFlexoConceptDeclaration node, FMLSemanticsAnalyzer semanticsAnalyzer) {
 		super(node, semanticsAnalyzer);
-
-		for (PConceptBodyDeclaration pConceptBodyDeclaration : node.getConceptBodyDeclarations()) {
-			if (pConceptBodyDeclaration instanceof APropertyConceptBodyDeclaration) {
-				handleProperty((APropertyConceptBodyDeclaration) pConceptBodyDeclaration);
-			}
-			else if (pConceptBodyDeclaration instanceof AFlexoBehaviourDeclarationConceptBodyDeclaration) {
-				handleBehaviour((AFlexoBehaviourDeclarationConceptBodyDeclaration) pConceptBodyDeclaration);
-			}
-			else if (pConceptBodyDeclaration instanceof AFlexoConceptConceptBodyDeclaration) {
-				handleFlexoConcept((AFlexoConceptConceptBodyDeclaration) pConceptBodyDeclaration);
-			}
-		}
-	}
-
-	private void handleFlexoConcept(AFlexoConceptConceptBodyDeclaration flexoConceptDeclaration) {
-		FlexoConcept concept = (FlexoConcept) getSemanticsAnalyzer().getRootNode().getParsedFMLObject(flexoConceptDeclaration);
-		if (concept != null) {
-			getFMLObject().addToEmbeddedFlexoConcepts(concept);
-		}
-		else {
-			logger.warning("Could not find FMLObject for " + flexoConceptDeclaration);
-		}
-	}
-
-	private void handleBehaviour(AFlexoBehaviourDeclarationConceptBodyDeclaration behaviourDeclaration) {
-		FlexoBehaviour behaviour = (FlexoBehaviour) getSemanticsAnalyzer().getRootNode().getParsedFMLObject(behaviourDeclaration);
-		if (behaviour != null) {
-			getFMLObject().addToFlexoBehaviours(behaviour);
-		}
-		else {
-			logger.warning("Could not find FMLObject for " + behaviourDeclaration);
-		}
-	}
-
-	private void handleProperty(APropertyConceptBodyDeclaration propertyDeclaration) {
-		FlexoProperty<?> property = (FlexoProperty) getSemanticsAnalyzer().getRootNode().getParsedFMLObject(propertyDeclaration);
-		if (property != null) {
-			getFMLObject().addToFlexoProperties(property);
-		}
-		else {
-			logger.warning("Could not find FMLObject for " + propertyDeclaration);
-		}
 	}
 
 	@Override
@@ -110,6 +65,28 @@ public class IRFlexoConceptNode extends IRNode<FlexoConcept, AFlexoConceptDeclar
 		}
 
 		return concept;
+	}
+
+	@Override
+	public String getFMLPrettyPrint(FMLPrettyPrintContext context) {
+		FMLRepresentationOutput out = new FMLRepresentationOutput(context);
+
+		if (StringUtils.isNotEmpty(getFMLObject().getDescription())) {
+			out.append(getAnnotationHeader(context), context);
+		}
+
+		out.append("public concept " + getFMLObject().getName() + getExtends(context), context);
+		out.append(" {" + StringUtils.LINE_SEPARATOR, context);
+
+		out.append(getFMLDeclaredProperties(context), context);
+
+		out.append(getFMLDeclaredBehaviours(context), context);
+
+		out.append(getFMLDeclaredInnerConcepts(context), context);
+
+		out.append("}" + StringUtils.LINE_SEPARATOR, context);
+
+		return out.toString();
 	}
 
 }

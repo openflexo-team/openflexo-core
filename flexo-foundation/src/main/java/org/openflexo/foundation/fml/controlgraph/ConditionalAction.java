@@ -50,8 +50,6 @@ import org.openflexo.connie.exception.TypeMismatchException;
 import org.openflexo.connie.type.ExplicitNullType;
 import org.openflexo.connie.type.TypeUtils;
 import org.openflexo.foundation.FlexoException;
-import org.openflexo.foundation.fml.FMLRepresentationContext;
-import org.openflexo.foundation.fml.FMLRepresentationContext.FMLRepresentationOutput;
 import org.openflexo.foundation.fml.binding.ControlGraphBindingModel;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext.ReturnException;
@@ -69,7 +67,6 @@ import org.openflexo.model.annotations.XMLElement;
 import org.openflexo.model.validation.ValidationError;
 import org.openflexo.model.validation.ValidationIssue;
 import org.openflexo.model.validation.ValidationRule;
-import org.openflexo.toolbox.StringUtils;
 
 @ModelEntity
 @ImplementationClass(ConditionalAction.ConditionalActionImpl.class)
@@ -170,7 +167,7 @@ public interface ConditionalAction extends ControlStructureAction, FMLControlGra
 			return getBindingModel();
 		}
 
-		@Override
+		/*@Override
 		public String getFMLRepresentation(FMLRepresentationContext context) {
 			FMLRepresentationOutput out = new FMLRepresentationOutput(context);
 			out.append("if " + getCondition().toString() + "", context);
@@ -189,7 +186,7 @@ public interface ConditionalAction extends ControlStructureAction, FMLControlGra
 				out.append("}", context);
 			}
 			return out.toString();
-		}
+		}*/
 
 		@Override
 		public DataBinding<Boolean> getCondition() {

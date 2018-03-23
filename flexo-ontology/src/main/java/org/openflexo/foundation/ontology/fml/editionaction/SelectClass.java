@@ -41,8 +41,6 @@ package org.openflexo.foundation.ontology.fml.editionaction;
 import java.lang.reflect.Type;
 import java.util.logging.Logger;
 
-import org.openflexo.foundation.fml.FMLRepresentationContext;
-import org.openflexo.foundation.fml.FMLRepresentationContext.FMLRepresentationOutput;
 import org.openflexo.foundation.fml.editionaction.FetchRequest;
 import org.openflexo.foundation.ontology.IFlexoOntology;
 import org.openflexo.foundation.ontology.IFlexoOntologyClass;
@@ -172,14 +170,14 @@ public abstract interface SelectClass<MS extends TypeAwareModelSlot<M, ?>, M ext
 					+ (StringUtils.isNotEmpty(getAssignation().toString()) ? " (" + getAssignation().toString() + ")" : "");
 		}*/
 
-		@Override
+		/*@Override
 		public String getFMLRepresentation(FMLRepresentationContext context) {
 			FMLRepresentationOutput out = new FMLRepresentationOutput(context);
 			out.append(getImplementedInterface().getSimpleName() + (getReceiver().isValid() ? " from " + getReceiver().toString() : " ")
 					+ " as " + (getParentClass() != null ? getParentClass().getName() : "No Type Specified")
 					+ (getConditions().size() > 0 ? " " + getWhereClausesFMLRepresentation(context) : ""), context);
 			return out.toString();
-		}
+		}*/
 
 	}
 }

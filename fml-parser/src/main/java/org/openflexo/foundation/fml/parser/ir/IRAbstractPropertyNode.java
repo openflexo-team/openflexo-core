@@ -38,69 +38,43 @@
 
 package org.openflexo.foundation.fml.parser.ir;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.lang.reflect.Type;
 
-import org.openflexo.foundation.fml.FMLObject;
-import org.openflexo.foundation.fml.VirtualModel;
+import org.openflexo.connie.type.TypeUtils;
+import org.openflexo.foundation.fml.AbstractProperty;
 import org.openflexo.foundation.fml.parser.FMLPrettyPrintContext;
 import org.openflexo.foundation.fml.parser.FMLPrettyPrintContext.FMLRepresentationOutput;
 import org.openflexo.foundation.fml.parser.FMLSemanticsAnalyzer;
-import org.openflexo.foundation.fml.parser.node.Start;
-import org.openflexo.foundation.technologyadapter.UseModelSlotDeclaration;
-import org.openflexo.toolbox.StringUtils;
+import org.openflexo.foundation.fml.parser.SemanticsException;
+import org.openflexo.foundation.fml.parser.node.AAbstractPropertyDeclaration;
 
-public class IRCompilationUnitNode extends IRNode<VirtualModel, Start> {
+public class IRAbstractPropertyNode extends IRFlexoPropertyNode<AbstractProperty<?>, AAbstractPropertyDeclaration> {
 
-	private IRVirtualModelNode virtualModelNode;
-	private final Map<FMLObject, IRNode<?, ?>> parsedFMLObjects;
-
-	public IRCompilationUnitNode(Start node, FMLSemanticsAnalyzer semanticsAnalyzer) {
+	public IRAbstractPropertyNode(AAbstractPropertyDeclaration node, FMLSemanticsAnalyzer semanticsAnalyzer) {
 		super(node, semanticsAnalyzer);
-		parsedFMLObjects = new HashMap<>();
-	}
 
-	public IRVirtualModelNode getVirtualModelNode() {
-		return virtualModelNode;
-	}
-
-	public void setVirtualModelNode(IRVirtualModelNode virtualModelNode) {
-		this.virtualModelNode = virtualModelNode;
 	}
 
 	@Override
-	VirtualModel buildFMLObject() {
-		// Done in the IRVirtualModelNode
-		return null;
-	}
-
-	@Override
-	public VirtualModel getFMLObject() {
-		if (getVirtualModelNode() != null) {
-			return getVirtualModelNode().getFMLObject();
+	AbstractProperty<?> buildFMLObject() {
+		AbstractProperty<?> property = getSemanticsAnalyzer().getFactory().newAbstractProperty();
+		property.setName(getNode().getIdentifier().getText());
+		try {
+			Type type = TypeAnalyzingUtils.makeType(getNode().getType(), getSemanticsAnalyzer());
+			property.setType(type);
+		} catch (SemanticsException e) {
+			fireSemanticsException(e);
+			property.setType(Object.class);
 		}
-		return super.getFMLObject();
-	}
-
-	protected <O extends FMLObject> void registerFMLObject(O fmlObject, IRNode<O, ?> node) {
-		parsedFMLObjects.put(fmlObject, node);
-	}
-
-	@SuppressWarnings("unchecked")
-	public <O extends FMLObject> IRNode<O, ?> getNode(O fmlObject) {
-		return (IRNode<O, ?>) parsedFMLObjects.get(fmlObject);
+		return property;
 	}
 
 	@Override
 	public String getFMLPrettyPrint(FMLPrettyPrintContext context) {
 		FMLRepresentationOutput out = new FMLRepresentationOutput(context);
-
-		for (UseModelSlotDeclaration msDecl : getFMLObject().getUseDeclarations()) {
-			out.append("use " + msDecl.getModelSlotClass().getCanonicalName() + ";" + StringUtils.LINE_SEPARATOR, context);
-		}
-		out.append(StringUtils.LINE_SEPARATOR, context);
-		IRNode<VirtualModel, ?> vmNode = getRootNode().getNode(getFMLObject());
-		out.append(vmNode.getFMLPrettyPrint(context), context);
+		out.append("public abstract " + TypeUtils.simpleRepresentation(getFMLObject().getResultingType()) + " " + getFMLObject().getName()
+				+ ";", context);
 		return out.toString();
 	}
+
 }

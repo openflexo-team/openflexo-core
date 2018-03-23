@@ -38,10 +38,8 @@
 
 package org.openflexo.foundation.fml;
 
-import org.openflexo.foundation.fml.FMLRepresentationContext.FMLRepresentationOutput;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
-import org.openflexo.toolbox.StringUtils;
 
 @ModelEntity(isAbstract = true)
 @ImplementationClass(AbstractCreationScheme.AbstractCreationSchemeImpl.class)
@@ -53,7 +51,7 @@ public abstract interface AbstractCreationScheme extends FlexoBehaviour {
 			super();
 		}
 
-		@Override
+		/*@Override
 		public final String getFMLRepresentation(FMLRepresentationContext context) {
 			FMLRepresentationOutput out = new FMLRepresentationOutput(context);
 			out.append(getFMLAnnotation(context), context);
@@ -68,7 +66,7 @@ public abstract interface AbstractCreationScheme extends FlexoBehaviour {
 			out.append("}", context);
 			out.append(StringUtils.LINE_SEPARATOR, context);
 			return out.toString();
-		}
+		}*/
 
 	}
 }

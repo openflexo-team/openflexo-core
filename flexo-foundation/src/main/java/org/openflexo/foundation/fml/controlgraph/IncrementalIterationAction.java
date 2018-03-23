@@ -49,8 +49,6 @@ import org.openflexo.connie.exception.NullReferenceException;
 import org.openflexo.connie.exception.TypeMismatchException;
 import org.openflexo.connie.type.TypeUtils;
 import org.openflexo.foundation.FlexoException;
-import org.openflexo.foundation.fml.FMLRepresentationContext;
-import org.openflexo.foundation.fml.FMLRepresentationContext.FMLRepresentationOutput;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext.ReturnException;
 import org.openflexo.model.annotations.DefineValidationRule;
@@ -64,7 +62,6 @@ import org.openflexo.model.annotations.XMLElement;
 import org.openflexo.model.validation.ValidationError;
 import org.openflexo.model.validation.ValidationIssue;
 import org.openflexo.model.validation.ValidationRule;
-import org.openflexo.toolbox.StringUtils;
 
 @ModelEntity
 @ImplementationClass(IncrementalIterationAction.IncrementalIterationActionImpl.class)
@@ -107,7 +104,7 @@ public interface IncrementalIterationAction extends AbstractIterationAction {
 		private DataBinding<Number> exclusiveEndValue;
 		private DataBinding<Number> increment;
 
-		@Override
+		/*@Override
 		public String getFMLRepresentation(FMLRepresentationContext context) {
 			FMLRepresentationOutput out = new FMLRepresentationOutput(context);
 			out.append(
@@ -122,7 +119,7 @@ public interface IncrementalIterationAction extends AbstractIterationAction {
 			}
 			out.append("}", context);
 			return out.toString();
-		}
+		}*/
 
 		@Override
 		public DataBinding<Number> getStartValue() {

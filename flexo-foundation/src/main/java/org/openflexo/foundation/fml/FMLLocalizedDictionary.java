@@ -653,11 +653,6 @@ public interface FMLLocalizedDictionary extends FMLObject, org.openflexo.localiz
 		}
 
 		@Override
-		public String getFMLRepresentation(FMLRepresentationContext context) {
-			return "<not_implemented:" + getStringRepresentation() + ">";
-		}
-
-		@Override
 		public File getLocalizedDirectory() {
 			return null;
 		}

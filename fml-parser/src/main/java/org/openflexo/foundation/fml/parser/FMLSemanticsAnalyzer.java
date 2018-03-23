@@ -43,13 +43,19 @@ import java.util.Stack;
 import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.fml.FMLModelFactory;
 import org.openflexo.foundation.fml.parser.analysis.DepthFirstAdapter;
+import org.openflexo.foundation.fml.parser.ir.IRAbstractPropertyNode;
 import org.openflexo.foundation.fml.parser.ir.IRCompilationUnitNode;
+import org.openflexo.foundation.fml.parser.ir.IRExpressionPropertyNode;
+import org.openflexo.foundation.fml.parser.ir.IRFlexoBehaviourNode;
 import org.openflexo.foundation.fml.parser.ir.IRFlexoConceptNode;
 import org.openflexo.foundation.fml.parser.ir.IRJavaImportNode;
 import org.openflexo.foundation.fml.parser.ir.IRJavaRoleNode;
 import org.openflexo.foundation.fml.parser.ir.IRNode;
 import org.openflexo.foundation.fml.parser.ir.IRPrimitiveRoleNode;
 import org.openflexo.foundation.fml.parser.ir.IRVirtualModelNode;
+import org.openflexo.foundation.fml.parser.node.AAbstractPropertyDeclaration;
+import org.openflexo.foundation.fml.parser.node.AExpressionPropertyDeclaration;
+import org.openflexo.foundation.fml.parser.node.AFlexoBehaviourDeclarationConceptBodyDeclaration;
 import org.openflexo.foundation.fml.parser.node.AFlexoConceptDeclaration;
 import org.openflexo.foundation.fml.parser.node.AJavaRoleDeclarationPrimitiveRoleDeclaration;
 import org.openflexo.foundation.fml.parser.node.APrimitivePrimitiveRoleDeclaration;
@@ -198,6 +204,42 @@ public class FMLSemanticsAnalyzer extends DepthFirstAdapter {
 	@Override
 	public void outAPrimitivePrimitiveRoleDeclaration(APrimitivePrimitiveRoleDeclaration node) {
 		super.outAPrimitivePrimitiveRoleDeclaration(node);
+		popIRNode();
+	}
+
+	@Override
+	public void inAAbstractPropertyDeclaration(AAbstractPropertyDeclaration node) {
+		super.inAAbstractPropertyDeclaration(node);
+		pushIRNode(new IRAbstractPropertyNode(node, this));
+	}
+
+	@Override
+	public void outAAbstractPropertyDeclaration(AAbstractPropertyDeclaration node) {
+		super.outAAbstractPropertyDeclaration(node);
+		popIRNode();
+	}
+
+	@Override
+	public void inAExpressionPropertyDeclaration(AExpressionPropertyDeclaration node) {
+		super.inAExpressionPropertyDeclaration(node);
+		pushIRNode(new IRExpressionPropertyNode(node, this));
+	}
+
+	@Override
+	public void outAExpressionPropertyDeclaration(AExpressionPropertyDeclaration node) {
+		super.outAExpressionPropertyDeclaration(node);
+		popIRNode();
+	}
+
+	@Override
+	public void inAFlexoBehaviourDeclarationConceptBodyDeclaration(AFlexoBehaviourDeclarationConceptBodyDeclaration node) {
+		super.inAFlexoBehaviourDeclarationConceptBodyDeclaration(node);
+		pushIRNode(new IRFlexoBehaviourNode(node, this));
+	}
+
+	@Override
+	public void outAFlexoBehaviourDeclarationConceptBodyDeclaration(AFlexoBehaviourDeclarationConceptBodyDeclaration node) {
+		super.outAFlexoBehaviourDeclarationConceptBodyDeclaration(node);
 		popIRNode();
 	}
 

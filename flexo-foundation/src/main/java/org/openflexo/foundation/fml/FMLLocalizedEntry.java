@@ -172,11 +172,6 @@ public interface FMLLocalizedEntry extends FMLObject {
 			return getDeclaringVirtualModel().getBindingModel();
 		}
 
-		@Override
-		public String getFMLRepresentation(FMLRepresentationContext context) {
-			return "<not_implemented:" + getStringRepresentation() + ">";
-		}
-
 	}
 
 	@DefineValidationRule

@@ -46,7 +46,6 @@ import org.openflexo.connie.BindingVariable;
 import org.openflexo.connie.DataBinding;
 import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.fml.FMLModelFactory;
-import org.openflexo.foundation.fml.FMLRepresentationContext;
 import org.openflexo.foundation.fml.FlexoBehaviour;
 import org.openflexo.foundation.fml.FlexoBehaviourObject;
 import org.openflexo.foundation.fml.FlexoConcept;
@@ -112,8 +111,8 @@ public abstract interface FMLControlGraph extends FlexoConceptObject {
 	 * @param context
 	 * @return
 	 */
-	@Override
-	public String getFMLRepresentation(FMLRepresentationContext context);
+	// @Override
+	// public String getFMLRepresentation(FMLRepresentationContext context);
 
 	/**
 	 * Sequentially append supplied control graph to this control graph<br>

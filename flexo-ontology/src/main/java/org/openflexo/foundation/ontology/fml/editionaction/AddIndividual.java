@@ -44,7 +44,6 @@ import java.util.Vector;
 import java.util.logging.Logger;
 
 import org.openflexo.connie.DataBinding;
-import org.openflexo.foundation.fml.FMLRepresentationContext;
 import org.openflexo.foundation.fml.editionaction.AssignationAction;
 import org.openflexo.foundation.ontology.IFlexoOntologyClass;
 import org.openflexo.foundation.ontology.IFlexoOntologyIndividual;
@@ -74,7 +73,6 @@ import org.openflexo.model.validation.FixProposal;
 import org.openflexo.model.validation.ValidationError;
 import org.openflexo.model.validation.ValidationIssue;
 import org.openflexo.model.validation.ValidationRule;
-import org.openflexo.toolbox.StringUtils;
 
 @FIBPanel("Fib/FML/AddIndividualPanel.fib")
 @ModelEntity(isAbstract = true)
@@ -192,7 +190,7 @@ public abstract interface AddIndividual<MS extends TypeAwareModelSlot<M, ?>, M e
 			return out.toString();
 		}*/
 
-		protected String getAssertionsFMLRepresentation(FMLRepresentationContext context) {
+		/*protected String getAssertionsFMLRepresentation(FMLRepresentationContext context) {
 			if (getDataAssertions().size() > 0) {
 				StringBuffer sb = new StringBuffer();
 				for (DataPropertyAssertion a : getDataAssertions()) {
@@ -212,7 +210,7 @@ public abstract interface AddIndividual<MS extends TypeAwareModelSlot<M, ?>, M e
 				return sb.toString();
 			}
 			return null;
-		}
+		}*/
 
 		public abstract Class<T> getOntologyIndividualClass();
 
@@ -245,7 +243,8 @@ public abstract interface AddIndividual<MS extends TypeAwareModelSlot<M, ?>, M e
 			if (ontologyClass != null) {
 				if (getAssignedFlexoProperty() instanceof IndividualRole) {
 					if (getAssignedFlexoProperty().getOntologicType() != null) {
-						if (getAssignedFlexoProperty().getOntologicType().isSuperConceptOf(ontologyClass)) {}
+						if (getAssignedFlexoProperty().getOntologicType().isSuperConceptOf(ontologyClass)) {
+						}
 						else {
 							getAssignedFlexoProperty().setOntologicType(ontologyClass);
 						}

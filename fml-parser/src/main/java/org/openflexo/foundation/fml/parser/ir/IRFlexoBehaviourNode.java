@@ -38,69 +38,61 @@
 
 package org.openflexo.foundation.fml.parser.ir;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import org.openflexo.foundation.fml.FMLObject;
-import org.openflexo.foundation.fml.VirtualModel;
+import org.openflexo.foundation.fml.FlexoBehaviour;
 import org.openflexo.foundation.fml.parser.FMLPrettyPrintContext;
-import org.openflexo.foundation.fml.parser.FMLPrettyPrintContext.FMLRepresentationOutput;
 import org.openflexo.foundation.fml.parser.FMLSemanticsAnalyzer;
-import org.openflexo.foundation.fml.parser.node.Start;
-import org.openflexo.foundation.technologyadapter.UseModelSlotDeclaration;
-import org.openflexo.toolbox.StringUtils;
+import org.openflexo.foundation.fml.parser.node.AFlexoBehaviourDeclarationConceptBodyDeclaration;
 
-public class IRCompilationUnitNode extends IRNode<VirtualModel, Start> {
+public class IRFlexoBehaviourNode extends IRNode<FlexoBehaviour, AFlexoBehaviourDeclarationConceptBodyDeclaration> {
 
-	private IRVirtualModelNode virtualModelNode;
-	private final Map<FMLObject, IRNode<?, ?>> parsedFMLObjects;
-
-	public IRCompilationUnitNode(Start node, FMLSemanticsAnalyzer semanticsAnalyzer) {
+	public IRFlexoBehaviourNode(AFlexoBehaviourDeclarationConceptBodyDeclaration node, FMLSemanticsAnalyzer semanticsAnalyzer) {
 		super(node, semanticsAnalyzer);
-		parsedFMLObjects = new HashMap<>();
-	}
-
-	public IRVirtualModelNode getVirtualModelNode() {
-		return virtualModelNode;
-	}
-
-	public void setVirtualModelNode(IRVirtualModelNode virtualModelNode) {
-		this.virtualModelNode = virtualModelNode;
 	}
 
 	@Override
-	VirtualModel buildFMLObject() {
-		// Done in the IRVirtualModelNode
+	FlexoBehaviour buildFMLObject() {
+		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public VirtualModel getFMLObject() {
-		if (getVirtualModelNode() != null) {
-			return getVirtualModelNode().getFMLObject();
-		}
-		return super.getFMLObject();
-	}
-
-	protected <O extends FMLObject> void registerFMLObject(O fmlObject, IRNode<O, ?> node) {
-		parsedFMLObjects.put(fmlObject, node);
-	}
-
-	@SuppressWarnings("unchecked")
-	public <O extends FMLObject> IRNode<O, ?> getNode(O fmlObject) {
-		return (IRNode<O, ?>) parsedFMLObjects.get(fmlObject);
-	}
-
-	@Override
 	public String getFMLPrettyPrint(FMLPrettyPrintContext context) {
-		FMLRepresentationOutput out = new FMLRepresentationOutput(context);
+		// TODO Auto-generated method stub
+		return null;
+	}
 
-		for (UseModelSlotDeclaration msDecl : getFMLObject().getUseDeclarations()) {
-			out.append("use " + msDecl.getModelSlotClass().getCanonicalName() + ";" + StringUtils.LINE_SEPARATOR, context);
+	/*protected String getFMLAnnotation(FMLPrettyPrintContext context) {
+		return "@" + getImplementedInterface().getSimpleName();
+	}
+	
+	@Override
+	public String getFMLRepresentation(FMLPrettyPrintContext context) {
+		FMLRepresentationOutput out = new FMLRepresentationOutput(context);
+		out.append(getFMLAnnotation(context), context);
+		out.append(StringUtils.LINE_SEPARATOR, context);
+		out.append(getVisibility().getFMLRepresentation() + TypeUtils.simpleRepresentation(getReturnType()) + " " + getName() + "("
+				+ getParametersFMLRepresentation(context) + ") {", context);
+		out.append(StringUtils.LINE_SEPARATOR, context);
+		if (getControlGraph() != null) {
+			out.append(getControlGraph().getFMLRepresentation(context), context, 1);
 		}
 		out.append(StringUtils.LINE_SEPARATOR, context);
-		IRNode<VirtualModel, ?> vmNode = getRootNode().getNode(getFMLObject());
-		out.append(vmNode.getFMLPrettyPrint(context), context);
+		out.append("}", context);
+		out.append(StringUtils.LINE_SEPARATOR, context);
 		return out.toString();
 	}
+	
+	protected String getParametersFMLRepresentation(FMLPrettyPrintContext context) {
+		if (getParameters().size() > 0) {
+			StringBuffer sb = new StringBuffer();
+			boolean isFirst = true;
+			for (FlexoBehaviourParameter p : getParameters()) {
+				sb.append((isFirst ? "" : ", ") + TypeUtils.simpleRepresentation(p.getType()) + " " + p.getName());
+				isFirst = false;
+			}
+			return sb.toString();
+		}
+		return "";
+	}*/
+
 }

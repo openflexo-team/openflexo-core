@@ -43,9 +43,6 @@ import java.lang.reflect.Type;
 
 import org.openflexo.connie.BindingModel;
 import org.openflexo.connie.DataBinding;
-import org.openflexo.connie.type.TypeUtils;
-import org.openflexo.foundation.fml.FMLRepresentationContext.FMLRepresentationOutput;
-import org.openflexo.foundation.fml.controlgraph.EmptyControlGraph;
 import org.openflexo.foundation.fml.controlgraph.FMLControlGraph;
 import org.openflexo.foundation.fml.controlgraph.FMLControlGraphOwner;
 import org.openflexo.model.annotations.CloningStrategy;
@@ -165,10 +162,10 @@ public abstract interface GetProperty<T> extends FlexoProperty<T>, FMLControlGra
 			}
 		}
 
-		private String getGetFMLAnnotation(FMLRepresentationContext context) {
+		/*private String getGetFMLAnnotation(FMLRepresentationContext context) {
 			return "@" + getImplementedInterface().getSimpleName() + "(value=" + '"' + getName() + '"' + ", access=get)";
 		}
-
+		
 		@Override
 		public String getFMLRepresentation(FMLRepresentationContext context) {
 			FMLRepresentationOutput out = new FMLRepresentationOutput(context);
@@ -182,7 +179,7 @@ public abstract interface GetProperty<T> extends FlexoProperty<T>, FMLControlGra
 				out.append("}", context);
 			}
 			return out.toString();
-		}
+		}*/
 
 		private String getGetAccessorName() {
 			if (StringUtils.isNotEmpty(getName())) {

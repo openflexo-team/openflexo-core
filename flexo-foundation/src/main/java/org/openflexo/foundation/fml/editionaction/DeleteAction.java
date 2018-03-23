@@ -47,8 +47,6 @@ import org.openflexo.connie.DataBinding.BindingDefinitionType;
 import org.openflexo.connie.exception.NullReferenceException;
 import org.openflexo.connie.exception.TypeMismatchException;
 import org.openflexo.foundation.FlexoObject;
-import org.openflexo.foundation.fml.FMLRepresentationContext;
-import org.openflexo.foundation.fml.FMLRepresentationContext.FMLRepresentationOutput;
 import org.openflexo.foundation.fml.FlexoProperty;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
 import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
@@ -87,12 +85,12 @@ public interface DeleteAction<T extends FlexoObject> extends EditionAction, Assi
 
 		private DataBinding<T> object;
 
-		@Override
+		/*@Override
 		public String getFMLRepresentation(FMLRepresentationContext context) {
 			FMLRepresentationOutput out = new FMLRepresentationOutput(context);
 			out.append(getObject().toString() + ".delete()" + ";", context);
 			return out.toString();
-		}
+		}*/
 
 		public Object getDeclaredObject(FlexoBehaviourAction<?, ?, ?> action) {
 			try {

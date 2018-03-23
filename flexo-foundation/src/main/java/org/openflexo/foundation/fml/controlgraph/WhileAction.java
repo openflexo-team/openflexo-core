@@ -48,8 +48,6 @@ import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.exception.NullReferenceException;
 import org.openflexo.connie.exception.TypeMismatchException;
 import org.openflexo.foundation.FlexoException;
-import org.openflexo.foundation.fml.FMLRepresentationContext;
-import org.openflexo.foundation.fml.FMLRepresentationContext.FMLRepresentationOutput;
 import org.openflexo.foundation.fml.binding.ControlGraphBindingModel;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext.ReturnException;
@@ -64,7 +62,6 @@ import org.openflexo.model.annotations.PropertyIdentifier;
 import org.openflexo.model.annotations.Setter;
 import org.openflexo.model.annotations.XMLAttribute;
 import org.openflexo.model.annotations.XMLElement;
-import org.openflexo.toolbox.StringUtils;
 
 @ModelEntity
 @ImplementationClass(WhileAction.WhileActionImpl.class)
@@ -145,7 +142,7 @@ public interface WhileAction extends ControlStructureAction, FMLControlGraphOwne
 			return getBindingModel();
 		}
 
-		@Override
+		/*@Override
 		public String getFMLRepresentation(FMLRepresentationContext context) {
 			FMLRepresentationOutput out = new FMLRepresentationOutput(context);
 			if (getEvaluateConditionAfterCycle()) {
@@ -167,9 +164,9 @@ public interface WhileAction extends ControlStructureAction, FMLControlGraphOwne
 				}
 				out.append("}", context);
 			}
-
+		
 			return out.toString();
-		}
+		}*/
 
 		@Override
 		public DataBinding<Boolean> getCondition() {

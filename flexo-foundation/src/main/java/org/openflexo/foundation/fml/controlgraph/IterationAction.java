@@ -47,8 +47,6 @@ import org.openflexo.connie.BindingModel;
 import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.DataBinding.BindingDefinitionType;
 import org.openflexo.foundation.FlexoException;
-import org.openflexo.foundation.fml.FMLRepresentationContext;
-import org.openflexo.foundation.fml.FMLRepresentationContext.FMLRepresentationOutput;
 import org.openflexo.foundation.fml.editionaction.AssignableAction;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext.ReturnException;
@@ -66,7 +64,6 @@ import org.openflexo.model.annotations.XMLElement;
 import org.openflexo.model.validation.ValidationError;
 import org.openflexo.model.validation.ValidationIssue;
 import org.openflexo.model.validation.ValidationRule;
-import org.openflexo.toolbox.StringUtils;
 
 @ModelEntity
 @ImplementationClass(IterationAction.IterationActionImpl.class)
@@ -106,7 +103,7 @@ public interface IterationAction extends AbstractIterationAction {
 
 		private static final Logger logger = Logger.getLogger(IterationAction.class.getPackage().getName());
 
-		@Override
+		/*@Override
 		public String getFMLRepresentation(FMLRepresentationContext context) {
 			FMLRepresentationOutput out = new FMLRepresentationOutput(context);
 			out.append("for (" + getIteratorName() + " : "
@@ -119,7 +116,7 @@ public interface IterationAction extends AbstractIterationAction {
 			}
 			out.append("}", context);
 			return out.toString();
-		}
+		}*/
 
 		private DataBinding<List<?>> iteration;
 

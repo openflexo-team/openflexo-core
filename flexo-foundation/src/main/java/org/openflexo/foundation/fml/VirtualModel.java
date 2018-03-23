@@ -52,7 +52,6 @@ import java.util.logging.Logger;
 import org.openflexo.connie.Bindable;
 import org.openflexo.connie.BindingFactory;
 import org.openflexo.foundation.FlexoException;
-import org.openflexo.foundation.fml.FMLRepresentationContext.FMLRepresentationOutput;
 import org.openflexo.foundation.fml.binding.FMLBindingFactory;
 import org.openflexo.foundation.fml.binding.VirtualModelBindingModel;
 import org.openflexo.foundation.fml.rm.VirtualModelResource;
@@ -898,51 +897,6 @@ public interface VirtualModel extends FlexoConcept, VirtualModelObject, FlexoMet
 				return getResource().getTechnologyAdapter();
 			}
 			return null;
-		}
-
-		@Override
-		protected String getFMLAnnotation(FMLRepresentationContext context) {
-			return "@VirtualModel(uri=" + '"' + getURI() + '"' + ")";
-		}
-
-		protected String getFMLDeclaredConcepts(FMLRepresentationContext context) {
-			FMLRepresentationOutput out = new FMLRepresentationOutput(context);
-			if (getFlexoConcepts().size() > 0) {
-				out.append(StringUtils.LINE_SEPARATOR, context);
-				for (FlexoConcept ep : getFlexoConcepts()) {
-					out.append(ep.getFMLRepresentation(context), context, 1);
-					out.append(StringUtils.LINE_SEPARATOR, context);
-				}
-			}
-			return out.toString();
-		}
-
-		@Override
-		public String getFMLRepresentation(FMLRepresentationContext context) {
-			FMLRepresentationOutput out = new FMLRepresentationOutput(context);
-
-			for (UseModelSlotDeclaration msDecl : getUseDeclarations()) {
-				out.append("use " + msDecl.getModelSlotClass().getCanonicalName() + ";" + StringUtils.LINE_SEPARATOR, context);
-			}
-			out.append(StringUtils.LINE_SEPARATOR, context);
-
-			out.append(getFMLDocHeader(context), context);
-
-			out.append(getFMLAnnotation(context), context);
-			out.append(StringUtils.LINE_SEPARATOR, context);
-
-			out.append("public class " + getName() + getExtends(context), context);
-			out.append(" {" + StringUtils.LINE_SEPARATOR, context);
-
-			out.append(getFMLDeclaredProperties(context), context);
-
-			out.append(getFMLDeclaredBehaviours(context), context);
-
-			out.append(getFMLDeclaredConcepts(context), context);
-
-			out.append("}" + StringUtils.LINE_SEPARATOR, context);
-
-			return out.toString();
 		}
 
 		@Override

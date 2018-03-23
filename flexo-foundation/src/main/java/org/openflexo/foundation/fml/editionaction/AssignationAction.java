@@ -45,8 +45,6 @@ import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.expr.BindingValue;
 import org.openflexo.connie.type.ExplicitNullType;
 import org.openflexo.foundation.FlexoException;
-import org.openflexo.foundation.fml.FMLRepresentationContext;
-import org.openflexo.foundation.fml.FMLRepresentationContext.FMLRepresentationOutput;
 import org.openflexo.foundation.fml.FlexoProperty;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
 import org.openflexo.model.annotations.DefineValidationRule;
@@ -189,14 +187,14 @@ public interface AssignationAction<T> extends AbstractAssignationAction<T> {
 			return value;
 		}
 
-		@Override
+		/*@Override
 		public String getFMLRepresentation(FMLRepresentationContext context) {
 			FMLRepresentationOutput out = new FMLRepresentationOutput(context);
 			out.append((getAssignation() != null ? getAssignation().toString() + " = " : "")
 					+ (getAssignableAction() != null ? getAssignableAction().getFMLRepresentation() : "<no_assignable_action>") + ";",
 					context);
 			return out.toString();
-		}
+		}*/
 
 		@Override
 		public String getStringRepresentation() {

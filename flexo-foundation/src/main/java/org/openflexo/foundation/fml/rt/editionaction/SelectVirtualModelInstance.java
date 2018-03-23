@@ -152,12 +152,12 @@ public interface SelectVirtualModelInstance<VMI extends VirtualModelInstance<VMI
 			notifiedBindingChanged(container);
 		}
 
-		@Override
+		/*@Override
 		public String getParametersStringRepresentation() {
 			String whereClauses = getWhereClausesFMLRepresentation(null);
 			return "(type=" + (getVirtualModelType() != null ? getVirtualModelType().getName() : "null")
 					+ (whereClauses != null ? "," + whereClauses : "") + ")";
-		}
+		}*/
 
 		@Override
 		public VirtualModel getAddressedVirtualModel() {

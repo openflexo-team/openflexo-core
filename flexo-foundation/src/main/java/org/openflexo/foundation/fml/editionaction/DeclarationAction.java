@@ -42,8 +42,6 @@ import java.util.logging.Logger;
 
 import org.openflexo.connie.type.TypeUtils;
 import org.openflexo.foundation.FlexoException;
-import org.openflexo.foundation.fml.FMLRepresentationContext;
-import org.openflexo.foundation.fml.FMLRepresentationContext.FMLRepresentationOutput;
 import org.openflexo.foundation.fml.binding.ControlGraphBindingModel;
 import org.openflexo.foundation.fml.binding.DeclarationActionBindingModel;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
@@ -99,13 +97,13 @@ public interface DeclarationAction<T> extends AbstractAssignationAction<T> {
 			return new DeclarationActionBindingModel(this);
 		}
 
-		@Override
+		/*@Override
 		public String getFMLRepresentation(FMLRepresentationContext context) {
 			FMLRepresentationOutput out = new FMLRepresentationOutput(context);
 			out.append(getDeclarationTypeAsString() + " " + getVariableName() + " = "
 					+ (getAssignableAction() != null ? getAssignableAction().getFMLRepresentation() : "") + ";", context);
 			return out.toString();
-		}
+		}*/
 
 		@Override
 		public String getStringRepresentation() {

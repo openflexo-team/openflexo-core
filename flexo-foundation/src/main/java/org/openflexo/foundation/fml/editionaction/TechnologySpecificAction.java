@@ -41,7 +41,6 @@ package org.openflexo.foundation.fml.editionaction;
 import java.util.logging.Logger;
 
 import org.openflexo.connie.type.TypeUtils;
-import org.openflexo.foundation.fml.FMLRepresentationContext;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.localization.LocalizedDelegate;
@@ -109,10 +108,10 @@ public abstract interface TechnologySpecificAction<MS extends ModelSlot<?>, T> e
 			return getHeaderContext() + getImplementedInterface().getSimpleName() + getParametersStringRepresentation();
 		}
 
-		@Override
+		/*@Override
 		public String getFMLRepresentation(FMLRepresentationContext context) {
 			return getImplementedInterface().getSimpleName() + "()";
-		}
+		}*/
 
 		protected final String getTechnologyAdapterIdentifier() {
 			if (getModelSlotTechnologyAdapter() != null) {

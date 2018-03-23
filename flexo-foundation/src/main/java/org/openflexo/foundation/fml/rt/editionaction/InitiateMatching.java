@@ -46,8 +46,6 @@ import java.util.logging.Logger;
 
 import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.DataBinding.BindingDefinitionType;
-import org.openflexo.foundation.fml.FMLRepresentationContext;
-import org.openflexo.foundation.fml.FMLRepresentationContext.FMLRepresentationOutput;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoConceptInstanceType;
 import org.openflexo.foundation.fml.VirtualModel;
@@ -220,14 +218,14 @@ public interface InitiateMatching extends AssignableAction<MatchingSet> {
 					+ (getFlexoConceptType() != null ? getFlexoConceptType().getName() : null) + ")";
 		}
 
-		@Override
+		/*@Override
 		public String getFMLRepresentation(FMLRepresentationContext context) {
 			FMLRepresentationOutput out = new FMLRepresentationOutput(context);
 			out.append(
 					getContainer() + ".initiateMatching(" + (getFlexoConceptType() != null ? getFlexoConceptType().getName() : null) + ")",
 					context);
 			return out.toString();
-		}
+		}*/
 
 		@Override
 		public DataBinding<FlexoConceptInstance> getContainer() {

@@ -41,8 +41,6 @@ package org.openflexo.foundation.ontology.fml;
 import java.lang.reflect.Type;
 
 import org.openflexo.connie.BindingVariable;
-import org.openflexo.foundation.fml.FMLRepresentationContext;
-import org.openflexo.foundation.fml.FMLRepresentationContext.FMLRepresentationOutput;
 import org.openflexo.foundation.fml.rt.AbstractVirtualModelInstanceModelFactory;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.ontology.IFlexoOntologyClass;
@@ -86,13 +84,13 @@ public interface IndividualRole<I extends IFlexoOntologyIndividual<?>> extends O
 			super();
 		}
 
-		@Override
+		/*@Override
 		public String getFMLRepresentation(FMLRepresentationContext context) {
 			FMLRepresentationOutput out = new FMLRepresentationOutput(context);
 			out.append("FlexoRole " + getName() + " as Individual conformTo " + getTypeDescription()
 					+ (getModelSlot() != null ? " from " + getModelSlot().getName() : "") + " ;", context);
 			return out.toString();
-		}
+		}*/
 
 		/**
 		 * Encodes the default cloning strategy
@@ -183,8 +181,7 @@ public interface IndividualRole<I extends IFlexoOntologyIndividual<?>> extends O
 		}
 
 		@Override
-		public ValidationIssue<IndividualFlexoRoleMustDefineAValidConceptClass, IndividualRole> applyValidation(
-				IndividualRole role) {
+		public ValidationIssue<IndividualFlexoRoleMustDefineAValidConceptClass, IndividualRole> applyValidation(IndividualRole role) {
 			if (role.getOntologicType() == null) {
 				return new ValidationWarning<>(this, role, "individual_role_does_not_define_any_concept_class");
 			}

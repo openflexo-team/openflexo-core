@@ -41,8 +41,11 @@ package org.openflexo.foundation.fml.parser.ir;
 import java.lang.reflect.Type;
 
 import org.openflexo.connie.type.PrimitiveType;
+import org.openflexo.connie.type.TypeUtils;
 import org.openflexo.foundation.fml.PrimitiveRole;
 import org.openflexo.foundation.fml.PropertyCardinality;
+import org.openflexo.foundation.fml.parser.FMLPrettyPrintContext;
+import org.openflexo.foundation.fml.parser.FMLPrettyPrintContext.FMLRepresentationOutput;
 import org.openflexo.foundation.fml.parser.FMLSemanticsAnalyzer;
 import org.openflexo.foundation.fml.parser.node.APrimitivePrimitiveRoleDeclaration;
 
@@ -76,4 +79,23 @@ public class IRPrimitiveRoleNode extends IRFlexoPropertyNode<PrimitiveRole<?>, A
 		}
 	}
 
+	/*@Override
+	protected String getFMLAnnotation(FMLRepresentationContext context) {
+		FMLRepresentationOutput out = new FMLRepresentationOutput(context);
+		out.append("@" + getImplementedInterface().getSimpleName() + "(cardinality=" + getCardinality() + ",readOnly=" + isReadOnly()
+				+ ")", context);
+		if (isKey()) {
+			out.append(StringUtils.LINE_SEPARATOR, context);
+			out.append("@Key", context);
+		}
+		return out.toString();
+	}*/
+
+	@Override
+	public String getFMLPrettyPrint(FMLPrettyPrintContext context) {
+		FMLRepresentationOutput out = new FMLRepresentationOutput(context);
+		out.append("public " + TypeUtils.simpleRepresentation(getFMLObject().getResultingType()) + " " + getFMLObject().getName() + ";",
+				context);
+		return out.toString();
+	}
 }

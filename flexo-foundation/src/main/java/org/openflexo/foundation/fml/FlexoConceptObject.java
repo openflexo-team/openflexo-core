@@ -72,15 +72,6 @@ public interface FlexoConceptObject extends FMLObject {
 	// TODO harmonize with Get Owner from FlexoConcept
 	public VirtualModel getOwningVirtualModel();
 
-	/**
-	 * Build and return a String encoding this {@link FMLObject} in FML textual language
-	 * 
-	 * @param context
-	 * @return
-	 */
-	@Override
-	public String getFMLRepresentation(FMLRepresentationContext context);
-
 	public abstract class FlexoConceptObjectImpl extends FMLObjectImpl implements FlexoConceptObject {
 
 		@Override
@@ -129,11 +120,6 @@ public interface FlexoConceptObject extends FMLObject {
 		public String getStringRepresentation() {
 			return (getOwningVirtualModel() != null ? getOwningVirtualModel().getStringRepresentation() : "null") + "#"
 					+ (getFlexoConcept() != null ? getFlexoConcept().getName() : "null") + "." + getClass().getSimpleName();
-		}
-
-		@Override
-		public String getFMLRepresentation(FMLRepresentationContext context) {
-			return "<not_implemented:" + getStringRepresentation() + ">";
 		}
 
 	}

@@ -38,9 +38,6 @@
 
 package org.openflexo.foundation.fml;
 
-import org.openflexo.connie.type.TypeUtils;
-import org.openflexo.foundation.fml.FMLRepresentationContext.FMLRepresentationOutput;
-import org.openflexo.foundation.fml.controlgraph.EmptyControlGraph;
 import org.openflexo.foundation.fml.controlgraph.FMLControlGraph;
 import org.openflexo.foundation.fml.controlgraph.FMLControlGraphOwner;
 import org.openflexo.model.annotations.CloningStrategy;
@@ -157,10 +154,10 @@ public abstract interface GetSetProperty<T> extends GetProperty<T> {
 			return out.toString();
 		}*/
 
-		private String getSetFMLAnnotation(FMLRepresentationContext context) {
+		/*private String getSetFMLAnnotation(FMLRepresentationContext context) {
 			return "@" + getImplementedInterface().getSimpleName() + "(value=" + '"' + getName() + '"' + ", access=set)";
 		}
-
+		
 		@Override
 		public String getFMLRepresentation(FMLRepresentationContext context) {
 			FMLRepresentationOutput out = new FMLRepresentationOutput(context);
@@ -176,7 +173,7 @@ public abstract interface GetSetProperty<T> extends GetProperty<T> {
 				out.append("}", context);
 			}
 			return super.getFMLRepresentation(context) + out.toString();
-		}
+		}*/
 
 		private String getSetAccessorName() {
 			if (StringUtils.isNotEmpty(getName())) {

@@ -46,8 +46,6 @@ import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.DataBinding.BindingDefinitionType;
 import org.openflexo.connie.exception.NullReferenceException;
 import org.openflexo.connie.exception.TypeMismatchException;
-import org.openflexo.foundation.fml.FMLRepresentationContext;
-import org.openflexo.foundation.fml.FMLRepresentationContext.FMLRepresentationOutput;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
 import org.openflexo.model.annotations.DefineValidationRule;
 import org.openflexo.model.annotations.Getter;
@@ -120,12 +118,12 @@ public interface NotifyPropertyChangedAction extends EditionAction {
 			return getHeaderContext() + getObject().toString() + ".firePropertyChange " + getPropertyName();
 		}
 
-		@Override
+		/*@Override
 		public String getFMLRepresentation(FMLRepresentationContext context) {
 			FMLRepresentationOutput out = new FMLRepresentationOutput(context);
 			out.append(getObject().toString() + ".firePropertyChange " + getPropertyName(), context);
 			return out.toString();
-		}
+		}*/
 
 		@Override
 		public Object execute(RunTimeEvaluationContext evaluationContext) {

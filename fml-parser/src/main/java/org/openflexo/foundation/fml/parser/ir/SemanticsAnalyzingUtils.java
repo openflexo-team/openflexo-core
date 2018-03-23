@@ -38,12 +38,18 @@
 
 package org.openflexo.foundation.fml.parser.ir;
 
+import java.lang.reflect.Type;
+
+import org.openflexo.connie.Bindable;
+import org.openflexo.connie.DataBinding;
+import org.openflexo.connie.DataBinding.BindingDefinitionType;
 import org.openflexo.foundation.fml.PropertyCardinality;
 import org.openflexo.foundation.fml.parser.node.AManyCardinality;
 import org.openflexo.foundation.fml.parser.node.AMaybeCardinality;
 import org.openflexo.foundation.fml.parser.node.AOneCardinality;
 import org.openflexo.foundation.fml.parser.node.ASomeCardinality;
 import org.openflexo.foundation.fml.parser.node.PCardinality;
+import org.openflexo.foundation.fml.parser.node.PExpression;
 
 /**
  * This class implements some utils used in semantics analyzing context<br>
@@ -67,6 +73,11 @@ public class SemanticsAnalyzingUtils {
 			return PropertyCardinality.OneMany;
 		}
 		return null;
+	}
+
+	static DataBinding<?> makeDataBinding(PExpression expression, Bindable owner, Type expectedType,
+			BindingDefinitionType bindingDefinitionType) {
+		return new DataBinding<>("TODO", owner, expectedType, bindingDefinitionType);
 	}
 
 }

@@ -47,9 +47,7 @@ import org.openflexo.connie.Bindable;
 import org.openflexo.connie.BindingModel;
 import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.binding.Function;
-import org.openflexo.connie.type.TypeUtils;
 import org.openflexo.foundation.DataModification;
-import org.openflexo.foundation.fml.FMLRepresentationContext.FMLRepresentationOutput;
 import org.openflexo.foundation.fml.binding.FlexoBehaviourBindingModel;
 import org.openflexo.foundation.fml.controlgraph.FMLControlGraph;
 import org.openflexo.foundation.fml.controlgraph.FMLControlGraphOwner;
@@ -388,42 +386,8 @@ public interface FlexoBehaviour extends FlexoBehaviourObject, Function, FMLContr
 			return (getFlexoConcept() != null ? getFlexoConcept().getStringRepresentation() : "null") + "." + getName();
 		}
 
-		protected String getFMLAnnotation(FMLRepresentationContext context) {
-			return "@" + getImplementedInterface().getSimpleName();
-		}
-
-		@Override
-		public String getFMLRepresentation(FMLRepresentationContext context) {
-			FMLRepresentationOutput out = new FMLRepresentationOutput(context);
-			out.append(getFMLAnnotation(context), context);
-			out.append(StringUtils.LINE_SEPARATOR, context);
-			out.append(getVisibility().getFMLRepresentation() + TypeUtils.simpleRepresentation(getReturnType()) + " " + getName() + "("
-					+ getParametersFMLRepresentation(context) + ") {", context);
-			out.append(StringUtils.LINE_SEPARATOR, context);
-			if (getControlGraph() != null) {
-				out.append(getControlGraph().getFMLRepresentation(context), context, 1);
-			}
-			out.append(StringUtils.LINE_SEPARATOR, context);
-			out.append("}", context);
-			out.append(StringUtils.LINE_SEPARATOR, context);
-			return out.toString();
-		}
-
 		protected String getTechnologyAdapterIdentifier() {
 			return "FML";
-		}
-
-		protected String getParametersFMLRepresentation(FMLRepresentationContext context) {
-			if (getParameters().size() > 0) {
-				StringBuffer sb = new StringBuffer();
-				boolean isFirst = true;
-				for (FlexoBehaviourParameter p : getParameters()) {
-					sb.append((isFirst ? "" : ", ") + TypeUtils.simpleRepresentation(p.getType()) + " " + p.getName());
-					isFirst = false;
-				}
-				return sb.toString();
-			}
-			return "";
 		}
 
 		/**

@@ -51,7 +51,6 @@ import org.openflexo.connie.exception.NullReferenceException;
 import org.openflexo.connie.exception.TypeMismatchException;
 import org.openflexo.connie.expr.BindingValue;
 import org.openflexo.foundation.DataModification;
-import org.openflexo.foundation.fml.FMLRepresentationContext.FMLRepresentationOutput;
 import org.openflexo.foundation.fml.binding.FlexoConceptFlexoPropertyPathElement;
 import org.openflexo.foundation.fml.binding.ModelSlotBindingVariable;
 import org.openflexo.foundation.fml.binding.VirtualModelModelSlotPathElement;
@@ -466,18 +465,6 @@ public interface FlexoRole<T> extends FlexoProperty<T> {
 			if (dataBinding == getContainer()) {
 				getPropertyChangeSupport().firePropertyChange(MODEL_SLOT_KEY, null, getModelSlot());
 			}
-		}
-
-		@Override
-		protected String getFMLAnnotation(FMLRepresentationContext context) {
-			FMLRepresentationOutput out = new FMLRepresentationOutput(context);
-			out.append("@" + getImplementedInterface().getSimpleName() + "(cardinality=" + getCardinality() + ",readOnly=" + isReadOnly()
-					+ ")", context);
-			if (isKey()) {
-				out.append(StringUtils.LINE_SEPARATOR, context);
-				out.append("@Key", context);
-			}
-			return out.toString();
 		}
 
 		/**

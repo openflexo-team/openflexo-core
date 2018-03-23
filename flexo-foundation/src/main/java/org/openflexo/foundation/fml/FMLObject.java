@@ -151,16 +151,17 @@ public interface FMLObject extends FlexoObject, Bindable, InnerResourceData/*<Vi
 	 * @param context
 	 * @return
 	 */
-	public String getFMLRepresentation(FMLRepresentationContext context);
+	// public String getFMLRepresentation(FMLRepresentationContext context);
 
 	/**
 	 * Build and return a String encoding this {@link FMLObject} in FML textual language
 	 * 
 	 * @return
 	 */
+	@Deprecated
 	public String getFMLRepresentation();
 
-	public void clearFMLRepresentation();
+	// public void clearFMLRepresentation();
 
 	/**
 	 * Return a string representation suitable for a common user<br>
@@ -314,8 +315,6 @@ public interface FMLObject extends FlexoObject, Bindable, InnerResourceData/*<Vi
 		@Override
 		public synchronized void setIsModified() {
 			super.setIsModified();
-			fmlRepresentation = null;
-			getPropertyChangeSupport().firePropertyChange("fMLRepresentation", false, true);
 			getPropertyChangeSupport().firePropertyChange("stringRepresentation", false, true);
 		}
 
@@ -384,25 +383,6 @@ public interface FMLObject extends FlexoObject, Bindable, InnerResourceData/*<Vi
 			return getDeclaringVirtualModel().getLocalizedDictionary();
 		}
 
-		// Voir du cote de GeneratorFormatter pour formatter tout ca
-		@Override
-		public abstract String getFMLRepresentation(FMLRepresentationContext context);
-
-		private String fmlRepresentation;
-
-		@Override
-		public final String getFMLRepresentation() {
-			if (fmlRepresentation == null) {
-				fmlRepresentation = getFMLRepresentation(new FMLRepresentationContext());
-			}
-			return fmlRepresentation;
-		}
-
-		@Override
-		public void clearFMLRepresentation() {
-			fmlRepresentation = null;
-		}
-
 		@Override
 		public FMLModelFactory getFMLModelFactory() {
 			return ((VirtualModelResource) getResourceData().getResource()).getFactory();
@@ -411,6 +391,12 @@ public interface FMLObject extends FlexoObject, Bindable, InnerResourceData/*<Vi
 		@Override
 		public String getStringRepresentation() {
 			return getFMLModelFactory().stringRepresentation(this);
+		}
+
+		@Override
+		@Deprecated
+		public String getFMLRepresentation() {
+			return "TODO";
 		}
 
 		private FMLModelFactory deserializationFactory;

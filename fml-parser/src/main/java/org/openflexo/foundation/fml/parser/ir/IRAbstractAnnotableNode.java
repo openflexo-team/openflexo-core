@@ -38,69 +38,33 @@
 
 package org.openflexo.foundation.fml.parser.ir;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import org.openflexo.foundation.fml.FMLObject;
+import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.parser.FMLPrettyPrintContext;
 import org.openflexo.foundation.fml.parser.FMLPrettyPrintContext.FMLRepresentationOutput;
 import org.openflexo.foundation.fml.parser.FMLSemanticsAnalyzer;
-import org.openflexo.foundation.fml.parser.node.Start;
-import org.openflexo.foundation.technologyadapter.UseModelSlotDeclaration;
+import org.openflexo.foundation.fml.parser.node.Node;
 import org.openflexo.toolbox.StringUtils;
 
-public class IRCompilationUnitNode extends IRNode<VirtualModel, Start> {
+public abstract class IRAbstractAnnotableNode<O extends FlexoConcept, N extends Node> extends IRNode<O, N> {
 
-	private IRVirtualModelNode virtualModelNode;
-	private final Map<FMLObject, IRNode<?, ?>> parsedFMLObjects;
-
-	public IRCompilationUnitNode(Start node, FMLSemanticsAnalyzer semanticsAnalyzer) {
+	public IRAbstractAnnotableNode(N node, FMLSemanticsAnalyzer semanticsAnalyzer) {
 		super(node, semanticsAnalyzer);
-		parsedFMLObjects = new HashMap<>();
 	}
 
-	public IRVirtualModelNode getVirtualModelNode() {
-		return virtualModelNode;
-	}
-
-	public void setVirtualModelNode(IRVirtualModelNode virtualModelNode) {
-		this.virtualModelNode = virtualModelNode;
-	}
-
-	@Override
-	VirtualModel buildFMLObject() {
-		// Done in the IRVirtualModelNode
-		return null;
-	}
-
-	@Override
-	public VirtualModel getFMLObject() {
-		if (getVirtualModelNode() != null) {
-			return getVirtualModelNode().getFMLObject();
-		}
-		return super.getFMLObject();
-	}
-
-	protected <O extends FMLObject> void registerFMLObject(O fmlObject, IRNode<O, ?> node) {
-		parsedFMLObjects.put(fmlObject, node);
-	}
-
-	@SuppressWarnings("unchecked")
-	public <O extends FMLObject> IRNode<O, ?> getNode(O fmlObject) {
-		return (IRNode<O, ?>) parsedFMLObjects.get(fmlObject);
-	}
-
-	@Override
-	public String getFMLPrettyPrint(FMLPrettyPrintContext context) {
+	protected String getAnnotationHeader(FMLPrettyPrintContext context) {
 		FMLRepresentationOutput out = new FMLRepresentationOutput(context);
-
-		for (UseModelSlotDeclaration msDecl : getFMLObject().getUseDeclarations()) {
-			out.append("use " + msDecl.getModelSlotClass().getCanonicalName() + ";" + StringUtils.LINE_SEPARATOR, context);
+		if (getFMLObject().getDescription() != null && StringUtils.isNotEmpty(getFMLObject().getDescription().trim())) {
+			out.append("@Description(\"" + getFMLObject().getDescription().trim() + "\")" + StringUtils.LINE_SEPARATOR, context);
 		}
-		out.append(StringUtils.LINE_SEPARATOR, context);
-		IRNode<VirtualModel, ?> vmNode = getRootNode().getNode(getFMLObject());
-		out.append(vmNode.getFMLPrettyPrint(context), context);
+		out.append(" * " + StringUtils.LINE_SEPARATOR, context);
+		if (StringUtils.isNotEmpty(getFMLObject().getAuthor())) {
+			out.append("@Author(\"" + getFMLObject().getAuthor() + "\")" + StringUtils.LINE_SEPARATOR, context);
+		}
+		if (getFMLObject() instanceof VirtualModel) {
+			out.append("@Version(\"" + ((VirtualModel) getFMLObject()).getVersion() + "\")" + StringUtils.LINE_SEPARATOR, context);
+		}
 		return out.toString();
 	}
+
 }

@@ -54,8 +54,6 @@ import org.openflexo.connie.DataBinding.BindingDefinitionType;
 import org.openflexo.connie.exception.NullReferenceException;
 import org.openflexo.connie.exception.TypeMismatchException;
 import org.openflexo.foundation.fml.CreationScheme;
-import org.openflexo.foundation.fml.FMLRepresentationContext;
-import org.openflexo.foundation.fml.FMLRepresentationContext.FMLRepresentationOutput;
 import org.openflexo.foundation.fml.FlexoBehaviourParameter;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoConceptInstanceType;
@@ -212,32 +210,26 @@ public interface MatchFlexoConceptInstance extends FMLRTAction<FlexoConceptInsta
 			this.matchingSet = matchingSet;
 		}
 
-		@Override
+		/*@Override
 		public String getParametersStringRepresentation() {
 			return "(type=" + (getFlexoConceptType() != null ? getFlexoConceptType().getName() : "null") + ","
 					+ getMatchingCriteriasFMLRepresentation(null) + ")";
 		}
-
+		
 		@Override
 		public String getFMLRepresentation(FMLRepresentationContext context) {
 			FMLRepresentationOutput out = new FMLRepresentationOutput(context);
-			/*if (getAssignation().isSet()) {
-				out.append(getAssignation().toString() + " = (", context);
-			}*/
 			out.append(getTechnologyAdapterIdentifier() + "::" + getImplementedInterface().getSimpleName() + " as "
 					+ (getFlexoConceptType() != null ? getFlexoConceptType().getName() : "no type specified") + " "
 					+ getMatchingCriteriasFMLRepresentation(context) + " using "
 					+ (getCreationScheme() != null ? getCreationScheme().getFlexoConcept().getName() : "no creation scheme specified") + ":"
 					+ (getCreationScheme() != null ? getCreationScheme().getName() : "no creation scheme specified") + "("
 					+ getCreationSchemeParametersFMLRepresentation(context) + ")", context);
-			/*if (getAssignation().isSet()) {
-				out.append(")", context);
-			}*/
 			return out.toString();
 		}
-
+		
 		protected String getMatchingCriteriasFMLRepresentation(FMLRepresentationContext context) {
-
+		
 			List<MatchingCriteria> matchingCriterias = getMatchingCriterias();
 			if (matchingCriterias.size() > 0) {
 				StringBuffer sb = new StringBuffer();
@@ -261,7 +253,7 @@ public interface MatchFlexoConceptInstance extends FMLRTAction<FlexoConceptInsta
 			}
 			return null;
 		}
-
+		
 		protected String getCreationSchemeParametersFMLRepresentation(FMLRepresentationContext context) {
 			if (getParameters().size() > 0) {
 				StringBuffer sb = new StringBuffer();
@@ -273,7 +265,7 @@ public interface MatchFlexoConceptInstance extends FMLRTAction<FlexoConceptInsta
 				return sb.toString();
 			}
 			return null;
-		}
+		}*/
 
 		public FMLRTVirtualModelInstance getVirtualModelInstance(RunTimeEvaluationContext evaluationContext) {
 			try {
@@ -718,8 +710,7 @@ public interface MatchFlexoConceptInstance extends FMLRTAction<FlexoConceptInsta
 				container = new DataBinding<>(this, FlexoConceptInstance.class, DataBinding.BindingDefinitionType.GET);
 				container.setBindingName("container");
 				container.setDeclaredType(getFlexoConceptType() != null && getFlexoConceptType().getContainerFlexoConcept() != null
-						? getFlexoConceptType().getContainerFlexoConcept().getInstanceType()
-						: FlexoConceptInstance.class);
+						? getFlexoConceptType().getContainerFlexoConcept().getInstanceType() : FlexoConceptInstance.class);
 			}
 			return container;
 		}
@@ -730,8 +721,7 @@ public interface MatchFlexoConceptInstance extends FMLRTAction<FlexoConceptInsta
 				aContainer.setOwner(this);
 				aContainer.setBindingName("container");
 				aContainer.setDeclaredType(getFlexoConceptType() != null && getFlexoConceptType().getContainerFlexoConcept() != null
-						? getFlexoConceptType().getContainerFlexoConcept().getInstanceType()
-						: FlexoConceptInstance.class);
+						? getFlexoConceptType().getContainerFlexoConcept().getInstanceType() : FlexoConceptInstance.class);
 				aContainer.setBindingDefinitionType(DataBinding.BindingDefinitionType.GET);
 			}
 			this.container = aContainer;
