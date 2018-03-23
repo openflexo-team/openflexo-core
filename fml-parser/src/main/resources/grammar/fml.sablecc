@@ -446,7 +446,7 @@ Productions
     {boolean} boolean;
   
   numeric_type =
-    {integral} Hop, on enregistre |
+    {integral} integral_type |
     {floating} floating_point_type;
   
    integral_type =
