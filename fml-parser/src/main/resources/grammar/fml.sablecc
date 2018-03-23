@@ -615,12 +615,6 @@ Productions
   block_statement =
     {unique} statement |
     {sequence} statement block_statement;
-   /* {sequence} sequence_statement |
-    {statement} statement;*/
-
- /* sequence_statement =
-    {unique} statement |
-    {tail} statement sequence_statement;*/
     
   local_variable_declaration_statement =
     local_variable_declaration semi;
