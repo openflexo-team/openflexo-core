@@ -610,12 +610,18 @@ Productions
     {empty} semi;
   
   block =
-    l_brc [block_statements]:block_statement* r_brc;
+    l_brc block_statement r_brc;
 
   block_statement =
-    {variable_declaration} local_variable_declaration_statement |
-    {statement}            statement;
+    {unique} statement |
+    {sequence} statement block_statement;
+   /* {sequence} sequence_statement |
+    {statement} statement;*/
 
+ /* sequence_statement =
+    {unique} statement |
+    {tail} statement sequence_statement;*/
+    
   local_variable_declaration_statement =
     local_variable_declaration semi;
 
@@ -628,6 +634,7 @@ Productions
 
   statement =
     {no_trail}   statement_without_trailing_substatement |
+    {variable_declaration} local_variable_declaration_statement |
     {if}         if_then_statement |
     {if_else}    if_then_else_statement |
     {while_loop} while_statement |

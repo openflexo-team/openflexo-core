@@ -1,0 +1,28 @@
+use org.openflexo.technologyadapter.diagram.TypedDiagramModelSlot as Diagram;
+
+@URI(["http://openflexo.org/test/TestStatements.fml"])
+public VirtualModel TestStatements  {
+
+	void action:testSequence() {
+		int a;
+		int b=2;
+		a+b;
+	}
+
+	void action:testConditional() {
+		int a;
+		if (a > 1) a=2;
+		if (a > 2) {
+			a = 3;
+			int b = a+1;
+		}
+	}
+
+	void action:testEnhancedLoop() {
+		for (Object o : aList) {
+			o.performAction();
+		}
+	}
+
+
+}

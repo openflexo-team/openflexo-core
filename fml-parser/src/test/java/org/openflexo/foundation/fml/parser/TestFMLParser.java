@@ -80,6 +80,11 @@ public class TestFMLParser extends OpenflexoTestCase {
 	}
 
 	@Test
+	public void testTestStatements() {
+		testFMLCompilationUnit(ResourceLocator.locateResource("FMLExamples/TestStatements.fml"));
+	}
+
+	@Test
 	public void test0() {
 		testFMLCompilationUnit(ResourceLocator.locateResource("FMLExamples/Test0.fml"));
 	}

@@ -24,8 +24,8 @@ public VirtualModel BasicFMLModel {
 		// Comment on variable b
 		public maybe int b;
 		// Comment on variable c
-		public /*maybe*/ String c;
-		public /*maybe*/ java.lang.String c;
+		public maybe String c1;
+		public one java.lang.String c2;
 		public Map<String,List<String>> d;
 		public xxx.yyy.ThisTypeDoesNotExist e;
 	}
