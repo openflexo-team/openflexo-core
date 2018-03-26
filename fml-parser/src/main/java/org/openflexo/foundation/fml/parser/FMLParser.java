@@ -45,6 +45,9 @@ import java.io.PushbackReader;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.FlexoServiceManager;
+import org.openflexo.foundation.fml.FMLCompilationUnit;
+import org.openflexo.foundation.fml.FMLModelFactory;
+import org.openflexo.foundation.fml.FMLPrettyPrinter;
 import org.openflexo.foundation.fml.parser.lexer.Lexer;
 import org.openflexo.foundation.fml.parser.node.Start;
 import org.openflexo.foundation.fml.parser.parser.Parser;
@@ -78,10 +81,11 @@ public class FMLParser {
 		try (FileReader in = new FileReader(inputFile)) {
 			System.out.println("Parsing: " + inputFile);
 
-			FMLCompilationUnit fmlCompilationUnit = new FMLCompilationUnit();
+			FMLModelFactory factory = new FMLModelFactory(null, serviceManager);
+			FMLCompilationUnit fmlCompilationUnit = factory.newInstance(FMLCompilationUnit.class);
 			String rawContents = FileUtils.fileContents(inputFile);
 			// System.out.println("Initial rawContents= [" + rawContents + "]");
-			fmlCompilationUnit.setRawContents(rawContents);
+			fmlCompilationUnit.initWithRawContents(rawContents);
 			fmlCompilationUnit.printRawContents();
 
 			// Create a Parser instance.
@@ -97,7 +101,11 @@ public class FMLParser {
 			// Apply the semantics analyzer.
 			FMLSemanticsAnalyzer semanticsAnalyzer = new FMLSemanticsAnalyzer(fmlCompilationUnit, syntaxAnalyzer, serviceManager);
 			tree.apply(semanticsAnalyzer);
-			fmlCompilationUnit.setRootNode(semanticsAnalyzer.getRootNode());
+			fmlCompilationUnit.setVirtualModel(semanticsAnalyzer.getRootNode().getVirtualModelNode().getFMLObject());
+
+			// Create FMLPrettyPrinterImpl
+			FMLPrettyPrinter pp = new FMLPrettyPrinterImpl(semanticsAnalyzer.getRootNode());
+			fmlCompilationUnit.setPrettyPrinter(pp);
 
 			return fmlCompilationUnit;
 

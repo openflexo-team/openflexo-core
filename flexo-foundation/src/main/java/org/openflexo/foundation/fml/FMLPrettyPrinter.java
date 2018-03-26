@@ -36,38 +36,17 @@
  * 
  */
 
-package org.openflexo.foundation.fml.parser;
-
-import org.openflexo.foundation.fml.FMLCompilationUnit.Fragment;
-import org.openflexo.foundation.fml.parser.node.Node;
+package org.openflexo.foundation.fml;
 
 /**
- * Thrown when some input failed semantics analysing
+ * Represent a software component allowing to get pretty-print or serialized FML version of a FML model object (see {@link FMLObject})
  * 
  * @author sylvain
  *
  */
-@SuppressWarnings("serial")
-public class SemanticsException extends Exception {
+public interface FMLPrettyPrinter {
 
-	private Fragment fragmentInError;
+	public String getFMLPrettyPrint(FMLObject object);
 
-	/**
-	 * Constructs a new parse exception with the specified detail message.
-	 * 
-	 * @param message
-	 *            the detail message. The detail message is saved for later retrieval by the {@link #getMessage()} method.
-	 */
-	public SemanticsException(String message, Node node, FMLSemanticsAnalyzer analyzer) {
-		super(message);
-		int beginLine = analyzer.getSyntaxAnalyzer().getBeginLine(node);
-		int beginCol = analyzer.getSyntaxAnalyzer().getBeginColumn(node);
-		int endLine = analyzer.getSyntaxAnalyzer().getEndLine(node);
-		int endCol = analyzer.getSyntaxAnalyzer().getEndColumn(node);
-		fragmentInError = analyzer.getFMLCompilationUnit().makeFragment(beginLine, beginCol, endLine, endCol);
-	}
-
-	public Fragment getFragmentInError() {
-		return fragmentInError;
-	}
+	public String getFMLSerialization(FMLObject object);
 }

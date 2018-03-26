@@ -42,9 +42,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
+import org.openflexo.foundation.fml.FMLCompilationUnit;
+import org.openflexo.foundation.fml.FMLCompilationUnit.Fragment;
 import org.openflexo.foundation.fml.FMLObject;
-import org.openflexo.foundation.fml.parser.FMLCompilationUnit;
-import org.openflexo.foundation.fml.parser.FMLCompilationUnit.Fragment;
 import org.openflexo.foundation.fml.parser.FMLPrettyPrintContext;
 import org.openflexo.foundation.fml.parser.FMLSemanticsAnalyzer;
 import org.openflexo.foundation.fml.parser.FMLSyntaxAnalyzer;
@@ -147,7 +147,7 @@ public abstract class IRNode<O extends FMLObject, N extends Node> {
 		int beginCol = getSyntaxAnalyzer().getBeginColumn(getNode());
 		int endLine = getSyntaxAnalyzer().getEndLine(getNode());
 		int endCol = getSyntaxAnalyzer().getEndColumn(getNode());
-		fragment = semanticsAnalyzer.getFMLCompilationUnit().new Fragment(beginLine, beginCol, endLine, endCol);
+		fragment = semanticsAnalyzer.getFMLCompilationUnit().makeFragment(beginLine, beginCol, endLine, endCol);
 		System.out.println("On extrait fragment " + fragment + " pour " + getNode());
 		return fragment;
 	}

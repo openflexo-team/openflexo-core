@@ -77,7 +77,7 @@ public class IRVirtualModelNode extends IRAbstractFlexoConceptNode<VirtualModel,
 	@Override
 	protected String getAnnotationHeader(FMLPrettyPrintContext context) {
 		String returned = super.getAnnotationHeader(context);
-		if (getFMLObject() instanceof VirtualModel) {
+		if (getFMLObject().getVersion() != null) {
 			FMLRepresentationOutput out = new FMLRepresentationOutput(context);
 			out.append(returned, context);
 			out.append("@Version(\"" + getFMLObject().getVersion() + "\")" + StringUtils.LINE_SEPARATOR, context);
@@ -91,7 +91,7 @@ public class IRVirtualModelNode extends IRAbstractFlexoConceptNode<VirtualModel,
 		if (getFMLObject().getFlexoConcepts().size() > 0) {
 			out.append(StringUtils.LINE_SEPARATOR, context);
 			for (FlexoConcept ep : getFMLObject().getFlexoConcepts()) {
-				IRNode<FlexoConcept, ?> conceptNode = getRootNode().getNode(getFMLObject());
+				IRNode<FlexoConcept, ?> conceptNode = getRootNode().getNode(ep);
 				out.append(conceptNode.getFMLPrettyPrint(context), context, 1);
 				out.append(StringUtils.LINE_SEPARATOR, context);
 			}

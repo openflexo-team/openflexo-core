@@ -39,7 +39,6 @@
 package org.openflexo.foundation.fml.parser.ir;
 
 import org.openflexo.foundation.fml.FlexoConcept;
-import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.parser.FMLPrettyPrintContext;
 import org.openflexo.foundation.fml.parser.FMLPrettyPrintContext.FMLRepresentationOutput;
 import org.openflexo.foundation.fml.parser.FMLSemanticsAnalyzer;
@@ -57,12 +56,8 @@ public abstract class IRAbstractAnnotableNode<O extends FlexoConcept, N extends 
 		if (getFMLObject().getDescription() != null && StringUtils.isNotEmpty(getFMLObject().getDescription().trim())) {
 			out.append("@Description(\"" + getFMLObject().getDescription().trim() + "\")" + StringUtils.LINE_SEPARATOR, context);
 		}
-		out.append(" * " + StringUtils.LINE_SEPARATOR, context);
 		if (StringUtils.isNotEmpty(getFMLObject().getAuthor())) {
 			out.append("@Author(\"" + getFMLObject().getAuthor() + "\")" + StringUtils.LINE_SEPARATOR, context);
-		}
-		if (getFMLObject() instanceof VirtualModel) {
-			out.append("@Version(\"" + ((VirtualModel) getFMLObject()).getVersion() + "\")" + StringUtils.LINE_SEPARATOR, context);
 		}
 		return out.toString();
 	}

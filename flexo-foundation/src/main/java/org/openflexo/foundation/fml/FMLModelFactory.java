@@ -223,6 +223,7 @@ public class FMLModelFactory extends FGEModelFactoryImpl implements PamelaResour
 	public static List<Class<?>> retrieveTechnologySpecificClasses(TechnologyAdapterService taService) throws ModelDefinitionException {
 		List<Class<?>> classes = new ArrayList<>();
 		classes.add(VirtualModel.class);
+		classes.add(FMLCompilationUnit.class);
 		for (TechnologyAdapter ta : taService.getTechnologyAdapters()) {
 			for (Class<? extends ModelSlot<?>> modelSlotClass : new ArrayList<>(ta.getAvailableModelSlotTypes())) {
 				retrieveTechnologySpecificClassesForModelSlot(modelSlotClass, classes);
@@ -244,6 +245,7 @@ public class FMLModelFactory extends FGEModelFactoryImpl implements PamelaResour
 			List<Class<? extends ModelSlot<?>>> usedModelSlots) throws ModelDefinitionException {
 		List<Class<?>> classes = new ArrayList<>();
 		classes.add(baseClass);
+		classes.add(FMLCompilationUnit.class);
 		for (Class<? extends ModelSlot<?>> modelSlotClass : usedModelSlots) {
 			retrieveTechnologySpecificClassesForModelSlot(modelSlotClass, classes);
 		}

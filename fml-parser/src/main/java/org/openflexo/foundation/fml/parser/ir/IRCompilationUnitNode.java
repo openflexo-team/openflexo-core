@@ -95,10 +95,12 @@ public class IRCompilationUnitNode extends IRNode<VirtualModel, Start> {
 	public String getFMLPrettyPrint(FMLPrettyPrintContext context) {
 		FMLRepresentationOutput out = new FMLRepresentationOutput(context);
 
-		for (UseModelSlotDeclaration msDecl : getFMLObject().getUseDeclarations()) {
-			out.append("use " + msDecl.getModelSlotClass().getCanonicalName() + ";" + StringUtils.LINE_SEPARATOR, context);
+		if (getFMLObject().getUseDeclarations().size() > 0) {
+			for (UseModelSlotDeclaration msDecl : getFMLObject().getUseDeclarations()) {
+				out.append("use " + msDecl.getModelSlotClass().getCanonicalName() + ";" + StringUtils.LINE_SEPARATOR, context);
+			}
+			out.append(StringUtils.LINE_SEPARATOR, context);
 		}
-		out.append(StringUtils.LINE_SEPARATOR, context);
 		IRNode<VirtualModel, ?> vmNode = getRootNode().getNode(getFMLObject());
 		out.append(vmNode.getFMLPrettyPrint(context), context);
 		return out.toString();

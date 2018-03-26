@@ -41,6 +41,7 @@ package org.openflexo.foundation.fml.parser;
 import java.util.Stack;
 
 import org.openflexo.foundation.FlexoServiceManager;
+import org.openflexo.foundation.fml.FMLCompilationUnit;
 import org.openflexo.foundation.fml.FMLModelFactory;
 import org.openflexo.foundation.fml.parser.analysis.DepthFirstAdapter;
 import org.openflexo.foundation.fml.parser.ir.IRAbstractPropertyNode;

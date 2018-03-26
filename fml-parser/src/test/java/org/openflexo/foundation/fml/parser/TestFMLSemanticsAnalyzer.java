@@ -42,6 +42,7 @@ import static org.junit.Assert.fail;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.openflexo.foundation.fml.FMLCompilationUnit;
 import org.openflexo.foundation.test.OpenflexoTestCase;
 import org.openflexo.rm.FileResourceImpl;
 import org.openflexo.rm.Resource;
@@ -64,9 +65,9 @@ public class TestFMLSemanticsAnalyzer extends OpenflexoTestCase {
 			FMLCompilationUnit compilationUnit = FMLParser.parse(((FileResourceImpl) fileResource).getFile(), serviceManager);
 
 			System.out.println("Pretty-print de ce qui est parse:");
-			System.out.println("rootNode=" + compilationUnit.getRootNode());
+			// System.out.println("rootNode=" + compilationUnit.getRootNode());
 			System.out.println("vm=" + compilationUnit.getVirtualModel());
-			System.out.println(compilationUnit.getVirtualModel().getFMLRepresentation());
+			System.out.println(compilationUnit.getFMLPrettyPrint(compilationUnit.getVirtualModel()));
 
 		} catch (ParseException e) {
 			e.printStackTrace();

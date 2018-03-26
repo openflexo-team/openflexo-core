@@ -42,6 +42,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.openflexo.foundation.FlexoServiceManager;
+import org.openflexo.foundation.fml.FMLCompilationUnit;
 import org.openflexo.foundation.fml.parser.analysis.ReversedDepthFirstAdapter;
 import org.openflexo.foundation.fml.parser.node.Node;
 import org.openflexo.foundation.fml.parser.node.Token;
