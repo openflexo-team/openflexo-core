@@ -633,8 +633,8 @@ public abstract class TechnologyAdapter extends FlexoObservable {
 	 */
 	public List<TechnologyAdapterGlobalRepository<?, ?>> getGlobalRepositories() {
 		List<TechnologyAdapterGlobalRepository<?, ?>> returned = new ArrayList<>();
-		for (FlexoResourceCenter<?> rc : getTechnologyAdapterService().getServiceManager().getResourceCenterService()
-				.getResourceCenters()) {
+		for (FlexoResourceCenter<?> rc : new ArrayList<>(
+				getTechnologyAdapterService().getServiceManager().getResourceCenterService().getResourceCenters())) {
 			// System.out.println("Pour le RC " + rc);
 			TechnologyAdapterGlobalRepository<?, ?> globalRepository = getGlobalRepository(rc);// rc.getGlobalRepository(this);
 			// System.out.println("global repo = " + globalRepository);
