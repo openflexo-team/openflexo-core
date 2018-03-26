@@ -52,7 +52,6 @@ import org.openflexo.model.validation.ValidationError;
 import org.openflexo.model.validation.ValidationIssue;
 import org.openflexo.model.validation.ValidationWarning;
 import org.openflexo.rm.ResourceLocator;
-import org.openflexo.swing.AnimatedIcon;
 import org.openflexo.view.controller.TechnologyAdapterController;
 import org.openflexo.view.controller.TechnologyAdapterControllerService;
 
@@ -103,8 +102,7 @@ public class IconLibrary {
 	public static final ImageIcon RESOURCE_CENTER_ICON = new ImageIconResource(
 			ResourceLocator.locateResource("Icons/Common/ResourceCenter.png"));
 
-	public static final Icon IN_PROGRESS_ICON = new AnimatedIcon(
-			new ImageIconResource(ResourceLocator.locateResource("Icons/Common/Progress.gif")));
+	public static final ImageIcon IN_PROGRESS_ICON = new ImageIconResource(ResourceLocator.locateResource("Icons/Common/Progress.gif"));
 	public static final ImageIcon VALID_ICON = new ImageIconResource(ResourceLocator.locateResource("Icons/Common/Valid.png"));
 	public static final ImageIcon INVALID_ICON = new ImageIconResource(ResourceLocator.locateResource("Icons/Common/Invalid.png"));
 
