@@ -48,6 +48,6 @@ import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
  * @author gbesancon
  * 
  */
-public interface IFlexoOntologyClabject<TA extends TechnologyAdapter> extends IFlexoOntologyClass<TA>, IFlexoOntologyIndividual<TA> {
+public interface IFlexoOntologyClabject<TA extends TechnologyAdapter<TA>> extends IFlexoOntologyClass<TA>, IFlexoOntologyIndividual<TA> {
 
 }

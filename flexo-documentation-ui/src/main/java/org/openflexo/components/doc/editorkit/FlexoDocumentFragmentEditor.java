@@ -54,7 +54,8 @@ import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
  *
  */
 @SuppressWarnings("serial")
-public class FlexoDocumentFragmentEditor<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter> extends FlexoDocumentEditor<D, TA> {
+public class FlexoDocumentFragmentEditor<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter<TA>>
+		extends FlexoDocumentEditor<D, TA> {
 
 	private static final Logger logger = Logger.getLogger(FlexoDocumentFragmentEditor.class.getPackage().getName());
 

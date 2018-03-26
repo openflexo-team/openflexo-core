@@ -56,7 +56,7 @@ public class TestVirtualModelTechnologyAdapter {
 		FlexoResourceCenterService rcService = DefaultResourceCenterService.getNewInstance(true);
 		TechnologyAdapterService taService = DefaultTechnologyAdapterService.getNewInstance(rcService);
 		((DefaultTechnologyAdapterService) taService).loadAvailableTechnologyAdapters();
-		for (TechnologyAdapter ta : taService.getTechnologyAdapters()) {
+		for (TechnologyAdapter<?> ta : taService.getTechnologyAdapters()) {
 			System.out.println("> " + ta);
 		}
 		assertTrue(taService.getTechnologyAdapters().size() > 0);

@@ -77,7 +77,7 @@ import org.openflexo.toolbox.StringUtils;
  * 
  * @author sguerin
  */
-public class OntologyBrowserModel<TA extends TechnologyAdapter> implements HasPropertyChangeSupport, PropertyChangeListener {
+public class OntologyBrowserModel<TA extends TechnologyAdapter<TA>> implements HasPropertyChangeSupport, PropertyChangeListener {
 
 	static final Logger logger = Logger.getLogger(OntologyBrowserModel.class.getPackage().getName());
 

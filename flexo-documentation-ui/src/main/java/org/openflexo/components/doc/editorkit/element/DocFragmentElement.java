@@ -60,7 +60,7 @@ import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
  *            {@link TechnologyAdapter} of current implementation
  */
 @SuppressWarnings("serial")
-public class DocFragmentElement<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter>
+public class DocFragmentElement<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter<TA>>
 		extends FlexoStyledDocument<D, TA>.DocumentRootElement<FlexoDocFragment<D, TA>> {
 
 	private final FlexoFragmentStyledDocument<D, TA> flexoFragmentStyledDocument;

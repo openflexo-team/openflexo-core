@@ -68,7 +68,7 @@ public class FIBResourceSelector extends FIBFlexoObjectSelector<TechnologyAdapte
 	public static Resource FIB_FILE = ResourceLocator.locateResource("Fib/ResourceSelector.fib");
 
 	private ResourceManager resourceManager;
-	private TechnologyAdapter technologyAdapter;
+	private TechnologyAdapter<?> technologyAdapter;
 	private FlexoResourceCenter<?> resourceCenter;
 	private Class<? extends ResourceData<?>> resourceDataClass;
 	private Type expectedType;
@@ -123,7 +123,7 @@ public class FIBResourceSelector extends FIBFlexoObjectSelector<TechnologyAdapte
 		}
 	}
 
-	public TechnologyAdapter getTechnologyAdapter() {
+	public TechnologyAdapter<?> getTechnologyAdapter() {
 		if (technologyAdapter == null && getServiceManager() != null && getExpectedType() instanceof FlexoResourceType) {
 			ITechnologySpecificFlexoResourceFactory<?, ?, ?> resourceFactory = ((FlexoResourceType) getExpectedType()).getResourceFactory();
 			if (resourceFactory != null) {
@@ -134,9 +134,9 @@ public class FIBResourceSelector extends FIBFlexoObjectSelector<TechnologyAdapte
 	}
 
 	@CustomComponentParameter(name = "technologyAdapter", type = CustomComponentParameter.Type.OPTIONAL)
-	public void setTechnologyAdapter(TechnologyAdapter technologyAdapter) {
+	public void setTechnologyAdapter(TechnologyAdapter<?> technologyAdapter) {
 		if (this.technologyAdapter != technologyAdapter) {
-			TechnologyAdapter oldValue = this.technologyAdapter;
+			TechnologyAdapter<?> oldValue = this.technologyAdapter;
 			this.technologyAdapter = technologyAdapter;
 			getPropertyChangeSupport().firePropertyChange("technologyAdapter", oldValue, technologyAdapter);
 			getPropertyChangeSupport().firePropertyChange("rootObject", null, getRootObject());
@@ -208,12 +208,12 @@ public class FIBResourceSelector extends FIBFlexoObjectSelector<TechnologyAdapte
 		if (super.isAcceptableValue(o)) {
 			if (o instanceof TechnologyAdapterResource) {
 				if (getTechnologyAdapter() != null) {
-					if (((TechnologyAdapterResource) o).getTechnologyAdapter() != getTechnologyAdapter()) {
+					if (((TechnologyAdapterResource<?, ?>) o).getTechnologyAdapter() != getTechnologyAdapter()) {
 						return false;
 					}
 				}
 				if (getResourceDataClass() != null) {
-					return getResourceDataClass().isAssignableFrom(((TechnologyAdapterResource) o).getResourceDataClass());
+					return getResourceDataClass().isAssignableFrom(((TechnologyAdapterResource<?, ?>) o).getResourceDataClass());
 				}
 				return true;
 			}

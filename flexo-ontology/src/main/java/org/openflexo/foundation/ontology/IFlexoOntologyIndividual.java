@@ -52,7 +52,7 @@ import org.openflexo.gina.annotation.FIBPanel;
  * 
  */
 @FIBPanel("Fib/FIBOntologyIndividualEditor.fib")
-public interface IFlexoOntologyIndividual<TA extends TechnologyAdapter> extends IFlexoOntologyConcept<TA> {
+public interface IFlexoOntologyIndividual<TA extends TechnologyAdapter<TA>> extends IFlexoOntologyConcept<TA> {
 	/**
 	 * Return types of Individual.
 	 * 
@@ -72,6 +72,7 @@ public interface IFlexoOntologyIndividual<TA extends TechnologyAdapter> extends 
 	 * 
 	 * @param aType
 	 */
+
 	// @Deprecated
 	// public void removeFromTypes(IFlexoOntologyClass aType);
 	/**

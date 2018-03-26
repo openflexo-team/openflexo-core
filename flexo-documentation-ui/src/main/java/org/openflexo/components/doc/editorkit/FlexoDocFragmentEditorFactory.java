@@ -56,7 +56,7 @@ import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
  * @author Stanislav Lapitsky
  * @author sylvain
  */
-public class FlexoDocFragmentEditorFactory<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter>
+public class FlexoDocFragmentEditorFactory<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter<TA>>
 		extends FlexoDocumentEditorFactory<D, TA> {
 
 	private FlexoDocFragment<D, TA> fragment;

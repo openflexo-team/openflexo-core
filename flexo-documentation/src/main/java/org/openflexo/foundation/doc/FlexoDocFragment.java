@@ -49,7 +49,7 @@ import org.openflexo.toolbox.StringUtils;
 @ModelEntity(isAbstract = true)
 @ImplementationClass(FlexoDocFragment.FlexoDocumentFragmentImpl.class)
 @Imports({ @Import(TextSelection.class) })
-public interface FlexoDocFragment<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter> extends FlexoDocObject<D, TA> {
+public interface FlexoDocFragment<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter<TA>> extends FlexoDocObject<D, TA> {
 
 	@PropertyIdentifier(type = String.class)
 	public static final String START_ELEMENT_KEY = "startElement";
@@ -123,7 +123,7 @@ public interface FlexoDocFragment<D extends FlexoDocument<D, TA>, TA extends Tec
 
 	public TextSelection<D, TA> makeTextSelection(FlexoDocElement<D, TA> element) throws FragmentConsistencyException;
 
-	public static abstract class FlexoDocumentFragmentImpl<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter>
+	public static abstract class FlexoDocumentFragmentImpl<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter<TA>>
 			extends FlexoDocObjectImpl<D, TA> implements FlexoDocFragment<D, TA> {
 
 		private static final Logger logger = Logger.getLogger(FlexoDocumentFragmentImpl.class.getPackage().getName());

@@ -83,7 +83,7 @@ import org.openflexo.model.validation.ValidationWarning;
  */
 @ModelEntity(isAbstract = true)
 @ImplementationClass(AbstractCreateResource.AbstractCreateResourceImpl.class)
-public interface AbstractCreateResource<MS extends ModelSlot<?>, RD extends ResourceData<RD> & TechnologyObject<TA>, TA extends TechnologyAdapter>
+public interface AbstractCreateResource<MS extends ModelSlot<?>, RD extends ResourceData<RD> & TechnologyObject<TA>, TA extends TechnologyAdapter<TA>>
 		extends TechnologySpecificAction<MS, RD> {
 
 	@PropertyIdentifier(type = DataBinding.class)
@@ -123,7 +123,7 @@ public interface AbstractCreateResource<MS extends ModelSlot<?>, RD extends Reso
 	@Setter(RELATIVE_PATH_KEY)
 	public void setRelativePath(String relativePath);
 
-	public static abstract class AbstractCreateResourceImpl<MS extends ModelSlot<RD>, RD extends ResourceData<RD> & TechnologyObject<TA>, TA extends TechnologyAdapter>
+	public static abstract class AbstractCreateResourceImpl<MS extends ModelSlot<RD>, RD extends ResourceData<RD> & TechnologyObject<TA>, TA extends TechnologyAdapter<TA>>
 			extends TechnologySpecificActionImpl<MS, RD> implements AbstractCreateResource<MS, RD, TA> {
 
 		private static final Logger logger = Logger.getLogger(AbstractCreateResource.class.getPackage().getName());

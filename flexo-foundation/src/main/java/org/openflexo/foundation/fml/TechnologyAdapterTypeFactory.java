@@ -13,16 +13,16 @@ import org.openflexo.toolbox.PropertyChangedSupportDefaultImplementation;
  * 
  * @param <T>
  */
-public abstract class TechnologyAdapterTypeFactory<T extends CustomType> extends PropertyChangedSupportDefaultImplementation implements
-		CustomTypeFactory<T> {
+public abstract class TechnologyAdapterTypeFactory<T extends CustomType, TA extends TechnologyAdapter<TA>>
+		extends PropertyChangedSupportDefaultImplementation implements CustomTypeFactory<T> {
 
-	private final TechnologyAdapter technologyAdapter;
+	private final TA technologyAdapter;
 
-	public TechnologyAdapterTypeFactory(TechnologyAdapter technologyAdapter) {
+	public TechnologyAdapterTypeFactory(TA technologyAdapter) {
 		this.technologyAdapter = technologyAdapter;
 	}
 
-	public TechnologyAdapter getTechnologyAdapter() {
+	public TA getTechnologyAdapter() {
 		return technologyAdapter;
 	}
 

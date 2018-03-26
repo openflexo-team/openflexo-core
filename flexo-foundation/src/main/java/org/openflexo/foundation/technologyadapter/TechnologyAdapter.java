@@ -106,12 +106,12 @@ import org.openflexo.toolbox.StringUtils;
  * @author sylvain
  * 
  */
-public abstract class TechnologyAdapter extends FlexoObservable {
+public abstract class TechnologyAdapter<TA extends TechnologyAdapter<TA>> extends FlexoObservable {
 
 	private static final Logger logger = Logger.getLogger(TechnologyAdapter.class.getPackage().getName());
 
 	private TechnologyAdapterService technologyAdapterService;
-	private TechnologyContextManager<?> technologyContextManager;
+	private TechnologyContextManager<TA> technologyContextManager;
 
 	private final List<ITechnologySpecificFlexoResourceFactory<?, ?, ?>> resourceFactories;
 
@@ -162,7 +162,9 @@ public abstract class TechnologyAdapter extends FlexoObservable {
 	 * 
 	 * @return
 	 */
-	public abstract TechnologyContextManager<?> createTechnologyContextManager(FlexoResourceCenterService service);
+	protected TechnologyContextManager<TA> createTechnologyContextManager(FlexoResourceCenterService service) {
+		return new TechnologyContextManager<>((TA) this, service);
+	}
 
 	/**
 	 * Return the {@link TechnologyContextManager} for this technology shared by all {@link FlexoResourceCenter} declared in the scope of
@@ -170,7 +172,7 @@ public abstract class TechnologyAdapter extends FlexoObservable {
 	 * 
 	 * @return
 	 */
-	public TechnologyContextManager<?> getTechnologyContextManager() {
+	public TechnologyContextManager<TA> getTechnologyContextManager() {
 		return technologyContextManager;
 	}
 
@@ -330,7 +332,7 @@ public abstract class TechnologyAdapter extends FlexoObservable {
 	 * @param serializationArtefact
 	 * @return
 	 */
-	private static <RF extends ITechnologySpecificFlexoResourceFactory<R, RD, TA>, R extends TechnologyAdapterResource<RD, TA>, RD extends ResourceData<RD> & TechnologyObject<TA>, TA extends TechnologyAdapter, I> R tryToLookupResource(
+	private static <RF extends ITechnologySpecificFlexoResourceFactory<R, RD, TA>, R extends TechnologyAdapterResource<RD, TA>, RD extends ResourceData<RD> & TechnologyObject<TA>, TA extends TechnologyAdapter<TA>, I> R tryToLookupResource(
 			RF resourceFactory, FlexoResourceCenter<I> resourceCenter, I serializationArtefact) {
 
 		try {
@@ -636,7 +638,7 @@ public abstract class TechnologyAdapter extends FlexoObservable {
 	public <I> TechnologyAdapterGlobalRepository<?, I> getGlobalRepository(FlexoResourceCenter<I> rc) {
 		TechnologyAdapterGlobalRepository<?, I> returned = globalRepositories.get(rc);
 		if (returned == null) {
-			returned = TechnologyAdapterGlobalRepository.instanciateNewRepository(this, rc);
+			returned = TechnologyAdapterGlobalRepository.instanciateNewRepository((TA) this, rc);
 			globalRepositories.put(rc, returned);
 		}
 		return returned;

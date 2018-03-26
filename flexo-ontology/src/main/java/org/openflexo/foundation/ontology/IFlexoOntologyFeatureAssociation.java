@@ -47,7 +47,7 @@ import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
  * 
  * @author gbesancon
  */
-public interface IFlexoOntologyFeatureAssociation<TA extends TechnologyAdapter> {
+public interface IFlexoOntologyFeatureAssociation<TA extends TechnologyAdapter<TA>> {
 	/**
 	 * Domain of association.
 	 * 

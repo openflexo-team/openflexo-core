@@ -64,7 +64,7 @@ import org.openflexo.toolbox.IProgress;
  * @author Sylvain
  * 
  */
-public abstract class AbstractVirtualModelInstanceResourceImpl<VMI extends VirtualModelInstance<VMI, TA>, TA extends TechnologyAdapter>
+public abstract class AbstractVirtualModelInstanceResourceImpl<VMI extends VirtualModelInstance<VMI, TA>, TA extends TechnologyAdapter<TA>>
 		extends PamelaResourceImpl<VMI, AbstractVirtualModelInstanceModelFactory<?>>
 		implements AbstractVirtualModelInstanceResource<VMI, TA> {
 

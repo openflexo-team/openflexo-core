@@ -89,7 +89,7 @@ import org.openflexo.toolbox.StringUtils;
 @ModelEntity(isAbstract = true)
 @Imports({ @Import(FMLRTVirtualModelInstanceModelSlot.class) })
 @ImplementationClass(FMLRTModelSlot.FMLRTModelSlotImpl.class)
-public interface FMLRTModelSlot<VMI extends VirtualModelInstance<VMI, TA>, TA extends TechnologyAdapter> extends ModelSlot<VMI> {
+public interface FMLRTModelSlot<VMI extends VirtualModelInstance<VMI, TA>, TA extends TechnologyAdapter<TA>> extends ModelSlot<VMI> {
 
 	@PropertyIdentifier(type = String.class)
 	public static final String VIRTUAL_MODEL_URI_KEY = "virtualModelURI";
@@ -113,7 +113,7 @@ public interface FMLRTModelSlot<VMI extends VirtualModelInstance<VMI, TA>, TA ex
 
 	public Class<TA> getTechnologyAdapterClass();
 
-	public static abstract class FMLRTModelSlotImpl<VMI extends VirtualModelInstance<VMI, TA>, TA extends TechnologyAdapter>
+	public static abstract class FMLRTModelSlotImpl<VMI extends VirtualModelInstance<VMI, TA>, TA extends TechnologyAdapter<TA>>
 			extends ModelSlotImpl<VMI> implements FMLRTModelSlot<VMI, TA> {
 
 		private static final Logger logger = Logger.getLogger(FMLRTModelSlot.class.getPackage().getName());

@@ -324,7 +324,7 @@ public class ResourceManager extends FlexoServiceImpl implements ReferenceOwner 
 	 * @param technologyAdapter
 	 * @return
 	 */
-	public <TA extends TechnologyAdapter> List<TechnologyAdapterResourceRepository<?, TA, ?, ?>> getGlobalRepositories(
+	public <TA extends TechnologyAdapter<TA>> List<TechnologyAdapterResourceRepository<?, TA, ?, ?>> getGlobalRepositories(
 			TA technologyAdapter) {
 		if (getServiceManager() != null) {
 			return getServiceManager().getTechnologyAdapterService().getGlobalRepositories(technologyAdapter);

@@ -187,7 +187,7 @@ public class ToolsMenu extends FlexoMenu {
 			addSeparator();
 
 			for (TechnologyAdapter ta : controller.getApplicationContext().getTechnologyAdapterService().getTechnologyAdapters()) {
-				JMenuItem item = new TechnologyAdapterItem(ta);
+				JMenuItem item = new TechnologyAdapterItem<>(ta);
 				if (controller.getApplicationContext().getTechnologyAdapterControllerService() != null && controller.getApplicationContext()
 						.getTechnologyAdapterControllerService().getTechnologyAdapterController(ta) != null) {
 					item.setIcon(controller.getApplicationContext().getTechnologyAdapterControllerService()
@@ -200,12 +200,12 @@ public class ToolsMenu extends FlexoMenu {
 
 	}
 
-	public class TechnologyAdapterItem extends JCheckBoxMenuItem implements PropertyChangeListener {
+	public class TechnologyAdapterItem<TA extends TechnologyAdapter<TA>> extends JCheckBoxMenuItem implements PropertyChangeListener {
 
-		private final TechnologyAdapter technologyAdapter;
+		private final TA technologyAdapter;
 
-		public TechnologyAdapterItem(TechnologyAdapter technologyAdapter) {
-			super(new TechnologyAdapterAction(technologyAdapter)/*, technologyAdapter.getName(), null, getController(), true*/);
+		public TechnologyAdapterItem(TA technologyAdapter) {
+			super(new TechnologyAdapterAction<>(technologyAdapter)/*, technologyAdapter.getName(), null, getController(), true*/);
 			this.technologyAdapter = technologyAdapter;
 			if (technologyAdapter != null) {
 				technologyAdapter.getPropertyChangeSupport().addPropertyChangeListener(this);
@@ -225,11 +225,11 @@ public class ToolsMenu extends FlexoMenu {
 
 	}
 
-	public class TechnologyAdapterAction extends AbstractAction {
+	public class TechnologyAdapterAction<TA extends TechnologyAdapter<TA>> extends AbstractAction {
 
-		private final TechnologyAdapter technologyAdapter;
+		private final TA technologyAdapter;
 
-		public TechnologyAdapterAction(TechnologyAdapter technologyAdapter) {
+		public TechnologyAdapterAction(TA technologyAdapter) {
 			super(technologyAdapter.getName(), null);
 			this.technologyAdapter = technologyAdapter;
 		}
@@ -355,7 +355,7 @@ public class ToolsMenu extends FlexoMenu {
 			addSeparator();
 
 			for (TechnologyAdapter ta : controller.getApplicationContext().getTechnologyAdapterService().getTechnologyAdapters()) {
-				JMenuItem item = new TechnologyLocalizedItem(ta);
+				JMenuItem item = new TechnologyLocalizedItem<>(ta);
 				if (controller.getApplicationContext().getTechnologyAdapterControllerService() != null && controller.getApplicationContext()
 						.getTechnologyAdapterControllerService().getTechnologyAdapterController(ta) != null) {
 					item.setIcon(controller.getApplicationContext().getTechnologyAdapterControllerService()
@@ -400,10 +400,10 @@ public class ToolsMenu extends FlexoMenu {
 
 	}
 
-	public class TechnologyLocalizedItem extends FlexoMenuItem {
+	public class TechnologyLocalizedItem<TA extends TechnologyAdapter<TA>> extends FlexoMenuItem {
 
-		public TechnologyLocalizedItem(TechnologyAdapter technologyAdapter) {
-			super(new TechnologyLocalizedEditorAction(technologyAdapter), technologyAdapter.getName(), null, getController(), false);
+		public TechnologyLocalizedItem(TA technologyAdapter) {
+			super(new TechnologyLocalizedEditorAction<>(technologyAdapter), technologyAdapter.getName(), null, getController(), false);
 		}
 
 	}
@@ -416,11 +416,12 @@ public class ToolsMenu extends FlexoMenu {
 
 	}
 
-	public class TechnologyLocalizedEditorAction extends LocalizedEditorAction implements PropertyChangeListener {
+	public class TechnologyLocalizedEditorAction<TA extends TechnologyAdapter<TA>> extends LocalizedEditorAction
+			implements PropertyChangeListener {
 
-		private final TechnologyAdapter technologyAdapter;
+		private final TA technologyAdapter;
 
-		public TechnologyLocalizedEditorAction(TechnologyAdapter technologyAdapter) {
+		public TechnologyLocalizedEditorAction(TA technologyAdapter) {
 			super(technologyAdapter.getName(), null);
 			this.technologyAdapter = technologyAdapter;
 			if (technologyAdapter != null) {

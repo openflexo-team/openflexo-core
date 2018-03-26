@@ -47,7 +47,7 @@ import org.openflexo.model.annotations.Setter;
  */
 @ModelEntity(isAbstract = true)
 @ImplementationClass(FlexoDocElement.FlexoDocumentElementImpl.class)
-public interface FlexoDocElement<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter> extends FlexoDocObject<D, TA> {
+public interface FlexoDocElement<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter<TA>> extends FlexoDocObject<D, TA> {
 
 	@PropertyIdentifier(type = String.class)
 	public static final String IDENTIFIER_KEY = "identifier";
@@ -131,7 +131,7 @@ public interface FlexoDocElement<D extends FlexoDocument<D, TA>, TA extends Tech
 	 */
 	public int getIndex();
 
-	public static abstract class FlexoDocumentElementImpl<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter>
+	public static abstract class FlexoDocumentElementImpl<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter<TA>>
 			extends FlexoDocObjectImpl<D, TA> implements FlexoDocElement<D, TA> {
 
 		private List<FlexoDocElement<D, TA>> childrenElements = null;

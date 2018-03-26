@@ -321,10 +321,11 @@ public abstract class ApplicationContext extends DefaultFlexoServiceManager {
 		return removeRCTask;
 	}
 
-	private Map<TechnologyAdapter, ActivateTechnologyAdapterTask> activatingTechnologyAdapters;
+	private Map<TechnologyAdapter<?>, ActivateTechnologyAdapterTask<?>> activatingTechnologyAdapters;
 
 	@Override
-	public ActivateTechnologyAdapterTask activateTechnologyAdapter(TechnologyAdapter technologyAdapter, boolean performNowInThisThread) {
+	public <TA extends TechnologyAdapter<TA>> ActivateTechnologyAdapterTask<TA> activateTechnologyAdapter(TA technologyAdapter,
+			boolean performNowInThisThread) {
 
 		if (performNowInThisThread) {
 			super.activateTechnologyAdapter(technologyAdapter, true);
@@ -344,8 +345,9 @@ public abstract class ApplicationContext extends DefaultFlexoServiceManager {
 			// About to be activated. No need to go further
 			return null;
 		}
-		ActivateTechnologyAdapterTask activateTATask = new ActivateTechnologyAdapterTask(getTechnologyAdapterService(), technologyAdapter);
-		for (TechnologyAdapter ta : activatingTechnologyAdapters.keySet()) {
+		ActivateTechnologyAdapterTask<TA> activateTATask = new ActivateTechnologyAdapterTask<>(getTechnologyAdapterService(),
+				technologyAdapter);
+		for (TechnologyAdapter<?> ta : activatingTechnologyAdapters.keySet()) {
 			activateTATask.addToDependantTasks(activatingTechnologyAdapters.get(ta));
 			// System.out.println("> Waiting " + ta);
 		}
@@ -357,17 +359,17 @@ public abstract class ApplicationContext extends DefaultFlexoServiceManager {
 	}
 
 	@Override
-	public void hasActivated(TechnologyAdapter technologyAdapter) {
+	public void hasActivated(TechnologyAdapter<?> technologyAdapter) {
 		super.hasActivated(technologyAdapter);
 		activatingTechnologyAdapters.remove(technologyAdapter);
 	}
 
 	@Override
-	public DisactivateTechnologyAdapterTask disactivateTechnologyAdapter(TechnologyAdapter technologyAdapter) {
+	public <TA extends TechnologyAdapter<TA>> DisactivateTechnologyAdapterTask<TA> disactivateTechnologyAdapter(TA technologyAdapter) {
 		if (!technologyAdapter.isActivated()) {
 			return null;
 		}
-		DisactivateTechnologyAdapterTask disactivateTATask = new DisactivateTechnologyAdapterTask(getTechnologyAdapterService(),
+		DisactivateTechnologyAdapterTask<TA> disactivateTATask = new DisactivateTechnologyAdapterTask<>(getTechnologyAdapterService(),
 				technologyAdapter);
 		getTaskManager().scheduleExecution(disactivateTATask);
 		return disactivateTATask;

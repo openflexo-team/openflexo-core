@@ -56,7 +56,7 @@ import org.openflexo.model.annotations.ModelEntity;
  *            type of {@link TechnologyAdapter} handling this conforming pattern
  */
 @ModelEntity(isAbstract = true)
-public interface FlexoMetaModelResource<M extends FlexoModel<M, MM> & TechnologyObject<?>, MM extends FlexoMetaModel<MM> & TechnologyObject<TA>, TA extends TechnologyAdapter>
+public interface FlexoMetaModelResource<M extends FlexoModel<M, MM> & TechnologyObject<?>, MM extends FlexoMetaModel<MM> & TechnologyObject<TA>, TA extends TechnologyAdapter<TA>>
 		extends TechnologyAdapterResource<MM, TA> {
 
 	public MM getMetaModelData();

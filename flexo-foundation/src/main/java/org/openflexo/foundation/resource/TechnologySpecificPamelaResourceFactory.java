@@ -49,7 +49,7 @@ import org.openflexo.model.factory.ModelFactory;
  * @param <F>
  *            type of {@link PamelaResourceModelFactory} managing contents of resources
  */
-public abstract class TechnologySpecificPamelaResourceFactory<R extends TechnologyAdapterResource<RD, TA> & PamelaResource<RD, F>, RD extends ResourceData<RD> & TechnologyObject<TA>, TA extends TechnologyAdapter, F extends ModelFactory & PamelaResourceModelFactory>
+public abstract class TechnologySpecificPamelaResourceFactory<R extends TechnologyAdapterResource<RD, TA> & PamelaResource<RD, F>, RD extends ResourceData<RD> & TechnologyObject<TA>, TA extends TechnologyAdapter<TA>, F extends ModelFactory & PamelaResourceModelFactory>
 		extends PamelaResourceFactory<R, RD, F> implements ITechnologySpecificFlexoResourceFactory<R, RD, TA> {
 
 	@SuppressWarnings("unused")
@@ -86,7 +86,7 @@ public abstract class TechnologySpecificPamelaResourceFactory<R extends Technolo
 	@Override
 	public TechnologyContextManager<TA> getTechnologyContextManager(FlexoServiceManager sm) {
 		TA technologyAdapter = sm.getTechnologyAdapterService().getTechnologyAdapter(getTechnologyAdapterClass());
-		return (TechnologyContextManager<TA>) technologyAdapter.getTechnologyContextManager();
+		return technologyAdapter.getTechnologyContextManager();
 	}
 
 	/**

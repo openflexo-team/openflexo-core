@@ -99,7 +99,7 @@ public abstract class AbstractVirtualModelInstanceModelFactory<R extends Abstrac
 		List<Class<?>> classes = new ArrayList<>();
 		classes.add(baseVMIClass);
 		if (taService != null) {
-			for (TechnologyAdapter ta : taService.getTechnologyAdapters()) {
+			for (TechnologyAdapter<?> ta : taService.getTechnologyAdapters()) {
 				for (Class<?> modelSlotClass : ta.getAvailableModelSlotTypes()) {
 					classes.add(modelSlotClass);
 					DeclareActorReferences arDeclarations = modelSlotClass.getAnnotation(DeclareActorReferences.class);

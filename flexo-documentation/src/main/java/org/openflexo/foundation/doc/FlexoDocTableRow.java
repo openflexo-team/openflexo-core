@@ -47,7 +47,7 @@ import org.openflexo.model.annotations.XMLElement;
  *            {@link TechnologyAdapter} of current implementation
  */
 @ModelEntity(isAbstract = true)
-public interface FlexoDocTableRow<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter> extends FlexoDocObject<D, TA> {
+public interface FlexoDocTableRow<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter<TA>> extends FlexoDocObject<D, TA> {
 
 	@PropertyIdentifier(type = FlexoDocTable.class)
 	public static final String TABLE_KEY = "table";
@@ -123,7 +123,7 @@ public interface FlexoDocTableRow<D extends FlexoDocument<D, TA>, TA extends Tec
 	 */
 	public FlexoDocElement<D, TA> getElementWithIdentifier(String identifier);
 
-	public static abstract class FlexoTableRowImpl<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter>
+	public static abstract class FlexoTableRowImpl<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter<TA>>
 			extends FlexoDocObjectImpl<D, TA> implements FlexoDocTableRow<D, TA> {
 
 		@Override

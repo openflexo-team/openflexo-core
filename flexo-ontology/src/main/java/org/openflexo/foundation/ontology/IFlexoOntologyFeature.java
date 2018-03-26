@@ -50,7 +50,7 @@ import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
  * @author gbesancon
  * 
  */
-public interface IFlexoOntologyFeature<TA extends TechnologyAdapter> extends IFlexoOntologyConcept<TA> {
+public interface IFlexoOntologyFeature<TA extends TechnologyAdapter<TA>> extends IFlexoOntologyConcept<TA> {
 
 	/**
 	 * Feature Associations referencing this Feature.

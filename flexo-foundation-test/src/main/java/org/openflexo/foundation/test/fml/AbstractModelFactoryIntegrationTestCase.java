@@ -60,7 +60,7 @@ public class AbstractModelFactoryIntegrationTestCase extends OpenflexoTestCase {
 
 	private static final Logger logger = FlexoLogger.getLogger(AbstractModelFactoryIntegrationTestCase.class.getPackage().getName());
 
-	protected void testVirtualModelModelFactoryWithTechnologyAdapter(TechnologyAdapter ta) {
+	protected void testVirtualModelModelFactoryWithTechnologyAdapter(TechnologyAdapter<?> ta) {
 		assertNotNull(ta);
 		try {
 			System.out.println("Instanciating FMLModelFactory integrating technology adapter " + ta);

@@ -71,7 +71,7 @@ import org.openflexo.model.annotations.ModelEntity;
  */
 @ModelEntity(isAbstract = true)
 @ImplementationClass(FlexoOntologyModelSlot.FlexoOntologyModelSlotImpl.class)
-public interface FlexoOntologyModelSlot<M extends FlexoModel<M, MM> & IFlexoOntology<TA>, MM extends FlexoMetaModel<MM> & IFlexoOntology<TA>, TA extends TechnologyAdapter>
+public interface FlexoOntologyModelSlot<M extends FlexoModel<M, MM> & IFlexoOntology<TA>, MM extends FlexoMetaModel<MM> & IFlexoOntology<TA>, TA extends TechnologyAdapter<TA>>
 		extends TypeAwareModelSlot<M, MM> {
 
 	/**
@@ -87,7 +87,7 @@ public interface FlexoOntologyModelSlot<M extends FlexoModel<M, MM> & IFlexoOnto
 
 	public abstract Class<? extends IndividualRole<?>> getIndividualRoleClass();
 
-	public static abstract class FlexoOntologyModelSlotImpl<M extends FlexoModel<M, MM> & IFlexoOntology<TA>, MM extends FlexoMetaModel<MM> & IFlexoOntology<TA>, TA extends TechnologyAdapter>
+	public static abstract class FlexoOntologyModelSlotImpl<M extends FlexoModel<M, MM> & IFlexoOntology<TA>, MM extends FlexoMetaModel<MM> & IFlexoOntology<TA>, TA extends TechnologyAdapter<TA>>
 			extends TypeAwareModelSlotImpl<M, MM> implements FlexoOntologyModelSlot<M, MM, TA> {
 
 		@SuppressWarnings("unused")

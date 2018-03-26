@@ -200,7 +200,7 @@ public class FlexoFIBController extends FIBController implements GraphicalFlexoO
 		}
 	}
 
-	public TechnologyAdapterController<?> getTechnologyAdapterController(TechnologyAdapter technologyAdapter) {
+	public <TA extends TechnologyAdapter<TA>> TechnologyAdapterController<TA> getTechnologyAdapterController(TA technologyAdapter) {
 		if (getFlexoController() != null) {
 			return getFlexoController().getApplicationContext().getTechnologyAdapterControllerService()
 					.getTechnologyAdapterController(technologyAdapter);

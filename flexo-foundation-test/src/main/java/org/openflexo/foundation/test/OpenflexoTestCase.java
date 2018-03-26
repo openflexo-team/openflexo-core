@@ -494,7 +494,7 @@ public abstract class OpenflexoTestCase {
 		}
 	}
 
-	protected <T extends TechnologyAdapter> T getTA(Class<T> type) {
+	protected <T extends TechnologyAdapter<T>> T getTA(Class<T> type) {
 		return serviceManager.getTechnologyAdapterService().getTechnologyAdapter(type);
 	}
 

@@ -98,7 +98,7 @@ public abstract class FlexoModule<M extends FlexoModule<M>> implements DataFlexo
 	private FlexoController controller;
 
 	private final ApplicationContext applicationContext;
-	private final ModulePreferences<M> preferences = null;
+	// Unused private final ModulePreferences<M> preferences = null;
 
 	public FlexoModule(ApplicationContext applicationContext) {
 		super();
@@ -493,7 +493,7 @@ public abstract class FlexoModule<M extends FlexoModule<M>> implements DataFlexo
 	 * @param technologyAdapter
 	 * @return
 	 */
-	public boolean activateAdvancedActions(TechnologyAdapter technologyAdapter) {
+	public boolean activateAdvancedActions(TechnologyAdapter<?> technologyAdapter) {
 		return false;
 	}
 }

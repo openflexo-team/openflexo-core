@@ -87,7 +87,7 @@ import org.openflexo.toolbox.StringUtils;
 @ModelEntity
 @ImplementationClass(TextBinding.TextBindingImpl.class)
 @XMLElement
-public interface TextBinding<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter> extends ModelSlotObject<D> {
+public interface TextBinding<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter<TA>> extends ModelSlotObject<D> {
 
 	@PropertyIdentifier(type = TextSelection.class)
 	public static final String TEXT_SELECTION_KEY = "textSelection";
@@ -145,7 +145,7 @@ public interface TextBinding<D extends FlexoDocument<D, TA>, TA extends Technolo
 	 */
 	public String extractFromFragment(FlexoConceptInstance fci);
 
-	public static abstract class TextBindingImpl<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter>
+	public static abstract class TextBindingImpl<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter<TA>>
 			extends FlexoConceptObjectImpl implements TextBinding<D, TA> {
 
 		@SuppressWarnings("unused")

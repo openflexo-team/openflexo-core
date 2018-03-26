@@ -65,7 +65,7 @@ public class FIBRepositoryFolderSelector extends FIBFlexoObjectSelector<Reposito
 	public static Resource FIB_FILE = ResourceLocator.locateResource("Fib/RepositoryFolderSelector.fib");
 
 	private ResourceManager resourceManager;
-	private TechnologyAdapter technologyAdapter;
+	private TechnologyAdapter<?> technologyAdapter;
 	private FlexoResourceCenter<?> resourceCenter;
 	private Class<? extends ResourceData<?>> resourceDataClass;
 
@@ -109,14 +109,14 @@ public class FIBRepositoryFolderSelector extends FIBFlexoObjectSelector<Reposito
 		}
 	}
 
-	public TechnologyAdapter getTechnologyAdapter() {
+	public TechnologyAdapter<?> getTechnologyAdapter() {
 		return technologyAdapter;
 	}
 
 	@CustomComponentParameter(name = "technologyAdapter", type = CustomComponentParameter.Type.OPTIONAL)
-	public void setTechnologyAdapter(TechnologyAdapter technologyAdapter) {
+	public void setTechnologyAdapter(TechnologyAdapter<?> technologyAdapter) {
 		if (this.technologyAdapter != technologyAdapter) {
-			TechnologyAdapter oldValue = this.technologyAdapter;
+			TechnologyAdapter<?> oldValue = this.technologyAdapter;
 			this.technologyAdapter = technologyAdapter;
 			getPropertyChangeSupport().firePropertyChange("technologyAdapter", oldValue, technologyAdapter);
 			getPropertyChangeSupport().firePropertyChange("rootObject", null, getRootObject());
@@ -165,12 +165,11 @@ public class FIBRepositoryFolderSelector extends FIBFlexoObjectSelector<Reposito
 
 	@Override
 	protected boolean isAcceptableValue(Object o) {
-
 		if (super.isAcceptableValue(o)) {
 			if (o instanceof RepositoryFolder) {
 				if (getTechnologyAdapter() != null) {
 					if (((RepositoryFolder<?, ?>) o).getResourceRepository() instanceof TechnologyAdapterResourceRepository) {
-						TechnologyAdapterResourceRepository repo = (TechnologyAdapterResourceRepository) ((RepositoryFolder<?, ?>) o)
+						TechnologyAdapterResourceRepository<?, ?, ?, ?> repo = (TechnologyAdapterResourceRepository<?, ?, ?, ?>) ((RepositoryFolder<?, ?>) o)
 								.getResourceRepository();
 						return repo.getTechnologyAdapter() == getTechnologyAdapter();
 					}
@@ -187,5 +186,4 @@ public class FIBRepositoryFolderSelector extends FIBFlexoObjectSelector<Reposito
 		}
 		return false;
 	}
-
 }

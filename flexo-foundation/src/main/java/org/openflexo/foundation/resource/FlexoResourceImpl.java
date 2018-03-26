@@ -615,7 +615,7 @@ public abstract class FlexoResourceImpl<RD extends ResourceData<RD>> extends Fle
 	@Override
 	public LocalizedDelegate getLocales() {
 		if (this instanceof TechnologyAdapterResource) {
-			return ((TechnologyAdapterResource) this).getTechnologyAdapter().getLocales();
+			return ((TechnologyAdapterResource<?, ?>) this).getTechnologyAdapter().getLocales();
 		}
 		return super.getLocales();
 	}

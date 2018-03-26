@@ -72,7 +72,7 @@ import org.openflexo.model.annotations.XMLElement;
 @ImplementationClass(TextSelectionActorReference.TextSelectionActorReferenceImpl.class)
 @XMLElement
 @FML("FragmentActorReference")
-public interface TextSelectionActorReference<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter>
+public interface TextSelectionActorReference<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter<TA>>
 		extends ActorReference<TextSelection<D, TA>> {
 
 	@PropertyIdentifier(type = String.class)
@@ -130,7 +130,7 @@ public interface TextSelectionActorReference<D extends FlexoDocument<D, TA>, TA 
 	@Setter(END_CHARACTER_INDEX_KEY)
 	public void setEndCharacterIndex(int endRunIndex);
 
-	public abstract static class TextSelectionActorReferenceImpl<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter>
+	public abstract static class TextSelectionActorReferenceImpl<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter<TA>>
 			extends ActorReferenceImpl<TextSelection<D, TA>> implements TextSelectionActorReference<D, TA> {
 
 		private static final Logger logger = FlexoLogger.getLogger(TextSelectionActorReference.class.getPackage().toString());

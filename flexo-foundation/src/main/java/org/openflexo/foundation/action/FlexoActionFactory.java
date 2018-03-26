@@ -374,7 +374,7 @@ public abstract class FlexoActionFactory<A extends FlexoAction<A, T1, T2>, T1 ex
 			Class<? extends TechnologyAdapter> taClass = (Class<? extends TechnologyAdapter>) TypeUtils
 					.getBaseClass(TypeUtils.getTypeArgument(getFlexoActionClass(), TechnologySpecificFlexoAction.class, 0));
 			if (taClass != null) {
-				TechnologyAdapter ta = serviceManager.getTechnologyAdapterService().getTechnologyAdapter(taClass);
+				TechnologyAdapter<?> ta = serviceManager.getTechnologyAdapterService().getTechnologyAdapter(taClass);
 				return ta.getLocales();
 			}
 		}

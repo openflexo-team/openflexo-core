@@ -47,6 +47,7 @@ import org.openflexo.foundation.action.FlexoActionRunnable;
 import org.openflexo.foundation.fml.FMLObject;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.action.AddUseDeclaration;
+import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterService;
 import org.openflexo.gina.controller.FIBController.Status;
 import org.openflexo.icon.FMLIconLibrary;
@@ -77,7 +78,7 @@ public class AddUseDeclarationInitializer extends ActionInitializer<AddUseDeclar
 		return (e, action) -> {
 			if (action.getModelSlotTechnologyAdapter() != null) {
 				TechnologyAdapterService taService = getController().getApplicationContext().getTechnologyAdapterService();
-				taService.activateTechnologyAdapter(action.getModelSlotTechnologyAdapter(), true);
+				taService.activateTechnologyAdapter((TechnologyAdapter) action.getModelSlotTechnologyAdapter(), true);
 				return true;
 			}
 			return false;

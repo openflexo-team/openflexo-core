@@ -77,10 +77,10 @@ public class TestApplicationContext extends ApplicationContext {
 
 	// protected static DirectoryResourceCenter resourceCenter;
 
-	private static final String TEST_RESOURCE_CENTER_URI = "http://openflexo.org/test/TestResourceCenter";
+	// Unused private static final String TEST_RESOURCE_CENTER_URI = "http://openflexo.org/test/TestResourceCenter";
 
 	public static class FlexoTestEditor extends DefaultFlexoEditor {
-		public FlexoTestEditor(FlexoProject project, FlexoServiceManager sm) {
+		public FlexoTestEditor(FlexoProject<?> project, FlexoServiceManager sm) {
 			super(project, sm);
 		}
 
@@ -183,16 +183,12 @@ public class TestApplicationContext extends ApplicationContext {
 	 * @param technologyAdapter
 	 */
 	@Override
-	public ActivateTechnologyAdapterTask activateTechnologyAdapter(TechnologyAdapter technologyAdapter, boolean performNowInThisThread) {
-
-		if (technologyAdapter.isActivated()) {
+	public <TA extends TechnologyAdapter<TA>> ActivateTechnologyAdapterTask<TA> activateTechnologyAdapter(TA technologyAdapter,
+			boolean performNowInThisThread) {
+		if (technologyAdapter.isActivated())
 			return null;
-		}
-
 		technologyAdapter.activate();
-
-		notify(getTechnologyAdapterService(), new TechnologyAdapterHasBeenActivated(technologyAdapter));
-
+		notify(getTechnologyAdapterService(), new TechnologyAdapterHasBeenActivated<>(technologyAdapter));
 		return null;
 	}
 
@@ -203,16 +199,11 @@ public class TestApplicationContext extends ApplicationContext {
 	 * @param technologyAdapter
 	 */
 	@Override
-	public DisactivateTechnologyAdapterTask disactivateTechnologyAdapter(TechnologyAdapter technologyAdapter) {
-
-		if (!technologyAdapter.isActivated()) {
+	public <TA extends TechnologyAdapter<TA>> DisactivateTechnologyAdapterTask<TA> disactivateTechnologyAdapter(TA technologyAdapter) {
+		if (!technologyAdapter.isActivated())
 			return null;
-		}
-
 		technologyAdapter.disactivate();
-		notify(getTechnologyAdapterService(), new TechnologyAdapterHasBeenDisactivated(technologyAdapter));
-
+		notify(getTechnologyAdapterService(), new TechnologyAdapterHasBeenDisactivated<>(technologyAdapter));
 		return null;
 	}
-
 }

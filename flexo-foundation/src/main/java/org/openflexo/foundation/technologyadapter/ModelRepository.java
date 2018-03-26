@@ -55,7 +55,7 @@ import org.openflexo.model.annotations.ModelEntity;
  */
 @ModelEntity(isAbstract = true)
 @ImplementationClass(ModelRepository.ModelRepositoryImpl.class)
-public interface ModelRepository<R extends FlexoModelResource<M, MM, TA, TAMM> & FlexoResource<M>, M extends FlexoModel<M, MM> & TechnologyObject<TA>, MM extends FlexoMetaModel<MM> & TechnologyObject<TAMM>, TA extends TechnologyAdapter, TAMM extends TechnologyAdapter, I>
+public interface ModelRepository<R extends FlexoModelResource<M, MM, TA, TAMM> & FlexoResource<M>, M extends FlexoModel<M, MM> & TechnologyObject<TA>, MM extends FlexoMetaModel<MM> & TechnologyObject<TAMM>, TA extends TechnologyAdapter<TA>, TAMM extends TechnologyAdapter<TAMM>, I>
 		extends TechnologyAdapterResourceRepository<R, TA, M, I> {
 
 	/*public ModelRepository(TA technologyAdapter, FlexoResourceCenter<I> resourceCenter) {
@@ -65,8 +65,7 @@ public interface ModelRepository<R extends FlexoModelResource<M, MM, TA, TAMM> &
 				.setDescription("ModelRepository for technology " + technologyAdapter.getName() + " resource center: " + resourceCenter);
 	}*/
 
-	public static abstract class ModelRepositoryImpl<R extends FlexoModelResource<M, MM, TA, TAMM> & FlexoResource<M>, M extends FlexoModel<M, MM> & TechnologyObject<TA>, MM extends FlexoMetaModel<MM> & TechnologyObject<TAMM>, TA extends TechnologyAdapter, TAMM extends TechnologyAdapter, I>
-			extends TechnologyAdapterResourceRepositoryImpl<R, TA, M, I> implements ModelRepository<R, M, MM, TA, TAMM, I> {
-	}
+	public static abstract class ModelRepositoryImpl<R extends FlexoModelResource<M, MM, TA, TAMM> & FlexoResource<M>, M extends FlexoModel<M, MM> & TechnologyObject<TA>, MM extends FlexoMetaModel<MM> & TechnologyObject<TAMM>, TA extends TechnologyAdapter<TA>, TAMM extends TechnologyAdapter<TAMM>, I>
+			extends TechnologyAdapterResourceRepositoryImpl<R, TA, M, I> implements ModelRepository<R, M, MM, TA, TAMM, I> {}
 
 }

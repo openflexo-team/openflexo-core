@@ -74,7 +74,7 @@ import org.openflexo.toolbox.StringUtils;
  * @param <T>
  *            type of container of newly created FMLRTVirtualModelInstance
  */
-public abstract class AbstractCreateVirtualModelInstance<A extends AbstractCreateVirtualModelInstance<A, T, VMI, TA>, T extends FlexoObject, VMI extends VirtualModelInstance<VMI, TA>, TA extends TechnologyAdapter>
+public abstract class AbstractCreateVirtualModelInstance<A extends AbstractCreateVirtualModelInstance<A, T, VMI, TA>, T extends FlexoObject, VMI extends VirtualModelInstance<VMI, TA>, TA extends TechnologyAdapter<TA>>
 		extends FlexoAction<A, T, FlexoObject> implements FlexoObserver {
 
 	private static final Logger logger = Logger.getLogger(AbstractCreateVirtualModelInstance.class.getPackage().getName());

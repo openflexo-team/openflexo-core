@@ -39,7 +39,7 @@ import org.openflexo.model.annotations.Setter;
  *            {@link TechnologyAdapter} of current implementation
  */
 @ModelEntity(isAbstract = true)
-public interface NamedDocStyle<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter> extends FlexoDocStyle<D, TA> {
+public interface NamedDocStyle<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter<TA>> extends FlexoDocStyle<D, TA> {
 
 	@PropertyIdentifier(type = String.class)
 	public static final String NAME_KEY = "name";
@@ -107,7 +107,7 @@ public interface NamedDocStyle<D extends FlexoDocument<D, TA>, TA extends Techno
 	@Setter(RUN_STYLE_KEY)
 	public void setRunStyle(FlexoRunStyle<D, TA> run);
 
-	public static abstract class NamedDocStyleImpl<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter>
+	public static abstract class NamedDocStyleImpl<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter<TA>>
 			extends FlexoDocStyleImpl<D, TA> implements NamedDocStyle<D, TA> {
 
 		@Override

@@ -78,7 +78,7 @@ public interface TechnologyAdapterControllerService extends FlexoService, Custom
 	 * @param technologyAdapterClass
 	 * @return
 	 */
-	public <TAC extends TechnologyAdapterController<TA>, TA extends TechnologyAdapter> TAC getTechnologyAdapterController(
+	public <TAC extends TechnologyAdapterController<TA>, TA extends TechnologyAdapter<TA>> TAC getTechnologyAdapterController(
 			Class<TAC> technologyAdapterControllerClass);
 
 	/**
@@ -88,7 +88,7 @@ public interface TechnologyAdapterControllerService extends FlexoService, Custom
 	 * @param technologyAdapterClass
 	 * @return
 	 */
-	public <TAC extends TechnologyAdapterController<TA>, TA extends TechnologyAdapter> TAC getTechnologyAdapterController(
+	public <TAC extends TechnologyAdapterController<TA>, TA extends TechnologyAdapter<TA>> TAC getTechnologyAdapterController(
 			TA technologyAdapter);
 
 	/**
@@ -97,7 +97,7 @@ public interface TechnologyAdapterControllerService extends FlexoService, Custom
 	 * @param object
 	 * @return
 	 */
-	public <TA extends TechnologyAdapter> boolean hasModuleViewForObject(TechnologyObject<TA> object, FlexoController controller);
+	public <TA extends TechnologyAdapter<TA>> boolean hasModuleViewForObject(TechnologyObject<TA> object, FlexoController controller);
 
 	/**
 	 * Return a newly created ModuleView for supplied technology object, if this TechnologyAdapter controller service support ModuleView
@@ -106,8 +106,8 @@ public interface TechnologyAdapterControllerService extends FlexoService, Custom
 	 * @param object
 	 * @return
 	 */
-	public <TA extends TechnologyAdapter> ModuleView<?> createModuleViewForObject(TechnologyObject<TA> object, FlexoController controller,
-			FlexoPerspective perspective);
+	public <TA extends TechnologyAdapter<TA>> ModuleView<?> createModuleViewForObject(TechnologyObject<TA> object,
+			FlexoController controller, FlexoPerspective perspective);
 
 	public Collection<TechnologyAdapterController<?>> getLoadedAdapterControllers();
 
@@ -117,7 +117,7 @@ public interface TechnologyAdapterControllerService extends FlexoService, Custom
 	 * 
 	 * @param technologyAdapter
 	 */
-	public void activateTechnology(TechnologyAdapter technologyAdapter);
+	public void activateTechnology(TechnologyAdapter<?> technologyAdapter);
 
 	/**
 	 * Disable a {@link TechnologyAdapter}<br>
@@ -125,7 +125,7 @@ public interface TechnologyAdapterControllerService extends FlexoService, Custom
 	 * 
 	 * @param technologyAdapter
 	 */
-	public void disactivateTechnology(TechnologyAdapter technologyAdapter);
+	public void disactivateTechnology(TechnologyAdapter<?> technologyAdapter);
 
 	/**
 	 * Return editor for supplied custom type

@@ -333,7 +333,7 @@ public interface JarResourceCenter extends ResourceRepository<FlexoResource<?>, 
 		@SuppressWarnings("unchecked")
 		@Override
 		public final <R extends ResourceRepository<?, InJarResourceImpl>> R retrieveRepository(Class<? extends R> repositoryType,
-				TechnologyAdapter technologyAdapter) {
+				TechnologyAdapter<?> technologyAdapter) {
 			HashMap<Class<? extends ResourceRepository<?, InJarResourceImpl>>, ResourceRepository<?, InJarResourceImpl>> map = getRepositoriesForAdapter(
 					technologyAdapter, false);
 			return (R) map.get(repositoryType);
@@ -341,7 +341,7 @@ public interface JarResourceCenter extends ResourceRepository<FlexoResource<?>, 
 
 		@Override
 		public final <R extends ResourceRepository<?, InJarResourceImpl>> void registerRepository(R repository,
-				Class<? extends R> repositoryType, TechnologyAdapter technologyAdapter) {
+				Class<? extends R> repositoryType, TechnologyAdapter<?> technologyAdapter) {
 			HashMap<Class<? extends ResourceRepository<?, InJarResourceImpl>>, ResourceRepository<?, InJarResourceImpl>> map = getRepositoriesForAdapter(
 					technologyAdapter, false);
 			if (map.get(repositoryType) == null) {

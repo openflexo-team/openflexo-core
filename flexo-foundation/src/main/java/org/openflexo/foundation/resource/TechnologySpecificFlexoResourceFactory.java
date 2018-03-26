@@ -44,7 +44,7 @@ import org.openflexo.model.exceptions.ModelDefinitionException;
  * @param <TA>
  *            type of {@link TechnologyAdapter}
  */
-public abstract class TechnologySpecificFlexoResourceFactory<R extends TechnologyAdapterResource<RD, TA>, RD extends ResourceData<RD> & TechnologyObject<TA>, TA extends TechnologyAdapter>
+public abstract class TechnologySpecificFlexoResourceFactory<R extends TechnologyAdapterResource<RD, TA>, RD extends ResourceData<RD> & TechnologyObject<TA>, TA extends TechnologyAdapter<TA>>
 		extends FlexoResourceFactory<R, RD> implements ITechnologySpecificFlexoResourceFactory<R, RD, TA> {
 
 	private static final Logger logger = Logger.getLogger(TechnologySpecificFlexoResourceFactory.class.getPackage().getName());
@@ -91,7 +91,7 @@ public abstract class TechnologySpecificFlexoResourceFactory<R extends Technolog
 	@Override
 	public TechnologyContextManager<TA> getTechnologyContextManager(FlexoServiceManager sm) {
 		TA technologyAdapter = sm.getTechnologyAdapterService().getTechnologyAdapter(getTechnologyAdapterClass());
-		return (TechnologyContextManager<TA>) technologyAdapter.getTechnologyContextManager();
+		return technologyAdapter.getTechnologyContextManager();
 	}
 
 	/**

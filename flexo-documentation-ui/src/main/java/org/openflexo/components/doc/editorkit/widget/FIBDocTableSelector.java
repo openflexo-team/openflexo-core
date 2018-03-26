@@ -72,7 +72,7 @@ import org.openflexo.rm.ResourceLocator;
  * 
  */
 @SuppressWarnings("serial")
-public class FIBDocTableSelector<T extends FlexoDocTable<D, TA>, D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter>
+public class FIBDocTableSelector<T extends FlexoDocTable<D, TA>, D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter<TA>>
 		extends FIBFlexoObjectSelector<T> {
 	static final Logger logger = Logger.getLogger(FIBDocTableSelector.class.getPackage().getName());
 

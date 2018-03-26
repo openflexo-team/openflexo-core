@@ -85,7 +85,7 @@ import org.openflexo.toolbox.HasPropertyChangeSupport;
  *
  */
 @SuppressWarnings("serial")
-public class FlexoDocumentEditor<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter>
+public class FlexoDocumentEditor<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter<TA>>
 		implements HasPropertyChangeSupport, DocumentListener, CaretListener {
 
 	private static final Logger logger = Logger.getLogger(FlexoDocumentEditor.class.getPackage().getName());

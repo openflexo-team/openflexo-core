@@ -46,8 +46,8 @@ import org.openflexo.components.widget.FIBProjectResourcesBrowser;
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.FlexoProject;
-import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstanceRepository;
 import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstance;
+import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstanceRepository;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.technologyadapter.TechnologyObject;
 import org.openflexo.icon.IconLibrary;
@@ -114,14 +114,14 @@ public class ProjectResourcesPerspective extends FlexoPerspective {
 		return object.toString();
 	}
 
-	private <TA extends TechnologyAdapter> String getWindowTitleForTechnologyObject(TechnologyObject<TA> object,
+	private <TA extends TechnologyAdapter<TA>> String getWindowTitleForTechnologyObject(TechnologyObject<TA> object,
 			FlexoController controller) {
 		TechnologyAdapterControllerService tacService = getController().getApplicationContext().getTechnologyAdapterControllerService();
 		TechnologyAdapterController<TA> tac = tacService.getTechnologyAdapterController(object.getTechnologyAdapter());
 		return tac.getWindowTitleforObject(object, controller);
 	}
 
-	private void setProject(FlexoProject project) {
+	private void setProject(FlexoProject<?> project) {
 		projectResourcesBrowser.setRootObject(project);
 	}
 

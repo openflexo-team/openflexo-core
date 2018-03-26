@@ -499,8 +499,8 @@ public class FMLIconLibrary extends IconLibrary {
 		return VIRTUAL_MODEL_ICON;
 	}
 
-	public static ImageIcon iconForModelSlot(TechnologyAdapter ta) {
-		TechnologyAdapterController<?> tac = getTechnologyAdapterController(ta);
+	public static <TA extends TechnologyAdapter<TA>> ImageIcon iconForModelSlot(TA ta) {
+		TechnologyAdapterController<TA> tac = getTechnologyAdapterController(ta);
 		if (tac != null) {
 			return IconFactory.getImageIcon(tac.getTechnologyIcon(), MODEL_SLOT_ICON_MARKER);
 		}

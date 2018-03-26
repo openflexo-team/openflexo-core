@@ -51,7 +51,7 @@ import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
  * 
  * 
  */
-public interface IFlexoOntologyStructuralProperty<TA extends TechnologyAdapter> extends IFlexoOntologyFeature<TA> {
+public interface IFlexoOntologyStructuralProperty<TA extends TechnologyAdapter<TA>> extends IFlexoOntologyFeature<TA> {
 
 	/**
 	 * Range of property.

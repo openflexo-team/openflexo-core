@@ -64,7 +64,7 @@ import org.openflexo.swing.CustomPopup.ApplyCancelListener;
  *
  */
 @SuppressWarnings("serial")
-public class FlexoDocumentEditorWidget<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter> extends JPanel
+public class FlexoDocumentEditorWidget<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter<TA>> extends JPanel
 		implements FIBCustomComponent<D> {
 
 	private static final Logger logger = Logger.getLogger(FlexoDocumentEditorWidget.class.getPackage().getName());

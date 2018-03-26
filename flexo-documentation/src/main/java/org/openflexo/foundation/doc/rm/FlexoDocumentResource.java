@@ -28,7 +28,7 @@ import org.openflexo.foundation.technologyadapter.TechnologyAdapterResource;
 import org.openflexo.model.annotations.ModelEntity;
 
 @ModelEntity(isAbstract = true)
-public abstract interface FlexoDocumentResource<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter, F extends DocumentFactory<D, TA>>
+public abstract interface FlexoDocumentResource<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter<TA>, F extends DocumentFactory<D, TA>>
 		extends TechnologyAdapterResource<D, TA>, PamelaResource<D, F> {
 
 	public D getDocument();

@@ -59,17 +59,12 @@ import javax.swing.SwingUtilities;
 import org.apache.commons.io.IOUtils;
 import org.openflexo.foundation.FlexoProject;
 import org.openflexo.foundation.FlexoService;
-import org.openflexo.foundation.FlexoService.ServiceNotification;
 import org.openflexo.foundation.FlexoServiceImpl;
 import org.openflexo.foundation.FlexoServiceManager.ServiceRegistered;
 import org.openflexo.foundation.FlexoServiceManager.TechnologyAdapterHasBeenActivated;
 import org.openflexo.foundation.FlexoServiceManager.TechnologyAdapterHasBeenDisactivated;
 import org.openflexo.foundation.project.FlexoProjectResource;
 import org.openflexo.foundation.project.FlexoProjectResourceFactory;
-import org.openflexo.foundation.resource.DefaultResourceCenterService.DefaultPackageResourceCenterIsNotInstalled;
-import org.openflexo.foundation.resource.DefaultResourceCenterService.ResourceCenterAdded;
-import org.openflexo.foundation.resource.DefaultResourceCenterService.ResourceCenterListShouldBeStored;
-import org.openflexo.foundation.resource.DefaultResourceCenterService.ResourceCenterRemoved;
 import org.openflexo.foundation.resource.FileIODelegate.FileHasBeenWrittenOnDiskNotification;
 import org.openflexo.foundation.resource.FileIODelegate.WillDeleteFileOnDiskNotification;
 import org.openflexo.foundation.resource.FileIODelegate.WillRenameFileOnDiskNotification;
@@ -188,9 +183,6 @@ public abstract class DefaultResourceCenterService extends FlexoServiceImpl impl
 							String dirPath = URLDecoder.decode(url.getPath().substring(0, url.getPath().indexOf("META-INF")), "UTF-8");
 
 							if (isDevMode()) {
-								// Was like this with 1.8.0 infrastructure with Maven
-								dirPath = dirPath.replace("target/classes", "src/main/resources");
-								// Is now like this with 1.8.1+ infrastructure with Gradle
 								dirPath = dirPath.replace("/bin/", "/src/main/resources/");
 								dirPath = dirPath.replace("build/resources/main", "/src/main/resources/");
 							}
@@ -326,16 +318,6 @@ public abstract class DefaultResourceCenterService extends FlexoServiceImpl impl
 				return ((FlexoProjectResourceFactory) getFlexoProjectResourceFactory()).retrieveResource(serializationArtefact,
 						resourceCenter);
 			}
-			else {
-				// Attempt to convert it from older format
-				// TODO ??? Any needs ?
-				/*I convertedSerializationArtefact = resourceFactory.getConvertableArtefact(serializationArtefact, resourceCenter);
-				if (convertedSerializationArtefact != null) {
-					R returned = resourceFactory.retrieveResource(convertedSerializationArtefact, resourceCenter);
-					returned.setNeedsConversion();
-					return returned;
-				}*/
-			}
 		} catch (ModelDefinitionException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
@@ -469,7 +451,7 @@ public abstract class DefaultResourceCenterService extends FlexoServiceImpl impl
 	public void initialize() {
 
 		try {
-			flexoProjectResourceFactory = new FlexoProjectResourceFactory<Object>(getServiceManager());
+			flexoProjectResourceFactory = new FlexoProjectResourceFactory<>(getServiceManager());
 		} catch (ModelDefinitionException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -652,14 +634,14 @@ public abstract class DefaultResourceCenterService extends FlexoServiceImpl impl
 				ArrayList<FlexoResourceCenter<?>> listRC = new ArrayList<>(getResourceCenters());
 				for (FlexoResourceCenter<?> rc : listRC) {
 					if (rc != null) {
-						rc.activateTechnology(((TechnologyAdapterHasBeenActivated) notification).getTechnologyAdapter());
+						rc.activateTechnology(((TechnologyAdapterHasBeenActivated<?>) notification).getTechnologyAdapter());
 					}
 				}
 			}
 			else if (notification instanceof TechnologyAdapterHasBeenDisactivated) {
 				for (FlexoResourceCenter<?> rc : getResourceCenters()) {
 					if (rc != null) {
-						rc.disactivateTechnology(((TechnologyAdapterHasBeenDisactivated) notification).getTechnologyAdapter());
+						rc.disactivateTechnology(((TechnologyAdapterHasBeenDisactivated<?>) notification).getTechnologyAdapter());
 					}
 				}
 			}

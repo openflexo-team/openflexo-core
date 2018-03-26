@@ -45,7 +45,6 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Logger;
 
 import javax.swing.ImageIcon;
 
@@ -128,10 +127,7 @@ import org.openflexo.view.controller.model.FlexoPerspective;
  * @author sylvain
  * 
  */
-public abstract class TechnologyAdapterController<TA extends TechnologyAdapter> {
-
-	private static final Logger logger = Logger.getLogger(TechnologyAdapterController.class.getPackage().getName());
-
+public abstract class TechnologyAdapterController<TA extends TechnologyAdapter<TA>> {
 	private TechnologyAdapterControllerService technologyAdapterControllerService;
 
 	private final Map<Class<? extends CustomType>, CustomTypeEditor> customTypeEditors = new LinkedHashMap<>();

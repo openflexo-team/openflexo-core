@@ -60,7 +60,8 @@ import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
  * @see DefaultStyledDocument
  */
 @SuppressWarnings("serial")
-public class FlexoFragmentStyledDocument<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter> extends FlexoStyledDocument<D, TA> {
+public class FlexoFragmentStyledDocument<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter<TA>>
+		extends FlexoStyledDocument<D, TA> {
 
 	static final Logger logger = Logger.getLogger(FlexoFragmentStyledDocument.class.getPackage().getName());
 

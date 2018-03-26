@@ -336,7 +336,7 @@ public class IconLibrary {
 	 * @param technologyAdapter
 	 * @return
 	 */
-	public static <TA extends TechnologyAdapter> TechnologyAdapterController<TA> getTechnologyAdapterController(TA technologyAdapter) {
+	public static <TA extends TechnologyAdapter<TA>> TechnologyAdapterController<TA> getTechnologyAdapterController(TA technologyAdapter) {
 		if (technologyAdapter != null) {
 			try {
 				FlexoServiceManager sm = technologyAdapter.getTechnologyAdapterService().getServiceManager();

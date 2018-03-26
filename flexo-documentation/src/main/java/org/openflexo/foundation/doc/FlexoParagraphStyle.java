@@ -43,7 +43,7 @@ import org.openflexo.model.annotations.Setter;
  *            {@link TechnologyAdapter} of current implementation
  */
 @ModelEntity(isAbstract = true)
-public interface FlexoParagraphStyle<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter> extends FlexoDocStyle<D, TA> {
+public interface FlexoParagraphStyle<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter<TA>> extends FlexoDocStyle<D, TA> {
 
 	public enum ParagraphAlignment {
 		Right, Left, Center, Justify
@@ -219,7 +219,7 @@ public interface FlexoParagraphStyle<D extends FlexoDocument<D, TA>, TA extends 
 	@Override
 	public String getStringRepresentation();
 
-	public static abstract class FlexoParagraphStyleImpl<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter>
+	public static abstract class FlexoParagraphStyleImpl<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter<TA>>
 			extends FlexoDocStyleImpl<D, TA> implements FlexoParagraphStyle<D, TA> {
 
 		@Override

@@ -65,7 +65,7 @@ import org.openflexo.toolbox.StringUtils;
 @ModelEntity
 @ImplementationClass(VirtualModelModelSlotInstance.VirtualModelModelSlotInstanceImpl.class)
 @XMLElement
-public interface VirtualModelModelSlotInstance<VMI extends VirtualModelInstance<VMI, TA>, TA extends TechnologyAdapter>
+public interface VirtualModelModelSlotInstance<VMI extends VirtualModelInstance<VMI, TA>, TA extends TechnologyAdapter<TA>>
 		extends ModelSlotInstance<FMLRTModelSlot<VMI, TA>, VMI> {
 
 	@PropertyIdentifier(type = String.class)
@@ -78,7 +78,7 @@ public interface VirtualModelModelSlotInstance<VMI extends VirtualModelInstance<
 	@Setter(VIRTUAL_MODEL_INSTANCE_URI_KEY)
 	public void setVirtualModelInstanceURI(String virtualModelInstanceURI);
 
-	public static abstract class VirtualModelModelSlotInstanceImpl<VMI extends VirtualModelInstance<VMI, TA>, TA extends TechnologyAdapter>
+	public static abstract class VirtualModelModelSlotInstanceImpl<VMI extends VirtualModelInstance<VMI, TA>, TA extends TechnologyAdapter<TA>>
 			extends ModelSlotInstanceImpl<FMLRTModelSlot<VMI, TA>, VMI> implements VirtualModelModelSlotInstance<VMI, TA> {
 
 		private static final Logger logger = Logger.getLogger(VirtualModelModelSlotInstance.class.getPackage().getName());

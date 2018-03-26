@@ -64,7 +64,7 @@ import org.openflexo.view.ModuleView;
  * 
  * @param <TA>
  */
-public abstract class SpecificNaturePerspective<TA extends TechnologyAdapter> extends GenericPerspective {
+public abstract class SpecificNaturePerspective<TA extends TechnologyAdapter<TA>> extends GenericPerspective {
 
 	static final Logger logger = Logger.getLogger(SpecificNaturePerspective.class.getPackage().getName());
 

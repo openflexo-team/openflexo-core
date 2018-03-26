@@ -68,7 +68,7 @@ import org.openflexo.model.annotations.XMLElement;
 @ModelEntity
 @ImplementationClass(ColumnTableBinding.ColumnTableBindingImpl.class)
 @XMLElement
-public interface ColumnTableBinding<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter>
+public interface ColumnTableBinding<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter<TA>>
 		extends ModelSlotObject<D>, FlexoConceptObject {
 
 	@PropertyIdentifier(type = String.class)
@@ -114,7 +114,7 @@ public interface ColumnTableBinding<D extends FlexoDocument<D, TA>, TA extends T
 	@Setter(TABLE_ROLE_KEY)
 	public void setTableRole(FlexoTableRole<?, D, TA> tableRole);
 
-	public static abstract class ColumnTableBindingImpl<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter>
+	public static abstract class ColumnTableBindingImpl<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter<TA>>
 			extends FlexoConceptObjectImpl implements ColumnTableBinding<D, TA> {
 
 		@SuppressWarnings("unused")

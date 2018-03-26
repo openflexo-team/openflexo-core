@@ -43,7 +43,7 @@ import org.openflexo.model.annotations.Setter;
  */
 @ModelEntity(isAbstract = true)
 @ImplementationClass(FlexoDocObject.FlexoDocObjectImpl.class)
-public interface FlexoDocObject<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter>
+public interface FlexoDocObject<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter<TA>>
 		extends TechnologyObject<TA>, InnerResourceData<D> {
 
 	@PropertyIdentifier(type = FlexoDocument.class)
@@ -55,8 +55,8 @@ public interface FlexoDocObject<D extends FlexoDocument<D, TA>, TA extends Techn
 	@Setter(DOCUMENT_KEY)
 	public void setFlexoDocument(D flexoDocument);
 
-	public static abstract class FlexoDocObjectImpl<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter> extends FlexoObjectImpl
-			implements FlexoDocObject<D, TA> {
+	public static abstract class FlexoDocObjectImpl<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter<TA>>
+			extends FlexoObjectImpl implements FlexoDocObject<D, TA> {
 
 		public FlexoDocObjectImpl() {
 			super();

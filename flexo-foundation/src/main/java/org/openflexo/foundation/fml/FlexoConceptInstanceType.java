@@ -71,7 +71,8 @@ public class FlexoConceptInstanceType implements TechnologySpecificType<FMLTechn
 	 * @author sylvain
 	 * 
 	 */
-	public static class FlexoConceptInstanceTypeFactory extends TechnologyAdapterTypeFactory<FlexoConceptInstanceType> {
+	public static class FlexoConceptInstanceTypeFactory
+			extends TechnologyAdapterTypeFactory<FlexoConceptInstanceType, FMLTechnologyAdapter> {
 
 		@Override
 		public Class<FlexoConceptInstanceType> getCustomType() {

@@ -150,7 +150,7 @@ public class PropertyEntry extends PropertyChangedSupportDefaultImplementation i
 	// The context in which the PropertyEntry has been defined
 	private FlexoConceptObject context;
 
-	private TechnologyAdapter technologyAdapter;
+	private TechnologyAdapter<?> technologyAdapter;
 	private Class<? extends ModelSlot<?>> modelSlotClass;
 	private Class<? extends FlexoRole<?>> flexoRoleClass;
 
@@ -369,7 +369,7 @@ public class PropertyEntry extends PropertyChangedSupportDefaultImplementation i
 	 * 
 	 * @return
 	 */
-	public TechnologyAdapter getTechnologyAdapter() {
+	public TechnologyAdapter<?> getTechnologyAdapter() {
 		if (technologyAdapter == null && context != null) {
 			/*Class<?> baseClass = TypeUtils.getBaseClass(getType());
 			if (TechnologyObject.class.isAssignableFrom(baseClass)) {
@@ -382,10 +382,10 @@ public class PropertyEntry extends PropertyChangedSupportDefaultImplementation i
 		return technologyAdapter;
 	}
 
-	public void setTechnologyAdapter(TechnologyAdapter technologyAdapter) {
+	public void setTechnologyAdapter(TechnologyAdapter<?> technologyAdapter) {
 		if ((technologyAdapter == null && this.technologyAdapter != null)
 				|| (technologyAdapter != null && !technologyAdapter.equals(this.technologyAdapter))) {
-			TechnologyAdapter oldValue = this.technologyAdapter;
+			TechnologyAdapter<?> oldValue = this.technologyAdapter;
 			this.technologyAdapter = technologyAdapter;
 			getPropertyChangeSupport().firePropertyChange("technologyAdapter", oldValue, technologyAdapter);
 			getPropertyChangeSupport().firePropertyChange("availableFlexoRoleTypes", null, getAvailableFlexoRoleTypes());
@@ -486,7 +486,7 @@ public class PropertyEntry extends PropertyChangedSupportDefaultImplementation i
 		return returned;
 	}
 
-	private static List<Class<? extends FlexoRole<?>>> buildAvailableFlexoRoleTypes(TechnologyAdapter ta) {
+	private static List<Class<? extends FlexoRole<?>>> buildAvailableFlexoRoleTypes(TechnologyAdapter<?> ta) {
 		List<Class<? extends FlexoRole<?>>> returned = new ArrayList<>();
 		for (Class<? extends ModelSlot<?>> modelSlotClass : ta.getAvailableModelSlotTypes()) {
 			for (Class<? extends FlexoRole<?>> flexoRoleClass : ta.getTechnologyAdapterService()

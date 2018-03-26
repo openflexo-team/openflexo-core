@@ -49,7 +49,7 @@ import org.openflexo.toolbox.StringUtils;
 
 @ModelEntity(isAbstract = true)
 @ImplementationClass(FlexoTableRole.FlexoTableRoleImpl.class)
-public interface FlexoTableRole<T extends FlexoDocTable<D, TA>, D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter>
+public interface FlexoTableRole<T extends FlexoDocTable<D, TA>, D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter<TA>>
 		extends FlexoRole<T> {
 
 	@PropertyIdentifier(type = FlexoDocFragment.class)
@@ -158,7 +158,7 @@ public interface FlexoTableRole<T extends FlexoDocTable<D, TA>, D extends FlexoD
 
 	public BindingModel getTableBindingModel();
 
-	public static abstract class FlexoTableRoleImpl<T extends FlexoDocTable<D, TA>, D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter>
+	public static abstract class FlexoTableRoleImpl<T extends FlexoDocTable<D, TA>, D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter<TA>>
 			extends FlexoRoleImpl<T> implements FlexoTableRole<T, D, TA> {
 
 		private BindingModel tableBindingModel;

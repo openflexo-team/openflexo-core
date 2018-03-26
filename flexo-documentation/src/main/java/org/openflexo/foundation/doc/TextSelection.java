@@ -77,7 +77,7 @@ import org.openflexo.toolbox.StringUtils;
 @ModelEntity
 @ImplementationClass(TextSelection.TextSelectionImpl.class)
 @XMLElement
-public interface TextSelection<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter> extends FlexoObject {
+public interface TextSelection<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter<TA>> extends FlexoObject {
 
 	@PropertyIdentifier(type = FlexoDocFragment.class)
 	public static final String FRAGMENT_KEY = "fragment";
@@ -200,7 +200,7 @@ public interface TextSelection<D extends FlexoDocument<D, TA>, TA extends Techno
 	 */
 	public boolean isSingleRun();
 
-	public static abstract class TextSelectionImpl<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter> extends FlexoObjectImpl
+	public static abstract class TextSelectionImpl<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter<TA>> extends FlexoObjectImpl
 			implements TextSelection<D, TA> {
 
 		@SuppressWarnings("unused")
@@ -475,9 +475,11 @@ public interface TextSelection<D extends FlexoDocument<D, TA>, TA extends Techno
 		public String toString() {
 			return getStartElementIdentifier()
 					+ (getStartRunIndex() > -1
-							? ":" + getStartRunIndex() + (getStartCharacterIndex() > -1 ? ":" + getStartCharacterIndex() : "") : "")
-					+ "-" + getEndElementIdentifier() + (getEndRunIndex() > -1
-							? ":" + getEndRunIndex() + (getEndCharacterIndex() > -1 ? ":" + getEndCharacterIndex() : "") : "");
+							? ":" + getStartRunIndex() + (getStartCharacterIndex() > -1 ? ":" + getStartCharacterIndex() : "")
+							: "")
+					+ "-" + getEndElementIdentifier()
+					+ (getEndRunIndex() > -1 ? ":" + getEndRunIndex() + (getEndCharacterIndex() > -1 ? ":" + getEndCharacterIndex() : "")
+							: "");
 		}
 	}
 

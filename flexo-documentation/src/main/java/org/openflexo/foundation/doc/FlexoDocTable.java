@@ -47,7 +47,7 @@ import org.openflexo.model.annotations.XMLElement;
  *            {@link TechnologyAdapter} of current implementation
  */
 @ModelEntity(isAbstract = true)
-public interface FlexoDocTable<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter> extends FlexoDocElement<D, TA> {
+public interface FlexoDocTable<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter<TA>> extends FlexoDocElement<D, TA> {
 
 	@PropertyIdentifier(type = FlexoDocTableRow.class, cardinality = Cardinality.LIST)
 	public static final String TABLE_ROWS_KEY = "tableRows";
@@ -115,7 +115,7 @@ public interface FlexoDocTable<D extends FlexoDocument<D, TA>, TA extends Techno
 
 	public int getColumnWidth(int colIndex);
 
-	public static abstract class FlexoTableImpl<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter>
+	public static abstract class FlexoTableImpl<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter<TA>>
 			extends FlexoDocumentElementImpl<D, TA> implements FlexoDocTable<D, TA> {
 
 		/**

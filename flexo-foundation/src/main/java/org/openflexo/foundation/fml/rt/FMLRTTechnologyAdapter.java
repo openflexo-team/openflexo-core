@@ -40,7 +40,8 @@ package org.openflexo.foundation.fml.rt;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Logger;
+
+import javax.swing.text.View;
 
 import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.fml.FlexoConceptInstanceType;
@@ -68,10 +69,7 @@ import org.openflexo.foundation.technologyadapter.TechnologyAdapterInitializatio
 @DeclareModelSlots({ FMLRTVirtualModelInstanceModelSlot.class })
 @DeclareTechnologySpecificTypes({ FlexoConceptInstanceType.class, VirtualModelInstanceType.class })
 @DeclareResourceTypes({ FMLRTVirtualModelInstanceResourceFactory.class })
-public class FMLRTTechnologyAdapter extends TechnologyAdapter {
-
-	private static final Logger logger = Logger.getLogger(FMLRTTechnologyAdapter.class.getPackage().getName());
-
+public class FMLRTTechnologyAdapter extends TechnologyAdapter<FMLRTTechnologyAdapter> {
 	public FMLRTTechnologyAdapter() throws TechnologyAdapterInitializationException {
 	}
 

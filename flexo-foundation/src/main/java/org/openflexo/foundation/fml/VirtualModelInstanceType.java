@@ -79,8 +79,8 @@ public class VirtualModelInstanceType extends FlexoConceptInstanceType {
 		if (factory instanceof AbstractVirtualModelInstanceTypeFactory) {
 			VirtualModel virtualModel;
 			try {
-				virtualModel = ((AbstractVirtualModelInstanceTypeFactory<?>) factory).getTechnologyAdapter().getTechnologyAdapterService()
-						.getServiceManager().getVirtualModelLibrary().getVirtualModel(conceptURI);
+				virtualModel = ((AbstractVirtualModelInstanceTypeFactory<?, ?>) factory).getTechnologyAdapter()
+						.getTechnologyAdapterService().getServiceManager().getVirtualModelLibrary().getVirtualModel(conceptURI);
 				if (virtualModel != null) {
 					flexoConcept = virtualModel;
 					this.customTypeFactory = null;
@@ -114,10 +114,10 @@ public class VirtualModelInstanceType extends FlexoConceptInstanceType {
 	 * @author sylvain
 	 * 
 	 */
-	public static abstract class AbstractVirtualModelInstanceTypeFactory<T extends VirtualModelInstanceType>
-			extends TechnologyAdapterTypeFactory<T> {
+	public static abstract class AbstractVirtualModelInstanceTypeFactory<T extends VirtualModelInstanceType, TA extends TechnologyAdapter<TA>>
+			extends TechnologyAdapterTypeFactory<T, TA> {
 
-		public AbstractVirtualModelInstanceTypeFactory(TechnologyAdapter technologyAdapter) {
+		public AbstractVirtualModelInstanceTypeFactory(TA technologyAdapter) {
 			super(technologyAdapter);
 		}
 
@@ -184,7 +184,8 @@ public class VirtualModelInstanceType extends FlexoConceptInstanceType {
 	 * @author sylvain
 	 * 
 	 */
-	public static class VirtualModelInstanceTypeFactory extends AbstractVirtualModelInstanceTypeFactory<VirtualModelInstanceType> {
+	public static class VirtualModelInstanceTypeFactory
+			extends AbstractVirtualModelInstanceTypeFactory<VirtualModelInstanceType, FMLTechnologyAdapter> {
 
 		public VirtualModelInstanceTypeFactory(FMLTechnologyAdapter technologyAdapter) {
 			super(technologyAdapter);

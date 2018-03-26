@@ -50,7 +50,7 @@ import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.utils.FlexoObjectReference;
 import org.openflexo.foundation.utils.FlexoObjectReference.ReferenceOwner;
 
-public class IndividualOfClass<TA extends TechnologyAdapter> implements TechnologySpecificType<TA> {
+public class IndividualOfClass<TA extends TechnologyAdapter<TA>> implements TechnologySpecificType<TA> {
 
 	/**
 	 * Factory for IndividualOfClass instances
@@ -58,7 +58,8 @@ public class IndividualOfClass<TA extends TechnologyAdapter> implements Technolo
 	 * @author sylvain
 	 * 
 	 */
-	public static class IndividualOfClassTypeFactory extends TechnologyAdapterTypeFactory<IndividualOfClass<?>> implements ReferenceOwner {
+	public static class IndividualOfClassTypeFactory extends TechnologyAdapterTypeFactory<IndividualOfClass<?>, FMLRTTechnologyAdapter>
+			implements ReferenceOwner {
 
 		public IndividualOfClassTypeFactory(FMLRTTechnologyAdapter technologyAdapter) {
 			super(technologyAdapter);
@@ -106,7 +107,7 @@ public class IndividualOfClass<TA extends TechnologyAdapter> implements Technolo
 
 	}
 
-	public static <TA extends TechnologyAdapter> IndividualOfClass<TA> getIndividualOfClass(IFlexoOntologyClass<TA> anOntologyClass) {
+	public static <TA extends TechnologyAdapter<TA>> IndividualOfClass<TA> getIndividualOfClass(IFlexoOntologyClass<TA> anOntologyClass) {
 		if (anOntologyClass == null) {
 			return null;
 		}

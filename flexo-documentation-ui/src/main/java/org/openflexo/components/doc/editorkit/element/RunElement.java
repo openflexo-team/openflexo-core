@@ -64,7 +64,7 @@ import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
  *            {@link TechnologyAdapter} of current implementation
  */
 @SuppressWarnings("serial")
-public class RunElement<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter> extends LeafElement
+public class RunElement<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter<TA>> extends LeafElement
 		implements AbstractDocumentElement<FlexoDocRun<D, TA>, D, TA> {
 
 	/**

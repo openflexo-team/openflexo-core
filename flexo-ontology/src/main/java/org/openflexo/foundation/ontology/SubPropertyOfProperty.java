@@ -50,7 +50,7 @@ import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.utils.FlexoObjectReference;
 import org.openflexo.foundation.utils.FlexoObjectReference.ReferenceOwner;
 
-public class SubPropertyOfProperty<TA extends TechnologyAdapter> implements TechnologySpecificType<TA> {
+public class SubPropertyOfProperty<TA extends TechnologyAdapter<TA>> implements TechnologySpecificType<TA> {
 
 	/**
 	 * Factory for SubPropertyOfProperty instances
@@ -58,8 +58,8 @@ public class SubPropertyOfProperty<TA extends TechnologyAdapter> implements Tech
 	 * @author sylvain
 	 * 
 	 */
-	public static class SubPropertyOfPropertyTypeFactory extends TechnologyAdapterTypeFactory<SubPropertyOfProperty<?>>
-			implements ReferenceOwner {
+	public static class SubPropertyOfPropertyTypeFactory
+			extends TechnologyAdapterTypeFactory<SubPropertyOfProperty<?>, FMLRTTechnologyAdapter> implements ReferenceOwner {
 
 		public SubPropertyOfPropertyTypeFactory(FMLRTTechnologyAdapter technologyAdapter) {
 			super(technologyAdapter);
@@ -107,7 +107,7 @@ public class SubPropertyOfProperty<TA extends TechnologyAdapter> implements Tech
 
 	}
 
-	public static <TA extends TechnologyAdapter> SubPropertyOfProperty<TA> getSubPropertyOfProperty(
+	public static <TA extends TechnologyAdapter<TA>> SubPropertyOfProperty<TA> getSubPropertyOfProperty(
 			IFlexoOntologyStructuralProperty<TA> anOntologyProperty) {
 		if (anOntologyProperty == null) {
 			return null;
@@ -207,7 +207,7 @@ public class SubPropertyOfProperty<TA extends TechnologyAdapter> implements Tech
 		return true;
 	}
 
-	public static class SubDataPropertyOfProperty<TA extends TechnologyAdapter> extends SubPropertyOfProperty<TA> {
+	public static class SubDataPropertyOfProperty<TA extends TechnologyAdapter<TA>> extends SubPropertyOfProperty<TA> {
 
 		private SubDataPropertyOfProperty(IFlexoOntologyDataProperty<TA> anOntologyProperty) {
 			super(anOntologyProperty);
@@ -235,7 +235,7 @@ public class SubPropertyOfProperty<TA extends TechnologyAdapter> implements Tech
 
 	}
 
-	public static class SubObjectPropertyOfProperty<TA extends TechnologyAdapter> extends SubPropertyOfProperty<TA> {
+	public static class SubObjectPropertyOfProperty<TA extends TechnologyAdapter<TA>> extends SubPropertyOfProperty<TA> {
 
 		private SubObjectPropertyOfProperty(IFlexoOntologyObjectProperty<TA> anOntologyProperty) {
 			super(anOntologyProperty);

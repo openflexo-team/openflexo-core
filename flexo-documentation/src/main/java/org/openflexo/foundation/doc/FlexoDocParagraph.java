@@ -50,7 +50,7 @@ import org.openflexo.toolbox.StringUtils;
  *            {@link TechnologyAdapter} of current implementation
  */
 @ModelEntity(isAbstract = true)
-public interface FlexoDocParagraph<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter> extends FlexoDocElement<D, TA> {
+public interface FlexoDocParagraph<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter<TA>> extends FlexoDocElement<D, TA> {
 
 	@PropertyIdentifier(type = FlexoDocRun.class, cardinality = Cardinality.LIST)
 	public static final String RUNS_KEY = "runs";
@@ -121,7 +121,7 @@ public interface FlexoDocParagraph<D extends FlexoDocument<D, TA>, TA extends Te
 	 */
 	public List<FlexoDrawingRun<D, TA>> getDrawingRuns();
 
-	public static abstract class FlexoDocParagraphImpl<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter>
+	public static abstract class FlexoDocParagraphImpl<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter<TA>>
 			extends FlexoDocumentElementImpl<D, TA> implements FlexoDocParagraph<D, TA> {
 
 		@Override

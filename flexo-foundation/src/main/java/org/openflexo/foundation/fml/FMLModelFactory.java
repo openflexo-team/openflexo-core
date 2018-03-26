@@ -162,7 +162,7 @@ public class FMLModelFactory extends ModelFactory implements PamelaResourceModel
 			relativePathResourceConverter
 					.setContainerResource(virtualModelResource.getIODelegate().getSerializationArtefactAsResource().getContainer());
 		}
-		for (TechnologyAdapter ta : taService.getTechnologyAdapters()) {
+		for (TechnologyAdapter<?> ta : taService.getTechnologyAdapters()) {
 			ta.initFMLModelFactory(this);
 		}
 
@@ -210,7 +210,7 @@ public class FMLModelFactory extends ModelFactory implements PamelaResourceModel
 	public static List<Class<?>> retrieveTechnologySpecificClasses(TechnologyAdapterService taService) throws ModelDefinitionException {
 		List<Class<?>> classes = new ArrayList<>();
 		classes.add(VirtualModel.class);
-		for (TechnologyAdapter ta : taService.getTechnologyAdapters()) {
+		for (TechnologyAdapter<?> ta : taService.getTechnologyAdapters()) {
 			for (Class<? extends ModelSlot<?>> modelSlotClass : new ArrayList<>(ta.getAvailableModelSlotTypes())) {
 				retrieveTechnologySpecificClassesForModelSlot(modelSlotClass, classes);
 			}

@@ -53,7 +53,7 @@ import org.openflexo.model.annotations.Setter;
  * @param <RD>
  */
 @ModelEntity(isAbstract = true)
-public interface TechnologyAdapterResource<RD extends ResourceData<RD> & TechnologyObject<TA>, TA extends TechnologyAdapter>
+public interface TechnologyAdapterResource<RD extends ResourceData<RD> & TechnologyObject<TA>, TA extends TechnologyAdapter<TA>>
 		extends FlexoResource<RD> {
 	public static final String TECHNOLOGY_ADAPTER = "technologyAdapter";
 	public static final String TECHNOLOGY_CONTEXT_MANAGER = "technologyContextManager";

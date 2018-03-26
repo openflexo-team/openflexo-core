@@ -60,7 +60,7 @@ import org.openflexo.model.validation.ValidationRule;
  */
 @ModelEntity(isAbstract = true)
 @ImplementationClass(FlexoFragmentRole.FlexoDocumentFragmentRoleImpl.class)
-public interface FlexoFragmentRole<F extends FlexoDocFragment<D, TA>, D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter>
+public interface FlexoFragmentRole<F extends FlexoDocFragment<D, TA>, D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter<TA>>
 		extends FlexoRole<F> {
 
 	@PropertyIdentifier(type = TextBinding.class, cardinality = Cardinality.LIST)
@@ -106,7 +106,7 @@ public interface FlexoFragmentRole<F extends FlexoDocFragment<D, TA>, D extends 
 
 	public TextBinding<D, TA> makeTextBinding(TextSelection<D, TA> textSelection, DataBinding<String> binding, boolean isMultiline);
 
-	public static abstract class FlexoDocumentFragmentRoleImpl<F extends FlexoDocFragment<D, TA>, D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter>
+	public static abstract class FlexoDocumentFragmentRoleImpl<F extends FlexoDocFragment<D, TA>, D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter<TA>>
 			extends FlexoRoleImpl<F> implements FlexoFragmentRole<F, D, TA> {
 
 		@Override

@@ -200,13 +200,13 @@ public class CreateModelSlotWizard extends AbstractCreateFMLElementWizard<Create
 			}
 		}
 
-		public TechnologyAdapter getTechnologyAdapter() {
+		public TechnologyAdapter<?> getTechnologyAdapter() {
 			return getAction().getTechnologyAdapter();
 		}
 
-		public void setTechnologyAdapter(TechnologyAdapter technologyAdapter) {
+		public void setTechnologyAdapter(TechnologyAdapter<?> technologyAdapter) {
 			if (getTechnologyAdapter() != technologyAdapter) {
-				TechnologyAdapter oldValue = getTechnologyAdapter();
+				TechnologyAdapter<?> oldValue = getTechnologyAdapter();
 				getAction().setTechnologyAdapter(technologyAdapter);
 				getPropertyChangeSupport().firePropertyChange("technologyAdapter", oldValue, technologyAdapter);
 				getPropertyChangeSupport().firePropertyChange("availableModelSlotTypes", false, getAvailableModelSlotTypes());

@@ -103,7 +103,7 @@ public class FlexoEnumType extends FlexoConceptInstanceType {
 	 * @author sylvain
 	 * 
 	 */
-	public static class FlexoEnumTypeFactory extends TechnologyAdapterTypeFactory<FlexoEnumType> {
+	public static class FlexoEnumTypeFactory extends TechnologyAdapterTypeFactory<FlexoEnumType, FMLTechnologyAdapter> {
 
 		@Override
 		public Class<FlexoEnumType> getCustomType() {

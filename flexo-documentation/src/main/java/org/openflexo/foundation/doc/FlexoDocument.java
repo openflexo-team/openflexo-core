@@ -62,7 +62,7 @@ import org.openflexo.model.annotations.XMLElement;
  */
 @ModelEntity(isAbstract = true)
 @ImplementationClass(FlexoDocument.FlexoDocumentImpl.class)
-public interface FlexoDocument<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter>
+public interface FlexoDocument<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter<TA>>
 		extends FlexoDocObject<D, TA>, ResourceData<D>, FlexoDocElementContainer<D, TA> {
 
 	public static final String ROOT_ELEMENTS_KEY = "rootElements";
@@ -239,7 +239,7 @@ public interface FlexoDocument<D extends FlexoDocument<D, TA>, TA extends Techno
 
 	public String debugStructuredContents();
 
-	public static abstract class FlexoDocumentImpl<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter>
+	public static abstract class FlexoDocumentImpl<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter<TA>>
 			extends FlexoDocObjectImpl<D, TA> implements FlexoDocument<D, TA> {
 
 		@Override

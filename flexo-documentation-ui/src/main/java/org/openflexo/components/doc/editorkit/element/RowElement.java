@@ -64,7 +64,7 @@ import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
  * @author Sylvain Guerin
  */
 @SuppressWarnings("serial")
-public class RowElement<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter> extends BranchElement
+public class RowElement<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter<TA>> extends BranchElement
 		implements AbstractDocumentElement<FlexoDocTableRow<D, TA>, D, TA> {
 
 	private final FlexoStyledDocument<D, TA> flexoStyledDocument;

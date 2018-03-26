@@ -37,7 +37,7 @@ import org.openflexo.model.annotations.Setter;
  *            {@link TechnologyAdapter} of current implementation
  */
 @ModelEntity(isAbstract = true)
-public interface FlexoDocTableCell<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter>
+public interface FlexoDocTableCell<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter<TA>>
 		extends FlexoDocObject<D, TA>, FlexoDocElementContainer<D, TA> {
 
 	@PropertyIdentifier(type = FlexoDocTableRow.class)
@@ -151,7 +151,7 @@ public interface FlexoDocTableCell<D extends FlexoDocument<D, TA>, TA extends Te
 	@Override
 	public FlexoDocElement<D, TA> getElementWithIdentifier(String identifier);
 
-	public static abstract class FlexoTableCellImpl<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter>
+	public static abstract class FlexoTableCellImpl<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter<TA>>
 			extends FlexoDocObjectImpl<D, TA> implements FlexoDocTableCell<D, TA> {
 
 		@Override

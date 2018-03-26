@@ -309,7 +309,7 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 	 * 
 	 * @param technologyAdapter
 	 */
-	public void focusOnTechnologyAdapter(TechnologyAdapter technologyAdapter) {
+	public void focusOnTechnologyAdapter(TechnologyAdapter<?> technologyAdapter) {
 	}
 
 	private FIBResourceManagerBrowser sharedBrowser;
@@ -1811,7 +1811,7 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 	 * @param technologyAdapter
 	 * @return
 	 */
-	public static <TA extends TechnologyAdapter> TechnologyAdapterController<TA> getTechnologyAdapterController(TA technologyAdapter) {
+	public static <TA extends TechnologyAdapter<TA>> TechnologyAdapterController<TA> getTechnologyAdapterController(TA technologyAdapter) {
 		if (technologyAdapter != null) {
 			FlexoServiceManager sm = technologyAdapter.getTechnologyAdapterService().getServiceManager();
 			if (sm != null) {
@@ -1830,7 +1830,8 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 	 * @param technologyAdapter
 	 * @return
 	 */
-	public <TA extends TechnologyAdapter> TechnologyAdapterController<TA> getTechnologyAdapterController(Class<TA> technologyAdapterClass) {
+	public <TA extends TechnologyAdapter<TA>> TechnologyAdapterController<TA> getTechnologyAdapterController(
+			Class<TA> technologyAdapterClass) {
 		TechnologyAdapterService taService = getApplicationContext().getTechnologyAdapterService();
 		TA ta = taService.getTechnologyAdapter(technologyAdapterClass);
 		TechnologyAdapterControllerService tacService = getApplicationContext().getTechnologyAdapterControllerService();
@@ -1843,7 +1844,7 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 	 * @param technologyAdapter
 	 * @return
 	 */
-	public <TA extends TechnologyAdapter> TA getTechnologyAdapter(Class<TA> technologyAdapterClass) {
+	public <TA extends TechnologyAdapter<TA>> TA getTechnologyAdapter(Class<TA> technologyAdapterClass) {
 		TechnologyAdapterService taService = getApplicationContext().getTechnologyAdapterService();
 		return taService.getTechnologyAdapter(technologyAdapterClass);
 	}
@@ -1884,7 +1885,7 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 		return iconForObject;
 	}
 
-	public static <TA extends TechnologyAdapter> ImageIcon statelessIconForTechnologyObject(TechnologyObject<TA> object) {
+	public static <TA extends TechnologyAdapter<TA>> ImageIcon statelessIconForTechnologyObject(TechnologyObject<TA> object) {
 		// prevent NPE
 		if (object != null) {
 			TechnologyAdapterController<?> tac;
@@ -1905,7 +1906,7 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 		return null;
 	}
 
-	public static <TA extends TechnologyAdapter> ImageIcon statelessIconForTechnologyAdapterResource(
+	public static <TA extends TechnologyAdapter<TA>> ImageIcon statelessIconForTechnologyAdapterResource(
 			TechnologyAdapterResource<?, TA> resource) {
 		TechnologyAdapterController<TA> tac = getTechnologyAdapterController(resource.getTechnologyAdapter());
 		if (tac != null) {
@@ -1960,7 +1961,7 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 		}
 
 		if (object instanceof ModelSlotEntry) {
-			return FMLIconLibrary.iconForModelSlot(((ModelSlotEntry) object).getTechnologyAdapter());
+			return FMLIconLibrary.iconForModelSlot(((ModelSlotEntry<?>) object).getTechnologyAdapter());
 		}
 		else if (object instanceof ParentFlexoConceptEntry) {
 			return FMLIconLibrary.FLEXO_CONCEPT_ICON;

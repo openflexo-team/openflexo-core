@@ -50,7 +50,7 @@ import org.openflexo.gina.annotation.FIBPanel;
  * 
  */
 @FIBPanel("Fib/FIBOntologyDataPropertyEditor.fib")
-public interface IFlexoOntologyDataProperty<TA extends TechnologyAdapter> extends IFlexoOntologyStructuralProperty<TA> {
+public interface IFlexoOntologyDataProperty<TA extends TechnologyAdapter<TA>> extends IFlexoOntologyStructuralProperty<TA> {
 	/**
 	 * Range of property.
 	 * 

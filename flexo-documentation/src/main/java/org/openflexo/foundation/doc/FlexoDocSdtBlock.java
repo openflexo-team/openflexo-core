@@ -34,10 +34,10 @@ import org.openflexo.model.annotations.ModelEntity;
  *            {@link TechnologyAdapter} of current implementation
  */
 @ModelEntity(isAbstract = true)
-public interface FlexoDocSdtBlock<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter> extends FlexoDocElement<D, TA> {
+public interface FlexoDocSdtBlock<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter<TA>> extends FlexoDocElement<D, TA> {
 
-	public static abstract class FlexoDocSdtBlockImpl<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter>
-			extends FlexoDocumentElementImpl<D, TA>implements FlexoDocSdtBlock<D, TA> {
+	public static abstract class FlexoDocSdtBlockImpl<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter<TA>>
+			extends FlexoDocumentElementImpl<D, TA> implements FlexoDocSdtBlock<D, TA> {
 
 		@Override
 		public String toString() {

@@ -36,7 +36,7 @@ import org.openflexo.toolbox.StringUtils;
 
 @ModelEntity(isAbstract = true)
 @ImplementationClass(FlexoParagraphRole.FlexoParagraphRoleImpl.class)
-public interface FlexoParagraphRole<P extends FlexoDocParagraph<D, TA>, D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter>
+public interface FlexoParagraphRole<P extends FlexoDocParagraph<D, TA>, D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter<TA>>
 		extends FlexoRole<P> {
 
 	@PropertyIdentifier(type = FlexoDocParagraph.class)
@@ -78,7 +78,7 @@ public interface FlexoParagraphRole<P extends FlexoDocParagraph<D, TA>, D extend
 	@Setter(PARAGRAPH_ID_KEY)
 	public void setParagraphId(String paragraphId);
 
-	public static abstract class FlexoParagraphRoleImpl<P extends FlexoDocParagraph<D, TA>, D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter>
+	public static abstract class FlexoParagraphRoleImpl<P extends FlexoDocParagraph<D, TA>, D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter<TA>>
 			extends FlexoRoleImpl<P> implements FlexoParagraphRole<P, D, TA> {
 
 		private P paragraph;

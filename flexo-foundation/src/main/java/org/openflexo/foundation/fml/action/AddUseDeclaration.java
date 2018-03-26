@@ -105,14 +105,14 @@ public class AddUseDeclaration extends FlexoAction<AddUseDeclaration, VirtualMod
 		return newUseDeclaration;
 	}
 
-	private TechnologyAdapter modelSlotTechnologyAdapter;
+	private TechnologyAdapter<?> modelSlotTechnologyAdapter;
 	private Class<? extends ModelSlot<?>> modelSlotClass;
 
-	public TechnologyAdapter getModelSlotTechnologyAdapter() {
+	public TechnologyAdapter<?> getModelSlotTechnologyAdapter() {
 		return modelSlotTechnologyAdapter;
 	}
 
-	public void setModelSlotTechnologyAdapter(TechnologyAdapter technologyAdapter) {
+	public void setModelSlotTechnologyAdapter(TechnologyAdapter<?> technologyAdapter) {
 		this.modelSlotTechnologyAdapter = technologyAdapter;
 		getPropertyChangeSupport().firePropertyChange("modelSlotTechnologyAdapter", null, technologyAdapter);
 		if (getModelSlotClass() != null && !technologyAdapter.getAvailableModelSlotTypes().contains(getModelSlotClass())) {

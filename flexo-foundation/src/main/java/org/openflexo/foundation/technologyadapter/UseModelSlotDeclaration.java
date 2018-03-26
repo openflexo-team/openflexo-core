@@ -98,7 +98,7 @@ public interface UseModelSlotDeclaration extends FlexoObject {
 				TechnologyAdapterService taService = sm.getTechnologyAdapterService();
 				TechnologyAdapter ta = taService.getTechnologyAdapterForModelSlot(getModelSlotClass());
 				if (ta != null) {
-					return ta.getInferedVirtualModelInstanceType(vm, (Class<? extends InferedFMLRTModelSlot<?, ?>>) getModelSlotClass());
+					return ta.getInferedVirtualModelInstanceType(vm, getModelSlotClass());
 				}
 			}
 			return null;

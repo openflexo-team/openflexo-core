@@ -1167,7 +1167,7 @@ public abstract class FlexoProjectImpl<I> extends ResourceRepositoryImpl<FlexoRe
 	}
 
 	@Override
-	public String canImportProject(FlexoProject project) {
+	public String canImportProject(FlexoProject<?> project) {
 		if (project.getProjectURI().equals(getProject().getProjectURI())) {
 			return getLocales().localizedForKey("cannot_import_itself");
 		}
@@ -1178,7 +1178,7 @@ public abstract class FlexoProjectImpl<I> extends ResourceRepositoryImpl<FlexoRe
 	}
 
 	@Override
-	public void removeFromImportedProjects(FlexoProject project) {
+	public void removeFromImportedProjects(FlexoProject<?> project) {
 		for (FlexoProjectReference ref : new ArrayList<>(getImportedProjects())) {
 			if (ref.getReferencedProject() == project) {
 				removeFromImportedProjects(ref);
@@ -1274,7 +1274,7 @@ public abstract class FlexoProjectImpl<I> extends ResourceRepositoryImpl<FlexoRe
 	}
 
 	@Override
-	public boolean isIgnorable(I artefact, TechnologyAdapter technologyAdapter) {
+	public boolean isIgnorable(I artefact, TechnologyAdapter<?> technologyAdapter) {
 		if (getDelegateResourceCenter() == null) {
 			return true;
 		}
@@ -1283,7 +1283,7 @@ public abstract class FlexoProjectImpl<I> extends ResourceRepositoryImpl<FlexoRe
 
 	@Override
 	public <R extends ResourceRepository<?, I>> R retrieveRepository(Class<? extends R> repositoryType,
-			TechnologyAdapter technologyAdapter) {
+			TechnologyAdapter<?> technologyAdapter) {
 		if (getDelegateResourceCenter() == null) {
 			return null;
 		}
@@ -1292,7 +1292,7 @@ public abstract class FlexoProjectImpl<I> extends ResourceRepositoryImpl<FlexoRe
 
 	@Override
 	public <R extends ResourceRepository<?, I>> void registerRepository(R repository, Class<? extends R> repositoryType,
-			TechnologyAdapter technologyAdapter) {
+			TechnologyAdapter<?> technologyAdapter) {
 		if (getDelegateResourceCenter() == null) {
 			return;
 		}
@@ -1300,7 +1300,7 @@ public abstract class FlexoProjectImpl<I> extends ResourceRepositoryImpl<FlexoRe
 	}
 
 	@Override
-	public Collection<? extends ResourceRepository<?, I>> getRegistedRepositories(TechnologyAdapter technologyAdapter,
+	public Collection<? extends ResourceRepository<?, I>> getRegistedRepositories(TechnologyAdapter<?> technologyAdapter,
 			boolean considerEmptyRepositories) {
 		if (getDelegateResourceCenter() == null) {
 			return Collections.emptyList();

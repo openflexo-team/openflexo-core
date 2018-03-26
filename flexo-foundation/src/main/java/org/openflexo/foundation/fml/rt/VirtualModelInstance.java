@@ -50,6 +50,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.swing.SwingUtilities;
+import javax.swing.text.View;
 
 import org.openflexo.connie.BindingEvaluationContext;
 import org.openflexo.connie.BindingVariable;
@@ -114,7 +115,7 @@ import org.openflexo.toolbox.StringUtils;
  */
 @ModelEntity(isAbstract = true)
 @ImplementationClass(VirtualModelInstance.VirtualModelInstanceImpl.class)
-public interface VirtualModelInstance<VMI extends VirtualModelInstance<VMI, TA>, TA extends TechnologyAdapter>
+public interface VirtualModelInstance<VMI extends VirtualModelInstance<VMI, TA>, TA extends TechnologyAdapter<TA>>
 		extends FlexoConceptInstance, FlexoModel<VMI, VirtualModel>, TechnologyObject<TA>, IndexableContainer<FlexoConceptInstance> {
 
 	public static final String EVENT_FIRED = "EventFired";
@@ -394,7 +395,7 @@ public interface VirtualModelInstance<VMI extends VirtualModelInstance<VMI, TA>,
 	 * @param <VMI>
 	 * @param <TA>
 	 */
-	public static abstract class VirtualModelInstanceImpl<VMI extends VirtualModelInstance<VMI, TA>, TA extends TechnologyAdapter>
+	public static abstract class VirtualModelInstanceImpl<VMI extends VirtualModelInstance<VMI, TA>, TA extends TechnologyAdapter<TA>>
 			extends FlexoConceptInstanceImpl implements VirtualModelInstance<VMI, TA> {
 
 		private static final Logger logger = Logger.getLogger(FMLRTVirtualModelInstance.class.getPackage().getName());

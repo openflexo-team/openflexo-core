@@ -137,13 +137,13 @@ public class AddUseDeclarationWizard extends FlexoWizard {
 			return true;
 		}
 
-		public TechnologyAdapter getTechnologyAdapter() {
+		public TechnologyAdapter<?> getTechnologyAdapter() {
 			return getAction().getModelSlotTechnologyAdapter();
 		}
 
-		public void setTechnologyAdapter(TechnologyAdapter technologyAdapter) {
+		public void setTechnologyAdapter(TechnologyAdapter<?> technologyAdapter) {
 			if (getTechnologyAdapter() != technologyAdapter) {
-				TechnologyAdapter oldValue = getTechnologyAdapter();
+				TechnologyAdapter<?> oldValue = getTechnologyAdapter();
 				getAction().setModelSlotTechnologyAdapter(technologyAdapter);
 				getPropertyChangeSupport().firePropertyChange("technologyAdapter", oldValue, technologyAdapter);
 				getPropertyChangeSupport().firePropertyChange("modelSlotClass", null, getModelSlotClass());

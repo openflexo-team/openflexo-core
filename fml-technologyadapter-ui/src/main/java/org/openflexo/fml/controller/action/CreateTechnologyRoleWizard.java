@@ -86,7 +86,7 @@ public class CreateTechnologyRoleWizard extends AbstractCreateFlexoRoleWizard<Cr
 	@FIBPanel("Fib/Wizard/CreateFMLElement/DescribeTechnologyRole.fib")
 	public class DescribeTechnologyRole extends AbstractDescribeFlexoRole /*implements Bindable*/ {
 
-		private TechnologyAdapter technologyAdapter;
+		private TechnologyAdapter<?> technologyAdapter;
 
 		// private boolean required = true;
 		// private DataBinding<?> defaultValue;
@@ -114,14 +114,14 @@ public class CreateTechnologyRoleWizard extends AbstractCreateFlexoRoleWizard<Cr
 			checkValidity();
 		}
 
-		public TechnologyAdapter getTechnologyAdapter() {
+		public TechnologyAdapter<?> getTechnologyAdapter() {
 			return technologyAdapter;
 		}
 
-		public void setTechnologyAdapter(TechnologyAdapter technologyAdapter) {
+		public void setTechnologyAdapter(TechnologyAdapter<?> technologyAdapter) {
 			if ((technologyAdapter == null && this.technologyAdapter != null)
 					|| (technologyAdapter != null && !technologyAdapter.equals(this.technologyAdapter))) {
-				TechnologyAdapter oldValue = this.technologyAdapter;
+				TechnologyAdapter<?> oldValue = this.technologyAdapter;
 				this.technologyAdapter = technologyAdapter;
 				getPropertyChangeSupport().firePropertyChange("technologyAdapter", oldValue, technologyAdapter);
 				getPropertyChangeSupport().firePropertyChange("availableFlexoRoleTypes", null, getAvailableFlexoRoleTypes());
@@ -228,7 +228,7 @@ public class CreateTechnologyRoleWizard extends AbstractCreateFlexoRoleWizard<Cr
 			return returned;
 		}
 
-		private List<Class<? extends FlexoRole<?>>> buildAvailableFlexoRoleTypes(TechnologyAdapter ta) {
+		private List<Class<? extends FlexoRole<?>>> buildAvailableFlexoRoleTypes(TechnologyAdapter<?> ta) {
 			List<Class<? extends FlexoRole<?>>> returned = new ArrayList<>();
 			for (Class<? extends ModelSlot<?>> modelSlotClass : ta.getAvailableModelSlotTypes()) {
 				for (Class<? extends FlexoRole<?>> flexoRoleClass : ta.getTechnologyAdapterService()

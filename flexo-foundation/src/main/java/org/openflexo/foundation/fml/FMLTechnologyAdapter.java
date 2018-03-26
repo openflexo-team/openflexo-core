@@ -40,7 +40,6 @@ package org.openflexo.foundation.fml;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Logger;
 
 import org.openflexo.connie.annotations.NotificationUnsafe;
 import org.openflexo.foundation.FlexoServiceManager;
@@ -68,10 +67,7 @@ import org.openflexo.foundation.technologyadapter.TechnologyAdapterService;
  */
 @DeclareModelSlots({ FMLModelSlot.class })
 @DeclareResourceTypes({ VirtualModelResourceFactory.class })
-public class FMLTechnologyAdapter extends TechnologyAdapter {
-
-	private static final Logger logger = Logger.getLogger(FMLTechnologyAdapter.class.getPackage().getName());
-
+public class FMLTechnologyAdapter extends TechnologyAdapter<FMLTechnologyAdapter> {
 	public FMLTechnologyAdapter() throws TechnologyAdapterInitializationException {
 	}
 

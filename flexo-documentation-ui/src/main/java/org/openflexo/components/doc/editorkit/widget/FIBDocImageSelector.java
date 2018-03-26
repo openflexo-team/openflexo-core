@@ -74,7 +74,7 @@ import org.openflexo.rm.ResourceLocator;
  * 
  */
 @SuppressWarnings("serial")
-public class FIBDocImageSelector<T extends FlexoDrawingRun<D, TA>, D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter>
+public class FIBDocImageSelector<T extends FlexoDrawingRun<D, TA>, D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter<TA>>
 		extends FIBFlexoObjectSelector<T> {
 	static final Logger logger = Logger.getLogger(FIBDocImageSelector.class.getPackage().getName());
 

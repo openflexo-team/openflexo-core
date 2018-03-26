@@ -81,7 +81,7 @@ public class OntologyUtils {
 
 	}
 
-	public static <TA extends TechnologyAdapter, C extends IFlexoOntologyClass<TA>> IFlexoOntologyClass<TA> getFirstCommonAncestor(C c1,
+	public static <TA extends TechnologyAdapter<TA>, C extends IFlexoOntologyClass<TA>> IFlexoOntologyClass<TA> getFirstCommonAncestor(C c1,
 			C c2) {
 		Set<C> commonAncestors = new HashSet<>();
 		Set<C> ancestors1 = (Set<C>) getAllSuperClasses(c1);
@@ -103,7 +103,7 @@ public class OntologyUtils {
 	 * 
 	 * @return
 	 */
-	public static <TA extends TechnologyAdapter> Set<IFlexoOntologyClass<TA>> getAllSuperClasses(IFlexoOntologyClass<TA> aClass) {
+	public static <TA extends TechnologyAdapter<TA>> Set<IFlexoOntologyClass<TA>> getAllSuperClasses(IFlexoOntologyClass<TA> aClass) {
 		Set<IFlexoOntologyClass<TA>> returned = new HashSet<>();
 		for (IFlexoOntologyClass<TA> c : aClass.getSuperClasses()) {
 			returned.add(c);

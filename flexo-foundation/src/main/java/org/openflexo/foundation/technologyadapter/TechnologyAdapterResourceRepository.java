@@ -59,14 +59,14 @@ import org.openflexo.model.annotations.ModelEntity;
  */
 @ModelEntity(isAbstract = true)
 @ImplementationClass(TechnologyAdapterResourceRepository.TechnologyAdapterResourceRepositoryImpl.class)
-public interface TechnologyAdapterResourceRepository<R extends TechnologyAdapterResource<RD, TA> & FlexoResource<RD>, TA extends TechnologyAdapter, RD extends ResourceData<RD> & TechnologyObject<TA>, I>
+public interface TechnologyAdapterResourceRepository<R extends TechnologyAdapterResource<RD, TA> & FlexoResource<RD>, TA extends TechnologyAdapter<TA>, RD extends ResourceData<RD> & TechnologyObject<TA>, I>
 		extends ResourceRepository<R, I> {
 
 	public TA getTechnologyAdapter();
 
 	public void setTechnologyAdapter(TA technologyAdapter);
 
-	public static abstract class TechnologyAdapterResourceRepositoryImpl<R extends TechnologyAdapterResource<RD, TA> & FlexoResource<RD>, TA extends TechnologyAdapter, RD extends ResourceData<RD> & TechnologyObject<TA>, I>
+	public static abstract class TechnologyAdapterResourceRepositoryImpl<R extends TechnologyAdapterResource<RD, TA> & FlexoResource<RD>, TA extends TechnologyAdapter<TA>, RD extends ResourceData<RD> & TechnologyObject<TA>, I>
 			extends ResourceRepositoryImpl<R, I> implements TechnologyAdapterResourceRepository<R, TA, RD, I> {
 
 		@SuppressWarnings("unused")

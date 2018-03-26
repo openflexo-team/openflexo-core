@@ -40,7 +40,7 @@ import org.openflexo.model.annotations.Setter;
  *            {@link TechnologyAdapter} of current implementation
  */
 @ModelEntity(isAbstract = true)
-public interface FlexoTextRun<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter> extends FlexoDocRun<D, TA> {
+public interface FlexoTextRun<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter<TA>> extends FlexoDocRun<D, TA> {
 
 	@PropertyIdentifier(type = String.class)
 	public static final String TEXT_KEY = "text";
@@ -57,8 +57,8 @@ public interface FlexoTextRun<D extends FlexoDocument<D, TA>, TA extends Technol
 	public void fireTextChanged();
 
 	@Implementation
-	public static abstract class FlexoTextRunImpl<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter> extends FlexoRunImpl<D, TA>
-			implements FlexoTextRun<D, TA> {
+	public static abstract class FlexoTextRunImpl<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter<TA>>
+			extends FlexoRunImpl<D, TA> implements FlexoTextRun<D, TA> {
 
 		@Override
 		public String getTextPreview() {

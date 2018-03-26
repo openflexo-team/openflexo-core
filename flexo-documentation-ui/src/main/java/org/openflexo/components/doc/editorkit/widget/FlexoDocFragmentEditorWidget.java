@@ -68,7 +68,7 @@ import org.openflexo.toolbox.HasPropertyChangeSupport;
  *
  */
 @SuppressWarnings("serial")
-public class FlexoDocFragmentEditorWidget<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter> extends JPanel
+public class FlexoDocFragmentEditorWidget<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter<TA>> extends JPanel
 		implements FIBCustomComponent<FlexoDocFragment<D, TA>>, HasPropertyChangeSupport {
 
 	private static final Logger logger = Logger.getLogger(FlexoDocFragmentEditorWidget.class.getPackage().getName());

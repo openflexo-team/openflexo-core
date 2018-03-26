@@ -48,12 +48,12 @@ import org.openflexo.model.annotations.ModelEntity;
  * 
  */
 @ModelEntity(isAbstract = true)
-public interface TechnologySpecificFlexoBehaviour extends FlexoBehaviour {
+public interface TechnologySpecificFlexoBehaviour<TA extends TechnologyAdapter<TA>> extends FlexoBehaviour {
 
 	/**
 	 * Return the {@link TechnologyAdapter} of technical space where this concept exists
 	 * 
 	 * @return
 	 */
-	public TechnologyAdapter getSpecificTechnologyAdapter();
+	public TA getSpecificTechnologyAdapter();
 }

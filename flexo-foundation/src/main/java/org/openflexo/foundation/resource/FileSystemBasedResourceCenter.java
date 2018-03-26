@@ -766,7 +766,7 @@ public interface FileSystemBasedResourceCenter extends ResourceRepository<FlexoR
 
 		@Override
 		public final <R extends ResourceRepository<?, File>> R retrieveRepository(Class<? extends R> repositoryType,
-				TechnologyAdapter technologyAdapter) {
+				TechnologyAdapter<?> technologyAdapter) {
 			HashMap<Class<? extends ResourceRepository<?, File>>, ResourceRepository<?, File>> map = getRepositoriesForAdapter(
 					technologyAdapter, false);
 
@@ -775,7 +775,7 @@ public interface FileSystemBasedResourceCenter extends ResourceRepository<FlexoR
 
 		@Override
 		public final <R extends ResourceRepository<?, File>> void registerRepository(R repository, Class<? extends R> repositoryType,
-				TechnologyAdapter technologyAdapter) {
+				TechnologyAdapter<?> technologyAdapter) {
 
 			HashMap<Class<? extends ResourceRepository<?, File>>, ResourceRepository<?, File>> map = getRepositoriesForAdapter(
 					technologyAdapter, false);

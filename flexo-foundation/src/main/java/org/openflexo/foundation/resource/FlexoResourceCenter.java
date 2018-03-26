@@ -166,7 +166,7 @@ public interface FlexoResourceCenter<I> extends Iterable<I>, ResourceRepository<
 	 * 
 	 * @param technologyAdapter
 	 */
-	default void activateTechnology(TechnologyAdapter technologyAdapter) {
+	default void activateTechnology(TechnologyAdapter<?> technologyAdapter) {
 		Progress.progress(getLocales().localizedForKey("initializing_adapter") + " " + technologyAdapter.getName());
 		technologyAdapter.initializeResourceCenter(this);
 	}
@@ -177,7 +177,7 @@ public interface FlexoResourceCenter<I> extends Iterable<I>, ResourceRepository<
 	 * 
 	 * @param technologyAdapter
 	 */
-	default void disactivateTechnology(TechnologyAdapter technologyAdapter) {
+	default void disactivateTechnology(TechnologyAdapter<?> technologyAdapter) {
 
 	}
 
@@ -298,7 +298,7 @@ public interface FlexoResourceCenter<I> extends Iterable<I>, ResourceRepository<
 	 * @param artefact
 	 * @return
 	 */
-	boolean isIgnorable(I artefact, TechnologyAdapter technologyAdapter);
+	boolean isIgnorable(I artefact, TechnologyAdapter<?> technologyAdapter);
 
 	/**
 	 * Retrieve repository matching supplied type and technology
@@ -308,7 +308,7 @@ public interface FlexoResourceCenter<I> extends Iterable<I>, ResourceRepository<
 	 * @return the registered repository
 	 */
 	// TODO: change to retrieveRepository(Class<? extends R> repositoryType, Class <? extends TechnologyAdapter technologyAdapterClass)
-	<R extends ResourceRepository<?, I>> R retrieveRepository(Class<? extends R> repositoryType, TechnologyAdapter technologyAdapter);
+	<R extends ResourceRepository<?, I>> R retrieveRepository(Class<? extends R> repositoryType, TechnologyAdapter<?> technologyAdapter);
 
 	/**
 	 * Register supplied repository for a given type and technology
@@ -319,7 +319,7 @@ public interface FlexoResourceCenter<I> extends Iterable<I>, ResourceRepository<
 	 * @param technologyAdapter
 	 */
 	<R extends ResourceRepository<?, I>> void registerRepository(R repository, Class<? extends R> repositoryType,
-			TechnologyAdapter technologyAdapter);
+			TechnologyAdapter<?> technologyAdapter);
 
 	/**
 	 * Return the list of all {@link ResourceRepositoryImpl} registered in this ResourceCenter for a given technology
@@ -327,7 +327,7 @@ public interface FlexoResourceCenter<I> extends Iterable<I>, ResourceRepository<
 	 * @param technologyAdapter
 	 * @return
 	 */
-	Collection<? extends ResourceRepository<?, I>> getRegistedRepositories(TechnologyAdapter technologyAdapter,
+	Collection<? extends ResourceRepository<?, I>> getRegistedRepositories(TechnologyAdapter<?> technologyAdapter,
 			boolean considerEmptyRepositories);
 
 	ResourceCenterEntry<?> getResourceCenterEntry();

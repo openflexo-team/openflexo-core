@@ -46,7 +46,7 @@ import org.openflexo.toolbox.StringUtils;
 
 @ModelEntity(isAbstract = true)
 @ImplementationClass(FlexoImageRole.FlexoImageRoleImpl.class)
-public interface FlexoImageRole<R extends FlexoDrawingRun<D, TA>, D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter>
+public interface FlexoImageRole<R extends FlexoDrawingRun<D, TA>, D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter<TA>>
 		extends FlexoRole<R> {
 
 	@PropertyIdentifier(type = FlexoDrawingRun.class)
@@ -148,7 +148,7 @@ public interface FlexoImageRole<R extends FlexoDrawingRun<D, TA>, D extends Flex
 
 	public List<Class<? extends ScreenshotableNature<?>>> getAvailableNatures();
 
-	public static abstract class FlexoImageRoleImpl<R extends FlexoDrawingRun<D, TA>, D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter>
+	public static abstract class FlexoImageRoleImpl<R extends FlexoDrawingRun<D, TA>, D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter<TA>>
 			extends FlexoRoleImpl<R> implements FlexoImageRole<R, D, TA> {
 
 		private R drawingRun;
@@ -280,7 +280,7 @@ public interface FlexoImageRole<R extends FlexoDrawingRun<D, TA>, D extends Flex
 		public List<Class<? extends ScreenshotableNature<?>>> getAvailableNatures() {
 			if (availableNatures == null && getServiceManager() != null) {
 				availableNatures = new ArrayList<>();
-				for (TechnologyAdapter ta : getServiceManager().getTechnologyAdapterService().getTechnologyAdapters()) {
+				for (TechnologyAdapter<?> ta : getServiceManager().getTechnologyAdapterService().getTechnologyAdapters()) {
 					for (Class<? extends VirtualModelInstanceNature> natureClass : ta.getAvailableVirtualModelInstanceNatures()) {
 						if (ScreenshotableNature.class.isAssignableFrom(natureClass)) {
 							availableNatures.add((Class<? extends ScreenshotableNature<?>>) natureClass);

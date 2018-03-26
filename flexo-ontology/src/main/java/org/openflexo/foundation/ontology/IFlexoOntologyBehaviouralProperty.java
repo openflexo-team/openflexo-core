@@ -49,6 +49,6 @@ import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
  * 
  * 
  */
-public interface IFlexoOntologyBehaviouralProperty<TA extends TechnologyAdapter> extends IFlexoOntologyFeature<TA> {
+public interface IFlexoOntologyBehaviouralProperty<TA extends TechnologyAdapter<TA>> extends IFlexoOntologyFeature<TA> {
 
 }

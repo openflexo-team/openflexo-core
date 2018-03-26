@@ -79,7 +79,7 @@ import org.openflexo.toolbox.StringUtils;
  * @author Stanislav Lapitsky
  * @author sylvain
  */
-public class FlexoDocumentEditorFactory<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter> {
+public class FlexoDocumentEditorFactory<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter<TA>> {
 	/**
 	 * document instance to the building.
 	 */

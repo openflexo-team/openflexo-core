@@ -50,10 +50,10 @@ import org.openflexo.model.factory.ModelFactory;
  * 
  */
 @ModelEntity
-public interface TechnologyAdapterGlobalRepository<TA extends TechnologyAdapter, I> extends TechnologyAdapterResourceRepository {
+public interface TechnologyAdapterGlobalRepository<TA extends TechnologyAdapter<TA>, I> extends TechnologyAdapterResourceRepository {
 
-	public static <TA extends TechnologyAdapter, I> TechnologyAdapterGlobalRepository<TA, I> instanciateNewRepository(TA technologyAdapter,
-			FlexoResourceCenter<I> resourceCenter) {
+	public static <TA extends TechnologyAdapter<TA>, I> TechnologyAdapterGlobalRepository<TA, I> instanciateNewRepository(
+			TA technologyAdapter, FlexoResourceCenter<I> resourceCenter) {
 		ModelFactory factory;
 		try {
 			factory = new ModelFactory(TechnologyAdapterGlobalRepository.class);

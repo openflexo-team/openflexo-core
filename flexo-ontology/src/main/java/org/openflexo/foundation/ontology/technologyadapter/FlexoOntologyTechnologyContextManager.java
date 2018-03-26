@@ -65,7 +65,7 @@ import org.openflexo.foundation.technologyadapter.TechnologyContextManager;
  * @author sylvain
  * 
  */
-public abstract class FlexoOntologyTechnologyContextManager<TA extends TechnologyAdapter> extends TechnologyContextManager<TA> {
+public abstract class FlexoOntologyTechnologyContextManager<TA extends TechnologyAdapter<TA>> extends TechnologyContextManager<TA> {
 
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(FlexoOntologyTechnologyContextManager.class.getPackage().getName());

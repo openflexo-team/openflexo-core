@@ -42,8 +42,8 @@ import java.util.List;
 
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.rm.VirtualModelResource;
-import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.foundation.fml.rt.AbstractVirtualModelInstanceModelFactory;
+import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.foundation.resource.DirectoryContainerResource;
 import org.openflexo.foundation.resource.FlexoResource;
 import org.openflexo.foundation.resource.PamelaResource;
@@ -62,7 +62,7 @@ import org.openflexo.model.annotations.Setter;
  */
 @ModelEntity(isAbstract = true)
 @ImplementationClass(AbstractVirtualModelInstanceResourceImpl.class)
-public interface AbstractVirtualModelInstanceResource<VMI extends VirtualModelInstance<VMI, TA>, TA extends TechnologyAdapter>
+public interface AbstractVirtualModelInstanceResource<VMI extends VirtualModelInstance<VMI, TA>, TA extends TechnologyAdapter<TA>>
 		extends PamelaResource<VMI, AbstractVirtualModelInstanceModelFactory<?>>, TechnologyAdapterResource<VMI, TA>,
 		DirectoryContainerResource<VMI> {
 
