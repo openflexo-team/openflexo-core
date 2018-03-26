@@ -178,8 +178,7 @@ public abstract interface FetchRequest<MS extends ModelSlot<RD>, RD extends Reso
 						returned.add(proposedFetchResult);
 						// System.out.println("I take " + proposedFetchResult);
 					}
-					else {
-					}
+					else {}
 				}
 				return returned;
 			}

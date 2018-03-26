@@ -38,8 +38,6 @@
 
 package org.openflexo.prefs;
 
-import java.util.logging.Logger;
-
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterService;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
@@ -61,11 +59,5 @@ import org.openflexo.model.annotations.XMLElement;
 		smallIcon = "Icons/Common/TechnologyAdapter.png",
 		bigIcon = "Icons/Common/TechnologyAdapter_64x64.png")
 public interface TechnologyAdapterPreferences extends ServicePreferences<TechnologyAdapterService> {
-
-	public abstract class TechnologyAdapterPreferencesImpl extends PreferencesContainerImpl implements TechnologyAdapterPreferences {
-
-		private static final Logger logger = Logger.getLogger(TechnologyAdapterPreferences.class.getPackage().getName());
-
-	}
-
+	public abstract class TechnologyAdapterPreferencesImpl extends PreferencesContainerImpl implements TechnologyAdapterPreferences {}
 }

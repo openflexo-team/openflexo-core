@@ -41,6 +41,8 @@ package org.openflexo.foundation.fml.rt;
 import java.io.FileNotFoundException;
 import java.util.logging.Logger;
 
+import javax.swing.text.View;
+
 import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.fml.FlexoProperty;
 import org.openflexo.foundation.fml.FlexoRole;
@@ -48,6 +50,7 @@ import org.openflexo.foundation.resource.ResourceData;
 import org.openflexo.foundation.resource.ResourceLoadingCancelledException;
 import org.openflexo.foundation.technologyadapter.FlexoModel;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
+import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterResource;
 import org.openflexo.foundation.technologyadapter.TechnologyObject;
 import org.openflexo.model.annotations.Getter;
@@ -338,7 +341,8 @@ public abstract interface ModelSlotInstance<MS extends ModelSlot<? extends RD>, 
 		@Override
 		public String toString() {
 			return "ModelSlotInstance:" + (getModelSlot() != null
-					? getModelSlot().getName() + ":" + getModelSlot().getClass().getSimpleName() + "_" + getFlexoID() : "null");
+					? getModelSlot().getName() + ":" + getModelSlot().getClass().getSimpleName() + "_" + getFlexoID()
+					: "null");
 		}
 
 		/**

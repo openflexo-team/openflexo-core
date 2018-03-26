@@ -41,6 +41,7 @@ package org.openflexo.foundation.fml.cli.command.directive;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.fml.cli.CommandInterpreter;
@@ -128,7 +129,8 @@ public class ResourcesDirective extends Directive {
 			}
 			else {
 				resourcesToDisplay = new ArrayList<>();
-				for (TechnologyAdapterGlobalRepository<?, ?> repository : getTechnologyAdapter().getGlobalRepositories()) {
+				List<TechnologyAdapterGlobalRepository<?, ?>> globalRepositories = getTechnologyAdapter().getGlobalRepositories();
+				for (TechnologyAdapterGlobalRepository<?, ?> repository : globalRepositories) {
 					resourcesToDisplay.addAll(repository.getAllResources());
 				}
 			}

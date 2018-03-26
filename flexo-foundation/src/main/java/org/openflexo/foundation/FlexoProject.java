@@ -186,9 +186,9 @@ public interface FlexoProject<I> extends ResourceRepository<FlexoResource<?>, I>
 	@Remover(value = IMPORTED_PROJECTS)
 	public void removeFromImportedProjects(FlexoProjectReference projectReference);
 
-	public String canImportProject(FlexoProject project);
+	public String canImportProject(FlexoProject<?> project);
 
-	public void removeFromImportedProjects(FlexoProject project);
+	public void removeFromImportedProjects(FlexoProject<?> project);
 
 	@Getter(value = EDITORS, cardinality = Cardinality.LIST, ignoreType = true)
 	public List<FlexoEditor> getEditors();

@@ -54,7 +54,7 @@ import org.openflexo.model.annotations.Setter;
 import org.openflexo.model.annotations.XMLAttribute;
 
 /**
- * Abstract behaviour beeing called on an existing {@link VirtualModelInstance}
+ * Abstract behaviour being called on an existing {@link VirtualModelInstance}
  * 
  * @author sylvain
  *

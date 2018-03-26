@@ -598,6 +598,7 @@ public class FMLTechnologyAdapterController extends TechnologyAdapterController<
 		return vmiSelector;
 	}
 
+	/* Unused 
 	private static FIBWidget makeViewSelector(final WidgetContext widgetContext, FIBModelFactory fibModelFactory, String variableName) {
 		FIBCustom viewSelector = fibModelFactory.newFIBCustom();
 		viewSelector.setBindingFactory(widgetContext.getBindingFactory());
@@ -611,12 +612,12 @@ public class FMLTechnologyAdapterController extends TechnologyAdapterController<
 		}
 		viewSelector.addToAssignments(fibModelFactory.newFIBCustomAssignment(viewSelector, new DataBinding<>("component.project"),
 				new DataBinding<>("controller.editor.project"), true));
-
+	
 		String containerBinding = getContainerBinding(widgetContext, variableName);
 		DataBinding<?> container = widgetContext.getContainer();
 		if (container != null && container.isSet() && container.isValid()) {
 			Type containerType = container.getAnalyzedType();
-
+	
 			if (TypeUtils.isTypeAssignableFrom(FlexoResourceCenter.class, containerType)) {
 				viewSelector.addToAssignments(fibModelFactory.newFIBCustomAssignment(viewSelector,
 						new DataBinding<>("component.resourceCenter"), new DataBinding<>(containerBinding), true));
@@ -628,14 +629,15 @@ public class FMLTechnologyAdapterController extends TechnologyAdapterController<
 					.addToAssignments(fibModelFactory.newFIBCustomAssignment(viewSelector, new DataBinding<>("component.serviceManager"),
 							new DataBinding<>("controller.flexoController.applicationContext"), true));
 		}
-
+	
 		// viewSelector.addToAssignments(fibModelFactory.newFIBCustomAssignment(viewSelector, new DataBinding<Object>("component.view"),
 		// new DataBinding<Object>(containerBinding), true));
-
+	
 		viewSelector.addToAssignments(fibModelFactory.newFIBCustomAssignment(viewSelector, new DataBinding<>("component.expectedType"),
 				new DataBinding<>(variableName + "." + widgetContext.getWidgetDefinitionAccess() + ".type"), true));
 		return viewSelector;
 	}
+	*/
 
 	@Override
 	public void resourceLoading(TechnologyAdapterResource<?, FMLTechnologyAdapter> resource) {

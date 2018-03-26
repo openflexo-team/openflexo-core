@@ -147,30 +147,6 @@ public abstract interface TechnologySpecificActionDefiningReceiver<MS extends Mo
 			return null;
 		}
 
-		/*@Deprecated
-		@Override
-		public ModelSlotInstance<MS, ?> getModelSlotInstance(RunTimeEvaluationContext action) {
-			FlexoConceptInstance fci = action.getFlexoConceptInstance();
-			VirtualModelInstance<?, ?> vmi = null;
-			if (fci != null && fci instanceof VirtualModelInstance<?, ?>) {
-				vmi = (VirtualModelInstance<?, ?>) fci;
-			}
-			else if (action.getVirtualModelInstance() != null) {
-				vmi = action.getVirtualModelInstance();
-			}
-			if (vmi != null) {
-				// Following line does not compile with Java7 (don't understand why)
-				// That's the reason i tried to fix that compile issue with getGenericModelSlot() method (see below)
-				// FD, in Java 8 return vmi.getModelSlotInstance(getModelSlot()); does not compile hence the cast
-				return vmi.getModelSlotInstance((ModelSlot) getInferedModelSlot());
-				// return (ModelSlotInstance<MS, ?>) vmi.getModelSlotInstance(getGenericModelSlot
-			}
-			else {
-				logger.severe("Could not access virtual model instance for action " + action);
-				return null;
-			}
-		}*/
-
 		/**
 		 * Return a string representation suitable for a common user<br>
 		 * This representation will used in all GUIs
@@ -193,13 +169,6 @@ public abstract interface TechnologySpecificActionDefiningReceiver<MS extends Mo
 				receiver.setBindingName("receiver");
 				receiver.setMandatory(isReceiverMandatory());
 			}
-
-			// TODO: this code should be removed from future release (after 1.8.1)
-			/*if (!receiver.isSet() && getModelSlot() != null) {
-				receiver.setUnparsedBinding(getModelSlot().getName());
-				receiver.isValid();
-			}*/
-
 			return receiver;
 		}
 
