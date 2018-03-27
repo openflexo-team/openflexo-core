@@ -114,7 +114,7 @@ public class CreateTechnologyRoleWizard extends AbstractCreateFlexoRoleWizard<Cr
 			checkValidity();
 		}
 
-		public TechnologyAdapter<?> getTechnologyAdapter() {
+		public TechnologyAdapter getTechnologyAdapter() {
 			return technologyAdapter;
 		}
 
@@ -149,7 +149,7 @@ public class CreateTechnologyRoleWizard extends AbstractCreateFlexoRoleWizard<Cr
 
 		public Class<? extends ModelSlot<?>> getModelSlotClass() {
 			if (getTechnologyAdapter() != null) {
-				for (Class<? extends ModelSlot<?>> msClass : getTechnologyAdapter().getAvailableModelSlotTypes()) {
+				for (Class<? extends ModelSlot<?>> msClass : technologyAdapter.getAvailableModelSlotTypes()) {
 					if (getTechnologyAdapter().getTechnologyAdapterService().getAvailableFlexoRoleTypes(msClass)
 							.contains(getFlexoRoleClass())) {
 						return msClass;

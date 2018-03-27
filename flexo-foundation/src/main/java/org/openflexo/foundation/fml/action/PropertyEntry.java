@@ -80,7 +80,7 @@ import org.openflexo.toolbox.StringUtils;
  * @author sylvain
  *
  */
-public class PropertyEntry extends PropertyChangedSupportDefaultImplementation implements Bindable {
+public class PropertyEntry<TA extends TechnologyAdapter<TA>> extends PropertyChangedSupportDefaultImplementation implements Bindable {
 
 	public static enum PropertyType {
 		PRIMITIVE,
@@ -150,7 +150,7 @@ public class PropertyEntry extends PropertyChangedSupportDefaultImplementation i
 	// The context in which the PropertyEntry has been defined
 	private FlexoConceptObject context;
 
-	private TechnologyAdapter<?> technologyAdapter;
+	private TA technologyAdapter;
 	private Class<? extends ModelSlot<?>> modelSlotClass;
 	private Class<? extends FlexoRole<?>> flexoRoleClass;
 
@@ -369,7 +369,7 @@ public class PropertyEntry extends PropertyChangedSupportDefaultImplementation i
 	 * 
 	 * @return
 	 */
-	public TechnologyAdapter<?> getTechnologyAdapter() {
+	public TA getTechnologyAdapter() {
 		if (technologyAdapter == null && context != null) {
 			/*Class<?> baseClass = TypeUtils.getBaseClass(getType());
 			if (TechnologyObject.class.isAssignableFrom(baseClass)) {
@@ -377,12 +377,12 @@ public class PropertyEntry extends PropertyChangedSupportDefaultImplementation i
 						TechnologyObject.class, 0);
 				return getServiceManager().getTechnologyAdapterService().getTechnologyAdapter(taClass);
 			}*/
-			return context.getServiceManager().getTechnologyAdapterService().getTechnologyAdapters().get(0);
+			return (TA) context.getServiceManager().getTechnologyAdapterService().getTechnologyAdapters().get(0);
 		}
 		return technologyAdapter;
 	}
 
-	public void setTechnologyAdapter(TechnologyAdapter<?> technologyAdapter) {
+	public void setTechnologyAdapter(TA technologyAdapter) {
 		if ((technologyAdapter == null && this.technologyAdapter != null)
 				|| (technologyAdapter != null && !technologyAdapter.equals(this.technologyAdapter))) {
 			TechnologyAdapter<?> oldValue = this.technologyAdapter;
