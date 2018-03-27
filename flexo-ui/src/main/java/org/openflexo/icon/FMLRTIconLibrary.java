@@ -48,6 +48,7 @@ import org.openflexo.foundation.fml.rt.ModelSlotInstance;
 import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.foundation.fml.rt.VirtualModelInstanceObject;
 import org.openflexo.foundation.fml.rt.rm.FMLRTVirtualModelInstanceResource;
+import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.rm.ResourceLocator;
 import org.openflexo.view.controller.TechnologyAdapterController;
 
@@ -108,7 +109,7 @@ public class FMLRTIconLibrary extends IconLibrary {
 		}
 		else if (object instanceof VirtualModelInstance) {
 			TechnologyAdapterController<?> tac = getTechnologyAdapterController(
-					((VirtualModelInstance<?, ?>) object).getTechnologyAdapter());
+					(TechnologyAdapter) ((VirtualModelInstance<?, ?>) object).getTechnologyAdapter());
 			if (tac != null) {
 				return tac.getIconForTechnologyObject((VirtualModelInstance<?, ?>) object);
 			}

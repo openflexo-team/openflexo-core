@@ -50,7 +50,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.swing.SwingUtilities;
-import javax.swing.text.View;
 
 import org.openflexo.connie.BindingEvaluationContext;
 import org.openflexo.connie.BindingVariable;
@@ -1018,7 +1017,7 @@ public interface VirtualModelInstance<VMI extends VirtualModelInstance<VMI, TA>,
 			VirtualModel vm = getVirtualModel();
 			boolean synchronizable = vm != null && vm.hasSynchronizationScheme();
 			if (synchronizable) {
-				for (TechnologyAdapter neededTA : vm.getRequiredTechnologyAdapters()) {
+				for (TechnologyAdapter<?> neededTA : vm.getRequiredTechnologyAdapters()) {
 					synchronizable = synchronizable && neededTA.isActivated();
 				}
 			}
