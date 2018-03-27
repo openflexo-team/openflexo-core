@@ -41,8 +41,6 @@ package org.openflexo.foundation.fml.rt;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.text.View;
-
 import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.fml.FlexoConceptInstanceType;
 import org.openflexo.foundation.fml.VirtualModel;
