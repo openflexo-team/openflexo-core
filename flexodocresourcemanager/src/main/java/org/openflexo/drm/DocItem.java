@@ -662,7 +662,7 @@ public class DocItem extends DRMObject {
 				logger.warning("This implementation is not correct: you should not use FlexoAction primitive from the model !");
 				// TODO: Please implement this better later
 				// Used editor will be null
-				ApproveVersion approveAction = ApproveVersion.actionType.makeNewAction(version.getDocItem(), null);
+				ApproveVersion approveAction = ApproveVersion.actionType.makeNewAction(version.getDocItem(), null, null);
 				approveAction.setVersion(version);
 				approveAction.doAction();
 			}

@@ -242,23 +242,6 @@ public abstract class FlexoActionFactory<A extends FlexoAction<A, T1, T2>, T1 ex
 	}*/
 
 	/**
-	 * Deprecated call to an action building outside the context of a FlexoEditor Please DON'T use it anymore !!!
-	 * 
-	 * All old implementations using this method must be rewritten
-	 * 
-	 * @deprecated
-	 * @param focusedObject
-	 *            the focused object
-	 * @param globalSelection
-	 *            a vector of FlexoModelObject, which represent all the selected objects
-	 * @return
-	 */
-	@Deprecated
-	public A makeNewAction(T1 focusedObject, Vector<T2> globalSelection) {
-		return makeNewAction(focusedObject, globalSelection, null);
-	}
-
-	/**
 	 * 
 	 * @param focusedObject
 	 *            the focused object
