@@ -6,7 +6,8 @@ import ["http://www.openflexo.org/Tests/OWL/Resource.xxx"] as Resource.xxx;
 public VirtualModel TestURI  {
 
 	// Test URI encoding
-	public XXX::XXXFlexoRole<AType> anObject (
+	// We address here resources
+	public XXX::XXXFlexoRole<AType> aResource (
 			uri1=["http://www.openflexo.org/Tests/OWL/Resource.xxx"],
 			uri2=[Resource.xxx],
 			uri3=[Resource.xxx:"Foo"],
@@ -14,7 +15,7 @@ public VirtualModel TestURI  {
 			uri5=[Resource.xxx:"Foo":"Foo2":"Foo3"]);
 
 	// Test object reference encoding
-	public XXX::XXXFlexoRole<AType> anObject (
+	public XXX::XXXFlexoRole<AType> aModellingElement (
 			object1=["http://www.openflexo.org/Tests/OWL/Resource.xxx"#Object1],
 			object2=[Resource.xxx#Object1],
 			object3=[Resource.xxx:"Foo"#Object2],

@@ -75,9 +75,20 @@ public VirtualModel ProcessDiagram {
 		
 		public FML::Instance<Activity> activity;
 		
+		//Diagram::DropScheme <-> drop
 		drop(target=topLevel):dropActivityGRAtTopLevel() {
 			shape = Diagram::AddShape(container=diagram);
-			activity = new Activity:create("Activity");
+			activity = new Activity:init("Activity");
+			//activity = new Activity("Activity");
+	
+			//@JC
+			//activity <- Activity.create:init("Activity");
+			//activity <- Activity.create:("Activity");
+			
+			a = 1;
+			a = toto;
+			a = toto.prout(1);
+			
 		}
        
 	}

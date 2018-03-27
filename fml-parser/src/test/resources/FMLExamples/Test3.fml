@@ -4,32 +4,57 @@ import ["http://www.openflexo.org/Tests/ViewPoints/ViewPoint1.fml"] as ViewPoint
 import ["http://www.openflexo.org/Tests/OWL/Ontology1.owl"] as Ontology1.owl;
 
 @URI(["http://openflexo.org/test/Test3VM.fml"])
-public VirtualModel Test3VM extends Test2VM,ViewPoint1.AnOtherVM {
+public model Test3VM extends Test2VM,ViewPoint1.AnOtherVM {
 
 	public OWL::OWLModelSlot<OWLOntology> ontology1;
-
+	// Antoine
+	public OWLOntology[OWL::OWLModelSlot] ontology1; 
+	// JC
+	public ontology1 : OWLOntology[OWL::OWLModelSlot]; 
+	
 	public OWL::OWLModelSlot<OWLOntology> ontology2 (
 			aStringParameter="foo",
 			anIntParameter=2);
+	// Antoine
+	// public OWLOntology[OWL::OWLModelSlot(aStringParameter="foo",anIntParameter=2)] ontology2; 
+	// JC
+	// public ontology2 : OWLOntology[OWL::OWLModelSlot(aStringParameter="foo",anIntParameter=2)]; 
 
 	@Description("This model slot points to an ontology, which import here ontology with uri Ontology1")
 	public OWL::OWLModelSlot<OWLOntology> ontology3 (
 			importOntology=FML::Resource<OWLOntology>(uri=[Ontology1.owl]));
+	// Antoine
+	// public OWLOntology[OWL::OWLModelSlot(importOntology=FML::Resource<OWLOntology>(uri=[Ontology1.owl]))] ontology2; 
+	// public OWLOntology[OWL::OWLModelSlot(importOntology=[Ontology1.owl])] ontology2; 
+	// JC
+	// public ontology2 : OWLOntology[OWL::OWLModelSlot(importOntology=FML::Resource<OWLOntology>(uri=[Ontology1.owl]))]; 
+	// public ontology2 : OWLOntology[OWL::OWLModelSlot(importOntology=[Ontology1.owl])]; 
 
 	// Note that previous declaration could be simply written as:
 	public OWL::OWLModelSlot<OWLOntology> ontology3 (importOntology=[Ontology1.owl]);
 
 	@Version("1.2")
 	@Description("This is the first concept")
-	public static FlexoConcept Concept1 {
+	public static concept Concept1 {
 		
 		public int v1;
-		private int v2;
+		// Shortcut for
+		// public int[FML::PrimitiveRole] v1;
+		// public v1 : int[FML::PrimitiveRole];
+		// public int[FML::PrimitiveRole(property=toto)] v1;
+
+		private int v2;		
 		
 		public FML::Expression<int> sum = v1+v2;
 		
-		/*
-		public FML:GetSet<int> c (
+		// JC
+		// public sum : int[FML::Expression] <- v1+v2;
+		// Antoine
+		// public int[FML::Expression] sum <- v1+v2;
+		// Plus simple encore:
+		// public int sum <- v1+v2;
+
+		/*public FML:GetSet<int> c (
 			get: {
 				return v1+v2:
 			}
@@ -39,6 +64,8 @@ public VirtualModel Test3VM extends Test2VM,ViewPoint1.AnOtherVM {
 			}
 		);*/
 		
+		//FML::CreationScheme
+		//[FML::CreationScheme]:init(int aV1, int aV2)
 		create:init(int aV1, int aV2) {
 			v1 = aV1;
 			v2 = aV2;
@@ -54,6 +81,10 @@ public VirtualModel Test3VM extends Test2VM,ViewPoint1.AnOtherVM {
 			print("Hello World !");
 		}
 		
+		int action:increase(int a) {
+			return a+1;
+		}
+		
 		public action:toto(int a, String s) {
 			for (String anItem : someItems) {
 				print("item: "+anItem);
@@ -64,6 +95,10 @@ public VirtualModel Test3VM extends Test2VM,ViewPoint1.AnOtherVM {
 				i = i+1;
 			}
 		}
+		
+		/*public listen(to=tutu,property=foo): {
+			
+		}*/
 		
 	}
 	
