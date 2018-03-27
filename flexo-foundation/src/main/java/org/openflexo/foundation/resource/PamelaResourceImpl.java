@@ -77,7 +77,6 @@ import org.openflexo.model.factory.ModelFactory;
 import org.openflexo.model.undo.AtomicEdit;
 import org.openflexo.toolbox.FileUtils;
 import org.openflexo.toolbox.FlexoVersion;
-import org.openflexo.toolbox.IProgress;
 
 import com.google.common.base.Throwables;
 
@@ -106,10 +105,8 @@ public abstract class PamelaResourceImpl<RD extends ResourceData<RD> & Accessibl
 	 * @throws SaveResourceException
 	 */
 	@Override
-	public final void save(IProgress progress) throws SaveResourceException {
-		if (progress != null) {
-			progress.setProgress(getLocales().localizedForKey("saving") + " " + this.getName());
-		}
+	public final void save() throws SaveResourceException {
+		// progress.setProgress(getLocales().localizedForKey("saving") + " " + this.getName());
 		if (!isLoaded()) {
 			return;
 		}
@@ -182,8 +179,8 @@ public abstract class PamelaResourceImpl<RD extends ResourceData<RD> & Accessibl
 	 * @see org.openflexo.foundation.rm.FlexoResource#loadResourceData()
 	 */
 	@Override
-	public RD loadResourceData(IProgress progress) throws FlexoFileNotFoundException, IOFlexoException, InvalidXMLException,
-			InconsistentDataException, InvalidModelDefinitionException {
+	public RD loadResourceData() throws FlexoFileNotFoundException, IOFlexoException, InvalidXMLException, InconsistentDataException,
+			InvalidModelDefinitionException {
 		if (resourceData != null) {
 			// already loaded
 			return resourceData;
@@ -192,11 +189,9 @@ public abstract class PamelaResourceImpl<RD extends ResourceData<RD> & Accessibl
 		startDeserializing();
 
 		isLoading = true;
-		if (progress != null) {
-			progress.setProgress(getLocales().localizedForKey("loading") + " " + this.getName());
-			progress.resetSecondaryProgress(4);
-			progress.setProgress(getLocales().localizedForKey("loading_from_disk"));
-		}
+		// progress.setProgress(getLocales().localizedForKey("loading") + " " + this.getName());
+		// progress.resetSecondaryProgress(4);
+		// progress.setProgress(getLocales().localizedForKey("loading_from_disk"));
 
 		if (logger.isLoggable(Level.FINE)) {
 			logger.fine("Load resource data for " + this);
@@ -387,7 +382,7 @@ public abstract class PamelaResourceImpl<RD extends ResourceData<RD> & Accessibl
 		}
 		if (clearIsModified) {
 			try {
-				getResourceData(null).clearIsModified(false);
+				getResourceData().clearIsModified(false);
 				// No need to reset the last memory update since it is valid
 				notifyResourceSaved();
 			} catch (Exception e) {

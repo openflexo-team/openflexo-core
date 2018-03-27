@@ -751,10 +751,8 @@ public interface VirtualModel extends FlexoConcept, FlexoConceptObject, FlexoMet
 			if (getVirtualModelLibrary() == null) {
 				return null;
 			}
-			else {
-				// Delegate this to the VirtualModelLibrary
-				return getVirtualModelLibrary().getFlexoConcept(flexoConceptNameOrURI);
-			}
+			// Delegate this to the VirtualModelLibrary
+			return getVirtualModelLibrary().getFlexoConcept(flexoConceptNameOrURI);
 
 			// logger.warning("Not found FlexoConcept:" + flexoConceptId);
 			// return null;
@@ -888,7 +886,7 @@ public interface VirtualModel extends FlexoConcept, FlexoConceptObject, FlexoMet
 			logger.info("Saving ViewPoint to " + getResource().getIODelegate().toString() + "...");
 
 			try {
-				getResource().save(null);
+				getResource().save();
 			} catch (SaveResourceException e) {
 				e.printStackTrace();
 			}
@@ -983,7 +981,7 @@ public interface VirtualModel extends FlexoConcept, FlexoConceptObject, FlexoMet
 			}
 			loadContainedVirtualModelsWhenUnloaded();
 			for (VirtualModel vm : getVirtualModels()) {
-				for (TechnologyAdapter ta : vm.getRequiredTechnologyAdapters()) {
+				for (TechnologyAdapter<?> ta : vm.getRequiredTechnologyAdapters()) {
 					if (!returned.contains(ta)) {
 						returned.add(ta);
 					}
@@ -1341,14 +1339,6 @@ public interface VirtualModel extends FlexoConcept, FlexoConceptObject, FlexoMet
 			return null;
 		}
 
-		@Deprecated
-		// TODO: is this still used ?
-		public void init(String baseName, VirtualModelLibrary library) {
-			logger.info("Registering virtual model " + baseName + " URI=" + getURI());
-
-			setName(baseName);
-		}
-
 		@Override
 		public String getStringRepresentation() {
 			return getURI();
@@ -1415,12 +1405,10 @@ public interface VirtualModel extends FlexoConcept, FlexoConceptObject, FlexoMet
 			if (StringUtils.isEmpty(vm.getURI())) {
 				return new ValidationError<>(this, vm, "virtual_model_has_no_uri");
 			}
-			else {
-				try {
-					new URL(vm.getURI());
-				} catch (MalformedURLException e) {
-					return new ValidationError<>(this, vm, "virtual_model_uri_is_not_valid");
-				}
+			try {
+				new URL(vm.getURI());
+			} catch (MalformedURLException e) {
+				return new ValidationError<>(this, vm, "virtual_model_uri_is_not_valid");
 			}
 			return null;
 		}

@@ -278,7 +278,7 @@ public class ResourceManager extends FlexoServiceImpl implements ReferenceOwner 
 			// In this case, we MUST unregister all resources contained in removed ResourceCenter
 			FlexoResourceCenter<?> removedRC = ((ResourceCenterRemoved) notification).getRemovedResourceCenter();
 
-			for (FlexoResource<?> r : removedRC.getAllResources(null)) {
+			for (FlexoResource<?> r : removedRC.getAllResources()) {
 				unregisterResource(r);
 			}
 
@@ -357,7 +357,7 @@ public class ResourceManager extends FlexoServiceImpl implements ReferenceOwner 
 	public @Nullable FlexoResource<?> getResource(@Nonnull String uri, FlexoVersion version) {
 		if (getServiceManager() != null) {
 			for (FlexoResourceCenter<?> rc : getServiceManager().getResourceCenterService().getResourceCenters()) {
-				FlexoResource<?> res = rc.retrieveResource(uri, null);
+				FlexoResource<?> res = rc.retrieveResource(uri);
 				if (res != null) {
 					return res;
 				}

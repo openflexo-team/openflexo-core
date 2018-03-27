@@ -86,12 +86,11 @@ public class LoadResource extends Directive {
 		}
 		else {
 			try {
-				resource.loadResourceData(null);
+				resource.loadResourceData();
 				System.out.println("Loaded " + resource.getURI() + ".");
 			} catch (FileNotFoundException e) {
 				System.err.println("Cannot find resource " + resource.getURI());
-			} catch (ResourceLoadingCancelledException e) {
-			} catch (FlexoException e) {
+			} catch (ResourceLoadingCancelledException e) {} catch (FlexoException e) {
 				System.err.println("Cannot load resource " + resource.getURI() + " : " + e.getMessage());
 			}
 		}

@@ -56,7 +56,6 @@ import org.openflexo.model.annotations.Remover;
 import org.openflexo.model.annotations.Setter;
 import org.openflexo.model.annotations.XMLAttribute;
 import org.openflexo.toolbox.FlexoVersion;
-import org.openflexo.toolbox.IProgress;
 
 /**
  * A FlexoResource is a resource that can be managed by OpenFlexo.
@@ -366,7 +365,7 @@ public interface FlexoResource<RD extends ResourceData<RD>> extends FlexoObject,
 	 * @return the resource data.
 	 * @throws ResourceLoadingCancelledException
 	 */
-	public RD getResourceData(IProgress progress) throws ResourceLoadingCancelledException, FileNotFoundException, FlexoException;
+	public RD getResourceData() throws ResourceLoadingCancelledException, FileNotFoundException, FlexoException;
 
 	/**
 	 * Sets {@link ResourceData} for this resource
@@ -386,7 +385,7 @@ public interface FlexoResource<RD extends ResourceData<RD>> extends FlexoObject,
 	 * @throws FileNotFoundException
 	 * @throws FlexoException
 	 */
-	public RD loadResourceData(IProgress progress) throws ResourceLoadingCancelledException, FileNotFoundException, FlexoException;
+	public RD loadResourceData() throws ResourceLoadingCancelledException, FileNotFoundException, FlexoException;
 
 	/**
 	 * Delete (dereference) resource data if resource data is loaded<br>
@@ -408,7 +407,7 @@ public interface FlexoResource<RD extends ResourceData<RD>> extends FlexoObject,
 	 * 
 	 * @throws SaveResourceException
 	 */
-	public void save(IProgress progress) throws SaveResourceException;
+	public void save() throws SaveResourceException;
 
 	/**
 	 * This method updates the resource.

@@ -84,7 +84,7 @@ public class ResourceSavingInfo {
 			if (e.saveThisResource()) {
 				try {
 					logger.info("Saving " + e.resource);
-					e.saveModified(null);
+					e.saveModified();
 				} catch (SaveResourceException e1) {
 					logger.warning("Could not save resource " + e.resource);
 					e1.printStackTrace();

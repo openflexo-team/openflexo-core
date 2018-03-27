@@ -39,7 +39,6 @@ package org.openflexo.foundation.resource;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Collection;
 import java.util.logging.Logger;
 
 import org.eclipse.jgit.api.Git;
@@ -54,7 +53,6 @@ import org.openflexo.model.exceptions.ModelDefinitionException;
 import org.openflexo.model.factory.ModelFactory;
 import org.openflexo.toolbox.FileUtils;
 import org.openflexo.toolbox.FlexoVersion;
-import org.openflexo.toolbox.IProgress;
 
 @ModelEntity
 @ImplementationClass(GitResourceCenter.GitResourceCenterImpl.class)
@@ -158,12 +156,7 @@ public interface GitResourceCenter extends FileSystemBasedResourceCenter {
 		}
 
 		@Override
-		public Collection<? extends FlexoResource<?>> getAllResources(IProgress progress) {
-			return getAllResources();
-		}
-
-		@Override
-		public void publishResource(FlexoResource<?> resource, FlexoVersion newVersion, IProgress progress) throws Exception {
+		public void publishResource(FlexoResource<?> resource, FlexoVersion newVersion) throws Exception {
 			// TODO Not yet implemented
 		}
 

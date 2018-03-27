@@ -60,7 +60,6 @@ import org.openflexo.foundation.resource.SaveResourceException;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.utils.FlexoObjectIDManager;
 import org.openflexo.foundation.utils.FlexoObjectReference;
-import org.openflexo.foundation.utils.FlexoProgress;
 import org.openflexo.foundation.utils.ProjectLoadingCancelledException;
 import org.openflexo.model.annotations.Adder;
 import org.openflexo.model.annotations.Embedded;
@@ -253,13 +252,11 @@ public interface FlexoProject<I> extends ResourceRepository<FlexoResource<?>, I>
 	 */
 	public void save() throws SaveResourceException;
 
-	public void save(FlexoProgress progress) throws SaveResourceException;
-
 	/**
 	 * Save this project using FlexoEditingContext scheme<br>
 	 * Additionnaly save all known resources related to this project
 	 */
-	public void saveModifiedResources(FlexoProgress progress) throws SaveResourceException;
+	public void saveModifiedResources() throws SaveResourceException;
 
 	/**
 	 * Save this project<br>
@@ -269,7 +266,7 @@ public interface FlexoProject<I> extends ResourceRepository<FlexoResource<?>, I>
 	 * 
 	 * @param clearModifiedStatus
 	 */
-	public void saveModifiedResources(FlexoProgress progress, boolean clearModifiedStatus) throws SaveResourceException;
+	public void saveModifiedResources(boolean clearModifiedStatus) throws SaveResourceException;
 
 	/**
 	 * Close this project by de-referencing all contents of that project and removing it from {@link FlexoResourceCenterService}<br>

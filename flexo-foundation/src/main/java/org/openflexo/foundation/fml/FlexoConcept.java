@@ -1501,7 +1501,7 @@ public interface FlexoConcept extends FlexoConceptObject {
 		@Deprecated
 		public void save() {
 			try {
-				getOwningVirtualModel().getResource().save(null);
+				getOwningVirtualModel().getResource().save();
 			} catch (SaveResourceException e) {
 				e.printStackTrace();
 			}
@@ -2036,7 +2036,8 @@ public interface FlexoConcept extends FlexoConceptObject {
 
 			@Override
 			protected void fixAction() {
-				CreateFlexoBehaviour action = CreateFlexoBehaviour.actionType.makeNewAction(flexoConcept, null);
+				// TODO : FD4SG was the only call to a deprecated method (added the null third parameter)
+				CreateFlexoBehaviour action = CreateFlexoBehaviour.actionType.makeNewAction(flexoConcept, null, null);
 				action.setFlexoBehaviourClass(DeletionScheme.class);
 				action.doAction();
 				// newDefaultDeletionScheme = flexoConcept.createDeletionScheme();

@@ -287,7 +287,7 @@ public class TestFMLBindingModelManagement3 extends OpenflexoProjectAtRunTimeTes
 		System.out.println("FlexoConcept A = " + flexoConceptA);
 		assertNotNull(flexoConceptA);
 
-		((VirtualModelResource) virtualModel1.getResource()).save(null);
+		((VirtualModelResource) virtualModel1.getResource()).save();
 
 		System.out.println("Saved: " + ((VirtualModelResource) virtualModel1.getResource()).getIODelegate());
 
@@ -412,7 +412,7 @@ public class TestFMLBindingModelManagement3 extends OpenflexoProjectAtRunTimeTes
 		assertNotNull(newView);
 		assertNotNull(newView.getResource());
 		try {
-			newView.getResource().save(null);
+			newView.getResource().save();
 		} catch (SaveResourceException e) {
 			e.printStackTrace();
 		}
@@ -698,28 +698,28 @@ public class TestFMLBindingModelManagement3 extends OpenflexoProjectAtRunTimeTes
 				.getVirtualModelInstance(searchedViewURI);
 		assertNotNull(newViewResource);
 		assertNull(newViewResource.getLoadedResourceData());
-		newViewResource.loadResourceData(null);
+		newViewResource.loadResourceData();
 		assertNotNull(newView = newViewResource.getVirtualModelInstance());
 
 		assertEquals(1, newViewResource.getVirtualModelInstanceResources().size());
 		FMLRTVirtualModelInstanceResource newVMI1Resource = newViewResource.getVirtualModelInstanceResources().get(0);
 		assertNotNull(newVMI1Resource);
 		assertNull(newVMI1Resource.getLoadedResourceData());
-		newVMI1Resource.loadResourceData(null);
+		newVMI1Resource.loadResourceData();
 		assertNotNull(vmi1 = newVMI1Resource.getVirtualModelInstance());
 
 		assertEquals(1, newVMI1Resource.getVirtualModelInstanceResources().size());
 		FMLRTVirtualModelInstanceResource newVMI2Resource = newVMI1Resource.getVirtualModelInstanceResources().get(0);
 		assertNotNull(newVMI2Resource);
 		assertNull(newVMI2Resource.getLoadedResourceData());
-		newVMI2Resource.loadResourceData(null);
+		newVMI2Resource.loadResourceData();
 		assertNotNull(vmi2 = newVMI2Resource.getVirtualModelInstance());
 
 		assertEquals(1, newVMI2Resource.getVirtualModelInstanceResources().size());
 		FMLRTVirtualModelInstanceResource newVMI3Resource = newVMI2Resource.getVirtualModelInstanceResources().get(0);
 		assertNotNull(newVMI3Resource);
 		assertNull(newVMI3Resource.getLoadedResourceData());
-		newVMI3Resource.loadResourceData(null);
+		newVMI3Resource.loadResourceData();
 		assertNotNull(vmi3 = newVMI3Resource.getVirtualModelInstance());
 
 		assertEquals(vmi3, vmi3.execute("this"));

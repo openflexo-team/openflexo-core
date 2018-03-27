@@ -210,7 +210,7 @@ public class SelectionSynchronizedFIBView extends FlexoFIBView implements Select
 	private static FlexoObject getRelevantObject(FlexoObject object) {
 		if (object instanceof FlexoResource<?> && ((FlexoResource<?>) object).isLoaded()) {
 			try {
-				return (FlexoObject) ((FlexoResource<?>) object).getResourceData(null);
+				return (FlexoObject) ((FlexoResource<?>) object).getResourceData();
 			} catch (FileNotFoundException e) {
 				e.printStackTrace();
 			} catch (ResourceLoadingCancelledException e) {

@@ -157,7 +157,7 @@ public abstract class FlexoResourceFactory<R extends FlexoResource<RD>, RD exten
 
 		if (createEmptyContents) {
 			createEmptyContents(returned);
-			returned.save(null);
+			returned.save();
 		}
 
 		return returned;

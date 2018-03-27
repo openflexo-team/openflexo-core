@@ -53,7 +53,6 @@ import org.openflexo.foundation.technologyadapter.TechnologyAdapterResource;
 import org.openflexo.foundation.utils.FlexoObjectReference;
 import org.openflexo.localization.LocalizedDelegate;
 import org.openflexo.model.factory.AccessibleProxyObject;
-import org.openflexo.toolbox.IProgress;
 import org.openflexo.toolbox.StringUtils;
 
 /**
@@ -108,7 +107,7 @@ public abstract class FlexoResourceImpl<RD extends ResourceData<RD>> extends Fle
 	 * @throws ResourceLoadingCancelledException
 	 */
 	@Override
-	public RD getResourceData(IProgress progress)
+	public RD getResourceData()
 			throws ResourceLoadingCancelledException, ResourceLoadingCancelledException, FileNotFoundException, FlexoException {
 
 		if (isDeleted()) {
@@ -125,7 +124,7 @@ public abstract class FlexoResourceImpl<RD extends ResourceData<RD>> extends Fle
 		if (resourceData == null && isLoadable() && !isLoading()) {
 			// The resourceData is null, we try to load it
 			setLoading(true);
-			resourceData = loadResourceData(progress);
+			resourceData = loadResourceData();
 			setLoading(false);
 			// That's fine, resource is loaded, now let's notify the loading of
 			// the resources

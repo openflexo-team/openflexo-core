@@ -184,7 +184,7 @@ public interface AddVirtualModelInstance extends AbstractAddFlexoConceptInstance
 			VirtualModelResource oldVMType = getVirtualModelType();
 			try {
 				setCreationScheme(null);
-				setFlexoConceptType(resource.getResourceData(null));
+				setFlexoConceptType(resource.getResourceData());
 			} catch (FileNotFoundException e) {
 				e.printStackTrace();
 			} catch (ResourceLoadingCancelledException e) {

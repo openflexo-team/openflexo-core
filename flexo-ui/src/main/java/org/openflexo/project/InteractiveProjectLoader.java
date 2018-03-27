@@ -48,7 +48,6 @@ import java.util.Map;
 import java.util.logging.Logger;
 
 import org.openflexo.ApplicationContext;
-import org.openflexo.components.ProgressWindow;
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoProject;
 import org.openflexo.foundation.nature.ProjectNature;
@@ -201,23 +200,17 @@ public class InteractiveProjectLoader extends ProjectLoader {
 				return 0;
 			}
 		});
-		try {
-			ProgressWindow.showProgressWindow(FlexoLocalization.getMainLocalizer().localizedForKey("saving"), projects.size());
-			for (FlexoProject<?> project : projects) {
-				try {
-					ProgressWindow.setProgressInstance(
-							FlexoLocalization.getMainLocalizer().localizedForKey("saving") + " " + project.getProjectName());
-					project.save(ProgressWindow.instance());
-				} catch (SaveResourceException e) {
-					e.printStackTrace();
-					exceptions.add(e);
-				}
+		for (FlexoProject<?> project : projects) {
+			try {
+				// ProgressWindow.setProgressInstance(FlexoLocalization.getMainLocalizer().localizedForKey("saving") + " " + project.getProjectName());
+				project.save();
+			} catch (SaveResourceException e) {
+				e.printStackTrace();
+				exceptions.add(e);
 			}
-			if (exceptions.size() > 0) {
-				throw new SaveResourceExceptionList(exceptions);
-			}
-		} finally {
-			ProgressWindow.hideProgressWindow();
+		}
+		if (exceptions.size() > 0) {
+			throw new SaveResourceExceptionList(exceptions);
 		}
 	}
 

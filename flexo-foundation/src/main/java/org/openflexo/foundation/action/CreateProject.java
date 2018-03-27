@@ -144,7 +144,7 @@ public class CreateProject extends FlexoAction<CreateProject, RepositoryFolder<F
 			newFlexoProject.setLastUniqueID(0);
 			newFlexoProject.setCreationUserId(FlexoObjectImpl.getCurrentUserIdentifier());
 			newFlexoProject.setCreationDate(new Date());
-			newProjectResource.save(null);
+			newProjectResource.save();
 
 			// We add the newly created project as a ResourceCenter
 			// Maybe this will be done now, but it may also be done in a task

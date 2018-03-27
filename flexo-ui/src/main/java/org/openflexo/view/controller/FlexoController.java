@@ -91,7 +91,6 @@ import javax.xml.ws.Holder;
 
 import org.openflexo.ApplicationContext;
 import org.openflexo.FlexoCst;
-import org.openflexo.components.ProgressWindow;
 import org.openflexo.components.ReviewUnsavedDialog;
 import org.openflexo.components.validation.ValidationWindow;
 import org.openflexo.components.widget.FIBResourceManagerBrowser;
@@ -145,7 +144,6 @@ import org.openflexo.foundation.technologyadapter.TechnologyAdapterResource;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterService;
 import org.openflexo.foundation.technologyadapter.TechnologyObject;
 import org.openflexo.foundation.technologyadapter.UseModelSlotDeclaration;
-import org.openflexo.foundation.utils.FlexoProgress;
 import org.openflexo.foundation.validation.FlexoValidationModel;
 import org.openflexo.gina.controller.FIBController.Status;
 import org.openflexo.gina.model.FIBMouseEvent;
@@ -806,11 +804,6 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 	 */
 	private static synchronized int showOptionDialog(Component parentComponent, Object message, String title, int optionType,
 			int messageType, Icon icon, Object[] options, Object initialValue) throws HeadlessException {
-		if (parentComponent == null) {
-			if (ProgressWindow.hasInstance()) {
-				parentComponent = ProgressWindow.instance();
-			}
-		}
 		final Component parent = parentComponent;
 		JOptionPane pane = null;
 		boolean isLocalized = false;
@@ -1015,11 +1008,6 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 
 	private static Object showInputDialog(Component parentComponent, Object message, String title, int messageType, Icon icon,
 			Object[] selectionValues, Object initialSelectionValue) throws HeadlessException {
-		if (parentComponent == null) {
-			if (ProgressWindow.hasInstance()) {
-				parentComponent = ProgressWindow.instance();
-			}
-		}
 		Object[] availableOptions = new Object[] { FlexoLocalization.getMainLocalizer().localizedForKey("OK"),
 				FlexoLocalization.getMainLocalizer().localizedForKey("cancel") };
 		JOptionPane pane = new JOptionPane(message, messageType, JOptionPane.OK_CANCEL_OPTION, icon, availableOptions, availableOptions[0]);
@@ -1630,22 +1618,7 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 		return false;
 	}
 
-	/*
-	 * File moved to Resource
-	public FlexoProgress willLoad(File fibFile) {
-	
-	
-		if (!FIBLibrary.instance().componentIsLoaded(fibFile)) {
-			FlexoProgress progress = ProgressWindow.makeProgressWindow(FlexoLocalization.localizedForKey("loading_interface..."), 3);
-			progress.setProgress("loading_component");
-			FIBLibrary.instance().retrieveFIBComponent(fibFile);
-			progress.setProgress("build_interface");
-			return progress;
-		}
-		return null;
-	}*/
-
-	public FlexoProgress willLoad(Resource fibResource) {
+	public void willLoad(Resource fibResource) {
 
 		if (!getApplicationFIBLibraryService().componentIsLoaded(fibResource)) {
 			Progress.progress(FlexoLocalization.getMainLocalizer().localizedForKey("loading_component") + " " + fibResource);
@@ -1655,26 +1628,8 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 			getApplicationFIBLibraryService().retrieveFIBComponent(fibResource);
 			// progress.setProgress("build_interface");
 			// return progress;
-			return null;
 		}
-		return null;
 	}
-
-	/*
-	public FlexoProgress willLoad(String fibResourcePath) {
-	
-		if (!FIBLibrary.instance().componentIsLoaded(fibResourcePath)) {
-			FlexoProgress progress = ProgressWindow.makeProgressWindow(FlexoLocalization.localizedForKey("loading_interface..."), 3);
-			progress.setProgress("loading_component");
-			FIBLibrary.instance().retrieveFIBComponent(fibResourcePath);
-			progress.setProgress("build_interface");
-			return progress;
-		}
-		return null;
-	}
-	 */
-
-	// toto
 
 	@Override
 	public void propertyChange(PropertyChangeEvent evt) {
@@ -1961,7 +1916,7 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 		}
 
 		if (object instanceof ModelSlotEntry) {
-			return FMLIconLibrary.iconForModelSlot(((ModelSlotEntry<?>) object).getTechnologyAdapter());
+			return FMLIconLibrary.iconForModelSlot(((ModelSlotEntry) object).getTechnologyAdapter());
 		}
 		else if (object instanceof ParentFlexoConceptEntry) {
 			return FMLIconLibrary.FLEXO_CONCEPT_ICON;
@@ -2065,7 +2020,7 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 		}
 		else if (object instanceof FlexoModelResource<?, ?, ?, ?>) {
 			TechnologyAdapterController<?> tac = getTechnologyAdapterController(
-					((FlexoModelResource<?, ?, ?, ?>) object).getTechnologyAdapter());
+					(TechnologyAdapter) ((FlexoModelResource<?, ?, ?, ?>) object).getTechnologyAdapter());
 			if (tac != null) {
 				return tac.getModelIcon();
 			}
@@ -2078,7 +2033,7 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 		}
 		else if (object instanceof FlexoMetaModelResource<?, ?, ?>) {
 			TechnologyAdapterController<?> tac = getTechnologyAdapterController(
-					((FlexoMetaModelResource<?, ?, ?>) object).getTechnologyAdapter());
+					(TechnologyAdapter) ((FlexoMetaModelResource<?, ?, ?>) object).getTechnologyAdapter());
 			if (tac != null) {
 				return tac.getMetaModelIcon();
 			}

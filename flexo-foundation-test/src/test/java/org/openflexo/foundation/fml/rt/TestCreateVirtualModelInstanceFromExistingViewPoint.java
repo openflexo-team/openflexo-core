@@ -130,7 +130,7 @@ public class TestCreateVirtualModelInstanceFromExistingViewPoint extends Openfle
 		assertNotNull(newView);
 		assertNotNull(newView.getResource());
 		try {
-			newView.getResource().save(null);
+			newView.getResource().save();
 		} catch (SaveResourceException e) {
 			e.printStackTrace();
 		}
@@ -185,7 +185,7 @@ public class TestCreateVirtualModelInstanceFromExistingViewPoint extends Openfle
 		FMLRTVirtualModelInstanceResource newViewResource = project.getVirtualModelInstanceRepository().getVirtualModelInstance(oldViewURI);
 		System.out.println("all resources = " + project.getVirtualModelInstanceRepository().getAllResources());
 		assertNotNull(newViewResource);
-		newViewResource.loadResourceData(null);
+		newViewResource.loadResourceData();
 		assertNotNull(newViewResource.getLoadedResourceData());
 		newView = newViewResource.getLoadedResourceData();
 
@@ -193,7 +193,7 @@ public class TestCreateVirtualModelInstanceFromExistingViewPoint extends Openfle
 		assertNotNull(project.getResource(newView.getURI()));
 
 		VirtualModelResource vpRes = newViewResource.getVirtualModelResource();
-		viewPoint = vpRes.getResourceData(null);
+		viewPoint = vpRes.getResourceData();
 		assertNotNull(viewPoint);
 
 		viewPoint.loadContainedVirtualModelsWhenUnloaded();

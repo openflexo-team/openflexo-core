@@ -78,7 +78,7 @@ public class FlexoObjectIDManager {
 		// First load all unloaded resources
 		for (FlexoResource<?> r : project.getResource().getContents()) {
 			try {
-				r.getResourceData(null);
+				r.getResourceData();
 			} catch (FileNotFoundException e) {
 				e.printStackTrace();
 			} catch (ResourceLoadingCancelledException e) {

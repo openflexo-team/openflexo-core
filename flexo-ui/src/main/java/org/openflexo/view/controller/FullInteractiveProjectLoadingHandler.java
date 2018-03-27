@@ -43,10 +43,8 @@ import java.io.File;
 import java.util.Hashtable;
 import java.util.Vector;
 
-import org.openflexo.components.ProgressWindow;
 import org.openflexo.foundation.FlexoProject;
 import org.openflexo.foundation.resource.FlexoResource;
-import org.openflexo.foundation.utils.FlexoProgress;
 import org.openflexo.foundation.utils.ProjectLoadingCancelledException;
 import org.openflexo.icon.IconLibrary;
 import org.openflexo.localization.FlexoLocalization;
@@ -96,9 +94,6 @@ public class FullInteractiveProjectLoadingHandler extends InteractiveProjectLoad
 			return false;
 		}
 		else {
-			if (ProgressWindow.hasInstance()) {
-				ProgressWindow.instance().hideWindow();
-			}
 			throw new ProjectLoadingCancelledException();
 		}
 	}
@@ -135,11 +130,10 @@ public class FullInteractiveProjectLoadingHandler extends InteractiveProjectLoad
 	}
 
 	@Override
-	public boolean loadAndConvertAllOldResourcesToLatestVersion(FlexoProject project, FlexoProgress progress)
-			throws ProjectLoadingCancelledException {
+	public boolean loadAndConvertAllOldResourcesToLatestVersion(FlexoProject project) throws ProjectLoadingCancelledException {
 		Vector<ResourceToConvert> resourcesToConvert = searchResourcesToConvert(project);
 		if (alwaysUpgradeResourceToLatestVersion) {
-			performConversion(project, resourcesToConvert, progress);
+			performConversion(project, resourcesToConvert);
 			return true;
 		}
 		if (resourcesToConvert.size() > 0) {

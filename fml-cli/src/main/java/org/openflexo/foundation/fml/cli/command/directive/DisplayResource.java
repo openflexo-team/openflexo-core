@@ -84,11 +84,10 @@ public class DisplayResource extends Directive {
 	public void execute() {
 		if (!resource.isLoaded()) {
 			try {
-				resource.loadResourceData(null);
+				resource.loadResourceData();
 			} catch (FileNotFoundException e) {
 				System.err.println("Cannot find resource " + resource.getURI());
-			} catch (ResourceLoadingCancelledException e) {
-			} catch (FlexoException e) {
+			} catch (ResourceLoadingCancelledException e) {} catch (FlexoException e) {
 				System.err.println("Cannot load resource " + resource.getURI() + " : " + e.getMessage());
 			}
 		}

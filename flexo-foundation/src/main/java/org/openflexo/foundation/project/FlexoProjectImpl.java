@@ -88,7 +88,6 @@ import org.openflexo.foundation.resource.SaveResourceException;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.utils.FlexoObjectIDManager;
 import org.openflexo.foundation.utils.FlexoObjectReference;
-import org.openflexo.foundation.utils.FlexoProgress;
 import org.openflexo.foundation.utils.ProjectLoadingHandler;
 import org.openflexo.foundation.validation.FlexoProjectValidationModel;
 import org.openflexo.model.annotations.DefineValidationRule;
@@ -103,7 +102,6 @@ import org.openflexo.toolbox.DirectoryWatcher;
 import org.openflexo.toolbox.FileUtils;
 import org.openflexo.toolbox.FileUtils.CopyStrategy;
 import org.openflexo.toolbox.FlexoVersion;
-import org.openflexo.toolbox.IProgress;
 import org.openflexo.toolbox.JavaUtils;
 import org.openflexo.toolbox.ZipUtils;
 import org.openflexo.xml.XMLRootElementInfo;
@@ -317,16 +315,11 @@ public abstract class FlexoProjectImpl<I> extends ResourceRepositoryImpl<FlexoRe
 	 */
 	@Override
 	public void save() throws SaveResourceException {
-		save(null);
-	}
-
-	@Override
-	public void save(FlexoProgress progress) throws SaveResourceException {
 		logger.info("Saving project...");
 
-		getResource().save(progress);
+		getResource().save();
 
-		saveModifiedResources(progress, true);
+		saveModifiedResources(true);
 
 		getServiceManager().getResourceManager().deleteFilesToBeDeleted();
 
@@ -369,8 +362,7 @@ public abstract class FlexoProjectImpl<I> extends ResourceRepositoryImpl<FlexoRe
 	 *            wheter the zipped project should be lighten of unrequired resources or not.
 	 * @throws SaveResourceException
 	 */
-	public void saveAsZipFile(File zipFile, FlexoProgress progress, boolean lightenProject, boolean copyCVSFiles)
-			throws SaveResourceException {
+	public void saveAsZipFile(File zipFile, boolean lightenProject, boolean copyCVSFiles) throws SaveResourceException {
 		try {
 			FileUtils.createNewFile(zipFile);
 			File tempProjectDirectory = FileUtils
@@ -379,12 +371,10 @@ public abstract class FlexoProjectImpl<I> extends ResourceRepositoryImpl<FlexoRe
 			if (lightenProject) {
 				// replaceBigJarsWithEmtpyJars(progress, tempProjectDirectory);
 				// removeScreenshots(progress, tempProjectDirectory);
-				removeBackupFiles(progress, tempProjectDirectory);
+				removeBackupFiles(tempProjectDirectory);
 			}
-			if (progress != null) {
-				progress.setProgress(getLocales().localizedForKey("zipping_project"));
-			}
-			ZipUtils.makeZip(zipFile, tempProjectDirectory, progress, null,
+			// progress.setProgress(getLocales().localizedForKey("zipping_project"));
+			ZipUtils.makeZip(zipFile, tempProjectDirectory, null,
 					lightenProject ? Deflater.BEST_COMPRESSION : Deflater.DEFAULT_COMPRESSION);
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -392,23 +382,18 @@ public abstract class FlexoProjectImpl<I> extends ResourceRepositoryImpl<FlexoRe
 		}
 	}
 
-	private void removeBackupFiles(FlexoProgress progress, File tempProjectDirectory) {
+	private static void removeBackupFiles(File tempProjectDirectory) {
 		List<File> tildes = FileUtils.listFilesRecursively(tempProjectDirectory, new FilenameFilter() {
 			@Override
 			public boolean accept(File dir, String name) {
 				return name.endsWith("~");
 			}
 		});
-		if (progress != null) {
-			progress.setProgress(getLocales().localizedForKey("removing_backups"));
-			progress.resetSecondaryProgress(tildes.size());
-		}
-		for (File tilde : tildes) {
-			if (progress != null) {
-				progress.setSecondaryProgress(getLocales().localizedForKey("removing") + " " + tilde.getName());
-			}
+		// progress.setProgress(getLocales().localizedForKey("removing_backups"));
+		// progress.resetSecondaryProgress(tildes.size());
+		for (File tilde : tildes)
+			// progress.setSecondaryProgress(getLocales().localizedForKey("removing") + " " + tilde.getName());
 			tilde.delete();
-		}
 	}
 
 	/**
@@ -420,8 +405,8 @@ public abstract class FlexoProjectImpl<I> extends ResourceRepositoryImpl<FlexoRe
 	 * @see org.openflexo.foundation.rm.FlexoResourceData#save()
 	 */
 	@Override
-	public synchronized void saveModifiedResources(FlexoProgress progress) throws SaveResourceException {
-		saveModifiedResources(progress, true);
+	public synchronized void saveModifiedResources() throws SaveResourceException {
+		saveModifiedResources(true);
 	}
 
 	/**
@@ -436,16 +421,16 @@ public abstract class FlexoProjectImpl<I> extends ResourceRepositoryImpl<FlexoRe
 	 * @see org.openflexo.foundation.rm.FlexoResourceData#save()
 	 */
 	@Override
-	public synchronized void saveModifiedResources(FlexoProgress progress, boolean clearModifiedStatus) throws SaveResourceException {
+	public synchronized void saveModifiedResources(boolean clearModifiedStatus) throws SaveResourceException {
 		try {
-			_saveModifiedResources(progress, clearModifiedStatus);
+			_saveModifiedResources(clearModifiedStatus);
 		} catch (Exception e) {
 			e.printStackTrace();
 			if (logger.isLoggable(Level.WARNING)) {
 				logger.warning("Exception occurred during saving " + getDisplayName() + ". Trying to repair and save again");
 			}
 			repairProject();
-			_saveModifiedResources(progress, clearModifiedStatus);
+			_saveModifiedResources(clearModifiedStatus);
 		}
 	}
 
@@ -473,11 +458,6 @@ public abstract class FlexoProjectImpl<I> extends ResourceRepositoryImpl<FlexoRe
 		return super.getAllResources();
 	}
 
-	@Override
-	public Collection<? extends FlexoResource<?>> getAllResources(IProgress progress) {
-		return getAllResources();
-	}
-
 	/**
 	 * Return a collection of all resources of this project which are to be saved (resource data is modified)
 	 */
@@ -491,24 +471,19 @@ public abstract class FlexoProjectImpl<I> extends ResourceRepositoryImpl<FlexoRe
 		return unsaved;
 	}
 
-	private void _saveModifiedResources(FlexoProgress progress, boolean clearModifiedStatus) throws SaveResourceException
+	private void _saveModifiedResources(boolean clearModifiedStatus) throws SaveResourceException
 	/*SaveXMLResourceException, SaveResourcePermissionDeniedException*/ {
 		if (logger.isLoggable(Level.FINE)) {
 			logger.fine("Saving modified resources of project...");
 		}
 		List<FlexoResource<?>> unsaved = getUnsavedResources();
-		if (progress != null) {
-			progress.setProgress(getLocales().localizedForKey("saving_modified_resources"));
-			progress.resetSecondaryProgress(unsaved.size() + 1);
-		}
+		// progress.setProgress(getLocales().localizedForKey("saving_modified_resources"));
+		// progress.resetSecondaryProgress(unsaved.size() + 1);
 		boolean resourceSaved = false;
 		try {
-			for (FlexoResource<?> r : unsaved) {
-				if (progress != null) {
-					progress.setSecondaryProgress(getLocales().localizedForKey("saving_resource_") + r);
-				}
-				r.save(null);
-			}
+			for (FlexoResource<?> r : unsaved)
+				// progress.setSecondaryProgress(getLocales().localizedForKey("saving_resource_") + r);
+				r.save();
 		} finally {
 			if (resourceSaved) {
 				// Revision is incremented only if a FlexoStorageResource has
@@ -1085,7 +1060,7 @@ public abstract class FlexoProjectImpl<I> extends ResourceRepositoryImpl<FlexoRe
 	}
 
 	@Override
-	public void publishResource(FlexoResource<?> resource, FlexoVersion newVersion, IProgress progress) throws Exception {
+	public void publishResource(FlexoResource<?> resource, FlexoVersion newVersion) throws Exception {
 		// TODO Auto-generated method stub
 
 	}
@@ -1241,28 +1216,27 @@ public abstract class FlexoProjectImpl<I> extends ResourceRepositoryImpl<FlexoRe
 	}
 
 	@Override
-	public <T extends ResourceData<T>> FlexoResource<T> retrieveResource(String uri, FlexoVersion version, Class<T> type,
-			IProgress progress) {
+	public <T extends ResourceData<T>> FlexoResource<T> retrieveResource(String uri, FlexoVersion version, Class<T> type) {
 		if (getDelegateResourceCenter() == null) {
 			return null;
 		}
-		return getDelegateResourceCenter().retrieveResource(uri, version, type, progress);
+		return getDelegateResourceCenter().retrieveResource(uri, version, type);
 	}
 
 	@Override
-	public FlexoResource<?> retrieveResource(String uri, IProgress progress) {
+	public FlexoResource<?> retrieveResource(String uri) {
 		if (getDelegateResourceCenter() == null) {
 			return null;
 		}
-		return getDelegateResourceCenter().retrieveResource(uri, progress);
+		return getDelegateResourceCenter().retrieveResource(uri);
 	}
 
 	@Override
-	public <T extends ResourceData<T>> List<FlexoResource<T>> retrieveResource(String uri, Class<T> type, IProgress progress) {
+	public <T extends ResourceData<T>> List<FlexoResource<T>> retrieveResource(String uri, Class<T> type) {
 		if (getDelegateResourceCenter() == null) {
 			return null;
 		}
-		return getDelegateResourceCenter().retrieveResource(uri, type, progress);
+		return getDelegateResourceCenter().retrieveResource(uri, type);
 	}
 
 	@Override

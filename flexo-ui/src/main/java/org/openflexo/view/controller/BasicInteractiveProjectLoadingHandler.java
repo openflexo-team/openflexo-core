@@ -45,7 +45,6 @@ import java.util.logging.Logger;
 
 import org.openflexo.foundation.FlexoProject;
 import org.openflexo.foundation.resource.FlexoResource;
-import org.openflexo.foundation.utils.FlexoProgress;
 import org.openflexo.foundation.utils.ProjectLoadingCancelledException;
 import org.openflexo.icon.IconLibrary;
 import org.openflexo.localization.FlexoLocalization;
@@ -74,9 +73,10 @@ public class BasicInteractiveProjectLoadingHandler extends InteractiveProjectLoa
 						+ _projectDirectory.getName() + "</center><br>"
 						+ FlexoLocalization.getMainLocalizer()
 								.localizedForKey("this_project_seems_to_have_been_created_with_an_older_version_of_flexo")
-				+ "<br>"
-				+ FlexoLocalization.getMainLocalizer()
-						.localizedForKey("would_you_like_to_convert_entire_project_to_new_version_of_flexo_(recommanded)") + "<br></html>",
+						+ "<br>"
+						+ FlexoLocalization.getMainLocalizer().localizedForKey(
+								"would_you_like_to_convert_entire_project_to_new_version_of_flexo_(recommanded)")
+						+ "<br></html>",
 				CONVERT, CONVERT, DONT_CONVERT, CANCEL);
 
 		if (choice == 0) { // CONVERT
@@ -111,8 +111,7 @@ public class BasicInteractiveProjectLoadingHandler extends InteractiveProjectLoa
 	}
 
 	@Override
-	public boolean loadAndConvertAllOldResourcesToLatestVersion(FlexoProject project, FlexoProgress progress)
-			throws ProjectLoadingCancelledException {
+	public boolean loadAndConvertAllOldResourcesToLatestVersion(FlexoProject project) throws ProjectLoadingCancelledException {
 		Vector<ResourceToConvert> resourcesToConvert = searchResourcesToConvert(project);
 
 		if (resourcesToConvert.size() > 0) {
@@ -122,7 +121,7 @@ public class BasicInteractiveProjectLoadingHandler extends InteractiveProjectLoa
 			}
 
 			if (convertProject) {
-				performConversion(project, resourcesToConvert, progress);
+				performConversion(project, resourcesToConvert);
 				return true;
 			}
 		}

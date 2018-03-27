@@ -81,7 +81,6 @@ import org.openflexo.rm.JarResourceImpl;
 import org.openflexo.rm.Resource;
 import org.openflexo.rm.ResourceLocator;
 import org.openflexo.toolbox.FlexoVersion;
-import org.openflexo.toolbox.IProgress;
 import org.openflexo.xml.XMLRootElementInfo;
 import org.openflexo.xml.XMLRootElementReader;
 
@@ -394,22 +393,21 @@ public interface JarResourceCenter extends ResourceRepository<FlexoResource<?>, 
 		}*/
 
 		@Override
-		public <T extends ResourceData<T>> List<FlexoResource<T>> retrieveResource(String uri, Class<T> type, IProgress progress) {
+		public <T extends ResourceData<T>> List<FlexoResource<T>> retrieveResource(String uri, Class<T> type) {
 			// TODO: provide support for class and version
-			FlexoResource<T> uniqueResource = retrieveResource(uri, null, null, progress);
+			FlexoResource<T> uniqueResource = retrieveResource(uri, null, null);
 			return Collections.singletonList(uniqueResource);
 		}
 
 		@SuppressWarnings("unchecked")
 		@Override
-		public <T extends ResourceData<T>> FlexoResource<T> retrieveResource(String uri, FlexoVersion version, Class<T> type,
-				IProgress progress) {
+		public <T extends ResourceData<T>> FlexoResource<T> retrieveResource(String uri, FlexoVersion version, Class<T> type) {
 			// TODO: provide support for class and version
-			return (FlexoResource<T>) retrieveResource(uri, progress);
+			return (FlexoResource<T>) retrieveResource(uri);
 		}
 
 		@Override
-		public FlexoResource<?> retrieveResource(String uri, IProgress progress) {
+		public FlexoResource<?> retrieveResource(String uri) {
 			return getResource(uri);
 		}
 
@@ -450,12 +448,7 @@ public interface JarResourceCenter extends ResourceRepository<FlexoResource<?>, 
 		}
 
 		@Override
-		public Collection<? extends FlexoResource<?>> getAllResources(IProgress progress) {
-			return getAllResources();
-		}
-
-		@Override
-		public void publishResource(FlexoResource<?> resource, FlexoVersion newVersion, IProgress progress) throws Exception {
+		public void publishResource(FlexoResource<?> resource, FlexoVersion newVersion) throws Exception {
 			// TODO Not yet implemented
 		}
 

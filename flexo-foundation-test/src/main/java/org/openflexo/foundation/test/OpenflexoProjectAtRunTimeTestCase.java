@@ -183,7 +183,7 @@ public abstract class OpenflexoProjectAtRunTimeTestCase extends OpenflexoTestCas
 		logger.info("Project has been SUCCESSFULLY created");
 		try {
 			// reply.getProject().setProjectName(_projectIdentifier/* projectName */);
-			reply.getProject().saveModifiedResources(null);
+			reply.getProject().saveModifiedResources();
 			reply.getProject().save();
 		} catch (SaveResourceException e) {
 			e.printStackTrace();
@@ -242,7 +242,7 @@ public abstract class OpenflexoProjectAtRunTimeTestCase extends OpenflexoTestCas
 		}
 		logger.info("Project has been SUCCESSFULLY created");
 		try {
-			reply.getProject().saveModifiedResources(null);
+			reply.getProject().saveModifiedResources();
 			reply.getProject().save();
 		} catch (SaveResourceException e) {
 			e.printStackTrace();

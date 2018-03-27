@@ -269,8 +269,7 @@ public interface SelectVirtualModelInstance<VMI extends VirtualModelInstance<VMI
 			VirtualModelInstance<?, ?> container = getContainer(evaluationContext);
 			if (container != null) {
 				try {
-					return filterWithConditions(
-							container.getVirtualModelInstancesForVirtualModel(getVirtualModelType().getResourceData(null)),
+					return filterWithConditions(container.getVirtualModelInstancesForVirtualModel(getVirtualModelType().getResourceData()),
 							evaluationContext);
 				} catch (FileNotFoundException e) {
 					e.printStackTrace();

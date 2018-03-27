@@ -136,7 +136,7 @@ public class VirtualModelPasteHandler extends FlexoPasteHandler<VirtualModel> {
 					System.out.println("On vient de creer " + newResource);
 					copy.setResource(newResource);
 					newResource.setResourceData(copy);
-					newResource.save(null);
+					newResource.save();
 				} catch (SaveResourceException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();

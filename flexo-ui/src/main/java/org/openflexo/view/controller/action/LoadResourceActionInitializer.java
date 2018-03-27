@@ -67,7 +67,7 @@ public class LoadResourceActionInitializer extends ActionInitializer<LoadResourc
 	protected FlexoActionRunnable<LoadResourceAction, FlexoObject, FlexoObject> getDefaultFinalizer() {
 		return (e, action) -> {
 			try {
-				FlexoObject loadedData = (FlexoObject) ((FlexoResource<?>) action.getFocusedObject()).getResourceData(null);
+				FlexoObject loadedData = (FlexoObject) ((FlexoResource<?>) action.getFocusedObject()).getResourceData();
 				getController().setCurrentEditedObjectAsModuleView(loadedData);
 				getController().getSelectionManager().setSelectedObject(loadedData);
 			} catch (FileNotFoundException e1) {

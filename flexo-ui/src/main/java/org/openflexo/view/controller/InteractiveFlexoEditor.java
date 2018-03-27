@@ -50,7 +50,6 @@ import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 
 import org.openflexo.ApplicationContext;
-import org.openflexo.components.ProgressWindow;
 import org.openflexo.foundation.DefaultFlexoEditor;
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoException;
@@ -72,8 +71,6 @@ import org.openflexo.foundation.resource.FlexoResource;
 import org.openflexo.foundation.resource.ResourceUpdateHandler;
 import org.openflexo.foundation.task.LongRunningActionTask;
 import org.openflexo.foundation.task.Progress;
-import org.openflexo.foundation.utils.FlexoProgress;
-import org.openflexo.foundation.utils.FlexoProgressFactory;
 import org.openflexo.logging.FlexoLogger;
 import org.openflexo.module.FlexoModule;
 import org.openflexo.module.ModuleLoader;
@@ -90,8 +87,6 @@ public class InteractiveFlexoEditor extends DefaultFlexoEditor {
 
 	private ScenarioRecorder _scenarioRecorder;
 
-	private final FlexoProgressFactory _progressFactory;
-
 	private final ApplicationContext applicationContext;
 
 	private Map<FlexoModule<?>, ControllerActionInitializer> actionInitializers;
@@ -103,13 +98,6 @@ public class InteractiveFlexoEditor extends DefaultFlexoEditor {
 		if (ScenarioRecorder.ENABLE) {
 			_scenarioRecorder = new ScenarioRecorder();
 		}
-		_progressFactory = new FlexoProgressFactory() {
-			@Override
-			public FlexoProgress makeFlexoProgress(String title, int steps) {
-				return ProgressWindow.makeProgressWindow(title, steps);
-			}
-		};
-
 	}
 
 	private ModuleLoader getModuleLoader() {
@@ -243,7 +231,6 @@ public class InteractiveFlexoEditor extends DefaultFlexoEditor {
 	private <A extends FlexoAction<A, T1, T2>, T1 extends FlexoObject, T2 extends FlexoObject> boolean runExceptionHandler(
 			FlexoException exception, final A action) {
 		actionHasBeenPerformed(action, false); // Action failed
-		ProgressWindow.hideProgressWindow();
 		FlexoExceptionHandler<A, ?, ?> exceptionHandler = null;
 		ActionInitializer<A, ?, ?> actionInitializer = getActionInitializer(action);
 		if (actionInitializer != null) {

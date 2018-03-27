@@ -506,7 +506,7 @@ public abstract class OpenflexoTestCase {
 		VirtualModelResource viewPointResource = factory.makeTopLevelVirtualModelResource(vmName, vmURI,
 				viewPointRepository.getRootFolder(), true);
 
-		viewPointResource.save(null);
+		viewPointResource.save();
 		return viewPointResource.getLoadedResourceData();
 	}
 

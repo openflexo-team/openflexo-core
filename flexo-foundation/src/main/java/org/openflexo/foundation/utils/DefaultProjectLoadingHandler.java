@@ -50,8 +50,7 @@ public class DefaultProjectLoadingHandler implements ProjectLoadingHandler {
 	private static final Logger logger = FlexoLogger.getLogger(DefaultProjectLoadingHandler.class.getPackage().getName());
 
 	@Override
-	public boolean loadAndConvertAllOldResourcesToLatestVersion(FlexoProject project, FlexoProgress progress)
-			throws ProjectLoadingCancelledException {
+	public boolean loadAndConvertAllOldResourcesToLatestVersion(FlexoProject project) throws ProjectLoadingCancelledException {
 		return false;
 	}
 

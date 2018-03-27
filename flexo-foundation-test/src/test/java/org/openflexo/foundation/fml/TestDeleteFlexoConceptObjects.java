@@ -196,7 +196,7 @@ public class TestDeleteFlexoConceptObjects extends OpenflexoProjectAtRunTimeTest
 		System.out.println("flexoConcept2 = " + flexoConcept2);
 		assertNotNull(flexoConcept2);
 
-		((VirtualModelResource) virtualModel.getResource()).save(null);
+		((VirtualModelResource) virtualModel.getResource()).save();
 
 		CreatePrimitiveRole createPR1 = CreatePrimitiveRole.actionType.makeNewAction(flexoConcept1, null, editor);
 		createPR1.setRoleName("aStringInA");

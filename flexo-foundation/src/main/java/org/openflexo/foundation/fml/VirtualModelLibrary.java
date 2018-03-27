@@ -128,7 +128,7 @@ public class VirtualModelLibrary extends DefaultFlexoObject implements FlexoServ
 		}
 		if (returned != null) {
 			if (loadWhenRequired) {
-				return returned.getResourceData(null);
+				return returned.getResourceData();
 			}
 			else {
 				return returned.getLoadedResourceData();

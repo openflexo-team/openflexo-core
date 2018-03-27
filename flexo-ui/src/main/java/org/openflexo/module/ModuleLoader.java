@@ -55,7 +55,6 @@ import javax.swing.SwingUtilities;
 
 import org.openflexo.ApplicationContext;
 import org.openflexo.action.SubmitDocumentationAction;
-import org.openflexo.components.ProgressWindow;
 import org.openflexo.components.SaveProjectsDialog;
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoService;
@@ -414,7 +413,6 @@ public class ModuleLoader extends FlexoServiceImpl implements FlexoService, HasP
 				return null;
 			}
 		} catch (Exception e) {
-			ProgressWindow.hideProgressWindow();
 			e.printStackTrace();
 			throw new ModuleLoadingException(module);
 		}

@@ -680,7 +680,7 @@ public class FlexoFIBController extends FIBController implements GraphicalFlexoO
 	public VirtualModel createContainedVirtualModel(FlexoResource<VirtualModel> containerVirtualModelResource)
 			throws FileNotFoundException, ResourceLoadingCancelledException, FlexoException {
 		CreateContainedVirtualModel createContainedVirtualModel = CreateContainedVirtualModel.actionType
-				.makeNewAction(containerVirtualModelResource.getResourceData(null), null, getEditor());
+				.makeNewAction(containerVirtualModelResource.getResourceData(), null, getEditor());
 		createContainedVirtualModel.doAction();
 		return createContainedVirtualModel.getNewVirtualModel();
 	}
@@ -689,8 +689,8 @@ public class FlexoFIBController extends FIBController implements GraphicalFlexoO
 	// TODO: refactor this (generic perspective should be adapted to FML in OpenflexoModeller)
 	public void deleteVirtualModel(FlexoResource<VirtualModel> virtualModelResource)
 			throws FileNotFoundException, ResourceLoadingCancelledException, FlexoException {
-		DeleteVirtualModel deleteVirtualModel = DeleteVirtualModel.actionType.makeNewAction(virtualModelResource.getResourceData(null),
-				null, getEditor());
+		DeleteVirtualModel deleteVirtualModel = DeleteVirtualModel.actionType.makeNewAction(virtualModelResource.getResourceData(), null,
+				getEditor());
 		deleteVirtualModel.doAction();
 	}
 

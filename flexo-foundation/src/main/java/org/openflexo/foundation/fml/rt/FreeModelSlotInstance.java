@@ -147,7 +147,7 @@ public interface FreeModelSlotInstance<RD extends ResourceData<RD> & TechnologyO
 				}*/
 				if (resource != null) {
 					try {
-						accessedResourceData = resource.getResourceData(null);
+						accessedResourceData = resource.getResourceData();
 					} catch (FileNotFoundException e) {
 						e.printStackTrace();
 					} catch (ResourceLoadingCancelledException e) {

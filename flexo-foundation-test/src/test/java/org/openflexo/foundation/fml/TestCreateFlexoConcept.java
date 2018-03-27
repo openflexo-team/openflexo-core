@@ -183,7 +183,7 @@ public class TestCreateFlexoConcept extends OpenflexoTestCase {
 		assertEquals(flexoConceptA, flexoConceptA.getFlexoConcept());
 		assertEquals(newVirtualModel, flexoConceptA.getResourceData());
 
-		((VirtualModelResource) newVirtualModel.getResource()).save(null);
+		((VirtualModelResource) newVirtualModel.getResource()).save();
 
 		// System.out.println("Saved: " + ((VirtualModelResource)
 		// newVirtualModel.getResource()).getFile());
@@ -207,7 +207,7 @@ public class TestCreateFlexoConcept extends OpenflexoTestCase {
 		System.out.println("FlexoConcept B = " + flexoConceptB);
 		assertNotNull(flexoConceptB);
 
-		((VirtualModelResource) newVirtualModel.getResource()).save(null);
+		((VirtualModelResource) newVirtualModel.getResource()).save();
 
 		System.out.println("Saved: " + ((VirtualModelResource) newVirtualModel.getResource()).getIODelegate().toString());
 
@@ -235,7 +235,7 @@ public class TestCreateFlexoConcept extends OpenflexoTestCase {
 		assertEquals(1, flexoConceptB.getChildFlexoConcepts().size());
 		assertEquals(flexoConceptC, flexoConceptB.getChildFlexoConcepts().get(0));
 
-		((VirtualModelResource) newVirtualModel.getResource()).save(null);
+		((VirtualModelResource) newVirtualModel.getResource()).save();
 
 		System.out.println("Saved: " + ((VirtualModelResource) newVirtualModel.getResource()).getIODelegate().toString());
 
@@ -264,7 +264,7 @@ public class TestCreateFlexoConcept extends OpenflexoTestCase {
 		assertEquals(flexoConceptC, flexoConceptB.getChildFlexoConcepts().get(0));
 		assertEquals(flexoConceptD, flexoConceptB.getChildFlexoConcepts().get(1));
 
-		((VirtualModelResource) newVirtualModel.getResource()).save(null);
+		((VirtualModelResource) newVirtualModel.getResource()).save();
 
 		System.out.println("Saved: " + ((VirtualModelResource) newVirtualModel.getResource()).getIODelegate().toString());
 
@@ -302,7 +302,7 @@ public class TestCreateFlexoConcept extends OpenflexoTestCase {
 		assertEquals(1, flexoConceptC.getChildFlexoConcepts().size());
 		assertEquals(flexoConceptE, flexoConceptC.getChildFlexoConcepts().get(0));
 
-		((VirtualModelResource) newVirtualModel.getResource()).save(null);
+		((VirtualModelResource) newVirtualModel.getResource()).save();
 
 		System.out.println("Saved: " + ((VirtualModelResource) newVirtualModel.getResource()).getIODelegate().toString());
 

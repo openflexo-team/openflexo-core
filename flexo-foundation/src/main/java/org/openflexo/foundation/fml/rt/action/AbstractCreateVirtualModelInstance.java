@@ -160,7 +160,7 @@ public abstract class AbstractCreateVirtualModelInstance<A extends AbstractCreat
 		}
 
 		// System.out.println("Saving file again...");
-		newVirtualModelInstanceResource.save(null);
+		newVirtualModelInstanceResource.save();
 	}
 
 	public int getStepsNumber() {

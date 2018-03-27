@@ -138,7 +138,7 @@ public class TestDeleteAction extends OpenflexoProjectAtRunTimeTestCase {
 		assertEquals(virtualModel, flexoConcept.getResourceData());
 
 		try {
-			((VirtualModelResource) virtualModel.getResource()).save(null);
+			((VirtualModelResource) virtualModel.getResource()).save();
 		} catch (SaveResourceException e) {
 			e.printStackTrace();
 		}

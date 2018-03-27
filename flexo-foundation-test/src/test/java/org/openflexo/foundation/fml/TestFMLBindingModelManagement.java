@@ -258,7 +258,7 @@ public class TestFMLBindingModelManagement extends OpenflexoProjectAtRunTimeTest
 		System.out.println("FlexoConcept A = " + flexoConceptA);
 		assertNotNull(flexoConceptA);
 
-		((VirtualModelResource) virtualModel1.getResource()).save(null);
+		((VirtualModelResource) virtualModel1.getResource()).save();
 
 		System.out.println("Saved: " + ((VirtualModelResource) virtualModel1.getResource()).getIODelegate());
 
@@ -417,7 +417,7 @@ public class TestFMLBindingModelManagement extends OpenflexoProjectAtRunTimeTest
 		assertEquals(1, flexoConceptC.getFlexoProperties().size());
 		assertTrue(flexoConceptC.getFlexoProperties().contains(createRoleInFlexoConceptC.getNewFlexoRole()));
 
-		((VirtualModelResource) virtualModel1.getResource()).save(null);
+		((VirtualModelResource) virtualModel1.getResource()).save();
 
 		assertEquals(3, flexoConceptB.getBindingModel().getBindingVariablesCount());
 		assertNotNull(flexoConceptB.getBindingModel().bindingVariableNamed(VirtualModelBindingModel.THIS_PROPERTY));
@@ -590,7 +590,7 @@ public class TestFMLBindingModelManagement extends OpenflexoProjectAtRunTimeTest
 		assertNotNull(flexoConceptD.getBindingModel().bindingVariableNamed("anOtherBooleanInA"));
 		assertEquals(Boolean.class, flexoConceptD.getBindingModel().bindingVariableNamed("anOtherBooleanInA").getType());
 
-		((VirtualModelResource) virtualModel1.getResource()).save(null);
+		((VirtualModelResource) virtualModel1.getResource()).save();
 		System.out.println("Saved: " + ((VirtualModelResource) virtualModel1.getResource()).getIODelegate().toString());
 
 	}
@@ -1573,7 +1573,7 @@ public class TestFMLBindingModelManagement extends OpenflexoProjectAtRunTimeTest
 		assertNotNull(newView);
 		assertNotNull(newView.getResource());
 		try {
-			newView.getResource().save(null);
+			newView.getResource().save();
 		} catch (SaveResourceException e) {
 			e.printStackTrace();
 		}

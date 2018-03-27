@@ -85,7 +85,6 @@ import org.openflexo.toolbox.DirectoryWatcher;
 import org.openflexo.toolbox.FileSystemMetaDataManager;
 import org.openflexo.toolbox.FileUtils;
 import org.openflexo.toolbox.FlexoVersion;
-import org.openflexo.toolbox.IProgress;
 import org.openflexo.toolbox.StringUtils;
 import org.openflexo.xml.XMLRootElementInfo;
 import org.openflexo.xml.XMLRootElementReader;
@@ -799,21 +798,20 @@ public interface FileSystemBasedResourceCenter extends ResourceRepository<FlexoR
 		}
 
 		@Override
-		public <T extends ResourceData<T>> List<FlexoResource<T>> retrieveResource(String uri, Class<T> type, IProgress progress) {
+		public <T extends ResourceData<T>> List<FlexoResource<T>> retrieveResource(String uri, Class<T> type) {
 			// TODO: provide support for class and version
-			FlexoResource<T> uniqueResource = retrieveResource(uri, null, null, progress);
+			FlexoResource<T> uniqueResource = retrieveResource(uri, null, null);
 			return Collections.singletonList(uniqueResource);
 		}
 
 		@Override
-		public <T extends ResourceData<T>> FlexoResource<T> retrieveResource(String uri, FlexoVersion version, Class<T> type,
-				IProgress progress) {
+		public <T extends ResourceData<T>> FlexoResource<T> retrieveResource(String uri, FlexoVersion version, Class<T> type) {
 			// TODO: provide support for class and version
-			return (FlexoResource<T>) retrieveResource(uri, progress);
+			return (FlexoResource<T>) retrieveResource(uri);
 		}
 
 		@Override
-		public FlexoResource<?> retrieveResource(String uri, IProgress progress) {
+		public FlexoResource<?> retrieveResource(String uri) {
 			return getResource(uri);
 		}
 

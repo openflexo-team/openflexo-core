@@ -46,7 +46,6 @@ import org.openflexo.foundation.resource.FlexoResource;
 import org.openflexo.foundation.resource.SaveResourceException;
 import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.logging.FlexoLogger;
-import org.openflexo.toolbox.IProgress;
 
 public class ResourceSavingEntryInfo {
 	private static final Logger logger = FlexoLogger.getLogger(ResourceSavingEntryInfo.class.getPackage().getName());
@@ -100,12 +99,10 @@ public class ResourceSavingEntryInfo {
 		saveThisResource = isModified() && resource.getIODelegate().hasWritePermission();
 	}
 
-	public void saveModified(IProgress progress) throws SaveResourceException {
-		if (progress != null) {
-			progress.setProgress(FlexoLocalization.getMainLocalizer().localizedForKey("saving") + " " + resource.getName());
-		}
+	public void saveModified() throws SaveResourceException {
+		// progress.setProgress(FlexoLocalization.getMainLocalizer().localizedForKey("saving") + " " + resource.getName());
 		if (saveThisResource && resource.getIODelegate().hasWritePermission()) {
-			resource.save(progress);
+			resource.save();
 		}
 	}
 

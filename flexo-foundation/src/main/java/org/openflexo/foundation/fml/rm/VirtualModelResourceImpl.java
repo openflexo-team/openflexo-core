@@ -82,7 +82,6 @@ import org.openflexo.rm.Resource;
 import org.openflexo.rm.ResourceLocator;
 import org.openflexo.toolbox.FileSystemMetaDataManager;
 import org.openflexo.toolbox.FileUtils;
-import org.openflexo.toolbox.IProgress;
 
 public abstract class VirtualModelResourceImpl extends PamelaResourceImpl<VirtualModel, FMLModelFactory> implements VirtualModelResource {
 
@@ -121,7 +120,7 @@ public abstract class VirtualModelResourceImpl extends PamelaResourceImpl<Virtua
 	@Override
 	public VirtualModel getVirtualModel() {
 		try {
-			return getResourceData(null);
+			return getResourceData();
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		} catch (ResourceLoadingCancelledException e) {
@@ -257,7 +256,7 @@ public abstract class VirtualModelResourceImpl extends PamelaResourceImpl<Virtua
 	 * @throws FileNotFoundException
 	 */
 	@Override
-	public VirtualModel loadResourceData(IProgress progress) throws FlexoFileNotFoundException, IOFlexoException, InvalidXMLException,
+	public VirtualModel loadResourceData() throws FlexoFileNotFoundException, IOFlexoException, InvalidXMLException,
 			InconsistentDataException, InvalidModelDefinitionException {
 
 		logger.info("*************** Loading " + this);
@@ -265,7 +264,7 @@ public abstract class VirtualModelResourceImpl extends PamelaResourceImpl<Virtua
 		// Now we have to activate all required technologies
 		activateRequiredTechnologies();
 
-		VirtualModel returned = super.loadResourceData(progress);
+		VirtualModel returned = super.loadResourceData();
 		// We notify a deserialization start on ViewPoint AND VirtualModel, to avoid addToVirtualModel() and setViewPoint() to notify
 		// UndoManager
 		boolean containerWasDeserializing = getContainer() != null ? getContainer().isDeserializing() : true;

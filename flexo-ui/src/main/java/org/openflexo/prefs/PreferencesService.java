@@ -224,7 +224,7 @@ public class PreferencesService extends FlexoServiceImpl implements HasPropertyC
 
 	public void savePreferences() {
 		try {
-			resource.save(null);
+			resource.save();
 		} catch (SaveResourceException e) {
 			e.printStackTrace();
 		}

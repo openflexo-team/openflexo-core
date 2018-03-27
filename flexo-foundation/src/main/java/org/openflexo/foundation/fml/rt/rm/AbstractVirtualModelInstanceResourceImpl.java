@@ -55,7 +55,6 @@ import org.openflexo.foundation.resource.FlexoFileNotFoundException;
 import org.openflexo.foundation.resource.PamelaResourceImpl;
 import org.openflexo.foundation.resource.ResourceLoadingCancelledException;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
-import org.openflexo.toolbox.IProgress;
 
 /**
  * Default implementation for {@link AbstractVirtualModelInstanceResource}
@@ -81,7 +80,7 @@ public abstract class AbstractVirtualModelInstanceResourceImpl<VMI extends Virtu
 	@Override
 	public VMI getVirtualModelInstance() {
 		try {
-			return getResourceData(null);
+			return getResourceData();
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		} catch (ResourceLoadingCancelledException e) {
@@ -93,8 +92,8 @@ public abstract class AbstractVirtualModelInstanceResourceImpl<VMI extends Virtu
 	}
 
 	@Override
-	public VMI loadResourceData(IProgress progress) throws FlexoFileNotFoundException, IOFlexoException, InvalidXMLException,
-			InconsistentDataException, InvalidModelDefinitionException {
+	public VMI loadResourceData() throws FlexoFileNotFoundException, IOFlexoException, InvalidXMLException, InconsistentDataException,
+			InvalidModelDefinitionException {
 		// We notify a deserialization start on ViewPoint AND VirtualModel, to avoid addToVirtualModel() and setViewPoint() to notify
 		// UndoManager
 		boolean containerWasDeserializing = (getContainer() != null && getContainer().isDeserializing());
@@ -104,7 +103,7 @@ public abstract class AbstractVirtualModelInstanceResourceImpl<VMI extends Virtu
 			}
 		}
 		startDeserializing();
-		VMI returned = super.loadResourceData(progress);
+		VMI returned = super.loadResourceData();
 
 		if (getVirtualModelResource() != null) {
 			returned.setVirtualModel(getVirtualModelResource().getVirtualModel());

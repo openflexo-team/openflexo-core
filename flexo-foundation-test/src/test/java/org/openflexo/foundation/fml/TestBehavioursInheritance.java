@@ -273,7 +273,7 @@ public class TestBehavioursInheritance extends OpenflexoProjectAtRunTimeTestCase
 		assertEquals(4, flexoConceptA.getDeclaredFlexoBehaviours().size());
 		assertEquals(4, flexoConceptA.getAccessibleFlexoBehaviours().size());
 
-		((VirtualModelResource) virtualModel.getResource()).save(null);
+		((VirtualModelResource) virtualModel.getResource()).save();
 
 	}
 
@@ -336,7 +336,7 @@ public class TestBehavioursInheritance extends OpenflexoProjectAtRunTimeTestCase
 		assertSame(m2InA, m2InA.getMostSpecializedBehaviour(flexoConceptA));
 		assertTrue(m6InB.overrides(m6InA));
 
-		((VirtualModelResource) virtualModel.getResource()).save(null);
+		((VirtualModelResource) virtualModel.getResource()).save();
 	}
 
 	/**
@@ -413,7 +413,7 @@ public class TestBehavioursInheritance extends OpenflexoProjectAtRunTimeTestCase
 
 		assertFalse(m4InC.overrides(m4InB));
 
-		((VirtualModelResource) virtualModel.getResource()).save(null);
+		((VirtualModelResource) virtualModel.getResource()).save();
 	}
 
 	/**

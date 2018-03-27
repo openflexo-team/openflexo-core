@@ -52,7 +52,6 @@ import org.openflexo.foundation.resource.PamelaResourceImpl;
 import org.openflexo.model.ModelContextLibrary;
 import org.openflexo.model.exceptions.ModelDefinitionException;
 import org.openflexo.model.factory.ModelFactory;
-import org.openflexo.toolbox.IProgress;
 
 /**
  * Default implementation for {@link ProjectDataResource}
@@ -97,7 +96,7 @@ public abstract class DocResourceCenterResourceImpl extends PamelaResourceImpl<D
 	}
 
 	@Override
-	public DocResourceCenter loadResourceData(IProgress progress) throws FlexoFileNotFoundException, IOFlexoException, InvalidXMLException,
+	public DocResourceCenter loadResourceData() throws FlexoFileNotFoundException, IOFlexoException, InvalidXMLException,
 			InconsistentDataException, InvalidModelDefinitionException {
 		// TODO
 		/*DocResourceCenter returned = super.loadResourceData(progress);

@@ -57,7 +57,6 @@ import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
 import org.openflexo.foundation.FlexoProject;
-import org.openflexo.foundation.utils.FlexoProgress;
 import org.openflexo.foundation.utils.ProjectInitializerException;
 import org.openflexo.foundation.utils.ProjectLoadingCancelledException;
 import org.openflexo.icon.IconLibrary;
@@ -239,7 +238,7 @@ public class AutoSaveService implements PropertyChangeListener {
 		dialog.show();
 	}
 
-	public void restoreAutoSaveProject(FlexoAutoSaveFile autoSaveFile, FlexoProgress progress) throws IOException {
+	public void restoreAutoSaveProject(FlexoAutoSaveFile autoSaveFile) throws IOException {
 		File projectDirectory = project.getProjectDirectory();
 		File dest = null;
 		int attempt = 0;
@@ -248,26 +247,14 @@ public class AutoSaveService implements PropertyChangeListener {
 					projectDirectory.getName() + ".restore" + (attempt == 0 ? "" : "." + attempt));
 			attempt++;
 		}
-		if (progress != null) {
-			progress.setProgress(
-					FlexoLocalization.getMainLocalizer().localizedForKey("creating_restore_project_at") + " " + dest.getAbsolutePath());
-		}
+		// progress.setProgress(FlexoLocalization.getMainLocalizer().localizedForKey("creating_restore_project_at") + " " + dest.getAbsolutePath());
 		FileUtils.copyContentDirToDir(projectDirectory, dest);
-		if (progress != null) {
-			progress.setProgress(FlexoLocalization.getMainLocalizer().localizedForKey("closing_project"));
-		}
+		// progress.setProgress(FlexoLocalization.getMainLocalizer().localizedForKey("closing_project"));
 		projectLoader.closeProject(project);
-		if (progress != null) {
-			progress.setProgress(FlexoLocalization.getMainLocalizer().localizedForKey("deleting_project"));
-		}
+		// progress.setProgress(FlexoLocalization.getMainLocalizer().localizedForKey("deleting_project"));
 		FileUtils.deleteDir(projectDirectory);
-		if (progress != null) {
-			progress.setProgress(FlexoLocalization.getMainLocalizer().localizedForKey("restoring_project"));
-		}
+		// progress.setProgress(FlexoLocalization.getMainLocalizer().localizedForKey("restoring_project"));
 		FileUtils.copyContentDirToDir(autoSaveFile.getDirectory(), projectDirectory);
-		if (progress != null) {
-			progress.hideWindow();
-		}
 		try {
 			projectLoader.loadProject(projectDirectory);
 		} catch (ProjectLoadingCancelledException e) {

@@ -50,7 +50,6 @@ import org.openflexo.foundation.resource.ResourceData;
 import org.openflexo.foundation.resource.ResourceLoadingCancelledException;
 import org.openflexo.foundation.technologyadapter.FlexoModel;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
-import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterResource;
 import org.openflexo.foundation.technologyadapter.TechnologyObject;
 import org.openflexo.model.annotations.Getter;
@@ -239,7 +238,7 @@ public abstract interface ModelSlotInstance<MS extends ModelSlot<? extends RD>, 
 		public RD getAccessedResourceData() {
 			if (accessedResourceData == null && getResource() != null) {
 				try {
-					accessedResourceData = getResource().getResourceData(null);
+					accessedResourceData = getResource().getResourceData();
 				} catch (FileNotFoundException e) {
 					e.printStackTrace();
 				} catch (ResourceLoadingCancelledException e) {

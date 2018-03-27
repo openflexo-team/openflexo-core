@@ -264,7 +264,7 @@ public class FlexoObjectReference<O extends FlexoObject> implements ResourceLoad
 	private O findObjectInResource(FlexoResource<?> resource) {
 		try {
 			// Ensure the resource is loaded
-			resource.getResourceData(null);
+			resource.getResourceData();
 			return (O) resource.findObject(objectIdentifier, userIdentifier, className);
 		} catch (RuntimeException | FileNotFoundException | ResourceLoadingCancelledException | FlexoException e) {
 			logger.log(Level.SEVERE, "Error while finding object in resource '" + resource.getURI() + "'", e);

@@ -464,7 +464,7 @@ public class ProjectLoader extends FlexoServiceImpl {
 			}
 		}*/
 
-		FlexoProject<I> loadedProject = projectResource.getResourceData(null);
+		FlexoProject<I> loadedProject = projectResource.getResourceData();
 
 		/*if (editor == null) {
 			try {
@@ -625,7 +625,7 @@ public class ProjectLoader extends FlexoServiceImpl {
 		});
 		for (FlexoProject<?> project : projects) {
 			try {
-				project.getResource().save(null);
+				project.getResource().save();
 			} catch (SaveResourceException e) {
 				e.printStackTrace();
 				exceptions.add(e);

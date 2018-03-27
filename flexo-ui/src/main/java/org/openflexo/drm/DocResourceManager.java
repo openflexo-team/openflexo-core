@@ -75,7 +75,6 @@ import org.openflexo.rm.FileResourceImpl;
 import org.openflexo.rm.Resource;
 import org.openflexo.rm.ResourceLocator;
 import org.openflexo.toolbox.FlexoVersion;
-import org.openflexo.toolbox.IProgress;
 import org.openflexo.view.FlexoMainPane;
 import org.openflexo.view.ModuleView;
 
@@ -119,10 +118,10 @@ public class DocResourceManager extends FlexoServiceImpl {
 
 	private FlexoEditor _editor;
 
-	private void load(IProgress progress) {
+	private void load() {
 
 		try {
-			drcResource.loadResourceData(progress);
+			drcResource.loadResourceData();
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		} catch (ResourceLoadingCancelledException e) {
@@ -135,7 +134,7 @@ public class DocResourceManager extends FlexoServiceImpl {
 	public void save() {
 
 		try {
-			drcResource.save(null);
+			drcResource.save();
 		} catch (SaveResourceException e) {
 			e.printStackTrace();
 		}
@@ -596,7 +595,7 @@ public class DocResourceManager extends FlexoServiceImpl {
 			e.printStackTrace();
 		}
 		drcResource = DocResourceCenterResourceImpl.retrieveDocResourceCenterResource(this, null);
-		load(null);
+		load();
 		status = Status.Started;
 	}
 

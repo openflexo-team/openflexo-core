@@ -159,7 +159,7 @@ public interface VirtualModelInstanceBasedNatureObject<N extends ProjectNature<N
 				// Do not load virtual model when unloaded
 				// return getAccessedVirtualModelResource().getLoadedResourceData();
 				try {
-					FMLRTVirtualModelInstance returned = getAccessedVirtualModelInstanceResource().getResourceData(null);
+					FMLRTVirtualModelInstance returned = getAccessedVirtualModelInstanceResource().getResourceData();
 					if (returned != null) {
 						fireVirtualModelInstanceConnected(returned);
 					}

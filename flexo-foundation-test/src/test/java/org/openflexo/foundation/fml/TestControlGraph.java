@@ -170,7 +170,7 @@ public class TestControlGraph extends OpenflexoTestCase {
 		System.out.println("FlexoConcept A = " + flexoConcept);
 		assertNotNull(flexoConcept);
 
-		((VirtualModelResource) newVirtualModel.getResource()).save(null);
+		((VirtualModelResource) newVirtualModel.getResource()).save();
 
 		// System.out.println("Saved: " + ((VirtualModelResource)
 		// newVirtualModel.getResource()).getFile());

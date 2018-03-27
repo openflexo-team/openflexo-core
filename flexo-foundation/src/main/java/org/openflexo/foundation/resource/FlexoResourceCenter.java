@@ -65,7 +65,6 @@ import org.openflexo.model.annotations.Import;
 import org.openflexo.model.annotations.Imports;
 import org.openflexo.model.annotations.ModelEntity;
 import org.openflexo.toolbox.FlexoVersion;
-import org.openflexo.toolbox.IProgress;
 import org.openflexo.xml.XMLRootElementInfo;
 
 /**
@@ -182,16 +181,6 @@ public interface FlexoResourceCenter<I> extends Iterable<I>, ResourceRepository<
 	}
 
 	/**
-	 * Returns all resources available in this resource center
-	 * 
-	 * @param progress
-	 *            a progress monitor that will be notified of the progress of this task. This parameter can be <code>null</code>
-	 * @return a list of all resources available in this resource center.
-	 */
-	@Nonnull
-	Collection<? extends FlexoResource<?>> getAllResources(@Nullable IProgress progress);
-
-	/**
 	 * Return resource matching supplied artefact
 	 * 
 	 * @param resourceArtefact
@@ -215,7 +204,7 @@ public interface FlexoResourceCenter<I> extends Iterable<I>, ResourceRepository<
 	 */
 	@Nullable
 	<T extends ResourceData<T>> FlexoResource<T> retrieveResource(@Nonnull String uri, @Nonnull FlexoVersion version,
-			@Nonnull Class<T> type, @Nullable IProgress progress);
+			@Nonnull Class<T> type);
 
 	/**
 	 * Returns the resource identified by the given <code>uri</code>.<br>
@@ -228,7 +217,7 @@ public interface FlexoResourceCenter<I> extends Iterable<I>, ResourceRepository<
 	 * @return the resource with the given <code>uri</code>, or null if it cannot be found.
 	 */
 	@Nullable
-	FlexoResource<?> retrieveResource(@Nonnull String uri, @Nullable IProgress progress);
+	FlexoResource<?> retrieveResource(@Nonnull String uri);
 
 	/**
 	 * Returns all available versions of the resource identified by the given <code>uri</code>
@@ -244,8 +233,7 @@ public interface FlexoResourceCenter<I> extends Iterable<I>, ResourceRepository<
 	 *         found
 	 */
 	@Nonnull
-	<T extends ResourceData<T>> List<FlexoResource<T>> retrieveResource(@Nonnull String uri, @Nonnull Class<T> type,
-			@Nullable IProgress progress);
+	<T extends ResourceData<T>> List<FlexoResource<T>> retrieveResource(@Nonnull String uri, @Nonnull Class<T> type);
 
 	/**
 	 * Publishes the resource in this resource center.
@@ -260,8 +248,7 @@ public interface FlexoResourceCenter<I> extends Iterable<I>, ResourceRepository<
 	 * @throws Exception
 	 *             in case the publication of this resource failed.
 	 */
-	void publishResource(@Nonnull FlexoResource<?> resource, @Nullable FlexoVersion newVersion, @Nullable IProgress progress)
-			throws Exception;
+	void publishResource(@Nonnull FlexoResource<?> resource, @Nullable FlexoVersion newVersion) throws Exception;
 
 	/**
 	 * Refreshes this resource center. This can be particularly useful for caching implementations.

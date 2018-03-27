@@ -64,7 +64,6 @@ import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
 
 import org.openflexo.FlexoCst;
-import org.openflexo.components.ProgressWindow;
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.FlexoProject;
@@ -92,8 +91,7 @@ public final class FlexoFrame extends JFrame implements FlexoActionSource<FlexoO
 
 		@Override
 		public void windowActivated(WindowEvent e) {
-			if (!(e.getOppositeWindow() instanceof ProgressWindow) && !(e.getOppositeWindow() instanceof TaskManagerPanel)
-					&& getModuleLoader().isLoaded(getModule().getModule())) {
+			if (!(e.getOppositeWindow() instanceof TaskManagerPanel) && getModuleLoader().isLoaded(getModule().getModule())) {
 				// System.out.println("windowActivated for " + getModule());
 				// System.out.println("Opposite: " + e.getOppositeWindow());
 				// System.out.println("active module: " + getModuleLoader().getActiveModule());
@@ -364,9 +362,6 @@ public final class FlexoFrame extends JFrame implements FlexoActionSource<FlexoO
 		}
 		if (logger.isLoggable(Level.INFO)) {
 			logger.info("Disposing " + this);
-		}
-		if (ProgressWindow.hasInstance()) {
-			ProgressWindow.hideProgressWindow();
 		}
 		dispose();
 	}
