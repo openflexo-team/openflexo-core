@@ -95,7 +95,7 @@ public abstract class OpenflexoTestCaseWithGUI extends OpenflexoTestCase {
 		Flexo.isDev = true;
 		serviceManager = new TestApplicationContext(/* generateCompoundTestResourceCenter */);
 		for (Class<? extends TechnologyAdapter> technologyAdapterClass : taClasses) {
-			serviceManager.activateTechnologyAdapter(
+			serviceManager.activateTechnologyAdapter((TechnologyAdapter)
 					serviceManager.getTechnologyAdapterService().getTechnologyAdapter(technologyAdapterClass), true);
 		}
 		return serviceManager;
