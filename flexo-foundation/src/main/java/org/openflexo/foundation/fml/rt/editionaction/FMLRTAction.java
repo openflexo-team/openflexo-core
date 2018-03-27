@@ -69,8 +69,6 @@ import org.openflexo.model.annotations.ModelEntity;
 public interface FMLRTAction<T extends VirtualModelInstanceObject, VMI extends VirtualModelInstance<VMI, ?>>
 		extends TechnologySpecificActionDefiningReceiver<FMLRTModelSlot<VMI, ?>, VMI, T> {
 
-	public static final String DEPRECATED_VIRTUAL_MODEL_INSTANCE_KEY = "virtualModelInstance";
-
 	public abstract Class<VMI> getVirtualModelInstanceClass();
 
 	/**
