@@ -284,7 +284,7 @@ public abstract class OpenflexoTestCase {
 
 		for (Class<? extends TechnologyAdapter> technologyAdapterClass : taClasses) {
 			serviceManager.activateTechnologyAdapter(
-					serviceManager.getTechnologyAdapterService().getTechnologyAdapter(technologyAdapterClass), true);
+					(TechnologyAdapter) serviceManager.getTechnologyAdapterService().getTechnologyAdapter(technologyAdapterClass), true);
 		}
 
 		return serviceManager;
