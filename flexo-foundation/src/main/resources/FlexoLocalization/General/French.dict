@@ -15,10 +15,12 @@ French=Fran\u00E7ais
 GINA_FIB_editor=Editeur de composants GINA
 ImportedProjects=ImportedProjects
 Market=Market
+Please\ select\ a\ valid\ directory=Please select a valid directory
 Resource\ Center=Resource Center
 SelectExistingFreeModel=SelectExistingFreeModel
 SelectExistingVirtualModel=SelectExistingVirtualModel
 String=Cha\u00EEne de caract\u00E8res
+Validate=Validate
 You\ might\ use\ wildcards\ (*\ \=\ any\ string)\ and\ press\ 'Search'=You might use wildcards (* \= any string) and press 'Search'
 activate_technology=Activer la technologie
 activation_of_technology=Activation de la technologie
