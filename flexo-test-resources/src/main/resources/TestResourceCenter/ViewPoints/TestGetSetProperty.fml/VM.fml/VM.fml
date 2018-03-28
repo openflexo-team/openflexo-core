@@ -1,0 +1,26 @@
+
+/**
+ * 
+ * @version 0.1
+ */
+@VirtualModel(uri="http://openflexo.org/test/flexo-test-resources/TestResourceCenter/ViewPoints/TestGetSetProperty.viewpoint/VM.fml")
+public class VM {
+
+  @GetSetProperty(value="getSetProperty", access=get)  
+  public String getGetSetProperty {  
+    return myValue;  
+  }  
+  @GetSetProperty(value="getSetProperty", access=set)  
+  public void setGetSetProperty(String value) {  
+    log ("want to set " + value)    
+    myValue = value;  
+  }
+  @PrimitiveRole(cardinality=ZeroOne,readOnly=false)  
+  public String myValue;
+
+  @CreationScheme  
+  VM:create() {  
+    myValue = "Hello world !";  
+  }  
+
+}

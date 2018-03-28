@@ -1,0 +1,9 @@
+
+/**
+ * A viewpoint designed for test purposes
+ * 
+ * @version 0.1
+ */
+@VirtualModel(uri="http://openflexo.org/test/TestResourceCenter/TestViewPointB.fml")
+public class TestViewPointB {
+}

@@ -1,0 +1,57 @@
+use org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstanceModelSlot;
+
+/**
+ * 
+ * @version 0.1
+ */
+@VirtualModel(uri="http://openflexo.org/test/TestResourceCenter/TestMatchFlexoConceptInstance.fml/MatchingVM.fml")
+public class MatchingVM {
+
+  @FMLRTVirtualModelInstanceModelSlot(cardinality=ZeroOne,readOnly=false)  
+  public VirtualModelInstanceType<VM> model;
+
+  @CreationScheme  
+  MatchingVM:create(VirtualModelInstanceType<NotFound:http://openflexo.org/test/TestResourceCenter/TestMatchFlexoConceptInstance.fml/VM> model) {  
+    model = parameters.model;    
+    log (">>>> Parametre model : " + parameters.model)  
+  }  
+
+  @ActionScheme  
+  Void synchronizeUsingMatchingSet() {  
+    MatchingSet matchingSet = this.initiateMatching(MatchedConcept);    
+    for (concept : model.SelectFlexoConceptInstance(type=Concept)) {    
+      FML@RT::MatchFlexoConceptInstance as MatchedConcept match=(concept=concept) using MatchedConcept:create(concept,(concept.p + "-matched"))    
+    }    
+    matchingSet.finalizeMatching()  
+  }  
+
+  @ActionScheme  
+  Void defaultSynchronize() {  
+    for (concept : model.SelectFlexoConceptInstance(type=Concept)) {    
+      FML@RT::MatchFlexoConceptInstance as MatchedConcept match=(concept=concept) using MatchedConcept:create(concept,(concept.p + "-default"))    
+    }  
+  }  
+
+
+  @FlexoConcept  
+  public class MatchedConcept {  
+  
+    @FlexoConceptInstanceRole(cardinality=ZeroOne,readOnly=false)    
+    public FlexoConceptInstanceType<Concept> concept;  
+    @PrimitiveRole(cardinality=ZeroOne,readOnly=false)    
+    public String p2;  
+  
+    @CreationScheme    
+    MatchedConcept:create(FlexoConceptInstanceType<Concept> aConcept, String aP2) {    
+      concept = parameters.aConcept;      
+      p2 = parameters.aP2;    
+    }    
+  
+    @DeletionScheme    
+    Void delete() {    
+      
+    }    
+  
+  }  
+
+}

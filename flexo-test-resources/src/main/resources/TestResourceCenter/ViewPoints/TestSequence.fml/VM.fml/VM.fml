@@ -1,0 +1,16 @@
+
+/**
+ * 
+ * @version 0.1
+ */
+@VirtualModel(uri="http://openflexo.org/test/TestResourceCenter/TestSequence.fml/VM.fml")
+public class VM {
+
+  @ActionScheme  
+  Void testBehaviour() {  
+    Long variable1 = 1;    
+    Long variable2 = 2;    
+    Long variable3 = 3;  
+  }  
+
+}

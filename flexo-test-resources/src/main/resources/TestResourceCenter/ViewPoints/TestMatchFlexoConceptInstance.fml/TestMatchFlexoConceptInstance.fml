@@ -1,0 +1,19 @@
+
+/**
+ * 
+ * @version 0.1
+ */
+@VirtualModel(uri="http://openflexo.org/test/TestResourceCenter/TestMatchFlexoConceptInstance.fml")
+public class TestMatchFlexoConceptInstance {
+
+  @CreationScheme  
+  TestMatchFlexoConceptInstance:create() {  
+    log "on cree le model"    
+    VirtualModelInstanceType<VM> model = VM.create();    
+    log "On a cree le modele"    
+    VirtualModelInstanceType<MatchingVM> matchingModel = MatchingVM.create(model);    
+    VirtualModelInstanceType<VM2> model2 = VM2.create();    
+    VirtualModelInstanceType<MatchingVM2> matchingModel2 = MatchingVM2.create(model2);  
+  }  
+
+}
