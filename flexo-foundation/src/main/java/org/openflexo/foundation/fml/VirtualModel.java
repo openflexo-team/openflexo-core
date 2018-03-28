@@ -49,8 +49,6 @@ import java.util.Set;
 import java.util.Vector;
 import java.util.logging.Logger;
 
-import javax.swing.text.View;
-
 import org.openflexo.connie.Bindable;
 import org.openflexo.connie.BindingFactory;
 import org.openflexo.foundation.FlexoException;
