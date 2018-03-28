@@ -93,7 +93,6 @@ import org.openflexo.replay.ScenarioRecorder;
 import org.openflexo.rm.FileSystemResourceLocatorImpl;
 import org.openflexo.rm.Resource;
 import org.openflexo.rm.ResourceLocator;
-import org.openflexo.ssl.DenaliSecurityProvider;
 import org.openflexo.toolbox.ToolBox;
 import org.openflexo.utils.CancelException;
 import org.openflexo.utils.TooManyFailedAttemptException;
@@ -314,11 +313,6 @@ public class Flexo {
 		// Before starting the UI, we need to initialize localization
 		FlexoApplication.initialize(applicationContext);
 		SwingUtilities.invokeLater(() -> initFlexo(applicationContext, splashWindow2));
-		try {
-			DenaliSecurityProvider.insertSecurityProvider();
-		} catch (Exception e) {
-			logger.log(Level.WARNING, "Could not insert security provider", e);
-		}
 		initProxyManagement(applicationContext);
 		logger.info("Starting on " + ToolBox.getPLATFORM() + "... JVM version is " + System.getProperty("java.version"));
 		logger.info("Working directory is " + new File(".").getAbsolutePath());
