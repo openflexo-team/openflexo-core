@@ -1,0 +1,33 @@
+
+/**
+ * 
+ * @version 0.1
+ */
+@VirtualModel(uri="http://openflexo.org/test/TestResourceCenter/TestMatchFlexoConceptInstance.fml/VM.fml")
+public class VM {
+
+  @CreationScheme  
+  VM:create() {  
+  
+  }  
+
+
+  @FlexoConcept  
+  public class Concept {  
+  
+    @PrimitiveRole(cardinality=ZeroOne,readOnly=false)    
+    public String p;  
+  
+    @CreationScheme    
+    Concept:create(String aP) {    
+      p = parameters.aP;    
+    }    
+  
+    @DeletionScheme    
+    Void delete() {    
+      
+    }    
+  
+  }  
+
+}

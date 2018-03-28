@@ -1,0 +1,8 @@
+
+/**
+ * 
+ * @version 0.1
+ */
+@VirtualModel(uri="http://openflexo.org/test/flexo-test-resources/TestResourceCenter/ViewPoints/TestGetSetProperty.viewpoint")
+public class TestGetSetProperty {
+}
