@@ -189,17 +189,6 @@ public abstract class FlexoTask implements Runnable, HasPropertyChangeSupport {
 		}
 	}
 
-	@Deprecated
-	protected void forceStopExecution() {
-		if (status == TaskStatus.RUNNING) {
-			status = TaskStatus.CANCEL_REQUESTED;
-			thread.stop();
-		}
-		else {
-			logger.warning("Force stop execution of FlexoTask called for a task with status " + status);
-		}
-	}
-
 	protected synchronized void finishedExecution() {
 		if (status == TaskStatus.RUNNING) {
 			thread.setTask(null);
