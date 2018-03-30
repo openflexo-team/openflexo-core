@@ -95,16 +95,6 @@ public class ThreadPoolFlexoTaskManager extends FlexoServiceImpl implements Flex
 					launchReadyToExecuteTasks();
 				}
 			}
-
-			/*@Override
-			protected <V> RunnableFuture<V> newTaskFor(final Runnable runnable, V v) {
-				return new FutureTask<V>(runnable, v) {
-					@Override
-					public String toString() {
-						return runnable.toString();
-					}
-				};
-			};*/
 		};
 
 		scheduledTasks = new ArrayList<>();
@@ -190,15 +180,6 @@ public class ThreadPoolFlexoTaskManager extends FlexoServiceImpl implements Flex
 		// task.getThread().interrupt();
 		// task.finishedExecution();
 		// scheduledTasks.remove(task);
-	}
-
-	@Override
-	@Deprecated
-	public void forceStopExecution(FlexoTask task) {
-		task.forceStopExecution();
-		// task.getThread().stop();
-		// task.finishedExecution();
-		scheduledTasks.remove(task);
 	}
 
 	@Override
