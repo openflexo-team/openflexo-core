@@ -47,8 +47,6 @@ import org.openflexo.connie.DataBinding;
 import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.fml.FMLModelFactory;
 import org.openflexo.foundation.fml.FMLRepresentationContext;
-import org.openflexo.foundation.fml.FlexoBehaviour;
-import org.openflexo.foundation.fml.FlexoBehaviourObject;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoConceptObject;
 import org.openflexo.foundation.fml.binding.ControlGraphBindingModel;
@@ -388,14 +386,6 @@ public abstract interface FMLControlGraph extends FlexoConceptObject {
 				return ((FMLControlGraph) getOwner()).getRootOwner();
 			}
 			return getOwner();
-		}
-
-		@Deprecated
-		public FlexoBehaviour getFlexoBehaviour() {
-			if (getRootOwner() instanceof FlexoBehaviourObject) {
-				return ((FlexoBehaviourObject) getRootOwner()).getFlexoBehaviour();
-			}
-			return null;
 		}
 
 		@Override
