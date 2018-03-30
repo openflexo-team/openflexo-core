@@ -73,9 +73,9 @@ public interface ClassRole<C extends IFlexoOntologyClass> extends OntologicObjec
 	@Setter(CONCEPT_URI_KEY)
 	public void _setConceptURI(String conceptURI);
 
-	public IFlexoOntologyClass<?> getOntologicType();
+	public C getOntologicType();
 
-	public void setOntologicType(IFlexoOntologyClass<?> ontologyClass);
+	public void setOntologicType(C ontologyClass);
 
 	public static abstract class ClassRoleImpl<C extends IFlexoOntologyClass> extends OntologicObjectRoleImpl<C> implements ClassRole<C> {
 
@@ -120,15 +120,15 @@ public interface ClassRole<C extends IFlexoOntologyClass> extends OntologicObjec
 		}
 
 		@Override
-		public IFlexoOntologyClass<?> getOntologicType() {
+		public C getOntologicType() {
 			if (FlexoOntologyVirtualModelNature.INSTANCE.hasNature(getOwningVirtualModel())) {
-				return FlexoOntologyVirtualModelNature.getOntologyClass(_getConceptURI(), getOwningVirtualModel());
+				return (C) FlexoOntologyVirtualModelNature.getOntologyClass(_getConceptURI(), getOwningVirtualModel());
 			}
 			return null;
 		}
 
 		@Override
-		public void setOntologicType(IFlexoOntologyClass<?> ontologyClass) {
+		public void setOntologicType(C ontologyClass) {
 			conceptURI = ontologyClass != null ? ontologyClass.getURI() : null;
 		}
 
@@ -159,13 +159,13 @@ public interface ClassRole<C extends IFlexoOntologyClass> extends OntologicObjec
 	}
 
 	@DefineValidationRule
-	public static class ClassRoleMustDefineAValidConceptClass extends ValidationRule<ClassRoleMustDefineAValidConceptClass, ClassRole> {
+	public static class ClassRoleMustDefineAValidConceptClass extends ValidationRule<ClassRoleMustDefineAValidConceptClass, ClassRole<?>> {
 		public ClassRoleMustDefineAValidConceptClass() {
 			super(ClassRole.class, "flexo_role_must_define_a_valid_concept_class");
 		}
 
 		@Override
-		public ValidationIssue<ClassRoleMustDefineAValidConceptClass, ClassRole> applyValidation(ClassRole patternRole) {
+		public ValidationIssue<ClassRoleMustDefineAValidConceptClass, ClassRole<?>> applyValidation(ClassRole<?> patternRole) {
 			if (patternRole.getOntologicType() == null) {
 				return new ValidationError<>(this, patternRole, "flexo_role_does_not_define_any_concept_class");
 			}
