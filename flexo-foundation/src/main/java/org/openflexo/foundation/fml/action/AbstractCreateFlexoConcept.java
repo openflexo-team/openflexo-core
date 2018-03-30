@@ -78,9 +78,9 @@ public abstract class AbstractCreateFlexoConcept<A extends FlexoAction<A, T1, T2
 
 	private final List<ParentFlexoConceptEntry> parentFlexoConceptEntries;
 
-	private final List<PropertyEntry> propertiesEntries;
-	private List<PropertyEntry> propertiesUsedForCreationScheme;
-	private List<PropertyEntry> propertiesUsedForInspector;
+	private final List<PropertyEntry<?>> propertiesEntries;
+	private List<PropertyEntry<?>> propertiesUsedForCreationScheme;
+	private List<PropertyEntry<?>> propertiesUsedForInspector;
 
 	public static final String PARENT_FLEXO_CONCEPT_ENTRIES = "parentFlexoConceptEntries";
 	public static final String PROPERTIES_ENTRIES = "propertiesEntries";
@@ -124,11 +124,11 @@ public abstract class AbstractCreateFlexoConcept<A extends FlexoAction<A, T1, T2
 		}
 	}
 
-	public List<PropertyEntry> getPropertiesEntries() {
+	public List<PropertyEntry<?>> getPropertiesEntries() {
 		return propertiesEntries;
 	}
 
-	public List<PropertyEntry> getPropertiesUsedForCreationScheme() {
+	public List<PropertyEntry<?>> getPropertiesUsedForCreationScheme() {
 		if (propertiesUsedForCreationScheme == null) {
 			propertiesUsedForCreationScheme = new ArrayList<>();
 			propertiesUsedForCreationScheme.addAll(getPropertiesEntries());
@@ -136,7 +136,7 @@ public abstract class AbstractCreateFlexoConcept<A extends FlexoAction<A, T1, T2
 		return propertiesUsedForCreationScheme;
 	}
 
-	public List<PropertyEntry> getPropertiesUsedForInspector() {
+	public List<PropertyEntry<?>> getPropertiesUsedForInspector() {
 		if (propertiesUsedForInspector == null) {
 			propertiesUsedForInspector = new ArrayList<>();
 			propertiesUsedForInspector.addAll(getPropertiesEntries());
@@ -144,8 +144,8 @@ public abstract class AbstractCreateFlexoConcept<A extends FlexoAction<A, T1, T2
 		return propertiesUsedForInspector;
 	}
 
-	public PropertyEntry newPropertyEntry() {
-		PropertyEntry returned = new PropertyEntry("property" + (getPropertiesEntries().size() + 1), getLocales(),
+	public PropertyEntry<?> newPropertyEntry() {
+		PropertyEntry<?> returned = new PropertyEntry<>("property" + (getPropertiesEntries().size() + 1), getLocales(),
 				getFocusedObject() instanceof FlexoConceptObject ? (FlexoConceptObject) getFocusedObject() : null);
 		returned.setType(String.class);
 		propertiesEntries.add(returned);
@@ -153,19 +153,19 @@ public abstract class AbstractCreateFlexoConcept<A extends FlexoAction<A, T1, T2
 		return returned;
 	}
 
-	public void deletePropertyEntry(PropertyEntry propertyEntryToDelete) {
+	public void deletePropertyEntry(PropertyEntry<?> propertyEntryToDelete) {
 		propertiesEntries.remove(propertyEntryToDelete);
 		propertyEntryToDelete.delete();
 		getPropertyChangeSupport().firePropertyChange(PROPERTIES_ENTRIES, propertyEntryToDelete, null);
 	}
 
-	public void propertyFirst(PropertyEntry p) {
+	public void propertyFirst(PropertyEntry<?> p) {
 		getPropertiesEntries().remove(p);
 		getPropertiesEntries().add(0, p);
 		getPropertyChangeSupport().firePropertyChange(PROPERTIES_ENTRIES, null, getPropertiesEntries());
 	}
 
-	public void propertyUp(PropertyEntry p) {
+	public void propertyUp(PropertyEntry<?> p) {
 		int index = getPropertiesEntries().indexOf(p);
 		if (index > 0) {
 			getPropertiesEntries().remove(p);
@@ -174,7 +174,7 @@ public abstract class AbstractCreateFlexoConcept<A extends FlexoAction<A, T1, T2
 		}
 	}
 
-	public void propertyDown(PropertyEntry p) {
+	public void propertyDown(PropertyEntry<?> p) {
 		int index = getPropertiesEntries().indexOf(p);
 		if (index > -1) {
 			getPropertiesEntries().remove(p);
@@ -183,19 +183,19 @@ public abstract class AbstractCreateFlexoConcept<A extends FlexoAction<A, T1, T2
 		}
 	}
 
-	public void propertyLast(PropertyEntry p) {
+	public void propertyLast(PropertyEntry<?> p) {
 		getPropertiesEntries().remove(p);
 		getPropertiesEntries().add(p);
 		getPropertyChangeSupport().firePropertyChange(PROPERTIES_ENTRIES, null, getPropertiesEntries());
 	}
 
 	protected void performCreateProperties() {
-		for (PropertyEntry entry : getPropertiesEntries()) {
+		for (PropertyEntry<?> entry : getPropertiesEntries()) {
 			entry.performCreateProperty(getNewFlexoConcept(), this);
 		}
 	}
 
-	private static String paramNameForEntry(PropertyEntry entry) {
+	private static String paramNameForEntry(PropertyEntry<?> entry) {
 		String capitalizedName = entry.getName().substring(0, 1).toUpperCase() + entry.getName().substring(1);
 		if (capitalizedName.startsWith("A") || capitalizedName.startsWith("E") || capitalizedName.startsWith("I")
 				|| capitalizedName.startsWith("O") || capitalizedName.startsWith("U")) {
@@ -211,7 +211,7 @@ public abstract class AbstractCreateFlexoConcept<A extends FlexoAction<A, T1, T2
 						null, this);
 				createCreationScheme.setFlexoBehaviourName("create");
 				createCreationScheme.setFlexoBehaviourClass(CreationScheme.class);
-				for (PropertyEntry entry : getPropertiesUsedForCreationScheme()) {
+				for (PropertyEntry<?> entry : getPropertiesUsedForCreationScheme()) {
 					BehaviourParameterEntry newEntry = createCreationScheme.newParameterEntry();
 					newEntry.setParameterName(paramNameForEntry(entry));
 					newEntry.setParameterType(entry.getType());
@@ -222,7 +222,7 @@ public abstract class AbstractCreateFlexoConcept<A extends FlexoAction<A, T1, T2
 				System.out.println("action valide = " + createCreationScheme.isValid());
 				createCreationScheme.doAction();
 				CreationScheme creationScheme = (CreationScheme) createCreationScheme.getNewFlexoBehaviour();
-				for (PropertyEntry entry : getPropertiesUsedForCreationScheme()) {
+				for (PropertyEntry<?> entry : getPropertiesUsedForCreationScheme()) {
 					CreateEditionAction assignAction = CreateEditionAction.actionType
 							.makeNewEmbeddedAction(creationScheme.getControlGraph(), null, this);
 					assignAction.setEditionActionClass(ExpressionAction.class);
@@ -266,13 +266,13 @@ public abstract class AbstractCreateFlexoConcept<A extends FlexoAction<A, T1, T2
 
 			System.out.println("getPropertiesUsedForInspector()=" + getPropertiesUsedForInspector());
 
-			for (PropertyEntry entry : getPropertiesUsedForInspector()) {
+			for (PropertyEntry<?> entry : getPropertiesUsedForInspector()) {
 				performCreateInspectorEntry(entry, inspector);
 			}
 		}
 	}
 
-	private void performCreateInspectorEntry(PropertyEntry entry, FlexoConceptInspector inspector) {
+	private void performCreateInspectorEntry(PropertyEntry<?> entry, FlexoConceptInspector inspector) {
 		Progress.progress(getLocales().localizedForKey("create_inspector_entry") + " " + entry.getName());
 
 		System.out.println("Create inspector entry " + entry.getName() + " type=" + entry.getType());
