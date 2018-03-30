@@ -141,7 +141,7 @@ public class CreateEditionAction extends FlexoAction<CreateEditionAction, FMLCon
 	private final List<Class<? extends EditionAction>> availableActions;
 	private final List<Class<? extends FetchRequest<?, ?, ?>>> availableFetchRequests;
 
-	private final HashMap<Class<? extends EditionAction>, TechnologyAdapter> editionActionForTechnologyAdapterMap;
+	private final HashMap<Class<? extends EditionAction>, TechnologyAdapter<?>> editionActionForTechnologyAdapterMap;
 	private final HashMap<Class<? extends EditionAction>, EditionAction> editionActionMap;
 
 	private boolean isVariableDeclaration = false;
@@ -150,7 +150,7 @@ public class CreateEditionAction extends FlexoAction<CreateEditionAction, FMLCon
 	private boolean isAddToListAction = false;
 	private IterationType iterationType = IterationType.Expression;
 
-	private void addToAvailableActions(Class<? extends EditionAction> availableActionClass, TechnologyAdapter ta) {
+	private void addToAvailableActions(Class<? extends EditionAction> availableActionClass, TechnologyAdapter<?> ta) {
 		if (!availableActions.contains(availableActionClass)) {
 			availableActions.add(availableActionClass);
 			editionActionForTechnologyAdapterMap.put(availableActionClass, ta);
@@ -195,7 +195,7 @@ public class CreateEditionAction extends FlexoAction<CreateEditionAction, FMLCon
 
 		for (UseModelSlotDeclaration useDecl : getVirtualModel().getAccessibleUseDeclarations()) {
 			Class<? extends ModelSlot<?>> modelSlotClass = useDecl.getModelSlotClass();
-			TechnologyAdapter modelSlotTA = getServiceManager().getTechnologyAdapterService()
+			TechnologyAdapter<?> modelSlotTA = getServiceManager().getTechnologyAdapterService()
 					.getTechnologyAdapterForModelSlot(modelSlotClass);
 			for (Class<? extends EditionAction> eaClass : getServiceManager().getTechnologyAdapterService()
 					.getAvailableEditionActionTypes(modelSlotClass)) {
@@ -265,7 +265,7 @@ public class CreateEditionAction extends FlexoAction<CreateEditionAction, FMLCon
 	}
 
 	public TechnologyAdapter getTechnologyAdapter(Class<? extends EditionAction> editionActionClass) {
-		TechnologyAdapter returned = editionActionForTechnologyAdapterMap.get(editionActionClass);
+		TechnologyAdapter<?> returned = editionActionForTechnologyAdapterMap.get(editionActionClass);
 		if (returned != null) {
 			return returned;
 		}

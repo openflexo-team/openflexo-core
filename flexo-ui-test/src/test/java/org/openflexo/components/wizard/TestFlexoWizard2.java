@@ -121,10 +121,6 @@ public class TestFlexoWizard2 extends OpenflexoFIBTestCase {
 	@Test
 	@TestOrder(2)
 	public void testDisplayWizard() {
-
-		// DeprecatedWizardDialog dialog = new DeprecatedWizardDialog(null, wizard);
-		// dialog.setVisible(true);
-
 		WizardDialog dialog = new WizardDialog(wizard, null);
 
 		System.out.println("File: " + WizardDialog.FIB_FILE);

@@ -77,9 +77,7 @@ public class FlexoEnumType extends FlexoConceptInstanceType {
 		if (aFlexoEnum != null) {
 			return aFlexoEnum.getInstanceType();
 		}
-		else {
-			return UNDEFINED_FLEXO_ENUM_TYPE;
-		}
+		return UNDEFINED_FLEXO_ENUM_TYPE;
 	}
 
 	@Override
@@ -129,14 +127,11 @@ public class FlexoEnumType extends FlexoConceptInstanceType {
 				concept = getFlexoEnum();
 			}
 
-			if (concept != null) {
+			if (concept != null)
 				return getFlexoEnumType(concept);
-			}
-			else {
-				// We don't return UNDEFINED_FLEXO_CONCEPT_INSTANCE_TYPE because we want here a mutable type
-				// if FlexoConcept might be resolved later
-				return new FlexoEnumType(configuration, this);
-			}
+			// We don't return UNDEFINED_FLEXO_CONCEPT_INSTANCE_TYPE because we want here a mutable type
+			// if FlexoConcept might be resolved later
+			return new FlexoEnumType(configuration, this);
 		}
 
 		private FlexoEnum flexoEnum;

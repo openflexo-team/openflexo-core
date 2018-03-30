@@ -228,14 +228,12 @@ public interface SelectFlexoConceptInstance<VMI extends VirtualModelInstance<VMI
 				if (isAnalyzingContainer) {
 					return null;
 				}
-				else {
-					if (getReceiver().isValid()) {
-						isAnalyzingContainer = true;
-						Type vmiType = getReceiver().getAnalyzedType();
-						isAnalyzingContainer = false;
-						if (vmiType instanceof VirtualModelInstanceType) {
-							return ((VirtualModelInstanceType) vmiType).getVirtualModel();
-						}
+				if (getReceiver().isValid()) {
+					isAnalyzingContainer = true;
+					Type vmiType = getReceiver().getAnalyzedType();
+					isAnalyzingContainer = false;
+					if (vmiType instanceof VirtualModelInstanceType) {
+						return ((VirtualModelInstanceType) vmiType).getVirtualModel();
 					}
 				}
 			}
@@ -243,7 +241,7 @@ public interface SelectFlexoConceptInstance<VMI extends VirtualModelInstance<VMI
 			if (getFlexoConcept() instanceof VirtualModel) {
 				return (VirtualModel) getFlexoConcept();
 			}
-			if (getInferedModelSlot() instanceof FMLRTModelSlot) {
+			if (getInferedModelSlot() != null) {
 				return getInferedModelSlot().getAccessedVirtualModel();
 			}
 			return getOwningVirtualModel();

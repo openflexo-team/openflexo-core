@@ -61,21 +61,6 @@ public interface IFlexoOntologyIndividual<TA extends TechnologyAdapter<TA>> exte
 	public List<? extends IFlexoOntologyClass<TA>> getTypes();
 
 	/**
-	 * Add supplied type to the list of types implemented by this individual
-	 * 
-	 * @param aType
-	 */
-	// @Deprecated
-	// public void addToTypes(IFlexoOntologyClass aType);
-	/**
-	 * Remove supplied type from the list of types implemented by this individual
-	 * 
-	 * @param aType
-	 */
-
-	// @Deprecated
-	// public void removeFromTypes(IFlexoOntologyClass aType);
-	/**
 	 * Is this an Individual of aClass.
 	 * 
 	 * @param aClass

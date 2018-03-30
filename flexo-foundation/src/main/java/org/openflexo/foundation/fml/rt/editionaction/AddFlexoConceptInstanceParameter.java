@@ -92,35 +92,11 @@ public interface AddFlexoConceptInstanceParameter extends BehaviourParameter<Abs
 			if (b == null || !b.isSet()) {
 				return new UndefinedRequiredBindingIssue<>(this, object);
 			}
-			/*else if (!b.isValid()) {
-				// FMLObjectImpl.logger.info(getClass().getName() + ": Binding NOT valid: " + b + " for " + object.getStringRepresentation()
-				// + ". Reason: " + b.invalidBindingReason());
-				// Thread.dumpStack();
-			
-				System.out.println("Un pb de binding pour l'object " + object + " of " + object.getImplementedInterface());
-				System.out.println("FML=" + object.getFMLRepresentation());
-				System.out.println("binding=" + b + " " + Integer.toHexString(b.hashCode()));
-				System.out.println("reason=" + b.invalidBindingReason());
-				System.out.println("bindable=" + b.getOwner());
-				System.out.println("bindingModel=" + b.getOwner().getBindingModel());
-				System.out.println("bindingFactory=" + b.getOwner().getBindingFactory());
-				if (b.isBindingValue()) {
-					BindingValue bindingValue = (BindingValue) b.getExpression();
-					System.out.println("bindingValue=" + bindingValue);
-					System.out.println("valid=" + bindingValue.isValid());
-					System.out.println("reason=" + bindingValue.invalidBindingReason());
-					System.out.println("referenced db= " + bindingValue.getDataBinding() + " "
-							+ Integer.toHexString(bindingValue.getDataBinding().hashCode()));
-					System.out.println("referenced db owner = " + bindingValue.getDataBinding().getOwner());
-					System.out.println("referenced db owner bf = " + bindingValue.getDataBinding().getOwner().getBindingFactory());
-				}
-			}*/
 
 			if (object.getParam().getIsRequired()) {
 				return super.applyValidation(object);
 			}
-			else
-				return null;
+			return null;
 		}
 
 	}

@@ -145,9 +145,7 @@ public class ContainerPathElement extends SimplePathElement {
 			if (applicableFlexoConcept.getContainerFlexoConcept() != null) {
 				return ((FlexoConceptInstance) target).getContainerFlexoConceptInstance();
 			}
-			else {
-				return ((FlexoConceptInstance) target).getVirtualModelInstance();
-			}
+			return ((FlexoConceptInstance) target).getVirtualModelInstance();
 		}
 		logger.warning("Please implement me, target=" + target + " context=" + context);
 		return null;

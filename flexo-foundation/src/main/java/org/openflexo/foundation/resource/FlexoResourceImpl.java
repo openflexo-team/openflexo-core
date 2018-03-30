@@ -230,7 +230,7 @@ public abstract class FlexoResourceImpl<RD extends ResourceData<RD>> extends Fle
 		notifyObservers(notification);
 		// Also notify that the contents of the resource may also have changed
 		setChanged();
-		notifyObservers(new DataModification("contents", null, getContents()));
+		notifyObservers(new DataModification<>("contents", null, getContents()));
 		if (getServiceManager() != null) {
 			getServiceManager().notify(getServiceManager().getResourceManager(), notification);
 		}
@@ -251,7 +251,7 @@ public abstract class FlexoResourceImpl<RD extends ResourceData<RD>> extends Fle
 		notifyObservers(notification);
 		// Also notify that the contents of the resource may also have changed
 		setChanged();
-		notifyObservers(new DataModification("contents", null, null));
+		notifyObservers(new DataModification<>("contents", null, null));
 		if (getServiceManager() != null) {
 			getServiceManager().notify(getServiceManager().getResourceManager(), notification);
 		}
@@ -268,7 +268,7 @@ public abstract class FlexoResourceImpl<RD extends ResourceData<RD>> extends Fle
 	public void notifyResourceSaved() {
 		logger.fine("notifyResourceSaved(), resource=" + this);
 
-		ResourceSaved notification = new ResourceSaved(this, resourceData);
+		ResourceSaved<RD> notification = new ResourceSaved<>(this, resourceData);
 		setChanged();
 		notifyObservers(notification);
 		getServiceManager().notify(getServiceManager().getResourceManager(), notification);
@@ -281,7 +281,7 @@ public abstract class FlexoResourceImpl<RD extends ResourceData<RD>> extends Fle
 	public void notifyResourceModified() {
 		// logger.info("notifyResourceModified(), resource=" + this);
 
-		ResourceModified notification = new ResourceModified(this, resourceData);
+		ResourceModified<RD> notification = new ResourceModified<>(this, resourceData);
 		setChanged();
 		notifyObservers(notification);
 		getServiceManager().notify(getServiceManager().getResourceManager(), notification);
@@ -426,36 +426,34 @@ public abstract class FlexoResourceImpl<RD extends ResourceData<RD>> extends Fle
 			logger.warning("Delete requested for READ-ONLY resource " + this);
 			return false;
 		}
-		else {
-			isDeleting = true;
-			logger.info("Deleting resource " + this);
+		isDeleting = true;
+		logger.info("Deleting resource " + this);
 
-			if (getResourceCenter() instanceof ResourceRepositoryImpl) {
-				((ResourceRepository) getResourceCenter()).unregisterResource(this);
-			}
-
-			if (getContainer() != null) {
-				FlexoResource<?> container = getContainer();
-				container.removeFromContents(this);
-				container.notifyContentsRemoved(this);
-			}
-			for (org.openflexo.foundation.resource.FlexoResource<?> r : new ArrayList<>(getContents())) {
-				r.delete();
-			}
-
-			if (isLoaded()) {
-				unloadResourceData(true);
-			}
-
-			// Handle Flexo IO delegate deletion
-			getIODelegate().delete();
-
-			performSuperDelete(context);
-
-			isDeleting = false;
-
-			return true;
+		if (getResourceCenter() instanceof ResourceRepositoryImpl) {
+			((ResourceRepository) getResourceCenter()).unregisterResource(this);
 		}
+
+		if (getContainer() != null) {
+			FlexoResource<?> container = getContainer();
+			container.removeFromContents(this);
+			container.notifyContentsRemoved(this);
+		}
+		for (org.openflexo.foundation.resource.FlexoResource<?> r : new ArrayList<>(getContents())) {
+			r.delete();
+		}
+
+		if (isLoaded()) {
+			unloadResourceData(true);
+		}
+
+		// Handle Flexo IO delegate deletion
+		getIODelegate().delete();
+
+		performSuperDelete(context);
+
+		isDeleting = false;
+
+		return true;
 	}
 
 	/**

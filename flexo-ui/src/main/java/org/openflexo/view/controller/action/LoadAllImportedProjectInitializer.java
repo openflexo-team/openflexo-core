@@ -44,7 +44,8 @@ import org.openflexo.foundation.action.LoadAllImportedProject;
 import org.openflexo.view.controller.ActionInitializer;
 import org.openflexo.view.controller.ControllerActionInitializer;
 
-public class LoadAllImportedProjectInitializer extends ActionInitializer<LoadAllImportedProject, FlexoProjectObject, FlexoProjectObject> {
+public class LoadAllImportedProjectInitializer
+		extends ActionInitializer<LoadAllImportedProject, FlexoProjectObject<?>, FlexoProjectObject<?>> {
 	public LoadAllImportedProjectInitializer(ControllerActionInitializer actionInitializer) {
 		super(LoadAllImportedProject.actionType, actionInitializer);
 	}

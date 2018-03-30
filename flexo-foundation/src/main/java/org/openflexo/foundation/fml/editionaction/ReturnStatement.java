@@ -39,7 +39,6 @@
 package org.openflexo.foundation.fml.editionaction;
 
 import java.lang.reflect.Type;
-import java.util.logging.Logger;
 
 import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.fml.FMLRepresentationContext;
@@ -64,10 +63,7 @@ import org.openflexo.model.annotations.XMLElement;
 @XMLElement
 public interface ReturnStatement<T> extends AbstractAssignationAction<T> {
 
-	public static abstract class ReturnActionImpl<T> extends AbstractAssignationActionImpl<T>implements ReturnStatement<T> {
-
-		private static final Logger logger = Logger.getLogger(ReturnStatement.class.getPackage().getName());
-
+	public static abstract class ReturnActionImpl<T> extends AbstractAssignationActionImpl<T> implements ReturnStatement<T> {
 		@Override
 		public Type getInferedType() {
 			return getAssignableType();
@@ -91,10 +87,7 @@ public interface ReturnStatement<T> extends AbstractAssignationAction<T> {
 			if (getAssignableAction() != null) {
 				return getHeaderContext() + "return " + getAssignableAction().getStringRepresentation();
 			}
-			else {
-				return getHeaderContext() + "return" + " = ???";
-			}
+			return getHeaderContext() + "return" + " = ???";
 		}
-
 	}
 }

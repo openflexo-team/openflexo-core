@@ -85,7 +85,6 @@ public class FlexoConceptInstanceType implements TechnologySpecificType<FMLTechn
 
 		@Override
 		public FlexoConceptInstanceType makeCustomType(String configuration) {
-
 			FlexoConcept concept = null;
 
 			if (configuration != null) {
@@ -94,18 +93,13 @@ public class FlexoConceptInstanceType implements TechnologySpecificType<FMLTechn
 				// Do not load virtual models for that reason, resolving will be performed later
 
 			}
-			else {
+			else
 				concept = getFlexoConceptType();
-			}
-
-			if (concept != null) {
+			if (concept != null)
 				return getFlexoConceptInstanceType(concept);
-			}
-			else {
-				// We don't return UNDEFINED_FLEXO_CONCEPT_INSTANCE_TYPE because we want here a mutable type
-				// if FlexoConcept might be resolved later
-				return new FlexoConceptInstanceType(configuration, this);
-			}
+			// We don't return UNDEFINED_FLEXO_CONCEPT_INSTANCE_TYPE because we want here a mutable type
+			// if FlexoConcept might be resolved later
+			return new FlexoConceptInstanceType(configuration, this);
 		}
 
 		private FlexoConcept flexoConceptType;
@@ -256,13 +250,9 @@ public class FlexoConceptInstanceType implements TechnologySpecificType<FMLTechn
 	}
 
 	public static FlexoConceptInstanceType getFlexoConceptInstanceType(FlexoConcept anFlexoConcept) {
-		if (anFlexoConcept != null) {
+		if (anFlexoConcept != null)
 			return anFlexoConcept.getInstanceType();
-		}
-		else {
-			// logger.warning("Trying to get a InstanceType for a null FlexoConcept");
-			return UNDEFINED_FLEXO_CONCEPT_INSTANCE_TYPE;
-		}
+		// logger.warning("Trying to get a InstanceType for a null FlexoConcept");
+		return UNDEFINED_FLEXO_CONCEPT_INSTANCE_TYPE;
 	}
-
 }

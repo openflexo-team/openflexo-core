@@ -278,9 +278,7 @@ public class FlexoObjectReference<O extends FlexoObject> implements ResourceLoad
 		if (res == null) {
 			return null;
 		}
-		else {
-			return findObjectInResource(res);
-		}
+		return findObjectInResource(res);
 	}
 
 	public FlexoResource<?> getResource(boolean force) {
@@ -294,9 +292,7 @@ public class FlexoObjectReference<O extends FlexoObject> implements ResourceLoad
 		if (resource != null) {
 			return resource.getURI();
 		}
-		else {
-			return resourceIdentifier;
-		}
+		return resourceIdentifier;
 	}
 
 	public String getObjectIdentifier() {
@@ -305,12 +301,10 @@ public class FlexoObjectReference<O extends FlexoObject> implements ResourceLoad
 
 	public FlexoProject getReferringProject(boolean force) {
 		if (modelObject instanceof FlexoProjectObject) {
-			return ((FlexoProjectObject) modelObject).getProject();
+			return ((FlexoProjectObject<?>) modelObject).getProject();
 		}
-		else {
-			// TODO: lookup project using projectIdentifier
-			return null;
-		}
+		// TODO: lookup project using projectIdentifier
+		return null;
 	}
 
 	public ReferenceOwner getOwner() {
@@ -321,11 +315,11 @@ public class FlexoObjectReference<O extends FlexoObject> implements ResourceLoad
 		if (this.owner != owner) {
 			if (this.owner instanceof FlexoProject) {
 				if (this.owner != null) {
-					((FlexoProject) this.owner).removeObjectReferences(this);
+					((FlexoProject<?>) this.owner).removeObjectReferences(this);
 				}
 				this.owner = owner;
 				if (this.owner != null) {
-					((FlexoProject) this.owner).addToObjectReferences(this);
+					((FlexoProject<?>) this.owner).addToObjectReferences(this);
 				}
 				else {
 					if (owner != null) {
@@ -345,9 +339,7 @@ public class FlexoObjectReference<O extends FlexoObject> implements ResourceLoad
 		if (modelObject != null) {
 			return modelObject.getReferenceForSerialization(serializeClassName);
 		}
-		else {
-			return constructSerializationRepresentation();
-		}
+		return constructSerializationRepresentation();
 	}
 
 	public void notifyObjectDeletion() {

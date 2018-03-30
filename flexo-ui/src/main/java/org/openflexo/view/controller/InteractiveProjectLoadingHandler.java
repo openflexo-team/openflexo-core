@@ -66,10 +66,6 @@ public abstract class InteractiveProjectLoadingHandler implements ProjectLoading
 
 	private boolean performingAutomaticConversion = false;
 
-	public InteractiveProjectLoadingHandler() {
-		super();
-	}
-
 	protected boolean isPerformingAutomaticConversion() {
 		return performingAutomaticConversion;
 	}
@@ -91,7 +87,7 @@ public abstract class InteractiveProjectLoadingHandler implements ProjectLoading
 		return resourcesToConvert;
 	}
 
-	protected void performConversion(FlexoProject project, Vector<ResourceToConvert> resourcesToConvert) {
+	protected void performConversion(FlexoProject<?> project, Vector<ResourceToConvert> resourcesToConvert) {
 		List<PamelaResource<?, ?>> resources = new ArrayList<>();
 		for (ResourceToConvert resourceToConvert : resourcesToConvert) {
 			resources.add(resourceToConvert.getResource());
@@ -105,8 +101,8 @@ public abstract class InteractiveProjectLoadingHandler implements ProjectLoading
 		// FlexoResource.sortResourcesWithDependancies(resources);
 		for (PamelaResource<?, ?> res : resources) {
 			// progress.setSecondaryProgress(FlexoLocalization.getMainLocalizer().localizedForKey("converting") + " " + res.getURI() + " "
-			//		+ FlexoLocalization.getMainLocalizer().localizedForKey("from") + " " + res.getModelVersion() + " "
-			//		+ FlexoLocalization.getMainLocalizer().localizedForKey("to") + " " + res.latestVersion());
+			// + FlexoLocalization.getMainLocalizer().localizedForKey("from") + " " + res.getModelVersion() + " "
+			// + FlexoLocalization.getMainLocalizer().localizedForKey("to") + " " + res.latestVersion());
 			if (!res.isDeleted()) {
 				try {
 					res.getResourceData();

@@ -437,7 +437,7 @@ public class CommandInterpreter extends PropertyChangedSupportDefaultImplementat
 		return availableCommands;
 	}
 
-	private List<String> tokenize(String startingBuffer) {
+	private static List<String> tokenize(String startingBuffer) {
 		List<String> returned = new ArrayList<>();
 		StringTokenizer st = new StringTokenizer(startingBuffer);
 		while (st.hasMoreTokens()) {

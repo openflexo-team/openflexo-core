@@ -478,7 +478,7 @@ public abstract class FlexoBehaviourAction<A extends FlexoBehaviourAction<A, FB,
 
 	public boolean parameterValueChanged() {
 		setChanged();
-		notifyObservers(new DataModification(PARAMETER_VALUE_CHANGED, null, getParametersValues()));
+		notifyObservers(new DataModification<>(PARAMETER_VALUE_CHANGED, null, getParametersValues()));
 		return true;
 	}
 

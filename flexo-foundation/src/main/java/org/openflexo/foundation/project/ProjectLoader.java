@@ -94,7 +94,7 @@ public class ProjectLoader extends FlexoServiceImpl {
 	public static final String ROOT_PROJECTS = "rootProjects";
 
 	private final Map<FlexoProject<?>, FlexoEditor> editors;
-	private Map<Object, FlexoProjectResource> projectResourcesForSerializationArtefacts = new HashMap<>();
+	private Map<Object, FlexoProjectResource<?>> projectResourcesForSerializationArtefacts = new HashMap<>();
 
 	private final List<FlexoProject<?>> rootProjects;
 	// private ModelFactory modelFactory;
@@ -228,24 +228,11 @@ public class ProjectLoader extends FlexoServiceImpl {
 		action.doAction();
 		newProject = action.getNewProject();
 
-		if (newProject == null) {
+		if (newProject == null)
 			return null;
-		}
 
-		projectResourcesForSerializationArtefacts.put(projectDirectory, (FlexoProjectResource) (FlexoResource) newProject.getResource());
-
-		/*try {
-			editor = FlexoProject.newProject(projectDirectory, new FlexoEditor.FlexoEditorFactory() {
-				@Override
-				public FlexoEditor makeFlexoEditor(FlexoProject project, FlexoServiceManager serviceManager) {
-					return new DefaultFlexoEditor(project, serviceManager);
-				}
-			}, getServiceManager(), null);
-		} catch (ProjectInitializerException e) {
-			throw e;
-		}*/
-
-		// newEditor(editor);
+		projectResourcesForSerializationArtefacts.put(projectDirectory,
+				(FlexoProjectResource<?>) (FlexoResource<?>) newProject.getResource());
 		addToRootProjects(newProject);
 
 		// Notify project just loaded
@@ -353,7 +340,7 @@ public class ProjectLoader extends FlexoServiceImpl {
 
 		try {
 			// Retrieve project resource
-			FlexoProjectResource projectResource = retrieveFlexoProjectResource(projectDirectory);
+			FlexoProjectResource<?> projectResource = retrieveFlexoProjectResource(projectDirectory);
 
 			// Load project
 			Progress.progress(FlexoLocalization.getMainLocalizer().localizedForKey("loading_project") + " " + projectResource.getName());
@@ -500,26 +487,6 @@ public class ProjectLoader extends FlexoServiceImpl {
 		return loadProject(projectDirectory);
 	}
 
-	/*protected void newEditor(FlexoEditor editor) {
-		editors.put(editor.getProject(), editor);
-		getPropertyChangeSupport().firePropertyChange(EDITOR_ADDED, null, editor);
-		try {
-			FlexoProjectReference ref = modelFactory.newInstance(FlexoProjectReference.class);
-			ref.init(editor.getProject());
-			// applicationContext.getResourceCenterService().getUserResourceCenter()
-			// .publishResource(ref, editor.getProject().getVersion(), null);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		for (FlexoProject project : new ArrayList<>(editors.keySet())) {
-			if (project.getProjectData() != null) {
-				for (FlexoProjectReference reference : project.getProjectData().getImportedProjects()) {
-					reference.getReferredProject(false);
-				}
-			}
-		}
-	}*/
-
 	public void closeProject(FlexoProject<?> project) {
 		FlexoEditor editor = editors.remove(project);
 		if (project != null) {
@@ -640,7 +607,7 @@ public class ProjectLoader extends FlexoServiceImpl {
 	}
 
 	public boolean someProjectsAreModified() {
-		for (FlexoProject project : getRootProjects()) {
+		for (FlexoProject<?> project : getRootProjects()) {
 			if (project.hasUnsavedResources()) {
 				return true;
 			}

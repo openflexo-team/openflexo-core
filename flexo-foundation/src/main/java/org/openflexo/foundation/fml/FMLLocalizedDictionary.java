@@ -264,14 +264,12 @@ public interface FMLLocalizedDictionary extends FMLObject, org.openflexo.localiz
 						return getParent().localizedForKeyAndLanguage(key, language, createsNewEntryInFirstEditableParent);
 					}
 				}
-				else {
-					// parent is null
-					if (createsNewEntryInFirstEditableParent && handleNewEntry(key, language)) {
-						addEntry(key);
-						return getDictForLang(language).get(key);
-					}
-					return key;
+				// parent is null
+				if (createsNewEntryInFirstEditableParent && handleNewEntry(key, language)) {
+					addEntry(key);
+					return getDictForLang(language).get(key);
 				}
+				return key;
 			}
 
 			return localized;
@@ -622,9 +620,7 @@ public interface FMLLocalizedDictionary extends FMLObject, org.openflexo.localiz
 				searchTranslation(getEntry(key, false));
 				return;
 			}
-			else {
-				addEntry(key);
-			}
+			addEntry(key);
 		}
 
 		@Override

@@ -487,7 +487,7 @@ public interface FlexoBehaviour extends FlexoBehaviourObject, Function, FMLContr
 			getParameters().remove(p);
 			getParameters().add(0, p);
 			setChanged();
-			notifyObservers(new DataModification("parameters", null, getParameters()));
+			notifyObservers(new DataModification<>("parameters", null, getParameters()));
 			updateSignature(oldSignature);
 		}
 
@@ -499,7 +499,7 @@ public interface FlexoBehaviour extends FlexoBehaviourObject, Function, FMLContr
 				getParameters().remove(p);
 				getParameters().add(index - 1, p);
 				setChanged();
-				notifyObservers(new DataModification("parameters", null, getParameters()));
+				notifyObservers(new DataModification<>("parameters", null, getParameters()));
 				updateSignature(oldSignature);
 			}
 		}
@@ -512,7 +512,7 @@ public interface FlexoBehaviour extends FlexoBehaviourObject, Function, FMLContr
 				getParameters().remove(p);
 				getParameters().add(index + 1, p);
 				setChanged();
-				notifyObservers(new DataModification("parameters", null, getParameters()));
+				notifyObservers(new DataModification<>("parameters", null, getParameters()));
 				updateSignature(oldSignature);
 			}
 		}
@@ -523,7 +523,7 @@ public interface FlexoBehaviour extends FlexoBehaviourObject, Function, FMLContr
 			getParameters().remove(p);
 			getParameters().add(p);
 			setChanged();
-			notifyObservers(new DataModification("parameters", null, getParameters()));
+			notifyObservers(new DataModification<>("parameters", null, getParameters()));
 			updateSignature(oldSignature);
 		}
 

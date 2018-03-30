@@ -81,11 +81,11 @@ public class HelpDirective extends Directive {
 		}
 	}
 
-	private void displayDirectiveHelp(String usage, String description) {
+	private static void displayDirectiveHelp(String usage, String description) {
 		System.out.println(usage + StringUtils.buildWhiteSpaceIndentation(40 - usage.length()) + ": " + description);
 	}
 
-	private void displayFMLCommandHelp(String usage, String description) {
+	private static void displayFMLCommandHelp(String usage, String description) {
 		System.out.println(usage + StringUtils.buildWhiteSpaceIndentation(40 - usage.length()) + ": " + description);
 	}
 }

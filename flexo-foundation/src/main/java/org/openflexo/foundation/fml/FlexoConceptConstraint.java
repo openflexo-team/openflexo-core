@@ -103,9 +103,7 @@ public interface FlexoConceptConstraint extends FlexoConceptObject {
 			if (getFlexoConcept() != null) {
 				return getFlexoConcept().getBindingModel();
 			}
-			else {
-				return null;
-			}
+			return null;
 		}
 
 		@Override

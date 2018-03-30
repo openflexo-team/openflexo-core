@@ -212,7 +212,7 @@ public class ResourceManager extends FlexoServiceImpl implements ReferenceOwner 
 		if (StringUtils.isEmpty(resourceURI)) {
 			return null;
 		}
-		for (FlexoResource r : new ArrayList<>(resources)) {
+		for (FlexoResource<?> r : new ArrayList<>(resources)) {
 			if (resourceURI.equals(r.getURI())) {
 				return r;
 			}
@@ -272,7 +272,7 @@ public class ResourceManager extends FlexoServiceImpl implements ReferenceOwner 
 		super.receiveNotification(caller, notification);
 		if (notification instanceof ResourceCenterAdded) {
 			setChanged();
-			notifyObservers(new DataModification(null, ((ResourceCenterAdded) notification).getAddedResourceCenter()));
+			notifyObservers(new DataModification<>(null, ((ResourceCenterAdded) notification).getAddedResourceCenter()));
 		}
 		if (notification instanceof ResourceCenterRemoved) {
 			// In this case, we MUST unregister all resources contained in removed ResourceCenter
@@ -290,7 +290,7 @@ public class ResourceManager extends FlexoServiceImpl implements ReferenceOwner 
 			}
 
 			setChanged();
-			notifyObservers(new DataModification(((ResourceCenterRemoved) notification).getRemovedResourceCenter(), null));
+			notifyObservers(new DataModification<>(((ResourceCenterRemoved) notification).getRemovedResourceCenter(), null));
 
 		}
 	}
@@ -309,7 +309,7 @@ public class ResourceManager extends FlexoServiceImpl implements ReferenceOwner 
 	 * @param technologyAdapter
 	 * @return
 	 */
-	public List<ResourceRepository<?, ?>> getAllRepositories(TechnologyAdapter technologyAdapter) {
+	public List<ResourceRepository<?, ?>> getAllRepositories(TechnologyAdapter<?> technologyAdapter) {
 		if (getServiceManager() != null) {
 			return getServiceManager().getTechnologyAdapterService().getAllRepositories(technologyAdapter);
 		}
@@ -340,7 +340,7 @@ public class ResourceManager extends FlexoServiceImpl implements ReferenceOwner 
 	 * @return
 	 */
 	public <RD extends ResourceData<RD>> List<ResourceRepository<? extends FlexoResource<RD>, ?>> getAllRepositories(
-			TechnologyAdapter technologyAdapter, Class<RD> resourceDataClass) {
+			TechnologyAdapter<?> technologyAdapter, Class<RD> resourceDataClass) {
 		if (getServiceManager() != null) {
 			return getServiceManager().getTechnologyAdapterService().getAllRepositories(technologyAdapter, resourceDataClass);
 		}
@@ -385,7 +385,7 @@ public class ResourceManager extends FlexoServiceImpl implements ReferenceOwner 
 
 	// TODO: also handle version parameter
 	public FlexoMetaModelResource<?, ?, ?> getMetaModelWithURI(String uri) {
-		for (TechnologyAdapter ta : getServiceManager().getTechnologyAdapterService().getTechnologyAdapters()) {
+		for (TechnologyAdapter<?> ta : getServiceManager().getTechnologyAdapterService().getTechnologyAdapters()) {
 			FlexoMetaModelResource<?, ?, ?> returned = getMetaModelWithURI(uri, ta);
 			if (returned != null) {
 				return returned;
@@ -395,7 +395,7 @@ public class ResourceManager extends FlexoServiceImpl implements ReferenceOwner 
 	}
 
 	// TODO: also handle version parameter
-	public FlexoMetaModelResource<?, ?, ?> getMetaModelWithURI(String uri, TechnologyAdapter technologyAdapter) {
+	public FlexoMetaModelResource<?, ?, ?> getMetaModelWithURI(String uri, TechnologyAdapter<?> technologyAdapter) {
 		if (technologyAdapter != null && technologyAdapter.getTechnologyContextManager() != null) {
 			return (FlexoMetaModelResource<?, ?, ?>) technologyAdapter.getTechnologyContextManager().getResourceWithURI(uri);
 		}
@@ -404,7 +404,7 @@ public class ResourceManager extends FlexoServiceImpl implements ReferenceOwner 
 
 	// TODO: also handle version parameter
 	public FlexoModelResource<?, ?, ?, ?> getModelWithURI(String uri) {
-		for (TechnologyAdapter ta : getServiceManager().getTechnologyAdapterService().getTechnologyAdapters()) {
+		for (TechnologyAdapter<?> ta : getServiceManager().getTechnologyAdapterService().getTechnologyAdapters()) {
 			FlexoModelResource<?, ?, ?, ?> returned = getModelWithURI(uri, ta);
 			if (returned != null) {
 				return returned;
@@ -414,7 +414,7 @@ public class ResourceManager extends FlexoServiceImpl implements ReferenceOwner 
 	}
 
 	// TODO: also handle version parameter
-	public FlexoModelResource<?, ?, ?, ?> getModelWithURI(String uri, TechnologyAdapter technologyAdapter) {
+	public FlexoModelResource<?, ?, ?, ?> getModelWithURI(String uri, TechnologyAdapter<?> technologyAdapter) {
 		if (technologyAdapter == null) {
 			logger.warning("Unexpected null " + technologyAdapter);
 			return null;
@@ -433,7 +433,7 @@ public class ResourceManager extends FlexoServiceImpl implements ReferenceOwner 
 	 * @param technologyAdapter
 	 * @return
 	 */
-	public List<ModelRepository<?, ?, ?, ?, ?, ?>> getAllModelRepositories(TechnologyAdapter technologyAdapter) {
+	public List<ModelRepository<?, ?, ?, ?, ?, ?>> getAllModelRepositories(TechnologyAdapter<?> technologyAdapter) {
 		if (getServiceManager() != null) {
 			return getServiceManager().getTechnologyAdapterService().getAllModelRepositories(technologyAdapter);
 		}
@@ -447,7 +447,7 @@ public class ResourceManager extends FlexoServiceImpl implements ReferenceOwner 
 	 * @param technologyAdapter
 	 * @return
 	 */
-	public List<MetaModelRepository<?, ?, ?, ?, ?>> getAllMetaModelRepositories(TechnologyAdapter technologyAdapter) {
+	public List<MetaModelRepository<?, ?, ?, ?, ?>> getAllMetaModelRepositories(TechnologyAdapter<?> technologyAdapter) {
 		if (getServiceManager() != null) {
 			return getServiceManager().getTechnologyAdapterService().getAllMetaModelRepositories(technologyAdapter);
 		}

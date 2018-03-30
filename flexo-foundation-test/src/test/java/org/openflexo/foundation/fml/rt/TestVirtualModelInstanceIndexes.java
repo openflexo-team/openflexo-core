@@ -341,21 +341,15 @@ public class TestVirtualModelInstanceIndexes extends OpenflexoProjectAtRunTimeTe
 
 	}
 
-	private static ActionScheme selectLastName;
-	private static ActionScheme selectFirstName;
-	private static ActionScheme selectAge;
-	private static ActionScheme selectLastNamePlusAge;
-	private static ActionScheme selectLastNameAndAge;
-
 	@Test
 	@TestOrder(6)
 	public void testCreateRequests() {
 
-		selectLastName = makeRequest("selectLastName", "selected.lastName = 'Smith'");
-		selectFirstName = makeRequest("selectFirstName", "'John' = selected.firstName");
-		selectAge = makeRequest("selectAge", "selected.age = 11");
-		selectLastNamePlusAge = makeRequest("selectLastNamePlusAge", "selected.lastName+'-'+selected.age = 'Smith-43'");
-		selectLastNameAndAge = makeRequest("selectLastNameAndAge", "selected.lastName = 'Smith'", "selected.age=43");
+		makeRequest("selectLastName", "selected.lastName = 'Smith'");
+		makeRequest("selectFirstName", "'John' = selected.firstName");
+		makeRequest("selectAge", "selected.age = 11");
+		makeRequest("selectLastNamePlusAge", "selected.lastName+'-'+selected.age = 'Smith-43'");
+		makeRequest("selectLastNameAndAge", "selected.lastName = 'Smith'", "selected.age=43");
 
 		System.out.println("FML=\n" + virtualModel.getFMLRepresentation());
 

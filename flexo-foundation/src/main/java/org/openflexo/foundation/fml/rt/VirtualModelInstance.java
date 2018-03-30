@@ -895,20 +895,6 @@ public interface VirtualModelInstance<VMI extends VirtualModelInstance<VMI, TA>,
 			return returned;
 		}
 
-		// TODO: refactor this
-		/*@Deprecated
-		public List<FlexoConceptInstance> getEPInstancesWithPropertyEqualsTo(String epName, String epProperty, Object value) {
-			List<FlexoConceptInstance> returned = new ArrayList<FlexoConceptInstance>();
-			Collection<FlexoConceptInstance> epis = getEPInstances(epName);
-			for (FlexoConceptInstance epi : epis) {
-				Object evaluate = epi.evaluate(epProperty);
-				if (value == null && evaluate == value || value != null && value.equals(evaluate)) {
-					returned.add(epi);
-				}
-			}
-			return returned;
-		}*/
-
 		@Override
 		public AbstractVirtualModelInstanceResource<VMI, TA> getResource() {
 			return resource;
@@ -1363,25 +1349,6 @@ public interface VirtualModelInstance<VMI extends VirtualModelInstance<VMI, TA>,
 		public boolean isValidVirtualModelInstanceName(String virtualModelName) {
 			return getVirtualModelInstance(virtualModelName) == null;
 		}
-
-		/*@Deprecated
-		@Override
-		public ViewLibrary<?> getViewLibrary() {
-		
-			FlexoResourceCenter<?> rc = getResourceCenter();
-			FMLRTTechnologyAdapter rtTA = rc.getServiceManager().getTechnologyAdapterService()
-					.getTechnologyAdapter(FMLRTTechnologyAdapter.class);
-			return rtTA.getViewRepository(rc);
-		}*/
-
-		/*@Deprecated
-		@Override
-		public RepositoryFolder<AbstractVirtualModelInstanceResource<VMI, TA>, ?> getFolder() {
-			if (getResource() != null) {
-				return ((ViewLibrary) getViewLibrary()).getParentFolder(getResource());
-			}
-			return null;
-		}*/
 
 		/**
 		 * Return the list of {@link TechnologyAdapter} used in the context of this {@link View}

@@ -450,7 +450,7 @@ public abstract class TechnologyAdapter<TA extends TechnologyAdapter<TA>> extend
 	public void resourceCenterAdded(FlexoResourceCenter<?> newResourceCenter) {
 		initializeResourceCenter(newResourceCenter);
 		setChanged();
-		notifyObservers(new DataModification(null, newResourceCenter));
+		notifyObservers(new DataModification<>(null, newResourceCenter));
 	}
 
 	/**
@@ -460,7 +460,7 @@ public abstract class TechnologyAdapter<TA extends TechnologyAdapter<TA>> extend
 	 */
 	public void resourceCenterRemoved(FlexoResourceCenter<?> removedResourceCenter) {
 		setChanged();
-		notifyObservers(new DataModification(removedResourceCenter, null));
+		notifyObservers(new DataModification<>(removedResourceCenter, null));
 		resourceCenterHasBeenRemoved(removedResourceCenter);
 	}
 

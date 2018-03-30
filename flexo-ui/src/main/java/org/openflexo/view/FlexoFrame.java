@@ -386,35 +386,6 @@ public final class FlexoFrame extends JFrame implements FlexoActionSource<FlexoO
 
 	private static final String WINDOW_MODIFIED = "windowModified";
 
-	/*@Override
-	public void update(final FlexoObservable observable, final DataModification dataModification) {
-		if (getController() == null) {
-			observable.deleteObserver(this);
-			return;
-		}
-		if (getController().getProject() == null) {
-			return;
-		}
-		if (!SwingUtilities.isEventDispatchThread()) {
-			SwingUtilities.invokeLater(new Runnable() {
-				@Override
-				public void run() {
-					update(observable, dataModification);
-				}
-			});
-			return;
-		}
-		if (dataModification instanceof NameChanged) {
-			updateTitle();
-		}
-		else if ("projectDirectory".equals(dataModification.propertyName())) {
-			updateTitle();
-		}
-	
-		updateWindowModified();
-	
-	}*/
-
 	public void updateWindowModified() {
 		if (ToolBox.isMacOS()) {
 			getRootPane().putClientProperty(WINDOW_MODIFIED,

@@ -341,7 +341,7 @@ public abstract class ResourceRepositoryImpl<R extends FlexoResource<?>, I> exte
 	}
 
 	@Override
-	public void update(FlexoObservable observable, DataModification dataModification) {
+	public void update(FlexoObservable observable, DataModification<?> dataModification) {
 	}
 
 	/* (non-Javadoc)

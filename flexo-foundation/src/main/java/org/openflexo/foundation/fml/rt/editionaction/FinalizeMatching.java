@@ -270,12 +270,9 @@ public interface FinalizeMatching extends EditionAction {
 		public List<FlexoConcept> getAvailableFlexoConceptTypes() {
 			FlexoConcept containerConcept = getOwnerConcept();
 			if (containerConcept != null) {
-				if (containerConcept instanceof VirtualModel) {
+				if (containerConcept instanceof VirtualModel)
 					return ((VirtualModel) containerConcept).getAllRootFlexoConcepts();
-				}
-				else {
-					return containerConcept.getEmbeddedFlexoConcepts();
-				}
+				return containerConcept.getEmbeddedFlexoConcepts();
 			}
 			return Collections.emptyList();
 		}

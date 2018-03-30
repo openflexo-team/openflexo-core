@@ -42,7 +42,6 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
-import java.util.logging.Logger;
 
 import org.openflexo.connie.type.ParameterizedTypeImpl;
 import org.openflexo.foundation.fml.FMLRepresentationContext;
@@ -102,8 +101,6 @@ public abstract interface FetchRequest<MS extends ModelSlot<RD>, RD extends Reso
 	public static abstract class FetchRequestImpl<MS extends ModelSlot<RD>, RD extends ResourceData<RD> & TechnologyObject<?>, T>
 			extends TechnologySpecificActionDefiningReceiverImpl<MS, RD, List<T>> implements FetchRequest<MS, RD, T> {
 
-		private static final Logger logger = Logger.getLogger(FetchRequest.class.getPackage().getName());
-
 		protected String getWhereClausesFMLRepresentation(FMLRepresentationContext context) {
 			if (getConditions().size() > 0) {
 				StringBuffer sb = new StringBuffer();
@@ -152,36 +149,24 @@ public abstract interface FetchRequest<MS extends ModelSlot<RD>, RD extends Reso
 			if (getConditions().size() == 0) {
 				return fetchResult;
 			}
-			else {
-				// System.out
-				// .println("Filtering with " + getConditions() + " fetchResult=" + fetchResult + " evalContext=" + evaluationContext);
-
-				/*if (getConditions().size() > 0) {
-					System.out.println("condition " + getConditions().get(0).getCondition());
-					System.out.println("evalContext=" + evaluationContext + " hash=" + Integer.toHexString(evaluationContext.hashCode()));
-					System.out.println("Je dois evaluer ");
-				}*/
-				// if (true)
-				// return fetchResult;
-				List<T> returned = new ArrayList<>();
-				for (final T proposedFetchResult : fetchResult) {
-					boolean takeIt = true;
-					for (FetchRequestCondition condition : getConditions()) {
-						if (!condition.evaluateCondition(proposedFetchResult, evaluationContext)) {
-							takeIt = false;
-							// System.out.println("I dismiss " + proposedFetchResult + " because of " + condition.getCondition() + " valid="
-							// + condition.getCondition().isValid());
-							break;
-						}
+			List<T> returned = new ArrayList<>();
+			for (final T proposedFetchResult : fetchResult) {
+				boolean takeIt = true;
+				for (FetchRequestCondition condition : getConditions()) {
+					if (!condition.evaluateCondition(proposedFetchResult, evaluationContext)) {
+						takeIt = false;
+						// System.out.println("I dismiss " + proposedFetchResult + " because of " + condition.getCondition() + " valid="
+						// + condition.getCondition().isValid());
+						break;
 					}
-					if (takeIt) {
-						returned.add(proposedFetchResult);
-						// System.out.println("I take " + proposedFetchResult);
-					}
-					else {}
 				}
-				return returned;
+				if (takeIt) {
+					returned.add(proposedFetchResult);
+					// System.out.println("I take " + proposedFetchResult);
+				}
+				else {}
 			}
+			return returned;
 		}
 
 		@Override

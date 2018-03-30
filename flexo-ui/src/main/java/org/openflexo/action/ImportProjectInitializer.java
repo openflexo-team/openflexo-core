@@ -61,13 +61,13 @@ import org.openflexo.view.controller.ActionInitializer;
 import org.openflexo.view.controller.ControllerActionInitializer;
 import org.openflexo.view.controller.FlexoController;
 
-public class ImportProjectInitializer extends ActionInitializer<ImportProject, FlexoProjectObject, FlexoProjectObject> {
+public class ImportProjectInitializer extends ActionInitializer<ImportProject, FlexoProjectObject<?>, FlexoProjectObject<?>> {
 	public ImportProjectInitializer(ControllerActionInitializer actionInitializer) {
 		super(ImportProject.actionType, actionInitializer);
 	}
 
 	@Override
-	protected FlexoExceptionHandler<ImportProject, FlexoProjectObject, FlexoProjectObject> getDefaultExceptionHandler() {
+	protected FlexoExceptionHandler<ImportProject, FlexoProjectObject<?>, FlexoProjectObject<?>> getDefaultExceptionHandler() {
 		return (exception, action) -> {
 			if (action.getThrownException() instanceof ProjectImportLoopException) {
 				FlexoController.notify(action.getLocales().localizedForKey("project_already_imported") + " "
@@ -78,7 +78,7 @@ public class ImportProjectInitializer extends ActionInitializer<ImportProject, F
 	}
 
 	@Override
-	protected FlexoActionRunnable<ImportProject, FlexoProjectObject, FlexoProjectObject> getDefaultFinalizer() {
+	protected FlexoActionRunnable<ImportProject, FlexoProjectObject<?>, FlexoProjectObject<?>> getDefaultFinalizer() {
 		return (event, action) -> {
 			if (action.hasActionExecutionSucceeded()) {
 				FlexoController.notify(action.getLocales().localizedForKey("successfully_imported_project") + " "
@@ -89,7 +89,7 @@ public class ImportProjectInitializer extends ActionInitializer<ImportProject, F
 	}
 
 	@Override
-	protected FlexoActionRunnable<ImportProject, FlexoProjectObject, FlexoProjectObject> getDefaultInitializer() {
+	protected FlexoActionRunnable<ImportProject, FlexoProjectObject<?>, FlexoProjectObject<?>> getDefaultInitializer() {
 		return (e, action) -> {
 			if (!(getController().getApplicationContext() instanceof InteractiveApplicationContext)) {
 				return false;
@@ -145,7 +145,7 @@ public class ImportProjectInitializer extends ActionInitializer<ImportProject, F
 	}
 
 	@Override
-	protected Icon getEnabledIcon(FlexoActionFactory<ImportProject, FlexoProjectObject, FlexoProjectObject> actionType) {
+	protected Icon getEnabledIcon(FlexoActionFactory<ImportProject, FlexoProjectObject<?>, FlexoProjectObject<?>> actionType) {
 		return IconLibrary.IMPORT_ICON;
 	}
 

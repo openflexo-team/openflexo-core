@@ -140,37 +140,32 @@ public abstract interface ExpressionProperty<T> extends FlexoProperty<T> {
 			if (isAnalysingType) {
 				return lastKnownType;
 			}
-			else {
+			// TODO: we should cache the result of analyzed type
+			// Because it takes too much time
+			// We need to explore the conditions for an analyzed type to change
+			// See https://bugs.openflexo.org/browse/CONNIE-18
 
-				// TODO: we should cache the result of analyzed type
-				// Because it takes too much time
-				// We need to explore the conditions for an analyzed type to change
-				// See https://bugs.openflexo.org/browse/CONNIE-18
+			// if (lastKnownType == null) {
 
-				// if (lastKnownType == null) {
+			try {
 
-				try {
+				isAnalysingType = true;
 
-					isAnalysingType = true;
+				/*System.out.println("Le type de " + getExpression() + " c'est quoi ?");
+				System.out.println("BM=" + getBindingModel());
+				System.out.println("valid=" + getExpression().isValid());
+				System.out.println("return: " + getExpression().getAnalyzedType());*/
 
-					/*System.out.println("Le type de " + getExpression() + " c'est quoi ?");
-					System.out.println("BM=" + getBindingModel());
-					System.out.println("valid=" + getExpression().isValid());
-					System.out.println("return: " + getExpression().getAnalyzedType());*/
-
-					if (getExpression() != null && getExpression().isValid()) {
-						lastKnownType = getExpression().getAnalyzedType();
-						// System.out.println("je retourne " + returned);
-						// System.out.println("valid=" + getExpression().isValid());
-						isAnalysingType = false;
-					}
-				} finally {
+				if (getExpression() != null && getExpression().isValid()) {
+					lastKnownType = getExpression().getAnalyzedType();
+					// System.out.println("je retourne " + returned);
+					// System.out.println("valid=" + getExpression().isValid());
 					isAnalysingType = false;
 				}
-				// }
-
+			} finally {
+				isAnalysingType = false;
 			}
-
+			// }
 			return lastKnownType;
 		}
 

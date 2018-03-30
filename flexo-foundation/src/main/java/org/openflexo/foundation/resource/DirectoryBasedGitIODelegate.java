@@ -200,10 +200,8 @@ public interface DirectoryBasedGitIODelegate extends GitIODelegate {
 				}
 				return returned;
 			}
-			else {
-				logger.warning("Delete requested for READ-ONLY file resource " + this);
-				return false;
-			}
+			logger.warning("Delete requested for READ-ONLY file resource " + this);
+			return false;
 		}
 
 		@Override

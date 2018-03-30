@@ -117,23 +117,11 @@ public interface FMLLocalizedEntry extends FMLObject {
 			if (getLocalizedDictionary() != null) {
 				return getLocalizedDictionary().getOwner();
 			}
-			else {
-				return null;
-			}
+			return null;
 		}
-
-		/*@Override
-		public ViewPoint getViewPoint() {
-			if (getLocalizedDictionary() != null) {
-				return getLocalizedDictionary().getViewPoint();
-			} else {
-				return null;
-			}
-		}*/
 
 		@Override
 		public String getURI() {
-			// TODO Auto-generated method stub
 			return null;
 		}
 

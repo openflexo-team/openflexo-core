@@ -113,23 +113,16 @@ public class PropertyEntry<TA extends TechnologyAdapter<TA>> extends PropertyCha
 
 	public static List<PropertyType> getAvailablePropertyTypes(Type type) {
 		Class<?> baseClass = TypeUtils.getBaseClass(type);
-		if (TypeUtils.isPrimitive(type) || (type instanceof Class && TypeUtils.isWrapperClass((Class<?>) type))
-				|| TypeUtils.isString(type)) {
+		if (TypeUtils.isPrimitive(type) || (type instanceof Class && TypeUtils.isWrapperClass((Class<?>) type)) || TypeUtils.isString(type))
 			return PRIMITIVE_TYPES;
-		}
-		else if (type instanceof VirtualModelInstanceType) {
+		else if (type instanceof VirtualModelInstanceType)
 			return VMI_TYPES;
-		}
-		else if (type instanceof FlexoConceptInstanceType) {
+		else if (type instanceof FlexoConceptInstanceType)
 			return FCI_TYPES;
-		}
 		else if (TechnologyObject.class.isAssignableFrom(baseClass)) {
-			if (ResourceData.class.isAssignableFrom(baseClass)) {
+			if (ResourceData.class.isAssignableFrom(baseClass))
 				return RESOURCE_DATA_TYPES;
-			}
-			else {
-				return ROLE_TYPES;
-			}
+			return ROLE_TYPES;
 		}
 		return ALL_TYPES;
 	}
@@ -158,7 +151,7 @@ public class PropertyEntry<TA extends TechnologyAdapter<TA>> extends PropertyCha
 	private FlexoMetaModelResource<?, ?, ?> metaModelResource;
 	private FlexoConcept flexoConcept;
 
-	private Map<TechnologyAdapter, List<Class<? extends FlexoRole<?>>>> availableFlexoRoleTypes = new HashMap<>();
+	private Map<TechnologyAdapter<?>, List<Class<? extends FlexoRole<?>>>> availableFlexoRoleTypes = new HashMap<>();
 
 	public PropertyEntry(String paramName, LocalizedDelegate locales, FlexoConceptObject context) {
 		super();
@@ -220,9 +213,7 @@ public class PropertyEntry<TA extends TechnologyAdapter<TA>> extends PropertyCha
 			if (getFlexoConcept() != null) {
 				return getFlexoConcept().getInstanceType();
 			}
-			else {
-				return FlexoConceptInstanceType.UNDEFINED_FLEXO_CONCEPT_INSTANCE_TYPE;
-			}
+			return FlexoConceptInstanceType.UNDEFINED_FLEXO_CONCEPT_INSTANCE_TYPE;
 		}
 		return type;
 	}
@@ -455,8 +446,8 @@ public class PropertyEntry<TA extends TechnologyAdapter<TA>> extends PropertyCha
 
 	@Override
 	public BindingModel getBindingModel() {
-		if (context instanceof Bindable) {
-			return ((Bindable) context).getBindingModel();
+		if (context != null) {
+			return context.getBindingModel();
 		}
 		return null;
 	}
@@ -672,11 +663,7 @@ public class PropertyEntry<TA extends TechnologyAdapter<TA>> extends PropertyCha
 			action.doAction();
 			return action.getNewFlexoProperty();
 		}
-		else {
-			System.out.println("Create property " + getName() + " not implemented yet");
-			return null;
-		}
-
+		System.out.println("Create property " + getName() + " not implemented yet");
+		return null;
 	}
-
 }

@@ -247,7 +247,8 @@ public class AutoSaveService implements PropertyChangeListener {
 					projectDirectory.getName() + ".restore" + (attempt == 0 ? "" : "." + attempt));
 			attempt++;
 		}
-		// progress.setProgress(FlexoLocalization.getMainLocalizer().localizedForKey("creating_restore_project_at") + " " + dest.getAbsolutePath());
+		// progress.setProgress(FlexoLocalization.getMainLocalizer().localizedForKey("creating_restore_project_at") + " " +
+		// dest.getAbsolutePath());
 		FileUtils.copyContentDirToDir(projectDirectory, dest);
 		// progress.setProgress(FlexoLocalization.getMainLocalizer().localizedForKey("closing_project"));
 		projectLoader.closeProject(project);

@@ -183,7 +183,7 @@ public abstract class FlexoObservable extends KVCFlexoObject implements HasPrope
 	 * @see java.util.Observable#clearChanged()
 	 * @see java.util.Observable#hasChanged()
 	 */
-	public void notifyObservers(DataModification arg) {
+	public void notifyObservers(DataModification<?> arg) {
 
 		if (enableObserving) {
 			/*

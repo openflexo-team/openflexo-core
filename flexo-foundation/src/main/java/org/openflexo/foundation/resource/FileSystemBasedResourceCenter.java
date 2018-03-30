@@ -99,7 +99,7 @@ import org.openflexo.xml.XMLRootElementReader;
  */
 @ModelEntity(isAbstract = true)
 @ImplementationClass(FileSystemBasedResourceCenter.FileSystemBasedResourceCenterImpl.class)
-public interface FileSystemBasedResourceCenter extends ResourceRepository<FlexoResource<?>, File>, FlexoResourceCenter<File> {
+public interface FileSystemBasedResourceCenter extends FlexoResourceCenter<File> {
 
 	/**
 	 * Equivalent to {@link #getBaseArtefact()}
@@ -188,15 +188,7 @@ public interface FileSystemBasedResourceCenter extends ResourceRepository<FlexoR
 		private FlexoResourceCenterService rcService;
 		private final FileSystemMetaDataManager fsMetaDataManager = new FileSystemMetaDataManager();
 
-		private final Map<TechnologyAdapter, HashMap<Class<? extends ResourceRepository<?, File>>, ResourceRepository<?, File>>> repositories = new HashMap<>();
-
-		/*public FileSystemBasedResourceCenterImpl(File rootDirectory, FlexoResourceCenterService rcService) {
-			super(null, rootDirectory);
-			// setBaseArtefact(rootDirectory);
-			// this.rcService = rcService;
-			// this.rootDirectory = rootDirectory;
-			// startDirectoryWatching();
-		}*/
+		private final Map<TechnologyAdapter<?>, HashMap<Class<? extends ResourceRepository<?, File>>, ResourceRepository<?, File>>> repositories = new HashMap<>();
 
 		@Override
 		public Class<File> getSerializationArtefactClass() {
@@ -306,13 +298,6 @@ public interface FileSystemBasedResourceCenter extends ResourceRepository<FlexoR
 			return null;
 		}
 
-		/*@Override
-		public void initialize(VirtualModelLibrary viewPointLibrary) {
-			logger.info("Initializing VirtualModelLibrary for " + this);
-			viewPointRepository = new VirtualModelRepository(this, viewPointLibrary);
-			exploreDirectoryLookingForViewPoints(getRootDirectory(), viewPointLibrary);
-		}*/
-
 		/**
 		 * Retrieve (creates it when not existant) folder containing supplied file
 		 * 
@@ -332,21 +317,18 @@ public interface FileSystemBasedResourceCenter extends ResourceRepository<FlexoR
 
 		@Override
 		public FlexoServiceManager getServiceManager() {
-			if (getFlexoResourceCenterService() == null) {
+			if (getFlexoResourceCenterService() == null)
 				return super.getServiceManager();
-			}
 			return getFlexoResourceCenterService().getServiceManager();
 		}
 
 		@Override
 		public Iterator<File> iterator() {
 			List<File> allFiles = new ArrayList<>();
-			if (getRootDirectory() != null) {
+			if (getRootDirectory() != null)
 				appendFiles(getRootDirectory(), allFiles);
-			}
-			else {
+			else
 				logger.warning("ResourceCenter: " + this + " rootDirectory is null");
-			}
 			return allFiles.iterator();
 		}
 
@@ -355,9 +337,8 @@ public interface FileSystemBasedResourceCenter extends ResourceRepository<FlexoR
 				for (File f : directory.listFiles()) {
 					if (!isIgnorable(f, null)) {
 						files.add(f);
-						if (f.isDirectory()) {
+						if (f.isDirectory())
 							appendFiles(f, files);
-						}
 					}
 				}
 			}
@@ -365,9 +346,6 @@ public interface FileSystemBasedResourceCenter extends ResourceRepository<FlexoR
 
 		@Override
 		public String getName() {
-			/*if (getRootDirectory() != null) {
-				return getDefaultBaseURI() + " [" + getRootDirectory().getAbsolutePath() + "]";
-			}*/
 			return getDefaultBaseURI();
 		}
 
@@ -431,27 +409,17 @@ public interface FileSystemBasedResourceCenter extends ResourceRepository<FlexoR
 
 			@Override
 			protected void performRun() {
-				if (DEBUG) {
+				if (DEBUG)
 					System.out.println("BEGIN performRun() for " + FileSystemBasedDirectoryWatcher.this);
-				}
-
 				super.performRun();
-
-				if (DEBUG) {
+				if (DEBUG)
 					System.out.println("Looking for files to be notified " + FileSystemBasedDirectoryWatcher.this);
-				}
-
 				resourceCenter.fireAddedFilesToBeNotified();
 				resourceCenter.fireDeletedFilesToBeNotified();
-				// System.out.println("Done for " + FileSystemBasedDirectoryWatcher.this);
 				isRunning = false;
-
-				if (DEBUG) {
+				if (DEBUG)
 					System.out.println("END performRun() for " + FileSystemBasedDirectoryWatcher.this);
-				}
-
 			}
-
 		}
 
 		/**
@@ -467,7 +435,6 @@ public interface FileSystemBasedResourceCenter extends ResourceRepository<FlexoR
 				ScheduledExecutorService newScheduledThreadPool = Executors.newScheduledThreadPool(1);
 				scheduleWithFixedDelay = newScheduledThreadPool.scheduleWithFixedDelay(directoryWatcher, 0, DIRECTORY_WATCHER_DELAY,
 						TimeUnit.SECONDS);
-				// System.out.println("startDirectoryWatching() for " + rootDirectory);
 			}
 		}
 
@@ -500,8 +467,6 @@ public interface FileSystemBasedResourceCenter extends ResourceRepository<FlexoR
 		 */
 		@Override
 		public void registerResource(FlexoResource<?> resource, File serializationArtefact) {
-			// registerResource(resource);
-			// if (getDelegatingProjectResource() != null) {cxv
 			resources.put(resource.getURI(), resource);
 			registeredResources.put(serializationArtefact, resource);
 		}
@@ -519,31 +484,10 @@ public interface FileSystemBasedResourceCenter extends ResourceRepository<FlexoR
 			registeredResources.remove(serializationArtefact);
 		}
 
-		/*@Override
-		public FlexoResource<?> getResource(String resourceURI) {
-			FlexoResource<?> returned = resources.get(resourceURI);
-		
-			// TODO: perf issue : implement a scheme to avoid another search for an URI that could not be resolved once (unless some other
-			// resources are registered or unregistered)
-		
-			// scheme to resolve resources from URI whose value has changed since registration
-			for (String oldURI : new ArrayList<>(resources.keySet())) {
-				FlexoResource<?> resource = resources.get(oldURI);
-				if (!Objects.equals(oldURI, resource.getURI())) {
-					resources.remove(oldURI);
-					resources.put(resource.getURI(), resource);
-				}
-				if (Objects.equals(resource.getURI(), resourceURI)) {
-					return resource;
-				}
-			}
-			return returned;
-		}*/
-
-		private final Map<TechnologyAdapter, List<File>> addedFilesToBeRenotified = new HashMap<>();
-		private final Map<TechnologyAdapter, List<File>> removedFilesToBeRenotified = new HashMap<>();
-		private final Map<TechnologyAdapter, List<File>> modifiedFilesToBeRenotified = new HashMap<>();
-		private final Map<TechnologyAdapter, Map<File, File>> renamedFilesToBeRenotified = new HashMap<>();
+		private final Map<TechnologyAdapter<?>, List<File>> addedFilesToBeRenotified = new HashMap<>();
+		private final Map<TechnologyAdapter<?>, List<File>> removedFilesToBeRenotified = new HashMap<>();
+		// Unused private final Map<TechnologyAdapter<?>, List<File>> modifiedFilesToBeRenotified = new HashMap<>();
+		// Unused private final Map<TechnologyAdapter<?>, Map<File, File>> renamedFilesToBeRenotified = new HashMap<>();
 
 		/**
 		 * Notify that a new File has been discovered in directory representing this ResourceCenter
@@ -556,7 +500,7 @@ public interface FileSystemBasedResourceCenter extends ResourceRepository<FlexoR
 			System.out.println(
 					"File ADDED in resource center " + this + " : " + file.getName() + " in " + file.getParentFile().getAbsolutePath());
 			if (getServiceManager() != null && getServiceManager().getTechnologyAdapterService() != null) {
-				for (TechnologyAdapter adapter : getServiceManager().getTechnologyAdapterService().getTechnologyAdapters()) {
+				for (TechnologyAdapter<?> adapter : getServiceManager().getTechnologyAdapterService().getTechnologyAdapters()) {
 					if (!isIgnorable(file, adapter)) {
 						List<File> filesToBeNotified = addedFilesToBeRenotified.get(adapter);
 						if (filesToBeNotified == null) {
@@ -580,7 +524,7 @@ public interface FileSystemBasedResourceCenter extends ResourceRepository<FlexoR
 		public void fireAddedFilesToBeNotified() {
 			// System.out.println("fireAddedFilesToBeNotified()");
 			if (getServiceManager() != null && getServiceManager().getTechnologyAdapterService() != null) {
-				for (TechnologyAdapter adapter : getServiceManager().getTechnologyAdapterService().getTechnologyAdapters()) {
+				for (TechnologyAdapter<?> adapter : getServiceManager().getTechnologyAdapterService().getTechnologyAdapters()) {
 					if (adapter.isActivated()) {
 						List<File> filesToBeNotified = addedFilesToBeRenotified.get(adapter);
 						if (filesToBeNotified != null && filesToBeNotified.size() > 0) {
@@ -602,7 +546,7 @@ public interface FileSystemBasedResourceCenter extends ResourceRepository<FlexoR
 		public void fileDeleted(File file) {
 			System.out.println("File DELETED " + file.getName() + " in " + file.getParentFile().getAbsolutePath());
 			if (getServiceManager() != null) {
-				for (TechnologyAdapter adapter : getServiceManager().getTechnologyAdapterService().getTechnologyAdapters()) {
+				for (TechnologyAdapter<?> adapter : getServiceManager().getTechnologyAdapterService().getTechnologyAdapters()) {
 					if (!isIgnorable(file, adapter)) {
 						List<File> filesToBeNotified = removedFilesToBeRenotified.get(adapter);
 						if (filesToBeNotified == null) {
@@ -627,7 +571,7 @@ public interface FileSystemBasedResourceCenter extends ResourceRepository<FlexoR
 		public void fireDeletedFilesToBeNotified() {
 			// System.out.println("fireDeletedFilesToBeNotified()");
 			if (getServiceManager() != null && getServiceManager().getTechnologyAdapterService() != null) {
-				for (TechnologyAdapter adapter : getServiceManager().getTechnologyAdapterService().getTechnologyAdapters()) {
+				for (TechnologyAdapter<?> adapter : getServiceManager().getTechnologyAdapterService().getTechnologyAdapters()) {
 					if (adapter.isActivated()) {
 						List<File> filesToBeNotified = removedFilesToBeRenotified.get(adapter);
 						if (filesToBeNotified != null && filesToBeNotified.size() > 0) {
@@ -662,7 +606,7 @@ public interface FileSystemBasedResourceCenter extends ResourceRepository<FlexoR
 		}
 
 		private final List<File> willBeWrittenFiles = new ArrayList<>();
-		private final Map<TechnologyAdapter, List<File>> writtenFiles = new HashMap<>();
+		private final Map<TechnologyAdapter<?>, List<File>> writtenFiles = new HashMap<>();
 		private final List<File> willBeRenamedFiles = new ArrayList<>();
 		private final List<File> willBeRenamedAsFiles = new ArrayList<>();
 		private final List<File> willBeDeletedFiles = new ArrayList<>();
@@ -676,7 +620,7 @@ public interface FileSystemBasedResourceCenter extends ResourceRepository<FlexoR
 
 		@Override
 		public void hasBeenWritten(File file) {
-			for (TechnologyAdapter ta : getServiceManager().getTechnologyAdapterService().getTechnologyAdapters()) {
+			for (TechnologyAdapter<?> ta : getServiceManager().getTechnologyAdapterService().getTechnologyAdapters()) {
 				List<File> l = writtenFiles.get(ta);
 				if (l == null) {
 					l = new ArrayList<>();
@@ -699,7 +643,7 @@ public interface FileSystemBasedResourceCenter extends ResourceRepository<FlexoR
 			willBeDeletedFiles.add(file);
 		}
 
-		private void dismissIgnoredFilesWhenRequired(File file, TechnologyAdapter technologyAdapter) {
+		private void dismissIgnoredFilesWhenRequired(File file, TechnologyAdapter<?> technologyAdapter) {
 			if (technologyAdapter == null) {
 				return;
 			}
@@ -708,7 +652,7 @@ public interface FileSystemBasedResourceCenter extends ResourceRepository<FlexoR
 				filesBeeingWritten.remove(file);
 			}
 			boolean fileIsStillToBeIgnored = false;
-			for (TechnologyAdapter ta : getServiceManager().getTechnologyAdapterService().getTechnologyAdapters()) {
+			for (TechnologyAdapter<?> ta : getServiceManager().getTechnologyAdapterService().getTechnologyAdapters()) {
 				List<File> l = writtenFiles.get(ta);
 				if (l != null && l.contains(file)) {
 					fileIsStillToBeIgnored = true;
@@ -727,7 +671,7 @@ public interface FileSystemBasedResourceCenter extends ResourceRepository<FlexoR
 		}
 
 		@Override
-		public boolean isIgnorable(File file, TechnologyAdapter technologyAdapter) {
+		public boolean isIgnorable(File file, TechnologyAdapter<?> technologyAdapter) {
 
 			if (isToBeIgnored(file)) {
 				return true;
@@ -751,7 +695,7 @@ public interface FileSystemBasedResourceCenter extends ResourceRepository<FlexoR
 		}
 
 		private HashMap<Class<? extends ResourceRepository<?, File>>, ResourceRepository<?, File>> getRepositoriesForAdapter(
-				TechnologyAdapter technologyAdapter, boolean considerEmptyRepositories) {
+				TechnologyAdapter<?> technologyAdapter, boolean considerEmptyRepositories) {
 			if (considerEmptyRepositories) {
 				technologyAdapter.ensureAllRepositoriesAreCreated(this);
 			}
@@ -792,7 +736,7 @@ public interface FileSystemBasedResourceCenter extends ResourceRepository<FlexoR
 		}
 
 		@Override
-		public Collection<ResourceRepository<?, File>> getRegistedRepositories(TechnologyAdapter technologyAdapter,
+		public Collection<ResourceRepository<?, File>> getRegistedRepositories(TechnologyAdapter<?> technologyAdapter,
 				boolean considerEmptyRepositories) {
 			return getRepositoriesForAdapter(technologyAdapter, considerEmptyRepositories).values();
 		}
@@ -922,10 +866,7 @@ public interface FileSystemBasedResourceCenter extends ResourceRepository<FlexoR
 				}
 				return newFile;
 			}
-			else {
-				return serializationArtefact;
-			}
-
+			return serializationArtefact;
 		}
 
 		/**
@@ -1138,9 +1079,7 @@ public interface FileSystemBasedResourceCenter extends ResourceRepository<FlexoR
 				}
 				return pathTo;
 			}
-			else {
-				return null;
-			}
+			return null;
 		}
 
 		@Override
@@ -1209,7 +1148,7 @@ public interface FileSystemBasedResourceCenter extends ResourceRepository<FlexoR
 			@Override
 			public boolean equals(Object obj) {
 				if (obj instanceof FSBasedResourceCenterEntry) {
-					return getDirectory() != null && getDirectory().equals(((FSBasedResourceCenterEntry) obj).getDirectory());
+					return getDirectory() != null && getDirectory().equals(((FSBasedResourceCenterEntry<?>) obj).getDirectory());
 				}
 				return false;
 			}

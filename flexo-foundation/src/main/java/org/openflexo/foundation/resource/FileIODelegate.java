@@ -142,8 +142,7 @@ public interface FileIODelegate extends StreamIODelegate<File> {
 				}
 				return true;
 			}
-			else
-				return false;
+			return false;
 		}
 
 		/**
@@ -154,10 +153,8 @@ public interface FileIODelegate extends StreamIODelegate<File> {
 			if (hasWritePermission()) {
 				return delete(true);
 			}
-			else {
-				logger.warning("Delete requested for READ-ONLY file resource " + this);
-				return false;
-			}
+			logger.warning("Delete requested for READ-ONLY file resource " + this);
+			return false;
 		}
 
 		@Override
@@ -211,10 +208,8 @@ public interface FileIODelegate extends StreamIODelegate<File> {
 				}
 				return true;
 			}
-			else {
-				logger.warning("Delete requested for READ-ONLY file resource " + this);
-				return false;
-			}
+			logger.warning("Delete requested for READ-ONLY file resource " + this);
+			return false;
 		}
 
 		@Override
@@ -258,9 +253,7 @@ public interface FileIODelegate extends StreamIODelegate<File> {
 					System.out.println("Using " + getSourceResource());
 					return new FileOutputStream(getSourceResource().getFile());
 				}
-				else {
-					return new FileOutputStream(getFile());
-				}
+				return new FileOutputStream(getFile());
 			} catch (FileNotFoundException e) {
 				e.printStackTrace();
 				return null;
@@ -272,9 +265,7 @@ public interface FileIODelegate extends StreamIODelegate<File> {
 			if (getFile().isDirectory()) {
 				return getFile().getAbsolutePath();
 			}
-			else {
-				return getFile().getParent();
-			}
+			return getFile().getParent();
 		}
 
 		@Override

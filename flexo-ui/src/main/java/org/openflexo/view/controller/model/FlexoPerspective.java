@@ -60,7 +60,7 @@ import org.openflexo.view.controller.TechnologyAdapterControllerService;
 
 public abstract class FlexoPerspective extends ControllerModelObject {
 
-	static final Logger logger = Logger.getLogger(FlexoPerspective.class.getPackage().getName());
+	private static final Logger logger = Logger.getLogger(FlexoPerspective.class.getPackage().getName());
 
 	private final String name;
 

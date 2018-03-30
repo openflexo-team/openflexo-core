@@ -448,15 +448,14 @@ public abstract class FlexoAction<A extends FlexoAction<A, T1, T2>, T1 extends F
 			Class<? extends TechnologyAdapter> taClass = (Class<? extends TechnologyAdapter>) TypeUtils
 					.getBaseClass(TypeUtils.getTypeArgument(getClass(), TechnologySpecificFlexoAction.class, 0));
 			if (taClass != null) {
-				TechnologyAdapter ta = getServiceManager().getTechnologyAdapterService().getTechnologyAdapter(taClass);
+				TechnologyAdapter<?> ta = getServiceManager().getTechnologyAdapterService().getTechnologyAdapter(taClass);
 				return ta.getLocales();
 			}
 		}
 		if (getFocusedObject() instanceof TechnologyObject) {
-			TechnologyAdapter ta = ((TechnologyObject<?>) getFocusedObject()).getTechnologyAdapter();
-			if (ta != null) {
+			TechnologyAdapter<?> ta = ((TechnologyObject<?>) getFocusedObject()).getTechnologyAdapter();
+			if (ta != null)
 				return ta.getLocales();
-			}
 		}
 		return getDefaultLocales(getServiceManager());
 	}

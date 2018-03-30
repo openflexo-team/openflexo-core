@@ -44,7 +44,6 @@ import javax.swing.SwingUtilities;
 
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoServiceManager;
-import org.openflexo.foundation.task.FlexoTask.TaskStatus;
 import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.localization.LocalizedDelegate;
 import org.openflexo.model.undo.CompoundEdit;

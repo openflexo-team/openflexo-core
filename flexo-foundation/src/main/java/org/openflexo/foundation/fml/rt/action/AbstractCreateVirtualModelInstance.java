@@ -207,7 +207,7 @@ public abstract class AbstractCreateVirtualModelInstance<A extends AbstractCreat
 		if (virtualModel != this.virtualModel) {
 			this.virtualModel = virtualModel;
 			setChanged();
-			notifyObservers(new DataModification("isActionValidable", false, true));
+			notifyObservers(new DataModification<>("isActionValidable", false, true));
 		}
 	}
 
@@ -306,10 +306,10 @@ public abstract class AbstractCreateVirtualModelInstance<A extends AbstractCreat
 	}
 
 	@Override
-	public void update(FlexoObservable observable, DataModification dataModification) {
+	public void update(FlexoObservable observable, DataModification<?> dataModification) {
 		if (dataModification.propertyName().equals(FlexoBehaviourAction.PARAMETER_VALUE_CHANGED)) {
 			setChanged();
-			notifyObservers(new DataModification("isActionValidable", false, true));
+			notifyObservers(new DataModification<>("isActionValidable", false, true));
 		}
 	}
 

@@ -180,7 +180,7 @@ public class CreateFlexoConceptInstance extends FlexoAction<CreateFlexoConceptIn
 			this.container = container;
 			getPropertyChangeSupport().firePropertyChange("container", oldValue, container);
 			setChanged();
-			notifyObservers(new DataModification("isActionValidable", false, true));
+			notifyObservers(new DataModification<>("isActionValidable", false, true));
 		}
 	}
 
@@ -194,7 +194,7 @@ public class CreateFlexoConceptInstance extends FlexoAction<CreateFlexoConceptIn
 			this.concept = concept;
 			getPropertyChangeSupport().firePropertyChange("flexoConcept", oldValue, concept);
 			setChanged();
-			notifyObservers(new DataModification("isActionValidable", false, true));
+			notifyObservers(new DataModification<>("isActionValidable", false, true));
 		}
 	}
 
@@ -204,7 +204,7 @@ public class CreateFlexoConceptInstance extends FlexoAction<CreateFlexoConceptIn
 	 * @return
 	 */
 	@Deprecated
-	public boolean isActionValidable() {
+	private boolean isActionValidable() {
 
 		if (!isValid()) {
 			return false;
@@ -255,10 +255,10 @@ public class CreateFlexoConceptInstance extends FlexoAction<CreateFlexoConceptIn
 	}
 
 	@Override
-	public void update(FlexoObservable observable, DataModification dataModification) {
+	public void update(FlexoObservable observable, DataModification<?> dataModification) {
 		if (dataModification.propertyName().equals(FlexoBehaviourAction.PARAMETER_VALUE_CHANGED)) {
 			setChanged();
-			notifyObservers(new DataModification("isActionValidable", false, true));
+			notifyObservers(new DataModification<>("isActionValidable", false, true));
 		}
 	}
 

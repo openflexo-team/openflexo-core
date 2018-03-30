@@ -85,7 +85,7 @@ import org.openflexo.toolbox.FileUtils;
 
 public abstract class VirtualModelResourceImpl extends PamelaResourceImpl<VirtualModel, FMLModelFactory> implements VirtualModelResource {
 
-	static final Logger logger = Logger.getLogger(VirtualModelResourceImpl.class.getPackage().getName());
+	private static final Logger logger = Logger.getLogger(VirtualModelResourceImpl.class.getPackage().getName());
 
 	@Override
 	public String computeDefaultURI() {
@@ -166,21 +166,6 @@ public abstract class VirtualModelResourceImpl extends PamelaResourceImpl<Virtua
 			return getIODelegate().getSerializationArtefactAsResource().getContainer();
 		}
 		return null;
-
-		/*if (getFlexoIODelegate() instanceof FileFlexoIODelegate) {
-			String parentPath = getDirectoryPath();
-			if (ResourceLocator.locateResource(parentPath) == null) {
-				FileSystemResourceLocatorImpl.appendDirectoryToFileSystemResourceLocator(parentPath);
-			}
-			return ResourceLocator.locateResource(parentPath);
-		}
-		else if (getFlexoIODelegate() instanceof InJarFlexoIODelegate) {
-			InJarResourceImpl resource = ((InJarFlexoIODelegate) getFlexoIODelegate()).getInJarResource();
-			String parentPath = FilenameUtils.getFullPath(resource.getRelativePath());
-			BasicResourceImpl parent = ((ClasspathResourceLocatorImpl) (resource.getLocator())).getJarResourcesList().get(parentPath);
-			return parent;
-		}
-		return null;*/
 	}
 
 	public String getDirectoryPath() {
@@ -197,32 +182,21 @@ public abstract class VirtualModelResourceImpl extends PamelaResourceImpl<Virtua
 	 * Activate all required technologies, while exploring declared model slots
 	 */
 	protected void activateRequiredTechnologies() {
-
 		logger.info("activateRequiredTechnologies() for " + this + " used: " + getUsedModelSlots());
 
 		TechnologyAdapterService taService = getServiceManager().getTechnologyAdapterService();
-		List<TechnologyAdapter> requiredTAList = new ArrayList<>();
+		List<TechnologyAdapter<?>> requiredTAList = new ArrayList<>();
 		requiredTAList.add(taService.getTechnologyAdapter(FMLRTTechnologyAdapter.class));
 		for (Class<? extends ModelSlot<?>> msClass : getUsedModelSlots()) {
-			TechnologyAdapter requiredTA = taService.getTechnologyAdapterForModelSlot(msClass);
+			TechnologyAdapter<?> requiredTA = taService.getTechnologyAdapterForModelSlot(msClass);
 			if (!requiredTAList.contains(requiredTA)) {
 				requiredTAList.add(requiredTA);
 			}
 		}
-
-		// List<FlexoTask> waitingTasks = new ArrayList<>();
 		for (TechnologyAdapter requiredTA : requiredTAList) {
 			logger.info("Activating " + requiredTA);
-			/*FlexoTask t =*/ taService.activateTechnologyAdapter(requiredTA, true);
-			/*if (t != null) {
-				waitingTasks.add(t);
-			}*/
+			taService.activateTechnologyAdapter(requiredTA, true);
 		}
-
-		/*for (FlexoTask waitingTask : waitingTasks) {
-			getServiceManager().getTaskManager().waitTask(waitingTask);
-		}*/
-
 	}
 
 	/**

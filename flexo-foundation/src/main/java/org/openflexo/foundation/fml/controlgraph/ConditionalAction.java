@@ -249,14 +249,10 @@ public interface ConditionalAction extends ControlStructureAction, FMLControlGra
 
 		@Override
 		public Object execute(RunTimeEvaluationContext evaluationContext) throws ReturnException, FlexoException {
-			if (evaluateCondition(evaluationContext)) {
+			if (evaluateCondition(evaluationContext))
 				return getThenControlGraph().execute(evaluationContext);
-			}
-			else {
-				if (getElseControlGraph() != null) {
-					return getElseControlGraph().execute(evaluationContext);
-				}
-			}
+			if (getElseControlGraph() != null)
+				return getElseControlGraph().execute(evaluationContext);
 			return null;
 		}
 

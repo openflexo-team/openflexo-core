@@ -163,7 +163,7 @@ public class FMLBindingFactory extends JavaBindingFactory {
 
 			if (pType instanceof TechnologySpecificType) {
 				TechnologySpecificType<?> parentType = (TechnologySpecificType<?>) pType;
-				TechnologyAdapter ta = parentType.getSpecificTechnologyAdapter();
+				TechnologyAdapter<?> ta = parentType.getSpecificTechnologyAdapter();
 				if (ta != null) {
 					TechnologyAdapterBindingFactory bf = ta.getTechnologyAdapterBindingFactory();
 					if (bf != null && bf.handleType(parentType)) {
@@ -253,7 +253,7 @@ public class FMLBindingFactory extends JavaBindingFactory {
 			return super.getAccessibleSimplePathElements(parent);
 		}
 		logger.warning("Trying to find accessible path elements for a NULL parent");
-		return Collections.EMPTY_LIST;
+		return Collections.emptyList();
 	}
 
 	@Override

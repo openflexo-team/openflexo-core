@@ -804,9 +804,7 @@ public interface FlexoConcept extends FlexoConceptObject {
 			if (getOwningVirtualModel() != null) {
 				return getOwningVirtualModel().getURI() + "#" + getName();
 			}
-			else {
-				return "null#" + getName();
-			}
+			return "null#" + getName();
 		}
 
 		@Override
@@ -1893,8 +1891,7 @@ public interface FlexoConcept extends FlexoConceptObject {
 			if (getBigIconResource() instanceof FileResourceImpl) {
 				return ((FileResourceImpl) getBigIconResource()).getFile();
 			}
-			else
-				return null;
+			return null;
 		}
 
 		// TODO : this is a Workaround for Fib File selector...It has to be fixed in a more efficient way
@@ -2010,7 +2007,7 @@ public interface FlexoConcept extends FlexoConceptObject {
 		public ValidationIssue<FlexoConceptShouldHaveDeletionScheme, FlexoConcept> applyValidation(FlexoConcept flexoConcept) {
 			if (!flexoConcept.isAbstract() && !(flexoConcept instanceof FlexoEnum) && flexoConcept.getDeletionSchemes().size() == 0) {
 				CreateDefaultDeletionScheme fixProposal = new CreateDefaultDeletionScheme(flexoConcept);
-				return new ValidationWarning(this, flexoConcept, "non_abstract_flexo_concept_($validable.name)_has_no_deletion_scheme",
+				return new ValidationWarning<>(this, flexoConcept, "non_abstract_flexo_concept_($validable.name)_has_no_deletion_scheme",
 						fixProposal);
 			}
 			return null;

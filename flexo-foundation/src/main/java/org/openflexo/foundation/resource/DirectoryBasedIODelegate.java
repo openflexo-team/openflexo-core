@@ -218,10 +218,8 @@ public interface DirectoryBasedIODelegate extends FileIODelegate {
 				}
 				return returned;
 			}
-			else {
-				logger.warning("Delete requested for READ-ONLY file resource " + this);
-				return false;
-			}
+			logger.warning("Delete requested for READ-ONLY file resource " + this);
+			return false;
 		}
 
 		@Override

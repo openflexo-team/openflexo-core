@@ -40,7 +40,6 @@ package org.openflexo.foundation.fml.editionaction;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Type;
-import java.util.logging.Logger;
 
 import org.openflexo.connie.BindingEvaluationContext;
 import org.openflexo.connie.DataBinding;
@@ -115,14 +114,8 @@ public abstract interface TechnologySpecificActionDefiningReceiver<MS extends Mo
 	 */
 	public R getReceiver(BindingEvaluationContext evaluationContext);
 
-	// @Deprecated
-	// public ModelSlotInstance<MS, ?> getModelSlotInstance(RunTimeEvaluationContext action);
-
 	public static abstract class TechnologySpecificActionDefiningReceiverImpl<MS extends ModelSlot<?>, R extends TechnologyObject<?>, T>
 			extends TechnologySpecificActionImpl<MS, T> implements TechnologySpecificActionDefiningReceiver<MS, R, T> {
-
-		private static final Logger logger = Logger.getLogger(TechnologySpecificActionDefiningReceiver.class.getPackage().getName());
-
 		private DataBinding<R> receiver;
 
 		/**

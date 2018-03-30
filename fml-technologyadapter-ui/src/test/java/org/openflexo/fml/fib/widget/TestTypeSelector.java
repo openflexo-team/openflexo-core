@@ -79,9 +79,8 @@ public class TestTypeSelector extends OpenflexoTestCaseWithGUI {
 
 	private static SwingGraphicalContextDelegate gcDelegate;
 
-	public static final String VIEWPOINT_NAME = "TestViewPoint";
-	public static final String VIEWPOINT_URI = "http://openflexo.org/test/TestViewPoint";
-	public static final String VIRTUAL_MODEL_NAME = "TestVirtualModel";
+	private static final String VIEWPOINT_NAME = "TestViewPoint";
+	private static final String VIEWPOINT_URI = "http://openflexo.org/test/TestViewPoint";
 
 	static VirtualModel newVirtualModel;
 	// static ViewPointResource newViewPointResource;
