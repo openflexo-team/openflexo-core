@@ -298,7 +298,7 @@ public interface FlexoRole<T> extends FlexoProperty<T> {
 		public void setModelSlot(ModelSlot<?> modelSlot) {
 			this.modelSlot = modelSlot;
 			setChanged();
-			notifyObservers(new DataModification("modelSlot", null, modelSlot));
+			notifyObservers(new DataModification<>("modelSlot", null, modelSlot));
 		}
 
 		@Override
@@ -521,13 +521,13 @@ public interface FlexoRole<T> extends FlexoProperty<T> {
 	}
 
 	@DefineValidationRule
-	public static class FlexoRoleMustHaveAName extends ValidationRule<FlexoRoleMustHaveAName, FlexoRole> {
+	public static class FlexoRoleMustHaveAName extends ValidationRule<FlexoRoleMustHaveAName, FlexoRole<?>> {
 		public FlexoRoleMustHaveAName() {
 			super(FlexoRole.class, "flexo_role_must_have_a_name");
 		}
 
 		@Override
-		public ValidationIssue<FlexoRoleMustHaveAName, FlexoRole> applyValidation(FlexoRole flexoRole) {
+		public ValidationIssue<FlexoRoleMustHaveAName, FlexoRole<?>> applyValidation(FlexoRole<?> flexoRole) {
 			if (StringUtils.isEmpty(flexoRole.getRoleName())) {
 				return new ValidationError<>(this, flexoRole, "flexo_role_has_no_name");
 			}
@@ -537,14 +537,14 @@ public interface FlexoRole<T> extends FlexoProperty<T> {
 
 	@DefineValidationRule
 	public static class ShouldNotHaveReflexiveVirtualModelModelSlot
-			extends ValidationRule<ShouldNotHaveReflexiveVirtualModelModelSlot, FlexoRole> {
+			extends ValidationRule<ShouldNotHaveReflexiveVirtualModelModelSlot, FlexoRole<?>> {
 
 		public ShouldNotHaveReflexiveVirtualModelModelSlot() {
 			super(FlexoRole.class, "FlexoRole_should_not_have_reflexive_model_slot_no_more");
 		}
 
 		@Override
-		public ValidationIssue<ShouldNotHaveReflexiveVirtualModelModelSlot, FlexoRole> applyValidation(FlexoRole aRole) {
+		public ValidationIssue<ShouldNotHaveReflexiveVirtualModelModelSlot, FlexoRole<?>> applyValidation(FlexoRole<?> aRole) {
 			ModelSlot<?> ms = aRole.getModelSlot();
 			if (ms instanceof FMLRTModelSlot && "virtualModelInstance".equals(ms.getName())) {
 				RemoveReflexiveVirtualModelModelSlot fixProposal = new RemoveReflexiveVirtualModelModelSlot(aRole);
@@ -555,11 +555,11 @@ public interface FlexoRole<T> extends FlexoProperty<T> {
 		}
 
 		protected static class RemoveReflexiveVirtualModelModelSlot
-				extends FixProposal<ShouldNotHaveReflexiveVirtualModelModelSlot, FlexoRole> {
+				extends FixProposal<ShouldNotHaveReflexiveVirtualModelModelSlot, FlexoRole<?>> {
 
 			private final FlexoRole<?> role;
 
-			public RemoveReflexiveVirtualModelModelSlot(FlexoRole aRole) {
+			public RemoveReflexiveVirtualModelModelSlot(FlexoRole<?> aRole) {
 				super("remove_reflexive_modelslot");
 				this.role = aRole;
 			}

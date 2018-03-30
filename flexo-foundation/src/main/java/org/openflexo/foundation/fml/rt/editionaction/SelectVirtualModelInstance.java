@@ -280,24 +280,22 @@ public interface SelectVirtualModelInstance<VMI extends VirtualModelInstance<VMI
 				}
 				return null;
 			}
-			else {
-				logger.warning(getStringRepresentation() + " : Cannot find view on which to apply SelectVirtualModelInstance");
-				logger.warning("Additional info: getContainer()=" + getContainer());
-				return null;
-			}
+			logger.warning(getStringRepresentation() + " : Cannot find view on which to apply SelectVirtualModelInstance");
+			logger.warning("Additional info: getContainer()=" + getContainer());
+			return null;
 		}
 	}
 
 	@DefineValidationRule
 	public static class SelectVirtualModelInstanceMustAddressAFlexoConceptType
-			extends ValidationRule<SelectVirtualModelInstanceMustAddressAFlexoConceptType, SelectVirtualModelInstance> {
+			extends ValidationRule<SelectVirtualModelInstanceMustAddressAFlexoConceptType, SelectVirtualModelInstance<?>> {
 		public SelectVirtualModelInstanceMustAddressAFlexoConceptType() {
 			super(SelectVirtualModelInstance.class, "select_virtual_model_instance_action_must_address_a_valid_virtual_model_type");
 		}
 
 		@Override
-		public ValidationIssue<SelectVirtualModelInstanceMustAddressAFlexoConceptType, SelectVirtualModelInstance> applyValidation(
-				SelectVirtualModelInstance action) {
+		public ValidationIssue<SelectVirtualModelInstanceMustAddressAFlexoConceptType, SelectVirtualModelInstance<?>> applyValidation(
+				SelectVirtualModelInstance<?> action) {
 			if (action.getVirtualModelType() == null) {
 				return new ValidationError<>(this, action, "select_virtual_model_instance_action_doesn't_define_any_virtual_model_type");
 			}

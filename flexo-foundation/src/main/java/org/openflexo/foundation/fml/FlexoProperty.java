@@ -482,13 +482,13 @@ public abstract interface FlexoProperty<T> extends FlexoConceptObject {
 	}
 
 	@DefineValidationRule
-	public static class FlexoPropertyMustHaveAName extends ValidationRule<FlexoPropertyMustHaveAName, FlexoProperty> {
+	public static class FlexoPropertyMustHaveAName extends ValidationRule<FlexoPropertyMustHaveAName, FlexoProperty<?>> {
 		public FlexoPropertyMustHaveAName() {
 			super(FlexoProperty.class, "flexo_property_must_have_a_name");
 		}
 
 		@Override
-		public ValidationIssue<FlexoPropertyMustHaveAName, FlexoProperty> applyValidation(FlexoProperty flexoRole) {
+		public ValidationIssue<FlexoPropertyMustHaveAName, FlexoProperty<?>> applyValidation(FlexoProperty<?> flexoRole) {
 			if (StringUtils.isEmpty(flexoRole.getPropertyName())) {
 				return new ValidationError<>(this, flexoRole, "flexo_property_has_no_name");
 			}

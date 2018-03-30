@@ -106,21 +106,19 @@ public interface AddFlexoConceptInstance<VMI extends VirtualModelInstance<VMI, ?
 
 	@DefineValidationRule
 	public static class AddFlexoConceptInstanceMustAddressACreationScheme
-			extends ValidationRule<AddFlexoConceptInstanceMustAddressACreationScheme, AddFlexoConceptInstance> {
+			extends ValidationRule<AddFlexoConceptInstanceMustAddressACreationScheme, AddFlexoConceptInstance<?>> {
 		public AddFlexoConceptInstanceMustAddressACreationScheme() {
 			super(AddFlexoConceptInstance.class, "add_flexo_concept_action_must_address_a_valid_creation_scheme");
 		}
 
 		@Override
-		public ValidationIssue<AddFlexoConceptInstanceMustAddressACreationScheme, AddFlexoConceptInstance> applyValidation(
-				AddFlexoConceptInstance action) {
+		public ValidationIssue<AddFlexoConceptInstanceMustAddressACreationScheme, AddFlexoConceptInstance<?>> applyValidation(
+				AddFlexoConceptInstance<?> action) {
 			if (action.getCreationScheme() == null) {
 				if (action.getFlexoConceptType() == null) {
 					return new ValidationError<>(this, action, "add_flexo_concept_action_doesn't_define_any_flexo_concept");
 				}
-				else {
-					return new ValidationError<>(this, action, "add_flexo_concept_action_doesn't_define_any_creation_scheme");
-				}
+				return new ValidationError<>(this, action, "add_flexo_concept_action_doesn't_define_any_creation_scheme");
 			}
 			return null;
 		}

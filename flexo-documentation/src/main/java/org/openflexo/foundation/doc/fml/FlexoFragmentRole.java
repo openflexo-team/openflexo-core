@@ -148,13 +148,14 @@ public interface FlexoFragmentRole<F extends FlexoDocFragment<D, TA>, D extends 
 
 	@DefineValidationRule
 	public static class FragmentRoleMustAddressATemplateFragment
-			extends ValidationRule<FragmentRoleMustAddressATemplateFragment, FlexoFragmentRole> {
+			extends ValidationRule<FragmentRoleMustAddressATemplateFragment, FlexoFragmentRole<?, ?, ?>> {
 		public FragmentRoleMustAddressATemplateFragment() {
 			super(FlexoFragmentRole.class, "fragment_role_must_reference_a_template_fragment");
 		}
 
 		@Override
-		public ValidationIssue<FragmentRoleMustAddressATemplateFragment, FlexoFragmentRole> applyValidation(FlexoFragmentRole role) {
+		public ValidationIssue<FragmentRoleMustAddressATemplateFragment, FlexoFragmentRole<?, ?, ?>> applyValidation(
+				FlexoFragmentRole<?, ?, ?> role) {
 			if (role.getModelSlot() instanceof FlexoDocumentModelSlot
 					&& ((FlexoDocumentModelSlot<?>) role.getModelSlot()).getTemplateResource() != null) {
 				if (role.getFragment() == null) {

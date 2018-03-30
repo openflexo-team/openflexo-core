@@ -51,8 +51,6 @@ import org.openflexo.connie.exception.NullReferenceException;
 import org.openflexo.connie.exception.TypeMismatchException;
 import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.fml.CreationScheme;
-import org.openflexo.foundation.fml.FMLObject.BindingIsRequiredAndMustBeValid;
-import org.openflexo.foundation.fml.FMLObject.BindingIsRequiredAndMustBeValid.UndefinedRequiredBindingIssue;
 import org.openflexo.foundation.fml.FMLRepresentationContext;
 import org.openflexo.foundation.fml.FlexoBehaviourParameter;
 import org.openflexo.foundation.fml.FlexoConcept;
@@ -67,9 +65,7 @@ import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
 import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.foundation.fml.rt.action.CreationSchemeAction;
 import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
-import org.openflexo.foundation.fml.rt.editionaction.AbstractAddFlexoConceptInstance.AddFlexoConceptInstanceParametersMustBeValid;
 import org.openflexo.foundation.fml.rt.editionaction.AddFlexoConceptInstance.AddFlexoConceptInstanceImpl;
-import org.openflexo.foundation.fml.rt.editionaction.FMLRTAction.FMLRTActionImpl;
 import org.openflexo.model.annotations.Adder;
 import org.openflexo.model.annotations.CloningStrategy;
 import org.openflexo.model.annotations.CloningStrategy.StrategyType;
@@ -625,7 +621,7 @@ public interface AbstractAddFlexoConceptInstance<FCI extends FlexoConceptInstanc
 
 						// Attempt to find some solutions...
 
-						for (FMLRTModelSlot ms : object.getOwningVirtualModel().getModelSlots(FMLRTModelSlot.class)) {
+						for (FMLRTModelSlot<?, ?> ms : object.getOwningVirtualModel().getModelSlots(FMLRTModelSlot.class)) {
 							// System.out.println("modelSlot " + ms + " vm=" + ms.getAddressedVirtualModel());
 							if (object.getFlexoConceptType().getOwner().isAssignableFrom(ms.getAccessedVirtualModel())) {
 								((ValidationError) returned).addToFixProposals(new UseFMLRTModelSlot(ms));
@@ -633,7 +629,7 @@ public interface AbstractAddFlexoConceptInstance<FCI extends FlexoConceptInstanc
 						}
 
 						if (object.getRootOwner().getFlexoConcept() instanceof VirtualModel) {
-							for (FMLRTModelSlot ms : ((VirtualModel) object.getRootOwner().getFlexoConcept())
+							for (FMLRTModelSlot<?, ?> ms : ((VirtualModel) object.getRootOwner().getFlexoConcept())
 									.getModelSlots(FMLRTModelSlot.class)) {
 								// System.out.println("modelSlot " + ms + " vm=" + ms.getAddressedVirtualModel());
 								if (object.getFlexoConceptType().getOwner().isAssignableFrom(ms.getAccessedVirtualModel())) {
@@ -648,8 +644,8 @@ public interface AbstractAddFlexoConceptInstance<FCI extends FlexoConceptInstanc
 			return returned;
 		}
 
-		protected static class UseLocalVirtualModelInstance
-				extends FixProposal<BindingIsRequiredAndMustBeValid<AbstractAddFlexoConceptInstance>, AbstractAddFlexoConceptInstance> {
+		protected static class UseLocalVirtualModelInstance extends
+				FixProposal<BindingIsRequiredAndMustBeValid<AbstractAddFlexoConceptInstance<?, ?>>, AbstractAddFlexoConceptInstance<?, ?>> {
 
 			public UseLocalVirtualModelInstance() {
 				super("sets_virtual_model_instance_to_'virtualModelInstance'_(local_virtual_model_instance)");
@@ -662,8 +658,8 @@ public interface AbstractAddFlexoConceptInstance<FCI extends FlexoConceptInstanc
 			}
 		}
 
-		protected static class UseFMLRTModelSlot
-				extends FixProposal<BindingIsRequiredAndMustBeValid<AbstractAddFlexoConceptInstance>, AbstractAddFlexoConceptInstance> {
+		protected static class UseFMLRTModelSlot extends
+				FixProposal<BindingIsRequiredAndMustBeValid<AbstractAddFlexoConceptInstance<?, ?>>, AbstractAddFlexoConceptInstance<?, ?>> {
 
 			private final FMLRTModelSlot<?, ?> modelSlot;
 

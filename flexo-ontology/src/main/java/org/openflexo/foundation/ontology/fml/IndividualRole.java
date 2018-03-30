@@ -177,14 +177,13 @@ public interface IndividualRole<I extends IFlexoOntologyIndividual<?>> extends O
 
 	@DefineValidationRule
 	public static class IndividualFlexoRoleMustDefineAValidConceptClass
-			extends ValidationRule<IndividualFlexoRoleMustDefineAValidConceptClass, IndividualRole> {
+			extends ValidationRule<IndividualFlexoRoleMustDefineAValidConceptClass, IndividualRole<?>> {
 		public IndividualFlexoRoleMustDefineAValidConceptClass() {
 			super(IndividualRole.class, "individual_role_must_define_a_valid_concept_class");
 		}
 
 		@Override
-		public ValidationIssue<IndividualFlexoRoleMustDefineAValidConceptClass, IndividualRole> applyValidation(
-				IndividualRole role) {
+		public ValidationIssue<IndividualFlexoRoleMustDefineAValidConceptClass, IndividualRole<?>> applyValidation(IndividualRole<?> role) {
 			if (role.getOntologicType() == null) {
 				return new ValidationWarning<>(this, role, "individual_role_does_not_define_any_concept_class");
 			}
