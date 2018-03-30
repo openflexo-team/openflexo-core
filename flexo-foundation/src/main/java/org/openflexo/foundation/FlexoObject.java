@@ -189,15 +189,6 @@ public interface FlexoObject extends AccessibleProxyObject, DeletableProxyObject
 
 	public Class<?> getImplementedInterface();
 
-	@Deprecated
-	public void setChanged();
-
-	@Deprecated
-	public void notifyObservers();
-
-	@Deprecated
-	public void notifyObservers(DataModification arg);
-
 	public FlexoServiceManager getServiceManager();
 
 	/**
