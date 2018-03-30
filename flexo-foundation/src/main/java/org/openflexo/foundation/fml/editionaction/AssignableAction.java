@@ -53,12 +53,8 @@ import org.openflexo.foundation.fml.controlgraph.Sequence;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext.ReturnException;
 import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
-import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
-import org.openflexo.model.annotations.PropertyIdentifier;
-import org.openflexo.model.annotations.Setter;
-import org.openflexo.model.annotations.XMLAttribute;
 
 /**
  * Abstract class representing an {@link EditionAction} with the particularity of returning a value which can be assigned<br>
@@ -74,31 +70,6 @@ import org.openflexo.model.annotations.XMLAttribute;
 @ModelEntity(isAbstract = true)
 @ImplementationClass(AssignableAction.AssignableActionImpl.class)
 public abstract interface AssignableAction<T> extends EditionAction {
-
-	@Deprecated
-	@PropertyIdentifier(type = String.class)
-	public static final String DEPRECATED_VARIABLE_NAME_KEY = "deprecatedVariableName";
-	@Deprecated
-	@PropertyIdentifier(type = DataBinding.class)
-	public static final String DEPRECATED_ASSIGNATION_KEY = "deprecatedAssignation";
-
-	@Deprecated
-	@Getter(value = DEPRECATED_VARIABLE_NAME_KEY)
-	@XMLAttribute(xmlTag = "variableName")
-	public String getDeprecatedVariableName();
-
-	@Deprecated
-	@Setter(DEPRECATED_VARIABLE_NAME_KEY)
-	public void setDeprecatedVariableName(String variableName);
-
-	@Deprecated
-	@Getter(value = DEPRECATED_ASSIGNATION_KEY)
-	@XMLAttribute(xmlTag = "assignation")
-	public DataBinding<? super T> getDeprecatedAssignation();
-
-	@Deprecated
-	@Setter(DEPRECATED_ASSIGNATION_KEY)
-	public void setDeprecatedAssignation(DataBinding<? super T> assignation);
 
 	/**
 	 * Execute edition action in the context provided by supplied {@link FlexoBehaviourAction}<br>
