@@ -168,28 +168,6 @@ public interface AddToListAction<T> extends AssignableAction<T>, FMLControlGraph
 		}
 
 		@Override
-		@Deprecated
-		public DataBinding<T> getValue() {
-			if (value == null) {
-				value = new DataBinding<>(this, Object.class, BindingDefinitionType.GET);
-				value.setBindingName("value");
-			}
-			return value;
-		}
-
-		@Override
-		@Deprecated
-		public void setValue(DataBinding<T> value) {
-			if (value != null) {
-				value.setOwner(this);
-				value.setBindingName("value");
-				value.setDeclaredType(Object.class);
-				value.setBindingDefinitionType(BindingDefinitionType.GET);
-			}
-			this.value = value;
-		}
-
-		@Override
 		public T execute(RunTimeEvaluationContext evaluationContext) throws FlexoException {
 			logger.fine("performing AddToListAction");
 
@@ -298,13 +276,13 @@ public interface AddToListAction<T> extends AssignableAction<T>, FMLControlGraph
 	// TODO: a rule that check that assignableAction is not null
 
 	@DefineValidationRule
-	public static class AssignableTypeMustBeCompatible extends ValidationRule<AssignableTypeMustBeCompatible, AddToListAction> {
+	public static class AssignableTypeMustBeCompatible extends ValidationRule<AssignableTypeMustBeCompatible, AddToListAction<?>> {
 		public AssignableTypeMustBeCompatible() {
 			super(AddToListAction.class, "assignable_type_must_be_compatible_with_list_type");
 		}
 
 		@Override
-		public ValidationIssue<AssignableTypeMustBeCompatible, AddToListAction> applyValidation(AddToListAction action) {
+		public ValidationIssue<AssignableTypeMustBeCompatible, AddToListAction<?>> applyValidation(AddToListAction<?> action) {
 
 			if (action.getAssignableAction() == null) {
 				return new ValidationError<>(this, action, "item_to_add_is_not_defined");
