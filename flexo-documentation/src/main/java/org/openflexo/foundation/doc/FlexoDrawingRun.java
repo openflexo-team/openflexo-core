@@ -21,7 +21,6 @@
 package org.openflexo.foundation.doc;
 
 import java.awt.Image;
-import java.io.File;
 
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.model.annotations.ModelEntity;
@@ -42,8 +41,4 @@ public interface FlexoDrawingRun<D extends FlexoDocument<D, TA>, TA extends Tech
 	public String getImageName();
 
 	public Image getImage();
-
-	@Deprecated
-	public File getImageFile();
-
 }
