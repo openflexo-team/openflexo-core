@@ -45,7 +45,6 @@ import java.util.logging.Logger;
 
 import org.openflexo.connie.BindingModel;
 import org.openflexo.connie.DataBinding;
-import org.openflexo.connie.DataBinding.BindingDefinitionType;
 import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.fml.FMLRepresentationContext;
 import org.openflexo.foundation.fml.FMLRepresentationContext.FMLRepresentationOutput;
@@ -72,21 +71,8 @@ import org.openflexo.toolbox.StringUtils;
 @ImplementationClass(IterationAction.IterationActionImpl.class)
 @XMLElement
 public interface IterationAction extends AbstractIterationAction {
-
-	@Deprecated
-	@PropertyIdentifier(type = DataBinding.class)
-	public static final String ITERATION_KEY = "iteration";
 	@PropertyIdentifier(type = DataBinding.class)
 	public static final String ITERATION_CONTROL_GRAPH_KEY = "iterationControlGraph";
-
-	@Deprecated
-	@Getter(value = ITERATION_KEY)
-	@XMLAttribute
-	public DataBinding<List<?>> getIteration();
-
-	@Deprecated
-	@Setter(ITERATION_KEY)
-	public void setIteration(DataBinding<List<?>> iteration);
 
 	@Getter(value = ITERATION_CONTROL_GRAPH_KEY, inverse = FMLControlGraph.OWNER_KEY)
 	@XMLElement(context = "Iteration_")
@@ -122,28 +108,6 @@ public interface IterationAction extends AbstractIterationAction {
 		}
 
 		private DataBinding<List<?>> iteration;
-
-		@Deprecated
-		@Override
-		public DataBinding<List<?>> getIteration() {
-			if (iteration == null) {
-				iteration = new DataBinding<>(this, List.class, BindingDefinitionType.GET);
-			}
-			return iteration;
-		}
-
-		@Deprecated
-		@Override
-		public void setIteration(DataBinding<List<?>> iteration) {
-			if (iteration != null) {
-				iteration.setOwner(this);
-				iteration.setBindingName("iteration");
-				iteration.setDeclaredType(List.class);
-				iteration.setBindingDefinitionType(BindingDefinitionType.GET);
-			}
-			this.iteration = iteration;
-			// rebuildInferedBindingModel();
-		}
 
 		@Override
 		public Type getItemType() {
@@ -192,8 +156,7 @@ public interface IterationAction extends AbstractIterationAction {
 			if (getIterationAction() != null) {
 				return getHeaderContext() + " for (" + getIteratorName() + " : " + getIterationAction().getStringRepresentation() + ")";
 			}
-			else
-				return "NULL ITERATION ACTION";
+			return "NULL ITERATION ACTION";
 		}
 
 		@Override
@@ -242,14 +205,6 @@ public interface IterationAction extends AbstractIterationAction {
 			}
 			logger.warning("Unexpected control graph: " + controlGraph);
 			return null;
-		}
-
-		@Override
-		public void notifiedBindingChanged(DataBinding<?> dataBinding) {
-			if (dataBinding == getIteration()) {
-				getPropertyChangeSupport().firePropertyChange(ITERATION_KEY, null, getIteration());
-			}
-			super.notifiedBindingChanged(dataBinding);
 		}
 
 		@Override
