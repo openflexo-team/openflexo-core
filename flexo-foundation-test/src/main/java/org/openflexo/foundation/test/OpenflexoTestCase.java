@@ -78,7 +78,6 @@ import org.openflexo.foundation.resource.FlexoResource;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.resource.FlexoResourceCenter.ResourceCenterEntry;
 import org.openflexo.foundation.resource.FlexoResourceCenterService;
-import org.openflexo.foundation.resource.GitResourceCenter;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterService;
 import org.openflexo.kvc.KeyValueLibrary;
@@ -121,9 +120,6 @@ public abstract class OpenflexoTestCase {
 	 */
 	private static DirectoryResourceCenter resourceCenter;
 
-	@Deprecated
-	private static GitResourceCenter gitResourceCenter;
-
 	protected static FlexoServiceManager serviceManager;
 
 	protected static File testResourceCenterDirectory;
@@ -165,9 +161,6 @@ public abstract class OpenflexoTestCase {
 			if (resourceCenter != null) {
 				RCService.removeFromResourceCenters(resourceCenter);
 			}
-			if (gitResourceCenter != null) {
-				RCService.removeFromResourceCenters(gitResourceCenter);
-			}
 			RCService.stop();
 		}
 
@@ -183,7 +176,6 @@ public abstract class OpenflexoTestCase {
 			}
 		}
 		resourceCenter = null;
-		gitResourceCenter = null;
 	}
 
 	public static class FlexoTestEditor extends DefaultFlexoEditor {
@@ -284,7 +276,7 @@ public abstract class OpenflexoTestCase {
 
 		for (Class<? extends TechnologyAdapter> technologyAdapterClass : taClasses) {
 			serviceManager.activateTechnologyAdapter(
-					(TechnologyAdapter) serviceManager.getTechnologyAdapterService().getTechnologyAdapter(technologyAdapterClass), true);
+					serviceManager.getTechnologyAdapterService().getTechnologyAdapter(technologyAdapterClass), true);
 		}
 
 		return serviceManager;
