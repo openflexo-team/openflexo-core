@@ -75,8 +75,6 @@ public class VirtualModelInstancePasteHandler extends FlexoPasteHandler<VirtualM
 
 	private static final Logger logger = Logger.getLogger(VirtualModelInstancePasteHandler.class.getPackage().getName());
 
-	public static final String COPY_SUFFIX = "-copy";
-
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
 	public Class<VirtualModelInstance<?, ?>> getPastingPointHolderType() {

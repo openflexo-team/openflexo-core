@@ -23,6 +23,8 @@ import org.openflexo.model.factory.ProxyMethodHandler;
  */
 public abstract class FlexoPasteHandler<T extends FlexoObject> implements PasteHandler<T> {
 
+	public static final String COPY_SUFFIX = "-copy";
+
 	/**
 	 * Default implementation of isPastable(), using PAMELA framwork directives
 	 * 
@@ -77,13 +79,10 @@ public abstract class FlexoPasteHandler<T extends FlexoObject> implements PasteH
 			return clipboard.getLeaderClipboard().getModelFactory().paste(clipboard.getLeaderClipboard(),
 					pastingContext.getPastingPointHolder());
 		} catch (ModelExecutionException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (ModelDefinitionException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (CloneNotSupportedException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return null;

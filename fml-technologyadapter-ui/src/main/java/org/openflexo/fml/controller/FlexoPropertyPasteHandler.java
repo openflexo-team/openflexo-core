@@ -59,8 +59,6 @@ public class FlexoPropertyPasteHandler extends FlexoPasteHandler<FlexoProperty> 
 
 	private static final Logger logger = Logger.getLogger(FlexoPropertyPasteHandler.class.getPackage().getName());
 
-	public static final String COPY_SUFFIX = "-copy";
-
 	@Override
 	public Class<FlexoProperty> getPastingPointHolderType() {
 		return FlexoProperty.class;
