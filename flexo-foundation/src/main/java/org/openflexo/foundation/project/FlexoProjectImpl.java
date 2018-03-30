@@ -62,7 +62,6 @@ import org.apache.commons.io.filefilter.FileFilterUtils;
 import org.openflexo.connie.annotations.NotificationUnsafe;
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoProject;
-import org.openflexo.foundation.FlexoProjectObject;
 import org.openflexo.foundation.FlexoService;
 import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.fml.VirtualModelRepository;
@@ -86,18 +85,12 @@ import org.openflexo.foundation.resource.ResourceRepository;
 import org.openflexo.foundation.resource.ResourceRepositoryImpl;
 import org.openflexo.foundation.resource.SaveResourceException;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
-import org.openflexo.foundation.utils.FlexoObjectIDManager;
 import org.openflexo.foundation.utils.FlexoObjectReference;
 import org.openflexo.foundation.utils.ProjectLoadingHandler;
 import org.openflexo.foundation.validation.FlexoProjectValidationModel;
-import org.openflexo.model.annotations.DefineValidationRule;
 import org.openflexo.model.exceptions.ModelDefinitionException;
-import org.openflexo.model.validation.CompoundIssue;
-import org.openflexo.model.validation.InformationIssue;
-import org.openflexo.model.validation.ValidationIssue;
 import org.openflexo.model.validation.ValidationModel;
 import org.openflexo.model.validation.ValidationReport;
-import org.openflexo.model.validation.ValidationRule;
 import org.openflexo.toolbox.DirectoryWatcher;
 import org.openflexo.toolbox.FileUtils;
 import org.openflexo.toolbox.FileUtils.CopyStrategy;
@@ -123,8 +116,6 @@ public abstract class FlexoProjectImpl<I> extends ResourceRepositoryImpl<FlexoRe
 	public static final String PROJECT_DATA = "projectData";
 	public static final String REVISION = "revision";
 	public static final String VERSION = "version";
-
-	private FlexoObjectIDManager objectIDManager;
 
 	private final List<FlexoObjectReference<?>> objectReferences = new ArrayList<>();
 
@@ -160,7 +151,7 @@ public abstract class FlexoProjectImpl<I> extends ResourceRepositoryImpl<FlexoRe
 		 *            if true, the loading should be silent. This flag is typically meant for interactive loaders.
 		 * @return
 		 */
-		public FlexoProject<?> loadProject(FlexoProjectReference reference, boolean silentlyOnly);
+		public FlexoProject<?> loadProject(FlexoProjectReference<?> reference, boolean silentlyOnly);
 
 	}
 
@@ -794,18 +785,6 @@ public abstract class FlexoProjectImpl<I> extends ResourceRepositoryImpl<FlexoRe
 		return false;
 	}
 
-	/**
-	 * Overrides finalize
-	 * 
-	 * @see java.lang.Object#finalize()
-	 */
-	@Override
-	protected void finalize() throws Throwable {
-		System.err.println("##########################################################\n" + "# Project finalization" + getID() + "\n"
-				+ "##########################################################");
-		super.finalize();
-	}
-
 	public boolean isHoldingProjectRegistration() {
 		return holdObjectRegistration;
 	}
@@ -828,48 +807,6 @@ public abstract class FlexoProjectImpl<I> extends ResourceRepositoryImpl<FlexoRe
 		return _rebuildDependanciesIsRequired;
 	}
 
-	@DefineValidationRule
-	public static class FlexoIDMustBeUnique extends ValidationRule<FlexoIDMustBeUnique, FlexoProject> {
-
-		/**
-		 * @param objectType
-		 * @param ruleName
-		 */
-		public FlexoIDMustBeUnique() {
-			super(FlexoProject.class, "flexo_id_must_be_unique");
-		}
-
-		/**
-		 * Overrides applyValidation
-		 * 
-		 * @see org.openflexo.model.validation.ValidationRule#applyValidation(org.openflexo.model.validation.Validable)
-		 */
-		@Override
-		public ValidationIssue<FlexoIDMustBeUnique, FlexoProject> applyValidation(FlexoProject object) {
-			List<FlexoProjectObject> badObjects = object.getObjectIDManager().checkProject(true);
-			if (badObjects.size() > 0) {
-				DuplicateObjectIDIssue issues = new DuplicateObjectIDIssue(object);
-				// TODO FD pour SG pourquoi obj pas utilisé dans la boucle ?
-				for (FlexoProjectObject obj : badObjects) {
-					issues.addToContainedIssues(new InformationIssue<FlexoIDMustBeUnique, FlexoProject>(object,
-							"identifier_of_($object.fullyQualifiedName)_was_duplicated_and_reset_to_($object.flexoID)"));
-				}
-				return issues;
-			}
-			else {
-				return new InformationIssue<>(object, "no_duplicated_identifiers_found");
-			}
-		}
-
-		public static class DuplicateObjectIDIssue extends CompoundIssue<FlexoIDMustBeUnique, FlexoProject> {
-
-			public DuplicateObjectIDIssue(FlexoProject anObject) {
-				super(anObject);
-			}
-
-		}
-	}
-
 	@Override
 	public String getCreationDateAsString() {
 		if (getCreationDate() != null) {
@@ -884,7 +821,7 @@ public abstract class FlexoProjectImpl<I> extends ResourceRepositoryImpl<FlexoRe
 	}
 
 	@Override
-	public boolean importsProject(FlexoProject project) {
+	public boolean importsProject(FlexoProject<?> project) {
 		return project != null && importsProjectWithURI(project.getProjectURI());
 	}
 
@@ -893,29 +830,21 @@ public abstract class FlexoProjectImpl<I> extends ResourceRepositoryImpl<FlexoRe
 		return getProjectReferenceWithURI(projectURI, true) != null;
 	}
 
-	@Override
-	public FlexoObjectIDManager getObjectIDManager() {
-		if (objectIDManager == null) {
-			objectIDManager = new FlexoObjectIDManager(this);
-		}
-		return objectIDManager;
-	}
-
 	public boolean hasImportedProjects() {
 		return getImportedProjects().size() > 0;
 	}
 
-	public List<FlexoProjectReference> getResolvedProjectReferences() {
-		List<FlexoProjectReference> refs = new ArrayList<>();
+	public List<FlexoProjectReference<?>> getResolvedProjectReferences() {
+		List<FlexoProjectReference<?>> refs = new ArrayList<>();
 		appendResolvedReferences(this, refs);
 		return refs;
 	}
 
-	private void appendResolvedReferences(FlexoProject<?> project, List<FlexoProjectReference> refs) {
+	private void appendResolvedReferences(FlexoProject<?> project, List<FlexoProjectReference<?>> refs) {
 		if (project != null) {
-			for (FlexoProjectReference ref : project.getImportedProjects()) {
+			for (FlexoProjectReference<?> ref : project.getImportedProjects()) {
 				boolean alreadyAdded = false;
-				for (FlexoProjectReference addedRef : refs) {
+				for (FlexoProjectReference<?> addedRef : refs) {
 					if (addedRef.getURI().equals(ref.getURI())) {
 						alreadyAdded = true;
 						break;
@@ -925,7 +854,7 @@ public abstract class FlexoProjectImpl<I> extends ResourceRepositoryImpl<FlexoRe
 					refs.add(ref);
 				}
 			}
-			for (FlexoProjectReference ref : project.getImportedProjects()) {
+			for (FlexoProjectReference<?> ref : project.getImportedProjects()) {
 				if (ref.getReferencedProject() != null) {
 					appendResolvedReferences(ref.getReferencedProject(), refs);
 				}
@@ -954,7 +883,7 @@ public abstract class FlexoProjectImpl<I> extends ResourceRepositoryImpl<FlexoRe
 	}
 
 	private static boolean areAllImportedProjectsLoaded(FlexoProject<?> project) {
-		for (FlexoProjectReference ref : project.getImportedProjects()) {
+		for (FlexoProjectReference<?> ref : project.getImportedProjects()) {
 			if (ref.getReferencedProject() == null) {
 				return false;
 			}
@@ -965,7 +894,7 @@ public abstract class FlexoProjectImpl<I> extends ResourceRepositoryImpl<FlexoRe
 		return true;
 	}
 
-	public FlexoProject<?> loadProjectReference(FlexoProjectReference reference, boolean silentlyOnly) {
+	public FlexoProject<?> loadProjectReference(FlexoProjectReference<?> reference, boolean silentlyOnly) {
 		if (projectReferenceLoader != null) {
 			FlexoProject<?> loadProject = projectReferenceLoader.loadProject(reference, silentlyOnly);
 			if (loadProject != null) {
@@ -1102,12 +1031,12 @@ public abstract class FlexoProjectImpl<I> extends ResourceRepositoryImpl<FlexoRe
 
 	@Override
 	public FlexoProjectReference getProjectReferenceWithURI(String projectURI, boolean searchRecursively) {
-		FlexoProjectReference ref = getProjectReferenceWithURI(projectURI);
+		FlexoProjectReference<?> ref = getProjectReferenceWithURI(projectURI);
 		if (ref != null) {
 			return ref;
 		}
 		if (searchRecursively) {
-			for (FlexoProjectReference ref2 : getImportedProjects()) {
+			for (FlexoProjectReference<?> ref2 : getImportedProjects()) {
 				if (ref2.getReferencedProject().getProjectReferenceWithURI(projectURI, searchRecursively) != null) {
 					return ref2.getReferencedProject().getProjectReferenceWithURI(projectURI, searchRecursively);
 				}
@@ -1117,7 +1046,7 @@ public abstract class FlexoProjectImpl<I> extends ResourceRepositoryImpl<FlexoRe
 	}
 
 	@Override
-	public void addToImportedProjects(FlexoProjectReference projectReference) throws ProjectImportLoopException {
+	public void addToImportedProjects(FlexoProjectReference<?> projectReference) throws ProjectImportLoopException {
 		if (!isDeserializing()) {
 			if (getImportedProjects().contains(projectReference)) {
 				return;
@@ -1135,7 +1064,7 @@ public abstract class FlexoProjectImpl<I> extends ResourceRepositoryImpl<FlexoRe
 	}
 
 	@Override
-	public void removeFromImportedProjects(FlexoProjectReference projectReference) {
+	public void removeFromImportedProjects(FlexoProjectReference<?> projectReference) {
 		// TODO: remove dependency toward external resource.
 		// getProject().getFlexoRMResource().removeFromDependentResources(projectReference.getReferredProject().getFlexoRMResource());
 		performSuperRemover(IMPORTED_PROJECTS, projectReference);
@@ -1154,7 +1083,7 @@ public abstract class FlexoProjectImpl<I> extends ResourceRepositoryImpl<FlexoRe
 
 	@Override
 	public void removeFromImportedProjects(FlexoProject<?> project) {
-		for (FlexoProjectReference ref : new ArrayList<>(getImportedProjects())) {
+		for (FlexoProjectReference<?> ref : new ArrayList<>(getImportedProjects())) {
 			if (ref.getReferencedProject() == project) {
 				removeFromImportedProjects(ref);
 				break;

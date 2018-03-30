@@ -50,15 +50,12 @@ import org.openflexo.foundation.project.FlexoProjectImpl;
 import org.openflexo.foundation.project.FlexoProjectReference;
 import org.openflexo.foundation.project.FlexoProjectResource;
 import org.openflexo.foundation.resource.CannotRenameException;
-import org.openflexo.foundation.resource.FlexoResource;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.resource.FlexoResourceCenterService;
 import org.openflexo.foundation.resource.ProjectImportLoopException;
 import org.openflexo.foundation.resource.ResourceData;
-import org.openflexo.foundation.resource.ResourceRepository;
 import org.openflexo.foundation.resource.SaveResourceException;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
-import org.openflexo.foundation.utils.FlexoObjectIDManager;
 import org.openflexo.foundation.utils.FlexoObjectReference;
 import org.openflexo.foundation.utils.ProjectLoadingCancelledException;
 import org.openflexo.model.annotations.Adder;
@@ -73,7 +70,6 @@ import org.openflexo.model.annotations.Remover;
 import org.openflexo.model.annotations.Setter;
 import org.openflexo.model.annotations.XMLAttribute;
 import org.openflexo.model.annotations.XMLElement;
-import org.openflexo.model.validation.Validable;
 import org.openflexo.model.validation.ValidationModel;
 import org.openflexo.toolbox.FlexoVersion;
 
@@ -91,8 +87,7 @@ import org.openflexo.toolbox.FlexoVersion;
 @ModelEntity
 @ImplementationClass(FlexoProjectImpl.class)
 @XMLElement(deprecatedXMLTags = "ProjectData")
-public interface FlexoProject<I> extends ResourceRepository<FlexoResource<?>, I>, FlexoResourceCenter<I>, Validable, FlexoProjectObject,
-		ResourceData<FlexoProject<I>> {
+public interface FlexoProject<I> extends FlexoResourceCenter<I>, FlexoProjectObject<I>, ResourceData<FlexoProject<I>> {
 
 	@PropertyIdentifier(type = String.class)
 	public static final String PROJECT_NAME_KEY = "projectName";
@@ -179,11 +174,11 @@ public interface FlexoProject<I> extends ResourceRepository<FlexoResource<?>, I>
 	public void setImportedProjects(List<FlexoProjectReference> importedProjects);
 
 	@Adder(IMPORTED_PROJECTS)
-	public void addToImportedProjects(FlexoProjectReference projectReference)
+	public void addToImportedProjects(FlexoProjectReference<?> projectReference)
 			throws ProjectImportLoopException, ProjectLoadingCancelledException;
 
 	@Remover(value = IMPORTED_PROJECTS)
-	public void removeFromImportedProjects(FlexoProjectReference projectReference);
+	public void removeFromImportedProjects(FlexoProjectReference<?> projectReference);
 
 	public String canImportProject(FlexoProject<?> project);
 
@@ -299,8 +294,6 @@ public interface FlexoProject<I> extends ResourceRepository<FlexoResource<?>, I>
 	public FlexoProjectResource<I> getProjectResource();
 
 	public ValidationModel getProjectValidationModel();
-
-	public FlexoObjectIDManager getObjectIDManager();
 
 	@Getter(value = PROJECT_NATURES, cardinality = Cardinality.LIST, inverse = ProjectNature.OWNER)
 	@XMLElement
