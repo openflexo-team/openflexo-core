@@ -49,6 +49,7 @@ import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.TypeAwareModelSlotInstance;
 import org.openflexo.foundation.ontology.IFlexoOntology;
 import org.openflexo.foundation.ontology.IFlexoOntologyClass;
+import org.openflexo.foundation.ontology.IFlexoOntologyIndividual;
 import org.openflexo.foundation.ontology.fml.IndividualRole;
 import org.openflexo.foundation.ontology.fml.editionaction.AddIndividual;
 import org.openflexo.foundation.ontology.fml.rt.FlexoOntologyModelSlotInstance;
@@ -82,8 +83,8 @@ public interface FlexoOntologyModelSlot<M extends FlexoModel<M, MM> & IFlexoOnto
 	 */
 	public IndividualRole<?> makeIndividualRole(IFlexoOntologyClass<?> type);
 
-	public AddIndividual<? extends FlexoOntologyModelSlot<M, MM, TA>, M, ?> makeAddIndividualAction(IndividualRole<?> individualRole,
-			AbstractCreationScheme creationScheme);
+	public AddIndividual<? extends FlexoOntologyModelSlot<M, MM, TA>, M, IFlexoOntologyIndividual<TA>, TA> makeAddIndividualAction(
+			IndividualRole<?> individualRole, AbstractCreationScheme creationScheme);
 
 	public abstract Class<? extends IndividualRole<?>> getIndividualRoleClass();
 
@@ -126,12 +127,13 @@ public interface FlexoOntologyModelSlot<M extends FlexoModel<M, MM> & IFlexoOnto
 		}
 
 		@Override
-		public AddIndividual<? extends FlexoOntologyModelSlot<M, MM, TA>, M, ?> makeAddIndividualAction(IndividualRole<?> flexoRole,
-				AbstractCreationScheme creationScheme) {
+		public AddIndividual<? extends FlexoOntologyModelSlot<M, MM, TA>, M, IFlexoOntologyIndividual<TA>, TA> makeAddIndividualAction(
+				IndividualRole<?> flexoRole, AbstractCreationScheme creationScheme) {
 			@SuppressWarnings("unchecked")
-			Class<? extends AddIndividual<? extends FlexoOntologyModelSlot<M, MM, TA>, M, ?>> addIndividualClass = (Class<? extends AddIndividual<? extends FlexoOntologyModelSlot<M, MM, TA>, M, ?>>) getEditionActionClass(
+			Class<? extends AddIndividual<? extends FlexoOntologyModelSlot<M, MM, TA>, M, IFlexoOntologyIndividual<TA>, TA>> addIndividualClass = (Class<? extends AddIndividual<? extends FlexoOntologyModelSlot<M, MM, TA>, M, IFlexoOntologyIndividual<TA>, TA>>) getEditionActionClass(
 					AddIndividual.class);
-			AddIndividual<? extends FlexoOntologyModelSlot<M, MM, TA>, M, ?> returned = makeEditionAction(addIndividualClass);
+			AddIndividual<? extends FlexoOntologyModelSlot<M, MM, TA>, M, IFlexoOntologyIndividual<TA>, TA> returned = makeEditionAction(
+					addIndividualClass);
 			returned.getReceiver().setUnparsedBinding(getName());
 			// returned.setModelSlot(this);
 

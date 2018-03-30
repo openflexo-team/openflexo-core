@@ -52,6 +52,7 @@ import org.openflexo.foundation.ontology.IndividualOfClass;
 import org.openflexo.foundation.ontology.fml.IndividualRole;
 import org.openflexo.foundation.ontology.nature.FlexoOntologyVirtualModelNature;
 import org.openflexo.foundation.technologyadapter.FlexoModel;
+import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.technologyadapter.TechnologyObject;
 import org.openflexo.foundation.technologyadapter.TypeAwareModelSlot;
 import org.openflexo.gina.annotation.FIBPanel;
@@ -79,7 +80,7 @@ import org.openflexo.toolbox.StringUtils;
 @FIBPanel("Fib/FML/AddIndividualPanel.fib")
 @ModelEntity(isAbstract = true)
 @ImplementationClass(AddIndividual.AddIndividualImpl.class)
-public abstract interface AddIndividual<MS extends TypeAwareModelSlot<M, ?>, M extends FlexoModel<M, ?> & TechnologyObject<?>, T extends IFlexoOntologyIndividual<?>>
+public abstract interface AddIndividual<MS extends TypeAwareModelSlot<M, ?>, M extends FlexoModel<M, ?> & TechnologyObject<TA>, T extends IFlexoOntologyIndividual<TA>, TA extends TechnologyAdapter<TA>>
 		extends AddConcept<MS, M, T> {
 
 	@PropertyIdentifier(type = DataBinding.class)
@@ -167,8 +168,8 @@ public abstract interface AddIndividual<MS extends TypeAwareModelSlot<M, ?>, M e
 
 	public DataPropertyAssertion deleteDataPropertyAssertion(DataPropertyAssertion assertion);
 
-	public static abstract class AddIndividualImpl<MS extends TypeAwareModelSlot<M, ?>, M extends FlexoModel<M, ?> & TechnologyObject<?>, T extends IFlexoOntologyIndividual<?>>
-			extends AddConceptImpl<MS, M, T> implements AddIndividual<MS, M, T> {
+	public static abstract class AddIndividualImpl<MS extends TypeAwareModelSlot<M, ?>, M extends FlexoModel<M, ?> & TechnologyObject<TA>, T extends IFlexoOntologyIndividual<TA>, TA extends TechnologyAdapter<TA>>
+			extends AddConceptImpl<MS, M, T> implements AddIndividual<MS, M, T, TA> {
 
 		protected static final Logger logger = FlexoLogger.getLogger(AddIndividual.class.getPackage().getName());
 
@@ -243,7 +244,7 @@ public abstract interface AddIndividual<MS extends TypeAwareModelSlot<M, ?>, M e
 		@Override
 		public void setOntologyClass(IFlexoOntologyClass ontologyClass) {
 			if (ontologyClass != null) {
-				if (getAssignedFlexoProperty() instanceof IndividualRole) {
+				if (getAssignedFlexoProperty() != null) {
 					if (getAssignedFlexoProperty().getOntologicType() != null) {
 						if (getAssignedFlexoProperty().getOntologicType().isSuperConceptOf(ontologyClass)) {}
 						else {
@@ -265,8 +266,7 @@ public abstract interface AddIndividual<MS extends TypeAwareModelSlot<M, ?>, M e
 		@Override
 		public String _getOntologyClassURI() {
 			if (getOntologyClass() != null) {
-				if (getAssignedFlexoProperty() instanceof IndividualRole
-						&& getAssignedFlexoProperty().getOntologicType() == getOntologyClass()) {
+				if (getAssignedFlexoProperty() != null && getAssignedFlexoProperty().getOntologicType() == getOntologyClass()) {
 					// No need to store an overriding type, just use default provided by pattern property
 					return null;
 				}
@@ -340,16 +340,17 @@ public abstract interface AddIndividual<MS extends TypeAwareModelSlot<M, ?>, M e
 
 	@DefineValidationRule
 	public static class AddIndividualActionMustDefineAnOntologyClass
-			extends ValidationRule<AddIndividualActionMustDefineAnOntologyClass, AddIndividual> {
+			extends ValidationRule<AddIndividualActionMustDefineAnOntologyClass, AddIndividual<?, ?, ?, ?>> {
 		public AddIndividualActionMustDefineAnOntologyClass() {
 			super(AddIndividual.class, "add_individual_action_must_define_an_ontology_class");
 		}
 
 		@Override
-		public ValidationIssue<AddIndividualActionMustDefineAnOntologyClass, AddIndividual> applyValidation(AddIndividual action) {
+		public ValidationIssue<AddIndividualActionMustDefineAnOntologyClass, AddIndividual<?, ?, ?, ?>> applyValidation(
+				AddIndividual<?, ?, ?, ?> action) {
 			if ((action.getDynamicType() == null || !action.getDynamicType().isSet()) && action.getOntologyClass() == null
 					&& action.getOwner() instanceof AssignationAction) {
-				Vector<FixProposal<AddIndividualActionMustDefineAnOntologyClass, AddIndividual>> v = new Vector<>();
+				Vector<FixProposal<AddIndividualActionMustDefineAnOntologyClass, AddIndividual<?, ?, ?, ?>>> v = new Vector<>();
 				for (IndividualRole<?> pr : action.getFlexoConcept().getAccessibleProperties(IndividualRole.class)) {
 					v.add(new SetsFlexoRole(pr));
 				}
@@ -358,7 +359,7 @@ public abstract interface AddIndividual<MS extends TypeAwareModelSlot<M, ?>, M e
 			return null;
 		}
 
-		protected static class SetsFlexoRole extends FixProposal<AddIndividualActionMustDefineAnOntologyClass, AddIndividual> {
+		protected static class SetsFlexoRole extends FixProposal<AddIndividualActionMustDefineAnOntologyClass, AddIndividual<?, ?, ?, ?>> {
 
 			private final IndividualRole<?> flexoRole;
 
@@ -373,7 +374,7 @@ public abstract interface AddIndividual<MS extends TypeAwareModelSlot<M, ?>, M e
 
 			@Override
 			protected void fixAction() {
-				AddIndividual<?, ?, ?> action = getValidable();
+				AddIndividual<?, ?, ?, ?> action = getValidable();
 				((AssignationAction<?>) action.getOwner()).setAssignation(new DataBinding<>(flexoRole.getRoleName()));
 			}
 

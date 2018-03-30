@@ -80,11 +80,11 @@ public interface ObjectPropertyAssertion extends AbstractAssertion {
 
 	@Override
 	@Getter(value = ACTION_KEY, inverse = AddIndividual.OBJECT_ASSERTIONS_KEY)
-	public AddIndividual<?, ?, ?> getAction();
+	public AddIndividual<?, ?, ?, ?> getAction();
 
 	@Override
 	@Setter(ACTION_KEY)
-	public void setAction(AddIndividual<?, ?, ?> action);
+	public void setAction(AddIndividual<?, ?, ?, ?> action);
 
 	@Getter(value = OBJECT_PROPERTY_URI_KEY)
 	@XMLAttribute
