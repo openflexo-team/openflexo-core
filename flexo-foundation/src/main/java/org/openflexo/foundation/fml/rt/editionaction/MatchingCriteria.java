@@ -41,7 +41,6 @@ package org.openflexo.foundation.fml.rt.editionaction;
 import java.lang.reflect.InvocationTargetException;
 import java.util.logging.Logger;
 
-import org.openflexo.connie.Bindable;
 import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.exception.NullReferenceException;
 import org.openflexo.connie.exception.TypeMismatchException;
@@ -62,7 +61,7 @@ import org.openflexo.model.annotations.XMLElement;
 @ModelEntity
 @ImplementationClass(MatchingCriteria.MatchingCriteriaImpl.class)
 @XMLElement
-public interface MatchingCriteria extends FlexoConceptObject, Bindable {
+public interface MatchingCriteria extends FlexoConceptObject {
 
 	@PropertyIdentifier(type = MatchFlexoConceptInstance.class)
 	public static final String ACTION_KEY = "action";

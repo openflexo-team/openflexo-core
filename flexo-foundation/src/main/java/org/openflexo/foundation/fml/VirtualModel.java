@@ -70,7 +70,6 @@ import org.openflexo.foundation.technologyadapter.FlexoMetaModel;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterService;
-import org.openflexo.foundation.technologyadapter.TechnologyObject;
 import org.openflexo.foundation.technologyadapter.TypeAwareModelSlot;
 import org.openflexo.foundation.technologyadapter.UseModelSlotDeclaration;
 import org.openflexo.model.annotations.Adder;
@@ -116,8 +115,7 @@ import org.openflexo.toolbox.StringUtils;
 @Imports({ @Import(FlexoConceptStructuralFacet.class), @Import(FlexoConceptBehaviouralFacet.class), @Import(InnerConceptsFacet.class),
 		@Import(DeleteFlexoConceptInstanceParameter.class) })
 @XMLElement
-public interface VirtualModel extends FlexoConcept, FlexoConceptObject, FlexoMetaModel<VirtualModel>, ResourceData<VirtualModel>,
-		TechnologyObject<FMLTechnologyAdapter>, Validable {
+public interface VirtualModel extends FlexoConcept, FlexoMetaModel<VirtualModel>, ResourceData<VirtualModel> {
 
 	public static final String RESOURCE = "resource";
 

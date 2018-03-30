@@ -60,7 +60,7 @@ import org.openflexo.model.factory.ModelFactory;
 // TODO
 @ModelEntity
 @ImplementationClass(RemoteResourceCenter.RemoteResourceCenterImpl.class)
-public interface RemoteResourceCenter extends ResourceRepository<FlexoResource<?>, Object>, FlexoResourceCenter<Object> {
+public interface RemoteResourceCenter extends FlexoResourceCenter<Object> {
 
 	public static abstract class RemoteResourceCenterImpl extends ResourceRepositoryImpl<FlexoResource<?>, Object>
 			implements RemoteResourceCenter {

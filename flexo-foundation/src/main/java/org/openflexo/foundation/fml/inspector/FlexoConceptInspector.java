@@ -77,7 +77,7 @@ import org.openflexo.model.annotations.XMLElement;
 @ModelEntity
 @ImplementationClass(FlexoConceptInspector.FlexoConceptInspectorImpl.class)
 @XMLElement(xmlTag = "Inspector")
-public interface FlexoConceptInspector extends FlexoConceptObject, Bindable {
+public interface FlexoConceptInspector extends FlexoConceptObject {
 
 	public static final String FORMATTER_INSTANCE_PROPERTY = "instance";
 

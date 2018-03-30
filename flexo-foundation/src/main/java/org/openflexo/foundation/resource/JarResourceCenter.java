@@ -48,6 +48,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Properties;
 import java.util.StringTokenizer;
@@ -92,7 +93,7 @@ import org.openflexo.xml.XMLRootElementReader;
  */
 @ModelEntity
 @ImplementationClass(JarResourceCenter.JarResourceCenterImpl.class)
-public interface JarResourceCenter extends ResourceRepository<FlexoResource<?>, InJarResourceImpl>, FlexoResourceCenter<InJarResourceImpl> {
+public interface JarResourceCenter extends FlexoResourceCenter<InJarResourceImpl> {
 
 	public static JarResourceCenter instanciateNewJarResourceCenter(JarFile jarFile, FlexoResourceCenterService rcService)
 			throws IOException {
@@ -313,10 +314,10 @@ public interface JarResourceCenter extends ResourceRepository<FlexoResource<?>, 
 			return "unset";
 		}
 
-		private final HashMap<TechnologyAdapter, HashMap<Class<? extends ResourceRepository<?, InJarResourceImpl>>, ResourceRepository<?, InJarResourceImpl>>> repositories = new HashMap<>();
+		private final Map<TechnologyAdapter<?>, HashMap<Class<? extends ResourceRepository<?, InJarResourceImpl>>, ResourceRepository<?, InJarResourceImpl>>> repositories = new HashMap<>();
 
 		private HashMap<Class<? extends ResourceRepository<?, InJarResourceImpl>>, ResourceRepository<?, InJarResourceImpl>> getRepositoriesForAdapter(
-				TechnologyAdapter technologyAdapter, boolean considerEmptyRepositories) {
+				TechnologyAdapter<?> technologyAdapter, boolean considerEmptyRepositories) {
 			if (considerEmptyRepositories) {
 				technologyAdapter.ensureAllRepositoriesAreCreated(this);
 			}
@@ -352,7 +353,7 @@ public interface JarResourceCenter extends ResourceRepository<FlexoResource<?>, 
 		}
 
 		@Override
-		public Collection<ResourceRepository<?, InJarResourceImpl>> getRegistedRepositories(TechnologyAdapter technologyAdapter,
+		public Collection<ResourceRepository<?, InJarResourceImpl>> getRegistedRepositories(TechnologyAdapter<?> technologyAdapter,
 				boolean considerEmptyRepositories) {
 			return getRepositoriesForAdapter(technologyAdapter, considerEmptyRepositories).values();
 		}
@@ -469,7 +470,7 @@ public interface JarResourceCenter extends ResourceRepository<FlexoResource<?>, 
 		}
 
 		@Override
-		public boolean isIgnorable(InJarResourceImpl artefact, TechnologyAdapter technologyAdapter) {
+		public boolean isIgnorable(InJarResourceImpl artefact, TechnologyAdapter<?> technologyAdapter) {
 			// Trivial implementation
 			return false;
 		}

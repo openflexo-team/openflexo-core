@@ -66,7 +66,7 @@ import org.openflexo.model.annotations.XMLElement;
 @ModelEntity
 @ImplementationClass(DeleteAction.DeleteActionImpl.class)
 @XMLElement
-public interface DeleteAction<T extends FlexoObject> extends EditionAction, AssignableAction<T> {
+public interface DeleteAction<T extends FlexoObject> extends AssignableAction<T> {
 
 	@PropertyIdentifier(type = DataBinding.class)
 	public static final String OBJECT_KEY = "object";

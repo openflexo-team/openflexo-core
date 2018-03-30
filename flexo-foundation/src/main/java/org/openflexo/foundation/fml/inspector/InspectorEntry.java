@@ -43,7 +43,6 @@ import java.lang.reflect.Type;
 import java.util.List;
 import java.util.logging.Logger;
 
-import org.openflexo.connie.Bindable;
 import org.openflexo.connie.BindingEvaluationContext;
 import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.DataBinding.BindingDefinitionType;
@@ -77,7 +76,7 @@ import org.openflexo.toolbox.StringUtils;
 @ModelEntity()
 @ImplementationClass(InspectorEntry.InspectorEntryImpl.class)
 @XMLElement(xmlTag = "InspectorEntry", deprecatedXMLTags = "GenericInspectorEntry")
-public interface InspectorEntry extends FlexoConceptObject, Bindable, WidgetContext {
+public interface InspectorEntry extends FlexoConceptObject, WidgetContext {
 
 	@PropertyIdentifier(type = FlexoConceptInspector.class)
 	public static final String INSPECTOR_KEY = "inspector";
