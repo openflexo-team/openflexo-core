@@ -59,7 +59,7 @@ import org.openflexo.toolbox.FlexoVersion;
 @ModelEntity
 @XMLElement
 @ImplementationClass(FlexoProjectReferenceImpl.class)
-public interface FlexoProjectReference extends FlexoProjectObject {
+public interface FlexoProjectReference<I> extends FlexoProjectObject<I> {
 
 	public static final String OWNER = "owner";
 	public static final String REFERENCED_PROJECT = "referencedProject";
@@ -68,7 +68,7 @@ public interface FlexoProjectReference extends FlexoProjectObject {
 	public static final String REVISION_KEY = "revision";
 
 	@Initializer
-	public FlexoProjectReference init(@Parameter(REFERENCED_PROJECT) FlexoProject<?> referencedProject);
+	public FlexoProjectReference<I> init(@Parameter(REFERENCED_PROJECT) FlexoProject<I> referencedProject);
 
 	/**
 	 * Return owner for this reference (the project where this reference is declared)
@@ -92,13 +92,13 @@ public interface FlexoProjectReference extends FlexoProjectObject {
 	 * @return the referenced project.
 	 */
 	@Getter(value = REFERENCED_PROJECT)
-	public FlexoProject<?> getReferencedProject();
+	public FlexoProject<I> getReferencedProject();
 
 	/**
 	 * Sets the referred project.
 	 */
 	@Setter(value = REFERENCED_PROJECT)
-	public void setReferencedProject(FlexoProject<?> project);
+	public void setReferencedProject(FlexoProject<I> project);
 
 	/**
 	 * Returns URI of referenced project

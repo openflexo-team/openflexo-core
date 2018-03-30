@@ -43,7 +43,7 @@ import org.openflexo.foundation.FlexoProject;
 import org.openflexo.foundation.resource.FlexoResource;
 
 public interface ProjectLoadingHandler {
-	public boolean loadAndConvertAllOldResourcesToLatestVersion(FlexoProject project) throws ProjectLoadingCancelledException;
+	public boolean loadAndConvertAllOldResourcesToLatestVersion(FlexoProject<?> project) throws ProjectLoadingCancelledException;
 
 	public boolean useOlderMappingWhenLoadingFailure(FlexoResource<?> resource) throws ProjectLoadingCancelledException;
 
