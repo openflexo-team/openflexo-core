@@ -41,14 +41,14 @@ package org.openflexo.foundation.resource;
 import org.openflexo.foundation.DataModification;
 import org.openflexo.foundation.FlexoProject;
 
-public class ImportedProjectLoaded extends DataModification {
+public class ImportedProjectLoaded<T> extends DataModification<FlexoProject<T>> {
 
-	public ImportedProjectLoaded(FlexoProject project) {
+	public ImportedProjectLoaded(FlexoProject<T> project) {
 		super(null, project);
 	}
 
-	public FlexoProject getProject() {
-		return (FlexoProject) newValue();
+	public FlexoProject<T> getProject() {
+		return newValue();
 	}
 
 }

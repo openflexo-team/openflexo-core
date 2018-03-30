@@ -40,9 +40,10 @@
 package org.openflexo.foundation.ontology.dm;
 
 import org.openflexo.foundation.ontology.IFlexoOntologyIndividual;
+import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 
-public class OntologyIndividualRemoved extends OntologyDataModification {
-	public OntologyIndividualRemoved(IFlexoOntologyIndividual individual) {
+public class OntologyIndividualRemoved<TA extends TechnologyAdapter<TA>> extends OntologyDataModification<IFlexoOntologyIndividual<TA>> {
+	public OntologyIndividualRemoved(IFlexoOntologyIndividual<TA> individual) {
 		super(individual, null);
 	}
 }

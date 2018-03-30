@@ -41,11 +41,11 @@ package org.openflexo.foundation.resource;
 import org.openflexo.foundation.DataModification;
 import org.openflexo.foundation.FlexoProject;
 
-public class ProjectClosedNotification extends DataModification {
+public class ProjectClosedNotification<T> extends DataModification<FlexoProject<T>> {
 
 	public static final String CLOSE = "close";
 
-	public ProjectClosedNotification(FlexoProject project) {
+	public ProjectClosedNotification(FlexoProject<T> project) {
 		super(CLOSE, project, project);
 	}
 

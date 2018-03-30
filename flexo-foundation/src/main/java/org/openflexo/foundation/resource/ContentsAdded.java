@@ -48,7 +48,7 @@ import org.openflexo.foundation.FlexoService.ServiceNotification;
  * @author sylvain
  * 
  */
-public class ContentsAdded extends DataModification implements ServiceNotification {
+public class ContentsAdded extends DataModification<FlexoResource<?>> implements ServiceNotification {
 
 	/**
 	 * @param resource

@@ -47,12 +47,12 @@ import org.openflexo.foundation.FlexoService.ServiceNotification;
  * @author sylvain
  * 
  */
-public class ResourceModified extends DataModification implements ServiceNotification {
+public class ResourceModified<RD extends ResourceData<RD>> extends DataModification<RD> implements ServiceNotification {
 
 	/**
 	 * @param resource
 	 */
-	public <RD extends ResourceData<RD>> ResourceModified(FlexoResource<RD> resource, RD resourceData) {
+	public ResourceModified(FlexoResource<RD> resource, RD resourceData) {
 		super(null, resourceData);
 	}
 

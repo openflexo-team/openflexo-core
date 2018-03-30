@@ -40,9 +40,11 @@
 package org.openflexo.foundation.ontology.dm;
 
 import org.openflexo.foundation.ontology.IFlexoOntologyObjectProperty;
+import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 
-public class OntologyObjectPropertyInserted extends OntologyDataModification {
-	public OntologyObjectPropertyInserted(IFlexoOntologyObjectProperty objectProperty) {
+public class OntologyObjectPropertyInserted<TA extends TechnologyAdapter<TA>>
+		extends OntologyDataModification<IFlexoOntologyObjectProperty<TA>> {
+	public OntologyObjectPropertyInserted(IFlexoOntologyObjectProperty<TA> objectProperty) {
 		super(null, objectProperty);
 	}
 }

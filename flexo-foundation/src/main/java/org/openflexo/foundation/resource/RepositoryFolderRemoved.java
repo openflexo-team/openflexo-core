@@ -42,19 +42,17 @@ package org.openflexo.foundation.resource;
 import org.openflexo.foundation.DataModification;
 import org.openflexo.foundation.FlexoService.ServiceNotification;
 
-public class RepositoryFolderRemoved extends DataModification implements ServiceNotification {
+public class RepositoryFolderRemoved extends DataModification<RepositoryFolder<?, ?>> implements ServiceNotification {
 
 	private RepositoryFolder<?, ?> parentFolder;
-	private RepositoryFolder<?, ?> folder;
 
 	public RepositoryFolderRemoved(RepositoryFolder<?, ?> parentFolder, RepositoryFolder<?, ?> folder) {
 		super("children", folder, null);
 		this.parentFolder = parentFolder;
-		this.folder = folder;
 	}
 
 	public RepositoryFolder<?, ?> getFolder() {
-		return folder;
+		return oldValue();
 	}
 
 	public RepositoryFolder<?, ?> getParentFolder() {
