@@ -546,13 +546,4 @@ public class FlexoUndoManager extends UndoManager {
 	public static interface IgnoreHandler {
 		public boolean isIgnorable(UndoableEdit edit);
 	}
-
-	// Try to avoid using it, since this might be really dangerous
-	@Deprecated
-	public static class IgnoreAll implements IgnoreHandler {
-		@Override
-		public boolean isIgnorable(UndoableEdit edit) {
-			return true;
-		}
-	}
 }
