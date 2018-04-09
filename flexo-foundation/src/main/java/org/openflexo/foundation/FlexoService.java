@@ -122,8 +122,7 @@ public interface FlexoService {
 	 * @author sylvain
 	 * 
 	 */
-	public static interface ServiceNotification {
-	}
+	public static interface ServiceNotification {}
 
 	/**
 	 * Represent the status of a {@link FlexoService}

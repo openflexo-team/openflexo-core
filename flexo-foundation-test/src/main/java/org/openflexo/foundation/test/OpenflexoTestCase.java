@@ -116,7 +116,7 @@ public abstract class OpenflexoTestCase {
 	protected static final String RESOURCE_CENTER_URI = "http://openflexo.org/test/TestResourceCenter";
 
 	/**
-	 * ResourceCenter beeing statically referenced while using makeNewDirectoryResourceCenter() methods
+	 * ResourceCenter being statically referenced while using makeNewDirectoryResourceCenter() methods
 	 */
 	private static DirectoryResourceCenter resourceCenter;
 
