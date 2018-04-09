@@ -527,9 +527,7 @@ public interface VirtualModel extends FlexoConcept, FlexoMetaModel<VirtualModel>
 			if (getResource() != null) {
 				return getResource().getFactory();
 			}
-			else {
-				return getDeserializationFactory();
-			}
+			return getDeserializationFactory();
 		}
 
 		@Override
@@ -957,7 +955,6 @@ public interface VirtualModel extends FlexoConcept, FlexoMetaModel<VirtualModel>
 
 		@Override
 		public Object getObject(String objectURI) {
-			// TODO Auto-generated method stub
 			return null;
 		}
 
@@ -1299,13 +1296,10 @@ public interface VirtualModel extends FlexoConcept, FlexoMetaModel<VirtualModel>
 				try {
 					return getVirtualModelLibrary().getVirtualModel(virtualModelNameOrURI);
 				} catch (FileNotFoundException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				} catch (ResourceLoadingCancelledException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				} catch (FlexoException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			}

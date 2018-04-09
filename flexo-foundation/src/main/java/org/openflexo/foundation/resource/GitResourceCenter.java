@@ -201,12 +201,8 @@ public interface GitResourceCenter extends FileSystemBasedResourceCenter {
 					return resourceRepository.getRootFolder();
 				}
 			}
-			else {
-				logger.warning("Could not retrieve File for ioDelegate=" + ioDelegate);
-				return null;
-			}
-
+			logger.warning("Could not retrieve File for ioDelegate=" + ioDelegate);
+			return null;
 		}
-
 	}
 }

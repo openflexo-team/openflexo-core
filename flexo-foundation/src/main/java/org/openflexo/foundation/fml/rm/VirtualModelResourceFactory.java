@@ -89,9 +89,7 @@ public class VirtualModelResourceFactory
 			System.out.println("Plutot que de creer un VirtualModel, je cree un " + resource.getSpecializedResourceDataClass());
 			return resource.getFactory().newInstance(resource.getSpecializedResourceDataClass());
 		}
-		else {
-			return resource.getFactory().newVirtualModel();
-		}
+		return resource.getFactory().newVirtualModel();
 	}
 
 	@Override

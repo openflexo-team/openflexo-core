@@ -113,7 +113,6 @@ public interface Sequence extends FMLControlGraph, FMLControlGraphOwner {
 
 		@Override
 		public String getURI() {
-			// TODO Auto-generated method stub
 			return null;
 		}
 
@@ -195,10 +194,7 @@ public interface Sequence extends FMLControlGraph, FMLControlGraphOwner {
 				if (getControlGraph1() instanceof AssignableAction) {
 					return getControlGraph1().getInferedBindingModel();
 				}
-				else {
-					return getBindingModel();
-				}
-
+				return getBindingModel();
 				// return getControlGraph1().getInferedBindingModel();
 			}
 			return null;

@@ -124,7 +124,7 @@ public abstract class FlexoServiceManager {
 			}
 		}
 		if (notification instanceof ProjectClosed) {
-			resourceCenterRemoved(((ProjectClosed) notification).getProject());
+			resourceCenterRemoved(((ProjectClosed<?>) notification).getProject());
 		}
 	}
 

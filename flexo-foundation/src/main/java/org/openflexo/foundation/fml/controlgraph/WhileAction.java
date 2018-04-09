@@ -220,12 +220,10 @@ public interface WhileAction extends ControlStructureAction, FMLControlGraphOwne
 				}
 				return getHeaderContext() + " do while ";
 			}
-			else {
-				if (getCondition().isSet() && getCondition().isValid()) {
-					return getHeaderContext() + " while " + getCondition();
-				}
-				return getHeaderContext() + " while ";
+			if (getCondition().isSet() && getCondition().isValid()) {
+				return getHeaderContext() + " while " + getCondition();
 			}
+			return getHeaderContext() + " while ";
 		}
 
 		@Override

@@ -185,10 +185,8 @@ public interface SelectVirtualModelInstance<VMI extends VirtualModelInstance<VMI
 						return VirtualModelInstanceType.getVirtualModelInstanceType(
 								getVirtualModelType() != null ? getVirtualModelType().getLoadedResourceData() : null);
 					}
-					else {
-						return new VirtualModelInstanceType(_getVirtualModelTypeURI(),
-								getTechnologyAdapter().getVirtualModelInstanceTypeFactory());
-					}
+					return new VirtualModelInstanceType(_getVirtualModelTypeURI(),
+							getTechnologyAdapter().getVirtualModelInstanceTypeFactory());
 				}
 			} finally {
 				isFetching = false;
@@ -224,13 +222,10 @@ public interface SelectVirtualModelInstance<VMI extends VirtualModelInstance<VMI
 									+ getAddressedVirtualModel().getVirtualModelLibrary().getVirtualModel(virtualModelTypeURI, true));
 						}
 					} catch (FileNotFoundException e) {
-						// TODO Auto-generated catch block
 						e.printStackTrace();
 					} catch (ResourceLoadingCancelledException e) {
-						// TODO Auto-generated catch block
 						e.printStackTrace();
 					} catch (FlexoException e) {
-						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
 				}*/

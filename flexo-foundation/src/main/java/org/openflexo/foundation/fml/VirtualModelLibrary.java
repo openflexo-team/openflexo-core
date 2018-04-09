@@ -130,9 +130,7 @@ public class VirtualModelLibrary extends DefaultFlexoObject implements FlexoServ
 			if (loadWhenRequired) {
 				return returned.getResourceData();
 			}
-			else {
-				return returned.getLoadedResourceData();
-			}
+			return returned.getLoadedResourceData();
 		}
 		/*if (returned == null) {
 			logger.warning("Cannot find virtual model:" + virtualModelURI);
@@ -270,13 +268,10 @@ public class VirtualModelLibrary extends DefaultFlexoObject implements FlexoServ
 		try {
 			returned = getVirtualModel(flexoConceptURI, loadWhenRequired);
 		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (ResourceLoadingCancelledException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (FlexoException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		if (returned != null) {
@@ -328,11 +323,9 @@ public class VirtualModelLibrary extends DefaultFlexoObject implements FlexoServ
 				if (vm != null) {
 					return vm.getFlexoConcept(flexoConceptName);
 				}
-				else {
-					// It is possible to come here, because this can be called during deserialization of VirtualModel itself
-					// In this case, the resource cannot be loaded yet (because already loading)
-					// Concept will be looked up later
-				}
+				// It is possible to come here, because this can be called during deserialization of VirtualModel itself
+				// In this case, the resource cannot be loaded yet (because already loading)
+				// Concept will be looked up later
 			}
 			// logger.warning("Cannot find virtual model " + virtualModelURI + " while searching flexo concept:" + flexoConceptURI + " ("
 			// + flexoConceptName + ")");
@@ -483,7 +476,6 @@ public class VirtualModelLibrary extends DefaultFlexoObject implements FlexoServ
 
 	@Override
 	public void stop() {
-		// TODO Auto-generated method stub
 		logger.warning("STOP Method for service should be overriden in each service [" + this.getClass().getCanonicalName() + "]");
 		status = Status.Stopped;
 	}

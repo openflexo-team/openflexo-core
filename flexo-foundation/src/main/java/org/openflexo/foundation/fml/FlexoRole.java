@@ -333,9 +333,7 @@ public interface FlexoRole<T> extends FlexoProperty<T> {
 			if (returned == null) {
 				return defaultCloningStrategy();
 			}
-			else {
-				return returned;
-			}
+			return returned;
 		}
 
 		@Override

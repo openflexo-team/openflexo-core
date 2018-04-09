@@ -182,9 +182,7 @@ public interface InitiateMatching extends AssignableAction<MatchingSet> {
 				if (containerConcept instanceof VirtualModel) {
 					return ((VirtualModel) containerConcept).getAllRootFlexoConcepts();
 				}
-				else {
-					return containerConcept.getEmbeddedFlexoConcepts();
-				}
+				return containerConcept.getEmbeddedFlexoConcepts();
 			}
 			return Collections.emptyList();
 		}

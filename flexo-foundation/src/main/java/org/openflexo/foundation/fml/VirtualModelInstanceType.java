@@ -102,10 +102,8 @@ public class VirtualModelInstanceType extends FlexoConceptInstanceType {
 		if (aVirtualModel != null) {
 			return (VirtualModelInstanceType) aVirtualModel.getInstanceType();
 		}
-		else {
-			// logger.warning("Trying to get a VirtualModelInstanceType for a null VirtualModel");
-			return UNDEFINED_VIRTUAL_MODEL_INSTANCE_TYPE;
-		}
+		// logger.warning("Trying to get a VirtualModelInstanceType for a null VirtualModel");
+		return UNDEFINED_VIRTUAL_MODEL_INSTANCE_TYPE;
 	}
 
 	/**
@@ -144,11 +142,9 @@ public class VirtualModelInstanceType extends FlexoConceptInstanceType {
 			if (virtualModel != null) {
 				return getType(virtualModel);
 			}
-			else {
-				// We don't return UNDEFINED_FLEXO_CONCEPT_INSTANCE_TYPE because we want here a mutable type
-				// if FlexoConcept might be resolved later
-				return getType(configuration, this);
-			}
+			// We don't return UNDEFINED_FLEXO_CONCEPT_INSTANCE_TYPE because we want here a mutable type
+			// if FlexoConcept might be resolved later
+			return getType(configuration, this);
 		}
 
 		private VirtualModel virtualModelType;

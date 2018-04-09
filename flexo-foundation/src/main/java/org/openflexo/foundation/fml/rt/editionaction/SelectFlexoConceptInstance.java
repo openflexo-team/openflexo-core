@@ -314,9 +314,7 @@ public interface SelectFlexoConceptInstance<VMI extends VirtualModelInstance<VMI
 				if (returned != null) {
 					return returned;
 				}
-				else {
-					return Collections.emptyList();
-				}
+				return Collections.emptyList();
 			}
 
 			return Collections.emptyList();
@@ -377,27 +375,18 @@ public interface SelectFlexoConceptInstance<VMI extends VirtualModelInstance<VMI
 				// System.out.println("Unfiltered FCI list for " + getFlexoConceptType() + " : " + fciList);
 				return filterWithConditions(fciList, evaluationContext);
 			}
-			else {
-				logger.warning(
-						getStringRepresentation() + " : Cannot find virtual model instance on which to apply SelectFlexoConceptInstance");
-				logger.warning("getReceiver()=" + getReceiver());
-				/*logger.warning("evaluationContext=" + evaluationContext);
-				logger.warning("isSet=" + getVirtualModelInstance().isSet());
-				logger.warning("isValid=" + getVirtualModelInstance().isValid());
-				logger.warning("fci=" + evaluationContext.getFlexoConceptInstance());
-				logger.warning("vmi=" + evaluationContext.getVirtualModelInstance());
-				try {
-					logger.warning("value=" + getVirtualModelInstance().getBindingValue(evaluationContext));
-				} catch (TypeMismatchException e) {
-					e.printStackTrace();
-				} catch (NullReferenceException e) {
-					e.printStackTrace();
-				} catch (InvocationTargetException e) {
-					e.printStackTrace();
-				}*/
-				logger.warning(getOwner().getFMLRepresentation());
-				return null;
-			}
+			logger.warning(
+					getStringRepresentation() + " : Cannot find virtual model instance on which to apply SelectFlexoConceptInstance");
+			logger.warning("getReceiver()=" + getReceiver());
+			/*
+			logger.warning("evaluationContext=" + evaluationContext);
+			logger.warning("isSet=" + getVirtualModelInstance().isSet());
+			logger.warning("isValid=" + getVirtualModelInstance().isValid());
+			logger.warning("fci=" + evaluationContext.getFlexoConceptInstance());
+			logger.warning("vmi=" + evaluationContext.getVirtualModelInstance());
+			*/
+			logger.warning(getOwner().getFMLRepresentation());
+			return null;
 		}
 
 		public boolean isIndexable(FlexoConceptInstance container) {
@@ -449,21 +438,13 @@ public interface SelectFlexoConceptInstance<VMI extends VirtualModelInstance<VMI
 				boolean rightTermUsesSelectedBindingVariable = expressionUsesSelectedBindingVariable(rightTerm);
 				if (binaryExpression.getOperator() == BooleanBinaryOperator.EQUALS) {
 					if (leftTermUsesSelectedBindingVariable) {
-						if (rightTermUsesSelectedBindingVariable) {
+						if (rightTermUsesSelectedBindingVariable)
 							return null;
-						}
-						else {
-							return rightTerm;
-						}
+						return rightTerm;
 					}
-					else {
-						if (rightTermUsesSelectedBindingVariable) {
-							return leftTerm;
-						}
-						else {
-							return null;
-						}
-					}
+					if (rightTermUsesSelectedBindingVariable)
+						return leftTerm;
+					return null;
 				}
 			}
 			return null;

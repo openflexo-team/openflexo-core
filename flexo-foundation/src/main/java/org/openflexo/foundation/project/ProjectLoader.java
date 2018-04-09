@@ -356,10 +356,8 @@ public class ProjectLoader extends FlexoServiceImpl {
 		} catch (ModelDefinitionException e) {
 			throw new ProjectInitializerException(e, projectDirectory);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (FlexoException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return null;
@@ -494,7 +492,7 @@ public class ProjectLoader extends FlexoServiceImpl {
 			removeFromRootProjects(project);
 			getPropertyChangeSupport().firePropertyChange(EDITOR_REMOVED, editor, null);
 		}
-		getServiceManager().notify(this, new ProjectClosed(project));
+		getServiceManager().notify(this, new ProjectClosed<>(project));
 	}
 
 	public <I> FlexoEditor saveAsProject(I projectDirectory, FlexoProject<I> project) throws Exception {
