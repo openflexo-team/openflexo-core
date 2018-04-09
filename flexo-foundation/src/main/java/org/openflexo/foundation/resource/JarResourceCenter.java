@@ -789,6 +789,8 @@ public interface JarResourceCenter extends FlexoResourceCenter<InJarResourceImpl
 		 */
 		@Override
 		public List<String> getPathTo(InJarResourceImpl resource) {
+			// TODO FD4SG la ligne ci-dessous est vraiment bizarre (getChildren renvoie une liste de RepositoryFolder alors que resource est
+			// une ressource
 			if (!getRootFolder().getChildren().contains(resource)) {
 				List<String> pathTo = new ArrayList<>();
 				StringTokenizer string = new StringTokenizer(/*resource.getURI()*/resource.getEntry().getName(),
