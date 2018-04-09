@@ -208,7 +208,6 @@ public class FIBDocTableSelector<T extends FlexoDocTable<D, TA>, D extends Flexo
 
 	@Override
 	public void setSelectedObject(Object selectedObject) {
-		// TODO Auto-generated method stub
 		super.setSelectedObject(selectedObject);
 		TableSelectorDetailsPanel customPanel = (TableSelectorDetailsPanel) getCustomPanel(false);
 		if (customPanel != null && selectedObject instanceof FlexoDocTable) {
@@ -302,13 +301,6 @@ public class FIBDocTableSelector<T extends FlexoDocTable<D, TA>, D extends Flexo
 
 			selectTableInDocumentEditor(value, getDocEditorWidget());
 		}
-
-		@Override
-		public void update() {
-			// TODO Auto-generated method stub
-			super.update();
-		}
-
 	}
 
 	protected void selectTableInDocumentEditor(T table, FIBCustomWidget<?, ?, ?> documentEditorWidget) {

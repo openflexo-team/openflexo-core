@@ -201,7 +201,6 @@ public class FIBDocImageSelector<T extends FlexoDrawingRun<D, TA>, D extends Fle
 
 	@Override
 	public void setSelectedObject(Object selectedObject) {
-		// TODO Auto-generated method stub
 		super.setSelectedObject(selectedObject);
 		ImageSelectorDetailsPanel customPanel = (ImageSelectorDetailsPanel) getCustomPanel(false);
 		if (customPanel != null) {
@@ -285,13 +284,6 @@ public class FIBDocImageSelector<T extends FlexoDrawingRun<D, TA>, D extends Fle
 
 			selectImageInDocumentEditor(value, getDocEditorWidget());
 		}
-
-		@Override
-		public void update() {
-			// TODO Auto-generated method stub
-			super.update();
-		}
-
 	}
 
 	protected void selectImageInDocumentEditor(T drawingRun, FIBCustomWidget<?, ?, ?> documentEditorWidget) {

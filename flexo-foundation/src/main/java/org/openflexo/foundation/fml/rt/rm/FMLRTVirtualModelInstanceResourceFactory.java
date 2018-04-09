@@ -219,12 +219,6 @@ public class FMLRTVirtualModelInstanceResourceFactory extends
 		return false;
 	}
 
-	@Override
-	public <I> I getConvertableArtefact(I serializationArtefact, FlexoResourceCenter<I> resourceCenter) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
 	/**
 	 * Build and return model factory to use for resource data managing
 	 */
@@ -347,7 +341,7 @@ public class FMLRTVirtualModelInstanceResourceFactory extends
 		public String virtualModelURI;
 		@SuppressWarnings("unused")
 		public String virtualModelVersion;
-		public String name;
+		// Unused public String name;
 		public String uri;
 		public String version;
 		public String modelVersion;
@@ -364,7 +358,7 @@ public class FMLRTVirtualModelInstanceResourceFactory extends
 		}
 
 		if (xmlRootElementInfo.getName().equals("FMLRTVirtualModelInstance")) {
-			returned.name = xmlRootElementInfo.getAttribute("name");
+			// Unused returned.name = xmlRootElementInfo.getAttribute("name");
 			returned.uri = xmlRootElementInfo.getAttribute("uri");
 			returned.virtualModelURI = xmlRootElementInfo.getAttribute("virtualModelURI");
 			returned.virtualModelVersion = xmlRootElementInfo.getAttribute("virtualModelVersion");

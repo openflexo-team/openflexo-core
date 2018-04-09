@@ -143,11 +143,6 @@ public class FlexoProjectResourceFactory<I> extends PamelaResourceFactory<FlexoP
 		return false;
 	}
 
-	@Override
-	public <I2> I2 getConvertableArtefact(I2 serializationArtefact, FlexoResourceCenter<I2> resourceCenter) {
-		return null;
-	}
-
 	public FlexoProjectResource<I> makeFlexoProjectResource(String baseName, String uri,
 			RepositoryFolder<FlexoProjectResource<I>, I> folder, boolean createEmptyContents)
 			throws SaveResourceException, ModelDefinitionException {
@@ -174,7 +169,6 @@ public class FlexoProjectResourceFactory<I> extends PamelaResourceFactory<FlexoP
 						.instanciateNewDirectoryResourceCenter((File) serializationArtefact, serviceManager.getResourceCenterService());
 				return returned;
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
@@ -247,7 +241,6 @@ public class FlexoProjectResourceFactory<I> extends PamelaResourceFactory<FlexoP
 		try {
 			resource.setFactory(makeResourceDataFactory(resource));
 		} catch (ModelDefinitionException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
@@ -257,7 +250,6 @@ public class FlexoProjectResourceFactory<I> extends PamelaResourceFactory<FlexoP
 
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	protected <I2> FlexoIODelegate<I2> makeFlexoIODelegate(I2 serializationArtefact, FlexoResourceCenter<I2> resourceCenter) {
 		if (resourceCenter != null) {
@@ -353,7 +345,6 @@ public class FlexoProjectResourceFactory<I> extends PamelaResourceFactory<FlexoP
 			try {
 				vpi = findDiagramSpecificationInfo(new FileInputStream(diagramSpecificationXMLFile));
 			} catch (FileNotFoundException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			if (vpi == null) {
@@ -372,7 +363,6 @@ public class FlexoProjectResourceFactory<I> extends PamelaResourceFactory<FlexoP
 					serviceManager.getEditingContext());
 			returned.setFactory(diagramSpecificationFactory);
 	
-			// TODO: why do we set the name twice ???
 			returned.initName(vpi.name);
 			if (StringUtils.isNotEmpty(vpi.version)) {
 				returned.setVersion(new FlexoVersion(vpi.version));
