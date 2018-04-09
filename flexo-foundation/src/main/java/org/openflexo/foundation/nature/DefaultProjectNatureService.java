@@ -116,7 +116,7 @@ public abstract class DefaultProjectNatureService extends FlexoServiceImpl imple
 	 * @return
 	 */
 	@Override
-	public <F extends ProjectNatureFactory<N>, N extends ProjectNature> F getProjectNatureFactory(Class<N> projectNatureClass) {
+	public <F extends ProjectNatureFactory<N>, N extends ProjectNature<N>> F getProjectNatureFactory(Class<N> projectNatureClass) {
 		return (F) loadedProjectNatureFactories.get(projectNatureClass);
 	}
 

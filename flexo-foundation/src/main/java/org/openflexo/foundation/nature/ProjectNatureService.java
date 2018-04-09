@@ -78,7 +78,7 @@ public interface ProjectNatureService extends FlexoService {
 	 * @param projectNatureClass
 	 * @return
 	 */
-	public <F extends ProjectNatureFactory<N>, N extends ProjectNature> F getProjectNatureFactory(Class<N> projectNatureClass);
+	public <F extends ProjectNatureFactory<N>, N extends ProjectNature<N>> F getProjectNatureFactory(Class<N> projectNatureClass);
 
 	/**
 	 * Return project nature mapping supplied class<br>
