@@ -916,19 +916,16 @@ public interface FlexoConcept extends FlexoConceptObject {
 					}
 				}
 
-				for (FlexoProperty<?> removeThis : unnecessaryProperty) {
-					inheritedProperties.remove(removeThis);
-				}
+				for (FlexoProperty<?> removeThis : unnecessaryProperty)
+					inheritedProperties.remove(removeThis.getName());
 
 				try {
 					computedAccessibleProperties.addAll(inheritedProperties.values());
 				} catch (NullPointerException e) {
 					logger.warning("Something wrong in getAccessibleProperty() evaluation for " + this);
 				}
-
 				accessibleProperties = computedAccessibleProperties;
 			}
-
 			return accessibleProperties;
 		}
 
@@ -1633,7 +1630,6 @@ public interface FlexoConcept extends FlexoConceptObject {
 						try {
 							addToParentFlexoConcepts(parent);
 						} catch (InconsistentFlexoConceptHierarchyException e) {
-							// TODO Auto-generated catch block
 							e.printStackTrace();
 						}
 					}
