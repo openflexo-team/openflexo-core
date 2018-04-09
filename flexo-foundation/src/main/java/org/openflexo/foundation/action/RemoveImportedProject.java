@@ -49,27 +49,23 @@ import org.openflexo.foundation.FlexoProjectObject;
 import org.openflexo.foundation.project.FlexoProjectReference;
 import org.openflexo.foundation.utils.FlexoObjectReference;
 
-public class RemoveImportedProject extends FlexoAction<RemoveImportedProject, FlexoProjectObject, FlexoProjectObject> {
-
-	private static final java.util.logging.Logger logger = org.openflexo.logging.FlexoLogger
-			.getLogger(RemoveImportedProject.class.getPackage().getName());
-
-	public static final FlexoActionFactory<RemoveImportedProject, FlexoProjectObject, FlexoProjectObject> actionType = new FlexoActionFactory<RemoveImportedProject, FlexoProjectObject, FlexoProjectObject>(
+public class RemoveImportedProject extends FlexoAction<RemoveImportedProject, FlexoProjectObject<?>, FlexoProjectObject<?>> {
+	public static final FlexoActionFactory<RemoveImportedProject, FlexoProjectObject<?>, FlexoProjectObject<?>> actionType = new FlexoActionFactory<RemoveImportedProject, FlexoProjectObject<?>, FlexoProjectObject<?>>(
 			"remove_project") {
 
 		@Override
-		public RemoveImportedProject makeNewAction(FlexoProjectObject focusedObject, Vector<FlexoProjectObject> globalSelection,
+		public RemoveImportedProject makeNewAction(FlexoProjectObject<?> focusedObject, Vector<FlexoProjectObject<?>> globalSelection,
 				FlexoEditor editor) {
 			return new RemoveImportedProject(focusedObject, globalSelection, editor);
 		}
 
 		@Override
-		public boolean isVisibleForSelection(FlexoProjectObject object, Vector<FlexoProjectObject> globalSelection) {
+		public boolean isVisibleForSelection(FlexoProjectObject<?> object, Vector<FlexoProjectObject<?>> globalSelection) {
 			return isEnabled(object, globalSelection);
 		}
 
 		@Override
-		public boolean isEnabledForSelection(FlexoProjectObject object, Vector<FlexoProjectObject> globalSelection) {
+		public boolean isEnabledForSelection(FlexoProjectObject<?> object, Vector<FlexoProjectObject<?>> globalSelection) {
 			return object != null && object.getProject() != null && object.getProject().getImportedProjects().size() > 0;
 		}
 	};
@@ -80,7 +76,7 @@ public class RemoveImportedProject extends FlexoAction<RemoveImportedProject, Fl
 
 	private String projectToRemoveURI;
 
-	private RemoveImportedProject(FlexoProjectObject focusedObject, Vector<FlexoProjectObject> globalSelection, FlexoEditor editor) {
+	private RemoveImportedProject(FlexoProjectObject<?> focusedObject, Vector<FlexoProjectObject<?>> globalSelection, FlexoEditor editor) {
 		super(actionType, focusedObject, globalSelection, editor);
 	}
 
@@ -88,7 +84,7 @@ public class RemoveImportedProject extends FlexoAction<RemoveImportedProject, Fl
 	protected void doAction(Object context) throws FlexoException {
 		if (getProject() != null) {
 			String projectToRemoveURI = getProjectToRemoveURI();
-			FlexoProjectReference projectReferenceWithURI = getProject().getProjectReferenceWithURI(projectToRemoveURI);
+			FlexoProjectReference<?> projectReferenceWithURI = getProject().getProjectReferenceWithURI(projectToRemoveURI);
 			if (projectReferenceWithURI != null) {
 				List<FlexoObjectReference<?>> toDelete = new ArrayList<>();
 				for (FlexoObjectReference<?> ref : getProject().getObjectReferences()) {

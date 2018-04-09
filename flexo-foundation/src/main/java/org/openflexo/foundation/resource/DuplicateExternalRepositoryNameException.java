@@ -49,19 +49,19 @@ import org.openflexo.foundation.FlexoException;
 @SuppressWarnings("serial")
 public class DuplicateExternalRepositoryNameException extends FlexoException {
 
-	private final ProjectExternalRepository repository;
+	private final ProjectExternalRepository<?> repository;
 	private final String name;
 
 	/**
 	 * @param folder
 	 * @param name
 	 */
-	public DuplicateExternalRepositoryNameException(ProjectExternalRepository repository, String name) {
+	public DuplicateExternalRepositoryNameException(ProjectExternalRepository<?> repository, String name) {
 		this.repository = repository;// may be null
 		this.name = name;
 	}
 
-	public ProjectExternalRepository getRepository() {
+	public ProjectExternalRepository<?> getRepository() {
 		return repository;
 	}
 

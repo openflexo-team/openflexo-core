@@ -161,17 +161,17 @@ public interface FlexoProject<I> extends FlexoResourceCenter<I>, FlexoProjectObj
 	public I getProjectDirectory();
 
 	@Finder(collection = IMPORTED_PROJECTS, attribute = FlexoProjectReference.URI, isMultiValued = false)
-	public FlexoProjectReference getProjectReferenceWithURI(String uri);
+	public FlexoProjectReference<?> getProjectReferenceWithURI(String uri);
 
-	public FlexoProjectReference getProjectReferenceWithURI(String projectURI, boolean searchRecursively);
+	public FlexoProjectReference<?> getProjectReferenceWithURI(String projectURI, boolean searchRecursively);
 
 	@Getter(value = IMPORTED_PROJECTS, cardinality = Cardinality.LIST, inverse = FlexoProjectReference.OWNER)
 	@XMLElement(xmlTag = "ImportedProjects")
 	@Embedded
-	public List<FlexoProjectReference> getImportedProjects();
+	public List<FlexoProjectReference<?>> getImportedProjects();
 
 	@Setter(value = IMPORTED_PROJECTS)
-	public void setImportedProjects(List<FlexoProjectReference> importedProjects);
+	public void setImportedProjects(List<FlexoProjectReference<?>> importedProjects);
 
 	@Adder(IMPORTED_PROJECTS)
 	public void addToImportedProjects(FlexoProjectReference<?> projectReference)
@@ -201,7 +201,7 @@ public interface FlexoProject<I> extends FlexoResourceCenter<I>, FlexoProjectObj
 	 * 
 	 * @return
 	 */
-	public List<TechnologyAdapter> getRequiredTechnologyAdapters();
+	public List<TechnologyAdapter<?>> getRequiredTechnologyAdapters();
 
 	public FlexoProjectFactory getModelFactory();
 
@@ -298,16 +298,16 @@ public interface FlexoProject<I> extends FlexoResourceCenter<I>, FlexoProjectObj
 	@Getter(value = PROJECT_NATURES, cardinality = Cardinality.LIST, inverse = ProjectNature.OWNER)
 	@XMLElement
 	@Embedded
-	public List<ProjectNature> getProjectNatures();
+	public List<ProjectNature<?>> getProjectNatures();
 
 	@Setter(value = PROJECT_NATURES)
-	public void setProjectNatures(List<ProjectNature> projectNatures);
+	public void setProjectNatures(List<ProjectNature<?>> projectNatures);
 
 	@Adder(PROJECT_NATURES)
-	public void addToProjectNatures(ProjectNature projectNature);
+	public void addToProjectNatures(ProjectNature<?> projectNature);
 
 	@Remover(value = PROJECT_NATURES)
-	public void removeFromProjectNatures(ProjectNature projectNature);
+	public void removeFromProjectNatures(ProjectNature<?> projectNature);
 
 	/**
 	 * Return boolean indicating if this project might be interpreted according to this project nature
@@ -335,7 +335,7 @@ public interface FlexoProject<I> extends FlexoResourceCenter<I>, FlexoProjectObj
 	 * @return
 	 */
 	@NotificationUnsafe
-	public <N extends ProjectNature> N getNature(Class<N> projectNatureClass);
+	public <N extends ProjectNature<N>> N getNature(Class<N> projectNatureClass);
 
 	/**
 	 * Return nature of supplied class when existing.<br>
@@ -344,6 +344,6 @@ public interface FlexoProject<I> extends FlexoResourceCenter<I>, FlexoProjectObj
 	 * @return
 	 */
 	@NotificationUnsafe
-	public <N extends ProjectNature> N getNature(String projectNatureClassName);
+	public <N extends ProjectNature<N>> N getNature(String projectNatureClassName);
 
 }

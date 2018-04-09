@@ -138,8 +138,8 @@ public abstract class FlexoProjectImpl<I> extends ResourceRepositoryImpl<FlexoRe
 
 	private FlexoProjectReferenceLoader projectReferenceLoader;
 
-	private final List<ProjectExternalRepository> _externalRepositories;
-	private final Map<String, ProjectExternalRepository> repositoriesCache;
+	private final List<ProjectExternalRepository<?>> _externalRepositories;
+	private final Map<String, ProjectExternalRepository<?>> repositoriesCache;
 
 	public static interface FlexoProjectReferenceLoader extends FlexoService {
 
@@ -570,7 +570,7 @@ public abstract class FlexoProjectImpl<I> extends ResourceRepositoryImpl<FlexoRe
 	@Override
 	@NotificationUnsafe
 	public final boolean hasNature(Class<? extends ProjectNature> projectNatureClass) {
-		for (ProjectNature n : getProjectNatures()) {
+		for (ProjectNature<?> n : getProjectNatures()) {
 			if (projectNatureClass.isAssignableFrom(n.getClass())) {
 				return true;
 			}
@@ -607,8 +607,8 @@ public abstract class FlexoProjectImpl<I> extends ResourceRepositoryImpl<FlexoRe
 	 */
 	@Override
 	@NotificationUnsafe
-	public <N extends ProjectNature> N getNature(Class<N> projectNatureClass) {
-		for (ProjectNature n : getProjectNatures()) {
+	public <N extends ProjectNature<N>> N getNature(Class<N> projectNatureClass) {
+		for (ProjectNature<?> n : getProjectNatures()) {
 			if (projectNatureClass.isAssignableFrom(n.getClass())) {
 				return (N) n;
 			}
@@ -624,7 +624,7 @@ public abstract class FlexoProjectImpl<I> extends ResourceRepositoryImpl<FlexoRe
 	 */
 	@Override
 	@NotificationUnsafe
-	public <N extends ProjectNature> N getNature(String projectNatureClassName) {
+	public <N extends ProjectNature<N>> N getNature(String projectNatureClassName) {
 
 		Class<? extends ProjectNature> projectNatureClass;
 		try {
@@ -899,20 +899,20 @@ public abstract class FlexoProjectImpl<I> extends ResourceRepositoryImpl<FlexoRe
 			FlexoProject<?> loadProject = projectReferenceLoader.loadProject(reference, silentlyOnly);
 			if (loadProject != null) {
 				setChanged();
-				notifyObservers(new ImportedProjectLoaded(loadProject));
+				notifyObservers(new ImportedProjectLoaded<>(loadProject));
 			}
 			return loadProject;
 		}
 		return null;
 	}
 
-	public ProjectExternalRepository createExternalRepositoryWithKey(String identifier) throws DuplicateExternalRepositoryNameException {
-		for (ProjectExternalRepository rep : _externalRepositories) {
+	public ProjectExternalRepository<?> createExternalRepositoryWithKey(String identifier) throws DuplicateExternalRepositoryNameException {
+		for (ProjectExternalRepository<?> rep : _externalRepositories) {
 			if (rep.getIdentifier().equals(identifier)) {
 				throw new DuplicateExternalRepositoryNameException(null, identifier);
 			}
 		}
-		ProjectExternalRepository returned = new ProjectExternalRepository(this, identifier);
+		ProjectExternalRepository<?> returned = new ProjectExternalRepository<>(this, identifier);
 		addToExternalRepositories(returned);
 		return returned;
 	}
@@ -927,8 +927,8 @@ public abstract class FlexoProjectImpl<I> extends ResourceRepositoryImpl<FlexoRe
 		return attempt;
 	}
 
-	public ProjectExternalRepository getExternalRepositoryWithKey(String identifier) {
-		for (ProjectExternalRepository rep : _externalRepositories) {
+	public ProjectExternalRepository<?> getExternalRepositoryWithKey(String identifier) {
+		for (ProjectExternalRepository<?> rep : _externalRepositories) {
 			if (rep.getIdentifier().equals(identifier)) {
 				return rep;
 			}
@@ -936,11 +936,11 @@ public abstract class FlexoProjectImpl<I> extends ResourceRepositoryImpl<FlexoRe
 		return null;
 	}
 
-	public ProjectExternalRepository getExternalRepositoryWithDirectory(File directory) {
+	public ProjectExternalRepository<?> getExternalRepositoryWithDirectory(File directory) {
 		if (directory == null) {
 			return null;
 		}
-		for (ProjectExternalRepository rep : _externalRepositories) {
+		for (ProjectExternalRepository<?> rep : _externalRepositories) {
 			if (rep.getDirectory() != null && rep.getDirectory().equals(directory)) {
 				return rep;
 			}
@@ -948,10 +948,10 @@ public abstract class FlexoProjectImpl<I> extends ResourceRepositoryImpl<FlexoRe
 		return null;
 	}
 
-	public ProjectExternalRepository setDirectoryForRepositoryName(String identifier, File directory) {
-		ProjectExternalRepository returned = getExternalRepositoryWithKey(identifier);
+	public ProjectExternalRepository<?> setDirectoryForRepositoryName(String identifier, File directory) {
+		ProjectExternalRepository<?> returned = getExternalRepositoryWithKey(identifier);
 		if (returned == null) {
-			returned = new ProjectExternalRepository(this, identifier);
+			returned = new ProjectExternalRepository<>(this, identifier);
 			addToExternalRepositories(returned);
 		}
 		if (returned.getDirectory() == null || !returned.getDirectory().equals(directory)) {
@@ -962,17 +962,17 @@ public abstract class FlexoProjectImpl<I> extends ResourceRepositoryImpl<FlexoRe
 		return returned;
 	}
 
-	public List<ProjectExternalRepository> getExternalRepositories() {
+	public List<ProjectExternalRepository<?>> getExternalRepositories() {
 		return _externalRepositories;
 	}
 
-	public void addToExternalRepositories(ProjectExternalRepository anExternalRepository) {
+	public void addToExternalRepositories(ProjectExternalRepository<?> anExternalRepository) {
 		_externalRepositories.add(anExternalRepository);
 		repositoriesCache.put(anExternalRepository.getIdentifier(), anExternalRepository);
 		setChanged();
 	}
 
-	public void removeFromExternalRepositories(ProjectExternalRepository anExternalRepository) {
+	public void removeFromExternalRepositories(ProjectExternalRepository<?> anExternalRepository) {
 		_externalRepositories.remove(anExternalRepository);
 		repositoriesCache.remove(anExternalRepository.getIdentifier());
 		setChanged();
@@ -990,13 +990,11 @@ public abstract class FlexoProjectImpl<I> extends ResourceRepositoryImpl<FlexoRe
 
 	@Override
 	public void publishResource(FlexoResource<?> resource, FlexoVersion newVersion) throws Exception {
-		// TODO Auto-generated method stub
 
 	}
 
 	@Override
 	public void update() throws IOException {
-		// TODO Auto-generated method stub
 
 	}
 
@@ -1011,8 +1009,8 @@ public abstract class FlexoProjectImpl<I> extends ResourceRepositoryImpl<FlexoRe
 	 * @return
 	 */
 	@Override
-	public List<TechnologyAdapter> getRequiredTechnologyAdapters() {
-		List<TechnologyAdapter> returned = new ArrayList<>();
+	public List<TechnologyAdapter<?>> getRequiredTechnologyAdapters() {
+		List<TechnologyAdapter<?>> returned = new ArrayList<>();
 		// TODO
 		/*for (ViewResource vr : getViewLibrary().getAllResources()) {
 			for (TechnologyAdapter ta : vr.getView().getRequiredTechnologyAdapters()) {
@@ -1030,7 +1028,7 @@ public abstract class FlexoProjectImpl<I> extends ResourceRepositoryImpl<FlexoRe
 	}
 
 	@Override
-	public FlexoProjectReference getProjectReferenceWithURI(String projectURI, boolean searchRecursively) {
+	public FlexoProjectReference<?> getProjectReferenceWithURI(String projectURI, boolean searchRecursively) {
 		FlexoProjectReference<?> ref = getProjectReferenceWithURI(projectURI);
 		if (ref != null) {
 			return ref;
