@@ -77,7 +77,6 @@ public class DefaultFlexoEditor implements FlexoEditor {
 		resourceUpdateHandler = new ResourceUpdateHandler() {
 			@Override
 			public void resourceChanged(FlexoResource<?> resource) {
-				// TODO Auto-generated method stub
 			}
 		};
 		console = new FMLConsole(this);
@@ -136,7 +135,6 @@ public class DefaultFlexoEditor implements FlexoEditor {
 
 	@Override
 	public FlexoUndoManager getUndoManager() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 

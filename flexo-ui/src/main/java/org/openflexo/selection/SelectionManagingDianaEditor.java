@@ -268,13 +268,11 @@ public class SelectionManagingDianaEditor<M extends FlexoObject> extends JDianaI
 
 	@Override
 	public void fireBeginMultipleSelection() {
-		// TODO Auto-generated method stub
 
 	}
 
 	@Override
 	public void fireEndMultipleSelection() {
-		// TODO Auto-generated method stub
 
 	}
 

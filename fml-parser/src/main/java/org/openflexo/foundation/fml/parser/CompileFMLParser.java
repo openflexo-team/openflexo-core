@@ -56,7 +56,6 @@ public class CompileFMLParser {
 		try {
 			// SableCC.processGrammar(grammar, output);
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}

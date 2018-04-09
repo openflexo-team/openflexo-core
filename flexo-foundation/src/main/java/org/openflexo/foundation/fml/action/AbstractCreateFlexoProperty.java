@@ -192,13 +192,11 @@ public abstract class AbstractCreateFlexoProperty<A extends AbstractCreateFlexoP
 
 	@Override
 	public void notifiedBindingChanged(DataBinding<?> dataBinding) {
-		// TODO Auto-generated method stub
 
 	}
 
 	@Override
 	public void notifiedBindingDecoded(DataBinding<?> dataBinding) {
-		// TODO Auto-generated method stub
 
 	}
 

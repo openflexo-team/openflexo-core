@@ -92,7 +92,6 @@ public class ActivateTechnologyAdapterTask<TA extends TechnologyAdapter<TA>> ext
 
 	@Override
 	protected synchronized void finishedExecution() {
-		// TODO Auto-generated method stub
 		super.finishedExecution();
 	}
 }

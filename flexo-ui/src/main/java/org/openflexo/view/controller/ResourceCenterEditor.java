@@ -119,7 +119,6 @@ public class ResourceCenterEditor implements HasPropertyChangeSupport {
 				rcService.getServiceManager().getTaskManager().scheduleExecution(task);
 				return newRC;
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}

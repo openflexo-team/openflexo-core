@@ -250,13 +250,10 @@ public class VirtualModelInstancePasteHandler extends FlexoPasteHandler<VirtualM
 				}
 
 			} catch (ModelExecutionException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			} catch (ModelDefinitionException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			} catch (CloneNotSupportedException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}

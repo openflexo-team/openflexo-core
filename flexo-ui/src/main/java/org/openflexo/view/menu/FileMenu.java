@@ -272,10 +272,8 @@ public class FileMenu extends FlexoMenu {
 					try {
 						getProjectLoader().newStandaloneProject(projectDirectory, projectNatureClass);
 					} catch (IOException e) {
-						// TODO Auto-generated catch block
 						e.printStackTrace();
 					} catch (ProjectInitializerException e) {
-						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
 				}
@@ -283,10 +281,8 @@ public class FileMenu extends FlexoMenu {
 					try {
 						getProjectLoader().newStandaloneProject(projectDirectory);
 					} catch (IOException e) {
-						// TODO Auto-generated catch block
 						e.printStackTrace();
 					} catch (ProjectInitializerException e) {
-						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
 				}
@@ -512,7 +508,6 @@ public class FileMenu extends FlexoMenu {
 				try {
 					getProjectLoader().saveAsProject(projectDirectory, (FlexoProject<File>) getController().getProject());
 				} catch (Exception e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			}

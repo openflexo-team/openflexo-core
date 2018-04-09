@@ -244,10 +244,8 @@ public abstract class FlexoModule<M extends FlexoModule<M>> implements DataFlexo
 						try {
 							getModule().getProjectLoader().newStandaloneProject(projectDirectory, projectNatureClass);
 						} catch (IOException e) {
-							// TODO Auto-generated catch block
 							e.printStackTrace();
 						} catch (ProjectInitializerException e) {
-							// TODO Auto-generated catch block
 							e.printStackTrace();
 						}
 					}
@@ -255,10 +253,8 @@ public abstract class FlexoModule<M extends FlexoModule<M>> implements DataFlexo
 						try {
 							getModule().getProjectLoader().newStandaloneProject(projectDirectory);
 						} catch (IOException e) {
-							// TODO Auto-generated catch block
 							e.printStackTrace();
 						} catch (ProjectInitializerException e) {
-							// TODO Auto-generated catch block
 							e.printStackTrace();
 						}
 					}
@@ -275,7 +271,6 @@ public abstract class FlexoModule<M extends FlexoModule<M>> implements DataFlexo
 			returned.setModule((M) this);
 			return returned;
 		} catch (ModelDefinitionException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return null;

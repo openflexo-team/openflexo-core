@@ -202,13 +202,10 @@ public interface FMLRTModelSlot<VMI extends VirtualModelInstance<VMI, TA>, TA ex
 				try {
 					return getAccessedVirtualModelResource().getResourceData();
 				} catch (FileNotFoundException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				} catch (ResourceLoadingCancelledException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				} catch (FlexoException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			}

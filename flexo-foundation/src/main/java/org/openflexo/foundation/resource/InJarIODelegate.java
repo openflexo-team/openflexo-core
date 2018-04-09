@@ -105,7 +105,6 @@ public interface InJarIODelegate extends StreamIODelegate<InJarResourceImpl> {
 
 		@Override
 		public void setInputStream(InputStream inputStream) {
-			// TODO Auto-generated method stub
 		}
 
 		@Override
@@ -121,10 +120,8 @@ public interface InJarIODelegate extends StreamIODelegate<InJarResourceImpl> {
 					return null;
 				}
 			}
-			else {
-				// can't save if not in sources
-				return null;
-			}
+			// can't save if not in sources
+			return null;
 		}
 
 		@Override
@@ -155,7 +152,6 @@ public interface InJarIODelegate extends StreamIODelegate<InJarResourceImpl> {
 
 		@Override
 		public String getParentPath() {
-			// TODO Auto-generated method stub
 			return null;
 		}
 

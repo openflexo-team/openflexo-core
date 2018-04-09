@@ -342,7 +342,6 @@ public abstract class FlexoResourceImpl<RD extends ResourceData<RD>> extends Fle
 
 	/*@Override
 	public List<FlexoResource<?>> getContents() {
-		// TODO Auto-generated method stub
 		return null;
 	}*/
 
@@ -531,14 +530,12 @@ public abstract class FlexoResourceImpl<RD extends ResourceData<RD>> extends Fle
 	// TODO: check this
 	/*@Override
 	public List<? extends Resource> getContents(Pattern pattern, boolean deep) {
-		// TODO Auto-generated method stub
 		return null;
 	}*/
 
 	// TODO: check this
 	/*@Override
 	public ResourceLocatorDelegate getLocator() {
-		// TODO Auto-generated method stub
 		return null;
 	}*/
 
@@ -568,13 +565,11 @@ public abstract class FlexoResourceImpl<RD extends ResourceData<RD>> extends Fle
 
 	/*@Override
 	public String computeRelativePath(Resource resource) {
-		// TODO Auto-generated method stub
 		return null;
 	}*/
 
 	/*@Override
 	public Resource locateResource(String relativePathName) {
-		// TODO Auto-generated method stub
 		return null;
 	}*/
 

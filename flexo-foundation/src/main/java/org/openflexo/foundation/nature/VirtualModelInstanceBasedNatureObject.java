@@ -165,13 +165,10 @@ public interface VirtualModelInstanceBasedNatureObject<N extends ProjectNature<N
 					}
 					return returned;
 				} catch (FileNotFoundException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				} catch (ResourceLoadingCancelledException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				} catch (FlexoException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			}

@@ -153,7 +153,6 @@ public interface FMLLocalizedDictionary extends FMLObject, org.openflexo.localiz
 
 		@Override
 		public String getURI() {
-			// TODO Auto-generated method stub
 			return null;
 		}
 

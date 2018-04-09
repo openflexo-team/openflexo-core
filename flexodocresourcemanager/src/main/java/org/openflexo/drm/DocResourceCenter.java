@@ -101,7 +101,6 @@ public class DocResourceCenter extends DocItemFolder implements ResourceData<Doc
 			try {
 				_drmValidationModel = new DRMValidationModel();
 			} catch (ModelDefinitionException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}

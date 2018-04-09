@@ -114,7 +114,6 @@ public class OntologyBrowserModel<TA extends TechnologyAdapter<TA>> implements H
 
 	@Override
 	public String getDeletedProperty() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 

@@ -113,10 +113,6 @@ import org.openflexo.model.factory.ModelFactory;
  * @author sylvain
  * 
  */
-// TODO (sylvain), i don't like this design, but we have here to extends DianaModelFactoryImpl,
-// because this is required for the FlexoConceptPreviewComponent to retrieve a FMLModelFactory
-// which extends DianaModelFactory interface (required by DIANA).
-// A better solution would be to implements composition in ModelFactory, instead of classic java inheritance
 public class FMLModelFactory extends ModelFactory implements PamelaResourceModelFactory<VirtualModelResource> {
 
 	protected static final Logger logger = Logger.getLogger(FMLModelFactory.class.getPackage().getName());

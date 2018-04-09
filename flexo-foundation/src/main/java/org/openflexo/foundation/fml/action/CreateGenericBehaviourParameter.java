@@ -311,13 +311,11 @@ public class CreateGenericBehaviourParameter extends FlexoAction<CreateGenericBe
 
 	@Override
 	public void notifiedBindingChanged(DataBinding<?> dataBinding) {
-		// TODO Auto-generated method stub
 
 	}
 
 	@Override
 	public void notifiedBindingDecoded(DataBinding<?> dataBinding) {
-		// TODO Auto-generated method stub
 
 	}
 

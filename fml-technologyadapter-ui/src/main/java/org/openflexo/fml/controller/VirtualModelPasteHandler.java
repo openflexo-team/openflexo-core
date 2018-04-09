@@ -136,10 +136,8 @@ public class VirtualModelPasteHandler extends FlexoPasteHandler<VirtualModel> {
 					newResource.setResourceData(copy);
 					newResource.save();
 				} catch (SaveResourceException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				} catch (ModelDefinitionException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			}
@@ -204,13 +202,10 @@ public class VirtualModelPasteHandler extends FlexoPasteHandler<VirtualModel> {
 				return clipboard.getLeaderClipboard().getModelFactory().paste(clipboard.getLeaderClipboard(), conceptProperty,
 						pastingContext.getPastingPointHolder());
 			} catch (ModelExecutionException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			} catch (ModelDefinitionException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			} catch (CloneNotSupportedException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 
@@ -243,13 +238,10 @@ public class VirtualModelPasteHandler extends FlexoPasteHandler<VirtualModel> {
 				return clipboard.getLeaderClipboard().getModelFactory().paste(clipboard.getLeaderClipboard(), conceptProperty,
 						pastingContext.getPastingPointHolder());
 			} catch (ModelExecutionException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			} catch (ModelDefinitionException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			} catch (CloneNotSupportedException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		

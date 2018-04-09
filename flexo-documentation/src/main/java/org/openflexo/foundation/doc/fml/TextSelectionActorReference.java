@@ -163,7 +163,6 @@ public interface TextSelectionActorReference<D extends FlexoDocument<D, TA>, TA 
 						textSelection = document.getFactory().makeTextSelection(startElement, getStartRunIndex(), getStartCharacterIndex(),
 								endElement, getEndRunIndex(), getEndCharacterIndex());
 					} catch (FragmentConsistencyException e) {
-						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
 				}

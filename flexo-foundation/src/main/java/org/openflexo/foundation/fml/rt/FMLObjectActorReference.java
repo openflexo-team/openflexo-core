@@ -138,13 +138,10 @@ public interface FMLObjectActorReference<T extends FMLObject> extends ActorRefer
 				try {
 					virtualModel = sm.getVirtualModelLibrary().getVirtualModel(virtualModelURI);
 				} catch (FileNotFoundException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				} catch (ResourceLoadingCancelledException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				} catch (FlexoException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 				System.out.println("vm=" + virtualModel);

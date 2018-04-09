@@ -64,7 +64,6 @@ public interface EmptyControlGraph extends FMLControlGraph {
 
 		@Override
 		public String getURI() {
-			// TODO Auto-generated method stub
 			return null;
 		}
 

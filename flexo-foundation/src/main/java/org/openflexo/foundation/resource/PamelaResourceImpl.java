@@ -545,7 +545,6 @@ public abstract class PamelaResourceImpl<RD extends ResourceData<RD> & Accessibl
 
 	@Override
 	public FlexoVersion latestVersion() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 

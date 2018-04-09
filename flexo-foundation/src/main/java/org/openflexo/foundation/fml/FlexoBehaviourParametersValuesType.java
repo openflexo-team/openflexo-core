@@ -109,7 +109,6 @@ public class FlexoBehaviourParametersValuesType implements CustomType {
 
 	@Override
 	public String getSerializationRepresentation() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 

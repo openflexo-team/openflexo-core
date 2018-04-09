@@ -106,7 +106,6 @@ public interface DirectoryResourceCenter extends FileSystemBasedResourceCenter {
 
 		@Override
 		public void publishResource(FlexoResource<?> resource, FlexoVersion newVersion) throws Exception {
-			// TODO Auto-generated method stub
 		}
 
 		@Override

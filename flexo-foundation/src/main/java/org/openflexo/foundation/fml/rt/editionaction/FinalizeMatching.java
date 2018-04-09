@@ -418,13 +418,10 @@ public interface FinalizeMatching extends EditionAction {
 				System.out.println("Finalizing MatchingSet " + getMatchingSet() + " pour " + getFlexoConceptType() + " dans "
 						+ getContainer().getBindingValue(evaluationContext));
 			} catch (TypeMismatchException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			} catch (NullReferenceException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			} catch (InvocationTargetException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}*/
 

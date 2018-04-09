@@ -75,7 +75,6 @@ public class ValidateActionizer extends ActionInitializer<ValidateAction, FMLObj
 			try {
 				virtualModelReport.revalidate(action.getFocusedObject());
 			} catch (InterruptedException e1) {
-				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
 			return true;

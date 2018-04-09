@@ -209,19 +209,16 @@ public interface StreamIODelegate<I> extends FlexoIODelegate<I> {
 
 		@Override
 		public FileWritingLock willWriteOnDisk() {
-			// TODO Auto-generated method stub
 			return null;
 		}
 
 		@Override
 		public void hasWrittenOnDisk(FileWritingLock lock) {
-			// TODO Auto-generated method stub
 
 		}
 
 		@Override
 		public String getDeletedProperty() {
-			// TODO Auto-generated method stub
 			return null;
 		}
 

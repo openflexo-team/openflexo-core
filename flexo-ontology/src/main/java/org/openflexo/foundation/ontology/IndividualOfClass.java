@@ -86,7 +86,6 @@ public class IndividualOfClass<TA extends TechnologyAdapter<TA>> implements Tech
 
 		@Override
 		public void configureFactory(IndividualOfClass<?> type) {
-			// TODO Auto-generated method stub
 		}
 
 		@Override

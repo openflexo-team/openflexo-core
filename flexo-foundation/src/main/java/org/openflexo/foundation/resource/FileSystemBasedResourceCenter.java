@@ -404,7 +404,6 @@ public interface FileSystemBasedResourceCenter extends FlexoResourceCenter<File>
 
 			@Override
 			protected void fileRenamed(File oldFile, File renamedFile) {
-				// TODO Auto-generated method stub
 			}
 
 			@Override

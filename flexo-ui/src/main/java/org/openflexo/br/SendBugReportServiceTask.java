@@ -223,7 +223,6 @@ public class SendBugReportServiceTask extends FlexoApplicationTask {
 
 	@Override
 	protected synchronized void finishedExecution() {
-		// TODO Auto-generated method stub
 		super.finishedExecution();
 	}
 }

@@ -308,7 +308,6 @@ class StructuralModification<D extends FlexoDocument<D, TA>, TA extends Technolo
 					try {
 						return flexoStyledDocument.getText(startIndex, endIndex - startIndex);
 					} catch (BadLocationException e) {
-						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
 					return null;

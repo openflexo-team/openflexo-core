@@ -767,7 +767,6 @@ public abstract class TechnologyAdapter<TA extends TechnologyAdapter<TA>> extend
 
 	@Override
 	public String getDeletedProperty() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 

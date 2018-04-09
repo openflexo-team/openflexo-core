@@ -75,7 +75,6 @@ public class ToStringVisitor implements IFlexoOntologyConceptVisitor<String> {
 	 */
 	@Override
 	public <TA extends TechnologyAdapter<TA>> String visit(IFlexoOntologyConstraint<TA> aConstraint) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -203,7 +202,6 @@ public class ToStringVisitor implements IFlexoOntologyConceptVisitor<String> {
 	 */
 	@Override
 	public <TA extends TechnologyAdapter<TA>> String visit(IFlexoOntologyClabject<TA> aClabject) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -250,7 +248,6 @@ public class ToStringVisitor implements IFlexoOntologyConceptVisitor<String> {
 	 */
 	@Override
 	public <TA extends TechnologyAdapter<TA>> String visit(IFlexoOntologyBehaviouralProperty<TA> aBehaviouralProperty) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 }

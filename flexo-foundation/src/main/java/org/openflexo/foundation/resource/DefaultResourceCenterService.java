@@ -453,7 +453,6 @@ public abstract class DefaultResourceCenterService extends FlexoServiceImpl impl
 		try {
 			flexoProjectResourceFactory = new FlexoProjectResourceFactory<>(getServiceManager());
 		} catch (ModelDefinitionException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
@@ -740,7 +739,6 @@ public abstract class DefaultResourceCenterService extends FlexoServiceImpl impl
 					newRC = DirectoryResourceCenter.instanciateNewDirectoryResourceCenter(directory, service);
 					service.addToResourceCenters(newRC);
 				} catch (IOException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			}

@@ -114,7 +114,6 @@ public abstract interface FreeModelSlot<RD extends ResourceData<RD> & Technology
 
 		@Override
 		public String getTypeDescription() {
-			// TODO Auto-generated method stub
 			return null;
 		}
 

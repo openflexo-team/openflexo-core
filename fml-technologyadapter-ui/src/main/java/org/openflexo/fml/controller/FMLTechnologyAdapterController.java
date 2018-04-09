@@ -497,7 +497,6 @@ public class FMLTechnologyAdapterController extends TechnologyAdapterController<
 			resourceSelectorClass = Class.forName("org.openflexo.components.widget.FIBResourceSelector");
 			resourceSelector.setComponentClass(resourceSelectorClass);
 		} catch (ClassNotFoundException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		resourceSelector.addToAssignments(fibModelFactory.newFIBCustomAssignment(resourceSelector, new DataBinding<>("component.project"),
@@ -521,7 +520,6 @@ public class FMLTechnologyAdapterController extends TechnologyAdapterController<
 			fciSelectorClass = Class.forName("org.openflexo.fml.rt.controller.widget.FIBFlexoConceptInstanceSelector");
 			fciSelector.setComponentClass(fciSelectorClass);
 		} catch (ClassNotFoundException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		fciSelector.addToAssignments(fibModelFactory.newFIBCustomAssignment(fciSelector, new DataBinding<>("component.project"),
@@ -563,7 +561,6 @@ public class FMLTechnologyAdapterController extends TechnologyAdapterController<
 			fciSelectorClass = Class.forName("org.openflexo.fml.rt.controller.widget.FIBVirtualModelInstanceSelector");
 			vmiSelector.setComponentClass(fciSelectorClass);
 		} catch (ClassNotFoundException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		vmiSelector.addToAssignments(fibModelFactory.newFIBCustomAssignment(vmiSelector, new DataBinding<>("component.project"),
@@ -607,7 +604,6 @@ public class FMLTechnologyAdapterController extends TechnologyAdapterController<
 			fciSelectorClass = Class.forName("org.openflexo.fml.rt.controller.widget.FIBViewSelector");
 			viewSelector.setComponentClass(fciSelectorClass);
 		} catch (ClassNotFoundException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		viewSelector.addToAssignments(fibModelFactory.newFIBCustomAssignment(viewSelector, new DataBinding<>("component.project"),
@@ -661,7 +657,6 @@ public class FMLTechnologyAdapterController extends TechnologyAdapterController<
 					}
 				}
 			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}

@@ -1012,7 +1012,6 @@ public interface VirtualModelInstance<VMI extends VirtualModelInstance<VMI, TA>,
 
 		@Override
 		public Object getObject(String objectURI) {
-			// TODO Auto-generated method stub
 			return null;
 		}
 

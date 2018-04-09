@@ -112,13 +112,10 @@ public class LongRunningActionSchemeAction extends ActionSchemeAction implements
 				System.out.println("Found steps: " + stepsNumber);
 				return stepsNumber;
 			} catch (TypeMismatchException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			} catch (NullReferenceException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			} catch (InvocationTargetException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}

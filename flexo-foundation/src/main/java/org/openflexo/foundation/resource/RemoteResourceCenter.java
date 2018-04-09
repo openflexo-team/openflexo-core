@@ -131,7 +131,6 @@ public interface RemoteResourceCenter extends FlexoResourceCenter<Object> {
 
 			@Override
 			public RemoteResourceCenter makeResourceCenter(FlexoResourceCenterService rcService) {
-				// TODO Auto-generated method stub
 				return null;
 			}
 

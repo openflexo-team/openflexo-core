@@ -146,13 +146,10 @@ public interface VirtualModelBasedNatureObject<N extends ProjectNature<N>> exten
 				try {
 					return getAccessedVirtualModelResource().getResourceData();
 				} catch (FileNotFoundException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				} catch (ResourceLoadingCancelledException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				} catch (FlexoException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			}

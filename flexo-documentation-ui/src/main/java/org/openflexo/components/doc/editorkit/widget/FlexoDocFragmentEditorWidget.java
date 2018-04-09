@@ -200,8 +200,6 @@ public class FlexoDocFragmentEditorWidget<D extends FlexoDocument<D, TA>, TA ext
 
 	@Override
 	public void delete() {
-		// TODO Auto-generated method stub
-
 	}
 
 	public TextSelection<D, TA> getTextSelection() {

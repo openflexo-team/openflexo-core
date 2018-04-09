@@ -101,7 +101,6 @@ public class FlexoDocumentFragmentEditor<D extends FlexoDocument<D, TA>, TA exte
 					jEditorPane.getDocument().addDocumentListener(this);
 					jEditorPane.addCaretListener(this);
 				} catch (BadLocationException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			}

@@ -143,13 +143,10 @@ public class MatchingSet {
 			}
 
 		} catch (TypeMismatchException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (NullReferenceException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (InvocationTargetException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
@@ -181,13 +178,10 @@ public class MatchingSet {
 				// System.out.println("Toutes les instances: " + allInstances);
 			}
 		} catch (TypeMismatchException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (NullReferenceException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (InvocationTargetException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 

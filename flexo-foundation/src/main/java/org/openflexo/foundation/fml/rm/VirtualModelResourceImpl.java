@@ -273,13 +273,10 @@ public abstract class VirtualModelResourceImpl extends PamelaResourceImpl<Virtua
 				}
 				saveResourceData(true);
 			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			} catch (SaveResourcePermissionDeniedException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			} catch (SaveResourceException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 

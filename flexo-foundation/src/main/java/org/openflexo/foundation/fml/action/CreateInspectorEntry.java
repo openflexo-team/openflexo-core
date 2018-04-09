@@ -325,7 +325,6 @@ public class CreateInspectorEntry extends FlexoAction<CreateInspectorEntry, Flex
 
 	@Override
 	public void notifiedBindingDecoded(DataBinding<?> dataBinding) {
-		// TODO Auto-generated method stub
 
 	}
 

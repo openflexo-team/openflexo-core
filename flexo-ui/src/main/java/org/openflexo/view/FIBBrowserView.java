@@ -154,7 +154,6 @@ public abstract class FIBBrowserView<O> extends SelectionSynchronizedFIBView imp
 								el.addToActions(
 										FIBBrowserActionAdapterImpl.makeFIBBrowserActionAdapter(actionType, this, getFlexoController()));
 							} catch (ModelDefinitionException e) {
-								// TODO Auto-generated catch block
 								e.printStackTrace();
 							}
 						}

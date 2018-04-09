@@ -70,114 +70,95 @@ public class DefaultFlexoObject extends FlexoObjectImpl {
 
 	@Override
 	public Object performSuperGetter(String propertyIdentifier) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public void performSuperSetter(String propertyIdentifier, Object value) {
-		// TODO Auto-generated method stub
 
 	}
 
 	@Override
 	public void performSuperAdder(String propertyIdentifier, Object value) {
-		// TODO Auto-generated method stub
 
 	}
 
 	@Override
 	public void performSuperAdder(String propertyIdentifier, Object value, int index) {
-		// TODO Auto-generated method stub
 
 	}
 
 	@Override
 	public void performSuperRemover(String propertyIdentifier, Object value) {
-		// TODO Auto-generated method stub
 
 	}
 
 	@Override
 	public Object performSuperGetter(String propertyIdentifier, Class<?> modelEntityInterface) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public void performSuperSetter(String propertyIdentifier, Object value, Class<?> modelEntityInterface) {
-		// TODO Auto-generated method stub
 
 	}
 
 	@Override
 	public void performSuperAdder(String propertyIdentifier, Object value, Class<?> modelEntityInterface) {
-		// TODO Auto-generated method stub
 
 	}
 
 	@Override
 	public void performSuperRemover(String propertyIdentifier, Object value, Class<?> modelEntityInterface) {
-		// TODO Auto-generated method stub
 
 	}
 
 	@Override
 	public Object performSuperFinder(String finderIdentifier, Object value) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public Object performSuperFinder(String finderIdentifier, Object value, Class<?> modelEntityInterface) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public boolean isSerializing() {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
 	@Override
 	public boolean isDeserializing() {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
 	@Override
 	public boolean equalsObject(Object obj) {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
 	@Override
 	public void updateWith(Object obj) {
-		// TODO Auto-generated method stub
 	}
 
 	@Override
 	public void destroy() {
-		// TODO Auto-generated method stub
 
 	}
 
 	@Override
 	public boolean performSuperDelete(Object... context) {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
 	@Override
 	public boolean performSuperUndelete(boolean restoreProperties) {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
 	@Override
 	public void performSuperDelete(Class<?> modelEntityInterface, Object... context) {
-		// TODO Auto-generated method stub
 
 	}
 
@@ -221,31 +202,26 @@ public class DefaultFlexoObject extends FlexoObjectImpl {
 
 	@Override
 	public Object cloneObject() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public Object cloneObject(Object... context) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public boolean isCreatedByCloning() {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
 	@Override
 	public boolean isBeingCloned() {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
 	@Override
 	public boolean hasKey(String key) {
-		// TODO Auto-generated method stub
 		return false;
 	}
 

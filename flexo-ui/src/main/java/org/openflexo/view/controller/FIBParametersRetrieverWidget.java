@@ -113,7 +113,6 @@ public class FIBParametersRetrieverWidget extends FIBJPanel<FlexoBehaviourAction
 
 	@Override
 	public void delete() {
-		// TODO Auto-generated method stub
 
 	}
 

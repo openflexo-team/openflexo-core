@@ -270,17 +270,14 @@ public interface FileIODelegate extends StreamIODelegate<File> {
 
 		@Override
 		public void setOutputStream(OutputStream outsputStream) {
-			// TODO Auto-generated method stub
 		}
 
 		@Override
 		public void setInputStream(InputStream inputStream) {
-			// TODO Auto-generated method stub
 		}
 
 		@Override
 		public boolean isReadOnly() {
-			// TODO Auto-generated method stub
 			return false;
 		}
 
@@ -300,7 +297,6 @@ public interface FileIODelegate extends StreamIODelegate<File> {
 
 		@Override
 		public void save(FlexoResource<?> resource) throws NotImplementedException {
-			// TODO Auto-generated method stub
 		}
 
 		/*

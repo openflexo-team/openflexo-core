@@ -86,7 +86,6 @@ public class SubClassOfClass<TA extends TechnologyAdapter<TA>> implements Techno
 
 		@Override
 		public void configureFactory(SubClassOfClass<?> type) {
-			// TODO Auto-generated method stub
 		}
 
 		@Override

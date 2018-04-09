@@ -142,7 +142,6 @@ public class MenuItemAction<A extends FlexoAction<A, T1, T2>, T1 extends FlexoOb
 				module = moduleLoader.getModuleInstance((Class) getModuleClass());
 				return module.getLocales();
 			} catch (ModuleLoadingException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}

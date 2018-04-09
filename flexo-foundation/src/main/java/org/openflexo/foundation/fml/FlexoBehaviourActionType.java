@@ -106,7 +106,6 @@ public class FlexoBehaviourActionType implements CustomType {
 
 	@Override
 	public String getSerializationRepresentation() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 

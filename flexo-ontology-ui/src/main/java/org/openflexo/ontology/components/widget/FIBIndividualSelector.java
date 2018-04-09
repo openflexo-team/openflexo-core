@@ -240,7 +240,6 @@ public class FIBIndividualSelector<TA extends TechnologyAdapter<TA>> extends FIB
 
 		@Override
 		public Object getValue(BindingVariable variable) {
-			// TODO Auto-generated method stub
 			return null;
 		}
 	}

@@ -142,7 +142,6 @@ public interface FlexoEnum extends FlexoConcept {
 			try {
 				RT_FACTORY = new ModelFactory(FlexoEnumInstance.class);
 			} catch (ModelDefinitionException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}

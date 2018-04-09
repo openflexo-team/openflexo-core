@@ -128,8 +128,6 @@ public interface NamedDocStyle<D extends FlexoDocument<D, TA>, TA extends Techno
 
 		@Override
 		public void setLevel(Integer level) {
-			// TODO Auto-generated method stub
 		}
 	}
-
 }

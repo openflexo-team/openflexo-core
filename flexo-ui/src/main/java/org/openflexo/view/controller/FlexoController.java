@@ -292,7 +292,6 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 
 	@Override
 	public String getDeletedProperty() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -2133,7 +2132,6 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 					try {
 						Thread.sleep(FlexoCst.TEMPORARY_MESSAGE_PERSISTENCY);
 					} catch (InterruptedException e) {
-						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
 					temporaryThreadCount--;

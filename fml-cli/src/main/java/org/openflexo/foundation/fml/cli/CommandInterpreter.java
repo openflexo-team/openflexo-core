@@ -368,7 +368,6 @@ public class CommandInterpreter extends PropertyChangedSupportDefaultImplementat
 		try {
 			console.stop();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -640,14 +639,10 @@ public class CommandInterpreter extends PropertyChangedSupportDefaultImplementat
 
 	@Override
 	public void notifiedBindingChanged(DataBinding<?> dataBinding) {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
 	public void notifiedBindingDecoded(DataBinding<?> dataBinding) {
-		// TODO Auto-generated method stub
-
 	}
 
 	private Map<BindingVariable, Object> values = new HashMap<>();

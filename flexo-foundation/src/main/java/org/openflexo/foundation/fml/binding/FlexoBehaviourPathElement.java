@@ -259,13 +259,11 @@ public class FlexoBehaviourPathElement extends FunctionPathElement implements Pr
 
 	@Override
 	public FunctionPathElement transform(ExpressionTransformer transformer) throws TransformException {
-		// TODO Auto-generated method stub
 		return this;
 	}
 
 	@Override
 	public String getSerializationRepresentation() {
-		// TODO Auto-generated method stub
 		return super.getSerializationRepresentation();
 	}
 

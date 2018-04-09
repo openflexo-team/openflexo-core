@@ -456,25 +456,21 @@ public class ResourceManager extends FlexoServiceImpl implements ReferenceOwner 
 
 	@Override
 	public void notifyObjectLoaded(FlexoObjectReference<?> reference) {
-		// TODO Auto-generated method stub
 
 	}
 
 	@Override
 	public void objectCantBeFound(FlexoObjectReference<?> reference) {
-		// TODO Auto-generated method stub
 
 	}
 
 	@Override
 	public void objectDeleted(FlexoObjectReference<?> reference) {
-		// TODO Auto-generated method stub
 
 	}
 
 	@Override
 	public void objectSerializationIdChanged(FlexoObjectReference<?> reference) {
-		// TODO Auto-generated method stub
 
 	}
 

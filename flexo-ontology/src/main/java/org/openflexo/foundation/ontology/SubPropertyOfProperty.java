@@ -86,7 +86,6 @@ public class SubPropertyOfProperty<TA extends TechnologyAdapter<TA>> implements 
 
 		@Override
 		public void configureFactory(SubPropertyOfProperty<?> type) {
-			// TODO Auto-generated method stub
 		}
 
 		@Override
