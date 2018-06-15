@@ -52,7 +52,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Enumeration;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
@@ -83,7 +82,6 @@ import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.resource.FlexoResourceCenterService;
 import org.openflexo.foundation.resource.ITechnologySpecificFlexoResourceFactory;
 import org.openflexo.foundation.resource.JarResourceCenter;
-import org.openflexo.foundation.resource.RepositoryFolder;
 import org.openflexo.foundation.resource.ResourceData;
 import org.openflexo.foundation.resource.ResourceRepository;
 import org.openflexo.foundation.resource.ResourceRepositoryImpl;
@@ -259,17 +257,12 @@ public abstract class TechnologyAdapter<TA extends TechnologyAdapter<TA>> extend
 			logger.fine("--------> performInitializeResourceCenter " + getName() + " for " + resourceCenter);
 		}
 
-		Iterator<I> it;
-
 		// We iterate on FlexoResourceFactory in the same order as they are declared in TechnologyAdapter
 		// (metamodels BEFORE models), so that retrieving of models might find their respective metamodels
 		for (ITechnologySpecificFlexoResourceFactory<?, ?, ?> resourceFactory : getResourceFactories()) {
 
 			// Then we iterate on all resources found in the resource factory
-			it = resourceCenter.iterator();
-
-			while (it.hasNext()) {
-				I serializationArtefact = it.next();
+			for (I serializationArtefact : resourceCenter) {
 				if (!isSerializationArtefactIgnorable(resourceCenter, serializationArtefact)) {
 					FlexoResource<?> r = tryToLookupResource(resourceFactory, resourceCenter, serializationArtefact);
 					if (r != null) {
@@ -289,12 +282,11 @@ public abstract class TechnologyAdapter<TA extends TechnologyAdapter<TA>> extend
 		}
 
 		resourceCenterHasBeenInitialized(resourceCenter);
-
 	}
 
 	protected final <I> void foundFolder(FlexoResourceCenter<I> resourceCenter, I folder) throws IOException {
 		if (resourceCenter.isDirectory(folder) && !isFolderIgnorable(resourceCenter, folder)) {
-			TechnologyAdapterGlobalRepository<?, ?> globalRepository = getGlobalRepository(resourceCenter);
+			ResourceRepository<?, I> globalRepository = getGlobalRepository(resourceCenter);
 			// Unused RepositoryFolder newRepositoryFolder =
 			globalRepository.getRepositoryFolder(folder, true);
 			for (ResourceRepository<?, ?> repository : getAllRepositories()) {
@@ -354,7 +346,7 @@ public abstract class TechnologyAdapter<TA extends TechnologyAdapter<TA>> extend
 		return null;
 	}
 
-	public <I> boolean isSerializationArtefactIgnorable(final FlexoResourceCenter<I> resourceCenter, final I contents) {
+	private <I> boolean isSerializationArtefactIgnorable(final FlexoResourceCenter<I> resourceCenter, final I contents) {
 		// This allows to ignore all resources contained in prj, that will be explored from their prj resource
 		if (resourceCenter.isDirectory(contents)) {
 			if (FlexoResourceCenter.isContainedInDirectoryWithSuffix(resourceCenter, contents,
@@ -367,7 +359,7 @@ public abstract class TechnologyAdapter<TA extends TechnologyAdapter<TA>> extend
 
 	public abstract <I> boolean isIgnorable(FlexoResourceCenter<I> resourceCenter, I contents);
 
-	public <I> boolean isFolderIgnorable(FlexoResourceCenter<I> resourceCenter, I contents) {
+	protected <I> boolean isFolderIgnorable(FlexoResourceCenter<I> resourceCenter, I contents) {
 		return isSerializationArtefactIgnorable(resourceCenter, contents);
 	}
 
@@ -582,12 +574,13 @@ public abstract class TechnologyAdapter<TA extends TechnologyAdapter<TA>> extend
 	}
 
 	/**
-	 * Retrieve (creates it when not existant) folder containing supplied file
+	 * Retrieve (creates it when not existing) folder containing supplied file
 	 * 
 	 * @param repository
 	 * @param aFile
 	 * @return
 	 */
+	/* Unused
 	protected <R extends FlexoResource<?>, I> RepositoryFolder<R, I> retrieveRepositoryFolder(ResourceRepository<R, I> repository,
 			I serializationArtefact) {
 		try {
@@ -597,6 +590,7 @@ public abstract class TechnologyAdapter<TA extends TechnologyAdapter<TA>> extend
 			return repository.getRootFolder();
 		}
 	}
+	*/
 
 	// Override when required
 	public void initFMLModelFactory(FMLModelFactory fMLModelFactory) {
@@ -801,7 +795,7 @@ public abstract class TechnologyAdapter<TA extends TechnologyAdapter<TA>> extend
 		return locales;
 	}
 
-	public abstract String getLocalizationDirectory();
+	protected abstract String getLocalizationDirectory();
 
 	/**
 	 * Add all the RCs that contain an identification of a FlexoResourceCenter in META-INF<br>
