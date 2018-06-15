@@ -83,7 +83,7 @@ public class FMLTechnologyAdapter extends TechnologyAdapter<FMLTechnologyAdapter
 	}
 
 	@Override
-	public String getLocalizationDirectory() {
+	protected String getLocalizationDirectory() {
 		return "FlexoLocalization/FMLTechnologyAdapter";
 	}
 
@@ -209,7 +209,7 @@ public class FMLTechnologyAdapter extends TechnologyAdapter<FMLTechnologyAdapter
 	}
 
 	@Override
-	public <I> boolean isFolderIgnorable(FlexoResourceCenter<I> resourceCenter, I contents) {
+	protected <I> boolean isFolderIgnorable(FlexoResourceCenter<I> resourceCenter, I contents) {
 		if (resourceCenter.isDirectory(contents)) {
 			if (FlexoResourceCenter.isContainedInDirectoryWithSuffix(resourceCenter, contents, VirtualModelResourceFactory.FML_SUFFIX)) {
 				return true;
