@@ -78,13 +78,11 @@ public class TestResourceCenterEditor extends OpenflexoTestCaseWithGUI {
 	@Test
 	@TestOrder(2)
 	public void testInstanciateWidget() {
-		ResourceCenterEditorDialog dialog = ResourceCenterEditorDialog.getResourceCenterEditorDialog(serviceManager,
-				null, true);
+		ResourceCenterEditorDialog dialog = ResourceCenterEditorDialog.getResourceCenterEditorDialog(serviceManager, null, true);
 
 		log("instanciated " + dialog);
 		System.out.println("rcs= " + serviceManager.getResourceCenterService().getResourceCenters());
-		gcDelegate = new FIBDialogGraphicalContextDelegate(dialog,
-				ResourceCenterEditorDialog.RESOURCE_CENTER_EDITOR_FIB);
+		gcDelegate = new FIBDialogGraphicalContextDelegate(dialog, ResourceCenterEditorDialog.RESOURCE_CENTER_EDITOR_FIB);
 	}
 
 	@Before
