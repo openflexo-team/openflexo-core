@@ -193,8 +193,7 @@ public interface AbstractAddFlexoConceptInstance<FCI extends FlexoConceptInstanc
 				container = new DataBinding<>(this, FlexoConceptInstance.class, DataBinding.BindingDefinitionType.GET);
 				container.setBindingName("container");
 				container.setDeclaredType(getFlexoConceptType() != null && getFlexoConceptType().getContainerFlexoConcept() != null
-						? getFlexoConceptType().getContainerFlexoConcept().getInstanceType()
-						: FlexoConceptInstance.class);
+						? getFlexoConceptType().getContainerFlexoConcept().getInstanceType() : FlexoConceptInstance.class);
 			}
 			return container;
 		}
@@ -205,8 +204,7 @@ public interface AbstractAddFlexoConceptInstance<FCI extends FlexoConceptInstanc
 				aContainer.setOwner(this);
 				aContainer.setBindingName("container");
 				aContainer.setDeclaredType(getFlexoConceptType() != null && getFlexoConceptType().getContainerFlexoConcept() != null
-						? getFlexoConceptType().getContainerFlexoConcept().getInstanceType()
-						: FlexoConceptInstance.class);
+						? getFlexoConceptType().getContainerFlexoConcept().getInstanceType() : FlexoConceptInstance.class);
 				aContainer.setBindingDefinitionType(DataBinding.BindingDefinitionType.GET);
 			}
 			this.container = aContainer;
@@ -431,10 +429,10 @@ public interface AbstractAddFlexoConceptInstance<FCI extends FlexoConceptInstanc
 			loadMetaModelWhenRequired();
 
 			VMI vmInstance = getVirtualModelInstance(evaluationContext);
-			if (vmInstance == null) {
+			/*if (vmInstance == null) {
 				logger.warning("null FMLRTVirtualModelInstance");
 				return null;
-			}
+			}*/
 
 			FlexoConceptInstance container = null;
 

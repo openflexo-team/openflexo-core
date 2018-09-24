@@ -54,6 +54,7 @@ import org.openflexo.foundation.fml.annotations.FML;
 import org.openflexo.foundation.fml.rm.VirtualModelResource;
 import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
+import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.foundation.fml.rt.action.CreateBasicVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
 import org.openflexo.foundation.resource.ResourceLoadingCancelledException;
@@ -79,7 +80,8 @@ import org.openflexo.model.annotations.XMLElement;
 @ImplementationClass(AddVirtualModelInstance.AddVirtualModelInstanceImpl.class)
 @XMLElement
 @FML("AddVirtualModelInstance")
-public interface AddVirtualModelInstance extends AbstractAddFlexoConceptInstance<FMLRTVirtualModelInstance, FMLRTVirtualModelInstance> {
+public interface AddVirtualModelInstance<VMI extends VirtualModelInstance<VMI, ?>>
+		extends AbstractAddFlexoConceptInstance<FMLRTVirtualModelInstance, VMI> {
 
 	@PropertyIdentifier(type = DataBinding.class)
 	public static final String VIRTUAL_MODEL_INSTANCE_NAME_KEY = "virtualModelInstanceName";
@@ -111,17 +113,22 @@ public interface AddVirtualModelInstance extends AbstractAddFlexoConceptInstance
 	 */
 	public VirtualModelResource getOwnerVirtualModelResource();
 
-	public static abstract class AddVirtualModelInstanceImpl extends
-			AbstractAddFlexoConceptInstanceImpl<FMLRTVirtualModelInstance, FMLRTVirtualModelInstance> implements AddVirtualModelInstance {
+	public static abstract class AddVirtualModelInstanceImpl<VMI extends VirtualModelInstance<VMI, ?>>
+			extends AbstractAddFlexoConceptInstanceImpl<FMLRTVirtualModelInstance, VMI> implements AddVirtualModelInstance<VMI> {
 
 		static final Logger logger = Logger.getLogger(AddVirtualModelInstance.class.getPackage().getName());
 
 		private DataBinding<String> virtualModelInstanceName;
 		private DataBinding<String> virtualModelInstanceTitle;
 
+		/*@Override
+		public Class<VirtualModelInstance<?,?>> getVirtualModelInstanceClass() {
+			return VirtualModelInstance.class;
+		}*/
+
 		@Override
-		public Class<FMLRTVirtualModelInstance> getVirtualModelInstanceClass() {
-			return FMLRTVirtualModelInstance.class;
+		public Class<VMI> getVirtualModelInstanceClass() {
+			return (Class<VMI>) VirtualModelInstance.class;
 		}
 
 		@Override
@@ -166,8 +173,10 @@ public interface AddVirtualModelInstance extends AbstractAddFlexoConceptInstance
 
 		@Override
 		public FMLRTVirtualModelInstance execute(RunTimeEvaluationContext evaluationContext) throws FlexoException {
-			System.out.println("Now create a FMLRTVirtualModelInstance");
-			return super.execute(evaluationContext);
+			System.out.println("Now create a FMLRTVirtualModelInstance " + getVirtualModelType());
+			FMLRTVirtualModelInstance returned = super.execute(evaluationContext);
+			System.out.println("returned=" + returned);
+			return returned;
 		}
 
 		@Override
@@ -223,7 +232,7 @@ public interface AddVirtualModelInstance extends AbstractAddFlexoConceptInstance
 
 		@Override
 		protected FMLRTVirtualModelInstance makeNewFlexoConceptInstance(RunTimeEvaluationContext evaluationContext) {
-			FMLRTVirtualModelInstance container = getVirtualModelInstance(evaluationContext);
+			VirtualModelInstance<?, ?> container = getVirtualModelInstance(evaluationContext);
 			logger.info("container: " + container);
 			if (container == null) {
 				logger.warning("null container");
