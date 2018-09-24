@@ -42,13 +42,7 @@
             <groupId>org.openflexo</groupId>
             <artifactId>testutils</artifactId>
         </dependency>
-        <dependency>
-            <groupId>org.openflexo</groupId>
-            <artifactId>testViewpoint2</artifactId>
-            <version>1.0</version>
-            <scope>test</scope>
-        </dependency>
-
+ 
         <!-- Third Party -->
 	<dependency>
 		<groupId>com.google.inject</groupId>

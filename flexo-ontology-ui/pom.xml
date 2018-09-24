@@ -30,22 +30,22 @@
 			<groupId>org.openflexo</groupId>
 			<artifactId>flexo-ontology</artifactId>
 		</dependency>
-		<dependency>
+		<!--  <dependency>
 			<groupId>org.openflexo</groupId>
 			<artifactId>flexo-ontology</artifactId>
 			<classifier>tests</classifier>
 			<scope>test</scope>
-		</dependency>
+		</dependency>-->
 		<dependency>
 			<groupId>org.openflexo</groupId>
 			<artifactId>flexo-ui</artifactId>
 		</dependency>
-        <dependency>
+        <!--  <dependency>
             <groupId>org.openflexo</groupId>
             <artifactId>flexo-ui</artifactId>
             <classifier>tests</classifier>
             <scope>test</scope>
-        </dependency>
+        </dependency>-->
  	</dependencies>
 </project>
 

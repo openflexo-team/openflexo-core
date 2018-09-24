@@ -39,12 +39,12 @@
             <groupId>org.openflexo</groupId>
             <artifactId>connie-core</artifactId>
         </dependency>
-        <dependency>
+        <!--  <dependency>
             <groupId>org.openflexo</groupId>
             <artifactId>flexo-foundation</artifactId>
             <classifier>tests</classifier>
             <scope>test</scope>
-        </dependency>
+        </dependency> -->
         <!--  <dependency>
             <groupId>org.openflexo</groupId>
             <artifactId>flexohelp</artifactId>
@@ -61,12 +61,12 @@
             <groupId>org.openflexo</groupId>
             <artifactId>gina-core</artifactId>
         </dependency>
-        <dependency>
+        <!--  <dependency>
             <groupId>org.openflexo</groupId>
             <artifactId>gina-core</artifactId>
             <classifier>tests</classifier>
             <scope>test</scope>
-        </dependency>
+        </dependency>-->
         <dependency>
             <groupId>org.openflexo</groupId>
             <artifactId>gina-swing</artifactId>
@@ -79,24 +79,24 @@
             <groupId>commons-codec</groupId>
             <artifactId>commons-codec</artifactId>
         </dependency>
-        <dependency>
+        <!--  <dependency>
             <groupId>org.openflexo</groupId>
             <artifactId>flexo-foundation</artifactId>
             <classifier>tests</classifier>
             <scope>test</scope>
-        </dependency>
-        <dependency>
+        </dependency>-->
+       <!--   <dependency>
             <groupId>org.openflexo</groupId>
             <artifactId>gina-swing-editor</artifactId>
             <classifier>tests</classifier>
             <scope>test</scope>
-        </dependency>
-        <dependency>
+        </dependency> -->
+       <!--  <dependency>
             <groupId>org.openflexo</groupId>
             <artifactId>gina-swing</artifactId>
             <classifier>tests</classifier>
             <scope>test</scope>
-        </dependency>
+        </dependency>-->
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
