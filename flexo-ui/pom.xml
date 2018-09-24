@@ -45,10 +45,10 @@
             <classifier>tests</classifier>
             <scope>test</scope>
         </dependency>
-        <dependency>
+        <!--  <dependency>
             <groupId>org.openflexo</groupId>
             <artifactId>flexohelp</artifactId>
-        </dependency>
+        </dependency> -->
         <!--  <dependency>
             <groupId>org.openflexo</groupId>
             <artifactId>flexodocresourcemanager</artifactId>
