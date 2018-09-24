@@ -35,8 +35,8 @@
 		<module>fml-parser</module>
 		<module>fml-technologyadapter-ui</module>
 		<module>fml-rt-technologyadapter-ui</module>
-		<module>flexodocresourcecenter</module>
-		<module>flexodocresourcemanager</module>
+		<!--  <module>flexodocresourcecenter</module>
+		<module>flexodocresourcemanager</module>-->
     </modules>
 	<dependencyManagement>
 		<dependencies>

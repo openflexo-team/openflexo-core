@@ -49,10 +49,10 @@
             <groupId>org.openflexo</groupId>
             <artifactId>flexohelp</artifactId>
         </dependency>
-        <dependency>
+        <!--  <dependency>
             <groupId>org.openflexo</groupId>
             <artifactId>flexodocresourcemanager</artifactId>
-        </dependency>
+        </dependency>-->
         <dependency>
             <groupId>org.openflexo</groupId>
             <artifactId>diana-swing</artifactId>
