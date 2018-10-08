@@ -183,7 +183,7 @@ public abstract class DefaultResourceCenterService extends FlexoServiceImpl impl
 							String dirPath = URLDecoder.decode(url.getPath().substring(0, url.getPath().indexOf("META-INF")), "UTF-8");
 
 							if (isDevMode()) {
-								dirPath = dirPath.replace("/bin/", "/src/main/resources/");
+								dirPath = dirPath.replace("/bin/main", "/src/main/resources/");
 								dirPath = dirPath.replace("build/resources/main", "/src/main/resources/");
 							}
 
