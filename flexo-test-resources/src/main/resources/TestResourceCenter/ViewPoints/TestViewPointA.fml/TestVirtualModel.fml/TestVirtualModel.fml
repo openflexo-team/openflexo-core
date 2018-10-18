@@ -1,0 +1,29 @@
+
+/**
+ * 
+ * @version 0.1
+ */
+@VirtualModel(uri="http://openflexo.org/test/TestResourceCenter/TestViewPointA.fml/TestVirtualModel.fml")
+public class TestVirtualModel {
+
+  @FlexoConcept  
+  public class FlexoConceptA {  
+  }  
+
+  @FlexoConcept  
+  public class FlexoConceptB {  
+  }  
+
+  @FlexoConcept  
+  public class FlexoConceptC extends FlexoConceptB  {  
+  }  
+
+  @FlexoConcept  
+  public class FlexoConceptD extends FlexoConceptB  {  
+  }  
+
+  @FlexoConcept  
+  public class FlexoConceptE extends FlexoConceptA,FlexoConceptB,FlexoConceptC  {  
+  }  
+
+}

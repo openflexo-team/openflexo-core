@@ -186,7 +186,7 @@ public abstract class DefaultResourceCenterService extends FlexoServiceImpl impl
 								// Was like this with 1.8.0 infrastructure with Maven
 								dirPath = dirPath.replace("target/classes", "src/main/resources");
 								// Is now like this with 1.8.1+ infrastructure with Gradle
-								dirPath = dirPath.replace("/bin/", "/src/main/resources/");
+								dirPath = dirPath.replace("/bin/main", "/src/main/resources/");
 								dirPath = dirPath.replace("build/resources/main", "/src/main/resources/");
 							}
 

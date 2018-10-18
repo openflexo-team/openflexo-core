@@ -383,7 +383,17 @@ public interface TextSelection<D extends FlexoDocument<D, TA>, TA extends Techno
 								sb.append(StringUtils.LINE_SEPARATOR);
 							}
 							if (isUnique) { // Unique paragraph
-								if (getStartRun() != null && getStartRun().getText() != null && getStartRunIndex() == getEndRunIndex()) {
+								if (getStartRunIndex() == -1 && getEndRunIndex() == -1) {
+									// Full paragraph
+									for (int i = 0; i < paragraph.getRuns().size(); i++) {
+										if (paragraph.getRuns().get(i) instanceof FlexoTextRun) {
+											FlexoTextRun<D, TA> run = (FlexoTextRun<D, TA>) paragraph.getRuns().get(i);
+											sb.append(run.getText());
+										}
+									}
+								}
+								else if (getStartRun() != null && getStartRun().getText() != null
+										&& getStartRunIndex() == getEndRunIndex()) {
 									if (getStartCharacterIndex() > -1 && getEndCharacterIndex() > -1
 											&& getStartCharacterIndex() <= getEndCharacterIndex()
 											&& getEndCharacterIndex() <= getStartRun().getText().length()) {
@@ -460,7 +470,6 @@ public interface TextSelection<D extends FlexoDocument<D, TA>, TA extends Techno
 							}
 						}
 					}
-					// System.out.println("Returning " + sb.toString());
 					return sb.toString();
 				} catch (FragmentConsistencyException e) {
 					logger.warning(e.getMessage());

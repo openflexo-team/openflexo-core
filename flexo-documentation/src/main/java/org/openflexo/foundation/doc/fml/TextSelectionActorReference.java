@@ -184,10 +184,10 @@ public interface TextSelectionActorReference<D extends FlexoDocument<D, TA>, TA 
 
 		private String startElementIdentifier;
 		private String endElementIdentifier;
-		private int startRunIndex;
-		private int endRunIndex;
-		private int startCharacterIndex;
-		private int endCharacterIndex;
+		private int startRunIndex = -1;
+		private int endRunIndex = -1;
+		private int startCharacterIndex = -1;
+		private int endCharacterIndex = -1;
 
 		@Override
 		public String getStartElementIdentifier() {

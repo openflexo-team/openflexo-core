@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>org.openflexo</groupId>
+		<artifactId>openflexo-core</artifactId>
+        <version>1.9.0-SNAPSHOT</version>
+	</parent>
+	<artifactId>fml-technologyadapter-ui</artifactId>
+	<name>FML-UI</name>
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-assembly-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<configuration>
+					<excludes>
+						<exclude>**/*/FlexoginaValidationTest.java</exclude>
+					</excludes>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+	<dependencies>
+		<dependency>
+			<groupId>org.openflexo</groupId>
+			<artifactId>flexo-ui</artifactId>
+		</dependency>
+		<!--  <dependency>
+			<groupId>org.openflexo</groupId>
+			<artifactId>flexo-ui</artifactId>
+			<classifier>tests</classifier>
+			<scope>test</scope>
+		</dependency>-->
+		<dependency>
+			<groupId>org.openflexo</groupId>
+			<artifactId>flexo-ontology-ui</artifactId>
+		</dependency>
+		<!--  <dependency>
+			<groupId>org.openflexo</groupId>
+			<artifactId>gina-core</artifactId>
+			<classifier>tests</classifier>
+			<scope>test</scope>
+		</dependency>-->
+		<dependency>
+			<groupId>org.openflexo</groupId>
+			<artifactId>testutils</artifactId>
+		</dependency>
+		<!--  <dependency>
+			<groupId>org.openflexo</groupId>
+			<artifactId>flexo-foundation</artifactId>
+			<classifier>tests</classifier>
+			<scope>test</scope>
+		</dependency>
+        <dependency>
+            <groupId>org.openflexo</groupId>
+            <artifactId>gina-swing</artifactId>
+            <classifier>tests</classifier>
+            <scope>test</scope>
+        </dependency> -->
+	</dependencies>
+</project>
+

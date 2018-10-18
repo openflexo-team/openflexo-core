@@ -1,0 +1,8 @@
+
+/**
+ * 
+ * @version 0.1
+ */
+@VirtualModel(uri="http://openflexo.org/test/TestResourceCenter/TestViewPointA.fml")
+public class TestViewPointA {
+}

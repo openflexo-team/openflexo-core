@@ -1,0 +1,70 @@
+
+/**
+ * 
+ * @version 0.1
+ */
+@VirtualModel(uri="http://openflexo.org/test/TestResourceCenter/TestMatchFlexoConceptInstance.fml/VM2.fml")
+public class VM2 {
+
+  @CreationScheme  
+  VM2:create() {  
+  
+  }  
+
+
+  @FlexoConcept  
+  public class ConceptA {  
+  
+    @PrimitiveRole(cardinality=ZeroOne,readOnly=false)    
+    public String nameA;  
+  
+    @CreationScheme    
+    ConceptA:create(String aNameA) {    
+      nameA = parameters.aNameA;    
+    }    
+  
+    @DeletionScheme    
+    Void delete() {    
+      
+    }    
+  
+  
+    @FlexoConcept    
+    public class ConceptB {    
+      
+      @PrimitiveRole(cardinality=ZeroOne,readOnly=false)      
+      public String nameB;    
+      
+      @CreationScheme      
+      ConceptB:create(String aNameB) {      
+        nameB = parameters.aNameB;      
+      }      
+      
+      @DeletionScheme      
+      Void delete() {      
+          
+      }      
+      
+    }    
+  
+  }  
+
+  @FlexoConcept  
+  public class ConceptB {  
+  
+    @PrimitiveRole(cardinality=ZeroOne,readOnly=false)    
+    public String nameB;  
+  
+    @CreationScheme    
+    ConceptB:create(String aNameB) {    
+      nameB = parameters.aNameB;    
+    }    
+  
+    @DeletionScheme    
+    Void delete() {    
+      
+    }    
+  
+  }  
+
+}

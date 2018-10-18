@@ -39,6 +39,10 @@ import org.openflexo.logging.FlexoLoggingManager;
  * 
  * java org.openflexo.foundation.fml.cli.LaunchHeadlessFMLCLI
  * 
+ * or
+ * 
+ * java -cp "Java/*" org.openflexo.foundation.fml.cli.LaunchHeadlessFMLCLI from .app
+ * 
  * 
  * @author sylvain
  *

@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.openflexo</groupId>
+        <artifactId>openflexo-core</artifactId>
+        <version>1.9.0-SNAPSHOT</version>
+    </parent>
+    <artifactId>flexo-ui</artifactId>
+    <name>Flexo-UI</name>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-assembly-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <excludes>
+                        <exclude>**/*/FlexoginaValidationTest.java</exclude>
+                    </excludes>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+    <dependencies>
+        <dependency>
+            <groupId>org.openflexo.utils</groupId>
+            <artifactId>macos_ui_simulation</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.openflexo</groupId>
+            <artifactId>flexo-foundation</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.openflexo</groupId>
+            <artifactId>connie-core</artifactId>
+        </dependency>
+        <!--  <dependency>
+            <groupId>org.openflexo</groupId>
+            <artifactId>flexo-foundation</artifactId>
+            <classifier>tests</classifier>
+            <scope>test</scope>
+        </dependency> -->
+        <!--  <dependency>
+            <groupId>org.openflexo</groupId>
+            <artifactId>flexohelp</artifactId>
+        </dependency> -->
+        <!--  <dependency>
+            <groupId>org.openflexo</groupId>
+            <artifactId>flexodocresourcemanager</artifactId>
+        </dependency>-->
+        <dependency>
+            <groupId>org.openflexo</groupId>
+            <artifactId>diana-swing</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.openflexo</groupId>
+            <artifactId>gina-core</artifactId>
+        </dependency>
+        <!--  <dependency>
+            <groupId>org.openflexo</groupId>
+            <artifactId>gina-core</artifactId>
+            <classifier>tests</classifier>
+            <scope>test</scope>
+        </dependency>-->
+        <dependency>
+            <groupId>org.openflexo</groupId>
+            <artifactId>gina-swing</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.openflexo</groupId>
+            <artifactId>gina-swing-editor</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>commons-codec</groupId>
+            <artifactId>commons-codec</artifactId>
+        </dependency>
+        <!--  <dependency>
+            <groupId>org.openflexo</groupId>
+            <artifactId>flexo-foundation</artifactId>
+            <classifier>tests</classifier>
+            <scope>test</scope>
+        </dependency>-->
+       <!--   <dependency>
+            <groupId>org.openflexo</groupId>
+            <artifactId>gina-swing-editor</artifactId>
+            <classifier>tests</classifier>
+            <scope>test</scope>
+        </dependency> -->
+       <!--  <dependency>
+            <groupId>org.openflexo</groupId>
+            <artifactId>gina-swing</artifactId>
+            <classifier>tests</classifier>
+            <scope>test</scope>
+        </dependency>-->
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.openflexo</groupId>
+            <artifactId>testutils</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.openflexo</groupId>
+            <artifactId>flexodocresourcecenter</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+
+        <!-- Third Party -->
+	<dependency>
+		<groupId>com.google.inject</groupId>
+		<artifactId>guice</artifactId>
+	</dependency>
+
+    </dependencies>
+</project>

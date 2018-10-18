@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<VirtualModel id="0" modelVersion="1.0" uri="http://openflexo.org/test/flexo-test-resources/TestResourceCenter/ViewPoints/TestGetSetProperty.viewpoint" version="0.1" name="TestGetSetProperty" userID="FLX" flexoID="3">
-  <Inspector id="1" inspectorTitle="TestGetSetProperty" userID="FLX" flexoID="2" />
+<VirtualModel id="FLX-3" virtualModelClass="org.openflexo.foundation.fml.VirtualModel" modelVersion="1.0" uri="http://openflexo.org/test/flexo-test-resources/TestResourceCenter/ViewPoints/TestGetSetProperty.viewpoint" version="0.1" name="TestGetSetProperty" userID="FLX" flexoID="3">
+  <FMLLocalizedDictionary id="SYL-7" userID="SYL" flexoID="7" />
+  <Inspector id="FLX-2" inspectorTitle="TestGetSetProperty" userID="FLX" flexoID="2" />
 </VirtualModel>
