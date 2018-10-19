@@ -43,6 +43,7 @@ import java.awt.BorderLayout;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
+import java.util.List;
 import java.util.logging.Logger;
 
 import javax.swing.JPanel;
@@ -54,7 +55,9 @@ import org.openflexo.foundation.GraphicalFlexoObserver;
 import org.openflexo.foundation.task.Progress;
 import org.openflexo.gina.controller.FIBController;
 import org.openflexo.gina.model.FIBComponent;
+import org.openflexo.gina.model.FIBContainer;
 import org.openflexo.gina.model.listener.FIBMouseClickListener;
+import org.openflexo.gina.model.widget.FIBBrowser;
 import org.openflexo.gina.swing.view.JFIBView;
 import org.openflexo.gina.swing.view.SwingViewFactory;
 import org.openflexo.gina.view.FIBView;
@@ -277,6 +280,126 @@ public class FlexoFIBView extends JPanel implements GraphicalFlexoObserver, HasP
 	}
 
 	/**
+	 * Explore the whole hierarchy of supplied component and return first component of supplied component class
+	 * 
+	 * @param component
+	 *            component to explore
+	 * @param componentClass
+	 * @return
+	 */
+	public static <C extends FIBComponent> C retrieveFIBComponent(FIBContainer component, Class<C> componentClass) {
+		if (component == null) {
+			return null;
+		}
+		List<FIBComponent> listComponent = component.getAllSubComponents();
+		for (FIBComponent c : listComponent) {
+			if (componentClass.isAssignableFrom(c.getClass())) {
+				return (C) c;
+			}
+		}
+		return null;
+	}
+
+	/**
+	 * Explore the whole hierarchy of supplied component, and return first component of supplied component class and matching supplied name
+	 * 
+	 * @param component
+	 *            component to explore
+	 * @param componentClass
+	 * @param name
+	 * @return
+	 */
+	public static <C extends FIBComponent> C retrieveFIBComponentNamed(FIBContainer component, Class<C> componentClass, String name) {
+		if (component == null) {
+			return null;
+		}
+		List<FIBComponent> listComponent = component.getAllSubComponents();
+		for (FIBComponent c : listComponent) {
+			if (componentClass.isAssignableFrom(c.getClass()) && (c.getName() != null) && (c.getName().equals(name))) {
+				return (C) c;
+			}
+		}
+		return null;
+	}
+
+	/**
+	 * Explore the whole hierarchy of component represented by this view, and return first component of supplied component class
+	 * 
+	 * @param componentClass
+	 * @return
+	 */
+	protected <C extends FIBComponent> C retrieveFIBComponent(Class<C> componentClass) {
+		if (getFIBComponent() instanceof FIBContainer) {
+			return retrieveFIBComponent((FIBContainer) getFIBComponent(), componentClass);
+		}
+		if (componentClass.isAssignableFrom(getFIBComponent().getClass())) {
+			return (C) getFIBComponent();
+		}
+
+		return null;
+	}
+
+	/**
+	 * Explore the whole hierarchy of component represented by this view, and return first component of supplied component class and
+	 * matching supplied name
+	 * 
+	 * @param componentClass
+	 * @param name
+	 * @return
+	 */
+	protected <C extends FIBComponent> C retrieveFIBComponentNamed(Class<C> componentClass, String name) {
+		if (getFIBComponent() instanceof FIBContainer) {
+			return retrieveFIBComponentNamed((FIBContainer) getFIBComponent(), componentClass, name);
+		}
+		if (componentClass.isAssignableFrom(getFIBComponent().getClass()) && (getFIBComponent().getName() != null)
+				&& (getFIBComponent().getName().equals(name))) {
+			return (C) getFIBComponent();
+		}
+
+		return null;
+	}
+
+	/**
+	 * Return {@link FIBBrowser} contained in component represented by this view, when any, asserting only one {@link FIBBrowser} resides in
+	 * it
+	 * 
+	 * @return
+	 */
+	public static FIBBrowser retrieveFIBBrowser(FIBContainer component) {
+		return retrieveFIBComponent(component, FIBBrowser.class);
+	}
+
+	/**
+	 * Return {@link FIBBrowser} contained in component represented by this view, with supplied name
+	 * 
+	 * @param name
+	 * @return
+	 */
+	public static FIBBrowser retrieveFIBBrowserNamed(FIBContainer component, String name) {
+		return retrieveFIBComponentNamed(component, FIBBrowser.class, name);
+	}
+
+	/**
+	 * Return {@link FIBBrowser} contained in component represented by this view, when any, asserting only one {@link FIBBrowser} resides in
+	 * it
+	 * 
+	 * @return
+	 */
+	protected FIBBrowser retrieveFIBBrowserNamed() {
+		return retrieveFIBComponent(FIBBrowser.class);
+	}
+
+	/**
+	 * Return {@link FIBBrowser} contained in component represented by this view, with supplied name
+	 * 
+	 * @param name
+	 * @return
+	 */
+	protected FIBBrowser retrieveFIBBrowserNamed(String name) {
+		return retrieveFIBComponentNamed(FIBBrowser.class, name);
+	}
+
+	/**
 	 * Semantics of this method is not trivial: the goal is to aggregate some notifications within a given time (supplied as a
 	 * aggregationTimeOut), to do it only once.<br>
 	 * Within this delay, all requests to this method will simply reinitialize time-out, and will be ignored. Only the first call will be
@@ -316,4 +439,5 @@ public class FlexoFIBView extends JPanel implements GraphicalFlexoObserver, HasP
 
 	private boolean invokeLaterScheduled = false;
 	private long lastSchedule = -1;
+
 }

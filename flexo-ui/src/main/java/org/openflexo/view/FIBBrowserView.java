@@ -175,30 +175,4 @@ public abstract class FIBBrowserView<O> extends SelectionSynchronizedFIBView imp
 
 	}
 
-	protected static FIBBrowser retrieveFIBBrowser(FIBContainer component) {
-		if (component == null) {
-			return null;
-		}
-		List<FIBComponent> listComponent = component.getAllSubComponents();
-		for (FIBComponent c : listComponent) {
-			if (c instanceof FIBBrowser) {
-				return (FIBBrowser) c;
-			}
-		}
-		return null;
-	}
-
-	protected static FIBBrowser retrieveFIBBrowserNamed(FIBContainer component, String name) {
-		if (component == null) {
-			return null;
-		}
-		List<FIBComponent> listComponent = component.getAllSubComponents();
-		for (FIBComponent c : listComponent) {
-			if ((c instanceof FIBBrowser) && (c.getName() != null) && (c.getName().equals(name))) {
-				return (FIBBrowser) c;
-			}
-		}
-		return null;
-	}
-
 }
