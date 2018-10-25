@@ -10,8 +10,8 @@ buildscript {
     }
 }
 
+version = "1.9.0"
 apply plugin: 'org.openflexo.buildconfig'
-allprojects { version = "1.9.0-SNAPSHOT" }
 
 task gitPull(type: Exec) {
     description 'Pulls git.'
