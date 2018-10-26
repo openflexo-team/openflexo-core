@@ -4,7 +4,7 @@
     <parent>
         <groupId>org.openflexo</groupId>
         <artifactId>openflexo-core</artifactId>
-        <version>1.9.0-SNAPSHOT</version>
+        <version>1.9.1-SNAPSHOT</version>
     </parent>
     <artifactId>fml-cli</artifactId>
     <name>FML Command-Line-Interface</name>
