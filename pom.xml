@@ -25,6 +25,10 @@
 		<url>https://github.com/openflexo-team/openflexo-core</url>
 	    <tag>1.9.1</tag>
     </scm>
+       <issueManagement>
+              <system>JIRA</system>
+              <url>https://bugs.openflexo.org/browse/CORE/</url>
+       </issueManagement>
 	<modules>
 		<module>flexo-foundation</module>
 		<module>flexo-ui</module>
