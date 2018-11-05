@@ -39,11 +39,10 @@
 package org.openflexo.foundation.fml.binding;
 
 import java.lang.reflect.Type;
-import java.util.List;
 import java.util.logging.Logger;
 
 import org.openflexo.connie.BindingEvaluationContext;
-import org.openflexo.connie.binding.BindingPathElement;
+import org.openflexo.connie.binding.IBindingPathElement;
 import org.openflexo.connie.binding.SimplePathElement;
 import org.openflexo.connie.exception.NullReferenceException;
 import org.openflexo.connie.exception.TypeMismatchException;
@@ -55,34 +54,46 @@ public class FlexoBehaviourParameterDefinitionPathElement extends SimplePathElem
 
 	private FlexoBehaviourParameter parameter;
 
-	public FlexoBehaviourParameterDefinitionPathElement(BindingPathElement parent, FlexoBehaviourParameter parameter) {
-		super(parent, parameter.getName(), parameter.getClass());
+	private static final String PARAMETER_DEFINITION = "definition";
+
+	public FlexoBehaviourParameterDefinitionPathElement(IBindingPathElement parent, FlexoBehaviourParameter parameter) {
+		super(parent, PARAMETER_DEFINITION, parameter.getImplementedInterface());
 		this.parameter = parameter;
+	}
+
+	/**
+	 * Return a flag indicating if this BindingPathElement supports computation with 'null' value as entry (target)
+	 * 
+	 * Returns true here
+	 * 
+	 * @return
+	 */
+	@Override
+	public boolean supportsNullValues() {
+		return true;
 	}
 
 	@Override
 	public String getLabel() {
-		return parameter.getName();
+		return PARAMETER_DEFINITION;
+		// return "prout-" + parameter.getName();
 	}
 
 	@Override
 	public String getTooltipText(Type resultingType) {
-		return parameter.getDescription();
+		return "Definition for parameter " + parameter.getDescription();
 	}
 
 	@Override
 	public Object getBindingValue(Object target, BindingEvaluationContext context) throws TypeMismatchException, NullReferenceException {
-		if (target instanceof List) {
-			return parameter;
-		}
-		logger.warning("Please implement me, target=" + target + " context=" + context);
-		return null;
+		// Inconditionnaly return parameter
+		return parameter;
 	}
 
 	@Override
-	public void setBindingValue(Object value, Object target, BindingEvaluationContext context) throws TypeMismatchException,
-			NullReferenceException {
-		logger.warning("Please implement me, target=" + target + " context=" + context);
+	public void setBindingValue(Object value, Object target, BindingEvaluationContext context)
+			throws TypeMismatchException, NullReferenceException {
+		logger.warning("Operation not allowed");
 	}
 
 }

@@ -40,42 +40,42 @@ package org.openflexo.fml.controller.action;
 
 import java.awt.Dimension;
 import java.awt.Image;
+import java.util.List;
 import java.util.logging.Logger;
 
 import org.openflexo.ApplicationContext;
 import org.openflexo.components.wizard.WizardStep;
-import org.openflexo.fib.annotation.FIBPanel;
-import org.openflexo.foundation.fml.AbstractVirtualModel;
 import org.openflexo.foundation.fml.FMLObject;
 import org.openflexo.foundation.fml.FMLTechnologyAdapter;
-import org.openflexo.foundation.fml.ViewPoint;
+import org.openflexo.foundation.fml.FlexoConceptObject;
 import org.openflexo.foundation.fml.VirtualModel;
+import org.openflexo.foundation.fml.VirtualModelLibrary;
 import org.openflexo.foundation.fml.action.CreateModelSlot;
 import org.openflexo.foundation.fml.rm.VirtualModelResource;
 import org.openflexo.foundation.fml.rt.FMLRTModelSlot;
-import org.openflexo.foundation.fml.rt.VirtualModelInstance;
+import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstance;
 import org.openflexo.foundation.technologyadapter.FlexoMetaModelResource;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.technologyadapter.TypeAwareModelSlot;
+import org.openflexo.gina.annotation.FIBPanel;
 import org.openflexo.icon.FMLIconLibrary;
 import org.openflexo.icon.IconFactory;
 import org.openflexo.icon.IconLibrary;
-import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.toolbox.StringUtils;
 import org.openflexo.view.controller.FlexoController;
 
-public class CreateModelSlotWizard extends AbstractCreateFMLElementWizard<CreateModelSlot, AbstractVirtualModel<?>, FMLObject> {
+public class CreateModelSlotWizard extends AbstractCreateFMLElementWizard<CreateModelSlot, FlexoConceptObject, FMLObject> {
 
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(CreateModelSlotWizard.class.getPackage().getName());
 
-	private static final String DUPLICATED_NAME = FlexoLocalization.localizedForKey("this_name_is_already_used_please_choose_an_other_one");
-	private static final String EMPTY_NAME = FlexoLocalization.localizedForKey("model_slot_must_have_an_non_empty_and_unique_name");
-	private static final String NO_TECHNOLOGY_ADAPTER = FlexoLocalization.localizedForKey("please_choose_a_technology_adapter");
-	private static final String NO_MODEL_SLOT_TYPE = FlexoLocalization.localizedForKey("please_choose_a_model_slot_type");
-	private static final String NO_META_MODEL = FlexoLocalization.localizedForKey("please_choose_a_valid_metamodel");
-	private static final String NO_VIRTUAL_MODEL = FlexoLocalization.localizedForKey("please_choose_a_valid_virtual_model");
+	private static final String DUPLICATED_NAME = "this_name_is_already_used_please_choose_an_other_one";
+	private static final String EMPTY_NAME = "model_slot_must_have_an_non_empty_and_unique_name";
+	private static final String NO_TECHNOLOGY_ADAPTER = "please_choose_a_technology_adapter";
+	private static final String NO_MODEL_SLOT_TYPE = "please_choose_a_model_slot_type";
+	private static final String NO_META_MODEL = "please_choose_a_valid_metamodel";
+	private static final String NO_VIRTUAL_MODEL = "please_choose_a_valid_virtual_model";
 
 	private final DescribeModelSlot describeModelSlot;
 
@@ -88,7 +88,7 @@ public class CreateModelSlotWizard extends AbstractCreateFMLElementWizard<Create
 
 	@Override
 	public String getWizardTitle() {
-		return FlexoLocalization.localizedForKey("create_model_slot");
+		return getAction().getLocales().localizedForKey("create_model_slot");
 	}
 
 	@Override
@@ -106,7 +106,7 @@ public class CreateModelSlotWizard extends AbstractCreateFMLElementWizard<Create
 	}
 
 	/**
-	 * This step is used to set {@link VirtualModel} to be used, as well as name and title of the {@link VirtualModelInstance}
+	 * This step is used to set {@link VirtualModel} to be used, as well as name and title of the {@link FMLRTVirtualModelInstance}
 	 * 
 	 * @author sylvain
 	 *
@@ -122,44 +122,52 @@ public class CreateModelSlotWizard extends AbstractCreateFMLElementWizard<Create
 			return CreateModelSlotWizard.this.getAction();
 		}
 
-		public ViewPoint getViewPoint() {
-			return CreateModelSlotWizard.this.getViewPoint();
+		public VirtualModel getVirtualModel() {
+			return CreateModelSlotWizard.this.getVirtualModel();
+		}
+
+		public VirtualModelLibrary getVirtualModelLibrary() {
+			return getServiceManager().getVirtualModelLibrary();
 		}
 
 		@Override
 		public String getTitle() {
-			return FlexoLocalization.localizedForKey("describe_model_slot");
+			return getAction().getLocales().localizedForKey("describe_model_slot");
 		}
 
 		@Override
 		public boolean isValid() {
 
-			if (StringUtils.isEmpty(getModelSlotName())) {
-				setIssueMessage(EMPTY_NAME, IssueMessageType.ERROR);
-				return false;
-			} else if (getFocusedObject() instanceof VirtualModel && getFocusedObject().getModelSlot(getModelSlotName()) != null) {
-				setIssueMessage(DUPLICATED_NAME, IssueMessageType.ERROR);
-				return false;
-			} else if (getTechnologyAdapter() == null) {
-				setIssueMessage(NO_TECHNOLOGY_ADAPTER, IssueMessageType.ERROR);
-				return false;
-			} else if (getModelSlotClass() == null) {
-				setIssueMessage(NO_MODEL_SLOT_TYPE, IssueMessageType.ERROR);
-				return false;
-			} else if (getTechnologyAdapter() instanceof FMLTechnologyAdapter) {
-				if (getVmRes() == null) {
-					setIssueMessage(NO_VIRTUAL_MODEL, IssueMessageType.ERROR);
-					return false;
-				}
-			} else if (TypeAwareModelSlot.class.isAssignableFrom(getModelSlotClass())) {
-				if (getMmRes() == null) {
-					setIssueMessage(NO_META_MODEL, IssueMessageType.ERROR);
-					return false;
-				}
+			if (StringUtils.isEmpty(getDescription())) {
+				setIssueMessage(getAction().getLocales().localizedForKey("it_is_recommanded_to_describe_model_slot"),
+						IssueMessageType.WARNING);
 			}
 
-			if (StringUtils.isEmpty(getDescription())) {
-				setIssueMessage(FlexoLocalization.localizedForKey("it_is_recommanded_to_describe_model_slot"), IssueMessageType.WARNING);
+			if (StringUtils.isEmpty(getModelSlotName())) {
+				setIssueMessage(getAction().getLocales().localizedForKey(EMPTY_NAME), IssueMessageType.ERROR);
+				return false;
+			}
+			else if (getAction().getFlexoConcept().getModelSlot(getModelSlotName()) != null) {
+				setIssueMessage(getAction().getLocales().localizedForKey(DUPLICATED_NAME), IssueMessageType.ERROR);
+				return false;
+			}
+			else if (getTechnologyAdapter() == null) {
+				setIssueMessage(getAction().getLocales().localizedForKey(NO_TECHNOLOGY_ADAPTER), IssueMessageType.ERROR);
+				return false;
+			}
+			else if (getModelSlotClass() == null) {
+				setIssueMessage(getAction().getLocales().localizedForKey(NO_MODEL_SLOT_TYPE), IssueMessageType.ERROR);
+				return false;
+			}
+			else if (getTechnologyAdapter() instanceof FMLTechnologyAdapter) {
+				if (getVmRes() == null) {
+					setIssueMessage(getAction().getLocales().localizedForKey(NO_VIRTUAL_MODEL), IssueMessageType.WARNING);
+				}
+			}
+			else if (TypeAwareModelSlot.class.isAssignableFrom(getModelSlotClass())) {
+				if (getMmRes() == null) {
+					setIssueMessage(getAction().getLocales().localizedForKey(NO_META_MODEL), IssueMessageType.WARNING);
+				}
 			}
 
 			return true;
@@ -201,12 +209,21 @@ public class CreateModelSlotWizard extends AbstractCreateFMLElementWizard<Create
 				TechnologyAdapter oldValue = getTechnologyAdapter();
 				getAction().setTechnologyAdapter(technologyAdapter);
 				getPropertyChangeSupport().firePropertyChange("technologyAdapter", oldValue, technologyAdapter);
+				getPropertyChangeSupport().firePropertyChange("availableModelSlotTypes", false, getAvailableModelSlotTypes());
 				getPropertyChangeSupport().firePropertyChange("modelSlotClass", null, getModelSlotClass());
 				getPropertyChangeSupport().firePropertyChange("isTypeAwareModelSlot", !isTypeAwareModelSlot(), isTypeAwareModelSlot());
 				getPropertyChangeSupport().firePropertyChange("isVirtualModelModelSlot", !isVirtualModelModelSlot(),
 						isVirtualModelModelSlot());
 				checkValidity();
 			}
+		}
+
+		public List<Class<? extends ModelSlot<?>>> getAvailableModelSlotTypes() {
+			if (getTechnologyAdapter() != null) {
+				// System.out.println("On retourne " + getTechnologyAdapter().getAvailableModelSlotTypes());
+				return getTechnologyAdapter().getAvailableModelSlotTypes();
+			}
+			return null;
 		}
 
 		public FlexoMetaModelResource<?, ?, ?> getMmRes() {
@@ -283,7 +300,7 @@ public class CreateModelSlotWizard extends AbstractCreateFMLElementWizard<Create
 		}
 
 		public boolean isVirtualModelModelSlot() {
-			return getModelSlotClass() != null && getModelSlotClass().equals(FMLRTModelSlot.class);
+			return getModelSlotClass() != null && FMLRTModelSlot.class.isAssignableFrom(getModelSlotClass());
 		}
 
 	}

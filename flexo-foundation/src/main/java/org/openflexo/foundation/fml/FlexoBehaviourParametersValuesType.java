@@ -71,7 +71,7 @@ public class FlexoBehaviourParametersValuesType implements CustomType {
 	}
 
 	@Override
-	public Class getBaseClass() {
+	public Class<?> getBaseClass() {
 		return Hashtable.class;
 	}
 
@@ -85,13 +85,21 @@ public class FlexoBehaviourParametersValuesType implements CustomType {
 	}
 
 	@Override
+	public boolean isOfType(Object object, boolean permissive) {
+		// TODO please implement me
+		return true;
+	}
+
+	@Override
 	public String simpleRepresentation() {
-		return "FlexoBehaviourParametersValuesType" + ":" + getFlexoBehaviour();
+		return "Parameters for " + getFlexoBehaviour().getSignature();
+		// return "FlexoBehaviourParametersValuesType" + ":" + getFlexoBehaviour();
 	}
 
 	@Override
 	public String fullQualifiedRepresentation() {
-		return "FlexoBehaviourParametersValuesType" + ":" + getFlexoBehaviour();
+		return "Parameters for " + getFlexoBehaviour().getSignature();
+		// return "FlexoBehaviourParametersValuesType" + ":" + getFlexoBehaviour();
 	}
 
 	@Override

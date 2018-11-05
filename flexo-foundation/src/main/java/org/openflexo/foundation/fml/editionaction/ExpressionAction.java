@@ -38,13 +38,15 @@
 
 package org.openflexo.foundation.fml.editionaction;
 
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Type;
 import java.util.logging.Logger;
 
 import org.openflexo.connie.DataBinding;
+import org.openflexo.connie.exception.NullReferenceException;
 import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.fml.FMLRepresentationContext;
-import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
+import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
 import org.openflexo.model.annotations.DefineValidationRule;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ImplementationClass;
@@ -80,23 +82,90 @@ public interface ExpressionAction<T> extends AssignableAction<T> {
 
 	public static abstract class ExpressionActionImpl<T> extends AssignableActionImpl<T> implements ExpressionAction<T> {
 
+		@SuppressWarnings("unused")
 		private static final Logger logger = Logger.getLogger(ExpressionAction.class.getPackage().getName());
 
 		private DataBinding<T> expression;
 
+		// private Type assignableType = null;
+		// private boolean isComputingAssignableType = false;
+
+		@Override
+		public void finalizeDeserialization() {
+			super.finalizeDeserialization();
+			// Attempt to resolve assignable type at the deserialization
+			getAssignableType();
+		}
+
 		@Override
 		public Type getAssignableType() {
+
 			if (getExpression() != null && getExpression().isSet() && getExpression().isValid()) {
 				return getExpression().getAnalyzedType();
 			}
 			return Object.class;
+
+			/*if (assignableType == null && !isComputingAssignableType) {
+				isComputingAssignableType = true;
+				if (getExpression() != null && getExpression().isSet() && getExpression().isValid()) {
+					assignableType = getExpression().getAnalyzedType();
+					System.out.println("Pour l'expression [" + getExpression() + "] le type c'est " + assignableType);
+				}
+				isComputingAssignableType = false;
+				// Hacking area - No time yet to fix this
+				// This case handles a CustomType which is not resolved yet
+				// Since, we have to way to know when this type will be resolved, we don't cache it
+				// TODO: handle this issue properly
+				if (assignableType instanceof CustomType && !((CustomType) assignableType).isResolved()) {
+					CustomType returned = (CustomType) assignableType;
+					assignableType = null;
+					return returned;
+				}
+			}
+			if (assignableType == null) {
+				return Object.class;
+			}
+			return assignableType;*/
+		}
+
+		@Override
+		public void notifiedScopeChanged() {
+			super.notifiedScopeChanged();
+			notifyTypeMightHaveChanged();
+		}
+
+		/**
+		 * Called to explicitely check assignable type<br>
+		 * Force expression DataBinding to be re-evaluated
+		 */
+		private void notifyTypeMightHaveChanged() {
+			// assignableType = null;
+			getPropertyChangeSupport().firePropertyChange("assignableType", null, getAssignableType());
+			getPropertyChangeSupport().firePropertyChange("iteratorType", null, getIteratorType());
+			getPropertyChangeSupport().firePropertyChange("isIterable", null, isIterable());
+		}
+
+		@Override
+		public void notifiedBindingChanged(DataBinding<?> dataBinding) {
+			super.notifiedBindingChanged(dataBinding);
+			if (dataBinding == getExpression()) {
+				notifyTypeMightHaveChanged();
+			}
+		}
+
+		@Override
+		public void notifiedBindingDecoded(DataBinding<?> dataBinding) {
+			super.notifiedBindingDecoded(dataBinding);
+			if (dataBinding == getExpression()) {
+				notifyTypeMightHaveChanged();
+			}
 		}
 
 		@Override
 		public DataBinding<T> getExpression() {
 			if (expression == null) {
-				expression = new DataBinding<T>(this, Object.class, DataBinding.BindingDefinitionType.GET);
-				expression.setBindingName("expression");
+				expression = new DataBinding<>(this, Object.class, DataBinding.BindingDefinitionType.GET);
+				expression.setBindingName(EXPRESSION_KEY);
 				expression.setMandatory(true);
 			}
 			return expression;
@@ -105,10 +174,13 @@ public interface ExpressionAction<T> extends AssignableAction<T> {
 		@Override
 		public void setExpression(DataBinding<T> expression) {
 			if (expression != null) {
-				this.expression = new DataBinding<T>(expression.toString(), this, Object.class, DataBinding.BindingDefinitionType.GET);
-				expression.setBindingName("expression");
+				expression.setOwner(this);
+				expression.setDeclaredType(Object.class);
+				expression.setBindingDefinitionType(DataBinding.BindingDefinitionType.GET);
+				expression.setBindingName(EXPRESSION_KEY);
 				expression.setMandatory(true);
 			}
+			this.expression = expression;
 			notifiedBindingChanged(expression);
 		}
 
@@ -117,10 +189,28 @@ public interface ExpressionAction<T> extends AssignableAction<T> {
 			return getHeaderContext() + (getExpression() != null ? getExpression().toString() : "");
 		}
 
+		private boolean forceRevalidated = false;
+
 		@Override
-		public T execute(FlexoBehaviourAction<?, ?, ?> action) throws FlexoException {
+		public T execute(RunTimeEvaluationContext evaluationContext) throws FlexoException {
+
+			// Quick and dirty hack because found invalid binding
+			// TODO: please investigate
+			if (!getExpression().isValid() && !forceRevalidated) {
+				forceRevalidated = true;
+				getExpression().forceRevalidate();
+			}
+
 			try {
-				return getExpression().getBindingValue(action);
+				return getExpression().getBindingValue(evaluationContext);
+			} catch (InvocationTargetException e) {
+				if (e.getTargetException() instanceof FlexoException) {
+					throw (FlexoException) e.getTargetException();
+				}
+				throw new FlexoException(e);
+			} catch (NullReferenceException e) {
+				System.out.println("Unexpected NullReferenceException while executing " + getExpression());
+				return null;
 			} catch (Exception e) {
 				e.printStackTrace();
 				throw new FlexoException(e);

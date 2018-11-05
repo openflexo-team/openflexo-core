@@ -38,8 +38,11 @@
 
 package org.openflexo.fml.fib.widget;
 
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
+
+import java.io.IOException;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -47,21 +50,21 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.openflexo.components.widget.TypeSelector;
-import org.openflexo.components.widget.TypeSelector.TypeSelectorDetailsPanel;
-import org.openflexo.fib.testutils.GraphicalContextDelegate;
+import org.openflexo.connie.type.PrimitiveType;
 import org.openflexo.foundation.DefaultFlexoEditor;
 import org.openflexo.foundation.FlexoEditor;
-import org.openflexo.foundation.OpenflexoTestCase;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoConceptInstanceType;
-import org.openflexo.foundation.fml.PrimitiveRole.PrimitiveType;
-import org.openflexo.foundation.fml.ViewPoint;
 import org.openflexo.foundation.fml.VirtualModel;
+import org.openflexo.foundation.fml.action.CreateContainedVirtualModel;
 import org.openflexo.foundation.fml.action.CreateFlexoConcept;
-import org.openflexo.foundation.fml.action.CreateViewPoint;
-import org.openflexo.foundation.fml.action.CreateVirtualModel;
+import org.openflexo.foundation.fml.action.CreateTopLevelVirtualModel;
+import org.openflexo.foundation.resource.DirectoryResourceCenter;
 import org.openflexo.foundation.resource.SaveResourceException;
+import org.openflexo.gina.swing.utils.TypeSelector;
+import org.openflexo.gina.swing.utils.TypeSelector.TypeSelectorDetailsPanel;
+import org.openflexo.gina.test.OpenflexoTestCaseWithGUI;
+import org.openflexo.gina.test.SwingGraphicalContextDelegate;
 import org.openflexo.test.OrderedRunner;
 import org.openflexo.test.TestOrder;
 
@@ -72,24 +75,27 @@ import org.openflexo.test.TestOrder;
  * 
  */
 @RunWith(OrderedRunner.class)
-public class TestTypeSelector extends OpenflexoTestCase {
+public class TestTypeSelector extends OpenflexoTestCaseWithGUI {
 
-	private static GraphicalContextDelegate gcDelegate;
+	private static SwingGraphicalContextDelegate gcDelegate;
 
 	public static final String VIEWPOINT_NAME = "TestViewPoint";
 	public static final String VIEWPOINT_URI = "http://openflexo.org/test/TestViewPoint";
 	public static final String VIRTUAL_MODEL_NAME = "TestVirtualModel";
 
-	static ViewPoint newViewPoint;
 	static VirtualModel newVirtualModel;
 	// static ViewPointResource newViewPointResource;
 	static FlexoConcept flexoConceptA, flexoConceptB, flexoConceptC;
 
 	static FlexoEditor editor;
 
+	static private DirectoryResourceCenter resourceCenter;
+
 	@BeforeClass
-	public static void setupClass() {
+	public static void setupClass() throws IOException {
 		instanciateTestServiceManager();
+		resourceCenter = makeNewDirectoryResourceCenter(serviceManager);
+		assertNotNull(resourceCenter);
 		editor = new DefaultFlexoEditor(null, serviceManager);
 		initGUI();
 	}
@@ -103,19 +109,22 @@ public class TestTypeSelector extends OpenflexoTestCase {
 	@TestOrder(1)
 	public void testSomeConcepts() throws SaveResourceException {
 
-		CreateViewPoint addViewPointAction = CreateViewPoint.actionType.makeNewAction(resourceCenter.getViewPointRepository()
-				.getRootFolder(), null, editor);
-		addViewPointAction.setNewViewPointName(VIEWPOINT_NAME);
-		addViewPointAction.setNewViewPointURI(VIEWPOINT_URI);
+		CreateTopLevelVirtualModel addViewPointAction = CreateTopLevelVirtualModel.actionType
+				.makeNewAction(resourceCenter.getVirtualModelRepository().getRootFolder(), null, editor);
+		addViewPointAction.setNewVirtualModelName(VIEWPOINT_NAME);
+		addViewPointAction.setNewVirtualModelURI(VIEWPOINT_URI);
 		addViewPointAction.doAction();
 		assertTrue(addViewPointAction.hasActionExecutionSucceeded());
-		ViewPoint newViewPoint = addViewPointAction.getNewViewPoint();
+		VirtualModel newViewPoint = addViewPointAction.getNewVirtualModel();
 
-		// newViewPoint = ViewPointImpl.newViewPoint(VIEWPOINT_NAME, VIEWPOINT_URI, resourceCenter.getDirectory(),
+		// newViewPoint = ViewPointImpl.newViewPoint(VIEWPOINT_NAME,
+		// VIEWPOINT_URI, resourceCenter.getDirectory(),
 		// serviceManager.getViewPointLibrary());
-		// newViewPointResource = (ViewPointResource) newViewPoint.getResource();
+		// newViewPointResource = (ViewPointResource)
+		// newViewPoint.getResource();
 
-		CreateVirtualModel addVirtualModelAction = CreateVirtualModel.actionType.makeNewAction(newViewPoint, null, editor);
+		CreateContainedVirtualModel addVirtualModelAction = CreateContainedVirtualModel.actionType.makeNewAction(newViewPoint, null,
+				editor);
 		addVirtualModelAction.setNewVirtualModelName("TestVirtualModel");
 		addVirtualModelAction.doAction();
 		assertTrue(addVirtualModelAction.hasActionExecutionSucceeded());
@@ -136,6 +145,8 @@ public class TestTypeSelector extends OpenflexoTestCase {
 	public void testInstanciateWidgetWithString() {
 
 		typeSelector = new TypeSelector(String.class);
+		typeSelector.setCustomTypeManager(serviceManager.getTechnologyAdapterService());
+		typeSelector.setCustomTypeEditorProvider(serviceManager.getTechnologyAdapterControllerService());
 		gcDelegate.addTab("TypeSelector", ((TypeSelectorDetailsPanel) typeSelector.getCustomPanel()).getController());
 		assertSame(typeSelector.getChoice(), PrimitiveType.String);
 	}
@@ -143,10 +154,10 @@ public class TestTypeSelector extends OpenflexoTestCase {
 	@Test
 	@TestOrder(3)
 	public void checkCustomTypes() {
-		typeSelector.setServiceManager(serviceManager);
+		typeSelector.setCustomTypeManager(serviceManager.getTechnologyAdapterService());
+		typeSelector.setCustomTypeEditorProvider(serviceManager.getTechnologyAdapterControllerService());
 		System.out.println("customTypeFactories=" + serviceManager.getTechnologyAdapterService().getCustomTypeFactories());
-		assertTrue(typeSelector.getChoices().contains(
-				serviceManager.getTechnologyAdapterService().getCustomTypeFactories().get(FlexoConceptInstanceType.class)));
+		assertTrue(typeSelector.getChoices().contains(FlexoConceptInstanceType.class));
 	}
 
 	@Test
@@ -158,7 +169,7 @@ public class TestTypeSelector extends OpenflexoTestCase {
 	}
 
 	public static void initGUI() {
-		gcDelegate = new GraphicalContextDelegate(TestTypeSelector.class.getSimpleName());
+		gcDelegate = new SwingGraphicalContextDelegate(TestTypeSelector.class.getSimpleName());
 	}
 
 	@AfterClass

@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<VirtualModel id="FLX-4" virtualModelClass="org.openflexo.foundation.fml.VirtualModel" modelVersion="1.0" uri="http://openflexo.org/test/TestResourceCenter/TestViewPointB.fml/VM1.fml" version="0.1" name="VM1" description="In this virtual model we test embedding features" userID="FLX" flexoID="4">
+  <FMLLocalizedDictionary id="SYL-136" userID="SYL" flexoID="136" />
+  <FlexoConcept id="FLX-11" name="ConceptA" userID="FLX" flexoID="11">
+    <Inspector id="FLX-6" inspectorTitle="ConceptA" userID="FLX" flexoID="6" />
+    <EmbeddedFlexoConcept id="FLX-27" name="ConceptB" userID="FLX" flexoID="27">
+      <Inspector id="FLX-26" inspectorTitle="ConceptB" userID="FLX" flexoID="26" />
+      <EmbeddedFlexoConcept id="FLX-47" name="ConceptC" userID="FLX" flexoID="47">
+        <Inspector id="FLX-46" inspectorTitle="ConceptC" userID="FLX" flexoID="46" />
+        <PrimitiveRole id="FLX-48" primitiveType="String" cloningStrategy="Clone" cardinality="ZeroOne" name="c1" userID="FLX" flexoID="48" />
+        <PrimitiveRole id="FLX-49" primitiveType="Boolean" cloningStrategy="Clone" cardinality="ZeroOne" name="c2" userID="FLX" flexoID="49" />
+        <CreationScheme id="FLX-57" name="create" width="800" label="create" height="600" userID="FLX" flexoID="57">
+          <BehaviourControlGraph_Sequence id="FLX-54" userID="FLX" flexoID="54">
+            <ControlGraph2_AssignationAction id="FLX-51" assign="c2" ownerContext="controlGraph2" userID="FLX" flexoID="51">
+              <AssignableAction_ExpressionAction id="FLX-50" expression="parameters.aC2" userID="FLX" flexoID="50" />
+            </ControlGraph2_AssignationAction>
+            <ControlGraph1_AssignationAction id="FLX-53" assign="c1" ownerContext="controlGraph1" userID="FLX" flexoID="53">
+              <AssignableAction_ExpressionAction id="FLX-52" expression="parameters.aC1" userID="FLX" flexoID="52" />
+            </ControlGraph1_AssignationAction>
+          </BehaviourControlGraph_Sequence>
+          <GenericBehaviourParameter id="FLX-55" isRequired="true" widget="TEXT_FIELD" name="aC1" type="java.lang.String" userID="FLX" flexoID="55" />
+          <GenericBehaviourParameter id="FLX-56" isRequired="true" widget="CHECKBOX" defaultValue="false" name="aC2" type="java.lang.Boolean" userID="FLX" flexoID="56" />
+        </CreationScheme>
+        <DeletionScheme id="FLX-61" name="delete" width="800" label="delete" height="600" userID="FLX" flexoID="61">
+          <BehaviourControlGraph_EmptyControlGraph id="FLX-60" userID="FLX" flexoID="60" />
+        </DeletionScheme>
+      </EmbeddedFlexoConcept>
+      <PrimitiveRole id="FLX-28" primitiveType="String" cloningStrategy="Clone" cardinality="ZeroOne" name="b1" userID="FLX" flexoID="28" />
+      <PrimitiveRole id="FLX-29" primitiveType="Float" cloningStrategy="Clone" cardinality="ZeroOne" name="b2" userID="FLX" flexoID="29" />
+      <CreationScheme id="FLX-37" name="create" width="800" label="create" height="600" userID="FLX" flexoID="37">
+        <BehaviourControlGraph_Sequence id="FLX-34" userID="FLX" flexoID="34">
+          <ControlGraph2_AssignationAction id="FLX-31" assign="b2" ownerContext="controlGraph2" userID="FLX" flexoID="31">
+            <AssignableAction_ExpressionAction id="FLX-30" expression="parameters.aB2" userID="FLX" flexoID="30" />
+          </ControlGraph2_AssignationAction>
+          <ControlGraph1_AssignationAction id="FLX-33" assign="b1" ownerContext="controlGraph1" userID="FLX" flexoID="33">
+            <AssignableAction_ExpressionAction id="FLX-32" expression="parameters.aB1" userID="FLX" flexoID="32" />
+          </ControlGraph1_AssignationAction>
+        </BehaviourControlGraph_Sequence>
+        <GenericBehaviourParameter id="FLX-35" isRequired="true" widget="TEXT_FIELD" name="aB1" type="java.lang.String" userID="FLX" flexoID="35" />
+        <GenericBehaviourParameter id="FLX-36" isRequired="true" widget="FLOAT" defaultValue="3.141592654" name="aB2" type="java.lang.Float" userID="FLX" flexoID="36" />
+      </CreationScheme>
+      <DeletionScheme id="FLX-41" name="delete" width="800" label="delete" height="600" userID="FLX" flexoID="41">
+        <BehaviourControlGraph_EmptyControlGraph id="FLX-40" userID="FLX" flexoID="40" />
+      </DeletionScheme>
+    </EmbeddedFlexoConcept>
+    <PrimitiveRole id="FLX-12" primitiveType="String" cloningStrategy="Clone" cardinality="ZeroOne" name="a1" userID="FLX" flexoID="12" />
+    <PrimitiveRole id="FLX-13" primitiveType="Integer" cloningStrategy="Clone" cardinality="ZeroOne" name="a2" userID="FLX" flexoID="13" />
+    <CreationScheme id="FLX-9" name="create" width="800" label="create" height="600" userID="FLX" flexoID="9">
+      <BehaviourControlGraph_Sequence id="FLX-18" userID="FLX" flexoID="18">
+        <ControlGraph2_AssignationAction id="FLX-15" assign="a2" ownerContext="controlGraph2" userID="FLX" flexoID="15">
+          <AssignableAction_ExpressionAction id="FLX-14" expression="parameters.anA2" userID="FLX" flexoID="14" />
+        </ControlGraph2_AssignationAction>
+        <ControlGraph1_AssignationAction id="FLX-17" assign="a1" ownerContext="controlGraph1" userID="FLX" flexoID="17">
+          <AssignableAction_ExpressionAction id="FLX-16" expression="parameters.anA1" userID="FLX" flexoID="16" />
+        </ControlGraph1_AssignationAction>
+      </BehaviourControlGraph_Sequence>
+      <GenericBehaviourParameter id="FLX-19" isRequired="true" widget="TEXT_FIELD" name="anA1" type="java.lang.String" userID="FLX" flexoID="19" />
+      <GenericBehaviourParameter id="FLX-20" isRequired="true" widget="INTEGER" defaultValue="7" name="anA2" type="java.lang.Integer" userID="FLX" flexoID="20" />
+    </CreationScheme>
+    <DeletionScheme id="FLX-10" name="delete" width="800" label="delete" height="600" userID="FLX" flexoID="10">
+      <BehaviourControlGraph_EmptyControlGraph id="FLX-23" userID="FLX" flexoID="23" />
+    </DeletionScheme>
+  </FlexoConcept>
+  <FlexoConcept idref="FLX-27" />
+  <FlexoConcept idref="FLX-47" />
+  <Inspector id="FLX-1" inspectorTitle="VM1" userID="FLX" flexoID="1" />
+  <CreationScheme id="FLX-67" name="create" width="800" label="create" height="600" userID="FLX" flexoID="67">
+    <BehaviourControlGraph_EmptyControlGraph id="FLX-68" userID="FLX" flexoID="68" />
+  </CreationScheme>
+  <ActionScheme id="FLX-69" name="generateSomeInstances" width="800" label="generateSomeInstances" height="600" userID="FLX" flexoID="69">
+    <BehaviourControlGraph_Sequence id="FLX-101" ownerContext="controlGraph2" userID="FLX" flexoID="101">
+      <ControlGraph2_Sequence id="FLX-123" ownerContext="controlGraph2" userID="FLX" flexoID="123">
+        <ControlGraph2_Sequence id="FLX-122" ownerContext="controlGraph2" userID="FLX" flexoID="122">
+          <ControlGraph2_Sequence id="FLX-121" ownerContext="controlGraph2" userID="FLX" flexoID="121">
+            <ControlGraph2_DeclarationAction id="FLX-120" variable="instanceC2" ownerContext="controlGraph2" userID="FLX" flexoID="120">
+              <AssignableAction_AddFlexoConceptInstance id="FLX-117" container="instanceB2" creationSchemeURI="http://openflexo.org/test/TestResourceCenter/TestViewPointB.fml/VM1.fml#ConceptC.create" receiver="this" userID="FLX" flexoID="117">
+                <AddFlexoConceptInstanceParameter id="FLX-118" paramName="aC1" value="&quot;c2&quot;" userID="FLX" flexoID="118" />
+                <AddFlexoConceptInstanceParameter id="FLX-119" paramName="aC2" value="false" userID="FLX" flexoID="119" />
+              </AssignableAction_AddFlexoConceptInstance>
+            </ControlGraph2_DeclarationAction>
+            <ControlGraph1_DeclarationAction id="FLX-115" variable="instanceC1" ownerContext="controlGraph1" userID="FLX" flexoID="115">
+              <AssignableAction_AddFlexoConceptInstance id="FLX-112" container="instanceB1" creationSchemeURI="http://openflexo.org/test/TestResourceCenter/TestViewPointB.fml/VM1.fml#ConceptC.create" receiver="this" userID="FLX" flexoID="112">
+                <AddFlexoConceptInstanceParameter id="FLX-113" paramName="aC1" value="&quot;c1&quot;" userID="FLX" flexoID="113" />
+                <AddFlexoConceptInstanceParameter id="FLX-114" paramName="aC2" value="true" userID="FLX" flexoID="114" />
+              </AssignableAction_AddFlexoConceptInstance>
+            </ControlGraph1_DeclarationAction>
+          </ControlGraph2_Sequence>
+          <ControlGraph1_DeclarationAction id="FLX-110" variable="instanceB2" ownerContext="controlGraph1" userID="FLX" flexoID="110">
+            <AssignableAction_AddFlexoConceptInstance id="FLX-107" container="instanceA" creationSchemeURI="http://openflexo.org/test/TestResourceCenter/TestViewPointB.fml/VM1.fml#ConceptB.create" receiver="this" userID="FLX" flexoID="107">
+              <AddFlexoConceptInstanceParameter id="FLX-108" paramName="aB1" value="&quot;b2&quot;" userID="FLX" flexoID="108" />
+              <AddFlexoConceptInstanceParameter id="FLX-109" paramName="aB2" value="1.2" userID="FLX" flexoID="109" />
+            </AssignableAction_AddFlexoConceptInstance>
+          </ControlGraph1_DeclarationAction>
+        </ControlGraph2_Sequence>
+        <ControlGraph1_DeclarationAction id="FLX-100" variable="instanceB1" ownerContext="controlGraph1" userID="FLX" flexoID="100">
+          <AssignableAction_AddFlexoConceptInstance id="FLX-97" container="instanceA" creationSchemeURI="http://openflexo.org/test/TestResourceCenter/TestViewPointB.fml/VM1.fml#ConceptB.create" receiver="this" userID="FLX" flexoID="97">
+            <AddFlexoConceptInstanceParameter id="FLX-98" paramName="aB1" value="&quot;b1&quot;" userID="FLX" flexoID="98" />
+            <AddFlexoConceptInstanceParameter id="FLX-99" paramName="aB2" value="1.1" userID="FLX" flexoID="99" />
+          </AssignableAction_AddFlexoConceptInstance>
+        </ControlGraph1_DeclarationAction>
+      </ControlGraph2_Sequence>
+      <ControlGraph1_DeclarationAction id="FLX-95" variable="instanceA" ownerContext="controlGraph1" userID="FLX" flexoID="95">
+        <AssignableAction_AddFlexoConceptInstance id="FLX-92" creationSchemeURI="http://openflexo.org/test/TestResourceCenter/TestViewPointB.fml/VM1.fml#ConceptA.create" receiver="this" userID="FLX" flexoID="92">
+          <AddFlexoConceptInstanceParameter id="FLX-93" paramName="anA1" value="parameters.instanceName" userID="FLX" flexoID="93" />
+          <AddFlexoConceptInstanceParameter id="FLX-94" paramName="anA2" value="8" userID="FLX" flexoID="94" />
+        </AssignableAction_AddFlexoConceptInstance>
+      </ControlGraph1_DeclarationAction>
+    </BehaviourControlGraph_Sequence>
+    <GenericBehaviourParameter id="FLX-102" isRequired="true" widget="TEXT_FIELD" name="instanceName" type="java.lang.String" userID="FLX" flexoID="102" />
+  </ActionScheme>
+</VirtualModel>

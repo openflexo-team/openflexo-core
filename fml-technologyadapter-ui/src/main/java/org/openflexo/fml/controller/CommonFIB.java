@@ -53,10 +53,9 @@ public class CommonFIB {
 	public static Resource REVIEW_UNSAVED_DIALOG_FIB = ResourceLocator.locateResource("Fib/Dialog/ReviewUnsavedDialog.fib");
 
 	// General components
-	public static Resource VIEWPOINT_VIEW_FIB = ResourceLocator.locateResource("Fib/FML/ViewPointView.fib");
-	public static Resource VIEWPOINT_LOCALIZED_DICTIONARY_VIEW_FIB = ResourceLocator
-			.locateResource("Fib/FML/ViewPointLocalizedDictionaryView.fib");
+	public static Resource FML_LOCALIZED_DICTIONARY_VIEW_FIB = ResourceLocator.locateResource("Fib/FML/FMLLocalizedDictionaryView.fib");
 	public static Resource STANDARD_FLEXO_CONCEPT_VIEW_FIB = ResourceLocator.locateResource("Fib/FML/StandardFlexoConceptView.fib");
 	public static Resource VIRTUAL_MODEL_VIEW_FIB = ResourceLocator.locateResource("Fib/FML/VirtualModelView.fib");
+	public static Resource FML_VIRTUAL_MODEL_VIEW_FIB = ResourceLocator.locateResource("Fib/FML/FMLVirtualModelView.fib");
 
 }

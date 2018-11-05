@@ -38,10 +38,7 @@
 
 package org.openflexo.foundation.fml.binding;
 
-import java.beans.PropertyChangeEvent;
-
 import org.openflexo.connie.BindingModel;
-import org.openflexo.foundation.fml.editionaction.EditionAction;
 import org.openflexo.foundation.fml.editionaction.FetchRequest;
 
 /**
@@ -52,32 +49,13 @@ import org.openflexo.foundation.fml.editionaction.FetchRequest;
  */
 public class FetchRequestBindingModel extends EditionActionBindingModel {
 
-	public FetchRequestBindingModel(FetchRequest<?, ?> fetchRequest) {
+	public FetchRequestBindingModel(FetchRequest<?, ?, ?> fetchRequest) {
 		super(fetchRequest);
-		if (fetchRequest.getEmbeddingIteration() != null) {
-			setBaseBindingModel(fetchRequest.getEmbeddingIteration().getBindingModel());
-		}
 	}
 
 	@Override
-	public void propertyChange(PropertyChangeEvent evt) {
-		super.propertyChange(evt);
-		if (evt.getSource() == getEditionAction()) {
-			if (evt.getPropertyName().equals(EditionAction.ACTION_CONTAINER_KEY) || evt.getPropertyName().equals("embeddingIteration")) {
-				if (getEditionAction().getEmbeddingIteration() != null) {
-					setBaseBindingModel(getEditionAction().getEmbeddingIteration().getBindingModel());
-				} else {
-					// Already done in superclass
-					// setBaseBindingModel(getEditionAction().getOwner() != null ? getEditionAction().getOwner().getBaseBindingModel(
-					// getEditionAction()) : null);
-				}
-			}
-		}
-	}
-
-	@Override
-	public FetchRequest<?, ?> getEditionAction() {
-		return (FetchRequest<?, ?>) super.getEditionAction();
+	public FetchRequest<?, ?, ?> getEditionAction() {
+		return (FetchRequest<?, ?, ?>) super.getEditionAction();
 	}
 
 }

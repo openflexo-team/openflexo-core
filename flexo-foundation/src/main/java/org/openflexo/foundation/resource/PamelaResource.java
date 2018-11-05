@@ -39,7 +39,7 @@
 package org.openflexo.foundation.resource;
 
 import javax.xml.bind.annotation.XmlAttribute;
-
+import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.PamelaResourceModelFactory;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ModelEntity;
@@ -55,51 +55,73 @@ import org.openflexo.toolbox.FlexoVersion;
  * @param <RD>
  */
 @ModelEntity(isAbstract = true)
-public interface PamelaResource<RD extends ResourceData<RD>, F extends ModelFactory & PamelaResourceModelFactory> extends FlexoResource<RD> {
+public interface PamelaResource<RD extends ResourceData<RD>, F extends ModelFactory & PamelaResourceModelFactory>
+		extends FlexoResource<RD> {
 
-	public static final String MODEL_VERSION = "modelVersion";
-	public static final String FACTORY = "factory";
+	String MODEL_VERSION = "modelVersion";
+	String FACTORY = "factory";
 
 	@Getter(value = FACTORY, ignoreType = true)
-	public F getFactory();
+	F getFactory();
 
 	@Setter(FACTORY)
-	public void setFactory(F factory);
+	void setFactory(F factory);
 
 	@Getter(value = MODEL_VERSION, isStringConvertable = true)
 	@XmlAttribute
-	public FlexoVersion getModelVersion();
+	FlexoVersion getModelVersion();
 
 	@Setter(MODEL_VERSION)
-	public void setModelVersion(FlexoVersion file);
+	void setModelVersion(FlexoVersion file);
 
-	public long getNewFlexoID();
+	long getNewFlexoID();
 
 	/**
 	 * Returns the lastUnique ID used in this resource
 	 * 
 	 * @return
 	 */
-	public long getLastID();
+	long getLastID();
 
-	public void setLastID(long lastUniqueID);
+	void setLastID(long lastUniqueID);
 
 	/**
 	 * Return the model version currently reflected by executed code (the software version)
 	 * 
 	 * @return
 	 */
-	public FlexoVersion latestVersion();
+	FlexoVersion latestVersion();
 
 	/**
 	 * Internally used to notify factory that a deserialization process has started<br>
 	 * This hook allows to handle FlexoID and ignore of edits raised during deserialization process
 	 */
-	public void startDeserializing();
+	void startDeserializing();
 
 	/**
 	 * Internally used to notify factory that a deserialization process has finished<br>
 	 */
-	public void stopDeserializing();
+	void stopDeserializing();
 
+	boolean isIndexing();
+
+	/**
+	 *
+	 * @param object
+	 */
+	void register(FlexoObject object);
+
+	@Override
+	default FlexoObject findObject(String objectIdentifier, String userIdentifier, String typeIdentifier) {
+		return getFlexoObject(Long.parseLong(objectIdentifier), userIdentifier);
+	}
+
+	/**
+	 * Retrieve object with supplied flexoId and userIdentifier
+	 * 
+	 * @param flexoId
+	 * @param userIdentifier
+	 * @return
+	 */
+	FlexoObject getFlexoObject(Long flexoId, String userIdentifier);
 }

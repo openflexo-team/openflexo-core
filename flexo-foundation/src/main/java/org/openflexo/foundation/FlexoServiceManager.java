@@ -43,10 +43,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
-import org.openflexo.foundation.FlexoProject.FlexoProjectReferenceLoader;
 import org.openflexo.foundation.FlexoService.ServiceNotification;
-import org.openflexo.foundation.fml.ViewPointLibrary;
+import org.openflexo.foundation.fml.VirtualModelLibrary;
+import org.openflexo.foundation.localization.LocalizationService;
 import org.openflexo.foundation.nature.ProjectNatureService;
+import org.openflexo.foundation.nature.ScreenshotService;
+import org.openflexo.foundation.project.FlexoProjectImpl.FlexoProjectReferenceLoader;
+import org.openflexo.foundation.project.ProjectLoader;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.resource.FlexoResourceCenterService;
 import org.openflexo.foundation.resource.ProjectClosed;
@@ -56,7 +59,6 @@ import org.openflexo.foundation.task.FlexoTask;
 import org.openflexo.foundation.task.FlexoTaskManager;
 import org.openflexo.foundation.technologyadapter.FlexoMetaModel;
 import org.openflexo.foundation.technologyadapter.FlexoModel;
-import org.openflexo.foundation.technologyadapter.InformationSpace;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterService;
 
@@ -81,7 +83,7 @@ public abstract class FlexoServiceManager {
 	private final ArrayList<FlexoService> registeredServices;
 
 	public FlexoServiceManager() {
-		registeredServices = new ArrayList<FlexoService>();
+		registeredServices = new ArrayList<>();
 	}
 
 	/*@Override
@@ -103,38 +105,85 @@ public abstract class FlexoServiceManager {
 			notify(service, new ServiceRegistered());
 
 			service.initialize();
-		} else {
+		}
+		else {
 			logger.warning("Trying to register null FlexoService");
 		}
 	}
 
 	public void notify(FlexoService caller, ServiceNotification notification) {
-		for (FlexoService s : registeredServices) {
+		for (FlexoService s : new ArrayList<>(registeredServices)) {
 			if (s != caller) {
 				s.receiveNotification(caller, notification);
 			}
 		}
 		if (notification instanceof ProjectLoaded) {
-			if (!getResourceCenterService().getResourceCenters().contains(((ProjectLoaded) notification).getProject())) {
-				resourceCenterAdded(((ProjectLoaded) notification).getProject());
+			resourceCenterAdded(((ProjectLoaded) notification).getProject());
+			for (TechnologyAdapter ta : ((ProjectLoaded) notification).getProject().getRequiredTechnologyAdapters()) {
+				activateTechnologyAdapter(ta, false);
 			}
 		}
 		if (notification instanceof ProjectClosed) {
-			if (getResourceCenterService().getResourceCenters().contains(((ProjectClosed) notification).getProject())) {
-				resourceCenterRemoved(((ProjectClosed) notification).getProject());
-			}
+			resourceCenterRemoved(((ProjectClosed) notification).getProject());
 		}
 	}
 
-	protected FlexoTask resourceCenterAdded(FlexoResourceCenter<?> resourceCenter) {
+	public FlexoTask resourceCenterAdded(FlexoResourceCenter<?> resourceCenter) {
 		getResourceCenterService().addToResourceCenters(resourceCenter);
 		return null;
 	}
 
-	protected void resourceCenterRemoved(FlexoResourceCenter<?> resourceCenter) {
+	public FlexoTask resourceCenterRemoved(FlexoResourceCenter<?> resourceCenter) {
 		getResourceCenterService().removeFromResourceCenters(resourceCenter);
+		return null;
 	}
 
+	/**
+	 * Enable a {@link TechnologyAdapter}<br>
+	 * All resources centers are notified to scan the resources that they may interpret
+	 * 
+	 * @param technologyAdapter
+	 */
+	public FlexoTask activateTechnologyAdapter(TechnologyAdapter technologyAdapter, boolean performNowInThisThread) {
+
+		if (technologyAdapter.isActivated()) {
+			return null;
+		}
+
+		technologyAdapter.activate();
+
+		notify(getTechnologyAdapterService(), new TechnologyAdapterHasBeenActivated(technologyAdapter));
+
+		return null;
+	}
+
+	/**
+	 * Disable a {@link TechnologyAdapter}<br>
+	 * All resources centers are notified to free the resources that they are managing, if possible
+	 * 
+	 * @param technologyAdapter
+	 */
+	public FlexoTask disactivateTechnologyAdapter(TechnologyAdapter technologyAdapter) {
+
+		if (!technologyAdapter.isActivated()) {
+			return null;
+		}
+
+		technologyAdapter.disactivate();
+		notify(getTechnologyAdapterService(), new TechnologyAdapterHasBeenDisactivated(technologyAdapter));
+
+		return null;
+	}
+
+	/**
+	 * Callback when a {@link TechnologyAdapter} has finished activating
+	 * 
+	 * @param technologyAdapter
+	 */
+	public void hasActivated(TechnologyAdapter technologyAdapter) {
+	}
+
+	@SuppressWarnings("unchecked")
 	public <S extends FlexoService> S getService(Class<S> serviceClass) {
 		for (FlexoService s : registeredServices) {
 			if (serviceClass.isAssignableFrom(s.getClass())) {
@@ -144,14 +193,28 @@ public abstract class FlexoServiceManager {
 		return null;
 	}
 
+	@SuppressWarnings("unchecked")
+	public <S extends FlexoService> S getService(String serviceName) {
+		for (FlexoService s : registeredServices) {
+			if (s.getServiceName().equals(serviceName)) {
+				return (S) s;
+			}
+		}
+		return null;
+	}
+
 	public List<FlexoService> getRegisteredServices() {
 		return registeredServices;
 	}
-	
-	public void stopAllServices(){
-		for (FlexoService r: registeredServices){
+
+	public void stopAllServices() {
+		for (FlexoService r : registeredServices) {
 			r.stop();
 		}
+	}
+
+	public LocalizationService getLocalizationService() {
+		return getService(LocalizationService.class);
 	}
 
 	public FlexoEditingContext getEditingContext() {
@@ -170,21 +233,17 @@ public abstract class FlexoServiceManager {
 		return getService(ProjectNatureService.class);
 	}
 
-	public ViewPointLibrary getViewPointLibrary() {
-		return getService(ViewPointLibrary.class);
-	}
-
-	public InformationSpace getInformationSpace() {
-		return getService(InformationSpace.class);
+	public VirtualModelLibrary getVirtualModelLibrary() {
+		return getService(VirtualModelLibrary.class);
 	}
 
 	public FlexoProjectReferenceLoader getProjectReferenceLoader() {
 		return getService(FlexoProjectReferenceLoader.class);
 	}
 
-	/*public XMLSerializationService getXMLSerializationService() {
-		return getService(XMLSerializationService.class);
-	}*/
+	public ProjectLoader getProjectLoaderService() {
+		return getService(ProjectLoader.class);
+	}
 
 	public ResourceManager getResourceManager() {
 		return getService(ResourceManager.class);
@@ -194,7 +253,47 @@ public abstract class FlexoServiceManager {
 		return getService(FlexoTaskManager.class);
 	}
 
+	public ScreenshotService getScreenshotService() {
+		return getService(ScreenshotService.class);
+	}
+
 	public class ServiceRegistered implements ServiceNotification {
+	}
+
+	/**
+	 * Notification of a TechnologyAdapter that has been activated
+	 * 
+	 * @author sylvain
+	 * 
+	 */
+	public class TechnologyAdapterHasBeenActivated implements ServiceNotification {
+		private final TechnologyAdapter technologyAdapter;
+
+		public TechnologyAdapterHasBeenActivated(TechnologyAdapter technologyAdapter) {
+			this.technologyAdapter = technologyAdapter;
+		}
+
+		public TechnologyAdapter getTechnologyAdapter() {
+			return technologyAdapter;
+		}
+	}
+
+	/**
+	 * Notification of a TechnologyAdapter that has been disactivated
+	 * 
+	 * @author sylvain
+	 * 
+	 */
+	public class TechnologyAdapterHasBeenDisactivated implements ServiceNotification {
+		private final TechnologyAdapter technologyAdapter;
+
+		public TechnologyAdapterHasBeenDisactivated(TechnologyAdapter technologyAdapter) {
+			this.technologyAdapter = technologyAdapter;
+		}
+
+		public TechnologyAdapter getTechnologyAdapter() {
+			return technologyAdapter;
+		}
 	}
 
 	protected abstract FlexoEditingContext createEditingContext();
@@ -209,12 +308,20 @@ public abstract class FlexoServiceManager {
 
 	protected abstract ProjectNatureService createProjectNatureService();
 
-	protected abstract ViewPointLibrary createViewPointLibraryService();
+	protected abstract VirtualModelLibrary createViewPointLibraryService();
 
-	protected abstract InformationSpace createInformationSpace();
+	protected abstract LocalizationService createLocalizationService(String relativePath);
 
 	protected abstract ResourceManager createResourceManager();
 
 	protected abstract FlexoTaskManager createTaskManager();
+
+	protected abstract ScreenshotService createScreenshotService();
+
+	protected abstract ProjectLoader createProjectLoaderService();
+
+	public FlexoEditor getDefaultEditor() {
+		return null;
+	}
 
 }

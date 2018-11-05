@@ -72,7 +72,7 @@ public class FileDiffEditorPopup extends FlexoDialog {
 	private DiffPanel diffPanel;
 
 	public FileDiffEditorPopup(String leftTitle, String rightTitle, String leftSource, String rightSource, FlexoController controller) {
-		super(controller.getFlexoFrame(), FlexoLocalization.localizedForKey("diff_editor"), false);
+		super(controller.getFlexoFrame(), FlexoLocalization.getMainLocalizer().localizedForKey("diff_editor"), false);
 		this.leftSource = leftSource;
 		this.rightSource = rightSource;
 		this.controller = controller;
@@ -82,7 +82,7 @@ public class FileDiffEditorPopup extends FlexoDialog {
 		getContentPane().add(diffPanel, BorderLayout.CENTER);
 		JPanel controlPanel = new JPanel(new FlowLayout());
 		JButton button = new JButton();
-		button.setText(FlexoLocalization.localizedForKey("close", button));
+		button.setText(FlexoLocalization.getMainLocalizer().localizedForKey("close", button));
 		button.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {

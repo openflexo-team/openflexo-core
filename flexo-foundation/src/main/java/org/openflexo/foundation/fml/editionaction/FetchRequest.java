@@ -47,9 +47,10 @@ import java.util.logging.Logger;
 import org.openflexo.connie.type.ParameterizedTypeImpl;
 import org.openflexo.foundation.fml.FMLRepresentationContext;
 import org.openflexo.foundation.fml.FMLRepresentationContext.FMLRepresentationOutput;
-import org.openflexo.foundation.fml.controlgraph.FetchRequestIterationAction;
-import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
+import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
+import org.openflexo.foundation.resource.ResourceData;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
+import org.openflexo.foundation.technologyadapter.TechnologyObject;
 import org.openflexo.model.annotations.Adder;
 import org.openflexo.model.annotations.CloningStrategy;
 import org.openflexo.model.annotations.CloningStrategy.StrategyType;
@@ -71,7 +72,8 @@ import org.openflexo.model.annotations.XMLElement;
  */
 @ModelEntity(isAbstract = true)
 @ImplementationClass(FetchRequest.FetchRequestImpl.class)
-public abstract interface FetchRequest<MS extends ModelSlot<?>, T> extends TechnologySpecificAction<MS, List<T>> {
+public abstract interface FetchRequest<MS extends ModelSlot<RD>, RD extends ResourceData<RD> & TechnologyObject<?>, T>
+		extends TechnologySpecificActionDefiningReceiver<MS, RD, List<T>> {
 
 	@PropertyIdentifier(type = Vector.class)
 	public static final String CONDITIONS_KEY = "conditions";
@@ -95,37 +97,17 @@ public abstract interface FetchRequest<MS extends ModelSlot<?>, T> extends Techn
 
 	public void deleteCondition(FetchRequestCondition aCondition);
 
-	@Deprecated
-	public FetchRequestIterationAction getEmbeddingIteration();
-
-	@Deprecated
-	public void setEmbeddingIteration(FetchRequestIterationAction embeddingIteration);
-
 	public Type getFetchedType();
 
-	public static abstract class FetchRequestImpl<MS extends ModelSlot<?>, T> extends TechnologySpecificActionImpl<MS, List<T>> implements
-			FetchRequest<MS, T> {
+	public static abstract class FetchRequestImpl<MS extends ModelSlot<RD>, RD extends ResourceData<RD> & TechnologyObject<?>, T>
+			extends TechnologySpecificActionDefiningReceiverImpl<MS, RD, List<T>> implements FetchRequest<MS, RD, T> {
 
 		private static final Logger logger = Logger.getLogger(FetchRequest.class.getPackage().getName());
-
-		// null in fetch request is not embedded in an iteration
-		@Deprecated
-		private FetchRequestIterationAction embeddingIteration;
-
-		/*@Override
-		public String getFMLRepresentation(FMLRepresentationContext context) {
-			FMLRepresentationOutput out = new FMLRepresentationOutput(context);
-			if (getAssignation().isSet()) {
-				out.append(getAssignation().toString() + " = ", context);
-			}
-			out.append(getImplementedInterface().getSimpleName(), context);
-			return out.toString();
-		}*/
 
 		protected String getWhereClausesFMLRepresentation(FMLRepresentationContext context) {
 			if (getConditions().size() > 0) {
 				StringBuffer sb = new StringBuffer();
-				sb.append("where ");
+				sb.append("where=");
 				if (getConditions().size() > 1) {
 					sb.append("(");
 				}
@@ -154,31 +136,6 @@ public abstract interface FetchRequest<MS extends ModelSlot<?>, T> extends Techn
 			return new ParameterizedTypeImpl(List.class, getFetchedType());
 		}
 
-		/*@Override
-		public Vector<FetchRequestCondition> getConditions() {
-			return conditions;
-		}
-
-		public void setConditions(Vector<FetchRequestCondition> conditions) {
-			this.conditions = conditions;
-		}
-
-		@Override
-		public void addToConditions(FetchRequestCondition condition) {
-			condition.setFetchRequest(this);
-			conditions.add(condition);
-			setChanged();
-			notifyObservers(new DataModification("conditions", null, condition));
-		}
-
-		@Override
-		public void removeFromConditions(FetchRequestCondition condition) {
-			condition.setFetchRequest(null);
-			conditions.remove(condition);
-			setChanged();
-			notifyObservers(new DataModification("conditions", condition, null));
-		}*/
-
 		@Override
 		public FetchRequestCondition createCondition() {
 			FetchRequestCondition newCondition = getFMLModelFactory().newFetchRequestCondition();
@@ -191,16 +148,26 @@ public abstract interface FetchRequest<MS extends ModelSlot<?>, T> extends Techn
 			removeFromConditions(aCondition);
 		}
 
-		public List<T> filterWithConditions(List<T> fetchResult, final FlexoBehaviourAction action) {
+		public List<T> filterWithConditions(List<T> fetchResult, final RunTimeEvaluationContext evaluationContext) {
 			if (getConditions().size() == 0) {
 				return fetchResult;
-			} else {
-				// System.out.println("Filtering with " + getConditions() + " fetchResult=" + fetchResult);
-				List<T> returned = new ArrayList<T>();
+			}
+			else {
+				// System.out
+				// .println("Filtering with " + getConditions() + " fetchResult=" + fetchResult + " evalContext=" + evaluationContext);
+
+				/*if (getConditions().size() > 0) {
+					System.out.println("condition " + getConditions().get(0).getCondition());
+					System.out.println("evalContext=" + evaluationContext + " hash=" + Integer.toHexString(evaluationContext.hashCode()));
+					System.out.println("Je dois evaluer ");
+				}*/
+				// if (true)
+				// return fetchResult;
+				List<T> returned = new ArrayList<>();
 				for (final T proposedFetchResult : fetchResult) {
 					boolean takeIt = true;
 					for (FetchRequestCondition condition : getConditions()) {
-						if (!condition.evaluateCondition(proposedFetchResult, action)) {
+						if (!condition.evaluateCondition(proposedFetchResult, evaluationContext)) {
 							takeIt = false;
 							// System.out.println("I dismiss " + proposedFetchResult + " because of " + condition.getCondition() + " valid="
 							// + condition.getCondition().isValid());
@@ -210,44 +177,25 @@ public abstract interface FetchRequest<MS extends ModelSlot<?>, T> extends Techn
 					if (takeIt) {
 						returned.add(proposedFetchResult);
 						// System.out.println("I take " + proposedFetchResult);
-					} else {
+					}
+					else {
 					}
 				}
 				return returned;
 			}
 		}
 
-		@Deprecated
 		@Override
-		public FetchRequestIterationAction getEmbeddingIteration() {
-			return embeddingIteration;
+		public String getParametersStringRepresentation() {
+			return "(" + getWhereClausesFMLRepresentation(null) + ")";
 		}
-
-		@Deprecated
-		@Override
-		public void setEmbeddingIteration(FetchRequestIterationAction embeddingIteration) {
-			if (this.embeddingIteration != embeddingIteration) {
-				FetchRequestIterationAction oldValue = this.embeddingIteration;
-				this.embeddingIteration = embeddingIteration;
-				getPropertyChangeSupport().firePropertyChange("embeddingIteration", oldValue, embeddingIteration);
-			}
-		}
-
-		/*private FetchRequestBindingModel inferedBindingModel = null;
-
-		@Override
-		public FetchRequestBindingModel getInferedBindingModel() {
-			if (inferedBindingModel == null) {
-				inferedBindingModel = new FetchRequestBindingModel(this);
-			}
-			return inferedBindingModel;
-		}*/
 
 		@Override
 		public String getFMLRepresentation(FMLRepresentationContext context) {
 			FMLRepresentationOutput out = new FMLRepresentationOutput(context);
-			out.append(getImplementedInterface().getSimpleName() + (getModelSlot() != null ? " from " + getModelSlot().getName() : " ")
-					+ (getConditions().size() > 0 ? " " + getWhereClausesFMLRepresentation(context) : ""), context);
+			out.append((getReceiver().isValid() ? getReceiver().toString() + "." : "") + getTechnologyAdapterIdentifier() + "::"
+					+ getImplementedInterface().getSimpleName()
+					+ (getConditions().size() > 0 ? " " + getWhereClausesFMLRepresentation(context) : "()"), context);
 			return out.toString();
 		}
 

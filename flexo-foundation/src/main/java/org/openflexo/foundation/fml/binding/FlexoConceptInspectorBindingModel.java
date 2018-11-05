@@ -56,7 +56,7 @@ public class FlexoConceptInspectorBindingModel extends BindingModel {
 	public FlexoConceptInspectorBindingModel(FlexoConceptInspector inspector) {
 		super(inspector.getFlexoConcept() != null ? inspector.getFlexoConcept().getBindingModel() : null);
 		this.inspector = inspector;
-		if (inspector != null && inspector.getPropertyChangeSupport() != null) {
+		if (inspector.getPropertyChangeSupport() != null) {
 			inspector.getPropertyChangeSupport().addPropertyChangeListener(this);
 		}
 	}

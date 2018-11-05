@@ -40,8 +40,8 @@
 package org.openflexo.drm;
 
 import org.openflexo.foundation.validation.FlexoValidationModel;
-import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.localization.LocalizedDelegate;
+import org.openflexo.localization.LocalizedDelegateImpl;
 import org.openflexo.model.ModelContextLibrary;
 import org.openflexo.model.exceptions.ModelDefinitionException;
 import org.openflexo.model.validation.Validable;
@@ -57,8 +57,7 @@ import org.openflexo.rm.ResourceLocator;
 public class DRMValidationModel extends FlexoValidationModel {
 
 	private static Resource fibValidationLocalizedDelegate = ResourceLocator.locateResource("DRMValidationLocalized");
-	private static LocalizedDelegate VALIDATION_LOCALIZATION = FlexoLocalization.getLocalizedDelegate(fibValidationLocalizedDelegate, null,
-			true, true);
+	private static LocalizedDelegate VALIDATION_LOCALIZATION = new LocalizedDelegateImpl(fibValidationLocalizedDelegate, null, false, true);
 
 	public DRMValidationModel() throws ModelDefinitionException {
 		super(ModelContextLibrary.getCompoundModelContext(DocResourceCenter.class), VALIDATION_LOCALIZATION);
@@ -67,7 +66,7 @@ public class DRMValidationModel extends FlexoValidationModel {
 			registerRule(new DocItem.DocumentationShouldBeUpToDate(language));
 		}
 		registerRule(new DocItemFolder.DocItemFolderMustHavePrimaryItem());
-
+		
 		// Notify that the validation model is complete and that inheritance
 		// computation could be performed
 		update();*/

@@ -39,8 +39,6 @@
 
 package org.openflexo.view.controller.model;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -50,11 +48,9 @@ import javax.swing.JComponent;
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.FlexoProject;
-import org.openflexo.foundation.nature.ProjectNature;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
-import org.openflexo.foundation.technologyadapter.TechnologyAdapterService;
 import org.openflexo.foundation.technologyadapter.TechnologyObject;
-import org.openflexo.localization.FlexoLocalization;
+import org.openflexo.module.FlexoModule.WelcomePanel;
 import org.openflexo.swing.layout.MultiSplitLayout.Node;
 import org.openflexo.view.EmptyPanel;
 import org.openflexo.view.ModuleView;
@@ -110,7 +106,7 @@ public abstract class FlexoPerspective extends ControllerModelObject {
 	}
 
 	public String getLocalizedName() {
-		return FlexoLocalization.localizedForKey(getName());
+		return getController().getModuleLocales().localizedForKey(getName());
 	}
 
 	@Override
@@ -122,12 +118,12 @@ public abstract class FlexoPerspective extends ControllerModelObject {
 		return controller;
 	}
 
-	public void setupDefaultLayout(Node layout) {
+	public void setupDefaultLayout(Node<?> layout) {
 	}
 
 	public abstract ImageIcon getActiveIcon();
 
-	public ModuleView<?> createModuleViewForObject(FlexoObject object, boolean editable) {
+	public final ModuleView<?> createModuleViewForObject(FlexoObject object, boolean editable) {
 		if (!editable) {
 			if (logger.isLoggable(Level.WARNING)) {
 				logger.warning("Perspective " + getName()
@@ -139,20 +135,16 @@ public abstract class FlexoPerspective extends ControllerModelObject {
 
 	public ModuleView<?> createModuleViewForObject(FlexoObject object) {
 
+		if (object instanceof WelcomePanel) {
+			return getController().makeWelcomePanel((WelcomePanel<?>) object, this);
+		}
 		if (object instanceof FlexoProject) {
-			FlexoProject project = (FlexoProject) object;
-			List<ProjectNature> availableNatures = getSpecificNaturesForProject(project);
-			if (availableNatures.size() > 0) {
-				ProjectNature nature = availableNatures.get(0);
-				return getModuleViewForProject(project, nature);
-			}
-			// No default view for a FlexoProject !
-			return new EmptyPanel<FlexoObject>(controller, this, object);
+			return getController().makeDefaultProjectView((FlexoProject<?>) object, this);
 		}
 		if (object instanceof TechnologyObject) {
 			return getModuleViewForTechnologyObject((TechnologyObject<?>) object);
 		}
-		return new EmptyPanel<FlexoObject>(controller, this, object);
+		return new EmptyPanel<>(controller, this, object);
 	}
 
 	/**
@@ -161,7 +153,7 @@ public abstract class FlexoPerspective extends ControllerModelObject {
 	 * 
 	 * This method should be overriden<br>
 	 * 
-	 * Default returned value is true for View/VirtualModelInstance/ViewPoint/VirtualModel/FlexoConcept objects<br>
+	 * Default returned value is true for View/FMLRTVirtualModelInstance/ViewPoint/VirtualModel/FlexoConcept objects<br>
 	 * Default returned value depends on nature availability for FlexoProject/FlexoConceptInstance objects
 	 * 
 	 * @param object
@@ -169,7 +161,7 @@ public abstract class FlexoPerspective extends ControllerModelObject {
 	 */
 	public boolean hasModuleViewForObject(FlexoObject object) {
 		if (object instanceof FlexoProject) {
-			return getSpecificNaturesForProject((FlexoProject) object).size() > 0;
+			return true;
 		}
 		if (object instanceof TechnologyObject) {
 			return hasModuleViewForTechnologyObject((TechnologyObject<?>) object);
@@ -336,32 +328,6 @@ public abstract class FlexoPerspective extends ControllerModelObject {
 		logger.info("NOT IMPLEMENTED: focusOnObject " + object);
 	}
 
-	// Handle natures for FlexoProject
-
-	public List<ProjectNature> getSpecificNaturesForProject(FlexoProject project) {
-		List<ProjectNature> returned = new ArrayList<ProjectNature>();
-		TechnologyAdapterControllerService tacService = controller.getApplicationContext().getTechnologyAdapterControllerService();
-		TechnologyAdapterService taService = controller.getApplicationContext().getTechnologyAdapterService();
-		for (TechnologyAdapter ta : taService.getTechnologyAdapters()) {
-			TechnologyAdapterController<?> tac = tacService.getTechnologyAdapterController(ta);
-			returned.addAll(tac.getSpecificProjectNatures(project));
-		}
-		return returned;
-	}
-
-	public ModuleView<FlexoProject> getModuleViewForProject(FlexoProject project, ProjectNature nature) {
-		TechnologyAdapterControllerService tacService = controller.getApplicationContext().getTechnologyAdapterControllerService();
-		TechnologyAdapterService taService = controller.getApplicationContext().getTechnologyAdapterService();
-		for (TechnologyAdapter ta : taService.getTechnologyAdapters()) {
-			TechnologyAdapterController<?> tac = tacService.getTechnologyAdapterController(ta);
-			ModuleView<FlexoProject> returned = tac.createFlexoProjectModuleViewForSpecificNature(project, nature, controller, this);
-			if (returned != null) {
-				return returned;
-			}
-		}
-		return null;
-	}
-
 	public abstract String getWindowTitleforObject(FlexoObject object, FlexoController controller);
 
 	/**
@@ -373,4 +339,9 @@ public abstract class FlexoPerspective extends ControllerModelObject {
 		// Do nothing here
 	}
 
+	/**
+	 * Hook triggered when a perspective is about to be shown
+	 */
+	public void willShow() {
+	}
 }

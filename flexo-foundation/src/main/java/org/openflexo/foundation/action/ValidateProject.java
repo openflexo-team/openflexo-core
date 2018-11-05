@@ -45,14 +45,13 @@ import java.util.logging.Logger;
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoProject;
 import org.openflexo.foundation.FlexoProjectObject;
-import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.model.validation.ValidationReport;
 
 public class ValidateProject extends FlexoAction<ValidateProject, FlexoProjectObject, FlexoProjectObject> {
 
 	static final Logger logger = Logger.getLogger(ValidateProject.class.getPackage().getName());
 
-	public static FlexoActionType<ValidateProject, FlexoProjectObject, FlexoProjectObject> actionType = new FlexoActionType<ValidateProject, FlexoProjectObject, FlexoProjectObject>(
+	public static FlexoActionFactory<ValidateProject, FlexoProjectObject, FlexoProjectObject> actionType = new FlexoActionFactory<ValidateProject, FlexoProjectObject, FlexoProjectObject>(
 			"validate_project") {
 
 		/**
@@ -63,14 +62,15 @@ public class ValidateProject extends FlexoAction<ValidateProject, FlexoProjectOb
 			return new ValidateProject(object, globalSelection, editor);
 		}
 
+		// TODO: revalidated action when FlexoProject will be refactored
 		@Override
 		public boolean isVisibleForSelection(FlexoProjectObject focusedObject, Vector<FlexoProjectObject> globalSelection) {
-			return true;
+			return false;
 		}
 
 		@Override
 		public boolean isEnabledForSelection(FlexoProjectObject focusedObject, Vector<FlexoProjectObject> globalSelection) {
-			return true;
+			return false;
 		}
 
 	};
@@ -79,19 +79,19 @@ public class ValidateProject extends FlexoAction<ValidateProject, FlexoProjectOb
 		// FlexoObject.addActionForClass(ValidateProject.actionType, FlexoProject.class);
 	}
 
-	ValidateProject(FlexoProjectObject focusedObject, Vector<FlexoProjectObject> globalSelection, FlexoEditor editor) {
+	private ValidateProject(FlexoProjectObject focusedObject, Vector<FlexoProjectObject> globalSelection, FlexoEditor editor) {
 		super(actionType, focusedObject, globalSelection, editor);
 	}
 
-	public FlexoProject getProject() {
+	public FlexoProject<?> getProject() {
 		return getFocusedObject().getProject();
 	}
 
 	@Override
 	protected void doAction(Object context) {
 		logger.info("Validate project");
-		makeFlexoProgress(FlexoLocalization.localizedForKey("check_model_consistency"), 5);
-		setProgress(FlexoLocalization.localizedForKey("loading_required_resources"));
+		// makeFlexoProgress(getLocales().localizedForKey("check_model_consistency"), 5);
+		// setProgress(getLocales().localizedForKey("loading_required_resources"));
 
 		/*if (getProject().getFlexoComponentLibrary(false) != null) {
 			// We validate the component library model
@@ -120,7 +120,7 @@ public class ValidateProject extends FlexoAction<ValidateProject, FlexoProjectOb
 			dmValidationReport = getProject().getDataModel().validate(dmValidationModel);
 			dmValidationModel.deleteObserver(dmValidationObserver);
 		}*/
-		hideFlexoProgress();
+		// hideFlexoProgress();
 	}
 
 	private ValidationReport ieValidationReport = null;
@@ -168,7 +168,7 @@ public class ValidateProject extends FlexoAction<ValidateProject, FlexoProjectOb
 			}
 		}
 	};
-
+	
 	private final FlexoObserver wkfValidationObserver = new FlexoObserver() {
 		@Override
 		public void update(FlexoObservable observable, DataModification dataModification) {
@@ -185,11 +185,11 @@ public class ValidateProject extends FlexoAction<ValidateProject, FlexoProjectOb
 				} else if (dataModification instanceof ValidationFinishedNotification) {
 					// Nothing
 				}
-
+	
 			}
 		}
 	};
-
+	
 	private final FlexoObserver dkvValidationObserver = new FlexoObserver() {
 		@Override
 		public void update(FlexoObservable observable, DataModification dataModification) {
@@ -206,11 +206,11 @@ public class ValidateProject extends FlexoAction<ValidateProject, FlexoProjectOb
 				} else if (dataModification instanceof ValidationFinishedNotification) {
 					// Nothing
 				}
-
+	
 			}
 		}
 	};
-
+	
 	private final FlexoObserver dmValidationObserver = new FlexoObserver() {
 		@Override
 		public void update(FlexoObservable observable, DataModification dataModification) {
@@ -227,7 +227,7 @@ public class ValidateProject extends FlexoAction<ValidateProject, FlexoProjectOb
 				} else if (dataModification instanceof ValidationFinishedNotification) {
 					// Nothing
 				}
-
+	
 			}
 		}
 	};*/

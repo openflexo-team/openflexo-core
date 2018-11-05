@@ -41,8 +41,6 @@ package org.openflexo.ws.jira.model;
 
 import java.util.List;
 
-import org.openflexo.ws.jira.model.JIRAIssue.IssueType;
-
 public class JIRAProject extends JIRAObject<JIRAProject> {
 
 	/**
@@ -51,15 +49,14 @@ public class JIRAProject extends JIRAObject<JIRAProject> {
 	private static final long serialVersionUID = 5973875816103952556L;
 
 	private String name;
-
 	private String description;
-
 	private JIRAUser lead;
+	private List<IssueType> issueTypes;
+	private List<JIRAComponent> components;
+	private List<JIRAVersion> versions;
 
-	private List<IssueType> issuetypes;
-	
 	private String iconUrl;
-	
+
 	public String getIconUrl() {
 		return iconUrl;
 	}
@@ -76,12 +73,12 @@ public class JIRAProject extends JIRAObject<JIRAProject> {
 		this.name = name;
 	}
 
-	public List<IssueType> getIssuetypes() {
-		return issuetypes;
+	public List<IssueType> getIssueTypes() {
+		return issueTypes;
 	}
 
-	public void setIssuetypes(List<IssueType> issuetypes) {
-		this.issuetypes = issuetypes;
+	public void setIssueTypes(List<IssueType> issuetypes) {
+		this.issueTypes = issuetypes;
 	}
 
 	public String getDescription() {
@@ -98,5 +95,46 @@ public class JIRAProject extends JIRAObject<JIRAProject> {
 
 	public void setLead(JIRAUser lead) {
 		this.lead = lead;
+	}
+
+	public List<JIRAVersion> getVersions() {
+		return versions;
+	}
+
+	public void setVersions(List<JIRAVersion> versions) {
+		this.versions = versions;
+	}
+
+	public JIRAVersion getLastReleasedVersion() {
+		JIRAVersion lastReleased = null;
+		for (JIRAVersion v : getVersions()) {
+			if (v.isReleased()) {
+				lastReleased = v;
+			}
+		}
+		return lastReleased;
+	}
+
+	public JIRAVersion getNextUnreleasedVersion() {
+		for (JIRAVersion v : getVersions()) {
+			if (!v.isReleased()) {
+				return v;
+			}
+		}
+		return null;
+	}
+
+	public List<JIRAComponent> getComponents() {
+		return components;
+	}
+
+	public void setComponents(List<JIRAComponent> components) {
+		this.components = components;
+	}
+
+	@Override
+	public String toString() {
+		return "Project " + getName() + " " + getDescription() + " lead=" + getLead() + " issues=" + getIssueTypes() + " iconURL="
+				+ getIconUrl() + " id=" + getId() + " key=" + getKey() + " self=" + getSelf();
 	}
 }

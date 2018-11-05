@@ -39,7 +39,7 @@
 package org.openflexo.fml.fib;
 
 import org.junit.Test;
-import org.openflexo.fib.utils.GenericFIBTestCase;
+import org.openflexo.gina.test.GenericFIBTestCase;
 import org.openflexo.rm.FileResourceImpl;
 import org.openflexo.rm.ResourceLocator;
 
@@ -65,6 +65,16 @@ public class TestFMLFibs extends GenericFIBTestCase {
 	}
 
 	@Test
+	public void testFMLLocalizedDictionaryView() {
+		validateFIB("Fib/FML/FMLLocalizedDictionaryView.fib");
+	}
+
+	@Test
+	public void testFMLVirtualModelView() {
+		validateFIB("Fib/FML/FMLVirtualModelView.fib");
+	}
+
+	@Test
 	public void testLocalizedDictionaryPanel() {
 		validateFIB("Fib/FML/LocalizedDictionaryPanel.fib");
 	}
@@ -72,16 +82,6 @@ public class TestFMLFibs extends GenericFIBTestCase {
 	@Test
 	public void testStandardFlexoConceptView() {
 		validateFIB("Fib/FML/StandardFlexoConceptView.fib");
-	}
-
-	@Test
-	public void testViewPointLocalizedDictionaryView() {
-		validateFIB("Fib/FML/ViewPointLocalizedDictionaryView.fib");
-	}
-
-	@Test
-	public void testViewPointView() {
-		validateFIB("Fib/FML/ViewPointView.fib");
 	}
 
 	@Test

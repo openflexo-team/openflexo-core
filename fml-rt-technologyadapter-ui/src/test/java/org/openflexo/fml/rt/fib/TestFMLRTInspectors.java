@@ -39,7 +39,7 @@
 package org.openflexo.fml.rt.fib;
 
 import org.junit.Test;
-import org.openflexo.fib.utils.GenericFIBInspectorTestCase;
+import org.openflexo.gina.test.GenericFIBInspectorTestCase;
 import org.openflexo.rm.FileResourceImpl;
 import org.openflexo.rm.ResourceLocator;
 
@@ -61,13 +61,13 @@ public class TestFMLRTInspectors extends GenericFIBInspectorTestCase {
 	}
 
 	@Test
-	public void testViewInspector() {
-		validateFIB("Inspectors/FML-RT/View.inspector");
+	public void testFMLRTVirtualModelInstanceInspector() {
+		validateFIB("Inspectors/FML-RT/FMLRTVirtualModelInstance.inspector");
 	}
 
 	@Test
-	public void testViewLibraryInspector() {
-		validateFIB("Inspectors/FML-RT/ViewLibrary.inspector");
+	public void testFMLRTVirtualModelInstanceRepositoryInspector() {
+		validateFIB("Inspectors/FML-RT/FMLRTVirtualModelInstanceRepository.inspector");
 	}
 
 	@Test

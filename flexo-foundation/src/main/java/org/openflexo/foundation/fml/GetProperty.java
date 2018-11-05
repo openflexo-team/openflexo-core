@@ -38,9 +38,14 @@
 
 package org.openflexo.foundation.fml;
 
+import java.beans.PropertyChangeSupport;
 import java.lang.reflect.Type;
 
 import org.openflexo.connie.BindingModel;
+import org.openflexo.connie.DataBinding;
+import org.openflexo.connie.type.TypeUtils;
+import org.openflexo.foundation.fml.FMLRepresentationContext.FMLRepresentationOutput;
+import org.openflexo.foundation.fml.controlgraph.EmptyControlGraph;
 import org.openflexo.foundation.fml.controlgraph.FMLControlGraph;
 import org.openflexo.foundation.fml.controlgraph.FMLControlGraphOwner;
 import org.openflexo.model.annotations.CloningStrategy;
@@ -52,6 +57,7 @@ import org.openflexo.model.annotations.ModelEntity;
 import org.openflexo.model.annotations.PropertyIdentifier;
 import org.openflexo.model.annotations.Setter;
 import org.openflexo.model.annotations.XMLElement;
+import org.openflexo.toolbox.StringUtils;
 
 /**
  * A {@link GetProperty} is a particular implementation of a {@link FlexoProperty} allowing to access data using a typed control graph<br>
@@ -74,7 +80,7 @@ public abstract interface GetProperty<T> extends FlexoProperty<T>, FMLControlGra
 	public static final String GET_CONTROL_GRAPH_KEY = "getControlGraph";
 
 	@Getter(value = GET_CONTROL_GRAPH_KEY, inverse = FMLControlGraph.OWNER_KEY)
-	@CloningStrategy(StrategyType.IGNORE)
+	@CloningStrategy(StrategyType.CLONE)
 	@XMLElement(context = "GetControlGraph_")
 	@Embedded
 	public FMLControlGraph getGetControlGraph();
@@ -86,7 +92,7 @@ public abstract interface GetProperty<T> extends FlexoProperty<T>, FMLControlGra
 	@Getter(value = TYPE_KEY, ignoreType = true)
 	@XMLAttribute
 	public Type getType();
-
+	
 	@Setter(TYPE_KEY)
 	public void setType(Type type);*/
 
@@ -111,10 +117,10 @@ public abstract interface GetProperty<T> extends FlexoProperty<T>, FMLControlGra
 
 		@Override
 		public Type getType() {
-			/*if (getGetControlGraph() != null) {
-				return getGetControlGraph().get
-			}*/
-			return Object.class;
+			if (getGetControlGraph() != null) {
+				return getGetControlGraph().getInferedType();
+			}
+			return Void.class;
 		}
 
 		@Override
@@ -128,6 +134,7 @@ public abstract interface GetProperty<T> extends FlexoProperty<T>, FMLControlGra
 				aControlGraph.setOwnerContext(GET_CONTROL_GRAPH_KEY);
 			}
 			performSuperSetter(GET_CONTROL_GRAPH_KEY, aControlGraph);
+			getPropertyChangeSupport().firePropertyChange("type", null, getType());
 		}
 
 		@Override
@@ -157,6 +164,61 @@ public abstract interface GetProperty<T> extends FlexoProperty<T>, FMLControlGra
 				((FMLControlGraphOwner) getGetControlGraph()).reduce();
 			}
 		}
+
+		private String getGetFMLAnnotation(FMLRepresentationContext context) {
+			return "@" + getImplementedInterface().getSimpleName() + "(value=" + '"' + getName() + '"' + ", access=get)";
+		}
+
+		@Override
+		public String getFMLRepresentation(FMLRepresentationContext context) {
+			FMLRepresentationOutput out = new FMLRepresentationOutput(context);
+			if (getGetControlGraph() != null && !(getGetControlGraph() instanceof EmptyControlGraph)) {
+				out.append(getGetFMLAnnotation(context), context);
+				out.append(StringUtils.LINE_SEPARATOR, context);
+				out.append("public " + TypeUtils.simpleRepresentation(getResultingType()) + " " + getGetAccessorName() + " {", context);
+				out.append(StringUtils.LINE_SEPARATOR, context);
+				out.append(getGetControlGraph().getFMLRepresentation(context), context, 1);
+				out.append(StringUtils.LINE_SEPARATOR, context);
+				out.append("}", context);
+			}
+			return out.toString();
+		}
+
+		private String getGetAccessorName() {
+			if (StringUtils.isNotEmpty(getName())) {
+				return "get" + getName().substring(0, 1).toUpperCase() + getName().substring(1);
+			}
+			return "get";
+		}
+
+		/**
+		 * Return boolean indicating if this {@link FlexoProperty} is notification-safe (all modifications of data retrived from that
+		 * property are notified using {@link PropertyChangeSupport} scheme)<br>
+		 * 
+		 * When tagged as unsafe, disable caching while evaluating related {@link DataBinding}.
+		 * 
+		 * @return
+		 */
+		@Override
+		public boolean isNotificationSafe() {
+			return false;
+		}
+
+		/*@Override
+		public String getFMLRepresentation(FMLRepresentationContext context) {
+			FMLRepresentationOutput out = new FMLRepresentationOutput(context);
+			out.append("FlexoProperty " + getName() + " as " + getTypeDescription() + " cardinality=" + getCardinality() + " get={",
+					context);
+			out.append(StringUtils.LINE_SEPARATOR, context);
+			if (getGetControlGraph() != null) {
+				out.append(getGetControlGraph().getFMLRepresentation(context), context, 1);
+			}
+			out.append(StringUtils.LINE_SEPARATOR, context);
+			out.append("};", context);
+			out.append(StringUtils.LINE_SEPARATOR, context);
+		
+			return out.toString();
+		}*/
 
 	}
 

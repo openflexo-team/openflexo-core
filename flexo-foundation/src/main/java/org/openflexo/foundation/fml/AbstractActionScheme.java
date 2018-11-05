@@ -44,6 +44,8 @@ import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.exception.NullReferenceException;
 import org.openflexo.connie.exception.TypeMismatchException;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
+import org.openflexo.foundation.fml.rt.VirtualModelInstance;
+import org.openflexo.foundation.fml.rt.action.AbstractActionSchemeActionFactory;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
@@ -51,6 +53,12 @@ import org.openflexo.model.annotations.PropertyIdentifier;
 import org.openflexo.model.annotations.Setter;
 import org.openflexo.model.annotations.XMLAttribute;
 
+/**
+ * Abstract behaviour beeing called on an existing {@link VirtualModelInstance}
+ * 
+ * @author sylvain
+ *
+ */
 @ModelEntity(isAbstract = true)
 @ImplementationClass(AbstractActionScheme.AbstractActionSchemeImpl.class)
 public abstract interface AbstractActionScheme extends FlexoBehaviour {
@@ -67,6 +75,8 @@ public abstract interface AbstractActionScheme extends FlexoBehaviour {
 
 	public boolean evaluateCondition(FlexoConceptInstance flexoConceptInstance);
 
+	AbstractActionSchemeActionFactory<?, ?, ?> getActionFactory(FlexoConceptInstance fci);
+
 	public static abstract class AbstractActionSchemeImpl extends FlexoBehaviourImpl implements AbstractActionScheme {
 
 		private DataBinding<Boolean> conditional;
@@ -78,7 +88,7 @@ public abstract interface AbstractActionScheme extends FlexoBehaviour {
 		@Override
 		public DataBinding<Boolean> getConditional() {
 			if (conditional == null) {
-				conditional = new DataBinding<Boolean>(this, Boolean.class, DataBinding.BindingDefinitionType.GET);
+				conditional = new DataBinding<>(this, Boolean.class, DataBinding.BindingDefinitionType.GET);
 				conditional.setBindingName("conditional");
 			}
 			return conditional;
@@ -112,18 +122,9 @@ public abstract interface AbstractActionScheme extends FlexoBehaviour {
 			return true;
 		}
 
-		/*@Override
-		protected void appendContextualBindingVariables(BindingModel bindingModel) {
-			super.appendContextualBindingVariables(bindingModel);
-			bindingModel.addToBindingVariables(new FlexoConceptPathElement<AbstractActionScheme>(FlexoBehaviour.THIS, getFlexoConcept(),
-					this));
-		}*/
-
-		/*@Override
-		public void setFlexoConcept(FlexoConcept flexoConcept) {
-		    super.setFlexoConcept(flexoConcept);
-		    updateBindingModels();
-		}*/
-
+		@Override
+		public AbstractActionSchemeActionFactory<?, ?, ?> getActionFactory(FlexoConceptInstance fci) {
+			return null;
+		}
 	}
 }

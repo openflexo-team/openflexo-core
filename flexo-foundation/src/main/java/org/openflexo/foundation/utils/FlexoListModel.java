@@ -57,7 +57,7 @@ import org.openflexo.toolbox.PropertyChangedSupportDefaultImplementation;
  * 
  */
 
-public abstract class FlexoListModel extends PropertyChangedSupportDefaultImplementation implements ListModel, Serializable {
+public abstract class FlexoListModel<E> extends PropertyChangedSupportDefaultImplementation implements ListModel<E>, Serializable {
 	protected EventListenerList listenerList = new EventListenerList();
 
 	/**
@@ -205,7 +205,7 @@ public abstract class FlexoListModel extends PropertyChangedSupportDefaultImplem
 	 * 
 	 * @since 1.3
 	 */
-	public EventListener[] getListeners(Class listenerType) {
+	public EventListener[] getListeners(Class<EventListener> listenerType) {
 		return listenerList.getListeners(listenerType);
 	}
 }

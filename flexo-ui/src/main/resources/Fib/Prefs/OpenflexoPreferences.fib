@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Panel id="0" vGap="5" borderLeft="0" hGap="5" height="99" sizeAdjustment="OriginalSize" controllerClassName="org.openflexo.components.PreferencesDialog$PreferencesFIBController" borderRight="0" border="empty" trackViewPortWidth="true" align="left" width="99" borderBottom="0" titleFont="Lucida Grande,0,13" borderTop="5" trackViewPortHeight="true" layout="gridbag" name="GeneralPreferencesPanel" flowAlignment="CENTER">
+  <Panel id="1" borderLeft="0" sizeAdjustment="OriginalSize" borderRight="0" border="empty" trackViewPortWidth="true" index="0" align="left" constraints="gridbag(anchor=center;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=0;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=center;padX=0;padY=0;weightX=0.0;weightY=0.0)" borderBottom="0" borderTitle="Panel" borderTop="0" trackViewPortHeight="true" layout="twocols" name="FIBPanel2">
+    <Image id="2" sizeAdjustment="OriginalSize" name="Image" data="data.applicationData.openflexoIcon.image" imageHeight="100" index="0" localize="true" align="left" constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=left)" imageWidth="100" />
+    <Panel id="3" borderLeft="0" sizeAdjustment="OriginalSize" borderRight="0" border="empty" trackViewPortWidth="true" index="0" align="left" constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=right)" borderBottom="0" borderTitle="Panel" borderTop="0" trackViewPortHeight="true" layout="border" name="FIBPanel">
+      <Image id="4" sizeAdjustment="OriginalSize" name="Image" data="data.applicationData.openflexoTextIcon.image" imageHeight="32" index="1" localize="true" align="left" constraints="border(location=center)" imageWidth="32" />
+      <Label id="5" name="Label" data="data.applicationData.businessName" foregroundColor="51,51,51" index="2" font="Dialog,2,12" align="left" constraints="border(location=south)" label="label" />
+    </Panel>
+    <Label id="6" name="SoftwareVersionLabel" localize="true" align="left" constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=20;location=left)" label="software_version" />
+    <TextField id="7" columns="20" name="TextField" data="data.softwareVersion" text="TextField" localize="true" constraints="twocols(expandHorizontally=false;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=20;location=right)" readOnly="true" />
+    <Label id="8" name="JavaVersionLabel" localize="true" align="left" constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=left)" label="java_version" />
+    <TextField id="9" columns="20" name="TextField2" data="data.javaVersion" text="TextField" localize="true" constraints="twocols(expandHorizontally=false;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=right)" readOnly="true" />
+    <Label id="10" name="PlatformLabel" localize="true" align="left" constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=left)" label="platform" />
+    <TextField id="11" columns="20" name="TextField3" data="data.platform" text="TextField" localize="true" constraints="twocols(expandHorizontally=false;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=right)" readOnly="true" />
+    <Label id="12" name="HeapMemorySizeLabel" localize="true" align="left" constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=left)" label="heap_memory_size" />
+    <TextField id="13" columns="20" name="TextField4" data="data.heapMemory" text="TextField" localize="true" constraints="twocols(expandHorizontally=false;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=right)" readOnly="true" />
+  </Panel>
+  <FIBVariable id="14" name="data" type="org.openflexo.prefs.FlexoPreferences" />
+  <LocalizedDictionary id="15">
+    <Localized id="16" value="Software version" lang="English" key="software_version" />
+    <Localized id="17" value="Software version" lang="Dutch" key="software_version" />
+    <Localized id="18" value="Version du logiciel" lang="French" key="software_version" />
+    <Localized id="19" value="Java version" lang="English" key="java_version" />
+    <Localized id="20" value="Java version" lang="Dutch" key="java_version" />
+    <Localized id="21" value="Version de Java" lang="French" key="java_version" />
+    <Localized id="22" value="Platform" lang="English" key="platform" />
+    <Localized id="23" value="Platform" lang="Dutch" key="platform" />
+    <Localized id="24" value="Plateforme" lang="French" key="platform" />
+    <Localized id="25" value="Heap memory size" lang="English" key="heap_memory_size" />
+    <Localized id="26" value="Heap memory size" lang="Dutch" key="heap_memory_size" />
+    <Localized id="27" value="Mémoire allouée" lang="French" key="heap_memory_size" />
+  </LocalizedDictionary>
+</Panel>

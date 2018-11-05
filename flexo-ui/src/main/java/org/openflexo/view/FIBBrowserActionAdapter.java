@@ -39,14 +39,16 @@
 package org.openflexo.view;
 
 import org.openflexo.connie.DataBinding;
-import org.openflexo.fib.model.FIBBrowserAction;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.action.FlexoAction;
-import org.openflexo.foundation.action.FlexoActionType;
+import org.openflexo.foundation.action.FlexoActionFactory;
+import org.openflexo.gina.model.FIBModelFactory;
+import org.openflexo.gina.model.widget.FIBBrowserAction;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
 import org.openflexo.model.annotations.XMLElement;
-import org.openflexo.view.controller.FlexoFIBController;
+import org.openflexo.model.exceptions.ModelDefinitionException;
+import org.openflexo.view.controller.FlexoController;
 
 /**
  * A built-in adapter in openflexo ui layer which allows to automatically map FlexoAction environment to FIBBrowser behaviour
@@ -73,36 +75,40 @@ public interface FIBBrowserActionAdapter<T extends FlexoObject> extends FIBBrows
 	public ActionType getActionType();
 
 	/**
-	 * Return {@link FlexoActionType}
+	 * Return {@link FlexoActionFactory}
 	 * 
 	 * @return
 	 */
-	public FlexoActionType<?, T, ?> getFlexoActionType();
+	public FlexoActionFactory<?, T, ?> getFlexoActionType();
 
-	public abstract class FIBBrowserActionAdapterImpl<T extends FlexoObject> extends FIBBrowserActionImpl implements
-			FIBBrowserActionAdapter<T> {
+	public abstract class FIBBrowserActionAdapterImpl<T extends FlexoObject> extends FIBBrowserActionImpl
+			implements FIBBrowserActionAdapter<T> {
 
-		public static <T extends FlexoObject> FIBBrowserActionAdapter<T> makeFIBBrowserActionAdapter(FlexoActionType<?, T, ?> actionType,
-				FIBBrowserView<?> browserView) {
-			FIBBrowserActionAdapterImpl<T> returned = (FIBBrowserActionAdapterImpl<T>) FlexoFIBController.FLEXO_FIB_FACTORY
+		public static <T extends FlexoObject> FIBBrowserActionAdapter<T> makeFIBBrowserActionAdapter(FlexoActionFactory<?, T, ?> actionType,
+				FIBBrowserView<?> browserView, FlexoController controller) throws ModelDefinitionException {
+
+			FIBModelFactory fibModelFactory = new FIBModelFactory(
+					controller != null ? controller.getApplicationContext().getTechnologyAdapterService() : null,
+					FIBBrowserActionAdapter.class);
+			FIBBrowserActionAdapterImpl<T> returned = (FIBBrowserActionAdapterImpl<T>) fibModelFactory
 					.newInstance(FIBBrowserActionAdapter.class);
 			returned.initWithActionType(actionType, browserView);
 			return returned;
 		}
 
-		private FlexoActionType<?, T, ?> actionType;
+		private FlexoActionFactory<?, T, ?> actionType;
 		private FIBBrowserView<?> browserView;
 
-		private void initWithActionType(FlexoActionType<?, T, ?> actionType, FIBBrowserView<?> browserView) {
+		private void initWithActionType(FlexoActionFactory<?, T, ?> actionType, FIBBrowserView<?> browserView) {
 			this.actionType = actionType;
 			this.browserView = browserView;
-			setMethod(new DataBinding<Object>("action.performAction(selected)"));
-			setIsAvailable(new DataBinding<Boolean>("action.isAvailable(selected)"));
+			setMethod(new DataBinding<>("action.performAction(selected)"));
+			setIsAvailable(new DataBinding<>("action.isAvailable(selected)"));
 		}
 
 		@Override
 		public Object performAction(T selected) {
-			FlexoAction action = actionType.makeNewAction(selected, null, browserView.getFIBController().getEditor());
+			FlexoAction<?, ?, ?> action = actionType.makeNewAction(selected, null, browserView.getFIBController().getEditor());
 			action.doAction();
 			return action;
 		}
@@ -115,8 +121,12 @@ public interface FIBBrowserActionAdapter<T extends FlexoObject> extends FIBBrows
 					.println("browserView.getFIBController().getFlexoController()=" + browserView.getFIBController().getFlexoController());
 			System.out.println("browserView.getFIBController().getEditor()=" + browserView.getFIBController().getEditor());*/
 
-			return browserView.getFIBController().getEditor().isActionVisible(actionType, selected, null)
-					&& browserView.getFIBController().getEditor().isActionEnabled(actionType, selected, null);
+			if (browserView.getFIBController().getEditor() != null) {
+				return browserView.getFIBController().getEditor().isActionVisible(actionType, selected, null)
+						&& browserView.getFIBController().getEditor().isActionEnabled(actionType, selected, null);
+			}
+
+			return false;
 		}
 
 		@Override
@@ -126,18 +136,25 @@ public interface FIBBrowserActionAdapter<T extends FlexoObject> extends FIBBrows
 
 		@Override
 		public ActionType getActionType() {
-			if (actionType.getActionCategory() == FlexoActionType.ADD_ACTION_TYPE) {
+			if (actionType.getActionCategory() == FlexoActionFactory.ADD_ACTION_TYPE) {
 				return ActionType.Add;
-			} else if (actionType.getActionCategory() == FlexoActionType.DELETE_ACTION_TYPE) {
+			}
+			else if (actionType.getActionCategory() == FlexoActionFactory.DELETE_ACTION_TYPE) {
 				return ActionType.Delete;
-			} else {
+			}
+			else {
 				return ActionType.Custom;
 			}
 		}
 
 		@Override
-		public FlexoActionType<?, T, ?> getFlexoActionType() {
+		public FlexoActionFactory<?, T, ?> getFlexoActionType() {
 			return actionType;
+		}
+
+		@Override
+		public boolean isSerializable() {
+			return false;
 		}
 
 	}

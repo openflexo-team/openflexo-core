@@ -38,12 +38,12 @@
 
 package org.openflexo.foundation.fml;
 
-import org.openflexo.fib.annotation.FIBPanel;
+import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
+import org.openflexo.foundation.fml.rt.action.DeletionSchemeActionFactory;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
 import org.openflexo.model.annotations.XMLElement;
 
-@FIBPanel("Fib/FML/DeletionSchemePanel.fib")
 @ModelEntity
 @ImplementationClass(DeletionScheme.DeletionSchemeImpl.class)
 @XMLElement
@@ -53,6 +53,11 @@ public interface DeletionScheme extends AbstractActionScheme {
 
 		public DeletionSchemeImpl() {
 			super();
+		}
+
+		@Override
+		public DeletionSchemeActionFactory getActionFactory(FlexoConceptInstance fci) {
+			return new DeletionSchemeActionFactory(this, fci);
 		}
 
 	}

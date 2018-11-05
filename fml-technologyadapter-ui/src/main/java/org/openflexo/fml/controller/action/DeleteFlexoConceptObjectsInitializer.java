@@ -46,18 +46,18 @@ import java.util.logging.Logger;
 import javax.swing.Icon;
 import javax.swing.KeyStroke;
 
-import org.openflexo.foundation.action.AbstractCopyAction.InvalidSelectionException;
 import org.openflexo.foundation.action.FlexoActionInitializer;
+import org.openflexo.foundation.action.FlexoActionFactory;
+import org.openflexo.foundation.action.copypaste.AbstractCopyAction.InvalidSelectionException;
 import org.openflexo.foundation.fml.FlexoConceptObject;
 import org.openflexo.foundation.fml.action.DeleteFlexoConceptObjects;
 import org.openflexo.icon.IconLibrary;
-import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.view.controller.ActionInitializer;
 import org.openflexo.view.controller.ControllerActionInitializer;
 import org.openflexo.view.controller.FlexoController;
 
-public class DeleteFlexoConceptObjectsInitializer extends
-		ActionInitializer<DeleteFlexoConceptObjects, FlexoConceptObject, FlexoConceptObject> {
+public class DeleteFlexoConceptObjectsInitializer
+		extends ActionInitializer<DeleteFlexoConceptObjects, FlexoConceptObject, FlexoConceptObject> {
 
 	private static final Logger logger = Logger.getLogger(ControllerActionInitializer.class.getPackage().getName());
 
@@ -73,9 +73,11 @@ public class DeleteFlexoConceptObjectsInitializer extends
 				try {
 					if (action.getObjectsToDelete().size() > 1) {
 						return FlexoController
-								.confirm(FlexoLocalization.localizedForKey("would_you_really_like_to_delete_those_objects_?"));
-					} else {
-						return FlexoController.confirm(FlexoLocalization.localizedForKey("would_you_really_like_to_delete_this_object_?"));
+								.confirm(action.getLocales().localizedForKey("would_you_really_like_to_delete_those_objects_?"));
+					}
+					else {
+						return FlexoController
+								.confirm(action.getLocales().localizedForKey("would_you_really_like_to_delete_this_object_?"));
 					}
 				} catch (HeadlessException e1) {
 					e1.printStackTrace();
@@ -89,7 +91,7 @@ public class DeleteFlexoConceptObjectsInitializer extends
 	}
 
 	@Override
-	protected Icon getEnabledIcon() {
+	protected Icon getEnabledIcon(FlexoActionFactory actionType) {
 		return IconLibrary.DELETE_ICON;
 	}
 

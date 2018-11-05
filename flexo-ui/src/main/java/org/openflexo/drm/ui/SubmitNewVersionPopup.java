@@ -53,9 +53,9 @@ import javax.swing.JPanel;
 import org.openflexo.drm.DocItem;
 import org.openflexo.drm.DocItemVersion;
 import org.openflexo.foundation.FlexoEditor;
-import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.localization.Language;
 import org.openflexo.view.FlexoDialog;
+import org.openflexo.view.controller.FlexoController;
 
 /**
  * Popup allowing to choose some objects of a given type from Flexo model objects hierarchy
@@ -70,10 +70,11 @@ public class SubmitNewVersionPopup extends FlexoDialog {
 	protected SubmitNewVersionView _view;
 	protected JButton hideShowDetailsButton;
 
-	public SubmitNewVersionPopup(final DocItem docItem, Language language, Frame owner, FlexoEditor editor) {
+	public SubmitNewVersionPopup(final DocItem docItem, Language language, Frame owner, final FlexoController controller,
+			FlexoEditor editor) {
 		super(owner);
 
-		String title = FlexoLocalization.localizedForKey("submit_documentation_for") + " " + docItem.getIdentifier();
+		String title = controller.getModuleLocales().localizedForKey("submit_documentation_for") + " " + docItem.getIdentifier();
 		setTitle(title);
 		getContentPane().setLayout(new BorderLayout());
 
@@ -83,7 +84,7 @@ public class SubmitNewVersionPopup extends FlexoDialog {
 		JPanel controlPanel = new JPanel();
 		controlPanel.setLayout(new FlowLayout());
 
-		JButton applyButton = new JButton(FlexoLocalization.localizedForKey("submit_documentation"));
+		JButton applyButton = new JButton(controller.getModuleLocales().localizedForKey("submit_documentation"));
 		applyButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -95,7 +96,7 @@ public class SubmitNewVersionPopup extends FlexoDialog {
 		controlPanel.add(applyButton);
 		applyButton.setSelected(true);
 
-		JButton cancelButton = new JButton(FlexoLocalization.localizedForKey("cancel_submission"));
+		JButton cancelButton = new JButton(controller.getModuleLocales().localizedForKey("cancel_submission"));
 		cancelButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -105,19 +106,20 @@ public class SubmitNewVersionPopup extends FlexoDialog {
 		});
 		controlPanel.add(cancelButton);
 
-		hideShowDetailsButton = new JButton(FlexoLocalization.localizedForKey("show_details"));
+		hideShowDetailsButton = new JButton(controller.getModuleLocales().localizedForKey("show_details"));
 		hideShowDetailsButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				if (_view.showDetails) {
 					_view.hideDetails();
-					hideShowDetailsButton.setText(FlexoLocalization.localizedForKey("show_details", hideShowDetailsButton));
-				} else {
+					hideShowDetailsButton.setText(controller.getModuleLocales().localizedForKey("show_details", hideShowDetailsButton));
+				}
+				else {
 					setSize(1000, 900);
 					Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
 					setLocation((dim.width - getSize().width) / 2, (dim.height - getSize().height) / 2 - 100);
 					_view.showDetails();
-					hideShowDetailsButton.setText(FlexoLocalization.localizedForKey("hide_details", hideShowDetailsButton));
+					hideShowDetailsButton.setText(controller.getModuleLocales().localizedForKey("hide_details", hideShowDetailsButton));
 					pack();
 					repaint();
 				}

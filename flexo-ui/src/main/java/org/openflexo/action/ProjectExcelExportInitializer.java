@@ -47,8 +47,8 @@ import javax.swing.Icon;
 import javax.swing.JFileChooser;
 
 import org.openflexo.foundation.action.FlexoActionInitializer;
+import org.openflexo.foundation.action.FlexoActionFactory;
 import org.openflexo.icon.IconLibrary;
-import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.toolbox.FileUtils;
 import org.openflexo.view.FlexoFrame;
 import org.openflexo.view.controller.ActionInitializer;
@@ -96,12 +96,13 @@ public class ProjectExcelExportInitializer extends ActionInitializer {
 					}
 					boolean doIt = false;
 					if (out.exists()) {
-						if (FlexoController.confirm(FlexoLocalization.localizedForKey("the_file") + " " + out.getName() + " "
-								+ FlexoLocalization.localizedForKey("already_exists") + "\n"
-								+ FlexoLocalization.localizedForKey("do_you_want_to_replace_it?"))) {
+						if (FlexoController.confirm(action.getLocales().localizedForKey("the_file") + " " + out.getName() + " "
+								+ action.getLocales().localizedForKey("already_exists") + "\n"
+								+ action.getLocales().localizedForKey("do_you_want_to_replace_it?"))) {
 							doIt = true; // the file exists but the user has confirmed the replacement
 						}
-					} else {
+					}
+					else {
 						doIt = true; // the file does not exist
 					}
 					if (doIt) {
@@ -110,7 +111,7 @@ public class ProjectExcelExportInitializer extends ActionInitializer {
 							return true;
 						} catch (IOException e) {
 							e.printStackTrace();
-							FlexoController.showError(FlexoLocalization.localizedForKey("export_failed"));
+							FlexoController.showError(action.getLocales().localizedForKey("export_failed"));
 							return false;
 						}
 					}
@@ -122,7 +123,7 @@ public class ProjectExcelExportInitializer extends ActionInitializer {
 	}
 
 	@Override
-	protected Icon getEnabledIcon() {
+	protected Icon getEnabledIcon(FlexoActionFactory actionType) {
 		return IconLibrary.BIG_EXCEL_ICON;
 	}
 

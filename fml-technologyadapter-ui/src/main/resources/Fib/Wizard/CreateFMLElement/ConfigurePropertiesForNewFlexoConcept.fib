@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Panel id="0" align="left" borderTop="0" borderLeft="0" trackViewPortHeight="true" trackViewPortWidth="true" borderBottom="0" border="empty" sizeAdjustment="OriginalSize" titleFont="Lucida Grande,0,13" layout="twocols" borderRight="0" controllerClassName="org.openflexo.view.controller.FlexoFIBController">
+  <Panel id="1" align="left" borderTop="2" borderLeft="0" trackViewPortHeight="true" trackViewPortWidth="true" borderBottom="2" border="empty" sizeAdjustment="OriginalSize" darkLevel="1" titleFont="SansSerif,0,11" layout="gridbag" borderRight="2" opaque="false" index="5" constraints="twocols(anchor=center;expandHorizontally=true;expandVertically=true;fill=both;gridHeight=0;gridWidth=1;gridX=0;gridY=0;index=0;insetsBottom=0;insetsLeft=10;insetsRight=10;insetsTop=0;location=north;padX=0;padY=0;splitIdentifier=top;weightX=1.0;weightY=1.0)" name="ParametersPanel">
+    <Table id="2" boundToSelectionManager="true" backgroundNonSelectionColor="255,255,255" iteratorClassName="org.openflexo.foundation.fml.action.PropertyEntry" backgroundSecondarySelectionColor="178,215,255" autoSelectFirstRow="true" lookAndFeel="Classic" selectionMode="MultipleIntervalSelection" localize="true" manageDynamicModel="true" rightClickAction="controller.rightClick(PropertiesTable.selected,event)" data="data.action.propertiesEntries" index="0" constraints="gridbag(anchor=center;fill=both;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=1;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=center;padX=0;padY=0;weightX=0.0;weightY=1.0;x=0;y=0)" font="SansSerif.plain,0,11" name="PropertiesTable">
+      <IconColumn id="3" data="data.getIconForProperty(iterator)" resizable="false" title="icon" displayTitle="false" columnWidth="20" showIcon="false" name="icon" />
+      <TextFieldColumn id="4" data="iterator.name" resizable="true" title="property" displayTitle="true" columnWidth="120" showIcon="false" name="parameter" />
+      <AddAction id="5" method="data.action.newPropertyEntry" name="add_property" />
+      <RemoveAction id="6" method="data.action.deletePropertyEntry(selected)" name="delete_property" />
+    </Table>
+    <Panel id="7" align="left" borderTop="0" borderTitle="Panel" borderLeft="0" trackViewPortHeight="true" trackViewPortWidth="true" borderBottom="0" boxLayoutAxis="Y_AXIS" border="empty" sizeAdjustment="OriginalSize" titleFont="SansSerif,0,11" layout="box" borderRight="0" opaque="false" index="0" constraints="gridbag(anchor=north;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=0;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=east;padX=0;padY=0;weightX=0.0;weightY=0.0)" name="PropertiesOrderingPanel">
+      <Button id="8" buttonIcon="controller.arrowTop" buttonType="Trigger" action="data.action.propertyFirst(PropertiesTable.selected)" label="" localize="true" enable="((PropertiesTable.selected != null) &amp; (data.action.propertiesEntries.indexOf(PropertiesTable.selected) &gt; 0))" index="0" constraints="box(alignmentX=0.5;alignmentY=0.5;index=0;location=west)" name="Button">
+        <Dependancy id="9" componentName="PropertiesTable" />
+      </Button>
+      <Button id="10" buttonIcon="controller.arrowUp" buttonType="Trigger" action="data.action.propertyUp(PropertiesTable.selected)" label="" localize="true" enable="((PropertiesTable.selected != null) &amp; (data.action.propertiesEntries.indexOf(PropertiesTable.selected) &gt; 0))" index="1" constraints="box(alignmentX=0.5;alignmentY=0.5;index=1;location=north)" name="Button2">
+        <Dependancy id="11" componentName="PropertiesTable" />
+      </Button>
+      <Button id="12" buttonIcon="controller.arrowDown" buttonType="Trigger" action="data.action.propertyDown(PropertiesTable.selected)" label="" localize="true" enable="((PropertiesTable.selected != null) &amp; (data.action.propertiesEntries.indexOf(PropertiesTable.selected) &lt; (data.action.propertiesEntries.size - 1)))" index="2" constraints="box(alignmentX=0.5;alignmentY=0.5;index=2;location=center)" name="Button3">
+        <Dependancy id="13" componentName="PropertiesTable" />
+      </Button>
+      <Button id="14" buttonIcon="controller.arrowBottom" buttonType="Trigger" action="data.action.propertyLast(PropertiesTable.selected)" label="" localize="true" enable="((PropertiesTable.selected != null) &amp; (data.action.propertiesEntries.indexOf(PropertiesTable.selected) &lt; (data.action.propertiesEntries.size - 1)))" index="3" constraints="box(alignmentX=0.5;alignmentY=0.5;index=3;location=east)" name="Button4">
+        <Dependancy id="15" componentName="PropertiesTable" />
+      </Button>
+    </Panel>
+    <Panel id="16" align="left" borderTop="10" borderLeft="10" trackViewPortHeight="true" trackViewPortWidth="true" borderBottom="10" border="rounded3d" sizeAdjustment="OriginalSize" darkLevel="2" titleFont="SansSerif,0,11" layout="twocols" borderRight="10" index="2" constraints="gridbag(anchor=center;fill=both;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=2;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;padX=0;padY=0;weightX=1.0;weightY=1.0)" name="DetailsPanel">
+      <FIBReferencedComponent id="17" componentFile="../PropertyEntryPanel.fib" localize="true" data="PropertiesTable.selected" visible="(PropertiesTable.selected != null)" index="1" constraints="twocols(expandHorizontally=true;expandVertically=true;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=right)" name="ReferencedComponent">
+        <ReferenceAssignment id="18" variable="controller.flexoController" value="controller.flexoController" mandatory="true" />
+      </FIBReferencedComponent>
+      <Label id="19" label="&lt;html&gt;&lt;a href=&quot;&quot;&gt;click_to_add_a_property&lt;/a&gt;&lt;/html&gt;" align="center" localize="true" clickAction="data.action.newPropertyEntry" visible="(PropertiesTable.selected = null)" constraints="twocols(expandHorizontally=true;expandVertically=true;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=right)" name="ClickToAdd" />
+    </Panel>
+  </Panel>
+  <FIBVariable id="20" type="org.openflexo.fml.controller.action.AbstractCreateFlexoConceptWizard$ConfigurePropertiesForNewFlexoConcept" name="data" />
+  <LocalizedDictionary id="21">
+    <Localized id="22" lang="English" value="Icon" key="icon" />
+    <Localized id="23" lang="Dutch" value="Icon" key="icon" />
+    <Localized id="24" lang="French" value="Icone" key="icon" />
+    <Localized id="25" lang="English" value="Property" key="property" />
+    <Localized id="26" lang="Dutch" value="Property" key="property" />
+    <Localized id="27" lang="French" value="Propriété" key="property" />
+    <Localized id="28" lang="English" value="Add property" key="add_property" />
+    <Localized id="29" lang="Dutch" value="Add property" key="add_property" />
+    <Localized id="30" lang="French" value="Ajouter une propriété" key="add_property" />
+    <Localized id="31" lang="English" value="Delete property" key="delete_property" />
+    <Localized id="32" lang="Dutch" value="Delete property" key="delete_property" />
+    <Localized id="33" lang="French" value="Supprimer la propriété" key="delete_property" />
+   <Localized id="73" lang="English" value="&lt;html&gt;&lt;a href=&quot;&quot;&gt;Click to add a property&lt;/a&gt;&lt;/html&gt;" key="&lt;html&gt;&lt;a href=&quot;&quot;&gt;click_to_add_a_property&lt;/a&gt;&lt;/html&gt;" />
+    <Localized id="74" lang="Dutch" value="&lt;html&gt;&lt;a href=&quot;&quot;&gt;Click to add a property&lt;/a&gt;&lt;/html&gt;" key="&lt;html&gt;&lt;a href=&quot;&quot;&gt;click_to_add_a_property&lt;/a&gt;&lt;/html&gt;" />
+    <Localized id="75" lang="French" value="&lt;html&gt;&lt;a href=&quot;&quot;&gt;Cliquer pour ajouter une propriété&lt;/a&gt;&lt;/html&gt;" key="&lt;html&gt;&lt;a href=&quot;&quot;&gt;click_to_add_a_property&lt;/a&gt;&lt;/html&gt;" />
+  </LocalizedDictionary>
+</Panel>

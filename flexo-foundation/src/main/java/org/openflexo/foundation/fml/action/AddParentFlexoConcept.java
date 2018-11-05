@@ -46,7 +46,7 @@ import java.util.logging.Logger;
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoObject.FlexoObjectImpl;
 import org.openflexo.foundation.action.FlexoAction;
-import org.openflexo.foundation.action.FlexoActionType;
+import org.openflexo.foundation.action.FlexoActionFactory;
 import org.openflexo.foundation.fml.FMLObject;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.InconsistentFlexoConceptHierarchyException;
@@ -58,13 +58,12 @@ import org.openflexo.foundation.fml.action.AbstractCreateFlexoConcept.ParentFlex
  * @author sylvain
  *
  */
-@SuppressWarnings("serial")
 public class AddParentFlexoConcept extends FlexoAction<AddParentFlexoConcept, FlexoConcept, FMLObject> {
 
 	private static final Logger logger = Logger.getLogger(AddParentFlexoConcept.class.getPackage().getName());
 
-	public static FlexoActionType<AddParentFlexoConcept, FlexoConcept, FMLObject> actionType = new FlexoActionType<AddParentFlexoConcept, FlexoConcept, FMLObject>(
-			"add_parent_flexo_concept", FlexoActionType.defaultGroup, FlexoActionType.NORMAL_ACTION_TYPE) {
+	public static FlexoActionFactory<AddParentFlexoConcept, FlexoConcept, FMLObject> actionType = new FlexoActionFactory<AddParentFlexoConcept, FlexoConcept, FMLObject>(
+			"add_parent_flexo_concept", FlexoActionFactory.defaultGroup, FlexoActionFactory.NORMAL_ACTION_TYPE) {
 
 		/**
 		 * Factory method
@@ -92,9 +91,9 @@ public class AddParentFlexoConcept extends FlexoAction<AddParentFlexoConcept, Fl
 
 	private final List<ParentFlexoConceptEntry> parentFlexoConceptEntries;
 
-	AddParentFlexoConcept(FlexoConcept focusedObject, Vector<FMLObject> globalSelection, FlexoEditor editor) {
+	private AddParentFlexoConcept(FlexoConcept focusedObject, Vector<FMLObject> globalSelection, FlexoEditor editor) {
 		super(actionType, focusedObject, globalSelection, editor);
-		parentFlexoConceptEntries = new ArrayList<AbstractCreateFlexoConcept.ParentFlexoConceptEntry>();
+		parentFlexoConceptEntries = new ArrayList<>();
 		for (FlexoConcept parentConcept : getFocusedObject().getParentFlexoConcepts()) {
 			addToParentConcepts(parentConcept);
 		}

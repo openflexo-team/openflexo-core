@@ -39,25 +39,25 @@
 package org.openflexo.foundation.fml.action;
 
 import java.security.InvalidParameterException;
+import java.util.ArrayList;
 import java.util.Vector;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoObject.FlexoObjectImpl;
 import org.openflexo.foundation.action.FlexoAction;
-import org.openflexo.foundation.action.FlexoActionType;
+import org.openflexo.foundation.action.FlexoActionFactory;
 import org.openflexo.foundation.action.NotImplementedException;
 import org.openflexo.foundation.fml.FMLObject;
-import org.openflexo.foundation.fml.ViewPoint;
 import org.openflexo.foundation.fml.VirtualModel;
-import org.openflexo.foundation.resource.FlexoResource;
+import org.openflexo.foundation.fml.rm.VirtualModelResource;
 
 public class DeleteVirtualModel extends FlexoAction<DeleteVirtualModel, VirtualModel, FMLObject> {
 
 	private static final Logger logger = Logger.getLogger(DeleteVirtualModel.class.getPackage().getName());
 
-	public static FlexoActionType<DeleteVirtualModel, VirtualModel, FMLObject> actionType = new FlexoActionType<DeleteVirtualModel, VirtualModel, FMLObject>(
-			"delete_virtual_model", FlexoActionType.editGroup, FlexoActionType.DELETE_ACTION_TYPE) {
+	public static FlexoActionFactory<DeleteVirtualModel, VirtualModel, FMLObject> actionType = new FlexoActionFactory<DeleteVirtualModel, VirtualModel, FMLObject>(
+			"delete_virtual_model", FlexoActionFactory.editGroup, FlexoActionFactory.DELETE_ACTION_TYPE) {
 
 		/**
 		 * Factory method
@@ -69,7 +69,7 @@ public class DeleteVirtualModel extends FlexoAction<DeleteVirtualModel, VirtualM
 
 		@Override
 		public boolean isVisibleForSelection(VirtualModel object, Vector<FMLObject> globalSelection) {
-			return object != null && object instanceof VirtualModel;
+			return object != null;
 		}
 
 		@Override
@@ -83,29 +83,38 @@ public class DeleteVirtualModel extends FlexoAction<DeleteVirtualModel, VirtualM
 		FlexoObjectImpl.addActionForClass(DeleteVirtualModel.actionType, VirtualModel.class);
 	}
 
-	DeleteVirtualModel(VirtualModel focusedObject, Vector<FMLObject> globalSelection, FlexoEditor editor) {
+	private DeleteVirtualModel(VirtualModel focusedObject, Vector<FMLObject> globalSelection, FlexoEditor editor) {
 		super(actionType, focusedObject, globalSelection, editor);
 	}
 
 	@Override
 	protected void doAction(Object context) throws NotImplementedException, InvalidParameterException {
 		logger.info("Delete VirtualModel");
-		FlexoResource<ViewPoint> viewPointResource = null;
-		FlexoResource<VirtualModel> virtualModelResource = getFocusedObject().getResource();
-		if (getFocusedObject().getOwningVirtualModel() instanceof ViewPoint) {
-			viewPointResource = ((ViewPoint) getFocusedObject().getOwningVirtualModel()).getResource();
-			((ViewPoint) (getFocusedObject().getOwningVirtualModel())).removeFromVirtualModels(getFocusedObject());
+
+		// First recursively delete contained VirtualModel
+		for (VirtualModel vm : new ArrayList<>(getFocusedObject().getVirtualModels())) {
+			DeleteVirtualModel deleteVM = DeleteVirtualModel.actionType.makeNewEmbeddedAction(vm, null, this);
+			deleteVM.doAction();
 		}
-		System.out.println("On supprime le VM");
-		getFocusedObject().delete();
+
+		// Then handle the resource
+		VirtualModelResource virtualModelResource = (VirtualModelResource) getFocusedObject().getResource();
 		if (virtualModelResource != null) {
-			System.out.println("on supprime la resource");
+			VirtualModelResource containerResource = virtualModelResource.getContainer();
+			if (containerResource != null) {
+				containerResource.getVirtualModel().removeFromVirtualModels(getFocusedObject());
+			}
+
+			// Delete the VirtualModel itself
+			getFocusedObject().delete();
+
+			// Delete the resource and notify container
 			virtualModelResource.delete();
-			if (viewPointResource != null) {
-				System.out.println("on notifie");
-				viewPointResource.notifyContentsRemoved(virtualModelResource);
+			if (containerResource != null) {
+				containerResource.notifyContentsRemoved(virtualModelResource);
 			}
 		}
+
 	}
 
 }

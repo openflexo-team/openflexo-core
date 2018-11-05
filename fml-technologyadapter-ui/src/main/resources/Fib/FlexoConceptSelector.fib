@@ -19,7 +19,6 @@
 		iteratorClassName="org.openflexo.foundation.fml.FlexoConcept"
 		autoSelectFirstRow="true" />
 	<Panel layout="gridbag" borderTitle="Panel" darkLevel="0" index="1"
-		data=""
 		constraints="twocols(expandHorizontally=true;expandVertically=false;index=1;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=center)"
 		visible="" name="Matches" opaque="false">
 		<Label label="dsffdsmksdfmkfdsmkfdsmkdfskmsdf" align="right"
@@ -32,61 +31,40 @@
 			enterPressedAction="" valueChangedAction="" />
 	</Panel>
 	<Browser root="data.rootObject" iteratorClassName="org.openflexo.foundation.fml.FlexoConcept"
-		visibleRowCount="5" rowHeight="18" boundToSelectionManager="false"
-		selectionMode="DiscontiguousTreeSelection" selected="data.selectedValue"
-		showFooter="true" rootVisible="true" showRootsHandle="true" format=""
-		icon="" tooltip="" localize="true" enable="" manageDynamicModel="true"
+		deepExploration="true" visibleRowCount="5" rowHeight="18"
+		boundToSelectionManager="false" selectionMode="DiscontiguousTreeSelection"
+		selected="data.selectedValue" showFooter="true" rootVisible="true"
+		showRootsHandle="true" format="" localize="true" manageDynamicModel="true"
 		clickAction="controller.selectedObjectChanged()" doubleClickAction="controller.apply()"
-		rightClickAction="" enterPressedAction="controller.apply()"
-		valueChangedAction="" name="ViewPointBrowser" index="2" data=""
-		constraints="twocols(expandHorizontally=true;expandVertically=true;index=2;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=center)"
-		visible="">
-		<BrowserElement dataClassName="org.openflexo.foundation.fml.ViewPointLibrary"
+		enterPressedAction="controller.apply()" name="ViewPointBrowser" index="2"
+		constraints="twocols(expandHorizontally=true;expandVertically=true;index=2;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=center)">
+		<BrowserElement dataClassName="org.openflexo.foundation.fml.VirtualModelLibrary"
 			label="&quot;Viewpoint Library&quot;" icon="controller.iconForObject(viewPointLibrary)"
-			isEditable="false" filtered="false" defaultVisible="true" name="viewPointLibrary">
+			isEditable="false" filtered="false" defaultVisible="true" name="viewPointLibrary" >
 			<Children data="viewPointLibrary.resourceCenterService.resourceCenters"
-				cast="child.viewPointRepository.rootFolder" name="resourceCenters" />
+				cast="child.virtualModelRepository.rootFolder" name="resourceCenters" />
 		</BrowserElement>
 		<BrowserElement dataClassName="org.openflexo.foundation.resource.RepositoryFolder"
-			label="viewPointFolder.displayableName" icon="controller.iconForObject(viewPointFolder)"
-			isEditable="false" filtered="false" defaultVisible="true" name="viewPointFolder">
-			<Children data="viewPointFolder.children" name="subFolders" />
-			<Children data="viewPointFolder.resources" name="viewPoints" />
+			label="folder.displayableName" icon="controller.iconForObject(folder)"
+			isEditable="false" filtered="false" defaultVisible="true" name="folder" visible="folder.resources.size &gt; 0">
+			<Children data="folder.children" name="subFolders" />
+			<Children data="folder.resources" name="viewPoints"
+				cast="child.loadedResourceData" />
 		</BrowserElement>
-		<BrowserElement dataClassName="org.openflexo.foundation.fml.rm.ViewPointResource"
-			label="viewPointResource.name" icon="controller.iconForObject(viewPointResource)"
-			tooltip="" enabled="viewPointResource.isLoaded" isEditable="false"
-			editableLabel="" filtered="false" defaultVisible="true" dynamicFont=""
-			name="viewPointResource">
-			<Children data="viewPointResource.contents" visible="viewPointResource.isLoaded"
-				name="subResources" />
-		</BrowserElement>
-		<BrowserElement dataClassName="org.openflexo.foundation.fml.rm.VirtualModelResource"
-			label="virtualModel.name" icon="controller.iconForObject(virtualModel)"
-			tooltip="" enabled="virtualModel.isLoaded" isEditable="false"
+		<BrowserElement dataClassName="org.openflexo.foundation.fml.VirtualModel"
+			label="virtualModel.name+'.fml'" icon="controller.iconForObject(virtualModel)"
+			isEditable="false"
 			editableLabel="" filtered="false" defaultVisible="true" dynamicFont=""
 			name="virtualModel">
-			<Children data="virtualModel.contents" visible="virtualModel.isLoaded"
-				cast="" name="subresources" />
-			<!-- <Children data="virtualModel.loadedVirtualModel.modelSlots" visible="virtualModel.isLoaded" 
-				cast="" name="modelSlots" /> -->
-			<Children data="virtualModel.loadedVirtualModel.allRootFlexoConcepts"
-				visible="virtualModel.isLoaded" cast="" name="rootFlexoConcepts" />
-		</BrowserElement>
-
-
-		<BrowserElement dataClassName="org.openflexo.foundation.fml.ViewPoint"
-			label="viewPoint.name" icon="controller.iconForObject(viewPoint)"
-			tooltip="" enabled="" visible="" isEditable="false" editableLabel=""
-			filtered="false" defaultVisible="true" dynamicFont="" name="viewPoint">
-			<Children data="viewPoint.virtualModels" visible="" cast=""
-				name="virtualModels" />
+			<Children data="virtualModel.virtualModels" name="subresources" />
+			<Children data="virtualModel.allRootFlexoConcepts" name="rootFlexoConcepts" />
 		</BrowserElement>
 		<BrowserElement dataClassName="org.openflexo.foundation.fml.FlexoConcept"
 			label="flexoConcept.name" icon="controller.iconForObject(flexoConcept)"
-			tooltip="" enabled="" visible="" isEditable="false" editableLabel=""
+			enabled="data.isAcceptableValue(flexoConcept)"
+			tooltip="" visible="" isEditable="false" editableLabel=""
 			filtered="false" defaultVisible="true" dynamicFont="" name="flexoConcept">
-			<Children data="flexoConcept.childFlexoConcepts" visible=""
+			<Children data="flexoConcept.embeddedFlexoConcepts" visible=""
 				cast="" name="children" />
 		</BrowserElement>
 		<BrowserElement dataClassName="org.openflexo.foundation.fml.VirtualModel"
@@ -98,7 +76,7 @@
 		</BrowserElement>
 	</Browser>
 	<Panel layout="flow" hGap="5" vGap="0" flowAlignment="CENTER"
-		borderTitle="Panel" darkLevel="0" index="3" data=""
+		borderTitle="Panel" darkLevel="0" index="3"
 		constraints="twocols(expandHorizontally=true;expandVertically=false;index=3;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=center)"
 		visible="" opaque="false">
 		<Button action="controller.apply()" buttonIcon="" buttonType="Trigger"

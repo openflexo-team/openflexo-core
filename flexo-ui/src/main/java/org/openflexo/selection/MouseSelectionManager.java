@@ -103,7 +103,7 @@ public abstract class MouseSelectionManager extends SelectionManager implements 
 
 		setLastClickedContainer(clickedContainer);
 		setLastClickedPoint(clickedPoint);
-		if (ToolBox.getPLATFORM() != ToolBox.MACOS || e.getButton() != MouseEvent.BUTTON3) {
+		if (!ToolBox.isMacOS() || e.getButton() != MouseEvent.BUTTON3) {
 			processMouseClicked(clickedContainer, clickedPoint, e.getClickCount(), e.getModifiersEx() == FlexoCst.MULTI_SELECTION_MASK);
 		}
 	}
@@ -191,9 +191,9 @@ public abstract class MouseSelectionManager extends SelectionManager implements 
 	public FlexoObject getPasteContext() {
 		return pasteContextForComponent(getLastClickedContainer());
 	}
-
+	
 	public abstract FlexoObject pasteContextForComponent(JComponent aComponent);
-
+	
 	@Override
 	public PastingGraphicalContext getPastingGraphicalContext() {
 		return _pastingGraphicalContext;

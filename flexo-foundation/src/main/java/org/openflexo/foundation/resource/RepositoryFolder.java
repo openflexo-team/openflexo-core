@@ -39,32 +39,37 @@
 
 package org.openflexo.foundation.resource;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.openflexo.connie.annotations.NotificationUnsafe;
 import org.openflexo.foundation.DefaultFlexoObject;
-import org.openflexo.toolbox.FileUtils;
 import org.openflexo.toolbox.StringUtils;
 
 /**
- * Represents a folder, as an organization item inside a {@link ResourceRepository}
+ * Represents a folder, as an organization item inside a {@link ResourceRepositoryImpl}
  * 
+ * @param <R>
+ *            type of resources being stored in this {@link ResourceRepositoryImpl}
+ * @param <I>
+ *            serialization artefact type
+ *
  * @author sylvain
  * 
  */
-public class RepositoryFolder<R extends FlexoResource<?>> extends DefaultFlexoObject {
+public class RepositoryFolder<R extends FlexoResource<?>, I> extends DefaultFlexoObject {
 
 	private static final Logger logger = Logger.getLogger(RepositoryFolder.class.getPackage().getName());
 
-	private final ResourceRepository<R> resourceRepository;
+	private I serializationArtefact;
+	private final ResourceRepository<R, I> resourceRepository;
 	private String name;
-	private String fullQualifiedPath;
+	private String description;
 	private String repositoryContext = null;
-	private RepositoryFolder<R> parent;
-	private final ArrayList<RepositoryFolder<R>> children;
+	private RepositoryFolder<R, I> parent;
+	private final ArrayList<RepositoryFolder<R, I>> children;
 	private final ArrayList<R> resources;
 
 	public static final String NAME_KEY = "name";
@@ -73,68 +78,97 @@ public class RepositoryFolder<R extends FlexoResource<?>> extends DefaultFlexoOb
 	public static final String CHILDREN_KEY = "children";
 	public static final String RESOURCES_KEY = "resources";
 
-	public RepositoryFolder(String name, RepositoryFolder<R> parentFolder, ResourceRepository<R> resourceRepository) {
+	public RepositoryFolder(I serializationArtefact, RepositoryFolder<R, I> parentFolder, ResourceRepository<R, I> resourceRepository) {
+		this.serializationArtefact = serializationArtefact;
 		this.resourceRepository = resourceRepository;
-		this.name = name;
+		this.name = resourceRepository.getResourceCenter().retrieveName(serializationArtefact);
 		this.parent = parentFolder;
-		children = new ArrayList<RepositoryFolder<R>>();
-		resources = new ArrayList<R>();
+		children = new ArrayList<>();
+		resources = new ArrayList<>();
 		if (parentFolder != null) {
-			parentFolder.addToChildren(this);
+			// FIXME: Adding try catch here to avoid failure in case of concurrent modifications
+			try {
+				parentFolder.addToChildren(this);
+			} catch (Throwable e) {
+				logger.log(Level.SEVERE, "Can't add " + this.getName() + " to " + parentFolder.getName(), e);
+			}
 		}
+	}
+
+	public I getSerializationArtefact() {
+		return serializationArtefact;
+	}
+
+	public void setSerializationArtefact(I serializationArtefact) {
+		this.serializationArtefact = serializationArtefact;
 	}
 
 	public String getName() {
-		if (getFile() != null) {
-			return getFile().getName();
+		if (getSerializationArtefact() == null || getResourceRepository() == null || getResourceRepository().getResourceCenter() == null) {
+			return name;
 		}
-		return name;
+		return (getResourceRepository().getResourceCenter().retrieveName(getSerializationArtefact()));
 	}
 
 	public void setName(String name) {
-		File oldFile = getFile();
 		String oldName = this.name;
 		if (oldName != null && !oldName.equals(name)) {
 			this.name = name;
-			if (getFile() != null) {
-				// This is a File, i try to rename it
-				// TODO: test this (quick and dirty done for Wei)
-				try {
-					FileUtils.rename(oldFile, getFile());
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-			}
+			getResourceRepository().getResourceCenter().rename(getSerializationArtefact(), name);
 			getPropertyChangeSupport().firePropertyChange(NAME_KEY, oldName, name);
 		}
 
 	}
 
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		if ((description == null && this.description != null) || (description != null && !description.equals(this.description))) {
+			String oldValue = this.description;
+			this.description = description;
+			getPropertyChangeSupport().firePropertyChange("description", oldValue, description);
+		}
+	}
+
+	public String getPathRelativeToRepository() {
+		if (getParentFolder() != null) {
+			return getParentFolder().getPathRelativeToRepository() + "/" + getName();
+		}
+		return getName();
+	}
+
 	public String getFullQualifiedPath() {
-		if (getFile() != null) {
-			return getFile().getAbsolutePath();
+		if (resourceRepository == null || getResourceRepository().getBaseArtefact() == null) {
+			return null;
 		}
-		return fullQualifiedPath;
-	}
-
-	public void setFullQualifiedPath(String fullQualifiedPath) {
-		String old = this.fullQualifiedPath;
-		this.fullQualifiedPath = fullQualifiedPath;
-		getPropertyChangeSupport().firePropertyChange(FULL_QUALIFIED_PATH_KEY, old, fullQualifiedPath);
-		if (name == null) {
-			if (fullQualifiedPath.lastIndexOf(File.separator) > -1) {
-				name = fullQualifiedPath.substring(fullQualifiedPath.lastIndexOf(File.separator));
-			} else {
-				name = fullQualifiedPath;
-			}
+		if (isRootFolder()) {
+			return getResourceRepository().getBaseArtefact().toString();
+		}
+		else {
+			return getResourceRepository().getBaseArtefact().toString() + "/" + getPathRelativeToRepository();
 		}
 	}
 
-	public List<RepositoryFolder<R>> getChildren() {
+	public String getDefaultBaseURI() {
+		if (resourceRepository == null) {
+			return null;
+		}
+		if (isRootFolder()) {
+			return getResourceRepository().getDefaultBaseURI();
+		}
+		else {
+			return getResourceRepository().getDefaultBaseURI() + "/" + getPathRelativeToRepository();
+		}
+	}
+
+	@NotificationUnsafe
+	public List<RepositoryFolder<R, I>> getChildren() {
 		return children;
 	}
 
-	public void addToChildren(RepositoryFolder<R> aFolder) {
+	public void addToChildren(RepositoryFolder<R, I> aFolder) {
 		children.add(aFolder);
 		aFolder.parent = this;
 		setChanged();
@@ -142,7 +176,7 @@ public class RepositoryFolder<R extends FlexoResource<?>> extends DefaultFlexoOb
 		getPropertyChangeSupport().firePropertyChange(CHILDREN_KEY, null, aFolder);
 	}
 
-	public void removeFromChildren(RepositoryFolder<R> aFolder) {
+	public void removeFromChildren(RepositoryFolder<R, I> aFolder) {
 		children.remove(aFolder);
 		aFolder.parent = null;
 		setChanged();
@@ -150,7 +184,7 @@ public class RepositoryFolder<R extends FlexoResource<?>> extends DefaultFlexoOb
 		getPropertyChangeSupport().firePropertyChange(CHILDREN_KEY, aFolder, null);
 	}
 
-	public RepositoryFolder<R> getParentFolder() {
+	public RepositoryFolder<R, I> getParentFolder() {
 		return parent;
 	}
 
@@ -158,8 +192,8 @@ public class RepositoryFolder<R extends FlexoResource<?>> extends DefaultFlexoOb
 		return getParentFolder() == null;
 	}
 
-	public RepositoryFolder<R> getFolderNamed(String newFolderName) {
-		for (RepositoryFolder<R> f : children) {
+	public RepositoryFolder<R, I> getFolderNamed(String newFolderName) {
+		for (RepositoryFolder<R, I> f : children) {
 			if (f.getName().equals(newFolderName)) {
 				return f;
 			}
@@ -167,19 +201,13 @@ public class RepositoryFolder<R extends FlexoResource<?>> extends DefaultFlexoOb
 		return null;
 	}
 
+	@NotificationUnsafe
 	public List<R> getResources() {
 		return resources;
 	}
 
 	public void addToResources(R resource) {
-		/*if (getResourceRepository() instanceof FlexoProject) {
-			System.out.println("Je tiens mon truc !!!!!!");
-			Thread.dumpStack();
-			System.exit(-1);
-		}*/
 		if (resources.contains(resource)) {
-			// logger.warning("Resource already present in " + this + " : " + resource + ". Ignore it.");
-			// Thread.dumpStack();
 			return;
 		}
 		resources.add(resource);
@@ -196,20 +224,8 @@ public class RepositoryFolder<R extends FlexoResource<?>> extends DefaultFlexoOb
 		getPropertyChangeSupport().firePropertyChange(RESOURCES_KEY, resource, null);
 	}
 
-	public ResourceRepository<?> getResourceRepository() {
+	public ResourceRepository<R, I> getResourceRepository() {
 		return resourceRepository;
-	}
-
-	// TODO : might be an issue here, while create a File systematically when it is not a FileResourceRepository?
-	public File getFile() {
-		if (isRootFolder()) {
-			if (getResourceRepository() instanceof FileResourceRepository) {
-				return ((FileResourceRepository) getResourceRepository()).getDirectory();
-			}
-			return null;
-		} else {
-			return new File(getParentFolder().getFile(), name);
-		}
 	}
 
 	public R getResourceWithName(String resourceName) {
@@ -225,8 +241,8 @@ public class RepositoryFolder<R extends FlexoResource<?>> extends DefaultFlexoOb
 		return getResourceWithName(resourceName) == null;
 	}
 
-	public boolean isFatherOf(RepositoryFolder<R> folder) {
-		RepositoryFolder<R> f = folder.getParentFolder();
+	public boolean isFatherOf(RepositoryFolder<R, I> folder) {
+		RepositoryFolder<R, I> f = folder.getParentFolder();
 		while (f != null) {
 			if (f.equals(this)) {
 				return true;
@@ -238,8 +254,8 @@ public class RepositoryFolder<R extends FlexoResource<?>> extends DefaultFlexoOb
 
 	@Override
 	public boolean delete(Object... context) {
-		if (getFile().exists()) {
-			getFile().delete();
+		if (getResourceRepository().getResourceCenter().exists(getSerializationArtefact())) {
+			getResourceRepository().getResourceCenter().delete(getSerializationArtefact());
 		}
 		super.delete(context);
 		return true;
@@ -267,6 +283,56 @@ public class RepositoryFolder<R extends FlexoResource<?>> extends DefaultFlexoOb
 	}
 
 	public String getDisplayableName() {
+		if (isRootFolder()) {
+			return (StringUtils.isNotEmpty(getRepositoryContext()) ? getRepositoryContext() + " " : "")
+					+ getResourceRepository().getDisplayableName();
+		}
 		return (StringUtils.isNotEmpty(getRepositoryContext()) ? getRepositoryContext() + " " : "") + getName();
 	}
+
+	/**
+	 * Return the repository folder where the resource is registered
+	 * 
+	 * @param resource
+	 * @return
+	 */
+	public RepositoryFolder<R, I> getRepositoryFolder(R resource) {
+		// System.out.println("Repo folder " + getSerializationArtefact());
+		/*for (FlexoResource<?> r : getResources()) {
+			System.out.println("resource: " + r.getFlexoIODelegate().getSerializationArtefact());
+		}
+		for (RepositoryFolder<R, I> f : getChildren()) {
+			System.out.println("subfolder: " + f.getSerializationArtefact());
+		}*/
+		// System.out.println("getResources()=" + getResources());
+		// System.out.println("getChildren()=" + getChildren());
+		if (getResources().contains(resource)) {
+			return this;
+		}
+		if (getChildren() != null && getChildren().size() > 0) {
+			for (RepositoryFolder<R, I> child : getChildren()) {
+				RepositoryFolder<R, I> returned = child.getRepositoryFolder(resource);
+				if (returned != null) {
+					return returned;
+				}
+			}
+		}
+		return null;
+	}
+
+	/**
+	 * Return boolean indicating if this folder contains some resources (at least one).<br>
+	 * Recursive implementation
+	 * 
+	 * @return
+	 */
+	public boolean containsResources() {
+		for (RepositoryFolder<R, I> child : getChildren()) {
+			if (child.containsResources()) {
+				return true;
+			}
+		}
+		return getResources().size() > 0;
+	}
+
 }

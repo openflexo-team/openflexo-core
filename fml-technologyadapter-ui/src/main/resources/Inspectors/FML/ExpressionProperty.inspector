@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Panel className="org.openflexo.fib.utils.FIBInspector" layout="border"
+<Panel className="org.openflexo.gina.utils.FIBInspector" layout="border"
 	titleFont="SansSerif,0,12" darkLevel="0"
 	dataClassName="org.openflexo.foundation.fml.ExpressionProperty"
 	controllerClassName="org.openflexo.fml.controller.FMLFIBInspectorController"
@@ -13,7 +13,7 @@
 				constraints="twocols(expandHorizontally=false;expandVertically=false;index=6;location=left)"
 				localize="true">
 			</Label>
-			<Custom componentClassName="org.openflexo.fib.swing.utils.BindingSelector"
+			<Custom componentClassName="org.openflexo.gina.swing.utils.BindingSelector"
 				localize="true" manageDynamicModel="true" index="7" data="data.expression"
 				constraints="twocols(expandHorizontally=true;expandVertically=false;index=7;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)"
 				visible="">

@@ -41,17 +41,19 @@ package org.openflexo;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import org.openflexo.br.ActivateBugReportServiceTask;
 import org.openflexo.br.BugReportService;
 import org.openflexo.drm.DocResourceManager;
 import org.openflexo.foundation.DefaultFlexoServiceManager;
 import org.openflexo.foundation.FlexoEditor;
-import org.openflexo.foundation.FlexoEditor.FlexoEditorFactory;
 import org.openflexo.foundation.FlexoService;
 import org.openflexo.foundation.FlexoService.ServiceNotification;
 import org.openflexo.foundation.FlexoServiceManager;
-import org.openflexo.foundation.remoteresources.FlexoUpdateService;
+import org.openflexo.foundation.project.ProjectLoader;
 import org.openflexo.foundation.resource.DefaultResourceCenterService;
 import org.openflexo.foundation.resource.DefaultResourceCenterService.DefaultPackageResourceCenterIsNotInstalled;
 import org.openflexo.foundation.resource.DefaultResourceCenterService.ResourceCenterListShouldBeStored;
@@ -60,12 +62,19 @@ import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.resource.FlexoResourceCenterService;
 import org.openflexo.foundation.resource.JarResourceCenter;
 import org.openflexo.foundation.task.FlexoTaskManager;
+import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.utils.ProjectLoadingHandler;
-import org.openflexo.model.exceptions.ModelDefinitionException;
 import org.openflexo.module.ModuleLoader;
+import org.openflexo.prefs.AdvancedPrefs;
+import org.openflexo.prefs.ApplicationFIBLibraryService;
+import org.openflexo.prefs.BugReportPreferences;
+import org.openflexo.prefs.GeneralPreferences;
+import org.openflexo.prefs.LoggingPreferences;
 import org.openflexo.prefs.PreferencesService;
-import org.openflexo.project.ProjectLoader;
+import org.openflexo.prefs.PresentationPreferences;
+import org.openflexo.rm.ActivateTechnologyAdapterTask;
 import org.openflexo.rm.AddResourceCenterTask;
+import org.openflexo.rm.DisactivateTechnologyAdapterTask;
 import org.openflexo.rm.RemoveResourceCenterTask;
 import org.openflexo.rm.ResourceConsistencyService;
 import org.openflexo.task.TaskManagerPanel;
@@ -73,7 +82,7 @@ import org.openflexo.view.controller.FlexoServerInstanceManager;
 import org.openflexo.view.controller.TechnologyAdapterControllerService;
 
 /**
- * The {@link ApplicationContext} is the {@link FlexoServiceManager} at desktop application level.<br>
+ * The {@link ApplicationContext} is an implementation of {@link FlexoServiceManager} at desktop application level.<br>
  * 
  * It basically inherits from {@link FlexoServiceManager} by extending service manager with desktop-level services:<br>
  * <ul>
@@ -87,26 +96,27 @@ import org.openflexo.view.controller.TechnologyAdapterControllerService;
  * @author sylvain
  * 
  */
-public abstract class ApplicationContext extends DefaultFlexoServiceManager implements FlexoEditorFactory {
+public abstract class ApplicationContext extends DefaultFlexoServiceManager {
 
-	private final FlexoEditor applicationEditor;
+	private final ApplicationData applicationData;
 
-	// private ServerRestService serverRestService;
+	/**
+	 * Initialize a new {@link ApplicationContext}
+	 * 
+	 * @param localizationRelativePath
+	 *            a String identifying a relative path to use for main localization (such as "FlexoLocalization/MyLocales") of the
+	 *            application
+	 * @param devMode
+	 *            true when 'developer' mode set to true (enable more services)
+	 */
+	public ApplicationContext(String localizationRelativePath, boolean devMode) {
+		super(localizationRelativePath, devMode);
 
-	public ApplicationContext() {
-		super();
+		applicationData = new ApplicationData(this);
 
+		registerApplicationFIBLibraryService();
 		registerModuleLoaderService();
 		registerPreferencesService();
-
-		applicationEditor = createApplicationEditor();
-		try {
-			ProjectLoader projectLoader = new ProjectLoader();
-			registerService(projectLoader);
-		} catch (ModelDefinitionException e) {
-			e.printStackTrace();
-			throw new RuntimeException(e);
-		}
 
 		TechnologyAdapterControllerService technologyAdapterControllerService = createTechnologyAdapterControllerService();
 		registerService(technologyAdapterControllerService);
@@ -118,6 +128,20 @@ public abstract class ApplicationContext extends DefaultFlexoServiceManager impl
 		registerService(flexoServerInstanceManager);
 		ResourceConsistencyService resourceConsistencyService = createResourceConsistencyService();
 		registerService(resourceConsistencyService);
+
+	}
+
+	// Unused private JFIBEditor applicationFIBEditor;
+
+	public ApplicationData getApplicationData() {
+		return applicationData;
+	}
+
+	private void registerApplicationFIBLibraryService() {
+		if (getApplicationFIBLibraryService() == null) {
+			ApplicationFIBLibraryService applicationFIBLibraryService = createApplicationFIBLibraryService();
+			registerService(applicationFIBLibraryService);
+		}
 	}
 
 	private void registerPreferencesService() {
@@ -130,7 +154,7 @@ public abstract class ApplicationContext extends DefaultFlexoServiceManager impl
 
 	private void registerModuleLoaderService() {
 		if (getModuleLoader() == null) {
-			ModuleLoader moduleLoader = new ModuleLoader(this);
+			ModuleLoader moduleLoader = createModuleLoader();
 			registerService(moduleLoader);
 		}
 	}
@@ -139,18 +163,61 @@ public abstract class ApplicationContext extends DefaultFlexoServiceManager impl
 		return getService(PreferencesService.class);
 	}
 
+	public ApplicationFIBLibraryService getApplicationFIBLibraryService() {
+		return getService(ApplicationFIBLibraryService.class);
+	}
+
 	public ModuleLoader getModuleLoader() {
 		return getService(ModuleLoader.class);
 	}
 
 	public BugReportService getBugReportService() {
 		if (getService(BugReportService.class) == null) {
-			BugReportService bugReportService = createBugReportService();
-			registerService(bugReportService);
+
+			ActivateBugReportServiceTask activateBRTask = new ActivateBugReportServiceTask(this);
+
+			// BugReportService bugReportService = createBugReportService();
+			// registerService(bugReportService);
+
+			getTaskManager().scheduleExecution(activateBRTask);
+			// getTaskManager().waitTask(activateBRTask);
+
+			return activateBRTask.getBugReportService();
 		}
 		return getService(BugReportService.class);
 	}
 
+	/*
+	 
+	 	@Override
+	public synchronized ActivateTechnologyAdapterTask activateTechnologyAdapter(TechnologyAdapter technologyAdapter) {
+	
+		// We try here to prevent activate all TA concurrently
+	
+		if (technologyAdapter.isActivated()) {
+			// Already activated
+			return null;
+		}
+		if (activatingTechnologyAdapters == null) {
+			activatingTechnologyAdapters = new HashMap<>();
+		}
+		if (activatingTechnologyAdapters.get(technologyAdapter) != null) {
+			// About to be activated. No need to go further
+			return null;
+		}
+		ActivateTechnologyAdapterTask activateTATask = new ActivateTechnologyAdapterTask(getTechnologyAdapterService(), technologyAdapter);
+		for (TechnologyAdapter ta : activatingTechnologyAdapters.keySet()) {
+			activateTATask.addToDependantTasks(activatingTechnologyAdapters.get(ta));
+			// System.out.println("> Waiting " + ta);
+		}
+	
+		activatingTechnologyAdapters.put(technologyAdapter, activateTATask);
+	
+		getTaskManager().scheduleExecution(activateTATask);
+		return activateTATask;
+	}
+	
+	*/
 	public DocResourceManager getDocResourceManager() {
 		return getService(DocResourceManager.class);
 	}
@@ -163,20 +230,12 @@ public abstract class ApplicationContext extends DefaultFlexoServiceManager impl
 		return getService(FlexoServerInstanceManager.class);
 	}
 
-	public FlexoUpdateService getFlexoUpdateService() {
-		return getService(FlexoUpdateService.class);
-	}
-
 	public ResourceConsistencyService getResourceConsistencyService() {
 		return getService(ResourceConsistencyService.class);
 	}
 
 	public final TechnologyAdapterControllerService getTechnologyAdapterControllerService() {
 		return getService(TechnologyAdapterControllerService.class);
-	}
-
-	public final FlexoEditor getApplicationEditor() {
-		return applicationEditor;
 	}
 
 	/*
@@ -186,7 +245,7 @@ public abstract class ApplicationContext extends DefaultFlexoServiceManager impl
 		}
 		return serverRestService;
 	}
-	*/
+	 */
 
 	public boolean isAutoSaveServiceEnabled() {
 		return false;
@@ -199,9 +258,13 @@ public abstract class ApplicationContext extends DefaultFlexoServiceManager impl
 
 	protected abstract TechnologyAdapterControllerService createTechnologyAdapterControllerService();
 
+	protected ApplicationFIBLibraryService createApplicationFIBLibraryService() {
+		return new ApplicationFIBLibraryService();
+	}
+
 	protected abstract PreferencesService createPreferencesService();
 
-	protected abstract BugReportService createBugReportService();
+	public abstract BugReportService createBugReportService();
 
 	protected abstract DocResourceManager createDocResourceManager();
 
@@ -209,11 +272,16 @@ public abstract class ApplicationContext extends DefaultFlexoServiceManager impl
 
 	protected abstract ResourceConsistencyService createResourceConsistencyService();
 
+	protected ModuleLoader createModuleLoader() {
+		return new ModuleLoader(this);
+	}
+
 	@Override
 	protected FlexoResourceCenterService createResourceCenterService() {
 		registerPreferencesService();
-		return DefaultResourceCenterService.getNewInstance(getPreferencesService().getResourceCenterPreferences()
-				.getResourceCenterEntries());
+		FlexoResourceCenterService returned = DefaultResourceCenterService
+				.getNewInstance(getPreferencesService().getResourceCenterPreferences().getResourceCenterEntries(), Flexo.isDev);
+		return returned;
 	}
 
 	@Override
@@ -222,31 +290,87 @@ public abstract class ApplicationContext extends DefaultFlexoServiceManager impl
 		// Little hack to handle rc location saving
 		// TODO: Should be removed when preferences will be a service see OPENFLEXO-651
 		if (notification instanceof ResourceCenterListShouldBeStored && caller instanceof FlexoResourceCenterService) {
-			List<File> rcList = new ArrayList<File>();
+			List<File> rcList = new ArrayList<>();
 			for (FlexoResourceCenter<?> rc : ((FlexoResourceCenterService) caller).getResourceCenters()) {
 				if (rc instanceof DirectoryResourceCenter) {
-					rcList.add(((DirectoryResourceCenter) rc).getDirectory());
-				} else if (rc instanceof JarResourceCenter) {
+					rcList.add(((DirectoryResourceCenter) rc).getRootDirectory());
+				}
+				else if (rc instanceof JarResourceCenter) {
 					rcList.add(new File(((JarResourceCenter) rc).getJarResourceImpl().getRelativePath()));
 				}
 			}
 			getGeneralPreferences().setDirectoryResourceCenterList(rcList);
-		} else if (notification instanceof DefaultPackageResourceCenterIsNotInstalled && caller instanceof FlexoResourceCenterService) {
+		}
+		else if (notification instanceof DefaultPackageResourceCenterIsNotInstalled && caller instanceof FlexoResourceCenterService) {
 			defaultPackagedResourceCenterIsNotInstalled = true;
 		}
 	}
 
 	@Override
-	protected AddResourceCenterTask resourceCenterAdded(FlexoResourceCenter<?> resourceCenter) {
+	public AddResourceCenterTask resourceCenterAdded(FlexoResourceCenter<?> resourceCenter) {
+		System.out.println("AddResourceCenterTask with " + resourceCenter);
 		AddResourceCenterTask addRCTask = new AddResourceCenterTask(getResourceCenterService(), resourceCenter);
 		getTaskManager().scheduleExecution(addRCTask);
 		return addRCTask;
 	}
 
 	@Override
-	protected void resourceCenterRemoved(FlexoResourceCenter<?> resourceCenter) {
+	public RemoveResourceCenterTask resourceCenterRemoved(FlexoResourceCenter<?> resourceCenter) {
 		RemoveResourceCenterTask removeRCTask = new RemoveResourceCenterTask(getResourceCenterService(), resourceCenter);
 		getTaskManager().scheduleExecution(removeRCTask);
+		return removeRCTask;
+	}
+
+	private Map<TechnologyAdapter, ActivateTechnologyAdapterTask> activatingTechnologyAdapters;
+
+	@Override
+	public ActivateTechnologyAdapterTask activateTechnologyAdapter(TechnologyAdapter technologyAdapter, boolean performNowInThisThread) {
+
+		if (performNowInThisThread) {
+			super.activateTechnologyAdapter(technologyAdapter, true);
+			return null;
+		}
+
+		// We try here to prevent activate all TA concurrently
+
+		if (technologyAdapter.isActivated()) {
+			// Already activated
+			return null;
+		}
+		if (activatingTechnologyAdapters == null) {
+			activatingTechnologyAdapters = new HashMap<>();
+		}
+		if (activatingTechnologyAdapters.get(technologyAdapter) != null) {
+			// About to be activated. No need to go further
+			return null;
+		}
+		ActivateTechnologyAdapterTask activateTATask = new ActivateTechnologyAdapterTask(getTechnologyAdapterService(), technologyAdapter);
+		for (TechnologyAdapter ta : activatingTechnologyAdapters.keySet()) {
+			activateTATask.addToDependantTasks(activatingTechnologyAdapters.get(ta));
+			// System.out.println("> Waiting " + ta);
+		}
+
+		activatingTechnologyAdapters.put(technologyAdapter, activateTATask);
+
+		getTaskManager().scheduleExecution(activateTATask);
+		return activateTATask;
+	}
+
+	@Override
+	public void hasActivated(TechnologyAdapter technologyAdapter) {
+		super.hasActivated(technologyAdapter);
+		activatingTechnologyAdapters.remove(technologyAdapter);
+	}
+
+	@Override
+	public DisactivateTechnologyAdapterTask disactivateTechnologyAdapter(TechnologyAdapter technologyAdapter) {
+		if (!technologyAdapter.isActivated()) {
+			return null;
+		}
+		DisactivateTechnologyAdapterTask disactivateTATask = new DisactivateTechnologyAdapterTask(getTechnologyAdapterService(),
+				technologyAdapter);
+		getTaskManager().scheduleExecution(disactivateTATask);
+		return disactivateTATask;
 	}
 
 	private boolean defaultPackagedResourceCenterIsNotInstalled;
@@ -257,14 +381,35 @@ public abstract class ApplicationContext extends DefaultFlexoServiceManager impl
 
 	public GeneralPreferences getGeneralPreferences() {
 		if (getPreferencesService() != null) {
-			return getPreferencesService().getPreferences(GeneralPreferences.class);
+			return getPreferencesService().getGeneralPreferences();
+		}
+		return null;
+	}
+
+	public PresentationPreferences getPresentationPreferences() {
+		if (getPreferencesService() != null) {
+			return getPreferencesService().getPresentationPreferences();
 		}
 		return null;
 	}
 
 	public AdvancedPrefs getAdvancedPrefs() {
 		if (getPreferencesService() != null) {
-			return getPreferencesService().getPreferences(AdvancedPrefs.class);
+			return getPreferencesService().getAdvancedPrefs();
+		}
+		return null;
+	}
+
+	public LoggingPreferences getLoggingPreferences() {
+		if (getPreferencesService() != null) {
+			return getPreferencesService().getLoggingPreferences();
+		}
+		return null;
+	}
+
+	public BugReportPreferences getBugReportPreferences() {
+		if (getPreferencesService() != null) {
+			return getPreferencesService().getBugReportPreferences();
 		}
 		return null;
 	}
@@ -272,7 +417,9 @@ public abstract class ApplicationContext extends DefaultFlexoServiceManager impl
 	@Override
 	protected FlexoTaskManager createTaskManager() {
 		FlexoTaskManager returned = super.createTaskManager();
-		TaskManagerPanel taskManagerPanel = new TaskManagerPanel(returned);
+		// Unused TaskManagerPanel taskManagerPanel =
+		new TaskManagerPanel(returned);
 		return returned;
 	}
+
 }

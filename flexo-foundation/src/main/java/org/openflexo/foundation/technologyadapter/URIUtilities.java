@@ -38,8 +38,8 @@
 
 package org.openflexo.foundation.technologyadapter;
 
+import org.openflexo.toolbox.JavaUtils;
 import org.openflexo.toolbox.StringUtils;
-import org.openflexo.toolbox.ToolBox;
 
 public class URIUtilities {
 
@@ -56,7 +56,7 @@ public class URIUtilities {
 		if (StringUtils.isEmpty(conceptURI.trim())) {
 			return false;
 		}
-		return conceptURI.equals(ToolBox.getJavaName(conceptURI, true, false)) && !isDuplicatedURI(model, conceptURI);
+		return conceptURI.equals(JavaUtils.getJavaName(conceptURI)) && !isDuplicatedURI(model, conceptURI);
 	}
 
 	/**
@@ -85,7 +85,7 @@ public class URIUtilities {
 		if (StringUtils.isEmpty(conceptURI.trim())) {
 			return false;
 		}
-		return conceptURI.equals(ToolBox.getJavaName(conceptURI, true, false)) && !isDuplicatedURI(metaModel, conceptURI);
+		return conceptURI.equals(JavaUtils.getJavaName(conceptURI)) && !isDuplicatedURI(metaModel, conceptURI);
 	}
 
 	/**

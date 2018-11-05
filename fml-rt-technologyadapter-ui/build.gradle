@@ -1,0 +1,14 @@
+dependencies {
+  // openflexo dep
+  compile project(':flexo-foundation')
+  compile project(':flexo-ui')
+  // external dep
+
+  // testing dep
+  testCompile ginaTest()
+  testCompile project(':flexo-ui-test')
+  testRuntime project(':fml-technologyadapter-ui')
+}
+tasks.withType(Test) {
+	jvmArgs += ["-Djava.awt.headless=true"]
+}

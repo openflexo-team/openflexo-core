@@ -49,11 +49,6 @@ public class ModelSlotBindingVariable extends FlexoPropertyBindingVariable {
 		super(modelSlot);
 	}
 
-	@Override
-	public void delete() {
-		super.delete();
-	}
-
 	public ModelSlot<?> getModelSlot() {
 		return (ModelSlot<?>) getFlexoProperty();
 	}

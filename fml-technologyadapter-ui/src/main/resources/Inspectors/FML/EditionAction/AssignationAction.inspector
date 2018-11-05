@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Panel className="org.openflexo.fib.utils.FIBInspector" layout="border"
+<Panel className="org.openflexo.gina.utils.FIBInspector" layout="border"
 	titleFont="SansSerif,0,12" darkLevel="0"
 	dataClassName="org.openflexo.foundation.fml.editionaction.AssignationAction"
 	controllerClassName="org.openflexo.fml.controller.FMLFIBInspectorController"
@@ -12,23 +12,30 @@
 			<Label label="Assign" index="2" data=""
 				constraints="twocols(expandHorizontally=true;expandVertically=false;index=2;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=5;location=left)"
 				localize="true" />
-			<Custom componentClassName="org.openflexo.fib.swing.utils.BindingSelector"
+			<Custom componentClassName="org.openflexo.gina.swing.utils.BindingSelector"
 				localize="true" manageDynamicModel="true" opaque="false"
 				name="AddIndividualAssignationCC" index="3" data="data.assignation"
 				constraints="twocols(expandHorizontally=true;expandVertically=false;index=2;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=5;location=right)">
 				<Assignment variable="component.bindable" value="data" />
 			</Custom>
-			<FIBReferencedComponent
-				dynamicComponent="controller.inspectorForObject(data.assignableAction)"
-				localize="true" manageDynamicModel="true" name="AssignableActionWidget"
-				index="15" data="data.assignableAction"
+			<Label label="assign" index="4" 
+				constraints="twocols(expandHorizontally=true;expandVertically=false;index=2;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=5;location=left)"/>
+			<Panel darkLevel="1" useScrollBar="false" protectContent="false"
+				layout="border" borderRight="2" border="rounded3d"
+				trackViewPortWidth="true" index="5"
 				constraints="twocols(expandHorizontally=true;expandVertically=true;index=9;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)"
-				opaque="false">
-				<ReferenceAssignment mandatory="true"
-					variable="controller.flexoController" value="controller.flexoController" />
-			</FIBReferencedComponent>
-
-			 <Label name="DescriptionLabel">
+				borderBottom="2" borderTitle="" titleFont="SansSerif,0,11"
+				borderTop="2" trackViewPortHeight="true">
+				<FIBReferencedComponent
+					dynamicComponent="controller.basicInspectorTabForObject(data.assignableAction)"
+					localize="true" manageDynamicModel="true" name="AssignableActionWidget"
+					index="15" data="data.assignableAction" constraints="border(location=center)"
+					opaque="false">
+					<ReferenceAssignment mandatory="true"
+						variable="controller.flexoController" value="controller.flexoController" />
+				</FIBReferencedComponent>
+			</Panel>
+			<Label name="DescriptionLabel">
 				<Parameter name="hidden" value="true" />
 			</Label>
 			<TextArea name="Description">

@@ -38,26 +38,28 @@
 
 package org.openflexo.prefs;
 
-import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Logger;
 
-import org.openflexo.AdvancedPrefs;
 import org.openflexo.ApplicationContext;
-import org.openflexo.GeneralPreferences;
-import org.openflexo.ResourceCenterPreferences;
 import org.openflexo.components.PreferencesDialog;
 import org.openflexo.foundation.FlexoProject;
 import org.openflexo.foundation.FlexoService;
 import org.openflexo.foundation.FlexoServiceImpl;
+import org.openflexo.foundation.FlexoServiceManager.ServiceRegistered;
 import org.openflexo.foundation.resource.DefaultResourceCenterService.ResourceCenterAdded;
 import org.openflexo.foundation.resource.DefaultResourceCenterService.ResourceCenterRemoved;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.resource.FlexoResourceCenterService;
 import org.openflexo.foundation.resource.SaveResourceException;
+import org.openflexo.foundation.technologyadapter.TechnologyAdapterService;
+import org.openflexo.model.ModelContextLibrary;
+import org.openflexo.model.exceptions.ModelDefinitionException;
 import org.openflexo.module.Module;
+import org.openflexo.module.ModuleLoader;
 import org.openflexo.prefs.FlexoPreferencesResource.FlexoPreferencesResourceImpl;
 import org.openflexo.toolbox.HasPropertyChangeSupport;
-import org.openflexo.toolbox.ToolBox;
 import org.openflexo.view.FlexoFrame;
 
 /**
@@ -68,7 +70,7 @@ import org.openflexo.view.FlexoFrame;
  * 
  * @author sguerin
  */
-public class PreferencesService extends FlexoServiceImpl implements FlexoService, HasPropertyChangeSupport {
+public class PreferencesService extends FlexoServiceImpl implements HasPropertyChangeSupport {
 
 	private static final Logger logger = Logger.getLogger(PreferencesService.class.getPackage().getName());
 
@@ -83,48 +85,141 @@ public class PreferencesService extends FlexoServiceImpl implements FlexoService
 		return resource.getFlexoPreferences();
 	}
 
-	private <P extends PreferencesContainer> P managePreferences(Class<P> prefClass, PreferencesContainer container) {
+	public <P extends PreferencesContainer> P managePreferences(Class<P> prefClass, PreferencesContainer container) {
 		P returned = getPreferences(prefClass);
 		if (returned == null) {
 			returned = getPreferencesFactory().newInstance(prefClass);
 			initPreferences(returned);
 			container.addToContents(returned);
 		}
+		returned.setPreferencesService(this);
 		return returned;
 	}
 
 	private void initPreferences(PreferencesContainer p) {
+	}
 
+	@Override
+	public String getServiceName() {
+		return "PreferencesService";
 	}
 
 	@Override
 	public void initialize() {
 		resource = FlexoPreferencesResourceImpl.makePreferencesResource(getServiceManager());
+		getFlexoPreferences().setPreferencesService(this);
 		managePreferences(GeneralPreferences.class, getFlexoPreferences());
+		managePreferences(PresentationPreferences.class, getFlexoPreferences());
 		managePreferences(AdvancedPrefs.class, getFlexoPreferences());
-		for (Module<?> m : getServiceManager().getModuleLoader().getKnownModules()) {
-			managePreferences(m.getPreferencesClass(), getFlexoPreferences());
+		ApplicationContext ac = getServiceManager();
+		for (FlexoService service : ac.getRegisteredServices()) {
+			initializePreferencesForService(service);
 		}
+
+		if (ac.getModuleLoader() != null) {
+			for (Module<?> m : ac.getModuleLoader().getKnownModules()) {
+				initializePreferencesForModule(m);
+			}
+		}
+
+		managePreferences(LoggingPreferences.class, getFlexoPreferences());
+		managePreferences(BugReportPreferences.class, getFlexoPreferences());
+
+		status = Status.Started;
+	}
+
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	private <S extends FlexoService> Class<? extends ServicePreferences<S>> getServicePreferencesClass(S service) {
+		if (service instanceof FlexoResourceCenterService) {
+			return (Class) ResourceCenterPreferences.class;
+		}
+		else if (service instanceof TechnologyAdapterService) {
+			return (Class) TechnologyAdapterPreferences.class;
+		}
+		else if (service instanceof ModuleLoader) {
+			return (Class) ModuleLoaderPreferences.class;
+		}
+		return null;
+	}
+
+	private <S extends FlexoService> ServicePreferences<S> initializePreferencesForService(S service) {
+		Class<? extends ServicePreferences<S>> preferencesClass = getServicePreferencesClass(service);
+		if (preferencesClass != null) {
+			ServicePreferences<S> preferences = managePreferences(preferencesClass, getFlexoPreferences());
+			if (preferences != null) {
+				preferences.setService(service);
+			}
+			return preferences;
+		}
+		return null;
+	}
+
+	private ModulePreferences<?> initializePreferencesForModule(Module<?> module) {
+		ModulePreferences<?> preferences = managePreferences(module.getPreferencesClass(), getModuleLoaderPreferences());
+		if (preferences != null) {
+			preferences.setModule((Module) module);
+		}
+		return preferences;
 	}
 
 	@Override
 	public void receiveNotification(FlexoService caller, ServiceNotification notification) {
 		logger.fine("PreferencesService received notification " + notification + " from " + caller);
 		if (caller instanceof FlexoResourceCenterService) {
-			if (notification instanceof ResourceCenterAdded) {
-				FlexoResourceCenter addedFlexoResourceCenter = ((ResourceCenterAdded) notification).getAddedResourceCenter();
+			if (notification instanceof ResourceCenterAdded && !readOnly()) {
+				FlexoResourceCenter<?> addedFlexoResourceCenter = ((ResourceCenterAdded) notification).getAddedResourceCenter();
 				if (!(addedFlexoResourceCenter instanceof FlexoProject)) {
-					System.out.println("Tiens: un resource center: " + addedFlexoResourceCenter + " of "
-							+ addedFlexoResourceCenter.getClass());
 					getResourceCenterPreferences().ensureResourceEntryIsPresent(addedFlexoResourceCenter.getResourceCenterEntry());
 				}
 				savePreferences();
-			} else if (notification instanceof ResourceCenterRemoved) {
+			}
+			else if (notification instanceof ResourceCenterRemoved) {
 				getResourceCenterPreferences().ensureResourceEntryIsNoMorePresent(
 						((ResourceCenterRemoved) notification).getRemovedResourceCenter().getResourceCenterEntry());
 				savePreferences();
 			}
 		}
+		if (notification instanceof ServiceRegistered) {
+			initializePreferencesForService(caller);
+		}
+	}
+
+	public FlexoPreferencesFactory makePreferencesFactory(FlexoPreferencesResource resource, ApplicationContext applicationContext)
+			throws ModelDefinitionException {
+		List<Class<?>> classes = buildClassesListForPreferenceFactory(applicationContext);
+		return new FlexoPreferencesFactory(resource,
+				ModelContextLibrary.getCompoundModelContext(classes.toArray(new Class<?>[classes.size()])));
+	}
+
+	protected List<Class<?>> buildClassesListForPreferenceFactory(ApplicationContext applicationContext) {
+		List<Class<?>> classes = new ArrayList<Class<?>>();
+		classes.add(FlexoPreferences.class);
+		classes.add(GeneralPreferences.class);
+		classes.add(PresentationPreferences.class);
+		classes.add(AdvancedPrefs.class);
+		classes.add(ResourceCenterPreferences.class);
+		classes.add(TechnologyAdapterPreferences.class);
+		classes.add(ModuleLoaderPreferences.class);
+		for (FlexoService service : getServiceManager().getRegisteredServices()) {
+			Class<?> servicePreferenceClass = getServicePreferencesClass(service);
+			if (servicePreferenceClass != null) {
+				classes.add(servicePreferenceClass);
+			}
+		}
+		if (applicationContext.getModuleLoader() != null) {
+			for (Module<?> m : applicationContext.getModuleLoader().getKnownModules()) {
+				classes.add(m.getPreferencesClass());
+			}
+		}
+
+		classes.add(LoggingPreferences.class);
+		classes.add(BugReportPreferences.class);
+
+		return classes;
+	}
+
+	public void applyPreferences() {
+		System.out.println("applyPreferences() not implemented yet");
 	}
 
 	public void savePreferences() {
@@ -136,39 +231,11 @@ public class PreferencesService extends FlexoServiceImpl implements FlexoService
 	}
 
 	public void revertToSaved() {
-		// TODO: reimplement this
+		System.out.println("revertToSaved() not implemented yet");
 	}
 
 	public FlexoPreferencesFactory getPreferencesFactory() {
 		return resource.getFactory();
-	}
-
-	public File getLogDirectory() {
-		File outputDir = new File(System.getProperty("user.home") + "/Library/Logs/OpenFlexo");
-		if (ToolBox.getPLATFORM() == ToolBox.WINDOWS) {
-			boolean ok = false;
-			String appData = System.getenv("LOCALAPPDATA");
-			if (appData != null) {
-				File f = new File(appData);
-				if (f.isDirectory() && f.canWrite()) {
-					outputDir = new File(f, "OpenFlexo/Logs");
-					ok = true;
-				}
-				if (!ok) {
-					appData = System.getenv("APPDATA");
-					if (appData != null) {
-						f = new File(appData);
-						if (f.isDirectory() && f.canWrite()) {
-							outputDir = new File(f, "OpenFlexo/Logs");
-							ok = true;
-						}
-					}
-				}
-			}
-		} else if (ToolBox.getPLATFORM() == ToolBox.LINUX) {
-			outputDir = new File(System.getProperty("user.home"), ".openflexo/logs");
-		}
-		return outputDir;
 	}
 
 	public <P extends PreferencesContainer> P getPreferences(Class<P> containerType) {
@@ -187,12 +254,49 @@ public class PreferencesService extends FlexoServiceImpl implements FlexoService
 		return managePreferences(GeneralPreferences.class, getFlexoPreferences());
 	}
 
+	public PresentationPreferences getPresentationPreferences() {
+		return managePreferences(PresentationPreferences.class, getFlexoPreferences());
+	}
+
 	public AdvancedPrefs getAdvancedPrefs() {
 		return managePreferences(AdvancedPrefs.class, getFlexoPreferences());
+	}
+
+	public LoggingPreferences getLoggingPreferences() {
+		return managePreferences(LoggingPreferences.class, getFlexoPreferences());
+	}
+
+	public BugReportPreferences getBugReportPreferences() {
+		return managePreferences(BugReportPreferences.class, getFlexoPreferences());
 	}
 
 	public ResourceCenterPreferences getResourceCenterPreferences() {
 		return managePreferences(ResourceCenterPreferences.class, getFlexoPreferences());
 	}
 
+	public <S extends FlexoService> ServicePreferences<S> getServicePreferences(S service) {
+		Class<? extends ServicePreferences<S>> preferencesClass = getServicePreferencesClass(service);
+		// System.out.println("preferencesClass for " + service + " is " + preferencesClass);
+		if (preferencesClass != null) {
+			ServicePreferences<S> preferences = managePreferences(preferencesClass, getFlexoPreferences());
+			if (preferences != null) {
+				preferences.setService(service);
+			}
+			return preferences;
+		}
+		return null;
+
+	}
+
+	public TechnologyAdapterPreferences getTechnologyAdapterPreferences() {
+		return (TechnologyAdapterPreferences) getServicePreferences(getServiceManager().getTechnologyAdapterService());
+	}
+
+	public ModuleLoaderPreferences getModuleLoaderPreferences() {
+		return (ModuleLoaderPreferences) getServicePreferences(getServiceManager().getModuleLoader());
+	}
+
+	public boolean readOnly() {
+		return false;
+	}
 }

@@ -41,7 +41,6 @@ package org.openflexo.foundation.fml.rt.editionaction;
 import java.lang.reflect.InvocationTargetException;
 import java.util.logging.Logger;
 
-import org.openflexo.connie.Bindable;
 import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.exception.NullReferenceException;
 import org.openflexo.connie.exception.TypeMismatchException;
@@ -60,10 +59,11 @@ import org.openflexo.model.annotations.Setter;
 import org.openflexo.model.annotations.XMLAttribute;
 import org.openflexo.model.annotations.XMLElement;
 
+//TODO: merge and use BehaviourParameter instead
 @ModelEntity
 @ImplementationClass(DeleteFlexoConceptInstanceParameter.DeleteFlexoConceptInstanceParameterImpl.class)
 @XMLElement
-public interface DeleteFlexoConceptInstanceParameter extends FlexoBehaviourObject, Bindable {
+public interface DeleteFlexoConceptInstanceParameter extends FlexoBehaviourObject {
 
 	@PropertyIdentifier(type = DeleteFlexoConceptInstance.class)
 	public static final String ACTION_KEY = "action";
@@ -99,13 +99,13 @@ public interface DeleteFlexoConceptInstanceParameter extends FlexoBehaviourObjec
 	// TODO: PAMELA
 	public void setParam(FlexoBehaviourParameter param);
 
-	public Object evaluateParameterValue(FlexoBehaviourAction action);
+	public Object evaluateParameterValue(FlexoBehaviourAction<?, ?, ?> action);
 
 	@Override
 	public DeleteFlexoConceptInstanceParameterBindingModel getBindingModel();
 
-	public static abstract class DeleteFlexoConceptInstanceParameterImpl extends FlexoBehaviourObjectImpl implements
-			DeleteFlexoConceptInstanceParameter {
+	public static abstract class DeleteFlexoConceptInstanceParameterImpl extends FlexoBehaviourObjectImpl
+			implements DeleteFlexoConceptInstanceParameter {
 
 		static final Logger logger = Logger.getLogger(DeleteFlexoConceptInstanceParameter.class.getPackage().getName());
 
@@ -150,7 +150,7 @@ public interface DeleteFlexoConceptInstanceParameter extends FlexoBehaviourObjec
 		@Override
 		public DataBinding<Object> getValue() {
 			if (value == null) {
-				value = new DataBinding<Object>(this, param.getType(), DataBinding.BindingDefinitionType.GET);
+				value = new DataBinding<>(this, param.getType(), DataBinding.BindingDefinitionType.GET);
 				value.setBindingName(param.getName());
 			}
 			return value;
@@ -168,7 +168,7 @@ public interface DeleteFlexoConceptInstanceParameter extends FlexoBehaviourObjec
 		}
 
 		@Override
-		public Object evaluateParameterValue(FlexoBehaviourAction action) {
+		public Object evaluateParameterValue(FlexoBehaviourAction<?, ?, ?> action) {
 			if (getValue() == null || getValue().isUnset()) {
 				/*logger.info("Binding for " + param.getName() + " is not set");
 				if (param instanceof URIParameter) {
@@ -182,7 +182,8 @@ public interface DeleteFlexoConceptInstanceParameter extends FlexoBehaviourObjec
 					logger.warning("Required parameter missing: " + param + ", some strange behaviour may happen from now...");
 				}*/
 				return null;
-			} else if (getValue().isValid()) {
+			}
+			else if (getValue().isValid()) {
 				try {
 					return getValue().getBindingValue(action);
 				} catch (TypeMismatchException e) {
@@ -193,7 +194,8 @@ public interface DeleteFlexoConceptInstanceParameter extends FlexoBehaviourObjec
 					e.printStackTrace();
 				}
 				return null;
-			} else {
+			}
+			else {
 				logger.warning("Invalid binding: " + getValue() + " Reason: " + getValue().invalidBindingReason());
 			}
 			return null;

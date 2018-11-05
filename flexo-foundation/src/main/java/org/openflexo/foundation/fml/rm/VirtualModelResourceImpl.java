@@ -39,172 +39,191 @@
 package org.openflexo.foundation.fml.rm;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
-import java.util.Iterator;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.StringTokenizer;
 import java.util.logging.Logger;
 
-import org.apache.commons.io.FilenameUtils;
-import org.jdom2.Attribute;
-import org.jdom2.Document;
-import org.jdom2.Element;
-import org.jdom2.JDOMException;
+import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.IOFlexoException;
 import org.openflexo.foundation.InconsistentDataException;
 import org.openflexo.foundation.InvalidModelDefinitionException;
 import org.openflexo.foundation.InvalidXMLException;
 import org.openflexo.foundation.fml.FMLModelFactory;
+import org.openflexo.foundation.fml.FMLObject.BindingIsRequiredAndMustBeValid.InvalidRequiredBindingIssue;
+import org.openflexo.foundation.fml.FMLTechnologyAdapter;
+import org.openflexo.foundation.fml.FMLValidationModel;
+import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.VirtualModel;
-import org.openflexo.foundation.resource.DirectoryBasedFlexoIODelegate;
-import org.openflexo.foundation.resource.DirectoryBasedFlexoIODelegate.DirectoryBasedFlexoIODelegateImpl;
+import org.openflexo.foundation.fml.VirtualModelLibrary;
+import org.openflexo.foundation.fml.rt.FMLRTTechnologyAdapter;
+import org.openflexo.foundation.resource.CannotRenameException;
+import org.openflexo.foundation.resource.DirectoryBasedIODelegate;
+import org.openflexo.foundation.resource.FileIODelegate;
+import org.openflexo.foundation.resource.FileIODelegate.FileHasBeenWrittenOnDiskNotification;
+import org.openflexo.foundation.resource.FileIODelegate.WillWriteFileOnDiskNotification;
+import org.openflexo.foundation.resource.FileSystemBasedResourceCenter;
 import org.openflexo.foundation.resource.FlexoFileNotFoundException;
-import org.openflexo.foundation.resource.InJarFlexoIODelegate;
-import org.openflexo.foundation.resource.InJarFlexoIODelegate.InJarFlexoIODelegateImpl;
+import org.openflexo.foundation.resource.FlexoResource;
+import org.openflexo.foundation.resource.PamelaResourceImpl;
 import org.openflexo.foundation.resource.ResourceLoadingCancelledException;
-import org.openflexo.model.ModelContextLibrary;
+import org.openflexo.foundation.resource.SaveResourceException;
+import org.openflexo.foundation.resource.SaveResourcePermissionDeniedException;
+import org.openflexo.foundation.technologyadapter.ModelSlot;
+import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
+import org.openflexo.foundation.technologyadapter.TechnologyAdapterService;
 import org.openflexo.model.exceptions.ModelDefinitionException;
-import org.openflexo.model.factory.AccessibleProxyObject;
-import org.openflexo.model.factory.ModelFactory;
-import org.openflexo.rm.InJarResourceImpl;
+import org.openflexo.model.validation.ValidationIssue;
+import org.openflexo.model.validation.ValidationReport;
 import org.openflexo.rm.Resource;
-import org.openflexo.toolbox.FlexoVersion;
+import org.openflexo.rm.ResourceLocator;
+import org.openflexo.toolbox.FileSystemMetaDataManager;
+import org.openflexo.toolbox.FileUtils;
 import org.openflexo.toolbox.IProgress;
-import org.openflexo.toolbox.StringUtils;
 
-public abstract class VirtualModelResourceImpl extends AbstractVirtualModelResourceImpl<VirtualModel> implements VirtualModelResource,
-		AccessibleProxyObject {
+public abstract class VirtualModelResourceImpl extends PamelaResourceImpl<VirtualModel, FMLModelFactory> implements VirtualModelResource {
 
 	static final Logger logger = Logger.getLogger(VirtualModelResourceImpl.class.getPackage().getName());
 
-	public static VirtualModelResource makeVirtualModelResource(String name, File containerDir, ViewPointResource viewPointResource,
-			FlexoServiceManager serviceManager) {
+	@Override
+	public String computeDefaultURI() {
+		String returned = super.computeDefaultURI();
+		if (!returned.endsWith(VirtualModelResourceFactory.FML_SUFFIX)) {
+			return returned + VirtualModelResourceFactory.FML_SUFFIX;
+		}
+		return returned;
+	}
+
+	@Override
+	public void setName(String aName) throws CannotRenameException {
+		String oldName = getName();
+		super.setName(aName);
+		if (getLoadedResourceData() != null && getLoadedResourceData().getPropertyChangeSupport() != null) {
+			getLoadedResourceData().getPropertyChangeSupport().firePropertyChange(FlexoConcept.NAME_KEY, oldName, aName);
+		}
+	}
+
+	@Override
+	public FMLTechnologyAdapter getTechnologyAdapter() {
+		if (getServiceManager() != null) {
+			return getServiceManager().getTechnologyAdapterService().getTechnologyAdapter(FMLTechnologyAdapter.class);
+		}
+		return null;
+	}
+
+	/**
+	 * Return virtual model stored by this resource<br>
+	 * Load the resource data when unloaded
+	 */
+	@Override
+	public VirtualModel getVirtualModel() {
 		try {
-			ModelFactory factory = new ModelFactory(ModelContextLibrary.getCompoundModelContext(DirectoryBasedFlexoIODelegate.class,
-					VirtualModelResource.class));
-			VirtualModelResourceImpl returned = (VirtualModelResourceImpl) factory.newInstance(VirtualModelResource.class);
-			returned.initName(name);
-
-			returned.setFlexoIODelegate(DirectoryBasedFlexoIODelegateImpl.makeDirectoryBasedFlexoIODelegate(containerDir, "",
-					CORE_FILE_SUFFIX, returned, factory));
-
-			/*DirectoryBasedFlexoIODelegate delegate = (DirectoryBasedFlexoIODelegate) returned.getFlexoIODelegate();
-			System.out.println("Nouveau VM");
-			System.out.println("containerDir=" + containerDir);
-			System.out.println("dir=" + delegate.getDirectory());
-			System.out.println("file=" + delegate.getFile());*/
-
-			// returned.setFlexoIODelegate(FileFlexoIODelegateImpl.makeFileFlexoIODelegate(virtualModelXMLFile, factory));
-			returned.setURI(viewPointResource.getURI() + "/" + name);
-			returned.setServiceManager(serviceManager);
-			viewPointResource.addToContents(returned);
-			viewPointResource.notifyContentsAdded(returned);
-
-			// TODO: the factory should be instantiated and managed by the ProjectNatureService, which should react to the registering
-			// of a new TA, and which is responsible to update the VirtualModelFactory of all VirtualModelResource
-			returned.setFactory(new FMLModelFactory(returned, serviceManager));
-
-			return returned;
-		} catch (ModelDefinitionException e) {
+			return getResourceData(null);
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (ResourceLoadingCancelledException e) {
+			e.printStackTrace();
+		} catch (FlexoException e) {
 			e.printStackTrace();
 		}
 		return null;
 	}
 
-	public static VirtualModelResource retrieveVirtualModelResource(File virtualModelDirectory/*, File virtualModelXMLFile*/,
-			ViewPointResource viewPointResource, FlexoServiceManager serviceManager) {
-		try {
-			ModelFactory factory = new ModelFactory(ModelContextLibrary.getCompoundModelContext(DirectoryBasedFlexoIODelegate.class,
-					VirtualModelResource.class));
-			VirtualModelResourceImpl returned = (VirtualModelResourceImpl) factory.newInstance(VirtualModelResource.class);
-			String baseName = virtualModelDirectory.getName();
-			File xmlFile = new File(virtualModelDirectory, baseName + CORE_FILE_SUFFIX);
-			VirtualModelInfo vpi = null;
-			try {
-				vpi = findVirtualModelInfo(new FileInputStream(xmlFile));
-			} catch (FileNotFoundException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+	@Override
+	public void stopDeserializing() {
+		// NPE Protection and warning
+		VirtualModel data = getLoadedResourceData();
+		if (data != null) {
+			data.finalizeDeserialization();
+		}
+		if (data == null) {
+			logger.warning("INVESTIGATE: NO DATA has been derserialized from VirtualModelResource - " + this.getURI());
+		}
+		else {
+			for (FlexoConcept fc : data.getFlexoConcepts()) {
+				fc.finalizeDeserialization();
 			}
-			if (vpi == null) {
-				// Unable to retrieve infos, just abort
-				return null;
+		}
+		super.stopDeserializing();
+	}
+
+	@Override
+	public boolean delete(Object... context) {
+		if (super.delete(context)) {
+			if (getServiceManager() != null) {
+				getServiceManager().getResourceManager().addToFilesToDelete(ResourceLocator.retrieveResourceAsFile(getDirectory()));
 			}
+			return true;
+		}
+		return false;
+	}
 
-			returned.initName(baseName);
-			returned.setFlexoIODelegate(DirectoryBasedFlexoIODelegateImpl.makeDirectoryBasedFlexoIODelegate(
-					virtualModelDirectory.getParentFile(), "", CORE_FILE_SUFFIX, returned, factory));
+	@Override
+	public Resource getDirectory() {
+		if (getIODelegate() != null && getIODelegate().getSerializationArtefactAsResource() != null) {
+			return getIODelegate().getSerializationArtefactAsResource().getContainer();
+		}
+		return null;
 
-			// returned.setFlexoIODelegate(FileFlexoIODelegateImpl.makeFileFlexoIODelegate(xmlFile, factory));
-			returned.setURI(viewPointResource.getURI() + "/" + virtualModelDirectory.getName());
-			if (StringUtils.isNotEmpty(vpi.version)) {
-				returned.setVersion(new FlexoVersion(vpi.version));
+		/*if (getFlexoIODelegate() instanceof FileFlexoIODelegate) {
+			String parentPath = getDirectoryPath();
+			if (ResourceLocator.locateResource(parentPath) == null) {
+				FileSystemResourceLocatorImpl.appendDirectoryToFileSystemResourceLocator(parentPath);
 			}
-			returned.setModelVersion(new FlexoVersion(StringUtils.isNotEmpty(vpi.modelVersion) ? vpi.modelVersion : "0.1"));
+			return ResourceLocator.locateResource(parentPath);
+		}
+		else if (getFlexoIODelegate() instanceof InJarFlexoIODelegate) {
+			InJarResourceImpl resource = ((InJarFlexoIODelegate) getFlexoIODelegate()).getInJarResource();
+			String parentPath = FilenameUtils.getFullPath(resource.getRelativePath());
+			BasicResourceImpl parent = ((ClasspathResourceLocatorImpl) (resource.getLocator())).getJarResourcesList().get(parentPath);
+			return parent;
+		}
+		return null;*/
+	}
 
-			// If ViewPointLibrary not initialized yet, we will do it later in ViewPointLibrary.initialize() method
-			/*if (serviceManager.getViewPointLibrary() != null) {
-				returned.setViewPointLibrary(serviceManager.getViewPointLibrary());
-			}*/
-
-			returned.setServiceManager(serviceManager);
-
-			logger.fine("VirtualModelResource " + xmlFile.getAbsolutePath() + " version " + returned.getModelVersion());
-
-			// TODO: the factory should be instantiated and managed by the ProjectNatureService, which should react to the registering
-			// of a new TA, and which is responsible to update the VirtualModelFactory of all VirtualModelResource
-			returned.setFactory(new FMLModelFactory(returned, serviceManager));
-
-			return returned;
-		} catch (ModelDefinitionException e) {
-			e.printStackTrace();
+	public String getDirectoryPath() {
+		if (getIODelegate() instanceof DirectoryBasedIODelegate) {
+			return ((DirectoryBasedIODelegate) getIODelegate()).getDirectory().getAbsolutePath();
+		}
+		else if (getIODelegate() instanceof FileIODelegate) {
+			return ((FileIODelegate) getIODelegate()).getFile().getParentFile().getAbsolutePath();
 		}
 		return null;
 	}
 
-	public static VirtualModelResource retrieveVirtualModelResource(InJarResourceImpl inJarResource, Resource parent,
-			ViewPointResource viewPointResource, FlexoServiceManager serviceManager) {
-		try {
-			ModelFactory factory = new ModelFactory(ModelContextLibrary.getCompoundModelContext(InJarFlexoIODelegate.class,
-					VirtualModelResource.class));
-			VirtualModelResourceImpl returned = (VirtualModelResourceImpl) factory.newInstance(VirtualModelResource.class);
+	/**
+	 * Activate all required technologies, while exploring declared model slots
+	 */
+	protected void activateRequiredTechnologies() {
 
-			returned.setFlexoIODelegate(InJarFlexoIODelegateImpl.makeInJarFlexoIODelegate(inJarResource, factory));
-			VirtualModelInfo vpi = findVirtualModelInfo(returned.getFlexoIOStreamDelegate().getInputStream());
-			if (vpi == null) {
-				// Unable to retrieve infos, just abort
-				return null;
+		logger.info("activateRequiredTechnologies() for " + this + " used: " + getUsedModelSlots());
+
+		TechnologyAdapterService taService = getServiceManager().getTechnologyAdapterService();
+		List<TechnologyAdapter> requiredTAList = new ArrayList<>();
+		requiredTAList.add(taService.getTechnologyAdapter(FMLRTTechnologyAdapter.class));
+		for (Class<? extends ModelSlot<?>> msClass : getUsedModelSlots()) {
+			TechnologyAdapter requiredTA = taService.getTechnologyAdapterForModelSlot(msClass);
+			if (!requiredTAList.contains(requiredTA)) {
+				requiredTAList.add(requiredTA);
 			}
-
-			// returned.setFile(xmlFile);
-			// returned.setDirectory(parent);
-			returned.initName(vpi.name);
-			returned.setURI(viewPointResource.getURI() + "/" + FilenameUtils.getBaseName(inJarResource.getRelativePath()));
-			if (StringUtils.isNotEmpty(vpi.version)) {
-				returned.setVersion(new FlexoVersion(vpi.version));
-			}
-			returned.setModelVersion(new FlexoVersion(StringUtils.isNotEmpty(vpi.modelVersion) ? vpi.modelVersion : "0.1"));
-
-			// If ViewPointLibrary not initialized yet, we will do it later in ViewPointLibrary.initialize() method
-			/*if (serviceManager.getViewPointLibrary() != null) {
-				returned.setViewPointLibrary(serviceManager.getViewPointLibrary());
-			}*/
-
-			returned.setServiceManager(serviceManager);
-
-			logger.fine("VirtualModelResource " + returned.getFlexoIODelegate().toString() + " version " + returned.getModelVersion());
-
-			// TODO: the factory should be instantiated and managed by the ProjectNatureService, which should react to the registering
-			// of a new TA, and which is responsible to update the VirtualModelFactory of all VirtualModelResource
-			returned.setFactory(new FMLModelFactory(returned, serviceManager));
-
-			return returned;
-		} catch (ModelDefinitionException e) {
-			e.printStackTrace();
 		}
-		return null;
+
+		// List<FlexoTask> waitingTasks = new ArrayList<>();
+		for (TechnologyAdapter requiredTA : requiredTAList) {
+			logger.info("Activating " + requiredTA);
+			/*FlexoTask t =*/ taService.activateTechnologyAdapter(requiredTA, true);
+			/*if (t != null) {
+				waitingTasks.add(t);
+			}*/
+		}
+
+		/*for (FlexoTask waitingTask : waitingTasks) {
+			getServiceManager().getTaskManager().waitTask(waitingTask);
+		}*/
+
 	}
 
 	/**
@@ -220,7 +239,10 @@ public abstract class VirtualModelResourceImpl extends AbstractVirtualModelResou
 	}
 
 	@Override
-	public Class<VirtualModel> getResourceDataClass() {
+	public Class<? extends VirtualModel> getResourceDataClass() {
+		if (getSpecializedResourceDataClass() != null) {
+			return getSpecializedResourceDataClass();
+		}
 		return VirtualModel.class;
 	}
 
@@ -237,21 +259,59 @@ public abstract class VirtualModelResourceImpl extends AbstractVirtualModelResou
 	@Override
 	public VirtualModel loadResourceData(IProgress progress) throws FlexoFileNotFoundException, IOFlexoException, InvalidXMLException,
 			InconsistentDataException, InvalidModelDefinitionException {
+
+		logger.info("*************** Loading " + this);
+
+		// Now we have to activate all required technologies
+		activateRequiredTechnologies();
+
 		VirtualModel returned = super.loadResourceData(progress);
 		// We notify a deserialization start on ViewPoint AND VirtualModel, to avoid addToVirtualModel() and setViewPoint() to notify
 		// UndoManager
-		boolean containerWasDeserializing = getContainer().isDeserializing();
+		boolean containerWasDeserializing = getContainer() != null ? getContainer().isDeserializing() : true;
 		if (!containerWasDeserializing) {
 			getContainer().startDeserializing();
 		}
 		startDeserializing();
-		getContainer().getViewPoint().addToVirtualModels(returned);
+		if (getContainer() != null) {
+			VirtualModel virtualModel = getContainer().getVirtualModel();
+			if (virtualModel != null)
+				virtualModel.addToVirtualModels(returned);
+		}
 		returned.clearIsModified();
 		// And, we notify a deserialization stop
 		stopDeserializing();
 		if (!containerWasDeserializing) {
 			getContainer().stopDeserializing();
 		}
+
+		if (needsConversion() || (getContainer() != null && getContainer().needsConversion())) {
+			logger.info("Converting " + this);
+			FMLValidationModel validationModel = getServiceManager().getVirtualModelLibrary().getFMLValidationModel();
+			try {
+				ValidationReport validationReport = validationModel.validate(returned);
+				for (ValidationIssue<?, ?> issue : validationReport.getAllIssues()) {
+					if (issue instanceof InvalidRequiredBindingIssue) {
+						InvalidRequiredBindingIssue<?> invalidBinding = (InvalidRequiredBindingIssue<?>) issue;
+						if (invalidBinding.getFixProposals().size() > 0) {
+							invalidBinding.getFixProposals().get(0).apply(false);
+						}
+					}
+				}
+				saveResourceData(true);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (SaveResourcePermissionDeniedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (SaveResourceException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+
+		}
+
 		return returned;
 	}
 
@@ -262,107 +322,170 @@ public abstract class VirtualModelResourceImpl extends AbstractVirtualModelResou
 		getPropertyChangeSupport().firePropertyChange("loadedVirtualModel", null, getLoadedResourceData());
 	}
 
-	private static class VirtualModelInfo {
-		public String version;
-		public String name;
-		public String modelVersion;
+	@Override
+	public VirtualModelResource getContainer() {
+		return (VirtualModelResource) performSuperGetter(CONTAINER);
 	}
-
-	private static VirtualModelInfo findVirtualModelInfo(InputStream inputStream) {
-		Document document;
-		try {
-			// logger.fine("Try to find infos for " + virtualModelDirectory);
-
-			// String baseName = virtualModelDirectory.getName();
-			// File xmlFile = new File(virtualModelDirectory, baseName + ".xml");
-
-			// if (xmlFile.exists()) {
-
-			document = readXMLInputStream(inputStream);// (xmlFile);
-			Element root = getElement(document, "VirtualModel");
-			if (root != null) {
-				VirtualModelInfo returned = new VirtualModelInfo();
-				Iterator<Attribute> it = root.getAttributes().iterator();
-				while (it.hasNext()) {
-					Attribute at = it.next();
-					if (at.getName().equals("name")) {
-						logger.fine("Returned " + at.getValue());
-						returned.name = at.getValue();
-					} else if (at.getName().equals("version")) {
-						logger.fine("Returned " + at.getValue());
-						returned.version = at.getValue();
-					} else if (at.getName().equals("modelVersion")) {
-						logger.fine("Returned " + at.getValue());
-						returned.modelVersion = at.getValue();
-					}
-				}
-				if (StringUtils.isEmpty(returned.name)) {
-					// returned.name = virtualModelDirectory.getName();
-					returned.name = "NoName";
-				}
-				return returned;
-			}
-			/*} else {
-				logger.warning("While analysing virtual model candidate: " + virtualModelDirectory.getAbsolutePath() + " cannot find file "
-						+ xmlFile.getAbsolutePath());
-			}*/
-		} catch (JDOMException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		logger.fine("Returned null");
-		return null;
-	}
-
-	/*private static VirtualModelInfo findVirtualModelInfo(File virtualModelDirectory) {
-		Document document;
-		try {
-			logger.fine("Try to find infos for " + virtualModelDirectory);
-	
-			String baseName = virtualModelDirectory.getName();
-			File xmlFile = new File(virtualModelDirectory, baseName + ".xml");
-	
-			if (xmlFile.exists()) {
-	
-				document = readXMLFile(xmlFile);
-				Element root = getElement(document, "VirtualModel");
-				if (root != null) {
-					VirtualModelInfo returned = new VirtualModelInfo();
-					Iterator<Attribute> it = root.getAttributes().iterator();
-					while (it.hasNext()) {
-						Attribute at = it.next();
-						if (at.getName().equals("name")) {
-							logger.fine("Returned " + at.getValue());
-							returned.name = at.getValue();
-						} else if (at.getName().equals("version")) {
-							logger.fine("Returned " + at.getValue());
-							returned.version = at.getValue();
-						} else if (at.getName().equals("modelVersion")) {
-							logger.fine("Returned " + at.getValue());
-							returned.modelVersion = at.getValue();
-						}
-					}
-					if (StringUtils.isEmpty(returned.name)) {
-						returned.name = virtualModelDirectory.getName();
-					}
-					return returned;
-				}
-			} else {
-				logger.warning("While analysing virtual model candidate: " + virtualModelDirectory.getAbsolutePath() + " cannot find file "
-						+ xmlFile.getAbsolutePath());
-			}
-		} catch (JDOMException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		logger.fine("Returned null");
-		return null;
-	}*/
 
 	@Override
-	public ViewPointResource getContainer() {
-		return (ViewPointResource) performSuperGetter(CONTAINER);
+	public VirtualModelResource getVirtualModelResource(String virtualModelNameOrURI) {
+		for (VirtualModelResource vmRes : getContainedVirtualModelResources()) {
+			if (vmRes.getName().equals(virtualModelNameOrURI) || vmRes.getURI().equals(virtualModelNameOrURI)) {
+				return vmRes;
+			}
+		}
+		return null;
 	}
+
+	@Override
+	public List<VirtualModelResource> getContainedVirtualModelResources() {
+		return getContents(VirtualModelResource.class);
+	}
+
+	@Override
+	public VirtualModelLibrary getVirtualModelLibrary() {
+		VirtualModelLibrary returned = (VirtualModelLibrary) performSuperGetter(VIRTUAL_MODEL_LIBRARY);
+		if (returned == null && getServiceManager() != null) {
+			return getServiceManager().getVirtualModelLibrary();
+		}
+		return returned;
+	}
+
+	@Override
+	public void addToContents(FlexoResource<?> resource) {
+		performSuperAdder(CONTENTS, resource);
+		notifyContentsAdded(resource);
+	}
+
+	@Override
+	public void removeFromContents(FlexoResource<?> resource) {
+		performSuperRemover(CONTENTS, resource);
+		notifyContentsRemoved(resource);
+	}
+
+	@Override
+	protected void _saveResourceData(boolean clearIsModified) throws SaveResourceException {
+		super._saveResourceData(clearIsModified);
+		// Hook to write FML as well
+		if (getIODelegate() instanceof DirectoryBasedIODelegate) {
+			DirectoryBasedIODelegate ioDelegate = (DirectoryBasedIODelegate) getIODelegate();
+			File fmlFile = new File(ioDelegate.getDirectory(), ioDelegate.getDirectory().getName());
+			if (!fmlFile.isDirectory()) {
+				try {
+					// Warn directory watcher about .fml file to be saved
+					getServiceManager().notify(null, new WillWriteFileOnDiskNotification(fmlFile));
+					FileUtils.saveToFile(fmlFile, getLoadedResourceData().getFMLRepresentation());
+					getServiceManager().notify(null, new FileHasBeenWrittenOnDiskNotification(fmlFile));
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+		saveMetaData();
+	}
+
+	private void saveMetaData() {
+		if (getResourceCenter() instanceof FileSystemBasedResourceCenter) {
+			FileSystemBasedResourceCenter rc = (FileSystemBasedResourceCenter) getResourceCenter();
+			FileSystemMetaDataManager metaDataManager = rc.getMetaDataManager();
+			File file = ((File) getIODelegate().getSerializationArtefact());
+			metaDataManager.setProperty("uri", getURI(), file, false);
+			metaDataManager.setProperty("name", getName(), file, false);
+			metaDataManager.setProperty("version", getVersion().toString(), file, false);
+			metaDataManager.setProperty("modelVersion", getModelVersion().toString(), file, false);
+			metaDataManager.setProperty("requiredModelSlotList", getUsedModelSlotsAsString(), file, false);
+			if (getSpecializedResourceDataClass() != null) {
+				metaDataManager.setProperty("virtualModelClassName", getSpecializedResourceDataClass().getName(), file, false);
+			}
+			metaDataManager.saveMetaDataProperties(file);
+		}
+	}
+
+	private List<Class<? extends ModelSlot<?>>> usedModelSlots = new ArrayList<>();
+
+	/**
+	 * Return {@link ModelSlot} classes used in this {@link VirtualModel} resource<br>
+	 * Note that this information is extracted from metadata or from reading XML file before effective parsing<br>
+	 * This information is used to determine which technology adapters have to be activated before {@link VirtualModel} is loaded
+	 * 
+	 * @return
+	 */
+	@Override
+	public List<Class<? extends ModelSlot<?>>> getUsedModelSlots() {
+		return usedModelSlots;
+	}
+
+	@Override
+	public String getUsedModelSlotsAsString() {
+		boolean isFirst = true;
+		StringBuffer sb = new StringBuffer();
+		for (Class<? extends ModelSlot<?>> msClass : usedModelSlots) {
+			sb.append((isFirst ? "" : ",") + msClass.getName());
+			isFirst = false;
+		}
+		return sb.toString();
+	}
+
+	/**
+	 * Internally sets UsedModelSlots
+	 * 
+	 * @param usedModelSlotClasses
+	 * @throws ClassNotFoundException
+	 */
+	protected void setUsedModelSlots(String usedModelSlotClasses) throws ClassNotFoundException {
+		usedModelSlots.clear();
+		StringTokenizer st = new StringTokenizer(usedModelSlotClasses, ",");
+		while (st.hasMoreTokens()) {
+			String next = st.nextToken();
+			usedModelSlots.add((Class<? extends ModelSlot<?>>) Class.forName(next));
+		}
+	}
+
+	/**
+	 * Rebuild a new {@link FMLModelFactory} using supplied use declarations, and set this new factory as model factory to use for this
+	 * resource<br>
+	 * This call is required for example when a new technology is required for a {@link VirtualModel}
+	 * 
+	 * @param useDeclarations
+	 */
+	@Override
+	public void updateFMLModelFactory(List<Class<? extends ModelSlot<?>>> usedModelSlots) {
+		this.usedModelSlots = usedModelSlots;
+		try {
+			FMLModelFactory modelFactory = new FMLModelFactory(this, getServiceManager());
+			setFactory(modelFactory);
+		} catch (ModelDefinitionException e) {
+			e.printStackTrace();
+		}
+	}
+
+	@Override
+	public void setSpecializedResourceDataClass(Class<? extends VirtualModel> specializedResourceDataClass) {
+		performSuperSetter(SPECIALIZED_VIRTUAL_MODEL_CLASS, specializedResourceDataClass);
+		if (getServiceManager() != null) {
+			try {
+				FMLModelFactory modelFactory = new FMLModelFactory(this, getServiceManager());
+				setFactory(modelFactory);
+			} catch (ModelDefinitionException e) {
+				e.printStackTrace();
+			}
+		}
+		else {
+			logger.warning("Could not access to ServiceManager");
+		}
+	}
+
+	@Override
+	public void setServiceManager(FlexoServiceManager serviceManager) {
+		super.setServiceManager(serviceManager);
+		if (serviceManager != null) {
+			try {
+				FMLModelFactory modelFactory = new FMLModelFactory(this, getServiceManager());
+				setFactory(modelFactory);
+			} catch (ModelDefinitionException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
 }

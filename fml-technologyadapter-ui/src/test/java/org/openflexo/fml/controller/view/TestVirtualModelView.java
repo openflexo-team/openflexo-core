@@ -42,6 +42,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import java.io.FileNotFoundException;
+
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -49,30 +51,32 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openflexo.connie.DataBinding;
-import org.openflexo.fib.swing.FIBJPanel;
-import org.openflexo.fib.testutils.GraphicalContextDelegate;
-import org.openflexo.fib.utils.OpenflexoFIBTestCase;
+import org.openflexo.connie.type.PrimitiveType;
+import org.openflexo.fml.controller.FMLFIBController;
 import org.openflexo.foundation.DefaultFlexoEditor;
 import org.openflexo.foundation.FlexoEditor;
+import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.fml.ActionScheme;
-import org.openflexo.foundation.fml.CheckboxParameter;
 import org.openflexo.foundation.fml.CreationScheme;
 import org.openflexo.foundation.fml.DeletionScheme;
 import org.openflexo.foundation.fml.FlexoBehaviourParameter;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.NavigationScheme;
-import org.openflexo.foundation.fml.PrimitiveRole;
-import org.openflexo.foundation.fml.PrimitiveRole.PrimitiveType;
-import org.openflexo.foundation.fml.ViewPoint;
-import org.openflexo.foundation.fml.ViewPointLibrary;
 import org.openflexo.foundation.fml.VirtualModel;
+import org.openflexo.foundation.fml.VirtualModelLibrary;
 import org.openflexo.foundation.fml.action.CreateEditionAction;
 import org.openflexo.foundation.fml.action.CreateFlexoBehaviour;
-import org.openflexo.foundation.fml.action.CreateFlexoBehaviourParameter;
-import org.openflexo.foundation.fml.action.CreateFlexoRole;
+import org.openflexo.foundation.fml.action.CreateGenericBehaviourParameter;
+import org.openflexo.foundation.fml.action.CreatePrimitiveRole;
 import org.openflexo.foundation.fml.controlgraph.ConditionalAction;
 import org.openflexo.foundation.fml.editionaction.AssignationAction;
 import org.openflexo.foundation.fml.editionaction.ExpressionAction;
+import org.openflexo.foundation.resource.ResourceLoadingCancelledException;
+import org.openflexo.gina.ApplicationFIBLibrary.ApplicationFIBLibraryImpl;
+import org.openflexo.gina.swing.utils.FIBJPanel;
+import org.openflexo.gina.test.OpenflexoFIBTestCase;
+import org.openflexo.gina.test.SwingGraphicalContextDelegate;
+import org.openflexo.gina.utils.InspectorGroup;
 import org.openflexo.rm.Resource;
 import org.openflexo.rm.ResourceLocator;
 import org.openflexo.test.OrderedRunner;
@@ -87,11 +91,11 @@ import org.openflexo.test.TestOrder;
 @RunWith(OrderedRunner.class)
 public class TestVirtualModelView extends OpenflexoFIBTestCase {
 
-	private static GraphicalContextDelegate gcDelegate;
+	private static SwingGraphicalContextDelegate gcDelegate;
 
 	private static Resource fibResource;
 
-	static ViewPoint viewPoint;
+	static VirtualModel viewPoint;
 	static VirtualModel virtualModel;
 
 	static FlexoConcept flexoConceptA;
@@ -126,11 +130,11 @@ public class TestVirtualModelView extends OpenflexoFIBTestCase {
 
 	@Test
 	@TestOrder(3)
-	public void loadConcepts() {
+	public void loadConcepts() throws FileNotFoundException, ResourceLoadingCancelledException, FlexoException {
 
-		ViewPointLibrary vpLib = serviceManager.getViewPointLibrary();
+		VirtualModelLibrary vpLib = serviceManager.getVirtualModelLibrary();
 		assertNotNull(vpLib);
-		viewPoint = vpLib.getViewPoint("http://openflexo.org/test/TestViewPoint1");
+		viewPoint = vpLib.getVirtualModel("http://openflexo.org/test/TestResourceCenter/TestViewPointA.fml");
 		assertNotNull(viewPoint);
 		virtualModel = viewPoint.getVirtualModelNamed("TestVirtualModel");
 		assertNotNull(virtualModel);
@@ -142,21 +146,18 @@ public class TestVirtualModelView extends OpenflexoFIBTestCase {
 		editor = new DefaultFlexoEditor(null, serviceManager);
 		assertNotNull(editor);
 
-		CreateFlexoRole createPR1 = CreateFlexoRole.actionType.makeNewAction(flexoConceptA, null, editor);
+		CreatePrimitiveRole createPR1 = CreatePrimitiveRole.actionType.makeNewAction(flexoConceptA, null, editor);
 		createPR1.setRoleName("aString");
-		createPR1.setFlexoRoleClass(PrimitiveRole.class);
 		createPR1.setPrimitiveType(PrimitiveType.String);
 		createPR1.doAction();
 
-		CreateFlexoRole createPR2 = CreateFlexoRole.actionType.makeNewAction(flexoConceptA, null, editor);
+		CreatePrimitiveRole createPR2 = CreatePrimitiveRole.actionType.makeNewAction(flexoConceptA, null, editor);
 		createPR2.setRoleName("aBoolean");
-		createPR2.setFlexoRoleClass(PrimitiveRole.class);
 		createPR2.setPrimitiveType(PrimitiveType.Boolean);
 		createPR2.doAction();
 
-		CreateFlexoRole createPR3 = CreateFlexoRole.actionType.makeNewAction(flexoConceptA, null, editor);
+		CreatePrimitiveRole createPR3 = CreatePrimitiveRole.actionType.makeNewAction(flexoConceptA, null, editor);
 		createPR3.setRoleName("anInteger");
-		createPR3.setFlexoRoleClass(PrimitiveRole.class);
 		createPR3.setPrimitiveType(PrimitiveType.Integer);
 		createPR3.doAction();
 
@@ -170,10 +171,10 @@ public class TestVirtualModelView extends OpenflexoFIBTestCase {
 				editor);
 		// createEditionAction1.actionChoice = CreateEditionActionChoice.BuiltInAction;
 		createEditionAction1.setEditionActionClass(ExpressionAction.class);
-		createEditionAction1.setAssignation(new DataBinding<Object>("aString"));
+		createEditionAction1.setAssignation(new DataBinding<>("aString"));
 		createEditionAction1.doAction();
 		AssignationAction<?> action1 = (AssignationAction<?>) createEditionAction1.getNewEditionAction();
-		((ExpressionAction) action1.getAssignableAction()).setExpression(new DataBinding<Object>("'foo'"));
+		((ExpressionAction<?>) action1.getAssignableAction()).setExpression(new DataBinding<>("'foo'"));
 		action1.setName("action1");
 
 		assertEquals(action1, creationScheme.getControlGraph());
@@ -183,20 +184,20 @@ public class TestVirtualModelView extends OpenflexoFIBTestCase {
 				editor);
 		// createEditionAction2.actionChoice = CreateEditionActionChoice.BuiltInAction;
 		createEditionAction2.setEditionActionClass(ExpressionAction.class);
-		createEditionAction2.setAssignation(new DataBinding<Object>("aBoolean"));
+		createEditionAction2.setAssignation(new DataBinding<>("aBoolean"));
 		createEditionAction2.doAction();
 		AssignationAction<?> action2 = (AssignationAction<?>) createEditionAction2.getNewEditionAction();
-		((ExpressionAction) action2.getAssignableAction()).setExpression(new DataBinding<Object>("true"));
+		((ExpressionAction<?>) action2.getAssignableAction()).setExpression(new DataBinding<>("true"));
 		action2.setName("action2");
 
 		CreateEditionAction createEditionAction3 = CreateEditionAction.actionType.makeNewAction(creationScheme.getControlGraph(), null,
 				editor);
 		// createEditionAction3.actionChoice = CreateEditionActionChoice.BuiltInAction;
 		createEditionAction3.setEditionActionClass(ExpressionAction.class);
-		createEditionAction3.setAssignation(new DataBinding<Object>("anInteger"));
+		createEditionAction3.setAssignation(new DataBinding<>("anInteger"));
 		createEditionAction3.doAction();
 		AssignationAction<?> action3 = (AssignationAction<?>) createEditionAction3.getNewEditionAction();
-		((ExpressionAction) action3.getAssignableAction()).setExpression(new DataBinding<Object>("8"));
+		((ExpressionAction<?>) action3.getAssignableAction()).setExpression(new DataBinding<>("8"));
 		action3.setName("action3");
 
 		CreateFlexoBehaviour createActionScheme = CreateFlexoBehaviour.actionType.makeNewAction(flexoConceptA, null, editor);
@@ -205,9 +206,10 @@ public class TestVirtualModelView extends OpenflexoFIBTestCase {
 		actionScheme = (ActionScheme) createActionScheme.getNewFlexoBehaviour();
 		assertNotNull(actionScheme);
 
-		CreateFlexoBehaviourParameter createParameter = CreateFlexoBehaviourParameter.actionType.makeNewAction(actionScheme, null, editor);
-		createParameter.setFlexoBehaviourParameterClass(CheckboxParameter.class);
+		CreateGenericBehaviourParameter createParameter = CreateGenericBehaviourParameter.actionType.makeNewAction(actionScheme, null,
+				editor);
 		createParameter.setParameterName("aFlag");
+		createParameter.setParameterType(Boolean.class);
 		createParameter.doAction();
 		FlexoBehaviourParameter param = createParameter.getNewParameter();
 		assertNotNull(param);
@@ -224,15 +226,15 @@ public class TestVirtualModelView extends OpenflexoFIBTestCase {
 		assertNotNull(conditional1);
 		assertTrue(conditional1.getCondition().isValid());
 
-		CreateEditionAction createDeclarePatternRoleInCondition1 = CreateEditionAction.actionType.makeNewAction(
-				conditional1.getThenControlGraph(), null, editor);
+		CreateEditionAction createDeclarePatternRoleInCondition1 = CreateEditionAction.actionType
+				.makeNewAction(conditional1.getThenControlGraph(), null, editor);
 		// createDeclarePatternRoleInCondition1.actionChoice = CreateEditionActionChoice.BuiltInAction;
 		createDeclarePatternRoleInCondition1.setEditionActionClass(ExpressionAction.class);
-		createDeclarePatternRoleInCondition1.setAssignation(new DataBinding<Object>("anInteger"));
+		createDeclarePatternRoleInCondition1.setAssignation(new DataBinding<>("anInteger"));
 		createDeclarePatternRoleInCondition1.doAction();
 		AssignationAction<?> declarePatternRoleInCondition1 = (AssignationAction<?>) createDeclarePatternRoleInCondition1
 				.getNewEditionAction();
-		((ExpressionAction) declarePatternRoleInCondition1.getAssignableAction()).setExpression(new DataBinding<Object>("8"));
+		((ExpressionAction<?>) declarePatternRoleInCondition1.getAssignableAction()).setExpression(new DataBinding<>("8"));
 
 		CreateEditionAction createConditionAction2 = CreateEditionAction.actionType.makeNewAction(actionScheme.getControlGraph(), null,
 				editor);
@@ -248,11 +250,11 @@ public class TestVirtualModelView extends OpenflexoFIBTestCase {
 		CreateEditionAction createDeclarePatternRoleInCondition2 = CreateEditionAction.actionType.makeNewAction(conditional2, null, editor);
 		// createDeclarePatternRoleInCondition2.actionChoice = CreateEditionActionChoice.BuiltInAction;
 		createDeclarePatternRoleInCondition2.setEditionActionClass(ExpressionAction.class);
-		createDeclarePatternRoleInCondition2.setAssignation(new DataBinding<Object>("anInteger"));
+		createDeclarePatternRoleInCondition2.setAssignation(new DataBinding<>("anInteger"));
 		createDeclarePatternRoleInCondition2.doAction();
 		AssignationAction<?> declarePatternRoleInCondition2 = (AssignationAction<?>) createDeclarePatternRoleInCondition2
 				.getNewEditionAction();
-		((ExpressionAction) declarePatternRoleInCondition2.getAssignableAction()).setExpression(new DataBinding<Object>("12"));
+		((ExpressionAction<?>) declarePatternRoleInCondition2.getAssignableAction()).setExpression(new DataBinding<>("12"));
 
 	}
 
@@ -261,12 +263,18 @@ public class TestVirtualModelView extends OpenflexoFIBTestCase {
 	public void testInstanciateWidget() {
 
 		FIBJPanel<VirtualModel> widget = instanciateFIB(fibResource, virtualModel, VirtualModel.class);
+		FMLFIBController fibController = (FMLFIBController) widget.getController();
+		InspectorGroup fmlInspectorGroup = new InspectorGroup(ResourceLocator.locateResource("Inspectors/FML"),
+				ApplicationFIBLibraryImpl.instance(), null);
+		fibController.setDefaultInspectorGroup(fmlInspectorGroup);
 
+		// ModuleInspectorController inspectorController = new ModuleInspectorController(null);
+		// fibController.setInspectorController
 		gcDelegate.addTab("TestVirtualModel", widget.getController());
 	}
 
 	public static void initGUI() {
-		gcDelegate = new GraphicalContextDelegate(TestVirtualModelView.class.getSimpleName());
+		gcDelegate = new SwingGraphicalContextDelegate(TestVirtualModelView.class.getSimpleName());
 	}
 
 	@AfterClass

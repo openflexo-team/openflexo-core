@@ -1,175 +1,403 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Panel className="org.openflexo.fib.utils.FIBInspector" layout="border"
-	titleFont="SansSerif,0,12" darkLevel="0"
-	dataClassName="org.openflexo.foundation.fml.FlexoBehaviour"
-	controllerClassName="org.openflexo.fml.controller.FMLFIBInspectorController"
-	font="SansSerif,0,12" name="Inspector">
-	<TabPanel name="Tab" constraints="border(location=center)">
-		<Tab title="Basic" layout="twocols" titleFont="SansSerif,0,11"
-			darkLevel="0" index="0" font="SansSerif,0,11" useScrollBar="true"
-			horizontalScrollbarPolicy="HORIZONTAL_SCROLLBAR_AS_NEEDED"
-			verticalScrollbarPolicy="VERTICAL_SCROLLBAR_AS_NEEDED" name="BasicTab">
-			<Label data="data.implementedInterface.simpleName" index="0"
-				constraints="twocols(expandHorizontally=false;expandVertically=false;index=0;location=left)"
-				name="NameLabel" localize="true" />
-			<TextField index="1" data="data.name"
-				constraints="twocols(expandHorizontally=true;expandVertically=false;index=1;location=right)"
-				name="Name" localize="true" columns="10" />
-			<Label label="label" index="2"
-				constraints="twocols(expandHorizontally=false;expandVertically=false;index=2;location=left)"
-				localize="true" />
-			<TextField index="3" data="data.label"
-				constraints="twocols(expandHorizontally=true;expandVertically=false;index=3;location=right)"
-				name="Label" localize="true" columns="10" />
-
-			<Label label="parameters" index="4"
-				constraints="twocols(expandHorizontally=false;expandVertically=false;index=2;location=left)"
-				localize="true" />
-			<Panel layout="border" border="none" 
-				borderTop="2" borderBottom="2" borderRight="2"
-				darkLevel="1" index="5"
-				constraints="twocols(expandHorizontally=true;expandVertically=true;index=5;location=right)"
-				opaque="false">
-				<Table iteratorClassName="org.openflexo.foundation.fml.FlexoBehaviourParameter"
-					autoSelectFirstRow="false" createNewRowOnClick="false"
-					boundToSelectionManager="true" showFooter="true"
-					selectionMode="MultipleIntervalSelection" localize="true" enable="(data != null)"
-					manageDynamicModel="true" name="ParametersTable" index="0"
-					data="data.parameters"
-					constraints="border(anchor=center;fill=both;gridHeight=1;gridWidth=1;gridX=0;gridY=1;index=0;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=center;padX=0;padY=0;weightX=0.5;weightY=1.0;x=0;y=0)"
-					font="SansSerif.plain,0,11" rightClickAction="controller.rightClick(ParametersTable.selected,event)">
-					<IconColumn data="controller.iconForObject(iterator)"
-						title="icon" columnWidth="20" resizable="false" displayTitle="false"
-						name="icon" />
-					<TextFieldColumn data="iterator.name" title="name"
-						columnWidth="100" resizable="true" displayTitle="true" />
-					<TextFieldColumn data="iterator.label" title="label"
-						columnWidth="100" resizable="true" displayTitle="true" />
-					<DropDownColumn data="iterator.widget" title="widget"
-						columnWidth="80" resizable="true" displayTitle="true" name="dropdown" />
-					<AddAction method="controller.createTextFieldParameter(data)"
-						name="add_textfield_parameter" />
-					<AddAction method="controller.createTextAreaParameter(data)"
-						name="add_textarea_parameter" />
-					<AddAction method="controller.createIntegerParameter(data)"
-						name="add_integer_parameter" />
-					<AddAction method="controller.createCheckBoxParameter(data)"
-						name="add_checkbox_parameter" />
-					<AddAction method="controller.createDropDownParameter(data)"
-						name="add_dropdown_parameter" />
-					<AddAction method="controller.createIndividualParameter(data)"
-						name="add_individual_parameter" />
-					<AddAction method="controller.createClassParameter(data)"
-						name="add_class_parameter" />
-					<AddAction method="controller.createURIParameter(data)"
-						name="add_uri_parameter" />
-					<AddAction method="controller.createObjectPropertyParameter(data)"
-						name="add_object_property_parameter" />
-					<AddAction method="controller.createDataPropertyParameter(data)"
-						name="add_data_property_parameter" />
-					<AddAction method="controller.createListParameter(data)"
-						name="add_list_parameter" />
-					<AddAction method="controller.createFlexoConceptInstanceParameter(data)"
-						name="add_flexo_concept_instance_parameter" />
-					<AddAction method="controller.createPropertyParameter(data)"
-						name="add_property_parameter" />
-					<AddAction method="controller.createTechnologyObjectParameter(data)"
-						name="add_technology_object" />
-					<RemoveAction method="controller.deleteParameter(data,selected)"
-						name="delete" />
+<Inspector xmlns:p="http://www.openflexo.org/pamela/" id="0"
+	p:modelEntity="org.openflexo.gina.utils.FIBInspector" borderLeft="0"
+	sizeAdjustment="OriginalSize" controllerClassName="org.openflexo.fml.controller.FMLFIBInspectorController"
+	border="empty" borderRight="0" trackViewPortWidth="true" font="SansSerif,0,12"
+	align="left" borderBottom="0" titleFont="SansSerif,0,12" borderTop="0"
+	trackViewPortHeight="true" layout="border" name="Inspector">
+	<Parameter id="1" name="title" value="Flexo Behaviour" />
+	<TabPanel id="2" name="Tab" constraints="border(location=center)">
+		<Tab id="3" verticalScrollbarPolicy="VERTICAL_SCROLLBAR_AS_NEEDED"
+			borderLeft="0" sizeAdjustment="OriginalSize" borderRight="0" border="empty"
+			trackViewPortWidth="true" index="0" font="SansSerif,0,11" align="left"
+			borderBottom="0" titleFont="SansSerif,0,11" borderTop="0"
+			trackViewPortHeight="true" horizontalScrollbarPolicy="HORIZONTAL_SCROLLBAR_AS_NEEDED"
+			useScrollBar="true" title="Basic" layout="twocols" name="BasicTab">
+			<Label id="4" name="NameLabel" data="data.implementedInterface.simpleName"
+				index="0" localize="true" align="left"
+				constraints="twocols(expandHorizontally=false;expandVertically=false;index=0;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=left)" />
+			<TextField id="5" columns="10" name="Name" data="data.name"
+				index="1" localize="true"
+				constraints="twocols(expandHorizontally=true;expandVertically=false;index=1;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=right)" />
+			<Label id="6" name="LabelLabel" index="2" localize="true"
+				align="left"
+				constraints="twocols(expandHorizontally=false;expandVertically=false;index=2;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=left)"
+				label="label" />
+			<TextField id="7" columns="10" name="LabelTF" data="data.label"
+				index="3" localize="true"
+				constraints="twocols(expandHorizontally=true;expandVertically=false;index=3;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=right)" />
+			<Label index="4" name="VisibilityLabel" localize="true" align="left"
+				constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=left)"
+				label="visibility" />
+			<DropDown index="5" data="data.visibility" localize="true"
+				constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=right)"
+				showText="true" iteratorClassName="org.openflexo.foundation.fml.FlexoBehaviour$Visibility"
+				showIcon="false" autoSelectFirstRow="true" name="visibilityDropdown" />
+			<Label id="8" name="ParametersLabel" index="6" localize="true"
+				align="left"
+				constraints="twocols(expandHorizontally=false;expandVertically=false;index=2;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=left)"
+				label="parameters" visible="data.supportParameters"/>
+			<Panel id="9" darkLevel="1" borderLeft="0" sizeAdjustment="OriginalSize"
+				opaque="false" border="empty" borderRight="2" trackViewPortWidth="true"
+				index="7" align="left" visible="data.supportParameters"
+				constraints="twocols(expandHorizontally=true;expandVertically=true;index=5;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=right)"
+				borderBottom="2" titleFont="SansSerif,0,11" borderTop="2"
+				trackViewPortHeight="true" layout="gridbag" name="ParametersPanel">
+				<Table id="10" showFooter="true" manageDynamicModel="true"
+					selectionMode="MultipleIntervalSelection"
+					data="data.parameters" rightClickAction="controller.rightClick(ParametersTable.selected,event)"
+					boundToSelectionManager="true" index="0" localize="true"
+					font="SansSerif.plain,0,11"
+					constraints="gridbag(anchor=center;fill=both;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=1;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=center;padX=0;padY=0;weightX=0.0;weightY=1.0;x=0;y=0)"
+					iteratorClassName="org.openflexo.foundation.fml.FlexoBehaviourParameter"
+					backgroundNonSelectionColor="255,255,255" autoSelectFirstRow="true"
+					name="ParametersTable" backgroundSecondarySelectionColor="178,215,255">
+					<IconColumn id="11" data="controller.iconForObject(iterator)"
+						displayTitle="false" title="icon" name="icon" columnWidth="20"
+						resizable="false" showIcon="false" />
+					<TextFieldColumn id="12" data="iterator.name"
+						displayTitle="true" title="parameter" name="parameter"
+						columnWidth="120" resizable="true" showIcon="false" />
+					<AddAction id="13" name="add_parameter"
+						method="controller.createFlexoBehaviourParameter(data)" />
+					<RemoveAction id="14" name="delete"
+						method="controller.deleteParameter(data,selected)" /> <!-- enable="data != null"  -->
 				</Table>
-				<Panel layout="box" boxLayoutAxis="Y_AXIS" borderTitle="Panel"
-					titleFont="SansSerif,0,11" darkLevel="0" constraints="border(location=east)"
-					opaque="false" name="ParametersOrderingPanel">
-					<Button action="data.parameterFirst(ParametersTable.selected)"
-						buttonIcon="controller.arrowTop" buttonType="Trigger" label=""
+				<Panel id="15" borderLeft="0" sizeAdjustment="OriginalSize"
+					opaque="false" border="empty" borderRight="0" trackViewPortWidth="true"
+					index="0" align="left"
+					constraints="gridbag(anchor=north;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=0;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=east;padX=0;padY=0;weightX=0.0;weightY=0.0)"
+					borderBottom="0" borderTitle="Panel" boxLayoutAxis="Y_AXIS"
+					titleFont="SansSerif,0,11" borderTop="0" trackViewPortHeight="true"
+					layout="box" name="ParametersOrderingPanel">
+					<Button id="16"
+						enable="(ParametersTable.selected != null) &amp; (ParametersTable.selected.index &gt; 0)"
+						buttonIcon="controller.arrowTop" buttonType="Trigger" name="Button"
+						action="data.parameterFirst(ParametersTable.selected)" index="0"
 						localize="true"
-						enable="((ParametersTable.selected != null) &amp; (ParametersTable.selected.index &gt; 0))"
-						index="0" constraints="box(alignmentX=0.5;alignmentY=0.5;index=0;location=west)">
-						<Dependancy componentName="ParametersTable" />
-						<LocalizedDictionary />
+						constraints="box(alignmentX=0.5;alignmentY=0.5;index=0;location=west)"
+						label="">
 					</Button>
-					<Button action="data.parameterUp(ParametersTable.selected)"
-						buttonIcon="controller.arrowUp" buttonType="Trigger" label=""
+					<Button id="18"
+						enable="(ParametersTable.selected != null) &amp; (ParametersTable.selected.index &gt; 0)"
+						buttonIcon="controller.arrowUp" buttonType="Trigger" name="Button2"
+						action="data.parameterUp(ParametersTable.selected)" index="1"
 						localize="true"
-						enable="((ParametersTable.selected != null) &amp; (ParametersTable.selected.index &gt; 0))"
-						index="1" constraints="box(alignmentX=0.5;alignmentY=0.5;index=1;location=north)">
-						<Dependancy componentName="ParametersTable" />
-						<LocalizedDictionary />
+						constraints="box(alignmentX=0.5;alignmentY=0.5;index=1;location=north)"
+						label="">
 					</Button>
-					<Button action="data.parameterDown(ParametersTable.selected)"
-						buttonIcon="controller.arrowDown" buttonType="Trigger" label=""
+					<Button id="20"
+						enable="(ParametersTable.selected != null) &amp; (ParametersTable.selected.index &lt; (data.parameters.size - 1))"
+						buttonIcon="controller.arrowDown" buttonType="Trigger" name="Button3"
+						action="data.parameterDown(ParametersTable.selected)" index="2"
 						localize="true"
-						enable="((ParametersTable.selected != null) &amp; (ParametersTable.selected.index &lt; (data.parameters.size - 1)))"
-						index="2" constraints="box(alignmentX=0.5;alignmentY=0.5;index=2;location=center)">
-						<Dependancy componentName="ParametersTable" />
-						<LocalizedDictionary />
+						constraints="box(alignmentX=0.5;alignmentY=0.5;index=2;location=center)"
+						label="">
 					</Button>
-					<Button action="data.parameterLast(ParametersTable.selected)"
-						buttonIcon="controller.arrowBottom" buttonType="Trigger" label=""
+					<Button id="22"
+						enable="(ParametersTable.selected != null) &amp; (ParametersTable.selected.index &lt; (data.parameters.size - 1))"
+						buttonIcon="controller.arrowBottom" buttonType="Trigger" name="Button4"
+						action="data.parameterLast(ParametersTable.selected)" index="3"
 						localize="true"
-						enable="((ParametersTable.selected != null) &amp; (ParametersTable.selected.index &lt; (data.parameters.size - 1)))"
-						index="3" constraints="box(alignmentX=0.5;alignmentY=0.5;index=3;location=east)">
-						<Dependancy componentName="ParametersTable" />
-						<LocalizedDictionary />
+						constraints="box(alignmentX=0.5;alignmentY=0.5;index=3;location=east)"
+						label="">
 					</Button>
 				</Panel>
-			</Panel>
+				<Panel id="24" darkLevel="2" borderLeft="10" sizeAdjustment="OriginalSize"
+					border="rounded3d" borderRight="10" trackViewPortWidth="true"
+					index="2" align="left" enable="ParametersTable.selected != null"
+					constraints="gridbag(anchor=center;fill=both;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=2;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;padX=0;padY=0;weightX=1.0;weightY=1.0)"
+					borderBottom="10" titleFont="SansSerif,0,11" borderTop="10"
+					trackViewPortHeight="true" layout="twocols" name="DetailsPanel">
+					<Label id="25" name="Label" localize="true" align="left"
+						constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=left)"
+						label="parameter_name" />
+					<TextField id="26" columns="7" name="TextField"
+						data="ParametersTable.selected.name"
+						constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=right)" />
+					<Label id="27" name="Label2" localize="true" align="left"
+						constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=left)"
+						label="parameter_type" />
+					<Custom id="28" manageDynamicModel="true"
+						dataClassForComponent="java.lang.reflect.Type"
+						componentClassName="org.openflexo.gina.swing.utils.TypeSelector"
+						name="TypeSelector" data="ParametersTable.selected.type" localize="true"
+						constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=right)">
+						<Assignment variable="component.customTypeManager"
+							value="controller.serviceManager.technologyAdapterService" />
+						<Assignment variable="component.customTypeEditorProvider"
+							value="controller.serviceManager.technologyAdapterControllerService" />
+					</Custom>
+					<Label id="30" name="Label3" localize="true" align="left"
+						constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=left)"
+						label="widget" />
+					<DropDown id="31" data="ParametersTable.selected.widget"
+						localize="true"
+						constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=right)"
+						showText="true"
+						iteratorClassName="org.openflexo.foundation.fml.FlexoBehaviourParameter$WidgetType"
+						showIcon="false" autoSelectFirstRow="true" name="dropdown"
+						list="ParametersTable.selected.availableWidgetTypes" />
+					<Label id="32"
+						visible="(ParametersTable.selected.widget = &quot;CUSTOM_WIDGET&quot;)"
+						name="Label4" localize="true" align="left"
+						constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=left)"
+						label="container" />
+					<Custom id="33"
+						visible="(ParametersTable.selected.widget = &quot;CUSTOM_WIDGET&quot;)"
+						manageDynamicModel="true" dataClassForComponent="org.openflexo.connie.DataBinding"
+						componentClassName="org.openflexo.gina.swing.utils.BindingSelector"
+						name="CustomSelector" data="ParametersTable.selected.container"
+						constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)">
+						<Assignment id="34" mandatory="true" variable="component.bindable" />
+					</Custom>
+					<Label id="35" name="Label5" localize="true" align="left"
+						constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=left)"
+						label="default_value" />
+					<Custom id="36" manageDynamicModel="true"
 
-			<CheckBox selected="true" index="14" data="data.skipConfirmationPanel"
-				constraints="twocols(expandHorizontally=true;expandVertically=false;index=14;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=5;location=left)"
-				localize="true" />
-			<Label label="skip_confirmation_panel_when_possible" index="15"
-				constraints="twocols(expandHorizontally=true;expandVertically=false;index=15;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)"
-				localize="true" />
-			<CheckBox selected="true" index="16"
-				data="data.definePopupDefaultSize"
-				constraints="twocols(expandHorizontally=true;expandVertically=false;index=16;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=5;location=left)"
-				localize="true" />
-			<Panel layout="flow" hGap="0" vGap="0" flowAlignment="LEADING"
-				borderTitle="Panel" titleFont="SansSerif,0,11" darkLevel="0" index="17"
-				constraints="twocols(expandHorizontally=true;expandVertically=false;index=17;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)">
-				<Label label="define_popup_size" index="0"
-					constraints="flow(anchor=center;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=0;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=-5;padX=0;padY=0;weightX=0.0;weightY=0.0)"
-					localize="true" />
-				<Number allowsNull="false" minValue="-2147483648" maxValue="2147483647"
-					increment="1" numberType="IntegerType" columns="3" index="1"
-					data="data.width"
-					constraints="flow(anchor=center;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=1;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=-5;padX=0;padY=0;weightX=0.0;weightY=0.0)"
-					name="Integer" localize="true" enable="data.definePopupDefaultSize" />
-				<Label label="x" index="2"
-					constraints="flow(anchor=center;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=2;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=-5;padX=0;padY=0;weightX=0.0;weightY=0.0)"
-					localize="false" />
-				<Number allowsNull="false" minValue="-2147483648" maxValue="2147483647"
-					increment="1" numberType="IntegerType" columns="3" index="3"
-					data="data.height"
-					constraints="flow(anchor=west;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=3;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=-5;padX=0;padY=0;weightX=0.0;weightY=0.0)"
-					name="Integer" localize="true" enable="data.definePopupDefaultSize" />
+						dataClassForComponent="org.openflexo.connie.DataBinding"
+						componentClassName="org.openflexo.gina.swing.utils.BindingSelector"
+						name="CustomSelector2" data="ParametersTable.selected.defaultValue"
+						constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)">
+						<Assignment id="37" mandatory="true" variable="component.bindable" />
+					</Custom>
+					<Label id="38" visible="ParametersTable.selected.isListType"
+						name="Label6" localize="true" align="left"
+						constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=left)"
+						label="list_of_values" />
+					<Custom id="39" visible="ParametersTable.selected.isListType"
+						manageDynamicModel="true" dataClassForComponent="org.openflexo.connie.DataBinding"
+						componentClassName="org.openflexo.gina.swing.utils.BindingSelector"
+						name="CustomSelector3" data="ParametersTable.selected.list"
+						constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)">
+						<Assignment id="40" mandatory="true" variable="component.bindable" />
+					</Custom>
+					<Label id="41" name="Label7" localize="true" align="left"
+						constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=left)"
+						label="required" />
+					<CheckBox id="42" selected="true" name="checkbox"
+						data="ParametersTable.selected.isRequired"
+						constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=right)" />
+					<Label id="43" name="Label8" localize="true" align="left"
+						constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=left)"
+						label="description" />
+					<TextArea id="44" verticalScrollbarPolicy="VERTICAL_SCROLLBAR_AS_NEEDED"
+						useScrollBar="true" columns="8" name="TextArea2"
+						data="ParametersTable.selected.description" text="TextArea"
+						constraints="twocols(expandHorizontally=true;expandVertically=true;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=right)"
+						rows="3" validateOnReturn="true" horizontalScrollbarPolicy="HORIZONTAL_SCROLLBAR_AS_NEEDED" />
+				</Panel>
 			</Panel>
-			<Label manageDynamicModel="false" useScrollBar="false"
-				controllerClassName="org.openflexo.fib.controller.FIBController"
-				localize="true" align="left" index="10000"
-				constraints="twocols(expandHorizontally=true;expandVertically=false;location=left)"
-				label="description" readOnly="false" />
-			<TextArea verticalScrollbarPolicy="VERTICAL_SCROLLBAR_AS_NEEDED"
-				manageDynamicModel="false" useScrollBar="true" columns="8"
-				controllerClassName="org.openflexo.fib.controller.FIBController"
-				text="TextArea" localize="true" index="10001"
-				constraints="twocols(expandHorizontally=true;expandVertically=true;location=right)"
-				rows="3" readOnly="false" validateOnReturn="true"
-				horizontalScrollbarPolicy="HORIZONTAL_SCROLLBAR_AS_NEEDED" />
+			<CheckBox selected="true" name="LongRunningActionCheckbox" 
+				data="data.longRunningAction" index="14" localize="true"
+				constraints="twocols(expandHorizontally=true;expandVertically=false;index=14;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=5;location=left)" />
+			<Label name="LongRunningActionLabel"
+				index="15" localize="true" align="left"
+				constraints="twocols(expandHorizontally=true;expandVertically=false;index=15;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)"
+				label="is_long_running_action" />
+				
+			<Label manageDynamicModel="false" useScrollBar="false" visible="data.longRunningAction"
+				localize="true" align="left" index="16" name="StepsNumberLabel"
+				constraints="twocols(expandHorizontally=true;expandVertically=false;index=2;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=5;location=left)"
+				label="steps_number" readOnly="false" />
+			<Custom manageDynamicModel="true" useScrollBar="false" visible="data.longRunningAction"
+				data="data.stepsNumber" componentClassName="org.openflexo.gina.swing.utils.BindingSelector"
+				opaque="false" name="StepsNumberCC"
+				localize="true" index="17"
+				constraints="twocols(expandHorizontally=true;expandVertically=false;index=2;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=5;location=right)"
+				readOnly="false">
+			</Custom>
+			
+			
+			<CheckBox selected="true" name="SkipConfirmationPanelWhenPossibleCheckbox" visible="data.supportParameters"
+				data="data.skipConfirmationPanel" index="18" localize="true"
+				constraints="twocols(expandHorizontally=true;expandVertically=false;index=14;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=5;location=left)" />
+			<Label name="SkipConfirmationPanelWhenPossibleLabel" visible="data.supportParameters"
+				index="19" localize="true" align="left"
+				constraints="twocols(expandHorizontally=true;expandVertically=false;index=15;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)"
+				label="skip_confirmation_panel_when_possible" />
+			<CheckBox id="47" selected="true" name="DefinePopupDefaultSizeCheckbox" visible="data.supportParameters"
+				data="data.definePopupDefaultSize" index="20" localize="true"
+				constraints="twocols(expandHorizontally=true;expandVertically=false;index=16;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=5;location=left)" />
+			<Panel id="48" vGap="0" borderLeft="0" hGap="0" sizeAdjustment="OriginalSize"
+				border="empty" borderRight="0" trackViewPortWidth="true" index="21" visible="data.supportParameters"
+				align="left"
+				constraints="twocols(expandHorizontally=true;expandVertically=false;index=17;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)"
+				borderBottom="0" borderTitle="Panel" titleFont="SansSerif,0,11"
+				borderTop="0" trackViewPortHeight="true" layout="flow" name="PopupSizePanel"
+				flowAlignment="LEADING">
+				<Label id="49" name="DefinePopupSizeLabel" index="0" localize="true"
+					align="left"
+					constraints="flow(anchor=center;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=0;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=-5;padX=0;padY=0;weightX=0.0;weightY=0.0)"
+					label="define_popup_size" />
+				<Number id="50" minValue="-2147483648" columns="3"
+					enable="data.definePopupDefaultSize" name="Integer" data="data.width"
+					maxValue="2147483647" increment="1" index="1" localize="true"
+					constraints="flow(anchor=center;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=1;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=-5;padX=0;padY=0;weightX=0.0;weightY=0.0)"
+					numberType="IntegerType" />
+				<Label id="51" name="XLabel" index="2" align="left"
+					constraints="flow(anchor=center;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=2;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=-5;padX=0;padY=0;weightX=0.0;weightY=0.0)"
+					label="x" />
+				<Number id="52" minValue="-2147483648" columns="3"
+					enable="data.definePopupDefaultSize" name="Integer" data="data.height"
+					maxValue="2147483647" increment="1" index="3" localize="true"
+					constraints="flow(anchor=west;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=3;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=-5;padX=0;padY=0;weightX=0.0;weightY=0.0)"
+					numberType="IntegerType" />
+			</Panel>
 		</Tab>
-		<Tab title="Advanced" layout="twocols" titleFont="SansSerif,0,11"
-			darkLevel="0" index="2" font="SansSerif,0,11" useScrollBar="true"
-			horizontalScrollbarPolicy="HORIZONTAL_SCROLLBAR_AS_NEEDED"
-			verticalScrollbarPolicy="VERTICAL_SCROLLBAR_AS_NEEDED" name="AdvancedTab" />
+		<Tab id="55" verticalScrollbarPolicy="VERTICAL_SCROLLBAR_AS_NEEDED"
+			borderLeft="0" sizeAdjustment="OriginalSize" borderRight="0" border="empty"
+			trackViewPortWidth="true" index="2" font="SansSerif,0,11" align="left"
+			borderBottom="0" titleFont="SansSerif,0,11" borderTop="0"
+			trackViewPortHeight="true" horizontalScrollbarPolicy="HORIZONTAL_SCROLLBAR_AS_NEEDED"
+			useScrollBar="true" title="Advanced" layout="twocols" name="AdvancedTab">
+			<Label id="56" name="ObjectTypeLabel" index="0" localize="true"
+				align="left"
+				constraints="twocols(expandHorizontally=false;expandVertically=false;index=0;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=left)"
+				label="object_type" />
+			<TextField id="57" columns="10" name="ObjectTypeTextField"
+				data="data.implementedInterface.simpleName" index="1" localize="true"
+				constraints="twocols(expandHorizontally=true;expandVertically=false;index=1;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=right)"
+				readOnly="true" />
+			<Label id="58" name="ViewPointLabel" index="2" localize="true"
+				align="left"
+				constraints="twocols(expandHorizontally=false;expandVertically=false;index=0;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=left)"
+				label="viewpoint" />
+			<TextField id="59" columns="10" name="ViewPointTextField"
+				data="data.declaringVirtualModel.name" index="3" localize="true"
+				constraints="twocols(expandHorizontally=true;expandVertically=false;index=1;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=right)"
+				readOnly="true" />
+			<Label id="60" name="URILabel" index="4" localize="true" align="left"
+				constraints="twocols(expandHorizontally=false;expandVertically=false;index=4;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=left)"
+				label="uri" />
+			<TextField id="61" columns="10" name="URITextField" data="data.uRI"
+				index="5" localize="true"
+				constraints="twocols(expandHorizontally=true;expandVertically=false;index=5;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=right)"
+				readOnly="true" />
+			<Label id="62" name="FlexoConceptLabel" index="6" localize="true"
+				align="left"
+				constraints="twocols(expandHorizontally=false;expandVertically=false;index=4;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=left)"
+				label="flexo_concept" />
+			<TextField id="63" columns="10" name="FlexoConceptTextField"
+				data="data.flexoConcept.name" index="7" localize="true"
+				constraints="twocols(expandHorizontally=true;expandVertically=false;index=5;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=right)"
+				readOnly="true" />
+			<Label id="64" name="FlexoIDLabel" index="100" localize="true"
+				align="left"
+				constraints="twocols(expandHorizontally=false;expandVertically=false;index=0;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=left)"
+				label="flexo_id" />
+			<TextField id="65" name="FlexoID" data="data.flexoID.toString"
+				index="101" localize="true"
+				constraints="twocols(expandHorizontally=true;expandVertically=false;index=1;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=right)"
+				readOnly="true" />
+			<Label id="66" name="HashLabel" index="102" localize="true"
+				align="left"
+				constraints="twocols(expandHorizontally=false;expandVertically=false;index=3;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=left)"
+				label="hash" />
+			<TextField id="67" name="HashCode" data="data.hash" index="103"
+				localize="true"
+				constraints="twocols(expandHorizontally=true;expandVertically=false;index=4;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=right)"
+				readOnly="true" />
+		</Tab>
+		<!--  <Tab id="68" verticalScrollbarPolicy="VERTICAL_SCROLLBAR_AS_NEEDED"
+			borderLeft="0" sizeAdjustment="OriginalSize" borderRight="0" border="empty"
+			trackViewPortWidth="true" index="3" font="SansSerif,0,11" align="left"
+			borderBottom="0" titleFont="SansSerif,0,11" borderTop="0"
+			trackViewPortHeight="true" horizontalScrollbarPolicy="HORIZONTAL_SCROLLBAR_AS_NEEDED"
+			useScrollBar="true" title="FML" layout="twocols" name="FMLTab">
+			<Editor id="69" verticalScrollbarPolicy="VERTICAL_SCROLLBAR_AS_NEEDED"
+				useScrollBar="true" columns="8" tokenMarkerStyle="FML" height="120"
+				name="Editor" data="data.fMLRepresentation" text="Editor" localize="true"
+				font="SansSerif,0,13" width="120"
+				constraints="twocols(expandHorizontally=true;expandVertically=true;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=center)"
+				rows="3" validateOnReturn="true" horizontalScrollbarPolicy="HORIZONTAL_SCROLLBAR_AS_NEEDED" />
+		</Tab>-->
 	</TabPanel>
-	<LocalizedDictionary>
-		<Localized key="Advanced" lang="French" value="Avancé" />
-		<Localized key="Basic" lang="French" value="Basique" />
-		<Localized key="name" lang="English" value="Name" />
-		<Localized key="name" lang="French" value="Nom" />
-		<Localized key="name" lang="Dutch" value="Name" />
+	<FIBVariable id="70" name="data"
+		type="org.openflexo.foundation.fml.FlexoBehaviour" />
+	<LocalizedDictionary id="71">
+		<Localized id="72" value="Avancé" lang="French" key="Advanced" />
+		<Localized id="73" value="Basique" lang="French" key="Basic" />
+		<Localized id="74" value="Name" lang="English" key="name" />
+		<Localized id="75" value="Nom" lang="French" key="name" />
+		<Localized id="76" value="Name" lang="Dutch" key="name" />
+		<Localized id="77" value="Parameters" lang="English" key="parameters" />
+		<Localized id="78" value="Parameters" lang="Dutch" key="parameters" />
+		<Localized id="79" value="Paramètres" lang="French" key="parameters" />
+		<Localized id="80" value="Parameter" lang="English" key="parameter" />
+		<Localized id="81" value="Parameter" lang="Dutch" key="parameter" />
+		<Localized id="82" value="Paramètre" lang="French" key="parameter" />
+		<Localized id="83" value="Add parameter" lang="English"
+			key="add_parameter" />
+		<Localized id="84" value="Add parameter" lang="Dutch"
+			key="add_parameter" />
+		<Localized id="85" value="Ajouter un paramètre" lang="French"
+			key="add_parameter" />
+		<Localized id="86" value="Delete" lang="English" key="delete" />
+		<Localized id="87" value="Delete" lang="Dutch" key="delete" />
+		<Localized id="88" value="Supprimer" lang="French" key="delete" />
+		<Localized id="89" value="Parameter name" lang="English"
+			key="parameter_name" />
+		<Localized id="90" value="Parameter name" lang="Dutch"
+			key="parameter_name" />
+		<Localized id="91" value="Nom du paramètre" lang="French"
+			key="parameter_name" />
+		<Localized id="92" value="Parameter type" lang="English"
+			key="parameter_type" />
+		<Localized id="93" value="Parameter type" lang="Dutch"
+			key="parameter_type" />
+		<Localized id="94" value="Type du paramètre" lang="French"
+			key="parameter_type" />
+		<Localized id="95" value="Widget" lang="English" key="widget" />
+		<Localized id="96" value="Widget" lang="Dutch" key="widget" />
+		<Localized id="97" value="Widget" lang="French" key="widget" />
+		<Localized id="98" value="Container" lang="English" key="container" />
+		<Localized id="99" value="Container" lang="Dutch" key="container" />
+		<Localized id="100" value="Conteneur" lang="French" key="container" />
+		<Localized id="101" value="Default value" lang="English"
+			key="default_value" />
+		<Localized id="102" value="Default value" lang="Dutch"
+			key="default_value" />
+		<Localized id="103" value="Valeur par défaut" lang="French"
+			key="default_value" />
+		<Localized id="104" value="List of values" lang="English"
+			key="list_of_values" />
+		<Localized id="105" value="List of values" lang="Dutch"
+			key="list_of_values" />
+		<Localized id="106" value="LIste de valeurs" lang="French"
+			key="list_of_values" />
+		<Localized id="107" value="Required value" lang="English"
+			key="required" />
+		<Localized id="108" value="Required value" lang="Dutch" key="required" />
+		<Localized id="109" value="Valeur requise" lang="French"
+			key="required" />
+		<Localized id="110" value="Description" lang="English" key="description" />
+		<Localized id="111" value="Description" lang="Dutch" key="description" />
+		<Localized id="112" value="Description" lang="French" key="description" />
+		<Localized id="113" value="Skip confirmation panel when possible"
+			lang="English" key="skip_confirmation_panel_when_possible" />
+		<Localized id="114" value="Skip confirmation panel when possible"
+			lang="Dutch" key="skip_confirmation_panel_when_possible" />
+		<Localized id="115"
+			value="Ne pas afficher de panneau de confirmation si possible" lang="French"
+			key="skip_confirmation_panel_when_possible" />
+		<Localized id="116" value="Define popup size" lang="English"
+			key="define_popup_size" />
+		<Localized id="117" value="Define popup size" lang="Dutch"
+			key="define_popup_size" />
+		<Localized id="118" value="Définir une taille de popup"
+			lang="French" key="define_popup_size" />
+		<Localized id="119" value="X" lang="English" key="x" />
+		<Localized id="120" value="X" lang="Dutch" key="x" />
+		<Localized id="121" value="x" lang="French" key="x" />
+		<Localized id="122" value="Flexo concept" lang="English"
+			key="flexo_concept" />
+		<Localized id="123" value="Flexo concept" lang="Dutch"
+			key="flexo_concept" />
+		<Localized id="124" value="Flexo concept" lang="French"
+			key="flexo_concept" />
+		<Localized id="125" value="Avancé" lang="French" key="Advanced" />
+		<Localized id="126" value="Basique" lang="French" key="Basic" />
 	</LocalizedDictionary>
-	<Parameter name="title" value="Flexo Behaviour" />
-</Panel>
+</Inspector>

@@ -49,13 +49,13 @@ import org.openflexo.foundation.FlexoService.ServiceNotification;
  */
 public final class ProjectLoaded implements ServiceNotification {
 
-	private final FlexoProject project;
+	private final FlexoProject<?> project;
 
-	public ProjectLoaded(FlexoProject project) {
+	public ProjectLoaded(FlexoProject<?> project) {
 		this.project = project;
 	}
 
-	public FlexoProject getProject() {
+	public FlexoProject<?> getProject() {
 		return project;
 	}
 }

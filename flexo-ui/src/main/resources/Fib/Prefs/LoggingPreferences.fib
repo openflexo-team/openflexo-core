@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Panel id="0" borderLeft="0" height="99" name="LoggingPreferencesPanel"
+	layout="twocols"
+	controllerClassName="org.openflexo.components.PreferencesDialog$PreferencesFIBController"
+	borderRight="0" border="empty" trackViewPortWidth="true" width="99"
+	borderBottom="0" titleFont="Lucida Grande,0,13" borderTop="5"
+	trackViewPortHeight="true">
+	<FIBVariable id="19" name="data"
+		type="org.openflexo.prefs.LoggingPreferences" />
+	<LocalizedDictionary id="1" />
+	<CheckBox id="2" data="data.enableLogging" selected="true"
+		name="checkbox"
+		constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=left)" />
+	<Label id="3" name="Label" align="left"
+		constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=right)"
+		label="enable_logging" />
+	<CheckBox id="4" manageDynamicModel="true" data="data.limitLogCount"
+		name="limitLogCount"
+		constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=left)" />
+	<Panel id="5" vGap="0" borderLeft="0"
+		hGap="0" name="FIBPanel" layout="flow" borderRight="0" border="empty"
+		flowAlignment="LEADING" trackViewPortWidth="true"
+		constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=right)"
+		borderBottom="0" borderTop="0" trackViewPortHeight="true">
+		<Label id="6" name="Label2" align="left" constraints="flow()"
+			label="limit_log_count" />
+		<Label id="7" visible="data.limitLogCount" name="Label3" align="left"
+			constraints="flow()" label="to" />
+		<Number id="8" visible="data.limitLogCount" minValue="0"
+			columns="3" data="data.maxLogCount" name="Integer" maxValue="65535"
+			increment="1" constraints="flow()" numberType="IntegerType" />
+		<Label id="9" visible="data.limitLogCount" name="Label4" align="left"
+			constraints="flow()" label="entries" />
+	</Panel>
+	<CheckBox id="11" data="data.isLoggingTrace" selected="true"
+		name="checkbox"
+		constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=left)" />
+	<Label id="12" name="Label6" align="left"
+		constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=right)"
+		label="activate_logging_trace" />
+	<Label id="13" name="Label5" align="left"
+		constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=left)"
+		label="logging_level" />
+	<DropDown id="14"
+		constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=right)"
+		showText="true" iteratorClassName="java.lang.Object" showIcon="false"
+		array="data.availableLoggingLevels" data="data.defaultLoggingLevel"
+		autoSelectFirstRow="true" name="dropdown" />
+	<Label id="15" name="Label7" align="left"
+		constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=left)"
+		label="logging_directory" />
+	<File id="16" data="data.logDirectory" name="FileSelector"
+		constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=10;insetsTop=0;location=right)" />
+	<Label id="17" name="Label8" align="left"
+		constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=left)"
+		label="logging_configuration" />
+	<TextField id="18" data="data.loggingFileName" columns="7"
+		name="TextField" text=""
+		constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=10;insetsTop=0;location=right)" />
+</Panel>

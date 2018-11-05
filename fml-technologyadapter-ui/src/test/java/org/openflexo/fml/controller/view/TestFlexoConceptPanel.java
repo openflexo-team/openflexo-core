@@ -41,24 +41,26 @@ package org.openflexo.fml.controller.view;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import java.io.FileNotFoundException;
+
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.openflexo.fib.swing.FIBJPanel;
-import org.openflexo.fib.testutils.GraphicalContextDelegate;
-import org.openflexo.fib.utils.OpenflexoFIBTestCase;
+import org.openflexo.connie.type.PrimitiveType;
 import org.openflexo.foundation.DefaultFlexoEditor;
 import org.openflexo.foundation.FlexoEditor;
+import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.fml.FlexoConcept;
-import org.openflexo.foundation.fml.PrimitiveRole;
-import org.openflexo.foundation.fml.PrimitiveRole.PrimitiveType;
-import org.openflexo.foundation.fml.ViewPoint;
-import org.openflexo.foundation.fml.ViewPointLibrary;
 import org.openflexo.foundation.fml.VirtualModel;
-import org.openflexo.foundation.fml.action.CreateFlexoRole;
+import org.openflexo.foundation.fml.VirtualModelLibrary;
+import org.openflexo.foundation.fml.action.CreatePrimitiveRole;
+import org.openflexo.foundation.resource.ResourceLoadingCancelledException;
+import org.openflexo.gina.swing.utils.FIBJPanel;
+import org.openflexo.gina.test.OpenflexoFIBTestCase;
+import org.openflexo.gina.test.SwingGraphicalContextDelegate;
 import org.openflexo.rm.Resource;
 import org.openflexo.rm.ResourceLocator;
 import org.openflexo.test.OrderedRunner;
@@ -73,7 +75,7 @@ import org.openflexo.test.TestOrder;
 @RunWith(OrderedRunner.class)
 public class TestFlexoConceptPanel extends OpenflexoFIBTestCase {
 
-	private static GraphicalContextDelegate gcDelegate;
+	private static SwingGraphicalContextDelegate gcDelegate;
 
 	private static Resource fibResource;
 
@@ -108,11 +110,11 @@ public class TestFlexoConceptPanel extends OpenflexoFIBTestCase {
 
 	@Test
 	@TestOrder(3)
-	public void loadConcepts() {
+	public void loadConcepts() throws FileNotFoundException, ResourceLoadingCancelledException, FlexoException {
 
-		ViewPointLibrary vpLib = serviceManager.getViewPointLibrary();
+		VirtualModelLibrary vpLib = serviceManager.getVirtualModelLibrary();
 		assertNotNull(vpLib);
-		ViewPoint viewPoint = vpLib.getViewPoint("http://openflexo.org/test/TestViewPoint1");
+		VirtualModel viewPoint = vpLib.getVirtualModel("http://openflexo.org/test/TestResourceCenter/TestViewPointA.fml");
 		assertNotNull(viewPoint);
 		VirtualModel virtualModel = viewPoint.getVirtualModelNamed("TestVirtualModel");
 		assertNotNull(virtualModel);
@@ -140,21 +142,18 @@ public class TestFlexoConceptPanel extends OpenflexoFIBTestCase {
 		editor = new DefaultFlexoEditor(null, serviceManager);
 		assertNotNull(editor);
 
-		CreateFlexoRole createPR1 = CreateFlexoRole.actionType.makeNewAction(flexoConceptA, null, editor);
+		CreatePrimitiveRole createPR1 = CreatePrimitiveRole.actionType.makeNewAction(flexoConceptA, null, editor);
 		createPR1.setRoleName("aString");
-		createPR1.setFlexoRoleClass(PrimitiveRole.class);
 		createPR1.setPrimitiveType(PrimitiveType.String);
 		createPR1.doAction();
 
-		CreateFlexoRole createPR2 = CreateFlexoRole.actionType.makeNewAction(flexoConceptA, null, editor);
+		CreatePrimitiveRole createPR2 = CreatePrimitiveRole.actionType.makeNewAction(flexoConceptA, null, editor);
 		createPR2.setRoleName("aBoolean");
-		createPR2.setFlexoRoleClass(PrimitiveRole.class);
 		createPR2.setPrimitiveType(PrimitiveType.Boolean);
 		createPR2.doAction();
 
-		CreateFlexoRole createPR3 = CreateFlexoRole.actionType.makeNewAction(flexoConceptA, null, editor);
+		CreatePrimitiveRole createPR3 = CreatePrimitiveRole.actionType.makeNewAction(flexoConceptA, null, editor);
 		createPR3.setRoleName("anInteger");
-		createPR3.setFlexoRoleClass(PrimitiveRole.class);
 		createPR3.setPrimitiveType(PrimitiveType.Integer);
 		createPR3.doAction();
 
@@ -206,7 +205,7 @@ public class TestFlexoConceptPanel extends OpenflexoFIBTestCase {
 	}
 
 	public static void initGUI() {
-		gcDelegate = new GraphicalContextDelegate(TestFlexoConceptPanel.class.getSimpleName());
+		gcDelegate = new SwingGraphicalContextDelegate(TestFlexoConceptPanel.class.getSimpleName());
 	}
 
 	@AfterClass

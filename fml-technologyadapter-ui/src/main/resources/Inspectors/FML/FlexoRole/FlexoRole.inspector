@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Panel className="org.openflexo.fib.utils.FIBInspector" layout="border"
+<Panel className="org.openflexo.gina.utils.FIBInspector" layout="border"
 	titleFont="SansSerif,0,12" darkLevel="0"
 	dataClassName="org.openflexo.foundation.fml.FlexoRole"
 	controllerClassName="org.openflexo.fml.controller.FMLFIBInspectorController"
@@ -9,25 +9,62 @@
 			darkLevel="0" index="0" font="SansSerif,0,11" useScrollBar="true"
 			horizontalScrollbarPolicy="HORIZONTAL_SCROLLBAR_AS_NEEDED"
 			verticalScrollbarPolicy="VERTICAL_SCROLLBAR_AS_NEEDED" name="BasicTab">
-			<Label label="model_slot" index="2"
-				constraints="twocols(expandHorizontally=false;expandVertically=false;index=2;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=5;location=left)"
+			<!--  <Label label="model_slot" index="4" name="ModelSlotLabel"
+				constraints="twocols(expandHorizontally=false;expandVertically=false;index=2;location=left)"
 				localize="true" />
-			<DropDown index="3" data="data.modelSlot"
-				constraints="twocols(expandHorizontally=true;expandVertically=false;index=3;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)"
+			<DropDown index="5" data="data.modelSlot"
+				constraints="twocols(expandHorizontally=true;expandVertically=false;index=3;location=right)"
 				name="ModelSlotDD" readOnly="true" format="object.name"
 				icon="controller.iconForObject(object)" localize="true"
-				list="data.owningVirtualModel.modelSlots" showIcon="true"
+				list="data.flexoConcept.virtualModel.modelSlots" showIcon="true"
 				iteratorClassName="org.openflexo.foundation.technologyadapter.ModelSlot"
-				autoSelectFirstRow="false" showReset="true" />
-			<Label label="cardinality" index="4"
-				constraints="twocols(expandHorizontally=false;expandVertically=false;index=2;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=5;location=left)"
+				autoSelectFirstRow="false" showReset="true" />-->
+			<Label name="TechnologyAdapterLabel" index="6" localize="true"
+				align="left"
+				constraints="twocols(expandHorizontally=false;expandVertically=false;index=2;location=left)"
+				label="technology" />
+			<DropDown manageDynamicModel="true" data="data.roleTechnologyAdapter"
+				index="7" localize="true" readOnly="true"
+				constraints="twocols(expandHorizontally=true;expandVertically=false;index=3;location=right)"
+				format="object.name" showText="true"
+				iteratorClassName="org.openflexo.foundation.technologyadapter.TechnologyAdapter"
+				showIcon="true" name="TechnologyAdapterDD"
+				icon="controller.getTechnologyAdapterController(object).technologyIcon"
+				list="data.serviceManager.technologyAdapterService.technologyAdapters" />
+			<Label label="cardinality" index="40"
+				constraints="twocols(expandHorizontally=false;expandVertically=false;index=2;location=left)"
 				localize="true" />
-			<DropDown index="5" data="data.cardinality"
-				constraints="twocols(expandHorizontally=true;expandVertically=false;index=3;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)"
-				name="CardinalityDD" format="object.stringRepresentation"
-				localize="true"
+			<DropDown index="41" data="data.cardinality"
+				constraints="twocols(expandHorizontally=false;expandVertically=false;index=3;location=right)"
+				name="CardinalityDD" format="object.stringRepresentation" localize="false"
 				iteratorClassName="org.openflexo.foundation.fml.PropertyCardinality"
-				autoSelectFirstRow="false" showReset="true" />
+				autoSelectFirstRow="false" showReset="false" />
+
+			<Label name="Label4" index="42" localize="true" align="left"
+				constraints="twocols(expandHorizontally=false;expandVertically=false;index=2;location=left)"
+				label="container" />
+			<Custom manageDynamicModel="true" index="43"
+				dataClassForComponent="org.openflexo.connie.DataBinding"
+				componentClassName="org.openflexo.gina.swing.utils.BindingSelector"
+				name="ContainerSelector" data="data.container"
+				constraints="twocols(expandHorizontally=true;expandVertically=false;index=3;location=right)">
+				<Assignment mandatory="true" variable="component.bindable" />
+			</Custom>
+			<Label name="Label5" index="44" localize="true" align="left"
+				constraints="twocols(expandHorizontally=false;expandVertically=false;index=2;location=left)"
+				label="default_value" />
+			<Custom manageDynamicModel="true" dataClassForComponent="org.openflexo.connie.DataBinding"
+				componentClassName="org.openflexo.gina.swing.utils.BindingSelector"
+				name="DefaultValueSelector" data="data.defaultValue" index="45"
+				constraints="twocols(expandHorizontally=true;expandVertically=false;index=3;location=right)">
+				<Assignment mandatory="true" variable="component.bindable" />
+			</Custom>
+			<Label name="Label7" index="46" localize="true" align="left"
+				constraints="twocols(expandHorizontally=false;expandVertically=false;index=2;location=left)"
+				label="required" />
+			<CheckBox selected="true" name="checkbox" data="data.isRequired"
+				index="47"
+				constraints="twocols(expandHorizontally=false;expandVertically=false;index=3;location=right)" />
 
 		</Tab>
 	</TabPanel>

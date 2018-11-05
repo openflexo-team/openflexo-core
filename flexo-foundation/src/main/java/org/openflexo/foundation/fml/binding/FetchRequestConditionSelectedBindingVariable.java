@@ -44,7 +44,7 @@ import java.lang.reflect.Type;
 import java.util.logging.Logger;
 
 import org.openflexo.connie.BindingVariable;
-import org.openflexo.foundation.fml.controlgraph.FetchRequestIterationAction;
+import org.openflexo.foundation.fml.editionaction.FetchRequest;
 import org.openflexo.foundation.fml.editionaction.FetchRequestCondition;
 
 /**
@@ -62,22 +62,27 @@ public class FetchRequestConditionSelectedBindingVariable extends BindingVariabl
 	public FetchRequestConditionSelectedBindingVariable(FetchRequestCondition condition) {
 		super(FetchRequestCondition.SELECTED, condition.getAction() != null ? condition.getAction().getFetchedType() : Object.class, false);
 		this.condition = condition;
-		lastKnownType = condition.getAction() != null ? condition.getAction().getFetchedType() : Object.class;
-		if (condition != null && condition.getPropertyChangeSupport() != null) {
+		if (condition.getPropertyChangeSupport() != null) {
 			condition.getPropertyChangeSupport().addPropertyChangeListener(this);
 		}
-		if (condition.getAction() != null && condition.getAction().getPropertyChangeSupport() != null) {
-			condition.getAction().getPropertyChangeSupport().addPropertyChangeListener(this);
+		FetchRequest<?, ?, ?> action = condition.getAction();
+		lastKnownType = action != null ? condition.getAction().getFetchedType() : Object.class;
+		if (action != null && action.getPropertyChangeSupport() != null) {
+			action.getPropertyChangeSupport().addPropertyChangeListener(this);
 		}
+		// setCacheable(false);
 	}
 
 	@Override
 	public void delete() {
-		if (condition != null && condition.getPropertyChangeSupport() != null) {
-			condition.getPropertyChangeSupport().addPropertyChangeListener(this);
-		}
-		if (condition.getAction() != null && condition.getAction().getPropertyChangeSupport() != null) {
-			condition.getAction().getPropertyChangeSupport().addPropertyChangeListener(this);
+		if (condition != null) {
+			if (condition.getPropertyChangeSupport() != null) {
+				condition.getPropertyChangeSupport().removePropertyChangeListener(this);
+			}
+			FetchRequest<?, ?, ?> action = condition.getAction();
+			if (action != null && action.getPropertyChangeSupport() != null) {
+				action.getPropertyChangeSupport().removePropertyChangeListener(this);
+			}
 		}
 		super.delete();
 	}

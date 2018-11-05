@@ -38,39 +38,36 @@
 
 package org.openflexo.foundation.fml.rt;
 
-import java.io.File;
-import java.util.Iterator;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Logger;
 
-import org.openflexo.foundation.FlexoProject;
 import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.fml.FlexoConceptInstanceType;
-import org.openflexo.foundation.fml.FlexoConceptInstanceType.FlexoConceptInstanceTypeFactory;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.VirtualModelInstanceType;
 import org.openflexo.foundation.fml.annotations.DeclareModelSlots;
+import org.openflexo.foundation.fml.annotations.DeclareResourceTypes;
 import org.openflexo.foundation.fml.annotations.DeclareTechnologySpecificTypes;
-import org.openflexo.foundation.fml.rm.ViewPointResource;
-import org.openflexo.foundation.fml.rt.rm.ViewResource;
-import org.openflexo.foundation.fml.rt.rm.ViewResourceImpl;
+import org.openflexo.foundation.fml.rt.rm.FMLRTVirtualModelInstanceResource;
+import org.openflexo.foundation.fml.rt.rm.FMLRTVirtualModelInstanceResourceFactory;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.resource.FlexoResourceCenterService;
-import org.openflexo.foundation.resource.RepositoryFolder;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterBindingFactory;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterInitializationException;
-import org.openflexo.foundation.technologyadapter.TechnologyAdapterService;
 
 /**
  * This class defines and implements the Openflexo built-in FML@runtime technology adapter<br>
  * 
- * This adapter allows to manage {@link View} and {@link VirtualModelInstance} resources in Openflexo infrastructure.
+ * This adapter allows to manage {@link View} and {@link FMLRTVirtualModelInstance} resources in Openflexo infrastructure.
  * 
  * @author sylvain
  * 
  */
-@DeclareModelSlots({ FMLRTModelSlot.class })
+@DeclareModelSlots({ FMLRTVirtualModelInstanceModelSlot.class })
 @DeclareTechnologySpecificTypes({ FlexoConceptInstanceType.class, VirtualModelInstanceType.class })
+@DeclareResourceTypes({ FMLRTVirtualModelInstanceResourceFactory.class })
 public class FMLRTTechnologyAdapter extends TechnologyAdapter {
 
 	private static final Logger logger = Logger.getLogger(FMLRTTechnologyAdapter.class.getPackage().getName());
@@ -81,6 +78,17 @@ public class FMLRTTechnologyAdapter extends TechnologyAdapter {
 	@Override
 	public String getName() {
 		return "FML@runtime technology adapter";
+	}
+
+	@Override
+	protected void initResourceFactories() {
+		super.initResourceFactories();
+		getAvailableResourceTypes().add(FMLRTVirtualModelInstanceResource.class);
+	}
+
+	@Override
+	public String getLocalizationDirectory() {
+		return "FlexoLocalization/FMLRTTechnologyAdapter";
 	}
 
 	/**
@@ -95,7 +103,7 @@ public class FMLRTTechnologyAdapter extends TechnologyAdapter {
 	 */
 	public FMLRTModelSlot makeVirtualModelModelSlot(final VirtualModel containerVirtualModel, final VirtualModel addressedVirtualModel) {
 		final FMLRTModelSlot returned = this.makeModelSlot(FMLRTModelSlot.class, containerVirtualModel);
-		returned.setAddressedVirtualModel(addressedVirtualModel);
+		returned.setAccessedVirtualModel(addressedVirtualModel);
 		return returned;
 	}
 
@@ -115,29 +123,35 @@ public class FMLRTTechnologyAdapter extends TechnologyAdapter {
 		return (FMLRTTechnologyContextManager) super.getTechnologyContextManager();
 	}
 
+	@Override
 	public FlexoServiceManager getServiceManager() {
 		return this.getTechnologyAdapterService().getServiceManager();
 	}
 
-	public <I> ViewRepository getViewRepository(final FlexoResourceCenter<I> resourceCenter) {
-		if (resourceCenter instanceof FlexoProject) {
-			return ((FlexoProject) resourceCenter).getViewLibrary();
-		}
-		ViewRepository viewRepository = resourceCenter.getRepository(ViewRepository.class, this);
-		if (viewRepository == null) {
-			viewRepository = createViewRepository(resourceCenter);
-		}
-		return viewRepository;
+	@Override
+	public void ensureAllRepositoriesAreCreated(FlexoResourceCenter<?> rc) {
+		super.ensureAllRepositoriesAreCreated(rc);
+		getVirtualModelInstanceRepository(rc);
 	}
 
-	@Override
-	public <I> void initializeResourceCenter(final FlexoResourceCenter<I> resourceCenter) {
+	public <I> FMLRTVirtualModelInstanceRepository<I> getVirtualModelInstanceRepository(FlexoResourceCenter<I> resourceCenter) {
+		FMLRTVirtualModelInstanceRepository<I> returned = resourceCenter.retrieveRepository(FMLRTVirtualModelInstanceRepository.class,
+				this);
+		if (returned == null) {
+			returned = FMLRTVirtualModelInstanceRepository.instanciateNewRepository(this, resourceCenter);
+			resourceCenter.registerRepository(returned, FMLRTVirtualModelInstanceRepository.class, this);
+		}
+		return returned;
+	}
 
-		final ViewRepository viewRepository = this.getViewRepository(resourceCenter);
-
+	/*@Override
+	public <I> void performInitializeResourceCenter(final FlexoResourceCenter<I> resourceCenter) {
+	
+		final FMLRTVirtualModelInstanceRepository viewRepository = this.getViewRepository(resourceCenter);
+	
 		// Iterate
 		Iterator<I> it = resourceCenter.iterator();
-
+	
 		while (it.hasNext()) {
 			final I item = it.next();
 			if (!this.isIgnorable(resourceCenter, item)) {
@@ -152,10 +166,10 @@ public class FMLRTTechnologyAdapter extends TechnologyAdapter {
 				}
 			}
 		}
-
+	
 		// Call it to update the current repositories
-		getPropertyChangeSupport().firePropertyChange("getAllRepositories()", null, resourceCenter);
-	}
+		notifyRepositoryStructureChanged();
+	}*/
 
 	/**
 	 * Return boolean indicating if supplied {@link File} has the general form of a ViewPoint directory
@@ -163,16 +177,20 @@ public class FMLRTTechnologyAdapter extends TechnologyAdapter {
 	 * @param candidateFile
 	 * @return
 	 */
-	private boolean isValidViewDirectory(final File candidateFile) {
+	/*private boolean isValidViewDirectory(final File candidateFile) {
 		if (candidateFile.exists() && candidateFile.isDirectory() && candidateFile.canRead()
 				&& candidateFile.getName().endsWith(ViewResource.VIEW_SUFFIX)) {
+			if (candidateFile.getParentFile().getName().endsWith(ViewResource.VIEW_SUFFIX)) {
+				// We dont try to interpret here a sub-view in a view
+				return false;
+			}
 			final String baseName = candidateFile.getName().substring(0,
 					candidateFile.getName().length() - ViewResource.VIEW_SUFFIX.length());
 			final File xmlFile = new File(candidateFile, baseName + ".xml");
 			return xmlFile.exists();
 		}
 		return false;
-	}
+	}*/
 
 	/**
 	 * Build and return {@link ViewResource} from a candidate file (a .view directory)<br>
@@ -183,7 +201,7 @@ public class FMLRTTechnologyAdapter extends TechnologyAdapter {
 	 * @param viewPointRepository
 	 * @return the newly created {@link ViewPointResource}
 	 */
-	private ViewResource analyseAsView(final File candidateFile, final ViewRepository viewRepository) {
+	/*private ViewResource analyseAsView(final File candidateFile, final FMLRTVirtualModelInstanceRepository viewRepository) {
 		if (viewRepository instanceof ViewLibrary && this.isValidViewDirectory(candidateFile)) {
 			final RepositoryFolder<ViewResource> folder = this.retrieveRepositoryFolder(viewRepository, candidateFile);
 			final ViewResource vRes = ViewResourceImpl.retrieveViewResource(candidateFile, folder, (ViewLibrary) viewRepository);
@@ -191,74 +209,65 @@ public class FMLRTTechnologyAdapter extends TechnologyAdapter {
 				logger.info("Found and register view " + vRes.getURI() + vRes.getFlexoIODelegate().toString());
 				viewRepository.registerResource(vRes, folder);
 				return vRes;
-			} else {
+			}
+			else {
 				logger.warning("While exploring resource center looking for views : cannot retrieve resource for file "
 						+ candidateFile.getAbsolutePath());
 			}
 		}
-
+	
 		return null;
-	}
-
-	/**
-	 * Creates and return a view repository for current {@link TechnologyAdapter} and supplied {@link FlexoResourceCenter}
-	 */
-	public ViewRepository createViewRepository(final FlexoResourceCenter<?> resourceCenter) {
-		final ViewRepository returned = new ViewRepository(this, resourceCenter);
-		resourceCenter.registerRepository(returned, ViewRepository.class, this);
-		return returned;
-	}
+	}*/
 
 	@Override
 	public <I> boolean isIgnorable(final FlexoResourceCenter<I> resourceCenter, final I contents) {
-		if (resourceCenter.isIgnorable(contents)) {
+		if (resourceCenter.isIgnorable(contents, this)) {
 			return true;
 		}
-		// TODO: ignore .view subcontents
+
+		// This allows to ignore all contained VirtualModel, that will be explored from their container resource
+		if (resourceCenter.isDirectory(contents)) {
+			if (FlexoResourceCenter.isContainedInDirectoryWithSuffix(resourceCenter, contents,
+					FMLRTVirtualModelInstanceResourceFactory.FML_RT_SUFFIX)) {
+				return true;
+			}
+		}
+
 		return false;
 	}
 
 	@Override
-	public <I> void contentsAdded(final FlexoResourceCenter<I> resourceCenter, final I contents) {
-		if (!this.isIgnorable(resourceCenter, contents)) {
-			final ViewRepository viewRepository = this.getViewRepository(resourceCenter);
-			if (contents instanceof File) {
-				File candidateFile = (File) contents;
-				System.out.println("FMLRTTechnologyAdapter: File ADDED " + candidateFile.getName() + " in "
-						+ candidateFile.getParentFile().getAbsolutePath());
-				if (this.isValidViewDirectory(candidateFile)) {
-					final ViewResource vRes = this.analyseAsView(candidateFile, viewRepository);
-					if (vRes != null) {
-						this.referenceResource(vRes, resourceCenter);
-					}
-				}
+	public <I> boolean isFolderIgnorable(FlexoResourceCenter<I> resourceCenter, I contents) {
+		if (resourceCenter.isDirectory(contents)) {
+			if (FlexoResourceCenter.isContainedInDirectoryWithSuffix(resourceCenter, contents,
+					FMLRTVirtualModelInstanceResourceFactory.FML_RT_SUFFIX)) {
+				return true;
 			}
 		}
+		return false;
 	}
 
 	@Override
-	public <I> void contentsDeleted(final FlexoResourceCenter<I> resourceCenter, final I contents) {
-		if (!this.isIgnorable(resourceCenter, contents)) {
-			if (contents instanceof File) {
-				System.out.println("FMLRTTechnologyAdapter: File DELETED " + ((File) contents).getName() + " in "
-						+ ((File) contents).getParentFile().getAbsolutePath());
-			}
-		}
+	public String getIdentifier() {
+		return "FML@RT";
 	}
 
-	private FlexoConceptInstanceTypeFactory fciFactory;
+	public FMLRTVirtualModelInstanceResourceFactory getFMLRTVirtualModelInstanceResourceFactory() {
+		return getResourceFactory(FMLRTVirtualModelInstanceResourceFactory.class);
+	}
+
+	public List<FMLRTVirtualModelInstanceRepository<?>> getVirtualModelInstanceRepositories() {
+		List<FMLRTVirtualModelInstanceRepository<?>> returned = new ArrayList<>();
+		for (FlexoResourceCenter<?> rc : getServiceManager().getResourceCenterService().getResourceCenters()) {
+			returned.add(getVirtualModelInstanceRepository(rc));
+		}
+		return returned;
+	}
 
 	@Override
-	public void initTechnologySpecificTypes(TechnologyAdapterService taService) {
-		taService.registerTypeClass(FlexoConceptInstanceType.class, getFlexoConceptInstanceTypeFactory());
-
-	}
-
-	protected FlexoConceptInstanceTypeFactory getFlexoConceptInstanceTypeFactory() {
-		if (fciFactory == null) {
-			fciFactory = new FlexoConceptInstanceTypeFactory(this);
-		}
-		return fciFactory;
+	public void notifyRepositoryStructureChanged() {
+		super.notifyRepositoryStructureChanged();
+		getPropertyChangeSupport().firePropertyChange("getVirtualModelInstanceRepositories()", null, getVirtualModelInstanceRepositories());
 	}
 
 }

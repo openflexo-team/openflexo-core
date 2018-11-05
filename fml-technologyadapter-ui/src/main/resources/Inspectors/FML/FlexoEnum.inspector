@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Panel className="org.openflexo.gina.utils.FIBInspector" layout="border"
+	titleFont="SansSerif,0,12" darkLevel="0"
+	dataClassName="org.openflexo.foundation.fml.FlexoEnum"
+	controllerClassName="org.openflexo.fml.controller.FMLFIBInspectorController"
+	font="SansSerif,0,12" name="Inspector">
+	<TabPanel name="Tab" constraints="border(location=center)">
+		<Tab title="Basic" layout="twocols" titleFont="SansSerif,0,11"
+			darkLevel="0" index="0" font="SansSerif,0,11" useScrollBar="true"
+			horizontalScrollbarPolicy="HORIZONTAL_SCROLLBAR_AS_NEEDED"
+			verticalScrollbarPolicy="VERTICAL_SCROLLBAR_AS_NEEDED" name="BasicTab">
+
+			<CheckBox name="AbstractCB">
+				<Parameter name="hidden" value="true" />
+			</CheckBox>
+			<Label name="AbstractLabel">
+				<Parameter name="hidden" value="true" />
+			</Label>
+
+			<Label name="ContainerLabel">
+				<Parameter name="hidden" value="true" />
+			</Label>
+			<Custom name="ContainerSelector">
+				<Parameter name="hidden" value="true" />
+			</Custom>
+
+			<Label name="ParentConceptsLabel">
+				<Parameter name="hidden" value="true" />
+			</Label>
+			<Table name="ParentFlexoConceptTable">
+				<Parameter name="hidden" value="true" />
+			</Table>
+
+			<Label name="ConstraintsLabel">
+				<Parameter name="hidden" value="true" />
+			</Label>
+			<Table name="ConstraintsTable">
+				<Parameter name="hidden" value="true" />
+			</Table>
+
+			<Label name="KeyPropertiesLabel">
+				<Parameter name="hidden" value="true" />
+			</Label>
+			<CheckboxList name="KeyPropertiesCBList">
+				<Parameter name="hidden" value="true" />
+			</CheckboxList>
+			
+
+			<Label label="values" index="14" data=""
+				constraints="twocols(expandHorizontally=false;expandVertically=false;index=2;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=5;location=left)"
+				visible="" format="" icon="" tooltip="" localize="true" enable=""
+				clickAction="" doubleClickAction="" rightClickAction=""
+				enterPressedAction="" valueChangedAction="" valueTransform=""
+				valueValidator="" />
+			<Panel id="9" darkLevel="1" borderLeft="0" sizeAdjustment="OriginalSize"
+				opaque="false" border="empty" borderRight="2" trackViewPortWidth="true"
+				index="7" align="left"
+				constraints="twocols(expandHorizontally=true;expandVertically=true;index=5;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=right)"
+				borderBottom="2" titleFont="SansSerif,0,11" borderTop="2"
+				trackViewPortHeight="true" layout="gridbag" name="ParametersPanel">
+				<Table id="10" showFooter="true" manageDynamicModel="true"
+					selectionMode="MultipleIntervalSelection"
+					data="data.values" rightClickAction="controller.rightClick(ValuesTable.selected,event)"
+					boundToSelectionManager="true" index="0" localize="true"
+					font="SansSerif.plain,0,11"
+					constraints="gridbag(anchor=center;fill=both;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=1;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=center;padX=0;padY=0;weightX=0.0;weightY=1.0;x=0;y=0)"
+					iteratorClassName="org.openflexo.foundation.fml.FlexoEnumValue"
+					backgroundNonSelectionColor="255,255,255" autoSelectFirstRow="true"
+					name="ValuesTable" backgroundSecondarySelectionColor="178,215,255">
+					<IconColumn id="11" data="controller.iconForObject(iterator)"
+						displayTitle="false" title="icon" name="icon" columnWidth="20"
+						resizable="false" showIcon="false" />
+					<TextFieldColumn id="12" data="iterator.name"
+						displayTitle="true" title="value" name="value"
+						columnWidth="120" resizable="true" showIcon="false" />
+					<AddAction id="13" name="add_value"
+						method="controller.createFlexoEnumValue(data)" />
+					<RemoveAction id="14" name="delete"
+						method="controller.deleteFlexoEnumValue(data,selected)" /> <!-- enable="data != null"  -->
+				</Table>
+				<Panel id="15" borderLeft="0" sizeAdjustment="OriginalSize"
+					opaque="false" border="empty" borderRight="0" trackViewPortWidth="true"
+					index="0" align="left"
+					constraints="gridbag(anchor=north;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=0;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=east;padX=0;padY=0;weightX=0.0;weightY=0.0)"
+					borderBottom="0" borderTitle="Panel" boxLayoutAxis="Y_AXIS"
+					titleFont="SansSerif,0,11" borderTop="0" trackViewPortHeight="true"
+					layout="box" name="ParametersOrderingPanel">
+					<Button id="16"
+						enable="(ValuesTable.selected != null) &amp; (ValuesTable.selected.index &gt; 0)"
+						buttonIcon="controller.arrowTop" buttonType="Trigger" name="Button"
+						action="data.valueFirst(ValuesTable.selected)" index="0"
+						localize="true"
+						constraints="box(alignmentX=0.5;alignmentY=0.5;index=0;location=west)"
+						label="">
+					</Button>
+					<Button id="18"
+						enable="(ValuesTable.selected != null) &amp; (ValuesTable.selected.index &gt; 0)"
+						buttonIcon="controller.arrowUp" buttonType="Trigger" name="Button2"
+						action="data.valueUp(ValuesTable.selected)" index="1"
+						localize="true"
+						constraints="box(alignmentX=0.5;alignmentY=0.5;index=1;location=north)"
+						label="">
+					</Button>
+					<Button id="20"
+						enable="(ValuesTable.selected != null) &amp; (ValuesTable.selected.index &lt; (data.values.size - 1))"
+						buttonIcon="controller.arrowDown" buttonType="Trigger" name="Button3"
+						action="data.valueDown(ValuesTable.selected)" index="2"
+						localize="true"
+						constraints="box(alignmentX=0.5;alignmentY=0.5;index=2;location=center)"
+						label="">
+					</Button>
+					<Button id="22"
+						enable="(ValuesTable.selected != null) &amp; (ValuesTable.selected.index &lt; (data.values.size - 1))"
+						buttonIcon="controller.arrowBottom" buttonType="Trigger" name="Button4"
+						action="data.valueLast(ValuesTable.selected)" index="3"
+						localize="true"
+						constraints="box(alignmentX=0.5;alignmentY=0.5;index=3;location=east)"
+						label="">
+					</Button>
+				</Panel>
+				<Panel id="24" darkLevel="2" borderLeft="10" sizeAdjustment="OriginalSize"
+					border="rounded3d" borderRight="10" trackViewPortWidth="true"
+					index="2" align="left" enable="ValuesTable.selected != null"
+					constraints="gridbag(anchor=center;fill=both;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=2;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;padX=0;padY=0;weightX=1.0;weightY=1.0)"
+					borderBottom="10" titleFont="SansSerif,0,11" borderTop="10"
+					trackViewPortHeight="true" layout="twocols" name="DetailsPanel">
+					<Label name="IndexLabel" localize="true" align="left"
+						constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=left)"
+						label="index" />
+					<TextField columns="7" name="TextField"
+						data="ValuesTable.selected.index.toString" readOnly="true"
+						constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=right)" />
+					<Label id="25" name="ValueLabel" localize="true" align="left"
+						constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=left)"
+						label="value_name" />
+					<TextField id="26" columns="7" name="TextField"
+						data="ValuesTable.selected.name"
+						constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=right)" />
+					<Label id="43" name="Label8" localize="true" align="left"
+						constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=left)"
+						label="description" />
+					<TextArea id="44" verticalScrollbarPolicy="VERTICAL_SCROLLBAR_AS_NEEDED"
+						useScrollBar="true" columns="8" name="TextArea2"
+						data="ValuesTable.selected.description" text="TextArea"
+						constraints="twocols(expandHorizontally=true;expandVertically=true;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=right)"
+						rows="3" validateOnReturn="true" horizontalScrollbarPolicy="HORIZONTAL_SCROLLBAR_AS_NEEDED" />
+				</Panel>
+			</Panel>
+
+		</Tab>
+		<Tab title="Advanced" layout="twocols" titleFont="SansSerif,0,11"
+			darkLevel="0" index="2" font="SansSerif,0,11" useScrollBar="true"
+			horizontalScrollbarPolicy="HORIZONTAL_SCROLLBAR_AS_NEEDED"
+			verticalScrollbarPolicy="VERTICAL_SCROLLBAR_AS_NEEDED" name="AdvancedTab" />
+		<!-- <Tab title="FML" layout="twocols" titleFont="SansSerif,0,11" darkLevel="0" 
+			index="3" font="SansSerif,0,11" useScrollBar="true" horizontalScrollbarPolicy="HORIZONTAL_SCROLLBAR_AS_NEEDED" 
+			verticalScrollbarPolicy="VERTICAL_SCROLLBAR_AS_NEEDED" name="FMLTab"> <Editor 
+			validateOnReturn="true" columns="8" rows="3" text="Editor" font="SansSerif,0,13" 
+			tokenMarkerStyle="FML" data="data.fMLRepresentation" constraints="twocols(expandHorizontally=true;expandVertically=true;location=center)" 
+			width="120" height="120" useScrollBar="true" horizontalScrollbarPolicy="HORIZONTAL_SCROLLBAR_AS_NEEDED" 
+			verticalScrollbarPolicy="VERTICAL_SCROLLBAR_AS_NEEDED" localize="true" /> 
+			</Tab> -->
+	</TabPanel>
+	<LocalizedDictionary>
+		<Localized key="Advanced" lang="French" value="Avancé" />
+		<Localized key="Basic" lang="French" value="Basique" />
+		<Localized key="name" lang="English" value="Name" />
+		<Localized key="name" lang="French" value="Nom" />
+		<Localized key="name" lang="Dutch" value="Name" />
+	</LocalizedDictionary>
+	<Parameter name="title" value="FlexoEnum" />
+</Panel>

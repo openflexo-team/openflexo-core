@@ -43,7 +43,6 @@ import java.util.Map;
 
 import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.fml.FMLObject;
-import org.openflexo.foundation.fml.ViewPoint;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.parser.analysis.DepthFirstAdapter;
 import org.openflexo.foundation.fml.parser.node.ABlock;
@@ -69,18 +68,18 @@ import org.openflexo.model.exceptions.ModelDefinitionException;
  */
 class FMLSemanticsAnalyzer extends DepthFirstAdapter {
 
-	private final ViewPoint viewPoint;
+	private final VirtualModel virtualModel;
 	private final FlexoServiceManager serviceManager;
 	private final Map<Node, FMLObject> parsedFMLObjects;
 
-	public FMLSemanticsAnalyzer(ViewPoint viewPoint, FlexoServiceManager serviceManager) {
-		this.viewPoint = viewPoint;
+	public FMLSemanticsAnalyzer(VirtualModel viewPoint, FlexoServiceManager serviceManager) {
+		this.virtualModel = viewPoint;
 		this.serviceManager = serviceManager;
-		parsedFMLObjects = new HashMap<Node, FMLObject>();
+		parsedFMLObjects = new HashMap<>();
 	}
 
-	public ViewPoint getViewPoint() {
-		return viewPoint;
+	public VirtualModel getVirtualModel() {
+		return virtualModel;
 	}
 
 	public FlexoServiceManager getServiceManager() {

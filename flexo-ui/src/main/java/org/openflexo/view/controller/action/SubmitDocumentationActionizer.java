@@ -51,6 +51,7 @@ import org.openflexo.drm.ui.SubmitNewVersionPopup;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.action.FlexoActionFinalizer;
 import org.openflexo.foundation.action.FlexoActionInitializer;
+import org.openflexo.foundation.action.FlexoActionFactory;
 import org.openflexo.icon.IconLibrary;
 import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.localization.Language;
@@ -61,8 +62,8 @@ import org.openflexo.view.controller.FlexoController;
 
 public class SubmitDocumentationActionizer extends ActionInitializer<SubmitDocumentationAction, FlexoObject, FlexoObject> {
 
-	private static final java.util.logging.Logger logger = org.openflexo.logging.FlexoLogger.getLogger(SubmitDocumentationActionizer.class
-			.getPackage().getName());
+	private static final java.util.logging.Logger logger = org.openflexo.logging.FlexoLogger
+			.getLogger(SubmitDocumentationActionizer.class.getPackage().getName());
 
 	public SubmitDocumentationActionizer(ControllerActionInitializer actionInitializer) {
 		super(SubmitDocumentationAction.actionType, actionInitializer);
@@ -76,7 +77,8 @@ public class SubmitDocumentationActionizer extends ActionInitializer<SubmitDocum
 				DocItem docItem;
 				if (anAction.getFocusedObject() instanceof DocItem) {
 					docItem = (DocItem) anAction.getFocusedObject();
-				} else {
+				}
+				else {
 					docItem = getController().getApplicationContext().getDocResourceManager().getDocItemFor(anAction.getFocusedObject());
 				}
 				if (docItem == null) {
@@ -99,16 +101,18 @@ public class SubmitDocumentationActionizer extends ActionInitializer<SubmitDocum
 						return false;
 					}*/
 
-				} else if (docItem.getDocResourceCenter().getLanguages().size() == 1) {
+				}
+				else if (docItem.getDocResourceCenter().getLanguages().size() == 1) {
 					language = docItem.getDocResourceCenter().getLanguages().firstElement();
 				}
 				if (language == null) {
 					return false;
 				}
-				SubmitVersion action = SubmitVersion.actionType.makeNewAction(docItem, null, getController().getApplicationContext()
-						.getDocResourceManager().getEditor());
-				SubmitNewVersionPopup editVersionPopup = new SubmitNewVersionPopup(action.getDocItem(), language, getController()
-						.getFlexoFrame(), getController().getApplicationContext().getDocResourceManager().getEditor());
+				SubmitVersion action = SubmitVersion.actionType.makeNewAction(docItem, null,
+						getController().getApplicationContext().getDocResourceManager().getEditor());
+				SubmitNewVersionPopup editVersionPopup = new SubmitNewVersionPopup(action.getDocItem(), language,
+						getController().getFlexoFrame(), getController(),
+						getController().getApplicationContext().getDocResourceManager().getEditor());
 				action.setVersion(editVersionPopup.getVersionToSubmit());
 				if (action.getVersion() == null) {
 					return false;
@@ -116,9 +120,10 @@ public class SubmitDocumentationActionizer extends ActionInitializer<SubmitDocum
 				String title;
 				DocItemAction lastAction = action.getDocItem().getLastActionForLanguage(action.getVersion().getLanguage());
 				if (lastAction == null) {
-					title = FlexoLocalization.localizedForKey("submit_documentation");
-				} else {
-					title = FlexoLocalization.localizedForKey("review_documentation");
+					title = FlexoLocalization.getMainLocalizer().localizedForKey("submit_documentation");
+				}
+				else {
+					title = FlexoLocalization.getMainLocalizer().localizedForKey("review_documentation");
 					action.getVersion().setVersion(FlexoVersion.versionByIncrementing(lastAction.getVersion().getVersion(), 0, 0, 1));
 				}
 				logger.warning("Please reimplement this");
@@ -153,7 +158,8 @@ public class SubmitDocumentationActionizer extends ActionInitializer<SubmitDocum
 			public boolean run(EventObject e, SubmitDocumentationAction action) {
 				if (action.getContext() != null && action.getContext() instanceof SubmitVersion) {
 					((SubmitVersion) action.getContext()).doAction();
-					FlexoController.notify(FlexoLocalization.localizedForKey("submission_has_been_successfully_recorded"));
+					FlexoController
+							.notify(FlexoLocalization.getMainLocalizer().localizedForKey("submission_has_been_successfully_recorded"));
 					return true;
 				}
 				return false;
@@ -162,7 +168,7 @@ public class SubmitDocumentationActionizer extends ActionInitializer<SubmitDocum
 	}
 
 	@Override
-	protected Icon getEnabledIcon() {
+	protected Icon getEnabledIcon(FlexoActionFactory actionType) {
 		return IconLibrary.HELP_ICON;
 	}
 }

@@ -39,16 +39,16 @@
 
 package org.openflexo.action;
 
-import java.util.EventObject;
 import java.util.logging.Logger;
 
 import javax.swing.Icon;
 import javax.swing.JFileChooser;
 
+import org.openflexo.InteractiveApplicationContext;
 import org.openflexo.components.ProjectChooserComponent;
 import org.openflexo.foundation.FlexoEditor;
-import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.FlexoProjectObject;
+import org.openflexo.foundation.action.FlexoActionFactory;
 import org.openflexo.foundation.action.FlexoActionFinalizer;
 import org.openflexo.foundation.action.FlexoActionInitializer;
 import org.openflexo.foundation.action.FlexoExceptionHandler;
@@ -58,7 +58,6 @@ import org.openflexo.foundation.task.FlexoTask.TaskStatus;
 import org.openflexo.foundation.utils.ProjectInitializerException;
 import org.openflexo.foundation.utils.ProjectLoadingCancelledException;
 import org.openflexo.icon.IconLibrary;
-import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.project.LoadProjectTask;
 import org.openflexo.view.FlexoFrame;
 import org.openflexo.view.controller.ActionInitializer;
@@ -75,88 +74,85 @@ public class ImportProjectInitializer extends ActionInitializer<ImportProject, F
 
 	@Override
 	protected FlexoExceptionHandler<ImportProject> getDefaultExceptionHandler() {
-		return new FlexoExceptionHandler<ImportProject>() {
-
-			@Override
-			public boolean handleException(FlexoException exception, ImportProject action) {
-				if (action.getThrownException() instanceof ProjectImportLoopException) {
-					FlexoController.notify(FlexoLocalization.localizedForKey("project_already_imported") + " "
-							+ action.getProjectToImport().getDisplayName());
-				}
-				return true;
+		return (exception, action) -> {
+			if (action.getThrownException() instanceof ProjectImportLoopException) {
+				FlexoController.notify(action.getLocales().localizedForKey("project_already_imported") + " "
+						+ action.getProjectToImport().getProjectName());
 			}
+			return true;
 		};
 	}
 
 	@Override
 	protected FlexoActionFinalizer<ImportProject> getDefaultFinalizer() {
-		return new FlexoActionFinalizer<ImportProject>() {
-			@Override
-			public boolean run(EventObject event, ImportProject action) {
-				if (action.hasActionExecutionSucceeded()) {
-					FlexoController.notify(FlexoLocalization.localizedForKey("successfully_imported_project") + " "
-							+ action.getProjectToImport().getDisplayName());
-				}
-				return true;
+		return (event, action) -> {
+			if (action.hasActionExecutionSucceeded()) {
+				FlexoController.notify(action.getLocales().localizedForKey("successfully_imported_project") + " "
+						+ action.getProjectToImport().getProjectName());
 			}
+			return true;
 		};
 	}
 
 	@Override
 	protected FlexoActionInitializer<ImportProject> getDefaultInitializer() {
-		return new FlexoActionInitializer<ImportProject>() {
-			@Override
-			public boolean run(EventObject e, ImportProject action) {
-				if (action.getProjectToImport() != null) {
-					return true;
-				}
-				ProjectChooserComponent chooser = new ProjectChooserComponent(FlexoFrame.getActiveFrame(), getController()
-						.getApplicationContext()) {
-				};
-				while (true) {
-					if (chooser.showOpenDialog() == JFileChooser.APPROVE_OPTION && chooser.getSelectedFile() != null) {
-						FlexoEditor editor = null;
+		return (e, action) -> {
+			if (!(getController().getApplicationContext() instanceof InteractiveApplicationContext)) {
+				return false;
+			}
 
-						LoadProjectTask loadProject = getController().getApplicationContext().getProjectLoader()
-								.loadProject(chooser.getSelectedFile(), true);
-						getController().getApplicationContext().getTaskManager().waitTask(loadProject);
-						if (loadProject.getTaskStatus() == TaskStatus.EXCEPTION_THROWN) {
-							if (loadProject.getThrownException() instanceof ProjectLoadingCancelledException) {
-								loadProject.getThrownException().printStackTrace();
-								// User chose not to load this project
-								return false;
-							} else if (loadProject.getThrownException() instanceof ProjectInitializerException) {
-								loadProject.getThrownException().printStackTrace();
-								// Failed to load the project
-								FlexoController.notify(FlexoLocalization.localizedForKey("could_not_open_project_located_at")
-										+ chooser.getSelectedFile().getAbsolutePath());
-							}
-						}
+			if (action.getProjectToImport() != null) {
+				return true;
+			}
+			ProjectChooserComponent chooser = new ProjectChooserComponent(FlexoFrame.getActiveFrame(),
+					getController().getApplicationContext()) {
+			};
+			while (true) {
+				if (chooser.showOpenDialog() == JFileChooser.APPROVE_OPTION && chooser.getSelectedFile() != null) {
+					FlexoEditor editor = null;
 
-						editor = loadProject.getFlexoEditor();
-
-						if (editor == null) {
+					LoadProjectTask loadProject = ((InteractiveApplicationContext) getController().getApplicationContext())
+							.getProjectLoader().makeLoadProjectTask(chooser.getSelectedFile(), true);
+					getController().getApplicationContext().getTaskManager().waitTask(loadProject);
+					if (loadProject.getTaskStatus() == TaskStatus.EXCEPTION_THROWN) {
+						if (loadProject.getThrownException() instanceof ProjectLoadingCancelledException) {
+							loadProject.getThrownException().printStackTrace();
+							// User chose not to load this project
 							return false;
 						}
-
-						String reason = action.getImportingProject().canImportProject(editor.getProject());
-						if (reason == null) {
-							action.setProjectToImport(editor.getProject());
-							return true;
-						} else {
-							FlexoController.notify(reason);
+						else if (loadProject.getThrownException() instanceof ProjectInitializerException) {
+							loadProject.getThrownException().printStackTrace();
+							// Failed to load the project
+							FlexoController.notify(action.getLocales().localizedForKey("could_not_open_project_located_at")
+									+ chooser.getSelectedFile().getAbsolutePath());
 						}
-					} else {
-						// User chose "Cancel"
+					}
+
+					editor = loadProject.getFlexoEditor();
+
+					if (editor == null) {
 						return false;
 					}
+
+					String reason = action.getImportingProject().canImportProject(editor.getProject());
+					if (reason == null) {
+						action.setProjectToImport(editor.getProject());
+						return true;
+					}
+					else {
+						FlexoController.notify(reason);
+					}
+				}
+				else {
+					// User chose "Cancel"
+					return false;
 				}
 			}
 		};
 	}
 
 	@Override
-	protected Icon getEnabledIcon() {
+	protected Icon getEnabledIcon(FlexoActionFactory actionType) {
 		return IconLibrary.IMPORT_ICON;
 	}
 

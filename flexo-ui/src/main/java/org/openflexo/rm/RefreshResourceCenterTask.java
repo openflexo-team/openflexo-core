@@ -60,7 +60,8 @@ public class RefreshResourceCenterTask extends FlexoApplicationTask {
 	private final FlexoResourceCenter<?> resourceCenter;
 
 	public RefreshResourceCenterTask(FlexoResourceCenterService rcService, FlexoResourceCenter<?> resourceCenter) {
-		super(FlexoLocalization.localizedForKey("refreshing_resource_center") + " " + resourceCenter.toString(), rcService);
+		super(FlexoLocalization.getMainLocalizer().localizedForKey("refreshing_resource_center") + " " + resourceCenter.toString(),
+				rcService.getServiceManager());
 		this.rcService = rcService;
 		this.resourceCenter = resourceCenter;
 	}
@@ -72,7 +73,6 @@ public class RefreshResourceCenterTask extends FlexoApplicationTask {
 		try {
 			resourceCenter.update();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}

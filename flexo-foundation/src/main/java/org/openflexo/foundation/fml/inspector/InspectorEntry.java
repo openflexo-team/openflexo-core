@@ -38,19 +38,29 @@
 
 package org.openflexo.foundation.fml.inspector;
 
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Type;
+import java.util.List;
 import java.util.logging.Logger;
 
 import org.openflexo.connie.Bindable;
+import org.openflexo.connie.BindingEvaluationContext;
 import org.openflexo.connie.DataBinding;
+import org.openflexo.connie.DataBinding.BindingDefinitionType;
+import org.openflexo.connie.exception.NullReferenceException;
+import org.openflexo.connie.exception.TypeMismatchException;
+import org.openflexo.connie.type.ParameterizedTypeImpl;
+import org.openflexo.connie.type.TypeUtils;
+import org.openflexo.foundation.fml.FlexoBehaviourParameter.FlexoBehaviourParameterImpl;
+import org.openflexo.foundation.fml.FlexoBehaviourParameter.WidgetType;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoConceptObject;
+import org.openflexo.foundation.fml.FlexoEnumType;
+import org.openflexo.foundation.fml.WidgetContext;
 import org.openflexo.foundation.fml.binding.InspectorEntryBindingModel;
 import org.openflexo.model.annotations.DefineValidationRule;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ImplementationClass;
-import org.openflexo.model.annotations.Import;
-import org.openflexo.model.annotations.Imports;
 import org.openflexo.model.annotations.ModelEntity;
 import org.openflexo.model.annotations.PropertyIdentifier;
 import org.openflexo.model.annotations.Setter;
@@ -64,13 +74,10 @@ import org.openflexo.toolbox.StringUtils;
  * @author sylvain
  * 
  */
-@ModelEntity(isAbstract = true)
+@ModelEntity()
 @ImplementationClass(InspectorEntry.InspectorEntryImpl.class)
-@Imports({ @Import(CheckboxInspectorEntry.class), @Import(ClassInspectorEntry.class), @Import(FloatInspectorEntry.class),
-		@Import(IndividualInspectorEntry.class), @Import(IntegerInspectorEntry.class), @Import(PropertyInspectorEntry.class),
-		@Import(TextAreaInspectorEntry.class), @Import(TextFieldInspectorEntry.class), @Import(DataPropertyInspectorEntry.class),
-		@Import(ObjectPropertyInspectorEntry.class) })
-public abstract interface InspectorEntry extends FlexoConceptObject, Bindable {
+@XMLElement(xmlTag = "InspectorEntry", deprecatedXMLTags = "GenericInspectorEntry")
+public interface InspectorEntry extends FlexoConceptObject, Bindable, WidgetContext {
 
 	@PropertyIdentifier(type = FlexoConceptInspector.class)
 	public static final String INSPECTOR_KEY = "inspector";
@@ -84,10 +91,16 @@ public abstract interface InspectorEntry extends FlexoConceptObject, Bindable {
 	@PropertyIdentifier(type = DataBinding.class)
 	public static final String DATA_KEY = "data";
 	@PropertyIdentifier(type = DataBinding.class)
-	public static final String CONDITIONAL_KEY = "conditional";
+	public static final String CONTAINER_KEY = "container";
+	@PropertyIdentifier(type = DataBinding.class)
+	public static final String LIST_KEY = "list";
+	@PropertyIdentifier(type = Type.class)
+	public static final String TYPE_KEY = "type";
+	@PropertyIdentifier(type = WidgetType.class)
+	public static final String WIDGET_KEY = "widget";
 
 	@Getter(value = INSPECTOR_KEY/*, inverse = FlexoConceptInspector.ENTRIES_KEY*/)
-	@XMLElement(xmlTag = "Inspector")
+	// @XMLElement(xmlTag = "Inspector")
 	public FlexoConceptInspector getInspector();
 
 	@Setter(INSPECTOR_KEY)
@@ -123,19 +136,56 @@ public abstract interface InspectorEntry extends FlexoConceptObject, Bindable {
 	@Setter(DATA_KEY)
 	public void setData(DataBinding<?> data);
 
-	@Getter(value = CONDITIONAL_KEY)
+	/*@Getter(value = CONDITIONAL_KEY)
 	@XMLAttribute
 	public DataBinding<Boolean> getConditional();
-
+	
 	@Setter(CONDITIONAL_KEY)
-	public void setConditional(DataBinding<Boolean> conditional);
+	public void setConditional(DataBinding<Boolean> conditional);*/
 
-	public String getWidgetName();
+	@Override
+	@Getter(value = TYPE_KEY, isStringConvertable = true)
+	@XMLAttribute
+	public abstract Type getType();
+
+	@Setter(TYPE_KEY)
+	public void setType(Type aType);
+
+	@Override
+	@Getter(value = WIDGET_KEY)
+	@XMLAttribute
+	public WidgetType getWidget();
+
+	@Setter(WIDGET_KEY)
+	public void setWidget(WidgetType widget);
+
+	@Override
+	@Getter(value = CONTAINER_KEY)
+	@XMLAttribute
+	public DataBinding<?> getContainer();
+
+	@Setter(CONTAINER_KEY)
+	public void setContainer(DataBinding<?> container);
+
+	public Object getContainer(BindingEvaluationContext evaluationContext);
+
+	@Getter(value = LIST_KEY)
+	@XMLAttribute
+	public DataBinding<List<?>> getList();
+
+	@Setter(LIST_KEY)
+	public void setList(DataBinding<List<?>> list);
+
+	public Object getList(BindingEvaluationContext evaluationContext);
 
 	public int getIndex();
 
 	@Override
 	public InspectorEntryBindingModel getBindingModel();
+
+	public boolean isListType();
+
+	public List<WidgetType> getAvailableWidgetTypes();
 
 	public static abstract class InspectorEntryImpl extends FlexoConceptObjectImpl implements InspectorEntry {
 
@@ -146,7 +196,9 @@ public abstract interface InspectorEntry extends FlexoConceptObject, Bindable {
 		// private boolean readOnly;
 
 		private DataBinding<?> data;
-		private DataBinding<Boolean> conditional;
+
+		private DataBinding<?> container;
+		private DataBinding<List<?>> list;
 
 		private InspectorEntryBindingModel bindingModel;
 
@@ -159,11 +211,38 @@ public abstract interface InspectorEntry extends FlexoConceptObject, Bindable {
 			return null;
 		}
 
-		public Type getType() {
+		/*public Type getType() {
 			return getDefaultDataClass();
+		}*/
+
+		@Override
+		public void setType(Type aType) {
+			performSuperSetter(TYPE_KEY, aType);
+			listType = null;
+			if (list != null) {
+				list.setDeclaredType(getListType());
+			}
+			if (data != null) {
+				data.setDeclaredType(aType);
+			}
+			getPropertyChangeSupport().firePropertyChange("availableWidgetTypes", null, getAvailableWidgetTypes());
+			getPropertyChangeSupport().firePropertyChange("isListType", !isListType(), isListType());
+			if (!getAvailableWidgetTypes().contains(getWidget()) && getAvailableWidgetTypes().size() > 0) {
+				setWidget(getAvailableWidgetTypes().get(0));
+			}
 		}
 
-		public abstract Class<?> getDefaultDataClass();
+		@Override
+		public boolean isListType() {
+			return TypeUtils.isList(getType());
+		}
+
+		@Override
+		public List<WidgetType> getAvailableWidgetTypes() {
+			return FlexoBehaviourParameterImpl.getAvailableWidgetTypes(getType());
+		}
+
+		// public abstract Class<?> getDefaultDataClass();
 
 		@Override
 		public FlexoConcept getFlexoConcept() {
@@ -188,6 +267,22 @@ public abstract interface InspectorEntry extends FlexoConceptObject, Bindable {
 				return;
 			}
 			performSuperSetter(LABEL_KEY, label);
+		}
+
+		@Override
+		public WidgetType getWidget() {
+			WidgetType returned = (WidgetType) performSuperGetter(WIDGET_KEY);
+			if (returned == null && getType() != null) {
+				return getDefaultWidget();
+			}
+			return returned;
+		}
+
+		private WidgetType getDefaultWidget() {
+			if (getType() != null) {
+				return FlexoBehaviourParameterImpl.getAvailableWidgetTypes(getType()).get(0);
+			}
+			return WidgetType.TEXT_FIELD;
 		}
 
 		public boolean isSingleEntry() {
@@ -219,8 +314,8 @@ public abstract interface InspectorEntry extends FlexoConceptObject, Bindable {
 		@Override
 		public DataBinding<?> getData() {
 			if (data == null) {
-				data = new DataBinding<Object>(this, getType(), (getIsReadOnly() ? DataBinding.BindingDefinitionType.GET
-						: DataBinding.BindingDefinitionType.GET_SET));
+				data = new DataBinding<>(this, getType(),
+						(getIsReadOnly() ? DataBinding.BindingDefinitionType.GET : DataBinding.BindingDefinitionType.GET_SET));
 				data.setBindingName("data");
 			}
 			return data;
@@ -231,15 +326,15 @@ public abstract interface InspectorEntry extends FlexoConceptObject, Bindable {
 			if (data != null) {
 				data.setOwner(this);
 				data.setDeclaredType(getType());
-				data.setBindingDefinitionType(getIsReadOnly() ? DataBinding.BindingDefinitionType.GET
-						: DataBinding.BindingDefinitionType.GET_SET);
+				data.setBindingDefinitionType(
+						getIsReadOnly() ? DataBinding.BindingDefinitionType.GET : DataBinding.BindingDefinitionType.GET_SET);
 				data.setBindingName("data");
 			}
 			this.data = data;
 			notifiedBindingChanged(this.data);
 		}
 
-		@Override
+		/*@Override
 		public DataBinding<Boolean> getConditional() {
 			if (conditional == null) {
 				conditional = new DataBinding<Boolean>(this, Boolean.class, DataBinding.BindingDefinitionType.GET);
@@ -247,7 +342,7 @@ public abstract interface InspectorEntry extends FlexoConceptObject, Bindable {
 			}
 			return conditional;
 		}
-
+		
 		@Override
 		public void setConditional(DataBinding<Boolean> conditional) {
 			if (conditional != null) {
@@ -257,7 +352,123 @@ public abstract interface InspectorEntry extends FlexoConceptObject, Bindable {
 				conditional.setBindingName("conditional");
 			}
 			this.conditional = conditional;
+		}*/
+
+		@Override
+		public DataBinding<?> getContainer() {
+			if (container == null) {
+				container = new DataBinding<>(this, Object.class, BindingDefinitionType.GET);
+				container.setBindingName("container");
+			}
+			return container;
 		}
+
+		@Override
+		public void setContainer(DataBinding<?> container) {
+			if (container != null) {
+				container.setOwner(this);
+				container.setBindingName("container");
+				container.setDeclaredType(Object.class);
+				container.setBindingDefinitionType(BindingDefinitionType.GET);
+			}
+			this.container = container;
+		}
+
+		@Override
+		public Object getContainer(BindingEvaluationContext evaluationContext) {
+			if (getContainer().isValid()) {
+				try {
+					return getContainer().getBindingValue(evaluationContext);
+				} catch (TypeMismatchException e) {
+					e.printStackTrace();
+				} catch (NullReferenceException e) {
+					e.printStackTrace();
+				} catch (InvocationTargetException e) {
+					e.printStackTrace();
+				}
+			}
+			return null;
+		}
+
+		@Override
+		public DataBinding<List<?>> getList() {
+			if (list == null) {
+				list = new DataBinding<>(this, getListType(), BindingDefinitionType.GET);
+			}
+			return list;
+		}
+
+		@Override
+		public void setList(DataBinding<List<?>> list) {
+			if (list != null) {
+				list.setOwner(this);
+				list.setBindingName("list");
+				list.setDeclaredType(getListType());
+				list.setBindingDefinitionType(BindingDefinitionType.GET);
+			}
+			this.list = list;
+		}
+
+		private ParameterizedTypeImpl listType = null;
+
+		private Type getListType() {
+			if (listType == null) {
+				listType = new ParameterizedTypeImpl(List.class, getType());
+			}
+			return listType;
+		}
+
+		@Override
+		public Object getList(BindingEvaluationContext evaluationContext) {
+			if (getList().isValid()) {
+				try {
+					return getList().getBindingValue(evaluationContext);
+				} catch (TypeMismatchException e) {
+					e.printStackTrace();
+				} catch (NullReferenceException e) {
+					e.printStackTrace();
+				} catch (InvocationTargetException e) {
+					e.printStackTrace();
+				}
+			}
+			return null;
+		}
+
+		/*@Override
+		public DataBinding<?> getDefaultValue() {
+			if (defaultValue == null) {
+				defaultValue = new DataBinding<Object>(this, getType(), BindingDefinitionType.GET);
+				defaultValue.setBindingName("defaultValue");
+			}
+			return defaultValue;
+		}
+		
+		@Override
+		public void setDefaultValue(DataBinding<?> defaultValue) {
+			if (defaultValue != null) {
+				defaultValue.setOwner(this);
+				defaultValue.setBindingName("defaultValue");
+				defaultValue.setDeclaredType(getType());
+				defaultValue.setBindingDefinitionType(BindingDefinitionType.GET);
+			}
+			this.defaultValue = defaultValue;
+		}*/
+
+		/*@Override
+		public Object getDefaultValue(BindingEvaluationContext evaluationContext) {
+			if (getDefaultValue().isValid()) {
+				try {
+					return getDefaultValue().getBindingValue(evaluationContext);
+				} catch (TypeMismatchException e) {
+					e.printStackTrace();
+				} catch (NullReferenceException e) {
+					e.printStackTrace();
+				} catch (InvocationTargetException e) {
+					e.printStackTrace();
+				}
+			}
+			return null;
+		}*/
 
 		@Override
 		public InspectorEntryBindingModel getBindingModel() {
@@ -265,6 +476,50 @@ public abstract interface InspectorEntry extends FlexoConceptObject, Bindable {
 				bindingModel = new InspectorEntryBindingModel(this);
 			}
 			return bindingModel;
+		}
+
+		/**
+		 * Return a String encoding a {@link DataBinding} which should get access to represented data from the context beeing represented by
+		 * this
+		 * 
+		 * @return
+		 */
+		@Override
+		public String getWidgetDataAccess() {
+			return getData().toString();
+		}
+
+		/**
+		 * Return a String encoding a {@link DataBinding} which should get access to represented data definition (which is this object)
+		 * 
+		 * @return
+		 */
+		@Override
+		public String getWidgetDefinitionAccess() {
+			return "flexoConcept.inspector.getEntry(\"" + getName() + "\")";
+		}
+
+		/**
+		 * Return a String encoding a {@link DataBinding} which should get access to instance of FlexoConcept
+		 * 
+		 * @return
+		 */
+		@Override
+		public String getFlexoConceptInstanceAccess() {
+			return null;
+		}
+
+		/**
+		 * Depending of type of data to represent, return a list of objects which may be used to represented data
+		 * 
+		 * @return
+		 */
+		@Override
+		public List<?> getListOfObjects() {
+			if (getType() instanceof FlexoEnumType) {
+				return ((FlexoEnumType) getType()).getFlexoEnum().getInstances();
+			}
+			return null;
 		}
 
 	}

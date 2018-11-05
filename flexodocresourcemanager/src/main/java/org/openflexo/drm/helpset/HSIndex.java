@@ -72,14 +72,15 @@ public class HSIndex extends KVCFlexoObject {
 
 	public Vector<HSIndexEntry> getRootEntries() {
 		if (_rootEntries == null) {
-			_rootEntries = new Vector<HSIndexEntry>();
+			_rootEntries = new Vector<>();
 			for (DocItem next : _drc.getAllItems()) {
 				if (next.isIncluded(configuration)) {
 					if (next.getInheritanceParentItem() == null && !next.getIsEmbedded() && next.isPublished()) {
 						logger.fine("Generate index entry for " + next);
 						_rootEntries.add(new HSIndexEntry(next));
 					}
-				} else {
+				}
+				else {
 					logger.fine("Ignoring " + next);
 				}
 			}
@@ -89,7 +90,7 @@ public class HSIndex extends KVCFlexoObject {
 
 	public class HSIndexEntry extends KVCFlexoObject {
 		public DocItem docItem;
-		public Vector entryChilds;
+		public Vector<HSIndexEntry> entryChilds;
 		public String text;
 
 		public HSIndexEntry(DocItem docItem) {
@@ -99,9 +100,9 @@ public class HSIndex extends KVCFlexoObject {
 				text = docItem.getIdentifier();
 			}
 
-			entryChilds = new Vector();
-			for (Enumeration en = docItem.getInheritanceChildItems().elements(); en.hasMoreElements();) {
-				DocItem next = (DocItem) en.nextElement();
+			entryChilds = new Vector<>();
+			for (Enumeration<DocItem> en = docItem.getInheritanceChildItems().elements(); en.hasMoreElements();) {
+				DocItem next = en.nextElement();
 				if (next.isPublished()) {
 					entryChilds.add(new HSIndexEntry(next));
 				}
@@ -122,7 +123,7 @@ public class HSIndex extends KVCFlexoObject {
 	}
 
 	/*private static XMLMapping _indexMapping;
-
+	
 	public static XMLMapping getIndexMapping() {
 		if (_indexMapping == null) {
 			File hsIndexModelFile;

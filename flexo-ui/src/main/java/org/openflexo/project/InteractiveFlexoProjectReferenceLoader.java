@@ -43,17 +43,16 @@ import java.util.logging.Logger;
 
 import javax.swing.JFileChooser;
 
-import org.openflexo.ApplicationContext;
+import org.openflexo.InteractiveApplicationContext;
 import org.openflexo.components.ProjectChooserComponent;
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoProject;
-import org.openflexo.foundation.FlexoProject.FlexoProjectReferenceLoader;
 import org.openflexo.foundation.FlexoService;
 import org.openflexo.foundation.FlexoServiceImpl;
-import org.openflexo.foundation.resource.FileFlexoIODelegate;
-import org.openflexo.foundation.resource.FlexoProjectReference;
-import org.openflexo.foundation.resource.FlexoResource;
-import org.openflexo.foundation.task.FlexoTask.TaskStatus;
+import org.openflexo.foundation.project.FlexoProjectImpl.FlexoProjectReferenceLoader;
+import org.openflexo.foundation.project.FlexoProjectReference;
+import org.openflexo.foundation.project.FlexoProjectResource;
+import org.openflexo.foundation.resource.FileIODelegate;
 import org.openflexo.foundation.utils.ProjectInitializerException;
 import org.openflexo.foundation.utils.ProjectLoadingCancelledException;
 import org.openflexo.localization.FlexoLocalization;
@@ -69,21 +68,21 @@ public class InteractiveFlexoProjectReferenceLoader extends FlexoServiceImpl imp
 	}
 
 	@Override
-	public ApplicationContext getServiceManager() {
-		return (ApplicationContext) super.getServiceManager();
+	public InteractiveApplicationContext getServiceManager() {
+		return (InteractiveApplicationContext) super.getServiceManager();
 	}
 
 	@Override
-	public FlexoProject loadProject(FlexoProjectReference ref, boolean silentlyOnly) {
+	public FlexoProject<?> loadProject(FlexoProjectReference ref, boolean silentlyOnly) {
 		boolean retrievedFromResourceCenter = false;
 
-		FlexoResource<FlexoProject> retrievedResource = getServiceManager().getInformationSpace().getResource(ref.getURI(),
+		FlexoProjectResource retrievedResource = (FlexoProjectResource) getServiceManager().getResourceManager().getResource(ref.getURI(),
 				ref.getVersion(), FlexoProject.class);
 
 		File selectedFile = null;
 
-		if (retrievedResource.getFlexoIODelegate() instanceof FileFlexoIODelegate) {
-			selectedFile = ((FileFlexoIODelegate) (retrievedResource.getFlexoIODelegate())).getFile();
+		if (retrievedResource.getIODelegate() instanceof FileIODelegate) {
+			selectedFile = ((FileIODelegate) (retrievedResource.getIODelegate())).getFile();
 			retrievedFromResourceCenter = true;
 		}
 		ProjectChooserComponent projectChooser = null;
@@ -96,67 +95,83 @@ public class InteractiveFlexoProjectReferenceLoader extends FlexoServiceImpl imp
 					projectChooser = new ProjectChooserComponent(FlexoFrame.getActiveFrame(), getServiceManager()) {
 					};
 					projectChooser.setOpenMode();
-					projectChooser.setTitle(FlexoLocalization.localizedForKey("locate_project") + " " + ref.getName() + " "
-							+ ref.getVersion());
+					projectChooser.setTitle(FlexoLocalization.getMainLocalizer().localizedForKey("locate_project") + " " + ref.getURI());
 				}
 				int ret = projectChooser.showOpenDialog();
 				if (ret == JFileChooser.APPROVE_OPTION) {
 					selectedFile = projectChooser.getSelectedFile();
 					retrievedFromResourceCenter = false;
-				} else {
+				}
+				else {
 					return null;
 				}
 			}
-			boolean openedProject = getServiceManager().getProjectLoader().hasEditorForProjectDirectory(selectedFile);
+			/*boolean openedProject = getServiceManager().getProjectLoader().hasEditorForProjectDirectory(selectedFile);
 			if (!openedProject && silentlyOnly) {
 				return null;
+			}*/
+			FlexoEditor editor;
+			try {
+				editor = getServiceManager().getProjectLoader().loadProject(selectedFile, true);
+			} catch (ProjectLoadingCancelledException e) {
+				e.printStackTrace();
+				return null;
+			} catch (ProjectInitializerException e) {
+				e.printStackTrace();
+				return null;
 			}
-			FlexoEditor editor = null;
-			LoadProjectTask loadProject = getServiceManager().getProjectLoader().loadProject(selectedFile, true);
-			getServiceManager().getTaskManager().waitTask(loadProject);
+			/*getServiceManager().getTaskManager().waitTask(loadProject);
 			if (loadProject.getTaskStatus() == TaskStatus.FINISHED) {
 				editor = loadProject.getFlexoEditor();
-			} else if (loadProject.getTaskStatus() == TaskStatus.EXCEPTION_THROWN) {
+			}
+			else if (loadProject.getTaskStatus() == TaskStatus.EXCEPTION_THROWN) {
 				if (loadProject.getThrownException() instanceof ProjectLoadingCancelledException) {
 					return null;
-				} else if (loadProject.getThrownException() instanceof ProjectInitializerException) {
+				}
+				else if (loadProject.getThrownException() instanceof ProjectInitializerException) {
 					loadProject.getThrownException().printStackTrace();
 					if (!retrievedFromResourceCenter) {
-						FlexoController.notify(FlexoLocalization.localizedForKey("could_not_load_project_at") + " "
+						FlexoController.notify(FlexoLocalization.getMainLocalizer().localizedForKey("could_not_load_project_at") + " "
 								+ selectedFile.getAbsolutePath());
 						selectedFile = null;
 					}
 				}
-			}
-			FlexoProject project = editor.getProject();
+			}*/
+			FlexoProject<?> project = editor.getProject();
 			if (project.getProjectURI().equals(ref.getURI())) {
 				// Project URI do match
-				boolean versionEqual = project.getVersion() == null && ref.getVersion() == null || project.getVersion() != null
-						&& project.getVersion().equals(ref.getVersion());
+				boolean versionEqual = project.getProjectVersion() == null && ref.getVersion() == null
+						|| project.getProjectVersion() != null && project.getProjectVersion().equals(ref.getVersion());
 
 				if (versionEqual) {
 					return project;
-				} else {
-					boolean ok = FlexoController.confirm(FlexoLocalization.localizedForKey("project_version_do_not_match") + ". "
-							+ project.getVersion() + " " + FlexoLocalization.localizedForKey("was_found")
-							+ FlexoLocalization.localizedForKey("but") + " " + ref.getVersion() + " "
-							+ FlexoLocalization.localizedForKey("was_expected") + "\n"
-							+ FlexoLocalization.localizedForKey("would_you_like_to_switch_to_version:") + " " + project.getVersion());
+				}
+				else {
+					boolean ok = FlexoController
+							.confirm(FlexoLocalization.getMainLocalizer().localizedForKey("project_version_do_not_match") + ". "
+									+ project.getProjectVersion() + " " + FlexoLocalization.getMainLocalizer().localizedForKey("was_found")
+									+ FlexoLocalization.getMainLocalizer().localizedForKey("but") + " " + ref.getVersion() + " "
+									+ FlexoLocalization.getMainLocalizer().localizedForKey("was_expected") + "\n"
+									+ FlexoLocalization.getMainLocalizer().localizedForKey("would_you_like_to_switch_to_version:") + " "
+									+ project.getProjectVersion());
 					if (ok) {
 						return project;
-					} else if (!openedProject) {
-						getServiceManager().getProjectLoader().closeProject(project);
 					}
+					/*else if (!openedProject) {
+						getServiceManager().getProjectLoader().closeProject(project);
+					}*/
 				}
-			} else {
+			}
+			else {
 				if (retrievedFromResourceCenter) {
 					selectedFile = null;
 					continue;
 				}
-				FlexoController.notify(FlexoLocalization.localizedForKey("project_uri_do_not_match") + ".\n"
-						+ FlexoLocalization.localizedForKey("uri") + " " + project.getProjectURI() + " "
-						+ FlexoLocalization.localizedForKey("was_found") + "\n" + FlexoLocalization.localizedForKey("but") + " " + ref
-						+ " " + FlexoLocalization.localizedForKey("was_expected"));
+				FlexoController.notify(FlexoLocalization.getMainLocalizer().localizedForKey("project_uri_do_not_match") + ".\n"
+						+ FlexoLocalization.getMainLocalizer().localizedForKey("uri") + " " + project.getProjectURI() + " "
+						+ FlexoLocalization.getMainLocalizer().localizedForKey("was_found") + "\n"
+						+ FlexoLocalization.getMainLocalizer().localizedForKey("but") + " " + ref + " "
+						+ FlexoLocalization.getMainLocalizer().localizedForKey("was_expected"));
 			}
 			selectedFile = null;
 		}
@@ -168,7 +183,13 @@ public class InteractiveFlexoProjectReferenceLoader extends FlexoServiceImpl imp
 	}
 
 	@Override
+	public String getServiceName() {
+		return "FlexoProjectReferenceLoader";
+	}
+
+	@Override
 	public void initialize() {
+		status = Status.Started;
 	}
 
 }

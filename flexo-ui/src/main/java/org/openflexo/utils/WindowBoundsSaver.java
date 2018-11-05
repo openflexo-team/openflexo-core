@@ -62,11 +62,12 @@ public class WindowBoundsSaver implements ComponentListener {
 		this.controller = controller;
 		Rectangle bounds = null;
 		if (controller.getApplicationContext().getGeneralPreferences() != null) {
-			bounds = controller.getApplicationContext().getGeneralPreferences().getBoundForFrameWithID(id);
+			bounds = controller.getApplicationContext().getPresentationPreferences().getBoundForFrameWithID(id);
 		}
 		if (bounds == null) {
 			bounds = defaultBounds;
-		} else {
+		}
+		else {
 			boolean ok = false;
 			for (GraphicsDevice device : GraphicsEnvironment.getLocalGraphicsEnvironment().getScreenDevices()) {
 				if (device.getDefaultConfiguration().getBounds().contains(bounds.getLocation())) {
@@ -122,7 +123,7 @@ public class WindowBoundsSaver implements ComponentListener {
 			if (window.getBounds().y + window.getHeight() < 0) {
 				return;
 			}
-			controller.getApplicationContext().getGeneralPreferences().setBoundForFrameWithID(id, window.getBounds());
+			controller.getApplicationContext().getPresentationPreferences().setBoundForFrameWithID(id, window.getBounds());
 			controller.getApplicationContext().getPreferencesService().savePreferences();
 		} finally {
 			boundsSaver = null;

@@ -38,27 +38,29 @@
 
 package org.openflexo.fml.rt.controller.view;
 
-import org.openflexo.fib.model.listener.FIBMouseClickListener;
-import org.openflexo.fib.view.FIBView;
 import org.openflexo.fml.rt.controller.CommonFIB;
+import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.VirtualModelInstance;
+import org.openflexo.gina.model.listener.FIBMouseClickListener;
+import org.openflexo.gina.view.FIBView;
 import org.openflexo.view.FIBModuleView;
 import org.openflexo.view.ModuleView;
 import org.openflexo.view.controller.FlexoController;
 import org.openflexo.view.controller.model.FlexoPerspective;
 
 /**
- * This is the {@link ModuleView} representing a {@link VirtualModelInstance}
+ * This is the {@link ModuleView} representing a {@link FMLRTVirtualModelInstance}
  * 
  * @author sguerin
  * 
  */
-public class VirtualModelInstanceView extends FIBModuleView<VirtualModelInstance> implements FIBMouseClickListener {
+@SuppressWarnings("serial")
+public class VirtualModelInstanceView extends FIBModuleView<VirtualModelInstance<?, ?>> implements FIBMouseClickListener {
 
 	private final FlexoPerspective perspective;
 
-	public VirtualModelInstanceView(VirtualModelInstance vmInstance, FlexoController controller, FlexoPerspective perspective) {
-		super(vmInstance, controller, CommonFIB.VIRTUAL_MODEL_INSTANCE_VIEW_FIB);
+	public VirtualModelInstanceView(VirtualModelInstance<?, ?> vmInstance, FlexoController controller, FlexoPerspective perspective) {
+		super(vmInstance, controller, CommonFIB.VIRTUAL_MODEL_INSTANCE_VIEW_FIB, vmInstance.getTechnologyAdapter().getLocales());
 		this.perspective = perspective;
 	}
 
@@ -68,8 +70,8 @@ public class VirtualModelInstanceView extends FIBModuleView<VirtualModelInstance
 	}
 
 	@Override
-	public void mouseClicked(FIBView<?, ?, ?> view, int clickCount) {
-		System.out.println("mouseClicked with " + view + " and " + clickCount);
+	public void mouseClicked(FIBView<?, ?> view, int clickCount) {
+		// System.out.println("mouseClicked with " + view + " and " + clickCount);
 		/*if (data instanceof FIBTableDynamicModel && ((FIBTableDynamicModel) data).selected instanceof FlexoModelObject && clickCount == 2) {
 			FlexoObject o = (FlexoObject) ((FIBTableDynamicModel) data).selected;
 			if (o instanceof ViewPoint || o instanceof FlexoConcept || o instanceof ExampleDiagram || o instanceof DiagramPalette) {

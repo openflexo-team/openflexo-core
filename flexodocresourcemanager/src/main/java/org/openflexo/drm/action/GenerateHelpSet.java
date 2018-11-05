@@ -55,8 +55,7 @@ import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.FlexoObject.FlexoObjectImpl;
 import org.openflexo.foundation.action.FlexoAction;
-import org.openflexo.foundation.action.FlexoActionType;
-import org.openflexo.localization.FlexoLocalization;
+import org.openflexo.foundation.action.FlexoActionFactory;
 import org.openflexo.localization.Language;
 import org.openflexo.rm.FileResourceImpl;
 import org.openflexo.rm.ResourceLocator;
@@ -65,8 +64,8 @@ public class GenerateHelpSet extends FlexoAction<GenerateHelpSet, DocResourceCen
 
 	private static final Logger logger = Logger.getLogger(GenerateHelpSet.class.getPackage().getName());
 
-	public static FlexoActionType<GenerateHelpSet, DocResourceCenter, FlexoObject> actionType = new FlexoActionType<GenerateHelpSet, DocResourceCenter, FlexoObject>(
-			"generate_helpset", FlexoActionType.defaultGroup, FlexoActionType.NORMAL_ACTION_TYPE) {
+	public static FlexoActionFactory<GenerateHelpSet, DocResourceCenter, FlexoObject> actionType = new FlexoActionFactory<GenerateHelpSet, DocResourceCenter, FlexoObject>(
+			"generate_helpset", FlexoActionFactory.defaultGroup, FlexoActionFactory.NORMAL_ACTION_TYPE) {
 
 		/**
 		 * Factory method
@@ -103,8 +102,8 @@ public class GenerateHelpSet extends FlexoAction<GenerateHelpSet, DocResourceCen
 
 	protected GenerateHelpSet(DocResourceCenter focusedObject, Vector<FlexoObject> globalSelection, FlexoEditor editor) {
 		super(actionType, focusedObject, globalSelection, editor);
-		configurations = new Vector<HelpSetConfiguration>();
-		generatedHelpsets = new Hashtable<HelpSetConfiguration, DRMHelpSet>();
+		configurations = new Vector<>();
+		generatedHelpsets = new Hashtable<>();
 	}
 
 	/*
@@ -137,17 +136,18 @@ public class GenerateHelpSet extends FlexoAction<GenerateHelpSet, DocResourceCen
 	@Override
 	protected void doAction(Object context) {
 		logger.info("GenerateHelpSet");
-		makeFlexoProgress(FlexoLocalization.localizedForKey("generating_helpset"), configurations.size() + 2);
+		// makeFlexoProgress(FlexoLocalization.getMainLocalizer().localizedForKey("generating_helpset"), configurations.size() + 2);
 		getHelpsetDirectory().mkdirs();
 		for (HelpSetConfiguration config : configurations) {
 			DRMHelpSet helpSet = new DRMHelpSet(getFocusedObject(), getHelpsetDirectory(), getBaseName(), config);
 			logger.info("Generating " + helpSet.getLocalizedName());
-			setProgress(FlexoLocalization.localizedForKey("generating") + " " + helpSet.getHelpSetDirectory().getName());
-			helpSet.generate(getFlexoProgress());
+			// setProgress(FlexoLocalization.getMainLocalizer().localizedForKey("generating") + " " +
+			// helpSet.getHelpSetDirectory().getName());
+			helpSet.generate(null/*getFlexoProgress()*/);
 			generatedHelpsets.put(config, helpSet);
 		}
 		vectorOfGeneratedHelpset = null;
-		hideFlexoProgress();
+		// hideFlexoProgress();
 	}
 
 	private File _helpSetDirectory;
@@ -167,7 +167,7 @@ public class GenerateHelpSet extends FlexoAction<GenerateHelpSet, DocResourceCen
 
 	public Vector<DRMHelpSet> getVectorOfGeneratedHelpset() {
 		if (vectorOfGeneratedHelpset == null) {
-			vectorOfGeneratedHelpset = new Vector<DRMHelpSet>();
+			vectorOfGeneratedHelpset = new Vector<>();
 			vectorOfGeneratedHelpset.addAll(generatedHelpsets.values());
 			Collections.sort(vectorOfGeneratedHelpset, new Comparator<DRMHelpSet>() {
 				@Override

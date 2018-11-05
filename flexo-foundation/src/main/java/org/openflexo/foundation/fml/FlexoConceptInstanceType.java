@@ -42,8 +42,6 @@ import java.lang.reflect.Type;
 import java.util.logging.Logger;
 
 import org.openflexo.connie.type.CustomTypeFactory;
-import org.openflexo.fib.annotation.FIBPanel;
-import org.openflexo.foundation.fml.rt.FMLRTTechnologyAdapter;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.logging.FlexoLogger;
 import org.openflexo.toolbox.StringUtils;
@@ -59,6 +57,10 @@ public class FlexoConceptInstanceType implements TechnologySpecificType<FMLTechn
 	protected FlexoConcept flexoConcept;
 	protected String conceptURI;
 
+	// factory stored for unresolved types
+	// should be nullified as quickly as possible (nullified when resolved)
+	protected CustomTypeFactory<?> customTypeFactory;
+
 	protected static final Logger logger = FlexoLogger.getLogger(FlexoConceptInstanceType.class.getPackage().getName());
 
 	public static FlexoConceptInstanceType UNDEFINED_FLEXO_CONCEPT_INSTANCE_TYPE = new FlexoConceptInstanceType((FlexoConcept) null);
@@ -69,10 +71,14 @@ public class FlexoConceptInstanceType implements TechnologySpecificType<FMLTechn
 	 * @author sylvain
 	 * 
 	 */
-	@FIBPanel("Fib/CustomType/FlexoConceptInstanceTypeFactory.fib")
 	public static class FlexoConceptInstanceTypeFactory extends TechnologyAdapterTypeFactory<FlexoConceptInstanceType> {
 
-		public FlexoConceptInstanceTypeFactory(FMLRTTechnologyAdapter technologyAdapter) {
+		@Override
+		public Class<FlexoConceptInstanceType> getCustomType() {
+			return FlexoConceptInstanceType.class;
+		}
+
+		public FlexoConceptInstanceTypeFactory(FMLTechnologyAdapter technologyAdapter) {
 			super(technologyAdapter);
 		}
 
@@ -82,18 +88,22 @@ public class FlexoConceptInstanceType implements TechnologySpecificType<FMLTechn
 			FlexoConcept concept = null;
 
 			if (configuration != null) {
-				concept = getTechnologyAdapter().getTechnologyAdapterService().getServiceManager().getViewPointLibrary()
-						.getFlexoConcept(configuration);
-			} else {
+				concept = getTechnologyAdapter().getTechnologyAdapterService().getServiceManager().getVirtualModelLibrary()
+						.getFlexoConcept(configuration, false);
+				// Do not load virtual models for that reason, resolving will be performed later
+
+			}
+			else {
 				concept = getFlexoConceptType();
 			}
 
 			if (concept != null) {
 				return getFlexoConceptInstanceType(concept);
-			} else {
+			}
+			else {
 				// We don't return UNDEFINED_FLEXO_CONCEPT_INSTANCE_TYPE because we want here a mutable type
 				// if FlexoConcept might be resolved later
-				return new FlexoConceptInstanceType(configuration);
+				return new FlexoConceptInstanceType(configuration, this);
 			}
 		}
 
@@ -128,11 +138,15 @@ public class FlexoConceptInstanceType implements TechnologySpecificType<FMLTechn
 		this.flexoConcept = anFlexoConcept;
 	}
 
-	protected FlexoConceptInstanceType(String flexoConceptURI) {
+	protected FlexoConceptInstanceType(String flexoConceptURI, CustomTypeFactory<?> customTypeFactory) {
 		this.conceptURI = flexoConceptURI;
+		this.customTypeFactory = customTypeFactory;
 	}
 
 	public FlexoConcept getFlexoConcept() {
+		if (!isResolved() && customTypeFactory != null) {
+			resolve(customTypeFactory);
+		}
 		return flexoConcept;
 	}
 
@@ -160,8 +174,16 @@ public class FlexoConceptInstanceType implements TechnologySpecificType<FMLTechn
 	}
 
 	@Override
+	public boolean isOfType(Object object, boolean permissive) {
+		if (!(object instanceof FlexoConceptInstance)) {
+			return false;
+		}
+		return getFlexoConcept().isAssignableFrom(((FlexoConceptInstance) object).getFlexoConcept());
+	}
+
+	@Override
 	public String simpleRepresentation() {
-		return getClass().getSimpleName() + "<" + (flexoConcept != null ? flexoConcept.getName() : "") + ">";
+		return getClass().getSimpleName() + "<" + (flexoConcept != null ? flexoConcept.getName() : "NotFound:" + conceptURI) + ">";
 	}
 
 	@Override
@@ -186,11 +208,16 @@ public class FlexoConceptInstanceType implements TechnologySpecificType<FMLTechn
 
 	@Override
 	public void resolve(CustomTypeFactory<?> factory) {
+		// System.out.println("******* resolve " + getSerializationRepresentation() + " with " + factory);
 		if (factory instanceof FlexoConceptInstanceTypeFactory) {
 			FlexoConcept concept = ((FlexoConceptInstanceTypeFactory) factory).getTechnologyAdapter().getTechnologyAdapterService()
-					.getServiceManager().getViewPointLibrary().getFlexoConcept(conceptURI);
+					.getServiceManager().getVirtualModelLibrary().getFlexoConcept(conceptURI);
 			if (concept != null) {
 				flexoConcept = concept;
+				this.customTypeFactory = null;
+			}
+			else {
+				this.customTypeFactory = factory;
 			}
 		}
 	}
@@ -220,7 +247,8 @@ public class FlexoConceptInstanceType implements TechnologySpecificType<FMLTechn
 		if (flexoConcept == null) {
 			if (other.flexoConcept != null)
 				return false;
-		} else if (!flexoConcept.equals(other.flexoConcept)) {
+		}
+		else if (!flexoConcept.equals(other.flexoConcept)) {
 			return false;
 		}
 		return true;
@@ -229,7 +257,8 @@ public class FlexoConceptInstanceType implements TechnologySpecificType<FMLTechn
 	public static FlexoConceptInstanceType getFlexoConceptInstanceType(FlexoConcept anFlexoConcept) {
 		if (anFlexoConcept != null) {
 			return anFlexoConcept.getInstanceType();
-		} else {
+		}
+		else {
 			// logger.warning("Trying to get a InstanceType for a null FlexoConcept");
 			return UNDEFINED_FLEXO_CONCEPT_INSTANCE_TYPE;
 		}

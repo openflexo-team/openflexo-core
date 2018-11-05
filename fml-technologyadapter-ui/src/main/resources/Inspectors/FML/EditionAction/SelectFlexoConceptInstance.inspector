@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Panel className="org.openflexo.fib.utils.FIBInspector" layout="border"
+<Panel className="org.openflexo.gina.utils.FIBInspector" layout="border"
 	titleFont="SansSerif,0,12" darkLevel="0"
 	dataClassName="org.openflexo.foundation.fml.rt.editionaction.SelectFlexoConceptInstance"
 	controllerClassName="org.openflexo.fml.controller.FMLFIBInspectorController"
@@ -9,65 +9,27 @@
 			darkLevel="0" index="0" font="SansSerif,0,11" useScrollBar="true"
 			horizontalScrollbarPolicy="HORIZONTAL_SCROLLBAR_AS_NEEDED"
 			verticalScrollbarPolicy="VERTICAL_SCROLLBAR_AS_NEEDED" name="BasicTab">
-			<Label label="virtual_model_instance" align="right" index="6"
-				data=""
+			<Label label="container" align="right" index="8"
 				constraints="twocols(expandHorizontally=true;expandVertically=false;index=6;insetsBottom=0;insetsLeft=2;insetsRight=4;insetsTop=5;location=left)"
-				visible="" format="" icon="" tooltip="" localize="true" enable=""
-				clickAction="" doubleClickAction="" rightClickAction=""
-				enterPressedAction="" valueChangedAction="" valueTransform=""
-				valueValidator="" />
-			<Custom componentClassName="org.openflexo.fib.swing.utils.BindingSelector"
-				format="" icon="" tooltip="" localize="true" enable=""
-				manageDynamicModel="true" opaque="false" clickAction=""
-				doubleClickAction="" rightClickAction="" enterPressedAction=""
-				valueChangedAction="" valueTransform="" valueValidator="" index="7"
-				data="data.virtualModelInstance"
-				constraints="twocols(expandHorizontally=true;expandVertically=false;index=7;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)"
-				visible="">
+				localize="true" />
+			<Custom componentClassName="org.openflexo.gina.swing.utils.BindingSelector"
+				localize="true" manageDynamicModel="true" opaque="false" index="9"
+				data="data.container"
+				constraints="twocols(expandHorizontally=true;expandVertically=false;index=7;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)">
 				<Assignment variable="component.bindable" value="data" />
 			</Custom>
-			<Label label="flexo_concept" index="8"
+			<Label label="flexo_concept" index="10"
 				constraints="twocols(anchor=east;expandHorizontally=false;expandVertically=false;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=8;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=5;location=left;padX=0;padY=0;weightX=0.0;weightY=0.0)"
 				localize="true" />
 			<Custom componentClassName="org.openflexo.fml.controller.widget.FIBFlexoConceptSelector"
 				localize="true" manageDynamicModel="true" name="AddFlexoConceptActionPanel"
-				index="9" data="data.flexoConceptType"
+				index="11" data="data.flexoConceptType"
 				constraints="twocols(anchor=west;expandHorizontally=true;expandVertically=false;fill=horizontal;gridHeight=1;gridWidth=0;gridX=-1;gridY=-1;index=9;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right;padX=0;padY=0;weightX=0.0;weightY=0.0)"
 				opaque="false" minWidth="200" minHeight="25">
-				<Assignment variable="component.viewPointLibrary" value="data.viewPointLibrary" />
-				<Assignment variable="component.viewPoint" value="data.viewPoint" />
+				<Assignment variable="component.virtualModelLibrary" value="data.virtualModelLibrary" />
+				<Assignment variable="component.virtualModel" value="data.addressedVirtualModel" />
 				<Dependancy componentName="SelectFlexoConceptDropDown" />
 			</Custom>
-			<Label label="conditions" index="10"
-				constraints="twocols(expandHorizontally=false;expandVertically=false;index=10;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=5;location=left)"
-				localize="true" />
-			<Table
-				iteratorClassName="org.openflexo.foundation.fml.editionaction.FetchRequestCondition"
-				visibleRowCount="4" rowHeight="18" autoSelectFirstRow="false"
-				createNewRowOnClick="false" boundToSelectionManager="false"
-				showFooter="true" selectionMode="MultipleIntervalSelection"
-				textSelectionColor="255,255,255" textNonSelectionColor="0,0,0"
-				backgroundSelectionColor="26,96,206"
-				backgroundSecondarySelectionColor="173,215,255"
-				backgroundNonSelectionColor="255,255,255" localize="true"
-				manageDynamicModel="true" name="ConditionsTable" index="11"
-				data="data.conditions"
-				constraints="twocols(expandHorizontally=true;expandVertically=true;index=11;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)"
-				opaque="false">
-				<IconColumn data="controller.iconForObject(iterator)"
-					title="icon" columnWidth="30" resizable="false" displayTitle="false"
-					name="icon" />
-				<CustomColumn componentClassName="org.openflexo.fib.swing.utils.BindingSelector"
-					customRendering="false" disableTerminateEditOnFocusLost="false"
-					data="iterator.condition" format="object.toString" title="condition"
-					columnWidth="80" resizable="true" displayTitle="true">
-					<ColumnAssignment variable="component.bindable"
-						value="iterator" />
-				</CustomColumn>
-				<AddAction method="data.createCondition" name="add_condition" />
-				<RemoveAction method="data.deleteCondition(selected)"
-					name="remove_condition" />
-			</Table>
 		</Tab>
 	</TabPanel>
 	<LocalizedDictionary>

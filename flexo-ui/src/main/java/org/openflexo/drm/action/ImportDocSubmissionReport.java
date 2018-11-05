@@ -51,30 +51,30 @@ import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.FlexoObject.FlexoObjectImpl;
 import org.openflexo.foundation.action.FlexoAction;
-import org.openflexo.foundation.action.FlexoActionType;
+import org.openflexo.foundation.action.FlexoActionFactory;
 
 public class ImportDocSubmissionReport extends FlexoAction<ImportDocSubmissionReport, FlexoObject, FlexoObject> {
 
 	private static final Logger logger = Logger.getLogger(ImportDocSubmissionReport.class.getPackage().getName());
 
-	public static FlexoActionType actionType = new FlexoActionType("import_doc_submission_report", FlexoActionType.defaultGroup,
-			FlexoActionType.NORMAL_ACTION_TYPE) {
+	public static FlexoActionFactory<ImportDocSubmissionReport, FlexoObject, FlexoObject> actionType = new FlexoActionFactory<ImportDocSubmissionReport, FlexoObject, FlexoObject>(
+			"import_doc_submission_report", FlexoActionFactory.defaultGroup, FlexoActionFactory.NORMAL_ACTION_TYPE) {
 
 		/**
 		 * Factory method
 		 */
 		@Override
-		public FlexoAction makeNewAction(FlexoObject focusedObject, Vector globalSelection, FlexoEditor editor) {
+		public ImportDocSubmissionReport makeNewAction(FlexoObject focusedObject, Vector<FlexoObject> globalSelection, FlexoEditor editor) {
 			return new ImportDocSubmissionReport(focusedObject, globalSelection, editor);
 		}
 
 		@Override
-		public boolean isVisibleForSelection(FlexoObject object, Vector globalSelection) {
+		public boolean isVisibleForSelection(FlexoObject object, Vector<FlexoObject> globalSelection) {
 			return isEnabledForSelection(object, globalSelection);
 		}
 
 		@Override
-		public boolean isEnabledForSelection(FlexoObject object, Vector globalSelection) {
+		public boolean isEnabledForSelection(FlexoObject object, Vector<FlexoObject> globalSelection) {
 			return object != null && object instanceof DocItemFolder && ((DocItemFolder) object).isRootFolder();
 		}
 
@@ -84,12 +84,12 @@ public class ImportDocSubmissionReport extends FlexoAction<ImportDocSubmissionRe
 		FlexoObjectImpl.addActionForClass(actionType, DocItemFolder.class);
 	}
 
-	ImportDocSubmissionReport(FlexoObject focusedObject, Vector globalSelection, FlexoEditor editor) {
+	private ImportDocSubmissionReport(FlexoObject focusedObject, Vector<FlexoObject> globalSelection, FlexoEditor editor) {
 		super(actionType, focusedObject, globalSelection, editor);
 	}
 
 	private File _docSubmissionReportFile;
-	private Vector _actionsToImport; // null if all actions must be imported
+	private Vector<?> _actionsToImport; // null if all actions must be imported
 
 	@Override
 	protected void doAction(Object context) {
@@ -122,11 +122,11 @@ public class ImportDocSubmissionReport extends FlexoAction<ImportDocSubmissionRe
 		return _docSubmissionReport;
 	}
 
-	public Vector getActionsToImport() {
+	public Vector<?> getActionsToImport() {
 		return _actionsToImport;
 	}
 
-	public void setActionsToImport(Vector actionsToImport) {
+	public void setActionsToImport(Vector<?> actionsToImport) {
 		_actionsToImport = actionsToImport;
 	}
 

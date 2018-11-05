@@ -44,45 +44,47 @@ import java.util.logging.Logger;
 
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoObject.FlexoObjectImpl;
-import org.openflexo.foundation.action.FlexoActionType;
+import org.openflexo.foundation.action.FlexoActionFactory;
 import org.openflexo.foundation.action.NotImplementedException;
-import org.openflexo.foundation.fml.AbstractVirtualModel;
 import org.openflexo.foundation.fml.FMLModelFactory;
 import org.openflexo.foundation.fml.FMLObject;
 import org.openflexo.foundation.fml.FlexoConcept;
+import org.openflexo.foundation.fml.FlexoConceptObject;
 import org.openflexo.foundation.fml.InconsistentFlexoConceptHierarchyException;
+import org.openflexo.foundation.fml.InnerConceptsFacet;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.toolbox.StringUtils;
 
-public class CreateFlexoConcept extends AbstractCreateFlexoConcept<CreateFlexoConcept, AbstractVirtualModel<?>, FMLObject> {
+public class CreateFlexoConcept extends AbstractCreateFlexoConcept<CreateFlexoConcept, FlexoConceptObject, FMLObject> {
 
 	private static final Logger logger = Logger.getLogger(CreateFlexoConcept.class.getPackage().getName());
 
-	public static FlexoActionType<CreateFlexoConcept, AbstractVirtualModel<?>, FMLObject> actionType = new FlexoActionType<CreateFlexoConcept, AbstractVirtualModel<?>, FMLObject>(
-			"add_new_flexo_concept", FlexoActionType.newMenu, FlexoActionType.defaultGroup, FlexoActionType.ADD_ACTION_TYPE) {
+	public static FlexoActionFactory<CreateFlexoConcept, FlexoConceptObject, FMLObject> actionType = new FlexoActionFactory<CreateFlexoConcept, FlexoConceptObject, FMLObject>(
+			"flexo_concept", FlexoActionFactory.newMenu, FlexoActionFactory.defaultGroup, FlexoActionFactory.ADD_ACTION_TYPE) {
 
 		/**
 		 * Factory method
 		 */
 		@Override
-		public CreateFlexoConcept makeNewAction(AbstractVirtualModel<?> focusedObject, Vector<FMLObject> globalSelection, FlexoEditor editor) {
+		public CreateFlexoConcept makeNewAction(FlexoConceptObject focusedObject, Vector<FMLObject> globalSelection, FlexoEditor editor) {
 			return new CreateFlexoConcept(focusedObject, globalSelection, editor);
 		}
 
 		@Override
-		public boolean isVisibleForSelection(AbstractVirtualModel<?> object, Vector<FMLObject> globalSelection) {
+		public boolean isVisibleForSelection(FlexoConceptObject object, Vector<FMLObject> globalSelection) {
 			return object != null;
 		}
 
 		@Override
-		public boolean isEnabledForSelection(AbstractVirtualModel<?> object, Vector<FMLObject> globalSelection) {
+		public boolean isEnabledForSelection(FlexoConceptObject object, Vector<FMLObject> globalSelection) {
 			return object != null;
 		}
 
 	};
 
 	static {
-		FlexoObjectImpl.addActionForClass(CreateFlexoConcept.actionType, VirtualModel.class);
+		FlexoObjectImpl.addActionForClass(CreateFlexoConcept.actionType, FlexoConcept.class);
+		FlexoObjectImpl.addActionForClass(CreateFlexoConcept.actionType, InnerConceptsFacet.class);
 	}
 
 	private String newFlexoConceptName;
@@ -91,22 +93,46 @@ public class CreateFlexoConcept extends AbstractCreateFlexoConcept<CreateFlexoCo
 
 	public boolean switchNewlyCreatedFlexoConcept = true;
 
-	CreateFlexoConcept(AbstractVirtualModel<?> focusedObject, Vector<FMLObject> globalSelection, FlexoEditor editor) {
+	private CreateFlexoConcept(FlexoConceptObject focusedObject, Vector<FMLObject> globalSelection, FlexoEditor editor) {
 		super(actionType, focusedObject, globalSelection, editor);
 	}
 
 	@Override
-	protected void doAction(Object context) throws NotImplementedException, InvalidParameterException,
-			InconsistentFlexoConceptHierarchyException {
+	protected void doAction(Object context)
+			throws NotImplementedException, InvalidParameterException, InconsistentFlexoConceptHierarchyException {
 
 		FMLModelFactory factory = getFocusedObject().getFMLModelFactory();
 
-		newFlexoConcept = factory.newFlexoConcept();
+		if (getSpecializedFlexoConceptClass() != null) {
+			newFlexoConcept = factory.newInstance(getSpecializedFlexoConceptClass());
+		}
+		else {
+			newFlexoConcept = factory.newFlexoConcept();
+		}
 		newFlexoConcept.setName(getNewFlexoConceptName());
+		newFlexoConcept.setDescription(getNewFlexoConceptDescription());
+
+		// Unused FlexoConcept addressedConcept =
+		// getFocusedObject().getFlexoConcept();
+		VirtualModel virtualModel = getFocusedObject().getDeclaringVirtualModel();
+
+		virtualModel.addToFlexoConcepts(newFlexoConcept);
+
+		if (getContainerFlexoConcept() != null) {
+			if (getContainerFlexoConcept() instanceof VirtualModel) {
+				// nothing to do
+			}
+			else {
+				newFlexoConcept.setContainerFlexoConcept(getContainerFlexoConcept());
+			}
+		}
 
 		performSetParentConcepts();
+		performCreateProperties();
+		performCreateBehaviours();
+		performCreateInspectors();
+		performPostProcessings();
 
-		getFocusedObject().addToFlexoConcepts(newFlexoConcept);
 	}
 
 	@Override
@@ -144,10 +170,44 @@ public class CreateFlexoConcept extends AbstractCreateFlexoConcept<CreateFlexoCo
 	public boolean isValid() {
 		if (StringUtils.isEmpty(newFlexoConceptName)) {
 			return false;
-		} else if (getFocusedObject() instanceof VirtualModel && getFocusedObject().getFlexoConcept(newFlexoConceptName) != null) {
+		}
+		else if (getFocusedObject().getDeclaringVirtualModel().getFlexoConcept(newFlexoConceptName) != null) {
 			return false;
 		}
 		return true;
+	}
+
+	private FlexoConcept containerFlexoConcept;
+
+	public FlexoConcept getContainerFlexoConcept() {
+		if (containerFlexoConcept == null && getFocusedObject().getFlexoConcept() != null
+				&& !(getFocusedObject().getFlexoConcept() instanceof VirtualModel)) {
+			return getFocusedObject().getFlexoConcept();
+		}
+		return containerFlexoConcept;
+	}
+
+	public void setContainerFlexoConcept(FlexoConcept containerFlexoConcept) {
+		if (containerFlexoConcept != this.containerFlexoConcept) {
+			FlexoConcept oldValue = this.containerFlexoConcept;
+			this.containerFlexoConcept = containerFlexoConcept;
+			getPropertyChangeSupport().firePropertyChange("containerFlexoConcept", oldValue, containerFlexoConcept);
+		}
+	}
+
+	private Class<? extends FlexoConcept> specializedFlexoConceptClass;
+
+	public Class<? extends FlexoConcept> getSpecializedFlexoConceptClass() {
+		return specializedFlexoConceptClass;
+	}
+
+	public void setSpecializedFlexoConceptClass(Class<? extends FlexoConcept> specializedFlexoConceptClass) {
+		if ((specializedFlexoConceptClass == null && this.specializedFlexoConceptClass != null)
+				|| (specializedFlexoConceptClass != null && !specializedFlexoConceptClass.equals(this.specializedFlexoConceptClass))) {
+			Class<? extends FlexoConcept> oldValue = this.specializedFlexoConceptClass;
+			this.specializedFlexoConceptClass = specializedFlexoConceptClass;
+			getPropertyChangeSupport().firePropertyChange("specializedFlexoConceptClass", oldValue, specializedFlexoConceptClass);
+		}
 	}
 
 	@Override

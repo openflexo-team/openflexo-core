@@ -44,8 +44,7 @@ import org.openflexo.view.controller.FlexoController;
 import org.openflexo.view.controller.model.FlexoPerspective;
 
 /**
- * This is the module view representing a standard FlexoConcept (an FlexoConcept which is not a VirtualModel, nor part of a
- * DiagramSpecification)<br>
+ * This is the module view representing a standard FlexoConcept
  * 
  * @author sguerin
  * 

@@ -1,0 +1,15 @@
+dependencies {
+  // openflexo dep
+  compile project(':flexo-foundation')
+  compile project(':flexo-ui')
+  compile project(':flexo-ontology')
+  compile project(':flexo-ontology-ui')
+  // external dep
+
+  // testing dep
+  testCompile testUtils()
+  testCompile ginaTest()
+  testCompile project(':flexo-ui-test')
+  testCompile project(':flexo-ontology-ui')
+  testCompile project(':flexo-test-resources')
+}

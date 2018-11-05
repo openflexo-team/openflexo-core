@@ -38,11 +38,14 @@
 
 package org.openflexo.foundation.fml;
 
+import java.util.Collection;
 import java.util.List;
 
+import org.openflexo.connie.Bindable;
 import org.openflexo.connie.BindingModel;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
+import org.openflexo.model.validation.Validable;
 
 @ModelEntity
 @ImplementationClass(FlexoConceptBehaviouralFacet.FlexoConceptBehaviouralFacetImpl.class)
@@ -66,7 +69,12 @@ public interface FlexoConceptBehaviouralFacet extends FlexoConceptObject, FlexoF
 
 		@Override
 		public void setFlexoConcept(FlexoConcept flexoConcept) {
+			FlexoConcept oldValue = this.flexoConcept;
+			BindingModel oldBM = getFlexoConcept() != null ? getFlexoConcept().getBindingModel() : null;
 			this.flexoConcept = flexoConcept;
+			BindingModel newBM = getFlexoConcept() != null ? getFlexoConcept().getBindingModel() : null;
+			getPropertyChangeSupport().firePropertyChange(Bindable.BINDING_MODEL_PROPERTY, oldBM, newBM);
+			getPropertyChangeSupport().firePropertyChange("flexoConcept", oldValue, flexoConcept);
 		}
 
 		@Override
@@ -86,11 +94,17 @@ public interface FlexoConceptBehaviouralFacet extends FlexoConceptObject, FlexoF
 
 		@Override
 		public List<FlexoBehaviour> getBehaviours() {
-			return getFlexoConcept().getFlexoBehaviours();
+			return getFlexoConcept().getDeclaredFlexoBehaviours();
 		}
 
 		protected void notifiedBehavioursChanged(FlexoBehaviour oldValue, FlexoBehaviour newValue) {
 			getPropertyChangeSupport().firePropertyChange("behaviours", oldValue, newValue);
 		}
+
+		@Override
+		public Collection<? extends Validable> getEmbeddedValidableObjects() {
+			return getBehaviours();
+		}
+
 	}
 }

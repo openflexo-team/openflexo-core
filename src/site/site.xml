@@ -1,32 +1,57 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 
-<project name="Maven" xmlns="http://maven.apache.org/DECORATION/1.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/DECORATION/1.0.0 http://maven.apache.org/xsd/decoration-1.0.0.xsd">
-   
-  <bannerLeft>
-	<name>Openflexo Core</name>
-	<src>${core.logo}</src>
-	<href>https://openflexo.org/tiki/OpenflexoCore</href>
-  </bannerLeft> 
-  <bannerRight>
-    <name>Openflexo</name>
-    <src>${organization.logo}</src>
-    <href>http://openflexo.org/</href>
-  </bannerRight>
-  <skin>
-    <groupId>org.openflexo</groupId>
-    <artifactId>openflexo-skin</artifactId>
-    <version>1.2-SNAPSHOT</version>
-  </skin>
+<project name="Maven" xmlns="http://maven.apache.org/DECORATION/1.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/DECORATION/1.0.0 http://maven.apache.org/xsd/decoration-1.0.0.xsd">
 
-  <body>
-    <links>
-      <item name="Maven 2" href="http://maven.apache.org/maven2/"/>
-    </links>
+	<bannerLeft>
+		<name>Openflexo Core</name>
+		<src>${core.logo}</src>
+		<href>https://openflexo.org/tiki/OpenflexoCore</href>
+	</bannerLeft>
+	<bannerRight>
+		<name>Openflexo</name>
+		<src>${organization.logo}</src>
+		<href>http://openflexo.org/</href>
+	</bannerRight>
+	<skin>
+		<groupId>org.openflexo</groupId>
+		<artifactId>openflexo-skin</artifactId>
+		<version>1.3-SNAPSHOT</version>
+	</skin>
 
-    <menu ref="parent" />
-    <menu ref="modules" />
-    <menu ref="reports" />
-<!--    <menu ref="plugins" /> -->
-  </body>
+	<custom>
+		<openflexo-skin>
+			<sideMenus>true</sideMenus>
+			<displayBreadCrumbs>true</displayBreadCrumbs>
+			<localMenu>/inc/html/developersMenu.html</localMenu>
+			<includeVersionLinks>true</includeVersionLinks>
+		</openflexo-skin>
+	</custom>
+
+	<body>
+
+		<menu name="Openflexo-core">
+			<item name="Home" href="index.html" />
+			<item name="Model layer" href="ModelLayer.html">
+				<item name="FlexoFoundation" href="flexo-foundation/index.html" />
+				<item name="FML-parser" href="fml-parser/index.html" />
+				<item name="FlexoOntology" href="flexo-ontology/index.html" />
+				<item name="FlexoDocumentation" href="flexo-documentation/index.html" />
+			</item>
+			<item name="UI layer" href="UILayer.html">
+			<item name="Flexo-UI" href="flexo-ui/index.html" />
+			<item name="FML-technology-adapter-ui" href="fml-technology-adapter-ui/index.html" />
+			<item name="FML@rt-technology-adapter-ui" href="fml-rt-technology-adapter-ui/index.html" />
+			<item name="FlexoOntology-UI" href="flexo-ontology-ui/index.html" />
+			<item name="FlexoDocumentation-UI" href="flexo-documentation-ui/index.html" />
+			</item>
+			<item name="FAQ" href="faq.html" />
+		</menu>
+
+
+		<menu ref="modules" />
+		<menu ref="reports" />
+	</body>
+
 </project>

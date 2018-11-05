@@ -42,11 +42,10 @@ import java.util.logging.Logger;
 
 import org.openflexo.components.widget.FIBFlexoObjectSelector;
 import org.openflexo.foundation.FlexoObject;
-import org.openflexo.foundation.fml.ViewPointLibrary;
-import org.openflexo.foundation.fml.rm.ViewPointResource;
+import org.openflexo.foundation.fml.VirtualModelLibrary;
 import org.openflexo.foundation.fml.rm.VirtualModelResource;
-import org.openflexo.rm.ResourceLocator;
 import org.openflexo.rm.Resource;
+import org.openflexo.rm.ResourceLocator;
 
 /**
  * Widget allowing to select a VirtualModel
@@ -68,7 +67,7 @@ public class FIBVirtualModelSelector extends FIBFlexoObjectSelector<VirtualModel
 	@Override
 	public void delete() {
 		super.delete();
-		viewPointLibrary = null;
+		virtualModelLibrary = null;
 	}
 
 	@Override
@@ -84,39 +83,43 @@ public class FIBVirtualModelSelector extends FIBFlexoObjectSelector<VirtualModel
 	@Override
 	public String renderedString(VirtualModelResource editedObject) {
 		if (editedObject != null) {
-			return editedObject.getName();
+			return editedObject.getDisplayName();
 		}
 		return "";
 	}
 
-	private ViewPointLibrary viewPointLibrary;
+	private VirtualModelLibrary virtualModelLibrary;
 
-	public ViewPointLibrary getViewPointLibrary() {
-		return viewPointLibrary;
+	public VirtualModelLibrary getVirtualModelLibrary() {
+		return virtualModelLibrary;
 	}
 
-	@CustomComponentParameter(name = "viewPointLibrary", type = CustomComponentParameter.Type.MANDATORY)
-	public void setViewPointLibrary(ViewPointLibrary viewPointLibrary) {
-		this.viewPointLibrary = viewPointLibrary;
+	@CustomComponentParameter(name = "virtualModelLibrary", type = CustomComponentParameter.Type.MANDATORY)
+	public void setVirtualModelLibrary(VirtualModelLibrary virtualModelLibrary) {
+		this.virtualModelLibrary = virtualModelLibrary;
 	}
 
-	private ViewPointResource viewPoint;
+	private VirtualModelResource containedVirtualModel;
 
-	public ViewPointResource getViewPoint() {
-		return viewPoint;
+	public VirtualModelResource getContainerVirtualModel() {
+		return containedVirtualModel;
 	}
 
-	@CustomComponentParameter(name = "viewPoint", type = CustomComponentParameter.Type.OPTIONAL)
-	public void setViewPoint(ViewPointResource viewPoint) {
-		System.out.println("Setting viewpoint with " + viewPoint);
-		this.viewPoint = viewPoint;
+	@CustomComponentParameter(name = "containerVirtualModel", type = CustomComponentParameter.Type.OPTIONAL)
+	public void setContainerVirtualModel(VirtualModelResource viewPoint) {
+		if (this.containedVirtualModel != viewPoint) {
+			FlexoObject oldRoot = getRootObject();
+			this.containedVirtualModel = viewPoint;
+			getPropertyChangeSupport().firePropertyChange("rootObject", oldRoot, getRootObject());
+		}
 	}
 
 	public FlexoObject getRootObject() {
-		if (getViewPoint() != null) {
-			return getViewPoint();
-		} else {
-			return getViewPointLibrary();
+		if (getContainerVirtualModel() != null) {
+			return getContainerVirtualModel();
+		}
+		else {
+			return getVirtualModelLibrary();
 		}
 	}
 
@@ -133,12 +136,12 @@ public class FIBVirtualModelSelector extends FIBFlexoObjectSelector<VirtualModel
 				selector.setViewPointLibrary(testApplicationContext.getViewPointLibrary());
 				return makeArray(selector);
 			}
-
+	
 			@Override
 			public File getFIBFile() {
 				return FIB_FILE;
 			}
-
+	
 			@Override
 			public FIBController makeNewController(FIBComponent component) {
 				return new FlexoFIBController(component);

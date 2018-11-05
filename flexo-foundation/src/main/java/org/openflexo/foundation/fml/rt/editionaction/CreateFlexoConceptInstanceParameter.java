@@ -41,7 +41,6 @@ package org.openflexo.foundation.fml.rt.editionaction;
 import java.lang.reflect.InvocationTargetException;
 import java.util.logging.Logger;
 
-import org.openflexo.connie.Bindable;
 import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.exception.NullReferenceException;
 import org.openflexo.connie.exception.TypeMismatchException;
@@ -50,7 +49,7 @@ import org.openflexo.foundation.fml.FlexoBehaviourObject;
 import org.openflexo.foundation.fml.FlexoBehaviourParameter;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.binding.CreateFlexoConceptInstanceParameterBindingModel;
-import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
+import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
 import org.openflexo.model.annotations.DefineValidationRule;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ImplementationClass;
@@ -60,10 +59,11 @@ import org.openflexo.model.annotations.Setter;
 import org.openflexo.model.annotations.XMLAttribute;
 import org.openflexo.model.annotations.XMLElement;
 
+//TODO: merge and use BehaviourParameter instead
 @ModelEntity
 @ImplementationClass(CreateFlexoConceptInstanceParameter.CreateFlexoConceptInstanceParameterImpl.class)
 @XMLElement
-public interface CreateFlexoConceptInstanceParameter extends FlexoBehaviourObject, Bindable {
+public interface CreateFlexoConceptInstanceParameter extends FlexoBehaviourObject {
 
 	@PropertyIdentifier(type = MatchFlexoConceptInstance.class)
 	public static final String ACTION_KEY = "action";
@@ -97,13 +97,13 @@ public interface CreateFlexoConceptInstanceParameter extends FlexoBehaviourObjec
 
 	public void setParam(FlexoBehaviourParameter param);
 
-	public Object evaluateParameterValue(FlexoBehaviourAction action);
+	public Object evaluateParameterValue(RunTimeEvaluationContext evaluationContext);
 
 	@Override
 	public CreateFlexoConceptInstanceParameterBindingModel getBindingModel();
 
-	public static abstract class CreateFlexoConceptInstanceParameterImpl extends FlexoBehaviourObjectImpl implements
-			CreateFlexoConceptInstanceParameter {
+	public static abstract class CreateFlexoConceptInstanceParameterImpl extends FlexoBehaviourObjectImpl
+			implements CreateFlexoConceptInstanceParameter {
 
 		private static final Logger logger = Logger.getLogger(CreateFlexoConceptInstanceParameter.class.getPackage().getName());
 
@@ -146,7 +146,7 @@ public interface CreateFlexoConceptInstanceParameter extends FlexoBehaviourObjec
 		@Override
 		public DataBinding<?> getValue() {
 			if (value == null) {
-				value = new DataBinding<Object>(this, param != null ? param.getType() : Object.class, DataBinding.BindingDefinitionType.GET);
+				value = new DataBinding<>(this, param != null ? param.getType() : Object.class, DataBinding.BindingDefinitionType.GET);
 				value.setBindingName(param != null ? param.getName() : "param");
 			}
 			return value;
@@ -164,7 +164,7 @@ public interface CreateFlexoConceptInstanceParameter extends FlexoBehaviourObjec
 		}
 
 		@Override
-		public Object evaluateParameterValue(FlexoBehaviourAction action) {
+		public Object evaluateParameterValue(RunTimeEvaluationContext evaluationContext) {
 			if (getValue() == null || getValue().isUnset()) {
 				/*logger.info("Binding for " + param.getName() + " is not set");
 				if (param instanceof URIParameter) {
@@ -178,9 +178,10 @@ public interface CreateFlexoConceptInstanceParameter extends FlexoBehaviourObjec
 					logger.warning("Required parameter missing: " + param + ", some strange behaviour may happen from now...");
 				}*/
 				return null;
-			} else if (getValue().isValid()) {
+			}
+			else if (getValue().isValid()) {
 				try {
-					return getValue().getBindingValue(action);
+					return getValue().getBindingValue(evaluationContext);
 				} catch (TypeMismatchException e) {
 					e.printStackTrace();
 				} catch (NullReferenceException e) {
@@ -189,7 +190,8 @@ public interface CreateFlexoConceptInstanceParameter extends FlexoBehaviourObjec
 					e.printStackTrace();
 				}
 				return null;
-			} else {
+			}
+			else {
 				logger.warning("Invalid binding: " + getValue() + " Reason: " + getValue().invalidBindingReason());
 			}
 			return null;

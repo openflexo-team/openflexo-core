@@ -38,38 +38,47 @@
 
 package org.openflexo.foundation.fml.rt;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
+import java.util.WeakHashMap;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.swing.SwingUtilities;
+
+import org.openflexo.connie.BindingEvaluationContext;
 import org.openflexo.connie.BindingVariable;
+import org.openflexo.connie.DataBinding;
+import org.openflexo.connie.binding.BindingValueChangeListener;
+import org.openflexo.connie.exception.NullReferenceException;
+import org.openflexo.connie.exception.TypeMismatchException;
 import org.openflexo.foundation.FlexoEditor;
-import org.openflexo.foundation.FlexoProject;
+import org.openflexo.foundation.IndexableContainer;
 import org.openflexo.foundation.fml.FlexoConcept;
+import org.openflexo.foundation.fml.FlexoConceptInstanceType;
+import org.openflexo.foundation.fml.FlexoEvent;
 import org.openflexo.foundation.fml.FlexoProperty;
 import org.openflexo.foundation.fml.FlexoRole;
 import org.openflexo.foundation.fml.SynchronizationScheme;
-import org.openflexo.foundation.fml.ViewPoint;
 import org.openflexo.foundation.fml.VirtualModel;
-import org.openflexo.foundation.fml.binding.ModelSlotBindingVariable;
-import org.openflexo.foundation.fml.binding.ViewPointBindingModel;
-import org.openflexo.foundation.fml.binding.VirtualModelBindingModel;
+import org.openflexo.foundation.fml.binding.FlexoConceptBindingModel;
+import org.openflexo.foundation.fml.editionaction.FetchRequestCondition;
 import org.openflexo.foundation.fml.rt.action.SynchronizationSchemeAction;
-import org.openflexo.foundation.fml.rt.action.SynchronizationSchemeActionType;
-import org.openflexo.foundation.fml.rt.rm.VirtualModelInstanceResource;
-import org.openflexo.foundation.fml.rt.rm.VirtualModelInstanceResourceImpl;
-import org.openflexo.foundation.resource.ResourceData;
-import org.openflexo.foundation.resource.SaveResourceException;
-import org.openflexo.foundation.technologyadapter.FlexoMetaModel;
+import org.openflexo.foundation.fml.rt.action.SynchronizationSchemeActionFactory;
+import org.openflexo.foundation.fml.rt.rm.AbstractVirtualModelInstanceResource;
+import org.openflexo.foundation.fml.rt.rm.FMLRTVirtualModelInstanceResourceFactory;
+import org.openflexo.foundation.resource.CannotRenameException;
+import org.openflexo.foundation.resource.FlexoResource;
 import org.openflexo.foundation.technologyadapter.FlexoModel;
+import org.openflexo.foundation.technologyadapter.ModelRepository;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
+import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.technologyadapter.TechnologyObject;
-import org.openflexo.foundation.technologyadapter.TypeAwareModelSlot;
 import org.openflexo.model.annotations.Adder;
 import org.openflexo.model.annotations.CloningStrategy;
 import org.openflexo.model.annotations.CloningStrategy.StrategyType;
@@ -84,37 +93,72 @@ import org.openflexo.model.annotations.Remover;
 import org.openflexo.model.annotations.Setter;
 import org.openflexo.model.annotations.XMLAttribute;
 import org.openflexo.model.annotations.XMLElement;
+import org.openflexo.toolbox.FlexoVersion;
 import org.openflexo.toolbox.StringUtils;
 
 /**
  * A {@link VirtualModelInstance} is the run-time concept (instance) of a {@link VirtualModel}.<br>
+ * A {@link VirtualModelInstance} mostly manages a collection of {@link FlexoConceptInstance} and is itself a
+ * {@link FlexoConceptInstance}.<br>
  * 
- * As such, a {@link VirtualModelInstance} is instantiated inside a {@link View}, and all model slot defined for the corresponding
- * {@link ViewPoint} are instantiated (reified) with existing or build-in managed {@link FlexoModel}.<br>
- * 
- * A {@link VirtualModelInstance} mostly manages a collection of {@link FlexoConceptInstance} and is itself an {@link FlexoConceptInstance}.<br>
- * 
- * A {@link VirtualModelInstance} might be used in the Design Space (for example to encode a Diagram)
+ * Note that this is a base implementation, common for FMLRTVirtualModelInstance (native implementation managed by the
+ * {@link FMLRTTechnologyAdapter}) and InferedVirtualModelInstance (managed through a ModelSlot by a {@link TechnologyAdapter})<br>
  * 
  * @author sylvain
  * 
+ * @param <VMI>
+ *            Type of reflected {@link VirtualModelInstance}
+ * @param <TA>
+ *            TechnologyAdapter managing this {@link VirtualModelInstance}
+ * 
  */
-@ModelEntity
+@ModelEntity(isAbstract = true)
 @ImplementationClass(VirtualModelInstance.VirtualModelInstanceImpl.class)
-@XMLElement
-public interface VirtualModelInstance extends FlexoConceptInstance, ResourceData<VirtualModelInstance>,
-		FlexoModel<VirtualModelInstance, VirtualModel>, TechnologyObject<FMLRTTechnologyAdapter> {
+public interface VirtualModelInstance<VMI extends VirtualModelInstance<VMI, TA>, TA extends TechnologyAdapter>
+		extends FlexoConceptInstance, FlexoModel<VMI, VirtualModel>, TechnologyObject<TA>, IndexableContainer<FlexoConceptInstance> {
+
+	public static final String EVENT_FIRED = "EventFired";
 
 	@PropertyIdentifier(type = String.class)
 	public static final String NAME_KEY = "name";
 	@PropertyIdentifier(type = String.class)
 	public static final String TITLE_KEY = "title";
+	@PropertyIdentifier(type = FlexoVersion.class)
+	public static final String VERSION_KEY = "version";
+	@PropertyIdentifier(type = FlexoVersion.class)
+	public static final String MODEL_VERSION_KEY = "modelVersion";
 	@PropertyIdentifier(type = String.class)
 	public static final String VIRTUAL_MODEL_URI_KEY = "virtualModelURI";
-	@PropertyIdentifier(type = List.class)
-	public static final String MODEL_SLOT_INSTANCES_KEY = "modelSlotInstances";
 	@PropertyIdentifier(type = FlexoConceptInstance.class, cardinality = Cardinality.LIST)
 	public static final String FLEXO_CONCEPT_INSTANCES_KEY = "flexoConceptInstances";
+
+	@PropertyIdentifier(type = VirtualModelInstance.class)
+	public static final String CONTAINER_VIRTUAL_MODEL_INSTANCE_KEY = "containerVirtualModelInstance";
+	@PropertyIdentifier(type = FMLRTVirtualModelInstance.class, cardinality = Cardinality.LIST)
+	public static final String VIRTUAL_MODEL_INSTANCES_KEY = "virtualModelInstances";
+
+	/**
+	 * Returns URI for this {@link VirtualModelInstance}.<br>
+	 * Note that if this {@link VirtualModelInstance} is contained in another {@link VirtualModelInstance}, URI is computed from URI of
+	 * container VirtualModel
+	 * 
+	 * The convention for URI are following:
+	 * <container_virtual_model_instance_uri>/<virtual_model_instance_name >#<flexo_concept_instance_id> <br>
+	 * eg<br>
+	 * http://www.mydomain.org/MyVirtuaModelInstance1/MyVirtualModelInstance2#ID
+	 * 
+	 * @return String representing unique URI of this object
+	 */
+	@Override
+	public String getURI();
+
+	/**
+	 * Sets URI for this {@link VirtualModelInstance}<br>
+	 * Note that if this {@link VirtualModelInstance} is contained in another {@link VirtualModelInstance}, this method will be unefficient
+	 * 
+	 * @param anURI
+	 */
+	public void setURI(String anURI);
 
 	@Getter(value = TITLE_KEY)
 	@XMLAttribute
@@ -122,6 +166,20 @@ public interface VirtualModelInstance extends FlexoConceptInstance, ResourceData
 
 	@Setter(TITLE_KEY)
 	public void setTitle(String title);
+
+	@Getter(value = VERSION_KEY, isStringConvertable = true)
+	@XMLAttribute
+	public FlexoVersion getVersion();
+
+	@Setter(VERSION_KEY)
+	public void setVersion(FlexoVersion version);
+
+	@Getter(value = MODEL_VERSION_KEY, isStringConvertable = true)
+	@XMLAttribute
+	public FlexoVersion getModelVersion();
+
+	@Setter(MODEL_VERSION_KEY)
+	public void setModelVersion(FlexoVersion modelVersion);
 
 	public VirtualModel getVirtualModel();
 
@@ -134,22 +192,19 @@ public interface VirtualModelInstance extends FlexoConceptInstance, ResourceData
 	@Setter(VIRTUAL_MODEL_URI_KEY)
 	public void setVirtualModelURI(String virtualModelURI);
 
-	@Getter(value = MODEL_SLOT_INSTANCES_KEY, cardinality = Cardinality.LIST, inverse = ModelSlotInstance.VIRTUAL_MODEL_INSTANCE_KEY)
-	@XMLElement
-	@Embedded
-	@CloningStrategy(StrategyType.CLONE)
-	public List<ModelSlotInstance<?, ?>> getModelSlotInstances();
+	/**
+	 * Return all {@link FlexoConceptInstance} defined in this {@link FMLRTVirtualModelInstance} which have no container (contaiment
+	 * semantics)<br>
+	 * (where container is the virtual model instance itself)
+	 * 
+	 * @return
+	 */
+	public List<FlexoConceptInstance> getAllRootFlexoConceptInstances();
 
-	@Setter(MODEL_SLOT_INSTANCES_KEY)
-	public void setModelSlotInstances(List<ModelSlotInstance<?, ?>> modelSlotInstances);
-
-	@Adder(MODEL_SLOT_INSTANCES_KEY)
-	public void addToModelSlotInstances(ModelSlotInstance<?, ?> aModelSlotInstance);
-
-	@Remover(MODEL_SLOT_INSTANCES_KEY)
-	public void removeFromModelSlotInstance(ModelSlotInstance<?, ?> aModelSlotInstance);
-
-	@Getter(value = FLEXO_CONCEPT_INSTANCES_KEY, cardinality = Cardinality.LIST, inverse = ModelSlotInstance.VIRTUAL_MODEL_INSTANCE_KEY)
+	@Getter(
+			value = FLEXO_CONCEPT_INSTANCES_KEY,
+			cardinality = Cardinality.LIST,
+			inverse = FlexoConceptInstance.OWNING_VIRTUAL_MODEL_INSTANCE_KEY)
 	@XMLElement
 	@Embedded
 	@CloningStrategy(StrategyType.CLONE)
@@ -159,7 +214,7 @@ public interface VirtualModelInstance extends FlexoConceptInstance, ResourceData
 	public void setFlexoConceptInstances(List<FlexoConceptInstance> someFlexoConceptInstances);
 
 	@Adder(FLEXO_CONCEPT_INSTANCES_KEY)
-	@PastingPoint
+	@PastingPoint(priority = 0)
 	public void addToFlexoConceptInstances(FlexoConceptInstance aFlexoConceptInstance);
 
 	@Remover(FLEXO_CONCEPT_INSTANCES_KEY)
@@ -172,34 +227,21 @@ public interface VirtualModelInstance extends FlexoConceptInstance, ResourceData
 	 * @param oldFlexoConcept
 	 * @param newFlexoConcept
 	 */
-	public void flexoConceptInstanceChangedFlexoConcept(FlexoConceptInstance fci, FlexoConcept oldFlexoConcept, FlexoConcept newFlexoConcept);
+	public void flexoConceptInstanceChangedFlexoConcept(FlexoConceptInstance fci, FlexoConcept oldFlexoConcept,
+			FlexoConcept newFlexoConcept);
 
 	public void synchronize(FlexoEditor editor);
 
 	public boolean isSynchronizable();
 
-	/**
-	 * Return {@link ModelSlotInstance} concretizing supplied modelSlot
-	 * 
-	 * @param modelSlot
-	 * @return
-	 */
-	public <RD extends ResourceData<RD> & TechnologyObject<?>, MS extends ModelSlot<? extends RD>> ModelSlotInstance<MS, RD> getModelSlotInstance(
-			MS modelSlot);
-
-	/**
-	 * Return {@link ModelSlotInstance} concretizing modelSlot identified by supplied name
-	 * 
-	 * @param modelSlot
-	 * @return
-	 */
-	public <RD extends ResourceData<RD> & TechnologyObject<?>> ModelSlotInstance<?, RD> getModelSlotInstance(String modelSlotName);
-
 	@Getter(NAME_KEY)
 	public String getName();
 
+	@Setter(NAME_KEY)
+	public void setName(String name);
+
 	/**
-	 * Instanciate and register a new {@link FlexoConceptInstance}
+	 * Instantiate and register a new {@link FlexoConceptInstance}
 	 * 
 	 * @param pattern
 	 * @return
@@ -207,12 +249,20 @@ public interface VirtualModelInstance extends FlexoConceptInstance, ResourceData
 	public FlexoConceptInstance makeNewFlexoConceptInstance(FlexoConcept concept);
 
 	/**
-	 * Return run-time value for {@link BindingVariable} variable
+	 * Instantiate and register a new {@link FlexoConceptInstance} in a container FlexoConceptInstance
 	 * 
-	 * @param variable
+	 * @param pattern
 	 * @return
 	 */
-	// public Object getValueForVariable(BindingVariable variable);
+	public FlexoConceptInstance makeNewFlexoConceptInstance(FlexoConcept concept, FlexoConceptInstance container);
+
+	/**
+	 * Instanciate and fire a new {@link FlexoConceptInstance} as a Flexo event
+	 * 
+	 * @param pattern
+	 * @return
+	 */
+	public FlexoEventInstance makeNewEvent(FlexoEvent event);
 
 	/**
 	 * Return a newly created list of all {@link FlexoConceptInstance} conform to the FlexoConcept identified by supplied String parameter
@@ -224,11 +274,18 @@ public interface VirtualModelInstance extends FlexoConceptInstance, ResourceData
 	public List<FlexoConceptInstance> getFlexoConceptInstances(String flexoConceptNameOrURI);
 
 	/**
-	 * Return a new list of FlexoConcept, which are all concepts used in this VirtualModelInstance
+	 * Return a new list of FlexoConcept, which are all concepts used in this FMLRTVirtualModelInstance
 	 * 
 	 * @return
 	 */
 	public List<FlexoConcept> getUsedFlexoConcepts();
+
+	/**
+	 * Return a new list of FlexoConcept, which are all top-level concepts used in this FMLRTVirtualModelInstance
+	 * 
+	 * @return
+	 */
+	public List<FlexoConcept> getUsedTopLevelFlexoConcepts();
 
 	/**
 	 * Return a newly created list of all {@link FlexoConceptInstance} conform to the supplied FlexoConcept
@@ -238,10 +295,10 @@ public interface VirtualModelInstance extends FlexoConceptInstance, ResourceData
 	 */
 	public List<FlexoConceptInstance> getFlexoConceptInstances(FlexoConcept flexoConcept);
 
-	public boolean hasNature(VirtualModelInstanceNature nature);
+	public boolean hasNature(AbstractVirtualModelInstanceNature<VMI, TA> nature);
 
 	/**
-	 * Try to lookup supplied object in the whole VirtualModelInstance.<br>
+	 * Try to lookup supplied object in the whole FMLRTVirtualModelInstance.<br>
 	 * This means that each {@link FlexoConceptInstance} is checked for any of its roles to see if the reference is the supplied object
 	 * 
 	 * @param object
@@ -250,54 +307,126 @@ public interface VirtualModelInstance extends FlexoConceptInstance, ResourceData
 	 */
 	public ObjectLookupResult lookup(Object object);
 
-	public static abstract class VirtualModelInstanceImpl extends FlexoConceptInstanceImpl implements VirtualModelInstance {
+	/**
+	 * Force re-index all FCI relatively to their {@link FlexoConcept}<br>
+	 * Use this method with caution, since it is really time costly
+	 */
+	public void reindexAllConceptInstances();
 
-		private static final Logger logger = Logger.getLogger(VirtualModelInstance.class.getPackage().getName());
+	/**
+	 * Delete all instances of this {@link FMLRTVirtualModelInstance}
+	 */
+	public void clear();
 
-		private VirtualModelInstanceResource resource;
-		// private List<ModelSlotInstance<?, ?>> modelSlotInstances;
-		// private Map<ModelSlot, FlexoModel<?, ?>> modelsMap = new HashMap<ModelSlot, FlexoModel<?, ?>>(); // Do not serialize
-		// this.
+	public void contentsAdded(FlexoConceptInstance objectBeeingAdded, FlexoConcept concept);
+
+	public void contentsRemoved(FlexoConceptInstance objectBeeingRemoved, FlexoConcept concept);
+
+	/**
+	 * Return (eventually null) container {@link VirtualModelInstance}
+	 * 
+	 * @return
+	 */
+	@Getter(value = CONTAINER_VIRTUAL_MODEL_INSTANCE_KEY, ignoreType = true)
+	public VirtualModelInstance<?, ?> getContainerVirtualModelInstance();
+
+	/**
+	 * Sets (eventually null) container {@link VirtualModelInstance}
+	 * 
+	 * @return
+	 */
+	@Setter(CONTAINER_VIRTUAL_MODEL_INSTANCE_KEY)
+	public void setContainerVirtualModelInstance(VirtualModelInstance<?, ?> containerVMI);
+
+	/**
+	 * Return all {@link FMLRTVirtualModelInstance} defined in this {@link View}
+	 * 
+	 * @return
+	 */
+	@Getter(
+			value = VIRTUAL_MODEL_INSTANCES_KEY,
+			cardinality = Cardinality.LIST,
+			inverse = VirtualModelInstance.CONTAINER_VIRTUAL_MODEL_INSTANCE_KEY,
+			ignoreType = true)
+	public List<VirtualModelInstance<?, ?>> getVirtualModelInstances();
+
+	/**
+	 * Allow to retrieve VMIs given a virtual model.
+	 * 
+	 * @param virtualModel
+	 *            key to find correct VMI
+	 * @return the list
+	 */
+	public List<VirtualModelInstance<?, ?>> getVirtualModelInstancesForVirtualModel(VirtualModel virtualModel);
+
+	@Setter(VIRTUAL_MODEL_INSTANCES_KEY)
+	public void setVirtualModelInstances(List<VirtualModelInstance<?, ?>> virtualModelInstances);
+
+	@Adder(VIRTUAL_MODEL_INSTANCES_KEY)
+	public void addToVirtualModelInstances(VirtualModelInstance<?, ?> virtualModelInstance);
+
+	@Remover(VIRTUAL_MODEL_INSTANCES_KEY)
+	public void removeFromVirtualModelInstances(VirtualModelInstance<?, ?> virtualModelInstance);
+
+	public VirtualModelInstance<?, ?> getVirtualModelInstance(String name);
+
+	public boolean isValidVirtualModelInstanceName(String virtualModelName);
+
+	/**
+	 * Return the list of {@link TechnologyAdapter} used in the context of this {@link View}
+	 * 
+	 * @return
+	 */
+	public List<TechnologyAdapter> getRequiredTechnologyAdapters();
+
+	public ModelRepository getVirtualModelInstanceRepository();
+
+	/**
+	 * Asynchronously execute firing of 'allRootFlexoConceptInstances' change event All notifications are merged and executed in EDT
+	 */
+	public void notifyAllRootFlexoConceptInstancesMayHaveChanged();
+
+	/**
+	 * Base implementation for VirtualModelInstance
+	 * 
+	 * @author sylvain
+	 *
+	 * @param <VMI>
+	 * @param <TA>
+	 */
+	public static abstract class VirtualModelInstanceImpl<VMI extends VirtualModelInstance<VMI, TA>, TA extends TechnologyAdapter>
+			extends FlexoConceptInstanceImpl implements VirtualModelInstance<VMI, TA> {
+
+		private static final Logger logger = Logger.getLogger(FMLRTVirtualModelInstance.class.getPackage().getName());
+
+		private AbstractVirtualModelInstanceResource<VMI, TA> resource;
 		private String title;
 
-		private final Hashtable<String, Map<Long, FlexoConceptInstance>> flexoConceptInstances;
+		/**
+		 * This map stores the concept instances as they are declared relatively to their final type (the unique FlexoConcept whose
+		 * FlexoConceptInstance is instance)
+		 */
+		private final Map<FlexoConcept, List<FlexoConceptInstance>> flexoConceptInstances;
 
-		// private final List<FlexoConceptInstance> orderedFlexoConceptInstances;
+		private List<FlexoConceptInstance> rootFlexoConceptInstances = new ArrayList<>();
 
-		// TODO: move this code to the VirtualModelInstanceResource
-		public static VirtualModelInstanceResource newVirtualModelInstance(String virtualModelName, String virtualModelTitle,
-				VirtualModel virtualModel, View view) throws SaveResourceException {
-
-			VirtualModelInstanceResource newVirtualModelResource = VirtualModelInstanceResourceImpl.makeVirtualModelInstanceResource(
-					virtualModelName, virtualModel, view);
-
-			VirtualModelInstanceImpl newVirtualModelInstance = (VirtualModelInstanceImpl) newVirtualModelResource.getFactory().newInstance(
-					VirtualModelInstance.class);
-			newVirtualModelInstance.setVirtualModel(virtualModel);
-
-			newVirtualModelResource.setResourceData(newVirtualModelInstance);
-			newVirtualModelInstance.setResource(newVirtualModelResource);
-			newVirtualModelInstance.setTitle(virtualModelTitle);
-
-			view.getResource().notifyContentsAdded(newVirtualModelResource);
-
-			newVirtualModelResource.save(null);
-
-			return newVirtualModelResource;
-		}
+		private Map<Type, Map<String, FlexoConceptInstanceIndex<?>>> indexes = new WeakHashMap<>();
 
 		/**
 		 * Default constructor with
 		 */
 		public VirtualModelInstanceImpl() {
 			super();
-			// modelSlotInstances = new ArrayList<ModelSlotInstance<?, ?>>();
-			flexoConceptInstances = new Hashtable<String, Map<Long, FlexoConceptInstance>>();
-			// orderedFlexoConceptInstances = new ArrayList<FlexoConceptInstance>();
+			flexoConceptInstances = new Hashtable<>();
 		}
 
 		@Override
-		public VirtualModelInstanceModelFactory getFactory() {
+		public String getStringRepresentation() {
+			return getName();
+		}
+
+		@Override
+		public AbstractVirtualModelInstanceModelFactory<?> getFactory() {
 			if (getResource() != null) {
 				return getResource().getFactory();
 			}
@@ -305,22 +434,63 @@ public interface VirtualModelInstance extends FlexoConceptInstance, ResourceData
 		}
 
 		@Override
-		public final boolean hasNature(VirtualModelInstanceNature nature) {
-			return nature.hasNature(this);
+		public void finalizeDeserialization() {
+			super.finalizeDeserialization();
 		}
 
 		@Override
+		public final boolean hasNature(AbstractVirtualModelInstanceNature<VMI, TA> nature) {
+			return nature.hasNature((VMI) this);
+		}
+
+		/**
+		 * Returns URI for this {@link VirtualModelInstance}.<br>
+		 * Note that if this {@link VirtualModelInstance} is contained in another {@link VirtualModelInstance}, URI is computed from URI of
+		 * container VirtualModel
+		 * 
+		 * The convention for URI are following:
+		 * <container_virtual_model_instance_uri>/<virtual_model_instance_name >#<flexo_concept_instance_id> <br>
+		 * eg<br>
+		 * http://www.mydomain.org/MyVirtuaModelInstance1/MyVirtualModelInstance2#ID
+		 * 
+		 * @return String representing unique URI of this object
+		 */
+		@Override
 		public String getURI() {
+			if (getContainerVirtualModelInstance() != null) {
+				return getContainerVirtualModelInstance().getURI() + "/" + getName()
+						+ FMLRTVirtualModelInstanceResourceFactory.FML_RT_SUFFIX;
+			}
 			if (getResource() != null) {
 				return getResource().getURI();
 			}
 			return null;
 		}
 
+		/**
+		 * Sets URI for this {@link VirtualModelInstance}<br>
+		 * Note that if this {@link VirtualModelInstance} is contained in another {@link VirtualModelInstance}, this method will be
+		 * unefficient
+		 * 
+		 * @param anURI
+		 */
 		@Override
-		public View getView() {
+		public void setURI(String anURI) {
+			if (getContainerVirtualModelInstance() == null) {
+				if (anURI != null) {
+					// We prevent ',' so that we can use it as a delimiter in tags.
+					anURI = anURI.replace(",", "");
+				}
+				if (getResource() != null) {
+					getResource().setURI(anURI);
+				}
+			}
+		}
+
+		@Override
+		public VirtualModelInstance<?, ?> getContainerVirtualModelInstance() {
 			if (getResource() != null && getResource().getContainer() != null) {
-				return getResource().getContainer().getView();
+				return getResource().getContainer().getVirtualModelInstance();
 			}
 			return null;
 		}
@@ -328,17 +498,17 @@ public interface VirtualModelInstance extends FlexoConceptInstance, ResourceData
 		@Override
 		public VirtualModel getFlexoConcept() {
 			// We override here getFlexoConcept() to retrieve matching VirtualModel
-			if (getView() != null && getView().getViewPoint() != null && flexoConcept == null && StringUtils.isNotEmpty(flexoConceptURI)) {
-				flexoConcept = getView().getViewPoint().getVirtualModelNamed(flexoConceptURI);
+			if (getContainerVirtualModelInstance() != null && getContainerVirtualModelInstance().getVirtualModel() != null
+					&& flexoConcept == null && StringUtils.isNotEmpty(flexoConceptURI)) {
+				flexoConcept = getContainerVirtualModelInstance().getVirtualModel().getVirtualModelNamed(flexoConceptURI);
+			}
+			if (flexoConcept == null && getResource() != null) {
+				// We can sometimes arrive here: flexoConcept is still not set
+				// But we have another chance to retrieve the VirtualModel while requesting it to the resource
+				// Then set the FlexoConcept
+				flexoConcept = getResource().getVirtualModel();
 			}
 			return (VirtualModel) flexoConcept;
-		}
-
-		public ViewPoint getViewPoint() {
-			if (getVirtualModel() != null) {
-				return getVirtualModel().getViewPoint();
-			}
-			return null;
 		}
 
 		@Override
@@ -367,19 +537,75 @@ public interface VirtualModelInstance extends FlexoConceptInstance, ResourceData
 		}
 
 		@Override
-		public FMLRTTechnologyAdapter getTechnologyAdapter() {
+		public FlexoVersion getModelVersion() {
 			if (getResource() != null) {
-				return getResource().getTechnologyAdapter();
+				return getResource().getModelVersion();
 			}
 			return null;
 		}
 
 		@Override
-		public FlexoProject getProject() {
-			if (getView() != null) {
-				return getView().getProject();
+		public void setModelVersion(FlexoVersion aVersion) {
+			if (getResource() != null) {
+				getResource().setModelVersion(aVersion);
 			}
-			return super.getProject();
+		}
+
+		@Override
+		public FlexoVersion getVersion() {
+			if (getResource() != null) {
+				return getResource().getVersion();
+			}
+			return null;
+		}
+
+		@Override
+		public void setVersion(FlexoVersion aVersion) {
+			if (requireChange(getVersion(), aVersion)) {
+				if (getResource() != null) {
+					getResource().setVersion(aVersion);
+				}
+			}
+		}
+
+		/**
+		 * Return all {@link FlexoConceptInstance} defined in this {@link FMLRTVirtualModelInstance} which have no container (containment
+		 * semantics)<br>
+		 * (where container is the virtual model instance itself)
+		 * 
+		 * @return
+		 */
+		@Override
+		public List<FlexoConceptInstance> getAllRootFlexoConceptInstances() {
+
+			return rootFlexoConceptInstances;
+		}
+
+		private List<FlexoConceptInstance> lastNotifiedRootFlexoConceptInstances = null;
+		private boolean willNotifyAllRootFlexoConceptInstancesMayHaveChanged = false;
+
+		/**
+		 * Asynchronously execute firing of 'allRootFlexoConceptInstances' change event All notifications are merged and executed in EDT
+		 */
+		@Override
+		public void notifyAllRootFlexoConceptInstancesMayHaveChanged() {
+			if (willNotifyAllRootFlexoConceptInstancesMayHaveChanged) {
+				return;
+			}
+			willNotifyAllRootFlexoConceptInstancesMayHaveChanged = true;
+			SwingUtilities.invokeLater(new Runnable() {
+				@Override
+				public void run() {
+					if (!isDeleted()) {
+						getPropertyChangeSupport().firePropertyChange("allRootFlexoConceptInstances",
+								(lastNotifiedRootFlexoConceptInstances != null ? new ArrayList<>(lastNotifiedRootFlexoConceptInstances)
+										: null),
+								new ArrayList<>(getAllRootFlexoConceptInstances()));
+						lastNotifiedRootFlexoConceptInstances = new ArrayList<>(getAllRootFlexoConceptInstances());
+						willNotifyAllRootFlexoConceptInstancesMayHaveChanged = false;
+					}
+				}
+			});
 		}
 
 		/**
@@ -390,10 +616,52 @@ public interface VirtualModelInstance extends FlexoConceptInstance, ResourceData
 		 */
 		@Override
 		public FlexoConceptInstance makeNewFlexoConceptInstance(FlexoConcept concept) {
-			FlexoConceptInstance returned = getResource().getFactory().newInstance(FlexoConceptInstance.class);
-			returned.setVirtualModelInstance(this);
-			returned.setFlexoConcept(concept);
+
+			return makeNewFlexoConceptInstance(concept, null);
+		}
+
+		/**
+		 * Instantiate and register a new {@link FlexoConceptInstance} in a container FlexoConceptInstance
+		 * 
+		 * @param pattern
+		 * @return
+		 */
+		@Override
+		public FlexoConceptInstance makeNewFlexoConceptInstance(FlexoConcept concept, FlexoConceptInstance container) {
+
+			FlexoConceptInstance returned = buildNewFlexoConceptInstance(concept);
+			if (container != null) {
+				container.addToEmbeddedFlexoConceptInstances(returned);
+			}
 			addToFlexoConceptInstances(returned);
+			return returned;
+		}
+
+		/**
+		 * Build a new FlexoConceptInstance<br>
+		 * Just instantiate, do not register yet
+		 * 
+		 * @return
+		 */
+		protected FlexoConceptInstance buildNewFlexoConceptInstance(FlexoConcept concept) {
+			FlexoConceptInstance returned = getResource().getFactory().newInstance(FlexoConceptInstance.class);
+			returned.setFlexoConcept(concept);
+			return returned;
+		}
+
+		/**
+		 * Instanciate and fire a new {@link FlexoEventInstance} as a Flexo event
+		 * 
+		 * @param pattern
+		 * @return
+		 */
+		@Override
+		public FlexoEventInstance makeNewEvent(FlexoEvent event) {
+
+			FlexoEventInstance returned = getResource().getFactory().newInstance(FlexoEventInstance.class);
+			returned.setFlexoConcept(event);
+			returned.setSourceVirtualModelInstance(this);
+
 			return returned;
 		}
 
@@ -407,21 +675,21 @@ public interface VirtualModelInstance extends FlexoConceptInstance, ResourceData
 		@Override
 		public void flexoConceptInstanceChangedFlexoConcept(FlexoConceptInstance fci, FlexoConcept oldFlexoConcept,
 				FlexoConcept newFlexoConcept) {
-			Map<Long, FlexoConceptInstance> hash = null;
+			List<FlexoConceptInstance> list = null;
 
 			if (oldFlexoConcept != null) {
-				hash = flexoConceptInstances.get(oldFlexoConcept.getURI());
-				if (hash != null) {
-					hash.remove(fci.getFlexoID());
+				list = flexoConceptInstances.get(oldFlexoConcept);
+				if (list != null) {
+					list.remove(fci);
 				}
 			}
 			if (newFlexoConcept != null) {
-				hash = flexoConceptInstances.get(newFlexoConcept.getURI());
-				if (hash == null) {
-					hash = new Hashtable<Long, FlexoConceptInstance>();
-					flexoConceptInstances.put(fci.getFlexoConceptURI(), hash);
+				list = flexoConceptInstances.get(newFlexoConcept);
+				if (list == null) {
+					list = new ArrayList<>();
+					flexoConceptInstances.put(newFlexoConcept, list);
 				}
-				hash.put(fci.getFlexoID(), fci);
+				list.add(fci);
 			}
 		}
 
@@ -434,36 +702,113 @@ public interface VirtualModelInstance extends FlexoConceptInstance, ResourceData
 		@Override
 		public void addToFlexoConceptInstances(FlexoConceptInstance fci) {
 
-			// System.out.println("Already storing: ");
-			// for (FlexoConceptInstance i : getFlexoConceptInstances()) {
-			// System.out.println("> " + i);
-			// }
+			// long time1 = 0, time2 = 0, time3 = 0, time4 = 0;
 
-			// System.out.println("Adding " + fci);
-			// System.out.println("fci.getFlexoConcept() = " + fci.getFlexoConcept());
-			// System.out.println("fci.getActors() = " + fci.getActors());
+			// long start = System.currentTimeMillis();
 
-			if (fci.getFlexoConceptURI() == null) {
-				logger.warning("Could not register FlexoConceptInstance with null FlexoConceptURI: " + fci);
-				// logger.warning("EPI: " + fci.debug());
-			} else {
-				Map<Long, FlexoConceptInstance> hash = flexoConceptInstances.get(fci.getFlexoConceptURI());
-				if (hash == null) {
-					hash = new Hashtable<Long, FlexoConceptInstance>();
-					flexoConceptInstances.put(fci.getFlexoConceptURI(), hash);
+			if (fci.getFlexoConcept() == null) {
+				if (!isDeserializing()) {
+					logger.warning("Could not register FlexoConceptInstance with null FlexoConcept: " + fci);
 				}
+			}
+			else {
 				// We store here the FCI twice:
-				// - first in double-entries hash map
+				// - first in list hash map
 				// - then in an ordered list (internally performed by PAMELA)
 				// We rely on PAMELA schemes to handle notifications
-				hash.put(fci.getFlexoID(), fci);
 
-				performSuperAdder(FLEXO_CONCEPT_INSTANCES_KEY, fci);
-				// orderedFlexoConceptInstances.add(fci);
-				// System.out.println("Registered EPI " + epi + " in " + epi.getFlexoConcept());
-				// System.out.println("Registered: " + getEPInstances(epi.getFlexoConcept()));
+				// time1 = System.currentTimeMillis();
+
+				ensureRegisterFCIInConcept(fci, fci.getFlexoConcept());
 
 			}
+
+			// time2 = System.currentTimeMillis();
+
+			performSuperAdder(FLEXO_CONCEPT_INSTANCES_KEY, fci);
+
+			// time3 = System.currentTimeMillis();
+
+			notifyAllRootFlexoConceptInstancesMayHaveChanged();
+			// getPropertyChangeSupport().firePropertyChange("allRootFlexoConceptInstances", false, true);
+
+			// long end = System.currentTimeMillis();
+
+			// System.out.println("Adding instance took " + (end - start) + " ms start=" + start + " t1=" + time1 + " t2=" + time2 + " t3="
+			// + time3 + " end=" + end);
+		}
+
+		/**
+		 * Force re-index all FCI relatively to their {@link FlexoConcept}<br>
+		 * Use this method with caution, since it is really time costly
+		 */
+		@Override
+		public void reindexAllConceptInstances() {
+			rootFlexoConceptInstances.clear();
+			for (FlexoConcept concept : flexoConceptInstances.keySet()) {
+				List<FlexoConceptInstance> l = flexoConceptInstances.get(concept);
+				if (l != null) {
+					l.clear();
+				}
+			}
+			flexoConceptInstances.clear();
+			for (FlexoConceptInstance fci : getFlexoConceptInstances()) {
+				ensureRegisterFCIInConcept(fci, fci.getFlexoConcept());
+			}
+		}
+
+		private void ensureRegisterFCIInConcept(FlexoConceptInstance fci, FlexoConcept concept) {
+
+			// System.out.println("**** ensure register FCI " + fci + " in " + concept);
+			if (fci.isRoot()) {
+				// Prevent when ensureRegisterFCIInConcept method is invoked twice, in case an instance has a parent.
+				if (!rootFlexoConceptInstances.contains(fci)) {
+					rootFlexoConceptInstances.add(fci);
+				}
+			}
+
+			if (concept == null) {
+				logger.warning("ensureRegisterFCIInConcept called for FCI without concept: " + fci);
+				return;
+			}
+
+			List<FlexoConceptInstance> list = flexoConceptInstances.get(concept);
+			if (list == null) {
+				list = new ArrayList<>();
+				flexoConceptInstances.put(concept, list);
+			}
+			if (!list.contains(fci)) {
+				list.add(fci);
+			}
+			for (FlexoConcept parentConcept : concept.getParentFlexoConcepts()) {
+				if (parentConcept != concept) { // In case of loops
+					ensureRegisterFCIInConcept(fci, parentConcept);
+				}
+			}
+
+			// Update indexes when relevant
+			contentsAdded(fci, concept);
+		}
+
+		private void ensureUnregisterFCIFromConcept(FlexoConceptInstance fci, FlexoConcept concept) {
+
+			if (fci.isRoot()) {
+				rootFlexoConceptInstances.remove(fci);
+			}
+
+			List<FlexoConceptInstance> list = flexoConceptInstances.get(concept);
+			if (list != null && list.contains(fci)) {
+				list.remove(fci);
+			}
+			for (FlexoConcept parentConcept : concept.getParentFlexoConcepts()) {
+				if (parentConcept != concept) { // In case of loops
+					ensureUnregisterFCIFromConcept(fci, parentConcept);
+				}
+			}
+
+			// Update indexes when relevant
+			contentsRemoved(fci, concept);
+
 		}
 
 		/**
@@ -474,65 +819,82 @@ public interface VirtualModelInstance extends FlexoConceptInstance, ResourceData
 		 */
 		@Override
 		public void removeFromFlexoConceptInstances(FlexoConceptInstance fci) {
-			// System.out.println("<<<<<<<<<<<<<< removeFromFlexoConceptInstances " + fci);
-			// Thread.dumpStack();
 
-			Map<Long, FlexoConceptInstance> hash = flexoConceptInstances.get(fci.getFlexoConceptURI());
-			if (hash == null) {
-				hash = new Hashtable<Long, FlexoConceptInstance>();
-				flexoConceptInstances.put(fci.getFlexoConceptURI(), hash);
+			if (fci.getFlexoConcept() == null) {
+				logger.warning("Could not remove FlexoConceptInstance with null FlexoConcept: " + fci);
 			}
-			hash.remove(fci.getFlexoID());
-			performSuperRemover(FLEXO_CONCEPT_INSTANCES_KEY, fci);
-			// orderedFlexoConceptInstances.remove(fci);
-			// getPropertyChangeSupport().firePropertyChange(FLEXO_CONCEPT_INSTANCES_KEY, fci, null);
-		}
+			else {
+				ensureUnregisterFCIFromConcept(fci, fci.getFlexoConcept());
+			}
 
-		// Not required !!!
-		/*@Override
-		public List<FlexoConceptInstance> getFlexoConceptInstances() {
-			return (List<FlexoConceptInstance>)performSuperGetter(FLEXO_CONCEPT_INSTANCES_KEY);
-		}*/
+			performSuperRemover(FLEXO_CONCEPT_INSTANCES_KEY, fci);
+
+			notifyAllRootFlexoConceptInstancesMayHaveChanged();
+			// getPropertyChangeSupport().firePropertyChange("allRootFlexoConceptInstances", false, true);
+		}
 
 		@Override
 		public List<FlexoConceptInstance> getFlexoConceptInstances(String flexoConceptNameOrURI) {
 			if (getVirtualModel() == null) {
 				return Collections.emptyList();
 			}
-			FlexoConcept ep = getVirtualModel().getFlexoConcept(flexoConceptNameOrURI);
-			return getFlexoConceptInstances(ep);
+			FlexoConcept flexoConcept = getVirtualModel().getFlexoConcept(flexoConceptNameOrURI);
+			return getFlexoConceptInstances(flexoConcept);
 		}
 
 		@Override
 		public List<FlexoConceptInstance> getFlexoConceptInstances(FlexoConcept flexoConcept) {
+
 			if (flexoConcept == null) {
 				// logger.warning("Unexpected null FlexoConcept");
 				return Collections.emptyList();
 			}
-			Map<Long, FlexoConceptInstance> hash = flexoConceptInstances.get(flexoConcept.getURI());
-			if (hash == null) {
-				hash = new Hashtable<Long, FlexoConceptInstance>();
-				flexoConceptInstances.put(flexoConcept.getURI(), hash);
+
+			if (flexoConcept == getVirtualModel()) {
+				return Collections.singletonList((FlexoConceptInstance) this);
 			}
-			// TODO: performance issue here
-			List<FlexoConceptInstance> returned = new ArrayList(hash.values());
-			for (FlexoConcept childEP : flexoConcept.getChildFlexoConcepts()) {
-				returned.addAll(getFlexoConceptInstances(childEP));
+
+			List<FlexoConceptInstance> returned = flexoConceptInstances.get(flexoConcept);
+
+			if (returned == null) {
+				/*System.out.println("Bizarre, pourtant j'ai ca: ");
+				for (FlexoConceptInstance fci : getFlexoConceptInstances()) {
+					System.out.println(" > " + fci);
+				}
+				for (FlexoConcept concept : flexoConceptInstances.keySet()) {
+					System.out.println("Key: " + concept + " list: " + flexoConceptInstances.get(concept));
+				}*/
+				return Collections.emptyList();
 			}
 			return returned;
 		}
 
 		/**
-		 * Return a new list of FlexoConcept, which are all concepts used in this VirtualModelInstance
+		 * Return a new list of FlexoConcept, which are all concepts used in this FMLRTVirtualModelInstance
 		 * 
 		 * @return
 		 */
 		@Override
 		public List<FlexoConcept> getUsedFlexoConcepts() {
-			List<FlexoConcept> returned = new ArrayList<FlexoConcept>();
-			for (String s : flexoConceptInstances.keySet()) {
-				FlexoConcept c = getVirtualModel().getFlexoConcept(s);
-				returned.add(c);
+			List<FlexoConcept> returned = new ArrayList<>();
+			for (FlexoConcept concept : flexoConceptInstances.keySet()) {
+				returned.add(concept);
+			}
+			return returned;
+		}
+
+		/**
+		 * Return a new list of FlexoConcept, which are all concepts used in this FMLRTVirtualModelInstance
+		 * 
+		 * @return
+		 */
+		@Override
+		public List<FlexoConcept> getUsedTopLevelFlexoConcepts() {
+			List<FlexoConcept> returned = new ArrayList<>();
+			for (FlexoConcept concept : flexoConceptInstances.keySet()) {
+				if (concept.getContainerFlexoConcept() == null) {
+					returned.add(concept);
+				}
 			}
 			return returned;
 		}
@@ -552,13 +914,13 @@ public interface VirtualModelInstance extends FlexoConceptInstance, ResourceData
 		}*/
 
 		@Override
-		public VirtualModelInstanceResource getResource() {
+		public AbstractVirtualModelInstanceResource<VMI, TA> getResource() {
 			return resource;
 		}
 
 		@Override
-		public void setResource(org.openflexo.foundation.resource.FlexoResource<VirtualModelInstance> resource) {
-			this.resource = (VirtualModelInstanceResource) resource;
+		public void setResource(FlexoResource<VMI> resource) {
+			this.resource = (AbstractVirtualModelInstanceResource<VMI, TA>) resource;
 		}
 
 		@Override
@@ -567,6 +929,17 @@ public interface VirtualModelInstance extends FlexoConceptInstance, ResourceData
 				return getResource().getName();
 			}
 			return null;
+		}
+
+		@Override
+		public void setName(String name) {
+			if (getResource() != null) {
+				try {
+					getResource().setName(name);
+				} catch (CannotRenameException e) {
+					e.printStackTrace();
+				}
+			}
 		}
 
 		@Override
@@ -585,141 +958,22 @@ public interface VirtualModelInstance extends FlexoConceptInstance, ResourceData
 		}
 
 		@Override
-		public VirtualModelInstanceImpl getResourceData() {
-			return this;
+		public VMI getResourceData() {
+			return (VMI) this;
 		}
-
-		@Override
-		public String toString() {
-			return "VirtualModelInstance[name=" + getName() + "/virtualModel=" + getVirtualModel() + "/hash="
-					+ Integer.toHexString(hashCode()) + "]";
-		}
-
-		// ==========================================================================
-		// ============================== Model Slots ===============================
-		// ==========================================================================
-
-		/**
-		 * Return {@link ModelSlotInstance} concretizing supplied modelSlot
-		 * 
-		 * @param modelSlot
-		 * @return
-		 */
-		@Override
-		public <RD extends ResourceData<RD> & TechnologyObject<?>, MS extends ModelSlot<? extends RD>> ModelSlotInstance<MS, RD> getModelSlotInstance(
-				MS modelSlot) {
-			for (ModelSlotInstance<?, ?> msInstance : getModelSlotInstances()) {
-				if (msInstance.getModelSlot() == modelSlot) {
-					return (ModelSlotInstance<MS, RD>) msInstance;
-				}
-			}
-			/*if (modelSlot instanceof FMLRTModelSlot && ((FMLRTModelSlot) modelSlot).isReflexiveModelSlot()) {
-				VirtualModelModelSlotInstance reflexiveModelSlotInstance = getResource().getFactory().newInstance(
-						VirtualModelModelSlotInstance.class);
-				reflexiveModelSlotInstance.setModelSlot((FMLRTModelSlot) modelSlot);
-				reflexiveModelSlotInstance.setAccessedResourceData(this);
-				addToModelSlotInstances(reflexiveModelSlotInstance);
-				return (ModelSlotInstance<MS, RD>) reflexiveModelSlotInstance;
-			}*/
-			logger.warning("Cannot find ModelSlotInstance for ModelSlot " + modelSlot);
-			if (getVirtualModel() != null && !getVirtualModel().getModelSlots().contains(modelSlot)) {
-				logger.warning("Worse than that, supplied ModelSlot is not part of virtual model " + getVirtualModel());
-			}
-			return null;
-		}
-
-		/**
-		 * Return {@link ModelSlotInstance} concretizing modelSlot identified by supplied name
-		 * 
-		 * @param modelSlot
-		 * @return
-		 */
-		@Override
-		public <RD extends ResourceData<RD> & TechnologyObject<?>> ModelSlotInstance<?, RD> getModelSlotInstance(String modelSlotName) {
-			for (ModelSlotInstance<?, ?> msInstance : getModelSlotInstances()) {
-				if (msInstance.getModelSlot().getName().equals(modelSlotName)) {
-					return (ModelSlotInstance<?, RD>) msInstance;
-				}
-			}
-			logger.warning("Cannot find ModelSlotInstance named " + modelSlotName);
-			return null;
-		}
-
-		/*	@Override
-			public List<ModelSlotInstance<?, ?>> getModelSlotInstances() {
-				return modelSlotInstances;
-			}
-
-			@Override
-			public void setModelSlotInstances(List<ModelSlotInstance<?, ?>> instances) {
-				this.modelSlotInstances = instances;
-			}
-
-			@Override
-			public void addToModelSlotInstances(ModelSlotInstance<?, ?> instance) {
-				if (!modelSlotInstances.contains(instance)) {
-					instance.setVirtualModelInstance(this);
-					modelSlotInstances.add(instance);
-					setChanged();
-					notifyObservers(new VEDataModification("modelSlotInstances", null, instance));
-				}
-			}
-
-			@Override
-			public void removeFromModelSlotInstance(ModelSlotInstance<?, ?> instance) {
-				if (modelSlotInstances.contains(instance)) {
-					instance.setVirtualModelInstance(null);
-					modelSlotInstances.remove(instance);
-					setChanged();
-					notifyObservers(new VEDataModification("modelSlotInstances", instance, null));
-				}
-			}*/
 
 		@Override
 		public <T> T getFlexoActor(FlexoRole<T> flexoRole) {
-			if (super.getFlexoActor(flexoRole) != null) {
-				return super.getFlexoActor(flexoRole);
-			}
 			if (flexoRole instanceof ModelSlot) {
-				ModelSlotInstance<?, ?> modelSlotInstance = getModelSlotInstance((ModelSlot<?>) flexoRole);
+				ModelSlotInstance<?, ?> modelSlotInstance = getModelSlotInstance((ModelSlot) flexoRole);
 				if (modelSlotInstance != null) {
 					return (T) modelSlotInstance.getAccessedResourceData();
 				}
 			}
+			if (super.getFlexoActor(flexoRole) != null) {
+				return super.getFlexoActor(flexoRole);
+			}
 			return null;
-		}
-
-		/**
-		 * Return a set of all meta models (load them when unloaded) used in this {@link VirtualModelInstance}
-		 * 
-		 * @return
-		 */
-		@Deprecated
-		public Set<FlexoMetaModel> getAllMetaModels() {
-			Set<FlexoMetaModel> allMetaModels = new HashSet<FlexoMetaModel>();
-			for (ModelSlotInstance instance : getModelSlotInstances()) {
-				if (instance.getModelSlot() instanceof TypeAwareModelSlot
-						&& ((TypeAwareModelSlot) instance.getModelSlot()).getMetaModelResource() != null) {
-					allMetaModels.add(((TypeAwareModelSlot) instance.getModelSlot()).getMetaModelResource().getMetaModelData());
-				}
-			}
-			return allMetaModels;
-		}
-
-		/**
-		 * Return a set of all models (load them when unloaded) used in this {@link VirtualModelInstance}
-		 * 
-		 * @return
-		 */
-		@Deprecated
-		public Set<FlexoModel<?, ?>> getAllModels() {
-			Set<FlexoModel<?, ?>> allModels = new HashSet<FlexoModel<?, ?>>();
-			for (ModelSlotInstance instance : getModelSlotInstances()) {
-				if (instance.getResourceData() instanceof FlexoModel) {
-					allModels.add(instance.getResourceData());
-				}
-			}
-			return allModels;
 		}
 
 		// ==========================================================================
@@ -729,7 +983,7 @@ public interface VirtualModelInstance extends FlexoConceptInstance, ResourceData
 		@Override
 		public final boolean delete(Object... context) {
 
-			logger.info("Deleting virtual model instance " + this);
+			logger.info("Deleting virtual model instance ");
 
 			// Dereference the resource
 			if (resource != null) {
@@ -752,30 +1006,27 @@ public interface VirtualModelInstance extends FlexoConceptInstance, ResourceData
 			if (isSynchronizable()) {
 				VirtualModel vm = getVirtualModel();
 				SynchronizationScheme ss = vm.getSynchronizationScheme();
-				SynchronizationSchemeActionType actionType = new SynchronizationSchemeActionType(ss, this);
+				SynchronizationSchemeActionFactory actionType = new SynchronizationSchemeActionFactory(ss, this);
 				SynchronizationSchemeAction action = actionType.makeNewAction(this, null, editor);
 				action.doAction();
-			} else {
+			}
+			else {
 				logger.warning("No synchronization scheme defined for " + getVirtualModel());
 			}
 		}
 
 		@Override
 		public boolean isSynchronizable() {
-			return getVirtualModel() != null && getVirtualModel().hasSynchronizationScheme();
+			// is synchronizable if virtualModel is not null, it has SynchronizationScheme and all needed TA are activated
+			VirtualModel vm = getVirtualModel();
+			boolean synchronizable = vm != null && vm.hasSynchronizationScheme();
+			if (synchronizable) {
+				for (TechnologyAdapter neededTA : vm.getRequiredTechnologyAdapters()) {
+					synchronizable = synchronizable && neededTA.isActivated();
+				}
+			}
+			return synchronizable;
 		}
-
-		/**
-		 * Return run-time value for {@link BindingVariable} variable
-		 * 
-		 * @param variable
-		 * @return
-		 */
-		/*@Override
-		public Object getValueForVariable(BindingVariable variable) {
-			logger.warning("Not implemented: getValueForVariable() " + variable);
-			return null;
-		}*/
 
 		@Override
 		public Object getObject(String objectURI) {
@@ -784,12 +1035,12 @@ public interface VirtualModelInstance extends FlexoConceptInstance, ResourceData
 		}
 
 		@Override
-		public VirtualModelInstance getVirtualModelInstance() {
+		public VirtualModelInstance<?, ?> getVirtualModelInstance() {
 			return this;
 		}
 
 		/**
-		 * Try to lookup supplied object in the whole VirtualModelInstance.<br>
+		 * Try to lookup supplied object in the whole FMLRTVirtualModelInstance.<br>
 		 * This means that each {@link FlexoConceptInstance} is checked for any of its roles to see if the reference is the supplied object
 		 * 
 		 * @param object
@@ -820,19 +1071,9 @@ public interface VirtualModelInstance extends FlexoConceptInstance, ResourceData
 		@Override
 		public Object getValue(BindingVariable variable) {
 
-			if (variable instanceof ModelSlotBindingVariable && getVirtualModel() != null) {
-				ModelSlot<?> ms = getVirtualModel().getModelSlot(variable.getVariableName());
-				if (ms != null) {
-					return getModelSlotInstance(ms).getAccessedResourceData();
-				}
-				logger.warning("Unexpected model slot " + variable);
-				return null;
-			} else if (variable.getVariableName().equals(VirtualModelBindingModel.REFLEXIVE_ACCESS_PROPERTY)) {
-				return getVirtualModel();
-			} else if (variable.getVariableName().equals(ViewPointBindingModel.VIEW_PROPERTY)) {
-				return getView();
-			} else if (variable.getVariableName().equals(VirtualModelBindingModel.VIRTUAL_MODEL_INSTANCE_PROPERTY)) {
-				return this;
+			if (variable.getVariableName().equals(FlexoConceptBindingModel.CONTAINER_PROPERTY)
+					&& getVirtualModel().getContainerVirtualModel() != null) {
+				return getContainerVirtualModelInstance();
 			}
 
 			Object returned = super.getValue(variable);
@@ -841,44 +1082,326 @@ public interface VirtualModelInstance extends FlexoConceptInstance, ResourceData
 				return returned;
 			}
 
-			// When not found, delegate it to the view
-			if (returned == null && getView() != null) {
-				return getView().getValue(variable);
+			// When not found, delegate it to the container virtual model instance
+			if (getContainerVirtualModelInstance() != null && getContainerVirtualModelInstance() != this) {
+				return getContainerVirtualModelInstance().getValue(variable);
 			}
 
-			logger.warning("Unexpected variable requested in VirtualModelInstance: " + variable + " of " + variable.getClass());
+			// Warning is not required, since it will will warn each time a value is null !
+			// logger.warning("Unexpected variable requested in FMLRTVirtualModelInstance: " + variable + " of " + variable.getClass());
 			return null;
 		}
 
 		@Override
 		public void setValue(Object value, BindingVariable variable) {
-			if (variable instanceof ModelSlotBindingVariable && getVirtualModel() != null) {
-				ModelSlot<?> ms = getVirtualModel().getModelSlot(variable.getVariableName());
-				if (ms != null) {
-					if (value instanceof ResourceData) {
-						((ModelSlotInstance) getModelSlotInstance(ms)).setAccessedResourceData((ResourceData) value);
-					} else {
-						logger.warning("Unexpected resource data " + value + " for model slot " + ms);
-					}
-				} else {
-					logger.warning("Unexpected property " + variable);
-				}
-				return;
-			} else if (variable.getVariableName().equals(VirtualModelBindingModel.REFLEXIVE_ACCESS_PROPERTY)) {
-				logger.warning("Forbidden write access " + VirtualModelBindingModel.REFLEXIVE_ACCESS_PROPERTY + " in " + this + " of "
-						+ getClass());
-				return;
-			} else if (variable.getVariableName().equals(ViewPointBindingModel.VIEW_PROPERTY)) {
-				logger.warning("Forbidden write access " + ViewPointBindingModel.VIEW_PROPERTY + " in " + this + " of " + getClass());
-				return;
-			} else if (variable.getVariableName().equals(VirtualModelBindingModel.VIRTUAL_MODEL_INSTANCE_PROPERTY)) {
-				logger.warning("Forbidden write access " + VirtualModelBindingModel.VIRTUAL_MODEL_INSTANCE_PROPERTY + " in " + this
-						+ " of " + getClass());
-				return;
-			}
 
 			super.setValue(value, variable);
 
+		}
+
+		public class FlexoConceptInstanceIndex<T> extends WeakHashMap<T, List<FlexoConceptInstance>> {
+
+			public class IndexedValueListener extends BindingValueChangeListener<T> {
+
+				private FlexoConceptInstance fci;
+				private T currentValue;
+
+				public IndexedValueListener(FlexoConceptInstance fci) {
+					super(indexableTerm, new BindingEvaluationContext() {
+						@Override
+						public Object getValue(BindingVariable variable) {
+							if (variable.getVariableName().equals(FetchRequestCondition.SELECTED)) {
+								return fci;
+							}
+							return fci.getValue(variable);
+						}
+					});
+					this.fci = fci;
+					try {
+						currentValue = indexableTerm.getBindingValue(getContext());
+					} catch (TypeMismatchException e) {
+						e.printStackTrace();
+					} catch (NullReferenceException e) {
+						e.printStackTrace();
+					} catch (InvocationTargetException e) {
+						e.printStackTrace();
+					}
+
+					if (logger.isLoggable(Level.FINE)) {
+						logger.fine("For " + fci + " value=" + currentValue);
+					}
+				}
+
+				public T getCurrentValue() {
+					return currentValue;
+				}
+
+				@Override
+				public void bindingValueChanged(Object source, T newValue) {
+					if (logger.isLoggable(Level.FINE)) {
+						logger.fine("******** For FCI " + fci + " evaluated value of " + indexableTerm + " changed from " + currentValue
+								+ " to " + newValue);
+					}
+					List<FlexoConceptInstance> oldList = FlexoConceptInstanceIndex.this.get(currentValue);
+					if (oldList != null) {
+						oldList.remove(fci);
+					}
+					List<FlexoConceptInstance> newList = FlexoConceptInstanceIndex.this.get(newValue);
+					if (newList == null) {
+						newList = new ArrayList<>();
+						FlexoConceptInstanceIndex.this.put(newValue, newList);
+					}
+
+					newList.add(fci);
+				}
+
+			}
+
+			private FlexoConceptInstanceType type;
+			private DataBinding<T> indexableTerm;
+
+			private boolean needsReindex = true;
+
+			private WeakHashMap<FlexoConceptInstance, IndexedValueListener> listeners = new WeakHashMap<>();
+
+			public FlexoConceptInstanceIndex(FlexoConceptInstanceType type, DataBinding<T> indexableTerm) {
+				this.type = type;
+				this.indexableTerm = indexableTerm;
+			}
+
+			public void updateWhenRequired() {
+				if (needsReindex) {
+					updateIndex();
+				}
+			}
+
+			private void updateIndex() {
+				if (logger.isLoggable(Level.FINE)) {
+					logger.fine("Computing index for " + this + " type=" + type + " with indexable term " + indexableTerm);
+				}
+				for (BindingValueChangeListener<T> l : listeners.values()) {
+					l.stopObserving();
+					l.delete();
+				}
+				listeners.clear();
+				clear();
+				for (FlexoConceptInstance fci : getFlexoConceptInstances(type.getFlexoConcept())) {
+					indexFlexoConceptInstance(fci);
+				}
+				needsReindex = false;
+			}
+
+			private void indexFlexoConceptInstance(FlexoConceptInstance fci) {
+
+				IndexedValueListener l = new IndexedValueListener(fci);
+				listeners.put(fci, l);
+
+				List<FlexoConceptInstance> fciList = get(l.getCurrentValue());
+				if (fciList == null) {
+					fciList = new ArrayList<>();
+					put(l.getCurrentValue(), fciList);
+				}
+
+				fciList.add(fci);
+			}
+
+			public void contentsAdded(FlexoConceptInstance objectBeeingAdded) {
+				if (logger.isLoggable(Level.FINE)) {
+					logger.fine("contentsAdded() for " + objectBeeingAdded + " indexableTerm=" + indexableTerm);
+				}
+				needsReindex = true;
+			}
+
+			public void contentsRemoved(FlexoConceptInstance objectBeeingRemoved) {
+				if (logger.isLoggable(Level.FINE)) {
+					logger.fine("contentsRemoved() for " + objectBeeingRemoved + " indexableTerm=" + indexableTerm);
+				}
+				needsReindex = true;
+				/*for (List<FlexoConceptInstance> l : values()) {
+					l.remove(objectBeeingRemoved);
+				}*/
+			}
+		}
+
+		@Override
+		public FlexoConceptInstanceIndex getIndex(Type type, DataBinding<?> indexableTerm) {
+			if (logger.isLoggable(Level.FINE)) {
+				logger.fine("Retrieving index for " + type + " and " + indexableTerm);
+			}
+
+			/*System.out.println("Retrieving index for " + type + " and " + indexableTerm);
+			
+			System.out.println("Les FCI par type:");
+			
+			for (FlexoConcept c : flexoConceptInstances.keySet()) {
+				System.out.println("Concept " + c);
+				for (FlexoConceptInstance fci : flexoConceptInstances.get(c)) {
+					System.out.println(" > " + fci);
+				}
+			}
+			
+			System.out.println("Les indexes:");
+			for (Type t : indexes.keySet()) {
+				System.out.println("Index for " + t);
+				Map<String, FlexoConceptInstanceIndex> map = indexes.get(t);
+				for (String s : map.keySet()) {
+					System.out.println(" > " + s + " : " + map.get(s));
+				}
+			}*/
+
+			if (type instanceof FlexoConceptInstanceType) {
+				Map<String, FlexoConceptInstanceIndex<?>> mapForType = indexes.get(type);
+				if (mapForType == null) {
+					mapForType = new WeakHashMap<>();
+					indexes.put(type, mapForType);
+				}
+				FlexoConceptInstanceIndex<?> returned = mapForType.get(indexableTerm.toString());
+				if (returned == null) {
+					returned = makeIndex((FlexoConceptInstanceType) type, indexableTerm);
+					mapForType.put(indexableTerm.toString(), returned);
+				}
+				// Now compute index when required
+				returned.updateWhenRequired();
+
+				// System.out.println("return " + returned);
+
+				return returned;
+			}
+			return null;
+		}
+
+		public <T> FlexoConceptInstanceIndex<T> makeIndex(FlexoConceptInstanceType type, DataBinding<T> indexableTerm) {
+			return new FlexoConceptInstanceIndex<>(type, indexableTerm);
+		}
+
+		@Override
+		public void contentsAdded(FlexoConceptInstance objectBeeingAdded) {
+			contentsAdded(objectBeeingAdded, objectBeeingAdded.getFlexoConcept());
+		}
+
+		@Override
+		public void contentsRemoved(FlexoConceptInstance objectBeeingAdded) {
+			contentsRemoved(objectBeeingAdded, objectBeeingAdded.getFlexoConcept());
+		}
+
+		@Override
+		public void contentsAdded(FlexoConceptInstance objectBeeingAdded, FlexoConcept concept) {
+			FlexoConceptInstanceType type = concept.getInstanceType();
+			Map<String, FlexoConceptInstanceIndex<?>> mapForType = indexes.get(type);
+			if (mapForType != null) {
+				for (FlexoConceptInstanceIndex<?> index : mapForType.values()) {
+					index.contentsAdded(objectBeeingAdded);
+				}
+			}
+		}
+
+		@Override
+		public void contentsRemoved(FlexoConceptInstance objectBeeingRemoved, FlexoConcept concept) {
+			FlexoConceptInstanceType type = concept.getInstanceType();
+			Map<String, FlexoConceptInstanceIndex<?>> mapForType = indexes.get(type);
+			if (mapForType != null) {
+				for (FlexoConceptInstanceIndex<?> index : mapForType.values()) {
+					index.contentsRemoved(objectBeeingRemoved);
+				}
+			}
+		}
+
+		/**
+		 * Delete all instances of this {@link FMLRTVirtualModelInstance}
+		 */
+		@Override
+		public void clear() {
+			for (FlexoConceptInstance fci : new ArrayList<>(getFlexoConceptInstances())) {
+				fci.delete();
+			}
+		}
+
+		@Override
+		public List<VirtualModelInstance<?, ?>> getVirtualModelInstances() {
+			if (getResource() != null && !getResource().isDeserializing()) {
+				loadVirtualModelInstancesWhenUnloaded();
+			}
+			return (List<VirtualModelInstance<?, ?>>) performSuperGetter(VIRTUAL_MODEL_INSTANCES_KEY);
+		}
+
+		@Override
+		public List<VirtualModelInstance<?, ?>> getVirtualModelInstancesForVirtualModel(final VirtualModel virtualModel) {
+			List<VirtualModelInstance<?, ?>> returned = new ArrayList<>();
+			for (VirtualModelInstance<?, ?> vmi : getVirtualModelInstances()) {
+				if (virtualModel.isAssignableFrom(vmi.getVirtualModel())) {
+					returned.add(vmi);
+				}
+			}
+			return returned;
+		}
+
+		/**
+		 * Load eventually unloaded VirtualModelInstances<br>
+		 * After this call return, we can assert that all {@link FMLRTVirtualModelInstance} are loaded.
+		 */
+		private void loadVirtualModelInstancesWhenUnloaded() {
+			for (org.openflexo.foundation.resource.FlexoResource<?> r : getResource().getContents()) {
+				if (r instanceof AbstractVirtualModelInstanceResource) {
+					((AbstractVirtualModelInstanceResource<?, ?>) r).getVirtualModelInstance();
+				}
+			}
+		}
+
+		@Override
+		public VirtualModelInstance<?, ?> getVirtualModelInstance(String name) {
+			for (VirtualModelInstance<?, ?> vmi : getVirtualModelInstances()) {
+				String lName = vmi.getName();
+				if (lName != null) {
+					if (vmi.getName().equals(name)) {
+						return vmi;
+					}
+				}
+				else {
+					logger.warning("Name of VirtualModel is null: " + this.toString());
+				}
+			}
+			return null;
+		}
+
+		@Override
+		public boolean isValidVirtualModelInstanceName(String virtualModelName) {
+			return getVirtualModelInstance(virtualModelName) == null;
+		}
+
+		/*@Deprecated
+		@Override
+		public ViewLibrary<?> getViewLibrary() {
+		
+			FlexoResourceCenter<?> rc = getResourceCenter();
+			FMLRTTechnologyAdapter rtTA = rc.getServiceManager().getTechnologyAdapterService()
+					.getTechnologyAdapter(FMLRTTechnologyAdapter.class);
+			return rtTA.getViewRepository(rc);
+		}*/
+
+		/*@Deprecated
+		@Override
+		public RepositoryFolder<AbstractVirtualModelInstanceResource<VMI, TA>, ?> getFolder() {
+			if (getResource() != null) {
+				return ((ViewLibrary) getViewLibrary()).getParentFolder(getResource());
+			}
+			return null;
+		}*/
+
+		/**
+		 * Return the list of {@link TechnologyAdapter} used in the context of this {@link View}
+		 * 
+		 * @return
+		 */
+		@Override
+		public List<TechnologyAdapter> getRequiredTechnologyAdapters() {
+			if (getVirtualModel() != null) {
+				List<TechnologyAdapter> returned = getVirtualModel().getRequiredTechnologyAdapters();
+				if (!returned.contains(getTechnologyAdapter())) {
+					returned.add(getTechnologyAdapter());
+				}
+				return returned;
+			}
+			return Collections.singletonList((TechnologyAdapter) getTechnologyAdapter());
 		}
 
 	}

@@ -38,122 +38,82 @@
 
 package org.openflexo.foundation.fml.rt.action;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Vector;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.openflexo.connie.BindingVariable;
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoException;
-import org.openflexo.foundation.fml.FlexoBehaviour;
+import org.openflexo.foundation.action.FlexoAction;
 import org.openflexo.foundation.fml.SynchronizationScheme;
-import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.foundation.fml.rt.VirtualModelInstanceObject;
 
-public class SynchronizationSchemeAction extends
-		FlexoBehaviourAction<SynchronizationSchemeAction, SynchronizationScheme, VirtualModelInstance> {
+/**
+ * Provides execution environment of a {@link SynchronizationScheme} on a given {@link VirtualModelInstance} as a {@link FlexoAction}
+ *
+ * An {@link SynchronizationSchemeAction} represents the execution (in the "instances" world) of a {@link SynchronizationScheme}.<br>
+ * To be used and executed on Openflexo platform, it is wrapped in a {@link FlexoAction}.<br>
+ * 
+ * @author sylvain
+ */
+public class SynchronizationSchemeAction
+		extends AbstractActionSchemeAction<SynchronizationSchemeAction, SynchronizationScheme, VirtualModelInstance<?, ?>> {
 
 	private static final Logger logger = Logger.getLogger(SynchronizationSchemeAction.class.getPackage().getName());
 
-	private final SynchronizationSchemeActionType actionType;
-
-	public SynchronizationSchemeAction(SynchronizationSchemeActionType actionType, VirtualModelInstance focusedObject,
+	/**
+	 * Constructor to be used with a factory
+	 * 
+	 * @param actionFactory
+	 * @param focusedObject
+	 * @param globalSelection
+	 * @param editor
+	 */
+	public SynchronizationSchemeAction(SynchronizationSchemeActionFactory actionFactory, VirtualModelInstance<?, ?> focusedObject,
 			Vector<VirtualModelInstanceObject> globalSelection, FlexoEditor editor) {
-		super(actionType, focusedObject, globalSelection, editor);
-		this.actionType = actionType;
-	}
-
-	public SynchronizationScheme getSynchronizationScheme() {
-		if (actionType != null) {
-			return actionType.getSynchronizationScheme();
-		}
-		return null;
+		super(actionFactory, focusedObject, globalSelection, editor);
 	}
 
 	/**
-	 * Return the {@link FlexoConceptInstance} on which this {@link FlexoBehaviour} is applied.<br>
-	 * Note that here, the returned {@link FlexoConceptInstance} is the {@link VirtualModelInstance} which is to be synchronized
+	 * Constructor to be used for creating a new action without factory
 	 * 
-	 * @return
+	 * @param flexoBehaviour
+	 * @param focusedObject
+	 * @param globalSelection
+	 * @param editor
 	 */
-	@Override
-	public VirtualModelInstance getFlexoConceptInstance() {
-		if (actionType != null) {
-			return (VirtualModelInstance) actionType.getFlexoConceptInstance();
-		}
-		return null;
+	public SynchronizationSchemeAction(SynchronizationScheme behaviour, VirtualModelInstance<?, ?> focusedObject,
+			Vector<VirtualModelInstanceObject> globalSelection, FlexoEditor editor) {
+		super(behaviour, focusedObject, globalSelection, editor);
 	}
 
-	@Override
-	public SynchronizationScheme getFlexoBehaviour() {
-		return getSynchronizationScheme();
+	/**
+	 * Constructor to be used for creating a new action as an action embedded in another one
+	 * 
+	 * @param flexoBehaviour
+	 * @param focusedObject
+	 * @param globalSelection
+	 * @param ownerAction
+	 *            Action in which action to be created will be embedded
+	 */
+	public SynchronizationSchemeAction(SynchronizationScheme behaviour, VirtualModelInstance<?, ?> focusedObject,
+			Vector<VirtualModelInstanceObject> globalSelection, FlexoAction<?, ?, ?> ownerAction) {
+		super(behaviour, focusedObject, globalSelection, ownerAction);
+	}
+
+	public SynchronizationScheme getSynchronizationScheme() {
+		return getFlexoBehaviour();
 	}
 
 	@Override
 	protected void doAction(Object context) throws FlexoException {
-		if (logger.isLoggable(Level.INFO)) {
-			logger.info("Perform action " + actionType);
-		}
 
-		if (getSynchronizationScheme() != null && getSynchronizationScheme().evaluateCondition(actionType.getFlexoConceptInstance())) {
+		if (getSynchronizationScheme() != null && getSynchronizationScheme().evaluateCondition(getFlexoConceptInstance())) {
 
 			// System.out.println("Executing code: ");
 			// System.out.println(getSynchronizationScheme().getFMLRepresentation());
-			applyEditionActions();
+			executeControlGraph();
 		}
-	}
-
-	@Override
-	protected void applyEditionActions() throws FlexoException {
-		beginSynchronization();
-		super.applyEditionActions();
-		endSynchronization();
-	}
-
-	/**
-	 * Return {@link VirtualModelInstance} in which synchronized {@link VirtualModelInstance} does exist
-	 */
-	@Override
-	public VirtualModelInstance retrieveVirtualModelInstance() {
-		/*if (getFlexoConceptInstance() instanceof VirtualModelInstance) {
-			return (VirtualModelInstance) getFlexoConceptInstance();
-		}*/
-		if (getFlexoConceptInstance() != null) {
-			return getFlexoConceptInstance().getVirtualModelInstance();
-		}
-		/*if (getFocusedObject() instanceof DiagramElement<?>) {
-			return ((DiagramElement<?>) getFocusedObject()).getDiagram();
-		}*/
-		return null;
-	}
-
-	private List<FlexoConceptInstance> episToBeRemoved;
-
-	public void beginSynchronization() {
-		// System.out.println("BEGIN synchronization on " + getVirtualModelInstance());
-		episToBeRemoved = new ArrayList<FlexoConceptInstance>();
-		episToBeRemoved.addAll(getFocusedObject().getFlexoConceptInstances());
-	}
-
-	public void endSynchronization() {
-		// System.out.println("END synchronization on " + getVirtualModelInstance());
-		for (FlexoConceptInstance epi : episToBeRemoved) {
-			epi.delete();
-			getVirtualModelInstance().removeFromFlexoConceptInstances(epi);
-		}
-	}
-
-	@Override
-	public void foundMatchingFlexoConceptInstance(FlexoConceptInstance matchingFlexoConceptInstance) {
-		episToBeRemoved.remove(matchingFlexoConceptInstance);
-	}
-
-	@Override
-	public Object getValue(BindingVariable variable) {
-		return super.getValue(variable);
 	}
 
 }

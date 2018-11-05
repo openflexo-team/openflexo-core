@@ -43,19 +43,17 @@ import java.util.List;
 import java.util.Vector;
 import java.util.logging.Logger;
 
+import org.openflexo.connie.Bindable;
 import org.openflexo.connie.BindingModel;
+import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.binding.Function;
 import org.openflexo.connie.type.TypeUtils;
 import org.openflexo.foundation.DataModification;
 import org.openflexo.foundation.fml.FMLRepresentationContext.FMLRepresentationOutput;
 import org.openflexo.foundation.fml.binding.FlexoBehaviourBindingModel;
 import org.openflexo.foundation.fml.controlgraph.FMLControlGraph;
-import org.openflexo.foundation.fml.controlgraph.FMLControlGraphConverter;
 import org.openflexo.foundation.fml.controlgraph.FMLControlGraphOwner;
-import org.openflexo.foundation.fml.editionaction.AssignableAction;
-import org.openflexo.foundation.fml.editionaction.EditionAction;
-import org.openflexo.foundation.fml.editionaction.TechnologySpecificAction;
-import org.openflexo.foundation.technologyadapter.ModelSlot;
+import org.openflexo.foundation.fml.controlgraph.FMLControlGraphVisitor;
 import org.openflexo.logging.FlexoLogger;
 import org.openflexo.model.annotations.Adder;
 import org.openflexo.model.annotations.CloningStrategy;
@@ -74,7 +72,6 @@ import org.openflexo.model.annotations.Remover;
 import org.openflexo.model.annotations.Setter;
 import org.openflexo.model.annotations.XMLAttribute;
 import org.openflexo.model.annotations.XMLElement;
-import org.openflexo.toolbox.ChainedCollection;
 import org.openflexo.toolbox.StringUtils;
 
 /**
@@ -86,11 +83,56 @@ import org.openflexo.toolbox.StringUtils;
 @ModelEntity(isAbstract = true)
 @ImplementationClass(FlexoBehaviour.FlexoBehaviourImpl.class)
 @Imports({ @Import(ActionScheme.class), @Import(DeletionScheme.class), @Import(NavigationScheme.class),
-		@Import(SynchronizationScheme.class), @Import(CreationScheme.class), @Import(CloningScheme.class) })
-public interface FlexoBehaviour extends FlexoBehaviourObject, ActionContainer, Function, FMLControlGraphOwner {
+		@Import(SynchronizationScheme.class), @Import(CreationScheme.class), @Import(CloningScheme.class), @Import(EventListener.class) })
+public interface FlexoBehaviour extends FlexoBehaviourObject, Function, FMLControlGraphOwner {
 
-	// public static final String FLEXO_BEHAVIOUR_INSTANCE = "flexoBehaviourInstance";
-	// public static final String VIRTUAL_MODEL_INSTANCE = "virtualModelInstance";
+	/**
+	 * Visibility for a behaviour
+	 * 
+	 * @author sylvain
+	 *
+	 */
+	public enum Visibility {
+		/**
+		 * Default visibility: limited to FML scope, not available from public API
+		 */
+		Default {
+			@Override
+			public String getFMLRepresentation() {
+				return "";
+			}
+		},
+		/**
+		 * Public visibility: behaviours are accessible from everywhere. In the whole tooling, it means that for example behaviours are
+		 * available through right-clicking on instances
+		 */
+		Public {
+			@Override
+			public String getFMLRepresentation() {
+				return "public ";
+			}
+		},
+		/**
+		 * Visibility restricted to current FlexoConcept hierarchy and current ViewPoint
+		 */
+		Protected {
+			@Override
+			public String getFMLRepresentation() {
+				return "protected ";
+			}
+		},
+		/**
+		 * Visibility restricted to current FlexoConcept
+		 */
+		Private {
+			@Override
+			public String getFMLRepresentation() {
+				return "private ";
+			}
+		};
+
+		public abstract String getFMLRepresentation();
+	}
 
 	@PropertyIdentifier(type = FlexoConcept.class)
 	public static final String FLEXO_CONCEPT_KEY = "flexoConcept";
@@ -98,8 +140,12 @@ public interface FlexoBehaviour extends FlexoBehaviourObject, ActionContainer, F
 	public static final String NAME_KEY = "name";
 	@PropertyIdentifier(type = String.class)
 	public static final String LABEL_KEY = "label";
+	@PropertyIdentifier(type = Visibility.class)
+	public static final String VISIBILITY_KEY = "visibility";
 	@PropertyIdentifier(type = boolean.class)
 	public static final String SKIP_CONFIRMATION_PANEL_KEY = "skipConfirmationPanel";
+	@PropertyIdentifier(type = boolean.class)
+	public static final String LONG_RUNNING_ACTION_KEY = "longRunningAction";
 	@PropertyIdentifier(type = boolean.class)
 	public static final String DEFINE_POPUP_DEFAULT_SIZE_KEY = "definePopupDefaultSize";
 	@PropertyIdentifier(type = int.class)
@@ -110,12 +156,13 @@ public interface FlexoBehaviour extends FlexoBehaviourObject, ActionContainer, F
 	public static final String DESCRIPTION_KEY = "description";
 	@PropertyIdentifier(type = Vector.class)
 	public static final String PARAMETERS_KEY = "parameters";
-
+	@PropertyIdentifier(type = DataBinding.class)
+	public static final String STEPS_NUMBER_KEY = "stepsNumber";
 	@PropertyIdentifier(type = FMLControlGraph.class)
 	public static final String CONTROL_GRAPH_KEY = "controlGraph";
 
 	@Getter(value = CONTROL_GRAPH_KEY, inverse = FMLControlGraph.OWNER_KEY)
-	@CloningStrategy(StrategyType.IGNORE)
+	@CloningStrategy(StrategyType.CLONE)
 	@XMLElement(context = "BehaviourControlGraph_")
 	@Embedded
 	public FMLControlGraph getControlGraph();
@@ -130,6 +177,9 @@ public interface FlexoBehaviour extends FlexoBehaviourObject, ActionContainer, F
 
 	@Setter(FLEXO_CONCEPT_KEY)
 	public void setFlexoConcept(FlexoConcept flexoConcept);
+
+	@Override
+	public Type getReturnType();
 
 	@Override
 	@Getter(value = NAME_KEY)
@@ -147,12 +197,33 @@ public interface FlexoBehaviour extends FlexoBehaviourObject, ActionContainer, F
 	@Setter(LABEL_KEY)
 	public void setLabel(String label);
 
-	@Getter(value = SKIP_CONFIRMATION_PANEL_KEY, defaultValue = "false")
+	@Getter(value = VISIBILITY_KEY, defaultValue = "Default")
+	@XMLAttribute
+	public Visibility getVisibility();
+
+	@Setter(VISIBILITY_KEY)
+	public void setVisibility(Visibility visibility);
+
+	@Getter(value = SKIP_CONFIRMATION_PANEL_KEY, defaultValue = "true")
 	@XMLAttribute
 	public boolean getSkipConfirmationPanel();
 
 	@Setter(SKIP_CONFIRMATION_PANEL_KEY)
 	public void setSkipConfirmationPanel(boolean skipConfirmationPanel);
+
+	@Getter(value = LONG_RUNNING_ACTION_KEY, defaultValue = "false")
+	@XMLAttribute
+	public boolean getLongRunningAction();
+
+	@Setter(LONG_RUNNING_ACTION_KEY)
+	public void setLongRunningAction(boolean isLongRunningAction);
+
+	@Getter(value = STEPS_NUMBER_KEY)
+	@XMLAttribute
+	public DataBinding<Integer> getStepsNumber();
+
+	@Setter(STEPS_NUMBER_KEY)
+	public void setStepsNumber(DataBinding<Integer> stepsNumber);
 
 	@Getter(value = DEFINE_POPUP_DEFAULT_SIZE_KEY, defaultValue = "false")
 	@XMLAttribute
@@ -179,7 +250,7 @@ public interface FlexoBehaviour extends FlexoBehaviourObject, ActionContainer, F
 	@Getter(value = DESCRIPTION_KEY)
 	@XMLElement
 	public String getDescription();
-
+	
 	@Override
 	@Setter(DESCRIPTION_KEY)
 	public void setDescription(String description);*/
@@ -187,6 +258,7 @@ public interface FlexoBehaviour extends FlexoBehaviourObject, ActionContainer, F
 	@Getter(value = PARAMETERS_KEY, cardinality = Cardinality.LIST, inverse = FlexoBehaviourParameter.FLEXO_BEHAVIOUR_KEY)
 	@Embedded
 	@XMLElement
+	@CloningStrategy(StrategyType.CLONE)
 	public List<FlexoBehaviourParameter> getParameters();
 
 	@Setter(PARAMETERS_KEY)
@@ -228,19 +300,51 @@ public interface FlexoBehaviour extends FlexoBehaviourObject, ActionContainer, F
 	@Override
 	public FlexoBehaviourBindingModel getBindingModel();
 
+	/**
+	 * Return flag indicating if this behaviour overrides supplied behaviour<br>
+	 * Return true if and only if name and signature equals, and if both declared concepts are not the same and if there are directely
+	 * connected without any intermediate implementation
+	 * 
+	 * @param behaviour
+	 * @return
+	 */
+	public boolean overrides(FlexoBehaviour behaviour);
+
+	/**
+	 * Return flag indicating if this behaviour is overriden in supplied context
+	 * 
+	 * @param context
+	 * @return
+	 */
+	public boolean isOverridenInContext(FlexoConcept context);
+
+	/**
+	 * Return the most specialized behaviour to execute matching supplied behaviour name and signature<br>
+	 * (dynamic binding: can be only supplied behaviour or an other behaviour overriding supplied behaviour)
+	 * 
+	 * @param behaviour
+	 * @param context
+	 * @return
+	 */
+	public FlexoBehaviour getMostSpecializedBehaviour(FlexoConcept context);
+
+	/**
+	 * Return a flag indicating if this behaviour support custom definition of parameters<br>
+	 * Default implementation is to return true
+	 * 
+	 * @return
+	 */
+	public boolean supportParameters();
+
 	public static abstract class FlexoBehaviourImpl extends FlexoBehaviourObjectImpl implements FlexoBehaviour {
 
 		protected FlexoBehaviourBindingModel bindingModel;
-
-		// protected BindingModel _bindingModel;
 
 		protected static final Logger logger = FlexoLogger.getLogger(FlexoBehaviour.class.getPackage().getName());
 
 		private String name;
 		private String label;
-		private boolean skipConfirmationPanel = false;
 
-		private boolean definePopupDefaultSize = false;
 		private int width = 800;
 		private int height = 600;
 
@@ -249,10 +353,15 @@ public interface FlexoBehaviour extends FlexoBehaviourObject, ActionContainer, F
 		private final FlexoBehaviourParametersType flexoBehaviourParametersType = new FlexoBehaviourParametersType(this);
 		private final FlexoBehaviourParametersValuesType flexoBehaviourParametersValuesType = new FlexoBehaviourParametersValuesType(this);
 
-		/**
-		 * Stores a chained collections of objects which are involved in validation
-		 */
-		private final ChainedCollection<FMLObject> validableObjects = null;
+		private DataBinding<Integer> stepsNumber;
+
+		@Override
+		public Type getReturnType() {
+			if (getControlGraph() != null) {
+				return getControlGraph().getInferedType();
+			}
+			return Void.TYPE;
+		}
 
 		@Override
 		public FlexoBehaviourType getFlexoBehaviourType() {
@@ -279,11 +388,17 @@ public interface FlexoBehaviour extends FlexoBehaviourObject, ActionContainer, F
 			return (getFlexoConcept() != null ? getFlexoConcept().getStringRepresentation() : "null") + "." + getName();
 		}
 
+		protected String getFMLAnnotation(FMLRepresentationContext context) {
+			return "@" + getImplementedInterface().getSimpleName();
+		}
+
 		@Override
 		public String getFMLRepresentation(FMLRepresentationContext context) {
 			FMLRepresentationOutput out = new FMLRepresentationOutput(context);
-			out.append(getImplementedInterface().getSimpleName() + " " + getName() + "(" + getParametersFMLRepresentation(context) + ") {",
-					context);
+			out.append(getFMLAnnotation(context), context);
+			out.append(StringUtils.LINE_SEPARATOR, context);
+			out.append(getVisibility().getFMLRepresentation() + TypeUtils.simpleRepresentation(getReturnType()) + " " + getName() + "("
+					+ getParametersFMLRepresentation(context) + ") {", context);
 			out.append(StringUtils.LINE_SEPARATOR, context);
 			if (getControlGraph() != null) {
 				out.append(getControlGraph().getFMLRepresentation(context), context, 1);
@@ -292,6 +407,10 @@ public interface FlexoBehaviour extends FlexoBehaviourObject, ActionContainer, F
 			out.append("}", context);
 			out.append(StringUtils.LINE_SEPARATOR, context);
 			return out.toString();
+		}
+
+		protected String getTechnologyAdapterIdentifier() {
+			return "FML";
 		}
 
 		protected String getParametersFMLRepresentation(FMLRepresentationContext context) {
@@ -341,266 +460,87 @@ public interface FlexoBehaviour extends FlexoBehaviourObject, ActionContainer, F
 			this.label = label;
 		}
 
-		/*@Override
-		public FlexoConcept getFlexoConcept() {
-			return _flexoConcept;
-		}*/
-
-		/*@Override
-		public void setFlexoConcept(FlexoConcept flexoConcept) {
-			performSuperSetter(FLEXO_CONCEPT_KEY, flexoConcept);
-			// _flexoConcept = flexoConcept;
-			//updateBindingModels();
-		}*/
-
-		/*@Override
-		public Vector<EditionAction> getActions() {
-			return actions;
-		}
-
 		@Override
-		public void setActions(Vector<EditionAction> actions) {
-			this.actions = actions;
-			setChanged();
-			notifyObservers();
-		}
-
-		@Override
-		public void addToActions(EditionAction action) {
-			// action.setScheme(this);
-			action.setActionContainer(this);
-			actions.add(action);
-			setChanged();
-			notifyObservers();
-			notifyChange("actions", null, actions);
-		}
-
-		@Override
-		public void removeFromActions(EditionAction action) {
-			// action.setScheme(null);
-			action.setActionContainer(null);
-			actions.remove(action);
-			setChanged();
-			notifyObservers();
-			notifyChange("actions", null, actions);
-		}*/
-
-		/*@Override
-		public int getIndex(EditionAction action) {
-			return actions.indexOf(action);
-		}
-
-		@Override
-		public void insertActionAtIndex(EditionAction action, int index) {
-			// action.setScheme(this);
-			action.setActionContainer(this);
-			actions.insertElementAt(action, index);
-			setChanged();
-			notifyObservers();
-			notifyChange("actions", null, actions);
-		}
-
-		@Override
-		public void actionFirst(EditionAction a) {
-			actions.remove(a);
-			actions.insertElementAt(a, 0);
-			setChanged();
-			notifyChange("actions", null, actions);
-		}
-
-		@Override
-		public void actionUp(EditionAction a) {
-			int index = actions.indexOf(a);
-			if (index > 0) {
-				actions.remove(a);
-				actions.insertElementAt(a, index - 1);
-				setChanged();
-				notifyChange("actions", null, actions);
-			}
-		}
-
-		@Override
-		public void actionDown(EditionAction a) {
-			int index = actions.indexOf(a);
-			if (index > -1) {
-				actions.remove(a);
-				actions.insertElementAt(a, index + 1);
-				setChanged();
-				notifyChange("actions", null, actions);
-			}
-		}
-
-		@Override
-		public void actionLast(EditionAction a) {
-			actions.remove(a);
-			actions.add(a);
-			setChanged();
-			notifyChange("actions", null, actions);
-		}
-		 */
-
-		@Override
-		public void actionFirst(EditionAction a) {
-			getActions().remove(a);
-			getActions().add(0, a);
-			getPropertyChangeSupport().firePropertyChange(ACTIONS_KEY, null, getActions());
-		}
-
-		@Override
-		public void actionUp(EditionAction a) {
-			int index = getActions().indexOf(a);
-			if (index > 0) {
-				getActions().remove(a);
-				getActions().add(index - 1, a);
-				getPropertyChangeSupport().firePropertyChange(ACTIONS_KEY, null, getActions());
-			}
-		}
-
-		@Override
-		public void actionDown(EditionAction a) {
-			int index = getActions().indexOf(a);
-			if (index > -1) {
-				getActions().remove(a);
-				getActions().add(index + 1, a);
-				getPropertyChangeSupport().firePropertyChange(ACTIONS_KEY, null, getActions());
-			}
-		}
-
-		@Override
-		public void actionLast(EditionAction a) {
-			getActions().remove(a);
-			getActions().add(a);
-			getPropertyChangeSupport().firePropertyChange(ACTIONS_KEY, null, getActions());
-		}
-
-		/*	@Override
-			public Vector<FlexoBehaviourParameter> getParameters() {
-				return parameters;
-			}*/
-
-		/*@Override
 		public void setParameters(List<FlexoBehaviourParameter> someParameters) {
+			String oldSignature = getSignature();
 			performSuperSetter(PARAMETERS_KEY, someParameters);
-			updateBindingModels();
+			updateSignature(oldSignature);
 		}
 
 		@Override
 		public void addToParameters(FlexoBehaviourParameter parameter) {
+			String oldSignature = getSignature();
 			performSuperAdder(PARAMETERS_KEY, parameter);
-			updateBindingModels();
+			updateSignature(oldSignature);
 		}
 
 		@Override
 		public void removeFromParameters(FlexoBehaviourParameter parameter) {
+			String oldSignature = getSignature();
 			performSuperRemover(PARAMETERS_KEY, parameter);
-			updateBindingModels();
-		}*/
+			updateSignature(oldSignature);
+		}
 
 		@Override
 		public void parameterFirst(FlexoBehaviourParameter p) {
-			System.out.println("parameterFirst()");
+			String oldSignature = getSignature();
 			getParameters().remove(p);
 			getParameters().add(0, p);
 			setChanged();
 			notifyObservers(new DataModification("parameters", null, getParameters()));
+			updateSignature(oldSignature);
 		}
 
 		@Override
 		public void parameterUp(FlexoBehaviourParameter p) {
-			System.out.println("parameterUp()");
 			int index = getParameters().indexOf(p);
 			if (index > 0) {
+				String oldSignature = getSignature();
 				getParameters().remove(p);
 				getParameters().add(index - 1, p);
 				setChanged();
 				notifyObservers(new DataModification("parameters", null, getParameters()));
+				updateSignature(oldSignature);
 			}
 		}
 
 		@Override
 		public void parameterDown(FlexoBehaviourParameter p) {
-			System.out.println("parameterDown()");
 			int index = getParameters().indexOf(p);
 			if (index > -1) {
+				String oldSignature = getSignature();
 				getParameters().remove(p);
 				getParameters().add(index + 1, p);
 				setChanged();
 				notifyObservers(new DataModification("parameters", null, getParameters()));
+				updateSignature(oldSignature);
 			}
 		}
 
 		@Override
 		public void parameterLast(FlexoBehaviourParameter p) {
-			System.out.println("parameterLast()");
+			String oldSignature = getSignature();
 			getParameters().remove(p);
 			getParameters().add(p);
 			setChanged();
 			notifyObservers(new DataModification("parameters", null, getParameters()));
-		}
-
-		/*public FlexoBehaviourParameter getParameter(String name) {
-			if (name == null) {
-				return null;
-			}
-			for (FlexoBehaviourParameter p : parameters) {
-				if (name.equals(p.getName())) {
-					return p;
-				}
-			}
-			return null;
-		}*/
-
-		/*@Override
-		public VirtualModel getVirtualModel() {
-			if (getFlexoConcept() != null && getFlexoConcept().getVirtualModel() != null) {
-				return getFlexoConcept().getVirtualModel();
-			}
-			if (getFlexoConcept() instanceof VirtualModel) {
-				return (VirtualModel) getFlexoConcept();
-			}
-			return null;
-		}*/
-
-		/**
-		 * Creates a new {@link EditionAction} of supplied class, and add it at the end of action list<br>
-		 * Delegates creation to model slot
-		 * 
-		 * @return newly created {@link EditionAction}
-		 */
-		@Override
-		public <A extends TechnologySpecificAction<?, ?>> A createAction(Class<A> actionClass, ModelSlot<?> modelSlot) {
-			A newAction = modelSlot.createAction(actionClass);
-			addToActions(newAction);
-			return newAction;
-		}
-
-		@Override
-		public EditionAction deleteAction(EditionAction anAction) {
-			removeFromActions(anAction);
-			anAction.delete();
-			return anAction;
+			updateSignature(oldSignature);
 		}
 
 		@Override
 		public void finalizeDeserialization() {
+			if (getControlGraph() != null) {
+				getControlGraph().accept(new FMLControlGraphVisitor() {
+					@Override
+					public void visit(FMLControlGraph controlGraph) {
+						controlGraph.finalizeDeserialization();
+					}
+				});
+			}
+
 			super.finalizeDeserialization();
-			// updateBindingModels();
-		}
 
-		@Override
-		public boolean getSkipConfirmationPanel() {
-			return skipConfirmationPanel;
 		}
-
-		@Override
-		public void setSkipConfirmationPanel(boolean skipConfirmationPanel) {
-			this.skipConfirmationPanel = skipConfirmationPanel;
-		}
-
-		/*@Override
-		public ActionContainerBindingModel getControlGraphBindingModel() {
-			return getBindingModel();
-		}*/
 
 		/**
 		 * Return the FlexoBehaviour's specific {@link BindingModel}.<br>
@@ -617,16 +557,9 @@ public interface FlexoBehaviour extends FlexoBehaviourObject, ActionContainer, F
 		public final FlexoBehaviourBindingModel getBindingModel() {
 			if (bindingModel == null) {
 				bindingModel = makeBindingModel();
-				// appendContextualBindingVariables(bindingModel);
+				getPropertyChangeSupport().firePropertyChange(Bindable.BINDING_MODEL_PROPERTY, null, bindingModel);
 			}
 			return bindingModel;
-			/*if (isRebuildingBindingModel) {
-				return _bindingModel;
-			}
-			if (_bindingModel == null) {
-				createBindingModel();
-			}
-			return _bindingModel;*/
 		}
 
 		@Override
@@ -642,118 +575,6 @@ public interface FlexoBehaviour extends FlexoBehaviourObject, ActionContainer, F
 			if (getControlGraph() instanceof FMLControlGraphOwner) {
 				((FMLControlGraphOwner) getControlGraph()).reduce();
 			}
-		}
-
-		/*@Override
-		public BindingModel getInferedBindingModel() {
-			return getBindingModel();
-		}*/
-
-		/*@Override
-		public void updateBindingModels() {
-			if (isDeserializing()) {
-				return;
-			}
-			logger.fine("updateBindingModels()");
-			_bindingModel = null;
-			createBindingModel();
-			getPropertyChangeSupport().firePropertyChange(BindingModelChanged.BINDING_MODEL_CHANGED, null, _bindingModel);
-			rebuildActionsBindingModel();
-			recursivelyUpdateInferedBindingModels(this);
-		}*/
-
-		/*private void recursivelyUpdateInferedBindingModels(ActionContainer container) {
-			for (EditionAction action : container.getActions()) {
-				action.rebuildInferedBindingModel();
-				if (action instanceof ActionContainer) {
-					recursivelyUpdateInferedBindingModels((ActionContainer) action);
-				}
-			}
-		}*/
-
-		/*protected void rebuildActionsBindingModel() {
-			for (EditionAction action : getActions()) {
-				action.rebuildInferedBindingModel();
-			}
-		}*/
-
-		// private boolean isRebuildingBindingModel = false;
-
-		/*private final void createBindingModel() {
-			_bindingModel = new BindingModel();
-			isRebuildingBindingModel = true;
-			_bindingModel.addToBindingVariables(new BindingVariable("parameters", getFlexoBehaviourParametersValuesType()));
-			_bindingModel.addToBindingVariables(new BindingVariable("parametersDefinitions", getFlexoBehaviourParametersType()));
-			// _bindingModel.addToBindingVariables(new EditionSchemeParametersBindingVariable(this));
-			// _bindingModel.addToBindingVariables(new EditionSchemeParameterListPathElement(this, null));
-			appendContextualBindingVariables(_bindingModel);
-			if (getFlexoConcept() != null) {
-				for (final FlexoRole property : getFlexoConcept().getFlexoRoles()) {
-					_bindingModel.addToBindingVariables(new FlexoPropertyBindingVariable(property));
-				}
-			}
-			for (final EditionAction a : getActions()) {
-				if (a instanceof AssignableAction && ((AssignableAction) a).getIsVariableDeclaration()) {
-					_bindingModel.addToBindingVariables(new BindingVariable(((AssignableAction) a).getVariableName(),
-							((AssignableAction) a).getAssignableType(), true) {
-						@Override
-						public Type getType() {
-							return ((AssignableAction) a).getAssignableType();
-						}
-					});
-				}
-			}
-			// notifyBindingModelChanged();
-			isRebuildingBindingModel = false;
-		}*/
-
-		/*protected void appendContextualBindingVariables(BindingModel bindingModel) {
-			// Si flexo concept est un diagram spec alors rajouter la varialble diagram
-			// AprÃ¨s faudra voir au runtime;
-			if (getFlexoConcept() != null) {
-				if (getFlexoConcept() instanceof VirtualModel) {
-					bindingModel.addToBindingVariables(new BindingVariable(FlexoBehaviour.VIRTUAL_MODEL_INSTANCE, FlexoConceptInstanceType
-							.getFlexoConceptInstanceType(getFlexoConcept())));
-				} else {
-					bindingModel.addToBindingVariables(new BindingVariable(FlexoBehaviour.FLEXO_BEHAVIOUR_INSTANCE,
-							FlexoConceptInstanceType.getFlexoConceptInstanceType(getFlexoConcept())));
-					bindingModel.addToBindingVariables(new BindingVariable(FlexoBehaviour.VIRTUAL_MODEL_INSTANCE, FlexoConceptInstanceType
-							.getFlexoConceptInstanceType(getFlexoConcept().getVirtualModel())));
-				}
-
-			if (getFlexoConcept().getVirtualModel() instanceof DiagramSpecification) {
-				bindingModel.addToBindingVariables(new BindingVariable(DiagramEditionScheme.DIAGRAM, FlexoConceptInstanceType
-						.getFlexoConceptInstanceType(getFlexoConcept().getVirtualModel())));
-			} 
-			if(getFlexoConcept() instanceof DiagramSpecification){
-				bindingModel.addToBindingVariables(new BindingVariable(DiagramEditionScheme.DIAGRAM, FlexoConceptInstanceType
-						.getFlexoConceptInstanceType(getFlexoConcept())));
-				bindingModel.addToBindingVariables(new BindingVariable(DiagramEditionScheme.TOP_LEVEL, DiagramRootPane.class));
-			}
-			else {
-				bindingModel.addToBindingVariables(new BindingVariable(FlexoBehaviour.VIRTUAL_MODEL_INSTANCE, FlexoConceptInstanceType
-						.getFlexoConceptInstanceType(getFlexoConcept().getVirtualModel())));
-			}
-			// }
-			// if (this instanceof DiagramEditionScheme) {
-			if (getFlexoConcept() != null && getFlexoConcept().getVirtualModel() instanceof DiagramSpecification) {
-				bindingModel.addToBindingVariables(new BindingVariable(DiagramEditionScheme.TOP_LEVEL, DiagramRootPane.class));
-			}
-		}*/
-
-		@Override
-		public void variableAdded(AssignableAction action) {
-			// updateBindingModels();
-		}
-
-		@Override
-		public boolean getDefinePopupDefaultSize() {
-			return definePopupDefaultSize;
-		}
-
-		@Override
-		public void setDefinePopupDefaultSize(boolean definePopupDefaultSize) {
-			this.definePopupDefaultSize = definePopupDefaultSize;
 		}
 
 		@Override
@@ -777,37 +598,44 @@ public interface FlexoBehaviour extends FlexoBehaviourObject, ActionContainer, F
 		}
 
 		@Override
-		public Type getReturnType() {
-			return Void.TYPE;
-		}
-
-		@Override
 		public List<FlexoBehaviourParameter> getArguments() {
 			return getParameters();
 		}
 
-		private String editionSchemeSignature = null;
+		@Override
+		public void setName(String name) {
+			String oldSignature = getSignature();
+			super.setName(name);
+			updateSignature(oldSignature);
+		}
+
+		protected void updateSignature(String oldSignature) {
+			behaviourSignature = null;
+			getPropertyChangeSupport().firePropertyChange("signature", oldSignature, getSignature());
+		}
+
+		private String behaviourSignature = null;
 
 		@Override
 		public String getSignature() {
-			if (editionSchemeSignature == null) {
+			if (behaviourSignature == null) {
 				StringBuffer signature = new StringBuffer();
 				signature.append(getName());
 				signature.append("(");
 				signature.append(getParameterListAsString(false));
 				signature.append(")");
-				editionSchemeSignature = signature.toString();
+				behaviourSignature = signature.toString();
 			}
-			return editionSchemeSignature;
+			return behaviourSignature;
 		}
 
-		private String getParameterListAsString(boolean fullyQualified) {
+		protected String getParameterListAsString(boolean fullyQualified) {
 			StringBuffer returned = new StringBuffer();
 			boolean isFirst = true;
 			for (FlexoBehaviourParameter param : getParameters()) {
-				returned.append((isFirst ? "" : ",")
-						+ (fullyQualified ? TypeUtils.fullQualifiedRepresentation(param.getType()) : TypeUtils.simpleRepresentation(param
-								.getType())));
+				// returned.append((isFirst ? "" : ",") + (fullyQualified ? TypeUtils.fullQualifiedRepresentation(param.getType())
+				// : TypeUtils.simpleRepresentation(param.getType())));
+				returned.append((isFirst ? "" : ",") + param.getName());
 				isFirst = false;
 			}
 			return returned.toString();
@@ -824,28 +652,6 @@ public interface FlexoBehaviour extends FlexoBehaviourObject, ActionContainer, F
 			return testName;
 		}
 
-		@Deprecated
-		@Override
-		public void addToActions(EditionAction anAction) {
-			/*FMLControlGraph controlGraph = getControlGraph();
-			if (controlGraph == null) {
-				// If control graph is null, action will be new new control graph
-				setControlGraph(anAction);
-			} else {
-				// Otherwise, sequentially append action
-				controlGraph.sequentiallyAppend(anAction);
-			}
-			// performSuperAdder(ACTIONS_KEY, anAction);*/
-			FMLControlGraphConverter.addToActions(this, null, anAction);
-		}
-
-		@Deprecated
-		@Override
-		public void removeFromActions(EditionAction anAction) {
-			FMLControlGraphConverter.removeFromActions(this, null, anAction);
-			// anAction.delete();
-		}
-
 		@Override
 		public FMLControlGraph getControlGraph(String ownerContext) {
 			return getControlGraph();
@@ -854,6 +660,125 @@ public interface FlexoBehaviour extends FlexoBehaviourObject, ActionContainer, F
 		@Override
 		public void setControlGraph(FMLControlGraph controlGraph, String ownerContext) {
 			setControlGraph(controlGraph);
+		}
+
+		/**
+		 * Return flag indicating if this behaviour overrides supplied behaviour<br>
+		 * Return true if and only if name and signature equals, and if both declared concepts are not the same and if there are directely
+		 * connected without any intermediate implementation
+		 * 
+		 * @param behaviour
+		 * @return
+		 */
+		@Override
+		public boolean overrides(FlexoBehaviour behaviour) {
+
+			if (behaviour == null) {
+				return false;
+			}
+			if (behaviour == this) {
+				return false;
+			}
+
+			if (!getFlexoConcept().getAllParentFlexoConcepts().contains(behaviour.getFlexoConcept())) {
+				return false;
+			}
+
+			if (behaviour.getName().equals(getName())) {
+				if (behaviour.getParameters().size() == getParameters().size()) {
+					boolean allParametersMatch = true;
+					for (int i = 0; i < behaviour.getParameters().size(); i++) {
+						if (!behaviour.getParameters().get(i).getType().equals(getParameters().get(i).getType())) {
+							allParametersMatch = false;
+							break;
+						}
+					}
+					if (allParametersMatch) {
+						return true;
+					}
+				}
+			}
+			return false;
+		}
+
+		/**
+		 * Return flag indicating if this behaviour is overriden in supplied context
+		 * 
+		 * @param context
+		 * @return
+		 */
+		@Override
+		public boolean isOverridenInContext(FlexoConcept context) {
+			return (getMostSpecializedBehaviour(context) != this);
+
+		}
+
+		/**
+		 * Return the most specialized behaviour to execute matching supplied behaviour name and signature<br>
+		 * (dynamic binding: can be only supplied behaviour or an other behaviour overriding supplied behaviour)
+		 * 
+		 * @param behaviour
+		 * @param context
+		 * @return
+		 */
+		@Override
+		public FlexoBehaviour getMostSpecializedBehaviour(FlexoConcept context) {
+			Type[] signature = new Type[getParameters().size()];
+			for (int i = 0; i < getParameters().size(); i++) {
+				signature[i] = getParameters().get(i).getType();
+			}
+			return context.getFlexoBehaviour(getName(), signature);
+
+		}
+
+		/**
+		 * Hook called when scope of a FMLObject changed.<br>
+		 * 
+		 * It happens for example when a {@link VirtualModel} is declared to be contained in a {@link ViewPoint}<br>
+		 * On that example {@link #getBindingFactory()} rely on {@link ViewPoint} enclosing, we must provide this hook to give a chance to
+		 * objects that rely on ViewPoint instanciation context to update their bindings (some bindings might becomes valid)<br>
+		 * 
+		 * It may also happen if an EditionAction is moved from a control graph to another control graph, etc...<br>
+		 * 
+		 */
+		@Override
+		public void notifiedScopeChanged() {
+			super.notifiedScopeChanged();
+			if (getControlGraph() != null) {
+				getControlGraph().accept(controlGraph -> controlGraph.notifiedScopeChanged());
+			}
+		}
+
+		/**
+		 * Return a flag indicating if this behaviour support custom definition of parameters<br>
+		 * Default implementation is to return true
+		 * 
+		 * @return
+		 */
+		@Override
+		public boolean supportParameters() {
+			return true;
+		}
+
+		@Override
+		public DataBinding<Integer> getStepsNumber() {
+			if (stepsNumber == null) {
+				stepsNumber = new DataBinding<>(this, Integer.class, DataBinding.BindingDefinitionType.GET);
+				stepsNumber.setBindingName("stepsNumber");
+				stepsNumber.setMandatory(false);
+
+			}
+			return stepsNumber;
+		}
+
+		@Override
+		public void setStepsNumber(DataBinding<Integer> stepsNumber) {
+			if (stepsNumber != null) {
+				this.stepsNumber = new DataBinding<>(stepsNumber.toString(), this, Integer.class, DataBinding.BindingDefinitionType.GET);
+				this.stepsNumber.setBindingName("stepsNumber");
+				this.stepsNumber.setMandatory(true);
+			}
+			notifiedBindingChanged(stepsNumber);
 		}
 
 	}

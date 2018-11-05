@@ -1,44 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Panel id="0" darkLevel="0" useScrollBar="false" protectContent="false"
-	layout="twocols" controllerClassName="org.openflexo.view.controller.FlexoFIBController"
-	border="empty" trackViewPortWidth="true"
-	dataClassName="org.openflexo.fml.controller.action.CreateFlexoBehaviourWizard$DescribeFlexoBehaviour"
-	trackViewPortHeight="true">
-	<LocalizedDictionary id="1" />
-	<Label id="2" manageDynamicModel="false" useScrollBar="false"
-		controllerClassName="org.openflexo.fib.controller.FIBController"
-		index="1" localize="true" align="right"
-		constraints="twocols(anchor=east;expandHorizontally=false;expandVertically=false;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=1;insetsBottom=0;insetsLeft=20;insetsRight=10;insetsTop=0;location=left;padX=0;padY=0;weightX=0.0;weightY=0.0)"
-		label="name" readOnly="false" />
-	<TextField id="3" passwd="false" manageDynamicModel="false"
-		useScrollBar="false" data="data.flexoBehaviourName" columns="20"
-		name="ModelSlotName" controllerClassName="org.openflexo.fib.controller.FIBController"
-		text="TextField" index="2" localize="true"
-		constraints="twocols(anchor=west;expandHorizontally=true;expandVertically=false;fill=horizontal;gridHeight=1;gridWidth=0;gridX=-1;gridY=-1;index=2;insetsBottom=0;insetsLeft=0;insetsRight=20;insetsTop=0;location=right;padX=0;padY=0;weightX=1.0;weightY=0.0)"
-		readOnly="false" validateOnReturn="false" />
-	<Label id="6" manageDynamicModel="false" useScrollBar="false"
-		controllerClassName="org.openflexo.fib.controller.FIBController"
-		index="2" localize="true" align="left"
-		constraints="twocols(anchor=center;expandHorizontally=true;expandVertically=false;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;insetsBottom=0;insetsLeft=20;insetsRight=0;insetsTop=0;location=left;padX=0;padY=0;weightX=0.0;weightY=0.0)"
-		label="modelslot_behaviour" readOnly="false" />
-	<RadioButtonList id="7" manageDynamicModel="false"
-		useScrollBar="false" data="data.flexoBehaviourClass" 
-		controllerClassName="org.openflexo.fib.controller.FIBController"
-		icon="controller.getTechnologyAdapterController(data.action.getBehaviourTechnologyAdapter(object)).getIconForFlexoBehaviour(object)"
-		index="2" localize="true"
-		constraints="twocols(anchor=center;expandHorizontally=true;expandVertically=false;fill=none;gridHeight=0;gridWidth=1;gridX=-1;gridY=-1;insetsBottom=0;insetsLeft=0;insetsRight=20;insetsTop=0;location=right;padX=0;padY=0;weightX=0.0;weightY=0.0)"
-		list="data.action.behaviours" format="object.simpleName" showText="true"
-		readOnly="false" iteratorClassName="java.lang.Class" showIcon="true" />
-	<Label id="10" manageDynamicModel="false" useScrollBar="false"
-		controllerClassName="org.openflexo.fib.controller.FIBController"
-		index="15" localize="true" align="right"
-		constraints="twocols(anchor=north_east;expandHorizontally=false;expandVertically=false;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=7;insetsBottom=0;insetsLeft=20;insetsRight=10;insetsTop=0;location=left;padX=0;padY=0;weightX=0.0;weightY=0.0)"
-		label="description" readOnly="false" />
-	<TextArea id="11" verticalScrollbarPolicy="VERTICAL_SCROLLBAR_AS_NEEDED"
-		manageDynamicModel="false" useScrollBar="true" data="data.description"
-		columns="6" controllerClassName="org.openflexo.fib.controller.FIBController"
-		text="TextArea" index="12" localize="true"
-		constraints="twocols(anchor=center;expandHorizontally=true;expandVertically=true;fill=both;gridHeight=1;gridWidth=0;gridX=-1;gridY=-1;index=8;insetsBottom=0;insetsLeft=0;insetsRight=20;insetsTop=0;location=right;padX=0;padY=0;weightX=1.0;weightY=1.0)"
-		rows="2" readOnly="false" validateOnReturn="false"
-		horizontalScrollbarPolicy="HORIZONTAL_SCROLLBAR_AS_NEEDED" />
+<Panel id="0" align="left" borderTop="0" borderLeft="0" trackViewPortHeight="true" trackViewPortWidth="true" borderBottom="0" border="empty" sizeAdjustment="OriginalSize" layout="twocols" borderRight="0" controllerClassName="org.openflexo.view.controller.FlexoFIBController">
+  <Label id="1" label="name" align="right" localize="true" index="1" constraints="twocols(anchor=east;expandHorizontally=false;expandVertically=false;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=1;insetsBottom=0;insetsLeft=20;insetsRight=10;insetsTop=0;location=left;padX=0;padY=0;weightX=0.0;weightY=0.0)" name="NameLabel" />
+  <TextField id="2" columns="20" text="TextField" localize="true" data="data.flexoBehaviourName" index="2" constraints="twocols(anchor=west;expandHorizontally=true;expandVertically=false;fill=horizontal;gridHeight=1;gridWidth=0;gridX=-1;gridY=-1;index=2;insetsBottom=0;insetsLeft=0;insetsRight=20;insetsTop=0;location=right;padX=0;padY=0;weightX=1.0;weightY=0.0)" name="ModelSlotName" />
+  <Label id="3" label="modelslot_behaviour" align="left" localize="true" index="2" constraints="twocols(anchor=center;expandHorizontally=true;expandVertically=false;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;insetsBottom=0;insetsLeft=20;insetsRight=0;insetsTop=0;location=left;padX=0;padY=0;weightX=0.0;weightY=0.0)" name="ModelslotBehaviourLabel" />
+  <RadioButtonList id="4" iteratorClassName="java.lang.Class" showText="true" list="data.action.behaviours" showIcon="true" localize="true" icon="controller.getTechnologyAdapterController(data.action.getBehaviourTechnologyAdapter(object)).getIconForFlexoBehaviour(object)" format="object.simpleName" enable="(data.action.class.simpleName = &quot;CreateFlexoBehaviour&quot;)" data="data.flexoBehaviourClass" index="2" constraints="twocols(anchor=center;expandHorizontally=true;expandVertically=false;fill=none;gridHeight=0;gridWidth=1;gridX=-1;gridY=-1;insetsBottom=0;insetsLeft=0;insetsRight=20;insetsTop=0;location=right;padX=0;padY=0;weightX=0.0;weightY=0.0)" name="RadioButtonList" />
+  <Label id="5" label="description" align="right" localize="true" index="15" constraints="twocols(anchor=north_east;expandHorizontally=false;expandVertically=false;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=7;insetsBottom=0;insetsLeft=20;insetsRight=10;insetsTop=0;location=left;padX=0;padY=0;weightX=0.0;weightY=0.0)" name="DescriptionLabel" />
+  <TextArea id="6" rows="2" columns="6" text="TextArea" localize="true" data="data.description" useScrollBar="true" verticalScrollbarPolicy="VERTICAL_SCROLLBAR_AS_NEEDED" index="12" constraints="twocols(anchor=center;expandHorizontally=true;expandVertically=true;fill=both;gridHeight=1;gridWidth=0;gridX=-1;gridY=-1;index=8;insetsBottom=0;insetsLeft=0;insetsRight=20;insetsTop=0;location=right;padX=0;padY=0;weightX=1.0;weightY=1.0)" horizontalScrollbarPolicy="HORIZONTAL_SCROLLBAR_AS_NEEDED" name="TextArea" />
+  <FIBVariable id="7" type="org.openflexo.fml.controller.action.CreateFlexoBehaviourWizard$DescribeFlexoBehaviour" name="data" />
+  <LocalizedDictionary id="8" />
 </Panel>

@@ -47,9 +47,9 @@ import javax.swing.Icon;
 import org.openflexo.foundation.action.DeleteRepositoryFolder;
 import org.openflexo.foundation.action.FlexoActionFinalizer;
 import org.openflexo.foundation.action.FlexoActionInitializer;
+import org.openflexo.foundation.action.FlexoActionFactory;
 import org.openflexo.foundation.resource.RepositoryFolder;
 import org.openflexo.icon.IconLibrary;
-import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.view.controller.ActionInitializer;
 import org.openflexo.view.controller.ControllerActionInitializer;
 import org.openflexo.view.controller.FlexoController;
@@ -67,7 +67,8 @@ public class DeleteRepositoryFolderInitializer extends ActionInitializer<DeleteR
 		return new FlexoActionInitializer<DeleteRepositoryFolder>() {
 			@Override
 			public boolean run(EventObject e, DeleteRepositoryFolder action) {
-				return FlexoController.confirm(FlexoLocalization.localizedForKey("really_delete_this_view_folder_and_all_its_contents_?"));
+				return FlexoController
+						.confirm(action.getLocales().localizedForKey("really_delete_this_view_folder_and_all_its_contents_?"));
 			}
 		};
 	}
@@ -83,7 +84,7 @@ public class DeleteRepositoryFolderInitializer extends ActionInitializer<DeleteR
 	}
 
 	@Override
-	protected Icon getEnabledIcon() {
+	protected Icon getEnabledIcon(FlexoActionFactory actionType) {
 		return IconLibrary.DELETE_ICON;
 	}
 

@@ -44,8 +44,8 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import org.openflexo.foundation.fml.editionaction.EditionAction;
 import org.openflexo.foundation.fml.editionaction.FetchRequest;
-import org.openflexo.foundation.fml.editionaction.TechnologySpecificAction;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 
 /**
@@ -59,5 +59,6 @@ import org.openflexo.foundation.technologyadapter.ModelSlot;
 @Target(value = ElementType.TYPE)
 public @interface DeclareEditionActions {
 
-	public Class<? extends TechnologySpecificAction<?, ?>>[] value();
+	public Class<? extends EditionAction>[] value();
+	// public Class<? extends TechnologySpecificAction>[] value();
 }

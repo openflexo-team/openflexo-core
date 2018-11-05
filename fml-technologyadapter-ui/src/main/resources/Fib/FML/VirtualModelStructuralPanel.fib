@@ -1,60 +1,128 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Panel opaque="false" layout="border" borderTitle="Panel" darkLevel="0" data="" dataClassName="org.openflexo.foundation.fml.VirtualModel" controllerClassName="org.openflexo.fml.controller.FMLFIBController" constraints="border(location=center)" visible="" name="VirtualModelStructuralPanel">
-  <SplitPanel data="" constraints="border(location=center)" visible="">
-    <ColSplit name="ColSplit" weight="0.0">
-      <Leaf name="structural" weight="0.0" />
-      <Divider />
-      <RowSplit name="RowSplit" weight="1.0">
-        <Leaf name="flexoConceptBrowser" weight="0.0" />
-        <Divider />
-        <Leaf name="flexoConceptDetails" weight="0.0" />
-      </RowSplit>
-    </ColSplit>
-    <Browser root="data" iteratorClassName="org.openflexo.foundation.fml.FlexoConcept" visibleRowCount="3" rowHeight="18" boundToSelectionManager="true" selectionMode="DiscontiguousTreeSelection" selected="" showFooter="true" rootVisible="true" showRootsHandle="true" format="" icon="" tooltip="" localize="true" enable="" manageDynamicModel="true" opaque="false" clickAction="" doubleClickAction="controller.doubleClick(FlexoConceptBrowser.selected)" rightClickAction="" enterPressedAction="" valueChangedAction="" valueTransform="" valueValidator="" name="FlexoConceptBrowser" data="" constraints="split(splitIdentifier=flexoConceptBrowser)" visible="" width="200" height="76">
-      <BrowserElement dataClassName="org.openflexo.foundation.fml.VirtualModel" label="virtualModel.name" icon="controller.iconForObject(virtualModel)" tooltip="" enabled="" visible="" isEditable="false" editableLabel="" filtered="false" defaultVisible="true" dynamicFont="" name="virtualModel">
-        <Children data="data.allRootFlexoConcepts" visible="data.flexoConcepts!=null" cast="" name="children" />
-        <BrowserAddAction method="controller.createFlexoConcept(selected)" isAvailable="" name="add_flexo_concept" />
-        <BrowserRemoveAction method="controller.deleteFlexoConcept(selected)" isAvailable="" name="remove_flexo_concept" />
-      </BrowserElement>
-      <BrowserElement dataClassName="org.openflexo.foundation.fml.FlexoConcept" label="flexoConcept.name" icon="controller.iconForObject(flexoConcept)" tooltip="" enabled="" visible="" isEditable="false" editableLabel="" filtered="false" defaultVisible="true" dynamicFont="" name="flexoConcept">
-        <Children data="flexoConcept.childFlexoConcepts" visible="" cast="" name="children" />
-        <BrowserAddAction method="controller.createFlexoConcept(selected)" isAvailable="" name="add_flexo_concept" />
-        <BrowserRemoveAction method="controller.deleteFlexoConcept(selected)" isAvailable="" name="remove_flexo_concept" />
-      </BrowserElement>
-    </Browser>
-    <Table iteratorClassName="org.openflexo.foundation.fml.FlexoProperty" visibleRowCount="3" autoSelectFirstRow="false" createNewRowOnClick="false" boundToSelectionManager="true" showFooter="true" selectionMode="MultipleIntervalSelection" selected="" format="" icon="" tooltip="" localize="true" enable="" manageDynamicModel="true" opaque="false" clickAction="" doubleClickAction="" rightClickAction="" enterPressedAction="" valueChangedAction="" valueTransform="" valueValidator="" name="FlexoRoleTable" index="0" data="data.flexoProperties" constraints="split(index=0;location=north;splitIdentifier=structural)" visible="">
-      <IconColumn data="controller.iconForObject(iterator)" format="" title="icon" columnWidth="25" resizable="false" displayTitle="false" color="" bgColor="" tooltip="" valueChangedAction="" name="icon" />
-      <TextFieldColumn isEditable="" data="iterator.propertyName" format="" title="flexo_role" columnWidth="70" resizable="true" displayTitle="true" color="" bgColor="" tooltip="" valueChangedAction="" />
-      <!--  <LabelColumn data="iterator.modelSlot.name" format="" title="model_slot" columnWidth="50" resizable="true" displayTitle="true" color="" bgColor="" tooltip="" valueChangedAction="" name="label" />-->
-      <DropDownColumn data="iterator.cardinality" format="object.stringRepresentation" displayTitle="true" title="cardinality" name="cardinalityDropdown" columnWidth="50" resizable="true" />
-      <LabelColumn data="iterator.typeDescription" format="" title="type" columnWidth="200" resizable="true" displayTitle="true" color="" bgColor="" tooltip="" valueChangedAction="" name="label" />
-      <RemoveAction method="controller.deleteFlexoProperty(data,selected)" isAvailable="" name="delete" />
-      <AddAction method="controller.createFlexoRole(data)" isAvailable="" name="createFlexoRole" />
-    </Table>
-    <Panel layout="border" border="rounded3d" borderTop="2" borderBottom="2" borderLeft="2" borderRight="2" darkLevel="0" index="0" data="" constraints="split(splitIdentifier=flexoConceptDetails)" visible="">
-      <FIBReferencedComponent componentFile="FlexoConceptPanel.fib" format="" icon="" tooltip="" localize="true" enable="" manageDynamicModel="true" opaque="false" clickAction="" doubleClickAction="" rightClickAction="" enterPressedAction="" valueChangedAction="" valueTransform="" valueValidator="" data="FlexoConceptBrowser.selected" constraints="border(location=center)" visible="(FlexoConceptBrowser.selected != null)">
-         <ReferenceAssignment mandatory="true" variable="controller.flexoController" value="controller.flexoController"  />
-      </FIBReferencedComponent>
-    </Panel>
-  </SplitPanel>
-  <LocalizedDictionary>
-    <Localized key="example_diagram" lang="English" value="Example diagram" />
-    <Localized key="example_diagram" lang="French" value="Diagramme exemple" />
-    <Localized key="example_diagram" lang="Dutch" value="example_diagram" />
-    <Localized key="pattern_role" lang="English" value="Pattern Role" />
-    <Localized key="pattern_role" lang="French" value="Pattern Role" />
-    <Localized key="pattern_role" lang="Dutch" value="Pattern Role" />
-    <Localized key="model_slot" lang="English" value="Model Slot" />
-    <Localized key="model_slot" lang="French" value="Model Slot" />
-    <Localized key="model_slot" lang="Dutch" value="model_slot" />
-    <Localized key="type" lang="English" value="Type" />
-    <Localized key="type" lang="French" value="Type" />
-    <Localized key="type" lang="Dutch" value="Type" />
-    <Localized key="delete" lang="English" value="Delete" />
-    <Localized key="delete" lang="French" value="Supprimer" />
-    <Localized key="delete" lang="Dutch" value="Delete" />
-    <Localized key="createFlexoRole" lang="English" value="createFlexoRole" />
-    <Localized key="createFlexoRole" lang="French" value="createFlexoRole" />
-    <Localized key="createFlexoRole" lang="Dutch" value="createFlexoRole" />
-  </LocalizedDictionary>
+<Panel opaque="false" layout="border" borderTitle="Panel"
+	darkLevel="0" dataClassName="org.openflexo.foundation.fml.VirtualModel"
+	controllerClassName="org.openflexo.fml.controller.FMLFIBController"
+	constraints="border(location=center)" visible=""
+	name="VirtualModelStructuralPanel">
+	<SplitPanel constraints="border(location=center)" visible="">
+		<ColSplit name="ColSplit" weight="0.0">
+			<Leaf name="structural" weight="0.0" />
+			<Divider />
+			<RowSplit name="RowSplit" weight="1.0">
+				<Leaf name="flexoConceptBrowser" weight="0.0" />
+				<Divider />
+				<Leaf name="flexoConceptDetails" weight="0.0" />
+			</RowSplit>
+		</ColSplit>
+		<Browser root="data" iteratorClassName="org.openflexo.foundation.fml.FlexoConcept"
+			visibleRowCount="3" rowHeight="18" deepExploration="true"
+			boundToSelectionManager="true" selectionMode="DiscontiguousTreeSelection"
+			selected="" showFooter="true" rootVisible="true" showRootsHandle="true"
+			format="" icon="" tooltip="" localize="true" enable=""
+			manageDynamicModel="true" opaque="false" clickAction=""
+			doubleClickAction="controller.doubleClick(FlexoConceptBrowser.selected)"
+			rightClickAction="" enterPressedAction="" valueChangedAction=""
+			valueTransform="" valueValidator="" name="FlexoConceptBrowser"
+			constraints="split(splitIdentifier=flexoConceptBrowser)" visible=""
+			width="200" height="76">
+			<BrowserElement dataClassName="org.openflexo.foundation.fml.VirtualModel"
+				label="virtualModel.name" icon="controller.iconForObject(virtualModel)"
+				tooltip="" enabled="" visible="" isEditable="false" editableLabel=""
+				filtered="false" defaultVisible="true" dynamicFont="" name="virtualModel">
+				<Children data="data.allRootFlexoConcepts" visible="data.flexoConcepts!=null"
+					cast="" name="children" />
+				<BrowserAddAction method="controller.createFlexoConcept(selected)"
+					isAvailable="" name="add_flexo_concept" />
+				<BrowserRemoveAction method="controller.deleteFlexoConcept(selected)"
+					isAvailable="" name="remove_flexo_concept" />
+			</BrowserElement>
+			<BrowserElement dataClassName="org.openflexo.foundation.fml.FlexoConcept"
+				label="flexoConcept.name" icon="controller.iconForObject(flexoConcept)"
+				tooltip="" enabled="" visible="" isEditable="false" editableLabel=""
+				filtered="false" defaultVisible="true" dynamicFont="" name="flexoConcept">
+				<Children data="flexoConcept.embeddedFlexoConcepts" visible=""
+					cast="" name="children" />
+				<BrowserAddAction method="controller.createFlexoConcept(selected)"
+					isAvailable="" name="add_flexo_concept" />
+				<BrowserRemoveAction method="controller.deleteFlexoConcept(selected)"
+					isAvailable="" name="remove_flexo_concept" />
+			</BrowserElement>
+		</Browser>
+		<Table iteratorClassName="org.openflexo.foundation.fml.FlexoProperty"
+			visibleRowCount="3" autoSelectFirstRow="false" createNewRowOnClick="false"
+			boundToSelectionManager="true" showFooter="true" selectionMode="MultipleIntervalSelection"
+			selected="" format="" icon="" tooltip="" localize="true" enable=""
+			manageDynamicModel="true" opaque="false" clickAction=""
+			doubleClickAction="" rightClickAction="" enterPressedAction=""
+			valueChangedAction="" valueTransform="" valueValidator=""
+			name="FlexoRoleTable" index="0" data="data.flexoProperties"
+			constraints="split(index=0;location=north;splitIdentifier=structural)"
+			visible="">
+			<IconColumn data="controller.iconForObject(iterator)"
+				format="" title="icon" columnWidth="25" resizable="false"
+				displayTitle="false" color="" bgColor="" tooltip=""
+				valueChangedAction="" name="icon" />
+			<TextFieldColumn isEditable="" data="iterator.propertyName"
+				format="" title="flexo_role" columnWidth="70" resizable="true"
+				displayTitle="true" color="" bgColor="" tooltip=""
+				valueChangedAction="" />
+			<!-- <LabelColumn data="iterator.modelSlot.name" format="" title="model_slot" 
+				columnWidth="50" resizable="true" displayTitle="true" color="" bgColor="" 
+				tooltip="" valueChangedAction="" name="label" /> -->
+			<DropDownColumn data="iterator.cardinality" format="object.stringRepresentation"
+				displayTitle="true" title="cardinality" name="cardinalityDropdown"
+				columnWidth="50" resizable="true" />
+			<LabelColumn data="iterator.typeDescription" format=""
+				title="type" columnWidth="200" resizable="true" displayTitle="true"
+				color="" bgColor="" tooltip="" valueChangedAction="" name="label" />
+			<AddAction name="new_technology_role"
+				method="controller.createTechnologyRole(selected.flexoConcept)" />
+			<AddAction name="new_flexo_concept_instance_role"
+				method="controller.createFlexoConceptInstanceRole(selected.flexoConcept)" />
+			<AddAction name="new_primitive_role"
+				method="controller.createPrimitiveRole(selected.flexoConcept)" />
+			<AddAction name="new_abstract_property"
+				method="controller.createAbstractProperty(selected.flexoConcept)" />
+			<AddAction name="new_expression_property"
+				method="controller.createExpressionProperty(selected.flexoConcept)" />
+			<AddAction name="new_get_set_property"
+				method="controller.createGetSetProperty(selected.flexoConcept)" />
+			<RemoveAction name="delete"
+				method="controller.deleteFlexoProperty(data,selected)" />
+		</Table>
+		<Panel layout="border" border="rounded3d" borderTop="2"
+			borderBottom="2" borderLeft="2" borderRight="2" darkLevel="0" index="0"
+			constraints="split(splitIdentifier=flexoConceptDetails)" visible="">
+			<FIBReferencedComponent componentFile="FlexoConceptPanel.fib"
+				format="" icon="" tooltip="" localize="true" enable=""
+				manageDynamicModel="true" opaque="false" clickAction=""
+				doubleClickAction="" rightClickAction="" enterPressedAction=""
+				valueChangedAction="" valueTransform="" valueValidator=""
+				data="FlexoConceptBrowser.selected" constraints="border(location=center)"
+				visible="(FlexoConceptBrowser.selected != null)">
+				<ReferenceAssignment mandatory="true"
+					variable="controller.flexoController" value="controller.flexoController" />
+			</FIBReferencedComponent>
+		</Panel>
+	</SplitPanel>
+	<LocalizedDictionary>
+		<Localized key="example_diagram" lang="English" value="Example diagram" />
+		<Localized key="example_diagram" lang="French" value="Diagramme exemple" />
+		<Localized key="example_diagram" lang="Dutch" value="example_diagram" />
+		<Localized key="pattern_role" lang="English" value="Pattern Role" />
+		<Localized key="pattern_role" lang="French" value="Pattern Role" />
+		<Localized key="pattern_role" lang="Dutch" value="Pattern Role" />
+		<Localized key="model_slot" lang="English" value="Model Slot" />
+		<Localized key="model_slot" lang="French" value="Model Slot" />
+		<Localized key="model_slot" lang="Dutch" value="model_slot" />
+		<Localized key="type" lang="English" value="Type" />
+		<Localized key="type" lang="French" value="Type" />
+		<Localized key="type" lang="Dutch" value="Type" />
+		<Localized key="delete" lang="English" value="Delete" />
+		<Localized key="delete" lang="French" value="Supprimer" />
+		<Localized key="delete" lang="Dutch" value="Delete" />
+		<Localized key="createFlexoRole" lang="English" value="createFlexoRole" />
+		<Localized key="createFlexoRole" lang="French" value="createFlexoRole" />
+		<Localized key="createFlexoRole" lang="Dutch" value="createFlexoRole" />
+	</LocalizedDictionary>
 </Panel>

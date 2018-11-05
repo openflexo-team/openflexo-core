@@ -51,6 +51,11 @@ import java.io.IOException;
 public class IOFlexoException extends FlexoException {
 	private final IOException _targetException;
 
+	public IOFlexoException(String message) {
+		super(message);
+		_targetException = null;
+	}
+
 	public IOFlexoException(IOException targetException) {
 		super("I/O exception", "io_exception");
 		_targetException = targetException;
@@ -61,7 +66,7 @@ public class IOFlexoException extends FlexoException {
 	}
 
 	@Override
-	public IOException getCause() {
+	public synchronized IOException getCause() {
 		return getTargetException();
 	}
 

@@ -56,11 +56,13 @@ import org.openflexo.model.annotations.Adder;
 import org.openflexo.model.annotations.CloningStrategy;
 import org.openflexo.model.annotations.CloningStrategy.StrategyType;
 import org.openflexo.model.annotations.Embedded;
+import org.openflexo.model.annotations.Finder;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.Getter.Cardinality;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
 import org.openflexo.model.annotations.PropertyIdentifier;
+import org.openflexo.model.annotations.Reindexer;
 import org.openflexo.model.annotations.Remover;
 import org.openflexo.model.annotations.Setter;
 import org.openflexo.model.annotations.XMLAttribute;
@@ -124,23 +126,13 @@ public interface FlexoConceptInspector extends FlexoConceptObject, Bindable {
 	@Remover(ENTRIES_KEY)
 	public void removeFromEntries(InspectorEntry aEntrie);
 
-	public TextFieldInspectorEntry createNewTextField();
+	@Reindexer(ENTRIES_KEY)
+	public void moveInspectorEntryToIndex(InspectorEntry entry, int index);
 
-	public TextAreaInspectorEntry createNewTextArea();
+	@Finder(collection = ENTRIES_KEY, attribute = InspectorEntry.NAME_KEY)
+	public InspectorEntry getEntry(String name);
 
-	public IntegerInspectorEntry createNewInteger();
-
-	public CheckboxInspectorEntry createNewCheckbox();
-
-	public IndividualInspectorEntry createNewIndividual();
-
-	public ClassInspectorEntry createNewClass();
-
-	public PropertyInspectorEntry createNewProperty();
-
-	public ObjectPropertyInspectorEntry createNewObjectProperty();
-
-	public DataPropertyInspectorEntry createNewDataProperty();
+	public String getAvailableEntryName(String baseName);
 
 	public InspectorEntry deleteEntry(InspectorEntry entry);
 
@@ -210,118 +202,16 @@ public interface FlexoConceptInspector extends FlexoConceptObject, Bindable {
 			this.inspectorTitle = inspectorTitle;
 		}
 
-		/*@Override
-		public Vector<InspectorEntry> getEntries() {
-			return entries;
-		}
-
-		public void setEntries(Vector<InspectorEntry> someEntries) {
-			entries = someEntries;
-		}
-
 		@Override
-		public void addToEntries(InspectorEntry anEntry) {
-			anEntry.setInspector(this);
-			entries.add(anEntry);
-			setChanged();
-			notifyObservers(new InspectorEntryInserted(anEntry, this));
+		public String getAvailableEntryName(String baseName) {
+			String testName = baseName;
+			int index = 2;
+			while (getEntry(testName) != null) {
+				testName = baseName + index;
+				index++;
+			}
+			return testName;
 		}
-
-		@Override
-		public void removeFromEntries(InspectorEntry anEntry) {
-			anEntry.setInspector(null);
-			entries.remove(anEntry);
-			setChanged();
-			notifyObservers(new InspectorEntryRemoved(anEntry, this));
-		}*/
-
-		@Override
-		public TextFieldInspectorEntry createNewTextField() {
-			TextFieldInspectorEntry newEntry = getFMLModelFactory().newTextFieldInspectorEntry();
-			newEntry.setName("textfield");
-			// newEntry.setLabel("textfield");
-			addToEntries(newEntry);
-			return newEntry;
-		}
-
-		@Override
-		public TextAreaInspectorEntry createNewTextArea() {
-			TextAreaInspectorEntry newEntry = getFMLModelFactory().newTextAreaInspectorEntry();
-			newEntry.setName("textarea");
-			// newEntry.setLabel("textarea");
-			addToEntries(newEntry);
-			return newEntry;
-		}
-
-		@Override
-		public IntegerInspectorEntry createNewInteger() {
-			IntegerInspectorEntry newEntry = getFMLModelFactory().newIntegerInspectorEntry();
-			newEntry.setName("integer");
-			// newEntry.setLabel("integer");
-			addToEntries(newEntry);
-			return newEntry;
-		}
-
-		@Override
-		public CheckboxInspectorEntry createNewCheckbox() {
-			CheckboxInspectorEntry newEntry = getFMLModelFactory().newCheckboxInspectorEntry();
-			newEntry.setName("checkbox");
-			// newEntry.setLabel("checkbox");
-			addToEntries(newEntry);
-			return newEntry;
-		}
-
-		@Override
-		public IndividualInspectorEntry createNewIndividual() {
-			IndividualInspectorEntry newEntry = getFMLModelFactory().newIndividualInspectorEntry();
-			newEntry.setName("individual");
-			// newEntry.setLabel("individual");
-			addToEntries(newEntry);
-			return newEntry;
-		}
-
-		@Override
-		public ClassInspectorEntry createNewClass() {
-			ClassInspectorEntry newEntry = getFMLModelFactory().newClassInspectorEntry();
-			newEntry.setName("class");
-			// newEntry.setLabel("class");
-			addToEntries(newEntry);
-			return newEntry;
-		}
-
-		@Override
-		public PropertyInspectorEntry createNewProperty() {
-			PropertyInspectorEntry newEntry = getFMLModelFactory().newPropertyInspectorEntry();
-			newEntry.setName("property");
-			// newEntry.setLabel("class");
-			addToEntries(newEntry);
-			return newEntry;
-		}
-
-		@Override
-		public ObjectPropertyInspectorEntry createNewObjectProperty() {
-			ObjectPropertyInspectorEntry newEntry = getFMLModelFactory().newObjectPropertyInspectorEntry();
-			newEntry.setName("objectProperty");
-			// newEntry.setLabel("class");
-			addToEntries(newEntry);
-			return newEntry;
-		}
-
-		@Override
-		public DataPropertyInspectorEntry createNewDataProperty() {
-			DataPropertyInspectorEntry newEntry = getFMLModelFactory().newDataPropertyInspectorEntry();
-			newEntry.setName("dataProperty");
-			// newEntry.setLabel("class");
-			addToEntries(newEntry);
-			return newEntry;
-		}
-
-		/*
-		 * public FlexoObjectInspectorEntry createNewFlexoObject() {
-		 * FlexoObjectInspectorEntry newEntry = new FlexoObjectInspectorEntry();
-		 * newEntry.setName("flexoObject"); // newEntry.setLabel("flexoObject");
-		 * addToEntries(newEntry); return newEntry; }
-		 */
 
 		@Override
 		public InspectorEntry deleteEntry(InspectorEntry entry) {
@@ -387,7 +277,7 @@ public interface FlexoConceptInspector extends FlexoConceptObject, Bindable {
 		@Override
 		public DataBinding<String> getRenderer() {
 			if (renderer == null) {
-				renderer = new DataBinding<String>(formatter, String.class, BindingDefinitionType.GET);
+				renderer = new DataBinding<>(formatter, String.class, BindingDefinitionType.GET);
 				renderer.setBindingName("renderer");
 			}
 			return renderer;

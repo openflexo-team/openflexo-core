@@ -1,46 +1,107 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Panel layout="border" darkLevel="0" dataClassName="org.openflexo.br.view.JIRAIssueReportDialog" opaque="false" width="400" height="600">
-  <Panel layout="twocols" borderTop="5" borderBottom="5" borderLeft="5" borderRight="5" darkLevel="0" index="0" constraints="border(index=0;location=center)" opaque="false">
-    <Label label="Summary" index="0" constraints="twocols(expandHorizontally=true;expandVertically=false;index=0;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=5;location=left)" name="summary" localize="true" />
-    <TextField index="1" data="data.issue.summary" constraints="twocols(expandHorizontally=true;expandVertically=false;index=1;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)" name="TitleTF" localize="true" columns="7" text="TextField" />
-    <Label label="Description" index="2" constraints="twocols(expandHorizontally=true;expandVertically=false;index=2;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=5;location=left)" localize="true" />
-    <TextArea columns="8" rows="10" text="TextArea" index="3" data="data.issue.description" constraints="twocols(expandHorizontally=true;expandVertically=true;index=3;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)" useScrollBar="true" horizontalScrollbarPolicy="HORIZONTAL_SCROLLBAR_AS_NEEDED" verticalScrollbarPolicy="VERTICAL_SCROLLBAR_AS_NEEDED" name="DescriptionTA" localize="true" />
-     <Label id="31" manageDynamicModel="false" useScrollBar="false" name="Project" localize="true" align="left" constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=left)" label="project" readOnly="false" />
-    <DropDown id="32" manageDynamicModel="false" useScrollBar="false" data="data.project" showReset="false" staticList="" autoSelectFirstRow="true" name="projectDD" localize="true" constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=right)" list="data.projects" format="object.name" showText="true" readOnly="false" iteratorClassName="org.openflexo.ws.jira.model.JIRAProject" showIcon="false" />
-    <Label label="Type" index="4" constraints="twocols(expandHorizontally=true;expandVertically=false;index=4;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=5;location=left)" localize="true" />
-    <DropDown index="5" data="data.issue.issuetype" constraints="twocols(expandHorizontally=true;expandVertically=false;index=5;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)" name="typeDD" format="object.name" localize="true" staticList="" list="data.project.issuetypes" iteratorClassName="org.openflexo.ws.jira.model.JIRAIssue$IssueType" autoSelectFirstRow="true">
-     	<Dependancy componentName="projectDD" />
-    </DropDown>
-    <Label label="Priority" index="6" constraints="twocols(expandHorizontally=true;expandVertically=false;index=6;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=5;location=left)" visible="(data.issue.issuetype.priorityField != null)" localize="true" />
-    <DropDown index="7" data="data.issue.priority" constraints="twocols(expandHorizontally=true;expandVertically=false;index=7;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)" visible="(data.issue.issuetype.priorityField != null)" name="priorityDD" format="object.name" localize="true" staticList="" list="data.issue.issuetype.priorityField.allowedValues" iteratorClassName="org.openflexo.ws.jira.model.JIRAPriority" autoSelectFirstRow="true">
-    	<Dependancy componentName="projectDD" />
-    	<Dependancy componentName="typeDD" />
-    </DropDown>
-    <Label label="Component" index="8" constraints="twocols(expandHorizontally=true;expandVertically=false;index=8;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=5;location=left)" visible="(data.issue.issuetype.componentField != null)" localize="true" />
-    <DropDown index="9" data="data.issue.component" constraints="twocols(expandHorizontally=true;expandVertically=false;index=9;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)" visible="(data.issue.issuetype.componentField != null)" name="componentDD" format="object.name" localize="true" staticList="" list="data.availableComponents" iteratorClassName="org.openflexo.ws.jira.model.JIRAComponent" autoSelectFirstRow="true">
-      <Dependancy componentName="typeDD" />
-      <Dependancy componentName="projectDD" />
-    </DropDown>
-    <Label label="Send logs" index="10" constraints="twocols(expandHorizontally=true;expandVertically=false;index=10;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=5;location=left)" localize="true" />
-    <CheckBox selected="false" index="11" data="data.isSendLogs" constraints="twocols(expandHorizontally=true;expandVertically=false;index=11;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)" name="sendLogs" localize="true" />
-    <Label label="Send system properties" index="12" constraints="twocols(expandHorizontally=true;expandVertically=false;index=12;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=5;location=left)" localize="true" />
-    <CheckBox selected="false" index="13" data="data.isSendSystemProperties" constraints="twocols(expandHorizontally=true;expandVertically=false;index=13;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)" name="sendSystemProperties" localize="true" />
-    <Label label="Send screenshots" index="14" constraints="twocols(expandHorizontally=true;expandVertically=false;index=14;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=5;location=left)" localize="true" />
-    <CheckBox selected="false" index="15" data="data.isSendScreenshots" constraints="twocols(expandHorizontally=true;expandVertically=false;index=15;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)" name="sendScreenshot" localize="true" />
-    <Label label="Send current project" index="16" constraints="twocols(expandHorizontally=true;expandVertically=false;index=16;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=5;location=left)" localize="true" />
-    <CheckBox selected="false" index="17" data="data.isSendProject" constraints="twocols(expandHorizontally=true;expandVertically=false;index=17;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)" name="sendCurrentProject" localize="true" />
-    <Label label="Attach file" index="18" constraints="twocols(expandHorizontally=true;expandVertically=false;index=18;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=5;location=left)" localize="true" />
-    <File mode="OpenMode" isDirectory="false" localize="true" name="attachFile" index="19" data="data.attachFile" constraints="twocols(expandHorizontally=true;expandVertically=false;index=19;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)" />
-    <Panel layout="flow" hGap="5" vGap="5" flowAlignment="CENTER" borderTitle="Panel" darkLevel="0" index="20" constraints="twocols(expandHorizontally=true;expandVertically=false;index=20;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=center)" opaque="false">
-      <Panel layout="buttons" hGap="5" vGap="5" cols="2" rows="2" flowAlignment="CENTER" borderTitle="" borderTop="2" borderBottom="2" borderLeft="2" borderRight="2" darkLevel="0" index="20" constraints="flow(expandHorizontally=true;expandVertically=false;index=20;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=center)" opaque="false">
-        <Button action="controller.validateAndDispose()" buttonType="Trigger" label="Send" localize="true" enable="data.isValid" name="Send" index="0" constraints="flow(index=0;x=0;y=0)">
-          <Dependancy componentName="TitleTF" />
-          <Dependancy componentName="typeDD" />
-          <Dependancy componentName="DescriptionTA" />
-        </Button>
-        <Button action="controller.cancelAndDispose()" buttonType="Trigger" label="Cancel" localize="true" index="0" constraints="flow(index=1;x=1;y=0)" />
+<Panel id="0" borderLeft="0" height="600" sizeAdjustment="OriginalSize" opaque="false" controllerClassName="org.openflexo.gina.controller.FIBController" borderRight="0" border="empty" trackViewPortWidth="true" align="left" width="600" borderBottom="0" borderTop="0" trackViewPortHeight="true" layout="border">
+  <Parameter id="1" name="title" value="Submit bug report" />
+  <Panel id="2" borderLeft="5" sizeAdjustment="OriginalSize" opaque="false" borderRight="5" border="empty" trackViewPortWidth="true" index="0" align="left" constraints="border(index=0;location=center)" borderBottom="5" borderTop="5" trackViewPortHeight="true" layout="twocols" name="FIBPanel3">
+    <Panel id="3" backgroundColor="255,255,255" borderLeft="0" height="200" sizeAdjustment="OriginalSize" opaque="true" borderRight="0" border="empty" trackViewPortWidth="true" align="left" width="100" constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=20;insetsLeft=0;insetsRight=0;insetsTop=0;location=center)" borderBottom="0" borderTop="0" trackViewPortHeight="true" layout="twocols" name="FIBPanel4">
+      <Label id="4" name="Label6" localize="true" font="SansSerif,0,16" align="left" constraints="twocols(expandHorizontally=true;expandVertically=true;insetsBottom=0;insetsLeft=20;insetsRight=0;insetsTop=0;location=left)" label="submit_bug_report_or_feature_request" />
+      <Image id="5" sizeAdjustment="OriginalSize" name="Image" imageFile="../Icons/Common/BugReportService_64x64.png" imageHeight="46" align="right" constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=20;insetsTop=0;location=right)" imageWidth="80" />
+    </Panel>
+    <Label id="6" name="summary" index="0" localize="true" align="left" constraints="twocols(expandHorizontally=true;expandVertically=false;index=0;insetsBottom=5;insetsLeft=0;insetsRight=0;insetsTop=0;location=left)" label="summary" />
+    <TextField id="7" columns="7" name="TitleTF" data="data.issue.summary" text="TextField" index="1" constraints="twocols(expandHorizontally=true;expandVertically=false;index=1;insetsBottom=5;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)" />
+    <Label id="8" name="Label5" localize="true" align="left" constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=left)" label="issue_type" />
+    <DropDown id="9" data="data.issue.issuetype" constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=right)" format="object.name" showText="true" iteratorClassName="org.openflexo.ws.jira.model.IssueType" showIcon="false" autoSelectFirstRow="true" name="dropdown" list="data.project.issueTypes" />
+    <Label id="10" name="Label4" data="((&quot;&lt;html&gt;&quot; + data.issue.issuetype.description) + &quot;&lt;/html&gt;&quot;)" font="SansSerif,2,11" align="left" constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=right)" label="label" />
+    <Label id="11" name="DescriptionLabel" index="2" localize="true" align="left" constraints="twocols(expandHorizontally=true;expandVertically=false;index=2;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=5;location=left)" label="description" />
+    <TextArea id="12" verticalScrollbarPolicy="VERTICAL_SCROLLBAR_AS_NEEDED" useScrollBar="true" columns="8" name="DescriptionTA" data="data.issue.description" text="TextArea" index="3" constraints="twocols(expandHorizontally=true;expandVertically=true;index=3;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=5;location=right)" rows="5" horizontalScrollbarPolicy="HORIZONTAL_SCROLLBAR_AS_NEEDED" />
+    <Label id="13" name="Label7" localize="true" font="SansSerif,2,11" align="left" constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=right)" label="please_provide_a_precise_and_reproducible_scenario" />
+    <Label id="14" name="Project" localize="true" align="left" constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=5;location=left)" label="project" />
+    <DropDown id="15" data="data.project" constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=5;location=right)" format="(object.name + ((&quot; [&quot; + object.id) + &quot;]&quot;))" showText="true" iteratorClassName="org.openflexo.ws.jira.model.JIRAProject" showIcon="false" staticList="" autoSelectFirstRow="true" name="projectDD" list="data.projects" />
+    <Label id="16" visible="(data.project.components.size &gt; 0)" name="TypeLabel" index="4" localize="true" align="left" constraints="twocols(expandHorizontally=true;expandVertically=false;index=4;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=left)" label="component" />
+    <DropDown id="17" visible="(data.project.components.size &gt; 0)" data="data.issue.component" index="5" constraints="twocols(expandHorizontally=true;expandVertically=false;index=5;insetsBottom=0;insetsLeft=0;insetsRight=2;insetsTop=0;location=right)" format="object.name" showText="true" iteratorClassName="org.openflexo.ws.jira.model.JIRAComponent" showIcon="false" staticList="" autoSelectFirstRow="true" name="typeDD" list="data.project.components" />
+    <Label id="18" name="Label2" data="((&quot;&lt;html&gt;&quot; + data.project.description) + &quot;&lt;/html&gt;&quot;)" font="SansSerif,2,11" align="left" constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=right)" label="label" />
+    <Label id="19" name="Label" localize="true" align="left" constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=left)" label="issue_version" />
+    <DropDown id="20" data="data.issue.version" constraints="twocols(expandHorizontally=false;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=right)" format="((object.name + ((object.description != null) ? (&quot;-&quot; + object.description) : &quot;&quot;)) + (object.isReleased ? &quot; [Released]&quot; : &quot;&quot;))" showText="true" iteratorClassName="org.openflexo.ws.jira.model.JIRAVersion" showIcon="false" autoSelectFirstRow="true" name="dropdown" list="data.project.versions" />
+    <Label id="21" visible="(data.issue.issuetype.priorityField != null)" name="PriorityLabel" index="6" localize="true" align="left" constraints="twocols(expandHorizontally=true;expandVertically=false;index=6;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=5;location=left)" label="Priority" />
+    <DropDown id="22" visible="(data.issue.issuetype.priorityField != null)" data="data.issue.priority" index="7" localize="true" constraints="twocols(expandHorizontally=true;expandVertically=false;index=7;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)" format="object.name" showText="true" iteratorClassName="org.openflexo.ws.jira.model.JIRAPriority" showIcon="false" staticList="" autoSelectFirstRow="true" name="priorityDD" list="data.issue.issuetype.priorityField.allowedValues" />
+    <Label id="23" visible="(data.issue.issuetype.componentField != null)" name="ComponentLabel" index="8" localize="true" align="left" constraints="twocols(expandHorizontally=true;expandVertically=false;index=8;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=5;location=left)" label="Component Field" />
+    <DropDown id="24" visible="(data.issue.issuetype.componentField != null)" data="data.issue.component" index="9" localize="true" constraints="twocols(expandHorizontally=true;expandVertically=false;index=9;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)" format="object.name" showText="true" iteratorClassName="org.openflexo.ws.jira.model.JIRAComponent" showIcon="false" staticList="" autoSelectFirstRow="true" name="componentDD" list="data.availableComponents" />
+    <Label id="25" name="Label3" localize="true" align="left" constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=left)" label="fix_version" />
+    <DropDown id="26" data="data.issue.fixVersion" constraints="twocols(expandHorizontally=false;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=right)" format="((object.name + ((object.description != null) ? (&quot;-&quot; + object.description) : &quot;&quot;)) + (object.isReleased ? &quot; [Released]&quot; : &quot;&quot;))" showText="true" iteratorClassName="org.openflexo.ws.jira.model.JIRAVersion" showIcon="false" autoSelectFirstRow="true" name="dropdown" list="data.project.versions" />
+    <Label id="27" name="SendLogsLabel" index="10" localize="true" align="left" constraints="twocols(expandHorizontally=true;expandVertically=false;index=10;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=left)" label="send_logs" />
+    <CheckBox id="28" name="sendLogs" data="data.isSendLogs" index="11" constraints="twocols(expandHorizontally=true;expandVertically=false;index=11;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)" />
+    <Label id="29" name="SendSystemPropertiesLabel" index="12" localize="true" align="left" constraints="twocols(expandHorizontally=true;expandVertically=false;index=12;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=left)" label="send_system_properties" />
+    <CheckBox id="30" name="sendSystemProperties" data="data.isSendSystemProperties" index="13" constraints="twocols(expandHorizontally=true;expandVertically=false;index=13;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)" />
+    <Label id="31" name="SendScreenshotsLabel" index="14" localize="true" align="left" constraints="twocols(expandHorizontally=true;expandVertically=false;index=14;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=left)" label="send_screenshots" />
+    <CheckBox id="32" name="sendScreenshot" data="data.isSendScreenshots" index="15" constraints="twocols(expandHorizontally=true;expandVertically=false;index=15;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)" />
+    <Label id="33" name="SendCurrentProjectLabel" index="16" localize="true" align="left" constraints="twocols(expandHorizontally=true;expandVertically=false;index=16;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=left)" label="send_current_project" />
+    <CheckBox id="34" name="sendCurrentProject" data="data.isSendProject" index="17" constraints="twocols(expandHorizontally=true;expandVertically=false;index=17;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)" />
+    <Label id="35" name="AttachFileLabel" index="18" localize="true" align="left" constraints="twocols(expandHorizontally=true;expandVertically=false;index=18;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=left)" label="attach_file" />
+    <File id="36" mode="OpenMode" name="attachFile" data="data.attachFile" index="19" constraints="twocols(expandHorizontally=true;expandVertically=false;index=19;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)" />
+    <Panel id="37" vGap="5" backgroundColor="255,255,255" borderLeft="0" hGap="5" sizeAdjustment="OriginalSize" opaque="false" borderRight="0" border="empty" trackViewPortWidth="true" index="20" align="left" constraints="twocols(expandHorizontally=true;expandVertically=false;index=20;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=10;location=center)" borderBottom="0" borderTitle="Panel" borderTop="10" trackViewPortHeight="true" layout="flow" name="FIBPanel2" flowAlignment="CENTER">
+      <Panel id="38" cols="2" vGap="5" borderLeft="2" hGap="5" sizeAdjustment="OriginalSize" opaque="false" borderRight="2" border="empty" trackViewPortWidth="true" index="20" align="left" constraints="flow(expandHorizontally=true;expandVertically=false;index=20;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=center)" borderBottom="2" borderTitle="" rows="2" borderTop="2" trackViewPortHeight="true" layout="flow" name="FIBPanel" flowAlignment="CENTER">
+        <Button id="39" enable="data.isValid" buttonType="Trigger" name="Send" action="controller.validateAndDispose()" index="0" localize="true" constraints="flow(index=0;x=0;y=0)" label="send_bug_report" />
+        <Button id="40" buttonType="Trigger" name="Button" action="controller.cancelAndDispose()" index="0" localize="true" constraints="flow(index=1;x=1;y=0)" label="cancel" />
       </Panel>
     </Panel>
   </Panel>
-  <LocalizedDictionary />
+  <FIBVariable id="41" name="data" type="org.openflexo.br.view.JIRAIssueReportDialog" />
+  <LocalizedDictionary id="42">
+    <Localized id="43" value="Summary" lang="English" key="summary" />
+    <Localized id="44" value="Summary" lang="Dutch" key="summary" />
+    <Localized id="45" value="Résumé" lang="French" key="summary" />
+    <Localized id="46" value="Issue type" lang="English" key="issue_type" />
+    <Localized id="47" value="Issue type" lang="Dutch" key="issue_type" />
+    <Localized id="48" value="Type d'anomalie" lang="French" key="issue_type" />
+    <Localized id="49" value="Label" lang="English" key="label" />
+    <Localized id="50" value="Label" lang="Dutch" key="label" />
+    <Localized id="51" value="Etiquette" lang="French" key="label" />
+    <Localized id="52" value="Description" lang="English" key="description" />
+    <Localized id="53" value="Beschrijving" lang="Dutch" key="description" />
+    <Localized id="54" value="Description" lang="French" key="description" />
+    <Localized id="55" value="Project" lang="English" key="project" />
+    <Localized id="56" value="Project" lang="Dutch" key="project" />
+    <Localized id="57" value="Projet" lang="French" key="project" />
+    <Localized id="58" value="Component" lang="English" key="component" />
+    <Localized id="59" value="Scherm" lang="Dutch" key="component" />
+    <Localized id="60" value="Composant" lang="French" key="component" />
+    <Localized id="61" value="Issue version" lang="English" key="issue_version" />
+    <Localized id="62" value="Issue version" lang="Dutch" key="issue_version" />
+    <Localized id="63" value="Détecté en version" lang="French" key="issue_version" />
+    <Localized id="64" value="Fix version" lang="English" key="fix_version" />
+    <Localized id="65" value="Fix version" lang="Dutch" key="fix_version" />
+    <Localized id="66" value="A corriger en version" lang="French" key="fix_version" />
+    <Localized id="67" value="Send logs" lang="English" key="send_logs" />
+    <Localized id="68" value="Send logs" lang="Dutch" key="send_logs" />
+    <Localized id="69" value="Envoyer les logs" lang="French" key="send_logs" />
+    <Localized id="70" value="Send system properties" lang="English" key="send_system_properties" />
+    <Localized id="71" value="Send system properties" lang="Dutch" key="send_system_properties" />
+    <Localized id="72" value="Envoyer les propriétés du système" lang="French" key="send_system_properties" />
+    <Localized id="73" value="Send screenshots" lang="English" key="send_screenshots" />
+    <Localized id="74" value="Send screenshots" lang="Dutch" key="send_screenshots" />
+    <Localized id="75" value="Envoyer des screenshots" lang="French" key="send_screenshots" />
+    <Localized id="76" value="Send current project" lang="English" key="send_current_project" />
+    <Localized id="77" value="Send current project" lang="Dutch" key="send_current_project" />
+    <Localized id="78" value="Envoyer le projet courant" lang="French" key="send_current_project" />
+    <Localized id="79" value="Attach file" lang="English" key="attach_file" />
+    <Localized id="80" value="Attach file" lang="Dutch" key="attach_file" />
+    <Localized id="81" value="Attacher un fichier" lang="French" key="attach_file" />
+    <Localized id="82" value="Send bug report" lang="English" key="send_bug_report" />
+    <Localized id="83" value="Send bug report" lang="Dutch" key="send_bug_report" />
+    <Localized id="84" value="Envoyer le rapport d'anomalie" lang="French" key="send_bug_report" />
+    <Localized id="85" value="Cancel" lang="English" key="cancel" />
+    <Localized id="86" value="Annuleren" lang="Dutch" key="cancel" />
+    <Localized id="87" value="Annuler" lang="French" key="cancel" />
+    <Localized id="88" value="Submit bug report or feature request" lang="English" key="submit_bug_report_or_feature_request" />
+    <Localized id="89" value="Submit bug report or feature request" lang="Dutch" key="submit_bug_report_or_feature_request" />
+    <Localized id="90" value="Soumettre un rapport d'anomalie ou une demande d'évolution" lang="French" key="submit_bug_report_or_feature_request" />
+    <Localized id="91" value="Priority" lang="English" key="Priority" />
+    <Localized id="92" value="Priority" lang="Dutch" key="Priority" />
+    <Localized id="93" value="Priority" lang="French" key="Priority" />
+    <Localized id="94" value="Component Field" lang="English" key="Component Field" />
+    <Localized id="95" value="Component Field" lang="Dutch" key="Component Field" />
+    <Localized id="96" value="Component Field" lang="French" key="Component Field" />
+    <Localized id="97" value="Please provide a precise and reproducible scenario" lang="English" key="please_provide_a_precise_and_reproducible_scenario" />
+    <Localized id="98" value="Please provide a precise and reproducible scenario" lang="Dutch" key="please_provide_a_precise_and_reproducible_scenario" />
+    <Localized id="99" value="Veuillez fournir un scénario précis et reproductible" lang="French" key="please_provide_a_precise_and_reproducible_scenario" />
+  </LocalizedDictionary>
 </Panel>

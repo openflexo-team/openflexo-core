@@ -45,28 +45,29 @@ import org.openflexo.drm.DocItem;
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.action.FlexoAction;
-import org.openflexo.foundation.action.FlexoActionType;
+import org.openflexo.foundation.action.FlexoActionFactory;
 
-public class RemoveInheritanceChildItem extends FlexoAction {
+public class RemoveInheritanceChildItem extends FlexoAction<RemoveInheritanceChildItem, FlexoObject, FlexoObject> {
 
-	public static FlexoActionType actionType = new FlexoActionType("remove_inheritance_child", FlexoActionType.defaultGroup,
-			FlexoActionType.NORMAL_ACTION_TYPE) {
+	public static FlexoActionFactory<RemoveInheritanceChildItem, FlexoObject, FlexoObject> actionType = new FlexoActionFactory<RemoveInheritanceChildItem, FlexoObject, FlexoObject>(
+			"remove_inheritance_child", FlexoActionFactory.defaultGroup, FlexoActionFactory.NORMAL_ACTION_TYPE) {
 
 		/**
 		 * Factory method
 		 */
 		@Override
-		public FlexoAction makeNewAction(FlexoObject focusedObject, Vector globalSelection, FlexoEditor editor) {
+		public RemoveInheritanceChildItem makeNewAction(FlexoObject focusedObject, Vector<FlexoObject> globalSelection,
+				FlexoEditor editor) {
 			return new RemoveInheritanceChildItem(focusedObject, globalSelection, editor);
 		}
 
 		@Override
-		public boolean isVisibleForSelection(FlexoObject object, Vector globalSelection) {
+		public boolean isVisibleForSelection(FlexoObject object, Vector<FlexoObject> globalSelection) {
 			return true;
 		}
 
 		@Override
-		public boolean isEnabledForSelection(FlexoObject object, Vector globalSelection) {
+		public boolean isEnabledForSelection(FlexoObject object, Vector<FlexoObject> globalSelection) {
 			return object != null && object instanceof DocItem && ((DocItem) object).getInheritanceParentItem() != null;
 		}
 
@@ -74,7 +75,7 @@ public class RemoveInheritanceChildItem extends FlexoAction {
 
 	private DocItem _docItemToRemove;
 
-	RemoveInheritanceChildItem(FlexoObject focusedObject, Vector globalSelection, FlexoEditor editor) {
+	private RemoveInheritanceChildItem(FlexoObject focusedObject, Vector<FlexoObject> globalSelection, FlexoEditor editor) {
 		super(actionType, focusedObject, globalSelection, editor);
 	}
 

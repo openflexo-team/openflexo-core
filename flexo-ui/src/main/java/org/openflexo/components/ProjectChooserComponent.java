@@ -49,7 +49,9 @@ import javax.swing.JFileChooser;
 
 import org.openflexo.ApplicationContext;
 import org.openflexo.foundation.FlexoProject;
+import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.localization.FlexoLocalization;
+import org.openflexo.localization.LocalizedDelegate;
 import org.openflexo.logging.FlexoLogger;
 import org.openflexo.swing.FlexoFileChooser;
 import org.openflexo.toolbox.ToolBox;
@@ -69,20 +71,32 @@ public abstract class ProjectChooserComponent {
 	private static final Logger logger = FlexoLogger.getLogger(ProjectChooserComponent.class.getPackage().getName());
 
 	private final FlexoFileChooser fileChooser;
-
+	private final ApplicationContext applicationContext;
 	private String approveButtonText;
 
 	public ProjectChooserComponent(Window owner, ApplicationContext applicationContext) {
 		super();
 
+		this.applicationContext = applicationContext;
 		fileChooser = new FlexoFileChooser(owner);
 		fileChooser.setCurrentDirectory(applicationContext.getAdvancedPrefs().getLastVisitedDirectory());
-		fileChooser.setDialogTitle(ToolBox.getPLATFORM() == ToolBox.MACOS ? FlexoLocalization.localizedForKey("select_a_prj_file")
-				: FlexoLocalization.localizedForKey("select_a_prj_directory"));
+		fileChooser.setDialogTitle(ToolBox.isMacOS() ? getLocales().localizedForKey("select_a_prj_file")
+				: getLocales().localizedForKey("select_a_prj_directory"));
 		fileChooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
 		fileChooser.setFileFilter(FlexoFileChooserUtils.PROJECT_FILE_FILTER);
 		fileChooser.setFileView(FlexoFileChooserUtils.PROJECT_FILE_VIEW);
 
+	}
+
+	public static LocalizedDelegate getLocales(FlexoServiceManager serviceManager) {
+		if (serviceManager != null) {
+			return serviceManager.getLocalizationService().getFlexoLocalizer();
+		}
+		return FlexoLocalization.getMainLocalizer();
+	}
+
+	public LocalizedDelegate getLocales() {
+		return getLocales(applicationContext);
 	}
 
 	protected void setApproveButtonText(String text) {
@@ -109,7 +123,7 @@ public abstract class ProjectChooserComponent {
 	public int showOpenDialog() throws HeadlessException {
 
 		fileChooser.setDialogType(JFileChooser.OPEN_DIALOG);
-		fileChooser.setDialogTitle(FlexoLocalization.localizedForKey("select_openflexo_project"));
+		fileChooser.setDialogTitle(getLocales().localizedForKey("select_openflexo_project"));
 		fileChooser.setApproveButtonText(approveButtonText);
 		return fileChooser.showOpenDialog();
 	}
@@ -117,7 +131,7 @@ public abstract class ProjectChooserComponent {
 	public int showSaveDialog() throws HeadlessException {
 
 		fileChooser.setDialogType(JFileChooser.SAVE_DIALOG);
-		fileChooser.setDialogTitle(FlexoLocalization.localizedForKey("set_name_for_new_prj_in_selected_directory"));
+		fileChooser.setDialogTitle(getLocales().localizedForKey("set_name_for_new_prj_in_selected_directory"));
 		fileChooser.setApproveButtonText(approveButtonText);
 		return fileChooser.showSaveDialog();
 

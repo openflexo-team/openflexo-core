@@ -39,6 +39,7 @@
 
 package org.openflexo.ws.jira.model;
 
+import java.beans.PropertyChangeSupport;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.ParameterizedType;
@@ -47,12 +48,31 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class JIRAObject<J extends JIRAObject<J>> extends HashMap<String, Object> {
+import org.openflexo.toolbox.HasPropertyChangeSupport;
+
+public class JIRAObject<J extends JIRAObject<J>> extends HashMap<String, Object> implements HasPropertyChangeSupport {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = -3961683012433439153L;
+
+	private final PropertyChangeSupport pcSupport;
+
+	public JIRAObject() {
+		pcSupport = new PropertyChangeSupport(this);
+	}
+
+	@Override
+	public PropertyChangeSupport getPropertyChangeSupport() {
+		return pcSupport;
+	}
+
+	@Override
+	public String getDeletedProperty() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
 	protected transient J originalObject;
 
@@ -97,14 +117,17 @@ public class JIRAObject<J extends JIRAObject<J>> extends HashMap<String, Object>
 		J j = getTypedClass().newInstance();
 		if (id != null) {
 			j.setId(id);
-		} else if (key != null) {
+		}
+		else if (key != null) {
 			j.setKey(key);
-		} else {
+		}
+		else {
 			j.setSelf(self);
 		}
 		if (originalObject != null) {
 			j.originalObject = originalObject;
-		} else {
+		}
+		else {
 			j.originalObject = (J) this;
 		}
 		return j;
@@ -119,11 +142,14 @@ public class JIRAObject<J extends JIRAObject<J>> extends HashMap<String, Object>
 	public int hashCode() {
 		if (getId() != null) {
 			return getId().hashCode();
-		} else if (getKey() != null) {
+		}
+		else if (getKey() != null) {
 			return getKey().hashCode();
-		} else if (getSelf() != null) {
+		}
+		else if (getSelf() != null) {
 			return getSelf().hashCode();
-		} else {
+		}
+		else {
 			return super.hashCode();
 		}
 	}
@@ -136,8 +162,8 @@ public class JIRAObject<J extends JIRAObject<J>> extends HashMap<String, Object>
 
 	}
 
-	public <O extends JIRAObject> O mutate(Class<O> target) throws InstantiationException, IllegalAccessException, SecurityException,
-			NoSuchFieldException {
+	public <O extends JIRAObject> O mutate(Class<O> target)
+			throws InstantiationException, IllegalAccessException, SecurityException, NoSuchFieldException {
 		O o = target.newInstance();
 		Class<?> klass = getClass();
 		while (klass != null && JIRAObject.class.isAssignableFrom(klass)) {
@@ -163,8 +189,8 @@ public class JIRAObject<J extends JIRAObject<J>> extends HashMap<String, Object>
 		return o;
 	}
 
-	protected <O extends JIRAObject> void setMutatedValueForField(O o, Object value, String fieldName) throws IllegalAccessException,
-			InstantiationException, IllegalArgumentException, SecurityException, NoSuchFieldException {
+	protected <O extends JIRAObject> void setMutatedValueForField(O o, Object value, String fieldName)
+			throws IllegalAccessException, InstantiationException, IllegalArgumentException, SecurityException, NoSuchFieldException {
 		Field field = null;
 		Class<?> klass = o.getClass();
 		while (field == null && klass != null) {
@@ -182,22 +208,23 @@ public class JIRAObject<J extends JIRAObject<J>> extends HashMap<String, Object>
 				if (value instanceof JIRAObject && JIRAObject.class.isAssignableFrom(field.getType())) {
 					JIRAObject jiraObject = (JIRAObject) value;
 					field.set(o, jiraObject.mutate(field.getType()));
-				} else if (value instanceof List
-						&& List.class.isAssignableFrom(field.getGenericType().getClass())
-						&& JIRAObject.class.isAssignableFrom(((ParameterizedType) field.getGenericType()).getActualTypeArguments()[0]
-								.getClass())) {
+				}
+				else if (value instanceof List && List.class.isAssignableFrom(field.getGenericType().getClass()) && JIRAObject.class
+						.isAssignableFrom(((ParameterizedType) field.getGenericType()).getActualTypeArguments()[0].getClass())) {
 					List<? extends JIRAObject> list = (List<? extends JIRAObject>) value;
-					List<JIRAObject> values = new ArrayList<JIRAObject>();
+					List<JIRAObject> values = new ArrayList<>();
 					for (JIRAObject jiraObject : list) {
-						values.add(jiraObject.mutate((Class<? extends JIRAObject>) ((ParameterizedType) field.getGenericType())
-								.getActualTypeArguments()[0]));
+						values.add(jiraObject.mutate(
+								(Class<? extends JIRAObject>) ((ParameterizedType) field.getGenericType()).getActualTypeArguments()[0]));
 
 					}
 					field.set(o, values);
-				} else {
+				}
+				else {
 					field.set(o, value);
 				}
-			} else {
+			}
+			else {
 				o.put(fieldName, value);
 			}
 		}

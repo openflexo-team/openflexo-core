@@ -46,14 +46,17 @@ import javax.swing.Icon;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.action.FlexoActionFinalizer;
 import org.openflexo.foundation.action.FlexoActionInitializer;
-import org.openflexo.foundation.fml.rt.VirtualModelInstance;
+import org.openflexo.foundation.action.FlexoActionFactory;
+import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.action.OpenVirtualModelInstance;
 import org.openflexo.icon.FMLRTIconLibrary;
+import org.openflexo.icon.IconFactory;
+import org.openflexo.icon.IconLibrary;
 import org.openflexo.view.controller.ActionInitializer;
 import org.openflexo.view.controller.ControllerActionInitializer;
-import org.openflexo.view.controller.TechnologyPerspective;
 
-public class OpenVirtualModelInstanceInitializer extends ActionInitializer<OpenVirtualModelInstance, VirtualModelInstance, FlexoObject> {
+public class OpenVirtualModelInstanceInitializer
+		extends ActionInitializer<OpenVirtualModelInstance, FMLRTVirtualModelInstance, FlexoObject> {
 
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(ControllerActionInitializer.class.getPackage().getName());
@@ -79,17 +82,18 @@ public class OpenVirtualModelInstanceInitializer extends ActionInitializer<OpenV
 			@Override
 			public boolean run(EventObject e, OpenVirtualModelInstance action) {
 
-				TechnologyPerspective<?> perspective = getController().getFMLRTTechnologyAdapterController()
+				/*TechnologyPerspective<?> perspective = getController().getFMLRTTechnologyAdapterController()
 						.getTechnologyPerspective(getController());
-				getController().setCurrentEditedObjectAsModuleView(action.getFocusedObject(), perspective);
+				getController().setCurrentEditedObjectAsModuleView(action.getFocusedObject(), perspective);*/
+				getController().setCurrentEditedObjectAsModuleView(action.getFocusedObject());
 				return true;
 			}
 		};
 	}
 
 	@Override
-	protected Icon getEnabledIcon() {
-		return FMLRTIconLibrary.VIRTUAL_MODEL_INSTANCE_ICON;
+	protected Icon getEnabledIcon(FlexoActionFactory actionType) {
+		return IconFactory.getImageIcon(FMLRTIconLibrary.VIRTUAL_MODEL_INSTANCE_ICON, IconLibrary.IMPORT);
 	}
 
 }

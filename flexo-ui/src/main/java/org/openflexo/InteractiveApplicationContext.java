@@ -44,15 +44,15 @@ import java.io.File;
 import org.openflexo.br.BugReportService;
 import org.openflexo.drm.DocResourceManager;
 import org.openflexo.foundation.FlexoEditor;
-import org.openflexo.foundation.FlexoProject;
 import org.openflexo.foundation.FlexoServiceManager;
-import org.openflexo.foundation.fml.ViewPointLibrary;
+import org.openflexo.foundation.fml.VirtualModelLibrary;
+import org.openflexo.foundation.project.ProjectLoader;
 import org.openflexo.foundation.resource.FlexoResourceCenterService;
 import org.openflexo.foundation.technologyadapter.DefaultTechnologyAdapterService;
-import org.openflexo.foundation.technologyadapter.InformationSpace;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterService;
 import org.openflexo.foundation.utils.ProjectLoadingHandler;
 import org.openflexo.prefs.PreferencesService;
+import org.openflexo.project.InteractiveProjectLoader;
 import org.openflexo.rm.ResourceConsistencyService;
 import org.openflexo.view.controller.DefaultTechnologyAdapterControllerService;
 import org.openflexo.view.controller.FlexoServerInstanceManager;
@@ -60,10 +60,39 @@ import org.openflexo.view.controller.FullInteractiveProjectLoadingHandler;
 import org.openflexo.view.controller.InteractiveFlexoEditor;
 import org.openflexo.view.controller.TechnologyAdapterControllerService;
 
+/**
+ * An implementation of a {@link FlexoServiceManager} available in graphical and interactive context (desktop application).<br>
+ * Provide many services usefull in that context
+ * 
+ * It basically inherits from {@link ApplicationContext} by extending service manager with desktop-level services:<br>
+ * <ul>
+ * <li>{@link ProjectLoader}</li>
+ * <li>{@link BugReportService}</li>
+ * <li>{@link PreferencesService}</li>
+ * <li>...</li>
+ * </ul>
+ * 
+ * 
+ * @author sylvain
+ *
+ */
 public class InteractiveApplicationContext extends ApplicationContext {
-	@Override
-	public FlexoEditor makeFlexoEditor(FlexoProject project, FlexoServiceManager sm) {
-		return new InteractiveFlexoEditor(this, project);
+
+	/**
+	 * Initialize a new {@link InteractiveApplicationContext}
+	 * 
+	 * @param localizationRelativePath
+	 *            a String identifying a relative path to use for main localization (such as "FlexoLocalization/MyLocales") of the
+	 *            application
+	 * @param devMode
+	 *            true when 'developer' mode set to true (enable more services)
+	 * @param recordMode
+	 *            true when GINA 'record' mode set to true
+	 * @param playMode
+	 *            true when GINA 'play' mode set to true
+	 */
+	public InteractiveApplicationContext(String localizationRelativePath, boolean devMode, boolean recordMode, boolean playMode) {
+		super(localizationRelativePath, devMode);
 	}
 
 	@Override
@@ -81,6 +110,16 @@ public class InteractiveApplicationContext extends ApplicationContext {
 	}
 
 	@Override
+	protected ProjectLoader createProjectLoaderService() {
+		return new InteractiveProjectLoader();
+	}
+
+	@Override
+	public InteractiveProjectLoader getProjectLoader() {
+		return getService(InteractiveProjectLoader.class);
+	}
+
+	@Override
 	protected TechnologyAdapterService createTechnologyAdapterService(FlexoResourceCenterService resourceCenterService) {
 		return DefaultTechnologyAdapterService.getNewInstance(resourceCenterService);
 	}
@@ -91,17 +130,12 @@ public class InteractiveApplicationContext extends ApplicationContext {
 	}
 
 	@Override
-	protected ViewPointLibrary createViewPointLibraryService() {
-		return new ViewPointLibrary();
+	protected VirtualModelLibrary createViewPointLibraryService() {
+		return new VirtualModelLibrary();
 	}
 
 	@Override
-	protected InformationSpace createInformationSpace() {
-		return new InformationSpace();
-	}
-
-	@Override
-	protected BugReportService createBugReportService() {
+	public BugReportService createBugReportService() {
 		return new BugReportService();
 	}
 

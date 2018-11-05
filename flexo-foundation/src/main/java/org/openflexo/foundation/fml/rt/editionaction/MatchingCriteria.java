@@ -49,7 +49,7 @@ import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoConceptObject;
 import org.openflexo.foundation.fml.FlexoProperty;
 import org.openflexo.foundation.fml.binding.MatchingCriteriaBindingModel;
-import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
+import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
 import org.openflexo.model.annotations.DefineValidationRule;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ImplementationClass;
@@ -97,7 +97,7 @@ public interface MatchingCriteria extends FlexoConceptObject, Bindable {
 
 	public void setFlexoProperty(FlexoProperty<?> property);
 
-	public Object evaluateCriteriaValue(FlexoBehaviourAction action);
+	public Object evaluateCriteriaValue(RunTimeEvaluationContext evaluationContext);
 
 	@Override
 	public MatchingCriteriaBindingModel getBindingModel();
@@ -135,7 +135,7 @@ public interface MatchingCriteria extends FlexoConceptObject, Bindable {
 		@Override
 		public DataBinding<?> getValue() {
 			if (value == null) {
-				value = new DataBinding<Object>(this, getFlexoProperty() != null ? getFlexoProperty().getResultingType() : Object.class,
+				value = new DataBinding<>(this, getFlexoProperty() != null ? getFlexoProperty().getResultingType() : Object.class,
 						DataBinding.BindingDefinitionType.GET);
 				value.setBindingName(getFlexoProperty() != null ? getFlexoProperty().getName() : "param");
 			}
@@ -154,7 +154,7 @@ public interface MatchingCriteria extends FlexoConceptObject, Bindable {
 		}
 
 		@Override
-		public Object evaluateCriteriaValue(FlexoBehaviourAction action) {
+		public Object evaluateCriteriaValue(RunTimeEvaluationContext evaluationContext) {
 			if (getValue() == null || getValue().isUnset()) {
 				/*logger.info("Binding for " + param.getName() + " is not set");
 				if (param instanceof URIParameter) {
@@ -168,9 +168,10 @@ public interface MatchingCriteria extends FlexoConceptObject, Bindable {
 					logger.warning("Required parameter missing: " + param + ", some strange behaviour may happen from now...");
 				}*/
 				return null;
-			} else if (getValue().isValid()) {
+			}
+			else if (getValue().isValid()) {
 				try {
-					return getValue().getBindingValue(action);
+					return getValue().getBindingValue(evaluationContext);
 				} catch (TypeMismatchException e) {
 					e.printStackTrace();
 				} catch (NullReferenceException e) {
@@ -179,7 +180,8 @@ public interface MatchingCriteria extends FlexoConceptObject, Bindable {
 					e.printStackTrace();
 				}
 				return null;
-			} else {
+			}
+			else {
 				logger.warning("Invalid binding: " + getValue() + " Reason: " + getValue().invalidBindingReason());
 			}
 			return null;

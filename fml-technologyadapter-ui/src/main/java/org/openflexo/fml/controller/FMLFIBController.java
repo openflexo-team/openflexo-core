@@ -38,61 +38,76 @@
 
 package org.openflexo.fml.controller;
 
-import java.io.FileNotFoundException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.Logger;
 
-import org.openflexo.fib.model.FIBComponent;
-import org.openflexo.fib.model.FIBTab;
-import org.openflexo.fib.utils.FIBInspector;
-import org.openflexo.foundation.FlexoException;
+import org.openflexo.components.validation.RevalidationTask;
+import org.openflexo.connie.annotations.NotificationUnsafe;
+import org.openflexo.fml.controller.validation.FixIssueDialog;
+import org.openflexo.fml.controller.validation.IssueFixing;
+import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.action.DeleteRepositoryFolder;
 import org.openflexo.foundation.fml.AbstractProperty;
-import org.openflexo.foundation.fml.AbstractVirtualModel;
 import org.openflexo.foundation.fml.ActionScheme;
 import org.openflexo.foundation.fml.CloningScheme;
 import org.openflexo.foundation.fml.CreationScheme;
 import org.openflexo.foundation.fml.DeletionScheme;
 import org.openflexo.foundation.fml.ExpressionProperty;
 import org.openflexo.foundation.fml.FMLObject;
+import org.openflexo.foundation.fml.FMLValidationReport;
 import org.openflexo.foundation.fml.FlexoBehaviour;
 import org.openflexo.foundation.fml.FlexoBehaviourParameter;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoConceptConstraint;
+import org.openflexo.foundation.fml.FlexoConceptInstanceRole;
 import org.openflexo.foundation.fml.FlexoConceptObject;
+import org.openflexo.foundation.fml.FlexoEnum;
+import org.openflexo.foundation.fml.FlexoEnumValue;
 import org.openflexo.foundation.fml.FlexoProperty;
 import org.openflexo.foundation.fml.FlexoRole;
 import org.openflexo.foundation.fml.GetSetProperty;
+import org.openflexo.foundation.fml.PrimitiveRole;
 import org.openflexo.foundation.fml.SynchronizationScheme;
-import org.openflexo.foundation.fml.ViewPoint;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.action.AddParentFlexoConcept;
+import org.openflexo.foundation.fml.action.AddUseDeclaration;
 import org.openflexo.foundation.fml.action.CreateAbstractProperty;
 import org.openflexo.foundation.fml.action.CreateEditionAction;
 import org.openflexo.foundation.fml.action.CreateExpressionProperty;
 import org.openflexo.foundation.fml.action.CreateFlexoBehaviour;
-import org.openflexo.foundation.fml.action.CreateFlexoConcept;
-import org.openflexo.foundation.fml.action.CreateFlexoRole;
+import org.openflexo.foundation.fml.action.CreateFlexoConceptInstanceRole;
+import org.openflexo.foundation.fml.action.CreateFlexoEnumValue;
+import org.openflexo.foundation.fml.action.CreateGenericBehaviourParameter;
 import org.openflexo.foundation.fml.action.CreateGetSetProperty;
+import org.openflexo.foundation.fml.action.CreateInspectorEntry;
 import org.openflexo.foundation.fml.action.CreateModelSlot;
-import org.openflexo.foundation.fml.action.CreateViewPoint;
-import org.openflexo.foundation.fml.action.CreateVirtualModel;
+import org.openflexo.foundation.fml.action.CreatePrimitiveRole;
+import org.openflexo.foundation.fml.action.CreateTechnologyRole;
 import org.openflexo.foundation.fml.action.DeleteFlexoConceptObjects;
-import org.openflexo.foundation.fml.action.DeleteViewpoint;
-import org.openflexo.foundation.fml.action.DeleteVirtualModel;
-import org.openflexo.foundation.fml.action.DuplicateFlexoConcept;
 import org.openflexo.foundation.fml.controlgraph.ConditionalAction;
 import org.openflexo.foundation.fml.controlgraph.EmptyControlGraph;
 import org.openflexo.foundation.fml.controlgraph.FMLControlGraph;
+import org.openflexo.foundation.fml.controlgraph.IncrementalIterationAction;
 import org.openflexo.foundation.fml.controlgraph.IterationAction;
+import org.openflexo.foundation.fml.controlgraph.WhileAction;
 import org.openflexo.foundation.fml.editionaction.EditionAction;
 import org.openflexo.foundation.fml.editionaction.TechnologySpecificAction;
-import org.openflexo.foundation.fml.rm.ViewPointResource;
-import org.openflexo.foundation.resource.FlexoResource;
+import org.openflexo.foundation.fml.inspector.FlexoConceptInspector;
+import org.openflexo.foundation.fml.inspector.InspectorEntry;
 import org.openflexo.foundation.resource.RepositoryFolder;
-import org.openflexo.foundation.resource.ResourceLoadingCancelledException;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
+import org.openflexo.foundation.technologyadapter.UseModelSlotDeclaration;
+import org.openflexo.gina.model.FIBComponent;
+import org.openflexo.gina.model.container.FIBTab;
+import org.openflexo.gina.utils.FIBInspector;
+import org.openflexo.gina.utils.InspectorGroup;
+import org.openflexo.gina.view.GinaViewFactory;
 import org.openflexo.logging.FlexoLogger;
+import org.openflexo.model.validation.ProblemIssue;
+import org.openflexo.model.validation.Validable;
+import org.openflexo.model.validation.ValidationIssue;
 import org.openflexo.rm.Resource;
 import org.openflexo.view.controller.FlexoController;
 import org.openflexo.view.controller.FlexoFIBController;
@@ -108,69 +123,34 @@ public class FMLFIBController extends FlexoFIBController {
 
 	protected static final Logger logger = FlexoLogger.getLogger(FMLFIBController.class.getPackage().getName());
 
-	public FMLFIBController(FIBComponent component) {
-		super(component);
+	public FMLFIBController(FIBComponent component, GinaViewFactory<?> viewFactory) {
+		super(component, viewFactory);
 	}
 
-	public FMLFIBController(FIBComponent component, FlexoController controller) {
-		super(component, controller);
+	public FMLFIBController(FIBComponent component, GinaViewFactory<?> viewFactory, FlexoController controller) {
+		super(component, viewFactory, controller);
 	}
 
-	public void deleteFolder(RepositoryFolder<?> folder) {
+	public void deleteFolder(RepositoryFolder<?, ?> folder) {
 		DeleteRepositoryFolder deleteRepositoryFolder = DeleteRepositoryFolder.actionType.makeNewAction(folder, null, getEditor());
 		deleteRepositoryFolder.doAction();
 	}
 
-	public ViewPoint createViewPoint(RepositoryFolder<ViewPointResource> folder) {
-		CreateViewPoint createViewPoint = CreateViewPoint.actionType.makeNewAction(folder, null, getEditor());
-		createViewPoint.doAction();
-		return createViewPoint.getNewViewPoint();
-	}
-
-	public void deleteViewPoint(FlexoResource<ViewPoint> viewPointResource)
-			throws FileNotFoundException, ResourceLoadingCancelledException, FlexoException {
-		DeleteViewpoint deleteViewPoint = DeleteViewpoint.actionType.makeNewAction(viewPointResource.getResourceData(null), null,
-				getEditor());
-		deleteViewPoint.doAction();
-	}
-
-	public VirtualModel createVirtualModel(FlexoResource<ViewPoint> viewPointResource)
-			throws FileNotFoundException, ResourceLoadingCancelledException, FlexoException {
-		CreateVirtualModel createVirtualModel = CreateVirtualModel.actionType.makeNewAction(viewPointResource.getResourceData(null), null,
-				getEditor());
-		createVirtualModel.doAction();
-		return createVirtualModel.getNewVirtualModel();
-	}
-
-	public void deleteVirtualModel(FlexoResource<VirtualModel> virtualModelResource)
-			throws FileNotFoundException, ResourceLoadingCancelledException, FlexoException {
-		DeleteVirtualModel deleteVirtualModel = DeleteVirtualModel.actionType.makeNewAction(virtualModelResource.getResourceData(null),
-				null, getEditor());
-		deleteVirtualModel.doAction();
-	}
-
-	public ModelSlot<?> createModelSlot(AbstractVirtualModel<?> virtualModel) {
-		CreateModelSlot createModelSlot = CreateModelSlot.actionType.makeNewAction(virtualModel, null, getEditor());
+	public ModelSlot<?> createModelSlot(FlexoConcept concept) {
+		CreateModelSlot createModelSlot = CreateModelSlot.actionType.makeNewAction(concept, null, getEditor());
 		createModelSlot.doAction();
 		return createModelSlot.getNewModelSlot();
 	}
 
-	public void deleteModelSlot(VirtualModel virtualModel, ModelSlot<?> modelSlot) {
-		virtualModel.removeFromModelSlots(modelSlot);
+	public void deleteModelSlot(FlexoConcept concept, ModelSlot<?> modelSlot) {
+		concept.removeFromModelSlots(modelSlot);
 		modelSlot.delete();
 	}
 
-	/**
-	 * Duplicates supplied FlexoConcept, given a new name<br>
-	 * Newly created FlexoConcept is added to ViewPoint
-	 * 
-	 * @param newName
-	 * @return the duplicated FlexoConcept
-	 */
-	public FlexoConcept duplicateFlexoConcept(FlexoConcept flexoConcept, String newName) {
-		DuplicateFlexoConcept duplicateAction = DuplicateFlexoConcept.actionType.makeNewAction(flexoConcept, null, getEditor());
-		duplicateAction.doAction();
-		return duplicateAction.getNewFlexoConcept();
+	public UseModelSlotDeclaration addToUseDeclarations(VirtualModel virtualModel) {
+		AddUseDeclaration addToUseDeclarations = AddUseDeclaration.actionType.makeNewAction(virtualModel, null, getEditor());
+		addToUseDeclarations.doAction();
+		return addToUseDeclarations.getNewUseDeclaration();
 	}
 
 	public FlexoConcept addParentFlexoConcept(FlexoConcept flexoConcept) {
@@ -185,8 +165,21 @@ public class FMLFIBController extends FlexoFIBController {
 		return createAbstractProperty.getNewFlexoProperty();
 	}
 
-	public FlexoRole<?> createFlexoRole(FlexoConcept flexoConcept) {
-		CreateFlexoRole createFlexoRole = CreateFlexoRole.actionType.makeNewAction(flexoConcept, null, getEditor());
+	public FlexoRole<?> createTechnologyRole(FlexoConcept flexoConcept) {
+		CreateTechnologyRole createFlexoRole = CreateTechnologyRole.actionType.makeNewAction(flexoConcept, null, getEditor());
+		createFlexoRole.doAction();
+		return createFlexoRole.getNewFlexoRole();
+	}
+
+	public FlexoConceptInstanceRole createFlexoConceptInstanceRole(FlexoConcept flexoConcept) {
+		CreateFlexoConceptInstanceRole createFlexoRole = CreateFlexoConceptInstanceRole.actionType.makeNewAction(flexoConcept, null,
+				getEditor());
+		createFlexoRole.doAction();
+		return createFlexoRole.getNewFlexoRole();
+	}
+
+	public PrimitiveRole<?> createPrimitiveRole(FlexoConcept flexoConcept) {
+		CreatePrimitiveRole createFlexoRole = CreatePrimitiveRole.actionType.makeNewAction(flexoConcept, null, getEditor());
 		createFlexoRole.doAction();
 		return createFlexoRole.getNewFlexoRole();
 	}
@@ -219,6 +212,18 @@ public class FMLFIBController extends FlexoFIBController {
 		flexoConcept.removeFromFlexoConceptConstraints(constraint);
 		constraint.delete();
 		return constraint;
+	}
+
+	public FlexoEnumValue createFlexoEnumValue(FlexoEnum flexoEnum) {
+		CreateFlexoEnumValue createFlexoBehaviourParameter = CreateFlexoEnumValue.actionType.makeNewAction(flexoEnum, null, getEditor());
+		createFlexoBehaviourParameter.doAction();
+		return createFlexoBehaviourParameter.getNewValue();
+	}
+
+	public FlexoEnumValue deleteFlexoEnumValue(FlexoEnum flexoEnum, FlexoEnumValue enumValue) {
+		flexoEnum.removeFromValues(enumValue);
+		enumValue.delete();
+		return enumValue;
 	}
 
 	/**
@@ -287,100 +292,118 @@ public class FMLFIBController extends FlexoFIBController {
 		return flexoBehaviour;
 	}
 
+	public FlexoBehaviourParameter createFlexoBehaviourParameter(FlexoBehaviour flexoBehaviour) {
+		CreateGenericBehaviourParameter createFlexoBehaviourParameter = CreateGenericBehaviourParameter.actionType
+				.makeNewAction(flexoBehaviour, null, getEditor());
+		createFlexoBehaviourParameter.doAction();
+		return createFlexoBehaviourParameter.getNewParameter();
+	}
+
 	public EditionAction createEditionAction(FMLControlGraph object) {
-		CreateEditionAction createEditionAction = CreateEditionAction.actionType.makeNewAction(object, null, getEditor());
-		createEditionAction.doAction();
-		return createEditionAction.getNewEditionAction();
-	}
-
-	public EditionAction createEditionActionInThenControlGraph(ConditionalAction conditional) {
-		if (conditional.getThenControlGraph() == null) {
-			EmptyControlGraph cg = conditional.getFMLModelFactory().newEmptyControlGraph();
-			conditional.setThenControlGraph(cg);
+		if (object != null) {
+			CreateEditionAction createEditionAction = CreateEditionAction.actionType.makeNewAction(object, null, getEditor());
+			createEditionAction.doAction();
+			return createEditionAction.getNewEditionAction();
 		}
-		CreateEditionAction createEditionAction = CreateEditionAction.actionType.makeNewAction(conditional.getThenControlGraph(), null,
-				getEditor());
-		createEditionAction.doAction();
-		return createEditionAction.getNewEditionAction();
-	}
-
-	public EditionAction createEditionActionInElseControlGraph(ConditionalAction conditional) {
-		if (conditional.getElseControlGraph() == null) {
-			EmptyControlGraph cg = conditional.getFMLModelFactory().newEmptyControlGraph();
-			conditional.setElseControlGraph(cg);
-		}
-		CreateEditionAction createEditionAction = CreateEditionAction.actionType.makeNewAction(conditional.getElseControlGraph(), null,
-				getEditor());
-		createEditionAction.doAction();
-		return createEditionAction.getNewEditionAction();
-	}
-
-	public EditionAction createEditionActionInIteration(IterationAction iteration) {
-		if (iteration.getControlGraph() == null) {
-			EmptyControlGraph cg = iteration.getFMLModelFactory().newEmptyControlGraph();
-			iteration.setControlGraph(cg);
-		}
-		CreateEditionAction createEditionAction = CreateEditionAction.actionType.makeNewAction(iteration.getControlGraph(), null,
-				getEditor());
-		createEditionAction.doAction();
-		return createEditionAction.getNewEditionAction();
-	}
-
-	public EditionAction createEditionActionInGetControlGraph(GetSetProperty<?> property) {
-		if (property.getGetControlGraph() == null) {
-			EmptyControlGraph cg = property.getFMLModelFactory().newEmptyControlGraph();
-			property.setGetControlGraph(cg);
-		}
-		CreateEditionAction createEditionAction = CreateEditionAction.actionType.makeNewAction(property.getGetControlGraph(), null,
-				getEditor());
-		createEditionAction.doAction();
-		return createEditionAction.getNewEditionAction();
-	}
-
-	public EditionAction createEditionActionInSetControlGraph(GetSetProperty<?> property) {
-		if (property.getSetControlGraph() == null) {
-			EmptyControlGraph cg = property.getFMLModelFactory().newEmptyControlGraph();
-			property.setSetControlGraph(cg);
-		}
-		CreateEditionAction createEditionAction = CreateEditionAction.actionType.makeNewAction(property.getSetControlGraph(), null,
-				getEditor());
-		createEditionAction.doAction();
-		return createEditionAction.getNewEditionAction();
-	}
-
-	public FlexoConcept createFlexoConcept(FlexoConcept flexoConcept) {
-		if (flexoConcept instanceof VirtualModel) {
-			CreateFlexoConcept createFlexoConcept = CreateFlexoConcept.actionType.makeNewAction((VirtualModel) flexoConcept, null,
-					getEditor());
-			createFlexoConcept.switchNewlyCreatedFlexoConcept = false;
-			createFlexoConcept.doAction();
-			return createFlexoConcept.getNewFlexoConcept();
-		} else if (flexoConcept != null) {
-			CreateFlexoConcept createFlexoConcept = CreateFlexoConcept.actionType.makeNewAction(flexoConcept.getOwningVirtualModel(), null,
-					getEditor());
-			createFlexoConcept.addToParentConcepts(flexoConcept);
-			createFlexoConcept.switchNewlyCreatedFlexoConcept = false;
-			createFlexoConcept.doAction();
-			/*if (addFlexoConcept.getNewFlexoConcept() != null) {
-				addFlexoConcept.getNewFlexoConcept().addToParentFlexoConcepts(flexoConcept);
-			}*/
-			return createFlexoConcept.getNewFlexoConcept();
-		}
-		logger.warning("Unexpected null flexo concept");
 		return null;
 	}
 
-	public FlexoConcept deleteFlexoConcept(FlexoConcept flexoConcept) {
-		if (flexoConcept instanceof VirtualModel) {
-			DeleteVirtualModel deleteVirtualModel = DeleteVirtualModel.actionType.makeNewAction((VirtualModel) flexoConcept, null,
+	public EditionAction createEditionActionInThenControlGraph(ConditionalAction conditional) {
+		if (conditional != null) {
+			if (conditional.getThenControlGraph() == null) {
+				EmptyControlGraph cg = conditional.getFMLModelFactory().newEmptyControlGraph();
+				conditional.setThenControlGraph(cg);
+			}
+			CreateEditionAction createEditionAction = CreateEditionAction.actionType.makeNewAction(conditional.getThenControlGraph(), null,
 					getEditor());
-			deleteVirtualModel.doAction();
-		} else if (flexoConcept != null) {
-			DeleteFlexoConceptObjects deleteFlexoConcept = DeleteFlexoConceptObjects.actionType.makeNewAction(flexoConcept, null,
-					getEditor());
-			deleteFlexoConcept.doAction();
+			createEditionAction.doAction();
+			return createEditionAction.getNewEditionAction();
 		}
-		return flexoConcept;
+		return null;
+	}
+
+	public EditionAction createEditionActionInElseControlGraph(ConditionalAction conditional) {
+		if (conditional != null) {
+			if (conditional.getElseControlGraph() == null) {
+				EmptyControlGraph cg = conditional.getFMLModelFactory().newEmptyControlGraph();
+				conditional.setElseControlGraph(cg);
+			}
+			CreateEditionAction createEditionAction = CreateEditionAction.actionType.makeNewAction(conditional.getElseControlGraph(), null,
+					getEditor());
+			createEditionAction.doAction();
+			return createEditionAction.getNewEditionAction();
+		}
+		return null;
+	}
+
+	public EditionAction createEditionActionInIteration(IterationAction iteration) {
+		if (iteration != null) {
+			if (iteration.getControlGraph() == null) {
+				EmptyControlGraph cg = iteration.getFMLModelFactory().newEmptyControlGraph();
+				iteration.setControlGraph(cg);
+			}
+			CreateEditionAction createEditionAction = CreateEditionAction.actionType.makeNewAction(iteration.getControlGraph(), null,
+					getEditor());
+			createEditionAction.doAction();
+			return createEditionAction.getNewEditionAction();
+		}
+		return null;
+	}
+
+	public EditionAction createEditionActionInWhileAction(WhileAction iteration) {
+		if (iteration != null) {
+			if (iteration.getControlGraph() == null) {
+				EmptyControlGraph cg = iteration.getFMLModelFactory().newEmptyControlGraph();
+				iteration.setControlGraph(cg);
+			}
+			CreateEditionAction createEditionAction = CreateEditionAction.actionType.makeNewAction(iteration.getControlGraph(), null,
+					getEditor());
+			createEditionAction.doAction();
+			return createEditionAction.getNewEditionAction();
+		}
+		return null;
+	}
+
+	public EditionAction createEditionActionInIncrementalIterationAction(IncrementalIterationAction iteration) {
+		if (iteration != null) {
+			if (iteration.getControlGraph() == null) {
+				EmptyControlGraph cg = iteration.getFMLModelFactory().newEmptyControlGraph();
+				iteration.setControlGraph(cg);
+			}
+			CreateEditionAction createEditionAction = CreateEditionAction.actionType.makeNewAction(iteration.getControlGraph(), null,
+					getEditor());
+			createEditionAction.doAction();
+			return createEditionAction.getNewEditionAction();
+		}
+		return null;
+	}
+
+	public EditionAction createEditionActionInGetControlGraph(GetSetProperty<?> property) {
+		if (property != null) {
+			if (property.getGetControlGraph() == null) {
+				EmptyControlGraph cg = property.getFMLModelFactory().newEmptyControlGraph();
+				property.setGetControlGraph(cg);
+			}
+			CreateEditionAction createEditionAction = CreateEditionAction.actionType.makeNewAction(property.getGetControlGraph(), null,
+					getEditor());
+			createEditionAction.doAction();
+			return createEditionAction.getNewEditionAction();
+		}
+		return null;
+	}
+
+	public EditionAction createEditionActionInSetControlGraph(GetSetProperty<?> property) {
+		if (property != null) {
+			if (property.getSetControlGraph() == null) {
+				EmptyControlGraph cg = property.getFMLModelFactory().newEmptyControlGraph();
+				property.setSetControlGraph(cg);
+			}
+			CreateEditionAction createEditionAction = CreateEditionAction.actionType.makeNewAction(property.getSetControlGraph(), null,
+					getEditor());
+			createEditionAction.doAction();
+			return createEditionAction.getNewEditionAction();
+		}
+		return null;
 	}
 
 	public FlexoConceptObject deleteFlexoConceptObject(FlexoConceptObject flexoConceptObject) {
@@ -392,7 +415,7 @@ public class FMLFIBController extends FlexoFIBController {
 		return flexoConceptObject;
 	}
 
-	public FlexoBehaviourParameter createURIParameter(FlexoBehaviour flexoBehaviour) {
+	/*public FlexoBehaviourParameter createURIParameter(FlexoBehaviour flexoBehaviour) {
 		FlexoBehaviourParameter newParameter = flexoBehaviour.getFMLModelFactory().newURIParameter();
 		newParameter.setName("uri");
 		newParameter.setBehaviour(flexoBehaviour);
@@ -400,7 +423,7 @@ public class FMLFIBController extends FlexoFIBController {
 		flexoBehaviour.addToParameters(newParameter);
 		return newParameter;
 	}
-
+	
 	public FlexoBehaviourParameter createTextFieldParameter(FlexoBehaviour flexoBehaviour) {
 		FlexoBehaviourParameter newParameter = flexoBehaviour.getFMLModelFactory().newTextFieldParameter();
 		newParameter.setName("textField");
@@ -409,7 +432,7 @@ public class FMLFIBController extends FlexoFIBController {
 		flexoBehaviour.addToParameters(newParameter);
 		return newParameter;
 	}
-
+	
 	public FlexoBehaviourParameter createTextAreaParameter(FlexoBehaviour flexoBehaviour) {
 		FlexoBehaviourParameter newParameter = flexoBehaviour.getFMLModelFactory().newTextAreaParameter();
 		newParameter.setName("textArea");
@@ -418,7 +441,7 @@ public class FMLFIBController extends FlexoFIBController {
 		flexoBehaviour.addToParameters(newParameter);
 		return newParameter;
 	}
-
+	
 	public FlexoBehaviourParameter createIntegerParameter(FlexoBehaviour flexoBehaviour) {
 		FlexoBehaviourParameter newParameter = flexoBehaviour.getFMLModelFactory().newIntegerParameter();
 		newParameter.setName("integer");
@@ -427,7 +450,7 @@ public class FMLFIBController extends FlexoFIBController {
 		flexoBehaviour.addToParameters(newParameter);
 		return newParameter;
 	}
-
+	
 	public FlexoBehaviourParameter createCheckBoxParameter(FlexoBehaviour flexoBehaviour) {
 		FlexoBehaviourParameter newParameter = flexoBehaviour.getFMLModelFactory().newCheckboxParameter();
 		newParameter.setName("checkbox");
@@ -436,7 +459,7 @@ public class FMLFIBController extends FlexoFIBController {
 		flexoBehaviour.addToParameters(newParameter);
 		return newParameter;
 	}
-
+	
 	public FlexoBehaviourParameter createDropDownParameter(FlexoBehaviour flexoBehaviour) {
 		FlexoBehaviourParameter newParameter = flexoBehaviour.getFMLModelFactory().newDropDownParameter();
 		newParameter.setName("dropdown");
@@ -445,51 +468,51 @@ public class FMLFIBController extends FlexoFIBController {
 		flexoBehaviour.addToParameters(newParameter);
 		return newParameter;
 	}
-
+	
 	public FlexoBehaviourParameter createIndividualParameter(FlexoBehaviour flexoBehaviour) {
-		FlexoBehaviourParameter newParameter = flexoBehaviour.getFMLModelFactory().newIndividualParameter();
+		FlexoBehaviourParameter newParameter = flexoBehaviour.getFMLModelFactory().newInstance(IndividualParameter.class);
 		newParameter.setName("individual");
 		newParameter.setBehaviour(flexoBehaviour);
 		// newParameter.setLabel("label");
 		flexoBehaviour.addToParameters(newParameter);
 		return newParameter;
 	}
-
+	
 	public FlexoBehaviourParameter createClassParameter(FlexoBehaviour flexoBehaviour) {
-		FlexoBehaviourParameter newParameter = flexoBehaviour.getFMLModelFactory().newClassParameter();
+		FlexoBehaviourParameter newParameter = flexoBehaviour.getFMLModelFactory().newInstance(ClassParameter.class);
 		newParameter.setName("class");
 		newParameter.setBehaviour(flexoBehaviour);
 		// newParameter.setLabel("label");
 		flexoBehaviour.addToParameters(newParameter);
 		return newParameter;
 	}
-
+	
 	public FlexoBehaviourParameter createPropertyParameter(FlexoBehaviour flexoBehaviour) {
-		FlexoBehaviourParameter newParameter = flexoBehaviour.getFMLModelFactory().newPropertyParameter();
+		FlexoBehaviourParameter newParameter = flexoBehaviour.getFMLModelFactory().newInstance(PropertyParameter.class);
 		newParameter.setName("property");
 		newParameter.setBehaviour(flexoBehaviour);
 		// newParameter.setLabel("label");
 		flexoBehaviour.addToParameters(newParameter);
 		return newParameter;
 	}
-
+	
 	public FlexoBehaviourParameter createObjectPropertyParameter(FlexoBehaviour flexoBehaviour) {
-		FlexoBehaviourParameter newParameter = flexoBehaviour.getFMLModelFactory().newObjectPropertyParameter();
+		FlexoBehaviourParameter newParameter = flexoBehaviour.getFMLModelFactory().newInstance(ObjectPropertyParameter.class);
 		newParameter.setName("property");
 		newParameter.setBehaviour(flexoBehaviour);
 		// newParameter.setLabel("label");
 		flexoBehaviour.addToParameters(newParameter);
 		return newParameter;
 	}
-
+	
 	public FlexoBehaviourParameter createDataPropertyParameter(FlexoBehaviour flexoBehaviour) {
-		FlexoBehaviourParameter newParameter = flexoBehaviour.getFMLModelFactory().newDataPropertyParameter();
+		FlexoBehaviourParameter newParameter = flexoBehaviour.getFMLModelFactory().newInstance(DataPropertyParameter.class);
 		newParameter.setName("property");
 		newParameter.setBehaviour(flexoBehaviour);
 		// newParameter.setLabel("label");
 		flexoBehaviour.addToParameters(newParameter);
 		return newParameter;
-	}
+	}*/
 
 	/*public EditionSchemeImplParameter createFlexoObjectParameter() {
 		FlexoBehaviourParameter newParameter = new FlexoObjectParameter(null);
@@ -499,7 +522,7 @@ public class FMLFIBController extends FlexoFIBController {
 		return newParameter;
 	}*/
 
-	public FlexoBehaviourParameter createTechnologyObjectParameter(FlexoBehaviour flexoBehaviour) {
+	/*public FlexoBehaviourParameter createTechnologyObjectParameter(FlexoBehaviour flexoBehaviour) {
 		FlexoBehaviourParameter newParameter = flexoBehaviour.getFMLModelFactory().newTechnologyObjectParameter();
 		newParameter.setName("technologyObject");
 		newParameter.setBehaviour(flexoBehaviour);
@@ -507,7 +530,7 @@ public class FMLFIBController extends FlexoFIBController {
 		flexoBehaviour.addToParameters(newParameter);
 		return newParameter;
 	}
-
+	
 	public FlexoBehaviourParameter createListParameter(FlexoBehaviour flexoBehaviour) {
 		FlexoBehaviourParameter newParameter = flexoBehaviour.getFMLModelFactory().newListParameter();
 		newParameter.setName("list");
@@ -516,7 +539,7 @@ public class FMLFIBController extends FlexoFIBController {
 		flexoBehaviour.addToParameters(newParameter);
 		return newParameter;
 	}
-
+	
 	public FlexoBehaviourParameter createFlexoConceptInstanceParameter(FlexoBehaviour flexoBehaviour) {
 		FlexoBehaviourParameter newParameter = flexoBehaviour.getFMLModelFactory().newFlexoConceptInstanceParameter();
 		newParameter.setName("flexoConceptInstance");
@@ -524,7 +547,7 @@ public class FMLFIBController extends FlexoFIBController {
 		// newParameter.setLabel("label");
 		flexoBehaviour.addToParameters(newParameter);
 		return newParameter;
-	}
+	}*/
 
 	public FlexoBehaviourParameter deleteParameter(FlexoBehaviour flexoBehaviour, FlexoBehaviourParameter parameterToDelete) {
 		flexoBehaviour.removeFromParameters(parameterToDelete);
@@ -532,31 +555,10 @@ public class FMLFIBController extends FlexoFIBController {
 		return parameterToDelete;
 	}
 
-	public void actionFirst(EditionAction action) {
-		if (action.getActionContainer() != null) {
-			action.getActionContainer().actionFirst(action);
-		}
-	}
-
-	public void actionUp(EditionAction action) {
-		if (action != null && action.getActionContainer() != null) {
-			action.getActionContainer().actionUp(action);
-		}
-		if (action == null) {
-			logger.warning("actionUp was called with null parameter");
-		}
-	}
-
-	public void actionDown(EditionAction action) {
-		if (action.getActionContainer() != null) {
-			action.getActionContainer().actionDown(action);
-		}
-	}
-
-	public void actionLast(EditionAction action) {
-		if (action.getActionContainer() != null) {
-			action.getActionContainer().actionLast(action);
-		}
+	public InspectorEntry createInspectorEntry(FlexoConceptInspector inspector) {
+		CreateInspectorEntry createInspectorEntry = CreateInspectorEntry.actionType.makeNewAction(inspector, null, getEditor());
+		createInspectorEntry.doAction();
+		return createInspectorEntry.getNewEntry();
 	}
 
 	public boolean isFlexoBehaviour(Object selectedObject, FlexoBehaviour context) {
@@ -571,19 +573,17 @@ public class FMLFIBController extends FlexoFIBController {
 		if (action == null) {
 			return null;
 		}
-		if (action instanceof TechnologySpecificAction && ((TechnologySpecificAction<?, ?>) action).getModelSlot() != null) {
-			TechnologyAdapter technologyAdapter = ((TechnologySpecificAction<?, ?>) action).getModelSlot().getModelSlotTechnologyAdapter();
+		if (action instanceof TechnologySpecificAction) {
+			TechnologyAdapter technologyAdapter = ((TechnologySpecificAction<?, ?>) action).getModelSlotTechnologyAdapter();
 			if (technologyAdapter != null) {
-				TechnologyAdapterController<?> taController = getFlexoController().getTechnologyAdapterController(technologyAdapter);
+				TechnologyAdapterController<?> taController = FlexoController.getTechnologyAdapterController(technologyAdapter);
 				return taController.getFIBPanelForObject(action);
-			} else
-				// No specific TechnologyAdapter, lookup in generic libraries
-				return getFIBPanelForObject(action);
-		} else {
+			}
 			// No specific TechnologyAdapter, lookup in generic libraries
 			return getFIBPanelForObject(action);
 		}
-
+		// No specific TechnologyAdapter, lookup in generic libraries
+		return getFIBPanelForObject(action);
 	}
 
 	public Resource fibForFlexoBehaviour(FlexoBehaviour flexoBehaviour) {
@@ -596,15 +596,127 @@ public class FMLFIBController extends FlexoFIBController {
 	}
 
 	public FIBInspector inspectorForObject(FMLObject object) {
-		return getFlexoController().getModuleInspectorController().inspectorForObject(object);
-	}
-
-	public FIBTab basicInspectorTabForObject(FMLObject object) {
-		FIBInspector inspector = inspectorForObject(object);
-		if (inspector != null && inspector.getTabPanel() != null) {
-			return (FIBTab) inspector.getTabPanel().getSubComponentNamed("BasicTab");
+		if (object == null) {
+			return null;
+		}
+		if (getFlexoController() != null) {
+			return getFlexoController().getModuleInspectorController().inspectorForObject(object);
+		}
+		if (defaultInspectorGroup != null) {
+			return defaultInspectorGroup.inspectorForClass(object.getClass());
 		}
 		return null;
+	}
+
+	// We store here a map of cloned basic tabs associated to their original FIBInspector
+	// for performances reasons: we don't want to clone multiple times
+	private Map<FIBInspector, FIBTab> basicInspectorTabs = new HashMap<>();
+
+	public FIBTab basicInspectorTabForObject(FMLObject object) {
+		// return inspectorForObject(object);
+
+		FIBInspector inspector = inspectorForObject(object);
+		if (inspector != null && inspector.getTabPanel() != null) {
+			FIBTab returned = basicInspectorTabs.get(inspector);
+			if (returned == null) {
+				FIBTab originalBasicTab = (FIBTab) inspector.getTabPanel().getSubComponentNamed("BasicTab");
+				if (originalBasicTab != null) {
+					// We have here to clone the component, because original component refers to a root container
+					// that we don't want to be displayed. So we clone the component, and define a clean API on it using setDataClass()
+					returned = (FIBTab) originalBasicTab.cloneObject();
+					returned.setControllerClass(FMLFIBInspectorController.class);
+					returned.setDataType(originalBasicTab.getRootComponent().getVariable(FIBComponent.DEFAULT_DATA_VARIABLE).getType());
+					basicInspectorTabs.put(inspector, returned);
+				}
+			}
+			return returned;
+		}
+		return null;
+	}
+
+	// Debug
+	private InspectorGroup defaultInspectorGroup;
+
+	// Debug
+	public InspectorGroup getDefaultInspectorGroup() {
+		return defaultInspectorGroup;
+	}
+
+	// Debug
+	public void setDefaultInspectorGroup(InspectorGroup defaultInspectorGroup) {
+		this.defaultInspectorGroup = defaultInspectorGroup;
+	}
+
+	public void moveControlGraph(FMLControlGraph controlGraph, FMLControlGraph receiver) {
+		System.out.println("On veut bouger le graphe de controle");
+		System.out.println(controlGraph.getFMLRepresentation());
+		System.out.println("Juste apres:");
+		System.out.println(receiver.getFMLRepresentation());
+
+		controlGraph.moveWhileSequentiallyAppendingTo(receiver);
+	}
+
+	public boolean canMoveControlGraph(FMLControlGraph controlGraph, FMLControlGraph receiver) {
+		return controlGraph != null && controlGraph.getOwner() != receiver;
+	}
+
+	private boolean showErrorsWarnings = true;
+
+	public boolean showErrorsWarnings() {
+		return showErrorsWarnings;
+	}
+
+	public void setShowErrorsWarnings(boolean showErrorsWarnings) {
+		// System.out.println("setShowErrorsWarnings with " + showErrorsWarnings);
+		if (this.showErrorsWarnings != showErrorsWarnings) {
+			this.showErrorsWarnings = showErrorsWarnings;
+			getPropertyChangeSupport().firePropertyChange("showErrorsWarnings", !showErrorsWarnings, showErrorsWarnings);
+		}
+	}
+
+	public void showIssue(ValidationIssue<?, ?> issue) {
+		if (issue != null) {
+			Validable objectToSelect = issue.getValidable();
+			getFlexoController().selectAndFocusObject((FlexoObject) objectToSelect);
+		}
+	}
+
+	public void fixIssue(ValidationIssue<?, ?> issue) {
+		if (issue instanceof ProblemIssue) {
+			VirtualModel vmToRevalidate = null;
+			if (issue.getValidationReport().getRootObject() instanceof VirtualModel) {
+				vmToRevalidate = (VirtualModel) issue.getValidationReport().getRootObject();
+			}
+			IssueFixing<?, ?> fixing = new IssueFixing<>((ProblemIssue<?, ?>) issue, getFlexoController());
+			FixIssueDialog dialog = new FixIssueDialog(fixing, getFlexoController());
+			dialog.showDialog();
+			if (dialog.getStatus() == Status.VALIDATED) {
+				fixing.fix();
+				if (vmToRevalidate != null) {
+					revalidate(vmToRevalidate);
+				}
+			}
+			else if (dialog.getStatus() == Status.NO) {
+				fixing.ignore();
+			}
+		}
+	}
+
+	public void revalidate(VirtualModel virtualModel) {
+		if (getServiceManager() != null) {
+			FMLTechnologyAdapterController tac = getServiceManager().getTechnologyAdapterControllerService()
+					.getTechnologyAdapterController(FMLTechnologyAdapterController.class);
+			FMLValidationReport virtualModelReport = (FMLValidationReport) tac.getValidationReport(virtualModel);
+			RevalidationTask validationTask = new RevalidationTask(virtualModelReport);
+			getServiceManager().getTaskManager().scheduleExecution(validationTask);
+		}
+	}
+
+	@Override
+	@NotificationUnsafe
+	public void moveFlexoConcept(FlexoConcept concept, FlexoConcept container) {
+		super.moveFlexoConcept(concept, container);
+		revalidate(concept.getOwner());
 	}
 
 }

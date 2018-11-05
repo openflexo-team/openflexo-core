@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Panel id="0" align="left" borderTop="0" borderLeft="0" trackViewPortHeight="true" trackViewPortWidth="true" borderBottom="0" border="empty" sizeAdjustment="OriginalSize" layout="twocols" borderRight="0" controllerClassName="org.openflexo.view.controller.FlexoFIBController">
+  <Label id="1" label="project_name" align="right" localize="true" constraints="twocols(anchor=east;expandHorizontally=false;expandVertically=false;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=0;insetsBottom=0;insetsLeft=20;insetsRight=10;insetsTop=0;location=left;padX=0;padY=0;weightX=0.0;weightY=0.0)" index="0" name="ProjectNameLabel" />
+  <TextField id="2" columns="40" text="TextField" data="data.projectName" constraints="twocols(anchor=center;expandHorizontally=true;expandVertically=false;fill=horizontal;gridHeight=1;gridWidth=0;gridX=-1;gridY=-1;index=1;insetsBottom=0;insetsLeft=0;insetsRight=20;insetsTop=0;location=right;padX=0;padY=0;weightX=1.0;weightY=0.0)" index="1" name="NameTextField" />
+  <Label id="3" label="project_uri" align="right" localize="true" constraints="twocols(anchor=east;expandHorizontally=false;expandVertically=false;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=0;insetsBottom=0;insetsLeft=20;insetsRight=10;insetsTop=0;location=left;padX=0;padY=0;weightX=0.0;weightY=0.0)" index="0" name="ProjectURILabel" />
+  <TextField id="4" columns="40" text="TextField" data="data.projectURI" constraints="twocols(anchor=center;expandHorizontally=true;expandVertically=false;fill=horizontal;gridHeight=1;gridWidth=0;gridX=-1;gridY=-1;index=1;insetsBottom=0;insetsLeft=0;insetsRight=20;insetsTop=0;location=right;padX=0;padY=0;weightX=1.0;weightY=0.0)" index="1" name="NameTextField" />
+  <Label id="5" label="description" align="right" localize="true" constraints="twocols(anchor=east;expandHorizontally=false;expandVertically=false;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=4;insetsBottom=0;insetsLeft=20;insetsRight=10;insetsTop=0;location=left;padX=0;padY=0;weightX=0.0;weightY=0.0)" index="12" name="DescriptionLabel" />
+  <TextArea id="6" rows="5" columns="6" text="TextArea" data="data.description" useScrollBar="true" verticalScrollbarPolicy="VERTICAL_SCROLLBAR_AS_NEEDED" constraints="twocols(anchor=center;expandHorizontally=true;expandVertically=true;fill=both;gridHeight=1;gridWidth=0;gridX=-1;gridY=-1;index=5;insetsBottom=0;insetsLeft=0;insetsRight=20;insetsTop=0;location=right;padX=0;padY=0;weightX=1.0;weightY=1.0)" horizontalScrollbarPolicy="HORIZONTAL_SCROLLBAR_AS_NEEDED" index="13" name="TextArea" />
+  <LocalizedDictionary id="7">
+    <Localized id="8" lang="English" value="Project name" key="project_name" />
+    <Localized id="9" lang="French" value="Nom du projet" key="project_name" />
+    <Localized id="10" lang="English" value="Project uri" key="project_uri" />
+    <Localized id="11" lang="Dutch" value="project_uri" key="project_uri" />
+    <Localized id="12" lang="French" value="URI du projet" key="project_uri" />
+    <Localized id="13" lang="English" value="Description" key="description" />
+    <Localized id="14" lang="Dutch" value="Description" key="description" />
+    <Localized id="15" lang="French" value="Description du projet" key="description" />
+  </LocalizedDictionary>
+  <FIBVariable id="16" type="org.openflexo.view.controller.action.CreateProjectWizard$ConfigureNewProject" name="data" />
+</Panel>

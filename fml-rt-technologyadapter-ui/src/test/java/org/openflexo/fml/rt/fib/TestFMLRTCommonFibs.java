@@ -39,7 +39,7 @@
 package org.openflexo.fml.rt.fib;
 
 import org.junit.Test;
-import org.openflexo.fib.utils.GenericFIBTestCase;
+import org.openflexo.gina.test.GenericFIBTestCase;
 import org.openflexo.rm.FileResourceImpl;
 import org.openflexo.rm.ResourceLocator;
 
@@ -55,13 +55,8 @@ public class TestFMLRTCommonFibs extends GenericFIBTestCase {
 	}
 
 	@Test
-	public void testViewFolderSelector() {
-		validateFIB("Fib/ViewFolderSelector.fib");
-	}
-
-	@Test
-	public void testViewSelector() {
-		validateFIB("Fib/ViewSelector.fib");
+	public void testVirtualModelInstanceResourceSelector() {
+		validateFIB("Fib/VirtualModelInstanceResourceSelector.fib");
 	}
 
 	@Test
@@ -75,8 +70,8 @@ public class TestFMLRTCommonFibs extends GenericFIBTestCase {
 	}
 
 	@Test
-	public void testFIBViewLibraryBrowser() {
-		validateFIB("Fib/Widget/FIBViewLibraryBrowser.fib");
+	public void testFIBVirtualModelInstanceRepositoriesBrowser() {
+		validateFIB("Fib/FIBVirtualModelInstanceRepositoriesBrowser.fib");
 	}
 
 }

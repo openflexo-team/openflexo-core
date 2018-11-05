@@ -45,12 +45,13 @@ import javax.swing.Icon;
 
 import org.openflexo.components.wizard.Wizard;
 import org.openflexo.components.wizard.WizardDialog;
-import org.openflexo.fib.controller.FIBController.Status;
 import org.openflexo.foundation.action.FlexoActionFinalizer;
 import org.openflexo.foundation.action.FlexoActionInitializer;
+import org.openflexo.foundation.action.FlexoActionFactory;
 import org.openflexo.foundation.fml.FMLObject;
 import org.openflexo.foundation.fml.action.CreateEditionAction;
 import org.openflexo.foundation.fml.controlgraph.FMLControlGraph;
+import org.openflexo.gina.controller.FIBController.Status;
 import org.openflexo.icon.FMLIconLibrary;
 import org.openflexo.view.controller.ActionInitializer;
 import org.openflexo.view.controller.ControllerActionInitializer;
@@ -88,14 +89,16 @@ public class CreateEditionActionInitializer extends ActionInitializer<CreateEdit
 		return new FlexoActionFinalizer<CreateEditionAction>() {
 			@Override
 			public boolean run(EventObject e, CreateEditionAction action) {
-				// getController().setCurrentEditedObjectAsModuleView(action.getNewModelSlot(), getController().VIEW_POINT_PERSPECTIVE);
+				// getController().setCurrentEditedObjectAsModuleView(action.getNewEditionAction(),
+				// getController().getCurrentPerspective());
+				getController().selectAndFocusObject(action.getNewEditionAction());
 				return true;
 			}
 		};
 	}
 
 	@Override
-	protected Icon getEnabledIcon() {
+	protected Icon getEnabledIcon(FlexoActionFactory actionType) {
 		return FMLIconLibrary.FLEXO_CONCEPT_ACTION_ICON;
 	}
 

@@ -41,11 +41,12 @@ package org.openflexo.components.validation;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 
+import org.openflexo.ApplicationContext;
 import org.openflexo.editor.SelectAndFocusObjectTask;
-import org.openflexo.fib.editor.ComponentValidationWindow;
-import org.openflexo.fib.model.FIBComponent;
-import org.openflexo.fib.swing.validation.ValidationPanel;
 import org.openflexo.foundation.FlexoObject;
+import org.openflexo.gina.model.FIBComponent;
+import org.openflexo.gina.swing.editor.validation.ComponentValidationWindow;
+import org.openflexo.gina.swing.editor.validation.ValidationDialogPanel;
 import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.localization.LocalizedDelegate;
 import org.openflexo.model.validation.Validable;
@@ -56,7 +57,7 @@ import org.openflexo.selection.SelectionManager;
 import org.openflexo.view.controller.FlexoController;
 
 /**
- * Non-modal window displaying a {@link ValidationPanel} for a {@link FlexoObject}<br>
+ * Non-modal window displaying a {@link ValidationDialogPanel} for a {@link FlexoObject}<br>
  * Selection of issues is synchronized with the {@link FlexoController}'s {@link SelectionManager}
  * 
  * {@link ValidationModel} must be given to validate {@link FlexoObject}
@@ -72,9 +73,9 @@ public class ValidationWindow extends JDialog {
 	private boolean isDisposed = false;
 
 	public ValidationWindow(JFrame frame, FlexoController controller) {
-		super(frame, FlexoLocalization.localizedForKey(FlexoLocalization.getMainLocalizer(), "validation"), ModalityType.MODELESS);
+		super(frame, controller.getFlexoLocales().localizedForKey("validation"), ModalityType.MODELESS);
 		this.controller = controller;
-		validationPanel = new FlexoValidationPanel(null, FlexoLocalization.getMainLocalizer());
+		validationPanel = new FlexoValidationPanel(null, controller.getApplicationContext(), FlexoLocalization.getMainLocalizer());
 		getContentPane().add(validationPanel);
 		pack();
 	}
@@ -115,10 +116,11 @@ public class ValidationWindow extends JDialog {
 		return isDisposed;
 	}
 
-	protected class FlexoValidationPanel extends ValidationPanel {
+	protected class FlexoValidationPanel extends ValidationDialogPanel {
 
-		public FlexoValidationPanel(ValidationReport validationReport, LocalizedDelegate parentLocalizer) {
-			super(validationReport, parentLocalizer);
+		public FlexoValidationPanel(ValidationReport validationReport, ApplicationContext applicationContext,
+				LocalizedDelegate parentLocalizer) {
+			super(validationReport, applicationContext.getApplicationFIBLibraryService().getApplicationFIBLibrary(), parentLocalizer);
 		}
 
 		@Override

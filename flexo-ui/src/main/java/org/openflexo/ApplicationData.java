@@ -48,6 +48,7 @@ import javax.swing.ImageIcon;
 import org.openflexo.connie.annotations.NotificationUnsafe;
 import org.openflexo.icon.IconLibrary;
 import org.openflexo.module.Module;
+import org.openflexo.toolbox.PropertyChangedSupportDefaultImplementation;
 
 /**
  * Class storing general data for application
@@ -55,7 +56,7 @@ import org.openflexo.module.Module;
  * 
  * @author sguerin
  */
-public class ApplicationData {
+public class ApplicationData extends PropertyChangedSupportDefaultImplementation {
 	private static final Logger logger = Logger.getLogger(ApplicationData.class.getPackage().getName());
 	private final ApplicationContext applicationContext;
 
@@ -97,23 +98,28 @@ public class ApplicationData {
 		return IconLibrary.OPENFLEXO_TEXT_SMALL_ICON;
 	}
 
+	@NotificationUnsafe
 	public Module<?> getFavoriteModule() {
-		Module<?> returned = applicationContext.getModuleLoader().getModuleNamed(
-				applicationContext.getGeneralPreferences().getFavoriteModuleName());
+		Module<?> returned = applicationContext.getModuleLoader()
+				.getModuleNamed(applicationContext.getGeneralPreferences().getFavoriteModuleName());
 		if (returned == null) {
 			if (getAvailableModules().size() > 0) {
 				return getAvailableModules().iterator().next();
 			}
 			logger.severe("No module found.");
 			return null;
-		} else {
+		}
+		else {
 			return returned;
 		}
 	}
 
 	public void setFavoriteModule(Module<?> aModule) {
+
 		if (aModule != null) {
 			applicationContext.getGeneralPreferences().setFavoriteModuleName(aModule.getName());
 		}
+		getPropertyChangeSupport().firePropertyChange("favoriteModule", null, aModule);
 	}
+
 }

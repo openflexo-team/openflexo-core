@@ -43,21 +43,26 @@ import java.awt.BorderLayout;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
+import java.util.List;
 import java.util.logging.Logger;
 
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
-import org.openflexo.fib.FIBLibrary;
-import org.openflexo.fib.controller.FIBController;
-import org.openflexo.fib.model.FIBComponent;
-import org.openflexo.fib.model.listener.FIBMouseClickListener;
-import org.openflexo.fib.view.FIBView;
 import org.openflexo.foundation.DataModification;
 import org.openflexo.foundation.FlexoObservable;
 import org.openflexo.foundation.GraphicalFlexoObserver;
 import org.openflexo.foundation.task.Progress;
+import org.openflexo.gina.controller.FIBController;
+import org.openflexo.gina.model.FIBComponent;
+import org.openflexo.gina.model.FIBContainer;
+import org.openflexo.gina.model.listener.FIBMouseClickListener;
+import org.openflexo.gina.model.widget.FIBBrowser;
+import org.openflexo.gina.swing.view.JFIBView;
+import org.openflexo.gina.swing.view.SwingViewFactory;
+import org.openflexo.gina.view.FIBView;
 import org.openflexo.localization.FlexoLocalization;
+import org.openflexo.localization.LocalizedDelegate;
 import org.openflexo.rm.Resource;
 import org.openflexo.toolbox.HasPropertyChangeSupport;
 import org.openflexo.toolbox.PropertyChangeListenerRegistrationManager;
@@ -70,6 +75,7 @@ import org.openflexo.view.controller.FlexoFIBController;
  * @author sguerin
  * 
  */
+@SuppressWarnings("serial")
 public class FlexoFIBView extends JPanel implements GraphicalFlexoObserver, HasPropertyChangeSupport, PropertyChangeListener {
 	static final Logger logger = Logger.getLogger(FlexoFIBView.class.getPackage().getName());
 
@@ -78,7 +84,7 @@ public class FlexoFIBView extends JPanel implements GraphicalFlexoObserver, HasP
 	private Object dataObject;
 
 	final FlexoController controller;
-	private final FIBView fibView;
+	private final JFIBView<?, ?> fibView;
 	private FlexoFIBController fibController;
 	private final FIBComponent fibComponent;
 
@@ -86,51 +92,53 @@ public class FlexoFIBView extends JPanel implements GraphicalFlexoObserver, HasP
 
 	protected PropertyChangeListenerRegistrationManager manager = new PropertyChangeListenerRegistrationManager();
 
-	public FlexoFIBView(Object representedObject, FlexoController controller, Resource fibResource) {
-		this(representedObject, controller, fibResource, false);
+	public FlexoFIBView(Object representedObject, FlexoController controller, Resource fibResource, LocalizedDelegate locales) {
+		this(representedObject, controller, fibResource, locales, false);
 	}
 
-	public FlexoFIBView(Object representedObject, FlexoController controller, Resource fibResource, boolean addScrollBar) {
-		this(representedObject, controller, FIBLibrary.instance().retrieveFIBComponent(fibResource), addScrollBar);
+	public FlexoFIBView(Object representedObject, FlexoController controller, Resource fibResource, LocalizedDelegate locales,
+			boolean addScrollBar) {
+		this(representedObject, controller, controller.getApplicationFIBLibraryService().retrieveFIBComponent(fibResource), locales,
+				addScrollBar);
 	}
 
-	// Removed as we should only use Resource everywhere
-	/*
-	public FlexoFIBView(Object representedObject, FlexoController controller, String fibResourcePath, FlexoProgress progress) {
-		this(representedObject, controller, fibResourcePath, false, progress);
-	}
-
-	public FlexoFIBView(Object representedObject, FlexoController controller, String fibResourcePath, boolean addScrollBar,
-			FlexoProgress progress) {
-		this(representedObject, controller, FIBLibrary.instance().retrieveFIBComponent(fibResourcePath), addScrollBar, progress);
-	}
-	*/
-
-	protected FlexoFIBView(Object dataObject, FlexoController controller, FIBComponent fibComponent, boolean addScrollBar) {
+	protected FlexoFIBView(Object dataObject, FlexoController controller, FIBComponent fibComponent, LocalizedDelegate locales,
+			boolean addScrollBar) {
 		super(new BorderLayout());
-		this.dataObject = dataObject;
 		this.controller = controller;
 		this.fibComponent = fibComponent;
 
-		if (dataObject instanceof HasPropertyChangeSupport) {
+		// TODO: try to remove following lines
+		/*if (dataObject instanceof HasPropertyChangeSupport) {
 			manager.addListener(this, (HasPropertyChangeSupport) dataObject);
-		} else if (dataObject instanceof FlexoObservable) {
-			((FlexoObservable) dataObject).addObserver(this);
 		}
+		else if (dataObject instanceof FlexoObservable) {
+			((FlexoObservable) dataObject).addObserver(this);
+		}*/
+		// TODO: try to remove previous lines
 
 		pcSupport = new PropertyChangeSupport(this);
 
+		// Important to set dataObject now
+		this.dataObject = dataObject;
 		initializeFIBComponent();
 
-		fibController = createFibController(fibComponent, controller);
+		if (getFlexoController() != null) {
+			getFIBComponent().setCustomTypeManager(getFlexoController().getApplicationContext().getTechnologyAdapterService());
+			getFIBComponent()
+					.setCustomTypeEditorProvider(getFlexoController().getApplicationContext().getTechnologyAdapterControllerService());
+		}
+		fibController = createFibController(fibComponent, controller, locales);
 
 		Progress.progress("builing_view");
 
-		fibView = fibController.buildView(fibComponent);
+		fibView = (JFIBView<?, ?>) fibController.buildView(fibComponent, null, true);
 
 		Progress.progress("init_view");
 
-		fibController.setDataObject(dataObject);
+		setDataObject(dataObject);
+
+		// fibController.setDataObject(dataObject);
 
 		if (this instanceof FIBMouseClickListener) {
 			fibView.getController().addMouseClickListener((FIBMouseClickListener) this);
@@ -138,7 +146,8 @@ public class FlexoFIBView extends JPanel implements GraphicalFlexoObserver, HasP
 
 		if (addScrollBar) {
 			add(new JScrollPane(fibView.getJComponent()), BorderLayout.CENTER);
-		} else {
+		}
+		else {
 			add(fibView.getJComponent(), BorderLayout.CENTER);
 		}
 
@@ -154,15 +163,17 @@ public class FlexoFIBView extends JPanel implements GraphicalFlexoObserver, HasP
 	 * @param controller
 	 * @return the newly created FlexoFIBController
 	 */
-	protected FlexoFIBController createFibController(FIBComponent fibComponent, FlexoController controller) {
-		FIBController returned = FIBController.instanciateController(fibComponent, FlexoLocalization.getMainLocalizer());
+	protected FlexoFIBController createFibController(FIBComponent fibComponent, FlexoController controller, LocalizedDelegate locales) {
+		FIBController returned = FIBController.instanciateController(fibComponent, SwingViewFactory.INSTANCE,
+				locales != null ? locales : FlexoLocalization.getMainLocalizer());
 		if (returned instanceof FlexoFIBController) {
 			((FlexoFIBController) returned).setFlexoController(controller);
 			return (FlexoFIBController) returned;
-		} else if (fibComponent.getControllerClass() != null) {
+		}
+		else if (fibComponent.getControllerClass() != null) {
 			logger.warning("Controller for component " + fibComponent + " is not an instanceof FlexoFIBController");
 		}
-		return fibController = new FlexoFIBController(fibComponent, controller);
+		return fibController = new FlexoFIBController(fibComponent, SwingViewFactory.INSTANCE, controller);
 	}
 
 	public FlexoController getFlexoController() {
@@ -193,13 +204,15 @@ public class FlexoFIBView extends JPanel implements GraphicalFlexoObserver, HasP
 		// logger.info(">>>>>>> setDataObject with " + object);
 		if (this.dataObject instanceof HasPropertyChangeSupport) {
 			manager.removeListener(this, (HasPropertyChangeSupport) this.dataObject);
-		} else if (this.dataObject instanceof FlexoObservable) {
+		}
+		else if (this.dataObject instanceof FlexoObservable) {
 			((FlexoObservable) this.dataObject).deleteObserver(this);
 		}
 		dataObject = object;
 		if (dataObject instanceof HasPropertyChangeSupport) {
 			manager.addListener(this, (HasPropertyChangeSupport) this.dataObject);
-		} else if (dataObject instanceof FlexoObservable) {
+		}
+		else if (dataObject instanceof FlexoObservable) {
 			((FlexoObservable) dataObject).addObserver(this);
 		}
 		fibController.setDataObject(object, true);
@@ -209,7 +222,7 @@ public class FlexoFIBView extends JPanel implements GraphicalFlexoObserver, HasP
 		return fibComponent;
 	}
 
-	public FIBView getFIBView() {
+	public FIBView<?, ?> getFIBView() {
 		return fibView;
 	}
 
@@ -217,8 +230,11 @@ public class FlexoFIBView extends JPanel implements GraphicalFlexoObserver, HasP
 		return fibController;
 	}
 
-	public FIBView getFIBView(String componentName) {
-		return fibController.viewForComponent(componentName);
+	public FIBView<?, ?> getFIBView(String componentName) {
+		if (fibController != null) {
+			return fibController.viewForComponent(componentName);
+		}
+		return null;
 	}
 
 	public void deleteView() {
@@ -247,7 +263,7 @@ public class FlexoFIBView extends JPanel implements GraphicalFlexoObserver, HasP
 	}
 
 	/**
-	 * This method is a hook which is called just before to initialize FIBView and FIBController, and allow to programmatically define,
+	 * This method is a hook which is called just before to initialize FIBViewImpl and FIBController, and allow to programmatically define,
 	 * check or redefine component
 	 */
 	public void initializeFIBComponent() {
@@ -261,6 +277,126 @@ public class FlexoFIBView extends JPanel implements GraphicalFlexoObserver, HasP
 	@Override
 	public String getDeletedProperty() {
 		return DELETED;
+	}
+
+	/**
+	 * Explore the whole hierarchy of supplied component and return first component of supplied component class
+	 * 
+	 * @param component
+	 *            component to explore
+	 * @param componentClass
+	 * @return
+	 */
+	public static <C extends FIBComponent> C retrieveFIBComponent(FIBContainer component, Class<C> componentClass) {
+		if (component == null) {
+			return null;
+		}
+		List<FIBComponent> listComponent = component.getAllSubComponents();
+		for (FIBComponent c : listComponent) {
+			if (componentClass.isAssignableFrom(c.getClass())) {
+				return (C) c;
+			}
+		}
+		return null;
+	}
+
+	/**
+	 * Explore the whole hierarchy of supplied component, and return first component of supplied component class and matching supplied name
+	 * 
+	 * @param component
+	 *            component to explore
+	 * @param componentClass
+	 * @param name
+	 * @return
+	 */
+	public static <C extends FIBComponent> C retrieveFIBComponentNamed(FIBContainer component, Class<C> componentClass, String name) {
+		if (component == null) {
+			return null;
+		}
+		List<FIBComponent> listComponent = component.getAllSubComponents();
+		for (FIBComponent c : listComponent) {
+			if (componentClass.isAssignableFrom(c.getClass()) && (c.getName() != null) && (c.getName().equals(name))) {
+				return (C) c;
+			}
+		}
+		return null;
+	}
+
+	/**
+	 * Explore the whole hierarchy of component represented by this view, and return first component of supplied component class
+	 * 
+	 * @param componentClass
+	 * @return
+	 */
+	protected <C extends FIBComponent> C retrieveFIBComponent(Class<C> componentClass) {
+		if (getFIBComponent() instanceof FIBContainer) {
+			return retrieveFIBComponent((FIBContainer) getFIBComponent(), componentClass);
+		}
+		if (componentClass.isAssignableFrom(getFIBComponent().getClass())) {
+			return (C) getFIBComponent();
+		}
+
+		return null;
+	}
+
+	/**
+	 * Explore the whole hierarchy of component represented by this view, and return first component of supplied component class and
+	 * matching supplied name
+	 * 
+	 * @param componentClass
+	 * @param name
+	 * @return
+	 */
+	protected <C extends FIBComponent> C retrieveFIBComponentNamed(Class<C> componentClass, String name) {
+		if (getFIBComponent() instanceof FIBContainer) {
+			return retrieveFIBComponentNamed((FIBContainer) getFIBComponent(), componentClass, name);
+		}
+		if (componentClass.isAssignableFrom(getFIBComponent().getClass()) && (getFIBComponent().getName() != null)
+				&& (getFIBComponent().getName().equals(name))) {
+			return (C) getFIBComponent();
+		}
+
+		return null;
+	}
+
+	/**
+	 * Return {@link FIBBrowser} contained in component represented by this view, when any, asserting only one {@link FIBBrowser} resides in
+	 * it
+	 * 
+	 * @return
+	 */
+	public static FIBBrowser retrieveFIBBrowser(FIBContainer component) {
+		return retrieveFIBComponent(component, FIBBrowser.class);
+	}
+
+	/**
+	 * Return {@link FIBBrowser} contained in component represented by this view, with supplied name
+	 * 
+	 * @param name
+	 * @return
+	 */
+	public static FIBBrowser retrieveFIBBrowserNamed(FIBContainer component, String name) {
+		return retrieveFIBComponentNamed(component, FIBBrowser.class, name);
+	}
+
+	/**
+	 * Return {@link FIBBrowser} contained in component represented by this view, when any, asserting only one {@link FIBBrowser} resides in
+	 * it
+	 * 
+	 * @return
+	 */
+	protected FIBBrowser retrieveFIBBrowserNamed() {
+		return retrieveFIBComponent(FIBBrowser.class);
+	}
+
+	/**
+	 * Return {@link FIBBrowser} contained in component represented by this view, with supplied name
+	 * 
+	 * @param name
+	 * @return
+	 */
+	protected FIBBrowser retrieveFIBBrowserNamed(String name) {
+		return retrieveFIBComponentNamed(FIBBrowser.class, name);
 	}
 
 	/**
@@ -297,7 +433,8 @@ public class FlexoFIBView extends JPanel implements GraphicalFlexoObserver, HasP
 					}
 				}, "InvokeLaterThread");
 				invokeLaterThread.start();
-			} else {
+			}
+			else {
 				System.out.println("Ignoring invokeLater");
 			}
 		}
@@ -305,4 +442,5 @@ public class FlexoFIBView extends JPanel implements GraphicalFlexoObserver, HasP
 
 	private boolean invokeLaterScheduled = false;
 	private long lastSchedule = -1;
+
 }

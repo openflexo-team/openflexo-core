@@ -43,12 +43,11 @@ import java.util.logging.Logger;
 
 import org.openflexo.ApplicationContext;
 import org.openflexo.ApplicationData;
-import org.openflexo.fib.FIBLibrary;
-import org.openflexo.fib.controller.FIBDialog;
+import org.openflexo.gina.swing.utils.JFIBDialog;
 import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.logging.FlexoLogger;
-import org.openflexo.rm.ResourceLocator;
 import org.openflexo.rm.Resource;
+import org.openflexo.rm.ResourceLocator;
 import org.openflexo.view.FlexoFrame;
 
 /**
@@ -56,17 +55,19 @@ import org.openflexo.view.FlexoFrame;
  * 
  * @author sguerin
  */
-public class WelcomeDialog extends FIBDialog<ApplicationData> {
+public class WelcomeDialog extends JFIBDialog<ApplicationData> {
 
 	private static final Logger logger = FlexoLogger.getLogger(WelcomeDialog.class.getPackage().getName());
 
-	
-
 	public static final Resource FIB_FILE = ResourceLocator.locateResource("Fib/WelcomePanel.fib");
 
-	public WelcomeDialog(ApplicationContext context) {
-		super(FIBLibrary.instance().retrieveFIBComponent(FIB_FILE), new ApplicationData(context), FlexoFrame.getActiveFrame(), true,
-				FlexoLocalization.getMainLocalizer());
+	public WelcomeDialog(ApplicationContext applicationContext) {
+		super(applicationContext.getApplicationFIBLibraryService().retrieveFIBComponent(FIB_FILE), applicationContext.getApplicationData(),
+				FlexoFrame.getActiveFrame(), true, FlexoLocalization.getMainLocalizer());
+
+		System.out.println("********** Main localizer = " + FlexoLocalization.getMainLocalizer());
+		System.out.println("new_project=" + FlexoLocalization.getMainLocalizer().localizedForKey("new_project"));
+
 		setResizable(false);
 	}
 }

@@ -39,19 +39,12 @@
 package org.openflexo.project;
 
 import java.io.File;
-import java.util.Map.Entry;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.openflexo.components.ProgressWindow;
 import org.openflexo.foundation.FlexoEditor;
-import org.openflexo.foundation.FlexoProject;
-import org.openflexo.foundation.resource.ProjectLoaded;
 import org.openflexo.foundation.task.Progress;
-import org.openflexo.foundation.utils.FlexoProjectUtil;
 import org.openflexo.foundation.utils.ProjectInitializerException;
 import org.openflexo.foundation.utils.ProjectLoadingCancelledException;
-import org.openflexo.foundation.utils.UnreadableProjectException;
 import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.task.FlexoApplicationTask;
 import org.openflexo.view.controller.FlexoController;
@@ -64,15 +57,16 @@ import org.openflexo.view.controller.FlexoController;
  */
 public class LoadProjectTask extends FlexoApplicationTask {
 
-	private static final Logger logger = Logger.getLogger(ProjectLoader.class.getPackage().getName());
+	private static final Logger logger = Logger.getLogger(InteractiveProjectLoader.class.getPackage().getName());
 
-	private final ProjectLoader projectLoader;
-	private final File projectDirectory;
+	protected final InteractiveProjectLoader projectLoader;
+	protected final File projectDirectory;
 	private FlexoEditor flexoEditor;
-	private final boolean asImportedProject;
+	protected final boolean asImportedProject;
 
-	public LoadProjectTask(ProjectLoader projectLoader, File projectDirectory, boolean asImportedProject) {
-		super(FlexoLocalization.localizedForKey("loading_project") + " " + projectDirectory.getName(), projectLoader);
+	public LoadProjectTask(InteractiveProjectLoader projectLoader, File projectDirectory, boolean asImportedProject) {
+		super(FlexoLocalization.getMainLocalizer().localizedForKey("loading_project") + " " + projectDirectory.getName(),
+				projectLoader.getServiceManager());
 		this.projectLoader = projectLoader;
 		this.projectDirectory = projectDirectory;
 		this.asImportedProject = asImportedProject;
@@ -80,8 +74,20 @@ public class LoadProjectTask extends FlexoApplicationTask {
 
 	@Override
 	public void performTask() {
+
+		// System.out.println("Loading project " + projectDirectory);
+
 		Progress.setExpectedProgressSteps(10);
-		if (projectDirectory == null) {
+
+		try {
+			projectLoader.loadProject(projectDirectory);
+		} catch (ProjectLoadingCancelledException e) {
+			throwException(e);
+		} catch (ProjectInitializerException e) {
+			throwException(e);
+		}
+
+		/*if (projectDirectory == null) {
 			throwException(new IllegalArgumentException("Project directory cannot be null"));
 		}
 		if (!projectDirectory.exists()) {
@@ -92,43 +98,42 @@ public class LoadProjectTask extends FlexoApplicationTask {
 		} catch (UnreadableProjectException e) {
 			throwException(new ProjectLoadingCancelledException(e.getMessage()));
 		}
-
-		Progress.progress(FlexoLocalization.localizedForKey("opening_project") + projectDirectory.getAbsolutePath());
-
-		FlexoEditor editor = null;
-
+		
+		Progress.progress(FlexoLocalization.getMainLocalizer().localizedForKey("opening_project") + projectDirectory.getAbsolutePath());
+		
 		if (logger.isLoggable(Level.FINE)) {
 			logger.fine("Opening " + projectDirectory.getAbsolutePath());
 		}
 		if (!asImportedProject) {
 			// Adds to recent project
-			Progress.progress(FlexoLocalization.localizedForKey("preinitialize_project") + projectDirectory.getAbsolutePath());
+			Progress.progress(
+					FlexoLocalization.getMainLocalizer().localizedForKey("preinitialize_project") + projectDirectory.getAbsolutePath());
 			projectLoader.preInitialization(projectDirectory);
 		}
-		for (Entry<FlexoProject, FlexoEditor> e : projectLoader.editors.entrySet()) {
+		for (Entry<FlexoProject, FlexoEditor> e : projectLoader.getEditors().entrySet()) {
 			if (e.getKey().getProjectDirectory().equals(projectDirectory)) {
-				editor = e.getValue();
+				flexoEditor = e.getValue();
 			}
 		}
-		if (editor == null) {
+		if (flexoEditor == null) {
 			try {
-				editor = FlexoProject.openProject(projectDirectory, projectLoader.getServiceManager(), projectLoader.getServiceManager(),
-						ProgressWindow.instance());
+				flexoEditor = FlexoProject.openProject(projectDirectory, projectLoader.getServiceManager(),
+						projectLoader.getServiceManager(), ProgressWindow.instance());
 			} catch (ProjectLoadingCancelledException e1) {
 				throwException(e1);
 			} catch (ProjectInitializerException e1) {
 				throwException(e1);
 			}
-			Progress.progress(FlexoLocalization.localizedForKey("create_and_open_editor"));
-			projectLoader.newEditor(editor);
+			Progress.progress(FlexoLocalization.getMainLocalizer().localizedForKey("create_and_open_editor"));
+			projectLoader.newEditor(flexoEditor);
 		}
 		if (!asImportedProject) {
-			projectLoader.addToRootProjects(editor.getProject());
+			projectLoader.addToRootProjects(flexoEditor.getProject());
 		}
-
+		
 		// Notify project just loaded
-		Progress.progress(FlexoLocalization.localizedForKey("notify_editors"));
-		projectLoader.getServiceManager().notify(projectLoader, new ProjectLoaded(editor.getProject()));
+		Progress.progress(FlexoLocalization.getMainLocalizer().localizedForKey("notify_editors"));
+		projectLoader.getServiceManager().notify(projectLoader, new ProjectLoaded(flexoEditor.getProject()));*/
 	}
 
 	public FlexoEditor getFlexoEditor() {
@@ -145,6 +150,7 @@ public class LoadProjectTask extends FlexoApplicationTask {
 		// TODO Auto-generated method stub
 		super.throwException(e);
 
-		FlexoController.notify(FlexoLocalization.localizedForKey("could_not_open_project_located_at") + projectDirectory.getAbsolutePath());
+		FlexoController.notify(FlexoLocalization.getMainLocalizer().localizedForKey("could_not_open_project_located_at")
+				+ projectDirectory.getAbsolutePath());
 	}
 }

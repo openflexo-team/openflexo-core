@@ -1,92 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Panel className="org.openflexo.fib.utils.FIBInspector" layout="border" titleFont="SansSerif,0,12" darkLevel="0" dataClassName="org.openflexo.foundation.FlexoProjectObject" controllerClassName="org.openflexo.inspector.FIBInspectorController" font="SansSerif,0,12" name="Inspector">
+<Panel className="org.openflexo.gina.utils.FIBInspector" layout="border" titleFont="SansSerif,0,12" darkLevel="0" dataClassName="org.openflexo.foundation.FlexoProjectObject" controllerClassName="org.openflexo.inspector.FIBInspectorController" font="SansSerif,0,12" name="Inspector">
   <TabPanel name="Tab" constraints="border(location=center)">
     <Tab title="Basic" layout="twocols" titleFont="SansSerif,0,11" darkLevel="0" index="0" font="SansSerif,0,11" useScrollBar="true" horizontalScrollbarPolicy="HORIZONTAL_SCROLLBAR_AS_NEEDED" verticalScrollbarPolicy="VERTICAL_SCROLLBAR_AS_NEEDED" name="BasicTab" />
     <Tab title="Doc" layout="twocols" titleFont="SansSerif,0,11" darkLevel="0" index="1" font="SansSerif,0,11" useScrollBar="true" horizontalScrollbarPolicy="HORIZONTAL_SCROLLBAR_AS_NEEDED" verticalScrollbarPolicy="VERTICAL_SCROLLBAR_AS_NEEDED" name="DocTab" />
     <Tab title="Advanced" layout="twocols" titleFont="SansSerif,0,11" darkLevel="0" index="4" font="SansSerif,0,11" useScrollBar="true" horizontalScrollbarPolicy="HORIZONTAL_SCROLLBAR_AS_NEEDED" verticalScrollbarPolicy="VERTICAL_SCROLLBAR_AS_NEEDED" name="AdvancedTab">
-     <!--  <Label label="EP refs" index="2" constraints="twocols(expandHorizontally=true;expandVertically=false;index=2;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=5;location=left)" localize="true">
-        <LocalizedDictionary />
-        <Parameter name="visibleFor" value="SEMANTICSPLUS,ANALYST,DEVELOPER,MAINTAINER" />
-      </Label>
-      <Panel layout="gridbag" hGap="5" vGap="5" cols="2" rows="2" borderTitle="Panel" titleFont="SansSerif,0,11" darkLevel="0" index="3" data="($org.openflexo.foundation.view.FlexoConceptInstance)EPRefsTable.selected.object" constraints="twocols(expandHorizontally=true;expandVertically=true;index=3;insetsBottom=10;insetsLeft=2;insetsRight=2;insetsTop=5;location=right)">
-        <Table iteratorClassName="org.openflexo.foundation.utils.FlexoObjectReference" visibleRowCount="2" rowHeight="18" autoSelectFirstRow="true" createNewRowOnClick="false" boundToSelectionManager="false" showFooter="false" selectionMode="MultipleIntervalSelection" textSelectionColor="255,255,255" textNonSelectionColor="0,0,0" backgroundSelectionColor="41,90,209" backgroundSecondarySelectionColor="173,215,255" backgroundNonSelectionColor="255,255,255" localize="true" manageDynamicModel="true" name="EPRefsTable" index="0" data="data.flexoConceptReferences" constraints="gridbag(anchor=center;expandHorizontally=true;expandVertically=true;fill=both;gridHeight=1;gridWidth=0;gridX=-1;gridY=-1;index=0;insetsBottom=10;insetsLeft=2;insetsRight=2;insetsTop=5;location=center;padX=0;padY=0;weightX=1.0;weightY=1.0;x=0;y=0)">
-          <TextFieldColumn data="iterator.flexoID" title="Id" columnWidth="15" resizable="true" displayTitle="true" font="Lucida Grande,0,13" />
-          <TextFieldColumn data="iterator.object.toString" title="FlexoConceptInstance" columnWidth="50" resizable="true" displayTitle="true" font="Lucida Grande,0,13" />
-          <LocalizedDictionary />
-        </Table>
-        <Panel layout="border" borderTitle="Panel" titleFont="SansSerif,0,11" darkLevel="0" index="1" data="($org.openflexo.foundation.view.FlexoConceptInstance)EPRefsTable.selected.object" dataClassName="org.openflexo.foundation.fml.rt.FlexoConceptInstance" constraints="gridbag(anchor=center;fill=both;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=1;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;padX=0;padY=0;weightX=1.0;weightY=1.0)" name="FlexoConceptInstanceDetails">
-          <Table iteratorClassName="org.openflexo.foundation.fml.FlexoRole" visibleRowCount="5" rowHeight="18" autoSelectFirstRow="false" createNewRowOnClick="false" boundToSelectionManager="false" showFooter="false" selectionMode="MultipleIntervalSelection" textSelectionColor="255,255,255" textNonSelectionColor="0,0,0" backgroundSelectionColor="41,90,209" backgroundSecondarySelectionColor="173,215,255" backgroundNonSelectionColor="255,255,255" localize="true" manageDynamicModel="true" index="1" data="FlexoConceptInstanceDetails.data.flexoConcept.flexoRoles" constraints="border(anchor=center;fill=both;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=1;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=center;padX=0;padY=0;weightX=1.0;weightY=1.0)">
-            <IconColumn data="controller.iconForObject(iterator)" title="icon" columnWidth="20" resizable="false" displayTitle="false" name="icon" />
-            <LabelColumn data="iterator.roleName" title="pattern_role" columnWidth="30" resizable="true" displayTitle="true" font="Lucida Grande,0,13" name="label" />
-            <LabelColumn data="FlexoConceptInstanceDetails.data.getFlexoActor(iterator)" title="actor" columnWidth="75" resizable="true" displayTitle="true" font="Lucida Grande,0,13" name="label" />
-            <LocalizedDictionary />
-          </Table>
-        </Panel>
-        <Parameter name="visibleFor" value="SEMANTICSPLUS,ANALYST,DEVELOPER,MAINTAINER" />
-      </Panel>-->
-      <Label label="custom_properties" align="center" index="4" constraints="twocols(expandHorizontally=true;expandVertically=false;index=4;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=left)" name="CustomPropertiesLabel" localize="true">
-        <Parameter name="visibleFor" value="ANALYST,DEVELOPER,MAINTAINER" />
-      </Label>
-      <Table iteratorClassName="org.openflexo.foundation.FlexoProperty" visibleRowCount="3" rowHeight="20" autoSelectFirstRow="false" createNewRowOnClick="false" boundToSelectionManager="false" showFooter="true" selectionMode="MultipleIntervalSelection" textSelectionColor="255,255,255" textNonSelectionColor="0,0,0" backgroundSelectionColor="26,96,206" backgroundSecondarySelectionColor="173,215,255" backgroundNonSelectionColor="255,255,255" localize="true" manageDynamicModel="true" name="CustomProperties" index="5" data="data.customProperties" constraints="twocols(expandHorizontally=true;expandVertically=true;index=5;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)">
-        <TextFieldColumn data="iterator.name" title="name" columnWidth="50" resizable="true" displayTitle="true" font="Lucida Grande,0,13" />
-        <TextFieldColumn data="iterator.value" title="value" columnWidth="65" resizable="true" displayTitle="true" font="Lucida Grande,0,13" />
-        <AddAction method="controller.addCustomProperty(data)" name="new" />
-        <RemoveAction method="controller.removeCustomProperty(selected)" name="delete" />
-        <CustomAction name="sort" />
-        <Parameter name="visibleFor" value="ANALYST,DEVELOPER,MAINTAINER" />
-      </Table>
-      <Parameter name="visibleFor" value="SEMANTIC,SEMANTICSPLUS,ANALYST,DEVELOPER,MAINTAINER" />
-    </Tab>
+     </Tab>
   </TabPanel>
   <LocalizedDictionary>
-    <Localized key="Advanced" lang="French" value="Avancé" />
-    <Localized key="flexo_id" lang="English" value="OpenFlexo ID" />
-    <Localized key="flexo_id" lang="French" value="OpenFlexo ID" />
-    <Localized key="flexo_id" lang="Dutch" value="OpenFlexo ID" />
-    <Localized key="custom_properties" lang="English" value="Custom properties" />
-    <Localized key="custom_properties" lang="French" value="Propriétés supplémentaires" />
-    <Localized key="custom_properties" lang="Dutch" value="Custom properties" />
-    <Localized key="dont_generate" lang="English" value="Don't generate doc" />
-    <Localized key="dont_generate" lang="French" value="Ne pas générer" />
-    <Localized key="dont_generate" lang="Dutch" value="Don't generate doc" />
-    <Localized key="EP refs" lang="English" value="EP refs" />
-    <Localized key="EP refs" lang="French" value="EP refs" />
-    <Localized key="EP refs" lang="Dutch" value="EP refs" />
-    <Localized key="Id" lang="English" value="Id" />
-    <Localized key="Id" lang="French" value="Id" />
-    <Localized key="Id" lang="Dutch" value="Id" />
-    <Localized key="FlexoConcept" lang="English" value="FlexoConcept" />
-    <Localized key="FlexoConcept" lang="French" value="FlexoConcept" />
-    <Localized key="FlexoConcept" lang="Dutch" value="FlexoConcept" />
-    <Localized key="PatternRole" lang="English" value="PatternRole" />
-    <Localized key="PatternRole" lang="French" value="PatternRole" />
-    <Localized key="PatternRole" lang="Dutch" value="PatternRole" />
-    <Localized key="pattern_role" lang="English" value="Pattern Role" />
-    <Localized key="pattern_role" lang="French" value="Pattern Role" />
-    <Localized key="pattern_role" lang="Dutch" value="Pattern Role" />
-    <Localized key="actor" lang="English" value="actor" />
-    <Localized key="actor" lang="French" value="actor" />
-    <Localized key="actor" lang="Dutch" value="actor" />
-    <Localized key="name" lang="English" value="Name" />
-    <Localized key="name" lang="French" value="Nom" />
-    <Localized key="name" lang="Dutch" value="Name" />
-    <Localized key="value" lang="English" value="Value" />
-    <Localized key="value" lang="French" value="Valeur" />
-    <Localized key="value" lang="Dutch" value="Value" />
-    <Localized key="new" lang="English" value="New" />
-    <Localized key="new" lang="French" value="Nouveau" />
-    <Localized key="new" lang="Dutch" value="New" />
-    <Localized key="delete" lang="English" value="Delete" />
-    <Localized key="delete" lang="French" value="Supprimer" />
-    <Localized key="delete" lang="Dutch" value="Delete" />
-    <Localized key="sort" lang="English" value="Sort" />
-    <Localized key="sort" lang="French" value="Trier" />
-    <Localized key="sort" lang="Dutch" value="Sort" />
-    <Localized key="Doc" lang="English" value="Doc" />
-    <Localized key="Doc" lang="French" value="Doc" />
-    <Localized key="Doc" lang="Dutch" value="Doc" />
-    <Localized key="Advanced" lang="English" value="Advanced" />
-    <Localized key="Advanced" lang="Dutch" value="Advanced" />
   </LocalizedDictionary>
   <Parameter name="title" value="FlexoProjectObject" />
 </Panel>

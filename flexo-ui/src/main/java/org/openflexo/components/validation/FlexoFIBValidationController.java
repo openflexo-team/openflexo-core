@@ -38,11 +38,11 @@
 
 package org.openflexo.components.validation;
 
-import org.openflexo.fib.model.FIBComponent;
-import org.openflexo.fib.swing.validation.FIBValidationController;
+import org.openflexo.gina.model.FIBComponent;
+import org.openflexo.gina.swing.editor.validation.ValidationFIBController;
 import org.openflexo.view.controller.FlexoController;
 
-public class FlexoFIBValidationController extends FIBValidationController {
+public class FlexoFIBValidationController extends ValidationFIBController {
 
 	private FlexoController controller;
 

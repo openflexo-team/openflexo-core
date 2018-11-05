@@ -49,6 +49,7 @@ import org.openflexo.drm.DocItem;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.action.FlexoActionFinalizer;
 import org.openflexo.foundation.action.FlexoActionInitializer;
+import org.openflexo.foundation.action.FlexoActionFactory;
 import org.openflexo.help.FlexoHelp;
 import org.openflexo.icon.IconLibrary;
 import org.openflexo.localization.FlexoLocalization;
@@ -58,8 +59,8 @@ import org.openflexo.view.controller.FlexoController;
 
 public class HelpActionizer extends ActionInitializer<HelpAction, FlexoObject, FlexoObject> {
 
-	private static final java.util.logging.Logger logger = org.openflexo.logging.FlexoLogger.getLogger(HelpActionizer.class.getPackage()
-			.getName());
+	private static final java.util.logging.Logger logger = org.openflexo.logging.FlexoLogger
+			.getLogger(HelpActionizer.class.getPackage().getName());
 
 	public HelpActionizer(ControllerActionInitializer actionInitializer) {
 		super(HelpAction.actionType, actionInitializer);
@@ -87,7 +88,7 @@ public class HelpActionizer extends ActionInitializer<HelpAction, FlexoObject, F
 						FlexoHelp.getHelpBroker().setCurrentID(item.getIdentifier());
 						FlexoHelp.getHelpBroker().setDisplayed(true);
 					} catch (BadIDException exception) {
-						FlexoController.showError(FlexoLocalization.localizedForKey("sorry_no_help_available_for") + " "
+						FlexoController.showError(FlexoLocalization.getMainLocalizer().localizedForKey("sorry_no_help_available_for") + " "
 								+ item.getIdentifier());
 						return false;
 					}
@@ -100,7 +101,7 @@ public class HelpActionizer extends ActionInitializer<HelpAction, FlexoObject, F
 	}
 
 	@Override
-	protected Icon getEnabledIcon() {
+	protected Icon getEnabledIcon(FlexoActionFactory actionType) {
 		return IconLibrary.HELP_ICON;
 	}
 }

@@ -51,9 +51,9 @@ import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.action.FlexoActionFinalizer;
 import org.openflexo.foundation.action.FlexoActionInitializer;
-import org.openflexo.foundation.action.FlexoActionType;
+import org.openflexo.foundation.action.FlexoActionFactory;
 import org.openflexo.foundation.action.FlexoActionVisibleCondition;
-import org.openflexo.foundation.action.PasteAction;
+import org.openflexo.foundation.action.copypaste.PasteAction;
 import org.openflexo.icon.IconLibrary;
 import org.openflexo.view.controller.ActionInitializer;
 import org.openflexo.view.controller.ControllerActionInitializer;
@@ -97,7 +97,7 @@ public class PasteActionInitializer extends ActionInitializer<PasteAction, Flexo
 	}
 
 	@Override
-	protected Icon getEnabledIcon() {
+	protected Icon getEnabledIcon(FlexoActionFactory actionType) {
 		return IconLibrary.PASTE_ICON;
 	}
 
@@ -111,7 +111,7 @@ public class PasteActionInitializer extends ActionInitializer<PasteAction, Flexo
 		return new FlexoActionVisibleCondition<PasteAction, FlexoObject, FlexoObject>() {
 
 			@Override
-			public boolean isVisible(FlexoActionType<PasteAction, FlexoObject, FlexoObject> actionType, FlexoObject object,
+			public boolean isVisible(FlexoActionFactory<PasteAction, FlexoObject, FlexoObject> actionType, FlexoObject object,
 					Vector<FlexoObject> globalSelection, FlexoEditor editor) {
 				return true;
 			}

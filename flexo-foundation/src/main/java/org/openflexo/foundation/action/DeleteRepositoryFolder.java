@@ -49,8 +49,8 @@ public class DeleteRepositoryFolder extends FlexoAction<DeleteRepositoryFolder, 
 
 	private static final Logger logger = Logger.getLogger(DeleteRepositoryFolder.class.getPackage().getName());
 
-	public static FlexoActionType<DeleteRepositoryFolder, RepositoryFolder, RepositoryFolder> actionType = new FlexoActionType<DeleteRepositoryFolder, RepositoryFolder, RepositoryFolder>(
-			"delete_folder", FlexoActionType.editGroup, FlexoActionType.DELETE_ACTION_TYPE) {
+	public static FlexoActionFactory<DeleteRepositoryFolder, RepositoryFolder, RepositoryFolder> actionType = new FlexoActionFactory<DeleteRepositoryFolder, RepositoryFolder, RepositoryFolder>(
+			"delete_folder", FlexoActionFactory.editGroup, FlexoActionFactory.DELETE_ACTION_TYPE) {
 
 		/**
 		 * Factory method
@@ -77,7 +77,7 @@ public class DeleteRepositoryFolder extends FlexoAction<DeleteRepositoryFolder, 
 		FlexoObjectImpl.addActionForClass(DeleteRepositoryFolder.actionType, RepositoryFolder.class);
 	}
 
-	DeleteRepositoryFolder(RepositoryFolder focusedObject, Vector<RepositoryFolder> globalSelection, FlexoEditor editor) {
+	private DeleteRepositoryFolder(RepositoryFolder focusedObject, Vector<RepositoryFolder> globalSelection, FlexoEditor editor) {
 		super(actionType, focusedObject, globalSelection, editor);
 	}
 
@@ -87,7 +87,8 @@ public class DeleteRepositoryFolder extends FlexoAction<DeleteRepositoryFolder, 
 
 		if (getFocusedObject() != null) {
 			getFocusedObject().getResourceRepository().deleteFolder(getFocusedObject());
-		} else {
+		}
+		else {
 			throw new InvalidParametersException("unable to create view folder: no focused object supplied");
 		}
 	}

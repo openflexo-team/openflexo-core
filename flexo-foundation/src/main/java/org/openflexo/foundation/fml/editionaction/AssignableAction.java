@@ -46,7 +46,12 @@ import java.util.logging.Logger;
 import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.type.TypeUtils;
 import org.openflexo.foundation.FlexoException;
+import org.openflexo.foundation.fml.FMLModelFactory;
 import org.openflexo.foundation.fml.FlexoProperty;
+import org.openflexo.foundation.fml.controlgraph.FMLControlGraphOwner;
+import org.openflexo.foundation.fml.controlgraph.Sequence;
+import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
+import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext.ReturnException;
 import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ImplementationClass;
@@ -98,11 +103,11 @@ public abstract interface AssignableAction<T> extends EditionAction {
 	/**
 	 * Execute edition action in the context provided by supplied {@link FlexoBehaviourAction}<br>
 	 * 
-	 * @param action
+	 * @param evaluationContext
 	 * @return
 	 */
 	@Override
-	public T execute(FlexoBehaviourAction<?, ?, ?> action) throws FlexoException;
+	public T execute(RunTimeEvaluationContext evaluationContext) throws ReturnException, FlexoException;
 
 	/**
 	 * Return property to which this action is bound with an assignation, if this action is the right-hand side of an
@@ -131,6 +136,34 @@ public abstract interface AssignableAction<T> extends EditionAction {
 	 */
 	public Type getIteratorType();
 
+	/**
+	 * Used to declare a new variable and assigning assignableAction to it
+	 * 
+	 * @param cg
+	 */
+	public DeclarationAction<T> declaresNewVariable(String variableName);
+
+	/**
+	 * Used to instantiate AssignationAction while value set to this action
+	 * 
+	 * @param cg
+	 */
+	public AssignationAction<T> assignTo(DataBinding<? super T> assignation);
+
+	/**
+	 * Used to instantiate {@link AddToListAction} while added value set to this action
+	 * 
+	 * @param cg
+	 */
+	public AddToListAction<T> addToList(DataBinding<? extends List<T>> assignation);
+
+	/**
+	 * Used to instantiate {@link ReturnStatement} while returning current assignable action
+	 * 
+	 * @param cg
+	 */
+	public ReturnStatement<T> addReturnStatement();
+
 	public static abstract class AssignableActionImpl<T> extends EditionActionImpl implements AssignableAction<T> {
 
 		private static final Logger logger = Logger.getLogger(AssignableAction.class.getPackage().getName());
@@ -150,6 +183,11 @@ public abstract interface AssignableAction<T> extends EditionAction {
 
 		@Override
 		public abstract Type getAssignableType();
+
+		@Override
+		public Type getInferedType() {
+			return Void.class;
+		}
 
 		@Override
 		public boolean isIterable() {
@@ -173,11 +211,138 @@ public abstract interface AssignableAction<T> extends EditionAction {
 		/**
 		 * Execute edition action in the context provided by supplied {@link FlexoBehaviourAction}<br>
 		 * 
-		 * @param action
+		 * @param evaluationContext
 		 * @return
 		 */
 		@Override
-		public abstract T execute(FlexoBehaviourAction<?, ?, ?> action) throws FlexoException;
+		public abstract T execute(RunTimeEvaluationContext evaluationContext) throws ReturnException, FlexoException;
+
+		/**
+		 * Used to instantiate AssignationAction while value set to this action
+		 * 
+		 * @param cg
+		 */
+		@Override
+		public AssignationAction<T> assignTo(DataBinding<? super T> assignation) {
+			FMLModelFactory factory = getFMLModelFactory();
+
+			FMLControlGraphOwner owner = getOwner();
+			String ownerContext = getOwnerContext();
+			Sequence parentFlattenedSequence = getParentFlattenedSequence();
+
+			owner.setControlGraph(null, ownerContext);
+
+			AssignationAction<T> assignationAction = factory.newAssignationAction(this);
+			assignationAction.setAssignation(assignation);
+
+			// We connect control graph
+			setOwnerContext(ownerContext);
+			owner.setControlGraph(assignationAction, ownerContext);
+
+			// Then we must notify the parent flattenedSequence where this control graph was presented as a sequence
+			// This fixes issue TA-81
+			if (parentFlattenedSequence != null) {
+				parentFlattenedSequence.controlGraphChanged(this);
+			}
+
+			return assignationAction;
+
+		}
+
+		/**
+		 * Used to declare a new variable and assigning assignableAction to it
+		 * 
+		 * @param cg
+		 */
+		@Override
+		public DeclarationAction<T> declaresNewVariable(String variableName) {
+			FMLModelFactory factory = getFMLModelFactory();
+
+			FMLControlGraphOwner owner = getOwner();
+			String ownerContext = getOwnerContext();
+			Sequence parentFlattenedSequence = getParentFlattenedSequence();
+
+			owner.setControlGraph(null, ownerContext);
+
+			DeclarationAction<T> declarationAction = factory.newDeclarationAction(variableName, this);
+
+			// We connect control graph
+			setOwnerContext(ownerContext);
+			owner.setControlGraph(declarationAction, ownerContext);
+
+			// Then we must notify the parent flattenedSequence where this control graph was presented as a sequence
+			// This fixes issue TA-81
+			if (parentFlattenedSequence != null) {
+				parentFlattenedSequence.controlGraphChanged(this);
+			}
+
+			return declarationAction;
+
+		}
+
+		/**
+		 * Used to instantiate {@link AddToListAction} while added value set to this action
+		 * 
+		 * @param cg
+		 */
+		@Override
+		public AddToListAction<T> addToList(DataBinding<? extends List<T>> list) {
+			FMLModelFactory factory = getFMLModelFactory();
+
+			FMLControlGraphOwner owner = getOwner();
+			String ownerContext = getOwnerContext();
+			Sequence parentFlattenedSequence = getParentFlattenedSequence();
+
+			owner.setControlGraph(null, ownerContext);
+
+			AddToListAction<T> addToListAction = factory.newAddToListAction();
+			addToListAction.setAssignableAction(this);
+			addToListAction.setList(list);
+
+			// We connect control graph
+			setOwnerContext(ownerContext);
+			owner.setControlGraph(addToListAction, ownerContext);
+
+			// Then we must notify the parent flattenedSequence where this control graph was presented as a sequence
+			// This fixes issue TA-81
+			if (parentFlattenedSequence != null) {
+				parentFlattenedSequence.controlGraphChanged(this);
+			}
+
+			return addToListAction;
+
+		}
+
+		/**
+		 * Used to instantiate {@link ReturnStatement} while returning current assignable action
+		 * 
+		 * @param cg
+		 */
+		@Override
+		public ReturnStatement<T> addReturnStatement() {
+			FMLModelFactory factory = getFMLModelFactory();
+
+			FMLControlGraphOwner owner = getOwner();
+			String ownerContext = getOwnerContext();
+			Sequence parentFlattenedSequence = getParentFlattenedSequence();
+
+			owner.setControlGraph(null, ownerContext);
+
+			ReturnStatement<T> returnStatement = factory.newReturnStatement(this);
+
+			// We connect control graph
+			setOwnerContext(ownerContext);
+			owner.setControlGraph(returnStatement, ownerContext);
+
+			// Then we must notify the parent flattenedSequence where this control graph was presented as a sequence
+			// This fixes issue TA-81
+			if (parentFlattenedSequence != null) {
+				parentFlattenedSequence.controlGraphChanged(this);
+			}
+
+			return returnStatement;
+
+		}
 
 	}
 

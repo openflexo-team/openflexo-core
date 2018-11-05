@@ -48,7 +48,7 @@ public class FlexoRemoteException extends FlexoException {
 	}
 
 	@Override
-	public RemoteException getCause() {
+	public synchronized RemoteException getCause() {
 		return (RemoteException) super.getCause();
 	}
 }

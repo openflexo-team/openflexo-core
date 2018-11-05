@@ -42,15 +42,14 @@ import java.util.logging.Logger;
 
 import org.openflexo.components.wizard.FlexoWizard;
 import org.openflexo.foundation.action.FlexoAction;
-import org.openflexo.foundation.fml.AbstractVirtualModel;
 import org.openflexo.foundation.fml.FMLObject;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoConceptObject;
-import org.openflexo.foundation.fml.ViewPoint;
+import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.action.AbstractCreateFlexoConcept;
+import org.openflexo.foundation.fml.action.CreateContainedVirtualModel;
 import org.openflexo.foundation.fml.action.CreateFlexoConcept;
-import org.openflexo.foundation.fml.action.CreateViewPoint;
-import org.openflexo.foundation.fml.action.CreateVirtualModel;
+import org.openflexo.foundation.fml.action.CreateTopLevelVirtualModel;
 import org.openflexo.view.controller.FlexoController;
 
 /**
@@ -60,8 +59,8 @@ import org.openflexo.view.controller.FlexoController;
  *
  * @param <A>
  * @see CreateFlexoConcept
- * @see CreateVirtualModel
- * @see CreateViewPoint
+ * @see CreateContainedVirtualModel
+ * @see CreateTopLevelVirtualModel
  */
 public abstract class AbstractCreateFMLElementWizard<A extends FlexoAction<A, T1, T2>, T1 extends FlexoConceptObject, T2 extends FMLObject>
 		extends FlexoWizard {
@@ -84,11 +83,7 @@ public abstract class AbstractCreateFMLElementWizard<A extends FlexoAction<A, T1
 		return action.getFocusedObject();
 	}
 
-	public ViewPoint getViewPoint() {
-		return getFocusedObject().getViewPoint();
-	}
-
-	public AbstractVirtualModel<?> getVirtualModel() {
+	public VirtualModel getVirtualModel() {
 		return getFocusedObject().getOwningVirtualModel();
 	}
 

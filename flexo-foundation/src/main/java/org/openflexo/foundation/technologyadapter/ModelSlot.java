@@ -42,34 +42,21 @@ package org.openflexo.foundation.technologyadapter;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Type;
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.logging.Logger;
 
-import org.openflexo.foundation.fml.AbstractVirtualModel;
 import org.openflexo.foundation.fml.FMLModelFactory;
-import org.openflexo.foundation.fml.FMLRepresentationContext;
-import org.openflexo.foundation.fml.FMLRepresentationContext.FMLRepresentationOutput;
 import org.openflexo.foundation.fml.FlexoBehaviour;
 import org.openflexo.foundation.fml.FlexoRole;
 import org.openflexo.foundation.fml.VirtualModel;
-import org.openflexo.foundation.fml.VirtualModelObject;
-import org.openflexo.foundation.fml.annotations.DeclareEditionActions;
-import org.openflexo.foundation.fml.annotations.DeclareFetchRequests;
-import org.openflexo.foundation.fml.annotations.DeclareFlexoBehaviours;
-import org.openflexo.foundation.fml.annotations.DeclareFlexoRoles;
 import org.openflexo.foundation.fml.editionaction.EditionAction;
 import org.openflexo.foundation.fml.editionaction.FetchRequest;
 import org.openflexo.foundation.fml.editionaction.TechnologySpecificAction;
-import org.openflexo.foundation.fml.rt.ActorReference;
 import org.openflexo.foundation.fml.rt.FMLRTModelSlot;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.ModelSlotInstance;
-import org.openflexo.foundation.fml.rt.action.CreateVirtualModelInstance;
-import org.openflexo.foundation.fml.rt.action.ModelSlotInstanceConfiguration;
 import org.openflexo.foundation.resource.ResourceData;
-import org.openflexo.model.annotations.CloningStrategy;
-import org.openflexo.model.annotations.CloningStrategy.StrategyType;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.Import;
@@ -80,12 +67,12 @@ import org.openflexo.model.annotations.Setter;
 import org.openflexo.model.annotations.XMLAttribute;
 
 /**
- * A model slot is a named object providing access to a particular data encoded in a given technology A model slot should be seen as a
- * connector.<br>
+ * A model slot is a named object providing access to a particular data encoded in a given technology<br>
+ * A model slot should be seen as a connector to a data.<br>
  * A model slot formalizes a contract for accessing to a data
  * 
- * It is defined at viewpoint level. <br>
- * A {@link ModelSlotInstance} binds used slots to some data within the project.
+ * It is defined at FML level. <br>
+ * A {@link ModelSlotInstance} binds used slots to some data
  * 
  * @param <RD>
  *            Type of resource data handled by this ModelSlot
@@ -94,13 +81,13 @@ import org.openflexo.model.annotations.XMLAttribute;
  * @see org.openflexo.foundation.fml.ViewPoint
  * @see org.openflexo.foundation.fml.rt.View
  * @see org.openflexo.foundation.fml.rt.ModelSlotInstance
- * */
+ */
 @ModelEntity(isAbstract = true)
 @ImplementationClass(ModelSlot.ModelSlotImpl.class)
 @Imports({ @Import(FMLRTModelSlot.class), @Import(TypeAwareModelSlot.class), @Import(FreeModelSlot.class) })
-public interface ModelSlot<RD extends ResourceData<RD> & TechnologyObject<?>> extends FlexoRole<RD>, VirtualModelObject {
+public interface ModelSlot<RD extends ResourceData<RD> & TechnologyObject<?>> extends FlexoRole<RD>, ModelSlotObject<RD> {
 
-	@PropertyIdentifier(type = AbstractVirtualModel.class)
+	@PropertyIdentifier(type = VirtualModel.class)
 	public static final String OWNER_KEY = "owner";
 
 	@PropertyIdentifier(type = boolean.class)
@@ -111,20 +98,12 @@ public interface ModelSlot<RD extends ResourceData<RD> & TechnologyObject<?>> ex
 	@Override
 	public FMLModelFactory getFMLModelFactory();
 
-	/**
-	 * Return the VirtualModel in which this ModelSlot is declared
-	 */
-	@Getter(value = OWNER_KEY, inverse = VirtualModel.MODEL_SLOTS_KEY)
-	@CloningStrategy(StrategyType.IGNORE)
-	public AbstractVirtualModel<?> getOwner();
-
-	@Setter(OWNER_KEY)
-	public void setOwner(AbstractVirtualModel<?> virtualModel);
-
+	@Override
 	@Getter(value = IS_REQUIRED_KEY, defaultValue = "false")
 	@XMLAttribute
 	public boolean getIsRequired();
 
+	@Override
 	@Setter(IS_REQUIRED_KEY)
 	public void setIsRequired(boolean isRequired);
 
@@ -144,6 +123,7 @@ public interface ModelSlot<RD extends ResourceData<RD> & TechnologyObject<?>> ex
 	 */
 	public <A extends TechnologySpecificAction<?, ?>> A createAction(Class<A> actionClass);
 
+	@Override
 	public TechnologyAdapter getModelSlotTechnologyAdapter();
 
 	public void setModelSlotTechnologyAdapter(TechnologyAdapter technologyAdapter);
@@ -153,9 +133,9 @@ public interface ModelSlot<RD extends ResourceData<RD> & TechnologyObject<?>> ex
 
 	public List<Class<? extends FlexoRole<?>>> getAvailableFlexoRoleTypes();
 
-	public List<Class<? extends TechnologySpecificAction<?, ?>>> getAvailableEditionActionTypes();
+	public List<Class<? extends EditionAction>> getAvailableEditionActionTypes();
 
-	public List<Class<? extends FetchRequest<?, ?>>> getAvailableFetchRequestActionTypes();
+	public List<Class<? extends FetchRequest<?, ?, ?>>> getAvailableFetchRequestActionTypes();
 
 	public List<Class<? extends FlexoBehaviour>> getAvailableFlexoBehaviourTypes();
 
@@ -167,7 +147,7 @@ public interface ModelSlot<RD extends ResourceData<RD> & TechnologyObject<?>> ex
 	 * @param flexoRoleClass
 	 * @return
 	 */
-	public abstract <PR extends FlexoRole<?>> PR makeFlexoRole(Class<PR> patternRoleClass);
+	public abstract <PR extends FlexoRole<?>> PR makeFlexoRole(Class<PR> flexoRoleClass);
 
 	/**
 	 * Creates and return a new {@link EditionAction} of supplied class.<br>
@@ -187,7 +167,7 @@ public interface ModelSlot<RD extends ResourceData<RD> & TechnologyObject<?>> ex
 	 * @param fetchRequestClass
 	 * @return
 	 */
-	public abstract <FR extends FetchRequest<?, ?>> FR makeFetchRequest(Class<FR> fetchRequestClass);
+	public abstract <FR extends FetchRequest<?, ?, ?>> FR makeFetchRequest(Class<FR> fetchRequestClass);
 
 	/**
 	 * Return default name for supplied pattern property class
@@ -200,31 +180,34 @@ public interface ModelSlot<RD extends ResourceData<RD> & TechnologyObject<?>> ex
 	/**
 	 * A Model Slot is responsible for URI mapping
 	 * 
-	 * @param msInstance
+	 * @param resourceData
 	 * @param o
 	 * @return URI as String
 	 */
-
-	public abstract String getURIForObject(ModelSlotInstance<? extends ModelSlot<RD>, RD> msInstance, Object o);
+	// TODO: deprecate ?
+	public abstract String getURIForObject(RD resourceData, Object o);
 
 	/**
 	 * A Model Slot is responsible for URI mapping
 	 * 
-	 * @param msInstance
+	 * @param resourceData
 	 * @param objectURI
 	 * @return the Object
 	 */
-
-	public abstract Object retrieveObjectWithURI(ModelSlotInstance<? extends ModelSlot<RD>, RD> msInstance, String objectURI);
-
-	public abstract ModelSlotInstanceConfiguration<? extends ModelSlot<RD>, RD> createConfiguration(CreateVirtualModelInstance action);
+	// TODO: deprecate ?
+	public abstract Object retrieveObjectWithURI(RD resourceData, String objectURI);
 
 	public String getModelSlotDescription();
 
+	// Use with caution, this is not the name of model slot, but a displayable name
+	@Deprecated
 	public String getModelSlotName();
 
-	public static abstract class ModelSlotImpl<RD extends ResourceData<RD> & TechnologyObject<?>> extends FlexoRoleImpl<RD> implements
-			ModelSlot<RD> {
+	@Override
+	public ModelSlotInstance<?, RD> makeActorReference(RD object, FlexoConceptInstance epi);
+
+	public static abstract class ModelSlotImpl<RD extends ResourceData<RD> & TechnologyObject<?>> extends FlexoRoleImpl<RD>
+			implements ModelSlot<RD> {
 
 		private static final Logger logger = Logger.getLogger(ModelSlot.class.getPackage().getName());
 
@@ -232,14 +215,27 @@ public interface ModelSlot<RD extends ResourceData<RD> & TechnologyObject<?>> ex
 		private boolean isReadOnly;
 		private TechnologyAdapter technologyAdapter;
 
-		private List<Class<? extends FlexoRole<?>>> availableFlexoRoleTypes;
+		/*private List<Class<? extends FlexoRole<?>>> availableFlexoRoleTypes;
 		private List<Class<? extends FlexoBehaviour>> availableFlexoBehaviourTypes;
-		private List<Class<? extends TechnologySpecificAction<?, ?>>> availableEditionActionTypes;
-		private List<Class<? extends FetchRequest<?, ?>>> availableFetchRequestActionTypes;
+		private List<Class<? extends TechnologySpecificAction<?, ?, ?>>> availableEditionActionTypes;
+		private List<Class<? extends FetchRequest<?, ?, ?>>> availableFetchRequestActionTypes;
+		private List<Class<? extends FlexoBehaviourParameter>> availableFlexoBehaviourParameterTypes;
+		private List<Class<? extends InspectorEntry>> availableInspectorEntryTypes;*/
 
 		@Override
-		public AbstractVirtualModel<?> getVirtualModel() {
-			return getOwner();
+		public VirtualModel getVirtualModel() {
+			if (getFlexoConcept() instanceof VirtualModel) {
+				return (VirtualModel) getFlexoConcept();
+			}
+			if (getFlexoConcept() != null) {
+				return getFlexoConcept().getOwner();
+			}
+			return null;
+		}
+
+		@Override
+		public ModelSlot<RD> getModelSlot() {
+			return this;
 		}
 
 		@Override
@@ -259,13 +255,13 @@ public interface ModelSlot<RD extends ResourceData<RD> & TechnologyObject<?>> ex
 		 * @return
 		 */
 		@Override
-		public final <PR extends FlexoRole<?>> PR makeFlexoRole(Class<PR> patternRoleClass) {
+		public <PR extends FlexoRole<?>> PR makeFlexoRole(Class<PR> flexoRoleClass) {
 			FMLModelFactory factory = getFMLModelFactory();
-			return factory.newInstance(patternRoleClass);
+			return factory.newInstance(flexoRoleClass);
 		}
 
 		@Override
-		public AbstractVirtualModel<?> getOwningVirtualModel() {
+		public VirtualModel getOwningVirtualModel() {
 			return getVirtualModel();
 		}
 
@@ -281,11 +277,11 @@ public interface ModelSlot<RD extends ResourceData<RD> & TechnologyObject<?>> ex
 		 */
 		@Override
 		public <A extends TechnologySpecificAction<?, ?>> A createAction(Class<A> actionClass) {
-			Class[] constructorParams = new Class[0];
+			Class<?>[] constructorParams = new Class[0];
 			// constructorParams[0] = VirtualModel.VirtualModelBuilder.class;
 			try {
 				Constructor<A> c = actionClass.getConstructor(constructorParams);
-				return c.newInstance(null);
+				return c.newInstance();
 			} catch (SecurityException e) {
 				logger.warning("Unexpected SecurityException " + e);
 				e.printStackTrace();
@@ -334,16 +330,18 @@ public interface ModelSlot<RD extends ResourceData<RD> & TechnologyObject<?>> ex
 		}
 
 		/*@Override
-		public BindingModel getBindingModel() {
-			return viewPoint.getBindingModel();
-		}*/
-
-		@Override
 		public String getFMLRepresentation(FMLRepresentationContext context) {
 			FMLRepresentationOutput out = new FMLRepresentationOutput(context);
-			out.append("ModelSlot " + getName() + " type=" + getClass().getSimpleName() + "\"" + " required=" + getIsRequired()
-					+ " readOnly=" + getIsReadOnly() + ";", context);
+			out.append("ModelSlot " + getName() + " as "
+					+ (getModelSlotTechnologyAdapter() != null ? getModelSlotTechnologyAdapter().getIdentifier() : "???") + "::"
+					+ getImplementedInterface().getSimpleName() + " " + getFMLRepresentationForConformToStatement() + "required="
+					+ getIsRequired() + " readOnly=" + getIsReadOnly() + ";", context);
 			return out.toString();
+		}*/
+
+		@Deprecated
+		protected String getFMLRepresentationForConformToStatement() {
+			return "";
 		}
 
 		@Override
@@ -364,140 +362,34 @@ public interface ModelSlot<RD extends ResourceData<RD> & TechnologyObject<?>> ex
 
 		@Override
 		public List<Class<? extends FlexoRole<?>>> getAvailableFlexoRoleTypes() {
-			if (availableFlexoRoleTypes == null) {
-				availableFlexoRoleTypes = computeAvailableFlexoRoleTypes();
+			if (getTechnologyAdapterService() != null) {
+				return getTechnologyAdapterService().getAvailableFlexoRoleTypes(getClass());
 			}
-			return availableFlexoRoleTypes;
-		}
-
-		private List<Class<? extends FlexoRole<?>>> computeAvailableFlexoRoleTypes() {
-			availableFlexoRoleTypes = new ArrayList<Class<? extends FlexoRole<?>>>();
-			appendDeclareFlexoRoles(availableFlexoRoleTypes, getClass());
-			return availableFlexoRoleTypes;
-
-			/*Class<?> cl = getClass();
-			if (cl.isAnnotationPresent(DeclareFlexoRoles.class)) {
-				DeclareFlexoRoles allPatternRoles = cl.getAnnotation(DeclareFlexoRoles.class);
-				for (DeclareFlexoRole patternRoleDeclaration : allPatternRoles.value()) {
-					availableFlexoRoleTypes.add(patternRoleDeclaration.flexoRoleClass());
-				}
-			}
-			// availableFlexoRoleTypes.add(FlexoConceptPatternRole.class);
-			// availableFlexoRoleTypes.add(FlexoModelObjectPatternRole.class);
-			// availableFlexoRoleTypes.add(PrimitiveRole.class);
-			return availableFlexoRoleTypes;*/
-		}
-
-		private void appendDeclareFlexoRoles(List<Class<? extends FlexoRole<?>>> aList, Class<?> cl) {
-			if (cl.isAnnotationPresent(DeclareFlexoRoles.class)) {
-				DeclareFlexoRoles allFlexoRoles = cl.getAnnotation(DeclareFlexoRoles.class);
-				for (Class<? extends FlexoRole> roleClass : allFlexoRoles.value()) {
-					if (!availableFlexoRoleTypes.contains(roleClass)) {
-						availableFlexoRoleTypes.add((Class<FlexoRole<?>>) roleClass);
-					}
-				}
-			}
-			if (cl.getSuperclass() != null) {
-				appendDeclareFlexoRoles(aList, cl.getSuperclass());
-			}
-
-			for (Class superInterface : cl.getInterfaces()) {
-				appendDeclareFlexoRoles(aList, superInterface);
-			}
-
+			return Collections.emptyList();
 		}
 
 		@Override
-		public List<Class<? extends TechnologySpecificAction<?, ?>>> getAvailableEditionActionTypes() {
-			if (availableEditionActionTypes == null) {
-				availableEditionActionTypes = computeAvailableEditionActionTypes();
+		public List<Class<? extends EditionAction>> getAvailableEditionActionTypes() {
+			if (getTechnologyAdapterService() != null) {
+				return getTechnologyAdapterService().getAvailableEditionActionTypes(getClass());
 			}
-			return availableEditionActionTypes;
-		}
-
-		private List<Class<? extends TechnologySpecificAction<?, ?>>> computeAvailableEditionActionTypes() {
-			availableEditionActionTypes = new ArrayList<Class<? extends TechnologySpecificAction<?, ?>>>();
-			appendEditionActionTypes(availableEditionActionTypes, getClass());
-			return availableEditionActionTypes;
-		}
-
-		private void appendEditionActionTypes(List<Class<? extends TechnologySpecificAction<?, ?>>> aList, Class<?> cl) {
-			if (cl.isAnnotationPresent(DeclareEditionActions.class)) {
-				DeclareEditionActions allEditionActions = cl.getAnnotation(DeclareEditionActions.class);
-				for (Class<? extends TechnologySpecificAction<?, ?>> editionActionClass : allEditionActions.value()) {
-					if (!availableEditionActionTypes.contains(editionActionClass)) {
-						availableEditionActionTypes.add(editionActionClass);
-					}
-				}
-			}
-			if (cl.getSuperclass() != null) {
-				appendEditionActionTypes(aList, cl.getSuperclass());
-			}
-			for (Class superInterface : cl.getInterfaces()) {
-				appendEditionActionTypes(aList, superInterface);
-			}
+			return Collections.emptyList();
 		}
 
 		@Override
 		public List<Class<? extends FlexoBehaviour>> getAvailableFlexoBehaviourTypes() {
-			if (availableFlexoBehaviourTypes == null) {
-				availableFlexoBehaviourTypes = computeAvailableFlexoBehaviourTypes();
+			if (getTechnologyAdapterService() != null) {
+				return getTechnologyAdapterService().getAvailableFlexoBehaviourTypes(getClass());
 			}
-			return availableFlexoBehaviourTypes;
-		}
-
-		private List<Class<? extends FlexoBehaviour>> computeAvailableFlexoBehaviourTypes() {
-			availableFlexoBehaviourTypes = new ArrayList<Class<? extends FlexoBehaviour>>();
-			appendFlexoBehaviourTypes(availableFlexoBehaviourTypes, getClass());
-			return availableFlexoBehaviourTypes;
-		}
-
-		private void appendFlexoBehaviourTypes(List<Class<? extends FlexoBehaviour>> aList, Class<?> cl) {
-			if (cl.isAnnotationPresent(DeclareFlexoBehaviours.class)) {
-				DeclareFlexoBehaviours allFlexoBehaviours = cl.getAnnotation(DeclareFlexoBehaviours.class);
-				for (Class<? extends FlexoBehaviour> flexoBehaviourClass : allFlexoBehaviours.value()) {
-					if (!availableFlexoBehaviourTypes.contains(flexoBehaviourClass)) {
-						availableFlexoBehaviourTypes.add(flexoBehaviourClass);
-					}
-				}
-			}
-			if (cl.getSuperclass() != null) {
-				appendFlexoBehaviourTypes(aList, cl.getSuperclass());
-			}
-			for (Class superInterface : cl.getInterfaces()) {
-				appendFlexoBehaviourTypes(aList, superInterface);
-			}
+			return Collections.emptyList();
 		}
 
 		@Override
-		public List<Class<? extends FetchRequest<?, ?>>> getAvailableFetchRequestActionTypes() {
-			if (availableFetchRequestActionTypes == null) {
-				availableFetchRequestActionTypes = computeAvailableFetchRequestActionTypes();
+		public List<Class<? extends FetchRequest<?, ?, ?>>> getAvailableFetchRequestActionTypes() {
+			if (getTechnologyAdapterService() != null) {
+				return getTechnologyAdapterService().getAvailableFetchRequestActionTypes(getClass());
 			}
-			return availableFetchRequestActionTypes;
-		}
-
-		private List<Class<? extends FetchRequest<?, ?>>> computeAvailableFetchRequestActionTypes() {
-			availableFetchRequestActionTypes = new ArrayList<Class<? extends FetchRequest<?, ?>>>();
-			appendFetchRequestActionTypes(availableFetchRequestActionTypes, getClass());
-			return availableFetchRequestActionTypes;
-		}
-
-		private void appendFetchRequestActionTypes(List<Class<? extends FetchRequest<?, ?>>> aList, Class<?> cl) {
-			if (cl.isAnnotationPresent(DeclareFetchRequests.class)) {
-				DeclareFetchRequests allFetchRequestActions = cl.getAnnotation(DeclareFetchRequests.class);
-				for (Class<? extends FetchRequest<?, ?>> fetchRequestClass : allFetchRequestActions.value()) {
-					if (!availableFetchRequestActionTypes.contains(fetchRequestClass)) {
-						availableFetchRequestActionTypes.add(fetchRequestClass);
-					}
-				}
-			}
-			if (cl.getSuperclass() != null) {
-				appendFetchRequestActionTypes(aList, cl.getSuperclass());
-			}
-			for (Class superInterface : cl.getInterfaces()) {
-				appendFetchRequestActionTypes(aList, superInterface);
-			}
+			return Collections.emptyList();
 		}
 
 		/**
@@ -523,35 +415,36 @@ public interface ModelSlot<RD extends ResourceData<RD> & TechnologyObject<?>> ex
 		 * @return
 		 */
 		@Override
-		public final <FR extends FetchRequest<?, ?>> FR makeFetchRequest(Class<FR> fetchRequestClass) {
+		public final <FR extends FetchRequest<?, ?, ?>> FR makeFetchRequest(Class<FR> fetchRequestClass) {
 			FMLModelFactory factory = getFMLModelFactory();
 			return factory.newInstance(fetchRequestClass);
 		}
 
-		@Override
-		public abstract ModelSlotInstanceConfiguration<? extends ModelSlot<RD>, RD> createConfiguration(CreateVirtualModelInstance action);
+		/*@Override
+		public abstract ModelSlotInstanceConfiguration<? extends ModelSlot<RD>, RD> createConfiguration(
+				FlexoConceptInstance flexoConceptInstance, FlexoResourceCenter<?> rc);*/
 
 		/**
 		 * A Model Slot is responsible for URI mapping
 		 * 
-		 * @param msInstance
+		 * @param resourceData
 		 * @param o
 		 * @return URI as String
 		 */
-
+		// TODO: deprecate ?
 		@Override
-		public abstract String getURIForObject(ModelSlotInstance<? extends ModelSlot<RD>, RD> msInstance, Object o);
+		public abstract String getURIForObject(RD resourceData, Object o);
 
 		/**
 		 * A Model Slot is responsible for URI mapping
 		 * 
-		 * @param msInstance
+		 * @param resourceData
 		 * @param objectURI
 		 * @return the Object
 		 */
-
+		// TODO: deprecate ?
 		@Override
-		public abstract Object retrieveObjectWithURI(ModelSlotInstance<? extends ModelSlot<RD>, RD> msInstance, String objectURI);
+		public abstract Object retrieveObjectWithURI(RD resourceData, String objectURI);
 
 		/**
 		 * Return first found class matching supplied class.<br>
@@ -560,10 +453,11 @@ public interface ModelSlot<RD extends ResourceData<RD> & TechnologyObject<?>> ex
 		 * @param flexoRoleClass
 		 * @return
 		 */
-		public <PR extends FlexoRole<?>> Class<? extends PR> getFlexoRoleClass(Class<PR> patternRoleClass) {
-			for (Class<?> patternRoleType : getAvailableFlexoRoleTypes()) {
-				if (patternRoleClass.isAssignableFrom(patternRoleType)) {
-					return (Class<? extends PR>) patternRoleType;
+		@SuppressWarnings("unchecked")
+		public <PR extends FlexoRole<?>> Class<? extends PR> getFlexoRoleClass(Class<PR> flexoRoleClass) {
+			for (Class<?> flexoRoleType : getAvailableFlexoRoleTypes()) {
+				if (flexoRoleClass.isAssignableFrom(flexoRoleType)) {
+					return (Class<? extends PR>) flexoRoleType;
 				}
 			}
 			return null;
@@ -576,10 +470,11 @@ public interface ModelSlot<RD extends ResourceData<RD> & TechnologyObject<?>> ex
 		 * @param flexoRoleClass
 		 * @return
 		 */
+		@SuppressWarnings("unchecked")
 		public <EA extends EditionAction> Class<? extends EA> getEditionActionClass(Class<EA> editionActionClass) {
-			for (Class editionActionType : getAvailableEditionActionTypes()) {
+			for (Class<? extends EditionAction> editionActionType : getAvailableEditionActionTypes()) {
 				if (editionActionClass.isAssignableFrom(editionActionType)) {
-					return editionActionType;
+					return (Class<? extends EA>) editionActionType;
 				}
 			}
 			return null;
@@ -621,13 +516,76 @@ public interface ModelSlot<RD extends ResourceData<RD> & TechnologyObject<?>> ex
 		}
 
 		@Override
-		public ActorReference<RD> makeActorReference(RD object, FlexoConceptInstance epi) {
-			return null;
+		public boolean isReadOnly() {
+			return false;
 		}
 
 		@Override
-		public boolean isReadOnly() {
-			return false;
+		public boolean delete(Object... context) {
+			/*FMLControlGraphVisitor cgVisitor = controlGraph -> {
+				if (controlGraph instanceof TechnologySpecificAction
+						&& ((TechnologySpecificAction<?, ?>) controlGraph).getInferedModelSlot() == ModelSlotImpl.this) {
+					// Unused TechnologySpecificAction<?, ?, ?> action = (TechnologySpecificAction<?, ?, ?>) controlGraph;
+					// nullify model slot for action
+					// action.setModelSlot(null);
+				}
+			};*/
+
+			VirtualModel virtualModel = getVirtualModel();
+			if (virtualModel != null) {
+				for (FlexoRole<?> role : virtualModel.getAccessibleRoles()) {
+					if (role.getModelSlot() == this) {
+						// nullify model slot for role
+						role.setModelSlot(null);
+					}
+				}
+
+				/*
+				// Also iterate on all behaviours, and find EditionAction that are declared with this model slot
+				for (FlexoBehaviour behaviour : virtualModel.getFlexoBehaviours()) {
+					if (behaviour.getControlGraph() != null) {
+						behaviour.getControlGraph().accept(cgVisitor);
+					}
+				}
+				// Also iterate on all behaviours of all inner FlexoConcept, and find EditionAction that are declared with this model slot
+				for (FlexoConcept concept : virtualModel.getFlexoConcepts()) {
+					for (FlexoBehaviour behaviour : concept.getFlexoBehaviours()) {
+						if (behaviour.getControlGraph() != null) {
+							behaviour.getControlGraph().accept(cgVisitor);
+						}
+					}
+				}
+				// Also iterate on GetProperty
+				for (GetProperty<?> property : virtualModel.getAccessibleProperties(GetProperty.class)) {
+					if (property.getGetControlGraph() != null) {
+						property.getGetControlGraph().accept(cgVisitor);
+					}
+					if (property instanceof GetSetProperty) {
+						if (((GetSetProperty<?>) property).getSetControlGraph() != null) {
+							((GetSetProperty<?>) property).getSetControlGraph().accept(cgVisitor);
+						}
+					}
+				}*/
+			}
+
+			return super.delete(context);
+		}
+
+		@Override
+		public Class<? extends TechnologyAdapter> getRoleTechnologyAdapterClass() {
+			return getModelSlotTechnologyAdapter().getClass();
+		}
+
+		@Override
+		public void finalizeDeserialization() {
+			if (getVirtualModel() != null && getFMLModelFactory() != null) {
+				Class<? extends ModelSlot<?>> modelSlotClass = getFMLModelFactory().getModelEntityForInstance(this)
+						.getImplementedInterface();
+				if (!getVirtualModel().uses(modelSlotClass)) {
+					getVirtualModel().declareUse(modelSlotClass);
+				}
+			}
+			super.finalizeDeserialization();
 		}
 	}
 

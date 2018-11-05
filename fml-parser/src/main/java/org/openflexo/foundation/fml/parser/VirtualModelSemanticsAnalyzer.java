@@ -39,8 +39,8 @@
 package org.openflexo.foundation.fml.parser;
 
 import org.openflexo.foundation.FlexoServiceManager;
-import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.FMLModelFactory;
+import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.parser.node.AModelSlotDeclaration;
 import org.openflexo.foundation.fml.parser.node.AVirtualModelDeclaration;
 import org.openflexo.model.exceptions.ModelDefinitionException;
@@ -60,7 +60,7 @@ class VirtualModelSemanticsAnalyzer extends FMLObjectSemanticsAnalyzer<AVirtualM
 	public VirtualModelSemanticsAnalyzer(AVirtualModelDeclaration node, FMLSemanticsAnalyzer parentAnalyser,
 			FlexoServiceManager serviceManager) throws ModelDefinitionException {
 		super(node, parentAnalyser, serviceManager);
-		factory = new FMLModelFactory(null, serviceManager.getEditingContext(), serviceManager.getTechnologyAdapterService());
+		factory = new FMLModelFactory(null, serviceManager);
 	}
 
 	@Override

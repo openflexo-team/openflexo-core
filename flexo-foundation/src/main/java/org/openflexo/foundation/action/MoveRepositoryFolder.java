@@ -43,13 +43,14 @@ import java.util.logging.Logger;
 
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoException;
+import org.openflexo.foundation.resource.FlexoResource;
 import org.openflexo.foundation.resource.RepositoryFolder;
 
 public class MoveRepositoryFolder extends FlexoAction<MoveRepositoryFolder, RepositoryFolder, RepositoryFolder> {
 
 	private static final Logger logger = Logger.getLogger(MoveRepositoryFolder.class.getPackage().getName());
 
-	public static final FlexoActionType<MoveRepositoryFolder, RepositoryFolder, RepositoryFolder> actionType = new FlexoActionType<MoveRepositoryFolder, RepositoryFolder, RepositoryFolder>(
+	public static final FlexoActionFactory<MoveRepositoryFolder, RepositoryFolder, RepositoryFolder> actionType = new FlexoActionFactory<MoveRepositoryFolder, RepositoryFolder, RepositoryFolder>(
 			"move_folder") {
 
 		@Override
@@ -82,16 +83,17 @@ public class MoveRepositoryFolder extends FlexoAction<MoveRepositoryFolder, Repo
 			logger.warning("Cannot move: null folder");
 			return;
 		}
-		for (RepositoryFolder v : getGlobalSelection()) {
+		for (RepositoryFolder<?, ?> v : getGlobalSelection()) {
 			if (isFolderMovableTo(v, folder)) {
 				moveToFolder(v, folder);
 			}
 		}
 	}
 
-	private void moveToFolder(RepositoryFolder folderToMove, RepositoryFolder newFatherFolder) {
+	private static <R extends FlexoResource<?>, I> void moveToFolder(RepositoryFolder<R, I> folderToMove,
+			RepositoryFolder<R, I> newFatherFolder) {
 		if (isFolderMovableTo(folderToMove, newFatherFolder)) {
-			RepositoryFolder oldFolder = folderToMove.getParentFolder();
+			RepositoryFolder<R, I> oldFolder = folderToMove.getParentFolder();
 			// Hack: we have first to load the view, to prevent a null value returned by FlexoViewResource.getSchemaDefinition()
 			oldFolder.removeFromChildren(folderToMove);
 			newFatherFolder.addToChildren(folderToMove);
@@ -106,7 +108,8 @@ public class MoveRepositoryFolder extends FlexoAction<MoveRepositoryFolder, Repo
 		this.folder = folder;
 	}
 
-	public static boolean isFolderMovableTo(RepositoryFolder folderToMove, RepositoryFolder newLocation) {
+	public static <R extends FlexoResource<?>, I> boolean isFolderMovableTo(RepositoryFolder<R, I> folderToMove,
+			RepositoryFolder<R, I> newLocation) {
 		return folderToMove != newLocation && !folderToMove.isFatherOf(newLocation);
 	}
 }

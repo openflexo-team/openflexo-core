@@ -56,18 +56,20 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
-import org.openflexo.GeneralPreferences;
 import org.openflexo.foundation.FlexoProject;
 import org.openflexo.foundation.utils.FlexoProgress;
+import org.openflexo.foundation.utils.ProjectInitializerException;
+import org.openflexo.foundation.utils.ProjectLoadingCancelledException;
 import org.openflexo.icon.IconLibrary;
 import org.openflexo.localization.FlexoLocalization;
+import org.openflexo.prefs.GeneralPreferences;
 import org.openflexo.project.FlexoAutoSaveThread.FlexoAutoSaveFile;
 import org.openflexo.toolbox.FileUtils;
 import org.openflexo.view.FlexoDialog;
 import org.openflexo.view.FlexoFrame;
 
 /**
- * AutoSave service working with the {@link ProjectLoader}<br>
+ * AutoSave service working with the {@link InteractiveProjectLoader}<br>
  * 
  * Perform automatic save for projects
  * 
@@ -80,11 +82,11 @@ public class AutoSaveService implements PropertyChangeListener {
 
 	private FlexoAutoSaveThread autoSaveThread = null;
 
-	private final FlexoProject project;
+	private final FlexoProject<File> project;
 
-	private final ProjectLoader projectLoader;
+	private final InteractiveProjectLoader projectLoader;
 
-	public AutoSaveService(ProjectLoader projectLoader, FlexoProject project) {
+	public AutoSaveService(InteractiveProjectLoader projectLoader, FlexoProject project) {
 		super();
 		this.projectLoader = projectLoader;
 		this.project = project;
@@ -100,7 +102,7 @@ public class AutoSaveService implements PropertyChangeListener {
 		stop();
 	}
 
-	public FlexoProject getProject() {
+	public FlexoProject<File> getProject() {
 		return project;
 	}
 
@@ -157,7 +159,8 @@ public class AutoSaveService implements PropertyChangeListener {
 	public File getAutoSaveDirectory() {
 		if (autoSaveThread != null) {
 			return autoSaveThread.getTempDirectory();
-		} else {
+		}
+		else {
 			return null;
 		}
 	}
@@ -175,12 +178,12 @@ public class AutoSaveService implements PropertyChangeListener {
 		((PropertyListParameter) parameters[1]).addReadOnlyTextFieldColumn("path", "path", 450, true);*/
 		JPanel north = new JPanel(new FlowLayout(FlowLayout.CENTER));
 		north.setBackground(Color.WHITE);
-		JLabel label = new JLabel("<html>" + FlexoLocalization.localizedForKey("time_travel_info") + "</html>",
+		JLabel label = new JLabel("<html>" + FlexoLocalization.getMainLocalizer().localizedForKey("time_travel_info") + "</html>",
 				IconLibrary.TIME_TRAVEL_ICON, SwingConstants.LEFT);
 		north.add(label);
 		// AskParametersPanel panel = new AskParametersPanel(project, parameters);
 		JPanel south = new JPanel(new FlowLayout(FlowLayout.CENTER));
-		JButton cancel = new JButton(FlexoLocalization.localizedForKey("cancel"));
+		JButton cancel = new JButton(FlexoLocalization.getMainLocalizer().localizedForKey("cancel"));
 		cancel.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -188,7 +191,7 @@ public class AutoSaveService implements PropertyChangeListener {
 				resume();
 			}
 		});
-		JButton ok = new JButton(FlexoLocalization.localizedForKey("restore"));
+		JButton ok = new JButton(FlexoLocalization.getMainLocalizer().localizedForKey("restore"));
 		ok.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -230,7 +233,7 @@ public class AutoSaveService implements PropertyChangeListener {
 		dialog.getContentPane().add(new JLabel("Please reimplement this"));
 		dialog.getContentPane().add(north, BorderLayout.NORTH);
 		dialog.getContentPane().add(south, BorderLayout.SOUTH);
-		dialog.setTitle(FlexoLocalization.localizedForKey("time_traveler"));
+		dialog.setTitle(FlexoLocalization.getMainLocalizer().localizedForKey("time_traveler"));
 		dialog.validate();
 		dialog.pack();
 		dialog.show();
@@ -241,37 +244,37 @@ public class AutoSaveService implements PropertyChangeListener {
 		File dest = null;
 		int attempt = 0;
 		while (dest == null || dest.exists()) {
-			dest = new File(projectDirectory.getParentFile(), projectDirectory.getName() + ".restore" + (attempt == 0 ? "" : "." + attempt));
+			dest = new File(projectDirectory.getParentFile(),
+					projectDirectory.getName() + ".restore" + (attempt == 0 ? "" : "." + attempt));
 			attempt++;
 		}
 		if (progress != null) {
-			progress.setProgress(FlexoLocalization.localizedForKey("creating_restore_project_at") + " " + dest.getAbsolutePath());
+			progress.setProgress(
+					FlexoLocalization.getMainLocalizer().localizedForKey("creating_restore_project_at") + " " + dest.getAbsolutePath());
 		}
 		FileUtils.copyContentDirToDir(projectDirectory, dest);
 		if (progress != null) {
-			progress.setProgress(FlexoLocalization.localizedForKey("closing_project"));
+			progress.setProgress(FlexoLocalization.getMainLocalizer().localizedForKey("closing_project"));
 		}
 		projectLoader.closeProject(project);
 		if (progress != null) {
-			progress.setProgress(FlexoLocalization.localizedForKey("deleting_project"));
+			progress.setProgress(FlexoLocalization.getMainLocalizer().localizedForKey("deleting_project"));
 		}
 		FileUtils.deleteDir(projectDirectory);
 		if (progress != null) {
-			progress.setProgress(FlexoLocalization.localizedForKey("restoring_project"));
+			progress.setProgress(FlexoLocalization.getMainLocalizer().localizedForKey("restoring_project"));
 		}
 		FileUtils.copyContentDirToDir(autoSaveFile.getDirectory(), projectDirectory);
 		if (progress != null) {
 			progress.hideWindow();
 		}
-		// try {
-		projectLoader.loadProject(projectDirectory);
-		/*} catch (ProjectLoadingCancelledException e) {
-			// TODO Auto-generated catch block
+		try {
+			projectLoader.loadProject(projectDirectory);
+		} catch (ProjectLoadingCancelledException e) {
 			e.printStackTrace();
 		} catch (ProjectInitializerException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}*/
+		}
 	}
 
 	@Override
@@ -281,12 +284,15 @@ public class AutoSaveService implements PropertyChangeListener {
 			if (GeneralPreferences.AUTO_SAVE_ENABLED.equals(key)) {
 				if (getGeneralPreferences().getAutoSaveEnabled()) {
 					start();
-				} else {
+				}
+				else {
 					stop();
 				}
-			} else if (GeneralPreferences.AUTO_SAVE_INTERVAL.equals(key)) {
+			}
+			else if (GeneralPreferences.AUTO_SAVE_INTERVAL.equals(key)) {
 				setAutoSaveInterval();
-			} else if (GeneralPreferences.AUTO_SAVE_LIMIT.equals(key)) {
+			}
+			else if (GeneralPreferences.AUTO_SAVE_LIMIT.equals(key)) {
 				setAutoSaveLimit();
 			}
 		}

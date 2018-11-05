@@ -44,14 +44,12 @@ import java.io.IOException;
 import java.util.Collection;
 import java.util.logging.Logger;
 
-import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.Implementation;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
-import org.openflexo.model.annotations.PropertyIdentifier;
-import org.openflexo.model.annotations.Setter;
-import org.openflexo.model.annotations.XMLAttribute;
 import org.openflexo.model.annotations.XMLElement;
+import org.openflexo.model.exceptions.ModelDefinitionException;
+import org.openflexo.model.factory.ModelFactory;
 import org.openflexo.toolbox.FlexoVersion;
 import org.openflexo.toolbox.IProgress;
 
@@ -61,78 +59,112 @@ import org.openflexo.toolbox.IProgress;
  * @author sylvain
  * 
  */
-public class DirectoryResourceCenter extends FileSystemBasedResourceCenter {
+@ModelEntity
+@ImplementationClass(DirectoryResourceCenter.DirectoryResourceCenterImpl.class)
+public interface DirectoryResourceCenter extends FileSystemBasedResourceCenter {
 
-	protected static final Logger logger = Logger.getLogger(DirectoryResourceCenter.class.getPackage().getName());
+	public static DirectoryResourceCenter instanciateNewDirectoryResourceCenter(File resourceCenterDirectory,
+			FlexoResourceCenterService rcService) throws IOException {
+		DirectoryResourceCenterImpl.logger.info("Instanciate ResourceCenter from " + resourceCenterDirectory.getAbsolutePath());
+		ModelFactory factory;
+		try {
+			factory = new ModelFactory(DirectoryResourceCenter.class);
+			DirectoryResourceCenter directoryResourceCenter = factory.newInstance(DirectoryResourceCenter.class);
+			directoryResourceCenter.setBaseArtefact(resourceCenterDirectory);
+			directoryResourceCenter.setFlexoResourceCenterService(rcService);
+			directoryResourceCenter.update();
+			directoryResourceCenter.startDirectoryWatching();
+			return directoryResourceCenter;
+		} catch (ModelDefinitionException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	public static abstract class DirectoryResourceCenterImpl extends FileSystemBasedResourceCenterImpl implements DirectoryResourceCenter {
+
+		protected static final Logger logger = Logger.getLogger(DirectoryResourceCenter.class.getPackage().getName());
+
+		/*public DirectoryResourceCenterImpl(File resourceCenterDirectory, FlexoResourceCenterService rcService) {
+			super(resourceCenterDirectory, rcService);
+		}
+		
+		public DirectoryResourceCenterImpl(File resourceCenterDirectory, String defaultBaseURI, FlexoResourceCenterService rcService) {
+			super(resourceCenterDirectory, rcService);
+			setDefaultBaseURI(defaultBaseURI);
+		}*/
+
+		/*public static DirectoryResourceCenter instanciateNewDirectoryResourceCenter(File resourceCenterDirectory,
+				FlexoResourceCenterService rcService) {
+			logger.info("Instanciate ResourceCenter from " + resourceCenterDirectory.getAbsolutePath());
+			DirectoryResourceCenter directoryResourceCenter = new DirectoryResourceCenter(resourceCenterDirectory, rcService);
+			try {
+				directoryResourceCenter.update();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			return directoryResourceCenter;
+		}*/
+
+		@Override
+		public Collection<FlexoResource<?>> getAllResources(IProgress progress) {
+			return getAllResources();
+		}
+
+		@Override
+		public void publishResource(FlexoResource<?> resource, FlexoVersion newVersion, IProgress progress) throws Exception {
+			// TODO Auto-generated method stub
+		}
+
+		@Override
+		public void update() throws IOException {
+		}
+
+		@Override
+		public boolean isDeleted() {
+			return false;
+		}
+
+		private DirectoryResourceCenterEntry entry;
+
+		@Override
+		public ResourceCenterEntry<?> getResourceCenterEntry() {
+			if (entry == null) {
+				try {
+					ModelFactory factory = new ModelFactory(DirectoryResourceCenterEntry.class);
+					entry = factory.newInstance(DirectoryResourceCenterEntry.class);
+					entry.setDirectory(getDirectory());
+				} catch (ModelDefinitionException e) {
+					e.printStackTrace();
+				}
+			}
+			return entry;
+		}
+
+	}
 
 	@ModelEntity
 	@ImplementationClass(DirectoryResourceCenterEntry.DirectoryResourceCenterEntryImpl.class)
-	@XMLElement
-	public static interface DirectoryResourceCenterEntry extends ResourceCenterEntry<DirectoryResourceCenter> {
-		@PropertyIdentifier(type = File.class)
-		public static final String DIRECTORY_KEY = "directory";
-
-		@Getter(DIRECTORY_KEY)
-		@XMLAttribute
-		public File getDirectory();
-
-		@Setter(DIRECTORY_KEY)
-		public void setDirectory(File aDirectory);
-
+	@XMLElement(xmlTag = "FSBasedResourceCenterEntry")
+	public static interface DirectoryResourceCenterEntry extends FSBasedResourceCenterEntry<DirectoryResourceCenter> {
 		@Implementation
 		public static abstract class DirectoryResourceCenterEntryImpl implements DirectoryResourceCenterEntry {
-			@Override
-			public DirectoryResourceCenter makeResourceCenter() {
-				return DirectoryResourceCenter.instanciateNewDirectoryResourceCenter(getDirectory());
-			}
 
 			@Override
-			public boolean equals(Object obj) {
-				if (obj instanceof DirectoryResourceCenterEntry) {
-					return getDirectory() != null && getDirectory().equals(((DirectoryResourceCenterEntry) obj).getDirectory());
+			public DirectoryResourceCenter makeResourceCenter(FlexoResourceCenterService rcService) {
+				try {
+					DirectoryResourceCenterImpl returned = (DirectoryResourceCenterImpl) DirectoryResourceCenter
+							.instanciateNewDirectoryResourceCenter(getDirectory(), rcService);
+					returned.entry = this;
+					return returned;
+				} catch (IOException e) {
+					e.printStackTrace();
+					return null;
 				}
-				return false;
 			}
+
 		}
 
 	}
 
-	public DirectoryResourceCenter(File resourceCenterDirectory) {
-		super(resourceCenterDirectory);
-	}
-
-	public static DirectoryResourceCenter instanciateNewDirectoryResourceCenter(File resourceCenterDirectory) {
-		logger.info("Instanciate ResourceCenter from " + resourceCenterDirectory.getAbsolutePath());
-		DirectoryResourceCenter directoryResourceCenter = new DirectoryResourceCenter(resourceCenterDirectory);
-		try {
-			directoryResourceCenter.update();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		return directoryResourceCenter;
-	}
-
-	@Override
-	public Collection<FlexoResource<?>> getAllResources(IProgress progress) {
-		return getAllResources();
-	}
-
-	@Override
-	public void publishResource(FlexoResource<?> resource, FlexoVersion newVersion, IProgress progress) throws Exception {
-		// TODO Auto-generated method stub
-	}
-
-	@Override
-	public void update() throws IOException {
-	}
-
-	@Override
-	public String getDefaultBaseURI() {
-		return getDirectory().toURI().toString();
-	}
-
-	@Override
-	public boolean isDeleted() {
-		return false;
-	}
 }

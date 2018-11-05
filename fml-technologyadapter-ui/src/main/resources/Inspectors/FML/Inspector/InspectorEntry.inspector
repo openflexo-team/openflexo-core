@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Panel className="org.openflexo.fib.utils.FIBInspector" layout="border"
+<Panel className="org.openflexo.gina.utils.FIBInspector" layout="border"
 	titleFont="SansSerif,0,12" darkLevel="0"
 	dataClassName="org.openflexo.foundation.fml.inspector.InspectorEntry"
 	controllerClassName="org.openflexo.fml.controller.FMLFIBInspectorController"
@@ -31,33 +31,31 @@
 				visible="" name="checkbox" localize="true" />
 			<Label label="data" index="6" 
 				constraints="twocols(expandHorizontally=false;expandVertically=false;index=6;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=5;location=left)"
-				visible="" name="data2" localize="true" />
-			<Custom componentClassName="org.openflexo.fib.swing.utils.BindingSelector"
+				name="data2" localize="true" />
+			<Custom componentClassName="org.openflexo.gina.swing.utils.BindingSelector"
 				localize="true" name="conditionalValue1" index="7" data="data.data"
 				constraints="twocols(expandHorizontally=true;expandVertically=false;index=7;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)"
 				opaque="false">
 				<Assignment variable="component.bindable" value="data" />
 			</Custom>
-			<Label label="conditional" index="19" data=""
+			<!--  <Label label="conditional" index="19" data=""
 				constraints="twocols(expandHorizontally=false;expandVertically=false;index=19;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=5;location=left)"
 				name="conditional" />
-			<Custom componentClassName="org.openflexo.fib.swing.utils.BindingSelector"
+			<Custom componentClassName="org.openflexo.gina.swing.utils.BindingSelector"
 				localize="true" manageDynamicModel="true" name="conditionalValue2"
 				index="20" data="data.conditional"
 				constraints="twocols(expandHorizontally=true;expandVertically=false;index=20;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)"
 				visible="" opaque="false">
 				<Assignment variable="component.bindable" value="data" />
-			</Custom>
+			</Custom>-->
 
 			<Label manageDynamicModel="false" useScrollBar="false"
-				controllerClassName="org.openflexo.fib.controller.FIBController"
 				localize="true" align="left" index="10000"
 				constraints="twocols(expandHorizontally=true;expandVertically=false;location=left)"
 				label="description" readOnly="false" />
 			<TextArea verticalScrollbarPolicy="VERTICAL_SCROLLBAR_AS_NEEDED"
 				manageDynamicModel="false" useScrollBar="true" columns="8"
-				controllerClassName="org.openflexo.fib.controller.FIBController"
-				text="TextArea" localize="true" index="10001"
+				text="TextArea" localize="false" index="10001"
 				constraints="twocols(expandHorizontally=true;expandVertically=true;location=right)"
 				rows="3" readOnly="false" validateOnReturn="true"
 				horizontalScrollbarPolicy="HORIZONTAL_SCROLLBAR_AS_NEEDED" />

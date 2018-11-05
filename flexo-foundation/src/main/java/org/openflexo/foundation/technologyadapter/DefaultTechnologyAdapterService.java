@@ -40,10 +40,12 @@
 package org.openflexo.foundation.technologyadapter;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.ServiceLoader;
@@ -55,6 +57,15 @@ import org.openflexo.foundation.FlexoService;
 import org.openflexo.foundation.FlexoServiceImpl;
 import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.fml.FMLTechnologyAdapter;
+import org.openflexo.foundation.fml.FlexoBehaviour;
+import org.openflexo.foundation.fml.FlexoRole;
+import org.openflexo.foundation.fml.annotations.DeclareEditionActions;
+import org.openflexo.foundation.fml.annotations.DeclareFetchRequests;
+import org.openflexo.foundation.fml.annotations.DeclareFlexoBehaviours;
+import org.openflexo.foundation.fml.annotations.DeclareFlexoRoles;
+import org.openflexo.foundation.fml.editionaction.EditionAction;
+import org.openflexo.foundation.fml.editionaction.FetchRequest;
+import org.openflexo.foundation.fml.editionaction.TechnologySpecificAction;
 import org.openflexo.foundation.fml.rt.FMLRTTechnologyAdapter;
 import org.openflexo.foundation.nature.ProjectNatureService;
 import org.openflexo.foundation.resource.DefaultResourceCenterService.ResourceCenterAdded;
@@ -64,10 +75,12 @@ import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.resource.FlexoResourceCenterService;
 import org.openflexo.foundation.resource.ResourceData;
 import org.openflexo.foundation.resource.ResourceRepository;
+import org.openflexo.foundation.resource.ResourceRepositoryImpl;
+import org.openflexo.foundation.task.FlexoTask;
 import org.openflexo.foundation.task.Progress;
-import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.model.exceptions.ModelDefinitionException;
 import org.openflexo.model.factory.ModelFactory;
+import org.openflexo.toolbox.StringUtils;
 
 /**
  * Default implementation for {@link ProjectNatureService}
@@ -79,10 +92,15 @@ public abstract class DefaultTechnologyAdapterService extends FlexoServiceImpl i
 
 	private static final Logger logger = Logger.getLogger(DefaultTechnologyAdapterService.class.getPackage().getName());
 
-	private FlexoResourceCenterService flexoResourceCenterService;
+	private Map<Class<?>, TechnologyAdapter> loadedAdapters;
 
-	private Map<Class, TechnologyAdapter> loadedAdapters;
-	private Map<TechnologyAdapter, TechnologyContextManager> technologyContextManagers;
+	private Map<Class<? extends ModelSlot<?>>, List<Class<? extends FlexoRole<?>>>> availableFlexoRoleTypes;
+	private Map<Class<? extends ModelSlot<?>>, List<Class<? extends FlexoBehaviour>>> availableFlexoBehaviourTypes;
+	private Map<Class<? extends ModelSlot<?>>, List<Class<? extends EditionAction>>> availableEditionActionTypes;
+	private Map<Class<? extends ModelSlot<?>>, List<Class<? extends FetchRequest<?, ?, ?>>>> availableFetchRequestActionTypes;
+
+	// private Map<Class<? extends ModelSlot<?>>, List<Class<? extends FlexoBehaviourParameter>>> availableFlexoBehaviourParameterTypes;
+	// private Map<Class<? extends ModelSlot<?>>, List<Class<? extends InspectorEntry>>> availableInspectorEntryTypes;
 
 	public static TechnologyAdapterService getNewInstance(FlexoResourceCenterService resourceCenterService) {
 		try {
@@ -113,8 +131,7 @@ public abstract class DefaultTechnologyAdapterService extends FlexoServiceImpl i
 
 		if (loadedAdapters == null) {
 
-			loadedAdapters = new Hashtable<Class, TechnologyAdapter>();
-			technologyContextManagers = new Hashtable<TechnologyAdapter, TechnologyContextManager>();
+			loadedAdapters = new Hashtable<>();
 
 			logger.info("Loading available technology adapters...");
 
@@ -133,7 +150,8 @@ public abstract class DefaultTechnologyAdapterService extends FlexoServiceImpl i
 				registerTechnologyAdapter(technologyAdapter);
 			}
 			logger.info("Loading available technology adapters. Done.");
-		} else {
+		}
+		else {
 			Iterator<TechnologyAdapter> iterator = loader.iterator();
 			while (iterator.hasNext()) {
 				TechnologyAdapter technologyAdapter = iterator.next();
@@ -146,26 +164,9 @@ public abstract class DefaultTechnologyAdapterService extends FlexoServiceImpl i
 
 	}
 
-	/*public void loadAvailableTechnologyAdapters(ServiceLoader<TechnologyAdapter> loader) {
-		if (loadedAdapters != null) {
-			Iterator<TechnologyAdapter> iterator = loader.iterator();
-			while (iterator.hasNext()) {
-				TechnologyAdapter technologyAdapter = iterator.next();
-				if(!loadedAdapters.containsKey(technologyAdapter.getClass())){
-					registerTechnologyAdapter(technologyAdapter);
-				}
-			}
-			logger.info("Loading available technology adapters. Done.");
-		}
-	}*/
-
 	private void registerTechnologyAdapter(TechnologyAdapter technologyAdapter) {
 		logger.fine("Found " + technologyAdapter);
 		technologyAdapter.setTechnologyAdapterService(this);
-		TechnologyContextManager tcm = technologyAdapter.createTechnologyContextManager(getFlexoResourceCenterService());
-		if (tcm != null) {
-			technologyContextManagers.put(technologyAdapter, tcm);
-		}
 		addToTechnologyAdapters(technologyAdapter);
 
 		logger.info("Load " + technologyAdapter.getName() + " as " + technologyAdapter.getClass());
@@ -173,7 +174,8 @@ public abstract class DefaultTechnologyAdapterService extends FlexoServiceImpl i
 		if (loadedAdapters.containsKey(technologyAdapter.getClass())) {
 			logger.severe("Cannot include TechnologyAdapter with classname '" + technologyAdapter.getClass().getName()
 					+ "' because it already exists !!!! A TechnologyAdapter name MUST be unique !");
-		} else {
+		}
+		else {
 			loadedAdapters.put(technologyAdapter.getClass(), technologyAdapter);
 		}
 	}
@@ -206,25 +208,28 @@ public abstract class DefaultTechnologyAdapterService extends FlexoServiceImpl i
 	 * @return
 	 */
 	@Override
-	public TechnologyContextManager getTechnologyContextManager(TechnologyAdapter technologyAdapter) {
-		return technologyContextManagers.get(technologyAdapter);
+	public TechnologyContextManager<?> getTechnologyContextManager(TechnologyAdapter technologyAdapter) {
+		if (technologyAdapter == null) {
+			return null;
+		}
+		return technologyAdapter.getTechnologyContextManager();
 	}
 
 	@Override
 	public void receiveNotification(FlexoService caller, ServiceNotification notification) {
 		if (caller instanceof FlexoResourceCenterService) {
 			if (notification instanceof ResourceCenterAdded) {
-				FlexoResourceCenter rc = ((ResourceCenterAdded) notification).getAddedResourceCenter();
-				Progress.progress(FlexoLocalization.localizedForKey("initializing") + " " + rc);
-				rc.initialize(this);
+				FlexoResourceCenter<?> rc = ((ResourceCenterAdded) notification).getAddedResourceCenter();
+				Progress.progress(getLocales().localizedForKey("initializing") + " " + rc);
 				for (TechnologyAdapter ta : getTechnologyAdapters()) {
-					Progress.progress(FlexoLocalization.localizedForKey("scan_resources_for_technology_adapters") + " " + ta.getName());
-					ta.resourceCenterAdded(rc);
+					if (ta.isActivated()) {
+						Progress.progress(getLocales().localizedForKey("scan_resources_for_technology_adapters") + " " + ta.getName());
+						ta.resourceCenterAdded(rc);
+					}
 				}
 			}
 			if (notification instanceof ResourceCenterRemoved) {
-				FlexoResourceCenter rc = ((ResourceCenterRemoved) notification).getRemovedResourceCenter();
-				rc.initialize(this);
+				FlexoResourceCenter<?> rc = ((ResourceCenterRemoved) notification).getRemovedResourceCenter();
 				for (TechnologyAdapter ta : getTechnologyAdapters()) {
 					ta.resourceCenterRemoved(rc);
 				}
@@ -233,97 +238,32 @@ public abstract class DefaultTechnologyAdapterService extends FlexoServiceImpl i
 	}
 
 	@Override
-	public void initialize() {
-		loadAvailableTechnologyAdapters();
-		for (TechnologyAdapter ta : getTechnologyAdapters()) {
-			ta.initialize();
-		}
-		for (FlexoResourceCenter rc : getFlexoResourceCenterService().getResourceCenters()) {
-			rc.initialize(this);
-		}
+	public String getServiceName() {
+		return "TechnologyAdapterService";
 	}
 
-	/*@Override
-	public void initialize(ServiceLoader<TechnologyAdapter> loader) {
-		loadAvailableTechnologyAdapters(loader);
-	}*/
+	@Override
+	public void initialize() {
+		availableFlexoRoleTypes = new HashMap<>();
+		availableEditionActionTypes = new HashMap<>();
+		availableFetchRequestActionTypes = new HashMap<>();
+		availableFlexoBehaviourTypes = new HashMap<>();
+		loadAvailableTechnologyAdapters();
+		status = Status.Started;
+	}
 
 	/**
-	 * Return the list of all non-empty {@link ModelRepository} discoverable in the scope of {@link FlexoServiceManager}, related to
-	 * technology as supplied by {@link TechnologyAdapter} parameter
-	 * 
-	 * @param technologyAdapter
-	 * @return
-	 */
-	/*
-	 * @Override public <R extends FlexoResource<? extends M>, M extends
-	 * FlexoModel<M, MM>, MM extends FlexoMetaModel<MM>, TA extends
-	 * TechnologyAdapter<M, MM>> List<ModelRepository<R, M, MM, TA>>
-	 * getAllModelRepositories( TA technologyAdapter) { List<ModelRepository<R,
-	 * M, MM, TA>> returned = new ArrayList<ModelRepository<R, M, MM, TA>>();
-	 * for (FlexoResourceCenter rc :
-	 * getFlexoResourceCenterService().getResourceCenters()) {
-	 * returned.add((ModelRepository<R, M, MM, TA>)
-	 * rc.getModelRepository(technologyAdapter)); } return returned; }
-	 */
-
-	/*
-	 * @Override public List<ModelRepository<?, ?, ?, ?>>
-	 * getAllModelRepositories(TechnologyAdapter technologyAdapter) {
-	 * List<ModelRepository<?, ?, ?, ?>> returned = new
-	 * ArrayList<ModelRepository<?, ?, ?, ?>>(); for (FlexoResourceCenter rc :
-	 * getFlexoResourceCenterService().getResourceCenters()) { if
-	 * (rc.getModelRepository(technologyAdapter) != null &&
-	 * rc.getModelRepository(technologyAdapter).getSize() > 0) {
-	 * logger.fine("Adding ModelRepository for " + technologyAdapter.getName() +
-	 * " and RC " + rc); returned.add(rc.getModelRepository(technologyAdapter));
-	 * } } return returned; }
-	 */
-
-	/**
-	 * Return the list of all non-empty {@link MetaModelRepository} discoverable in the scope of {@link FlexoServiceManager}, related to
-	 * technology as supplied by {@link TechnologyAdapter} parameter
-	 * 
-	 * @param technologyAdapter
-	 * @return
-	 */
-	/*
-	 * @Override public <R extends FlexoResource<? extends MM>, M extends
-	 * FlexoModel<M, MM>, MM extends FlexoMetaModel<MM>, TA extends
-	 * TechnologyAdapter<M, MM>> List<MetaModelRepository<R, M, MM, TA>>
-	 * getAllMetaModelRepositories( TA technologyAdapter) {
-	 * List<MetaModelRepository<R, M, MM, TA>> returned = new
-	 * ArrayList<MetaModelRepository<R, M, MM, TA>>(); for (FlexoResourceCenter
-	 * rc : getFlexoResourceCenterService().getResourceCenters()) {
-	 * returned.add((MetaModelRepository<R, M, MM, TA>)
-	 * rc.getMetaModelRepository(technologyAdapter)); } return returned; }
-	 */
-	/*
-	 * @Override public List<MetaModelRepository<?, ?, ?, ?>>
-	 * getAllMetaModelRepositories(TechnologyAdapter technologyAdapter) {
-	 * List<MetaModelRepository<?, ?, ?, ?>> returned = new
-	 * ArrayList<MetaModelRepository<?, ?, ?, ?>>(); for (FlexoResourceCenter rc
-	 * : getFlexoResourceCenterService().getResourceCenters()) { if
-	 * (rc.getMetaModelRepository(technologyAdapter) != null &&
-	 * rc.getMetaModelRepository(technologyAdapter).getSize() > 0) {
-	 * logger.fine("Adding MetaModelRepository for " +
-	 * technologyAdapter.getName() + " and RC " + rc);
-	 * returned.add(rc.getMetaModelRepository(technologyAdapter)); } } return
-	 * returned; }
-	 */
-
-	/**
-	 * Return the list of all non-empty {@link ResourceRepository} discovered in the scope of {@link FlexoServiceManager}, related to
+	 * Return the list of all non-empty {@link ResourceRepositoryImpl} discovered in the scope of {@link FlexoServiceManager}, related to
 	 * technology as supplied by {@link TechnologyAdapter} parameter
 	 * 
 	 * @param technologyAdapter
 	 * @return
 	 */
 	@Override
-	public List<ResourceRepository<?>> getAllRepositories(TechnologyAdapter technologyAdapter) {
-		List<ResourceRepository<?>> returned = new ArrayList<ResourceRepository<?>>();
+	public List<ResourceRepository<?, ?>> getAllRepositories(TechnologyAdapter technologyAdapter) {
+		List<ResourceRepository<?, ?>> returned = new ArrayList<>();
 		for (FlexoResourceCenter<?> rc : getFlexoResourceCenterService().getResourceCenters()) {
-			Collection<ResourceRepository<?>> repCollection = rc.getRegistedRepositories(technologyAdapter);
+			Collection<? extends ResourceRepository<?, ?>> repCollection = rc.getRegistedRepositories(technologyAdapter, true);
 			if (repCollection != null) {
 				returned.addAll(repCollection);
 			}
@@ -332,22 +272,40 @@ public abstract class DefaultTechnologyAdapterService extends FlexoServiceImpl i
 	}
 
 	/**
-	 * Return the list of all non-empty {@link ResourceRepository} discovered in the scope of {@link FlexoServiceManager} which may give
+	 * Return the list of all global {@link ResourceRepositoryImpl} discovered in this {@link InformationSpace}, related to technology as
+	 * supplied by {@link TechnologyAdapter} parameter.<br>
+	 * One global repository for each {@link FlexoResourceCenter} is returned
+	 * 
+	 * @param technologyAdapter
+	 * @return
+	 */
+	@Override
+	public <TA extends TechnologyAdapter> List<TechnologyAdapterResourceRepository<?, TA, ?, ?>> getGlobalRepositories(
+			TA technologyAdapter) {
+		List<TechnologyAdapterResourceRepository<?, TA, ?, ?>> returned = new ArrayList<>();
+		for (FlexoResourceCenter<?> rc : getFlexoResourceCenterService().getResourceCenters()) {
+			returned.add(technologyAdapter.getGlobalRepository(rc));
+		}
+		return returned;
+	}
+
+	/**
+	 * Return the list of all non-empty {@link ResourceRepositoryImpl} discovered in the scope of {@link FlexoServiceManager} which may give
 	 * access to some instance of supplied resource data class, related to technology as supplied by {@link TechnologyAdapter} parameter
 	 * 
 	 * @param technologyAdapter
 	 * @return
 	 */
 	@Override
-	public <RD extends ResourceData<RD>> List<ResourceRepository<? extends FlexoResource<RD>>> getAllRepositories(
+	public <RD extends ResourceData<RD>> List<ResourceRepository<? extends FlexoResource<RD>, ?>> getAllRepositories(
 			TechnologyAdapter technologyAdapter, Class<RD> resourceDataClass) {
-		List<ResourceRepository<? extends FlexoResource<RD>>> returned = new ArrayList<ResourceRepository<? extends FlexoResource<RD>>>();
+		List<ResourceRepository<? extends FlexoResource<RD>, ?>> returned = new ArrayList<>();
 		for (FlexoResourceCenter<?> rc : getFlexoResourceCenterService().getResourceCenters()) {
-			Collection<ResourceRepository<?>> repCollection = rc.getRegistedRepositories(technologyAdapter);
+			Collection<? extends ResourceRepository<?, ?>> repCollection = rc.getRegistedRepositories(technologyAdapter, true);
 			if (repCollection != null) {
-				for (ResourceRepository<?> rep : repCollection) {
+				for (ResourceRepository<?, ?> rep : repCollection) {
 					if (resourceDataClass.isAssignableFrom(rep.getResourceDataClass())) {
-						returned.add((ResourceRepository<? extends FlexoResource<RD>>) rep);
+						returned.add((ResourceRepositoryImpl<? extends FlexoResource<RD>, ?>) rep);
 					}
 				}
 			}
@@ -363,14 +321,14 @@ public abstract class DefaultTechnologyAdapterService extends FlexoServiceImpl i
 	 * @return
 	 */
 	@Override
-	public List<ModelRepository<?, ?, ?, ?, ?>> getAllModelRepositories(TechnologyAdapter technologyAdapter) {
-		List<ModelRepository<?, ?, ?, ?, ?>> returned = new ArrayList<ModelRepository<?, ?, ?, ?, ?>>();
+	public List<ModelRepository<?, ?, ?, ?, ?, ?>> getAllModelRepositories(TechnologyAdapter technologyAdapter) {
+		List<ModelRepository<?, ?, ?, ?, ?, ?>> returned = new ArrayList<>();
 		for (FlexoResourceCenter<?> rc : getFlexoResourceCenterService().getResourceCenters()) {
-			Collection<ResourceRepository<?>> repCollection = rc.getRegistedRepositories(technologyAdapter);
+			Collection<? extends ResourceRepository<?, ?>> repCollection = rc.getRegistedRepositories(technologyAdapter, true);
 			if (repCollection != null) {
-				for (ResourceRepository<?> rep : repCollection) {
+				for (ResourceRepository<?, ?> rep : repCollection) {
 					if (rep instanceof ModelRepository) {
-						returned.add((ModelRepository<?, ?, ?, ?, ?>) rep);
+						returned.add((ModelRepository<?, ?, ?, ?, ?, ?>) rep);
 					}
 				}
 			}
@@ -386,14 +344,14 @@ public abstract class DefaultTechnologyAdapterService extends FlexoServiceImpl i
 	 * @return
 	 */
 	@Override
-	public List<MetaModelRepository<?, ?, ?, ?>> getAllMetaModelRepositories(TechnologyAdapter technologyAdapter) {
-		List<MetaModelRepository<?, ?, ?, ?>> returned = new ArrayList<MetaModelRepository<?, ?, ?, ?>>();
+	public List<MetaModelRepository<?, ?, ?, ?, ?>> getAllMetaModelRepositories(TechnologyAdapter technologyAdapter) {
+		List<MetaModelRepository<?, ?, ?, ?, ?>> returned = new ArrayList<>();
 		for (FlexoResourceCenter<?> rc : getFlexoResourceCenterService().getResourceCenters()) {
-			Collection<ResourceRepository<?>> repCollection = rc.getRegistedRepositories(technologyAdapter);
+			Collection<? extends ResourceRepository<?, ?>> repCollection = rc.getRegistedRepositories(technologyAdapter, true);
 			if (repCollection != null) {
-				for (ResourceRepository<?> rep : repCollection) {
+				for (ResourceRepository<?, ?> rep : repCollection) {
 					if (rep instanceof MetaModelRepository) {
-						returned.add((MetaModelRepository<?, ?, ?, ?>) rep);
+						returned.add((MetaModelRepository<?, ?, ?, ?, ?>) rep);
 					}
 				}
 			}
@@ -401,7 +359,7 @@ public abstract class DefaultTechnologyAdapterService extends FlexoServiceImpl i
 		return returned;
 	}
 
-	private final Map<Class<? extends CustomType>, CustomTypeFactory<?>> customTypeFactories = new HashMap<Class<? extends CustomType>, CustomTypeFactory<?>>();
+	private final Map<Class<? extends CustomType>, CustomTypeFactory<?>> customTypeFactories = new LinkedHashMap<>();
 
 	/**
 	 * Return all {@link CustomType} factories defined for all known technologies
@@ -423,6 +381,262 @@ public abstract class DefaultTechnologyAdapterService extends FlexoServiceImpl i
 	public <T extends CustomType> void registerTypeClass(Class<T> typeClass, CustomTypeFactory<T> factory) {
 		// System.out.println("registering " + typeClass + " with " + factory);
 		customTypeFactories.put(typeClass, factory);
+	}
+
+	/**
+	 * Enable a {@link TechnologyAdapter}<br>
+	 * All resources centers are notified to scan the resources that they may interpret
+	 * 
+	 * @param technologyAdapter
+	 */
+	@Override
+	public FlexoTask activateTechnologyAdapter(TechnologyAdapter technologyAdapter, boolean now) {
+
+		return getServiceManager().activateTechnologyAdapter(technologyAdapter, now);
+	}
+
+	/**
+	 * Disable a {@link TechnologyAdapter}<br>
+	 * All resources centers are notified to free the resources that they are managing, if possible
+	 * 
+	 * @param technologyAdapter
+	 */
+	@Override
+	public FlexoTask disactivateTechnologyAdapter(TechnologyAdapter technologyAdapter) {
+
+		return getServiceManager().disactivateTechnologyAdapter(technologyAdapter);
+	}
+
+	/**
+	 * Return {@link TechnologyAdapter} where supplied modelSlotClass has been declared
+	 * 
+	 * @param modelSlotClass
+	 * @return
+	 */
+	@Override
+	public <MS extends ModelSlot<?>> TechnologyAdapter getTechnologyAdapterForModelSlot(Class<MS> modelSlotClass) {
+		if (modelSlotClass == null) {
+			return null;
+		}
+		for (TechnologyAdapter ta : getTechnologyAdapters()) {
+			for (Class<? extends ModelSlot<?>> msType : ta.getAvailableModelSlotTypes()) {
+				if (modelSlotClass.isAssignableFrom(msType)) {
+					return ta;
+				}
+			}
+		}
+		return null;
+	}
+
+	/**
+	 * Return the list of {@link FlexoRole} class available for supplied modelSlotClass
+	 * 
+	 * @param modelSlotClass
+	 * @return
+	 */
+	@Override
+	public <MS extends ModelSlot<?>> List<Class<? extends FlexoRole<?>>> getAvailableFlexoRoleTypes(Class<MS> modelSlotClass) {
+		List<Class<? extends FlexoRole<?>>> returned = availableFlexoRoleTypes.get(modelSlotClass);
+		if (returned == null) {
+			returned = new ArrayList<>();
+			appendDeclareFlexoRoles(returned, modelSlotClass);
+			availableFlexoRoleTypes.put(modelSlotClass, returned);
+		}
+		return returned;
+	}
+
+	/**
+	 * Return the list of {@link TechnologySpecificAction} class available for supplied modelSlotClass
+	 * 
+	 * @param modelSlotClass
+	 * @return
+	 */
+	@Override
+	public <MS extends ModelSlot<?>> List<Class<? extends EditionAction>> getAvailableEditionActionTypes(Class<MS> modelSlotClass) {
+		List<Class<? extends EditionAction>> returned = availableEditionActionTypes.get(modelSlotClass);
+		if (returned == null) {
+			returned = new ArrayList<>();
+			appendEditionActionTypes(returned, modelSlotClass);
+			availableEditionActionTypes.put(modelSlotClass, returned);
+		}
+		return returned;
+
+	}
+
+	/**
+	 * Return the list of {@link FetchRequest} class available for supplied modelSlotClass
+	 * 
+	 * @param modelSlotClass
+	 * @return
+	 */
+	@Override
+	public <MS extends ModelSlot<?>> List<Class<? extends FetchRequest<?, ?, ?>>> getAvailableFetchRequestActionTypes(
+			Class<MS> modelSlotClass) {
+		List<Class<? extends FetchRequest<?, ?, ?>>> returned = availableFetchRequestActionTypes.get(modelSlotClass);
+		if (returned == null) {
+			returned = new ArrayList<>();
+			appendFetchRequestActionTypes(returned, modelSlotClass);
+			availableFetchRequestActionTypes.put(modelSlotClass, returned);
+		}
+		return returned;
+	}
+
+	/**
+	 * Return the list of {@link FlexoBehaviour} class available for supplied modelSlotClass
+	 * 
+	 * @param modelSlotClass
+	 * @return
+	 */
+	@Override
+	public <MS extends ModelSlot<?>> List<Class<? extends FlexoBehaviour>> getAvailableFlexoBehaviourTypes(Class<MS> modelSlotClass) {
+		List<Class<? extends FlexoBehaviour>> returned = availableFlexoBehaviourTypes.get(modelSlotClass);
+		if (returned == null) {
+			returned = new ArrayList<>();
+			appendFlexoBehaviourTypes(returned, modelSlotClass);
+			availableFlexoBehaviourTypes.put(modelSlotClass, returned);
+		}
+		return returned;
+	}
+
+	private static void appendDeclareFlexoRoles(List<Class<? extends FlexoRole<?>>> aList, Class<?> cl) {
+		if (cl.isAnnotationPresent(DeclareFlexoRoles.class)) {
+			DeclareFlexoRoles allFlexoRoles = cl.getAnnotation(DeclareFlexoRoles.class);
+			for (Class<? extends FlexoRole> roleClass : allFlexoRoles.value()) {
+				if (!aList.contains(roleClass)) {
+					aList.add((Class<FlexoRole<?>>) roleClass);
+				}
+			}
+		}
+		if (cl.getSuperclass() != null) {
+			appendDeclareFlexoRoles(aList, cl.getSuperclass());
+		}
+
+		for (Class<?> superInterface : cl.getInterfaces()) {
+			appendDeclareFlexoRoles(aList, superInterface);
+		}
+	}
+
+	private static void appendEditionActionTypes(List<Class<? extends EditionAction>> aList, Class<?> cl) {
+		if (cl.isAnnotationPresent(DeclareEditionActions.class)) {
+			DeclareEditionActions allEditionActions = cl.getAnnotation(DeclareEditionActions.class);
+			/*for (Class<? extends TechnologySpecificAction> editionActionClass : allEditionActions.value()) {
+				if (!aList.contains(editionActionClass)) {
+					aList.add((Class<? extends TechnologySpecificAction<?, ?, ?>>) editionActionClass);
+				}
+			}*/
+			for (Class<? extends EditionAction> editionActionClass : allEditionActions.value()) {
+				if (!aList.contains(editionActionClass)) {
+					aList.add(editionActionClass);
+				}
+			}
+		}
+		if (cl.getSuperclass() != null) {
+			appendEditionActionTypes(aList, cl.getSuperclass());
+		}
+		for (Class<?> superInterface : cl.getInterfaces()) {
+			appendEditionActionTypes(aList, superInterface);
+		}
+	}
+
+	private static void appendFetchRequestActionTypes(List<Class<? extends FetchRequest<?, ?, ?>>> aList, Class<?> cl) {
+		if (cl.isAnnotationPresent(DeclareFetchRequests.class)) {
+			DeclareFetchRequests allFetchRequestActions = cl.getAnnotation(DeclareFetchRequests.class);
+			for (Class<? extends FetchRequest> fetchRequestClass : allFetchRequestActions.value()) {
+				if (!aList.contains(fetchRequestClass)) {
+					aList.add((Class) fetchRequestClass);
+				}
+			}
+		}
+		if (cl.getSuperclass() != null) {
+			appendFetchRequestActionTypes(aList, cl.getSuperclass());
+		}
+		for (Class<?> superInterface : cl.getInterfaces()) {
+			appendFetchRequestActionTypes(aList, superInterface);
+		}
+	}
+
+	private static void appendFlexoBehaviourTypes(List<Class<? extends FlexoBehaviour>> aList, Class<?> cl) {
+		if (cl.isAnnotationPresent(DeclareFlexoBehaviours.class)) {
+			DeclareFlexoBehaviours allFlexoBehaviours = cl.getAnnotation(DeclareFlexoBehaviours.class);
+			for (Class<? extends FlexoBehaviour> flexoBehaviourClass : allFlexoBehaviours.value()) {
+				if (!aList.contains(flexoBehaviourClass)) {
+					aList.add(flexoBehaviourClass);
+				}
+			}
+		}
+		if (cl.getSuperclass() != null) {
+			appendFlexoBehaviourTypes(aList, cl.getSuperclass());
+		}
+		for (Class<?> superInterface : cl.getInterfaces()) {
+			appendFlexoBehaviourTypes(aList, superInterface);
+		}
+	}
+
+	@Override
+	public Class<? extends ModelSlot<?>> getModelSlotClass(Class<? extends FlexoRole<?>> roleClass) {
+		for (TechnologyAdapter ta : getTechnologyAdapters()) {
+			for (Class<? extends ModelSlot<?>> modelSlotClass : ta.getAvailableModelSlotTypes()) {
+				if (getAvailableFlexoRoleTypes(modelSlotClass).contains(roleClass)) {
+					return modelSlotClass;
+				}
+			}
+		}
+		return null;
+	}
+
+	@Override
+	public String getDisplayableStatus() {
+		StringBuffer sb = new StringBuffer();
+		sb.append(super.getDisplayableStatus() + " with " + getTechnologyAdapters().size() + " technology adapters");
+		for (TechnologyAdapter ta : getTechnologyAdapters()) {
+			sb.append("\n" + ta.getIdentifier() + StringUtils.buildWhiteSpaceIndentation(8 - ta.getIdentifier().length()) + " "
+					+ ta.getName() + StringUtils.buildWhiteSpaceIndentation(30 - ta.getName().length()) + " status: "
+					+ (ta.isActivated() ? "ACTIVATED" : "INACTIVE"));
+		}
+		return sb.toString();
+	}
+
+	@Override
+	protected Collection<ServiceOperation<?>> makeAvailableServiceOperations() {
+		Collection<ServiceOperation<?>> returned = super.makeAvailableServiceOperations();
+		returned.add(ACTIVATE_TA);
+		return returned;
+	}
+
+	public static ActivateTechnologyAdapter ACTIVATE_TA = new ActivateTechnologyAdapter();
+
+	public static class ActivateTechnologyAdapter implements ServiceOperation<TechnologyAdapterService> {
+		private ActivateTechnologyAdapter() {
+		}
+
+		@Override
+		public String getOperationName() {
+			return "activate";
+		}
+
+		@Override
+		public String usage(TechnologyAdapterService service) {
+			return "service " + service.getServiceName() + " activate <ta>";
+		}
+
+		@Override
+		public String description() {
+			return "activate technology adapter";
+		}
+
+		@Override
+		public List<String> getOptions() {
+			return Arrays.asList("<ta>");
+		}
+
+		@Override
+		public void execute(TechnologyAdapterService service, Object... options) {
+			if (options.length > 0) {
+				TechnologyAdapter ta = (TechnologyAdapter) options[0];
+				System.out.println("Activate TA " + ta);
+				service.activateTechnologyAdapter(ta, true);
+			}
+		}
 	}
 
 }

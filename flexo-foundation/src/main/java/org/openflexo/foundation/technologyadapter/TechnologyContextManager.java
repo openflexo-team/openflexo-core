@@ -40,17 +40,11 @@
 package org.openflexo.foundation.technologyadapter;
 
 import java.util.HashMap;
-import java.util.Hashtable;
 import java.util.Map;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.DefaultFlexoObject;
 import org.openflexo.foundation.FlexoServiceManager;
-import org.openflexo.foundation.ontology.IFlexoOntologyClass;
-import org.openflexo.foundation.ontology.IFlexoOntologyStructuralProperty;
-import org.openflexo.foundation.ontology.IndividualOfClass;
-import org.openflexo.foundation.ontology.SubClassOfClass;
-import org.openflexo.foundation.ontology.SubPropertyOfProperty;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.resource.FlexoResourceCenterService;
 
@@ -74,48 +68,11 @@ public abstract class TechnologyContextManager<TA extends TechnologyAdapter> ext
 	private final FlexoResourceCenterService resourceCenterService;
 
 	/** Stores all known resources where key is the URI of resource */
-	protected Map<String, TechnologyAdapterResource<?, TA>> resources = new HashMap<String, TechnologyAdapterResource<?, TA>>();
-
-	protected Hashtable<IFlexoOntologyClass<TA>, IndividualOfClass<TA>> individualsOfClass;
-	protected Hashtable<IFlexoOntologyClass<TA>, SubClassOfClass<TA>> subclassesOfClass;
-	protected Hashtable<IFlexoOntologyStructuralProperty<TA>, SubPropertyOfProperty<TA>> subpropertiesOfProperty;
-
-	public IndividualOfClass<TA> getIndividualOfClass(IFlexoOntologyClass<TA> anOntologyClass) {
-		if (individualsOfClass.get(anOntologyClass) != null) {
-			return individualsOfClass.get(anOntologyClass);
-		} else {
-			IndividualOfClass<TA> returned = new IndividualOfClass<TA>(anOntologyClass);
-			individualsOfClass.put(anOntologyClass, returned);
-			return returned;
-		}
-	}
-
-	public SubClassOfClass<TA> getSubClassOfClass(IFlexoOntologyClass<TA> anOntologyClass) {
-		if (subclassesOfClass.get(anOntologyClass) != null) {
-			return subclassesOfClass.get(anOntologyClass);
-		} else {
-			SubClassOfClass<TA> returned = new SubClassOfClass<TA>(anOntologyClass);
-			subclassesOfClass.put(anOntologyClass, returned);
-			return returned;
-		}
-	}
-
-	public SubPropertyOfProperty<TA> getSubPropertyOfProperty(IFlexoOntologyStructuralProperty<TA> anOntologyProperty) {
-		if (subpropertiesOfProperty.get(anOntologyProperty) != null) {
-			return subpropertiesOfProperty.get(anOntologyProperty);
-		} else {
-			SubPropertyOfProperty<TA> returned = new SubPropertyOfProperty<TA>(anOntologyProperty);
-			subpropertiesOfProperty.put(anOntologyProperty, returned);
-			return returned;
-		}
-	}
+	protected Map<String, TechnologyAdapterResource<?, TA>> resources = new HashMap<>();
 
 	public TechnologyContextManager(TA adapter, FlexoResourceCenterService resourceCenterService) {
 		this.adapter = adapter;
 		this.resourceCenterService = resourceCenterService;
-		individualsOfClass = new Hashtable<IFlexoOntologyClass<TA>, IndividualOfClass<TA>>();
-		subclassesOfClass = new Hashtable<IFlexoOntologyClass<TA>, SubClassOfClass<TA>>();
-		subpropertiesOfProperty = new Hashtable<IFlexoOntologyStructuralProperty<TA>, SubPropertyOfProperty<TA>>();
 	}
 
 	public FlexoServiceManager getServiceManager() {

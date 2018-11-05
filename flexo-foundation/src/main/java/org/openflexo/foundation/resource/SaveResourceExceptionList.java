@@ -58,7 +58,7 @@ public class SaveResourceExceptionList extends Exception {
 
 	public SaveResourceExceptionList(SaveResourceException exception) {
 		super();
-		_saveExceptions = new ArrayList<SaveResourceException>();
+		_saveExceptions = new ArrayList<>();
 		registerNewException(exception);
 	}
 

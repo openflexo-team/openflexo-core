@@ -42,7 +42,6 @@ package org.openflexo.ws.jira;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
-import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
 import java.util.ArrayList;
@@ -52,6 +51,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.openflexo.connie.type.TypeUtils;
 import org.openflexo.ws.jira.model.JIRAObject;
 
 import com.google.gson.Gson;
@@ -101,11 +101,13 @@ public class JiraObjectTypeAdapterFactory implements TypeAdapterFactory {
 				if (!(runtimeTypeAdapter instanceof ReflectiveTypeAdapterFactory.Adapter)) {
 					// The user registered a type adapter for the runtime type, so we will use that
 					chosen = runtimeTypeAdapter;
-				} else if (!(delegate instanceof ReflectiveTypeAdapterFactory.Adapter)) {
+				}
+				else if (!(delegate instanceof ReflectiveTypeAdapterFactory.Adapter)) {
 					// The user registered a type adapter for Base class, so we prefer it over the
 					// reflective type adapter for the runtime type
 					chosen = delegate;
-				} else {
+				}
+				else {
 					// Use the type adapter for runtime type
 					chosen = runtimeTypeAdapter;
 				}
@@ -139,7 +141,8 @@ public class JiraObjectTypeAdapterFactory implements TypeAdapterFactory {
 			return new Adapter(type, new TypeAdapterRuntimeTypeWrapper(gson, valueAdapter, valueType), getBoundFields(gson, type, raw));
 		}
 		if (List.class.isAssignableFrom(raw)) {
-			Type parameter = ((ParameterizedType) type.getType()).getActualTypeArguments()[0];
+
+			Type parameter = TypeUtils.getTypeArgument(type.getType(), List.class, 0);
 			if (parameter instanceof TypeVariable) {
 				Type type2 = ((TypeVariable) parameter).getBounds()[0];
 				if (JIRAObject.class.isAssignableFrom($Gson$Types.getRawType(type2))) {
@@ -174,7 +177,7 @@ public class JiraObjectTypeAdapterFactory implements TypeAdapterFactory {
 				return null;
 			}
 
-			Collection collection = new ArrayList();
+			Collection<JIRAObject<?>> collection = new ArrayList<>();
 			in.beginArray();
 			while (in.hasNext()) {
 				JIRAObject<?> instance = jiraObjectAdapter.read(in);
@@ -287,7 +290,8 @@ public class JiraObjectTypeAdapterFactory implements TypeAdapterFactory {
 					BoundField field = boundFields.get(name);
 					if (field == null) {
 						instance.put(name, valueTypeAdapter.read(in));
-					} else {
+					}
+					else {
 						field.read(in, instance);
 					}
 				}

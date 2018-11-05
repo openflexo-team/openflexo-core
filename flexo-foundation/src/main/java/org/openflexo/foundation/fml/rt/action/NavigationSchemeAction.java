@@ -44,84 +44,110 @@ import java.util.logging.Logger;
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.FlexoObject;
-import org.openflexo.foundation.fml.FlexoBehaviour;
+import org.openflexo.foundation.action.FlexoAction;
 import org.openflexo.foundation.fml.NavigationScheme;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
-import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.foundation.fml.rt.VirtualModelInstanceObject;
 
-public class NavigationSchemeAction extends FlexoBehaviourAction<NavigationSchemeAction, NavigationScheme, FlexoConceptInstance> {
+/**
+ * Provides execution environment of a {@link NavigationScheme} on a given {@link FlexoConceptInstance} as a {@link FlexoAction}
+ *
+ * An {@link NavigationSchemeAction} represents the execution (in the "instances" world) of a {@link NavigationScheme}.<br>
+ * To be used and executed on Openflexo platform, it is wrapped in a {@link FlexoAction}.<br>
+ * 
+ * @author sylvain
+ */
+public class NavigationSchemeAction extends AbstractActionSchemeAction<NavigationSchemeAction, NavigationScheme, FlexoConceptInstance> {
 
 	private static final Logger logger = Logger.getLogger(NavigationSchemeAction.class.getPackage().getName());
 
-	private final NavigationSchemeActionType actionType;
-
-	public NavigationSchemeAction(NavigationSchemeActionType actionType, FlexoConceptInstance focusedObject,
+	/**
+	 * Constructor to be used with a factory
+	 * 
+	 * @param actionFactory
+	 * @param focusedObject
+	 * @param globalSelection
+	 * @param editor
+	 */
+	public NavigationSchemeAction(NavigationSchemeActionFactory actionFactory, FlexoConceptInstance focusedObject,
 			Vector<VirtualModelInstanceObject> globalSelection, FlexoEditor editor) {
-		super(actionType, focusedObject, globalSelection, editor);
-		this.actionType = actionType;
-	}
-
-	public NavigationScheme getNavigationScheme() {
-		if (actionType != null) {
-			return actionType.getNavigationScheme();
-		}
-		return null;
+		super(actionFactory, focusedObject, globalSelection, editor);
 	}
 
 	/**
-	 * Return the {@link FlexoConceptInstance} on which this {@link FlexoBehaviour} is applied.<br>
-	 * We want to navigate to this {@link FlexoConceptInstance}
+	 * Constructor to be used for creating a new action without factory
 	 * 
-	 * @return
+	 * @param flexoBehaviour
+	 * @param focusedObject
+	 * @param globalSelection
+	 * @param editor
 	 */
-	@Override
-	public FlexoConceptInstance getFlexoConceptInstance() {
-		if (actionType != null) {
-			return actionType.getFlexoConceptInstance();
-		}
-		return null;
+	public NavigationSchemeAction(NavigationScheme behaviour, FlexoConceptInstance focusedObject,
+			Vector<VirtualModelInstanceObject> globalSelection, FlexoEditor editor) {
+		super(behaviour, focusedObject, globalSelection, editor);
 	}
 
-	@Override
-	public NavigationScheme getFlexoBehaviour() {
-		return getNavigationScheme();
+	/**
+	 * Constructor to be used for creating a new action as an action embedded in another one
+	 * 
+	 * @param flexoBehaviour
+	 * @param focusedObject
+	 * @param globalSelection
+	 * @param ownerAction
+	 *            Action in which action to be created will be embedded
+	 */
+	public NavigationSchemeAction(NavigationScheme behaviour, FlexoConceptInstance focusedObject,
+			Vector<VirtualModelInstanceObject> globalSelection, FlexoAction<?, ?, ?> ownerAction) {
+		super(behaviour, focusedObject, globalSelection, ownerAction);
 	}
+
+	private FlexoObject targetObject = null;
+	private boolean forceRevalidated = false;
 
 	@Override
 	protected void doAction(Object context) throws FlexoException {
-		logger.info("Perform navigation " + actionType);
 
 		if (evaluateCondition()) {
-			// If target diagram is not existant, we must create it
-			if (getTargetObject() == null) {
-				applyEditionActions();
+
+			// Quick and dirty hack because found invalid binding
+			// TODO: please investigate
+			if (!getFlexoBehaviour().getTargetObject().isValid() && !forceRevalidated) {
+				forceRevalidated = true;
+				getFlexoBehaviour().getTargetObject().forceRevalidate();
+			}
+
+			if (getFlexoBehaviour().getTargetObject() != null && getFlexoBehaviour().getTargetObject().isSet()
+					&& getFlexoBehaviour().getTargetObject().isValid()) {
+				targetObject = evaluateTargetObject();
+			}
+			else {
+				executeControlGraph();
+				if (getReturnedValue() instanceof FlexoObject) {
+					targetObject = (FlexoObject) getReturnedValue();
+				}
 			}
 		}
-	}
 
-	public boolean evaluateCondition() {
-		if (getNavigationScheme() == null) {
-			logger.warning("No navigation scheme. Please investigate !");
-			return false;
-		}
-		return getNavigationScheme().evaluateCondition(actionType.getFlexoConceptInstance());
 	}
 
 	public FlexoObject getTargetObject() {
-		if (getNavigationScheme() == null) {
+		return targetObject;
+	}
+
+	public boolean evaluateCondition() {
+		if (getFlexoBehaviour() == null) {
+			logger.warning("No navigation scheme. Please investigate !");
+			return false;
+		}
+		return getFlexoBehaviour().evaluateCondition(getFlexoConceptInstance());
+	}
+
+	public FlexoObject evaluateTargetObject() {
+		if (getFlexoBehaviour() == null) {
 			logger.warning("No navigation scheme. Please investigate !");
 			return null;
 		}
-		return getNavigationScheme().evaluateTargetObject(actionType.getFlexoConceptInstance());
-	}
-
-	@Override
-	public VirtualModelInstance retrieveVirtualModelInstance() {
-		/*if (getFocusedObject() instanceof DiagramElement<?>) {
-			return ((DiagramElement<?>) getFocusedObject()).getDiagram();
-		}*/
-		return getFlexoConceptInstance().getVirtualModelInstance();
+		return getFlexoBehaviour().evaluateTargetObject(this);
 	}
 
 }

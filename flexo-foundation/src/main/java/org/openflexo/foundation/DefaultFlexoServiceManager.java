@@ -39,11 +39,17 @@
 
 package org.openflexo.foundation;
 
-import org.openflexo.foundation.FlexoProject.FlexoProjectReferenceLoader;
-import org.openflexo.foundation.fml.ViewPointLibrary;
+import org.openflexo.connie.DataBinding;
+import org.openflexo.connie.DataBinding.CachingStrategy;
+import org.openflexo.foundation.fml.VirtualModelLibrary;
+import org.openflexo.foundation.localization.DefaultLocalizationService;
+import org.openflexo.foundation.localization.LocalizationService;
 import org.openflexo.foundation.nature.DefaultProjectNatureService;
+import org.openflexo.foundation.nature.DefaultScreenshotService;
 import org.openflexo.foundation.nature.ProjectNatureService;
-import org.openflexo.foundation.remoteresources.FlexoUpdateService;
+import org.openflexo.foundation.nature.ScreenshotService;
+import org.openflexo.foundation.project.FlexoProjectImpl.FlexoProjectReferenceLoader;
+import org.openflexo.foundation.project.ProjectLoader;
 import org.openflexo.foundation.resource.DefaultResourceCenterService;
 import org.openflexo.foundation.resource.FlexoResource;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
@@ -53,7 +59,6 @@ import org.openflexo.foundation.resource.ResourceRepository;
 import org.openflexo.foundation.task.FlexoTaskManager;
 import org.openflexo.foundation.task.ThreadPoolFlexoTaskManager;
 import org.openflexo.foundation.technologyadapter.DefaultTechnologyAdapterService;
-import org.openflexo.foundation.technologyadapter.InformationSpace;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterService;
 
@@ -66,7 +71,23 @@ import org.openflexo.foundation.technologyadapter.TechnologyAdapterService;
  */
 public class DefaultFlexoServiceManager extends FlexoServiceManager {
 
-	public DefaultFlexoServiceManager() {
+	private final FlexoEditor applicationEditor;
+
+	/**
+	 * Initialize a new {@link DefaultFlexoServiceManager}
+	 * 
+	 * @param localizationRelativePath
+	 *            a String identifying a relative path to use for main localization (such as "FlexoLocalization/MyLocales") of the
+	 *            application
+	 * @param devMode
+	 *            true when 'developer' mode set to true (enable more services)
+	 */
+	public DefaultFlexoServiceManager(String localizationRelativePath, boolean devMode) {
+
+		DataBinding.setDefaultCachingStrategy(CachingStrategy.PRAGMATIC_CACHE);
+
+		LocalizationService localizationService = createLocalizationService(localizationRelativePath);
+		registerService(localizationService);
 
 		FlexoEditingContext editingContext = createEditingContext();
 		registerService(editingContext);
@@ -81,23 +102,26 @@ public class DefaultFlexoServiceManager extends FlexoServiceManager {
 			registerService(projectReferenceLoader);
 		}
 
-		FlexoUpdateService flexoUpdateService = new FlexoUpdateService();
-		registerService(flexoUpdateService);
-		
-		FlexoResourceCenterService resourceCenterService = createResourceCenterService();
-		registerService(resourceCenterService);
-		
-		TechnologyAdapterService technologyAdapterService = createTechnologyAdapterService(resourceCenterService);
-		registerService(technologyAdapterService);
+		ProjectLoader projectLoaderService = createProjectLoaderService();
+		registerService(projectLoaderService);
 
 		ProjectNatureService projectNatureService = createProjectNatureService();
 		registerService(projectNatureService);
 
-		InformationSpace informationSpace = createInformationSpace();
-		registerService(informationSpace);
+		FlexoResourceCenterService resourceCenterService = createResourceCenterService();
+		registerService(resourceCenterService);
 
-		ViewPointLibrary viewPointLibrary = createViewPointLibraryService();
-		registerService(viewPointLibrary);
+		TechnologyAdapterService technologyAdapterService = createTechnologyAdapterService(resourceCenterService);
+		registerService(technologyAdapterService);
+
+		VirtualModelLibrary virtualModelLibrary = createViewPointLibraryService();
+		registerService(virtualModelLibrary);
+
+		ScreenshotService screenshotService = createScreenshotService();
+		registerService(screenshotService);
+
+		applicationEditor = createApplicationEditor();
+
 	}
 
 	@Override
@@ -112,7 +136,7 @@ public class DefaultFlexoServiceManager extends FlexoServiceManager {
 
 	@Override
 	protected FlexoResourceCenterService createResourceCenterService() {
-		return DefaultResourceCenterService.getNewInstance();
+		return DefaultResourceCenterService.getNewInstance(false);
 	}
 
 	@Override
@@ -126,13 +150,8 @@ public class DefaultFlexoServiceManager extends FlexoServiceManager {
 	}
 
 	@Override
-	protected ViewPointLibrary createViewPointLibraryService() {
-		return new ViewPointLibrary();
-	}
-
-	@Override
-	protected InformationSpace createInformationSpace() {
-		return new InformationSpace();
+	protected VirtualModelLibrary createViewPointLibraryService() {
+		return new VirtualModelLibrary();
 	}
 
 	@Override
@@ -141,15 +160,41 @@ public class DefaultFlexoServiceManager extends FlexoServiceManager {
 	}
 
 	@Override
+	protected ScreenshotService createScreenshotService() {
+		return DefaultScreenshotService.createInstance();
+	}
+
+	@Override
+	protected ProjectLoader createProjectLoaderService() {
+		return new ProjectLoader();
+	}
+
+	@Override
 	protected FlexoProjectReferenceLoader createProjectReferenceLoader() {
 		// Please override
 		return null;
 	}
 
+	public final FlexoEditor getApplicationEditor() {
+		return applicationEditor;
+	}
+
+	@Override
+	public FlexoEditor getDefaultEditor() {
+		return getApplicationEditor();
+	}
+
 	@Override
 	protected FlexoEditor createApplicationEditor() {
 		// Please override
-		return null;
+		return new DefaultFlexoEditor(null, this);
+	}
+
+	@Override
+	protected LocalizationService createLocalizationService(String relativePath) {
+		LocalizationService returned = new DefaultLocalizationService();
+		returned.setGeneralLocalizerRelativePath(relativePath);
+		return returned;
 	}
 
 	public String debug() {
@@ -177,14 +222,16 @@ public class DefaultFlexoServiceManager extends FlexoServiceManager {
 				sb.append("> " + rc.getName() + "\n");
 			}
 		}
-		if (getInformationSpace() != null) {
+		if (getResourceManager() != null) {
 			sb.append("**********************************************\n");
-			sb.append("Information Space\n");
-			for (TechnologyAdapter ta : getTechnologyAdapterService().getTechnologyAdapters()) {
-				for (ResourceRepository<?> rep : getInformationSpace().getAllRepositories(ta)) {
-					System.out.println("Technology adapter: " + ta + " repository: " + rep + "\n");
-					for (FlexoResource<?> r : rep.getAllResources()) {
-						sb.append("> " + r.getURI() + "\n");
+			sb.append("ResourceManager / Information Space\n");
+			if (getTechnologyAdapterService() != null) {
+				for (TechnologyAdapter ta : getTechnologyAdapterService().getTechnologyAdapters()) {
+					for (ResourceRepository<?, ?> rep : getResourceManager().getAllRepositories(ta)) {
+						System.out.println("Technology adapter: " + ta + " repository: " + rep + "\n");
+						for (FlexoResource<?> r : rep.getAllResources()) {
+							sb.append("> " + r.getURI() + "\n");
+						}
 					}
 				}
 			}

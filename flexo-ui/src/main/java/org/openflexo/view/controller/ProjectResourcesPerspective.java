@@ -46,9 +46,8 @@ import org.openflexo.components.widget.FIBProjectResourcesBrowser;
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.FlexoProject;
-import org.openflexo.foundation.fml.rt.View;
-import org.openflexo.foundation.fml.rt.ViewLibrary;
-import org.openflexo.foundation.fml.rt.VirtualModelInstance;
+import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstanceRepository;
+import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstance;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.technologyadapter.TechnologyObject;
 import org.openflexo.icon.IconLibrary;
@@ -73,7 +72,7 @@ public class ProjectResourcesPerspective extends FlexoPerspective {
 		super("resources_perspective", controller);
 
 		projectResourcesBrowser = new FIBProjectResourcesBrowser(controller.getProject() != null ? controller.getProject() : null,
-				controller);
+				controller, controller.getFlexoLocales());
 
 		setTopLeftView(projectResourcesBrowser);
 
@@ -101,16 +100,13 @@ public class ProjectResourcesPerspective extends FlexoPerspective {
 	@Override
 	public String getWindowTitleforObject(FlexoObject object, FlexoController controller) {
 		if (object == null) {
-			return FlexoLocalization.localizedForKey("no_selection");
+			return FlexoLocalization.getMainLocalizer().localizedForKey("no_selection");
 		}
-		if (object instanceof ViewLibrary) {
-			return FlexoLocalization.localizedForKey("view_library");
+		if (object instanceof FMLRTVirtualModelInstanceRepository) {
+			return FlexoLocalization.getMainLocalizer().localizedForKey("virtual_model_instance_repository");
 		}
-		if (object instanceof VirtualModelInstance) {
-			return ((VirtualModelInstance) object).getTitle();
-		}
-		if (object instanceof View) {
-			return ((View) object).getName();
+		if (object instanceof FMLRTVirtualModelInstance) {
+			return ((FMLRTVirtualModelInstance) object).getTitle();
 		}
 		if (object instanceof TechnologyObject) {
 			return getWindowTitleForTechnologyObject((TechnologyObject<?>) object, getController());
@@ -118,7 +114,8 @@ public class ProjectResourcesPerspective extends FlexoPerspective {
 		return object.toString();
 	}
 
-	private <TA extends TechnologyAdapter> String getWindowTitleForTechnologyObject(TechnologyObject<TA> object, FlexoController controller) {
+	private <TA extends TechnologyAdapter> String getWindowTitleForTechnologyObject(TechnologyObject<TA> object,
+			FlexoController controller) {
 		TechnologyAdapterControllerService tacService = getController().getApplicationContext().getTechnologyAdapterControllerService();
 		TechnologyAdapterController<TA> tac = tacService.getTechnologyAdapterController(object.getTechnologyAdapter());
 		return tac.getWindowTitleforObject(object, controller);

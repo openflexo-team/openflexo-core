@@ -1,0 +1,22 @@
+dependencies {
+  // openflexo dep
+  compile flexoLocalization()
+
+  // TODO: following dependancies need to be removed
+  // compile ginaApi()
+  // compile dianaApi()
+  compile diana()
+
+
+  // external dep
+  compile group: 'org.eclipse.jgit', name: 'org.eclipse.jgit', version: '4.3.1.201605051710-r'
+  compile group: 'com.google.inject', name: 'guice', version: '4.1.0'
+  compile group: 'findbugs', name: 'annotations', version: '1.0.0'
+  compile group: 'xerces', name: 'xercesImpl', version: '2.11.0'
+}
+
+if (JavaVersion.current().isJava9Compatible()) {
+	tasks.withType(JavaCompile) {
+		options.compilerArgs.addAll(['--add-modules', 'java.xml.bind'])
+    }
+}  

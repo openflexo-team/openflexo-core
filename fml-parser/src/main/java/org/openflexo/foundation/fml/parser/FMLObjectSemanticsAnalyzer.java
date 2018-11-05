@@ -40,7 +40,7 @@ package org.openflexo.foundation.fml.parser;
 
 import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.fml.FMLObject;
-import org.openflexo.foundation.fml.ViewPoint;
+import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.parser.node.Node;
 
 /**
@@ -58,7 +58,7 @@ public abstract class FMLObjectSemanticsAnalyzer<N extends Node, T extends FMLOb
 
 	public FMLObjectSemanticsAnalyzer(N node, FMLSemanticsAnalyzer parentAnalyser, FlexoServiceManager serviceManager) {
 		// System.out.println(">>>> node=" + node + " of " + node.getClass());
-		super(parentAnalyser.getViewPoint(), serviceManager);
+		super(parentAnalyser.getVirtualModel(), serviceManager);
 		this.node = node;
 		this.parentAnalyser = parentAnalyser;
 	}
@@ -70,11 +70,11 @@ public abstract class FMLObjectSemanticsAnalyzer<N extends Node, T extends FMLOb
 	public abstract T makeFMLObject();
 
 	@Override
-	public ViewPoint getViewPoint() {
+	public VirtualModel getVirtualModel() {
 		if (parentAnalyser != null) {
 			System.out.println("Moi: " + this + " et lui " + parentAnalyser);
-			return parentAnalyser.getViewPoint();
+			return parentAnalyser.getVirtualModel();
 		}
-		return super.getViewPoint();
+		return super.getVirtualModel();
 	}
 }

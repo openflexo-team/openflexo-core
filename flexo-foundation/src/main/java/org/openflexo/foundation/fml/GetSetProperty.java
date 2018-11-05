@@ -38,6 +38,9 @@
 
 package org.openflexo.foundation.fml;
 
+import org.openflexo.connie.type.TypeUtils;
+import org.openflexo.foundation.fml.FMLRepresentationContext.FMLRepresentationOutput;
+import org.openflexo.foundation.fml.controlgraph.EmptyControlGraph;
 import org.openflexo.foundation.fml.controlgraph.FMLControlGraph;
 import org.openflexo.foundation.fml.controlgraph.FMLControlGraphOwner;
 import org.openflexo.model.annotations.CloningStrategy;
@@ -48,7 +51,9 @@ import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
 import org.openflexo.model.annotations.PropertyIdentifier;
 import org.openflexo.model.annotations.Setter;
+import org.openflexo.model.annotations.XMLAttribute;
 import org.openflexo.model.annotations.XMLElement;
+import org.openflexo.toolbox.StringUtils;
 
 /**
  * A {@link GetSetProperty} is a particular implementation of a {@link FlexoProperty} allowing to access data for reading and writing using
@@ -65,11 +70,21 @@ import org.openflexo.model.annotations.XMLElement;
 @XMLElement
 public abstract interface GetSetProperty<T> extends GetProperty<T> {
 
+	@PropertyIdentifier(type = String.class)
+	public static final String VALUE_VARIABLE_NAME_KEY = "valueVariableName";
+
 	@PropertyIdentifier(type = FMLControlGraph.class)
 	public static final String SET_CONTROL_GRAPH_KEY = "setControlGraph";
 
+	@Getter(value = VALUE_VARIABLE_NAME_KEY, defaultValue = "value")
+	@XMLAttribute
+	public String getValueVariableName();
+
+	@Setter(VALUE_VARIABLE_NAME_KEY)
+	public void setValueVariableName(String valueVariableName);
+
 	@Getter(value = SET_CONTROL_GRAPH_KEY, inverse = FMLControlGraph.OWNER_KEY)
-	@CloningStrategy(StrategyType.IGNORE)
+	@CloningStrategy(StrategyType.CLONE)
 	@XMLElement(context = "SetControlGraph_")
 	@Embedded
 	public FMLControlGraph getSetControlGraph();
@@ -107,7 +122,8 @@ public abstract interface GetSetProperty<T> extends GetProperty<T> {
 
 			if (SET_CONTROL_GRAPH_KEY.equals(ownerContext)) {
 				setSetControlGraph(controlGraph);
-			} else {
+			}
+			else {
 				super.setControlGraph(controlGraph, ownerContext);
 			}
 		}
@@ -118,6 +134,55 @@ public abstract interface GetSetProperty<T> extends GetProperty<T> {
 			if (getSetControlGraph() instanceof FMLControlGraphOwner) {
 				((FMLControlGraphOwner) getSetControlGraph()).reduce();
 			}
+		}
+
+		/*@Override
+		public String getFMLRepresentation(FMLRepresentationContext context) {
+			FMLRepresentationOutput out = new FMLRepresentationOutput(context);
+			out.append("FlexoProperty " + getName() + " as " + getTypeDescription() + " cardinality=" + getCardinality() + " get={",
+					context);
+			out.append(StringUtils.LINE_SEPARATOR, context);
+			if (getGetControlGraph() != null) {
+				out.append(getGetControlGraph().getFMLRepresentation(context), context, 1);
+			}
+			out.append(StringUtils.LINE_SEPARATOR, context);
+			if (getSetControlGraph() != null && !(getSetControlGraph() instanceof EmptyControlGraph)) {
+				out.append("} set={", context);
+				out.append(StringUtils.LINE_SEPARATOR, context);
+				out.append(getSetControlGraph().getFMLRepresentation(context), context, 1);
+			}
+			out.append("};", context);
+			out.append(StringUtils.LINE_SEPARATOR, context);
+		
+			return out.toString();
+		}*/
+
+		private String getSetFMLAnnotation(FMLRepresentationContext context) {
+			return "@" + getImplementedInterface().getSimpleName() + "(value=" + '"' + getName() + '"' + ", access=set)";
+		}
+
+		@Override
+		public String getFMLRepresentation(FMLRepresentationContext context) {
+			FMLRepresentationOutput out = new FMLRepresentationOutput(context);
+			if (getSetControlGraph() != null && !(getSetControlGraph() instanceof EmptyControlGraph)) {
+				out.append(StringUtils.LINE_SEPARATOR, context);
+				out.append(getSetFMLAnnotation(context), context);
+				out.append(StringUtils.LINE_SEPARATOR, context);
+				out.append("public void " + getSetAccessorName() + "(" + TypeUtils.simpleRepresentation(getResultingType()) + " value) {",
+						context);
+				out.append(StringUtils.LINE_SEPARATOR, context);
+				out.append(getSetControlGraph().getFMLRepresentation(context), context, 1);
+				out.append(StringUtils.LINE_SEPARATOR, context);
+				out.append("}", context);
+			}
+			return super.getFMLRepresentation(context) + out.toString();
+		}
+
+		private String getSetAccessorName() {
+			if (StringUtils.isNotEmpty(getName())) {
+				return "set" + getName().substring(0, 1).toUpperCase() + getName().substring(1);
+			}
+			return "set";
 		}
 
 	}

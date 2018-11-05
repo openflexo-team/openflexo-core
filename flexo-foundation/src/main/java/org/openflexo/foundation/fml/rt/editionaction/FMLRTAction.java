@@ -38,67 +38,110 @@
 
 package org.openflexo.foundation.fml.rt.editionaction;
 
+import java.lang.reflect.Type;
 import java.util.logging.Logger;
 
 import org.openflexo.connie.DataBinding;
-import org.openflexo.foundation.fml.editionaction.TechnologySpecificAction;
+import org.openflexo.foundation.fml.VirtualModel;
+import org.openflexo.foundation.fml.VirtualModelInstanceType;
+import org.openflexo.foundation.fml.editionaction.TechnologySpecificActionDefiningReceiver;
 import org.openflexo.foundation.fml.rt.FMLRTModelSlot;
-import org.openflexo.foundation.fml.rt.ViewObject;
+import org.openflexo.foundation.fml.rt.FMLRTTechnologyAdapter;
+import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.VirtualModelInstance;
+import org.openflexo.foundation.fml.rt.VirtualModelInstanceObject;
+import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
-import org.openflexo.model.annotations.PropertyIdentifier;
 import org.openflexo.model.annotations.Setter;
 import org.openflexo.model.annotations.XMLAttribute;
 
 /**
- * This action is used to handle data inside a {@link VirtualModelInstance}
+ * This action is used to handle data inside a {@link FMLRTVirtualModelInstance}
  * 
  * @author sylvain
  * 
+ * @param <T>
+ *            type of object beeing handled by this action
+ * @param <VMI>
+ *            type of the container of object beeing handled by this action
  */
-
 @ModelEntity(isAbstract = true)
 @ImplementationClass(FMLRTAction.FMLRTActionImpl.class)
-public interface FMLRTAction<T extends ViewObject> extends TechnologySpecificAction<FMLRTModelSlot, T> {
+public interface FMLRTAction<T extends VirtualModelInstanceObject, VMI extends VirtualModelInstance<VMI, ?>>
+		extends TechnologySpecificActionDefiningReceiver<FMLRTModelSlot<VMI, ?>, VMI, T> {
 
-	@PropertyIdentifier(type = DataBinding.class)
+	/*@PropertyIdentifier(type = DataBinding.class)
 	public static final String VIRTUAL_MODEL_INSTANCE_KEY = "virtualModelInstance";
-
+	
 	@Getter(value = VIRTUAL_MODEL_INSTANCE_KEY)
 	@XMLAttribute
-	public DataBinding<VirtualModelInstance> getVirtualModelInstance();
-
+	public DataBinding<VMI> getVirtualModelInstance();
+	
 	@Setter(VIRTUAL_MODEL_INSTANCE_KEY)
-	public void setVirtualModelInstance(DataBinding<VirtualModelInstance> virtualModelInstance);
+	public void setVirtualModelInstance(DataBinding<VMI> virtualModelInstance);*/
 
-	public static abstract class FMLRTActionImpl<T extends ViewObject> extends TechnologySpecificActionImpl<FMLRTModelSlot, T> implements
-			FMLRTAction<T> {
+	public static final String DEPRECATED_VIRTUAL_MODEL_INSTANCE_KEY = "virtualModelInstance";
+
+	// TODO: remove from new releases after 1.8.1
+	@Deprecated
+	@Getter(value = DEPRECATED_VIRTUAL_MODEL_INSTANCE_KEY)
+	@XMLAttribute(xmlTag = "virtualModelInstance")
+	public String getDeprecatedVirtualModelInstance();
+
+	// TODO: remove from new releases after 1.8.1
+	@Setter(DEPRECATED_VIRTUAL_MODEL_INSTANCE_KEY)
+	public void setDeprecatedVirtualModelInstance(String virtualModelInstanceAsString);
+
+	public abstract Class<VMI> getVirtualModelInstanceClass();
+
+	/**
+	 * Return type of FMLRTVirtualModelInstance, when {@link #getVirtualModelInstance()} is set and valid
+	 * 
+	 * @return
+	 */
+	public VirtualModel getOwnerVirtualModelType();
+
+	public static abstract class FMLRTActionImpl<T extends VirtualModelInstanceObject, VMI extends VirtualModelInstance<VMI, ?>>
+			extends TechnologySpecificActionDefiningReceiverImpl<FMLRTModelSlot<VMI, ?>, VMI, T> implements FMLRTAction<T, VMI> {
 
 		static final Logger logger = Logger.getLogger(FMLRTAction.class.getPackage().getName());
 
-		private DataBinding<VirtualModelInstance> virtualModelInstance;
-
 		@Override
-		public DataBinding<VirtualModelInstance> getVirtualModelInstance() {
-			if (virtualModelInstance == null) {
-				virtualModelInstance = new DataBinding<VirtualModelInstance>(this, VirtualModelInstance.class,
-						DataBinding.BindingDefinitionType.GET);
-				virtualModelInstance.setBindingName("virtualModelInstance");
+		public void setDeprecatedVirtualModelInstance(String virtualModelInstanceAsString) {
+
+			if (virtualModelInstanceAsString != null) {
+				getReceiver().setUnparsedBinding(virtualModelInstanceAsString);
+				notifiedBindingChanged(getReceiver());
 			}
-			return virtualModelInstance;
 		}
 
 		@Override
-		public void setVirtualModelInstance(DataBinding<VirtualModelInstance> aVirtualModelInstance) {
-			if (aVirtualModelInstance != null) {
-				aVirtualModelInstance.setOwner(this);
-				aVirtualModelInstance.setBindingName("virtualModelInstance");
-				aVirtualModelInstance.setDeclaredType(VirtualModelInstance.class);
-				aVirtualModelInstance.setBindingDefinitionType(DataBinding.BindingDefinitionType.GET);
+		public TechnologyAdapter getModelSlotTechnologyAdapter() {
+			if (getServiceManager() != null) {
+				return getServiceManager().getTechnologyAdapterService().getTechnologyAdapter(FMLRTTechnologyAdapter.class);
 			}
-			this.virtualModelInstance = aVirtualModelInstance;
+			return super.getModelSlotTechnologyAdapter();
+		}
+
+		@Override
+		public VirtualModel getOwnerVirtualModelType() {
+			if (getReceiver().isSet() && getReceiver().isValid()) {
+				Type type = getReceiver().getAnalyzedType();
+				if (type instanceof VirtualModelInstanceType) {
+					return ((VirtualModelInstanceType) type).getVirtualModel();
+				}
+			}
+			return null;
+		}
+
+		@Override
+		public void notifiedBindingChanged(DataBinding<?> dataBinding) {
+			super.notifiedBindingChanged(dataBinding);
+			if (dataBinding == getReceiver()) {
+				getPropertyChangeSupport().firePropertyChange("ownerVirtualModelType", null, getOwnerVirtualModelType());
+			}
 		}
 
 	}

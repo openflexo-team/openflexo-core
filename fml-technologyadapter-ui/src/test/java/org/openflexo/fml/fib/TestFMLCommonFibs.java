@@ -39,7 +39,7 @@
 package org.openflexo.fml.fib;
 
 import org.junit.Test;
-import org.openflexo.fib.utils.GenericFIBTestCase;
+import org.openflexo.gina.test.GenericFIBTestCase;
 import org.openflexo.rm.FileResourceImpl;
 import org.openflexo.rm.ResourceLocator;
 
@@ -55,13 +55,13 @@ public class TestFMLCommonFibs extends GenericFIBTestCase {
 	}
 
 	@Test
-	public void testViewPointSelector() {
-		validateFIB("Fib/ViewPointSelector.fib");
+	public void testVirtualModelSelector() {
+		validateFIB("Fib/VirtualModelSelector.fib");
 	}
 
 	@Test
-	public void testVirtualModelSelector() {
-		validateFIB("Fib/VirtualModelSelector.fib");
+	public void testFlexoBehaviourSelector() {
+		validateFIB("Fib/FlexoBehaviourSelector.fib");
 	}
 
 }

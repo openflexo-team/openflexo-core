@@ -1,6 +1,7 @@
 /**
  * 
- * Copyright (c) 2014, Openflexo
+ * Copyright (c) 2013-2014, Openflexo
+ * Copyright (c) 2012-2012, AgileBirds
  * 
  * This file is part of Flexo-foundation, a component of the software infrastructure 
  * developed at Openflexo.
@@ -38,58 +39,69 @@
 
 package org.openflexo.foundation.technologyadapter;
 
-import java.io.File;
 import java.util.logging.Logger;
 
-import org.openflexo.foundation.resource.FileSystemBasedResourceCenter;
 import org.openflexo.foundation.resource.FlexoResource;
-import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.resource.ResourceData;
 import org.openflexo.foundation.resource.ResourceRepository;
+import org.openflexo.foundation.resource.ResourceRepositoryImpl;
+import org.openflexo.model.annotations.ImplementationClass;
+import org.openflexo.model.annotations.ModelEntity;
 
 /**
  * A {@link TechnologyAdapterResourceRepository} stores all resources storing resources relative to a given technology<br>
- * Resources are organized with a folder hierarchy inside a {@link ResourceRepository}
+ * Resources are organized with a folder hierarchy inside a {@link ResourceRepositoryImpl}
  * 
  * @author sylvain
  * 
  * @param <R>
  * @param <TA>
  */
-public abstract class TechnologyAdapterResourceRepository<R extends TechnologyAdapterResource<RD, TA> & FlexoResource<RD>, TA extends TechnologyAdapter, RD extends ResourceData<RD> & TechnologyObject<TA>>
-		extends ResourceRepository<R> {
+@ModelEntity(isAbstract = true)
+@ImplementationClass(TechnologyAdapterResourceRepository.TechnologyAdapterResourceRepositoryImpl.class)
+public interface TechnologyAdapterResourceRepository<R extends TechnologyAdapterResource<RD, TA> & FlexoResource<RD>, TA extends TechnologyAdapter, RD extends ResourceData<RD> & TechnologyObject<TA>, I>
+		extends ResourceRepository<R, I> {
 
-	private static final Logger logger = Logger.getLogger(TechnologyAdapterResourceRepository.class.getPackage().getName());
+	public TA getTechnologyAdapter();
 
-	private final TA technologyAdapter;
-	private FlexoResourceCenter<?> resourceCenter;
+	public void setTechnologyAdapter(TA technologyAdapter);
 
-	public TechnologyAdapterResourceRepository(TA technologyAdapter, FlexoResourceCenter<?> resourceCenter) {
-		this(technologyAdapter, resourceCenter,
-				resourceCenter instanceof FileSystemBasedResourceCenter ? ((FileSystemBasedResourceCenter) resourceCenter)
-						.getRootDirectory() : null);
+	public static abstract class TechnologyAdapterResourceRepositoryImpl<R extends TechnologyAdapterResource<RD, TA> & FlexoResource<RD>, TA extends TechnologyAdapter, RD extends ResourceData<RD> & TechnologyObject<TA>, I>
+			extends ResourceRepositoryImpl<R, I> implements TechnologyAdapterResourceRepository<R, TA, RD, I> {
+
+		@SuppressWarnings("unused")
+		private static final Logger logger = Logger.getLogger(TechnologyAdapterResourceRepository.class.getPackage().getName());
+
+		private TA technologyAdapter;
+
+		/*public TechnologyAdapterResourceRepository(TA technologyAdapter, FlexoResourceCenter<I> resourceCenter) {
+			// this(technologyAdapter, resourceCenter, resourceCenter instanceof FileSystemBasedResourceCenter
+			// ? ((FileSystemBasedResourceCenter) resourceCenter).getRootDirectory() : null);
+			super(resourceCenter, resourceCenter.getBaseArtefact());
+			this.technologyAdapter = technologyAdapter;
+			// getRootFolder().setFullQualifiedPath(resourceCenter.getName());
+			getRootFolder().setDescription(
+					"FileResource Repository for technology " + technologyAdapter.getName() + " resource center: " + resourceCenter);
+		}*/
+
+		@Override
+		public TA getTechnologyAdapter() {
+			return technologyAdapter;
+		}
+
+		@Override
+		public void setTechnologyAdapter(TA technologyAdapter) {
+			this.technologyAdapter = technologyAdapter;
+		}
+
+		@Override
+		public final String getDefaultBaseURI() {
+			return getResourceCenter().getDefaultBaseURI() /*+ "/" + getTechnologyAdapter().getIdentifier()*/;
+		}
+
+		@Override
+		public String getDisplayableName() {
+			return getResourceCenter().getDisplayableName();
+		}
 	}
-
-	public TechnologyAdapterResourceRepository(TA technologyAdapter, FlexoResourceCenter<?> resourceCenter, File directory) {
-		super(resourceCenter);
-		this.technologyAdapter = technologyAdapter;
-		this.resourceCenter = resourceCenter;
-		// getRootFolder().setName(resourceCenter.getName());
-		getRootFolder().setFullQualifiedPath(resourceCenter.getName());
-		getRootFolder().setDescription(
-				"Resource Repository for technology " + technologyAdapter.getName() + " resource center: " + resourceCenter);
-	}
-
-	public TA getTechnologyAdapter() {
-		return technologyAdapter;
-	}
-
-	public FlexoResourceCenter getResourceCenter() {
-		return resourceCenter;
-	}
-
-	public void setResourceCenter(FlexoResourceCenter resourceCenter) {
-		this.resourceCenter = resourceCenter;
-	}
-
 }

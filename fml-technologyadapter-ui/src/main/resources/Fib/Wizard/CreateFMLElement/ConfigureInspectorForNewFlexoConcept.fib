@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Panel id="0" borderLeft="0" sizeAdjustment="OriginalSize" controllerClassName="org.openflexo.view.controller.FlexoFIBController" borderRight="0" border="empty" trackViewPortWidth="true" align="left" borderBottom="0" titleFont="Lucida Grande,0,13" borderTop="0" trackViewPortHeight="true" layout="twocols">
+  <CheckBox id="1" selected="true" name="checkbox" data="data.defineInspector" localize="true" constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=50;insetsRight=0;insetsTop=0;location=left)" />
+  <Label id="2" name="DefineInspectorLabel" localize="true" align="left" constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=right)" label="define_inspector_while_exposing_some_properties" />
+  <CheckboxList id="3" enable="data.defineInspector" data="data.action.propertiesUsedForInspector" font="SansSerif,0,11" constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=right)" format="object.displayableName" showText="true" iteratorClassName="org.openflexo.foundation.fml.action.PropertyEntry" showIcon="true" staticList="" autoSelectFirstRow="true" name="CheckboxList" icon="data.getIconForProperty(object)" list="data.action.propertiesEntries" />
+  <FIBVariable id="4" name="data" type="org.openflexo.fml.controller.action.AbstractCreateFlexoConceptWizard$ConfigureInspectorForNewFlexoConcept" />
+  <LocalizedDictionary id="5" />
+</Panel>

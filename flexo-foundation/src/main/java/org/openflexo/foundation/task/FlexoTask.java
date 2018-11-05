@@ -47,13 +47,13 @@ import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.toolbox.HasPropertyChangeSupport;
 
 /**
- * Represents a long-running task launchable in Openflexo infrastructure<br>
+ * Represents a long-running task launch-able in OpenFlexo infrastructure<br>
  * A {@link FlexoTask} is executed in a given instance of {@link FlexoTaskManager}<br>
- * Life-cyle of a {@link FlexoTask} is this:
+ * Life-cycle of a {@link FlexoTask} is this:
  * <ul>
- * <li>WAITING: at the creation of the task, and when execution of task is conditionned by the end of execution of some other tasks</li>
+ * <li>WAITING: at the creation of the task, and when execution of task is conditioned by the end of execution of some other tasks</li>
  * <li>READY_TO_EXECUTE: when the task is ready to execute (when all dependant tasks have finished their job)</li>
- * <li>RUNNING: while the task is beeing executed</li>
+ * <li>RUNNING: while the task is being executed</li>
  * <li>FINISHED: when the task has successfully executed</li>
  * <li>EXCEPTION_THROWN: when the task has raised an exception</li>
  * <li>CANCEL_REQUESTED: when cancel has been requested for this task</li>
@@ -72,6 +72,9 @@ public abstract class FlexoTask implements Runnable, HasPropertyChangeSupport {
 	public static final String CURRENT_PROGRESS_PROPERTY = "currentProgress";
 	public static final String EXPECTED_PROGRESS_STEPS_PROPERTY = "expectedProgressSteps";
 	public static final String CURRENT_STEP_NAME_PROPERTY = "currentStepName";
+	public static final String TASK_BAR_SHOW = "showTaskBar";
+	public static final String TASK_BAR_HIDE = "hideTaskBar";
+	public static final String TASK_BAR_FORCE_HIDE = "forceHideTaskBar";
 
 	private final String taskTitle;
 	private TaskStatus status;
@@ -89,49 +92,49 @@ public abstract class FlexoTask implements Runnable, HasPropertyChangeSupport {
 		WAITING {
 			@Override
 			public String getLocalizedName() {
-				return FlexoLocalization.localizedForKey("waiting");
+				return FlexoLocalization.getMainLocalizer().localizedForKey("waiting");
 			}
 		},
 		READY_TO_EXECUTE {
 			@Override
 			public String getLocalizedName() {
-				return FlexoLocalization.localizedForKey("ready_to_execute");
+				return FlexoLocalization.getMainLocalizer().localizedForKey("ready_to_execute");
 			}
 		},
 		RUNNING {
 			@Override
 			public String getLocalizedName() {
-				return FlexoLocalization.localizedForKey("running");
+				return FlexoLocalization.getMainLocalizer().localizedForKey("running");
 			}
 		},
 		FINISHED {
 			@Override
 			public String getLocalizedName() {
-				return FlexoLocalization.localizedForKey("finished");
+				return FlexoLocalization.getMainLocalizer().localizedForKey("finished");
 			}
 		},
 		EXCEPTION_THROWN {
 			@Override
 			public String getLocalizedName() {
-				return FlexoLocalization.localizedForKey("exception_thrown");
+				return FlexoLocalization.getMainLocalizer().localizedForKey("exception_thrown");
 			}
 		},
 		CANCEL_REQUESTED {
 			@Override
 			public String getLocalizedName() {
-				return FlexoLocalization.localizedForKey("cancel_requested");
+				return FlexoLocalization.getMainLocalizer().localizedForKey("cancel_requested");
 			}
 		},
 		CANCELLED {
 			@Override
 			public String getLocalizedName() {
-				return FlexoLocalization.localizedForKey("cancelled");
+				return FlexoLocalization.getMainLocalizer().localizedForKey("cancelled");
 			}
 		},
 		UNKNOWN {
 			@Override
 			public String getLocalizedName() {
-				return FlexoLocalization.localizedForKey("unknown_task_status");
+				return FlexoLocalization.getMainLocalizer().localizedForKey("unknown_task_status");
 			}
 		};
 		public abstract String getLocalizedName();
@@ -142,7 +145,7 @@ public abstract class FlexoTask implements Runnable, HasPropertyChangeSupport {
 	public FlexoTask(String title) {
 		this.taskTitle = title;
 		status = TaskStatus.WAITING;
-		dependantTasks = new ArrayList<FlexoTask>();
+		dependantTasks = new ArrayList<>();
 	}
 
 	@Override
@@ -161,7 +164,7 @@ public abstract class FlexoTask implements Runnable, HasPropertyChangeSupport {
 
 	@Override
 	public String toString() {
-		return "FlexoTask:" + getTaskTitle();
+		return "<FlexoTask:" + getTaskTitle() + " status=" + getTaskStatus() + " depends of: " + dependantTasks + ">";
 	}
 
 	protected synchronized void startExecution(FlexoTaskThread thread) {
@@ -170,7 +173,8 @@ public abstract class FlexoTask implements Runnable, HasPropertyChangeSupport {
 			thread.setTask(this);
 			status = TaskStatus.RUNNING;
 			getPropertyChangeSupport().firePropertyChange(TASK_STATUS_PROPERTY, TaskStatus.WAITING, TaskStatus.READY_TO_EXECUTE);
-		} else {
+		}
+		else {
 			logger.warning("Start execution of FlexoTask " + this + " called for a task with status " + status);
 		}
 	}
@@ -179,7 +183,8 @@ public abstract class FlexoTask implements Runnable, HasPropertyChangeSupport {
 		if (status == TaskStatus.RUNNING) {
 			status = TaskStatus.CANCEL_REQUESTED;
 			thread.interrupt();
-		} else {
+		}
+		else {
 			logger.warning("Stop execution of FlexoTask called for a task with status " + status);
 		}
 	}
@@ -189,7 +194,8 @@ public abstract class FlexoTask implements Runnable, HasPropertyChangeSupport {
 		if (status == TaskStatus.RUNNING) {
 			status = TaskStatus.CANCEL_REQUESTED;
 			thread.stop();
-		} else {
+		}
+		else {
 			logger.warning("Force stop execution of FlexoTask called for a task with status " + status);
 		}
 	}
@@ -199,14 +205,17 @@ public abstract class FlexoTask implements Runnable, HasPropertyChangeSupport {
 			thread.setTask(null);
 			status = TaskStatus.FINISHED;
 			getPropertyChangeSupport().firePropertyChange(TASK_STATUS_PROPERTY, TaskStatus.RUNNING, status);
-		} else if (status == TaskStatus.CANCEL_REQUESTED) {
+		}
+		else if (status == TaskStatus.CANCEL_REQUESTED) {
 			thread.setTask(null);
 			status = TaskStatus.CANCELLED;
 			getPropertyChangeSupport().firePropertyChange(TASK_STATUS_PROPERTY, TaskStatus.CANCEL_REQUESTED, status);
-		} else if (status == TaskStatus.EXCEPTION_THROWN) {
+		}
+		else if (status == TaskStatus.EXCEPTION_THROWN) {
 			thread.setTask(null);
 			getPropertyChangeSupport().firePropertyChange(TASK_STATUS_PROPERTY, TaskStatus.RUNNING, status);
-		} else {
+		}
+		else {
 			Thread.dumpStack();
 			logger.warning("Finished execution of FlexoTask called for a task with status " + status);
 		}
@@ -216,7 +225,8 @@ public abstract class FlexoTask implements Runnable, HasPropertyChangeSupport {
 		if (status == TaskStatus.WAITING) {
 			status = TaskStatus.READY_TO_EXECUTE;
 			getPropertyChangeSupport().firePropertyChange(TASK_STATUS_PROPERTY, TaskStatus.WAITING, status);
-		} else {
+		}
+		else {
 			Thread.dumpStack();
 			logger.warning("executionScheduled() of FlexoTask called for a task with status " + status);
 		}
@@ -275,6 +285,22 @@ public abstract class FlexoTask implements Runnable, HasPropertyChangeSupport {
 	public void progress(String stepName) {
 		progress();
 		setCurrentStepName(stepName);
+	}
+
+	public void hideTaskBar() {
+		getPropertyChangeSupport().firePropertyChange(TASK_BAR_HIDE, true, false);
+	}
+
+	public void showTaskBar() {
+		getPropertyChangeSupport().firePropertyChange(TASK_BAR_SHOW, false, true);
+	}
+
+	public void forceHideTaskBar() {
+		getPropertyChangeSupport().firePropertyChange(TASK_BAR_FORCE_HIDE, false, true);
+	}
+
+	public void stopForceHideTaskBar() {
+		getPropertyChangeSupport().firePropertyChange(TASK_BAR_FORCE_HIDE, true, false);
 	}
 
 	public void addToDependantTasks(FlexoTask task) {
@@ -343,7 +369,7 @@ public abstract class FlexoTask implements Runnable, HasPropertyChangeSupport {
 	 * 
 	 */
 	@Override
-	public final void run() {
+	public void run() {
 		try {
 			performTask();
 		} catch (InterruptedException e) {

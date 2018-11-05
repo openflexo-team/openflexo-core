@@ -40,8 +40,8 @@
 package org.openflexo.br.view;
 
 import org.openflexo.ApplicationContext;
-import org.openflexo.fib.controller.FIBController.Status;
-import org.openflexo.fib.controller.FIBDialog;
+import org.openflexo.gina.controller.FIBController.Status;
+import org.openflexo.gina.swing.utils.JFIBDialog;
 import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.rm.Resource;
 import org.openflexo.rm.ResourceLocator;
@@ -58,8 +58,8 @@ public class JIRAURLCredentialsDialog {
 
 	public JIRAURLCredentialsDialog(ApplicationContext applicationContext) {
 		this.applicationContext = applicationContext;
-		login = applicationContext.getAdvancedPrefs().getBugReportUser();
-		password = applicationContext.getAdvancedPrefs().getBugReportPassword();
+		login = applicationContext.getBugReportPreferences().getBugReportUser();
+		password = applicationContext.getBugReportPreferences().getBugReportPassword();
 	}
 
 	public String getLogin() {
@@ -79,21 +79,23 @@ public class JIRAURLCredentialsDialog {
 	}
 
 	public String getUrlLabel() {
-		return "<html><a href=\"" + applicationContext.getAdvancedPrefs().getBugReportUrl() + "\">"
-				+ applicationContext.getAdvancedPrefs().getBugReportUrl() + "</a></html>";
+		return "<html><a href=\"" + applicationContext.getBugReportPreferences().getBugReportUrl() + "\">"
+				+ applicationContext.getBugReportPreferences().getBugReportUrl() + "</a></html>";
 	}
 
 	public void openUrl() {
-		ToolBox.openURL(applicationContext.getAdvancedPrefs().getBugReportUrl());
+		ToolBox.openURL(applicationContext.getBugReportPreferences().getBugReportUrl());
 	}
 
 	public static boolean askLoginPassword(ApplicationContext applicationContext) {
 		JIRAURLCredentialsDialog credentialsDialog = new JIRAURLCredentialsDialog(applicationContext);
-		FIBDialog<JIRAURLCredentialsDialog> dialog = FIBDialog.instanciateAndShowDialog(URL_FIB_FILE, credentialsDialog,
-				FlexoFrame.getActiveFrame(), true, FlexoLocalization.getMainLocalizer());
+		JFIBDialog<JIRAURLCredentialsDialog> dialog = JFIBDialog.instanciateAndShowDialog(URL_FIB_FILE, credentialsDialog,
+				applicationContext.getApplicationFIBLibraryService().getApplicationFIBLibrary(), FlexoFrame.getActiveFrame(), true,
+				FlexoLocalization.getMainLocalizer());
 		if (dialog.getStatus() == Status.VALIDATED) {
-			applicationContext.getAdvancedPrefs().setBugReportUser(credentialsDialog.login);
-			applicationContext.getAdvancedPrefs().setBugReportPassword(credentialsDialog.password);
+			applicationContext.getBugReportPreferences().setBugReportUser(credentialsDialog.login);
+			applicationContext.getBugReportPreferences().setBugReportPassword(credentialsDialog.password);
+			applicationContext.getPreferencesService().savePreferences();
 			// AdvancedPrefs.save();
 			return true;
 		}

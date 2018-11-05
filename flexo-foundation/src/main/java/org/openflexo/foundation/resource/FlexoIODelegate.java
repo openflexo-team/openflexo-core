@@ -38,6 +38,9 @@
 
 package org.openflexo.foundation.resource;
 
+import java.io.IOException;
+
+import org.openflexo.foundation.action.NotImplementedException;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.Import;
 import org.openflexo.model.annotations.Imports;
@@ -45,6 +48,7 @@ import org.openflexo.model.annotations.ModelEntity;
 import org.openflexo.model.annotations.PropertyIdentifier;
 import org.openflexo.model.annotations.Setter;
 import org.openflexo.model.factory.AccessibleProxyObject;
+import org.openflexo.rm.Resource;
 
 /**
  * Flexo IO Delegate makes a link between a flexo resource and a serialization artefact.
@@ -54,7 +58,7 @@ import org.openflexo.model.factory.AccessibleProxyObject;
  * @param <I>
  */
 @ModelEntity(isAbstract = true)
-@Imports({ @Import(FlexoIOStreamDelegate.class) })
+@Imports({ @Import(StreamIODelegate.class), @Import(ClassLoaderIODelegate.class) })
 public interface FlexoIODelegate<I> extends AccessibleProxyObject {
 
 	@PropertyIdentifier(type = String.class)
@@ -68,7 +72,7 @@ public interface FlexoIODelegate<I> extends AccessibleProxyObject {
 	 */
 	public static final String SERIALIZATION_ARTEFACT = "serialization_artefact";
 
-	@Getter(value = FLEXO_RESOURCE, inverse = FlexoResource.FLEXO_IO_DELEGATE)
+	@Getter(value = FLEXO_RESOURCE)
 	public FlexoResource<?> getFlexoResource();
 
 	@Setter(FLEXO_RESOURCE)
@@ -79,6 +83,12 @@ public interface FlexoIODelegate<I> extends AccessibleProxyObject {
 
 	@Setter(SERIALIZATION_ARTEFACT)
 	public void setSerializationArtefact(I artefact);
+
+	public String getDisplayName();
+
+	public String getSerializationArtefactName();
+
+	public Resource getSerializationArtefactAsResource();
 
 	/**
 	 * Indicates whether this resource can be edited or not. Returns <code>true</code> if the resource cannot be edited, else returns
@@ -120,5 +130,26 @@ public interface FlexoIODelegate<I> extends AccessibleProxyObject {
 	/**
 	 * Called when the {@link FlexoResource} this delegate handle I/O has been renamed.
 	 */
-	public void rename() throws CannotRenameException;
+	public void rename(String newName) throws CannotRenameException;
+
+	public void save(FlexoResource<?> resource) throws NotImplementedException;
+
+	public RepositoryFolder<?, I> getRepositoryFolder(ResourceRepository<?, I> resourceRepository, boolean createWhenNonExistent)
+			throws IOException;
+
+	/**
+	 * Used to retrieve a ClassLoader exposing code embedded in serialization artefact
+	 * 
+	 * @return
+	 */
+	public ClassLoader retrieveClassLoader();
+
+	/**
+	 * Used to retrieve a resource stored in parent serialization artefact, and identified by a relativePathName
+	 * 
+	 * @param relativePathName
+	 * @return
+	 */
+	// public Resource locateResourceRelativeToParentPath(String
+	// relativePathName);
 }

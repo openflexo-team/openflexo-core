@@ -38,86 +38,85 @@
 
 package org.openflexo.foundation.fml.rt;
 
+import java.io.FileNotFoundException;
 import java.lang.reflect.Type;
 import java.util.logging.Logger;
 
-import org.openflexo.foundation.fml.FMLTechnologyAdapter;
+import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoConceptInstanceRole;
 import org.openflexo.foundation.fml.FlexoConceptInstanceType;
 import org.openflexo.foundation.fml.FlexoRole;
 import org.openflexo.foundation.fml.PrimitiveRole;
 import org.openflexo.foundation.fml.VirtualModel;
-import org.openflexo.foundation.fml.annotations.DeclareEditionActions;
-import org.openflexo.foundation.fml.annotations.DeclareFetchRequests;
-import org.openflexo.foundation.fml.annotations.DeclareFlexoRoles;
-import org.openflexo.foundation.fml.annotations.FML;
 import org.openflexo.foundation.fml.rm.VirtualModelResource;
-import org.openflexo.foundation.fml.rt.action.CreateVirtualModelInstance;
-import org.openflexo.foundation.fml.rt.action.ModelSlotInstanceConfiguration;
-import org.openflexo.foundation.fml.rt.editionaction.AddFlexoConceptInstance;
-import org.openflexo.foundation.fml.rt.editionaction.DeleteFlexoConceptInstance;
-import org.openflexo.foundation.fml.rt.editionaction.SelectFlexoConceptInstance;
+import org.openflexo.foundation.resource.ResourceLoadingCancelledException;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
+import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
+import org.openflexo.model.annotations.DefineValidationRule;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ImplementationClass;
+import org.openflexo.model.annotations.Import;
+import org.openflexo.model.annotations.Imports;
 import org.openflexo.model.annotations.ModelEntity;
 import org.openflexo.model.annotations.PropertyIdentifier;
 import org.openflexo.model.annotations.Setter;
 import org.openflexo.model.annotations.XMLAttribute;
-import org.openflexo.model.annotations.XMLElement;
+import org.openflexo.model.validation.ValidationError;
+import org.openflexo.model.validation.ValidationIssue;
+import org.openflexo.model.validation.ValidationRule;
 import org.openflexo.toolbox.StringUtils;
 
 /**
- * Implementation of the ModelSlot for a FML VirtualModel
+ * A {@link ModelSlot} allowing to access an {@link VirtualModelInstance}<br>
  * 
- * @author sylvain, christophe
+ * Such {@link ModelSlot} is defining a general contract modellized by an abstract {@link VirtualModel}<br>
  * 
+ * There are two different implementations of a {@link FMLRTModelSlot}:
+ * <ul>
+ * <li>Native implementation (see {@link FMLRTVirtualModelInstanceModelSlot}) provided by {@link FMLRTTechnologyAdapter}</li>
+ * <li>Alternative implementation provided by some {@link TechnologyAdapter} which present data as instances of {@link FlexoConcept} (see
+ * )</li>
+ * </ul>
+ * 
+ * @author sylvain
+ *
+ * @param <VMI>
+ *            type of {@link VirtualModelInstance} presented by this model slot
+ * @param <TA>
+ *            technology providing this model slot
  */
-@DeclareFlexoRoles({ FlexoConceptInstanceRole.class, PrimitiveRole.class })
-@DeclareEditionActions({ AddFlexoConceptInstance.class, DeleteFlexoConceptInstance.class })
-@DeclareFetchRequests({ SelectFlexoConceptInstance.class })
-@ModelEntity
+@ModelEntity(isAbstract = true)
+@Imports({ @Import(FMLRTVirtualModelInstanceModelSlot.class) })
 @ImplementationClass(FMLRTModelSlot.FMLRTModelSlotImpl.class)
-@XMLElement
-@FML("FMLRTModelSlot")
-public interface FMLRTModelSlot extends ModelSlot<VirtualModelInstance> {
+public interface FMLRTModelSlot<VMI extends VirtualModelInstance<VMI, TA>, TA extends TechnologyAdapter> extends ModelSlot<VMI> {
 
 	@PropertyIdentifier(type = String.class)
 	public static final String VIRTUAL_MODEL_URI_KEY = "virtualModelURI";
 
 	@Getter(value = VIRTUAL_MODEL_URI_KEY)
-	@XMLAttribute
-	public String getVirtualModelURI();
+	@XMLAttribute(xmlTag = "virtualModelURI")
+	public String getAccessedVirtualModelURI();
 
 	@Setter(VIRTUAL_MODEL_URI_KEY)
-	public void setVirtualModelURI(String virtualModelURI);
+	public void setAccessedVirtualModelURI(String virtualModelURI);
 
-	public VirtualModelResource getVirtualModelResource();
+	public VirtualModelResource getAccessedVirtualModelResource();
 
-	public void setVirtualModelResource(VirtualModelResource virtualModelResource);
+	public void setAccessedVirtualModelResource(VirtualModelResource virtualModelResource);
 
-	public VirtualModel getAddressedVirtualModel();
+	public VirtualModel getAccessedVirtualModel();
 
-	public void setAddressedVirtualModel(VirtualModel aVirtualModel);
-
-	// public boolean isReflexiveModelSlot();
+	public void setAccessedVirtualModel(VirtualModel aVirtualModel);
 
 	public FlexoConceptInstanceRole makeFlexoConceptInstanceRole(FlexoConcept flexoConcept);
 
-	public static abstract class FMLRTModelSlotImpl extends ModelSlotImpl<VirtualModelInstance> implements FMLRTModelSlot {
+	public Class<TA> getTechnologyAdapterClass();
+
+	public static abstract class FMLRTModelSlotImpl<VMI extends VirtualModelInstance<VMI, TA>, TA extends TechnologyAdapter>
+			extends ModelSlotImpl<VMI> implements FMLRTModelSlot<VMI, TA> {
 
 		private static final Logger logger = Logger.getLogger(FMLRTModelSlot.class.getPackage().getName());
-
-		@Override
-		public String getStringRepresentation() {
-			return "FMLRTModelSlot";
-		}
-
-		@Override
-		public Class getTechnologyAdapterClass() {
-			return FMLTechnologyAdapter.class;
-		}
 
 		@Override
 		public FlexoConceptInstanceRole makeFlexoConceptInstanceRole(FlexoConcept flexoConcept) {
@@ -128,53 +127,57 @@ public interface FMLRTModelSlot extends ModelSlot<VirtualModelInstance> {
 		}
 
 		@Override
-		public <PR extends FlexoRole<?>> String defaultFlexoRoleName(Class<PR> patternRoleClass) {
-			if (FlexoConceptInstanceRole.class.isAssignableFrom(patternRoleClass)) {
+		public <PR extends FlexoRole<?>> String defaultFlexoRoleName(Class<PR> flexoRoleClass) {
+			if (FlexoConceptInstanceRole.class.isAssignableFrom(flexoRoleClass)) {
 				return "flexoConceptInstance";
-			} else if (PrimitiveRole.class.isAssignableFrom(patternRoleClass)) {
+			}
+			else if (PrimitiveRole.class.isAssignableFrom(flexoRoleClass)) {
 				return "primitive";
 			}
-			logger.warning("Unexpected pattern property: " + patternRoleClass.getName());
+			logger.warning("Unexpected role: " + flexoRoleClass.getName());
 			return null;
 		}
 
-		@Override
-		public ModelSlotInstanceConfiguration<? extends FMLRTModelSlot, VirtualModelInstance> createConfiguration(
-				CreateVirtualModelInstance action) {
-			return new FMLRTModelSlotInstanceConfiguration(this, action);
-		}
-
-		private VirtualModelResource virtualModelResource;
+		protected VirtualModelResource virtualModelResource;
 		private String virtualModelURI;
 
 		@Override
-		public VirtualModelResource getVirtualModelResource() {
-			if (virtualModelResource == null && StringUtils.isNotEmpty(virtualModelURI) && getViewPoint() != null) {
-				if (getViewPoint().getVirtualModelNamed(virtualModelURI) != null) {
-					virtualModelResource = (VirtualModelResource) getViewPoint().getVirtualModelNamed(virtualModelURI).getResource();
+		public VirtualModelResource getAccessedVirtualModelResource() {
+
+			if (virtualModelResource == null && StringUtils.isNotEmpty(virtualModelURI) && getVirtualModelLibrary() != null) {
+				virtualModelResource = getVirtualModelLibrary().getVirtualModelResource(virtualModelURI);
+				if (virtualModelResource != null) {
 					logger.info("Looked-up " + virtualModelResource);
+					getPropertyChangeSupport().firePropertyChange("type", null, getType());
+					getPropertyChangeSupport().firePropertyChange("resultingType", null, getResultingType());
 				}
 			}
+
 			return virtualModelResource;
 		}
 
 		@Override
-		public void setVirtualModelResource(VirtualModelResource virtualModelResource) {
+		public void setAccessedVirtualModelResource(VirtualModelResource virtualModelResource) {
+			VirtualModelResource oldValue = this.virtualModelResource;
 			this.virtualModelResource = virtualModelResource;
+			if (virtualModelResource == null) {
+				virtualModelURI = null;
+			}
+			getPropertyChangeSupport().firePropertyChange("accessedVirtualModelResource", oldValue, virtualModelResource);
 		}
 
 		@Override
 		public Type getType() {
-			return FlexoConceptInstanceType.getFlexoConceptInstanceType(getAddressedVirtualModel());
+			return FlexoConceptInstanceType.getFlexoConceptInstanceType(getAccessedVirtualModel());
 		}
 
 		@Override
 		public String getTypeDescription() {
-			return "Virtual Model";
+			return "VirtualModel instance";
 		};
 
 		@Override
-		public String getVirtualModelURI() {
+		public String getAccessedVirtualModelURI() {
 			if (virtualModelResource != null) {
 				return virtualModelResource.getURI();
 			}
@@ -182,7 +185,7 @@ public interface FMLRTModelSlot extends ModelSlot<VirtualModelInstance> {
 		}
 
 		@Override
-		public void setVirtualModelURI(String metaModelURI) {
+		public void setAccessedVirtualModelURI(String metaModelURI) {
 			this.virtualModelURI = metaModelURI;
 		}
 
@@ -192,29 +195,31 @@ public interface FMLRTModelSlot extends ModelSlot<VirtualModelInstance> {
 		 * @return
 		 */
 		@Override
-		public VirtualModel getAddressedVirtualModel() {
-			if (getViewPoint() != null && StringUtils.isNotEmpty(getVirtualModelURI())) {
-				return getViewPoint().getVirtualModelNamed(getVirtualModelURI());
+		public final VirtualModel getAccessedVirtualModel() {
+			if (getAccessedVirtualModelResource() != null && !getAccessedVirtualModelResource().isLoading()) {
+				// Do not load virtual model when unloaded
+				// return getAccessedVirtualModelResource().getLoadedResourceData();
+				try {
+					return getAccessedVirtualModelResource().getResourceData(null);
+				} catch (FileNotFoundException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (ResourceLoadingCancelledException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (FlexoException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
 			return null;
 		}
 
 		@Override
-		public void setAddressedVirtualModel(VirtualModel aVirtualModel) {
+		public void setAccessedVirtualModel(VirtualModel aVirtualModel) {
 			this.virtualModelURI = aVirtualModel.getURI();
 			notifyResultingTypeChanged();
 		}
-
-		/**
-		 * Return flag indicating if this model slot is the reflexive model slot for virtual model container
-		 * 
-		 * @return
-		 */
-		/*@Override
-		public boolean isReflexiveModelSlot() {
-			return getName() != null && getName().equals(VirtualModel.REFLEXIVE_MODEL_SLOT_NAME)
-					&& getVirtualModelResource() == getVirtualModel().getResource();
-		}*/
 
 		/**
 		 * 
@@ -223,7 +228,7 @@ public interface FMLRTModelSlot extends ModelSlot<VirtualModelInstance> {
 		 * @return URI as String
 		 */
 		@Override
-		public String getURIForObject(ModelSlotInstance msInstance, Object o) {
+		public String getURIForObject(VMI resourceData, Object o) {
 			logger.warning("This method should be refined by child classes");
 			return null;
 		}
@@ -234,15 +239,50 @@ public interface FMLRTModelSlot extends ModelSlot<VirtualModelInstance> {
 		 * @return the Object
 		 */
 		@Override
-		public Object retrieveObjectWithURI(ModelSlotInstance msInstance, String objectURI) {
+		public Object retrieveObjectWithURI(VMI resourceData, String objectURI) {
 			logger.warning("This method should be refined by child classes");
 			return null;
 		}
 
 		@Override
 		public String getModelSlotDescription() {
-			return "Virtual Model conform to " + getVirtualModelURI() /*+ (isReflexiveModelSlot() ? " [reflexive]" : "")*/;
+			return "Virtual Model conform to " + getAccessedVirtualModelURI() /*+ (isReflexiveModelSlot() ? " [reflexive]" : "")*/;
+		}
+
+		@Override
+		protected String getFMLRepresentationForConformToStatement() {
+			return "conformTo " + getAccessedVirtualModelURI() + " ";
+		}
+
+		@SuppressWarnings("unchecked")
+		@Override
+		public VirtualModelModelSlotInstance<VMI, TA> makeActorReference(VMI object, FlexoConceptInstance fci) {
+			AbstractVirtualModelInstanceModelFactory<?> factory = fci.getFactory();
+			VirtualModelModelSlotInstance<VMI, TA> returned = factory.newInstance(VirtualModelModelSlotInstance.class);
+			returned.setModelSlot(this);
+			returned.setFlexoConceptInstance(fci);
+			returned.setVirtualModelInstanceURI(object.getURI());
+			return returned;
+
 		}
 
 	}
+
+	@DefineValidationRule
+	public static class VirtualModelIsRequired extends ValidationRule<VirtualModelIsRequired, FMLRTModelSlot<?, ?>> {
+		public VirtualModelIsRequired() {
+			super(FMLRTModelSlot.class, "virtual_model_is_required");
+		}
+
+		@Override
+		public ValidationIssue<VirtualModelIsRequired, FMLRTModelSlot<?, ?>> applyValidation(FMLRTModelSlot<?, ?> modelSlot) {
+
+			if (modelSlot.getAccessedVirtualModel() == null) {
+				return new ValidationError<>(this, modelSlot, "fml_rt_model_slot_does_not_define_a_valid_virtual_model");
+			}
+			return null;
+		}
+
+	}
+
 }

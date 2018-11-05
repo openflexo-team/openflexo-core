@@ -94,12 +94,11 @@ public interface PrimitiveActorReference<T> extends ActorReference<T> {
 		}
 
 		@Override
-		public T getModellingElement() {
+		public T getModellingElement(boolean forceLoading) {
 			if (modellingElement == null && getValueAsString() != null && getFactory() != null) {
 				try {
 					modellingElement = getFactory().getStringEncoder().fromString(getActorClass(), getValueAsString());
 				} catch (InvalidDataException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			}
@@ -121,7 +120,7 @@ public interface PrimitiveActorReference<T> extends ActorReference<T> {
 		@Override
 		public Class<? extends T> getActorClass() {
 
-			if (getFlexoRole().getPrimitiveType() == null) {
+			if (getFlexoRole() == null || getFlexoRole().getPrimitiveType() == null) {
 				return null;
 			}
 

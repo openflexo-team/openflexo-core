@@ -41,6 +41,7 @@ package org.openflexo.foundation.fml.rt;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.FlexoObject;
+import org.openflexo.foundation.resource.PamelaResource;
 import org.openflexo.foundation.utils.FlexoObjectReference;
 import org.openflexo.logging.FlexoLogger;
 import org.openflexo.model.annotations.Getter;
@@ -64,17 +65,17 @@ import org.openflexo.model.annotations.XMLElement;
 public interface ModelObjectActorReference<T extends FlexoObject> extends ActorReference<T> {
 
 	@PropertyIdentifier(type = FlexoObjectReference.class)
-	public static final String OBJECT_REFERENCE_KEY = "objectReference";
+	String OBJECT_REFERENCE_KEY = "objectReference";
 
 	@Getter(value = OBJECT_REFERENCE_KEY, isStringConvertable = true)
 	@XMLAttribute
-	public FlexoObjectReference<T> getObjectReference();
+	FlexoObjectReference<T> getObjectReference();
 
 	@Setter(OBJECT_REFERENCE_KEY)
-	public void setObjectReference(FlexoObjectReference<T> objectReference);
+	void setObjectReference(FlexoObjectReference<T> objectReference);
 
-	public static abstract class ModelObjectActorReferenceImpl<T extends FlexoObject> extends ActorReferenceImpl<T> implements
-			ModelObjectActorReference<T> {
+	abstract class ModelObjectActorReferenceImpl<T extends FlexoObject> extends ActorReferenceImpl<T>
+			implements ModelObjectActorReference<T> {
 
 		private static final Logger logger = FlexoLogger.getLogger(ModelObjectActorReference.class.getPackage().toString());
 
@@ -83,17 +84,23 @@ public interface ModelObjectActorReference<T extends FlexoObject> extends ActorR
 		@Override
 		public void setModellingElement(T object) {
 			if (object != null) {
-				setObjectReference(new FlexoObjectReference<T>(object));
-			} else {
+				setObjectReference(new FlexoObjectReference<>(object));
+			}
+			else {
 				setObjectReference(null);
 			}
 		}
 
 		@Override
-		public synchronized T getModellingElement() {
+		public synchronized T getModellingElement(boolean forceLoading) {
+			if (getResourceData() != null && getResourceData().getResource() instanceof PamelaResource
+					&& ((PamelaResource<?, ?>) getResourceData().getResource()).isIndexing()) {
+				return null;
+			}
 			if (isLoading) {
 				return null;
-			} else if (getObjectReference() != null) {
+			}
+			else if (getObjectReference() != null) {
 				isLoading = true;
 				T returned = getObjectReference().getObject(true);
 				if (returned == null) {

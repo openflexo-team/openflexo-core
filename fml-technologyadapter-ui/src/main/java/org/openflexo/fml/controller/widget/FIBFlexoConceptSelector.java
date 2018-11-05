@@ -38,14 +38,16 @@
 
 package org.openflexo.fml.controller.widget;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Logger;
 
 import org.openflexo.components.widget.FIBFlexoObjectSelector;
 import org.openflexo.foundation.FlexoObject;
+import org.openflexo.foundation.fml.FMLUtils;
 import org.openflexo.foundation.fml.FlexoConcept;
-import org.openflexo.foundation.fml.ViewPoint;
-import org.openflexo.foundation.fml.ViewPointLibrary;
 import org.openflexo.foundation.fml.VirtualModel;
+import org.openflexo.foundation.fml.VirtualModelLibrary;
 import org.openflexo.rm.Resource;
 import org.openflexo.rm.ResourceLocator;
 
@@ -69,7 +71,7 @@ public class FIBFlexoConceptSelector extends FIBFlexoObjectSelector<FlexoConcept
 	@Override
 	public void delete() {
 		super.delete();
-		viewPointLibrary = null;
+		virtualModelLibrary = null;
 	}
 
 	@Override
@@ -90,29 +92,20 @@ public class FIBFlexoConceptSelector extends FIBFlexoObjectSelector<FlexoConcept
 		return "";
 	}
 
-	private ViewPointLibrary viewPointLibrary;
+	private VirtualModelLibrary virtualModelLibrary;
 
-	public ViewPointLibrary getViewPointLibrary() {
-		return viewPointLibrary;
+	public VirtualModelLibrary getVirtualModelLibrary() {
+		return virtualModelLibrary;
 	}
 
-	@CustomComponentParameter(name = "viewPointLibrary", type = CustomComponentParameter.Type.MANDATORY)
-	public void setViewPointLibrary(ViewPointLibrary viewPointLibrary) {
-		this.viewPointLibrary = viewPointLibrary;
-	}
-
-	private ViewPoint viewPoint;
-
-	public ViewPoint getViewPoint() {
-		return viewPoint;
-	}
-
-	@CustomComponentParameter(name = "viewPoint", type = CustomComponentParameter.Type.OPTIONAL)
-	public void setViewPoint(ViewPoint viewPoint) {
-		if (this.viewPoint != viewPoint) {
-			FlexoObject oldRoot = getRootObject();
-			this.viewPoint = viewPoint;
-			getPropertyChangeSupport().firePropertyChange("rootObject", oldRoot, getRootObject());
+	@CustomComponentParameter(name = "virtualModelLibrary", type = CustomComponentParameter.Type.MANDATORY)
+	public void setVirtualModelLibrary(VirtualModelLibrary virtualModelLibrary) {
+		if ((virtualModelLibrary == null && this.virtualModelLibrary != null)
+				|| (virtualModelLibrary != null && !virtualModelLibrary.equals(this.virtualModelLibrary))) {
+			VirtualModelLibrary oldValue = this.virtualModelLibrary;
+			this.virtualModelLibrary = virtualModelLibrary;
+			getPropertyChangeSupport().firePropertyChange("virtualModelLibrary", oldValue, virtualModelLibrary);
+			getPropertyChangeSupport().firePropertyChange("rootObject", null, getRootObject());
 		}
 	}
 
@@ -124,6 +117,7 @@ public class FIBFlexoConceptSelector extends FIBFlexoObjectSelector<FlexoConcept
 
 	@CustomComponentParameter(name = "virtualModel", type = CustomComponentParameter.Type.OPTIONAL)
 	public void setVirtualModel(VirtualModel virtualModel) {
+
 		if (this.virtualModel != virtualModel) {
 			FlexoObject oldRoot = getRootObject();
 			this.virtualModel = virtualModel;
@@ -131,13 +125,130 @@ public class FIBFlexoConceptSelector extends FIBFlexoObjectSelector<FlexoConcept
 		}
 	}
 
+	private VirtualModel inheritingContext = null;
+	private boolean restrictToContext = false;
+
+	/**
+	 * When true, indicates that we want to select a {@link FlexoConcept} instantiable in supplied {@link #getInheritingContext()}
+	 * 
+	 * @return
+	 */
+	public boolean isRestrictToContext() {
+		return restrictToContext;
+	}
+
+	/**
+	 * When set to true, indicates that we want to select a {@link FlexoConcept} instantiable in supplied {@link #getInheritingContext()}
+	 * 
+	 * 
+	 * @param restrictToContext
+	 */
+	@CustomComponentParameter(name = "restrictToContext", type = CustomComponentParameter.Type.OPTIONAL)
+	public void setRestrictToContext(boolean restrictToContext) {
+		if (restrictToContext != this.restrictToContext) {
+			this.restrictToContext = restrictToContext;
+			getPropertyChangeSupport().firePropertyChange("restrictToContext", !restrictToContext, restrictToContext);
+			getPropertyChangeSupport().firePropertyChange("rootObject", null, getRootObject());
+		}
+	}
+
+	/**
+	 * Return inheriting context for an acceptable value of this selector<br>
+	 * Default value is null
+	 * 
+	 * @return
+	 */
+	public VirtualModel getInheritingContext() {
+		return inheritingContext;
+	}
+
+	/**
+	 * Sets inheriting context for an acceptable value of this selector.
+	 * 
+	 * This means that an instance of selected {@link FlexoConcept} might be instanciated in an instance of supplied {@link VirtualModel}
+	 * 
+	 * If supplied inheritingContext is null (but {@link #isRestrictToContext()} flag to true), this means that selectable concept must be a
+	 * {@link VirtualModel} at top-level
+	 * 
+	 * @param inheritingContext
+	 */
+	@CustomComponentParameter(name = "inheritingContext", type = CustomComponentParameter.Type.OPTIONAL)
+	public void setInheritingContext(VirtualModel inheritingContext) {
+		if (this.inheritingContext != inheritingContext) {
+			VirtualModel oldValue = this.inheritingContext;
+			this.inheritingContext = inheritingContext;
+			getPropertyChangeSupport().firePropertyChange("inheritingContext", oldValue, inheritingContext);
+			getPropertyChangeSupport().firePropertyChange("rootObject", null, getRootObject());
+		}
+	}
+
+	@Override
+	public boolean isAcceptableValue(Object o) {
+		boolean returned = super.isAcceptableValue(o);
+		if (returned && isRestrictToContext()) {
+			if (getInheritingContext() == null) {
+				return o instanceof VirtualModel && ((VirtualModel) o).getContainerVirtualModel() == null;
+			}
+			else {
+				if (o instanceof VirtualModel) {
+					if (((VirtualModel) o).getContainerVirtualModel() == null) {
+						return false;
+					}
+					return ((VirtualModel) o).getContainerVirtualModel().isAssignableFrom(getInheritingContext());
+				}
+				else {
+					return ((FlexoConcept) o).getOwningVirtualModel() != null
+							&& ((FlexoConcept) o).getOwningVirtualModel().isAssignableFrom(getInheritingContext());
+				}
+			}
+		}
+		return returned;
+	}
+
 	public FlexoObject getRootObject() {
+		if (getInheritingContext() != null) {
+			return getInheritingContextRoot();
+		}
 		if (getVirtualModel() != null) {
 			return getVirtualModel();
-		} else if (getViewPoint() != null) {
-			return getViewPoint();
-		} else {
-			return getViewPointLibrary();
+		}
+		else {
+			return getVirtualModelLibrary();
+		}
+	}
+
+	private FlexoObject getInheritingContextRoot() {
+		List<VirtualModel> vmList = new ArrayList<>();
+		appendInheritingVirtualModels(getInheritingContext(), vmList);
+		FlexoObject returned = getInheritingContext();
+		if (vmList.size() >= 1) {
+			// returned = vmList.get(0);
+			for (VirtualModel vm : vmList) {
+				if (returned instanceof VirtualModel) {
+					returned = FMLUtils.getMostSpecializedContainer((VirtualModel) returned, vm);
+				}
+				else {
+					// TODO: check that vm is in returned
+					logger.warning("TODO: check that " + vm + " is in " + returned);
+				}
+			}
+		}
+		if (returned == null) {
+			return getInheritingContext().getVirtualModelLibrary();
+		}
+		else {
+			return returned;
+		}
+	}
+
+	private void appendInheritingVirtualModels(VirtualModel vm, List<VirtualModel> vmList) {
+		if (vm != null) {
+			for (FlexoConcept parent : vm.getParentFlexoConcepts()) {
+				if (parent instanceof VirtualModel) {
+					vmList.add((VirtualModel) parent);
+					appendInheritingVirtualModels((VirtualModel) parent, vmList);
+				}
+			}
 		}
 	}
 
@@ -154,12 +265,12 @@ public class FIBFlexoConceptSelector extends FIBFlexoObjectSelector<FlexoConcept
 				selector.setViewPointLibrary(testApplicationContext.getViewPointLibrary());
 				return makeArray(selector);
 			}
-
+	
 			@Override
 			public File getFIBFile() {
 				return FIB_FILE;
 			}
-
+	
 			@Override
 			public FIBController makeNewController(FIBComponent component) {
 				return new FlexoFIBController(component);

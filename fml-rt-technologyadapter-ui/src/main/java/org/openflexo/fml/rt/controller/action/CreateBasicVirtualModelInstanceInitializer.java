@@ -45,22 +45,25 @@ import javax.swing.Icon;
 
 import org.openflexo.components.wizard.Wizard;
 import org.openflexo.components.wizard.WizardDialog;
-import org.openflexo.fib.controller.FIBController.Status;
 import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.action.FlexoActionFinalizer;
 import org.openflexo.foundation.action.FlexoActionInitializer;
+import org.openflexo.foundation.action.FlexoActionFactory;
 import org.openflexo.foundation.action.FlexoExceptionHandler;
 import org.openflexo.foundation.action.NotImplementedException;
-import org.openflexo.foundation.fml.rt.View;
+import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.action.CreateBasicVirtualModelInstance;
+import org.openflexo.gina.controller.FIBController.Status;
 import org.openflexo.icon.FMLRTIconLibrary;
-import org.openflexo.localization.FlexoLocalization;
+import org.openflexo.icon.IconFactory;
+import org.openflexo.icon.IconLibrary;
 import org.openflexo.view.controller.ActionInitializer;
 import org.openflexo.view.controller.ControllerActionInitializer;
 import org.openflexo.view.controller.FlexoController;
 
-public class CreateBasicVirtualModelInstanceInitializer extends ActionInitializer<CreateBasicVirtualModelInstance, View, FlexoObject> {
+public class CreateBasicVirtualModelInstanceInitializer
+		extends ActionInitializer<CreateBasicVirtualModelInstance, FlexoObject, FlexoObject> {
 
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(ControllerActionInitializer.class.getPackage().getName());
@@ -74,9 +77,16 @@ public class CreateBasicVirtualModelInstanceInitializer extends ActionInitialize
 		return new FlexoActionInitializer<CreateBasicVirtualModelInstance>() {
 			@Override
 			public boolean run(EventObject e, CreateBasicVirtualModelInstance action) {
-				if (action.skipChoosePopup) {
+				if (action.skipChoosePopup()) {
 					return true;
-				} else {
+				}
+				else {
+					if (action.getFocusedObject() instanceof FMLRTVirtualModelInstance
+							&& ((FMLRTVirtualModelInstance) action.getFocusedObject()).getVirtualModel() != null) {
+						// @Brutal
+						// TODO: Instead of doing this, it would be better to handle resources in wizard FIB
+						((FMLRTVirtualModelInstance) action.getFocusedObject()).getVirtualModel().loadContainedVirtualModelsWhenUnloaded();
+					}
 					Wizard wizard = new CreateBasicVirtualModelInstanceWizard(action, getController());
 					WizardDialog dialog = new WizardDialog(wizard, getController());
 					dialog.showDialog();
@@ -97,7 +107,9 @@ public class CreateBasicVirtualModelInstanceInitializer extends ActionInitialize
 			@Override
 			public boolean run(EventObject e, CreateBasicVirtualModelInstance action) {
 				// getController().setCurrentEditedObjectAsModuleView(action.getNewVirtualModelInstance());
-				getController().selectAndFocusObject(action.getNewVirtualModelInstance());
+				if (action.openAfterCreation()) {
+					getController().selectAndFocusObject(action.getNewVirtualModelInstance());
+				}
 				return true;
 			}
 		};
@@ -109,7 +121,7 @@ public class CreateBasicVirtualModelInstanceInitializer extends ActionInitialize
 			@Override
 			public boolean handleException(FlexoException exception, CreateBasicVirtualModelInstance action) {
 				if (exception instanceof NotImplementedException) {
-					FlexoController.notify(FlexoLocalization.localizedForKey("not_implemented_yet"));
+					FlexoController.notify(action.getLocales().localizedForKey("not_implemented_yet"));
 					return true;
 				}
 				return false;
@@ -118,8 +130,8 @@ public class CreateBasicVirtualModelInstanceInitializer extends ActionInitialize
 	}
 
 	@Override
-	protected Icon getEnabledIcon() {
-		return FMLRTIconLibrary.VIRTUAL_MODEL_INSTANCE_ICON;
+	protected Icon getEnabledIcon(FlexoActionFactory actionType) {
+		return IconFactory.getImageIcon(FMLRTIconLibrary.VIRTUAL_MODEL_INSTANCE_ICON, IconLibrary.NEW_MARKER);
 	}
 
 	/**

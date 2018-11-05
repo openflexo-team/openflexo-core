@@ -70,7 +70,7 @@ public class FlexoBehaviourActionType implements CustomType {
 	}
 
 	@Override
-	public Class getBaseClass() {
+	public Class<?> getBaseClass() {
 		return FlexoBehaviourAction.class;
 	}
 
@@ -84,13 +84,19 @@ public class FlexoBehaviourActionType implements CustomType {
 	}
 
 	@Override
+	public boolean isOfType(Object object, boolean permissive) {
+		// TODO please implement me
+		return true;
+	}
+
+	@Override
 	public String simpleRepresentation() {
-		return "FlexoBehaviourActionType" + ":" + getFlexoBehaviour();
+		return getFlexoBehaviour().getSignature();
 	}
 
 	@Override
 	public String fullQualifiedRepresentation() {
-		return "FlexoBehaviourActionType" + ":" + getFlexoBehaviour();
+		return getFlexoBehaviour().getSignature();
 	}
 
 	@Override

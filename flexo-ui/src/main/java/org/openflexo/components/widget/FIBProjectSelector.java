@@ -39,16 +39,15 @@
 
 package org.openflexo.components.widget;
 
-import java.io.File;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.FlexoProject;
-import org.openflexo.project.ProjectLoader;
-import org.openflexo.rm.ResourceLocator;
+import org.openflexo.project.InteractiveProjectLoader;
 import org.openflexo.rm.Resource;
+import org.openflexo.rm.ResourceLocator;
 
 /**
- * Widget allowing to select a ViewPoint
+ * Widget allowing to select a {@link FlexoProject}
  * 
  * @author sguerin
  * 
@@ -60,7 +59,7 @@ public class FIBProjectSelector extends FIBFlexoObjectSelector<FlexoProject> {
 
 	public static Resource FIB_FILE_NAME = ResourceLocator.locateResource("Fib/ProjectSelector.fib");
 
-	private ProjectLoader projectLoader;
+	private InteractiveProjectLoader projectLoader;
 
 	public FIBProjectSelector(FlexoProject editedObject) {
 		super(editedObject);
@@ -80,17 +79,17 @@ public class FIBProjectSelector extends FIBFlexoObjectSelector<FlexoProject> {
 	@Override
 	public String renderedString(FlexoProject editedObject) {
 		if (editedObject != null) {
-			return editedObject.getDisplayName();
+			return editedObject.getProjectName();
 		}
 		return "";
 	}
 
-	public ProjectLoader getProjectLoader() {
+	public InteractiveProjectLoader getProjectLoader() {
 		return projectLoader;
 	}
 
-	public void setProjectLoader(ProjectLoader projectLoader) {
-		ProjectLoader old = this.projectLoader;
+	public void setProjectLoader(InteractiveProjectLoader projectLoader) {
+		InteractiveProjectLoader old = this.projectLoader;
 		this.projectLoader = projectLoader;
 		getPropertyChangeSupport().firePropertyChange("projectLoader", old, projectLoader);
 	}
@@ -120,10 +119,9 @@ public class FIBProjectSelector extends FIBFlexoObjectSelector<FlexoProject> {
 					ref1.init(subProject2);
 					Mockito.when(projectData.getImportedProjects()).thenReturn(Arrays.asList(ref1, ref2));
 				} catch (ModelDefinitionException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-
+	
 				ProjectLoader projectLoader = Mockito.mock(ProjectLoader.class);
 				Mockito.when(projectLoader.getRootProjects()).thenReturn(Arrays.asList(project));
 				mockPropertyChangeSupport(projectLoader);
@@ -134,16 +132,16 @@ public class FIBProjectSelector extends FIBFlexoObjectSelector<FlexoProject> {
 				selector.setProjectLoader(projectLoader);
 				return makeArray(selector);
 			}
-
+	
 			private void mockPropertyChangeSupport(HasPropertyChangeSupport changeSupport) {
 				Mockito.when(changeSupport.getPropertyChangeSupport()).thenReturn(new PropertyChangeSupport(changeSupport));
 			}
-
+	
 			@Override
 			public File getFIBFile() {
 				return FIB_FILE;
 			}
-
+	
 			@Override
 			public FIBController makeNewController(FIBComponent component) {
 				return new FlexoFIBController(component);

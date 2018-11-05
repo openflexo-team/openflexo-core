@@ -1,6 +1,6 @@
 /**
  * 
- * Copyright (c) 2014-2015, Openflexo
+ * Copyright (c) 2015, Openflexo
  * 
  * This file is part of Flexo-foundation, a component of the software infrastructure 
  * developed at Openflexo.
@@ -38,25 +38,38 @@
 
 package org.openflexo.foundation.fml.rm;
 
+import java.util.List;
+
+import org.openflexo.foundation.fml.FMLModelFactory;
+import org.openflexo.foundation.fml.FMLTechnologyAdapter;
 import org.openflexo.foundation.fml.VirtualModel;
+import org.openflexo.foundation.fml.VirtualModelLibrary;
+import org.openflexo.foundation.resource.DirectoryContainerResource;
+import org.openflexo.foundation.resource.PamelaResource;
+import org.openflexo.foundation.technologyadapter.ModelSlot;
+import org.openflexo.foundation.technologyadapter.TechnologyAdapterResource;
+import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
-import org.openflexo.model.annotations.XMLElement;
+import org.openflexo.model.annotations.Setter;
 
+/**
+ * The resource storing a {@link VirtualModel}
+ * 
+ * @author sylvain
+ *
+ */
 @ModelEntity
 @ImplementationClass(VirtualModelResourceImpl.class)
-@XMLElement
-public interface VirtualModelResource extends AbstractVirtualModelResource<VirtualModel> {
+public interface VirtualModelResource extends PamelaResource<VirtualModel, FMLModelFactory>, DirectoryContainerResource<VirtualModel>,
+		TechnologyAdapterResource<VirtualModel, FMLTechnologyAdapter> {
 
-	public static final String VIEW_POINT_LIBRARY = "viewPointLibrary";
-
-	// public static final String DIRECTORY = "directory";
+	public static final String VIRTUAL_MODEL_LIBRARY = "virtualModelLibrary";
 
 	/**
-	 * Return virtual model stored by this resource<br>
-	 * Load the resource data when unloaded
+	 * Return virtual model stored by this resource when loaded<br>
+	 * Force the resource data to be loaded when unloaded
 	 */
-	@Override
 	public VirtualModel getVirtualModel();
 
 	/**
@@ -65,20 +78,42 @@ public interface VirtualModelResource extends AbstractVirtualModelResource<Virtu
 	 */
 	public VirtualModel getLoadedVirtualModel();
 
-	/*@Getter(value = VIEW_POINT_LIBRARY, ignoreType = true)
-	public ViewPointLibrary getViewPointLibrary();
-
-	@Setter(VIEW_POINT_LIBRARY)
-	public void setViewPointLibrary(ViewPointLibrary viewPointLibrary);*/
-
-	/*@Getter(DIRECTORY)
-	@XmlAttribute
-	public File getDirectory();
-
-	@Setter(DIRECTORY)
-	public void setDirectory(File file);*/
-
 	@Override
-	public ViewPointResource getContainer();
+	public VirtualModelResource getContainer();
+
+	public List<VirtualModelResource> getContainedVirtualModelResources();
+
+	public VirtualModelResource getVirtualModelResource(String virtualModelNameOrURI);
+
+	@Getter(value = VIRTUAL_MODEL_LIBRARY, ignoreType = true)
+	public VirtualModelLibrary getVirtualModelLibrary();
+
+	@Setter(VIRTUAL_MODEL_LIBRARY)
+	public void setVirtualModelLibrary(VirtualModelLibrary virtualModelLibrary);
+
+	/**
+	 * Return {@link ModelSlot} classes used in this {@link VirtualModel} resource<br>
+	 * Note that this information is extracted from metadata or from reading XML file before effective parsing<br>
+	 * This information is used to determine which technology adapters have to be activated before {@link VirtualModel} is loaded
+	 * 
+	 * @return
+	 */
+	public List<Class<? extends ModelSlot<?>>> getUsedModelSlots();
+
+	/**
+	 * Return a string representation of used model slots classes as a comma-separated string with class names
+	 * 
+	 * @return
+	 */
+	public String getUsedModelSlotsAsString();
+
+	/**
+	 * Rebuild a new {@link FMLModelFactory} using supplied use declarations, and set this new factory as model factory to use for this
+	 * resource<br>
+	 * This call is required for example when a new technology is required for a {@link VirtualModel}
+	 * 
+	 * @param useDeclarations
+	 */
+	public void updateFMLModelFactory(List<Class<? extends ModelSlot<?>>> useDeclarations);
 
 }

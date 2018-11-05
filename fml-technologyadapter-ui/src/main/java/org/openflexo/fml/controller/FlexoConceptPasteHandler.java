@@ -43,22 +43,22 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.FlexoObject;
-import org.openflexo.foundation.action.FlexoClipboard;
-import org.openflexo.foundation.action.PasteAction.DefaultPastingContext;
-import org.openflexo.foundation.action.PasteAction.PasteHandler;
-import org.openflexo.foundation.action.PasteAction.PastingContext;
+import org.openflexo.foundation.action.copypaste.DefaultPastingContext;
+import org.openflexo.foundation.action.copypaste.FlexoClipboard;
+import org.openflexo.foundation.action.copypaste.FlexoPasteHandler;
+import org.openflexo.foundation.action.copypaste.PastingContext;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoConceptObject;
 import org.openflexo.model.factory.Clipboard;
 import org.openflexo.toolbox.StringUtils;
 
 /**
- * Paste Handler suitable for pasting something into a FlexoConcept
+ * Paste Handler suitable for pasting something into a {@link FlexoConcept}
  * 
  * @author sylvain
  * 
  */
-public class FlexoConceptPasteHandler implements PasteHandler<FlexoConcept> {
+public class FlexoConceptPasteHandler extends FlexoPasteHandler<FlexoConcept> {
 
 	private static final Logger logger = Logger.getLogger(FlexoConceptPasteHandler.class.getPackage().getName());
 
@@ -73,11 +73,12 @@ public class FlexoConceptPasteHandler implements PasteHandler<FlexoConcept> {
 	public PastingContext<FlexoConcept> retrievePastingContext(FlexoObject focusedObject, List<FlexoObject> globalSelection,
 			FlexoClipboard clipboard, Event event) {
 
-		if (!(focusedObject instanceof FlexoConceptObject)) {
-			return null;
+		if (focusedObject instanceof FlexoConceptObject) {
+			// In this case, FlexoConcept will be contained in another FlexoConcept
+			return new DefaultPastingContext<>(((FlexoConceptObject) focusedObject).getFlexoConcept(), event);
 		}
 
-		return new DefaultPastingContext<FlexoConcept>(((FlexoConceptObject) focusedObject).getFlexoConcept(), event);
+		return null;
 	}
 
 	@Override
@@ -90,7 +91,8 @@ public class FlexoConceptPasteHandler implements PasteHandler<FlexoConcept> {
 			if (leaderClipboard.getSingleContents() instanceof FlexoConceptObject) {
 				translateName((FlexoConceptObject) leaderClipboard.getSingleContents());
 			}
-		} else {
+		}
+		else {
 			for (Object o : leaderClipboard.getMultipleContents()) {
 				if (o instanceof FlexoConceptObject) {
 					translateName((FlexoConceptObject) o);
@@ -99,12 +101,50 @@ public class FlexoConceptPasteHandler implements PasteHandler<FlexoConcept> {
 		}
 	}
 
+	/*@Override
+	public Object paste(FlexoClipboard clipboard, PastingContext<FlexoConcept> pastingContext) {
+	
+		if (pastingContext.getPastingPointHolder() instanceof VirtualModel) {
+			// In this case, FlexoConcept will be pasted as a FlexoConcept in a VirtualModel
+	
+			try {
+	
+				ModelEntity<VirtualModel> vmEntity = clipboard.getLeaderClipboard().getModelFactory().getModelContext()
+						.getModelEntity(VirtualModel.class);
+				ModelProperty<? super VirtualModel> conceptProperty = vmEntity
+						.getModelProperty(VirtualModel.FLEXO_CONCEPTS_KEY);
+	
+				System.out.println("OK, je copie le concept dans le VM " + pastingContext.getPastingPointHolder());
+	
+				System.out.println("vmEntity=" + vmEntity);
+				System.out.println("conceptProperty=" + conceptProperty);
+	
+				System.out.println(((FlexoConcept) clipboard.getLeaderClipboard().getSingleContents()).getFMLRepresentation());
+	
+				return clipboard.getLeaderClipboard().getModelFactory().paste(clipboard.getLeaderClipboard(), conceptProperty,
+						pastingContext.getPastingPointHolder());
+			} catch (ModelExecutionException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (ModelDefinitionException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (CloneNotSupportedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+	
+		}
+	
+		return super.paste(clipboard, pastingContext);
+	}*/
+
 	@Override
 	public void finalizePasting(FlexoClipboard clipboard, PastingContext<FlexoConcept> pastingContext) {
 		// Nothing to do
 	}
 
-	private String translateName(FlexoConceptObject object) {
+	private static String translateName(FlexoConceptObject object) {
 		String oldName = object.getName();
 		if (StringUtils.isEmpty(oldName)) {
 			return null;
@@ -112,7 +152,8 @@ public class FlexoConceptPasteHandler implements PasteHandler<FlexoConcept> {
 		String newName;
 		if (oldName.endsWith(COPY_SUFFIX)) {
 			newName = oldName + "2";
-		} else if (oldName.contains(COPY_SUFFIX)) {
+		}
+		else if (oldName.contains(COPY_SUFFIX)) {
 			try {
 				int currentIndex = Integer.parseInt(oldName.substring(oldName.lastIndexOf(COPY_SUFFIX) + COPY_SUFFIX.length()));
 				newName = oldName.substring(0, oldName.lastIndexOf(COPY_SUFFIX)) + COPY_SUFFIX + (currentIndex + 1);
@@ -120,7 +161,8 @@ public class FlexoConceptPasteHandler implements PasteHandler<FlexoConcept> {
 				logger.warning("Could not parse as int " + oldName.substring(oldName.lastIndexOf(COPY_SUFFIX)));
 				newName = oldName + COPY_SUFFIX;
 			}
-		} else {
+		}
+		else {
 			newName = oldName + COPY_SUFFIX;
 		}
 		System.out.println("translating name from " + oldName + " to " + newName);

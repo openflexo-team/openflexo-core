@@ -38,11 +38,15 @@
 
 package org.openflexo.foundation.validation;
 
+import java.lang.reflect.Type;
+
 import org.openflexo.connie.BindingEvaluator;
+import org.openflexo.connie.type.ParameterizedTypeImpl;
 import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.localization.LocalizedDelegate;
 import org.openflexo.model.ModelContext;
 import org.openflexo.model.validation.Validable;
+import org.openflexo.model.validation.ValidationIssue;
 import org.openflexo.model.validation.ValidationModel;
 
 /**
@@ -51,7 +55,6 @@ import org.openflexo.model.validation.ValidationModel;
  * @author sylvain
  * 
  */
-@SuppressWarnings("serial")
 public class FlexoValidationModel extends ValidationModel {
 
 	private final LocalizedDelegate validationLocalization;
@@ -84,10 +87,15 @@ public class FlexoValidationModel extends ValidationModel {
 
 	@Override
 	public String localizedInContext(String key, Object context) {
-		String localized = validationLocalization.getLocalizedForKeyAndLanguage(key, FlexoLocalization.getCurrentLanguage(), true);
-		if (localized.contains("($")) {
+		String localized = validationLocalization.localizedForKeyAndLanguage(key, FlexoLocalization.getCurrentLanguage(), true);
+		if (localized != null && localized.contains("($")) {
 			String asBindingExpression = asBindingExpression(localized);
 			try {
+				if (context instanceof ValidationIssue) {
+					ValidationIssue<?, ?> issue = (ValidationIssue<?, ?>) context;
+					Type t = new ParameterizedTypeImpl(context.getClass(), issue.getCause().getClass(), issue.getValidable().getClass());
+					return (String) BindingEvaluator.evaluateBinding(asBindingExpression, context, t);
+				}
 				return (String) BindingEvaluator.evaluateBinding(asBindingExpression, context);
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -95,6 +103,10 @@ public class FlexoValidationModel extends ValidationModel {
 			}
 		}
 		return localized;
+	}
+
+	public LocalizedDelegate getLocales() {
+		return validationLocalization;
 	}
 
 }

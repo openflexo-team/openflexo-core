@@ -68,7 +68,7 @@ public class ResourceSavingEntryInfo {
 	}
 
 	public String getName() {
-		return resource.getName() + (isModified() ? " [" + FlexoLocalization.localizedForKey("modified") + "]" : "");
+		return resource.getName() + (isModified() ? " [" + FlexoLocalization.getMainLocalizer().localizedForKey("modified") + "]" : "");
 	}
 
 	public String getType() {
@@ -97,13 +97,14 @@ public class ResourceSavingEntryInfo {
 	}
 
 	public void reviewModifiedResource() {
-
-		saveThisResource = isModified();
+		saveThisResource = isModified() && resource.getIODelegate().hasWritePermission();
 	}
 
 	public void saveModified(IProgress progress) throws SaveResourceException {
-		progress.setProgress(FlexoLocalization.localizedForKey("saving") + " " + resource.getName());
-		if (saveThisResource) {
+		if (progress != null) {
+			progress.setProgress(FlexoLocalization.getMainLocalizer().localizedForKey("saving") + " " + resource.getName());
+		}
+		if (saveThisResource && resource.getIODelegate().hasWritePermission()) {
 			resource.save(progress);
 		}
 	}

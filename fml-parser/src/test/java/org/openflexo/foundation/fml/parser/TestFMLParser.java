@@ -42,7 +42,7 @@ import static org.junit.Assert.fail;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.openflexo.foundation.OpenflexoTestCase;
+import org.openflexo.foundation.test.OpenflexoTestCase;
 import org.openflexo.rm.FileResourceImpl;
 import org.openflexo.rm.Resource;
 import org.openflexo.rm.ResourceLocator;
@@ -64,7 +64,12 @@ public class TestFMLParser extends OpenflexoTestCase {
 		testFMLCompilationUnit(ResourceLocator.locateResource("FMLExamples/Test1.fml"));
 	}*/
 
-	private void testFMLCompilationUnit(Resource fileResource) {
+	/*@Test
+	public void test2() {
+		testFMLCompilationUnit(ResourceLocator.locateResource("FMLExamples/Test2.fml"));
+	}*/
+
+	private static void testFMLCompilationUnit(Resource fileResource) {
 		try {
 			FMLParser.parse(((FileResourceImpl) fileResource).getFile(), serviceManager);
 		} catch (ParseException e) {

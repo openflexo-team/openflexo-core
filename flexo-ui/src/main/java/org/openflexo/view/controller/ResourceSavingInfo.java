@@ -83,8 +83,11 @@ public class ResourceSavingInfo {
 			}
 		}
 
-		IProgress progress = progressFactory.makeFlexoProgress(FlexoLocalization.localizedForKey("saving_resources"),
-				resourcesToSave.size());
+		IProgress progress = null;
+		if (progressFactory != null) {
+			progress = progressFactory.makeFlexoProgress(FlexoLocalization.getMainLocalizer().localizedForKey("saving_resources"),
+					resourcesToSave.size());
+		}
 		for (ResourceSavingEntryInfo e : entries) {
 			if (e.saveThisResource()) {
 				try {
@@ -97,7 +100,9 @@ public class ResourceSavingInfo {
 			}
 		}
 
-		progress.hideWindow();
+		if (progress != null) {
+			progress.hideWindow();
+		}
 
 	}
 }

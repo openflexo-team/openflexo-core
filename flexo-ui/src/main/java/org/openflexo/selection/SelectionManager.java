@@ -63,7 +63,7 @@ import org.openflexo.view.controller.FlexoController;
  * <LI>Synchonization of all components synchronized with itself objects, as FlexoObject instances</LI>
  * <LI>Focused and last selected objects management</LI>
  * <LI>Inspection management</LI>
- * <LI>Copy/Cut/Paste/SelectAll management by storing and managing a {@link org.openflexo.selection.FlexoClipboard}</LI>
+ * <LI>Copy/Cut/Paste/SelectAll management by storing and managing a {@link org.openflexo.foundation.action.copypaste.FlexoClipboard}</LI>
  * </UL>
  * 
  * @author bmangez, sguerin
@@ -106,11 +106,13 @@ public abstract class SelectionManager extends Observable {
 	public SelectionManager(FlexoController controller) {
 		super();
 		_controller = controller;
-		_selection = new Vector<FlexoObject>();
-		_selectionListeners = new Vector<SelectionListener>();
+		_selection = new Vector<>();
+		_selectionListeners = new Vector<>();
 
-		inspectionContext = new Hashtable<String, Object>();
-		inspectionContext.put(MODULE_KEY, getController().getModule().getClass().getName());
+		inspectionContext = new Hashtable<>();
+		if (getController() != null) {
+			inspectionContext.put(MODULE_KEY, getController().getModule().getClass().getName());
+		}
 	}
 
 	public FlexoController getController() {
@@ -262,7 +264,8 @@ public abstract class SelectionManager extends Observable {
 					logger.fine("Removing " + obj + " because master view is not able to show it");
 				}
 				internallyRemoveFromSelected(obj);
-			} else {
+			}
+			else {
 				if (logger.isLoggable(Level.FINE)) {
 					logger.fine("Keeping " + obj + " because master view is able to show it");
 				}
@@ -531,21 +534,21 @@ public abstract class SelectionManager extends Observable {
 		}
 		return _clipboard.performSelectionCopy(getSelection());
 	}
-
+	
 	public boolean performSelectionPaste() {
 		if (logger.isLoggable(Level.FINE)) {
 			logger.fine("performSelectionPaste in " + getClass().getName());
 		}
 		return _clipboard.performSelectionPaste();
 	}
-
+	
 	public boolean performSelectionCut() {
 		if (logger.isLoggable(Level.WARNING)) {
 			logger.warning("Perform selection cut is not implemented");
 		}
 		return false;
 	}
-
+	
 	public boolean hasCopiedData() {
 		return _clipboard.hasCopiedData();
 	}*/
@@ -636,10 +639,12 @@ public abstract class SelectionManager extends Observable {
 	private void updateInspectorManagement() {
 		if (getSelectionSize() == 0) {
 			setCurrentInspectedObjectToNone();
-		} else if (getSelectionSize() == 1) {
+		}
+		else if (getSelectionSize() == 1) {
 			FlexoObject selection = getSelection().firstElement();
 			setCurrentInspectedObject(selection);
-		} else if (getSelectionSize() > 1) {
+		}
+		else if (getSelectionSize() > 1) {
 			setCurrentInspectedObjectToMultiple();
 		}
 		if (logger.isLoggable(Level.FINE)) {

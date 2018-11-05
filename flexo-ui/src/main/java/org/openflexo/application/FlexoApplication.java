@@ -41,32 +41,25 @@ package org.openflexo.application;
 
 import java.awt.AWTEvent;
 import java.awt.HeadlessException;
-import java.awt.Image;
 import java.awt.Toolkit;
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.openflexo.ApplicationContext;
 import org.openflexo.Flexo;
-import org.openflexo.br.view.JIRAIssueReportDialog;
+import org.openflexo.br.SendBugReportServiceTask;
 import org.openflexo.components.ProgressWindow;
 import org.openflexo.drm.DefaultHelpRetriever;
 import org.openflexo.foundation.FlexoObject.FlexoObjectImpl;
 import org.openflexo.foundation.action.InvalidParametersException;
 import org.openflexo.foundation.action.NotImplementedException;
 import org.openflexo.help.FlexoHelp;
-import org.openflexo.icon.IconLibrary;
 import org.openflexo.jedit.JEditTextArea;
 import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.logging.FlexoLoggingManager;
-import org.openflexo.module.ModuleLoader;
-import org.openflexo.toolbox.ToolBox;
 import org.openflexo.utils.CancelException;
 import org.openflexo.utils.TooManyFailedAttemptException;
 import org.openflexo.view.FlexoDialog;
@@ -94,10 +87,6 @@ public class FlexoApplication {
 
 	private static boolean isInitialized = false;
 
-	private static Object application;
-
-	private static FlexoApplicationAdapter applicationAdapter;
-
 	public static EventProcessor eventProcessor;
 
 	private static byte[] mem = new byte[1024 * 1024];
@@ -113,33 +102,10 @@ public class FlexoApplication {
 
 		isInitialized = true;
 
-		ModuleLoader moduleLoader = applicationContext.getModuleLoader();
-
 		JEditTextArea.DIALOG_FACTORY = FlexoDialog.DIALOG_FACTORY;
-		try {
-			if (ToolBox.getPLATFORM() == ToolBox.MACOS) {
-				application = Class.forName("com.apple.eawt.Application").newInstance();
-				Method enablePrefMenu = application.getClass().getMethod("setEnabledPreferencesMenu", new Class[] { boolean.class });
-				enablePrefMenu.invoke(application, new Object[] { new Boolean(true) });
-				// ((com.apple.eawt.Application)application).setEnabledPreferencesMenu(true);
-				Method enableAboutMenu = application.getClass().getMethod("setEnabledAboutMenu", new Class[] { boolean.class });
-				enableAboutMenu.invoke(application, new Object[] { new Boolean(true) });
-				// ((com.apple.eawt.Application)application).setDockIconImage(ModuleLoader.getUserType().getIconImage().getImage());
-				Method setDockIconImage = application.getClass().getMethod("setDockIconImage", new Class[] { Image.class });
-				setDockIconImage.invoke(application, new Object[] { IconLibrary.OPENFLEXO_NOTEXT_128.getImage() });
-				applicationAdapter = new FlexoApplicationAdapter(applicationContext);
 
-				Method addApplicationListener = application.getClass().getMethod("addApplicationListener",
-						new Class[] { Class.forName("com.apple.eawt.ApplicationListener") });
-				addApplicationListener.invoke(application, new Object[] { applicationAdapter });
-
-				// ((com.apple.eawt.Application)application).addApplicationListener(applicationAdapter);
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		FlexoHelp
-				.configure(applicationContext.getGeneralPreferences().getLanguage().getIdentifier(), null/*UserType.getCurrentUserType().getIdentifier()*/);
+		FlexoHelp.configure(applicationContext.getGeneralPreferences().getLanguage().getIdentifier(),
+				null/*UserType.getCurrentUserType().getIdentifier()*/);
 		FlexoHelp.reloadHelpSet();
 		FlexoObjectImpl.setCurrentUserIdentifier(applicationContext.getGeneralPreferences().getUserIdentifier());// Loads the preferences
 		FlexoObjectImpl.setHelpRetriever(new DefaultHelpRetriever(applicationContext.getDocResourceManager()));
@@ -169,7 +135,8 @@ public class FlexoApplication {
 		private synchronized boolean testAndSetIsReportingBug() {
 			if (isReportingBug) {
 				return true;
-			} else {
+			}
+			else {
 				isReportingBug = true;
 				return false;
 			}
@@ -207,7 +174,8 @@ public class FlexoApplication {
 					return;
 				}
 				if (exception instanceof TooManyFailedAttemptException || exception.getCause() instanceof TooManyFailedAttemptException) {
-					FlexoController.showError(FlexoLocalization.localizedForKey("too_many_failed_attempt_to_authenticate_to_proxy"));
+					FlexoController.showError(
+							FlexoLocalization.getMainLocalizer().localizedForKey("too_many_failed_attempt_to_authenticate_to_proxy"));
 					return;
 				}
 
@@ -226,20 +194,25 @@ public class FlexoApplication {
 					try {
 						if (exception instanceof InvalidParametersException) {
 							message = "InvalidParametersException: " + exception.getMessage() + ". Edit a bug report ?";
-						} else if (exception instanceof NotImplementedException) {
-							message = FlexoLocalization.localizedForKey("feature_not_implemented:_") + exception.getMessage() + " "
-									+ FlexoLocalization.localizedForKey("would_you_like_to_send_a_report");
-						} else {
-							message = FlexoLocalization.localizedForKey("unexpected_exception_occured") + " "
-									+ FlexoLocalization.localizedForKey("would_you_like_to_send_a_report");
+						}
+						else if (exception instanceof NotImplementedException) {
+							message = FlexoLocalization.getMainLocalizer().localizedForKey("feature_not_implemented:_")
+									+ exception.getMessage() + " "
+									+ FlexoLocalization.getMainLocalizer().localizedForKey("would_you_like_to_send_a_report");
+						}
+						else {
+							message = FlexoLocalization.getMainLocalizer().localizedForKey("unexpected_exception_occured") + " "
+									+ FlexoLocalization.getMainLocalizer().localizedForKey("would_you_like_to_send_a_report");
 						}
 					} catch (RuntimeException e3) {// This catch is here in case the localization layer has crashed
 						e3.printStackTrace();
 						if (exception instanceof InvalidParametersException) {
 							message = "InvalidParametersException: " + exception.getMessage() + ". Edit a bug report ?";
-						} else if (exception instanceof NotImplementedException) {
+						}
+						else if (exception instanceof NotImplementedException) {
 							message = "Feature not implemented: " + exception.getMessage() + ". Edit a bug report ?";
-						} else {
+						}
+						else {
 							message = "Unexpected exception occured: " + exception.getClass().getName() + ". Edit a bug report ?";
 						}
 					}
@@ -248,9 +221,12 @@ public class FlexoApplication {
 							try {
 								if (FlexoController.confirm(message)) {
 									FlexoFrame frame = FlexoFrame.getActiveFrame(false);
-									JIRAIssueReportDialog.newBugReport((Exception) exception, frame != null ? frame.getModule() : null,
-											frame != null ? frame.getController().getProject() : null, frame != null ? frame
-													.getController().getApplicationContext() : null);
+									SendBugReportServiceTask sendBugReport = new SendBugReportServiceTask((Exception) exception,
+											frame != null ? frame.getModule() : null,
+											frame != null ? frame.getController().getProject() : null,
+											frame != null ? frame.getController().getApplicationContext() : null);
+									frame.getController().getApplicationContext().getTaskManager().scheduleExecution(sendBugReport);
+
 								}
 							} catch (HeadlessException e1) {
 								e1.printStackTrace();
@@ -259,13 +235,15 @@ public class FlexoApplication {
 							} finally {
 								resetIsReportingBug();
 							}
-						} else {
+						}
+						else {
 							if (logger.isLoggable(Level.SEVERE)) {
 								logger.severe("Already reporting a bug. Ignoring another exception: " + exception);
 							}
 						}
 					}
-				} else {
+				}
+				else {
 					if (logger.isLoggable(Level.INFO)) {
 						logger.info("Ignoring exception: " + exception);
 					}
@@ -279,37 +257,32 @@ public class FlexoApplication {
 		 * ComponentEvent.COMPONENT_SHOWN)) { logger.info("postEvent: "+e); } }
 		 */
 
-		private void printFocusedComponent() {
+		/*
+		private static void printFocusedComponent() {
 			try {
-				Class c = Class.forName("org.openflexo.wkf.view.WKFFrame");
+				Class<?> c = Class.forName("org.openflexo.wkf.view.WKFFrame");
 				Field f = c.getField("frame");
 				Object o = f.get(null);
 				c = o.getClass();
 				Method m = c.getMethod("printFocusedComponent", new Class[] {});
 				m.invoke(o, new Object[] {});
 			} catch (SecurityException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			} catch (IllegalArgumentException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			} catch (ClassNotFoundException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			} catch (NoSuchFieldException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			} catch (NoSuchMethodException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			} catch (IllegalAccessException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			} catch (InvocationTargetException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
+		*/
 
 		/**
 		 * Determines if exception can be ignored.
@@ -343,7 +316,8 @@ public class FlexoApplication {
 				if (exceptions.size() > 100) {
 					exceptions.remove(100);
 				}
-			} else {
+			}
+			else {
 				return true;
 			}
 
@@ -354,9 +328,8 @@ public class FlexoApplication {
 
 			// if the bug came from the FileChooser (Windows or Metal)
 			// or the AquaDirectoryModel, ignore it.
-			if (bug instanceof NullPointerException
-					&& (msg.indexOf("MetalFileChooserUI") != -1 || msg.indexOf("WindowsFileChooserUI") != -1 || msg
-							.indexOf("AquaDirectoryModel") != -1)) {
+			if (bug instanceof NullPointerException && (msg.indexOf("MetalFileChooserUI") != -1 || msg.indexOf("WindowsFileChooserUI") != -1
+					|| msg.indexOf("AquaDirectoryModel") != -1)) {
 				return true;
 			}
 
@@ -378,8 +351,9 @@ public class FlexoApplication {
 				}
 				bug.printStackTrace();
 				return true;
-			} else {
-				// Same for exceptions where denali appear only as
+			}
+			else {
+				// Same for exceptions where org.openflexo appear only as
 				// org.openflexo.application.FlexoApplication$EventProcessor.dispatchEvent()
 				int index = msg.indexOf("org.openflexo");
 				String searchedString = "org.openflexo.application.FlexoApplication$EventProcessor.dispatchEvent";

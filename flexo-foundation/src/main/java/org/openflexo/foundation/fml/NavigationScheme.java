@@ -44,9 +44,12 @@ import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.DataBinding.BindingDefinitionType;
 import org.openflexo.connie.exception.NullReferenceException;
 import org.openflexo.connie.exception.TypeMismatchException;
-import org.openflexo.fib.annotation.FIBPanel;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
+import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
+import org.openflexo.foundation.fml.rt.action.NavigationSchemeActionFactory;
+import org.openflexo.foundation.nature.FlexoNature;
+import org.openflexo.model.annotations.DefineValidationRule;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
@@ -55,7 +58,6 @@ import org.openflexo.model.annotations.Setter;
 import org.openflexo.model.annotations.XMLAttribute;
 import org.openflexo.model.annotations.XMLElement;
 
-@FIBPanel("Fib/FML/NavigationSchemePanel.fib")
 @ModelEntity
 @ImplementationClass(NavigationScheme.NavigationSchemeImpl.class)
 @XMLElement
@@ -71,7 +73,14 @@ public interface NavigationScheme extends AbstractActionScheme {
 	@Setter(TARGET_OBJECT_KEY)
 	public void setTargetObject(DataBinding<?> targetObject);
 
-	public FlexoObject evaluateTargetObject(FlexoConceptInstance flexoConceptInstance);
+	public FlexoObject evaluateTargetObject(RunTimeEvaluationContext evaluationContext);
+
+	/**
+	 * Returns nature which we will try to use to display target object
+	 * 
+	 * @return
+	 */
+	public <O extends FlexoObject> FlexoNature<O> getDisplayNature(O targetObject);
 
 	public static abstract class NavigationSchemeImpl extends AbstractActionSchemeImpl implements NavigationScheme {
 
@@ -84,7 +93,7 @@ public interface NavigationScheme extends AbstractActionScheme {
 		@Override
 		public DataBinding<?> getTargetObject() {
 			if (targetObject == null) {
-				targetObject = new DataBinding<Object>(this, FlexoObject.class, BindingDefinitionType.GET);
+				targetObject = new DataBinding<>(this, FlexoObject.class, BindingDefinitionType.GET);
 				targetObject.setBindingName("targetObject");
 			}
 			return targetObject;
@@ -102,10 +111,10 @@ public interface NavigationScheme extends AbstractActionScheme {
 		}
 
 		@Override
-		public FlexoObject evaluateTargetObject(FlexoConceptInstance flexoConceptInstance) {
+		public FlexoObject evaluateTargetObject(RunTimeEvaluationContext evaluationContext) {
 			if (getTargetObject().isValid()) {
 				try {
-					return (FlexoObject) getTargetObject().getBindingValue(flexoConceptInstance);
+					return (FlexoObject) getTargetObject().getBindingValue(evaluationContext);
 				} catch (TypeMismatchException e) {
 					e.printStackTrace();
 				} catch (NullReferenceException e) {
@@ -117,5 +126,33 @@ public interface NavigationScheme extends AbstractActionScheme {
 			return null;
 		}
 
+		@Override
+		public NavigationSchemeActionFactory getActionFactory(FlexoConceptInstance fci) {
+			return new NavigationSchemeActionFactory(this, fci);
+		}
+
+		/**
+		 * Returns nature which we will try to use to display target object
+		 * 
+		 * @return
+		 */
+		@Override
+		public <O extends FlexoObject> FlexoNature<O> getDisplayNature(O targetObject) {
+			return null;
+		}
+
 	}
+
+	@DefineValidationRule
+	public static class TargetObjectIsRequiredAndMustBeValid extends BindingIsRequiredAndMustBeValid<NavigationScheme> {
+		public TargetObjectIsRequiredAndMustBeValid() {
+			super("'target_object'_binding_is_not_valid", NavigationScheme.class);
+		}
+
+		@Override
+		public DataBinding<?> getBinding(NavigationScheme object) {
+			return object.getTargetObject();
+		}
+	}
+
 }

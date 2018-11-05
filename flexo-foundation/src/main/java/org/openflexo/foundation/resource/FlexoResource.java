@@ -55,7 +55,6 @@ import org.openflexo.model.annotations.ModelEntity;
 import org.openflexo.model.annotations.Remover;
 import org.openflexo.model.annotations.Setter;
 import org.openflexo.model.annotations.XMLAttribute;
-import org.openflexo.rm.Resource;
 import org.openflexo.toolbox.FlexoVersion;
 import org.openflexo.toolbox.IProgress;
 
@@ -69,7 +68,7 @@ import org.openflexo.toolbox.IProgress;
  */
 @ModelEntity(isAbstract = true)
 @ImplementationClass(FlexoResourceImpl.class)
-public interface FlexoResource<RD extends ResourceData<RD>> extends FlexoObject, ReferenceOwner, Resource {
+public interface FlexoResource<RD extends ResourceData<RD>> extends FlexoObject, ReferenceOwner {
 
 	public static final String NAME = "name";
 	public static final String URI = "URI";
@@ -80,7 +79,9 @@ public interface FlexoResource<RD extends ResourceData<RD>> extends FlexoObject,
 	public static final String DEPENDENCIES = "dependencies";
 	public static final String LAST_UPDATE = "lastUpdate";
 	public static final String SERVICE_MANAGER = "serviceManager";
+	public static final String RESOURCE_CENTER = "resourceCenter";
 	public static final String FLEXO_IO_DELEGATE = "flexoIODelegate";
+	public static final String SPECIALIZED_VIRTUAL_MODEL_CLASS = "specializedVirtualModelClass";
 
 	/**
 	 * Returns the name of this resource. The name of the resource is a displayable name that the end-user will understand. There are no
@@ -110,21 +111,21 @@ public interface FlexoResource<RD extends ResourceData<RD>> extends FlexoObject,
 
 	/**
 	 * Returns the unique resource identifier of this resource. A URI is unique in the whole universe and clearly and uniquely identifies
-	 * this resource.
+	 * this resource.<br>
+	 * If URI was not set for this resource, delegate default URI computation to resource center in which this resource exists
 	 * 
 	 * @return the unique resource identifier of this resource
 	 */
-	@Override
 	@Getter(URI)
 	@XMLAttribute()
 	public String getURI();
 
 	/**
-	 * Sets the unique resource identifier of this resource.
+	 * Sets the unique resource identifier of this resource.<br>
+	 * By doing that, you will desactivate the URI computation performed by the resource center in which this resource exists
 	 * 
 	 * @param anURI
 	 */
-	@Override
 	@Setter(URI)
 	public void setURI(String anURI);
 
@@ -153,7 +154,6 @@ public interface FlexoResource<RD extends ResourceData<RD>> extends FlexoObject,
 	 * 
 	 * @return date
 	 */
-	@Override
 	@Getter(value = LAST_UPDATE, isStringConvertable = true)
 	@XMLAttribute
 	public Date getLastUpdate();
@@ -197,11 +197,32 @@ public interface FlexoResource<RD extends ResourceData<RD>> extends FlexoObject,
 	public void setServiceManager(FlexoServiceManager serviceManager);
 
 	/**
+	 * Return the {@link FlexoResourceCenter} which provides this resource
+	 * 
+	 * @return
+	 */
+	@Getter(value = RESOURCE_CENTER, ignoreType = true)
+	public FlexoResourceCenter<?> getResourceCenter();
+
+	/**
+	 * Sets the {@link FlexoResourceCenter} which provides this resource
+	 */
+	@Setter(RESOURCE_CENTER)
+	public void setResourceCenter(FlexoResourceCenter<?> resourceCenter);
+
+	/**
+	 * Return displayable name for this FlexoResource
+	 * 
+	 * @return
+	 */
+	public String getDisplayName();
+
+	/**
 	 * Returns the class of the resource data held by this resource.
 	 * 
 	 * @return the class of the resource data.
 	 */
-	public Class<RD> getResourceDataClass();
+	public Class<? extends RD> getResourceDataClass();
 
 	/**
 	 * Indicates whether this resource can be edited or not. Returns <code>true</code> if the resource cannot be edited, else returns
@@ -209,7 +230,6 @@ public interface FlexoResource<RD extends ResourceData<RD>> extends FlexoObject,
 	 * 
 	 * @return <code>true</code> if the resource cannot be edited, else returns <code>false</code>.
 	 */
-	@Override
 	public boolean isReadOnly();
 
 	/**
@@ -217,7 +237,6 @@ public interface FlexoResource<RD extends ResourceData<RD>> extends FlexoObject,
 	 * 
 	 * @return the container of this resource.
 	 */
-	@Override
 	@Getter(value = CONTAINER, inverse = CONTENTS)
 	public FlexoResource<?> getContainer();
 
@@ -235,7 +254,6 @@ public interface FlexoResource<RD extends ResourceData<RD>> extends FlexoObject,
 	 * 
 	 * @return the list of contained resources.
 	 */
-	@Override
 	@Getter(value = CONTENTS, cardinality = Cardinality.LIST, inverse = CONTAINER)
 	public List<FlexoResource<?>> getContents();
 
@@ -298,10 +316,18 @@ public interface FlexoResource<RD extends ResourceData<RD>> extends FlexoObject,
 	public void removeFromDependencies(FlexoResource<?> resource);
 
 	@Getter(value = FLEXO_IO_DELEGATE, inverse = FlexoIODelegate.FLEXO_RESOURCE)
-	public FlexoIODelegate<?> getFlexoIODelegate();
+	public FlexoIODelegate<?> getIODelegate();
 
 	@Setter(FLEXO_IO_DELEGATE)
-	public void setFlexoIODelegate(FlexoIODelegate<?> delegate);
+	public void setIODelegate(FlexoIODelegate<?> delegate);
+
+	/**
+	 * Return flag indicating if this resource is currently beeing loading<br>
+	 * Can be used to prevent StackOverflow on some tricky loadings
+	 * 
+	 * @return
+	 */
+	public boolean isLoading();
 
 	/**
 	 * Return flag indicating if this resource is loaded
@@ -316,6 +342,13 @@ public interface FlexoResource<RD extends ResourceData<RD>> extends FlexoObject,
 	 * @return
 	 */
 	public boolean isLoadable();
+
+	/**
+	 * Return flag indicating if this resource support external update
+	 * 
+	 * @return
+	 */
+	public boolean isUpdatable();
 
 	/**
 	 * Returns the &quot;real&quot; resource data of this resource, asserting resource data is already loaded. If the resource is not
@@ -357,9 +390,18 @@ public interface FlexoResource<RD extends ResourceData<RD>> extends FlexoObject,
 
 	/**
 	 * Delete (dereference) resource data if resource data is loaded<br>
-	 * Also delete the resource data
+	 * Also delete the resource data if flag set to true
 	 */
-	public void unloadResourceData();
+	public void unloadResourceData(boolean deleteResourceData);
+
+	/**
+	 * If this resource support external update (reloading), perform it now<br>
+	 * Does nothing if this resource is not updatable
+	 * 
+	 * @param updatedResourceData
+	 * @see #isUpdatable()
+	 */
+	public void updateResourceData();
 
 	/**
 	 * Save the &quot;real&quot; resource data of this resource.
@@ -378,6 +420,11 @@ public interface FlexoResource<RD extends ResourceData<RD>> extends FlexoObject,
 	 * Called to notify that a resource has successfully been loaded
 	 */
 	public void notifyResourceLoaded();
+
+	/**
+	 * Called to notify that a resource has successfully been loaded
+	 */
+	public void notifyResourceUnloaded();
 
 	/**
 	 * Called to notify that a resource has successfully been saved
@@ -431,4 +478,19 @@ public interface FlexoResource<RD extends ResourceData<RD>> extends FlexoObject,
 	 */
 	public boolean isDeleting();
 	// public Date getLastUpdate();
+
+	default FlexoObject findObject(String objectIdentifier, String userIdentifier, String typeIdentifier) {
+		return null;
+	}
+
+	public boolean needsConversion();
+
+	public void setNeedsConversion();
+
+	@Getter(value = SPECIALIZED_VIRTUAL_MODEL_CLASS, ignoreType = true)
+	public Class<? extends RD> getSpecializedResourceDataClass();
+
+	@Setter(SPECIALIZED_VIRTUAL_MODEL_CLASS)
+	public void setSpecializedResourceDataClass(Class<? extends RD> specializedResourceDataClass);
+
 }

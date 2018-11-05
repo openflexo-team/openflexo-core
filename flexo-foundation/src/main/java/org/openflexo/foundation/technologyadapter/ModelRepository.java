@@ -39,37 +39,34 @@
 
 package org.openflexo.foundation.technologyadapter;
 
-import java.io.File;
-
 import org.openflexo.foundation.resource.FlexoResource;
-import org.openflexo.foundation.resource.FlexoResourceCenter;
-import org.openflexo.foundation.resource.ResourceRepository;
-import org.openflexo.localization.FlexoLocalization;
+import org.openflexo.foundation.resource.ResourceRepositoryImpl;
+import org.openflexo.model.annotations.ImplementationClass;
+import org.openflexo.model.annotations.ModelEntity;
 
 /**
  * A {@link ModelRepository} stores all resources storing models relative to a given technology<br>
- * Resources are organized with a folder hierarchy inside a {@link ResourceRepository}
+ * Resources are organized with a folder hierarchy inside a {@link ResourceRepositoryImpl}
  * 
  * @author sylvain
  * 
  * @param <R>
  * @param <TA>
  */
-public abstract class ModelRepository<R extends FlexoModelResource<M, MM, TA, TAMM> & FlexoResource<M>, M extends FlexoModel<M, MM> & TechnologyObject<TA>, MM extends FlexoMetaModel<MM> & TechnologyObject<TAMM>, TA extends TechnologyAdapter, TAMM extends TechnologyAdapter>
-		extends TechnologyAdapterFileResourceRepository<R, TA, M> {
+@ModelEntity(isAbstract = true)
+@ImplementationClass(ModelRepository.ModelRepositoryImpl.class)
+public interface ModelRepository<R extends FlexoModelResource<M, MM, TA, TAMM> & FlexoResource<M>, M extends FlexoModel<M, MM> & TechnologyObject<TA>, MM extends FlexoMetaModel<MM> & TechnologyObject<TAMM>, TA extends TechnologyAdapter, TAMM extends TechnologyAdapter, I>
+		extends TechnologyAdapterResourceRepository<R, TA, M, I> {
 
-	public ModelRepository(TA technologyAdapter, FlexoResourceCenter<?> resourceCenter) {
+	/*public ModelRepository(TA technologyAdapter, FlexoResourceCenter<I> resourceCenter) {
 		super(technologyAdapter, resourceCenter);
-		getRootFolder().setRepositoryContext(FlexoLocalization.localizedForKey("[Models]"));
-		getRootFolder().setDescription(
-				"ModelRepository for technology " + technologyAdapter.getName() + " resource center: " + resourceCenter);
-	}
+		getRootFolder().setRepositoryContext(resourceCenter.getLocales().localizedForKey("[Models]"));
+		getRootFolder()
+				.setDescription("ModelRepository for technology " + technologyAdapter.getName() + " resource center: " + resourceCenter);
+	}*/
 
-	public ModelRepository(TA technologyAdapter, FlexoResourceCenter<?> resourceCenter, File directory) {
-		super(technologyAdapter, resourceCenter, directory);
-		getRootFolder().setRepositoryContext(FlexoLocalization.localizedForKey("[Models]"));
-		getRootFolder().setDescription(
-				"ModelRepository for technology " + technologyAdapter.getName() + " resource center: " + resourceCenter);
+	public static abstract class ModelRepositoryImpl<R extends FlexoModelResource<M, MM, TA, TAMM> & FlexoResource<M>, M extends FlexoModel<M, MM> & TechnologyObject<TA>, MM extends FlexoMetaModel<MM> & TechnologyObject<TAMM>, TA extends TechnologyAdapter, TAMM extends TechnologyAdapter, I>
+			extends TechnologyAdapterResourceRepositoryImpl<R, TA, M, I> implements ModelRepository<R, M, MM, TA, TAMM, I> {
 	}
 
 }

@@ -46,14 +46,15 @@ import java.util.Map;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.FlexoObject;
-import org.openflexo.foundation.action.FlexoClipboard;
-import org.openflexo.foundation.action.PasteAction.DefaultPastingContext;
-import org.openflexo.foundation.action.PasteAction.PasteHandler;
-import org.openflexo.foundation.action.PasteAction.PastingContext;
+import org.openflexo.foundation.action.copypaste.DefaultPastingContext;
+import org.openflexo.foundation.action.copypaste.FlexoClipboard;
+import org.openflexo.foundation.action.copypaste.FlexoPasteHandler;
+import org.openflexo.foundation.action.copypaste.PastingContext;
+import org.openflexo.foundation.fml.FlexoRole.RoleCloningStrategy;
 import org.openflexo.foundation.fml.PrimitiveRole;
 import org.openflexo.foundation.fml.VirtualModel;
-import org.openflexo.foundation.fml.FlexoRole.RoleCloningStrategy;
 import org.openflexo.foundation.fml.rt.ActorReference;
+import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.ModelSlotInstance;
 import org.openflexo.foundation.fml.rt.VirtualModelInstance;
@@ -65,29 +66,30 @@ import org.openflexo.model.factory.ModelFactory;
 import org.openflexo.toolbox.HasPropertyChangeSupport;
 
 /**
- * Paste Handler suitable for pasting something into a VirtualModelInstance<br>
+ * Paste Handler suitable for pasting something into a FMLRTVirtualModelInstance<br>
  * This is the federated models paste handler (when you want to copy/paste {@link FlexoConceptInstance} inside a {@link VirtualModel})
  * 
  * @author sylvain
  * 
  */
-public class VirtualModelInstancePasteHandler implements PasteHandler<VirtualModelInstance> {
+public class VirtualModelInstancePasteHandler extends FlexoPasteHandler<VirtualModelInstance<?, ?>> {
 
 	private static final Logger logger = Logger.getLogger(VirtualModelInstancePasteHandler.class.getPackage().getName());
 
 	public static final String COPY_SUFFIX = "-copy";
 
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
-	public Class<VirtualModelInstance> getPastingPointHolderType() {
-		return VirtualModelInstance.class;
+	public Class<VirtualModelInstance<?, ?>> getPastingPointHolderType() {
+		return (Class) FMLRTVirtualModelInstance.class;
 	}
 
 	@Override
-	public PastingContext<VirtualModelInstance> retrievePastingContext(FlexoObject focusedObject, List<FlexoObject> globalSelection,
+	public PastingContext<VirtualModelInstance<?, ?>> retrievePastingContext(FlexoObject focusedObject, List<FlexoObject> globalSelection,
 			FlexoClipboard clipboard, Event event) {
 
-		if (focusedObject instanceof VirtualModelInstance) {
-			return new HeterogeneousPastingContext((VirtualModelInstance) focusedObject, event);
+		if (focusedObject instanceof FMLRTVirtualModelInstance) {
+			return new HeterogeneousPastingContext((VirtualModelInstance<?, ?>) focusedObject, event);
 
 		}
 
@@ -100,7 +102,7 @@ public class VirtualModelInstancePasteHandler implements PasteHandler<VirtualMod
 	}
 
 	@Override
-	public void prepareClipboardForPasting(FlexoClipboard clipboard, PastingContext<VirtualModelInstance> pastingContext) {
+	public void prepareClipboardForPasting(FlexoClipboard clipboard, PastingContext<VirtualModelInstance<?, ?>> pastingContext) {
 
 		System.out.println("********** prepareClipboardForPasting in " + pastingContext);
 
@@ -110,7 +112,7 @@ public class VirtualModelInstancePasteHandler implements PasteHandler<VirtualMod
 	}
 
 	@Override
-	public void finalizePasting(FlexoClipboard clipboard, PastingContext<VirtualModelInstance> pastingContext) {
+	public void finalizePasting(FlexoClipboard clipboard, PastingContext<VirtualModelInstance<?, ?>> pastingContext) {
 
 		System.out.println("Trying to notify.........");
 
@@ -149,13 +151,13 @@ public class VirtualModelInstancePasteHandler implements PasteHandler<VirtualMod
 	 * @author sylvain
 	 * 
 	 */
-	public class HeterogeneousPastingContext extends DefaultPastingContext<VirtualModelInstance> {
+	public class HeterogeneousPastingContext extends DefaultPastingContext<VirtualModelInstance<?, ?>> {
 
 		// private final Map<ModelSlotInstance<?, ?>, Clipboard> modelSlotClipboards;
 
 		private FlexoClipboard clipboard;
 
-		public HeterogeneousPastingContext(VirtualModelInstance holder, Event event) {
+		public HeterogeneousPastingContext(VirtualModelInstance<?, ?> holder, Event event) {
 			super(holder, event);
 			// modelSlotClipboards = new HashMap<ModelSlotInstance<?, ?>, Clipboard>();
 		}
@@ -166,13 +168,14 @@ public class VirtualModelInstancePasteHandler implements PasteHandler<VirtualMod
 			Clipboard leaderClipboard = clipboard.getLeaderClipboard();
 
 			// First put all FCI in a list
-			List<FlexoConceptInstance> fciList = new ArrayList<FlexoConceptInstance>();
+			List<FlexoConceptInstance> fciList = new ArrayList<>();
 
 			if (leaderClipboard.isSingleObject()) {
 				if (leaderClipboard.getSingleContents() instanceof FlexoConceptInstance) {
 					fciList.add((FlexoConceptInstance) leaderClipboard.getSingleContents());
 				}
-			} else {
+			}
+			else {
 				for (Object o : leaderClipboard.getMultipleContents()) {
 					if (o instanceof FlexoConceptInstance) {
 						fciList.add((FlexoConceptInstance) o);
@@ -184,7 +187,7 @@ public class VirtualModelInstancePasteHandler implements PasteHandler<VirtualMod
 
 				for (ModelSlotInstance<?, ?> msi : getPastingPointHolder().getModelSlotInstances()) {
 					if (msi.getAccessedResourceData() != null && msi.getAccessedResourceData().getResource() instanceof PamelaResource) {
-						PamelaResource modelSlotInstanceResource = (PamelaResource) msi.getAccessedResourceData().getResource();
+						PamelaResource<?, ?> modelSlotInstanceResource = (PamelaResource<?, ?>) msi.getAccessedResourceData().getResource();
 						ModelFactory factory = modelSlotInstanceResource.getFactory();
 
 						Clipboard modelSlotInstanceClipboard = clipboard.getClipboard(modelSlotInstanceResource);
@@ -201,7 +204,7 @@ public class VirtualModelInstancePasteHandler implements PasteHandler<VirtualMod
 
 								prepareModelSlotSpecificClipboard(modelSlotInstanceClipboard, msi, this);
 
-								Map<Object, Object> copiedObjects = new HashMap<Object, Object>();
+								Map<Object, Object> copiedObjects = new HashMap<>();
 
 								// We retain the references for copied objects in this model slot, BEFORE the paste
 								Object[] lastReferenceContents = modelSlotInstanceClipboard.getLastReferenceContents();
@@ -213,8 +216,9 @@ public class VirtualModelInstancePasteHandler implements PasteHandler<VirtualMod
 								// the paste
 								if (modelSlotInstanceClipboard.isSingleObject()) {
 									copiedObjects.put(lastReferenceContents[0], copy);
-								} else {
-									List copyList = (List) copy;
+								}
+								else {
+									List<?> copyList = (List<?>) copy;
 									for (int i = 0; i < lastReferenceContents.length; i++) {
 										copiedObjects.put(lastReferenceContents[i], copyList.get(i));
 									}
@@ -231,14 +235,16 @@ public class VirtualModelInstancePasteHandler implements PasteHandler<VirtualMod
 									}
 								}
 
-							} else {
+							}
+							else {
 								System.out
 										.println("Cannot paste " + modelSlotInstanceClipboard.getTypes()[0] + " in " + pastingPointHolder);
 							}
 
 						}
 
-					} else {
+					}
+					else {
 						if (msi.getAccessedResourceData() != null
 								&& !(msi.getAccessedResourceData().getResource() instanceof PamelaResource)) {
 							logger.severe("Unexpected resource " + msi.getAccessedResourceData().getResource());

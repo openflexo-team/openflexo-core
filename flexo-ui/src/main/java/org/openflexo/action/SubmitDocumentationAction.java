@@ -44,14 +44,14 @@ import java.util.Vector;
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.FlexoObject.FlexoObjectImpl;
-import org.openflexo.foundation.action.FlexoActionType;
+import org.openflexo.foundation.action.FlexoActionFactory;
 import org.openflexo.foundation.action.FlexoGUIAction;
 
 public class SubmitDocumentationAction extends FlexoGUIAction<SubmitDocumentationAction, FlexoObject, FlexoObject> {
 
-	public static class SubmitDocumentationActionType extends FlexoActionType<SubmitDocumentationAction, FlexoObject, FlexoObject> {
+	public static class SubmitDocumentationActionType extends FlexoActionFactory<SubmitDocumentationAction, FlexoObject, FlexoObject> {
 		protected SubmitDocumentationActionType() {
-			super("submit_documentation", null, FlexoActionType.helpGroup, NORMAL_ACTION_TYPE);
+			super("submit_documentation", null, FlexoActionFactory.helpGroup, NORMAL_ACTION_TYPE);
 		}
 
 		private boolean allowsDocSubmission = false;
@@ -65,12 +65,12 @@ public class SubmitDocumentationAction extends FlexoGUIAction<SubmitDocumentatio
 		}
 
 		@Override
-		public boolean isVisibleForSelection(FlexoObject object, Vector globalSelection) {
+		public boolean isVisibleForSelection(FlexoObject object, Vector<FlexoObject> globalSelection) {
 			return allowsDocSubmission;
 		}
 
 		@Override
-		public boolean isEnabledForSelection(FlexoObject object, Vector globalSelection) {
+		public boolean isEnabledForSelection(FlexoObject object, Vector<FlexoObject> globalSelection) {
 			return allowsDocSubmission && object != null;
 		}
 

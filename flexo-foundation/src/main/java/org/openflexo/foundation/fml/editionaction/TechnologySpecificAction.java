@@ -38,194 +38,127 @@
 
 package org.openflexo.foundation.fml.editionaction;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.logging.Logger;
 
 import org.openflexo.connie.type.TypeUtils;
-import org.openflexo.foundation.fml.VirtualModel;
-import org.openflexo.foundation.fml.rt.FMLRTModelSlot;
-import org.openflexo.foundation.fml.rt.ModelSlotInstance;
-import org.openflexo.foundation.fml.rt.VirtualModelInstance;
-import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
+import org.openflexo.foundation.fml.FMLRepresentationContext;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
-import org.openflexo.model.annotations.DefineValidationRule;
-import org.openflexo.model.annotations.Getter;
+import org.openflexo.localization.LocalizedDelegate;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
-import org.openflexo.model.annotations.PropertyIdentifier;
-import org.openflexo.model.annotations.Setter;
-import org.openflexo.model.annotations.XMLElement;
-import org.openflexo.model.validation.FixProposal;
-import org.openflexo.model.validation.ValidationIssue;
-import org.openflexo.model.validation.ValidationRule;
-import org.openflexo.model.validation.ValidationWarning;
 
 /**
- * Abstract class representing a primitive to be executed as an atomic action of an FlexoBehaviour
  * 
- * An edition action adresses a {@link ModelSlot}
+ * Represents an {@link EditionAction} which address a specific technology referenced by a {@link ModelSlot} class<br>
  * 
  * @author sylvain
- * 
+ *
+ * @param <MS>
+ *            Type of model slot which contractualize access to a given technology resource on which this action applies
+ * @param <T>
+ *            Type of assigned value
  */
 @ModelEntity(isAbstract = true)
 @ImplementationClass(TechnologySpecificAction.TechnologySpecificActionImpl.class)
 public abstract interface TechnologySpecificAction<MS extends ModelSlot<?>, T> extends AssignableAction<T> {
 
-	@PropertyIdentifier(type = ModelSlot.class)
-	public static final String MODEL_SLOT_KEY = "modelSlot";
-
-	@Getter(value = MODEL_SLOT_KEY)
-	@XMLElement(primary = false)
-	public MS getModelSlot();
-
-	@Setter(MODEL_SLOT_KEY)
-	public void setModelSlot(MS modelSlot);
-
-	public <MS2 extends ModelSlot<?>> List<MS2> getAvailableModelSlots(Class<MS2> msType);
-
-	public <MS2 extends ModelSlot<?>> List<MS2> getAvailableModelSlots();
-
-	public List<FMLRTModelSlot> getAvailableVirtualModelModelSlots();
-
-	public ModelSlotInstance<MS, ?> getModelSlotInstance(FlexoBehaviourAction<?, ?, ?> action);
-
+	/**
+	 * Return the {@link TechnologyAdapter} were this {@link EditionAction} was registered
+	 * 
+	 * @return
+	 */
 	public TechnologyAdapter getModelSlotTechnologyAdapter();
 
-	public static abstract class TechnologySpecificActionImpl<MS extends ModelSlot<?>, T> extends AssignableActionImpl<T> implements
-			TechnologySpecificAction<MS, T> {
+	/**
+	 * Return {@link Class} of model slot were this {@link EditionAction} was registered
+	 * 
+	 * @return
+	 */
+	public Class<? extends MS> getModelSlotClass();
 
+	/**
+	 * Compute and return assigned model slot asserting this action is assigned to requested {@link ModelSlot}<br>
+	 * 
+	 * Please not there is absolutely no guarantee that this {@link EditionAction} is assigned to a {@link ModelSlot}<br>
+	 * 
+	 * @return null if this {@link EditionAction} is not assigned to a {@link ModelSlot}
+	 */
+	public MS getAssignedModelSlot();
+
+	public static abstract class TechnologySpecificActionImpl<MS extends ModelSlot<?>, T> extends AssignableActionImpl<T>
+			implements TechnologySpecificAction<MS, T> {
+
+		@SuppressWarnings("unused")
 		private static final Logger logger = Logger.getLogger(TechnologySpecificAction.class.getPackage().getName());
 
-		private MS modelSlot;
+		@Override
+		public LocalizedDelegate getLocales() {
+			if (getModelSlotTechnologyAdapter() != null) {
+				return getModelSlotTechnologyAdapter().getLocales();
+			}
+			return super.getLocales();
+		}
 
+		/**
+		 * Return a string representation suitable for a common user<br>
+		 * This representation will used in all GUIs
+		 */
+		@Override
+		public String getStringRepresentation() {
+			return getHeaderContext() + getImplementedInterface().getSimpleName() + getParametersStringRepresentation();
+		}
+
+		@Override
+		public String getFMLRepresentation(FMLRepresentationContext context) {
+			return getImplementedInterface().getSimpleName() + "()";
+		}
+
+		protected final String getTechnologyAdapterIdentifier() {
+			if (getModelSlotTechnologyAdapter() != null) {
+				return getModelSlotTechnologyAdapter().getIdentifier();
+			}
+			return "FML";
+		}
+
+		/**
+		 * Return {@link Class} of model slot were this {@link EditionAction} was registered
+		 * 
+		 * @return
+		 */
+		@SuppressWarnings("unchecked")
+		@Override
+		public final Class<? extends MS> getModelSlotClass() {
+			return (Class<? extends MS>) TypeUtils.getBaseClass(TypeUtils.getTypeArgument(getClass(), TechnologySpecificAction.class, 0));
+		}
+
+		/**
+		 * Return the {@link TechnologyAdapter} were this {@link EditionAction} was registered
+		 * 
+		 * @return
+		 */
 		@Override
 		public TechnologyAdapter getModelSlotTechnologyAdapter() {
-			return modelSlot.getModelSlotTechnologyAdapter();
-		}
-
-		@Override
-		public MS getModelSlot() {
-			if (modelSlot == null) {
-				if (getAvailableModelSlots() != null && getAvailableModelSlots().size() > 0) {
-					modelSlot = (MS) getAvailableModelSlots().get(0);
-				}
-			}
-			return modelSlot;
-		}
-
-		@Override
-		public void setModelSlot(MS modelSlot) {
-			if (modelSlot != this.modelSlot) {
-				MS oldValue = this.modelSlot;
-				this.modelSlot = modelSlot;
-				getPropertyChangeSupport().firePropertyChange("modelSlot", oldValue, modelSlot);
-			}
-		}
-
-		@Override
-		public <MS2 extends ModelSlot<?>> List<MS2> getAvailableModelSlots(Class<MS2> msType) {
-			if (getFlexoConcept() instanceof VirtualModel) {
-				return ((VirtualModel) getFlexoConcept()).getModelSlots(msType);
-			} else if (getFlexoConcept() != null && getFlexoConcept().getOwningVirtualModel() != null) {
-				return getFlexoConcept().getOwningVirtualModel().getModelSlots(msType);
+			if (getServiceManager() != null) {
+				return getServiceManager().getTechnologyAdapterService().getTechnologyAdapterForModelSlot(getModelSlotClass());
 			}
 			return null;
 		}
 
+		/**
+		 * Compute and return assigned model slot asserting this action is assigned to requested {@link ModelSlot}<br>
+		 * 
+		 * Please not there is absolutely no guarantee that this {@link EditionAction} is assigned to a {@link ModelSlot}<br>
+		 * 
+		 * @return null if this {@link EditionAction} is not assigned to a {@link ModelSlot}
+		 */
 		@SuppressWarnings("unchecked")
 		@Override
-		public <MS2 extends ModelSlot<?>> List<MS2> getAvailableModelSlots() {
-			if (getAllAvailableModelSlots() != null) {
-				return (List<MS2>) findAvailableModelSlots();
+		public MS getAssignedModelSlot() {
+			if (getModelSlotClass().isAssignableFrom(getAssignedFlexoProperty().getClass())) {
+				return (MS) getAssignedFlexoProperty();
 			}
 			return null;
-		}
-
-		@Override
-		public List<FMLRTModelSlot> getAvailableVirtualModelModelSlots() {
-			return getAvailableModelSlots(FMLRTModelSlot.class);
-		}
-
-		@Override
-		public ModelSlotInstance<MS, ?> getModelSlotInstance(FlexoBehaviourAction<?, ?, ?> action) {
-			if (action.getVirtualModelInstance() != null) {
-				VirtualModelInstance vmi = action.getVirtualModelInstance();
-				// Following line does not compile with Java7 (don't understand why)
-				// That's the reason i tried to fix that compile issue with getGenericModelSlot() method (see below)
-				return action.getVirtualModelInstance().getModelSlotInstance(getModelSlot());
-				// return (ModelSlotInstance<MS, ?>) vmi.getModelSlotInstance(getGenericModelSlot());
-			} else {
-				logger.severe("Could not access virtual model instance for action " + action);
-				return null;
-			}
-		}
-
-		@SuppressWarnings("unchecked")
-		private <MS2 extends ModelSlot<?>> List<MS2> getAllAvailableModelSlots() {
-			if (getFlexoConcept() != null && getFlexoConcept() instanceof VirtualModel) {
-				return (List<MS2>) ((VirtualModel) getFlexoConcept()).getModelSlots();
-			} else if (getFlexoConcept() != null && getFlexoConcept().getOwningVirtualModel() != null) {
-				return (List<MS2>) getFlexoConcept().getOwningVirtualModel().getModelSlots();
-			}
-			return null;
-		}
-
-		private List<ModelSlot<?>> findAvailableModelSlots() {
-			List<ModelSlot<?>> returned = new ArrayList<ModelSlot<?>>();
-			for (ModelSlot<?> ms : getAllAvailableModelSlots()) {
-				for (Class<?> editionActionType : ms.getAvailableEditionActionTypes()) {
-					if (TypeUtils.isAssignableTo(this, editionActionType)) {
-						returned.add(ms);
-					}
-				}
-				for (Class<?> editionActionType : ms.getAvailableFetchRequestActionTypes()) {
-					if (TypeUtils.isAssignableTo(this, editionActionType)) {
-						returned.add(ms);
-					}
-				}
-			}
-			return returned;
-		}
-	}
-
-	@DefineValidationRule
-	public static class ShouldNotHaveReflexiveVirtualModelModelSlot extends
-			ValidationRule<ShouldNotHaveReflexiveVirtualModelModelSlot, TechnologySpecificAction<?, ?>> {
-
-		public ShouldNotHaveReflexiveVirtualModelModelSlot() {
-			super(TechnologySpecificAction.class, "EditionAction_should_not_have_reflexive_model_slot_no_more");
-		}
-
-		@Override
-		public ValidationIssue<ShouldNotHaveReflexiveVirtualModelModelSlot, TechnologySpecificAction<?, ?>> applyValidation(
-				TechnologySpecificAction<?, ?> anAction) {
-			ModelSlot ms = anAction.getModelSlot();
-			if (ms instanceof FMLRTModelSlot && "virtualModelInstance".equals(ms.getName())) {
-				RemoveReflexiveVirtualModelModelSlot fixProposal = new RemoveReflexiveVirtualModelModelSlot(anAction);
-				return new ValidationWarning<ShouldNotHaveReflexiveVirtualModelModelSlot, TechnologySpecificAction<?, ?>>(this, anAction,
-						"EditionAction_should_not_have_reflexive_model_slot_no_more", fixProposal);
-
-			}
-			return null;
-		}
-
-		protected static class RemoveReflexiveVirtualModelModelSlot extends
-				FixProposal<ShouldNotHaveReflexiveVirtualModelModelSlot, TechnologySpecificAction<?, ?>> {
-
-			private final TechnologySpecificAction<?, ?> action;
-
-			public RemoveReflexiveVirtualModelModelSlot(TechnologySpecificAction<?, ?> anAction) {
-				super("remove_reflexive_modelslot");
-				this.action = anAction;
-			}
-
-			@Override
-			protected void fixAction() {
-				action.setModelSlot(null);
-			}
 		}
 
 	}

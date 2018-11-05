@@ -44,7 +44,7 @@ import java.util.logging.Logger;
 
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoObject.FlexoObjectImpl;
-import org.openflexo.foundation.action.FlexoActionType;
+import org.openflexo.foundation.action.FlexoActionFactory;
 import org.openflexo.foundation.action.NotImplementedException;
 import org.openflexo.foundation.fml.FMLModelFactory;
 import org.openflexo.foundation.fml.FMLObject;
@@ -52,6 +52,7 @@ import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoConceptObject;
 import org.openflexo.foundation.fml.FlexoConceptStructuralFacet;
 import org.openflexo.foundation.fml.GetSetProperty;
+import org.openflexo.foundation.fml.controlgraph.FMLControlGraph;
 
 /**
  * Action allowing to create a {@link GetSetProperty}<br>
@@ -67,8 +68,8 @@ public class CreateGetSetProperty extends AbstractCreateFlexoProperty<CreateGetS
 
 	private static final Logger logger = Logger.getLogger(CreateGetSetProperty.class.getPackage().getName());
 
-	public static FlexoActionType<CreateGetSetProperty, FlexoConceptObject, FMLObject> actionType = new FlexoActionType<CreateGetSetProperty, FlexoConceptObject, FMLObject>(
-			"create_get_set_property", FlexoActionType.newMenu, FlexoActionType.defaultGroup, FlexoActionType.ADD_ACTION_TYPE) {
+	public static FlexoActionFactory<CreateGetSetProperty, FlexoConceptObject, FMLObject> actionType = new FlexoActionFactory<CreateGetSetProperty, FlexoConceptObject, FMLObject>(
+			"create_get_set_property", FlexoActionFactory.newPropertyMenu, FlexoActionFactory.defaultGroup, FlexoActionFactory.ADD_ACTION_TYPE) {
 
 		/**
 		 * Factory method
@@ -120,10 +121,41 @@ public class CreateGetSetProperty extends AbstractCreateFlexoProperty<CreateGetS
 		if (newGetSetProperty != null) {
 
 			newGetSetProperty.setPropertyName(getPropertyName());
-
-			super.doAction(context);
+			newGetSetProperty.setGetControlGraph(getGetControlGraph());
+			if (getSetControlGraph() != null) {
+				newGetSetProperty.setSetControlGraph(getSetControlGraph());
+			}
+			finalizeDoAction(context);
 		}
 
 	}
 
+	private FMLControlGraph getControlGraph;
+	private FMLControlGraph setControlGraph;
+
+	public FMLControlGraph getGetControlGraph() {
+		return getControlGraph;
+	}
+
+	public void setGetControlGraph(FMLControlGraph getControlGraph) {
+		if ((getControlGraph == null && this.getControlGraph != null)
+				|| (getControlGraph != null && !getControlGraph.equals(this.getControlGraph))) {
+			FMLControlGraph oldValue = this.getControlGraph;
+			this.getControlGraph = getControlGraph;
+			getPropertyChangeSupport().firePropertyChange("getControlGraph", oldValue, getControlGraph);
+		}
+	}
+
+	public FMLControlGraph getSetControlGraph() {
+		return setControlGraph;
+	}
+
+	public void setSetControlGraph(FMLControlGraph setControlGraph) {
+		if ((setControlGraph == null && this.setControlGraph != null)
+				|| (setControlGraph != null && !setControlGraph.equals(this.setControlGraph))) {
+			FMLControlGraph oldValue = this.setControlGraph;
+			this.setControlGraph = setControlGraph;
+			getPropertyChangeSupport().firePropertyChange("setControlGraph", oldValue, setControlGraph);
+		}
+	}
 }

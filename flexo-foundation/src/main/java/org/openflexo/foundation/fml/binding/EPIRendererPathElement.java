@@ -42,7 +42,7 @@ import java.lang.reflect.Type;
 import java.util.logging.Logger;
 
 import org.openflexo.connie.BindingEvaluationContext;
-import org.openflexo.connie.binding.BindingPathElement;
+import org.openflexo.connie.binding.IBindingPathElement;
 import org.openflexo.connie.binding.SimplePathElement;
 import org.openflexo.connie.exception.NullReferenceException;
 import org.openflexo.connie.exception.TypeMismatchException;
@@ -53,7 +53,7 @@ public class EPIRendererPathElement extends SimplePathElement {
 
 	private static final Logger logger = Logger.getLogger(EPIRendererPathElement.class.getPackage().getName());
 
-	public EPIRendererPathElement(BindingPathElement parent) {
+	public EPIRendererPathElement(IBindingPathElement parent) {
 		super(parent, "render", String.class);
 	}
 
@@ -64,7 +64,7 @@ public class EPIRendererPathElement extends SimplePathElement {
 
 	@Override
 	public String getTooltipText(Type resultingType) {
-		return FlexoLocalization.localizedForKey("renderer");
+		return FlexoLocalization.getMainLocalizer().localizedForKey("renderer");
 	}
 
 	@Override
@@ -84,9 +84,14 @@ public class EPIRendererPathElement extends SimplePathElement {
 	}
 
 	@Override
-	public void setBindingValue(Object value, Object target, BindingEvaluationContext context) throws TypeMismatchException,
-			NullReferenceException {
+	public void setBindingValue(Object value, Object target, BindingEvaluationContext context)
+			throws TypeMismatchException, NullReferenceException {
 		// Not applicable
+	}
+
+	@Override
+	public boolean isNotificationSafe() {
+		return false;
 	}
 
 }

@@ -47,14 +47,27 @@ import org.openflexo.foundation.DefaultFlexoObject;
 import org.openflexo.model.validation.Validable;
 
 // TODO: convert this model with PAMELA
-public abstract class DRMObject extends DefaultFlexoObject implements Validable {
+public abstract class DRMObject extends DefaultFlexoObject {
 
 	static final Logger logger = Logger.getLogger(DRMObject.class.getPackage().getName());
 
 	private DocItemFolder folder;
+	private String description;
 
 	public DRMObject() {
 		super();
+	}
+
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		if ((description == null && this.description != null) || (description != null && !description.equals(this.description))) {
+			String oldValue = this.description;
+			this.description = description;
+			getPropertyChangeSupport().firePropertyChange("description", oldValue, description);
+		}
 	}
 
 	public DocResourceCenter getDocResourceCenter() {
@@ -168,13 +181,8 @@ public abstract class DRMObject extends DefaultFlexoObject implements Validable 
 	 * 
 	 * @return a Vector of Validable objects
 	 */
-	/**
-	 * Return a vector of all embedded objects at this level does NOT include itself
-	 * 
-	 * @return a Vector of Validable objects
-	 */
 	@Override
-	public Collection<? extends DRMObject> getEmbeddedValidableObjects() {
+	public Collection<Validable> getEmbeddedValidableObjects() {
 		return Collections.emptyList();
 	}
 

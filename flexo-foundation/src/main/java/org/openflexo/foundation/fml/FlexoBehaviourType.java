@@ -73,7 +73,7 @@ public class FlexoBehaviourType implements CustomType {
 	}
 
 	@Override
-	public Class getBaseClass() {
+	public Class<?> getBaseClass() {
 		return FlexoBehaviour.class;
 	}
 
@@ -84,6 +84,12 @@ public class FlexoBehaviourType implements CustomType {
 			return getFlexoBehaviour() == (((FlexoBehaviourType) aType).getFlexoBehaviour());
 		}
 		return false;
+	}
+
+	@Override
+	public boolean isOfType(Object object, boolean permissive) {
+		// TODO please implement me
+		return true;
 	}
 
 	@Override

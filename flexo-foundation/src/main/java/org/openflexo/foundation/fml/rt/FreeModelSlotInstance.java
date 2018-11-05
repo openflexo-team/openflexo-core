@@ -36,7 +36,6 @@
  * 
  */
 
-
 package org.openflexo.foundation.fml.rt;
 
 import java.io.FileNotFoundException;
@@ -62,7 +61,7 @@ import org.openflexo.toolbox.StringUtils;
 
 /**
  * Concretize the binding of a {@link ModelSlot} to a concrete {@link FlexoModel}<br>
- * This is the binding point between a {@link FreeModelSlot} and its concretization in a {@link VirtualModelInstance}
+ * This is the binding point between a {@link FreeModelSlot} and its concretization in a {@link FMLRTVirtualModelInstance}
  * 
  * @author Sylvain Guerin, Vincent LeildÃ©
  * @see FreeModelSlot
@@ -71,8 +70,8 @@ import org.openflexo.toolbox.StringUtils;
 @ModelEntity
 @ImplementationClass(FreeModelSlotInstance.FreeModelSlotInstanceImpl.class)
 @XMLElement
-public interface FreeModelSlotInstance<RD extends ResourceData<RD> & TechnologyObject<?>, MS extends FreeModelSlot<RD>> extends
-		ModelSlotInstance<MS, RD> {
+public interface FreeModelSlotInstance<RD extends ResourceData<RD> & TechnologyObject<?>, MS extends FreeModelSlot<RD>>
+		extends ModelSlotInstance<MS, RD> {
 
 	@PropertyIdentifier(type = String.class)
 	public static final String RESOURCE_URI_KEY = "resourceURI";
@@ -98,7 +97,7 @@ public interface FreeModelSlotInstance<RD extends ResourceData<RD> & TechnologyO
 			super(view, modelSlot);
 		}*/
 
-		/*public FreeModelSlotInstanceImpl(VirtualModelInstance vmInstance, MS modelSlot) {
+		/*public FreeModelSlotInstanceImpl(FMLRTVirtualModelInstance vmInstance, MS modelSlot) {
 			super(vmInstance, modelSlot);
 		}*/
 
@@ -110,22 +109,50 @@ public interface FreeModelSlotInstance<RD extends ResourceData<RD> & TechnologyO
 		}
 
 		@Override
+		public TechnologyAdapterResource<RD, ?> getResource() {
+			TechnologyAdapterResource<RD, ?> returned = super.getResource();
+			if (returned == null && StringUtils.isNotEmpty(resourceURI) && getServiceManager() != null
+					&& getServiceManager().getResourceManager() != null) {
+				// System.out.println("------------> OK, je cherche la resource " + resourceURI);
+				returned = (TechnologyAdapterResource<RD, ?>) getServiceManager().getResourceManager().getResource(resourceURI,
+						getVersion());
+				// System.out.println("Je trouve " + returned);
+
+				/*if (returned == null) {
+					System.out.println("Bon, je trouve pas la resource " + resourceURI);
+					for (FlexoResourceCenter<?> rc : getServiceManager().getResourceCenterService().getResourceCenters()) {
+						System.out.println("> Dans " + rc);
+						for (FlexoResource<?> r : rc.getAllResources()) {
+							System.out.println("   >>> " + r.getURI());
+						}
+					}
+				}*/
+
+				setResource(returned, false);
+			}
+			return returned;
+		}
+
+		@Override
 		public RD getAccessedResourceData() {
-			if (getVirtualModelInstance() != null && accessedResourceData == null && StringUtils.isNotEmpty(resourceURI)) {
-				TechnologyAdapterResource<RD, ?> resource = (TechnologyAdapterResource<RD, ?>) getVirtualModelInstance()
-						.getInformationSpace().getResource(resourceURI, getVersion());
+			if (accessedResourceData == null && getServiceManager() != null) {
+
+				TechnologyAdapterResource<RD, ?> resource = getResource();
+
+				/*if (resource == null && StringUtils.isNotEmpty(resourceURI) && getServiceManager() != null
+						&& getServiceManager().getResourceManager() != null) {
+					resource = (TechnologyAdapterResource<RD, ?>) getServiceManager().getResourceManager().getResource(resourceURI,
+							getVersion());
+					setResource(resource, false);
+				}*/
 				if (resource != null) {
 					try {
 						accessedResourceData = resource.getResourceData(null);
-						this.resource = resource;
 					} catch (FileNotFoundException e) {
-						// TODO Auto-generated catch block
 						e.printStackTrace();
 					} catch (ResourceLoadingCancelledException e) {
-						// TODO Auto-generated catch block
 						e.printStackTrace();
 					} catch (FlexoException e) {
-						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
 				}

@@ -40,7 +40,6 @@ package org.openflexo.foundation.nature;
 
 import java.util.Collection;
 import java.util.Hashtable;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.ServiceLoader;
 import java.util.logging.Logger;
@@ -60,7 +59,7 @@ public abstract class DefaultProjectNatureService extends FlexoServiceImpl imple
 
 	private static final Logger logger = Logger.getLogger(DefaultProjectNatureService.class.getPackage().getName());
 
-	private Map<Class, ProjectNature<?, ?>> loadedProjectNatures;
+	private Map<Class<?>, ProjectNatureFactory<?>> loadedProjectNatureFactories;
 
 	public static ProjectNatureService getNewInstance() {
 		try {
@@ -81,33 +80,32 @@ public abstract class DefaultProjectNatureService extends FlexoServiceImpl imple
 	 * 
 	 * @return the retrieved TechnologyModuleDefinition map.
 	 */
-	public void loadAvailableProjectNatures() {
-		if (loadedProjectNatures == null) {
-			loadedProjectNatures = new Hashtable<Class, ProjectNature<?, ?>>();
+	public void loadAvailableProjectNatureFactories() {
+		if (loadedProjectNatureFactories == null) {
+			loadedProjectNatureFactories = new Hashtable<>();
 			logger.info("Loading available project natures...");
-			ServiceLoader<ProjectNature> loader = ServiceLoader.load(ProjectNature.class);
-			Iterator<ProjectNature> iterator = loader.iterator();
-			while (iterator.hasNext()) {
-				ProjectNature projectNature = iterator.next();
-				registerProjectNature(projectNature);
+			ServiceLoader<ProjectNatureFactory> loader = ServiceLoader.load(ProjectNatureFactory.class);
+			for (ProjectNatureFactory<?> projectNatureFactory : loader) {
+				registerProjectNatureFactory(projectNatureFactory);
 			}
 			logger.info("Loading available project natures. Done.");
 		}
 
 	}
 
-	private void registerProjectNature(ProjectNature projectNature) {
-		logger.info("Found " + projectNature);
-		projectNature.setProjectNatureService(this);
-		addToProjectNatures(projectNature);
+	private void registerProjectNatureFactory(ProjectNatureFactory<?> projectNatureFactory) {
+		logger.info("Found " + projectNatureFactory);
+		projectNatureFactory.setProjectNatureService(this);
+		addToProjectNatureFactories(projectNatureFactory);
 
-		logger.info("Load " + projectNature + " as " + projectNature.getClass());
+		logger.info("Load " + projectNatureFactory + " as " + projectNatureFactory.getProjectNatureClass());
 
-		if (loadedProjectNatures.containsKey(projectNature.getClass())) {
-			logger.severe("Cannot include ProjectNature with classname '" + projectNature.getClass().getName()
+		if (loadedProjectNatureFactories.containsKey(projectNatureFactory.getProjectNatureClass())) {
+			logger.severe("Cannot include ProjectNature with classname '" + projectNatureFactory.getProjectNatureClass().getName()
 					+ "' because it already exists !!!! A ProjectNature name MUST be unique !");
-		} else {
-			loadedProjectNatures.put(projectNature.getClass(), projectNature);
+		}
+		else {
+			loadedProjectNatureFactories.put(projectNatureFactory.getProjectNatureClass(), projectNatureFactory);
 		}
 	}
 
@@ -118,8 +116,8 @@ public abstract class DefaultProjectNatureService extends FlexoServiceImpl imple
 	 * @return
 	 */
 	@Override
-	public <N extends ProjectNature<?, ?>> N getProjectNature(Class<N> projectNatureClass) {
-		return (N) loadedProjectNatures.get(projectNatureClass);
+	public <F extends ProjectNatureFactory<N>, N extends ProjectNature> F getProjectNatureFactory(Class<N> projectNatureClass) {
+		return (F) loadedProjectNatureFactories.get(projectNatureClass);
 	}
 
 	/**
@@ -129,10 +127,10 @@ public abstract class DefaultProjectNatureService extends FlexoServiceImpl imple
 	 * @return
 	 */
 	@Override
-	public ProjectNature<?, ?> getProjectNature(String projectNatureClassName) {
-		for (Class<?> c : loadedProjectNatures.keySet()) {
+	public ProjectNatureFactory<?> getProjectNatureFactory(String projectNatureClassName) {
+		for (Class<?> c : loadedProjectNatureFactories.keySet()) {
 			if (c.getName().equals(projectNatureClassName)) {
-				return loadedProjectNatures.get(c);
+				return loadedProjectNatureFactories.get(c);
 			}
 		}
 		return null;
@@ -143,8 +141,8 @@ public abstract class DefaultProjectNatureService extends FlexoServiceImpl imple
 	 * 
 	 * @return
 	 */
-	public Collection<ProjectNature<?, ?>> getLoadedProjectNatures() {
-		return loadedProjectNatures.values();
+	public Collection<ProjectNatureFactory<?>> getLoadedProjectNatures() {
+		return loadedProjectNatureFactories.values();
 	}
 
 	@Override
@@ -153,8 +151,14 @@ public abstract class DefaultProjectNatureService extends FlexoServiceImpl imple
 	}
 
 	@Override
+	public String getServiceName() {
+		return "ProjectNatureService";
+	}
+
+	@Override
 	public void initialize() {
-		loadAvailableProjectNatures();
+		loadAvailableProjectNatureFactories();
+		status = Status.Started;
 	}
 
 }

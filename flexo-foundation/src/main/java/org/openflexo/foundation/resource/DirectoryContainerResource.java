@@ -70,7 +70,7 @@ public interface DirectoryContainerResource<RD extends ResourceData<RD>> extends
 	 * @return
 	 */
 	@Deprecated
-	@Getter(DIRECTORY)
+	@Getter(value = DIRECTORY, ignoreType = true)
 	@XmlAttribute
 	public Resource getDirectory();
 

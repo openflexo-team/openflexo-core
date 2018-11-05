@@ -41,6 +41,7 @@ package org.openflexo.components.widget;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.FlexoProject;
+import org.openflexo.localization.LocalizedDelegate;
 import org.openflexo.rm.Resource;
 import org.openflexo.rm.ResourceLocator;
 import org.openflexo.view.FIBBrowserView;
@@ -58,7 +59,7 @@ public class FIBProjectResourcesBrowser extends FIBBrowserView<FlexoProject> {
 
 	public static final Resource FIB_FILE = ResourceLocator.locateResource("Fib/Widget/FIBProjectResourcesBrowser.fib");
 
-	public FIBProjectResourcesBrowser(FlexoProject project, FlexoController controller) {
-		super(project, controller, FIB_FILE);
+	public FIBProjectResourcesBrowser(FlexoProject<?> project, FlexoController controller, LocalizedDelegate locales) {
+		super(project, controller, FIB_FILE, locales);
 	}
 }

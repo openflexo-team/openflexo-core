@@ -40,21 +40,21 @@
 package org.openflexo.foundation.technologyadapter;
 
 import org.openflexo.foundation.resource.FlexoResource;
-import org.openflexo.foundation.resource.FlexoResourceCenter;
-import org.openflexo.foundation.resource.ResourceRepository;
-import org.openflexo.localization.FlexoLocalization;
+import org.openflexo.foundation.resource.ResourceRepositoryImpl;
+import org.openflexo.model.annotations.ModelEntity;
 
 /**
  * A {@link MetaModelRepository} stores all resources storing metamodels relative to a given technology<br>
- * Resources are organized with a folder hierarchy inside a {@link ResourceRepository}
+ * Resources are organized with a folder hierarchy inside a {@link ResourceRepositoryImpl}
  * 
  * @author sylvain
  * 
  * @param <R>
  * @param <TA>
  */
-public abstract class MetaModelRepository<R extends FlexoMetaModelResource<M, MM, TA> & FlexoResource<MM>, M extends FlexoModel<M, MM> & TechnologyObject<TA>, MM extends FlexoMetaModel<MM> & TechnologyObject<TA>, TA extends TechnologyAdapter>
-		extends TechnologyAdapterFileResourceRepository<R, TA, MM> {
+@ModelEntity(isAbstract = true)
+public interface MetaModelRepository<R extends FlexoMetaModelResource<M, MM, TA> & FlexoResource<MM>, M extends FlexoModel<M, MM> & TechnologyObject<TA>, MM extends FlexoMetaModel<MM> & TechnologyObject<TA>, TA extends TechnologyAdapter, I>
+		extends TechnologyAdapterResourceRepository<R, TA, MM, I> {
 
 	/**
 	 * Constructor.
@@ -62,11 +62,11 @@ public abstract class MetaModelRepository<R extends FlexoMetaModelResource<M, MM
 	 * @param technologyAdapter
 	 * @param resourceCenter
 	 */
-	public MetaModelRepository(TA technologyAdapter, FlexoResourceCenter<?> resourceCenter) {
+	/*public MetaModelRepository(TA technologyAdapter, FlexoResourceCenter<I> resourceCenter) {
 		super(technologyAdapter, resourceCenter);
-		getRootFolder().setRepositoryContext(FlexoLocalization.localizedForKey("[Metamodels]"));
+		getRootFolder().setRepositoryContext(resourceCenter.getLocales().localizedForKey("[Metamodels]"));
 		getRootFolder().setDescription(
 				"MetaModelRepository for technology " + technologyAdapter.getName() + " resource center: " + resourceCenter);
-	}
+	}*/
 
 }

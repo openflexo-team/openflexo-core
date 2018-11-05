@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<VirtualModel id="FLX-4" virtualModelClass="org.openflexo.foundation.fml.VirtualModel" modelVersion="1.0" uri="http://openflexo.org/test/flexo-test-resources/TestResourceCenter/ViewPoints/TestGetSetProperty.viewpoint/VM.fml" version="0.1" name="VM" userID="FLX" flexoID="4">
+  <FMLLocalizedDictionary id="SYL-31" userID="SYL" flexoID="31" />
+  <Inspector id="FLX-1" inspectorTitle="VM" userID="FLX" flexoID="1" />
+  <GetSetProperty id="FLX-6" name="getSetProperty" userID="FLX" flexoID="6">
+    <SetControlGraph_Sequence id="FLX-27" ownerContext="setControlGraph" userID="FLX" flexoID="27">
+      <ControlGraph2_AssignationAction id="FLX-20" assign="myValue" ownerContext="controlGraph2" userID="FLX" flexoID="20">
+        <AssignableAction_ExpressionAction id="FLX-19" expression="value" userID="FLX" flexoID="19" />
+      </ControlGraph2_AssignationAction>
+      <ControlGraph1_LogAction id="FLX-11" logLevel="INFO" logString="(&quot;want to set &quot; + value)" ownerContext="controlGraph1" userID="FLX" flexoID="11" />
+    </SetControlGraph_Sequence>
+    <GetControlGraph_ReturnStatement id="FLX-9" ownerContext="getControlGraph" userID="FLX" flexoID="9">
+      <AssignableAction_ExpressionAction id="FLX-8" expression="myValue" userID="FLX" flexoID="8" />
+    </GetControlGraph_ReturnStatement>
+  </GetSetProperty>
+  <PrimitiveRole id="FLX-18" primitiveType="String" cloningStrategy="Clone" cardinality="ZeroOne" name="myValue" userID="FLX" flexoID="18" />
+  <CreationScheme id="FLX-23" name="create" width="800" label="create" height="600" userID="FLX" flexoID="23">
+    <BehaviourControlGraph_AssignationAction id="FLX-26" assign="myValue" userID="FLX" flexoID="26">
+      <AssignableAction_ExpressionAction id="FLX-25" expression="&quot;Hello world !&quot;" userID="FLX" flexoID="25" />
+    </BehaviourControlGraph_AssignationAction>
+  </CreationScheme>
+</VirtualModel>

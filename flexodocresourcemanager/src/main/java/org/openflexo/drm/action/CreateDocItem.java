@@ -48,30 +48,30 @@ import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.FlexoObject.FlexoObjectImpl;
 import org.openflexo.foundation.action.FlexoAction;
-import org.openflexo.foundation.action.FlexoActionType;
+import org.openflexo.foundation.action.FlexoActionFactory;
 
-public class CreateDocItem extends FlexoAction {
+public class CreateDocItem extends FlexoAction<CreateDocItem, FlexoObject, FlexoObject> {
 
 	private static final Logger logger = Logger.getLogger(CreateDocItem.class.getPackage().getName());
 
-	public static FlexoActionType actionType = new FlexoActionType("create_new_item", FlexoActionType.newMenu,
-			FlexoActionType.defaultGroup, FlexoActionType.ADD_ACTION_TYPE) {
+	public static FlexoActionFactory<CreateDocItem, FlexoObject, FlexoObject> actionType = new FlexoActionFactory<CreateDocItem, FlexoObject, FlexoObject>(
+			"create_new_item", FlexoActionFactory.newMenu, FlexoActionFactory.defaultGroup, FlexoActionFactory.ADD_ACTION_TYPE) {
 
 		/**
 		 * Factory method
 		 */
 		@Override
-		public FlexoAction makeNewAction(FlexoObject focusedObject, Vector globalSelection, FlexoEditor editor) {
+		public CreateDocItem makeNewAction(FlexoObject focusedObject, Vector<FlexoObject> globalSelection, FlexoEditor editor) {
 			return new CreateDocItem(focusedObject, globalSelection, editor);
 		}
 
 		@Override
-		public boolean isVisibleForSelection(FlexoObject object, Vector globalSelection) {
+		public boolean isVisibleForSelection(FlexoObject object, Vector<FlexoObject> globalSelection) {
 			return true;
 		}
 
 		@Override
-		public boolean isEnabledForSelection(FlexoObject object, Vector globalSelection) {
+		public boolean isEnabledForSelection(FlexoObject object, Vector<FlexoObject> globalSelection) {
 			return object != null && object instanceof DocItemFolder;
 		}
 
@@ -86,7 +86,7 @@ public class CreateDocItem extends FlexoAction {
 	private String _newItemDescription;
 	private DocItem _newDocItem;
 
-	CreateDocItem(FlexoObject focusedObject, Vector globalSelection, FlexoEditor editor) {
+	private CreateDocItem(FlexoObject focusedObject, Vector<FlexoObject> globalSelection, FlexoEditor editor) {
 		super(actionType, focusedObject, globalSelection, editor);
 	}
 

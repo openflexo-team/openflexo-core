@@ -56,7 +56,8 @@ public class LoadModuleTask extends FlexoApplicationTask {
 	private final Module module;
 
 	public LoadModuleTask(ModuleLoader moduleLoader, Module module) {
-		super(FlexoLocalization.localizedForKey("loading_module") + " " + module.getLocalizedName(), moduleLoader);
+		super(FlexoLocalization.getMainLocalizer().localizedForKey("loading_module") + " " + module.getName(),
+				moduleLoader.getServiceManager());
 		this.moduleLoader = moduleLoader;
 		this.module = module;
 	}
@@ -67,7 +68,6 @@ public class LoadModuleTask extends FlexoApplicationTask {
 			Progress.setExpectedProgressSteps(150);
 			this.moduleLoader.performSwitchToModule(module);
 		} catch (ModuleLoadingException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Panel className="org.openflexo.fib.utils.FIBInspector" layout="border"
+<Panel className="org.openflexo.gina.utils.FIBInspector" layout="border"
 	titleFont="SansSerif,0,12" darkLevel="0"
 	dataClassName="org.openflexo.foundation.fml.FlexoConcept"
 	controllerClassName="org.openflexo.fml.controller.FMLFIBInspectorController"
@@ -14,31 +14,32 @@
 				name="NameLabel" localize="true" />
 			<TextField index="1" data="data.name"
 				constraints="twocols(expandHorizontally=true;expandVertically=false;index=1;location=right)"
-				name="Name" localize="true" columns="10" />
+				name="Name" localize="true" columns="10" validateOnReturn="true" />
 
-			<CheckBox selected="true" index="2" data="data.isAbstract"
+			<Label name="AbstractLabel" label="abstract_concept" index="10"
 				constraints="twocols(expandHorizontally=true;expandVertically=false;location=left)"
-				localize="true" enable="!data.abstractRequired" />
-			<Label label="abstract_concept" index="3"
-				constraints="twocols(expandHorizontally=true;expandVertically=false;location=right)"
 				localize="true" />
+			<CheckBox name="AbstractCB" selected="true" index="11" data="data.isAbstract"
+				constraints="twocols(expandHorizontally=true;expandVertically=false;location=right)"
+				localize="true" enable="!data.abstractRequired" />
 
-			<Label label="parent_concepts" index="4" data=""
-				constraints="twocols(expandHorizontally=false;expandVertically=false;index=2;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=5;location=left)"
+			<Label name="ParentConceptsLabel" label="parent_concepts" index="12" data=""
+				constraints="twocols(expandHorizontally=false;expandVertically=false;index=0;location=left)"
 				visible="" format="" icon="" tooltip="" localize="true" enable=""
 				clickAction="" doubleClickAction="" rightClickAction=""
 				enterPressedAction="" valueChangedAction="" valueTransform=""
 				valueValidator="" />
-			<Table iteratorClassName="org.openflexo.foundation.fml.FlexoConcept"
+			<Table name="ParentFlexoConceptTable" iteratorClassName="org.openflexo.foundation.fml.FlexoConcept"
+			    lookAndFeel="FlatDesign" showHeader="false"
 				autoSelectFirstRow="false" createNewRowOnClick="false"
 				boundToSelectionManager="true" showFooter="true"
 				selectionMode="MultipleIntervalSelection" selected="" format=""
 				icon="" tooltip="" localize="true" enable="" manageDynamicModel="true"
 				opaque="false" clickAction="" doubleClickAction="" rightClickAction=""
 				enterPressedAction="" valueChangedAction="" valueTransform=""
-				valueValidator="" name="ParentFlexoConceptTable" index="5"
+				valueValidator="" index="13"
 				data="data.parentFlexoConcepts"
-				constraints="twocols(expandHorizontally=true;expandVertically=true;index=3;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)"
+				constraints="twocols(expandHorizontally=true;expandVertically=false;index=3;location=right)"
 				visible="">
 				<IconColumn data="controller.iconForObject(iterator)"
 					format="" title="icon" columnWidth="25" resizable="false"
@@ -52,24 +53,37 @@
 				<AddAction method="controller.addParentFlexoConcept(data)"
 					name="addParentFlexoConcept" />
 			</Table>
-			<Label label="constraints" index="6"
-				constraints="twocols(expandHorizontally=false;expandVertically=false;index=4;location=left)"
+
+			<Label name="ContainerLabel" label="container" index="14"
+				constraints="twocols(expandHorizontally=false;expandVertically=false;index=0;location=left)"
 				localize="true" />
-			<Table iteratorClassName="org.openflexo.foundation.fml.FlexoConceptConstraint"
-				visibleRowCount="4" rowHeight="18" autoSelectFirstRow="false"
-				createNewRowOnClick="false" boundToSelectionManager="false"
-				showFooter="true" selectionMode="MultipleIntervalSelection"
-				textSelectionColor="255,255,255" textNonSelectionColor="0,0,0"
-				backgroundSelectionColor="26,96,206"
+			<Custom name="ContainerSelector" componentClassName="org.openflexo.fml.controller.widget.FIBFlexoConceptSelector"
+				localize="true" manageDynamicModel="true" opaque="false" 
+				index="15" data="data.containerFlexoConcept"
+				constraints="twocols(expandHorizontally=true;expandVertically=false;index=1;location=right)"
+				minWidth="200" minHeight="25">
+				<Assignment variable="component.virtualModel" value="data.owner" />
+			</Custom>
+
+
+			<Label name="ConstraintsLabel" label="constraints" index="16"
+				constraints="twocols(expandHorizontally=false;expandVertically=false;index=0;location=left)"
+				localize="true" />
+			<Table name="ConstraintsTable" iteratorClassName="org.openflexo.foundation.fml.FlexoConceptConstraint"
+			    lookAndFeel="FlatDesign" showHeader="false"
+				rowHeight="18" autoSelectFirstRow="false" createNewRowOnClick="false"
+				boundToSelectionManager="false" showFooter="true"
+				selectionMode="MultipleIntervalSelection" textSelectionColor="255,255,255"
+				textNonSelectionColor="0,0,0" backgroundSelectionColor="26,96,206"
 				backgroundSecondarySelectionColor="173,215,255"
 				backgroundNonSelectionColor="255,255,255" localize="true"
-				manageDynamicModel="true" name="ConstraintsTable" index="7"
+				manageDynamicModel="true" index="17"
 				data="data.flexoConceptConstraints"
-				constraints="twocols(expandHorizontally=true;expandVertically=true;index=3;location=right)">
+				constraints="twocols(expandHorizontally=true;expandVertically=false;index=3;location=right)">
 				<IconColumn data="controller.iconForObject(iterator)"
 					title="icon" columnWidth="30" resizable="false" displayTitle="false"
 					name="icon" />
-				<CustomColumn componentClassName="org.openflexo.fib.swing.utils.BindingSelector"
+				<CustomColumn componentClassName="org.openflexo.gina.swing.utils.BindingSelector"
 					customRendering="false" disableTerminateEditOnFocusLost="false"
 					data="iterator.constraint" title="constraint" columnWidth="80"
 					resizable="true" displayTitle="true" name="value">
@@ -81,33 +95,67 @@
 				<RemoveAction method="controller.deleteConstraint(data,selected)"
 					name="delete_constraint" />
 			</Table>
-			<Label manageDynamicModel="false" useScrollBar="false"
-				controllerClassName="org.openflexo.fib.controller.FIBController"
-				localize="true" align="left" index="10000"
-				constraints="twocols(expandHorizontally=true;expandVertically=false;location=left)"
-				label="description" readOnly="false" />
-			<TextArea verticalScrollbarPolicy="VERTICAL_SCROLLBAR_AS_NEEDED"
-				manageDynamicModel="false" useScrollBar="true" columns="8"
-				controllerClassName="org.openflexo.fib.controller.FIBController"
-				data="data.description" localize="true" index="10001"
-				constraints="twocols(expandHorizontally=true;expandVertically=true;location=right)"
-				rows="3" readOnly="false" validateOnReturn="true"
-				horizontalScrollbarPolicy="HORIZONTAL_SCROLLBAR_AS_NEEDED" />
+
 
 		</Tab>
 		<Tab title="Advanced" layout="twocols" titleFont="SansSerif,0,11"
 			darkLevel="0" index="2" font="SansSerif,0,11" useScrollBar="true"
 			horizontalScrollbarPolicy="HORIZONTAL_SCROLLBAR_AS_NEEDED"
-			verticalScrollbarPolicy="VERTICAL_SCROLLBAR_AS_NEEDED" name="AdvancedTab" />
-		<Tab title="FML" layout="twocols" titleFont="SansSerif,0,11"
+			verticalScrollbarPolicy="VERTICAL_SCROLLBAR_AS_NEEDED" name="AdvancedTab">
+			<Label name="KeyPropertiesLabel" localize="true"
+				visible="(data.flexoProperties.size &gt; 0)" align="left" index="18"
+				constraints="twocols(expandHorizontally=false;expandVertically=false;index=2;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=5;location=left)"
+				label="key_properties" />
+			<CheckboxList name="KeyPropertiesCBList" data="data.keyProperties" index="19"
+				visible="(data.flexoProperties.size &gt; 0)"
+				constraints="twocols(expandHorizontally=true;expandVertically=false;index=3;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)"
+				format="object.name" showText="true"
+				iteratorClassName="org.openflexo.foundation.fml.FlexoProperty"
+				showIcon="true" staticList="" autoSelectFirstRow="true" 
+				icon="controller.iconForObject(object)" list="data.flexoProperties" />
+		</Tab>
+		
+		<Tab title="Doc" layout="twocols" titleFont="SansSerif,0,11"
 			darkLevel="0" index="3" font="SansSerif,0,11" useScrollBar="true"
 			horizontalScrollbarPolicy="HORIZONTAL_SCROLLBAR_AS_NEEDED"
-			verticalScrollbarPolicy="VERTICAL_SCROLLBAR_AS_NEEDED" name="FMLTab">
-			<Editor validateOnReturn="true" columns="8" rows="3" text="Editor"
-				tokenMarkerStyle="FML" data="data.fMLRepresentation" constraints="twocols(expandHorizontally=true;expandVertically=true;location=center)"
-				width="120" height="120" useScrollBar="true"
-				horizontalScrollbarPolicy="HORIZONTAL_SCROLLBAR_AS_NEEDED"
-				verticalScrollbarPolicy="VERTICAL_SCROLLBAR_AS_NEEDED" localize="true" />
+			verticalScrollbarPolicy="VERTICAL_SCROLLBAR_AS_NEEDED" name="DocTab">
+		
+			<Label index="30" label="big_icon_(64x64px)" constraints="twocols(expandHorizontally=false;expandVertically=false;index=0;location=left)"
+				localize="true" />
+			<Panel index="31" layout="border" hGap="0" vGap="0"
+				flowAlignment="LEADING" borderLeft="2" titleFont="SansSerif,0,11"
+				darkLevel="0" constraints="twocols(expandHorizontally=true;location=right)">
+				<Image manageDynamicModel="false" useScrollBar="false" data="data.bigIcon.image"
+					sizeAdjustment="FitToAvailableSizeRespectRatio" imageHeight="64" localize="true"
+					align="left" readOnly="false" imageWidth="64" constraints="border(location=west)" />
+				<File isDirectory="false" columns="5" localize="true"
+					data="data.bigIconFile" constraints="border(location=border)" />
+			</Panel>
+
+			<Label index="32" label="medium_icon_(32x32px)" constraints="twocols(expandHorizontally=false;expandVertically=false;index=0;location=left)"
+				localize="true" />
+			<Panel index="33" layout="border" hGap="0" vGap="0"
+				flowAlignment="LEADING" borderLeft="2" titleFont="SansSerif,0,11"
+				darkLevel="0" constraints="twocols(expandHorizontally=true;location=right)">
+				<Image manageDynamicModel="false" useScrollBar="false" data="data.mediumIcon.image"
+					sizeAdjustment="FitToAvailableSizeRespectRatio" imageHeight="32" localize="true"
+					align="left" readOnly="false" imageWidth="32" constraints="border(location=west)" />
+				<File isDirectory="false" columns="5" localize="true"
+					data="data.mediumIconFile" constraints="border(location=border)" />
+			</Panel>
+
+			<Label index="34" label="small_icon_(16x16px)" constraints="twocols(expandHorizontally=false;expandVertically=false;index=0;location=left)"
+				localize="true" />
+			<Panel index="35" layout="border" hGap="0" vGap="0"
+				flowAlignment="LEADING" borderLeft="2" titleFont="SansSerif,0,11"
+				darkLevel="0" constraints="twocols(expandHorizontally=true;location=right)">
+				<Image manageDynamicModel="false" useScrollBar="false" data="data.smallIcon.image"
+					sizeAdjustment="OriginalSize" imageHeight="16" localize="true"
+					align="left" readOnly="false" imageWidth="16" constraints="border(location=west)" />
+				<File isDirectory="false" columns="5" localize="true"
+					data="data.smallIconFile" constraints="border(location=border)" />
+			</Panel>
+
 		</Tab>
 	</TabPanel>
 	<LocalizedDictionary>

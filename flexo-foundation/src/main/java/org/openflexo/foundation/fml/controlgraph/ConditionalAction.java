@@ -39,19 +39,22 @@
 package org.openflexo.foundation.fml.controlgraph;
 
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Type;
 import java.util.logging.Logger;
 
+import org.openflexo.connie.BindingEvaluationContext;
 import org.openflexo.connie.BindingModel;
 import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.exception.NullReferenceException;
 import org.openflexo.connie.exception.TypeMismatchException;
-import org.openflexo.fib.annotation.FIBPanel;
+import org.openflexo.connie.type.ExplicitNullType;
+import org.openflexo.connie.type.TypeUtils;
 import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.fml.FMLRepresentationContext;
 import org.openflexo.foundation.fml.FMLRepresentationContext.FMLRepresentationOutput;
 import org.openflexo.foundation.fml.binding.ControlGraphBindingModel;
-import org.openflexo.foundation.fml.editionaction.EditionAction;
-import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
+import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
+import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext.ReturnException;
 import org.openflexo.model.annotations.CloningStrategy;
 import org.openflexo.model.annotations.CloningStrategy.StrategyType;
 import org.openflexo.model.annotations.DefineValidationRule;
@@ -63,9 +66,11 @@ import org.openflexo.model.annotations.PropertyIdentifier;
 import org.openflexo.model.annotations.Setter;
 import org.openflexo.model.annotations.XMLAttribute;
 import org.openflexo.model.annotations.XMLElement;
+import org.openflexo.model.validation.ValidationError;
+import org.openflexo.model.validation.ValidationIssue;
+import org.openflexo.model.validation.ValidationRule;
 import org.openflexo.toolbox.StringUtils;
 
-@FIBPanel("Fib/FML/ConditionalActionPanel.fib")
 @ModelEntity
 @ImplementationClass(ConditionalAction.ConditionalActionImpl.class)
 @XMLElement
@@ -103,8 +108,11 @@ public interface ConditionalAction extends ControlStructureAction, FMLControlGra
 	@Setter(ELSE_CONTROL_GRAPH_KEY)
 	public void setElseControlGraph(FMLControlGraph aControlGraph);
 
+	public boolean evaluateCondition(BindingEvaluationContext evaluationContext);
+
 	public static abstract class ConditionalActionImpl extends ControlStructureActionImpl implements ConditionalAction {
 
+		@SuppressWarnings("unused")
 		private static final Logger logger = Logger.getLogger(ConditionalAction.class.getPackage().getName());
 
 		private DataBinding<Boolean> condition;
@@ -133,7 +141,8 @@ public interface ConditionalAction extends ControlStructureAction, FMLControlGra
 		public FMLControlGraph getControlGraph(String ownerContext) {
 			if (THEN_CONTROL_GRAPH_KEY.equals(ownerContext)) {
 				return getThenControlGraph();
-			} else if (ELSE_CONTROL_GRAPH_KEY.equals(ownerContext)) {
+			}
+			else if (ELSE_CONTROL_GRAPH_KEY.equals(ownerContext)) {
 				return getElseControlGraph();
 			}
 			return null;
@@ -144,7 +153,8 @@ public interface ConditionalAction extends ControlStructureAction, FMLControlGra
 
 			if (THEN_CONTROL_GRAPH_KEY.equals(ownerContext)) {
 				setThenControlGraph(controlGraph);
-			} else if (ELSE_CONTROL_GRAPH_KEY.equals(ownerContext)) {
+			}
+			else if (ELSE_CONTROL_GRAPH_KEY.equals(ownerContext)) {
 				setElseControlGraph(controlGraph);
 			}
 		}
@@ -166,8 +176,10 @@ public interface ConditionalAction extends ControlStructureAction, FMLControlGra
 			out.append("if " + getCondition().toString() + "", context);
 			out.append(" {", context);
 			out.append(StringUtils.LINE_SEPARATOR, context);
-			out.append(getThenControlGraph().getFMLRepresentation(context), context, 1);
-			out.append(StringUtils.LINE_SEPARATOR, context);
+			if (getThenControlGraph() != null) {
+				out.append(getThenControlGraph().getFMLRepresentation(context), context, 1);
+				out.append(StringUtils.LINE_SEPARATOR, context);
+			}
 			out.append("}", context);
 			if (getElseControlGraph() != null) {
 				out.append(" else {", context);
@@ -182,7 +194,7 @@ public interface ConditionalAction extends ControlStructureAction, FMLControlGra
 		@Override
 		public DataBinding<Boolean> getCondition() {
 			if (condition == null) {
-				condition = new DataBinding<Boolean>(this, Boolean.class, DataBinding.BindingDefinitionType.GET);
+				condition = new DataBinding<>(this, Boolean.class, DataBinding.BindingDefinitionType.GET);
 				condition.setBindingName("condition");
 			}
 			return condition;
@@ -200,11 +212,11 @@ public interface ConditionalAction extends ControlStructureAction, FMLControlGra
 		}
 
 		@Override
-		public boolean evaluateCondition(FlexoBehaviourAction action) {
-			if (getCondition().isSet() && getCondition().isValid()) {
+		public boolean evaluateCondition(BindingEvaluationContext evaluationContext) {
+			DataBinding<Boolean> condition = getCondition();
+			if (condition.isSet() && condition.isValid()) {
 				try {
-					DataBinding condition = getCondition();
-					Boolean returned = getCondition().getBindingValue(action);
+					Boolean returned = condition.getBindingValue(evaluationContext);
 					if (returned == null) {
 						/*System.out.println("Evaluation of " + getCondition() + " returns null");
 						DataBinding db1 = new DataBinding<Object>("city1.name", getCondition().getOwner(), Object.class,
@@ -236,49 +248,17 @@ public interface ConditionalAction extends ControlStructureAction, FMLControlGra
 		}
 
 		@Override
-		public Object execute(FlexoBehaviourAction<?, ?, ?> action) throws FlexoException {
-			if (evaluateCondition(action)) {
-				return getThenControlGraph().execute(action);
-				// performBatchOfActions(getActions(), action);
-			} else {
+		public Object execute(RunTimeEvaluationContext evaluationContext) throws ReturnException, FlexoException {
+			if (evaluateCondition(evaluationContext)) {
+				return getThenControlGraph().execute(evaluationContext);
+			}
+			else {
 				if (getElseControlGraph() != null) {
-					return getElseControlGraph().execute(action);
+					return getElseControlGraph().execute(evaluationContext);
 				}
 			}
 			return null;
 		}
-
-		@Deprecated
-		@Override
-		public void addToActions(EditionAction anAction) {
-			FMLControlGraphConverter.addToActions(this, THEN_CONTROL_GRAPH_KEY, anAction);
-		}
-
-		@Deprecated
-		@Override
-		public void removeFromActions(EditionAction anAction) {
-			FMLControlGraphConverter.removeFromActions(this, THEN_CONTROL_GRAPH_KEY, anAction);
-		}
-
-		/*@Deprecated
-		@Override
-		public void addToActions(EditionAction anAction) {
-			FMLControlGraph controlGraph = getThenControlGraph();
-			if (controlGraph == null) {
-				// If control graph is null, action will be new new control graph
-				setThenControlGraph(anAction);
-			} else {
-				// Otherwise, sequentially append action
-				controlGraph.sequentiallyAppend(anAction);
-			}
-			// performSuperAdder(ACTIONS_KEY, anAction);
-		}
-
-		@Deprecated
-		@Override
-		public void removeFromActions(EditionAction anAction) {
-			anAction.delete();
-		}*/
 
 		@Override
 		public void reduce() {
@@ -300,12 +280,58 @@ public interface ConditionalAction extends ControlStructureAction, FMLControlGra
 
 		@Override
 		public void setOwner(FMLControlGraphOwner owner) {
-			performSuperSetter(OWNER_KEY, owner);
+			super.setOwner(owner);
 			if (getThenControlGraph() != null) {
 				getThenControlGraph().getBindingModel().setBaseBindingModel(getInferedBindingModel());
 			}
 			if (getElseControlGraph() != null) {
 				getElseControlGraph().getBindingModel().setBaseBindingModel(getInferedBindingModel());
+			}
+		}
+
+		@Override
+		public Type getInferedType() {
+
+			if (getThenControlGraph() != null) {
+
+				Type inferedType1 = getThenControlGraph().getInferedType();
+
+				if (getElseControlGraph() != null) {
+					Type inferedType2 = getElseControlGraph().getInferedType();
+
+					if (inferedType1 instanceof ExplicitNullType) {
+						if (inferedType2 instanceof ExplicitNullType) {
+							return Object.class;
+						}
+						return inferedType2;
+					}
+
+					if (inferedType2 instanceof ExplicitNullType) {
+						return inferedType1;
+					}
+
+					if (TypeUtils.isTypeAssignableFrom(inferedType1, inferedType2)) {
+						return inferedType1;
+					}
+					if (TypeUtils.isTypeAssignableFrom(inferedType2, inferedType1)) {
+						return inferedType2;
+					}
+				}
+
+				return inferedType1;
+			}
+
+			return Void.class;
+		}
+
+		@Override
+		public void accept(FMLControlGraphVisitor visitor) {
+			super.accept(visitor);
+			if (getThenControlGraph() != null) {
+				getThenControlGraph().accept(visitor);
+			}
+			if (getElseControlGraph() != null) {
+				getElseControlGraph().accept(visitor);
 			}
 		}
 
@@ -322,6 +348,33 @@ public interface ConditionalAction extends ControlStructureAction, FMLControlGra
 			return object.getCondition();
 		}
 
+	}
+
+	@DefineValidationRule
+	public static class InferedTypesMustBeCompatible extends ValidationRule<InferedTypesMustBeCompatible, ConditionalAction> {
+		public InferedTypesMustBeCompatible() {
+			super(ConditionalAction.class, "infered_types_must_be_compatible_in_a_conditional");
+		}
+
+		@Override
+		public ValidationIssue<InferedTypesMustBeCompatible, ConditionalAction> applyValidation(ConditionalAction conditional) {
+
+			if (conditional.getThenControlGraph() != null) {
+				Type inferedType1 = conditional.getThenControlGraph().getInferedType();
+				if (conditional.getElseControlGraph() != null) {
+					Type inferedType2 = conditional.getElseControlGraph().getInferedType();
+					if (inferedType1 != Void.class && inferedType2 != Void.class
+							&& !TypeUtils.isTypeAssignableFrom(inferedType1, inferedType2)
+							&& !TypeUtils.isTypeAssignableFrom(inferedType2, inferedType1)) {
+						return new ValidationError<>(this, conditional,
+								"types_are_not_compatible (" + TypeUtils.simpleRepresentation(inferedType1) + " and "
+										+ TypeUtils.simpleRepresentation(inferedType2) + ")");
+					}
+				}
+			}
+
+			return null;
+		}
 	}
 
 }

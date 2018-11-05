@@ -51,15 +51,15 @@ import org.openflexo.drm.DocItemVersion;
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoObject.FlexoObjectImpl;
 import org.openflexo.foundation.action.FlexoAction;
-import org.openflexo.foundation.action.FlexoActionType;
+import org.openflexo.foundation.action.FlexoActionFactory;
 import org.openflexo.localization.Language;
 
 public class ApproveVersion extends FlexoAction<ApproveVersion, DocItem, DocItem> {
 
 	private static final Logger logger = Logger.getLogger(ApproveVersion.class.getPackage().getName());
 
-	public static FlexoActionType<ApproveVersion, DocItem, DocItem> actionType = new FlexoActionType<ApproveVersion, DocItem, DocItem>(
-			"approve_version", FlexoActionType.defaultGroup, FlexoActionType.NORMAL_ACTION_TYPE) {
+	public static FlexoActionFactory<ApproveVersion, DocItem, DocItem> actionType = new FlexoActionFactory<ApproveVersion, DocItem, DocItem>(
+			"approve_version", FlexoActionFactory.defaultGroup, FlexoActionFactory.NORMAL_ACTION_TYPE) {
 
 		/**
 		 * Factory method
@@ -86,7 +86,7 @@ public class ApproveVersion extends FlexoAction<ApproveVersion, DocItem, DocItem
 	}
 
 	protected static List<DocItemAction> getPendingActions(DocItem item) {
-		List<DocItemAction> returned = new ArrayList<DocItemAction>();
+		List<DocItemAction> returned = new ArrayList<>();
 		for (Language lang : item.getDocResourceCenter().getLanguages()) {
 			DocItemAction dia = item.getLastPendingActionForLanguage(lang);
 			if (dia != null) {
@@ -106,7 +106,7 @@ public class ApproveVersion extends FlexoAction<ApproveVersion, DocItem, DocItem
 
 	public Vector<DocItemVersion> getVersionsThatCanBeApproved() {
 		if (_versionsThatCanBeApproved == null) {
-			_versionsThatCanBeApproved = new Vector<DocItemVersion>();
+			_versionsThatCanBeApproved = new Vector<>();
 			for (DocItemAction next : getPendingActions(getDocItem())) {
 				_versionsThatCanBeApproved.add(next.getVersion());
 			}
@@ -114,7 +114,7 @@ public class ApproveVersion extends FlexoAction<ApproveVersion, DocItem, DocItem
 		return _versionsThatCanBeApproved;
 	}
 
-	ApproveVersion(DocItem focusedObject, Vector<DocItem> globalSelection, FlexoEditor editor) {
+	private ApproveVersion(DocItem focusedObject, Vector<DocItem> globalSelection, FlexoEditor editor) {
 		super(actionType, focusedObject, globalSelection, editor);
 	}
 
@@ -132,7 +132,7 @@ public class ApproveVersion extends FlexoAction<ApproveVersion, DocItem, DocItem
 
 	public DocItem getDocItem() {
 		if (_docItem == null) {
-			if (getFocusedObject() != null && getFocusedObject() instanceof DocItem) {
+			if (getFocusedObject() != null) {
 				_docItem = getFocusedObject();
 			}
 		}

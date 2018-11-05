@@ -40,27 +40,31 @@ package org.openflexo.foundation;
 
 import java.awt.Event;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.openflexo.connie.type.TypeUtils;
 import org.openflexo.foundation.FlexoObject.FlexoObjectImpl;
-import org.openflexo.foundation.action.CopyAction.CopyActionType;
-import org.openflexo.foundation.action.CutAction.CutActionType;
-import org.openflexo.foundation.action.FlexoClipboard;
 import org.openflexo.foundation.action.FlexoUndoManager;
-import org.openflexo.foundation.action.PasteAction.DefaultPasteHandler;
-import org.openflexo.foundation.action.PasteAction.PasteActionType;
-import org.openflexo.foundation.action.PasteAction.PasteHandler;
 import org.openflexo.foundation.action.SelectAllAction.SelectAllActionType;
+import org.openflexo.foundation.action.copypaste.CopyAction.CopyActionType;
+import org.openflexo.foundation.action.copypaste.CutAction.CutActionType;
+import org.openflexo.foundation.action.copypaste.DefaultPasteHandler;
+import org.openflexo.foundation.action.copypaste.FlexoClipboard;
+import org.openflexo.foundation.action.copypaste.PasteAction.PasteActionType;
+import org.openflexo.foundation.action.copypaste.PasteHandler;
+import org.openflexo.foundation.action.copypaste.PastingContext;
 import org.openflexo.model.ModelEntity;
 import org.openflexo.model.factory.Clipboard;
 import org.openflexo.model.factory.EditingContext;
 import org.openflexo.model.factory.EditingContextImpl;
 import org.openflexo.model.factory.ModelFactory;
 import org.openflexo.model.factory.ProxyMethodHandler;
+import org.openflexo.toolbox.StringUtils;
 
 /**
  * The {@link FlexoEditingContext} represents the {@link EditingContext} for the whole application<br>
@@ -73,6 +77,8 @@ import org.openflexo.model.factory.ProxyMethodHandler;
 public class FlexoEditingContext extends EditingContextImpl implements FlexoService {
 
 	protected static final Logger logger = Logger.getLogger(FlexoEditingContext.class.getPackage().getName());
+
+	protected Status status = Status.Registered;
 
 	private FlexoServiceManager serviceManager;
 	private FlexoUndoManager undoManager;
@@ -88,12 +94,28 @@ public class FlexoEditingContext extends EditingContextImpl implements FlexoServ
 
 	private final PasteHandler<?> defaultPasteHandler;
 
+	private boolean warnOnUnexpectedEdits = true;
+
 	public static FlexoEditingContext createInstance() {
-		return new FlexoEditingContext();
+		return new FlexoEditingContext(true);
 	}
 
-	private FlexoEditingContext() {
-		pasteHandlers = new HashMap<Class<?>, List<PasteHandler<? extends FlexoObject>>>();
+	public static FlexoEditingContext createInstance(boolean warnOnUnexpectedEdits) {
+		return new FlexoEditingContext(warnOnUnexpectedEdits);
+	}
+
+	/**
+	 * Return a flag indicating if we should warn about edits being raised outside declared UNDO scope
+	 * 
+	 * @return
+	 */
+	public boolean warnOnUnexpectedEdits() {
+		return warnOnUnexpectedEdits;
+	}
+
+	private FlexoEditingContext(boolean warnOnUnexpectedEdits) {
+		this.warnOnUnexpectedEdits = warnOnUnexpectedEdits;
+		pasteHandlers = new HashMap<>();
 		defaultPasteHandler = new DefaultPasteHandler();
 	}
 
@@ -103,9 +125,14 @@ public class FlexoEditingContext extends EditingContextImpl implements FlexoServ
 	}
 
 	@Override
+	public String getServiceName() {
+		return "FlexoEditingContext";
+	}
+
+	@Override
 	public void initialize() {
 		logger.info("Initialized FlexoEditingContext...");
-		undoManager = new FlexoUndoManager();
+		undoManager = new FlexoUndoManager(this);
 		copyActionType = new CopyActionType(this);
 		FlexoObjectImpl.addActionForClass(copyActionType, FlexoObject.class);
 		cutActionType = new CutActionType(this);
@@ -114,11 +141,14 @@ public class FlexoEditingContext extends EditingContextImpl implements FlexoServ
 		FlexoObjectImpl.addActionForClass(pasteActionType, FlexoObject.class);
 		selectAllActionType = new SelectAllActionType(this);
 		FlexoObjectImpl.addActionForClass(selectAllActionType, FlexoObject.class);
+		status = Status.Started;
 	}
 
 	@Override
 	public void receiveNotification(FlexoService caller, ServiceNotification notification) {
-		logger.fine(getClass().getSimpleName() + " service received notification " + notification + " from " + caller);
+		if (logger.isLoggable(Level.FINE)) {
+			logger.fine(getClass().getSimpleName() + " service received notification " + notification + " from " + caller);
+		}
 	}
 
 	@Override
@@ -159,7 +189,7 @@ public class FlexoEditingContext extends EditingContextImpl implements FlexoServ
 		// logger.info("%%%%%%%%% registerPasteHandler " + pasteHandler + " for " + pasteHandler.getPastingPointHolderType());
 		List<PasteHandler<?>> handlersList = pasteHandlers.get(pasteHandler.getPastingPointHolderType());
 		if (handlersList == null) {
-			handlersList = new ArrayList<PasteHandler<?>>();
+			handlersList = new ArrayList<>();
 			pasteHandlers.put(pasteHandler.getPastingPointHolderType(), handlersList);
 		}
 		if (!handlersList.contains(pasteHandler)) {
@@ -180,6 +210,7 @@ public class FlexoEditingContext extends EditingContextImpl implements FlexoServ
 
 	/**
 	 * Implements PasteHandler lookup<br>
+	 * Return the best PastHandler adapter to current paste operation<br>
 	 * The lookup is performed relatively to the current selection and focused object, and the type of objects stored in Clipboard.
 	 * 
 	 * @param focusedObject
@@ -204,7 +235,7 @@ public class FlexoEditingContext extends EditingContextImpl implements FlexoServ
 		}*/
 
 		// We will store all matching handlers in a map where the key is the pasting point holder type
-		Map<Class<?>, List<PasteHandler<?>>> matchingHandlers = new HashMap<Class<?>, List<PasteHandler<?>>>();
+		Map<Class<?>, List<PasteHandler<?>>> matchingHandlers = new HashMap<>();
 
 		Clipboard masterClipboard = clipboard.getLeaderClipboard();
 
@@ -216,43 +247,31 @@ public class FlexoEditingContext extends EditingContextImpl implements FlexoServ
 
 				// System.out.println("Examining Paste handler: " + h + " pastingPointHolderType=" + h.getPastingPointHolderType());
 
-				ModelEntity<?> pastingPointHolderEntity = factory.getModelContext().getModelEntity(h.getPastingPointHolderType());
+				PastingContext potentialPastingContext = h.retrievePastingContext(focusedObject, globalSelection, getClipboard(), event);
 
-				// System.out.println("factory=" + factory);
-				// System.out.println("pastingPointHolderEntity=" + pastingPointHolderEntity);
+				boolean correctlyTyped = potentialPastingContext == null
+						|| h.getPastingPointHolderType().isInstance(potentialPastingContext.getPastingPointHolder());
+				if (correctlyTyped && h.isPastable(clipboard, potentialPastingContext)) {
+					// System.out.println("OK, this is pastable...");
 
-				if (pastingPointHolderEntity != null) {
-					// Entity was found in this ModelFactory, we can proceed
+					// System.out.println("potentialPastingContext=" + potentialPastingContext);
 
-					// System.out.println("Found entity " + pastingPointHolderEntity);
-
-					if (ProxyMethodHandler.isPastable(masterClipboard, pastingPointHolderEntity)) {
-						// Pamela annotations generically allows a paste for such pasting point holder type
-						// Proceed...
-
-						// System.out.println("OK, this is pastable...");
-
-						Object potentialPastingContext = h.retrievePastingContext(focusedObject, globalSelection, getClipboard(), event);
-
-						// System.out.println("potentialPastingContext=" + potentialPastingContext);
-
-						if (potentialPastingContext != null) {
-							// System.out.println("Found PasteHandler " + h + " for " + focusedObject);
-							List<PasteHandler<?>> l = matchingHandlers.get(h.getPastingPointHolderType());
-							if (l == null) {
-								l = new ArrayList<PasteHandler<?>>();
-								matchingHandlers.put(h.getPastingPointHolderType(), l);
-							}
-							l.add(h);
+					if (potentialPastingContext != null) {
+						// System.out.println("Found PasteHandler " + h + " for " + focusedObject);
+						List<PasteHandler<?>> l = matchingHandlers.get(h.getPastingPointHolderType());
+						if (l == null) {
+							l = new ArrayList<>();
+							matchingHandlers.put(h.getPastingPointHolderType(), l);
 						}
-					}
-
-					else {
-						// Sorry, cannot proceed to paste for pastingPointHolderEntity
-						// System.out.println("Sorry, cannot paste for " + pastingPointHolderEntity + " (handler=" + h + ")");
+						l.add(h);
 					}
 
 				}
+				else {
+					// Sorry, cannot proceed to paste for pastingPointHolderEntity
+					// System.out.println("Sorry, cannot paste for (handler=" + h + ")");
+				}
+
 			}
 		}
 
@@ -263,7 +282,8 @@ public class FlexoEditingContext extends EditingContextImpl implements FlexoServ
 			if (returned != null) {
 				return returned;
 			}
-		} else if (matchingHandlers.size() > 0) {
+		}
+		else if (matchingHandlers.size() > 0) {
 			// System.out.println("Found multiple paste handler:");
 			/*for (List<PasteHandler<?>> hList : matchingHandlers.values()) {
 				System.out.println("> " + hList);
@@ -299,15 +319,17 @@ public class FlexoEditingContext extends EditingContextImpl implements FlexoServ
 		return null;
 	}
 
-	private PasteHandler<?> getMostSpecializedPasteHander(List<PasteHandler<?>> l) {
+	private static PasteHandler<?> getMostSpecializedPasteHander(List<PasteHandler<?>> l) {
 		if (l.size() == 0) {
 			return null;
-		} else if (l.size() == 1) {
+		}
+		else if (l.size() == 1) {
 			return l.get(0);
-		} else if (l.size() > 1) {
+		}
+		else if (l.size() > 1) {
 			// In this case, this is not easy, we have to define a strategy
 			// Lets' try to return the most specialized class
-			Map<Class<?>, PasteHandler<?>> handlerClasses = new HashMap<Class<?>, PasteHandler<?>>();
+			Map<Class<?>, PasteHandler<?>> handlerClasses = new HashMap<>();
 			for (PasteHandler<?> h : l) {
 				handlerClasses.put(h.getClass(), h);
 			}
@@ -321,10 +343,47 @@ public class FlexoEditingContext extends EditingContextImpl implements FlexoServ
 
 	@Override
 	public void stop() {
-		// TODO Auto-generated method stub		
-		logger.warning("STOP Method for service should be overriden in each service [" + this.getClass().getCanonicalName() +"]");
-		
+		// Fixed memory leak
+		FlexoObjectImpl.removeActionFromClass(copyActionType, FlexoObject.class);
+		FlexoObjectImpl.removeActionFromClass(cutActionType, FlexoObject.class);
+		FlexoObjectImpl.removeActionFromClass(pasteActionType, FlexoObject.class);
+		FlexoObjectImpl.removeActionFromClass(selectAllActionType, FlexoObject.class);
+		status = Status.Stopped;
 	}
-	
-	
+
+	@Override
+	public Status getStatus() {
+		return status;
+	}
+
+	/**
+	 * Return indicating general status of this FlexoService<br>
+	 * This is the display value of 'service <service> status' as given in FML command-line interpreter
+	 * 
+	 * @return
+	 */
+	@Override
+	public String getDisplayableStatus() {
+		return getServiceName() + StringUtils.buildWhiteSpaceIndentation(30 - getServiceName().length()) + getStatus();
+	}
+
+	private List<ServiceOperation<?>> availableServiceOperations = null;
+
+	/**
+	 * Return collection of all available {@link ServiceOperation} available for this {@link FlexoService}
+	 * 
+	 * @return
+	 */
+	@Override
+	public Collection<ServiceOperation<?>> getAvailableServiceOperations() {
+		if (availableServiceOperations == null) {
+			availableServiceOperations = new ArrayList<>();
+			availableServiceOperations.add(HELP_ON_SERVICE);
+			availableServiceOperations.add(DISPLAY_SERVICE_STATUS);
+			availableServiceOperations.add(START_SERVICE);
+			availableServiceOperations.add(STOP_SERVICE);
+		}
+		return availableServiceOperations;
+	}
+
 }

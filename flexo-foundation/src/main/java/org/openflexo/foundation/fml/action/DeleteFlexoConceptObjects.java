@@ -47,21 +47,21 @@ import java.util.logging.Logger;
 
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoObject.FlexoObjectImpl;
-import org.openflexo.foundation.action.AbstractCopyAction.InvalidSelectionException;
 import org.openflexo.foundation.action.FlexoAction;
-import org.openflexo.foundation.action.FlexoActionType;
-import org.openflexo.foundation.fml.AbstractVirtualModel;
+import org.openflexo.foundation.action.FlexoActionFactory;
+import org.openflexo.foundation.action.copypaste.AbstractCopyAction.InvalidSelectionException;
 import org.openflexo.foundation.fml.FMLModelFactory;
 import org.openflexo.foundation.fml.FlexoConceptObject;
-import org.openflexo.foundation.fml.rm.AbstractVirtualModelResource;
+import org.openflexo.foundation.fml.VirtualModel;
+import org.openflexo.foundation.fml.rm.VirtualModelResource;
 import org.openflexo.model.factory.EmbeddingType;
 
 public class DeleteFlexoConceptObjects extends FlexoAction<DeleteFlexoConceptObjects, FlexoConceptObject, FlexoConceptObject> {
 
 	private static final Logger logger = Logger.getLogger(DeleteFlexoConceptObjects.class.getPackage().getName());
 
-	public static FlexoActionType<DeleteFlexoConceptObjects, FlexoConceptObject, FlexoConceptObject> actionType = new FlexoActionType<DeleteFlexoConceptObjects, FlexoConceptObject, FlexoConceptObject>(
-			"delete", FlexoActionType.editGroup, FlexoActionType.DELETE_ACTION_TYPE) {
+	public static FlexoActionFactory<DeleteFlexoConceptObjects, FlexoConceptObject, FlexoConceptObject> actionType = new FlexoActionFactory<DeleteFlexoConceptObjects, FlexoConceptObject, FlexoConceptObject>(
+			"delete", FlexoActionFactory.editGroup, FlexoActionFactory.DELETE_ACTION_TYPE) {
 
 		/**
 		 * Factory method
@@ -93,7 +93,7 @@ public class DeleteFlexoConceptObjects extends FlexoAction<DeleteFlexoConceptObj
 		FlexoObjectImpl.addActionForClass(DeleteFlexoConceptObjects.actionType, FlexoConceptObject.class);
 	}
 
-	DeleteFlexoConceptObjects(FlexoConceptObject focusedObject, Vector<FlexoConceptObject> globalSelection, FlexoEditor editor) {
+	private DeleteFlexoConceptObjects(FlexoConceptObject focusedObject, Vector<FlexoConceptObject> globalSelection, FlexoEditor editor) {
 		super(actionType, focusedObject, globalSelection, editor);
 	}
 
@@ -112,20 +112,22 @@ public class DeleteFlexoConceptObjects extends FlexoAction<DeleteFlexoConceptObj
 		return getObjectsToDelete(getGlobalSelection(getFocusedObject(), getGlobalSelection()));
 	}
 
-	protected static List<FlexoConceptObject> getObjectsToDelete(List<FlexoConceptObject> globalSelection) throws InvalidSelectionException {
+	protected static List<FlexoConceptObject> getObjectsToDelete(List<FlexoConceptObject> globalSelection)
+			throws InvalidSelectionException {
 
-		List<FlexoConceptObject> allObjects = new ArrayList<FlexoConceptObject>();
+		List<FlexoConceptObject> allObjects = new ArrayList<>();
 
-		AbstractVirtualModelResource<?> resource = null;
+		VirtualModelResource resource = null;
 		FMLModelFactory modelFactory = null;
 
 		for (FlexoConceptObject o : globalSelection) {
 			if (o.getResourceData() != null) {
 				if (resource == null) {
-					resource = (AbstractVirtualModelResource<?>) o.getResourceData().getResource();
+					resource = (VirtualModelResource) o.getResourceData().getResource();
 					modelFactory = resource.getFactory();
-				} else {
-					if ((AbstractVirtualModelResource<?>) o.getResourceData().getResource() != resource) {
+				}
+				else {
+					if ((VirtualModelResource) o.getResourceData().getResource() != resource) {
 						throw new InvalidSelectionException("Multiple virtual model impacted");
 					}
 				}
@@ -133,13 +135,15 @@ public class DeleteFlexoConceptObjects extends FlexoAction<DeleteFlexoConceptObj
 			}
 		}
 
-		List<FlexoConceptObject> returned = new ArrayList<FlexoConceptObject>();
-		Map<FlexoConceptObject, List<Object>> allDerived = new HashMap<FlexoConceptObject, List<Object>>();
+		List<FlexoConceptObject> returned = new ArrayList<>();
+		Map<FlexoConceptObject, List<Object>> allDerived = new HashMap<>();
 
 		for (FlexoConceptObject o : allObjects) {
 			if (isDeletable(o)) {
 				List<Object> embeddedObjects = modelFactory.getEmbeddedObjects(o, EmbeddingType.DELETION,
-						allObjects.toArray(new FlexoConceptObject[allObjects.size()]));
+						(Object[]) allObjects.toArray(new FlexoConceptObject[allObjects.size()]));
+				// removes origin object from dependencies
+				embeddedObjects.remove(o);
 				allDerived.put(o, embeddedObjects);
 			}
 		}
@@ -165,7 +169,7 @@ public class DeleteFlexoConceptObjects extends FlexoAction<DeleteFlexoConceptObj
 
 	protected static boolean isDeletable(FlexoConceptObject o) {
 		// VirtualModel and ViewPoint are deleted using specific actions: DeleteViewpoint and DeleteVirtualModel
-		if (o instanceof AbstractVirtualModel) {
+		if (o instanceof VirtualModel) {
 			return false;
 		}
 		return true;

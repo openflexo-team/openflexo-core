@@ -43,11 +43,8 @@ import javax.swing.Icon;
 import javax.swing.ImageIcon;
 
 import org.openflexo.foundation.FlexoServiceManager;
-import org.openflexo.foundation.ProjectDataResource;
-import org.openflexo.foundation.ProjectDirectoryResource;
-import org.openflexo.foundation.fml.rm.ViewPointResource;
 import org.openflexo.foundation.fml.rm.VirtualModelResource;
-import org.openflexo.foundation.fml.rt.rm.ViewResource;
+import org.openflexo.foundation.project.FlexoProjectResource;
 import org.openflexo.foundation.resource.FlexoResource;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.model.validation.InformationIssue;
@@ -56,7 +53,6 @@ import org.openflexo.model.validation.ValidationIssue;
 import org.openflexo.model.validation.ValidationWarning;
 import org.openflexo.rm.ResourceLocator;
 import org.openflexo.swing.AnimatedIcon;
-import org.openflexo.toolbox.ImageIconResource;
 import org.openflexo.view.controller.TechnologyAdapterController;
 import org.openflexo.view.controller.TechnologyAdapterControllerService;
 
@@ -79,7 +75,8 @@ public class IconLibrary {
 	public static final ImageIcon BUSINESS_PLUS_32_ICON = new ImageIconResource(
 			ResourceLocator.locateResource("Icons/Flexo/BusinessPlus32.png"));
 	public static final ImageIcon BUSINESS_32_ICON = new ImageIconResource(ResourceLocator.locateResource("Icons/Flexo/Business32.png"));
-	public static final ImageIcon ENTERPRISE_32_ICON = new ImageIconResource(ResourceLocator.locateResource("Icons/Flexo/Entreprise32.png"));
+	public static final ImageIcon ENTERPRISE_32_ICON = new ImageIconResource(
+			ResourceLocator.locateResource("Icons/Flexo/Entreprise32.png"));
 
 	public static final ImageIcon OPENFLEXO_NOTEXT_16 = new ImageIconResource(
 			ResourceLocator.locateResource("Icons/Flexo/OpenflexoNoText_16.png"));
@@ -106,8 +103,8 @@ public class IconLibrary {
 	public static final ImageIcon RESOURCE_CENTER_ICON = new ImageIconResource(
 			ResourceLocator.locateResource("Icons/Common/ResourceCenter.png"));
 
-	public static final Icon IN_PROGRESS_ICON = new AnimatedIcon(new ImageIconResource(
-			ResourceLocator.locateResource("Icons/Common/Progress.gif")));
+	public static final Icon IN_PROGRESS_ICON = new AnimatedIcon(
+			new ImageIconResource(ResourceLocator.locateResource("Icons/Common/Progress.gif")));
 	public static final ImageIcon VALID_ICON = new ImageIconResource(ResourceLocator.locateResource("Icons/Common/Valid.png"));
 	public static final ImageIcon INVALID_ICON = new ImageIconResource(ResourceLocator.locateResource("Icons/Common/Invalid.png"));
 
@@ -139,6 +136,7 @@ public class IconLibrary {
 	public static final ImageIcon EXPORT_ICON = new ImageIconResource(ResourceLocator.locateResource("Icons/Actions/Export.png"));
 	public static final ImageIcon OPEN_ICON = new ImageIconResource(ResourceLocator.locateResource("Icons/Actions/Open.png"));
 	public static final ImageIcon NEW_ICON = new ImageIconResource(ResourceLocator.locateResource("Icons/Actions/New.png"));
+	public static final ImageIcon EDIT_ICON = new ImageIconResource(ResourceLocator.locateResource("Icons/Actions/Edit.png"));
 	public static final ImageIcon PRINT_ICON = new ImageIconResource(ResourceLocator.locateResource("Icons/Actions/Print.png"));
 	public static final ImageIcon SAVE_ICON = new ImageIconResource(ResourceLocator.locateResource("Icons/Actions/Save.png"));
 	public static final ImageIcon SAVE_DISABLED_ICON = new ImageIconResource(
@@ -217,33 +215,41 @@ public class IconLibrary {
 			ResourceLocator.locateResource("Icons/Utils/Markers/Sync.png"));
 
 	// Markers
-	public static final IconMarker POSITIVE_MARKER = new IconMarker(new ImageIconResource(
-			ResourceLocator.locateResource("Icons/Utils/Markers/Plus.png")), 8, 8);
-	public static final IconMarker NEGATIVE_MARKER = new IconMarker(new ImageIconResource(
-			ResourceLocator.locateResource("Icons/Utils/Markers/Minus.png")), 8, 8);
-	public static final IconMarker WARNING = new IconMarker(new ImageIconResource(
-			ResourceLocator.locateResource("Icons/Utils/Markers/Warning.gif")), 0, 9);
-	public static final IconMarker IMPORT = new IconMarker(new ImageIconResource(
-			ResourceLocator.locateResource("Icons/Utils/Markers/Import.gif")), 10, 7);
-	public static final IconMarker ERROR = new IconMarker(new ImageIconResource(
-			ResourceLocator.locateResource("Icons/Utils/Markers/Error.gif")), 0, 9);
-	public static final IconMarker ERROR2 = new IconMarker(new ImageIconResource(
-			ResourceLocator.locateResource("Icons/Utils/Markers/Error2.gif")), 0, 9);
-	public static final IconMarker QUESTION = new IconMarker(new ImageIconResource(
-			ResourceLocator.locateResource("Icons/Utils/Markers/Question.gif")), 12, 9);
-	public static final IconMarker MERGE_OK = new IconMarker(new ImageIconResource(
-			ResourceLocator.locateResource("Icons/Utils/Markers/OK.gif")), 12, 1);
-	public static final IconMarker DELETE = new IconMarker(new ImageIconResource(
-			ResourceLocator.locateResource("Icons/Utils/Markers/Delete.png")), 8, 8);
-	public static final IconMarker DUPLICATE = new IconMarker(new ImageIconResource(
-			ResourceLocator.locateResource("Icons/Utils/Markers/Plus.png")), 0, 0);
-	public static final IconMarker LOCKED = new IconMarker(new ImageIconResource(
-			ResourceLocator.locateResource("Icons/Utils/Markers/Locked.png")), 0, 5);
-	public static final IconMarker SYNC = new IconMarker(new ImageIconResource(
-			ResourceLocator.locateResource("Icons/Utils/Markers/Sync.png")), 10, 7);
+	public static final IconMarker POSITIVE_MARKER = new IconMarker(
+			new ImageIconResource(ResourceLocator.locateResource("Icons/Utils/Markers/Plus.png")), 8, 8);
+	public static final IconMarker NEGATIVE_MARKER = new IconMarker(
+			new ImageIconResource(ResourceLocator.locateResource("Icons/Utils/Markers/Minus.png")), 8, 8);
+	public static final IconMarker WARNING = new IconMarker(
+			new ImageIconResource(ResourceLocator.locateResource("Icons/Utils/Markers/Warning.gif")), 0, 9);
+	public static final IconMarker IMPORT = new IconMarker(
+			new ImageIconResource(ResourceLocator.locateResource("Icons/Utils/Markers/Import.gif")), 10, 7);
+	public static final IconMarker GENERATE = new IconMarker(
+			new ImageIconResource(ResourceLocator.locateResource("Icons/Utils/Markers/Generate.png")), 10, 7);
+	public static final IconMarker REINJECT = new IconMarker(
+			new ImageIconResource(ResourceLocator.locateResource("Icons/Utils/Markers/Reinject.png")), 10, 7);
+	public static final IconMarker ERROR = new IconMarker(
+			new ImageIconResource(ResourceLocator.locateResource("Icons/Utils/Markers/Error.gif")), 0, 9);
+	public static final IconMarker ERROR2 = new IconMarker(
+			new ImageIconResource(ResourceLocator.locateResource("Icons/Utils/Markers/Error2.gif")), 0, 9);
+	public static final IconMarker QUESTION = new IconMarker(
+			new ImageIconResource(ResourceLocator.locateResource("Icons/Utils/Markers/Question.gif")), 12, 9);
+	public static final IconMarker MERGE_OK = new IconMarker(
+			new ImageIconResource(ResourceLocator.locateResource("Icons/Utils/Markers/OK.gif")), 12, 1);
+	public static final IconMarker DELETE = new IconMarker(
+			new ImageIconResource(ResourceLocator.locateResource("Icons/Utils/Markers/Delete.png")), 8, 8);
+	public static final IconMarker DUPLICATE = new IconMarker(
+			new ImageIconResource(ResourceLocator.locateResource("Icons/Utils/Markers/Plus.png")), 0, 0);
+	public static final IconMarker LOCKED = new IconMarker(
+			new ImageIconResource(ResourceLocator.locateResource("Icons/Utils/Markers/Locked.png")), 0, 5);
+	public static final IconMarker SYNC = new IconMarker(
+			new ImageIconResource(ResourceLocator.locateResource("Icons/Utils/Markers/Sync.png")), 10, 7);
 	public static final ImageIcon QUESTION_ICON = new ImageIconResource(ResourceLocator.locateResource("Icons/Utils/Markers/Question.gif"));
-	public static final IconMarker NEW_32_32 = new IconMarker(new ImageIconResource(
-			ResourceLocator.locateResource("Icons/Utils/Markers/Plus16x16.png")), 45, 0);
+	public static final IconMarker NEW_32_32 = new IconMarker(
+			new ImageIconResource(ResourceLocator.locateResource("Icons/Utils/Markers/Plus16x16.png")), 45, 0);
+	public static final IconMarker NEW_MARKER = new IconMarker(
+			new ImageIconResource(ResourceLocator.locateResource("Icons/Utils/Markers/Plus.png")), 8, 0);
+	public static final IconMarker NOTIFY_MARKER = new IconMarker(
+			new ImageIconResource(ResourceLocator.locateResource("Icons/Utils/Markers/Notify.png")), 6, 0);
 
 	// Cursors
 	public static final ImageIcon DROP_OK_CURSOR = new ImageIconResource(
@@ -273,12 +279,14 @@ public class IconLibrary {
 	// Model icons
 	// public static final ImageIcon PROJECT_ICON = new ImageIconResource(ResourceLocator.locateResource("Icons/Model/Project.gif"));
 
-	public static ImageIcon getIconForValidationIssue(ValidationIssue issue) {
+	public static ImageIcon getIconForValidationIssue(ValidationIssue<?, ?> issue) {
 		if (issue instanceof ValidationWarning) {
-			return ((ValidationWarning) issue).isFixable() ? IconLibrary.FIXABLE_WARNING_ICON : IconLibrary.UNFIXABLE_WARNING_ICON;
-		} else if (issue instanceof ValidationError) {
-			return ((ValidationError) issue).isFixable() ? IconLibrary.FIXABLE_ERROR_ICON : IconLibrary.UNFIXABLE_ERROR_ICON;
-		} else if (issue instanceof InformationIssue) {
+			return ((ValidationWarning<?, ?>) issue).isFixable() ? IconLibrary.FIXABLE_WARNING_ICON : IconLibrary.UNFIXABLE_WARNING_ICON;
+		}
+		else if (issue instanceof ValidationError) {
+			return ((ValidationError<?, ?>) issue).isFixable() ? IconLibrary.FIXABLE_ERROR_ICON : IconLibrary.UNFIXABLE_ERROR_ICON;
+		}
+		else if (issue instanceof InformationIssue) {
 			return IconLibrary.INFO_ISSUE_ICON;
 		}
 		return null;
@@ -318,7 +326,7 @@ public class IconLibrary {
 		} else if (resourceType == ResourceType.WORKFLOW) {
 			return WKFIconLibrary.WORKFLOW_ICON;
 		}
-
+	
 		return FilesIconLibrary.smallIconForFileFormat(resourceType.getFormat());
 	}*/
 
@@ -346,15 +354,10 @@ public class IconLibrary {
 	}
 
 	public static ImageIcon getIconForResource(FlexoResource<?> resource) {
-		if (resource instanceof ProjectDirectoryResource) {
+		if (resource instanceof FlexoProjectResource) {
 			return OPENFLEXO_NOTEXT_16;
-		} else if (resource instanceof ProjectDataResource) {
-			return OPENFLEXO_NOTEXT_16;
-		} else if (resource instanceof ViewResource) {
-			return FMLRTIconLibrary.VIEW_ICON;
-		} else if (resource instanceof ViewPointResource) {
-			return FMLIconLibrary.VIEWPOINT_ICON;
-		} else if (resource instanceof VirtualModelResource) {
+		}
+		else if (resource instanceof VirtualModelResource) {
 			return FMLIconLibrary.VIRTUAL_MODEL_ICON;
 		}
 		return null;

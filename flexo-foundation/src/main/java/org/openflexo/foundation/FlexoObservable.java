@@ -41,8 +41,8 @@ package org.openflexo.foundation;
 
 import java.beans.PropertyChangeSupport;
 import java.lang.ref.WeakReference;
-import java.util.Enumeration;
-import java.util.Hashtable;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Vector;
 import java.util.logging.Level;
@@ -78,10 +78,8 @@ import org.openflexo.toolbox.HasPropertyChangeSupport;
  * 
  * @author sguerin
  * @see FlexoObservable#notifyObservers()
- * @see FlexoObservable#notifyObservers(java.lang.Object)
  * @see FlexoObserver
- * @see FlexoObserver#update(java.util.Observable, java.lang.Object)
- * 
+ *
  * 
  */
 public abstract class FlexoObservable extends KVCFlexoObject implements HasPropertyChangeSupport {
@@ -92,34 +90,24 @@ public abstract class FlexoObservable extends KVCFlexoObject implements HasPrope
 
 	private boolean changed = false;
 
-	private final Vector<WeakReference<FlexoObserver>> _flexoObservers;
+	private final ArrayList<WeakReference<FlexoObserver>> flexoObservers = new ArrayList<>();
 
-	private final PropertyChangeSupport _pcSupport;
+	private final PropertyChangeSupport pcSupport = new PropertyChangeSupport(this);
 
 	/**
 	 * This hastable stores for all classes encountered as observers for this observable a property coded as a Boolean indicating if
 	 * notifications should be fired.
 	 */
-	protected Hashtable<Class, Boolean> observerClasses;
+	protected final HashMap<Class<?>, Boolean> observerClasses = new HashMap<>();
 
 	/**
 	 * This flag codes the necessity to fire notifications or not
 	 */
 	protected boolean enableObserving = true;
 
-	/**
-	 * Construct a FlexoObservable with zero observers.
-	 */
-	public FlexoObservable() {
-		super();
-		_pcSupport = new PropertyChangeSupport(this);
-		_flexoObservers = new Vector<WeakReference<FlexoObserver>>();
-		observerClasses = new Hashtable<Class, Boolean>();
-	}
-
 	@Override
 	public PropertyChangeSupport getPropertyChangeSupport() {
-		return _pcSupport;
+		return pcSupport;
 	}
 
 	/**
@@ -135,13 +123,13 @@ public abstract class FlexoObservable extends KVCFlexoObject implements HasPrope
 		if (o == null) {
 			throw new NullPointerException();
 		}
-		synchronized (_flexoObservers) {
+		synchronized (flexoObservers) {
 
 			if (!isObservedBy(o)) {
-				_flexoObservers.add(new WeakReference<FlexoObserver>(o));
+				flexoObservers.add(new WeakReference<>(o));
 				if (observerClasses.get(o.getClass()) == null) {
 					// Add an entry for this kind of observer
-					observerClasses.put(o.getClass(), new Boolean(true));
+					observerClasses.put(o.getClass(), Boolean.TRUE);
 				}
 			}
 		}
@@ -154,13 +142,14 @@ public abstract class FlexoObservable extends KVCFlexoObject implements HasPrope
 	 *            the observer to be deleted.
 	 */
 	public void deleteObserver(FlexoObserver o) {
-		synchronized (_flexoObservers) {
-			Iterator<WeakReference<FlexoObserver>> i = _flexoObservers.iterator();
+		synchronized (flexoObservers) {
+			Iterator<WeakReference<FlexoObserver>> i = flexoObservers.iterator();
 			while (i.hasNext()) {
 				WeakReference<FlexoObserver> reference = i.next();
 				if (reference.get() == null) {
 					i.remove();
-				} else if (reference.get() == o) {
+				}
+				else if (reference.get() == o) {
 					i.remove();
 					break;
 				}
@@ -178,7 +167,6 @@ public abstract class FlexoObservable extends KVCFlexoObject implements HasPrope
 	 * 
 	 * @see java.util.Observable#clearChanged()
 	 * @see java.util.Observable#hasChanged()
-	 * @see java.util.FlexoObserver#update(java.util.Observable, java.lang.Object)
 	 */
 	public void notifyObservers() {
 		notifyObservers(null);
@@ -194,7 +182,6 @@ public abstract class FlexoObservable extends KVCFlexoObject implements HasPrope
 	 *            any object.
 	 * @see java.util.Observable#clearChanged()
 	 * @see java.util.Observable#hasChanged()
-	 * @see java.util.FlexoObserver#update(java.util.Observable, java.lang.Object)
 	 */
 	public void notifyObservers(DataModification arg) {
 
@@ -203,7 +190,8 @@ public abstract class FlexoObservable extends KVCFlexoObject implements HasPrope
 			 * a temporary array buffer, used as a snapshot of the state of
 			 * current FlexoObservers.
 			 */
-			WeakReference<FlexoObserver>[] arrLocal1 = new WeakReference[_flexoObservers.size()];
+			@SuppressWarnings("unchecked")
+			WeakReference<FlexoObserver>[] arrLocal1 = new WeakReference[flexoObservers.size()];
 
 			synchronized (this) {
 				/*
@@ -220,7 +208,7 @@ public abstract class FlexoObservable extends KVCFlexoObject implements HasPrope
 				if (!changed /*&& !(arg instanceof ResourceStatusModification)*/) {
 					return;
 				}
-				arrLocal1 = _flexoObservers.toArray(arrLocal1);
+				arrLocal1 = flexoObservers.toArray(arrLocal1);
 				clearChanged();
 			}
 
@@ -231,7 +219,7 @@ public abstract class FlexoObservable extends KVCFlexoObject implements HasPrope
 				if (weakRef != null) {
 					FlexoObserver o = arrLocal1[i].get();
 					if (o == null) {
-						_flexoObservers.remove(arrLocal1[i]);
+						flexoObservers.remove(arrLocal1[i]);
 						continue;
 					}
 					if (observerClasses.get(o.getClass()).booleanValue()) {
@@ -241,7 +229,7 @@ public abstract class FlexoObservable extends KVCFlexoObject implements HasPrope
 			}
 
 			if (arg != null) {
-				_pcSupport.firePropertyChange(arg.propertyName() != null ? arg.propertyName() : "", arg.oldValue(), arg.newValue());
+				pcSupport.firePropertyChange(arg.propertyName() != null ? arg.propertyName() : "", arg.oldValue(), arg.newValue());
 			}
 		}
 
@@ -249,11 +237,11 @@ public abstract class FlexoObservable extends KVCFlexoObject implements HasPrope
 
 	/**
 	 * Build and return a Vector of all current observers, as a snapshot of the state of current FlexoObservers and Inspector observers. Be
-	 * careful with method such as indexOf, contains, etc... which usually rely on equals() method. They have been overriden to use
+	 * careful with method such as indexOf, contains, etc... which usually rely on equals() method. They have been overridden to use
 	 * explicitly the == operator.
 	 */
-	public Vector getAllObservers() {
-		Vector returned = new Vector() {
+	public Vector<FlexoObserver> getAllObservers() {
+		Vector<FlexoObserver> returned = new Vector<FlexoObserver>() {
 
 			@Override
 			public synchronized int indexOf(Object o, int index) {
@@ -266,12 +254,13 @@ public abstract class FlexoObservable extends KVCFlexoObject implements HasPrope
 			}
 
 		};
-		Iterator<WeakReference<FlexoObserver>> i = _flexoObservers.iterator();
+		Iterator<WeakReference<FlexoObserver>> i = flexoObservers.iterator();
 		while (i.hasNext()) {
 			WeakReference<FlexoObserver> reference = i.next();
 			if (reference.get() == null) {
 				i.remove();
-			} else {
+			}
+			else {
 				returned.add(reference.get());
 			}
 		}
@@ -282,19 +271,14 @@ public abstract class FlexoObservable extends KVCFlexoObject implements HasPrope
 	 * Prints array of all current observers, as a snapshot of the state of current FlexoObservers.
 	 */
 	public void printObservers() {
-		Enumeration e = getAllObservers().elements();
 		if (logger.isLoggable(Level.INFO)) {
 			logger.info("Observers of: " + getClass().getName() + " / " + this);
 		}
 		int i = 0;
-		while (e.hasMoreElements()) {
-			Object object = e.nextElement();
-			if (object instanceof FlexoObserver) {
-				FlexoObserver o = (FlexoObserver) object;
-				if (logger.isLoggable(Level.INFO)) {
-					logger.info(" * " + i + " hash= " + Integer.toHexString(o.hashCode()) + " FlexoObserver: " + o.getClass().getName()
-							+ " / " + o);
-				}
+		for (FlexoObserver o : getAllObservers()) {
+			if (logger.isLoggable(Level.INFO)) {
+				logger.info(" * " + i + " hash= " + Integer.toHexString(o.hashCode()) + " FlexoObserver: " + o.getClass().getName() + " / "
+						+ o);
 			}
 			i++;
 		}
@@ -304,8 +288,8 @@ public abstract class FlexoObservable extends KVCFlexoObject implements HasPrope
 	 * Clears the observer list so that this object no longer has any observers.
 	 */
 	public synchronized void deleteObservers() {
-		synchronized (_flexoObservers) {
-			_flexoObservers.clear();
+		synchronized (flexoObservers) {
+			flexoObservers.clear();
 		}
 	}
 
@@ -321,8 +305,6 @@ public abstract class FlexoObservable extends KVCFlexoObject implements HasPrope
 	 * that the <tt>hasChanged</tt> method will now return <tt>false</tt>. This method is called automatically by the
 	 * <code>notifyFlexoObservers</code> methods.
 	 * 
-	 * @see java.util.Observable#notifyFlexoObservers()
-	 * @see java.util.Observable#notifyFlexoObservers(java.lang.Object)
 	 */
 	public synchronized void clearChanged() {
 		changed = false;
@@ -346,7 +328,7 @@ public abstract class FlexoObservable extends KVCFlexoObject implements HasPrope
 	 * @return the number of observers of this object.
 	 */
 	public int countObservers() {
-		return _flexoObservers.size();
+		return flexoObservers.size();
 	}
 
 	/**
@@ -366,14 +348,13 @@ public abstract class FlexoObservable extends KVCFlexoObject implements HasPrope
 	/**
 	 * Enable observing for all observers of class 'observerClass' and all related subclasses
 	 */
-	public synchronized void enableObserving(Class observerClass) {
-		for (Enumeration en = observerClasses.keys(); en.hasMoreElements();) {
-			Class temp = (Class) en.nextElement();
-			if (observerClass.isAssignableFrom(temp)) {
+	public synchronized void enableObserving(Class<?> observerClass) {
+		for (Class<?> aClass : observerClasses.keySet()) {
+			if (observerClass.isAssignableFrom(aClass)) {
 				if (logger.isLoggable(Level.FINE)) {
-					logger.fine("Enable observing for " + temp.getName());
+					logger.fine("Enable observing for " + ((Class<?>) aClass).getName());
 				}
-				observerClasses.put(temp, new Boolean(true));
+				observerClasses.put(aClass, true);
 			}
 		}
 	}
@@ -381,34 +362,43 @@ public abstract class FlexoObservable extends KVCFlexoObject implements HasPrope
 	/**
 	 * Disable observing for all observers of class 'observerClass' and all related subclasses
 	 */
-	public synchronized void disableObserving(Class observerClass) {
-		for (Enumeration en = observerClasses.keys(); en.hasMoreElements();) {
-			Class temp = (Class) en.nextElement();
-			if (observerClass.isAssignableFrom(temp)) {
+	public synchronized void disableObserving(Class<?> observerClass) {
+		for (Class<?> aClass : observerClasses.keySet()) {
+			if (observerClass.isAssignableFrom(aClass)) {
 				if (logger.isLoggable(Level.FINE)) {
-					logger.fine("Disable observing for " + temp.getName());
+					logger.fine("Disable observing for " + ((Class<?>) aClass).getName());
 				}
-				observerClasses.put(temp, new Boolean(false));
+				observerClasses.put(aClass, false);
 			}
 		}
 	}
 
 	public static boolean areSameValue(Object o1, Object o2) {
-		if (o1 == null) {
+		if (o1 == null)
 			return o2 == null;
+		if (o1.equals(o2))
+			return true;
+		if (o1 instanceof Number && o2 instanceof Number) {
+			Number n1 = (Number) o1;
+			Number n2 = (Number) o2;
+			long l1 = n1.longValue();
+			long l2 = n2.longValue();
+			if (l1 != l2)
+				return false;
+			return n1.doubleValue() == n2.doubleValue();
 		}
-		return o1.equals(o2);
+		return false;
 	}
 
 	public boolean isObservedBy(FlexoObserver observer) {
-		synchronized (_flexoObservers) {
-
-			Iterator<WeakReference<FlexoObserver>> i = _flexoObservers.iterator();
+		synchronized (flexoObservers) {
+			Iterator<WeakReference<FlexoObserver>> i = flexoObservers.iterator();
 			while (i.hasNext()) {
 				WeakReference<FlexoObserver> reference = i.next();
 				if (reference.get() == null) {
 					i.remove();
-				} else if (reference.get() == observer) {
+				}
+				else if (reference.get() == observer) {
 					return true;
 				}
 			}

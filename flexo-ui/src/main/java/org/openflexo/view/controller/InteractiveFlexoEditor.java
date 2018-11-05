@@ -43,7 +43,6 @@ import java.util.EventObject;
 import java.util.Hashtable;
 import java.util.Map;
 import java.util.Vector;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.swing.Icon;
@@ -53,26 +52,26 @@ import javax.swing.SwingUtilities;
 import org.openflexo.ApplicationContext;
 import org.openflexo.components.ProgressWindow;
 import org.openflexo.foundation.DefaultFlexoEditor;
+import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.FlexoProject;
-import org.openflexo.foundation.FlexoProjectObject;
 import org.openflexo.foundation.action.FlexoAction;
 import org.openflexo.foundation.action.FlexoAction.ExecutionStatus;
 import org.openflexo.foundation.action.FlexoActionEnableCondition;
+import org.openflexo.foundation.action.FlexoActionFactory;
 import org.openflexo.foundation.action.FlexoActionFinalizer;
 import org.openflexo.foundation.action.FlexoActionInitializer;
-import org.openflexo.foundation.action.FlexoActionType;
 import org.openflexo.foundation.action.FlexoActionVisibleCondition;
 import org.openflexo.foundation.action.FlexoExceptionHandler;
-import org.openflexo.foundation.action.FlexoGUIAction;
 import org.openflexo.foundation.action.FlexoUndoManager;
 import org.openflexo.foundation.action.LongRunningAction;
-import org.openflexo.foundation.fml.rt.action.ActionSchemeActionType;
-import org.openflexo.foundation.fml.rt.action.DeletionSchemeActionType;
+import org.openflexo.foundation.fml.rt.action.ActionSchemeActionFactory;
+import org.openflexo.foundation.fml.rt.action.DeletionSchemeActionFactory;
+import org.openflexo.foundation.nature.FlexoNature;
 import org.openflexo.foundation.resource.FlexoResource;
 import org.openflexo.foundation.resource.ResourceUpdateHandler;
-import org.openflexo.foundation.task.FlexoTask;
+import org.openflexo.foundation.task.LongRunningActionTask;
 import org.openflexo.foundation.task.Progress;
 import org.openflexo.foundation.utils.FlexoProgress;
 import org.openflexo.foundation.utils.FlexoProgressFactory;
@@ -80,6 +79,12 @@ import org.openflexo.logging.FlexoLogger;
 import org.openflexo.module.FlexoModule;
 import org.openflexo.module.ModuleLoader;
 
+/**
+ * Interactive implementation of a {@link FlexoEditor}
+ * 
+ * @author sylvain
+ *
+ */
 public class InteractiveFlexoEditor extends DefaultFlexoEditor {
 
 	private static final Logger logger = FlexoLogger.getLogger(InteractiveFlexoEditor.class.getPackage().getName());
@@ -90,12 +95,12 @@ public class InteractiveFlexoEditor extends DefaultFlexoEditor {
 
 	private final ApplicationContext applicationContext;
 
-	private Map<FlexoModule, ControllerActionInitializer> actionInitializers;
+	private Map<FlexoModule<?>, ControllerActionInitializer> actionInitializers;
 
 	public InteractiveFlexoEditor(ApplicationContext applicationContext, FlexoProject project) {
 		super(project, applicationContext);
 		this.applicationContext = applicationContext;
-		actionInitializers = new Hashtable<FlexoModule, ControllerActionInitializer>();
+		actionInitializers = new Hashtable<>();
 		if (ScenarioRecorder.ENABLE) {
 			_scenarioRecorder = new ScenarioRecorder();
 		}
@@ -133,49 +138,53 @@ public class InteractiveFlexoEditor extends DefaultFlexoEditor {
 			final A action, final EventObject e) {
 		// NPE Protection
 		if (action != null) {
-			FlexoActionType<A, T1, T2> at = action.getActionType();
+			FlexoActionFactory<A, T1, T2> at = action.getActionFactory();
 			if (at != null) {
-				if (!action.getActionType().isEnabled(action.getFocusedObject(), action.getGlobalSelection())) {
+				if (!action.getActionFactory().isEnabled(action.getFocusedObject(), action.getGlobalSelection())) {
 					return null;
 				}
-				if (!(action instanceof FlexoGUIAction<?, ?, ?>) && (action.getFocusedObject() instanceof FlexoProjectObject)
-						&& ((FlexoProjectObject) action.getFocusedObject()).getProject() != getProject()) {
-					if (logger.isLoggable(Level.INFO)) {
-						logger.info("Cannot execute action because focused object is within another project than the one of this editor");
-					}
-					return null;
-				}
-
 				executeAction(action, e);
 				return action;
-			} else {
-				logger.warning("Action Type was NULL!");
-				return null;
 			}
-		} else {
+			else { // No factory supplied, execute action inconditionnaly
+				executeAction(action, e);
+				return action;
+			}
+		}
+		else {
 			logger.warning("Action was NULL!");
 			return null;
 		}
 	}
 
+	/**
+	 * This is the CORE execution method
+	 * 
+	 * @param action
+	 * @param event
+	 * @return
+	 */
 	private <A extends org.openflexo.foundation.action.FlexoAction<A, T1, T2>, T1 extends FlexoObject, T2 extends FlexoObject> A executeAction(
 			final A action, final EventObject event) {
-		final boolean progressIsShowing = ProgressWindow.hasInstance();
+		// We do it sooner to embed eventual initializer execution in the record session of the undo manager
+		if (!action.isEmbedded()) {
+			actionWillBePerformed(action);
+		}
+
 		// If action is embedded and valid, we skip initializer
 		boolean confirmDoAction = (action.isEmbedded() && action.isValid()) ? true : runInitializer(action, event);
 		if (confirmDoAction) {
-			actionWillBePerformed(action);
 			if (action instanceof LongRunningAction && (!action.isEmbedded()) && SwingUtilities.isEventDispatchThread()) {
-
-				FlexoTask task = new FlexoTask(action.getLocalizedName()) {
+				LongRunningActionTask task = new LongRunningActionTask((LongRunningAction) action) {
 					@Override
-					public void performTask() {
+					public void performTask() throws InterruptedException {
 						Progress.setExpectedProgressSteps(((LongRunningAction) action).getExpectedProgressSteps());
 						doExecuteAction(action, event);
 					}
 				};
 				applicationContext.getTaskManager().scheduleExecution(task);
-			} else {
+			}
+			else {
 				// Do it now, in this thread
 				doExecuteAction(action, event);
 			}
@@ -196,11 +205,16 @@ public class InteractiveFlexoEditor extends DefaultFlexoEditor {
 		if (!action.isEmbedded()) {
 			runFinalizer(action, event);
 		}
+
+		// We do it later to embed eventual finalizer execution in the record session of the undo manager
+		if (!action.isEmbedded()) {
+			actionHasBeenPerformed(action, true); // Action succeeded
+		}
+
 	}
 
-	private <A extends FlexoAction<A, T1, T2>, T1 extends FlexoObject, T2 extends FlexoObject> boolean runInitializer(A action,
-			EventObject event) {
-		ActionInitializer<A, T1, T2> actionInitializer = getActionInitializer(action.getActionType());
+	private <A extends FlexoAction<A, ?, ?>> boolean runInitializer(A action, EventObject event) {
+		ActionInitializer<A, ?, ?> actionInitializer = getActionInitializer(action);
 		if (actionInitializer != null) {
 			FlexoActionInitializer<A> initializer = actionInitializer.getDefaultInitializer();
 			if (initializer != null) {
@@ -210,21 +224,12 @@ public class InteractiveFlexoEditor extends DefaultFlexoEditor {
 		return true;
 	}
 
-	private <A extends org.openflexo.foundation.action.FlexoAction<A, T1, T2>, T1 extends FlexoObject, T2 extends FlexoObject> void runAction(
-			final A action) throws FlexoException {
-		/*if (getProject() != null) {
-			getProject().clearRecentlyCreatedObjects();
-		}*/
+	private <A extends FlexoAction<A, ?, ?>> void runAction(final A action) throws FlexoException {
 		action.doActionInContext();
-		/*if (getProject() != null) {
-			getProject().notifyRecentlyCreatedObjects();
-		}*/
-		actionHasBeenPerformed(action, true); // Action succeeded
 	}
 
-	private <A extends org.openflexo.foundation.action.FlexoAction<A, T1, T2>, T1 extends FlexoObject, T2 extends FlexoObject> void runFinalizer(
-			final A action, EventObject event) {
-		ActionInitializer<A, T1, T2> actionInitializer = getActionInitializer(action.getActionType());
+	private <A extends FlexoAction<A, ?, ?>> void runFinalizer(final A action, EventObject event) {
+		ActionInitializer<A, ?, ?> actionInitializer = getActionInitializer(action);
 		if (actionInitializer != null) {
 			FlexoActionFinalizer<A> finalizer = actionInitializer.getDefaultFinalizer();
 			if (finalizer != null) {
@@ -233,12 +238,11 @@ public class InteractiveFlexoEditor extends DefaultFlexoEditor {
 		}
 	}
 
-	private <A extends FlexoAction<A, T1, T2>, T1 extends FlexoObject, T2 extends FlexoObject> boolean runExceptionHandler(
-			FlexoException exception, final A action) {
+	private <A extends FlexoAction<A, ?, ?>> boolean runExceptionHandler(FlexoException exception, final A action) {
 		actionHasBeenPerformed(action, false); // Action failed
 		ProgressWindow.hideProgressWindow();
 		FlexoExceptionHandler<A> exceptionHandler = null;
-		ActionInitializer<A, T1, T2> actionInitializer = getActionInitializer(action.getActionType());
+		ActionInitializer<A, ?, ?> actionInitializer = getActionInitializer(action);
 		if (actionInitializer != null) {
 			exceptionHandler = actionInitializer.getDefaultExceptionHandler();
 		}
@@ -246,11 +250,13 @@ public class InteractiveFlexoEditor extends DefaultFlexoEditor {
 			if (exceptionHandler.handleException(exception, action)) {
 				// The exception has been handled, we may still have to execute finalizer, if any
 				return true;
-			} else {
+			}
+			else {
 				return false;
 			}
 
-		} else {
+		}
+		else {
 			return false;
 		}
 	}
@@ -265,8 +271,7 @@ public class InteractiveFlexoEditor extends DefaultFlexoEditor {
 		getUndoManager().actionWillBePerformed(action);
 	}
 
-	private <A extends org.openflexo.foundation.action.FlexoAction<A, T1, T2>, T1 extends FlexoObject, T2 extends FlexoObject> void actionHasBeenPerformed(
-			A action, boolean success) {
+	private <A extends org.openflexo.foundation.action.FlexoAction<A, ?, ?>> void actionHasBeenPerformed(A action, boolean success) {
 		getUndoManager().actionHasBeenPerformed(action, success);
 		if (success) {
 			if (_scenarioRecorder != null) {
@@ -291,10 +296,19 @@ public class InteractiveFlexoEditor extends DefaultFlexoEditor {
 		return false;
 	}
 
+	/**
+	 * Focus on supplied object, trying to display a view adapted to supplied displayNature
+	 * 
+	 * @param object
+	 * @param displayNature
+	 */
 	@Override
-	public void focusOn(FlexoObject object) {
-
+	public <O extends FlexoObject> void focusOn(O object, FlexoNature<O> displayNature) {
 		// Only interactive editor handle this
+
+		if (displayNature != null) {
+			getModuleLoader().getActiveModule().getFlexoController().switchToPerspective(displayNature);
+		}
 		getModuleLoader().getActiveModule().getFlexoController().setCurrentEditedObjectAsModuleView(object);
 		getModuleLoader().getActiveModule().getFlexoController().getSelectionManager().setSelectedObject(object);
 	}
@@ -314,35 +328,44 @@ public class InteractiveFlexoEditor extends DefaultFlexoEditor {
 		return null;
 	}
 
-	private <A extends FlexoAction<A, T1, T2>, T1 extends FlexoObject, T2 extends FlexoObject> ActionInitializer<A, T1, T2> getActionInitializer(
-			FlexoActionType<A, T1, T2> actionType) {
+	private <A extends FlexoAction<A, ?, ?>> ActionInitializer<A, ?, ?> getActionInitializer(FlexoActionFactory<A, ?, ?> actionFactory) {
 		ControllerActionInitializer currentControllerActionInitializer = getCurrentControllerActionInitializer();
 		if (currentControllerActionInitializer != null) {
-			return currentControllerActionInitializer.getActionInitializer(actionType);
+			return currentControllerActionInitializer.getActionInitializer(actionFactory);
+		}
+		return null;
+	}
+
+	private <A extends FlexoAction<A, ?, ?>> ActionInitializer<A, ?, ?> getActionInitializer(A action) {
+		ControllerActionInitializer currentControllerActionInitializer = getCurrentControllerActionInitializer();
+		if (currentControllerActionInitializer != null) {
+			return currentControllerActionInitializer.getActionInitializer(action);
 		}
 		return null;
 	}
 
 	@Override
 	public <A extends FlexoAction<A, T1, T2>, T1 extends FlexoObject, T2 extends FlexoObject> boolean isActionEnabled(
-			FlexoActionType<A, T1, T2> actionType, T1 focusedObject, Vector<T2> globalSelection) {
-		if (actionType instanceof ActionSchemeActionType) {
+			FlexoActionFactory<A, T1, T2> actionFactory, T1 focusedObject, Vector<T2> globalSelection) {
+		if (actionFactory instanceof ActionSchemeActionFactory) {
 			return true;
 		}
-		if (actionType instanceof DeletionSchemeActionType) {
+		if (actionFactory instanceof DeletionSchemeActionFactory) {
 			return true;
 		}
-		if (actionType.isEnabled(focusedObject, globalSelection)) {
-			ActionInitializer<A, T1, T2> actionInitializer = getActionInitializer(actionType);
+		if (actionFactory.isEnabled(focusedObject, globalSelection)) {
+			ActionInitializer<A, T1, T2> actionInitializer = (ActionInitializer<A, T1, T2>) getActionInitializer(actionFactory);
 			if (actionInitializer != null) {
 				FlexoActionEnableCondition<A, T1, T2> condition = actionInitializer.getEnableCondition();
 				if (condition != null) {
-					return condition.isEnabled(actionType, focusedObject, globalSelection, this);
+					return condition.isEnabled(actionFactory, focusedObject, globalSelection, this);
 				}
-			} else {
+			}
+			else {
 				return false;
 			}
-		} else {
+		}
+		else {
 			return false;
 		}
 		return true;
@@ -350,53 +373,58 @@ public class InteractiveFlexoEditor extends DefaultFlexoEditor {
 
 	@Override
 	public <A extends FlexoAction<A, T1, T2>, T1 extends FlexoObject, T2 extends FlexoObject> boolean isActionVisible(
-			FlexoActionType<A, T1, T2> actionType, T1 focusedObject, Vector<T2> globalSelection) {
-		if (actionType.isVisibleForSelection(focusedObject, globalSelection)) {
-			ActionInitializer<A, T1, T2> actionInitializer = getActionInitializer(actionType);
-			if (actionInitializer != null) {
-				FlexoActionVisibleCondition<A, T1, T2> condition = actionInitializer.getVisibleCondition();
-				if (condition != null) {
-					return condition.isVisible(actionType, focusedObject, globalSelection, this);
+			FlexoActionFactory<A, T1, T2> actionFactory, T1 focusedObject, Vector<T2> globalSelection) {
+		try {
+			if (actionFactory.isVisibleForSelection(focusedObject, globalSelection)) {
+				ActionInitializer<A, T1, T2> actionInitializer = (ActionInitializer<A, T1, T2>) getActionInitializer(actionFactory);
+				if (actionInitializer != null) {
+					FlexoActionVisibleCondition<A, T1, T2> condition = actionInitializer.getVisibleCondition();
+					if (condition != null) {
+						return condition.isVisible(actionFactory, focusedObject, globalSelection, this);
+					}
 				}
-			} else {
+				else {
+					return false;
+				}
+			}
+			else {
 				return false;
 			}
-		} else {
+			return true;
+		} catch (ClassCastException e) {
+			// Might happen in some circonstances, when trying to lookup focused object and global selection
 			return false;
 		}
-		return true;
 	}
 
 	@Override
-	public <A extends FlexoAction<A, T1, T2>, T1 extends FlexoObject, T2 extends FlexoObject> Icon getEnabledIconFor(
-			FlexoActionType<A, T1, T2> actionType) {
-		ActionInitializer<A, T1, T2> actionInitializer = getActionInitializer(actionType);
+	public <A extends FlexoAction<A, ?, ?>> Icon getEnabledIconFor(FlexoActionFactory<A, ?, ?> actionFactory) {
+		ActionInitializer<A, ?, ?> actionInitializer = getActionInitializer(actionFactory);
 		if (actionInitializer != null) {
-			return actionInitializer.getEnabledIcon();
+			return actionInitializer.getEnabledIcon(actionFactory);
 		}
-		if (actionType instanceof DeletionSchemeActionType) {
-			return FlexoController.statelessIconForObject(((DeletionSchemeActionType) actionType).getDeletionScheme());
-		} else if (actionType instanceof ActionSchemeActionType) {
-			return FlexoController.statelessIconForObject(((ActionSchemeActionType) actionType).getActionScheme());
+		if (actionFactory instanceof DeletionSchemeActionFactory) {
+			return FlexoController.statelessIconForObject(((DeletionSchemeActionFactory) actionFactory).getDeletionScheme());
+		}
+		else if (actionFactory instanceof ActionSchemeActionFactory) {
+			return FlexoController.statelessIconForObject(((ActionSchemeActionFactory) actionFactory).getActionScheme());
 		}
 
 		return null;
 	}
 
 	@Override
-	public <A extends FlexoAction<A, T1, T2>, T1 extends FlexoObject, T2 extends FlexoObject> Icon getDisabledIconFor(
-			FlexoActionType<A, T1, T2> actionType) {
-		ActionInitializer<A, T1, T2> actionInitializer = getActionInitializer(actionType);
+	public <A extends FlexoAction<A, ?, ?>> Icon getDisabledIconFor(FlexoActionFactory<A, ?, ?> actionFactory) {
+		ActionInitializer<A, ?, ?> actionInitializer = getActionInitializer(actionFactory);
 		if (actionInitializer != null) {
-			return actionInitializer.getDisabledIcon();
+			return actionInitializer.getDisabledIcon(actionFactory);
 		}
 		return null;
 	}
 
 	@Override
-	public <A extends FlexoAction<A, T1, T2>, T1 extends FlexoObject, T2 extends FlexoObject> KeyStroke getKeyStrokeFor(
-			FlexoActionType<A, T1, T2> actionType) {
-		ActionInitializer<A, T1, T2> actionInitializer = getActionInitializer(actionType);
+	public <A extends FlexoAction<A, ?, ?>> KeyStroke getKeyStrokeFor(FlexoActionFactory<A, ?, ?> actionFactory) {
+		ActionInitializer<A, ?, ?> actionInitializer = getActionInitializer(actionFactory);
 		if (actionInitializer != null) {
 			return actionInitializer.getShortcut();
 		}

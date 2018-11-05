@@ -36,40 +36,37 @@
  * 
  */
 
-
 package org.openflexo.rm;
 
 import java.awt.Image;
 import java.awt.Window;
 import java.beans.PropertyChangeSupport;
 
-import org.openflexo.foundation.resource.FileFlexoIODelegate;
+import org.openflexo.foundation.resource.FileIODelegate;
 import org.openflexo.foundation.resource.FlexoResource;
+import org.openflexo.icon.ImageIconResource;
 import org.openflexo.toolbox.HasPropertyChangeSupport;
-import org.openflexo.toolbox.ImageIconResource;
 
+public class ConflictedResourceEditor implements HasPropertyChangeSupport {
 
-public class ConflictedResourceEditor implements HasPropertyChangeSupport{
-	
 	private final PropertyChangeSupport _pcSupport;
-	
+
 	private Window owner;
-	
+
 	private final ResourceConsistencyService service;
-	
+
 	private ConflictedResourceSet resources;
-	
+
 	private String errorMessage;
-	
+
 	private Image image;
-	
-	private final Image conflictImage =  new ImageIconResource(
-			ResourceLocator.locateResource("Icons/Common/resource_conflict.png")).getImage();
-	
-	private final Image validImage =  new ImageIconResource(
-			ResourceLocator.locateResource("Icons/Common/resource_conflict_ok.png")).getImage();
-	
-	
+
+	private final Image conflictImage = new ImageIconResource(ResourceLocator.locateResource("Icons/Common/resource_conflict.png"))
+			.getImage();
+
+	private final Image validImage = new ImageIconResource(ResourceLocator.locateResource("Icons/Common/resource_conflict_ok.png"))
+			.getImage();
+
 	public Window getOwner() {
 		return owner;
 	}
@@ -77,28 +74,28 @@ public class ConflictedResourceEditor implements HasPropertyChangeSupport{
 	public void setOwner(Window owner) {
 		this.owner = owner;
 	}
-	
-	public ConflictedResourceEditor(ConflictedResourceSet resources, ResourceConsistencyService service){
-		 _pcSupport = new PropertyChangeSupport(this);
+
+	public ConflictedResourceEditor(ConflictedResourceSet resources, ResourceConsistencyService service) {
+		_pcSupport = new PropertyChangeSupport(this);
 		this.service = service;
-		this.resources =resources;
+		this.resources = resources;
 	}
-	
 
-    @Override
-    public String getDeletedProperty() {
-        return null;
-    }
+	@Override
+	public String getDeletedProperty() {
+		return null;
+	}
 
-    @Override
-    public PropertyChangeSupport getPropertyChangeSupport() {
-        return _pcSupport;
-    }
-	
+	@Override
+	public PropertyChangeSupport getPropertyChangeSupport() {
+		return _pcSupport;
+	}
+
 	public Image getImage() {
-		if(image==null || !isValid()){
+		if (image == null || !isValid()) {
 			image = conflictImage;
-		}else {
+		}
+		else {
 			image = validImage;
 		}
 		return image;
@@ -107,16 +104,16 @@ public class ConflictedResourceEditor implements HasPropertyChangeSupport{
 	public void setImage(Image image) {
 		this.image = image;
 	}
-	
-	public String getLocation(FlexoResource<?> resource){
-		if(resource!=null && resource.getFlexoIODelegate() instanceof FileFlexoIODelegate){
-			FileFlexoIODelegate delegate = (FileFlexoIODelegate)(resource.getFlexoIODelegate());
+
+	public String getLocation(FlexoResource<?> resource) {
+		if (resource != null && resource.getIODelegate() instanceof FileIODelegate) {
+			FileIODelegate delegate = (FileIODelegate) (resource.getIODelegate());
 			return delegate.getFile().getAbsolutePath();
 		}
 		return "";
 	}
-	
-	public void update(){ 
+
+	public void update() {
 		getPropertyChangeSupport().firePropertyChange("image", null, null);
 		getPropertyChangeSupport().firePropertyChange("isValid()", null, isValid());
 	}
@@ -135,10 +132,11 @@ public class ConflictedResourceEditor implements HasPropertyChangeSupport{
 	}
 
 	public boolean isValid() {
-		for(FlexoResource<?> resource : resources.getConflictedResources()){
-			if(!service.multipleResourcesWithSameURI(resource)){
+		for (FlexoResource<?> resource : resources.getConflictedResources()) {
+			if (!service.multipleResourcesWithSameURI(resource)) {
 				return true;
-			}else{
+			}
+			else {
 				return false;
 			}
 		}
@@ -148,10 +146,9 @@ public class ConflictedResourceEditor implements HasPropertyChangeSupport{
 	public String getNumberOfConflicts() {
 		return Integer.toString(service.getNumberOfConflicts());
 	}
-	
+
 	public String getIndexOfConflicts() {
-		return Integer.toString(service.getConflictedResourceSets().indexOf(resources)+1);
+		return Integer.toString(service.getConflictedResourceSets().indexOf(resources) + 1);
 	}
-	
+
 }
-	

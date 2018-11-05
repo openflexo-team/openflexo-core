@@ -40,12 +40,13 @@ package org.openflexo.foundation.fml.binding;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.beans.PropertyChangeSupport;
 import java.lang.reflect.Type;
 import java.util.logging.Logger;
 
 import org.openflexo.connie.BindingVariable;
 import org.openflexo.foundation.fml.FlexoProperty;
+import org.openflexo.foundation.fml.FlexoRole;
+import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 
 public class FlexoPropertyBindingVariable extends BindingVariable implements PropertyChangeListener {
 	static final Logger logger = Logger.getLogger(FlexoPropertyBindingVariable.class.getPackage().getName());
@@ -56,20 +57,19 @@ public class FlexoPropertyBindingVariable extends BindingVariable implements Pro
 	public FlexoPropertyBindingVariable(FlexoProperty<?> flexoProperty) {
 		super(flexoProperty.getName(), flexoProperty.getResultingType(), !flexoProperty.isReadOnly());
 		this.flexoProperty = flexoProperty;
-		if (flexoProperty != null) {
-			lastKnownType = flexoProperty.getResultingType();
-		}
-		if (flexoProperty != null && flexoProperty.getPropertyChangeSupport() != null) {
+		lastKnownType = flexoProperty.getResultingType();
+		if (flexoProperty.getPropertyChangeSupport() != null) {
 			flexoProperty.getPropertyChangeSupport().addPropertyChangeListener(this);
 		}
 	}
 
 	@Override
 	public void delete() {
-		// Thread.dumpStack();
+		// System.out.println("################# Desactivate " + this + " " + Integer.toHexString(hashCode()) + " on ecoute " +
+		// flexoProperty
+		// + " cs=" + flexoProperty.getPropertyChangeSupport());
+
 		if (flexoProperty != null && flexoProperty.getPropertyChangeSupport() != null) {
-			PropertyChangeSupport pcSupport = flexoProperty.getPropertyChangeSupport();
-			// System.out.println("Je lui dit d'arreter d'observer " + flexoProperty);
 			flexoProperty.getPropertyChangeSupport().removePropertyChangeListener(this);
 		}
 		super.delete();
@@ -94,7 +94,7 @@ public class FlexoPropertyBindingVariable extends BindingVariable implements Pro
 
 		if (evt.getSource() == getFlexoProperty()) {
 			if (evt.getPropertyName().equals(FlexoProperty.NAME_KEY) || evt.getPropertyName().equals(FlexoProperty.PROPERTY_NAME_KEY)) {
-				// System.out.println("Notify name changing for " + getFlexoRole() + " new=" + getVariableName());
+				// System.out.println("Notify name changing for " + getFlexoProperty() + " new=" + getVariableName());
 				if (getPropertyChangeSupport() != null) {
 					getPropertyChangeSupport().firePropertyChange(VARIABLE_NAME_PROPERTY, evt.getOldValue(), getVariableName());
 				}
@@ -118,8 +118,9 @@ public class FlexoPropertyBindingVariable extends BindingVariable implements Pro
 				// We might arrive here only in the case of a FlexoRole does not correctely notify
 				// its type change. We warn it to 'tell' the developper that such notification should be done
 				// in FlexoRole (see IndividualRole for example)
-				logger.warning("Detecting un-notified type changing for FlexoProperty " + flexoProperty + " from " + lastKnownType + " to "
-						+ getType() + ". Trying to handle case.");
+				// logger.warning("Detecting un-notified type changing for FlexoProperty " + flexoProperty + " from " + lastKnownType + " to
+				// "
+				// + getType() + ". Trying to handle case.");
 				if (getPropertyChangeSupport() != null) {
 					getPropertyChangeSupport().firePropertyChange(TYPE_PROPERTY, lastKnownType, getType());
 				}
@@ -127,4 +128,28 @@ public class FlexoPropertyBindingVariable extends BindingVariable implements Pro
 			}
 		}
 	}
+
+	public Object getValue(FlexoConceptInstance flexoConceptInstance) {
+
+		if (flexoProperty instanceof FlexoRole) {
+			if (flexoProperty.getCardinality().isMultipleCardinality()) {
+				return flexoConceptInstance.getFlexoActorList((FlexoRole<?>) flexoProperty);
+			}
+			else {
+				return flexoConceptInstance.getFlexoActor((FlexoRole<?>) flexoProperty);
+			}
+		}
+
+		return flexoConceptInstance.getFlexoPropertyValue(flexoProperty);
+
+	}
+
+	@Override
+	public boolean isSettable() {
+		if (flexoProperty != null) {
+			return !flexoProperty.isReadOnly();
+		}
+		return super.isSettable();
+	}
+
 }

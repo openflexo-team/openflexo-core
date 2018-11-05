@@ -64,7 +64,7 @@ public interface SelectionSynchronizedComponent extends SelectionListener {
 	 * 
 	 * @return a Vector of FlexoObject
 	 */
-	public Vector getSelection();
+	public Vector<FlexoObject> getSelection();
 
 	/**
 	 * Reset selection

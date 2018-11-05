@@ -1,0 +1,13 @@
+dependencies {
+  // openflexo dep
+  compile project(':flexo-foundation')
+  compile project(':flexo-ui')
+  compile project(':flexo-documentation')
+  compile ginaSwing()
+  testCompile project(':flexo-ui-test')
+
+  // testing dep
+}
+tasks.withType(Test) {
+	jvmArgs += ["-Djava.awt.headless=true"]
+}

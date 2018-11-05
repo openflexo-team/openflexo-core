@@ -51,7 +51,7 @@ public class RedoException extends FlexoException {
 	}
 
 	@Override
-	public FlexoException getCause() {
+	public synchronized FlexoException getCause() {
 		return _cause;
 	}
 

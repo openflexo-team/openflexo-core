@@ -36,12 +36,16 @@
  * 
  */
 
-
 package org.openflexo.foundation.fml.rt;
 
+import java.io.FileNotFoundException;
 import java.util.logging.Logger;
 
+import org.openflexo.foundation.FlexoException;
+import org.openflexo.foundation.fml.FlexoProperty;
+import org.openflexo.foundation.fml.FlexoRole;
 import org.openflexo.foundation.resource.ResourceData;
+import org.openflexo.foundation.resource.ResourceLoadingCancelledException;
 import org.openflexo.foundation.technologyadapter.FlexoModel;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterResource;
@@ -58,7 +62,7 @@ import org.openflexo.toolbox.StringUtils;
 
 /**
  * Concretize the binding of a {@link ModelSlot} to a concrete {@link FlexoModel}<br>
- * This is the binding point between a {@link ModelSlot} and its concretization in a {@link VirtualModelInstance}
+ * This is the binding point between a {@link ModelSlot} and its concretization in a {@link FMLRTVirtualModelInstance}
  * 
  * The {@link ModelSlotInstance} are instantiated inside a {@link View}
  * 
@@ -71,11 +75,17 @@ import org.openflexo.toolbox.StringUtils;
 @ModelEntity(isAbstract = true)
 @ImplementationClass(ModelSlotInstance.ModelSlotInstanceImpl.class)
 @Imports({ @Import(FreeModelSlotInstance.class), @Import(TypeAwareModelSlotInstance.class), @Import(VirtualModelModelSlotInstance.class) })
-public abstract interface ModelSlotInstance<MS extends ModelSlot<? extends RD>, RD extends ResourceData<RD> & TechnologyObject<?>> extends
-		VirtualModelInstanceObject {
+public abstract interface ModelSlotInstance<MS extends ModelSlot<? extends RD>, RD extends ResourceData<RD> & TechnologyObject<?>>
+		extends ActorReference<RD> {
 
 	@PropertyIdentifier(type = String.class)
 	public static final String MODEL_SLOT_NAME_KEY = "modelSlotName";
+
+	@PropertyIdentifier(type = TechnologyAdapterResource.class)
+	public static final String RESOURCE_KEY = "resource";
+
+	@PropertyIdentifier(type = ResourceData.class)
+	public static final String ACCESSED_RESOURCE_DATA_KEY = "accessedResourceData";
 
 	@Getter(value = MODEL_SLOT_NAME_KEY)
 	@XMLAttribute
@@ -94,6 +104,7 @@ public abstract interface ModelSlotInstance<MS extends ModelSlot<? extends RD>, 
 	 * 
 	 * @return
 	 */
+	@Getter(value = ACCESSED_RESOURCE_DATA_KEY, ignoreType = true)
 	public RD getAccessedResourceData();
 
 	/**
@@ -101,6 +112,7 @@ public abstract interface ModelSlotInstance<MS extends ModelSlot<? extends RD>, 
 	 * 
 	 * @param accessedResourceData
 	 */
+	@Setter(ACCESSED_RESOURCE_DATA_KEY)
 	public void setAccessedResourceData(RD accessedResourceData);
 
 	/**
@@ -109,15 +121,35 @@ public abstract interface ModelSlotInstance<MS extends ModelSlot<? extends RD>, 
 	 * 
 	 * @return
 	 */
+	@Getter(value = RESOURCE_KEY, ignoreType = true)
 	public TechnologyAdapterResource<RD, ?> getResource();
 
-	public static abstract class ModelSlotInstanceImpl<MS extends ModelSlot<RD>, RD extends ResourceData<RD> & TechnologyObject<?>> extends
-			VirtualModelInstanceObjectImpl implements ModelSlotInstance<MS, RD> {
+	/**
+	 * Sets the resource of the data this model slot gives access to.<br>
+	 * This is the data contractualized by the related model slot
+	 * 
+	 * @param resource
+	 */
+	@Setter(RESOURCE_KEY)
+	public void setResource(TechnologyAdapterResource<RD, ?> resource);
+
+	/**
+	 * Sets the resource of the data this model slot gives access to.<br>
+	 * This is the data contractualized by the related model slot<br>
+	 * A flag allows to declare enclosing resource to be modified or not
+	 * 
+	 * @param resource
+	 * @param declareAsModified
+	 */
+	public void setResource(TechnologyAdapterResource<RD, ?> resource, boolean declareAsModified);
+
+	public static abstract class ModelSlotInstanceImpl<MS extends ModelSlot<RD>, RD extends ResourceData<RD> & TechnologyObject<?>>
+			extends ActorReferenceImpl<RD> implements ModelSlotInstance<MS, RD> {
 
 		private static final Logger logger = Logger.getLogger(ModelSlotInstance.class.getPackage().getName());
 
-		private View view;
-		private VirtualModelInstance vmInstance;
+		// private View view;
+		// private VirtualModelInstance<?, ?> vmInstance;
 		private MS modelSlot;
 		protected RD accessedResourceData;
 		protected TechnologyAdapterResource<RD, ?> resource;
@@ -134,7 +166,7 @@ public abstract interface ModelSlotInstance<MS extends ModelSlot<? extends RD>, 
 			this.modelSlot = modelSlot;
 		}*/
 
-		/*public ModelSlotInstanceImpl(VirtualModelInstance vmInstance, MS modelSlot) {
+		/*public ModelSlotInstanceImpl(FMLRTVirtualModelInstance vmInstance, MS modelSlot) {
 			super(vmInstance.getProject());
 			this.vmInstance = vmInstance;
 			this.view = vmInstance.getView();
@@ -149,42 +181,46 @@ public abstract interface ModelSlotInstance<MS extends ModelSlot<? extends RD>, 
 		}
 
 		@Override
-		public VirtualModelInstance getResourceData() {
+		public VirtualModelInstance<?, ?> getResourceData() {
 			return getVirtualModelInstance();
 		}
 
-		@Override
+		/*@Override
 		public void setView(View view) {
 			this.view = view;
 		}
-
+		
 		@Override
 		public View getView() {
 			return view;
-		}
+		}*/
 
-		@Override
-		public VirtualModelInstance getVirtualModelInstance() {
+		/*@Override
+		public VirtualModelInstance<?, ?> getVirtualModelInstance() {
 			return vmInstance;
 		}
+		
+		@Override
+		public void setVirtualModelInstance(VirtualModelInstance<?, ?> vmInstance) {
+			this.vmInstance = vmInstance;
+		}*/
 
 		@Override
-		public void setVirtualModelInstance(VirtualModelInstance vmInstance) {
-			this.vmInstance = vmInstance;
+		public MS getModelSlot() {
+
+			if (getFlexoConceptInstance() != null && getFlexoConceptInstance().getFlexoConcept() != null && modelSlot == null
+					&& StringUtils.isNotEmpty(modelSlotName)) {
+				FlexoProperty<?> foundModelSlot = getFlexoConceptInstance().getFlexoConcept().getAccessibleProperty(modelSlotName);
+				if (foundModelSlot instanceof ModelSlot) {
+					modelSlot = (MS) foundModelSlot;
+				}
+			}
+			return modelSlot;
 		}
 
 		@Override
 		public void setModelSlot(MS modelSlot) {
 			this.modelSlot = modelSlot;
-		}
-
-		@Override
-		public MS getModelSlot() {
-			if (getVirtualModelInstance() != null && getVirtualModelInstance().getVirtualModel() != null && modelSlot == null
-					&& StringUtils.isNotEmpty(modelSlotName)) {
-				modelSlot = (MS) getVirtualModelInstance().getVirtualModel().getModelSlot(modelSlotName);
-			}
-			return modelSlot;
 		}
 
 		public void updateActorReferencesURI() {
@@ -198,6 +234,18 @@ public abstract interface ModelSlotInstance<MS extends ModelSlot<? extends RD>, 
 		 */
 		@Override
 		public RD getAccessedResourceData() {
+			if (accessedResourceData == null && getResource() != null) {
+				try {
+					accessedResourceData = getResource().getResourceData(null);
+				} catch (FileNotFoundException e) {
+					e.printStackTrace();
+				} catch (ResourceLoadingCancelledException e) {
+					e.printStackTrace();
+				} catch (FlexoException e) {
+					e.printStackTrace();
+				}
+			}
+
 			return accessedResourceData;
 		}
 
@@ -208,13 +256,18 @@ public abstract interface ModelSlotInstance<MS extends ModelSlot<? extends RD>, 
 		 */
 		@Override
 		public void setAccessedResourceData(RD accessedResourceData) {
-			boolean requiresUpdate = false;
-			if (this.accessedResourceData != accessedResourceData) {
-				requiresUpdate = true;
-			}
+			// FD unused
+			// boolean requiresUpdate = false;
+			// if (this.accessedResourceData != accessedResourceData) {
+			// requiresUpdate = true;
+			// }
 
+			// NPE Protection when deleting VMI
+			if (accessedResourceData != null) {
+				logger.info("resourceData will be set to " + accessedResourceData + " for ModelSlot: " + this.getModelSlotName());
+				setResource((TechnologyAdapterResource<RD, ?>) accessedResourceData.getResource());
+			}
 			this.accessedResourceData = accessedResourceData;
-			this.resource = (TechnologyAdapterResource<RD, ?>) accessedResourceData.getResource();
 
 			/*if (requiresUpdate) {
 				// The virtual model can be synchronized with the new resource data.
@@ -223,6 +276,10 @@ public abstract interface ModelSlotInstance<MS extends ModelSlot<? extends RD>, 
 					getVirtualModelInstance().synchronize(null);
 				}
 			}*/
+
+			if (getVirtualModelInstance() != null) {
+				getVirtualModelInstance().setModified(true);
+			}
 
 		}
 
@@ -235,6 +292,32 @@ public abstract interface ModelSlotInstance<MS extends ModelSlot<? extends RD>, 
 		@Override
 		public TechnologyAdapterResource<RD, ?> getResource() {
 			return resource;
+		}
+
+		@Override
+		public void setResource(TechnologyAdapterResource<RD, ?> resource) {
+			setResource(resource, true);
+		}
+
+		/**
+		 * Sets the resource of the data this model slot gives access to.<br>
+		 * This is the data contractualized by the related model slot<br>
+		 * A flag allows to declare enclosing resource to be modified or not
+		 * 
+		 * @param resource
+		 * @param declareAsModified
+		 */
+		@Override
+		public void setResource(TechnologyAdapterResource<RD, ?> resource, boolean declareAsModified) {
+			if ((resource == null && this.resource != null) || (resource != null && !resource.equals(this.resource))) {
+				TechnologyAdapterResource<RD, ?> oldValue = this.resource;
+				this.resource = resource;
+				getPropertyChangeSupport().firePropertyChange("resource", oldValue, resource);
+				if (declareAsModified && (getVirtualModelInstance() != null)) {
+					getVirtualModelInstance().setModified(true);
+				}
+
+			}
 		}
 
 		// Serialization/deserialization only, do not use
@@ -254,9 +337,8 @@ public abstract interface ModelSlotInstance<MS extends ModelSlot<? extends RD>, 
 
 		@Override
 		public String toString() {
-			return "ModelSlotInstance:"
-					+ (getModelSlot() != null ? getModelSlot().getName() + ":" + getModelSlot().getClass().getSimpleName() + "_"
-							+ getFlexoID() : "null");
+			return "ModelSlotInstance:" + (getModelSlot() != null
+					? getModelSlot().getName() + ":" + getModelSlot().getClass().getSimpleName() + "_" + getFlexoID() : "null");
 		}
 
 		/**
@@ -265,5 +347,40 @@ public abstract interface ModelSlotInstance<MS extends ModelSlot<? extends RD>, 
 		 * @return
 		 */
 		public abstract String getBindingDescription();
+
+		@Override
+		public String getRoleName() {
+			return getModelSlotName();
+		}
+
+		@Override
+		public void setRoleName(String roleName) {
+			setModelSlotName(roleName);
+		}
+
+		@Override
+		public RD getModellingElement(boolean forceLoading) {
+			return getAccessedResourceData();
+		}
+
+		@Override
+		public void setModellingElement(RD resourceData) {
+			setAccessedResourceData(resourceData);
+		}
+
+		@Override
+		public MS getFlexoRole() {
+			return getModelSlot();
+		}
+
+		@Override
+		public void setFlexoRole(FlexoRole<? super RD> flexoRole) {
+			setModelSlot((MS) flexoRole);
+		}
+
+		@Override
+		public ModelSlotInstance<?, ?> getModelSlotInstance() {
+			return null;
+		}
 	}
 }

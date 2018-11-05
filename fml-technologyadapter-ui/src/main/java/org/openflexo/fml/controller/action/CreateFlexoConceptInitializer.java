@@ -45,11 +45,14 @@ import javax.swing.Icon;
 
 import org.openflexo.components.wizard.Wizard;
 import org.openflexo.components.wizard.WizardDialog;
-import org.openflexo.fib.controller.FIBController.Status;
 import org.openflexo.foundation.action.FlexoActionFinalizer;
 import org.openflexo.foundation.action.FlexoActionInitializer;
+import org.openflexo.foundation.action.FlexoActionFactory;
 import org.openflexo.foundation.fml.action.CreateFlexoConcept;
+import org.openflexo.gina.controller.FIBController.Status;
 import org.openflexo.icon.FMLIconLibrary;
+import org.openflexo.icon.IconFactory;
+import org.openflexo.icon.IconLibrary;
 import org.openflexo.view.controller.ActionInitializer;
 import org.openflexo.view.controller.ControllerActionInitializer;
 
@@ -66,6 +69,7 @@ public class CreateFlexoConceptInitializer extends ActionInitializer {
 		return new FlexoActionInitializer<CreateFlexoConcept>() {
 			@Override
 			public boolean run(EventObject e, CreateFlexoConcept action) {
+				action.setDefineSomeBehaviours(true);
 				Wizard wizard = new CreateFlexoConceptWizard(action, getController());
 				WizardDialog dialog = new WizardDialog(wizard, getController());
 				dialog.showDialog();
@@ -84,6 +88,7 @@ public class CreateFlexoConceptInitializer extends ActionInitializer {
 		return new FlexoActionFinalizer<CreateFlexoConcept>() {
 			@Override
 			public boolean run(EventObject e, CreateFlexoConcept action) {
+				action.getNewFlexoConcept().setAuthor(getController().getApplicationContext().getGeneralPreferences().getUserName());
 				if (action.switchNewlyCreatedFlexoConcept) {
 					getController().setCurrentEditedObjectAsModuleView(action.getNewFlexoConcept());
 				}
@@ -93,8 +98,8 @@ public class CreateFlexoConceptInitializer extends ActionInitializer {
 	}
 
 	@Override
-	protected Icon getEnabledIcon() {
-		return FMLIconLibrary.FLEXO_CONCEPT_ICON;
+	protected Icon getEnabledIcon(FlexoActionFactory actionType) {
+		return IconFactory.getImageIcon(FMLIconLibrary.FLEXO_CONCEPT_ICON, IconLibrary.NEW_MARKER);
 	}
 
 }

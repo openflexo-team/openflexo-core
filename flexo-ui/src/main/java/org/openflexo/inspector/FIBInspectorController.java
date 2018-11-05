@@ -39,28 +39,14 @@
 
 package org.openflexo.inspector;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.MouseEvent;
 import java.util.logging.Logger;
 
-import javax.swing.JMenuItem;
-import javax.swing.JPopupMenu;
-
-import org.openflexo.connie.BindingVariable;
-import org.openflexo.fib.FIBLibrary;
-import org.openflexo.fib.model.FIBComponent;
-import org.openflexo.fib.model.FIBModelFactory;
-import org.openflexo.fib.utils.FIBInspector;
 import org.openflexo.foundation.DataModification;
-import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.FlexoObservable;
-import org.openflexo.foundation.FlexoProperty;
-import org.openflexo.foundation.InnerResourceData;
-import org.openflexo.foundation.action.AddFlexoProperty;
 import org.openflexo.foundation.resource.ResourceLoaded;
+import org.openflexo.gina.model.FIBComponent;
+import org.openflexo.gina.view.GinaViewFactory;
 import org.openflexo.logging.FlexoLogger;
-import org.openflexo.model.exceptions.ModelDefinitionException;
 import org.openflexo.view.controller.FlexoFIBController;
 
 /**
@@ -73,64 +59,16 @@ public class FIBInspectorController extends FlexoFIBController {
 
 	private static final Logger logger = FlexoLogger.getLogger(FIBInspectorController.class.getPackage().getName());
 
-	private static FIBModelFactory INSPECTOR_FACTORY;
-
-	static {
-		try {
-			INSPECTOR_FACTORY = new FIBModelFactory(FIBInspector.class);
-		} catch (ModelDefinitionException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
-
-	public FIBInspectorController(FIBComponent component) {
-		super(component);
+	public FIBInspectorController(FIBComponent component, GinaViewFactory<?> viewFactory) {
+		super(component, viewFactory);
 	}
 
 	public boolean displayInspectorTabForContext(String context) {
 		if (getFlexoController() != null) {
 			return getFlexoController().displayInspectorTabForContext(context);
-		} else {
-			return true;
 		}
-	}
-
-	@Override
-	public Object getValue(BindingVariable variable) {
-		/*if (variable instanceof FlexoConceptInstanceBindingVariable) {
-			if (getDataObject() instanceof FlexoObject) {
-				List<FlexoObjectReference<FlexoConceptInstance>> refs = ((FlexoObject) getDataObject()).getFlexoConceptReferences();
-				if (refs != null && ((FlexoConceptInstanceBindingVariable) variable).getIndex() < refs.size()) {
-					return refs.get(((FlexoConceptInstanceBindingVariable) variable).getIndex()).getObject();
-				}
-			}
-		}*/
-		return super.getValue(variable);
-	}
-
-	@Override
-	protected void openFIBEditor(FIBComponent component, final MouseEvent event) {
-		if (component instanceof FIBInspector) {
-			JPopupMenu popup = new JPopupMenu();
-			for (FIBInspector current : getFlexoController().getModuleInspectorController().inspectorsForClass(component.getDataClass())) {
-				JMenuItem menuItem = new JMenuItem(current.getResource().getRelativePath());
-				// We dont use existing inspector which is already
-				// aggregated !!!
-				final FIBInspector inspectorToOpen = (FIBInspector) FIBLibrary.instance().retrieveFIBComponent(current.getResource(),
-						false, INSPECTOR_FACTORY);
-				menuItem.addActionListener(new ActionListener() {
-					@Override
-					public void actionPerformed(ActionEvent e) {
-						FIBInspectorController.super.openFIBEditor(inspectorToOpen, event);
-					}
-				});
-				popup.add(menuItem);
-			}
-			popup.show(event.getComponent(), event.getX(), event.getY());
-
-		} else {
-			super.openFIBEditor(component, event);
+		else {
+			return true;
 		}
 	}
 
@@ -140,19 +78,6 @@ public class FIBInspectorController extends FlexoFIBController {
 		if (dataModification instanceof ResourceLoaded) {
 			// System.out.println("Detected resource being loaded !");
 		}
-	}
-
-	public void addCustomProperty(FlexoObject object) {
-		if (object instanceof InnerResourceData) {
-			System.out.println("Creating property for object " + object);
-			AddFlexoProperty action = AddFlexoProperty.actionType.makeNewAction(object, null, getEditor());
-			action.doAction();
-		}
-	}
-
-	public void removeCustomProperty(FlexoProperty property) {
-		System.out.println("Deleting property " + property + " for object " + property.getOwner());
-		property.delete();
 	}
 
 }

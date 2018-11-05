@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<VirtualModel id="FLX-4" virtualModelClass="org.openflexo.foundation.fml.VirtualModel" modelVersion="1.0" uri="http://openflexo.org/test/TestResourceCenter/TestSequence.fml/VM.fml" version="0.1" name="VM" userID="FLX" flexoID="4">
+  <FMLLocalizedDictionary id="SYL-22" userID="SYL" flexoID="22" />
+  <Inspector id="FLX-1" inspectorTitle="VM" userID="FLX" flexoID="1" />
+  <ActionScheme id="FLX-6" name="testBehaviour" width="800" label="testBehaviour" height="600" userID="FLX" flexoID="6">
+    <BehaviourControlGraph_Sequence id="FLX-18" userID="FLX" flexoID="18">
+      <ControlGraph2_Sequence id="FLX-17" ownerContext="controlGraph2" userID="FLX" flexoID="17">
+        <ControlGraph2_DeclarationAction id="FLX-16" variable="variable3" ownerContext="controlGraph2" userID="FLX" flexoID="16">
+          <AssignableAction_ExpressionAction id="FLX-15" expression="3" userID="FLX" flexoID="15" />
+        </ControlGraph2_DeclarationAction>
+        <ControlGraph1_DeclarationAction id="FLX-14" variable="variable2" ownerContext="controlGraph1" userID="FLX" flexoID="14">
+          <AssignableAction_ExpressionAction id="FLX-13" expression="2" userID="FLX" flexoID="13" />
+        </ControlGraph1_DeclarationAction>
+      </ControlGraph2_Sequence>
+      <ControlGraph1_DeclarationAction id="FLX-9" variable="variable1" ownerContext="controlGraph1" userID="FLX" flexoID="9">
+        <AssignableAction_ExpressionAction id="FLX-8" expression="1" userID="FLX" flexoID="8" />
+      </ControlGraph1_DeclarationAction>
+    </BehaviourControlGraph_Sequence>
+  </ActionScheme>
+</VirtualModel>

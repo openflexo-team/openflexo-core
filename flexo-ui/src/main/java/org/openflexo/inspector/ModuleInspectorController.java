@@ -41,6 +41,8 @@ package org.openflexo.inspector;
 
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Hashtable;
@@ -50,52 +52,45 @@ import java.util.Observable;
 import java.util.Observer;
 import java.util.logging.Logger;
 
-import org.openflexo.components.widget.FIBIndividualSelector;
-import org.openflexo.components.widget.FIBPropertySelector;
-import org.openflexo.connie.BindingVariable;
 import org.openflexo.connie.DataBinding;
+import org.openflexo.connie.exception.TransformException;
+import org.openflexo.connie.expr.BindingValue;
+import org.openflexo.connie.expr.BindingValue.AbstractBindingPathElement;
+import org.openflexo.connie.expr.BindingValue.NormalBindingPathElement;
+import org.openflexo.connie.expr.Expression;
+import org.openflexo.connie.expr.ExpressionTransformer;
+import org.openflexo.connie.expr.parser.ExpressionParser;
+import org.openflexo.connie.expr.parser.ParseException;
 import org.openflexo.connie.type.TypeUtils;
-import org.openflexo.fib.model.FIBCheckBox;
-import org.openflexo.fib.model.FIBComponent;
-import org.openflexo.fib.model.FIBComponent.HorizontalScrollBarPolicy;
-import org.openflexo.fib.model.FIBComponent.VerticalScrollBarPolicy;
-import org.openflexo.fib.model.FIBContainer;
-import org.openflexo.fib.model.FIBCustom;
-import org.openflexo.fib.model.FIBCustom.FIBCustomAssignment;
-import org.openflexo.fib.model.FIBLabel;
-import org.openflexo.fib.model.FIBModelFactory;
-import org.openflexo.fib.model.FIBNumber;
-import org.openflexo.fib.model.FIBNumber.NumberType;
-import org.openflexo.fib.model.FIBPanel.Layout;
-import org.openflexo.fib.model.FIBTab;
-import org.openflexo.fib.model.FIBTextArea;
-import org.openflexo.fib.model.FIBTextField;
-import org.openflexo.fib.model.FIBWidget;
-import org.openflexo.fib.model.TwoColsLayoutConstraints;
-import org.openflexo.fib.model.TwoColsLayoutConstraints.TwoColsLayoutLocation;
-import org.openflexo.fib.utils.FIBInspector;
-import org.openflexo.fib.utils.InspectorGroup;
+import org.openflexo.foundation.fml.FMLLocalizedDictionary;
 import org.openflexo.foundation.fml.FlexoConcept;
-import org.openflexo.foundation.fml.FlexoConceptInstanceType;
-import org.openflexo.foundation.fml.ViewPointLocalizedDictionary;
-import org.openflexo.foundation.fml.inspector.CheckboxInspectorEntry;
-import org.openflexo.foundation.fml.inspector.ClassInspectorEntry;
-import org.openflexo.foundation.fml.inspector.DataPropertyInspectorEntry;
-import org.openflexo.foundation.fml.inspector.IndividualInspectorEntry;
+import org.openflexo.foundation.fml.inspector.FlexoConceptInspector;
 import org.openflexo.foundation.fml.inspector.InspectorEntry;
-import org.openflexo.foundation.fml.inspector.IntegerInspectorEntry;
-import org.openflexo.foundation.fml.inspector.ObjectPropertyInspectorEntry;
-import org.openflexo.foundation.fml.inspector.PropertyInspectorEntry;
-import org.openflexo.foundation.fml.inspector.TextAreaInspectorEntry;
-import org.openflexo.foundation.fml.inspector.TextFieldInspectorEntry;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
-import org.openflexo.foundation.ontology.IFlexoOntologyClass;
 import org.openflexo.foundation.task.Progress;
+import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
+import org.openflexo.gina.ApplicationFIBLibrary.ApplicationFIBLibraryImpl;
+import org.openflexo.gina.FIBLibrary;
+import org.openflexo.gina.model.FIBComponent;
+import org.openflexo.gina.model.FIBContainer;
+import org.openflexo.gina.model.FIBModelFactory;
+import org.openflexo.gina.model.FIBVariable;
+import org.openflexo.gina.model.FIBWidget;
+import org.openflexo.gina.model.container.FIBPanel;
+import org.openflexo.gina.model.container.FIBPanel.Layout;
+import org.openflexo.gina.model.container.FIBTab;
+import org.openflexo.gina.model.container.layout.TwoColsLayoutConstraints;
+import org.openflexo.gina.model.container.layout.TwoColsLayoutConstraints.TwoColsLayoutLocation;
+import org.openflexo.gina.model.widget.FIBLabel;
+import org.openflexo.gina.utils.FIBInspector;
+import org.openflexo.gina.utils.InspectorGroup;
 import org.openflexo.localization.FlexoLocalization;
+import org.openflexo.localization.LocalizedDelegate;
 import org.openflexo.rm.Resource;
 import org.openflexo.rm.ResourceLocator;
-import org.openflexo.toolbox.StringUtils;
 import org.openflexo.view.controller.FlexoController;
+import org.openflexo.view.controller.FlexoFIBController;
+import org.openflexo.view.controller.TechnologyAdapterController;
 
 /**
  * Represents the controller for all inspectors managed in the context of a module<br>
@@ -106,7 +101,7 @@ import org.openflexo.view.controller.FlexoController;
  */
 public class ModuleInspectorController extends Observable implements Observer {
 
-	private static final String CONTROLLER_EDITABLE_BINDING = "controller.flexoController.isEditable(data)";
+	// private static final String CONTROLLER_EDITABLE_BINDING = "controller.flexoController.isEditable(data)";
 
 	static final Logger logger = Logger.getLogger(ModuleInspectorController.class.getPackage().getName());
 
@@ -115,7 +110,6 @@ public class ModuleInspectorController extends Observable implements Observer {
 	private final FlexoController flexoController;
 
 	private final Map<FlexoConcept, FIBInspector> flexoConceptInspectors;
-	// private final Map<Class<?>, FIBInspector> inspectors;
 
 	private FIBInspector currentInspector = null;
 
@@ -124,40 +118,31 @@ public class ModuleInspectorController extends Observable implements Observer {
 
 	private Object currentInspectedObject = null;
 
-	/*public static FIBModelFactory INSPECTOR_FACTORY;
-	
-	static {
-		try {
-			INSPECTOR_FACTORY = new FIBModelFactory(FIBInspector.class);
-		} catch (ModelDefinitionException e1) {
-			e1.printStackTrace();
-		}
-	}*/
-
 	public ModuleInspectorController(final FlexoController flexoController) {
 		this.flexoController = flexoController;
 
-		inspectorGroups = new ArrayList<InspectorGroup>();
-		coreInspectorGroup = new InspectorGroup(ResourceLocator.locateResource("Inspectors/COMMON"));
+		inspectorGroups = new ArrayList<>();
+		coreInspectorGroup = new InspectorGroup(ResourceLocator.locateResource("Inspectors/COMMON"), getInspectorsFIBLibrary(),
+				flexoController.getFlexoLocales());
 		inspectorGroups.add(coreInspectorGroup);
 
-		flexoConceptInspectors = new Hashtable<FlexoConcept, FIBInspector>();
+		flexoConceptInspectors = new Hashtable<>();
 		inspectorDialog = new FIBInspectorDialog(this);
 		Boolean visible = null;
 		if (flexoController.getApplicationContext().getGeneralPreferences() != null) {
-			visible = flexoController.getApplicationContext().getGeneralPreferences().getInspectorVisible();
+			visible = flexoController.getApplicationContext().getPresentationPreferences().getInspectorVisible();
 		}
 		inspectorDialog.setVisible(visible == null || visible);
 		inspectorDialog.addComponentListener(new ComponentAdapter() {
 			@Override
 			public void componentShown(ComponentEvent e) {
-				flexoController.getApplicationContext().getGeneralPreferences().setInspectorVisible(true);
+				flexoController.getApplicationContext().getPresentationPreferences().setInspectorVisible(true);
 				flexoController.getApplicationContext().getPreferencesService().savePreferences();
 			}
 
 			@Override
 			public void componentHidden(ComponentEvent e) {
-				flexoController.getApplicationContext().getGeneralPreferences().setInspectorVisible(false);
+				flexoController.getApplicationContext().getPresentationPreferences().setInspectorVisible(false);
 				flexoController.getApplicationContext().getPreferencesService().savePreferences();
 			};
 		});
@@ -183,14 +168,25 @@ public class ModuleInspectorController extends Observable implements Observer {
 		return returned;
 	}*/
 
-	public InspectorGroup loadDirectory(Resource inspectorsDirectory, InspectorGroup... parentInspectorGroups) {
-		InspectorGroup newInspectorGroup = new InspectorGroup(inspectorsDirectory, parentInspectorGroups) {
+	private FIBLibrary getInspectorsFIBLibrary() {
+		if (getFlexoController() != null) {
+			return getFlexoController().getApplicationContext().getApplicationFIBLibraryService().getApplicationFIBLibrary();
+		}
+		return ApplicationFIBLibraryImpl.instance();
+	}
+
+	public InspectorGroup loadDirectory(Resource inspectorsDirectory, LocalizedDelegate locales, InspectorGroup... parentInspectorGroups) {
+		InspectorGroup newInspectorGroup = new InspectorGroup(inspectorsDirectory, getInspectorsFIBLibrary(), locales,
+				parentInspectorGroups) {
 			@Override
 			public void progress(Resource f, FIBInspector inspector) {
 				super.progress(f, inspector);
 				appendVisibleFor(inspector);
-				appendEditableCondition(inspector);
-				Progress.progress(FlexoLocalization.localizedForKey("loaded_inspector") + " " + inspector.getDataClass().getSimpleName());
+
+				// Dont do it anymore: perfs issues
+				// appendEditableCondition(inspector);
+				Progress.progress(FlexoLocalization.getMainLocalizer().localizedForKey("loaded_inspector") + " "
+						+ inspector.getInspectedClass().getSimpleName());
 			}
 		};
 		inspectorGroups.add(newInspectorGroup);
@@ -243,21 +239,23 @@ public class ModuleInspectorController extends Observable implements Observer {
 		}
 	}*/
 
-	private void appendEditableCondition(FIBComponent component) {
+	/*private void appendEditableCondition(FIBComponent component) {
 		if (component instanceof FIBWidget) {
 			FIBWidget widget = (FIBWidget) component;
 			DataBinding<Boolean> enable = widget.getEnable();
 			if (enable != null && enable.isValid()) {
 				widget.setEnable(new DataBinding<Boolean>(enable.toString() + " & " + CONTROLLER_EDITABLE_BINDING));
-			} else {
+			}
+			else {
 				widget.setEnable(new DataBinding<Boolean>(CONTROLLER_EDITABLE_BINDING));
 			}
-		} else if (component instanceof FIBContainer) {
+		}
+		else if (component instanceof FIBContainer) {
 			for (FIBComponent child : ((FIBContainer) component).getSubComponents()) {
 				appendEditableCondition(child);
 			}
 		}
-	}
+	}*/
 
 	private void appendVisibleFor(FIBComponent component) {
 		/*String visibleForParam = component.getParameter("visibleFor");
@@ -298,11 +296,11 @@ public class ModuleInspectorController extends Observable implements Observer {
 			return null;
 		}
 
-		Map<Class<?>, FIBInspector> potentialInspectors = new HashMap<Class<?>, FIBInspector>();
-		for (InspectorGroup inspectorGroup : inspectorGroups) {
+		Map<Class<?>, FIBInspector> potentialInspectors = new HashMap<>();
+		for (InspectorGroup inspectorGroup : new ArrayList<>(inspectorGroups)) {
 			FIBInspector inspector = inspectorGroup.inspectorForClass(objectClass);
 			if (inspector != null) {
-				potentialInspectors.put(inspector.getDataClass(), inspector);
+				potentialInspectors.put(inspector.getInspectedClass(), inspector);
 			}
 		}
 
@@ -333,7 +331,7 @@ public class ModuleInspectorController extends Observable implements Observer {
 			return null;
 		}
 
-		List<FIBInspector> returned = new ArrayList<FIBInspector>();
+		List<FIBInspector> returned = new ArrayList<>();
 
 		for (InspectorGroup inspectorGroup : inspectorGroups) {
 			for (FIBInspector inspector : inspectorGroup.inspectorsForClass(objectClass)) {
@@ -358,6 +356,14 @@ public class ModuleInspectorController extends Observable implements Observer {
 		return inspectorForClass(object.getClass());
 	}
 
+	/**
+	 * Internally called to build an inspector for a given {@link FlexoConceptInstance}<br>
+	 * Inspector is build from {@link FlexoConceptInstance} classical inspector augmented with tab as defined in
+	 * {@link FlexoConceptInspector}
+	 * 
+	 * @param conceptInstance
+	 * @return
+	 */
 	private FIBInspector inspectorForFlexoConceptInstance(FlexoConceptInstance conceptInstance) {
 		FlexoConcept concept = conceptInstance.getFlexoConcept();
 		if (concept == null) {
@@ -366,57 +372,60 @@ public class ModuleInspectorController extends Observable implements Observer {
 		FIBInspector returned = flexoConceptInspectors.get(concept);
 		if (returned != null) {
 			return returned;
-		} else {
+		}
+		else {
+			// First retrieve basic inspector (as defined in FlexoConceptInstance.inspector)
 			returned = inspectorForClass(conceptInstance.getImplementedInterface());
+			// Clone it
 			returned = (FIBInspector) returned.cloneObject();
-			// FIBTab basicTab = (FIBTab) returned.getTabPanel().getChildAt(0);
-			// System.out.println("basicTab=" + basicTab);
-			// returned.removeFromSubComponents(basicTab);
-			appendFlexoConceptInspectors(concept, returned);
+			returned.setLocales(getFlexoController().getModuleLocales());
+			// And append tab matching FlexoConceptInspector
+			appendFlexoConceptInspector(concept, returned);
 			flexoConceptInspectors.put(concept, returned);
+
+			FlexoConceptInstanceInspectorUpdater updater = new FlexoConceptInstanceInspectorUpdater(returned, concept);
+			concept.getInspector().getPropertyChangeSupport().addPropertyChangeListener(updater);
+			for (InspectorEntry entry : concept.getInspector().getEntries()) {
+				entry.getPropertyChangeSupport().addPropertyChangeListener(updater);
+			}
+
 			return returned;
 		}
 	}
 
-	/*protected FIBInspector inspectorForClass(Class<?> aClass) {
-		if (aClass == null) {
-			return null;
+	/**
+	 * Internal listener of an inspector tab of a FlexoConcept
+	 * 
+	 * @author sylvain
+	 *
+	 */
+	class FlexoConceptInstanceInspectorUpdater implements PropertyChangeListener {
+
+		private FIBInspector inspector;
+		private FlexoConcept concept;
+
+		public FlexoConceptInstanceInspectorUpdater(FIBInspector inspector, FlexoConcept concept) {
+			this.inspector = inspector;
+			this.concept = concept;
 		}
-		FIBInspector returned = inspectors.get(aClass);
-		if (returned != null) {
-			return returned;
-		} else {
-			Class<?> superclass = aClass.getSuperclass();
-			if (superclass != null) {
-				returned = inspectors.get(aClass);
-				if (returned != null) {
-					return returned;
-				} else {
-					for (Class<?> superInterface : aClass.getInterfaces()) {
-						returned = inspectors.get(superInterface);
-						if (returned != null) {
-							return returned;
-						}
-					}
-					return inspectorForClass(superclass);
+
+		@Override
+		public void propertyChange(PropertyChangeEvent evt) {
+			if (evt.getSource() == concept.getInspector() && evt.getPropertyName().equals(FlexoConceptInspector.ENTRIES_KEY)) {
+				updateFlexoConceptInspector(concept, inspector);
+				if (evt.getNewValue() instanceof InspectorEntry) {
+					((InspectorEntry) evt.getNewValue()).getPropertyChangeSupport().addPropertyChangeListener(this);
+				}
+				else if (evt.getOldValue() instanceof InspectorEntry) {
+					((InspectorEntry) evt.getOldValue()).getPropertyChangeSupport().removePropertyChangeListener(this);
 				}
 			}
-		}
-		List<Class<?>> matchingClasses = new ArrayList<Class<?>>();
-		for (Class<?> cl : inspectors.keySet()) {
-			if (cl.isAssignableFrom(aClass)) {
-				matchingClasses.add(cl);
+			if (evt.getSource() instanceof InspectorEntry) {
+				updateFlexoConceptInspector(concept, inspector);
 			}
 		}
-		if (matchingClasses.size() > 0) {
-			return inspectors.get(TypeUtils.getMostSpecializedClass(matchingClasses));
-		}
-		return null;
-	}*/
 
-	/*protected Map<Class<?>, FIBInspector> getInspectors() {
-		return inspectors;
-	}*/
+	}
 
 	public FIBInspectorDialog getInspectorDialog() {
 		return inspectorDialog;
@@ -443,6 +452,7 @@ public class ModuleInspectorController extends Observable implements Observer {
 	}
 
 	private void switchToInspector(FIBInspector newInspector/*, boolean updateEPTabs*/) {
+		// System.out.println("switchToInspector " + newInspector);
 		currentInspector = newInspector;
 		setChanged();
 		notifyObservers(new InspectorSwitching(newInspector/*, updateEPTabs*/));
@@ -474,15 +484,10 @@ public class ModuleInspectorController extends Observable implements Observer {
 		if (newInspector == null) {
 			logger.warning("No inspector for " + object);
 			switchToEmptyContent();
-		} else {
-			/*boolean updateEPTabs = false;
-			if (object instanceof FlexoConceptInstance) {
-				updateEPTabs = newInspector.updateFlexoConceptInstanceInspector((FlexoConceptInstance) object);
-			} else if (object instanceof FlexoObject) {
-				updateEPTabs = newInspector.updateFlexoObjectInspector((FlexoObject) object);
-			}*/
-			if (newInspector != currentInspector /*|| updateEPTabs*/) {
-				switchToInspector(newInspector/*, updateEPTabs*/);
+		}
+		else {
+			if (newInspector != currentInspector) {
+				switchToInspector(newInspector);
 			}
 			displayObject(object);
 		}
@@ -500,9 +505,11 @@ public class ModuleInspectorController extends Observable implements Observer {
 			InspectorSelection inspectorSelection = (InspectorSelection) notification;
 			if (inspectorSelection instanceof EmptySelection) {
 				switchToEmptyContent();
-			} else if (inspectorSelection instanceof MultipleSelection) {
+			}
+			else if (inspectorSelection instanceof MultipleSelection) {
 				switchToMultipleSelection();
-			} else if (inspectorSelection instanceof UniqueSelection) {
+			}
+			else if (inspectorSelection instanceof UniqueSelection) {
 				inspectObject(((UniqueSelection) inspectorSelection).getInspectedObject());
 			}
 		}
@@ -525,17 +532,11 @@ public class ModuleInspectorController extends Observable implements Observer {
 	}
 
 	public static class InspectorSwitching {
-		// private final boolean updateEPTabs;
 		private final FIBInspector newInspector;
 
 		public InspectorSwitching(FIBInspector newInspector/*, boolean updateEPTabs*/) {
 			this.newInspector = newInspector;
-			// this.updateEPTabs = updateEPTabs;
 		}
-
-		/*public boolean updateEPTabs() {
-			return updateEPTabs;
-		}*/
 
 		public FIBInspector getNewInspector() {
 			return newInspector;
@@ -560,74 +561,142 @@ public class ModuleInspectorController extends Observable implements Observer {
 		currentInspector = null;
 	}
 
-	public void appendFlexoConceptInspectors(FlexoConcept concept, FIBInspector inspector) {
-		FIBTab newTab = makeFIBTab(concept, inspector);
+	private FIBTab appendFlexoConceptInspector(FlexoConcept concept, FIBInspector inspector) {
+		FIBTab newTab = makeFIBTab(concept);
+		// TODO: we have to set the parent first, otherwise in FIBViewImpl.java
+		// The value of FIBVariable fci is still invalid when component beeing added
+		// Thus, this is not listened
+		newTab.setParent(inspector.getTabPanel());
 		inspector.getTabPanel().addToSubComponents(newTab, null, 0);
-
-		/*try {
-			logger.info("Getting this "
-					+ XMLCoder.encodeObjectWithMapping(this, FIBLibrary.getFIBMapping(), StringEncoder.getDefaultInstance()));
-		} catch (InvalidObjectSpecificationException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (InvalidModelException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (AccessorInvocationException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (DuplicateSerializationIdentifierException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}*/
+		return newTab;
 	}
 
-	private FIBTab makeFIBTab(FlexoConcept flexoConcept, FIBInspector inspector) {
-		// logger.info("makeFIBTab " + refIndex + " for " + ep);
-		FIBTab newTab = createFIBTabForFlexoConcept(flexoConcept);
-
-		// VERY IMPORTANT
-		// We MUST here redefine the type of inspected data
-		BindingVariable bv = inspector.getBindingModel().bindingVariableNamed("data");
-		if (bv != null && flexoConcept != null) {
-			bv.setType(FlexoConceptInstanceType.getFlexoConceptInstanceType(flexoConcept));
+	private FIBTab updateFlexoConceptInspector(FlexoConcept concept, FIBInspector inspector) {
+		Object wasInspected = currentInspectedObject;
+		if (concept != null && inspector != null && inspector.getTabPanel() != null
+				&& inspector.getTabPanel().getSubComponents().size() > 0) {
+			FIBTab existingTab = (FIBTab) inspector.getTabPanel().getSubComponents().get(0);
+			if (existingTab.getTitle().equals(concept.getInspector().getInspectorTitle())) {
+				inspector.getTabPanel().removeFromSubComponents(existingTab);
+			}
 		}
+
+		FIBTab returned = appendFlexoConceptInspector(concept, inspector);
+		if (wasInspected != null) {
+			switchToEmptyContent();
+			inspectObject(wasInspected);
+		}
+		return returned;
+	}
+
+	private Map<FlexoConcept, FIBPanel> flexoConceptInspectorPanels = new HashMap<>();
+
+	public FIBPanel getFIBInspectorPanel(FlexoConcept flexoConcept) {
+		FIBPanel returned = flexoConceptInspectorPanels.get(flexoConcept);
+		if (returned == null) {
+			returned = makeFIBInspectorPanel(flexoConcept);
+			flexoConceptInspectorPanels.put(flexoConcept, returned);
+		}
+		return returned;
+
+	}
+
+	private FIBPanel makeFIBInspectorPanel(FlexoConcept flexoConcept) {
+		FIBPanel inspector = getFactory().newFIBPanel();
+		inspector.setLayout(Layout.twocols);
+		inspector.setUseScrollBar(true);
+
+		inspector.setControllerClass(FlexoFIBController.class);
+
+		// We create a variable for inspector data
+		// This variable is called fci, with type FlexoConceptInstanceType<FlexoConcept>, and value 'data' (which is the
+		// FlexoConceptInstance)
+		// The goal of that variable definition is to provide type for inspected FlexoConceptInstance
+		FIBVariable<?> dataVariable = getFactory().newFIBVariable(inspector, "fci", flexoConcept.getInstanceType());
+		dataVariable.setValue(new DataBinding<>("data"));
+		inspector.addToVariables(dataVariable);
+		inspector.setName(flexoConcept.getName() + "Panel");
+
+		logger.info("Building inspector for " + flexoConcept);
+		appendInspectorEntries(flexoConcept, inspector);
+		logger.info("Built inspector for " + flexoConcept);
+		inspector.finalizeDeserialization();
+
+		return inspector;
+	}
+
+	/**
+	 * Internally called to create {@link FIBTab} matching inspector of supplied {@link FlexoConcept}
+	 * 
+	 * @param flexoConcept
+	 * @param inspector
+	 * @return
+	 */
+	private FIBTab makeFIBTab(FlexoConcept flexoConcept) {
+		FIBTab newTab = getFactory().newFIBTab();
+		newTab.setTitle(flexoConcept.getInspector().getInspectorTitle());
+		newTab.setLayout(Layout.twocols);
+		newTab.setUseScrollBar(true);
+
+		// We create a variable for inspector data
+		// This variable is called fci, with type FlexoConceptInstanceType<FlexoConcept>, and value 'data' (which is the
+		// FlexoConceptInstance)
+		// The goal of that variable definition is to provide type for inspected FlexoConceptInstance
+		FIBVariable<?> dataVariable = getFactory().newFIBVariable(newTab, "fci", flexoConcept.getInstanceType());
+		dataVariable.setValue(new DataBinding<>("data"));
+		newTab.addToVariables(dataVariable);
+		newTab.setName(flexoConcept.getName() + "Panel");
 
 		appendInspectorEntries(flexoConcept, newTab);
 		newTab.finalizeDeserialization();
+
+		/*for (FIBComponent c : newTab.getSubComponents()) {
+			System.out.println("> component " + c);
+			if (c instanceof FIBWidget) {
+				System.out.println("value=" + ((FIBWidget) c).getData());
+				System.out.println(
+						"valid=" + ((FIBWidget) c).getData().isValid() + " reason=" + ((FIBWidget) c).getData().invalidBindingReason());
+			}
+		}*/
+
 		return newTab;
 	}
 
-	protected FIBTab createFIBTabForFlexoConcept(FlexoConcept ep) {
-		// String epIdentifier = getFlexoConceptIdentifierForEPIReference(ep);
-		FIBTab newTab = getFactory().newFIBTab();
-		newTab.setTitle(ep.getInspector().getInspectorTitle());
-		newTab.setLayout(Layout.twocols);
-		newTab.setUseScrollBar(true);
-		// newTab.setDataClass(FlexoConceptInstance.class);
-		// newTab.setData(new DataBinding("data.flexoConceptReferences.get["+refIndex+"].flexoConceptInstance"));
-		// newTab.setData(new DataBinding("data.flexoConceptReferences.firstElement.flexoConceptInstance"));
-		newTab.setName(ep.getName() + "Panel");
-		return newTab;
-	}
-
-	private void appendInspectorEntries(FlexoConcept ep, FIBTab newTab) {
-		for (FlexoConcept parentEP : ep.getParentFlexoConcepts()) {
+	/**
+	 * Internally called to append all entries of supplied flexo concept
+	 * 
+	 * @param flexoConcept
+	 * @param newTab
+	 */
+	private void appendInspectorEntries(FlexoConcept flexoConcept, FIBPanel newTab) {
+		if (flexoConcept == null) {
+			logger.warning("Unexpected null concept ");
+			return;
+		}
+		for (FlexoConcept parentEP : flexoConcept.getParentFlexoConcepts()) {
 			appendInspectorEntries(parentEP, newTab);
 		}
-		ViewPointLocalizedDictionary localizedDictionary = ep.getViewPoint().getLocalizedDictionary();
-		for (final InspectorEntry entry : ep.getInspector().getEntries()) {
+		if (flexoConcept.getDeclaringVirtualModel() == null) {
+			logger.warning("Unexpected null virtual model for concept " + flexoConcept);
+			return;
+		}
+		FMLLocalizedDictionary localizedDictionary = flexoConcept.getDeclaringVirtualModel().getLocalizedDictionary();
+		for (final InspectorEntry entry : flexoConcept.getInspector().getEntries()) {
 			FIBLabel label = getFactory().newFIBLabel();
-			String entryLabel = localizedDictionary.getLocalizedForKeyAndLanguage(entry.getLabel(), FlexoLocalization.getCurrentLanguage());
+			String entryLabel = localizedDictionary.localizedForKeyAndLanguage(entry.getLabel(), FlexoLocalization.getCurrentLanguage());
 			if (entryLabel == null) {
 				entryLabel = entry.getLabel();
 			}
 			label.setLabel(entryLabel);
-			newTab.addToSubComponents(label, new TwoColsLayoutConstraints(TwoColsLayoutLocation.left, false, false));
+			newTab.addToSubComponentsNoNotification(label, new TwoColsLayoutConstraints(TwoColsLayoutLocation.left, false, false));
 			FIBWidget widget = makeWidget(entry, newTab);
-			widget.setBindingFactory(entry.getBindingFactory());
-			widget.setData(new DataBinding<Object>("data." + entry.getData().toString()));
-			widget.setReadOnly(entry.getIsReadOnly());
+			if (widget != null) {
+				widget.setBindingFactory(entry.getBindingFactory());
+				String bindingPath = entry.getData().toString();
+				String normalizedBindingPath = normalizeBindingPath(bindingPath);
+				widget.setData(new DataBinding<>(normalizedBindingPath));
+				widget.setReadOnly(entry.getIsReadOnly());
+			}
 			/*System.out.println("Widget " + widget + " data=" + entry.getData());
 			System.out.println("valid:" + entry.getData().isValid());
 			System.out.println("reason=" + entry.getData().invalidBindingReason());
@@ -635,227 +704,79 @@ public class ModuleInspectorController extends Observable implements Observer {
 			System.out.println("valid:" + widget.getData().isValid());
 			System.out.println("reason=" + widget.getData().invalidBindingReason());*/
 		}
+
+		newTab.fireSubComponentsChanged();
+
+		// System.out.println("Je retourne " + getFactory().stringRepresentation(newTab));
 	}
 
-	private FIBWidget makeWidget(final InspectorEntry entry, FIBTab newTab) {
-		if (entry instanceof TextFieldInspectorEntry) {
-			FIBTextField tf = getFactory().newFIBTextField();
-			tf.setValidateOnReturn(true); // Avoid too many ontologies manipulations
-			newTab.addToSubComponents(tf, new TwoColsLayoutConstraints(TwoColsLayoutLocation.right, true, false));
-			return tf;
-		} else if (entry instanceof TextAreaInspectorEntry) {
-			FIBTextArea ta = getFactory().newFIBTextArea();
-			ta.setValidateOnReturn(true); // Avoid to many ontologies manipulations
-			ta.setUseScrollBar(true);
-			ta.setHorizontalScrollbarPolicy(HorizontalScrollBarPolicy.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-			ta.setVerticalScrollbarPolicy(VerticalScrollBarPolicy.VERTICAL_SCROLLBAR_AS_NEEDED);
-			newTab.addToSubComponents(ta, new TwoColsLayoutConstraints(TwoColsLayoutLocation.right, true, true));
-			return ta;
-		} else if (entry instanceof CheckboxInspectorEntry) {
-			FIBCheckBox cb = getFactory().newFIBCheckBox();
-			newTab.addToSubComponents(cb, new TwoColsLayoutConstraints(TwoColsLayoutLocation.right, true, false));
-			return cb;
-		} else if (entry instanceof IntegerInspectorEntry) {
-			FIBNumber number = getFactory().newFIBNumber();
-			number.setNumberType(NumberType.IntegerType);
-			newTab.addToSubComponents(number, new TwoColsLayoutConstraints(TwoColsLayoutLocation.right, true, false));
-			return number;
-		} else if (entry instanceof IndividualInspectorEntry) {
-			IndividualInspectorEntry individualEntry = (IndividualInspectorEntry) entry;
-			FIBCustom individualSelector = getFactory().newFIBCustom();
-			individualSelector.setComponentClass(FIBIndividualSelector.class);
-			// Quick and dirty hack to configure ClassSelector: refactor this when new binding model will be in use
-			// component.context = xxx
-			FIBCustomAssignment projectAssignment = getFactory().newInstance(FIBCustomAssignment.class);
-			projectAssignment.setOwner(individualSelector);
-			projectAssignment.setVariable(new DataBinding<Object>("component.project"));
-			projectAssignment.setValue(new DataBinding<Object>("data.project"));
-			projectAssignment.setMandatory(true);
-			individualSelector.addToAssignments(projectAssignment);
+	/**
+	 * Normalized BindingPath so that all {@link BindingValue} starts with 'fci.' (name of FCI beeing represented)
+	 * 
+	 * @param bindingPath
+	 * @return
+	 */
+	private static String normalizeBindingPath(String bindingPath) {
+		Expression expression = null;
+		try {
+			expression = ExpressionParser.parse(bindingPath);
 
-			/*individualSelector.addToAssignments(new FIBCustomAssignment(individualSelector, new DataBinding("component.project"),
-					new DataBinding("data.project"), true));*/
-			/*individualSelector.addToAssignments(new FIBCustomAssignment(individualSelector,
-					new DataBinding("component.contextOntologyURI"), new DataBinding('"' + individualEntry.getViewPoint()
-							.getViewpointOntology().getURI() + '"') {
-						@Override
-						public BindingFactory getBindingFactory() {
-							return entry.getBindingFactory();
+			expression = expression.transform(new ExpressionTransformer() {
+				@Override
+				public Expression performTransformation(Expression e) throws TransformException {
+					if (e instanceof BindingValue) {
+						BindingValue bv = (BindingValue) e;
+						if (bv.getParsedBindingPath().size() > 0) {
+							AbstractBindingPathElement firstPathElement = bv.getParsedBindingPath().get(0);
+							if (!(firstPathElement instanceof NormalBindingPathElement)
+									|| !((NormalBindingPathElement) firstPathElement).property.equals("fci")) {
+								bv.getParsedBindingPath().add(0, new NormalBindingPathElement("fci"));
+								bv.clearSerializationRepresentation();
+							}
 						}
-					}, true));*/
-			// Quick and dirty hack to configure IndividualSelector: refactor this when new binding model will be in use
-			IFlexoOntologyClass conceptClass = null;
-			if (individualEntry.getIsDynamicConceptValue()) {
-				// conceptClass = classEntry.evaluateConceptValue(action);
-				// TODO: implement proper scheme with new binding support
-				logger.warning("Please implement me !!!!!!!!!");
-			} else {
-				conceptClass = individualEntry.getConcept();
-			}
-			if (conceptClass != null) {
-				FIBCustomAssignment conceptClassAssignment = getFactory().newInstance(FIBCustomAssignment.class);
-				conceptClassAssignment.setOwner(individualSelector);
-				conceptClassAssignment.setVariable(new DataBinding<Object>("component.typeURI"));
-				conceptClassAssignment.setValue(new DataBinding('"' + conceptClass.getURI() + '"'));
-				conceptClassAssignment.setMandatory(true);
-				individualSelector.addToAssignments(conceptClassAssignment);
-				/*individualSelector.addToAssignments(new FIBCustomAssignment(individualSelector, new DataBinding("component.typeURI"),
-						new DataBinding('"' + conceptClass.getURI() + '"'), true));*/
-			}
-			if (StringUtils.isNotEmpty(individualEntry.getRenderer())) {
-				FIBCustomAssignment rendererAssignment = getFactory().newInstance(FIBCustomAssignment.class);
-				rendererAssignment.setOwner(individualSelector);
-				rendererAssignment.setVariable(new DataBinding<Object>("component.renderer"));
-				rendererAssignment.setValue(new DataBinding('"' + individualEntry.getRenderer() + '"'));
-				rendererAssignment.setMandatory(true);
-				individualSelector.addToAssignments(rendererAssignment);
-				/*individualSelector.addToAssignments(new FIBCustomAssignment(individualSelector, new DataBinding("component.renderer"),
-						new DataBinding('"' + individualEntry.getRenderer() + '"'), true));*/
-			}
-
-			newTab.addToSubComponents(individualSelector, new TwoColsLayoutConstraints(TwoColsLayoutLocation.right, true, false));
-			return individualSelector;
-		} else if (entry instanceof ClassInspectorEntry) {
-			ClassInspectorEntry classEntry = (ClassInspectorEntry) entry;
-			FIBCustom classSelector = getFactory().newFIBCustom();
-			classSelector.setComponentClass(org.openflexo.components.widget.FIBClassSelector.class);
-			// Quick and dirty hack to configure ClassSelector: refactor this when new binding model will be in use
-			// component.context = xxx
-			FIBCustomAssignment projectAssignment = getFactory().newInstance(FIBCustomAssignment.class);
-			projectAssignment.setOwner(classSelector);
-			projectAssignment.setVariable(new DataBinding<Object>("component.project"));
-			projectAssignment.setValue(new DataBinding<Object>("data.project"));
-			projectAssignment.setMandatory(true);
-			classSelector.addToAssignments(projectAssignment);
-			/*classSelector.addToAssignments(new FIBCustomAssignment(classSelector, new DataBinding<Object>("component.project"),
-					new DataBinding<Object>("data.project"), true));*/
-			/*classSelector.addToAssignments(new FIBCustomAssignment(classSelector, new DataBinding("component.contextOntologyURI"),
-					new DataBinding('"' + classEntry.getViewPoint().getViewpointOntology().getURI() + '"') {
-						@Override
-						public BindingFactory getBindingFactory() {
-							return entry.getBindingFactory();
-						}
-					}, true));*/
-			// Quick and dirty hack to configure ClassSelector: refactor this when new binding model will be in use
-			IFlexoOntologyClass conceptClass = null;
-			if (classEntry.getIsDynamicConceptValue()) {
-				// conceptClass = classEntry.evaluateConceptValue(action);
-				// TODO: implement proper scheme with new binding support
-				logger.warning("Please implement me !!!!!!!!!");
-			} else {
-				conceptClass = classEntry.getConcept();
-			}
-			if (conceptClass != null) {
-				FIBCustomAssignment rootClassAssignment = getFactory().newInstance(FIBCustomAssignment.class);
-				rootClassAssignment.setOwner(classSelector);
-				rootClassAssignment.setVariable(new DataBinding<Object>("component.rootClassURI"));
-				rootClassAssignment.setValue(new DataBinding<Object>('"' + conceptClass.getURI() + '"'));
-				rootClassAssignment.setMandatory(true);
-				classSelector.addToAssignments(rootClassAssignment);
-				/*	classSelector.addToAssignments(new FIBCustomAssignment(classSelector,
-							new DataBinding<Object>("component.rootClassURI"), new DataBinding<Object>('"' + conceptClass.getURI() + '"'),
-							true));*/
-			}
-			newTab.addToSubComponents(classSelector, new TwoColsLayoutConstraints(TwoColsLayoutLocation.right, true, false));
-			return classSelector;
-		} else if (entry instanceof PropertyInspectorEntry) {
-			PropertyInspectorEntry propertyEntry = (PropertyInspectorEntry) entry;
-			FIBCustom propertySelector = getFactory().newFIBCustom();
-			propertySelector.setComponentClass(FIBPropertySelector.class);
-			// Quick and dirty hack to configure FIBPropertySelector: refactor this when new binding model will be in use
-			// component.context = xxx
-			FIBCustomAssignment projectAssignment = getFactory().newInstance(FIBCustomAssignment.class);
-			projectAssignment.setOwner(propertySelector);
-			projectAssignment.setVariable(new DataBinding<Object>("component.project"));
-			projectAssignment.setValue(new DataBinding<Object>("data.project"));
-			projectAssignment.setMandatory(true);
-			propertySelector.addToAssignments(projectAssignment);
-			/*propertySelector.addToAssignments(new FIBCustomAssignment(propertySelector, new DataBinding<Object>("component.project"),
-					new DataBinding<Object>("data.project"), true));*/
-			/*propertySelector.addToAssignments(new FIBCustomAssignment(propertySelector, new DataBinding("component.contextOntologyURI"),
-					new DataBinding('"' + propertyEntry.getViewPoint().getViewpointOntology().getURI() + '"') {
-						@Override
-						public BindingFactory getBindingFactory() {
-							return entry.getBindingFactory();
-						}
-					}, true));*/
-
-			// Quick and dirty hack to configure FIBPropertySelector: refactor this when new binding model will be in use
-			IFlexoOntologyClass domainClass = null;
-			if (propertyEntry.getIsDynamicDomainValue()) {
-				// domainClass = propertyEntry.evaluateDomainValue(action);
-				// TODO: implement proper scheme with new binding support
-				logger.warning("Please implement me !!!!!!!!!");
-			} else {
-				domainClass = propertyEntry.getDomain();
-			}
-			if (domainClass != null) {
-				FIBCustomAssignment domainClassAssignment = getFactory().newInstance(FIBCustomAssignment.class);
-				domainClassAssignment.setOwner(propertySelector);
-				domainClassAssignment.setVariable(new DataBinding<Object>("component.domainClassURI"));
-				domainClassAssignment.setValue(new DataBinding<Object>('"' + domainClass.getURI() + '"'));
-				domainClassAssignment.setMandatory(true);
-				propertySelector.addToAssignments(domainClassAssignment);
-				/*propertySelector.addToAssignments(new FIBCustomAssignment(propertySelector, new DataBinding<Object>(
-						"component.domainClassURI"), new DataBinding<Object>('"' + domainClass.getURI() + '"'), true));*/
-			}
-			if (propertyEntry instanceof ObjectPropertyInspectorEntry) {
-				IFlexoOntologyClass rangeClass = null;
-				if (propertyEntry.getIsDynamicDomainValue()) {
-					// domainClass = propertyEntry.evaluateDomainValue(action);
-					// TODO: implement proper scheme with new binding support
-					logger.warning("Please implement me !!!!!!!!!");
-				} else {
-					rangeClass = ((ObjectPropertyInspectorEntry) propertyEntry).getRange();
+						return bv;
+					}
+					return e;
 				}
-				if (rangeClass != null) {
-					FIBCustomAssignment rangeClassAssignment = getFactory().newInstance(FIBCustomAssignment.class);
-					rangeClassAssignment.setOwner(propertySelector);
-					rangeClassAssignment.setVariable(new DataBinding<Object>("component.rangeClassURI"));
-					rangeClassAssignment.setValue(new DataBinding<Object>('"' + rangeClass.getURI() + '"'));
-					rangeClassAssignment.setMandatory(true);
-					propertySelector.addToAssignments(rangeClassAssignment);
-					/*propertySelector.addToAssignments(new FIBCustomAssignment(propertySelector, new DataBinding<Object>(
-							"component.rangeClassURI"), new DataBinding<Object>('"' + rangeClass.getURI() + '"'), true));*/
-				}
-			}
-			if (propertyEntry instanceof ObjectPropertyInspectorEntry) {
-				FIBCustomAssignment selectDataPropertiesAssignment = getFactory().newInstance(FIBCustomAssignment.class);
-				selectDataPropertiesAssignment.setOwner(propertySelector);
-				selectDataPropertiesAssignment.setVariable(new DataBinding<Object>("component.selectDataProperties"));
-				selectDataPropertiesAssignment.setValue(new DataBinding<Object>("false"));
-				selectDataPropertiesAssignment.setMandatory(true);
-				propertySelector.addToAssignments(selectDataPropertiesAssignment);
-				/*propertySelector.addToAssignments(new FIBCustomAssignment(propertySelector, new DataBinding<Object>(
-						"component.selectDataProperties"), new DataBinding<Object>("false"), true));*/
-			} else if (propertyEntry instanceof DataPropertyInspectorEntry) {
-				FIBCustomAssignment selectObjectPropertiesAssignment = getFactory().newInstance(FIBCustomAssignment.class);
-				selectObjectPropertiesAssignment.setOwner(propertySelector);
-				selectObjectPropertiesAssignment.setVariable(new DataBinding<Object>("component.selectObjectProperties"));
-				selectObjectPropertiesAssignment.setValue(new DataBinding<Object>("false"));
-				selectObjectPropertiesAssignment.setMandatory(true);
-				propertySelector.addToAssignments(selectObjectPropertiesAssignment);
-				/*propertySelector.addToAssignments(new FIBCustomAssignment(propertySelector, new DataBinding<Object>(
-						"component.selectObjectProperties"), new DataBinding<Object>("false"), true));*/
-			}
+			});
 
-			// Quick and dirty hack to configure PropertySelector: refactor this when new binding model will be in use
-			/*propertySelector.addToAssignments(new FIBCustomAssignment(propertySelector, new DataBinding("component.domainClassURI"),
-					new DataBinding('"' + ((PropertyInspectorEntry) entry)._getDomainURI() + '"') {
-						@Override
-						public BindingFactory getBindingFactory() {
-							return entry.getBindingFactory();
-						}
-					}, true));*/
-			newTab.addToSubComponents(propertySelector, new TwoColsLayoutConstraints(TwoColsLayoutLocation.right, true, false));
-			return propertySelector;
+			return expression.toString();
+		} catch (ParseException e) {
+			System.out.println("Could not parse: " + bindingPath);
+			e.printStackTrace();
+			return bindingPath;
+		} catch (TransformException e) {
+			System.out.println("TransformException while parsing: " + bindingPath);
+			e.printStackTrace();
+			return bindingPath;
+		}
+	}
+
+	/**
+	 * Factory method used to instanciate a technology-specific FIBWidget for a given {@link InspectorEntry}<br>
+	 * We iterate on all known technologies to use the delegated {@link TechnologyAdapterController}
+	 * 
+	 * @param entry
+	 * @param newTab
+	 * @param factory
+	 * @return
+	 */
+	private FIBWidget makeWidget(final InspectorEntry entry, FIBPanel newTab) {
+		for (TechnologyAdapter ta : flexoController.getApplicationContext().getTechnologyAdapterService().getTechnologyAdapters()) {
+			TechnologyAdapterController<?> tac = FlexoController.getTechnologyAdapterController(ta);
+			boolean[] expand = { true, false };
+			FIBWidget returned = tac.makeWidget(entry, null, getFactory(), "fci", expand);
+			if (returned != null) {
+				newTab.addToSubComponentsNoNotification(returned,
+						new TwoColsLayoutConstraints(TwoColsLayoutLocation.right, expand[0], expand[1]));
+				return returned;
+			}
+			else {
+				logger.warning("Cannot make widget for inspector entry " + entry);
+			}
 		}
 
-		FIBLabel unknown = getFactory().newFIBLabel();
-		unknown.setLabel("???");
-		newTab.addToSubComponents(unknown, new TwoColsLayoutConstraints(TwoColsLayoutLocation.right, true, false));
-		return unknown;
-
+		return null;
 	}
 
 	public FIBModelFactory getFactory() {

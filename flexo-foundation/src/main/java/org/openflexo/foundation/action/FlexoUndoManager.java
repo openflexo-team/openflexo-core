@@ -42,11 +42,12 @@ import java.beans.PropertyChangeSupport;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.swing.undo.UndoableEdit;
 
-import org.openflexo.foundation.FlexoObject;
+import org.openflexo.foundation.FlexoEditingContext;
 import org.openflexo.foundation.PamelaResourceModelFactory;
 import org.openflexo.foundation.resource.PamelaResource;
 import org.openflexo.model.ModelProperty;
@@ -71,6 +72,7 @@ import org.openflexo.toolbox.StringUtils;
  * @author sylvain
  * 
  */
+// TODO: this implementation is not thread safe: we cannot support many concurrent access to undo-manager
 @SuppressWarnings("serial")
 public class FlexoUndoManager extends UndoManager {
 
@@ -81,8 +83,11 @@ public class FlexoUndoManager extends UndoManager {
 	private FlexoAction<?, ?, ?> actionBeeingCurrentlyExecuted;
 	private final List<IgnoreHandler> ignoreHandlers;
 
-	public FlexoUndoManager() {
-		ignoreHandlers = new ArrayList<IgnoreHandler>();
+	private final FlexoEditingContext editingContext;
+
+	public FlexoUndoManager(FlexoEditingContext editingContext) {
+		ignoreHandlers = new ArrayList<>();
+		this.editingContext = editingContext;
 	}
 
 	/**
@@ -122,18 +127,31 @@ public class FlexoUndoManager extends UndoManager {
 	 * @param action
 	 *            : the FlexoAction that has just been successfully executed
 	 */
-	public <A extends FlexoAction<A, T1, T2>, T1 extends FlexoObject, T2 extends FlexoObject> void actionHasBeenPerformed(A action,
-			boolean success) {
+	public <A extends FlexoAction<A, ?, ?>> void actionHasBeenPerformed(A action, boolean success) {
 		if (success) {
 			hasSuccessfullyDone(action);
-		} else {
+		}
+		else {
 			compensateFailedAction(action);
 		}
 	}
 
 	@Override
-	public FlexoActionCompoundEdit startRecording(String presentationName) {
-		return (FlexoActionCompoundEdit) super.startRecording(presentationName);
+	public synchronized CompoundEdit startRecording(String presentationName) {
+		if (logger.isLoggable(Level.FINE)) {
+			logger.fine("FlexoUndoManager: START RECORDING " + presentationName);
+		}
+		return super.startRecording(presentationName);
+	}
+
+	@Override
+	public synchronized CompoundEdit stopRecording(CompoundEdit edit) {
+		if (edit != null) {
+			if (logger.isLoggable(Level.FINE)) {
+				logger.fine("FlexoUndoManager: STOP RECORDING " + edit.getPresentationName());
+			}
+		}
+		return super.stopRecording(edit);
 	}
 
 	/**
@@ -178,12 +196,14 @@ public class FlexoUndoManager extends UndoManager {
 		if (!action.isEmbedded()) {
 			if (action.getCompoundEdit() != null) {
 				// CompoundEdit has already been initialized
-			} else {
+			}
+			else {
 				actionBeeingCurrentlyExecuted = action;
-				FlexoActionCompoundEdit compoundEdit = startRecording(action.getLocalizedName());
+				FlexoActionCompoundEdit compoundEdit = (FlexoActionCompoundEdit) startRecording(action.getLocalizedName());
 				action.setCompoundEdit(compoundEdit);
 			}
-		} else {
+		}
+		else {
 			// embedded action
 			if (getCurrentEdition() instanceof FlexoActionCompoundEdit) {
 				((FlexoActionCompoundEdit) getCurrentEdition()).willDoEmbeddedAction(action);
@@ -199,10 +219,13 @@ public class FlexoUndoManager extends UndoManager {
 	 */
 	private void hasSuccessfullyDone(FlexoAction<?, ?, ?> action) {
 		if (!action.isEmbedded()) {
-			stopRecording(getCurrentEdition());
+			if (getCurrentEdition() != null) {
+				stopRecording(getCurrentEdition());
+			}
 			actionBeeingCurrentlyExecuted = null;
 			getPropertyChangeSupport().firePropertyChange(ACTION_HISTORY, null, action);
-		} else {
+		}
+		else {
 			// embedded action
 			if (getCurrentEdition() instanceof FlexoActionCompoundEdit) {
 				((FlexoActionCompoundEdit) getCurrentEdition()).hasDoneEmbeddedAction(action);
@@ -235,22 +258,21 @@ public class FlexoUndoManager extends UndoManager {
 
 	@Override
 	public boolean isIgnorable(UndoableEdit edit) {
-		for (IgnoreHandler ih : ignoreHandlers) {
+		for (IgnoreHandler ih : new ArrayList<>(ignoreHandlers)) {
 			if (ih.isIgnorable(edit)) {
 				return true;
 			}
 		}
+
 		// Debug
 		if (getCurrentEdition() == null || getCurrentEdition().getPresentationName().equals(UNIDENTIFIED_RECORDING)) {
 			// We are on an unidentified recording
-			logger.warning("Received edit outside legal UNDO declaration: " + edit);
-			// Thread.dumpStack();
-			/*if (edit instanceof SetCommand) {
-				if (((SetCommand) edit).getModelProperty().getPropertyIdentifier().equals("mouseClickControls")) {
-					System.out.println("Celui la je l'ignore");
-					return true;
+			if (editingContext.warnOnUnexpectedEdits()) {
+				if (logger.isLoggable(Level.FINE)) {
+					logger.warning("Received edit outside legal UNDO declaration");
+					// Thread.dumpStack();
 				}
-			}*/
+			}
 		}
 		return false;
 	}
@@ -339,11 +361,11 @@ public class FlexoUndoManager extends UndoManager {
 		private FlexoActionCompoundEdit currentEmbeddedFlexoActionCompoundEdit = null;
 
 		public FlexoActionCompoundEdit(FlexoAction<?, ?, ?> action, String presentationName) {
-			super(action != null ? action.getLocalizedName() : presentationName);
+			super(presentationName);
 			this.action = action;
 			pcSupport = new PropertyChangeSupport(this);
 			stackTrace = new Exception().getStackTrace();
-			embeddedFlexoActionCompoundEdits = new ArrayList<FlexoActionCompoundEdit>();
+			embeddedFlexoActionCompoundEdits = new ArrayList<>();
 		}
 
 		public FlexoActionCompoundEdit(FlexoActionCompoundEdit owner, FlexoAction<?, ?, ?> action) {
@@ -351,7 +373,7 @@ public class FlexoUndoManager extends UndoManager {
 			this.action = action;
 			pcSupport = new PropertyChangeSupport(this);
 			stackTrace = new Exception().getStackTrace();
-			embeddedFlexoActionCompoundEdits = new ArrayList<FlexoActionCompoundEdit>();
+			embeddedFlexoActionCompoundEdits = new ArrayList<>();
 			this.owner = owner;
 		}
 
@@ -448,9 +470,11 @@ public class FlexoUndoManager extends UndoManager {
 		public ModelProperty<?> getProperty(AtomicEdit<?> edit) {
 			if (edit instanceof SetCommand) {
 				return ((SetCommand<?>) edit).getModelProperty();
-			} else if (edit instanceof AddCommand) {
+			}
+			else if (edit instanceof AddCommand) {
 				return ((AddCommand<?>) edit).getModelProperty();
-			} else if (edit instanceof RemoveCommand) {
+			}
+			else if (edit instanceof RemoveCommand) {
 				return ((RemoveCommand<?>) edit).getModelProperty();
 			}
 			return null;
@@ -459,9 +483,11 @@ public class FlexoUndoManager extends UndoManager {
 		public Object getOldValue(AtomicEdit<?> edit) {
 			if (edit instanceof SetCommand) {
 				return ((SetCommand<?>) edit).getOldValue();
-			} else if (edit instanceof AddCommand) {
+			}
+			else if (edit instanceof AddCommand) {
 				return null;
-			} else if (edit instanceof RemoveCommand) {
+			}
+			else if (edit instanceof RemoveCommand) {
 				return ((RemoveCommand<?>) edit).getRemovedValue();
 			}
 			return null;
@@ -470,9 +496,11 @@ public class FlexoUndoManager extends UndoManager {
 		public Object getNewValue(AtomicEdit<?> edit) {
 			if (edit instanceof SetCommand) {
 				return ((SetCommand<?>) edit).getNewValue();
-			} else if (edit instanceof AddCommand) {
+			}
+			else if (edit instanceof AddCommand) {
 				return ((AddCommand<?>) edit).getAddedValue();
-			} else if (edit instanceof RemoveCommand) {
+			}
+			else if (edit instanceof RemoveCommand) {
 				return null;
 			}
 			return null;
@@ -481,7 +509,8 @@ public class FlexoUndoManager extends UndoManager {
 		public String getStackTraceAsString() {
 			if (_stackTraceAsString != null) {
 				return _stackTraceAsString;
-			} else if (stackTrace != null) {
+			}
+			else if (stackTrace != null) {
 				StringBuilder returned = new StringBuilder();
 				int beginAt;
 				beginAt = 6;
@@ -490,7 +519,8 @@ public class FlexoUndoManager extends UndoManager {
 					returned.append("\t").append("at ").append(stackTrace[i]).append('\n');
 				}
 				return returned.toString();
-			} else {
+			}
+			else {
 				return "StackTrace not available";
 			}
 		}

@@ -40,16 +40,18 @@ package org.openflexo.view.controller;
 
 import java.awt.Window;
 import java.beans.PropertyChangeSupport;
+import java.io.IOException;
 import java.util.logging.Logger;
 
+import org.openflexo.ApplicationContext;
 import org.openflexo.fib.AskResourceCenterDirectory;
-import org.openflexo.fib.FIBLibrary;
-import org.openflexo.fib.controller.FIBController.Status;
-import org.openflexo.fib.controller.FIBDialog;
-import org.openflexo.fib.model.FIBComponent;
 import org.openflexo.foundation.resource.DirectoryResourceCenter;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.resource.FlexoResourceCenterService;
+import org.openflexo.gina.ApplicationFIBLibrary;
+import org.openflexo.gina.controller.FIBController.Status;
+import org.openflexo.gina.model.FIBComponent;
+import org.openflexo.gina.swing.utils.JFIBDialog;
 import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.rm.AddResourceCenterTask;
 import org.openflexo.rm.RefreshResourceCenterTask;
@@ -96,19 +98,35 @@ public class ResourceCenterEditor implements HasPropertyChangeSupport {
 		return _pcSupport;
 	}
 
-	public void addResourceCenter() {
-		FIBComponent askRCDirectoryComponent = FIBLibrary.instance().retrieveFIBComponent(AskResourceCenterDirectory.FIB_FILE);
-		AskResourceCenterDirectory askDir = new AskResourceCenterDirectory();
-		FIBDialog dialog = FIBDialog.instanciateAndShowDialog(askRCDirectoryComponent, askDir, FlexoFrame.getActiveFrame(), true,
-				FlexoLocalization.getMainLocalizer());
-		if (dialog.getStatus() == Status.VALIDATED) {
-			DirectoryResourceCenter newRC = new DirectoryResourceCenter(askDir.getLocalResourceDirectory());
-			AddResourceCenterTask task = new AddResourceCenterTask(getRcService(), newRC);
-			rcService.getServiceManager().getTaskManager().scheduleExecution(task);
-		}
+	public ApplicationFIBLibrary getApplicationFIBLibrary() {
+		return getApplicationContext().getApplicationFIBLibraryService().getApplicationFIBLibrary();
 	}
 
-	public void removeResourceCenter(FlexoResourceCenter rc) {
+	public ApplicationContext getApplicationContext() {
+		return (ApplicationContext) rcService.getServiceManager();
+	}
+
+	public FlexoResourceCenter<?> addResourceCenter() {
+		FIBComponent askRCDirectoryComponent = getApplicationFIBLibrary().retrieveFIBComponent(AskResourceCenterDirectory.FIB_FILE);
+		AskResourceCenterDirectory askDir = new AskResourceCenterDirectory();
+		JFIBDialog dialog = JFIBDialog.instanciateAndShowDialog(askRCDirectoryComponent, askDir, FlexoFrame.getActiveFrame(), true,
+				FlexoLocalization.getMainLocalizer());
+		if (dialog.getStatus() == Status.VALIDATED) {
+			try {
+				DirectoryResourceCenter newRC = DirectoryResourceCenter
+						.instanciateNewDirectoryResourceCenter(askDir.getLocalResourceDirectory(), rcService);
+				AddResourceCenterTask task = new AddResourceCenterTask(getRcService(), newRC);
+				rcService.getServiceManager().getTaskManager().scheduleExecution(task);
+				return newRC;
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		return null;
+	}
+
+	public void removeResourceCenter(FlexoResourceCenter<?> rc) {
 		logger.info("removeResourceCenter " + rc);
 		// if (rc instanceof DirectoryResourceCenter) {
 		RemoveResourceCenterTask task = new RemoveResourceCenterTask(getRcService(), rc);
@@ -119,7 +137,7 @@ public class ResourceCenterEditor implements HasPropertyChangeSupport {
 		// }
 	}
 
-	public void refreshResourceCenter(FlexoResourceCenter rc) {
+	public void refreshResourceCenter(FlexoResourceCenter<?> rc) {
 		if (rc != null) {
 			logger.info("refreshResourceCenter " + rc);
 			RefreshResourceCenterTask task = new RefreshResourceCenterTask(getRcService(), rc);
@@ -134,7 +152,7 @@ public class ResourceCenterEditor implements HasPropertyChangeSupport {
 		ProgressWindow.showProgressWindow(owner, FlexoLocalization.localizedForKey(stepname), 1);
 		ProgressWindow.instance().setProgress(FlexoLocalization.localizedForKey(stepname));
 	}
-
+	
 	private void hideProgress() {
 		ProgressWindow.hideProgressWindow();
 	}*/

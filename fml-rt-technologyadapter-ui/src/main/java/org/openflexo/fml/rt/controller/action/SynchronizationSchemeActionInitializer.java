@@ -44,6 +44,7 @@ import java.util.logging.Logger;
 import javax.swing.Icon;
 
 import org.openflexo.foundation.FlexoException;
+import org.openflexo.foundation.action.FlexoActionFactory;
 import org.openflexo.foundation.action.FlexoActionFinalizer;
 import org.openflexo.foundation.action.FlexoActionInitializer;
 import org.openflexo.foundation.action.FlexoExceptionHandler;
@@ -53,19 +54,18 @@ import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.foundation.fml.rt.VirtualModelInstanceObject;
 import org.openflexo.foundation.fml.rt.action.SynchronizationSchemeAction;
 import org.openflexo.icon.FMLIconLibrary;
-import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.view.controller.ActionInitializer;
 import org.openflexo.view.controller.ControllerActionInitializer;
 import org.openflexo.view.controller.FlexoController;
 import org.openflexo.view.controller.ParametersRetriever;
 
-public class SynchronizationSchemeActionInitializer extends
-		ActionInitializer<SynchronizationSchemeAction, VirtualModelInstance, VirtualModelInstanceObject> {
+public class SynchronizationSchemeActionInitializer
+		extends ActionInitializer<SynchronizationSchemeAction, VirtualModelInstance<?, ?>, VirtualModelInstanceObject> {
 
 	private static final Logger logger = Logger.getLogger(ControllerActionInitializer.class.getPackage().getName());
 
 	public SynchronizationSchemeActionInitializer(ControllerActionInitializer actionInitializer) {
-		super(null, actionInitializer);
+		super(SynchronizationSchemeAction.class, actionInitializer);
 	}
 
 	@Override
@@ -73,7 +73,9 @@ public class SynchronizationSchemeActionInitializer extends
 		return new FlexoActionInitializer<SynchronizationSchemeAction>() {
 			@Override
 			public boolean run(EventObject e, SynchronizationSchemeAction action) {
-				ParametersRetriever<SynchronizationScheme> parameterRetriever = new ParametersRetriever<SynchronizationScheme>(action);
+				getController().willExecute(action);
+				ParametersRetriever<SynchronizationScheme> parameterRetriever = new ParametersRetriever<>(action,
+						getController() != null ? getController().getApplicationContext() : null);
 				if (action.escapeParameterRetrievingWhenValid && parameterRetriever.isSkipable()) {
 					return true;
 				}
@@ -87,6 +89,7 @@ public class SynchronizationSchemeActionInitializer extends
 		return new FlexoActionFinalizer<SynchronizationSchemeAction>() {
 			@Override
 			public boolean run(EventObject e, SynchronizationSchemeAction action) {
+				getController().hasExecuted(action);
 				return true;
 			}
 		};
@@ -98,7 +101,7 @@ public class SynchronizationSchemeActionInitializer extends
 			@Override
 			public boolean handleException(FlexoException exception, SynchronizationSchemeAction action) {
 				if (exception instanceof NotImplementedException) {
-					FlexoController.notify(FlexoLocalization.localizedForKey("not_implemented_yet"));
+					FlexoController.notify(action.getLocales().localizedForKey("not_implemented_yet"));
 					return true;
 				}
 				return false;
@@ -107,7 +110,7 @@ public class SynchronizationSchemeActionInitializer extends
 	}
 
 	@Override
-	protected Icon getEnabledIcon() {
+	protected Icon getEnabledIcon(FlexoActionFactory actionType) {
 		return FMLIconLibrary.SYNCHRONIZATION_SCHEME_ICON;
 	}
 

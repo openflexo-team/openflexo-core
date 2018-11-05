@@ -39,11 +39,15 @@
 
 package org.openflexo.components.widget;
 
+import java.lang.reflect.Type;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.resource.FlexoResourceCenter;
+import org.openflexo.foundation.resource.FlexoResourceType;
+import org.openflexo.foundation.resource.ITechnologySpecificFlexoResourceFactory;
+import org.openflexo.foundation.resource.RepositoryFolder;
 import org.openflexo.foundation.resource.ResourceData;
-import org.openflexo.foundation.technologyadapter.InformationSpace;
+import org.openflexo.foundation.resource.ResourceManager;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterResource;
 import org.openflexo.rm.Resource;
@@ -63,14 +67,23 @@ public class FIBResourceSelector extends FIBFlexoObjectSelector<TechnologyAdapte
 
 	public static Resource FIB_FILE = ResourceLocator.locateResource("Fib/ResourceSelector.fib");
 
-	private InformationSpace informationSpace;
+	private ResourceManager resourceManager;
 	private TechnologyAdapter technologyAdapter;
 	private FlexoResourceCenter<?> resourceCenter;
 	private Class<? extends ResourceData<?>> resourceDataClass;
+	private Type expectedType;
+	private FlexoResourceType defaultExpectedType;
 
 	public FIBResourceSelector(TechnologyAdapterResource editedObject) {
 		super(editedObject);
-		logger.info(">>>>>>>>>> Create FIBResourceSelector: " + Integer.toHexString(hashCode()));
+		// logger.info(">>>>>>>>>> Create FIBResourceSelector: " + Integer.toHexString(hashCode()));
+		if (editedObject != null && editedObject.getServiceManager() != null) {
+			defaultExpectedType = FlexoResourceType.getFlexoResourceType(editedObject.getResourceDataClass(),
+					editedObject.getServiceManager().getTechnologyAdapterService());
+		}
+		else {
+			defaultExpectedType = FlexoResourceType.UNDEFINED_RESOURCE_TYPE;
+		}
 	}
 
 	@Override
@@ -86,31 +99,37 @@ public class FIBResourceSelector extends FIBFlexoObjectSelector<TechnologyAdapte
 	@Override
 	public String renderedString(TechnologyAdapterResource editedObject) {
 		if (editedObject != null) {
-			return editedObject.getURI();
+			return editedObject.getName();
 		}
 		return "";
 	}
 
-	public InformationSpace getInformationSpace() {
-		return informationSpace;
+	public ResourceManager getResourceManager() {
+		if (resourceManager == null && getServiceManager() != null) {
+			return getServiceManager().getResourceManager();
+		}
+		return resourceManager;
 	}
 
-	@CustomComponentParameter(name = "informationSpace", type = CustomComponentParameter.Type.MANDATORY)
-	public void setInformationSpace(InformationSpace informationSpace) {
+	@CustomComponentParameter(name = "resourceManager", type = CustomComponentParameter.Type.MANDATORY)
+	public void setResourceManager(ResourceManager resourceManager) {
 
-		if (this.informationSpace != informationSpace) {
-			logger.info(">>>>>>>>>> setInformationSpace in FIBResourceSelector" + Integer.toHexString(hashCode()) + " with "
-					+ informationSpace);
-			InformationSpace oldValue = this.informationSpace;
-			this.informationSpace = informationSpace;
-			getPropertyChangeSupport().firePropertyChange("informationSpace", oldValue, informationSpace);
+		if (this.resourceManager != resourceManager) {
+			ResourceManager oldValue = this.resourceManager;
+			this.resourceManager = resourceManager;
+			getPropertyChangeSupport().firePropertyChange("resourceManager", oldValue, resourceManager);
 			getPropertyChangeSupport().firePropertyChange("rootObject", null, getRootObject());
 			updateCustomPanel(getEditedObject());
 		}
-
 	}
 
 	public TechnologyAdapter getTechnologyAdapter() {
+		if (technologyAdapter == null && getServiceManager() != null && getExpectedType() instanceof FlexoResourceType) {
+			ITechnologySpecificFlexoResourceFactory<?, ?, ?> resourceFactory = ((FlexoResourceType) getExpectedType()).getResourceFactory();
+			if (resourceFactory != null) {
+				return getServiceManager().getTechnologyAdapterService().getTechnologyAdapter(resourceFactory.getTechnologyAdapterClass());
+			}
+		}
 		return technologyAdapter;
 	}
 
@@ -128,8 +147,9 @@ public class FIBResourceSelector extends FIBFlexoObjectSelector<TechnologyAdapte
 	public Object getRootObject() {
 		if (getTechnologyAdapter() != null) {
 			return getTechnologyAdapter();
-		} else {
-			return getInformationSpace();
+		}
+		else {
+			return getResourceManager();
 		}
 	}
 
@@ -151,17 +171,36 @@ public class FIBResourceSelector extends FIBFlexoObjectSelector<TechnologyAdapte
 	}
 
 	public Class<? extends ResourceData<?>> getResourceDataClass() {
+		if (resourceDataClass == null && getExpectedType() instanceof FlexoResourceType
+				&& ((FlexoResourceType) getExpectedType()).getResourceFactory() != null) {
+			return ((FlexoResourceType) getExpectedType()).getResourceFactory().getResourceDataClass();
+		}
 		return resourceDataClass;
 	}
 
 	@CustomComponentParameter(name = "resourceDataClass", type = CustomComponentParameter.Type.OPTIONAL)
 	public void setResourceDataClass(Class<? extends ResourceData<?>> resourceDataClass) {
-		System.out.println("set resource data class with " + resourceDataClass);
+		// System.out.println("set resource data class with " + resourceDataClass);
 		this.resourceDataClass = resourceDataClass;
 		fireEditedObjectChanged();
 	}
 
-	//
+	public Type getExpectedType() {
+		if (expectedType == null) {
+			return defaultExpectedType;
+		}
+		return expectedType;
+	}
+
+	@CustomComponentParameter(name = "expectedType", type = CustomComponentParameter.Type.OPTIONAL)
+	public void setExpectedType(Type expectedType) {
+
+		if ((expectedType == null && this.expectedType != null) || (expectedType != null && !expectedType.equals(this.expectedType))) {
+			Type oldValue = this.expectedType;
+			this.expectedType = expectedType;
+			getPropertyChangeSupport().firePropertyChange("expectedType", oldValue, expectedType);
+		}
+	}
 
 	@Override
 	protected boolean isAcceptableValue(Object o) {
@@ -182,32 +221,37 @@ public class FIBResourceSelector extends FIBFlexoObjectSelector<TechnologyAdapte
 		return false;
 	}
 
+	public boolean isFolderVisible(RepositoryFolder<?, ?> folder) {
+		if (!folder.containsResources()) {
+			return false;
+		}
+		return true;
+	}
+
 	// Please uncomment this for a live test
 	// Never commit this uncommented since it will not compile on continuous build
 	// To have icon, you need to choose "Test interface" in the editor (otherwise, flexo controller is not instantiated in EDIT mode)
 	/*public static void main(String[] args) {
-
+	
 		try {
 			FlexoLoggingManager.initialize(-1, true, null, Level.INFO, null);
 		} catch (SecurityException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
-		// final ViewPointLibrary viewPointLibrary;
-
+	
+		// final VirtualModelLibrary viewPointLibrary;
+	
 		final FlexoServiceManager serviceManager = new TestFlexoServiceManager(new FileResource(
 				"C:/Users/Vincent/git/openflexo/packaging/technologyadaptersintegration/src/test/resources/TestResourceCenter"));
-
+	
 		/*final FlexoServiceManager serviceManager = new DefaultFlexoServiceManager() {
 			@Override
 			protected FlexoProjectReferenceLoader createProjectReferenceLoader() {
 				return null;
 			}
-
+	
 			@Override
 			protected FlexoEditor createApplicationEditor() {
 				return null;
@@ -215,9 +259,9 @@ public class FIBResourceSelector extends FIBFlexoObjectSelector<TechnologyAdapte
 		};*/
 	/*TechnologyAdapterControllerService tacService = DefaultTechnologyAdapterControllerService.getNewInstance();
 	serviceManager.registerService(tacService);
-
+	
 	final InformationSpace informationSpace = serviceManager.getInformationSpace();
-
+	
 	FIBAbstractEditor editor = new FIBAbstractEditor() {
 		@Override
 		public Object[] getData() {
@@ -231,12 +275,12 @@ public class FIBResourceSelector extends FIBFlexoObjectSelector<TechnologyAdapte
 			}
 			return makeArray(selector);
 		}
-
+	
 		@Override
 		public File getFIBFile() {
 			return FIB_FILE;
 		}
-
+	
 		@Override
 		public FIBController makeNewController(FIBComponent component) {
 			return new FlexoFIBController(component);
@@ -245,11 +289,4 @@ public class FIBResourceSelector extends FIBFlexoObjectSelector<TechnologyAdapte
 	editor.launch();
 	}*/
 
-	@Override
-	public void openPopup() {
-		System.out.println("InformationSpace=" + getInformationSpace());
-		System.out.println("TA=" + getTechnologyAdapter());
-		System.out.println("RC=" + getResourceCenter());
-		super.openPopup();
-	}
 }

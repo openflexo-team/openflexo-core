@@ -41,17 +41,22 @@ package org.openflexo.fml.controller.action;
 import java.awt.Dimension;
 import java.util.logging.Logger;
 
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
+
 import org.openflexo.ApplicationContext;
 import org.openflexo.components.wizard.FlexoWizard;
 import org.openflexo.components.wizard.WizardStep;
-import org.openflexo.fib.annotation.FIBPanel;
-import org.openflexo.foundation.fml.VirtualModel;
+import org.openflexo.connie.type.TypeUtils;
+import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.action.AbstractCreateFlexoConcept;
+import org.openflexo.foundation.fml.action.CreateContainedVirtualModel;
 import org.openflexo.foundation.fml.action.CreateFlexoConcept;
-import org.openflexo.foundation.fml.action.CreateViewPoint;
-import org.openflexo.foundation.fml.action.CreateVirtualModel;
-import org.openflexo.foundation.fml.rt.VirtualModelInstance;
-import org.openflexo.localization.FlexoLocalization;
+import org.openflexo.foundation.fml.action.CreateTopLevelVirtualModel;
+import org.openflexo.foundation.fml.action.PropertyEntry;
+import org.openflexo.gina.annotation.FIBPanel;
+import org.openflexo.icon.FMLIconLibrary;
+import org.openflexo.icon.FMLRTIconLibrary;
 import org.openflexo.view.controller.FlexoController;
 
 /**
@@ -61,8 +66,8 @@ import org.openflexo.view.controller.FlexoController;
  *
  * @param <A>
  * @see CreateFlexoConcept
- * @see CreateVirtualModel
- * @see CreateViewPoint
+ * @see CreateContainedVirtualModel
+ * @see CreateTopLevelVirtualModel
  */
 public abstract class AbstractCreateFlexoConceptWizard<A extends AbstractCreateFlexoConcept<?, ?, ?>> extends FlexoWizard {
 
@@ -73,9 +78,31 @@ public abstract class AbstractCreateFlexoConceptWizard<A extends AbstractCreateF
 
 	private static final Dimension DIMENSIONS = new Dimension(900, 600);
 
+	private ConfigurePropertiesForNewFlexoConcept configurePropertiesForNewFlexoConcept;
+	private ConfigureBehavioursForNewFlexoConcept configureBehavioursForNewFlexoConcept;
+	private ConfigureInspectorForNewFlexoConcept configureInspectorForNewFlexoConcept;
+
 	public AbstractCreateFlexoConceptWizard(A action, FlexoController controller) {
 		super(controller);
 		this.action = action;
+	}
+
+	protected void createAdditionalSteps() {
+		addStep(configurePropertiesForNewFlexoConcept = new ConfigurePropertiesForNewFlexoConcept());
+		addStep(configureBehavioursForNewFlexoConcept = new ConfigureBehavioursForNewFlexoConcept());
+		addStep(configureInspectorForNewFlexoConcept = new ConfigureInspectorForNewFlexoConcept());
+	}
+
+	public ConfigurePropertiesForNewFlexoConcept getConfigurePropertiesForNewFlexoConcept() {
+		return configurePropertiesForNewFlexoConcept;
+	}
+
+	public ConfigureBehavioursForNewFlexoConcept getConfigureBehavioursForNewFlexoConcept() {
+		return configureBehavioursForNewFlexoConcept;
+	}
+
+	public ConfigureInspectorForNewFlexoConcept getConfigureInspectorForNewFlexoConcept() {
+		return configureInspectorForNewFlexoConcept;
 	}
 
 	public A getAction() {
@@ -88,19 +115,13 @@ public abstract class AbstractCreateFlexoConceptWizard<A extends AbstractCreateF
 	}
 
 	/**
-	 * This step is used to set {@link VirtualModel} to be used, as well as name and title of the {@link VirtualModelInstance}
+	 * This step is used to define some properties to be created for new {@link FlexoConcept}
 	 * 
 	 * @author sylvain
 	 *
 	 */
-	@FIBPanel("Fib/Wizard/CreateFMLElement/ConfigureAdditionalStepsForNewFlexoConcept.fib")
-	public class ConfigureAdditionalStepsForNewFlexoConcept extends WizardStep {
-
-		private boolean defineSomeRoles = false;
-		private boolean defineSomeBehaviours = false;
-		private boolean defineDefaultCreationScheme = false;
-		private boolean defineDefaultDeletionScheme = false;
-		private boolean defineInspector = false;
+	@FIBPanel("Fib/Wizard/CreateFMLElement/ConfigurePropertiesForNewFlexoConcept.fib")
+	public class ConfigurePropertiesForNewFlexoConcept extends WizardStep {
 
 		public ApplicationContext getServiceManager() {
 			return getController().getApplicationContext();
@@ -112,7 +133,7 @@ public abstract class AbstractCreateFlexoConceptWizard<A extends AbstractCreateF
 
 		@Override
 		public String getTitle() {
-			return FlexoLocalization.localizedForKey("configure_new_flexo_concept");
+			return getAction().getLocales().localizedForKey("declare_some_properties_for_new_flexo_concept");
 		}
 
 		@Override
@@ -121,45 +142,74 @@ public abstract class AbstractCreateFlexoConceptWizard<A extends AbstractCreateF
 			return true;
 		}
 
-		public boolean getDefineSomeRoles() {
-			return defineSomeRoles;
+		public boolean getDefineSomeProperties() {
+			return getAction().getPropertiesEntries().size() > 0;
+		}
+
+		public Icon getIconForProperty(PropertyEntry entry) {
+			return getIconFor(entry);
+		}
+	}
+
+	/**
+	 * This step is used to define some properties to be created for new {@link FlexoConcept}
+	 * 
+	 * @author sylvain
+	 *
+	 */
+	@FIBPanel("Fib/Wizard/CreateFMLElement/ConfigureBehavioursForNewFlexoConcept.fib")
+	public class ConfigureBehavioursForNewFlexoConcept extends WizardStep {
+
+		public ApplicationContext getServiceManager() {
+			return getController().getApplicationContext();
+		}
+
+		public AbstractCreateFlexoConcept getAction() {
+			return AbstractCreateFlexoConceptWizard.this.getAction();
+		}
+
+		@Override
+		public String getTitle() {
+			return getAction().getLocales().localizedForKey("declare_some_behaviours_for_new_flexo_concept");
+		}
+
+		@Override
+		public boolean isValid() {
+
+			return true;
 		}
 
 		public boolean getDefineSomeBehaviours() {
-			return defineSomeBehaviours;
+			return getAction().getDefineSomeBehaviours();
 		}
 
 		public boolean getDefineDefaultCreationScheme() {
-			return defineDefaultCreationScheme;
+			return getAction().getDefineDefaultCreationScheme();
 		}
 
 		public boolean getDefineDefaultDeletionScheme() {
-			return defineDefaultDeletionScheme;
+			return getAction().getDefineDefaultDeletionScheme();
 		}
 
-		public boolean getDefineInspector() {
-			return defineInspector;
+		public boolean getDefineSynchronizationScheme() {
+			return getAction().getDefineSynchronizationScheme();
 		}
 
-		public void setDefineSomeRoles(boolean defineSomeRoles) {
-			if (defineSomeRoles != this.defineSomeRoles) {
-				this.defineSomeRoles = defineSomeRoles;
-				getPropertyChangeSupport().firePropertyChange("defineSomeRoles", !defineSomeRoles, defineSomeRoles);
-				checkValidity();
-			}
+		public boolean getDefineCloningScheme() {
+			return getAction().getDefineCloningScheme();
 		}
 
 		public void setDefineSomeBehaviours(boolean defineSomeBehaviours) {
-			if (defineSomeBehaviours != this.defineSomeBehaviours) {
-				this.defineSomeBehaviours = defineSomeBehaviours;
+			if (defineSomeBehaviours != getDefineSomeBehaviours()) {
+				getAction().setDefineSomeBehaviours(defineSomeBehaviours);
 				getPropertyChangeSupport().firePropertyChange("defineSomeBehaviours", !defineSomeBehaviours, defineSomeBehaviours);
 				checkValidity();
 			}
 		}
 
 		public void setDefineDefaultCreationScheme(boolean defineDefaultCreationScheme) {
-			if (defineDefaultCreationScheme != this.defineDefaultCreationScheme) {
-				this.defineDefaultCreationScheme = defineDefaultCreationScheme;
+			if (defineDefaultCreationScheme != getDefineDefaultCreationScheme()) {
+				getAction().setDefineDefaultCreationScheme(defineDefaultCreationScheme);
 				getPropertyChangeSupport().firePropertyChange("defineDefaultCreationScheme", !defineDefaultCreationScheme,
 						defineDefaultCreationScheme);
 				checkValidity();
@@ -167,55 +217,133 @@ public abstract class AbstractCreateFlexoConceptWizard<A extends AbstractCreateF
 		}
 
 		public void setDefineDefaultDeletionScheme(boolean defineDefaultDeletionScheme) {
-			if (defineDefaultDeletionScheme != this.defineDefaultDeletionScheme) {
-				this.defineDefaultDeletionScheme = defineDefaultDeletionScheme;
+			if (defineDefaultDeletionScheme != getDefineDefaultDeletionScheme()) {
+				getAction().setDefineDefaultDeletionScheme(defineDefaultDeletionScheme);
 				getPropertyChangeSupport().firePropertyChange("defineDefaultDeletionScheme", !defineDefaultDeletionScheme,
 						defineDefaultDeletionScheme);
 				checkValidity();
 			}
 		}
 
+		public void setDefineSynchronizationScheme(boolean defineSynchronizationScheme) {
+			if (defineSynchronizationScheme != getDefineSynchronizationScheme()) {
+				getAction().setDefineSynchronizationScheme(defineSynchronizationScheme);
+				getPropertyChangeSupport().firePropertyChange("defineSynchronizationScheme", !defineSynchronizationScheme,
+						defineSynchronizationScheme);
+				checkValidity();
+			}
+		}
+
+		public void setDefineCloningScheme(boolean defineCloningScheme) {
+			if (defineCloningScheme != getDefineCloningScheme()) {
+				getAction().setDefineCloningScheme(defineCloningScheme);
+				getPropertyChangeSupport().firePropertyChange("defineCloningScheme", !defineCloningScheme, defineCloningScheme);
+				checkValidity();
+			}
+		}
+
+		public Icon getIconForProperty(PropertyEntry entry) {
+			return getIconFor(entry);
+		}
+
+		public ImageIcon getCreationSchemeIcon() {
+			return FMLIconLibrary.CREATION_SCHEME_ICON;
+		}
+
+		public ImageIcon getDeletionSchemeIcon() {
+			return FMLIconLibrary.DELETION_SCHEME_ICON;
+		}
+
+		public ImageIcon getSynchronizationSchemeIcon() {
+			return FMLIconLibrary.SYNCHRONIZATION_SCHEME_ICON;
+		}
+
+		public ImageIcon getCloningSchemeIcon() {
+			return FMLIconLibrary.CLONING_SCHEME_ICON;
+		}
+	}
+
+	/**
+	 * This step is used to define some properties to be created for new {@link FlexoConcept}
+	 * 
+	 * @author sylvain
+	 *
+	 */
+	@FIBPanel("Fib/Wizard/CreateFMLElement/ConfigureInspectorForNewFlexoConcept.fib")
+	public class ConfigureInspectorForNewFlexoConcept extends WizardStep {
+
+		public ApplicationContext getServiceManager() {
+			return getController().getApplicationContext();
+		}
+
+		public AbstractCreateFlexoConcept getAction() {
+			return AbstractCreateFlexoConceptWizard.this.getAction();
+		}
+
+		@Override
+		public String getTitle() {
+			return getAction().getLocales().localizedForKey("configure_new_flexo_concept_inspector");
+		}
+
+		@Override
+		public boolean isValid() {
+
+			return true;
+		}
+
+		public boolean getDefineInspector() {
+			return getAction().getDefineInspector();
+		}
+
 		public void setDefineInspector(boolean defineInspector) {
-			if (defineInspector != this.defineInspector) {
-				this.defineInspector = defineInspector;
+			if (defineInspector != getDefineInspector()) {
+				getAction().setDefineInspector(defineInspector);
 				getPropertyChangeSupport().firePropertyChange("defineInspector", !defineInspector, defineInspector);
 				checkValidity();
 			}
 		}
 
-		@Override
-		public boolean isTransitionalStep() {
-			return getDefineSomeRoles() || getDefineSomeBehaviours() || getDefineDefaultCreationScheme()
-					|| getDefineDefaultDeletionScheme() || getDefineInspector();
+		public Icon getIconForProperty(PropertyEntry entry) {
+			return getIconFor(entry);
 		}
+	}
 
-		@Override
-		public void performTransition() {
-			// We have now to update all steps according to chosen VirtualModel
-			/*for (ModelSlot<?> ms : chooseVirtualModel.getVirtualModel().getModelSlots()) {
-				ConfigureModelSlot<?, ?> step = makeConfigureModelSlotStep(ms);
-				if (step != null) {
-					modelSlotConfigurationSteps.add(step);
-					addStep(step);
+	public Icon getIconFor(PropertyEntry entry) {
+		// TechnologyAdapter ta = entry.getTechnologyAdapter();
+		switch (entry.getPropertyType()) {
+			case PRIMITIVE:
+				if (TypeUtils.isString(entry.getType())) {
+					return FMLIconLibrary.STRING_PRIMITIVE_ICON;
 				}
-			}
-			if (chooseVirtualModel.getVirtualModel().hasCreationScheme()) {
-				chooseAndConfigureCreationScheme = new ChooseAndConfigureCreationScheme();
-				addStep(chooseAndConfigureCreationScheme);
-			}*/
-		}
-
-		@Override
-		public void discardTransition() {
-			/*	for (ConfigureModelSlot<?, ?> step : modelSlotConfigurationSteps) {
-					removeStep(step);
+				if (TypeUtils.isDate(entry.getType())) {
+					return FMLIconLibrary.DATE_PRIMITIVE_ICON;
 				}
-				modelSlotConfigurationSteps.clear();
-				if (chooseAndConfigureCreationScheme != null) {
-					removeStep(chooseAndConfigureCreationScheme);
-					chooseAndConfigureCreationScheme = null;
-				}*/
+				if (TypeUtils.isBoolean(entry.getType())) {
+					return FMLIconLibrary.BOOLEAN_PRIMITIVE_ICON;
+				}
+				if (TypeUtils.isInteger(entry.getType()) || TypeUtils.isLong(entry.getType()) || TypeUtils.isShort(entry.getType())
+						|| TypeUtils.isByte(entry.getType())) {
+					return FMLIconLibrary.INTEGER_PRIMITIVE_ICON;
+				}
+				if (TypeUtils.isFloat(entry.getType()) || TypeUtils.isDouble(entry.getType())) {
+					return FMLIconLibrary.DOUBLE_PRIMITIVE_ICON;
+				}
+				return FMLIconLibrary.UNKNOWN_ICON;
+			case ABSTRACT_PROPERTY:
+				return FMLIconLibrary.ABSTRACT_PROPERTY_ICON;
+			case GET_PROPERTY:
+			case GET_SET_PROPERTY:
+				return FMLIconLibrary.GET_SET_PROPERTY_ICON;
+			case EXPRESSION_PROPERTY:
+				return FMLIconLibrary.EXPRESSION_PROPERTY_ICON;
+			case FLEXO_CONCEPT_INSTANCE:
+				return FMLRTIconLibrary.FLEXO_CONCEPT_INSTANCE_ICON;
+			case MODEL_SLOT:
+				return FMLIconLibrary.MODEL_SLOT_ICON;
+			case TECHNOLOGY_ROLE:
+				return FMLIconLibrary.FLEXO_ROLE_ICON;
 		}
+		return FMLIconLibrary.UNKNOWN_ICON;
 
 	}
 

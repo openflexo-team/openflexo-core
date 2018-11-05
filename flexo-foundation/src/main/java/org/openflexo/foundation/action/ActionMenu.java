@@ -41,12 +41,13 @@ package org.openflexo.foundation.action;
 
 import javax.swing.Icon;
 
-import org.openflexo.localization.FlexoLocalization;
+import org.openflexo.localization.LocalizedDelegate;
 
 public class ActionMenu {
 
+	private ActionMenu _parentMenu;
 	private ActionGroup _actionGroup;
-	private String _actionMenuName;
+	private final String _actionMenuName;
 	private Icon _smallIcon;
 
 	protected ActionMenu(String actionMenuName) {
@@ -69,16 +70,26 @@ public class ActionMenu {
 		setSmallIcon(icon);
 	}
 
+	protected ActionMenu(String actionMenuName, ActionGroup actionGroup, Icon icon, ActionMenu parentMenu) {
+		this(actionMenuName, actionGroup, icon);
+		_parentMenu = parentMenu;
+	}
+
+	protected ActionMenu(String actionMenuName, ActionGroup actionGroup, ActionMenu parentMenu) {
+		this(actionMenuName, actionGroup);
+		_parentMenu = parentMenu;
+	}
+
 	public String getUnlocalizedName() {
 		return _actionMenuName;
 	}
 
-	public String getLocalizedName() {
-		return FlexoLocalization.localizedForKey(_actionMenuName);
+	public String getLocalizedName(LocalizedDelegate locales) {
+		return locales.localizedForKey(_actionMenuName);
 	}
 
-	public String getLocalizedDescription() {
-		return FlexoLocalization.localizedForKey(_actionMenuName + "_description");
+	public String getLocalizedDescription(LocalizedDelegate locales) {
+		return locales.localizedForKey(_actionMenuName + "_description");
 	}
 
 	public Icon getSmallIcon() {
@@ -97,4 +108,7 @@ public class ActionMenu {
 		_actionGroup = actionGroup;
 	}
 
+	public ActionMenu getParentMenu() {
+		return _parentMenu;
+	}
 }

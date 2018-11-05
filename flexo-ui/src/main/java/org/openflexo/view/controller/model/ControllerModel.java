@@ -50,13 +50,15 @@ import java.util.Stack;
 import java.util.Vector;
 import java.util.logging.Level;
 
+import org.apache.commons.collections15.ListUtils;
 import org.openflexo.ApplicationContext;
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.FlexoProject;
+import org.openflexo.foundation.project.ProjectLoader;
 import org.openflexo.module.FlexoModule;
 import org.openflexo.module.ModuleLoader;
-import org.openflexo.project.ProjectLoader;
+import org.openflexo.project.InteractiveProjectLoader;
 import org.openflexo.swing.layout.MultiSplitLayout.Node;
 import org.openflexo.swing.layout.MultiSplitLayoutTypeAdapterFactory;
 import org.openflexo.toolbox.ExtendedSet;
@@ -68,8 +70,8 @@ import com.google.gson.GsonBuilder;
 
 public class ControllerModel extends ControllerModelObject implements PropertyChangeListener {
 
-	private static final java.util.logging.Logger logger = org.openflexo.logging.FlexoLogger.getLogger(ControllerModel.class.getPackage()
-			.getName());
+	private static final java.util.logging.Logger logger = org.openflexo.logging.FlexoLogger
+			.getLogger(ControllerModel.class.getPackage().getName());
 
 	public static final String RIGHT_VIEW_VISIBLE = "rightViewVisible";
 	public static final String LEFT_VIEW_VISIBLE = "leftViewVisible";
@@ -82,7 +84,7 @@ public class ControllerModel extends ControllerModelObject implements PropertyCh
 	public static final String CURRENT_EDITOR = "currentEditor";
 	public static final String CURRENT_PERSPECTIVE = "currentPerspective";
 
-	private static final Location NO_LOCATION = new Location(null, null, null);
+	private final Location NO_LOCATION;
 
 	/** Gson instance used to serialize and deserialize layouts of the mainpane multisplitpane */
 	private Gson gsonLayout;
@@ -112,7 +114,7 @@ public class ControllerModel extends ControllerModelObject implements PropertyCh
 	private final Stack<Location> nextHistory;
 
 	/** The current location in the history */
-	private Location currentLocation = NO_LOCATION;
+	private Location currentLocation;
 
 	/** Internal flag that indicates if we are currently moving forward in the history */
 	private boolean isGoingForward = false;
@@ -124,26 +126,41 @@ public class ControllerModel extends ControllerModelObject implements PropertyCh
 	private final ApplicationContext context;
 
 	/** The module in which this controller model was created (mainly used to save module specific preferences) */
-	private final FlexoModule module;
+	private final FlexoModule<?> module;
 
 	/** A property change listener registration manager that keeps track of all the registered {@link PropertyChangeListener} */
 	private final PropertyChangeListenerRegistrationManager registrationManager;
 
-	public ControllerModel(ApplicationContext context, FlexoModule module) {
+	public ControllerModel(ApplicationContext context, FlexoModule<?> module) {
 		this.context = context;
 		this.module = module;
 		registrationManager = new PropertyChangeListenerRegistrationManager();
+
+		NO_LOCATION = new Location(null, null, null) {
+			@Override
+			public FlexoPerspective getPerspective() {
+				if (module != null && module.getController() != null) {
+					return module.getController().getDefaultPerspective();
+				}
+				return null;
+			}
+		};
+		currentLocation = NO_LOCATION;
+
 		if (context.getGeneralPreferences() != null) {
-			leftViewVisible = context.getGeneralPreferences().getShowLeftView(module.getShortName());
-			rightViewVisible = context.getGeneralPreferences().getShowRightView(module.getShortName());
+			leftViewVisible = context.getPresentationPreferences().getShowLeftView(module.getShortName());
+			rightViewVisible = context.getPresentationPreferences().getShowRightView(module.getShortName());
 		}
-		registrationManager.new PropertyChangeListenerRegistration(ProjectLoader.PROJECT_OPENED, this, context.getProjectLoader());
-		registrationManager.new PropertyChangeListenerRegistration(ProjectLoader.PROJECT_CLOSED, this, context.getProjectLoader());
-		objects = new ArrayList<FlexoObject>();
-		locations = new ExtendedSet<Location>();
-		perspectives = new Vector<FlexoPerspective>();
-		previousHistory = new Stack<Location>();
-		nextHistory = new Stack<Location>();
+
+		registrationManager.new PropertyChangeListenerRegistration(InteractiveProjectLoader.PROJECT_OPENED, this,
+				context.getProjectLoader());
+		registrationManager.new PropertyChangeListenerRegistration(InteractiveProjectLoader.PROJECT_CLOSED, this,
+				context.getProjectLoader());
+		objects = new ArrayList<>();
+		locations = new ExtendedSet<>();
+		perspectives = new Vector<>();
+		previousHistory = new Stack<>();
+		nextHistory = new Stack<>();
 	}
 
 	public ModuleLoader getModuleLoader() {
@@ -154,7 +171,7 @@ public class ControllerModel extends ControllerModelObject implements PropertyCh
 		return context.getProjectLoader();
 	}
 
-	public FlexoModule getModule() {
+	public FlexoModule<?> getModule() {
 		return module;
 	}
 
@@ -185,10 +202,13 @@ public class ControllerModel extends ControllerModelObject implements PropertyCh
 	public FlexoPerspective getCurrentPerspective() {
 		if (currentLocation != null) {
 			return currentLocation.getPerspective();
-		} else {
-			return null;
+		}
+		else {
+			return defaultPerspective;
 		}
 	}
+
+	private FlexoPerspective defaultPerspective = null;
 
 	public void setCurrentPerspective(FlexoPerspective currentPerspective) {
 
@@ -197,8 +217,18 @@ public class ControllerModel extends ControllerModelObject implements PropertyCh
 		// System.out.println("currentObject=" + getCurrentObject());
 		// System.out.println(">>>>>>>> SWITCHING to " + currentPerspective);
 
+		if (currentPerspective != null) {
+			defaultPerspective = currentPerspective;
+		}
+
+		if (currentPerspective == null) {
+			System.out.println("Qui me passe la current perspective a null ????");
+			Thread.dumpStack();
+		}
+
 		FlexoObject object = getCurrentObject();
 		if (currentPerspective != null) {
+			currentPerspective.willShow();
 			if (object == null || !currentPerspective.hasModuleViewForObject(object)) {
 				object = currentPerspective.getDefaultObject(object != null ? object : getCurrentProject());
 			}
@@ -234,7 +264,8 @@ public class ControllerModel extends ControllerModelObject implements PropertyCh
 		// if (requiresProject()) {
 		if (currentLocation.getEditor() != null) {
 			return currentLocation.getEditor();
-		} else {
+		}
+		else {
 			return context.getApplicationEditor();
 		}
 	}
@@ -249,7 +280,8 @@ public class ControllerModel extends ControllerModelObject implements PropertyCh
 				Location location = getLastLocationForEditor(currentEditor, null);
 				if (location != null && location != NO_LOCATION) {
 					setCurrentLocation(location);
-				} else {
+				}
+				else {
 					FlexoObject object = null;
 					if (getCurrentEditor() == null && currentEditor != null && currentEditor.getProject() != null
 							&& getCurrentPerspective() != null) {
@@ -261,15 +293,15 @@ public class ControllerModel extends ControllerModelObject implements PropertyCh
 		}
 	}
 
-	public FlexoProject getCurrentProject() {
+	public FlexoProject<?> getCurrentProject() {
 		return getCurrentEditor() != null ? getCurrentEditor().getProject() : null;
 	}
 
-	public void setCurrentProject(FlexoProject project) {
+	public void setCurrentProject(FlexoProject<?> project) {
 		setCurrentEditor(project != null ? context.getProjectLoader().getEditorForProject(project) : null);
 	}
 
-	public boolean isSelectableProject(FlexoProject project) {
+	public boolean isSelectableProject(FlexoProject<?> project) {
 		return context.getProjectLoader().getRootProjects().contains(project);
 	}
 
@@ -306,8 +338,20 @@ public class ControllerModel extends ControllerModelObject implements PropertyCh
 	public void setCurrentLocation(Location location) {
 		if (location != null && location.equals(getCurrentLocation())) {
 			return;
-		} else if (location != null) {
-			setCurrentLocation(location.getEditor(), location.getObject(), location.getPerspective());
+		}
+		else if (location != null) {
+			if (location == NO_LOCATION) {
+				Location old = currentLocation;
+				currentLocation = NO_LOCATION;
+				notifyLocationChange(old, currentLocation);
+
+				return;
+			}
+			else {
+				setCurrentLocation(location.getEditor(), location.getObject(), location.getPerspective());
+				defaultPerspective = location.getPerspective();
+
+			}
 		}
 	}
 
@@ -334,10 +378,18 @@ public class ControllerModel extends ControllerModelObject implements PropertyCh
 	}
 
 	public boolean removeFromLocations(Location location) {
+
+		//System.out.println("On supprime la location pour " + location.getEditor().getProject() + " object=" + location.getObject()
+		//		+ " perspective=" + location.getPerspective());
+
 		boolean removed = locations.remove(location);
 		if (removed) {
 			if (location != null && location.equals(currentLocation)) {
-				setCurrentLocation(getLastLocationForEditor(getCurrentEditor(), getCurrentPerspective()));
+				Location lastLocationForEditor = getLastLocationForEditor(getCurrentEditor(), getCurrentPerspective());
+				//System.out.println("Et on passe a la location pour "
+				//		+ (lastLocationForEditor.getEditor() != null ? lastLocationForEditor.getEditor().getProject() : null) + " object="
+				//		+ lastLocationForEditor.getObject() + " perspective=" + lastLocationForEditor.getPerspective());
+				setCurrentLocation(lastLocationForEditor);
 			}
 			getPropertyChangeSupport().firePropertyChange(LOCATIONS, location, null);
 		}
@@ -378,16 +430,16 @@ public class ControllerModel extends ControllerModelObject implements PropertyCh
 	private void notifyLocationChange(Location old, Location newLocation) {
 
 		if (old == null || old.getEditor() != currentLocation.getEditor()) {
-			getPropertyChangeSupport()
-					.firePropertyChange(CURRENT_EDITOR, old != null ? old.getEditor() : null, currentLocation.getEditor());
+			getPropertyChangeSupport().firePropertyChange(CURRENT_EDITOR, old != null ? old.getEditor() : null,
+					currentLocation.getEditor());
 		}
 		if (old == null || old.getPerspective() != currentLocation.getPerspective()) {
 			getPropertyChangeSupport().firePropertyChange(CURRENT_PERSPECTIVE, old != null ? old.getPerspective() : null,
 					currentLocation.getPerspective());
 		}
 		if (old == null || old.getObject() != currentLocation.getObject()) {
-			getPropertyChangeSupport()
-					.firePropertyChange(CURRENT_OBJECT, old != null ? old.getObject() : null, currentLocation.getObject());
+			getPropertyChangeSupport().firePropertyChange(CURRENT_OBJECT, old != null ? old.getObject() : null,
+					currentLocation.getObject());
 		}
 		getPropertyChangeSupport().firePropertyChange(CURRENT_LOCATION, old, currentLocation);
 	}
@@ -413,36 +465,38 @@ public class ControllerModel extends ControllerModelObject implements PropertyCh
 	}
 
 	private Location getLastLocationForEditor(FlexoEditor editor, FlexoPerspective perspective) {
+		List<Location> allLocations = ListUtils.union(previousHistory, nextHistory);
 		if (perspective != null) {
-			for (int i = previousHistory.size() - 1; i > -1; i--) {
-				Location location = previousHistory.get(i);
-				if ((editor == null || location.getEditor() == editor) && location.getPerspective() == perspective
-						&& locations.contains(location)) {
-					return location;
-				}
-			}
-			for (Location location : nextHistory) {
-				if ((editor == null || location.getEditor() == editor) && location.getPerspective() == perspective
-						&& locations.contains(location)) {
+			// avoid empty perspective if there is one to select
+			for (Location location : allLocations) {
+				if (filterEditor(editor, location) && location.getPerspective() == perspective && isLocationAvailable(location)) {
 					return location;
 				}
 			}
 		}
-		for (int i = previousHistory.size() - 1; i > -1; i--) {
-			Location location = previousHistory.get(i);
-			if (editor == null || location.getEditor() == editor && locations.contains(location)) {
-				return location;
+		else {
+			for (Location location : allLocations) {
+				if (filterEditor(editor, location) && isLocationAvailable(location)) {
+					return location;
+				}
 			}
 		}
-		for (Location location : nextHistory) {
-			if (editor == null || location.getEditor() == editor && locations.contains(location)) {
-				return location;
-			}
-		}
+		/*if (editor != null) {
+			System.out.println("Comme lastLocation, je retourne " + (editor != null ? editor.getProject() : null));
+			return new Location(editor, null, perspective);
+		}*/
 		return NO_LOCATION;
 	}
 
-	private FlexoObject getParent(FlexoObject object) {
+	private static boolean filterEditor(FlexoEditor editor, Location location) {
+		return editor == null || location.getEditor() == editor;
+	}
+
+	private boolean isLocationAvailable(Location location) {
+		return locations.contains(location);
+	}
+
+	private static FlexoObject getParent(FlexoObject object) {
 		logger.warning("Please reimplement this (getParent(FlexoObject)");
 		return null;
 	}
@@ -488,35 +542,41 @@ public class ControllerModel extends ControllerModelObject implements PropertyCh
 	@Override
 	public void propertyChange(PropertyChangeEvent evt) {
 		if (evt.getSource() == getProjectLoader()) {
-			if (evt.getPropertyName().equals(ProjectLoader.PROJECT_OPENED)) {
-				FlexoProject project = (FlexoProject) evt.getNewValue();
+			if (evt.getPropertyName().equals(InteractiveProjectLoader.PROJECT_OPENED)) {
+				FlexoProject<?> project = (FlexoProject<?>) evt.getNewValue();
 				if (getCurrentPerspective() != null) {
 					FlexoObject object = getCurrentPerspective().getDefaultObject(project);
+					System.out.println("Je veux afficher le project " + project);
+					System.out.println("Object " + object);
+					System.out.println("Editor: " + getProjectLoader().getEditorForProject(project));
 					setCurrentLocation(getProjectLoader().getEditorForProject(project), object, getCurrentPerspective());
-				} else {
+				}
+				else {
 					setCurrentProject(project);
 				}
-			} else if (evt.getPropertyName().equals(ProjectLoader.PROJECT_CLOSED)) {
-				handleProjectRemoval((FlexoProject) evt.getOldValue());
+			}
+			else if (evt.getPropertyName().equals(InteractiveProjectLoader.PROJECT_CLOSED)) {
+				handleProjectRemoval((FlexoProject<?>) evt.getOldValue());
 				setCurrentProject(null);
 			}
-		} else if (evt.getOldValue() instanceof FlexoObject
+		}
+		else if (evt.getOldValue() instanceof FlexoObject
 				&& evt.getPropertyName().equals(((FlexoObject) evt.getOldValue()).getDeletedProperty())) {
 			handleObjectDeletion((FlexoObject) evt.getOldValue());
 		}
 	}
 
-	private void handleProjectRemoval(FlexoProject removedProject) {
+	private void handleProjectRemoval(FlexoProject<?> removedProject) {
 		updateHistoryForProjectRemoval(previousHistory, removedProject);
 		updateHistoryForProjectRemoval(nextHistory, removedProject);
-		for (Location location : new ArrayList<Location>(locations)) {
+		for (Location location : new ArrayList<>(locations)) {
 			if (location.getEditor() != null && location.getEditor().getProject() == removedProject) {
 				removeFromLocations(location);
 			}
 		}
 	}
 
-	private void updateHistoryForProjectRemoval(Stack<Location> history, FlexoProject removedProject) {
+	private static void updateHistoryForProjectRemoval(Stack<Location> history, FlexoProject<?> removedProject) {
 		Iterator<Location> i = history.iterator();
 		while (i.hasNext()) {
 			Location hl = i.next();
@@ -532,7 +592,7 @@ public class ControllerModel extends ControllerModelObject implements PropertyCh
 		}
 		updateHistoryForDeletedObject(previousHistory, deletedObject);
 		updateHistoryForDeletedObject(nextHistory, deletedObject);
-		for (Location location : new ArrayList<Location>(locations)) {
+		for (Location location : new ArrayList<>(locations)) {
 			if (location.getObject() == deletedObject) {
 				removeFromLocations(location);
 			}
@@ -540,14 +600,15 @@ public class ControllerModel extends ControllerModelObject implements PropertyCh
 		if (currentLocation != null && currentLocation.getObject() == deletedObject) {
 			if (canGoBack()) {
 				historyBack();
-			} else {
+			}
+			else {
 				setCurrentObject(null);
 			}
 		}
 		registrationManager.removeListener(deletedObject.getDeletedProperty(), this, deletedObject);
 	}
 
-	private void updateHistoryForDeletedObject(Stack<Location> history, FlexoObject deletedObject) {
+	private static void updateHistoryForDeletedObject(Stack<Location> history, FlexoObject deletedObject) {
 		Iterator<Location> i = history.iterator();
 		while (i.hasNext()) {
 			Location hl = i.next();
@@ -561,26 +622,28 @@ public class ControllerModel extends ControllerModelObject implements PropertyCh
 	 * LAYOUT *
 	 **********/
 
-	public Node getLayoutForPerspective(FlexoPerspective perspective) {
+	public Node<?> getLayoutForPerspective(FlexoPerspective perspective) {
 
 		String layout = null;
 		if (context.getGeneralPreferences() != null) {
-			layout = context.getGeneralPreferences().getLayoutFor(getModule().getShortName() + perspective.getName());
+			layout = context.getPresentationPreferences().getLayoutFor(getModule().getShortName() + perspective.getName());
 		}
 		if (layout != null) {
 			// System.out.println("Parsing layout: " + layout);
 			return getLayoutFromString(layout);
-		} else {
+		}
+		else {
 			return null;
 		}
 	}
 
-	private Node getLayoutFromString(String layout) {
+	private Node<?> getLayoutFromString(String layout) {
 		return getGsonLayout().fromJson(layout, Node.class);
 	}
 
-	public void setLayoutForPerspective(FlexoPerspective perspective, Node layout) {
-		context.getGeneralPreferences().setLayoutFor(getGsonLayout().toJson(layout), getModule().getShortName() + perspective.getName());
+	public void setLayoutForPerspective(FlexoPerspective perspective, Node<?> layout) {
+		context.getPresentationPreferences().setLayoutFor(getGsonLayout().toJson(layout),
+				getModule().getShortName() + perspective.getName());
 		context.getPreferencesService().savePreferences();
 	}
 
@@ -602,7 +665,7 @@ public class ControllerModel extends ControllerModelObject implements PropertyCh
 
 	public void setLeftViewVisible(boolean leftViewVisible) {
 		this.leftViewVisible = leftViewVisible;
-		context.getGeneralPreferences().setShowLeftView(getModule().getShortName(), leftViewVisible);
+		context.getPresentationPreferences().setShowLeftView(getModule().getShortName(), leftViewVisible);
 		context.getPreferencesService().savePreferences();
 		getPropertyChangeSupport().firePropertyChange(LEFT_VIEW_VISIBLE, !leftViewVisible, leftViewVisible);
 	}
@@ -613,7 +676,7 @@ public class ControllerModel extends ControllerModelObject implements PropertyCh
 
 	public void setRightViewVisible(boolean rightViewVisible) {
 		this.rightViewVisible = rightViewVisible;
-		context.getGeneralPreferences().setShowRightView(getModule().getShortName(), rightViewVisible);
+		context.getPresentationPreferences().setShowRightView(getModule().getShortName(), rightViewVisible);
 		context.getPreferencesService().savePreferences();
 		getPropertyChangeSupport().firePropertyChange(RIGHT_VIEW_VISIBLE, !rightViewVisible, rightViewVisible);
 	}

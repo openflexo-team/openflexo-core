@@ -8,11 +8,11 @@
 		selectionMode="DiscontiguousTreeSelection" selected="" showFooter="true"
 		rootVisible="true" showRootsHandle="true" format="" icon="" tooltip=""
 		localize="true" enable="" manageDynamicModel="true"
-		clickAction="controller.singleClick(InformationSpaceBrowser.selected)"
-		doubleClickAction="controller.doubleClick(InformationSpaceBrowser.selected)"
-		rightClickAction="controller.rightClick(InformationSpaceBrowser.selected,event)"
+		clickAction="controller.singleClick(resourceManagerBrowser.selected)"
+		doubleClickAction="controller.doubleClick(resourceManagerBrowser.selected)"
+		rightClickAction="controller.rightClick(resourceManagerBrowser.selected,event)"
 		enterPressedAction="" valueChangedAction="" valueTransform=""
-		valueValidator="" name="InformationSpaceBrowser" index="0" data=""
+		valueValidator="" name="resourceManagerBrowser" index="0" data=""
 		constraints="twocols(expandHorizontally=true;expandVertically=true;index=0;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=center)"
 		visible="">
 		<BrowserElement
@@ -21,24 +21,23 @@
 			tooltip="" enabled="" visible="" isEditable="false" editableLabel=""
 			filtered="false" defaultVisible="true" dynamicFont=""
 			name="technologyAdapter">
-			<Children data="data.getAllRepositories()" visible=""
+			<Children data="data.getGlobalRepositories()" 
 				cast="child.rootFolder" name="repositories" />
 		</BrowserElement>
 		<BrowserElement dataClassName="org.openflexo.foundation.resource.RepositoryFolder"
 			label="folder.displayableName" icon="controller.iconForObject(folder)"
-			tooltip="" enabled="" visible="" isEditable="false" editableLabel=""
-			filtered="false" defaultVisible="true" dynamicFont="" name="folder">
-			<Children data="folder.children" visible="" cast=""
-				name="subFolders" />
-			<Children data="folder.resources" visible="" cast=""
-				name="resource" />
+			visible="controller.shouldBeDisplayed(folder)" isEditable="false"
+			editableLabel="" filtered="false" defaultVisible="true" name="folder">
+			<Children data="folder.children" name="subFolders" />
+			<Children data="folder.resources" name="resource" />
 		</BrowserElement>
 		<BrowserElement dataClassName="org.openflexo.foundation.resource.FlexoResource"
 			label="resource.name" icon="controller.iconForObject(resource)"
 			tooltip="" enabled="resource.isLoaded" visible="!(resource.isDeleted)"
 			isEditable="false" editableLabel="" filtered="false" defaultVisible="true"
-			dynamicFont="" name="resource">
-			<Children data="resource.contents" visible="resource.isLoaded" cast="" name="subResources" />
+			name="resource">
+			<Children data="resource.contents" visible="resource.isLoaded"
+				name="subResources" />
 		</BrowserElement>
 	</Browser>
 	<LocalizedDictionary />

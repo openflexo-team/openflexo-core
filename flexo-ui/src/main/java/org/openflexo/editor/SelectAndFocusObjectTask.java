@@ -40,7 +40,6 @@ package org.openflexo.editor;
 
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.task.Progress;
-import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.task.FlexoApplicationTask;
 import org.openflexo.view.controller.FlexoController;
 
@@ -56,8 +55,8 @@ public class SelectAndFocusObjectTask extends FlexoApplicationTask {
 	private final FlexoObject objectToFocusOn;
 
 	public SelectAndFocusObjectTask(FlexoController controller, FlexoObject objectToFocusOn) {
-		super(FlexoLocalization.localizedForKey("opening_module_view_for_object") + " " + objectToFocusOn, controller
-				.getApplicationContext().getModuleLoader());
+		super(controller.getModuleLocales().localizedForKey("opening_module_view_for_object") + " " + objectToFocusOn,
+				controller.getApplicationContext());
 		this.controller = controller;
 		this.objectToFocusOn = objectToFocusOn;
 	}

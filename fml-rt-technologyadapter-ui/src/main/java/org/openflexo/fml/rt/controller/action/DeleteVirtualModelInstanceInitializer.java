@@ -46,15 +46,16 @@ import javax.swing.Icon;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.action.FlexoActionFinalizer;
 import org.openflexo.foundation.action.FlexoActionInitializer;
-import org.openflexo.foundation.fml.rt.VirtualModelInstance;
+import org.openflexo.foundation.action.FlexoActionFactory;
+import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.action.DeleteVirtualModelInstance;
 import org.openflexo.icon.IconLibrary;
-import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.view.controller.ActionInitializer;
 import org.openflexo.view.controller.ControllerActionInitializer;
 import org.openflexo.view.controller.FlexoController;
 
-public class DeleteVirtualModelInstanceInitializer extends ActionInitializer<DeleteVirtualModelInstance, VirtualModelInstance, FlexoObject> {
+public class DeleteVirtualModelInstanceInitializer
+		extends ActionInitializer<DeleteVirtualModelInstance, FMLRTVirtualModelInstance, FlexoObject> {
 
 	private static final Logger logger = Logger.getLogger(ControllerActionInitializer.class.getPackage().getName());
 
@@ -67,7 +68,7 @@ public class DeleteVirtualModelInstanceInitializer extends ActionInitializer<Del
 		return new FlexoActionInitializer<DeleteVirtualModelInstance>() {
 			@Override
 			public boolean run(EventObject e, DeleteVirtualModelInstance action) {
-				return FlexoController.confirm(FlexoLocalization.localizedForKey("really_delete_this_virtual_model_instance_?"));
+				return FlexoController.confirm(action.getLocales().localizedForKey("really_delete_this_virtual_model_instance_?"));
 			}
 		};
 	}
@@ -83,7 +84,7 @@ public class DeleteVirtualModelInstanceInitializer extends ActionInitializer<Del
 	}
 
 	@Override
-	protected Icon getEnabledIcon() {
+	protected Icon getEnabledIcon(FlexoActionFactory actionType) {
 		return IconLibrary.DELETE_ICON;
 	}
 

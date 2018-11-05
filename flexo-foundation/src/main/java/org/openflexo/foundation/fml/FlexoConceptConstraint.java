@@ -40,6 +40,7 @@ package org.openflexo.foundation.fml;
 
 import java.util.logging.Logger;
 
+import org.openflexo.connie.Bindable;
 import org.openflexo.connie.BindingModel;
 import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.DataBinding.BindingDefinitionType;
@@ -101,7 +102,8 @@ public interface FlexoConceptConstraint extends FlexoConceptObject {
 		public BindingModel getBindingModel() {
 			if (getFlexoConcept() != null) {
 				return getFlexoConcept().getBindingModel();
-			} else {
+			}
+			else {
 				return null;
 			}
 		}
@@ -113,7 +115,12 @@ public interface FlexoConceptConstraint extends FlexoConceptObject {
 
 		@Override
 		public void setFlexoConcept(FlexoConcept flexoConcept) {
+			FlexoConcept oldValue = this.flexoConcept;
+			BindingModel oldBM = getFlexoConcept() != null ? getFlexoConcept().getBindingModel() : null;
 			this.flexoConcept = flexoConcept;
+			BindingModel newBM = getFlexoConcept() != null ? getFlexoConcept().getBindingModel() : null;
+			getPropertyChangeSupport().firePropertyChange(Bindable.BINDING_MODEL_PROPERTY, oldBM, newBM);
+			getPropertyChangeSupport().firePropertyChange("flexoConcept", oldValue, flexoConcept);
 		}
 
 		@Override
@@ -124,7 +131,7 @@ public interface FlexoConceptConstraint extends FlexoConceptObject {
 		@Override
 		public DataBinding<Boolean> getConstraint() {
 			if (constraint == null) {
-				constraint = new DataBinding<Boolean>(this, Boolean.class, BindingDefinitionType.GET);
+				constraint = new DataBinding<>(this, Boolean.class, BindingDefinitionType.GET);
 				constraint.setBindingName("constraint");
 			}
 			return constraint;

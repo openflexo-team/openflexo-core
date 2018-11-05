@@ -41,22 +41,48 @@ package org.openflexo.view.controller;
 import java.awt.BorderLayout;
 import java.util.logging.Logger;
 
-import org.openflexo.fib.swing.FIBJPanel;
+import org.openflexo.ApplicationContext;
 import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
+import org.openflexo.gina.controller.FIBController;
+import org.openflexo.gina.model.FIBComponent;
+import org.openflexo.gina.swing.utils.FIBJPanel;
+import org.openflexo.gina.swing.view.JFIBView;
+import org.openflexo.gina.swing.view.SwingViewFactory;
 import org.openflexo.localization.FlexoLocalization;
+import org.openflexo.localization.LocalizedDelegate;
+import org.openflexo.view.controller.ParametersRetriever.ParametersRetrieverController;
 
 /**
  * Widget allowing to edit parameters of an FlexoBehaviour
  * 
  * @author sguerin
- * 
  */
 public class FIBParametersRetrieverWidget extends FIBJPanel<FlexoBehaviourAction> {
 
 	static final Logger logger = Logger.getLogger(FIBParametersRetrieverWidget.class.getPackage().getName());
 
-	public FIBParametersRetrieverWidget(FlexoBehaviourAction action) {
-		super((new ParametersRetriever(action)).makeFIB(false, false), action, FlexoLocalization.getMainLocalizer());
+	private ApplicationContext applicationContext;
+
+	public FIBParametersRetrieverWidget(FlexoBehaviourAction<?, ?, ?> action) {
+		super((new ParametersRetriever<>(action, null)).makeFIB(false, false), action, FlexoLocalization.getMainLocalizer());
+	}
+
+	public ApplicationContext getApplicationContext() {
+		return applicationContext;
+	}
+
+	public void setApplicationContext(ApplicationContext applicationContext) {
+		// Avoid multiple call of fireEditedObjectChanged when not necessary
+		if (applicationContext != this.applicationContext) {
+			this.applicationContext = applicationContext;
+			if (getController() instanceof ParametersRetrieverController) {
+				if (applicationContext != null) {
+					((ParametersRetrieverController) getController())
+							.setFlexoController(applicationContext.getModuleLoader().getActiveModule().getController());
+				}
+			}
+			fireEditedObjectChanged();
+		}
 	}
 
 	@Override
@@ -65,12 +91,18 @@ public class FIBParametersRetrieverWidget extends FIBJPanel<FlexoBehaviourAction
 	}
 
 	@Override
+	protected FIBController makeFIBController(FIBComponent fibComponent, LocalizedDelegate parentLocalizer) {
+		return new ParametersRetrieverController(fibComponent, SwingViewFactory.INSTANCE,
+				applicationContext != null ? applicationContext.getModuleLoader().getActiveModule().getController() : null);
+	}
+
+	@Override
 	public void fireEditedObjectChanged() {
-		FlexoBehaviourAction action = getEditedObject();
+		FlexoBehaviourAction<?, ?, ?> action = getEditedObject();
 		if (action != null) {
-			fibComponent = (new ParametersRetriever(action)).makeFIB(false, false);
+			fibComponent = (new ParametersRetriever<>(action, applicationContext)).makeFIB(false, false);
 			controller = makeFIBController(fibComponent, localizer);
-			fibView = controller.buildView(fibComponent);
+			fibView = (JFIBView<?, ?>) controller.buildView(fibComponent, null, true);
 			removeAll();
 			add(fibView.getResultingJComponent(), BorderLayout.CENTER);
 			revalidate();

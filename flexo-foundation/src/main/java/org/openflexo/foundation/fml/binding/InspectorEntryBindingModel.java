@@ -56,7 +56,7 @@ public class InspectorEntryBindingModel extends BindingModel {
 	public InspectorEntryBindingModel(InspectorEntry inspectorEntry) {
 		super(inspectorEntry.getInspector() != null ? inspectorEntry.getInspector().getBindingModel() : null);
 		this.inspectorEntry = inspectorEntry;
-		if (inspectorEntry != null && inspectorEntry.getPropertyChangeSupport() != null) {
+		if (inspectorEntry.getPropertyChangeSupport() != null) {
 			inspectorEntry.getPropertyChangeSupport().addPropertyChangeListener(this);
 		}
 	}

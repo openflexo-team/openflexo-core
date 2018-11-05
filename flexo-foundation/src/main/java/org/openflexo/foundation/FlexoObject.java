@@ -43,49 +43,40 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Hashtable;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
-import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.openflexo.foundation.action.AddFlexoProperty;
-import org.openflexo.foundation.action.DeleteFlexoProperty;
-import org.openflexo.foundation.action.FlexoActionType;
-import org.openflexo.foundation.action.FlexoActionizer;
-import org.openflexo.foundation.action.SortFlexoProperties;
+import org.openflexo.foundation.action.FlexoActionFactory;
 import org.openflexo.foundation.resource.FlexoResource;
 import org.openflexo.foundation.resource.PamelaResource;
 import org.openflexo.foundation.resource.ResourceData;
+import org.openflexo.foundation.technologyadapter.TechnologyObject;
 import org.openflexo.foundation.utils.FlexoObjectReference;
 import org.openflexo.localization.FlexoLocalization;
-import org.openflexo.model.annotations.Adder;
+import org.openflexo.localization.LocalizedDelegate;
 import org.openflexo.model.annotations.CloningStrategy;
 import org.openflexo.model.annotations.CloningStrategy.StrategyType;
-import org.openflexo.model.annotations.Finder;
 import org.openflexo.model.annotations.Getter;
-import org.openflexo.model.annotations.Getter.Cardinality;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
 import org.openflexo.model.annotations.PropertyIdentifier;
-import org.openflexo.model.annotations.Remover;
 import org.openflexo.model.annotations.Setter;
 import org.openflexo.model.annotations.XMLAttribute;
-import org.openflexo.model.annotations.XMLElement;
 import org.openflexo.model.factory.AccessibleProxyObject;
 import org.openflexo.model.factory.CloneableProxyObject;
 import org.openflexo.model.factory.DeletableProxyObject;
 import org.openflexo.model.factory.EmbeddingType;
-import org.openflexo.model.factory.KeyValueCoding;
 import org.openflexo.model.factory.ModelFactory;
 import org.openflexo.model.validation.Validable;
-import org.openflexo.toolbox.HTMLUtils;
 
 /**
  * Super class for any object involved in Openflexo-Core (model layer)<br>
  * 
- * This abstract class represents an object. (a "model" in the model-view paradigm)<br>
+ * Provides a direct access to {@link FlexoServiceManager} for objects beeing part of a {@link ResourceData} accessed through a
+ * FlexoResource
  * 
  * @author sguerin
  * 
@@ -93,19 +84,12 @@ import org.openflexo.toolbox.HTMLUtils;
 @ModelEntity(isAbstract = true)
 @ImplementationClass(FlexoObject.FlexoObjectImpl.class)
 // TODO: remove ReferenceOwner declaration and create a new class
-public abstract interface FlexoObject extends AccessibleProxyObject, DeletableProxyObject, CloneableProxyObject, KeyValueCoding, Validable {
+public interface FlexoObject extends AccessibleProxyObject, DeletableProxyObject, CloneableProxyObject, Validable {
+
 	@PropertyIdentifier(type = String.class)
-	public static final String USER_IDENTIFIER_KEY = "userIdentifier";
+	String USER_IDENTIFIER_KEY = "userIdentifier";
 	@PropertyIdentifier(type = long.class)
-	public static final String FLEXO_ID_KEY = "flexoID";
-	@PropertyIdentifier(type = String.class)
-	public static final String DESCRIPTION_KEY = "description";
-	@PropertyIdentifier(type = boolean.class)
-	public static final String HAS_SPECIFIC_DESCRIPTIONS_KEY = "hasSpecificDescriptions";
-	@PropertyIdentifier(type = Map.class)
-	public static final String SPECIFIC_DESCRIPTIONS_KEY = "specificDescriptions";
-	@PropertyIdentifier(type = Vector.class)
-	public static final String CUSTOM_PROPERTIES_KEY = "customProperties";
+	String FLEXO_ID_KEY = "flexoID";
 
 	@Getter(value = USER_IDENTIFIER_KEY)
 	@XMLAttribute(xmlTag = "userID")
@@ -139,57 +123,7 @@ public abstract interface FlexoObject extends AccessibleProxyObject, DeletablePr
 	 */
 	public String hash();
 
-	@Getter(value = DESCRIPTION_KEY)
-	@XMLAttribute
-	public String getDescription();
-
-	@Setter(DESCRIPTION_KEY)
-	public void setDescription(String description);
-
-	public boolean hasDescription();
-
-	@Getter(value = HAS_SPECIFIC_DESCRIPTIONS_KEY, defaultValue = "false")
-	@XMLAttribute(xmlTag = "useSpecificDescriptions")
-	public boolean getHasSpecificDescriptions();
-
-	@Setter(HAS_SPECIFIC_DESCRIPTIONS_KEY)
-	public void setHasSpecificDescriptions(boolean hasSpecificDescriptions);
-
-	public List<String> getSpecificDescriptionKeys();
-
-	@Getter(value = SPECIFIC_DESCRIPTIONS_KEY, ignoreType = true)
-	public Map<String, String> getSpecificDescriptions();
-
-	@Setter(SPECIFIC_DESCRIPTIONS_KEY)
-	public void setSpecificDescriptions(Map<String, String> specificDescriptions);
-
-	public boolean hasSpecificDescriptionForKey(String key);
-
-	public String getSpecificDescriptionForKey(String key);
-
-	@Adder(SPECIFIC_DESCRIPTIONS_KEY)
-	public void setSpecificDescriptionsForKey(String description, String key);
-
-	@Remover(SPECIFIC_DESCRIPTIONS_KEY)
-	public void removeSpecificDescriptionsWithKey(String key);
-
-	@Getter(value = CUSTOM_PROPERTIES_KEY, cardinality = Cardinality.LIST, inverse = FlexoProperty.OWNER_KEY)
-	@XMLElement
-	public List<FlexoProperty> getCustomProperties();
-
-	@Setter(CUSTOM_PROPERTIES_KEY)
-	public void setCustomProperties(List<FlexoProperty> customProperties);
-
-	@Adder(CUSTOM_PROPERTIES_KEY)
-	public void addToCustomProperties(FlexoProperty aCustomPropertie);
-
-	@Remover(CUSTOM_PROPERTIES_KEY)
-	public void removeFromCustomProperties(FlexoProperty aCustomPropertie);
-
-	@Finder(attribute = FlexoProperty.NAME_KEY, collection = CUSTOM_PROPERTIES_KEY)
-	public FlexoProperty getPropertyNamed(String name);
-
-	public List<FlexoActionType<?, ?, ?>> getActionList();
+	public List<FlexoActionFactory<?, ?, ?>> getActionList();
 
 	public void addToReferencers(FlexoObjectReference<? extends FlexoObject> ref);
 
@@ -197,7 +131,7 @@ public abstract interface FlexoObject extends AccessibleProxyObject, DeletablePr
 
 	public List<FlexoObjectReference<?>> getReferencers();
 
-	public boolean hasSpecificHelp(String key);
+	// public boolean hasSpecificHelp(String key);
 
 	/**
 	 * Return the list of all references to FlexoConceptInstance where this FlexoObject is involved in a FlexoRole
@@ -212,9 +146,9 @@ public abstract interface FlexoObject extends AccessibleProxyObject, DeletablePr
 	// flexoConceptReferences);
 
 	/*public void addToFlexoConceptReferences(final FlexoObjectReference<FlexoConceptInstance> ref);
-
+	
 	public void removeFromFlexoConceptReferences(FlexoObjectReference<FlexoConceptInstance> ref);
-	*/
+	 */
 
 	/**
 	 * Return the {@link FlexoConceptInstance}
@@ -227,7 +161,8 @@ public abstract interface FlexoObject extends AccessibleProxyObject, DeletablePr
 	// flexoConceptId, long instanceId);
 
 	/**
-	 * Return FlexoConceptInstance matching supplied id represented as a string, which could be either the name of FlexoConcept, or its URI<br>
+	 * Return FlexoConceptInstance matching supplied id represented as a string, which could be either the name of FlexoConcept, or its URI
+	 * <br>
 	 * If many FlexoConceptInstance are declared in this FlexoProjectObject, return first one
 	 * 
 	 * @param flexoConceptId
@@ -263,6 +198,35 @@ public abstract interface FlexoObject extends AccessibleProxyObject, DeletablePr
 	@Deprecated
 	public void notifyObservers(DataModification arg);
 
+	public FlexoServiceManager getServiceManager();
+
+	/**
+	 * Mark the current object to be in 'modified' status<br>
+	 * If object is part of a {@link ResourceData}, mark the {@link ResourceData} to be modified, and thus, related resource to be modified.
+	 * Also notify the {@link FlexoEditingContext}
+	 */
+	public void setIsModified();
+
+	/**
+	 * Return the locales attached to this {@link FlexoObject}.<br>
+	 * This is the responsability of subclasses to implements a proper scheme
+	 * 
+	 * @return
+	 */
+	public LocalizedDelegate getLocales();
+
+	default String getReferenceForSerialization(boolean serializeClassName) {
+		if (this instanceof InnerResourceData) {
+			ResourceData<?> resourceData = ((InnerResourceData<?>) this).getResourceData();
+			if (resourceData != null && resourceData.getResource() != null) {
+				FlexoResource<?> resource = resourceData.getResource();
+				return FlexoObjectReference.constructSerializationRepresentation(resource.getURI(), getUserIdentifier(),
+						Long.toString(getFlexoID()), serializeClassName ? getClass().getName() : null);
+			}
+		}
+		return null;
+	}
+
 	public static abstract class FlexoObjectImpl extends FlexoObservable implements FlexoObject {
 
 		private static final Logger logger = Logger.getLogger(FlexoObject.class.getPackage().getName());
@@ -272,34 +236,15 @@ public abstract interface FlexoObject extends AccessibleProxyObject, DeletablePr
 
 		private Object context;
 
-		private String description;
-
-		private Map<String, String> specificDescriptions;
-		private List<FlexoProperty> customProperties;
-		private boolean hasSpecificDescriptions = false;
-
 		/**
 		 * A map that stores the different declared actions for each class
 		 */
-		private static final Map<Class, List<FlexoActionType<?, ?, ?>>> _declaredActionsForClass = new Hashtable<Class, List<FlexoActionType<?, ?, ?>>>();
+		private static final Map<Class<?>, List<FlexoActionFactory<?, ?, ?>>> _declaredActionsForClass = new LinkedHashMap<>();
 
 		/**
 		 * A map that stores all the actions for each class (computed with the inheritance of each class)
 		 */
-		private static final Hashtable<Class, List<FlexoActionType<?, ?, ?>>> _actionListForClass = new Hashtable<Class, List<FlexoActionType<?, ?, ?>>>();
-
-		public static FlexoActionizer<AddFlexoProperty, FlexoObject, FlexoObject> addFlexoPropertyActionizer;
-
-		public static FlexoActionizer<DeleteFlexoProperty, FlexoProperty, FlexoProperty> deleteFlexoPropertyActionizer;
-
-		public static FlexoActionizer<SortFlexoProperties, FlexoObject, FlexoObject> sortFlexoPropertiesActionizer;
-
-		/**
-		 * This list contains all EPI's by reference
-		 */
-		// TODO: merge with referencers
-		// private List<FlexoObjectReference<FlexoConceptInstance>>
-		// flexoConceptReferences;
+		private static final Hashtable<Class<?>, List<FlexoActionFactory<?, ?, ?>>> _actionListForClass = new Hashtable<>();
 
 		private final List<FlexoObjectReference<?>> referencers;
 
@@ -307,16 +252,30 @@ public abstract interface FlexoObject extends AccessibleProxyObject, DeletablePr
 		 * Default constructor for {@link FlexoObject}
 		 */
 		public FlexoObjectImpl() {
-			specificDescriptions = new TreeMap<String, String>();
-			customProperties = new ArrayList<FlexoProperty>();
-			// flexoConceptReferences = new
-			// ArrayList<FlexoObjectReference<FlexoConceptInstance>>();
-			referencers = new ArrayList<FlexoObjectReference<?>>();
+			referencers = new ArrayList<>();
 		}
 
 		@Override
 		public final String getDeletedProperty() {
 			return DELETED_PROPERTY;
+		}
+
+		/**
+		 * Implements access to service manager of objects being part of a {@link ResourceData} accessed through a FlexoResource
+		 */
+		@Override
+		public FlexoServiceManager getServiceManager() {
+			if (this instanceof InnerResourceData) {
+				ResourceData<?> resdata = ((InnerResourceData<?>) this).getResourceData();
+				// avoid NPE when deleting object
+				if (resdata != null) {
+					FlexoResource<?> resource = resdata.getResource();
+					if (resource != null) {
+						return resource.getServiceManager();
+					}
+				}
+			}
+			return null;
 		}
 
 		/**
@@ -327,8 +286,8 @@ public abstract interface FlexoObject extends AccessibleProxyObject, DeletablePr
 		 * @return
 		 */
 		protected <T> boolean requireChange(T oldValue, T newValue) {
-			return oldValue == null && newValue != null || oldValue != null && newValue == null || oldValue != null && newValue != null
-					&& !oldValue.equals(newValue);
+			return oldValue == null && newValue != null || oldValue != null && newValue == null
+					|| oldValue != null && newValue != null && !oldValue.equals(newValue);
 		}
 
 		/**
@@ -442,9 +401,9 @@ public abstract interface FlexoObject extends AccessibleProxyObject, DeletablePr
 
 		/*@Override
 		public void registerFlexoConceptReference(FlexoConceptInstance flexoConceptInstance) {
-
+		
 			FlexoObjectReference<FlexoConceptInstance> existingReference = getFlexoConceptReference(flexoConceptInstance);
-
+		
 			if (existingReference == null) {
 				addToFlexoConceptReferences(new FlexoObjectReference<FlexoConceptInstance>(flexoConceptInstance));
 			}
@@ -487,7 +446,8 @@ public abstract interface FlexoObject extends AccessibleProxyObject, DeletablePr
 		public void setModified(boolean modified) {
 			if (modified) {
 				setIsModified();
-			} else {
+			}
+			else {
 				clearIsModified();
 			}
 		}
@@ -497,6 +457,7 @@ public abstract interface FlexoObject extends AccessibleProxyObject, DeletablePr
 		 * If object is part of a {@link ResourceData}, mark the {@link ResourceData} to be modified, and thus, related resource to be
 		 * modified. Also notify the {@link FlexoEditingContext}
 		 */
+		@Override
 		public synchronized void setIsModified() {
 
 			// If ignore notification flag set to true, just return
@@ -583,63 +544,71 @@ public abstract interface FlexoObject extends AccessibleProxyObject, DeletablePr
 		// ***************************************************
 
 		@Override
-		public final List<FlexoActionType<?, ?, ?>> getActionList() {
+		public final List<FlexoActionFactory<?, ?, ?>> getActionList() {
 			return getActionList(getClass());
 		}
 
-		public static <T extends FlexoObject> List<FlexoActionType<?, ?, ?>> getActionList(Class<T> aClass) {
+		public static <T extends FlexoObject> List<FlexoActionFactory<?, ?, ?>> getActionList(Class<T> aClass) {
 			if (_actionListForClass.get(aClass) == null) {
 				if (logger.isLoggable(Level.FINE)) {
 					logger.fine("COMPUTE ACTION_LIST FOR " + aClass.getName());
 				}
-				List<FlexoActionType<?, ?, ?>> returned = updateActionListFor(aClass);
+				List<FlexoActionFactory<?, ?, ?>> returned = updateActionListFor(aClass);
 				if (logger.isLoggable(Level.FINE)) {
 					logger.fine("DONE. COMPUTE ACTION_LIST FOR " + aClass.getName() + ": " + returned.size() + " action(s) :");
-					for (FlexoActionType<?, ?, ?> next : returned) {
-						logger.fine(" " + next.getLocalizedName());
+					for (FlexoActionFactory<?, ?, ?> next : returned) {
+						logger.fine(" " + next.getActionName());
 					}
 					logger.fine(".");
 				}
 				return returned;
 			}
-			List<FlexoActionType<?, ?, ?>> returned = _actionListForClass.get(aClass);
+			List<FlexoActionFactory<?, ?, ?>> returned = _actionListForClass.get(aClass);
 			if (logger.isLoggable(Level.FINE)) {
 				logger.fine("RETURN (NO COMPUTING) ACTION_LIST FOR " + aClass.getName() + ": " + returned.size() + " action(s) :");
 
-				for (FlexoActionType<?, ?, ?> next : returned) {
-					logger.fine(" " + next.getLocalizedName());
+				for (FlexoActionFactory<?, ?, ?> next : returned) {
+					logger.fine(" " + next.getActionName());
 				}
 				logger.fine(".");
 			}
 			return returned;
 		}
 
-		public static <T1 extends FlexoObject, T extends T1> void addActionForClass(FlexoActionType<?, T1, ?> actionType,
+		/**
+		 * @deprecated should not be used anymore since this is a potential memory leak
+		 * 
+		 * @param actionType
+		 * @param objectClass
+		 */
+		@Deprecated
+		public static <T1 extends FlexoObject, T extends T1> void addActionForClass(FlexoActionFactory<?, T1, ?> actionType,
 				Class<T> objectClass) {
 			if (logger.isLoggable(Level.FINE)) {
 				logger.fine("addActionForClass: " + actionType + " for " + objectClass);
 			}
-			List<FlexoActionType<?, ?, ?>> actions = _declaredActionsForClass.get(objectClass);
+			List<FlexoActionFactory<?, ?, ?>> actions = _declaredActionsForClass.get(objectClass);
 			if (actions == null) {
-				actions = new ArrayList<FlexoActionType<?, ?, ?>>();
+				actions = new ArrayList<>();
 				_declaredActionsForClass.put(objectClass, actions);
 			}
 			if (actionType != null) {
 				if (!actions.contains(actionType)) {
 					actions.add(actionType);
 				}
-			} else {
+			}
+			else {
 				logger.warning("Trying to declare null action !");
 			}
 
 			if (_actionListForClass != null) {
-				List<Class> entriesToRemove = new ArrayList<Class>();
-				for (Class aClass : _actionListForClass.keySet()) {
+				List<Class<?>> entriesToRemove = new ArrayList<>();
+				for (Class<?> aClass : _actionListForClass.keySet()) {
 					if (objectClass.isAssignableFrom(aClass)) {
 						entriesToRemove.add(aClass);
 					}
 				}
-				for (Class aClass : entriesToRemove) {
+				for (Class<?> aClass : entriesToRemove) {
 					logger.info("Recompute actions list for " + aClass);
 					_actionListForClass.remove(aClass);
 				}
@@ -647,9 +616,19 @@ public abstract interface FlexoObject extends AccessibleProxyObject, DeletablePr
 
 		}
 
-		private static <T extends FlexoObject> List<FlexoActionType<?, ?, ?>> updateActionListFor(Class<T> aClass) {
-			List<FlexoActionType<?, ?, ?>> newActionList = new ArrayList<FlexoActionType<?, ?, ?>>();
-			for (Map.Entry<Class, List<FlexoActionType<?, ?, ?>>> e : _declaredActionsForClass.entrySet()) {
+		@Deprecated
+		public static <T1 extends FlexoObject, T extends T1> void removeActionFromClass(FlexoActionFactory<?, T1, ?> actionType,
+				Class<T> objectClass) {
+
+			List<FlexoActionFactory<?, ?, ?>> actions = _declaredActionsForClass.get(objectClass);
+			if (actions.contains(actionType)) {
+				actions.remove(actionType);
+			}
+		}
+
+		private static <T extends FlexoObject> List<FlexoActionFactory<?, ?, ?>> updateActionListFor(Class<T> aClass) {
+			List<FlexoActionFactory<?, ?, ?>> newActionList = new ArrayList<>();
+			for (Map.Entry<Class<?>, List<FlexoActionFactory<?, ?, ?>>> e : _declaredActionsForClass.entrySet()) {
 				if (e.getKey().isAssignableFrom(aClass)) {
 					newActionList.addAll(e.getValue());
 				}
@@ -657,7 +636,7 @@ public abstract interface FlexoObject extends AccessibleProxyObject, DeletablePr
 			_actionListForClass.put(aClass, newActionList);
 			if (logger.isLoggable(Level.FINE)) {
 				logger.fine("updateActionListFor() class: " + aClass);
-				for (FlexoActionType a : newActionList) {
+				for (FlexoActionFactory<?, ?, ?> a : newActionList) {
 					logger.finer(" > " + a);
 				}
 			}
@@ -668,7 +647,7 @@ public abstract interface FlexoObject extends AccessibleProxyObject, DeletablePr
 			return getActionList().size();
 		}
 
-		public FlexoActionType<?, ?, ?> getActionTypeAt(int index) {
+		public FlexoActionFactory<?, ?, ?> getActionTypeAt(int index) {
 			return getActionList().get(index);
 		}
 
@@ -689,248 +668,26 @@ public abstract interface FlexoObject extends AccessibleProxyObject, DeletablePr
 			return !isImported();
 		}
 
-		@Override
-		public String getDescription() {
-			if (description != null && description.startsWith("<html>First")) {
-				new Exception().printStackTrace();
+		public static LocalizedDelegate getLocales(FlexoServiceManager serviceManager) {
+			if (serviceManager != null) {
+				return serviceManager.getLocalizationService().getFlexoLocalizer();
 			}
-			return description;
+			return FlexoLocalization.getMainLocalizer();
 		}
 
 		@Override
-		public void setDescription(String description) {
-			if (!stringHasChanged(this.description, description)) {
-				return;
+		public LocalizedDelegate getLocales() {
+			if (this instanceof TechnologyObject && ((TechnologyObject<?>) this).getTechnologyAdapter() != null) {
+				return ((TechnologyObject<?>) this).getTechnologyAdapter().getLocales();
 			}
-			String old = this.description;
-			if (old == null && description == null) {
-				return;
-			}
-			if (old == null || !old.equals(description)) {
-				this.description = description;
-				// setChanged();
-				// notifyObservers(new DataModification("description", old, description));
-				getPropertyChangeSupport().firePropertyChange(DESCRIPTION_KEY, old, description);
-			}
-		}
-
-		public String getFullDescriptionWithOnlyBodyContent(String specificDescriptionType) {
-			StringBuilder sb = new StringBuilder();
-
-			if (getDescription() != null) {
-				String description = HTMLUtils.extractBodyContent(getDescription());
-				sb.append(description != null ? description : getDescription());
-			}
-
-			if (getHasSpecificDescriptions() && specificDescriptionType != null
-					&& getSpecificDescriptionForKey(specificDescriptionType) != null) {
-				String specifDesc = HTMLUtils.extractBodyContent(getSpecificDescriptionForKey(specificDescriptionType));
-				sb.append(specifDesc != null ? specifDesc : getSpecificDescriptionForKey(specificDescriptionType));
-			}
-
-			return sb.toString().trim();
-		}
-
-		@Override
-		public boolean getHasSpecificDescriptions() {
-			return hasSpecificDescriptions;
-		}
-
-		@Override
-		public void setHasSpecificDescriptions(boolean hasSpecificDescription) {
-			if (this.hasSpecificDescriptions == hasSpecificDescription) {
-				return;
-			}
-			boolean old = this.hasSpecificDescriptions;
-			this.hasSpecificDescriptions = hasSpecificDescription;
-			setChanged();
-			notifyObservers(new DataModification("hasSpecificDescriptions", old, hasSpecificDescription));
-		}
-
-		@Override
-		public List<String> getSpecificDescriptionKeys() {
-			if (!getHasSpecificDescriptions()) {
-				return null;
-			}
-			return new ArrayList<String>(getSpecificDescriptions().keySet());
-		}
-
-		@Override
-		public Map<String, String> getSpecificDescriptions() {
-			return specificDescriptions;
-		}
-
-		@Override
-		public void setSpecificDescriptions(Map<String, String> specificDescriptions) {
-			if (this.specificDescriptions == null) {
-				this.specificDescriptions = new TreeMap<String, String>();
-			} else {
-				this.specificDescriptions = specificDescriptions;
-			}
+			return getLocales(getServiceManager());
 		}
 
 		/**
 		 * @return
 		 */
 		public String getLocalizedClassName() {
-			return FlexoLocalization.localizedForKey(getClass().getSimpleName());
-		}
-
-		@Override
-		public List<FlexoProperty> getCustomProperties() {
-			return customProperties;
-		}
-
-		@Override
-		public void setCustomProperties(List<FlexoProperty> customProperties) {
-			if (this.customProperties != null) {
-				for (FlexoProperty property : this.customProperties) {
-					property.setOwner(null);
-				}
-			}
-			this.customProperties = customProperties;
-			if (this.customProperties != null) {
-				for (FlexoProperty property : new ArrayList<FlexoProperty>(this.customProperties)) {
-					property.setOwner(this);
-				}
-			}
-
-		}
-
-		@Override
-		public void addToCustomProperties(FlexoProperty property) {
-			addToCustomProperties(property, false);
-		}
-
-		public void addToCustomProperties(FlexoProperty property, boolean insertSorted) {
-			if (insertSorted && property.getName() != null) {
-				int i = 0;
-				for (FlexoProperty p : customProperties) {
-					if (p.getName() != null && p.getName().compareTo(property.getName()) > 0) {
-						break;
-					}
-					i++;
-				}
-				customProperties.set(i, property);
-			} else {
-				customProperties.add(property);
-			}
-			if (property != null) {
-				property.setOwner(this);
-			}
-			setChanged();
-			DataModification dm = new DataModification("customProperties", null, property);
-			notifyObservers(dm);
-		}
-
-		@Override
-		public void removeFromCustomProperties(FlexoProperty property) {
-			customProperties.remove(property);
-		}
-
-		public boolean hasPropertyNamed(String name) {
-			return getPropertyNamed(name) != null;
-		}
-
-		@Override
-		public FlexoProperty getPropertyNamed(String name) {
-			if (name == null) {
-				for (FlexoProperty p : getCustomProperties()) {
-					if (p.getName() == null) {
-						return p;
-					}
-				}
-			} else {
-				for (FlexoProperty p : getCustomProperties()) {
-					if (name.equals(p.getName())) {
-						return p;
-					}
-				}
-			}
-			return null;
-		}
-
-		public List<FlexoProperty> getProperties(String name) {
-			List<FlexoProperty> v = new ArrayList<FlexoProperty>();
-			if (name == null) {
-				for (FlexoProperty p : getCustomProperties()) {
-					if (p.getName() == null) {
-						v.add(p);
-					}
-				}
-			} else {
-				for (FlexoProperty p : getCustomProperties()) {
-					if (name.equals(p.getName())) {
-						v.add(p);
-					}
-				}
-			}
-			return v;
-		}
-
-		public void addProperty() {
-			if (addFlexoPropertyActionizer != null) {
-				addFlexoPropertyActionizer.run(this, null);
-			}
-		}
-
-		public boolean canSortProperties() {
-			return customProperties.size() > 1;
-		}
-
-		public void sortProperties() {
-			if (sortFlexoPropertiesActionizer != null) {
-				sortFlexoPropertiesActionizer.run(this, null);
-			}
-		}
-
-		public void deleteProperty(FlexoProperty property) {
-			if (deleteFlexoPropertyActionizer != null) {
-				deleteFlexoPropertyActionizer.run(property, null);
-			}
-		}
-
-		@Override
-		public boolean hasDescription() {
-			return getDescription() != null && getDescription().trim().length() > 0;
-		}
-
-		/**
-		 * This property is used by the hightlightUncommentedItem mode. The decoration meaning that the description is missing will only
-		 * appears on object for wich this method return true. So this method has to be overridden in subclass.
-		 * 
-		 * @return
-		 */
-		public boolean isDescriptionImportant() {
-			return false;
-		}
-
-		@Override
-		public boolean hasSpecificHelp(String key) {
-			return getSpecificDescriptionForKey(key) != null && getSpecificDescriptionForKey(key).length() > 0;
-		}
-
-		@Override
-		public boolean hasSpecificDescriptionForKey(String key) {
-			return getSpecificDescriptionForKey(key) != null && getSpecificDescriptionForKey(key).trim().length() > 0;
-		}
-
-		@Override
-		public String getSpecificDescriptionForKey(String key) {
-			return specificDescriptions.get(key);
-		}
-
-		@Override
-		public void setSpecificDescriptionsForKey(String description, String key) {
-			specificDescriptions.put(key, description);
-			setChanged();
-			DataModification dm = new DataModification("specificDescriptions", null, description);
-			notifyObservers(dm);
-		}
-
-		@Override
-		public void removeSpecificDescriptionsWithKey(String key) {
-			specificDescriptions.remove(key);
+			return getLocales().localizedForKey(getClass().getSimpleName());
 		}
 
 		/**
@@ -942,27 +699,34 @@ public abstract interface FlexoObject extends AccessibleProxyObject, DeletablePr
 		@Override
 		public Collection<? extends Validable> getEmbeddedValidableObjects() {
 			// System.out.println("> Compute getEmbeddedValidableObjects() for " + this.getClass() + " : " + this);
-			ResourceData<?> resourceData = null;
-			if (this instanceof ResourceData) {
-				resourceData = (ResourceData) this;
-			} else if (this instanceof InnerResourceData) {
-				resourceData = ((InnerResourceData) this).getResourceData();
-			}
-			if (resourceData != null && resourceData.getResource() instanceof PamelaResource) {
-				List<?> embeddedObjects = ((PamelaResource) resourceData.getResource()).getFactory().getEmbeddedObjects(this,
-						EmbeddingType.CLOSURE);
-				List<Validable> returned = new ArrayList<Validable>();
+			PamelaResource<?, ?> resource = getPamelaResource();
+			if (resource != null) {
+				List<?> embeddedObjects = resource.getFactory().getEmbeddedObjects(this, EmbeddingType.CLOSURE);
+				List<Validable> returned = new ArrayList<>();
 				for (Object e : embeddedObjects) {
 					if (e instanceof Validable) {
 						returned.add((Validable) e);
 					}
 				}
-				// System.out.println("Return " + returned);
 				return returned;
 
 			}
+			return null;
+		}
 
-			// System.out.println("< return null;");
+		private PamelaResource<?, ?> getPamelaResource() {
+			ResourceData<?> data = null;
+			if (this instanceof InnerResourceData) {
+				data = ((InnerResourceData<?>) this).getResourceData();
+			}
+			if (this instanceof ResourceData) {
+				data = (ResourceData<?>) this;
+			}
+
+			if (data != null && data.getResource() instanceof PamelaResource) {
+				return (PamelaResource<?, ?>) data.getResource();
+			}
+
 			return null;
 		}
 
@@ -1014,10 +778,13 @@ public abstract interface FlexoObject extends AccessibleProxyObject, DeletablePr
 		}
 
 		public static void setCurrentUserIdentifier(String aUserIdentifier) {
-			if (aUserIdentifier != null && aUserIdentifier.indexOf('#') > -1) {
-				aUserIdentifier = aUserIdentifier.replace('#', '-');
+			if (aUserIdentifier != null) {
 				currentUserIdentifier = aUserIdentifier.intern();
 			}
+			/*if (aUserIdentifier != null && aUserIdentifier.indexOf('#') > -1) {
+				aUserIdentifier = aUserIdentifier.replace('#', '-');
+				currentUserIdentifier = aUserIdentifier.intern();
+			}*/
 		}
 
 		private String userIdentifier;
@@ -1060,10 +827,12 @@ public abstract interface FlexoObject extends AccessibleProxyObject, DeletablePr
 		 */
 		@Override
 		public long obtainNewFlexoID() {
-			if (this instanceof InnerResourceData && ((InnerResourceData) this).getResourceData() != null
-					&& ((InnerResourceData) this).getResourceData().getResource() instanceof PamelaResource) {
-				flexoID = ((PamelaResource<?, ?>) ((InnerResourceData) this).getResourceData().getResource()).getNewFlexoID();
-			} else {
+			PamelaResource<?, ?> resource = getPamelaResource();
+			if (resource != null) {
+				flexoID = resource.getNewFlexoID();
+				resource.register(this);
+			}
+			else {
 				flexoID = -1;
 			}
 			return flexoID;
@@ -1078,10 +847,11 @@ public abstract interface FlexoObject extends AccessibleProxyObject, DeletablePr
 		@Override
 		public void setFlexoID(long flexoID) {
 			if (flexoID > 0 && flexoID != this.flexoID) {
-				long oldId = this.flexoID;
+				// FD : seems unused
+				// long oldId = this.flexoID;
 				this.flexoID = flexoID;
-				if (this instanceof InnerResourceData && ((InnerResourceData) this).getResourceData() != null
-						&& ((InnerResourceData) this).getResourceData().getResource() instanceof PamelaResource) {
+				PamelaResource<?, ?> resource = getPamelaResource();
+				if (resource != null) {
 					// TODO sets last id of resource ?
 				}
 			}
@@ -1089,13 +859,13 @@ public abstract interface FlexoObject extends AccessibleProxyObject, DeletablePr
 
 		@Override
 		public Class<?> getImplementedInterface() {
-			if (this instanceof ResourceData && ((ResourceData) this).getResource() instanceof PamelaResource) {
-				ModelFactory f = ((PamelaResource) ((ResourceData) this).getResource()).getFactory();
+			if (this instanceof ResourceData && ((ResourceData<?>) this).getResource() instanceof PamelaResource) {
+				ModelFactory f = ((PamelaResource<?, ?>) ((ResourceData<?>) this).getResource()).getFactory();
 				return f.getModelEntityForInstance(this).getImplementedInterface();
 			}
-			if (this instanceof InnerResourceData && ((InnerResourceData) this).getResourceData() != null
-					&& ((InnerResourceData) this).getResourceData().getResource() instanceof PamelaResource) {
-				ModelFactory f = ((PamelaResource) ((InnerResourceData) this).getResourceData().getResource()).getFactory();
+			if (this instanceof InnerResourceData && ((InnerResourceData<?>) this).getResourceData() != null
+					&& ((InnerResourceData<?>) this).getResourceData().getResource() instanceof PamelaResource) {
+				ModelFactory f = ((PamelaResource<?, ?>) ((InnerResourceData<?>) this).getResourceData().getResource()).getFactory();
 				return f.getModelEntityForInstance(this).getImplementedInterface();
 			}
 			return getClass();

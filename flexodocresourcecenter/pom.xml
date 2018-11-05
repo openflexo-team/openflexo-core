@@ -4,11 +4,10 @@
 	<parent>
 		<groupId>org.openflexo</groupId>
 		<artifactId>openflexo-core</artifactId>
-        <version>1.7.1-SNAPSHOT</version>
+        <version>1.9.0</version>
 	</parent>
 	<artifactId>flexodocresourcecenter</artifactId>
-  <version>1.7.1-SNAPSHOT</version>
-	<name>Help :: FlexoDocResourceCenter</name>
+	<name>FlexoDocResourceCenter</name>
 	<build>
 		<plugins>
 			<plugin>

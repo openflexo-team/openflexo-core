@@ -69,19 +69,23 @@ import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
 import org.openflexo.application.FlexoApplication;
+import org.openflexo.application.Platform;
+import org.openflexo.application.PlatformHook;
+import org.openflexo.application.PlatformHook.NativeOsCallback;
+import org.openflexo.components.AboutDialog;
 import org.openflexo.components.RequestLoginDialog;
 import org.openflexo.components.SplashWindow;
 import org.openflexo.components.WelcomeDialog;
-import org.openflexo.fib.controller.FIBController.Status;
 import org.openflexo.foundation.task.FlexoTask.TaskStatus;
 import org.openflexo.foundation.utils.OperationCancelledException;
 import org.openflexo.foundation.utils.ProjectInitializerException;
 import org.openflexo.foundation.utils.ProjectLoadingCancelledException;
-import org.openflexo.localization.FlexoLocalization;
+import org.openflexo.gina.controller.FIBController.Status;
 import org.openflexo.logging.FlexoLoggingFormatter;
 import org.openflexo.logging.FlexoLoggingManager;
 import org.openflexo.logging.FlexoLoggingManager.LoggingManagerDelegate;
 import org.openflexo.module.Module;
+import org.openflexo.module.ModuleLoader;
 import org.openflexo.module.ModuleLoadingException;
 import org.openflexo.project.LoadProjectTask;
 import org.openflexo.replay.ScenarioPlayer;
@@ -96,9 +100,6 @@ import org.openflexo.utils.TooManyFailedAttemptException;
 import org.openflexo.view.FlexoFrame;
 import org.openflexo.view.controller.FlexoController;
 
-import sun.misc.Signal;
-import sun.misc.SignalHandler;
-
 /**
  * Main class of the Flexo Application Suite
  * 
@@ -106,7 +107,10 @@ import sun.misc.SignalHandler;
  * @author sguerin
  */
 public class Flexo {
-	private static final Logger logger = Logger.getLogger(Flexo.class.getPackage().getName());
+	protected static final Logger logger = Logger.getLogger(Flexo.class.getPackage().getName());
+
+	public static Platform platform;
+	public static PlatformHook platformHook;
 
 	public static boolean isDev = false;
 
@@ -124,8 +128,8 @@ public class Flexo {
 		return demoMode;
 	}
 
-	private static String getResourcePath() {
-		if (ToolBox.getPLATFORM() == ToolBox.MACOS) {
+	protected static String getResourcePath() {
+		if (ToolBox.isMacOS()) {
 
 			try {
 				Class<?> fileManager = Class.forName("com.apple.eio.FileManager");
@@ -154,70 +158,81 @@ public class Flexo {
 				e.printStackTrace();
 			}
 			return System.getProperty("user.dir");
-		} else {
+		}
+		else {
 			return System.getProperty("user.dir");
 		}
 	}
 
-	@SuppressWarnings("restriction")
-	private static void registerShutdownHook() {
-		try {
-			Class.forName("sun.misc.Signal");
-			Class.forName("sun.misc.SignalHandler");
-			Signal.handle(new Signal("TERM"), new SignalHandler() {
-
-				@Override
-				public void handle(Signal arg0) {
-					FlexoFrame activeFrame = FlexoFrame.getActiveFrame(false);
-					if (activeFrame != null) {
-						try {
-							activeFrame.getController().getModuleLoader()
-									.quit(activeFrame.getController().getProjectLoader().someProjectsAreModified());
-						} catch (OperationCancelledException e) {
-							e.printStackTrace();
-						}
+	protected static void registerShutdownHook() {
+		Runtime.getRuntime().addShutdownHook(new Thread() {
+			@Override
+			public void run() {
+				FlexoFrame activeFrame = FlexoFrame.getActiveFrame(false);
+				if (activeFrame != null) {
+					try {
+						activeFrame.getController().getModuleLoader()
+								.quit(activeFrame.getController().getProjectLoader().someProjectsAreModified());
+					} catch (OperationCancelledException e) {
+						e.printStackTrace();
 					}
 				}
-			});
-		} catch (IllegalArgumentException e) {
-			e.printStackTrace();
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
-		}
+			}
+		});
 	}
 
 	/**
-	 * Launch method to start Flexo in multimodule mode. Program args are in dev: -userType MAINTAINER Dev -nosplash otherwise see windows
-	 * launchers or build.xml for package args VM args: -Xmx512M (for big projects push it to 1024) For MacOS also add: -Xdock:name=Flexo
-	 * -Dapple.laf.useScreenMenuBar=true
+	 * Launch method to start Flexo in multimodule mode. When in development mode, program args should be: Dev -nosplash For MacOS, you can
+	 * also add: -Xdock:name=Flexo -Dapple.laf.useScreenMenuBar=true
 	 * 
 	 * @param args
 	 */
 	public static void main(final String[] args) {
-		// String userTypeName = null;
 		boolean noSplash = false;
+
+		String localesRelativePath = null;
+
 		if (args.length > 0) {
 			// ATTENTION: Argument cannot start with "-D", nor start with "-X", nor start with "-agentlib" since they are reserved keywords
 			// for JVM
 			for (int i = 0; i < args.length; i++) {
-				/*if (args[i].equals("-userType")) {
-					userTypeName = args[i + 1];
-				}*/
 				if (args[i].equals("-nosplash")) {
 					noSplash = true;
-				} else if (args[i].equalsIgnoreCase("DEV")) {
+				}
+				else if (args[i].equalsIgnoreCase("-dev") || args[i].equalsIgnoreCase("DEV")) {
 					isDev = true;
-				} else if (args[i].toLowerCase().contains("-demo")) {
+				}
+				else if (args[i].equalsIgnoreCase("-locales")) {
+					if (i < args.length - 1) {
+						localesRelativePath = args[i + 1];
+					}
+				}
+				else if (args[i].toLowerCase().contains("-demo")) {
 					demoMode = true;
-				} else if (args[i].toLowerCase().contains("-record")) {
+				}
+				else if (args[i].toLowerCase().contains("-record")) {
 					recordMode = true;
-				} else if (args[i].toLowerCase().contains("-play")) {
+				}
+				else if (args[i].toLowerCase().contains("-play")) {
 					playMode = true;
 				}
 			}
 		}
 
+		platform = Platform.determinePlatform();
+		System.out.println("Platform=" + platform);
+
+		platformHook = Platform.determinePlatform().accept(PlatformHook.CONSTRUCT_FROM_PLATFORM);
+		System.out.println("platformHook=" + platformHook);
+
+		DefaultNativeOsCallback osCallback = new DefaultNativeOsCallback();
+
+		platformHook.setNativeOsCallback(osCallback);
+		// call the really early hook before we do anything else
+		platformHook.preStartupHook();
+
 		FlexoApplication.installEventQueue();
+
 		if (recordMode) {
 			FlexoApplication.eventProcessor.setPreprocessor(new ScenarioRecorder());
 		}
@@ -226,54 +241,59 @@ public class Flexo {
 			new ScenarioPlayer();
 		}
 
+		platformHook.startupHook(Flexo::askUpdateJava);
+
 		// 1. Very important to initiate first the ResourceLocator. Nothing else. See also issue 463.
 		String resourcepath = getResourcePath();
 
-		// TODO : XtoF, Check if this is necesary.... now that Resources are located in classpath
+		// TODO : XtoF, Check if this is necessary.... now that Resources are located in classpath
 
 		final FileSystemResourceLocatorImpl fsrl = new FileSystemResourceLocatorImpl();
 		fsrl.appendToDirectories(resourcepath);
 		fsrl.appendToDirectories(System.getProperty("user.home"));
 		ResourceLocator.appendDelegate(fsrl);
 
-		// UserType userTypeNamed = UserType.getUserTypeNamed(userTypeName);
-		// UserType.setCurrentUserType(userTypeNamed);
 		SplashWindow splashWindow = null;
 		if (!noSplash) {
 			splashWindow = new SplashWindow(FlexoFrame.getActiveFrame());
 		}
 		final SplashWindow splashWindow2 = splashWindow;
+
 		// First init localization with default location
-		FlexoLocalization.initWith(FlexoMainLocalizer.getInstance());
-		final ApplicationContext applicationContext = new InteractiveApplicationContext();
+		// FlexoLocalization.initWith(FlexoMainLocalizer.getInstance());
+
+		final InteractiveApplicationContext applicationContext = new InteractiveApplicationContext(localesRelativePath, isDev, recordMode,
+				playMode);
 
 		remapStandardOuputs(isDev, applicationContext);
+
+		osCallback.setApplicationContext(applicationContext);
 
 		// FlexoProperties.load();
 		initializeLoggingManager(applicationContext);
 
 		/*final ApplicationContext applicationContext = new ApplicationContext() {
-
+		
 			@Override
 			public FlexoEditor makeFlexoEditor(FlexoProject project) {
 				return new InteractiveFlexoEditor(this, project);
 			}
-
+		
 			@Override
 			protected FlexoProjectReferenceLoader createProjectReferenceLoader() {
 				return new InteractiveFlexoProjectReferenceLoader(this);
 			}
-
+		
 			@Override
 			protected FlexoEditor createApplicationEditor() {
 				return new InteractiveFlexoEditor(this, null);
 			}
-
+		
 			@Override
 			protected FlexoResourceCenterService createResourceCenterService() {
 				return DefaultResourceCenterService.getNewInstance(GeneralPreferences.getLocalResourceCenterDirectory());
 			}
-
+		
 			@Override
 			public ProjectLoadingHandler getProjectLoadingHandler(File projectDirectory) {
 				if (UserType.isCustomerRelease() || UserType.isAnalystRelease()) {
@@ -282,7 +302,7 @@ public class Flexo {
 					return new FullInteractiveProjectLoadingHandler(projectDirectory);
 				}
 			}
-
+		
 			@Override
 			protected TechnologyAdapterControllerService createTechnologyAdapterService(FlexoResourceCenterService resourceCenterService) {
 				TechnologyAdapterControllerService returned = DefaultTechnologyAdapterControllerService.getNewInstance();
@@ -302,35 +322,27 @@ public class Flexo {
 		try {
 			DenaliSecurityProvider.insertSecurityProvider();
 		} catch (Exception e) {
-			if (logger.isLoggable(Level.WARNING)) {
-				logger.log(Level.WARNING, "Could not insert security provider", e);
-			}
+			logger.log(Level.WARNING, "Could not insert security provider", e);
 		}
 		initProxyManagement(applicationContext);
-		if (logger.isLoggable(Level.INFO)) {
-			logger.info("Starting on " + ToolBox.getPLATFORM() + "... JVM version is " + System.getProperty("java.version"));
-		}
-		if (logger.isLoggable(Level.INFO)) {
-			logger.info("Working directory is " + new File(".").getAbsolutePath());
-		}
-		if (logger.isLoggable(Level.INFO)) {
-			logger.info("Heap memory is about: " + ManagementFactory.getMemoryMXBean().getHeapMemoryUsage().getMax() / (1024 * 1024) + "Mb");
-		}
+		logger.info("Starting on " + ToolBox.getPLATFORM() + "... JVM version is " + System.getProperty("java.version"));
+		logger.info("Working directory is " + new File(".").getAbsolutePath());
+		logger.info("Heap memory is about: " + ManagementFactory.getMemoryMXBean().getHeapMemoryUsage().getMax() / (1024 * 1024) + "Mb");
 		applicationContext.getModuleLoader()
 				.setAllowsDocSubmission(isDev || applicationContext.getAdvancedPrefs().getAllowsDocSubmission());
-		if (logger.isLoggable(Level.INFO)) {
-			logger.info("Launching FLEXO Application Suite version " + FlexoCst.BUSINESS_APPLICATION_VERSION_NAME + "...");
-		}
+		logger.info("Launching FLEXO Application Suite version " + FlexoCst.BUSINESS_APPLICATION_VERSION_NAME + "...");
 		if (!isDev) {
 			registerShutdownHook();
 		}
 	}
 
-	protected static void initFlexo(ApplicationContext applicationContext, SplashWindow splashWindow) {
-		if (ToolBox.getPLATFORM() == ToolBox.MACOS) {
+	protected static void initFlexo(InteractiveApplicationContext applicationContext, SplashWindow splashWindow) {
+		if (ToolBox.isMacOS()) {
 			System.setProperty("apple.laf.useScreenMenuBar", "true");
+			System.setProperty("apple.awt.graphics.UseQuartz", "true");
+			System.setProperty("apple.awt.rendering", "quality");
 		}
-		initUILAF(applicationContext.getAdvancedPrefs().getLookAndFeelAsString());
+		initUILAF(applicationContext.getPresentationPreferences().getLookAndFeelAsString());
 		if (isDev) {
 			FlexoLoggingFormatter.logDate = false;
 		}
@@ -348,8 +360,9 @@ public class Flexo {
 		}*/
 
 		if (fileNameToOpen == null) {
-			showWelcomDialog(applicationContext, splashWindow);
-		} else {
+			showWelcomeDialog(applicationContext, splashWindow);
+		}
+		else {
 			try {
 				File projectDirectory = new File(fileNameToOpen);
 				if (splashWindow != null) {
@@ -357,8 +370,8 @@ public class Flexo {
 					splashWindow.dispose();
 					splashWindow = null;
 				}
-				Module module = applicationContext.getModuleLoader().getModuleNamed(
-						applicationContext.getGeneralPreferences().getFavoriteModuleName());
+				Module<?> module = applicationContext.getModuleLoader()
+						.getModuleNamed(applicationContext.getGeneralPreferences().getFavoriteModuleName());
 				if (module == null) {
 					if (applicationContext.getModuleLoader().getKnownModules().size() > 0) {
 						module = applicationContext.getModuleLoader().getKnownModules().iterator().next();
@@ -366,29 +379,32 @@ public class Flexo {
 				}
 				applicationContext.getModuleLoader().switchToModule(module);
 
-				LoadProjectTask loadProject = applicationContext.getProjectLoader().loadProject(projectDirectory);
+				LoadProjectTask loadProject = applicationContext.getProjectLoader().makeLoadProjectTask(projectDirectory);
 				applicationContext.getTaskManager().waitTask(loadProject);
 				if (loadProject.getTaskStatus() == TaskStatus.EXCEPTION_THROWN) {
 					if (loadProject.getThrownException() instanceof ProjectLoadingCancelledException) {
 						// project need a conversion, but user cancelled the conversion.
-						showWelcomDialog(applicationContext, null);
-					} else if (loadProject.getThrownException() instanceof ProjectInitializerException) {
+						showWelcomeDialog(applicationContext, null);
+					}
+					else if (loadProject.getThrownException() instanceof ProjectInitializerException) {
 						loadProject.getThrownException().printStackTrace();
-						FlexoController.notify(FlexoLocalization.localizedForKey("could_not_open_project_located_at")
-								+ projectDirectory.getAbsolutePath());
-						showWelcomDialog(applicationContext, null);
+						FlexoController.notify(applicationContext.getLocalizationService().getFlexoLocalizer()
+								.localizedForKey("could_not_open_project_located_at") + projectDirectory.getAbsolutePath());
+						showWelcomeDialog(applicationContext, null);
 					}
 				}
 
 			} catch (ModuleLoadingException e) {
 				e.printStackTrace();
-				FlexoController.notify(FlexoLocalization.localizedForKey("could_not_load_module") + " " + e.getModule());
-				showWelcomDialog(applicationContext, null);
+				FlexoController
+						.notify(applicationContext.getLocalizationService().getFlexoLocalizer().localizedForKey("could_not_load_module")
+								+ " " + e.getModule());
+				showWelcomeDialog(applicationContext, null);
 			}
 		}
 	}
 
-	public static void showWelcomDialog(final ApplicationContext applicationContext, final SplashWindow splashWindow) {
+	public static void showWelcomeDialog(final ApplicationContext applicationContext, final SplashWindow splashWindow) {
 		WelcomeDialog welcomeDialog = new WelcomeDialog(applicationContext);
 		welcomeDialog.pack();
 		welcomeDialog.center();
@@ -400,7 +416,7 @@ public class Flexo {
 		welcomeDialog.toFront();
 	}
 
-	static void initUILAF(String value) {
+	public static void initUILAF(String value) {
 		if (UIManager.getLookAndFeel().getClass().getName().equals(value)) {
 			return;
 		}
@@ -412,21 +428,21 @@ public class Flexo {
 				}
 				SwingUtilities.updateComponentTreeUI(frame);
 			}
+			// prints the stacktrace but don't let Exception bothered initialization of L&F as it does not actually matter
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
+		} catch (ClassCastException e) {
+			e.printStackTrace();
 		} catch (InstantiationException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IllegalAccessException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (UnsupportedLookAndFeelException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
 
-	private static void initProxyManagement(final ApplicationContext applicationContext) {
+	protected static void initProxyManagement(final ApplicationContext applicationContext) {
 		applicationContext.getAdvancedPrefs().applyProxySettings();
 		final ProxySelector defaultSelector = ProxySelector.getDefault();
 		ProxySelector.setDefault(new ProxySelector() {
@@ -454,7 +470,7 @@ public class Flexo {
 				if (getRequestingHost().equals(applicationContext.getAdvancedPrefs().getProxyHost())
 						&& applicationContext.getAdvancedPrefs().getProxyPort().equals(getRequestingPort())
 						|| getRequestingHost().equals(applicationContext.getAdvancedPrefs().getSProxyHost())
-						&& applicationContext.getAdvancedPrefs().getSProxyPort().equals(getRequestingPort())) {
+								&& applicationContext.getAdvancedPrefs().getSProxyPort().equals(getRequestingPort())) {
 					try {
 						if (previous == getRequestingURL()) {
 							count++;
@@ -462,7 +478,8 @@ public class Flexo {
 						if (previous != getRequestingURL() && applicationContext.getAdvancedPrefs().getProxyLogin() != null
 								&& applicationContext.getAdvancedPrefs().getProxyPassword() != null) {
 							count = 0;
-						} else {
+						}
+						else {
 							if (count < 3) {
 								RequestLoginDialog dialog = new RequestLoginDialog(applicationContext);
 								dialog.setVisible(true);
@@ -470,22 +487,25 @@ public class Flexo {
 									applicationContext.getAdvancedPrefs().setProxyLogin(dialog.getData().login);
 									applicationContext.getAdvancedPrefs().setProxyPassword(dialog.getData().password);
 									// AdvancedPrefs.save();
-								} else {
+								}
+								else {
 									throw new CancelException();
 								}
-							} else {
+							}
+							else {
 								if (logger.isLoggable(Level.WARNING)) {
 									logger.warning("Too many attempts (3) failed. Throwing exception to prevent locking.");
 								}
 								throw new TooManyFailedAttemptException();
 							}
 						}
-						return new PasswordAuthentication(applicationContext.getAdvancedPrefs().getProxyLogin(), applicationContext
-								.getAdvancedPrefs().getProxyPassword().toCharArray());
+						return new PasswordAuthentication(applicationContext.getAdvancedPrefs().getProxyLogin(),
+								applicationContext.getAdvancedPrefs().getProxyPassword().toCharArray());
 					} finally {
 						previous = getRequestingURL();
 					}
-				} else {
+				}
+				else {
 					return null;
 				}
 			}
@@ -495,10 +515,13 @@ public class Flexo {
 	/**
 	 *
 	 */
-	private static void remapStandardOuputs(boolean outputToConsole, final ApplicationContext applicationContext) {
+	public static void remapStandardOuputs(boolean outputToConsole, final ApplicationContext applicationContext) {
 		try {
 			// First let's see if we will be able to write into the log directory
-			File outputDir = applicationContext.getPreferencesService().getLogDirectory();
+			File outputDir = applicationContext.getPreferencesService().getLoggingPreferences().getLogDirectory();
+
+			logger.info("Mapping standard and errors outputs to " + outputDir);
+
 			if (!outputDir.exists()) {
 				outputDir.mkdirs();
 			}
@@ -512,15 +535,16 @@ public class Flexo {
 					logger.severe("Can not write to " + outputDir.getAbsolutePath() + " because access is denied by the file system");
 				}
 			}
-			String outString = outputDir.getAbsolutePath() + "/Flexo.out";
-			String errString = outputDir.getAbsolutePath() + "/Flexo.err";
+			String outString = outputDir.getAbsolutePath() + "/Openflexo.out";
+			String errString = outputDir.getAbsolutePath() + "/Openflexo.err";
 
 			outLogFile = getOutputFile(outString);
 			if (outLogFile != null) {
 				PrintStream ps1 = new PrintStream(outLogFile);
 				if (outputToConsole) {
 					System.setOut(new PrintStream(new DoublePrintStream(ps1, System.out)));
-				} else {
+				}
+				else {
 					System.setOut(ps1);
 				}
 			}
@@ -530,7 +554,8 @@ public class Flexo {
 				PrintStream ps1 = new PrintStream(errLogFile);
 				if (outputToConsole) {
 					System.setErr(new PrintStream(new DoublePrintStream(ps1, System.err)));
-				} else {
+				}
+				else {
 					System.setErr(ps1);
 				}
 			}
@@ -565,6 +590,11 @@ public class Flexo {
 			ps2.print((char) b);
 		}
 
+		@Override
+		public void flush() throws IOException {
+			ps1.flush();
+			ps2.flush();
+		}
 	}
 
 	private static File getOutputFile(String outString) throws IOException {
@@ -596,7 +626,8 @@ public class Flexo {
 				out = null;
 				attempt++;
 				continue;
-			} else {
+			}
+			else {
 				try {
 					lock.createNewFile();
 					boolean lockAcquired = false;
@@ -605,8 +636,7 @@ public class Flexo {
 						FileLock fileLock = fos.getChannel().lock();
 						lockAcquired = true;
 						System.out.println("locked " + fileLock);
-					} catch (IOException e) {
-					} finally {
+					} catch (IOException e) {} finally {
 						if (!lockAcquired) {
 							fos.close();
 						}
@@ -630,35 +660,39 @@ public class Flexo {
 			if (loggingFileName == null) {
 				if (isDev) {
 					loggingFile = ResourceLocator.locateResource("Config/logging_INFO.properties");
-				} else {
+				}
+				else {
 					loggingFile = ResourceLocator.locateResource("Config/logging_WARNING.properties");
 				}
 				if (loggingFile != null) {
 					loggingFileName = loggingFile.getURI();
-				} else {
+				}
+				else {
 					logger.severe("Unable to find default logging File");
 				}
-			} else {
+			}
+			else {
 				loggingFile = ResourceLocator.locateResource(loggingFileName);
 			}
 			if (loggingFile != null) {
 				logger.info("Default logging config file " + loggingFileName);
-				if (applicationContext.getAdvancedPrefs().getDefaultLoggingLevel() == null) {
-					applicationContext.getAdvancedPrefs().setDefaultLoggingLevel(Level.INFO);
+				if (applicationContext.getLoggingPreferences().getDefaultLoggingLevel() == null) {
+					applicationContext.getLoggingPreferences().setDefaultLoggingLevel(Level.INFO);
 				}
-				return FlexoLoggingManager.initialize(applicationContext.getAdvancedPrefs().getMaxLogCount(), applicationContext
-						.getAdvancedPrefs().getIsLoggingTrace(),
-						applicationContext.getAdvancedPrefs().getCustomLoggingFile() != null ? applicationContext.getAdvancedPrefs()
-								.getCustomLoggingFile() : loggingFile, applicationContext.getAdvancedPrefs().getDefaultLoggingLevel(),
-						new LoggingManagerDelegate() {
+				return FlexoLoggingManager.initialize(applicationContext.getLoggingPreferences().getMaxLogCount(),
+						applicationContext.getLoggingPreferences().getIsLoggingTrace(),
+						applicationContext.getLoggingPreferences().getCustomLoggingFile() != null
+								? applicationContext.getLoggingPreferences().getCustomLoggingFile()
+								: loggingFile,
+						applicationContext.getLoggingPreferences().getDefaultLoggingLevel(), new LoggingManagerDelegate() {
 							@Override
 							public void setMaxLogCount(Integer maxLogCount) {
-								applicationContext.getAdvancedPrefs().setMaxLogCount(maxLogCount);
+								applicationContext.getLoggingPreferences().setMaxLogCount(maxLogCount);
 							}
 
 							@Override
 							public void setKeepLogTrace(boolean logTrace) {
-								applicationContext.getAdvancedPrefs().setIsLoggingTrace(logTrace);
+								applicationContext.getLoggingPreferences().setIsLoggingTrace(logTrace);
 							}
 
 							@Override
@@ -684,16 +718,17 @@ public class Flexo {
 								}
 								Resource loggingFile = ResourceLocator.locateResource("Config/logging_" + fileName + ".properties");
 								reloadLoggingFile(loggingFile);
-								applicationContext.getAdvancedPrefs().setLoggingFileName(null);
+								applicationContext.getLoggingPreferences().setLoggingFileName(null);
 							}
 
 							@Override
 							public void setConfigurationFileLocation(Resource configurationFile) {
 								reloadLoggingFile(configurationFile);
-								applicationContext.getAdvancedPrefs().setLoggingFileName(configurationFile.getRelativePath());
+								applicationContext.getLoggingPreferences().setLoggingFileName(configurationFile.getRelativePath());
 							}
 						});
-			} else {
+			}
+			else {
 				logger.severe("cannot read logging configuration file : " + System.getProperty("java.util.logging.config.file"));
 				return null;
 
@@ -701,10 +736,6 @@ public class Flexo {
 		} catch (SecurityException e) {
 			logger.severe("cannot read logging configuration file : " + System.getProperty("java.util.logging.config.file")
 					+ "\nIt seems the file has read access protection.");
-			e.printStackTrace();
-			return null;
-		} catch (IOException e) {
-			logger.severe("cannot read logging configuration file : " + System.getProperty("java.util.logging.config.file"));
 			e.printStackTrace();
 			return null;
 		}
@@ -729,6 +760,97 @@ public class Flexo {
 
 	public static void setFileNameToOpen(String filename) {
 		Flexo.fileNameToOpen = filename;
+	}
+
+	private static class DefaultNativeOsCallback implements NativeOsCallback {
+
+		private ApplicationContext applicationContext;
+
+		@Override
+		public void openFiles(List<File> files) {
+			logger.info("Not implemented: open " + files);
+		}
+
+		@Override
+		public boolean handleQuitRequest() {
+			try {
+				getModuleLoader().quit(true);
+				return true;
+			} catch (OperationCancelledException e) {
+				return false;
+			}
+		}
+
+		@Override
+		public void handleAbout() {
+			new AboutDialog();
+		}
+
+		@Override
+		public void handlePreferences() {
+			getApplicationContext().getPreferencesService().showPreferences();
+		}
+
+		public ApplicationContext getApplicationContext() {
+			return applicationContext;
+		}
+
+		public void setApplicationContext(ApplicationContext applicationContext) {
+			this.applicationContext = applicationContext;
+		}
+
+		public ModuleLoader getModuleLoader() {
+			return applicationContext.getModuleLoader();
+		}
+
+	}
+
+	/**
+	 * Asks user to update its version of Java.
+	 * 
+	 * @param updVersion
+	 *            target update version
+	 * @param url
+	 *            download URL
+	 * @param major
+	 *            true for a migration towards a major version of Java (8:9), false otherwise
+	 * @param eolDate
+	 *            the EOL/expiration date
+	 * @since 12270
+	 */
+	public static void askUpdateJava(String updVersion, String url, String eolDate, boolean major) {
+		// TODO one day if required
+		/*ExtendedDialog ed = new ExtendedDialog(
+		        Main.parent,
+		        tr("Outdated Java version"),
+		        tr("OK"), tr("Update Java"), tr("Cancel"));
+		// Check if the dialog has not already been permanently hidden by user
+		if (!ed.toggleEnable("askUpdateJava"+updVersion).toggleCheckState()) {
+		    ed.setButtonIcons("ok", "java", "cancel").setCancelButton(3);
+		    ed.setMinimumSize(new Dimension(480, 300));
+		    ed.setIcon(JOptionPane.WARNING_MESSAGE);
+		    StringBuilder content = new StringBuilder(tr("You are running version {0} of Java.",
+		            "<b>"+System.getProperty("java.version")+"</b>")).append("<br><br>");
+		    if ("Sun Microsystems Inc.".equals(System.getProperty("java.vendor")) && !platform.isOpenJDK()) {
+		        content.append("<b>").append(tr("This version is no longer supported by {0} since {1} and is not recommended for use.",
+		                "Oracle", eolDate)).append("</b><br><br>");
+		    }
+		    content.append("<b>")
+		           .append(major ?
+		                tr("JOSM will soon stop working with this version; we highly recommend you to update to Java {0}.", updVersion) :
+		                tr("You may face critical Java bugs; we highly recommend you to update to Java {0}.", updVersion))
+		           .append("</b><br><br>")
+		           .append(tr("Would you like to update now ?"));
+		    ed.setContent(content.toString());
+		
+		    if (ed.showDialog().getValue() == 2) {
+		        try {
+		            platform.openUrl(url);
+		        } catch (IOException e) {
+		            Logging.warn(e);
+		        }
+		    }
+		}*/
 	}
 
 }

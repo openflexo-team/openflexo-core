@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Panel className="org.openflexo.gina.utils.FIBInspector" layout="border"
+	titleFont="SansSerif,0,12" darkLevel="0"
+	dataClassName="org.openflexo.foundation.fml.rt.FMLRTModelSlot"
+	controllerClassName="org.openflexo.fml.controller.FMLFIBInspectorController"
+	font="SansSerif,0,12" name="Inspector">
+	<TabPanel name="Tab" constraints="border(location=center)">
+		<Tab title="Basic" layout="twocols" titleFont="SansSerif,0,11"
+			darkLevel="0" index="0" font="SansSerif,0,11" useScrollBar="true"
+			horizontalScrollbarPolicy="HORIZONTAL_SCROLLBAR_AS_NEEDED"
+			verticalScrollbarPolicy="VERTICAL_SCROLLBAR_AS_NEEDED" name="BasicTab">
+			<Label label="virtual_model" index="16"
+				constraints="twocols(expandHorizontally=false;expandVertically=false;location=left)"
+				name="VirtualModelLabel" localize="true" />
+			<Custom componentClassName="org.openflexo.fml.controller.widget.FIBVirtualModelSelector"
+				localize="true" manageDynamicModel="true" name="VirtualModelSelector"
+				index="17" data="data.accessedVirtualModelResource"
+				constraints="twocols(expandHorizontally=true;expandVertically=false;location=right)">
+				<Assignment variable="component.virtualModelLibrary"
+					value="data.virtualModelLibrary" mandatory="true" />
+			</Custom>
+		</Tab>
+		<Tab title="Advanced" layout="twocols" titleFont="SansSerif,0,11"
+			darkLevel="0" index="2" font="SansSerif,0,11" useScrollBar="true"
+			horizontalScrollbarPolicy="HORIZONTAL_SCROLLBAR_AS_NEEDED"
+			verticalScrollbarPolicy="VERTICAL_SCROLLBAR_AS_NEEDED" name="AdvancedTab" />
+	</TabPanel>
+	<LocalizedDictionary />
+	<Parameter name="title" value="FML@runtime Model Slot" />
+</Panel>

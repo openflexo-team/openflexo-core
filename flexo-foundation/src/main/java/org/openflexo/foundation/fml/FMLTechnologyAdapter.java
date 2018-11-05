@@ -38,29 +38,36 @@
 
 package org.openflexo.foundation.fml;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.Iterator;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Logger;
 
-import org.apache.commons.io.FilenameUtils;
+import org.openflexo.connie.annotations.NotificationUnsafe;
 import org.openflexo.foundation.FlexoServiceManager;
-import org.openflexo.foundation.fml.rm.ViewPointResource;
-import org.openflexo.foundation.fml.rm.ViewPointResourceImpl;
+import org.openflexo.foundation.fml.FlexoConceptInstanceType.FlexoConceptInstanceTypeFactory;
+import org.openflexo.foundation.fml.FlexoEnumType.FlexoEnumTypeFactory;
+import org.openflexo.foundation.fml.VirtualModelInstanceType.VirtualModelInstanceTypeFactory;
+import org.openflexo.foundation.fml.annotations.DeclareModelSlots;
+import org.openflexo.foundation.fml.annotations.DeclareResourceTypes;
+import org.openflexo.foundation.fml.rm.VirtualModelResource;
+import org.openflexo.foundation.fml.rm.VirtualModelResourceFactory;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.resource.FlexoResourceCenterService;
-import org.openflexo.foundation.resource.RepositoryFolder;
+import org.openflexo.foundation.resource.FlexoResourceType;
+import org.openflexo.foundation.resource.FlexoResourceType.FlexoResourceTypeFactory;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterBindingFactory;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterInitializationException;
-import org.openflexo.rm.InJarResourceImpl;
+import org.openflexo.foundation.technologyadapter.TechnologyAdapterService;
 
 /**
- * This class defines and implements the Openflexo built-in virtual model technology adapter
+ * This class defines and implements the FML technology adapter (Flexo Modelling Language)
  * 
  * @author sylvain
  * 
  */
+@DeclareModelSlots({ FMLModelSlot.class })
+@DeclareResourceTypes({ VirtualModelResourceFactory.class })
 public class FMLTechnologyAdapter extends TechnologyAdapter {
 
 	private static final Logger logger = Logger.getLogger(FMLTechnologyAdapter.class.getPackage().getName());
@@ -69,8 +76,19 @@ public class FMLTechnologyAdapter extends TechnologyAdapter {
 	}
 
 	@Override
+	protected void initResourceFactories() {
+		super.initResourceFactories();
+		getAvailableResourceTypes().add(VirtualModelResource.class);
+	}
+
+	@Override
 	public String getName() {
 		return "FML technology adapter";
+	}
+
+	@Override
+	public String getLocalizationDirectory() {
+		return "FlexoLocalization/FMLTechnologyAdapter";
 	}
 
 	@Override
@@ -89,187 +107,119 @@ public class FMLTechnologyAdapter extends TechnologyAdapter {
 		return (FMLTechnologyContextManager) super.getTechnologyContextManager();
 	}
 
+	@Override
 	public FlexoServiceManager getServiceManager() {
 		return this.getTechnologyAdapterService().getServiceManager();
 	}
 
-	public ViewPointLibrary getViewPointLibrary() {
-		return this.getServiceManager().getViewPointLibrary();
-	}
-
-	public <I> ViewPointRepository getViewPointRepository(final FlexoResourceCenter<I> resourceCenter) {
-		ViewPointRepository viewPointRepository = resourceCenter.getRepository(ViewPointRepository.class, this);
-		if (viewPointRepository == null) {
-			viewPointRepository = this.createViewPointRepository(resourceCenter);
-		}
-		return viewPointRepository;
-	}
+	private FlexoResourceTypeFactory resourceTypeFactory;
+	private FlexoConceptInstanceTypeFactory fciFactory;
+	private FlexoEnumTypeFactory enumFactory;
+	private VirtualModelInstanceTypeFactory vmiFactory;
 
 	@Override
-	public <I> void initializeResourceCenter(final FlexoResourceCenter<I> resourceCenter) {
-
-		final ViewPointRepository viewPointRepository = getViewPointRepository(resourceCenter);
-
-		// Iterate
-		Iterator<I> it = resourceCenter.iterator();
-
-		while (it.hasNext()) {
-			final I item = it.next();
-			if (!this.isIgnorable(resourceCenter, item)) {
-				// if (item instanceof File) {
-				// final File candidateFile = (File) item;
-				// if (this.isValidViewPointDirectory(item)) {
-				final ViewPointResource vpRes = analyseAsViewPoint(item, resourceCenter);
-				// this.referenceResource(vpRes, resourceCenter);
-				// }
-				// }
-				// if (item instanceof InJarResourceImpl) {
-				// final InJarResourceImpl candidateJar = (InJarResourceImpl) item;
-				// if (this.isValidViewPointDirectory(candidateJar)) {
-				// final ViewPointResource vpRes = analyseAsViewPoint(candidateJar, resourceCenter);
-				// this.referenceResource(vpRes, resourceCenter);
-				// / }
-				// }
-			}
-		}
-
-		// Call it to update the current repositories
-		getPropertyChangeSupport().firePropertyChange("getAllRepositories()", null, resourceCenter);
+	public void initTechnologySpecificTypes(TechnologyAdapterService taService) {
+		taService.registerTypeClass(FlexoResourceType.class, getFlexoResourceTypeFactory());
+		taService.registerTypeClass(FlexoConceptInstanceType.class, getFlexoConceptInstanceTypeFactory());
+		taService.registerTypeClass(FlexoEnumType.class, getFlexoEnumTypeFactory());
+		taService.registerTypeClass(VirtualModelInstanceType.class, getVirtualModelInstanceTypeFactory());
 	}
 
-	/**
-	 * Return boolean indicating if supplied {@link File} has the general form of a ViewPoint directory
-	 * 
-	 * @param candidateFile
-	 * @return
-	 */
-	private boolean isValidViewPointDirectory(final File candidateFile) {
-		if (candidateFile.exists() && candidateFile.isDirectory() && candidateFile.canRead()
-				&& candidateFile.getName().endsWith(ViewPointResource.VIEWPOINT_SUFFIX)) {
-			final String baseName = candidateFile.getName().substring(0,
-					candidateFile.getName().length() - ViewPointResource.VIEWPOINT_SUFFIX.length());
-			final File xmlFile = new File(candidateFile, baseName + ".xml");
-			return xmlFile.exists();
+	public FlexoResourceTypeFactory getFlexoResourceTypeFactory() {
+		if (resourceTypeFactory == null) {
+			resourceTypeFactory = new FlexoResourceTypeFactory(this);
 		}
-		return false;
+		return resourceTypeFactory;
 	}
 
-	/**
-	 * Return boolean indicating if supplied {@link InJarResourceImpl} has the general form of a ViewPoint directory
-	 * 
-	 * @param candidateJar
-	 * @return
-	 */
-	private boolean isValidViewPointDirectory(final InJarResourceImpl candidateJar) {
-		String candidateJarName = FilenameUtils.getBaseName(candidateJar.getRelativePath());
-		if (candidateJar.getRelativePath().endsWith(".xml")
-				&& candidateJar.getRelativePath().endsWith(
-						candidateJarName + ViewPointResource.VIEWPOINT_SUFFIX + "/" + candidateJarName + ".xml")) {
-			return true;
+	public FlexoEnumTypeFactory getFlexoEnumTypeFactory() {
+		if (enumFactory == null) {
+			enumFactory = new FlexoEnumTypeFactory(this);
 		}
-		return false;
+		return enumFactory;
 	}
 
-	/**
-	 * Build and return {@link ViewPointResource} from a candidate file (a .viewpoint directory)<br>
-	 * Register this {@link ViewPointResource} in the supplied {@link ViewPointRepository} as well as in the {@link ViewPointLibrary}
-	 * 
-	 * @param candidateFile
-	 * @param viewPointRepository
-	 * @return the newly created {@link ViewPointResource}
-	 */
-	private ViewPointResource analyseAsViewPoint(final Object candidateElement, FlexoResourceCenter resourceCenter) {
-		if (this.isValidViewPoint(candidateElement)) {
-			ViewPointResource vpRes = null;
-			if (candidateElement instanceof File) {
-				vpRes = ViewPointResourceImpl.retrieveViewPointResource((File) candidateElement, getServiceManager());
-			} else if (candidateElement instanceof InJarResourceImpl) {
-				vpRes = ViewPointResourceImpl.retrieveViewPointResource((InJarResourceImpl) candidateElement, this.getServiceManager());
-			}
-			if (vpRes != null) {
-				ViewPointRepository viewPointFileBasedRepository = getViewPointRepository(resourceCenter);
-				registerResource(vpRes, viewPointFileBasedRepository, candidateElement);
-				referenceResource(vpRes, resourceCenter);
-				return vpRes;
-			}
+	public FlexoConceptInstanceTypeFactory getFlexoConceptInstanceTypeFactory() {
+		if (fciFactory == null) {
+			fciFactory = new FlexoConceptInstanceTypeFactory(this);
 		}
-		return null;
+		return fciFactory;
 	}
 
-	private void registerResource(ViewPointResource vpRes, ViewPointRepository repository, Object candidateElement) {
-		try {
-			if (vpRes != null) {
-				logger.info("Found and register viewpoint " + vpRes.getURI() + vpRes.getFlexoIODelegate().toString());
-				RepositoryFolder<ViewPointResource> folder;
-				folder = repository.getRepositoryFolder(candidateElement, true);
-				repository.registerResource(vpRes, folder);
-			} else {
-				logger.warning("While exploring resource center looking for viewpoints : cannot retrieve resource for element "
-						+ candidateElement);
-			}
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+	public VirtualModelInstanceTypeFactory getVirtualModelInstanceTypeFactory() {
+		if (vmiFactory == null) {
+			vmiFactory = new VirtualModelInstanceTypeFactory(this);
 		}
+		return vmiFactory;
 	}
 
-	/**
-	 * Check it might correspond to a viewpoint
-	 * 
-	 * @param candidateElement
-	 * @return
-	 */
-	private boolean isValidViewPoint(Object candidateElement) {
-		if (candidateElement instanceof File && isValidViewPointDirectory(((File) candidateElement))) {
-			return true;
-		}
-		if (candidateElement instanceof InJarResourceImpl && isValidViewPointDirectory((InJarResourceImpl) candidateElement)) {
-			return true;
-		}
-		return false;
+	public VirtualModelLibrary getVirtualModelLibrary() {
+		return this.getServiceManager().getVirtualModelLibrary();
 	}
 
-	/**
-	 * Creates and return a view repository for current {@link TechnologyAdapter} and supplied {@link FlexoResourceCenter}
-	 */
-	public ViewPointRepository createViewPointRepository(final FlexoResourceCenter<?> resourceCenter) {
-		final ViewPointRepository returned = new ViewPointRepository(this, resourceCenter);
-		resourceCenter.registerRepository(returned, ViewPointRepository.class, this);
+	public <I> VirtualModelRepository<I> getVirtualModelRepository(FlexoResourceCenter<I> resourceCenter) {
+		VirtualModelRepository<I> returned = resourceCenter.retrieveRepository(VirtualModelRepository.class, this);
+		if (returned == null) {
+			returned = VirtualModelRepository.instanciateNewRepository(this, resourceCenter);
+			resourceCenter.registerRepository(returned, VirtualModelRepository.class, this);
+		}
 		return returned;
 	}
 
 	@Override
+	public String getIdentifier() {
+		return "FML";
+	}
+
+	public VirtualModelResourceFactory getVirtualModelResourceFactory() {
+		return getResourceFactory(VirtualModelResourceFactory.class);
+	}
+
+	@NotificationUnsafe
+	public List<VirtualModelRepository<?>> getVirtualModelRepositories() {
+		List<VirtualModelRepository<?>> returned = new ArrayList<>();
+		for (FlexoResourceCenter<?> rc : getServiceManager().getResourceCenterService().getResourceCenters()) {
+			if (!rc.isDeleted()) {
+				returned.add(getVirtualModelRepository(rc));
+			}
+		}
+		return returned;
+	}
+
+	@Override
+	public void notifyRepositoryStructureChanged() {
+		super.notifyRepositoryStructureChanged();
+		getPropertyChangeSupport().firePropertyChange("getVirtualModelRepositories()", null, getVirtualModelRepositories());
+	}
+
+	@Override
+	public void ensureAllRepositoriesAreCreated(FlexoResourceCenter<?> rc) {
+		super.ensureAllRepositoriesAreCreated(rc);
+		getVirtualModelRepository(rc);
+	}
+
+	@Override
 	public <I> boolean isIgnorable(final FlexoResourceCenter<I> resourceCenter, final I contents) {
-		if (resourceCenter.isIgnorable(contents)) {
+		if (resourceCenter.isIgnorable(contents, this)) {
 			return true;
 		}
-		// TODO: ignore .viewpoint subcontents
+		// This allows to ignore all contained VirtualModel, that will be explored from their container resource
+		if (resourceCenter.isDirectory(contents)) {
+			if (FlexoResourceCenter.isContainedInDirectoryWithSuffix(resourceCenter, contents, VirtualModelResourceFactory.FML_SUFFIX)) {
+				return true;
+			}
+		}
 		return false;
 	}
 
 	@Override
-	public <I> void contentsAdded(final FlexoResourceCenter<I> resourceCenter, final I contents) {
-		if (!this.isIgnorable(resourceCenter, contents)) {
-			if (contents instanceof File) {
-				System.out.println("FMLTechnologyAdapter: File ADDED " + ((File) contents).getName() + " in "
-						+ ((File) contents).getParentFile().getAbsolutePath());
-				final File candidateFile = (File) contents;
-				if (isValidViewPointDirectory(candidateFile)) {
-					final ViewPointResource vpRes = analyseAsViewPoint(contents, resourceCenter);
-					referenceResource(vpRes, resourceCenter);
-				}
+	public <I> boolean isFolderIgnorable(FlexoResourceCenter<I> resourceCenter, I contents) {
+		if (resourceCenter.isDirectory(contents)) {
+			if (FlexoResourceCenter.isContainedInDirectoryWithSuffix(resourceCenter, contents, VirtualModelResourceFactory.FML_SUFFIX)) {
+				return true;
 			}
 		}
-	}
-
-	@Override
-	public <I> void contentsDeleted(final FlexoResourceCenter<I> resourceCenter, final I contents) {
-		if (!this.isIgnorable(resourceCenter, contents)) {
-			if (contents instanceof File) {
-				System.out.println("FMLTechnologyAdapter: File DELETED " + ((File) contents).getName() + " in "
-						+ ((File) contents).getParentFile().getAbsolutePath());
-			}
-		}
+		return false;
 	}
 
 }

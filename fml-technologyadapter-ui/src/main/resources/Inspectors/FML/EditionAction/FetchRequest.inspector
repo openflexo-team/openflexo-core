@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Panel className="org.openflexo.fib.utils.FIBInspector" layout="border"
+<Panel className="org.openflexo.gina.utils.FIBInspector" layout="border"
 	titleFont="SansSerif,0,12" darkLevel="0"
 	dataClassName="org.openflexo.foundation.fml.editionaction.FetchRequest"
 	controllerClassName="org.openflexo.fml.controller.FMLFIBInspectorController"
@@ -9,7 +9,7 @@
 			darkLevel="0" index="0" font="SansSerif,0,11" useScrollBar="true"
 			horizontalScrollbarPolicy="HORIZONTAL_SCROLLBAR_AS_NEEDED"
 			verticalScrollbarPolicy="VERTICAL_SCROLLBAR_AS_NEEDED" name="BasicTab">
-			<Label label="conditions" index="10"
+			<Label label="conditions" index="12"
 				constraints="twocols(expandHorizontally=false;expandVertically=false;index=10;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=5;location=left)"
 				localize="true" />
 			<Table
@@ -21,14 +21,14 @@
 				backgroundSelectionColor="26,96,206"
 				backgroundSecondarySelectionColor="173,215,255"
 				backgroundNonSelectionColor="255,255,255" localize="true"
-				manageDynamicModel="true" name="ConditionsTable" index="11"
+				manageDynamicModel="true" name="ConditionsTable" index="13"
 				data="data.conditions"
 				constraints="twocols(expandHorizontally=true;expandVertically=true;index=11;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)"
 				opaque="false">
 				<IconColumn data="controller.iconForObject(iterator)"
 					title="icon" columnWidth="30" resizable="false" displayTitle="false"
 					name="icon" />
-				<CustomColumn componentClassName="org.openflexo.fib.swing.utils.BindingSelector"
+				<CustomColumn componentClassName="org.openflexo.gina.swing.utils.BindingSelector"
 					customRendering="false" disableTerminateEditOnFocusLost="false"
 					data="iterator.condition" format="object.toString" title="condition"
 					columnWidth="80" resizable="true" displayTitle="true">
@@ -39,6 +39,12 @@
 				<RemoveAction method="data.deleteCondition(selected)"
 					name="remove_condition" />
 			</Table>
+			<!--  <Label name="DescriptionLabel">
+				<Parameter name="hidden" value="true" />
+			</Label>
+			<TextArea name="Description">
+				<Parameter name="hidden" value="true" />
+			</TextArea>-->
 		</Tab>
 	</TabPanel>
 	<LocalizedDictionary>

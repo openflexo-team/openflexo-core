@@ -41,6 +41,7 @@ package org.openflexo.components.widget;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.FlexoProject;
 import org.openflexo.foundation.FlexoProjectObject;
 
@@ -53,11 +54,11 @@ import org.openflexo.foundation.FlexoProjectObject;
  * 
  */
 @SuppressWarnings("serial")
-public abstract class FIBProjectObjectSelector<T extends FlexoProjectObject> extends FIBFlexoObjectSelector<T> {
+public abstract class FIBProjectObjectSelector<T extends FlexoObject> extends FIBFlexoObjectSelector<T> {
 
 	static final Logger logger = Logger.getLogger(FIBProjectObjectSelector.class.getPackage().getName());
 
-	private FlexoProject project;
+	private FlexoProject<?> project;
 
 	public FIBProjectObjectSelector(T editedObject) {
 		super(editedObject);
@@ -69,20 +70,19 @@ public abstract class FIBProjectObjectSelector<T extends FlexoProjectObject> ext
 		project = null;
 	}
 
-	public FlexoProject getProject() {
+	public FlexoProject<?> getProject() {
 		return project;
 	}
 
 	@CustomComponentParameter(name = "project", type = CustomComponentParameter.Type.MANDATORY)
-	public void setProject(FlexoProject project) {
+	public void setProject(FlexoProject<?> project) {
 		if (this.project != project) {
-			FlexoProject oldProject = this.project;
+			FlexoProject<?> oldProject = this.project;
 			if (project == null) {
 				if (logger.isLoggable(Level.WARNING)) {
 					logger.warning("Passing null project. If you rely on project this is unlikely to work");
 				}
 			}
-			System.out.println(">>>>>>>>> Sets project with " + project);
 			this.project = project;
 			getPropertyChangeSupport().firePropertyChange("project", oldProject, project);
 		}

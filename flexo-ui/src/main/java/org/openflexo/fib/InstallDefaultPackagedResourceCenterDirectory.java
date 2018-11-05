@@ -44,13 +44,12 @@ import java.io.IOException;
 import org.openflexo.foundation.resource.DirectoryResourceCenter;
 import org.openflexo.foundation.resource.FlexoResourceCenterService;
 import org.openflexo.rm.FileResourceImpl;
-import org.openflexo.rm.ResourceLocator;
 import org.openflexo.rm.Resource;
+import org.openflexo.rm.ResourceLocator;
 import org.openflexo.toolbox.FileUtils;
 import org.openflexo.toolbox.FileUtils.CopyStrategy;
 
 public class InstallDefaultPackagedResourceCenterDirectory {
-
 
 	public static final Resource FIB_FILE = ResourceLocator.locateResource("Fib/InstallDefaultPackagedResourceCenterDirectory.fib");
 
@@ -76,18 +75,19 @@ public class InstallDefaultPackagedResourceCenterDirectory {
 		this.resourceCenterDirectory = resourceCenterDirectory;
 	}
 
-	public void installDefaultPackagedResourceCenter(FlexoResourceCenterService rcService) {
+	public void installDefaultPackagedResourceCenter(FlexoResourceCenterService rcService) throws IOException {
 		getResourceCenterDirectory().mkdirs();
 		copyViewPoints(VIEWPOINT_LIBRARY_DIR, getResourceCenterDirectory(), CopyStrategy.REPLACE_OLD_ONLY);
 		copyOntologies(ONTOLOGIES_DIR, getResourceCenterDirectory(), CopyStrategy.REPLACE_OLD_ONLY);
-		DirectoryResourceCenter newRC = new DirectoryResourceCenter(getResourceCenterDirectory());
+		DirectoryResourceCenter newRC = DirectoryResourceCenter.instanciateNewDirectoryResourceCenter(getResourceCenterDirectory(),
+				rcService);
 		rcService.addToResourceCenters(newRC);
 		rcService.storeDirectoryResourceCenterLocations();
 	}
 
 	private static void copyViewPoints(Resource initialDirectory, File resourceCenterDirectory, CopyStrategy copyStrategy) {
 
-		if (initialDirectory instanceof FileResourceImpl){
+		if (initialDirectory instanceof FileResourceImpl) {
 			if (((FileResourceImpl) initialDirectory).getFile().getParentFile().equals(resourceCenterDirectory)) {
 				return;
 			}
@@ -101,7 +101,7 @@ public class InstallDefaultPackagedResourceCenterDirectory {
 
 	private static void copyOntologies(Resource initialDirectory, File resourceCenterDirectory, CopyStrategy copyStrategy) {
 
-		if (initialDirectory instanceof FileResourceImpl){
+		if (initialDirectory instanceof FileResourceImpl) {
 			if (((FileResourceImpl) initialDirectory).getFile().getParentFile().equals(resourceCenterDirectory)) {
 				return;
 			}

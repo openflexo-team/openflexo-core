@@ -41,10 +41,14 @@ package org.openflexo.view.controller;
 
 import java.util.Collection;
 
+import org.openflexo.connie.type.CustomType;
 import org.openflexo.foundation.FlexoService;
+import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.resource.FlexoResourceCenterService;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.technologyadapter.TechnologyObject;
+import org.openflexo.gina.controller.CustomTypeEditor;
+import org.openflexo.gina.controller.CustomTypeEditorProvider;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
 import org.openflexo.view.ModuleView;
@@ -60,7 +64,7 @@ import org.openflexo.view.controller.model.FlexoPerspective;
  */
 @ModelEntity
 @ImplementationClass(DefaultTechnologyAdapterControllerService.class)
-public interface TechnologyAdapterControllerService extends FlexoService {
+public interface TechnologyAdapterControllerService extends FlexoService, CustomTypeEditorProvider {
 
 	/**
 	 * Load all available technology adapters controllers
@@ -106,5 +110,30 @@ public interface TechnologyAdapterControllerService extends FlexoService {
 			FlexoPerspective perspective);
 
 	public Collection<TechnologyAdapterController<?>> getLoadedAdapterControllers();
+
+	/**
+	 * Enable a {@link TechnologyAdapter}<br>
+	 * The {@link FlexoResourceCenter} should scan the resources that it may interpret
+	 * 
+	 * @param technologyAdapter
+	 */
+	public void activateTechnology(TechnologyAdapter technologyAdapter);
+
+	/**
+	 * Disable a {@link TechnologyAdapter}<br>
+	 * The {@link FlexoResourceCenter} is notified to free the resources that it is managing, if possible
+	 * 
+	 * @param technologyAdapter
+	 */
+	public void disactivateTechnology(TechnologyAdapter technologyAdapter);
+
+	/**
+	 * Return editor for supplied custom type
+	 * 
+	 * @param typeClass
+	 * @return
+	 */
+	@Override
+	public <T extends CustomType> CustomTypeEditor<T> getCustomTypeEditor(Class<T> typeClass);
 
 }

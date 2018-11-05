@@ -59,8 +59,8 @@ import org.openflexo.model.factory.ModelFactory;
  * @author sylvain
  * 
  */
-public class DefaultPamelaResourceModelFactory<R extends PamelaResource<?, ?>> extends ModelFactory implements
-		PamelaResourceModelFactory<R> {
+public class DefaultPamelaResourceModelFactory<R extends PamelaResource<?, ?>> extends ModelFactory
+		implements PamelaResourceModelFactory<R> {
 
 	protected static final Logger logger = Logger.getLogger(DefaultPamelaResourceModelFactory.class.getPackage().getName());
 
@@ -84,7 +84,7 @@ public class DefaultPamelaResourceModelFactory<R extends PamelaResource<?, ?>> e
 	}
 
 	private static Class<?>[] appendGRClasses(final Collection<Class<?>> classes) {
-		final Set<Class<?>> returned = new HashSet<Class<?>>(classes);
+		final Set<Class<?>> returned = new HashSet<>(classes);
 		return returned.toArray(new Class<?>[returned.size()]);
 	}
 
@@ -95,6 +95,13 @@ public class DefaultPamelaResourceModelFactory<R extends PamelaResource<?, ?>> e
 
 	@Override
 	public synchronized void startDeserializing() {
+		if (resource == null) {
+			logger.warning("startDeserializing() called for null resource");
+		}
+		if (resource.getServiceManager() == null) {
+			logger.warning("startDeserializing() called for resource with null ServiceManager");
+		}
+
 		EditingContext editingContext = resource.getServiceManager().getEditingContext();
 
 		if (editingContext != null && editingContext.getUndoManager() instanceof FlexoUndoManager) {
@@ -120,7 +127,8 @@ public class DefaultPamelaResourceModelFactory<R extends PamelaResource<?, ?>> e
 		if (newlyCreatedObject instanceof FlexoObject) {
 			if (getResource() != null) {
 				getResource().setLastID(((FlexoObject) newlyCreatedObject).getFlexoID());
-			} else {
+			}
+			else {
 				logger.warning("Could not access resource beeing deserialized");
 			}
 		}

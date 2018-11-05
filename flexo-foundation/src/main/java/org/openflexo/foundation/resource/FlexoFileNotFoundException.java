@@ -54,7 +54,7 @@ public class FlexoFileNotFoundException extends LoadResourceException {
 	@Override
 	public String getMessage() {
 		String msg = super.getMessage();
-		FileFlexoIODelegate delegate = (FileFlexoIODelegate)(getResource().getFlexoIODelegate());
+		FileIODelegate delegate = (FileIODelegate)(getResource().getIODelegate());
 		return "LoadResourceException: resource " + getResource().getURI() + " file=" + delegate.getFile() + " "
 				+ (msg != null ? "\n" + msg : "");
 	}

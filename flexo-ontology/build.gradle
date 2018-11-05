@@ -1,0 +1,12 @@
+dependencies {
+  // openflexo dep
+  compile project(':flexo-foundation')
+  compile ginaApi()
+
+  // external dep
+
+  // testing dep
+}
+tasks.withType(Test) {
+	jvmArgs += ["-Djava.awt.headless=true"]
+}

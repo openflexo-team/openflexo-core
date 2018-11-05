@@ -39,15 +39,15 @@
 package org.openflexo.fml.fib;
 
 import org.junit.Test;
-import org.openflexo.fib.utils.GenericFIBTestCase;
+import org.openflexo.gina.test.GenericFIBTestCase;
 import org.openflexo.rm.FileResourceImpl;
 import org.openflexo.rm.ResourceLocator;
 
 public class TestFMLWizardFibs extends GenericFIBTestCase {
 
 	public static void main(String[] args) {
-		System.out.println(generateFIBTestCaseClass(((FileResourceImpl) ResourceLocator.locateResource("Fib/Wizard")).getFile(),
-				"Fib/Wizard/"));
+		System.out.println(
+				generateFIBTestCaseClass(((FileResourceImpl) ResourceLocator.locateResource("Fib/Wizard")).getFile(), "Fib/Wizard/"));
 	}
 
 	@Test
@@ -56,8 +56,8 @@ public class TestFMLWizardFibs extends GenericFIBTestCase {
 	}
 
 	@Test
-	public void testConfigureAdditionalStepsForNewFlexoConcept() {
-		validateFIB("Fib/Wizard/CreateFMLElement/ConfigureAdditionalStepsForNewFlexoConcept.fib");
+	public void testConfigureBehavioursForNewFlexoConcept() {
+		validateFIB("Fib/Wizard/CreateFMLElement/ConfigureBehavioursForNewFlexoConcept.fib");
 	}
 
 	@Test
@@ -66,28 +66,23 @@ public class TestFMLWizardFibs extends GenericFIBTestCase {
 	}
 
 	@Test
-	public void testConfigureFreeModelSlot() {
-		validateFIB("Fib/Wizard/CreateFMLElement/ConfigureFreeModelSlot.fib");
+	public void testConfigureInspectorForNewFlexoConcept() {
+		validateFIB("Fib/Wizard/CreateFMLElement/ConfigureInspectorForNewFlexoConcept.fib");
 	}
 
 	@Test
-	public void testConfigureModelSlots() {
-		validateFIB("Fib/Wizard/CreateFMLElement/ConfigureModelSlots.fib");
-	}
-
-	@Test
-	public void testConfigureTypeAwareModelSlot() {
-		validateFIB("Fib/Wizard/CreateFMLElement/ConfigureTypeAwareModelSlot.fib");
-	}
-
-	@Test
-	public void testConfigureVirtualModelModelSlot() {
-		validateFIB("Fib/Wizard/CreateFMLElement/ConfigureVirtualModelModelSlot.fib");
+	public void testConfigurePropertiesForNewFlexoConcept() {
+		validateFIB("Fib/Wizard/CreateFMLElement/ConfigurePropertiesForNewFlexoConcept.fib");
 	}
 
 	@Test
 	public void testDescribeAbstractProperty() {
 		validateFIB("Fib/Wizard/CreateFMLElement/DescribeAbstractProperty.fib");
+	}
+
+	@Test
+	public void testDescribeAssignation() {
+		validateFIB("Fib/Wizard/CreateFMLElement/DescribeAssignation.fib");
 	}
 
 	@Test
@@ -106,8 +101,28 @@ public class TestFMLWizardFibs extends GenericFIBTestCase {
 	}
 
 	@Test
-	public void testDescribeFlexoRole() {
-		validateFIB("Fib/Wizard/CreateFMLElement/DescribeFlexoRole.fib");
+	public void testDescribeFlexoConceptInstanceRole() {
+		validateFIB("Fib/Wizard/CreateFMLElement/DescribeFlexoConceptInstanceRole.fib");
+	}
+
+	@Test
+	public void testDescribeFlexoEnum() {
+		validateFIB("Fib/Wizard/CreateFMLElement/DescribeFlexoEnum.fib");
+	}
+
+	@Test
+	public void testDescribeFlexoEnumValue() {
+		validateFIB("Fib/Wizard/CreateFMLElement/DescribeFlexoEnumValue.fib");
+	}
+
+	@Test
+	public void testDescribeFlexoEvent() {
+		validateFIB("Fib/Wizard/CreateFMLElement/DescribeFlexoEvent.fib");
+	}
+
+	@Test
+	public void testDescribeGenericBehaviourParameter() {
+		validateFIB("Fib/Wizard/CreateFMLElement/DescribeGenericBehaviourParameter.fib");
 	}
 
 	@Test
@@ -116,13 +131,48 @@ public class TestFMLWizardFibs extends GenericFIBTestCase {
 	}
 
 	@Test
+	public void testDescribeIndividualRole() {
+		validateFIB("Fib/Wizard/CreateFMLElement/DescribeIndividualRole.fib");
+	}
+
+	@Test
+	public void testDescribeInspectorEntry() {
+		validateFIB("Fib/Wizard/CreateFMLElement/DescribeInspectorEntry.fib");
+	}
+
+	@Test
+	public void testDescribeListWhereToAdd() {
+		validateFIB("Fib/Wizard/CreateFMLElement/DescribeListWhereToAdd.fib");
+	}
+
+	@Test
 	public void testDescribeModelSlot() {
 		validateFIB("Fib/Wizard/CreateFMLElement/DescribeModelSlot.fib");
 	}
 
 	@Test
-	public void testDescribeViewPoint() {
-		validateFIB("Fib/Wizard/CreateFMLElement/DescribeViewPoint.fib");
+	public void testDescribeNewVariable() {
+		validateFIB("Fib/Wizard/CreateFMLElement/DescribeNewVariable.fib");
+	}
+
+	@Test
+	public void testDescribePrimitiveRole() {
+		validateFIB("Fib/Wizard/CreateFMLElement/DescribePrimitiveRole.fib");
+	}
+
+	@Test
+	public void testDescribeTechnologyRole() {
+		validateFIB("Fib/Wizard/CreateFMLElement/DescribeTechnologyRole.fib");
+	}
+
+	@Test
+	public void testDescribeTopLevelVirtualModel() {
+		validateFIB("Fib/Wizard/CreateFMLElement/DescribeTopLevelVirtualModel.fib");
+	}
+
+	@Test
+	public void testDescribeUseDeclaration() {
+		validateFIB("Fib/Wizard/CreateFMLElement/DescribeUseDeclaration.fib");
 	}
 
 	@Test
@@ -131,8 +181,18 @@ public class TestFMLWizardFibs extends GenericFIBTestCase {
 	}
 
 	@Test
+	public void testChooseOption() {
+		validateFIB("Fib/Wizard/DeclareInFlexoConcept/ChooseOption.fib");
+	}
+
+	@Test
 	public void testDescribeNewParentConcepts() {
 		validateFIB("Fib/Wizard/FMLAction/DescribeNewParentConcepts.fib");
+	}
+
+	@Test
+	public void testPropertyEntryPanel() {
+		validateFIB("Fib/Wizard/PropertyEntryPanel.fib");
 	}
 
 }

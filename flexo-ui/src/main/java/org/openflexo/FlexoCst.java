@@ -66,8 +66,9 @@ import org.openflexo.rm.BasicResourceImpl;
 import org.openflexo.rm.ResourceLocator;
 import org.openflexo.toolbox.FlexoVersion;
 import org.openflexo.toolbox.ToolBox;
+import org.openflexo.uicst.ColorUtils;
 
-public class FlexoCst extends ColorCst {
+public class FlexoCst extends ColorUtils {
 	public static final String DLPM_WORKPACKAGE_ID = "1000023";
 
 	public static final FlexoVersion BUSINESS_APPLICATION_VERSION = new FlexoVersion(ApplicationVersion.BUSINESS_APPLICATION_VERSION);
@@ -76,14 +77,12 @@ public class FlexoCst extends ColorCst {
 
 	public static final String OUTPUT_FILES_ENCODING = "UTF-8";
 
-	public static final int META_MASK = ToolBox.getPLATFORM() == ToolBox.MACOS ? InputEvent.META_MASK : InputEvent.CTRL_MASK;
+	public static final int META_MASK = ToolBox.isMacOS() ? InputEvent.META_MASK : InputEvent.CTRL_MASK;
 
-	public static final int MULTI_SELECTION_MASK = ToolBox.getPLATFORM() == ToolBox.MACOS ? InputEvent.META_DOWN_MASK
-			: InputEvent.CTRL_DOWN_MASK;
+	public static final int MULTI_SELECTION_MASK = ToolBox.isMacOS() ? InputEvent.META_DOWN_MASK : InputEvent.CTRL_DOWN_MASK;
 
-	public static final int DELETE_KEY_CODE = ToolBox.getPLATFORM() == ToolBox.MACOS ? KeyEvent.VK_BACK_SPACE : KeyEvent.VK_DELETE;
-	public static final int BACKSPACE_DELETE_KEY_CODE = ToolBox.getPLATFORM() == ToolBox.MACOS ? KeyEvent.VK_DELETE
-			: KeyEvent.VK_BACK_SPACE;
+	public static final int DELETE_KEY_CODE = ToolBox.isMacOS() ? KeyEvent.VK_BACK_SPACE : KeyEvent.VK_DELETE;
+	public static final int BACKSPACE_DELETE_KEY_CODE = ToolBox.isMacOS() ? KeyEvent.VK_DELETE : KeyEvent.VK_BACK_SPACE;
 
 	public static final Font BIG_FONT = new Font("SansSerif", Font.PLAIN, 13);
 
@@ -142,12 +141,14 @@ public class FlexoCst extends ColorCst {
 			otherLineColor = new Color(231, 232, 234);
 			flexoTextColor = new Color(29, 67, 130);
 			flexoMainColor = new Color(145, 170, 208);
-		} else if (colorSet.equals("Omniscio")) {
+		}
+		else if (colorSet.equals("Omniscio")) {
 			oddLineColor = new Color(255, 255, 255);
 			otherLineColor = new Color(253, 229, 200);
 			flexoTextColor = new Color(0, 0, 0);
 			flexoMainColor = new Color(249, 186, 109);
-		} else {
+		}
+		else {
 			// flexoTextColor=new Color(74,119,50);
 			// flexoMainColor=new Color(152,185,94);
 			flexoTextColor = new Color(53, 85, 36);

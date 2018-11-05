@@ -59,7 +59,7 @@ public class ProjectExternalRepository extends KVCFlexoObject {
 	private final FlexoProject _project;
 	private String _identifier;
 	private File _directory;
-	private Map<String, String> directoriesForUser = new TreeMap<String, String>();
+	private Map<String, String> directoriesForUser = new TreeMap<>();
 
 	private static final String getUserName() {
 		return System.getProperty("user.name");
@@ -107,7 +107,8 @@ public class ProjectExternalRepository extends KVCFlexoObject {
 		_directory = directory;
 		if (_directory != null) {
 			directoriesForUser.put(getUserName(), _directory.getAbsolutePath());
-		} else {
+		}
+		else {
 			directoriesForUser.remove(getUserName());
 		}
 		_isConnected = _directory != null && _directory.exists();
@@ -184,7 +185,7 @@ public class ProjectExternalRepository extends KVCFlexoObject {
 	}
 
 	public void setDirectoriesForUser(Map<String, String> directoriesForUser) {
-		this.directoriesForUser = new TreeMap<String, String>(directoriesForUser);
+		this.directoriesForUser = new TreeMap<>(directoriesForUser);
 	}
 
 	public void setDirectoriesForUserForKey(String directory, String user) {

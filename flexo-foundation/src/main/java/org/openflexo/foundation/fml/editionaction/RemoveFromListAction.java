@@ -48,7 +48,9 @@ import org.openflexo.connie.DataBinding.BindingDefinitionType;
 import org.openflexo.connie.exception.NullReferenceException;
 import org.openflexo.connie.exception.TypeMismatchException;
 import org.openflexo.connie.type.ParameterizedTypeImpl;
-import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
+import org.openflexo.foundation.fml.FMLRepresentationContext;
+import org.openflexo.foundation.fml.FMLRepresentationContext.FMLRepresentationOutput;
+import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
 import org.openflexo.model.annotations.DefineValidationRule;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ImplementationClass;
@@ -89,16 +91,16 @@ public interface RemoveFromListAction<T> extends AssignableAction<T> {
 		private DataBinding<T> value;
 		private DataBinding<? extends List<T>> list;
 
-		/*@Override
+		@Override
 		public String getFMLRepresentation(FMLRepresentationContext context) {
 			FMLRepresentationOutput out = new FMLRepresentationOutput(context);
-			out.append(getAssignation().toString() + " = " + getValue().toString() + ";", context);
+			out.append(getList().toString() + ".remove(" + getValue().toString() + ");", context);
 			return out.toString();
-		}*/
+		}
 
-		public T getDeclaredObject(FlexoBehaviourAction<?, ?, ?> action) {
+		public T getDeclaredObject(RunTimeEvaluationContext evaluationContext) {
 			try {
-				return getValue().getBindingValue(action);
+				return getValue().getBindingValue(evaluationContext);
 			} catch (TypeMismatchException e) {
 				e.printStackTrace();
 			} catch (NullReferenceException e) {
@@ -114,7 +116,7 @@ public interface RemoveFromListAction<T> extends AssignableAction<T> {
 
 			// TODO Xtof: when I will have found how to set same kind of Individual:<name> type in the XSD TA
 			if (list == null) {
-				list = new DataBinding<List<T>>(this, new ParameterizedTypeImpl(List.class, Object.class), BindingDefinitionType.GET);
+				list = new DataBinding<>(this, new ParameterizedTypeImpl(List.class, Object.class), BindingDefinitionType.GET);
 				list.setBindingName("list");
 			}
 			return list;
@@ -136,7 +138,7 @@ public interface RemoveFromListAction<T> extends AssignableAction<T> {
 		@Override
 		public DataBinding<T> getValue() {
 			if (value == null) {
-				value = new DataBinding<T>(this, Object.class, BindingDefinitionType.GET);
+				value = new DataBinding<>(this, Object.class, BindingDefinitionType.GET);
 				value.setBindingName("value");
 			}
 			return value;
@@ -166,33 +168,31 @@ public interface RemoveFromListAction<T> extends AssignableAction<T> {
 		}
 
 		@Override
-		public T execute(FlexoBehaviourAction<?, ?, ?> action) {
+		public T execute(RunTimeEvaluationContext evaluationContext) {
 			logger.info("performing RemoveFromListAction");
 
-			DataBinding<? extends List<T>> list = getList();
-			T objToRemove = getDeclaredObject(action);
+			T objToRemove = getDeclaredObject(evaluationContext);
 
 			try {
 
-				if (list != null) {
-					List<T> listObj = list.getBindingValue(action);
-					if (objToRemove != null) {
+				if (getList() != null) {
+					List<T> listObj = getList().getBindingValue(evaluationContext);
+					if (listObj != null && objToRemove != null) {
 						listObj.remove(objToRemove);
-					} else {
+					}
+					else {
 						logger.warning("Won't add null object to list");
 
 					}
-				} else {
+				}
+				else {
 					logger.warning("Cannot perform Assignation as assignation is null");
 				}
 			} catch (TypeMismatchException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			} catch (NullReferenceException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			} catch (InvocationTargetException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 

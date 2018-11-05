@@ -44,6 +44,8 @@ import java.util.logging.Logger;
 import javax.swing.Icon;
 
 import org.openflexo.foundation.FlexoException;
+import org.openflexo.foundation.FlexoObject;
+import org.openflexo.foundation.action.FlexoActionFactory;
 import org.openflexo.foundation.action.FlexoActionFinalizer;
 import org.openflexo.foundation.action.FlexoActionInitializer;
 import org.openflexo.foundation.action.FlexoExceptionHandler;
@@ -53,19 +55,18 @@ import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.VirtualModelInstanceObject;
 import org.openflexo.foundation.fml.rt.action.NavigationSchemeAction;
 import org.openflexo.icon.FMLIconLibrary;
-import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.view.controller.ActionInitializer;
 import org.openflexo.view.controller.ControllerActionInitializer;
 import org.openflexo.view.controller.FlexoController;
 import org.openflexo.view.controller.ParametersRetriever;
 
-public class NavigationSchemeActionInitializer extends
-		ActionInitializer<NavigationSchemeAction, FlexoConceptInstance, VirtualModelInstanceObject> {
+public class NavigationSchemeActionInitializer
+		extends ActionInitializer<NavigationSchemeAction, FlexoConceptInstance, VirtualModelInstanceObject> {
 
 	private static final Logger logger = Logger.getLogger(ControllerActionInitializer.class.getPackage().getName());
 
 	public NavigationSchemeActionInitializer(ControllerActionInitializer actionInitializer) {
-		super(null, actionInitializer);
+		super(NavigationSchemeAction.class, actionInitializer);
 	}
 
 	@Override
@@ -77,20 +78,17 @@ public class NavigationSchemeActionInitializer extends
 					return false;
 				}
 
-				if (action.getTargetObject() == null) {
-					// If target diagram is not existant, we must create it
-					// First retrieve parameters
+				getController().willExecute(action);
 
-					ParametersRetriever<NavigationScheme> parameterRetriever = new ParametersRetriever<NavigationScheme>(action);
-					if (action.escapeParameterRetrievingWhenValid && parameterRetriever.isSkipable()) {
-						return true;
-					}
-					return parameterRetriever.retrieveParameters();
-				} else {
-					// Target diagram is already existing, finalizer will show it
-					// First retrieve parameters
+				// First retrieve parameters
+
+				ParametersRetriever<NavigationScheme> parameterRetriever = new ParametersRetriever<>(action,
+						getController() != null ? getController().getApplicationContext() : null);
+				if (action.escapeParameterRetrievingWhenValid && parameterRetriever.isSkipable()) {
 					return true;
 				}
+				getController().hasExecuted(action);
+				return parameterRetriever.retrieveParameters();
 
 			}
 		};
@@ -103,13 +101,21 @@ public class NavigationSchemeActionInitializer extends
 			public boolean run(EventObject e, NavigationSchemeAction action) {
 				if (action.getTargetObject() != null) {
 					// Editor will handle switch to right module and perspective, and select target object
-					getEditor().focusOn(action.getTargetObject());
+					System.out.println("-------------> Du coup, focus sur " + action.getTargetObject());
+					FlexoObject targetObject = action.getTargetObject();
+					focusOnTargetObject(targetObject, action);
+					// getEditor().focusOn(targetObject, (FlexoNature) action.getFlexoBehaviour().getDisplayNature(targetObject));
 					return true;
-				} else {
+				}
+				else {
 					return false;
 				}
 			}
 		};
+	}
+
+	private <O extends FlexoObject> void focusOnTargetObject(O targetObject, NavigationSchemeAction action) {
+		getEditor().focusOn(targetObject, action.getFlexoBehaviour().getDisplayNature(targetObject));
 	}
 
 	@Override
@@ -118,7 +124,7 @@ public class NavigationSchemeActionInitializer extends
 			@Override
 			public boolean handleException(FlexoException exception, NavigationSchemeAction action) {
 				if (exception instanceof NotImplementedException) {
-					FlexoController.notify(FlexoLocalization.localizedForKey("not_implemented_yet"));
+					FlexoController.notify(action.getLocales().localizedForKey("not_implemented_yet"));
 					return true;
 				}
 				return false;
@@ -127,7 +133,7 @@ public class NavigationSchemeActionInitializer extends
 	}
 
 	@Override
-	protected Icon getEnabledIcon() {
+	protected Icon getEnabledIcon(FlexoActionFactory actionType) {
 		return FMLIconLibrary.NAVIGATION_SCHEME_ICON;
 	}
 

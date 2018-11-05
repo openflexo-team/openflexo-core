@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Panel id="0" borderLeft="0" sizeAdjustment="OriginalSize"
+	controllerClassName="org.openflexo.view.controller.FlexoFIBController"
+	border="empty" borderRight="0" trackViewPortWidth="true" align="left"
+	borderBottom="0" titleFont="Lucida Grande,0,13" borderTop="0"
+	trackViewPortHeight="true" layout="twocols">
+	<CheckBox id="1" manageDynamicModel="true" selected="true"
+		name="DefineSomeBehavioursCB" data="data.defineSomeBehaviours"
+		localize="true"
+		constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=50;insetsRight=0;insetsTop=0;location=left)" />
+	<Label id="2" name="DefineSomeBehavioursLabel" localize="true"
+		align="left"
+		constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=right)"
+		label="define_some_behaviours" />
+	<Panel id="3" borderLeft="0" sizeAdjustment="OriginalSize"
+		border="empty" borderRight="0" trackViewPortWidth="true" align="left"
+		constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=10;insetsRight=0;insetsTop=0;location=right)"
+		borderBottom="0" borderTop="0" trackViewPortHeight="true" layout="twocols"
+		name="FIBPanel">
+		<CheckBox id="4" enable="data.defineSomeBehaviours" selected="true"
+			name="creationSchemeCB" data="data.defineDefaultCreationScheme"
+			localize="true"
+			constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=left)" />
+		<Panel id="5" vGap="5" borderLeft="0" hGap="5" sizeAdjustment="OriginalSize"
+			border="empty" borderRight="0" trackViewPortWidth="true" align="left"
+			constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=right)"
+			borderBottom="0" borderTitle="Panel" borderTop="0"
+			trackViewPortHeight="true" layout="border" name="FIBPanel2"
+			flowAlignment="LEADING">
+			<Image id="6" enable="data.defineSomeBehaviours"
+				sizeAdjustment="OriginalSize" name="Image" data="data.creationSchemeIcon.image"
+				imageHeight="46" align="left" constraints="border(location=west)"
+				imageWidth="80" />
+			<Label id="7" enable="data.defineSomeBehaviours" name="DefineDefaultCreationSchemeLabel"
+				localize="true" align="left"
+				constraints="border(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=center)"
+				label="define_default_creation_scheme_while_setting_following_properties" />
+		</Panel>
+		<CheckboxList id="8"
+			enable="(data.defineSomeBehaviours &amp; data.defineDefaultCreationScheme)"
+			data="data.action.propertiesUsedForCreationScheme" font="SansSerif,0,11"
+			constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=right)"
+			format="object.displayableName" showText="true"
+			iteratorClassName="org.openflexo.foundation.fml.action.PropertyEntry"
+			showIcon="true" staticList="" autoSelectFirstRow="true" name="CheckboxList"
+			icon="data.getIconForProperty(object)" list="data.action.propertiesEntries" />
+		<CheckBox id="9" enable="data.defineSomeBehaviours" selected="true"
+			name="deletionSchemeCB" data="data.defineDefaultDeletionScheme"
+			localize="true"
+			constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=left)" />
+		<Panel id="10" vGap="5" borderLeft="0" hGap="5" sizeAdjustment="OriginalSize"
+			border="empty" borderRight="0" trackViewPortWidth="true" align="left"
+			constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=right)"
+			borderBottom="0" borderTitle="Panel" borderTop="0"
+			trackViewPortHeight="true" layout="border" name="FIBPanel2"
+			flowAlignment="LEADING">
+			<Image id="11" enable="data.defineSomeBehaviours"
+				sizeAdjustment="OriginalSize" name="Image" data="data.deletionSchemeIcon.image"
+				imageHeight="46" align="left" constraints="border(location=west)"
+				imageWidth="80" />
+			<Label id="12" enable="data.defineSomeBehaviours" name="DefineDefaultCreationSchemeLabel"
+				localize="true" align="left"
+				constraints="border(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=center)"
+				label="define_default_deletion_scheme" />
+		</Panel>
+		<CheckBox id="13" enable="data.defineSomeBehaviours"
+			selected="true" name="synchronizationSchemeCB" data="data.defineSynchronizationScheme"
+			constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=left)" />
+		<Panel id="14" vGap="5" borderLeft="0" hGap="5" sizeAdjustment="OriginalSize"
+			border="empty" borderRight="0" trackViewPortWidth="true" align="left"
+			constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=right)"
+			borderBottom="0" borderTitle="Panel" borderTop="0"
+			trackViewPortHeight="true" layout="border" name="FIBPanel2"
+			flowAlignment="LEADING">
+			<Image id="15" enable="data.defineSomeBehaviours"
+				sizeAdjustment="OriginalSize" name="Image"
+				data="data.synchronizationSchemeIcon.image" imageHeight="46" align="left"
+				constraints="border(location=west)" imageWidth="80" />
+			<Label id="16" enable="data.defineSomeBehaviours" name="DefineDefaultCreationSchemeLabel"
+				localize="true" align="left"
+				constraints="border(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=center)"
+				label="define_synchronization_scheme" />
+		</Panel>
+		<CheckBox id="17" enable="data.defineSomeBehaviours"
+			selected="true" name="cloningSchemeCB" data="data.defineCloningScheme"
+			constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=left)" />
+		<Panel id="18" vGap="5" borderLeft="0" hGap="5" sizeAdjustment="OriginalSize"
+			border="empty" borderRight="0" trackViewPortWidth="true" align="left"
+			constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=right)"
+			borderBottom="0" borderTitle="Panel" borderTop="0"
+			trackViewPortHeight="true" layout="border" name="FIBPanel2"
+			flowAlignment="LEADING">
+			<Image id="19" enable="data.defineSomeBehaviours"
+				sizeAdjustment="OriginalSize" name="Image" data="data.cloningSchemeIcon.image"
+				imageHeight="46" align="left" constraints="border(location=west)"
+				imageWidth="80" />
+			<Label id="20" enable="data.defineSomeBehaviours" name="DefineDefaultCreationSchemeLabel"
+				localize="true" align="left"
+				constraints="border(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=center)"
+				label="define_cloning_scheme" />
+		</Panel>
+	</Panel>
+	<FIBVariable id="21" name="data"
+		type="org.openflexo.fml.controller.action.AbstractCreateFlexoConceptWizard$ConfigureBehavioursForNewFlexoConcept" />
+	<LocalizedDictionary id="22" />
+</Panel>

@@ -42,70 +42,74 @@ import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.openflexo.connie.BindingVariable;
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoException;
+import org.openflexo.foundation.action.FlexoAction;
 import org.openflexo.foundation.action.InvalidParametersException;
 import org.openflexo.foundation.action.NotImplementedException;
 import org.openflexo.foundation.fml.DeletionScheme;
 import org.openflexo.foundation.fml.FlexoBehaviour;
-import org.openflexo.foundation.fml.FlexoRole;
-import org.openflexo.foundation.fml.binding.FlexoRoleBindingVariable;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
-import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.foundation.fml.rt.VirtualModelInstanceObject;
 
-public class DeletionSchemeAction extends FlexoBehaviourAction<DeletionSchemeAction, DeletionScheme, FlexoConceptInstance> {
+/**
+ * Provides execution environment of a {@link DeletionScheme} on a given {@link FlexoConceptInstance} as a {@link FlexoAction}
+ *
+ * An {@link DeletionSchemeAction} represents the execution (in the "instances" world) of a {@link DeletionScheme}.<br>
+ * To be used and executed on Openflexo platform, it is wrapped in a {@link FlexoAction}.<br>
+ * 
+ * @author sylvain
+ */
+public class DeletionSchemeAction extends AbstractActionSchemeAction<DeletionSchemeAction, DeletionScheme, FlexoConceptInstance> {
 
 	private static final Logger logger = Logger.getLogger(DeletionSchemeAction.class.getPackage().getName());
 
-	/*public static FlexoActionType<DeletionSchemeAction, FlexoConceptInstance, VirtualModelInstanceObject> actionType = new FlexoActionType<DeletionSchemeAction, FlexoConceptInstance, VirtualModelInstanceObject>(
-			"delete_flexo_concept_instance", FlexoActionType.editGroup, FlexoActionType.DELETE_ACTION_TYPE) {
-
-		@Override
-		public DeletionSchemeAction makeNewAction(FlexoConceptInstance focusedObject, Vector<VirtualModelInstanceObject> globalSelection,
-				FlexoEditor editor) {
-			return new DeletionSchemeAction(focusedObject, globalSelection, editor);
-		}
-
-		@Override
-		public boolean isVisibleForSelection(FlexoConceptInstance object, Vector<VirtualModelInstanceObject> globalSelection) {
-			return false;
-		}
-
-		@Override
-		public boolean isEnabledForSelection(FlexoConceptInstance object, Vector<VirtualModelInstanceObject> globalSelection) {
-			return true;
-		}
-
-	};
-
-	static {
-		FlexoObjectImpl.addActionForClass(actionType, FlexoConceptInstance.class);
-	}*/
-
-	private final DeletionSchemeActionType actionType;
-
-	public DeletionSchemeAction(DeletionSchemeActionType actionType, FlexoConceptInstance focusedObject,
+	/**
+	 * Constructor to be used with a factory
+	 * 
+	 * @param actionFactory
+	 * @param focusedObject
+	 * @param globalSelection
+	 * @param editor
+	 */
+	public DeletionSchemeAction(DeletionSchemeActionFactory actionType, FlexoConceptInstance focusedObject,
 			Vector<VirtualModelInstanceObject> globalSelection, FlexoEditor editor) {
 		super(actionType, focusedObject, globalSelection, editor);
-		this.actionType = actionType;
+	}
+
+	/**
+	 * Constructor to be used for creating a new action without factory
+	 * 
+	 * @param flexoBehaviour
+	 * @param focusedObject
+	 * @param globalSelection
+	 * @param editor
+	 */
+	public DeletionSchemeAction(DeletionScheme deletionScheme, FlexoConceptInstance focusedObject,
+			Vector<VirtualModelInstanceObject> globalSelection, FlexoEditor editor) {
+		super(deletionScheme, focusedObject, globalSelection, editor);
+	}
+
+	/**
+	 * Constructor to be used for creating a new action as an action embedded in another one
+	 * 
+	 * @param flexoBehaviour
+	 * @param focusedObject
+	 * @param globalSelection
+	 * @param ownerAction
+	 *            Action in which action to be created will be embedded
+	 */
+	public DeletionSchemeAction(DeletionScheme deletionScheme, FlexoConceptInstance focusedObject,
+			Vector<VirtualModelInstanceObject> globalSelection, FlexoAction<?, ?, ?> ownerAction) {
+		super(deletionScheme, focusedObject, globalSelection, ownerAction);
 	}
 
 	public DeletionScheme getDeletionScheme() {
-		if (actionType != null) {
-			return actionType.getDeletionScheme();
-		}
-		return null;
+		return getFlexoBehaviour();
 	}
 
-	private VirtualModelInstance vmInstance;
-	// private DeletionScheme deletionScheme;
-	private FlexoConceptInstance flexoConceptInstanceToDelete;
-
-	/*DeletionSchemeAction(FlexoConceptInstance focusedObject, Vector<VirtualModelInstanceObject> globalSelection, FlexoEditor editor) {
-		super(actionType, focusedObject, globalSelection, editor);
-	}*/
+	// private VirtualModelInstance<?, ?> vmInstance;
+	// private FlexoConceptInstance flexoConceptInstanceToDelete;
 
 	@Override
 	protected void doAction(Object context) throws NotImplementedException, InvalidParametersException, FlexoException {
@@ -114,9 +118,12 @@ public class DeletionSchemeAction extends FlexoBehaviourAction<DeletionSchemeAct
 			logger.fine("getDeletionScheme()=" + getDeletionScheme());
 			logger.fine("getFlexoConceptInstance()=" + getFlexoConceptInstance());
 		}
-		applyEditionActions();
-		if (getFlexoConceptInstanceToDelete() != null) {
+		executeControlGraph();
+		/*if (getFlexoConceptInstanceToDelete() != null) {
 			getFlexoConceptInstanceToDelete().delete(context);
+		}*/
+		if (getFlexoConceptInstance() != null) {
+			getFlexoConceptInstance().delete(context);
 		}
 	}
 
@@ -128,89 +135,84 @@ public class DeletionSchemeAction extends FlexoBehaviourAction<DeletionSchemeAct
 	 */
 	@Override
 	public final FlexoConceptInstance getFlexoConceptInstance() {
-		if (flexoConceptInstanceToDelete == null && getFocusedObject() != null) {
+		/*if (flexoConceptInstanceToDelete == null && getFocusedObject() != null) {
 			flexoConceptInstanceToDelete = getFocusedObject();
 		}
-		return flexoConceptInstanceToDelete;
+		return flexoConceptInstanceToDelete;*/
+		return super.getFlexoConceptInstance();
 	}
 
-	@Override
-	public VirtualModelInstance getVirtualModelInstance() {
+	/*@Override
+	public VirtualModelInstance<?, ?> getVirtualModelInstance() {
 		if (vmInstance == null) {
 			FlexoConceptInstance vObject = getFocusedObject();
-			if (vObject instanceof VirtualModelInstance) {
-				vmInstance = (VirtualModelInstance) getFocusedObject();
-			} else if (vObject instanceof FlexoConceptInstance) {
+			if (vObject instanceof FMLRTVirtualModelInstance) {
+				vmInstance = (VirtualModelInstance<?, ?>) getFocusedObject();
+			}
+			else if (vObject instanceof FlexoConceptInstance) {
 				vmInstance = vObject.getVirtualModelInstance();
 			}
 		}
 		return vmInstance;
 	}
-
-	public void setVirtualModelInstance(VirtualModelInstance vmInstance) {
+	
+	public void setVirtualModelInstance(VirtualModelInstance<?, ?> vmInstance) {
 		this.vmInstance = vmInstance;
-	}
-
-	/*public DeletionScheme getDeletionScheme() {
-		return deletionScheme;
-	}
-
-	public void setDeletionScheme(DeletionScheme deletionScheme) {
-		this.deletionScheme = deletionScheme;
 	}*/
-
-	@Override
-	public DeletionScheme getFlexoBehaviour() {
-		return getDeletionScheme();
-	}
 
 	/*@Override
 	public FlexoConceptInstance getFlexoConceptInstance() {
 		return getFlexoConceptInstanceToDelete();
 	}
-
+	
 	public FlexoConceptInstance getFlexoConceptInstanceToDelete() {
 		if (flexoConceptInstanceToDelete == null && getFocusedObject() instanceof DiagramElement) {
 			flexoConceptInstanceToDelete = ((DiagramElement) getFocusedObject()).getFlexoConceptInstance();
 		}
 		return flexoConceptInstanceToDelete;
 	}
-
+	
 	public void setFlexoConceptInstanceToDelete(FlexoConceptInstance flexoConceptInstanceToDelete) {
 		this.flexoConceptInstanceToDelete = flexoConceptInstanceToDelete;
 	}*/
 
-	@Override
-	public VirtualModelInstance retrieveVirtualModelInstance() {
+	/*@Override
+	public VirtualModelInstance<?, ?> retrieveVirtualModelInstance() {
 		return getVirtualModelInstance();
-	}
+	}*/
 
-	@Override
+	/*@Override
 	public Object getValue(BindingVariable variable) {
 		FlexoConceptInstance fci = this.getFlexoConceptInstanceToDelete();
 		if (fci != null && variable != null) {
 			if (variable instanceof FlexoRoleBindingVariable) {
 				FlexoRole<?> role = ((FlexoRoleBindingVariable) variable).getFlexoRole();
 				if (role != null) {
-					return fci.getFlexoActor(role);
-				} else {
+					if (role.getCardinality().isMultipleCardinality()) {
+						return fci.getFlexoActorList(role);
+					}
+					else {
+						return fci.getFlexoActor(role);
+					}
+				}
+				else {
 					logger.warning("Trying to delete a null actor for : " + fci.getFlexoConceptURI() + "/" + variable.toString());
 				}
 			}
 			return super.getValue(variable);
 		}
 		return null;
-	}
+	}*/
 
-	public FlexoConceptInstance getFlexoConceptInstanceToDelete() {
+	/*public FlexoConceptInstance getFlexoConceptInstanceToDelete() {
 		if (flexoConceptInstanceToDelete == null && getFocusedObject() != null) {
 			flexoConceptInstanceToDelete = getFocusedObject();
 		}
 		return flexoConceptInstanceToDelete;
 	}
-
+	
 	public void setFlexoConceptInstanceToDelete(FlexoConceptInstance flexoConceptInstanceToDelete) {
 		this.flexoConceptInstanceToDelete = flexoConceptInstanceToDelete;
-	}
+	}*/
 
 }

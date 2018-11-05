@@ -38,90 +38,73 @@
 
 package org.openflexo.foundation.fml.rt.action;
 
-import java.util.Vector;
-import java.util.logging.Level;
+import java.util.List;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoException;
-import org.openflexo.foundation.fml.AbstractActionScheme;
-import org.openflexo.foundation.fml.FlexoBehaviour;
+import org.openflexo.foundation.action.FlexoAction;
+import org.openflexo.foundation.fml.ActionScheme;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
-import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.foundation.fml.rt.VirtualModelInstanceObject;
 
-public class ActionSchemeAction extends FlexoBehaviourAction<ActionSchemeAction, AbstractActionScheme, FlexoConceptInstance> {
+/**
+ * Provides execution environment of a {@link ActionScheme} on a given {@link FlexoConceptInstance} as a {@link FlexoAction}
+ *
+ * An {@link ActionSchemeAction} represents the execution (in the "instances" world) of an {@link ActionScheme}.<br>
+ * To be used and executed on Openflexo platform, it is wrapped in a {@link FlexoAction}.<br>
+ * 
+ * @author sylvain
+ */
+public class ActionSchemeAction extends AbstractActionSchemeAction<ActionSchemeAction, ActionScheme, FlexoConceptInstance> {
 
+	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(ActionSchemeAction.class.getPackage().getName());
 
-	private final ActionSchemeActionType actionType;
-
-	public ActionSchemeAction(ActionSchemeActionType actionType, FlexoConceptInstance focusedObject,
-			Vector<VirtualModelInstanceObject> globalSelection, FlexoEditor editor) {
-		super(actionType, focusedObject, globalSelection, editor);
-		this.actionType = actionType;
-	}
-
-	public AbstractActionScheme getActionScheme() {
-		if (actionType != null) {
-			return actionType.getActionScheme();
-		}
-		return null;
+	/**
+	 * Constructor to be used with a factory
+	 * 
+	 * @param actionFactory
+	 * @param focusedObject
+	 * @param globalSelection
+	 * @param editor
+	 */
+	public ActionSchemeAction(ActionSchemeActionFactory actionFactory, FlexoConceptInstance focusedObject,
+			List<VirtualModelInstanceObject> globalSelection, FlexoEditor editor) {
+		super(actionFactory, focusedObject, globalSelection, editor);
 	}
 
 	/**
-	 * Return the {@link FlexoConceptInstance} on which this {@link FlexoBehaviour} is applied.<br>
+	 * Constructor to be used for creating a new action without factory
 	 * 
-	 * @return
+	 * @param flexoBehaviour
+	 * @param focusedObject
+	 * @param globalSelection
+	 * @param editor
 	 */
-	@Override
-	public FlexoConceptInstance getFlexoConceptInstance() {
-		if (actionType != null) {
-			return actionType.getFlexoConceptInstance();
-		}
-		return null;
+	public ActionSchemeAction(ActionScheme actionScheme, FlexoConceptInstance focusedObject,
+			List<VirtualModelInstanceObject> globalSelection, FlexoEditor editor) {
+		super(actionScheme, focusedObject, globalSelection, editor);
 	}
 
-	@Override
-	public AbstractActionScheme getFlexoBehaviour() {
-		return getActionScheme();
+	/**
+	 * Constructor to be used for creating a new action as an action embedded in another one
+	 * 
+	 * @param flexoBehaviour
+	 * @param focusedObject
+	 * @param globalSelection
+	 * @param ownerAction
+	 *            Action in which action to be created will be embedded
+	 */
+	public ActionSchemeAction(ActionScheme actionScheme, FlexoConceptInstance focusedObject,
+			List<VirtualModelInstanceObject> globalSelection, FlexoAction<?, ?, ?> ownerAction) {
+		super(actionScheme, focusedObject, globalSelection, ownerAction);
 	}
 
 	@Override
 	protected void doAction(Object context) throws FlexoException {
-		if (logger.isLoggable(Level.INFO)) {
-			logger.info("Perform action " + actionType);
-		}
-
-		if (getActionScheme() != null && getActionScheme().evaluateCondition(actionType.getFlexoConceptInstance())) {
-			applyEditionActions();
+		if (getActionScheme() != null && getActionScheme().evaluateCondition(getFlexoConceptInstance())) {
+			executeControlGraph();
 		}
 	}
-
-	@Override
-	public VirtualModelInstance retrieveVirtualModelInstance() {
-		if (getFlexoConceptInstance() instanceof VirtualModelInstance) {
-			return (VirtualModelInstance) getFlexoConceptInstance();
-		}
-		if (getFlexoConceptInstance() != null) {
-			return getFlexoConceptInstance().getVirtualModelInstance();
-		}
-		return null;
-	}
-
-	/*@Override
-	public Object getValue(BindingVariable variable) {
-		return super.getValue(variable);
-	}*/
-
-	/*@Override
-	public void setValue(Object value, BindingVariable variable) {
-		// Why not upper ?
-		if (variable instanceof FlexoPropertyBindingVariable) {
-			getFlexoConceptInstance().setFlexoActor(value, (FlexoProperty) ((FlexoPropertyBindingVariable) variable).getFlexoProperty());
-			return;
-		}
-		super.setValue(value, variable);
-	}*/
-
 }

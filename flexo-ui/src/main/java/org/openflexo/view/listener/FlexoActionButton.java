@@ -51,9 +51,9 @@ import org.openflexo.connie.type.TypeUtils;
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.action.FlexoAction;
+import org.openflexo.foundation.action.FlexoActionFactory;
 import org.openflexo.foundation.action.FlexoActionSource;
-import org.openflexo.foundation.action.FlexoActionType;
-import org.openflexo.localization.FlexoLocalization;
+import org.openflexo.localization.LocalizedDelegate;
 import org.openflexo.view.controller.FlexoController;
 
 public class FlexoActionButton extends JButton {
@@ -61,18 +61,18 @@ public class FlexoActionButton extends JButton {
 	private final FlexoActionSource actionSource;
 	private final FlexoController controller;
 
-	public FlexoActionButton(FlexoActionType<?, ?, ?> actionType, FlexoActionSource source, FlexoController controller) {
+	public FlexoActionButton(FlexoActionFactory<?, ?, ?> actionType, FlexoActionSource source, FlexoController controller) {
 		this(actionType, null, source, controller);
 	}
 
-	public FlexoActionButton(FlexoActionType<?, ?, ?> actionType, String unlocalizedActionName, FlexoActionSource source,
+	public FlexoActionButton(FlexoActionFactory<?, ?, ?> actionType, String unlocalizedActionName, FlexoActionSource source,
 			FlexoController controller) {
 		super();
 		actionSource = source;
 		this.controller = controller;
 		action = new ButtonAction(actionType, unlocalizedActionName);
 		setText(action.getLocalizedName(this));
-		setToolTipText(FlexoLocalization.localizedTooltipForKey(action._unlocalizedName, this));
+		setToolTipText(controller.getModuleLocales().localizedTooltipForKey(action._unlocalizedName, this));
 		if (getEditor() != null) {
 			if (getEditor().getEnabledIconFor(actionType) != null) {
 				setIcon(getEditor().getEnabledIconFor(actionType));
@@ -88,7 +88,8 @@ public class FlexoActionButton extends JButton {
 	private FlexoEditor getEditor() {
 		if (controller != null) {
 			return controller.getEditor();
-		} else {
+		}
+		else {
 			return null;
 		}
 	}
@@ -107,15 +108,15 @@ public class FlexoActionButton extends JButton {
 
 	public class ButtonAction<A extends FlexoAction<A, T1, T2>, T1 extends FlexoObject, T2 extends FlexoObject> implements ActionListener {
 
-		private final FlexoActionType<A, T1, T2> actionType;
+		private final FlexoActionFactory<A, T1, T2> actionType;
 		private String _unlocalizedName = null;
 
-		public ButtonAction(FlexoActionType<A, T1, T2> actionType) {
+		public ButtonAction(FlexoActionFactory<A, T1, T2> actionType) {
 			super();
 			this.actionType = actionType;
 		}
 
-		public ButtonAction(FlexoActionType<A, T1, T2> actionType, String actionName) {
+		public ButtonAction(FlexoActionFactory<A, T1, T2> actionType, String actionName) {
 			this(actionType);
 			_unlocalizedName = actionName;
 		}
@@ -125,7 +126,7 @@ public class FlexoActionButton extends JButton {
 			List<? extends FlexoObject> globalSelection = getGlobalSelection();
 			if (TypeUtils.isAssignableTo(getFocusedObject(), actionType.getFocusedObjectType())
 					&& (globalSelection == null || TypeUtils.isAssignableTo(globalSelection, actionType.getGlobalSelectionType()))) {
-				getEditor().performActionType(actionType, (T1) getFocusedObject(), (Vector<T2>) globalSelection, event);
+				getEditor().performActionFactory(actionType, (T1) getFocusedObject(), (Vector<T2>) globalSelection, event);
 			}
 		}
 
@@ -138,16 +139,17 @@ public class FlexoActionButton extends JButton {
 			return false;
 		}
 
-		public FlexoActionType<A, T1, T2> getActionType() {
+		public FlexoActionFactory<A, T1, T2> getActionType() {
 			return actionType;
 		}
 
 		public String getLocalizedName(Component component) {
+			LocalizedDelegate locales = actionType.getLocales(getEditor().getServiceManager());
 			if (_unlocalizedName == null) {
-				return actionType.getLocalizedName(component);
-
-			} else {
-				return FlexoLocalization.localizedForKey(_unlocalizedName, component);
+				return locales.localizedForKey(actionType.getActionName(), component);
+			}
+			else {
+				return locales.localizedForKey(_unlocalizedName, component);
 			}
 		}
 

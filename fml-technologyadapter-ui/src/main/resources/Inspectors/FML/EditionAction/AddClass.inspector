@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Panel className="org.openflexo.fib.utils.FIBInspector" layout="border"
+<Panel className="org.openflexo.gina.utils.FIBInspector" layout="border"
 	titleFont="SansSerif,0,12" darkLevel="0"
-	dataClassName="org.openflexo.foundation.fml.editionaction.AddClass"
+	dataClassName="org.openflexo.foundation.ontology.fml.editionaction.AddClass"
 	controllerClassName="org.openflexo.fml.controller.FMLFIBInspectorController"
 	font="SansSerif,0,12" name="Inspector">
 	<TabPanel name="Tab" constraints="border(location=center)">
@@ -15,7 +15,7 @@
 				clickAction="" doubleClickAction="" rightClickAction=""
 				enterPressedAction="" valueChangedAction="" valueTransform=""
 				valueValidator="" />
-			<Custom componentClassName="org.openflexo.components.widget.FIBClassSelector"
+			<Custom componentClassName="org.openflexo.ontology.components.widget.FIBClassSelector"
 				format="" icon="" tooltip="" localize="true" enable=""
 				manageDynamicModel="true" clickAction="" doubleClickAction=""
 				rightClickAction="" enterPressedAction="" valueChangedAction=""
@@ -23,7 +23,7 @@
 				constraints="twocols(expandHorizontally=true;expandVertically=false;index=7;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)"
 				visible="">
 				<Assignment variable="component.context"
-					value="data.modelSlot.metaModelResource.metaModelData" />
+					value="data.inferedModelSlot.metaModelResource.metaModelData" />
 			</Custom>
 			<Label label="new_class_name_(uri)" align="right" index="8"
 				data=""
@@ -32,7 +32,7 @@
 				clickAction="" doubleClickAction="" rightClickAction=""
 				enterPressedAction="" valueChangedAction="" valueTransform=""
 				valueValidator="" />
-			<Custom componentClassName="org.openflexo.fib.swing.utils.BindingSelector"
+			<Custom componentClassName="org.openflexo.gina.swing.utils.BindingSelector"
 				format="" icon="" tooltip="" localize="true" enable=""
 				manageDynamicModel="true" clickAction="" doubleClickAction=""
 				rightClickAction="" enterPressedAction="" valueChangedAction=""

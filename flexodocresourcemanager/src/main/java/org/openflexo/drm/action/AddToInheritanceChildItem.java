@@ -46,28 +46,28 @@ import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.FlexoObject.FlexoObjectImpl;
 import org.openflexo.foundation.action.FlexoAction;
-import org.openflexo.foundation.action.FlexoActionType;
+import org.openflexo.foundation.action.FlexoActionFactory;
 
-public class AddToInheritanceChildItem extends FlexoAction {
+public class AddToInheritanceChildItem extends FlexoAction<AddToInheritanceChildItem, FlexoObject, FlexoObject> {
 
-	public static FlexoActionType actionType = new FlexoActionType("add_inheritance_child", FlexoActionType.newMenu,
-			FlexoActionType.defaultGroup, FlexoActionType.ADD_ACTION_TYPE) {
+	public static FlexoActionFactory<AddToInheritanceChildItem, FlexoObject, FlexoObject> actionType = new FlexoActionFactory<AddToInheritanceChildItem, FlexoObject, FlexoObject>(
+			"add_inheritance_child", FlexoActionFactory.newMenu, FlexoActionFactory.defaultGroup, FlexoActionFactory.ADD_ACTION_TYPE) {
 
 		/**
 		 * Factory method
 		 */
 		@Override
-		public FlexoAction makeNewAction(FlexoObject focusedObject, Vector globalSelection, FlexoEditor editor) {
+		public AddToInheritanceChildItem makeNewAction(FlexoObject focusedObject, Vector<FlexoObject> globalSelection, FlexoEditor editor) {
 			return new AddToInheritanceChildItem(focusedObject, globalSelection, editor);
 		}
 
 		@Override
-		public boolean isVisibleForSelection(FlexoObject object, Vector globalSelection) {
+		public boolean isVisibleForSelection(FlexoObject object, Vector<FlexoObject> globalSelection) {
 			return true;
 		}
 
 		@Override
-		public boolean isEnabledForSelection(FlexoObject object, Vector globalSelection) {
+		public boolean isEnabledForSelection(FlexoObject object, Vector<FlexoObject> globalSelection) {
 			return object != null && object instanceof DocItem;
 		}
 
@@ -80,7 +80,7 @@ public class AddToInheritanceChildItem extends FlexoAction {
 	private DocItem _parentDocItem;
 	private DocItem _childDocItem;
 
-	AddToInheritanceChildItem(FlexoObject focusedObject, Vector globalSelection, FlexoEditor editor) {
+	private AddToInheritanceChildItem(FlexoObject focusedObject, Vector<FlexoObject> globalSelection, FlexoEditor editor) {
 		super(actionType, focusedObject, globalSelection, editor);
 	}
 

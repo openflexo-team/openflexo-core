@@ -65,8 +65,8 @@ public class DRMHelpSet extends KVCFlexoObject {
 	public String version = "1.0";
 	public String title;
 	public Maps maps;
-	public Vector views;
-	public Vector presentations;
+	public Vector<View> views;
+	public Vector<Presentation> presentations;
 
 	public View toc;
 	public View index;
@@ -79,7 +79,7 @@ public class DRMHelpSet extends KVCFlexoObject {
 	private final HSMap _hsMap;
 	private final HSToc _hsToc;
 
-	private final String baseName;
+	// Unused private final String baseName;
 	private final HelpSetConfiguration configuration;
 
 	public DRMHelpSet(DocResourceCenter drc, File directory, String baseName, HelpSetConfiguration config) {
@@ -89,7 +89,7 @@ public class DRMHelpSet extends KVCFlexoObject {
 		Language language = config.getLanguage();
 		org.openflexo.localization.Language lang = org.openflexo.localization.Language.get(language.getIdentifier());
 
-		this.baseName = baseName;
+		// Unused this.baseName = baseName;
 		String helpSetDirectoryName = baseName + "_" + config.getDistributionName() + "_" + language.getIdentifier() + ".helpset";
 		helpSetDirectory = new File(directory, helpSetDirectoryName);
 		try {
@@ -105,20 +105,20 @@ public class DRMHelpSet extends KVCFlexoObject {
 		_hsToc = new HSToc(_drc, language, getTocFile(), configuration);
 
 		maps = new Maps();
-		views = new Vector();
-		presentations = new Vector();
-		toc = new View("TOC", FlexoLocalization.localizedForKeyAndLanguage("table_of_content", lang), "javax.help.TOCView",
-				new View.ViewData(getTocFile().getName(), null));
-		index = new View("Index", FlexoLocalization.localizedForKeyAndLanguage("index", lang), "javax.help.IndexView", new View.ViewData(
-				getIndexFile().getName(), null));
-		search = new View("Search", FlexoLocalization.localizedForKeyAndLanguage("search", lang), "javax.help.SearchView",
-				new View.ViewData("JavaHelpSearch", "com.sun.java.help.search.DefaultSearchEngine"));
+		views = new Vector<>();
+		presentations = new Vector<>();
+		toc = new View("TOC", FlexoLocalization.getMainLocalizer().localizedForKeyAndLanguage("table_of_content", lang),
+				"javax.help.TOCView", new View.ViewData(getTocFile().getName(), null));
+		index = new View("Index", FlexoLocalization.getMainLocalizer().localizedForKeyAndLanguage("index", lang), "javax.help.IndexView",
+				new View.ViewData(getIndexFile().getName(), null));
+		search = new View("Search", FlexoLocalization.getMainLocalizer().localizedForKeyAndLanguage("search", lang),
+				"javax.help.SearchView", new View.ViewData("JavaHelpSearch", "com.sun.java.help.search.DefaultSearchEngine"));
 		views.add(toc);
 		views.add(index);
 		views.add(search);
 
-		Presentation primaryPresentation = new Presentation("primary", new Presentation.Size(800, 600),
-				new Presentation.Location(100, 100), title, TOP_LEVEL_FOLDER);
+		Presentation primaryPresentation = new Presentation("primary", new Presentation.Size(800, 600), new Presentation.Location(100, 100),
+				title, TOP_LEVEL_FOLDER);
 		primaryPresentation.toolbar = new Presentation.Toolbar();
 		primaryPresentation.toolbar.add("javax.help.BackAction");
 		primaryPresentation.toolbar.add("javax.help.ForwardAction");
@@ -139,8 +139,9 @@ public class DRMHelpSet extends KVCFlexoObject {
 	}
 
 	public String getLocalizedName() {
-		return FlexoLocalization.localizedForKey("help_set_for_distribution") + " " + configuration.getDistributionName() + " "
-				+ FlexoLocalization.localizedForKey("and_language") + " " + configuration.getLanguage().getLocalizedName();
+		return FlexoLocalization.getMainLocalizer().localizedForKey("help_set_for_distribution") + " " + configuration.getDistributionName()
+				+ " " + FlexoLocalization.getMainLocalizer().localizedForKey("and_language") + " "
+				+ configuration.getLanguage().getLocalizedName();
 	}
 
 	public String getDistributionName() {
@@ -215,10 +216,10 @@ public class DRMHelpSet extends KVCFlexoObject {
 		}
 
 		public static class Toolbar extends KVCFlexoObject {
-			public Vector helpActions;
+			public Vector<HelpAction> helpActions;
 
 			public Toolbar() {
-				helpActions = new Vector();
+				helpActions = new Vector<>();
 			}
 
 			public void add(String helpAction) {
@@ -294,48 +295,48 @@ public class DRMHelpSet extends KVCFlexoObject {
 		}
 
 		if (progress != null) {
-			progress.setSecondaryProgress(FlexoLocalization.localizedForKey("creating_directory"));
+			progress.setSecondaryProgress(FlexoLocalization.getMainLocalizer().localizedForKey("creating_directory"));
 		}
 		helpSetDirectory.mkdirs();
 
 		if (progress != null) {
-			progress.setSecondaryProgress(FlexoLocalization.localizedForKey("generate_helpset_file"));
+			progress.setSecondaryProgress(FlexoLocalization.getMainLocalizer().localizedForKey("generate_helpset_file"));
 		}
 		generateHSFile();
 
 		if (progress != null) {
-			progress.setSecondaryProgress(FlexoLocalization.localizedForKey("generate_table_of_contents"));
+			progress.setSecondaryProgress(FlexoLocalization.getMainLocalizer().localizedForKey("generate_table_of_contents"));
 		}
 		_hsToc.generate();
 
 		if (progress != null) {
-			progress.setSecondaryProgress(FlexoLocalization.localizedForKey("generate_index"));
+			progress.setSecondaryProgress(FlexoLocalization.getMainLocalizer().localizedForKey("generate_index"));
 		}
 		_hsIndex.generate();
 
 		if (progress != null) {
-			progress.setSecondaryProgress(FlexoLocalization.localizedForKey("generate_map"));
+			progress.setSecondaryProgress(FlexoLocalization.getMainLocalizer().localizedForKey("generate_map"));
 		}
 		_hsMap.generate();// This will create HTML file also!
 		try {
-			FileUtils.copyResourceToDir(ResourceLocator.locateResource("Resources/FlexoHelpMasterStyle.css"), new File(getHelpSetDirectory(), "HTML/"
-					+ _drc.getFolder().getIdentifier() + "/"));
+			FileUtils.copyResourceToDir(ResourceLocator.locateResource("Resources/FlexoHelpMasterStyle.css"),
+					new File(getHelpSetDirectory(), "HTML/" + _drc.getFolder().getIdentifier() + "/"));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 		if (progress != null) {
-			progress.setSecondaryProgress(FlexoLocalization.localizedForKey("indexing_helpset"));
+			progress.setSecondaryProgress(FlexoLocalization.getMainLocalizer().localizedForKey("indexing_helpset"));
 		}
 		new JHIndexer(helpSetDirectory).generate();
 		if (progress != null) {
-			progress.setSecondaryProgress(FlexoLocalization.localizedForKey("copying_images"));
+			progress.setSecondaryProgress(FlexoLocalization.getMainLocalizer().localizedForKey("copying_images"));
 		}
 		copyImages();
 	}
 
 	private void copyImages() {
 
-		Vector<String> v = new Vector<String>();
+		Vector<String> v = new Vector<>();
 		try {
 			v.add(_drc.getFolder().getDirectory().getCanonicalPath());
 		} catch (IOException e1) {
@@ -360,7 +361,8 @@ public class DRMHelpSet extends KVCFlexoObject {
 					if (!f.getCanonicalFile().equals(_drc.getFTSFolder().getDirectory().getCanonicalFile())
 							&& !f.getCanonicalFile().equals(_drc.getModelFolder().getDirectory().getCanonicalFile())) {
 						scanForImages(f.listFiles(), _drc.getFolder(), v, 5);
-					} else {
+					}
+					else {
 						scanForImages(f.listFiles(), _drc.getFolder(), v, 1);
 					}
 				} catch (IOException e) {
@@ -377,7 +379,8 @@ public class DRMHelpSet extends KVCFlexoObject {
 		for (File file : files) {
 			if (file.isDirectory() && recursiveDepth > 0 && !visitedDirectories.contains(file.getCanonicalPath())) {
 				scanForImages(file.listFiles(), f, visitedDirectories, recursiveDepth - 1);
-			} else {
+			}
+			else {
 				if (file.getName().toLowerCase().endsWith(".jpg") || file.getName().toLowerCase().endsWith(".jpeg")
 						|| file.getName().toLowerCase().endsWith(".png") || file.getName().toLowerCase().endsWith(".gif")) {
 					try {
@@ -407,7 +410,7 @@ public class DRMHelpSet extends KVCFlexoObject {
 	}
 
 	/*private static XMLMapping _hsMapping;
-
+	
 	public static XMLMapping getHSMapping() {
 		if (_hsMapping == null) {
 			File hsModelFile;

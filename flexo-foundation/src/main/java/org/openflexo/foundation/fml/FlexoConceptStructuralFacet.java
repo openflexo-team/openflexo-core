@@ -38,12 +38,14 @@
 
 package org.openflexo.foundation.fml;
 
+import java.util.Collection;
 import java.util.List;
 
+import org.openflexo.connie.Bindable;
 import org.openflexo.connie.BindingModel;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
-import org.openflexo.toolbox.ConcatenedList;
+import org.openflexo.model.validation.Validable;
 
 @ModelEntity
 @ImplementationClass(FlexoConceptStructuralFacet.FlexoConceptStructuralFacetImpl.class)
@@ -67,8 +69,12 @@ public interface FlexoConceptStructuralFacet extends FlexoConceptObject, FlexoFa
 
 		@Override
 		public void setFlexoConcept(FlexoConcept flexoConcept) {
+			FlexoConcept oldValue = this.flexoConcept;
+			BindingModel oldBM = getFlexoConcept() != null ? getFlexoConcept().getBindingModel() : null;
 			this.flexoConcept = flexoConcept;
-			properties = null;
+			BindingModel newBM = getFlexoConcept() != null ? getFlexoConcept().getBindingModel() : null;
+			getPropertyChangeSupport().firePropertyChange(Bindable.BINDING_MODEL_PROPERTY, oldBM, newBM);
+			getPropertyChangeSupport().firePropertyChange("flexoConcept", oldValue, flexoConcept);
 		}
 
 		@Override
@@ -86,23 +92,29 @@ public interface FlexoConceptStructuralFacet extends FlexoConceptObject, FlexoFa
 			return getFlexoConcept().getURI();
 		}
 
-		private List<FlexoProperty<?>> properties = null;
+		// private List<FlexoProperty<?>> properties = null;
 
 		@Override
 		public List<FlexoProperty<?>> getProperties() {
-			if (properties == null) {
-				if (getFlexoConcept() instanceof AbstractVirtualModel) {
-					properties = new ConcatenedList<FlexoProperty<?>>(((AbstractVirtualModel) getFlexoConcept()).getModelSlots(),
+			return getFlexoConcept().getDeclaredProperties();
+			/*if (properties == null) {
+				if (getFlexoConcept() instanceof VirtualModel) {
+					properties = new ConcatenedList<FlexoProperty<?>>(((VirtualModel) getFlexoConcept()).getModelSlots(),
 							getFlexoConcept().getFlexoProperties());
 				} else if (getFlexoConcept() != null) {
 					properties = getFlexoConcept().getFlexoProperties();
 				}
 			}
-			return properties;
+			return properties;*/
 		}
 
 		public void notifiedPropertiesChanged(FlexoProperty<?> oldValue, FlexoProperty<?> newValue) {
 			getPropertyChangeSupport().firePropertyChange("properties", oldValue, newValue);
+		}
+
+		@Override
+		public Collection<? extends Validable> getEmbeddedValidableObjects() {
+			return getProperties();
 		}
 
 	}

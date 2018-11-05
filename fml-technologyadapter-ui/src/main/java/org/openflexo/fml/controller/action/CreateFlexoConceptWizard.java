@@ -44,16 +44,15 @@ import java.util.logging.Logger;
 
 import org.openflexo.ApplicationContext;
 import org.openflexo.components.wizard.WizardStep;
-import org.openflexo.fib.annotation.FIBPanel;
-import org.openflexo.foundation.fml.AbstractVirtualModel;
+import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.action.AbstractCreateFlexoConcept.ParentFlexoConceptEntry;
 import org.openflexo.foundation.fml.action.CreateFlexoConcept;
-import org.openflexo.foundation.fml.rt.VirtualModelInstance;
+import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstance;
+import org.openflexo.gina.annotation.FIBPanel;
 import org.openflexo.icon.FMLIconLibrary;
 import org.openflexo.icon.IconFactory;
 import org.openflexo.icon.IconLibrary;
-import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.toolbox.StringUtils;
 import org.openflexo.view.controller.FlexoController;
 
@@ -62,21 +61,20 @@ public class CreateFlexoConceptWizard extends AbstractCreateFlexoConceptWizard<C
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(CreateFlexoConceptWizard.class.getPackage().getName());
 
-	private static final String DUPLICATED_NAME = FlexoLocalization.localizedForKey("this_name_is_already_used_please_choose_an_other_one");
-	private static final String EMPTY_NAME = FlexoLocalization.localizedForKey("flexo_concept_must_have_an_non_empty_and_unique_name");
+	private static final String DUPLICATED_NAME = "this_name_is_already_used_please_choose_an_other_one";
+	private static final String EMPTY_NAME = "flexo_concept_must_have_an_non_empty_and_unique_name";
 
 	private final DescribeFlexoConcept describeFlexoConcept;
-	private final ConfigureAdditionalStepsForNewFlexoConcept configureAdditionalStepsForNewFlexoConcept;
 
 	public CreateFlexoConceptWizard(CreateFlexoConcept action, FlexoController controller) {
 		super(action, controller);
 		addStep(describeFlexoConcept = new DescribeFlexoConcept());
-		addStep(configureAdditionalStepsForNewFlexoConcept = new ConfigureAdditionalStepsForNewFlexoConcept());
+		createAdditionalSteps();
 	}
 
 	@Override
 	public String getWizardTitle() {
-		return FlexoLocalization.localizedForKey("create_flexo_concept");
+		return getAction().getLocales().localizedForKey("create_flexo_concept");
 	}
 
 	@Override
@@ -89,7 +87,7 @@ public class CreateFlexoConceptWizard extends AbstractCreateFlexoConceptWizard<C
 	}
 
 	/**
-	 * This step is used to set {@link VirtualModel} to be used, as well as name and title of the {@link VirtualModelInstance}
+	 * This step is used to set {@link VirtualModel} to be used, as well as name and title of the {@link FMLRTVirtualModelInstance}
 	 * 
 	 * @author sylvain
 	 *
@@ -105,27 +103,30 @@ public class CreateFlexoConceptWizard extends AbstractCreateFlexoConceptWizard<C
 			return CreateFlexoConceptWizard.this.getAction();
 		}
 
-		public AbstractVirtualModel<?> getVirtualModel() {
-			return getAction().getFocusedObject();
+		public VirtualModel getVirtualModel() {
+			return getAction().getFocusedObject().getDeclaringVirtualModel();
 		}
 
 		@Override
 		public String getTitle() {
-			return FlexoLocalization.localizedForKey("describe_flexo_concept");
+			return getAction().getLocales().localizedForKey("describe_flexo_concept");
 		}
 
 		@Override
 		public boolean isValid() {
 
 			if (StringUtils.isEmpty(getNewFlexoConceptName())) {
-				setIssueMessage(EMPTY_NAME, IssueMessageType.ERROR);
+				setIssueMessage(getAction().getLocales().localizedForKey(EMPTY_NAME), IssueMessageType.ERROR);
 				return false;
-			} else if (getAction().getFocusedObject() instanceof VirtualModel
-					&& getAction().getFocusedObject().getFlexoConcept(getNewFlexoConceptName()) != null) {
-				setIssueMessage(DUPLICATED_NAME, IssueMessageType.ERROR);
+			}
+			else if (getAction().getFocusedObject() instanceof VirtualModel
+					&& getAction().getFocusedObject().getDeclaringVirtualModel().getFlexoConcept(getNewFlexoConceptName()) != null) {
+				setIssueMessage(getAction().getLocales().localizedForKey(DUPLICATED_NAME), IssueMessageType.ERROR);
 				return false;
-			} else if (StringUtils.isEmpty(getNewFlexoConceptDescription())) {
-				setIssueMessage(FlexoLocalization.localizedForKey("it_is_recommanded_to_describe_flexo_concept"), IssueMessageType.WARNING);
+			}
+			else if (StringUtils.isEmpty(getNewFlexoConceptDescription())) {
+				setIssueMessage(getAction().getLocales().localizedForKey("it_is_recommanded_to_describe_flexo_concept"),
+						IssueMessageType.WARNING);
 			}
 
 			return true;
@@ -158,6 +159,18 @@ public class CreateFlexoConceptWizard extends AbstractCreateFlexoConceptWizard<C
 				getAction().setNewFlexoConceptDescription(newFlexoConceptDescription);
 				getPropertyChangeSupport().firePropertyChange("newFlexoConceptDescription", oldValue, newFlexoConceptDescription);
 				checkValidity();
+			}
+		}
+
+		public FlexoConcept getContainerFlexoConcept() {
+			return getAction().getContainerFlexoConcept();
+		}
+
+		public void setContainerFlexoConcept(FlexoConcept containerFlexoConcept) {
+			if (containerFlexoConcept != getContainerFlexoConcept()) {
+				FlexoConcept oldValue = getContainerFlexoConcept();
+				getAction().setContainerFlexoConcept(containerFlexoConcept);
+				getPropertyChangeSupport().firePropertyChange("containerFlexoConcept", oldValue, containerFlexoConcept);
 			}
 		}
 

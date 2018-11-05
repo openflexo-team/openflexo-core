@@ -44,7 +44,7 @@ import java.util.logging.Logger;
 
 import javax.swing.ImageIcon;
 
-import org.openflexo.fib.annotation.FIBPanel;
+import org.openflexo.gina.annotation.FIBPanel;
 import org.openflexo.icon.UtilsIconLibrary;
 import org.openflexo.logging.FlexoLogger;
 import org.openflexo.rm.Resource;
@@ -223,7 +223,7 @@ public abstract class WizardStep implements HasPropertyChangeSupport {
 		issueMessageChangeRequested = false;
 		lastValidityStatus = isValid();
 		if (!issueMessageChangeRequested) {
-			setIssueMessage(null, null);
+			setIssueMessage(null, (IssueMessageType) null);
 		}
 		IssueMessageType validity = getIssueMessageType();
 
@@ -238,8 +238,11 @@ public abstract class WizardStep implements HasPropertyChangeSupport {
 			getPropertyChangeSupport().firePropertyChange("issueMessage", null, getIssueMessage());
 			getPropertyChangeSupport().firePropertyChange("issueMessageType", null, getIssueMessageType());
 			getPropertyChangeSupport().firePropertyChange("issueMessageIcon", null, getIssueMessageIcon());
-			wizard.updateStatus();
-		} else {
+			if (wizard != null) {
+				wizard.updateStatus();
+			}
+		}
+		else {
 			// Nothing to do
 		}
 		lastNotifiedValidity = validity;
@@ -263,6 +266,25 @@ public abstract class WizardStep implements HasPropertyChangeSupport {
 		issueMessageChangeRequested = true;
 		setIssueMessageType(messageType);
 		setIssueMessage(issueMessage);
+	}
+
+	public void setIssueMessage(String issueMessage,
+			org.openflexo.foundation.action.transformation.TransformationStrategy.IssueMessageType messageType) {
+		setIssueMessage(issueMessage, getIssueMessageType(messageType));
+	}
+
+	private IssueMessageType getIssueMessageType(
+			org.openflexo.foundation.action.transformation.TransformationStrategy.IssueMessageType messageType) {
+		switch (messageType) {
+			case INFO:
+				return IssueMessageType.INFO;
+			case WARNING:
+				return IssueMessageType.WARNING;
+			case ERROR:
+				return IssueMessageType.ERROR;
+			default:
+				return null;
+		}
 	}
 
 	public enum IssueMessageType {
@@ -303,14 +325,14 @@ public abstract class WizardStep implements HasPropertyChangeSupport {
 			return null;
 		}
 		switch (getIssueMessageType()) {
-		case ERROR:
-			return UtilsIconLibrary.ERROR_ICON;
-		case WARNING:
-			return UtilsIconLibrary.WARNING_ICON;
-		case INFO:
-			return UtilsIconLibrary.OK_ICON;
-		default:
-			return null;
+			case ERROR:
+				return UtilsIconLibrary.ERROR_ICON;
+			case WARNING:
+				return UtilsIconLibrary.WARNING_ICON;
+			case INFO:
+				return UtilsIconLibrary.OK_ICON;
+			default:
+				return null;
 		}
 	}
 
@@ -318,6 +340,12 @@ public abstract class WizardStep implements HasPropertyChangeSupport {
 	 * Hook executed when a step has finished
 	 */
 	public void done() {
+	}
+
+	/**
+	 * Hook executed when a wizard has been cancelled, current step is then called with this method
+	 */
+	public void cancelled() {
 	}
 
 	/**

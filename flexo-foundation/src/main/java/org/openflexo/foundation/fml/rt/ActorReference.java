@@ -64,7 +64,8 @@ import org.openflexo.toolbox.StringUtils;
  */
 @ModelEntity(isAbstract = true)
 @ImplementationClass(ActorReference.ActorReferenceImpl.class)
-@Imports({ @Import(ConceptActorReference.class), @Import(ModelObjectActorReference.class), @Import(PrimitiveActorReference.class) })
+@Imports({ @Import(ModelObjectActorReference.class), @Import(PrimitiveActorReference.class), @Import(FlexoEnumValueActorReference.class),
+		@Import(ModelSlotInstance.class) })
 public abstract interface ActorReference<T> extends VirtualModelInstanceObject {
 
 	@PropertyIdentifier(type = FlexoConceptInstance.class)
@@ -92,6 +93,14 @@ public abstract interface ActorReference<T> extends VirtualModelInstanceObject {
 	public T getModellingElement();
 
 	/**
+	 * Retrieve and return modelling element from informations stored in this {@link ActorReference}<br>
+	 * When forceLoading flag to false, and modelling element not loaded, return null
+	 * 
+	 * @return
+	 */
+	public T getModellingElement(boolean forceLoading);
+
+	/**
 	 * Sets modelling element referenced by this {@link ActorReference}
 	 * 
 	 * @param object
@@ -111,30 +120,21 @@ public abstract interface ActorReference<T> extends VirtualModelInstanceObject {
 	@Setter(FLEXO_CONCEPT_INSTANCE_KEY)
 	public void setFlexoConceptInstance(FlexoConceptInstance epi);
 
-	public FlexoRole<T> getFlexoRole();
+	public FlexoRole<? super T> getFlexoRole();
 
-	public void setFlexoRole(FlexoRole<T> patternRole);
+	public void setFlexoRole(FlexoRole<? super T> patternRole);
 
 	public ModelSlotInstance<?, ?> getModelSlotInstance();
 
 	public Class<? extends T> getActorClass();
 
 	public static abstract class ActorReferenceImpl<T> extends VirtualModelInstanceObjectImpl implements ActorReference<T> {
-		private FlexoRole<T> flexoRole;
+		private FlexoRole<? super T> flexoRole;
 		private String flexoRoleName;
-		private ModelSlot modelSlot;
 		private FlexoConceptInstance flexoConceptInstance;
 
-		public ModelSlot getModelSlot() {
-			return modelSlot;
-		}
-
-		public void setModelSlot(ModelSlot modelSlot) {
-			this.modelSlot = modelSlot;
-		}
-
 		@Override
-		public VirtualModelInstance getResourceData() {
+		public VirtualModelInstance<?, ?> getResourceData() {
 			if (getFlexoConceptInstance() != null) {
 				return getFlexoConceptInstance().getResourceData();
 			}
@@ -147,7 +147,18 @@ public abstract interface ActorReference<T> extends VirtualModelInstanceObject {
 		 * @return
 		 */
 		@Override
-		public abstract T getModellingElement();
+		public final T getModellingElement() {
+			return getModellingElement(true);
+		}
+
+		/**
+		 * Retrieve and return modelling element from informations stored in this {@link ActorReference}<br>
+		 * When forceLoading flag to false, and modelling element not loaded, return null
+		 * 
+		 * @return
+		 */
+		@Override
+		public abstract T getModellingElement(boolean forceLoading);
 
 		@Override
 		public FlexoConceptInstance getFlexoConceptInstance() {
@@ -160,7 +171,7 @@ public abstract interface ActorReference<T> extends VirtualModelInstanceObject {
 		}
 
 		@Override
-		public FlexoRole<T> getFlexoRole() {
+		public FlexoRole<? super T> getFlexoRole() {
 			if (flexoRole == null && flexoConceptInstance != null && flexoConceptInstance.getFlexoConcept() != null
 					&& StringUtils.isNotEmpty(flexoRoleName)
 					&& flexoConceptInstance.getFlexoConcept().getAccessibleProperty(flexoRoleName) instanceof FlexoRole) {
@@ -170,8 +181,8 @@ public abstract interface ActorReference<T> extends VirtualModelInstanceObject {
 		}
 
 		@Override
-		public void setFlexoRole(FlexoRole<T> patternRole) {
-			this.flexoRole = patternRole;
+		public void setFlexoRole(FlexoRole<? super T> flexoRole) {
+			this.flexoRole = flexoRole;
 		}
 
 		@Override
@@ -188,7 +199,10 @@ public abstract interface ActorReference<T> extends VirtualModelInstanceObject {
 		}
 
 		@Override
-		public VirtualModelInstance getVirtualModelInstance() {
+		public VirtualModelInstance<?, ?> getVirtualModelInstance() {
+			if (getFlexoConceptInstance() instanceof FMLRTVirtualModelInstance) {
+				return (FMLRTVirtualModelInstance) getFlexoConceptInstance();
+			}
 			if (getFlexoConceptInstance() != null) {
 				return getFlexoConceptInstance().getVirtualModelInstance();
 			}
@@ -197,10 +211,13 @@ public abstract interface ActorReference<T> extends VirtualModelInstanceObject {
 
 		@Override
 		public ModelSlotInstance<?, ?> getModelSlotInstance() {
-			if (getVirtualModelInstance() != null) {
-				return getVirtualModelInstance().getModelSlotInstance(getFlexoRole().getModelSlot());
+			ModelSlotInstance<?, ?> returned = null;
+			if (getFlexoRole() != null && getFlexoRole().getModelSlot() != null) {
+				if (getVirtualModelInstance() != null) {
+					returned = getVirtualModelInstance().getModelSlotInstance((ModelSlot) getFlexoRole().getModelSlot());
+				}
 			}
-			return null;
+			return returned;
 		}
 
 		@Override

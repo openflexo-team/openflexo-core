@@ -38,9 +38,12 @@
 
 package org.openflexo.foundation.fml;
 
+import java.beans.PropertyChangeSupport;
 import java.lang.reflect.Type;
 
 import org.openflexo.connie.DataBinding;
+import org.openflexo.connie.type.TypeUtils;
+import org.openflexo.foundation.fml.FMLRepresentationContext.FMLRepresentationOutput;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
@@ -48,6 +51,7 @@ import org.openflexo.model.annotations.PropertyIdentifier;
 import org.openflexo.model.annotations.Setter;
 import org.openflexo.model.annotations.XMLAttribute;
 import org.openflexo.model.annotations.XMLElement;
+import org.openflexo.toolbox.StringUtils;
 
 /**
  * A {@link ExpressionProperty} is a particular implementation of a {@link FlexoProperty} allowing to access data using an expression<br>
@@ -114,43 +118,85 @@ public abstract interface ExpressionProperty<T> extends FlexoProperty<T> {
 		public void setExpression(DataBinding<? super T> expression) {
 			if (expression != null) {
 				this.expression = new DataBinding<Object>(expression.toString(), this, Object.class, DataBinding.BindingDefinitionType.GET);
-				expression.setBindingName("expression");
-				expression.setMandatory(true);
+				this.expression.setBindingName("expression");
+				this.expression.setMandatory(true);
 			}
 			notifiedBindingChanged(expression);
 		}
 
 		private boolean isAnalysingType = false;
+		private Type lastKnownType = Object.class;
 
 		@Override
 		public Type getType() {
 
+			// TODO: i think following code is no more necessary, since DataBinding now handle this
+			// Just do something like:
+			// if (getExpression() != null && getExpression().isSet() && getExpression().isValid()) {
+			// return getExpression().getAnalyzedType();
+			// }
+			// return Object.class;
+
 			if (isAnalysingType) {
-				return Object.class;
-			} else {
-				isAnalysingType = true;
+				return lastKnownType;
+			}
+			else {
 
-				/*System.out.println("Le type de " + getExpression() + " c'est quoi ?");
-				System.out.println("BM=" + getBindingModel());
-				System.out.println("valid=" + getExpression().isValid());
-				System.out.println("return: " + getExpression().getAnalyzedType())*/
+				// TODO: we should cache the result of analyzed type
+				// Because it takes too much time
+				// We need to explore the conditions for an analyzed type to change
+				// See https://bugs.openflexo.org/browse/CONNIE-18
 
-				// getBindingModel();
+				// if (lastKnownType == null) {
 
-				if (getExpression() != null && getExpression().isValid()) {
-					Type returned = getExpression().getAnalyzedType();
-					// System.out.println("je retourne " + returned);
-					// System.out.println("valid=" + getExpression().isValid());
+				try {
 
+					isAnalysingType = true;
+
+					/*System.out.println("Le type de " + getExpression() + " c'est quoi ?");
+					System.out.println("BM=" + getBindingModel());
+					System.out.println("valid=" + getExpression().isValid());
+					System.out.println("return: " + getExpression().getAnalyzedType());*/
+
+					if (getExpression() != null && getExpression().isValid()) {
+						lastKnownType = getExpression().getAnalyzedType();
+						// System.out.println("je retourne " + returned);
+						// System.out.println("valid=" + getExpression().isValid());
+						isAnalysingType = false;
+					}
+				} finally {
 					isAnalysingType = false;
-					return returned;
 				}
+				// }
 
-				isAnalysingType = false;
 			}
 
-			return Object.class;
+			return lastKnownType;
 		}
+
+		@Override
+		public String getFMLRepresentation(FMLRepresentationContext context) {
+			FMLRepresentationOutput out = new FMLRepresentationOutput(context);
+			out.append(getFMLAnnotation(context), context);
+			out.append(StringUtils.LINE_SEPARATOR, context);
+			out.append("public " + TypeUtils.simpleRepresentation(getResultingType()) + " " + getName() + " = " + getExpression() + ";",
+					context);
+			return out.toString();
+		}
+
+		/**
+		 * Return boolean indicating if this {@link FlexoProperty} is notification-safe (all modifications of data retrived from that
+		 * property are notified using {@link PropertyChangeSupport} scheme)<br>
+		 * 
+		 * When tagged as unsafe, disable caching while evaluating related {@link DataBinding}.
+		 * 
+		 * @return
+		 */
+		@Override
+		public boolean isNotificationSafe() {
+			return true;
+		}
+
 	}
 
 }

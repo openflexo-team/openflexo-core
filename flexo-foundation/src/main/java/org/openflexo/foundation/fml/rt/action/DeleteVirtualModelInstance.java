@@ -46,42 +46,42 @@ import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.FlexoObject.FlexoObjectImpl;
 import org.openflexo.foundation.action.FlexoAction;
-import org.openflexo.foundation.action.FlexoActionType;
-import org.openflexo.foundation.fml.rt.VirtualModelInstance;
+import org.openflexo.foundation.action.FlexoActionFactory;
+import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstance;
 
-public class DeleteVirtualModelInstance extends FlexoAction<DeleteVirtualModelInstance, VirtualModelInstance, FlexoObject> {
+public class DeleteVirtualModelInstance extends FlexoAction<DeleteVirtualModelInstance, FMLRTVirtualModelInstance, FlexoObject> {
 
 	private static final Logger logger = Logger.getLogger(DeleteVirtualModelInstance.class.getPackage().getName());
 
-	public static FlexoActionType<DeleteVirtualModelInstance, VirtualModelInstance, FlexoObject> actionType = new FlexoActionType<DeleteVirtualModelInstance, VirtualModelInstance, FlexoObject>(
-			"delete_virtual_model_instance", FlexoActionType.editGroup, FlexoActionType.DELETE_ACTION_TYPE) {
+	public static FlexoActionFactory<DeleteVirtualModelInstance, FMLRTVirtualModelInstance, FlexoObject> actionType = new FlexoActionFactory<DeleteVirtualModelInstance, FMLRTVirtualModelInstance, FlexoObject>(
+			"delete_virtual_model_instance", FlexoActionFactory.editGroup, FlexoActionFactory.DELETE_ACTION_TYPE) {
 
 		/**
 		 * Factory method
 		 */
 		@Override
-		public DeleteVirtualModelInstance makeNewAction(VirtualModelInstance focusedObject, Vector<FlexoObject> globalSelection,
+		public DeleteVirtualModelInstance makeNewAction(FMLRTVirtualModelInstance focusedObject, Vector<FlexoObject> globalSelection,
 				FlexoEditor editor) {
 			return new DeleteVirtualModelInstance(focusedObject, globalSelection, editor);
 		}
 
 		@Override
-		public boolean isVisibleForSelection(VirtualModelInstance vmi, Vector<FlexoObject> globalSelection) {
-			return vmi != null && TypeUtils.isAssignableTo(vmi, VirtualModelInstance.class);
+		public boolean isVisibleForSelection(FMLRTVirtualModelInstance vmi, Vector<FlexoObject> globalSelection) {
+			return vmi != null && TypeUtils.isAssignableTo(vmi, FMLRTVirtualModelInstance.class);
 		}
 
 		@Override
-		public boolean isEnabledForSelection(VirtualModelInstance vmi, Vector<FlexoObject> globalSelection) {
+		public boolean isEnabledForSelection(FMLRTVirtualModelInstance vmi, Vector<FlexoObject> globalSelection) {
 			return isVisibleForSelection(vmi, globalSelection);
 		}
 
 	};
 
 	static {
-		FlexoObjectImpl.addActionForClass(DeleteVirtualModelInstance.actionType, VirtualModelInstance.class);
+		FlexoObjectImpl.addActionForClass(DeleteVirtualModelInstance.actionType, FMLRTVirtualModelInstance.class);
 	}
 
-	DeleteVirtualModelInstance(VirtualModelInstance focusedObject, Vector<FlexoObject> globalSelection, FlexoEditor editor) {
+	private DeleteVirtualModelInstance(FMLRTVirtualModelInstance focusedObject, Vector<FlexoObject> globalSelection, FlexoEditor editor) {
 		super(actionType, focusedObject, globalSelection, editor);
 	}
 

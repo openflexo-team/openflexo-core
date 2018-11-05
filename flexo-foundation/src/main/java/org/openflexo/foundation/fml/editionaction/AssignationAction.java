@@ -43,11 +43,12 @@ import java.util.logging.Logger;
 
 import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.expr.BindingValue;
+import org.openflexo.connie.type.ExplicitNullType;
 import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.fml.FMLRepresentationContext;
 import org.openflexo.foundation.fml.FMLRepresentationContext.FMLRepresentationOutput;
 import org.openflexo.foundation.fml.FlexoProperty;
-import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
+import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
 import org.openflexo.model.annotations.DefineValidationRule;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ImplementationClass;
@@ -93,21 +94,29 @@ public interface AssignationAction<T> extends AbstractAssignationAction<T> {
 
 		private DataBinding<? super T> assignation;
 
+		private Type getAssignableNotNullType() {
+			Type returned = getAssignableType();
+			if (returned instanceof ExplicitNullType) {
+				return Object.class;
+			}
+			return returned;
+		}
+
 		@Override
 		public DataBinding<? super T> getAssignation() {
 			if (assignation == null) {
-				assignation = new DataBinding<Object>(this, Object.class, DataBinding.BindingDefinitionType.GET_SET) {
-					@Override
-					public Type getDeclaredType() {
-						return getAssignableType();
-					}
-				};
-				assignation.setDeclaredType(getAssignableType());
+				assignation = new DataBinding<Object>(this, Object.class, DataBinding.BindingDefinitionType.GET_SET)/*{
+																													@Override
+																													public Type getDeclaredType() {
+																													return getAssignableNotNullType();
+																													}
+																													}*/;
+				// assignation.setDeclaredType(getAssignableNotNullType());
 				assignation.setBindingName("assignation");
 				assignation.setMandatory(true);
 
 			}
-			assignation.setDeclaredType(getAssignableType());
+			// assignation.setDeclaredType(getAssignableNotNullType());
 			return assignation;
 		}
 
@@ -115,13 +124,13 @@ public interface AssignationAction<T> extends AbstractAssignationAction<T> {
 		public void setAssignation(DataBinding<? super T> assignation) {
 			if (assignation != null) {
 				this.assignation = new DataBinding<Object>(assignation.toString(), this, Object.class,
-						DataBinding.BindingDefinitionType.GET_SET) {
-					@Override
-					public Type getDeclaredType() {
-						return getAssignableType();
-					}
-				};
-				assignation.setDeclaredType(getAssignableType());
+						DataBinding.BindingDefinitionType.GET_SET) /*{
+																	@Override
+																	public Type getDeclaredType() {
+																	return getAssignableNotNullType();
+																	}
+																	}*/;
+				// assignation.setDeclaredType(getAssignableNotNullType());
 				assignation.setBindingName("assignation");
 				assignation.setMandatory(true);
 			}
@@ -133,9 +142,9 @@ public interface AssignationAction<T> extends AbstractAssignationAction<T> {
 			if (getFlexoConcept() == null) {
 				return null;
 			}
-			if (assignation != null && assignation.isBindingValue()) {
+			if (assignation != null && assignation.isValid() && assignation.isBindingValue()) {
 				BindingValue bindingValue = (BindingValue) assignation.getExpression();
-				if (bindingValue.getBindingPath().size() == 0) {
+				if (bindingValue.isValid() && bindingValue.getBindingPath().size() == 0) {
 					return (FlexoProperty<T>) getFlexoConcept().getAccessibleProperty(bindingValue.getVariableName());
 				}
 			}
@@ -143,10 +152,10 @@ public interface AssignationAction<T> extends AbstractAssignationAction<T> {
 		}
 
 		@Override
-		public T execute(FlexoBehaviourAction action) throws FlexoException {
-			T value = getAssignationValue(action);
+		public T execute(RunTimeEvaluationContext evaluationContext) throws FlexoException {
+			T value = getAssignationValue(evaluationContext);
 			try {
-				getAssignation().setBindingValue(value, action);
+				getAssignation().setBindingValue(value, evaluationContext);
 			} catch (Exception e) {
 				logger.warning("Unexpected assignation issue, " + getAssignation() + " value=" + value + " exception: " + e);
 				e.printStackTrace();

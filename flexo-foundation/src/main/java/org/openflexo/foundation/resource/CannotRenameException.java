@@ -39,7 +39,6 @@
 package org.openflexo.foundation.resource;
 
 import org.openflexo.foundation.FlexoException;
-import org.openflexo.localization.FlexoLocalization;
 
 /**
  * @author sylvain
@@ -73,6 +72,9 @@ public class CannotRenameException extends FlexoException {
 	 */
 	@Override
 	public String getLocalizedMessage() {
-		return FlexoLocalization.localizedForKey("cannot_rename_resource") + " " + getResource();
+		if (resource != null) {
+			return resource.getLocales().localizedForKey("cannot_rename_resource") + " " + getResource();
+		}
+		return super.getLocalizedMessage();
 	}
 }

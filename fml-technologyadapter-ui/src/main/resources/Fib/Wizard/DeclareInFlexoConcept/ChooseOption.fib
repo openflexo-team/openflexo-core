@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Panel id="0" darkLevel="0" useScrollBar="false" protectContent="false"
+	height="400" name="main" layout="twocols"
+	controllerClassName="org.openflexo.view.controller.FlexoFIBController"
+	border="empty" trackViewPortWidth="true" font="Lucida Grande,0,11"
+	width="600"
+	dataClassName="org.openflexo.view.controller.action.AbstractDeclareInFlexoConceptWizard$ChooseOption"
+	titleFont="Lucida Grande,0,11" trackViewPortHeight="true">
+	<LocalizedDictionary id="1">
+		<Localized id="2" value="Creates new FlexoConcept" lang="English"
+			key="CREATES_FLEXO_CONCEPT" />
+		<Localized id="3" value="CREATES_FLEXO_CONCEPT" lang="Dutch"
+			key="CREATES_FLEXO_CONCEPT" />
+		<Localized id="4" value="Créer un nouveau FlexoConcept"
+			lang="French" key="CREATES_FLEXO_CONCEPT" />
+		<Localized id="5" value="Replace element in existing FlexoConcept"
+			lang="English" key="REPLACE_ELEMENT_IN_EXISTING_FLEXO_CONCEPT" />
+		<Localized id="6" value="REPLACE_ELEMENT_IN_EXISTING_FLEXO_CONCEPT"
+			lang="Dutch" key="REPLACE_ELEMENT_IN_EXISTING_FLEXO_CONCEPT" />
+		<Localized id="7"
+			value="Remplacer un element d'un FlexoConcept existant" lang="French"
+			key="REPLACE_ELEMENT_IN_EXISTING_FLEXO_CONCEPT" />
+		<Localized id="8" value="Creates element in existing FlexoConcept"
+			lang="English" key="CREATE_ELEMENT_IN_EXISTING_FLEXO_CONCEPT" />
+		<Localized id="9" value="CREATE_ELEMENT_IN_EXISTING_FLEXO_CONCEPT"
+			lang="Dutch" key="CREATE_ELEMENT_IN_EXISTING_FLEXO_CONCEPT" />
+		<Localized id="10"
+			value="Créer un element dans un FlexoConcept existant" lang="French"
+			key="CREATE_ELEMENT_IN_EXISTING_FLEXO_CONCEPT" />
+		<Localized id="11"
+			value="&lt;html&gt;&#xA;  &lt;head&gt;&#xA;    &#xA;  &lt;/head&gt;&#xA;  &lt;body&gt;&#xA;    Creates new FlexoConcept, with a element role taking graphical properties of &#xA;    current selected element&#xA;  &lt;/body&gt;&#xA;&lt;/html&gt;&#xA;"
+			lang="English" key="CREATES_FLEXO_CONCEPT_description" />
+		<Localized id="12"
+			value="&lt;html&gt;&#xA;&lt;head&gt;&#xA;&lt;/head&gt;&#xA;&lt;body&gt;&#xA;CREATES_FLEXO_CONCEPT&#xA;&lt;/body&gt;&#xA;&lt;/html&gt;"
+			lang="Dutch" key="CREATES_FLEXO_CONCEPT_description" />
+		<Localized id="13"
+			value="&lt;html&gt;&#xA;  &lt;head&gt;&#xA;    &#xA;  &lt;/head&gt;&#xA;  &lt;body&gt;&#xA;    Cr&amp;#233;er un nouveau FlexoConcept avec un role de type forme reprenant les &#xA;    propri&amp;#233;t&amp;#233;s graphique de la forme actuellement s&amp;#233;lectionn&amp;#233;e.&#xA;  &lt;/body&gt;&#xA;&lt;/html&gt;&#xA;"
+			lang="French" key="CREATES_FLEXO_CONCEPT_description" />
+		<Localized id="14"
+			value="&lt;html&gt;&#xA;  &lt;head&gt;&#xA;    &#xA;  &lt;/head&gt;&#xA;  &lt;body&gt;&#xA;    Choose existing FlexoConcept where a element is already defined, and will be &#xA;    replaced with graphical properties of current selected element&#xA;  &lt;/body&gt;&#xA;&lt;/html&gt;&#xA;"
+			lang="English" key="REPLACE_ELEMENT_IN_EXISTING_FLEXO_CONCEPT_description" />
+		<Localized id="15"
+			value="&lt;html&gt;&#xA;  &lt;head&gt;&#xA;    &#xA;  &lt;/head&gt;&#xA;  &lt;body&gt;&#xA;    CHOOSE_EXISTING_FLEXO_CONCEPT&#xA;  &lt;/body&gt;&#xA;&lt;/html&gt;&#xA;"
+			lang="Dutch" key="REPLACE_ELEMENT_IN_EXISTING_FLEXO_CONCEPT_description" />
+		<Localized id="16"
+			value="&lt;html&gt;&#xA;  &lt;head&gt;&#xA;    &#xA;  &lt;/head&gt;&#xA;  &lt;body&gt;&#xA;    Choisir un FlexoConcept existant dans lequel une forme est d&amp;#233;j&amp;#224; d&amp;#233;finie et &#xA;    sera remplac&amp;#233;e par les propri&amp;#233;t&amp;#233;s graphiques de la forme s&amp;#233;lectionn&amp;#233;e.&#xA;  &lt;/body&gt;&#xA;&lt;/html&gt;&#xA;"
+			lang="French" key="REPLACE_ELEMENT_IN_EXISTING_FLEXO_CONCEPT_description" />
+		<Localized id="17"
+			value="&lt;html&gt;&#xA;  &lt;head&gt;&#xA;    &#xA;  &lt;/head&gt;&#xA;  &lt;body&gt;&#xA;    Choose existing FlexoConcept where a element will be created with graphical &#xA;    properties set with those from current selected element&#xA;  &lt;/body&gt;&#xA;&lt;/html&gt;&#xA;"
+			lang="English" key="CREATE_ELEMENT_IN_EXISTING_FLEXO_CONCEPT_description" />
+		<Localized id="18"
+			value="&lt;html&gt;&#xA;&lt;head&gt;&#xA;&lt;/head&gt;&#xA;&lt;body&gt;&#xA;CHOOSE_EXISTING_FLEXO_CONCEPT&#xA;&lt;/body&gt;&#xA;&lt;/html&gt;"
+			lang="Dutch" key="CREATE_ELEMENT_IN_EXISTING_FLEXO_CONCEPT_description" />
+		<Localized id="19"
+			value="&lt;html&gt;&#xA;  &lt;head&gt;&#xA;    &#xA;  &lt;/head&gt;&#xA;  &lt;body&gt;&#xA;    Choisir un FlexoConcept existant dans lequel une forme va &amp;#234;tre cr&amp;#233;&amp;#233;e &#xA;    reprenant les propri&amp;#233;t&amp;#233;s graphiques de la forme s&amp;#233;lectionn&amp;#233;e.&#xA;  &lt;/body&gt;&#xA;&lt;/html&gt;&#xA;"
+			lang="French" key="CREATE_ELEMENT_IN_EXISTING_FLEXO_CONCEPT_description" />
+		<Localized id="20" value="Virtual model" lang="English"
+			key="virtual_model" />
+		<Localized id="21" value="virtual_model" lang="Dutch"
+			key="virtual_model" />
+		<Localized id="22" value="Virtual model" lang="French"
+			key="virtual_model" />
+		<Localized id="23" value="Please select an option" lang="English"
+			key="please_select_an_option" />
+		<Localized id="24" value="please_select_an_option" lang="Dutch"
+			key="please_select_an_option" />
+		<Localized id="25" value="Sélectionner une option" lang="French"
+			key="please_select_an_option" />
+	</LocalizedDictionary>
+	<Label id="26" manageDynamicModel="false" useScrollBar="false"
+		controllerClassName="org.openflexo.gina.controller.FIBController"
+		index="0" localize="true" align="center"
+		constraints="twocols(anchor=center;expandHorizontally=false;expandVertically=false;fill=horizontal;gridHeight=1;gridWidth=0;gridX=0;gridY=0;index=0;insetsBottom=20;insetsLeft=0;insetsRight=0;insetsTop=5;location=left;padX=0;padY=0;weightX=1.0;weightY=0.0)"
+		label="please_select_an_option" readOnly="false" />
+	<RadioButtonList id="27" manageDynamicModel="true"
+		columns="1" description="" controllerClassName="org.openflexo.gina.controller.FIBController"
+		index="1" localize="true"
+		constraints="twocols(anchor=center;expandHorizontally=true;expandVertically=false;fill=horizontal;gridHeight=1;gridWidth=0;gridX=0;gridY=1;index=1;insetsBottom=0;insetsLeft=0;insetsRight=10;insetsTop=0;location=right;padX=0;padY=0;weightX=0.0;weightY=0.0)"
+		format="object.name" showText="true"
+		iteratorClassName="org.openflexo.foundation.action.transformation.AbstractDeclareInFlexoConcept$DeclareInFlexoConceptChoices"
+		vGap="0" showIcon="false" useScrollBar="false" data="data.primaryChoice"
+		staticList="" autoSelectFirstRow="true" name="RadioButtonList" hGap="0"
+		readOnly="false">
+		<LocalizedDictionary id="28" />
+	</RadioButtonList>
+	<Label id="29" manageDynamicModel="false" useScrollBar="false"
+		controllerClassName="org.openflexo.gina.controller.FIBController"
+		index="1" localize="true" align="center"
+		constraints="twocols(anchor=center;expandHorizontally=false;expandVertically=false;fill=none;gridHeight=1;gridWidth=1;gridX=0;gridY=2;index=1;insetsBottom=0;insetsLeft=50;insetsRight=2;insetsTop=0;location=left;padX=0;padY=0;weightX=0.0;weightY=0.0)"
+		label="" readOnly="false" />
+	<Panel id="30" darkLevel="0" useScrollBar="false" protectContent="false"
+		layout="border" controllerClassName="org.openflexo.gina.controller.FIBController"
+		border="empty" trackViewPortWidth="true"
+		constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=10;insetsLeft=0;insetsRight=0;insetsTop=0;location=right)"
+		titleFont="Lucida Grande,0,11" trackViewPortHeight="true">
+		<Label id="31" manageDynamicModel="false" useScrollBar="false"
+			data="(data.primaryChoice.name + &quot;_description&quot;)"
+			controllerClassName="org.openflexo.gina.controller.FIBController"
+			localize="true" font="LucidaGrande,2,11" align="left"
+			constraints="border(location=center)" readOnly="false" />
+	</Panel>
+	<Label id="32" manageDynamicModel="false" useScrollBar="false"
+		controllerClassName="org.openflexo.gina.controller.FIBController"
+		index="6" localize="true" align="center"
+		constraints="twocols(anchor=center;expandHorizontally=false;expandVertically=false;fill=none;gridHeight=1;gridWidth=1;gridX=0;gridY=2;index=1;insetsBottom=0;insetsLeft=50;insetsRight=2;insetsTop=0;location=left;padX=0;padY=0;weightX=0.0;weightY=0.0)"
+		label="virtual_model" readOnly="false" />
+	<Custom id="33" manageDynamicModel="true" useScrollBar="false"
+		data="data.virtualModelResource"
+		componentClassName="org.openflexo.fml.controller.widget.FIBVirtualModelSelector"
+		name="virtualModelSelector" controllerClassName="org.openflexo.gina.controller.FIBController"
+		index="6" localize="true"
+		constraints="twocols(anchor=center;expandHorizontally=true;expandVertically=false;fill=horizontal;gridHeight=1;gridWidth=1;gridX=1;gridY=2;index=1;insetsBottom=0;insetsLeft=0;insetsRight=50;insetsTop=0;location=right;padX=0;padY=0;weightX=0.0;weightY=0.0)"
+		readOnly="false">
+		<Assignment id="37" mandatory="true"
+			value="data.action.editor.serviceManager.virtualModelLibrary" variable="component.virtualModelLibrary" />
+	</Custom>
+	<Label id="39" manageDynamicModel="false" useScrollBar="false"
+		controllerClassName="org.openflexo.gina.controller.FIBController"
+		localize="true" align="left"
+		constraints="twocols(expandHorizontally=false;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=center)"
+		readOnly="false" />
+</Panel>

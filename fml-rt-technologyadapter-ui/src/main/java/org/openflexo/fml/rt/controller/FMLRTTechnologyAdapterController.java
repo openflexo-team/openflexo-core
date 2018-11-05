@@ -38,46 +38,48 @@
 
 package org.openflexo.fml.rt.controller;
 
+import java.util.logging.Logger;
+
 import javax.swing.ImageIcon;
 
 import org.openflexo.components.widget.FIBTechnologyBrowser;
-import org.openflexo.fib.utils.InspectorGroup;
 import org.openflexo.fml.rt.controller.action.ActionSchemeActionInitializer;
 import org.openflexo.fml.rt.controller.action.CreateBasicVirtualModelInstanceInitializer;
-import org.openflexo.fml.rt.controller.action.CreateViewInitializer;
-import org.openflexo.fml.rt.controller.action.DeleteViewInitializer;
+import org.openflexo.fml.rt.controller.action.CreateFlexoConceptInstanceInitializer;
 import org.openflexo.fml.rt.controller.action.DeleteVirtualModelInstanceInitializer;
-import org.openflexo.fml.rt.controller.action.MoveViewInitializer;
+import org.openflexo.fml.rt.controller.action.MoveVirtualModelInstanceInitializer;
 import org.openflexo.fml.rt.controller.action.NavigationSchemeActionInitializer;
 import org.openflexo.fml.rt.controller.action.OpenVirtualModelInstanceInitializer;
 import org.openflexo.fml.rt.controller.action.SynchronizationSchemeActionInitializer;
-import org.openflexo.fml.rt.controller.view.ViewModuleView;
 import org.openflexo.fml.rt.controller.view.VirtualModelInstanceView;
-import org.openflexo.fml.rt.controller.widget.FIBViewLibraryBrowser;
+import org.openflexo.fml.rt.controller.widget.FIBVirtualModelInstanceRepositoriesBrowser;
 import org.openflexo.foundation.fml.ActionScheme;
 import org.openflexo.foundation.fml.CloningScheme;
 import org.openflexo.foundation.fml.CreationScheme;
 import org.openflexo.foundation.fml.DeletionScheme;
+import org.openflexo.foundation.fml.EventListener;
 import org.openflexo.foundation.fml.FlexoBehaviour;
 import org.openflexo.foundation.fml.FlexoConceptInstanceRole;
 import org.openflexo.foundation.fml.FlexoRole;
 import org.openflexo.foundation.fml.NavigationScheme;
 import org.openflexo.foundation.fml.SynchronizationScheme;
+import org.openflexo.foundation.fml.editionaction.AddClassInstance;
 import org.openflexo.foundation.fml.editionaction.DeleteAction;
 import org.openflexo.foundation.fml.editionaction.EditionAction;
 import org.openflexo.foundation.fml.rt.FMLRTTechnologyAdapter;
+import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstance;
+import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstanceRepository;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
-import org.openflexo.foundation.fml.rt.View;
-import org.openflexo.foundation.fml.rt.ViewLibrary;
-import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.foundation.fml.rt.editionaction.AddFlexoConceptInstance;
+import org.openflexo.foundation.fml.rt.editionaction.AddVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.editionaction.SelectFlexoConceptInstance;
+import org.openflexo.foundation.fml.rt.editionaction.SelectVirtualModelInstance;
 import org.openflexo.foundation.technologyadapter.TechnologyObject;
+import org.openflexo.gina.utils.InspectorGroup;
 import org.openflexo.icon.FMLIconLibrary;
 import org.openflexo.icon.FMLRTIconLibrary;
 import org.openflexo.icon.IconFactory;
 import org.openflexo.icon.IconLibrary;
-import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.view.EmptyPanel;
 import org.openflexo.view.ModuleView;
 import org.openflexo.view.controller.ControllerActionInitializer;
@@ -85,7 +87,15 @@ import org.openflexo.view.controller.FlexoController;
 import org.openflexo.view.controller.TechnologyAdapterController;
 import org.openflexo.view.controller.model.FlexoPerspective;
 
+/**
+ * Technology-specific controller provided by {@link FMLRTTechnologyAdapter}<br>
+ * 
+ * @author sylvain
+ *
+ */
 public class FMLRTTechnologyAdapterController extends TechnologyAdapterController<FMLRTTechnologyAdapter> {
+
+	static final Logger logger = Logger.getLogger(FlexoController.class.getPackage().getName());
 
 	@Override
 	public Class<FMLRTTechnologyAdapter> getTechnologyAdapterClass() {
@@ -100,7 +110,8 @@ public class FMLRTTechnologyAdapterController extends TechnologyAdapterControlle
 	@Override
 	protected void initializeInspectors(FlexoController controller) {
 
-		fmlRTInspectorGroup = controller.loadInspectorGroup("FML-RT", getFMLTechnologyAdapterInspectorGroup());
+		fmlRTInspectorGroup = controller.loadInspectorGroup("FML-RT", getTechnologyAdapter().getLocales(),
+				getFMLTechnologyAdapterInspectorGroup());
 		// actionInitializer.getController().getModuleInspectorController()
 		// .loadDirectory(ResourceLocator.locateResource("src/main/resources/Inspectors/Fiacre"));
 	}
@@ -120,13 +131,13 @@ public class FMLRTTechnologyAdapterController extends TechnologyAdapterControlle
 	@Override
 	protected void initializeActions(ControllerActionInitializer actionInitializer) {
 
-		// View library perspective
-		new CreateViewInitializer(actionInitializer);
-		new MoveViewInitializer(actionInitializer);
+		// FMLRTVirtualModelInstance
 
-		new DeleteViewInitializer(actionInitializer);
 		new CreateBasicVirtualModelInstanceInitializer(actionInitializer);
 		new DeleteVirtualModelInstanceInitializer(actionInitializer);
+		new MoveVirtualModelInstanceInitializer(actionInitializer);
+
+		new CreateFlexoConceptInstanceInitializer(actionInitializer);
 
 		new ActionSchemeActionInitializer(actionInitializer);
 		new SynchronizationSchemeActionInitializer(actionInitializer);
@@ -181,25 +192,24 @@ public class FMLRTTechnologyAdapterController extends TechnologyAdapterControlle
 	 */
 	@Override
 	public ImageIcon getIconForTechnologyObject(Class<? extends TechnologyObject<?>> objectClass) {
-		if (View.class.isAssignableFrom(objectClass)) {
-			return FMLRTIconLibrary.VIEW_ICON;
-		} else if (VirtualModelInstance.class.isAssignableFrom(objectClass)) {
+		if (FMLRTVirtualModelInstance.class.isAssignableFrom(objectClass)) {
 			return FMLRTIconLibrary.VIRTUAL_MODEL_INSTANCE_ICON;
-		} else if (FlexoConceptInstance.class.isAssignableFrom(objectClass)) {
+		}
+		else if (FlexoConceptInstance.class.isAssignableFrom(objectClass)) {
 			return FMLRTIconLibrary.FLEXO_CONCEPT_INSTANCE_ICON;
 		}
 		return IconFactory.getImageIcon(FMLRTIconLibrary.OPENFLEXO_NOTEXT_16, IconLibrary.QUESTION);
 	}
 
 	/**
-	 * Return icon representing supplied pattern property
+	 * Return icon representing supplied flexo role class
 	 * 
 	 * @param patternRoleClass
 	 * @return ImageIcon representing supplied pattern property
 	 */
 	@Override
-	public ImageIcon getIconForPatternRole(Class<? extends FlexoRole<?>> patternRoleClass) {
-		if (FlexoConceptInstanceRole.class.isAssignableFrom(patternRoleClass)) {
+	public ImageIcon getIconForFlexoRole(Class<? extends FlexoRole<?>> flexoRoleClass) {
+		if (FlexoConceptInstanceRole.class.isAssignableFrom(flexoRoleClass)) {
 			return FMLRTIconLibrary.FLEXO_CONCEPT_INSTANCE_ICON;
 		}
 		return null;
@@ -209,28 +219,48 @@ public class FMLRTTechnologyAdapterController extends TechnologyAdapterControlle
 	public ImageIcon getIconForEditionAction(Class<? extends EditionAction> editionActionClass) {
 		if (AddFlexoConceptInstance.class.isAssignableFrom(editionActionClass)) {
 			return IconFactory.getImageIcon(FMLRTIconLibrary.FLEXO_CONCEPT_INSTANCE_ICON, IconLibrary.DUPLICATE);
-		} else if (SelectFlexoConceptInstance.class.isAssignableFrom(editionActionClass)) {
+		}
+		if (AddVirtualModelInstance.class.isAssignableFrom(editionActionClass)) {
+			return IconFactory.getImageIcon(FMLRTIconLibrary.VIRTUAL_MODEL_INSTANCE_ICON, IconLibrary.DUPLICATE);
+		}
+		else if (AddClassInstance.class.isAssignableFrom(editionActionClass)) {
+			return IconFactory.getImageIcon(FMLRTIconLibrary.FLEXO_CLASS_INSTANCE_ICON, IconLibrary.DUPLICATE);
+		}
+		else if (SelectFlexoConceptInstance.class.isAssignableFrom(editionActionClass)) {
 			return IconFactory.getImageIcon(FMLRTIconLibrary.FLEXO_CONCEPT_INSTANCE_ICON, IconLibrary.IMPORT);
-		} else if (DeleteAction.class.isAssignableFrom(editionActionClass)) {
+		}
+		else if (SelectVirtualModelInstance.class.isAssignableFrom(editionActionClass)) {
+			return IconFactory.getImageIcon(FMLRTIconLibrary.VIRTUAL_MODEL_INSTANCE_ICON, IconLibrary.IMPORT);
+		}
+		else if (DeleteAction.class.isAssignableFrom(editionActionClass)) {
 			return IconFactory.getImageIcon(FMLRTIconLibrary.FLEXO_CONCEPT_INSTANCE_ICON, IconLibrary.DELETE);
 		}
+
 		return super.getIconForEditionAction(editionActionClass);
 	}
 
 	@Override
 	public ImageIcon getIconForFlexoBehaviour(Class<? extends FlexoBehaviour> flexoBehaviourClass) {
 		if (ActionScheme.class.isAssignableFrom(flexoBehaviourClass)) {
-			return IconFactory.getImageIcon(FMLIconLibrary.ACTION_SCHEME_ICON);
-		} else if (DeletionScheme.class.isAssignableFrom(flexoBehaviourClass)) {
-			return IconFactory.getImageIcon(FMLIconLibrary.DELETE_ICON);
-		} else if (CreationScheme.class.isAssignableFrom(flexoBehaviourClass)) {
-			return IconFactory.getImageIcon(FMLIconLibrary.CREATION_SCHEME_ICON);
-		} else if (NavigationScheme.class.isAssignableFrom(flexoBehaviourClass)) {
-			return IconFactory.getImageIcon(FMLIconLibrary.NAVIGATION_SCHEME_ICON);
-		} else if (SynchronizationScheme.class.isAssignableFrom(flexoBehaviourClass)) {
-			return IconFactory.getImageIcon(FMLIconLibrary.SYNCHRONIZATION_SCHEME_ICON);
-		} else if (CloningScheme.class.isAssignableFrom(flexoBehaviourClass)) {
-			return IconFactory.getImageIcon(FMLIconLibrary.CLONING_SCHEME_ICON);
+			return FMLIconLibrary.ACTION_SCHEME_ICON;
+		}
+		else if (DeletionScheme.class.isAssignableFrom(flexoBehaviourClass)) {
+			return FMLIconLibrary.DELETE_ICON;
+		}
+		else if (CreationScheme.class.isAssignableFrom(flexoBehaviourClass)) {
+			return FMLIconLibrary.CREATION_SCHEME_ICON;
+		}
+		else if (NavigationScheme.class.isAssignableFrom(flexoBehaviourClass)) {
+			return FMLIconLibrary.NAVIGATION_SCHEME_ICON;
+		}
+		else if (SynchronizationScheme.class.isAssignableFrom(flexoBehaviourClass)) {
+			return FMLIconLibrary.SYNCHRONIZATION_SCHEME_ICON;
+		}
+		else if (CloningScheme.class.isAssignableFrom(flexoBehaviourClass)) {
+			return FMLIconLibrary.CLONING_SCHEME_ICON;
+		}
+		else if (EventListener.class.isAssignableFrom(flexoBehaviourClass)) {
+			return FMLIconLibrary.EVENT_LISTENER_ICON;
 		}
 		return super.getIconForFlexoBehaviour(flexoBehaviourClass);
 	}
@@ -238,26 +268,19 @@ public class FMLRTTechnologyAdapterController extends TechnologyAdapterControlle
 	@Override
 	public boolean hasModuleViewForObject(TechnologyObject<FMLRTTechnologyAdapter> object, FlexoController controller) {
 
-		if (object instanceof View) {
+		if (object instanceof FMLRTVirtualModelInstance) {
 			return true;
-		} else if (object instanceof VirtualModelInstance) {
-			return true;
-		} /*else if (object instanceof FlexoConceptInstance) {
-			// NO module view yet
-			}*/
+		}
 		return false;
 	}
 
 	@Override
 	public String getWindowTitleforObject(TechnologyObject<FMLRTTechnologyAdapter> object, FlexoController controller) {
-		if (object instanceof ViewLibrary) {
-			return FlexoLocalization.localizedForKey("view_library");
+		if (object instanceof FMLRTVirtualModelInstanceRepository) {
+			return getLocales().localizedForKey("virtual_model_instance_repository");
 		}
-		if (object instanceof VirtualModelInstance) {
-			return ((VirtualModelInstance) object).getTitle();
-		}
-		if (object instanceof View) {
-			return ((View) object).getName();
+		if (object instanceof FMLRTVirtualModelInstance) {
+			return ((FMLRTVirtualModelInstance) object).getTitle();
 		}
 		return object.toString();
 	}
@@ -273,22 +296,19 @@ public class FMLRTTechnologyAdapterController extends TechnologyAdapterControlle
 	public ModuleView<?> createModuleViewForObject(TechnologyObject<FMLRTTechnologyAdapter> object, FlexoController controller,
 			FlexoPerspective perspective) {
 
-		if (object instanceof View) {
-			View view = (View) object;
-			return new ViewModuleView(view, controller, perspective);
-		} else if (object instanceof VirtualModelInstance) {
-			VirtualModelInstance vmi = (VirtualModelInstance) object;
+		if (object instanceof FMLRTVirtualModelInstance) {
+			FMLRTVirtualModelInstance vmi = (FMLRTVirtualModelInstance) object;
 			return new VirtualModelInstanceView(vmi, controller, perspective);
-		} else if (object instanceof FlexoConceptInstance) {
+		}
+		else if (object instanceof FlexoConceptInstance) {
 			// NO module view yet
 		}
 
-		return new EmptyPanel<TechnologyObject<FMLRTTechnologyAdapter>>(controller, perspective, object);
+		return new EmptyPanel<>(controller, perspective, object);
 	}
 
 	@Override
 	protected FIBTechnologyBrowser<FMLRTTechnologyAdapter> buildTechnologyBrowser(FlexoController controller) {
-		return new FIBViewLibraryBrowser(getTechnologyAdapter(), controller);
+		return new FIBVirtualModelInstanceRepositoriesBrowser(getTechnologyAdapter(), controller);
 	}
-
 }

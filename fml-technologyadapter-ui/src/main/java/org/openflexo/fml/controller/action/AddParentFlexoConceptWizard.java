@@ -48,16 +48,15 @@ import java.util.logging.Logger;
 import org.openflexo.ApplicationContext;
 import org.openflexo.components.wizard.FlexoWizard;
 import org.openflexo.components.wizard.WizardStep;
-import org.openflexo.fib.annotation.FIBPanel;
-import org.openflexo.foundation.fml.AbstractVirtualModel;
 import org.openflexo.foundation.fml.VirtualModel;
+import org.openflexo.foundation.fml.VirtualModelLibrary;
 import org.openflexo.foundation.fml.action.AbstractCreateFlexoConcept.ParentFlexoConceptEntry;
 import org.openflexo.foundation.fml.action.AddParentFlexoConcept;
-import org.openflexo.foundation.fml.rt.VirtualModelInstance;
+import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstance;
+import org.openflexo.gina.annotation.FIBPanel;
 import org.openflexo.icon.FMLIconLibrary;
 import org.openflexo.icon.IconFactory;
 import org.openflexo.icon.IconLibrary;
-import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.view.controller.FlexoController;
 
 public class AddParentFlexoConceptWizard extends FlexoWizard {
@@ -65,7 +64,7 @@ public class AddParentFlexoConceptWizard extends FlexoWizard {
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(AddParentFlexoConceptWizard.class.getPackage().getName());
 
-	private static final String INCONSISTENT_HIERARCHY = FlexoLocalization.localizedForKey("inconsistent_flexo_concept_hierarchy");
+	private static final String INCONSISTENT_HIERARCHY = "inconsistent_flexo_concept_hierarchy";
 
 	private DescribeNewParentConcepts describeNewParentConcepts;
 
@@ -90,7 +89,7 @@ public class AddParentFlexoConceptWizard extends FlexoWizard {
 
 	@Override
 	public String getWizardTitle() {
-		return FlexoLocalization.localizedForKey("define_parent_concepts");
+		return getAction().getLocales().localizedForKey("define_parent_concepts");
 	}
 
 	@Override
@@ -103,7 +102,7 @@ public class AddParentFlexoConceptWizard extends FlexoWizard {
 	}
 
 	/**
-	 * This step is used to set {@link VirtualModel} to be used, as well as name and title of the {@link VirtualModelInstance}
+	 * This step is used to set {@link VirtualModel} to be used, as well as name and title of the {@link FMLRTVirtualModelInstance}
 	 * 
 	 * @author sylvain
 	 *
@@ -135,11 +134,25 @@ public class AddParentFlexoConceptWizard extends FlexoWizard {
 
 		@Override
 		public String getTitle() {
-			return FlexoLocalization.localizedForKey("define_parent_concepts");
+			return getAction().getLocales().localizedForKey("define_parent_concepts");
 		}
 
-		public AbstractVirtualModel<?> getVirtualModel() {
-			return getAction().getFocusedObject().getOwningVirtualModel();
+		/**
+		 * Return the {@link VirtualModel} which will be used as inheriting context in FlexoConceptSelector
+		 * 
+		 * @return
+		 */
+		public VirtualModel getVirtualModel() {
+			if (getAction().getFocusedObject() instanceof VirtualModel) {
+				return ((VirtualModel) getAction().getFocusedObject()).getContainerVirtualModel();
+			}
+			else {
+				return getAction().getFocusedObject().getDeclaringVirtualModel();
+			}
+		}
+
+		public VirtualModelLibrary getVirtualModelLibrary() {
+			return getAction().getFocusedObject().getDeclaringVirtualModel().getVirtualModelLibrary();
 		}
 
 		@Override
@@ -147,7 +160,7 @@ public class AddParentFlexoConceptWizard extends FlexoWizard {
 
 			for (ParentFlexoConceptEntry entry : getParentFlexoConceptEntries()) {
 				if (getAction().getFocusedObject().isSuperConceptOf(entry.getParentConcept())) {
-					setIssueMessage(INCONSISTENT_HIERARCHY, IssueMessageType.ERROR);
+					setIssueMessage(getAction().getLocales().localizedForKey(INCONSISTENT_HIERARCHY), IssueMessageType.ERROR);
 					return false;
 				}
 			}

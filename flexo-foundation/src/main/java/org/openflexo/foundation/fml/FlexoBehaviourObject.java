@@ -51,9 +51,9 @@ import org.openflexo.model.annotations.ModelEntity;
 @ImplementationClass(FlexoBehaviourObject.FlexoBehaviourObjectImpl.class)
 public interface FlexoBehaviourObject extends FlexoConceptObject {
 
-	public FlexoBehaviour getFlexoBehaviour();
+	FlexoBehaviour getFlexoBehaviour();
 
-	public abstract class FlexoBehaviourObjectImpl extends FlexoConceptObjectImpl implements FlexoBehaviourObject {
+	abstract class FlexoBehaviourObjectImpl extends FlexoConceptObjectImpl implements FlexoBehaviourObject {
 
 	}
 

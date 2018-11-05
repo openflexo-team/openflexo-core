@@ -44,20 +44,20 @@ import org.openflexo.foundation.FlexoService.ServiceNotification;
 
 public class RepositoryFolderAdded extends DataModification implements ServiceNotification {
 
-	private RepositoryFolder<?> parentFolder;
-	private RepositoryFolder<?> folder;
+	private RepositoryFolder<?, ?> parentFolder;
+	private RepositoryFolder<?, ?> folder;
 
-	public RepositoryFolderAdded(RepositoryFolder<?> parentFolder, RepositoryFolder<?> folder) {
+	public RepositoryFolderAdded(RepositoryFolder<?, ?> parentFolder, RepositoryFolder<?, ?> folder) {
 		super("children", null, folder);
 		this.parentFolder = parentFolder;
 		this.folder = folder;
 	}
 
-	public RepositoryFolder<?> getFolder() {
+	public RepositoryFolder<?, ?> getFolder() {
 		return folder;
 	}
 
-	public RepositoryFolder<?> getParentFolder() {
+	public RepositoryFolder<?, ?> getParentFolder() {
 		return parentFolder;
 	}
 }

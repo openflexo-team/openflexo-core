@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Panel id="0" align="left" borderTop="0" borderLeft="0" trackViewPortHeight="true" trackViewPortWidth="true" borderBottom="0" border="empty" sizeAdjustment="OriginalSize" layout="twocols" borderRight="0" controllerClassName="org.openflexo.view.controller.FlexoFIBController">
+  <Browser id="1" backgroundSelectionColor="9,80,208" visibleRowCount="5" boundToSelectionManager="true" backgroundNonSelectionColor="255,255,255" iteratorClassName="java.lang.Object" textSelectionColor="255,255,255" backgroundSecondarySelectionColor="178,215,255" showRootsHandle="true" showFooter="true" allowsDragAndDrop="true" textNonSelectionColor="0,0,0" root="data" selectionMode="DiscontiguousTreeSelection" rootVisible="false" rowHeight="18" localize="true" manageDynamicModel="true" rightClickAction="controller.rightClick(resourceManagerBrowser.selected,event)" doubleClickAction="controller.doubleClick(resourceManagerBrowser.selected)" clickAction="controller.singleClick(resourceManagerBrowser.selected)" constraints="twocols(expandHorizontally=true;expandVertically=true;index=0;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=center)" index="0" name="resourceManagerBrowser">
+    <BrowserElement id="2" dataClassName="org.openflexo.foundation.FlexoServiceManager" icon="controller.iconForObject(serviceManager)" label="&quot;ServiceManager&quot;" isEditable="false" name="serviceManager">
+      <Children id="3" cast="child.rootFolder" data="data.resourceCenterService.resourceCenters" name="resourceCenters" />
+    </BrowserElement>
+    <BrowserElement id="4" visible="controller.shouldBeDisplayed(folder)" dataClassName="org.openflexo.foundation.resource.RepositoryFolder" icon="controller.iconForObject(folder)" label="folder.displayableName" isEditable="false" name="folder">
+      <Children id="5" data="folder.children" name="subFolders" />
+      <Children id="6" data="folder.resources" name="resource" />
+    </BrowserElement>
+    <BrowserElement id="7" dataClassName="org.openflexo.foundation.fml.rm.VirtualModelResource" icon="controller.iconForObject(virtualModel)" label="(virtualModel.name + &quot;.fml&quot;)" enabled="virtualModel.isLoaded" editableLabel="virtualModel.name" isEditable="false" name="virtualModel">
+      <Children id="8" visible="virtualModel.isLoaded" data="virtualModel.contents" name="subresources" />
+      <Children id="9" visible="virtualModel.isLoaded" data="virtualModel.loadedVirtualModel.allRootFlexoConcepts" name="rootFlexoConcepts" />
+      <BrowserRemoveAction id="10" method="controller.deleteVirtualModel(selected)" name="delete_virtual_model" />
+      <BrowserAddAction id="11" method="controller.createFlexoConcept(selected.virtualModel)" name="create_flexo_concept" />
+    </BrowserElement>
+    <BrowserElement id="12" dataClassName="org.openflexo.foundation.fml.FMLLocalizedDictionary" icon="controller.iconForObject(inspector)" label="&quot;Locales&quot;" isEditable="false" name="inspector" />
+    <BrowserElement id="13" dataClassName="org.openflexo.foundation.fml.FlexoConcept" icon="controller.iconForObject(flexoConcept)" label="flexoConcept.name" editableLabel="flexoConcept.name" isEditable="false" name="flexoConcept">
+      <DragOperation id="14" isAvailable="controller.canMoveFlexoConcept(dragged,target)" targetElementName="flexoConcept" action="controller.moveFlexoConcept(dragged,target)" name="drag_concept_into_concept" />
+      <DragOperation id="15" isAvailable="controller.canMoveFlexoConcept(dragged,target.virtualModel)" targetElementName="virtualModel" action="controller.moveFlexoConcept(dragged,target.virtualModel)" name="drag_concept_into_virtual_model" />
+      <Children id="16" data="flexoConcept.embeddedFlexoConcepts" name="children" />
+      <BrowserRemoveAction id="17" method="controller.deleteFlexoConcept(selected)" name="delete_flexo_concept" />
+      <BrowserAddAction id="18" method="controller.createFlexoConcept(selected)" name="create_flexo_concept" />
+    </BrowserElement>
+    <BrowserElement id="19" visible="controller.isVisibleInBrowser(resource)" dataClassName="org.openflexo.foundation.resource.FlexoResource" icon="controller.iconForObject(resource)" label="resource.displayName" enabled="resource.isLoaded" isEditable="false" name="resource">
+      <Children id="20" visible="resource.isLoaded" data="resource.contents" name="subResources" />
+    </BrowserElement>
+  </Browser>
+  <LocalizedDictionary id="21" />
+  <FIBVariable id="22" type="org.openflexo.foundation.FlexoServiceManager" name="data" />
+</Panel>

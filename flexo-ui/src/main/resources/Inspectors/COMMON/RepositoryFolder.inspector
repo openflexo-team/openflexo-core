@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Panel className="org.openflexo.fib.utils.FIBInspector" layout="border"
+<Panel className="org.openflexo.gina.utils.FIBInspector" layout="border"
 	titleFont="SansSerif,0,12" darkLevel="0"
 	dataClassName="org.openflexo.foundation.resource.RepositoryFolder"
 	controllerClassName="org.openflexo.inspector.FIBInspectorController"
@@ -12,29 +12,28 @@
 			<Label label="name" index="0"
 				constraints="twocols(expandHorizontally=false;expandVertically=false;index=0;location=left)"
 				name="NameLabel" localize="true" />
-			<TextField index="1" data="data.name"
+			<TextField index="1" data="data.displayableName"
 				constraints="twocols(expandHorizontally=true;expandVertically=false;index=1;location=right)"
-				name="Name" localize="true" validateOnReturn="true" columns="10" />
-			<Label label="path" index="2"
+				name="Name" localize="true" validateOnReturn="true" columns="10" readOnly="true"/>
+			<Label label="default_uri" index="2"
+				constraints="twocols(expandHorizontally=false;expandVertically=false;index=0;location=left)"
+				name="DefaultURILabel" localize="true" />
+			<TextField index="3" data="data.defaultBaseURI"
+				constraints="twocols(expandHorizontally=true;expandVertically=false;index=1;location=right)"
+				name="DefaultURI" localize="true" validateOnReturn="true" columns="10" readOnly="true"/>
+			<Label label="path" index="4"
 				constraints="twocols(expandHorizontally=false;expandVertically=false;index=0;location=left)"
 				name="PathLabel" localize="true" />
-			<TextField index="3" data="data.fullQualifiedPath"
+			<TextArea index="5" data="data.fullQualifiedPath" columns="10" rows="3"
 				constraints="twocols(expandHorizontally=true;expandVertically=false;index=1;location=right)"
-				name="FullQualifiedPath" localize="true" validateOnReturn="true" columns="10" />
-			<Label label="index" index="4"
-				constraints="twocols(expandHorizontally=false;expandVertically=false;index=2;location=left)"
-				name="IndexLabel" localize="true" />
-			<Number numberType="IntegerType" columns="5" index="5"
-				data="data.index"
-				constraints="twocols(expandHorizontally=false;expandVertically=false;index=3;location=right)"
-				name="Index" localize="true" />
-			<Label label="description" index="6"
+				name="FullQualifiedPath" localize="true" validateOnReturn="true" readOnly="true"/>
+			<!--  <Label label="description" index="6"
 				constraints="twocols(expandHorizontally=true;expandVertically=false;index=4;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=5;location=left)"
 				localize="true" />
 			<TextArea validateOnReturn="true" columns="8" rows="3"
 				text="TextArea" index="7" data="data.description"
 				constraints="twocols(expandHorizontally=true;expandVertically=true;index=5;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)"
-				localize="true" />
+				localize="true" /> -->
 		</Tab>
 		<Tab title="Advanced" layout="twocols" titleFont="SansSerif,0,11"
 			darkLevel="0" index="2" font="SansSerif,0,11" useScrollBar="true"

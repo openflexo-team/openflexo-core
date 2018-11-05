@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Panel id="0" darkLevel="0" useScrollBar="false" borderLeft="0"
+	protectContent="false" height="99" name="ResourceCenterPreferencesPanel"
+	layout="twocols"
+	controllerClassName="org.openflexo.components.PreferencesDialog$PreferencesFIBController"
+	border="empty" trackViewPortWidth="true" width="99"
+	dataClassName="org.openflexo.prefs.ResourceCenterPreferences"
+	titleFont="Lucida Grande,0,13" borderTop="5" trackViewPortHeight="true">
+	<Table iteratorClassName="org.openflexo.foundation.resource.FlexoResourceCenter"
+		visibleRowCount="5" rowHeight="18" autoSelectFirstRow="true"
+		createNewRowOnClick="false" boundToSelectionManager="false"
+		showFooter="false" selectionMode="MultipleIntervalSelection"
+		textSelectionColor="255,255,255" textNonSelectionColor="0,0,0"
+		backgroundSelectionColor="41,90,209"
+		backgroundSecondarySelectionColor="173,215,255"
+		backgroundNonSelectionColor="255,255,255" localize="true"
+		manageDynamicModel="true" name="RCTable" index="0"
+		data="data.service.resourceCenters"
+		constraints="twocols(expandHorizontally=true;expandVertically=true;index=4;insetsBottom=0;insetsLeft=10;insetsRight=10;insetsTop=5;location=center)"
+		font="Lucida Grande,0,11">
+		<IconColumn data="controller.iconForObject(iterator)"
+			title="icon" columnWidth="20" resizable="false" displayTitle="false"
+			name="icon" />
+		<LabelColumn data="iterator.name" title="Resource Center"
+			columnWidth="100" resizable="true" displayTitle="true" name="label" />
+		<Dependancy componentName="RCActionsPanel" />
+	</Table>
+	<Label label="Resource Center" index="4"
+		constraints="twocols(expandHorizontally=true;expandVertically=false;index=4;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=5;location=left)"
+		localize="true" />
+	<TextField index="5" data="RCTable.selected.name"
+		constraints="twocols(expandHorizontally=true;expandVertically=false;index=5;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)"
+		readOnly="true" localize="true" columns="7" text="TextField" />
+	<Label label="type" index="6"
+		constraints="twocols(expandHorizontally=true;expandVertically=false;index=6;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=5;location=left)"
+		localize="true" />
+	<TextField index="7" data="RCTable.selected.class.simpleName"
+		constraints="twocols(expandHorizontally=true;expandVertically=false;index=7;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)"
+		readOnly="true" localize="true" columns="7" text="TextField" />
+	<Label label="directory" index="8"
+		constraints="twocols(expandHorizontally=true;expandVertically=false;index=8;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=5;location=left)"
+		localize="true" />
+	<Panel layout="border" borderTitle="Panel" titleFont="SansSerif,0,12"
+		darkLevel="0" index="8"
+		constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)"
+		name="FSRCPanel">
+		<FIBVariable name="selectedResourceCenter"
+			value="($org.openflexo.foundation.resource.FileSystemBasedResourceCenter)RCTable.selected"
+			type="org.openflexo.foundation.resource.FileSystemBasedResourceCenter" />
+		<File isDirectory="false" localize="true" index="11"
+			data="selectedResourceCenter.rootDirectory"
+			constraints="border(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=center)" />
+	</Panel>
+	<CheckBox selected="true" index="8"
+		constraints="twocols(expandHorizontally=true;expandVertically=false;index=0;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=left)"
+		name="EnableRCCheckbox" localize="true" manageDynamicModel="true" />
+	<Label label="enable_resource_center" index="8"
+		constraints="twocols(expandHorizontally=true;expandVertically=false;index=0;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)"
+		localize="true" />
+	<CheckBox selected="true" index="8"
+		constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=left)"
+		name="AllowsEditingCheckbox" localize="true" manageDynamicModel="true" />
+	<Label label="allows_editing" index="8"
+		constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)"
+		localize="true" />
+	<CheckBox selected="true" index="8"
+		constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=left)"
+		name="AllowsPublishingCB" localize="true" manageDynamicModel="true" />
+	<Label label="allows_publishing" index="8"
+		constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)"
+		localize="true" />
+	<CheckBox selected="true" index="8"
+		constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=left)"
+		name="WatchCB" localize="true" manageDynamicModel="true" />
+	<Panel layout="flow" hGap="0" vGap="0" flowAlignment="LEADING"
+		borderTitle="Panel" titleFont="SansSerif,0,12" darkLevel="0" index="8"
+		constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)">
+		<Label label="watch_resource_center_every" index="8"
+			constraints="flow(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=center)"
+			localize="true" />
+		<Number allowsNull="false" minValue="0" maxValue="2147483647"
+			increment="1" numberType="IntegerType" columns="3" index="8"
+			constraints="flow()" name="Integer" localize="true" enable="WatchCB.value" />
+		<Label label="seconds" index="8" constraints="flow()" localize="true" />
+	</Panel>
+</Panel>

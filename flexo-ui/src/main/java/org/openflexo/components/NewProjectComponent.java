@@ -48,7 +48,6 @@ import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 
 import org.openflexo.ApplicationContext;
-import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.toolbox.FileUtils;
 import org.openflexo.view.FlexoFrame;
 import org.openflexo.view.controller.FlexoController;
@@ -64,7 +63,7 @@ public class NewProjectComponent extends ProjectChooserComponent {
 
 	protected NewProjectComponent(Frame owner, ApplicationContext applicationContext) {
 		super(owner, applicationContext);
-		setApproveButtonText(FlexoLocalization.localizedForKey("create"));
+		setApproveButtonText(getLocales().localizedForKey("create"));
 	}
 
 	public static File getProjectDirectory(ApplicationContext applicationContext) {
@@ -85,25 +84,29 @@ public class NewProjectComponent extends ProjectChooserComponent {
 				}
 				if (newProjectDir.exists()) {
 					int option = FlexoController.confirmWithWarningYesNoCancel(
-							FlexoLocalization.localizedForKey("project_already_exists_do_you_want_to_replace_it"),
-							FlexoLocalization.localizedForKey("name_conflict"));
+							getLocales(applicationContext).localizedForKey("project_already_exists_do_you_want_to_replace_it"),
+							getLocales(applicationContext).localizedForKey("name_conflict"));
 
 					if (option == JOptionPane.YES_OPTION) {
 						// We continue with this folder
-					} else if (option == JOptionPane.NO_OPTION) {
+					}
+					else if (option == JOptionPane.NO_OPTION) {
 						return getProjectDirectory(owner, applicationContext);
-					} else { /*Cancel*/
+					}
+					else { /*Cancel*/
 						newProjectDir = null;
 					}
 				}
-			} else {
+			}
+			else {
 				if (logger.isLoggable(Level.WARNING)) {
 					logger.warning("Invalid project name. The following characters are not allowed: "
 							+ FileUtils.BAD_CHARACTERS_FOR_FILE_NAME_REG_EXP);
 				}
-				FlexoController.notify(FlexoLocalization.localizedForKey("project_name_cannot_contain_\\___&_#_{_}_[_]_%_~"));
+				FlexoController.notify(getLocales(applicationContext).localizedForKey("project_name_cannot_contain_\\___&_#_{_}_[_]_%_~"));
 			}
-		} else {
+		}
+		else {
 			if (logger.isLoggable(Level.WARNING)) {
 				logger.warning("No project specified !");
 			}

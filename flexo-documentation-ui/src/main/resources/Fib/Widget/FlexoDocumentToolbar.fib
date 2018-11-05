@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Panel id="0" align="left" borderTop="0" flowAlignment="LEADING"
+	borderLeft="0" trackViewPortHeight="true" trackViewPortWidth="true"
+	borderBottom="0" border="empty" sizeAdjustment="OriginalSize" layout="flow"
+	vGap="5" borderRight="0" hGap="5"
+	controllerClassName="org.openflexo.components.doc.editorkit.FlexoDocumentToolbar$ToolbarFIBController">
+	<DropDown id="1" autoSelectFirstRow="true" showText="true"
+		iteratorClassName="org.openflexo.foundation.doc.NamedDocStyle" list="data.flexoDocument.styles"
+		showIcon="false" format="object.name" constraints="flow()" name="dropdown" />
+	<Font id="2" allowsNullText="define_color" sampleText="sample_for_this_font"
+		constraints="flow()" name="FontSelector" />
+	<Color id="3" allowsNullText="define_color" constraints="flow()"
+		name="ColorSelector" />
+	<Button id="4" buttonType="Toggle" action="controller.toogleBold()"
+		label="B" constraints="flow()" width="20" height="20" font="SansSerif,1,12"
+		name="Button" />
+	<Button id="5" buttonType="Toggle" action="controller.toogleItalic()"
+		label="I" constraints="flow()" width="20" height="20" font="SansSerif,2,12"
+		name="Button" />
+	<Button id="6" buttonType="Toggle" action="controller.toogleUnderline()"
+		label="U" constraints="flow()" width="20" height="20" name="Button" />
+	<FIBVariable id="7"
+		type="org.openflexo.components.doc.editorkit.FlexoDocumentEditor"
+		name="data" />
+	<LocalizedDictionary id="8" />
+</Panel>

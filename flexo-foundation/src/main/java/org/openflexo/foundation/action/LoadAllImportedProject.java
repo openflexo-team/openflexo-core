@@ -42,14 +42,15 @@ import java.util.Vector;
 
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoException;
+import org.openflexo.foundation.FlexoObject.FlexoObjectImpl;
 import org.openflexo.foundation.FlexoProject;
 import org.openflexo.foundation.FlexoProjectObject;
-import org.openflexo.foundation.resource.FlexoProjectReference;
+import org.openflexo.foundation.project.FlexoProjectReference;
 import org.openflexo.foundation.utils.ProjectLoadingCancelledException;
 
 public class LoadAllImportedProject extends FlexoAction<LoadAllImportedProject, FlexoProjectObject, FlexoProjectObject> {
 
-	public static final FlexoActionType<LoadAllImportedProject, FlexoProjectObject, FlexoProjectObject> actionType = new FlexoActionType<LoadAllImportedProject, FlexoProjectObject, FlexoProjectObject>(
+	public static final FlexoActionFactory<LoadAllImportedProject, FlexoProjectObject, FlexoProjectObject> actionType = new FlexoActionFactory<LoadAllImportedProject, FlexoProjectObject, FlexoProjectObject>(
 			"load_all_imported_project") {
 
 		@Override
@@ -60,8 +61,7 @@ public class LoadAllImportedProject extends FlexoAction<LoadAllImportedProject, 
 
 		@Override
 		public boolean isVisibleForSelection(FlexoProjectObject object, Vector<FlexoProjectObject> globalSelection) {
-			return object != null && object.getProject() != null && object.getProject().getProjectData() != null
-					&& object.getProject().getProjectData().getImportedProjects().size() > 0;
+			return object != null && object.getProject() != null && object.getProject().getImportedProjects().size() > 0;
 		}
 
 		@Override
@@ -71,31 +71,30 @@ public class LoadAllImportedProject extends FlexoAction<LoadAllImportedProject, 
 	};
 
 	static {
-		// FlexoObject.addActionForClass(actionType, GeneratedOutput.class);
-		// FlexoObject.addActionForClass(actionType, GenerationRepository.class);
-		// FlexoObject.addActionForClass(actionType, FlexoProject.class);
+		FlexoObjectImpl.addActionForClass(actionType, FlexoProject.class);
 	}
 
-	public LoadAllImportedProject(FlexoProjectObject focusedObject, Vector<FlexoProjectObject> globalSelection, FlexoEditor editor) {
+	private LoadAllImportedProject(FlexoProjectObject focusedObject, Vector<FlexoProjectObject> globalSelection, FlexoEditor editor) {
 		super(actionType, focusedObject, globalSelection, editor);
 	}
 
 	@Override
 	protected void doAction(Object context) throws FlexoException {
-		FlexoProject project = getImportingProject();
+		FlexoProject<?> project = getImportingProject();
 		if (!loadImportedProjects(project)) {
 			throw new ProjectLoadingCancelledException();
 		}
 	}
 
-	private boolean loadImportedProjects(FlexoProject project) {
+	private boolean loadImportedProjects(FlexoProject<?> project) {
 		boolean loaded = true;
-		if (project.getProjectData() != null) {
-			for (FlexoProjectReference ref : project.getProjectData().getImportedProjects()) {
-				FlexoProject referredProject = ref.getReferredProject(true);
+		if (project != null) {
+			for (FlexoProjectReference ref : project.getImportedProjects()) {
+				FlexoProject<?> referredProject = ref.getReferencedProject();
 				if (referredProject != null) {
 					loaded &= loadImportedProjects(referredProject);
-				} else {
+				}
+				else {
 					loaded = false;
 				}
 			}
@@ -103,7 +102,7 @@ public class LoadAllImportedProject extends FlexoAction<LoadAllImportedProject, 
 		return loaded;
 	}
 
-	public FlexoProject getImportingProject() {
+	public FlexoProject<?> getImportingProject() {
 		return getFocusedObject().getProject();
 	}
 

@@ -41,28 +41,39 @@ package org.openflexo.foundation;
 
 import java.util.EventObject;
 import java.util.Vector;
-import java.util.logging.Level;
 
 import javax.swing.Icon;
 import javax.swing.KeyStroke;
 
 import org.openflexo.foundation.action.FlexoAction;
-import org.openflexo.foundation.action.FlexoActionType;
+import org.openflexo.foundation.action.FlexoActionFactory;
 import org.openflexo.foundation.action.FlexoUndoManager;
+import org.openflexo.foundation.fml.rt.FMLRunTimeEngine;
+import org.openflexo.foundation.fml.rt.SynchronousFMLRunTimeEngine;
+import org.openflexo.foundation.fml.rt.logging.FMLConsole;
+import org.openflexo.foundation.nature.FlexoNature;
 import org.openflexo.foundation.resource.FlexoResource;
 import org.openflexo.foundation.resource.ResourceUpdateHandler;
 import org.openflexo.foundation.utils.FlexoProgressFactory;
 
+/**
+ * Default implementation of {@link FlexoEditor}
+ * 
+ * @author sylvain
+ * @see FlexoEditor
+ *
+ */
 public class DefaultFlexoEditor implements FlexoEditor {
 
-	private static final java.util.logging.Logger logger = org.openflexo.logging.FlexoLogger.getLogger(DefaultFlexoEditor.class
-			.getPackage().getName());
+	private static final java.util.logging.Logger logger = org.openflexo.logging.FlexoLogger
+			.getLogger(DefaultFlexoEditor.class.getPackage().getName());
 
-	private final FlexoProject project;
+	private final FlexoProject<?> project;
 	private final FlexoServiceManager serviceManager;
 	private final ResourceUpdateHandler resourceUpdateHandler;
+	private final FMLConsole console;
 
-	public DefaultFlexoEditor(FlexoProject project, FlexoServiceManager serviceManager) {
+	public DefaultFlexoEditor(FlexoProject<?> project, FlexoServiceManager serviceManager) {
 		this.project = project;
 		this.serviceManager = serviceManager;
 		if (project != null) {
@@ -75,16 +86,32 @@ public class DefaultFlexoEditor implements FlexoEditor {
 
 			}
 		};
+		console = new FMLConsole(this);
 	}
 
 	@Override
-	public final FlexoProject getProject() {
+	public final FlexoProject<?> getProject() {
 		return project;
 	}
 
 	@Override
 	public FlexoServiceManager getServiceManager() {
 		return serviceManager;
+	}
+
+	private FMLRunTimeEngine runTimeEngine = null;
+
+	@Override
+	public FMLRunTimeEngine getFMLRunTimeEngine() {
+		if (runTimeEngine == null) {
+			runTimeEngine = new SynchronousFMLRunTimeEngine();
+		}
+		return runTimeEngine;
+	}
+
+	@Override
+	public FMLConsole getFMLConsole() {
+		return console;
 	}
 
 	@Override
@@ -98,8 +125,14 @@ public class DefaultFlexoEditor implements FlexoEditor {
 		return null;
 	}
 
+	/**
+	 * Focus on supplied object, trying to display a view adapted to supplied displayNature
+	 * 
+	 * @param object
+	 * @param displayNature
+	 */
 	@Override
-	public void focusOn(FlexoObject object) {
+	public <O extends FlexoObject> void focusOn(O object, FlexoNature<O> displayNature) {
 		// Only interactive editor handle this
 	}
 
@@ -120,23 +153,17 @@ public class DefaultFlexoEditor implements FlexoEditor {
 	}
 
 	@Override
-	public <A extends FlexoAction<A, T1, T2>, T1 extends FlexoObject, T2 extends FlexoObject> A performActionType(
-			FlexoActionType<A, T1, T2> actionType, T1 focusedObject, Vector<T2> globalSelection, EventObject e) {
+	public <A extends FlexoAction<A, T1, T2>, T1 extends FlexoObject, T2 extends FlexoObject> A performActionFactory(
+			FlexoActionFactory<A, T1, T2> actionType, T1 focusedObject, Vector<T2> globalSelection, EventObject e) {
 		A action = actionType.makeNewAction(focusedObject, globalSelection, this);
 		return performAction(action, e);
 	}
 
 	@Override
 	public <A extends FlexoAction<A, T1, T2>, T1 extends FlexoObject, T2 extends FlexoObject> A performAction(A action, EventObject e) {
-		if (!action.getActionType().isEnabled(action.getFocusedObject(), action.getGlobalSelection())) {
-			return null;
-		}
-		if (action.getFocusedObject() instanceof FlexoProjectObject
-				&& ((FlexoProjectObject) action.getFocusedObject()).getProject() != getProject()) {
-			if (logger.isLoggable(Level.WARNING)) {
-				logger.warning("Focused object project is not the same as my project. Refusing to edit and execute action "
-						+ action.getLocalizedName());
-			}
+		// If the factory is not null, check that factory allows execution in its context
+		if (action.getActionFactory() != null
+				&& !action.getActionFactory().isEnabled(action.getFocusedObject(), action.getGlobalSelection())) {
 			return null;
 		}
 		try {
@@ -147,33 +174,70 @@ public class DefaultFlexoEditor implements FlexoEditor {
 		}
 	}
 
-	@Override
-	public <A extends FlexoAction<A, T1, T2>, T1 extends FlexoObject, T2 extends FlexoObject> KeyStroke getKeyStrokeFor(
-			FlexoActionType<A, T1, T2> action) {
-		return null;
-	}
-
+	/**
+	 * Return flag indicating if supplied {@link FlexoActionFactory} implies an enabled action for supplied context (focused object and
+	 * global selection)
+	 * 
+	 * @param actionFactory
+	 * @param focusedObject
+	 * @param globalSelection
+	 * @return
+	 */
 	@Override
 	public <A extends FlexoAction<A, T1, T2>, T1 extends FlexoObject, T2 extends FlexoObject> boolean isActionEnabled(
-			FlexoActionType<A, T1, T2> actionType, T1 focusedObject, Vector<T2> globalSelection) {
-		return actionType.isEnabled(focusedObject, globalSelection);
+			FlexoActionFactory<A, T1, T2> actionFactory, T1 focusedObject, Vector<T2> globalSelection) {
+		return actionFactory.isEnabled(focusedObject, globalSelection);
 	}
 
+	/**
+	 * Return flag indicating if supplied {@link FlexoActionFactory} implies an visible action for supplied context (focused object and
+	 * global selection)
+	 *
+	 * Default implementation returns true
+	 * 
+	 * @param actionFactory
+	 * @param focusedObject
+	 * @param globalSelection
+	 * @return
+	 */
 	@Override
 	public <A extends FlexoAction<A, T1, T2>, T1 extends FlexoObject, T2 extends FlexoObject> boolean isActionVisible(
-			FlexoActionType<A, T1, T2> actionType, T1 focusedObject, Vector<T2> globalSelection) {
+			FlexoActionFactory<A, T1, T2> actionFactory, T1 focusedObject, Vector<T2> globalSelection) {
 		return true;
 	}
 
+	/**
+	 * Return 'enabled' icon for supplied {@link FlexoActionFactory}
+	 * 
+	 * @param actionFactory
+	 * @return
+	 */
 	@Override
-	public <A extends FlexoAction<A, T1, T2>, T1 extends FlexoObject, T2 extends FlexoObject> Icon getEnabledIconFor(
-			FlexoActionType<A, T1, T2> action) {
+	public <A extends FlexoAction<A, ?, ?>> Icon getEnabledIconFor(FlexoActionFactory<A, ?, ?> action) {
 		return null;
 	}
 
+	/**
+	 * Return 'disabled' icon for supplied {@link FlexoActionFactory}
+	 * 
+	 * @param actionFactory
+	 * @return
+	 */
 	@Override
-	public <A extends FlexoAction<A, T1, T2>, T1 extends FlexoObject, T2 extends FlexoObject> Icon getDisabledIconFor(
-			FlexoActionType<A, T1, T2> action) {
+	public <A extends FlexoAction<A, ?, ?>> Icon getDisabledIconFor(FlexoActionFactory<A, ?, ?> action) {
+		return null;
+	}
+
+	/**
+	 * Return eventual {@link KeyStroke} for supplied {@link FlexoActionFactory}<br>
+	 * 
+	 * Default implementation returns null
+	 * 
+	 * @param actionFactory
+	 * @return
+	 */
+	@Override
+	public <A extends FlexoAction<A, ?, ?>> KeyStroke getKeyStrokeFor(FlexoActionFactory<A, ?, ?> actionFactory) {
 		return null;
 	}
 

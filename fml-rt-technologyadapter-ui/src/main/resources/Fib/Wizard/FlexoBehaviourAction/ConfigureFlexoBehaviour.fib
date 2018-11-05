@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Panel id="0" darkLevel="0" useScrollBar="false" protectContent="false"
+	height="400" name="main" layout="border"
+	controllerClassName="org.openflexo.view.controller.FlexoFIBController"
+	border="empty" trackViewPortWidth="true" font="Lucida Grande,0,11"
+	width="600"
+	dataClassName="org.openflexo.fml.rt.controller.action.FlexoBehaviourActionWizard$ConfigureFlexoBehaviour"
+	titleFont="Lucida Grande,0,11" trackViewPortHeight="true">
+
+	<!--  <Panel darkLevel="0" useScrollBar="false" protectContent="false"
+		layout="border" controllerClassName="org.openflexo.gina.controller.FIBController"
+		border="empty" borderRight="2" trackViewPortWidth="true" index="0"
+		constraints="border(location=north)" borderBottom="2" borderTitle=""
+		titleFont="Lucida Grande,0,11" borderTop="2" trackViewPortHeight="true">
+		<Label manageDynamicModel="false" useScrollBar="false"
+			data="data.flexoBehaviour.label" controllerClassName="org.openflexo.gina.controller.FIBController"
+			localize="true" font="SansSerif,1,12" align="center" constraints="border(location=north)"
+			label="label1" readOnly="false" />
+		<Label manageDynamicModel="false" useScrollBar="false"
+			data="data.flexoBehaviour.description" controllerClassName="org.openflexo.gina.controller.FIBController"
+			localize="true" align="center" constraints="border(location=center)"
+			label="label2" readOnly="false" />
+	</Panel>-->
+
+
+	<Custom manageDynamicModel="true" useScrollBar="false"
+		data="data.action" componentClassName="org.openflexo.view.controller.FIBParametersRetrieverWidget"
+		name="ParametersRetriverWidget" controllerClassName="org.openflexo.gina.controller.FIBController"
+		localize="true" constraints="border(location=center)" readOnly="false">
+		<Assignment mandatory="true" variable="component.applicationContext"
+			value="controller.flexoController.applicationContext" />
+	</Custom>
+
+	<LocalizedDictionary id="1">
+	</LocalizedDictionary>
+
+</Panel>

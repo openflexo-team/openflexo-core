@@ -38,12 +38,13 @@
 
 package org.openflexo.foundation.fml.controlgraph;
 
+import java.lang.reflect.Type;
 import java.util.Collections;
 import java.util.List;
 
 import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.fml.FMLRepresentationContext;
-import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
+import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
 import org.openflexo.model.annotations.XMLElement;
@@ -90,7 +91,7 @@ public interface EmptyControlGraph extends FMLControlGraph {
 		}
 
 		@Override
-		public Object execute(FlexoBehaviourAction<?, ?, ?> action) throws FlexoException {
+		public Object execute(RunTimeEvaluationContext evaluationContext) throws FlexoException {
 			// Nothing to do
 			return null;
 		}
@@ -99,5 +100,16 @@ public interface EmptyControlGraph extends FMLControlGraph {
 		public String getFMLRepresentation(FMLRepresentationContext context) {
 			return "";
 		}
+
+		@Override
+		public Type getInferedType() {
+			return Void.class;
+		}
+
+		@Override
+		public void accept(FMLControlGraphVisitor visitor) {
+			visitor.visit(this);
+		}
+
 	}
 }

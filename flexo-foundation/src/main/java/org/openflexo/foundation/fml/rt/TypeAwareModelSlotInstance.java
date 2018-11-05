@@ -40,6 +40,7 @@ package org.openflexo.foundation.fml.rt;
 
 import java.util.logging.Logger;
 
+import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.technologyadapter.FlexoMetaModel;
 import org.openflexo.foundation.technologyadapter.FlexoModel;
 import org.openflexo.foundation.technologyadapter.FlexoModelResource;
@@ -57,7 +58,7 @@ import org.openflexo.toolbox.StringUtils;
 
 /**
  * Concretize the binding of a {@link ModelSlot} to a concrete {@link FlexoModel} conform to a given {@link FlexoMetaModel}<br>
- * This is the binding point between a {@link TypeAwareModelSlot} and its concretization in a {@link VirtualModelInstance}
+ * This is the binding point between a {@link TypeAwareModelSlot} and its concretization in a {@link FMLRTVirtualModelInstance}
  * 
  * @author Sylvain Guerin
  * @see TypeAwareModelSlot
@@ -82,7 +83,7 @@ public interface TypeAwareModelSlotInstance<M extends FlexoModel<M, MM> & Techno
 	public M getModel();
 
 	public static abstract class TypeAwareModelSlotInstanceImpl<M extends FlexoModel<M, MM> & TechnologyObject<?>, MM extends FlexoMetaModel<MM> & TechnologyObject<?>, MS extends TypeAwareModelSlot<M, MM>>
-			extends ModelSlotInstanceImpl<MS, M> implements TypeAwareModelSlotInstance<M, MM, MS> {
+			extends ModelSlotInstanceImpl<MS, M>implements TypeAwareModelSlotInstance<M, MM, MS> {
 
 		private static final Logger logger = Logger.getLogger(TypeAwareModelSlotInstance.class.getPackage().getName());
 
@@ -93,7 +94,7 @@ public interface TypeAwareModelSlotInstance<M extends FlexoModel<M, MM> & Techno
 			super(view, modelSlot);
 		}*/
 
-		/*public TypeAwareModelSlotInstanceImpl(VirtualModelInstance vmInstance, MS modelSlot) {
+		/*public TypeAwareModelSlotInstanceImpl(FMLRTVirtualModelInstance vmInstance, MS modelSlot) {
 			super(vmInstance, modelSlot);
 		}*/
 
@@ -112,13 +113,15 @@ public interface TypeAwareModelSlotInstance<M extends FlexoModel<M, MM> & Techno
 		 */
 		@Override
 		public M getAccessedResourceData() {
-			if (getModelSlot() != null && getVirtualModelInstance() != null && getVirtualModelInstance().getInformationSpace() != null
+			FlexoServiceManager svcManager = getServiceManager();
+			if (getModelSlot() != null && getVirtualModelInstance() != null && svcManager != null && svcManager.getResourceManager() != null
 					&& accessedResourceData == null && StringUtils.isNotEmpty(modelURI)) {
-				FlexoModelResource<M, ?, ?, ?> modelResource = (FlexoModelResource<M, ?, ?, ?>) getVirtualModelInstance()
-						.getInformationSpace().getModelWithURI(modelURI, getModelSlot().getModelSlotTechnologyAdapter());
+				FlexoModelResource<M, ?, ?, ?> modelResource = (FlexoModelResource<M, ?, ?, ?>) svcManager.getResourceManager()
+						.getModelWithURI(modelURI, getModelSlot().getModelSlotTechnologyAdapter());
 				if (modelResource != null) {
 					accessedResourceData = modelResource.getModel();
-					resource = modelResource;
+					setResource(modelResource, false);
+					// resource = modelResource;
 				}
 			}
 			if (accessedResourceData == null && StringUtils.isNotEmpty(modelURI)) {
@@ -154,24 +157,7 @@ public interface TypeAwareModelSlotInstance<M extends FlexoModel<M, MM> & Techno
 
 		@Override
 		public void updateActorReferencesURI() {
-			// Browse the epi and their actors
-			for (FlexoConceptInstance epi : getVirtualModelInstance().getFlexoConceptInstances()) {
-				for (ActorReference<?> actor : epi.getActors()) {
-					// If it is provided by the right model slot
-					if (actor instanceof ConceptActorReference && actor.getModelSlotInstance().equals(this)) {
-
-						// This should be changed
-						ConceptActorReference<?> conceptActorRef = (ConceptActorReference<?>) actor;
-						String id = conceptActorRef.getConceptURI().substring(conceptActorRef.getConceptURI().lastIndexOf("#"));
-						conceptActorRef.setConceptURI(getAccessedResourceData().getURI() + id);
-						if (conceptActorRef.getModellingElement() == null) {
-							logger.warning("cannot retrieve objects in this resource " + conceptActorRef);
-							// conceptActorRef.delete();
-						}
-					}
-				}
-			}
-
+			super.updateActorReferencesURI();
 			setModelURI(getAccessedResourceData().getURI());
 		}
 	}

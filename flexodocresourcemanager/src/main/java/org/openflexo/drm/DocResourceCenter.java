@@ -92,8 +92,8 @@ public class DocResourceCenter extends DocItemFolder implements ResourceData<Doc
 
 	public DocResourceCenter() {
 		super();
-		languages = new Vector<Language>();
-		authors = new Vector<Author>();
+		languages = new Vector<>();
+		authors = new Vector<>();
 	}
 
 	public ValidationModel getDRMValidationModel() {
@@ -157,9 +157,10 @@ public class DocResourceCenter extends DocItemFolder implements ResourceData<Doc
 		DocItemFolder rootFolder = DocItemFolder.createDocItemFolder(DOC_RESOURCE_CENTER, "Root folder for Flexo documentation", null,
 				returned);
 		returned.setFolder(rootFolder);
-		DocItemFolder flexoModelFolder = DocItemFolder.createDocItemFolder(FLEXO_MODEL, "Description of Flexo model", rootFolder, returned);
-		DocItemFolder flexoToolSetFolder = DocItemFolder.createDocItemFolder(FLEXO_TOOL_SET,
-				"Description for the FlexoToolSet application", rootFolder, returned);
+		// Unused DocItemFolder flexoModelFolder =
+		DocItemFolder.createDocItemFolder(FLEXO_MODEL, "Description of Flexo model", rootFolder, returned);
+		DocItemFolder flexoToolSetFolder = DocItemFolder.createDocItemFolder(FLEXO_TOOL_SET, "Description for the FlexoToolSet application",
+				rootFolder, returned);
 		DocItemFolder abstractModuleFolder = DocItemFolder.createDocItemFolder(ABSTRACT_MODULE, "Description of what is a module",
 				flexoToolSetFolder, returned);
 		DocItem abstractMainPaneItem = DocItem.createDocItem(ABSTRACT_MAIN_PANE, "Description of what is the main pane",
@@ -218,12 +219,13 @@ public class DocResourceCenter extends DocItemFolder implements ResourceData<Doc
 		clearIsModified(false);
 	}*/
 
+	/* Unused
 	private void initializeSerialization() {
 	}
-
+	
 	private void finalizeSerialization() {
 	}
-
+	*/
 	public Author getUser() {
 		Author returned = getAuthorNamed(System.getProperty("user.name"));
 		if (returned == null) {
@@ -233,8 +235,8 @@ public class DocResourceCenter extends DocItemFolder implements ResourceData<Doc
 	}
 
 	public Author getAuthorNamed(String authorIdentifier) {
-		for (Enumeration en = getAuthors().elements(); en.hasMoreElements();) {
-			Author next = (Author) en.nextElement();
+		for (Enumeration<Author> en = getAuthors().elements(); en.hasMoreElements();) {
+			Author next = en.nextElement();
 			if (next.getIdentifier().equals(authorIdentifier)) {
 				return next;
 			}
@@ -243,8 +245,8 @@ public class DocResourceCenter extends DocItemFolder implements ResourceData<Doc
 	}
 
 	public Language getLanguageNamed(String languageIdentifier) {
-		for (Enumeration en = getLanguages().elements(); en.hasMoreElements();) {
-			Language next = (Language) en.nextElement();
+		for (Enumeration<Language> en = getLanguages().elements(); en.hasMoreElements();) {
+			Language next = en.nextElement();
 			if (next.getIdentifier().equalsIgnoreCase(languageIdentifier)) {
 				return next;
 			}
@@ -291,7 +293,7 @@ public class DocResourceCenter extends DocItemFolder implements ResourceData<Doc
 	}
 
 	public List<DocItem> getAllItems() {
-		List<DocItem> returned = new ArrayList<DocItem>();
+		List<DocItem> returned = new ArrayList<>();
 		for (DRMObject next : getAllFoldersAndItems()) {
 			if (next instanceof DocItem) {
 				returned.add((DocItem) next);

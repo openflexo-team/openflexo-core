@@ -40,23 +40,21 @@
 package org.openflexo.foundation.resource;
 
 import java.io.FileNotFoundException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
-import java.util.regex.Pattern;
 
 import org.openflexo.foundation.DataModification;
 import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.FlexoObject.FlexoObjectImpl;
 import org.openflexo.foundation.FlexoServiceManager;
+import org.openflexo.foundation.technologyadapter.TechnologyAdapterResource;
 import org.openflexo.foundation.utils.FlexoObjectReference;
+import org.openflexo.localization.LocalizedDelegate;
 import org.openflexo.model.factory.AccessibleProxyObject;
-import org.openflexo.rm.Resource;
-import org.openflexo.rm.ResourceLocatorDelegate;
 import org.openflexo.toolbox.IProgress;
+import org.openflexo.toolbox.StringUtils;
 
 /**
  * Default implementation for {@link FlexoResource}<br>
@@ -75,6 +73,7 @@ public abstract class FlexoResourceImpl<RD extends ResourceData<RD>> extends Fle
 
 	private FlexoServiceManager serviceManager = null;
 	private boolean isLoading = false;
+	protected boolean isUnloading = false;
 	protected RD resourceData = null;
 
 	/**
@@ -95,8 +94,9 @@ public abstract class FlexoResourceImpl<RD extends ResourceData<RD>> extends Fle
 	 */
 	@Override
 	public boolean isLoadable() {
-		// By default, a resource is always loadable, then this method always returns true if IO delegate exists
-		return getFlexoIODelegate() != null && getFlexoIODelegate().exists();
+		// By default, a resource is always loadable, then this method always
+		// returns true if IO delegate exists
+		return getIODelegate() != null && getIODelegate().exists();
 	}
 
 	/**
@@ -108,19 +108,27 @@ public abstract class FlexoResourceImpl<RD extends ResourceData<RD>> extends Fle
 	 * @throws ResourceLoadingCancelledException
 	 */
 	@Override
-	public synchronized RD getResourceData(IProgress progress)
+	public RD getResourceData(IProgress progress)
 			throws ResourceLoadingCancelledException, ResourceLoadingCancelledException, FileNotFoundException, FlexoException {
 
+		if (isDeleted()) {
+			return null;
+		}
+		if (isUnloading) {
+			return null;
+		}
 		if (isLoading()) {
-			// logger.warning("trying to load a resource data from itself, please investigate");
+			// logger.warning("trying to load a resource data from itself,
+			// please investigate");
 			return resourceData;
 		}
-		if (resourceData == null && isLoadable()) {
+		if (resourceData == null && isLoadable() && !isLoading()) {
 			// The resourceData is null, we try to load it
 			setLoading(true);
 			resourceData = loadResourceData(progress);
 			setLoading(false);
-			// That's fine, resource is loaded, now let's notify the loading of the resources
+			// That's fine, resource is loaded, now let's notify the loading of
+			// the resources
 			notifyResourceLoaded();
 		}
 		return resourceData;
@@ -131,6 +139,7 @@ public abstract class FlexoResourceImpl<RD extends ResourceData<RD>> extends Fle
 	 * 
 	 * @return
 	 */
+	@Override
 	public boolean isLoading() {
 		return isLoading;
 	}
@@ -174,12 +183,27 @@ public abstract class FlexoResourceImpl<RD extends ResourceData<RD>> extends Fle
 	 */
 	@Override
 	public void setName(String aName) throws CannotRenameException {
-		if (getFlexoIODelegate() != null && getFlexoIODelegate().hasWritePermission()) {
-			performSuperSetter(NAME, aName);
-			if (getFlexoIODelegate() != null) {
-				getFlexoIODelegate().rename();
+		if (StringUtils.isEmpty(aName)) {
+			// logger.warning("Trying to rename a FlexoResource with a null or empty name. Please investigate.");
+			return;
+		}
+		if (getIODelegate() != null && getIODelegate().hasWritePermission()) {
+			if (computeDefaultURI() != null && computeDefaultURI().equals(getURI())) {
+				// This was the default URI, which should then be recomputed
+				setURI(null);
 			}
-		} else if (!isDeleting()) {
+			performSuperSetter(NAME, aName);
+			if (getIODelegate() != null) {
+				getIODelegate().rename(aName);
+			}
+			// System.out.println("Renamed URI: " + getURI());
+		}
+		else if (!isDeleting()) {
+			System.out.println("Trying to rename " + this + " from " + getName() + " to " + aName);
+			System.out.println("IOdelegate=" + getIODelegate());
+			if (getIODelegate() != null) {
+				System.out.println("Write permission: " + getIODelegate().hasWritePermission());
+			}
 			throw new CannotRenameException(this);
 		}
 	}
@@ -202,7 +226,7 @@ public abstract class FlexoResourceImpl<RD extends ResourceData<RD>> extends Fle
 	public void notifyResourceLoaded() {
 		logger.fine("notifyResourceLoaded(), resource=" + this);
 
-		ResourceLoaded notification = new ResourceLoaded(this, resourceData);
+		ResourceLoaded<?> notification = new ResourceLoaded<>(this, resourceData);
 		setChanged();
 		notifyObservers(notification);
 		// Also notify that the contents of the resource may also have changed
@@ -210,9 +234,32 @@ public abstract class FlexoResourceImpl<RD extends ResourceData<RD>> extends Fle
 		notifyObservers(new DataModification("contents", null, getContents()));
 		if (getServiceManager() != null) {
 			getServiceManager().notify(getServiceManager().getResourceManager(), notification);
-		} else {
+		}
+		else {
 			logger.warning("Resource " + this + " does not refer to any ServiceManager. Please investigate...");
 		}
+	}
+
+	/**
+	 * Called to notify that a resource has successfully been unloaded
+	 */
+	@Override
+	public void notifyResourceUnloaded() {
+		logger.fine("notifyResourceUnloaded(), resource=" + this);
+
+		ResourceUnloaded<?> notification = new ResourceUnloaded<>(this, resourceData);
+		setChanged();
+		notifyObservers(notification);
+		// Also notify that the contents of the resource may also have changed
+		setChanged();
+		notifyObservers(new DataModification("contents", null, null));
+		if (getServiceManager() != null) {
+			getServiceManager().notify(getServiceManager().getResourceManager(), notification);
+		}
+		else {
+			logger.warning("Resource " + this + " does not refer to any ServiceManager. Please investigate...");
+		}
+
 	}
 
 	/**
@@ -281,9 +328,24 @@ public abstract class FlexoResourceImpl<RD extends ResourceData<RD>> extends Fle
 	}
 
 	@Override
-	public final String toString() {
+	public String toString() {
+		if (getLoadedResourceData() instanceof FlexoObject) {
+			return ((FlexoObject) getLoadedResourceData()).getImplementedInterface().getSimpleName() + "." + getURI() + "." + getVersion()
+					+ "." + getRevision();
+		}
 		return getClass().getSimpleName() + "." + getURI() + "." + getVersion() + "." + getRevision();
 	}
+
+	/*public List<? extends Resource> getContents(boolean deep) {
+		// TODO: manage depth
+		return getContents();
+	}*/
+
+	/*@Override
+	public List<FlexoResource<?>> getContents() {
+		// TODO Auto-generated method stub
+		return null;
+	}*/
 
 	/**
 	 * Returns a list of resources of supplied type contained by this resource.
@@ -292,7 +354,7 @@ public abstract class FlexoResourceImpl<RD extends ResourceData<RD>> extends Fle
 	 */
 	@Override
 	public <R extends FlexoResource<?>> List<R> getContents(Class<R> resourceClass) {
-		ArrayList<R> returned = new ArrayList<R>();
+		ArrayList<R> returned = new ArrayList<>();
 		for (FlexoResource<?> r : getContents()) {
 			if (resourceClass.isAssignableFrom(r.getClass())) {
 				returned.add((R) r);
@@ -342,6 +404,9 @@ public abstract class FlexoResourceImpl<RD extends ResourceData<RD>> extends Fle
 	 */
 	@Override
 	public boolean isReadOnly() {
+		if (getIODelegate() != null && !getIODelegate().hasWritePermission()) {
+			return true;
+		}
 		return false;
 	}
 
@@ -361,25 +426,30 @@ public abstract class FlexoResourceImpl<RD extends ResourceData<RD>> extends Fle
 		if (isReadOnly()) {
 			logger.warning("Delete requested for READ-ONLY resource " + this);
 			return false;
-		} else {
+		}
+		else {
 			isDeleting = true;
 			logger.info("Deleting resource " + this);
+
+			if (getResourceCenter() instanceof ResourceRepositoryImpl) {
+				((ResourceRepository) getResourceCenter()).unregisterResource(this);
+			}
+
 			if (getContainer() != null) {
 				FlexoResource<?> container = getContainer();
 				container.removeFromContents(this);
 				container.notifyContentsRemoved(this);
 			}
-			for (org.openflexo.foundation.resource.FlexoResource<?> r : new ArrayList<org.openflexo.foundation.resource.FlexoResource<?>>(
-					getContents())) {
+			for (org.openflexo.foundation.resource.FlexoResource<?> r : new ArrayList<>(getContents())) {
 				r.delete();
 			}
 
 			if (isLoaded()) {
-				unloadResourceData();
+				unloadResourceData(true);
 			}
 
 			// Handle Flexo IO delegate deletion
-			getFlexoIODelegate().delete();
+			getIODelegate().delete();
 
 			performSuperDelete(context);
 
@@ -394,11 +464,39 @@ public abstract class FlexoResourceImpl<RD extends ResourceData<RD>> extends Fle
 	 * Also delete the resource data
 	 */
 	@Override
-	public void unloadResourceData() {
+	public void unloadResourceData(boolean deleteResourceData) {
 		if (isLoaded()) {
-			resourceData.delete();
+			isUnloading = true;
+			if (deleteResourceData) {
+				resourceData.delete();
+			}
 			resourceData = null;
+			// That's fine, resource is loaded, now let's notify the loading of
+			// the resources
+			notifyResourceUnloaded();
+			isUnloading = false;
 		}
+	}
+
+	/**
+	 * Return flag indicating if this resource support external update<br>
+	 * Default implementation return false
+	 * 
+	 * @return
+	 */
+	@Override
+	public boolean isUpdatable() {
+		return false;
+	}
+
+	/**
+	 * If this resource support external update (reloading), perform it now<br>
+	 * Default implementation does nothing
+	 * 
+	 * @see #isUpdatable()
+	 */
+	@Override
+	public void updateResourceData() {
 	}
 
 	@Override
@@ -427,61 +525,139 @@ public abstract class FlexoResourceImpl<RD extends ResourceData<RD>> extends Fle
 	}
 
 	// TODO: check this
-	@Override
-	public void setContainer(Resource resource) {
+	/*public void setContainer(Resource resource) {
 		if (resource instanceof FlexoResource) {
 			setContainer((FlexoResource<?>) resource);
 		}
-	}
+	}*/
 
 	// TODO: check this
-	@Override
-	public List<? extends Resource> getContents(Pattern pattern) {
+	/*@Override
+	public List<? extends Resource> getContents(Pattern pattern, boolean deep) {
 		// TODO Auto-generated method stub
 		return null;
-	}
+	}*/
 
 	// TODO: check this
-	@Override
+	/*@Override
 	public ResourceLocatorDelegate getLocator() {
 		// TODO Auto-generated method stub
 		return null;
-	}
+	}*/
 
 	// TODO: check this
-	@Override
+	/*@Override
 	public InputStream openInputStream() {
 		if (getFlexoIODelegate() instanceof FlexoIOStreamDelegate) {
 			return ((FlexoIOStreamDelegate) getFlexoIODelegate()).getInputStream();
 		}
 		return null;
-	}
+	}*/
 
 	// TODO: check this
-	@Override
+	/*@Override
 	public OutputStream openOutputStream() {
 		if (getFlexoIODelegate() instanceof FlexoIOStreamDelegate) {
 			return ((FlexoIOStreamDelegate) getFlexoIODelegate()).getOutputStream();
 		}
 		return null;
-	}
+	}*/
 
 	// TODO: check this
-	@Override
+	/*@Override
 	public final String getRelativePath() {
 		return null;
-	}
+	}*/
 
-	// TODO: check this
-	@Override
-	public String makePathRelativeToString(String pathRelative) {
+	/*@Override
+	public String computeRelativePath(Resource resource) {
 		// TODO Auto-generated method stub
 		return null;
-	}
+	}*/
+
+	/*@Override
+	public Resource locateResource(String relativePathName) {
+		// TODO Auto-generated method stub
+		return null;
+	}*/
 
 	// TODO: check this
-	@Override
+	/*@Override
 	public boolean isContainer() {
 		return true;
+	}*/
+
+	/**
+	 * Return URI of this resource<br>
+	 * If URI was set for this resource, return that URI, otherwise delegate default URI computation to resource center in which this
+	 * resource exists
+	 */
+	@Override
+	public final String getURI() {
+		String returned = (String) performSuperGetter(URI);
+
+		if (returned == null && getResourceCenter() != null) {
+			returned = computeDefaultURI();
+		}
+
+		if (returned == null && (getIODelegate() instanceof FileIODelegate) && (((FileIODelegate) getIODelegate()).getFile() != null)) {
+			if (((FileIODelegate) getIODelegate()).getFile() != null) {
+				return ((FileIODelegate) getIODelegate()).getFile().toURI().toString();
+			}
+		}
+		return returned;
 	}
+
+	public String computeDefaultURI() {
+		return getResourceCenter().getDefaultResourceURI(this);
+	}
+
+	@Override
+	public LocalizedDelegate getLocales() {
+		if (this instanceof TechnologyAdapterResource) {
+			return ((TechnologyAdapterResource) this).getTechnologyAdapter().getLocales();
+		}
+		return super.getLocales();
+	}
+
+	/*
+	 * public void willWrite(File file) { getServiceManager().notify(null, new
+	 * WillWriteFileOnDiskNotification(file)); }
+	 * 
+	 * public void hasWritten(File file) { getServiceManager().notify(null, new
+	 * FileHasBeenWrittenOnDiskNotification(file)); }
+	 * 
+	 * public void willRename(File fromFile, File toFile) {
+	 * getServiceManager().notify(null, new
+	 * WillRenameFileOnDiskNotification(fromFile, toFile)); }
+	 * 
+	 * public void willDelete(File file) { getServiceManager().notify(null, new
+	 * WillDeleteFileOnDiskNotification(file)); }
+	 */
+
+	private boolean needsConversion = false;
+
+	@Override
+	public void setNeedsConversion() {
+		needsConversion = true;
+	}
+
+	@Override
+	public boolean needsConversion() {
+		return needsConversion;
+	}
+
+	/**
+	 * Return displayable name for this FlexoResource
+	 * 
+	 * @return
+	 */
+	@Override
+	public String getDisplayName() {
+		if (getIODelegate() != null) {
+			return getIODelegate().getDisplayName();
+		}
+		return getName();
+	}
+
 }

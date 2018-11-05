@@ -58,25 +58,26 @@ import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 import javax.swing.SwingUtilities;
 
-import org.openflexo.FlexoCst;
 import org.openflexo.connie.type.TypeUtils;
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.action.ActionGroup;
 import org.openflexo.foundation.action.ActionMenu;
 import org.openflexo.foundation.action.FlexoAction;
-import org.openflexo.foundation.action.FlexoActionType;
+import org.openflexo.foundation.action.FlexoActionFactory;
 import org.openflexo.foundation.fml.ActionScheme;
 import org.openflexo.foundation.fml.DeletionScheme;
+import org.openflexo.foundation.fml.FlexoBehaviour.Visibility;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.NavigationScheme;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
-import org.openflexo.foundation.fml.rt.action.ActionSchemeActionType;
-import org.openflexo.foundation.fml.rt.action.DeletionSchemeActionType;
-import org.openflexo.foundation.fml.rt.action.NavigationSchemeActionType;
-import org.openflexo.foundation.fml.rt.action.SynchronizationSchemeActionType;
+import org.openflexo.foundation.fml.rt.VirtualModelInstance;
+import org.openflexo.foundation.fml.rt.action.ActionSchemeActionFactory;
+import org.openflexo.foundation.fml.rt.action.DeletionSchemeActionFactory;
+import org.openflexo.foundation.fml.rt.action.NavigationSchemeActionFactory;
+import org.openflexo.foundation.fml.rt.action.SynchronizationSchemeActionFactory;
 import org.openflexo.view.controller.FlexoController;
-import org.openflexo.view.controller.action.EditionAction;
+import org.openflexo.view.controller.action.MenuItemAction;
 
 public class ContextualMenuManager {
 
@@ -85,7 +86,7 @@ public class ContextualMenuManager {
 	private static final MenuFilter ALL = new MenuFilter() {
 
 		@Override
-		public boolean acceptActionType(FlexoActionType<?, ?, ?> actionType) {
+		public boolean acceptActionType(FlexoActionFactory<?, ?, ?> actionType) {
 			return true;
 		}
 	};
@@ -123,7 +124,7 @@ public class ContextualMenuManager {
 					return;
 				}
 
-				boolean isCtrlDown = (e.getModifiersEx() & FlexoCst.MULTI_SELECTION_MASK) == FlexoCst.MULTI_SELECTION_MASK;
+				// Unused boolean isCtrlDown = (e.getModifiersEx() & FlexoCst.MULTI_SELECTION_MASK) == FlexoCst.MULTI_SELECTION_MASK;
 
 			}
 		}
@@ -142,7 +143,7 @@ public class ContextualMenuManager {
 	}
 
 	public void processMouseMoved(MouseEvent e) {
-		if (_isPopupMenuDisplayed && controller.getApplicationContext().getAdvancedPrefs().getCloseOnMouseOut()) {
+		if (_isPopupMenuDisplayed && controller.getApplicationContext().getPresentationPreferences().getCloseOnMouseOut()) {
 			Rectangle menuBounds = _popupMenu.getBounds();
 			menuBounds.width = menuBounds.width + 40;
 			menuBounds.height = menuBounds.height + 40;
@@ -169,23 +170,23 @@ public class ContextualMenuManager {
 	// ============================= Filters ===================================
 	// ==========================================================================
 
-	public boolean acceptAction(FlexoActionType<?, ?, ?> action) {
+	public boolean acceptAction(FlexoActionFactory<?, ?, ?> action) {
 		// override this method to exclude some actions.
 		return true;
 	}
 
 	@SuppressWarnings("unchecked")
-	public <A extends FlexoAction<A, T1, T2>, T1 extends FlexoObject, T2 extends FlexoObject> List<FlexoActionType<A, T1, T2>> getActionTypesWithAddType(
+	public <A extends FlexoAction<A, T1, T2>, T1 extends FlexoObject, T2 extends FlexoObject> List<FlexoActionFactory<A, T1, T2>> getActionTypesWithAddType(
 			FlexoObject focusedObject, Vector<? extends FlexoObject> globalSelection) {
-		List<FlexoActionType<A, T1, T2>> returned = new ArrayList<FlexoActionType<A, T1, T2>>();
+		List<FlexoActionFactory<A, T1, T2>> returned = new ArrayList<>();
 		if (getEditor() == null) {
 			return returned;
 		}
-		for (FlexoActionType<?, ?, ?> actionType : focusedObject.getActionList()) {
+		for (FlexoActionFactory<?, ?, ?> actionType : focusedObject.getActionList()) {
 			if (TypeUtils.isAssignableTo(focusedObject, actionType.getFocusedObjectType())
 					&& (globalSelection == null || TypeUtils.isAssignableTo(globalSelection, actionType.getGlobalSelectionType()))) {
-				FlexoActionType<A, T1, T2> cast = (FlexoActionType<A, T1, T2>) actionType;
-				if (cast.getActionCategory() == FlexoActionType.ADD_ACTION_TYPE) {
+				FlexoActionFactory<A, T1, T2> cast = (FlexoActionFactory<A, T1, T2>) actionType;
+				if (cast.getActionCategory() == FlexoActionFactory.ADD_ACTION_TYPE) {
 					if (getEditor().isActionVisible(cast, (T1) focusedObject, (Vector<T2>) globalSelection)) {
 						if (getEditor().isActionEnabled(cast, (T1) focusedObject, (Vector<T2>) globalSelection)) {
 							returned.add(cast);
@@ -198,18 +199,17 @@ public class ContextualMenuManager {
 	}
 
 	@SuppressWarnings("unchecked")
-	public <A extends FlexoAction<A, T1, T2>, T1 extends FlexoObject, T2 extends FlexoObject> List<FlexoActionType<A, T1, T2>> getActionTypesWithDeleteType(
+	public <A extends FlexoAction<A, T1, T2>, T1 extends FlexoObject, T2 extends FlexoObject> List<FlexoActionFactory<A, T1, T2>> getActionTypesWithDeleteType(
 			FlexoObject focusedObject, Vector<? extends FlexoObject> globalSelection) {
-		List<FlexoActionType<A, T1, T2>> returned = new ArrayList<FlexoActionType<A, T1, T2>>();
+		List<FlexoActionFactory<A, T1, T2>> returned = new ArrayList<>();
 		if (getEditor() == null) {
 			return returned;
 		}
-		for (FlexoActionType<?, ?, ?> actionType : focusedObject.getActionList()) {
+		for (FlexoActionFactory<?, ?, ?> actionType : focusedObject.getActionList()) {
 			if (TypeUtils.isAssignableTo(focusedObject, actionType.getFocusedObjectType())
 					&& (globalSelection == null || TypeUtils.isAssignableTo(globalSelection, actionType.getGlobalSelectionType()))) {
-				@SuppressWarnings("unchecked")
-				FlexoActionType<A, T1, T2> cast = (FlexoActionType<A, T1, T2>) actionType;
-				if (cast.getActionCategory() == FlexoActionType.DELETE_ACTION_TYPE) {
+				FlexoActionFactory<A, T1, T2> cast = (FlexoActionFactory<A, T1, T2>) actionType;
+				if (cast.getActionCategory() == FlexoActionFactory.DELETE_ACTION_TYPE) {
 					if (getEditor().isActionVisible(cast, (T1) focusedObject, (Vector<T2>) globalSelection)) {
 						if (getEditor().isActionEnabled(cast, (T1) focusedObject, (Vector<T2>) globalSelection)) {
 							returned.add(cast);
@@ -243,10 +243,9 @@ public class ContextualMenuManager {
 	public JPopupMenu makePopupMenu(FlexoObject focusedObject, MenuFilter filter) {
 		if (focusedObject != null) {
 			ContextualMenu contextualMenu = new ContextualMenu();
-			for (FlexoActionType next : focusedObject.getActionList()) {
-				if (filter.acceptActionType(next)
-						&& getEditor().isActionVisible(next, focusedObject,
-								_selectionManager != null ? _selectionManager.getSelection() : null)) {
+			for (FlexoActionFactory next : focusedObject.getActionList()) {
+				if (filter.acceptActionType(next) && getEditor().isActionVisible(next, focusedObject,
+						_selectionManager != null ? _selectionManager.getSelection() : null)) {
 					contextualMenu.putAction(next);
 				}
 			}
@@ -254,28 +253,41 @@ public class ContextualMenuManager {
 				FlexoConceptInstance fci = (FlexoConceptInstance) focusedObject;
 				FlexoConcept commonConcept = fci.getFlexoConcept();
 				if (FlexoAction.isHomogeneousFlexoConceptInstanceSelection(focusedObject, _selectionManager.getSelection())) {
-					if (commonConcept.hasSynchronizationScheme()) {
-						contextualMenu.putAction(new SynchronizationSchemeActionType(commonConcept.getSynchronizationScheme(), fci));
+					if (commonConcept.hasSynchronizationScheme() && fci instanceof VirtualModelInstance) {
+						contextualMenu.putAction(new SynchronizationSchemeActionFactory(commonConcept.getSynchronizationScheme(),
+								(VirtualModelInstance<?, ?>) fci));
 					}
 					if (commonConcept.hasActionScheme()) {
-						for (ActionScheme as : commonConcept.getActionSchemes()) {
-							contextualMenu.putAction(new ActionSchemeActionType(as, fci));
+						for (ActionScheme as : commonConcept.getAccessibleActionSchemes()) {
+							if (as.getVisibility() == Visibility.Public) {
+								contextualMenu.putAction(new ActionSchemeActionFactory(as, fci));
+							}
 						}
 					}
 					if (commonConcept.hasNavigationScheme()) {
-						for (NavigationScheme as : commonConcept.getNavigationSchemes()) {
-							contextualMenu.putAction(new NavigationSchemeActionType(as, fci));
+						for (NavigationScheme ns : commonConcept.getNavigationSchemes()) {
+							if (ns.getVisibility() == Visibility.Public) {
+								contextualMenu.putAction(new NavigationSchemeActionFactory(ns, fci));
+							}
 						}
 					}
 					if (commonConcept.hasDeletionScheme()) {
-						for (DeletionScheme ds : commonConcept.getDeletionSchemes()) {
-							contextualMenu.putAction(new DeletionSchemeActionType(ds, fci));
+						for (DeletionScheme ds : commonConcept.getAccessibleDeletionSchemes()) {
+							if (ds.getVisibility() == Visibility.Public) {
+								contextualMenu.putAction(new DeletionSchemeActionFactory(ds, fci));
+							}
 						}
 					}
+					/*if (commonConcept instanceof VirtualModel) {
+						for (FlexoConcept rootConcept : ((VirtualModel) commonConcept).getAllRootFlexoConcepts()) {
+							AddFlexoConceptInstance<FMLRTVirtualModelInstance<VMI,?>>
+						}
+					}*/
 				}
 			}
 			_popupMenu = contextualMenu.makePopupMenu(focusedObject);
-		} else {
+		}
+		else {
 			_popupMenu = new JPopupMenu();
 		}
 		return _popupMenu;
@@ -292,17 +304,18 @@ public class ContextualMenuManager {
 			if (_popupMenu.getComponentCount() > 0) {
 				_popupMenu.show(_invoker, position.x, position.y);
 				_isPopupMenuDisplayed = true;
-			} else {
+			}
+			else {
 				resetContextualMenuTriggering();
 			}
 		}
 	}
 
 	protected class ContextualMenu extends Hashtable<ActionGroup, ContextualMenuGroup> {
-		private final Hashtable<ActionMenu, ContextualSubMenu> _subMenus = new Hashtable<ActionMenu, ContextualSubMenu>();
+		final Hashtable<ActionMenu, ContextualSubMenu> _subMenus = new Hashtable<>();
 
 		public Enumeration<ContextualMenuGroup> orderedGroups() {
-			Vector<ContextualMenuGroup> orderedGroups = new Vector<ContextualMenuGroup>(values());
+			Vector<ContextualMenuGroup> orderedGroups = new Vector<>(values());
 			Collections.sort(orderedGroups, new Comparator<ContextualMenuGroup>() {
 				@Override
 				public int compare(ContextualMenuGroup o1, ContextualMenuGroup o2) {
@@ -312,23 +325,48 @@ public class ContextualMenuManager {
 			return orderedGroups.elements();
 		}
 
-		public void putAction(FlexoActionType actionType) {
+		public void putAction(FlexoActionFactory<?, ?, ?> actionType) {
 			if (acceptAction(actionType)) {
 				if (actionType.getActionMenu() != null) {
-					ContextualSubMenu subMenu = _subMenus.get(actionType.getActionMenu());
+					ContextualSubMenu subMenu = ensureSubMenuCreated(actionType.getActionMenu());
+
+					/*ContextualSubMenu subMenu = _subMenus.get(actionType.getActionMenu());
 					if (subMenu == null) {
 						subMenu = new ContextualSubMenu(actionType.getActionMenu());
 						addSubMenu(subMenu);
 						_subMenus.put(actionType.getActionMenu(), subMenu);
-					}
+					}*/
 					subMenu.addAction(actionType);
-				} else {
+				}
+				else {
 					addAction(actionType);
 				}
 			}
 		}
 
-		public void addAction(FlexoActionType actionType) {
+		private ContextualSubMenu ensureSubMenuCreated(ActionMenu actionMenu) {
+			if (actionMenu.getParentMenu() != null) {
+				ContextualSubMenu parentMenu = ensureSubMenuCreated(actionMenu.getParentMenu());
+				ContextualSubMenu subMenu = parentMenu._subMenus.get(actionMenu);
+				if (subMenu == null) {
+					subMenu = new ContextualSubMenu(parentMenu, actionMenu);
+					parentMenu.addSubMenu(subMenu);
+					parentMenu._subMenus.put(actionMenu, subMenu);
+				}
+				return subMenu;
+			}
+			else {
+				ContextualSubMenu subMenu = _subMenus.get(actionMenu);
+				if (subMenu == null) {
+					subMenu = new ContextualSubMenu(this, actionMenu);
+					addSubMenu(subMenu);
+					_subMenus.put(actionMenu, subMenu);
+				}
+				return subMenu;
+			}
+		}
+
+		public void addAction(FlexoActionFactory<?, ?, ?> actionType) {
 			if (acceptAction(actionType)) {
 				ContextualMenuGroup contextualMenuGroup = get(actionType.getActionGroup());
 				if (contextualMenuGroup == null) {
@@ -361,13 +399,15 @@ public class ContextualMenuManager {
 				addSeparator = true;
 				// System.out.println("============= Groupe
 				// "+menuGroup._actionGroup.getLocalizedName());
-				for (Enumeration en2 = menuGroup.elements(); en2.hasMoreElements();) {
+				for (Enumeration<?> en2 = menuGroup.elements(); en2.hasMoreElements();) {
 					Object nextElement = en2.nextElement();
-					if (nextElement instanceof FlexoActionType) {
-						// System.out.println("Ajout de "+nextElement);
-						makeMenuItem((FlexoActionType) nextElement, focusedObject, returned);
-					} else if (nextElement instanceof ContextualSubMenu) {
-						// System.out.println("Ajout de "+nextElement);
+
+					if (nextElement instanceof FlexoActionFactory) {
+						// System.out.println("Ajout de " + nextElement);
+						makeMenuItem((FlexoActionFactory) nextElement, focusedObject, returned);
+					}
+					else if (nextElement instanceof ContextualSubMenu) {
+						// System.out.println("Ajout de " + nextElement);
 						JMenuItem item = ((ContextualSubMenu) nextElement).makeMenu(focusedObject);
 						returned.add(item);
 					}
@@ -378,14 +418,14 @@ public class ContextualMenuManager {
 
 	}
 
-	protected class ContextualMenuGroup extends Vector {
+	protected class ContextualMenuGroup extends Vector<Object> {
 		private final ActionGroup _actionGroup;
 
 		public ContextualMenuGroup(ActionGroup actionGroup) {
 			_actionGroup = actionGroup;
 		}
 
-		public void addAction(FlexoActionType actionType) {
+		public void addAction(FlexoActionFactory<?, ?, ?> actionType) {
 			// should have already been checked, but it's more secure.
 			if (acceptAction(actionType)) {
 				add(actionType);
@@ -403,9 +443,15 @@ public class ContextualMenuManager {
 
 	protected class ContextualSubMenu extends ContextualMenu {
 		private final ActionMenu _actionMenu;
+		private final ContextualMenu parentMenu;
 
-		public ContextualSubMenu(ActionMenu actionMenu) {
+		public ContextualSubMenu(ContextualMenu parentMenu, ActionMenu actionMenu) {
 			_actionMenu = actionMenu;
+			this.parentMenu = parentMenu;
+		}
+
+		public ContextualMenu getParentMenu() {
+			return parentMenu;
 		}
 
 		public ActionMenu getActionMenu() {
@@ -415,20 +461,24 @@ public class ContextualMenuManager {
 		public JMenu makeMenu(FlexoObject focusedObject) {
 			boolean addSeparator = false;
 			JMenu returned = new JMenu();
-			returned.setText(getActionMenu().getLocalizedName());
+			returned.setText(getActionMenu().getLocalizedName(focusedObject.getLocales()));
 			if (getActionMenu().getSmallIcon() != null) {
 				returned.setIcon(getActionMenu().getSmallIcon());
 			}
-			for (Enumeration en = orderedGroups(); en.hasMoreElements();) {
+			for (Enumeration<?> en = orderedGroups(); en.hasMoreElements();) {
 				ContextualMenuGroup menuGroup = (ContextualMenuGroup) en.nextElement();
 				if (addSeparator) {
 					returned.addSeparator();
 				}
 				addSeparator = true;
-				for (Enumeration en2 = menuGroup.elements(); en2.hasMoreElements();) {
+				for (Enumeration<?> en2 = menuGroup.elements(); en2.hasMoreElements();) {
 					Object nextElement = en2.nextElement();
-					if (nextElement instanceof FlexoActionType) {
-						makeMenuItem((FlexoActionType) nextElement, focusedObject, returned);
+					if (nextElement instanceof FlexoActionFactory) {
+						makeMenuItem((FlexoActionFactory) nextElement, focusedObject, returned);
+					}
+					else if (nextElement instanceof ContextualSubMenu) {
+						JMenuItem item = ((ContextualSubMenu) nextElement).makeMenu(focusedObject);
+						returned.add(item);
 					}
 				}
 			}
@@ -438,13 +488,13 @@ public class ContextualMenuManager {
 	}
 
 	public interface MenuFilter {
-		public boolean acceptActionType(FlexoActionType<?, ?, ?> actionType);
+		public boolean acceptActionType(FlexoActionFactory<?, ?, ?> actionType);
 	}
 
 	private <A extends FlexoAction<A, T1, T2>, T1 extends FlexoObject, T2 extends FlexoObject> JMenuItem makeMenuItem(
-			FlexoActionType<A, T1, T2> actionType, FlexoObject focusedObject, JPopupMenu menu) {
+			FlexoActionFactory<A, T1, T2> actionType, FlexoObject focusedObject, JPopupMenu menu) {
 		try {
-			Vector<T2> globalSelection = new Vector<T2>();
+			Vector<T2> globalSelection = new Vector<>();
 			if (_selectionManager != null) {
 				for (FlexoObject o : _selectionManager.getSelection()) {
 					try {
@@ -455,9 +505,11 @@ public class ContextualMenuManager {
 					}
 				}
 			}
-			EditionAction<A, T1, T2> action = new EditionAction<A, T1, T2>(actionType, (T1) focusedObject, globalSelection, getEditor());
+			MenuItemAction<A, T1, T2> action = new MenuItemAction<>(actionType, (T1) focusedObject, globalSelection, getEditor());
 			JMenuItem item = menu.add(action);
-			item.setText(actionType.getLocalizedName());
+
+			item.setText(action.getLocalizedActionName());
+
 			if (getEditor().getKeyStrokeFor(actionType) != null) {
 				item.setAccelerator(getEditor().getKeyStrokeFor(actionType));
 			}
@@ -469,20 +521,21 @@ public class ContextualMenuManager {
 			}
 			return item;
 		} catch (ClassCastException exception) {
-			logger.warning("ClassCastException raised while trying to build FlexoAction " + actionType + " Exception: "
-					+ exception.getMessage());
+			logger.warning(
+					"ClassCastException raised while trying to build FlexoAction " + actionType + " Exception: " + exception.getMessage());
 			return null;
 		}
 	}
 
 	<A extends FlexoAction<A, T1, T2>, T1 extends FlexoObject, T2 extends FlexoObject> JMenuItem makeMenuItem(
-			FlexoActionType<A, T1, T2> actionType, T1 focusedObject, JMenu menu) {
+			FlexoActionFactory<A, T1, T2> actionType, T1 focusedObject, JMenu menu) {
 		try {
-			EditionAction<A, T1, T2> action = new EditionAction<A, T1, T2>(actionType, focusedObject,
+			MenuItemAction<A, T1, T2> action = new MenuItemAction<>(actionType, focusedObject,
 					_selectionManager != null ? (Vector<T2>) _selectionManager.getSelection() : null, getEditor());
 			JMenuItem item = menu.add(action);
 
-			item.setText(actionType.getLocalizedName());
+			item.setText(action.getLocalizedActionName());
+
 			if (getEditor().getKeyStrokeFor(actionType) != null) {
 				item.setAccelerator(getEditor().getKeyStrokeFor(actionType));
 			}
@@ -494,8 +547,8 @@ public class ContextualMenuManager {
 			}
 			return item;
 		} catch (ClassCastException exception) {
-			logger.warning("ClassCastException raised while trying to build FlexoAction " + actionType + " Exception: "
-					+ exception.getMessage());
+			logger.warning(
+					"ClassCastException raised while trying to build FlexoAction " + actionType + " Exception: " + exception.getMessage());
 			return null;
 		}
 	}

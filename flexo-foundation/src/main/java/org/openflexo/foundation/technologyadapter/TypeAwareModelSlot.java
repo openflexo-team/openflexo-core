@@ -41,25 +41,22 @@ package org.openflexo.foundation.technologyadapter;
 import java.util.logging.Logger;
 
 import org.apache.commons.lang3.reflect.TypeUtils;
-import org.openflexo.connie.DataBinding;
-import org.openflexo.foundation.FlexoProject;
-import org.openflexo.foundation.fml.AbstractCreationScheme;
 import org.openflexo.foundation.fml.FMLRepresentationContext;
 import org.openflexo.foundation.fml.FMLRepresentationContext.FMLRepresentationOutput;
-import org.openflexo.foundation.fml.IndividualRole;
-import org.openflexo.foundation.fml.editionaction.AddIndividual;
-import org.openflexo.foundation.fml.rt.ModelSlotInstance;
+import org.openflexo.foundation.fml.rt.AbstractVirtualModelInstanceModelFactory;
+import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.TypeAwareModelSlotInstance;
-import org.openflexo.foundation.fml.rt.action.CreateVirtualModelInstance;
-import org.openflexo.foundation.fml.rt.action.ModelSlotInstanceConfiguration;
-import org.openflexo.foundation.ontology.IFlexoOntologyClass;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
+import org.openflexo.model.annotations.DefineValidationRule;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
 import org.openflexo.model.annotations.PropertyIdentifier;
 import org.openflexo.model.annotations.Setter;
 import org.openflexo.model.annotations.XMLAttribute;
+import org.openflexo.model.validation.ValidationError;
+import org.openflexo.model.validation.ValidationIssue;
+import org.openflexo.model.validation.ValidationRule;
 import org.openflexo.toolbox.JavaUtils;
 import org.openflexo.toolbox.StringUtils;
 
@@ -92,8 +89,8 @@ public interface TypeAwareModelSlot<M extends FlexoModel<M, MM> & TechnologyObje
 
 	public Class<? extends FlexoMetaModel<?>> getMetaModelClass();
 
-	public FlexoModelResource<M, MM, ?, ?> createProjectSpecificEmptyModel(FlexoProject project, String filename, String modelUri,
-			FlexoMetaModelResource<M, MM, ?> metaModelResource);
+	public FlexoModelResource<M, MM, ?, ?> createProjectSpecificEmptyModel(FlexoResourceCenter<?> rc, String filename, String relativePath,
+			String modelUri, FlexoMetaModelResource<M, MM, ?> metaModelResource);
 
 	public FlexoModelResource<M, MM, ?, ?> createSharedEmptyModel(FlexoResourceCenter<?> resourceCenter, String relativePath,
 			String filename, String modelUri, FlexoMetaModelResource<M, MM, ?> metaModelResource);
@@ -106,7 +103,7 @@ public interface TypeAwareModelSlot<M extends FlexoModel<M, MM> & TechnologyObje
 	 * @param proposedName
 	 * @return
 	 */
-	public String generateUniqueURI(TypeAwareModelSlotInstance msInstance, String proposedName);
+	public String generateUniqueURI(M model, String proposedName);
 
 	/**
 	 * Return a new String (the simple name) uniquely identifying a new object in related technology, according to the conventions of
@@ -116,20 +113,9 @@ public interface TypeAwareModelSlot<M extends FlexoModel<M, MM> & TechnologyObje
 	 * @param proposedName
 	 * @return
 	 */
-	public String generateUniqueURIName(TypeAwareModelSlotInstance msInstance, String proposedName);
+	public String generateUniqueURIName(M model, String proposedName);
 
-	public String generateUniqueURIName(TypeAwareModelSlotInstance msInstance, String proposedName, String uriPrefix);
-
-	/**
-	 * Instantiate a new IndividualRole
-	 * 
-	 * @param ontClass
-	 * @return
-	 */
-	public IndividualRole<?> makeIndividualRole(IFlexoOntologyClass ontClass);
-
-	public AddIndividual<? extends TypeAwareModelSlot, ?> makeAddIndividualAction(IndividualRole<?> patternRole,
-			AbstractCreationScheme creationScheme);
+	public String generateUniqueURIName(M model, String proposedName, String uriPrefix);
 
 	public static abstract class TypeAwareModelSlotImpl<M extends FlexoModel<M, MM> & TechnologyObject<?>, MM extends FlexoMetaModel<MM> & TechnologyObject<?>>
 			extends ModelSlotImpl<M> implements TypeAwareModelSlot<M, MM> {
@@ -139,37 +125,15 @@ public interface TypeAwareModelSlot<M extends FlexoModel<M, MM> & TechnologyObje
 		private FlexoMetaModelResource<M, MM, ?> metaModelResource;
 		private String metaModelURI;
 
-		/**
-		 * Instanciate a new model slot instance configuration for this model slot
-		 */
+		@SuppressWarnings({ "rawtypes", "unchecked" })
 		@Override
-		public abstract ModelSlotInstanceConfiguration<? extends TypeAwareModelSlot<M, MM>, M> createConfiguration(
-				CreateVirtualModelInstance action);
+		public TypeAwareModelSlotInstance<M, MM, ?> makeActorReference(M object, FlexoConceptInstance fci) {
 
-		/**
-		 * Instantiate a new IndividualRole
-		 * 
-		 * @param ontClass
-		 * @return
-		 */
-		@Override
-		public IndividualRole<?> makeIndividualRole(IFlexoOntologyClass ontClass) {
-			Class<? extends IndividualRole> individualPRClass = getFlexoRoleClass(IndividualRole.class);
-			IndividualRole<?> returned = makeFlexoRole(individualPRClass);
-			returned.setOntologicType(ontClass);
-			return returned;
-		}
-
-		@Override
-		public AddIndividual<? extends TypeAwareModelSlot, ?> makeAddIndividualAction(IndividualRole<?> patternRole,
-				AbstractCreationScheme creationScheme) {
-			Class<? extends AddIndividual<? extends TypeAwareModelSlot, ?>> addIndividualClass = (Class<? extends AddIndividual<? extends TypeAwareModelSlot, ?>>) getEditionActionClass(AddIndividual.class);
-			AddIndividual<? extends TypeAwareModelSlot, ?> returned = makeEditionAction(addIndividualClass);
-
-			// returned.setAssignation(new DataBinding(patternRole.getRoleName()));
-			if (creationScheme.getParameter("uri") != null) {
-				returned.setIndividualName(new DataBinding("parameters.uri"));
-			}
+			AbstractVirtualModelInstanceModelFactory<?> factory = fci.getFactory();
+			TypeAwareModelSlotInstance returned = factory.newInstance(TypeAwareModelSlotInstance.class);
+			returned.setModelSlot(this);
+			returned.setFlexoConceptInstance(fci);
+			returned.setAccessedResourceData(object);
 			return returned;
 		}
 
@@ -177,44 +141,44 @@ public interface TypeAwareModelSlot<M extends FlexoModel<M, MM> & TechnologyObje
 		 * Return a new String (full URI) uniquely identifying a new object in related technology, according to the conventions of related
 		 * technology
 		 * 
-		 * @param msInstance
+		 * @param model
 		 * @param proposedName
 		 * @return
 		 */
 		@Override
-		public String generateUniqueURI(TypeAwareModelSlotInstance msInstance, String proposedName) {
-			if (msInstance == null || msInstance.getResourceData() == null) {
+		public String generateUniqueURI(M model, String proposedName) {
+			if (model == null) {
 				return null;
 			}
-			return msInstance.getModelURI() + "#" + generateUniqueURIName(msInstance, proposedName);
+			return model.getURI() + "#" + generateUniqueURIName(model, proposedName);
 		}
 
 		/**
 		 * Return a new String (the simple name) uniquely identifying a new object in related technology, according to the conventions of
 		 * related technology
 		 * 
-		 * @param msInstance
+		 * @param model
 		 * @param proposedName
 		 * @return
 		 */
 		@Override
-		public String generateUniqueURIName(TypeAwareModelSlotInstance msInstance, String proposedName) {
-			if (msInstance == null || msInstance.getResourceData() == null) {
-				return proposedName;
+		public String generateUniqueURIName(M model, String proposedName) {
+			if (model == null) {
+				return null;
 			}
-			return generateUniqueURIName(msInstance, proposedName, msInstance.getModelURI() + "#");
+			return generateUniqueURIName(model, proposedName, model.getURI() + "#");
 		}
 
 		@Override
-		public String generateUniqueURIName(TypeAwareModelSlotInstance msInstance, String proposedName, String uriPrefix) {
-			if (msInstance == null || msInstance.getResourceData() == null) {
-				return proposedName;
+		public String generateUniqueURIName(M model, String proposedName, String uriPrefix) {
+			if (model == null) {
+				return null;
 			}
 			String baseName = JavaUtils.getClassName(proposedName);
 			boolean unique = false;
 			int testThis = 0;
 			while (!unique) {
-				unique = msInstance.getResourceData().getObject(uriPrefix + baseName) == null;
+				unique = model.getObject(uriPrefix + baseName) == null;
 				if (!unique) {
 					testThis++;
 					baseName = proposedName + testThis;
@@ -224,8 +188,8 @@ public interface TypeAwareModelSlot<M extends FlexoModel<M, MM> & TechnologyObje
 		}
 
 		@Override
-		public abstract FlexoModelResource<M, MM, ?, ?> createProjectSpecificEmptyModel(FlexoProject project, String filename,
-				String modelUri, FlexoMetaModelResource<M, MM, ?> metaModelResource);
+		public abstract FlexoModelResource<M, MM, ?, ?> createProjectSpecificEmptyModel(FlexoResourceCenter<?> rc, String filename,
+				String relativePath, String modelUri, FlexoMetaModelResource<M, MM, ?> metaModelResource);
 
 		@Override
 		public abstract FlexoModelResource<M, MM, ?, ?> createSharedEmptyModel(FlexoResourceCenter<?> resourceCenter, String relativePath,
@@ -233,20 +197,12 @@ public interface TypeAwareModelSlot<M extends FlexoModel<M, MM> & TechnologyObje
 
 		@Override
 		public FlexoMetaModelResource<M, MM, ?> getMetaModelResource() {
-			if (metaModelResource == null && StringUtils.isNotEmpty(metaModelURI) && getInformationSpace() != null) {
-				metaModelResource = (FlexoMetaModelResource<M, MM, ?>) getInformationSpace().getMetaModelWithURI(metaModelURI,
-						getModelSlotTechnologyAdapter());
+			if (metaModelResource == null && StringUtils.isNotEmpty(metaModelURI) && getServiceManager() != null
+					&& getServiceManager().getResourceManager() != null) {
+				metaModelResource = (FlexoMetaModelResource<M, MM, ?>) getServiceManager().getResourceManager()
+						.getMetaModelWithURI(metaModelURI, getModelSlotTechnologyAdapter());
 				logger.info("Looked-up " + metaModelResource + " for " + metaModelURI);
 			}
-			// Temporary hack to lookup parent slot (to be refactored)
-			/*
-			 * if (metaModelResource == null && getVirtualModel() != null &&
-			 * getViewPoint() != null) { if
-			 * (getViewPoint().getModelSlot(getName()) != null) { return
-			 * ((TypeSafeModelSlot)
-			 * getViewPoint().getModelSlot(getName())).getMetaModelResource(); }
-			 * }
-			 */
 			return metaModelResource;
 		}
 
@@ -268,28 +224,31 @@ public interface TypeAwareModelSlot<M extends FlexoModel<M, MM> & TechnologyObje
 			this.metaModelURI = metaModelURI;
 		}
 
-		@Override
+		/*@Override
 		public String getFMLRepresentation(FMLRepresentationContext context) {
 			FMLRepresentationOutput out = new FMLRepresentationOutput(context);
 			out.append("ModelSlot " + getName() + " type=" + getClass().getSimpleName() + " conformTo=\"" + getMetaModelURI() + "\""
 					+ " required=" + getIsRequired() + " readOnly=" + getIsReadOnly() + ";", context);
 			return out.toString();
+		}*/
+
+		@Override
+		protected String getFMLAnnotation(FMLRepresentationContext context) {
+			FMLRepresentationOutput out = new FMLRepresentationOutput(context);
+			out.append("@" + getImplementedInterface().getSimpleName() + "(metamodel=" + '"' + getMetaModelURI() + '"' + ",cardinality="
+					+ getCardinality() + ",readOnly=" + isReadOnly() + ")", context);
+			if (isKey()) {
+				out.append(StringUtils.LINE_SEPARATOR, context);
+				out.append("@Key", context);
+			}
+			return out.toString();
 		}
 
 		@Override
-		public final String getURIForObject(ModelSlotInstance msInstance, Object o) {
-			return getURIForObject((TypeAwareModelSlotInstance<M, MM, ? extends TypeAwareModelSlot<M, MM>>) msInstance, o);
-		}
+		public abstract String getURIForObject(M model, Object o);
 
 		@Override
-		public final Object retrieveObjectWithURI(ModelSlotInstance msInstance, String objectURI) {
-			return retrieveObjectWithURI((TypeAwareModelSlotInstance<M, MM, ? extends TypeAwareModelSlot<M, MM>>) msInstance, objectURI);
-		}
-
-		public abstract String getURIForObject(TypeAwareModelSlotInstance<M, MM, ? extends TypeAwareModelSlot<M, MM>> msInstance, Object o);
-
-		public abstract Object retrieveObjectWithURI(TypeAwareModelSlotInstance<M, MM, ? extends TypeAwareModelSlot<M, MM>> msInstance,
-				String objectURI);
+		public abstract Object retrieveObjectWithURI(M model, String objectURI);
 
 		/**
 		 * Return class of models this slot gives access to
@@ -298,8 +257,8 @@ public interface TypeAwareModelSlot<M extends FlexoModel<M, MM> & TechnologyObje
 		 */
 		@SuppressWarnings("unchecked")
 		public final Class<? extends FlexoModel<?, ?>> getModelClass() {
-			return (Class<? extends FlexoModel<?, ?>>) TypeUtils.getTypeArguments(getClass(), TypeAwareModelSlot.class).get(
-					TypeAwareModelSlot.class.getTypeParameters()[0]);
+			return (Class<? extends FlexoModel<?, ?>>) TypeUtils.getTypeArguments(getClass(), TypeAwareModelSlot.class)
+					.get(TypeAwareModelSlot.class.getTypeParameters()[0]);
 		}
 
 		/**
@@ -310,8 +269,8 @@ public interface TypeAwareModelSlot<M extends FlexoModel<M, MM> & TechnologyObje
 		@Override
 		@SuppressWarnings("unchecked")
 		public final Class<? extends FlexoMetaModel<?>> getMetaModelClass() {
-			return (Class<? extends FlexoMetaModel<?>>) TypeUtils.getTypeArguments(getClass(), TypeAwareModelSlot.class).get(
-					TypeAwareModelSlot.class.getTypeParameters()[1]);
+			return (Class<? extends FlexoMetaModel<?>>) TypeUtils.getTypeArguments(getClass(), TypeAwareModelSlot.class)
+					.get(TypeAwareModelSlot.class.getTypeParameters()[1]);
 		}
 
 		/**
@@ -327,6 +286,26 @@ public interface TypeAwareModelSlot<M extends FlexoModel<M, MM> & TechnologyObje
 		public String getModelSlotDescription() {
 			return "Model conform to " + getMetaModelURI();
 		}
-
 	}
+
+	@DefineValidationRule
+	@SuppressWarnings({ "rawtypes" })
+	public static class TypeAwareModelSlotMustAddressAValidMetaModel
+			extends ValidationRule<TypeAwareModelSlotMustAddressAValidMetaModel, TypeAwareModelSlot> {
+		public TypeAwareModelSlotMustAddressAValidMetaModel() {
+			super(TypeAwareModelSlot.class, "ModelSlot_($validable.name)_must_address_a_valid_meta_model");
+		}
+
+		@Override
+		public ValidationIssue<TypeAwareModelSlotMustAddressAValidMetaModel, TypeAwareModelSlot> applyValidation(
+				TypeAwareModelSlot modelSlot) {
+
+			if (modelSlot.getMetaModelResource() == null) {
+				return new ValidationError<>(this, modelSlot, "ModelSlot_($validable.name)_doesn't_define_any_meta_model");
+			}
+
+			return null;
+		}
+	}
+
 }

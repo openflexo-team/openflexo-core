@@ -42,15 +42,14 @@ import java.util.logging.Logger;
 
 import javax.swing.ImageIcon;
 
+import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.ModelSlotInstance;
-import org.openflexo.foundation.fml.rt.View;
-import org.openflexo.foundation.fml.rt.ViewObject;
 import org.openflexo.foundation.fml.rt.VirtualModelInstance;
-import org.openflexo.foundation.fml.rt.rm.ViewResource;
-import org.openflexo.foundation.fml.rt.rm.VirtualModelInstanceResource;
+import org.openflexo.foundation.fml.rt.VirtualModelInstanceObject;
+import org.openflexo.foundation.fml.rt.rm.FMLRTVirtualModelInstanceResource;
 import org.openflexo.rm.ResourceLocator;
-import org.openflexo.toolbox.ImageIconResource;
+import org.openflexo.view.controller.TechnologyAdapterController;
 
 /**
  * Utility class containing all icons used in context of FML@runtime technology adapter
@@ -68,46 +67,65 @@ public class FMLRTIconLibrary extends IconLibrary {
 	public static final ImageIconResource FML_RT_BIG_ICON = new ImageIconResource(
 			ResourceLocator.locateResource("Icons/Model/VE/FML-RT_64x64.png"));
 
-	public static final ImageIconResource VIEW_LIBRARY_ICON = new ImageIconResource(
-			ResourceLocator.locateResource("Icons/Model/VE/ViewLibrary.png"));
-	public static final ImageIconResource VIEW_ICON = new ImageIconResource(ResourceLocator.locateResource("Icons/Model/VE/View.png"));
-	public static final ImageIconResource VIEW_MEDIUM_ICON = new ImageIconResource(
-			ResourceLocator.locateResource("Icons/Model/VE/View_32x32.png"));
+	public static final ImageIconResource VIRTUAL_MODEL_INSTANCE_SMALL_ICON = new ImageIconResource(
+			ResourceLocator.locateResource("Icons/Model/VE/VirtualModelInstance_8x8.png"));
 	public static final ImageIconResource VIRTUAL_MODEL_INSTANCE_ICON = new ImageIconResource(
-			ResourceLocator.locateResource("Icons/Model/VE/VirtualModelInstance.png"));
+			ResourceLocator.locateResource("Icons/Model/VE/VirtualModelInstance_16x16.png"));
 	public static final ImageIconResource VIRTUAL_MODEL_INSTANCE_MEDIUM_ICON = new ImageIconResource(
 			ResourceLocator.locateResource("Icons/Model/VE/VirtualModelInstance_32x32.png"));
 	public static final ImageIconResource VIRTUAL_MODEL_INSTANCE_BIG_ICON = new ImageIconResource(
 			ResourceLocator.locateResource("Icons/Model/VE/VirtualModelInstance_64x64.png"));
 	public static final ImageIconResource FLEXO_CONCEPT_INSTANCE_ICON = new ImageIconResource(
-			ResourceLocator.locateResource("Icons/Model/VE/FlexoConceptInstance.png"));
+			ResourceLocator.locateResource("Icons/Model/VE/FlexoConceptInstance_16x16.png"));
 	public static final ImageIconResource FLEXO_CONCEPT_INSTANCE_MEDIUM_ICON = new ImageIconResource(
-			ResourceLocator.locateResource("Icons/Model/VE/FlexoConceptInstance32.png"));
+			ResourceLocator.locateResource("Icons/Model/VE/FlexoConceptInstance_32x32.png"));
+	public static final ImageIconResource FLEXO_CONCEPT_INSTANCE_BIG_ICON = new ImageIconResource(
+			ResourceLocator.locateResource("Icons/Model/VE/FlexoConceptInstance_64x64.png"));
 	public static final ImageIconResource MODEL_SLOT_INSTANCE_ICON = new ImageIconResource(
 			ResourceLocator.locateResource("Icons/Model/VE/ModelSlotInstance.png"));
+	public static final ImageIconResource FLEXO_CLASS_INSTANCE_ICON = new ImageIconResource(
+			ResourceLocator.locateResource("Icons/Java/ClassPublic.gif"));
+
+	public static final IconMarker DELETE_MARKER = new IconMarker(FMLIconLibrary.DELETION_SCHEME_ICON, 45, 0);
+	public static final IconMarker ADD_MARKER = new IconMarker(FMLIconLibrary.CREATION_SCHEME_ICON, 45, 0);
+	public static final IconMarker ACTION_MARKER = new IconMarker(FMLIconLibrary.ACTION_SCHEME_ICON, 45, 0);
+
+	public static final IconMarker VIRTUAL_MODEL_INSTANCE_MARKER = new IconMarker(VIRTUAL_MODEL_INSTANCE_SMALL_ICON, 6, 0);
 
 	public static final ImageIconResource UNKNOWN_ICON = new ImageIconResource(
 			ResourceLocator.locateResource("Icons/Model/VE/UnknownIcon.gif"));
 
-	public static ImageIcon iconForObject(ViewObject object) {
-		if (object instanceof View) {
-			return VIEW_ICON;
-		} else if (object instanceof ModelSlotInstance) {
-			return MODEL_SLOT_INSTANCE_ICON;
-		} else if (object instanceof VirtualModelInstance) {
+	public static ImageIcon iconForObject(VirtualModelInstanceObject object) {
+		if (object instanceof ModelSlotInstance) {
+			return FMLIconLibrary.iconForObject(((ModelSlotInstance<?, ?>) object).getModelSlot());
+		}
+		else if (object instanceof FMLRTVirtualModelInstance) {
+			if (((FMLRTVirtualModelInstance) object).getVirtualModel() != null
+					&& ((FMLRTVirtualModelInstance) object).getVirtualModel().getSmallIcon() != null) {
+				return ((FMLRTVirtualModelInstance) object).getVirtualModel().getSmallIcon();
+			}
 			return VIRTUAL_MODEL_INSTANCE_ICON;
-		} else if (object instanceof FlexoConceptInstance) {
+		}
+		else if (object instanceof VirtualModelInstance) {
+			TechnologyAdapterController<?> tac = getTechnologyAdapterController(
+					((VirtualModelInstance<?, ?>) object).getTechnologyAdapter());
+			if (tac != null) {
+				return tac.getIconForTechnologyObject((VirtualModelInstance<?, ?>) object);
+			}
+			return VIRTUAL_MODEL_INSTANCE_ICON;
+		}
+		else if (object instanceof FlexoConceptInstance) {
+			if (((FlexoConceptInstance) object).getFlexoConcept() != null
+					&& ((FlexoConceptInstance) object).getFlexoConcept().getSmallIcon() != null) {
+				return ((FlexoConceptInstance) object).getFlexoConcept().getSmallIcon();
+			}
 			return FLEXO_CONCEPT_INSTANCE_ICON;
 		}
 		logger.warning("No icon for " + object.getClass());
 		return UNKNOWN_ICON;
 	}
 
-	public static ImageIcon iconForObject(ViewResource object) {
-		return VIEW_ICON;
-	}
-
-	public static ImageIcon iconForObject(VirtualModelInstanceResource object) {
+	public static ImageIcon iconForObject(FMLRTVirtualModelInstanceResource object) {
 		return VIRTUAL_MODEL_INSTANCE_ICON;
 	}
 

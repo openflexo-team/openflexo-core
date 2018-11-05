@@ -38,158 +38,61 @@
 
 package org.openflexo.fml.rt.controller.widget;
 
-import java.io.File;
+import java.lang.reflect.Type;
 import java.util.logging.Logger;
 
-import org.openflexo.components.widget.FIBProjectObjectSelector;
-import org.openflexo.foundation.FlexoObject;
-import org.openflexo.foundation.fml.VirtualModel;
-import org.openflexo.foundation.fml.rt.View;
-import org.openflexo.foundation.fml.rt.ViewLibrary;
-import org.openflexo.foundation.fml.rt.VirtualModelInstance;
-import org.openflexo.foundation.fml.rt.rm.VirtualModelInstanceResource;
-import org.openflexo.rm.ResourceLocator;
+import org.openflexo.foundation.fml.VirtualModelInstanceType;
+import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstance;
 import org.openflexo.rm.Resource;
+import org.openflexo.rm.ResourceLocator;
 
 /**
- * Widget allowing to select a VirtualModelInstance
+ * Widget allowing to select a FMLRTVirtualModelInstance
  * 
  * @author sguerin
  * 
  */
 @SuppressWarnings("serial")
-public class FIBVirtualModelInstanceSelector extends FIBProjectObjectSelector<VirtualModelInstanceResource> {
+public class FIBVirtualModelInstanceSelector extends FIBAbstractFMLRTObjectSelector<FMLRTVirtualModelInstance> {
 
 	static final Logger logger = Logger.getLogger(FIBVirtualModelInstanceSelector.class.getPackage().getName());
 
 	public static Resource FIB_FILE = ResourceLocator.locateResource("Fib/VirtualModelInstanceSelector.fib");
 
-	private ViewLibrary viewLibrary;
-	private View view;
-	private VirtualModel virtualModel;
-
-	public FIBVirtualModelInstanceSelector(VirtualModelInstanceResource editedObject) {
+	public FIBVirtualModelInstanceSelector(FMLRTVirtualModelInstance editedObject) {
 		super(editedObject);
 	}
-
-	@Override
-	public void delete() {
-		super.delete();
-		viewLibrary = null;
-		view = null;
-		virtualModel = null;
-	}
-
 
 	@Override
 	public Resource getFIBResource() {
 		return FIB_FILE;
 	}
-	
-	@Override
-	public Class<VirtualModelInstanceResource> getRepresentedType() {
-		return VirtualModelInstanceResource.class;
-	}
 
 	@Override
-	public String renderedString(VirtualModelInstanceResource editedObject) {
-		if (editedObject != null) {
-			return editedObject.getName();
-		}
-		return "";
-	}
-
-	public ViewLibrary getViewLibrary() {
-		return viewLibrary;
-	}
-
-	@CustomComponentParameter(name = "viewLibrary", type = CustomComponentParameter.Type.OPTIONAL)
-	public void setViewLibrary(ViewLibrary viewLibrary) {
-		this.viewLibrary = viewLibrary;
-	}
-
-	public View getView() {
-		return view;
-	}
-
-	@CustomComponentParameter(name = "view", type = CustomComponentParameter.Type.OPTIONAL)
-	public void setView(View view) {
-		this.view = view;
-	}
-
-	/**
-	 * Return virtual model which selected VirtualModelInstance should conform
-	 * 
-	 * @return
-	 */
-	public VirtualModel getVirtualModel() {
-		return virtualModel;
-	}
-
-	/**
-	 * Sets virtual model which selected VirtualModelInstance should conform
-	 * 
-	 * @param virtualModel
-	 */
-	@CustomComponentParameter(name = "virtualModel", type = CustomComponentParameter.Type.OPTIONAL)
-	public void setVirtualModel(VirtualModel virtualModel) {
-		this.virtualModel = virtualModel;
-	}
-
-	public FlexoObject getRootObject() {
-		if (getView() != null) {
-			return getView().getResource();
-		} else if (getViewLibrary() != null) {
-			return getViewLibrary();
-		} else {
-			return getProject();
-		}
+	public Class<FMLRTVirtualModelInstance> getRepresentedType() {
+		return FMLRTVirtualModelInstance.class;
 	}
 
 	@Override
-	protected boolean isAcceptableValue(Object o) {
-		if (o instanceof VirtualModelInstanceResource) {
-			VirtualModelInstance vmi = ((VirtualModelInstanceResource) o).getVirtualModelInstance();
-			if (getVirtualModel() != null) {
-				return vmi.getVirtualModel() == getVirtualModel();
-			}
-			return true;
-		}
-		return super.isAcceptableValue(o);
+	public Type getDefaultExpectedType() {
+		return VirtualModelInstanceType.UNDEFINED_VIRTUAL_MODEL_INSTANCE_TYPE;
 	}
 
-	public boolean isConformedToVirtualModel(VirtualModelInstanceResource vmiResource){
-		if (((VirtualModelInstanceResource) vmiResource).getVirtualModelResource() != null && getVirtualModel()!=null) {
-			return ((VirtualModelInstanceResource) vmiResource).getVirtualModelResource().getVirtualModel() == getVirtualModel();
+	@Override
+	public boolean isAcceptableValue(Object o) {
+		if (!super.isAcceptableValue(o)) {
+			return false;
 		}
-		return false;
+		if (!(o instanceof FMLRTVirtualModelInstance)) {
+			return false;
+		}
+		if (!(getExpectedType() instanceof VirtualModelInstanceType)) {
+			return false;
+		}
+		FMLRTVirtualModelInstance vmi = (FMLRTVirtualModelInstance) o;
+		VirtualModelInstanceType vmiType = (VirtualModelInstanceType) getExpectedType();
+		return (vmiType.getVirtualModel() == null) || (vmiType.getVirtualModel().isAssignableFrom(vmi.getVirtualModel()));
+
 	}
-	
-	// Please uncomment this for a live test
-	// Never commit this uncommented since it will not compile on continuous build
-	// To have icon, you need to choose "Test interface" in the editor (otherwise, flexo controller is not insanciated in EDIT mode)
-	/*public static void main(String[] args) {
-		FIBAbstractEditor editor = new FIBAbstractEditor() {
-			@Override
-			public Object[] getData() {
-				TestApplicationContext testApplicationContext = new TestApplicationContext(new FileResource(
-						"src/test/resources/TestResourceCenter"));
-				FIBVirtualModelSelector selector = new FIBVirtualModelSelector(null);
-				selector.setViewPointLibrary(testApplicationContext.getViewPointLibrary());
-				return makeArray(selector);
-			}
-
-			@Override
-			public File getFIBFile() {
-				return FIB_FILE;
-			}
-
-			@Override
-			public FIBController makeNewController(FIBComponent component) {
-				return new FlexoFIBController(component);
-			}
-		};
-		editor.launch();
-	}*/
 
 }

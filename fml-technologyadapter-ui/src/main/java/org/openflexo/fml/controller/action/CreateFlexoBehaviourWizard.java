@@ -47,20 +47,17 @@ import java.util.logging.Logger;
 
 import org.openflexo.ApplicationContext;
 import org.openflexo.components.wizard.WizardStep;
-import org.openflexo.fib.annotation.FIBPanel;
 import org.openflexo.foundation.fml.FMLObject;
 import org.openflexo.foundation.fml.FlexoBehaviour;
 import org.openflexo.foundation.fml.FlexoConceptObject;
-import org.openflexo.foundation.fml.ViewPoint;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.action.CreateFlexoBehaviour;
 import org.openflexo.foundation.fml.action.CreateFlexoBehaviour.BehaviourParameterEntry;
-import org.openflexo.foundation.fml.action.CreateFlexoBehaviourParameter;
-import org.openflexo.foundation.fml.rt.VirtualModelInstance;
+import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstance;
+import org.openflexo.gina.annotation.FIBPanel;
 import org.openflexo.icon.FMLIconLibrary;
 import org.openflexo.icon.IconFactory;
 import org.openflexo.icon.IconLibrary;
-import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.toolbox.StringUtils;
 import org.openflexo.view.controller.FlexoController;
 
@@ -69,13 +66,11 @@ public class CreateFlexoBehaviourWizard extends AbstractCreateFMLElementWizard<C
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(CreateFlexoBehaviourWizard.class.getPackage().getName());
 
-	private static final String DUPLICATED_NAME = FlexoLocalization.localizedForKey("this_name_is_already_used_please_choose_an_other_one");
-	private static final String EMPTY_NAME = FlexoLocalization.localizedForKey("flexo_behaviour_must_have_an_non_empty_and_unique_name");
-	private static final String NO_BEHAVIOUR_TYPE = FlexoLocalization.localizedForKey("please_choose_a_behaviour_type");
-	private static final String RECOMMANDED_DESCRIPTION = FlexoLocalization
-			.localizedForKey("it_is_recommanded_to_describe_flexo_behaviour");
-	private static final String DISCOURAGED_NAME = FlexoLocalization
-			.localizedForKey("name_is_discouraged_by_convention_behaviour_name_usually_start_with_a_lowercase_letter");
+	private static final String DUPLICATED_NAME = "this_name_is_already_used_please_choose_an_other_one";
+	private static final String EMPTY_NAME = "flexo_behaviour_must_have_an_non_empty_and_unique_name";
+	private static final String NO_BEHAVIOUR_TYPE = "please_choose_a_behaviour_type";
+	private static final String RECOMMANDED_DESCRIPTION = "it_is_recommanded_to_describe_flexo_behaviour";
+	private static final String DISCOURAGED_NAME = "name_is_discouraged_by_convention_behaviour_name_usually_start_with_a_lowercase_letter";
 
 	private final DescribeFlexoBehaviour describeFlexoBehaviour;
 	private final ConfigureFlexoBehaviourParameters configureParameters;
@@ -90,7 +85,7 @@ public class CreateFlexoBehaviourWizard extends AbstractCreateFMLElementWizard<C
 
 	@Override
 	public String getWizardTitle() {
-		return FlexoLocalization.localizedForKey("create_flexo_behaviour");
+		return getAction().getLocales().localizedForKey("create_flexo_behaviour");
 	}
 
 	@Override
@@ -108,7 +103,7 @@ public class CreateFlexoBehaviourWizard extends AbstractCreateFMLElementWizard<C
 	}
 
 	/**
-	 * This step is used to set {@link VirtualModel} to be used, as well as name and title of the {@link VirtualModelInstance}
+	 * This step is used to set {@link VirtualModel} to be used, as well as name and title of the {@link FMLRTVirtualModelInstance}
 	 * 
 	 * @author sylvain
 	 *
@@ -124,33 +119,36 @@ public class CreateFlexoBehaviourWizard extends AbstractCreateFMLElementWizard<C
 			return CreateFlexoBehaviourWizard.this.getAction();
 		}
 
-		public ViewPoint getViewPoint() {
-			return CreateFlexoBehaviourWizard.this.getViewPoint();
+		public VirtualModel getVirtualModel() {
+			return CreateFlexoBehaviourWizard.this.getVirtualModel();
 		}
 
 		@Override
 		public String getTitle() {
-			return FlexoLocalization.localizedForKey("describe_flexo_behaviour");
+			return getAction().getLocales().localizedForKey("describe_flexo_behaviour");
 		}
 
 		@Override
 		public boolean isValid() {
 
 			if (StringUtils.isEmpty(getFlexoBehaviourName())) {
-				setIssueMessage(EMPTY_NAME, IssueMessageType.ERROR);
+				setIssueMessage(getAction().getLocales().localizedForKey(EMPTY_NAME), IssueMessageType.ERROR);
 				return false;
-			} else if (getFlexoConcept().getFlexoBehaviour(getFlexoBehaviourName()) != null) {
-				setIssueMessage(DUPLICATED_NAME, IssueMessageType.ERROR);
+			}
+			else if (getFlexoConcept().getFlexoBehaviour(getFlexoBehaviourName()) != null) {
+				setIssueMessage(getAction().getLocales().localizedForKey(DUPLICATED_NAME), IssueMessageType.ERROR);
 				return false;
-			} else if (getFlexoBehaviourClass() == null) {
-				setIssueMessage(NO_BEHAVIOUR_TYPE, IssueMessageType.ERROR);
+			}
+			else if (getFlexoBehaviourClass() == null) {
+				setIssueMessage(getAction().getLocales().localizedForKey(NO_BEHAVIOUR_TYPE), IssueMessageType.ERROR);
 				return false;
-			} else if (StringUtils.isEmpty(getDescription())) {
-				setIssueMessage(RECOMMANDED_DESCRIPTION, IssueMessageType.WARNING);
+			}
+			else if (StringUtils.isEmpty(getDescription())) {
+				setIssueMessage(getAction().getLocales().localizedForKey(RECOMMANDED_DESCRIPTION), IssueMessageType.WARNING);
 			}
 
 			if (!getFlexoBehaviourName().substring(0, 1).toLowerCase().equals(getFlexoBehaviourName().substring(0, 1))) {
-				setIssueMessage(DISCOURAGED_NAME, IssueMessageType.WARNING);
+				setIssueMessage(getAction().getLocales().localizedForKey(DISCOURAGED_NAME), IssueMessageType.WARNING);
 			}
 
 			return true;
@@ -199,7 +197,7 @@ public class CreateFlexoBehaviourWizard extends AbstractCreateFMLElementWizard<C
 	}
 
 	/**
-	 * This step is used to set {@link VirtualModel} to be used, as well as name and title of the {@link VirtualModelInstance}
+	 * This step is used to set {@link VirtualModel} to be used, as well as name and title of the {@link FMLRTVirtualModelInstance}
 	 * 
 	 * @author sylvain
 	 *
@@ -220,11 +218,7 @@ public class CreateFlexoBehaviourWizard extends AbstractCreateFMLElementWizard<C
 
 		@Override
 		public String getTitle() {
-			return FlexoLocalization.localizedForKey("configure_behaviour_parameters");
-		}
-
-		public Class[] getAvailableParameterTypes() {
-			return CreateFlexoBehaviourParameter.AVAILABLE_TYPES;
+			return getAction().getLocales().localizedForKey("configure_behaviour_parameters");
 		}
 
 		public List<BehaviourParameterEntry> getParameterEntries() {
@@ -255,16 +249,17 @@ public class CreateFlexoBehaviourWizard extends AbstractCreateFMLElementWizard<C
 		public boolean isValid() {
 
 			if (getParameterEntries().size() == 0) {
-				setIssueMessage(FlexoLocalization.localizedForKey("no_parameters_defined"), IssueMessageType.WARNING);
+				setIssueMessage(getAction().getLocales().localizedForKey("no_parameters_defined"), IssueMessageType.WARNING);
 				return true;
-			} else {
+			}
+			else {
 
 				// We try to detect duplicated names
 				for (BehaviourParameterEntry entry : getParameterEntries()) {
 					String paramName = entry.getParameterName();
 					for (BehaviourParameterEntry entry2 : getParameterEntries()) {
 						if ((entry != entry2) && (entry.getParameterName().equals(entry2.getParameterName()))) {
-							setIssueMessage(FlexoLocalization.localizedForKey("duplicated_parameter_name") + " : " + paramName,
+							setIssueMessage(getAction().getLocales().localizedForKey("duplicated_parameter_name") + " : " + paramName,
 									IssueMessageType.ERROR);
 							return false;
 						}
@@ -286,12 +281,13 @@ public class CreateFlexoBehaviourWizard extends AbstractCreateFMLElementWizard<C
 					}
 				}
 				if (!hasWarnings) {
-					setIssueMessage(FlexoLocalization.localizedForKey("all_behaviour_parameters_are_valid"), IssueMessageType.INFO);
+					setIssueMessage(getAction().getLocales().localizedForKey("all_behaviour_parameters_are_valid"), IssueMessageType.INFO);
 				}
 				return true;
 			}
 
 		}
+
 	}
 
 }

@@ -46,12 +46,12 @@ import org.openflexo.foundation.FlexoObject;
 
 public class SelectAllAction extends FlexoGUIAction<SelectAllAction, FlexoObject, FlexoObject> {
 
-	public static class SelectAllActionType extends FlexoActionType<SelectAllAction, FlexoObject, FlexoObject> {
+	public static class SelectAllActionType extends FlexoActionFactory<SelectAllAction, FlexoObject, FlexoObject> {
 
 		private final FlexoEditingContext editingContext;
 
 		public SelectAllActionType(FlexoEditingContext editingContext) {
-			super("select_all", FlexoActionType.editGroup);
+			super("select_all", FlexoActionFactory.editGroup);
 			this.editingContext = editingContext;
 		}
 

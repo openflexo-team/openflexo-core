@@ -39,14 +39,13 @@
 
 package org.openflexo.components.widget;
 
-import java.io.File;
 import java.util.logging.Logger;
 
+import org.openflexo.foundation.resource.ResourceManager;
 import org.openflexo.foundation.technologyadapter.FlexoMetaModelResource;
-import org.openflexo.foundation.technologyadapter.InformationSpace;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
-import org.openflexo.rm.ResourceLocator;
 import org.openflexo.rm.Resource;
+import org.openflexo.rm.ResourceLocator;
 
 /**
  * Widget allowing to select a MetaModel while browsing in Information Space
@@ -60,6 +59,9 @@ public class FIBMetaModelSelector extends FIBFlexoObjectSelector<FlexoMetaModelR
 	static final Logger logger = Logger.getLogger(FIBMetaModelSelector.class.getPackage().getName());
 
 	public static Resource FIB_FILE_NAME = ResourceLocator.locateResource("Fib/MetaModelSelector.fib");
+
+	private ResourceManager resourceManager;
+	private TechnologyAdapter technologyAdapter;
 
 	public FIBMetaModelSelector(FlexoMetaModelResource editedObject) {
 		super(editedObject);
@@ -83,21 +85,21 @@ public class FIBMetaModelSelector extends FIBFlexoObjectSelector<FlexoMetaModelR
 		return "";
 	}
 
-	private InformationSpace informationSpace;
-
-	public InformationSpace getInformationSpace() {
-		return informationSpace;
+	public ResourceManager getResourceManager() {
+		return resourceManager;
 	}
 
-	@CustomComponentParameter(name = "informationSpace", type = CustomComponentParameter.Type.MANDATORY)
-	public void setInformationSpace(InformationSpace informationSpace) {
+	@CustomComponentParameter(name = "resourceManager", type = CustomComponentParameter.Type.MANDATORY)
+	public void setResourceManager(ResourceManager resourceManager) {
 
-		this.informationSpace = informationSpace;
-		getPropertyChangeSupport().firePropertyChange("rootObject", null, getRootObject());
-		updateCustomPanel(getEditedObject());
+		if (this.resourceManager != resourceManager) {
+			ResourceManager oldValue = this.resourceManager;
+			this.resourceManager = resourceManager;
+			getPropertyChangeSupport().firePropertyChange("resourceManager", oldValue, resourceManager);
+			getPropertyChangeSupport().firePropertyChange("rootObject", null, getRootObject());
+			updateCustomPanel(getEditedObject());
+		}
 	}
-
-	private TechnologyAdapter technologyAdapter;
 
 	public TechnologyAdapter getTechnologyAdapter() {
 		return technologyAdapter;
@@ -105,18 +107,21 @@ public class FIBMetaModelSelector extends FIBFlexoObjectSelector<FlexoMetaModelR
 
 	@CustomComponentParameter(name = "technologyAdapter", type = CustomComponentParameter.Type.OPTIONAL)
 	public void setTechnologyAdapter(TechnologyAdapter technologyAdapter) {
-		// System.out.println(">>>>>>>>> SETS TechnologyAdapter with " + technologyAdapter);
-		this.technologyAdapter = technologyAdapter;
-		// System.out.println("fire rootObject with " + getRootObject() + " on " + this + " hash=" + Integer.toHexString(hashCode()));
-		getPropertyChangeSupport().firePropertyChange("rootObject", null, getRootObject());
-		updateCustomPanel(getEditedObject());
+		if (this.technologyAdapter != technologyAdapter) {
+			TechnologyAdapter oldValue = this.technologyAdapter;
+			this.technologyAdapter = technologyAdapter;
+			getPropertyChangeSupport().firePropertyChange("technologyAdapter", oldValue, technologyAdapter);
+			getPropertyChangeSupport().firePropertyChange("rootObject", null, getRootObject());
+			updateCustomPanel(getEditedObject());
+		}
 	}
 
 	public Object getRootObject() {
 		if (getTechnologyAdapter() != null) {
 			return getTechnologyAdapter();
-		} else {
-			return getInformationSpace();
+		}
+		else {
+			return getResourceManager();
 		}
 	}
 
@@ -124,25 +129,23 @@ public class FIBMetaModelSelector extends FIBFlexoObjectSelector<FlexoMetaModelR
 	// Never commit this uncommented since it will not compile on continuous build
 	// To have icon, you need to choose "Test interface" in the editor (otherwise, flexo controller is not instantiated in EDIT mode)
 	/*public static void main(String[] args) {
-
+	
 		try {
 			FlexoLoggingManager.initialize(-1, true, null, Level.INFO, null);
 		} catch (SecurityException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
-		final ViewPointLibrary viewPointLibrary;
-
+	
+		final VirtualModelLibrary viewPointLibrary;
+	
 		final FlexoServiceManager serviceManager = new DefaultFlexoServiceManager() {
 			@Override
 			protected FlexoProjectReferenceLoader createProjectReferenceLoader() {
 				return null;
 			}
-
+	
 			@Override
 			protected FlexoEditor createApplicationEditor() {
 				return null;
@@ -151,7 +154,7 @@ public class FIBMetaModelSelector extends FIBFlexoObjectSelector<FlexoMetaModelR
 		TechnologyAdapterControllerService tacService = DefaultTechnologyAdapterControllerService.getNewInstance();
 		serviceManager.registerService(tacService);
 		final InformationSpace informationSpace = serviceManager.getInformationSpace();
-
+	
 		FIBAbstractEditor editor = new FIBAbstractEditor() {
 			@Override
 			public Object[] getData() {
@@ -165,12 +168,12 @@ public class FIBMetaModelSelector extends FIBFlexoObjectSelector<FlexoMetaModelR
 				}
 				return makeArray(selector);
 			}
-
+	
 			@Override
 			public File getFIBFile() {
 				return FIB_FILE;
 			}
-
+	
 			@Override
 			public FIBController makeNewController(FIBComponent component) {
 				return new FlexoFIBController(component);

@@ -41,6 +41,7 @@ package org.openflexo.foundation.fml.binding;
 import java.beans.PropertyChangeEvent;
 
 import org.openflexo.connie.BindingModel;
+import org.openflexo.foundation.fml.GetSetProperty;
 import org.openflexo.foundation.fml.controlgraph.FMLControlGraph;
 import org.openflexo.foundation.fml.controlgraph.FMLControlGraphOwner;
 
@@ -54,20 +55,22 @@ import org.openflexo.foundation.fml.controlgraph.FMLControlGraphOwner;
 public class ControlGraphBindingModel<CG extends FMLControlGraph> extends BindingModel {
 
 	private final CG controlGraph;
+	private SetValueBindingVariable<?> setValueBindingVariable = null;
 
 	public ControlGraphBindingModel(CG controlGraph) {
 		super(controlGraph.getOwner() != null ? controlGraph.getOwner().getBaseBindingModel(controlGraph) : null);
 
 		this.controlGraph = controlGraph;
 
-		if (controlGraph != null && controlGraph.getPropertyChangeSupport() != null) {
+		if (controlGraph.getPropertyChangeSupport() != null) {
 			controlGraph.getPropertyChangeSupport().addPropertyChangeListener(this);
 		}
 
-		if (controlGraph != null && controlGraph.getOwner() != null && controlGraph.getOwner().getPropertyChangeSupport() != null) {
+		if (controlGraph.getOwner() != null && controlGraph.getOwner().getPropertyChangeSupport() != null) {
 			controlGraph.getOwner().getPropertyChangeSupport().addPropertyChangeListener(this);
 		}
 
+		handleSetValueBindingVariable();
 	}
 
 	/**
@@ -92,7 +95,8 @@ public class ControlGraphBindingModel<CG extends FMLControlGraph> extends Bindin
 			if (evt.getPropertyName().equals(FMLControlGraph.OWNER_CONTEXT_KEY)) {
 				// The control graph changes it's context
 				setBaseBindingModel(controlGraph.getOwner() != null ? controlGraph.getOwner().getBaseBindingModel(controlGraph) : null);
-			} else if (evt.getPropertyName().equals(FMLControlGraph.OWNER_KEY)) {
+			}
+			else if (evt.getPropertyName().equals(FMLControlGraph.OWNER_KEY)) {
 				// The control graph changes it's owner
 				setBaseBindingModel(controlGraph.getOwner() != null ? controlGraph.getOwner().getBaseBindingModel(controlGraph) : null);
 				FMLControlGraphOwner oldOwner = (FMLControlGraphOwner) evt.getOldValue();
@@ -103,12 +107,36 @@ public class ControlGraphBindingModel<CG extends FMLControlGraph> extends Bindin
 					controlGraph.getOwner().getPropertyChangeSupport().addPropertyChangeListener(this);
 				}
 			}
-		} else if (evt.getSource() == controlGraph.getOwner()) {
+		}
+		else if (evt.getSource() == controlGraph.getOwner()) {
 			setBaseBindingModel(controlGraph.getOwner() != null ? controlGraph.getOwner().getBaseBindingModel(controlGraph) : null);
 		}
+		handleSetValueBindingVariable();
 	}
 
 	public CG getControlGraph() {
 		return controlGraph;
 	}
+
+	private void handleSetValueBindingVariable() {
+		if (controlGraph != null && controlGraph.getOwner() instanceof GetSetProperty && controlGraph.getOwnerContext() != null
+				&& controlGraph.getOwnerContext().equals(GetSetProperty.SET_CONTROL_GRAPH_KEY)) {
+			// In this case, we detect that we are in a context of a SET control graph of a GetSetProperty
+			if (setValueBindingVariable == null) {
+				setValueBindingVariable = new SetValueBindingVariable<>((GetSetProperty<?>) controlGraph.getOwner());
+				addToBindingVariables(setValueBindingVariable);
+			}
+		}
+
+		else {
+			// We are not in the context of a SET control graph of a GetSetProperty
+			if (setValueBindingVariable != null) {
+				removeFromBindingVariables(setValueBindingVariable);
+				setValueBindingVariable.delete();
+				setValueBindingVariable = null;
+			}
+		}
+
+	}
+
 }

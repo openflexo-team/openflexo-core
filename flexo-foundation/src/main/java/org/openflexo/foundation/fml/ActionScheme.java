@@ -38,12 +38,12 @@
 
 package org.openflexo.foundation.fml;
 
-import org.openflexo.fib.annotation.FIBPanel;
+import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
+import org.openflexo.foundation.fml.rt.action.ActionSchemeActionFactory;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
 import org.openflexo.model.annotations.XMLElement;
 
-@FIBPanel("Fib/FML/ActionSchemePanel.fib")
 @ModelEntity
 @ImplementationClass(ActionScheme.ActionSchemeImpl.class)
 @XMLElement
@@ -53,6 +53,11 @@ public interface ActionScheme extends AbstractActionScheme {
 
 		public ActionSchemeImpl() {
 			super();
+		}
+
+		@Override
+		public ActionSchemeActionFactory getActionFactory(FlexoConceptInstance fci) {
+			return new ActionSchemeActionFactory(this, fci);
 		}
 
 	}

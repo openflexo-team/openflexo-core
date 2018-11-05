@@ -47,7 +47,6 @@ import java.util.logging.Logger;
 import org.openflexo.ApplicationContext;
 import org.openflexo.components.wizard.WizardStep;
 import org.openflexo.connie.DataBinding;
-import org.openflexo.fib.annotation.FIBPanel;
 import org.openflexo.foundation.fml.FMLObject;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.action.CreateEditionAction;
@@ -55,11 +54,11 @@ import org.openflexo.foundation.fml.controlgraph.FMLControlGraph;
 import org.openflexo.foundation.fml.controlgraph.IterationAction;
 import org.openflexo.foundation.fml.editionaction.EditionAction;
 import org.openflexo.foundation.fml.editionaction.FetchRequest;
-import org.openflexo.foundation.fml.rt.VirtualModelInstance;
+import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstance;
+import org.openflexo.gina.annotation.FIBPanel;
 import org.openflexo.icon.FMLIconLibrary;
 import org.openflexo.icon.IconFactory;
 import org.openflexo.icon.IconLibrary;
-import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.view.controller.FlexoController;
 
 public class CreateEditionActionWizard extends AbstractCreateFMLElementWizard<CreateEditionAction, FMLControlGraph, FMLObject> {
@@ -69,12 +68,10 @@ public class CreateEditionActionWizard extends AbstractCreateFMLElementWizard<Cr
 
 	private final ChooseEditionActionClass chooseEditionActionClass;
 
-	private static final Dimension DIMENSIONS = new Dimension(700, 600);
+	private static final Dimension DIMENSIONS = new Dimension(800, 700);
 
-	private static final String NO_EDITION_ACTION_TYPE = FlexoLocalization
-			.localizedForKey("please_choose_an_edition_action_or_control_structure");
-	private static final String DUPLICATED_VARIABLE_NAME = FlexoLocalization
-			.localizedForKey("this_variable_name_shadow_an_other_identifier");
+	private static final String NO_EDITION_ACTION_TYPE = "please_choose_an_edition_action_or_control_structure";
+	private static final String DUPLICATED_VARIABLE_NAME = "this_variable_name_shadow_an_other_identifier";
 
 	public CreateEditionActionWizard(CreateEditionAction action, FlexoController controller) {
 		super(action, controller);
@@ -83,7 +80,7 @@ public class CreateEditionActionWizard extends AbstractCreateFMLElementWizard<Cr
 
 	@Override
 	public String getWizardTitle() {
-		return FlexoLocalization.localizedForKey("create_edition_action");
+		return getAction().getLocales().localizedForKey("create_edition_action");
 	}
 
 	@Override
@@ -101,7 +98,7 @@ public class CreateEditionActionWizard extends AbstractCreateFMLElementWizard<Cr
 	}
 
 	/**
-	 * This step is used to set {@link VirtualModel} to be used, as well as name and title of the {@link VirtualModelInstance}
+	 * This step is used to set {@link VirtualModel} to be used, as well as name and title of the {@link FMLRTVirtualModelInstance}
 	 * 
 	 * @author sylvain
 	 *
@@ -135,20 +132,20 @@ public class CreateEditionActionWizard extends AbstractCreateFMLElementWizard<Cr
 
 		@Override
 		public String getTitle() {
-			return FlexoLocalization.localizedForKey("choose_edition_action");
+			return getAction().getLocales().localizedForKey("choose_edition_action");
 		}
 
 		@Override
 		public boolean isValid() {
 
 			if (getEditionActionClass() == null) {
-				setIssueMessage(NO_EDITION_ACTION_TYPE, IssueMessageType.ERROR);
+				setIssueMessage(getAction().getLocales().localizedForKey(NO_EDITION_ACTION_TYPE), IssueMessageType.ERROR);
 				return false;
 			}
 
 			if (getAction().isVariableDeclaration()
 					&& getFocusedObject().getInferedBindingModel().bindingVariableNamed(getAction().getDeclarationVariableName()) != null) {
-				setIssueMessage(DUPLICATED_VARIABLE_NAME, IssueMessageType.ERROR);
+				setIssueMessage(getAction().getLocales().localizedForKey(DUPLICATED_VARIABLE_NAME), IssueMessageType.ERROR);
 				return false;
 			}
 
@@ -209,13 +206,13 @@ public class CreateEditionActionWizard extends AbstractCreateFMLElementWizard<Cr
 			}
 		}
 
-		public Class<? extends FetchRequest<?, ?>> getFetchRequestClass() {
+		public Class<? extends FetchRequest<?, ?, ?>> getFetchRequestClass() {
 			return getAction().getFetchRequestClass();
 		}
 
-		public void setFetchRequestClass(Class<? extends FetchRequest<?, ?>> fetchRequestClass) {
+		public void setFetchRequestClass(Class<? extends FetchRequest<?, ?, ?>> fetchRequestClass) {
 			if (getFetchRequestClass() != fetchRequestClass) {
-				Class<? extends FetchRequest<?, ?>> oldValue = getFetchRequestClass();
+				Class<? extends FetchRequest<?, ?, ?>> oldValue = getFetchRequestClass();
 				getAction().setFetchRequestClass(fetchRequestClass);
 				getPropertyChangeSupport().firePropertyChange("fetchRequestClass", oldValue, fetchRequestClass);
 				checkValidity();

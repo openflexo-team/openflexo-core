@@ -39,25 +39,30 @@
 package org.openflexo.fml.rt.fib;
 
 import org.junit.Test;
-import org.openflexo.fib.utils.GenericFIBTestCase;
+import org.openflexo.gina.test.GenericFIBTestCase;
 import org.openflexo.rm.FileResourceImpl;
 import org.openflexo.rm.ResourceLocator;
 
 public class TestFMLRTWizardFibs extends GenericFIBTestCase {
 
 	public static void main(String[] args) {
-		System.out.println(generateFIBTestCaseClass(((FileResourceImpl) ResourceLocator.locateResource("Fib/Wizard")).getFile(),
-				"Fib/Wizard/"));
+		System.out.println(
+				generateFIBTestCaseClass(((FileResourceImpl) ResourceLocator.locateResource("Fib/Wizard")).getFile(), "Fib/Wizard/"));
 	}
 
 	@Test
-	public void testChooseViewPoint() {
-		validateFIB("Fib/Wizard/CreateView/ChooseViewPoint.fib");
+	public void testConfigureCreationScheme() {
+		validateFIB("Fib/Wizard/CreateFlexoConceptInstance/ConfigureCreationScheme.fib");
 	}
 
 	@Test
-	public void testChooseAndConfigureCreationScheme() {
-		validateFIB("Fib/Wizard/CreateVirtualModelInstance/ChooseAndConfigureCreationScheme.fib");
+	public void testDescribeFlexoConceptInstance() {
+		validateFIB("Fib/Wizard/CreateFlexoConceptInstance/DescribeFlexoConceptInstance.fib");
+	}
+
+	@Test
+	public void testChooseAndConfigureCreationSchemeForVirtualModel() {
+		validateFIB("Fib/Wizard/CreateVirtualModelInstance/ChooseAndConfigureCreationSchemeForVirtualModel.fib");
 	}
 
 	@Test
@@ -66,18 +71,8 @@ public class TestFMLRTWizardFibs extends GenericFIBTestCase {
 	}
 
 	@Test
-	public void testConfigureFreeModelSlotInstance() {
-		validateFIB("Fib/Wizard/CreateVirtualModelInstance/ConfigureFreeModelSlotInstance.fib");
-	}
-
-	@Test
-	public void testConfigureTypeAwareModelSlotInstance() {
-		validateFIB("Fib/Wizard/CreateVirtualModelInstance/ConfigureTypeAwareModelSlotInstance.fib");
-	}
-
-	@Test
-	public void testConfigureVirtualModelSlotInstance() {
-		validateFIB("Fib/Wizard/CreateVirtualModelInstance/ConfigureVirtualModelSlotInstance.fib");
+	public void testConfigureFlexoBehaviour() {
+		validateFIB("Fib/Wizard/FlexoBehaviourAction/ConfigureFlexoBehaviour.fib");
 	}
 
 }

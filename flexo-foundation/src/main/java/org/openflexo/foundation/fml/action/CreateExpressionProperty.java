@@ -45,7 +45,7 @@ import java.util.logging.Logger;
 import org.openflexo.connie.DataBinding;
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoObject.FlexoObjectImpl;
-import org.openflexo.foundation.action.FlexoActionType;
+import org.openflexo.foundation.action.FlexoActionFactory;
 import org.openflexo.foundation.action.NotImplementedException;
 import org.openflexo.foundation.fml.ExpressionProperty;
 import org.openflexo.foundation.fml.FMLModelFactory;
@@ -69,8 +69,9 @@ public class CreateExpressionProperty extends AbstractCreateFlexoProperty<Create
 
 	private static final Logger logger = Logger.getLogger(CreateExpressionProperty.class.getPackage().getName());
 
-	public static FlexoActionType<CreateExpressionProperty, FlexoConceptObject, FMLObject> actionType = new FlexoActionType<CreateExpressionProperty, FlexoConceptObject, FMLObject>(
-			"create_expression_property", FlexoActionType.newMenu, FlexoActionType.defaultGroup, FlexoActionType.ADD_ACTION_TYPE) {
+	public static FlexoActionFactory<CreateExpressionProperty, FlexoConceptObject, FMLObject> actionType = new FlexoActionFactory<CreateExpressionProperty, FlexoConceptObject, FMLObject>(
+			"create_expression_property", FlexoActionFactory.newPropertyMenu, FlexoActionFactory.defaultGroup,
+			FlexoActionFactory.ADD_ACTION_TYPE) {
 
 		/**
 		 * Factory method
@@ -102,13 +103,13 @@ public class CreateExpressionProperty extends AbstractCreateFlexoProperty<Create
 
 	private ExpressionProperty<?> newExpressionProperty;
 
-	CreateExpressionProperty(FlexoConceptObject focusedObject, Vector<FMLObject> globalSelection, FlexoEditor editor) {
+	private CreateExpressionProperty(FlexoConceptObject focusedObject, Vector<FMLObject> globalSelection, FlexoEditor editor) {
 		super(actionType, focusedObject, globalSelection, editor);
 	}
 
 	public DataBinding<?> getExpression() {
 		if (expression == null) {
-			expression = new DataBinding<Object>(getFlexoConcept(), Object.class, DataBinding.BindingDefinitionType.GET);
+			expression = new DataBinding<>(this, Object.class, DataBinding.BindingDefinitionType.GET);
 			expression.setBindingName("expression");
 			expression.setMandatory(true);
 
@@ -118,8 +119,7 @@ public class CreateExpressionProperty extends AbstractCreateFlexoProperty<Create
 
 	public void setExpression(DataBinding<?> expression) {
 		if (expression != null) {
-			this.expression = new DataBinding<Object>(expression.toString(), getFlexoConcept(), Object.class,
-					DataBinding.BindingDefinitionType.GET);
+			this.expression = new DataBinding<>(expression.toString(), this, Object.class, DataBinding.BindingDefinitionType.GET);
 			expression.setBindingName("expression");
 			expression.setMandatory(true);
 		}
@@ -139,23 +139,31 @@ public class CreateExpressionProperty extends AbstractCreateFlexoProperty<Create
 	@Override
 	protected void doAction(Object context) throws NotImplementedException, InvalidParameterException {
 
-		if (getExpression() != null && getExpression().isSet() && getExpression().isValid()) {
-			FMLModelFactory factory = getFocusedObject().getFMLModelFactory();
-			newExpressionProperty = factory.newExpressionProperty();
+		FMLModelFactory factory = getFocusedObject().getFMLModelFactory();
+		newExpressionProperty = factory.newExpressionProperty();
 
-			if (newExpressionProperty != null) {
+		if (newExpressionProperty != null) {
 
-				newExpressionProperty.setPropertyName(getPropertyName());
+			newExpressionProperty.setPropertyName(getPropertyName());
+			if (getExpression() != null && getExpression().isSet() && getExpression().isValid()) {
 				newExpressionProperty.setExpression((DataBinding) getExpression());
-
-				super.doAction(context);
 			}
+
+			finalizeDoAction(context);
 		}
 
-		else {
-			throw new InvalidParameterException("No expression or invalid expression defined");
-		}
+	}
 
+	private boolean isNotifying = false;
+
+	@Override
+	public void notifiedBindingChanged(DataBinding<?> dataBinding) {
+		if (isNotifying) {
+			return;
+		}
+		isNotifying = true;
+		getPropertyChangeSupport().firePropertyChange("expression", null, getExpression());
+		isNotifying = false;
 	}
 
 }

@@ -49,8 +49,8 @@ public class AddRepositoryFolder extends FlexoAction<AddRepositoryFolder, Reposi
 
 	private static final Logger logger = Logger.getLogger(AddRepositoryFolder.class.getPackage().getName());
 
-	public static FlexoActionType<AddRepositoryFolder, RepositoryFolder, RepositoryFolder> actionType = new FlexoActionType<AddRepositoryFolder, RepositoryFolder, RepositoryFolder>(
-			"create_folder", FlexoActionType.newMenu, FlexoActionType.defaultGroup, FlexoActionType.ADD_ACTION_TYPE) {
+	public static FlexoActionFactory<AddRepositoryFolder, RepositoryFolder, RepositoryFolder> actionType = new FlexoActionFactory<AddRepositoryFolder, RepositoryFolder, RepositoryFolder>(
+			"create_folder", FlexoActionFactory.newMenu, FlexoActionFactory.defaultGroup, FlexoActionFactory.ADD_ACTION_TYPE) {
 
 		/**
 		 * Factory method
@@ -77,10 +77,10 @@ public class AddRepositoryFolder extends FlexoAction<AddRepositoryFolder, Reposi
 		FlexoObjectImpl.addActionForClass(AddRepositoryFolder.actionType, RepositoryFolder.class);
 	}
 
-	private RepositoryFolder newFolder;
+	private RepositoryFolder<?, ?> newFolder;
 	private String newFolderName;
 
-	AddRepositoryFolder(RepositoryFolder focusedObject, Vector<RepositoryFolder> globalSelection, FlexoEditor editor) {
+	private AddRepositoryFolder(RepositoryFolder<?, ?> focusedObject, Vector<RepositoryFolder> globalSelection, FlexoEditor editor) {
 		super(actionType, focusedObject, globalSelection, editor);
 	}
 
@@ -89,7 +89,8 @@ public class AddRepositoryFolder extends FlexoAction<AddRepositoryFolder, Reposi
 		logger.info("Add view folder");
 		if (getFocusedObject() != null) {
 			newFolder = getFocusedObject().getResourceRepository().createNewFolder(getNewFolderName(), getFocusedObject());
-		} else {
+		}
+		else {
 			throw new InvalidParametersException("unable to create view folder: no focused object supplied");
 		}
 	}

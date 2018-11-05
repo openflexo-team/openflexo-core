@@ -49,19 +49,19 @@ import org.openflexo.prefs.ModulePreferences;
  * @author sguerin
  * 
  */
-public abstract class NatureSpecificModule<M extends FlexoModule<M>, N extends ProjectNature<?, ?>> extends Module<M> {
+public abstract class NatureSpecificModule<M extends FlexoModule<M>, N extends ProjectNature> extends Module<M> {
 
-	private final Class<N> natureClass;
+	private final Class<N> projectNatureClass;
 
-	public NatureSpecificModule(String name, String shortName, Class<M> moduleClass,
-			Class<? extends ModulePreferences<M>> preferencesClass, String relativeDirectory, String jiraComponentID, String helpTopic,
-			ImageIcon smallIcon, ImageIcon mediumIcon, ImageIcon mediumIconWithHover, ImageIcon bigIcon, Class<N> natureClass) {
+	public NatureSpecificModule(String name, String shortName, Class<M> moduleClass, Class<? extends ModulePreferences<M>> preferencesClass,
+			String relativeDirectory, String jiraComponentID, String helpTopic, ImageIcon smallIcon, ImageIcon mediumIcon,
+			ImageIcon mediumIconWithHover, ImageIcon bigIcon, Class<N> projectNatureClass) {
 		super(name, shortName, moduleClass, preferencesClass, relativeDirectory, jiraComponentID, helpTopic, smallIcon, mediumIcon,
 				mediumIconWithHover, bigIcon);
-		this.natureClass = natureClass;
+		this.projectNatureClass = projectNatureClass;
 	}
 
-	public Class<N> getNatureClass() {
-		return natureClass;
+	public Class<N> getProjectNatureClass() {
+		return projectNatureClass;
 	}
 }

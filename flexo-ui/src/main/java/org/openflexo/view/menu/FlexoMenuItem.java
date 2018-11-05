@@ -58,32 +58,33 @@ import javax.swing.KeyStroke;
 
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoObject;
+import org.openflexo.foundation.action.FlexoActionFactory;
 import org.openflexo.foundation.action.FlexoActionSource;
-import org.openflexo.foundation.action.FlexoActionType;
-import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.logging.FlexoLogger;
 import org.openflexo.selection.SelectionManager;
 import org.openflexo.view.controller.FlexoController;
-import org.openflexo.view.controller.action.EditionAction;
+import org.openflexo.view.controller.action.MenuItemAction;
 
 /**
  * Give a shortcut to the item and register the action near the FlexoMainController
  * 
  * @author benoit
  */
+@SuppressWarnings("serial")
 public class FlexoMenuItem extends JMenuItem implements FlexoActionSource, PropertyChangeListener {
 
+	@SuppressWarnings("unused")
 	private static final Logger logger = FlexoLogger.getLogger(FlexoMenuItem.class.getPackage().getName());
 
 	private final FlexoController _controller;
 
-	private FlexoActionType actionType;
+	private FlexoActionFactory<?, ?, ?> actionType;
 
 	public FlexoMenuItem(FlexoController controller, String unlocalizedMenuName) {
 		super();
 		_controller = controller;
 		_controller.getPropertyChangeSupport().addPropertyChangeListener(this);
-		setText(FlexoLocalization.localizedForKey(unlocalizedMenuName, this));
+		setText(controller.getModuleLocales().localizedForKey(unlocalizedMenuName, this));
 	}
 
 	public FlexoMenuItem(AbstractAction action, String flexoActionName, KeyStroke accelerator, FlexoController controller,
@@ -96,8 +97,9 @@ public class FlexoMenuItem extends JMenuItem implements FlexoActionSource, Prope
 			_controller.registerActionForKeyStroke(action, accelerator, flexoActionName);
 		}
 		if (localizeActionName) {
-			setText(FlexoLocalization.localizedForKey(flexoActionName, this));
-		} else {
+			setText(controller.getModuleLocales().localizedForKey(flexoActionName, this));
+		}
+		else {
 			setText(flexoActionName);
 		}
 	}
@@ -107,7 +109,7 @@ public class FlexoMenuItem extends JMenuItem implements FlexoActionSource, Prope
 		setIcon(icon);
 	}
 
-	public FlexoMenuItem(FlexoActionType actionType, KeyStroke accelerator, Icon icon, FlexoController controller) {
+	public FlexoMenuItem(FlexoActionFactory<?, ?, ?> actionType, KeyStroke accelerator, Icon icon, FlexoController controller) {
 		this(actionType, controller);
 		setIcon(icon);
 		if (accelerator != null) {
@@ -115,17 +117,17 @@ public class FlexoMenuItem extends JMenuItem implements FlexoActionSource, Prope
 		}
 	}
 
-	public FlexoMenuItem(FlexoActionType actionType, Icon icon, FlexoController controller) {
+	public FlexoMenuItem(FlexoActionFactory<?, ?, ?> actionType, Icon icon, FlexoController controller) {
 		this(actionType, controller);
 		setIcon(icon);
 	}
 
-	public FlexoMenuItem(FlexoActionType actionType, FlexoController controller) {
+	public FlexoMenuItem(FlexoActionFactory<?, ?, ?> actionType, FlexoController controller) {
 		super();
 		this.actionType = actionType;
 		_controller = controller;
-		setAction(new EditionAction(actionType, this));
-		setText(FlexoLocalization.localizedForKey(actionType.getUnlocalizedName(), this));
+		setAction(new MenuItemAction<>(actionType, this));
+		setText(controller.getModuleLocales().localizedForKey(actionType.getUnlocalizedName(), this));
 	}
 
 	@Override
@@ -148,13 +150,15 @@ public class FlexoMenuItem extends JMenuItem implements FlexoActionSource, Prope
 	}
 
 	/**
-     * 
-     */
+	 * 
+	 */
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public void itemWillShow() {
-		if (actionType instanceof FlexoActionType && getSelectionManager() != null) {
+		if (actionType instanceof FlexoActionFactory && getSelectionManager() != null) {
 			if (getFocusedObject() == null || getFocusedObject().getActionList().indexOf(actionType) > -1) {
-				setEnabled(actionType.isEnabled(getFocusedObject(), getGlobalSelection()));
-			} else {
+				setEnabled(((FlexoActionFactory) actionType).isEnabled(getFocusedObject(), getGlobalSelection()));
+			}
+			else {
 				setEnabled(false);
 			}
 		}

@@ -41,8 +41,10 @@ package org.openflexo.prefs;
 import java.util.List;
 
 import org.openflexo.foundation.FlexoObject;
-import org.openflexo.foundation.FlexoProperty;
+import org.openflexo.foundation.FlexoServiceManager;
+import org.openflexo.foundation.fml.FlexoProperty;
 import org.openflexo.model.annotations.Adder;
+import org.openflexo.model.annotations.Finder;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.Getter.Cardinality;
 import org.openflexo.model.annotations.ImplementationClass;
@@ -65,6 +67,10 @@ public interface PreferencesContainer extends FlexoObject {
 	public static final String CONTENTS = "contents";
 	@PropertyIdentifier(type = PreferencesContainer.class)
 	public static final String CONTAINER = "container";
+	@PropertyIdentifier(type = PreferencesService.class)
+	public static final String PREFERENCES_SERVICE = "preferencesService";
+	@PropertyIdentifier(type = PreferenceProperty.class, cardinality = Cardinality.LIST)
+	String CUSTOM_PROPERTIES_KEY = "customProperties";
 
 	@Getter(value = CONTAINER, inverse = CONTENTS)
 	public PreferencesContainer getContainer();
@@ -85,25 +91,70 @@ public interface PreferencesContainer extends FlexoObject {
 	@Remover(CONTENTS)
 	public void removeFromContents(PreferencesContainer aContent);
 
+	@Getter(value = CUSTOM_PROPERTIES_KEY, cardinality = Cardinality.LIST, inverse = PreferenceProperty.OWNER_KEY)
+	@XMLElement
+	public List<PreferenceProperty> getCustomProperties();
+
+	@Setter(CUSTOM_PROPERTIES_KEY)
+	public void setCustomProperties(List<PreferenceProperty> customProperties);
+
+	@Adder(CUSTOM_PROPERTIES_KEY)
+	public void addToCustomProperties(PreferenceProperty aCustomPropertie);
+
+	@Remover(CUSTOM_PROPERTIES_KEY)
+	public void removeFromCustomProperties(PreferenceProperty aCustomPropertie);
+
+	@Finder(attribute = FlexoProperty.NAME_KEY, collection = CUSTOM_PROPERTIES_KEY)
+	public PreferenceProperty getPropertyNamed(String name);
+
 	public <P extends PreferencesContainer> P getPreferences(Class<P> containerType);
 
 	public FlexoPreferencesFactory getFlexoPreferencesFactory();
 
 	public void setFlexoPreferencesFactory(FlexoPreferencesFactory factory);
 
-	public FlexoProperty assertProperty(String propertyName);
+	public PreferenceProperty assertProperty(String propertyName);
 
 	public String getName();
+
+	@Getter(value = PREFERENCES_SERVICE, ignoreType = true)
+	public PreferencesService getPreferencesService();
+
+	@Setter(PREFERENCES_SERVICE)
+	public void setPreferencesService(PreferencesService preferencesService);
 
 	public static abstract class PreferencesContainerImpl extends FlexoObjectImpl implements PreferencesContainer {
 
 		private FlexoPreferencesFactory factory;
 
+		public boolean hasPropertyNamed(String name) {
+			return getPropertyNamed(name) != null;
+		}
+
 		@Override
-		public FlexoProperty assertProperty(String propertyName) {
-			FlexoProperty p = getPropertyNamed(propertyName);
+		public PreferenceProperty getPropertyNamed(String name) {
+			if (name == null) {
+				for (PreferenceProperty p : getCustomProperties()) {
+					if (p.getName() == null) {
+						return p;
+					}
+				}
+			}
+			else {
+				for (PreferenceProperty p : getCustomProperties()) {
+					if (name.equals(p.getName())) {
+						return p;
+					}
+				}
+			}
+			return null;
+		}
+
+		@Override
+		public PreferenceProperty assertProperty(String propertyName) {
+			PreferenceProperty p = getPropertyNamed(propertyName);
 			if (p == null) {
-				p = getFlexoPreferencesFactory().newInstance(FlexoProperty.class);
+				p = getFlexoPreferencesFactory().newInstance(PreferenceProperty.class);
 				p.setName(propertyName);
 				addToCustomProperties(p);
 				return p;
@@ -139,6 +190,14 @@ public interface PreferencesContainer extends FlexoObject {
 		public String getName() {
 			org.openflexo.model.ModelEntity e = getFlexoPreferencesFactory().getModelEntityForInstance(this);
 			return e.getImplementedInterface().getSimpleName();
+		}
+
+		@Override
+		public FlexoServiceManager getServiceManager() {
+			if (getPreferencesService() != null) {
+				return getPreferencesService().getServiceManager();
+			}
+			return super.getServiceManager();
 		}
 
 	}

@@ -112,29 +112,30 @@ public class HSToc extends KVCFlexoObject {
 			if (text == null) {
 				text = docItem.getIdentifier();
 			}
-			childs = new Vector<HSTocEntry>();
-			for (Enumeration en = docItem.getOrderedEmbeddingChildItems().elements(); en.hasMoreElements();) {
-				DocItem next = (DocItem) en.nextElement();
+			childs = new Vector<>();
+			for (Enumeration<DocItem> en = docItem.getOrderedEmbeddingChildItems().elements(); en.hasMoreElements();) {
+				DocItem next = en.nextElement();
 				if (next.isIncluded(configuration)) {
 					if (!next.getIsEmbedded() && next.isPublished() && next.getFolder() == folder) {
 						childs.add(new HSTocEntry(next));
 					}
 				}
 			}
-			for (Enumeration en = folder.getOrderedItems().elements(); en.hasMoreElements();) {
-				DocItem next = (DocItem) en.nextElement();
+			for (Enumeration<DocItem> en = folder.getOrderedItems().elements(); en.hasMoreElements();) {
+				DocItem next = en.nextElement();
 				if (next.isIncluded(configuration)) {
 					if (next.getEmbeddingParentItem() == null && next != folder.getPrimaryDocItem() && next.isPublished()) {
 						childs.add(new HSTocEntry(next));
 					}
 				}
 			}
-			for (Enumeration en = folder.getOrderedChildFolders().elements(); en.hasMoreElements();) {
-				DocItemFolder next = (DocItemFolder) en.nextElement();
+			for (Enumeration<DocItemFolder> en = folder.getOrderedChildFolders().elements(); en.hasMoreElements();) {
+				DocItemFolder next = en.nextElement();
 				if (next.isIncluded(configuration) && next.getPrimaryDocItem() != null && next.getPrimaryDocItem().isPublished()) {
 					logger.fine("Generate toc entry for " + next);
 					childs.add(new HSTocEntry(next));
-				} else {
+				}
+				else {
 					logger.fine("Ignore " + next);
 				}
 			}
@@ -147,9 +148,9 @@ public class HSToc extends KVCFlexoObject {
 			if (text == null) {
 				text = docItem.getIdentifier();
 			}
-			childs = new Vector<HSTocEntry>();
-			for (Enumeration en = item.getOrderedEmbeddingChildItems().elements(); en.hasMoreElements();) {
-				DocItem next = (DocItem) en.nextElement();
+			childs = new Vector<>();
+			for (Enumeration<DocItem> en = item.getOrderedEmbeddingChildItems().elements(); en.hasMoreElements();) {
+				DocItem next = en.nextElement();
 				if (next.isIncluded(configuration)) {
 					if (!next.getIsEmbedded() && next.isPublished()) {
 						childs.add(new HSTocEntry(next));
@@ -171,7 +172,7 @@ public class HSToc extends KVCFlexoObject {
 	}
 
 	/*	private static XMLMapping _tocMapping;
-
+	
 		public static XMLMapping getTocMapping() {
 			if (_tocMapping == null) {
 				File hsTocModelFile;

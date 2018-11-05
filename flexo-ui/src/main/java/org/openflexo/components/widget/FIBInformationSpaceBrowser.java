@@ -44,11 +44,12 @@ import java.util.logging.Logger;
 import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.resource.FlexoResourceCenterService;
+import org.openflexo.foundation.resource.ResourceManager;
 import org.openflexo.foundation.technologyadapter.FlexoMetaModel;
 import org.openflexo.foundation.technologyadapter.FlexoModel;
-import org.openflexo.foundation.technologyadapter.InformationSpace;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterService;
+import org.openflexo.localization.LocalizedDelegate;
 import org.openflexo.rm.Resource;
 import org.openflexo.rm.ResourceLocator;
 import org.openflexo.view.FIBBrowserView;
@@ -65,36 +66,34 @@ import org.openflexo.view.controller.FlexoController;
  * 
  */
 @SuppressWarnings("serial")
-public class FIBInformationSpaceBrowser extends FIBBrowserView<InformationSpace> {
+public class FIBInformationSpaceBrowser extends FIBBrowserView<ResourceManager> {
 	static final Logger logger = Logger.getLogger(FIBInformationSpaceBrowser.class.getPackage().getName());
 
 	public static final Resource FIB_FILE = ResourceLocator.locateResource("Fib/FIBInformationSpaceBrowser.fib");
 
-	public FIBInformationSpaceBrowser(InformationSpace informationSpace, FlexoController controller) {
-		super(informationSpace, controller, FIB_FILE);
+	public FIBInformationSpaceBrowser(ResourceManager resourceManager, FlexoController controller, LocalizedDelegate locales) {
+		super(resourceManager, controller, FIB_FILE, locales);
 	}
 
 	// Please uncomment this for a live test
 	// Never commit this uncommented since it will not compile on continuous build
 	// To have icon, you need to choose "Test interface" in the editor (otherwise, flexo controller is not insanciated in EDIT mode)
 	/*public static void main(String[] args) {
-
+	
 		try {
 			FlexoLoggingManager.initialize(-1, true, null, Level.INFO, null);
 		} catch (SecurityException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
+	
 		final FlexoServiceManager serviceManager = new DefaultFlexoServiceManager() {
 			@Override
 			protected FlexoProjectReferenceLoader createProjectReferenceLoader() {
 				return null;
 			}
-
+	
 			@Override
 			protected FlexoEditor createApplicationEditor() {
 				return null;
@@ -103,28 +102,28 @@ public class FIBInformationSpaceBrowser extends FIBBrowserView<InformationSpace>
 		TechnologyAdapterControllerService tacService = DefaultTechnologyAdapterControllerService.getNewInstance();
 		serviceManager.registerService(tacService);
 		final InformationSpace informationSpace = serviceManager.getInformationSpace();
-
+	
 		// System.out.println("Resource centers=" + viewPointLibrary.getResourceCenterService().getResourceCenters());
 		// System.exit(-1);
-
+	
 		FIBAbstractEditor editor = new FIBAbstractEditor() {
 			@Override
 			public Object[] getData() {
 				return makeArray(informationSpace);
 			}
-
+	
 			@Override
 			public File getFIBFile() {
 				return FIB_FILE;
 			}
-
+	
 			@Override
 			public FIBController makeNewController(FIBComponent component) {
 				return new FlexoFIBController(component);
 			}
 		};
 		editor.launch();
-
+	
 	}*/
 
 }

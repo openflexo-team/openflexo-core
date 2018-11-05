@@ -42,15 +42,11 @@ import java.io.File;
 import java.io.IOException;
 
 import org.openflexo.foundation.FlexoEditor;
-import org.openflexo.foundation.FlexoProject;
 import org.openflexo.foundation.nature.ProjectNature;
-import org.openflexo.foundation.resource.ProjectLoaded;
 import org.openflexo.foundation.task.Progress;
-import org.openflexo.foundation.utils.FlexoProjectUtil;
 import org.openflexo.foundation.utils.ProjectInitializerException;
 import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.task.FlexoApplicationTask;
-import org.openflexo.toolbox.FileUtils;
 
 /**
  * A task used to create a new Flexo project
@@ -62,58 +58,79 @@ public class NewProjectTask extends FlexoApplicationTask {
 	/**
 	 * 
 	 */
-	private final ProjectLoader projectLoader;
+	private final InteractiveProjectLoader projectLoader;
 	private final File projectDirectory;
-	private final ProjectNature<?, ?> projectNature;
+	private final Class<? extends ProjectNature> projectNatureClass;
 	private FlexoEditor flexoEditor;
 
-	public NewProjectTask(ProjectLoader projectLoader, File projectDirectory) {
+	public NewProjectTask(InteractiveProjectLoader projectLoader, File projectDirectory) {
 		this(projectLoader, projectDirectory, null);
 	}
 
-	public NewProjectTask(ProjectLoader projectLoader, File projectDirectory, ProjectNature<?, ?> projectNature) {
-		super(FlexoLocalization.localizedForKey("new_project") + " " + projectDirectory.getName(), projectLoader);
+	public NewProjectTask(InteractiveProjectLoader projectLoader, File projectDirectory,
+			Class<? extends ProjectNature> projectNatureClass) {
+		super(FlexoLocalization.getMainLocalizer().localizedForKey("new_project") + " " + projectDirectory.getName(),
+				projectLoader.getServiceManager());
 		this.projectLoader = projectLoader;
 		this.projectDirectory = projectDirectory;
-		this.projectNature = projectNature;
+		this.projectNatureClass = projectNatureClass;
 	}
 
 	@Override
 	public void performTask() {
-		Progress.setExpectedProgressSteps(100);
 
+		Progress.setExpectedProgressSteps(10);
+
+		try {
+			projectLoader.newStandaloneProject(projectDirectory, projectNatureClass);
+		} catch (ProjectInitializerException e) {
+			throwException(e);
+		} catch (IOException e) {
+			throwException(e);
+		}
+
+		/*Progress.setExpectedProgressSteps(100);
+		
 		// This will just create the .version in the project
 		FlexoProjectUtil.currentFlexoVersionIsSmallerThanLastVersion(projectDirectory);
-
+		
 		projectLoader.preInitialization(projectDirectory);
-
+		
 		if (projectDirectory.exists()) {
 			// We should have already asked the user if the new project has to override the old one
 			// so we really delete the old project
-
+		
 			File backupProject = new File(projectDirectory.getParentFile(), projectDirectory.getName() + "~");
 			if (backupProject.exists()) {
 				FileUtils.recursiveDeleteFile(backupProject);
 			}
-
+		
 			try {
 				FileUtils.rename(projectDirectory, backupProject);
 			} catch (IOException e) {
 				throwException(e);
 			}
 		}
-
+		
 		try {
-			flexoEditor = FlexoProject.newProject(projectDirectory, projectNature, projectLoader.getServiceManager(),
-					projectLoader.getServiceManager(), null);
+			flexoEditor = FlexoProject.newProject(projectDirectory, projectLoader.getServiceManager(), projectLoader.getServiceManager(),
+					null);
 		} catch (ProjectInitializerException e) {
 			throwException(e);
 		}
+		
 		projectLoader.newEditor(flexoEditor);
+		
 		projectLoader.addToRootProjects(flexoEditor.getProject());
-
+		
+		// Now, if a nature has been supplied, gives this nature to the project
+		if (projectNature != null) {
+			projectNature.givesNature(flexoEditor.getProject(), flexoEditor);
+		}
+		
 		// Notify project just loaded
 		projectLoader.getServiceManager().notify(projectLoader, new ProjectLoaded(flexoEditor.getProject()));
+		*/
 	}
 
 	public FlexoEditor getFlexoEditor() {
@@ -128,8 +145,10 @@ public class NewProjectTask extends FlexoApplicationTask {
 	@Override
 	protected void notifyThrownException(Exception e) {
 
-		showException(FlexoLocalization.localizedForKey("could_not_create_project"),
-				FlexoLocalization.localizedForKey("could_not_create_project_located_at") + projectDirectory.getAbsolutePath(), e);
+		showException(FlexoLocalization.getMainLocalizer().localizedForKey("could_not_create_project"),
+				FlexoLocalization.getMainLocalizer().localizedForKey("could_not_create_project_located_at")
+						+ projectDirectory.getAbsolutePath(),
+				e);
 		e.printStackTrace();
 	}
 }

@@ -1,0 +1,99 @@
+use org.openflexo.technologyadapter.owl.OWLModelSlot;
+
+def Ontology1 = OWLOntology("http://www.openflexo.org/Tests/OWL/Ontology1.owl");
+def ViewPoint1 = VirtualModel("http://www.openflexo.org/Tests/ViewPoints/ViewPoint1.fml");
+	
+	
+/**
+ * This is a description of VirtualModel
+ * 
+ * @author sylvain
+ * @version 1.1
+ */
+@VirtualModel(uri="http://www.openflexo.org/Tests/FML/Test1/Test1VM.fml")
+public static class Test1VM extends Test2VM,ViewPoint1.AnOtherVM {
+
+	@OWLModelSlot(metaModel=Ontology1)
+	public OWLOntology ontology;
+
+
+	/**
+	 * This is the first concept
+	 * 
+	 * @author sylvain
+	 * @version 1.2
+	 */
+	@FlexoConcept
+	public class Concept1 {
+
+		/**
+		 * This is the description of the role
+		 */
+		@OWLIndividualRole(type=Ontology1:Type1)
+		protected OWLIndividual individual;
+
+		/**
+		 * Creates a new instance of Concept1
+		 */
+		@CreationScheme
+		public Concept1:createWithExistingIndividual(@Parameter(required=true)OWLIndividual<Ontology1:Type1> anIndividual) {
+			individual = anIndividual;
+		}
+		
+		/**
+		 * Creates a new instance of Concept1
+		 */
+		@CreationScheme
+		public Concept1:createNewIndividual() {
+			individual = ontology.AddOWLIndividual(type=Ontology1:Type1);
+		}
+		
+		/**
+		 * Delete this instance
+		 */
+		@DeletionScheme
+		public delete() {
+			ontology.removeIndividual(individual);			
+		}
+
+		/**
+		 * This is an action
+		 */
+		@ActionScheme
+		public int action(@Parameter(default=3)int anInteger, SomeClass anOtherArgument) {
+			int i = 6;
+			bidule=machin;
+			this.bidule=machin;
+			truc.bidule=machin;
+			truc.bidule=machin.chose(truc,machin,truc);
+			return i;
+		}
+
+		/**
+		 * This is an other action
+		 */
+		@ActionScheme
+		public void anotherAction() {
+			for (OWLIndividual<Ontology1:Type1> individual : ontology.getAllIndividualsOfType(type=Ontology1:Type1)) {
+				log("Found individual: "+individual);
+			}
+		}
+	}
+
+	/**
+	 * This is the second concept
+	 * 
+	 * @author sylvain
+	 * @version 1.2
+	 */
+	@FlexoConcept
+	public FlexoConcept Concept2 {
+
+		/**
+		 * This is the description of the role
+		 */
+		@OWLIndividualRole(type=Ontology1:Type2)
+		protected OWLIndividual<Ontology1:Type2> individual2;
+	}
+
+}

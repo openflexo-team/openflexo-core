@@ -1,0 +1,8 @@
+dependencies {
+  // openflexo dep
+  compile project(':flexo-foundation')
+  compile connie()
+  // external dep
+
+  // testing dep
+}

@@ -50,6 +50,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -87,6 +88,8 @@ public class TaskManagerPanel extends JDialog implements PropertyChangeListener 
 
 	private final Map<FlexoTask, TaskPanel> taskPanels;
 
+	private boolean forceHide = false;
+
 	// private final boolean automaticallyBecomesVisible = true;
 
 	public TaskManagerPanel(FlexoTaskManager taskManager) {
@@ -95,7 +98,8 @@ public class TaskManagerPanel extends JDialog implements PropertyChangeListener 
 		this.taskManager = taskManager;
 		taskManager.getPropertyChangeSupport().addPropertyChangeListener(this);
 
-		setAlwaysOnTop(false);
+		// false until we have fixed issue with remaining and empty task bar
+		setAlwaysOnTop(true);
 		setUndecorated(true);
 
 		contentPane = new JPanel();
@@ -108,7 +112,7 @@ public class TaskManagerPanel extends JDialog implements PropertyChangeListener 
 
 		getContentPane().add(scrollPane);
 
-		taskPanels = new HashMap<FlexoTask, TaskPanel>();
+		taskPanels = new HashMap<>();
 
 		contentPane.setPreferredSize(new Dimension(PREFERRED_WIDTH, PREFERRED_HEIGHT));
 		validate();
@@ -116,27 +120,37 @@ public class TaskManagerPanel extends JDialog implements PropertyChangeListener 
 		updateSizeAndCenter();
 	}
 
-	/*@Override
-	public void setVisible(boolean b) {
-		super.setVisible(b);
-		if (b) {
-			center();
-		}
-	}*/
-
 	public FlexoTaskManager getTaskManager() {
 		return taskManager;
 	}
 
 	@Override
-	public void propertyChange(PropertyChangeEvent evt) {
+	public void propertyChange(final PropertyChangeEvent evt) {
+		if (!SwingUtilities.isEventDispatchThread()) {
+			SwingUtilities.invokeLater(new Runnable() {
+				@Override
+				public void run() {
+					propertyChange(evt);
+				}
+			});
+			return;
+		}
 		if (evt.getSource() == taskManager) {
 			updatePanel();
 		}
 	}
 
-	private synchronized void updatePanel() {
-		for (FlexoTask task : taskManager.getScheduledTasks()) {
+	private void updatePanel() {
+		if (!SwingUtilities.isEventDispatchThread()) {
+			SwingUtilities.invokeLater(new Runnable() {
+				@Override
+				public void run() {
+					updatePanel();
+				}
+			});
+			return;
+		}
+		for (FlexoTask task : new ArrayList<>(taskManager.getScheduledTasks())) {
 			TaskPanel p = taskPanels.get(task);
 			if (p == null) {
 				p = new TaskPanel(task);
@@ -145,24 +159,25 @@ public class TaskManagerPanel extends JDialog implements PropertyChangeListener 
 			}
 		}
 
-		// contentPane.setPreferredSize(new Dimension(PREFERRED_WIDTH, PREFERRED_HEIGHT * 3));
-
-		if (!isVisible() && taskManager.getScheduledTasks().size() > 0) {
-			setVisible(true);
-			SwingUtilities.invokeLater(new Runnable() {
-				@Override
-				public void run() {
-					requestFocusInWindow();
-					requestFocus();
-				}
-			});
-
+		if (!isVisible() && taskManager.getScheduledTasks().size() > 0 && !forceHide) {
+			performShowTaskManagerPanel();
 		}
 
 		updateSizeAndCenter();
 	}
 
 	private synchronized void updateSizeAndCenter() {
+
+		if (!SwingUtilities.isEventDispatchThread()) {
+			SwingUtilities.invokeLater(new Runnable() {
+				@Override
+				public void run() {
+					updateSizeAndCenter();
+				}
+			});
+			return;
+		}
+
 		contentPane.setPreferredSize(new Dimension(PREFERRED_WIDTH, PREFERRED_HEIGHT * taskManager.getScheduledTasks().size()));
 
 		((JComponent) getContentPane()).revalidate();
@@ -172,14 +187,68 @@ public class TaskManagerPanel extends JDialog implements PropertyChangeListener 
 		center();
 
 		if (taskManager.getScheduledTasks().size() == 0) {
+			// System.out.println("Hidding TaskManagerPanel " + Integer.toHexString(TaskManagerPanel.this.hashCode()) + "...");
 			setVisible(false);
+			SwingUtilities.invokeLater(new Runnable() {
+				@Override
+				public void run() {
+					// System.out.println("Hidding Again TaskManagerPanel " + Integer.toHexString(TaskManagerPanel.this.hashCode()) +
+					// "...");
+					setVisible(false);
+				}
+			});
 		}
+
+	}
+
+	public boolean getForceHide() {
+		return forceHide;
+	}
+
+	public void setForceHide(boolean forceHide) {
+		this.forceHide = forceHide;
+		if (forceHide) {
+			if (isVisible()) {
+				setVisible(false);
+			}
+		}
+		else {
+			if (!isVisible() && taskManager.getScheduledTasks().size() > 0) {
+				performShowTaskManagerPanel();
+			}
+
+		}
+	}
+
+	private void performShowTaskManagerPanel() {
+		// System.out.println("Showing TaskManagerPanel " + Integer.toHexString(TaskManagerPanel.this.hashCode()) + "...");
+		setVisible(true);
+		SwingUtilities.invokeLater(new Runnable() {
+			@Override
+			public void run() {
+				if (isVisible()) {
+					// System.out.println("Perform Show TaskManagerPanel " + Integer.toHexString(TaskManagerPanel.this.hashCode()) + "...");
+					requestFocusInWindow();
+					requestFocus();
+				}
+			}
+		});
 	}
 
 	/**
 	 * @param flexoFrame
 	 */
 	public void center() {
+		if (!SwingUtilities.isEventDispatchThread()) {
+			SwingUtilities.invokeLater(new Runnable() {
+				@Override
+				public void run() {
+					center();
+				}
+			});
+			return;
+		}
+
 		Dimension dim;
 		/*if (initOwner != null && initOwner.isVisible()) {
 			dim = new Dimension(initOwner.getLocationOnScreen().x + initOwner.getWidth() / 2, initOwner.getLocationOnScreen().y
@@ -259,13 +328,23 @@ public class TaskManagerPanel extends JDialog implements PropertyChangeListener 
 		private void updateStatusLabel() {
 			if (StringUtils.isEmpty(task.getCurrentStepName())) {
 				statusLabel.setText(task.getTaskStatus().getLocalizedName());
-			} else {
+			}
+			else {
 				statusLabel.setText(task.getCurrentStepName());
 			}
 		}
 
 		@Override
-		public void propertyChange(PropertyChangeEvent evt) {
+		public void propertyChange(final PropertyChangeEvent evt) {
+			if (!SwingUtilities.isEventDispatchThread()) {
+				SwingUtilities.invokeLater(new Runnable() {
+					@Override
+					public void run() {
+						propertyChange(evt);
+					}
+				});
+				return;
+			}
 			if (evt.getSource() == task) {
 				if (evt.getPropertyName().equals(FlexoTask.TASK_STATUS_PROPERTY)) {
 					cancelButton.setEnabled(task.getTaskStatus() == TaskStatus.RUNNING && task.isCancellable());
@@ -274,7 +353,8 @@ public class TaskManagerPanel extends JDialog implements PropertyChangeListener 
 						progressBar.setStringPainted(false);
 						progressBar.setIndeterminate(true);
 						progressBar.setEnabled(true);
-					} else if ((task.getTaskStatus() == TaskStatus.FINISHED) || (task.getTaskStatus() == TaskStatus.CANCELLED)
+					}
+					else if ((task.getTaskStatus() == TaskStatus.FINISHED) || (task.getTaskStatus() == TaskStatus.CANCELLED)
 							|| (task.getTaskStatus() == TaskStatus.EXCEPTION_THROWN)) {
 						taskPanels.remove(task);
 						contentPane.remove(this);
@@ -282,16 +362,28 @@ public class TaskManagerPanel extends JDialog implements PropertyChangeListener 
 						TaskManagerPanel.this.repaint();
 						updateSizeAndCenter();
 					}
-				} else if (evt.getPropertyName().equals(FlexoTask.EXPECTED_PROGRESS_STEPS_PROPERTY)) {
+				}
+				else if (evt.getPropertyName().equals(FlexoTask.EXPECTED_PROGRESS_STEPS_PROPERTY)) {
 					progressBar.setStringPainted(true);
 					progressBar.setIndeterminate(false);
 					progressBar.setMinimum(0);
 					progressBar.setMaximum(task.getExpectedProgressSteps());
 					progressBar.setValue(task.getCurrentProgress());
-				} else if (evt.getPropertyName().equals(FlexoTask.CURRENT_PROGRESS_PROPERTY)) {
+				}
+				else if (evt.getPropertyName().equals(FlexoTask.CURRENT_PROGRESS_PROPERTY)) {
 					progressBar.setValue(task.getCurrentProgress());
-				} else if (evt.getPropertyName().equals(FlexoTask.CURRENT_STEP_NAME_PROPERTY)) {
+				}
+				else if (evt.getPropertyName().equals(FlexoTask.CURRENT_STEP_NAME_PROPERTY)) {
 					updateStatusLabel();
+				}
+				else if (evt.getPropertyName().equals(FlexoTask.TASK_BAR_HIDE)) {
+					TaskManagerPanel.this.setVisible(false);
+				}
+				else if (evt.getPropertyName().equals(FlexoTask.TASK_BAR_SHOW)) {
+					TaskManagerPanel.this.setVisible(true);
+				}
+				else if (evt.getPropertyName().equals(FlexoTask.TASK_BAR_FORCE_HIDE)) {
+					setForceHide((Boolean) evt.getNewValue());
 				}
 			}
 		}

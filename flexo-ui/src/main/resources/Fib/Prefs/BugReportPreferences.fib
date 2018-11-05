@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Panel id="0" borderLeft="0" height="99" name="BugReportPreferencesPanel" layout="twocols" controllerClassName="org.openflexo.components.PreferencesDialog$PreferencesFIBController" border="empty" borderRight="0" trackViewPortWidth="true" width="99" borderBottom="0" titleFont="Lucida Grande,0,13" borderTop="5" trackViewPortHeight="true">
+  <LocalizedDictionary id="1" />
+  <Label id="2" name="TodoLabel" align="left" constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=left)" label="JIRA_server" />
+  <TextField id="3" data="data.bugReportUrl" columns="7" name="TextField" constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=right)" />
+  <Label id="4" name="Label" align="left" constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=left)" label="login" />
+  <TextField id="5" data="data.bugReportUser" columns="7" name="TextField2" constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=right)" />
+  <Label id="6" name="Label2" align="left" constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=left)" label="password" />
+  <TextField id="7" passwd="true" data="data.bugReportPassword" columns="7" name="TextField3" constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=right)" />
+  <FIBVariable id="8" name="data" type="org.openflexo.prefs.BugReportPreferences" />
+</Panel>

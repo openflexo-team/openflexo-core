@@ -45,17 +45,19 @@ import javax.swing.Icon;
 
 import org.openflexo.components.wizard.Wizard;
 import org.openflexo.components.wizard.WizardDialog;
-import org.openflexo.fib.controller.FIBController.Status;
+import org.openflexo.foundation.action.FlexoActionFactory;
 import org.openflexo.foundation.action.FlexoActionFinalizer;
 import org.openflexo.foundation.action.FlexoActionInitializer;
-import org.openflexo.foundation.fml.AbstractVirtualModel;
 import org.openflexo.foundation.fml.FMLObject;
+import org.openflexo.foundation.fml.FlexoConceptObject;
 import org.openflexo.foundation.fml.action.CreateModelSlot;
+import org.openflexo.foundation.technologyadapter.TechnologyAdapterService;
+import org.openflexo.gina.controller.FIBController.Status;
 import org.openflexo.icon.FMLIconLibrary;
 import org.openflexo.view.controller.ActionInitializer;
 import org.openflexo.view.controller.ControllerActionInitializer;
 
-public class CreateModelSlotInitializer extends ActionInitializer<CreateModelSlot, AbstractVirtualModel<?>, FMLObject> {
+public class CreateModelSlotInitializer extends ActionInitializer<CreateModelSlot, FlexoConceptObject, FMLObject> {
 
 	private static final Logger logger = Logger.getLogger(ControllerActionInitializer.class.getPackage().getName());
 
@@ -76,7 +78,6 @@ public class CreateModelSlotInitializer extends ActionInitializer<CreateModelSlo
 					return false;
 				}
 				return true;
-				// return instanciateAndShowDialog(action, VPMCst.CREATE_MODEL_SLOT_DIALOG_FIB);
 			}
 		};
 	}
@@ -86,14 +87,19 @@ public class CreateModelSlotInitializer extends ActionInitializer<CreateModelSlo
 		return new FlexoActionFinalizer<CreateModelSlot>() {
 			@Override
 			public boolean run(EventObject e, CreateModelSlot action) {
-				// getController().setCurrentEditedObjectAsModuleView(action.getNewModelSlot(), getController().VIEW_POINT_PERSPECTIVE);
-				return true;
+				if (action.getNewModelSlot() != null) {
+					TechnologyAdapterService taService = getController().getApplicationContext().getTechnologyAdapterService();
+					taService.activateTechnologyAdapter(action.getNewModelSlot().getModelSlotTechnologyAdapter(), true);
+					getController().selectAndFocusObject(action.getNewModelSlot());
+					return true;
+				}
+				return false;
 			}
 		};
 	}
 
 	@Override
-	protected Icon getEnabledIcon() {
+	protected Icon getEnabledIcon(FlexoActionFactory actionType) {
 		return FMLIconLibrary.MODEL_SLOT_ICON;
 	}
 

@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Panel className="org.openflexo.gina.utils.FIBInspector" layout="border"
+	titleFont="SansSerif,0,12" darkLevel="0"
+	dataClassName="org.openflexo.foundation.fml.editionaction.ReturnStatement"
+	controllerClassName="org.openflexo.fml.controller.FMLFIBInspectorController"
+	font="SansSerif,0,12" name="Inspector">
+	<TabPanel name="Tab" constraints="border(location=center)">
+		<Tab title="Basic" layout="twocols" titleFont="SansSerif,0,11"
+			darkLevel="0" index="0" font="SansSerif,0,11" useScrollBar="true"
+			horizontalScrollbarPolicy="HORIZONTAL_SCROLLBAR_AS_NEEDED"
+			verticalScrollbarPolicy="VERTICAL_SCROLLBAR_AS_NEEDED" name="BasicTab">
+			<Label label="return" index="4" 
+				constraints="twocols(expandHorizontally=true;expandVertically=false;index=2;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=5;location=left)"/>
+			<Panel darkLevel="1" useScrollBar="false" protectContent="false"
+				layout="border" borderRight="2" border="rounded3d"
+				trackViewPortWidth="true" index="5"
+				constraints="twocols(expandHorizontally=true;expandVertically=true;index=9;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)"
+				borderBottom="2" borderTitle="" titleFont="SansSerif,0,11"
+				borderTop="2" trackViewPortHeight="true">
+				<FIBReferencedComponent
+					dynamicComponent="controller.basicInspectorTabForObject(data.assignableAction)"
+					localize="true" manageDynamicModel="true" name="AssignableActionWidget"
+					index="15" data="data.assignableAction" constraints="border(location=center)"
+					opaque="false">
+					<ReferenceAssignment mandatory="true"
+						variable="controller.flexoController" value="controller.flexoController" />
+				</FIBReferencedComponent>
+			</Panel>
+
+		 	<Label name="DescriptionLabel">
+				<Parameter name="hidden" value="true" />
+			</Label>
+			<TextArea name="Description">
+				<Parameter name="hidden" value="true" />
+			</TextArea>
+
+		</Tab>
+		<Tab title="Advanced" layout="twocols" titleFont="SansSerif,0,11"
+			darkLevel="0" index="2" font="SansSerif,0,11" useScrollBar="true"
+			horizontalScrollbarPolicy="HORIZONTAL_SCROLLBAR_AS_NEEDED"
+			verticalScrollbarPolicy="VERTICAL_SCROLLBAR_AS_NEEDED" name="AdvancedTab" />
+	</TabPanel>
+	<LocalizedDictionary>
+	</LocalizedDictionary>
+	<Parameter name="title" value="Return statement" />
+</Panel>

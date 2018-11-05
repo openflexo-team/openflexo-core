@@ -45,71 +45,61 @@ import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.openflexo.fib.FIBLibrary;
-import org.openflexo.fib.controller.FIBController;
-import org.openflexo.fib.model.FIBComponent;
-import org.openflexo.fib.model.listener.FIBSelectionListener;
-import org.openflexo.fib.view.FIBView;
 import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.GraphicalFlexoObserver;
 import org.openflexo.foundation.resource.FlexoResource;
 import org.openflexo.foundation.resource.ResourceLoadingCancelledException;
+import org.openflexo.gina.ApplicationFIBLibrary.ApplicationFIBLibraryImpl;
+import org.openflexo.gina.controller.FIBController;
+import org.openflexo.gina.model.FIBComponent;
+import org.openflexo.gina.model.listener.FIBSelectionListener;
+import org.openflexo.gina.view.FIBView;
+import org.openflexo.localization.LocalizedDelegate;
 import org.openflexo.rm.Resource;
 import org.openflexo.selection.SelectionListener;
 import org.openflexo.selection.SelectionManager;
 import org.openflexo.view.controller.FlexoController;
 
 /**
- * Default implementation for a FIBView which is synchronized with a {@link SelectionManager}
+ * Default implementation for a FIBViewImpl which is synchronized with a {@link SelectionManager}
  * 
  * @author sylvain
  * 
  */
+@SuppressWarnings("serial")
 public class SelectionSynchronizedFIBView extends FlexoFIBView implements SelectionListener, GraphicalFlexoObserver, FIBSelectionListener {
 	static final Logger logger = Logger.getLogger(SelectionSynchronizedFIBView.class.getPackage().getName());
 
-	public SelectionSynchronizedFIBView(Object representedObject, FlexoController controller, Resource fibResource) {
-		this(representedObject, controller, fibResource, false);
+	public SelectionSynchronizedFIBView(Object representedObject, FlexoController controller, Resource fibResource,
+			LocalizedDelegate locales) {
+		this(representedObject, controller, fibResource, locales, false);
 		if (controller != null) {
 			controller.willLoad(fibResource);
 		}
 	}
 
-	public SelectionSynchronizedFIBView(Object representedObject, FlexoController controller, Resource fibResource, boolean addScrollBar) {
-		this(representedObject, controller, FIBLibrary.instance().retrieveFIBComponent(fibResource), addScrollBar);
+	public SelectionSynchronizedFIBView(Object representedObject, FlexoController controller, Resource fibResource,
+			LocalizedDelegate locales, boolean addScrollBar) {
+		this(representedObject, controller,
+				(controller != null ? controller.getApplicationFIBLibraryService().retrieveFIBComponent(fibResource)
+						: ApplicationFIBLibraryImpl.instance().retrieveFIBComponent(fibResource)),
+				locales, addScrollBar);
 	}
 
-	// REMOVED as we should only use Resource everywhere
-	/*
-		public SelectionSynchronizedFIBView(Object representedObject, FlexoController controller, String fibResourcePath, FlexoProgress progress) {
-			this(representedObject, controller, fibResourcePath, false, progress);
-		}
-		public SelectionSynchronizedFIBView(Object representedObject, FlexoController controller, String fibResourcePath) {
-			this(representedObject, controller, fibResourcePath, false, controller != null ? controller.willLoad(fibResourcePath) : null);
-		}
-
-		public SelectionSynchronizedFIBView(Object representedObject, FlexoController controller, String fibResourcePath, boolean addScrollBar,
-				FlexoProgress progress) {
-			this(representedObject, controller, FIBLibrary.instance().retrieveFIBComponent(ResourceLocator.locateResource(fibResourcePath)), addScrollBar, progress);
-		}
-	 */
-
 	protected SelectionSynchronizedFIBView(Object representedObject, FlexoController controller, FIBComponent fibComponent,
-			boolean addScrollBar) {
-		super(representedObject, controller, fibComponent, addScrollBar);
+			LocalizedDelegate locales, boolean addScrollBar) {
+		super(representedObject, controller, fibComponent, locales, addScrollBar);
 		getFIBView().getController().addSelectionListener(this);
 		if (controller != null && controller.getSelectionManager() != null) {
+			logger.fine("Added selection manager for " + getClass().getSimpleName());
 			controller.getSelectionManager().addToSelectionListeners(this);
 		}
-		// Fixed CORE-101 FlexoConceptView does not display FlexoConcept at creation
-		// SGU: I don't like this design, but i don't see other solutions unless getting deeply in the code: not enough time yet
-		getFIBView().getController().objectAddedToSelection(representedObject);
 	}
 
 	@Override
 	public void deleteView() {
-		FIBView aFibView = getFIBView();
+		FIBView<?, ?> aFibView = getFIBView();
 		FIBController aController = null;
 		if (aFibView != null) {
 			aController = aFibView.getController();
@@ -193,7 +183,7 @@ public class SelectionSynchronizedFIBView extends FlexoFIBView implements Select
 		if (selection == null) {
 			return;
 		}
-		Vector<FlexoObject> newSelection = new Vector<FlexoObject>();
+		Vector<FlexoObject> newSelection = new Vector<>();
 		for (Object o : selection) {
 			if (o instanceof FlexoObject) {
 				newSelection.add(getRelevantObject((FlexoObject) o));
@@ -217,7 +207,7 @@ public class SelectionSynchronizedFIBView extends FlexoFIBView implements Select
 	 * @param object
 	 * @return
 	 */
-	private FlexoObject getRelevantObject(FlexoObject object) {
+	private static FlexoObject getRelevantObject(FlexoObject object) {
 		if (object instanceof FlexoResource<?> && ((FlexoResource<?>) object).isLoaded()) {
 			try {
 				return (FlexoObject) ((FlexoResource<?>) object).getResourceData(null);

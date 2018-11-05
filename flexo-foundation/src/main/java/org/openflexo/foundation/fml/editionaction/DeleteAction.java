@@ -39,6 +39,7 @@
 package org.openflexo.foundation.fml.editionaction;
 
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Type;
 import java.util.logging.Logger;
 
 import org.openflexo.connie.DataBinding;
@@ -49,7 +50,10 @@ import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.fml.FMLRepresentationContext;
 import org.openflexo.foundation.fml.FMLRepresentationContext.FMLRepresentationOutput;
 import org.openflexo.foundation.fml.FlexoProperty;
+import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
 import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
+import org.openflexo.foundation.resource.FlexoResource;
+import org.openflexo.foundation.resource.ResourceData;
 import org.openflexo.model.annotations.DefineValidationRule;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ImplementationClass;
@@ -62,7 +66,7 @@ import org.openflexo.model.annotations.XMLElement;
 @ModelEntity
 @ImplementationClass(DeleteAction.DeleteActionImpl.class)
 @XMLElement
-public interface DeleteAction<T extends FlexoObject> extends EditionAction {
+public interface DeleteAction<T extends FlexoObject> extends EditionAction, AssignableAction<T> {
 
 	@PropertyIdentifier(type = DataBinding.class)
 	public static final String OBJECT_KEY = "object";
@@ -74,9 +78,10 @@ public interface DeleteAction<T extends FlexoObject> extends EditionAction {
 	@Setter(OBJECT_KEY)
 	public void setObject(DataBinding<T> object);
 
-	public FlexoProperty<?> getAssignedFlexoProperty();
+	@Override
+	public FlexoProperty<T> getAssignedFlexoProperty();
 
-	public static abstract class DeleteActionImpl<T extends FlexoObject> extends EditionActionImpl implements DeleteAction<T> {
+	public static abstract class DeleteActionImpl<T extends FlexoObject> extends AssignableActionImpl<T> implements DeleteAction<T> {
 
 		private static final Logger logger = Logger.getLogger(DeleteAction.class.getPackage().getName());
 
@@ -85,11 +90,11 @@ public interface DeleteAction<T extends FlexoObject> extends EditionAction {
 		@Override
 		public String getFMLRepresentation(FMLRepresentationContext context) {
 			FMLRepresentationOutput out = new FMLRepresentationOutput(context);
-			out.append("delete " + getObject().toString(), context);
+			out.append(getObject().toString() + ".delete()" + ";", context);
 			return out.toString();
 		}
 
-		public Object getDeclaredObject(FlexoBehaviourAction action) {
+		public Object getDeclaredObject(FlexoBehaviourAction<?, ?, ?> action) {
 			try {
 				return getObject().getBindingValue(action);
 			} catch (TypeMismatchException e) {
@@ -105,7 +110,7 @@ public interface DeleteAction<T extends FlexoObject> extends EditionAction {
 		@Override
 		public DataBinding<T> getObject() {
 			if (object == null) {
-				object = new DataBinding<T>(this, FlexoObject.class, BindingDefinitionType.GET);
+				object = new DataBinding<>(this, FlexoObject.class, BindingDefinitionType.GET);
 				object.setBindingName("object");
 			}
 			return object;
@@ -120,21 +125,23 @@ public interface DeleteAction<T extends FlexoObject> extends EditionAction {
 				object.setBindingDefinitionType(BindingDefinitionType.GET);
 			}
 			this.object = object;
+			notifiedBindingChanged(object);
 		}
 
 		@Override
-		public FlexoProperty<?> getAssignedFlexoProperty() {
+		public FlexoProperty<T> getAssignedFlexoProperty() {
 			if (getFlexoConcept() == null) {
 				return null;
 			}
-			return getFlexoConcept().getAccessibleProperty(getObject().toString());
+			return (FlexoProperty) getFlexoConcept().getAccessibleProperty(getObject().toString());
 		}
 
 		@Override
-		public T execute(FlexoBehaviourAction action) {
+		public T execute(RunTimeEvaluationContext evaluationContext) {
+
 			T objectToDelete = null;
 			try {
-				objectToDelete = getObject().getBindingValue(action);
+				objectToDelete = getObject().getBindingValue(evaluationContext);
 			} catch (TypeMismatchException e1) {
 				e1.printStackTrace();
 			} catch (NullReferenceException e1) {
@@ -142,12 +149,25 @@ public interface DeleteAction<T extends FlexoObject> extends EditionAction {
 			} catch (InvocationTargetException e1) {
 				e1.printStackTrace();
 			}
+
 			if (objectToDelete == null) {
 				return null;
 			}
 			try {
+
+				FlexoResource<?> resourceToDelete = null;
+				if (objectToDelete instanceof ResourceData) {
+					resourceToDelete = ((ResourceData<?>) objectToDelete).getResource();
+				}
+
 				logger.info("Delete object " + objectToDelete + " for object " + getObject() + " this=" + this);
 				objectToDelete.delete();
+
+				if (resourceToDelete != null) {
+					logger.info("Also delete resource " + resourceToDelete);
+					resourceToDelete.delete();
+				}
+
 			} catch (Exception e) {
 				logger.warning("Unexpected exception occured during deletion: " + e.getMessage());
 				e.printStackTrace();
@@ -155,6 +175,15 @@ public interface DeleteAction<T extends FlexoObject> extends EditionAction {
 			return objectToDelete;
 		}
 
+		@Override
+		public Type getInferedType() {
+			return Void.class;
+		}
+
+		@Override
+		public Type getAssignableType() {
+			return Object.class;
+		}
 	}
 
 	@DefineValidationRule

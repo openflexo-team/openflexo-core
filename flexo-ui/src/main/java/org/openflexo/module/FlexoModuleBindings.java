@@ -52,7 +52,7 @@ public abstract class FlexoModuleBindings extends AbstractModule {
 
 	public abstract <T extends FlexoController> Class<T> getFlexoControllerClass();
 
-	public abstract <T extends FlexoModule> Class<T> getFlexoModuleClass();
+	public abstract <T extends FlexoModule<?>> Class<T> getFlexoModuleClass();
 
 	public abstract <T extends FlexoMenuBar> Class<T> getMenuBarClass();
 

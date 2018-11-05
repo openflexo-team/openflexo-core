@@ -46,16 +46,15 @@ import org.openflexo.ApplicationContext;
 import org.openflexo.components.wizard.WizardStep;
 import org.openflexo.foundation.fml.FMLObject;
 import org.openflexo.foundation.fml.FlexoConceptObject;
-import org.openflexo.foundation.fml.ViewPoint;
+import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.action.AbstractCreateFlexoProperty;
+import org.openflexo.foundation.fml.action.AbstractCreateFlexoRole;
 import org.openflexo.foundation.fml.action.CreateAbstractProperty;
 import org.openflexo.foundation.fml.action.CreateExpressionProperty;
-import org.openflexo.foundation.fml.action.CreateFlexoRole;
 import org.openflexo.foundation.fml.action.CreateGetSetProperty;
 import org.openflexo.icon.FMLIconLibrary;
 import org.openflexo.icon.IconFactory;
 import org.openflexo.icon.IconLibrary;
-import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.toolbox.StringUtils;
 import org.openflexo.view.controller.FlexoController;
 
@@ -66,21 +65,20 @@ import org.openflexo.view.controller.FlexoController;
  * 
  * @param <A>
  * @see CreateAbstractProperty
- * @see CreateFlexoRole
+ * @see AbstractCreateFlexoRole
  * @see CreateExpressionProperty
  * @see CreateGetSetProperty
  */
-public abstract class AbstractCreateFlexoPropertyWizard<A extends AbstractCreateFlexoProperty<A>> extends
-		AbstractCreateFMLElementWizard<A, FlexoConceptObject, FMLObject> {
+public abstract class AbstractCreateFlexoPropertyWizard<A extends AbstractCreateFlexoProperty<A>>
+		extends AbstractCreateFMLElementWizard<A, FlexoConceptObject, FMLObject> {
 
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(AbstractCreateFlexoPropertyWizard.class.getPackage().getName());
 
-	private static final String DUPLICATED_NAME = FlexoLocalization.localizedForKey("this_name_is_already_used_please_choose_an_other_one");
-	private static final String EMPTY_NAME = FlexoLocalization.localizedForKey("flexo_property_must_have_an_non_empty_and_unique_name");
-	private static final String RECOMMANDED_DESCRIPTION = FlexoLocalization.localizedForKey("it_is_recommanded_to_describe_flexo_property");
-	private static final String DISCOURAGED_NAME = FlexoLocalization
-			.localizedForKey("name_is_discouraged_by_convention_property_name_usually_start_with_a_lowercase_letter");
+	private static final String DUPLICATED_NAME = "this_name_is_already_used_please_choose_an_other_one";
+	private static final String EMPTY_NAME = "flexo_property_must_have_an_non_empty_and_unique_name";
+	private static final String RECOMMANDED_DESCRIPTION = "it_is_recommanded_to_describe_flexo_property";
+	private static final String DISCOURAGED_NAME = "name_is_discouraged_by_convention_property_name_usually_start_with_a_lowercase_letter";
 
 	private final DescribeProperty describeProperty;
 
@@ -123,30 +121,32 @@ public abstract class AbstractCreateFlexoPropertyWizard<A extends AbstractCreate
 			return AbstractCreateFlexoPropertyWizard.this.getAction();
 		}
 
-		public ViewPoint getViewPoint() {
-			return AbstractCreateFlexoPropertyWizard.this.getViewPoint();
+		public VirtualModel getVirtualModel() {
+			return AbstractCreateFlexoPropertyWizard.this.getVirtualModel();
 		}
 
 		@Override
 		public String getTitle() {
-			return FlexoLocalization.localizedForKey("describe_property");
+			return getAction().getLocales().localizedForKey("describe_property");
 		}
 
 		@Override
 		public boolean isValid() {
 
 			if (StringUtils.isEmpty(getPropertyName())) {
-				setIssueMessage(EMPTY_NAME, IssueMessageType.ERROR);
+				setIssueMessage(getAction().getLocales().localizedForKey(EMPTY_NAME), IssueMessageType.ERROR);
 				return false;
-			} else if (getFlexoConcept().getDeclaredProperty(getPropertyName()) != null) {
-				setIssueMessage(DUPLICATED_NAME, IssueMessageType.ERROR);
+			}
+			else if (getFlexoConcept().getDeclaredProperty(getPropertyName()) != null) {
+				setIssueMessage(getAction().getLocales().localizedForKey(DUPLICATED_NAME), IssueMessageType.ERROR);
 				return false;
-			} else if (StringUtils.isEmpty(getDescription())) {
-				setIssueMessage(RECOMMANDED_DESCRIPTION, IssueMessageType.WARNING);
+			}
+			else if (StringUtils.isEmpty(getDescription())) {
+				setIssueMessage(getAction().getLocales().localizedForKey(RECOMMANDED_DESCRIPTION), IssueMessageType.WARNING);
 			}
 
 			if (!getPropertyName().substring(0, 1).toLowerCase().equals(getPropertyName().substring(0, 1))) {
-				setIssueMessage(DISCOURAGED_NAME, IssueMessageType.WARNING);
+				setIssueMessage(getAction().getLocales().localizedForKey(DISCOURAGED_NAME), IssueMessageType.WARNING);
 			}
 
 			return true;

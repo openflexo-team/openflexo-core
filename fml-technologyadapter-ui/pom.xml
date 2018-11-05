@@ -4,11 +4,10 @@
 	<parent>
 		<groupId>org.openflexo</groupId>
 		<artifactId>openflexo-core</artifactId>
-        <version>1.7.1-SNAPSHOT</version>
+        <version>1.9.0</version>
 	</parent>
 	<artifactId>fml-technologyadapter-ui</artifactId>
-  <version>1.7.1-SNAPSHOT</version>
-	<name>FML technology adapter : UI layer</name>
+	<name>FML-UI</name>
 	<build>
 		<plugins>
 			<plugin>
@@ -31,30 +30,38 @@
 			<groupId>org.openflexo</groupId>
 			<artifactId>flexo-ui</artifactId>
 		</dependency>
-		<dependency>
+		<!--  <dependency>
 			<groupId>org.openflexo</groupId>
 			<artifactId>flexo-ui</artifactId>
 			<classifier>tests</classifier>
 			<scope>test</scope>
-		</dependency>
+		</dependency>-->
 		<dependency>
+			<groupId>org.openflexo</groupId>
+			<artifactId>flexo-ontology-ui</artifactId>
+		</dependency>
+		<!--  <dependency>
 			<groupId>org.openflexo</groupId>
 			<artifactId>gina-core</artifactId>
 			<classifier>tests</classifier>
 			<scope>test</scope>
-		</dependency>
+		</dependency>-->
 		<dependency>
 			<groupId>org.openflexo</groupId>
-			<artifactId>flexoutils</artifactId>
-			<classifier>tests</classifier>
-			<scope>test</scope>
+			<artifactId>testutils</artifactId>
 		</dependency>
-		<dependency>
+		<!--  <dependency>
 			<groupId>org.openflexo</groupId>
 			<artifactId>flexo-foundation</artifactId>
 			<classifier>tests</classifier>
 			<scope>test</scope>
 		</dependency>
+        <dependency>
+            <groupId>org.openflexo</groupId>
+            <artifactId>gina-swing</artifactId>
+            <classifier>tests</classifier>
+            <scope>test</scope>
+        </dependency> -->
 	</dependencies>
 </project>
 

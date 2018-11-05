@@ -46,7 +46,7 @@ import org.openflexo.foundation.fml.FMLRepresentationContext;
 import org.openflexo.foundation.fml.FMLRepresentationContext.FMLRepresentationOutput;
 import org.openflexo.foundation.fml.binding.ControlGraphBindingModel;
 import org.openflexo.foundation.fml.binding.DeclarationActionBindingModel;
-import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
+import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
@@ -81,9 +81,9 @@ public interface DeclarationAction<T> extends AbstractAssignationAction<T> {
 		private ControlGraphBindingModel<?> inferedBindingModel = null;
 
 		@Override
-		public T execute(FlexoBehaviourAction action) throws FlexoException {
-			T value = getAssignationValue(action);
-			action.declareVariable(getVariableName(), value);
+		public T execute(RunTimeEvaluationContext evaluationContext) throws FlexoException {
+			T value = getAssignationValue(evaluationContext);
+			evaluationContext.declareVariable(getVariableName(), value);
 			return value;
 		}
 
@@ -102,7 +102,7 @@ public interface DeclarationAction<T> extends AbstractAssignationAction<T> {
 		@Override
 		public String getFMLRepresentation(FMLRepresentationContext context) {
 			FMLRepresentationOutput out = new FMLRepresentationOutput(context);
-			out.append(getFullQualifiedDeclarationTypeAsString() + " " + getVariableName() + " = "
+			out.append(getDeclarationTypeAsString() + " " + getVariableName() + " = "
 					+ (getAssignableAction() != null ? getAssignableAction().getFMLRepresentation() : "") + ";", context);
 			return out.toString();
 		}
@@ -112,29 +112,25 @@ public interface DeclarationAction<T> extends AbstractAssignationAction<T> {
 			if (getAssignableAction() != null) {
 				return getHeaderContext() + getDeclarationTypeAsString() + " " + getVariableName() + " = "
 						+ getAssignableAction().getStringRepresentation();
-			} else {
-				return getHeaderContext() + getDeclarationTypeAsString() + " " + getVariableName() + " = ???";
 			}
+			return getHeaderContext() + getDeclarationTypeAsString() + " " + getVariableName() + " = ???";
 		}
 
 		@Override
 		public String getDeclarationTypeAsString() {
 			if (getAssignableAction() != null) {
 				return TypeUtils.simpleRepresentation(getAssignableAction().getAssignableType());
-			} else {
-				return "null";
 			}
+			return "null";
 		}
 
 		@Override
 		public String getFullQualifiedDeclarationTypeAsString() {
 			if (getAssignableAction() != null) {
 				return TypeUtils.fullQualifiedRepresentation(getAssignableAction().getAssignableType());
-			} else {
-				return "null";
 			}
+			return "null";
 		}
-
 	}
 
 	// @DefineValidationRule

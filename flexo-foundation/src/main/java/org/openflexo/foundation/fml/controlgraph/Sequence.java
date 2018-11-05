@@ -38,17 +38,22 @@
 
 package org.openflexo.foundation.fml.controlgraph;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.openflexo.connie.BindingModel;
+import org.openflexo.connie.type.ExplicitNullType;
+import org.openflexo.connie.type.TypeUtils;
 import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.fml.FMLRepresentationContext;
 import org.openflexo.foundation.fml.FMLRepresentationContext.FMLRepresentationOutput;
 import org.openflexo.foundation.fml.editionaction.AssignableAction;
-import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
+import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
+import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext.ReturnException;
 import org.openflexo.model.annotations.CloningStrategy;
 import org.openflexo.model.annotations.CloningStrategy.StrategyType;
+import org.openflexo.model.annotations.DefineValidationRule;
 import org.openflexo.model.annotations.Embedded;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ImplementationClass;
@@ -56,6 +61,9 @@ import org.openflexo.model.annotations.ModelEntity;
 import org.openflexo.model.annotations.PropertyIdentifier;
 import org.openflexo.model.annotations.Setter;
 import org.openflexo.model.annotations.XMLElement;
+import org.openflexo.model.validation.ValidationError;
+import org.openflexo.model.validation.ValidationIssue;
+import org.openflexo.model.validation.ValidationRule;
 import org.openflexo.toolbox.StringUtils;
 
 /**
@@ -148,7 +156,8 @@ public interface Sequence extends FMLControlGraph, FMLControlGraphOwner {
 
 			if (getControlGraph1() instanceof EmptyControlGraph) {
 				replaceWith(getControlGraph2(), owner, ownerContext);
-			} else if (getControlGraph2() instanceof EmptyControlGraph) {
+			}
+			else if (getControlGraph2() instanceof EmptyControlGraph) {
 				replaceWith(getControlGraph1(), owner, ownerContext);
 			}
 		}
@@ -157,7 +166,8 @@ public interface Sequence extends FMLControlGraph, FMLControlGraphOwner {
 		public FMLControlGraph getControlGraph(String ownerContext) {
 			if (CONTROL_GRAPH1_KEY.equals(ownerContext)) {
 				return getControlGraph1();
-			} else if (CONTROL_GRAPH2_KEY.equals(ownerContext)) {
+			}
+			else if (CONTROL_GRAPH2_KEY.equals(ownerContext)) {
 				return getControlGraph2();
 			}
 			return null;
@@ -168,7 +178,8 @@ public interface Sequence extends FMLControlGraph, FMLControlGraphOwner {
 
 			if (CONTROL_GRAPH1_KEY.equals(ownerContext)) {
 				setControlGraph1(controlGraph);
-			} else if (CONTROL_GRAPH2_KEY.equals(ownerContext)) {
+			}
+			else if (CONTROL_GRAPH2_KEY.equals(ownerContext)) {
 				setControlGraph2(controlGraph);
 			}
 		}
@@ -177,12 +188,14 @@ public interface Sequence extends FMLControlGraph, FMLControlGraphOwner {
 		public BindingModel getBaseBindingModel(FMLControlGraph controlGraph) {
 			if (controlGraph == getControlGraph1()) {
 				return getBindingModel();
-			} else if (controlGraph == getControlGraph2()) {
+			}
+			else if (controlGraph == getControlGraph2()) {
 				// If control graph 1 declares a new variable, this variable should be added
 				// to context of control graph 2 binding model
 				if (getControlGraph1() instanceof AssignableAction) {
 					return getControlGraph1().getInferedBindingModel();
-				} else {
+				}
+				else {
 					return getBindingModel();
 				}
 
@@ -193,15 +206,17 @@ public interface Sequence extends FMLControlGraph, FMLControlGraphOwner {
 
 		@Override
 		public List<FMLControlGraph> getFlattenedSequence() {
-			List<FMLControlGraph> returned = new ArrayList<FMLControlGraph>();
+			List<FMLControlGraph> returned = new ArrayList<>();
 			if (getControlGraph1() instanceof Sequence) {
 				returned.addAll(((Sequence) getControlGraph1()).getFlattenedSequence());
-			} else {
+			}
+			else if (getControlGraph1() != null) {
 				returned.add(getControlGraph1());
 			}
 			if (getControlGraph2() instanceof Sequence) {
 				returned.addAll(((Sequence) getControlGraph2()).getFlattenedSequence());
-			} else {
+			}
+			else if (getControlGraph2() != null) {
 				returned.add(getControlGraph2());
 			}
 			return returned;
@@ -215,22 +230,25 @@ public interface Sequence extends FMLControlGraph, FMLControlGraphOwner {
 				if (!isFirst) {
 					out.append(StringUtils.LINE_SEPARATOR, context);
 				}
-				out.append(cg.getFMLRepresentation(context), context);
+				if (cg != null) {
+					out.append(cg.getFMLRepresentation(context), context);
+				}
 				isFirst = false;
 			}
 			return out.toString();
 		}
 
 		@Override
-		public Object execute(FlexoBehaviourAction<?, ?, ?> action) throws FlexoException {
-			getControlGraph1().execute(action);
-			getControlGraph2().execute(action);
+		public Object execute(RunTimeEvaluationContext evaluationContext) throws ReturnException, FlexoException {
+			getControlGraph1().execute(evaluationContext);
+			getControlGraph2().execute(evaluationContext);
 			return null;
 		}
 
 		@Override
 		public void setOwner(FMLControlGraphOwner owner) {
-			performSuperSetter(OWNER_KEY, owner);
+			super.setOwner(owner);
+
 			if (getControlGraph1() != null) {
 
 				// System.out.println("WAS: " + getControlGraph1().getInferedBindingModel());
@@ -246,15 +264,132 @@ public interface Sequence extends FMLControlGraph, FMLControlGraphOwner {
 
 				/*if (getBaseBindingModel(getControlGraph2()) != getInferedBindingModel()) {
 					System.out.println("Ya un pb la !!!!");
-
+				
 					if (getBaseBindingModel(getControlGraph2()) == getControlGraph1().getInferedBindingModel()) {
 						System.out.println("c'est bien ca, c'est un " + getControlGraph1().getInferedBindingModel().getClass());
 						System.out.println("Base BM = " + getControlGraph1().getInferedBindingModel().getBaseBindingModel());
 					}
-
+				
 					// System.exit(-1);
 				}*/
 			}
 		}
+
+		@Override
+		public Type getInferedType() {
+			if (getControlGraph1() == null) {
+				return Void.class;
+			}
+			Type inferedType1 = getControlGraph1().getInferedType();
+			if (getControlGraph2() == null) {
+				return inferedType1;
+			}
+			Type inferedType2 = getControlGraph2().getInferedType();
+			if (inferedType1.equals(Void.class)) {
+				return inferedType2;
+			}
+
+			if (inferedType2.equals(Void.class)) {
+				return inferedType1;
+			}
+
+			if (inferedType1 instanceof ExplicitNullType) {
+				if (inferedType2 instanceof ExplicitNullType) {
+					return ExplicitNullType.INSTANCE;
+				}
+				return inferedType2;
+			}
+
+			if (inferedType2 instanceof ExplicitNullType) {
+				return inferedType1;
+			}
+
+			if (TypeUtils.isTypeAssignableFrom(inferedType1, inferedType2)) {
+				return inferedType1;
+			}
+
+			if (TypeUtils.isTypeAssignableFrom(inferedType2, inferedType1)) {
+				return inferedType2;
+			}
+
+			return Void.class;
+		}
+
+		@Override
+		public void accept(FMLControlGraphVisitor visitor) {
+			visitor.visit(this);
+			if (getControlGraph1() != null) {
+				getControlGraph1().accept(visitor);
+			}
+			if (getControlGraph2() != null) {
+				getControlGraph2().accept(visitor);
+			}
+		}
+
 	}
+
+	@DefineValidationRule
+	public static class ControlGraph1IsRequired extends ValidationRule<ControlGraph1IsRequired, Sequence> {
+		public ControlGraph1IsRequired() {
+			super(Sequence.class, "sequence_must_contain_first_control_graph");
+		}
+
+		@Override
+		public ValidationIssue<ControlGraph1IsRequired, Sequence> applyValidation(Sequence sequence) {
+
+			if (sequence.getControlGraph1() == null) {
+				System.err.println("Missing control graph for " + sequence);
+				System.err.println(sequence.getRootOwner().getFMLRepresentation());
+				return new ValidationError<>(this, sequence, "missing_control_graph_(first_statement)");
+			}
+			return null;
+		}
+	}
+
+	@DefineValidationRule
+	public static class ControlGraph2IsRequired extends ValidationRule<ControlGraph2IsRequired, Sequence> {
+		public ControlGraph2IsRequired() {
+			super(Sequence.class, "sequence_must_contain_first_control_graph");
+		}
+
+		@Override
+		public ValidationIssue<ControlGraph2IsRequired, Sequence> applyValidation(Sequence sequence) {
+
+			if (sequence.getControlGraph2() == null) {
+				System.err.println("Missing control graph for " + sequence);
+				System.err.println(sequence.getRootOwner().getFMLRepresentation());
+				return new ValidationError<>(this, sequence, "missing_control_graph_(second_statement)");
+			}
+			return null;
+		}
+	}
+
+	@DefineValidationRule
+	public static class InferedTypesMustBeCompatible extends ValidationRule<InferedTypesMustBeCompatible, Sequence> {
+		public InferedTypesMustBeCompatible() {
+			super(Sequence.class, "infered_types_must_be_compatible_in_a_sequence");
+		}
+
+		@Override
+		public ValidationIssue<InferedTypesMustBeCompatible, Sequence> applyValidation(Sequence sequence) {
+
+			if (sequence.getControlGraph1() == null || sequence.getControlGraph2() == null) {
+				return null;
+			}
+
+			Type inferedType1 = sequence.getControlGraph1().getInferedType();
+			Type inferedType2 = sequence.getControlGraph2().getInferedType();
+
+			if (!(inferedType1.equals(Void.class)) && !(inferedType2.equals(Void.class))
+					&& !TypeUtils.isTypeAssignableFrom(inferedType1, inferedType2)
+					&& !TypeUtils.isTypeAssignableFrom(inferedType2, inferedType1)) {
+				System.out.println("Types are not compatible in:");
+				System.out.println(sequence.getFMLRepresentation());
+				return new ValidationError<>(this, sequence, "types_are_not_compatible (" + TypeUtils.simpleRepresentation(inferedType1)
+						+ " and " + TypeUtils.simpleRepresentation(inferedType2) + ")");
+			}
+			return null;
+		}
+	}
+
 }

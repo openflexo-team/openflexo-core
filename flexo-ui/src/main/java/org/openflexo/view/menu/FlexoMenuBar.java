@@ -51,23 +51,20 @@ import org.openflexo.view.controller.FlexoController;
  * 
  * @author sguerin
  */
+@SuppressWarnings("serial")
 public abstract class FlexoMenuBar extends JMenuBar {
 
 	public static final String KEY_PRESSED = "KeyPressed";
 
 	protected FlexoController _controller;
 
-	private FileMenu _fileMenu = null;
+	private FileMenu fileMenu = null;
+	private EditMenu editMenu = null;
+	protected WindowMenu windowMenu = null;
+	private ToolsMenu toolsMenu = null;
+	private HelpMenu helpMenu = null;
 
-	private EditMenu _editMenu = null;
-
-	protected WindowMenu _windowMenu = null;
-
-	private ToolsMenu _toolsMenu = null;
-
-	private HelpMenu _helpMenu = null;
-
-	public FlexoMenuBar(FlexoController controller, Module module) {
+	public FlexoMenuBar(FlexoController controller, Module<?> module) {
 		super();
 		_controller = controller;
 		add(getFileMenu(controller));
@@ -104,10 +101,10 @@ public abstract class FlexoMenuBar extends JMenuBar {
 	 * @return a FileMenu instance
 	 */
 	public FileMenu getFileMenu(FlexoController controller) {
-		if (_fileMenu == null) {
-			_fileMenu = new FileMenu(_controller);
+		if (fileMenu == null) {
+			fileMenu = new FileMenu(_controller);
 		}
-		return _fileMenu;
+		return fileMenu;
 	}
 
 	/**
@@ -117,10 +114,10 @@ public abstract class FlexoMenuBar extends JMenuBar {
 	 * @return a EditMenu instance
 	 */
 	public EditMenu getEditMenu(FlexoController controller) {
-		if (_editMenu == null) {
-			_editMenu = new EditMenu(_controller);
+		if (editMenu == null) {
+			editMenu = new EditMenu(_controller);
 		}
-		return _editMenu;
+		return editMenu;
 	}
 
 	/**
@@ -132,11 +129,11 @@ public abstract class FlexoMenuBar extends JMenuBar {
 	 *            TODO
 	 * @return a WindowMenu instance
 	 */
-	public WindowMenu getWindowMenu(FlexoController controller, Module module) {
-		if (_windowMenu == null) {
-			_windowMenu = new WindowMenu(controller, module);
+	public WindowMenu getWindowMenu(FlexoController controller, Module<?> module) {
+		if (windowMenu == null) {
+			windowMenu = new WindowMenu(controller, module);
 		}
-		return _windowMenu;
+		return windowMenu;
 	}
 
 	/**
@@ -148,7 +145,7 @@ public abstract class FlexoMenuBar extends JMenuBar {
 	 * @return a WindowMenu instance
 	 */
 	public WindowMenu getWindowMenu() {
-		return _windowMenu;
+		return windowMenu;
 	}
 
 	/**
@@ -159,10 +156,10 @@ public abstract class FlexoMenuBar extends JMenuBar {
 	 * @return a ToolsMenu instance
 	 */
 	public ToolsMenu getToolsMenu(FlexoController controller) {
-		if (_toolsMenu == null) {
-			_toolsMenu = new ToolsMenu(controller);
+		if (toolsMenu == null) {
+			toolsMenu = new ToolsMenu(controller);
 		}
-		return _toolsMenu;
+		return toolsMenu;
 	}
 
 	/**
@@ -172,10 +169,10 @@ public abstract class FlexoMenuBar extends JMenuBar {
 	 * @return a HelpMenu instance
 	 */
 	public HelpMenu getHelpMenu(FlexoController controller) {
-		if (_helpMenu == null) {
-			_helpMenu = new HelpMenu(controller);
+		if (helpMenu == null) {
+			helpMenu = new HelpMenu(controller);
 		}
-		return _helpMenu;
+		return helpMenu;
 	}
 
 	/*@Override

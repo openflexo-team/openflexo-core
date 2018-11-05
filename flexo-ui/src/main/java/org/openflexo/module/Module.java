@@ -52,6 +52,7 @@ import org.openflexo.foundation.task.Progress;
 import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.localization.Language;
 import org.openflexo.prefs.ModulePreferences;
+import org.openflexo.toolbox.PropertyChangedSupportDefaultImplementation;
 
 /**
  * Represents a Module in Openflexo intrastructure. A module is a software component.
@@ -62,7 +63,7 @@ import org.openflexo.prefs.ModulePreferences;
  * @author sguerin
  * 
  */
-public abstract class Module<M extends FlexoModule<M>> {
+public abstract class Module<M extends FlexoModule<M>> extends PropertyChangedSupportDefaultImplementation {
 
 	private static final Logger logger = Logger.getLogger(Module.class.getPackage().getName());
 
@@ -164,16 +165,12 @@ public abstract class Module<M extends FlexoModule<M>> {
 		return notFoundNotified;
 	}
 
-	public String getLocalizedName() {
-		return FlexoLocalization.localizedForKey(getName());
-	}
-
 	public final String getDescription() {
 		return getName() + "_description";
 	}
 
 	public String getLocalizedDescription() {
-		return FlexoLocalization.localizedForKey(getDescription());
+		return FlexoLocalization.getMainLocalizer().localizedForKey(getDescription());
 	}
 
 	/**
@@ -184,7 +181,7 @@ public abstract class Module<M extends FlexoModule<M>> {
 		if (logger.isLoggable(Level.INFO)) {
 			logger.info("Registering module '" + getName() + "'");
 		}
-		Class[] constructorSigner;
+		Class<?>[] constructorSigner;
 		constructorSigner = new Class[1];
 		constructorSigner[0] = ApplicationContext.class;
 		try {
@@ -207,7 +204,7 @@ public abstract class Module<M extends FlexoModule<M>> {
 
 	@Override
 	public String toString() {
-		return getLocalizedName();
+		return getName();
 	}
 
 	public ApplicationContext getApplicationContext() {
@@ -228,8 +225,10 @@ public abstract class Module<M extends FlexoModule<M>> {
 			}
 		}
 
-		return "<html>No description available for <b>" + getLocalizedName() + "</b>" + "<br>"
-				+ "Please submit documentation in documentation resource center" + "<br>" + "</html>";
+		return getLocalizedDescription();
+
+		/*return "<html>No description available for <b>" + getLocalizedName() + "</b>" + "<br>"
+				+ "Please submit documentation in documentation resource center" + "<br>" + "</html>";*/
 	}
 
 	/**
@@ -237,7 +236,6 @@ public abstract class Module<M extends FlexoModule<M>> {
 	 * Default implementation does nothing
 	 */
 	public void initialize() {
-
 	}
 
 	/**
@@ -267,6 +265,8 @@ public abstract class Module<M extends FlexoModule<M>> {
 			getApplicationContext().getDocResourceManager().ensureHelpEntryForModuleHaveBeenCreated(loadedModuleInstance);
 		}
 
+		getPropertyChangeSupport().firePropertyChange("loaded", false, true);
+
 		return loadedModuleInstance;
 	}
 
@@ -293,13 +293,13 @@ public abstract class Module<M extends FlexoModule<M>> {
 	}*/
 
 	/*private class ModuleLoaderCallable implements Callable<FlexoModule> {
-
+	
 		private final FlexoModule module;
-
+	
 		public ModuleLoaderCallable(FlexoModule module) {
 			this.module = module;
 		}
-
+	
 		@Override
 		public FlexoModule call() throws Exception {
 			if (logger.isLoggable(Level.INFO)) {

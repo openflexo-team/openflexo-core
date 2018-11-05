@@ -45,28 +45,28 @@ import org.openflexo.drm.DocItem;
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.action.FlexoAction;
-import org.openflexo.foundation.action.FlexoActionType;
+import org.openflexo.foundation.action.FlexoActionFactory;
 
-public class RemoveRelatedToItem extends FlexoAction {
+public class RemoveRelatedToItem extends FlexoAction<RemoveRelatedToItem, FlexoObject, FlexoObject> {
 
-	public static FlexoActionType actionType = new FlexoActionType("remove_related_to_item", FlexoActionType.defaultGroup,
-			FlexoActionType.NORMAL_ACTION_TYPE) {
+	public static FlexoActionFactory<RemoveRelatedToItem, FlexoObject, FlexoObject> actionType = new FlexoActionFactory<RemoveRelatedToItem, FlexoObject, FlexoObject>(
+			"remove_related_to_item", FlexoActionFactory.defaultGroup, FlexoActionFactory.NORMAL_ACTION_TYPE) {
 
 		/**
 		 * Factory method
 		 */
 		@Override
-		public FlexoAction makeNewAction(FlexoObject focusedObject, Vector globalSelection, FlexoEditor editor) {
+		public RemoveRelatedToItem makeNewAction(FlexoObject focusedObject, Vector<FlexoObject> globalSelection, FlexoEditor editor) {
 			return new RemoveRelatedToItem(focusedObject, globalSelection, editor);
 		}
 
 		@Override
-		public boolean isVisibleForSelection(FlexoObject object, Vector globalSelection) {
+		public boolean isVisibleForSelection(FlexoObject object, Vector<FlexoObject> globalSelection) {
 			return true;
 		}
 
 		@Override
-		public boolean isEnabledForSelection(FlexoObject object, Vector globalSelection) {
+		public boolean isEnabledForSelection(FlexoObject object, Vector<FlexoObject> globalSelection) {
 			return object != null && object instanceof DocItem && globalSelection.size() > 0
 					&& globalSelection.firstElement() instanceof DocItem;
 		}
@@ -75,7 +75,7 @@ public class RemoveRelatedToItem extends FlexoAction {
 
 	private DocItem _docItemToRemove;
 
-	RemoveRelatedToItem(FlexoObject focusedObject, Vector globalSelection, FlexoEditor editor) {
+	private RemoveRelatedToItem(FlexoObject focusedObject, Vector<FlexoObject> globalSelection, FlexoEditor editor) {
 		super(actionType, focusedObject, globalSelection, editor);
 	}
 

@@ -44,14 +44,13 @@ import java.util.Vector;
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.FlexoObject.FlexoObjectImpl;
-import org.openflexo.foundation.action.FlexoActionType;
+import org.openflexo.foundation.action.FlexoActionFactory;
 import org.openflexo.foundation.action.FlexoGUIAction;
-import org.openflexo.localization.FlexoLocalization;
 
 public class HelpAction extends FlexoGUIAction<HelpAction, FlexoObject, FlexoObject> {
 
-	public static FlexoActionType<HelpAction, FlexoObject, FlexoObject> actionType = new FlexoActionType<HelpAction, FlexoObject, FlexoObject>(
-			"help", FlexoActionType.helpGroup) {
+	public static FlexoActionFactory<HelpAction, FlexoObject, FlexoObject> actionType = new FlexoActionFactory<HelpAction, FlexoObject, FlexoObject>(
+			"help", FlexoActionFactory.helpGroup) {
 
 		/**
 		 * Factory method
@@ -88,8 +87,7 @@ public class HelpAction extends FlexoGUIAction<HelpAction, FlexoObject, FlexoObj
 			 String extClassName = getFocusedObject().getClass().getName();
 			 StringTokenizer st = new StringTokenizer(extClassName,".");
 			 while (st.hasMoreTokens()) shortClassName = st.nextToken();*/
-			return FlexoLocalization.localizedForKey("help_on") + " "
-					+ FlexoLocalization.localizedForKey(getFocusedObject().getClass().getName());
+			return getLocales().localizedForKey("help_on") + " " + getLocales().localizedForKey(getFocusedObject().getClass().getName());
 		}
 		return null;
 	}

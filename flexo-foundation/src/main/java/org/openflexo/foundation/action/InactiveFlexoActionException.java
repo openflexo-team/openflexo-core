@@ -46,11 +46,11 @@ import org.openflexo.foundation.FlexoObject;
 
 public class InactiveFlexoActionException extends FlexoException {
 
-	private final FlexoActionType<?, ?, ?> actionType;
+	private final FlexoActionFactory<?, ?, ?> actionType;
 	private final FlexoObject focusedObject;
 	private final Vector<? extends FlexoObject> globalSelection;
 
-	public InactiveFlexoActionException(FlexoActionType<?, ?, ?> actionType, FlexoObject focusedObject,
+	public InactiveFlexoActionException(FlexoActionFactory<?, ?, ?> actionType, FlexoObject focusedObject,
 			Vector<? extends FlexoObject> globalSelection) {
 		super("Action " + actionType + " is not active for " + focusedObject + " and " + globalSelection);
 		this.actionType = actionType;
@@ -58,7 +58,7 @@ public class InactiveFlexoActionException extends FlexoException {
 		this.globalSelection = globalSelection;
 	}
 
-	public FlexoActionType<?, ?, ?> getActionType() {
+	public FlexoActionFactory<?, ?, ?> getActionType() {
 		return actionType;
 	}
 

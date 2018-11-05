@@ -42,9 +42,9 @@ package org.openflexo.components;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.openflexo.fib.controller.FIBController.Status;
-import org.openflexo.fib.controller.FIBDialog;
 import org.openflexo.foundation.FlexoProject;
+import org.openflexo.gina.controller.FIBController.Status;
+import org.openflexo.gina.swing.utils.JFIBDialog;
 import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.rm.Resource;
 import org.openflexo.rm.ResourceLocator;
@@ -63,30 +63,30 @@ public class SaveProjectsDialog {
 	private final ProjectList data;
 
 	public static class ProjectList extends PropertyChangedSupportDefaultImplementation {
-		private final List<FlexoProject> projects;
-		private List<FlexoProject> selected;
+		private final List<FlexoProject<?>> projects;
+		private List<FlexoProject<?>> selected;
 
-		public ProjectList(List<FlexoProject> projects) {
+		public ProjectList(List<FlexoProject<?>> projects) {
 			this.projects = projects;
-			this.selected = new ArrayList<FlexoProject>(projects);
+			this.selected = new ArrayList<>(projects);
 		}
 
-		public List<FlexoProject> getProjects() {
+		public List<FlexoProject<?>> getProjects() {
 			return projects;
 		}
 
-		public List<FlexoProject> getSelected() {
+		public List<FlexoProject<?>> getSelected() {
 			return selected;
 		}
 
-		public void setSelected(List<FlexoProject> selected) {
-			List<FlexoProject> old = this.selected;
+		public void setSelected(List<FlexoProject<?>> selected) {
+			List<FlexoProject<?>> old = this.selected;
 			this.selected = selected;
 			getPropertyChangeSupport().firePropertyChange("selected", old, selected);
 		}
 
 		public void selectAll() {
-			for (FlexoProject p : getProjects()) {
+			for (FlexoProject<?> p : getProjects()) {
 				if (!selected.contains(p)) {
 					selected.add(p);
 					getPropertyChangeSupport().firePropertyChange("selected", null, p);
@@ -95,7 +95,7 @@ public class SaveProjectsDialog {
 		}
 
 		public void deselectAll() {
-			for (FlexoProject p : getProjects()) {
+			for (FlexoProject<?> p : getProjects()) {
 				if (selected.contains(p)) {
 					selected.remove(p);
 					getPropertyChangeSupport().firePropertyChange("selected", p, null);
@@ -106,19 +106,20 @@ public class SaveProjectsDialog {
 
 	private boolean ok = false;
 
-	public SaveProjectsDialog(FlexoController controller, List<FlexoProject> modifiedProjects) {
+	public SaveProjectsDialog(FlexoController controller, List<FlexoProject<?>> modifiedProjects) {
 		data = new ProjectList(modifiedProjects);
-		FIBDialog<ProjectList> dialog = FIBDialog.instanciateDialog(FIB_FILE_NAME, data, FlexoFrame.getActiveFrame(), true,
-				FlexoLocalization.getMainLocalizer());
+		JFIBDialog<ProjectList> dialog = JFIBDialog.instanciateDialog(FIB_FILE_NAME, data,
+				controller.getApplicationContext().getApplicationFIBLibraryService().getApplicationFIBLibrary(),
+				FlexoFrame.getActiveFrame(), true, FlexoLocalization.getMainLocalizer());
 		if (dialog.getController() instanceof FlexoFIBController) {
 			((FlexoFIBController) dialog.getController()).setFlexoController(controller);
 		}
-		dialog.setTitle(FlexoLocalization.localizedForKey("project_has_unsaved_changes"));
+		dialog.setTitle(controller.getFlexoLocales().localizedForKey("project_has_unsaved_changes"));
 		dialog.showDialog();
 		ok = dialog.getController().getStatus() == Status.YES;
 	}
 
-	public List<FlexoProject> getSelectedProject() {
+	public List<FlexoProject<?>> getSelectedProject() {
 		return data.getSelected();
 	}
 

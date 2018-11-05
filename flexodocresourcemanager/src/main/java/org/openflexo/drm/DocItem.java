@@ -134,13 +134,13 @@ public class DocItem extends DRMObject {
 		super();
 		identifier = null;
 		inheritanceParentItem = null;
-		inheritanceChildItems = new Vector<DocItem>();
+		inheritanceChildItems = new Vector<>();
 		embeddingParentItem = null;
-		embeddingChildItems = new Vector<DocItem>();
-		relatedToItems = new Vector<DocItem>();
-		titles = new TreeMap<String, String>();
-		versions = new Vector<DocItemVersion>();
-		actions = new Vector<DocItemAction>();
+		embeddingChildItems = new Vector<>();
+		relatedToItems = new Vector<>();
+		titles = new TreeMap<>();
+		versions = new Vector<>();
+		actions = new Vector<>();
 	}
 
 	public static DocItem createDocItem(String anIdentifier, String aDescription, DocItemFolder folder, boolean isEmbedded) {
@@ -152,9 +152,7 @@ public class DocItem extends DRMObject {
 		logger.fine("Create DocItem " + anIdentifier + " in " + folder.getIdentifier());
 		DocItem returned = new DocItem();
 		returned.identifier = anIdentifier;
-		if (folder != null) {
-			folder.addToItems(returned);
-		}
+		folder.addToItems(returned);
 		returned._isEmbedded = isEmbedded;
 		returned._isHidden = true;
 		return returned;
@@ -167,21 +165,12 @@ public class DocItem extends DRMObject {
 	 */
 	@Override
 	public boolean delete(Object... context) {
-		Enumeration en = ((Vector) embeddingChildItems.clone()).elements();
-		while (en.hasMoreElements()) {
-			DocItem it = (DocItem) en.nextElement();
+		for (DocItem it : embeddingChildItems)
 			it.delete();
-		}
-		en = ((Vector) relatedToItems.clone()).elements();
-		while (en.hasMoreElements()) {
-			DocItem it = (DocItem) en.nextElement();
+		for (DocItem it : relatedToItems)
 			it.removeFromRelatedToItems(this);
-		}
-		en = ((Vector) inheritanceChildItems.clone()).elements();
-		while (en.hasMoreElements()) {
-			DocItem it = (DocItem) en.nextElement();
+		for (DocItem it : inheritanceChildItems)
 			it.removeFromInheritanceChildItems(this);
-		}
 		if (embeddingParentItem != null) {
 			embeddingParentItem.removeFromEmbeddingChildItems(this);
 		}
@@ -214,7 +203,7 @@ public class DocItem extends DRMObject {
 
 	public Vector<DocItem> getOrderedEmbeddingChildItems() {
 		if (embeddingItemsNeedsReordering) {
-			orderedEmbeddingChildItems = new Vector<DocItem>();
+			orderedEmbeddingChildItems = new Vector<>();
 			orderedEmbeddingChildItems.addAll(embeddingChildItems);
 			Collections.sort(orderedEmbeddingChildItems, DocItem.COMPARATOR);
 			embeddingItemsNeedsReordering = false;
@@ -277,12 +266,13 @@ public class DocItem extends DRMObject {
 	 * @return
 	 */
 	public Vector<DocItem> getDerivedInheritanceChildItems() {
-		Vector<DocItem> returned = new Vector<DocItem>();
-		for (Enumeration en = getInheritanceChildItems().elements(); en.hasMoreElements();) {
-			DocItem next = (DocItem) en.nextElement();
+		Vector<DocItem> returned = new Vector<>();
+		for (Enumeration<DocItem> en = getInheritanceChildItems().elements(); en.hasMoreElements();) {
+			DocItem next = en.nextElement();
 			if (!next.isPublished()) {
 				returned.addAll(next.getDerivedInheritanceChildItems());
-			} else {
+			}
+			else {
 				returned.add(next);
 			}
 		}
@@ -360,7 +350,7 @@ public class DocItem extends DRMObject {
 	}
 
 	public void _setTitles(Map<String, String> titles) {
-		this.titles = new TreeMap<String, String>(titles);
+		this.titles = new TreeMap<>(titles);
 	}
 
 	public void _setTitleForKey(String title, String languageId) {
@@ -514,29 +504,30 @@ public class DocItem extends DRMObject {
 		if (lastPendingAction != null
 				&& lastPendingAction.getVersion().getVersion().isGreaterThan(lastApprovedAction.getVersion().getVersion())) {
 			return AVAILABLE_NEWER_VERSION_PENDING;
-		} else {
+		}
+		else {
 			return AVAILABLE_UP_TO_DATE;
 		}
 	}
 
 	public String getLocalizedStatusForLanguage(Language language) {
 		switch (getStatusForLanguage(language)) {
-		case NO_DOCUMENTED:
-			return FlexoLocalization.localizedForKey("no_documentation");
-		case APPROVING_PENDING:
-			return FlexoLocalization.localizedForKey("approving_pending");
-		case AVAILABLE_NEWER_VERSION_PENDING:
-			return FlexoLocalization.localizedForKey("available_newer_version_pending");
-		case AVAILABLE_UP_TO_DATE:
-			return FlexoLocalization.localizedForKey("available_and_up_to_date");
-		default:
-			return "???";
+			case NO_DOCUMENTED:
+				return FlexoLocalization.getMainLocalizer().localizedForKey("no_documentation");
+			case APPROVING_PENDING:
+				return FlexoLocalization.getMainLocalizer().localizedForKey("approving_pending");
+			case AVAILABLE_NEWER_VERSION_PENDING:
+				return FlexoLocalization.getMainLocalizer().localizedForKey("available_newer_version_pending");
+			case AVAILABLE_UP_TO_DATE:
+				return FlexoLocalization.getMainLocalizer().localizedForKey("available_and_up_to_date");
+			default:
+				return "???";
 		}
 	}
 
 	public boolean hasBeenApproved() {
-		for (Enumeration en = getActions().elements(); en.hasMoreElements();) {
-			DocItemAction next = (DocItemAction) en.nextElement();
+		for (Enumeration<DocItemAction> en = getActions().elements(); en.hasMoreElements();) {
+			DocItemAction next = en.nextElement();
 			if (next.isApproved()) {
 				return true;
 			}
@@ -546,8 +537,8 @@ public class DocItem extends DRMObject {
 
 	public DocItemAction getLastApprovedActionForLanguage(Language language) {
 		DocItemAction returned = null;
-		for (Enumeration en = getActions().elements(); en.hasMoreElements();) {
-			DocItemAction next = (DocItemAction) en.nextElement();
+		for (Enumeration<DocItemAction> en = getActions().elements(); en.hasMoreElements();) {
+			DocItemAction next = en.nextElement();
 			if (/*next.getVersion().getLanguage() == language &&*/next.isApproved()) {
 				returned = next;
 			}
@@ -557,8 +548,8 @@ public class DocItem extends DRMObject {
 
 	public DocItemAction getLastPendingActionForLanguage(Language language) {
 		DocItemAction returned = null;
-		for (Enumeration en = getActions().elements(); en.hasMoreElements();) {
-			DocItemAction next = (DocItemAction) en.nextElement();
+		for (Enumeration<DocItemAction> en = getActions().elements(); en.hasMoreElements();) {
+			DocItemAction next = en.nextElement();
 			if (/*next.getVersion().getLanguage() == language &&*/next.isPending()) {
 				returned = next;
 			}
@@ -568,8 +559,8 @@ public class DocItem extends DRMObject {
 
 	public DocItemAction getLastActionForLanguage(Language language) {
 		DocItemAction returned = null;
-		for (Enumeration en = getActions().elements(); en.hasMoreElements();) {
-			DocItemAction next = (DocItemAction) en.nextElement();
+		for (Enumeration<DocItemAction> en = getActions().elements(); en.hasMoreElements();) {
+			DocItemAction next = en.nextElement();
 			// if (next.getVersion().getLanguage() == language) {
 			returned = next;
 			// }
@@ -602,9 +593,8 @@ public class DocItem extends DRMObject {
 					string2 = docItem2.getIdentifier();
 				}
 				return string1.compareTo(string2);
-			} else {
-				return docItem1.getIdentifier().compareTo(docItem2.getIdentifier());
 			}
+			return docItem1.getIdentifier().compareTo(docItem2.getIdentifier());
 		}
 
 	}
@@ -615,7 +605,7 @@ public class DocItem extends DRMObject {
 	// ==========================================================================
 
 	@DefineValidationRule
-	public static class DocumentationShouldBeUpToDate extends ValidationRule {
+	public static class DocumentationShouldBeUpToDate<R extends ValidationRule<R, DocItem>> extends ValidationRule<R, DocItem> {
 		private final Language _language;
 
 		public DocumentationShouldBeUpToDate(Language language) {
@@ -637,25 +627,29 @@ public class DocItem extends DRMObject {
 		}*/
 
 		@Override
-		public ValidationIssue applyValidation(final Validable object) {
-			final DocItem item = (DocItem) object;
-			ProblemIssue issue = null;
+		public ValidationIssue<R, DocItem> applyValidation(final DocItem object) {
+			final DocItem item = object;
+			ProblemIssue<R, DocItem> issue = null;
 			if (item.getStatusForLanguage(_language) == NO_DOCUMENTED) {
-				issue = new ValidationError(this, object,
+				issue = new ValidationError<>((R) this, object,
 						"doc_item_($object.identifier)_has_no_documentation_for_language_($validationRule.languageIdentifier)");
-			} else if (item.getStatusForLanguage(_language) == APPROVING_PENDING) {
-				issue = new ValidationError(this, object,
+			}
+			else if (item.getStatusForLanguage(_language) == APPROVING_PENDING) {
+				issue = new ValidationError<>((R) this, object,
 						"doc_item_($object.identifier)_has_unvalidated_documentation_proposal_for_language_($validationRule.languageIdentifier)");
-				issue.addToFixProposals(new ApprovePendingVersion(item.getLastPendingActionForLanguage(_language).getVersion()));
-			} else if (item.getStatusForLanguage(_language) == AVAILABLE_NEWER_VERSION_PENDING) {
-				issue = new ValidationWarning(this, object,
+				issue.addToFixProposals(
+						new ApprovePendingVersion<R, DocItem>(item.getLastPendingActionForLanguage(_language).getVersion()));
+			}
+			else if (item.getStatusForLanguage(_language) == AVAILABLE_NEWER_VERSION_PENDING) {
+				issue = new ValidationWarning<>((R) this, object,
 						"doc_item_($object.identifier)_is_available_for_language_($validationRule.languageIdentifier)_but_a_newer_version_is_pending");
-				issue.addToFixProposals(new ApprovePendingVersion(item.getLastPendingActionForLanguage(_language).getVersion()));
+				issue.addToFixProposals(
+						new ApprovePendingVersion<R, DocItem>(item.getLastPendingActionForLanguage(_language).getVersion()));
 			}
 			return issue;
 		}
 
-		public static class ApprovePendingVersion extends FixProposal {
+		public static class ApprovePendingVersion<R extends ValidationRule<R, V>, V extends Validable> extends FixProposal<R, V> {
 			public DocItemVersion version;
 
 			public ApprovePendingVersion(DocItemVersion aVersion) {

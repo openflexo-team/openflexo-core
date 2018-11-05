@@ -43,6 +43,7 @@ import java.util.List;
 
 import org.openflexo.foundation.FlexoService;
 import org.openflexo.foundation.FlexoServiceManager;
+import org.openflexo.foundation.project.FlexoProjectResourceFactory;
 import org.openflexo.model.annotations.Adder;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.Getter.Cardinality;
@@ -64,20 +65,35 @@ import org.openflexo.model.factory.AccessibleProxyObject;
 public interface FlexoResourceCenterService extends FlexoService, AccessibleProxyObject {
 	public static final String RESOURCE_CENTERS = "resourceCenters";
 
+	public FlexoResourceCenter<?> getFlexoResourceCenter(String baseURI);
+
 	@Getter(value = RESOURCE_CENTERS, cardinality = Cardinality.LIST, ignoreType = true)
-	public List<FlexoResourceCenter> getResourceCenters();
+	public List<FlexoResourceCenter<?>> getResourceCenters();
 
 	@Setter(RESOURCE_CENTERS)
-	public void setResourceCenters(List<FlexoResourceCenter> resourceCenters);
+	public void setResourceCenters(List<FlexoResourceCenter<?>> resourceCenters);
 
 	@Adder(RESOURCE_CENTERS)
-	public void addToResourceCenters(FlexoResourceCenter resourceCenter);
+	public void addToResourceCenters(FlexoResourceCenter<?> resourceCenter);
 
 	@Remover(RESOURCE_CENTERS)
-	public void removeFromResourceCenters(FlexoResourceCenter resourceCenter);
+	public void removeFromResourceCenters(FlexoResourceCenter<?> resourceCenter);
 
 	/**
 	 * Save all locations for registered resource centers on disk
 	 */
 	public void storeDirectoryResourceCenterLocations();
+
+	public boolean isDevMode();
+
+	public void setDevMode(boolean devMode);
+
+	public <I> FlexoResourceCenter<I> getResourceCenterContaining(I serializationArtefact);
+
+	/**
+	 * Return the {@link FlexoProjectResourceFactory}
+	 * 
+	 * @return
+	 */
+	public FlexoProjectResourceFactory<?> getFlexoProjectResourceFactory();
 }

@@ -40,9 +40,9 @@ package org.openflexo.foundation.fml.binding;
 
 import java.beans.PropertyChangeEvent;
 
-import org.openflexo.connie.BindingEvaluationContext;
 import org.openflexo.connie.BindingModel;
 import org.openflexo.foundation.fml.FlexoBehaviour;
+import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
 import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
 
 /**
@@ -51,7 +51,7 @@ import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
  * 
  * Provides access to the parameters and parameterDefinitions<br>
  * 
- * Note that default {@link BindingEvaluationContext} corresponding to this {@link BindingModel} is a {@link FlexoBehaviourAction}
+ * Note that default {@link RunTimeEvaluationContext} corresponding to this {@link BindingModel} is a {@link FlexoBehaviourAction}
  * 
  * 
  * @author sylvain
@@ -62,10 +62,8 @@ public class FlexoBehaviourBindingModel extends BindingModel {
 	private final FlexoBehaviour flexoBehaviour;
 
 	private final FlexoBehaviourParametersBindingVariable parametersBindingVariable;
-	private final FlexoBehaviourParametersDefinitionBindingVariable parametersDefinitionBindingVariable;
 
 	public static final String PARAMETERS_PROPERTY = "parameters";
-	public static final String PARAMETERS_DEFINITION_PROPERTY = "parametersDefinitions";
 
 	public FlexoBehaviourBindingModel(FlexoBehaviour flexoBehaviour) {
 		super(flexoBehaviour.getFlexoConcept() != null ? flexoBehaviour.getFlexoConcept().getBindingModel() : null);
@@ -75,10 +73,7 @@ public class FlexoBehaviourBindingModel extends BindingModel {
 		parametersBindingVariable = new FlexoBehaviourParametersBindingVariable(flexoBehaviour);
 		addToBindingVariables(parametersBindingVariable);
 
-		parametersDefinitionBindingVariable = new FlexoBehaviourParametersDefinitionBindingVariable(flexoBehaviour);
-		addToBindingVariables(parametersDefinitionBindingVariable);
-
-		if (flexoBehaviour != null && flexoBehaviour.getPropertyChangeSupport() != null) {
+		if (flexoBehaviour.getPropertyChangeSupport() != null) {
 			flexoBehaviour.getPropertyChangeSupport().addPropertyChangeListener(this);
 		}
 
@@ -116,7 +111,4 @@ public class FlexoBehaviourBindingModel extends BindingModel {
 		return parametersBindingVariable;
 	}
 
-	public FlexoBehaviourParametersDefinitionBindingVariable getParametersDefinitionBindingVariable() {
-		return parametersDefinitionBindingVariable;
-	}
 }

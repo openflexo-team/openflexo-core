@@ -48,6 +48,6 @@ import org.openflexo.foundation.nature.FlexoNature;
  * @author sylvain
  * 
  */
-public interface VirtualModelNature extends FlexoNature<AbstractVirtualModel<?>> {
+public interface VirtualModelNature extends FlexoNature<VirtualModel> {
 
 }

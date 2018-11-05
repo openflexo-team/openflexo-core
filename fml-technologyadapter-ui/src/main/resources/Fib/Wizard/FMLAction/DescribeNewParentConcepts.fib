@@ -6,13 +6,13 @@
 	titleFont="Lucida Grande,0,13" trackViewPortHeight="true">
 	<LocalizedDictionary id="1" />
 	<Label id="4" manageDynamicModel="false" useScrollBar="false"
-		controllerClassName="org.openflexo.fib.controller.FIBController"
+		controllerClassName="org.openflexo.gina.controller.FIBController"
 		index="3" localize="true" align="left"
 		constraints="twocols(anchor=center;expandHorizontally=false;expandVertically=false;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=2;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=5;location=left;padX=0;padY=0;weightX=0.0;weightY=0.0)"
 		label="parent_concepts" readOnly="false" />
 	<Table id="5" showFooter="true" manageDynamicModel="true"
 		selectionMode="MultipleIntervalSelection" boundToSelectionManager="true"
-		controllerClassName="org.openflexo.fib.controller.FIBController"
+		controllerClassName="org.openflexo.gina.controller.FIBController"
 		index="4" localize="true"
 		constraints="twocols(anchor=center;expandHorizontally=true;expandVertically=true;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=3;insetsBottom=0;insetsLeft=0;insetsRight=20;insetsTop=0;location=right;padX=0;padY=0;weightX=0.0;weightY=0.0)"
 		createNewRowOnClick="false"
@@ -27,8 +27,9 @@
 			componentClassName="org.openflexo.fml.controller.widget.FIBFlexoConceptSelector"
 			displayTitle="true" disableTerminateEditOnFocusLost="false" title="flexo_concept"
 			columnWidth="80" resizable="true" showIcon="false">
-			<ColumnAssignment id="12" mandatory="true"
-				value="data.virtualModel" variable="component.virtualModel" />
+			<ColumnAssignment mandatory="true" variable="component.virtualModelLibrary" value="data.virtualModelLibrary" />
+			<ColumnAssignment mandatory="true" variable="component.restrictToContext" value="true" />
+			<ColumnAssignment mandatory="true" variable="component.inheritingContext" value="data.virtualModel"  />
 		</CustomColumn>
 		<RemoveAction id="13" name="delete"
 			method="data.deleteParentFlexoConceptEntry(selected)" />

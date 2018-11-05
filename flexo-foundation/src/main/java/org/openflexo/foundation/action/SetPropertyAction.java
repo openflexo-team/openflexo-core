@@ -55,7 +55,7 @@ public class SetPropertyAction extends FlexoAction<SetPropertyAction, FlexoObjec
 
 	private static final Logger logger = Logger.getLogger(SetPropertyAction.class.getPackage().getName());
 
-	public static class SetPropertyActionType extends FlexoActionType<SetPropertyAction, FlexoObject, FlexoObject> {
+	public static class SetPropertyActionType extends FlexoActionFactory<SetPropertyAction, FlexoObject, FlexoObject> {
 
 		protected SetPropertyActionType(String actionName) {
 			super(actionName);
@@ -79,7 +79,7 @@ public class SetPropertyAction extends FlexoAction<SetPropertyAction, FlexoObjec
 		/**
 		 * Overrides getPersistentProperties
 		 * 
-		 * @see org.openflexo.foundation.action.FlexoActionType#getPersistentProperties()
+		 * @see org.openflexo.foundation.action.FlexoActionFactory#getPersistentProperties()
 		 */
 		@Override
 		protected String[] getPersistentProperties() {

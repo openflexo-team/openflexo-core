@@ -49,12 +49,12 @@ import java.util.logging.Logger;
 import javax.swing.Scrollable;
 import javax.swing.SwingConstants;
 
-import org.openflexo.fib.FIBLibrary;
-import org.openflexo.fib.model.FIBComponent;
-import org.openflexo.fib.model.listener.FIBSelectionListener;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.GraphicalFlexoObserver;
 import org.openflexo.foundation.task.Progress;
+import org.openflexo.gina.model.FIBComponent;
+import org.openflexo.gina.model.listener.FIBSelectionListener;
+import org.openflexo.localization.LocalizedDelegate;
 import org.openflexo.rm.Resource;
 import org.openflexo.selection.SelectionListener;
 import org.openflexo.view.controller.FlexoController;
@@ -67,25 +67,28 @@ import org.openflexo.view.controller.model.FlexoPerspective;
  * @author sguerin
  * 
  */
-public abstract class FIBModuleView<O extends FlexoObject> extends SelectionSynchronizedFIBView implements
-		SelectionSynchronizedModuleView<O>, GraphicalFlexoObserver, FIBSelectionListener, Scrollable {
+public abstract class FIBModuleView<O extends FlexoObject> extends SelectionSynchronizedFIBView
+		implements SelectionSynchronizedModuleView<O>, GraphicalFlexoObserver, FIBSelectionListener, Scrollable {
 	static final Logger logger = Logger.getLogger(FIBModuleView.class.getPackage().getName());
 
 	// private Object representedObject;
 	// private FlexoController controller;
-	// private FIBView fibView;
+	// private FIBViewImpl fibView;
 
-	public FIBModuleView(O representedObject, FlexoController controller, Resource fibResource) {
-		this(representedObject, controller, fibResource, false);
+	public FIBModuleView(O representedObject, FlexoController controller, Resource fibResource, LocalizedDelegate locales) {
+		this(representedObject, controller, fibResource, locales, false);
 	}
 
-	public FIBModuleView(O representedObject, FlexoController controller, Resource fibResource, boolean addScrollBar) {
-		this(representedObject, controller, FIBLibrary.instance().retrieveFIBComponent(fibResource), addScrollBar);
+	public FIBModuleView(O representedObject, FlexoController controller, Resource fibResource, LocalizedDelegate locales,
+			boolean addScrollBar) {
+		this(representedObject, controller, controller.getApplicationFIBLibraryService().retrieveFIBComponent(fibResource), locales,
+				addScrollBar);
 		controller.willLoad(fibResource);
 	}
 
-	protected FIBModuleView(O representedObject, FlexoController controller, FIBComponent fibComponent, boolean addScrollBar) {
-		super(representedObject, controller, fibComponent, addScrollBar);
+	protected FIBModuleView(O representedObject, FlexoController controller, FIBComponent fibComponent, LocalizedDelegate locales,
+			boolean addScrollBar) {
+		super(representedObject, controller, fibComponent, locales, addScrollBar);
 		Progress.progress("instantiating_fib_component");
 	}
 
@@ -96,9 +99,9 @@ public abstract class FIBModuleView<O extends FlexoObject> extends SelectionSync
 	}
 
 	@Override
-	protected FlexoFIBController createFibController(FIBComponent fibComponent, FlexoController controller) {
+	protected FlexoFIBController createFibController(FIBComponent fibComponent, FlexoController controller, LocalizedDelegate locales) {
 		Progress.progress("initializing_fib_controller");
-		return super.createFibController(fibComponent, controller);
+		return super.createFibController(fibComponent, controller, locales);
 	}
 
 	@Override
@@ -124,12 +127,18 @@ public abstract class FIBModuleView<O extends FlexoObject> extends SelectionSync
 
 	@Override
 	public void willHide() {
-		// Override when required
+		// System.out.println("************ ModuleView willHide() " + this + " devient INVISIBLE");
+		// setVisible(false);
 	}
 
 	@Override
 	public void willShow() {
-		// Override when required
+		// System.out.println("************ ModuleView willShow()" + this + " devient VISIBLE");
+		setVisible(true);
+		if (getSelectionManager() != null && getSelectionManager().getSelection().size() == 1
+				&& getSelectionManager().getSelection().get(0) == getRepresentedObject()) {
+			fireObjectSelected(getSelectionManager().getSelection().get(0));
+		}
 	}
 
 	@Override
@@ -150,24 +159,24 @@ public abstract class FIBModuleView<O extends FlexoObject> extends SelectionSync
 	@Override
 	public int getScrollableUnitIncrement(Rectangle visibleRect, int orientation, int direction) {
 		switch (orientation) {
-		case SwingConstants.VERTICAL:
-			return visibleRect.height / 10;
-		case SwingConstants.HORIZONTAL:
-			return visibleRect.width / 10;
-		default:
-			throw new IllegalArgumentException("Invalid orientation: " + orientation);
+			case SwingConstants.VERTICAL:
+				return visibleRect.height / 10;
+			case SwingConstants.HORIZONTAL:
+				return visibleRect.width / 10;
+			default:
+				throw new IllegalArgumentException("Invalid orientation: " + orientation);
 		}
 	}
 
 	@Override
 	public int getScrollableBlockIncrement(Rectangle visibleRect, int orientation, int direction) {
 		switch (orientation) {
-		case SwingConstants.VERTICAL:
-			return visibleRect.height;
-		case SwingConstants.HORIZONTAL:
-			return visibleRect.width;
-		default:
-			throw new IllegalArgumentException("Invalid orientation: " + orientation);
+			case SwingConstants.VERTICAL:
+				return visibleRect.height;
+			case SwingConstants.HORIZONTAL:
+				return visibleRect.width;
+			default:
+				throw new IllegalArgumentException("Invalid orientation: " + orientation);
 		}
 	}
 

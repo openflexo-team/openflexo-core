@@ -38,6 +38,8 @@
 
 package org.openflexo.foundation.fml.action;
 
+import java.lang.reflect.Type;
+
 // org.openflexo.foundation.fml.action.AbstractCreateVirtualModel$ModelSlotEntry
 
 import java.util.ArrayList;
@@ -45,38 +47,43 @@ import java.util.List;
 import java.util.Vector;
 import java.util.logging.Logger;
 
+import org.openflexo.connie.DataBinding;
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoObject;
-import org.openflexo.foundation.action.FlexoAction;
-import org.openflexo.foundation.action.FlexoActionType;
-import org.openflexo.foundation.fml.FlexoConcept;
+import org.openflexo.foundation.action.FlexoActionFactory;
 import org.openflexo.foundation.fml.FMLObject;
+import org.openflexo.foundation.fml.FlexoBehaviour;
+import org.openflexo.foundation.fml.FlexoBehaviourParameter;
+import org.openflexo.foundation.fml.FlexoConcept;
+import org.openflexo.foundation.fml.FlexoConceptInstanceType;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.rm.VirtualModelResource;
+import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstance;
 import org.openflexo.foundation.task.Progress;
 import org.openflexo.foundation.technologyadapter.FlexoMetaModelResource;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
-import org.openflexo.localization.FlexoLocalization;
+import org.openflexo.localization.LocalizedDelegate;
 import org.openflexo.toolbox.PropertyChangedSupportDefaultImplementation;
 import org.openflexo.toolbox.StringUtils;
 
 /**
- * Abstract action creating a {@link FlexoConcept} or any of its subclass
+ * Abstract action creating a {@link VirtualModel} or any of its subclass
  * 
  * @author sylvain
  * 
  */
-public abstract class AbstractCreateVirtualModel<A extends FlexoAction<A, T1, T2>, T1 extends FlexoObject, T2 extends FMLObject>
+public abstract class AbstractCreateVirtualModel<A extends AbstractCreateVirtualModel<A, T1, T2>, T1 extends FlexoObject, T2 extends FMLObject>
 		extends AbstractCreateFlexoConcept<A, T1, T2> {
 
 	private static final Logger logger = Logger.getLogger(AbstractCreateVirtualModel.class.getPackage().getName());
 
 	private final List<ModelSlotEntry> modelSlotEntries;
 
-	AbstractCreateVirtualModel(FlexoActionType<A, T1, T2> actionType, T1 focusedObject, Vector<T2> globalSelection, FlexoEditor editor) {
+	protected AbstractCreateVirtualModel(FlexoActionFactory<A, T1, T2> actionType, T1 focusedObject, Vector<T2> globalSelection,
+			FlexoEditor editor) {
 		super(actionType, focusedObject, globalSelection, editor);
-		modelSlotEntries = new ArrayList<AbstractCreateVirtualModel.ModelSlotEntry>();
+		modelSlotEntries = new ArrayList<>();
 	}
 
 	public List<ModelSlotEntry> getModelSlotEntries() {
@@ -84,7 +91,7 @@ public abstract class AbstractCreateVirtualModel<A extends FlexoAction<A, T1, T2
 	}
 
 	public ModelSlotEntry newModelSlotEntry() {
-		ModelSlotEntry returned = new ModelSlotEntry("modelSlot" + (getModelSlotEntries().size() + 1));
+		ModelSlotEntry returned = new ModelSlotEntry("modelSlot" + (getModelSlotEntries().size() + 1), getLocales());
 		modelSlotEntries.add(returned);
 		getPropertyChangeSupport().firePropertyChange("modelSlotEntries", null, returned);
 		return returned;
@@ -110,7 +117,7 @@ public abstract class AbstractCreateVirtualModel<A extends FlexoAction<A, T1, T2
 	}
 
 	protected void performCreateModelSlot(ModelSlotEntry entry) {
-		Progress.progress(FlexoLocalization.localizedForKey("create_model_slot") + " " + entry.getModelSlotName());
+		Progress.progress(getLocales().localizedForKey("create_model_slot") + " " + entry.getModelSlotName());
 		CreateModelSlot action = CreateModelSlot.actionType.makeNewEmbeddedAction(getNewVirtualModel(), null, this);
 		action.setModelSlotName(entry.getModelSlotName());
 		action.setDescription(entry.getModelSlotDescription());
@@ -119,6 +126,20 @@ public abstract class AbstractCreateVirtualModel<A extends FlexoAction<A, T1, T2
 		action.setMmRes(entry.getMetaModelResource());
 		action.setVmRes(entry.getVirtualModelResource());
 		action.doAction();
+	}
+
+	protected FlexoBehaviourParameter createParameter(FlexoBehaviour behaviour, String parameterName, Type parameterType) {
+		CreateGenericBehaviourParameter createParameter = CreateGenericBehaviourParameter.actionType.makeNewEmbeddedAction(behaviour, null,
+				this);
+		createParameter.setParameterName(parameterName);
+		createParameter.setParameterType(parameterType);
+
+		createParameter.doAction();
+		FlexoBehaviourParameter returned = createParameter.getNewParameter();
+		if (parameterType instanceof FlexoConceptInstanceType) {
+			returned.setContainer(new DataBinding<FMLRTVirtualModelInstance>("this"));
+		}
+		return returned;
 	}
 
 	public static class ModelSlotEntry extends PropertyChangedSupportDefaultImplementation {
@@ -134,9 +155,12 @@ public abstract class AbstractCreateVirtualModel<A extends FlexoAction<A, T1, T2
 		private VirtualModelResource virtualModelResource;
 		private FlexoMetaModelResource<?, ?, ?> metaModelResource;
 
-		public ModelSlotEntry(String defaultName) {
+		private LocalizedDelegate locales;
+
+		public ModelSlotEntry(String defaultName, LocalizedDelegate locales) {
 			super();
 			defaultModelSlotName = defaultName;
+			this.locales = locales;
 		}
 
 		public void delete() {
@@ -146,9 +170,9 @@ public abstract class AbstractCreateVirtualModel<A extends FlexoAction<A, T1, T2
 			modelSlotClass = null;
 		}
 
-		/*public Icon getIcon() {
-			return VPMIconLibrary.iconForModelSlot(getTechnologyAdapter());
-		}*/
+		public LocalizedDelegate getLocales() {
+			return locales;
+		}
 
 		public Class<? extends ModelSlot<?>> getModelSlotClass() {
 			if (modelSlotClass == null && technologyAdapter != null && technologyAdapter.getAvailableModelSlotTypes().size() > 0) {
@@ -194,7 +218,8 @@ public abstract class AbstractCreateVirtualModel<A extends FlexoAction<A, T1, T2
 				// The ModelSlot class is not consistent anymore
 				if (technologyAdapter.getAvailableModelSlotTypes().size() > 0) {
 					setModelSlotClass(technologyAdapter.getAvailableModelSlotTypes().get(0));
-				} else {
+				}
+				else {
 					setModelSlotClass(null);
 				}
 			}
@@ -247,13 +272,13 @@ public abstract class AbstractCreateVirtualModel<A extends FlexoAction<A, T1, T2
 		public String getConfigurationErrorMessage() {
 
 			if (StringUtils.isEmpty(getModelSlotName())) {
-				return FlexoLocalization.localizedForKey("please_supply_valid_model_slot_name");
+				return getLocales().localizedForKey("please_supply_valid_model_slot_name");
 			}
 			if (getTechnologyAdapter() == null) {
-				return FlexoLocalization.localizedForKey("no_technology_adapter_defined_for") + " " + getModelSlotName();
+				return getLocales().localizedForKey("no_technology_adapter_defined_for") + " " + getModelSlotName();
 			}
 			if (getModelSlotClass() == null) {
-				return FlexoLocalization.localizedForKey("no_model_slot_type_defined_for") + " " + getModelSlotName();
+				return getLocales().localizedForKey("no_model_slot_type_defined_for") + " " + getModelSlotName();
 			}
 
 			return null;
@@ -261,7 +286,7 @@ public abstract class AbstractCreateVirtualModel<A extends FlexoAction<A, T1, T2
 
 		public String getConfigurationWarningMessage() {
 			if (StringUtils.isEmpty(getModelSlotDescription())) {
-				return FlexoLocalization.localizedForKey("it_is_recommanded_to_describe_model_slot") + " " + getModelSlotName();
+				return getLocales().localizedForKey("it_is_recommanded_to_describe_model_slot") + " " + getModelSlotName();
 			}
 			return null;
 
