@@ -306,7 +306,7 @@ public interface TextSelection<D extends FlexoDocument<D, TA>, TA extends Techno
 					return (FlexoTextRun<D, TA>) returned;
 				}
 			}
-			if (getStartElement() instanceof FlexoDocParagraph
+			if (getStartElement() instanceof FlexoDocParagraph && (getStartRunIndex() >= 0)
 					&& (getStartRunIndex() < ((FlexoDocParagraph<D, TA>) getStartElement()).getRuns().size())) {
 				FlexoDocRun<D, TA> returned = ((FlexoDocParagraph<D, TA>) getStartElement()).getRuns().get(getStartRunIndex());
 				if (returned instanceof FlexoTextRun) {
@@ -331,7 +331,7 @@ public interface TextSelection<D extends FlexoDocument<D, TA>, TA extends Techno
 					return (FlexoTextRun<D, TA>) returned;
 				}
 			}
-			if (getEndElement() instanceof FlexoDocParagraph
+			if (getEndElement() instanceof FlexoDocParagraph && (getEndRunIndex() >= 0)
 					&& (getEndRunIndex() < ((FlexoDocParagraph<D, TA>) getEndElement()).getRuns().size())) {
 				FlexoDocRun<D, TA> returned = ((FlexoDocParagraph<D, TA>) getEndElement()).getRuns().get(getEndRunIndex());
 				if (returned instanceof FlexoTextRun) {
