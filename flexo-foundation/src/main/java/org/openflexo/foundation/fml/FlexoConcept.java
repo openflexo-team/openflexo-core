@@ -906,19 +906,6 @@ public interface FlexoConcept extends FlexoConceptObject {
 					}
 				}
 
-				// Now, we have to suppress all extra references
-				List<FlexoProperty<?>> unnecessaryProperty = new ArrayList<>();
-				for (FlexoProperty<?> p : inheritedProperties.values()) {
-					for (FlexoProperty<?> superP : p.getAllSuperProperties()) {
-						if (inheritedProperties.get(superP.getName()) != null) {
-							unnecessaryProperty.add(superP);
-						}
-					}
-				}
-
-				for (FlexoProperty<?> removeThis : unnecessaryProperty)
-					inheritedProperties.remove(removeThis.getName());
-
 				try {
 					computedAccessibleProperties.addAll(inheritedProperties.values());
 				} catch (NullPointerException e) {
