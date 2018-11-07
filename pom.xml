@@ -11,11 +11,11 @@
 	<name>Openflexo-Core</name>
 	<packaging>pom</packaging>
 	<properties>
-		<gina.version>2.1.2-SNAPSHOT</gina.version>
-		<connie.version>1.4.2-SNAPSHOT</connie.version>
-		<pamela.version>1.4.2-SNAPSHOT</pamela.version>
-		<diana.version>1.4.2-SNAPSHOT</diana.version>
-		<openflexoutils.version>2.1.2-SNAPSHOT</openflexoutils.version>
+		<gina.version>2.2-SNAPSHOT</gina.version>
+		<connie.version>1.5-SNAPSHOT</connie.version>
+		<pamela.version>1.5-SNAPSHOT</pamela.version>
+		<diana.version>1.5-SNAPSHOT</diana.version>
+		<openflexoutils.version>2.2-SNAPSHOT</openflexoutils.version>
 		<google.guice.version>3.0</google.guice.version>
 		<core.logo>https://media.openflexo.org/images/gina_logo64x64.png</core.logo>
 	    <sitedeploy.dir>/home/www/sites/openflexo-core</sitedeploy.dir>
@@ -23,7 +23,7 @@
 	<scm>
 		<connection>scm:git:ssh://git@github.com/openflexo-team/openflexo-core.git</connection>
 		<url>https://github.com/openflexo-team/openflexo-core</url>
-	    <tag>1.9.1</tag>
+	    <tag>2.0.0</tag>
     </scm>
        <issueManagement>
               <system>JIRA</system>
