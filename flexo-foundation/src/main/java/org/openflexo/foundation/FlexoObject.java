@@ -852,7 +852,9 @@ public interface FlexoObject extends AccessibleProxyObject, DeletableProxyObject
 		public Class<?> getImplementedInterface() {
 			if (this instanceof ResourceData && ((ResourceData<?>) this).getResource() instanceof PamelaResource) {
 				ModelFactory f = ((PamelaResource<?, ?>) ((ResourceData<?>) this).getResource()).getFactory();
-				return f.getModelEntityForInstance(this).getImplementedInterface();
+				if (f != null) {
+					return f.getModelEntityForInstance(this).getImplementedInterface();
+				}
 			}
 			if (this instanceof InnerResourceData && ((InnerResourceData<?>) this).getResourceData() != null
 					&& ((InnerResourceData<?>) this).getResourceData().getResource() instanceof PamelaResource) {
