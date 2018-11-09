@@ -159,6 +159,22 @@ public abstract class FlexoBehaviourAction<A extends FlexoBehaviourAction<A, FB,
 		return super.getLocales();
 	}
 
+	@Override
+	public String getLocalizedName() {
+		if (getLocales() != null) {
+			return getLocales().localizedForKey(getFlexoBehaviour().getName());
+		}
+		return super.getLocalizedName();
+	}
+
+	@Override
+	public String getLocalizedDescription() {
+		if (getLocales() != null) {
+			return getLocales().localizedForKey(getFlexoBehaviour().getDescription());
+		}
+		return super.getLocalizedName();
+	}
+
 	public final FB getFlexoBehaviour() {
 		if (getActionFactory() != null) {
 			return getActionFactory().getBehaviour();
