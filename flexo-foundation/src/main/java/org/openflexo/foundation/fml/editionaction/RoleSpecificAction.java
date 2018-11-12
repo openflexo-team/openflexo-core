@@ -48,8 +48,8 @@ import org.openflexo.foundation.fml.binding.FlexoConceptFlexoPropertyPathElement
 import org.openflexo.foundation.fml.binding.FlexoRoleBindingVariable;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.foundation.technologyadapter.TechnologyObject;
-import org.openflexo.model.annotations.ImplementationClass;
-import org.openflexo.model.annotations.ModelEntity;
+import org.openflexo.pamela.annotations.ImplementationClass;
+import org.openflexo.pamela.annotations.ModelEntity;
 
 /**
  * Represents an {@link TechnologySpecificAction} which address a specific technology object accessible as a {@link FlexoRole}

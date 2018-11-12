@@ -38,8 +38,8 @@
 
 package org.openflexo.foundation.fml;
 
-import org.openflexo.model.annotations.ImplementationClass;
-import org.openflexo.model.annotations.ModelEntity;
+import org.openflexo.pamela.annotations.ImplementationClass;
+import org.openflexo.pamela.annotations.ModelEntity;
 
 /**
  * Represents an object which is part of the model of a FlexoBehaviour

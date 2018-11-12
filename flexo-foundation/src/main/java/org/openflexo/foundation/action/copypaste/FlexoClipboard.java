@@ -53,8 +53,8 @@ import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.rm.AbstractVirtualModelInstanceResource;
 import org.openflexo.foundation.resource.FlexoResource;
 import org.openflexo.foundation.resource.PamelaResource;
-import org.openflexo.model.factory.Clipboard;
-import org.openflexo.model.factory.ModelFactory;
+import org.openflexo.pamela.factory.Clipboard;
+import org.openflexo.pamela.factory.ModelFactory;
 
 /**
  * Clipboard used in the context Openflexo infrastructure.<br>

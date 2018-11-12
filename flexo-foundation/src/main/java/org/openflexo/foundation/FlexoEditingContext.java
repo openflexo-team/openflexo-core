@@ -55,14 +55,14 @@ import org.openflexo.foundation.action.copypaste.CutAction.CutActionType;
 import org.openflexo.foundation.action.copypaste.DefaultPasteHandler;
 import org.openflexo.foundation.action.copypaste.FlexoClipboard;
 import org.openflexo.foundation.action.copypaste.PasteAction.PasteActionType;
+import org.openflexo.pamela.ModelEntity;
+import org.openflexo.pamela.factory.Clipboard;
+import org.openflexo.pamela.factory.EditingContext;
+import org.openflexo.pamela.factory.EditingContextImpl;
+import org.openflexo.pamela.factory.ModelFactory;
+import org.openflexo.pamela.factory.ProxyMethodHandler;
 import org.openflexo.foundation.action.copypaste.PasteHandler;
 import org.openflexo.foundation.action.copypaste.PastingContext;
-import org.openflexo.model.ModelEntity;
-import org.openflexo.model.factory.Clipboard;
-import org.openflexo.model.factory.EditingContext;
-import org.openflexo.model.factory.EditingContextImpl;
-import org.openflexo.model.factory.ModelFactory;
-import org.openflexo.model.factory.ProxyMethodHandler;
 import org.openflexo.toolbox.StringUtils;
 
 /**

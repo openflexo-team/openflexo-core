@@ -39,9 +39,9 @@
 package org.openflexo.drm;
 
 import org.openflexo.foundation.DefaultPamelaResourceModelFactory;
-import org.openflexo.model.ModelContextLibrary;
-import org.openflexo.model.exceptions.ModelDefinitionException;
-import org.openflexo.model.factory.ModelFactory;
+import org.openflexo.pamela.ModelContextLibrary;
+import org.openflexo.pamela.exceptions.ModelDefinitionException;
+import org.openflexo.pamela.factory.ModelFactory;
 
 /**
  * {@link ModelFactory} used to handle DocResourceCenter model<br>

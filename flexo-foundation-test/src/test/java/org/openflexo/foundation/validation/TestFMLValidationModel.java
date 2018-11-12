@@ -50,9 +50,9 @@ import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.editionaction.AssignationAction;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.foundation.test.OpenflexoTestCase;
-import org.openflexo.model.exceptions.ModelDefinitionException;
-import org.openflexo.model.validation.ValidationRule;
-import org.openflexo.model.validation.ValidationRuleSet;
+import org.openflexo.pamela.exceptions.ModelDefinitionException;
+import org.openflexo.pamela.validation.ValidationRule;
+import org.openflexo.pamela.validation.ValidationRuleSet;
 import org.openflexo.test.OrderedRunner;
 import org.openflexo.test.TestOrder;
 

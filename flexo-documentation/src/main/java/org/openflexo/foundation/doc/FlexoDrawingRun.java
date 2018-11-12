@@ -23,7 +23,7 @@ package org.openflexo.foundation.doc;
 import java.awt.Image;
 
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
-import org.openflexo.model.annotations.ModelEntity;
+import org.openflexo.pamela.annotations.ModelEntity;
 
 /**
  * Represent a run with a drawing in a paragraph of a text-based document (eg .docx, .odt, etc...)

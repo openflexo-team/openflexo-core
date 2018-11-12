@@ -3,7 +3,7 @@ package org.openflexo.foundation.action.copypaste;
 import java.util.List;
 
 import org.openflexo.foundation.FlexoObject;
-import org.openflexo.model.factory.Clipboard;
+import org.openflexo.pamela.factory.Clipboard;
 
 /**
  * An handler which is used to intercept and translate paste actions from/to the right pasting context<br>

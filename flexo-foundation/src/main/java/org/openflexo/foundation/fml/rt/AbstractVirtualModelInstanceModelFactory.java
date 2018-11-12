@@ -48,12 +48,12 @@ import org.openflexo.foundation.fml.rt.rm.AbstractVirtualModelInstanceResource;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterService;
 import org.openflexo.foundation.utils.FlexoObjectReferenceConverter;
-import org.openflexo.model.converter.DataBindingConverter;
-import org.openflexo.model.converter.FlexoVersionConverter;
-import org.openflexo.model.converter.RelativePathResourceConverter;
-import org.openflexo.model.exceptions.ModelDefinitionException;
-import org.openflexo.model.factory.EditingContext;
-import org.openflexo.model.factory.ModelFactory;
+import org.openflexo.pamela.converter.DataBindingConverter;
+import org.openflexo.pamela.converter.FlexoVersionConverter;
+import org.openflexo.pamela.converter.RelativePathResourceConverter;
+import org.openflexo.pamela.exceptions.ModelDefinitionException;
+import org.openflexo.pamela.factory.EditingContext;
+import org.openflexo.pamela.factory.ModelFactory;
 
 /**
  * {@link ModelFactory} used to handle {@link VirtualModelInstance} models<br>

@@ -41,7 +41,7 @@ package org.openflexo.foundation.technologyadapter;
 
 import org.openflexo.foundation.resource.FlexoResource;
 import org.openflexo.foundation.resource.ResourceRepositoryImpl;
-import org.openflexo.model.annotations.ModelEntity;
+import org.openflexo.pamela.annotations.ModelEntity;
 
 /**
  * A {@link MetaModelRepository} stores all resources storing metamodels relative to a given technology<br>

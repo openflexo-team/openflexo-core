@@ -39,9 +39,9 @@
 package org.openflexo.foundation.technologyadapter;
 
 import org.openflexo.foundation.resource.FlexoResourceCenter;
-import org.openflexo.model.annotations.ModelEntity;
-import org.openflexo.model.exceptions.ModelDefinitionException;
-import org.openflexo.model.factory.ModelFactory;
+import org.openflexo.pamela.annotations.ModelEntity;
+import org.openflexo.pamela.exceptions.ModelDefinitionException;
+import org.openflexo.pamela.factory.ModelFactory;
 
 /**
  * The global resource repository for a Technology Adapter

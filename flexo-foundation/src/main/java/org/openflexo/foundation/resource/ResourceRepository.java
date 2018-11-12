@@ -5,8 +5,8 @@ import java.util.Collection;
 import java.util.Enumeration;
 
 import org.openflexo.foundation.FlexoObject;
-import org.openflexo.model.annotations.ImplementationClass;
-import org.openflexo.model.annotations.ModelEntity;
+import org.openflexo.pamela.annotations.ImplementationClass;
+import org.openflexo.pamela.annotations.ModelEntity;
 
 /**
  * A {@link ResourceRepository} stores all resources of a particular type.<br>

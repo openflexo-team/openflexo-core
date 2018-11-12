@@ -71,8 +71,8 @@ import org.openflexo.foundation.resource.FileIODelegate.WillRenameFileOnDiskNoti
 import org.openflexo.foundation.resource.FileIODelegate.WillWriteFileOnDiskNotification;
 import org.openflexo.foundation.resource.FlexoResourceCenter.ResourceCenterEntry;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterService;
-import org.openflexo.model.exceptions.ModelDefinitionException;
-import org.openflexo.model.factory.ModelFactory;
+import org.openflexo.pamela.exceptions.ModelDefinitionException;
+import org.openflexo.pamela.factory.ModelFactory;
 import org.openflexo.toolbox.FileUtils;
 
 /**

@@ -42,9 +42,9 @@ import java.io.IOException;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.action.NotImplementedException;
-import org.openflexo.model.annotations.Implementation;
-import org.openflexo.model.annotations.ModelEntity;
-import org.openflexo.model.annotations.XMLElement;
+import org.openflexo.pamela.annotations.Implementation;
+import org.openflexo.pamela.annotations.ModelEntity;
+import org.openflexo.pamela.annotations.XMLElement;
 import org.openflexo.rm.Resource;
 
 /**

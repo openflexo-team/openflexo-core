@@ -61,9 +61,9 @@ import org.openflexo.foundation.resource.JarResourceCenter.JarResourceCenterEntr
 import org.openflexo.foundation.resource.RemoteResourceCenter.RemoteResourceCenterEntry;
 import org.openflexo.foundation.task.Progress;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
-import org.openflexo.model.annotations.Import;
-import org.openflexo.model.annotations.Imports;
-import org.openflexo.model.annotations.ModelEntity;
+import org.openflexo.pamela.annotations.Import;
+import org.openflexo.pamela.annotations.Imports;
+import org.openflexo.pamela.annotations.ModelEntity;
 import org.openflexo.toolbox.FlexoVersion;
 import org.openflexo.xml.XMLRootElementInfo;
 

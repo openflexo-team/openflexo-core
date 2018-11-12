@@ -45,7 +45,7 @@ import java.util.logging.Logger;
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoProject;
 import org.openflexo.foundation.FlexoProjectObject;
-import org.openflexo.model.validation.ValidationReport;
+import org.openflexo.pamela.validation.ValidationReport;
 
 public class ValidateProject extends FlexoAction<ValidateProject, FlexoProjectObject<?>, FlexoProjectObject<?>> {
 

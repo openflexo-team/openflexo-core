@@ -39,7 +39,7 @@
 package org.openflexo.foundation.fml;
 
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
-import org.openflexo.model.annotations.ModelEntity;
+import org.openflexo.pamela.annotations.ModelEntity;
 
 /**
  * Implemented by all {@link FlexoBehaviour} specific to a technology

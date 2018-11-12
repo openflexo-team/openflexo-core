@@ -70,9 +70,9 @@ import org.openflexo.gina.model.widget.FIBLabel.Align;
 import org.openflexo.gina.swing.utils.JFIBDialog;
 import org.openflexo.gina.swing.view.SwingViewFactory;
 import org.openflexo.gina.view.GinaViewFactory;
-import org.openflexo.model.exceptions.ModelDefinitionException;
-import org.openflexo.model.validation.ValidationError;
-import org.openflexo.model.validation.ValidationReport;
+import org.openflexo.pamela.exceptions.ModelDefinitionException;
+import org.openflexo.pamela.validation.ValidationError;
+import org.openflexo.pamela.validation.ValidationReport;
 import org.openflexo.toolbox.StringUtils;
 
 public class ParametersRetriever<ES extends FlexoBehaviour> {

@@ -42,11 +42,11 @@ import java.io.File;
 import java.net.URL;
 import java.util.logging.Logger;
 
-import org.openflexo.model.annotations.Implementation;
-import org.openflexo.model.annotations.ImplementationClass;
-import org.openflexo.model.annotations.ModelEntity;
-import org.openflexo.model.annotations.XMLElement;
-import org.openflexo.model.factory.ModelFactory;
+import org.openflexo.pamela.annotations.Implementation;
+import org.openflexo.pamela.annotations.ImplementationClass;
+import org.openflexo.pamela.annotations.ModelEntity;
+import org.openflexo.pamela.annotations.XMLElement;
+import org.openflexo.pamela.factory.ModelFactory;
 import org.openflexo.rm.InJarResourceImpl;
 import org.openflexo.toolbox.JarClassLoader;
 

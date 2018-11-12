@@ -41,8 +41,8 @@ package org.openflexo.foundation.localization;
 import org.openflexo.foundation.FlexoService;
 import org.openflexo.foundation.nature.DefaultProjectNatureService;
 import org.openflexo.localization.LocalizedDelegate;
-import org.openflexo.model.annotations.ImplementationClass;
-import org.openflexo.model.annotations.ModelEntity;
+import org.openflexo.pamela.annotations.ImplementationClass;
+import org.openflexo.pamela.annotations.ModelEntity;
 
 /**
  * This service provides localization features

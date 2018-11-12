@@ -60,7 +60,7 @@ import org.openflexo.diana.swing.JDianaInteractiveEditor;
 import org.openflexo.diana.swing.control.SwingToolFactory;
 import org.openflexo.diana.swing.view.JDianaView;
 import org.openflexo.foundation.FlexoObject;
-import org.openflexo.model.factory.EditingContext;
+import org.openflexo.pamela.factory.EditingContext;
 import org.openflexo.toolbox.ToolBox;
 
 /**

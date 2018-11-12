@@ -55,7 +55,7 @@ import org.openflexo.gina.model.widget.FIBBrowser;
 import org.openflexo.gina.model.widget.FIBBrowserAction;
 import org.openflexo.gina.model.widget.FIBBrowserElement;
 import org.openflexo.localization.LocalizedDelegate;
-import org.openflexo.model.exceptions.ModelDefinitionException;
+import org.openflexo.pamela.exceptions.ModelDefinitionException;
 import org.openflexo.prefs.ApplicationFIBLibraryService;
 import org.openflexo.rm.Resource;
 import org.openflexo.view.FIBBrowserActionAdapter.FIBBrowserActionAdapterImpl;

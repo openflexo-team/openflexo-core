@@ -2,7 +2,7 @@ package org.openflexo.foundation.resource;
 
 import java.io.IOException;
 
-import org.openflexo.model.exceptions.ModelDefinitionException;
+import org.openflexo.pamela.exceptions.ModelDefinitionException;
 
 public interface IFlexoResourceFactory<R extends FlexoResource<RD>, RD extends ResourceData<RD>> {
 

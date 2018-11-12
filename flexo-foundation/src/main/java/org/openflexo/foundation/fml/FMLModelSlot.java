@@ -49,9 +49,9 @@ import org.openflexo.foundation.fml.rt.FMLModelSlotInstance;
 import org.openflexo.foundation.fml.rt.FMLObjectActorReference;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
-import org.openflexo.model.annotations.ImplementationClass;
-import org.openflexo.model.annotations.ModelEntity;
-import org.openflexo.model.annotations.XMLElement;
+import org.openflexo.pamela.annotations.ImplementationClass;
+import org.openflexo.pamela.annotations.ModelEntity;
+import org.openflexo.pamela.annotations.XMLElement;
 
 /**
  * A {@link ModelSlot} allowing to reflexively access an {@link VirtualModel}<br>

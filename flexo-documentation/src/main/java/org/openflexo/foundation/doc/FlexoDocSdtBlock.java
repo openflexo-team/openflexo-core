@@ -21,7 +21,7 @@
 package org.openflexo.foundation.doc;
 
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
-import org.openflexo.model.annotations.ModelEntity;
+import org.openflexo.pamela.annotations.ModelEntity;
 
 /**
  * Generic abstract concept representing a block-level structured document content in a text-based document (eg .docx, .odt, etc...)

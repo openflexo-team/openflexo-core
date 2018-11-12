@@ -41,7 +41,7 @@ package org.openflexo.foundation.project;
 import java.beans.PropertyChangeListener;
 
 import org.openflexo.foundation.FlexoProjectObject.FlexoProjectObjectImpl;
-import org.openflexo.model.annotations.Setter;
+import org.openflexo.pamela.annotations.Setter;
 
 public abstract class FlexoProjectReferenceImpl<I> extends FlexoProjectObjectImpl<I>
 		implements FlexoProjectReference<I>, PropertyChangeListener {

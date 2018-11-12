@@ -41,9 +41,9 @@ package org.openflexo.foundation.fml;
 import java.util.logging.Logger;
 
 import org.openflexo.logging.FlexoLogger;
-import org.openflexo.model.annotations.ImplementationClass;
-import org.openflexo.model.annotations.ModelEntity;
-import org.openflexo.model.annotations.XMLElement;
+import org.openflexo.pamela.annotations.ImplementationClass;
+import org.openflexo.pamela.annotations.ModelEntity;
+import org.openflexo.pamela.annotations.XMLElement;
 
 /**
  * An {@link FlexoEvent} represent an event beeing emitted by an instance of {@link VirtualModel}, and might be listened by an other

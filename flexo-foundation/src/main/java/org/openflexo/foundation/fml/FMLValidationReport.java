@@ -45,12 +45,12 @@ import org.openflexo.connie.DataBinding;
 import org.openflexo.foundation.fml.FMLObject.BindingIsRequiredAndMustBeValid;
 import org.openflexo.foundation.fml.editionaction.AbstractAssignationAction;
 import org.openflexo.foundation.fml.inspector.FlexoConceptInspector;
-import org.openflexo.model.validation.InformationIssue;
-import org.openflexo.model.validation.ValidationError;
-import org.openflexo.model.validation.ValidationIssue;
-import org.openflexo.model.validation.ValidationModel;
-import org.openflexo.model.validation.ValidationReport;
-import org.openflexo.model.validation.ValidationWarning;
+import org.openflexo.pamela.validation.InformationIssue;
+import org.openflexo.pamela.validation.ValidationError;
+import org.openflexo.pamela.validation.ValidationIssue;
+import org.openflexo.pamela.validation.ValidationModel;
+import org.openflexo.pamela.validation.ValidationReport;
+import org.openflexo.pamela.validation.ValidationWarning;
 
 /**
  * This is the {@link ValidationReport} for a {@link VirtualModel}

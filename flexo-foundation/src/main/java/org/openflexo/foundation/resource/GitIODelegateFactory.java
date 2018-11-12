@@ -2,9 +2,9 @@ package org.openflexo.foundation.resource;
 
 import java.io.File;
 
-import org.openflexo.model.ModelContextLibrary;
-import org.openflexo.model.exceptions.ModelDefinitionException;
-import org.openflexo.model.factory.ModelFactory;
+import org.openflexo.pamela.ModelContextLibrary;
+import org.openflexo.pamela.exceptions.ModelDefinitionException;
+import org.openflexo.pamela.factory.ModelFactory;
 
 public class GitIODelegateFactory implements IODelegateFactory<File> {
 

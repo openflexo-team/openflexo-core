@@ -44,7 +44,7 @@ import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.task.FlexoTask;
 import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.localization.LocalizedDelegate;
-import org.openflexo.model.undo.CompoundEdit;
+import org.openflexo.pamela.undo.CompoundEdit;
 import org.openflexo.view.controller.FlexoController;
 
 /**

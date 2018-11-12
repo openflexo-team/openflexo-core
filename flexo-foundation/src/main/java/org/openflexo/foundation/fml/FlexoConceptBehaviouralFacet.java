@@ -43,9 +43,9 @@ import java.util.List;
 
 import org.openflexo.connie.Bindable;
 import org.openflexo.connie.BindingModel;
-import org.openflexo.model.annotations.ImplementationClass;
-import org.openflexo.model.annotations.ModelEntity;
-import org.openflexo.model.validation.Validable;
+import org.openflexo.pamela.annotations.ImplementationClass;
+import org.openflexo.pamela.annotations.ModelEntity;
+import org.openflexo.pamela.validation.Validable;
 
 @ModelEntity
 @ImplementationClass(FlexoConceptBehaviouralFacet.FlexoConceptBehaviouralFacetImpl.class)

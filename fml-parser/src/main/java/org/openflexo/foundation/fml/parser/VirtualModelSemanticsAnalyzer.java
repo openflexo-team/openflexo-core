@@ -43,7 +43,7 @@ import org.openflexo.foundation.fml.FMLModelFactory;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.parser.node.AModelSlotDeclaration;
 import org.openflexo.foundation.fml.parser.node.AVirtualModelDeclaration;
-import org.openflexo.model.exceptions.ModelDefinitionException;
+import org.openflexo.pamela.exceptions.ModelDefinitionException;
 
 /**
  * This class implements the semantics analyzer for a parsed VirtualModel.<br>

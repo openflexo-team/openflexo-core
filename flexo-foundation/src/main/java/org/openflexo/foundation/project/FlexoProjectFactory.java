@@ -48,9 +48,9 @@ import org.openflexo.foundation.FlexoProject;
 import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.nature.ProjectNatureFactory;
 import org.openflexo.foundation.nature.ProjectNatureService;
-import org.openflexo.model.converter.FlexoVersionConverter;
-import org.openflexo.model.converter.RelativePathResourceConverter;
-import org.openflexo.model.exceptions.ModelDefinitionException;
+import org.openflexo.pamela.converter.FlexoVersionConverter;
+import org.openflexo.pamela.converter.RelativePathResourceConverter;
+import org.openflexo.pamela.exceptions.ModelDefinitionException;
 
 /**
  * {@link FlexoProject} PAMELA factory<br>

@@ -58,7 +58,7 @@ import org.openflexo.foundation.fml.parser.node.AUseDeclaration;
 import org.openflexo.foundation.fml.parser.node.AViewpointDeclaration;
 import org.openflexo.foundation.fml.parser.node.AVirtualModelDeclaration;
 import org.openflexo.foundation.fml.parser.node.Node;
-import org.openflexo.model.exceptions.ModelDefinitionException;
+import org.openflexo.pamela.exceptions.ModelDefinitionException;
 
 /**
  * This class implements the semantics analyzer for a parsed FML compilation unit.<br>

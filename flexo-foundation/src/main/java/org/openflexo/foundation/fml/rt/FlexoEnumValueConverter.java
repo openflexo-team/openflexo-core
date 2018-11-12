@@ -40,9 +40,9 @@ package org.openflexo.foundation.fml.rt;
 
 import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.fml.FlexoEnum;
-import org.openflexo.model.StringConverterLibrary.Converter;
-import org.openflexo.model.exceptions.InvalidDataException;
-import org.openflexo.model.factory.ModelFactory;
+import org.openflexo.pamela.StringConverterLibrary.Converter;
+import org.openflexo.pamela.exceptions.InvalidDataException;
+import org.openflexo.pamela.factory.ModelFactory;
 
 public class FlexoEnumValueConverter extends Converter<FlexoEnumInstance> {
 
