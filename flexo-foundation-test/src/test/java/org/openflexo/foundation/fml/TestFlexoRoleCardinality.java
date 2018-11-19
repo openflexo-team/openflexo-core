@@ -135,7 +135,7 @@ public class TestFlexoRoleCardinality extends OpenflexoProjectAtRunTimeTestCase 
 	}
 
 	/**
-	 * Test {@link ViewPoint} creation, check {@link BindingModel}
+	 * Test {@link VirtualModel} creation, check {@link BindingModel}
 	 * 
 	 * @throws ModelDefinitionException
 	 * @throws SaveResourceException

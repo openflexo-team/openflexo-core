@@ -89,8 +89,8 @@ import org.openflexo.pamela.validation.ValidationRule;
 /**
  * Generic base action used to instanciate a {@link FlexoConceptInstance} in a given {@link FMLRTVirtualModelInstance}.
  * 
- * Note that this is also the base implementation for adding of a {@link FMLRTVirtualModelInstance} in a {@link View}, or a {@link View} in
- * its parent {@link View}
+ * Note that this is also the base implementation for adding of a {@link FMLRTVirtualModelInstance} in a {@link VirtualModelInstance}, or a {@link VirtualModelInstance} in
+ * its parent {@link VirtualModelInstance}
  * 
  * 
  * @author sylvain

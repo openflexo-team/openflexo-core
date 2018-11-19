@@ -47,7 +47,7 @@ import org.openflexo.view.controller.FlexoController;
 import org.openflexo.view.controller.model.FlexoPerspective;
 
 /**
- * This is the {@link ModuleView} representing a {@link ViewPoint}
+ * This is the {@link ModuleView} representing a {@link VirtualModel}
  * 
  * @author sguerin
  * 

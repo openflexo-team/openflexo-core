@@ -231,7 +231,7 @@ public class VirtualModelLibrary extends DefaultFlexoObject implements FlexoServ
 
 	/**
 	 * Lookup and return {@link FlexoConcept} identified by supplied flexoConceptURI<br>
-	 * Return concept might be a {@link ViewPoint}, a {@link VirtualModel} or a simple {@link FlexoConcept}<br>
+	 * Return concept might be a {@link VirtualModel}, a {@link VirtualModel} or a simple {@link FlexoConcept}<br>
 	 * Use of this method triggers required virtual models to be loaded
 	 * 
 	 * @param flexoConceptURI
@@ -255,7 +255,7 @@ public class VirtualModelLibrary extends DefaultFlexoObject implements FlexoServ
 
 	/**
 	 * Lookup and return {@link FlexoConcept} identified by supplied flexoConceptURI<br>
-	 * Return concept might be a {@link ViewPoint}, a {@link VirtualModel} or a simple {@link FlexoConcept}<br>
+	 * Return concept might be a {@link VirtualModel}, a {@link VirtualModel} or a simple {@link FlexoConcept}<br>
 	 * If the flag loadWhenRequired is set to true, load required virtual models
 	 * 
 	 * @param flexoConceptURI

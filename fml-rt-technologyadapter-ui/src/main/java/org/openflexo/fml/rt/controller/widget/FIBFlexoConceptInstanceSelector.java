@@ -52,7 +52,7 @@ import org.openflexo.rm.ResourceLocator;
  * The scope of searched EPI is either:
  * <ul>
  * <li>the whole project, if {@link FlexoProject} has been set</li>
- * <li>a view, if {@link View} has been set</li>
+ * <li>a view, if {@link VirtualModelInstance} has been set</li>
  * <li>a virtual model instance, if {@link FMLRTVirtualModelInstance} has been set</li>
  * </ul>
  * 

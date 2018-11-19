@@ -388,7 +388,7 @@ public interface VirtualModel extends FlexoConcept, FlexoMetaModel<VirtualModel>
 	VirtualModelInstanceType getVirtualModelInstanceType();
 
 	/**
-	 * Return all loaded {@link VirtualModel} defined in this {@link ViewPoint}<br>
+	 * Return all loaded {@link VirtualModel} defined in this {@link VirtualModel}<br>
 	 * Warning: if a VirtualModel was not loaded, it wont be added to the returned list<br>
 	 * See {@link #getVirtualModels(boolean)} to force the loading of unloaded virtual models
 	 * 
@@ -1106,8 +1106,8 @@ public interface VirtualModel extends FlexoConcept, FlexoMetaModel<VirtualModel>
 		/**
 		 * Hook called when scope of a FMLObject changed.<br>
 		 * 
-		 * It happens for example when a {@link VirtualModel} is declared to be contained in a {@link ViewPoint}<br>
-		 * On that example {@link #getBindingFactory()} rely on {@link ViewPoint} enclosing, we must provide this hook to give a chance to
+		 * It happens for example when a {@link VirtualModel} is declared to be contained in a {@link VirtualModel}<br>
+		 * On that example {@link #getBindingFactory()} rely on {@link VirtualModel} enclosing, we must provide this hook to give a chance to
 		 * objects that rely on ViewPoint instanciation context to update their bindings (some bindings might becomes valid)<br>
 		 * 
 		 * It may also happen if an EditionAction is moved from a control graph to another control graph, etc...<br>
@@ -1229,7 +1229,7 @@ public interface VirtualModel extends FlexoConcept, FlexoMetaModel<VirtualModel>
 		}
 
 		/**
-		 * Return all loaded {@link VirtualModel} defined in this {@link ViewPoint}<br>
+		 * Return all loaded {@link VirtualModel} defined in this {@link VirtualModel}<br>
 		 * Warning: if a VirtualModel was not loaded, it wont be added to the returned list<br>
 		 * See {@link #getVirtualModels(boolean)} to force the loading of unloaded virtual models
 		 * 
@@ -1241,7 +1241,7 @@ public interface VirtualModel extends FlexoConcept, FlexoMetaModel<VirtualModel>
 		}
 
 		/**
-		 * Return all {@link VirtualModel} defined in this {@link ViewPoint}<br>
+		 * Return all {@link VirtualModel} defined in this {@link VirtualModel}<br>
 		 * When forceLoad set to true, force the loading of all virtual models
 		 * 
 		 * @return

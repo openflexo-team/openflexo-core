@@ -182,7 +182,7 @@ public interface FMLObject extends FlexoObject, Bindable, InnerResourceData/*<Vi
 	/**
 	 * Return the {@link ResourceData} (the "container") of this {@link FMLObject}.<br>
 	 * The container is the {@link ResourceData} of this object.<br>
-	 * It is an instance of {@link VirtualModel} (a {@link VirtualModel} or a {@link ViewPoint})
+	 * It is an instance of {@link VirtualModel} (a {@link VirtualModel} or a {@link VirtualModel})
 	 * 
 	 * @return
 	 */
@@ -192,8 +192,8 @@ public interface FMLObject extends FlexoObject, Bindable, InnerResourceData/*<Vi
 	/**
 	 * Hook called when scope of a FMLObject changed.<br>
 	 * 
-	 * It happens for example when a {@link VirtualModel} is declared to be contained in a {@link ViewPoint}<br>
-	 * On that example {@link #getBindingFactory()} rely on {@link ViewPoint} enclosing, we must provide this hook to give a chance to
+	 * It happens for example when a {@link VirtualModel} is declared to be contained in a {@link VirtualModel}<br>
+	 * On that example {@link #getBindingFactory()} rely on {@link VirtualModel} enclosing, we must provide this hook to give a chance to
 	 * objects that rely on ViewPoint instanciation context to update their bindings (some bindings might becomes valid)<br>
 	 * 
 	 * It may also happen if an EditionAction is moved from a control graph to another control graph, etc...
@@ -285,7 +285,7 @@ public interface FMLObject extends FlexoObject, Bindable, InnerResourceData/*<Vi
 		/**
 		 * Return the {@link ResourceData} (the "container") of this {@link FMLObject}.<br>
 		 * The container is the {@link ResourceData} of this object.<br>
-		 * It is an instance of {@link VirtualModel} (a {@link VirtualModel} or a {@link ViewPoint})
+		 * It is an instance of {@link VirtualModel} (a {@link VirtualModel} or a {@link VirtualModel})
 		 * 
 		 * @return
 		 */
@@ -294,7 +294,7 @@ public interface FMLObject extends FlexoObject, Bindable, InnerResourceData/*<Vi
 
 		/**
 		 * Return the ViewPoint in which this {@link FMLObject} is defined<br>
-		 * If container of this object is a {@link ViewPoint}, return this ViewPoint<br>
+		 * If container of this object is a {@link VirtualModel}, return this ViewPoint<br>
 		 * Otherwise, container of this object is a {@link VirtualModel}, return ViewPoint of VirtualModel
 		 * 
 		 */
@@ -362,8 +362,8 @@ public interface FMLObject extends FlexoObject, Bindable, InnerResourceData/*<Vi
 		/**
 		 * Hook called when scope of a FMLObject changed.<br>
 		 * 
-		 * It happens for example when a {@link VirtualModel} is declared to be contained in a {@link ViewPoint}<br>
-		 * On that example {@link #getBindingFactory()} rely on {@link ViewPoint} enclosing, we must provide this hook to give a chance to
+		 * It happens for example when a {@link VirtualModel} is declared to be contained in a {@link VirtualModel}<br>
+		 * On that example {@link #getBindingFactory()} rely on {@link VirtualModel} enclosing, we must provide this hook to give a chance to
 		 * objects that rely on ViewPoint instanciation context to update their bindings (some bindings might becomes valid)<br>
 		 * 
 		 * It may also happen if an EditionAction is moved from a control graph to another control graph, etc...<br>

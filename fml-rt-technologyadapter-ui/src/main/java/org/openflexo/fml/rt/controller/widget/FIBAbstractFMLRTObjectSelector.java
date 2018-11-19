@@ -64,7 +64,7 @@ import org.openflexo.foundation.resource.RepositoryFolder;
  * <ul>
  * <li>the whole environment (all is foundable in all resource centers), if {@link FlexoServiceManager} has been set</li>
  * <li>a resource center, if {@link FlexoResourceCenter} has been set</li>
- * <li>a view, if {@link View} has been set</li>
+ * <li>a view, if {@link VirtualModelInstance} has been set</li>
  * <li>a virtual model instance, if {@link FMLRTVirtualModelInstance} has been set</li>
  * </ul>
  * 

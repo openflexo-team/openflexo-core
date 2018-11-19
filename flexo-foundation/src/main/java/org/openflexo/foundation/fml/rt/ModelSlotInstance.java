@@ -66,7 +66,7 @@ import org.openflexo.toolbox.StringUtils;
  * Concretize the binding of a {@link ModelSlot} to a concrete {@link FlexoModel}<br>
  * This is the binding point between a {@link ModelSlot} and its concretization in a {@link FMLRTVirtualModelInstance}
  * 
- * The {@link ModelSlotInstance} are instantiated inside a {@link View}
+ * The {@link ModelSlotInstance} are instantiated inside a {@link VirtualModelInstance}
  * 
  * @author Luka Le Roux, Sylvain Guerin
  * @see ModelSlot

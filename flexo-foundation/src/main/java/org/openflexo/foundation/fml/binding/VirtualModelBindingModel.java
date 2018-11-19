@@ -51,7 +51,7 @@ import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
  * This is the {@link BindingModel} exposed by a {@link VirtualModel}<br>
  * This {@link BindingModel} is based on ViewPoint's (owner of this VirtualModel) {@link BindingModel}
  * 
- * Provides access to the {@link View}<br>
+ * Provides access to the {@link VirtualModelInstance}<br>
  * Allows reflexive access to the {@link VirtualModel} itself<br>
  * 
  * Note that default {@link RunTimeEvaluationContext} corresponding to this {@link BindingModel} is a {@link FMLRTVirtualModelInstance}

@@ -339,7 +339,7 @@ public interface VirtualModelInstance<VMI extends VirtualModelInstance<VMI, TA>,
 	public void setContainerVirtualModelInstance(VirtualModelInstance<?, ?> containerVMI);
 
 	/**
-	 * Return all {@link FMLRTVirtualModelInstance} defined in this {@link View}
+	 * Return all {@link FMLRTVirtualModelInstance} defined in this {@link VirtualModelInstance}
 	 * 
 	 * @return
 	 */
@@ -373,7 +373,7 @@ public interface VirtualModelInstance<VMI extends VirtualModelInstance<VMI, TA>,
 	public boolean isValidVirtualModelInstanceName(String virtualModelName);
 
 	/**
-	 * Return the list of {@link TechnologyAdapter} used in the context of this {@link View}
+	 * Return the list of {@link TechnologyAdapter} used in the context of this {@link VirtualModelInstance}
 	 * 
 	 * @return
 	 */
@@ -1350,7 +1350,7 @@ public interface VirtualModelInstance<VMI extends VirtualModelInstance<VMI, TA>,
 		}
 
 		/**
-		 * Return the list of {@link TechnologyAdapter} used in the context of this {@link View}
+		 * Return the list of {@link TechnologyAdapter} used in the context of this {@link VirtualModelInstance}
 		 * 
 		 * @return
 		 */
