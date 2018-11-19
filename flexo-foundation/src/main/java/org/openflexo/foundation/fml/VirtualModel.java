@@ -1098,6 +1098,7 @@ public interface VirtualModel extends FlexoConcept, FlexoMetaModel<VirtualModel>
 
 		@Override
 		public VirtualModel getOwner() {
+			// Fixed CORE-293
 			// return getDeclaringVirtualModel();
 			return getContainerVirtualModel();
 		}

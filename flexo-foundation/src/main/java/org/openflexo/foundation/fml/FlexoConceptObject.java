@@ -104,6 +104,9 @@ public interface FlexoConceptObject extends FMLObject {
 
 		@Override
 		public VirtualModel getResourceData() {
+			if (getFlexoConcept() instanceof VirtualModel) {
+				return (VirtualModel) getFlexoConcept();
+			}
 			if (getFlexoConcept() != null && getFlexoConcept().getOwner() != null) {
 				return getFlexoConcept().getOwner();
 			}
