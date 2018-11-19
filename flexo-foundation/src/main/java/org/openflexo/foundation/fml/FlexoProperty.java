@@ -53,6 +53,7 @@ import org.openflexo.connie.type.TypeUtils;
 import org.openflexo.foundation.fml.FMLRepresentationContext.FMLRepresentationOutput;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.pamela.annotations.CloningStrategy;
+import org.openflexo.pamela.annotations.CloningStrategy.StrategyType;
 import org.openflexo.pamela.annotations.DefineValidationRule;
 import org.openflexo.pamela.annotations.Getter;
 import org.openflexo.pamela.annotations.ImplementationClass;
@@ -61,7 +62,6 @@ import org.openflexo.pamela.annotations.Imports;
 import org.openflexo.pamela.annotations.ModelEntity;
 import org.openflexo.pamela.annotations.PropertyIdentifier;
 import org.openflexo.pamela.annotations.Setter;
-import org.openflexo.pamela.annotations.CloningStrategy.StrategyType;
 import org.openflexo.pamela.validation.ValidationError;
 import org.openflexo.pamela.validation.ValidationIssue;
 import org.openflexo.pamela.validation.ValidationRule;
@@ -274,14 +274,15 @@ public abstract interface FlexoProperty<T> extends FlexoConceptObject {
 
 		@Override
 		public String toString() {
-			return getClass().getSimpleName() + ":" + getPropertyName() + "[container="
-					+ (getFlexoConcept() != null
-							? getFlexoConcept().getName() + "/"
-									+ (getFlexoConcept().getOwningVirtualModel() != null
-											? getFlexoConcept().getOwningVirtualModel().getName()
-											: "null")
-							: "null")
-					+ "][" + Integer.toHexString(hashCode()) + "]";
+			return getClass().getSimpleName() + ":" + getPropertyName() /*+ "[container="
+																		+ (getFlexoConcept() != null
+																		? getFlexoConcept().getName() + "/"
+																		+ (getFlexoConcept().getOwningVirtualModel() != null
+																		? getFlexoConcept().getOwningVirtualModel().getName()
+																		: "null")
+																		: "null")
+																		+ "]*/
+					+ " [" + Integer.toHexString(hashCode()) + "]";
 		}
 
 		/**
