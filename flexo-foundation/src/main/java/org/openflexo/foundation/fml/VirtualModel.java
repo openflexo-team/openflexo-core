@@ -49,6 +49,8 @@ import java.util.Set;
 import java.util.Vector;
 import java.util.logging.Logger;
 
+import javax.swing.text.View;
+
 import org.openflexo.connie.Bindable;
 import org.openflexo.connie.BindingFactory;
 import org.openflexo.foundation.FlexoException;
@@ -74,9 +76,11 @@ import org.openflexo.foundation.technologyadapter.TypeAwareModelSlot;
 import org.openflexo.foundation.technologyadapter.UseModelSlotDeclaration;
 import org.openflexo.pamela.annotations.Adder;
 import org.openflexo.pamela.annotations.CloningStrategy;
+import org.openflexo.pamela.annotations.CloningStrategy.StrategyType;
 import org.openflexo.pamela.annotations.DefineValidationRule;
 import org.openflexo.pamela.annotations.Embedded;
 import org.openflexo.pamela.annotations.Getter;
+import org.openflexo.pamela.annotations.Getter.Cardinality;
 import org.openflexo.pamela.annotations.ImplementationClass;
 import org.openflexo.pamela.annotations.Import;
 import org.openflexo.pamela.annotations.Imports;
@@ -87,8 +91,6 @@ import org.openflexo.pamela.annotations.Remover;
 import org.openflexo.pamela.annotations.Setter;
 import org.openflexo.pamela.annotations.XMLAttribute;
 import org.openflexo.pamela.annotations.XMLElement;
-import org.openflexo.pamela.annotations.CloningStrategy.StrategyType;
-import org.openflexo.pamela.annotations.Getter.Cardinality;
 import org.openflexo.pamela.validation.Validable;
 import org.openflexo.pamela.validation.ValidationError;
 import org.openflexo.pamela.validation.ValidationIssue;
@@ -1099,7 +1101,8 @@ public interface VirtualModel extends FlexoConcept, FlexoMetaModel<VirtualModel>
 
 		@Override
 		public VirtualModel getOwner() {
-			return getDeclaringVirtualModel();
+			// return getDeclaringVirtualModel();
+			return getContainerVirtualModel();
 		}
 
 		/**
