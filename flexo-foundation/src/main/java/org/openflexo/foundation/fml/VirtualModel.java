@@ -49,8 +49,6 @@ import java.util.Set;
 import java.util.Vector;
 import java.util.logging.Logger;
 
-import javax.swing.text.View;
-
 import org.openflexo.connie.Bindable;
 import org.openflexo.connie.BindingFactory;
 import org.openflexo.foundation.FlexoException;
@@ -100,8 +98,7 @@ import org.openflexo.toolbox.JavaUtils;
 import org.openflexo.toolbox.StringUtils;
 
 /**
- * An {@link VirtualModel} is the specification of a model which will be instantied in a {@link View} as a set of federated models. An
- * {@link VirtualModel} is either a {@link VirtualModel} of a {@link ViewPoint}
+ * An {@link VirtualModel} is the specification of a model which will be instantied as a set of federated models.
  * 
  * The base modelling element of a {@link VirtualModel} is provided by {@link FlexoConcept} concept.
  * 
