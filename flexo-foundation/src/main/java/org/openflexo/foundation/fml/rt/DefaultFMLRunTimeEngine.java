@@ -193,8 +193,8 @@ public abstract class DefaultFMLRunTimeEngine implements FMLRunTimeEngine, Prope
 				bvChangeListener = new BindingValueChangeListener<VirtualModelInstance<?, ?>>(vmiBinding, evaluationContext, true) {
 					@Override
 					public void bindingValueChanged(Object source, VirtualModelInstance<?, ?> newValue) {
-						System.out.println(" **** bindingValueChanged() detected for fci=" + instanceBeeingListening + "vmi="
-								+ listener.getListenedVirtualModelInstance() + " with newValue=" + newValue + " source=" + source);
+						// System.out.println(" **** bindingValueChanged() detected for fci=" + instanceBeeingListening + "vmi="
+						// + listener.getListenedVirtualModelInstance() + " with newValue=" + newValue + " source=" + source);
 						listenTo(newValue);
 					}
 				};
