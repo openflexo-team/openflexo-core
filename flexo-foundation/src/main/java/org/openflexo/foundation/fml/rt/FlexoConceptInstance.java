@@ -85,10 +85,12 @@ import org.openflexo.foundation.technologyadapter.TechnologyObject;
 import org.openflexo.logging.FlexoLogger;
 import org.openflexo.pamela.annotations.Adder;
 import org.openflexo.pamela.annotations.CloningStrategy;
+import org.openflexo.pamela.annotations.CloningStrategy.StrategyType;
 import org.openflexo.pamela.annotations.DeserializationFinalizer;
 import org.openflexo.pamela.annotations.DeserializationInitializer;
 import org.openflexo.pamela.annotations.Embedded;
 import org.openflexo.pamela.annotations.Getter;
+import org.openflexo.pamela.annotations.Getter.Cardinality;
 import org.openflexo.pamela.annotations.ImplementationClass;
 import org.openflexo.pamela.annotations.Import;
 import org.openflexo.pamela.annotations.Imports;
@@ -99,8 +101,6 @@ import org.openflexo.pamela.annotations.Remover;
 import org.openflexo.pamela.annotations.Setter;
 import org.openflexo.pamela.annotations.XMLAttribute;
 import org.openflexo.pamela.annotations.XMLElement;
-import org.openflexo.pamela.annotations.CloningStrategy.StrategyType;
-import org.openflexo.pamela.annotations.Getter.Cardinality;
 import org.openflexo.toolbox.StringUtils;
 
 /**
@@ -429,6 +429,8 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 	 * as a String expressed in FML language, and execute this expression in that run-time context<br>
 	 * Return the value computed from the expression in that run-time context.
 	 * 
+	 * Note that 'this' is implicitely used and replaces first path element when missing
+	 * 
 	 * TODO: add FlexoEditor parameter instead of using {@link #getEditor()}
 	 * 
 	 * @param expression
@@ -444,6 +446,8 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 	 * Use the current FlexoConceptInstance as the run-time context of an expression supplied<br>
 	 * as a String expressed in FML language, and a set of arguments given in appearing order in the expression<br>
 	 * Execute this expression in that run-time context and return the value computed from the expression in that run-time context.
+	 * 
+	 * Note that 'this' is implicitely used and replaces first path element when missing
 	 * 
 	 * Syntax is this:
 	 * 
