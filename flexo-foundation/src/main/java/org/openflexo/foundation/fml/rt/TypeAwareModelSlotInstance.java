@@ -83,7 +83,7 @@ public interface TypeAwareModelSlotInstance<M extends FlexoModel<M, MM> & Techno
 	public M getModel();
 
 	public static abstract class TypeAwareModelSlotInstanceImpl<M extends FlexoModel<M, MM> & TechnologyObject<?>, MM extends FlexoMetaModel<MM> & TechnologyObject<?>, MS extends TypeAwareModelSlot<M, MM>>
-			extends ModelSlotInstanceImpl<MS, M>implements TypeAwareModelSlotInstance<M, MM, MS> {
+			extends ModelSlotInstanceImpl<MS, M> implements TypeAwareModelSlotInstance<M, MM, MS> {
 
 		private static final Logger logger = Logger.getLogger(TypeAwareModelSlotInstance.class.getPackage().getName());
 
@@ -126,6 +126,12 @@ public interface TypeAwareModelSlotInstance<M extends FlexoModel<M, MM> & Techno
 			}
 			if (accessedResourceData == null && StringUtils.isNotEmpty(modelURI)) {
 				logger.warning("cannot find model " + modelURI);
+				/*for (FlexoResourceCenter<?> rc : svcManager.getResourceCenterService().getResourceCenters()) {
+					System.out.println("--------------- RC: " + rc);
+					for (FlexoResource<?> resource : rc.getAllResources()) {
+						System.out.println(" > " + resource.getURI());
+					}
+				}*/
 			}
 			return accessedResourceData;
 		}
