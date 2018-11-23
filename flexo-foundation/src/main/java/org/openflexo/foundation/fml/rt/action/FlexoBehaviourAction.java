@@ -162,7 +162,7 @@ public abstract class FlexoBehaviourAction<A extends FlexoBehaviourAction<A, FB,
 	@Override
 	public String getLocalizedName() {
 		if (getLocales() != null) {
-			return getLocales().localizedForKey(getFlexoBehaviour().getName());
+			return getLocales().localizedForKey(getFlexoBehaviour().getLabel());
 		}
 		return super.getLocalizedName();
 	}
