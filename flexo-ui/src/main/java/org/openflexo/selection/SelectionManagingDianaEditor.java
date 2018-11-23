@@ -42,14 +42,15 @@ package org.openflexo.selection;
 import java.awt.Component;
 import java.awt.Point;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.logging.Logger;
 
 import javax.swing.SwingUtilities;
 
-import org.openflexo.diana.Drawing;
 import org.openflexo.diana.DianaModelFactory;
 import org.openflexo.diana.DianaUtils;
+import org.openflexo.diana.Drawing;
 import org.openflexo.diana.Drawing.DrawingTreeNode;
 import org.openflexo.diana.control.MouseClickControlAction;
 import org.openflexo.diana.control.MouseControlContext;
@@ -110,6 +111,13 @@ public class SelectionManagingDianaEditor<M extends FlexoObject> extends JDianaI
 
 	@Override
 	public void setSelectedObjects(List<? extends DrawingTreeNode<?, ?>> someSelectedObjects) {
+		if (someSelectedObjects == null) {
+			someSelectedObjects = Collections.emptyList();
+		}
+		// If the current selection is the same as requested, just return
+		if (someSelectedObjects.equals(getSelectedObjects())) {
+			return;
+		}
 		if (_selectionManager != null) {
 			_selectionManager.resetSelection(true);
 		}
