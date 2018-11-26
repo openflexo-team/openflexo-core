@@ -88,9 +88,14 @@ public interface DeleteAction<T extends FlexoObject> extends AssignableAction<T>
 		private DataBinding<T> object;
 
 		@Override
+		public String getStringRepresentation() {
+			return "delete " + getObject().toString();
+		}
+
+		@Override
 		public String getFMLRepresentation(FMLRepresentationContext context) {
 			FMLRepresentationOutput out = new FMLRepresentationOutput(context);
-			out.append(getObject().toString() + ".delete()" + ";", context);
+			out.append("delete " + getObject().toString() + ";", context);
 			return out.toString();
 		}
 
