@@ -63,9 +63,11 @@ import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
 import org.openflexo.foundation.fml.rt.rm.AbstractVirtualModelInstanceResource;
 import org.openflexo.pamela.annotations.Adder;
 import org.openflexo.pamela.annotations.CloningStrategy;
+import org.openflexo.pamela.annotations.CloningStrategy.StrategyType;
 import org.openflexo.pamela.annotations.DefineValidationRule;
 import org.openflexo.pamela.annotations.Embedded;
 import org.openflexo.pamela.annotations.Getter;
+import org.openflexo.pamela.annotations.Getter.Cardinality;
 import org.openflexo.pamela.annotations.ImplementationClass;
 import org.openflexo.pamela.annotations.ModelEntity;
 import org.openflexo.pamela.annotations.PropertyIdentifier;
@@ -73,8 +75,6 @@ import org.openflexo.pamela.annotations.Remover;
 import org.openflexo.pamela.annotations.Setter;
 import org.openflexo.pamela.annotations.XMLAttribute;
 import org.openflexo.pamela.annotations.XMLElement;
-import org.openflexo.pamela.annotations.CloningStrategy.StrategyType;
-import org.openflexo.pamela.annotations.Getter.Cardinality;
 import org.openflexo.pamela.validation.CompoundIssue;
 import org.openflexo.pamela.validation.ValidationError;
 import org.openflexo.pamela.validation.ValidationIssue;
@@ -324,6 +324,16 @@ public interface DeleteFlexoConceptInstance<VMI extends VirtualModelInstance<VMI
 				out.append(getObject().toString() + ".delete()" + ";", context);
 			}
 			return out.toString();
+		}
+
+		@Override
+		public String getStringRepresentation() {
+			if (getDeletionScheme() != null) {
+				return getObject().toString() + "." + getDeletionScheme().getName() + "()";
+			}
+			else {
+				return super.getStringRepresentation();
+			}
 		}
 	}
 
