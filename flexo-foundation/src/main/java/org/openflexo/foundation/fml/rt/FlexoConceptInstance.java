@@ -64,6 +64,7 @@ import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.FlexoProject;
+import org.openflexo.foundation.fml.AbstractProperty;
 import org.openflexo.foundation.fml.CloningScheme;
 import org.openflexo.foundation.fml.DeletionScheme;
 import org.openflexo.foundation.fml.ExpressionProperty;
@@ -725,6 +726,17 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 						}
 					}
 				}
+				else if (flexoProperty instanceof AbstractProperty) {
+					FlexoProperty<T> specializedProperty = (FlexoProperty<T>) getFlexoConcept()
+							.getAccessibleProperty(flexoProperty.getName());
+					if (flexoProperty != specializedProperty) {
+						return getFlexoPropertyValue(specializedProperty);
+					}
+					else {
+						logger.warning("Cannot execute abstract property: " + flexoProperty);
+						return null;
+					}
+				}
 			}
 			logger.warning("Not implemented: getValue() for " + this + " property=" + flexoProperty);
 			return null;
@@ -783,7 +795,8 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 					}
 					else if (flexoProperty instanceof GetSetProperty) {
 
-						System.out.println("On veut executer un SET sur la GetSetProperty " + flexoProperty + " avec la valeur " + value);
+						// System.out.println("On veut executer un SET sur la GetSetProperty " + flexoProperty + " avec la valeur " +
+						// value);
 
 						FMLControlGraph setControlGraph = ((GetSetProperty<T>) flexoProperty).getSetControlGraph();
 						try {
@@ -806,6 +819,16 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 							}
 						} catch (FlexoException e) {
 							e.printStackTrace();
+						}
+					}
+					else if (flexoProperty instanceof AbstractProperty) {
+						FlexoProperty<T> specializedProperty = (FlexoProperty<T>) getFlexoConcept()
+								.getAccessibleProperty(flexoProperty.getName());
+						if (flexoProperty != specializedProperty) {
+							setFlexoPropertyValue(specializedProperty, value);
+						}
+						else {
+							logger.warning("Cannot execute abstract property: " + flexoProperty);
 						}
 					}
 
