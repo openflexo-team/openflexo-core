@@ -489,6 +489,11 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 	 */
 	public boolean performCoreDeletion();
 
+	/**
+	 * Delete this FlexoConcept instance using supplied DeletionScheme
+	 */
+	public boolean deleteWithScheme(DeletionScheme deletionScheme);
+
 	public static abstract class FlexoConceptInstanceImpl extends VirtualModelInstanceObjectImpl implements FlexoConceptInstance {
 
 		private static final Logger logger = FlexoLogger.getLogger(FlexoConceptInstance.class.getPackage().toString());
@@ -1650,6 +1655,10 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 		 */
 		@Override
 		public boolean delete(Object... context) {
+
+			System.out.println("delete " + this);
+			Thread.dumpStack();
+
 			// Also implement properly #getDeletedProperty()
 			if (getFlexoConcept() != null) {
 				if (getFlexoConcept().getDefaultDeletionScheme() != null) {
@@ -1688,12 +1697,14 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 		/**
 		 * Delete this FlexoConcept instance using supplied DeletionScheme
 		 */
+		@Override
 		public boolean deleteWithScheme(DeletionScheme deletionScheme) {
 			if (isDeleted()) {
 				return false;
 			}
 
 			FlexoConceptInstance container = getContainerFlexoConceptInstance();
+			VirtualModelInstance<?, ?> vmi = getOwningVirtualModelInstance();
 
 			if (deletionScheme != null && deletionScheme.getControlGraph() != null) {
 				try {
@@ -1710,7 +1721,6 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 				container.removeFromEmbeddedFlexoConceptInstances(this);
 			}
 
-			VirtualModelInstance<?, ?> vmi = getOwningVirtualModelInstance();
 			if (vmi != null) {
 				vmi.removeFromFlexoConceptInstances(this);
 			}

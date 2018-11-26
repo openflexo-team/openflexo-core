@@ -48,7 +48,6 @@ import org.openflexo.foundation.action.FlexoAction;
 import org.openflexo.foundation.action.InvalidParametersException;
 import org.openflexo.foundation.action.NotImplementedException;
 import org.openflexo.foundation.fml.DeletionScheme;
-import org.openflexo.foundation.fml.FlexoBehaviour;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.VirtualModelInstanceObject;
 
@@ -108,9 +107,6 @@ public class DeletionSchemeAction extends AbstractActionSchemeAction<DeletionSch
 		return getFlexoBehaviour();
 	}
 
-	// private VirtualModelInstance<?, ?> vmInstance;
-	// private FlexoConceptInstance flexoConceptInstanceToDelete;
-
 	@Override
 	protected void doAction(Object context) throws NotImplementedException, InvalidParametersException, FlexoException {
 		if (logger.isLoggable(Level.FINE)) {
@@ -118,101 +114,12 @@ public class DeletionSchemeAction extends AbstractActionSchemeAction<DeletionSch
 			logger.fine("getDeletionScheme()=" + getDeletionScheme());
 			logger.fine("getFlexoConceptInstance()=" + getFlexoConceptInstance());
 		}
-		executeControlGraph();
-		/*if (getFlexoConceptInstanceToDelete() != null) {
-			getFlexoConceptInstanceToDelete().delete(context);
-		}*/
-		if (getFlexoConceptInstance() != null) {
+		if (getDeletionScheme() != null) {
+			getFlexoConceptInstance().deleteWithScheme(getDeletionScheme());
+		}
+		else {
 			getFlexoConceptInstance().delete(context);
 		}
 	}
-
-	/**
-	 * Return the {@link FlexoConceptInstance} on which this {@link FlexoBehaviour} is applied.<br>
-	 * This is this instance that will be deleted.
-	 * 
-	 * @return
-	 */
-	@Override
-	public final FlexoConceptInstance getFlexoConceptInstance() {
-		/*if (flexoConceptInstanceToDelete == null && getFocusedObject() != null) {
-			flexoConceptInstanceToDelete = getFocusedObject();
-		}
-		return flexoConceptInstanceToDelete;*/
-		return super.getFlexoConceptInstance();
-	}
-
-	/*@Override
-	public VirtualModelInstance<?, ?> getVirtualModelInstance() {
-		if (vmInstance == null) {
-			FlexoConceptInstance vObject = getFocusedObject();
-			if (vObject instanceof FMLRTVirtualModelInstance) {
-				vmInstance = (VirtualModelInstance<?, ?>) getFocusedObject();
-			}
-			else if (vObject instanceof FlexoConceptInstance) {
-				vmInstance = vObject.getVirtualModelInstance();
-			}
-		}
-		return vmInstance;
-	}
-	
-	public void setVirtualModelInstance(VirtualModelInstance<?, ?> vmInstance) {
-		this.vmInstance = vmInstance;
-	}*/
-
-	/*@Override
-	public FlexoConceptInstance getFlexoConceptInstance() {
-		return getFlexoConceptInstanceToDelete();
-	}
-	
-	public FlexoConceptInstance getFlexoConceptInstanceToDelete() {
-		if (flexoConceptInstanceToDelete == null && getFocusedObject() instanceof DiagramElement) {
-			flexoConceptInstanceToDelete = ((DiagramElement) getFocusedObject()).getFlexoConceptInstance();
-		}
-		return flexoConceptInstanceToDelete;
-	}
-	
-	public void setFlexoConceptInstanceToDelete(FlexoConceptInstance flexoConceptInstanceToDelete) {
-		this.flexoConceptInstanceToDelete = flexoConceptInstanceToDelete;
-	}*/
-
-	/*@Override
-	public VirtualModelInstance<?, ?> retrieveVirtualModelInstance() {
-		return getVirtualModelInstance();
-	}*/
-
-	/*@Override
-	public Object getValue(BindingVariable variable) {
-		FlexoConceptInstance fci = this.getFlexoConceptInstanceToDelete();
-		if (fci != null && variable != null) {
-			if (variable instanceof FlexoRoleBindingVariable) {
-				FlexoRole<?> role = ((FlexoRoleBindingVariable) variable).getFlexoRole();
-				if (role != null) {
-					if (role.getCardinality().isMultipleCardinality()) {
-						return fci.getFlexoActorList(role);
-					}
-					else {
-						return fci.getFlexoActor(role);
-					}
-				}
-				else {
-					logger.warning("Trying to delete a null actor for : " + fci.getFlexoConceptURI() + "/" + variable.toString());
-				}
-			}
-			return super.getValue(variable);
-		}
-		return null;
-	}*/
-
-	/*public FlexoConceptInstance getFlexoConceptInstanceToDelete() {
-		if (flexoConceptInstanceToDelete == null && getFocusedObject() != null) {
-			flexoConceptInstanceToDelete = getFocusedObject();
-		}
-		return flexoConceptInstanceToDelete;
-	}
-	
-	public void setFlexoConceptInstanceToDelete(FlexoConceptInstance flexoConceptInstanceToDelete) {
-		this.flexoConceptInstanceToDelete = flexoConceptInstanceToDelete;
-	}*/
 
 }
