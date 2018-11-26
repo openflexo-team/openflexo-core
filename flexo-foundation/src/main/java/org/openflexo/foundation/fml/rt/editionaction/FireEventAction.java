@@ -112,7 +112,9 @@ public interface FireEventAction<VMI extends VirtualModelInstance<VMI, ?>>
 			FlexoEventInstance returned = (FlexoEventInstance) super.execute(evaluationContext);
 
 			// And we fire the new event to the listening FMLRunTimeEngine(s)
-			vmi.getPropertyChangeSupport().firePropertyChange(FMLRTVirtualModelInstance.EVENT_FIRED, null, returned);
+			if (vmi != null) {
+				vmi.getPropertyChangeSupport().firePropertyChange(FMLRTVirtualModelInstance.EVENT_FIRED, null, returned);
+			}
 
 			return returned;
 		}
