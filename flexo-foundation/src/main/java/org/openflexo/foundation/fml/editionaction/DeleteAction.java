@@ -50,6 +50,7 @@ import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.fml.FMLRepresentationContext;
 import org.openflexo.foundation.fml.FMLRepresentationContext.FMLRepresentationOutput;
 import org.openflexo.foundation.fml.FlexoProperty;
+import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
 import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
 import org.openflexo.foundation.resource.FlexoResource;
@@ -155,6 +156,12 @@ public interface DeleteAction<T extends FlexoObject> extends AssignableAction<T>
 				e1.printStackTrace();
 			}
 
+			// Handle special case of explicit call to super delete
+			if (objectToDelete instanceof FlexoConceptInstance && getObject() != null && getObject().toString().equals("this")) {
+				((FlexoConceptInstance) objectToDelete).performCoreDeletion();
+				return objectToDelete;
+			}
+
 			if (objectToDelete == null) {
 				return null;
 			}
@@ -166,7 +173,15 @@ public interface DeleteAction<T extends FlexoObject> extends AssignableAction<T>
 				}
 
 				logger.info("Delete object " + objectToDelete + " for object " + getObject() + " this=" + this);
+				if (objectToDelete instanceof FlexoConceptInstance) {
+					logger.info("On supprime " + objectToDelete + " of " + ((FlexoConceptInstance) objectToDelete).getFlexoConcept());
+				}
 				objectToDelete.delete();
+				logger.info("END Deleting object " + objectToDelete + " for object " + getObject() + " this=" + this);
+				if (objectToDelete instanceof FlexoConceptInstance) {
+					logger.info("END On vient de supprimer " + objectToDelete + " of "
+							+ ((FlexoConceptInstance) objectToDelete).getFlexoConcept());
+				}
 
 				if (resourceToDelete != null) {
 					logger.info("Also delete resource " + resourceToDelete);

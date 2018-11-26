@@ -481,6 +481,14 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 	 */
 	public ActorReference<? extends FlexoConceptInstance> makeActorReference(FlexoConceptInstanceRole role, FlexoConceptInstance fci);
 
+	/**
+	 * Delete this {@link FlexoConceptInstance} while calling super delete and removing FCI from container and/or owning
+	 * {@link VirtualModelInstance}
+	 * 
+	 * @return
+	 */
+	public boolean performCoreDeletion();
+
 	public static abstract class FlexoConceptInstanceImpl extends VirtualModelInstanceObjectImpl implements FlexoConceptInstance {
 
 		private static final Logger logger = FlexoLogger.getLogger(FlexoConceptInstance.class.getPackage().toString());
@@ -510,10 +518,10 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 
 		// TODO: this is not a good idea, we should separate FlexoConceptInstance from RunTimeEvaluationContext
 		private FlexoEditor getFlexoEditor() {
-			if (getResourceCenter() instanceof FlexoProject && getServiceManager() != null) {
+			if (getResourceCenter() != null && getResourceCenter() instanceof FlexoProject && getServiceManager() != null) {
 				return getServiceManager().getProjectLoaderService().getEditorForProject((FlexoProject<?>) getResourceCenter());
 			}
-			else if (getResourceCenter().getDelegatingProjectResource() != null) {
+			else if (getResourceCenter() != null && getResourceCenter().getDelegatingProjectResource() != null) {
 				return getServiceManager().getProjectLoaderService()
 						.getEditorForProject(getResourceCenter().getDelegatingProjectResource().getFlexoProject());
 			}
@@ -1553,6 +1561,10 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 				return getOwningVirtualModelInstance().getValue(variable);
 			}
 
+			if (variables.containsKey(variable.getVariableName())) {
+				return variables.get(variable.getVariableName());
+			}
+
 			return null;
 		}
 
@@ -1618,6 +1630,11 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 				return;
 			}
 
+			if (variables.containsKey(variable.getVariableName())) {
+				variables.put(variable.getVariableName(), value);
+				return;
+			}
+
 			if (getOwningVirtualModelInstance() != null) {
 				getOwningVirtualModelInstance().setValue(value, variable);
 				return;
@@ -1648,6 +1665,27 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 		}
 
 		/**
+		 * Delete this {@link FlexoConceptInstance} while calling super delete and removing FCI from container and/or owning
+		 * {@link VirtualModelInstance}
+		 * 
+		 * @return
+		 */
+		@Override
+		public boolean performCoreDeletion() {
+			FlexoConceptInstance container = getContainerFlexoConceptInstance();
+			VirtualModelInstance<?, ?> vmi = getOwningVirtualModelInstance();
+			if (container != null) {
+				container.removeFromEmbeddedFlexoConceptInstances(this);
+			}
+			if (vmi != null) {
+				vmi.removeFromFlexoConceptInstances(this);
+			}
+			boolean returned = performSuperDelete();
+			getPropertyChangeSupport().firePropertyChange(getDeletedProperty(), false, true);
+			return returned;
+		}
+
+		/**
 		 * Delete this FlexoConcept instance using supplied DeletionScheme
 		 */
 		public boolean deleteWithScheme(DeletionScheme deletionScheme) {
@@ -1659,7 +1697,7 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 
 			if (deletionScheme != null && deletionScheme.getControlGraph() != null) {
 				try {
-					deletionScheme.getControlGraph().execute(this);
+					deletionScheme.getControlGraph().execute(this.new LocalRunTimeEvaluationContext());
 				} catch (ReturnException e) {
 					// TODO: think about that
 					e.printStackTrace();
