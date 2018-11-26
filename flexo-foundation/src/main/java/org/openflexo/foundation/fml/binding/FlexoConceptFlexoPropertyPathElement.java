@@ -146,6 +146,10 @@ public class FlexoConceptFlexoPropertyPathElement<P extends FlexoProperty<?>> ex
 		if (target instanceof FlexoConceptInstance) {
 			FlexoConceptInstance flexoConceptInstance = (FlexoConceptInstance) target;
 
+			if (flexoConceptInstance.getFlexoConcept() == null) {
+				return null;
+			}
+
 			// We have to first lookup the exact property to be executed
 			// This is where the dynamic binding is evaluated
 			// effectiveProperty might not be the property to be executed, if supplied flexoConceptInstance
