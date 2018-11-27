@@ -81,8 +81,10 @@ import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.technologyadapter.TechnologyObject;
 import org.openflexo.pamela.annotations.Adder;
 import org.openflexo.pamela.annotations.CloningStrategy;
+import org.openflexo.pamela.annotations.CloningStrategy.StrategyType;
 import org.openflexo.pamela.annotations.Embedded;
 import org.openflexo.pamela.annotations.Getter;
+import org.openflexo.pamela.annotations.Getter.Cardinality;
 import org.openflexo.pamela.annotations.ImplementationClass;
 import org.openflexo.pamela.annotations.ModelEntity;
 import org.openflexo.pamela.annotations.PastingPoint;
@@ -91,8 +93,6 @@ import org.openflexo.pamela.annotations.Remover;
 import org.openflexo.pamela.annotations.Setter;
 import org.openflexo.pamela.annotations.XMLAttribute;
 import org.openflexo.pamela.annotations.XMLElement;
-import org.openflexo.pamela.annotations.CloningStrategy.StrategyType;
-import org.openflexo.pamela.annotations.Getter.Cardinality;
 import org.openflexo.toolbox.FlexoVersion;
 import org.openflexo.toolbox.StringUtils;
 
@@ -807,6 +807,21 @@ public interface VirtualModelInstance<VMI extends VirtualModelInstance<VMI, TA>,
 
 		}
 
+		private void ensureUnregisterFCI(FlexoConceptInstance fci) {
+			if (rootFlexoConceptInstances.contains(fci)) {
+				rootFlexoConceptInstances.remove(fci);
+			}
+
+			for (FlexoConcept concept : flexoConceptInstances.keySet()) {
+				List<FlexoConceptInstance> list = flexoConceptInstances.get(concept);
+				if (list != null && list.contains(fci)) {
+					list.remove(fci);
+					contentsRemoved(fci, concept);
+				}
+			}
+
+		}
+
 		/**
 		 * Remove a {@link FlexoConceptInstance}
 		 * 
@@ -817,7 +832,9 @@ public interface VirtualModelInstance<VMI extends VirtualModelInstance<VMI, TA>,
 		public void removeFromFlexoConceptInstances(FlexoConceptInstance fci) {
 
 			if (fci.getFlexoConcept() == null) {
-				logger.warning("Could not remove FlexoConceptInstance with null FlexoConcept: " + fci);
+				// Special computing
+				ensureUnregisterFCI(fci);
+				// logger.warning("Could not remove FlexoConceptInstance with null FlexoConcept: " + fci);
 			}
 			else {
 				ensureUnregisterFCIFromConcept(fci, fci.getFlexoConcept());

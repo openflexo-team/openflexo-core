@@ -115,7 +115,7 @@ public class DeletionSchemeAction extends AbstractActionSchemeAction<DeletionSch
 			logger.fine("getFlexoConceptInstance()=" + getFlexoConceptInstance());
 		}
 		if (getDeletionScheme() != null) {
-			getFlexoConceptInstance().deleteWithScheme(getDeletionScheme());
+			getFlexoConceptInstance().deleteWithScheme(getDeletionScheme(), this);
 		}
 		else {
 			getFlexoConceptInstance().delete(context);

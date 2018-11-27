@@ -492,7 +492,7 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 	/**
 	 * Delete this FlexoConcept instance using supplied DeletionScheme
 	 */
-	public boolean deleteWithScheme(DeletionScheme deletionScheme);
+	public boolean deleteWithScheme(DeletionScheme deletionScheme, RunTimeEvaluationContext evaluationContext);
 
 	public static abstract class FlexoConceptInstanceImpl extends VirtualModelInstanceObjectImpl implements FlexoConceptInstance {
 
@@ -1443,6 +1443,7 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 
 			if (actorReference == null) {
 				logger.warning("Could not register null ActorReference");
+				Thread.dumpStack();
 				return;
 			}
 
@@ -1656,21 +1657,19 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 		@Override
 		public boolean delete(Object... context) {
 
-			System.out.println("delete " + this);
-			Thread.dumpStack();
-
 			// Also implement properly #getDeletedProperty()
 			if (getFlexoConcept() != null) {
 				if (getFlexoConcept().getDefaultDeletionScheme() != null) {
-					return deleteWithScheme(getFlexoConcept().getDefaultDeletionScheme());
+					return deleteWithScheme(getFlexoConcept().getDefaultDeletionScheme(), new LocalRunTimeEvaluationContext());
 				}
 				// Generate on-the-fly default deletion scheme
 				DeletionScheme ds = getFlexoConcept().generateDefaultDeletionScheme();
-				return deleteWithScheme(ds);
+				return deleteWithScheme(ds, new LocalRunTimeEvaluationContext());
 			}
-			boolean returned = performSuperDelete(context);
+			/*boolean returned = performSuperDelete(context);
 			getPropertyChangeSupport().firePropertyChange(getDeletedProperty(), false, true);
-			return returned;
+			return returned;*/
+			return performCoreDeletion();
 		}
 
 		/**
@@ -1681,6 +1680,7 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 		 */
 		@Override
 		public boolean performCoreDeletion() {
+			storedFactoryAfterDeletion = getFactory();
 			FlexoConceptInstance container = getContainerFlexoConceptInstance();
 			VirtualModelInstance<?, ?> vmi = getOwningVirtualModelInstance();
 			if (container != null) {
@@ -1698,17 +1698,18 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 		 * Delete this FlexoConcept instance using supplied DeletionScheme
 		 */
 		@Override
-		public boolean deleteWithScheme(DeletionScheme deletionScheme) {
+		public boolean deleteWithScheme(DeletionScheme deletionScheme, RunTimeEvaluationContext evaluationContext) {
 			if (isDeleted()) {
 				return false;
 			}
 
+			storedFactoryAfterDeletion = getFactory();
 			FlexoConceptInstance container = getContainerFlexoConceptInstance();
 			VirtualModelInstance<?, ?> vmi = getOwningVirtualModelInstance();
 
 			if (deletionScheme != null && deletionScheme.getControlGraph() != null) {
 				try {
-					deletionScheme.getControlGraph().execute(this.new LocalRunTimeEvaluationContext());
+					deletionScheme.getControlGraph().execute(evaluationContext);
 				} catch (ReturnException e) {
 					// TODO: think about that
 					e.printStackTrace();
@@ -1745,6 +1746,16 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 			boolean returned = performSuperDelete();
 			getPropertyChangeSupport().firePropertyChange(getDeletedProperty(), false, true);
 			return returned;
+		}
+
+		private AbstractVirtualModelInstanceModelFactory<?> storedFactoryAfterDeletion;
+
+		@Override
+		public AbstractVirtualModelInstanceModelFactory<?> getFactory() {
+			if (isDeleted()) {
+				return storedFactoryAfterDeletion;
+			}
+			return super.getFactory();
 		}
 
 		/**
