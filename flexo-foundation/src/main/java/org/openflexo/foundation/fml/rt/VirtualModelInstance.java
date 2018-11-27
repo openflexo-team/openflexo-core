@@ -131,6 +131,7 @@ public interface VirtualModelInstance<VMI extends VirtualModelInstance<VMI, TA>,
 	public static final String VIRTUAL_MODEL_URI_KEY = "virtualModelURI";
 	@PropertyIdentifier(type = FlexoConceptInstance.class, cardinality = Cardinality.LIST)
 	public static final String FLEXO_CONCEPT_INSTANCES_KEY = "flexoConceptInstances";
+	public static final String FINALIZE_FLEXO_CONCEPT_INSTANCE_ADDING_KEY = "finalizeFlexoConceptInstanceAdding";
 
 	@PropertyIdentifier(type = VirtualModelInstance.class)
 	public static final String CONTAINER_VIRTUAL_MODEL_INSTANCE_KEY = "containerVirtualModelInstance";
@@ -732,6 +733,10 @@ public interface VirtualModelInstance<VMI extends VirtualModelInstance<VMI, TA>,
 
 			// System.out.println("Adding instance took " + (end - start) + " ms start=" + start + " t1=" + time1 + " t2=" + time2 + " t3="
 			// + time3 + " end=" + end);
+
+			// We notify this now, because the inverse property wasn't set during adding notifying
+			// So we renotify it now
+			getPropertyChangeSupport().firePropertyChange(FINALIZE_FLEXO_CONCEPT_INSTANCE_ADDING_KEY, null, fci);
 		}
 
 		/**
