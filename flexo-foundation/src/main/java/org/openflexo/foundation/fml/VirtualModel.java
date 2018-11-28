@@ -1463,6 +1463,20 @@ public interface VirtualModel extends FlexoConcept, FlexoMetaModel<VirtualModel>
 			return (FMLLocalizedDictionary) performSuperGetter(LOCALIZED_DICTIONARY_KEY);
 		}
 
+		private void searchNewEntriesForConcept(FlexoConcept concept) {
+			// checkAndRegisterLocalized(concept.getName());
+			for (FlexoBehaviour es : concept.getFlexoBehaviours()) {
+				checkAndRegisterLocalized(es.getLabel(), normalizedKey -> es.setLabel(normalizedKey));
+				// checkAndRegisterLocalized(es.getDescription());
+				for (FlexoBehaviourParameter p : es.getParameters()) {
+					checkAndRegisterLocalized(p.getName());
+				}
+				for (InspectorEntry entry : concept.getInspector().getEntries()) {
+					checkAndRegisterLocalized(entry.getLabel(), normalizedKey -> entry.setLabel(normalizedKey));
+				}
+			}
+		}
+
 		private void searchNewLocalizedEntries() {
 			logger.info("Search new entries for " + this);
 
@@ -1478,18 +1492,10 @@ public interface VirtualModel extends FlexoConcept, FlexoMetaModel<VirtualModel>
 				}
 			}
 
+			searchNewEntriesForConcept(this);
+
 			for (FlexoConcept concept : getFlexoConcepts()) {
-				// checkAndRegisterLocalized(concept.getName());
-				for (FlexoBehaviour es : concept.getFlexoBehaviours()) {
-					checkAndRegisterLocalized(es.getLabel(), normalizedKey -> es.setLabel(normalizedKey));
-					// checkAndRegisterLocalized(es.getDescription());
-					for (FlexoBehaviourParameter p : es.getParameters()) {
-						checkAndRegisterLocalized(p.getName());
-					}
-					for (InspectorEntry entry : concept.getInspector().getEntries()) {
-						checkAndRegisterLocalized(entry.getLabel(), normalizedKey -> entry.setLabel(normalizedKey));
-					}
-				}
+				searchNewEntriesForConcept(concept);
 			}
 
 			if (factory != null) {

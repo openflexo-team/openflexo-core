@@ -224,6 +224,13 @@ public abstract class FlexoActionFactory<A extends FlexoAction<A, T1, T2>, T1 ex
 		return _actionName;
 	}
 
+	public String getLocalizedName(FlexoServiceManager serviceManager) {
+		if (getLocales(serviceManager) != null) {
+			return getLocales(serviceManager).localizedForKey(getUnlocalizedName());
+		}
+		return getUnlocalizedName();
+	}
+
 	/*
 	public LocalizedDelegate getLocales() {
 		return FlexoLocalization.getMainLocalizer();
