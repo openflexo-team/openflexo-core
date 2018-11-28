@@ -56,6 +56,7 @@ import org.openflexo.foundation.action.TechnologySpecificFlexoAction;
 import org.openflexo.foundation.fml.FMLTechnologyAdapter;
 import org.openflexo.foundation.fml.editionaction.EditionAction;
 import org.openflexo.foundation.fml.editionaction.TechnologySpecificAction;
+import org.openflexo.foundation.fml.rt.action.FlexoBehaviourActionFactory;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.localization.LocalizedDelegate;
@@ -135,6 +136,10 @@ public class MenuItemAction<A extends FlexoAction<A, T1, T2>, T1 extends FlexoOb
 	}
 
 	public LocalizedDelegate getApplicableLocales() {
+		if (actionFactory instanceof FlexoBehaviourActionFactory) {
+			System.out.println("OK on retourne les bonnes locales");
+			return actionFactory.getLocales(editor.getServiceManager());
+		}
 		if (getModuleClass() != null) {
 			FlexoModule<?> module;
 			try {

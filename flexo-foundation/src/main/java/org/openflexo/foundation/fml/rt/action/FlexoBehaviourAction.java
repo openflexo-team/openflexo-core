@@ -152,7 +152,7 @@ public abstract class FlexoBehaviourAction<A extends FlexoBehaviourAction<A, FB,
 	}
 
 	@Override
-	public LocalizedDelegate getLocales() {
+	public final LocalizedDelegate getLocales() {
 		if (getFlexoBehaviour() != null) {
 			return getFlexoBehaviour().getLocales();
 		}

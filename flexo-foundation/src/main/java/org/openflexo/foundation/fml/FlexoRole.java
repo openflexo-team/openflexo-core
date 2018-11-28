@@ -60,7 +60,6 @@ import org.openflexo.foundation.fml.rt.FMLRTModelSlot;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
-import org.openflexo.localization.LocalizedDelegate;
 import org.openflexo.pamela.annotations.DefineValidationRule;
 import org.openflexo.pamela.annotations.Embedded;
 import org.openflexo.pamela.annotations.Getter;
@@ -435,13 +434,13 @@ public interface FlexoRole<T> extends FlexoProperty<T> {
 			return out.toString();
 		}*/
 
-		@Override
+		/*@Override
 		public LocalizedDelegate getLocales() {
 			if (getModelSlot() != null && getModelSlot().getModelSlotTechnologyAdapter() != null) {
 				return getModelSlot().getModelSlotTechnologyAdapter().getLocales();
 			}
 			return super.getLocales();
-		}
+		}*/
 
 		/**
 		 * Return the {@link TechnologyAdapter} managing this kind of role

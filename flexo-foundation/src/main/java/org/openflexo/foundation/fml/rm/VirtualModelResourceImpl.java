@@ -75,6 +75,7 @@ import org.openflexo.foundation.resource.SaveResourcePermissionDeniedException;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterService;
+import org.openflexo.localization.LocalizedDelegateImpl;
 import org.openflexo.pamela.exceptions.ModelDefinitionException;
 import org.openflexo.pamela.validation.ValidationIssue;
 import org.openflexo.pamela.validation.ValidationReport;
@@ -351,6 +352,11 @@ public abstract class VirtualModelResourceImpl extends PamelaResourceImpl<Virtua
 				}
 			}
 		}
+		// Save locales
+		if (getLoadedResourceData().getLocalizedDictionary() instanceof LocalizedDelegateImpl) {
+			((LocalizedDelegateImpl) getLoadedResourceData().getLocalizedDictionary()).save();
+		}
+		// Save meta data
 		saveMetaData();
 	}
 

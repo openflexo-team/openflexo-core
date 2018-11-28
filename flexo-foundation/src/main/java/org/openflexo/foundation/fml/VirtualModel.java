@@ -48,6 +48,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.Vector;
+import java.util.function.Consumer;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
 
@@ -57,6 +58,7 @@ import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.fml.FMLRepresentationContext.FMLRepresentationOutput;
 import org.openflexo.foundation.fml.binding.FMLBindingFactory;
 import org.openflexo.foundation.fml.binding.VirtualModelBindingModel;
+import org.openflexo.foundation.fml.inspector.InspectorEntry;
 import org.openflexo.foundation.fml.rm.VirtualModelResource;
 import org.openflexo.foundation.fml.rm.VirtualModelResourceFactory;
 import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstance;
@@ -94,6 +96,7 @@ import org.openflexo.pamela.annotations.Remover;
 import org.openflexo.pamela.annotations.Setter;
 import org.openflexo.pamela.annotations.XMLAttribute;
 import org.openflexo.pamela.annotations.XMLElement;
+import org.openflexo.pamela.undo.CompoundEdit;
 import org.openflexo.pamela.validation.Validable;
 import org.openflexo.pamela.validation.ValidationError;
 import org.openflexo.pamela.validation.ValidationIssue;
@@ -1404,9 +1407,16 @@ public interface VirtualModel extends FlexoConcept, FlexoMetaModel<VirtualModel>
 				Resource localizedDirectoryResource = getLocalizedDirectoryResource();
 				boolean editSupport = getResource().getIODelegate().getSerializationArtefactAsResource() instanceof FileResourceImpl;
 				logger.info("Reading locales from " + localizedDirectoryResource);
-				return new LocalizedDelegateImpl(localizedDirectoryResource, getContainerVirtualModel() != null
+				LocalizedDelegateImpl returned = new LocalizedDelegateImpl(localizedDirectoryResource, getContainerVirtualModel() != null
 						? getContainerVirtualModel().getLocales() : getServiceManager().getLocalizationService().getFlexoLocalizer(),
 						editSupport, editSupport);
+				returned.setLocalizationRetriever(new Runnable() {
+					@Override
+					public void run() {
+						searchNewLocalizedEntries();
+					}
+				});
+				return returned;
 
 			}
 			return null;
@@ -1440,6 +1450,77 @@ public interface VirtualModel extends FlexoConcept, FlexoMetaModel<VirtualModel>
 				return null;
 			}
 			return (FMLLocalizedDictionary) performSuperGetter(LOCALIZED_DICTIONARY_KEY);
+		}
+
+		private void searchNewLocalizedEntries() {
+			logger.info("Search new entries for " + this);
+
+			CompoundEdit ce = null;
+			FMLModelFactory factory = null;
+
+			if (getOwner() != null) {
+				factory = getFMLModelFactory();
+				if (factory != null) {
+					if (!factory.getEditingContext().getUndoManager().isBeeingRecording()) {
+						ce = factory.getEditingContext().getUndoManager().startRecording("localize_virtual_model");
+					}
+				}
+			}
+
+			for (FlexoConcept concept : getFlexoConcepts()) {
+				// checkAndRegisterLocalized(concept.getName());
+				for (FlexoBehaviour es : concept.getFlexoBehaviours()) {
+					checkAndRegisterLocalized(es.getLabel(), normalizedKey -> es.setLabel(normalizedKey));
+					// checkAndRegisterLocalized(es.getDescription());
+					for (FlexoBehaviourParameter p : es.getParameters()) {
+						checkAndRegisterLocalized(p.getName());
+					}
+					for (InspectorEntry entry : concept.getInspector().getEntries()) {
+						checkAndRegisterLocalized(entry.getLabel(), normalizedKey -> entry.setLabel(normalizedKey));
+					}
+				}
+			}
+
+			if (factory != null) {
+				if (ce != null) {
+					factory.getEditingContext().getUndoManager().stopRecording(ce);
+				}
+				else if (factory.getEditingContext().getUndoManager().isBeeingRecording()) {
+					factory.getEditingContext().getUndoManager()
+							.stopRecording(factory.getEditingContext().getUndoManager().getCurrentEdition());
+				}
+			}
+
+			// getViewPoint().setChanged();
+			// getViewPoint().notifyObservers();
+		}
+
+		private String checkAndRegisterLocalized(String key, Consumer<String> updateKey) {
+
+			// System.out.println("checkAndRegisterLocalized for " + key);
+			if (StringUtils.isEmpty(key)) {
+				return null;
+			}
+
+			String normalizedKey = StringUtils.toLocalizedKey(key.trim());
+
+			if (!key.equals(normalizedKey)) {
+				updateKey.accept(normalizedKey);
+			}
+
+			getLocalizedDictionary().addEntry(normalizedKey);
+			return normalizedKey;
+		}
+
+		private String checkAndRegisterLocalized(String key) {
+
+			// System.out.println("checkAndRegisterLocalized for " + key);
+			if (StringUtils.isEmpty(key)) {
+				return null;
+			}
+
+			getLocalizedDictionary().addEntry(key);
+			return key;
 		}
 
 	}

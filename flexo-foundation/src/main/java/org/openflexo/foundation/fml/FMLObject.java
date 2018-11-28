@@ -243,7 +243,7 @@ public interface FMLObject extends FlexoObject, Bindable, InnerResourceData/*<Vi
 		}
 
 		@Override
-		public LocalizedDelegate getLocales() {
+		public final LocalizedDelegate getLocales() {
 			if (getDeclaringVirtualModel() != null) {
 				return getDeclaringVirtualModel().getLocalizedDictionary();
 			}

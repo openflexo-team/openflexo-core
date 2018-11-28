@@ -177,11 +177,12 @@ public class ParametersRetriever<ES extends FlexoBehaviour> {
 			returned.setMinHeight(flexoBehaviour.getHeight());
 		}
 
+		LocalizedDelegate dict = flexoBehaviour.getDeclaringVirtualModel().getLocalizedDictionary();
+
 		int index = 0;
 		if (addTitle) {
 			FIBLabel titleLabel = fibModelFactory.newFIBLabel();
 			titleLabel.setAlign(Align.center);
-			LocalizedDelegate dict = flexoBehaviour.getDeclaringVirtualModel().getLocalizedDictionary();
 			titleLabel.setLabel(
 					dict.localizedForKey(flexoBehaviour.getLabel() != null ? flexoBehaviour.getLabel() : flexoBehaviour.getName()));
 			returned.addToSubComponents(titleLabel, new TwoColsLayoutConstraints(TwoColsLayoutLocation.center, true, false), 0);
@@ -210,7 +211,7 @@ public class ParametersRetriever<ES extends FlexoBehaviour> {
 		Hashtable<FlexoBehaviourParameter, FIBComponent> widgets = new Hashtable<>();
 		for (final FlexoBehaviourParameter parameter : flexoBehaviour.getParameters()) {
 			FIBLabel label = fibModelFactory.newFIBLabel();
-			label.setLabel(parameter.getName());
+			label.setLabel(dict.localizedForKey(parameter.getName()));
 			returned.addToSubComponents(label, new TwoColsLayoutConstraints(TwoColsLayoutLocation.left, false, false), index++);
 			FIBComponent widget = makeWidget(parameter, returned, index);
 			if (widget != null) {

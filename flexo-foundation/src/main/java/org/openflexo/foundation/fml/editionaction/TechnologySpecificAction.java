@@ -44,7 +44,6 @@ import org.openflexo.connie.type.TypeUtils;
 import org.openflexo.foundation.fml.FMLRepresentationContext;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
-import org.openflexo.localization.LocalizedDelegate;
 import org.openflexo.pamela.annotations.ImplementationClass;
 import org.openflexo.pamela.annotations.ModelEntity;
 
@@ -92,13 +91,13 @@ public abstract interface TechnologySpecificAction<MS extends ModelSlot<?>, T> e
 		@SuppressWarnings("unused")
 		private static final Logger logger = Logger.getLogger(TechnologySpecificAction.class.getPackage().getName());
 
-		@Override
+		/*@Override
 		public LocalizedDelegate getLocales() {
 			if (getModelSlotTechnologyAdapter() != null) {
 				return getModelSlotTechnologyAdapter().getLocales();
 			}
 			return super.getLocales();
-		}
+		}*/
 
 		/**
 		 * Return a string representation suitable for a common user<br>
