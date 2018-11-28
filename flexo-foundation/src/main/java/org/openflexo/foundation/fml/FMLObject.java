@@ -170,7 +170,7 @@ public interface FMLObject extends FlexoObject, Bindable, InnerResourceData/*<Vi
 
 	// public void notifyBindingModelChanged();
 
-	public FMLLocalizedDictionary getLocalizedDictionary();
+	// public FMLLocalizedDictionary getLocalizedDictionary();
 
 	@DeserializationInitializer
 	public void initializeDeserialization(FMLModelFactory factory);
@@ -363,8 +363,8 @@ public interface FMLObject extends FlexoObject, Bindable, InnerResourceData/*<Vi
 		 * Hook called when scope of a FMLObject changed.<br>
 		 * 
 		 * It happens for example when a {@link VirtualModel} is declared to be contained in a {@link VirtualModel}<br>
-		 * On that example {@link #getBindingFactory()} rely on {@link VirtualModel} enclosing, we must provide this hook to give a chance to
-		 * objects that rely on ViewPoint instanciation context to update their bindings (some bindings might becomes valid)<br>
+		 * On that example {@link #getBindingFactory()} rely on {@link VirtualModel} enclosing, we must provide this hook to give a chance
+		 * to objects that rely on ViewPoint instanciation context to update their bindings (some bindings might becomes valid)<br>
 		 * 
 		 * It may also happen if an EditionAction is moved from a control graph to another control graph, etc...<br>
 		 * 
@@ -379,10 +379,9 @@ public interface FMLObject extends FlexoObject, Bindable, InnerResourceData/*<Vi
 			getPropertyChangeSupport().firePropertyChange(BindingModelChanged.BINDING_MODEL_CHANGED, null, null);
 		}*/
 
-		@Override
-		public FMLLocalizedDictionary getLocalizedDictionary() {
+		/*public LocalizedDelegate getLocalizedDictionary() {
 			return getDeclaringVirtualModel().getLocalizedDictionary();
-		}
+		}*/
 
 		// Voir du cote de GeneratorFormatter pour formatter tout ca
 		@Override

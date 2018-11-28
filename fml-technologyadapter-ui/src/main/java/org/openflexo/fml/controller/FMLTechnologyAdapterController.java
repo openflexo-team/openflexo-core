@@ -78,7 +78,6 @@ import org.openflexo.fml.controller.action.DeleteFlexoConceptObjectsInitializer;
 import org.openflexo.fml.controller.action.DeleteVirtualModelInitializer;
 import org.openflexo.fml.controller.action.ShowFMLRepresentationInitializer;
 import org.openflexo.fml.controller.validation.ValidateActionizer;
-import org.openflexo.fml.controller.view.FMLLocalizedDictionaryView;
 import org.openflexo.fml.controller.view.StandardFlexoConceptView;
 import org.openflexo.fml.controller.view.VirtualModelView;
 import org.openflexo.fml.controller.widget.FIBVirtualModelLibraryBrowser;
@@ -92,7 +91,6 @@ import org.openflexo.foundation.fml.CloningScheme;
 import org.openflexo.foundation.fml.CreationScheme;
 import org.openflexo.foundation.fml.DeletionScheme;
 import org.openflexo.foundation.fml.EventListener;
-import org.openflexo.foundation.fml.FMLLocalizedDictionary;
 import org.openflexo.foundation.fml.FMLTechnologyAdapter;
 import org.openflexo.foundation.fml.FMLValidationModel;
 import org.openflexo.foundation.fml.FMLValidationReport;
@@ -404,7 +402,7 @@ public class FMLTechnologyAdapterController extends TechnologyAdapterController<
 	@Override
 	public boolean hasModuleViewForObject(TechnologyObject<FMLTechnologyAdapter> object, FlexoController controller) {
 
-		if (object instanceof FlexoConcept || object instanceof FMLLocalizedDictionary) {
+		if (object instanceof FlexoConcept) {
 			return true;
 		}
 		// TODO not applicable
@@ -418,9 +416,6 @@ public class FMLTechnologyAdapterController extends TechnologyAdapterController<
 		}
 		if (object instanceof FlexoConcept) {
 			return ((FlexoConcept) object).getName();
-		}
-		if (object instanceof FMLLocalizedDictionary) {
-			return getLocales().localizedForKey("localized_dictionary_for") + " " + ((FMLLocalizedDictionary) object).getOwner().getName();
 		}
 		if (object != null) {
 			return object.toString();
@@ -438,9 +433,6 @@ public class FMLTechnologyAdapterController extends TechnologyAdapterController<
 	@Override
 	public ModuleView<?> createModuleViewForObject(TechnologyObject<FMLTechnologyAdapter> object, FlexoController controller,
 			FlexoPerspective perspective) {
-		if (object instanceof FMLLocalizedDictionary) {
-			return new FMLLocalizedDictionaryView((FMLLocalizedDictionary) object, controller, perspective);
-		}
 		if (object instanceof FlexoConcept) {
 			FlexoConcept ep = (FlexoConcept) object;
 			if (ep instanceof VirtualModel) {
@@ -481,11 +473,8 @@ public class FMLTechnologyAdapterController extends TechnologyAdapterController<
 	}*/
 
 	private static String getContainerBinding(WidgetContext widgetContext, String variableName) {
-		return variableName + "."
-				+ (StringUtils.isNotEmpty(widgetContext.getFlexoConceptInstanceAccess())
-						? widgetContext.getFlexoConceptInstanceAccess() + "."
-						: "")
-				+ widgetContext.getContainer().toString();
+		return variableName + "." + (StringUtils.isNotEmpty(widgetContext.getFlexoConceptInstanceAccess())
+				? widgetContext.getFlexoConceptInstanceAccess() + "." : "") + widgetContext.getContainer().toString();
 	}
 
 	private static FIBWidget makeFlexoResourceSelector(final WidgetContext widgetContext, FIBModelFactory fibModelFactory,

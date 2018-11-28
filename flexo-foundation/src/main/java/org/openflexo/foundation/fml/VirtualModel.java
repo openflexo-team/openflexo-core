@@ -38,6 +38,7 @@
 
 package org.openflexo.foundation.fml;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -48,6 +49,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.Vector;
 import java.util.logging.Logger;
+import java.util.regex.Pattern;
 
 import org.openflexo.connie.Bindable;
 import org.openflexo.connie.BindingFactory;
@@ -72,6 +74,9 @@ import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterService;
 import org.openflexo.foundation.technologyadapter.TypeAwareModelSlot;
 import org.openflexo.foundation.technologyadapter.UseModelSlotDeclaration;
+import org.openflexo.localization.Language;
+import org.openflexo.localization.LocalizedDelegate;
+import org.openflexo.localization.LocalizedDelegateImpl;
 import org.openflexo.pamela.annotations.Adder;
 import org.openflexo.pamela.annotations.CloningStrategy;
 import org.openflexo.pamela.annotations.CloningStrategy.StrategyType;
@@ -93,6 +98,9 @@ import org.openflexo.pamela.validation.Validable;
 import org.openflexo.pamela.validation.ValidationError;
 import org.openflexo.pamela.validation.ValidationIssue;
 import org.openflexo.pamela.validation.ValidationRule;
+import org.openflexo.rm.BasicResourceImpl.LocatorNotFoundException;
+import org.openflexo.rm.FileResourceImpl;
+import org.openflexo.rm.Resource;
 import org.openflexo.toolbox.FlexoVersion;
 import org.openflexo.toolbox.JavaUtils;
 import org.openflexo.toolbox.StringUtils;
@@ -204,13 +212,14 @@ public interface VirtualModel extends FlexoConcept, FlexoMetaModel<VirtualModel>
 	@Setter(MODEL_VERSION_KEY)
 	public void setModelVersion(FlexoVersion modelVersion);
 
-	@Override
 	@Getter(value = LOCALIZED_DICTIONARY_KEY, inverse = FMLLocalizedDictionary.OWNER_KEY)
 	@XMLElement
-	FMLLocalizedDictionary getLocalizedDictionary();
+	FMLLocalizedDictionary getDeprecatedLocalizedDictionary();
 
 	@Setter(LOCALIZED_DICTIONARY_KEY)
-	void setLocalizedDictionary(FMLLocalizedDictionary localizedDictionary);
+	void setDeprecatedLocalizedDictionary(FMLLocalizedDictionary localizedDictionary);
+
+	public LocalizedDelegate getLocalizedDictionary();
 
 	/**
 	 * Return list of {@link UseModelSlotDeclaration} accessible from this {@link VirtualModel}<br>
@@ -542,10 +551,10 @@ public interface VirtualModel extends FlexoConcept, FlexoMetaModel<VirtualModel>
 			return nature.hasNature(this);
 		}
 
-		@Override
+		/*@Override
 		public FMLLocalizedDictionary getLocalizedDictionary() {
 			return (FMLLocalizedDictionary) performSuperGetter(LOCALIZED_DICTIONARY_KEY);
-		}
+		}*/
 
 		/**
 		 * Returns URI for this {@link VirtualModel}.<br>
@@ -950,7 +959,7 @@ public interface VirtualModel extends FlexoConcept, FlexoMetaModel<VirtualModel>
 		public VirtualModel getVirtualModel() {
 			return this;
 		}
-		*/
+		 */
 
 		@Override
 		public Object getObject(String objectURI) {
@@ -1107,8 +1116,8 @@ public interface VirtualModel extends FlexoConcept, FlexoMetaModel<VirtualModel>
 		 * Hook called when scope of a FMLObject changed.<br>
 		 * 
 		 * It happens for example when a {@link VirtualModel} is declared to be contained in a {@link VirtualModel}<br>
-		 * On that example {@link #getBindingFactory()} rely on {@link VirtualModel} enclosing, we must provide this hook to give a chance to
-		 * objects that rely on ViewPoint instanciation context to update their bindings (some bindings might becomes valid)<br>
+		 * On that example {@link #getBindingFactory()} rely on {@link VirtualModel} enclosing, we must provide this hook to give a chance
+		 * to objects that rely on ViewPoint instanciation context to update their bindings (some bindings might becomes valid)<br>
 		 * 
 		 * It may also happen if an EditionAction is moved from a control graph to another control graph, etc...<br>
 		 * 
@@ -1366,6 +1375,73 @@ public interface VirtualModel extends FlexoConcept, FlexoMetaModel<VirtualModel>
 		public Class<? extends VirtualModel> getVirtualModelClass() {
 			return (Class<? extends VirtualModel>) getImplementedInterface();
 		}
+
+		private LocalizedDelegateImpl localized;
+
+		private Resource getLocalizedDirectoryResource() {
+			Resource virtualModelDirectory = getResource().getIODelegate().getSerializationArtefactAsResource().getContainer();
+			List<? extends Resource> localizedDirs = virtualModelDirectory.getContents(Pattern.compile("Localized"), false);
+			if (localizedDirs.size() > 0) {
+				return localizedDirs.get(0);
+			}
+			if (virtualModelDirectory instanceof FileResourceImpl) {
+				try {
+					return new FileResourceImpl(virtualModelDirectory.getLocator(),
+							new File(((FileResourceImpl) virtualModelDirectory).getFile(), "Localized"));
+				} catch (MalformedURLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (LocatorNotFoundException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+			return null;
+		}
+
+		private LocalizedDelegateImpl instantiateOrLoadLocales() {
+			if (getResource() != null) {
+				Resource localizedDirectoryResource = getLocalizedDirectoryResource();
+				boolean editSupport = getResource().getIODelegate().getSerializationArtefactAsResource() instanceof FileResourceImpl;
+				logger.info("Reading locales from " + localizedDirectoryResource);
+				return new LocalizedDelegateImpl(localizedDirectoryResource, getContainerVirtualModel() != null
+						? getContainerVirtualModel().getLocales() : getServiceManager().getLocalizationService().getFlexoLocalizer(),
+						editSupport, editSupport);
+
+			}
+			return null;
+		}
+
+		@Override
+		public LocalizedDelegate getLocalizedDictionary() {
+			if (localized == null) {
+				localized = instantiateOrLoadLocales();
+				// Converting old dictionaries
+				if (getDeprecatedLocalizedDictionary() != null) {
+					for (FMLLocalizedEntry fmlLocalizedEntry : getDeprecatedLocalizedDictionary().getLocalizedEntries()) {
+						localized.registerNewEntry(fmlLocalizedEntry.getKey(), Language.get(fmlLocalizedEntry.getLanguage()),
+								fmlLocalizedEntry.getValue());
+					}
+				}
+			}
+			return localized;
+		}
+
+		public void createLocalizedDictionaryWhenNonExistant() {
+			if (localized == null) {
+				logger.info("createLocalizedDictionary");
+				localized = instantiateOrLoadLocales();
+			}
+		}
+
+		@Override
+		public FMLLocalizedDictionary getDeprecatedLocalizedDictionary() {
+			if (isSerializing()) {
+				return null;
+			}
+			return (FMLLocalizedDictionary) performSuperGetter(LOCALIZED_DICTIONARY_KEY);
+		}
+
 	}
 
 	// FIN: provient de VirtualModel

@@ -55,6 +55,7 @@ import org.openflexo.pamela.validation.ValidationWarning;
 @ModelEntity
 @ImplementationClass(FMLLocalizedEntry.FMLLocalizedEntryImpl.class)
 @XMLElement(xmlTag = "Localized")
+@Deprecated
 public interface FMLLocalizedEntry extends FMLObject {
 
 	@PropertyIdentifier(type = FMLLocalizedDictionary.class)
@@ -87,7 +88,6 @@ public interface FMLLocalizedEntry extends FMLObject {
 	@Setter(VALUE_KEY)
 	public void setValue(String value);
 
-	@Override
 	@Getter(value = LOCALIZED_DICTIONARY_KEY /*, inverse = FMLLocalizedDictionary.ENTRIES_KEY*/)
 	public FMLLocalizedDictionary getLocalizedDictionary();
 

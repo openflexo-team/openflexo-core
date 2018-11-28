@@ -45,7 +45,6 @@ import java.util.logging.Logger;
 import org.openflexo.ApplicationContext;
 import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.annotations.NotificationUnsafe;
-import org.openflexo.foundation.fml.FMLLocalizedDictionary;
 import org.openflexo.foundation.fml.FlexoBehaviour;
 import org.openflexo.foundation.fml.FlexoBehaviourActionType;
 import org.openflexo.foundation.fml.FlexoBehaviourParameter;
@@ -70,6 +69,7 @@ import org.openflexo.gina.model.widget.FIBLabel.Align;
 import org.openflexo.gina.swing.utils.JFIBDialog;
 import org.openflexo.gina.swing.view.SwingViewFactory;
 import org.openflexo.gina.view.GinaViewFactory;
+import org.openflexo.localization.LocalizedDelegate;
 import org.openflexo.pamela.exceptions.ModelDefinitionException;
 import org.openflexo.pamela.validation.ValidationError;
 import org.openflexo.pamela.validation.ValidationReport;
@@ -181,7 +181,7 @@ public class ParametersRetriever<ES extends FlexoBehaviour> {
 		if (addTitle) {
 			FIBLabel titleLabel = fibModelFactory.newFIBLabel();
 			titleLabel.setAlign(Align.center);
-			FMLLocalizedDictionary dict = flexoBehaviour.getDeclaringVirtualModel().getLocalizedDictionary();
+			LocalizedDelegate dict = flexoBehaviour.getDeclaringVirtualModel().getLocalizedDictionary();
 			titleLabel.setLabel(
 					dict.localizedForKey(flexoBehaviour.getLabel() != null ? flexoBehaviour.getLabel() : flexoBehaviour.getName()));
 			returned.addToSubComponents(titleLabel, new TwoColsLayoutConstraints(TwoColsLayoutLocation.center, true, false), 0);

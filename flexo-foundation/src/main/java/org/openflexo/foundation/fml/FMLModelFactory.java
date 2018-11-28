@@ -47,6 +47,7 @@ import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.PamelaResourceModelFactory;
 import org.openflexo.foundation.action.FlexoUndoManager;
+import org.openflexo.foundation.fml.VirtualModel.VirtualModelImpl;
 import org.openflexo.foundation.fml.annotations.DeclareEditionActions;
 import org.openflexo.foundation.fml.annotations.DeclareFetchRequests;
 import org.openflexo.foundation.fml.annotations.DeclareFlexoBehaviours;
@@ -633,20 +634,18 @@ public class FMLModelFactory extends ModelFactory implements PamelaResourceModel
 		else {
 			logger.warning("Could not access resource beeing deserialized");
 		}
-		if (newlyCreatedObject instanceof VirtualModel && ((VirtualModel) newlyCreatedObject).getLocalizedDictionary() == null) {
-			// Always set a FMLLocalizedDictionary for a ViewPoint
-			FMLLocalizedDictionary localizedDictionary = newInstance(FMLLocalizedDictionary.class);
-			((VirtualModel) newlyCreatedObject).setLocalizedDictionary(localizedDictionary);
+		if (newlyCreatedObject instanceof VirtualModelImpl) {
+			// Always create a LocalizedDictionary for a VirtualModel
+			((VirtualModelImpl) newlyCreatedObject).createLocalizedDictionaryWhenNonExistant();
 		}
 	}
 
 	@Override
 	public <I> void objectHasBeenCreated(final I newlyCreatedObject, final Class<I> implementedInterface) {
 		super.objectHasBeenCreated(newlyCreatedObject, implementedInterface);
-		if (newlyCreatedObject instanceof VirtualModel && ((VirtualModel) newlyCreatedObject).getLocalizedDictionary() == null) {
-			// Always set a FMLLocalizedDictionary for a ViewPoint
-			FMLLocalizedDictionary localizedDictionary = newInstance(FMLLocalizedDictionary.class);
-			((VirtualModel) newlyCreatedObject).setLocalizedDictionary(localizedDictionary);
+		if (newlyCreatedObject instanceof VirtualModelImpl) {
+			// Always create a LocalizedDictionary for a VirtualModel
+			((VirtualModelImpl) newlyCreatedObject).createLocalizedDictionaryWhenNonExistant();
 		}
 	}
 
