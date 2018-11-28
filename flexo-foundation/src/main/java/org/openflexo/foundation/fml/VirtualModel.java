@@ -1399,12 +1399,16 @@ public interface VirtualModel extends FlexoConcept, FlexoMetaModel<VirtualModel>
 					e.printStackTrace();
 				}
 			}
+			logger.warning("Cannot find localized directory for " + this);
 			return null;
 		}
 
 		private LocalizedDelegateImpl instantiateOrLoadLocales() {
 			if (getResource() != null) {
 				Resource localizedDirectoryResource = getLocalizedDirectoryResource();
+				if (localizedDirectoryResource == null) {
+					return null;
+				}
 				boolean editSupport = getResource().getIODelegate().getSerializationArtefactAsResource() instanceof FileResourceImpl;
 				logger.info("Reading locales from " + localizedDirectoryResource);
 				LocalizedDelegateImpl returned = new LocalizedDelegateImpl(localizedDirectoryResource, getContainerVirtualModel() != null
@@ -1426,6 +1430,13 @@ public interface VirtualModel extends FlexoConcept, FlexoMetaModel<VirtualModel>
 		public LocalizedDelegate getLocalizedDictionary() {
 			if (localized == null) {
 				localized = instantiateOrLoadLocales();
+				if (localized == null) {
+					// Cannot load locales
+					if (getServiceManager() != null) {
+						return getServiceManager().getLocalizationService().getFlexoLocalizer();
+					}
+					return null;
+				}
 				// Converting old dictionaries
 				if (getDeprecatedLocalizedDictionary() != null) {
 					for (FMLLocalizedEntry fmlLocalizedEntry : getDeprecatedLocalizedDictionary().getLocalizedEntries()) {
