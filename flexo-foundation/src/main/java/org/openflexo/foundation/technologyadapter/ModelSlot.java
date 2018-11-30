@@ -50,6 +50,7 @@ import org.openflexo.foundation.fml.FMLModelFactory;
 import org.openflexo.foundation.fml.FlexoBehaviour;
 import org.openflexo.foundation.fml.FlexoRole;
 import org.openflexo.foundation.fml.VirtualModel;
+import org.openflexo.foundation.fml.editionaction.AbstractFetchRequest;
 import org.openflexo.foundation.fml.editionaction.EditionAction;
 import org.openflexo.foundation.fml.editionaction.FetchRequest;
 import org.openflexo.foundation.fml.editionaction.TechnologySpecificAction;
@@ -135,6 +136,8 @@ public interface ModelSlot<RD extends ResourceData<RD> & TechnologyObject<?>> ex
 
 	public List<Class<? extends EditionAction>> getAvailableEditionActionTypes();
 
+	public List<Class<? extends AbstractFetchRequest<?, ?, ?, ?>>> getAvailableAbstractFetchRequestActionTypes();
+
 	public List<Class<? extends FetchRequest<?, ?, ?>>> getAvailableFetchRequestActionTypes();
 
 	public List<Class<? extends FlexoBehaviour>> getAvailableFlexoBehaviourTypes();
@@ -160,14 +163,14 @@ public interface ModelSlot<RD extends ResourceData<RD> & TechnologyObject<?>> ex
 	public abstract <EA extends TechnologySpecificAction<?, ?>> EA makeEditionAction(Class<EA> editionActionClass);
 
 	/**
-	 * Creates and return a new {@link FetchRequest} of supplied class.<br>
+	 * Creates and return a new {@link AbstractFetchRequest} of supplied class.<br>
 	 * This responsability is delegated to the technology-specific {@link ModelSlot} which manages with introspection its own
-	 * {@link FetchRequest} types
+	 * {@link AbstractFetchRequest} types
 	 * 
 	 * @param fetchRequestClass
 	 * @return
 	 */
-	public abstract <FR extends FetchRequest<?, ?, ?>> FR makeFetchRequest(Class<FR> fetchRequestClass);
+	public abstract <FR extends AbstractFetchRequest<?, ?, ?, ?>> FR makeFetchRequest(Class<FR> fetchRequestClass);
 
 	/**
 	 * Return default name for supplied pattern property class
@@ -361,6 +364,14 @@ public interface ModelSlot<RD extends ResourceData<RD> & TechnologyObject<?>> ex
 		}
 
 		@Override
+		public List<Class<? extends AbstractFetchRequest<?, ?, ?, ?>>> getAvailableAbstractFetchRequestActionTypes() {
+			if (getTechnologyAdapterService() != null) {
+				return getTechnologyAdapterService().getAvailableAbstractFetchRequestActionTypes(getClass());
+			}
+			return Collections.emptyList();
+		}
+
+		@Override
 		public List<Class<? extends FetchRequest<?, ?, ?>>> getAvailableFetchRequestActionTypes() {
 			if (getTechnologyAdapterService() != null) {
 				return getTechnologyAdapterService().getAvailableFetchRequestActionTypes(getClass());
@@ -383,15 +394,15 @@ public interface ModelSlot<RD extends ResourceData<RD> & TechnologyObject<?>> ex
 		}
 
 		/**
-		 * Creates and return a new {@link FetchRequest} of supplied class.<br>
+		 * Creates and return a new {@link AbstractFetchRequest} of supplied class.<br>
 		 * This responsability is delegated to the technology-specific {@link ModelSlot} which manages with introspection its own
-		 * {@link FetchRequest} types
+		 * {@link AbstractFetchRequest} types
 		 * 
 		 * @param fetchRequestClass
 		 * @return
 		 */
 		@Override
-		public final <FR extends FetchRequest<?, ?, ?>> FR makeFetchRequest(Class<FR> fetchRequestClass) {
+		public final <FR extends AbstractFetchRequest<?, ?, ?, ?>> FR makeFetchRequest(Class<FR> fetchRequestClass) {
 			FMLModelFactory factory = getFMLModelFactory();
 			return factory.newInstance(fetchRequestClass);
 		}

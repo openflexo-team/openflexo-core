@@ -36,31 +36,30 @@
  * 
  */
 
-package org.openflexo.foundation.fml.editionaction;
+package org.openflexo.foundation.ontology.fml.editionaction;
 
-import java.util.List;
-
-import org.openflexo.foundation.resource.ResourceData;
-import org.openflexo.foundation.technologyadapter.ModelSlot;
+import org.openflexo.foundation.fml.editionaction.FetchRequest;
+import org.openflexo.foundation.fml.editionaction.UniqueFetchRequest;
+import org.openflexo.foundation.ontology.IFlexoOntologyClass;
+import org.openflexo.foundation.technologyadapter.FlexoModel;
 import org.openflexo.foundation.technologyadapter.TechnologyObject;
+import org.openflexo.foundation.technologyadapter.TypeAwareModelSlot;
+import org.openflexo.pamela.annotations.ImplementationClass;
 import org.openflexo.pamela.annotations.ModelEntity;
 
 /**
- * Abstract class representing a fetch request, which is a primitive allowing to browse in the model while configuring requests
- * 
- * This request manage a collection (a {@link List}) of fetched type
+ * A {@link FetchRequest} allowing to retrieve a unique class matching some conditions and a given type.<br>
+ * This action is technology-specific and must be redefined in a given technology
  * 
  * @author sylvain
- *
- * @param <MS>
- *            Type of model slot which contractualize access to a given technology resource on which this action applies
- * @param <R>
- *            Type of receiver on this action (the precise technology object on which this action apply)
+ * 
+ * @param <M>
+ * @param <MM>
  * @param <T>
- *            Type of fetched value
  */
 @ModelEntity(isAbstract = true)
-public abstract interface FetchRequest<MS extends ModelSlot<RD>, RD extends ResourceData<RD> & TechnologyObject<?>, T>
-		extends AbstractFetchRequest<MS, RD, T, List<T>> {
+@ImplementationClass(SelectUniqueClass.AbstractSelectClassImpl.class)
+public abstract interface SelectUniqueClass<MS extends TypeAwareModelSlot<M, ?>, M extends FlexoModel<M, ?> & TechnologyObject<?>, T extends IFlexoOntologyClass>
+		extends AbstractSelectClass<MS, M, T, T>, UniqueFetchRequest<MS, M, T> {
 
 }

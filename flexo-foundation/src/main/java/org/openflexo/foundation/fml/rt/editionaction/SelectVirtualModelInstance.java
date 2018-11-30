@@ -38,285 +38,32 @@
 
 package org.openflexo.foundation.fml.rt.editionaction;
 
-import java.io.FileNotFoundException;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Type;
 import java.util.List;
-import java.util.logging.Logger;
 
-import org.openflexo.connie.DataBinding;
-import org.openflexo.connie.exception.NullReferenceException;
-import org.openflexo.connie.exception.TypeMismatchException;
-import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.fml.VirtualModel;
-import org.openflexo.foundation.fml.VirtualModelInstanceType;
 import org.openflexo.foundation.fml.annotations.FML;
 import org.openflexo.foundation.fml.editionaction.FetchRequest;
-import org.openflexo.foundation.fml.rm.VirtualModelResource;
 import org.openflexo.foundation.fml.rt.FMLRTModelSlot;
 import org.openflexo.foundation.fml.rt.FMLRTTechnologyAdapter;
 import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstance;
-import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
 import org.openflexo.foundation.fml.rt.VirtualModelInstance;
-import org.openflexo.foundation.resource.ResourceLoadingCancelledException;
-import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
-import org.openflexo.logging.FlexoLogger;
-import org.openflexo.pamela.annotations.DefineValidationRule;
-import org.openflexo.pamela.annotations.Getter;
 import org.openflexo.pamela.annotations.ImplementationClass;
 import org.openflexo.pamela.annotations.ModelEntity;
-import org.openflexo.pamela.annotations.PropertyIdentifier;
-import org.openflexo.pamela.annotations.Setter;
-import org.openflexo.pamela.annotations.XMLAttribute;
 import org.openflexo.pamela.annotations.XMLElement;
-import org.openflexo.pamela.validation.ValidationError;
-import org.openflexo.pamela.validation.ValidationIssue;
-import org.openflexo.pamela.validation.ValidationRule;
 
 /**
- * Generic {@link FetchRequest} allowing to retrieve a selection of some {@link FMLRTVirtualModelInstance} matching some conditions and a
- * given {@link VirtualModel}.<br>
+ * A {@link FetchRequest} allowing to retrieve a selection of some {@link FMLRTVirtualModelInstance} matching some conditions and a given
+ * {@link VirtualModel}.<br>
  * 
  * @author sylvain
  * 
  */
 @ModelEntity
-@ImplementationClass(SelectVirtualModelInstance.SelectVirtualModelInstanceImpl.class)
+@ImplementationClass(AbstractSelectVirtualModelInstance.AbstractSelectVirtualModelInstanceImpl.class)
 @XMLElement
 @FML("SelectVirtualModelInstance")
 public interface SelectVirtualModelInstance<VMI extends VirtualModelInstance<VMI, FMLRTTechnologyAdapter>>
-		extends FetchRequest<FMLRTModelSlot<VMI, FMLRTTechnologyAdapter>, VMI, VirtualModelInstance<?, ?>> {
-
-	@PropertyIdentifier(type = String.class)
-	public static final String VIRTUAL_MODEL_TYPE_URI_KEY = "virtualModelTypeURI";
-
-	@PropertyIdentifier(type = DataBinding.class)
-	public static final String CONTAINER_KEY = "container";
-
-	@Getter(value = CONTAINER_KEY)
-	@XMLAttribute
-	public DataBinding<VirtualModelInstance<?, ?>> getContainer();
-
-	@Setter(CONTAINER_KEY)
-	public void setContainer(DataBinding<VirtualModelInstance<?, ?>> container);
-
-	@Getter(value = VIRTUAL_MODEL_TYPE_URI_KEY)
-	@XMLAttribute
-	public String _getVirtualModelTypeURI();
-
-	@Setter(VIRTUAL_MODEL_TYPE_URI_KEY)
-	public void _setVirtualModelTypeURI(String virtualModelTypeURI);
-
-	public VirtualModelResource getVirtualModelType();
-
-	public void setVirtualModelType(VirtualModelResource virtualModelType);
-
-	public VirtualModel getAddressedVirtualModel();
-
-	public static abstract class SelectVirtualModelInstanceImpl<VMI extends VirtualModelInstance<VMI, FMLRTTechnologyAdapter>>
-			extends FetchRequestImpl<FMLRTModelSlot<VMI, FMLRTTechnologyAdapter>, VMI, VirtualModelInstance<?, ?>>
-			implements SelectVirtualModelInstance<VMI> {
-
-		protected static final Logger logger = FlexoLogger.getLogger(SelectVirtualModelInstance.class.getPackage().getName());
-
-		private VirtualModelResource virtualModelType;
-		private String virtualModelTypeURI;
-
-		@Override
-		public TechnologyAdapter getModelSlotTechnologyAdapter() {
-			if (getServiceManager() != null) {
-				return getServiceManager().getTechnologyAdapterService().getTechnologyAdapter(FMLRTTechnologyAdapter.class);
-			}
-			return super.getModelSlotTechnologyAdapter();
-		}
-
-		private DataBinding<VirtualModelInstance<?, ?>> container;
-
-		@Override
-		public DataBinding<VirtualModelInstance<?, ?>> getContainer() {
-			if (container == null) {
-				container = new DataBinding<>(this, VirtualModelInstance.class, DataBinding.BindingDefinitionType.GET);
-				container.setBindingName("container");
-			}
-			return container;
-		}
-
-		@Override
-		public void setContainer(DataBinding<VirtualModelInstance<?, ?>> aContainer) {
-			if (aContainer != null) {
-				aContainer.setOwner(this);
-				aContainer.setBindingName("container");
-				aContainer.setDeclaredType(VirtualModelInstance.class);
-				aContainer.setBindingDefinitionType(DataBinding.BindingDefinitionType.GET);
-			}
-			this.container = aContainer;
-			notifiedBindingChanged(container);
-		}
-
-		@Override
-		public String getParametersStringRepresentation() {
-			String whereClauses = getWhereClausesFMLRepresentation(null);
-			return "(type=" + (getVirtualModelType() != null ? getVirtualModelType().getName() : "null")
-					+ (whereClauses != null ? "," + whereClauses : "") + ")";
-		}
-
-		@Override
-		public VirtualModel getAddressedVirtualModel() {
-			if (getContainer() != null && getContainer().isSet() && getContainer().isValid()) {
-				Type containerType = getContainer().getAnalyzedType();
-				if (containerType instanceof VirtualModelInstanceType) {
-					return ((VirtualModelInstanceType) containerType).getVirtualModel();
-				}
-			}
-			return null;
-		}
-
-		private boolean isFetching = false;
-
-		@Override
-		public VirtualModelInstanceType getFetchedType() {
-			if (isFetching) {
-				return VirtualModelInstanceType.UNDEFINED_VIRTUAL_MODEL_INSTANCE_TYPE;
-			}
-			isFetching = true;
-			try {
-				if (getVirtualModelType() != null) {
-					if (getVirtualModelType().isLoaded()) {
-						return VirtualModelInstanceType.getVirtualModelInstanceType(
-								getVirtualModelType() != null ? getVirtualModelType().getLoadedResourceData() : null);
-					}
-					return new VirtualModelInstanceType(_getVirtualModelTypeURI(),
-							getTechnologyAdapter().getVirtualModelInstanceTypeFactory());
-				}
-			} finally {
-				isFetching = false;
-			}
-			return VirtualModelInstanceType.UNDEFINED_VIRTUAL_MODEL_INSTANCE_TYPE;
-		}
-
-		@Override
-		public String _getVirtualModelTypeURI() {
-			if (virtualModelType != null) {
-				return virtualModelType.getURI();
-			}
-			return virtualModelTypeURI;
-		}
-
-		@Override
-		public void _setVirtualModelTypeURI(String virtualModelTypeURI) {
-			this.virtualModelTypeURI = virtualModelTypeURI;
-		}
-
-		@Override
-		public VirtualModelResource getVirtualModelType() {
-			if (virtualModelType == null && virtualModelTypeURI != null && getAddressedVirtualModel() != null) {
-				VirtualModel vm = getAddressedVirtualModel().getVirtualModelNamed(virtualModelTypeURI);
-				if (vm != null) {
-					virtualModelType = (VirtualModelResource) vm.getResource();
-				}
-				/*else {
-					logger.warning("?????????????????? je trouve pas " + virtualModelTypeURI);
-					try {
-						if (getAddressedVirtualModel() != null && getAddressedVirtualModel().getVirtualModelLibrary() != null) {
-							System.out.println("Et: "
-									+ getAddressedVirtualModel().getVirtualModelLibrary().getVirtualModel(virtualModelTypeURI, true));
-						}
-					} catch (FileNotFoundException e) {
-						e.printStackTrace();
-					} catch (ResourceLoadingCancelledException e) {
-						e.printStackTrace();
-					} catch (FlexoException e) {
-						e.printStackTrace();
-					}
-				}*/
-			}
-
-			return virtualModelType;
-		}
-
-		@Override
-		public void setVirtualModelType(VirtualModelResource virtualModelType) {
-			if (virtualModelType != this.virtualModelType) {
-				VirtualModelResource oldValue = this.virtualModelType;
-				this.virtualModelType = virtualModelType;
-				getPropertyChangeSupport().firePropertyChange("virtualModelType", oldValue, virtualModelType);
-			}
-		}
-
-		public VirtualModelInstance<?, ?> getContainer(RunTimeEvaluationContext evaluationContext) {
-			if (getContainer() != null && getContainer().isSet() && getContainer().isValid()) {
-				try {
-					return getContainer().getBindingValue(evaluationContext);
-				} catch (TypeMismatchException e) {
-					e.printStackTrace();
-				} catch (NullReferenceException e) {
-					e.printStackTrace();
-				} catch (InvocationTargetException e) {
-					e.printStackTrace();
-				}
-			}
-			return null;
-
-		}
-
-		@Override
-		public List<VirtualModelInstance<?, ?>> execute(RunTimeEvaluationContext evaluationContext) {
-			VirtualModelInstance<?, ?> container = getContainer(evaluationContext);
-			if (container != null) {
-				try {
-					return filterWithConditions(container.getVirtualModelInstancesForVirtualModel(getVirtualModelType().getResourceData()),
-							evaluationContext);
-				} catch (FileNotFoundException e) {
-					e.printStackTrace();
-				} catch (ResourceLoadingCancelledException e) {
-					e.printStackTrace();
-				} catch (FlexoException e) {
-					e.printStackTrace();
-				}
-				return null;
-			}
-			logger.warning(getStringRepresentation() + " : Cannot find view on which to apply SelectVirtualModelInstance");
-			logger.warning("Additional info: getContainer()=" + getContainer());
-			return null;
-		}
-	}
-
-	@DefineValidationRule
-	public static class SelectVirtualModelInstanceMustAddressAFlexoConceptType
-			extends ValidationRule<SelectVirtualModelInstanceMustAddressAFlexoConceptType, SelectVirtualModelInstance<?>> {
-		public SelectVirtualModelInstanceMustAddressAFlexoConceptType() {
-			super(SelectVirtualModelInstance.class, "select_virtual_model_instance_action_must_address_a_valid_virtual_model_type");
-		}
-
-		@Override
-		public ValidationIssue<SelectVirtualModelInstanceMustAddressAFlexoConceptType, SelectVirtualModelInstance<?>> applyValidation(
-				SelectVirtualModelInstance<?> action) {
-			if (action.getVirtualModelType() == null) {
-				return new ValidationError<>(this, action, "select_virtual_model_instance_action_doesn't_define_any_virtual_model_type");
-			}
-			return null;
-		}
-	}
-
-	@DefineValidationRule
-	public static class ContainerBindingIsRequiredAndMustBeValid extends BindingIsRequiredAndMustBeValid<SelectVirtualModelInstance> {
-		public ContainerBindingIsRequiredAndMustBeValid() {
-			super("'container'_binding_is_not_valid", SelectVirtualModelInstance.class);
-		}
-
-		@Override
-		public DataBinding<VirtualModelInstance<?, ?>> getBinding(SelectVirtualModelInstance object) {
-			return object.getContainer();
-		}
-
-		@Override
-		public ValidationIssue<BindingIsRequiredAndMustBeValid<SelectVirtualModelInstance>, SelectVirtualModelInstance> applyValidation(
-				SelectVirtualModelInstance object) {
-			ValidationIssue<BindingIsRequiredAndMustBeValid<SelectVirtualModelInstance>, SelectVirtualModelInstance> returned = super.applyValidation(
-					object);
-			return returned;
-		}
-
-	}
+		extends AbstractSelectVirtualModelInstance<VMI, List<VirtualModelInstance<?, ?>>>,
+		FetchRequest<FMLRTModelSlot<VMI, FMLRTTechnologyAdapter>, VMI, VirtualModelInstance<?, ?>> {
 
 }

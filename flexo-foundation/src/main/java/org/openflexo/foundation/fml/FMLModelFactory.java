@@ -67,7 +67,7 @@ import org.openflexo.foundation.fml.editionaction.DeclarationAction;
 import org.openflexo.foundation.fml.editionaction.DeleteAction;
 import org.openflexo.foundation.fml.editionaction.EditionAction;
 import org.openflexo.foundation.fml.editionaction.ExpressionAction;
-import org.openflexo.foundation.fml.editionaction.FetchRequest;
+import org.openflexo.foundation.fml.editionaction.AbstractFetchRequest;
 import org.openflexo.foundation.fml.editionaction.FetchRequestCondition;
 import org.openflexo.foundation.fml.editionaction.LogAction;
 import org.openflexo.foundation.fml.editionaction.NotifyProgressAction;
@@ -258,7 +258,7 @@ public class FMLModelFactory extends ModelFactory implements PamelaResourceModel
 		}
 		DeclareFetchRequests frDeclarations = modelSlotClass.getAnnotation(DeclareFetchRequests.class);
 		if (frDeclarations != null) {
-			for (Class<? extends FetchRequest> fetchRequestClass : frDeclarations.value()) {
+			for (Class<? extends AbstractFetchRequest> fetchRequestClass : frDeclarations.value()) {
 				classes.add(fetchRequestClass);
 			}
 		}

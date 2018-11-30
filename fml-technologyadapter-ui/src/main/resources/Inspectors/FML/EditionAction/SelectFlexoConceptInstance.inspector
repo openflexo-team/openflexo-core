@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Panel className="org.openflexo.gina.utils.FIBInspector" layout="border"
 	titleFont="SansSerif,0,12" darkLevel="0"
-	dataClassName="org.openflexo.foundation.fml.rt.editionaction.SelectFlexoConceptInstance"
+	dataClassName="org.openflexo.foundation.fml.rt.editionaction.AbstractSelectFlexoConceptInstance"
 	controllerClassName="org.openflexo.fml.controller.FMLFIBInspectorController"
 	font="SansSerif,0,12" name="Inspector">
 	<TabPanel name="Tab" constraints="border(location=center)">

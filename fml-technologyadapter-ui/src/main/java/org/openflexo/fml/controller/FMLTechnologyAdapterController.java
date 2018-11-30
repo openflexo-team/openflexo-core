@@ -117,9 +117,9 @@ import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstanceModelSlot;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
+import org.openflexo.foundation.fml.rt.editionaction.AbstractSelectFlexoConceptInstance;
+import org.openflexo.foundation.fml.rt.editionaction.AbstractSelectVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.editionaction.AddFlexoConceptInstance;
-import org.openflexo.foundation.fml.rt.editionaction.SelectFlexoConceptInstance;
-import org.openflexo.foundation.fml.rt.editionaction.SelectVirtualModelInstance;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.resource.FlexoResourceType;
 import org.openflexo.foundation.resource.ResourceData;
@@ -361,10 +361,10 @@ public class FMLTechnologyAdapterController extends TechnologyAdapterController<
 		if (AddFlexoConceptInstance.class.isAssignableFrom(editionActionClass)) {
 			return IconFactory.getImageIcon(FMLRTIconLibrary.FLEXO_CONCEPT_INSTANCE_ICON, IconLibrary.DUPLICATE);
 		}
-		else if (SelectFlexoConceptInstance.class.isAssignableFrom(editionActionClass)) {
+		else if (AbstractSelectFlexoConceptInstance.class.isAssignableFrom(editionActionClass)) {
 			return IconFactory.getImageIcon(FMLRTIconLibrary.FLEXO_CONCEPT_INSTANCE_ICON, IconLibrary.IMPORT);
 		}
-		else if (SelectVirtualModelInstance.class.isAssignableFrom(editionActionClass)) {
+		else if (AbstractSelectVirtualModelInstance.class.isAssignableFrom(editionActionClass)) {
 			return IconFactory.getImageIcon(FMLRTIconLibrary.VIRTUAL_MODEL_INSTANCE_ICON, IconLibrary.IMPORT);
 		}
 		else if (DeleteAction.class.isAssignableFrom(editionActionClass)) {

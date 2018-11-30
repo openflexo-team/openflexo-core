@@ -49,6 +49,8 @@ import org.openflexo.foundation.fml.annotations.FML;
 import org.openflexo.foundation.fml.rt.editionaction.AddFlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.editionaction.AddVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.editionaction.SelectFlexoConceptInstance;
+import org.openflexo.foundation.fml.rt.editionaction.SelectUniqueFlexoConceptInstance;
+import org.openflexo.foundation.fml.rt.editionaction.SelectUniqueVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.editionaction.SelectVirtualModelInstance;
 import org.openflexo.pamela.annotations.ImplementationClass;
 import org.openflexo.pamela.annotations.ModelEntity;
@@ -63,7 +65,8 @@ import org.openflexo.pamela.annotations.XMLElement;
  */
 @DeclareFlexoRoles({ FlexoConceptInstanceRole.class, PrimitiveRole.class })
 @DeclareEditionActions({ AddFlexoConceptInstance.class, AddVirtualModelInstance.class })
-@DeclareFetchRequests({ SelectFlexoConceptInstance.class, SelectVirtualModelInstance.class })
+@DeclareFetchRequests({ SelectFlexoConceptInstance.class, SelectVirtualModelInstance.class, SelectUniqueFlexoConceptInstance.class,
+		SelectUniqueVirtualModelInstance.class })
 @ModelEntity
 @ImplementationClass(FMLRTVirtualModelInstanceModelSlot.FMLRTVirtualModelInstanceModelSlotImpl.class)
 @XMLElement(xmlTag = "FMLRTVirtualModelInstanceModelSlot", deprecatedXMLTags = "ViewModelSlot,VirtualModelInstanceModelSlot")

@@ -69,6 +69,7 @@ import org.openflexo.foundation.fml.controlgraph.FMLControlGraph;
 import org.openflexo.foundation.fml.controlgraph.IncrementalIterationAction;
 import org.openflexo.foundation.fml.controlgraph.IterationAction;
 import org.openflexo.foundation.fml.controlgraph.WhileAction;
+import org.openflexo.foundation.fml.editionaction.AbstractFetchRequest;
 import org.openflexo.foundation.fml.editionaction.AddClassInstance;
 import org.openflexo.foundation.fml.editionaction.AddToListAction;
 import org.openflexo.foundation.fml.editionaction.AssignableAction;
@@ -94,6 +95,8 @@ import org.openflexo.foundation.fml.rt.editionaction.FireEventAction;
 import org.openflexo.foundation.fml.rt.editionaction.InitiateMatching;
 import org.openflexo.foundation.fml.rt.editionaction.MatchFlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.editionaction.SelectFlexoConceptInstance;
+import org.openflexo.foundation.fml.rt.editionaction.SelectUniqueFlexoConceptInstance;
+import org.openflexo.foundation.fml.rt.editionaction.SelectUniqueVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.editionaction.SelectVirtualModelInstance;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
@@ -154,7 +157,7 @@ public class CreateEditionAction extends FlexoAction<CreateEditionAction, FMLCon
 		if (!availableActions.contains(availableActionClass)) {
 			availableActions.add(availableActionClass);
 			editionActionForTechnologyAdapterMap.put(availableActionClass, ta);
-			if (FetchRequest.class.isAssignableFrom(availableActionClass)) {
+			if (AbstractFetchRequest.class.isAssignableFrom(availableActionClass)) {
 				availableFetchRequests.add((Class<FetchRequest<?, ?, ?>>) availableActionClass);
 			}
 		}
@@ -186,7 +189,9 @@ public class CreateEditionAction extends FlexoAction<CreateEditionAction, FMLCon
 		addToAvailableActions(InitiateMatching.class, fmlTA);
 		addToAvailableActions(MatchFlexoConceptInstance.class, fmlTA);
 		addToAvailableActions(FinalizeMatching.class, fmlTA);
+		addToAvailableActions(SelectUniqueFlexoConceptInstance.class, fmlTA);
 		addToAvailableActions(SelectFlexoConceptInstance.class, fmlTA);
+		addToAvailableActions(SelectUniqueVirtualModelInstance.class, fmlTA);
 		addToAvailableActions(SelectVirtualModelInstance.class, fmlTA);
 		addToAvailableActions(DeleteAction.class, fmlTA);
 		addToAvailableActions(DeleteFlexoConceptInstance.class, fmlTA);
@@ -326,11 +331,11 @@ public class CreateEditionAction extends FlexoAction<CreateEditionAction, FMLCon
 		return returned;
 	}
 
-	public FetchRequest<?, ?, ?> getFetchRequestAction() {
+	public AbstractFetchRequest<?, ?, ?, ?> getFetchRequestAction() {
 		if (isIterationAction()) {
 			if (getIterationType() == IterationType.FetchRequest
-					&& ((IterationAction) getBaseEditionAction()).getIterationAction() instanceof FetchRequest) {
-				return (FetchRequest<?, ?, ?>) ((IterationAction) getBaseEditionAction()).getIterationAction();
+					&& ((IterationAction) getBaseEditionAction()).getIterationAction() instanceof AbstractFetchRequest) {
+				return (AbstractFetchRequest<?, ?, ?, ?>) ((IterationAction) getBaseEditionAction()).getIterationAction();
 			}
 		}
 		return null;
@@ -516,8 +521,8 @@ public class CreateEditionAction extends FlexoAction<CreateEditionAction, FMLCon
 			returned = factory.newIterationAction();
 			updateIteration((IterationAction) returned);
 		}
-		else if (FetchRequest.class.isAssignableFrom(editionActionClass) && getModelSlot() != null) {
-			returned = getModelSlot().makeFetchRequest((Class<FetchRequest<?, ?, ?>>) editionActionClass);
+		else if (AbstractFetchRequest.class.isAssignableFrom(editionActionClass) && getModelSlot() != null) {
+			returned = getModelSlot().makeFetchRequest((Class<AbstractFetchRequest<?, ?, ?, ?>>) editionActionClass);
 		}
 		else if (TechnologySpecificAction.class.isAssignableFrom(editionActionClass) && getModelSlot() != null) {
 			returned = getModelSlot().makeEditionAction((Class<TechnologySpecificAction<?, ?>>) editionActionClass);

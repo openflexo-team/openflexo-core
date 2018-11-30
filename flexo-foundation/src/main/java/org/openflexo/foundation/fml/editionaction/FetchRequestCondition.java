@@ -74,17 +74,17 @@ public interface FetchRequestCondition extends FlexoConceptObject {
 
 	public static final String SELECTED = "selected";
 
-	@PropertyIdentifier(type = FetchRequest.class)
+	@PropertyIdentifier(type = AbstractFetchRequest.class)
 	public static final String ACTION_KEY = "action";
 
 	@PropertyIdentifier(type = DataBinding.class)
 	public static final String CONDITION_KEY = "condition";
 
 	@Getter(value = ACTION_KEY /*, inverse = FetchRequest.CONDITIONS_KEY*/)
-	public FetchRequest<?, ?, ?> getAction();
+	public AbstractFetchRequest<?, ?, ?, ?> getAction();
 
 	@Setter(ACTION_KEY)
-	public void setAction(FetchRequest<?, ?, ?> action);
+	public void setAction(AbstractFetchRequest<?, ?, ?, ?> action);
 
 	@Getter(value = CONDITION_KEY)
 	@XMLAttribute

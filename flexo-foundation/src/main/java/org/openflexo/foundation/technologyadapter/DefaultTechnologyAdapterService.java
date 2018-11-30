@@ -62,6 +62,7 @@ import org.openflexo.foundation.fml.annotations.DeclareEditionActions;
 import org.openflexo.foundation.fml.annotations.DeclareFetchRequests;
 import org.openflexo.foundation.fml.annotations.DeclareFlexoBehaviours;
 import org.openflexo.foundation.fml.annotations.DeclareFlexoRoles;
+import org.openflexo.foundation.fml.editionaction.AbstractFetchRequest;
 import org.openflexo.foundation.fml.editionaction.EditionAction;
 import org.openflexo.foundation.fml.editionaction.FetchRequest;
 import org.openflexo.foundation.fml.editionaction.TechnologySpecificAction;
@@ -96,6 +97,7 @@ public abstract class DefaultTechnologyAdapterService extends FlexoServiceImpl i
 	private Map<Class<? extends ModelSlot<?>>, List<Class<? extends FlexoRole<?>>>> availableFlexoRoleTypes;
 	private Map<Class<? extends ModelSlot<?>>, List<Class<? extends FlexoBehaviour>>> availableFlexoBehaviourTypes;
 	private Map<Class<? extends ModelSlot<?>>, List<Class<? extends EditionAction>>> availableEditionActionTypes;
+	private Map<Class<? extends ModelSlot<?>>, List<Class<? extends AbstractFetchRequest<?, ?, ?, ?>>>> availableAbstractFetchRequestActionTypes;
 	private Map<Class<? extends ModelSlot<?>>, List<Class<? extends FetchRequest<?, ?, ?>>>> availableFetchRequestActionTypes;
 
 	// private Map<Class<? extends ModelSlot<?>>, List<Class<? extends FlexoBehaviourParameter>>> availableFlexoBehaviourParameterTypes;
@@ -458,7 +460,25 @@ public abstract class DefaultTechnologyAdapterService extends FlexoServiceImpl i
 	}
 
 	/**
-	 * Return the list of {@link FetchRequest} class available for supplied modelSlotClass
+	 * Return the list of {@link AbstractFetchRequest} class available for supplied modelSlotClass
+	 * 
+	 * @param modelSlotClass
+	 * @return
+	 */
+	@Override
+	public <MS extends ModelSlot<?>> List<Class<? extends AbstractFetchRequest<?, ?, ?, ?>>> getAvailableAbstractFetchRequestActionTypes(
+			Class<MS> modelSlotClass) {
+		List<Class<? extends AbstractFetchRequest<?, ?, ?, ?>>> returned = availableAbstractFetchRequestActionTypes.get(modelSlotClass);
+		if (returned == null) {
+			returned = new ArrayList<>();
+			appendAbstractFetchRequestActionTypes(returned, modelSlotClass);
+			availableAbstractFetchRequestActionTypes.put(modelSlotClass, returned);
+		}
+		return returned;
+	}
+
+	/**
+	 * Return the list of {@link AbstractFetchRequest} class available for supplied modelSlotClass
 	 * 
 	 * @param modelSlotClass
 	 * @return
@@ -532,11 +552,28 @@ public abstract class DefaultTechnologyAdapterService extends FlexoServiceImpl i
 		}
 	}
 
+	private static void appendAbstractFetchRequestActionTypes(List<Class<? extends AbstractFetchRequest<?, ?, ?, ?>>> aList, Class<?> cl) {
+		if (cl.isAnnotationPresent(DeclareFetchRequests.class)) {
+			DeclareFetchRequests allFetchRequestActions = cl.getAnnotation(DeclareFetchRequests.class);
+			for (Class<? extends AbstractFetchRequest> fetchRequestClass : allFetchRequestActions.value()) {
+				if (!aList.contains(fetchRequestClass)) {
+					aList.add((Class) fetchRequestClass);
+				}
+			}
+		}
+		if (cl.getSuperclass() != null) {
+			appendAbstractFetchRequestActionTypes(aList, cl.getSuperclass());
+		}
+		for (Class<?> superInterface : cl.getInterfaces()) {
+			appendAbstractFetchRequestActionTypes(aList, superInterface);
+		}
+	}
+
 	private static void appendFetchRequestActionTypes(List<Class<? extends FetchRequest<?, ?, ?>>> aList, Class<?> cl) {
 		if (cl.isAnnotationPresent(DeclareFetchRequests.class)) {
 			DeclareFetchRequests allFetchRequestActions = cl.getAnnotation(DeclareFetchRequests.class);
-			for (Class<? extends FetchRequest> fetchRequestClass : allFetchRequestActions.value()) {
-				if (!aList.contains(fetchRequestClass)) {
+			for (Class<? extends AbstractFetchRequest> fetchRequestClass : allFetchRequestActions.value()) {
+				if (FetchRequest.class.isAssignableFrom(fetchRequestClass) && !aList.contains(fetchRequestClass)) {
 					aList.add((Class) fetchRequestClass);
 				}
 			}

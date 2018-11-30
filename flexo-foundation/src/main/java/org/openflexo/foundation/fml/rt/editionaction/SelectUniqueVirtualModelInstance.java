@@ -36,31 +36,33 @@
  * 
  */
 
-package org.openflexo.foundation.fml.editionaction;
+package org.openflexo.foundation.fml.rt.editionaction;
 
-import java.util.List;
-
-import org.openflexo.foundation.resource.ResourceData;
-import org.openflexo.foundation.technologyadapter.ModelSlot;
-import org.openflexo.foundation.technologyadapter.TechnologyObject;
+import org.openflexo.foundation.fml.VirtualModel;
+import org.openflexo.foundation.fml.annotations.FML;
+import org.openflexo.foundation.fml.editionaction.FetchRequest;
+import org.openflexo.foundation.fml.editionaction.UniqueFetchRequest;
+import org.openflexo.foundation.fml.rt.FMLRTModelSlot;
+import org.openflexo.foundation.fml.rt.FMLRTTechnologyAdapter;
+import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstance;
+import org.openflexo.foundation.fml.rt.VirtualModelInstance;
+import org.openflexo.pamela.annotations.ImplementationClass;
 import org.openflexo.pamela.annotations.ModelEntity;
+import org.openflexo.pamela.annotations.XMLElement;
 
 /**
- * Abstract class representing a fetch request, which is a primitive allowing to browse in the model while configuring requests
- * 
- * This request manage a collection (a {@link List}) of fetched type
+ * A {@link FetchRequest} allowing to retrieve a unique {@link FMLRTVirtualModelInstance} matching some conditions and a given
+ * {@link VirtualModel}.<br>
  * 
  * @author sylvain
- *
- * @param <MS>
- *            Type of model slot which contractualize access to a given technology resource on which this action applies
- * @param <R>
- *            Type of receiver on this action (the precise technology object on which this action apply)
- * @param <T>
- *            Type of fetched value
+ * 
  */
-@ModelEntity(isAbstract = true)
-public abstract interface FetchRequest<MS extends ModelSlot<RD>, RD extends ResourceData<RD> & TechnologyObject<?>, T>
-		extends AbstractFetchRequest<MS, RD, T, List<T>> {
+@ModelEntity
+@ImplementationClass(AbstractSelectVirtualModelInstance.AbstractSelectVirtualModelInstanceImpl.class)
+@XMLElement
+@FML("SelectUniqueVirtualModelInstance")
+public interface SelectUniqueVirtualModelInstance<VMI extends VirtualModelInstance<VMI, FMLRTTechnologyAdapter>>
+		extends AbstractSelectVirtualModelInstance<VMI, VirtualModelInstance<?, ?>>,
+		UniqueFetchRequest<FMLRTModelSlot<VMI, FMLRTTechnologyAdapter>, VMI, VirtualModelInstance<?, ?>> {
 
 }

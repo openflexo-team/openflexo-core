@@ -38,8 +38,6 @@
 
 package org.openflexo.foundation.fml.editionaction;
 
-import java.util.List;
-
 import org.openflexo.foundation.resource.ResourceData;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.foundation.technologyadapter.TechnologyObject;
@@ -48,7 +46,8 @@ import org.openflexo.pamela.annotations.ModelEntity;
 /**
  * Abstract class representing a fetch request, which is a primitive allowing to browse in the model while configuring requests
  * 
- * This request manage a collection (a {@link List}) of fetched type
+ * This request manages a single value of fetched type (if none value were found, value is null, when many values match conditions, return
+ * first found). Unicity must be guaranteed by business logic (semantics of build models).
  * 
  * @author sylvain
  *
@@ -60,7 +59,7 @@ import org.openflexo.pamela.annotations.ModelEntity;
  *            Type of fetched value
  */
 @ModelEntity(isAbstract = true)
-public abstract interface FetchRequest<MS extends ModelSlot<RD>, RD extends ResourceData<RD> & TechnologyObject<?>, T>
-		extends AbstractFetchRequest<MS, RD, T, List<T>> {
+public abstract interface UniqueFetchRequest<MS extends ModelSlot<RD>, RD extends ResourceData<RD> & TechnologyObject<?>, T>
+		extends AbstractFetchRequest<MS, RD, T, T> {
 
 }

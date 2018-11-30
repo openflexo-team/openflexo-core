@@ -49,6 +49,7 @@ import org.openflexo.foundation.FlexoService;
 import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.fml.FlexoBehaviour;
 import org.openflexo.foundation.fml.FlexoRole;
+import org.openflexo.foundation.fml.editionaction.AbstractFetchRequest;
 import org.openflexo.foundation.fml.editionaction.EditionAction;
 import org.openflexo.foundation.fml.editionaction.FetchRequest;
 import org.openflexo.foundation.fml.editionaction.TechnologySpecificAction;
@@ -61,11 +62,11 @@ import org.openflexo.foundation.resource.ResourceRepositoryImpl;
 import org.openflexo.foundation.task.FlexoTask;
 import org.openflexo.pamela.annotations.Adder;
 import org.openflexo.pamela.annotations.Getter;
+import org.openflexo.pamela.annotations.Getter.Cardinality;
 import org.openflexo.pamela.annotations.ImplementationClass;
 import org.openflexo.pamela.annotations.ModelEntity;
 import org.openflexo.pamela.annotations.Remover;
 import org.openflexo.pamela.annotations.Setter;
-import org.openflexo.pamela.annotations.Getter.Cardinality;
 
 /**
  * This service provides access to all technology adapters available in a given environment.
@@ -224,6 +225,15 @@ public interface TechnologyAdapterService extends FlexoService, CustomTypeManage
 	 * @return
 	 */
 	public <MS extends ModelSlot<?>> List<Class<? extends EditionAction>> getAvailableEditionActionTypes(Class<MS> modelSlotClass);
+
+	/**
+	 * Return the list of {@link AbstractFetchRequest} class available for supplied modelSlotClass
+	 * 
+	 * @param modelSlotClass
+	 * @return
+	 */
+	public <MS extends ModelSlot<?>> List<Class<? extends AbstractFetchRequest<?, ?, ?, ?>>> getAvailableAbstractFetchRequestActionTypes(
+			Class<MS> modelSlotClass);
 
 	/**
 	 * Return the list of {@link FetchRequest} class available for supplied modelSlotClass
