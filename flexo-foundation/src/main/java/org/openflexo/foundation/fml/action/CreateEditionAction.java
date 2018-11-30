@@ -157,7 +157,7 @@ public class CreateEditionAction extends FlexoAction<CreateEditionAction, FMLCon
 		if (!availableActions.contains(availableActionClass)) {
 			availableActions.add(availableActionClass);
 			editionActionForTechnologyAdapterMap.put(availableActionClass, ta);
-			if (AbstractFetchRequest.class.isAssignableFrom(availableActionClass)) {
+			if (FetchRequest.class.isAssignableFrom(availableActionClass)) {
 				availableFetchRequests.add((Class<FetchRequest<?, ?, ?>>) availableActionClass);
 			}
 		}
