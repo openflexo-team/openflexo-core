@@ -16,7 +16,6 @@
       <BrowserAddAction id="25" method="controller.createFlexoConcept(selected.virtualModel)" name="create_flexo_concept" />
       <BrowserAddAction method="controller.createContainedVirtualModel(selected)" name="create_virtual_model" />
     </BrowserElement>
-    </BrowserElement>
     <BrowserElement id="49" dataClassName="org.openflexo.foundation.fml.FlexoConcept" icon="controller.iconForObject(flexoConcept)" label="flexoConcept.name" editableLabel="flexoConcept.name" name="flexoConcept">
       <Children id="50" data="flexoConcept.embeddedFlexoConcepts" name="children" />
       <BrowserRemoveAction id="51" method="controller.deleteFlexoConcept(selected)" name="delete_flexo_concept" />

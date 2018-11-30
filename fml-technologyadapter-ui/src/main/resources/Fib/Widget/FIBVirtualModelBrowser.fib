@@ -19,7 +19,7 @@
 			label="virtualModel.name" icon="controller.iconForObject(virtualModel)"
 			tooltip="" enabled="" visible="" isEditable="false" editableLabel=""
 			filtered="false" defaultVisible="true" dynamicFont="" name="virtualModel">
- 			<Children data="virtualModel.allRootFlexoConcepts" visible=""
+			<Children data="virtualModel.allRootFlexoConcepts" visible=""
 				cast="" name="flexoConcepts" />
 		</BrowserElement>
 		<BrowserElement dataClassName="org.openflexo.foundation.fml.FlexoConcept"
