@@ -457,10 +457,12 @@ public interface AbstractAddFlexoConceptInstance<FCI extends FlexoConceptInstanc
 			}
 
 			FCI newFCI = makeNewFlexoConceptInstance(evaluationContext);
+
+			if (getFlexoConceptType().getContainerFlexoConcept() != null) {
+				container.addToEmbeddedFlexoConceptInstances(newFCI);
+			}
+
 			if (executeCreationScheme(newFCI, vmInstance, evaluationContext)) {
-				if (getFlexoConceptType().getContainerFlexoConcept() != null) {
-					container.addToEmbeddedFlexoConceptInstances(newFCI);
-				}
 				if (logger.isLoggable(Level.FINE)) {
 					logger.fine("Successfully performed performAddFlexoConcept " + evaluationContext);
 				}
