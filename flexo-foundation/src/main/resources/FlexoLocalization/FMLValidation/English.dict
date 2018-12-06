@@ -35,6 +35,7 @@ add_connector_action_does_not_have_a_valid_ending_shape=Add connector action doe
 add_connector_action_does_not_have_a_valid_starting_shape=Add connector action does not have a valid starting shape
 add_connector_action_must_have_a_valid_ending_shape_description=Add connector action must have a valid ending shape description
 add_connector_action_must_have_a_valid_starting_shape_description=Add connector action must have a valid starting shape description
+add_flexo_concept_action_doesn't_define_any_creation_scheme=Add flexo concept action doesn't define any creation scheme
 add_flexo_concept_action_doesn't_define_any_flexo_concept=Add flexo concept action doesn't define any flexo concept
 add_individual_action_does_not_define_any_ontology_class=Add individual action does not define any ontology class
 add_individual_action_must_define_an_ontology_class=Add individual action must define an ontology class
