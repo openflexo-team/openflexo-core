@@ -448,7 +448,12 @@ public abstract class FlexoBehaviourAction<A extends FlexoBehaviourAction<A, FB,
 	public void setValue(Object value, BindingVariable variable) {
 
 		if (variable instanceof DeclarationBindingVariable) {
-			variables.put(variable.getVariableName(), value);
+			if (value != null) {
+				variables.put(variable.getVariableName(), value);
+			}
+			else {
+				variables.remove(variable.getVariableName());
+			}
 			return;
 		}
 
