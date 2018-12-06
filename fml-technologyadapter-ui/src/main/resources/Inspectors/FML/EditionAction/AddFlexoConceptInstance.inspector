@@ -9,16 +9,16 @@
 			darkLevel="0" index="0" font="SansSerif,0,11" useScrollBar="true"
 			horizontalScrollbarPolicy="HORIZONTAL_SCROLLBAR_AS_NEEDED"
 			verticalScrollbarPolicy="VERTICAL_SCROLLBAR_AS_NEEDED" name="BasicTab">
-			<Label label="container" align="right" index="12"
+			<Label name="containerLabel" label="container" align="right" index="12"
 				constraints="twocols(expandHorizontally=true;expandVertically=false;index=6;insetsBottom=0;insetsLeft=2;insetsRight=4;insetsTop=5;location=left)"
 				localize="true" visible="data.flexoConceptType.containerFlexoConcept != null"/>
-			<Custom componentClassName="org.openflexo.gina.swing.utils.BindingSelector"
+			<Custom name="containerBS" componentClassName="org.openflexo.gina.swing.utils.BindingSelector"
 				localize="true" manageDynamicModel="true" opaque="false" index="13"
 				data="data.container" visible="data.flexoConceptType.containerFlexoConcept != null"
 				constraints="twocols(expandHorizontally=true;expandVertically=false;index=7;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)">
 				<Assignment variable="component.bindable" value="data" />
 			</Custom>
-			<Label label="flexo_concept" index="14"
+			<Label name="conceptLabel" label="flexo_concept" index="14"
 				constraints="twocols(anchor=east;expandHorizontally=false;expandVertically=false;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=8;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=5;location=left;padX=0;padY=0;weightX=0.0;weightY=0.0)"
 				localize="true" />
 			<Custom componentClassName="org.openflexo.fml.controller.widget.FIBFlexoConceptSelector"
