@@ -1383,7 +1383,7 @@ public interface VirtualModel extends FlexoConcept, FlexoMetaModel<VirtualModel>
 
 		private Resource getLocalizedDirectoryResource() {
 			Resource virtualModelDirectory = getResource().getIODelegate().getSerializationArtefactAsResource().getContainer();
-			List<? extends Resource> localizedDirs = virtualModelDirectory.getContents(Pattern.compile("Localized"), false);
+			List<? extends Resource> localizedDirs = virtualModelDirectory.getContents(Pattern.compile(".*/Localized"), false);
 			if (localizedDirs.size() > 0) {
 				return localizedDirs.get(0);
 			}
