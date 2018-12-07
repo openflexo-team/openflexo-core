@@ -114,8 +114,31 @@ public class DeletionSchemeAction extends AbstractActionSchemeAction<DeletionSch
 			logger.fine("getDeletionScheme()=" + getDeletionScheme());
 			logger.fine("getFlexoConceptInstance()=" + getFlexoConceptInstance());
 		}
+
+		// System.out.println("Delete " + getFlexoConceptInstance());
+		// System.out.println("Concept: " + getFlexoConceptInstance().getFlexoConcept());
+		// System.out.println("DeletionScheme: " + getDeletionScheme().getFMLRepresentation());
+		// System.out.println("Defined in " + getDeletionScheme().getFlexoConcept());
+
+		if (getFlexoConceptInstance() == null) {
+			throw new InvalidParametersException("Cannot delete a null FlexoConceptInstance");
+		}
+		if (getFlexoConceptInstance().getFlexoConcept() == null) {
+			throw new InvalidParametersException("Cannot delete a FlexoConceptInstance with null concept: " + getFlexoConceptInstance());
+		}
+
 		if (getDeletionScheme() != null) {
-			getFlexoConceptInstance().deleteWithScheme(getDeletionScheme(), this);
+			if (getDeletionScheme().getFlexoConcept() == null) {
+				throw new InvalidParametersException(
+						"Inconsistent data: DeletionScheme is not defined in any FlexoConcept: " + getDeletionScheme());
+			}
+			if (getDeletionScheme().getFlexoConcept().isAssignableFrom(getFlexoConceptInstance().getFlexoConcept())) {
+				getFlexoConceptInstance().deleteWithScheme(getDeletionScheme(), this);
+			}
+			else {
+				throw new InvalidParametersException("DeletionScheme " + getDeletionScheme() + " is not a behaviour defined for "
+						+ getFlexoConceptInstance().getFlexoConcept());
+			}
 		}
 		else {
 			getFlexoConceptInstance().delete(context);
