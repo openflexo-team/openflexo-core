@@ -86,7 +86,7 @@ public class VirtualModelResourceFactory
 	@Override
 	public VirtualModel makeEmptyResourceData(VirtualModelResource resource) {
 		if (resource.getSpecializedResourceDataClass() != null) {
-			System.out.println("Plutot que de creer un VirtualModel, je cree un " + resource.getSpecializedResourceDataClass());
+			// System.out.println("Plutot que de creer un VirtualModel, je cree un " + resource.getSpecializedResourceDataClass());
 			return resource.getFactory().newInstance(resource.getSpecializedResourceDataClass());
 		}
 		return resource.getFactory().newVirtualModel();
