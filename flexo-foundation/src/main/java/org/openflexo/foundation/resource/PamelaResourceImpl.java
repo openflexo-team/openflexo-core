@@ -43,6 +43,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -355,6 +356,20 @@ public abstract class PamelaResourceImpl<RD extends ResourceData<RD> & Accessibl
 	public StreamIODelegate<?> getFlexoIOStreamDelegate() {
 		if (getIODelegate() instanceof StreamIODelegate) {
 			return (StreamIODelegate<?>) getIODelegate();
+		}
+		return null;
+	}
+
+	public final InputStream getInputStream() {
+		if (getFlexoIOStreamDelegate() != null) {
+			return getFlexoIOStreamDelegate().getInputStream();
+		}
+		return null;
+	}
+
+	public final OutputStream getOutputStream() {
+		if (getFlexoIOStreamDelegate() != null) {
+			return getFlexoIOStreamDelegate().getOutputStream();
 		}
 		return null;
 	}

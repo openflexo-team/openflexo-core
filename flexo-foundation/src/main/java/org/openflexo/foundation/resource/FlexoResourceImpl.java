@@ -39,7 +39,9 @@
 
 package org.openflexo.foundation.resource;
 
+import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
@@ -53,6 +55,7 @@ import org.openflexo.foundation.technologyadapter.TechnologyAdapterResource;
 import org.openflexo.foundation.utils.FlexoObjectReference;
 import org.openflexo.localization.LocalizedDelegate;
 import org.openflexo.pamela.factory.AccessibleProxyObject;
+import org.openflexo.toolbox.FileUtils;
 import org.openflexo.toolbox.StringUtils;
 
 /**
@@ -650,6 +653,14 @@ public abstract class FlexoResourceImpl<RD extends ResourceData<RD>> extends Fle
 			return getIODelegate().getDisplayName();
 		}
 		return getName();
+	}
+
+	protected static void makeLocalCopy(File file) throws IOException {
+		if (file != null && file.exists()) {
+			String localCopyName = file.getName() + "~";
+			File localCopy = new File(file.getParentFile(), localCopyName);
+			FileUtils.copyFileToFile(file, localCopy);
+		}
 	}
 
 }
