@@ -93,7 +93,7 @@ public interface IFlexoResourceFactory<R extends FlexoResource<RD>, RD extends R
 	RD makeEmptyResourceData(R resource);
 
 	/**
-	 * Return boolean indicating is supplied serialization artefact seems to be a good candidate to be wrapped in considered
+	 * Return boolean indicating if supplied serialization artefact seems to be a good candidate to be wrapped in considered
 	 * {@link FlexoResource}
 	 * 
 	 * @param serializationArtefact
