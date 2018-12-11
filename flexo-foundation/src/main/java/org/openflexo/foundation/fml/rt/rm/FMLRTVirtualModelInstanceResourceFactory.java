@@ -223,7 +223,7 @@ public class FMLRTVirtualModelInstanceResourceFactory extends
 	 * Build and return model factory to use for resource data managing
 	 */
 	@Override
-	public FMLRTVirtualModelInstanceModelFactory makeResourceDataFactory(FMLRTVirtualModelInstanceResource resource,
+	public FMLRTVirtualModelInstanceModelFactory makeModelFactory(FMLRTVirtualModelInstanceResource resource,
 			TechnologyContextManager<FMLRTTechnologyAdapter> technologyContextManager) throws ModelDefinitionException {
 		return new FMLRTVirtualModelInstanceModelFactory(resource,
 				technologyContextManager.getTechnologyAdapter().getServiceManager().getEditingContext(),

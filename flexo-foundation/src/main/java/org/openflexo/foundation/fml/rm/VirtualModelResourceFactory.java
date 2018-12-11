@@ -73,7 +73,7 @@ public class VirtualModelResourceFactory
 	 * Build and return model factory to use for resource data managing
 	 */
 	@Override
-	public FMLModelFactory makeResourceDataFactory(VirtualModelResource resource,
+	public FMLModelFactory makeModelFactory(VirtualModelResource resource,
 			TechnologyContextManager<FMLTechnologyAdapter> technologyContextManager) throws ModelDefinitionException {
 		return new FMLModelFactory(resource, technologyContextManager.getServiceManager());
 	}
@@ -270,7 +270,7 @@ public class VirtualModelResourceFactory
 			}
 			// We set a new factory because of required model slots
 			if (StringUtils.isNotEmpty(vpi.requiredModelSlotList)) {
-				returned.setFactory(makeResourceDataFactory(returned, getTechnologyContextManager(resourceCenter.getServiceManager())));
+				returned.setFactory(makeModelFactory(returned, getTechnologyContextManager(resourceCenter.getServiceManager())));
 			}
 			if (StringUtils.isNotEmpty(vpi.virtualModelClassName)) {
 				Class<? extends VirtualModel> virtualModelClass = null;

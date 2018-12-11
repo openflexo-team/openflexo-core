@@ -117,7 +117,7 @@ public abstract class TechnologySpecificPamelaResourceFactory<R extends Technolo
 			throws ModelDefinitionException, IOException {
 		R returned = super.initResourceForRetrieving(serializationArtefact, resourceCenter);
 		TechnologyContextManager<TA> technologyContextManager = getTechnologyContextManager(resourceCenter.getServiceManager());
-		returned.setFactory(makeResourceDataFactory(returned, technologyContextManager));
+		returned.setFactory(makeModelFactory(returned, technologyContextManager));
 		return returned;
 	}
 
@@ -126,7 +126,7 @@ public abstract class TechnologySpecificPamelaResourceFactory<R extends Technolo
 			throws ModelDefinitionException {
 		R returned = super.initResourceForCreation(serializationArtefact, resourceCenter, name, uri);
 		TechnologyContextManager<TA> technologyContextManager = getTechnologyContextManager(resourceCenter.getServiceManager());
-		returned.setFactory(makeResourceDataFactory(returned, technologyContextManager));
+		returned.setFactory(makeModelFactory(returned, technologyContextManager));
 		return returned;
 	}
 
@@ -137,7 +137,7 @@ public abstract class TechnologySpecificPamelaResourceFactory<R extends Technolo
 	 * @param technologyContextManager
 	 * @return
 	 */
-	public abstract F makeResourceDataFactory(R resource, TechnologyContextManager<TA> technologyContextManager)
+	public abstract F makeModelFactory(R resource, TechnologyContextManager<TA> technologyContextManager)
 			throws ModelDefinitionException;
 
 }
