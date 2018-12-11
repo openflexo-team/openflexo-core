@@ -41,6 +41,7 @@ package org.openflexo.foundation.resource;
 
 import org.openflexo.pamela.annotations.Getter;
 import org.openflexo.pamela.annotations.ModelEntity;
+import org.openflexo.pamela.annotations.PropertyIdentifier;
 import org.openflexo.pamela.annotations.Setter;
 
 /**
@@ -53,7 +54,8 @@ import org.openflexo.pamela.annotations.Setter;
 @ModelEntity(isAbstract = true)
 public interface ResourceData<RD extends ResourceData<RD>> {
 
-	String FLEXO_RESOURCE = "flexoResource";
+	@PropertyIdentifier(type = FlexoResource.class)
+	final String FLEXO_RESOURCE = "flexoResource";
 
 	@Getter(value = FLEXO_RESOURCE, ignoreType = true)
 	FlexoResource<RD> getResource();
