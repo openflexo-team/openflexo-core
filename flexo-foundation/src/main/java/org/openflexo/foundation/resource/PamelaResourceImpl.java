@@ -353,7 +353,7 @@ public abstract class PamelaResourceImpl<RD extends ResourceData<RD> & Accessibl
 	 * 
 	 * @return
 	 */
-	public StreamIODelegate<?> getFlexoIOStreamDelegate() {
+	public final StreamIODelegate<?> getFlexoIOStreamDelegate() {
 		if (getIODelegate() instanceof StreamIODelegate) {
 			return (StreamIODelegate<?>) getIODelegate();
 		}
