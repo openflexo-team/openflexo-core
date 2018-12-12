@@ -47,7 +47,7 @@ import org.openflexo.foundation.fml.FlexoConceptInstanceType.FlexoConceptInstanc
 import org.openflexo.foundation.fml.FlexoEnumType.FlexoEnumTypeFactory;
 import org.openflexo.foundation.fml.VirtualModelInstanceType.VirtualModelInstanceTypeFactory;
 import org.openflexo.foundation.fml.annotations.DeclareModelSlots;
-import org.openflexo.foundation.fml.annotations.DeclareResourceFactory;
+import org.openflexo.foundation.fml.annotations.DeclareResourceFactories;
 import org.openflexo.foundation.fml.rm.VirtualModelResource;
 import org.openflexo.foundation.fml.rm.VirtualModelResourceFactory;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
@@ -66,7 +66,7 @@ import org.openflexo.foundation.technologyadapter.TechnologyAdapterService;
  * 
  */
 @DeclareModelSlots({ FMLModelSlot.class })
-@DeclareResourceFactory({ VirtualModelResourceFactory.class })
+@DeclareResourceFactories({ VirtualModelResourceFactory.class })
 public class FMLTechnologyAdapter extends TechnologyAdapter<FMLTechnologyAdapter> {
 	public FMLTechnologyAdapter() throws TechnologyAdapterInitializationException {
 	}

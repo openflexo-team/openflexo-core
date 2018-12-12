@@ -57,7 +57,7 @@ import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 @Retention(RetentionPolicy.RUNTIME)
 @Inherited
 @Target(value = ElementType.TYPE)
-public @interface DeclareResourceFactory {
+public @interface DeclareResourceFactories {
 
 	public Class<? extends ITechnologySpecificFlexoResourceFactory<?, ?, ?>>[] value();
 
