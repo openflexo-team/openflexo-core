@@ -2,7 +2,7 @@
 <html><a\ href\="https\://bugs.openflexo.org">https\://bugs.openflexo.org</a></html>=<html><a href\="https\://bugs.openflexo.org">https\://bugs.openflexo.org</a></html>
 <html>You\ need\ a\ valid\ login/password\ to\ submit\ issues\ in\ OpenFlexo.\ If\ you\ are\ not\ registered\ yet,\ please\ freely\ register\ at\:</html>=<html>\n  <head>\n    \n  </head>\n  <body>\n    Vous avez besoin d'un login pour soumettre un bug pour OpenFlexo. Si vous \n    n'&\#234;tes pas enregistr&\#233;, vous pouvez le faire ici\:\n  </body>\n</html>\n
 <html>build_a_new_concept_representing_an_individual</html>=<html>build_a_new_concept_representing_an_individual</html>
-<html>build_a_new_concept_without_connexion_to_any_data_source</html>=<html>build_a_new_concept_without_connexion_to_any_data_source</html>
+<html>build_a_new_concept_without_connection_to_any_data_source</html>=<html>build_a_new_concept_without_connection_to_any_data_source</html>
 <html>your_preferences_hide_empty_folder<br>would_you_like_to_show_empty_folders_?<br>you_can_change_this_option_in_presentation_preferences</html>=<html>\n  <head>\n    \n  </head>\n  <body>\n    Vos pr&\#233;f&\#233;rences sont r&\#233;gl&\#233;es pour cacher les r&\#233;pertoires vides.<br>Voulez \n    vous les modifier pour voir les r&\#233;pertoires vides ?<br>Vous pouvez \n    modifier cette options dans les pr&\#233;f&\#233;rences.\n  </body>\n</html>\n
 CHECKBOX=Checkbox
 CHECKBOX_LIST=CHECKBOX_LIST
