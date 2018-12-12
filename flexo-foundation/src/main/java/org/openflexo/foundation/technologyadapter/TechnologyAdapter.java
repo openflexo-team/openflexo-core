@@ -70,7 +70,7 @@ import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.VirtualModelInstanceType;
 import org.openflexo.foundation.fml.annotations.DeclareModelSlots;
-import org.openflexo.foundation.fml.annotations.DeclareResourceTypes;
+import org.openflexo.foundation.fml.annotations.DeclareResourceFactory;
 import org.openflexo.foundation.fml.annotations.DeclareVirtualModelInstanceNatures;
 import org.openflexo.foundation.fml.rt.InferedFMLRTModelSlot;
 import org.openflexo.foundation.fml.rt.VirtualModelInstanceNature;
@@ -507,8 +507,8 @@ public abstract class TechnologyAdapter<TA extends TechnologyAdapter<TA>> extend
 		resourceFactories.clear();
 		availableResourceTypes.clear();
 		Class<?> cl = getClass();
-		if (cl.isAnnotationPresent(DeclareResourceTypes.class)) {
-			DeclareResourceTypes allResourceTypes = cl.getAnnotation(DeclareResourceTypes.class);
+		if (cl.isAnnotationPresent(DeclareResourceFactory.class)) {
+			DeclareResourceFactory allResourceTypes = cl.getAnnotation(DeclareResourceFactory.class);
 			for (Class<? extends ITechnologySpecificFlexoResourceFactory<?, ?, ?>> resourceFactoryClass : allResourceTypes.value()) {
 				Constructor<? extends ITechnologySpecificFlexoResourceFactory<?, ?, ?>> constructor;
 				try {

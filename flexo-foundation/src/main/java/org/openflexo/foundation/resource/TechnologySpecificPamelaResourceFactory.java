@@ -98,7 +98,8 @@ public abstract class TechnologySpecificPamelaResourceFactory<R extends Technolo
 	 * @return
 	 */
 	@Override
-	protected <I> R registerResource(R resource, FlexoResourceCenter<I> resourceCenter) {
+	protected <I> R registerResource(R resource, FlexoResourceCenter<I> resourceCenter) { // I must be used cause it is needed in the super
+																							// class
 		R returned = super.registerResource(resource, resourceCenter);
 		// Register the resource in the global repository of technology adapter
 		if (resourceCenter != null) {
@@ -137,7 +138,6 @@ public abstract class TechnologySpecificPamelaResourceFactory<R extends Technolo
 	 * @param technologyContextManager
 	 * @return
 	 */
-	public abstract F makeModelFactory(R resource, TechnologyContextManager<TA> technologyContextManager)
-			throws ModelDefinitionException;
+	public abstract F makeModelFactory(R resource, TechnologyContextManager<TA> technologyContextManager) throws ModelDefinitionException;
 
 }
