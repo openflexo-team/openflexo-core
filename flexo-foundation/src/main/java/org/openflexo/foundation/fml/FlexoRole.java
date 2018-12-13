@@ -311,17 +311,6 @@ public interface FlexoRole<T> extends FlexoProperty<T> {
 		}
 
 		/**
-		 * Return the type of any instance of modelling element handled by this property.<br>
-		 * Note that if the cardinality of this property is multiple, this method will return the type of each modelling element.<br>
-		 * Getting type of the list of all modelling elements for a multiple cardinality property is obtained by {@link #getResultingType()}
-		 * method.
-		 * 
-		 * @return
-		 */
-		@Override
-		public abstract Type getType();
-
-		/**
 		 * Return cloning strategy to be applied for this property
 		 * 
 		 * @return

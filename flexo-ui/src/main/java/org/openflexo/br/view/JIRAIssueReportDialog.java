@@ -324,7 +324,7 @@ public class JIRAIssueReportDialog extends PropertyChangedSupportDefaultImplemen
 				}
 				else if (target.getException() instanceof UnknownHostException) {
 					submit = FlexoController
-							.confirm(getLocales().localizedForKey("could_not_send_to_host_check_internet_connexion_and_try_again") + "? ");
+							.confirm(getLocales().localizedForKey("could_not_send_to_host_check_internet_connection_and_try_again") + "? ");
 					// If the user want to stop, quit, otherwise clean the exception and try again
 					if (submit == false) {
 						throw target.getException();
