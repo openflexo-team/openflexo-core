@@ -488,8 +488,8 @@ public class FMLTechnologyAdapterController extends TechnologyAdapterController<
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
 		}
-		resourceSelector.addToAssignments(fibModelFactory.newFIBCustomAssignment(resourceSelector, new DataBinding<>("component.project"),
-				new DataBinding<>("controller.editor.project"), true));
+		resourceSelector.addToAssignments(fibModelFactory.newFIBCustomAssignment(resourceSelector,
+				new DataBinding<>("component.resourceCenter"), new DataBinding<>("controller.editor.project"), true));
 		resourceSelector.addToAssignments(fibModelFactory.newFIBCustomAssignment(resourceSelector,
 				new DataBinding<>("component.serviceManager"), new DataBinding<>("controller.flexoController.applicationContext"), true));
 		resourceSelector
