@@ -244,7 +244,12 @@ public class FMLBindingFactory extends JavaBindingFactory {
 				if (!(flexoBehaviour instanceof CreationScheme)) {
 					returned.add(new FlexoConceptInstancePathElement(parent, FLEXO_CONCEPT_INSTANCE, flexoBehaviour.getFlexoConcept()));
 				}
-				returned.add(new ContainerPathElement(parent, flexoBehaviour.getFlexoConcept().getOwningVirtualModel()));
+				if (flexoBehaviour.getFlexoConcept().getOwningVirtualModel() != null) {
+					returned.add(new ContainerPathElement(parent, flexoBehaviour.getFlexoConcept().getOwningVirtualModel()));
+				}
+				else {
+					logger.warning("No owning virtual model declared for behaviour: " + flexoBehaviour);
+				}
 				returned.add(new ResourceCenterPathElement(parent));
 				return returned;
 			}
