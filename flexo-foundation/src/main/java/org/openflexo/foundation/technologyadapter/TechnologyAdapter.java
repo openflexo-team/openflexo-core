@@ -186,15 +186,20 @@ public abstract class TechnologyAdapter<TA extends TechnologyAdapter<TA>> extend
 	 */
 	public void activate() {
 		if (!isActivated()) {
-			technologyContextManager = createTechnologyContextManager(getTechnologyAdapterService().getFlexoResourceCenterService());
-			initResourceFactories();
-			initTechnologySpecificTypes(getTechnologyAdapterService());
-			locales = new LocalizedDelegateImpl(ResourceLocator.locateResource(getLocalizationDirectory()),
-					getTechnologyAdapterService().getServiceManager().getLocalizationService().getFlexoLocalizer(),
-					getTechnologyAdapterService().getServiceManager().getLocalizationService().getAutomaticSaving(), true);
-			loadPrivateResourceCenters();
-			isActivated = true;
-			getPropertyChangeSupport().firePropertyChange("activated", false, true);
+			try {
+				isActivating = true;
+				technologyContextManager = createTechnologyContextManager(getTechnologyAdapterService().getFlexoResourceCenterService());
+				initResourceFactories();
+				initTechnologySpecificTypes(getTechnologyAdapterService());
+				locales = new LocalizedDelegateImpl(ResourceLocator.locateResource(getLocalizationDirectory()),
+						getTechnologyAdapterService().getServiceManager().getLocalizationService().getFlexoLocalizer(),
+						getTechnologyAdapterService().getServiceManager().getLocalizationService().getAutomaticSaving(), true);
+				loadPrivateResourceCenters();
+				isActivated = true;
+				getPropertyChangeSupport().firePropertyChange("activated", false, true);
+			} finally {
+				isActivating = false;
+			}
 		}
 	}
 
@@ -206,9 +211,14 @@ public abstract class TechnologyAdapter<TA extends TechnologyAdapter<TA>> extend
 	}
 
 	private boolean isActivated = false;
+	private boolean isActivating = false;
 
 	public boolean isActivated() {
 		return isActivated;
+	}
+
+	public boolean isActivating() {
+		return isActivating;
 	}
 
 	public List<ITechnologySpecificFlexoResourceFactory<?, ?, ?>> getResourceFactories() {
