@@ -243,7 +243,6 @@ public abstract class PamelaResourceImpl<RD extends ResourceData<RD> & Accessibl
 			e.printStackTrace();
 			logger.warning("Unhandled Exception");
 		} finally {
-			isLoading = false;
 			/*
 			 * if (ignoreHandler != null) {
 			 * undoManager.removeFromIgnoreHandlers(ignoreHandler); //
@@ -251,6 +250,7 @@ public abstract class PamelaResourceImpl<RD extends ResourceData<RD> & Accessibl
 			 * getURI()); }
 			 */
 			stopDeserializing();
+			isLoading = false;
 
 		}
 		return null;
