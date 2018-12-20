@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<TokenMakerDefinition>
+  <general>
+    <package>org.openflexo.fml.controller.view</package>
+    <className>FMLTokenMaker</className>
+    <extendedClass>AbstractJFlexCTokenMaker</extendedClass>
+    <classComment/>
+    <ignoreCase>false</ignoreCase>
+    <booleanLiterals>false</booleanLiterals>
+  </general>
+  <comments>
+    <lineComments enabled="true" start="//"/>
+    <multiLineComments enabled="true" end="*/" start="/*"/>
+    <docComments enabled="true" end="*/" start="/**"/>
+  </comments>
+  <keywords>
+    <keyword>as</keyword>
+    <keyword>concept</keyword>
+    <keyword>define</keyword>
+    <keyword>extends</keyword>
+    <keyword>import</keyword>
+    <keyword>model</keyword>
+    <keyword>use</keyword>
+  </keywords>
+  <keywords2>
+    <keyword>private</keyword>
+    <keyword>public</keyword>
+    <keyword>with</keyword>
+  </keywords2>
+  <dataTypes>
+    <dataType>@Author</dataType>
+    <dataType>@Description</dataType>
+    <dataType>@URI</dataType>
+    <dataType>@Version</dataType>
+    <dataType>void</dataType>
+  </dataTypes>
+  <functions>
+    <function>action:</function>
+    <function>create:</function>
+    <function>delete:</function>
+  </functions>
+  <numbers>
+    <hexLiteral>0x{HexDigit}+</hexLiteral>
+    <intLiteral>{Digit}+</intLiteral>
+    <floatLiteral>({Digit}+)("."{Digit}+)?(e[+-]?{Digit}+)? | ({Digit}+)?("."{Digit}+)(e[+-]?{Digit}+)?</floatLiteral>
+  </numbers>
+  <stringLiterals enabled="true" multiLine="false"/>
+  <charLiterals enabled="false" multiLine="false"/>
+  <backtickLiterals enabled="false"/>
+  <operators>
+    <operator>!</operator>
+    <operator>%</operator>
+    <operator>%=</operator>
+    <operator>&amp;</operator>
+    <operator>&amp;&amp;</operator>
+    <operator>*</operator>
+    <operator>*=</operator>
+    <operator>+</operator>
+    <operator>++</operator>
+    <operator>+=</operator>
+    <operator>,</operator>
+    <operator>-</operator>
+    <operator>--</operator>
+    <operator>-=</operator>
+    <operator>/</operator>
+    <operator>/=</operator>
+    <operator>:</operator>
+    <operator>&lt;</operator>
+    <operator>&lt;&lt;</operator>
+    <operator>&lt;&lt;=</operator>
+    <operator>=</operator>
+    <operator>==</operator>
+    <operator>&gt;</operator>
+    <operator>&gt;&gt;</operator>
+    <operator>&gt;&gt;=</operator>
+    <operator>?</operator>
+    <operator>^</operator>
+    <operator>|</operator>
+    <operator>||</operator>
+    <operator>~</operator>
+  </operators>
+</TokenMakerDefinition>

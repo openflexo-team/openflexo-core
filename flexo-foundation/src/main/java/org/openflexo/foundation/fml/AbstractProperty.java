@@ -108,7 +108,7 @@ public abstract interface AbstractProperty<T> extends FlexoProperty<T> {
 		@Override
 		public final String getFMLRepresentation(FMLRepresentationContext context) {
 			FMLRepresentationOutput out = new FMLRepresentationOutput(context);
-			out.append(getFMLAnnotation(context), context);
+			// out.append(getFMLAnnotation(context), context);
 			out.append(StringUtils.LINE_SEPARATOR, context);
 			out.append("abstract " + TypeUtils.simpleRepresentation(getResultingType()) + " " + getName() + ";", context);
 			return out.toString();

@@ -454,7 +454,7 @@ public interface FlexoRole<T> extends FlexoProperty<T> {
 			}
 		}
 
-		@Override
+		/*@Override
 		protected String getFMLAnnotation(FMLRepresentationContext context) {
 			FMLRepresentationOutput out = new FMLRepresentationOutput(context);
 			out.append("@" + getImplementedInterface().getSimpleName() + "(cardinality=" + getCardinality() + ",readOnly=" + isReadOnly()
@@ -464,6 +464,36 @@ public interface FlexoRole<T> extends FlexoProperty<T> {
 				out.append("@Key", context);
 			}
 			return out.toString();
+		}*/
+
+		/**
+		 * Computes and return canonical FML representation of a role
+		 * 
+		 * <pre>
+		 * [public|private] [key] <ReturnType>[..] roleName with [TA::]RoleType(p1=v1,...,pn=vn);
+		 * </pre>
+		 * 
+		 */
+		@Override
+		public String getFMLRepresentation(FMLRepresentationContext context) {
+			FMLRepresentationOutput out = new FMLRepresentationOutput(context);
+			// out.append(getFMLAnnotation(context), context);
+			// out.append(StringUtils.LINE_SEPARATOR, context);
+			// if (detailedFMLSpecifications(context) == null) {
+			out.append("public " + context.serializeType(getResultingType()) + " " + getName() + ";", context);
+			/*}
+			else {
+				out.append("public " + TypeUtils.simpleRepresentation(getResultingType()) + " " + getName() + " {", context);
+				out.append(StringUtils.LINE_SEPARATOR, context);
+				// out.append(detailedFMLSpecifications(context), context, 1);
+				// out.append(StringUtils.LINE_SEPARATOR, context);
+				out.append("}", context);
+			}*/
+			return out.toString();
+		}
+
+		public String detailedFMLSpecifications(FMLRepresentationContext context) {
+			return null;
 		}
 
 		/**

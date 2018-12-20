@@ -172,7 +172,7 @@ public abstract interface ExpressionProperty<T> extends FlexoProperty<T> {
 		@Override
 		public String getFMLRepresentation(FMLRepresentationContext context) {
 			FMLRepresentationOutput out = new FMLRepresentationOutput(context);
-			out.append(getFMLAnnotation(context), context);
+			// out.append(getFMLAnnotation(context), context);
 			out.append(StringUtils.LINE_SEPARATOR, context);
 			out.append("public " + TypeUtils.simpleRepresentation(getResultingType()) + " " + getName() + " = " + getExpression() + ";",
 					context);

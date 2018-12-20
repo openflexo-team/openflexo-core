@@ -50,7 +50,6 @@ import org.openflexo.connie.BindingModel;
 import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.type.ParameterizedTypeImpl;
 import org.openflexo.connie.type.TypeUtils;
-import org.openflexo.foundation.fml.FMLRepresentationContext.FMLRepresentationOutput;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.pamela.annotations.CloningStrategy;
 import org.openflexo.pamela.annotations.CloningStrategy.StrategyType;
@@ -434,7 +433,7 @@ public abstract interface FlexoProperty<T> extends FlexoConceptObject {
 			return getFlexoConcept() != null && getFlexoConcept().getKeyProperties().contains(this);
 		}
 
-		protected String getFMLAnnotation(FMLRepresentationContext context) {
+		/*protected String getFMLAnnotation(FMLRepresentationContext context) {
 			FMLRepresentationOutput out = new FMLRepresentationOutput(context);
 			out.append("@" + getImplementedInterface().getSimpleName(), context);
 			if (isKey()) {
@@ -442,29 +441,28 @@ public abstract interface FlexoProperty<T> extends FlexoConceptObject {
 				out.append("@Key", context);
 			}
 			return out.toString();
-		}
+		}*/
 
-		@Override
+		/*@Override
 		public String getFMLRepresentation(FMLRepresentationContext context) {
 			FMLRepresentationOutput out = new FMLRepresentationOutput(context);
-			out.append(getFMLAnnotation(context), context);
-			out.append(StringUtils.LINE_SEPARATOR, context);
+			// out.append(getFMLAnnotation(context), context);
+			// out.append(StringUtils.LINE_SEPARATOR, context);
 			if (detailedFMLSpecifications(context) == null) {
 				out.append("public " + TypeUtils.simpleRepresentation(getResultingType()) + " " + getName() + ";", context);
 			}
 			else {
 				out.append("public " + TypeUtils.simpleRepresentation(getResultingType()) + " " + getName() + " {", context);
 				out.append(StringUtils.LINE_SEPARATOR, context);
-				out.append(detailedFMLSpecifications(context), context, 1);
+				// out.append(detailedFMLSpecifications(context), context, 1);
 				// out.append(StringUtils.LINE_SEPARATOR, context);
 				out.append("}", context);
 			}
 			return out.toString();
-		}
+		}*/
 
-		public String detailedFMLSpecifications(FMLRepresentationContext context) {
-			return null;
-		}
+		@Override
+		public abstract String getFMLRepresentation(FMLRepresentationContext context);
 
 		/**
 		 * Return boolean indicating if this {@link FlexoProperty} is a key property (declared in key properties of its declaring
