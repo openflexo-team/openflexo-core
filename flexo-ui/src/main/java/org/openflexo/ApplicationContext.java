@@ -327,6 +327,18 @@ public abstract class ApplicationContext extends DefaultFlexoServiceManager {
 	public <TA extends TechnologyAdapter<TA>> ActivateTechnologyAdapterTask<TA> activateTechnologyAdapter(TA technologyAdapter,
 			boolean performNowInThisThread) {
 
+		if (technologyAdapter.isActivated()) {
+			// Already activated
+			return null;
+		}
+
+		if (technologyAdapter.isActivating()) {
+			// Already activating
+			return null;
+		}
+
+		logger.fine("********** Activating technology adapter " + technologyAdapter);
+
 		if (performNowInThisThread) {
 			super.activateTechnologyAdapter(technologyAdapter, true);
 			return null;
@@ -334,10 +346,6 @@ public abstract class ApplicationContext extends DefaultFlexoServiceManager {
 
 		// We try here to prevent activate all TA concurrently
 
-		if (technologyAdapter.isActivated()) {
-			// Already activated
-			return null;
-		}
 		if (activatingTechnologyAdapters == null) {
 			activatingTechnologyAdapters = new HashMap<>();
 		}
