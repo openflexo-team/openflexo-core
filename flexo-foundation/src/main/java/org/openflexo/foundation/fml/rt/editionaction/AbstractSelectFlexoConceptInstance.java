@@ -179,6 +179,7 @@ public interface AbstractSelectFlexoConceptInstance<VMI extends VirtualModelInst
 
 		@Override
 		public FlexoConceptInstanceType getFetchedType() {
+			// TODO: consider put same code here as in AbstractSelectVirtualModelInstance ???
 			return FlexoConceptInstanceType.getFlexoConceptInstanceType(getFlexoConceptType());
 		}
 

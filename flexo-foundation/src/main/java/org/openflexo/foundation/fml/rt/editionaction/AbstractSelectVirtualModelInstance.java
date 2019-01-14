@@ -70,6 +70,7 @@ import org.openflexo.pamela.annotations.XMLAttribute;
 import org.openflexo.pamela.validation.ValidationError;
 import org.openflexo.pamela.validation.ValidationIssue;
 import org.openflexo.pamela.validation.ValidationRule;
+import org.openflexo.toolbox.StringUtils;
 
 /**
  * Generic {@link AbstractFetchRequest} allowing to retrieve a selection of some {@link FMLRTVirtualModelInstance} matching some conditions
@@ -186,6 +187,9 @@ public interface AbstractSelectVirtualModelInstance<VMI extends VirtualModelInst
 				}
 			} finally {
 				isFetching = false;
+			}
+			if (getTechnologyAdapter() != null && StringUtils.isNotEmpty(_getVirtualModelTypeURI())) {
+				return new VirtualModelInstanceType(_getVirtualModelTypeURI(), getTechnologyAdapter().getVirtualModelInstanceTypeFactory());
 			}
 			return VirtualModelInstanceType.UNDEFINED_VIRTUAL_MODEL_INSTANCE_TYPE;
 		}
