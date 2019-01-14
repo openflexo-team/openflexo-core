@@ -178,7 +178,8 @@ public class FlexoConceptInstanceType implements TechnologySpecificType<FMLTechn
 
 	@Override
 	public String simpleRepresentation() {
-		return getClass().getSimpleName() + "<" + (flexoConcept != null ? flexoConcept.getName() : "NotFound:" + conceptURI) + ">";
+		return getClass().getSimpleName() + "<" + (getFlexoConcept() != null ? getFlexoConcept().getName() : "NotFound:" + conceptURI)
+				+ ">";
 	}
 
 	@Override
@@ -193,7 +194,7 @@ public class FlexoConceptInstanceType implements TechnologySpecificType<FMLTechn
 
 	@Override
 	public String getSerializationRepresentation() {
-		return (flexoConcept != null ? flexoConcept.getURI() : conceptURI);
+		return (getFlexoConcept() != null ? getFlexoConcept().getURI() : conceptURI);
 	}
 
 	@Override
