@@ -255,6 +255,9 @@ public interface FMLObject extends FlexoObject, Bindable, InnerResourceData/*<Vi
 			if (getVirtualModelLibrary() != null) {
 				return getDeclaringVirtualModel().getVirtualModelLibrary().getServiceManager();
 			}
+			if (getDeserializationFactory() != null) {
+				return getDeserializationFactory().getServiceManager();
+			}
 			return null;
 		}
 
