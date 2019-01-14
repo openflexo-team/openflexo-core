@@ -40,6 +40,8 @@ package org.openflexo.foundation.fml;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -102,6 +104,10 @@ public class TestInferedTypes extends OpenflexoTestCase {
 
 		System.out.println("FML: " + viewPoint.getFMLRepresentation());
 
+		assertNotNull(viewPoint.getDeclaredProperty("property"));
+		GetProperty<?> p = (GetProperty<?>) viewPoint.getDeclaredProperty("property");
+		assertTrue(p.getType() instanceof VirtualModelInstanceType);
+		assertSame(viewPoint, ((VirtualModelInstanceType) p.getType()).getVirtualModel());
 	}
 
 }
