@@ -45,6 +45,7 @@ import java.util.List;
 import org.openflexo.connie.BindingModel;
 import org.openflexo.connie.type.ExplicitNullType;
 import org.openflexo.connie.type.TypeUtils;
+import org.openflexo.connie.type.UndefinedType;
 import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.fml.FMLRepresentationContext;
 import org.openflexo.foundation.fml.FMLRepresentationContext.FMLRepresentationOutput;
@@ -52,6 +53,7 @@ import org.openflexo.foundation.fml.editionaction.AssignableAction;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext.ReturnException;
 import org.openflexo.pamela.annotations.CloningStrategy;
+import org.openflexo.pamela.annotations.CloningStrategy.StrategyType;
 import org.openflexo.pamela.annotations.DefineValidationRule;
 import org.openflexo.pamela.annotations.Embedded;
 import org.openflexo.pamela.annotations.Getter;
@@ -60,7 +62,6 @@ import org.openflexo.pamela.annotations.ModelEntity;
 import org.openflexo.pamela.annotations.PropertyIdentifier;
 import org.openflexo.pamela.annotations.Setter;
 import org.openflexo.pamela.annotations.XMLElement;
-import org.openflexo.pamela.annotations.CloningStrategy.StrategyType;
 import org.openflexo.pamela.validation.ValidationError;
 import org.openflexo.pamela.validation.ValidationIssue;
 import org.openflexo.pamela.validation.ValidationRule;
@@ -291,12 +292,19 @@ public interface Sequence extends FMLControlGraph, FMLControlGraphOwner {
 
 			if (inferedType1 instanceof ExplicitNullType) {
 				if (inferedType2 instanceof ExplicitNullType) {
-					return ExplicitNullType.INSTANCE;
+					return Object.class;
 				}
 				return inferedType2;
 			}
 
-			if (inferedType2 instanceof ExplicitNullType) {
+			if (inferedType1 instanceof UndefinedType) {
+				if (inferedType2 instanceof UndefinedType) {
+					return UndefinedType.INSTANCE;
+				}
+				return inferedType2;
+			}
+
+			if (inferedType2 instanceof ExplicitNullType || inferedType2 instanceof UndefinedType) {
 				return inferedType1;
 			}
 

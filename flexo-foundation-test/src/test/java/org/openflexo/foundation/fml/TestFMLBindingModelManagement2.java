@@ -51,6 +51,7 @@ import org.junit.runner.RunWith;
 import org.openflexo.connie.BindingModel;
 import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.type.PrimitiveType;
+import org.openflexo.connie.type.UndefinedType;
 import org.openflexo.foundation.DefaultFlexoEditor;
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.fml.action.CreateEditionAction;
@@ -499,7 +500,7 @@ public class TestFMLBindingModelManagement2 extends OpenflexoProjectAtRunTimeTes
 
 		// Type is undefined (Object) because
 		System.out.println("Type=" + assignation1.getAssignableType());
-		assertEquals(Object.class, assignation1.getAssignableType());
+		assertTrue(assignation1.getAssignableType() instanceof UndefinedType);
 
 		ExpressionAction<String> expression1 = (ExpressionAction<String>) assignation1.getAssignableAction();
 		assertFalse(expression1.getExpression().isValid());

@@ -44,6 +44,7 @@ import java.util.logging.Logger;
 
 import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.exception.NullReferenceException;
+import org.openflexo.connie.type.UndefinedType;
 import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.fml.FMLRepresentationContext;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
@@ -103,7 +104,7 @@ public interface ExpressionAction<T> extends AssignableAction<T> {
 			if (getExpression() != null && getExpression().isSet() && getExpression().isValid()) {
 				return getExpression().getAnalyzedType();
 			}
-			return Object.class;
+			return UndefinedType.INSTANCE;
 
 			/*if (assignableType == null && !isComputingAssignableType) {
 				isComputingAssignableType = true;
