@@ -49,6 +49,7 @@ import org.openflexo.foundation.fml.FlexoConceptInstanceType;
 import org.openflexo.foundation.fml.FlexoRole;
 import org.openflexo.foundation.fml.PrimitiveRole;
 import org.openflexo.foundation.fml.VirtualModel;
+import org.openflexo.foundation.fml.VirtualModelInstanceType;
 import org.openflexo.foundation.fml.rm.VirtualModelResource;
 import org.openflexo.foundation.resource.ResourceLoadingCancelledException;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
@@ -168,6 +169,14 @@ public interface FMLRTModelSlot<VMI extends VirtualModelInstance<VMI, TA>, TA ex
 
 		@Override
 		public Type getType() {
+			if (getAccessedVirtualModel() == null) {
+				if (StringUtils.isNotEmpty(getAccessedVirtualModelURI())) {
+					return getTechnologyAdapter().getVirtualModelInstanceTypeFactory().makeCustomType(getAccessedVirtualModelURI());
+				}
+				else {
+					return VirtualModelInstanceType.UNDEFINED_VIRTUAL_MODEL_INSTANCE_TYPE;
+				}
+			}
 			return FlexoConceptInstanceType.getFlexoConceptInstanceType(getAccessedVirtualModel());
 		}
 

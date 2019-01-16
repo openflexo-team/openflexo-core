@@ -55,7 +55,12 @@ import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
  */
 public class VirtualModelInstanceType extends FlexoConceptInstanceType {
 
-	public static VirtualModelInstanceType UNDEFINED_VIRTUAL_MODEL_INSTANCE_TYPE = new VirtualModelInstanceType((VirtualModel) null);
+	public static VirtualModelInstanceType UNDEFINED_VIRTUAL_MODEL_INSTANCE_TYPE = new VirtualModelInstanceType((VirtualModel) null) {
+		@Override
+		public String simpleRepresentation() {
+			return "UndefinedVirtualModelInstanceType";
+		}
+	};
 
 	public VirtualModelInstanceType(VirtualModel aVirtualModel) {
 		super(aVirtualModel);

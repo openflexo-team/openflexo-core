@@ -60,6 +60,7 @@ import org.openflexo.pamela.annotations.XMLElement;
 import org.openflexo.pamela.validation.ValidationIssue;
 import org.openflexo.pamela.validation.ValidationRule;
 import org.openflexo.pamela.validation.ValidationWarning;
+import org.openflexo.toolbox.StringUtils;
 
 @ModelEntity
 @ImplementationClass(FlexoConceptInstanceRole.FlexoConceptInstanceRoleImpl.class)
@@ -153,10 +154,16 @@ public interface FlexoConceptInstanceRole extends FlexoRole<FlexoConceptInstance
 
 		@Override
 		public Type getType() {
-			if (getFlexoConceptType() != null) {
-				return getFlexoConceptType().getInstanceType();
+
+			if (getFlexoConceptType() == null) {
+				if (StringUtils.isNotEmpty(_getFlexoConceptTypeURI())) {
+					return getTechnologyAdapter().getFlexoConceptInstanceTypeFactory().makeCustomType(_getFlexoConceptTypeURI());
+				}
+				else {
+					return FlexoConceptInstanceType.UNDEFINED_FLEXO_CONCEPT_INSTANCE_TYPE;
+				}
 			}
-			return FlexoConceptInstanceType.UNDEFINED_FLEXO_CONCEPT_INSTANCE_TYPE;
+			return getFlexoConceptType().getInstanceType();
 		}
 
 		@Override

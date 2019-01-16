@@ -413,9 +413,9 @@ public interface AbstractAddFlexoConceptInstance<FCI extends FlexoConceptInstanc
 						}
 					}
 				}
-			}
-			for (AddFlexoConceptInstanceParameter removeThis : parametersToRemove) {
-				removeFromParameters(removeThis);
+				for (AddFlexoConceptInstanceParameter removeThis : parametersToRemove) {
+					removeFromParameters(removeThis);
+				}
 			}
 			getPropertyChangeSupport().firePropertyChange(PARAMETERS_KEY, oldValue, parameters);
 		}
