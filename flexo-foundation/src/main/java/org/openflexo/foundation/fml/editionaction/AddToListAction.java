@@ -50,6 +50,7 @@ import org.openflexo.connie.exception.NullReferenceException;
 import org.openflexo.connie.exception.TypeMismatchException;
 import org.openflexo.connie.type.ParameterizedTypeImpl;
 import org.openflexo.connie.type.TypeUtils;
+import org.openflexo.connie.type.WilcardTypeImpl;
 import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.fml.FMLRepresentationContext;
 import org.openflexo.foundation.fml.FMLRepresentationContext.FMLRepresentationOutput;
@@ -58,6 +59,7 @@ import org.openflexo.foundation.fml.controlgraph.FMLControlGraphOwner;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext.ReturnException;
 import org.openflexo.pamela.annotations.CloningStrategy;
+import org.openflexo.pamela.annotations.CloningStrategy.StrategyType;
 import org.openflexo.pamela.annotations.DefineValidationRule;
 import org.openflexo.pamela.annotations.Embedded;
 import org.openflexo.pamela.annotations.Getter;
@@ -67,7 +69,6 @@ import org.openflexo.pamela.annotations.PropertyIdentifier;
 import org.openflexo.pamela.annotations.Setter;
 import org.openflexo.pamela.annotations.XMLAttribute;
 import org.openflexo.pamela.annotations.XMLElement;
-import org.openflexo.pamela.annotations.CloningStrategy.StrategyType;
 import org.openflexo.pamela.validation.ValidationError;
 import org.openflexo.pamela.validation.ValidationIssue;
 import org.openflexo.pamela.validation.ValidationRule;
@@ -149,7 +150,8 @@ public interface AddToListAction<T> extends AssignableAction<T>, FMLControlGraph
 		public DataBinding<? extends List<T>> getList() {
 
 			if (list == null) {
-				list = new DataBinding<>(this, new ParameterizedTypeImpl(List.class, Object.class), BindingDefinitionType.GET);
+				list = new DataBinding<>(this, new ParameterizedTypeImpl(List.class, new WilcardTypeImpl(Object.class)),
+						BindingDefinitionType.GET);
 				list.setBindingName("list");
 			}
 			return list;
@@ -161,7 +163,7 @@ public interface AddToListAction<T> extends AssignableAction<T>, FMLControlGraph
 			if (list != null) {
 				list.setOwner(this);
 				list.setBindingName("list");
-				list.setDeclaredType(new ParameterizedTypeImpl(List.class, Object.class));
+				list.setDeclaredType(new ParameterizedTypeImpl(List.class, new WilcardTypeImpl(Object.class)));
 				list.setBindingDefinitionType(BindingDefinitionType.GET);
 			}
 			this.list = list;
