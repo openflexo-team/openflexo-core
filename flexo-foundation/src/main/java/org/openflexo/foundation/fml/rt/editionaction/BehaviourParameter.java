@@ -254,7 +254,7 @@ public interface BehaviourParameter<T extends FlexoConceptObject> extends FlexoB
 		public ValidationIssue<BindingIsRequiredAndMustBeValid<BehaviourParameter>, BehaviourParameter> applyValidation(
 				BehaviourParameter object) {
 			// Should return an issue only if parameter is required
-			if (object.getParam().getIsRequired()) {
+			if (object.getParam() != null && object.getParam().getIsRequired()) {
 				return super.applyValidation(object);
 			}
 			return null;

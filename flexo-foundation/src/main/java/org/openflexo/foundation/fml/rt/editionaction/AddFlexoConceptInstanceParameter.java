@@ -93,7 +93,7 @@ public interface AddFlexoConceptInstanceParameter extends BehaviourParameter<Abs
 				return new UndefinedRequiredBindingIssue<>(this, object);
 			}
 
-			if (object.getParam().getIsRequired()) {
+			if (object.getParam() != null && object.getParam().getIsRequired()) {
 				return super.applyValidation(object);
 			}
 			return null;
