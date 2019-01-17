@@ -129,11 +129,15 @@ public class ResourceManager extends FlexoServiceImpl implements ReferenceOwner 
 	}
 
 	// It should be synchronized has the same resource could be registered several times in different threads
-	public synchronized void registerResource(FlexoResource<?> resource) {
+	public synchronized void registerResource(FlexoResource<?> resource) throws DuplicateURIException {
 
 		if (resource.getResourceCenter() == null) {
 			logger.warning("Resource belonging to no ResourceCenter: " + resource);
 			// Thread.dumpStack();
+		}
+
+		if (getResource(resource.getURI()) != null) {
+			throw new DuplicateURIException(resource);
 		}
 
 		if (!resources.contains(resource)) {

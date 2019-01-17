@@ -392,7 +392,12 @@ public abstract class FlexoResourceImpl<RD extends ResourceData<RD>> extends Fle
 	public void setServiceManager(FlexoServiceManager serviceManager) {
 		this.serviceManager = serviceManager;
 		if (getServiceManager() != null) {
-			getServiceManager().getResourceManager().registerResource(this);
+			try {
+				getServiceManager().getResourceManager().registerResource(this);
+			} catch (DuplicateURIException e) {
+				logger.warning(e.getMessage());
+				e.printStackTrace();
+			}
 		}
 	}
 
