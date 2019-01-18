@@ -454,6 +454,13 @@ public interface FileSystemBasedResourceCenter extends FlexoResourceCenter<File>
 					updatedResource.updateResourceData();
 				}
 			}
+			else {
+				// OK, the file was declared as beeing written
+				// Now, we have to detect it again
+				if (willBeWrittenFiles.contains(file)) {
+					willBeWrittenFiles.remove(file);
+				}
+			}
 		}
 
 		private Map<File, FlexoResource<?>> registeredResources = new HashMap<>();
