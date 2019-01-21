@@ -69,10 +69,12 @@ import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.logging.FlexoLogger;
 import org.openflexo.pamela.annotations.Adder;
 import org.openflexo.pamela.annotations.CloningStrategy;
+import org.openflexo.pamela.annotations.CloningStrategy.StrategyType;
 import org.openflexo.pamela.annotations.DefineValidationRule;
 import org.openflexo.pamela.annotations.Embedded;
 import org.openflexo.pamela.annotations.Finder;
 import org.openflexo.pamela.annotations.Getter;
+import org.openflexo.pamela.annotations.Getter.Cardinality;
 import org.openflexo.pamela.annotations.ImplementationClass;
 import org.openflexo.pamela.annotations.Import;
 import org.openflexo.pamela.annotations.Imports;
@@ -83,8 +85,6 @@ import org.openflexo.pamela.annotations.Remover;
 import org.openflexo.pamela.annotations.Setter;
 import org.openflexo.pamela.annotations.XMLAttribute;
 import org.openflexo.pamela.annotations.XMLElement;
-import org.openflexo.pamela.annotations.CloningStrategy.StrategyType;
-import org.openflexo.pamela.annotations.Getter.Cardinality;
 import org.openflexo.pamela.undo.CompoundEdit;
 import org.openflexo.pamela.validation.FixProposal;
 import org.openflexo.pamela.validation.Validable;
@@ -1182,7 +1182,7 @@ public interface FlexoConcept extends FlexoConceptObject {
 					if (b.getParameters().size() == parameters.length) {
 						boolean allParametersMatch = true;
 						for (int i = 0; i < b.getParameters().size(); i++) {
-							if (!TypeUtils.isTypeAssignableFrom(parameters[i], b.getParameters().get(i).getType(), true)) {
+							if (!TypeUtils.isTypeAssignableFrom(b.getParameters().get(i).getType(), parameters[i], true)) {
 								allParametersMatch = false;
 								break;
 							}
@@ -1840,8 +1840,8 @@ public interface FlexoConcept extends FlexoConceptObject {
 		 * Hook called when scope of a FMLObject changed.<br>
 		 * 
 		 * It happens for example when a {@link VirtualModel} is declared to be contained in a {@link VirtualModel}<br>
-		 * On that example {@link #getBindingFactory()} rely on {@link VirtualModel} enclosing, we must provide this hook to give a chance to
-		 * objects that rely on ViewPoint instanciation context to update their bindings (some bindings might becomes valid)<br>
+		 * On that example {@link #getBindingFactory()} rely on {@link VirtualModel} enclosing, we must provide this hook to give a chance
+		 * to objects that rely on ViewPoint instanciation context to update their bindings (some bindings might becomes valid)<br>
 		 * 
 		 * It may also happen if an EditionAction is moved from a control graph to another control graph, etc...<br>
 		 * 
