@@ -282,6 +282,10 @@ public abstract class OpenflexoTestCase {
 		return serviceManager;
 	}
 
+	public static DirectoryResourceCenter getResourceCenter() {
+		return resourceCenter;
+	}
+
 	protected static FlexoResourceCenterService getNewResourceCenter(String name) {
 		try {
 			ModelFactory factory = new ModelFactory(FSBasedResourceCenterEntry.class);
