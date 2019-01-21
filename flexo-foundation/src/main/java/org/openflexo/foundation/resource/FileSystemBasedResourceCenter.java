@@ -57,7 +57,6 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.FlexoProject;
@@ -238,38 +237,50 @@ public interface FileSystemBasedResourceCenter extends FlexoResourceCenter<File>
 				return null;
 			}
 
-			try {
-				// searches for parent folder.
-				RepositoryFolder<?, File> folder = getParentRepositoryFolder(resourceArtifact, false);
-
-				// When not found
-				// It might be a resource artefact encoded as a directory based, try to find parent folder
-				if (folder == null) {
-					folder = getParentRepositoryFolder(resourceArtifact.getParentFile(), false);
-				}
-
-				if (folder == null) {
+			// try {
+			for (FlexoResource<?> r : getAllResources()) {
+				if (Objects.equals(r.getIODelegate().getSerializationArtefact(), resourceArtifact)) {
+					if (resourceClass.isInstance(r)) {
+						return resourceClass.cast(r);
+					}
+					logger.warning("Found resource matching file " + resourceArtifact + " but not of desired type: " + r.getClass()
+							+ " instead of " + resourceClass);
 					return null;
 				}
+			}
 
-				for (FlexoResource<?> r : folder.getResources()) {
-					if (Objects.equals(r.getIODelegate().getSerializationArtefact(), resourceArtifact)) {
-						if (resourceClass.isInstance(r)) {
-							return resourceClass.cast(r);
-						}
-						logger.warning("Found resource matching file " + resourceArtifact + " but not of desired type: " + r.getClass()
-								+ " instead of " + resourceClass);
-						return null;
-					}
-				}
-
-				// Cannot find the resource
-				return null;
-
-			} catch (IOException e) {
-				logger.log(Level.WARNING, "Error while getting parent folder for " + resourceArtifact, e);
+			/*
+			// searches for parent folder.
+			RepositoryFolder<?, File> folder = getParentRepositoryFolder(resourceArtifact, false);
+			
+			// When not found
+			// It might be a resource artefact encoded as a directory based, try to find parent folder
+			if (folder == null) {
+				folder = getParentRepositoryFolder(resourceArtifact.getParentFile(), false);
+			}
+			
+			if (folder == null) {
 				return null;
 			}
+			
+			for (FlexoResource<?> r : folder.getResources()) {
+				if (Objects.equals(r.getIODelegate().getSerializationArtefact(), resourceArtifact)) {
+					if (resourceClass.isInstance(r)) {
+						return resourceClass.cast(r);
+					}
+					logger.warning("Found resource matching file " + resourceArtifact + " but not of desired type: " + r.getClass()
+							+ " instead of " + resourceClass);
+					return null;
+				}
+			}*/
+
+			// Cannot find the resource
+			return null;
+
+			/*} catch (IOException e) {
+				logger.log(Level.WARNING, "Error while getting parent folder for " + resourceArtifact, e);
+				return null;
+			}*/
 		}
 
 		@Override
