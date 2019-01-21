@@ -446,9 +446,9 @@ public abstract class VirtualModelResourceImpl extends PamelaResourceImpl<Virtua
 				e.printStackTrace();
 			}
 		}
-		else {
+		/*else {
 			logger.warning("Could not access to ServiceManager");
-		}
+		}*/
 	}
 
 	@Override
