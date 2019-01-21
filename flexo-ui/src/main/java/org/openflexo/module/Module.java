@@ -286,6 +286,10 @@ public abstract class Module<M extends FlexoModule<M>> extends PropertyChangedSu
 		return loadedModuleInstance;
 	}
 
+	public int getExpectedProgressLoadingSteps() {
+		return 150;
+	}
+
 	/*private FlexoModule doInternalLoadModule() throws Exception {
 		ModuleLoaderCallable loader = new ModuleLoaderCallable(loadedModuleInstance);
 		// return FlexoSwingUtils.syncRunInEDT(loader);

@@ -65,7 +65,7 @@ public class LoadModuleTask extends FlexoApplicationTask {
 	@Override
 	public void performTask() {
 		try {
-			Progress.setExpectedProgressSteps(150);
+			Progress.setExpectedProgressSteps(module.getExpectedProgressLoadingSteps());
 			this.moduleLoader.performSwitchToModule(module);
 		} catch (ModuleLoadingException e) {
 			e.printStackTrace();
