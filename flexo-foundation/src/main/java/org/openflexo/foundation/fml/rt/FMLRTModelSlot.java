@@ -170,7 +170,8 @@ public interface FMLRTModelSlot<VMI extends VirtualModelInstance<VMI, TA>, TA ex
 		@Override
 		public Type getType() {
 			if (getAccessedVirtualModel() == null) {
-				if (StringUtils.isNotEmpty(getAccessedVirtualModelURI())) {
+				if (StringUtils.isNotEmpty(getAccessedVirtualModelURI()) && getTechnologyAdapter() != null
+						&& getTechnologyAdapter().getVirtualModelInstanceTypeFactory() != null) {
 					return getTechnologyAdapter().getVirtualModelInstanceTypeFactory().makeCustomType(getAccessedVirtualModelURI());
 				}
 				else {

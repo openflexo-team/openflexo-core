@@ -156,7 +156,8 @@ public interface FlexoConceptInstanceRole extends FlexoRole<FlexoConceptInstance
 		public Type getType() {
 
 			if (getFlexoConceptType() == null) {
-				if (StringUtils.isNotEmpty(_getFlexoConceptTypeURI())) {
+				if (StringUtils.isNotEmpty(_getFlexoConceptTypeURI()) && getTechnologyAdapter() != null
+						&& getTechnologyAdapter().getFlexoConceptInstanceTypeFactory() != null) {
 					return getTechnologyAdapter().getFlexoConceptInstanceTypeFactory().makeCustomType(_getFlexoConceptTypeURI());
 				}
 				else {
