@@ -1388,6 +1388,29 @@ public interface VirtualModelInstance<VMI extends VirtualModelInstance<VMI, TA>,
 			return Collections.singletonList((TechnologyAdapter) getTechnologyAdapter());
 		}
 
+		@Override
+		public void addToVirtualModelInstances(VirtualModelInstance<?, ?> virtualModelInstance) {
+			performSuperAdder(VIRTUAL_MODEL_INSTANCES_KEY, virtualModelInstance);
+			// We notify now all properties from container
+			if (getVirtualModel() != null) {
+				for (FlexoProperty<?> property : getVirtualModel().getAccessibleProperties()) {
+					virtualModelInstance.getPropertyChangeSupport().firePropertyChange(property.getName(), null,
+							getFlexoPropertyValue(property));
+				}
+			}
+		}
+
+		@Override
+		public void removeFromVirtualModelInstances(VirtualModelInstance<?, ?> virtualModelInstance) {
+			performSuperRemover(VIRTUAL_MODEL_INSTANCES_KEY, virtualModelInstance);
+			// We notify now all properties from container
+			if (getVirtualModel() != null) {
+				for (FlexoProperty<?> property : getVirtualModel().getAccessibleProperties()) {
+					virtualModelInstance.getPropertyChangeSupport().firePropertyChange(property.getName(), new Object(), null);
+				}
+			}
+		}
+
 	}
 
 	public class ObjectLookupResult {
