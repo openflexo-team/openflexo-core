@@ -129,130 +129,63 @@ Helpers
 
 Tokens
 
-  // separators
-
-  at = '@';
-  comma = ',';
-  dot   = '.';
-  dot_dot_dot = '...';
-  l_bkt = '[';
-  l_brc = '{';
-  l_par = '(';
-  r_bkt = ']';
-  r_brc = '}';
-  r_par = ')';
-  semi  = ';';
-
-  // operators
-
-  amp = '&';
-  amp_amp = '&&';
-  amp_assign = '&=';
-  assign = '=';
-  bar = '|';
-  bar_assign = '|=';
-  bar_bar = '||';
-  caret = '^';
-  caret_assign = '^=';
-  colon = ':';
-  emark = '!';
-  eq = '==';
-  gt = '>';
-  gteq = '>=';
-  lt = '<';
-  lteq = '<=';
-  minus = '-';
-  minus_assign = '-=';
-  minus_minus = '--';
-  neq = '!=';
-  percent = '%';
-  percent_assign = '%=';
-  plus = '+';
-  plus_assign = '+=';
-  plus_plus = '++';
-  qmark = '?';
-  shl = '<<';
-  shl_assign = '<<=';
-  shr = '>>';
-  shr_assign = '>>=';
-  slash = '/';
-  slash_assign = '/=';
-  star = '*';
-  star_assign = '*=';
-  tilde = '~';
-  ushr = '>>>';
-  ushr_assign = '>>>=';
-
-  // keywords
-
-  abstract = 'abstract';
-  assert = 'assert';
-  boolean = 'boolean';
-  break = 'break';
-  byte = 'byte';
-  case = 'case';
-  catch = 'catch';
-  char = 'char';
-  class_token = 'class';
-  const = 'const';
-  continue = 'continue';
-  default = 'default';
-  do = 'do';
-  double = 'double';
-  else = 'else';
-  enum = 'enum';
-  extends = 'extends';
-  false = 'false';
-  final = 'final';
-  finally_token = 'finally';
-  float = 'float';
-  for = 'for';
-  goto = 'goto';
-  if = 'if';
-  implements = 'implements';
-  instanceof = 'instanceof';
-  int = 'int';
-  interface = 'interface';
-  long = 'long';
-  native = 'native';
-  new = 'new';
-  package = 'package';
-  private = 'private';
-  protected = 'protected';
-  public = 'public';
-  return = 'return';
-  short = 'short';
-  static = 'static';
-  strictfp = 'strictfp';
-  super_token = 'super';
-  switch = 'switch';
-  synchronized = 'synchronized';
-  this = 'this';
-  throw = 'throw';
-  throws_token = 'throws';
-  transient = 'transient';
-  true = 'true';
-  try = 'try';
-  void = 'void';
-  volatile = 'volatile';
-  while = 'while';
-  
-  // FML keywords
-  namespace = 'namespace';
-  viewpoint = 'ViewPoint';
-  virtualmodel = 'VirtualModel';
+ dollar = '$';
+ plus = '+';
+ minus = '-';
+ mult = '*';
+ div = '/';
+ mod = '%';
+ power = '^';
+ lt = '<';
+ gt = '>';
+ lte = '<=';
+ gte = '>=';
+ and = '&';
+ and2 = '&&';
+ or = '|';
+ or2 = '||';
+ eq = '=';
+ eq2 = '==';
+ neq = '!=';
+ not = '!';
+ l_par = '(';
+ r_par = ')';
+ dot = '.';
+ comma = ',';
+ if_token = '?';
+ else_token = ':';
+ pi = 'pi';
+ cos = 'cos';
+ acos = 'acos';
+ sin = 'sin';
+ asin = 'asin';
+ tan = 'tan';
+ atan = 'atan';
+ log = 'log';
+ exp = 'exp';
+ sqrt = 'sqrt';
+ true = 'true';
+ false = 'false';
+ //null = 'null';
+ //decimal_number = ['0' .. '9']+;
+ //precise_number = ['0' .. '9']+ '.' ['0' .. '9']+;
+ //scientific_notation_number = 
+ //['0' .. '9']+ '.' ['0' .. '9']+ 'e' ['0' .. '9']+ 
+ //| ['0' .. '9']+ '.' ['0' .. '9']+ 'e' '-' ['0' .. '9']+
+ //| ['0' .. '9']+ '.' ['0' .. '9']+ 'E' ['0' .. '9']+ 
+ //| ['0' .. '9']+ '.' ['0' .. '9']+ 'E' '-' ['0' .. '9']+;
+ 
+   // FML keywords
+  model = 'model';
+  concept = 'concept';
   use = 'use';
   as = 'as';
   import = 'import';   
-  modelslot = 'ModelSlot';   
-  flexoconcept = 'FlexoConcept';   
-  role = 'Role';   
+
+   string_literal = '"' string_character* '"';
+   character_literal = ''' (single_character | escape_sequence) ''';
  
-  // literals
-
-  character_literal = ''' (single_character | escape_sequence) ''';
-
-  floating_point_literal =
+   floating_point_literal =
     digit+ '.' digit* exponent_part? float_type_suffix? |
     '.' digit+ exponent_part? float_type_suffix? |
     digit+ exponent_part float_type_suffix? |
@@ -264,12 +197,10 @@ Tokens
     octal_numeral integer_type_suffix?;
 
   null_literal = 'null';
-
-  string_literal = '"' string_character* '"';
-
-  // identifier
-
+ 
   identifier = java_letter java_letter_or_digit*;
+
+  blank = (' ' | 13 | 10)+;
 
   // white space and comments
 
@@ -279,12 +210,10 @@ Tokens
   documentation_comment =    '/**' '*'* (not_star_not_slash not_star* '*'+)* '/';
   end_of_line_comment = '//' input_character* line_terminator?;
 
-  url = 'http://' unicode_letter (url_letter_or_digit)*;
-  ta_identifier = (java_letter*) '::' (java_letter*);
-
 
 Ignored Tokens
 
+  blank,
   white_space,
   traditional_comment,
   documentation_comment,
@@ -293,791 +222,92 @@ Ignored Tokens
 
 Productions
 
-  compilation_unit = namespace_declaration? [use_declarations]:use_declaration* [import_declarations]:import_declaration* main_declaration;
+  fml_compilation_unit = concept identifier;
 
-  namespace_declaration = namespace url semi;
+ expr =
+  {expr2} expr2 |
+  {cond_expr} [condition]:expr if_token [then]:expr2 else_token [else]:expr2 |
+  {eq_expr} [left]:expr eq [right]:expr2 |
+  {eq2_expr} [left]:expr eq2 [right]:expr2 |
+  {neq_expr} [left]:expr neq [right]:expr2 |
+  {lt_expr} [left]:expr lt [right]:expr2 |
+  {gt_expr} [left]:expr gt [right]:expr2 |
+  {lte_expr} [left]:expr lte [right]:expr2 |
+  {gte_expr} [left]:expr gte [right]:expr2 ;
 
-  use_declaration = use [technology_adapter]:identifier [technology_adapter_additional_identifiers]:additional_identifier* as [ta_id]:identifier semi;
-
-  import_declaration = import url as identifier semi;
-
-  main_declaration =
-    {view_point}	viewpoint_declaration |
-    {virtual_model}	virtual_model_declaration |
-    {flexo_concept}	flexo_concept_declaration;    
-
-  viewpoint_declaration = [annotations]:annotation*  viewpoint identifier super? l_brc [virtual_model_body_declarations]:virtual_model_body_declaration* r_brc;
-
-  virtual_model_declaration = [annotations]:annotation* virtualmodel identifier super? l_brc [virtual_model_body_declarations]:virtual_model_body_declaration* r_brc;
-
-  flexo_concept_declaration = [annotations]:annotation* flexoconcept identifier super? l_brc [flexo_concept_body_declarations]:flexo_concept_body_declaration* r_brc;
-
-  virtual_model_body_declaration =
-    {model_slot_member}        model_slot_declaration |
-    {flexo_concept}        	   flexo_concept_declaration |
-    {flexo_concept_member}     flexo_concept_member_declaration;
-
-  flexo_concept_body_declaration =
-    {flexo_concept_member}     flexo_concept_member_declaration;
-
-  flexo_concept_member_declaration =
-    {flexo_role}     	flexo_role_declaration |
-    {flexo_behaviour}   flexo_behaviour_declaration |
-    {empty}    semi;
-
-  model_slot_declaration = [annotations]:annotation* modelslot identifier as ta_identifier l_par fml_value_pairs? r_par semi;
- 
-  flexo_role_declaration = [annotations]:annotation* role identifier as ta_identifier l_par fml_value_pairs? r_par semi;
- 
-  flexo_behaviour_declaration = [annotations]:annotation* ta_identifier identifier l_par formal_arguments_list? r_par flexo_behaviour_body;
- 
-  flexo_behaviour_body =
-    {block} block |
-    {empty} semi;
- 
-  fml_value_pairs =
-    {one}       fml_value_pair |
-    {many}      fml_value_pairs comma fml_value_pair;
-
-  fml_value_pair =
-    identifier assign fml_value;
-
-  fml_value =
-    {conditional}       conditional_expression |
-    {identifier}        identifier [additional_identifiers]:additional_identifier*;
- 
-  formal_arguments_list =
-    {one}                          formal_argument |
-    {many} formal_arguments_list comma formal_argument;
+ expr2 =
+  {expr3} expr3 |
+  {or_expr} [left]:expr2 or [right]:expr3 |
+  {or2_expr} [left]:expr2 or2 [right]:expr3 |
+  {add_expr} [left]:expr2 plus [right]:expr3 |
+  {sub_expr} [left]:expr2 minus [right]:expr3;
   
-  formal_argument =
-    {primitive} primitive_type                                                                                                             [dims1]:dim*               identifier [dims2]:dim* |
-    {reference} [identifier1]:identifier [additional_identifiers]:additional_identifier* [type_components]:type_component* type_arguments? [dims1]:dim* [identifier2]:identifier [dims2]:dim* |
-    {technology_specific} technology_specific_type [dims1]:dim* identifier [dims2]:dim*;
+ expr3 =
+  {term} term |
+  {and_expr} [left]:expr3 and [right]:term |
+  {and2_expr} [left]:expr3 and2 [right]:term |
+  {mult_expr} [left]:expr3 mult [right]:term |
+  {div_expr} [left]:expr3 div [right]:term |
+  {mod_expr} [left]:expr3 mod [right]:term |
+  {power_expr} [left]:expr3 power [right]:term |
+  {not_expr} not term;
  
-  annotation =
-    {normal_annotation}         normal_annotation |
-    {marker_annotation}         marker_annotation |
-    {single_element_annotation} single_element_annotation;
+ type_reference = 
+  {basic} dollar type_reference_path |
+  {parametered} dollar type_reference_path type_reference_arg_list;
+
+ type_reference_path = 
+  {identifier} identifier |
+  {tail} identifier dot type_reference_path;
+
+ type_reference_arg_list = 
+   lt type_reference [type_reference_additional_args]:type_reference_additional_arg* gt;
+
+ type_reference_additional_arg = 
+  comma type_reference;
+
+ call = 
+  identifier arg_list ;
+
+ arg_list = 
+  {empty_list} l_par r_par |
+  {non_empty_list} l_par expr [additional_args]:additional_arg* r_par;
+
+ additional_arg = 
+  comma expr;
+
+ binding = 
+  {identifier} identifier |
+  {call} call |
+  {tail1} identifier dot binding |
+  {tail2} call dot binding;
+
+ function =
+  {cos_func} cos l_par expr2 r_par |
+  {acos_func} acos l_par expr2 r_par |
+  {sin_func} sin l_par expr2 r_par |
+  {asin_func} asin l_par expr2 r_par |
+  {tan_func} tan l_par expr2 r_par |
+  {atan_func} atan l_par expr2 r_par |
+  {exp_func} exp l_par expr2 r_par |
+  {log_func} log l_par expr2 r_par |
+  {sqrt_func} sqrt l_par expr2 r_par;
+
+ constant = 
+  {true} true |
+  {false} false |
+  {pi} pi;
+
+ term =
+  {negative} minus term |
+  {floating_point_literal} floating_point_literal |
+  {integer_literal} integer_literal |
+  {string_literal} string_literal |
+  {character_literal} character_literal |
+  {null_literal} null_literal |
+  {function} function |
+  {binding} binding |
+  {expr} l_par expr r_par |
+  {cast} l_par type_reference r_par term;
 
-  normal_annotation =
-    at identifier [additional_identifiers]:additional_identifier* l_par element_value_pairs? r_par;
 
-  marker_annotation =
-    at identifier [additional_identifiers]:additional_identifier*;
-
-  single_element_annotation =
-    at identifier [additional_identifiers]:additional_identifier* l_par element_value r_par;
-
-  element_value_pairs =
-    {one}                            element_value_pair |
-    {many} element_value_pairs comma element_value_pair;
-
-  element_value =
-    {conditional}       conditional_expression |
-    {identifier}        identifier [additional_identifiers]:additional_identifier* |
-    {annotation}        annotation |
-    {array_initializer} element_value_array_initializer;
-
-  type_parameters =
-    {gt}   lt type_parameter_list gt |
-    {shr}  lt type_parameter_list_shr shr |
-    {ushr} lt type_parameter_list_ushr ushr;
-
-  super =
-    extends super_type_list;
-
-  super_type_list =
-    {one}                            identifier [additional_identifiers]:additional_identifier* |
-    {many} super_type_list comma identifier [additional_identifiers]:additional_identifier*;
-
-  element_value_pair =
-    identifier assign element_value;
-
-  conditional_expression =
-    {simple}         conditional_or_expression |
-    {qmark_or_ex_or} conditional_or_expression                                                 qmark expression                                                                colon conditional_expression |
-    {qmark_or_ex_id} conditional_or_expression                                                 qmark expression                                                                colon               identifier  [additional_identifiers]:additional_identifier* |
-    {qmark_or_id_or} conditional_or_expression                                                 qmark               identifier  [additional_identifiers]:additional_identifier* colon conditional_expression |
-    {qmakr_or_id_id} conditional_or_expression                                                 qmark [identifier1]:identifier [additional_identifiers1]:additional_identifier* colon [identifier2]:identifier [additional_identifiers2]:additional_identifier* |
-    {qmakr_id_ex_or}               identifier  [additional_identifiers]:additional_identifier* qmark expression                                                                colon conditional_expression |
-    {qmakr_id_ex_id} [identifier1]:identifier [additional_identifiers1]:additional_identifier* qmark expression                                                                colon [identifier2]:identifier [additional_identifiers2]:additional_identifier* |
-    {qmakr_id_id_or} [identifier1]:identifier [additional_identifiers1]:additional_identifier* qmark [identifier2]:identifier [additional_identifiers2]:additional_identifier* colon conditional_expression |
-    {qmakr_id_id_id} [identifier1]:identifier [additional_identifiers1]:additional_identifier* qmark [identifier2]:identifier [additional_identifiers2]:additional_identifier* colon [identifier3]:identifier [additional_identifiers3]:additional_identifier*;
-
-  element_value_array_initializer =
-    l_brc element_values? comma? r_brc;
-
-  type_parameter_list =
-    {one}                            type_parameter |
-    {many} type_parameter_list comma type_parameter;
-
-  type_parameter_list_shr =
-    {one}                            type_parameter_shr |
-    {many} type_parameter_list comma type_parameter_shr;
-
-  type_parameter_list_ushr =
-    {one}                            type_parameter_ushr |
-    {many} type_parameter_list comma type_parameter_ushr;
-
-  interface_type_list =
-    {one}                            identifier [additional_identifiers]:additional_identifier* [type_components]:type_component* type_arguments? |
-    {many} interface_type_list comma identifier [additional_identifiers]:additional_identifier* [type_components]:type_component* type_arguments?;
-
-  conditional_or_expression =
-    {simple}                                                                                          conditional_and_expression |
-    {bar_bar_or_or} conditional_or_expression                                                 bar_bar conditional_and_expression |
-    {bar_bar_or_id} conditional_or_expression                                                 bar_bar               identifier  [additional_identifiers]:additional_identifier* |
-    {bar_bar_id_or}               identifier  [additional_identifiers]:additional_identifier* bar_bar conditional_and_expression |
-    {bar_bar_id_id} [identifier1]:identifier [additional_identifiers1]:additional_identifier* bar_bar [identifier2]:identifier [additional_identifiers2]:additional_identifier*;
-
-  expression =
-    assignment_expression;
-
-  element_values =
-    {one}                       element_value |
-    {many} element_values comma element_value;
-
-  type_parameter =
-    identifier type_bound?;
-
-  type_parameter_shr =
-    identifier type_bound_shr;
-
-  type_parameter_ushr =
-    identifier type_bound_ushr;
-
-  type_arguments =
-    {gt}   lt actual_type_argument_list gt |
-    {shr}  lt actual_type_argument_list_shr shr |
-    {ushr} lt actual_type_argument_list_ushr ushr;
-
-  type_arguments_shr_no_gt =
-    lt actual_type_argument_list;
-
-  type_arguments_ushr_no_gt_gt =
-    lt actual_type_argument_list_ushr_no_gt;
-
-  type_arguments_ushr_no_gt =
-    lt actual_type_argument_list;
-
-  instance_initializer =
-    block;
-
-  static_initializer =
-    static block;
-
-  constant_declaration =
-    {primitive} [modifiers]:modifier* primitive_type                                                                                               [dims]:dim* variable_declarators semi |
-    {reference} [modifiers]:modifier* identifier [additional_identifiers]:additional_identifier* [type_components]:type_component* type_arguments? [dims]:dim* variable_declarators semi;
-
-  default_value =
-    default element_value;
-
-  conditional_and_expression =
-    {simple}                                                                                          inclusive_or_expression |
-    {amp_amp_an_or} conditional_and_expression                                                amp_amp inclusive_or_expression |
-    {amp_amp_an_id} conditional_and_expression                                                amp_amp               identifier  [additional_identifiers]:additional_identifier* |
-    {amp_amp_id_or}               identifier  [additional_identifiers]:additional_identifier* amp_amp inclusive_or_expression |
-    {amp_amp_id_id} [identifier1]:identifier [additional_identifiers1]:additional_identifier* amp_amp [identifier2]:identifier [additional_identifiers2]:additional_identifier*;
-
-  assignment_expression =
-    {conditional} conditional_expression |
-    {assignment}  assignment;
-
-  type_bound =
-    extends identifier [additional_identifiers]:additional_identifier* [type_components]:type_component* type_arguments? [additional_bounds]:additional_bound*;
-
-  type_bound_shr =
-    {argument} extends identifier [additional_identifiers]:additional_identifier* [type_components]:type_component* type_arguments_shr_no_gt |
-    {bound}    extends identifier [additional_identifiers]:additional_identifier* [type_components]:type_component* type_arguments? [additional_bounds]:additional_bound* additional_bound_shr_no_gt;
-
-  type_bound_ushr =
-    {argument} extends identifier [additional_identifiers]:additional_identifier* [type_components]:type_component* type_arguments_ushr_no_gt_gt |
-    {bound}    extends identifier [additional_identifiers]:additional_identifier* [type_components]:type_component* type_arguments? [additional_bounds]:additional_bound* additional_bound_ushr_no_gt_gt;
-
-  type_component =
-    type_arguments [additional_identifiers]:additional_identifier+;
-
-  actual_type_argument_list =
-    {one}                                  actual_type_argument |
-    {many} actual_type_argument_list comma actual_type_argument;
-
-  actual_type_argument_list_shr =
-    {one}                                  actual_type_argument_shr |
-    {many} actual_type_argument_list comma actual_type_argument_shr;
-
-  actual_type_argument_list_ushr =
-    {one}                                  actual_type_argument_ushr |
-    {many} actual_type_argument_list comma actual_type_argument_ushr;
-
-  actual_type_argument_list_ushr_no_gt =
-    {one}                                  actual_type_argument_ushr_no_gt |
-    {many} actual_type_argument_list comma actual_type_argument_ushr_no_gt;
-
-  block =
-    l_brc [block_statements]:block_statement* r_brc;
-
-  throws =
-    throws_token exception_type_list;
-
-  arguments =
-    l_par argument_list? r_par;
-
-  variable_declarators =
-    {one}                             variable_declarator |
-    {many} variable_declarators comma variable_declarator;
-
-  technology_specific_type =
-    ta_identifier l_par fml_value_pairs? r_par;
-
-  primitive_type =
-    {numeric} numeric_type |
-    {boolean} boolean;
-
-  inclusive_or_expression =
-    {simple}                                                                                  exclusive_or_expression |
-    {bar_or_or} inclusive_or_expression                                                   bar exclusive_or_expression |
-    {bar_or_id} inclusive_or_expression                                                   bar               identifier  [additional_identifiers]:additional_identifier* |
-    {bar_id_or}               identifier  [additional_identifiers]:additional_identifier* bar exclusive_or_expression |
-    {bar_id_id} [identifier1]:identifier [additional_identifiers1]:additional_identifier* bar [identifier2]:identifier [additional_identifiers2]:additional_identifier*;
-
-  assignment =
-    {expression} left_hand_side assignment_operator assignment_expression |
-    {identifier} left_hand_side assignment_operator identifier [additional_identifiers]:additional_identifier*;
-
-  additional_bound =
-    amp identifier [additional_identifiers]:additional_identifier* [type_components]:type_component* type_arguments?;
-
-  additional_bound_shr_no_gt =
-    amp identifier [additional_identifiers]:additional_identifier* [type_components]:type_component* type_arguments_shr_no_gt;
-
-  additional_bound_ushr_no_gt_gt =
-    amp identifier [additional_identifiers]:additional_identifier* [type_components]:type_component* type_arguments_ushr_no_gt_gt;
-
-  actual_type_argument =
-    {primitive} primitive_type [dims]:dim+ |
-    {reference} identifier [additional_identifiers]:additional_identifier* [type_components]:type_component* type_arguments? [dims]:dim* |
-    {wildcard}  wildcard;
-
-  actual_type_argument_shr =
-    {reference} identifier [additional_identifiers]:additional_identifier* [type_components]:type_component* type_arguments_shr_no_gt |
-    {wildcard}  wildcard_shr;
-
-  actual_type_argument_ushr =
-    {reference} identifier [additional_identifiers]:additional_identifier* [type_components]:type_component* type_arguments_ushr_no_gt_gt |
-    {wildcard}  wildcard_ushr;
-
-  actual_type_argument_ushr_no_gt =
-    {reference} identifier [additional_identifiers]:additional_identifier* [type_components]:type_component* type_arguments_ushr_no_gt |
-    {wildcard}  wildcard_ushr_no_gt;
-
-  block_statement =
-    {variable_declaration} local_variable_declaration_statement |
-    {statement}            statement;
-
-  formal_parameter_list =
-    {one}                          last_formal_parameter |
-    {many} formal_parameters comma last_formal_parameter;
-
-  exception_type_list =
-    {one}                            exception_type |
-    {many} exception_type_list comma exception_type;
-
-  argument_list =
-    {one_ex}                      expression |
-    {one_id}                      identifier [additional_identifiers]:additional_identifier* |
-    {many_ex} argument_list comma expression |
-    {many_id} argument_list comma identifier [additional_identifiers]:additional_identifier*;
-
-  variable_declarator =
-    {simple}      identifier [dims]:dim* |
-    {initializer} identifier [dims]:dim* assign variable_initializer;
-
-  numeric_type =
-    {integral} integral_type |
-    {floating} floating_point_type;
-
-  exclusive_or_expression =
-    {simple}                                                                                      and_expression |
-    {caret_or_an} exclusive_or_expression                                                   caret and_expression |
-    {caret_or_id} exclusive_or_expression                                                   caret               identifier  [additional_identifiers]:additional_identifier* |
-    {caret_id_an}               identifier  [additional_identifiers]:additional_identifier* caret and_expression |
-    {caret_id_id} [identifier1]:identifier [additional_identifiers1]:additional_identifier* caret [identifier2]:identifier [additional_identifiers2]:additional_identifier*;
-
-  left_hand_side =
-    {identifier} identifier [additional_identifiers]:additional_identifier* |
-    {field}      field_access |
-    {array}      array_access;
-
-  assignment_operator =
-    {assign}         assign |
-    {star_assign}    star_assign |
-    {slash_assign}   slash_assign |
-    {percent_assign} percent_assign |
-    {plus_assign}    plus_assign |
-    {minus_assign}   minus_assign |
-    {shl_assign}     shl_assign |
-    {shr_assign}     shr_assign |
-    {ushr_assign}    ushr_assign |
-    {amp_assign}     amp_assign |
-    {caret_assign}   caret_assign |
-    {bar_assign}     bar_assign;
-
-  wildcard =
-    qmark wildcard_bounds?;
-
-  wildcard_shr =
-    qmark wildcard_bounds_shr;
-
-  wildcard_ushr =
-    qmark wildcard_bounds_ushr;
-
-  wildcard_ushr_no_gt =
-    qmark wildcard_bounds_ushr_no_gt;
-
-  local_variable_declaration_statement =
-    local_variable_declaration semi;
-
-  statement =
-    {no_trail}   statement_without_trailing_substatement |
-    {label}      labeled_statement |
-    {if}         if_then_statement |
-    {if_else}    if_then_else_statement |
-    {while_loop} while_statement |
-    {for_loop}   for_statement;
-
-  last_formal_parameter =
-    {primitive_var_arg} [modifiers]:modifier* primitive_type                                                                                                             [dims1]:dim* dot_dot_dot               identifier [dims2]:dim* |
-    {reference_var_arg} [modifiers]:modifier* [identifier1]:identifier [additional_identifiers]:additional_identifier* [type_components]:type_component* type_arguments? [dims1]:dim* dot_dot_dot [identifier2]:identifier [dims2]:dim* |
-    {simple}            formal_parameter;
-
-  formal_parameters =
-    {one}                          formal_parameter |
-    {many} formal_parameters comma formal_parameter;
-
-  exception_type =
-    identifier [additional_identifiers]:additional_identifier* [type_components]:type_component* type_arguments?;
-
-  non_wild_type_arguments =
-    {gt}   lt reference_type_list gt |
-    {shr}  lt reference_type_list_shr shr |
-    {ushr} lt reference_type_list_ushr ushr;
-
-  primary =
-    {no_array} primary_no_new_array |
-    {array}    array_creation_expression;
-
-  variable_initializer =
-    {expression} expression |
-    {identifier} identifier [additional_identifiers]:additional_identifier* |
-    {array}      array_initializer;
-
-  integral_type =
-    {byte}  byte |
-    {short} short |
-    {int}   int |
-    {long}  long |
-    {char}  char;
-
-  floating_point_type =
-    {float}  float |
-    {double} double;
-
-  and_expression =
-    {simple}                                                                                  equality_expression |
-    {amp_an_eq} and_expression                                                            amp equality_expression |
-    {amp_an_id} and_expression                                                            amp               identifier  [additional_identifiers]:additional_identifier* |
-    {amp_id_eq}               identifier  [additional_identifiers]:additional_identifier* amp equality_expression |
-    {amp_id_id} [identifier1]:identifier [additional_identifiers1]:additional_identifier* amp [identifier2]:identifier [additional_identifiers2]:additional_identifier*;
-
-  field_access =
-    {primary}                                                                                             primary            dot               identifier |
-    {super}                                                                                               super_token        dot               identifier |
-    {reference_super} [identifier1]:identifier [additional_identifiers]:additional_identifier* [dot1]:dot super_token [dot2]:dot [identifier2]:identifier;
-
-  array_access =
-    {primary_ex}    primary_no_new_array                                                      l_bkt expression                                                                r_bkt |
-    {primary_id}    primary_no_new_array                                                      l_bkt               identifier  [additional_identifiers]:additional_identifier* r_bkt |
-    {identifier_ex}               identifier  [additional_identifiers]:additional_identifier* l_bkt expression                                                                r_bkt |
-    {identifier_id} [identifier1]:identifier [additional_identifiers1]:additional_identifier* l_bkt [identifier2]:identifier [additional_identifiers2]:additional_identifier* r_bkt;
-
-  wildcard_bounds =
-    {extends_primitive} extends     primitive_type [dims]:dim+ |
-    {extends_reference} extends     identifier [additional_identifiers]:additional_identifier* [type_components]:type_component* type_arguments? [dims]:dim* |
-    {super_primitive}   super_token primitive_type [dims]:dim+ |
-    {super_reference}   super_token identifier [additional_identifiers]:additional_identifier* [type_components]:type_component* type_arguments? [dims]:dim*;
-
-  wildcard_bounds_shr =
-    {extends_reference} extends     identifier [additional_identifiers]:additional_identifier* [type_components]:type_component* type_arguments_shr_no_gt |
-    {super_reference}   super_token identifier [additional_identifiers]:additional_identifier* [type_components]:type_component* type_arguments_shr_no_gt;
-
-  wildcard_bounds_ushr =
-    {extends_reference} extends     identifier [additional_identifiers]:additional_identifier* [type_components]:type_component* type_arguments_ushr_no_gt_gt |
-    {super_reference}   super_token identifier [additional_identifiers]:additional_identifier* [type_components]:type_component* type_arguments_ushr_no_gt_gt;
-
-  wildcard_bounds_ushr_no_gt =
-    {extends_reference} extends     identifier [additional_identifiers]:additional_identifier* [type_components]:type_component* type_arguments_ushr_no_gt |
-    {super_reference}   super_token identifier [additional_identifiers]:additional_identifier* [type_components]:type_component* type_arguments_ushr_no_gt;
-
-  local_variable_declaration =
-    {primitive} [modifiers]:modifier* primitive_type                                                                                               [dims]:dim* variable_declarators |
-    {reference} [modifiers]:modifier* identifier [additional_identifiers]:additional_identifier* [type_components]:type_component* type_arguments? [dims]:dim* variable_declarators;
-
-  statement_without_trailing_substatement =
-    {block}                  block |
-    {empty_statement}        empty_statement |
-    {expression_statement}   expression_statement |
-    {assert_statement}       assert_statement |
-    {switch_statement}       switch_statement |
-    {do_statement}           do_statement |
-    {break_statement}        break_statement |
-    {continue_statement}     continue_statement |
-    {return_statement}       return_statement |
-    {synchronized_statement} synchronized_statement |
-    {throw_statement}        throw_statement |
-    {try_statement}          try_statement;
-
-  labeled_statement =
-    identifier colon statement;
-
-  if_then_statement =
-    {expression} if l_par expression                                                 r_par statement |
-    {identifier} if l_par identifier [additional_identifiers]:additional_identifier* r_par statement;
-
-  if_then_else_statement =
-    {expression} if l_par expression                                                 r_par statement_no_short_if else statement |
-    {identifier} if l_par identifier [additional_identifiers]:additional_identifier* r_par statement_no_short_if else statement;
-
-  while_statement =
-    {expression} while l_par expression                                                 r_par statement |
-    {identifier} while l_par identifier [additional_identifiers]:additional_identifier* r_par statement;
-
-  for_statement =
-    {basic_for}    basic_for_statement |
-    {enhanced_for} enhanced_for_statement;
-
-  formal_parameter =
-    {primitive} [modifiers]:modifier* primitive_type                                                                                                             [dims1]:dim*               identifier [dims2]:dim* |
-    {reference} [modifiers]:modifier* [identifier1]:identifier [additional_identifiers]:additional_identifier* [type_components]:type_component* type_arguments? [dims1]:dim* [identifier2]:identifier [dims2]:dim*;
-
-  reference_type_list =
-    {one_primitive}                            primitive_type [dims]:dim+ |
-    {one_reference}                            identifier [additional_identifiers]:additional_identifier* [type_components]:type_component* type_arguments? [dims]:dim* |
-    {many_primitive} reference_type_list comma primitive_type [dims]:dim+ |
-    {many_reference} reference_type_list comma identifier [additional_identifiers]:additional_identifier* [type_components]:type_component* type_arguments? [dims]:dim*;
-
-  reference_type_list_shr =
-    {one_reference}                            identifier [additional_identifiers]:additional_identifier* [type_components]:type_component* type_arguments_shr_no_gt |
-    {many_reference} reference_type_list comma identifier [additional_identifiers]:additional_identifier* [type_components]:type_component* type_arguments_shr_no_gt;
-
-  reference_type_list_ushr =
-    {one_reference}                            identifier [additional_identifiers]:additional_identifier* [type_components]:type_component* type_arguments_ushr_no_gt_gt |
-    {many_reference} reference_type_list comma identifier [additional_identifiers]:additional_identifier* [type_components]:type_component* type_arguments_ushr_no_gt_gt;
-
-  primary_no_new_array =
-    {literal}    literal |
-    {primitive}  primitive_type                                             [dims]:dim* dot class_token |
-    {reference}  identifier [additional_identifiers]:additional_identifier* [dims]:dim* dot class_token |
-    {void}       void dot class_token |
-    {this}       this |
-    {class}      identifier [additional_identifiers]:additional_identifier* dot this |
-    {expression} l_par expression                                                 r_par |
-    {identifier} l_par identifier [additional_identifiers]:additional_identifier* r_par |
-    {field}      field_access |
-    {method}     method_invocation |
-    {array}      array_access;
-
-  array_creation_expression =
-    {primitive}             new primitive_type                                                                                               [dim_exprs]:dim_expr+ [dims]:dim* |
-    {reference}             new identifier [additional_identifiers]:additional_identifier* [type_components]:type_component* type_arguments? [dim_exprs]:dim_expr+ [dims]:dim* |
-    {primitive_initializer} new primitive_type                                                                                               [dims]:dim+ array_initializer |
-    {reference_initializer} new identifier [additional_identifiers]:additional_identifier* [type_components]:type_component* type_arguments? [dims]:dim+ array_initializer;
-
-  array_initializer =
-    l_brc variable_initializers? comma? r_brc;
-
-  variable_initializers =
-    {one}                              variable_initializer |
-    {many} variable_initializers comma variable_initializer;
-
-  equality_expression =
-    {simple}                                                                                  relational_expression |
-    {eq_eq_re}  equality_expression                                                       eq  relational_expression |
-    {eq_eq_id}  equality_expression                                                       eq                identifier  [additional_identifiers]:additional_identifier* |
-    {eq_id_re}                identifier  [additional_identifiers]:additional_identifier* eq  relational_expression |
-    {eq_id_id}  [identifier1]:identifier [additional_identifiers1]:additional_identifier* eq  [identifier2]:identifier [additional_identifiers2]:additional_identifier* |
-    {neq_eq_re} equality_expression                                                       neq relational_expression |
-    {neq_eq_id} equality_expression                                                       neq               identifier  [additional_identifiers]:additional_identifier* |
-    {neq_id_re}               identifier  [additional_identifiers]:additional_identifier* neq relational_expression |
-    {neq_id_id} [identifier1]:identifier [additional_identifiers1]:additional_identifier* neq [identifier2]:identifier [additional_identifiers2]:additional_identifier*;
-
-  empty_statement =
-    semi;
-
-  expression_statement =
-    statement_expression semi;
-
-  assert_statement =
-    {one_ex}    assert               expression                                                  semi |
-    {one_id}    assert               identifier [additional_identifiers]:additional_identifier*  semi |
-    {two_ex_ex} assert [expression1]:expression                                                  colon [expression2]:expression semi |
-    {two_ex_id} assert               expression                                                  colon               identifier  [additional_identifiers]:additional_identifier* semi |
-    {two_id_ex} assert               identifier  [additional_identifiers]:additional_identifier* colon expression                                                                semi |
-    {two_id_id} assert [identifier1]:identifier [additional_identifiers1]:additional_identifier* colon [identifier2]:identifier [additional_identifiers2]:additional_identifier* semi;
-
-  switch_statement =
-    {expression} switch l_par expression                                                 r_par switch_block |
-    {identifier} switch l_par identifier [additional_identifiers]:additional_identifier* r_par switch_block;
-
-  do_statement =
-    {expression} do statement while l_par expression                                                 r_par semi |
-    {identifier} do statement while l_par identifier [additional_identifiers]:additional_identifier* r_par semi;
-
-  break_statement =
-    break identifier? semi;
-
-  continue_statement =
-    continue identifier? semi;
-
-  return_statement =
-    {empty}      return                                                            semi |
-    {expression} return expression                                                 semi |
-    {identifier} return identifier [additional_identifiers]:additional_identifier* semi;
-
-  synchronized_statement =
-    {expression} synchronized l_par expression                                                 r_par block |
-    {identifier} synchronized l_par identifier [additional_identifiers]:additional_identifier* r_par block;
-
-  throw_statement =
-    {expression} throw expression                                                 semi |
-    {identifier} throw identifier [additional_identifiers]:additional_identifier* semi;
-
-  try_statement =
-    {catch}   try block [catch_clauses]:catch_clause+ |
-    {finally} try block [catch_clauses]:catch_clause* finally;
-
-  statement_no_short_if =
-    {statement_without_trailing_substatement} statement_without_trailing_substatement |
-    {labeled_statement_no_short_if}           labeled_statement_no_short_if |
-    {if_then_else_statement_no_short_if}      if_then_else_statement_no_short_if |
-    {while_statement_no_short_if}             while_statement_no_short_if |
-    {for_statement_no_short_if}               for_statement_no_short_if;
-
-  basic_for_statement =
-    {empty}      for l_par for_init? [semi1]:semi                                                            [semi2]:semi for_update? r_par statement |
-    {expression} for l_par for_init? [semi1]:semi expression                                                 [semi2]:semi for_update? r_par statement |
-    {identifier} for l_par for_init? [semi1]:semi identifier [additional_identifiers]:additional_identifier* [semi2]:semi for_update? r_par statement;
-
-  enhanced_for_statement =
-    {primitive_expression} for l_par [modifiers]:modifier* primitive_type                                                                                                              [dims]:dim*               identifier colon expression                                                                r_par statement |
-    {primitive_identifier} for l_par [modifiers]:modifier* primitive_type                                                                                                              [dims]:dim* [identifier1]:identifier colon [identifier2]:identifier  [additional_identifiers]:additional_identifier* r_par statement |
-    {reference_expression} for l_par [modifiers]:modifier* [identifier1]:identifier  [additional_identifiers]:additional_identifier* [type_components]:type_component* type_arguments? [dims]:dim* [identifier2]:identifier colon expression                                                                r_par statement |
-    {reference_identifier} for l_par [modifiers]:modifier* [identifier1]:identifier [additional_identifiers1]:additional_identifier* [type_components]:type_component* type_arguments? [dims]:dim* [identifier2]:identifier colon [identifier3]:identifier [additional_identifiers2]:additional_identifier* r_par statement;
-
-  literal =
-    {integer}        integer_literal |
-    {floating_point} floating_point_literal |
-    {boolean}        boolean_literal |
-    {character}      character_literal |
-    {string}         string_literal |
-    {null}           null_literal;
-
-  method_invocation =
-    {simple}                   identifier [additional_identifiers]:additional_identifier*                                                                                     l_par argument_list? r_par |
-    {primary}    primary     dot non_wild_type_arguments? identifier                                                                                                          l_par argument_list? r_par |
-    {super}      super_token dot non_wild_type_arguments? identifier                                                                                                          l_par argument_list? r_par |
-    {class_name} [identifier1]:identifier [additional_identifiers]:additional_identifier* [dot1]:dot super_token [dot2]:dot non_wild_type_arguments? [identifier2]:identifier l_par argument_list? r_par |
-    {type_name}  [identifier1]:identifier [additional_identifiers]:additional_identifier*                               dot non_wild_type_arguments  [identifier2]:identifier l_par argument_list? r_par;
-
-  dim_expr =
-    {expression} l_bkt expression                                                 r_bkt |
-    {identifier} l_bkt identifier [additional_identifiers]:additional_identifier* r_bkt;
-
-  dim =
-    l_bkt r_bkt;
-
-  relational_expression =
-    {simple}                                                                                                                     shift_expression |
-    {lt_sh_sh}                [shift_expression1]:shift_expression                                      lt   [shift_expression2]:shift_expression |
-    {lt_sh_id}                                    shift_expression                                      lt                 identifier  [additional_identifiers]:additional_identifier* |
-    {lt_id_sh}                              identifier  [additional_identifiers]:additional_identifier* lt                       shift_expression |
-    {lt_id_id}                [identifier1]:identifier [additional_identifiers1]:additional_identifier* lt   [identifier2]:identifier [additional_identifiers2]:additional_identifier* |
-    {gt_sh_sh}                [shift_expression1]:shift_expression                                      gt   [shift_expression2]:shift_expression |
-    {gt_sh_id}                                    shift_expression                                      gt                 identifier  [additional_identifiers]:additional_identifier* |
-    {gt_id_sh}                              identifier  [additional_identifiers]:additional_identifier* gt                       shift_expression |
-    {gt_id_id}                [identifier1]:identifier [additional_identifiers1]:additional_identifier* gt   [identifier2]:identifier [additional_identifiers2]:additional_identifier* |
-    {lteq_sh_sh}              [shift_expression1]:shift_expression                                      lteq [shift_expression2]:shift_expression |
-    {lteq_sh_id}                                  shift_expression                                      lteq               identifier  [additional_identifiers]:additional_identifier* |
-    {lteq_id_sh}                            identifier  [additional_identifiers]:additional_identifier* lteq                     shift_expression |
-    {lteq_id_id}              [identifier1]:identifier [additional_identifiers1]:additional_identifier* lteq [identifier2]:identifier [additional_identifiers2]:additional_identifier* |
-    {gteq_sh_sh}              [shift_expression1]:shift_expression                                      gteq [shift_expression2]:shift_expression |
-    {gteq_sh_id}                                  shift_expression                                      gteq               identifier  [additional_identifiers]:additional_identifier* |
-    {gteq_id_sh}                            identifier  [additional_identifiers]:additional_identifier* gteq                     shift_expression |
-    {gteq_id_id}              [identifier1]:identifier [additional_identifiers1]:additional_identifier* gteq [identifier2]:identifier [additional_identifiers2]:additional_identifier* |
-    {instanceof_sh_primitive} shift_expression                                                          instanceof primitive_type [dims]:dim+ |
-    {instanceof_sh_reference} shift_expression                                                          instanceof               identifier  [additional_identifiers]:additional_identifier* [type_components]:type_component* type_arguments? [dims]:dim* |
-    {instanceof_id_primitive}               identifier  [additional_identifiers]:additional_identifier* instanceof primitive_type [dims]:dim+ |
-    {instanceof_id_reference} [identifier1]:identifier [additional_identifiers1]:additional_identifier* instanceof [identifier2]:identifier [additional_identifiers2]:additional_identifier* [type_components]:type_component* type_arguments? [dims]:dim*;
-
-  statement_expression =
-    {assignment}        assignment |
-    {pre_increment}     pre_increment_expression |
-    {pre_decrement}     pre_decrement_expression |
-    {post_increment}    post_increment_expression |
-    {post_decrement}    post_decrement_expression |
-    {method_invocation} method_invocation /*|
-    {instance_creation} class_instance_creation_expression*/;
-
-  switch_block =
-    l_brc [switch_block_statement_groups]:switch_block_statement_group* [switch_labels]:switch_label* r_brc;
-
-  catch_clause =
-    catch l_par formal_parameter r_par block;
-
-  finally =
-    finally_token block;
-
-  labeled_statement_no_short_if =
-    identifier colon statement_no_short_if;
-
-  if_then_else_statement_no_short_if =
-    {expression} if l_par expression                                                 r_par [statement_no_short_if1]:statement_no_short_if else [statement_no_short_if2]:statement_no_short_if |
-    {identifier} if l_par identifier [additional_identifiers]:additional_identifier* r_par [statement_no_short_if1]:statement_no_short_if else [statement_no_short_if2]:statement_no_short_if;
-
-  while_statement_no_short_if =
-    {expression} while l_par expression                                                 r_par statement_no_short_if |
-    {identifier} while l_par identifier [additional_identifiers]:additional_identifier* r_par statement_no_short_if;
-
-  for_statement_no_short_if =
-    {empty}      for l_par for_init? [semi1]:semi                                                            [semi2]:semi for_update? r_par statement_no_short_if |
-    {expression} for l_par for_init? [semi1]:semi expression                                                 [semi2]:semi for_update? r_par statement_no_short_if |
-    {identifier} for l_par for_init? [semi1]:semi identifier [additional_identifiers]:additional_identifier* [semi2]:semi for_update? r_par statement_no_short_if;
-
-  for_init =
-    {statement}            statement_expression_list |
-    {variable_declaration} local_variable_declaration;
-
-  for_update =
-    statement_expression_list;
-
-  shift_expression =
-    {simple}                                                                                    additive_expression |
-    {shl_sh_ad}  shift_expression                                                          shl  additive_expression |
-    {shl_sh_id}  shift_expression                                                          shl                identifier  [additional_identifiers]:additional_identifier* |
-    {shl_id_ad}                identifier  [additional_identifiers]:additional_identifier* shl  additive_expression |
-    {shl_id_id}  [identifier1]:identifier [additional_identifiers1]:additional_identifier* shl  [identifier2]:identifier [additional_identifiers2]:additional_identifier* |
-    {shr_sh_ad}  shift_expression                                                          shr  additive_expression |
-    {shr_sh_id}  shift_expression                                                          shr                identifier  [additional_identifiers]:additional_identifier* |
-    {shr_id_ad}                identifier  [additional_identifiers]:additional_identifier* shr  additive_expression |
-    {shr_id_id}  [identifier1]:identifier [additional_identifiers1]:additional_identifier* shr  [identifier2]:identifier [additional_identifiers2]:additional_identifier* |
-    {ushr_sh_ad} shift_expression                                                          ushr additive_expression |
-    {ushr_sh_id} shift_expression                                                          ushr               identifier  [additional_identifiers]:additional_identifier* |
-    {ushr_id_ad}               identifier  [additional_identifiers]:additional_identifier* ushr additive_expression |
-    {ushr_id_id} [identifier1]:identifier [additional_identifiers1]:additional_identifier* ushr [identifier2]:identifier [additional_identifiers2]:additional_identifier*;
-
-  pre_increment_expression =
-    {expression} plus_plus unary_expression |
-    {identifier} plus_plus identifier [additional_identifiers]:additional_identifier*;
-
-  pre_decrement_expression =
-    {expression} minus_minus unary_expression |
-    {identifier} minus_minus identifier [additional_identifiers]:additional_identifier*;
-
-  post_increment_expression =
-    {expression} postfix_expression                                         plus_plus |
-    {identifier} identifier [additional_identifiers]:additional_identifier* plus_plus;
-
-  post_decrement_expression =
-    {expression} postfix_expression                                         minus_minus |
-    {identifier} identifier [additional_identifiers]:additional_identifier* minus_minus;
-
-  switch_block_statement_group =
-    [switch_labels]:switch_label+ [block_statements]:block_statement+;
-
-  switch_label =
-    {expression} case constant_expression                                        colon |
-    {identifier} case identifier [additional_identifiers]:additional_identifier* colon |
-    {default}    default                                                         colon;
-
-  statement_expression_list =
-    {one}                                  statement_expression |
-    {many} statement_expression_list comma statement_expression;
-
-  additive_expression =
-    {simple}                                                                                       multiplicative_expression |
-    {plus_ad_mu}   additive_expression                                                       plus  multiplicative_expression |
-    {plus_ad_id}   additive_expression                                                       plus                identifier  [additional_identifiers]:additional_identifier* |
-    {plus_id_mu}                 identifier  [additional_identifiers]:additional_identifier* plus  multiplicative_expression |
-    {plus_id_id}   [identifier1]:identifier [additional_identifiers1]:additional_identifier* plus  [identifier2]:identifier [additional_identifiers2]:additional_identifier* |
-    {minus_ad_mu}  additive_expression                                                       minus multiplicative_expression |
-    {minus_ad_id}  additive_expression                                                       minus               identifier  [additional_identifiers]:additional_identifier* |
-    {minus_id_mu}                identifier  [additional_identifiers]:additional_identifier* minus multiplicative_expression |
-    {minus_id_id}  [identifier1]:identifier [additional_identifiers1]:additional_identifier* minus [identifier2]:identifier [additional_identifiers2]:additional_identifier*;
-
-  unary_expression =
-   {pre_increment}    pre_increment_expression |
-   {pre_decrement}    pre_decrement_expression |
-   {plus_expression}  plus  unary_expression |
-   {plus_identifier}  plus  identifier [additional_identifiers]:additional_identifier* |
-   {minus_expression} minus unary_expression |
-   {minus_identifier} minus identifier [additional_identifiers]:additional_identifier* |
-   {unary}            unary_expression_not_plus_minus;
-
-  postfix_expression =
-    {primary}        primary |
-    {post_increment} post_increment_expression |
-    {post_decrement} post_decrement_expression;
-
-  constant_expression =
-    expression;
-
-  multiplicative_expression =
-    {simple}                                                                                          unary_expression |
-    {star_mu_un}    multiplicative_expression                                                 star    unary_expression |
-    {star_mu_id}    multiplicative_expression                                                 star                  identifier  [additional_identifiers]:additional_identifier* |
-    {star_id_un}                  identifier  [additional_identifiers]:additional_identifier* star    unary_expression |
-    {star_id_id}    [identifier1]:identifier [additional_identifiers1]:additional_identifier* star    [identifier2]:identifier [additional_identifiers2]:additional_identifier* |
-    {slash_mu_un}   multiplicative_expression                                                 slash   unary_expression |
-    {slash_mu_id}   multiplicative_expression                                                 slash                 identifier  [additional_identifiers]:additional_identifier* |
-    {slash_id_un}                 identifier  [additional_identifiers]:additional_identifier* slash   unary_expression |
-    {slash_id_id}   [identifier1]:identifier [additional_identifiers1]:additional_identifier* slash   [identifier2]:identifier [additional_identifiers2]:additional_identifier* |
-    {percent_mu_un} multiplicative_expression                                                 percent unary_expression |
-    {percent_mu_id} multiplicative_expression                                                 percent               identifier  [additional_identifiers]:additional_identifier* |
-    {percent_id_un}               identifier  [additional_identifiers]:additional_identifier* percent unary_expression |
-    {percent_id_id} [identifier1]:identifier [additional_identifiers1]:additional_identifier* percent [identifier2]:identifier [additional_identifiers2]:additional_identifier*;
-
-  unary_expression_not_plus_minus =
-    {postfix}          postfix_expression |
-    {tilde_expression} tilde unary_expression |
-    {tilde_identifier} tilde identifier [additional_identifiers]:additional_identifier* |
-    {emark_expression} emark unary_expression |
-    {emark_identifier} emark identifier [additional_identifiers]:additional_identifier* |
-    {cast}             cast_expression;
-
-  cast_expression =
-    {primitive_expression} l_par primitive_type                                                                                                              [dims]:dim* r_par unary_expression |
-    {primitive_identifier} l_par primitive_type                                                                                                              [dims]:dim* r_par               identifier  [additional_identifiers]:additional_identifier* |
-    {reference_expression} l_par               identifier  [additional_identifiers]:additional_identifier* [type_components]:type_component* type_arguments? [dims]:dim* r_par unary_expression_not_plus_minus |
-    {reference_identifier} l_par [identifier1]:identifier [additional_identifiers1]:additional_identifier* [type_components]:type_component* type_arguments? [dims]:dim* r_par [identifier2]:identifier [additional_identifiers2]:additional_identifier*;
-
-  modifier =
-    {abstract}     abstract |
-    {annotation}   annotation |
-    {final}        final |
-    {native}       native |
-    {private}      private |
-    {protected}    protected |
-    {public}       public |
-    {static}       static |
-    {strictfp}     strictfp |
-    {synchronized} synchronized |
-    {transient}    transient |
-    {volatile}     volatile;
-
-  additional_identifier =
-    dot identifier;
-
-  boolean_literal =
-    {true}  true |
-    {false} false;

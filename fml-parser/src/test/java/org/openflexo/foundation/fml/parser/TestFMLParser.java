@@ -45,6 +45,7 @@ import org.junit.Test;
 import org.openflexo.foundation.test.OpenflexoTestCase;
 import org.openflexo.rm.FileResourceImpl;
 import org.openflexo.rm.Resource;
+import org.openflexo.rm.ResourceLocator;
 
 public class TestFMLParser extends OpenflexoTestCase {
 
@@ -54,20 +55,9 @@ public class TestFMLParser extends OpenflexoTestCase {
 	}
 
 	@Test
-	public void test0() {
-		// Temporary desactivated
-		// testFMLCompilationUnit(ResourceLocator.locateResource("FMLExamples/Test0.fml"));
-	}
-
-	/*@Test
 	public void test1() {
-		testFMLCompilationUnit(ResourceLocator.locateResource("FMLExamples/Test1.fml"));
-	}*/
-
-	/*@Test
-	public void test2() {
-		testFMLCompilationUnit(ResourceLocator.locateResource("FMLExamples/Test2.fml"));
-	}*/
+		testFMLCompilationUnit(ResourceLocator.locateResource("NewFMLExamples/Test1.fml"));
+	}
 
 	private static void testFMLCompilationUnit(Resource fileResource) {
 		try {

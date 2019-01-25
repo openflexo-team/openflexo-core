@@ -41,8 +41,7 @@ package org.openflexo.foundation.fml.parser;
 import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.fml.FMLModelFactory;
 import org.openflexo.foundation.fml.VirtualModel;
-import org.openflexo.foundation.fml.parser.node.AModelSlotDeclaration;
-import org.openflexo.foundation.fml.parser.node.AVirtualModelDeclaration;
+import org.openflexo.foundation.fml.parser.node.Node;
 import org.openflexo.pamela.exceptions.ModelDefinitionException;
 
 /**
@@ -53,11 +52,11 @@ import org.openflexo.pamela.exceptions.ModelDefinitionException;
  * @author sylvain
  * 
  */
-class VirtualModelSemanticsAnalyzer extends FMLObjectSemanticsAnalyzer<AVirtualModelDeclaration, VirtualModel> {
+class VirtualModelSemanticsAnalyzer extends FMLObjectSemanticsAnalyzer<Node, VirtualModel> {
 
 	private final FMLModelFactory factory;
 
-	public VirtualModelSemanticsAnalyzer(AVirtualModelDeclaration node, FMLSemanticsAnalyzer parentAnalyser,
+	public VirtualModelSemanticsAnalyzer(Node/*AVirtualModelDeclaration*/ node, FMLSemanticsAnalyzer parentAnalyser,
 			FlexoServiceManager serviceManager) throws ModelDefinitionException {
 		super(node, parentAnalyser, serviceManager);
 		factory = new FMLModelFactory(null, serviceManager);
@@ -74,17 +73,17 @@ class VirtualModelSemanticsAnalyzer extends FMLObjectSemanticsAnalyzer<AVirtualM
 		return vm;
 	}
 
-	@Override
+	/*@Override
 	public void outAVirtualModelDeclaration(AVirtualModelDeclaration node) {
 		defaultOut(node);
 	}
-
+	
 	@Override
 	public void outAModelSlotDeclaration(AModelSlotDeclaration node) {
 		super.outAModelSlotDeclaration(node);
 		System.out.println("******** Tiens, un ModelSlotDeclaration: " + node + " pour le VM " + getNode().getIdentifier());
 		System.out.println("line=" + node.getModelslot().getLine());
 		System.out.println("pos=" + node.getModelslot().getPos());
-
-	}
+	
+	}*/
 }
