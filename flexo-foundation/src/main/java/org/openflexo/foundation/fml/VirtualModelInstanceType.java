@@ -55,12 +55,7 @@ import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
  */
 public class VirtualModelInstanceType extends FlexoConceptInstanceType {
 
-	public static VirtualModelInstanceType UNDEFINED_VIRTUAL_MODEL_INSTANCE_TYPE = new VirtualModelInstanceType((VirtualModel) null) {
-		@Override
-		public String simpleRepresentation() {
-			return "UndefinedVirtualModelInstanceType";
-		}
-	};
+	public static VirtualModelInstanceType UNDEFINED_VIRTUAL_MODEL_INSTANCE_TYPE = new VirtualModelInstanceType((VirtualModel) null);
 
 	public VirtualModelInstanceType(VirtualModel aVirtualModel) {
 		super(aVirtualModel);
@@ -101,6 +96,14 @@ public class VirtualModelInstanceType extends FlexoConceptInstanceType {
 		else {
 			super.resolve(factory);
 		}
+	}
+
+	@Override
+	public String simpleRepresentation() {
+		if (flexoConcept == null) {
+			return "UndefinedVirtualModelInstanceType";
+		}
+		return super.simpleRepresentation();
 	}
 
 	public static VirtualModelInstanceType getVirtualModelInstanceType(VirtualModel aVirtualModel) {

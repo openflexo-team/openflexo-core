@@ -63,12 +63,7 @@ public class FlexoConceptInstanceType implements TechnologySpecificType<FMLTechn
 
 	protected static final Logger logger = FlexoLogger.getLogger(FlexoConceptInstanceType.class.getPackage().getName());
 
-	public static FlexoConceptInstanceType UNDEFINED_FLEXO_CONCEPT_INSTANCE_TYPE = new FlexoConceptInstanceType((FlexoConcept) null) {
-		@Override
-		public String simpleRepresentation() {
-			return "UndefinedFlexoConceptInstanceType";
-		}
-	};
+	public static FlexoConceptInstanceType UNDEFINED_FLEXO_CONCEPT_INSTANCE_TYPE = new FlexoConceptInstanceType((FlexoConcept) null);
 
 	/**
 	 * Factory for FlexoConceptInstanceType instances
@@ -183,8 +178,11 @@ public class FlexoConceptInstanceType implements TechnologySpecificType<FMLTechn
 
 	@Override
 	public String simpleRepresentation() {
+		if (flexoConcept == null) {
+			return "UndefinedFlexoConceptInstanceType";
+		}
 		// IMPORTANT: do not use getFlexoConcept() here, as it may trigger too early type resolution !!!
-		return getClass().getSimpleName() + "<" + (flexoConcept != null ? flexoConcept.getName() : "NotFound:" + conceptURI) + ">";
+		return getClass().getSimpleName() + "<" + flexoConcept.getName() + ">";
 	}
 
 	@Override
