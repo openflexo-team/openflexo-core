@@ -1,1 +1,16 @@
-concept Concept
+/**
+ * First test of a empty model
+ * Test use, import and model declaration
+ */
+
+use org.openflexo.foundation.fml.rt.FMLRTModelSlot as FMLRT;
+use some.package.name.AModelSlot as MS;
+
+import java.lang.String;
+import java.util.List;
+import aClass;
+
+// This is the main declaration
+model MyModel {
+	
+}

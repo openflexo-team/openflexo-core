@@ -175,6 +175,12 @@ Tokens
  //| ['0' .. '9']+ '.' ['0' .. '9']+ 'E' ['0' .. '9']+ 
  //| ['0' .. '9']+ '.' ['0' .. '9']+ 'E' '-' ['0' .. '9']+;
  
+ semi  = ';';
+   l_bkt = '[';
+  l_brc = '{';
+  r_bkt = ']';
+  r_brc = '}';
+ 
    // FML keywords
   model = 'model';
   concept = 'concept';
@@ -222,7 +228,23 @@ Ignored Tokens
 
 Productions
 
-  fml_compilation_unit = concept identifier;
+  fml_compilation_unit = [use_declarations]:use_declaration* [import_declarations]:import_declaration* model_declaration;
+
+//  use_declaration = use [technology_adapter]:identifier [technology_adapter_additional_identifiers]:additional_identifier* as [ta_id]:identifier semi;
+  use_declaration = use [model_slot]:dotted_identifier as [ta_id]:identifier semi;
+
+  import_declaration = import [java_class_name]:dotted_identifier semi;
+
+  model_declaration = model identifier l_brc  r_brc;
+
+  flexo_concept_declaration = concept identifier l_brc r_brc;
+
+  dotted_identifier =
+   {identifier} identifier |
+   {tail} identifier dot dotted_identifier;
+
+//  additional_identifier =
+//    dot identifier;
 
  expr =
   {expr2} expr2 |
