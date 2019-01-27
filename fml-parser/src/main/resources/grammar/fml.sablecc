@@ -183,6 +183,7 @@ Tokens
     use = 'use';
     as = 'as';
     import = 'import';   
+    namespace = 'namespace';   
     extends = 'extends';
 
 	// Literals
@@ -228,22 +229,33 @@ Ignored Tokens
 
 Productions
 
-    fml_compilation_unit = [use_declarations]:use_declaration* [import_declarations]:import_declaration* model_declaration;
+    fml_compilation_unit = [namespace_declaration]:namespace_declaration* [use_declarations]:use_declaration* [import_declarations]:import_declaration* model_declaration;
 
+    namespace_declaration = namespace [string_literal]:string_literal as [ns_id]:identifier semi;
+ 
     use_declaration = use [model_slot]:dotted_identifier as [ta_id]:identifier semi;
 
     import_declaration = 
     	{java_import} import [java_class_name]:dotted_identifier semi |
-    	{uri_import} import [object]:reference_by_uri semi;
+    	{named_java_import} import [java_class_name]:dotted_identifier as [name]:identifier semi |
+    	{uri_import} import [object]:reference_by_uri semi |
+    	{named_uri_import} import [object]:reference_by_uri as [name]:identifier semi;
 
 	reference_by_uri = 
 		{resource} l_bkt [resource]:expr r_bkt |
 		{object_in_resource} l_bkt [resource]:expr colon [object]:expr r_bkt;
 
 
-    model_declaration = [annotations]:annotation* model identifier super? l_brc  r_brc;
+    model_declaration = [annotations]:annotation* model identifier super? l_brc  [inner_model_declaration]:inner_model_declaration* r_brc;
+
+    inner_model_declaration =
+        {concept_declaration} concept_declaration |
+        {inner_concept_declaration} inner_concept_declaration;
 
     concept_declaration = [annotations]:annotation* concept identifier super? l_brc r_brc;
+
+    inner_concept_declaration =
+        {property_declaration} property_declaration;
 
     super =
         extends super_type_list;
@@ -257,6 +269,7 @@ Productions
         {tail} identifier dot dotted_identifier;
 
 	// Annotations
+	
 	annotation =
         {single_annotation}         single_annotation |
         {value_annotation}         value_annotation;
@@ -267,6 +280,10 @@ Productions
     value_annotation =
         at [tag]:dotted_identifier l_par expr r_par;
  
+	// Properties
+	
+	property_declaration = identifier;
+	
 
 	// BEGIN Connie
     expr =
