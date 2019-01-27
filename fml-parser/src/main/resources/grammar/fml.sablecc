@@ -156,7 +156,6 @@ Tokens
     dot = '.';
     comma = ',';
     if_token = '?';
-    else_token = ':';
     pi = 'pi';
     cos = 'cos';
     acos = 'acos';
@@ -170,7 +169,9 @@ Tokens
     true = 'true';
     false = 'false';
  
+    at = '@';
     semi  = ';';
+    colon = ':';
     l_bkt = '[';
     l_brc = '{';
     r_bkt = ']';
@@ -231,20 +232,46 @@ Productions
 
     use_declaration = use [model_slot]:dotted_identifier as [ta_id]:identifier semi;
 
-    import_declaration = import [java_class_name]:dotted_identifier semi;
+    import_declaration = 
+    	{java_import} import [java_class_name]:dotted_identifier semi |
+    	{uri_import} import [object]:reference_by_uri semi;
 
-    model_declaration = model identifier l_brc  r_brc;
+	reference_by_uri = 
+		{resource} l_bkt [resource]:expr r_bkt |
+		{object_in_resource} l_bkt [resource]:expr colon [object]:expr r_bkt;
 
-    concept_declaration = concept identifier l_brc r_brc;
+
+    model_declaration = [annotations]:annotation* model identifier super? l_brc  r_brc;
+
+    concept_declaration = [annotations]:annotation* concept identifier super? l_brc r_brc;
+
+    super =
+        extends super_type_list;
+
+    super_type_list =
+        {one}  dotted_identifier |
+        {many} super_type_list comma dotted_identifier;
 
     dotted_identifier =
         {identifier} identifier |
         {tail} identifier dot dotted_identifier;
 
+	// Annotations
+	annotation =
+        {single_annotation}         single_annotation |
+        {value_annotation}         value_annotation;
+
+    single_annotation =
+        at [tag]:dotted_identifier;
+
+    value_annotation =
+        at [tag]:dotted_identifier l_par expr r_par;
+ 
+
 	// BEGIN Connie
     expr =
         {expr2} expr2 |
-        {cond_expr} [condition]:expr if_token [then]:expr2 else_token [else]:expr2 |
+        {cond_expr} [condition]:expr if_token [then]:expr2 colon [else]:expr2 |
         {eq_expr} [left]:expr eq [right]:expr2 |
         {eq2_expr} [left]:expr eq2 [right]:expr2 |
         {neq_expr} [left]:expr neq [right]:expr2 |

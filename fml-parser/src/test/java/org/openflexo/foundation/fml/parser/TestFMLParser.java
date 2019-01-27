@@ -1,8 +1,8 @@
 /**
  * 
- * Copyright (c) 2014-2015, Openflexo
+ * Copyright (c) 2014, Openflexo
  * 
- * This file is part of Fml-parser, a component of the software infrastructure 
+ * This file is part of Cartoeditor, a component of the software infrastructure 
  * developed at Openflexo.
  * 
  * 
@@ -40,23 +40,62 @@ package org.openflexo.foundation.fml.parser;
 
 import static org.junit.Assert.fail;
 
+import java.util.ArrayList;
+import java.util.Collection;
+
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 import org.openflexo.foundation.test.OpenflexoTestCase;
 import org.openflexo.rm.FileResourceImpl;
 import org.openflexo.rm.Resource;
 import org.openflexo.rm.ResourceLocator;
 
+/**
+ * A parameterized suite of unit tests iterating on FML files, and testing it
+ * 
+ * @author sylvain
+ *
+ */
+@RunWith(Parameterized.class)
 public class TestFMLParser extends OpenflexoTestCase {
+
+	@Parameterized.Parameters(name = "{1}")
+	public static Collection<Object[]> generateData() {
+		final ArrayList<Object[]> list = new ArrayList<Object[]>();
+		final Resource directory = ResourceLocator.locateResource("NewFMLExamples");
+		addToList(list, directory);
+		return list;
+	}
+
+	private static void addToList(final ArrayList<Object[]> list, final Resource directory) {
+		for (Resource f : directory.getContents()) {
+			if (f.getURI().endsWith(".fml")) {
+				final Object[] construcArgs = { f, f.getURI().substring(f.getURI().lastIndexOf("/") + 1) };
+				list.add(construcArgs);
+			}
+			else if (f.isContainer()) {
+				addToList(list, f);
+			}
+		}
+	}
+
+	private final Resource fmlResource;
+
+	public TestFMLParser(Resource fmlResource, String name) {
+		System.out.println("********* TestFMLParser " + fmlResource + " name=" + name);
+		this.fmlResource = fmlResource;
+	}
+
+	@Test
+	public void testResource() {
+		testFMLCompilationUnit(fmlResource);
+	}
 
 	@BeforeClass
 	public static void initServiceManager() {
 		instanciateTestServiceManager();
-	}
-
-	@Test
-	public void test1() {
-		testFMLCompilationUnit(ResourceLocator.locateResource("NewFMLExamples/Test1.fml"));
 	}
 
 	private static void testFMLCompilationUnit(Resource fileResource) {
@@ -67,4 +106,5 @@ public class TestFMLParser extends OpenflexoTestCase {
 			fail();
 		}
 	}
+
 }
