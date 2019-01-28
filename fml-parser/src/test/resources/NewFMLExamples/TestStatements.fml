@@ -1,0 +1,44 @@
+/**
+ * Testing statements
+ */
+
+use org.openflexo.foundation.fml.rt.FMLRTModelSlot as FMLRT;
+
+model MyModel {
+	
+	// Testing assignments
+	testAssignment() {
+		test1 = a.path.to.something;
+		test2 = a+b*c-9;
+		test3 = call(1,"aString",3+3);
+		test4 = a.path.to.something();
+		test5 = a.path.to.something().b;
+		test6 = a.path.to.something().with.some.paths.after;
+		test7 = a.path.to.something().with.some.calls(1,2);
+	}
+	
+	// Testing return
+	// Well, there is here a problem of semantics, we juste test here syntax and parsing...
+	testReturn() {
+		return;
+		return 0;
+		return 1+3;
+		return null;
+	}
+	
+	testNewJavaInstance() {
+		new ArrayList<String>();
+		new ArrayList<>();
+		new HashMap<String,Date>();
+	}
+	
+	testNewVariable() {
+		boolean aFlag;
+		int i = 0;
+		List<String> list;
+		List<String> list2 = new ArrayList<String>();
+	}
+	
+
+
+}
