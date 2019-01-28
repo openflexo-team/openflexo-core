@@ -230,13 +230,8 @@ Tokens
 	// ****************** Primitive types ************************
 	
 	boolean = 'boolean';
-	byte = 'byte';
-	short = 'short';
 	int = 'int';
-	long = 'long';
-	char = 'char';
 	float = 'float';
-	double = 'double';	
 
 	// ********************** Literals ***************************
  
@@ -765,20 +760,9 @@ Productions
         {boolean} boolean;
 
     numeric_type =
-        {integral} integral_type |
-        {floating} floating_point_type;
-
-    integral_type =
-        {byte}  byte |
-        {short} short |
         {int}   int |
-        {long}  long |
-        {char}  char;
-
-    floating_point_type =
-        {float}  float |
-        {double} double;
-
+        {float} float;
+ 
     reference_type =
         [identifier]:identifier [additional_identifiers]:additional_identifier* [args]:type_arguments?;
 
