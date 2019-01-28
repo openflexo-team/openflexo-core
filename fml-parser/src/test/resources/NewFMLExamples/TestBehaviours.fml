@@ -8,7 +8,7 @@ model MyModel {
 	
 	concept ConceptA {
 		
-		/*create: () {  
+		create: () {  
 			i = 1;
 		}
 	
@@ -22,7 +22,7 @@ model MyModel {
 		
 		int action:action2() {
 			//return 0;
-		}*/
+		}
 	}
 
 

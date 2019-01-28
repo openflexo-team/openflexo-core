@@ -284,11 +284,11 @@ Productions
 
     namespace_declaration = namespace [string_literal]:string_literal as [ns_id]:identifier semi;
  
-    use_declaration = use [model_slot]:dotted_identifier as [ta_id]:identifier semi;
+    use_declaration = use [identifier]:identifier [additional_identifiers]:additional_identifier* as [ta_id]:identifier semi;
 
     import_declaration = 
-    	{java_import} import [java_class_name]:dotted_identifier semi |
-    	{named_java_import} import [java_class_name]:dotted_identifier as [name]:identifier semi |
+    	{java_import} import [identifier]:identifier [additional_identifiers]:additional_identifier* semi |
+    	{named_java_import} import [identifier]:identifier [additional_identifiers]:additional_identifier* as [name]:identifier semi |
     	{uri_import} import [object]:reference_by_uri semi |
     	{named_uri_import} import [object]:reference_by_uri as [name]:identifier semi;
 
@@ -317,15 +317,15 @@ Productions
         extends super_type_list;
 
     super_type_list =
-        {one}  dotted_identifier |
-        {many} super_type_list comma dotted_identifier;
+        {one}  [identifier]:identifier [additional_identifiers]:additional_identifier* |
+        {many} super_type_list comma [identifier]:identifier [additional_identifiers]:additional_identifier*;
 
     additional_identifier =
         dot identifier;
 
-    dotted_identifier =
+    /*dotted_identifier =
         {identifier} identifier |
-        {tail} identifier dot dotted_identifier;
+        {tail} identifier dot dotted_identifier;*/
 
 	// ************************ Annotations **************************
 	
@@ -334,10 +334,10 @@ Productions
         {value_annotation}  value_annotation;
 
     single_annotation =
-        at [tag]:dotted_identifier;
+        at [identifier]:identifier [additional_identifiers]:additional_identifier*;
 
     value_annotation =
-        at [tag]:dotted_identifier l_par expression r_par;
+        at [identifier]:identifier [additional_identifiers]:additional_identifier* l_par expression r_par;
  
 	// ********************* Structural properties *******************
 	
@@ -381,6 +381,8 @@ Productions
 	behaviour_declaration = 
 		//{constructor} [annotations]:annotation* visibility? [protocol]:identifier [name]:identifier? colon l_par  r_par flexo_behaviour_body |
 		//{name_only} [annotations]:annotation* visibility? type? colon [name]:identifier l_par  r_par flexo_behaviour_body |
+		{protocol_only} [annotations]:annotation* visibility? type? [protocol]:identifier colon l_par  r_par flexo_behaviour_body |
+		{name_only} [annotations]:annotation* visibility? type? [name]:identifier l_par  r_par flexo_behaviour_body |
 		{name_and_protocol} [annotations]:annotation* visibility? type? [protocol]:identifier colon [name]:identifier l_par  r_par flexo_behaviour_body;
  
     flexo_behaviour_body =
@@ -705,7 +707,7 @@ Productions
    
     type =
         {primitive} primitive_type |
-        {simple} dotted_identifier |
+        {simple} [identifier]:identifier [additional_identifiers]:additional_identifier* |
         {complex} reference_type ;
    
     primitive_type =
@@ -728,7 +730,7 @@ Productions
         {double} double;
 
     reference_type =
-        [identifier]:dotted_identifier [args]:type_arguments?;
+        [identifier]:identifier [additional_identifiers]:additional_identifier* [args]:type_arguments?;
 
  
     // Take care of the following lexical anomaly:
@@ -741,8 +743,8 @@ Productions
 
     type_arguments =
         {gt} lt type_argument_list gt |
-        {shr} [lt1]:lt type_argument_list_head* dotted_identifier [lt2]:lt type_argument_list shr |
-        {ushr} [lt1]:lt [heads1]:type_argument_list_head* [specifier1]:dotted_identifier [lt2]:lt [heads2]:type_argument_list_head* [specifier2]:dotted_identifier [lt3]:lt type_argument_list ushr;
+        {shr} [lt1]:lt type_argument_list_head* [identifier]:identifier [additional_identifiers]:additional_identifier* [lt2]:lt type_argument_list shr |
+        {ushr} [lt1]:lt [heads1]:type_argument_list_head* [specifier1]:identifier [specifier1_additional_identifiers]:additional_identifier* [lt2]:lt [heads2]:type_argument_list_head* [specifier2]:identifier [specifier2_additional_identifiers]:additional_identifier* [lt3]:lt type_argument_list ushr;
 
     type_argument_list =
         type_argument_list_head* type_argument;

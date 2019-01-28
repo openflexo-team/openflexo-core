@@ -51,6 +51,17 @@ model MyModel {
 		abstract ConceptB aConceptB;
 	}
 
+	// Test GetSetProperty
+	concept ConceptC {
+		
+		/*int value {
+			int get:() {
+				return 0;
+			}
+		}*/
+		
+	}
+
 
 
 }
