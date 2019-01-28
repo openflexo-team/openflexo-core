@@ -197,6 +197,7 @@ Tokens
     l_brc = '{';
     r_bkt = ']';
     r_brc = '}';
+   dot_dot_dot = '...';
  
     // FML keywords
     model = 'model';
@@ -334,7 +335,7 @@ Productions
 	property_declaration = primitive_role_declaration;
 	
 	primitive_role_declaration =
-        visibility? type primitive_role_declarators semi;
+        visibility? type cardinality? primitive_role_declarators semi;
 
     primitive_role_declarators =
         {declarator} primitive_role_declarator |
@@ -343,6 +344,13 @@ Productions
     primitive_role_declarator =
         {identifier} identifier |
         {initializer} identifier assign expression;
+
+	cardinality =
+		{with_explicit_bounds} l_bkt [lower]:integer_literal comma [upper]:integer_literal r_bkt |
+		{with_lower_bounds} l_bkt [lower]:integer_literal comma [upper]:star r_bkt |
+		{with_upper_bounds} l_bkt [lower]:star comma [upper]:integer_literal r_bkt |
+		{multiple1} l_bkt [lower]:star comma [upper]:star r_bkt |
+		{multiple2} dot_dot_dot;
 
 	// Behaviours
 	

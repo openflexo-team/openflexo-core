@@ -8,18 +8,25 @@ model MyModel {
 	
 	concept ConceptA {
 		
-	    /*String unStringQuiPeutEtreNull;
-	    String[1,1] projectName;
-	    String[1,*] auMoinsUneValeur;
+		// Following are PrimitiveRole
+	    String unStringQuiPeutEtreNull;
+	    String[1,1] projectName; // A non-null String
+	    String[1,*] atLeastAValue;
 	    String[0,*] yEnAPlusieurs;
 	    String... equivalentToPrevious;
 	    String[2,8] auMoins2AuPlus8;
 	    int titi,tutu,tata;
-	    ConceptB unConceptB;
-	    ConceptB[0,*] pleinDeConceptB;*/
+	    List<ConceptB>[0,*] aJavaListOfConceptB;
 	    
+	    // With a visibility identifier
+	    // Default visibility is public
 	    private String thisPropertyIsPrivate;
-	    private String thisOneIsProtected;
+	    protected String thisOneIsProtected;
+	    public String thisOneIsPublic; // Same as no visibility
+
+	    // Following are FlexoConceptInstanceRole
+	    ConceptB aConceptB;
+	    ConceptB[0,*] someConceptB;
 
 	}
 
