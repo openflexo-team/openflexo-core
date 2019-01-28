@@ -132,52 +132,63 @@ Helpers
 
 Tokens
 
- // operators
+ 	// ********************** Operators ***************************
 
-  amp = '&';
-  amp_amp = '&&';
-  amp_assign = '&=';
-  assign = '=';
-  bar = '|';
-  bar_assign = '|=';
-  bar_bar = '||';
-  caret = '^';
-  caret_assign = '^=';
-  colon = ':';
-  emark = '!';
-  eq = '==';
-  gt = '>';
-  gteq = '>=';
-  lt = '<';
-  lteq = '<=';
-  minus = '-';
-  minus_assign = '-=';
-  minus_minus = '--';
-  neq = '!=';
-  percent = '%';
-  percent_assign = '%=';
-  plus = '+';
-  plus_assign = '+=';
-  plus_plus = '++';
-  qmark = '?';
-  shl = '<<';
-  shl_assign = '<<=';
-  shr = '>>';
-  shr_assign = '>>=';
-  slash = '/';
-  slash_assign = '/=';
-  star = '*';
-  star_assign = '*=';
-  tilde = '~';
-  ushr = '>>>';
-  ushr_assign = '>>>=';
+    amp = '&';
+    amp_amp = '&&';
+    amp_assign = '&=';
+    assign = '=';
+    bar = '|';
+    bar_assign = '|=';
+    bar_bar = '||';
+    caret = '^';
+    caret_assign = '^=';
+    colon = ':';
+    emark = '!';
+    eq = '==';
+    gt = '>';
+    gteq = '>=';
+    lt = '<';
+    lteq = '<=';
+    minus = '-';
+    minus_assign = '-=';
+    minus_minus = '--';
+    neq = '!=';
+    percent = '%';
+    percent_assign = '%=';
+    plus = '+';
+    plus_assign = '+=';
+    plus_plus = '++';
+    qmark = '?';
+    shl = '<<';
+    shl_assign = '<<=';
+    shr = '>>';
+    shr_assign = '>>=';
+    slash = '/';
+    slash_assign = '/=';
+    star = '*';
+    star_assign = '*=';
+    tilde = '~';
+    ushr = '>>>';
+    ushr_assign = '>>>=';
 
+	// ********************** Separators ***************************
 
     dollar = '$';
     l_par = '(';
     r_par = ')';
     dot = '.';
     comma = ',';
+    at = '@';
+    semi  = ';';
+    l_bkt = '[';
+    l_brc = '{';
+    r_bkt = ']';
+    r_brc = '}';
+    dot_dot_dot = '...';
+ 
+	// ********************** Mathematics **************************
+
     pi = 'pi';
     cos = 'cos';
     acos = 'acos';
@@ -188,18 +199,9 @@ Tokens
     log = 'log';
     exp = 'exp';
     sqrt = 'sqrt';
-    true = 'true';
-    false = 'false';
- 
-    at = '@';
-    semi  = ';';
-    l_bkt = '[';
-    l_brc = '{';
-    r_bkt = ']';
-    r_brc = '}';
-   dot_dot_dot = '...';
- 
-    // FML keywords
+    
+	// ********************* FML Keywords ************************
+
     model = 'model';
     concept = 'concept';
     use = 'use';
@@ -214,7 +216,7 @@ Tokens
     protected = 'protected';
     private = 'private';
 
-	// Primitive types
+	// ****************** Primitive types ************************
 	
 	boolean = 'boolean';
 	byte = 'byte';
@@ -225,7 +227,7 @@ Tokens
 	float = 'float';
 	double = 'double';	
 
-	// Literals
+	// ********************** Literals ***************************
  
     string_literal = '"' string_character* '"';
  
@@ -244,6 +246,9 @@ Tokens
 
     null_literal = 'null';
  
+    true = 'true';
+    false = 'false';
+    
     // Take care to define your tokens before that !!!
     
     identifier = java_letter java_letter_or_digit*;
@@ -258,6 +263,8 @@ Tokens
     end_of_line_comment = '//' input_character* line_terminator?;
 
 Ignored Tokens
+
+	// ********************** Ignored ***************************
 
     blank,
     white_space,
