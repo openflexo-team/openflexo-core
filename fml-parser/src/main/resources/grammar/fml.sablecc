@@ -378,7 +378,10 @@ Productions
 
 	// Behaviours
 	
-	behaviour_declaration = [annotations]:annotation* visibility? identifier l_par  r_par flexo_behaviour_body;
+	behaviour_declaration = 
+		//{constructor} [annotations]:annotation* visibility? [protocol]:identifier [name]:identifier? colon l_par  r_par flexo_behaviour_body |
+		//{name_only} [annotations]:annotation* visibility? type? colon [name]:identifier l_par  r_par flexo_behaviour_body |
+		{name_and_protocol} [annotations]:annotation* visibility? type? [protocol]:identifier colon [name]:identifier l_par  r_par flexo_behaviour_body;
  
     flexo_behaviour_body =
      	{block} block |
