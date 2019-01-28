@@ -208,18 +208,21 @@ Tokens
     extends = 'extends';
     instanceof = 'instanceof';
  	new = 'new';
-    super_token = 'super';
+    super = 'super';
+    public = 'public';
+    protected = 'protected';
+    private = 'private';
 
 	// Primitive types
 	
-	   boolean = 'boolean';
-	   byte = 'byte';
-	   short = 'short';
-	   int = 'int';
-	   long = 'long';
-	   char = 'char';
-	   float = 'float';
-	   double = 'double';	
+	boolean = 'boolean';
+	byte = 'byte';
+	short = 'short';
+	int = 'int';
+	long = 'long';
+	char = 'char';
+	float = 'float';
+	double = 'double';	
 
 	// Literals
  
@@ -283,20 +286,24 @@ Productions
 		{resource} l_bkt [resource]:expression r_bkt |
 		{object_in_resource} l_bkt [resource]:expression colon [object]:expression r_bkt;
 
+    visibility =
+        {private}      private |
+        {protected}    protected |
+        {public}       public;
 
-    model_declaration = [annotations]:annotation* model identifier super? l_brc  [inner_model_declaration]:inner_model_declaration* r_brc;
+    model_declaration = [annotations]:annotation* visibility? model identifier super_clause? l_brc  [inner_model_declaration]:inner_model_declaration* r_brc;
 
     inner_model_declaration =
         {concept_declaration} concept_declaration |
         {inner_concept_declaration} inner_concept_declaration;
 
-    concept_declaration = [annotations]:annotation* concept identifier super? l_brc [inner_concept_declaration]:inner_concept_declaration* r_brc;
+    concept_declaration = [annotations]:annotation* visibility? concept identifier super_clause? l_brc [inner_concept_declaration]:inner_concept_declaration* r_brc;
 
     inner_concept_declaration =
         {property_declaration} property_declaration |
         {behaviour_declaration} behaviour_declaration;
 
-    super =
+    super_clause =
         extends super_type_list;
 
     super_type_list =
@@ -324,11 +331,22 @@ Productions
  
 	// ********************* Structural properties *******************
 	
-	property_declaration = identifier;
+	property_declaration = primitive_role_declaration;
 	
+	primitive_role_declaration =
+        visibility? type primitive_role_declarators semi;
+
+    primitive_role_declarators =
+        {declarator} primitive_role_declarator |
+        {declarators} primitive_role_declarators comma primitive_role_declarator;
+
+    primitive_role_declarator =
+        {identifier} identifier |
+        {initializer} identifier assign expression;
+
 	// Behaviours
 	
-	behaviour_declaration = [annotations]:annotation* identifier l_par  r_par flexo_behaviour_body;
+	behaviour_declaration = [annotations]:annotation* visibility? identifier l_par  r_par flexo_behaviour_body;
  
     flexo_behaviour_body =
      	{block} block |
@@ -389,8 +407,8 @@ Productions
     method_invocation =
         {simple}     identifier [additional_identifiers]:additional_identifier* l_par argument_list? r_par |
         {primary}    primary dot /*non_wild_type_arguments?*/ identifier l_par argument_list? r_par; // |
-        // {super}      super_token dot non_wild_type_arguments? identifier l_par argument_list? r_par |
-        // {class_name} [identifier1]:identifier [additional_identifiers]:additional_identifier* [dot1]:dot super_token [dot2]:dot non_wild_type_arguments? [identifier2]:identifier l_par argument_list? r_par |
+        // {super}      super dot non_wild_type_arguments? identifier l_par argument_list? r_par |
+        // {class_name} [identifier1]:identifier [additional_identifiers]:additional_identifier* [dot1]:dot super [dot2]:dot non_wild_type_arguments? [identifier2]:identifier l_par argument_list? r_par |
         // {type_name}  [identifier1]:identifier [additional_identifiers]:additional_identifier* dot non_wild_type_arguments  [identifier2]:identifier l_par argument_list? r_par;
 
     argument_list =
@@ -620,8 +638,8 @@ Productions
 
     field_access =
         {primary} primary dot identifier |
-        {super} super_token dot identifier |
-        {reference_super} [identifier1]:identifier [additional_identifiers]:additional_identifier* [dot1]:dot super_token [dot2]:dot [identifier2]:identifier;
+        {super} super dot identifier |
+        {reference_super} [identifier1]:identifier [additional_identifiers]:additional_identifier* [dot1]:dot super [dot2]:dot [identifier2]:identifier;
 
     literal =
         {integer}        integer_literal |
@@ -650,6 +668,11 @@ Productions
 
 	// ************************* Types *************************
    
+    type =
+        {primitive} primitive_type |
+        {simple} dotted_identifier |
+        {complex} reference_type ;
+   
     primitive_type =
         {numeric} numeric_type |
         {boolean} boolean;
@@ -668,6 +691,40 @@ Productions
     floating_point_type =
         {float}  float |
         {double} double;
+
+    reference_type =
+        [identifier]:dotted_identifier [args]:type_arguments?;
+
+ 
+    // Take care of the following lexical anomaly:
+    //   A<B<C>>  and  A<B<C<D>>>
+    // Notice the '>>' and '>>>" tokens.
+    //
+    // (Instead of)
+    // type_arguments =
+    //     lt type_argument_list gt;
+
+    type_arguments =
+        {gt} lt type_argument_list gt |
+        {shr} [lt1]:lt type_argument_list_head* dotted_identifier [lt2]:lt type_argument_list shr |
+        {ushr} [lt1]:lt [heads1]:type_argument_list_head* [specifier1]:dotted_identifier [lt2]:lt [heads2]:type_argument_list_head* [specifier2]:dotted_identifier [lt3]:lt type_argument_list ushr;
+
+    type_argument_list =
+        type_argument_list_head* type_argument;
+
+    type_argument_list_head =
+        type_argument comma;
+
+    type_argument =
+        {reference} reference_type |
+        {wildcard} wildcard;
+
+    wildcard =
+        qmark wildcard_bounds?;
+
+    wildcard_bounds =
+        {extends} extends reference_type |
+        {super} super reference_type;
 
 // Autres trucs a regarder
 
