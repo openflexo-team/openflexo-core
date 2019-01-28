@@ -30,6 +30,7 @@ model MyModel {
 		new ArrayList<String>();
 		new ArrayList<>();
 		new HashMap<String,Date>();
+		new ArrayList<>((new List<>()).size(),7);
 	}
 	
 	testNewVariable() {
@@ -39,6 +40,45 @@ model MyModel {
 		List<String> list2 = new ArrayList<String>();
 	}
 	
+	testConditionalNoElse() {
+		if (some.condition) {
+			something_todo();
+		}
+	}
+	
+	testConditionalWithElse() {
+		if (some.condition) {
+			something_todo();
+		}
+		else {
+			something_else_todo();
+		}
+	}
+	
+	testWhile() {
+		while (some.condition) {
+			something_todo();
+		}
+	}
 
+	testFor() {
+		for (int i=0; i<10; i++) {
+			something_todo(i);
+		}
+	}
+
+	testEnhancedFor() {
+		List<String> someItems;
+		for (String item : someItems) {
+			something_todo(item);
+		}
+	}
+
+	testEnhancedFor2() {
+		List<String> someItems;
+		for (String item : new ArrayList(someItems)) {
+			something_todo(item);
+		}
+	}
 
 }

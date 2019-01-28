@@ -37,6 +37,12 @@ model MyModel {
 			test9 = call().b.call();
 		}
 		
+		conditionals() {
+			test1 = aTest ? 2 : 7;
+			test2 = aTest ? true : (7 != 8);
+			test3 = a.path.to.something() ? callYes() : callNo();
+		}
+		
 	}
 
 

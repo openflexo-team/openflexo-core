@@ -220,6 +220,11 @@ Tokens
     get = 'get';
     set = 'set';
     return = 'return';
+    if = 'if';
+    then = 'then';
+    else = 'else';
+    while = 'while';
+    for = 'for';
 
 	// ****************** Primitive types ************************
 	
@@ -408,12 +413,11 @@ Productions
     //    {reference} identifier [additional_identifiers]:additional_identifier* [type_components]:type_component* type_arguments? [dims]:dim* variable_declarators;
 
     statement =
-        {no_trail}   statement_without_trailing_substatement /*|
-        {label}      labeled_statement |
+        {no_trail}   statement_without_trailing_substatement |
         {if}         if_then_statement |
         {if_else}    if_then_else_statement |
         {while_loop} while_statement |
-        {for_loop}   for_statement*/;
+        {for_loop}   for_statement;
 
     statement_without_trailing_substatement =
         {block}                  block |
@@ -469,10 +473,55 @@ Productions
         {many_ex} argument_list comma expression |
         {many_id} argument_list comma identifier [additional_identifiers]:additional_identifier*;
 
-    /* non_wild_type_arguments =
-        {gt}   lt reference_type_list gt |
-        {shr}  lt reference_type_list_shr shr |
-        {ushr} lt reference_type_list_ushr ushr;*/
+    if_then_statement =
+        {expression} if l_par expression r_par statement |
+        {identifier} if l_par identifier [additional_identifiers]:additional_identifier* r_par statement;
+
+    if_then_else_statement =
+        {expression} if l_par expression r_par statement_no_short_if else statement |
+        {identifier} if l_par identifier [additional_identifiers]:additional_identifier* r_par statement_no_short_if else statement;
+
+    while_statement =
+        {expression} while l_par expression  r_par statement |
+        {identifier} while l_par identifier [additional_identifiers]:additional_identifier* r_par statement;
+
+    for_statement =
+        {basic_for}    basic_for_statement |
+        {enhanced_for} enhanced_for_statement;
+
+    statement_no_short_if =
+        {statement_without_trailing_substatement} statement_without_trailing_substatement |
+        {if_then_else_statement_no_short_if}      if_then_else_statement_no_short_if |
+        {while_statement_no_short_if}             while_statement_no_short_if |
+        {for_statement_no_short_if}               for_statement_no_short_if;
+
+    if_then_else_statement_no_short_if =
+        {expression} if l_par expression r_par [statement_no_short_if1]:statement_no_short_if else [statement_no_short_if2]:statement_no_short_if |
+        {identifier} if l_par identifier [additional_identifiers]:additional_identifier* r_par [statement_no_short_if1]:statement_no_short_if else [statement_no_short_if2]:statement_no_short_if;
+
+    while_statement_no_short_if =
+        {expression} while l_par expression r_par statement_no_short_if |
+        {identifier} while l_par identifier [additional_identifiers]:additional_identifier* r_par statement_no_short_if;
+
+    for_statement_no_short_if =
+        {empty}      for l_par for_init? [semi1]:semi [semi2]:semi for_update? r_par statement_no_short_if |
+        {expression} for l_par for_init? [semi1]:semi expression [semi2]:semi for_update? r_par statement_no_short_if |
+        {identifier} for l_par for_init? [semi1]:semi identifier [additional_identifiers]:additional_identifier* [semi2]:semi for_update? r_par statement_no_short_if;
+
+    basic_for_statement =
+        {empty}      for l_par for_init? [semi1]:semi [semi2]:semi for_update? r_par statement |
+        {expression} for l_par for_init? [semi1]:semi expression [semi2]:semi for_update? r_par statement |
+        {identifier} for l_par for_init? [semi1]:semi identifier [additional_identifiers]:additional_identifier* [semi2]:semi for_update? r_par statement;
+
+    for_init =
+        {statement}            statement_expression |
+        {variable_declaration} type variable_declarator;
+
+    for_update = statement_expression;
+
+    enhanced_for_statement =
+        {primitive_expression} for l_par type identifier colon expression r_par statement |
+        {primitive_identifier} for l_par type [identifier1]:identifier colon [identifier2]:identifier  [additional_identifiers]:additional_identifier* r_par statement;
 
 	assignment =
         {expression} [left]:left_hand_side assignment_operator [right]:assignment_expression |
@@ -705,19 +754,6 @@ Productions
     boolean_literal =
         {true}  true |
         {false} false;
-
-    /*array_creation_expression =
-        {primitive}             new primitive_type                                                                                               [dim_exprs]:dim_expr+ [dims]:dim* |
-        {reference}             new identifier [additional_identifiers]:additional_identifier* [type_components]:type_component* type_arguments? [dim_exprs]:dim_expr+ [dims]:dim* |
-        {primitive_initializer} new primitive_type                                                                                               [dims]:dim+ array_initializer |
-        {reference_initializer} new identifier [additional_identifiers]:additional_identifier* [type_components]:type_component* type_arguments? [dims]:dim+ array_initializer;
-
-    array_initializer =
-        l_brc variable_initializers? comma? r_brc;
-
-    variable_initializers =
-        {one}                              variable_initializer |
-        {many} variable_initializers comma variable_initializer;*/
 
 	// ************************* Types *************************
    
