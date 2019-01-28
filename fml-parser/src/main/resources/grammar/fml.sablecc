@@ -375,7 +375,7 @@ Productions
     statement_expression semi;
 	
 	  statement_expression =
-    //{assignment}        assignment |
+    {assignment}        assignment |
     {pre_increment}     pre_increment_expression |
     {pre_decrement}     pre_decrement_expression |
     {post_increment}    post_increment_expression |
@@ -383,7 +383,40 @@ Productions
     {method_invocation} method_invocation*/ /*|
     {instance_creation} class_instance_creation_expression*/;
 
-	
+/*  method_invocation =
+    {simple}                   identifier [additional_identifiers]:additional_identifier*                                                                                     l_par argument_list? r_par |
+    {primary}    primary     dot non_wild_type_arguments? identifier                                                                                                          l_par argument_list? r_par |
+    {super}      super_token dot non_wild_type_arguments? identifier                                                                                                          l_par argument_list? r_par |
+    {class_name} [identifier1]:identifier [additional_identifiers]:additional_identifier* [dot1]:dot super_token [dot2]:dot non_wild_type_arguments? [identifier2]:identifier l_par argument_list? r_par |
+    {type_name}  [identifier1]:identifier [additional_identifiers]:additional_identifier*                               dot non_wild_type_arguments  [identifier2]:identifier l_par argument_list? r_par;
+*/
+
+	assignment =
+        {expression} [left]:assignment_expression assignment_operator [right]:assignment_expression |
+        {identifier} [left]:assignment_expression assignment_operator identifier [additional_identifiers]:additional_identifier*;
+
+// Plus utile a priori
+ /*  left_hand_side =
+    {identifier} identifier [additional_identifiers]:additional_identifier* |
+    {field}      field_access |
+    {array}      array_access;
+    */
+
+  assignment_operator =
+    {assign}         assign |
+    {star_assign}    star_assign |
+    {slash_assign}   slash_assign |
+    {percent_assign} percent_assign |
+    {plus_assign}    plus_assign |
+    {minus_assign}   minus_assign |
+    {shl_assign}     shl_assign |
+    {shr_assign}     shr_assign |
+    {ushr_assign}    ushr_assign |
+    {amp_assign}     amp_assign |
+    {caret_assign}   caret_assign |
+    {bar_assign}     bar_assign;
+
+ 
 
 	// Expressions
 	
