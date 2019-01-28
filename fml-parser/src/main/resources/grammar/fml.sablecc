@@ -225,6 +225,7 @@ Tokens
     else = 'else';
     while = 'while';
     for = 'for';
+    do = 'do';
 
 	// ****************** Primitive types ************************
 	
@@ -423,15 +424,8 @@ Productions
         {block}                  block |
         {empty_statement}        empty_statement |
         {expression_statement}   expression_statement |
-        //{assert_statement}       assert_statement |
-        //{switch_statement}       switch_statement |
-        //{do_statement}           do_statement |
-        //{break_statement}        break_statement |
-        //{continue_statement}     continue_statement |
+        {do_statement}           do_statement |
         {return_statement}       return_statement;
-        //{synchronized_statement} synchronized_statement |
-        //{throw_statement}        throw_statement |
-        //{try_statement}          try_statement;
 
     empty_statement =
         semi;
@@ -484,6 +478,10 @@ Productions
     while_statement =
         {expression} while l_par expression  r_par statement |
         {identifier} while l_par identifier [additional_identifiers]:additional_identifier* r_par statement;
+
+    do_statement =
+        {expression} do statement while l_par expression r_par semi |
+        {identifier} do statement while l_par identifier [additional_identifiers]:additional_identifier* r_par semi;
 
     for_statement =
         {basic_for}    basic_for_statement |
