@@ -1,14 +1,14 @@
 /**
- * Testing concepts
+ * Testing structural properties
  */
 
 use org.openflexo.foundation.fml.rt.FMLRTModelSlot as FMLRT;
 
 model MyModel {
 	
+	// Testing PrimitiveRole properties
 	concept ConceptA {
 		
-		// Following are PrimitiveRole
 	    String unStringQuiPeutEtreNull;
 	    String[1,1] projectName; // A non-null String
 	    String[1,*] atLeastAValue;
@@ -23,15 +23,34 @@ model MyModel {
 	    private String thisPropertyIsPrivate;
 	    protected String thisOneIsProtected;
 	    public String thisOneIsPublic; // Same as no visibility
+	}
 
-	    // Following are FlexoConceptInstanceRole
-	    ConceptB aConceptB;
+	// Testing FlexoConceptInstanceRole
+	concept ConceptB {
+
+		ConceptB aConceptB;
 	    ConceptB[0,*] someConceptB;
 
 	}
 
-	concept ConceptB {
+	// Test ExpressionProperty
+	concept ConceptC {
+		
+		int aComputedValue = 0; // This is not an expression property, but a primitive with an init value
+		int aComputedValue values 0; // Always return 0
+		int aComputedValue values a.path.to.a.computed.value; // Compute that path
+		int anOtherComputedValue values a.path().to.a.computed.value(1,2,"foo"); // Compute that path
 	}
+
+	// Test AbstractProperty
+	concept ConceptC {
+		
+		abstract int aValue;
+		public abstract String aString;
+		abstract Map<String,ConceptA> aMap;
+		abstract ConceptB aConceptB;
+	}
+
 
 
 }

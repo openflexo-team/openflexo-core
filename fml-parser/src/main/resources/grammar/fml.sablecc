@@ -215,6 +215,8 @@ Tokens
     public = 'public';
     protected = 'protected';
     private = 'private';
+    values = 'values';
+    abstract = 'abstract';
 
 	// ****************** Primitive types ************************
 	
@@ -299,13 +301,13 @@ Productions
         {protected}    protected |
         {public}       public;
 
-    model_declaration = [annotations]:annotation* visibility? model identifier super_clause? l_brc  [inner_model_declaration]:inner_model_declaration* r_brc;
+    model_declaration = [annotations]:annotation* visibility? abstract? model identifier super_clause? l_brc  [inner_model_declaration]:inner_model_declaration* r_brc;
 
     inner_model_declaration =
         {concept_declaration} concept_declaration |
         {inner_concept_declaration} inner_concept_declaration;
 
-    concept_declaration = [annotations]:annotation* visibility? concept identifier super_clause? l_brc [inner_concept_declaration]:inner_concept_declaration* r_brc;
+    concept_declaration = [annotations]:annotation* visibility? abstract? concept identifier super_clause? l_brc [inner_concept_declaration]:inner_concept_declaration* r_brc;
 
     inner_concept_declaration =
         {property_declaration} property_declaration |
@@ -339,17 +341,20 @@ Productions
  
 	// ********************* Structural properties *******************
 	
-	property_declaration = primitive_role_declaration;
+	property_declaration = 
+		{basic_property}      basic_role_declaration |
+		{abstract_property}   abstract_property_declaration |
+		{expression_property} expression_property_declaration;
 	
-	primitive_role_declaration =
-        visibility? type cardinality? primitive_role_declarators semi;
+	basic_role_declaration =
+        visibility? type cardinality? basic_role_declarators semi;
 
-    primitive_role_declarators =
-        {declarator} primitive_role_declarator |
-        {declarators} primitive_role_declarators comma primitive_role_declarator;
+    basic_role_declarators =
+        {declarator}  basic_role_declarator |
+        {declarators} basic_role_declarators comma basic_role_declarator;
 
-    primitive_role_declarator =
-        {identifier} identifier |
+    basic_role_declarator =
+        {identifier}  identifier |
         {initializer} identifier assign expression;
 
 	cardinality =
@@ -358,6 +363,18 @@ Productions
 		{with_upper_bounds} l_bkt [lower]:star comma [upper]:integer_literal r_bkt |
 		{multiple1} l_bkt [lower]:star comma [upper]:star r_bkt |
 		{multiple2} dot_dot_dot;
+
+	expression_property_declaration =
+        {identifier} visibility? type [identifier]:identifier values [expression_value]:identifier [additional_identifiers]:additional_identifier* semi |
+        {expression} visibility? type [identifier]:identifier values [expression_value]:expression semi;
+
+	abstract_property_declaration =
+        visibility? abstract type abstract_property_declarators semi;
+
+    abstract_property_declarators =
+        {declarator}  identifier |
+        {declarators} abstract_property_declarators comma identifier;
+
 
 	// Behaviours
 	
