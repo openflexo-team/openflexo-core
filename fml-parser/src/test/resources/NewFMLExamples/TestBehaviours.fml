@@ -1,0 +1,21 @@
+/**
+ * Testing concepts
+ */
+
+use org.openflexo.foundation.fml.rt.FMLRTModelSlot as FMLRT;
+
+model MyModel {
+	
+	concept ConceptA {
+		
+		coucou() {	
+		}
+		
+		coucou2() {
+			test++;
+		}
+		
+	}
+
+
+}
