@@ -217,6 +217,9 @@ Tokens
     private = 'private';
     values = 'values';
     abstract = 'abstract';
+    get = 'get';
+    set = 'set';
+    return = 'return';
 
 	// ****************** Primitive types ************************
 	
@@ -323,10 +326,6 @@ Productions
     additional_identifier =
         dot identifier;
 
-    /*dotted_identifier =
-        {identifier} identifier |
-        {tail} identifier dot dotted_identifier;*/
-
 	// ************************ Annotations **************************
 	
 	annotation =
@@ -344,7 +343,8 @@ Productions
 	property_declaration = 
 		{basic_property}      basic_role_declaration |
 		{abstract_property}   abstract_property_declaration |
-		{expression_property} expression_property_declaration;
+		{expression_property} expression_property_declaration |
+		{get_set_property}    get_set_property_declaration;
 	
 	basic_role_declaration =
         visibility? type cardinality? basic_role_declarators semi;
@@ -375,12 +375,16 @@ Productions
         {declarator}  identifier |
         {declarators} abstract_property_declarators comma identifier;
 
+	get_set_property_declaration =
+        visibility? type identifier l_brc get_declaration set_declaration ? r_brc semi;
 
+	get_declaration = type get colon l_par r_par flexo_behaviour_body;
+ 
+	set_declaration = set colon l_par type identifier r_par flexo_behaviour_body;
+ 
 	// Behaviours
 	
 	behaviour_declaration = 
-		//{constructor} [annotations]:annotation* visibility? [protocol]:identifier [name]:identifier? colon l_par  r_par flexo_behaviour_body |
-		//{name_only} [annotations]:annotation* visibility? type? colon [name]:identifier l_par  r_par flexo_behaviour_body |
 		{protocol_only} [annotations]:annotation* visibility? type? [protocol]:identifier colon l_par  r_par flexo_behaviour_body |
 		{name_only} [annotations]:annotation* visibility? type? [name]:identifier l_par  r_par flexo_behaviour_body |
 		{name_and_protocol} [annotations]:annotation* visibility? type? [protocol]:identifier colon [name]:identifier l_par  r_par flexo_behaviour_body;
@@ -415,16 +419,16 @@ Productions
     statement_without_trailing_substatement =
         {block}                  block |
         {empty_statement}        empty_statement |
-        {expression_statement}   expression_statement /*|
-        {assert_statement}       assert_statement |
-        {switch_statement}       switch_statement |
-        {do_statement}           do_statement |
-        {break_statement}        break_statement |
-        {continue_statement}     continue_statement |
-        {return_statement}       return_statement |
-        {synchronized_statement} synchronized_statement |
-        {throw_statement}        throw_statement |
-        {try_statement}          try_statement*/;
+        {expression_statement}   expression_statement |
+        //{assert_statement}       assert_statement |
+        //{switch_statement}       switch_statement |
+        //{do_statement}           do_statement |
+        //{break_statement}        break_statement |
+        //{continue_statement}     continue_statement |
+        {return_statement}       return_statement;
+        //{synchronized_statement} synchronized_statement |
+        //{throw_statement}        throw_statement |
+        //{try_statement}          try_statement;
 
     empty_statement =
         semi;
@@ -447,6 +451,11 @@ Productions
         // {super}      super dot non_wild_type_arguments? identifier l_par argument_list? r_par |
         // {class_name} [identifier1]:identifier [additional_identifiers]:additional_identifier* [dot1]:dot super [dot2]:dot non_wild_type_arguments? [identifier2]:identifier l_par argument_list? r_par |
         // {type_name}  [identifier1]:identifier [additional_identifiers]:additional_identifier* dot non_wild_type_arguments  [identifier2]:identifier l_par argument_list? r_par;
+
+    return_statement =
+        {empty}      return semi |
+        {expression} return expression semi |
+        {identifier} return identifier [additional_identifiers]:additional_identifier* semi;
 
     argument_list =
         {one_ex} expression |

@@ -54,11 +54,31 @@ model MyModel {
 	// Test GetSetProperty
 	concept ConceptC {
 		
-		/*int value {
+		private int internalValue;
+		
+		// A GetProperty
+		int value {
 			int get:() {
-				return 0;
+				return internalValue;
+			}		
+		};
+		
+		// A GetSetProperty
+		int settable_value {
+			int get:() {
+				return internalValue;
 			}
-		}*/
+		
+			set:(int aValue) {
+				internalValue = aValue;
+			}
+		};
+		
+		// More compact syntax
+		int settable_value {
+			int get:() { return internalValue; }		
+			set:(int aValue) { internalValue = aValue; }
+		};
 		
 	}
 
