@@ -13,8 +13,8 @@ model MyModel {
 		test3 = call(1,"aString",3+3);
 		test4 = a.path.to.something();
 		test5 = a.path.to.something().b;
-		test6 = a.path.to.something().with.some.paths.after;
-		test7 = a.path.to.something().with.some.calls(1,2);
+		test6 = a.path.to.something().wiz.some.paths.after;
+		test7 = a.path.to.something().wiz.some.calls(1,2);
 	}
 	
 	// Testing return

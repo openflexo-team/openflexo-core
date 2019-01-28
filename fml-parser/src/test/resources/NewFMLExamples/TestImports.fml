@@ -14,7 +14,7 @@ import ["http://some_uri/AModel.fml"]; // Import FML model addressed by specifie
 import ["http://some_uri/AnOtherModel.fml"] as AnOtherModel; // Import FML model addressed by specified URI
 import ["http://some_uri/AResource":"Toto#13"] as aParticularObjectInResource; 
 import [NS+"AThirdModel.fml"]; // Import FML model addressed by specified URI, 'as' is implicit
-
+import [NS+"AThirdModel.fml":"SomeURI"] as AN_OBJECT;
 
 // This is the main declaration
 model MyModel {

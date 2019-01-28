@@ -186,6 +186,7 @@ Tokens
     r_bkt = ']';
     r_brc = '}';
     dot_dot_dot = '...';
+    colon_colon = '::';
  
 	// ********************** Mathematics **************************
 
@@ -226,6 +227,7 @@ Tokens
     while = 'while';
     for = 'for';
     do = 'do';
+    with = 'with';
 
 	// ****************** Primitive types ************************
 	
@@ -298,7 +300,9 @@ Productions
 
 	reference_by_uri = 
 		{resource} l_bkt [resource]:expression r_bkt |
-		{object_in_resource} l_bkt [resource]:expression colon [object]:expression r_bkt;
+		{object_in_resource} l_bkt [resource]:expression colon [object]:expression r_bkt |
+		{resource_id} l_bkt [identifier]:identifier [additional_identifiers]:additional_identifier* r_bkt |
+		{object_in_resource_id} l_bkt [identifier]:identifier [additional_identifiers]:additional_identifier* colon [object]:expression r_bkt;
 
     visibility =
         {private}      private |
@@ -327,6 +331,16 @@ Productions
     additional_identifier =
         dot identifier;
 
+    qualified_argument_list =
+        {one_ex} [arg_name]:identifier assign expression |
+        {one_id} [arg_name]:identifier assign [identifier]:identifier [additional_identifiers]:additional_identifier* |
+        {many_ex} argument_list comma [arg_name]:identifier assign expression |
+        {many_id} argument_list comma [arg_name]:identifier assign [identifier]:identifier [additional_identifiers]:additional_identifier*;
+
+    fml_parameters = 
+        //{unqualified} l_par argument_list? r_par |
+        {full_qualified} l_par qualified_argument_list? r_par;
+
 	// ************************ Annotations **************************
 	
 	annotation =
@@ -348,7 +362,8 @@ Productions
 		{get_set_property}    get_set_property_declaration;
 	
 	basic_role_declaration =
-        visibility? type cardinality? variable_declarators semi;
+        {java} visibility? type cardinality? variable_declarators semi |
+        {fml} visibility? type cardinality? identifier with [ta_id]:identifier colon_colon [role]:identifier fml_parameters? semi;
 
     variable_declarators =
         {declarator}  variable_declarator |
@@ -386,9 +401,9 @@ Productions
 	// Behaviours
 	
 	behaviour_declaration = 
-		{protocol_only} [annotations]:annotation* visibility? type? [protocol]:identifier colon l_par  r_par flexo_behaviour_body |
+		{protocol_only} [annotations]:annotation* visibility? type? [protocol]:identifier fml_parameters? colon l_par  r_par flexo_behaviour_body |
 		{name_only} [annotations]:annotation* visibility? type? [name]:identifier l_par  r_par flexo_behaviour_body |
-		{name_and_protocol} [annotations]:annotation* visibility? type? [protocol]:identifier colon [name]:identifier l_par  r_par flexo_behaviour_body;
+		{name_and_protocol} [annotations]:annotation* visibility? type? [protocol]:identifier fml_parameters? colon [name]:identifier l_par  r_par flexo_behaviour_body;
  
     flexo_behaviour_body =
      	{block} block |

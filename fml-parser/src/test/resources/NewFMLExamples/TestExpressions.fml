@@ -32,8 +32,8 @@ model MyModel {
 			test4 = call(1,"aString",3+3);
 			test5 = a.path.to.something();
 			test6 = a.path.to.something().b;
-			test7 = a.path.to.something().with.some.paths.after;
-			test8 = a.path.to.something().with.some.calls(1,2);
+			test7 = a.path.to.something().wiz.some.paths.after;
+			test8 = a.path.to.something().wiz.some.calls(1,2);
 			test9 = call().b.call();
 		}
 		
