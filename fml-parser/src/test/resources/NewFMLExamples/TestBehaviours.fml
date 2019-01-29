@@ -5,28 +5,33 @@
 use org.openflexo.foundation.fml.rt.FMLRTModelSlot as FMLRT;
 
 model MyModel {
-	
+
+	/**
+	 * Some default behaviours
+	 */
 	concept ConceptA {
-		
+
+		int i;
+
 		// This is the default constructor for that concept
 		// We don't need to supply a name (forbidden if multiple constructors)
-		create: () {  
+		create () {  
 			i = 1;
 		}
-	
-	    // This is the default destructor for that concept
-	    // We don't need to supply a name (forbidden if multiple destructors)
-		delete: () {
+
+		// This is the default destructor for that concept
+		// We don't need to supply a name (forbidden if multiple destructors)
+		delete () {
 			i = 0;
 		}
 
-		// An action (basic behaviour), implicit protocol is 'action:'
+		// An action (basic behaviour)
 		int action1() {
 			return 0;
 		}
-		
-		// An action with protocol supplied (not required)
-		int action:action2() {
+
+		// Another action
+	    void action2() {
 			return 0;
 		}
 
@@ -38,6 +43,77 @@ model MyModel {
 		// An action with a visibility modifier
 		protected int action4() {
 			return 0;
+		}
+
+	}
+
+	/**
+	 * Multiple constructors and destructors
+	 */
+	concept ConceptB {
+
+		int i;
+
+		// A first constructor for that concept
+		create::constructor1 () {  
+			i = 1;
+		}
+
+		// Another constructor for that concept
+		create::constructor2 () {  
+			i = 2;
+		}
+
+		// A first destructor for that concept
+		delete::delete1 () {
+			i = 0;
+		}
+
+		// Another destructor for that concept
+		delete::delete2 () {
+			i = -1;
+		}
+
+	}
+
+	/**
+	 * An example of event listener
+	 */
+	concept ConceptC {
+
+		int n = -1;
+
+		listen container.anObject receive(NodeAdded event) {
+			
+		}
+		
+		listen container.evaluate_a_function() receive(NodeAdded event) {
+			
+		}
+		
+	}
+
+	Diagram diagram with DIAGRAM::TypedDiagramModelSlot(templateDiagram = DIAGRAM_SPECIFICATION);	
+
+	/**
+	 * Some technology-specific behaviours
+	 */
+	concept ConceptD {
+
+		// Pointing DropScheme in Diagram technology adapter
+		dropNewConcept(String name) with DIAGRAM::drop(target=topLevel) {
+		}
+
+		// No need to specify technology adapter model slot, as it is not ambigous
+		dropNewConcept(String name) with drop(target=topLevel) {
+		}
+
+		// Pointing LinkScheme in Diagram technology adapter
+		linkConcepts() with DIAGRAM::link(fromTarget=MyConceptGR,toTarget=MyConceptGR) {
+		}
+		
+		// No need to specify technology adapter model slot, as it is not ambigous
+		linkConcepts() with link(fromTarget=MyConceptGR,toTarget=MyConceptGR) {
 		}
 		
 	}

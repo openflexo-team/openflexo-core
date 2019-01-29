@@ -212,6 +212,8 @@ Tokens
     extends = 'extends';
     instanceof = 'instanceof';
  	new = 'new';
+ 	create = 'create';
+ 	delete = 'delete';
     super = 'super';
     public = 'public';
     protected = 'protected';
@@ -228,12 +230,15 @@ Tokens
     for = 'for';
     do = 'do';
     with = 'with';
+    listen = 'listen';
+    receive = 'receive';
 
 	// ****************** Primitive types ************************
 	
 	boolean = 'boolean';
 	int = 'int';
 	float = 'float';
+	void = 'void';
 
 	// ********************** Literals ***************************
  
@@ -363,7 +368,8 @@ Productions
 	
 	basic_role_declaration =
         {java} visibility? type cardinality? variable_declarators semi |
-        {fml} visibility? type cardinality? identifier with [ta_id]:identifier colon_colon [role]:identifier fml_parameters? semi;
+        {fml} visibility? type cardinality? identifier with [role]:identifier fml_parameters? semi |
+        {fml_fully_qualified} visibility? type cardinality? identifier with [ta_id]:identifier colon_colon [role]:identifier fml_parameters? semi;
 
     variable_declarators =
         {declarator}  variable_declarator |
@@ -398,12 +404,31 @@ Productions
  
 	set_declaration = set colon l_par type identifier r_par flexo_behaviour_body;
  
-	// Behaviours
+	// ********************* Behaviours *******************
 	
 	behaviour_declaration = 
-		{protocol_only} [annotations]:annotation* visibility? type? [protocol]:identifier fml_parameters? colon l_par  r_par flexo_behaviour_body |
-		{name_only} [annotations]:annotation* visibility? type? [name]:identifier l_par  r_par flexo_behaviour_body |
-		{name_and_protocol} [annotations]:annotation* visibility? type? [protocol]:identifier fml_parameters? colon [name]:identifier l_par  r_par flexo_behaviour_body;
+		{anonymous_constructor} [annotations]:annotation* visibility? create l_par formal_arguments_list? r_par flexo_behaviour_body |
+		{named_constructor} [annotations]:annotation* visibility? create colon_colon [name]:identifier l_par formal_arguments_list? r_par flexo_behaviour_body |
+		{anonymous_destructor} [annotations]:annotation* visibility? delete l_par formal_arguments_list? r_par flexo_behaviour_body |
+		{named_destructor} [annotations]:annotation* visibility? delete colon_colon [name]:identifier l_par formal_arguments_list? r_par flexo_behaviour_body |
+		{method} [annotations]:annotation* visibility? type? [name]:identifier l_par formal_arguments_list? r_par flexo_behaviour_body |
+		{listener_id} [annotations]:annotation* listen [listened_identifier]:identifier [listened_additional_identifiers]:additional_identifier* receive l_par [event_type_identifier]:identifier [event_type_additional_identifiers]:additional_identifier* [event_name]:identifier r_par flexo_behaviour_body |
+		{listener_expr} [annotations]:annotation* listen [listened]:expression receive l_par [event_type_identifier]:identifier [event_type_additional_identifiers]:additional_identifier* [event_name]:identifier r_par flexo_behaviour_body |
+		{fml} [annotations]:annotation* visibility? type? [name]:identifier l_par formal_arguments_list? r_par with [behaviour]:identifier fml_parameters? flexo_behaviour_body |
+		{fml_fully_qualified} [annotations]:annotation* visibility? type? [name]:identifier l_par formal_arguments_list? r_par with [ta_id]:identifier colon_colon [behaviour]:identifier fml_parameters? flexo_behaviour_body;
+
+		//{protocol_only} [annotations]:annotation* visibility? type? [protocol]:identifier fml_parameters? colon l_par formal_arguments_list? r_par flexo_behaviour_body |
+		//{name_only} [annotations]:annotation* visibility? type? [name]:identifier l_par formal_arguments_list? r_par flexo_behaviour_body |
+		//{name_and_protocol} [annotations]:annotation* visibility? type? [protocol]:identifier fml_parameters? colon [name]:identifier l_par formal_arguments_list? r_par flexo_behaviour_body;
+ 
+    formal_arguments_list =
+        {one}  formal_argument |
+        {many} formal_arguments_list comma formal_argument;
+  
+    formal_argument =
+        {primitive} primitive_type [arg_name]:identifier |
+        {simple} [identifier]:identifier [additional_identifiers]:additional_identifier* [arg_name]:identifier |
+        {complex} reference_type [arg_name]:identifier;
  
     flexo_behaviour_body =
      	{block} block |
@@ -768,7 +793,8 @@ Productions
     type =
         {primitive} primitive_type |
         {simple} [identifier]:identifier [additional_identifiers]:additional_identifier* |
-        {complex} reference_type ;
+        {complex} reference_type |
+        {void} void;
    
     primitive_type =
         {numeric} numeric_type |

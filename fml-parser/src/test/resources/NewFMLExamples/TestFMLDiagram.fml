@@ -12,8 +12,7 @@ import [EXAMPLE_DIAGRAM:"SYL_78"] as BLUE_ARC;
 
 model MyModel {
 	
-	Diagram diagram with DIAGRAM::TypedDiagramModelSlot(templateDiagram = aDiagSpecification);
-	
+	Diagram diagram with DIAGRAM::TypedDiagramModelSlot(templateDiagram = DIAGRAM_SPECIFICATION);	
 	ConceptualModel conceptualModel;
 	
 	concept MyConceptGR {
@@ -25,17 +24,17 @@ model MyModel {
 		);
 		
 		// DropScheme
-		drop(target=topLevel): (/*String name*/) {
-			//myConcept = new MyConcept:init(name);
-			//shape = DIAGRAM:AddShape(container=topLevel) in diagram;
+		dropNewConcept(String name) with drop(target=topLevel) {
+			//myConcept = new MyConcept::init(name);
+			//shape = DIAGRAM::AddShape(container=topLevel) in diagram;
 		}
 		
-		delete:deleteConcept() {
+		delete::deleteConcept() {
 			//delete myConcept;
 			//delete shape;
 		}
 		
-		delete:removeFromDiagram() {
+		delete::removeFromDiagram() {
 			myConcept = null;
 			//delete shape;
 		}
@@ -46,16 +45,20 @@ model MyModel {
 		MyConceptGR from;
 		MyConceptGR to;
 		DiagramConnector connector with DIAGRAM::ConnectorRole (
-				metaModelElement = BLUE_ARC,
-				label = "connected with"
+			metaModelElement = BLUE_ARC,
+			label = "connected with"
 		);
 		
 		// LinkScheme
-		link(fromTarget=MyConceptGR,toTarget=MyConceptGR): () {
+		linkConcepts() with link(fromTarget=MyConceptGR,toTarget=MyConceptGR) {
 			from = fromTarget;
 			to = toTarget;
-			fromTarget.myConcept.connectedWith = toTarget.myConcept;
+			performLink(fromTarget.myConcept,toTarget.myConcept);
 			//connector = DIAGRAM:AddConnector(fromShape=from.shape,toShape=to.shape) in diagram;
+		}
+		
+		performLink(MyConcept from, MyConcept to) {
+			from.connectedWith = to;			
 		}
 		
 	}
