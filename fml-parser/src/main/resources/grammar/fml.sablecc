@@ -230,6 +230,9 @@ Tokens
     for = 'for';
     do = 'do';
     with = 'with';
+    in = 'in';
+    from = 'from';
+    select = 'select';
     listen = 'listen';
     receive = 'receive';
 
@@ -469,14 +472,15 @@ Productions
         statement_expression semi;
 	
 	statement_expression =
-        {assignment}        assignment |
-        {pre_increment}     pre_increment_expression |
-        {pre_decrement}     pre_decrement_expression |
-        {post_increment}    post_increment_expression |
-        {post_decrement}    post_decrement_expression |
-        {method_invocation} method_invocation |
+        {assignment}             assignment |
+        {pre_increment}          pre_increment_expression |
+        {pre_decrement}          pre_decrement_expression |
+        {post_increment}         post_increment_expression |
+        {post_decrement}         post_decrement_expression |
+        {method_invocation}      method_invocation |
         {java_instance_creation} class_instance_creation_expression |
-        {fml_instance_creation} concept_instance_creation_expression;
+        {fml_instance_creation}  concept_instance_creation_expression |
+        {ta_edition_action}      technology_specific_edition_expression;
 
     method_invocation =
         {simple}     identifier [additional_identifiers]:additional_identifier* l_par argument_list? r_par |
@@ -486,11 +490,22 @@ Productions
         // {type_name}  [identifier1]:identifier [additional_identifiers]:additional_identifier* dot non_wild_type_arguments  [identifier2]:identifier l_par argument_list? r_par;
 
     class_instance_creation_expression =
-        {new} new identifier [additional_identifiers]:additional_identifier* type_arguments_or_diamond? l_par argument_list? r_par;
+        new identifier [additional_identifiers]:additional_identifier* type_arguments_or_diamond? l_par argument_list? r_par;
 		
     concept_instance_creation_expression =
-        {new} new [concept_name]:identifier colon_colon [constructor_name]:identifier l_par argument_list? r_par;
+        new [concept_name]:identifier colon_colon [constructor_name]:identifier l_par argument_list? r_par;
 		
+    technology_specific_edition_expression =
+       [ta_id]:identifier colon_colon [role]:identifier fml_parameters? in_clause? from_clause?;
+	
+	in_clause = 
+       {expression} in l_par expression r_par |
+       {identifier} in l_par identifier [additional_identifiers]:additional_identifier* r_par;
+	
+	from_clause = 
+       {expression} from l_par expression r_par |
+       {identifier} from l_par identifier [additional_identifiers]:additional_identifier* r_par;
+	
     type_arguments_or_diamond =
         {type_arguments} type_arguments |
         {diamond} lt gt;
@@ -758,18 +773,19 @@ Productions
         {identifier} identifier [additional_identifiers]:additional_identifier* minus_minus;
 
     primary =
-        {literal}    literal |
+        {literal}                literal |
         //   {primitive}  primitive_type                                             [dims]:dim* dot class_token |
         //   {reference}  identifier [additional_identifiers]:additional_identifier* [dims]:dim* dot class_token |
         //   {void}       void dot class_token |
         //   {this}       this |
         //   {class}      identifier [additional_identifiers]:additional_identifier* dot this |
-        {expression} l_par expression                                                 r_par |
-        {identifier} l_par identifier [additional_identifiers]:additional_identifier* r_par |
-        {field}      field_access |
-        {method}     method_invocation |
+        {expression}             l_par expression                                                 r_par |
+        {identifier}             l_par identifier [additional_identifiers]:additional_identifier* r_par |
+        {field}                  field_access |
+        {method}                 method_invocation |
         {java_instance_creation} class_instance_creation_expression |
-        {fml_instance_creation} concept_instance_creation_expression/*|
+        {fml_instance_creation}  concept_instance_creation_expression |
+        {ta_edition_action}      technology_specific_edition_expression /*|
         {array}      array_access*/;
 
     field_access =

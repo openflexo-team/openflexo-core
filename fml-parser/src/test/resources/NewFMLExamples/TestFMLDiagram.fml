@@ -26,7 +26,7 @@ model MyModel {
 		// DropScheme
 		dropNewConcept(String name) with drop(target=topLevel) {
 			myConcept = new MyConcept::init(name);
-			shape = DIAGRAM::AddShape(container=topLevel) in diagram;
+			shape = DIAGRAM::AddShape(container=topLevel) in (diagram);
 		}
 		
 		delete::deleteConcept() {
@@ -42,8 +42,8 @@ model MyModel {
 	
 	concept LinkGR {
 		
-		MyConceptGR from;
-		MyConceptGR to;
+		MyConceptGR fromGR;
+		MyConceptGR toGR;
 		DiagramConnector connector with DIAGRAM::ConnectorRole (
 			metaModelElement = BLUE_ARC,
 			label = "connected with"
@@ -51,14 +51,14 @@ model MyModel {
 		
 		// LinkScheme
 		linkConcepts() with link(fromTarget=MyConceptGR,toTarget=MyConceptGR) {
-			from = fromTarget;
-			to = toTarget;
+			fromGR = fromTarget;
+			toGR = toTarget;
 			performLink(fromTarget.myConcept,toTarget.myConcept);
-			//connector = DIAGRAM:AddConnector(fromShape=from.shape,toShape=to.shape) in diagram;
+			connector = DIAGRAM::AddConnector(fromShape=fromGR.shape,toShape=toGR.shape) in (diagram);
 		}
 		
-		performLink(MyConcept from, MyConcept to) {
-			from.connectedWith = to;			
+		performLink(MyConcept fromConcept, MyConcept toConcept) {
+			fromConcept.connectedWith = toConcept;			
 		}
 		
 	}

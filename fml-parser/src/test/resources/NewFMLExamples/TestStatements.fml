@@ -26,19 +26,24 @@ model MyModel {
 		return null;
 	}
 	
-	testNewJavaInstance() {
-		new ArrayList<String>();
-		new ArrayList<>();
-		new HashMap<String,Date>();
-		new ArrayList<>((new List<>()).size(),7);
-	}
-	
 	testNewVariable() {
 		boolean aFlag;
 		int i = 0;
 		List<String> list;
 		List<String> list2 = new ArrayList<String>();
 	}
+	
+	testNewJavaInstance() {
+		new ArrayList<String>();
+		new ArrayList<>();
+		new HashMap<String,Date>();
+		new ArrayList<>((new List<>()).size(),7);
+
+		List<String> l1 = new ArrayList<String>();
+		List<String> l2 = new ArrayList<>();
+		Map<?,?> m1 = new HashMap<String,Date>();
+		List<String> l3 = new ArrayList<>((new List<>()).size(),7);
+    }
 	
 	testConditionalNoElse() {
 		if (some.condition) {
@@ -87,5 +92,15 @@ model MyModel {
 			something_todo(item);
 		}
 	}
+	
+	testNewConceptInstance() {
+		new MyConcept::init(name);
+		MyConcept myConcept = new MyConcept::init(name);
+   }
+
+	testTAEditionAction() {
+		DIAGRAM::AddShape(container=topLevel) in (diagram);
+		shape = DIAGRAM::AddShape(container=topLevel) in (diagram);
+   }
 
 }
