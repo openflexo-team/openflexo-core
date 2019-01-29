@@ -475,7 +475,8 @@ Productions
         {post_increment}    post_increment_expression |
         {post_decrement}    post_decrement_expression |
         {method_invocation} method_invocation |
-        {instance_creation} class_instance_creation_expression;
+        {java_instance_creation} class_instance_creation_expression |
+        {fml_instance_creation} concept_instance_creation_expression;
 
     method_invocation =
         {simple}     identifier [additional_identifiers]:additional_identifier* l_par argument_list? r_par |
@@ -486,6 +487,9 @@ Productions
 
     class_instance_creation_expression =
         {new} new identifier [additional_identifiers]:additional_identifier* type_arguments_or_diamond? l_par argument_list? r_par;
+		
+    concept_instance_creation_expression =
+        {new} new [concept_name]:identifier colon_colon [constructor_name]:identifier l_par argument_list? r_par;
 		
     type_arguments_or_diamond =
         {type_arguments} type_arguments |
@@ -754,10 +758,6 @@ Productions
         {identifier} identifier [additional_identifiers]:additional_identifier* minus_minus;
 
     primary =
-        {no_array} primary_no_new_array /*|
-        {array}    array_creation_expression*/;
-
-    primary_no_new_array =
         {literal}    literal |
         //   {primitive}  primitive_type                                             [dims]:dim* dot class_token |
         //   {reference}  identifier [additional_identifiers]:additional_identifier* [dims]:dim* dot class_token |
@@ -768,7 +768,8 @@ Productions
         {identifier} l_par identifier [additional_identifiers]:additional_identifier* r_par |
         {field}      field_access |
         {method}     method_invocation |
-        {instance_creation} class_instance_creation_expression/*|
+        {java_instance_creation} class_instance_creation_expression |
+        {fml_instance_creation} concept_instance_creation_expression/*|
         {array}      array_access*/;
 
     field_access =
