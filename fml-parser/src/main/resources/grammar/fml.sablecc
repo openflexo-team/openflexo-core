@@ -233,6 +233,7 @@ Tokens
     in = 'in';
     from = 'from';
     select = 'select';
+    where = 'where';
     listen = 'listen';
     receive = 'receive';
 
@@ -481,7 +482,8 @@ Productions
         {java_instance_creation} class_instance_creation_expression |
         {fml_instance_creation}  concept_instance_creation_expression |
         {ta_edition_action}      technology_specific_edition_expression |
-        {delete_action}          delete_action_expression ;
+        {delete_action}          delete_action_expression |
+        {select_action}          select_expression;
 
     method_invocation =
         {simple}     identifier [additional_identifiers]:additional_identifier* l_par argument_list? r_par |
@@ -503,13 +505,19 @@ Productions
         {expression} delete l_par expression r_par from_clause? |
         {identifier} delete l_par identifier [additional_identifiers]:additional_identifier* r_par from_clause?;
 	
+    select_expression =
+    	select [concept_name]:identifier from_clause where_clause?;
+	
 	in_clause = 
-       {expression} in l_par expression r_par |
-       {identifier} in l_par identifier [additional_identifiers]:additional_identifier* r_par;
+        {expression} in l_par expression r_par |
+        {identifier} in l_par identifier [additional_identifiers]:additional_identifier* r_par;
 	
 	from_clause = 
-       {expression} from l_par expression r_par |
-       {identifier} from l_par identifier [additional_identifiers]:additional_identifier* r_par;
+        {expression} from l_par expression r_par |
+        {identifier} from l_par identifier [additional_identifiers]:additional_identifier* r_par;
+	
+	where_clause = 
+        where l_par argument_list? r_par;
 	
     type_arguments_or_diamond =
         {type_arguments} type_arguments |
@@ -791,7 +799,8 @@ Productions
         {java_instance_creation} class_instance_creation_expression |
         {fml_instance_creation}  concept_instance_creation_expression |
         {ta_edition_action}      technology_specific_edition_expression |
-        {delete_action}          delete_action_expression /*|
+        {delete_action}          delete_action_expression |
+        {select_action}          select_expression/*|
         {array}      array_access*/;
 
     field_access =

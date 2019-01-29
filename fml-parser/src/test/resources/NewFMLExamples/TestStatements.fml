@@ -109,4 +109,13 @@ model MyModel {
 		Object objectBeeingDelete = delete (path_to_an_object_to_delete(1,2));
    }
 
+	testSelect() {
+		// A basic selection
+		select MyConcept from (container) where (selected.index > 0, selected.name != null);
+		// A selection embedded in a loop
+		for (MyConcept myConcept : select MyConcept from (container) where (selected.index > 0, selected.name != null)) {
+			myConcept.doSomething();
+		}
+   }
+
 }
