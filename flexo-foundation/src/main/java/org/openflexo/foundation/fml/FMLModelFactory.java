@@ -59,6 +59,7 @@ import org.openflexo.foundation.fml.controlgraph.IncrementalIterationAction;
 import org.openflexo.foundation.fml.controlgraph.IterationAction;
 import org.openflexo.foundation.fml.controlgraph.Sequence;
 import org.openflexo.foundation.fml.controlgraph.WhileAction;
+import org.openflexo.foundation.fml.editionaction.AbstractFetchRequest;
 import org.openflexo.foundation.fml.editionaction.AddClassInstance;
 import org.openflexo.foundation.fml.editionaction.AddToListAction;
 import org.openflexo.foundation.fml.editionaction.AssignableAction;
@@ -67,7 +68,6 @@ import org.openflexo.foundation.fml.editionaction.DeclarationAction;
 import org.openflexo.foundation.fml.editionaction.DeleteAction;
 import org.openflexo.foundation.fml.editionaction.EditionAction;
 import org.openflexo.foundation.fml.editionaction.ExpressionAction;
-import org.openflexo.foundation.fml.editionaction.AbstractFetchRequest;
 import org.openflexo.foundation.fml.editionaction.FetchRequestCondition;
 import org.openflexo.foundation.fml.editionaction.LogAction;
 import org.openflexo.foundation.fml.editionaction.NotifyProgressAction;
@@ -206,7 +206,7 @@ public class FMLModelFactory extends ModelFactory implements PamelaResourceModel
 	 */
 	public static List<Class<?>> retrieveTechnologySpecificClasses(TechnologyAdapterService taService) throws ModelDefinitionException {
 		List<Class<?>> classes = new ArrayList<>();
-		classes.add(VirtualModel.class);
+		classes.add(FMLCompilationUnit.class);
 		for (TechnologyAdapter<?> ta : taService.getTechnologyAdapters()) {
 			for (Class<? extends ModelSlot<?>> modelSlotClass : new ArrayList<>(ta.getAvailableModelSlotTypes())) {
 				retrieveTechnologySpecificClassesForModelSlot(modelSlotClass, classes);
@@ -264,18 +264,9 @@ public class FMLModelFactory extends ModelFactory implements PamelaResourceModel
 		}
 	}
 
-	/**
-	 * Iterate on all defined {@link TechnologyAdapter} to extract classes to expose being involved in technology adapter as VirtualModel
-	 * parts, and return a newly created ModelContext dedicated to {@link VirtualModel} manipulations
-	 * 
-	 * @param taService
-	 * @return
-	 * @throws ModelDefinitionException
-	 */
-	/*private static ModelContext computeModelContext(TechnologyAdapterService taService) throws ModelDefinitionException {
-		List<Class<?>> classes = retrieveTechnologySpecificClasses(taService);
-		return ModelContextLibrary.getCompoundModelContext(classes.toArray(new Class<?>[classes.size()]));
-	}*/
+	public FMLCompilationUnit newCompilationUnit() {
+		return newInstance(FMLCompilationUnit.class);
+	}
 
 	public VirtualModel newVirtualModel() {
 		return newInstance(VirtualModel.class);

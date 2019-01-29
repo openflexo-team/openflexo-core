@@ -47,7 +47,10 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
+import org.openflexo.foundation.fml.FMLCompilationUnit;
+import org.openflexo.foundation.fml.FMLModelFactory;
 import org.openflexo.foundation.test.OpenflexoTestCase;
+import org.openflexo.pamela.exceptions.ModelDefinitionException;
 import org.openflexo.rm.FileResourceImpl;
 import org.openflexo.rm.Resource;
 import org.openflexo.rm.ResourceLocator;
@@ -89,7 +92,7 @@ public class TestFMLParser extends OpenflexoTestCase {
 	}
 
 	@Test
-	public void testResource() {
+	public void testResource() throws ModelDefinitionException {
 		testFMLCompilationUnit(fmlResource);
 	}
 
@@ -98,9 +101,11 @@ public class TestFMLParser extends OpenflexoTestCase {
 		instanciateTestServiceManager();
 	}
 
-	private static void testFMLCompilationUnit(Resource fileResource) {
+	private static void testFMLCompilationUnit(Resource fileResource) throws ModelDefinitionException {
 		try {
-			FMLParser.parse(((FileResourceImpl) fileResource).getFile(), serviceManager);
+			FMLCompilationUnit compilationUnit = FMLParser.parse(((FileResourceImpl) fileResource).getFile(),
+					new FMLModelFactory(null, serviceManager));
+			System.out.println("virtualModel=" + compilationUnit.getVirtualModel().getFMLRepresentation());
 		} catch (ParseException e) {
 			e.printStackTrace();
 			fail();

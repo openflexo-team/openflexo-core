@@ -38,6 +38,32 @@
 
 package org.openflexo.foundation.fml.parser;
 
-public class FMLCompilationUnit {
+import org.openflexo.foundation.fml.FlexoConcept;
+import org.openflexo.foundation.fml.parser.node.AConceptDeclaration;
+
+/**
+ * @author sylvain
+ * 
+ */
+public class FlexoConceptNode extends FMLObjectNode<AConceptDeclaration, FlexoConcept> {
+
+	public FlexoConceptNode(AConceptDeclaration astNode, FMLSemanticsAnalyzer analyser) {
+		super(astNode, analyser);
+	}
+
+	@Override
+	public FlexoConcept makeFMLObject() {
+		FlexoConcept returned = getFactory().newFlexoConcept();
+		returned.setName(getASTNode().getIdentifier().getText());
+		return returned;
+	}
+
+	@Override
+	public FlexoConceptNode deserialize() {
+		if (getParent() instanceof VirtualModelNode) {
+			((VirtualModelNode) getParent()).getFMLObject().addToFlexoConcepts(getFMLObject());
+		}
+		return this;
+	}
 
 }

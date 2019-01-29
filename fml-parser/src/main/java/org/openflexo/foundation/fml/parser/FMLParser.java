@@ -44,7 +44,8 @@ import java.io.FileReader;
 import java.io.PushbackReader;
 import java.util.logging.Logger;
 
-import org.openflexo.foundation.FlexoServiceManager;
+import org.openflexo.foundation.fml.FMLCompilationUnit;
+import org.openflexo.foundation.fml.FMLModelFactory;
 import org.openflexo.foundation.fml.parser.lexer.Lexer;
 import org.openflexo.foundation.fml.parser.node.Start;
 import org.openflexo.foundation.fml.parser.parser.Parser;
@@ -72,7 +73,7 @@ public class FMLParser {
 	 * @throws ParseException
 	 *             if expression was not parsable
 	 */
-	public static FMLCompilationUnit parse(File inputFile, FlexoServiceManager serviceManager) throws ParseException {
+	public static FMLCompilationUnit parse(File inputFile, FMLModelFactory modelFactory) throws ParseException {
 		try (FileReader in = new FileReader(inputFile)) {
 			System.out.println("Parsing: " + inputFile);
 
@@ -83,8 +84,7 @@ public class FMLParser {
 			Start tree = p.parse();
 
 			// Apply the semantics analyzer.
-			FMLSemanticsAnalyzer t = new FMLSemanticsAnalyzer(null, serviceManager);
-			tree.apply(t);
+			FMLSemanticsAnalyzer t = new FMLSemanticsAnalyzer(modelFactory, tree);
 
 			return t.getCompilationUnit();
 		} catch (Exception e) {

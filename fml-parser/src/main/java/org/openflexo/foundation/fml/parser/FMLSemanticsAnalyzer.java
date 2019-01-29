@@ -38,9 +38,19 @@
 
 package org.openflexo.foundation.fml.parser;
 
+import java.util.Stack;
+
 import org.openflexo.foundation.FlexoServiceManager;
-import org.openflexo.foundation.fml.VirtualModel;
+import org.openflexo.foundation.fml.FMLCompilationUnit;
+import org.openflexo.foundation.fml.FMLModelFactory;
 import org.openflexo.foundation.fml.parser.analysis.DepthFirstAdapter;
+import org.openflexo.foundation.fml.parser.node.AConceptDeclaration;
+import org.openflexo.foundation.fml.parser.node.AFmlCompilationUnit;
+import org.openflexo.foundation.fml.parser.node.AModelDeclaration;
+import org.openflexo.foundation.fml.parser.node.Node;
+import org.openflexo.foundation.fml.parser.node.Start;
+import org.openflexo.foundation.fml.parser.node.Token;
+import org.openflexo.toolbox.StringUtils;
 
 /**
  * This class implements the semantics analyzer for a parsed FML compilation unit.<br>
@@ -50,24 +60,124 @@ import org.openflexo.foundation.fml.parser.analysis.DepthFirstAdapter;
  */
 class FMLSemanticsAnalyzer extends DepthFirstAdapter {
 
-	private final VirtualModel virtualModel;
-	private final FlexoServiceManager serviceManager;
+	private final FMLModelFactory factory;
 
-	public FMLSemanticsAnalyzer(VirtualModel virtualModel, FlexoServiceManager serviceManager) {
-		this.virtualModel = virtualModel;
-		this.serviceManager = serviceManager;
-	}
+	private FMLCompilationUnitNode compilationUnitNode;
 
-	public VirtualModel getVirtualModel() {
-		return virtualModel;
-	}
+	// Stack of FMLObjectNode beeing build during semantics analyzing
+	protected Stack<FMLObjectNode<?, ?>> fmlNodes = new Stack<>();
 
-	public FlexoServiceManager getServiceManager() {
-		return serviceManager;
+	public FMLSemanticsAnalyzer(FMLModelFactory factory, Start tree) {
+		this.factory = factory;
+		tree.apply(this);
+		finalizeDeserialization();
 	}
 
 	public FMLCompilationUnit getCompilationUnit() {
-		return null;
+		return compilationUnitNode.getFMLObject();
+	}
+
+	public FMLModelFactory getFactory() {
+		return factory;
+	}
+
+	public FlexoServiceManager getServiceManager() {
+		return getFactory().getServiceManager();
+	}
+
+	public FMLCompilationUnitNode getCompilationUnitNode() {
+		return compilationUnitNode;
+	}
+
+	private void finalizeDeserialization() {
+		finalizeDeserialization(compilationUnitNode);
+		debug(compilationUnitNode, 0);
+	}
+
+	private void finalizeDeserialization(FMLObjectNode<?, ?> node) {
+		node.finalizeDeserialization();
+		for (FMLObjectNode<?, ?> child : node.getChildren()) {
+			finalizeDeserialization(child);
+		}
+	}
+
+	private void debug(FMLObjectNode<?, ?> node, int indent) {
+		System.out.println(StringUtils.buildWhiteSpaceIndentation(indent * 2) + " > " + node.getClass().getSimpleName() + " from "
+				+ node.getStartLine() + ":" + node.getStartChar() + " to " + node.getEndLine() + ":" + node.getEndChar());
+		indent++;
+		for (FMLObjectNode<?, ?> child : node.getChildren()) {
+			debug(child, indent);
+		}
+	}
+
+	/*@Override
+	public void defaultIn(Node node) {
+		super.defaultIn(node);
+		// System.out.println(StringUtils.buildWhiteSpaceIndentation(indent * 2) + " > " + node.getClass().getSimpleName());
+		// indent++;
+	}
+	
+	@Override
+	public void defaultOut(Node node) {
+		super.defaultOut(node);
+		// indent--;
+		// System.out.println(StringUtils.buildWhiteSpaceIndentation(indent * 2) + " < " + node.getClass().getSimpleName());
+	}*/
+
+	@Override
+	public void inAFmlCompilationUnit(AFmlCompilationUnit node) {
+		super.inAFmlCompilationUnit(node);
+		FMLCompilationUnitNode newNode = new FMLCompilationUnitNode(node, this);
+		fmlNodes.push(newNode);
+	}
+
+	@Override
+	public void outAFmlCompilationUnit(AFmlCompilationUnit node) {
+		super.outAFmlCompilationUnit(node);
+		compilationUnitNode = (FMLCompilationUnitNode) fmlNodes.pop().deserialize();
+	}
+
+	@Override
+	public void inAModelDeclaration(AModelDeclaration node) {
+		super.inAModelDeclaration(node);
+		VirtualModelNode newNode = new VirtualModelNode(node, this);
+		fmlNodes.push(newNode);
+	}
+
+	@Override
+	public void outAModelDeclaration(AModelDeclaration node) {
+		super.outAModelDeclaration(node);
+		fmlNodes.pop().deserialize();
+	}
+
+	@Override
+	public void inAConceptDeclaration(AConceptDeclaration node) {
+		super.inAConceptDeclaration(node);
+		// System.out.println("DEBUT Nouveau concept " + node.getIdentifier().getText());
+		FlexoConceptNode newNode = new FlexoConceptNode(node, this);
+		fmlNodes.push(newNode);
+	}
+
+	@Override
+	public void outAConceptDeclaration(AConceptDeclaration node) {
+		super.outAConceptDeclaration(node);
+		fmlNodes.pop().deserialize();
+		// System.out.println("FIN Nouveau concept " + node.getIdentifier().getText());
+		// System.out.println("fmlNodes=" + fmlNodes);
+	}
+
+	@Override
+	public void defaultCase(Node node) {
+		super.defaultCase(node);
+		if (node instanceof Token && !fmlNodes.isEmpty()) {
+			FMLObjectNode<?, ?> currentNode = fmlNodes.peek();
+			if (currentNode != null) {
+				// System.out.println("Token: " + ((Token) node).getText() + " de " + ((Token) node).getLine() + ":" + ((Token)
+				// node).getPos()
+				// + ":" + ((Token) node).getOffset());
+				currentNode.handleToken((Token) node);
+			}
+		}
 	}
 
 }

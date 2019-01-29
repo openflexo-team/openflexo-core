@@ -36,45 +36,54 @@
  * 
  */
 
-package org.openflexo.foundation.fml.parser;
+package org.openflexo.foundation.fml;
 
-import org.openflexo.foundation.FlexoServiceManager;
-import org.openflexo.foundation.fml.FMLObject;
-import org.openflexo.foundation.fml.VirtualModel;
-import org.openflexo.foundation.fml.parser.node.Node;
+import org.openflexo.pamela.annotations.Getter;
+import org.openflexo.pamela.annotations.ImplementationClass;
+import org.openflexo.pamela.annotations.ModelEntity;
+import org.openflexo.pamela.annotations.PropertyIdentifier;
+import org.openflexo.pamela.annotations.Setter;
 
-/**
- * This class implements the semantics analyzer for a parsed FMLObject.<br>
- * Its main purpose is to structurally build a binding from a parsed AST.<br>
- * No semantics nor type checking is performed at this stage
- * 
- * @author sylvain
- * 
- */
-public abstract class FMLObjectSemanticsAnalyzer<N extends Node, T extends FMLObject> extends FMLSemanticsAnalyzer {
+@ModelEntity
+@ImplementationClass(FMLCompilationUnit.FMLCompilationUnitImpl.class)
+public interface FMLCompilationUnit extends FMLObject {
 
-	private final N node;
-	private final FMLSemanticsAnalyzer parentAnalyser;
+	@PropertyIdentifier(type = VirtualModel.class)
+	public static final String VIRTUAL_MODEL_KEY = "virtualModel";
 
-	public FMLObjectSemanticsAnalyzer(N node, FMLSemanticsAnalyzer parentAnalyser, FlexoServiceManager serviceManager) {
-		// System.out.println(">>>> node=" + node + " of " + node.getClass());
-		super(parentAnalyser.getVirtualModel(), serviceManager);
-		this.node = node;
-		this.parentAnalyser = parentAnalyser;
-	}
+	/**
+	 * Return the {@link VirtualModel} defined by this FMLCompilationUnit
+	 * 
+	 * @return
+	 */
+	@Getter(value = VIRTUAL_MODEL_KEY)
+	public VirtualModel getVirtualModel();
 
-	public N getNode() {
-		return node;
-	}
+	@Setter(VIRTUAL_MODEL_KEY)
+	public void setVirtualModel(VirtualModel virtualModel);
 
-	public abstract T makeFMLObject();
+	public abstract class FMLCompilationUnitImpl extends FMLObjectImpl implements FMLCompilationUnit {
 
-	@Override
-	public VirtualModel getVirtualModel() {
-		if (parentAnalyser != null) {
-			System.out.println("Moi: " + this + " et lui " + parentAnalyser);
-			return parentAnalyser.getVirtualModel();
+		@Override
+		public FMLModelFactory getFMLModelFactory() {
+
+			FMLModelFactory returned = super.getFMLModelFactory();
+			if (returned == null) {
+				return getDeserializationFactory();
+			}
+			return returned;
 		}
-		return super.getVirtualModel();
+
+		@Override
+		public VirtualModel getResourceData() {
+			return getVirtualModel();
+		}
+
+		@Override
+		public String getFMLRepresentation(FMLRepresentationContext context) {
+			return "<not_implemented:" + getStringRepresentation() + ">";
+		}
+
 	}
+
 }
