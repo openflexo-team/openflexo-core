@@ -404,9 +404,9 @@ Productions
 	get_set_property_declaration =
         visibility? type identifier l_brc get_declaration set_declaration ? r_brc semi;
 
-	get_declaration = type get colon l_par r_par flexo_behaviour_body;
+	get_declaration = type get l_par r_par flexo_behaviour_body;
  
-	set_declaration = set colon l_par type identifier r_par flexo_behaviour_body;
+	set_declaration = set l_par type identifier r_par flexo_behaviour_body;
  
 	// ********************* Behaviours *******************
 	
