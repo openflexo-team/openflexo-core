@@ -480,7 +480,8 @@ Productions
         {method_invocation}      method_invocation |
         {java_instance_creation} class_instance_creation_expression |
         {fml_instance_creation}  concept_instance_creation_expression |
-        {ta_edition_action}      technology_specific_edition_expression;
+        {ta_edition_action}      technology_specific_edition_expression |
+        {delete_action}          delete_action_expression ;
 
     method_invocation =
         {simple}     identifier [additional_identifiers]:additional_identifier* l_par argument_list? r_par |
@@ -496,7 +497,11 @@ Productions
         new [concept_name]:identifier colon_colon [constructor_name]:identifier l_par argument_list? r_par;
 		
     technology_specific_edition_expression =
-       [ta_id]:identifier colon_colon [role]:identifier fml_parameters? in_clause? from_clause?;
+       [ta_id]:identifier colon_colon [edition_action]:identifier fml_parameters? in_clause? from_clause?;
+	
+    delete_action_expression =
+        {expression} delete l_par expression r_par from_clause? |
+        {identifier} delete l_par identifier [additional_identifiers]:additional_identifier* r_par from_clause?;
 	
 	in_clause = 
        {expression} in l_par expression r_par |
@@ -785,7 +790,8 @@ Productions
         {method}                 method_invocation |
         {java_instance_creation} class_instance_creation_expression |
         {fml_instance_creation}  concept_instance_creation_expression |
-        {ta_edition_action}      technology_specific_edition_expression /*|
+        {ta_edition_action}      technology_specific_edition_expression |
+        {delete_action}          delete_action_expression /*|
         {array}      array_access*/;
 
     field_access =

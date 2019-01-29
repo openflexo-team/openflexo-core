@@ -30,13 +30,13 @@ model MyModel {
 		}
 		
 		delete::deleteConcept() {
-			//delete myConcept;
-			//delete shape;
+			delete (myConcept);
+			delete (shape);
 		}
 		
 		delete::removeFromDiagram() {
 			myConcept = null;
-			//delete shape;
+			delete (shape);
 		}
 	}
 	

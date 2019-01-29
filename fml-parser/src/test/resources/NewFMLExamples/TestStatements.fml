@@ -103,4 +103,10 @@ model MyModel {
 		shape = DIAGRAM::AddShape(container=topLevel) in (diagram);
    }
 
+	testDelete() {
+		delete (anObject);
+		Object deletedObject = delete (anObject);
+		Object objectBeeingDelete = delete (path_to_an_object_to_delete(1,2));
+   }
+
 }
