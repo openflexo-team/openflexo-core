@@ -38,53 +38,38 @@
 
 package org.openflexo.foundation.fml.parser.fmlnodes;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.openflexo.foundation.fml.FMLCompilationUnit;
-import org.openflexo.foundation.fml.FMLPrettyPrintable;
+import org.openflexo.foundation.fml.JavaImportDeclaration;
 import org.openflexo.foundation.fml.parser.FMLObjectNode;
 import org.openflexo.foundation.fml.parser.FMLSemanticsAnalyzer;
-import org.openflexo.foundation.fml.parser.node.AFmlCompilationUnit;
+import org.openflexo.foundation.fml.parser.node.Node;
 
 /**
  * @author sylvain
  * 
  */
-public class FMLCompilationUnitNode extends FMLObjectNode<AFmlCompilationUnit, FMLCompilationUnit> {
+public abstract class AbstractJavaImportNode<N extends Node> extends FMLObjectNode<N, JavaImportDeclaration> {
 
-	public FMLCompilationUnitNode(AFmlCompilationUnit astNode, FMLSemanticsAnalyzer analyser) {
+	public AbstractJavaImportNode(N astNode, FMLSemanticsAnalyzer analyser) {
 		super(astNode, analyser);
 	}
 
-	@Override
-	public FMLCompilationUnit buildFMLObjectFromAST() {
-		return getFactory().newCompilationUnit();
+	public AbstractJavaImportNode(JavaImportDeclaration importDeclaration, FMLSemanticsAnalyzer analyser) {
+		super(importDeclaration, analyser);
 	}
 
 	@Override
-	public FMLCompilationUnitNode deserialize() {
-		return this;
+	public JavaImportDeclaration buildFMLObjectFromAST() {
+		return getFactory().newJavaImportDeclaration();
 	}
 
 	@Override
-	public String getNormalizedFMLRepresentation(PrettyPrintContext context) {
-		return "CompilationUnit";
-	}
-
-	@Override
-	public String updateFMLRepresentation(PrettyPrintContext context) {
-
-		System.out.println("********* updateFMLRepresentation for CompilationUnit " + getFMLObject());
-
-		// Abnormal case: even the VirtualModel is not defined
-		if (getFMLObject().getVirtualModel() == null) {
-			return getLastParsed();
+	public AbstractJavaImportNode<N> deserialize() {
+		if (getParent() instanceof FMLCompilationUnitNode) {
+			System.out.println("Adding to import " + getASTNode() + " as " + getFMLObject().getFullQualifiedClassName());
+			((FMLCompilationUnitNode) getParent()).getFMLObject().addToJavaImports(getFMLObject());
 		}
 
-		List<FMLPrettyPrintable> childrenObjects = new ArrayList();
-		childrenObjects.add(getFMLObject().getVirtualModel());
-		return buildFMLRepresentation(childrenObjects, context);
+		return this;
 	}
 
 }

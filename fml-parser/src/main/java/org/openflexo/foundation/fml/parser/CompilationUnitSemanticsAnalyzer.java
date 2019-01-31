@@ -43,7 +43,11 @@ import java.util.List;
 import org.openflexo.foundation.fml.FMLCompilationUnit;
 import org.openflexo.foundation.fml.FMLModelFactory;
 import org.openflexo.foundation.fml.parser.fmlnodes.FMLCompilationUnitNode;
+import org.openflexo.foundation.fml.parser.fmlnodes.JavaImportNode;
+import org.openflexo.foundation.fml.parser.fmlnodes.NamedJavaImportNode;
 import org.openflexo.foundation.fml.parser.node.AFmlCompilationUnit;
+import org.openflexo.foundation.fml.parser.node.AJavaImportImportDeclaration;
+import org.openflexo.foundation.fml.parser.node.ANamedJavaImportImportDeclaration;
 import org.openflexo.foundation.fml.parser.node.Start;
 
 /**
@@ -76,13 +80,36 @@ public abstract class CompilationUnitSemanticsAnalyzer extends FMLCoreSemanticsA
 	@Override
 	public void inAFmlCompilationUnit(AFmlCompilationUnit node) {
 		super.inAFmlCompilationUnit(node);
-		push(new FMLCompilationUnitNode(node, (FMLSemanticsAnalyzer) this));
+		push(compilationUnitNode = new FMLCompilationUnitNode(node, (FMLSemanticsAnalyzer) this));
 	}
 
 	@Override
 	public void outAFmlCompilationUnit(AFmlCompilationUnit node) {
 		super.outAFmlCompilationUnit(node);
-		compilationUnitNode = pop();
+		pop();
 	}
 
+	@Override
+	public void inAJavaImportImportDeclaration(AJavaImportImportDeclaration node) {
+		super.inAJavaImportImportDeclaration(node);
+		push(new JavaImportNode(node, (FMLSemanticsAnalyzer) this));
+	}
+
+	@Override
+	public void outAJavaImportImportDeclaration(AJavaImportImportDeclaration node) {
+		super.outAJavaImportImportDeclaration(node);
+		pop();
+	}
+
+	@Override
+	public void inANamedJavaImportImportDeclaration(ANamedJavaImportImportDeclaration node) {
+		super.inANamedJavaImportImportDeclaration(node);
+		push(new NamedJavaImportNode(node, (FMLSemanticsAnalyzer) this));
+	}
+
+	@Override
+	public void outANamedJavaImportImportDeclaration(ANamedJavaImportImportDeclaration node) {
+		super.outANamedJavaImportImportDeclaration(node);
+		pop();
+	}
 }

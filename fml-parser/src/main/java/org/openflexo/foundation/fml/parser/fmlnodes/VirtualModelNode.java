@@ -62,7 +62,7 @@ public class VirtualModelNode extends FMLObjectNode<AModelDeclaration, VirtualMo
 	}
 
 	@Override
-	public VirtualModel makeFMLObject() {
+	public VirtualModel buildFMLObjectFromAST() {
 		VirtualModel returned = getFactory().newVirtualModel();
 		returned.setName(getASTNode().getIdentifier().getText());
 		return returned;

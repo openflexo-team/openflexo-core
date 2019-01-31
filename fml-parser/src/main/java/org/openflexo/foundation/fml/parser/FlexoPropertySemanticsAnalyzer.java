@@ -38,11 +38,13 @@
 
 package org.openflexo.foundation.fml.parser;
 
+import java.lang.reflect.Type;
 import java.util.List;
 
 import org.openflexo.foundation.fml.FMLModelFactory;
 import org.openflexo.foundation.fml.parser.fmlnodes.AbstractPropertyNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.FlexoPropertyNode;
+import org.openflexo.foundation.fml.parser.fmlnodes.PrimitiveRoleNode;
 import org.openflexo.foundation.fml.parser.node.AAbstractPropertyDeclaration;
 import org.openflexo.foundation.fml.parser.node.AAbstractPropertyPropertyDeclaration;
 import org.openflexo.foundation.fml.parser.node.ABasicPropertyPropertyDeclaration;
@@ -77,7 +79,11 @@ public class FlexoPropertySemanticsAnalyzer extends FlexoConceptSemanticsAnalyze
 		else if (node instanceof ABasicPropertyPropertyDeclaration) {
 			PBasicRoleDeclaration basicRoleDeclaration = ((ABasicPropertyPropertyDeclaration) node).getBasicRoleDeclaration();
 			if (basicRoleDeclaration instanceof AJavaBasicRoleDeclaration) {
-				System.out.println("Tiens une basic property declaration java: " + node);
+				Type type = getTypeFactory().makeType(((AJavaBasicRoleDeclaration) basicRoleDeclaration).getType());
+				System.out.println("Tiens une basic property declaration java: " + node + " type=" + type);
+				if (getTypeFactory().getPrimitiveType(type) != null) {
+					return new PrimitiveRoleNode((AJavaBasicRoleDeclaration) basicRoleDeclaration, (FMLSemanticsAnalyzer) this);
+				}
 			}
 			else if (basicRoleDeclaration instanceof AFmlBasicRoleDeclaration) {
 				System.out.println("Tiens une basic property declaration FML: " + node);
@@ -98,13 +104,13 @@ public class FlexoPropertySemanticsAnalyzer extends FlexoConceptSemanticsAnalyze
 	@Override
 	public void inAPropertyDeclarationInnerConceptDeclaration(APropertyDeclarationInnerConceptDeclaration node) {
 		super.inAPropertyDeclarationInnerConceptDeclaration(node);
-		// push(makePropertyNode(node.getPropertyDeclaration()));
+		push(makePropertyNode(node.getPropertyDeclaration()));
 	}
 
 	@Override
 	public void outAPropertyDeclarationInnerConceptDeclaration(APropertyDeclarationInnerConceptDeclaration node) {
 		super.outAPropertyDeclarationInnerConceptDeclaration(node);
-		// pop();
+		pop();
 	}
 
 }

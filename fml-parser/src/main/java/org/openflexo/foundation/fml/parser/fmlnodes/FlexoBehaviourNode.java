@@ -58,7 +58,7 @@ public class FlexoBehaviourNode extends FMLObjectNode<AConceptDeclaration, Flexo
 	}
 
 	@Override
-	public FlexoConcept makeFMLObject() {
+	public FlexoConcept buildFMLObjectFromAST() {
 		FlexoConcept returned = getFactory().newFlexoConcept();
 		returned.setName(getASTNode().getIdentifier().getText());
 		return returned;

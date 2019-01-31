@@ -38,28 +38,11 @@
 
 package org.openflexo.foundation.fml.parser.fmlnodes;
 
-import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.fml.AbstractProperty;
 import org.openflexo.foundation.fml.parser.FMLSemanticsAnalyzer;
 import org.openflexo.foundation.fml.parser.node.AAbstractPropertyDeclaration;
-import org.openflexo.foundation.fml.parser.node.AAdditionalIdentifier;
-import org.openflexo.foundation.fml.parser.node.ABooleanPrimitiveType;
-import org.openflexo.foundation.fml.parser.node.AComplexType;
-import org.openflexo.foundation.fml.parser.node.AFloatNumericType;
-import org.openflexo.foundation.fml.parser.node.AIntNumericType;
-import org.openflexo.foundation.fml.parser.node.ANumericPrimitiveType;
-import org.openflexo.foundation.fml.parser.node.APrimitiveType;
-import org.openflexo.foundation.fml.parser.node.ASimpleType;
-import org.openflexo.foundation.fml.parser.node.AVoidType;
-import org.openflexo.foundation.fml.parser.node.PAdditionalIdentifier;
-import org.openflexo.foundation.fml.parser.node.PNumericType;
-import org.openflexo.foundation.fml.parser.node.PPrimitiveType;
-import org.openflexo.foundation.fml.parser.node.PType;
-import org.openflexo.foundation.fml.parser.node.TIdentifier;
 
 /**
  * @author sylvain
@@ -78,57 +61,11 @@ public class AbstractPropertyNode extends FlexoPropertyNode<AAbstractPropertyDec
 	}
 
 	@Override
-	public AbstractProperty<?> makeFMLObject() {
+	public AbstractProperty<?> buildFMLObjectFromAST() {
 		AbstractProperty<?> returned = getFactory().newAbstractProperty();
 		returned.setName(getName(getASTNode().getVariableDeclarator()).getText());
-
-		System.out.println("Pour le type, il s'agit de " + makeType(getASTNode().getType()));
-
+		returned.setType(getTypeFactory().makeType(getASTNode().getType()));
 		return returned;
-	}
-
-	protected Type makeType(PType pType) {
-		if (pType instanceof AVoidType) {
-			return Void.TYPE;
-		}
-		else if (pType instanceof APrimitiveType) {
-			PPrimitiveType primitiveType = ((APrimitiveType) pType).getPrimitiveType();
-			if (primitiveType instanceof ABooleanPrimitiveType) {
-				return Boolean.TYPE;
-			}
-			else if (primitiveType instanceof ANumericPrimitiveType) {
-				PNumericType numericType = ((ANumericPrimitiveType) primitiveType).getNumericType();
-				if (numericType instanceof AIntNumericType) {
-					return Integer.TYPE;
-				}
-				else if (numericType instanceof AFloatNumericType) {
-					return Float.TYPE;
-				}
-			}
-		}
-		else if (pType instanceof ASimpleType) {
-		}
-		else if (pType instanceof AComplexType) {
-		}
-		logger.warning("Unexpected " + pType);
-		return null;
-	}
-
-	protected List<String> makeFullQualifiedIdentifier(TIdentifier identifier, List<PAdditionalIdentifier> additionalIdentifiers) {
-		List<String> returned = new ArrayList<>();
-		returned.add(identifier.getText());
-		for (PAdditionalIdentifier pAdditionalIdentifier : additionalIdentifiers) {
-			if (pAdditionalIdentifier instanceof AAdditionalIdentifier) {
-				returned.add(((AAdditionalIdentifier) pAdditionalIdentifier).getIdentifier().getText());
-			}
-		}
-		return returned;
-	}
-
-	protected Type makeType(TIdentifier identifier, List<PAdditionalIdentifier> additionalIdentifiers) {
-		List<String> fqIds = makeFullQualifiedIdentifier(identifier, additionalIdentifiers);
-		System.out.println("On cherche " + fqIds);
-		return null;
 	}
 
 	@Override

@@ -268,6 +268,10 @@ public class FMLModelFactory extends ModelFactory implements PamelaResourceModel
 		return newInstance(FMLCompilationUnit.class);
 	}
 
+	public JavaImportDeclaration newJavaImportDeclaration() {
+		return newInstance(JavaImportDeclaration.class);
+	}
+
 	public VirtualModel newVirtualModel() {
 		return newInstance(VirtualModel.class);
 	}
@@ -308,6 +312,10 @@ public class FMLModelFactory extends ModelFactory implements PamelaResourceModel
 
 	public AbstractProperty<?> newAbstractProperty() {
 		return newInstance(AbstractProperty.class);
+	}
+
+	public PrimitiveRole<?> newPrimitiveRole() {
+		return newInstance(PrimitiveRole.class);
 	}
 
 	public ExpressionProperty<?> newExpressionProperty() {

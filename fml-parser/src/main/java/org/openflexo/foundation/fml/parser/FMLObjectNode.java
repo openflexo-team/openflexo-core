@@ -51,6 +51,8 @@ import org.openflexo.foundation.fml.FMLPrettyPrintable;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.parser.fmlnodes.FlexoConceptNode;
 import org.openflexo.foundation.fml.parser.node.Node;
+import org.openflexo.foundation.fml.parser.node.PAdditionalIdentifier;
+import org.openflexo.foundation.fml.parser.node.TIdentifier;
 import org.openflexo.foundation.fml.parser.node.Token;
 
 /**
@@ -78,7 +80,7 @@ public abstract class FMLObjectNode<N extends Node, T extends FMLPrettyPrintable
 	public FMLObjectNode(N astNode, FMLSemanticsAnalyzer analyser) {
 		this.astNode = astNode;
 		this.analyser = analyser;
-		fmlObject = makeFMLObject();
+		fmlObject = buildFMLObjectFromAST();
 		fmlObject.setPrettyPrintDelegate(this);
 		fmlObject.initializeDeserialization(getFactory());
 		/*if (!analyser.fmlNodes.isEmpty()) {
@@ -112,6 +114,10 @@ public abstract class FMLObjectNode<N extends Node, T extends FMLPrettyPrintable
 		return analyser;
 	}
 
+	public TypeFactory getTypeFactory() {
+		return analyser.getTypeFactory();
+	}
+
 	public N getASTNode() {
 		return astNode;
 	}
@@ -124,7 +130,7 @@ public abstract class FMLObjectNode<N extends Node, T extends FMLPrettyPrintable
 		return children;
 	}
 
-	public abstract T makeFMLObject();
+	public abstract T buildFMLObjectFromAST();
 
 	public abstract FMLObjectNode<N, T> deserialize();
 
@@ -285,6 +291,14 @@ public abstract class FMLObjectNode<N extends Node, T extends FMLPrettyPrintable
 			}
 		}
 		return null;
+	}
+
+	public List<String> makeFullQualifiedIdentifierList(TIdentifier identifier, List<PAdditionalIdentifier> additionalIdentifiers) {
+		return getTypeFactory().makeFullQualifiedIdentifierList(identifier, additionalIdentifiers);
+	}
+
+	public String makeFullQualifiedIdentifier(TIdentifier identifier, List<PAdditionalIdentifier> additionalIdentifiers) {
+		return getTypeFactory().makeFullQualifiedIdentifier(identifier, additionalIdentifiers);
 	}
 
 }

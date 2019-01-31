@@ -71,8 +71,8 @@ public class TestFMLSemanticsAnalyzer extends OpenflexoTestCase {
 	}
 
 	@Test
-	public void testTestProperties() throws ParseException, ModelDefinitionException {
-		final Resource fmlFile = ResourceLocator.locateResource("NewFMLExamples/TestAbstractProperty.fml");
+	public void testBasicTypes() throws ParseException, ModelDefinitionException {
+		final Resource fmlFile = ResourceLocator.locateResource("NewFMLExamples/TestBasicTypes.fml");
 		FMLCompilationUnit compilationUnit = parseFile(fmlFile);
 		VirtualModel virtualModel;
 		FlexoConcept conceptA;

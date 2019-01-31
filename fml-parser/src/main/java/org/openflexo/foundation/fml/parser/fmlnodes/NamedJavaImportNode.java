@@ -38,38 +38,36 @@
 
 package org.openflexo.foundation.fml.parser.fmlnodes;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.openflexo.foundation.fml.FMLCompilationUnit;
-import org.openflexo.foundation.fml.FMLPrettyPrintable;
-import org.openflexo.foundation.fml.parser.FMLObjectNode;
+import org.openflexo.foundation.fml.JavaImportDeclaration;
 import org.openflexo.foundation.fml.parser.FMLSemanticsAnalyzer;
-import org.openflexo.foundation.fml.parser.node.AFmlCompilationUnit;
+import org.openflexo.foundation.fml.parser.node.ANamedJavaImportImportDeclaration;
 
 /**
  * @author sylvain
  * 
  */
-public class FMLCompilationUnitNode extends FMLObjectNode<AFmlCompilationUnit, FMLCompilationUnit> {
+public class NamedJavaImportNode extends AbstractJavaImportNode<ANamedJavaImportImportDeclaration> {
 
-	public FMLCompilationUnitNode(AFmlCompilationUnit astNode, FMLSemanticsAnalyzer analyser) {
+	public NamedJavaImportNode(ANamedJavaImportImportDeclaration astNode, FMLSemanticsAnalyzer analyser) {
 		super(astNode, analyser);
 	}
 
-	@Override
-	public FMLCompilationUnit buildFMLObjectFromAST() {
-		return getFactory().newCompilationUnit();
+	public NamedJavaImportNode(JavaImportDeclaration importDeclaration, FMLSemanticsAnalyzer analyser) {
+		super(importDeclaration, analyser);
 	}
 
 	@Override
-	public FMLCompilationUnitNode deserialize() {
-		return this;
+	public JavaImportDeclaration buildFMLObjectFromAST() {
+		JavaImportDeclaration returned = super.buildFMLObjectFromAST();
+		returned.setFullQualifiedClassName(
+				makeFullQualifiedIdentifier(getASTNode().getIdentifier(), getASTNode().getAdditionalIdentifiers()));
+		returned.setAbbrev(getASTNode().getName().getText());
+		return returned;
 	}
 
 	@Override
 	public String getNormalizedFMLRepresentation(PrettyPrintContext context) {
-		return "CompilationUnit";
+		return "import " + getFMLObject().getFullQualifiedClassName() + " as " + getFMLObject().getAbbrev() + ";";
 	}
 
 	@Override
@@ -77,14 +75,16 @@ public class FMLCompilationUnitNode extends FMLObjectNode<AFmlCompilationUnit, F
 
 		System.out.println("********* updateFMLRepresentation for CompilationUnit " + getFMLObject());
 
-		// Abnormal case: even the VirtualModel is not defined
-		if (getFMLObject().getVirtualModel() == null) {
+		// Abnormal case: mode object is not defined
+		if (getFMLObject() == null) {
 			return getLastParsed();
 		}
 
-		List<FMLPrettyPrintable> childrenObjects = new ArrayList();
+		/*List<FMLPrettyPrintable> childrenObjects = new ArrayList();
 		childrenObjects.add(getFMLObject().getVirtualModel());
-		return buildFMLRepresentation(childrenObjects, context);
+		return buildFMLRepresentation(childrenObjects, context);*/
+
+		return getNormalizedFMLRepresentation(context);
 	}
 
 }

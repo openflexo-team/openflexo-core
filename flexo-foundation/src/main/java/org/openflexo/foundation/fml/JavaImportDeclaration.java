@@ -1,8 +1,8 @@
 /**
  * 
- * Copyright (c) 2014, Openflexo
+ * Copyright (c) 2014-2015, Openflexo
  * 
- * This file is part of Fml-parser, a component of the software infrastructure 
+ * This file is part of Flexo-foundation, a component of the software infrastructure 
  * developed at Openflexo.
  * 
  * 
@@ -38,78 +38,81 @@
 
 package org.openflexo.foundation.fml;
 
-import java.util.List;
-
-import org.openflexo.pamela.annotations.Adder;
 import org.openflexo.pamela.annotations.CloningStrategy;
 import org.openflexo.pamela.annotations.CloningStrategy.StrategyType;
 import org.openflexo.pamela.annotations.Getter;
-import org.openflexo.pamela.annotations.Getter.Cardinality;
 import org.openflexo.pamela.annotations.ImplementationClass;
 import org.openflexo.pamela.annotations.ModelEntity;
 import org.openflexo.pamela.annotations.PropertyIdentifier;
-import org.openflexo.pamela.annotations.Remover;
 import org.openflexo.pamela.annotations.Setter;
+import org.openflexo.pamela.annotations.XMLAttribute;
 import org.openflexo.pamela.annotations.XMLElement;
 
+/**
+ * 
+ * 
+ * @author sylvain
+ *
+ */
 @ModelEntity
-@ImplementationClass(FMLCompilationUnit.FMLCompilationUnitImpl.class)
-public interface FMLCompilationUnit extends FMLObject, FMLPrettyPrintable {
+@XMLElement
+@ImplementationClass(JavaImportDeclaration.JavaImportDeclarationImpl.class)
+public interface JavaImportDeclaration extends FMLPrettyPrintable {
 
-	@PropertyIdentifier(type = JavaImportDeclaration.class, cardinality = Cardinality.LIST)
-	public static final String JAVA_IMPORTS_KEY = "javaImports";
-	@PropertyIdentifier(type = VirtualModel.class)
-	public static final String VIRTUAL_MODEL_KEY = "virtualModel";
+	@PropertyIdentifier(type = FMLCompilationUnit.class)
+	public static final String COMPILATION_UNIT_KEY = "compilationUnit";
+	@PropertyIdentifier(type = String.class)
+	public static final String FULL_QUALIFIED_CLASS_NAME_KEY = "fullQualifiedClassName";
+	@PropertyIdentifier(type = String.class)
+	public static final String ABBREV_KEY = "abbrev";
 
 	/**
-	 * Return list of {@link JavaImportDeclaration} explicitely declared in this {@link FMLCompilationUnit}
+	 * Return simple class name represented by the full qualified denotation of this import
 	 * 
 	 * @return
 	 */
-	@Getter(value = JAVA_IMPORTS_KEY, cardinality = Cardinality.LIST, inverse = JavaImportDeclaration.COMPILATION_UNIT_KEY)
-	@XMLElement
-	@CloningStrategy(StrategyType.CLONE)
-	public List<JavaImportDeclaration> getJavaImports();
+	public String getClassName();
 
-	@Adder(JAVA_IMPORTS_KEY)
-	public void addToJavaImports(JavaImportDeclaration javaImportDeclaration);
+	@Getter(value = FULL_QUALIFIED_CLASS_NAME_KEY)
+	@XMLAttribute
+	public String getFullQualifiedClassName();
 
-	@Remover(JAVA_IMPORTS_KEY)
-	public void removeFromJavaImports(JavaImportDeclaration javaImportDeclaration);
+	@Setter(FULL_QUALIFIED_CLASS_NAME_KEY)
+	public void setFullQualifiedClassName(String fullQualifiedClassName);
 
-	/**
-	 * Return the {@link VirtualModel} defined by this FMLCompilationUnit
-	 * 
-	 * @return
-	 */
-	@Getter(value = VIRTUAL_MODEL_KEY)
-	public VirtualModel getVirtualModel();
+	@Getter(value = ABBREV_KEY)
+	@XMLAttribute
+	public String getAbbrev();
 
-	@Setter(VIRTUAL_MODEL_KEY)
-	public void setVirtualModel(VirtualModel virtualModel);
+	@Setter(ABBREV_KEY)
+	public void setAbbrev(String abbrev);
 
-	public abstract class FMLCompilationUnitImpl extends FMLObjectImpl implements FMLCompilationUnit {
+	@Getter(value = COMPILATION_UNIT_KEY, inverse = FMLCompilationUnit.JAVA_IMPORTS_KEY)
+	@CloningStrategy(StrategyType.IGNORE)
+	public FMLCompilationUnit getCompilationUnit();
 
-		@Override
-		public FMLModelFactory getFMLModelFactory() {
+	@Setter(COMPILATION_UNIT_KEY)
+	public void setCompilationUnit(FMLCompilationUnit compilationUnit);
 
-			FMLModelFactory returned = super.getFMLModelFactory();
-			if (returned == null) {
-				return getDeserializationFactory();
-			}
-			return returned;
-		}
+	public static abstract class JavaImportDeclarationImpl extends FMLObjectImpl implements JavaImportDeclaration {
 
 		@Override
 		public VirtualModel getResourceData() {
-			return getVirtualModel();
+			if (getCompilationUnit() != null) {
+				return getCompilationUnit().getVirtualModel();
+			}
+			return null;
 		}
 
 		@Override
-		public String getFMLRepresentation(FMLRepresentationContext context) {
-			return "<not_implemented:" + getStringRepresentation() + ">";
+		public String getClassName() {
+			if (getAbbrev() != null) {
+				return getAbbrev();
+			}
+			if (getFullQualifiedClassName() == null) {
+				return null;
+			}
+			return getFullQualifiedClassName().substring(getFullQualifiedClassName().lastIndexOf(".") + 1);
 		}
-
 	}
-
 }

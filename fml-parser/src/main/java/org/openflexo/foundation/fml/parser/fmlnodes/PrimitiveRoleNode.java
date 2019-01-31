@@ -38,53 +38,45 @@
 
 package org.openflexo.foundation.fml.parser.fmlnodes;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.logging.Logger;
 
-import org.openflexo.foundation.fml.FMLCompilationUnit;
-import org.openflexo.foundation.fml.FMLPrettyPrintable;
-import org.openflexo.foundation.fml.parser.FMLObjectNode;
+import org.openflexo.foundation.fml.PrimitiveRole;
 import org.openflexo.foundation.fml.parser.FMLSemanticsAnalyzer;
-import org.openflexo.foundation.fml.parser.node.AFmlCompilationUnit;
+import org.openflexo.foundation.fml.parser.node.AJavaBasicRoleDeclaration;
 
 /**
  * @author sylvain
  * 
  */
-public class FMLCompilationUnitNode extends FMLObjectNode<AFmlCompilationUnit, FMLCompilationUnit> {
+public class PrimitiveRoleNode extends FlexoPropertyNode<AJavaBasicRoleDeclaration, PrimitiveRole<?>> {
 
-	public FMLCompilationUnitNode(AFmlCompilationUnit astNode, FMLSemanticsAnalyzer analyser) {
+	private static final Logger logger = Logger.getLogger(PrimitiveRoleNode.class.getPackage().getName());
+
+	public PrimitiveRoleNode(AJavaBasicRoleDeclaration astNode, FMLSemanticsAnalyzer analyser) {
 		super(astNode, analyser);
 	}
 
-	@Override
-	public FMLCompilationUnit buildFMLObjectFromAST() {
-		return getFactory().newCompilationUnit();
+	public PrimitiveRoleNode(PrimitiveRole<?> property, FMLSemanticsAnalyzer analyser) {
+		super(property, analyser);
 	}
 
 	@Override
-	public FMLCompilationUnitNode deserialize() {
-		return this;
+	public PrimitiveRole<?> buildFMLObjectFromAST() {
+		PrimitiveRole<?> returned = getFactory().newPrimitiveRole();
+		returned.setName(getName(getASTNode().getVariableDeclarator()).getText());
+		returned.setPrimitiveType(getTypeFactory().getPrimitiveType(getASTNode().getType()));
+		return returned;
 	}
 
 	@Override
 	public String getNormalizedFMLRepresentation(PrettyPrintContext context) {
-		return "CompilationUnit";
+		return "<primitive_role>";
 	}
 
 	@Override
 	public String updateFMLRepresentation(PrettyPrintContext context) {
-
-		System.out.println("********* updateFMLRepresentation for CompilationUnit " + getFMLObject());
-
-		// Abnormal case: even the VirtualModel is not defined
-		if (getFMLObject().getVirtualModel() == null) {
-			return getLastParsed();
-		}
-
-		List<FMLPrettyPrintable> childrenObjects = new ArrayList();
-		childrenObjects.add(getFMLObject().getVirtualModel());
-		return buildFMLRepresentation(childrenObjects, context);
+		System.out.println("********* updateFMLRepresentation for primitive_role<?> " + getFMLObject());
+		return "<primitive_role>";
 	}
 
 }

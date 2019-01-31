@@ -58,6 +58,8 @@ public abstract class FMLCoreSemanticsAnalyzer extends DepthFirstAdapter {
 
 	private final FMLModelFactory factory;
 
+	private final TypeFactory typeFactory;
+
 	// Stack of FMLObjectNode beeing build during semantics analyzing
 	protected Stack<FMLObjectNode<?, ?>> fmlNodes = new Stack<>();
 
@@ -67,12 +69,17 @@ public abstract class FMLCoreSemanticsAnalyzer extends DepthFirstAdapter {
 	public FMLCoreSemanticsAnalyzer(FMLModelFactory factory, Start tree, List<String> rawSource) {
 		this.factory = factory;
 		this.rawSource = rawSource;
+		typeFactory = new TypeFactory((FMLSemanticsAnalyzer) this);
 		tree.apply(this);
 		finalizeDeserialization();
 	}
 
 	public FMLModelFactory getFactory() {
 		return factory;
+	}
+
+	public TypeFactory getTypeFactory() {
+		return typeFactory;
 	}
 
 	public FlexoServiceManager getServiceManager() {
