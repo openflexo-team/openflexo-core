@@ -41,6 +41,8 @@ package org.openflexo.foundation.fml.parser;
 import java.util.List;
 
 import org.openflexo.foundation.fml.FMLModelFactory;
+import org.openflexo.foundation.fml.parser.fmlnodes.VirtualModelNode;
+import org.openflexo.foundation.fml.parser.node.AModelDeclaration;
 import org.openflexo.foundation.fml.parser.node.Start;
 
 /**
@@ -49,10 +51,21 @@ import org.openflexo.foundation.fml.parser.node.Start;
  * @author sylvain
  * 
  */
-public class FMLSemanticsAnalyzer extends FlexoBehaviourSemanticsAnalyzer {
+public class VirtualModelSemanticsAnalyzer extends CompilationUnitSemanticsAnalyzer {
 
-	public FMLSemanticsAnalyzer(FMLModelFactory factory, Start tree, List<String> rawSource) {
+	public VirtualModelSemanticsAnalyzer(FMLModelFactory factory, Start tree, List<String> rawSource) {
 		super(factory, tree, rawSource);
 	}
 
+	@Override
+	public void inAModelDeclaration(AModelDeclaration node) {
+		super.inAModelDeclaration(node);
+		push(new VirtualModelNode(node, (FMLSemanticsAnalyzer) this));
+	}
+
+	@Override
+	public void outAModelDeclaration(AModelDeclaration node) {
+		super.outAModelDeclaration(node);
+		pop();
+	}
 }

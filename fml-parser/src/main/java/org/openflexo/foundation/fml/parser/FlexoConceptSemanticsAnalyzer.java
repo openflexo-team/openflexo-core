@@ -41,6 +41,8 @@ package org.openflexo.foundation.fml.parser;
 import java.util.List;
 
 import org.openflexo.foundation.fml.FMLModelFactory;
+import org.openflexo.foundation.fml.parser.fmlnodes.FlexoConceptNode;
+import org.openflexo.foundation.fml.parser.node.AConceptDeclaration;
 import org.openflexo.foundation.fml.parser.node.Start;
 
 /**
@@ -49,10 +51,23 @@ import org.openflexo.foundation.fml.parser.node.Start;
  * @author sylvain
  * 
  */
-public class FMLSemanticsAnalyzer extends FlexoBehaviourSemanticsAnalyzer {
+public class FlexoConceptSemanticsAnalyzer extends VirtualModelSemanticsAnalyzer {
 
-	public FMLSemanticsAnalyzer(FMLModelFactory factory, Start tree, List<String> rawSource) {
+	public FlexoConceptSemanticsAnalyzer(FMLModelFactory factory, Start tree, List<String> rawSource) {
 		super(factory, tree, rawSource);
+	}
+
+	@Override
+	public void inAConceptDeclaration(AConceptDeclaration node) {
+		super.inAConceptDeclaration(node);
+		// System.out.println("DEBUT Nouveau concept " + node.getIdentifier().getText());
+		push(new FlexoConceptNode(node, (FMLSemanticsAnalyzer) this));
+	}
+
+	@Override
+	public void outAConceptDeclaration(AConceptDeclaration node) {
+		super.outAConceptDeclaration(node);
+		pop();
 	}
 
 }

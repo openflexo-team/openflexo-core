@@ -40,7 +40,10 @@ package org.openflexo.foundation.fml.parser;
 
 import java.util.List;
 
+import org.openflexo.foundation.fml.FMLCompilationUnit;
 import org.openflexo.foundation.fml.FMLModelFactory;
+import org.openflexo.foundation.fml.parser.fmlnodes.FMLCompilationUnitNode;
+import org.openflexo.foundation.fml.parser.node.AFmlCompilationUnit;
 import org.openflexo.foundation.fml.parser.node.Start;
 
 /**
@@ -49,10 +52,37 @@ import org.openflexo.foundation.fml.parser.node.Start;
  * @author sylvain
  * 
  */
-public class FMLSemanticsAnalyzer extends FlexoBehaviourSemanticsAnalyzer {
+public abstract class CompilationUnitSemanticsAnalyzer extends FMLCoreSemanticsAnalyzer {
 
-	public FMLSemanticsAnalyzer(FMLModelFactory factory, Start tree, List<String> rawSource) {
+	private FMLCompilationUnitNode compilationUnitNode;
+
+	public CompilationUnitSemanticsAnalyzer(FMLModelFactory factory, Start tree, List<String> rawSource) {
 		super(factory, tree, rawSource);
+	}
+
+	public FMLCompilationUnit getCompilationUnit() {
+		return compilationUnitNode.getFMLObject();
+	}
+
+	public FMLCompilationUnitNode getCompilationUnitNode() {
+		return compilationUnitNode;
+	}
+
+	@Override
+	protected final void finalizeDeserialization() {
+		finalizeDeserialization(compilationUnitNode);
+	}
+
+	@Override
+	public void inAFmlCompilationUnit(AFmlCompilationUnit node) {
+		super.inAFmlCompilationUnit(node);
+		push(new FMLCompilationUnitNode(node, (FMLSemanticsAnalyzer) this));
+	}
+
+	@Override
+	public void outAFmlCompilationUnit(AFmlCompilationUnit node) {
+		super.outAFmlCompilationUnit(node);
+		compilationUnitNode = pop();
 	}
 
 }

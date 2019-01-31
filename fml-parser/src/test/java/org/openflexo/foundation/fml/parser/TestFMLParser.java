@@ -38,8 +38,6 @@
 
 package org.openflexo.foundation.fml.parser;
 
-import static org.junit.Assert.fail;
-
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -49,14 +47,18 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.openflexo.foundation.fml.FMLCompilationUnit;
 import org.openflexo.foundation.fml.FMLModelFactory;
+import org.openflexo.foundation.fml.parser.fmlnodes.FMLCompilationUnitNode;
 import org.openflexo.foundation.test.OpenflexoTestCase;
 import org.openflexo.pamela.exceptions.ModelDefinitionException;
 import org.openflexo.rm.FileResourceImpl;
 import org.openflexo.rm.Resource;
 import org.openflexo.rm.ResourceLocator;
+import org.openflexo.toolbox.StringUtils;
 
 /**
- * A parameterized suite of unit tests iterating on FML files, and testing it
+ * A parameterized suite of unit tests iterating on FML files.
+ * 
+ * For each FML file, parse it.
  * 
  * @author sylvain
  *
@@ -92,7 +94,7 @@ public class TestFMLParser extends OpenflexoTestCase {
 	}
 
 	@Test
-	public void testResource() throws ModelDefinitionException {
+	public void testResource() throws ModelDefinitionException, ParseException {
 		testFMLCompilationUnit(fmlResource);
 	}
 
@@ -101,14 +103,22 @@ public class TestFMLParser extends OpenflexoTestCase {
 		instanciateTestServiceManager();
 	}
 
-	private static void testFMLCompilationUnit(Resource fileResource) throws ModelDefinitionException {
-		try {
-			FMLCompilationUnit compilationUnit = FMLParser.parse(((FileResourceImpl) fileResource).getFile(),
-					new FMLModelFactory(null, serviceManager));
-			System.out.println("virtualModel=" + compilationUnit.getVirtualModel().getFMLRepresentation());
-		} catch (ParseException e) {
-			e.printStackTrace();
-			fail();
+	private static void testFMLCompilationUnit(Resource fileResource) throws ModelDefinitionException, ParseException {
+		FMLCompilationUnit compilationUnit = FMLParser.parse(((FileResourceImpl) fileResource).getFile(),
+				new FMLModelFactory(null, serviceManager));
+		FMLCompilationUnitNode rootNode = (FMLCompilationUnitNode) compilationUnit.getPrettyPrintDelegate();
+		debug(rootNode, 0);
+		System.out.println("FML=\n" + compilationUnit.getVirtualModel().getFMLPrettyPrint());
+	}
+
+	private static void debug(FMLObjectNode<?, ?> node, int indent) {
+		System.out.println(StringUtils.buildWhiteSpaceIndentation(indent * 2) + " > " + node.getClass().getSimpleName() + " from "
+				+ node.getStartLine() + ":" + node.getStartChar() + " to " + node.getEndLine() + ":" + node.getEndChar());
+		// System.err.println(node.getLastParsed());
+		node.getLastParsed();
+		indent++;
+		for (FMLObjectNode<?, ?> child : node.getChildren()) {
+			debug(child, indent);
 		}
 	}
 

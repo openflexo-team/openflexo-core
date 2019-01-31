@@ -151,6 +151,7 @@ public interface FMLObject extends FlexoObject, Bindable, InnerResourceData/*<Vi
 	 * @param context
 	 * @return
 	 */
+	@Deprecated
 	public String getFMLRepresentation(FMLRepresentationContext context);
 
 	/**
@@ -158,8 +159,10 @@ public interface FMLObject extends FlexoObject, Bindable, InnerResourceData/*<Vi
 	 * 
 	 * @return
 	 */
+	@Deprecated
 	public String getFMLRepresentation();
 
+	@Deprecated
 	public void clearFMLRepresentation();
 
 	/**
@@ -388,11 +391,14 @@ public interface FMLObject extends FlexoObject, Bindable, InnerResourceData/*<Vi
 
 		// Voir du cote de GeneratorFormatter pour formatter tout ca
 		@Override
+		@Deprecated
 		public abstract String getFMLRepresentation(FMLRepresentationContext context);
 
+		@Deprecated
 		private String fmlRepresentation;
 
 		@Override
+		@Deprecated
 		public final String getFMLRepresentation() {
 			if (fmlRepresentation == null) {
 				fmlRepresentation = getFMLRepresentation(new FMLRepresentationContext());
@@ -430,6 +436,15 @@ public interface FMLObject extends FlexoObject, Bindable, InnerResourceData/*<Vi
 		public FMLModelFactory getDeserializationFactory() {
 			return deserializationFactory;
 		}
+
+		public String getFMLPrettyPrint() {
+			if (this instanceof FMLPrettyPrintable) {
+				FMLPrettyPrintDelegate<?> ppDelegate = ((FMLPrettyPrintable) this).getPrettyPrintDelegate();
+				return ppDelegate.getFMLRepresentation(ppDelegate.makePrettyPrintContext());
+			}
+			return getFMLRepresentation();
+		}
+
 	}
 
 	public static abstract class BindingIsRecommandedAndShouldBeValid<C extends FMLObject>

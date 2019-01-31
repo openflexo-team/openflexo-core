@@ -1,8 +1,8 @@
 /**
  * 
- * Copyright (c) 2014, Openflexo
+ * Copyright (c) 2019, Openflexo
  * 
- * This file is part of Fml-parser, a component of the software infrastructure 
+ * This file is part of FML-parser, a component of the software infrastructure 
  * developed at Openflexo.
  * 
  * 
@@ -36,9 +36,15 @@
  * 
  */
 
-package org.openflexo.foundation.fml.parser;
+package org.openflexo.foundation.fml.parser.fmlnodes;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import org.openflexo.foundation.fml.FMLCompilationUnit;
+import org.openflexo.foundation.fml.FMLPrettyPrintable;
+import org.openflexo.foundation.fml.parser.FMLObjectNode;
+import org.openflexo.foundation.fml.parser.FMLSemanticsAnalyzer;
 import org.openflexo.foundation.fml.parser.node.AFmlCompilationUnit;
 
 /**
@@ -60,4 +66,25 @@ public class FMLCompilationUnitNode extends FMLObjectNode<AFmlCompilationUnit, F
 	public FMLCompilationUnitNode deserialize() {
 		return this;
 	}
+
+	@Override
+	public String getNormalizedFMLRepresentation(PrettyPrintContext context) {
+		return "CompilationUnit";
+	}
+
+	@Override
+	public String updateFMLRepresentation(PrettyPrintContext context) {
+
+		System.out.println("********* updateFMLRepresentation for CompilationUnit " + getFMLObject());
+
+		// Abnormal case: even the VirtualModel is not defined
+		if (getFMLObject().getVirtualModel() == null) {
+			return getLastParsed();
+		}
+
+		List<FMLPrettyPrintable> childrenObjects = new ArrayList();
+		childrenObjects.add(getFMLObject().getVirtualModel());
+		return buildFMLRepresentation(childrenObjects, context);
+	}
+
 }

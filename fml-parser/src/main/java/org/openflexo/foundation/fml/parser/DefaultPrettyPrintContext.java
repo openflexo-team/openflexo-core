@@ -1,8 +1,8 @@
 /**
  * 
- * Copyright (c) 2014, Openflexo
+ * Copyright (c) 2019, Openflexo
  * 
- * This file is part of Fml-parser, a component of the software infrastructure 
+ * This file is part of FML-parser, a component of the software infrastructure 
  * developed at Openflexo.
  * 
  * 
@@ -38,32 +38,11 @@
 
 package org.openflexo.foundation.fml.parser;
 
-import org.openflexo.foundation.fml.FlexoConcept;
-import org.openflexo.foundation.fml.parser.node.AConceptDeclaration;
+import org.openflexo.foundation.fml.FMLPrettyPrintDelegate.PrettyPrintContext;
 
 /**
  * @author sylvain
  * 
  */
-public class FlexoConceptNode extends FMLObjectNode<AConceptDeclaration, FlexoConcept> {
-
-	public FlexoConceptNode(AConceptDeclaration astNode, FMLSemanticsAnalyzer analyser) {
-		super(astNode, analyser);
-	}
-
-	@Override
-	public FlexoConcept makeFMLObject() {
-		FlexoConcept returned = getFactory().newFlexoConcept();
-		returned.setName(getASTNode().getIdentifier().getText());
-		return returned;
-	}
-
-	@Override
-	public FlexoConceptNode deserialize() {
-		if (getParent() instanceof VirtualModelNode) {
-			((VirtualModelNode) getParent()).getFMLObject().addToFlexoConcepts(getFMLObject());
-		}
-		return this;
-	}
-
+public class DefaultPrettyPrintContext implements PrettyPrintContext {
 }

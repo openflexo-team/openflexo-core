@@ -115,7 +115,7 @@ import org.openflexo.toolbox.StringUtils;
 @ImplementationClass(FlexoConcept.FlexoConceptImpl.class)
 @XMLElement
 @Imports({ @Import(FlexoEvent.class), @Import(FlexoEnum.class) })
-public interface FlexoConcept extends FlexoConceptObject {
+public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 
 	@PropertyIdentifier(type = VirtualModel.class)
 	public static final String OWNER_KEY = "owner";

@@ -36,23 +36,51 @@
  * 
  */
 
-package org.openflexo.foundation.fml.parser;
+package org.openflexo.foundation.fml.parser.fmlnodes;
 
-import java.util.List;
-
-import org.openflexo.foundation.fml.FMLModelFactory;
-import org.openflexo.foundation.fml.parser.node.Start;
+import org.openflexo.foundation.fml.FlexoConcept;
+import org.openflexo.foundation.fml.parser.FMLObjectNode;
+import org.openflexo.foundation.fml.parser.FMLSemanticsAnalyzer;
+import org.openflexo.foundation.fml.parser.node.AConceptDeclaration;
 
 /**
- * This class implements the semantics analyzer for a parsed FML compilation unit.<br>
- * 
  * @author sylvain
  * 
  */
-public class FMLSemanticsAnalyzer extends FlexoBehaviourSemanticsAnalyzer {
+public class FlexoBehaviourNode extends FMLObjectNode<AConceptDeclaration, FlexoConcept> {
 
-	public FMLSemanticsAnalyzer(FMLModelFactory factory, Start tree, List<String> rawSource) {
-		super(factory, tree, rawSource);
+	public FlexoBehaviourNode(AConceptDeclaration astNode, FMLSemanticsAnalyzer analyser) {
+		super(astNode, analyser);
+	}
+
+	public FlexoBehaviourNode(FlexoConcept concept, FMLSemanticsAnalyzer analyser) {
+		super(concept, analyser);
+	}
+
+	@Override
+	public FlexoConcept makeFMLObject() {
+		FlexoConcept returned = getFactory().newFlexoConcept();
+		returned.setName(getASTNode().getIdentifier().getText());
+		return returned;
+	}
+
+	@Override
+	public FlexoBehaviourNode deserialize() {
+		if (getParent() instanceof VirtualModelNode) {
+			((VirtualModelNode) getParent()).getFMLObject().addToFlexoConcepts(getFMLObject());
+		}
+		return this;
+	}
+
+	@Override
+	public String getNormalizedFMLRepresentation(PrettyPrintContext context) {
+		return "concept";
+	}
+
+	@Override
+	public String updateFMLRepresentation(PrettyPrintContext context) {
+		System.out.println("********* updateFMLRepresentation for FlexoConcept " + getFMLObject());
+		return "concept";
 	}
 
 }

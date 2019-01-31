@@ -10,14 +10,14 @@ model MyModel {
 		
 		int a;
 		boolean h;
-		float i,j;
+		float i;
 		
 	}
 
 	concept TestBasicTypes {
 		
 		Date a;
-		String b,c;
+		String b;
 		ConceptB d;
 	}
 

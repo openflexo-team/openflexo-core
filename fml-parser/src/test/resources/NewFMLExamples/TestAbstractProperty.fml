@@ -1,0 +1,17 @@
+/**
+ * Testing abstract properties
+ */
+
+use org.openflexo.foundation.fml.rt.FMLRTModelSlot as FMLRT;
+
+import java.lang.String;
+
+model MyModel {
+
+	// Testing abstract properties
+	concept ConceptA {
+		abstract int aValue;
+		//public abstract String aString;
+	}
+
+}

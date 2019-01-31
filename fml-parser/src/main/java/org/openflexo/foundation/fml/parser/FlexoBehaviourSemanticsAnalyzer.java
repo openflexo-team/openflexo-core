@@ -41,6 +41,7 @@ package org.openflexo.foundation.fml.parser;
 import java.util.List;
 
 import org.openflexo.foundation.fml.FMLModelFactory;
+import org.openflexo.foundation.fml.parser.node.ABehaviourDeclarationInnerConceptDeclaration;
 import org.openflexo.foundation.fml.parser.node.Start;
 
 /**
@@ -49,10 +50,22 @@ import org.openflexo.foundation.fml.parser.node.Start;
  * @author sylvain
  * 
  */
-public class FMLSemanticsAnalyzer extends FlexoBehaviourSemanticsAnalyzer {
+public class FlexoBehaviourSemanticsAnalyzer extends FlexoPropertySemanticsAnalyzer {
 
-	public FMLSemanticsAnalyzer(FMLModelFactory factory, Start tree, List<String> rawSource) {
+	public FlexoBehaviourSemanticsAnalyzer(FMLModelFactory factory, Start tree, List<String> rawSource) {
 		super(factory, tree, rawSource);
+	}
+
+	@Override
+	public void inABehaviourDeclarationInnerConceptDeclaration(ABehaviourDeclarationInnerConceptDeclaration node) {
+		super.inABehaviourDeclarationInnerConceptDeclaration(node);
+		// push(new FlexoBehaviourNode(node, this));
+	}
+
+	@Override
+	public void outABehaviourDeclarationInnerConceptDeclaration(ABehaviourDeclarationInnerConceptDeclaration node) {
+		super.outABehaviourDeclarationInnerConceptDeclaration(node);
+		// pop();
 	}
 
 }

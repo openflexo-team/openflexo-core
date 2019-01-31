@@ -1,8 +1,8 @@
 /**
  * 
- * Copyright (c) 2014, Openflexo
+ * Copyright (c) 2019, Openflexo
  * 
- * This file is part of Fml-parser, a component of the software infrastructure 
+ * This file is part of FML-parser, a component of the software infrastructure 
  * developed at Openflexo.
  * 
  * 
@@ -37,7 +37,6 @@
  */
 
 package org.openflexo.foundation.fml.parser;
-
 
 @SuppressWarnings("serial")
 public class ParseException extends Exception {

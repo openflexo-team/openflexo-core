@@ -1,8 +1,8 @@
 /**
  * 
- * Copyright (c) 2014, Openflexo
+ * Copyright (c) 2014-2015, Openflexo
  * 
- * This file is part of Fml-parser, a component of the software infrastructure 
+ * This file is part of Flexo-foundation, a component of the software infrastructure 
  * developed at Openflexo.
  * 
  * 
@@ -39,51 +39,29 @@
 package org.openflexo.foundation.fml;
 
 import org.openflexo.pamela.annotations.Getter;
-import org.openflexo.pamela.annotations.ImplementationClass;
 import org.openflexo.pamela.annotations.ModelEntity;
 import org.openflexo.pamela.annotations.PropertyIdentifier;
 import org.openflexo.pamela.annotations.Setter;
 
-@ModelEntity
-@ImplementationClass(FMLCompilationUnit.FMLCompilationUnitImpl.class)
-public interface FMLCompilationUnit extends FMLObject, FMLPrettyPrintable {
+/**
+ * Implemented by all FMLObjects which are pretty-printable in FML language<br>
+ * 
+ * Pretty-print is operated here using a {@link FMLPrettyPrintDelegate}
+ * 
+ * @author sylvain
+ * 
+ */
+@ModelEntity(isAbstract = true)
+public interface FMLPrettyPrintable extends FMLObject {
 
-	@PropertyIdentifier(type = VirtualModel.class)
-	public static final String VIRTUAL_MODEL_KEY = "virtualModel";
+	@PropertyIdentifier(type = FMLPrettyPrintDelegate.class)
+	public static final String PRETTY_PRINT_DELEGATE_KEY = "prettyPrintDelegate";
 
-	/**
-	 * Return the {@link VirtualModel} defined by this FMLCompilationUnit
-	 * 
-	 * @return
-	 */
-	@Getter(value = VIRTUAL_MODEL_KEY)
-	public VirtualModel getVirtualModel();
+	@Getter(value = PRETTY_PRINT_DELEGATE_KEY, ignoreType = true)
+	public FMLPrettyPrintDelegate<?> getPrettyPrintDelegate();
 
-	@Setter(VIRTUAL_MODEL_KEY)
-	public void setVirtualModel(VirtualModel virtualModel);
+	@Setter(PRETTY_PRINT_DELEGATE_KEY)
+	public void setPrettyPrintDelegate(FMLPrettyPrintDelegate<?> delegate);
 
-	public abstract class FMLCompilationUnitImpl extends FMLObjectImpl implements FMLCompilationUnit {
-
-		@Override
-		public FMLModelFactory getFMLModelFactory() {
-
-			FMLModelFactory returned = super.getFMLModelFactory();
-			if (returned == null) {
-				return getDeserializationFactory();
-			}
-			return returned;
-		}
-
-		@Override
-		public VirtualModel getResourceData() {
-			return getVirtualModel();
-		}
-
-		@Override
-		public String getFMLRepresentation(FMLRepresentationContext context) {
-			return "<not_implemented:" + getStringRepresentation() + ">";
-		}
-
-	}
-
+	public String getFMLPrettyPrint();
 }

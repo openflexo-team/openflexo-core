@@ -1,8 +1,8 @@
 /**
  * 
- * Copyright (c) 2014, Openflexo
+ * Copyright (c) 2019, Openflexo
  * 
- * This file is part of Fml-parser, a component of the software infrastructure 
+ * This file is part of FML-parser, a component of the software infrastructure 
  * developed at Openflexo.
  * 
  * 
@@ -36,34 +36,51 @@
  * 
  */
 
-package org.openflexo.foundation.fml.parser;
+package org.openflexo.foundation.fml.parser.fmlnodes;
 
-import org.openflexo.foundation.fml.VirtualModel;
-import org.openflexo.foundation.fml.parser.node.AModelDeclaration;
+import org.openflexo.foundation.fml.FlexoConcept;
+import org.openflexo.foundation.fml.parser.FMLObjectNode;
+import org.openflexo.foundation.fml.parser.FMLSemanticsAnalyzer;
+import org.openflexo.foundation.fml.parser.node.AConceptDeclaration;
 
 /**
  * @author sylvain
  * 
  */
-public class VirtualModelNode extends FMLObjectNode<AModelDeclaration, VirtualModel> {
+public class FlexoConceptNode extends FMLObjectNode<AConceptDeclaration, FlexoConcept> {
 
-	public VirtualModelNode(AModelDeclaration astNode, FMLSemanticsAnalyzer analyser) {
+	public FlexoConceptNode(AConceptDeclaration astNode, FMLSemanticsAnalyzer analyser) {
 		super(astNode, analyser);
 	}
 
+	public FlexoConceptNode(FlexoConcept concept, FMLSemanticsAnalyzer analyser) {
+		super(concept, analyser);
+	}
+
 	@Override
-	public VirtualModel makeFMLObject() {
-		VirtualModel returned = getFactory().newVirtualModel();
+	public FlexoConcept makeFMLObject() {
+		FlexoConcept returned = getFactory().newFlexoConcept();
 		returned.setName(getASTNode().getIdentifier().getText());
 		return returned;
 	}
 
 	@Override
-	public VirtualModelNode deserialize() {
-		if (getParent() instanceof FMLCompilationUnitNode) {
-			((FMLCompilationUnitNode) getParent()).getFMLObject().setVirtualModel(getFMLObject());
+	public FlexoConceptNode deserialize() {
+		if (getParent() instanceof VirtualModelNode) {
+			((VirtualModelNode) getParent()).getFMLObject().addToFlexoConcepts(getFMLObject());
 		}
 		return this;
+	}
+
+	@Override
+	public String getNormalizedFMLRepresentation(PrettyPrintContext context) {
+		return "concept";
+	}
+
+	@Override
+	public String updateFMLRepresentation(PrettyPrintContext context) {
+		System.out.println("********* updateFMLRepresentation for FlexoConcept " + getFMLObject());
+		return "concept";
 	}
 
 }

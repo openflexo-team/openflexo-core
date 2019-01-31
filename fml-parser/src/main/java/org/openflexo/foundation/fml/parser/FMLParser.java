@@ -1,8 +1,8 @@
 /**
  * 
- * Copyright (c) 2014, Openflexo
+ * Copyright (c) 2019, Openflexo
  * 
- * This file is part of Fml-parser, a component of the software infrastructure 
+ * This file is part of FML-parser, a component of the software infrastructure 
  * developed at Openflexo.
  * 
  * 
@@ -40,8 +40,14 @@ package org.openflexo.foundation.fml.parser;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.PushbackReader;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.fml.FMLCompilationUnit;
@@ -62,7 +68,8 @@ import org.openflexo.foundation.fml.parser.parser.Parser;
  */
 public class FMLParser {
 
-	private static final Logger LOGGER = Logger.getLogger(FMLParser.class.getPackage().getName());
+	@SuppressWarnings("unused")
+	private static final Logger logger = Logger.getLogger(FMLParser.class.getPackage().getName());
 
 	/**
 	 * This is the method to invoke to perform a parsing. Syntaxic and (some) semantics analyzer are performed and returned value is an
@@ -74,6 +81,9 @@ public class FMLParser {
 	 *             if expression was not parsable
 	 */
 	public static FMLCompilationUnit parse(File inputFile, FMLModelFactory modelFactory) throws ParseException {
+
+		// TODO: handle close of all streams !!!!
+
 		try (FileReader in = new FileReader(inputFile)) {
 			System.out.println("Parsing: " + inputFile);
 
@@ -84,13 +94,33 @@ public class FMLParser {
 			Start tree = p.parse();
 
 			// Apply the semantics analyzer.
-			FMLSemanticsAnalyzer t = new FMLSemanticsAnalyzer(modelFactory, tree);
+			FMLSemanticsAnalyzer t = new FMLSemanticsAnalyzer(modelFactory, tree, readRawSource(new FileInputStream(inputFile)));
 
 			return t.getCompilationUnit();
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw new ParseException(e.getMessage() + " while parsing " + inputFile);
 		}
+	}
+
+	/**
+	 * Read raw source of the file
+	 * 
+	 * @param ioDelegate
+	 * @throws IOException
+	 */
+	private static List<String> readRawSource(InputStream inputStream) throws IOException {
+		List<String> returned = new ArrayList<>();
+		try (BufferedReader br = new BufferedReader(new InputStreamReader(inputStream))) {
+			String nextLine = null;
+			do {
+				nextLine = br.readLine();
+				if (nextLine != null) {
+					returned.add(nextLine);
+				}
+			} while (nextLine != null);
+		}
+		return returned;
 	}
 
 }

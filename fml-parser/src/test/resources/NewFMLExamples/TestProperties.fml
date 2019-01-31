@@ -15,7 +15,7 @@ model MyModel {
 	    String[0,*] yEnAPlusieurs;
 	    String... equivalentToPrevious;
 	    String[2,8] auMoins2AuPlus8;
-	    int titi,tutu,tata;
+	    int titi = 2+3;
 	    List<ConceptB>[0,*] aJavaListOfConceptB;
 	    
 	    // With a visibility identifier
@@ -43,7 +43,7 @@ model MyModel {
 	}
 
 	// Test AbstractProperty
-	concept ConceptC {
+	concept ConceptD {
 		
 		abstract int aValue;
 		public abstract String aString;
@@ -52,7 +52,7 @@ model MyModel {
 	}
 
 	// Test GetSetProperty
-	concept ConceptC {
+	concept ConceptE {
 		
 		private int internalValue;
 		

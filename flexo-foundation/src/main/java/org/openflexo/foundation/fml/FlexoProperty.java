@@ -82,7 +82,7 @@ import org.openflexo.toolbox.StringUtils;
 @ImplementationClass(FlexoProperty.FlexoPropertyImpl.class)
 @Imports({ @Import(AbstractProperty.class), @Import(FlexoRole.class), @Import(ExpressionProperty.class), @Import(GetProperty.class),
 		@Import(GetSetProperty.class) })
-public abstract interface FlexoProperty<T> extends FlexoConceptObject {
+public abstract interface FlexoProperty<T> extends FlexoConceptObject, FMLPrettyPrintable {
 
 	public static final String RESULTING_TYPE_PROPERTY = "resultingType";
 

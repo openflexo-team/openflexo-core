@@ -1,8 +1,8 @@
 /**
  * 
- * Copyright (c) 2014, Openflexo
+ * Copyright (c) 2014-2015, Openflexo
  * 
- * This file is part of Fml-parser, a component of the software infrastructure 
+ * This file is part of Flexo-foundation, a component of the software infrastructure 
  * developed at Openflexo.
  * 
  * 
@@ -38,52 +38,46 @@
 
 package org.openflexo.foundation.fml;
 
-import org.openflexo.pamela.annotations.Getter;
-import org.openflexo.pamela.annotations.ImplementationClass;
-import org.openflexo.pamela.annotations.ModelEntity;
-import org.openflexo.pamela.annotations.PropertyIdentifier;
-import org.openflexo.pamela.annotations.Setter;
-
-@ModelEntity
-@ImplementationClass(FMLCompilationUnit.FMLCompilationUnitImpl.class)
-public interface FMLCompilationUnit extends FMLObject, FMLPrettyPrintable {
-
-	@PropertyIdentifier(type = VirtualModel.class)
-	public static final String VIRTUAL_MODEL_KEY = "virtualModel";
+/**
+ * A delegate providing pretty-print to an FMLObject.<br>
+ * 
+ * @author sylvain
+ * 
+ */
+public interface FMLPrettyPrintDelegate<T extends FMLObject> {
 
 	/**
-	 * Return the {@link VirtualModel} defined by this FMLCompilationUnit
+	 * Returned object beeing pretty-printed by this delegate
 	 * 
 	 * @return
 	 */
-	@Getter(value = VIRTUAL_MODEL_KEY)
-	public VirtualModel getVirtualModel();
+	public T getFMLObject();
 
-	@Setter(VIRTUAL_MODEL_KEY)
-	public void setVirtualModel(VirtualModel virtualModel);
+	/**
+	 * Return normalized FML representation for that object
+	 * 
+	 * @return
+	 */
+	public String getNormalizedFMLRepresentation(PrettyPrintContext context);
 
-	public abstract class FMLCompilationUnitImpl extends FMLObjectImpl implements FMLCompilationUnit {
+	/**
+	 * Return FML representation for that object<br>
+	 * 
+	 * This representation might be different as the normalized one, as underlying FMLObject could be obtained from a parsed FML file. Some
+	 * pretty-print implementations may want to preserve original formatting and syntax (including comments)
+	 * 
+	 * @return
+	 */
+	public String getFMLRepresentation(PrettyPrintContext context);
 
-		@Override
-		public FMLModelFactory getFMLModelFactory() {
+	/**
+	 * Build and return a new pretty-print context
+	 * 
+	 * @return
+	 */
+	public PrettyPrintContext makePrettyPrintContext();
 
-			FMLModelFactory returned = super.getFMLModelFactory();
-			if (returned == null) {
-				return getDeserializationFactory();
-			}
-			return returned;
-		}
-
-		@Override
-		public VirtualModel getResourceData() {
-			return getVirtualModel();
-		}
-
-		@Override
-		public String getFMLRepresentation(FMLRepresentationContext context) {
-			return "<not_implemented:" + getStringRepresentation() + ">";
-		}
+	public interface PrettyPrintContext {
 
 	}
-
 }

@@ -4,6 +4,8 @@ dependencies {
   // external dep
 
   // testing dep
+  compile group: 'junit', name: 'junit', version: '4.+'
+  testCompile testUtils()
   testCompile project(':flexo-foundation-test')
   testCompile project(':flexo-test-resources')
 }

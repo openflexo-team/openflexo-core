@@ -371,15 +371,11 @@ Productions
 		{get_set_property}    get_set_property_declaration;
 	
 	basic_role_declaration =
-        {java} visibility? type cardinality? variable_declarators semi |
+        {java} visibility? type cardinality? variable_declarator semi |
         {fml} visibility? type cardinality? identifier with [role]:identifier fml_parameters? semi |
         {fml_fully_qualified} visibility? type cardinality? identifier with [ta_id]:identifier colon_colon [role]:identifier fml_parameters? semi;
 
-    variable_declarators =
-        {declarator}  variable_declarator |
-        {declarators} variable_declarators comma variable_declarator;
-
-    variable_declarator =
+   variable_declarator =
         {identifier}  identifier |
         {initializer} identifier assign assignment_expression;
 
@@ -395,13 +391,9 @@ Productions
         {expression} visibility? type [identifier]:identifier values [expression_value]:expression semi;
 
 	abstract_property_declaration =
-        visibility? abstract type abstract_property_declarators semi;
+        visibility? abstract type variable_declarator semi;
 
-    abstract_property_declarators =
-        {declarator}  identifier |
-        {declarators} abstract_property_declarators comma identifier;
-
-	get_set_property_declaration =
+ 	get_set_property_declaration =
         visibility? type identifier l_brc get_declaration set_declaration ? r_brc semi;
 
 	get_declaration = type get l_par r_par flexo_behaviour_body;
@@ -446,7 +438,7 @@ Productions
     	{statement}            statement;
  	
 	local_variable_declaration_statement =
-    	type variable_declarators semi;
+    	type variable_declarator semi;
 	
     //local_variable_declaration =
     //    {primitive} type variable_declarators |
