@@ -38,8 +38,6 @@
 
 package org.openflexo.foundation.fml.parser;
 
-import java.util.List;
-
 import org.openflexo.foundation.fml.FMLCompilationUnit;
 import org.openflexo.foundation.fml.FMLModelFactory;
 import org.openflexo.foundation.fml.parser.fmlnodes.FMLCompilationUnitNode;
@@ -60,7 +58,7 @@ public abstract class CompilationUnitSemanticsAnalyzer extends FMLCoreSemanticsA
 
 	private FMLCompilationUnitNode compilationUnitNode;
 
-	public CompilationUnitSemanticsAnalyzer(FMLModelFactory factory, Start tree, List<String> rawSource) {
+	public CompilationUnitSemanticsAnalyzer(FMLModelFactory factory, Start tree, RawSource rawSource) {
 		super(factory, tree, rawSource);
 	}
 
@@ -98,7 +96,10 @@ public abstract class CompilationUnitSemanticsAnalyzer extends FMLCoreSemanticsA
 	@Override
 	public void outAJavaImportImportDeclaration(AJavaImportImportDeclaration node) {
 		super.outAJavaImportImportDeclaration(node);
-		pop();
+		JavaImportNode returned = pop();
+		System.out.println("Je cree un import depuis " + returned.getLastParsedFragment() + " which is ["
+				+ returned.getLastParsedFragment().getRawText() + "]");
+
 	}
 
 	@Override

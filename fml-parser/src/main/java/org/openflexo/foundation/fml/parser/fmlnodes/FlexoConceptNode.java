@@ -101,7 +101,7 @@ public class FlexoConceptNode extends FMLObjectNode<AConceptDeclaration, FlexoCo
 
 		// Abnormal case: the model object is not defined
 		if (getFMLObject() == null) {
-			return getLastParsed();
+			return getLastParsedFragment().getRawText();
 		}
 
 		return updatePrettyPrintForChildren(context);

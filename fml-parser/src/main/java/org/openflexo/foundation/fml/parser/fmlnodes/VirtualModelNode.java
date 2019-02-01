@@ -102,7 +102,7 @@ public class VirtualModelNode extends FMLObjectNode<AModelDeclaration, VirtualMo
 
 		// Abnormal case: even the VirtualModel is not defined
 		if (getFMLObject() == null) {
-			return getLastParsed();
+			return getLastParsedFragment().getRawText();
 		}
 
 		return updatePrettyPrintForChildren(context);

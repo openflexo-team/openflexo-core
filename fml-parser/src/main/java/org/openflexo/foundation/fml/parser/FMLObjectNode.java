@@ -49,6 +49,8 @@ import org.openflexo.foundation.fml.FMLObject;
 import org.openflexo.foundation.fml.FMLPrettyPrintDelegate;
 import org.openflexo.foundation.fml.FMLPrettyPrintable;
 import org.openflexo.foundation.fml.FlexoConcept;
+import org.openflexo.foundation.fml.parser.RawSource.RawSourceFragment;
+import org.openflexo.foundation.fml.parser.RawSource.RawSourcePosition;
 import org.openflexo.foundation.fml.parser.fmlnodes.FMLCompilationUnitNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.FlexoConceptNode;
 import org.openflexo.foundation.fml.parser.node.Node;
@@ -75,8 +77,9 @@ public abstract class FMLObjectNode<N extends Node, T extends FMLPrettyPrintable
 	private FMLObjectNode<?, ?> parent;
 	private ArrayList<FMLObjectNode<?, ?>> children = new ArrayList<>();
 
-	private int startLine = -1, startChar = -1;
-	private int endLine = -1, endChar = -1;
+	private RawSourcePosition startPosition;
+	private RawSourcePosition endPosition;
+	private RawSourceFragment parsedFragment;
 
 	public FMLObjectNode(N astNode, FMLSemanticsAnalyzer analyser) {
 		this.astNode = astNode;
@@ -146,24 +149,21 @@ public abstract class FMLObjectNode<N extends Node, T extends FMLPrettyPrintable
 
 	protected void handleToken(Token token) {
 
-		// System.out.println(
-		// "Handle token [" + token.getText() + "] " + token.getLine() + ":" + token.getPos() + ":" + token.getText().length());
+		// System.out.println("Receiving Token " + token.getLine() + ":" + token.getPos() + ":" + token.getText() + " tokenEnd=" + tokenEnd
+		// + " endPosition=" + endPosition);
 
-		if (startLine == -1 || startLine > token.getLine()) {
-			startLine = token.getLine();
-			startChar = -1;
+		RawSourcePosition tokenStart = getRawSource().makePositionBeforeChar(token.getLine(), token.getPos());
+		RawSourcePosition tokenEnd = getRawSource().makePositionBeforeChar(token.getLine(), token.getPos() + token.getText().length());
+
+		if (startPosition == null || tokenStart.compareTo(startPosition) < 0) {
+			startPosition = tokenStart;
+			parsedFragment = null;
 		}
-		if (startChar == -1 || startChar > token.getPos()) {
-			startChar = token.getPos();
+		if (endPosition == null || tokenEnd.compareTo(endPosition) > 0) {
+			endPosition = tokenEnd;
+			parsedFragment = null;
 		}
 
-		if (endLine == -1 || endLine < token.getLine()) {
-			endLine = token.getLine();
-			endChar = -1;
-		}
-		if (endChar == -1 || endChar < token.getPos()) {
-			endChar = token.getPos() + token.getText().length();
-		}
 		if (getParent() != null) {
 			getParent().handleToken(token);
 		}
@@ -174,103 +174,38 @@ public abstract class FMLObjectNode<N extends Node, T extends FMLPrettyPrintable
 	 * 
 	 * @return
 	 */
-	public List<String> getRawSource() {
+	public RawSource getRawSource() {
 		return analyser.getRawSource();
 	}
 
 	/**
-	 * Return the number of the starting line (all line numbers start with 1), where underlying model object is textually serialized,
-	 * inclusive
+	 * Return starting position of RawSource, where underlying model object is textually serialized, inclusive
 	 * 
 	 * @return
 	 */
-	public int getStartLine() {
-		return startLine;
+	public RawSourcePosition getStartPosition() {
+		return startPosition;
 	}
 
 	/**
-	 * Return the number of the starting char (starting at 1) in starting line, where underlying model object is textually serialized,
-	 * inclusive
+	 * Return end position of RawSource, where underlying model object is textually serialized, inclusive
 	 * 
 	 * @return
 	 */
-	public int getStartChar() {
-		return startChar;
+	public RawSourcePosition getEndPosition() {
+		return endPosition;
 	}
 
 	/**
-	 * Return the number of the ending line (all line numbers start with 1), where underlying model object is textually serialized,
-	 * inclusive
+	 * Return fragment representing underlying FMLObject as a String in FML language, as it was last parsed
 	 * 
 	 * @return
 	 */
-	public int getEndLine() {
-		return endLine;
-	}
-
-	/**
-	 * Return the number of the ending char (starting at 1) in ending line, where underlying model object is textually serialized, inclusive
-	 * 
-	 * @return
-	 */
-	public int getEndChar() {
-		return endChar;
-	}
-
-	/**
-	 * Build and return a String representing underlying FMLObject as a String in FML language, as it was last parsed
-	 * 
-	 * @return
-	 */
-	public String getLastParsed() {
-		return extract(getStartLine(), getStartChar(), getEndLine(), getEndChar());
-	}
-
-	/**
-	 * Build and return a String extracted from raw source with start and end bounds
-	 * 
-	 * @return
-	 */
-	public String extract(int startLine, int startChar, int endLine, int endChar) {
-		if (startLine > -1 && startChar > -1 && endLine > -1 && endChar > -1 && startLine <= endLine) {
-			if (startLine == endLine) {
-				// All in one line
-				// System.out.println("On retourne [" + getRawSource().get(startLine - 1).substring(startChar - 1, endChar) + "]");
-				return getRawSource().get(startLine - 1).substring(startChar - 1, endChar);
-			}
-			StringBuffer sb = new StringBuffer();
-			for (int i = startLine; i <= endLine; i++) {
-				if (i == startLine) {
-					// First line
-					sb.append(getRawSource().get(i - 1).substring(startChar - 1) + "\n");
-				}
-				else if (i == endLine) {
-					// Last line
-					// if (endChar > 0) {
-					try {
-						if (endChar > getRawSource().get(i - 1).length()) {
-							sb.append(getRawSource().get(i - 1).substring(0, endChar - 1) + "\n");
-						}
-						else {
-							sb.append(getRawSource().get(i - 1).substring(0, endChar));
-						}
-					} catch (StringIndexOutOfBoundsException e) {
-						System.out.println("Bizarre, pour " + getClass().getSimpleName() + " from " + startLine + ":" + startChar + " to "
-								+ endLine + ":" + endChar);
-						System.out.println("String = [" + getRawSource().get(i - 1) + "]");
-						System.out.println("Je cherche a extraire 0-" + endChar);
-						sb.append("ERROR!");
-						Thread.dumpStack();
-					}
-					// }
-				}
-				else {
-					sb.append(getRawSource().get(i - 1) + "\n");
-				}
-			}
-			return sb.toString();
+	public RawSourceFragment getLastParsedFragment() {
+		if (parsedFragment == null && getStartPosition() != null && getEndPosition() != null) {
+			parsedFragment = getRawSource().makeFragment(getStartPosition(), getEndPosition());
 		}
-		return null;
+		return parsedFragment;
 	}
 
 	@Override
@@ -361,7 +296,7 @@ public abstract class FMLObjectNode<N extends Node, T extends FMLPrettyPrintable
 		List<PrettyPrintableContents> childrenObjects = preparePrettyPrint(context);
 
 		if (childrenObjects.size() == 0) {
-			return getLastParsed();
+			return getLastParsedFragment().getRawText();
 		}
 
 		Map<PrettyPrintableContents, String> updatedChildRepresentations = new HashMap<>();
@@ -385,17 +320,18 @@ public abstract class FMLObjectNode<N extends Node, T extends FMLPrettyPrintable
 		}
 
 		if (debug) {
-			System.out.println("-------------------------> START Pretty-Print for " + getClass().getSimpleName() + " " + getStartLine()
-					+ ":" + getStartChar() + "-" + getEndLine() + ":" + getEndChar());
-			System.out.println("last parsed: [" + getLastParsed() + "]");
+			System.out.println("-------------------------> START Pretty-Print for " + getClass().getSimpleName());
+			System.out.println("last parsed: [" + getLastParsedFragment() + "]");
 		}
-		int currentLine = getStartLine();
-		int currentChar = getStartChar();
+
+		RawSourcePosition current = getStartPosition();
+		// int currentLine = getStartLine();
+		// int currentChar = getStartChar();
 		StringBuffer sb = new StringBuffer();
 
-		if (debug) {
+		/*if (debug) {
 			System.out.println("currentLine=" + currentLine + " currentChar=" + currentChar);
-		}
+		}*/
 
 		for (PrettyPrintableContents childObject : childrenObjects) {
 			if (childObject instanceof ChildContents) {
@@ -403,48 +339,53 @@ public abstract class FMLObjectNode<N extends Node, T extends FMLPrettyPrintable
 				// System.out.println(
 				// "> " + childNode.getClass().getSimpleName() + " from " + childNode.getStartLine() + ":" + childNode.getStartChar()
 				// + "-" + childNode.getEndLine() + ":" + childNode.getEndChar() + " for " + childNode.getFMLObject());
-
-				int toLine = childNode.getStartLine();
+				RawSourcePosition toPosition = childNode.getStartPosition();
+				/*int toLine = childNode.getStartLine();
 				int toChar = childNode.getStartChar();
 				if (toChar == 1) {
 					toLine--;
 					toChar = getRawSource().get(toLine - 1).length();
-				}
-				String prelude = extract(currentLine, currentChar, toLine, toChar);
+				}*/
+
+				RawSourceFragment prelude = getRawSource().makeFragment(current, toPosition);
+
+				// RawSourceFragment prelude = extract(currentLine, currentChar, toLine, toChar);
 				if (debug) {
-					System.out.println("Before handling " + childNode.getFMLObject() + " / Adding (" + currentLine + ":" + currentChar
-							+ " a " + toLine + ":" + toChar + ") value [" + prelude + "]");
+					System.out.println("Before handling " + childNode.getFMLObject() + " / Adding " + prelude + " value ["
+							+ prelude.getRawText() + "]");
 				}
-				sb.append(prelude);
+				sb.append(prelude.getRawText());
 
 				String updatedChildrenPP = childNode.updateFMLRepresentation(context.derive());
 				if (debug) {
-					System.out.println("Now consider " + getFMLObject() + " (" + childNode.getStartLine() + ":" + childNode.getStartChar()
-							+ "-" + childNode.getEndLine() + ":" + childNode.getEndChar() + ") value [" + updatedChildrenPP + "]");
+					System.out.println("Now consider " + getFMLObject() + " " + childNode.getLastParsedFragment() + " value ["
+							+ updatedChildrenPP + "]");
 				}
 				sb.append(updatedChildrenPP);
-				currentLine = childNode.getEndLine();
+
+				current = childNode.getEndPosition();
+
+				/*currentLine = childNode.getEndLine();
 				currentChar = childNode.getEndChar() + 1;
 				if (currentChar >= getRawSource().get(currentLine - 1).length()) {
 					currentLine++;
 					currentChar = 1;
-				}
+				}*/
 				if (debug) {
-					System.out.println("AFTER adding children currentLine=" + currentLine + " currentChar=" + currentChar);
+					System.out.println("AFTER adding children current=" + current);
 				}
 			}
 		}
 
-		String postlude = extract(currentLine, currentChar, getEndLine(), getEndChar());
-		if (debug) {
-			System.out.println("At the end for " + getFMLObject() + " / Adding remaining (" + currentLine + ":" + currentChar + "-"
-					+ getEndLine() + ":" + getEndChar() + ") value [" + postlude + "]");
-		}
-		sb.append(postlude);
+		RawSourceFragment postlude = getRawSource().makeFragment(current, getEndPosition());
 
 		if (debug) {
-			System.out.println("<------------------------> DONE Pretty-Print for " + getClass().getSimpleName() + " " + getStartLine() + ":"
-					+ getStartChar() + "-" + getEndLine() + ":" + getEndChar());
+			System.out.println("At the end for " + getFMLObject() + " / Adding remaining " + postlude + ") value [" + postlude + "]");
+		}
+		sb.append(postlude.getRawText());
+
+		if (debug) {
+			System.out.println("<------------------------> DONE Pretty-Print for " + getClass().getSimpleName());
 			System.out.println("RESULT: [" + sb.toString() + "]");
 		}
 		return sb.toString();

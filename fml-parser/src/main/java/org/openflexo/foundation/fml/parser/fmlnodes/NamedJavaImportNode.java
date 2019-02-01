@@ -81,7 +81,7 @@ public class NamedJavaImportNode extends AbstractJavaImportNode<ANamedJavaImport
 
 		// Abnormal case: model object is not defined
 		if (getFMLObject() == null) {
-			return getLastParsed();
+			return getLastParsedFragment().getRawText();
 		}
 
 		return updatePrettyPrintForChildren(context);

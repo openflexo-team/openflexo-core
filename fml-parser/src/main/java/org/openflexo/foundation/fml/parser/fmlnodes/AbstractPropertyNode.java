@@ -82,7 +82,7 @@ public class AbstractPropertyNode extends FlexoPropertyNode<AAbstractPropertyDec
 
 		// Abnormal case: mode object is not defined
 		if (getFMLObject() == null) {
-			return getLastParsed();
+			return getLastParsedFragment().getRawText();
 		}
 
 		return updatePrettyPrintForChildren(context);

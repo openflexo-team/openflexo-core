@@ -79,6 +79,8 @@ public class TestRawSource {
 	public void testIncrementDecrement() throws IOException {
 		RawSourcePosition topLeft = rawSource.makePositionBeforeChar(1, 1);
 		RawSourcePosition bottomRight = rawSource.makePositionAfterChar(5, 3);
+		assertEquals(rawSource.getStartPosition(), topLeft);
+		assertEquals(rawSource.getEndPosition(), bottomRight);
 		assertFalse(topLeft.canDecrement());
 		assertTrue(topLeft.canIncrement());
 		assertFalse(bottomRight.canIncrement());

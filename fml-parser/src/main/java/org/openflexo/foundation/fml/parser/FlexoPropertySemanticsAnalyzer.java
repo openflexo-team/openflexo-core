@@ -39,7 +39,6 @@
 package org.openflexo.foundation.fml.parser;
 
 import java.lang.reflect.Type;
-import java.util.List;
 
 import org.openflexo.foundation.fml.FMLModelFactory;
 import org.openflexo.foundation.fml.parser.fmlnodes.AbstractPropertyNode;
@@ -67,7 +66,7 @@ import org.openflexo.foundation.fml.parser.node.Start;
  */
 public class FlexoPropertySemanticsAnalyzer extends FlexoConceptSemanticsAnalyzer {
 
-	public FlexoPropertySemanticsAnalyzer(FMLModelFactory factory, Start tree, List<String> rawSource) {
+	public FlexoPropertySemanticsAnalyzer(FMLModelFactory factory, Start tree, RawSource rawSource) {
 		super(factory, tree, rawSource);
 	}
 

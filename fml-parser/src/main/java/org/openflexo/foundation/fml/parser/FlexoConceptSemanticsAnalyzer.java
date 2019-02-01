@@ -38,8 +38,6 @@
 
 package org.openflexo.foundation.fml.parser;
 
-import java.util.List;
-
 import org.openflexo.foundation.fml.FMLModelFactory;
 import org.openflexo.foundation.fml.parser.fmlnodes.FlexoConceptNode;
 import org.openflexo.foundation.fml.parser.node.AConceptDeclaration;
@@ -53,7 +51,7 @@ import org.openflexo.foundation.fml.parser.node.Start;
  */
 public class FlexoConceptSemanticsAnalyzer extends VirtualModelSemanticsAnalyzer {
 
-	public FlexoConceptSemanticsAnalyzer(FMLModelFactory factory, Start tree, List<String> rawSource) {
+	public FlexoConceptSemanticsAnalyzer(FMLModelFactory factory, Start tree, RawSource rawSource) {
 		super(factory, tree, rawSource);
 	}
 

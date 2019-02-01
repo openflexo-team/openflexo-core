@@ -38,8 +38,6 @@
 
 package org.openflexo.foundation.fml.parser;
 
-import java.util.List;
-
 import org.openflexo.foundation.fml.FMLModelFactory;
 import org.openflexo.foundation.fml.parser.node.Start;
 
@@ -51,7 +49,7 @@ import org.openflexo.foundation.fml.parser.node.Start;
  */
 public class FMLSemanticsAnalyzer extends FlexoBehaviourSemanticsAnalyzer {
 
-	public FMLSemanticsAnalyzer(FMLModelFactory factory, Start tree, List<String> rawSource) {
+	public FMLSemanticsAnalyzer(FMLModelFactory factory, Start tree, RawSource rawSource) {
 		super(factory, tree, rawSource);
 	}
 

@@ -76,7 +76,7 @@ public class TestFMLPrettyPrint extends OpenflexoTestCase {
 	@TestOrder(1)
 	public void initServiceManager() throws ParseException, ModelDefinitionException {
 		instanciateTestServiceManager();
-		final Resource fmlFile = ResourceLocator.locateResource("NewFMLExamples/TestBasicTypesWithComments.fml");
+		final Resource fmlFile = ResourceLocator.locateResource("NewFMLExamples/TestBasicTypesWithComments2.fml");
 		compilationUnit = parseFile(fmlFile);
 		assertNotNull(virtualModel = compilationUnit.getVirtualModel());
 		assertEquals("MyModel", virtualModel.getName());

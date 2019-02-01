@@ -45,6 +45,7 @@ import org.openflexo.foundation.fml.FMLCompilationUnit;
 import org.openflexo.foundation.fml.JavaImportDeclaration;
 import org.openflexo.foundation.fml.parser.FMLObjectNode;
 import org.openflexo.foundation.fml.parser.FMLSemanticsAnalyzer;
+import org.openflexo.foundation.fml.parser.RawSource.RawSourcePosition;
 import org.openflexo.foundation.fml.parser.node.AFmlCompilationUnit;
 
 /**
@@ -53,8 +54,13 @@ import org.openflexo.foundation.fml.parser.node.AFmlCompilationUnit;
  */
 public class FMLCompilationUnitNode extends FMLObjectNode<AFmlCompilationUnit, FMLCompilationUnit> {
 
+	private RawSourcePosition startPosition;
+	private RawSourcePosition endPosition;
+
 	public FMLCompilationUnitNode(AFmlCompilationUnit astNode, FMLSemanticsAnalyzer analyser) {
 		super(astNode, analyser);
+		startPosition = getRawSource().getStartPosition();
+		endPosition = getRawSource().getEndPosition();
 	}
 
 	@Override
@@ -84,53 +90,20 @@ public class FMLCompilationUnitNode extends FMLObjectNode<AFmlCompilationUnit, F
 
 		// Abnormal case: even the VirtualModel is not defined
 		if (getFMLObject() == null || getFMLObject().getVirtualModel() == null) {
-			return getLastParsed();
+			return getLastParsedFragment().getRawText();
 		}
 
 		return updatePrettyPrintForChildren(context);
 	}
 
-	/**
-	 * Return the number of the starting line (all line numbers start with 1), where underlying model object is textually serialized,
-	 * inclusive
-	 * 
-	 * @return
-	 */
 	@Override
-	public int getStartLine() {
-		return 1;
+	public RawSourcePosition getStartPosition() {
+		return startPosition;
 	}
 
-	/**
-	 * Return the number of the starting char (starting at 1) in starting line, where underlying model object is textually serialized,
-	 * inclusive
-	 * 
-	 * @return
-	 */
 	@Override
-	public int getStartChar() {
-		return 1;
-	}
-
-	/**
-	 * Return the number of the ending line (all line numbers start with 1), where underlying model object is textually serialized,
-	 * inclusive
-	 * 
-	 * @return
-	 */
-	@Override
-	public int getEndLine() {
-		return getRawSource().size();
-	}
-
-	/**
-	 * Return the number of the ending char (starting at 1) in ending line, where underlying model object is textually serialized, inclusive
-	 * 
-	 * @return
-	 */
-	@Override
-	public int getEndChar() {
-		return getRawSource().get(getRawSource().size() - 1).length();
+	public RawSourcePosition getEndPosition() {
+		return endPosition;
 	}
 
 }

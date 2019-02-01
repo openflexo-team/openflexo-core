@@ -38,8 +38,6 @@
 
 package org.openflexo.foundation.fml.parser;
 
-import java.util.List;
-
 import org.openflexo.foundation.fml.FMLModelFactory;
 import org.openflexo.foundation.fml.parser.fmlnodes.VirtualModelNode;
 import org.openflexo.foundation.fml.parser.node.AModelDeclaration;
@@ -53,7 +51,7 @@ import org.openflexo.foundation.fml.parser.node.Start;
  */
 public class VirtualModelSemanticsAnalyzer extends CompilationUnitSemanticsAnalyzer {
 
-	public VirtualModelSemanticsAnalyzer(FMLModelFactory factory, Start tree, List<String> rawSource) {
+	public VirtualModelSemanticsAnalyzer(FMLModelFactory factory, Start tree, RawSource rawSource) {
 		super(factory, tree, rawSource);
 	}
 

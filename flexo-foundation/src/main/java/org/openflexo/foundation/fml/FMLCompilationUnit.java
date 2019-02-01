@@ -110,6 +110,10 @@ public interface FMLCompilationUnit extends FMLObject, FMLPrettyPrintable {
 			return "<not_implemented:" + getStringRepresentation() + ">";
 		}
 
+		@Override
+		public String toString() {
+			return "FMLCompilationUnit";
+		}
 	}
 
 }

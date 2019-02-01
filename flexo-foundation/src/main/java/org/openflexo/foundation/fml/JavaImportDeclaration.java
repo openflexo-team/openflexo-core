@@ -114,5 +114,10 @@ public interface JavaImportDeclaration extends FMLPrettyPrintable {
 			}
 			return getFullQualifiedClassName().substring(getFullQualifiedClassName().lastIndexOf(".") + 1);
 		}
+
+		@Override
+		public String toString() {
+			return "JavaImportDeclaration(" + getFullQualifiedClassName() + ")";
+		}
 	}
 }

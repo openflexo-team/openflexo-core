@@ -80,6 +80,8 @@ public class RawSource {
 	private static final Logger logger = Logger.getLogger(RawSource.class.getPackage().getName());
 
 	public List<String> rows;
+	private final RawSourcePosition startPosition;
+	private final RawSourcePosition endPosition;
 
 	/**
 	 * Encodes a position in the RawSource, using line and position in line<br>
@@ -89,7 +91,7 @@ public class RawSource {
 	 * @author sylvain
 	 *
 	 */
-	public class RawSourcePosition {
+	public class RawSourcePosition implements Comparable<RawSourcePosition> {
 		public final int line;
 		public final int pos;
 
@@ -135,6 +137,27 @@ public class RawSource {
 				newPos = 0;
 			}
 			return new RawSourcePosition(newLine, newPos);
+		}
+
+		@Override
+		public int compareTo(RawSourcePosition o) {
+			if (o.line < line) {
+				return 1;
+			}
+			else if (o.line > line) {
+				return -1;
+			}
+			else {
+				if (o.pos < pos) {
+					return 1;
+				}
+				else if (o.pos > pos) {
+					return -1;
+				}
+				else {
+					return 0;
+				}
+			}
 		}
 
 		@Override
@@ -199,6 +222,11 @@ public class RawSource {
 			this.end = end;
 		}
 
+		@Override
+		public String toString() {
+			return start.toString() + "-" + end.toString();
+		}
+
 		public String getRawText() {
 			int startLine = start.line;
 			int startPos = start.pos;
@@ -255,6 +283,8 @@ public class RawSource {
 				}
 			} while (nextLine != null);
 		}
+		startPosition = new RawSourcePosition(1, 0);
+		endPosition = new RawSourcePosition(rows.size(), rows.get(rows.size() - 1).length());
 	}
 
 	/**
@@ -277,6 +307,14 @@ public class RawSource {
 	 */
 	public RawSourcePosition makePositionAfterChar(int line, int character) {
 		return new RawSourcePosition(line, character);
+	}
+
+	public RawSourcePosition getStartPosition() {
+		return startPosition;
+	}
+
+	public RawSourcePosition getEndPosition() {
+		return endPosition;
 	}
 
 	/**

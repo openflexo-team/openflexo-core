@@ -84,7 +84,7 @@ public class JavaRoleNode extends FlexoPropertyNode<AJavaBasicRoleDeclaration, J
 
 		// Abnormal case: model object is not defined
 		if (getFMLObject() == null) {
-			return getLastParsed();
+			return getLastParsedFragment().getRawText();
 		}
 
 		return updatePrettyPrintForChildren(context);

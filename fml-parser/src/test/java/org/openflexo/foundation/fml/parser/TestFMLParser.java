@@ -113,9 +113,9 @@ public class TestFMLParser extends OpenflexoTestCase {
 
 	private static void debug(FMLObjectNode<?, ?> node, int indent) {
 		System.out.println(StringUtils.buildWhiteSpaceIndentation(indent * 2) + " > " + node.getClass().getSimpleName() + " from "
-				+ node.getStartLine() + ":" + node.getStartChar() + " to " + node.getEndLine() + ":" + node.getEndChar());
+				+ node.getLastParsedFragment());
 		// System.err.println(node.getLastParsed());
-		node.getLastParsed();
+		// node.getLastParsed();
 		indent++;
 		for (FMLObjectNode<?, ?> child : node.getChildren()) {
 			debug(child, indent);

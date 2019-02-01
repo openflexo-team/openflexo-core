@@ -44,10 +44,7 @@ import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.PushbackReader;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.fml.FMLCompilationUnit;
@@ -109,18 +106,8 @@ public class FMLParser {
 	 * @param ioDelegate
 	 * @throws IOException
 	 */
-	private static List<String> readRawSource(InputStream inputStream) throws IOException {
-		List<String> returned = new ArrayList<>();
-		try (BufferedReader br = new BufferedReader(new InputStreamReader(inputStream))) {
-			String nextLine = null;
-			do {
-				nextLine = br.readLine();
-				if (nextLine != null) {
-					returned.add(nextLine);
-				}
-			} while (nextLine != null);
-		}
-		return returned;
+	private static RawSource readRawSource(InputStream inputStream) throws IOException {
+		return new RawSource(inputStream);
 	}
 
 }

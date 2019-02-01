@@ -38,7 +38,6 @@
 
 package org.openflexo.foundation.fml.parser;
 
-import java.util.List;
 import java.util.Stack;
 
 import org.openflexo.foundation.FlexoServiceManager;
@@ -64,9 +63,9 @@ public abstract class FMLCoreSemanticsAnalyzer extends DepthFirstAdapter {
 	protected Stack<FMLObjectNode<?, ?>> fmlNodes = new Stack<>();
 
 	// Raw source as when this analyzer was last parsed
-	private List<String> rawSource;
+	private RawSource rawSource;
 
-	public FMLCoreSemanticsAnalyzer(FMLModelFactory factory, Start tree, List<String> rawSource) {
+	public FMLCoreSemanticsAnalyzer(FMLModelFactory factory, Start tree, RawSource rawSource) {
 		this.factory = factory;
 		this.rawSource = rawSource;
 		typeFactory = new TypeFactory((FMLSemanticsAnalyzer) this);
@@ -95,7 +94,7 @@ public abstract class FMLCoreSemanticsAnalyzer extends DepthFirstAdapter {
 		}
 	}
 
-	public List<String> getRawSource() {
+	public RawSource getRawSource() {
 		return rawSource;
 	}
 
