@@ -1,0 +1,9 @@
+/**
+ * Testing abstract properties
+ */
+
+import java.lang.String;
+
+// Comment
+model MyModel {
+}

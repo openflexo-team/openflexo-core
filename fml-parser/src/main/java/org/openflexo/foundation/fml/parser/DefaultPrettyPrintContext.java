@@ -39,10 +39,27 @@
 package org.openflexo.foundation.fml.parser;
 
 import org.openflexo.foundation.fml.FMLPrettyPrintDelegate.PrettyPrintContext;
+import org.openflexo.toolbox.StringUtils;
 
 /**
  * @author sylvain
  * 
  */
 public class DefaultPrettyPrintContext implements PrettyPrintContext {
+
+	private int indentation;
+
+	public DefaultPrettyPrintContext(int indentation) {
+		this.indentation = indentation;
+	}
+
+	@Override
+	public PrettyPrintContext derive() {
+		return new DefaultPrettyPrintContext(indentation + 1);
+	}
+
+	@Override
+	public String getIndentation() {
+		return StringUtils.buildWhiteSpaceIndentation(indentation * 4);
+	}
 }

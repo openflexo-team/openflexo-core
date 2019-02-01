@@ -38,6 +38,8 @@
 
 package org.openflexo.foundation.fml.parser.fmlnodes;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.fml.AbstractProperty;
@@ -69,14 +71,21 @@ public class AbstractPropertyNode extends FlexoPropertyNode<AAbstractPropertyDec
 	}
 
 	@Override
-	public String getNormalizedFMLRepresentation(PrettyPrintContext context) {
-		return "<abstract_property>";
+	protected List<PrettyPrintableContents> preparePrettyPrint(PrettyPrintContext context) {
+		List<PrettyPrintableContents> returned = new ArrayList<>();
+		returned.add(new StaticContents("abstract " + getFMLObject().getType() + " " + getFMLObject().getName() + ";", context));
+		return returned;
 	}
 
 	@Override
 	public String updateFMLRepresentation(PrettyPrintContext context) {
-		System.out.println("********* updateFMLRepresentation for AbstractProperty<?> " + getFMLObject());
-		return "<abstract_property>";
+
+		// Abnormal case: mode object is not defined
+		if (getFMLObject() == null) {
+			return getLastParsed();
+		}
+
+		return updatePrettyPrintForChildren(context);
 	}
 
 }

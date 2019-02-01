@@ -44,6 +44,7 @@ import java.util.List;
 import org.openflexo.foundation.fml.FMLModelFactory;
 import org.openflexo.foundation.fml.parser.fmlnodes.AbstractPropertyNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.FlexoPropertyNode;
+import org.openflexo.foundation.fml.parser.fmlnodes.JavaRoleNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.PrimitiveRoleNode;
 import org.openflexo.foundation.fml.parser.node.AAbstractPropertyDeclaration;
 import org.openflexo.foundation.fml.parser.node.AAbstractPropertyPropertyDeclaration;
@@ -83,6 +84,9 @@ public class FlexoPropertySemanticsAnalyzer extends FlexoConceptSemanticsAnalyze
 				System.out.println("Tiens une basic property declaration java: " + node + " type=" + type);
 				if (getTypeFactory().getPrimitiveType(type) != null) {
 					return new PrimitiveRoleNode((AJavaBasicRoleDeclaration) basicRoleDeclaration, (FMLSemanticsAnalyzer) this);
+				}
+				else {
+					return new JavaRoleNode((AJavaBasicRoleDeclaration) basicRoleDeclaration, (FMLSemanticsAnalyzer) this);
 				}
 			}
 			else if (basicRoleDeclaration instanceof AFmlBasicRoleDeclaration) {

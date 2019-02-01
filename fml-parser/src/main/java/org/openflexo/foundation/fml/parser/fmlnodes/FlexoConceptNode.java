@@ -38,7 +38,12 @@
 
 package org.openflexo.foundation.fml.parser.fmlnodes;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.openflexo.foundation.fml.FlexoBehaviour;
 import org.openflexo.foundation.fml.FlexoConcept;
+import org.openflexo.foundation.fml.FlexoProperty;
 import org.openflexo.foundation.fml.parser.FMLObjectNode;
 import org.openflexo.foundation.fml.parser.FMLSemanticsAnalyzer;
 import org.openflexo.foundation.fml.parser.node.AConceptDeclaration;
@@ -73,14 +78,34 @@ public class FlexoConceptNode extends FMLObjectNode<AConceptDeclaration, FlexoCo
 	}
 
 	@Override
-	public String getNormalizedFMLRepresentation(PrettyPrintContext context) {
-		return "concept";
+	protected List<PrettyPrintableContents> preparePrettyPrint(PrettyPrintContext context) {
+		List<PrettyPrintableContents> returned = new ArrayList<>();
+		returned.add(new StaticContents("concept " + getFMLObject().getName() + " {\n", context));
+		for (FlexoProperty<?> property : getFMLObject().getFlexoProperties()) {
+			returned.add(new ChildContents("", property, "\n", context.derive()));
+		}
+		for (FlexoBehaviour behaviour : getFMLObject().getFlexoBehaviours()) {
+			returned.add(new ChildContents("", behaviour, "\n", context.derive()));
+		}
+		for (FlexoConcept concept : getFMLObject().getChildFlexoConcepts()) {
+			returned.add(new ChildContents("", concept, "\n", context.derive()));
+		}
+		returned.add(new StaticContents("}", context));
+		return returned;
 	}
 
 	@Override
 	public String updateFMLRepresentation(PrettyPrintContext context) {
-		System.out.println("********* updateFMLRepresentation for FlexoConcept " + getFMLObject());
-		return "concept";
+
+		// System.out.println("********* updateFMLRepresentation for FlexoConcept " + getFMLObject());
+
+		// Abnormal case: the model object is not defined
+		if (getFMLObject() == null) {
+			return getLastParsed();
+		}
+
+		return updatePrettyPrintForChildren(context);
+
 	}
 
 }

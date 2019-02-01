@@ -41,7 +41,9 @@ package org.openflexo.foundation.fml.parser.fmlnodes;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.openflexo.foundation.fml.FMLPrettyPrintable;
+import org.openflexo.foundation.fml.FlexoBehaviour;
+import org.openflexo.foundation.fml.FlexoConcept;
+import org.openflexo.foundation.fml.FlexoProperty;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.parser.FMLObjectNode;
 import org.openflexo.foundation.fml.parser.FMLSemanticsAnalyzer;
@@ -77,27 +79,33 @@ public class VirtualModelNode extends FMLObjectNode<AModelDeclaration, VirtualMo
 	}
 
 	@Override
-	public String getNormalizedFMLRepresentation(PrettyPrintContext context) {
-		return "model";
+	protected List<PrettyPrintableContents> preparePrettyPrint(PrettyPrintContext context) {
+		List<PrettyPrintableContents> returned = new ArrayList<>();
+		returned.add(new StaticContents("model " + getFMLObject().getName() + " {\n", context));
+		for (FlexoProperty<?> property : getFMLObject().getFlexoProperties()) {
+			returned.add(new ChildContents("", property, "\n", context.derive()));
+		}
+		for (FlexoBehaviour behaviour : getFMLObject().getFlexoBehaviours()) {
+			returned.add(new ChildContents("\n", behaviour, "\n", context.derive()));
+		}
+		for (FlexoConcept concept : getFMLObject().getFlexoConcepts()) {
+			returned.add(new ChildContents("\n", concept, "\n", context.derive()));
+		}
+		returned.add(new StaticContents("}", context));
+		return returned;
 	}
 
 	@Override
 	public String updateFMLRepresentation(PrettyPrintContext context) {
 
-		System.out.println("********* updateFMLRepresentation for VirtualModel " + getFMLObject());
+		// System.out.println("********* updateFMLRepresentation for VirtualModel " + getFMLObject());
 
 		// Abnormal case: even the VirtualModel is not defined
 		if (getFMLObject() == null) {
 			return getLastParsed();
 		}
 
-		List<FMLPrettyPrintable> childrenObjects = new ArrayList();
-		childrenObjects.addAll(getFMLObject().getFlexoProperties());
-		childrenObjects.addAll(getFMLObject().getFlexoBehaviours());
-		childrenObjects.addAll(getFMLObject().getFlexoConcepts());
-		System.out.println("Les concepts: " + getFMLObject().getFlexoConcepts());
-
-		return buildFMLRepresentation(childrenObjects, context);
+		return updatePrettyPrintForChildren(context);
 
 	}
 

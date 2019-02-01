@@ -39,11 +39,13 @@
 package org.openflexo.foundation.fml.parser;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openflexo.foundation.fml.FMLCompilationUnit;
 import org.openflexo.foundation.fml.FMLModelFactory;
+import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.test.OpenflexoTestCase;
 import org.openflexo.pamela.exceptions.ModelDefinitionException;
@@ -64,24 +66,39 @@ public class TestFMLPrettyPrint extends OpenflexoTestCase {
 
 	private static FMLCompilationUnit compilationUnit;
 	private static VirtualModel virtualModel;
+	private static FlexoConcept conceptA;
+
+	private static FMLCompilationUnit parseFile(Resource fileResource) throws ModelDefinitionException, ParseException {
+		return FMLParser.parse(((FileResourceImpl) fileResource).getFile(), new FMLModelFactory(null, serviceManager));
+	}
 
 	@Test
 	@TestOrder(1)
 	public void initServiceManager() throws ParseException, ModelDefinitionException {
 		instanciateTestServiceManager();
-		final Resource fmlFile = ResourceLocator.locateResource("NewFMLExamples/TestFMLDiagram.fml");
-		log("Load " + fmlFile);
-		compilationUnit = FMLParser.parse(((FileResourceImpl) fmlFile).getFile(), new FMLModelFactory(null, serviceManager));
-		virtualModel = compilationUnit.getVirtualModel();
-		System.out.println("FML=\n" + compilationUnit.getFMLPrettyPrint());
+		final Resource fmlFile = ResourceLocator.locateResource("NewFMLExamples/TestBasicTypesWithComments.fml");
+		compilationUnit = parseFile(fmlFile);
+		assertNotNull(virtualModel = compilationUnit.getVirtualModel());
+		assertEquals("MyModel", virtualModel.getName());
+		// assertEquals(2, virtualModel.getFlexoConcepts().size());
+		// conceptA = virtualModel.getFlexoConcepts().get(0);
+		// assertEquals("ConceptA", conceptA.getName());
+
+		System.out.println("Normalized:");
+		System.out.println(compilationUnit.getPrettyPrintDelegate()
+				.getNormalizedFMLRepresentation(compilationUnit.getPrettyPrintDelegate().makePrettyPrintContext()));
+
+		System.out.println("Current FML");
+		System.out.println(">>>>>>>>>>>>>>>>" + compilationUnit.getPrettyPrintDelegate()
+				.getFMLRepresentation(compilationUnit.getPrettyPrintDelegate().makePrettyPrintContext()) + "<<<<<<<<<<<<<<");
 	}
 
-	@Test
+	/*@Test
 	@TestOrder(2)
 	public void changeVirtualModelName() {
 		log("Change name to AnOtherName");
 		assertEquals("MyModel", virtualModel.getName());
 		virtualModel.setName("AnOtherName");
 		System.out.println("FML=\n" + compilationUnit.getFMLPrettyPrint());
-	}
+	}*/
 }

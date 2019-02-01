@@ -41,15 +41,11 @@ package org.openflexo.foundation.fml;
 import java.lang.reflect.Type;
 import java.util.logging.Logger;
 
-import org.openflexo.connie.type.PrimitiveType;
 import org.openflexo.foundation.fml.annotations.FML;
-import org.openflexo.foundation.fml.rt.AbstractVirtualModelInstanceModelFactory;
 import org.openflexo.foundation.fml.rt.ActorReference;
 import org.openflexo.foundation.fml.rt.FMLRTTechnologyAdapter;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
-import org.openflexo.foundation.fml.rt.PrimitiveActorReference;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
-import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.logging.FlexoLogger;
 import org.openflexo.pamela.annotations.Getter;
 import org.openflexo.pamela.annotations.ImplementationClass;
@@ -60,77 +56,50 @@ import org.openflexo.pamela.annotations.XMLAttribute;
 import org.openflexo.pamela.annotations.XMLElement;
 
 /**
- * A primitive property, whose value is serialized at run-time
+ * A java property which type is any type of Java language
  * 
- * Type of such property might be an enum value of {@link PrimitiveType}
+ * Take care that this property is transient: value cannot be serialized at run-time
  * 
  * @author sylvain
  *
  * @param <T>
  */
 @ModelEntity
-@ImplementationClass(PrimitiveRole.PrimitiveRoleImpl.class)
+@ImplementationClass(JavaRole.JavaRoleImpl.class)
 @XMLElement
-@FML("PrimitiveRole")
-public interface PrimitiveRole<T> extends FlexoRole<T> {
+@FML("JavaRole")
+public interface JavaRole<T> extends FlexoRole<T> {
 
-	@PropertyIdentifier(type = PrimitiveType.class)
-	public static final String PRIMITIVE_TYPE_KEY = "primitiveType";
+	@PropertyIdentifier(type = Type.class)
+	public static final String TYPE_KEY = "type";
 
-	@Getter(value = PRIMITIVE_TYPE_KEY)
+	@Override
+	@Getter(value = TYPE_KEY, isStringConvertable = true)
 	@XMLAttribute
-	public PrimitiveType getPrimitiveType();
+	public Type getType();
 
-	@Setter(PRIMITIVE_TYPE_KEY)
-	public void setPrimitiveType(PrimitiveType primitiveType);
+	@Setter(TYPE_KEY)
+	public void setType(Type type);
 
-	public static abstract class PrimitiveRoleImpl<T> extends FlexoRoleImpl<T> implements PrimitiveRole<T> {
+	public static abstract class JavaRoleImpl<T> extends FlexoRoleImpl<T> implements JavaRole<T> {
 
-		protected static final Logger logger = FlexoLogger.getLogger(PrimitiveRole.class.getPackage().getName());
+		protected static final Logger logger = FlexoLogger.getLogger(JavaRole.class.getPackage().getName());
 
-		private PrimitiveType primitiveType;
-
-		public PrimitiveRoleImpl() {
-			super();
-		}
-
-		/*@Override
-		public String getFMLRepresentation(FMLRepresentationContext context) {
-			FMLRepresentationOutput out = new FMLRepresentationOutput(context);
-			out.append("FlexoRole " + getName() + " as " + getTypeDescription() + " cardinality=" + getCardinality() + ";", context);
-			return out.toString();
-		}*/
-
-		@Override
-		public PrimitiveType getPrimitiveType() {
-			return primitiveType;
-		}
-
-		@Override
-		public void setPrimitiveType(PrimitiveType primitiveType) {
-			if (requireChange(getPrimitiveType(), primitiveType)) {
-				PrimitiveType oldValue = this.primitiveType;
-				this.primitiveType = primitiveType;
-				notifyChange(PRIMITIVE_TYPE_KEY, oldValue, primitiveType);
-				notifyResultingTypeChanged();
-			}
-		}
-
-		@Override
-		public String getTypeDescription() {
-			if (primitiveType == null) {
-				return null;
-			}
-			return FlexoLocalization.getMainLocalizer().localizedForKey(primitiveType.name());
-		}
+		private Type type;
 
 		@Override
 		public Type getType() {
-			if (primitiveType == null) {
-				return null;
-			}
-			return primitiveType.getType();
+			return type;
+		}
 
+		@Override
+		public void setType(Type type) {
+			if (requireChange(getType(), type)) {
+				Type oldValue = this.type;
+				this.type = type;
+				notifyChange(TYPE_KEY, oldValue, type);
+				notifyResultingTypeChanged();
+			}
 		}
 
 		/**
@@ -150,11 +119,8 @@ public interface PrimitiveRole<T> extends FlexoRole<T> {
 
 		@Override
 		public ActorReference<T> makeActorReference(T object, FlexoConceptInstance fci) {
-			AbstractVirtualModelInstanceModelFactory<?> factory = fci.getFactory();
-			PrimitiveActorReference<T> returned = factory.newInstance(PrimitiveActorReference.class);
-			returned.setFlexoRole(this);
-			returned.setModellingElement(object);
-			return returned;
+			// Never serialized
+			return null;
 		}
 
 		@Override

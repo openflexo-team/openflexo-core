@@ -90,7 +90,7 @@ import org.openflexo.toolbox.StringUtils;
  */
 @ModelEntity(isAbstract = true)
 @ImplementationClass(FlexoRole.FlexoRoleImpl.class)
-@Imports({ @Import(FlexoConceptInstanceRole.class), @Import(PrimitiveRole.class) })
+@Imports({ @Import(FlexoConceptInstanceRole.class), @Import(PrimitiveRole.class), @Import(JavaRole.class) })
 public interface FlexoRole<T> extends FlexoProperty<T> {
 
 	@PropertyIdentifier(type = String.class)

@@ -318,6 +318,10 @@ public class FMLModelFactory extends ModelFactory implements PamelaResourceModel
 		return newInstance(PrimitiveRole.class);
 	}
 
+	public JavaRole<?> newJavaRole() {
+		return newInstance(JavaRole.class);
+	}
+
 	public ExpressionProperty<?> newExpressionProperty() {
 		return newInstance(ExpressionProperty.class);
 	}

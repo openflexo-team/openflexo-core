@@ -49,6 +49,7 @@ import org.openflexo.foundation.fml.FMLObject;
 import org.openflexo.foundation.fml.FMLPrettyPrintDelegate;
 import org.openflexo.foundation.fml.FMLPrettyPrintable;
 import org.openflexo.foundation.fml.FlexoConcept;
+import org.openflexo.foundation.fml.parser.fmlnodes.FMLCompilationUnitNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.FlexoConceptNode;
 import org.openflexo.foundation.fml.parser.node.Node;
 import org.openflexo.foundation.fml.parser.node.PAdditionalIdentifier;
@@ -144,43 +145,76 @@ public abstract class FMLObjectNode<N extends Node, T extends FMLPrettyPrintable
 	}
 
 	protected void handleToken(Token token) {
+
+		// System.out.println(
+		// "Handle token [" + token.getText() + "] " + token.getLine() + ":" + token.getPos() + ":" + token.getText().length());
+
 		if (startLine == -1 || startLine > token.getLine()) {
 			startLine = token.getLine();
 			startChar = -1;
-			if (startChar == -1 || startChar > token.getPos()) {
-				startChar = token.getPos();
-			}
 		}
+		if (startChar == -1 || startChar > token.getPos()) {
+			startChar = token.getPos();
+		}
+
 		if (endLine == -1 || endLine < token.getLine()) {
 			endLine = token.getLine();
 			endChar = -1;
-			if (endChar == -1 || endChar < token.getPos()) {
-				endChar = token.getPos();
-			}
+		}
+		if (endChar == -1 || endChar < token.getPos()) {
+			endChar = token.getPos() + token.getText().length();
 		}
 		if (getParent() != null) {
 			getParent().handleToken(token);
 		}
 	}
 
+	/**
+	 * Return original version of last serialized raw source, FOR THE ENTIRE compilation unit
+	 * 
+	 * @return
+	 */
+	public List<String> getRawSource() {
+		return analyser.getRawSource();
+	}
+
+	/**
+	 * Return the number of the starting line (all line numbers start with 1), where underlying model object is textually serialized,
+	 * inclusive
+	 * 
+	 * @return
+	 */
 	public int getStartLine() {
 		return startLine;
 	}
 
+	/**
+	 * Return the number of the starting char (starting at 1) in starting line, where underlying model object is textually serialized,
+	 * inclusive
+	 * 
+	 * @return
+	 */
 	public int getStartChar() {
 		return startChar;
 	}
 
+	/**
+	 * Return the number of the ending line (all line numbers start with 1), where underlying model object is textually serialized,
+	 * inclusive
+	 * 
+	 * @return
+	 */
 	public int getEndLine() {
 		return endLine;
 	}
 
+	/**
+	 * Return the number of the ending char (starting at 1) in ending line, where underlying model object is textually serialized, inclusive
+	 * 
+	 * @return
+	 */
 	public int getEndChar() {
 		return endChar;
-	}
-
-	public List<String> getRawSource() {
-		return analyser.getRawSource();
 	}
 
 	/**
@@ -189,28 +223,46 @@ public abstract class FMLObjectNode<N extends Node, T extends FMLPrettyPrintable
 	 * @return
 	 */
 	public String getLastParsed() {
-		if (getStartLine() > -1 && getStartChar() > -1 && getEndLine() > -1 && getEndChar() > -1 && getStartLine() <= getEndLine()) {
-			if (getStartLine() == getEndLine()) {
+		return extract(getStartLine(), getStartChar(), getEndLine(), getEndChar());
+	}
+
+	/**
+	 * Build and return a String extracted from raw source with start and end bounds
+	 * 
+	 * @return
+	 */
+	public String extract(int startLine, int startChar, int endLine, int endChar) {
+		if (startLine > -1 && startChar > -1 && endLine > -1 && endChar > -1 && startLine <= endLine) {
+			if (startLine == endLine) {
 				// All in one line
-				return getRawSource().get(getStartLine() - 1).substring(getStartChar() - 1, getEndChar() - 1);
+				// System.out.println("On retourne [" + getRawSource().get(startLine - 1).substring(startChar - 1, endChar) + "]");
+				return getRawSource().get(startLine - 1).substring(startChar - 1, endChar);
 			}
 			StringBuffer sb = new StringBuffer();
-			for (int i = getStartLine(); i <= getEndLine(); i++) {
-				if (i == getStartLine()) {
+			for (int i = startLine; i <= endLine; i++) {
+				if (i == startLine) {
 					// First line
-					sb.append(getRawSource().get(i - 1).substring(getStartChar() - 1) + "\n");
+					sb.append(getRawSource().get(i - 1).substring(startChar - 1) + "\n");
 				}
-				else if (i == getEndLine()) {
+				else if (i == endLine) {
 					// Last line
-					// try {
-					sb.append(getRawSource().get(i - 1).substring(0, getEndChar() - 1));
-					/*} catch (StringIndexOutOfBoundsException e) {
-						System.out.println("Bizarre, pour " + getClass().getSimpleName() + " from " + getStartLine() + ":" + getStartChar()
-								+ " to " + getEndLine() + ":" + getEndChar());
+					// if (endChar > 0) {
+					try {
+						if (endChar > getRawSource().get(i - 1).length()) {
+							sb.append(getRawSource().get(i - 1).substring(0, endChar - 1) + "\n");
+						}
+						else {
+							sb.append(getRawSource().get(i - 1).substring(0, endChar));
+						}
+					} catch (StringIndexOutOfBoundsException e) {
+						System.out.println("Bizarre, pour " + getClass().getSimpleName() + " from " + startLine + ":" + startChar + " to "
+								+ endLine + ":" + endChar);
 						System.out.println("String = [" + getRawSource().get(i - 1) + "]");
-						System.out.println("Je cherche a extraire 0-" + (getEndChar() - 1));
+						System.out.println("Je cherche a extraire 0-" + endChar);
 						sb.append("ERROR!");
-					}*/
+						Thread.dumpStack();
+					}
+					// }
 				}
 				else {
 					sb.append(getRawSource().get(i - 1) + "\n");
@@ -244,36 +296,158 @@ public abstract class FMLObjectNode<N extends Node, T extends FMLPrettyPrintable
 	 */
 	@Override
 	public PrettyPrintContext makePrettyPrintContext() {
-		return new DefaultPrettyPrintContext();
+		return new DefaultPrettyPrintContext(0);
 	}
 
-	protected String buildFMLRepresentation(List<FMLPrettyPrintable> childrenObjects, PrettyPrintContext context) {
+	public static abstract class PrettyPrintableContents {
+		public PrettyPrintableContents(String prelude, String postlude, PrettyPrintContext context) {
+			super();
+			this.prelude = prelude;
+			this.postlude = postlude;
+			this.context = context;
+		}
 
-		Map<FMLObjectNode<?, ?>, String> updatedChildRepresentations = new HashMap<>();
+		String prelude;
+		String postlude;
+		PrettyPrintContext context;
+	}
+
+	public static class ChildContents extends PrettyPrintableContents {
+		public ChildContents(String prelude, FMLPrettyPrintable contents, String postlude, PrettyPrintContext context) {
+			super(prelude, postlude, context);
+			this.contents = contents;
+		}
+
+		FMLPrettyPrintable contents;
+		FMLObjectNode<?, ?> childNode;
+	}
+
+	public static class StaticContents extends PrettyPrintableContents {
+		public StaticContents(String contents, PrettyPrintContext context) {
+			super("", "", context);
+			this.contents = contents;
+		}
+
+		String contents;
+	}
+
+	protected abstract List<PrettyPrintableContents> preparePrettyPrint(PrettyPrintContext context);
+
+	@Override
+	public final String getNormalizedFMLRepresentation(PrettyPrintContext context) {
+		List<PrettyPrintableContents> childrenObjects = preparePrettyPrint(context);
+		StringBuffer sb = new StringBuffer();
+		for (PrettyPrintableContents child : childrenObjects) {
+			if (child instanceof ChildContents) {
+				FMLObjectNode<?, ?> childNode = getObjectNode(((ChildContents) child).contents);
+				if (childNode == null) {
+					childNode = makeObjectNode(((ChildContents) child).contents);
+					addToChildren(childNode);
+				}
+				sb.append(child.prelude + context.getIndentation() + childNode.getNormalizedFMLRepresentation(child.context)
+						+ child.postlude);
+			}
+			else if (child instanceof StaticContents) {
+				sb.append(child.prelude + context.getIndentation() + ((StaticContents) child).contents + child.postlude);
+			}
+		}
+		return sb.toString();
+	}
+
+	protected String updatePrettyPrintForChildren(PrettyPrintContext context) {
+
+		boolean debug = (this instanceof FMLCompilationUnitNode);
+
+		List<PrettyPrintableContents> childrenObjects = preparePrettyPrint(context);
+
+		if (childrenObjects.size() == 0) {
+			return getLastParsed();
+		}
+
+		Map<PrettyPrintableContents, String> updatedChildRepresentations = new HashMap<>();
 
 		int insertionPoint = 0;
 
-		for (FMLPrettyPrintable childObject : childrenObjects) {
-			FMLObjectNode<?, ?> childNode = getObjectNode(childObject);
-			if (childNode == null) {
-				childNode = makeObjectNode(childObject);
-				addToChildren(childNode, insertionPoint);
+		for (PrettyPrintableContents childObject : childrenObjects) {
+			if (childObject instanceof ChildContents) {
+				FMLObjectNode<?, ?> childNode = getObjectNode(((ChildContents) childObject).contents);
+				if (childNode == null) {
+					childNode = makeObjectNode(((ChildContents) childObject).contents);
+					addToChildren(childNode, insertionPoint);
+				}
+				((ChildContents) childObject).childNode = childNode;
+				updatedChildRepresentations.put(childObject, childNode.updateFMLRepresentation(context));
+				insertionPoint = getChildren().indexOf(childNode) + 1;
 			}
-			updatedChildRepresentations.put(childNode, childNode.updateFMLRepresentation(context));
-			insertionPoint = getChildren().indexOf(childNode) + 1;
+			else if (childObject instanceof StaticContents) {
+				updatedChildRepresentations.put(childObject, ((StaticContents) childObject).contents);
+			}
 		}
 
-		System.out.println("------------------------->  OK on est la dans " + getClass().getSimpleName() + " avec");
-		// System.out.println(getLastParsed());
+		if (debug) {
+			System.out.println("-------------------------> START Pretty-Print for " + getClass().getSimpleName() + " " + getStartLine()
+					+ ":" + getStartChar() + "-" + getEndLine() + ":" + getEndChar());
+			System.out.println("last parsed: [" + getLastParsed() + "]");
+		}
+		int currentLine = getStartLine();
+		int currentChar = getStartChar();
+		StringBuffer sb = new StringBuffer();
 
-		for (FMLObjectNode<?, ?> childNode : getChildren()) {
-			System.out.println(
-					"> " + childNode.getClass().getSimpleName() + " from " + childNode.getStartLine() + ":" + childNode.getStartChar() + "-"
-							+ childNode.getEndLine() + ":" + childNode.getEndChar() + " for " + childNode.getFMLObject());
-
+		if (debug) {
+			System.out.println("currentLine=" + currentLine + " currentChar=" + currentChar);
 		}
 
-		return getNormalizedFMLRepresentation(context);
+		for (PrettyPrintableContents childObject : childrenObjects) {
+			if (childObject instanceof ChildContents) {
+				FMLObjectNode<?, ?> childNode = ((ChildContents) childObject).childNode;
+				// System.out.println(
+				// "> " + childNode.getClass().getSimpleName() + " from " + childNode.getStartLine() + ":" + childNode.getStartChar()
+				// + "-" + childNode.getEndLine() + ":" + childNode.getEndChar() + " for " + childNode.getFMLObject());
+
+				int toLine = childNode.getStartLine();
+				int toChar = childNode.getStartChar();
+				if (toChar == 1) {
+					toLine--;
+					toChar = getRawSource().get(toLine - 1).length();
+				}
+				String prelude = extract(currentLine, currentChar, toLine, toChar);
+				if (debug) {
+					System.out.println("Before handling " + childNode.getFMLObject() + " / Adding (" + currentLine + ":" + currentChar
+							+ " a " + toLine + ":" + toChar + ") value [" + prelude + "]");
+				}
+				sb.append(prelude);
+
+				String updatedChildrenPP = childNode.updateFMLRepresentation(context.derive());
+				if (debug) {
+					System.out.println("Now consider " + getFMLObject() + " (" + childNode.getStartLine() + ":" + childNode.getStartChar()
+							+ "-" + childNode.getEndLine() + ":" + childNode.getEndChar() + ") value [" + updatedChildrenPP + "]");
+				}
+				sb.append(updatedChildrenPP);
+				currentLine = childNode.getEndLine();
+				currentChar = childNode.getEndChar() + 1;
+				if (currentChar >= getRawSource().get(currentLine - 1).length()) {
+					currentLine++;
+					currentChar = 1;
+				}
+				if (debug) {
+					System.out.println("AFTER adding children currentLine=" + currentLine + " currentChar=" + currentChar);
+				}
+			}
+		}
+
+		String postlude = extract(currentLine, currentChar, getEndLine(), getEndChar());
+		if (debug) {
+			System.out.println("At the end for " + getFMLObject() + " / Adding remaining (" + currentLine + ":" + currentChar + "-"
+					+ getEndLine() + ":" + getEndChar() + ") value [" + postlude + "]");
+		}
+		sb.append(postlude);
+
+		if (debug) {
+			System.out.println("<------------------------> DONE Pretty-Print for " + getClass().getSimpleName() + " " + getStartLine() + ":"
+					+ getStartChar() + "-" + getEndLine() + ":" + getEndChar());
+			System.out.println("RESULT: [" + sb.toString() + "]");
+		}
+		return sb.toString();
 	}
 
 	protected <O extends FMLPrettyPrintable> FMLObjectNode<?, O> makeObjectNode(O object) {

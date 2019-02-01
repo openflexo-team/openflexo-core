@@ -38,6 +38,9 @@
 
 package org.openflexo.foundation.fml.parser.fmlnodes;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.openflexo.foundation.fml.JavaImportDeclaration;
 import org.openflexo.foundation.fml.parser.FMLSemanticsAnalyzer;
 import org.openflexo.foundation.fml.parser.node.AJavaImportImportDeclaration;
@@ -65,25 +68,21 @@ public class JavaImportNode extends AbstractJavaImportNode<AJavaImportImportDecl
 	}
 
 	@Override
-	public String getNormalizedFMLRepresentation(PrettyPrintContext context) {
-		return "import " + getFMLObject().getFullQualifiedClassName() + ";";
+	protected List<PrettyPrintableContents> preparePrettyPrint(PrettyPrintContext context) {
+		List<PrettyPrintableContents> returned = new ArrayList<>();
+		returned.add(new StaticContents("import " + getFMLObject().getFullQualifiedClassName() + ";", context));
+		return returned;
 	}
 
 	@Override
 	public String updateFMLRepresentation(PrettyPrintContext context) {
 
-		System.out.println("********* updateFMLRepresentation for CompilationUnit " + getFMLObject());
-
-		// Abnormal case: mode object is not defined
+		// Abnormal case: model object is not defined
 		if (getFMLObject() == null) {
 			return getLastParsed();
 		}
 
-		/*List<FMLPrettyPrintable> childrenObjects = new ArrayList();
-		childrenObjects.add(getFMLObject().getVirtualModel());
-		return buildFMLRepresentation(childrenObjects, context);*/
-
-		return getNormalizedFMLRepresentation(context);
+		return updatePrettyPrintForChildren(context);
 	}
 
 }

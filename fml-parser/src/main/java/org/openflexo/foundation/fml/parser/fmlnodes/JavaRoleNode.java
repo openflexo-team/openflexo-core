@@ -40,44 +40,47 @@ package org.openflexo.foundation.fml.parser.fmlnodes;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
-import org.openflexo.foundation.fml.JavaImportDeclaration;
+import org.openflexo.foundation.fml.JavaRole;
 import org.openflexo.foundation.fml.parser.FMLSemanticsAnalyzer;
-import org.openflexo.foundation.fml.parser.node.ANamedJavaImportImportDeclaration;
+import org.openflexo.foundation.fml.parser.node.AJavaBasicRoleDeclaration;
 
 /**
  * @author sylvain
  * 
  */
-public class NamedJavaImportNode extends AbstractJavaImportNode<ANamedJavaImportImportDeclaration> {
+public class JavaRoleNode extends FlexoPropertyNode<AJavaBasicRoleDeclaration, JavaRole<?>> {
 
-	public NamedJavaImportNode(ANamedJavaImportImportDeclaration astNode, FMLSemanticsAnalyzer analyser) {
+	private static final Logger logger = Logger.getLogger(JavaRoleNode.class.getPackage().getName());
+
+	public JavaRoleNode(AJavaBasicRoleDeclaration astNode, FMLSemanticsAnalyzer analyser) {
 		super(astNode, analyser);
 	}
 
-	public NamedJavaImportNode(JavaImportDeclaration importDeclaration, FMLSemanticsAnalyzer analyser) {
-		super(importDeclaration, analyser);
+	public JavaRoleNode(JavaRole<?> property, FMLSemanticsAnalyzer analyser) {
+		super(property, analyser);
 	}
 
 	@Override
-	public JavaImportDeclaration buildFMLObjectFromAST() {
-		JavaImportDeclaration returned = super.buildFMLObjectFromAST();
-		returned.setFullQualifiedClassName(
-				makeFullQualifiedIdentifier(getASTNode().getIdentifier(), getASTNode().getAdditionalIdentifiers()));
-		returned.setAbbrev(getASTNode().getName().getText());
+	public JavaRole<?> buildFMLObjectFromAST() {
+		JavaRole<?> returned = getFactory().newJavaRole();
+		returned.setName(getName(getASTNode().getVariableDeclarator()).getText());
+		returned.setType(getTypeFactory().makeType(getASTNode().getType()));
 		return returned;
 	}
 
 	@Override
 	protected List<PrettyPrintableContents> preparePrettyPrint(PrettyPrintContext context) {
 		List<PrettyPrintableContents> returned = new ArrayList<>();
-		returned.add(new StaticContents("import " + getFMLObject().getFullQualifiedClassName() + " as " + getFMLObject().getAbbrev() + ";",
-				context));
+		returned.add(new StaticContents(getFMLObject().getType() + " " + getFMLObject().getName() + ";", context));
 		return returned;
 	}
 
 	@Override
 	public String updateFMLRepresentation(PrettyPrintContext context) {
+
+		// System.out.println("********* updateFMLRepresentation for CompilationUnit " + getFMLObject());
 
 		// Abnormal case: model object is not defined
 		if (getFMLObject() == null) {

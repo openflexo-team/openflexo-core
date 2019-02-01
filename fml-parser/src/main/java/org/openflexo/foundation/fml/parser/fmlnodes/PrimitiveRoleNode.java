@@ -38,6 +38,8 @@
 
 package org.openflexo.foundation.fml.parser.fmlnodes;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.fml.PrimitiveRole;
@@ -69,14 +71,23 @@ public class PrimitiveRoleNode extends FlexoPropertyNode<AJavaBasicRoleDeclarati
 	}
 
 	@Override
-	public String getNormalizedFMLRepresentation(PrettyPrintContext context) {
-		return "<primitive_role>";
+	protected List<PrettyPrintableContents> preparePrettyPrint(PrettyPrintContext context) {
+		List<PrettyPrintableContents> returned = new ArrayList<>();
+		returned.add(new StaticContents(getFMLObject().getType() + " " + getFMLObject().getName() + ";", context));
+		return returned;
 	}
 
 	@Override
 	public String updateFMLRepresentation(PrettyPrintContext context) {
-		System.out.println("********* updateFMLRepresentation for primitive_role<?> " + getFMLObject());
-		return "<primitive_role>";
+
+		// System.out.println("********* updateFMLRepresentation for CompilationUnit " + getFMLObject());
+
+		// Abnormal case: model object is not defined
+		if (getFMLObject() == null) {
+			return getLastParsed();
+		}
+
+		return updatePrettyPrintForChildren(context);
 	}
 
 }

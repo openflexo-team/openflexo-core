@@ -42,7 +42,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.openflexo.foundation.fml.FMLCompilationUnit;
-import org.openflexo.foundation.fml.FMLPrettyPrintable;
+import org.openflexo.foundation.fml.JavaImportDeclaration;
 import org.openflexo.foundation.fml.parser.FMLObjectNode;
 import org.openflexo.foundation.fml.parser.FMLSemanticsAnalyzer;
 import org.openflexo.foundation.fml.parser.node.AFmlCompilationUnit;
@@ -68,23 +68,69 @@ public class FMLCompilationUnitNode extends FMLObjectNode<AFmlCompilationUnit, F
 	}
 
 	@Override
-	public String getNormalizedFMLRepresentation(PrettyPrintContext context) {
-		return "CompilationUnit";
+	protected List<PrettyPrintableContents> preparePrettyPrint(PrettyPrintContext context) {
+		List<PrettyPrintableContents> returned = new ArrayList<>();
+		for (JavaImportDeclaration javaImportDeclaration : getFMLObject().getJavaImports()) {
+			returned.add(new ChildContents("", javaImportDeclaration, "\n", context));
+		}
+		returned.add(new ChildContents("\n", getFMLObject().getVirtualModel(), "\n", context));
+		return returned;
 	}
 
 	@Override
 	public String updateFMLRepresentation(PrettyPrintContext context) {
 
-		System.out.println("********* updateFMLRepresentation for CompilationUnit " + getFMLObject());
+		// System.out.println("********* updateFMLRepresentation for CompilationUnit " + getFMLObject());
 
 		// Abnormal case: even the VirtualModel is not defined
-		if (getFMLObject().getVirtualModel() == null) {
+		if (getFMLObject() == null || getFMLObject().getVirtualModel() == null) {
 			return getLastParsed();
 		}
 
-		List<FMLPrettyPrintable> childrenObjects = new ArrayList();
-		childrenObjects.add(getFMLObject().getVirtualModel());
-		return buildFMLRepresentation(childrenObjects, context);
+		return updatePrettyPrintForChildren(context);
+	}
+
+	/**
+	 * Return the number of the starting line (all line numbers start with 1), where underlying model object is textually serialized,
+	 * inclusive
+	 * 
+	 * @return
+	 */
+	@Override
+	public int getStartLine() {
+		return 1;
+	}
+
+	/**
+	 * Return the number of the starting char (starting at 1) in starting line, where underlying model object is textually serialized,
+	 * inclusive
+	 * 
+	 * @return
+	 */
+	@Override
+	public int getStartChar() {
+		return 1;
+	}
+
+	/**
+	 * Return the number of the ending line (all line numbers start with 1), where underlying model object is textually serialized,
+	 * inclusive
+	 * 
+	 * @return
+	 */
+	@Override
+	public int getEndLine() {
+		return getRawSource().size();
+	}
+
+	/**
+	 * Return the number of the ending char (starting at 1) in ending line, where underlying model object is textually serialized, inclusive
+	 * 
+	 * @return
+	 */
+	@Override
+	public int getEndChar() {
+		return getRawSource().get(getRawSource().size() - 1).length();
 	}
 
 }

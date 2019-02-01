@@ -113,14 +113,12 @@ public class TypeFactory {
 
 	public Type makeType(TIdentifier identifier, List<PAdditionalIdentifier> additionalIdentifiers) {
 		String typeName = makeFullQualifiedIdentifier(identifier, additionalIdentifiers);
-		System.out.println("On cherche " + typeName);
 		try {
 			return Class.forName(typeName);
 		} catch (ClassNotFoundException e) {
 			// OK, continue
 		}
 		for (JavaImportDeclaration javaImportDeclaration : analyser.getCompilationUnit().getJavaImports()) {
-			System.out.println("compare " + typeName + " and " + javaImportDeclaration.getClassName());
 			if (typeName.equals(javaImportDeclaration.getClassName())) {
 				try {
 					return Class.forName(javaImportDeclaration.getFullQualifiedClassName());

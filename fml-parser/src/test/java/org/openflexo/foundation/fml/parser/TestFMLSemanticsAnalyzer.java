@@ -78,9 +78,17 @@ public class TestFMLSemanticsAnalyzer extends OpenflexoTestCase {
 		FlexoConcept conceptA;
 		assertNotNull(virtualModel = compilationUnit.getVirtualModel());
 		assertEquals("MyModel", virtualModel.getName());
-		assertEquals(1, virtualModel.getFlexoConcepts().size());
+		assertEquals(2, virtualModel.getFlexoConcepts().size());
 		conceptA = virtualModel.getFlexoConcepts().get(0);
 		assertEquals("ConceptA", conceptA.getName());
+
+		System.out.println("Normalized:");
+		System.out.println(compilationUnit.getPrettyPrintDelegate()
+				.getNormalizedFMLRepresentation(compilationUnit.getPrettyPrintDelegate().makePrettyPrintContext()));
+
+		System.out.println("Current FML");
+		System.out.println(">>>>>>>>>>>>>>>>" + compilationUnit.getPrettyPrintDelegate()
+				.getFMLRepresentation(compilationUnit.getPrettyPrintDelegate().makePrettyPrintContext()) + "<<<<<<<<<<<<<<");
 	}
 
 	/*@Test

@@ -38,6 +38,9 @@
 
 package org.openflexo.foundation.fml.parser.fmlnodes;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.parser.FMLObjectNode;
 import org.openflexo.foundation.fml.parser.FMLSemanticsAnalyzer;
@@ -73,14 +76,23 @@ public class FlexoBehaviourNode extends FMLObjectNode<AConceptDeclaration, Flexo
 	}
 
 	@Override
-	public String getNormalizedFMLRepresentation(PrettyPrintContext context) {
-		return "concept";
+	protected List<PrettyPrintableContents> preparePrettyPrint(PrettyPrintContext context) {
+		List<PrettyPrintableContents> returned = new ArrayList<>();
+		// returned.add(new StaticContents("", getFMLObject().getType() + " " + getFMLObject().getName() + ";", "\n", context));
+		return returned;
 	}
 
 	@Override
 	public String updateFMLRepresentation(PrettyPrintContext context) {
-		System.out.println("********* updateFMLRepresentation for FlexoConcept " + getFMLObject());
-		return "concept";
+
+		System.out.println("********* updateFMLRepresentation for CompilationUnit " + getFMLObject());
+
+		// Abnormal case: model object is not defined
+		if (getFMLObject() == null) {
+			return getLastParsed();
+		}
+
+		return updatePrettyPrintForChildren(context);
 	}
 
 }
