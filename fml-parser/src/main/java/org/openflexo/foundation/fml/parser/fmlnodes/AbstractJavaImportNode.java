@@ -58,14 +58,14 @@ public abstract class AbstractJavaImportNode<N extends Node> extends FMLObjectNo
 	}
 
 	@Override
-	public JavaImportDeclaration buildFMLObjectFromAST() {
+	public JavaImportDeclaration buildFMLObjectFromAST(N node) {
 		return getFactory().newJavaImportDeclaration();
 	}
 
 	@Override
 	public AbstractJavaImportNode<N> deserialize() {
 		if (getParent() instanceof FMLCompilationUnitNode) {
-			System.out.println("Adding to import " + getASTNode() + " as " + getFMLObject().getFullQualifiedClassName());
+			System.out.println("Adding to import as " + getFMLObject().getFullQualifiedClassName());
 			((FMLCompilationUnitNode) getParent()).getFMLObject().addToJavaImports(getFMLObject());
 		}
 

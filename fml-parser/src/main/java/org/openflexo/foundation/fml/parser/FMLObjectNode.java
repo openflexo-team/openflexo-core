@@ -70,7 +70,7 @@ public abstract class FMLObjectNode<N extends Node, T extends FMLPrettyPrintable
 
 	private static final Logger logger = Logger.getLogger(FMLObjectNode.class.getPackage().getName());
 
-	private N astNode;
+	// private N astNode;
 	private final FMLSemanticsAnalyzer analyser;
 	private T fmlObject;
 
@@ -82,9 +82,9 @@ public abstract class FMLObjectNode<N extends Node, T extends FMLPrettyPrintable
 	private RawSourceFragment parsedFragment;
 
 	public FMLObjectNode(N astNode, FMLSemanticsAnalyzer analyser) {
-		this.astNode = astNode;
+		// this.astNode = astNode;
 		this.analyser = analyser;
-		fmlObject = buildFMLObjectFromAST();
+		fmlObject = buildFMLObjectFromAST(astNode);
 		fmlObject.setPrettyPrintDelegate(this);
 		fmlObject.initializeDeserialization(getFactory());
 		/*if (!analyser.fmlNodes.isEmpty()) {
@@ -123,9 +123,9 @@ public abstract class FMLObjectNode<N extends Node, T extends FMLPrettyPrintable
 		return analyser.getTypeFactory();
 	}
 
-	public N getASTNode() {
+	/*public N getASTNode() {
 		return astNode;
-	}
+	}*/
 
 	public FMLObjectNode<?, ?> getParent() {
 		return parent;
@@ -135,7 +135,7 @@ public abstract class FMLObjectNode<N extends Node, T extends FMLPrettyPrintable
 		return children;
 	}
 
-	public abstract T buildFMLObjectFromAST();
+	public abstract T buildFMLObjectFromAST(N astNode);
 
 	public abstract FMLObjectNode<N, T> deserialize();
 

@@ -64,7 +64,7 @@ public class FMLCompilationUnitNode extends FMLObjectNode<AFmlCompilationUnit, F
 	}
 
 	@Override
-	public FMLCompilationUnit buildFMLObjectFromAST() {
+	public FMLCompilationUnit buildFMLObjectFromAST(AFmlCompilationUnit astNode) {
 		return getFactory().newCompilationUnit();
 	}
 

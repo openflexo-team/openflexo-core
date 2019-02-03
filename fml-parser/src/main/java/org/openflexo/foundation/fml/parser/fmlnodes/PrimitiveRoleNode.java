@@ -63,10 +63,10 @@ public class PrimitiveRoleNode extends FlexoPropertyNode<AJavaBasicRoleDeclarati
 	}
 
 	@Override
-	public PrimitiveRole<?> buildFMLObjectFromAST() {
+	public PrimitiveRole<?> buildFMLObjectFromAST(AJavaBasicRoleDeclaration astNode) {
 		PrimitiveRole<?> returned = getFactory().newPrimitiveRole();
-		returned.setName(getName(getASTNode().getVariableDeclarator()).getText());
-		returned.setPrimitiveType(getTypeFactory().getPrimitiveType(getASTNode().getType()));
+		returned.setName(getName(astNode.getVariableDeclarator()).getText());
+		returned.setPrimitiveType(getTypeFactory().getPrimitiveType(astNode.getType()));
 		return returned;
 	}
 

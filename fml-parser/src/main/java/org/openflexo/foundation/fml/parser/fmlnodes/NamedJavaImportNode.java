@@ -60,11 +60,10 @@ public class NamedJavaImportNode extends AbstractJavaImportNode<ANamedJavaImport
 	}
 
 	@Override
-	public JavaImportDeclaration buildFMLObjectFromAST() {
-		JavaImportDeclaration returned = super.buildFMLObjectFromAST();
-		returned.setFullQualifiedClassName(
-				makeFullQualifiedIdentifier(getASTNode().getIdentifier(), getASTNode().getAdditionalIdentifiers()));
-		returned.setAbbrev(getASTNode().getName().getText());
+	public JavaImportDeclaration buildFMLObjectFromAST(ANamedJavaImportImportDeclaration astNode) {
+		JavaImportDeclaration returned = super.buildFMLObjectFromAST(astNode);
+		returned.setFullQualifiedClassName(makeFullQualifiedIdentifier(astNode.getIdentifier(), astNode.getAdditionalIdentifiers()));
+		returned.setAbbrev(astNode.getName().getText());
 		return returned;
 	}
 

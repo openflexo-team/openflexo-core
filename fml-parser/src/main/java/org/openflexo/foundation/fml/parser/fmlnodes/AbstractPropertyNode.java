@@ -63,10 +63,10 @@ public class AbstractPropertyNode extends FlexoPropertyNode<AAbstractPropertyDec
 	}
 
 	@Override
-	public AbstractProperty<?> buildFMLObjectFromAST() {
+	public AbstractProperty<?> buildFMLObjectFromAST(AAbstractPropertyDeclaration astNode) {
 		AbstractProperty<?> returned = getFactory().newAbstractProperty();
-		returned.setName(getName(getASTNode().getVariableDeclarator()).getText());
-		returned.setType(getTypeFactory().makeType(getASTNode().getType()));
+		returned.setName(getName(astNode.getVariableDeclarator()).getText());
+		returned.setType(getTypeFactory().makeType(astNode.getType()));
 		return returned;
 	}
 

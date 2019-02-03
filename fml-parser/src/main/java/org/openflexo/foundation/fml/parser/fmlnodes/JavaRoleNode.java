@@ -63,10 +63,10 @@ public class JavaRoleNode extends FlexoPropertyNode<AJavaBasicRoleDeclaration, J
 	}
 
 	@Override
-	public JavaRole<?> buildFMLObjectFromAST() {
+	public JavaRole<?> buildFMLObjectFromAST(AJavaBasicRoleDeclaration astNode) {
 		JavaRole<?> returned = getFactory().newJavaRole();
-		returned.setName(getName(getASTNode().getVariableDeclarator()).getText());
-		returned.setType(getTypeFactory().makeType(getASTNode().getType()));
+		returned.setName(getName(astNode.getVariableDeclarator()).getText());
+		returned.setType(getTypeFactory().makeType(astNode.getType()));
 		return returned;
 	}
 
