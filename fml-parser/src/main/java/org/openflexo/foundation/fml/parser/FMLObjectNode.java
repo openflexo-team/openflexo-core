@@ -95,8 +95,9 @@ public abstract class FMLObjectNode<N extends Node, T extends FMLPrettyPrintable
 		}*/
 	}
 
-	public FMLObjectNode(T fmlObject, FMLSemanticsAnalyzer analyser) {
+	public FMLObjectNode(T aFMLObject, FMLSemanticsAnalyzer analyser) {
 		this.analyser = analyser;
+		this.fmlObject = aFMLObject;
 		fmlObject.setPrettyPrintDelegate(this);
 	}
 
@@ -377,6 +378,8 @@ public abstract class FMLObjectNode<N extends Node, T extends FMLPrettyPrintable
 			}
 		}
 
+		System.out.println("current=" + current);
+		System.out.println("getEndPosition()=" + getEndPosition());
 		RawSourceFragment postlude = getRawSource().makeFragment(current, getEndPosition());
 
 		if (debug) {

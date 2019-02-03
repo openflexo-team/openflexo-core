@@ -218,6 +218,14 @@ public class RawSource {
 		 */
 		public RawSourceFragment(RawSourcePosition start, RawSourcePosition end) {
 			super();
+			if (start == null) {
+				System.out.println("Tiens le start est null !");
+				Thread.dumpStack();
+			}
+			if (end == null) {
+				System.out.println("Tiens le end est null !");
+				Thread.dumpStack();
+			}
 			this.start = start;
 			this.end = end;
 		}
