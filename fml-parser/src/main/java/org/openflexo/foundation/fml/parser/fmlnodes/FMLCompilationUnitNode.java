@@ -38,9 +38,6 @@
 
 package org.openflexo.foundation.fml.parser.fmlnodes;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.openflexo.foundation.fml.FMLCompilationUnit;
 import org.openflexo.foundation.fml.JavaImportDeclaration;
 import org.openflexo.foundation.fml.parser.FMLObjectNode;
@@ -74,26 +71,12 @@ public class FMLCompilationUnitNode extends FMLObjectNode<AFmlCompilationUnit, F
 	}
 
 	@Override
-	protected List<PrettyPrintableContents> preparePrettyPrint(PrettyPrintContext context) {
-		List<PrettyPrintableContents> returned = new ArrayList<>();
+	protected void preparePrettyPrint() {
+
 		for (JavaImportDeclaration javaImportDeclaration : getFMLObject().getJavaImports()) {
-			returned.add(new ChildContents("", javaImportDeclaration, "\n", context));
+			appendToChildPrettyPrintContents("", javaImportDeclaration, LINE_SEPARATOR, 0);
 		}
-		returned.add(new ChildContents("\n", getFMLObject().getVirtualModel(), "\n", context));
-		return returned;
-	}
-
-	@Override
-	public String updateFMLRepresentation(PrettyPrintContext context) {
-
-		// System.out.println("********* updateFMLRepresentation for CompilationUnit " + getFMLObject());
-
-		// Abnormal case: even the VirtualModel is not defined
-		if (getFMLObject() == null || getFMLObject().getVirtualModel() == null) {
-			return getLastParsedFragment().getRawText();
-		}
-
-		return updatePrettyPrintForChildren(context);
+		appendToChildPrettyPrintContents(LINE_SEPARATOR, getFMLObject().getVirtualModel(), LINE_SEPARATOR, 0);
 	}
 
 	@Override

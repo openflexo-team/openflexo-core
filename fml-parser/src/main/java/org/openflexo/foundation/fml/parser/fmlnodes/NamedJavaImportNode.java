@@ -38,11 +38,11 @@
 
 package org.openflexo.foundation.fml.parser.fmlnodes;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.openflexo.foundation.fml.JavaImportDeclaration;
+import org.openflexo.foundation.fml.parser.DynamicContents;
 import org.openflexo.foundation.fml.parser.FMLSemanticsAnalyzer;
+import org.openflexo.foundation.fml.parser.RawSource.RawSourceFragment;
+import org.openflexo.foundation.fml.parser.StaticContents;
 import org.openflexo.foundation.fml.parser.node.ANamedJavaImportImportDeclaration;
 
 /**
@@ -68,22 +68,16 @@ public class NamedJavaImportNode extends AbstractJavaImportNode<ANamedJavaImport
 	}
 
 	@Override
-	protected List<PrettyPrintableContents> preparePrettyPrint(PrettyPrintContext context) {
-		List<PrettyPrintableContents> returned = new ArrayList<>();
-		returned.add(new StaticContents("import " + getFMLObject().getFullQualifiedClassName() + " as " + getFMLObject().getAbbrev() + ";",
-				context));
-		return returned;
-	}
+	protected void preparePrettyPrint() {
+		RawSourceFragment importFragment = getFragment(getASTNode().getImport());
+		RawSourceFragment fullQualifiedFragment = getFragment(getASTNode().getIdentifier(), getASTNode().getAdditionalIdentifiers());
+		RawSourceFragment asFragment = getFragment(getASTNode().getAs());
+		RawSourceFragment nameFragment = getFragment(getASTNode().getName());
 
-	@Override
-	public String updateFMLRepresentation(PrettyPrintContext context) {
-
-		// Abnormal case: model object is not defined
-		if (getFMLObject() == null) {
-			return getLastParsedFragment().getRawText();
-		}
-
-		return updatePrettyPrintForChildren(context);
+		appendToPrettyPrintContents(new StaticContents<>("import", SPACE, importFragment));
+		appendToPrettyPrintContents(new DynamicContents<>(() -> getFMLObject().getFullQualifiedClassName(), SPACE, fullQualifiedFragment));
+		appendToPrettyPrintContents(new StaticContents<>("as", SPACE, asFragment));
+		appendToPrettyPrintContents(new DynamicContents<>(() -> getFMLObject().getAbbrev(), ";", nameFragment));
 	}
 
 }

@@ -38,13 +38,17 @@
 
 package org.openflexo.foundation.fml.parser.fmlnodes;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.fml.PrimitiveRole;
+import org.openflexo.foundation.fml.parser.DynamicContents;
 import org.openflexo.foundation.fml.parser.FMLSemanticsAnalyzer;
+import org.openflexo.foundation.fml.parser.RawSource.RawSourceFragment;
+import org.openflexo.foundation.fml.parser.StaticContents;
+import org.openflexo.foundation.fml.parser.node.AIdentifierVariableDeclarator;
+import org.openflexo.foundation.fml.parser.node.AInitializerVariableDeclarator;
 import org.openflexo.foundation.fml.parser.node.AJavaBasicRoleDeclaration;
+import org.openflexo.foundation.fml.parser.node.PVariableDeclarator;
 
 /**
  * @author sylvain
@@ -71,23 +75,34 @@ public class PrimitiveRoleNode extends FlexoPropertyNode<AJavaBasicRoleDeclarati
 	}
 
 	@Override
-	protected List<PrettyPrintableContents> preparePrettyPrint(PrettyPrintContext context) {
-		List<PrettyPrintableContents> returned = new ArrayList<>();
-		returned.add(new StaticContents(getFMLObject().getType() + " " + getFMLObject().getName() + ";", context));
-		return returned;
+	protected void preparePrettyPrint() {
+		RawSourceFragment typeFragment = getFragment(getASTNode().getType());
+		RawSourceFragment nameFragment = null;
+		PVariableDeclarator variableDeclarator = getASTNode().getVariableDeclarator();
+		if (variableDeclarator instanceof AIdentifierVariableDeclarator) {
+			nameFragment = getFragment(((AIdentifierVariableDeclarator) variableDeclarator).getIdentifier());
+		}
+		else if (variableDeclarator instanceof AInitializerVariableDeclarator) {
+			nameFragment = getFragment(((AInitializerVariableDeclarator) variableDeclarator).getIdentifier());
+		}
+		RawSourceFragment semiFragment = getFragment(getASTNode().getSemi());
+
+		appendToPrettyPrintContents(new DynamicContents<>(() -> getFMLObject().getType().toString(), SPACE, typeFragment));
+		appendToPrettyPrintContents(new DynamicContents<>(() -> getFMLObject().getName(), nameFragment));
+		appendToPrettyPrintContents(new StaticContents<>(";", semiFragment));
 	}
 
-	@Override
+	/*@Override
 	public String updateFMLRepresentation(PrettyPrintContext context) {
-
+	
 		// System.out.println("********* updateFMLRepresentation for CompilationUnit " + getFMLObject());
-
+	
 		// Abnormal case: model object is not defined
 		if (getFMLObject() == null) {
 			return getLastParsedFragment().getRawText();
 		}
-
+	
 		return updatePrettyPrintForChildren(context);
-	}
+	}*/
 
 }

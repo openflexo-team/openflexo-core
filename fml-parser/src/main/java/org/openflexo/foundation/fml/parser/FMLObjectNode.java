@@ -39,9 +39,7 @@
 package org.openflexo.foundation.fml.parser;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.fml.FMLModelFactory;
@@ -57,6 +55,7 @@ import org.openflexo.foundation.fml.parser.node.Node;
 import org.openflexo.foundation.fml.parser.node.PAdditionalIdentifier;
 import org.openflexo.foundation.fml.parser.node.TIdentifier;
 import org.openflexo.foundation.fml.parser.node.Token;
+import org.openflexo.toolbox.ChainedCollection;
 
 /**
  * Maintains consistency between the model (represented by an {@link FMLObject}) and source code represented in FML language
@@ -70,7 +69,7 @@ public abstract class FMLObjectNode<N extends Node, T extends FMLPrettyPrintable
 
 	private static final Logger logger = Logger.getLogger(FMLObjectNode.class.getPackage().getName());
 
-	// private N astNode;
+	private N astNode;
 	private final FMLSemanticsAnalyzer analyser;
 	private T fmlObject;
 
@@ -81,18 +80,18 @@ public abstract class FMLObjectNode<N extends Node, T extends FMLPrettyPrintable
 	private RawSourcePosition endPosition;
 	private RawSourceFragment parsedFragment;
 
+	// private DerivedRawSource derivedRawSource;
+
+	private List<PrettyPrintableContents> ppContents = new ArrayList<>();
+
 	public FMLObjectNode(N astNode, FMLSemanticsAnalyzer analyser) {
-		// this.astNode = astNode;
+		this.astNode = astNode;
 		this.analyser = analyser;
+
 		fmlObject = buildFMLObjectFromAST(astNode);
 		fmlObject.setPrettyPrintDelegate(this);
 		fmlObject.initializeDeserialization(getFactory());
-		/*if (!analyser.fmlNodes.isEmpty()) {
-			parent = analyser.fmlNodes.peek();
-			// System.out.println("Parent " + parent.getClass().getSimpleName() + Integer.toHexString(parent.hashCode()) + " > "
-			// + getClass().getSimpleName() + Integer.toHexString(hashCode()));
-			parent.children.add(this);
-		}*/
+
 	}
 
 	public FMLObjectNode(T aFMLObject, FMLSemanticsAnalyzer analyser) {
@@ -123,9 +122,9 @@ public abstract class FMLObjectNode<N extends Node, T extends FMLPrettyPrintable
 		return analyser.getTypeFactory();
 	}
 
-	/*public N getASTNode() {
+	public N getASTNode() {
 		return astNode;
-	}*/
+	}
 
 	public FMLObjectNode<?, ?> getParent() {
 		return parent;
@@ -209,22 +208,6 @@ public abstract class FMLObjectNode<N extends Node, T extends FMLPrettyPrintable
 		return parsedFragment;
 	}
 
-	@Override
-	public String getFMLRepresentation(PrettyPrintContext context) {
-		// TODO: implement a cache !!!!
-		return updateFMLRepresentation(context);
-	}
-
-	/**
-	 * Computes and return a String representing FML representation as the merge of:
-	 * <ul>
-	 * <li>Last parsed version (as it was in the original source file)</li>
-	 * <li>Eventual model modifications</li> </u>
-	 * 
-	 * @return
-	 */
-	public abstract String updateFMLRepresentation(PrettyPrintContext context);
-
 	/**
 	 * Build and return a new pretty-print context
 	 * 
@@ -235,75 +218,84 @@ public abstract class FMLObjectNode<N extends Node, T extends FMLPrettyPrintable
 		return new DefaultPrettyPrintContext(0);
 	}
 
-	public static abstract class PrettyPrintableContents {
-		public PrettyPrintableContents(String prelude, String postlude, PrettyPrintContext context) {
-			super();
-			this.prelude = prelude;
-			this.postlude = postlude;
-			this.context = context;
-		}
-
-		String prelude;
-		String postlude;
-		PrettyPrintContext context;
-	}
-
-	public static class ChildContents extends PrettyPrintableContents {
-		public ChildContents(String prelude, FMLPrettyPrintable contents, String postlude, PrettyPrintContext context) {
-			super(prelude, postlude, context);
-			this.contents = contents;
-		}
-
-		FMLPrettyPrintable contents;
-		FMLObjectNode<?, ?> childNode;
-	}
-
-	public static class StaticContents extends PrettyPrintableContents {
-		public StaticContents(String contents, PrettyPrintContext context) {
-			super("", "", context);
-			this.contents = contents;
-		}
-
-		String contents;
-	}
-
-	protected abstract List<PrettyPrintableContents> preparePrettyPrint(PrettyPrintContext context);
+	protected abstract void preparePrettyPrint();
 
 	@Override
 	public final String getNormalizedFMLRepresentation(PrettyPrintContext context) {
-		List<PrettyPrintableContents> childrenObjects = preparePrettyPrint(context);
 		StringBuffer sb = new StringBuffer();
-		for (PrettyPrintableContents child : childrenObjects) {
-			if (child instanceof ChildContents) {
-				FMLObjectNode<?, ?> childNode = getObjectNode(((ChildContents) child).contents);
-				if (childNode == null) {
-					childNode = makeObjectNode(((ChildContents) child).contents);
-					addToChildren(childNode);
-				}
-				sb.append(child.prelude + context.getIndentation() + childNode.getNormalizedFMLRepresentation(child.context)
-						+ child.postlude);
-			}
-			else if (child instanceof StaticContents) {
-				sb.append(child.prelude + context.getIndentation() + ((StaticContents) child).contents + child.postlude);
-			}
+		for (PrettyPrintableContents<?> child : ppContents) {
+			sb.append(child.getNormalizedPrettyPrint(context));
 		}
 		return sb.toString();
 	}
 
-	protected String updatePrettyPrintForChildren(PrettyPrintContext context) {
+	protected void appendToPrettyPrintContents(PrettyPrintableContents<?> content) {
+		ppContents.add(content);
+	}
 
+	/**
+	 * Called to indicate that supplied childObject must be serialized at this pretty-print level<br>
+	 * Either this object is already serialized, or should be created
+	 * 
+	 * @param childObject
+	 */
+	protected void appendToChildPrettyPrintContents(String prelude, FMLPrettyPrintable childObject, String postude, int indentationLevel) {
+
+		FMLObjectNode<?, ?> childNode = getObjectNode(childObject);
+		if (childNode == null) {
+			childNode = makeObjectNode(childObject);
+			addToChildren(childNode);
+		}
+		ChildContents<?> newChildContents = new ChildContents<>(prelude, childNode, postude, indentationLevel);
+		appendToPrettyPrintContents(newChildContents);
+	}
+
+	@Override
+	public String getFMLRepresentation(PrettyPrintContext context) {
+		// TODO: implement a cache !!!!
+
+		DerivedRawSource derivedRawSource = computeFMLRepresentation(context);
+		return derivedRawSource.getStringRepresentation();
+	}
+
+	/**
+	 * Computes and return a String representing FML representation as the merge of:
+	 * <ul>
+	 * <li>Last parsed version (as it was in the original source file)</li>
+	 * <li>Eventual model modifications</li> </u>
+	 * 
+	 * @return
+	 */
+	protected DerivedRawSource computeFMLRepresentation(PrettyPrintContext context) {
 		boolean debug = (this instanceof FMLCompilationUnitNode);
 
-		List<PrettyPrintableContents> childrenObjects = preparePrettyPrint(context);
+		DerivedRawSource derivedRawSource = new DerivedRawSource(getLastParsedFragment());
 
-		if (childrenObjects.size() == 0) {
-			return getLastParsedFragment().getRawText();
+		if (getFMLObject() == null) {
+			logger.warning("Unexpected null model object in " + this);
+			return derivedRawSource;
 		}
 
-		Map<PrettyPrintableContents, String> updatedChildRepresentations = new HashMap<>();
+		/*List<PrettyPrintableContents> childrenObjects = ppContents;
+		
+		if (childrenObjects.size() == 0) {
+			return getLastParsedFragment().getRawText();
+		}*/
 
+		if (debug) {
+			System.out.println("-------------------------> START Pretty-Print for " + getClass().getSimpleName());
+		}
+
+		for (PrettyPrintableContents<?> prettyPrintableContents : ppContents) {
+			prettyPrintableContents.updatePrettyPrint(derivedRawSource, context);
+		}
+
+		return derivedRawSource;
+
+		/*Map<PrettyPrintableContents, String> updatedChildRepresentations = new HashMap<>();
+		
 		int insertionPoint = 0;
-
+		
 		for (PrettyPrintableContents childObject : childrenObjects) {
 			if (childObject instanceof ChildContents) {
 				FMLObjectNode<?, ?> childNode = getObjectNode(((ChildContents) childObject).contents);
@@ -319,21 +311,14 @@ public abstract class FMLObjectNode<N extends Node, T extends FMLPrettyPrintable
 				updatedChildRepresentations.put(childObject, ((StaticContents) childObject).contents);
 			}
 		}
-
-		if (debug) {
-			System.out.println("-------------------------> START Pretty-Print for " + getClass().getSimpleName());
-			System.out.println("last parsed: [" + getLastParsedFragment() + "]");
-		}
-
+		
 		RawSourcePosition current = getStartPosition();
-		// int currentLine = getStartLine();
-		// int currentChar = getStartChar();
 		StringBuffer sb = new StringBuffer();
-
-		/*if (debug) {
-			System.out.println("currentLine=" + currentLine + " currentChar=" + currentChar);
-		}*/
-
+		
+		// if (debug) {
+		// System.out.println("currentLine=" + currentLine + " currentChar=" + currentChar);
+		// }
+		
 		for (PrettyPrintableContents childObject : childrenObjects) {
 			if (childObject instanceof ChildContents) {
 				FMLObjectNode<?, ?> childNode = ((ChildContents) childObject).childNode;
@@ -341,57 +326,48 @@ public abstract class FMLObjectNode<N extends Node, T extends FMLPrettyPrintable
 				// "> " + childNode.getClass().getSimpleName() + " from " + childNode.getStartLine() + ":" + childNode.getStartChar()
 				// + "-" + childNode.getEndLine() + ":" + childNode.getEndChar() + " for " + childNode.getFMLObject());
 				RawSourcePosition toPosition = childNode.getStartPosition();
-				/*int toLine = childNode.getStartLine();
-				int toChar = childNode.getStartChar();
-				if (toChar == 1) {
-					toLine--;
-					toChar = getRawSource().get(toLine - 1).length();
-				}*/
-
+		
 				RawSourceFragment prelude = getRawSource().makeFragment(current, toPosition);
-
+		
 				// RawSourceFragment prelude = extract(currentLine, currentChar, toLine, toChar);
 				if (debug) {
 					System.out.println("Before handling " + childNode.getFMLObject() + " / Adding " + prelude + " value ["
 							+ prelude.getRawText() + "]");
 				}
 				sb.append(prelude.getRawText());
-
+		
 				String updatedChildrenPP = childNode.updateFMLRepresentation(context.derive());
 				if (debug) {
 					System.out.println("Now consider " + getFMLObject() + " " + childNode.getLastParsedFragment() + " value ["
 							+ updatedChildrenPP + "]");
 				}
 				sb.append(updatedChildrenPP);
-
+		
 				current = childNode.getEndPosition();
-
-				/*currentLine = childNode.getEndLine();
-				currentChar = childNode.getEndChar() + 1;
-				if (currentChar >= getRawSource().get(currentLine - 1).length()) {
-					currentLine++;
-					currentChar = 1;
-				}*/
+		
 				if (debug) {
 					System.out.println("AFTER adding children current=" + current);
 				}
 			}
 		}
-
+		
 		System.out.println("current=" + current);
 		System.out.println("getEndPosition()=" + getEndPosition());
 		RawSourceFragment postlude = getRawSource().makeFragment(current, getEndPosition());
-
+		
 		if (debug) {
 			System.out.println("At the end for " + getFMLObject() + " / Adding remaining " + postlude + ") value [" + postlude + "]");
 		}
 		sb.append(postlude.getRawText());
-
+		
 		if (debug) {
 			System.out.println("<------------------------> DONE Pretty-Print for " + getClass().getSimpleName());
 			System.out.println("RESULT: [" + sb.toString() + "]");
 		}
-		return sb.toString();
+		return sb.toString();*/
+
+		// System.out.println("Not handled yet");
+		// return getLastParsedFragment().getRawText();
 	}
 
 	protected <O extends FMLPrettyPrintable> FMLObjectNode<?, O> makeObjectNode(O object) {
@@ -411,6 +387,58 @@ public abstract class FMLObjectNode<N extends Node, T extends FMLPrettyPrintable
 		return null;
 	}
 
+	/**
+	 * Return position as a cursor BEFORE the targetted character
+	 * 
+	 * @param line
+	 * @param pos
+	 * @return
+	 */
+	public RawSourcePosition getPositionBefore(Token token) {
+		return getRawSource().makePositionBeforeChar(token.getLine(), token.getPos() - 1);
+	}
+
+	/**
+	 * Return position as a cursor AFTER the targetted character
+	 * 
+	 * @param line
+	 * @param pos
+	 * @return
+	 */
+	public RawSourcePosition getPositionAfter(Token token) {
+		return getRawSource().makePositionAfterChar(token.getLine(), token.getPos());
+	}
+
+	/**
+	 * Return fragment matching supplied node in AST
+	 * 
+	 * @param token
+	 * @return
+	 */
+	public RawSourceFragment getFragment(Node node) {
+		if (node instanceof Token) {
+			Token token = (Token) node;
+			return getRawSource().makeFragment(getRawSource().makePositionBeforeChar(token.getLine(), token.getPos()),
+					getRawSource().makePositionBeforeChar(token.getLine(), token.getPos() + token.getText().length()));
+		}
+		else {
+			return getAnalyser().getFragmentManager().getFragment(node);
+		}
+	}
+
+	/**
+	 * Return fragment matching supplied nodes in AST
+	 * 
+	 * @param token
+	 * @return
+	 */
+	public RawSourceFragment getFragment(Node node, List<? extends Node> otherNodes) {
+		ChainedCollection<Node> collection = new ChainedCollection<>();
+		collection.add(node);
+		collection.add(otherNodes);
+		return getAnalyser().getFragmentManager().getFragment(collection);
+	}
+
 	public List<String> makeFullQualifiedIdentifierList(TIdentifier identifier, List<PAdditionalIdentifier> additionalIdentifiers) {
 		return getTypeFactory().makeFullQualifiedIdentifierList(identifier, additionalIdentifiers);
 	}
@@ -418,5 +446,29 @@ public abstract class FMLObjectNode<N extends Node, T extends FMLPrettyPrintable
 	public String makeFullQualifiedIdentifier(TIdentifier identifier, List<PAdditionalIdentifier> additionalIdentifiers) {
 		return getTypeFactory().makeFullQualifiedIdentifier(identifier, additionalIdentifiers);
 	}
+
+	protected static final String SPACE = " ";
+	protected static final String LINE_SEPARATOR = "\n";
+
+	protected String getVisibilityAsString() {
+		return "";
+	}
+
+	/*protected RawSourceFragment getFragment(PVisibility visibility) {
+		if (visibility instanceof APrivateVisibility) {
+			return getFragment(((APrivateVisibility) visibility).getPrivate());
+		}
+		if (visibility instanceof AProtectedVisibility) {
+			return getFragment(((AProtectedVisibility) visibility).getProtected());
+		}
+		if (visibility instanceof APublicVisibility) {
+			return getFragment(((APublicVisibility) visibility).getPublic());
+		}
+		return null;
+	}*/
+
+	/*protected RawSourceFragment getFragment(PType type) {
+		return null;
+	}*/
 
 }

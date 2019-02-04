@@ -46,6 +46,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
+import org.openflexo.toolbox.StringUtils;
+
 /**
  * Represent raw source at it has been serialized and parsed.<br>
  * 
@@ -193,7 +195,7 @@ public class RawSource {
 			return true;
 		}
 
-		private RawSource getOuterType() {
+		public RawSource getOuterType() {
 			return RawSource.this;
 		}
 	}
@@ -205,8 +207,9 @@ public class RawSource {
 	 *
 	 */
 	public class RawSourceFragment {
-		public RawSourcePosition start; // inclusive
-		public RawSourcePosition end; // exclusive
+
+		private final RawSourcePosition start;
+		private final RawSourcePosition end;
 
 		/**
 		 * Build new fragment, identified by start position and end position
@@ -219,12 +222,10 @@ public class RawSource {
 		public RawSourceFragment(RawSourcePosition start, RawSourcePosition end) {
 			super();
 			if (start == null) {
-				System.out.println("Tiens le start est null !");
-				Thread.dumpStack();
+				logger.warning("Create a fragment with null start position");
 			}
 			if (end == null) {
-				System.out.println("Tiens le end est null !");
-				Thread.dumpStack();
+				logger.warning("Create a fragment with null end position");
 			}
 			this.start = start;
 			this.end = end;
@@ -233,6 +234,14 @@ public class RawSource {
 		@Override
 		public String toString() {
 			return start.toString() + "-" + end.toString();
+		}
+
+		public RawSourcePosition getStartPosition() {
+			return start;
+		}
+
+		public RawSourcePosition getEndPosition() {
+			return end;
 		}
 
 		public String getRawText() {
@@ -278,6 +287,24 @@ public class RawSource {
 			}
 			return null;
 		}
+
+		/*public RawSource makeRowSource() {
+			String rawSourceAsText = getRawText();
+			InputStream targetStream = new ByteArrayInputStream(rawSourceAsText.getBytes());
+			try {
+				return new RawSource(targetStream);
+			} catch (IOException e) {
+				logger.warning("Unexpected IOException " + e);
+				e.printStackTrace();
+				return null;
+			}
+		
+		}*/
+
+		public RawSource getRawSource() {
+			return RawSource.this;
+		}
+
 	}
 
 	public RawSource(InputStream inputStream) throws IOException {
@@ -339,8 +366,12 @@ public class RawSource {
 
 	public String debug() {
 		StringBuffer sb = new StringBuffer();
+		int i = 1;
 		for (String row : rows) {
-			sb.append(row + "\n");
+			String lineNumber = "" + i;
+			lineNumber = StringUtils.buildWhiteSpaceIndentation(4 - lineNumber.length()) + lineNumber;
+			sb.append("| " + lineNumber + " : " + row + "\n");
+			i++;
 		}
 		return sb.toString();
 	}

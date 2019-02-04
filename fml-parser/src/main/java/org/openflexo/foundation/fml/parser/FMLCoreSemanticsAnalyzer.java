@@ -65,9 +65,12 @@ public abstract class FMLCoreSemanticsAnalyzer extends DepthFirstAdapter {
 	// Raw source as when this analyzer was last parsed
 	private RawSource rawSource;
 
+	private FragmentManager fragmentManager;
+
 	public FMLCoreSemanticsAnalyzer(FMLModelFactory factory, Start tree, RawSource rawSource) {
 		this.factory = factory;
 		this.rawSource = rawSource;
+		fragmentManager = new FragmentManager(rawSource);
 		typeFactory = new TypeFactory((FMLSemanticsAnalyzer) this);
 		tree.apply(this);
 		finalizeDeserialization();
@@ -75,6 +78,10 @@ public abstract class FMLCoreSemanticsAnalyzer extends DepthFirstAdapter {
 
 	public FMLModelFactory getFactory() {
 		return factory;
+	}
+
+	public FragmentManager getFragmentManager() {
+		return fragmentManager;
 	}
 
 	public TypeFactory getTypeFactory() {
@@ -107,7 +114,10 @@ public abstract class FMLCoreSemanticsAnalyzer extends DepthFirstAdapter {
 	}
 
 	protected <N extends FMLObjectNode<?, ?>> N pop() {
-		return (N) fmlNodes.pop().deserialize();
+		N builtFMLNode = (N) fmlNodes.pop();
+		builtFMLNode.deserialize();
+		builtFMLNode.preparePrettyPrint();
+		return builtFMLNode;
 	}
 
 	@Override

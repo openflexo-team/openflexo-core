@@ -36,45 +36,61 @@
  * 
  */
 
-package org.openflexo.foundation.fml.parser.fmlnodes;
+package org.openflexo.foundation.fml.parser;
 
-import org.openflexo.foundation.fml.FlexoConcept;
-import org.openflexo.foundation.fml.parser.FMLObjectNode;
-import org.openflexo.foundation.fml.parser.FMLSemanticsAnalyzer;
-import org.openflexo.foundation.fml.parser.node.AConceptDeclaration;
+import org.openflexo.foundation.fml.FMLPrettyPrintDelegate.PrettyPrintContext;
+import org.openflexo.foundation.fml.FMLPrettyPrintable;
+import org.openflexo.foundation.fml.parser.RawSource.RawSourceFragment;
+import org.openflexo.toolbox.StringUtils;
 
 /**
- * @author sylvain
+ * A static contents (a keyword for example)
  * 
+ * @author sylvain
+ *
+ * @param <T>
  */
-public class FlexoBehaviourNode extends FMLObjectNode<AConceptDeclaration, FlexoConcept> {
+public class StaticContents<T extends FMLPrettyPrintable> extends PrettyPrintableContents<T> {
 
-	public FlexoBehaviourNode(AConceptDeclaration astNode, FMLSemanticsAnalyzer analyser) {
-		super(astNode, analyser);
+	final String staticContents;
+
+	public StaticContents(String staticContents, RawSourceFragment fragment) {
+		super(0);
+		this.staticContents = staticContents;
 	}
 
-	public FlexoBehaviourNode(FlexoConcept concept, FMLSemanticsAnalyzer analyser) {
-		super(concept, analyser);
+	public StaticContents(String prelude, String staticContents, RawSourceFragment fragment) {
+		super(prelude, null, 0);
+		this.staticContents = staticContents;
+	}
+
+	public StaticContents(String prelude, String staticContents, String postlude, RawSourceFragment fragment) {
+		super(prelude, postlude, 0);
+		this.staticContents = staticContents;
+	}
+
+	public String getStaticContents() {
+		return staticContents;
 	}
 
 	@Override
-	public FlexoConcept buildFMLObjectFromAST(AConceptDeclaration astNode) {
-		FlexoConcept returned = getFactory().newFlexoConcept();
-		returned.setName(astNode.getIdentifier().getText());
-		return returned;
-	}
-
-	@Override
-	public FlexoBehaviourNode deserialize() {
-		if (getParent() instanceof VirtualModelNode) {
-			((VirtualModelNode) getParent()).getFMLObject().addToFlexoConcepts(getFMLObject());
+	public String getNormalizedPrettyPrint(PrettyPrintContext context) {
+		StringBuffer sb = new StringBuffer();
+		if (StringUtils.isNotEmpty(getPrelude())) {
+			sb.append(getPrelude());
 		}
-		return this;
+		if (StringUtils.isNotEmpty(getStaticContents())) {
+			sb.append(getStaticContents());
+		}
+		if (StringUtils.isNotEmpty(getPostlude())) {
+			sb.append(getPostlude());
+		}
+		return sb.toString();
 	}
 
 	@Override
-	protected void preparePrettyPrint() {
-		// TODO Auto-generated method stub
-
+	public void updatePrettyPrint(DerivedRawSource derivedRawSource, PrettyPrintContext context) {
+		System.out.println("> Rien a faire pour staticContents=[" + getStaticContents() + "]");
 	}
+
 }

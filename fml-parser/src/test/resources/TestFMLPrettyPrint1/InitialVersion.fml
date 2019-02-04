@@ -1,9 +1,12 @@
 /**
- * Testing abstract properties
+ * Testing PrettyPrint
  */
 
 import java.lang.String;
 
 // Comment
 model MyModel {
+	
+	public int i;
+	private String foo;
 }

@@ -49,7 +49,6 @@ import org.openflexo.foundation.fml.FMLCompilationUnit;
 import org.openflexo.foundation.fml.FMLModelFactory;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.VirtualModel;
-import org.openflexo.foundation.fml.action.CreateFlexoConcept;
 import org.openflexo.foundation.test.OpenflexoTestCase;
 import org.openflexo.pamela.exceptions.ModelDefinitionException;
 import org.openflexo.rm.FileResourceImpl;
@@ -65,7 +64,7 @@ import org.openflexo.test.TestOrder;
  *
  */
 @RunWith(OrderedRunner.class)
-public class TestFMLPrettyPrint extends OpenflexoTestCase {
+public class TestFMLPrettyPrint1 extends OpenflexoTestCase {
 
 	private static FMLCompilationUnit compilationUnit;
 	private static VirtualModel virtualModel;
@@ -85,7 +84,7 @@ public class TestFMLPrettyPrint extends OpenflexoTestCase {
 		editor = new DefaultFlexoEditor(null, serviceManager);
 		assertNotNull(editor);
 
-		final Resource fmlFile = ResourceLocator.locateResource("NewFMLExamples/TestBasicTypesWithComments.fml");
+		final Resource fmlFile = ResourceLocator.locateResource("TestFMLPrettyPrint1/InitialVersion.fml");
 		compilationUnit = parseFile(fmlFile);
 		assertNotNull(virtualModel = compilationUnit.getVirtualModel());
 		assertEquals("MyModel", virtualModel.getName());
@@ -102,32 +101,32 @@ public class TestFMLPrettyPrint extends OpenflexoTestCase {
 				.getFMLRepresentation(compilationUnit.getPrettyPrintDelegate().makePrettyPrintContext()) + "<<<<<<<<<<<<<<");
 	}
 
-	/*@Test
+	@Test
 	@TestOrder(2)
 	public void changeVirtualModelName() {
 		log("Change name to AnOtherName");
 		assertEquals("MyModel", virtualModel.getName());
 		virtualModel.setName("AnOtherName");
 		System.out.println("FML=\n" + compilationUnit.getFMLPrettyPrint());
-	}*/
+	}
 
-	@Test
+	/*@Test
 	@TestOrder(3)
 	public void addFlexoConcept() {
 		log("addFlexoConcept");
-
+	
 		CreateFlexoConcept addConceptC = CreateFlexoConcept.actionType.makeNewAction(virtualModel, null, editor);
 		addConceptC.setNewFlexoConceptName("FlexoConceptC");
 		addConceptC.doAction();
-
+	
 		FlexoConcept conceptC = addConceptC.getNewFlexoConcept();
-
+	
 		System.out.println("Normalized:");
 		System.out.println(compilationUnit.getPrettyPrintDelegate()
 				.getNormalizedFMLRepresentation(compilationUnit.getPrettyPrintDelegate().makePrettyPrintContext()));
-
+	
 		System.out.println("Current FML");
 		System.out.println(">>>>>>>>>>>>>>>>" + compilationUnit.getPrettyPrintDelegate()
 				.getFMLRepresentation(compilationUnit.getPrettyPrintDelegate().makePrettyPrintContext()) + "<<<<<<<<<<<<<<");
-	}
+	}*/
 }

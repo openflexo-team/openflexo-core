@@ -38,14 +38,14 @@
 
 package org.openflexo.foundation.fml.parser.fmlnodes;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.openflexo.foundation.fml.FlexoBehaviour;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoProperty;
+import org.openflexo.foundation.fml.parser.DynamicContents;
 import org.openflexo.foundation.fml.parser.FMLObjectNode;
 import org.openflexo.foundation.fml.parser.FMLSemanticsAnalyzer;
+import org.openflexo.foundation.fml.parser.RawSource.RawSourceFragment;
+import org.openflexo.foundation.fml.parser.StaticContents;
 import org.openflexo.foundation.fml.parser.node.AConceptDeclaration;
 
 /**
@@ -78,34 +78,32 @@ public class FlexoConceptNode extends FMLObjectNode<AConceptDeclaration, FlexoCo
 	}
 
 	@Override
-	protected List<PrettyPrintableContents> preparePrettyPrint(PrettyPrintContext context) {
-		List<PrettyPrintableContents> returned = new ArrayList<>();
-		returned.add(new StaticContents("concept " + getFMLObject().getName() + " {\n", context));
+	protected void preparePrettyPrint() {
+
+		RawSourceFragment nameFragment = getFragment(getASTNode().getIdentifier());
+		RawSourceFragment conceptFragment = getFragment(getASTNode().getConcept());
+
+		if (getASTNode().getVisibility() != null) {
+			RawSourceFragment visibilityFragment = getFragment(getASTNode().getVisibility());
+			appendToPrettyPrintContents(new DynamicContents<>(() -> getVisibilityAsString(), SPACE, visibilityFragment));
+		}
+		else {
+			appendToPrettyPrintContents(new DynamicContents<>(() -> getVisibilityAsString(), SPACE, conceptFragment.getStartPosition()));
+		}
+		appendToPrettyPrintContents(new StaticContents<>("concept", SPACE, conceptFragment));
+		appendToPrettyPrintContents(new DynamicContents<>(() -> getFMLObject().getName(), nameFragment));
+		appendToPrettyPrintContents(new StaticContents<>("{", LINE_SEPARATOR, getFragment(getASTNode().getLBrc())));
+
 		for (FlexoProperty<?> property : getFMLObject().getFlexoProperties()) {
-			returned.add(new ChildContents("", property, "\n", context.derive()));
+			appendToChildPrettyPrintContents("", property, LINE_SEPARATOR, 1);
 		}
 		for (FlexoBehaviour behaviour : getFMLObject().getFlexoBehaviours()) {
-			returned.add(new ChildContents("", behaviour, "\n", context.derive()));
+			appendToChildPrettyPrintContents(LINE_SEPARATOR, behaviour, LINE_SEPARATOR, 1);
 		}
 		for (FlexoConcept concept : getFMLObject().getChildFlexoConcepts()) {
-			returned.add(new ChildContents("", concept, "\n", context.derive()));
+			appendToChildPrettyPrintContents(LINE_SEPARATOR, concept, LINE_SEPARATOR, 1);
 		}
-		returned.add(new StaticContents("}", context));
-		return returned;
-	}
-
-	@Override
-	public String updateFMLRepresentation(PrettyPrintContext context) {
-
-		// System.out.println("********* updateFMLRepresentation for FlexoConcept " + getFMLObject());
-
-		// Abnormal case: the model object is not defined
-		if (getFMLObject() == null) {
-			return getLastParsedFragment().getRawText();
-		}
-
-		return updatePrettyPrintForChildren(context);
-
+		appendToPrettyPrintContents(new StaticContents<>("}", LINE_SEPARATOR, getFragment(getASTNode().getRBrc())));
 	}
 
 }
