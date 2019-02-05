@@ -67,6 +67,7 @@ public class JavaRoleNode extends FlexoPropertyNode<AJavaBasicRoleDeclaration, J
 	@Override
 	public JavaRole<?> buildFMLObjectFromAST(AJavaBasicRoleDeclaration astNode) {
 		JavaRole<?> returned = getFactory().newJavaRole();
+		returned.setVisibility(getVisibility(astNode.getVisibility()));
 		returned.setName(getName(astNode.getVariableDeclarator()).getText());
 		returned.setType(getTypeFactory().makeType(astNode.getType()));
 		return returned;
@@ -75,6 +76,13 @@ public class JavaRoleNode extends FlexoPropertyNode<AJavaBasicRoleDeclaration, J
 	@Override
 	protected void preparePrettyPrint() {
 		super.preparePrettyPrint();
+		if (getASTNode().getVisibility() != null) {
+			RawSourceFragment visibilityFragment = getFragment(getASTNode().getVisibility());
+			appendDynamicContents(() -> getVisibilityAsString(getFMLObject().getVisibility()), SPACE, visibilityFragment);
+		}
+		else {
+			appendDynamicContents(() -> getVisibilityAsString(getFMLObject().getVisibility()), SPACE);
+		}
 		RawSourceFragment typeFragment = getFragment(getASTNode().getType());
 		RawSourceFragment nameFragment = null;
 		PVariableDeclarator variableDeclarator = getASTNode().getVariableDeclarator();

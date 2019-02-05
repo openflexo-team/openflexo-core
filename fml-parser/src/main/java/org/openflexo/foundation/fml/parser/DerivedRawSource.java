@@ -83,8 +83,9 @@ public class DerivedRawSource {
 		}
 	}
 
-	public void insert(RawSourcePosition insertionPoint, String fmlRepresentation) {
-		System.out.println("On insere a la position " + insertionPoint + " la valeur [" + fmlRepresentation + "])");
+	public void insert(RawSourcePosition insertionPoint, String insertion) {
+		System.out.println("On insere a la position " + insertionPoint + " la valeur [" + insertion + "])");
+		modifications.add(new StringInsertion(insertionPoint, insertion));
 	}
 
 	public void remove(RawSourceFragment fragment) {
@@ -125,6 +126,9 @@ public class DerivedRawSource {
 			}
 			if (modification instanceof DerivedRawSourceReplacement) {
 				sb.append(((DerivedRawSourceReplacement) modification).replacement.getStringRepresentation());
+			}
+			if (modification instanceof StringInsertion) {
+				sb.append(((StringInsertion) modification).getInsertion());
 			}
 			current = replacedFragment.getEndPosition();
 		}
@@ -242,6 +246,25 @@ public class DerivedRawSource {
 			return "DerivedRawSourceReplacement " + getInitialFragment();
 		}
 
+	}
+
+	public class StringInsertion extends Modification {
+
+		private String insertion;
+
+		public StringInsertion(RawSourcePosition insertionPoint, String insertion) {
+			super(insertionPoint.getOuterType().makeFragment(insertionPoint, insertionPoint));
+			this.insertion = insertion;
+		}
+
+		public String getInsertion() {
+			return insertion;
+		}
+
+		@Override
+		public String toString() {
+			return "StringInsertion " + getInitialFragment() + " with " + getInsertion();
+		}
 	}
 
 }

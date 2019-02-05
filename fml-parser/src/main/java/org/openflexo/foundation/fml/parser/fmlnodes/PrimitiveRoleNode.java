@@ -67,14 +67,32 @@ public class PrimitiveRoleNode extends FlexoPropertyNode<AJavaBasicRoleDeclarati
 	@Override
 	public PrimitiveRole<?> buildFMLObjectFromAST(AJavaBasicRoleDeclaration astNode) {
 		PrimitiveRole<?> returned = getFactory().newPrimitiveRole();
+		returned.setVisibility(getVisibility(astNode.getVisibility()));
 		returned.setName(getName(astNode.getVariableDeclarator()).getText());
 		returned.setPrimitiveType(getTypeFactory().getPrimitiveType(astNode.getType()));
 		return returned;
 	}
 
 	@Override
+	protected void prepareNormalizedPrettyPrint() {
+		super.prepareNormalizedPrettyPrint();
+
+		appendDynamicContents(() -> getVisibilityAsString(getFMLObject().getVisibility()), SPACE);
+		appendDynamicContents(() -> serializeType(getFMLObject().getType(), getCompilationUnit()), SPACE);
+		appendDynamicContents(() -> getFMLObject().getName());
+		appendStaticContents(";");
+	}
+
+	@Override
 	protected void preparePrettyPrint() {
 		super.preparePrettyPrint();
+		if (getASTNode().getVisibility() != null) {
+			RawSourceFragment visibilityFragment = getFragment(getASTNode().getVisibility());
+			appendDynamicContents(() -> getVisibilityAsString(getFMLObject().getVisibility()), SPACE, visibilityFragment);
+		}
+		else {
+			appendDynamicContents(() -> getVisibilityAsString(getFMLObject().getVisibility()), SPACE);
+		}
 		RawSourceFragment typeFragment = getFragment(getASTNode().getType());
 		RawSourceFragment nameFragment = null;
 		PVariableDeclarator variableDeclarator = getASTNode().getVariableDeclarator();

@@ -62,7 +62,6 @@ public class DefaultPrettyPrintContext implements PrettyPrintContext {
 
 	public DefaultPrettyPrintContext(int indentation) {
 		this.indentation = indentation;
-		System.out.println("Nouveau context, indentation=" + indentation);
 	}
 
 	@Override

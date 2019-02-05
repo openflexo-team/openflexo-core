@@ -8,6 +8,6 @@ import java.util.List;
 // Comment
 model MyModel {
 
-	public int i;
+	int i;
 	private String foo;
 }

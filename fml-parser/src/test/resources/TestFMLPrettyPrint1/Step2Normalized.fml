@@ -1,13 +1,7 @@
-/**
- * Testing PrettyPrint
- */
-
 import java.lang.String;
-import java.util.List;
+import java.util.ArrayList;
 
-// Comment
 model MyModel {
-
 	int i;
 	private String foo;
 }

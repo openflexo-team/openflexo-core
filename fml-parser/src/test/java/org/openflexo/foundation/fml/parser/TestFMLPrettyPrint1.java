@@ -50,6 +50,7 @@ import java.util.List;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.openflexo.connie.type.PrimitiveType;
 import org.openflexo.foundation.DefaultFlexoEditor;
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.fml.FMLCompilationUnit;
@@ -57,6 +58,7 @@ import org.openflexo.foundation.fml.FMLModelFactory;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.JavaImportDeclaration;
 import org.openflexo.foundation.fml.VirtualModel;
+import org.openflexo.foundation.fml.action.CreatePrimitiveRole;
 import org.openflexo.foundation.test.OpenflexoTestCase;
 import org.openflexo.pamela.exceptions.ModelDefinitionException;
 import org.openflexo.rm.FileResourceImpl;
@@ -126,7 +128,7 @@ public class TestFMLPrettyPrint1 extends OpenflexoTestCase {
 				nextLine = br.readLine();
 				if (nextLine != null) {
 					rows1.add(nextLine);
-					// System.out.println("1> [" + rows1.size() + "] : " + nextLine);
+					System.out.println("1> [" + rows1.size() + "] : " + nextLine);
 				}
 			} while (nextLine != null);
 		} catch (IOException e) {
@@ -144,7 +146,7 @@ public class TestFMLPrettyPrint1 extends OpenflexoTestCase {
 				nextLine = br.readLine();
 				if (nextLine != null) {
 					rows2.add(nextLine);
-					// System.out.println("2> [" + rows2.size() + "] : " + nextLine);
+					System.out.println("2> [" + rows2.size() + "] : " + nextLine);
 				}
 			} while (nextLine != null);
 		} catch (IOException e) {
@@ -178,36 +180,42 @@ public class TestFMLPrettyPrint1 extends OpenflexoTestCase {
 		testNormalizedFMLRepresentationEquals("TestFMLPrettyPrint1/Step1Normalized.fml");
 		testFMLPrettyPrintEquals("TestFMLPrettyPrint1/Step1PrettyPrint.fml");
 
-		/*final Resource step1NormalizedFile = ResourceLocator.locateResource("TestFMLPrettyPrint1/Step1Normalized.fml");
-		String step1NormalizedFileContents = FileUtils.fileContents(step1NormalizedFile.openInputStream(), null);
-		
-		String normalizedFMLRepresentation = compilationUnit.getPrettyPrintDelegate()
-				.getNormalizedFMLRepresentation(compilationUnit.getPrettyPrintDelegate().makePrettyPrintContext());
-		System.out.println("Expected:");
-		System.out.println(step1NormalizedFileContents);
-		System.out.println("Normalized:");
-		System.out.println(normalizedFMLRepresentation);
-		assertEquals(step1NormalizedFileContents, normalizedFMLRepresentation);
-		
-		final Resource step1PrettyPrintFile = ResourceLocator.locateResource("TestFMLPrettyPrint1/Step1PrettyPrint.fml");
-		String step1PrettyPrintFileContents = FileUtils.fileContents(step1PrettyPrintFile.openInputStream(), null);
-		
-		String prettyPrint = compilationUnit.getPrettyPrintDelegate()
-				.getFMLRepresentation(compilationUnit.getPrettyPrintDelegate().makePrettyPrintContext());
-		System.out.println("PrettyPrint:");
-		System.out.println(prettyPrint);
-		assertEquals(step1PrettyPrintFileContents, prettyPrint);*/
 	}
 
 	@Test
 	@TestOrder(3)
 	public void modifyImport() {
-		System.exit(-1);
-
 		JavaImportDeclaration listDeclaration = compilationUnit.getJavaImports().get(1);
 		listDeclaration.setFullQualifiedClassName("java.util.ArrayList");
 		System.out.println("FML=\n" + compilationUnit.getFMLPrettyPrint());
+		testNormalizedFMLRepresentationEquals("TestFMLPrettyPrint1/Step2Normalized.fml");
+		testFMLPrettyPrintEquals("TestFMLPrettyPrint1/Step2PrettyPrint.fml");
 	}
+
+	@Test
+	@TestOrder(4)
+	public void addStringProperty() {
+
+		CreatePrimitiveRole createStringProperty = CreatePrimitiveRole.actionType.makeNewAction(virtualModel, null, editor);
+		createStringProperty.setRoleName("newString");
+		createStringProperty.setPrimitiveType(PrimitiveType.String);
+		createStringProperty.doAction();
+		System.out.println("FML=\n" + compilationUnit.getFMLPrettyPrint());
+		testNormalizedFMLRepresentationEquals("TestFMLPrettyPrint1/Step3Normalized.fml");
+		testFMLPrettyPrintEquals("TestFMLPrettyPrint1/Step3PrettyPrint.fml");
+	}
+
+	/*@Test
+	@TestOrder(5)
+	public void addDateProperty() {
+	
+		CreatePrimitiveRole createStringProperty = CreatePrimitiveRole.actionType.makeNewAction(virtualModel, null, editor);
+		createStringProperty.setRoleName("newDate");
+		createStringProperty.setPrimitiveType(PrimitiveType.Date);
+		createStringProperty.doAction();
+	
+		System.out.println("FML=\n" + compilationUnit.getFMLPrettyPrint());
+	}*/
 
 	/*@Test
 	@TestOrder(10)

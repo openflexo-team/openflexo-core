@@ -67,6 +67,7 @@ public class AbstractPropertyNode extends FlexoPropertyNode<AAbstractPropertyDec
 	@Override
 	public AbstractProperty<?> buildFMLObjectFromAST(AAbstractPropertyDeclaration astNode) {
 		AbstractProperty<?> returned = getFactory().newAbstractProperty();
+		returned.setVisibility(getVisibility(astNode.getVisibility()));
 		returned.setName(getName(astNode.getVariableDeclarator()).getText());
 		returned.setType(getTypeFactory().makeType(astNode.getType()));
 		return returned;
@@ -75,6 +76,13 @@ public class AbstractPropertyNode extends FlexoPropertyNode<AAbstractPropertyDec
 	@Override
 	protected void preparePrettyPrint() {
 		super.preparePrettyPrint();
+		if (getASTNode().getVisibility() != null) {
+			RawSourceFragment visibilityFragment = getFragment(getASTNode().getVisibility());
+			appendDynamicContents(() -> getVisibilityAsString(getFMLObject().getVisibility()), SPACE, visibilityFragment);
+		}
+		else {
+			appendDynamicContents(() -> getVisibilityAsString(getFMLObject().getVisibility()), SPACE);
+		}
 		RawSourceFragment abstractFragment = getFragment(getASTNode().getAbstract());
 		RawSourceFragment typeFragment = getFragment(getASTNode().getType());
 		RawSourceFragment nameFragment = null;
