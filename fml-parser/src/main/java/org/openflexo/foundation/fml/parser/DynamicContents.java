@@ -43,7 +43,6 @@ import java.util.function.Supplier;
 import org.openflexo.foundation.fml.FMLPrettyPrintDelegate.PrettyPrintContext;
 import org.openflexo.foundation.fml.FMLPrettyPrintable;
 import org.openflexo.foundation.fml.parser.RawSource.RawSourceFragment;
-import org.openflexo.foundation.fml.parser.RawSource.RawSourcePosition;
 import org.openflexo.toolbox.StringUtils;
 
 /**
@@ -60,86 +59,15 @@ public class DynamicContents<T extends FMLPrettyPrintable> extends PrettyPrintab
 	/**
 	 * Build a new {@link DynamicContents}, whose value is intented to replace text determined with supplied fragment
 	 * 
-	 * @param stringRepresentationSupplier
-	 *            gives dynamic value of that contents
-	 * @param fragment
-	 */
-	public DynamicContents(Supplier<String> stringRepresentationSupplier, RawSourceFragment fragment) {
-		super(0);
-		this.stringRepresentationSupplier = stringRepresentationSupplier;
-		setFragment(fragment);
-	}
-
-	/**
-	 * Build a new {@link DynamicContents}, whose value is intented to be inserted at supplied location (no current contents was parsed in
-	 * initial raw source)
-	 * 
-	 * @param stringRepresentationSupplier
-	 *            gives dynamic value of that contents
-	 * @param expectedLocation
-	 */
-	public DynamicContents(Supplier<String> stringRepresentationSupplier, RawSourcePosition expectedLocation) {
-		super(0);
-		this.stringRepresentationSupplier = stringRepresentationSupplier;
-		setFragment(expectedLocation.getOuterType().makeFragment(expectedLocation, expectedLocation));
-	}
-
-	/**
-	 * Build a new {@link DynamicContents}, whose value is intented to replace text determined with supplied fragment
-	 * 
 	 * @param prelude
 	 * @param stringRepresentationSupplier
 	 *            gives dynamic value of that contents
 	 * @param fragment
 	 */
-	public DynamicContents(String prelude, Supplier<String> stringRepresentationSupplier, RawSourceFragment fragment) {
-		super(prelude, null, 0);
+	public DynamicContents(String prelude, Supplier<String> stringRepresentationSupplier, String postlude, RawSourceFragment fragment) {
+		super(prelude, postlude, 0);
 		this.stringRepresentationSupplier = stringRepresentationSupplier;
 		setFragment(fragment);
-	}
-
-	/**
-	 * Build a new {@link DynamicContents}, whose value is intented to be inserted at supplied location (no current contents was parsed in
-	 * initial raw source)
-	 * 
-	 * @param prelude
-	 * @param stringRepresentationSupplier
-	 *            gives dynamic value of that contents
-	 * @param expectedLocation
-	 */
-	public DynamicContents(String prelude, Supplier<String> stringRepresentationSupplier, RawSourcePosition expectedLocation) {
-		super(prelude, null, 0);
-		this.stringRepresentationSupplier = stringRepresentationSupplier;
-		setFragment(expectedLocation.getOuterType().makeFragment(expectedLocation, expectedLocation));
-	}
-
-	/**
-	 * Build a new {@link DynamicContents}, whose value is intented to replace text determined with supplied fragment
-	 * 
-	 * @param stringRepresentationSupplier
-	 *            gives dynamic value of that contents
-	 * @param postlude
-	 * @param fragment
-	 */
-	public DynamicContents(Supplier<String> stringRepresentationSupplier, String postlude, RawSourceFragment fragment) {
-		super(null, postlude, 0);
-		this.stringRepresentationSupplier = stringRepresentationSupplier;
-		setFragment(fragment);
-	}
-
-	/**
-	 * Build a new {@link DynamicContents}, whose value is intented to be inserted at supplied location (no current contents was parsed in
-	 * initial raw source)
-	 * 
-	 * @param stringRepresentationSupplier
-	 *            gives dynamic value of that contents
-	 * @param postlude
-	 * @param expectedLocation
-	 */
-	public DynamicContents(Supplier<String> stringRepresentationSupplier, String postlude, RawSourcePosition expectedLocation) {
-		super(null, postlude, 0);
-		this.stringRepresentationSupplier = stringRepresentationSupplier;
-		setFragment(expectedLocation.getOuterType().makeFragment(expectedLocation, expectedLocation));
 	}
 
 	@Override

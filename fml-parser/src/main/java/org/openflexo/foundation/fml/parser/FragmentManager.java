@@ -87,7 +87,6 @@ public class FragmentManager extends DepthFirstAdapter {
 	@Override
 	public void defaultCase(Node node) {
 		super.defaultCase(node);
-		System.out.println("defaultCase for " + node);
 		if (node instanceof Token) {
 			handleToken((Token) node);
 		}

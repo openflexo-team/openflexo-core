@@ -66,7 +66,7 @@ public class ChildContents<T extends FMLPrettyPrintable> extends PrettyPrintable
 	@Override
 	public String getNormalizedPrettyPrint(PrettyPrintContext context) {
 		StringBuffer sb = new StringBuffer();
-		String childPrettyPrint = childNode.getNormalizedFMLRepresentation(context);
+		String childPrettyPrint = childNode.getNormalizedFMLRepresentation(context.derive(getRelativeIndentation()));
 		if (StringUtils.isNotEmpty(childPrettyPrint)) {
 			if (StringUtils.isNotEmpty(getPrelude())) {
 				sb.append(getPrelude());

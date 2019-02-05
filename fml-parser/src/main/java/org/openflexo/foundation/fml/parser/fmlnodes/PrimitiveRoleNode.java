@@ -41,10 +41,8 @@ package org.openflexo.foundation.fml.parser.fmlnodes;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.fml.PrimitiveRole;
-import org.openflexo.foundation.fml.parser.DynamicContents;
 import org.openflexo.foundation.fml.parser.FMLSemanticsAnalyzer;
 import org.openflexo.foundation.fml.parser.RawSource.RawSourceFragment;
-import org.openflexo.foundation.fml.parser.StaticContents;
 import org.openflexo.foundation.fml.parser.node.AIdentifierVariableDeclarator;
 import org.openflexo.foundation.fml.parser.node.AInitializerVariableDeclarator;
 import org.openflexo.foundation.fml.parser.node.AJavaBasicRoleDeclaration;
@@ -76,6 +74,7 @@ public class PrimitiveRoleNode extends FlexoPropertyNode<AJavaBasicRoleDeclarati
 
 	@Override
 	protected void preparePrettyPrint() {
+		super.preparePrettyPrint();
 		RawSourceFragment typeFragment = getFragment(getASTNode().getType());
 		RawSourceFragment nameFragment = null;
 		PVariableDeclarator variableDeclarator = getASTNode().getVariableDeclarator();
@@ -87,22 +86,9 @@ public class PrimitiveRoleNode extends FlexoPropertyNode<AJavaBasicRoleDeclarati
 		}
 		RawSourceFragment semiFragment = getFragment(getASTNode().getSemi());
 
-		appendToPrettyPrintContents(new DynamicContents<>(() -> getFMLObject().getType().toString(), SPACE, typeFragment));
-		appendToPrettyPrintContents(new DynamicContents<>(() -> getFMLObject().getName(), nameFragment));
-		appendToPrettyPrintContents(new StaticContents<>(";", semiFragment));
+		appendDynamicContents(() -> serializeType(getFMLObject().getType(), getCompilationUnit()), SPACE, typeFragment);
+		appendDynamicContents(() -> getFMLObject().getName(), nameFragment);
+		appendStaticContents(";", semiFragment);
 	}
-
-	/*@Override
-	public String updateFMLRepresentation(PrettyPrintContext context) {
-	
-		// System.out.println("********* updateFMLRepresentation for CompilationUnit " + getFMLObject());
-	
-		// Abnormal case: model object is not defined
-		if (getFMLObject() == null) {
-			return getLastParsedFragment().getRawText();
-		}
-	
-		return updatePrettyPrintForChildren(context);
-	}*/
 
 }

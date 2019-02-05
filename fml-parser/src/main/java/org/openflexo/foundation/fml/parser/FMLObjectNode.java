@@ -40,6 +40,7 @@ package org.openflexo.foundation.fml.parser;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Supplier;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.fml.FMLModelFactory;
@@ -47,10 +48,12 @@ import org.openflexo.foundation.fml.FMLObject;
 import org.openflexo.foundation.fml.FMLPrettyPrintDelegate;
 import org.openflexo.foundation.fml.FMLPrettyPrintable;
 import org.openflexo.foundation.fml.FlexoConcept;
+import org.openflexo.foundation.fml.JavaImportDeclaration;
 import org.openflexo.foundation.fml.parser.RawSource.RawSourceFragment;
 import org.openflexo.foundation.fml.parser.RawSource.RawSourcePosition;
 import org.openflexo.foundation.fml.parser.fmlnodes.FMLCompilationUnitNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.FlexoConceptNode;
+import org.openflexo.foundation.fml.parser.fmlnodes.JavaImportNode;
 import org.openflexo.foundation.fml.parser.node.Node;
 import org.openflexo.foundation.fml.parser.node.PAdditionalIdentifier;
 import org.openflexo.foundation.fml.parser.node.TIdentifier;
@@ -82,7 +85,7 @@ public abstract class FMLObjectNode<N extends Node, T extends FMLPrettyPrintable
 
 	// private DerivedRawSource derivedRawSource;
 
-	private List<PrettyPrintableContents> ppContents = new ArrayList<>();
+	private List<PrettyPrintableContents<?>> ppContents = new ArrayList<>();
 
 	public FMLObjectNode(N astNode, FMLSemanticsAnalyzer analyser) {
 		this.astNode = astNode;
@@ -91,7 +94,6 @@ public abstract class FMLObjectNode<N extends Node, T extends FMLPrettyPrintable
 		fmlObject = buildFMLObjectFromAST(astNode);
 		fmlObject.setPrettyPrintDelegate(this);
 		fmlObject.initializeDeserialization(getFactory());
-
 	}
 
 	public FMLObjectNode(T aFMLObject, FMLSemanticsAnalyzer analyser) {
@@ -218,7 +220,9 @@ public abstract class FMLObjectNode<N extends Node, T extends FMLPrettyPrintable
 		return new DefaultPrettyPrintContext(0);
 	}
 
-	protected abstract void preparePrettyPrint();
+	protected void preparePrettyPrint() {
+		defaultInsertionPoint = getStartPosition();
+	}
 
 	@Override
 	public final String getNormalizedFMLRepresentation(PrettyPrintContext context) {
@@ -226,15 +230,154 @@ public abstract class FMLObjectNode<N extends Node, T extends FMLPrettyPrintable
 		for (PrettyPrintableContents<?> child : ppContents) {
 			sb.append(child.getNormalizedPrettyPrint(context));
 		}
-		return sb.toString();
+		System.out.println("On indente pour indentation=[" + context.getResultingIndentation() + "]");
+		System.out.println("Ce qu'on indente: " + sb.toString());
+		System.out.println("On retourne: " + context.indent(sb.toString()));
+		return context.indent(sb.toString());
 	}
 
-	protected void appendToPrettyPrintContents(PrettyPrintableContents<?> content) {
+	/*protected void appendToPrettyPrintContents(PrettyPrintableContents<?> content) {
 		ppContents.add(content);
+	}*/
+
+	private RawSourcePosition defaultInsertionPoint;
+
+	public RawSourcePosition getDefaultInsertionPoint() {
+		return defaultInsertionPoint;
 	}
 
 	/**
-	 * Called to indicate that supplied childObject must be serialized at this pretty-print level<br>
+	 * Append {@link StaticContents}, whose value is intented to replace text determined with supplied fragment
+	 * 
+	 * @param staticContents
+	 *            value to append
+	 * @param fragment
+	 */
+	public void appendStaticContents(String staticContents, RawSourceFragment fragment) {
+		StaticContents<?> newContents = new StaticContents<>(null, staticContents, null, fragment);
+		ppContents.add(newContents);
+		defaultInsertionPoint = fragment.getEndPosition();
+	}
+
+	/**
+	 * Append {@link StaticContents}, whose value is intented to replace text determined with supplied fragment
+	 * 
+	 * @param prelude
+	 *            prelude to add if normalized pretty-print is to be applied
+	 * @param staticContents
+	 *            value to append
+	 * @param fragment
+	 */
+	public void appendStaticContents(String prelude, String staticContents, RawSourceFragment fragment) {
+		StaticContents<?> newContents = new StaticContents<>(prelude, staticContents, null, fragment);
+		ppContents.add(newContents);
+		defaultInsertionPoint = fragment.getEndPosition();
+	}
+
+	/**
+	 * Append {@link StaticContents}, whose value is intented to replace text determined with supplied fragment
+	 * 
+	 * @param prelude
+	 *            prelude to add if normalized pretty-print is to be applied
+	 * @param staticContents
+	 *            value to append
+	 * @param postlude
+	 *            postlude to add if normalized pretty-print is to be applied
+	 * @param fragment
+	 */
+	public void appendStaticContents(String prelude, String staticContents, String postlude, RawSourceFragment fragment) {
+		StaticContents<?> newContents = new StaticContents<>(prelude, staticContents, postlude, fragment);
+		ppContents.add(newContents);
+		defaultInsertionPoint = fragment.getEndPosition();
+	}
+
+	/**
+	 * Append {@link DynamicContents}, whose value is intented to replace text determined with supplied fragment
+	 * 
+	 * @param stringRepresentationSupplier
+	 *            gives dynamic value of that contents
+	 * @param fragment
+	 */
+	public void appendDynamicContents(Supplier<String> stringRepresentationSupplier, RawSourceFragment fragment) {
+		DynamicContents<?> newContents = new DynamicContents<>(null, stringRepresentationSupplier, null, fragment);
+		ppContents.add(newContents);
+		defaultInsertionPoint = fragment.getEndPosition();
+	}
+
+	/**
+	 * Append {@link DynamicContents}, whose value is intented to be inserted at current location (no current contents was parsed in initial
+	 * raw source)
+	 * 
+	 * @param stringRepresentationSupplier
+	 *            gives dynamic value of that contents
+	 */
+	public void appendDynamicContents(Supplier<String> stringRepresentationSupplier) {
+		RawSourceFragment insertionPointFragment = defaultInsertionPoint.getOuterType().makeFragment(defaultInsertionPoint,
+				defaultInsertionPoint);
+		DynamicContents<?> newContents = new DynamicContents<>(null, stringRepresentationSupplier, null, insertionPointFragment);
+		ppContents.add(newContents);
+	}
+
+	/**
+	 * Append {@link DynamicContents}, whose value is intented to replace text determined with supplied fragment
+	 * 
+	 * @param prelude
+	 * @param stringRepresentationSupplier
+	 *            gives dynamic value of that contents
+	 * @param fragment
+	 */
+	public void appendDynamicContents(String prelude, Supplier<String> stringRepresentationSupplier, RawSourceFragment fragment) {
+		DynamicContents<?> newContents = new DynamicContents<>(prelude, stringRepresentationSupplier, null, fragment);
+		ppContents.add(newContents);
+		defaultInsertionPoint = fragment.getEndPosition();
+	}
+
+	/**
+	 * Append {@link DynamicContents}, whose value is intented to be inserted at current location (no current contents was parsed in initial
+	 * raw source)
+	 * 
+	 * @param prelude
+	 * @param stringRepresentationSupplier
+	 *            gives dynamic value of that contents
+	 */
+	public void addDynamicContents(String prelude, Supplier<String> stringRepresentationSupplier) {
+		RawSourceFragment insertionPointFragment = defaultInsertionPoint.getOuterType().makeFragment(defaultInsertionPoint,
+				defaultInsertionPoint);
+		DynamicContents<?> newContents = new DynamicContents<>(prelude, stringRepresentationSupplier, null, insertionPointFragment);
+		ppContents.add(newContents);
+	}
+
+	/**
+	 * Append {@link DynamicContents}, whose value is intented to replace text determined with supplied fragment
+	 * 
+	 * @param stringRepresentationSupplier
+	 *            gives dynamic value of that contents
+	 * @param postlude
+	 * @param fragment
+	 */
+	public void appendDynamicContents(Supplier<String> stringRepresentationSupplier, String postlude, RawSourceFragment fragment) {
+		DynamicContents<?> newContents = new DynamicContents<>(null, stringRepresentationSupplier, postlude, fragment);
+		ppContents.add(newContents);
+		defaultInsertionPoint = fragment.getEndPosition();
+	}
+
+	/**
+	 * Append {@link DynamicContents}, whose value is intented to be inserted at current location (no current contents was parsed in initial
+	 * raw source)
+	 * 
+	 * @param stringRepresentationSupplier
+	 *            gives dynamic value of that contents
+	 * @param postlude
+	 */
+	public void appendDynamicContents(Supplier<String> stringRepresentationSupplier, String postlude) {
+		RawSourceFragment insertionPointFragment = defaultInsertionPoint.getOuterType().makeFragment(defaultInsertionPoint,
+				defaultInsertionPoint);
+		DynamicContents<?> newContents = new DynamicContents<>(null, stringRepresentationSupplier, postlude, insertionPointFragment);
+		ppContents.add(newContents);
+	}
+
+	/**
+	 * Append {@link ChildContents} managing pretty-print for supplied childObject<br>
 	 * Either this object is already serialized, or should be created
 	 * 
 	 * @param childObject
@@ -247,12 +390,30 @@ public abstract class FMLObjectNode<N extends Node, T extends FMLPrettyPrintable
 			addToChildren(childNode);
 		}
 		ChildContents<?> newChildContents = new ChildContents<>(prelude, childNode, postude, indentationLevel);
-		appendToPrettyPrintContents(newChildContents);
+		ppContents.add(newChildContents);
+	}
+
+	/**
+	 * Called to indicate that supplied childObject must be serialized at this pretty-print level<br>
+	 * Either this object is already serialized, or should be created
+	 * 
+	 * @param childObject
+	 */
+	protected <T2 extends FMLPrettyPrintable> void appendToChildrenPrettyPrintContents(String prelude,
+			Supplier<List<? extends T2>> childrenObjects, String postude, int indentationLevel, Class<T2> childrenType) {
+
+		ChildrenContents<T2> newChildrenContents = new ChildrenContents<>(prelude, childrenObjects, postude, indentationLevel, this,
+				childrenType);
+		ppContents.add(newChildrenContents);
 	}
 
 	@Override
 	public String getFMLRepresentation(PrettyPrintContext context) {
 		// TODO: implement a cache !!!!
+
+		if (getASTNode() == null) {
+			return getNormalizedFMLRepresentation(context);
+		}
 
 		DerivedRawSource derivedRawSource = computeFMLRepresentation(context);
 		return derivedRawSource.getStringRepresentation();
@@ -371,6 +532,11 @@ public abstract class FMLObjectNode<N extends Node, T extends FMLPrettyPrintable
 	}
 
 	protected <O extends FMLPrettyPrintable> FMLObjectNode<?, O> makeObjectNode(O object) {
+		if (object instanceof JavaImportDeclaration) {
+			System.out.println("Qu'est ce qu'on fout la ???");
+			Thread.dumpStack();
+			return (FMLObjectNode<?, O>) new JavaImportNode((JavaImportDeclaration) object, getAnalyser());
+		}
 		if (object instanceof FlexoConcept) {
 			return (FMLObjectNode<?, O>) new FlexoConceptNode((FlexoConcept) object, getAnalyser());
 		}

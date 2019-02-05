@@ -83,6 +83,14 @@ public class DerivedRawSource {
 		}
 	}
 
+	public void insert(RawSourcePosition insertionPoint, String fmlRepresentation) {
+		System.out.println("On insere a la position " + insertionPoint + " la valeur [" + fmlRepresentation + "])");
+	}
+
+	public void remove(RawSourceFragment fragment) {
+		System.out.println("On supprime " + fragment + " (values [" + fragment.getRawText() + "])");
+	}
+
 	public String getStringRepresentation() {
 		try {
 			checkNoModificationsOverlapping();
@@ -235,4 +243,5 @@ public class DerivedRawSource {
 		}
 
 	}
+
 }

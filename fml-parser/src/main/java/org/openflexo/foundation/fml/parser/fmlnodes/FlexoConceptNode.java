@@ -41,11 +41,9 @@ package org.openflexo.foundation.fml.parser.fmlnodes;
 import org.openflexo.foundation.fml.FlexoBehaviour;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoProperty;
-import org.openflexo.foundation.fml.parser.DynamicContents;
 import org.openflexo.foundation.fml.parser.FMLObjectNode;
 import org.openflexo.foundation.fml.parser.FMLSemanticsAnalyzer;
 import org.openflexo.foundation.fml.parser.RawSource.RawSourceFragment;
-import org.openflexo.foundation.fml.parser.StaticContents;
 import org.openflexo.foundation.fml.parser.node.AConceptDeclaration;
 
 /**
@@ -80,19 +78,17 @@ public class FlexoConceptNode extends FMLObjectNode<AConceptDeclaration, FlexoCo
 	@Override
 	protected void preparePrettyPrint() {
 
-		RawSourceFragment nameFragment = getFragment(getASTNode().getIdentifier());
-		RawSourceFragment conceptFragment = getFragment(getASTNode().getConcept());
-
 		if (getASTNode().getVisibility() != null) {
 			RawSourceFragment visibilityFragment = getFragment(getASTNode().getVisibility());
-			appendToPrettyPrintContents(new DynamicContents<>(() -> getVisibilityAsString(), SPACE, visibilityFragment));
+			appendDynamicContents(() -> getVisibilityAsString(), SPACE, visibilityFragment);
 		}
 		else {
-			appendToPrettyPrintContents(new DynamicContents<>(() -> getVisibilityAsString(), SPACE, conceptFragment.getStartPosition()));
+			appendDynamicContents(() -> getVisibilityAsString(), SPACE);
 		}
-		appendToPrettyPrintContents(new StaticContents<>("concept", SPACE, conceptFragment));
-		appendToPrettyPrintContents(new DynamicContents<>(() -> getFMLObject().getName(), nameFragment));
-		appendToPrettyPrintContents(new StaticContents<>("{", LINE_SEPARATOR, getFragment(getASTNode().getLBrc())));
+
+		appendStaticContents("concept", SPACE, getFragment(getASTNode().getConcept()));
+		appendDynamicContents(() -> getFMLObject().getName(), getFragment(getASTNode().getIdentifier()));
+		appendStaticContents(SPACE, "{", LINE_SEPARATOR, getFragment(getASTNode().getLBrc()));
 
 		for (FlexoProperty<?> property : getFMLObject().getFlexoProperties()) {
 			appendToChildPrettyPrintContents("", property, LINE_SEPARATOR, 1);
@@ -103,7 +99,7 @@ public class FlexoConceptNode extends FMLObjectNode<AConceptDeclaration, FlexoCo
 		for (FlexoConcept concept : getFMLObject().getChildFlexoConcepts()) {
 			appendToChildPrettyPrintContents(LINE_SEPARATOR, concept, LINE_SEPARATOR, 1);
 		}
-		appendToPrettyPrintContents(new StaticContents<>("}", LINE_SEPARATOR, getFragment(getASTNode().getRBrc())));
+		appendStaticContents("}", LINE_SEPARATOR, getFragment(getASTNode().getRBrc()));
 	}
 
 }

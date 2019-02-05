@@ -74,7 +74,6 @@ public class FlexoBehaviourNode extends FMLObjectNode<AConceptDeclaration, Flexo
 
 	@Override
 	protected void preparePrettyPrint() {
-		// TODO Auto-generated method stub
-
+		super.preparePrettyPrint();
 	}
 }

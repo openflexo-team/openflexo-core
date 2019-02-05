@@ -41,10 +41,8 @@ package org.openflexo.foundation.fml.parser.fmlnodes;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.fml.AbstractProperty;
-import org.openflexo.foundation.fml.parser.DynamicContents;
 import org.openflexo.foundation.fml.parser.FMLSemanticsAnalyzer;
 import org.openflexo.foundation.fml.parser.RawSource.RawSourceFragment;
-import org.openflexo.foundation.fml.parser.StaticContents;
 import org.openflexo.foundation.fml.parser.node.AAbstractPropertyDeclaration;
 import org.openflexo.foundation.fml.parser.node.AIdentifierVariableDeclarator;
 import org.openflexo.foundation.fml.parser.node.AInitializerVariableDeclarator;
@@ -76,6 +74,7 @@ public class AbstractPropertyNode extends FlexoPropertyNode<AAbstractPropertyDec
 
 	@Override
 	protected void preparePrettyPrint() {
+		super.preparePrettyPrint();
 		RawSourceFragment abstractFragment = getFragment(getASTNode().getAbstract());
 		RawSourceFragment typeFragment = getFragment(getASTNode().getType());
 		RawSourceFragment nameFragment = null;
@@ -88,10 +87,10 @@ public class AbstractPropertyNode extends FlexoPropertyNode<AAbstractPropertyDec
 		}
 		RawSourceFragment semiFragment = getFragment(getASTNode().getSemi());
 
-		appendToPrettyPrintContents(new StaticContents<>("abstract", SPACE, abstractFragment));
-		appendToPrettyPrintContents(new DynamicContents<>(() -> getFMLObject().getType().toString(), SPACE, typeFragment));
-		appendToPrettyPrintContents(new DynamicContents<>(() -> getFMLObject().getName(), nameFragment));
-		appendToPrettyPrintContents(new StaticContents<>(";", semiFragment));
+		appendStaticContents("abstract", SPACE, abstractFragment);
+		appendDynamicContents(() -> serializeType(getFMLObject().getType(), getCompilationUnit()), SPACE, typeFragment);
+		appendDynamicContents(() -> getFMLObject().getName(), nameFragment);
+		appendStaticContents(";", semiFragment);
 	}
 
 }

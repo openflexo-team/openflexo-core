@@ -39,10 +39,8 @@
 package org.openflexo.foundation.fml.parser.fmlnodes;
 
 import org.openflexo.foundation.fml.JavaImportDeclaration;
-import org.openflexo.foundation.fml.parser.DynamicContents;
 import org.openflexo.foundation.fml.parser.FMLSemanticsAnalyzer;
 import org.openflexo.foundation.fml.parser.RawSource.RawSourceFragment;
-import org.openflexo.foundation.fml.parser.StaticContents;
 import org.openflexo.foundation.fml.parser.node.AJavaImportImportDeclaration;
 
 /**
@@ -69,13 +67,16 @@ public class JavaImportNode extends AbstractJavaImportNode<AJavaImportImportDecl
 	@Override
 	protected void preparePrettyPrint() {
 
+		super.preparePrettyPrint();
 		RawSourceFragment importFragment = getFragment(getASTNode().getImport());
 		RawSourceFragment fullQualifiedFragment = getFragment(getASTNode().getIdentifier(), getASTNode().getAdditionalIdentifiers());
+		RawSourceFragment semiFragment = getFragment(getASTNode().getSemi());
 
-		System.out.println("fullQualifiedFragment=" + fullQualifiedFragment + " [" + fullQualifiedFragment.getRawText() + "]");
+		// System.out.println("fullQualifiedFragment=" + fullQualifiedFragment + " [" + fullQualifiedFragment.getRawText() + "]");
 
-		appendToPrettyPrintContents(new StaticContents<>("import", SPACE, importFragment));
-		appendToPrettyPrintContents(new DynamicContents<>(() -> getFMLObject().getFullQualifiedClassName(), ";", fullQualifiedFragment));
+		appendStaticContents("import", SPACE, importFragment);
+		appendDynamicContents(() -> getFMLObject().getFullQualifiedClassName(), fullQualifiedFragment);
+		appendStaticContents(";", semiFragment);
 	}
 
 }

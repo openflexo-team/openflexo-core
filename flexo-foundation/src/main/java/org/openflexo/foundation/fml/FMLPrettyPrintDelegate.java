@@ -79,8 +79,11 @@ public interface FMLPrettyPrintDelegate<T extends FMLObject> {
 
 	public interface PrettyPrintContext {
 
-		public PrettyPrintContext derive();
+		public PrettyPrintContext derive(int indentation);
 
-		public String getIndentation();
+		public String getResultingIndentation();
+
+		public String indent(String stringToIndent);
+
 	}
 }

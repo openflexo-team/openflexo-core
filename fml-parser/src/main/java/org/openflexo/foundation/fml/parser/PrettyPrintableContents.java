@@ -53,24 +53,24 @@ public abstract class PrettyPrintableContents<T extends FMLPrettyPrintable> {
 
 	private final String prelude;
 	private final String postlude;
-	private final int indentationLevel;
+	private final int relativeIndentation;
 
 	private RawSourceFragment fragment = null;
 	// private RawSourcePosition startPosition = null;
 	// private RawSourcePosition endPosition = null;
 
-	public PrettyPrintableContents(String prelude, String postlude, int indentationLevel) {
+	public PrettyPrintableContents(String prelude, String postlude, int relativeIndentation) {
 		super();
 		this.prelude = prelude;
 		this.postlude = postlude;
-		this.indentationLevel = indentationLevel;
+		this.relativeIndentation = relativeIndentation;
 	}
 
-	public PrettyPrintableContents(int indentationLevel) {
+	public PrettyPrintableContents(int relativeIndentation) {
 		super();
 		this.prelude = null;
 		this.postlude = null;
-		this.indentationLevel = indentationLevel;
+		this.relativeIndentation = relativeIndentation;
 	}
 
 	public String getPrelude() {
@@ -81,8 +81,8 @@ public abstract class PrettyPrintableContents<T extends FMLPrettyPrintable> {
 		return postlude;
 	}
 
-	public int getIndentationLevel() {
-		return indentationLevel;
+	public int getRelativeIndentation() {
+		return relativeIndentation;
 	}
 
 	/*public RawSourcePosition getStartPosition() {

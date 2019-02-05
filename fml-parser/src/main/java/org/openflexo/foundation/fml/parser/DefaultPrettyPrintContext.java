@@ -38,8 +38,14 @@
 
 package org.openflexo.foundation.fml.parser;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.StringReader;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.logging.Logger;
+
 import org.openflexo.foundation.fml.FMLPrettyPrintDelegate.PrettyPrintContext;
-import org.openflexo.toolbox.StringUtils;
 
 /**
  * @author sylvain
@@ -47,19 +53,64 @@ import org.openflexo.toolbox.StringUtils;
  */
 public class DefaultPrettyPrintContext implements PrettyPrintContext {
 
+	private static final Logger logger = Logger.getLogger(DefaultPrettyPrintContext.class.getPackage().getName());
+
 	private int indentation;
+	private String resultingIndentation = null;
+
+	private static final String INDENTATION = "\t";
 
 	public DefaultPrettyPrintContext(int indentation) {
 		this.indentation = indentation;
+		System.out.println("Nouveau context, indentation=" + indentation);
 	}
 
 	@Override
-	public PrettyPrintContext derive() {
-		return new DefaultPrettyPrintContext(indentation + 1);
+	public PrettyPrintContext derive(int relativeIndentation) {
+		return new DefaultPrettyPrintContext(indentation + relativeIndentation);
 	}
 
 	@Override
-	public String getIndentation() {
-		return StringUtils.buildWhiteSpaceIndentation(indentation * 4);
+	public String getResultingIndentation() {
+		if (resultingIndentation == null) {
+			if (indentation > 0) {
+				StringBuffer sb = new StringBuffer();
+				for (int i = 0; i < indentation; i++) {
+					sb.append(INDENTATION);
+				}
+				resultingIndentation = sb.toString();
+			}
+			else {
+				resultingIndentation = "";
+			}
+		}
+		return resultingIndentation;
 	}
+
+	@Override
+	public String indent(String stringToIndent) {
+		if (indentation == 0) {
+			return stringToIndent;
+		}
+		List<String> rows = new ArrayList<>();
+		try (BufferedReader br = new BufferedReader(new StringReader(stringToIndent))) {
+			String nextLine = null;
+			do {
+				nextLine = br.readLine();
+				if (nextLine != null) {
+					rows.add(nextLine);
+				}
+			} while (nextLine != null);
+		} catch (IOException e) {
+			logger.warning("Unexpected exception " + e.getMessage());
+			return stringToIndent;
+		}
+
+		StringBuffer sb = new StringBuffer();
+		for (String row : rows) {
+			sb.append(getResultingIndentation() + row);
+		}
+		return sb.toString();
+	}
+
 }
