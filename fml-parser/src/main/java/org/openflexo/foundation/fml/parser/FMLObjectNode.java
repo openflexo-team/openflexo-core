@@ -238,8 +238,10 @@ public abstract class FMLObjectNode<N extends Node, T extends FMLPrettyPrintable
 		defaultInsertionPoint = getStartPosition();
 	}
 
-	protected void prepareNormalizedPrettyPrint() {
-	}
+	/*protected void prepareNormalizedPrettyPrint() {
+	}*/
+
+	protected abstract void prepareNormalizedPrettyPrint();
 
 	@Override
 	public final String getNormalizedFMLRepresentation(PrettyPrintContext context) {
@@ -278,12 +280,45 @@ public abstract class FMLObjectNode<N extends Node, T extends FMLPrettyPrintable
 	 * 
 	 * @param staticContents
 	 *            value to append
-	 * @param fragment
 	 */
 	public void appendStaticContents(String staticContents) {
 		RawSourceFragment insertionPointFragment = defaultInsertionPoint != null
 				? defaultInsertionPoint.getOuterType().makeFragment(defaultInsertionPoint, defaultInsertionPoint) : null;
 		StaticContents<?> newContents = new StaticContents<>(null, staticContents, null, insertionPointFragment);
+		ppContents.add(newContents);
+	}
+
+	/**
+	 * Append {@link StaticContents}, whose value is intented to be inserted at current location (no current contents was parsed in initial
+	 * raw source)
+	 * 
+	 * @param prelude
+	 *            prelude to add if normalized pretty-print is to be applied
+	 * @param staticContents
+	 *            value to append
+	 */
+	public void appendStaticContents(String prelude, String staticContents) {
+		RawSourceFragment insertionPointFragment = defaultInsertionPoint != null
+				? defaultInsertionPoint.getOuterType().makeFragment(defaultInsertionPoint, defaultInsertionPoint) : null;
+		StaticContents<?> newContents = new StaticContents<>(prelude, staticContents, null, insertionPointFragment);
+		ppContents.add(newContents);
+	}
+
+	/**
+	 * Append {@link StaticContents}, whose value is intented to be inserted at current location (no current contents was parsed in initial
+	 * raw source)
+	 * 
+	 * @param prelude
+	 *            prelude to add if normalized pretty-print is to be applied
+	 * @param staticContents
+	 *            value to append
+	 * @param postlude
+	 *            postlude to add if normalized pretty-print is to be applied
+	 */
+	public void appendStaticContents(String prelude, String staticContents, String postlude) {
+		RawSourceFragment insertionPointFragment = defaultInsertionPoint != null
+				? defaultInsertionPoint.getOuterType().makeFragment(defaultInsertionPoint, defaultInsertionPoint) : null;
+		StaticContents<?> newContents = new StaticContents<>(prelude, staticContents, postlude, insertionPointFragment);
 		ppContents.add(newContents);
 	}
 

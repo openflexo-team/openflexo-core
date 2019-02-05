@@ -65,6 +65,15 @@ public class JavaImportNode extends AbstractJavaImportNode<AJavaImportImportDecl
 	}
 
 	@Override
+	protected void prepareNormalizedPrettyPrint() {
+		// super.prepareNormalizedPrettyPrint();
+
+		appendStaticContents("import", SPACE);
+		appendDynamicContents(() -> getFMLObject().getFullQualifiedClassName());
+		appendStaticContents(";");
+	}
+
+	@Override
 	protected void preparePrettyPrint() {
 
 		super.preparePrettyPrint();

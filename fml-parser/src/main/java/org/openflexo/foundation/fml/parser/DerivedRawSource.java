@@ -90,6 +90,7 @@ public class DerivedRawSource {
 
 	public void remove(RawSourceFragment fragment) {
 		System.out.println("On supprime " + fragment + " (values [" + fragment.getRawText() + "])");
+		modifications.add(new StringDeletion(fragment));
 	}
 
 	public String getStringRepresentation() {
@@ -129,6 +130,9 @@ public class DerivedRawSource {
 			}
 			if (modification instanceof StringInsertion) {
 				sb.append(((StringInsertion) modification).getInsertion());
+			}
+			if (modification instanceof StringDeletion) {
+				// Do not append it !
 			}
 			current = replacedFragment.getEndPosition();
 		}
@@ -264,6 +268,18 @@ public class DerivedRawSource {
 		@Override
 		public String toString() {
 			return "StringInsertion " + getInitialFragment() + " with " + getInsertion();
+		}
+	}
+
+	public class StringDeletion extends Modification {
+
+		public StringDeletion(RawSourceFragment initialFragment) {
+			super(initialFragment);
+		}
+
+		@Override
+		public String toString() {
+			return "StringDeletion " + getInitialFragment();
 		}
 	}
 

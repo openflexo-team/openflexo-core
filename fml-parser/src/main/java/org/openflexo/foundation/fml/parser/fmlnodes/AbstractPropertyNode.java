@@ -74,6 +74,17 @@ public class AbstractPropertyNode extends FlexoPropertyNode<AAbstractPropertyDec
 	}
 
 	@Override
+	protected void prepareNormalizedPrettyPrint() {
+		// super.prepareNormalizedPrettyPrint();
+
+		appendDynamicContents(() -> getVisibilityAsString(getFMLObject().getVisibility()), SPACE);
+		appendStaticContents("abstract" + SPACE);
+		appendDynamicContents(() -> serializeType(getFMLObject().getType()), SPACE);
+		appendDynamicContents(() -> getFMLObject().getName());
+		appendStaticContents(";");
+	}
+
+	@Override
 	protected void preparePrettyPrint() {
 		super.preparePrettyPrint();
 		if (getASTNode().getVisibility() != null) {
@@ -96,7 +107,7 @@ public class AbstractPropertyNode extends FlexoPropertyNode<AAbstractPropertyDec
 		RawSourceFragment semiFragment = getFragment(getASTNode().getSemi());
 
 		appendStaticContents("abstract", SPACE, abstractFragment);
-		appendDynamicContents(() -> serializeType(getFMLObject().getType(), getCompilationUnit()), SPACE, typeFragment);
+		appendDynamicContents(() -> serializeType(getFMLObject().getType()), SPACE, typeFragment);
 		appendDynamicContents(() -> getFMLObject().getName(), nameFragment);
 		appendStaticContents(";", semiFragment);
 	}

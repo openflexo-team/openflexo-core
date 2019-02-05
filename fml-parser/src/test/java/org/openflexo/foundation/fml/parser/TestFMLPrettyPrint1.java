@@ -56,6 +56,7 @@ import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.fml.FMLCompilationUnit;
 import org.openflexo.foundation.fml.FMLModelFactory;
 import org.openflexo.foundation.fml.FlexoConcept;
+import org.openflexo.foundation.fml.FlexoProperty;
 import org.openflexo.foundation.fml.JavaImportDeclaration;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.action.CreatePrimitiveRole;
@@ -128,7 +129,7 @@ public class TestFMLPrettyPrint1 extends OpenflexoTestCase {
 				nextLine = br.readLine();
 				if (nextLine != null) {
 					rows1.add(nextLine);
-					System.out.println("1> [" + rows1.size() + "] : " + nextLine);
+					// System.out.println("1> [" + rows1.size() + "] : " + nextLine);
 				}
 			} while (nextLine != null);
 		} catch (IOException e) {
@@ -146,7 +147,7 @@ public class TestFMLPrettyPrint1 extends OpenflexoTestCase {
 				nextLine = br.readLine();
 				if (nextLine != null) {
 					rows2.add(nextLine);
-					System.out.println("2> [" + rows2.size() + "] : " + nextLine);
+					// System.out.println("2> [" + rows2.size() + "] : " + nextLine);
 				}
 			} while (nextLine != null);
 		} catch (IOException e) {
@@ -205,44 +206,43 @@ public class TestFMLPrettyPrint1 extends OpenflexoTestCase {
 		testFMLPrettyPrintEquals("TestFMLPrettyPrint1/Step3PrettyPrint.fml");
 	}
 
-	/*@Test
+	@Test
 	@TestOrder(5)
 	public void addDateProperty() {
-	
-		CreatePrimitiveRole createStringProperty = CreatePrimitiveRole.actionType.makeNewAction(virtualModel, null, editor);
-		createStringProperty.setRoleName("newDate");
-		createStringProperty.setPrimitiveType(PrimitiveType.Date);
-		createStringProperty.doAction();
-	
-		System.out.println("FML=\n" + compilationUnit.getFMLPrettyPrint());
-	}*/
 
-	/*@Test
-	@TestOrder(10)
-	public void changeVirtualModelName() {
-		log("Change name to AnOtherName");
-		assertEquals("MyModel", virtualModel.getName());
-		virtualModel.setName("AnOtherName");
+		CreatePrimitiveRole createDateProperty = CreatePrimitiveRole.actionType.makeNewAction(virtualModel, null, editor);
+		createDateProperty.setRoleName("newDate");
+		createDateProperty.setPrimitiveType(PrimitiveType.Date);
+		createDateProperty.doAction();
 		System.out.println("FML=\n" + compilationUnit.getFMLPrettyPrint());
-	}*/
+		testNormalizedFMLRepresentationEquals("TestFMLPrettyPrint1/Step4Normalized.fml");
+		testFMLPrettyPrintEquals("TestFMLPrettyPrint1/Step4PrettyPrint.fml");
+	}
 
-	/*@Test
-	@TestOrder(3)
-	public void addFlexoConcept() {
-		log("addFlexoConcept");
-	
-		CreateFlexoConcept addConceptC = CreateFlexoConcept.actionType.makeNewAction(virtualModel, null, editor);
-		addConceptC.setNewFlexoConceptName("FlexoConceptC");
-		addConceptC.doAction();
-	
-		FlexoConcept conceptC = addConceptC.getNewFlexoConcept();
-	
-		System.out.println("Normalized:");
-		System.out.println(compilationUnit.getPrettyPrintDelegate()
-				.getNormalizedFMLRepresentation(compilationUnit.getPrettyPrintDelegate().makePrettyPrintContext()));
-	
-		System.out.println("Current FML");
-		System.out.println(">>>>>>>>>>>>>>>>" + compilationUnit.getPrettyPrintDelegate()
-				.getFMLRepresentation(compilationUnit.getPrettyPrintDelegate().makePrettyPrintContext()) + "<<<<<<<<<<<<<<");
-	}*/
+	@Test
+	@TestOrder(6)
+	public void removeFooProperty() {
+
+		FlexoProperty<?> fooProperty = virtualModel.getAccessibleProperty("foo");
+		virtualModel.removeFromFlexoProperties(fooProperty);
+		fooProperty.delete();
+
+		System.out.println("FML=\n" + compilationUnit.getFMLPrettyPrint());
+		testNormalizedFMLRepresentationEquals("TestFMLPrettyPrint1/Step5Normalized.fml");
+		testFMLPrettyPrintEquals("TestFMLPrettyPrint1/Step5PrettyPrint.fml");
+	}
+
+	@Test
+	@TestOrder(7)
+	public void removeDateProperty() {
+
+		FlexoProperty<?> dateProperty = virtualModel.getAccessibleProperty("newDate");
+		virtualModel.removeFromFlexoProperties(dateProperty);
+		dateProperty.delete();
+
+		System.out.println("FML=\n" + compilationUnit.getFMLPrettyPrint());
+		testNormalizedFMLRepresentationEquals("TestFMLPrettyPrint1/Step6Normalized.fml");
+		testFMLPrettyPrintEquals("TestFMLPrettyPrint1/Step6PrettyPrint.fml");
+	}
+
 }

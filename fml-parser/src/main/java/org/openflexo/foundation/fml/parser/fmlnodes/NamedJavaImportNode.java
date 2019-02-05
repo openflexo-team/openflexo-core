@@ -66,6 +66,17 @@ public class NamedJavaImportNode extends AbstractJavaImportNode<ANamedJavaImport
 	}
 
 	@Override
+	protected void prepareNormalizedPrettyPrint() {
+		// super.prepareNormalizedPrettyPrint();
+
+		appendStaticContents("import", SPACE);
+		appendDynamicContents(() -> getFMLObject().getFullQualifiedClassName());
+		appendStaticContents("as", SPACE);
+		appendDynamicContents(() -> getFMLObject().getAbbrev());
+		appendStaticContents(";");
+	}
+
+	@Override
 	protected void preparePrettyPrint() {
 		super.preparePrettyPrint();
 		RawSourceFragment importFragment = getFragment(getASTNode().getImport());

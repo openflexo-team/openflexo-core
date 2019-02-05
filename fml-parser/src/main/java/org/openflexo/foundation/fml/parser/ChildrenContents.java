@@ -146,6 +146,7 @@ public class ChildrenContents<T extends FMLPrettyPrintable> extends PrettyPrinta
 		PrettyPrintContext derivedContext = context.derive(getRelativeIndentation());
 
 		for (T childObject : childrenObjectsSupplier.get()) {
+			System.out.println("*** Je m'occupe de " + childObject);
 			FMLObjectNode<?, T> childNode = parentNode.getObjectNode(childObject);
 			if (childNode == null) {
 				childNode = parentNode.makeObjectNode(childObject);
@@ -162,6 +163,9 @@ public class ChildrenContents<T extends FMLPrettyPrintable> extends PrettyPrinta
 					// OK, this is an update
 					derivedRawSource.replace(childNode.getLastParsedFragment(), childNode.getFMLRepresentation(context));
 					insertionPoint = childNode.getLastParsedFragment().getEndPosition();
+					for (int i = 0; i < getPostlude().length(); i++) {
+						insertionPoint = insertionPoint.increment();
+					}
 				}
 				else {
 					String insertThis = (getPrelude() != null ? getPrelude() : "") + childNode.getFMLRepresentation(derivedContext)
@@ -173,7 +177,15 @@ public class ChildrenContents<T extends FMLPrettyPrintable> extends PrettyPrinta
 		}
 
 		for (FMLObjectNode<?, T> removedNode : nodesToBeRemoved) {
-			derivedRawSource.remove(removedNode.getLastParsedFragment());
+			RawSourcePosition startPosition = removedNode.getLastParsedFragment().getStartPosition();
+			for (int i = 0; i < getPrelude().length(); i++) {
+				startPosition = startPosition.decrement();
+			}
+			RawSourcePosition endPosition = removedNode.getLastParsedFragment().getEndPosition();
+			for (int i = 0; i < getPostlude().length(); i++) {
+				endPosition = endPosition.increment();
+			}
+			derivedRawSource.remove(startPosition.getOuterType().makeFragment(startPosition, endPosition));
 		}
 
 		/*FMLObjectNode<?, ?> childNode = getObjectNode(childObject);

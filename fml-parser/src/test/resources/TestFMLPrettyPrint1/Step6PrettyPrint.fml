@@ -1,0 +1,14 @@
+/**
+ * Testing PrettyPrint
+ */
+
+import java.lang.String;
+import java.util.ArrayList;
+import java.util.Date;
+
+// Comment
+model MyModel {
+
+	int i;
+	String newString;
+}

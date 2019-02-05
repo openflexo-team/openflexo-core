@@ -75,10 +75,10 @@ public class PrimitiveRoleNode extends FlexoPropertyNode<AJavaBasicRoleDeclarati
 
 	@Override
 	protected void prepareNormalizedPrettyPrint() {
-		super.prepareNormalizedPrettyPrint();
+		// super.prepareNormalizedPrettyPrint();
 
 		appendDynamicContents(() -> getVisibilityAsString(getFMLObject().getVisibility()), SPACE);
-		appendDynamicContents(() -> serializeType(getFMLObject().getType(), getCompilationUnit()), SPACE);
+		appendDynamicContents(() -> serializeType(getFMLObject().getType()), SPACE);
 		appendDynamicContents(() -> getFMLObject().getName());
 		appendStaticContents(";");
 	}
@@ -104,7 +104,7 @@ public class PrimitiveRoleNode extends FlexoPropertyNode<AJavaBasicRoleDeclarati
 		}
 		RawSourceFragment semiFragment = getFragment(getASTNode().getSemi());
 
-		appendDynamicContents(() -> serializeType(getFMLObject().getType(), getCompilationUnit()), SPACE, typeFragment);
+		appendDynamicContents(() -> serializeType(getFMLObject().getType()), SPACE, typeFragment);
 		appendDynamicContents(() -> getFMLObject().getName(), nameFragment);
 		appendStaticContents(";", semiFragment);
 	}

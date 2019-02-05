@@ -124,12 +124,18 @@ public class RawSource {
 		public boolean canIncrement() {
 			// System.out.println("pos=" + pos);
 			// System.out.println("rows.get(rows.size() - 1).length()=" + (rows.get(rows.size() - 1).length()));
-			return line < rows.size() - 1 || pos < rows.get(rows.size() - 1).length();
+			return line <= rows.size() - 1 || pos < rows.get(rows.size() - 1).length();
 		}
 
 		public RawSourcePosition increment() {
 			if (!canIncrement()) {
 				// Cannot proceed
+				/*System.out.println("Cannot increment");
+				System.out.println("line=" + line);
+				System.out.println("rows.size()=" + rows.size());
+				System.out.println("pos=" + pos);
+				System.out.println("rows.get(rows.size() - 1).length()=" + rows.get(rows.size() - 1).length());*/
+				// System.exit(-1);
 				throw new ArrayIndexOutOfBoundsException("Cannot increment from position " + this);
 			}
 			int newPos = pos + 1;

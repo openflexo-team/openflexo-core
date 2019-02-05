@@ -41,11 +41,9 @@ package org.openflexo.foundation.fml.parser.fmlnodes;
 import java.lang.reflect.Type;
 import java.util.logging.Logger;
 
-import org.openflexo.connie.type.CustomType;
 import org.openflexo.connie.type.TypeUtils;
 import org.openflexo.foundation.fml.FMLCompilationUnit;
 import org.openflexo.foundation.fml.FlexoProperty;
-import org.openflexo.foundation.fml.JavaImportDeclaration;
 import org.openflexo.foundation.fml.parser.FMLObjectNode;
 import org.openflexo.foundation.fml.parser.FMLSemanticsAnalyzer;
 import org.openflexo.foundation.fml.parser.node.AIdentifierVariableDeclarator;
@@ -92,37 +90,9 @@ public abstract class FlexoPropertyNode<N extends Node, T extends FlexoProperty<
 		return getAnalyser().getCompilationUnit();
 	}
 
-	protected String serializeType(Type type, FMLCompilationUnit compilationUnit) {
-		if (type instanceof CustomType) {
-			// TODO: handle imports of required stuff
-			return ((CustomType) type).simpleRepresentation();
-		}
-		else {
-			Class<?> rawType = TypeUtils.getRawType(type);
+	protected String serializeType(Type type) {
+		return TypeUtils.simpleRepresentation(type);
 
-			if (!TypeUtils.isPrimitive(rawType)) {
-
-				boolean typeWasFound = false;
-				for (JavaImportDeclaration importDeclaration : compilationUnit.getJavaImports()) {
-					if (importDeclaration.getFullQualifiedClassName().equals(rawType.getName())) {
-						typeWasFound = true;
-						break;
-					}
-				}
-				if (!typeWasFound) {
-					System.out.println("Type pas trouve !, j'ajoute " + rawType.getName());
-					JavaImportDeclaration newJavaImportDeclaration = getAnalyser().getFactory().newJavaImportDeclaration();
-					newJavaImportDeclaration.setFullQualifiedClassName(rawType.getName());
-					compilationUnit.addToJavaImports(newJavaImportDeclaration);
-				}
-				else {
-					System.out.println("Type trouve !");
-				}
-			}
-
-			return TypeUtils.simpleRepresentation(type);
-
-		}
 	}
 
 }

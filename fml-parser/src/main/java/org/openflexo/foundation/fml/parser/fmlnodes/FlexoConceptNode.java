@@ -77,6 +77,20 @@ public class FlexoConceptNode extends FMLObjectNode<AConceptDeclaration, FlexoCo
 	}
 
 	@Override
+	protected void prepareNormalizedPrettyPrint() {
+		appendDynamicContents(() -> getVisibilityAsString(getFMLObject().getVisibility()), SPACE);
+		appendStaticContents("concept" + SPACE);
+		appendDynamicContents(() -> getFMLObject().getName());
+		appendStaticContents(SPACE, "{", LINE_SEPARATOR);
+		appendToChildrenPrettyPrintContents("", () -> getFMLObject().getFlexoProperties(), LINE_SEPARATOR, 1, FlexoProperty.class);
+		appendToChildrenPrettyPrintContents(LINE_SEPARATOR, () -> getFMLObject().getFlexoBehaviours(), LINE_SEPARATOR, 1,
+				FlexoBehaviour.class);
+		appendToChildrenPrettyPrintContents(LINE_SEPARATOR, () -> getFMLObject().getChildFlexoConcepts(), LINE_SEPARATOR, 1,
+				FlexoConcept.class);
+		appendStaticContents("}", LINE_SEPARATOR);
+	}
+
+	@Override
 	protected void preparePrettyPrint() {
 
 		if (getASTNode().getVisibility() != null) {
@@ -89,8 +103,8 @@ public class FlexoConceptNode extends FMLObjectNode<AConceptDeclaration, FlexoCo
 
 		appendStaticContents("concept", SPACE, getFragment(getASTNode().getConcept()));
 		appendDynamicContents(() -> getFMLObject().getName(), getFragment(getASTNode().getIdentifier()));
-		appendStaticContents(SPACE, "{", getFragment(getASTNode().getLBrc()));
-		appendToChildrenPrettyPrintContents(LINE_SEPARATOR, () -> getFMLObject().getFlexoProperties(), "", 1, FlexoProperty.class);
+		appendStaticContents(SPACE, "{", LINE_SEPARATOR, getFragment(getASTNode().getLBrc()));
+		appendToChildrenPrettyPrintContents("", () -> getFMLObject().getFlexoProperties(), LINE_SEPARATOR, 1, FlexoProperty.class);
 		appendToChildrenPrettyPrintContents(LINE_SEPARATOR, () -> getFMLObject().getFlexoBehaviours(), LINE_SEPARATOR, 1,
 				FlexoBehaviour.class);
 		appendToChildrenPrettyPrintContents(LINE_SEPARATOR, () -> getFMLObject().getChildFlexoConcepts(), LINE_SEPARATOR, 1,

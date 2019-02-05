@@ -71,6 +71,13 @@ public class FMLCompilationUnitNode extends FMLObjectNode<AFmlCompilationUnit, F
 	}
 
 	@Override
+	protected void prepareNormalizedPrettyPrint() {
+
+		appendToChildrenPrettyPrintContents("", () -> getFMLObject().getJavaImports(), LINE_SEPARATOR, 0, JavaImportDeclaration.class);
+		appendToChildPrettyPrintContents(LINE_SEPARATOR, getFMLObject().getVirtualModel(), LINE_SEPARATOR, 0);
+	}
+
+	@Override
 	protected void preparePrettyPrint() {
 
 		super.preparePrettyPrint();

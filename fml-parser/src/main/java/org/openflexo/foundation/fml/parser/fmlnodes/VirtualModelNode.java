@@ -78,6 +78,19 @@ public class VirtualModelNode extends FMLObjectNode<AModelDeclaration, VirtualMo
 	}
 
 	@Override
+	protected void prepareNormalizedPrettyPrint() {
+		appendDynamicContents(() -> getVisibilityAsString(getFMLObject().getVisibility()), SPACE);
+		appendStaticContents("model" + SPACE);
+		appendDynamicContents(() -> getFMLObject().getName());
+		appendStaticContents(SPACE, "{", LINE_SEPARATOR);
+		appendToChildrenPrettyPrintContents("", () -> getFMLObject().getFlexoProperties(), LINE_SEPARATOR, 1, FlexoProperty.class);
+		appendToChildrenPrettyPrintContents(LINE_SEPARATOR, () -> getFMLObject().getFlexoBehaviours(), LINE_SEPARATOR, 1,
+				FlexoBehaviour.class);
+		appendToChildrenPrettyPrintContents(LINE_SEPARATOR, () -> getFMLObject().getFlexoConcepts(), LINE_SEPARATOR, 1, FlexoConcept.class);
+		appendStaticContents("}", LINE_SEPARATOR);
+	}
+
+	@Override
 	protected void preparePrettyPrint() {
 
 		super.preparePrettyPrint();
@@ -92,13 +105,13 @@ public class VirtualModelNode extends FMLObjectNode<AModelDeclaration, VirtualMo
 
 		appendStaticContents("model", SPACE, getFragment(getASTNode().getModel()));
 		appendDynamicContents(() -> getFMLObject().getName(), getFragment(getASTNode().getIdentifier()));
-		appendStaticContents(SPACE, "{", getFragment(getASTNode().getLBrc()));
-		appendToChildrenPrettyPrintContents(LINE_SEPARATOR, () -> getFMLObject().getFlexoProperties(), "", 1, FlexoProperty.class);
+		appendStaticContents(SPACE, "{", LINE_SEPARATOR, getFragment(getASTNode().getLBrc()));
+		appendToChildrenPrettyPrintContents("", () -> getFMLObject().getFlexoProperties(), LINE_SEPARATOR, 1, FlexoProperty.class);
 		appendToChildrenPrettyPrintContents(LINE_SEPARATOR, () -> getFMLObject().getFlexoBehaviours(), LINE_SEPARATOR, 1,
 				FlexoBehaviour.class);
 		appendToChildrenPrettyPrintContents(LINE_SEPARATOR, () -> getFMLObject().getFlexoConcepts(), LINE_SEPARATOR, 1, FlexoConcept.class);
 
-		appendStaticContents(LINE_SEPARATOR, "}", LINE_SEPARATOR, getFragment(getASTNode().getRBrc()));
+		appendStaticContents("}", LINE_SEPARATOR, getFragment(getASTNode().getRBrc()));
 	}
 
 }
