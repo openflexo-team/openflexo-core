@@ -194,6 +194,8 @@ public abstract interface FlexoProperty<T> extends FlexoConceptObject, FMLPretty
 	 */
 	public boolean isNotificationSafe();
 
+	public void handleTypeDeclarationInImports();
+
 	/**
 	 * Return boolean indicating if this {@link FlexoProperty} is a key property (declared in key properties of its declaring FlexoConcept)
 	 * 
@@ -276,7 +278,42 @@ public abstract interface FlexoProperty<T> extends FlexoConceptObject, FMLPretty
 			return PropertyCardinality.ZeroOne;
 		}
 
+		@Override
+		public void handleTypeDeclarationInImports() {
+
+			if (getDeclaringVirtualModel() == null || getDeclaringVirtualModel().getCompilationUnit() == null) {
+				return;
+			}
+
+			Class<?> rawType = TypeUtils.getRawType(getType());
+
+			if (!TypeUtils.isPrimitive(rawType)) {
+
+				boolean typeWasFound = false;
+				for (JavaImportDeclaration importDeclaration : getDeclaringVirtualModel().getCompilationUnit().getJavaImports()) {
+					if (importDeclaration.getFullQualifiedClassName().equals(rawType.getName())) {
+						typeWasFound = true;
+						break;
+					}
+				}
+				if (!typeWasFound) {
+					System.out.println("Type pas trouve !, j'ajoute " + rawType.getName());
+					JavaImportDeclaration newJavaImportDeclaration = getDeclaringVirtualModel().getFMLModelFactory()
+							.newJavaImportDeclaration();
+					newJavaImportDeclaration.setFullQualifiedClassName(rawType.getName());
+					getDeclaringVirtualModel().getCompilationUnit().addToJavaImports(newJavaImportDeclaration);
+				}
+				else {
+					System.out.println("Type trouve !");
+				}
+			}
+
+		}
+
 		protected void notifyResultingTypeChanged() {
+
+			handleTypeDeclarationInImports();
+
 			resultingType = null;
 			getPropertyChangeSupport().firePropertyChange(RESULTING_TYPE_PROPERTY, null, getResultingType());
 		}
@@ -353,6 +390,7 @@ public abstract interface FlexoProperty<T> extends FlexoConceptObject, FMLPretty
 		@Override
 		public void finalizeDeserialization() {
 			super.finalizeDeserialization();
+			handleTypeDeclarationInImports();
 		}
 
 		@Override

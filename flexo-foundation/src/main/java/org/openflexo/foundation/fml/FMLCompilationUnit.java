@@ -82,7 +82,7 @@ public interface FMLCompilationUnit extends FMLObject, FMLPrettyPrintable {
 	 * 
 	 * @return
 	 */
-	@Getter(value = VIRTUAL_MODEL_KEY)
+	@Getter(value = VIRTUAL_MODEL_KEY, inverse = VirtualModel.COMPILATION_UNIT_KEY)
 	public VirtualModel getVirtualModel();
 
 	@Setter(VIRTUAL_MODEL_KEY)

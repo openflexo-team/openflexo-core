@@ -148,6 +148,20 @@ public interface VirtualModel extends FlexoConcept, FlexoMetaModel<VirtualModel>
 	@PropertyIdentifier(type = Class.class)
 	public static final String MODEL_SLOT_NATURE_CLASS_KEY = "modelSlotNatureClass";
 
+	@PropertyIdentifier(type = FMLCompilationUnit.class)
+	public static final String COMPILATION_UNIT_KEY = "compilationUnit";
+
+	/**
+	 * Return the {@link FMLCompilationUnit} where this {@link VirtualModel} is defined
+	 * 
+	 * @return
+	 */
+	@Getter(value = COMPILATION_UNIT_KEY, ignoreType = true)
+	public FMLCompilationUnit getCompilationUnit();
+
+	@Setter(COMPILATION_UNIT_KEY)
+	public void setCompilationUnit(FMLCompilationUnit virtualModel);
+
 	@Getter(value = MODEL_SLOT_NATURE_CLASS_KEY)
 	@XMLAttribute
 	@Deprecated
