@@ -75,21 +75,21 @@ public class ChildrenContents<T extends FMLPrettyPrintable> extends PrettyPrinta
 
 		childrenObjectsSupplier = childrenObjects;
 
-		System.out.println("Tous les children: " + parentNode.getChildren());
-		System.out.println("Type: " + objectType);
+		// System.out.println("Tous les children: " + parentNode.getChildren());
+		// System.out.println("Type: " + objectType);
 		lastParsedNodes = new ArrayList<>();
 		for (FMLObjectNode<?, ?> objectNode : parentNode.getChildren()) {
 			if (TypeUtils.isOfType(objectNode.getFMLObject(), objectType)) {
 				lastParsedNodes.add((FMLObjectNode<?, T>) objectNode);
 			}
 		}
-		System.out.println("Tous les nodes qu'on considere: " + lastParsedNodes);
+		// System.out.println("Tous les nodes qu'on considere: " + lastParsedNodes);
 
 		// RawSourceFragment fragment = null;
 
-		for (FMLObjectNode<?, T> objectNode : lastParsedNodes) {
+		/*for (FMLObjectNode<?, T> objectNode : lastParsedNodes) {
 			System.out.println("> fragment " + objectNode.getLastParsedFragment());
-		}
+		}*/
 
 		if (lastParsedNodes.size() > 0) {
 			defaultInsertionPoint = lastParsedNodes.get(0).getLastParsedFragment().getStartPosition();
@@ -132,28 +132,28 @@ public class ChildrenContents<T extends FMLPrettyPrintable> extends PrettyPrinta
 	@Override
 	public void updatePrettyPrint(DerivedRawSource derivedRawSource, PrettyPrintContext context) {
 
-		System.out.println("Tous les children: " + parentNode.getChildren());
-		System.out.println("Type: " + objectType);
+		// System.out.println("Tous les children: " + parentNode.getChildren());
+		// System.out.println("Type: " + objectType);
 		List<FMLObjectNode<?, T>> nodesToBeRemoved = new ArrayList<>();
 		nodesToBeRemoved.addAll(lastParsedNodes);
 
-		System.out.println("Tous les nodes qu'on considere: " + nodesToBeRemoved);
+		// System.out.println("Tous les nodes qu'on considere: " + nodesToBeRemoved);
 
 		RawSourcePosition insertionPoint = defaultInsertionPoint;
 
-		System.out.println("Insertion point pour commencer: " + insertionPoint);
+		// System.out.println("Insertion point pour commencer: " + insertionPoint);
 
 		PrettyPrintContext derivedContext = context.derive(getRelativeIndentation());
 
 		for (T childObject : childrenObjectsSupplier.get()) {
-			System.out.println("*** Je m'occupe de " + childObject);
+			// System.out.println("*** Je m'occupe de " + childObject);
 			FMLObjectNode<?, T> childNode = parentNode.getObjectNode(childObject);
 			if (childNode == null) {
 				childNode = parentNode.makeObjectNode(childObject);
 				parentNode.addToChildren(childNode);
-				System.out.println("Nouveau childNode for " + childObject);
-				System.out.println("ASTNode " + childNode.getASTNode());
-				System.out.println("FML= " + childNode.getFMLRepresentation(context));
+				// System.out.println("Nouveau childNode for " + childObject);
+				// System.out.println("ASTNode " + childNode.getASTNode());
+				// System.out.println("FML= " + childNode.getFMLRepresentation(context));
 				String insertThis = (getPrelude() != null ? getPrelude() : "") + childNode.getFMLRepresentation(derivedContext)
 						+ (getPostlude() != null ? getPostlude() : "");
 				derivedRawSource.insert(insertionPoint, insertThis);

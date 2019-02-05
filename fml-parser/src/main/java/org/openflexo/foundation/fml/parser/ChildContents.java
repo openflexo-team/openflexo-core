@@ -81,8 +81,8 @@ public class ChildContents<T extends FMLPrettyPrintable> extends PrettyPrintable
 
 	@Override
 	public void updatePrettyPrint(DerivedRawSource derivedRawSource, PrettyPrintContext context) {
-		System.out.println("> Pour ChildContents " + childNode.getFMLObject() + " c'est plus complique");
-		System.out.println("Et on calcule la nouvelle valeur:");
+		// System.out.println("> Pour ChildContents " + childNode.getFMLObject() + " c'est plus complique");
+		// System.out.println("Et on calcule la nouvelle valeur:");
 		// System.out.println(childNode.computeFMLRepresentation(context));
 		derivedRawSource.replace(getFragment(), childNode.computeFMLRepresentation(context));
 	}

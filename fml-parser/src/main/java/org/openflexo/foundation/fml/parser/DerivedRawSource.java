@@ -71,25 +71,25 @@ public class DerivedRawSource {
 
 	public void replace(RawSourceFragment fragment, String replacement) {
 		if (!fragment.getRawText().equals(replacement)) {
-			System.out.println("On remplace " + fragment + " (values [" + fragment.getRawText() + "]) par " + replacement);
+			// System.out.println("On remplace " + fragment + " (values [" + fragment.getRawText() + "]) par " + replacement);
 			modifications.add(new StringReplacement(fragment, replacement));
 		}
 	}
 
 	public void replace(RawSourceFragment fragment, DerivedRawSource replacement) {
 		if (!fragment.getRawText().equals(replacement)) {
-			System.out.println("On remplace " + fragment + " (values [" + fragment.getRawText() + "]) par " + replacement);
+			// System.out.println("On remplace " + fragment + " (values [" + fragment.getRawText() + "]) par " + replacement);
 			modifications.add(new DerivedRawSourceReplacement(fragment, replacement));
 		}
 	}
 
 	public void insert(RawSourcePosition insertionPoint, String insertion) {
-		System.out.println("On insere a la position " + insertionPoint + " la valeur [" + insertion + "])");
+		// System.out.println("On insere a la position " + insertionPoint + " la valeur [" + insertion + "])");
 		modifications.add(new StringInsertion(insertionPoint, insertion));
 	}
 
 	public void remove(RawSourceFragment fragment) {
-		System.out.println("On supprime " + fragment + " (values [" + fragment.getRawText() + "])");
+		// System.out.println("On supprime " + fragment + " (values [" + fragment.getRawText() + "])");
 		modifications.add(new StringDeletion(fragment));
 	}
 
@@ -106,10 +106,10 @@ public class DerivedRawSource {
 			}
 		});
 
-		System.out.println("Les modifications:");
+		/*System.out.println("Les modifications:");
 		for (Modification modification : modifications) {
 			System.out.println(" > " + modification);
-		}
+		}*/
 
 		if (modifications.size() == 0) {
 			return getSourceFragment().getRawText();

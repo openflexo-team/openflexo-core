@@ -90,7 +90,7 @@ public class StaticContents<T extends FMLPrettyPrintable> extends PrettyPrintabl
 
 	@Override
 	public void updatePrettyPrint(DerivedRawSource derivedRawSource, PrettyPrintContext context) {
-		System.out.println("> Rien a faire pour staticContents=[" + getStaticContents() + "]");
+		// System.out.println("> Rien a faire pour staticContents=[" + getStaticContents() + "]");
 	}
 
 }

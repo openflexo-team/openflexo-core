@@ -88,7 +88,7 @@ public class DynamicContents<T extends FMLPrettyPrintable> extends PrettyPrintab
 
 	@Override
 	public void updatePrettyPrint(DerivedRawSource derivedRawSource, PrettyPrintContext context) {
-		System.out.println("> Pour DynamicContents, faudrait passer " + getFragment() + " a " + stringRepresentationSupplier.get());
+		// System.out.println("> Pour DynamicContents, faudrait passer " + getFragment() + " a " + stringRepresentationSupplier.get());
 		derivedRawSource.replace(getFragment(), stringRepresentationSupplier.get());
 	}
 

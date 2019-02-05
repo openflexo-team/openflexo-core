@@ -297,14 +297,11 @@ public abstract interface FlexoProperty<T> extends FlexoConceptObject, FMLPretty
 					}
 				}
 				if (!typeWasFound) {
-					System.out.println("Type pas trouve !, j'ajoute " + rawType.getName());
+					// Adding import
 					JavaImportDeclaration newJavaImportDeclaration = getDeclaringVirtualModel().getFMLModelFactory()
 							.newJavaImportDeclaration();
 					newJavaImportDeclaration.setFullQualifiedClassName(rawType.getName());
 					getDeclaringVirtualModel().getCompilationUnit().addToJavaImports(newJavaImportDeclaration);
-				}
-				else {
-					System.out.println("Type trouve !");
 				}
 			}
 
