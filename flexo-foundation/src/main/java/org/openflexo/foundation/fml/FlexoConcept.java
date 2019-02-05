@@ -121,6 +121,8 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 	public static final String OWNER_KEY = "owner";
 	@PropertyIdentifier(type = String.class)
 	public static final String NAME_KEY = "name";
+	@PropertyIdentifier(type = Visibility.class)
+	public static final String VISIBILITY_KEY = "visibility";
 	@PropertyIdentifier(type = FlexoConcept.class)
 	public static final String CONTAINER_FLEXO_CONCEPT_KEY = "containerFlexoConcept";
 	@PropertyIdentifier(type = List.class)
@@ -160,6 +162,13 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 	@Override
 	@Setter(NAME_KEY)
 	public void setName(String name);
+
+	@Getter(value = VISIBILITY_KEY, defaultValue = "Default")
+	@XMLAttribute
+	public Visibility getVisibility();
+
+	@Setter(VISIBILITY_KEY)
+	public void setVisibility(Visibility visibility);
 
 	@Getter(value = CONTAINER_FLEXO_CONCEPT_KEY, inverse = EMBEDDED_FLEXO_CONCEPT_KEY)
 	@CloningStrategy(StrategyType.IGNORE)

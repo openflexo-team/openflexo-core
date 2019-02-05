@@ -23,7 +23,15 @@
 				constraints="twocols(expandHorizontally=true;expandVertically=false;location=right)"
 				localize="true" enable="!data.abstractRequired" />
 
-			<Label name="ParentConceptsLabel" label="parent_concepts" index="12" data=""
+			<Label index="12" name="VisibilityLabel" localize="true" align="left"
+				constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=left)"
+				label="visibility" />
+			<DropDown index="13" data="data.visibility" localize="true"
+				constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=right)"
+				showText="true" iteratorClassName="org.openflexo.foundation.fml.Visibility"
+				showIcon="false" autoSelectFirstRow="true" name="visibilityDropdown" />
+
+			<Label name="ParentConceptsLabel" label="parent_concepts" index="14" data=""
 				constraints="twocols(expandHorizontally=false;expandVertically=false;index=0;location=left)"
 				visible="" format="" icon="" tooltip="" localize="true" enable=""
 				clickAction="" doubleClickAction="" rightClickAction=""
@@ -37,7 +45,7 @@
 				icon="" tooltip="" localize="true" enable="" manageDynamicModel="true"
 				opaque="false" clickAction="" doubleClickAction="" rightClickAction=""
 				enterPressedAction="" valueChangedAction="" valueTransform=""
-				valueValidator="" index="13"
+				valueValidator="" index="15"
 				data="data.parentFlexoConcepts"
 				constraints="twocols(expandHorizontally=true;expandVertically=false;index=3;location=right)"
 				visible="">
@@ -54,19 +62,19 @@
 					name="addParentFlexoConcept" />
 			</Table>
 
-			<Label name="ContainerLabel" label="container" index="14"
+			<Label name="ContainerLabel" label="container" index="16"
 				constraints="twocols(expandHorizontally=false;expandVertically=false;index=0;location=left)"
 				localize="true" />
 			<Custom name="ContainerSelector" componentClassName="org.openflexo.fml.controller.widget.FIBFlexoConceptSelector"
 				localize="true" manageDynamicModel="true" opaque="false" 
-				index="15" data="data.containerFlexoConcept"
+				index="17" data="data.containerFlexoConcept"
 				constraints="twocols(expandHorizontally=true;expandVertically=false;index=1;location=right)"
 				minWidth="200" minHeight="25">
 				<Assignment variable="component.virtualModel" value="data.owner" />
 			</Custom>
 
 
-			<Label name="ConstraintsLabel" label="constraints" index="16"
+			<Label name="ConstraintsLabel" label="constraints" index="18"
 				constraints="twocols(expandHorizontally=false;expandVertically=false;index=0;location=left)"
 				localize="true" />
 			<Table name="ConstraintsTable" iteratorClassName="org.openflexo.foundation.fml.FlexoConceptConstraint"
@@ -77,7 +85,7 @@
 				textNonSelectionColor="0,0,0" backgroundSelectionColor="26,96,206"
 				backgroundSecondarySelectionColor="173,215,255"
 				backgroundNonSelectionColor="255,255,255" localize="true"
-				manageDynamicModel="true" index="17"
+				manageDynamicModel="true" index="19"
 				data="data.flexoConceptConstraints"
 				constraints="twocols(expandHorizontally=true;expandVertically=false;index=3;location=right)">
 				<IconColumn data="controller.iconForObject(iterator)"

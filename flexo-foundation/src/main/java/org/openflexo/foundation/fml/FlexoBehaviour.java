@@ -86,54 +86,6 @@ import org.openflexo.toolbox.StringUtils;
 		@Import(SynchronizationScheme.class), @Import(CreationScheme.class), @Import(CloningScheme.class), @Import(EventListener.class) })
 public interface FlexoBehaviour extends FlexoBehaviourObject, Function, FMLControlGraphOwner, FMLPrettyPrintable {
 
-	/**
-	 * Visibility for a behaviour
-	 * 
-	 * @author sylvain
-	 *
-	 */
-	public enum Visibility {
-		/**
-		 * Default visibility: limited to FML scope, not available from public API
-		 */
-		Default {
-			@Override
-			public String getFMLRepresentation() {
-				return "";
-			}
-		},
-		/**
-		 * Public visibility: behaviours are accessible from everywhere. In the whole tooling, it means that for example behaviours are
-		 * available through right-clicking on instances
-		 */
-		Public {
-			@Override
-			public String getFMLRepresentation() {
-				return "public ";
-			}
-		},
-		/**
-		 * Visibility restricted to current FlexoConcept hierarchy and current ViewPoint
-		 */
-		Protected {
-			@Override
-			public String getFMLRepresentation() {
-				return "protected ";
-			}
-		},
-		/**
-		 * Visibility restricted to current FlexoConcept
-		 */
-		Private {
-			@Override
-			public String getFMLRepresentation() {
-				return "private ";
-			}
-		};
-
-		public abstract String getFMLRepresentation();
-	}
-
 	@PropertyIdentifier(type = FlexoConcept.class)
 	public static final String FLEXO_CONCEPT_KEY = "flexoConcept";
 	@PropertyIdentifier(type = String.class)

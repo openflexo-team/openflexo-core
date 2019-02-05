@@ -61,6 +61,7 @@ import org.openflexo.pamela.annotations.Imports;
 import org.openflexo.pamela.annotations.ModelEntity;
 import org.openflexo.pamela.annotations.PropertyIdentifier;
 import org.openflexo.pamela.annotations.Setter;
+import org.openflexo.pamela.annotations.XMLAttribute;
 import org.openflexo.pamela.validation.ValidationError;
 import org.openflexo.pamela.validation.ValidationIssue;
 import org.openflexo.pamela.validation.ValidationRule;
@@ -90,6 +91,8 @@ public abstract interface FlexoProperty<T> extends FlexoConceptObject, FMLPretty
 	public static final String FLEXO_CONCEPT_KEY = "flexoConcept";
 	@PropertyIdentifier(type = String.class)
 	public static final String PROPERTY_NAME_KEY = "propertyName";
+	@PropertyIdentifier(type = Visibility.class)
+	public static final String VISIBILITY_KEY = "visibility";
 	@PropertyIdentifier(type = String.class)
 	public static final String DESCRIPTION_KEY = "description";
 
@@ -106,6 +109,13 @@ public abstract interface FlexoProperty<T> extends FlexoConceptObject, FMLPretty
 
 	@Setter(PROPERTY_NAME_KEY)
 	public void setPropertyName(String propertyName);
+
+	@Getter(value = VISIBILITY_KEY, defaultValue = "Default")
+	@XMLAttribute
+	public Visibility getVisibility();
+
+	@Setter(VISIBILITY_KEY)
+	public void setVisibility(Visibility visibility);
 
 	/**
 	 * Return cardinality of this property

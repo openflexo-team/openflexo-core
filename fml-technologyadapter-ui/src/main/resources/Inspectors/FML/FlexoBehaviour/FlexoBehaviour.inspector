@@ -31,7 +31,7 @@
 				label="visibility" />
 			<DropDown index="5" data="data.visibility" localize="true"
 				constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=right)"
-				showText="true" iteratorClassName="org.openflexo.foundation.fml.FlexoBehaviour$Visibility"
+				showText="true" iteratorClassName="org.openflexo.foundation.fml.Visibility"
 				showIcon="false" autoSelectFirstRow="true" name="visibilityDropdown" />
 			<Label id="8" name="ParametersLabel" index="6" localize="true"
 				align="left"
