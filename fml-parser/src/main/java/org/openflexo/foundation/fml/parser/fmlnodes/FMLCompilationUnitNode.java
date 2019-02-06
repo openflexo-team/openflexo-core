@@ -42,8 +42,8 @@ import org.openflexo.foundation.fml.FMLCompilationUnit;
 import org.openflexo.foundation.fml.JavaImportDeclaration;
 import org.openflexo.foundation.fml.parser.FMLObjectNode;
 import org.openflexo.foundation.fml.parser.FMLSemanticsAnalyzer;
-import org.openflexo.foundation.fml.parser.RawSource.RawSourcePosition;
 import org.openflexo.foundation.fml.parser.node.AFmlCompilationUnit;
+import org.openflexo.p2pp.RawSource.RawSourcePosition;
 
 /**
  * @author sylvain
@@ -78,12 +78,11 @@ public class FMLCompilationUnitNode extends FMLObjectNode<AFmlCompilationUnit, F
 	}
 
 	@Override
-	protected void preparePrettyPrint() {
+	public void preparePrettyPrint() {
 
 		super.preparePrettyPrint();
 
 		appendToChildrenPrettyPrintContents("", () -> getFMLObject().getJavaImports(), LINE_SEPARATOR, 0, JavaImportDeclaration.class);
-
 		appendToChildPrettyPrintContents(LINE_SEPARATOR, getFMLObject().getVirtualModel(), LINE_SEPARATOR, 0);
 	}
 

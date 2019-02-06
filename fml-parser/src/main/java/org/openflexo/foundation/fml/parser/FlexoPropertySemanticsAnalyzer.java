@@ -39,6 +39,7 @@
 package org.openflexo.foundation.fml.parser;
 
 import java.lang.reflect.Type;
+import java.util.logging.Logger;
 
 import org.openflexo.foundation.fml.FMLModelFactory;
 import org.openflexo.foundation.fml.parser.fmlnodes.AbstractPropertyNode;
@@ -57,6 +58,7 @@ import org.openflexo.foundation.fml.parser.node.APropertyDeclarationInnerConcept
 import org.openflexo.foundation.fml.parser.node.PBasicRoleDeclaration;
 import org.openflexo.foundation.fml.parser.node.PPropertyDeclaration;
 import org.openflexo.foundation.fml.parser.node.Start;
+import org.openflexo.p2pp.RawSource;
 
 /**
  * This class implements the semantics analyzer for a parsed FML compilation unit.<br>
@@ -65,6 +67,9 @@ import org.openflexo.foundation.fml.parser.node.Start;
  * 
  */
 public class FlexoPropertySemanticsAnalyzer extends FlexoConceptSemanticsAnalyzer {
+
+	@SuppressWarnings("unused")
+	private static final Logger logger = Logger.getLogger(FlexoPropertySemanticsAnalyzer.class.getPackage().getName());
 
 	public FlexoPropertySemanticsAnalyzer(FMLModelFactory factory, Start tree, RawSource rawSource) {
 		super(factory, tree, rawSource);
@@ -80,7 +85,7 @@ public class FlexoPropertySemanticsAnalyzer extends FlexoConceptSemanticsAnalyze
 			PBasicRoleDeclaration basicRoleDeclaration = ((ABasicPropertyPropertyDeclaration) node).getBasicRoleDeclaration();
 			if (basicRoleDeclaration instanceof AJavaBasicRoleDeclaration) {
 				Type type = getTypeFactory().makeType(((AJavaBasicRoleDeclaration) basicRoleDeclaration).getType());
-				System.out.println("Tiens une basic property declaration java: " + node + " type=" + type);
+				// System.out.println("Tiens une basic property declaration java: " + node + " type=" + type);
 				if (getTypeFactory().getPrimitiveType(type) != null) {
 					return new PrimitiveRoleNode((AJavaBasicRoleDeclaration) basicRoleDeclaration, (FMLSemanticsAnalyzer) this);
 				}
@@ -89,10 +94,10 @@ public class FlexoPropertySemanticsAnalyzer extends FlexoConceptSemanticsAnalyze
 				}
 			}
 			else if (basicRoleDeclaration instanceof AFmlBasicRoleDeclaration) {
-				System.out.println("Tiens une basic property declaration FML: " + node);
+				// System.out.println("Tiens une basic property declaration FML: " + node);
 			}
 			else if (basicRoleDeclaration instanceof AFmlFullyQualifiedBasicRoleDeclaration) {
-				System.out.println("Tiens une basic property declaration FML fully-qualified: " + node);
+				// System.out.println("Tiens une basic property declaration FML fully-qualified: " + node);
 			}
 		}
 		else if (node instanceof AExpressionPropertyPropertyDeclaration) {
@@ -101,6 +106,8 @@ public class FlexoPropertySemanticsAnalyzer extends FlexoConceptSemanticsAnalyze
 		else if (node instanceof AGetSetPropertyPropertyDeclaration) {
 
 		}
+		logger.warning("Unexpected node: " + node);
+		Thread.dumpStack();
 		return null;
 	}
 

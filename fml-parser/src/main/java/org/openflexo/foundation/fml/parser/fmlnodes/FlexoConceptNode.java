@@ -43,8 +43,8 @@ import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoProperty;
 import org.openflexo.foundation.fml.parser.FMLObjectNode;
 import org.openflexo.foundation.fml.parser.FMLSemanticsAnalyzer;
-import org.openflexo.foundation.fml.parser.RawSource.RawSourceFragment;
 import org.openflexo.foundation.fml.parser.node.AConceptDeclaration;
+import org.openflexo.p2pp.RawSource.RawSourceFragment;
 
 /**
  * @author sylvain
@@ -91,7 +91,7 @@ public class FlexoConceptNode extends FMLObjectNode<AConceptDeclaration, FlexoCo
 	}
 
 	@Override
-	protected void preparePrettyPrint() {
+	public void preparePrettyPrint() {
 
 		if (getASTNode().getVisibility() != null) {
 			RawSourceFragment visibilityFragment = getFragment(getASTNode().getVisibility());

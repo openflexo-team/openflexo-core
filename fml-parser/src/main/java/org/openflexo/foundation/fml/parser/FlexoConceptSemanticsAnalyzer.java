@@ -42,6 +42,7 @@ import org.openflexo.foundation.fml.FMLModelFactory;
 import org.openflexo.foundation.fml.parser.fmlnodes.FlexoConceptNode;
 import org.openflexo.foundation.fml.parser.node.AConceptDeclaration;
 import org.openflexo.foundation.fml.parser.node.Start;
+import org.openflexo.p2pp.RawSource;
 
 /**
  * This class implements the semantics analyzer for a parsed FML compilation unit.<br>

@@ -49,6 +49,7 @@ import org.openflexo.foundation.fml.FMLCompilationUnit;
 import org.openflexo.foundation.fml.FMLModelFactory;
 import org.openflexo.foundation.fml.parser.fmlnodes.FMLCompilationUnitNode;
 import org.openflexo.foundation.test.OpenflexoTestCase;
+import org.openflexo.p2pp.P2PPNode;
 import org.openflexo.pamela.exceptions.ModelDefinitionException;
 import org.openflexo.rm.FileResourceImpl;
 import org.openflexo.rm.Resource;
@@ -111,13 +112,13 @@ public class TestFMLParser extends OpenflexoTestCase {
 		System.out.println("FML=\n" + compilationUnit.getVirtualModel().getFMLPrettyPrint());
 	}
 
-	private static void debug(FMLObjectNode<?, ?> node, int indent) {
+	private static void debug(P2PPNode<?, ?> node, int indent) {
 		System.out.println(StringUtils.buildWhiteSpaceIndentation(indent * 2) + " > " + node.getClass().getSimpleName() + " from "
 				+ node.getLastParsedFragment());
 		// System.err.println(node.getLastParsed());
 		// node.getLastParsed();
 		indent++;
-		for (FMLObjectNode<?, ?> child : node.getChildren()) {
+		for (P2PPNode<?, ?> child : node.getChildren()) {
 			debug(child, indent);
 		}
 	}

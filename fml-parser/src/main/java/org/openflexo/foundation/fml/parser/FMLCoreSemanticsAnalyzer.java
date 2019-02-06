@@ -46,6 +46,8 @@ import org.openflexo.foundation.fml.parser.analysis.DepthFirstAdapter;
 import org.openflexo.foundation.fml.parser.node.Node;
 import org.openflexo.foundation.fml.parser.node.Start;
 import org.openflexo.foundation.fml.parser.node.Token;
+import org.openflexo.p2pp.P2PPNode;
+import org.openflexo.p2pp.RawSource;
 
 /**
  * This class implements the semantics analyzer for a parsed FML compilation unit.<br>
@@ -96,8 +98,8 @@ public abstract class FMLCoreSemanticsAnalyzer extends DepthFirstAdapter {
 
 	protected final void finalizeDeserialization(FMLObjectNode<?, ?> node) {
 		node.finalizeDeserialization();
-		for (FMLObjectNode<?, ?> child : node.getChildren()) {
-			finalizeDeserialization(child);
+		for (P2PPNode<?, ?> child : node.getChildren()) {
+			finalizeDeserialization((FMLObjectNode<?, ?>) child);
 		}
 	}
 
@@ -116,7 +118,7 @@ public abstract class FMLCoreSemanticsAnalyzer extends DepthFirstAdapter {
 	protected <N extends FMLObjectNode<?, ?>> N pop() {
 		N builtFMLNode = (N) fmlNodes.pop();
 		builtFMLNode.deserialize();
-		builtFMLNode.preparePrettyPrint();
+		builtFMLNode.initializePrettyPrint();
 		return builtFMLNode;
 	}
 

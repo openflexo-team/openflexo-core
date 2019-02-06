@@ -1,5 +1,6 @@
 dependencies {
   // openflexo dep
+  compile flexoP2PP();
   compile flexoLocalization()
   // Still to be removed
   compile flexoGraphicUtils() // used for icon mgt in FlexoConcept

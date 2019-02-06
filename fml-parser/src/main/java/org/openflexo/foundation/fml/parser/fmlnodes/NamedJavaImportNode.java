@@ -40,8 +40,8 @@ package org.openflexo.foundation.fml.parser.fmlnodes;
 
 import org.openflexo.foundation.fml.JavaImportDeclaration;
 import org.openflexo.foundation.fml.parser.FMLSemanticsAnalyzer;
-import org.openflexo.foundation.fml.parser.RawSource.RawSourceFragment;
 import org.openflexo.foundation.fml.parser.node.ANamedJavaImportImportDeclaration;
+import org.openflexo.p2pp.RawSource.RawSourceFragment;
 
 /**
  * @author sylvain
@@ -77,7 +77,7 @@ public class NamedJavaImportNode extends AbstractJavaImportNode<ANamedJavaImport
 	}
 
 	@Override
-	protected void preparePrettyPrint() {
+	public void preparePrettyPrint() {
 		super.preparePrettyPrint();
 		RawSourceFragment importFragment = getFragment(getASTNode().getImport());
 		RawSourceFragment fullQualifiedFragment = getFragment(getASTNode().getIdentifier(), getASTNode().getAdditionalIdentifiers());

@@ -79,7 +79,7 @@ public class FlexoBehaviourNode extends FMLObjectNode<AConceptDeclaration, Flexo
 	}
 
 	@Override
-	protected void preparePrettyPrint() {
+	public void preparePrettyPrint() {
 		super.preparePrettyPrint();
 	}
 }

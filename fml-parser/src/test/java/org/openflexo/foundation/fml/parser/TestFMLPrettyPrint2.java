@@ -85,7 +85,7 @@ public class TestFMLPrettyPrint2 extends OpenflexoTestCase {
 		editor = new DefaultFlexoEditor(null, serviceManager);
 		assertNotNull(editor);
 
-		final Resource fmlFile = ResourceLocator.locateResource("NewFMLExamples/TestBasicTypesWithComments.fml");
+		final Resource fmlFile = ResourceLocator.locateResource("TestFMLPrettyPrint2/TestBasicTypesWithComments.fml");
 		compilationUnit = parseFile(fmlFile);
 		assertNotNull(virtualModel = compilationUnit.getVirtualModel());
 		assertEquals("MyModel", virtualModel.getName());

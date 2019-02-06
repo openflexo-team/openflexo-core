@@ -1,5 +1,6 @@
 dependencies {
   // openflexo dep
+  compile flexoP2PP();
   compile project(':flexo-foundation')
   // external dep
 

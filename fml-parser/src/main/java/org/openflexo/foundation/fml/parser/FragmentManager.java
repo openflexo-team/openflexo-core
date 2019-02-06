@@ -40,11 +40,12 @@ package org.openflexo.foundation.fml.parser;
 
 import java.util.Collection;
 
-import org.openflexo.foundation.fml.parser.RawSource.RawSourceFragment;
-import org.openflexo.foundation.fml.parser.RawSource.RawSourcePosition;
 import org.openflexo.foundation.fml.parser.analysis.DepthFirstAdapter;
 import org.openflexo.foundation.fml.parser.node.Node;
 import org.openflexo.foundation.fml.parser.node.Token;
+import org.openflexo.p2pp.RawSource;
+import org.openflexo.p2pp.RawSource.RawSourceFragment;
+import org.openflexo.p2pp.RawSource.RawSourcePosition;
 
 /**
  * 
@@ -75,7 +76,7 @@ public class FragmentManager extends DepthFirstAdapter {
 		return getRawSource().makeFragment(startPosition, endPosition);
 	}
 
-	public RawSourceFragment getFragment(Collection<Node> nodes) {
+	public RawSourceFragment getFragment(Collection<? extends Node> nodes) {
 		startPosition = null;
 		endPosition = null;
 		for (Node node : nodes) {

@@ -44,8 +44,8 @@ import org.openflexo.foundation.fml.FlexoProperty;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.parser.FMLObjectNode;
 import org.openflexo.foundation.fml.parser.FMLSemanticsAnalyzer;
-import org.openflexo.foundation.fml.parser.RawSource.RawSourceFragment;
 import org.openflexo.foundation.fml.parser.node.AModelDeclaration;
+import org.openflexo.p2pp.RawSource.RawSourceFragment;
 
 /**
  * @author sylvain
@@ -91,7 +91,7 @@ public class VirtualModelNode extends FMLObjectNode<AModelDeclaration, VirtualMo
 	}
 
 	@Override
-	protected void preparePrettyPrint() {
+	public void preparePrettyPrint() {
 
 		super.preparePrettyPrint();
 

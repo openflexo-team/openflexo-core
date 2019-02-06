@@ -42,11 +42,11 @@ import java.util.logging.Logger;
 
 import org.openflexo.foundation.fml.AbstractProperty;
 import org.openflexo.foundation.fml.parser.FMLSemanticsAnalyzer;
-import org.openflexo.foundation.fml.parser.RawSource.RawSourceFragment;
 import org.openflexo.foundation.fml.parser.node.AAbstractPropertyDeclaration;
 import org.openflexo.foundation.fml.parser.node.AIdentifierVariableDeclarator;
 import org.openflexo.foundation.fml.parser.node.AInitializerVariableDeclarator;
 import org.openflexo.foundation.fml.parser.node.PVariableDeclarator;
+import org.openflexo.p2pp.RawSource.RawSourceFragment;
 
 /**
  * @author sylvain
@@ -85,7 +85,7 @@ public class AbstractPropertyNode extends FlexoPropertyNode<AAbstractPropertyDec
 	}
 
 	@Override
-	protected void preparePrettyPrint() {
+	public void preparePrettyPrint() {
 		super.preparePrettyPrint();
 		if (getASTNode().getVisibility() != null) {
 			RawSourceFragment visibilityFragment = getFragment(getASTNode().getVisibility());

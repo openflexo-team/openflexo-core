@@ -38,6 +38,8 @@
 
 package org.openflexo.foundation.fml;
 
+import org.openflexo.p2pp.PrettyPrintContext;
+
 /**
  * A delegate providing pretty-print to an FMLObject.<br>
  * 
@@ -76,14 +78,4 @@ public interface FMLPrettyPrintDelegate<T extends FMLObject> {
 	 * @return
 	 */
 	public PrettyPrintContext makePrettyPrintContext();
-
-	public interface PrettyPrintContext {
-
-		public PrettyPrintContext derive(int indentation);
-
-		public String getResultingIndentation();
-
-		public String indent(String stringToIndent);
-
-	}
 }

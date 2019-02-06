@@ -52,6 +52,7 @@ import org.openflexo.foundation.fml.FMLModelFactory;
 import org.openflexo.foundation.fml.parser.lexer.Lexer;
 import org.openflexo.foundation.fml.parser.node.Start;
 import org.openflexo.foundation.fml.parser.parser.Parser;
+import org.openflexo.p2pp.RawSource;
 
 /**
  * This class provides the parsing service for FML. This includes syntaxic and semantics analyzer.<br>
