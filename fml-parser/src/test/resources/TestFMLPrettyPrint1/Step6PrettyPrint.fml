@@ -9,6 +9,6 @@ import java.util.Date;
 // Comment
 model MyModel {
 
-	int i;
+	int i; /* Some comments here */
 	String newString;
 }

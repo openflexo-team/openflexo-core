@@ -65,7 +65,6 @@ import org.openflexo.foundation.fml.parser.fmlnodes.FlexoPropertyNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.JavaImportNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.VirtualModelNode;
 import org.openflexo.foundation.test.OpenflexoTestCase;
-import org.openflexo.p2pp.DerivedRawSource;
 import org.openflexo.pamela.exceptions.ModelDefinitionException;
 import org.openflexo.rm.FileResourceImpl;
 import org.openflexo.rm.Resource;
@@ -300,7 +299,6 @@ public class TestFMLPrettyPrint1 extends OpenflexoTestCase {
 		virtualModel.removeFromFlexoProperties(fooProperty);
 		fooProperty.delete();
 
-		DerivedRawSource.DEBUG = true;
 		System.out.println("FML=\n" + compilationUnit.getFMLPrettyPrint());
 		// testNormalizedFMLRepresentationEquals("TestFMLPrettyPrint1/Step5Normalized.fml");
 		// testFMLPrettyPrintEquals("TestFMLPrettyPrint1/Step5PrettyPrint.fml");

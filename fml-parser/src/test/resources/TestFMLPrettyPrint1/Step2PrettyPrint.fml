@@ -8,6 +8,6 @@ import java.util.ArrayList;
 // Comment
 model MyModel {
 
-	int i;
+	int i; /* Some comments here */
 	private String foo;
 }

@@ -9,7 +9,7 @@ import java.util.Date;
 // Comment
 model MyModel {
 
-	int i;
+	int i; /* Some comments here */
 	private String foo;
 	String newString;
 	Date newDate;
