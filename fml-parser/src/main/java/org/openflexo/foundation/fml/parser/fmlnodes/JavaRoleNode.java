@@ -74,39 +74,59 @@ public class JavaRoleNode extends FlexoPropertyNode<AJavaBasicRoleDeclaration, J
 	}
 
 	@Override
-	protected void prepareNormalizedPrettyPrint() {
-		// super.prepareNormalizedPrettyPrint();
-
-		appendDynamicContents(() -> getVisibilityAsString(getFMLObject().getVisibility()), SPACE);
-		appendDynamicContents(() -> serializeType(getFMLObject().getType()), SPACE);
-		appendDynamicContents(() -> getFMLObject().getName());
-		appendStaticContents(";");
-	}
-
-	@Override
-	public void preparePrettyPrint() {
-		super.preparePrettyPrint();
-		if (getASTNode().getVisibility() != null) {
-			RawSourceFragment visibilityFragment = getFragment(getASTNode().getVisibility());
-			appendDynamicContents(() -> getVisibilityAsString(getFMLObject().getVisibility()), SPACE, visibilityFragment);
+	public void preparePrettyPrint(boolean hasParsedVersion) {
+		super.preparePrettyPrint(hasParsedVersion);
+		if (hasParsedVersion && getVisibilityFragment() != null) {
+			appendDynamicContents(() -> getVisibilityAsString(getFMLObject().getVisibility()), SPACE, getVisibilityFragment());
 		}
 		else {
 			appendDynamicContents(() -> getVisibilityAsString(getFMLObject().getVisibility()), SPACE);
 		}
-		RawSourceFragment typeFragment = getFragment(getASTNode().getType());
-		RawSourceFragment nameFragment = null;
-		PVariableDeclarator variableDeclarator = getASTNode().getVariableDeclarator();
-		if (variableDeclarator instanceof AIdentifierVariableDeclarator) {
-			nameFragment = getFragment(((AIdentifierVariableDeclarator) variableDeclarator).getIdentifier());
+		if (hasParsedVersion) {
+			appendDynamicContents(() -> serializeType(getFMLObject().getType()), SPACE, getTypeFragment());
+			appendDynamicContents(() -> getFMLObject().getName(), getNameFragment());
+			appendStaticContents(";", getSemiFragment());
 		}
-		else if (variableDeclarator instanceof AInitializerVariableDeclarator) {
-			nameFragment = getFragment(((AInitializerVariableDeclarator) variableDeclarator).getIdentifier());
+		else {
+			appendDynamicContents(() -> getVisibilityAsString(getFMLObject().getVisibility()), SPACE);
+			appendDynamicContents(() -> serializeType(getFMLObject().getType()), SPACE);
+			appendDynamicContents(() -> getFMLObject().getName());
+			appendStaticContents(";");
 		}
-		RawSourceFragment semiFragment = getFragment(getASTNode().getSemi());
+	}
 
-		appendDynamicContents(() -> serializeType(getFMLObject().getType()), SPACE, typeFragment);
-		appendDynamicContents(() -> getFMLObject().getName(), nameFragment);
-		appendStaticContents(";", semiFragment);
+	private RawSourceFragment getVisibilityFragment() {
+		if (getASTNode() != null && getASTNode().getVisibility() != null) {
+			return getFragment(getASTNode().getVisibility());
+		}
+		return null;
+	}
+
+	private RawSourceFragment getTypeFragment() {
+		if (getASTNode() != null) {
+			return getFragment(getASTNode().getType());
+		}
+		return null;
+	}
+
+	private RawSourceFragment getNameFragment() {
+		if (getASTNode() != null) {
+			PVariableDeclarator variableDeclarator = getASTNode().getVariableDeclarator();
+			if (variableDeclarator instanceof AIdentifierVariableDeclarator) {
+				return getFragment(((AIdentifierVariableDeclarator) variableDeclarator).getIdentifier());
+			}
+			else if (variableDeclarator instanceof AInitializerVariableDeclarator) {
+				return getFragment(((AInitializerVariableDeclarator) variableDeclarator).getIdentifier());
+			}
+		}
+		return null;
+	}
+
+	private RawSourceFragment getSemiFragment() {
+		if (getASTNode() != null) {
+			return getFragment(getASTNode().getSemi());
+		}
+		return null;
 	}
 
 }

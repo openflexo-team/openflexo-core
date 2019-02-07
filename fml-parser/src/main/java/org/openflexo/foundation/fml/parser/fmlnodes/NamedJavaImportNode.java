@@ -66,31 +66,58 @@ public class NamedJavaImportNode extends AbstractJavaImportNode<ANamedJavaImport
 	}
 
 	@Override
-	protected void prepareNormalizedPrettyPrint() {
-		// super.prepareNormalizedPrettyPrint();
+	public void preparePrettyPrint(boolean hasParsedVersion) {
+		super.preparePrettyPrint(hasParsedVersion);
 
-		appendStaticContents("import", SPACE);
-		appendDynamicContents(() -> getFMLObject().getFullQualifiedClassName());
-		appendStaticContents("as", SPACE);
-		appendDynamicContents(() -> getFMLObject().getAbbrev());
-		appendStaticContents(";");
+		if (hasParsedVersion) {
+			appendStaticContents("import", SPACE, getImportFragment());
+			appendDynamicContents(() -> getFMLObject().getFullQualifiedClassName(), getFullQualifiedFragment());
+			appendStaticContents("as", SPACE, getAsFragment());
+			appendDynamicContents(() -> getFMLObject().getAbbrev(), getNameFragment());
+			appendStaticContents(";", getSemiFragment());
+		}
+		else {
+			appendStaticContents("import", SPACE);
+			appendDynamicContents(() -> getFMLObject().getFullQualifiedClassName());
+			appendStaticContents("as", SPACE);
+			appendDynamicContents(() -> getFMLObject().getAbbrev());
+			appendStaticContents(";");
+		}
 	}
 
-	@Override
-	public void preparePrettyPrint() {
-		super.preparePrettyPrint();
-		RawSourceFragment importFragment = getFragment(getASTNode().getImport());
-		RawSourceFragment fullQualifiedFragment = getFragment(getASTNode().getIdentifier(), getASTNode().getAdditionalIdentifiers());
-		RawSourceFragment asFragment = getFragment(getASTNode().getAs());
-		RawSourceFragment nameFragment = getFragment(getASTNode().getName());
-		RawSourceFragment semiFragment = getFragment(getASTNode().getSemi());
+	private RawSourceFragment getImportFragment() {
+		if (getASTNode() != null) {
+			return getFragment(getASTNode().getImport());
+		}
+		return null;
+	}
 
-		appendStaticContents("import", SPACE, importFragment);
-		appendDynamicContents(() -> getFMLObject().getFullQualifiedClassName(), fullQualifiedFragment);
-		appendStaticContents("as", SPACE, asFragment);
-		appendDynamicContents(() -> getFMLObject().getAbbrev(), nameFragment);
-		appendStaticContents(";", semiFragment);
+	private RawSourceFragment getFullQualifiedFragment() {
+		if (getASTNode() != null) {
+			return getFragment(getASTNode().getIdentifier(), getASTNode().getAdditionalIdentifiers());
+		}
+		return null;
+	}
 
+	private RawSourceFragment getAsFragment() {
+		if (getASTNode() != null) {
+			return getFragment(getASTNode().getAs());
+		}
+		return null;
+	}
+
+	private RawSourceFragment getNameFragment() {
+		if (getASTNode() != null) {
+			return getFragment(getASTNode().getName());
+		}
+		return null;
+	}
+
+	private RawSourceFragment getSemiFragment() {
+		if (getASTNode() != null) {
+			return getFragment(getASTNode().getSemi());
+		}
+		return null;
 	}
 
 }

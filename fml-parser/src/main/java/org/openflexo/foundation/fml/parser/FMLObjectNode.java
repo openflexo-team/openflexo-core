@@ -103,7 +103,7 @@ public abstract class FMLObjectNode<N extends Node, T extends FMLPrettyPrintable
 		this.analyser = analyser;
 
 		fmlObject.setPrettyPrintDelegate(this);
-		prepareNormalizedPrettyPrint();
+		preparePrettyPrint(false);
 	}
 
 	public FMLModelFactory getFactory() {
@@ -126,8 +126,8 @@ public abstract class FMLObjectNode<N extends Node, T extends FMLPrettyPrintable
 
 	// Make this method visible
 	@Override
-	public void preparePrettyPrint() {
-		super.preparePrettyPrint();
+	public void preparePrettyPrint(boolean hasParsedVersion) {
+		super.preparePrettyPrint(hasParsedVersion);
 	}
 
 	protected void handleToken(Token token) {

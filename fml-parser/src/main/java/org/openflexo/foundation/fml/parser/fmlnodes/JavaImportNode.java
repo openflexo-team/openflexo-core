@@ -65,27 +65,40 @@ public class JavaImportNode extends AbstractJavaImportNode<AJavaImportImportDecl
 	}
 
 	@Override
-	protected void prepareNormalizedPrettyPrint() {
-		// super.prepareNormalizedPrettyPrint();
+	public void preparePrettyPrint(boolean hasParsedVersion) {
+		super.preparePrettyPrint(hasParsedVersion);
 
-		appendStaticContents("import", SPACE);
-		appendDynamicContents(() -> getFMLObject().getFullQualifiedClassName());
-		appendStaticContents(";");
+		if (hasParsedVersion) {
+			appendStaticContents("import", SPACE, getImportFragment());
+			appendDynamicContents(() -> getFMLObject().getFullQualifiedClassName(), getFullQualifiedFragment());
+			appendStaticContents(";", getSemiFragment());
+		}
+		else {
+			appendStaticContents("import", SPACE);
+			appendDynamicContents(() -> getFMLObject().getFullQualifiedClassName());
+			appendStaticContents(";");
+		}
 	}
 
-	@Override
-	public void preparePrettyPrint() {
+	private RawSourceFragment getImportFragment() {
+		if (getASTNode() != null) {
+			return getFragment(getASTNode().getImport());
+		}
+		return null;
+	}
 
-		super.preparePrettyPrint();
-		RawSourceFragment importFragment = getFragment(getASTNode().getImport());
-		RawSourceFragment fullQualifiedFragment = getFragment(getASTNode().getIdentifier(), getASTNode().getAdditionalIdentifiers());
-		RawSourceFragment semiFragment = getFragment(getASTNode().getSemi());
+	private RawSourceFragment getFullQualifiedFragment() {
+		if (getASTNode() != null) {
+			return getFragment(getASTNode().getIdentifier(), getASTNode().getAdditionalIdentifiers());
+		}
+		return null;
+	}
 
-		// System.out.println("fullQualifiedFragment=" + fullQualifiedFragment + " [" + fullQualifiedFragment.getRawText() + "]");
-
-		appendStaticContents("import", SPACE, importFragment);
-		appendDynamicContents(() -> getFMLObject().getFullQualifiedClassName(), fullQualifiedFragment);
-		appendStaticContents(";", semiFragment);
+	private RawSourceFragment getSemiFragment() {
+		if (getASTNode() != null) {
+			return getFragment(getASTNode().getSemi());
+		}
+		return null;
 	}
 
 }

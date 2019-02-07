@@ -77,40 +77,73 @@ public class FlexoConceptNode extends FMLObjectNode<AConceptDeclaration, FlexoCo
 	}
 
 	@Override
-	protected void prepareNormalizedPrettyPrint() {
-		appendDynamicContents(() -> getVisibilityAsString(getFMLObject().getVisibility()), SPACE);
-		appendStaticContents("concept" + SPACE);
-		appendDynamicContents(() -> getFMLObject().getName());
-		appendStaticContents(SPACE, "{", LINE_SEPARATOR);
-		appendToChildrenPrettyPrintContents("", () -> getFMLObject().getFlexoProperties(), LINE_SEPARATOR, 1, FlexoProperty.class);
-		appendToChildrenPrettyPrintContents(LINE_SEPARATOR, () -> getFMLObject().getFlexoBehaviours(), LINE_SEPARATOR, 1,
-				FlexoBehaviour.class);
-		appendToChildrenPrettyPrintContents(LINE_SEPARATOR, () -> getFMLObject().getChildFlexoConcepts(), LINE_SEPARATOR, 1,
-				FlexoConcept.class);
-		appendStaticContents("}", LINE_SEPARATOR);
-	}
+	public void preparePrettyPrint(boolean hasParsedVersion) {
 
-	@Override
-	public void preparePrettyPrint() {
+		super.preparePrettyPrint(hasParsedVersion);
 
-		if (getASTNode().getVisibility() != null) {
-			RawSourceFragment visibilityFragment = getFragment(getASTNode().getVisibility());
-			appendDynamicContents(() -> getVisibilityAsString(getFMLObject().getVisibility()), SPACE, visibilityFragment);
+		if (hasParsedVersion && getVisibilityFragment() != null) {
+			appendDynamicContents(() -> getVisibilityAsString(getFMLObject().getVisibility()), SPACE, getVisibilityFragment());
 		}
 		else {
 			appendDynamicContents(() -> getVisibilityAsString(getFMLObject().getVisibility()), SPACE);
 		}
 
-		appendStaticContents("concept", SPACE, getFragment(getASTNode().getConcept()));
-		appendDynamicContents(() -> getFMLObject().getName(), getFragment(getASTNode().getIdentifier()));
-		appendStaticContents(SPACE, "{", LINE_SEPARATOR, getFragment(getASTNode().getLBrc()));
+		if (hasParsedVersion) {
+			appendStaticContents("concept", SPACE, getConceptFragment());
+			appendDynamicContents(() -> getFMLObject().getName(), getNameFragment());
+			appendStaticContents(SPACE, "{", LINE_SEPARATOR, getLBrcFragment());
+		}
+		else {
+			appendStaticContents("model" + SPACE);
+			appendDynamicContents(() -> getFMLObject().getName());
+			appendStaticContents(SPACE, "{", LINE_SEPARATOR);
+		}
 		appendToChildrenPrettyPrintContents("", () -> getFMLObject().getFlexoProperties(), LINE_SEPARATOR, 1, FlexoProperty.class);
 		appendToChildrenPrettyPrintContents(LINE_SEPARATOR, () -> getFMLObject().getFlexoBehaviours(), LINE_SEPARATOR, 1,
 				FlexoBehaviour.class);
 		appendToChildrenPrettyPrintContents(LINE_SEPARATOR, () -> getFMLObject().getChildFlexoConcepts(), LINE_SEPARATOR, 1,
 				FlexoConcept.class);
 
-		appendStaticContents("}", LINE_SEPARATOR, getFragment(getASTNode().getRBrc()));
+		if (getASTNode() != null) {
+			appendStaticContents("}", LINE_SEPARATOR, getRBrcFragment());
+		}
+		else {
+			appendStaticContents("}", LINE_SEPARATOR);
+		}
 	}
 
+	private RawSourceFragment getVisibilityFragment() {
+		if (getASTNode() != null && getASTNode().getVisibility() != null) {
+			return getFragment(getASTNode().getVisibility());
+		}
+		return null;
+	}
+
+	private RawSourceFragment getConceptFragment() {
+		if (getASTNode() != null) {
+			return getFragment(getASTNode().getConcept());
+		}
+		return null;
+	}
+
+	private RawSourceFragment getNameFragment() {
+		if (getASTNode() != null) {
+			return getFragment(getASTNode().getIdentifier());
+		}
+		return null;
+	}
+
+	private RawSourceFragment getLBrcFragment() {
+		if (getASTNode() != null) {
+			return getFragment(getASTNode().getLBrc());
+		}
+		return null;
+	}
+
+	private RawSourceFragment getRBrcFragment() {
+		if (getASTNode() != null) {
+			return getFragment(getASTNode().getRBrc());
+		}
+		return null;
+	}
 }
