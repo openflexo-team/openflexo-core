@@ -40,6 +40,7 @@ package org.openflexo.foundation.fml;
 
 import java.util.List;
 
+import org.openflexo.connie.BindingModel;
 import org.openflexo.pamela.annotations.Adder;
 import org.openflexo.pamela.annotations.CloningStrategy;
 import org.openflexo.pamela.annotations.CloningStrategy.StrategyType;
@@ -114,6 +115,19 @@ public interface FMLCompilationUnit extends FMLObject, FMLPrettyPrintable {
 		public String toString() {
 			return "FMLCompilationUnit";
 		}
+
+		@Override
+		public String getURI() {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public BindingModel getBindingModel() {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
 	}
 
 }

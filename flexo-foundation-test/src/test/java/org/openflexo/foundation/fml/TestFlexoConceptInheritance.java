@@ -380,8 +380,8 @@ public class TestFlexoConceptInheritance extends OpenflexoProjectAtRunTimeTestCa
 		assertTrue(flexoConceptB.getDeclaredProperties().contains(createProperty7inB.getNewFlexoProperty()));
 
 		assertSame(property2InB, flexoConceptB.getAccessibleProperty("property2"));
-		assertEquals(Boolean.class, property2InB.getType());
-		assertEquals(Boolean.class, property2InB.getResultingType());
+		assertEquals(Boolean.TYPE, property2InB.getType());
+		assertEquals(Boolean.TYPE, property2InB.getResultingType());
 		assertSameList(property2InB.getSuperProperties(), property2InA);
 		assertSameList(property2InB.getAllSuperProperties(), property2InA);
 

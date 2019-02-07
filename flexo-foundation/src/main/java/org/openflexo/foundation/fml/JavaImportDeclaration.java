@@ -38,6 +38,7 @@
 
 package org.openflexo.foundation.fml;
 
+import org.openflexo.connie.BindingModel;
 import org.openflexo.pamela.annotations.CloningStrategy;
 import org.openflexo.pamela.annotations.CloningStrategy.StrategyType;
 import org.openflexo.pamela.annotations.Getter;
@@ -118,6 +119,23 @@ public interface JavaImportDeclaration extends FMLPrettyPrintable {
 		@Override
 		public String toString() {
 			return "JavaImportDeclaration(" + getFullQualifiedClassName() + ")";
+		}
+
+		@Override
+		public String getURI() {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public String getFMLRepresentation(FMLRepresentationContext context) {
+			return "<not_implemented:" + getStringRepresentation() + ">";
+		}
+
+		@Override
+		public BindingModel getBindingModel() {
+			// TODO Auto-generated method stub
+			return null;
 		}
 	}
 }
