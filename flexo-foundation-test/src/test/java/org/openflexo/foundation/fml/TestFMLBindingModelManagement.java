@@ -327,9 +327,9 @@ public class TestFMLBindingModelManagement extends OpenflexoProjectAtRunTimeTest
 		assertNotNull(flexoConceptA.getBindingModel().bindingVariableNamed("aStringInA"));
 		assertEquals(String.class, flexoConceptA.getBindingModel().bindingVariableNamed("aStringInA").getType());
 		assertNotNull(flexoConceptA.getBindingModel().bindingVariableNamed("aBooleanInA"));
-		assertEquals(Boolean.class, flexoConceptA.getBindingModel().bindingVariableNamed("aBooleanInA").getType());
+		assertEquals(Boolean.TYPE, flexoConceptA.getBindingModel().bindingVariableNamed("aBooleanInA").getType());
 		assertNotNull(flexoConceptA.getBindingModel().bindingVariableNamed("anIntegerInA"));
-		assertEquals(Integer.class, flexoConceptA.getBindingModel().bindingVariableNamed("anIntegerInA").getType());
+		assertEquals(Integer.TYPE, flexoConceptA.getBindingModel().bindingVariableNamed("anIntegerInA").getType());
 
 		PrimitiveRole<?> aStringInA = (PrimitiveRole<?>) flexoConceptA.getAccessibleProperty("aStringInA");
 		assertNotNull(aStringInA);
@@ -370,7 +370,7 @@ public class TestFMLBindingModelManagement extends OpenflexoProjectAtRunTimeTest
 		}
 
 		assertNotNull(flexoConceptA.getBindingModel().bindingVariableNamed("aRenamedStringInA"));
-		assertEquals(Float.class, flexoConceptA.getBindingModel().bindingVariableNamed("aRenamedStringInA").getType());
+		assertEquals(Float.TYPE, flexoConceptA.getBindingModel().bindingVariableNamed("aRenamedStringInA").getType());
 
 		// Back to initial values
 		aStringInA.setName("aStringInA");
@@ -515,9 +515,9 @@ public class TestFMLBindingModelManagement extends OpenflexoProjectAtRunTimeTest
 		assertNotNull(flexoConceptC.getBindingModel().bindingVariableNamed("aStringInA"));
 		assertEquals(String.class, flexoConceptC.getBindingModel().bindingVariableNamed("aStringInA").getType());
 		assertNotNull(flexoConceptC.getBindingModel().bindingVariableNamed("aBooleanInA"));
-		assertEquals(Boolean.class, flexoConceptC.getBindingModel().bindingVariableNamed("aBooleanInA").getType());
+		assertEquals(Boolean.TYPE, flexoConceptC.getBindingModel().bindingVariableNamed("aBooleanInA").getType());
 		assertNotNull(flexoConceptC.getBindingModel().bindingVariableNamed("anIntegerInA"));
-		assertEquals(Integer.class, flexoConceptC.getBindingModel().bindingVariableNamed("anIntegerInA").getType());
+		assertEquals(Integer.TYPE, flexoConceptC.getBindingModel().bindingVariableNamed("anIntegerInA").getType());
 		assertNotNull(flexoConceptC.getBindingModel().bindingVariableNamed("aRenamedStringInB"));
 		assertEquals(String.class, flexoConceptC.getBindingModel().bindingVariableNamed("aRenamedStringInB").getType());
 		assertNotNull(flexoConceptC.getBindingModel().bindingVariableNamed("anOtherStringInB"));
@@ -569,9 +569,9 @@ public class TestFMLBindingModelManagement extends OpenflexoProjectAtRunTimeTest
 		assertNotNull(flexoConceptD.getBindingModel().bindingVariableNamed("aStringInA"));
 		assertEquals(String.class, flexoConceptD.getBindingModel().bindingVariableNamed("aStringInA").getType());
 		assertNotNull(flexoConceptD.getBindingModel().bindingVariableNamed("aBooleanInA"));
-		assertEquals(Boolean.class, flexoConceptD.getBindingModel().bindingVariableNamed("aBooleanInA").getType());
+		assertEquals(Boolean.TYPE, flexoConceptD.getBindingModel().bindingVariableNamed("aBooleanInA").getType());
 		assertNotNull(flexoConceptD.getBindingModel().bindingVariableNamed("anIntegerInA"));
-		assertEquals(Integer.class, flexoConceptD.getBindingModel().bindingVariableNamed("anIntegerInA").getType());
+		assertEquals(Integer.TYPE, flexoConceptD.getBindingModel().bindingVariableNamed("anIntegerInA").getType());
 		assertNotNull(flexoConceptD.getBindingModel().bindingVariableNamed("aRenamedStringInB"));
 		assertEquals(String.class, flexoConceptD.getBindingModel().bindingVariableNamed("aRenamedStringInB").getType());
 		assertNotNull(flexoConceptD.getBindingModel().bindingVariableNamed("anOtherStringInB"));
@@ -588,7 +588,7 @@ public class TestFMLBindingModelManagement extends OpenflexoProjectAtRunTimeTest
 		// Check that this property is visible in FlexoConceptD
 		assertEquals(9, flexoConceptD.getBindingModel().getBindingVariablesCount());
 		assertNotNull(flexoConceptD.getBindingModel().bindingVariableNamed("anOtherBooleanInA"));
-		assertEquals(Boolean.class, flexoConceptD.getBindingModel().bindingVariableNamed("anOtherBooleanInA").getType());
+		assertEquals(Boolean.TYPE, flexoConceptD.getBindingModel().bindingVariableNamed("anOtherBooleanInA").getType());
 
 		((VirtualModelResource) virtualModel1.getResource()).save();
 		System.out.println("Saved: " + ((VirtualModelResource) virtualModel1.getResource()).getIODelegate().toString());
@@ -766,11 +766,11 @@ public class TestFMLBindingModelManagement extends OpenflexoProjectAtRunTimeTest
 		assertNotNull(creationScheme.getBindingModel().bindingVariableNamed("aStringInA"));
 		assertEquals(String.class, creationScheme.getBindingModel().bindingVariableNamed("aStringInA").getType());
 		assertNotNull(creationScheme.getBindingModel().bindingVariableNamed("aBooleanInA"));
-		assertEquals(Boolean.class, creationScheme.getBindingModel().bindingVariableNamed("aBooleanInA").getType());
+		assertEquals(Boolean.TYPE, creationScheme.getBindingModel().bindingVariableNamed("aBooleanInA").getType());
 		assertNotNull(creationScheme.getBindingModel().bindingVariableNamed("anIntegerInA"));
-		assertEquals(Integer.class, creationScheme.getBindingModel().bindingVariableNamed("anIntegerInA").getType());
+		assertEquals(Integer.TYPE, creationScheme.getBindingModel().bindingVariableNamed("anIntegerInA").getType());
 		assertNotNull(creationScheme.getBindingModel().bindingVariableNamed("anOtherBooleanInA"));
-		assertEquals(Boolean.class, creationScheme.getBindingModel().bindingVariableNamed("anOtherBooleanInA").getType());
+		assertEquals(Boolean.TYPE, creationScheme.getBindingModel().bindingVariableNamed("anOtherBooleanInA").getType());
 
 	}
 
@@ -825,11 +825,11 @@ public class TestFMLBindingModelManagement extends OpenflexoProjectAtRunTimeTest
 		assertNotNull(actionScheme.getBindingModel().bindingVariableNamed("aStringInA"));
 		assertEquals(String.class, actionScheme.getBindingModel().bindingVariableNamed("aStringInA").getType());
 		assertNotNull(actionScheme.getBindingModel().bindingVariableNamed("aBooleanInA"));
-		assertEquals(Boolean.class, actionScheme.getBindingModel().bindingVariableNamed("aBooleanInA").getType());
+		assertEquals(Boolean.TYPE, actionScheme.getBindingModel().bindingVariableNamed("aBooleanInA").getType());
 		assertNotNull(actionScheme.getBindingModel().bindingVariableNamed("anIntegerInA"));
-		assertEquals(Integer.class, actionScheme.getBindingModel().bindingVariableNamed("anIntegerInA").getType());
+		assertEquals(Integer.TYPE, actionScheme.getBindingModel().bindingVariableNamed("anIntegerInA").getType());
 		assertNotNull(actionScheme.getBindingModel().bindingVariableNamed("anOtherBooleanInA"));
-		assertEquals(Boolean.class, actionScheme.getBindingModel().bindingVariableNamed("anOtherBooleanInA").getType());
+		assertEquals(Boolean.TYPE, actionScheme.getBindingModel().bindingVariableNamed("anOtherBooleanInA").getType());
 		assertNotNull(actionScheme.getBindingModel().bindingVariableNamed(FlexoBehaviourBindingModel.PARAMETERS_PROPERTY));
 
 		CreateEditionAction createConditionAction1 = CreateEditionAction.actionType.makeNewAction(actionScheme.getControlGraph(), null,
@@ -1009,11 +1009,11 @@ public class TestFMLBindingModelManagement extends OpenflexoProjectAtRunTimeTest
 		assertNotNull(conditional2.getBindingModel().bindingVariableNamed("aStringInA"));
 		assertEquals(String.class, conditional2.getBindingModel().bindingVariableNamed("aStringInA").getType());
 		assertNotNull(conditional2.getBindingModel().bindingVariableNamed("aBooleanInA"));
-		assertEquals(Boolean.class, conditional2.getBindingModel().bindingVariableNamed("aBooleanInA").getType());
+		assertEquals(Boolean.TYPE, conditional2.getBindingModel().bindingVariableNamed("aBooleanInA").getType());
 		assertNotNull(conditional2.getBindingModel().bindingVariableNamed("anIntegerInA"));
-		assertEquals(Integer.class, conditional2.getBindingModel().bindingVariableNamed("anIntegerInA").getType());
+		assertEquals(Integer.TYPE, conditional2.getBindingModel().bindingVariableNamed("anIntegerInA").getType());
 		assertNotNull(conditional2.getBindingModel().bindingVariableNamed("anOtherBooleanInA"));
-		assertEquals(Boolean.class, conditional2.getBindingModel().bindingVariableNamed("anOtherBooleanInA").getType());
+		assertEquals(Boolean.TYPE, conditional2.getBindingModel().bindingVariableNamed("anOtherBooleanInA").getType());
 		assertNotNull(conditional2.getBindingModel().bindingVariableNamed(FlexoBehaviourBindingModel.PARAMETERS_PROPERTY));
 
 		// conditional2.removeFromActions(declareFlexoRoleInIteration2);
@@ -1066,11 +1066,11 @@ public class TestFMLBindingModelManagement extends OpenflexoProjectAtRunTimeTest
 		assertNotNull(actionScheme.getBindingModel().bindingVariableNamed("aStringInA"));
 		assertEquals(String.class, actionScheme.getBindingModel().bindingVariableNamed("aStringInA").getType());
 		assertNotNull(actionScheme.getBindingModel().bindingVariableNamed("aBooleanInA"));
-		assertEquals(Boolean.class, actionScheme.getBindingModel().bindingVariableNamed("aBooleanInA").getType());
+		assertEquals(Boolean.TYPE, actionScheme.getBindingModel().bindingVariableNamed("aBooleanInA").getType());
 		assertNotNull(actionScheme.getBindingModel().bindingVariableNamed("anIntegerInA"));
-		assertEquals(Integer.class, actionScheme.getBindingModel().bindingVariableNamed("anIntegerInA").getType());
+		assertEquals(Integer.TYPE, actionScheme.getBindingModel().bindingVariableNamed("anIntegerInA").getType());
 		assertNotNull(actionScheme.getBindingModel().bindingVariableNamed("anOtherBooleanInA"));
-		assertEquals(Boolean.class, actionScheme.getBindingModel().bindingVariableNamed("anOtherBooleanInA").getType());
+		assertEquals(Boolean.TYPE, actionScheme.getBindingModel().bindingVariableNamed("anOtherBooleanInA").getType());
 		assertNotNull(actionScheme.getBindingModel().bindingVariableNamed(FlexoBehaviourBindingModel.PARAMETERS_PROPERTY));
 
 		CreateEditionAction createSelectFlexoConceptInstanceAction = CreateEditionAction.actionType
@@ -1152,11 +1152,11 @@ public class TestFMLBindingModelManagement extends OpenflexoProjectAtRunTimeTest
 		assertNotNull(actionScheme.getBindingModel().bindingVariableNamed("aStringInA"));
 		assertEquals(String.class, actionScheme.getBindingModel().bindingVariableNamed("aStringInA").getType());
 		assertNotNull(actionScheme.getBindingModel().bindingVariableNamed("aBooleanInA"));
-		assertEquals(Boolean.class, actionScheme.getBindingModel().bindingVariableNamed("aBooleanInA").getType());
+		assertEquals(Boolean.TYPE, actionScheme.getBindingModel().bindingVariableNamed("aBooleanInA").getType());
 		assertNotNull(actionScheme.getBindingModel().bindingVariableNamed("anIntegerInA"));
-		assertEquals(Integer.class, actionScheme.getBindingModel().bindingVariableNamed("anIntegerInA").getType());
+		assertEquals(Integer.TYPE, actionScheme.getBindingModel().bindingVariableNamed("anIntegerInA").getType());
 		assertNotNull(actionScheme.getBindingModel().bindingVariableNamed("anOtherBooleanInA"));
-		assertEquals(Boolean.class, actionScheme.getBindingModel().bindingVariableNamed("anOtherBooleanInA").getType());
+		assertEquals(Boolean.TYPE, actionScheme.getBindingModel().bindingVariableNamed("anOtherBooleanInA").getType());
 		assertNotNull(actionScheme.getBindingModel().bindingVariableNamed(FlexoBehaviourBindingModel.PARAMETERS_PROPERTY));
 
 		CreateEditionAction createIterationAction = CreateEditionAction.actionType.makeNewAction(actionScheme.getControlGraph(), null,
@@ -1293,11 +1293,11 @@ public class TestFMLBindingModelManagement extends OpenflexoProjectAtRunTimeTest
 		assertNotNull(actionScheme.getBindingModel().bindingVariableNamed("aStringInA"));
 		assertEquals(String.class, actionScheme.getBindingModel().bindingVariableNamed("aStringInA").getType());
 		assertNotNull(actionScheme.getBindingModel().bindingVariableNamed("aBooleanInA"));
-		assertEquals(Boolean.class, actionScheme.getBindingModel().bindingVariableNamed("aBooleanInA").getType());
+		assertEquals(Boolean.TYPE, actionScheme.getBindingModel().bindingVariableNamed("aBooleanInA").getType());
 		assertNotNull(actionScheme.getBindingModel().bindingVariableNamed("anIntegerInA"));
-		assertEquals(Integer.class, actionScheme.getBindingModel().bindingVariableNamed("anIntegerInA").getType());
+		assertEquals(Integer.TYPE, actionScheme.getBindingModel().bindingVariableNamed("anIntegerInA").getType());
 		assertNotNull(actionScheme.getBindingModel().bindingVariableNamed("anOtherBooleanInA"));
-		assertEquals(Boolean.class, actionScheme.getBindingModel().bindingVariableNamed("anOtherBooleanInA").getType());
+		assertEquals(Boolean.TYPE, actionScheme.getBindingModel().bindingVariableNamed("anOtherBooleanInA").getType());
 		assertNotNull(actionScheme.getBindingModel().bindingVariableNamed(FlexoBehaviourBindingModel.PARAMETERS_PROPERTY));
 
 		CreateEditionAction createSelectFetchRequestIterationAction = CreateEditionAction.actionType
@@ -1501,11 +1501,11 @@ public class TestFMLBindingModelManagement extends OpenflexoProjectAtRunTimeTest
 		assertNotNull(flexoConceptA.getInspector().getBindingModel().bindingVariableNamed("aStringInA"));
 		assertEquals(String.class, flexoConceptA.getInspector().getBindingModel().bindingVariableNamed("aStringInA").getType());
 		assertNotNull(flexoConceptA.getInspector().getBindingModel().bindingVariableNamed("aBooleanInA"));
-		assertEquals(Boolean.class, flexoConceptA.getInspector().getBindingModel().bindingVariableNamed("aBooleanInA").getType());
+		assertEquals(Boolean.TYPE, flexoConceptA.getInspector().getBindingModel().bindingVariableNamed("aBooleanInA").getType());
 		assertNotNull(flexoConceptA.getInspector().getBindingModel().bindingVariableNamed("anIntegerInA"));
-		assertEquals(Integer.class, flexoConceptA.getInspector().getBindingModel().bindingVariableNamed("anIntegerInA").getType());
+		assertEquals(Integer.TYPE, flexoConceptA.getInspector().getBindingModel().bindingVariableNamed("anIntegerInA").getType());
 		assertNotNull(flexoConceptA.getInspector().getBindingModel().bindingVariableNamed("anOtherBooleanInA"));
-		assertEquals(Boolean.class, flexoConceptA.getInspector().getBindingModel().bindingVariableNamed("anOtherBooleanInA").getType());
+		assertEquals(Boolean.TYPE, flexoConceptA.getInspector().getBindingModel().bindingVariableNamed("anOtherBooleanInA").getType());
 	}
 
 	@Test
@@ -1524,13 +1524,13 @@ public class TestFMLBindingModelManagement extends OpenflexoProjectAtRunTimeTest
 		assertEquals(String.class,
 				flexoConceptA.getInspector().getFormatter().getBindingModel().bindingVariableNamed("aStringInA").getType());
 		assertNotNull(flexoConceptA.getInspector().getFormatter().getBindingModel().bindingVariableNamed("aBooleanInA"));
-		assertEquals(Boolean.class,
+		assertEquals(Boolean.TYPE,
 				flexoConceptA.getInspector().getFormatter().getBindingModel().bindingVariableNamed("aBooleanInA").getType());
 		assertNotNull(flexoConceptA.getInspector().getFormatter().getBindingModel().bindingVariableNamed("anIntegerInA"));
-		assertEquals(Integer.class,
+		assertEquals(Integer.TYPE,
 				flexoConceptA.getInspector().getFormatter().getBindingModel().bindingVariableNamed("anIntegerInA").getType());
 		assertNotNull(flexoConceptA.getInspector().getFormatter().getBindingModel().bindingVariableNamed("anOtherBooleanInA"));
-		assertEquals(Boolean.class,
+		assertEquals(Boolean.TYPE,
 				flexoConceptA.getInspector().getFormatter().getBindingModel().bindingVariableNamed("anOtherBooleanInA").getType());
 		assertNotNull(flexoConceptA.getInspector().getFormatter().getBindingModel()
 				.bindingVariableNamed(FlexoConceptInspector.FORMATTER_INSTANCE_PROPERTY));
@@ -1725,15 +1725,15 @@ public class TestFMLBindingModelManagement extends OpenflexoProjectAtRunTimeTest
 		checkBindingVariableAccess("aStringInA", flexoConceptA, fci, "foo");
 
 		assertNotNull(flexoConceptA.getBindingModel().bindingVariableNamed("aBooleanInA"));
-		assertEquals(Boolean.class, flexoConceptA.getBindingModel().bindingVariableNamed("aBooleanInA").getType());
+		assertEquals(Boolean.TYPE, flexoConceptA.getBindingModel().bindingVariableNamed("aBooleanInA").getType());
 		checkBindingVariableAccess("aBooleanInA", flexoConceptA, fci, true);
 
 		assertNotNull(flexoConceptA.getBindingModel().bindingVariableNamed("anIntegerInA"));
-		assertEquals(Integer.class, flexoConceptA.getBindingModel().bindingVariableNamed("anIntegerInA").getType());
-		checkBindingVariableAccess("anIntegerInA", flexoConceptA, fci, 8);
+		assertEquals(Integer.TYPE, flexoConceptA.getBindingModel().bindingVariableNamed("anIntegerInA").getType());
+		checkBindingVariableAccess("anIntegerInA", flexoConceptA, fci, 8L);
 
 		assertNotNull(flexoConceptA.getBindingModel().bindingVariableNamed("anOtherBooleanInA"));
-		assertEquals(Boolean.class, flexoConceptA.getBindingModel().bindingVariableNamed("anOtherBooleanInA").getType());
+		assertEquals(Boolean.TYPE, flexoConceptA.getBindingModel().bindingVariableNamed("anOtherBooleanInA").getType());
 		checkBindingVariableAccess("anOtherBooleanInA", flexoConceptA, fci, false);
 
 		checkBinding("this", flexoConceptA, fci, fci);
@@ -1791,15 +1791,15 @@ public class TestFMLBindingModelManagement extends OpenflexoProjectAtRunTimeTest
 		checkBindingVariableAccess("aStringInA", actionScheme, actionSchemeCreationAction, "foo");
 
 		assertNotNull(actionScheme.getBindingModel().bindingVariableNamed("aBooleanInA"));
-		assertEquals(Boolean.class, actionScheme.getBindingModel().bindingVariableNamed("aBooleanInA").getType());
+		assertEquals(Boolean.TYPE, actionScheme.getBindingModel().bindingVariableNamed("aBooleanInA").getType());
 		checkBindingVariableAccess("aBooleanInA", actionScheme, actionSchemeCreationAction, true);
 
 		assertNotNull(actionScheme.getBindingModel().bindingVariableNamed("anIntegerInA"));
-		assertEquals(Integer.class, actionScheme.getBindingModel().bindingVariableNamed("anIntegerInA").getType());
-		checkBindingVariableAccess("anIntegerInA", actionScheme, actionSchemeCreationAction, 12);
+		assertEquals(Integer.TYPE, actionScheme.getBindingModel().bindingVariableNamed("anIntegerInA").getType());
+		checkBindingVariableAccess("anIntegerInA", actionScheme, actionSchemeCreationAction, 12L);
 
 		assertNotNull(actionScheme.getBindingModel().bindingVariableNamed("anOtherBooleanInA"));
-		assertEquals(Boolean.class, actionScheme.getBindingModel().bindingVariableNamed("anOtherBooleanInA").getType());
+		assertEquals(Boolean.TYPE, actionScheme.getBindingModel().bindingVariableNamed("anOtherBooleanInA").getType());
 		checkBindingVariableAccess("anOtherBooleanInA", actionScheme, actionSchemeCreationAction, true);
 
 		assertNotNull(actionScheme.getBindingModel().bindingVariableNamed(FlexoBehaviourBindingModel.PARAMETERS_PROPERTY));

@@ -234,12 +234,12 @@ public class TestDeleteFlexoConceptObjects extends OpenflexoProjectAtRunTimeTest
 		assertEquals(String.class, aStringInA.getResultingType());
 		someBooleanInA = (PrimitiveRole<Boolean>) flexoConcept1.getAccessibleProperty("someBooleanInA");
 		assertNotNull(someBooleanInA);
-		assertEquals(Boolean.class, someBooleanInA.getType());
-		assertEquals(new ParameterizedTypeImpl(List.class, Boolean.class), someBooleanInA.getResultingType());
+		assertEquals(Boolean.TYPE, someBooleanInA.getType());
+		assertEquals(new ParameterizedTypeImpl(List.class, Boolean.TYPE), someBooleanInA.getResultingType());
 		someIntegerInA = (PrimitiveRole<Integer>) flexoConcept1.getAccessibleProperty("someIntegerInA");
 		assertNotNull(someIntegerInA);
-		assertEquals(Integer.class, someIntegerInA.getType());
-		assertEquals(new ParameterizedTypeImpl(List.class, Integer.class), someIntegerInA.getResultingType());
+		assertEquals(Integer.TYPE, someIntegerInA.getType());
+		assertEquals(new ParameterizedTypeImpl(List.class, Integer.TYPE), someIntegerInA.getResultingType());
 		someFlexoConcept2 = (FlexoConceptInstanceRole) flexoConcept1.getAccessibleProperty("someFlexoConcept2");
 		assertNotNull(someFlexoConcept2);
 
