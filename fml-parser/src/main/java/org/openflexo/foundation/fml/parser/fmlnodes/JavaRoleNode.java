@@ -65,7 +65,7 @@ public class JavaRoleNode extends FlexoPropertyNode<AJavaBasicRoleDeclaration, J
 	}
 
 	@Override
-	public JavaRole<?> buildFMLObjectFromAST(AJavaBasicRoleDeclaration astNode) {
+	public JavaRole<?> buildModelObjectFromAST(AJavaBasicRoleDeclaration astNode) {
 		JavaRole<?> returned = getFactory().newJavaRole();
 		returned.setVisibility(getVisibility(astNode.getVisibility()));
 		returned.setName(getName(astNode.getVariableDeclarator()).getText());
@@ -77,20 +77,20 @@ public class JavaRoleNode extends FlexoPropertyNode<AJavaBasicRoleDeclaration, J
 	public void preparePrettyPrint(boolean hasParsedVersion) {
 		super.preparePrettyPrint(hasParsedVersion);
 		if (hasParsedVersion && getVisibilityFragment() != null) {
-			appendDynamicContents(() -> getVisibilityAsString(getFMLObject().getVisibility()), SPACE, getVisibilityFragment());
+			appendDynamicContents(() -> getVisibilityAsString(getModelObject().getVisibility()), SPACE, getVisibilityFragment());
 		}
 		else {
-			appendDynamicContents(() -> getVisibilityAsString(getFMLObject().getVisibility()), SPACE);
+			appendDynamicContents(() -> getVisibilityAsString(getModelObject().getVisibility()), SPACE);
 		}
 		if (hasParsedVersion) {
-			appendDynamicContents(() -> serializeType(getFMLObject().getType()), SPACE, getTypeFragment());
-			appendDynamicContents(() -> getFMLObject().getName(), getNameFragment());
+			appendDynamicContents(() -> serializeType(getModelObject().getType()), SPACE, getTypeFragment());
+			appendDynamicContents(() -> getModelObject().getName(), getNameFragment());
 			appendStaticContents(";", getSemiFragment());
 		}
 		else {
-			appendDynamicContents(() -> getVisibilityAsString(getFMLObject().getVisibility()), SPACE);
-			appendDynamicContents(() -> serializeType(getFMLObject().getType()), SPACE);
-			appendDynamicContents(() -> getFMLObject().getName());
+			appendDynamicContents(() -> getVisibilityAsString(getModelObject().getVisibility()), SPACE);
+			appendDynamicContents(() -> serializeType(getModelObject().getType()), SPACE);
+			appendDynamicContents(() -> getModelObject().getName());
 			appendStaticContents(";");
 		}
 	}

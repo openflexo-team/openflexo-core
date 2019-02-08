@@ -93,16 +93,16 @@ public abstract class FMLObjectNode<N extends Node, T extends FMLPrettyPrintable
 		super(null, astNode);
 		this.analyser = analyser;
 
-		fmlObject = buildFMLObjectFromAST(astNode);
-		fmlObject.setPrettyPrintDelegate(this);
-		fmlObject.initializeDeserialization(getFactory());
+		modelObject = buildModelObjectFromAST(astNode);
+		modelObject.setPrettyPrintDelegate(this);
+		modelObject.initializeDeserialization(getFactory());
 	}
 
 	public FMLObjectNode(T aFMLObject, FMLSemanticsAnalyzer analyser) {
 		super(aFMLObject, null);
 		this.analyser = analyser;
 
-		fmlObject.setPrettyPrintDelegate(this);
+		modelObject.setPrettyPrintDelegate(this);
 		preparePrettyPrint(false);
 	}
 

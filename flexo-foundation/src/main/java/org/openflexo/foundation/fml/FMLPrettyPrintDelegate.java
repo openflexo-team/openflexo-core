@@ -53,7 +53,7 @@ public interface FMLPrettyPrintDelegate<T extends FMLObject> {
 	 * 
 	 * @return
 	 */
-	public T getFMLObject();
+	public T getModelObject();
 
 	/**
 	 * Return normalized FML representation for that object

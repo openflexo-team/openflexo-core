@@ -61,7 +61,7 @@ public class FMLCompilationUnitNode extends FMLObjectNode<AFmlCompilationUnit, F
 	}
 
 	@Override
-	public FMLCompilationUnit buildFMLObjectFromAST(AFmlCompilationUnit astNode) {
+	public FMLCompilationUnit buildModelObjectFromAST(AFmlCompilationUnit astNode) {
 		return getFactory().newCompilationUnit();
 	}
 
@@ -75,8 +75,8 @@ public class FMLCompilationUnitNode extends FMLObjectNode<AFmlCompilationUnit, F
 
 		super.preparePrettyPrint(hasParsedVersion);
 
-		appendToChildrenPrettyPrintContents("", () -> getFMLObject().getJavaImports(), LINE_SEPARATOR, 0, JavaImportDeclaration.class);
-		appendToChildPrettyPrintContents(LINE_SEPARATOR, getFMLObject().getVirtualModel(), LINE_SEPARATOR, 0);
+		appendToChildrenPrettyPrintContents("", () -> getModelObject().getJavaImports(), LINE_SEPARATOR, 0, JavaImportDeclaration.class);
+		appendToChildPrettyPrintContents(LINE_SEPARATOR, getModelObject().getVirtualModel(), LINE_SEPARATOR, 0);
 	}
 
 	@Override

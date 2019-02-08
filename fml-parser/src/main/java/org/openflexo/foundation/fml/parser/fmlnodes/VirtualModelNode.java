@@ -62,7 +62,7 @@ public class VirtualModelNode extends FMLObjectNode<AModelDeclaration, VirtualMo
 	}
 
 	@Override
-	public VirtualModel buildFMLObjectFromAST(AModelDeclaration astNode) {
+	public VirtualModel buildModelObjectFromAST(AModelDeclaration astNode) {
 		VirtualModel returned = getFactory().newVirtualModel();
 		returned.setName(astNode.getIdentifier().getText());
 		returned.setVisibility(getVisibility(astNode.getVisibility()));
@@ -72,7 +72,7 @@ public class VirtualModelNode extends FMLObjectNode<AModelDeclaration, VirtualMo
 	@Override
 	public VirtualModelNode deserialize() {
 		if (getParent() instanceof FMLCompilationUnitNode) {
-			((FMLCompilationUnitNode) getParent()).getFMLObject().setVirtualModel(getFMLObject());
+			((FMLCompilationUnitNode) getParent()).getModelObject().setVirtualModel(getModelObject());
 		}
 		return this;
 	}
@@ -83,26 +83,27 @@ public class VirtualModelNode extends FMLObjectNode<AModelDeclaration, VirtualMo
 		super.preparePrettyPrint(hasParsedVersion);
 
 		if (hasParsedVersion && getVisibilityFragment() != null) {
-			appendDynamicContents(() -> getVisibilityAsString(getFMLObject().getVisibility()), SPACE, getVisibilityFragment());
+			appendDynamicContents(() -> getVisibilityAsString(getModelObject().getVisibility()), SPACE, getVisibilityFragment());
 		}
 		else {
-			appendDynamicContents(() -> getVisibilityAsString(getFMLObject().getVisibility()), SPACE);
+			appendDynamicContents(() -> getVisibilityAsString(getModelObject().getVisibility()), SPACE);
 		}
 
 		if (hasParsedVersion) {
 			appendStaticContents("model", SPACE, getModelFragment());
-			appendDynamicContents(() -> getFMLObject().getName(), getNameFragment());
+			appendDynamicContents(() -> getModelObject().getName(), getNameFragment());
 			appendStaticContents(SPACE, "{", LINE_SEPARATOR, getLBrcFragment());
 		}
 		else {
 			appendStaticContents("model" + SPACE);
-			appendDynamicContents(() -> getFMLObject().getName());
+			appendDynamicContents(() -> getModelObject().getName());
 			appendStaticContents(SPACE, "{", LINE_SEPARATOR);
 		}
-		appendToChildrenPrettyPrintContents("", () -> getFMLObject().getFlexoProperties(), LINE_SEPARATOR, 1, FlexoProperty.class);
-		appendToChildrenPrettyPrintContents(LINE_SEPARATOR, () -> getFMLObject().getFlexoBehaviours(), LINE_SEPARATOR, 1,
+		appendToChildrenPrettyPrintContents("", () -> getModelObject().getFlexoProperties(), LINE_SEPARATOR, 1, FlexoProperty.class);
+		appendToChildrenPrettyPrintContents(LINE_SEPARATOR, () -> getModelObject().getFlexoBehaviours(), LINE_SEPARATOR, 1,
 				FlexoBehaviour.class);
-		appendToChildrenPrettyPrintContents(LINE_SEPARATOR, () -> getFMLObject().getFlexoConcepts(), LINE_SEPARATOR, 1, FlexoConcept.class);
+		appendToChildrenPrettyPrintContents(LINE_SEPARATOR, () -> getModelObject().getFlexoConcepts(), LINE_SEPARATOR, 1,
+				FlexoConcept.class);
 
 		if (getASTNode() != null) {
 			appendStaticContents("}", LINE_SEPARATOR, getRBrcFragment());

@@ -64,7 +64,7 @@ public abstract class CompilationUnitSemanticsAnalyzer extends FMLCoreSemanticsA
 	}
 
 	public FMLCompilationUnit getCompilationUnit() {
-		return compilationUnitNode.getFMLObject();
+		return compilationUnitNode.getModelObject();
 	}
 
 	public FMLCompilationUnitNode getCompilationUnitNode() {
@@ -98,8 +98,8 @@ public abstract class CompilationUnitSemanticsAnalyzer extends FMLCoreSemanticsA
 	public void outAJavaImportImportDeclaration(AJavaImportImportDeclaration node) {
 		super.outAJavaImportImportDeclaration(node);
 		JavaImportNode returned = pop();
-		System.out.println("Je cree un import depuis " + returned.getLastParsedFragment() + " which is ["
-				+ returned.getLastParsedFragment().getRawText() + "]");
+		// System.out.println("Je cree un import depuis " + returned.getLastParsedFragment() + " which is ["
+		// + returned.getLastParsedFragment().getRawText() + "]");
 
 	}
 

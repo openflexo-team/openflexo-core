@@ -61,7 +61,7 @@ public class FlexoConceptNode extends FMLObjectNode<AConceptDeclaration, FlexoCo
 	}
 
 	@Override
-	public FlexoConcept buildFMLObjectFromAST(AConceptDeclaration astNode) {
+	public FlexoConcept buildModelObjectFromAST(AConceptDeclaration astNode) {
 		FlexoConcept returned = getFactory().newFlexoConcept();
 		returned.setName(astNode.getIdentifier().getText());
 		returned.setVisibility(getVisibility(astNode.getVisibility()));
@@ -71,7 +71,7 @@ public class FlexoConceptNode extends FMLObjectNode<AConceptDeclaration, FlexoCo
 	@Override
 	public FlexoConceptNode deserialize() {
 		if (getParent() instanceof VirtualModelNode) {
-			((VirtualModelNode) getParent()).getFMLObject().addToFlexoConcepts(getFMLObject());
+			((VirtualModelNode) getParent()).getModelObject().addToFlexoConcepts(getModelObject());
 		}
 		return this;
 	}
@@ -82,26 +82,26 @@ public class FlexoConceptNode extends FMLObjectNode<AConceptDeclaration, FlexoCo
 		super.preparePrettyPrint(hasParsedVersion);
 
 		if (hasParsedVersion && getVisibilityFragment() != null) {
-			appendDynamicContents(() -> getVisibilityAsString(getFMLObject().getVisibility()), SPACE, getVisibilityFragment());
+			appendDynamicContents(() -> getVisibilityAsString(getModelObject().getVisibility()), SPACE, getVisibilityFragment());
 		}
 		else {
-			appendDynamicContents(() -> getVisibilityAsString(getFMLObject().getVisibility()), SPACE);
+			appendDynamicContents(() -> getVisibilityAsString(getModelObject().getVisibility()), SPACE);
 		}
 
 		if (hasParsedVersion) {
 			appendStaticContents("concept", SPACE, getConceptFragment());
-			appendDynamicContents(() -> getFMLObject().getName(), getNameFragment());
+			appendDynamicContents(() -> getModelObject().getName(), getNameFragment());
 			appendStaticContents(SPACE, "{", LINE_SEPARATOR, getLBrcFragment());
 		}
 		else {
 			appendStaticContents("model" + SPACE);
-			appendDynamicContents(() -> getFMLObject().getName());
+			appendDynamicContents(() -> getModelObject().getName());
 			appendStaticContents(SPACE, "{", LINE_SEPARATOR);
 		}
-		appendToChildrenPrettyPrintContents("", () -> getFMLObject().getFlexoProperties(), LINE_SEPARATOR, 1, FlexoProperty.class);
-		appendToChildrenPrettyPrintContents(LINE_SEPARATOR, () -> getFMLObject().getFlexoBehaviours(), LINE_SEPARATOR, 1,
+		appendToChildrenPrettyPrintContents("", () -> getModelObject().getFlexoProperties(), LINE_SEPARATOR, 1, FlexoProperty.class);
+		appendToChildrenPrettyPrintContents(LINE_SEPARATOR, () -> getModelObject().getFlexoBehaviours(), LINE_SEPARATOR, 1,
 				FlexoBehaviour.class);
-		appendToChildrenPrettyPrintContents(LINE_SEPARATOR, () -> getFMLObject().getChildFlexoConcepts(), LINE_SEPARATOR, 1,
+		appendToChildrenPrettyPrintContents(LINE_SEPARATOR, () -> getModelObject().getChildFlexoConcepts(), LINE_SEPARATOR, 1,
 				FlexoConcept.class);
 
 		if (getASTNode() != null) {

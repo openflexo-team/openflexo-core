@@ -58,8 +58,8 @@ public class NamedJavaImportNode extends AbstractJavaImportNode<ANamedJavaImport
 	}
 
 	@Override
-	public JavaImportDeclaration buildFMLObjectFromAST(ANamedJavaImportImportDeclaration astNode) {
-		JavaImportDeclaration returned = super.buildFMLObjectFromAST(astNode);
+	public JavaImportDeclaration buildModelObjectFromAST(ANamedJavaImportImportDeclaration astNode) {
+		JavaImportDeclaration returned = super.buildModelObjectFromAST(astNode);
 		returned.setFullQualifiedClassName(makeFullQualifiedIdentifier(astNode.getIdentifier(), astNode.getAdditionalIdentifiers()));
 		returned.setAbbrev(astNode.getName().getText());
 		return returned;
@@ -71,16 +71,16 @@ public class NamedJavaImportNode extends AbstractJavaImportNode<ANamedJavaImport
 
 		if (hasParsedVersion) {
 			appendStaticContents("import", SPACE, getImportFragment());
-			appendDynamicContents(() -> getFMLObject().getFullQualifiedClassName(), getFullQualifiedFragment());
+			appendDynamicContents(() -> getModelObject().getFullQualifiedClassName(), getFullQualifiedFragment());
 			appendStaticContents("as", SPACE, getAsFragment());
-			appendDynamicContents(() -> getFMLObject().getAbbrev(), getNameFragment());
+			appendDynamicContents(() -> getModelObject().getAbbrev(), getNameFragment());
 			appendStaticContents(";", getSemiFragment());
 		}
 		else {
 			appendStaticContents("import", SPACE);
-			appendDynamicContents(() -> getFMLObject().getFullQualifiedClassName());
+			appendDynamicContents(() -> getModelObject().getFullQualifiedClassName());
 			appendStaticContents("as", SPACE);
-			appendDynamicContents(() -> getFMLObject().getAbbrev());
+			appendDynamicContents(() -> getModelObject().getAbbrev());
 			appendStaticContents(";");
 		}
 	}

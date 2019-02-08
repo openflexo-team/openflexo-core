@@ -58,13 +58,13 @@ import org.openflexo.foundation.utils.FlexoObjectReference;
 import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.localization.LocalizedDelegate;
 import org.openflexo.pamela.annotations.CloningStrategy;
+import org.openflexo.pamela.annotations.CloningStrategy.StrategyType;
 import org.openflexo.pamela.annotations.Getter;
 import org.openflexo.pamela.annotations.ImplementationClass;
 import org.openflexo.pamela.annotations.ModelEntity;
 import org.openflexo.pamela.annotations.PropertyIdentifier;
 import org.openflexo.pamela.annotations.Setter;
 import org.openflexo.pamela.annotations.XMLAttribute;
-import org.openflexo.pamela.annotations.CloningStrategy.StrategyType;
 import org.openflexo.pamela.factory.AccessibleProxyObject;
 import org.openflexo.pamela.factory.CloneableProxyObject;
 import org.openflexo.pamela.factory.DeletableProxyObject;
@@ -99,7 +99,7 @@ public interface FlexoObject extends AccessibleProxyObject, DeletableProxyObject
 	public void setUserIdentifier(String userIdentifier);
 
 	@Getter(value = FLEXO_ID_KEY, defaultValue = "0")
-	@XMLAttribute
+	@XMLAttribute(ignoreForEquality = true)
 	// Here, we dont want to have the FlexoID duplicated (never a good idea for
 	// an ID !!!)
 	// We delegate here the computation of a new ID to the PamelaResource

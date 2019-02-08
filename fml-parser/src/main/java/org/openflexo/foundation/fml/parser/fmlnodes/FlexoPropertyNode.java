@@ -71,7 +71,7 @@ public abstract class FlexoPropertyNode<N extends Node, T extends FlexoProperty<
 	@Override
 	public FlexoPropertyNode<N, T> deserialize() {
 		if (getParent() instanceof VirtualModelNode) {
-			((VirtualModelNode) getParent()).getFMLObject().addToFlexoProperties(getFMLObject());
+			((VirtualModelNode) getParent()).getModelObject().addToFlexoProperties(getModelObject());
 		}
 		return this;
 	}

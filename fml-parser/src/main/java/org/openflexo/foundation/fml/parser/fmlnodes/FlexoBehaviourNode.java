@@ -58,7 +58,7 @@ public class FlexoBehaviourNode extends FMLObjectNode<AConceptDeclaration, Flexo
 	}
 
 	@Override
-	public FlexoConcept buildFMLObjectFromAST(AConceptDeclaration astNode) {
+	public FlexoConcept buildModelObjectFromAST(AConceptDeclaration astNode) {
 		FlexoConcept returned = getFactory().newFlexoConcept();
 		returned.setName(astNode.getIdentifier().getText());
 		return returned;
@@ -67,7 +67,7 @@ public class FlexoBehaviourNode extends FMLObjectNode<AConceptDeclaration, Flexo
 	@Override
 	public FlexoBehaviourNode deserialize() {
 		if (getParent() instanceof VirtualModelNode) {
-			((VirtualModelNode) getParent()).getFMLObject().addToFlexoConcepts(getFMLObject());
+			((VirtualModelNode) getParent()).getModelObject().addToFlexoConcepts(getModelObject());
 		}
 		return this;
 	}
