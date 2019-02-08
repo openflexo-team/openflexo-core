@@ -38,7 +38,7 @@
 
 package org.openflexo.foundation.fml;
 
-import org.openflexo.p2pp.PrettyPrintContext;
+import org.openflexo.p2pp.PrettyPrintDelegate;
 
 /**
  * A delegate providing pretty-print to an FMLObject.<br>
@@ -46,36 +46,6 @@ import org.openflexo.p2pp.PrettyPrintContext;
  * @author sylvain
  * 
  */
-public interface FMLPrettyPrintDelegate<T extends FMLObject> {
-
-	/**
-	 * Returned object beeing pretty-printed by this delegate
-	 * 
-	 * @return
-	 */
-	public T getModelObject();
-
-	/**
-	 * Return normalized FML representation for that object
-	 * 
-	 * @return
-	 */
-	public String getNormalizedFMLRepresentation(PrettyPrintContext context);
-
-	/**
-	 * Return FML representation for that object<br>
-	 * 
-	 * This representation might be different as the normalized one, as underlying FMLObject could be obtained from a parsed FML file. Some
-	 * pretty-print implementations may want to preserve original formatting and syntax (including comments)
-	 * 
-	 * @return
-	 */
-	public String getFMLRepresentation(PrettyPrintContext context);
-
-	/**
-	 * Build and return a new pretty-print context
-	 * 
-	 * @return
-	 */
-	public PrettyPrintContext makePrettyPrintContext();
+// TODO: Do we need to keep this interface?
+public interface FMLPrettyPrintDelegate<T extends FMLObject> extends PrettyPrintDelegate<T> {
 }

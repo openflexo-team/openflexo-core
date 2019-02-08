@@ -104,12 +104,12 @@ public class TestFMLPrettyPrint1 extends OpenflexoTestCase {
 
 	private void testNormalizedFMLRepresentationEquals(String resourceFile) {
 		testFileContentsEquals(compilationUnit.getPrettyPrintDelegate()
-				.getNormalizedFMLRepresentation(compilationUnit.getPrettyPrintDelegate().makePrettyPrintContext()), resourceFile);
+				.getNormalizedRepresentation(compilationUnit.getPrettyPrintDelegate().makePrettyPrintContext()), resourceFile);
 	}
 
 	private void testFMLPrettyPrintEquals(String resourceFile) {
 		testFileContentsEquals(compilationUnit.getPrettyPrintDelegate()
-				.getFMLRepresentation(compilationUnit.getPrettyPrintDelegate().makePrettyPrintContext()), resourceFile);
+				.getRepresentation(compilationUnit.getPrettyPrintDelegate().makePrettyPrintContext()), resourceFile);
 	}
 
 	private void testFileContentsEquals(String expected, String resourceFile) {

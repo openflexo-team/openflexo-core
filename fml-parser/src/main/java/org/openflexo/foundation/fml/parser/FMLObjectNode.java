@@ -163,12 +163,12 @@ public abstract class FMLObjectNode<N extends Node, T extends FMLPrettyPrintable
 	}
 
 	@Override
-	public String getFMLRepresentation(PrettyPrintContext context) {
+	public String getRepresentation(PrettyPrintContext context) {
 		return getTextualRepresentation(context);
 	}
 
 	@Override
-	public String getNormalizedFMLRepresentation(PrettyPrintContext context) {
+	public String getNormalizedRepresentation(PrettyPrintContext context) {
 		return getNormalizedTextualRepresentation(context);
 	}
 
