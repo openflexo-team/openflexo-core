@@ -95,11 +95,11 @@ public class TestFMLPrettyPrint2 extends OpenflexoTestCase {
 
 		System.out.println("Normalized:");
 		System.out.println(compilationUnit.getPrettyPrintDelegate()
-				.getNormalizedFMLRepresentation(compilationUnit.getPrettyPrintDelegate().makePrettyPrintContext()));
+				.getNormalizedRepresentation(compilationUnit.getPrettyPrintDelegate().makePrettyPrintContext()));
 
 		System.out.println("Current FML");
 		System.out.println(">>>>>>>>>>>>>>>>" + compilationUnit.getPrettyPrintDelegate()
-				.getFMLRepresentation(compilationUnit.getPrettyPrintDelegate().makePrettyPrintContext()) + "<<<<<<<<<<<<<<");
+				.getRepresentation(compilationUnit.getPrettyPrintDelegate().makePrettyPrintContext()) + "<<<<<<<<<<<<<<");
 	}
 
 	/*@Test
@@ -124,10 +124,10 @@ public class TestFMLPrettyPrint2 extends OpenflexoTestCase {
 
 		System.out.println("Normalized:");
 		System.out.println(compilationUnit.getPrettyPrintDelegate()
-				.getNormalizedFMLRepresentation(compilationUnit.getPrettyPrintDelegate().makePrettyPrintContext()));
+				.getNormalizedRepresentation(compilationUnit.getPrettyPrintDelegate().makePrettyPrintContext()));
 
 		System.out.println("Current FML");
 		System.out.println(">>>>>>>>>>>>>>>>" + compilationUnit.getPrettyPrintDelegate()
-				.getFMLRepresentation(compilationUnit.getPrettyPrintDelegate().makePrettyPrintContext()) + "<<<<<<<<<<<<<<");
+				.getRepresentation(compilationUnit.getPrettyPrintDelegate().makePrettyPrintContext()) + "<<<<<<<<<<<<<<");
 	}
 }

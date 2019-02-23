@@ -440,7 +440,7 @@ public interface FMLObject extends FlexoObject, Bindable, InnerResourceData/*<Vi
 		public String getFMLPrettyPrint() {
 			if (this instanceof FMLPrettyPrintable) {
 				FMLPrettyPrintDelegate<?> ppDelegate = ((FMLPrettyPrintable) this).getPrettyPrintDelegate();
-				return ppDelegate.getFMLRepresentation(ppDelegate.makePrettyPrintContext());
+				return ppDelegate.getRepresentation(ppDelegate.makePrettyPrintContext());
 			}
 			return getFMLRepresentation();
 		}
