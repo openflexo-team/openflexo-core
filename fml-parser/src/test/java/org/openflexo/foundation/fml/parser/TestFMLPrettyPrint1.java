@@ -106,9 +106,9 @@ public class TestFMLPrettyPrint1 extends OpenflexoTestCase {
 	}
 
 	private void testNormalizedFMLRepresentationEquals(String resourceFile) {
-		System.out.println("Normalized=");
-		System.out.println(compilationUnit.getPrettyPrintDelegate()
-				.getNormalizedFMLRepresentation(compilationUnit.getPrettyPrintDelegate().makePrettyPrintContext()));
+		// System.out.println("Normalized=");
+		// System.out.println(compilationUnit.getPrettyPrintDelegate()
+		// .getNormalizedRepresentation(compilationUnit.getPrettyPrintDelegate().makePrettyPrintContext()));
 		testFileContentsEquals(compilationUnit.getPrettyPrintDelegate()
 				.getNormalizedRepresentation(compilationUnit.getPrettyPrintDelegate().makePrettyPrintContext()), resourceFile);
 	}
