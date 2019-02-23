@@ -74,6 +74,7 @@ public abstract class CompilationUnitSemanticsAnalyzer extends FMLCoreSemanticsA
 	@Override
 	protected final void finalizeDeserialization() {
 		finalizeDeserialization(compilationUnitNode);
+		compilationUnitNode.initializePrettyPrint(compilationUnitNode, compilationUnitNode.makePrettyPrintContext());
 	}
 
 	@Override

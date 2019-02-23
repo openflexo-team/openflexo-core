@@ -65,6 +65,8 @@ import org.openflexo.foundation.fml.parser.fmlnodes.FlexoPropertyNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.JavaImportNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.VirtualModelNode;
 import org.openflexo.foundation.test.OpenflexoTestCase;
+import org.openflexo.p2pp.P2PPNode;
+import org.openflexo.p2pp.RawSource;
 import org.openflexo.pamela.exceptions.ModelDefinitionException;
 import org.openflexo.rm.FileResourceImpl;
 import org.openflexo.rm.Resource;
@@ -72,6 +74,7 @@ import org.openflexo.rm.ResourceLocator;
 import org.openflexo.test.OrderedRunner;
 import org.openflexo.test.TestOrder;
 import org.openflexo.toolbox.FileUtils;
+import org.openflexo.toolbox.StringUtils;
 
 /**
  * Parse a FML file, perform some edits and checks that pretty-print is correct
@@ -103,6 +106,9 @@ public class TestFMLPrettyPrint1 extends OpenflexoTestCase {
 	}
 
 	private void testNormalizedFMLRepresentationEquals(String resourceFile) {
+		System.out.println("Normalized=");
+		System.out.println(compilationUnit.getPrettyPrintDelegate()
+				.getNormalizedFMLRepresentation(compilationUnit.getPrettyPrintDelegate().makePrettyPrintContext()));
 		testFileContentsEquals(compilationUnit.getPrettyPrintDelegate()
 				.getNormalizedFMLRepresentation(compilationUnit.getPrettyPrintDelegate().makePrettyPrintContext()), resourceFile);
 	}
@@ -193,6 +199,14 @@ public class TestFMLPrettyPrint1 extends OpenflexoTestCase {
 	private static JavaImportNode listImportNode;
 	private static JavaImportNode dateImportNode;
 
+	private void debug(P2PPNode<?, ?> node, int indentLevel) {
+		System.out.println(StringUtils.buildWhiteSpaceIndentation(indentLevel * 2) + "> " + node.getClass().getSimpleName() + " "
+				+ node.getLastParsedFragment() + " prelude=" + node.getPrelude() + " postlude=" + node.getPostlude());
+		for (P2PPNode<?, ?> child : node.getChildren()) {
+			debug(child, indentLevel + 1);
+		}
+	}
+
 	@Test
 	@TestOrder(2)
 	public void loadInitialVersion() throws ParseException, ModelDefinitionException, IOException {
@@ -224,10 +238,25 @@ public class TestFMLPrettyPrint1 extends OpenflexoTestCase {
 		assertNotNull(iPropertyNode = (FlexoPropertyNode<?, ?>) vmNode.getObjectNode(iProperty));
 		assertNotNull(fooPropertyNode = (FlexoPropertyNode<?, ?>) vmNode.getObjectNode(fooProperty));
 
-		assertEquals("(5:0)-(6:0)", stringImportNode.getLastParsedFragment().toString());
-		assertEquals("(6:0)-(7:0)", listImportNode.getLastParsedFragment().toString());
-		assertEquals("(11:0)-(12:0)", iPropertyNode.getLastParsedFragment().toString());
-		assertEquals("(12:0)-(13:0)", fooPropertyNode.getLastParsedFragment().toString());
+		RawSource rawSource = rootNode.getRawSource();
+		System.out.println(rawSource.debug());
+		debug(rootNode, 0);
+
+		assertEquals("(5:0)-(5:24)", stringImportNode.getLastParsedFragment().toString());
+		assertEquals(null, stringImportNode.getPrelude());
+		assertEquals("(5:24)-(6:0)", stringImportNode.getPostlude().toString());
+
+		assertEquals("(6:0)-(6:22)", listImportNode.getLastParsedFragment().toString());
+		assertEquals(null, listImportNode.getPrelude());
+		assertEquals("(6:22)-(7:0)", listImportNode.getPostlude().toString());
+
+		assertEquals("(11:1)-(11:7)", iPropertyNode.getLastParsedFragment().toString());
+		assertEquals("(11:0)-(11:1)", iPropertyNode.getPrelude().toString());
+		assertEquals("(11:32)-(12:0)", iPropertyNode.getPostlude().toString());
+
+		assertEquals("(12:1)-(12:20)", fooPropertyNode.getLastParsedFragment().toString());
+		assertEquals("(12:0)-(12:1)", fooPropertyNode.getPrelude().toString());
+		assertEquals("(12:20)-(13:0)", fooPropertyNode.getPostlude().toString());
 
 	}
 
@@ -243,10 +272,21 @@ public class TestFMLPrettyPrint1 extends OpenflexoTestCase {
 		testNormalizedFMLRepresentationEquals("TestFMLPrettyPrint1/Step2Normalized.fml");
 		testFMLPrettyPrintEquals("TestFMLPrettyPrint1/Step2PrettyPrint.fml");
 
-		assertEquals("(5:0)-(6:0)", stringImportNode.getLastParsedFragment().toString());
-		assertEquals("(6:0)-(7:0)", listImportNode.getLastParsedFragment().toString());
-		assertEquals("(11:0)-(12:0)", iPropertyNode.getLastParsedFragment().toString());
-		assertEquals("(12:0)-(13:0)", fooPropertyNode.getLastParsedFragment().toString());
+		assertEquals("(5:0)-(5:24)", stringImportNode.getLastParsedFragment().toString());
+		assertEquals(null, stringImportNode.getPrelude());
+		assertEquals("(5:24)-(6:0)", stringImportNode.getPostlude().toString());
+
+		assertEquals("(6:0)-(6:22)", listImportNode.getLastParsedFragment().toString());
+		assertEquals(null, listImportNode.getPrelude());
+		assertEquals("(6:22)-(7:0)", listImportNode.getPostlude().toString());
+
+		assertEquals("(11:1)-(11:7)", iPropertyNode.getLastParsedFragment().toString());
+		assertEquals("(11:0)-(11:1)", iPropertyNode.getPrelude().toString());
+		assertEquals("(11:32)-(12:0)", iPropertyNode.getPostlude().toString());
+
+		assertEquals("(12:1)-(12:20)", fooPropertyNode.getLastParsedFragment().toString());
+		assertEquals("(12:0)-(12:1)", fooPropertyNode.getPrelude().toString());
+		assertEquals("(12:20)-(13:0)", fooPropertyNode.getPostlude().toString());
 
 	}
 
@@ -267,9 +307,15 @@ public class TestFMLPrettyPrint1 extends OpenflexoTestCase {
 		assertNotNull(stringProperty = virtualModel.getAccessibleProperty("newString"));
 		assertNotNull(stringPropertyNode = (FlexoPropertyNode<?, ?>) vmNode.getObjectNode(stringProperty));
 
-		assertEquals("(11:0)-(12:0)", iPropertyNode.getLastParsedFragment().toString());
-		assertEquals("(12:0)-(13:0)", fooPropertyNode.getLastParsedFragment().toString());
-		// assertEquals("(13:1)-(14:0)", stringPropertyNode.getLastParsedFragment().toString());
+		debug(rootNode, 0);
+
+		assertEquals("(11:1)-(11:7)", iPropertyNode.getLastParsedFragment().toString());
+		assertEquals("(11:0)-(11:1)", iPropertyNode.getPrelude().toString());
+		assertEquals("(11:32)-(12:0)", iPropertyNode.getPostlude().toString());
+
+		assertEquals("(12:1)-(12:20)", fooPropertyNode.getLastParsedFragment().toString());
+		assertEquals("(12:0)-(12:1)", fooPropertyNode.getPrelude().toString());
+		assertEquals("(12:20)-(13:0)", fooPropertyNode.getPostlude().toString());
 	}
 
 	@Test
@@ -300,8 +346,13 @@ public class TestFMLPrettyPrint1 extends OpenflexoTestCase {
 		fooProperty.delete();
 
 		System.out.println("FML=\n" + compilationUnit.getFMLPrettyPrint());
-		// testNormalizedFMLRepresentationEquals("TestFMLPrettyPrint1/Step5Normalized.fml");
-		// testFMLPrettyPrintEquals("TestFMLPrettyPrint1/Step5PrettyPrint.fml");
+
+		RawSource rawSource = rootNode.getRawSource();
+		System.out.println(rawSource.debug());
+		debug(rootNode, 0);
+
+		testNormalizedFMLRepresentationEquals("TestFMLPrettyPrint1/Step5Normalized.fml");
+		testFMLPrettyPrintEquals("TestFMLPrettyPrint1/Step5PrettyPrint.fml");
 
 	}
 
