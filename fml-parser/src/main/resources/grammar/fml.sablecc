@@ -471,6 +471,9 @@ Productions
         {post_increment}         post_increment_expression |
         {post_decrement}         post_decrement_expression |
         {method_invocation}      method_invocation |
+        {fml_action_expression}  fml_action_expression;
+
+	fml_action_expression =
         {java_instance_creation} class_instance_creation_expression |
         {fml_instance_creation}  concept_instance_creation_expression |
         {ta_edition_action}      technology_specific_edition_expression |
@@ -497,7 +500,7 @@ Productions
         {expression} delete l_par expression r_par from_clause? |
         {identifier} delete l_par identifier [additional_identifiers]:additional_identifier* r_par from_clause?;
 	
-    select_expression =
+    select_expression = 
     	select [concept_name]:identifier from_clause where_clause?;
 	
 	in_clause = 
@@ -788,11 +791,7 @@ Productions
         {identifier}             l_par identifier [additional_identifiers]:additional_identifier* r_par |
         {field}                  field_access |
         {method}                 method_invocation |
-        {java_instance_creation} class_instance_creation_expression |
-        {fml_instance_creation}  concept_instance_creation_expression |
-        {ta_edition_action}      technology_specific_edition_expression |
-        {delete_action}          delete_action_expression |
-        {select_action}          select_expression/*|
+        {fml_action_expression}  fml_action_expression /*|
         {array}      array_access*/;
 
     field_access =

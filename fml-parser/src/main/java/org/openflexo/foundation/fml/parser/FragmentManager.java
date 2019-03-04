@@ -43,6 +43,7 @@ import java.util.Collection;
 import org.openflexo.foundation.fml.parser.analysis.DepthFirstAdapter;
 import org.openflexo.foundation.fml.parser.node.Node;
 import org.openflexo.foundation.fml.parser.node.Token;
+import org.openflexo.p2pp.FragmentRetriever;
 import org.openflexo.p2pp.RawSource;
 import org.openflexo.p2pp.RawSource.RawSourceFragment;
 import org.openflexo.p2pp.RawSource.RawSourcePosition;
@@ -53,7 +54,7 @@ import org.openflexo.p2pp.RawSource.RawSourcePosition;
  * @author sylvain
  * 
  */
-public class FragmentManager extends DepthFirstAdapter {
+public class FragmentManager extends DepthFirstAdapter implements FragmentRetriever<Node> {
 
 	// Raw source as when this analyzer was last parsed
 	private RawSource rawSource;
@@ -69,7 +70,8 @@ public class FragmentManager extends DepthFirstAdapter {
 		return rawSource;
 	}
 
-	public RawSourceFragment getFragment(Node node) {
+	@Override
+	public RawSourceFragment retrieveFragment(Node node) {
 		startPosition = null;
 		endPosition = null;
 		node.apply(this);

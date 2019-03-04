@@ -43,9 +43,7 @@ import java.util.Stack;
 import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.fml.FMLModelFactory;
 import org.openflexo.foundation.fml.parser.analysis.DepthFirstAdapter;
-import org.openflexo.foundation.fml.parser.node.Node;
 import org.openflexo.foundation.fml.parser.node.Start;
-import org.openflexo.foundation.fml.parser.node.Token;
 import org.openflexo.p2pp.P2PPNode;
 import org.openflexo.p2pp.RawSource;
 
@@ -118,11 +116,11 @@ public abstract class FMLCoreSemanticsAnalyzer extends DepthFirstAdapter {
 	protected <N extends FMLObjectNode<?, ?>> N pop() {
 		N builtFMLNode = (N) fmlNodes.pop();
 		builtFMLNode.deserialize();
-		builtFMLNode.initializePrettyPrint();
+		// builtFMLNode.initializePrettyPrint();
 		return builtFMLNode;
 	}
 
-	@Override
+	/*@Override
 	public void defaultCase(Node node) {
 		super.defaultCase(node);
 		if (node instanceof Token && !fmlNodes.isEmpty()) {
@@ -134,6 +132,6 @@ public abstract class FMLCoreSemanticsAnalyzer extends DepthFirstAdapter {
 				currentNode.handleToken((Token) node);
 			}
 		}
-	}
+	}*/
 
 }

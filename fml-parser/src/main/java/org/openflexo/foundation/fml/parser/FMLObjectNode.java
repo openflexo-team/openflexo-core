@@ -70,7 +70,6 @@ import org.openflexo.p2pp.P2PPNode;
 import org.openflexo.p2pp.PrettyPrintContext;
 import org.openflexo.p2pp.RawSource;
 import org.openflexo.p2pp.RawSource.RawSourceFragment;
-import org.openflexo.p2pp.RawSource.RawSourcePosition;
 import org.openflexo.toolbox.ChainedCollection;
 
 /**
@@ -90,7 +89,7 @@ public abstract class FMLObjectNode<N extends Node, T extends FMLPrettyPrintable
 	private final FMLSemanticsAnalyzer analyser;
 
 	public FMLObjectNode(N astNode, FMLSemanticsAnalyzer analyser) {
-		super(null, astNode);
+		super(null, astNode, analyser.getFragmentManager());
 		this.analyser = analyser;
 
 		modelObject = buildModelObjectFromAST(astNode);
@@ -99,7 +98,7 @@ public abstract class FMLObjectNode<N extends Node, T extends FMLPrettyPrintable
 	}
 
 	public FMLObjectNode(T aFMLObject, FMLSemanticsAnalyzer analyser) {
-		super(aFMLObject, null);
+		super(aFMLObject, null, null);
 		this.analyser = analyser;
 
 		modelObject.setPrettyPrintDelegate(this);
@@ -130,14 +129,14 @@ public abstract class FMLObjectNode<N extends Node, T extends FMLPrettyPrintable
 		super.preparePrettyPrint(hasParsedVersion);
 	}
 
-	protected void handleToken(Token token) {
-
+	/*protected void handleToken(Token token) {
+	
 		// System.out.println("Receiving Token " + token.getLine() + ":" + token.getPos() + ":" + token.getText() + " tokenEnd=" + tokenEnd
 		// + " endPosition=" + endPosition);
-
+	
 		RawSourcePosition tokenStart = getRawSource().makePositionBeforeChar(token.getLine(), token.getPos());
 		RawSourcePosition tokenEnd = getRawSource().makePositionBeforeChar(token.getLine(), token.getPos() + token.getText().length());
-
+	
 		if (startPosition == null || tokenStart.compareTo(startPosition) < 0) {
 			startPosition = tokenStart;
 			parsedFragment = null;
@@ -146,11 +145,11 @@ public abstract class FMLObjectNode<N extends Node, T extends FMLPrettyPrintable
 			endPosition = tokenEnd;
 			parsedFragment = null;
 		}
-
+	
 		if (getParent() instanceof FMLObjectNode) {
 			((FMLObjectNode<?, ?>) getParent()).handleToken(token);
 		}
-	}
+	}*/
 
 	/**
 	 * Return original version of last serialized raw source, FOR THE ENTIRE compilation unit
@@ -204,7 +203,6 @@ public abstract class FMLObjectNode<N extends Node, T extends FMLPrettyPrintable
 	 * @param token
 	 * @return
 	 */
-	// @Override
 	public RawSourceFragment getFragment(Node node) {
 		if (node instanceof Token) {
 			Token token = (Token) node;
@@ -212,7 +210,7 @@ public abstract class FMLObjectNode<N extends Node, T extends FMLPrettyPrintable
 					getRawSource().makePositionBeforeChar(token.getLine(), token.getPos() + token.getText().length()));
 		}
 		else {
-			return getAnalyser().getFragmentManager().getFragment(node);
+			return getAnalyser().getFragmentManager().retrieveFragment(node);
 		}
 	}
 
