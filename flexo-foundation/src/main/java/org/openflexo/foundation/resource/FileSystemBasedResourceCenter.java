@@ -461,7 +461,7 @@ public interface FileSystemBasedResourceCenter extends FlexoResourceCenter<File>
 				FlexoResource<?> updatedResource = registeredResources.get(file);
 				System.out.println("File MODIFIED " + file.getName() + " in " + file.getParentFile().getAbsolutePath() + " resource="
 						+ updatedResource);
-				if (updatedResource != null && updatedResource.isUpdatable()) {
+				if (updatedResource != null && updatedResource.isLoaded() && updatedResource.isUpdatable()) {
 					updatedResource.updateResourceData();
 				}
 			}
