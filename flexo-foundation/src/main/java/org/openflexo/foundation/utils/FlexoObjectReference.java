@@ -195,13 +195,41 @@ public class FlexoObjectReference<O extends FlexoObject> implements ResourceLoad
 		}
 		this.status = ReferenceStatus.RESOLVED;
 
+		FlexoResource<?> resource = null;
+		ResourceData<?> rd = null;
+		if (modelObject instanceof InnerResourceData) {
+			if (((InnerResourceData<?>) modelObject).getResourceData() != null) {
+				rd = ((InnerResourceData<?>) modelObject).getResourceData();
+				resource = rd.getResource();
+			}
+			else {
+				logger.warning("object " + modelObject + " has null resource data !");
+			}
+		}
+		else if (modelObject instanceof ResourceData) {
+			rd = ((ResourceData<?>) modelObject);
+			resource = rd.getResource();
+		}
+		else {
+			logger.warning("object " + modelObject + " has no resource data !");
+		}
+
 		/**
 		 * We also initialize the string representation for the following reason: Let's say the user creates a reference to the given
 		 * <code>object</code> and then later on, the user deletes that <code>object</code> but the reference owner does not remove its
 		 * reference, we will have to serialize this without any data which will be a disaster (we should expect NullPointer,
 		 * ArrayIndexOutOfBounds, etc...
 		 */
-		if (modelObject instanceof InnerResourceData) {
+
+		if (resource != null) {
+			this.resourceIdentifier = resource.getURI();
+			this.userIdentifier = resource.getUserIdentifier(modelObject);
+			this.objectIdentifier = resource.getObjectIdentifier(modelObject);
+			this.className = modelObject.getClass().getName();
+			setOwner(resource);
+		}
+
+		/*if (modelObject instanceof InnerResourceData) {
 			InnerResourceData<?> ird = (InnerResourceData<?>) modelObject;
 			ResourceData<?> rd = ird.getResourceData();
 			if (rd != null) {
@@ -211,13 +239,14 @@ public class FlexoObjectReference<O extends FlexoObject> implements ResourceLoad
 				logger.warning("object " + modelObject + " has a resource data (" + rd + ") with null resource ");
 		}
 		else
-			logger.warning("object " + modelObject + " has no resource data !");
-		if (modelObject != null) {
+			logger.warning("object " + modelObject + " has no resource data !");*/
+
+		/*if (modelObject != null) {
 			this.userIdentifier = modelObject.getUserIdentifier();
 			this.objectIdentifier = Long.toString(modelObject.getFlexoID());
 			this.className = modelObject.getClass().getName();
 		}
-
+		
 		if (object instanceof InnerResourceData) {
 			ResourceData<?> resourceData = ((InnerResourceData<?>) object).getResourceData();
 			if (resourceData != null) {
@@ -226,7 +255,7 @@ public class FlexoObjectReference<O extends FlexoObject> implements ResourceLoad
 		}
 		else {
 			logger.warning("Could not find any Reference owner for " + object);
-		}
+		}*/
 	}
 
 	public String getClassName() {
@@ -336,9 +365,9 @@ public class FlexoObjectReference<O extends FlexoObject> implements ResourceLoad
 	}
 
 	public String getStringRepresentation() {
-		if (modelObject != null) {
+		/*if (modelObject != null) {
 			return modelObject.getReferenceForSerialization(serializeClassName);
-		}
+		}*/
 		return constructSerializationRepresentation();
 	}
 

@@ -39,6 +39,7 @@
 package org.openflexo.foundation.resource;
 
 import javax.xml.bind.annotation.XmlAttribute;
+
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.PamelaResourceModelFactory;
 import org.openflexo.pamela.annotations.Getter;
@@ -110,11 +111,6 @@ public interface PamelaResource<RD extends ResourceData<RD>, F extends ModelFact
 	 * @param object
 	 */
 	void register(FlexoObject object);
-
-	@Override
-	default FlexoObject findObject(String objectIdentifier, String userIdentifier, String typeIdentifier) {
-		return getFlexoObject(Long.parseLong(objectIdentifier), userIdentifier);
-	}
 
 	/**
 	 * Retrieve object with supplied flexoId and userIdentifier
