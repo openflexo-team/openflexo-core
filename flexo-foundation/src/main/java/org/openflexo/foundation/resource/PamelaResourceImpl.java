@@ -62,6 +62,7 @@ import org.jdom2.input.SAXBuilder;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.IOFlexoException;
 import org.openflexo.foundation.InconsistentDataException;
+import org.openflexo.foundation.InnerResourceData;
 import org.openflexo.foundation.InvalidModelDefinitionException;
 import org.openflexo.foundation.InvalidXMLException;
 import org.openflexo.foundation.PamelaResourceModelFactory;
@@ -619,6 +620,53 @@ public abstract class PamelaResourceImpl<RD extends ResourceData<RD> & Accessibl
 			objects.put(object.getUserIdentifier(), objectsForUserIdentifier);
 		}
 		objectsForUserIdentifier.put(object.getFlexoID(), object);
+	}
+
+	/**
+	 * Generic method used to retrieve in this resource an object with supplied objectIdentifier, userIdentifier, and type identifier<br>
+	 * 
+	 * Note that for certain resources, some parameters might not be used (for example userIdentifier or typeIdentifier)
+	 * 
+	 * @param objectIdentifier
+	 * @param userIdentifier
+	 * @param typeIdentifier
+	 * @return
+	 */
+	@Override
+	public FlexoObject findObject(String objectIdentifier, String userIdentifier, String typeIdentifier) {
+		return getFlexoObject(Long.parseLong(objectIdentifier), userIdentifier);
+	}
+
+	/**
+	 * Used to compute identifier of an object asserting this object is the {@link ResourceData} itself, or a {@link InnerResourceData}
+	 * object stored inside this resource
+	 * 
+	 * @param object
+	 * @return a String identifying supplied object (semantics is composite key using userIdentifier and typeIdentifier)
+	 */
+	@Override
+	public String getObjectIdentifier(Object object) {
+		if (object instanceof FlexoObject) {
+			return Long.toString(((FlexoObject) object).getFlexoID());
+		}
+		logger.warning("Object " + object + " is not a FlexoObject");
+		return "???";
+	}
+
+	/**
+	 * Used to compute user identifier of an object asserting this object is the {@link ResourceData} itself, or a {@link InnerResourceData}
+	 * object stored inside this resource
+	 * 
+	 * @param object
+	 * @return a String identifying author (user) of supplied object
+	 */
+	@Override
+	public String getUserIdentifier(Object object) {
+		if (object instanceof FlexoObject) {
+			return ((FlexoObject) object).getUserIdentifier();
+		}
+		logger.warning("Object " + object + " is not a FlexoObject");
+		return "FLX";
 	}
 
 	/**

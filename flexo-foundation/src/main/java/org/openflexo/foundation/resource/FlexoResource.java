@@ -46,15 +46,16 @@ import java.util.List;
 import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.FlexoServiceManager;
+import org.openflexo.foundation.InnerResourceData;
 import org.openflexo.foundation.utils.FlexoObjectReference.ReferenceOwner;
 import org.openflexo.pamela.annotations.Adder;
 import org.openflexo.pamela.annotations.Getter;
+import org.openflexo.pamela.annotations.Getter.Cardinality;
 import org.openflexo.pamela.annotations.ImplementationClass;
 import org.openflexo.pamela.annotations.ModelEntity;
 import org.openflexo.pamela.annotations.Remover;
 import org.openflexo.pamela.annotations.Setter;
 import org.openflexo.pamela.annotations.XMLAttribute;
-import org.openflexo.pamela.annotations.Getter.Cardinality;
 import org.openflexo.toolbox.FlexoVersion;
 
 /**
@@ -410,12 +411,6 @@ public interface FlexoResource<RD extends ResourceData<RD>> extends FlexoObject,
 	public void save() throws SaveResourceException;
 
 	/**
-	 * This method updates the resource.
-	 */
-	/*public FlexoResourceTree update() throws ResourceDependencyLoopException, LoadResourceException, FileNotFoundException,
-			ProjectLoadingCancelledException, FlexoException;*/
-
-	/**
 	 * Called to notify that a resource has successfully been loaded
 	 */
 	public void notifyResourceLoaded();
@@ -478,9 +473,35 @@ public interface FlexoResource<RD extends ResourceData<RD>> extends FlexoObject,
 	public boolean isDeleting();
 	// public Date getLastUpdate();
 
-	default FlexoObject findObject(String objectIdentifier, String userIdentifier, String typeIdentifier) {
-		return null;
-	}
+	/**
+	 * Generic method used to retrieve in this resource an object with supplied objectIdentifier, userIdentifier, and type identifier<br>
+	 * 
+	 * Note that for certain resources, some parameters might not be used (for example userIdentifier or typeIdentifier)
+	 * 
+	 * @param objectIdentifier
+	 * @param userIdentifier
+	 * @param typeIdentifier
+	 * @return
+	 */
+	public Object findObject(String objectIdentifier, String userIdentifier, String typeIdentifier);
+
+	/**
+	 * Used to compute identifier of an object asserting this object is the {@link ResourceData} itself, or a {@link InnerResourceData}
+	 * object stored inside this resource
+	 * 
+	 * @param object
+	 * @return a String identifying supplied object (semantics is composite key using userIdentifier and typeIdentifier)
+	 */
+	public String getObjectIdentifier(Object object);
+
+	/**
+	 * Used to compute user identifier of an object asserting this object is the {@link ResourceData} itself, or a {@link InnerResourceData}
+	 * object stored inside this resource
+	 * 
+	 * @param object
+	 * @return a String identifying author (user) of supplied object
+	 */
+	public String getUserIdentifier(Object object);
 
 	public boolean needsConversion();
 

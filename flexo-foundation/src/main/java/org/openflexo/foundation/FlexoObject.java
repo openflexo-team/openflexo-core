@@ -206,7 +206,7 @@ public interface FlexoObject extends AccessibleProxyObject, DeletableProxyObject
 	 */
 	public LocalizedDelegate getLocales();
 
-	default String getReferenceForSerialization(boolean serializeClassName) {
+	/*default String getReferenceForSerialization(boolean serializeClassName) {
 		if (this instanceof InnerResourceData) {
 			ResourceData<?> resourceData = ((InnerResourceData<?>) this).getResourceData();
 			if (resourceData != null && resourceData.getResource() != null) {
@@ -216,7 +216,7 @@ public interface FlexoObject extends AccessibleProxyObject, DeletableProxyObject
 			}
 		}
 		return null;
-	}
+	}*/
 
 	public static abstract class FlexoObjectImpl extends FlexoObservable implements FlexoObject {
 
