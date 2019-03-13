@@ -50,7 +50,6 @@ import org.openflexo.connie.exception.TypeMismatchException;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoConceptObject;
 import org.openflexo.foundation.fml.binding.MatchConditionBindingModel;
-import org.openflexo.foundation.fml.editionaction.FetchRequestCondition;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
 import org.openflexo.logging.FlexoLogger;
@@ -174,13 +173,13 @@ public interface MatchCondition extends FlexoConceptObject {
 	}
 
 	@DefineValidationRule
-	public static class ConditionBindingIsRequiredAndMustBeValid extends BindingIsRequiredAndMustBeValid<FetchRequestCondition> {
+	public static class ConditionBindingIsRequiredAndMustBeValid extends BindingIsRequiredAndMustBeValid<MatchCondition> {
 		public ConditionBindingIsRequiredAndMustBeValid() {
-			super("'condition'_binding_is_not_valid", FetchRequestCondition.class);
+			super("'condition'_binding_is_not_valid", MatchCondition.class);
 		}
 
 		@Override
-		public DataBinding<Boolean> getBinding(FetchRequestCondition object) {
+		public DataBinding<Boolean> getBinding(MatchCondition object) {
 			return object.getCondition();
 		}
 	}
