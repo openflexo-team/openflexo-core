@@ -127,7 +127,7 @@ public interface ModelSlot<RD extends ResourceData<RD> & TechnologyObject<?>> ex
 	@Override
 	public TechnologyAdapter getModelSlotTechnologyAdapter();
 
-	public void setModelSlotTechnologyAdapter(TechnologyAdapter technologyAdapter);
+	public void setModelSlotTechnologyAdapter(TechnologyAdapter<?> technologyAdapter);
 
 	@Override
 	public Type getType();
@@ -278,7 +278,7 @@ public interface ModelSlot<RD extends ResourceData<RD> & TechnologyObject<?>> ex
 				e.printStackTrace();
 				return null;
 			} catch (IllegalAccessException e) {
-				logger.warning("Unexpected InvocationTargetException " + e);
+				logger.warning("Unexpected IllegalAccessException " + e);
 				e.printStackTrace();
 				return null;
 			} catch (InvocationTargetException e) {
@@ -333,7 +333,7 @@ public interface ModelSlot<RD extends ResourceData<RD> & TechnologyObject<?>> ex
 		}
 
 		@Override
-		public void setModelSlotTechnologyAdapter(TechnologyAdapter technologyAdapter) {
+		public void setModelSlotTechnologyAdapter(TechnologyAdapter<?> technologyAdapter) {
 			this.technologyAdapter = technologyAdapter;
 		}
 
