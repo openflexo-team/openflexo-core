@@ -53,6 +53,7 @@ import org.openflexo.pamela.exceptions.ModelDefinitionException;
 import org.openflexo.rm.FileResourceImpl;
 import org.openflexo.rm.Resource;
 import org.openflexo.rm.ResourceLocator;
+import org.openflexo.rm.Resources;
 import org.openflexo.toolbox.StringUtils;
 
 /**
@@ -68,7 +69,7 @@ public class TestFMLParser extends OpenflexoTestCase {
 
 	@Parameterized.Parameters(name = "{1}")
 	public static Collection<Object[]> generateData() {
-		return Resource.getMatchingResource(ResourceLocator.locateResource("NewFMLExamples"), ".fml");
+		return Resources.getMatchingResource(ResourceLocator.locateResource("NewFMLExamples"), ".fml");
 	}
 
 	private final Resource fmlResource;
