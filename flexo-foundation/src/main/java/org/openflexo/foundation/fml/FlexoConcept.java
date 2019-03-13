@@ -250,7 +250,7 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 	public FlexoBehaviour getDeclaredFlexoBehaviour(String behaviourName, Type... parameters);
 
 	/**
-	 * Return {@link FlexoProperty}'s explicitely declared in this {@link FlexoConcept}
+	 * Return {@link FlexoProperty}'s explicitly declared in this {@link FlexoConcept}
 	 * 
 	 * @return
 	 */
@@ -261,7 +261,7 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 	public List<FlexoProperty<?>> getFlexoProperties();
 
 	/**
-	 * Sets {@link FlexoProperty}'s explicitely declared in this {@link FlexoConcept}
+	 * Sets {@link FlexoProperty}'s explicitly declared in this {@link FlexoConcept}
 	 * 
 	 * @param properties
 	 */
@@ -269,7 +269,7 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 	public void setFlexoProperties(List<FlexoProperty<?>> properties);
 
 	/**
-	 * Add to {@link FlexoProperty}'s explicitely declared in this {@link FlexoConcept}
+	 * Add to {@link FlexoProperty}'s explicitly declared in this {@link FlexoConcept}
 	 * 
 	 * @param aProperty
 	 */
@@ -278,7 +278,7 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 	public void addToFlexoProperties(FlexoProperty<?> aProperty);
 
 	/**
-	 * Remove from {@link FlexoProperty}'s explicitely declared in this {@link FlexoConcept}
+	 * Remove from {@link FlexoProperty}'s explicitly declared in this {@link FlexoConcept}
 	 * 
 	 * @param aProperty
 	 */
@@ -347,7 +347,7 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 	 * 
 	 * This returned {@link List} includes all declared properties for this FlexoConcept, augmented with all properties of parent
 	 * {@link FlexoConcept} which are not parent properties of this concept declared properties.<br>
-	 * This means that only leaf nodes of inheritance graph infered by this {@link FlexoConcept} hierarchy will be returned.
+	 * This means that only leaf nodes of inheritance graph inferred by this {@link FlexoConcept} hierarchy will be returned.
 	 * 
 	 * Note that this method is not efficient (perf issue: the list is rebuilt for each call)
 	 * 
@@ -429,7 +429,7 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 	 */
 	public FlexoRole<?> getAccessibleRole(String roleName);
 
-	// ModelSlot are also FlexoRole instances, but it's usefull to be able to access them
+	// ModelSlot are also FlexoRole instances, but it's useful to be able to access them
 	public List<ModelSlot<?>> getModelSlots();
 
 	public void addToModelSlots(ModelSlot<?> aModelSlot);
@@ -906,7 +906,7 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 				if (owner != null && owner != this) {
 					for (FlexoProperty<?> p : owner.getAccessibleProperties()) {
 						if (getDeclaredProperty(p.getPropertyName()) == null) {
-							// This property is inherited but not overriden
+							// This property is inherited but not overridden
 							// We check that we don't have this property yet
 							if (inheritedProperties.get(p.getName()) == null) {
 								inheritedProperties.put(p.getName(), p);
@@ -1547,10 +1547,11 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 		public void setContainerFlexoConcept(FlexoConcept aConcept) {
 			performSuperSetter(CONTAINER_FLEXO_CONCEPT_KEY, aConcept);
 			clearAccessiblePropertiesCache();
-			if (getOwningVirtualModel() != null) {
-				getOwningVirtualModel().getInnerConceptsFacet().notifiedConceptsChanged();
-				getOwningVirtualModel().getPropertyChangeSupport().firePropertyChange("allRootFlexoConcepts", null,
-						getOwningVirtualModel().getAllRootFlexoConcepts());
+			VirtualModel owningVirtualModel = getOwningVirtualModel();
+			if (owningVirtualModel != null) {
+				owningVirtualModel.getInnerConceptsFacet().notifiedConceptsChanged();
+				owningVirtualModel.getPropertyChangeSupport().firePropertyChange("allRootFlexoConcepts", null,
+						owningVirtualModel.getAllRootFlexoConcepts());
 			}
 		}
 
@@ -1558,10 +1559,11 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 		public void addToEmbeddedFlexoConcepts(FlexoConcept aFlexoConcept) {
 			performSuperAdder(EMBEDDED_FLEXO_CONCEPT_KEY, aFlexoConcept);
 			getInnerConceptsFacet().notifiedConceptsChanged();
-			if (getOwningVirtualModel() != null) {
-				getOwningVirtualModel().getInnerConceptsFacet().notifiedConceptsChanged();
-				getOwningVirtualModel().getPropertyChangeSupport().firePropertyChange("allRootFlexoConcepts", null,
-						getOwningVirtualModel().getAllRootFlexoConcepts());
+			VirtualModel owningVirtualModel = getOwningVirtualModel();
+			if (owningVirtualModel != null) {
+				owningVirtualModel.getInnerConceptsFacet().notifiedConceptsChanged();
+				owningVirtualModel.getPropertyChangeSupport().firePropertyChange("allRootFlexoConcepts", null,
+						owningVirtualModel.getAllRootFlexoConcepts());
 			}
 		}
 
@@ -1569,10 +1571,11 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 		public void removeFromEmbeddedFlexoConcepts(FlexoConcept aFlexoConcept) {
 			performSuperRemover(EMBEDDED_FLEXO_CONCEPT_KEY, aFlexoConcept);
 			getInnerConceptsFacet().notifiedConceptsChanged();
-			if (getOwningVirtualModel() != null) {
-				getOwningVirtualModel().getInnerConceptsFacet().notifiedConceptsChanged();
-				getOwningVirtualModel().getPropertyChangeSupport().firePropertyChange("allRootFlexoConcepts", null,
-						getOwningVirtualModel().getAllRootFlexoConcepts());
+			VirtualModel owningVirtualModel = getOwningVirtualModel();
+			if (owningVirtualModel != null) {
+				owningVirtualModel.getInnerConceptsFacet().notifiedConceptsChanged();
+				owningVirtualModel.getPropertyChangeSupport().firePropertyChange("allRootFlexoConcepts", null,
+						owningVirtualModel.getAllRootFlexoConcepts());
 			}
 		}
 
@@ -1666,10 +1669,11 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 				getPropertyChangeSupport().firePropertyChange("parentFlexoConcepts", null, parentFlexoConcept);
 				parentFlexoConceptList = null;
 				accessibleProperties = null;
-				if (getOwningVirtualModel() != null) {
-					getOwningVirtualModel().getInnerConceptsFacet().notifiedConceptsChanged();
-					getOwningVirtualModel().getPropertyChangeSupport().firePropertyChange("allSuperFlexoConcepts", null,
-							getOwningVirtualModel().getAllSuperFlexoConcepts());
+				VirtualModel owningVirtualModel = getOwningVirtualModel();
+				if (owningVirtualModel != null) {
+					owningVirtualModel.getInnerConceptsFacet().notifiedConceptsChanged();
+					owningVirtualModel.getPropertyChangeSupport().firePropertyChange("allSuperFlexoConcepts", null,
+							owningVirtualModel.getAllSuperFlexoConcepts());
 				}
 				setIsModified();
 			}
@@ -1686,10 +1690,11 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 			getPropertyChangeSupport().firePropertyChange("parentFlexoConcepts", parentFlexoConcept, null);
 			parentFlexoConceptList = null;
 			accessibleProperties = null;
-			if (getOwningVirtualModel() != null) {
-				getOwningVirtualModel().getInnerConceptsFacet().notifiedConceptsChanged();
-				getOwningVirtualModel().getPropertyChangeSupport().firePropertyChange("allSuperFlexoConcepts", null,
-						getOwningVirtualModel().getAllSuperFlexoConcepts());
+			VirtualModel owningVirtualModel = getOwningVirtualModel();
+			if (owningVirtualModel != null) {
+				owningVirtualModel.getInnerConceptsFacet().notifiedConceptsChanged();
+				owningVirtualModel.getPropertyChangeSupport().firePropertyChange("allSuperFlexoConcepts", null,
+						owningVirtualModel.getAllSuperFlexoConcepts());
 			}
 		}
 
@@ -1851,7 +1856,7 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 		 * 
 		 * It happens for example when a {@link VirtualModel} is declared to be contained in a {@link VirtualModel}<br>
 		 * On that example {@link #getBindingFactory()} rely on {@link VirtualModel} enclosing, we must provide this hook to give a chance
-		 * to objects that rely on ViewPoint instanciation context to update their bindings (some bindings might becomes valid)<br>
+		 * to objects that rely on ViewPoint instantiation context to update their bindings (some bindings might becomes valid)<br>
 		 * 
 		 * It may also happen if an EditionAction is moved from a control graph to another control graph, etc...<br>
 		 * 

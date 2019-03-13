@@ -144,7 +144,7 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 	public static final String OWNING_VIRTUAL_MODEL_INSTANCE_KEY = "owningVirtualModelInstance";
 
 	/**
-	 * Return the {@link FMLRTVirtualModelInstance} where this FlexoConceptInstance is instanciated (result might be different from
+	 * Return the {@link FMLRTVirtualModelInstance} where this FlexoConceptInstance is instantiated (result might be different from
 	 * {@link #getVirtualModelInstance()}, which is The {@link VirtualModelInstanceObject} API)
 	 * 
 	 * @return
@@ -430,7 +430,7 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 	 * as a String expressed in FML language, and execute this expression in that run-time context<br>
 	 * Return the value computed from the expression in that run-time context.
 	 * 
-	 * Note that 'this' is implicitely used and replaces first path element when missing
+	 * Note that 'this' is implicitly used and replaces first path element when missing
 	 * 
 	 * TODO: add FlexoEditor parameter instead of using {@link #getEditor()}
 	 * 
@@ -448,7 +448,7 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 	 * as a String expressed in FML language, and a set of arguments given in appearing order in the expression<br>
 	 * Execute this expression in that run-time context and return the value computed from the expression in that run-time context.
 	 * 
-	 * Note that 'this' is implicitely used and replaces first path element when missing
+	 * Note that 'this' is implicitly used and replaces first path element when missing
 	 * 
 	 * Syntax is this:
 	 * 
@@ -471,7 +471,7 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 			throws TypeMismatchException, NullReferenceException, InvocationTargetException, InvalidBindingException;
 
 	/**
-	 * Instanciate run-time-level object encoding reference to this {@link FlexoConceptInstance} object
+	 * Instantiate run-time-level object encoding reference to this {@link FlexoConceptInstance} object
 	 * 
 	 * @param role
 	 *            the {@link FlexoConceptInstanceRole} defining access to supplied object

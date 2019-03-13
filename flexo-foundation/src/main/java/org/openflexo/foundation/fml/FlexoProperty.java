@@ -69,7 +69,7 @@ import org.openflexo.pamela.validation.ValidationWarning;
 import org.openflexo.toolbox.StringUtils;
 
 /**
- * A {@link FlexoProperty} is a structural element of an FlexoConcept, which contractualize the access to a typed data<br>
+ * A {@link FlexoProperty} is a structural element of a FlexoConcept, which contractualize the access to a typed data<br>
  * More formerly, a {@link FlexoProperty} is the specification of a data accessed at run-time (inside an {@link FlexoConcept} instance)<br>
  * A {@link FlexoProperty} formalizes a contract for accessing to a data.<br>
  * A {@link FlexoProperty} is abstract and might be implemented by a sub-class of {@link FlexoProperty} (a {@link FlexoRole} is for instance
@@ -161,7 +161,7 @@ public abstract interface FlexoProperty<T> extends FlexoConceptObject, FMLPretty
 	public List<? extends FlexoProperty<?>> getSuperProperties();
 
 	/**
-	 * Return the full hiearchy of properties of this property<br>
+	 * Return the full hierarchy of properties of this property<br>
 	 * A super property is a {@link FlexoProperty} declared in any ancestor {@link FlexoConcept}, which is overriden by this property
 	 * 
 	 * @return

@@ -211,7 +211,7 @@ public interface FlexoRole<T> extends FlexoProperty<T> {
 	RoleCloningStrategy defaultCloningStrategy();
 
 	/**
-	 * Instanciate run-time-level object encoding reference to object (see {@link ActorReference})
+	 * Instantiate run-time-level object encoding reference to object (see {@link ActorReference})
 	 * 
 	 * @param object
 	 *            the object which are pointing to
@@ -260,7 +260,7 @@ public interface FlexoRole<T> extends FlexoProperty<T> {
 		}
 
 		/**
-		 * Compute infered model slot from getContainer() binding
+		 * Compute inferred model slot from getContainer() binding
 		 * 
 		 * @return
 		 */
