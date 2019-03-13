@@ -127,7 +127,7 @@ public interface ModelSlot<RD extends ResourceData<RD> & TechnologyObject<?>> ex
 	@Override
 	public TechnologyAdapter getModelSlotTechnologyAdapter();
 
-	public void setModelSlotTechnologyAdapter(TechnologyAdapter technologyAdapter);
+	public void setModelSlotTechnologyAdapter(TechnologyAdapter<?> technologyAdapter);
 
 	@Override
 	public Type getType();
@@ -144,7 +144,7 @@ public interface ModelSlot<RD extends ResourceData<RD> & TechnologyObject<?>> ex
 
 	/**
 	 * Creates and return a new {@link FlexoRole} of supplied class.<br>
-	 * This responsability is delegated to the technology-specific {@link ModelSlot} which manages with introspection its own
+	 * This responsibility is delegated to the technology-specific {@link ModelSlot} which manages with introspection its own
 	 * {@link FlexoRole} types
 	 * 
 	 * @param flexoRoleClass
@@ -154,7 +154,7 @@ public interface ModelSlot<RD extends ResourceData<RD> & TechnologyObject<?>> ex
 
 	/**
 	 * Creates and return a new {@link EditionAction} of supplied class.<br>
-	 * This responsability is delegated to the technology-specific {@link ModelSlot} which manages with introspection its own
+	 * This responsibility is delegated to the technology-specific {@link ModelSlot} which manages with introspection its own
 	 * {@link EditionAction} types
 	 * 
 	 * @param editionActionClass
@@ -164,7 +164,7 @@ public interface ModelSlot<RD extends ResourceData<RD> & TechnologyObject<?>> ex
 
 	/**
 	 * Creates and return a new {@link AbstractFetchRequest} of supplied class.<br>
-	 * This responsability is delegated to the technology-specific {@link ModelSlot} which manages with introspection its own
+	 * This responsibility is delegated to the technology-specific {@link ModelSlot} which manages with introspection its own
 	 * {@link AbstractFetchRequest} types
 	 * 
 	 * @param fetchRequestClass
@@ -216,7 +216,7 @@ public interface ModelSlot<RD extends ResourceData<RD> & TechnologyObject<?>> ex
 
 		private boolean isRequired;
 		private boolean isReadOnly;
-		private TechnologyAdapter technologyAdapter;
+		private TechnologyAdapter<?> technologyAdapter;
 
 		/*private List<Class<? extends FlexoRole<?>>> availableFlexoRoleTypes;
 		private List<Class<? extends FlexoBehaviour>> availableFlexoBehaviourTypes;
@@ -232,7 +232,7 @@ public interface ModelSlot<RD extends ResourceData<RD> & TechnologyObject<?>> ex
 
 		/**
 		 * Creates and return a new {@link FlexoRole} of supplied class.<br>
-		 * This responsability is delegated to the technology-specific {@link ModelSlot} which manages with introspection its own
+		 * This responsibility is delegated to the technology-specific {@link ModelSlot} which manages with introspection its own
 		 * {@link FlexoRole} types
 		 * 
 		 * @param flexoRoleClass
@@ -278,7 +278,7 @@ public interface ModelSlot<RD extends ResourceData<RD> & TechnologyObject<?>> ex
 				e.printStackTrace();
 				return null;
 			} catch (IllegalAccessException e) {
-				logger.warning("Unexpected InvocationTargetException " + e);
+				logger.warning("Unexpected IllegalAccessException " + e);
 				e.printStackTrace();
 				return null;
 			} catch (InvocationTargetException e) {
@@ -333,7 +333,7 @@ public interface ModelSlot<RD extends ResourceData<RD> & TechnologyObject<?>> ex
 		}
 
 		@Override
-		public void setModelSlotTechnologyAdapter(TechnologyAdapter technologyAdapter) {
+		public void setModelSlotTechnologyAdapter(TechnologyAdapter<?> technologyAdapter) {
 			this.technologyAdapter = technologyAdapter;
 		}
 
@@ -381,7 +381,7 @@ public interface ModelSlot<RD extends ResourceData<RD> & TechnologyObject<?>> ex
 
 		/**
 		 * Creates and return a new {@link EditionAction} of supplied class.<br>
-		 * This responsability is delegated to the technology-specific {@link ModelSlot} which manages with introspection its own
+		 * This responsibility is delegated to the technology-specific {@link ModelSlot} which manages with introspection its own
 		 * {@link EditionAction} types
 		 * 
 		 * @param editionActionClass
@@ -395,7 +395,7 @@ public interface ModelSlot<RD extends ResourceData<RD> & TechnologyObject<?>> ex
 
 		/**
 		 * Creates and return a new {@link AbstractFetchRequest} of supplied class.<br>
-		 * This responsability is delegated to the technology-specific {@link ModelSlot} which manages with introspection its own
+		 * This responsibility is delegated to the technology-specific {@link ModelSlot} which manages with introspection its own
 		 * {@link AbstractFetchRequest} types
 		 * 
 		 * @param fetchRequestClass

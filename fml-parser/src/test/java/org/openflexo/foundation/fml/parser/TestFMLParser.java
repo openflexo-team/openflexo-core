@@ -38,7 +38,6 @@
 
 package org.openflexo.foundation.fml.parser;
 
-import java.util.ArrayList;
 import java.util.Collection;
 
 import org.junit.BeforeClass;
@@ -54,6 +53,7 @@ import org.openflexo.pamela.exceptions.ModelDefinitionException;
 import org.openflexo.rm.FileResourceImpl;
 import org.openflexo.rm.Resource;
 import org.openflexo.rm.ResourceLocator;
+import org.openflexo.rm.Resources;
 import org.openflexo.toolbox.StringUtils;
 
 /**
@@ -69,22 +69,7 @@ public class TestFMLParser extends OpenflexoTestCase {
 
 	@Parameterized.Parameters(name = "{1}")
 	public static Collection<Object[]> generateData() {
-		final ArrayList<Object[]> list = new ArrayList<Object[]>();
-		final Resource directory = ResourceLocator.locateResource("NewFMLExamples");
-		addToList(list, directory);
-		return list;
-	}
-
-	private static void addToList(final ArrayList<Object[]> list, final Resource directory) {
-		for (Resource f : directory.getContents()) {
-			if (f.getURI().endsWith(".fml")) {
-				final Object[] construcArgs = { f, f.getURI().substring(f.getURI().lastIndexOf("/") + 1) };
-				list.add(construcArgs);
-			}
-			else if (f.isContainer()) {
-				addToList(list, f);
-			}
-		}
+		return Resources.getMatchingResource(ResourceLocator.locateResource("NewFMLExamples"), ".fml");
 	}
 
 	private final Resource fmlResource;
