@@ -211,17 +211,19 @@ public class FlexoBehaviourPathElement extends FunctionPathElement implements Pr
 				}
 				else {
 					FlexoEditor editor = null;
-					if (fci.getResourceCenter() instanceof FlexoProject) {
-						FlexoProject<?> prj = (FlexoProject<?>) fci.getResourceCenter();
-						editor = prj.getServiceManager().getProjectLoaderService().getEditorForProject(prj);
-					}
-					else if (fci.getResourceCenter().getDelegatingProjectResource() != null) {
-						FlexoProject<?> prj = fci.getResourceCenter().getDelegatingProjectResource().getFlexoProject();
-						editor = prj.getServiceManager().getProjectLoaderService().getEditorForProject(prj);
-					}
+					if (fci.getResourceCenter() != null) {
+						if (fci.getResourceCenter() instanceof FlexoProject) {
+							FlexoProject<?> prj = (FlexoProject<?>) fci.getResourceCenter();
+							editor = prj.getServiceManager().getProjectLoaderService().getEditorForProject(prj);
+						}
+						else if (fci.getResourceCenter().getDelegatingProjectResource() != null) {
+							FlexoProject<?> prj = fci.getResourceCenter().getDelegatingProjectResource().getFlexoProject();
+							editor = prj.getServiceManager().getProjectLoaderService().getEditorForProject(prj);
+						}
 
-					actionSchemeAction = (AbstractActionSchemeAction<?, ?, ?>) actionType.makeNewAction(fci.getVirtualModelInstance(), null,
-							editor);
+						actionSchemeAction = (AbstractActionSchemeAction<?, ?, ?>) actionType.makeNewAction(fci.getVirtualModelInstance(),
+								null, editor);
+					}
 				}
 				for (FlexoBehaviourParameter p : getFlexoBehaviour().getParameters()) {
 					DataBinding<?> param = getParameter(p);
