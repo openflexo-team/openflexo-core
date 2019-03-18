@@ -43,16 +43,16 @@ import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoProperty;
 import org.openflexo.foundation.fml.parser.FMLObjectNode;
 import org.openflexo.foundation.fml.parser.FMLSemanticsAnalyzer;
-import org.openflexo.foundation.fml.parser.node.AConceptDeclaration;
+import org.openflexo.foundation.fml.parser.node.AConceptDecl;
 import org.openflexo.p2pp.RawSource.RawSourceFragment;
 
 /**
  * @author sylvain
  * 
  */
-public class FlexoConceptNode extends FMLObjectNode<AConceptDeclaration, FlexoConcept> {
+public class FlexoConceptNode extends FMLObjectNode<AConceptDecl, FlexoConcept> {
 
-	public FlexoConceptNode(AConceptDeclaration astNode, FMLSemanticsAnalyzer analyser) {
+	public FlexoConceptNode(AConceptDecl astNode, FMLSemanticsAnalyzer analyser) {
 		super(astNode, analyser);
 	}
 
@@ -61,7 +61,7 @@ public class FlexoConceptNode extends FMLObjectNode<AConceptDeclaration, FlexoCo
 	}
 
 	@Override
-	public FlexoConcept buildModelObjectFromAST(AConceptDeclaration astNode) {
+	public FlexoConcept buildModelObjectFromAST(AConceptDecl astNode) {
 		FlexoConcept returned = getFactory().newFlexoConcept();
 		returned.setName(astNode.getIdentifier().getText());
 		returned.setVisibility(getVisibility(astNode.getVisibility()));
@@ -121,7 +121,7 @@ public class FlexoConceptNode extends FMLObjectNode<AConceptDeclaration, FlexoCo
 
 	private RawSourceFragment getConceptFragment() {
 		if (getASTNode() != null) {
-			return getFragment(getASTNode().getConcept());
+			return getFragment(getASTNode().getKwConcept());
 		}
 		return null;
 	}

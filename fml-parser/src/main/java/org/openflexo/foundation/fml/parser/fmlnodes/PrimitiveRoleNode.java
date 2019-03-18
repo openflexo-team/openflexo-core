@@ -44,7 +44,7 @@ import org.openflexo.foundation.fml.PrimitiveRole;
 import org.openflexo.foundation.fml.parser.FMLSemanticsAnalyzer;
 import org.openflexo.foundation.fml.parser.node.AIdentifierVariableDeclarator;
 import org.openflexo.foundation.fml.parser.node.AInitializerVariableDeclarator;
-import org.openflexo.foundation.fml.parser.node.AJavaBasicRoleDeclaration;
+import org.openflexo.foundation.fml.parser.node.AJavaInnerConceptDecl;
 import org.openflexo.foundation.fml.parser.node.PVariableDeclarator;
 import org.openflexo.p2pp.RawSource.RawSourceFragment;
 
@@ -52,11 +52,11 @@ import org.openflexo.p2pp.RawSource.RawSourceFragment;
  * @author sylvain
  * 
  */
-public class PrimitiveRoleNode extends FlexoPropertyNode<AJavaBasicRoleDeclaration, PrimitiveRole<?>> {
+public class PrimitiveRoleNode extends FlexoPropertyNode<AJavaInnerConceptDecl, PrimitiveRole<?>> {
 
 	private static final Logger logger = Logger.getLogger(PrimitiveRoleNode.class.getPackage().getName());
 
-	public PrimitiveRoleNode(AJavaBasicRoleDeclaration astNode, FMLSemanticsAnalyzer analyser) {
+	public PrimitiveRoleNode(AJavaInnerConceptDecl astNode, FMLSemanticsAnalyzer analyser) {
 		super(astNode, analyser);
 	}
 
@@ -65,7 +65,7 @@ public class PrimitiveRoleNode extends FlexoPropertyNode<AJavaBasicRoleDeclarati
 	}
 
 	@Override
-	public PrimitiveRole<?> buildModelObjectFromAST(AJavaBasicRoleDeclaration astNode) {
+	public PrimitiveRole<?> buildModelObjectFromAST(AJavaInnerConceptDecl astNode) {
 		PrimitiveRole<?> returned = getFactory().newPrimitiveRole();
 		returned.setVisibility(getVisibility(astNode.getVisibility()));
 		returned.setName(getName(astNode.getVariableDeclarator()).getText());

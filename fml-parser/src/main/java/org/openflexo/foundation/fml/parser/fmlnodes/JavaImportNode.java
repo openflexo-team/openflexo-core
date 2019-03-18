@@ -40,16 +40,17 @@ package org.openflexo.foundation.fml.parser.fmlnodes;
 
 import org.openflexo.foundation.fml.JavaImportDeclaration;
 import org.openflexo.foundation.fml.parser.FMLSemanticsAnalyzer;
-import org.openflexo.foundation.fml.parser.node.AJavaImportImportDeclaration;
+import org.openflexo.foundation.fml.parser.node.ACompositeIdent;
+import org.openflexo.foundation.fml.parser.node.AJavaImportImportDecl;
 import org.openflexo.p2pp.RawSource.RawSourceFragment;
 
 /**
  * @author sylvain
  * 
  */
-public class JavaImportNode extends AbstractJavaImportNode<AJavaImportImportDeclaration> {
+public class JavaImportNode extends AbstractJavaImportNode<AJavaImportImportDecl> {
 
-	public JavaImportNode(AJavaImportImportDeclaration astNode, FMLSemanticsAnalyzer analyser) {
+	public JavaImportNode(AJavaImportImportDecl astNode, FMLSemanticsAnalyzer analyser) {
 		super(astNode, analyser);
 	}
 
@@ -58,9 +59,9 @@ public class JavaImportNode extends AbstractJavaImportNode<AJavaImportImportDecl
 	}
 
 	@Override
-	public JavaImportDeclaration buildModelObjectFromAST(AJavaImportImportDeclaration astNode) {
+	public JavaImportDeclaration buildModelObjectFromAST(AJavaImportImportDecl astNode) {
 		JavaImportDeclaration returned = super.buildModelObjectFromAST(astNode);
-		returned.setFullQualifiedClassName(makeFullQualifiedIdentifier(astNode.getIdentifier(), astNode.getAdditionalIdentifiers()));
+		returned.setFullQualifiedClassName(makeFullQualifiedIdentifier((ACompositeIdent) astNode.getIdentifier()));
 		return returned;
 	}
 
@@ -82,14 +83,14 @@ public class JavaImportNode extends AbstractJavaImportNode<AJavaImportImportDecl
 
 	private RawSourceFragment getImportFragment() {
 		if (getASTNode() != null) {
-			return getFragment(getASTNode().getImport());
+			return getFragment(getASTNode().getKwImport());
 		}
 		return null;
 	}
 
 	private RawSourceFragment getFullQualifiedFragment() {
 		if (getASTNode() != null) {
-			return getFragment(getASTNode().getIdentifier(), getASTNode().getAdditionalIdentifiers());
+			return getFragment(getASTNode().getIdentifier());
 		}
 		return null;
 	}

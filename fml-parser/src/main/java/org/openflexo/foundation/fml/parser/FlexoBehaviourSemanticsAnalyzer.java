@@ -39,7 +39,7 @@
 package org.openflexo.foundation.fml.parser;
 
 import org.openflexo.foundation.fml.FMLModelFactory;
-import org.openflexo.foundation.fml.parser.node.ABehaviourDeclarationInnerConceptDeclaration;
+import org.openflexo.foundation.fml.parser.node.ABehaviourDeclarationInnerConceptDecl;
 import org.openflexo.foundation.fml.parser.node.Start;
 import org.openflexo.p2pp.RawSource;
 
@@ -56,14 +56,14 @@ public class FlexoBehaviourSemanticsAnalyzer extends FlexoPropertySemanticsAnaly
 	}
 
 	@Override
-	public void inABehaviourDeclarationInnerConceptDeclaration(ABehaviourDeclarationInnerConceptDeclaration node) {
-		super.inABehaviourDeclarationInnerConceptDeclaration(node);
+	public void inABehaviourDeclarationInnerConceptDecl(ABehaviourDeclarationInnerConceptDecl node) {
+		super.inABehaviourDeclarationInnerConceptDecl(node);
 		// push(new FlexoBehaviourNode(node, this));
 	}
 
 	@Override
-	public void outABehaviourDeclarationInnerConceptDeclaration(ABehaviourDeclarationInnerConceptDeclaration node) {
-		super.outABehaviourDeclarationInnerConceptDeclaration(node);
+	public void outABehaviourDeclarationInnerConceptDecl(ABehaviourDeclarationInnerConceptDecl node) {
+		super.outABehaviourDeclarationInnerConceptDecl(node);
 		// pop();
 	}
 

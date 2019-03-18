@@ -41,15 +41,15 @@ package org.openflexo.foundation.fml.parser.fmlnodes;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.parser.FMLObjectNode;
 import org.openflexo.foundation.fml.parser.FMLSemanticsAnalyzer;
-import org.openflexo.foundation.fml.parser.node.AConceptDeclaration;
+import org.openflexo.foundation.fml.parser.node.AConceptDecl;
 
 /**
  * @author sylvain
  * 
  */
-public class FlexoBehaviourNode extends FMLObjectNode<AConceptDeclaration, FlexoConcept> {
+public class FlexoBehaviourNode extends FMLObjectNode<AConceptDecl, FlexoConcept> {
 
-	public FlexoBehaviourNode(AConceptDeclaration astNode, FMLSemanticsAnalyzer analyser) {
+	public FlexoBehaviourNode(AConceptDecl astNode, FMLSemanticsAnalyzer analyser) {
 		super(astNode, analyser);
 	}
 
@@ -58,7 +58,7 @@ public class FlexoBehaviourNode extends FMLObjectNode<AConceptDeclaration, Flexo
 	}
 
 	@Override
-	public FlexoConcept buildModelObjectFromAST(AConceptDeclaration astNode) {
+	public FlexoConcept buildModelObjectFromAST(AConceptDecl astNode) {
 		FlexoConcept returned = getFactory().newFlexoConcept();
 		returned.setName(astNode.getIdentifier().getText());
 		return returned;

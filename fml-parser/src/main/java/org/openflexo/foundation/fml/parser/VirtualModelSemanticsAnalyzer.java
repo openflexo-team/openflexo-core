@@ -40,7 +40,7 @@ package org.openflexo.foundation.fml.parser;
 
 import org.openflexo.foundation.fml.FMLModelFactory;
 import org.openflexo.foundation.fml.parser.fmlnodes.VirtualModelNode;
-import org.openflexo.foundation.fml.parser.node.AModelDeclaration;
+import org.openflexo.foundation.fml.parser.node.AModelDecl;
 import org.openflexo.foundation.fml.parser.node.Start;
 import org.openflexo.p2pp.RawSource;
 
@@ -57,14 +57,14 @@ public class VirtualModelSemanticsAnalyzer extends CompilationUnitSemanticsAnaly
 	}
 
 	@Override
-	public void inAModelDeclaration(AModelDeclaration node) {
-		super.inAModelDeclaration(node);
+	public void inAModelDecl(AModelDecl node) {
+		super.inAModelDecl(node);
 		push(new VirtualModelNode(node, (FMLSemanticsAnalyzer) this));
 	}
 
 	@Override
-	public void outAModelDeclaration(AModelDeclaration node) {
-		super.outAModelDeclaration(node);
+	public void outAModelDecl(AModelDecl node) {
+		super.outAModelDecl(node);
 		pop();
 	}
 }

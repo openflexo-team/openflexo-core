@@ -42,7 +42,7 @@ import java.util.logging.Logger;
 
 import org.openflexo.foundation.fml.AbstractProperty;
 import org.openflexo.foundation.fml.parser.FMLSemanticsAnalyzer;
-import org.openflexo.foundation.fml.parser.node.AAbstractPropertyDeclaration;
+import org.openflexo.foundation.fml.parser.node.AAbstractPropertyInnerConceptDecl;
 import org.openflexo.foundation.fml.parser.node.AIdentifierVariableDeclarator;
 import org.openflexo.foundation.fml.parser.node.AInitializerVariableDeclarator;
 import org.openflexo.foundation.fml.parser.node.PVariableDeclarator;
@@ -52,11 +52,11 @@ import org.openflexo.p2pp.RawSource.RawSourceFragment;
  * @author sylvain
  * 
  */
-public class AbstractPropertyNode extends FlexoPropertyNode<AAbstractPropertyDeclaration, AbstractProperty<?>> {
+public class AbstractPropertyNode extends FlexoPropertyNode<AAbstractPropertyInnerConceptDecl, AbstractProperty<?>> {
 
 	private static final Logger logger = Logger.getLogger(AbstractPropertyNode.class.getPackage().getName());
 
-	public AbstractPropertyNode(AAbstractPropertyDeclaration astNode, FMLSemanticsAnalyzer analyser) {
+	public AbstractPropertyNode(AAbstractPropertyInnerConceptDecl astNode, FMLSemanticsAnalyzer analyser) {
 		super(astNode, analyser);
 	}
 
@@ -65,7 +65,7 @@ public class AbstractPropertyNode extends FlexoPropertyNode<AAbstractPropertyDec
 	}
 
 	@Override
-	public AbstractProperty<?> buildModelObjectFromAST(AAbstractPropertyDeclaration astNode) {
+	public AbstractProperty<?> buildModelObjectFromAST(AAbstractPropertyInnerConceptDecl astNode) {
 		AbstractProperty<?> returned = getFactory().newAbstractProperty();
 		returned.setVisibility(getVisibility(astNode.getVisibility()));
 		returned.setName(getName(astNode.getVariableDeclarator()).getText());

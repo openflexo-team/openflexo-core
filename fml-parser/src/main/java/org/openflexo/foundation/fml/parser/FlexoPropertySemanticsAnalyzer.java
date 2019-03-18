@@ -46,17 +46,14 @@ import org.openflexo.foundation.fml.parser.fmlnodes.AbstractPropertyNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.FlexoPropertyNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.JavaRoleNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.PrimitiveRoleNode;
-import org.openflexo.foundation.fml.parser.node.AAbstractPropertyDeclaration;
-import org.openflexo.foundation.fml.parser.node.AAbstractPropertyPropertyDeclaration;
-import org.openflexo.foundation.fml.parser.node.ABasicPropertyPropertyDeclaration;
-import org.openflexo.foundation.fml.parser.node.AExpressionPropertyPropertyDeclaration;
-import org.openflexo.foundation.fml.parser.node.AFmlBasicRoleDeclaration;
-import org.openflexo.foundation.fml.parser.node.AFmlFullyQualifiedBasicRoleDeclaration;
-import org.openflexo.foundation.fml.parser.node.AGetSetPropertyPropertyDeclaration;
-import org.openflexo.foundation.fml.parser.node.AJavaBasicRoleDeclaration;
-import org.openflexo.foundation.fml.parser.node.APropertyDeclarationInnerConceptDeclaration;
-import org.openflexo.foundation.fml.parser.node.PBasicRoleDeclaration;
-import org.openflexo.foundation.fml.parser.node.PPropertyDeclaration;
+import org.openflexo.foundation.fml.parser.node.AAbstractPropertyInnerConceptDecl;
+import org.openflexo.foundation.fml.parser.node.AExpressionPropertyInnerConceptDecl;
+import org.openflexo.foundation.fml.parser.node.AFmlFullyQualifiedInnerConceptDecl;
+import org.openflexo.foundation.fml.parser.node.AFmlInnerConceptDecl;
+import org.openflexo.foundation.fml.parser.node.AGetSetPropertyInnerConceptDecl;
+import org.openflexo.foundation.fml.parser.node.AInnerConceptDeclarationInnerModelDecl;
+import org.openflexo.foundation.fml.parser.node.AJavaInnerConceptDecl;
+import org.openflexo.foundation.fml.parser.node.PInnerConceptDecl;
 import org.openflexo.foundation.fml.parser.node.Start;
 import org.openflexo.p2pp.RawSource;
 
@@ -75,35 +72,28 @@ public class FlexoPropertySemanticsAnalyzer extends FlexoConceptSemanticsAnalyze
 		super(factory, tree, rawSource);
 	}
 
-	private FlexoPropertyNode<?, ?> makePropertyNode(PPropertyDeclaration node) {
-		if (node instanceof AAbstractPropertyPropertyDeclaration) {
-			return new AbstractPropertyNode(
-					(AAbstractPropertyDeclaration) ((AAbstractPropertyPropertyDeclaration) node).getAbstractPropertyDeclaration(),
-					(FMLSemanticsAnalyzer) this);
+	private FlexoPropertyNode<?, ?> makePropertyNode(PInnerConceptDecl node) {
+		if (node instanceof AAbstractPropertyInnerConceptDecl) {
+			return new AbstractPropertyNode((AAbstractPropertyInnerConceptDecl) node, (FMLSemanticsAnalyzer) this);
 		}
-		else if (node instanceof ABasicPropertyPropertyDeclaration) {
-			PBasicRoleDeclaration basicRoleDeclaration = ((ABasicPropertyPropertyDeclaration) node).getBasicRoleDeclaration();
-			if (basicRoleDeclaration instanceof AJavaBasicRoleDeclaration) {
-				Type type = getTypeFactory().makeType(((AJavaBasicRoleDeclaration) basicRoleDeclaration).getType());
-				// System.out.println("Tiens une basic property declaration java: " + node + " type=" + type);
-				if (getTypeFactory().getPrimitiveType(type) != null) {
-					return new PrimitiveRoleNode((AJavaBasicRoleDeclaration) basicRoleDeclaration, (FMLSemanticsAnalyzer) this);
-				}
-				else {
-					return new JavaRoleNode((AJavaBasicRoleDeclaration) basicRoleDeclaration, (FMLSemanticsAnalyzer) this);
-				}
+		else if (node instanceof AJavaInnerConceptDecl) {
+			Type type = getTypeFactory().makeType(((AJavaInnerConceptDecl) node).getType());
+			// System.out.println("Tiens une basic property declaration java: " + node + " type=" + type);
+			if (getTypeFactory().getPrimitiveType(type) != null) {
+				return new PrimitiveRoleNode((AJavaInnerConceptDecl) node, (FMLSemanticsAnalyzer) this);
 			}
-			else if (basicRoleDeclaration instanceof AFmlBasicRoleDeclaration) {
-				// System.out.println("Tiens une basic property declaration FML: " + node);
-			}
-			else if (basicRoleDeclaration instanceof AFmlFullyQualifiedBasicRoleDeclaration) {
-				// System.out.println("Tiens une basic property declaration FML fully-qualified: " + node);
-			}
+			return new JavaRoleNode((AJavaInnerConceptDecl) node, (FMLSemanticsAnalyzer) this);
 		}
-		else if (node instanceof AExpressionPropertyPropertyDeclaration) {
+		else if (node instanceof AFmlInnerConceptDecl) {
+			// System.out.println("Tiens une basic property declaration FML: " + node);
+		}
+		else if (node instanceof AFmlFullyQualifiedInnerConceptDecl) {
+			// System.out.println("Tiens une basic property declaration FML fully-qualified: " + node);
+		}
+		else if (node instanceof AExpressionPropertyInnerConceptDecl) {
 
 		}
-		else if (node instanceof AGetSetPropertyPropertyDeclaration) {
+		else if (node instanceof AGetSetPropertyInnerConceptDecl) {
 
 		}
 		logger.warning("Unexpected node: " + node);
@@ -112,14 +102,14 @@ public class FlexoPropertySemanticsAnalyzer extends FlexoConceptSemanticsAnalyze
 	}
 
 	@Override
-	public void inAPropertyDeclarationInnerConceptDeclaration(APropertyDeclarationInnerConceptDeclaration node) {
-		super.inAPropertyDeclarationInnerConceptDeclaration(node);
-		push(makePropertyNode(node.getPropertyDeclaration()));
+	public void inAInnerConceptDeclarationInnerModelDecl(AInnerConceptDeclarationInnerModelDecl node) {
+		super.inAInnerConceptDeclarationInnerModelDecl(node);
+		push(makePropertyNode(node.getInnerConceptDecl()));
 	}
 
 	@Override
-	public void outAPropertyDeclarationInnerConceptDeclaration(APropertyDeclarationInnerConceptDeclaration node) {
-		super.outAPropertyDeclarationInnerConceptDeclaration(node);
+	public void outAInnerConceptDeclarationInnerModelDecl(AInnerConceptDeclarationInnerModelDecl node) {
+		super.outAInnerConceptDeclarationInnerModelDecl(node);
 		pop();
 	}
 

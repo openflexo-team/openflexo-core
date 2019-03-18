@@ -51,21 +51,19 @@ import org.openflexo.foundation.fml.JavaImportDeclaration;
 import org.openflexo.foundation.fml.parser.node.AAdditionalIdentifier;
 import org.openflexo.foundation.fml.parser.node.ABooleanPrimitiveType;
 import org.openflexo.foundation.fml.parser.node.AComplexType;
-import org.openflexo.foundation.fml.parser.node.AFloatNumericType;
+import org.openflexo.foundation.fml.parser.node.ACompositeIdent;
+import org.openflexo.foundation.fml.parser.node.AFloatPrimitiveType;
 import org.openflexo.foundation.fml.parser.node.AGtTypeArguments;
-import org.openflexo.foundation.fml.parser.node.AIntNumericType;
-import org.openflexo.foundation.fml.parser.node.ANumericPrimitiveType;
+import org.openflexo.foundation.fml.parser.node.AIntPrimitiveType;
 import org.openflexo.foundation.fml.parser.node.APrimitiveType;
 import org.openflexo.foundation.fml.parser.node.AReferenceType;
 import org.openflexo.foundation.fml.parser.node.AReferenceTypeArgument;
 import org.openflexo.foundation.fml.parser.node.AShrTypeArguments;
-import org.openflexo.foundation.fml.parser.node.ASimpleType;
 import org.openflexo.foundation.fml.parser.node.ATypeArgumentList;
 import org.openflexo.foundation.fml.parser.node.ATypeArgumentListHead;
 import org.openflexo.foundation.fml.parser.node.AUshrTypeArguments;
 import org.openflexo.foundation.fml.parser.node.AVoidType;
 import org.openflexo.foundation.fml.parser.node.PAdditionalIdentifier;
-import org.openflexo.foundation.fml.parser.node.PNumericType;
 import org.openflexo.foundation.fml.parser.node.PPrimitiveType;
 import org.openflexo.foundation.fml.parser.node.PReferenceType;
 import org.openflexo.foundation.fml.parser.node.PType;
@@ -111,8 +109,8 @@ public class TypeFactory {
 		return returned.toString();
 	}
 
-	public Type makeType(TIdentifier identifier, List<PAdditionalIdentifier> additionalIdentifiers) {
-		String typeName = makeFullQualifiedIdentifier(identifier, additionalIdentifiers);
+	public Type makeType(ACompositeIdent identifier) {
+		String typeName = makeFullQualifiedIdentifier(identifier.getIdentifier(), identifier.getAdditionalIdentifiers());
 		try {
 			return Class.forName(typeName);
 		} catch (ClassNotFoundException e) {
@@ -130,6 +128,26 @@ public class TypeFactory {
 		return new UnresolvedType(typeName);
 	}
 
+	/*
+		public Type makeType(TIdentifier identifier, List<PAdditionalIdentifier> additionalIdentifiers) {
+			String typeName = makeFullQualifiedIdentifier(identifier, additionalIdentifiers);
+			try {
+				return Class.forName(typeName);
+			} catch (ClassNotFoundException e) {
+				// OK, continue
+			}
+			for (JavaImportDeclaration javaImportDeclaration : analyser.getCompilationUnit().getJavaImports()) {
+				if (typeName.equals(javaImportDeclaration.getClassName())) {
+					try {
+						return Class.forName(javaImportDeclaration.getFullQualifiedClassName());
+					} catch (ClassNotFoundException e) {
+						// OK, continue
+					}
+				}
+			}
+			return new UnresolvedType(typeName);
+		}
+	*/
 	public Type makeType(PType pType) {
 		if (pType instanceof AVoidType) {
 			return Void.TYPE;
@@ -139,19 +157,16 @@ public class TypeFactory {
 			if (primitiveType instanceof ABooleanPrimitiveType) {
 				return Boolean.TYPE;
 			}
-			else if (primitiveType instanceof ANumericPrimitiveType) {
-				PNumericType numericType = ((ANumericPrimitiveType) primitiveType).getNumericType();
-				if (numericType instanceof AIntNumericType) {
-					return Integer.TYPE;
-				}
-				else if (numericType instanceof AFloatNumericType) {
-					return Float.TYPE;
-				}
+			else if (primitiveType instanceof AIntPrimitiveType) {
+				return Integer.TYPE;
+			}
+			else if (primitiveType instanceof AFloatPrimitiveType) {
+				return Float.TYPE;
 			}
 		}
-		else if (pType instanceof ASimpleType) {
-			return makeType(((ASimpleType) pType).getIdentifier(), ((ASimpleType) pType).getAdditionalIdentifiers());
-		}
+		// else if (pType instanceof ASimpleType) {
+		// return makeType(((ASimpleType) pType).getIdentifier(), ((ASimpleType) pType).getAdditionalIdentifiers());
+		// }
 		else if (pType instanceof AComplexType) {
 			return makeType(((AComplexType) pType).getReferenceType());
 		}
@@ -162,19 +177,15 @@ public class TypeFactory {
 	public Type makeType(PReferenceType referenceType) {
 		if (referenceType instanceof AReferenceType) {
 			if (((AReferenceType) referenceType).getArgs() == null) {
-				return makeType(((AReferenceType) referenceType).getIdentifier(),
-						((AReferenceType) referenceType).getAdditionalIdentifiers());
+				return makeType((ACompositeIdent) ((AReferenceType) referenceType).getIdentifier());
+			}
+			Type baseType = makeType((ACompositeIdent) ((AReferenceType) referenceType).getIdentifier());
+			if (baseType instanceof Class) {
+				List<Type> typeArguments = makeTypeArguments(((AReferenceType) referenceType).getArgs());
+				return new ParameterizedTypeImpl((Class) baseType, typeArguments.toArray(new Type[typeArguments.size()]));
 			}
 			else {
-				Type baseType = makeType(((AReferenceType) referenceType).getIdentifier(),
-						((AReferenceType) referenceType).getAdditionalIdentifiers());
-				if (baseType instanceof Class) {
-					List<Type> typeArguments = makeTypeArguments(((AReferenceType) referenceType).getArgs());
-					return new ParameterizedTypeImpl((Class) baseType, typeArguments.toArray(new Type[typeArguments.size()]));
-				}
-				else {
-					logger.warning("Unexpected base type" + baseType);
-				}
+				logger.warning("Unexpected base type" + baseType);
 			}
 		}
 		logger.warning("Unexpected " + referenceType + " of " + referenceType.getClass());

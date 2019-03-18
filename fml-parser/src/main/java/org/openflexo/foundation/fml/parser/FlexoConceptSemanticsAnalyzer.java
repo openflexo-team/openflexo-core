@@ -40,7 +40,7 @@ package org.openflexo.foundation.fml.parser;
 
 import org.openflexo.foundation.fml.FMLModelFactory;
 import org.openflexo.foundation.fml.parser.fmlnodes.FlexoConceptNode;
-import org.openflexo.foundation.fml.parser.node.AConceptDeclaration;
+import org.openflexo.foundation.fml.parser.node.AConceptDecl;
 import org.openflexo.foundation.fml.parser.node.Start;
 import org.openflexo.p2pp.RawSource;
 
@@ -57,15 +57,15 @@ public class FlexoConceptSemanticsAnalyzer extends VirtualModelSemanticsAnalyzer
 	}
 
 	@Override
-	public void inAConceptDeclaration(AConceptDeclaration node) {
-		super.inAConceptDeclaration(node);
+	public void inAConceptDecl(AConceptDecl node) {
+		super.inAConceptDecl(node);
 		// System.out.println("DEBUT Nouveau concept " + node.getIdentifier().getText());
 		push(new FlexoConceptNode(node, (FMLSemanticsAnalyzer) this));
 	}
 
 	@Override
-	public void outAConceptDeclaration(AConceptDeclaration node) {
-		super.outAConceptDeclaration(node);
+	public void outAConceptDecl(AConceptDecl node) {
+		super.outAConceptDecl(node);
 		pop();
 	}
 

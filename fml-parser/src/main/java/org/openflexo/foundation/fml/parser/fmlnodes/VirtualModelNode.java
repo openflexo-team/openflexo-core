@@ -44,16 +44,16 @@ import org.openflexo.foundation.fml.FlexoProperty;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.parser.FMLObjectNode;
 import org.openflexo.foundation.fml.parser.FMLSemanticsAnalyzer;
-import org.openflexo.foundation.fml.parser.node.AModelDeclaration;
+import org.openflexo.foundation.fml.parser.node.AModelDecl;
 import org.openflexo.p2pp.RawSource.RawSourceFragment;
 
 /**
  * @author sylvain
  * 
  */
-public class VirtualModelNode extends FMLObjectNode<AModelDeclaration, VirtualModel> {
+public class VirtualModelNode extends FMLObjectNode<AModelDecl, VirtualModel> {
 
-	public VirtualModelNode(AModelDeclaration astNode, FMLSemanticsAnalyzer analyser) {
+	public VirtualModelNode(AModelDecl astNode, FMLSemanticsAnalyzer analyser) {
 		super(astNode, analyser);
 	}
 
@@ -62,7 +62,7 @@ public class VirtualModelNode extends FMLObjectNode<AModelDeclaration, VirtualMo
 	}
 
 	@Override
-	public VirtualModel buildModelObjectFromAST(AModelDeclaration astNode) {
+	public VirtualModel buildModelObjectFromAST(AModelDecl astNode) {
 		VirtualModel returned = getFactory().newVirtualModel();
 		returned.setName(astNode.getIdentifier().getText());
 		returned.setVisibility(getVisibility(astNode.getVisibility()));
@@ -122,7 +122,7 @@ public class VirtualModelNode extends FMLObjectNode<AModelDeclaration, VirtualMo
 
 	private RawSourceFragment getModelFragment() {
 		if (getASTNode() != null) {
-			return getFragment(getASTNode().getModel());
+			return getFragment(getASTNode().getKwModel());
 		}
 		return null;
 	}

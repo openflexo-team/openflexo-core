@@ -44,8 +44,8 @@ import org.openflexo.foundation.fml.parser.fmlnodes.FMLCompilationUnitNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.JavaImportNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.NamedJavaImportNode;
 import org.openflexo.foundation.fml.parser.node.AFmlCompilationUnit;
-import org.openflexo.foundation.fml.parser.node.AJavaImportImportDeclaration;
-import org.openflexo.foundation.fml.parser.node.ANamedJavaImportImportDeclaration;
+import org.openflexo.foundation.fml.parser.node.AJavaImportImportDecl;
+import org.openflexo.foundation.fml.parser.node.ANamedJavaImportImportDecl;
 import org.openflexo.foundation.fml.parser.node.Start;
 import org.openflexo.p2pp.RawSource;
 
@@ -90,14 +90,14 @@ public abstract class CompilationUnitSemanticsAnalyzer extends FMLCoreSemanticsA
 	}
 
 	@Override
-	public void inAJavaImportImportDeclaration(AJavaImportImportDeclaration node) {
-		super.inAJavaImportImportDeclaration(node);
+	public void inAJavaImportImportDecl(AJavaImportImportDecl node) {
+		super.inAJavaImportImportDecl(node);
 		push(new JavaImportNode(node, (FMLSemanticsAnalyzer) this));
 	}
 
 	@Override
-	public void outAJavaImportImportDeclaration(AJavaImportImportDeclaration node) {
-		super.outAJavaImportImportDeclaration(node);
+	public void outAJavaImportImportDecl(AJavaImportImportDecl node) {
+		super.outAJavaImportImportDecl(node);
 		JavaImportNode returned = pop();
 		// System.out.println("Je cree un import depuis " + returned.getLastParsedFragment() + " which is ["
 		// + returned.getLastParsedFragment().getRawText() + "]");
@@ -105,14 +105,14 @@ public abstract class CompilationUnitSemanticsAnalyzer extends FMLCoreSemanticsA
 	}
 
 	@Override
-	public void inANamedJavaImportImportDeclaration(ANamedJavaImportImportDeclaration node) {
-		super.inANamedJavaImportImportDeclaration(node);
+	public void inANamedJavaImportImportDecl(ANamedJavaImportImportDecl node) {
+		super.inANamedJavaImportImportDecl(node);
 		push(new NamedJavaImportNode(node, (FMLSemanticsAnalyzer) this));
 	}
 
 	@Override
-	public void outANamedJavaImportImportDeclaration(ANamedJavaImportImportDeclaration node) {
-		super.outANamedJavaImportImportDeclaration(node);
+	public void outANamedJavaImportImportDecl(ANamedJavaImportImportDecl node) {
+		super.outANamedJavaImportImportDecl(node);
 		pop();
 	}
 }

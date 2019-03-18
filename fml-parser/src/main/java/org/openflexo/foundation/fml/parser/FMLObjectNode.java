@@ -58,13 +58,12 @@ import org.openflexo.foundation.fml.parser.fmlnodes.JavaImportNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.JavaRoleNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.PrimitiveRoleNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.VirtualModelNode;
+import org.openflexo.foundation.fml.parser.node.ACompositeIdent;
 import org.openflexo.foundation.fml.parser.node.APrivateVisibility;
 import org.openflexo.foundation.fml.parser.node.AProtectedVisibility;
 import org.openflexo.foundation.fml.parser.node.APublicVisibility;
 import org.openflexo.foundation.fml.parser.node.Node;
-import org.openflexo.foundation.fml.parser.node.PAdditionalIdentifier;
 import org.openflexo.foundation.fml.parser.node.PVisibility;
-import org.openflexo.foundation.fml.parser.node.TIdentifier;
 import org.openflexo.foundation.fml.parser.node.Token;
 import org.openflexo.p2pp.P2PPNode;
 import org.openflexo.p2pp.PrettyPrintContext;
@@ -228,12 +227,8 @@ public abstract class FMLObjectNode<N extends Node, T extends FMLPrettyPrintable
 		return getAnalyser().getFragmentManager().getFragment(collection);
 	}
 
-	public List<String> makeFullQualifiedIdentifierList(TIdentifier identifier, List<PAdditionalIdentifier> additionalIdentifiers) {
-		return getTypeFactory().makeFullQualifiedIdentifierList(identifier, additionalIdentifiers);
-	}
-
-	public String makeFullQualifiedIdentifier(TIdentifier identifier, List<PAdditionalIdentifier> additionalIdentifiers) {
-		return getTypeFactory().makeFullQualifiedIdentifier(identifier, additionalIdentifiers);
+	public String makeFullQualifiedIdentifier(ACompositeIdent identifier) {
+		return getTypeFactory().makeFullQualifiedIdentifier(identifier.getIdentifier(), identifier.getAdditionalIdentifiers());
 	}
 
 	protected String getVisibilityAsString(Visibility visibility) {

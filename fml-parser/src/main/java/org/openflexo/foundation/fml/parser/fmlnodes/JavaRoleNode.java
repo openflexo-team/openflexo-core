@@ -44,7 +44,7 @@ import org.openflexo.foundation.fml.JavaRole;
 import org.openflexo.foundation.fml.parser.FMLSemanticsAnalyzer;
 import org.openflexo.foundation.fml.parser.node.AIdentifierVariableDeclarator;
 import org.openflexo.foundation.fml.parser.node.AInitializerVariableDeclarator;
-import org.openflexo.foundation.fml.parser.node.AJavaBasicRoleDeclaration;
+import org.openflexo.foundation.fml.parser.node.AJavaInnerConceptDecl;
 import org.openflexo.foundation.fml.parser.node.PVariableDeclarator;
 import org.openflexo.p2pp.RawSource.RawSourceFragment;
 
@@ -52,11 +52,11 @@ import org.openflexo.p2pp.RawSource.RawSourceFragment;
  * @author sylvain
  * 
  */
-public class JavaRoleNode extends FlexoPropertyNode<AJavaBasicRoleDeclaration, JavaRole<?>> {
+public class JavaRoleNode extends FlexoPropertyNode<AJavaInnerConceptDecl, JavaRole<?>> {
 
 	private static final Logger logger = Logger.getLogger(JavaRoleNode.class.getPackage().getName());
 
-	public JavaRoleNode(AJavaBasicRoleDeclaration astNode, FMLSemanticsAnalyzer analyser) {
+	public JavaRoleNode(AJavaInnerConceptDecl astNode, FMLSemanticsAnalyzer analyser) {
 		super(astNode, analyser);
 	}
 
@@ -65,7 +65,7 @@ public class JavaRoleNode extends FlexoPropertyNode<AJavaBasicRoleDeclaration, J
 	}
 
 	@Override
-	public JavaRole<?> buildModelObjectFromAST(AJavaBasicRoleDeclaration astNode) {
+	public JavaRole<?> buildModelObjectFromAST(AJavaInnerConceptDecl astNode) {
 		JavaRole<?> returned = getFactory().newJavaRole();
 		returned.setVisibility(getVisibility(astNode.getVisibility()));
 		returned.setName(getName(astNode.getVariableDeclarator()).getText());
