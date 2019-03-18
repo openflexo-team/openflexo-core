@@ -46,7 +46,6 @@ import org.openflexo.foundation.fml.rt.FreeModelSlotInstance;
 import org.openflexo.foundation.resource.ResourceData;
 import org.openflexo.pamela.annotations.ImplementationClass;
 import org.openflexo.pamela.annotations.ModelEntity;
-import org.openflexo.toolbox.JavaUtils;
 
 /**
  * Implementation of a ModelSlot in a given technology allowing to plug any data source<br>
@@ -82,13 +81,14 @@ public abstract interface FreeModelSlot<RD extends ResourceData<RD> & Technology
 		 * @param proposedName
 		 * @return
 		 */
-		private String generateUniqueURI(FreeModelSlotInstance<?, ?> msInstance, String proposedName) {
+		/* Unused
+		private static String generateUniqueURI(FreeModelSlotInstance<?, ?> msInstance, String proposedName) {
 			if (msInstance == null || msInstance.getResourceData() == null) {
 				return null;
 			}
 			return msInstance.getResourceURI() + "#" + generateUniqueURIName(msInstance, proposedName);
 		}
-
+		*/
 		/**
 		 * Return a new String (the simple name) uniquely identifying a new object in related technology, according to the conventions of
 		 * related technology
@@ -97,20 +97,22 @@ public abstract interface FreeModelSlot<RD extends ResourceData<RD> & Technology
 		 * @param proposedName
 		 * @return
 		 */
-		private String generateUniqueURIName(FreeModelSlotInstance<?, ?> msInstance, String proposedName) {
+		/* Unused
+		private static String generateUniqueURIName(FreeModelSlotInstance<?, ?> msInstance, String proposedName) {
 			if (msInstance == null || msInstance.getResourceData() == null) {
 				return proposedName;
 			}
 			return generateUniqueURIName(msInstance, proposedName, msInstance.getResourceURI() + "#");
 		}
-
-		private String generateUniqueURIName(FreeModelSlotInstance<?, ?> msInstance, String proposedName, String uriPrefix) {
+		
+		private static String generateUniqueURIName(FreeModelSlotInstance<?, ?> msInstance, String proposedName, String uriPrefix) {
 			if (msInstance == null || msInstance.getResourceData() == null) {
 				return proposedName;
 			}
 			String baseName = JavaUtils.getClassName(proposedName);
 			return baseName;
 		}
+		*/
 
 		@Override
 		public String getTypeDescription() {
