@@ -47,6 +47,7 @@ import org.openflexo.foundation.fml.parser.fmlnodes.FlexoPropertyNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.JavaRoleNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.PrimitiveRoleNode;
 import org.openflexo.foundation.fml.parser.node.AAbstractPropertyInnerConceptDecl;
+import org.openflexo.foundation.fml.parser.node.ABehaviourDeclarationInnerConceptDecl;
 import org.openflexo.foundation.fml.parser.node.AExpressionPropertyInnerConceptDecl;
 import org.openflexo.foundation.fml.parser.node.AFmlFullyQualifiedInnerConceptDecl;
 import org.openflexo.foundation.fml.parser.node.AFmlInnerConceptDecl;
@@ -72,6 +73,31 @@ public class FlexoPropertySemanticsAnalyzer extends FlexoConceptSemanticsAnalyze
 		super(factory, tree, rawSource);
 	}
 
+	@Override
+	public void inAInnerConceptDeclarationInnerModelDecl(AInnerConceptDeclarationInnerModelDecl node) {
+		super.inAInnerConceptDeclarationInnerModelDecl(node);
+		if (!(node.getInnerConceptDecl() instanceof ABehaviourDeclarationInnerConceptDecl)) {
+			push(makePropertyNode(node.getInnerConceptDecl()));
+		}
+	}
+
+	@Override
+	public void outAInnerConceptDeclarationInnerModelDecl(AInnerConceptDeclarationInnerModelDecl node) {
+		super.outAInnerConceptDeclarationInnerModelDecl(node);
+		if (!(node.getInnerConceptDecl() instanceof ABehaviourDeclarationInnerConceptDecl)) {
+			pop();
+		}
+	}
+
+	/*private FMLObjectNode<?, ?> makeInnerConceptDeclarationNode(PInnerConceptDecl node) {
+		if (node instanceof ABehaviourDeclarationInnerConceptDecl) {
+			return makeBehaviourNode(((ABehaviourDeclarationInnerConceptDecl) node).getBehaviourDecl());
+		}
+		else {
+			return makePropertyNode(node);
+		}
+	}*/
+
 	private FlexoPropertyNode<?, ?> makePropertyNode(PInnerConceptDecl node) {
 		if (node instanceof AAbstractPropertyInnerConceptDecl) {
 			return new AbstractPropertyNode((AAbstractPropertyInnerConceptDecl) node, (FMLSemanticsAnalyzer) this);
@@ -96,21 +122,46 @@ public class FlexoPropertySemanticsAnalyzer extends FlexoConceptSemanticsAnalyze
 		else if (node instanceof AGetSetPropertyInnerConceptDecl) {
 
 		}
-		logger.warning("Unexpected node: " + node);
+		logger.warning("Unexpected node: " + node + " of " + node.getClass());
 		Thread.dumpStack();
 		return null;
 	}
 
-	@Override
-	public void inAInnerConceptDeclarationInnerModelDecl(AInnerConceptDeclarationInnerModelDecl node) {
-		super.inAInnerConceptDeclarationInnerModelDecl(node);
-		push(makePropertyNode(node.getInnerConceptDecl()));
-	}
+	// See fml.sablecc l.367
+	/*private FlexoBehaviourNode<?, ?> makeBehaviourNode(PBehaviourDecl node) {
+		System.out.println("Tiens je tombe sur un " + node.getClass());
+	
+		if (node instanceof AMethodBehaviourDecl) {
+			return new ActionSchemeNode((AMethodBehaviourDecl) node, (FMLSemanticsAnalyzer) this);
+		}*/
 
-	@Override
-	public void outAInnerConceptDeclarationInnerModelDecl(AInnerConceptDeclarationInnerModelDecl node) {
-		super.outAInnerConceptDeclarationInnerModelDecl(node);
-		pop();
+	/*
+	if (node instanceof AAbstractPropertyInnerConceptDecl) {
+		return new AbstractPropertyNode((AAbstractPropertyInnerConceptDecl) node, (FMLSemanticsAnalyzer) this);
 	}
+	else if (node instanceof AJavaInnerConceptDecl) {
+		Type type = getTypeFactory().makeType(((AJavaInnerConceptDecl) node).getType());
+		// System.out.println("Tiens une basic property declaration java: " + node + " type=" + type);
+		if (getTypeFactory().getPrimitiveType(type) != null) {
+			return new PrimitiveRoleNode((AJavaInnerConceptDecl) node, (FMLSemanticsAnalyzer) this);
+		}
+		return new JavaRoleNode((AJavaInnerConceptDecl) node, (FMLSemanticsAnalyzer) this);
+	}
+	else if (node instanceof AFmlInnerConceptDecl) {
+		// System.out.println("Tiens une basic property declaration FML: " + node);
+	}
+	else if (node instanceof AFmlFullyQualifiedInnerConceptDecl) {
+		// System.out.println("Tiens une basic property declaration FML fully-qualified: " + node);
+	}
+	else if (node instanceof AExpressionPropertyInnerConceptDecl) {
+	
+	}
+	else if (node instanceof AGetSetPropertyInnerConceptDecl) {
+	
+	}*/
+	/*logger.warning("Unexpected node: " + node + " of " + node.getClass());
+	Thread.dumpStack();
+	return null;
+	}*/
 
 }

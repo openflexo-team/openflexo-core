@@ -38,42 +38,34 @@
 
 package org.openflexo.foundation.fml.parser.fmlnodes;
 
-import org.openflexo.foundation.fml.FlexoConcept;
+import java.util.logging.Logger;
+
+import org.openflexo.foundation.fml.FlexoBehaviour;
 import org.openflexo.foundation.fml.parser.FMLObjectNode;
 import org.openflexo.foundation.fml.parser.FMLSemanticsAnalyzer;
-import org.openflexo.foundation.fml.parser.node.AConceptDecl;
+import org.openflexo.foundation.fml.parser.node.PBehaviourDecl;
 
 /**
  * @author sylvain
  * 
  */
-public class FlexoBehaviourNode extends FMLObjectNode<AConceptDecl, FlexoConcept> {
+public abstract class FlexoBehaviourNode<N extends PBehaviourDecl, T extends FlexoBehaviour> extends FMLObjectNode<N, T> {
 
-	public FlexoBehaviourNode(AConceptDecl astNode, FMLSemanticsAnalyzer analyser) {
+	private static final Logger logger = Logger.getLogger(FlexoBehaviourNode.class.getPackage().getName());
+
+	public FlexoBehaviourNode(N astNode, FMLSemanticsAnalyzer analyser) {
 		super(astNode, analyser);
 	}
 
-	public FlexoBehaviourNode(FlexoConcept concept, FMLSemanticsAnalyzer analyser) {
-		super(concept, analyser);
+	public FlexoBehaviourNode(T behaviour, FMLSemanticsAnalyzer analyser) {
+		super(behaviour, analyser);
 	}
 
 	@Override
-	public FlexoConcept buildModelObjectFromAST(AConceptDecl astNode) {
-		FlexoConcept returned = getFactory().newFlexoConcept();
-		returned.setName(astNode.getIdentifier().getText());
-		return returned;
-	}
-
-	@Override
-	public FlexoBehaviourNode deserialize() {
-		if (getParent() instanceof VirtualModelNode) {
-			((VirtualModelNode) getParent()).getModelObject().addToFlexoConcepts(getModelObject());
+	public FlexoBehaviourNode<N, T> deserialize() {
+		if (getParent() instanceof FlexoConceptNode) {
+			((FlexoConceptNode) getParent()).getModelObject().addToFlexoBehaviours(getModelObject());
 		}
 		return this;
-	}
-
-	@Override
-	public void preparePrettyPrint(boolean hasParsedVersion) {
-		super.preparePrettyPrint(hasParsedVersion);
 	}
 }

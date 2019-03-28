@@ -19,7 +19,7 @@ model MyModel {
 	
 	// Testing return
 	// Well, there is here a problem of semantics, we juste test here syntax and parsing...
-	testReturn() {
+/*	testReturn() {
 		return;
 		return 0;
 		return 1+3;
@@ -97,8 +97,9 @@ model MyModel {
 		new MyConcept::init(name);
 		MyConcept myConcept = new MyConcept::init(name);
    }
-
-	testTAEditionAction() {
+*/
+	
+/*	testTAEditionAction() {
 		DIAGRAM::AddShape(container=topLevel) in (diagram);
 		shape = DIAGRAM::AddShape(container=topLevel) in (diagram);
    }
@@ -117,5 +118,5 @@ model MyModel {
 			myConcept.doSomething();
 		}
    }
-
+*/
 }

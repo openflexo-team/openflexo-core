@@ -149,6 +149,10 @@ public class TypeFactory {
 		}
 	*/
 	public Type makeType(PType pType) {
+		if (pType == null) {
+			logger.warning("Unexpected null type");
+			return null;
+		}
 		if (pType instanceof AVoidType) {
 			return Void.TYPE;
 		}

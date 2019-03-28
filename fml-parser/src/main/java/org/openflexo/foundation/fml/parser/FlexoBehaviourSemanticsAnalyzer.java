@@ -38,8 +38,14 @@
 
 package org.openflexo.foundation.fml.parser;
 
+import java.util.logging.Logger;
+
 import org.openflexo.foundation.fml.FMLModelFactory;
+import org.openflexo.foundation.fml.parser.fmlnodes.ActionSchemeNode;
+import org.openflexo.foundation.fml.parser.fmlnodes.FlexoBehaviourNode;
 import org.openflexo.foundation.fml.parser.node.ABehaviourDeclarationInnerConceptDecl;
+import org.openflexo.foundation.fml.parser.node.AMethodBehaviourDecl;
+import org.openflexo.foundation.fml.parser.node.PBehaviourDecl;
 import org.openflexo.foundation.fml.parser.node.Start;
 import org.openflexo.p2pp.RawSource;
 
@@ -51,6 +57,9 @@ import org.openflexo.p2pp.RawSource;
  */
 public class FlexoBehaviourSemanticsAnalyzer extends FlexoPropertySemanticsAnalyzer {
 
+	@SuppressWarnings("unused")
+	private static final Logger logger = Logger.getLogger(FlexoBehaviourSemanticsAnalyzer.class.getPackage().getName());
+
 	public FlexoBehaviourSemanticsAnalyzer(FMLModelFactory factory, Start tree, RawSource rawSource) {
 		super(factory, tree, rawSource);
 	}
@@ -58,13 +67,52 @@ public class FlexoBehaviourSemanticsAnalyzer extends FlexoPropertySemanticsAnaly
 	@Override
 	public void inABehaviourDeclarationInnerConceptDecl(ABehaviourDeclarationInnerConceptDecl node) {
 		super.inABehaviourDeclarationInnerConceptDecl(node);
-		// push(new FlexoBehaviourNode(node, this));
+		push(makeBehaviourNode(node.getBehaviourDecl()));
 	}
 
 	@Override
 	public void outABehaviourDeclarationInnerConceptDecl(ABehaviourDeclarationInnerConceptDecl node) {
 		super.outABehaviourDeclarationInnerConceptDecl(node);
-		// pop();
+		pop();
+	}
+
+	// See fml.sablecc l.367
+	private FlexoBehaviourNode<?, ?> makeBehaviourNode(PBehaviourDecl node) {
+		System.out.println("Tiens tiens, je tombe sur un " + node.getClass());
+
+		if (node instanceof AMethodBehaviourDecl) {
+			return new ActionSchemeNode((AMethodBehaviourDecl) node, (FMLSemanticsAnalyzer) this);
+		}
+
+		/*
+		if (node instanceof AAbstractPropertyInnerConceptDecl) {
+			return new AbstractPropertyNode((AAbstractPropertyInnerConceptDecl) node, (FMLSemanticsAnalyzer) this);
+		}
+		else if (node instanceof AJavaInnerConceptDecl) {
+			Type type = getTypeFactory().makeType(((AJavaInnerConceptDecl) node).getType());
+			// System.out.println("Tiens une basic property declaration java: " + node + " type=" + type);
+			if (getTypeFactory().getPrimitiveType(type) != null) {
+				return new PrimitiveRoleNode((AJavaInnerConceptDecl) node, (FMLSemanticsAnalyzer) this);
+			}
+			return new JavaRoleNode((AJavaInnerConceptDecl) node, (FMLSemanticsAnalyzer) this);
+		}
+		else if (node instanceof AFmlInnerConceptDecl) {
+			// System.out.println("Tiens une basic property declaration FML: " + node);
+		}
+		else if (node instanceof AFmlFullyQualifiedInnerConceptDecl) {
+			// System.out.println("Tiens une basic property declaration FML fully-qualified: " + node);
+		}
+		else if (node instanceof AExpressionPropertyInnerConceptDecl) {
+		
+		}
+		else if (node instanceof AGetSetPropertyInnerConceptDecl) {
+		
+		}*/
+
+		logger.warning("Unexpected node: " + node + " of " + node.getClass());
+		Thread.dumpStack();
+		return null;
+
 	}
 
 }

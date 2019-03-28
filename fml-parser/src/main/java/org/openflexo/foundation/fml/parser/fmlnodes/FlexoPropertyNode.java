@@ -38,25 +38,18 @@
 
 package org.openflexo.foundation.fml.parser.fmlnodes;
 
-import java.lang.reflect.Type;
 import java.util.logging.Logger;
 
-import org.openflexo.connie.type.TypeUtils;
-import org.openflexo.foundation.fml.FMLCompilationUnit;
 import org.openflexo.foundation.fml.FlexoProperty;
 import org.openflexo.foundation.fml.parser.FMLObjectNode;
 import org.openflexo.foundation.fml.parser.FMLSemanticsAnalyzer;
-import org.openflexo.foundation.fml.parser.node.AIdentifierVariableDeclarator;
-import org.openflexo.foundation.fml.parser.node.AInitializerVariableDeclarator;
-import org.openflexo.foundation.fml.parser.node.Node;
-import org.openflexo.foundation.fml.parser.node.PVariableDeclarator;
-import org.openflexo.foundation.fml.parser.node.TIdentifier;
+import org.openflexo.foundation.fml.parser.node.PInnerConceptDecl;
 
 /**
  * @author sylvain
  * 
  */
-public abstract class FlexoPropertyNode<N extends Node, T extends FlexoProperty<?>> extends FMLObjectNode<N, T> {
+public abstract class FlexoPropertyNode<N extends PInnerConceptDecl, T extends FlexoProperty<?>> extends FMLObjectNode<N, T> {
 
 	private static final Logger logger = Logger.getLogger(FlexoPropertyNode.class.getPackage().getName());
 
@@ -74,25 +67,6 @@ public abstract class FlexoPropertyNode<N extends Node, T extends FlexoProperty<
 			((VirtualModelNode) getParent()).getModelObject().addToFlexoProperties(getModelObject());
 		}
 		return this;
-	}
-
-	protected TIdentifier getName(PVariableDeclarator variableDeclarator) {
-		if (variableDeclarator instanceof AIdentifierVariableDeclarator) {
-			return ((AIdentifierVariableDeclarator) variableDeclarator).getIdentifier();
-		}
-		if (variableDeclarator instanceof AInitializerVariableDeclarator) {
-			return ((AInitializerVariableDeclarator) variableDeclarator).getIdentifier();
-		}
-		return null;
-	}
-
-	protected FMLCompilationUnit getCompilationUnit() {
-		return getAnalyser().getCompilationUnit();
-	}
-
-	protected String serializeType(Type type) {
-		return TypeUtils.simpleRepresentation(type);
-
 	}
 
 }

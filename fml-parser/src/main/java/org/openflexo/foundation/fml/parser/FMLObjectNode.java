@@ -38,10 +38,13 @@
 
 package org.openflexo.foundation.fml.parser;
 
+import java.lang.reflect.Type;
 import java.util.List;
 import java.util.logging.Logger;
 
+import org.openflexo.connie.type.TypeUtils;
 import org.openflexo.foundation.fml.AbstractProperty;
+import org.openflexo.foundation.fml.FMLCompilationUnit;
 import org.openflexo.foundation.fml.FMLModelFactory;
 import org.openflexo.foundation.fml.FMLObject;
 import org.openflexo.foundation.fml.FMLPrettyPrintDelegate;
@@ -59,11 +62,15 @@ import org.openflexo.foundation.fml.parser.fmlnodes.JavaRoleNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.PrimitiveRoleNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.VirtualModelNode;
 import org.openflexo.foundation.fml.parser.node.ACompositeIdent;
+import org.openflexo.foundation.fml.parser.node.AIdentifierVariableDeclarator;
+import org.openflexo.foundation.fml.parser.node.AInitializerVariableDeclarator;
 import org.openflexo.foundation.fml.parser.node.APrivateVisibility;
 import org.openflexo.foundation.fml.parser.node.AProtectedVisibility;
 import org.openflexo.foundation.fml.parser.node.APublicVisibility;
 import org.openflexo.foundation.fml.parser.node.Node;
+import org.openflexo.foundation.fml.parser.node.PVariableDeclarator;
 import org.openflexo.foundation.fml.parser.node.PVisibility;
+import org.openflexo.foundation.fml.parser.node.TIdentifier;
 import org.openflexo.foundation.fml.parser.node.Token;
 import org.openflexo.p2pp.P2PPNode;
 import org.openflexo.p2pp.PrettyPrintContext;
@@ -261,6 +268,25 @@ public abstract class FMLObjectNode<N extends Node, T extends FMLPrettyPrintable
 			return Visibility.Private;
 		}
 		return null;
+	}
+
+	protected TIdentifier getName(PVariableDeclarator variableDeclarator) {
+		if (variableDeclarator instanceof AIdentifierVariableDeclarator) {
+			return ((AIdentifierVariableDeclarator) variableDeclarator).getIdentifier();
+		}
+		if (variableDeclarator instanceof AInitializerVariableDeclarator) {
+			return ((AInitializerVariableDeclarator) variableDeclarator).getIdentifier();
+		}
+		return null;
+	}
+
+	protected FMLCompilationUnit getCompilationUnit() {
+		return getAnalyser().getCompilationUnit();
+	}
+
+	protected String serializeType(Type type) {
+		return TypeUtils.simpleRepresentation(type);
+
 	}
 
 }
