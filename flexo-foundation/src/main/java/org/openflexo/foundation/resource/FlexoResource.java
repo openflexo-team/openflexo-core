@@ -180,6 +180,12 @@ public interface FlexoResource<RD extends ResourceData<RD>> extends FlexoObject,
 	public Long getRevision();
 
 	/**
+	 * Sets the revision of this resource.
+	 */
+	@Setter(REVISION)
+	public void setRevision(Long revision);
+
+	/**
 	 * Returns the FlexoServiceManager where this resource is registered
 	 * 
 	 * @return the name of this resource.
