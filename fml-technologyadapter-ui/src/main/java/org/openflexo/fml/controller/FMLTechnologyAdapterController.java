@@ -79,7 +79,7 @@ import org.openflexo.fml.controller.action.DeleteVirtualModelInitializer;
 import org.openflexo.fml.controller.action.ShowFMLRepresentationInitializer;
 import org.openflexo.fml.controller.validation.ValidateActionizer;
 import org.openflexo.fml.controller.view.StandardFlexoConceptView;
-import org.openflexo.fml.controller.view.VirtualModelView;
+import org.openflexo.fml.controller.view.StandardVirtualModelView;
 import org.openflexo.fml.controller.widget.FIBVirtualModelLibraryBrowser;
 import org.openflexo.fml.controller.widget.FlexoConceptInstanceTypeEditor;
 import org.openflexo.fml.controller.widget.FlexoEnumTypeEditor;
@@ -436,7 +436,7 @@ public class FMLTechnologyAdapterController extends TechnologyAdapterController<
 		if (object instanceof FlexoConcept) {
 			FlexoConcept ep = (FlexoConcept) object;
 			if (ep instanceof VirtualModel) {
-				return new VirtualModelView((VirtualModel) ep, controller, perspective);
+				return new StandardVirtualModelView((VirtualModel) ep, controller, perspective);
 			}
 			return new StandardFlexoConceptView(ep, controller, perspective);
 		}
@@ -473,8 +473,11 @@ public class FMLTechnologyAdapterController extends TechnologyAdapterController<
 	}*/
 
 	private static String getContainerBinding(WidgetContext widgetContext, String variableName) {
-		return variableName + "." + (StringUtils.isNotEmpty(widgetContext.getFlexoConceptInstanceAccess())
-				? widgetContext.getFlexoConceptInstanceAccess() + "." : "") + widgetContext.getContainer().toString();
+		return variableName + "."
+				+ (StringUtils.isNotEmpty(widgetContext.getFlexoConceptInstanceAccess())
+						? widgetContext.getFlexoConceptInstanceAccess() + "."
+						: "")
+				+ widgetContext.getContainer().toString();
 	}
 
 	private static FIBWidget makeFlexoResourceSelector(final WidgetContext widgetContext, FIBModelFactory fibModelFactory,

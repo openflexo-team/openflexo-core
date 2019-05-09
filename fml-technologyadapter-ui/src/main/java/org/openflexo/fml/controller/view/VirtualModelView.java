@@ -50,7 +50,7 @@ import org.openflexo.view.controller.model.FlexoPerspective;
  * @author sguerin
  * 
  */
-public class VirtualModelView extends FlexoConceptView<VirtualModel> {
+public abstract class VirtualModelView extends FlexoConceptView<VirtualModel> {
 
 	public VirtualModelView(VirtualModel virtualModel, FlexoController controller, FlexoPerspective perspective) {
 		super(virtualModel, CommonFIB.VIRTUAL_MODEL_VIEW_FIB, controller, perspective);

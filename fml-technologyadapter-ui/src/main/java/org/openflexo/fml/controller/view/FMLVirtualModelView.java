@@ -79,4 +79,10 @@ public class FMLVirtualModelView extends FlexoConceptView<VirtualModel> {
 		((RSyntaxTextArea) rTextScrollPane.getTextArea()).setSyntaxEditingStyle("text/fml");
 	}
 
+	@Override
+	public void willShow() {
+		super.willShow();
+		getFlexoController().getControllerModel().setRightViewVisible(false);
+	}
+
 }

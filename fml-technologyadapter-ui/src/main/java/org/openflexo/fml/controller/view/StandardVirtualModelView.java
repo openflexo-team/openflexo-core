@@ -39,20 +39,25 @@
 package org.openflexo.fml.controller.view;
 
 import org.openflexo.fml.controller.CommonFIB;
-import org.openflexo.foundation.fml.FlexoConcept;
+import org.openflexo.foundation.fml.VirtualModel;
+import org.openflexo.rm.Resource;
 import org.openflexo.view.controller.FlexoController;
 import org.openflexo.view.controller.model.FlexoPerspective;
 
 /**
- * This is the module view representing a standard FlexoConcept
+ * This is the module view representing a {@link VirtualModel}<br>
  * 
  * @author sguerin
  * 
  */
-public class StandardFlexoConceptView extends FlexoConceptView<FlexoConcept> {
+public class StandardVirtualModelView extends VirtualModelView {
 
-	public StandardFlexoConceptView(FlexoConcept flexoConcept, FlexoController controller, FlexoPerspective perspective) {
-		super(flexoConcept, CommonFIB.STANDARD_FLEXO_CONCEPT_VIEW_FIB, controller, perspective);
+	public StandardVirtualModelView(VirtualModel virtualModel, FlexoController controller, FlexoPerspective perspective) {
+		super(virtualModel, CommonFIB.VIRTUAL_MODEL_VIEW_FIB, controller, perspective);
+	}
+
+	public StandardVirtualModelView(VirtualModel virtualModel, Resource fibFile, FlexoController controller, FlexoPerspective perspective) {
+		super(virtualModel, fibFile, controller, perspective);
 	}
 
 	@Override
