@@ -94,6 +94,7 @@ creation_strategy=Strat\u00E9gie de cr\u00E9ation
 cut=Couper
 data=data
 declare_new_variable=declare_new_variable
+default_uri=default_uri
 default_value=default_value
 delete=delete
 deletion_scheme=deletion_scheme

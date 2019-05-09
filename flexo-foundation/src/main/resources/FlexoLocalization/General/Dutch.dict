@@ -94,6 +94,7 @@ creation_strategy=Creation strategy
 cut=Knippen
 data=Data
 declare_new_variable=Declare new variable
+default_uri=Default uri
 default_value=Default value
 delete=Delete
 deletion_scheme=Deletion scheme
