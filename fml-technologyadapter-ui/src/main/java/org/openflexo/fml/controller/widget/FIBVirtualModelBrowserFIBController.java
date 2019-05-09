@@ -40,8 +40,12 @@ package org.openflexo.fml.controller.widget;
 
 import java.util.logging.Logger;
 
+import javax.swing.BorderFactory;
+import javax.swing.SwingUtilities;
+
 import org.openflexo.fml.controller.FMLFIBController;
 import org.openflexo.gina.model.FIBComponent;
+import org.openflexo.gina.swing.view.widget.JFIBImageWidget;
 import org.openflexo.gina.view.GinaViewFactory;
 import org.openflexo.logging.FlexoLogger;
 import org.openflexo.view.controller.FlexoController;
@@ -54,25 +58,64 @@ public class FIBVirtualModelBrowserFIBController extends FMLFIBController {
 		Embedding, Hierarchical, Flat
 	}
 
-	private ViewMode viewMode = ViewMode.Embedding;
+	private ViewMode viewMode;
 
 	public FIBVirtualModelBrowserFIBController(FIBComponent component, GinaViewFactory<?> viewFactory) {
 		super(component, viewFactory);
+		SwingUtilities.invokeLater(new Runnable() {
+			@Override
+			public void run() {
+				setViewMode(ViewMode.Embedding);
+			}
+		});
 	}
 
 	public FIBVirtualModelBrowserFIBController(FIBComponent component, GinaViewFactory<?> viewFactory, FlexoController controller) {
 		super(component, viewFactory, controller);
+		SwingUtilities.invokeLater(new Runnable() {
+			@Override
+			public void run() {
+				setViewMode(ViewMode.Embedding);
+			}
+		});
 	}
 
 	public void setViewModeToEmbedding() {
-		System.out.println("Hop, embedding");
+		setViewMode(ViewMode.Embedding);
 	}
 
 	public void setViewModeToHierarchical() {
-		System.out.println("Hop, hierarchical");
+		setViewMode(ViewMode.Hierarchical);
 	}
 
 	public void setViewModeToFlat() {
-		System.out.println("Hop, flat");
+		setViewMode(ViewMode.Flat);
 	}
+
+	public ViewMode getViewMode() {
+		return viewMode;
+	}
+
+	public void setViewMode(ViewMode viewMode) {
+		if ((viewMode == null && this.viewMode != null) || (viewMode != null && !viewMode.equals(this.viewMode))) {
+			ViewMode oldValue = this.viewMode;
+			this.viewMode = viewMode;
+			getPropertyChangeSupport().firePropertyChange("viewMode", oldValue, viewMode);
+
+			JFIBImageWidget flatIconWidget = (JFIBImageWidget) viewForComponent("FlatIcon");
+			JFIBImageWidget hierarchicalIconWidget = (JFIBImageWidget) viewForComponent("HierarchicalIcon");
+			JFIBImageWidget embeddingIconWidget = (JFIBImageWidget) viewForComponent("EmbeddingIcon");
+
+			if (flatIconWidget != null)
+				flatIconWidget.getJComponent()
+						.setBorder(viewMode == ViewMode.Flat ? BorderFactory.createEtchedBorder() : BorderFactory.createEmptyBorder());
+			if (hierarchicalIconWidget != null)
+				hierarchicalIconWidget.getJComponent().setBorder(
+						viewMode == ViewMode.Hierarchical ? BorderFactory.createEtchedBorder() : BorderFactory.createEmptyBorder());
+			if (embeddingIconWidget != null)
+				embeddingIconWidget.getJComponent()
+						.setBorder(viewMode == ViewMode.Embedding ? BorderFactory.createEtchedBorder() : BorderFactory.createEmptyBorder());
+		}
+	}
+
 }
