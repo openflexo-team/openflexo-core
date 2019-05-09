@@ -99,8 +99,6 @@ public abstract class DefaultTechnologyAdapterControllerService extends FlexoSer
 	 * Load all available technology adapters<br>
 	 * Retrieve all {@link TechnologyAdapter} available from classpath. <br>
 	 * Map contains the TechnologyAdapter class name as key and the TechnologyAdapter itself as value.
-	 * 
-	 * @return the retrieved TechnologyModuleDefinition map.
 	 */
 	private void loadAvailableTechnologyAdapterControllers() {
 		if (loadedAdapters == null) {
@@ -126,6 +124,25 @@ public abstract class DefaultTechnologyAdapterControllerService extends FlexoSer
 			loadedAdapters.put(technologyAdapterController.getClass(), technologyAdapterController);
 		}
 		logger.info("Loaded " + technologyAdapterController.getClass());
+	}
+
+	/**
+	 * Load all available technology adapters plugins<br>
+	 * Retrieve all {@link TechnologyAdapterPlugin} available from classpath. <br>
+	 * 
+	 */
+	private void loadAvailableTechnologyAdapterPlugins() {
+		logger.info("Loading available technology adapter plugins...");
+		for (TechnologyAdapterPlugin<?> plugin : ServiceLoader.load(TechnologyAdapterPlugin.class)) {
+			registerTechnologyAdapterPlugin(plugin);
+		}
+		logger.info("Loading available technology adapter plugins. Done.");
+	}
+
+	private void registerTechnologyAdapterPlugin(TechnologyAdapterPlugin<?> technologyAdapterPlugin) {
+		logger.fine("Loading plugin " + technologyAdapterPlugin.getClass());
+		technologyAdapterPlugin.setTechnologyAdapterService(this);
+		technologyAdapterPlugin.getTargetTechnologyAdapterController().addToTechnologyAdapterPlugins(technologyAdapterPlugin);
 	}
 
 	/**
@@ -283,6 +300,7 @@ public abstract class DefaultTechnologyAdapterControllerService extends FlexoSer
 				}
 			}
 		}
+		loadAvailableTechnologyAdapterPlugins();
 		status = Status.Started;
 	}
 
@@ -297,6 +315,10 @@ public abstract class DefaultTechnologyAdapterControllerService extends FlexoSer
 		TechnologyAdapterController<?> tac = getTechnologyAdapterController((TechnologyAdapter) technologyAdapter);
 		if (tac != null) {
 			tac.activate();
+		}
+
+		for (TechnologyAdapterController<?> technologyAdapterController : loadedAdapters.values()) {
+			technologyAdapterController.activateActivablePlugins();
 		}
 	}
 

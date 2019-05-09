@@ -132,6 +132,8 @@ public abstract class TechnologyAdapterController<TA extends TechnologyAdapter<T
 
 	private final Map<Class<? extends CustomType>, CustomTypeEditor> customTypeEditors = new LinkedHashMap<>();
 
+	private List<TechnologyAdapterPlugin<TA>> plugins = new ArrayList<>();
+
 	/**
 	 * Returns applicable {@link ProjectNatureService}
 	 * 
@@ -222,6 +224,7 @@ public abstract class TechnologyAdapterController<TA extends TechnologyAdapter<T
 			if (module.activateAdvancedActions(getTechnologyAdapter())) {
 				initializeAdvancedActions(controller.getControllerActionInitializer());
 			}
+			activateActivablePlugins(module);
 		}
 	}
 
@@ -631,6 +634,14 @@ public abstract class TechnologyAdapterController<TA extends TechnologyAdapter<T
 		return returned;
 	}
 
+	public void addToTechnologyAdapterPlugins(TechnologyAdapterPlugin plugin) {
+		plugins.add(plugin);
+	}
+
+	public void removeFromTechnologyAdapterPlugins(TechnologyAdapterPlugin plugin) {
+		plugins.remove(plugin);
+	}
+
 	public void resourceLoading(TechnologyAdapterResource<?, TA> resource) {
 	}
 
@@ -643,6 +654,25 @@ public abstract class TechnologyAdapterController<TA extends TechnologyAdapter<T
 
 	public ValidationReport getValidationReport(ResourceData<?> resourceData) {
 		return null;
+	}
+
+	public void activateActivablePlugins() {
+		for (FlexoModule<?> flexoModule : getServiceManager().getModuleLoader().getLoadedModuleInstances()) {
+			if (flexoModule.isActive()) {
+				activateActivablePlugins(flexoModule);
+			}
+		}
+	}
+
+	public void activateActivablePlugins(FlexoModule<?> module) {
+		FlexoController controller = module.getFlexoController();
+		if (controller != null) {
+			for (TechnologyAdapterPlugin<TA> plugin : plugins) {
+				if (plugin.isActivable(module)) {
+					plugin.activate(module);
+				}
+			}
+		}
 	}
 
 }
