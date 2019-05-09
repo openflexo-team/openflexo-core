@@ -8,11 +8,12 @@
       <Children id="5" data="folder.children" name="subFolders" />
       <Children id="6" data="folder.resources" name="resource" />
     </BrowserElement>
-    <BrowserElement id="7" dataClassName="org.openflexo.foundation.fml.rm.VirtualModelResource" icon="controller.iconForObject(virtualModel)" label="(virtualModel.name + &quot;.fml&quot;)" enabled="virtualModel.isLoaded" editableLabel="virtualModel.name" isEditable="false" name="virtualModel">
-      <Children id="8" visible="virtualModel.isLoaded" data="virtualModel.contents" name="subresources" />
-      <Children id="9" visible="virtualModel.isLoaded" data="virtualModel.loadedVirtualModel.allRootFlexoConcepts" name="rootFlexoConcepts" />
+    <BrowserElement id="7" dataClassName="org.openflexo.foundation.fml.rm.VirtualModelResource" icon="controller.iconForObject(virtualModelResource)" label="(virtualModelResource.name + &quot;.fml&quot;)" enabled="virtualModelResource.isLoaded" editableLabel="virtualModelResource.name" isEditable="false" name="virtualModelResource">
+      <Children visible="virtualModelResource.isLoaded" data="virtualModelResource.containedVMI" name="containedVMI" />
+      <Children id="8" visible="virtualModelResource.isLoaded" data="virtualModelResource.contents" name="subresources" />
+     <!--  <Children id="9" visible="virtualModelResource.isLoaded" data="virtualModelResource.loadedVirtualModel.allRootFlexoConcepts" name="rootFlexoConcepts" /> -->
       <BrowserRemoveAction id="10" method="controller.deleteVirtualModel(selected)" name="delete_virtual_model" />
-      <BrowserAddAction id="11" method="controller.createFlexoConcept(selected.virtualModel)" name="create_flexo_concept" />
+      <BrowserAddAction id="11" method="controller.createFlexoConcept(selected.virtualModelResource)" name="create_flexo_concept" />
     </BrowserElement>
     <BrowserElement id="12" dataClassName="org.openflexo.foundation.fml.FMLLocalizedDictionary" icon="controller.iconForObject(inspector)" label="&quot;Locales&quot;" isEditable="false" name="inspector" />
     <BrowserElement id="13" dataClassName="org.openflexo.foundation.fml.FlexoConcept" icon="controller.iconForObject(flexoConcept)" label="flexoConcept.name" editableLabel="flexoConcept.name" isEditable="false" name="flexoConcept">
@@ -22,10 +23,10 @@
       <BrowserRemoveAction id="17" method="controller.deleteFlexoConcept(selected)" name="delete_flexo_concept" />
       <BrowserAddAction id="18" method="controller.createFlexoConcept(selected)" name="create_flexo_concept" />
     </BrowserElement>
-    <BrowserElement id="19" visible="controller.isVisibleInBrowser(resource)" dataClassName="org.openflexo.foundation.resource.FlexoResource" icon="controller.iconForObject(resource)" label="resource.displayName" enabled="resource.isLoaded" isEditable="false" name="resource">
-      <Children id="20" visible="resource.isLoaded" data="resource.contents" name="subResources" />
+    <BrowserElement id="22" visible="controller.isVisibleInBrowser(resource)" dataClassName="org.openflexo.foundation.resource.FlexoResource" icon="controller.iconForObject(resource)" label="resource.displayName" enabled="resource.isLoaded" isEditable="false" name="resource">
+      <Children id="23" visible="resource.isLoaded" data="resource.contents" name="subResources" />
     </BrowserElement>
   </Browser>
-  <LocalizedDictionary id="21" />
-  <FIBVariable id="22" type="org.openflexo.foundation.FlexoServiceManager" name="data" />
+  <LocalizedDictionary id="24" />
+  <FIBVariable id="25" type="org.openflexo.foundation.FlexoServiceManager" name="data" />
 </Panel>
