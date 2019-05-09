@@ -47,6 +47,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.openflexo.connie.type.CustomType;
+import org.openflexo.connie.type.TypeUtils;
 import org.openflexo.foundation.FlexoService;
 import org.openflexo.foundation.FlexoServiceImpl;
 import org.openflexo.foundation.FlexoServiceManager.ServiceRegistered;
@@ -128,20 +129,20 @@ public abstract class DefaultTechnologyAdapterControllerService extends FlexoSer
 
 	/**
 	 * Load all available technology adapters plugins<br>
-	 * Retrieve all {@link TechnologyAdapterPlugin} available from classpath. <br>
+	 * Retrieve all {@link TechnologyAdapterPluginController} available from classpath. <br>
 	 * 
 	 */
 	private void loadAvailableTechnologyAdapterPlugins() {
 		logger.info("Loading available technology adapter plugins...");
-		for (TechnologyAdapterPlugin<?> plugin : ServiceLoader.load(TechnologyAdapterPlugin.class)) {
+		for (TechnologyAdapterPluginController<?> plugin : ServiceLoader.load(TechnologyAdapterPluginController.class)) {
 			registerTechnologyAdapterPlugin(plugin);
 		}
 		logger.info("Loading available technology adapter plugins. Done.");
 	}
 
-	private void registerTechnologyAdapterPlugin(TechnologyAdapterPlugin<?> technologyAdapterPlugin) {
+	private void registerTechnologyAdapterPlugin(TechnologyAdapterPluginController<?> technologyAdapterPlugin) {
 		logger.fine("Loading plugin " + technologyAdapterPlugin.getClass());
-		technologyAdapterPlugin.setTechnologyAdapterService(this);
+		technologyAdapterPlugin.setServiceManager(getServiceManager());
 		technologyAdapterPlugin.getTargetTechnologyAdapterController().addToTechnologyAdapterPlugins(technologyAdapterPlugin);
 	}
 
@@ -371,6 +372,17 @@ public abstract class DefaultTechnologyAdapterControllerService extends FlexoSer
 					return returned;
 				}
 			}
+		}
+		return null;
+	}
+
+	@Override
+	public <P extends TechnologyAdapterPluginController<?>> P getPlugin(Class<P> pluginClass) {
+		Class<? extends TechnologyAdapter> taClass = (Class<? extends TechnologyAdapter>) TypeUtils
+				.getBaseClass(TypeUtils.getTypeArgument(pluginClass, TechnologyAdapterPluginController.class, 0));
+		if (taClass != null) {
+			TechnologyAdapter ta = getServiceManager().getTechnologyAdapterService().getTechnologyAdapter(taClass);
+			return (P) getTechnologyAdapterController(ta).getPlugin(pluginClass);
 		}
 		return null;
 	}

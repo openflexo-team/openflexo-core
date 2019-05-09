@@ -136,4 +136,6 @@ public interface TechnologyAdapterControllerService extends FlexoService, Custom
 	@Override
 	public <T extends CustomType> CustomTypeEditor<T> getCustomTypeEditor(Class<T> typeClass);
 
+	public <P extends TechnologyAdapterPluginController<?>> P getPlugin(Class<P> pluginClass);
+
 }

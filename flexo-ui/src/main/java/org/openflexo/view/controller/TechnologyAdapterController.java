@@ -132,7 +132,7 @@ public abstract class TechnologyAdapterController<TA extends TechnologyAdapter<T
 
 	private final Map<Class<? extends CustomType>, CustomTypeEditor> customTypeEditors = new LinkedHashMap<>();
 
-	private List<TechnologyAdapterPlugin<TA>> plugins = new ArrayList<>();
+	private List<TechnologyAdapterPluginController<TA>> plugins = new ArrayList<>();
 
 	/**
 	 * Returns applicable {@link ProjectNatureService}
@@ -634,11 +634,11 @@ public abstract class TechnologyAdapterController<TA extends TechnologyAdapter<T
 		return returned;
 	}
 
-	public void addToTechnologyAdapterPlugins(TechnologyAdapterPlugin plugin) {
+	public void addToTechnologyAdapterPlugins(TechnologyAdapterPluginController plugin) {
 		plugins.add(plugin);
 	}
 
-	public void removeFromTechnologyAdapterPlugins(TechnologyAdapterPlugin plugin) {
+	public void removeFromTechnologyAdapterPlugins(TechnologyAdapterPluginController plugin) {
 		plugins.remove(plugin);
 	}
 
@@ -667,12 +667,21 @@ public abstract class TechnologyAdapterController<TA extends TechnologyAdapter<T
 	public void activateActivablePlugins(FlexoModule<?> module) {
 		FlexoController controller = module.getFlexoController();
 		if (controller != null) {
-			for (TechnologyAdapterPlugin<TA> plugin : plugins) {
+			for (TechnologyAdapterPluginController<TA> plugin : plugins) {
 				if (plugin.isActivable(module)) {
 					plugin.activate(module);
 				}
 			}
 		}
+	}
+
+	public <P extends TechnologyAdapterPluginController<?>> P getPlugin(Class<P> pluginClass) {
+		for (TechnologyAdapterPluginController<TA> plugin : plugins) {
+			if (pluginClass.isAssignableFrom(plugin.getClass())) {
+				return (P) plugin;
+			}
+		}
+		return null;
 	}
 
 }

@@ -41,10 +41,12 @@ package org.openflexo.view.controller;
 
 import java.util.logging.Logger;
 
-import org.openflexo.foundation.nature.ProjectNatureService;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
-import org.openflexo.foundation.technologyadapter.TechnologyAdapterService;
+import org.openflexo.foundation.technologyadapter.TechnologyAdapterPlugin;
+import org.openflexo.localization.LocalizedDelegate;
+import org.openflexo.localization.LocalizedDelegateImpl;
 import org.openflexo.module.FlexoModule;
+import org.openflexo.rm.ResourceLocator;
 
 /**
  * This class represents a technology-specific plugin
@@ -52,39 +54,11 @@ import org.openflexo.module.FlexoModule;
  * @author sylvain
  * 
  */
-public abstract class TechnologyAdapterPlugin<TA extends TechnologyAdapter<TA>> {
+public abstract class TechnologyAdapterPluginController<TA extends TechnologyAdapter<TA>> extends TechnologyAdapterPlugin<TA> {
 
-	static final Logger logger = Logger.getLogger(TechnologyAdapterPlugin.class.getPackage().getName());
+	static final Logger logger = Logger.getLogger(TechnologyAdapterPluginController.class.getPackage().getName());
 
-	private TechnologyAdapterControllerService technologyAdapterControllerService;
-
-	/**
-	 * Returns applicable {@link ProjectNatureService}
-	 * 
-	 * @return
-	 */
-	public TechnologyAdapterControllerService getTechnologyAdapterControllerService() {
-		return technologyAdapterControllerService;
-	}
-
-	/**
-	 * Sets applicable {@link ProjectNatureService}
-	 * 
-	 * @param technologyAdapterService
-	 */
-	public void setTechnologyAdapterService(TechnologyAdapterControllerService technologyAdapterControllerService) {
-		this.technologyAdapterControllerService = technologyAdapterControllerService;
-	}
-
-	/**
-	 * Return TechnologyAdapter
-	 * 
-	 * @return
-	 */
-	public final TA getTargetTechnologyAdapter() {
-		return technologyAdapterControllerService.getServiceManager().getService(TechnologyAdapterService.class)
-				.getTechnologyAdapter(getTargetTechnologyAdapterClass());
-	}
+	private LocalizedDelegate locales;
 
 	/**
 	 * Return TechnologyAdapterController
@@ -92,16 +66,8 @@ public abstract class TechnologyAdapterPlugin<TA extends TechnologyAdapter<TA>> 
 	 * @return
 	 */
 	public final TechnologyAdapterController<TA> getTargetTechnologyAdapterController() {
-		return technologyAdapterControllerService.getServiceManager().getService(TechnologyAdapterControllerService.class)
-				.getTechnologyAdapterController(getTargetTechnologyAdapter());
+		return getTechnologyAdapterControllerService().getTechnologyAdapterController(getTargetTechnologyAdapter());
 	}
-
-	/**
-	 * Return TechnologyAdapter class targetted by this plugin
-	 * 
-	 * @return
-	 */
-	public abstract Class<TA> getTargetTechnologyAdapterClass();
 
 	/**
 	 * Called to activate the {@link TechnologyAdapterController} We do it for all loaded modules. This means that all features and GUIs
@@ -110,6 +76,10 @@ public abstract class TechnologyAdapterPlugin<TA extends TechnologyAdapter<TA>> 
 	 * From a technical point of view, we first initialize inspectors and then actions
 	 */
 	public void activate(FlexoModule<?> module) {
+
+		if (locales == null) {
+			initLocales();
+		}
 
 		logger.info("Activate plugin " + getClass() + "for module " + module);
 
@@ -127,5 +97,21 @@ public abstract class TechnologyAdapterPlugin<TA extends TechnologyAdapter<TA>> 
 	protected abstract void initializeActions(ControllerActionInitializer actionInitializer);
 
 	public abstract boolean isActivable(FlexoModule<?> module);
+
+	public TechnologyAdapterControllerService getTechnologyAdapterControllerService() {
+		return getServiceManager().getService(TechnologyAdapterControllerService.class);
+	}
+
+	private void initLocales() {
+		locales = new LocalizedDelegateImpl(ResourceLocator.locateResource(getLocalizationDirectory()),
+				getServiceManager().getLocalizationService().getFlexoLocalizer(),
+				getServiceManager().getLocalizationService().getAutomaticSaving(), true);
+	}
+
+	protected abstract String getLocalizationDirectory();
+
+	public LocalizedDelegate getLocales() {
+		return locales;
+	}
 
 }
