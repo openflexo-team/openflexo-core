@@ -206,6 +206,24 @@ public abstract class ResourceRepositoryImpl<R extends FlexoResource<?>, I> exte
 		return returned;
 	}
 
+	/**
+	 * Return first found resource matching supplied serialization artefact
+	 * 
+	 * @param serializationArtefact
+	 * @return
+	 */
+	public R getResource(I serializationArtefact) {
+
+		// TODO: perf issue ?
+
+		for (R r : getAllResources()) {
+			if (serializationArtefact.equals(r.getIODelegate().getSerializationArtefact())) {
+				return r;
+			}
+		}
+		return null;
+	}
+
 	/* (non-Javadoc)
 	 * @see org.openflexo.foundation.resource.ResourceRepository#registerResource(R)
 	 */
