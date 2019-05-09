@@ -81,6 +81,7 @@ import org.openflexo.foundation.fml.action.CreateTopLevelVirtualModel;
 import org.openflexo.foundation.fml.action.DeleteFlexoConceptObjects;
 import org.openflexo.foundation.fml.action.DeleteVirtualModel;
 import org.openflexo.foundation.fml.rm.VirtualModelResource;
+import org.openflexo.foundation.fml.rm.VirtualModelResourceFactory;
 import org.openflexo.foundation.project.FlexoProjectReference;
 import org.openflexo.foundation.project.FlexoProjectResource;
 import org.openflexo.foundation.resource.FlexoResource;
@@ -533,6 +534,10 @@ public class FlexoFIBController extends FIBController implements GraphicalFlexoO
 
 	@NotificationUnsafe
 	public boolean shouldBeDisplayed(RepositoryFolder<?, ?> folder) {
+		// Folders representing a VirtualModel should not be displayed here
+		if (folder.getName().endsWith(VirtualModelResourceFactory.FML_SUFFIX)) {
+			return false;
+		}
 		if (folder.isRootFolder()) {
 			return true;
 		}
