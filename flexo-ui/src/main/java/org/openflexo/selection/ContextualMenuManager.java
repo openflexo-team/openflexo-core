@@ -480,7 +480,7 @@ public class ContextualMenuManager {
 		public JMenu makeMenu(FlexoObject focusedObject) {
 			boolean addSeparator = false;
 			JMenu returned = new JMenu();
-			returned.setText(getActionMenu().getLocalizedName(focusedObject.getLocales()));
+			returned.setText(getActionMenu().getLocalizedName(controller.getModuleLocales()));
 			if (getActionMenu().getSmallIcon() != null) {
 				returned.setIcon(getActionMenu().getSmallIcon());
 			}

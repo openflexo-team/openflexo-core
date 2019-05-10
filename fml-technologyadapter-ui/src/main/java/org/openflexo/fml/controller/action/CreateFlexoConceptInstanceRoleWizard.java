@@ -38,16 +38,20 @@
 
 package org.openflexo.fml.controller.action;
 
+import java.awt.Image;
 import java.util.logging.Logger;
 
 import org.openflexo.connie.DataBinding;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.action.CreateFlexoConceptInstanceRole;
-import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.foundation.fml.rt.FMLRTModelSlot;
+import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.gina.annotation.FIBPanel;
+import org.openflexo.icon.FMLRTIconLibrary;
+import org.openflexo.icon.IconFactory;
+import org.openflexo.icon.IconLibrary;
 import org.openflexo.view.controller.FlexoController;
 
 public class CreateFlexoConceptInstanceRoleWizard extends AbstractCreateFlexoRoleWizard<CreateFlexoConceptInstanceRole, FMLRTModelSlot> {
@@ -69,6 +73,11 @@ public class CreateFlexoConceptInstanceRoleWizard extends AbstractCreateFlexoRol
 	@Override
 	public String getWizardTitle() {
 		return getAction().getLocales().localizedForKey("create_flexo_concept_instance_role");
+	}
+
+	@Override
+	public Image getDefaultPageImage() {
+		return IconFactory.getImageIcon(FMLRTIconLibrary.FLEXO_CONCEPT_INSTANCE_BIG_ICON, IconLibrary.NEW_32_32).getImage();
 	}
 
 	@Override

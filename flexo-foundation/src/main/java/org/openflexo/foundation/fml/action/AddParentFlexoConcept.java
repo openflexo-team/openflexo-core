@@ -63,7 +63,7 @@ public class AddParentFlexoConcept extends FlexoAction<AddParentFlexoConcept, Fl
 	private static final Logger logger = Logger.getLogger(AddParentFlexoConcept.class.getPackage().getName());
 
 	public static FlexoActionFactory<AddParentFlexoConcept, FlexoConcept, FMLObject> actionType = new FlexoActionFactory<AddParentFlexoConcept, FlexoConcept, FMLObject>(
-			"add_parent_flexo_concept", FlexoActionFactory.defaultGroup, FlexoActionFactory.NORMAL_ACTION_TYPE) {
+			"add_parent_flexo_concept", FlexoActionFactory.advancedGroup, FlexoActionFactory.NORMAL_ACTION_TYPE) {
 
 		/**
 		 * Factory method

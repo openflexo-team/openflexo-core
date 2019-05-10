@@ -63,7 +63,7 @@ public class AddUseDeclaration extends FlexoAction<AddUseDeclaration, VirtualMod
 	private static final Logger logger = Logger.getLogger(AddUseDeclaration.class.getPackage().getName());
 
 	public static FlexoActionFactory<AddUseDeclaration, VirtualModel, FMLObject> actionType = new FlexoActionFactory<AddUseDeclaration, VirtualModel, FMLObject>(
-			"declare_use_of_model_slot", FlexoActionFactory.defaultGroup, FlexoActionFactory.NORMAL_ACTION_TYPE) {
+			"declare_use_of_model_slot", FlexoActionFactory.advancedGroup, FlexoActionFactory.NORMAL_ACTION_TYPE) {
 
 		/**
 		 * Factory method
