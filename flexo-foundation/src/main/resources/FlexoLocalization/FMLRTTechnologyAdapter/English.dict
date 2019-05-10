@@ -1,8 +1,3 @@
-Capteur\ [ID\=2]=Capteur [ID\=2]
-Capteur\ [ID\=7]=Capteur [ID\=7]
-Culture\ [ID\=1]=Culture [ID\=1]
-Type\ [ID\=1]=Type [ID\=1]
-TypeSouche\ [ID\=10]=TypeSouche [ID\=10]
 cannot_instantiate_enum=Cannot instantiate enum
 define_new_concept_instance=Define new concept instance
 describe_flexo_concept_instance=Describe flexo concept instance
