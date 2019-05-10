@@ -39,8 +39,10 @@
 
 package org.openflexo.view.controller;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Map;
 import java.util.ServiceLoader;
 import java.util.logging.Level;
@@ -376,6 +378,13 @@ public abstract class DefaultTechnologyAdapterControllerService extends FlexoSer
 		return null;
 	}
 
+	/**
+	 * Return singleton instance of supplied Plugin class
+	 * 
+	 * @param <P>
+	 * @param pluginClass
+	 * @return
+	 */
 	@Override
 	public <P extends TechnologyAdapterPluginController<?>> P getPlugin(Class<P> pluginClass) {
 		Class<? extends TechnologyAdapter> taClass = (Class<? extends TechnologyAdapter>) TypeUtils
@@ -385,6 +394,20 @@ public abstract class DefaultTechnologyAdapterControllerService extends FlexoSer
 			return (P) getTechnologyAdapterController(ta).getPlugin(pluginClass);
 		}
 		return null;
+	}
+
+	/**
+	 * Return the list of all activated {@link TechnologyAdapterPluginController}
+	 * 
+	 * @return
+	 */
+	@Override
+	public List<TechnologyAdapterPluginController<?>> getActivatedPlugins() {
+		List<TechnologyAdapterPluginController<?>> returned = new ArrayList<>();
+		for (TechnologyAdapterController<?> technologyAdapterController : loadedAdapters.values()) {
+			returned.addAll(technologyAdapterController.getPlugins());
+		}
+		return returned;
 	}
 
 }

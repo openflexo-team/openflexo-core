@@ -684,4 +684,13 @@ public abstract class TechnologyAdapterController<TA extends TechnologyAdapter<T
 		return null;
 	}
 
+	/**
+	 * Return list of all activated TechnologyAdapter Plugins
+	 * 
+	 * @return
+	 */
+	public List<TechnologyAdapterPluginController<TA>> getPlugins() {
+		return plugins;
+	}
+
 }

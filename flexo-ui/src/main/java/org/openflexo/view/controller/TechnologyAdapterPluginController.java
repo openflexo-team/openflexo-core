@@ -41,12 +41,15 @@ package org.openflexo.view.controller;
 
 import java.util.logging.Logger;
 
+import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterPlugin;
 import org.openflexo.localization.LocalizedDelegate;
 import org.openflexo.localization.LocalizedDelegateImpl;
 import org.openflexo.module.FlexoModule;
 import org.openflexo.rm.ResourceLocator;
+import org.openflexo.view.ModuleView;
+import org.openflexo.view.controller.model.FlexoPerspective;
 
 /**
  * This class represents a technology-specific plugin
@@ -113,5 +116,9 @@ public abstract class TechnologyAdapterPluginController<TA extends TechnologyAda
 	public LocalizedDelegate getLocales() {
 		return locales;
 	}
+
+	public abstract boolean handleObject(FlexoObject object);
+
+	public abstract ModuleView<?> createModuleViewForObject(FlexoObject object, FlexoController controller, FlexoPerspective perspective);
 
 }
