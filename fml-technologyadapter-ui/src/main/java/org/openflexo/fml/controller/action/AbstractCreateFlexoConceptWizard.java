@@ -347,4 +347,10 @@ public abstract class AbstractCreateFlexoConceptWizard<A extends AbstractCreateF
 
 	}
 
+	@Override
+	public void cancel() {
+		super.cancel();
+		getAction().cancelExecution();
+	}
+
 }

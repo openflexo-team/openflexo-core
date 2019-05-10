@@ -96,7 +96,6 @@ import org.openflexo.foundation.fml.FMLValidationReport;
 import org.openflexo.foundation.fml.FlexoBehaviour;
 import org.openflexo.foundation.fml.FlexoBehaviourParameter.WidgetType;
 import org.openflexo.foundation.fml.FlexoConcept;
-import org.openflexo.foundation.fml.FlexoConceptInstanceRole;
 import org.openflexo.foundation.fml.FlexoConceptInstanceType;
 import org.openflexo.foundation.fml.FlexoEnum;
 import org.openflexo.foundation.fml.FlexoEnumType;
@@ -109,16 +108,14 @@ import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.VirtualModelInstanceType;
 import org.openflexo.foundation.fml.WidgetContext;
 import org.openflexo.foundation.fml.action.DeleteFlexoConceptObjects;
-import org.openflexo.foundation.fml.editionaction.DeleteAction;
 import org.openflexo.foundation.fml.editionaction.EditionAction;
 import org.openflexo.foundation.fml.rm.VirtualModelResource;
 import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstanceModelSlot;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
-import org.openflexo.foundation.fml.rt.editionaction.AbstractSelectFlexoConceptInstance;
-import org.openflexo.foundation.fml.rt.editionaction.AbstractSelectVirtualModelInstance;
-import org.openflexo.foundation.fml.rt.editionaction.AddFlexoConceptInstance;
+import org.openflexo.foundation.fml.ta.CreateFlexoConcept;
+import org.openflexo.foundation.fml.ta.FlexoConceptRole;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.resource.FlexoResourceType;
 import org.openflexo.foundation.resource.ResourceData;
@@ -347,8 +344,8 @@ public class FMLTechnologyAdapterController extends TechnologyAdapterController<
 	 */
 	@Override
 	public ImageIcon getIconForFlexoRole(Class<? extends FlexoRole<?>> flexoRoleClass) {
-		if (FlexoConceptInstanceRole.class.isAssignableFrom(flexoRoleClass)) {
-			return FMLRTIconLibrary.FLEXO_CONCEPT_INSTANCE_ICON;
+		if (FlexoConceptRole.class.isAssignableFrom(flexoRoleClass)) {
+			return FMLIconLibrary.FLEXO_CONCEPT_ICON;
 		}
 		return null;
 	}
@@ -356,17 +353,8 @@ public class FMLTechnologyAdapterController extends TechnologyAdapterController<
 	@Override
 	public ImageIcon getIconForEditionAction(Class<? extends EditionAction> editionActionClass) {
 
-		if (AddFlexoConceptInstance.class.isAssignableFrom(editionActionClass)) {
-			return IconFactory.getImageIcon(FMLRTIconLibrary.FLEXO_CONCEPT_INSTANCE_ICON, IconLibrary.DUPLICATE);
-		}
-		else if (AbstractSelectFlexoConceptInstance.class.isAssignableFrom(editionActionClass)) {
-			return IconFactory.getImageIcon(FMLRTIconLibrary.FLEXO_CONCEPT_INSTANCE_ICON, IconLibrary.IMPORT);
-		}
-		else if (AbstractSelectVirtualModelInstance.class.isAssignableFrom(editionActionClass)) {
-			return IconFactory.getImageIcon(FMLRTIconLibrary.VIRTUAL_MODEL_INSTANCE_ICON, IconLibrary.IMPORT);
-		}
-		else if (DeleteAction.class.isAssignableFrom(editionActionClass)) {
-			return IconFactory.getImageIcon(FMLRTIconLibrary.FLEXO_CONCEPT_INSTANCE_ICON, IconLibrary.DELETE);
+		if (CreateFlexoConcept.class.isAssignableFrom(editionActionClass)) {
+			return IconFactory.getImageIcon(FMLIconLibrary.FLEXO_CONCEPT_ICON, IconLibrary.DUPLICATE);
 		}
 		return super.getIconForEditionAction(editionActionClass);
 	}

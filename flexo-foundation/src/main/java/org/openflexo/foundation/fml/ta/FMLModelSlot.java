@@ -45,6 +45,7 @@ import org.openflexo.foundation.fml.FMLTechnologyAdapter;
 import org.openflexo.foundation.fml.FlexoRole;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.annotations.DeclareActorReferences;
+import org.openflexo.foundation.fml.annotations.DeclareEditionActions;
 import org.openflexo.foundation.fml.annotations.DeclareFlexoRoles;
 import org.openflexo.foundation.fml.annotations.FML;
 import org.openflexo.foundation.fml.rt.AbstractVirtualModelInstanceModelFactory;
@@ -61,7 +62,7 @@ import org.openflexo.pamela.annotations.XMLElement;
  *
  */
 @DeclareFlexoRoles({ FlexoConceptRole.class })
-// @DeclareEditionActions({ AddFlexoConceptInstance.class, AddVirtualModelInstance.class })
+@DeclareEditionActions({ CreateFlexoConcept.class })
 // @DeclareFetchRequests({ SelectFlexoConceptInstance.class, SelectVirtualModelInstance.class })
 @DeclareActorReferences({ FMLModelSlotInstance.class, FMLObjectActorReference.class })
 @ModelEntity
@@ -76,12 +77,9 @@ public interface FMLModelSlot extends ModelSlot<VirtualModel> {
 
 		@Override
 		public <PR extends FlexoRole<?>> String defaultFlexoRoleName(Class<PR> flexoRoleClass) {
-			/*if (FlexoConceptInstanceRole.class.isAssignableFrom(flexoRoleClass)) {
-				return "flexoConceptInstance";
+			if (FlexoConceptRole.class.isAssignableFrom(flexoRoleClass)) {
+				return "concept";
 			}
-			else if (PrimitiveRole.class.isAssignableFrom(flexoRoleClass)) {
-				return "primitive";
-			}*/
 			logger.warning("Unexpected role: " + flexoRoleClass.getName());
 			return null;
 		}
