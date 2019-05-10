@@ -4,8 +4,8 @@
     <Image id="2" imageWidth="64" sizeAdjustment="OriginalSize" imageFile="../../Icons/Validation/FixIssue_64x64.png" align="left" imageHeight="64" localize="true" constraints="border(location=east)" name="Image" />
     <Panel id="3" align="left" borderTop="0" borderLeft="0" trackViewPortHeight="true" trackViewPortWidth="true" borderBottom="0" border="empty" sizeAdjustment="OriginalSize" layout="border" borderRight="0" constraints="border(location=center)" name="FIBPanel3">
       <Label id="4" label="fix_issue" align="left" localize="true" constraints="border(location=north)" font="SansSerif,1,16" name="Label" />
-      <Panel id="5" align="left" borderTop="0" flowAlignment="LEFT" borderLeft="0" trackViewPortHeight="true" trackViewPortWidth="true" borderBottom="0" border="empty" sizeAdjustment="OriginalSize" layout="flow" borderRight="0" vGap="0" hGap="0" backgroundColor="255,255,255" visible="data.currentStep.messageTypeIsToBeDisplayed" opaque="true" constraints="border(location=south)" name="FIBPanel">
-        <Image id="6" imageWidth="16" sizeAdjustment="OriginalSize" align="right" imageHeight="16" localize="true" data="data.currentStep.issueMessageIcon.image" constraints="flow()" name="Image" />
+      <Panel id="5" align="left" borderTop="0" flowAlignment="LEFT" borderLeft="0" trackViewPortHeight="true" trackViewPortWidth="true" borderBottom="0" border="empty" sizeAdjustment="OriginalSize" layout="flow" borderRight="0" vGap="0" hGap="0" backgroundColor="255,255,255" opaque="true" constraints="border(location=south)" name="FIBPanel">
+        <Image id="6" imageWidth="16" sizeAdjustment="OriginalSize" align="right" imageHeight="16" localize="true" data="controller.iconForObject(data.issue).image" constraints="flow()" name="Image" />
         <Label id="7" label="label" align="left" data="data.validationModel.localizedIssueMessage(data.issue)" constraints="flow()" font="SansSerif,0,11" name="Label" />
       </Panel>
     </Panel>
