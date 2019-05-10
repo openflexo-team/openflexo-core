@@ -36,13 +36,15 @@
  * 
  */
 
-package org.openflexo.foundation.fml.rt;
+package org.openflexo.foundation.fml.ta;
 
 import java.util.logging.Logger;
 
-import org.openflexo.foundation.fml.FMLModelSlot;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.rm.VirtualModelResource;
+import org.openflexo.foundation.fml.rt.FMLRTModelSlot;
+import org.openflexo.foundation.fml.rt.ModelSlotInstance;
+import org.openflexo.foundation.fml.rt.ModelSlotInstance.ModelSlotInstanceImpl;
 import org.openflexo.pamela.annotations.Getter;
 import org.openflexo.pamela.annotations.ImplementationClass;
 import org.openflexo.pamela.annotations.ModelEntity;

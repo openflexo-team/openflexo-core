@@ -36,11 +36,12 @@
  * 
  */
 
-package org.openflexo.foundation.fml;
+package org.openflexo.foundation.fml.ta;
 
 import java.util.HashMap;
 import java.util.Map;
 
+import org.openflexo.foundation.fml.FMLTechnologyAdapter;
 import org.openflexo.foundation.fml.rm.VirtualModelResource;
 import org.openflexo.foundation.resource.FlexoResourceCenterService;
 import org.openflexo.foundation.technologyadapter.TechnologyContextManager;

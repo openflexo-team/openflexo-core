@@ -36,25 +36,22 @@
  * 
  */
 
-package org.openflexo.foundation.fml;
+package org.openflexo.foundation.fml.ta;
 
-import java.lang.reflect.Type;
 import java.util.logging.Logger;
 
-import org.openflexo.foundation.fml.annotations.FML;
+import org.openflexo.foundation.fml.FMLObject;
+import org.openflexo.foundation.fml.FMLTechnologyAdapter;
+import org.openflexo.foundation.fml.FlexoRole;
 import org.openflexo.foundation.fml.rt.AbstractVirtualModelInstanceModelFactory;
 import org.openflexo.foundation.fml.rt.ActorReference;
-import org.openflexo.foundation.fml.rt.FMLObjectActorReference;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.pamela.annotations.ImplementationClass;
 import org.openflexo.pamela.annotations.ModelEntity;
-import org.openflexo.pamela.annotations.XMLElement;
 
-@ModelEntity
+@ModelEntity(isAbstract = true)
 @ImplementationClass(FMLObjectRole.FMLObjectRoleImpl.class)
-@XMLElement
-@FML("FlexoConceptInstanceRole")
 public interface FMLObjectRole<T extends FMLObject> extends FlexoRole<T> {
 
 	public static abstract class FMLObjectRoleImpl<T extends FMLObject> extends FlexoRoleImpl<T> implements FMLObjectRole<T> {
@@ -100,11 +97,6 @@ public interface FMLObjectRole<T extends FMLObject> extends FlexoRole<T> {
 			return returned;
 		}
 
-		@Override
-		public Type getType() {
-			// TODO
-			return null;
-		}
 	}
 
 }

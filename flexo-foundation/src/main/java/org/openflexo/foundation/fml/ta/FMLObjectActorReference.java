@@ -36,7 +36,7 @@
  * 
  */
 
-package org.openflexo.foundation.fml.rt;
+package org.openflexo.foundation.fml.ta;
 
 import java.io.FileNotFoundException;
 import java.util.logging.Logger;
@@ -46,6 +46,8 @@ import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.fml.FMLObject;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.annotations.FML;
+import org.openflexo.foundation.fml.rt.ActorReference;
+import org.openflexo.foundation.fml.rt.ActorReference.ActorReferenceImpl;
 import org.openflexo.foundation.resource.ResourceLoadingCancelledException;
 import org.openflexo.logging.FlexoLogger;
 import org.openflexo.pamela.annotations.Getter;

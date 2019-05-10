@@ -36,11 +36,12 @@
  * 
  */
 
-package org.openflexo.foundation.fml;
+package org.openflexo.foundation.fml.ta;
 
 import java.lang.reflect.Type;
 import java.util.logging.Logger;
 
+import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.annotations.FML;
 import org.openflexo.pamela.annotations.ImplementationClass;
 import org.openflexo.pamela.annotations.ModelEntity;
@@ -49,7 +50,7 @@ import org.openflexo.pamela.annotations.XMLElement;
 @ModelEntity
 @ImplementationClass(FlexoConceptRole.FlexoConceptRoleImpl.class)
 @XMLElement
-@FML("FlexoConceptInstanceRole")
+@FML("FlexoConceptRole")
 public interface FlexoConceptRole extends FMLObjectRole<FlexoConcept> {
 
 	public static abstract class FlexoConceptRoleImpl extends FMLObjectRoleImpl<FlexoConcept> implements FlexoConceptRole {
