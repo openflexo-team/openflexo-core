@@ -44,7 +44,7 @@ import java.beans.PropertyChangeListener;
 import java.util.logging.Logger;
 
 import org.openflexo.ApplicationContext;
-import org.openflexo.components.wizard.FlexoWizard;
+import org.openflexo.components.wizard.FlexoActionWizard;
 import org.openflexo.components.wizard.WizardStep;
 import org.openflexo.connie.DataBinding;
 import org.openflexo.foundation.fml.action.AssignAction;
@@ -54,22 +54,16 @@ import org.openflexo.icon.IconFactory;
 import org.openflexo.icon.IconLibrary;
 import org.openflexo.view.controller.FlexoController;
 
-public class AssignActionWizard extends FlexoWizard {
+public class AssignActionWizard extends FlexoActionWizard<AssignAction> {
 
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(AssignActionWizard.class.getPackage().getName());
 
 	private final DescribeAssignation describeAssignation;
-	private final AssignAction action;
 
 	public AssignActionWizard(AssignAction action, FlexoController controller) {
-		super(controller);
-		this.action = action;
+		super(action, controller);
 		addStep(describeAssignation = new DescribeAssignation());
-	}
-
-	public AssignAction getAction() {
-		return action;
 	}
 
 	@Override

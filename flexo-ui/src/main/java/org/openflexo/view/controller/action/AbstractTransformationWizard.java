@@ -41,26 +41,19 @@ package org.openflexo.view.controller.action;
 import java.util.logging.Logger;
 
 import org.openflexo.ApplicationContext;
-import org.openflexo.components.wizard.FlexoWizard;
+import org.openflexo.components.wizard.FlexoActionWizard;
 import org.openflexo.components.wizard.WizardStep;
 import org.openflexo.foundation.action.transformation.TransformationAction;
 import org.openflexo.foundation.action.transformation.TransformationStrategy;
 import org.openflexo.view.controller.FlexoController;
 
-public abstract class AbstractTransformationWizard<A extends TransformationAction<A, ?, ?>> extends FlexoWizard {
+public abstract class AbstractTransformationWizard<A extends TransformationAction<A, ?, ?>> extends FlexoActionWizard<A> {
 
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(AbstractTransformationWizard.class.getPackage().getName());
 
-	private final A action;
-
 	public AbstractTransformationWizard(A action, FlexoController controller) {
-		super(controller);
-		this.action = action;
-	}
-
-	public A getAction() {
-		return action;
+		super(action, controller);
 	}
 
 	public abstract class TransformationConfigurationStep<S extends TransformationStrategy<A>> extends WizardStep {
@@ -76,7 +69,7 @@ public abstract class AbstractTransformationWizard<A extends TransformationActio
 		}
 
 		public A getAction() {
-			return action;
+			return AbstractTransformationWizard.this.getAction();
 		}
 
 		public S getStrategy() {
@@ -94,4 +87,5 @@ public abstract class AbstractTransformationWizard<A extends TransformationActio
 		}
 
 	}
+
 }

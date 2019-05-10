@@ -1,8 +1,9 @@
 /**
  * 
- * Copyright (c) 2014-2015, Openflexo
+ * Copyright (c) 2013-2014, Openflexo
+ * Copyright (c) 2011-2012, AgileBirds
  * 
- * This file is part of Fml-technologyadapter-ui, a component of the software infrastructure 
+ * This file is part of Flexo-ui, a component of the software infrastructure 
  * developed at Openflexo.
  * 
  * 
@@ -36,52 +37,40 @@
  * 
  */
 
-package org.openflexo.fml.controller.action;
+package org.openflexo.components.wizard;
 
 import java.util.logging.Logger;
 
-import org.openflexo.components.wizard.FlexoActionWizard;
 import org.openflexo.foundation.action.FlexoAction;
-import org.openflexo.foundation.fml.FMLObject;
-import org.openflexo.foundation.fml.FlexoConcept;
-import org.openflexo.foundation.fml.FlexoConceptObject;
-import org.openflexo.foundation.fml.VirtualModel;
-import org.openflexo.foundation.fml.action.AbstractCreateFlexoConcept;
-import org.openflexo.foundation.fml.action.CreateContainedVirtualModel;
-import org.openflexo.foundation.fml.action.CreateFlexoConcept;
-import org.openflexo.foundation.fml.action.CreateTopLevelVirtualModel;
+import org.openflexo.logging.FlexoLogger;
 import org.openflexo.view.controller.FlexoController;
 
 /**
- * Common stuff for wizards of {@link AbstractCreateFlexoConcept} action
+ * A {@link FlexoWizard} launched in the context of the execution of a {@link FlexoAction}
+ * 
  * 
  * @author sylvain
- *
- * @param <A>
- * @see CreateFlexoConcept
- * @see CreateContainedVirtualModel
- * @see CreateTopLevelVirtualModel
+ * 
  */
-public abstract class AbstractCreateFMLElementWizard<A extends FlexoAction<A, T1, T2>, T1 extends FlexoConceptObject, T2 extends FMLObject>
-		extends FlexoActionWizard<A> {
+public abstract class FlexoActionWizard<A extends FlexoAction<?, ?, ?>> extends FlexoWizard {
 
-	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(AbstractCreateFMLElementWizard.class.getPackage().getName());
+	private static final Logger logger = FlexoLogger.getLogger(FlexoActionWizard.class.getPackage().getName());
 
-	public AbstractCreateFMLElementWizard(A action, FlexoController controller) {
-		super(action, controller);
+	private final A action;
+
+	public FlexoActionWizard(A action, FlexoController controller) {
+		super(controller);
+		this.action = action;
 	}
 
-	public T1 getFocusedObject() {
-		return getAction().getFocusedObject();
+	public final A getAction() {
+		return action;
 	}
 
-	public VirtualModel getVirtualModel() {
-		return getFocusedObject().getOwningVirtualModel();
-	}
-
-	public FlexoConcept getFlexoConcept() {
-		return getFocusedObject().getFlexoConcept();
+	@Override
+	public final void cancel() {
+		super.cancel();
+		getAction().cancelExecution();
 	}
 
 }

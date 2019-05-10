@@ -45,7 +45,7 @@ import javax.swing.Icon;
 import javax.swing.ImageIcon;
 
 import org.openflexo.ApplicationContext;
-import org.openflexo.components.wizard.FlexoWizard;
+import org.openflexo.components.wizard.FlexoActionWizard;
 import org.openflexo.components.wizard.WizardStep;
 import org.openflexo.connie.type.TypeUtils;
 import org.openflexo.foundation.fml.FlexoConcept;
@@ -69,12 +69,10 @@ import org.openflexo.view.controller.FlexoController;
  * @see CreateContainedVirtualModel
  * @see CreateTopLevelVirtualModel
  */
-public abstract class AbstractCreateFlexoConceptWizard<A extends AbstractCreateFlexoConcept<?, ?, ?>> extends FlexoWizard {
+public abstract class AbstractCreateFlexoConceptWizard<A extends AbstractCreateFlexoConcept<?, ?, ?>> extends FlexoActionWizard<A> {
 
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(AbstractCreateFlexoConceptWizard.class.getPackage().getName());
-
-	private final A action;
 
 	private static final Dimension DIMENSIONS = new Dimension(900, 600);
 
@@ -83,8 +81,7 @@ public abstract class AbstractCreateFlexoConceptWizard<A extends AbstractCreateF
 	private ConfigureInspectorForNewFlexoConcept configureInspectorForNewFlexoConcept;
 
 	public AbstractCreateFlexoConceptWizard(A action, FlexoController controller) {
-		super(controller);
-		this.action = action;
+		super(action, controller);
 	}
 
 	protected void createAdditionalSteps() {
@@ -103,10 +100,6 @@ public abstract class AbstractCreateFlexoConceptWizard<A extends AbstractCreateF
 
 	public ConfigureInspectorForNewFlexoConcept getConfigureInspectorForNewFlexoConcept() {
 		return configureInspectorForNewFlexoConcept;
-	}
-
-	public A getAction() {
-		return action;
 	}
 
 	@Override
@@ -345,12 +338,6 @@ public abstract class AbstractCreateFlexoConceptWizard<A extends AbstractCreateF
 		}
 		return FMLIconLibrary.UNKNOWN_ICON;
 
-	}
-
-	@Override
-	public void cancel() {
-		super.cancel();
-		getAction().cancelExecution();
 	}
 
 }

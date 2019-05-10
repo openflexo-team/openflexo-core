@@ -44,7 +44,7 @@ import java.beans.PropertyChangeListener;
 import java.util.logging.Logger;
 
 import org.openflexo.ApplicationContext;
-import org.openflexo.components.wizard.FlexoWizard;
+import org.openflexo.components.wizard.FlexoActionWizard;
 import org.openflexo.components.wizard.WizardStep;
 import org.openflexo.connie.DataBinding;
 import org.openflexo.foundation.fml.action.AddToAction;
@@ -54,22 +54,16 @@ import org.openflexo.icon.IconFactory;
 import org.openflexo.icon.IconLibrary;
 import org.openflexo.view.controller.FlexoController;
 
-public class AddToListActionWizard extends FlexoWizard {
+public class AddToListActionWizard extends FlexoActionWizard<AddToAction> {
 
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(AddToListActionWizard.class.getPackage().getName());
 
 	private final DescribeListWhereToAdd describeListWhereToAdd;
-	private final AddToAction action;
 
 	public AddToListActionWizard(AddToAction action, FlexoController controller) {
-		super(controller);
-		this.action = action;
+		super(action, controller);
 		addStep(describeListWhereToAdd = new DescribeListWhereToAdd());
-	}
-
-	public AddToAction getAction() {
-		return action;
 	}
 
 	@Override
