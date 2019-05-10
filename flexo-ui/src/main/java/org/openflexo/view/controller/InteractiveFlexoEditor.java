@@ -159,7 +159,8 @@ public class InteractiveFlexoEditor extends DefaultFlexoEditor {
 		}
 
 		// If action is embedded and valid, we skip initializer
-		boolean confirmDoAction = (action.isEmbedded() && action.isValid()) ? true : runInitializer(action, event);
+		boolean confirmDoAction = (action.isEmbedded() && action.isValid() && !action.getForceExecuteConfirmationPanel()) ? true
+				: runInitializer(action, event);
 		if (confirmDoAction) {
 			if (action instanceof LongRunningAction && (!action.isEmbedded()) && SwingUtilities.isEventDispatchThread()) {
 				LongRunningActionTask task = new LongRunningActionTask((LongRunningAction) action) {
