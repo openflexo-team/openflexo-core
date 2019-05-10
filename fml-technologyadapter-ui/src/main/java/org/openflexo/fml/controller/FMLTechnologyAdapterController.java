@@ -76,7 +76,6 @@ import org.openflexo.fml.controller.action.CreateTopLevelVirtualModelInitializer
 import org.openflexo.fml.controller.action.DeclareNewVariableActionInitializer;
 import org.openflexo.fml.controller.action.DeleteFlexoConceptObjectsInitializer;
 import org.openflexo.fml.controller.action.DeleteVirtualModelInitializer;
-import org.openflexo.fml.controller.action.ShowFMLRepresentationInitializer;
 import org.openflexo.fml.controller.validation.ValidateActionizer;
 import org.openflexo.fml.controller.view.StandardFlexoConceptView;
 import org.openflexo.fml.controller.view.StandardVirtualModelView;
@@ -236,7 +235,6 @@ public class FMLTechnologyAdapterController extends TechnologyAdapterController<
 		new CreateFlexoEnumValueInitializer(actionInitializer);
 		new CreateGenericBehaviourParameterInitializer(actionInitializer);
 		new CreateInspectorEntryInitializer(actionInitializer);
-		new ShowFMLRepresentationInitializer(actionInitializer);
 
 		new DeclareNewVariableActionInitializer(actionInitializer);
 		new AssignActionInitializer(actionInitializer);

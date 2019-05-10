@@ -238,7 +238,6 @@ setLogicalTypeToAnd=setLogicalTypeToAnd
 setLogicalTypeToNone=setLogicalTypeToNone
 setLogicalTypeToOr=setLogicalTypeToOr
 set_parent_concepts=Set parent concepts
-show_flexo_modelling_language_representation=show_flexo_modelling_language_representation
 skip_confirmation_panel_when_possible=Skip confirmation panel when possible
 small_icon_(16x16px)=small_icon_(16x16px)
 south=south
