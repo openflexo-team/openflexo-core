@@ -4,6 +4,7 @@ delete_virtual_model_instance=Delete virtual model instance
 describe_flexo_concept_instance=Describe flexo concept instance
 discouraged_name_for_new_virtual_model_instance=Discouraged name for new virtual model instance
 initializing_adapter=Initializing adapter
+instantiate_flexo_concept=Instantiate flexo concept
 instantiate_virtual_model=Instantiate virtual model
 new=New
 open_virtual_model_instance=Open virtual model instance
