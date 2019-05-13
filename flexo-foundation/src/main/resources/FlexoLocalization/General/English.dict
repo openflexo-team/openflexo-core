@@ -147,7 +147,6 @@ inspect_project=Inspect project
 inspector=Inspector
 instance=Instance
 instance_role_name=Instance role name
-instantiate_flexo_concept=Instantiate flexo concept
 iterate_on=Iterate on
 iteration=Iteration
 iterator_name=Iterator name
