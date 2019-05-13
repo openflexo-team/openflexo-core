@@ -389,7 +389,7 @@ public interface FlexoBehaviour extends FlexoBehaviourObject, Function, FMLContr
 		@Override
 		public String getURI() {
 			if (getFlexoConcept() != null) {
-				return getFlexoConcept().getURI() + "." + getName();
+				return getFlexoConcept().getURI() + "." + getSignature();
 			}
 			return "null." + getName();
 		}

@@ -980,7 +980,7 @@ public interface VirtualModel extends FlexoConcept, FlexoMetaModel<VirtualModel>
 
 		@Override
 		public Object getObject(String objectURI) {
-			return null;
+			return getVirtualModelLibrary().getFMLObject(objectURI, true);
 		}
 
 		/**

@@ -240,6 +240,16 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 	public FlexoBehaviour getFlexoBehaviour(String behaviourName, Type... parameters);
 
 	/**
+	 * Return {@link FlexoBehaviour} matching supplied signature (expressed with types), which are declared for this concept. Result does
+	 * not include inherited behaviours.
+	 * 
+	 * @param behaviourName
+	 * @param parameters
+	 * @return
+	 */
+	public FlexoBehaviour getDeclaredFlexoBehaviour(String signature);
+
+	/**
 	 * Return {@link FlexoBehaviour} matching supplied name and signature (expressed with types), which are declared for this concept.
 	 * Result does not include inherited behaviours.
 	 * 
@@ -1201,6 +1211,16 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 							return b;
 						}
 					}
+				}
+			}
+			return null;
+		}
+
+		@Override
+		public FlexoBehaviour getDeclaredFlexoBehaviour(String signature) {
+			for (FlexoBehaviour b : getDeclaredFlexoBehaviours()) {
+				if (b.getSignature().equals(signature)) {
+					return b;
 				}
 			}
 			return null;
