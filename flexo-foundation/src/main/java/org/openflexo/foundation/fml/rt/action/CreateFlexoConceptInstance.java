@@ -50,9 +50,11 @@ import org.openflexo.foundation.FlexoObservable;
 import org.openflexo.foundation.FlexoObserver;
 import org.openflexo.foundation.action.FlexoAction;
 import org.openflexo.foundation.action.FlexoActionFactory;
+import org.openflexo.foundation.action.TechnologySpecificFlexoAction;
 import org.openflexo.foundation.fml.CreationScheme;
 import org.openflexo.foundation.fml.FlexoBehaviourParameter;
 import org.openflexo.foundation.fml.FlexoConcept;
+import org.openflexo.foundation.fml.rt.FMLRTTechnologyAdapter;
 import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 
@@ -63,7 +65,7 @@ import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
  * 
  */
 public class CreateFlexoConceptInstance extends FlexoAction<CreateFlexoConceptInstance, FlexoConceptInstance, FlexoObject>
-		implements FlexoObserver {
+		implements FlexoObserver, TechnologySpecificFlexoAction<FMLRTTechnologyAdapter> {
 
 	private static final Logger logger = Logger.getLogger(CreateFlexoConceptInstance.class.getPackage().getName());
 
@@ -114,6 +116,11 @@ public class CreateFlexoConceptInstance extends FlexoAction<CreateFlexoConceptIn
 
 	protected CreateFlexoConceptInstance(FlexoConceptInstance focusedObject, Vector<FlexoObject> globalSelection, FlexoEditor editor) {
 		super(actionType, focusedObject, globalSelection, editor);
+	}
+
+	@Override
+	public Class<? extends FMLRTTechnologyAdapter> getTechnologyAdapterClass() {
+		return FMLRTTechnologyAdapter.class;
 	}
 
 	@Override

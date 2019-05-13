@@ -141,6 +141,9 @@ public class MenuItemAction<A extends FlexoAction<A, T1, T2>, T1 extends FlexoOb
 			System.out.println("OK on retourne les bonnes locales");
 			return actionFactory.getLocales(editor.getServiceManager());
 		}*/
+
+		System.out.println("Applicable locales for " + actionFactory + " : " + actionFactory.getLocales(editor.getServiceManager()));
+
 		if (getModuleClass() != null) {
 			FlexoModule<?> module;
 			try {
