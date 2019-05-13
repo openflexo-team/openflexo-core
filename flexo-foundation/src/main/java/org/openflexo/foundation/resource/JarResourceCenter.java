@@ -865,6 +865,11 @@ public interface JarResourceCenter extends FlexoResourceCenter<InJarResourceImpl
 			return false;
 		}
 
+		@Override
+		public String relativePath(InJarResourceImpl serializationArtefact) {
+			return InJarResourceImpl.makePathRelativeTo(serializationArtefact, getBaseArtefact());
+		}
+
 	}
 
 	@ModelEntity

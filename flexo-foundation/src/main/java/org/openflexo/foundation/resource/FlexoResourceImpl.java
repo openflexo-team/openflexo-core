@@ -668,4 +668,15 @@ public abstract class FlexoResourceImpl<RD extends ResourceData<RD>> extends Fle
 		}
 	}
 
+	@Override
+	public <I> String pathRelativeToResourceCenter(FlexoResourceCenter<I> rc) {
+		return rc.relativePath((I) getIODelegate().getSerializationArtefact());
+	}
+
+	@Override
+	public <I> String parentPathRelativeToResourceCenter(FlexoResourceCenter<I> rc) {
+		I parent = rc.getContainer((I) getIODelegate().getSerializationArtefact());
+		return rc.relativePath(parent);
+	}
+
 }
