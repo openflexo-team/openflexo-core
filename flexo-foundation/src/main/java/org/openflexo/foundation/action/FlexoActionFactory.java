@@ -51,7 +51,6 @@ import org.openflexo.connie.type.TypeUtils;
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.FlexoServiceManager;
-import org.openflexo.foundation.fml.editionaction.TechnologySpecificAction;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.localization.LocalizedDelegate;
@@ -361,7 +360,7 @@ public abstract class FlexoActionFactory<A extends FlexoAction<A, T1, T2>, T1 ex
 
 	@SuppressWarnings("unchecked")
 	public LocalizedDelegate getLocales(FlexoServiceManager serviceManager) {
-		if (TechnologySpecificAction.class.isAssignableFrom(getFlexoActionClass())) {
+		if (TechnologySpecificFlexoAction.class.isAssignableFrom(getFlexoActionClass())) {
 			Class<? extends TechnologyAdapter> taClass = (Class<? extends TechnologyAdapter>) TypeUtils
 					.getBaseClass(TypeUtils.getTypeArgument(getFlexoActionClass(), TechnologySpecificFlexoAction.class, 0));
 			if (taClass != null) {
