@@ -47,7 +47,9 @@ import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoObject.FlexoObjectImpl;
 import org.openflexo.foundation.action.FlexoAction;
 import org.openflexo.foundation.action.FlexoActionFactory;
+import org.openflexo.foundation.action.TechnologySpecificFlexoAction;
 import org.openflexo.foundation.fml.FMLObject;
+import org.openflexo.foundation.fml.FMLTechnologyAdapter;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.InconsistentFlexoConceptHierarchyException;
 import org.openflexo.foundation.fml.action.AbstractCreateFlexoConcept.ParentFlexoConceptEntry;
@@ -58,7 +60,8 @@ import org.openflexo.foundation.fml.action.AbstractCreateFlexoConcept.ParentFlex
  * @author sylvain
  *
  */
-public class AddParentFlexoConcept extends FlexoAction<AddParentFlexoConcept, FlexoConcept, FMLObject> {
+public class AddParentFlexoConcept extends FlexoAction<AddParentFlexoConcept, FlexoConcept, FMLObject>
+		implements TechnologySpecificFlexoAction<FMLTechnologyAdapter> {
 
 	private static final Logger logger = Logger.getLogger(AddParentFlexoConcept.class.getPackage().getName());
 
@@ -97,6 +100,11 @@ public class AddParentFlexoConcept extends FlexoAction<AddParentFlexoConcept, Fl
 		for (FlexoConcept parentConcept : getFocusedObject().getParentFlexoConcepts()) {
 			addToParentConcepts(parentConcept);
 		}
+	}
+
+	@Override
+	public Class<? extends FMLTechnologyAdapter> getTechnologyAdapterClass() {
+		return FMLTechnologyAdapter.class;
 	}
 
 	public List<ParentFlexoConceptEntry> getParentFlexoConceptEntries() {

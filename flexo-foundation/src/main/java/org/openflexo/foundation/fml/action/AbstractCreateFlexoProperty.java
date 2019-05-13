@@ -50,7 +50,9 @@ import org.openflexo.connie.DataBinding.BindingDefinitionType;
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.action.FlexoAction;
 import org.openflexo.foundation.action.FlexoActionFactory;
+import org.openflexo.foundation.action.TechnologySpecificFlexoAction;
 import org.openflexo.foundation.fml.FMLObject;
+import org.openflexo.foundation.fml.FMLTechnologyAdapter;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoConceptObject;
 import org.openflexo.foundation.fml.FlexoProperty;
@@ -64,7 +66,7 @@ import org.openflexo.toolbox.StringUtils;
  * @param <A>
  */
 public abstract class AbstractCreateFlexoProperty<A extends AbstractCreateFlexoProperty<A>>
-		extends FlexoAction<A, FlexoConceptObject, FMLObject> implements Bindable {
+		extends FlexoAction<A, FlexoConceptObject, FMLObject> implements Bindable, TechnologySpecificFlexoAction<FMLTechnologyAdapter> {
 
 	private static final Logger logger = Logger.getLogger(AbstractCreateFlexoProperty.class.getPackage().getName());
 
@@ -77,6 +79,11 @@ public abstract class AbstractCreateFlexoProperty<A extends AbstractCreateFlexoP
 	protected AbstractCreateFlexoProperty(FlexoActionFactory<A, FlexoConceptObject, FMLObject> actionType, FlexoConceptObject focusedObject,
 			Vector<FMLObject> globalSelection, FlexoEditor editor) {
 		super(actionType, focusedObject, globalSelection, editor);
+	}
+
+	@Override
+	public Class<? extends FMLTechnologyAdapter> getTechnologyAdapterClass() {
+		return FMLTechnologyAdapter.class;
 	}
 
 	public FlexoConcept getFlexoConcept() {

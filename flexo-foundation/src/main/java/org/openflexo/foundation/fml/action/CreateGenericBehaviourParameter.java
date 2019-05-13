@@ -56,8 +56,10 @@ import org.openflexo.foundation.FlexoObject.FlexoObjectImpl;
 import org.openflexo.foundation.action.FlexoAction;
 import org.openflexo.foundation.action.FlexoActionFactory;
 import org.openflexo.foundation.action.NotImplementedException;
+import org.openflexo.foundation.action.TechnologySpecificFlexoAction;
 import org.openflexo.foundation.fml.FMLModelFactory;
 import org.openflexo.foundation.fml.FMLObject;
+import org.openflexo.foundation.fml.FMLTechnologyAdapter;
 import org.openflexo.foundation.fml.FlexoBehaviour;
 import org.openflexo.foundation.fml.FlexoBehaviourObject;
 import org.openflexo.foundation.fml.FlexoBehaviourParameter;
@@ -65,7 +67,7 @@ import org.openflexo.foundation.fml.FlexoBehaviourParameter.WidgetType;
 import org.openflexo.toolbox.StringUtils;
 
 public class CreateGenericBehaviourParameter extends FlexoAction<CreateGenericBehaviourParameter, FlexoBehaviourObject, FMLObject>
-		implements Bindable {
+		implements Bindable, TechnologySpecificFlexoAction<FMLTechnologyAdapter> {
 
 	private static final Logger logger = Logger.getLogger(CreateGenericBehaviourParameter.class.getPackage().getName());
 
@@ -112,6 +114,11 @@ public class CreateGenericBehaviourParameter extends FlexoAction<CreateGenericBe
 	private CreateGenericBehaviourParameter(FlexoBehaviourObject focusedObject, Vector<FMLObject> globalSelection, FlexoEditor editor) {
 		super(actionType, focusedObject, globalSelection, editor);
 
+	}
+
+	@Override
+	public Class<? extends FMLTechnologyAdapter> getTechnologyAdapterClass() {
+		return FMLTechnologyAdapter.class;
 	}
 
 	public FlexoBehaviour getFlexoBehaviour() {

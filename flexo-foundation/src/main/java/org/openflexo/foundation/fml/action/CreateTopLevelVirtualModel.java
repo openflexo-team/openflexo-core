@@ -47,6 +47,7 @@ import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.FlexoObject.FlexoObjectImpl;
 import org.openflexo.foundation.action.FlexoActionFactory;
+import org.openflexo.foundation.action.TechnologySpecificFlexoAction;
 import org.openflexo.foundation.fml.FMLObject;
 import org.openflexo.foundation.fml.FMLTechnologyAdapter;
 import org.openflexo.foundation.fml.VirtualModel;
@@ -68,7 +69,8 @@ import org.openflexo.toolbox.StringUtils;
  * 
  */
 public class CreateTopLevelVirtualModel
-		extends AbstractCreateVirtualModel<CreateTopLevelVirtualModel, RepositoryFolder<VirtualModelResource, ?>, FMLObject> {
+		extends AbstractCreateVirtualModel<CreateTopLevelVirtualModel, RepositoryFolder<VirtualModelResource, ?>, FMLObject>
+		implements TechnologySpecificFlexoAction<FMLTechnologyAdapter> {
 
 	private static final Logger logger = Logger.getLogger(CreateTopLevelVirtualModel.class.getPackage().getName());
 
@@ -109,6 +111,11 @@ public class CreateTopLevelVirtualModel
 	CreateTopLevelVirtualModel(RepositoryFolder<VirtualModelResource, ?> focusedObject, Vector<FMLObject> globalSelection,
 			FlexoEditor editor) {
 		super(actionType, focusedObject, globalSelection, editor);
+	}
+
+	@Override
+	public Class<? extends FMLTechnologyAdapter> getTechnologyAdapterClass() {
+		return FMLTechnologyAdapter.class;
 	}
 
 	public VirtualModelLibrary getVirtualModelLibrary() {

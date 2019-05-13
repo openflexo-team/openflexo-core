@@ -46,8 +46,10 @@ import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoObject.FlexoObjectImpl;
 import org.openflexo.foundation.action.FlexoActionFactory;
 import org.openflexo.foundation.action.NotImplementedException;
+import org.openflexo.foundation.action.TechnologySpecificFlexoAction;
 import org.openflexo.foundation.fml.FMLModelFactory;
 import org.openflexo.foundation.fml.FMLObject;
+import org.openflexo.foundation.fml.FMLTechnologyAdapter;
 import org.openflexo.foundation.fml.FlexoConceptObject;
 import org.openflexo.foundation.fml.FlexoEnum;
 import org.openflexo.foundation.fml.InconsistentFlexoConceptHierarchyException;
@@ -55,7 +57,8 @@ import org.openflexo.foundation.fml.InnerConceptsFacet;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.toolbox.StringUtils;
 
-public class CreateFlexoEnum extends AbstractCreateFlexoConcept<CreateFlexoEnum, FlexoConceptObject, FMLObject> {
+public class CreateFlexoEnum extends AbstractCreateFlexoConcept<CreateFlexoEnum, FlexoConceptObject, FMLObject>
+		implements TechnologySpecificFlexoAction<FMLTechnologyAdapter> {
 
 	private static final Logger logger = Logger.getLogger(CreateFlexoEnum.class.getPackage().getName());
 
@@ -95,6 +98,11 @@ public class CreateFlexoEnum extends AbstractCreateFlexoConcept<CreateFlexoEnum,
 
 	CreateFlexoEnum(FlexoConceptObject focusedObject, Vector<FMLObject> globalSelection, FlexoEditor editor) {
 		super(actionType, focusedObject, globalSelection, editor);
+	}
+
+	@Override
+	public Class<? extends FMLTechnologyAdapter> getTechnologyAdapterClass() {
+		return FMLTechnologyAdapter.class;
 	}
 
 	@Override

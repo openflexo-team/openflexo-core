@@ -46,7 +46,9 @@ import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.FlexoObject.FlexoObjectImpl;
 import org.openflexo.foundation.action.FlexoAction;
 import org.openflexo.foundation.action.FlexoActionFactory;
+import org.openflexo.foundation.action.TechnologySpecificFlexoAction;
 import org.openflexo.foundation.fml.FMLObject;
+import org.openflexo.foundation.fml.FMLTechnologyAdapter;
 import org.openflexo.foundation.fml.editionaction.AddToListAction;
 import org.openflexo.foundation.fml.editionaction.AssignableAction;
 import org.openflexo.foundation.fml.editionaction.AssignationAction;
@@ -60,7 +62,8 @@ import org.openflexo.toolbox.StringUtils;
  * @author sylvain
  *
  */
-public class DeclareNewVariableAction extends FlexoAction<DeclareNewVariableAction, AssignableAction<?>, FMLObject> {
+public class DeclareNewVariableAction extends FlexoAction<DeclareNewVariableAction, AssignableAction<?>, FMLObject>
+		implements TechnologySpecificFlexoAction<FMLTechnologyAdapter> {
 
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(DeclareNewVariableAction.class.getPackage().getName());
@@ -99,6 +102,11 @@ public class DeclareNewVariableAction extends FlexoAction<DeclareNewVariableActi
 
 	private DeclareNewVariableAction(AssignableAction<?> focusedObject, Vector<FMLObject> globalSelection, FlexoEditor editor) {
 		super(actionType, focusedObject, globalSelection, editor);
+	}
+
+	@Override
+	public Class<? extends FMLTechnologyAdapter> getTechnologyAdapterClass() {
+		return FMLTechnologyAdapter.class;
 	}
 
 	@Override
