@@ -79,6 +79,7 @@ import org.openflexo.fml.controller.action.DeleteVirtualModelInitializer;
 import org.openflexo.fml.controller.validation.ValidateActionizer;
 import org.openflexo.fml.controller.view.StandardFlexoConceptView;
 import org.openflexo.fml.controller.view.StandardVirtualModelView;
+import org.openflexo.fml.controller.widget.FIBVirtualModelBrowser;
 import org.openflexo.fml.controller.widget.FIBVirtualModelLibraryBrowser;
 import org.openflexo.fml.controller.widget.FlexoConceptInstanceTypeEditor;
 import org.openflexo.fml.controller.widget.FlexoEnumTypeEditor;
@@ -159,6 +160,8 @@ public class FMLTechnologyAdapterController extends TechnologyAdapterController<
 	private FMLValidationModel validationModel;
 	private Map<VirtualModel, FMLValidationReport> validationReports = new HashMap<>();
 
+	private FIBVirtualModelBrowser virtualModelBrowser;
+
 	@Override
 	public Class<FMLTechnologyAdapter> getTechnologyAdapterClass() {
 		return FMLTechnologyAdapter.class;
@@ -201,6 +204,8 @@ public class FMLTechnologyAdapterController extends TechnologyAdapterController<
 		actionInitializer.getEditingContext().registerPasteHandler(new FlexoBehaviourPasteHandler());
 		actionInitializer.getEditingContext().registerPasteHandler(new FMLControlGraphPasteHandler());
 		actionInitializer.getEditingContext().registerPasteHandler(new BehaviorPasteHandler());
+
+		virtualModelBrowser = new FIBVirtualModelBrowser(null, actionInitializer.getController());
 
 	}
 
@@ -667,6 +672,10 @@ public class FMLTechnologyAdapterController extends TechnologyAdapterController<
 			return validationReports.get(resourceData);
 		}
 		return null;
+	}
+
+	public FIBVirtualModelBrowser getVirtualModelBrowser() {
+		return virtualModelBrowser;
 	}
 
 }
