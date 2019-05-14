@@ -26,7 +26,7 @@
 		backgroundNonSelectionColor="255,255,255"
 		iteratorClassName="java.lang.Object" textSelectionColor="255,255,255"
 		backgroundSecondarySelectionColor="178,215,255" showRootsHandle="true"
-		showFooter="true" allowsDragAndDrop="true"
+		showFooter="true" allowsDragAndDrop="true" allowsExternalDragAndDrop="true"
 		textNonSelectionColor="0,0,0" root="data.resource"
 		selectionMode="DiscontiguousTreeSelection" rowHeight="18"
 		localize="true" manageDynamicModel="true"
