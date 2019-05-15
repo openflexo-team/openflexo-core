@@ -65,7 +65,11 @@ public class FIBVirtualModelBrowserFIBController extends FMLFIBController {
 		SwingUtilities.invokeLater(new Runnable() {
 			@Override
 			public void run() {
-				setViewMode(ViewMode.Embedding);
+				try {
+					setViewMode(ViewMode.Embedding);
+				} catch (Exception e) {
+					// Ignore
+				}
 			}
 		});
 	}
