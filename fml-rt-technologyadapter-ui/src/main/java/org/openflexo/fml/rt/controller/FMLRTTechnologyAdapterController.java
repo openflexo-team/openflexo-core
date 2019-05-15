@@ -270,7 +270,7 @@ public class FMLRTTechnologyAdapterController extends TechnologyAdapterControlle
 	public boolean hasModuleViewForObject(TechnologyObject<FMLRTTechnologyAdapter> object, FlexoController controller) {
 
 		for (TechnologyAdapterPluginController<?> plugin : getTechnologyAdapterControllerService().getActivatedPlugins()) {
-			if (plugin.handleObject(object)) {
+			if (plugin.hasModuleViewForObject(object)) {
 				return true;
 			}
 		}
@@ -304,7 +304,7 @@ public class FMLRTTechnologyAdapterController extends TechnologyAdapterControlle
 			FlexoPerspective perspective) {
 
 		for (TechnologyAdapterPluginController<?> plugin : getTechnologyAdapterControllerService().getActivatedPlugins()) {
-			if (plugin.handleObject(object)) {
+			if (plugin.hasModuleViewForObject(object)) {
 				return plugin.createModuleViewForObject(object, controller, perspective);
 			}
 		}

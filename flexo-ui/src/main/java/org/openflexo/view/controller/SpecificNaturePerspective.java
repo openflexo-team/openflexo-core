@@ -136,7 +136,7 @@ public abstract class SpecificNaturePerspective<TA extends TechnologyAdapter<TA>
 
 		TechnologyAdapterControllerService tacService = getController().getApplicationContext().getTechnologyAdapterControllerService();
 		for (TechnologyAdapterPluginController<?> plugin : tacService.getActivatedPlugins()) {
-			if (plugin.handleObject(object)) {
+			if (plugin.hasModuleViewForObject(object)) {
 				return true;
 			}
 		}
@@ -163,7 +163,7 @@ public abstract class SpecificNaturePerspective<TA extends TechnologyAdapter<TA>
 
 		TechnologyAdapterControllerService tacService = getController().getApplicationContext().getTechnologyAdapterControllerService();
 		for (TechnologyAdapterPluginController<?> plugin : tacService.getActivatedPlugins()) {
-			if (plugin.handleObject(object)) {
+			if (plugin.hasModuleViewForObject(object)) {
 				return plugin.createModuleViewForObject(object, getController(), this);
 			}
 		}

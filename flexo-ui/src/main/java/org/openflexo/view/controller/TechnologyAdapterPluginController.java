@@ -117,8 +117,40 @@ public abstract class TechnologyAdapterPluginController<TA extends TechnologyAda
 		return locales;
 	}
 
+	/**
+	 * Indicates if supplied object is managed by this {@link TechnologyAdapterPlugin} regarding selection managing
+	 * 
+	 * @param object
+	 * @return
+	 */
 	public abstract boolean handleObject(FlexoObject object);
 
+	/**
+	 * This method is used to specialize objects beeing managed by this {@link TechnologyAdapterPlugin}.
+	 * 
+	 * We provide here an indirection for the SelectionManager to consider a {@link FlexoObject}
+	 * 
+	 * @param object
+	 * @return
+	 */
+	public abstract FlexoObject getRelevantObject(FlexoObject object);
+
+	/**
+	 * Indicates if this {@link TechnologyAdapterPlugin} provides a {@link ModuleView} for supplied object
+	 * 
+	 * @param object
+	 * @return
+	 */
+	public abstract boolean hasModuleViewForObject(FlexoObject object);
+
+	/**
+	 * Creates a plug-in specific {@link ModuleView} for supplied object, when relevant
+	 * 
+	 * @param object
+	 * @param controller
+	 * @param perspective
+	 * @return
+	 */
 	public abstract ModuleView<?> createModuleViewForObject(FlexoObject object, FlexoController controller, FlexoPerspective perspective);
 
 }

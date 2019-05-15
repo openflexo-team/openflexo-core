@@ -140,6 +140,7 @@ import org.openflexo.foundation.technologyadapter.FlexoModel;
 import org.openflexo.foundation.technologyadapter.FlexoModelResource;
 import org.openflexo.foundation.technologyadapter.ModelSlotObject;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
+import org.openflexo.foundation.technologyadapter.TechnologyAdapterPlugin;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterResource;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterService;
 import org.openflexo.foundation.technologyadapter.TechnologyObject;
@@ -160,6 +161,8 @@ import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.localization.LocalizedDelegate;
 import org.openflexo.module.FlexoModule;
 import org.openflexo.module.FlexoModule.WelcomePanel;
+import org.openflexo.module.Module;
+import org.openflexo.module.ModuleLoader;
 import org.openflexo.pamela.undo.AddCommand;
 import org.openflexo.pamela.undo.AtomicEdit;
 import org.openflexo.pamela.undo.CreateCommand;
@@ -169,8 +172,6 @@ import org.openflexo.pamela.undo.SetCommand;
 import org.openflexo.pamela.validation.ValidationModel;
 import org.openflexo.pamela.validation.ValidationRule;
 import org.openflexo.pamela.validation.ValidationRuleFilter;
-import org.openflexo.module.Module;
-import org.openflexo.module.ModuleLoader;
 import org.openflexo.prefs.ApplicationFIBLibraryService;
 import org.openflexo.prefs.FlexoPreferences;
 import org.openflexo.prefs.GeneralPreferences;
@@ -1537,18 +1538,27 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 	}
 
 	/**
-	 * We manage here an indirection with resources: resource data is used instead of resource if resource is loaded
+	 * This method is used to specialize in a {@link FlexoModule} object beeing managed with the selection.
+	 * 
+	 * Generic behaviour is to manage an indirection with resources: resource data is used instead of resource if resource is loaded
+	 * 
+	 * {@link TechnologyAdapterPlugin} also provide this abstraction
 	 * 
 	 * @param object
 	 * @return
 	 */
-	private static FlexoObject getRelevantObject(FlexoObject object) {
-		/*if (object instanceof FlexoResource<?>) {
-			logger.info("Resource " + object + " loaded=" + ((FlexoResource<?>) object).isLoaded());
-		}*/
+	public FlexoObject getRelevantObject(FlexoObject object) {
 		if (object instanceof FlexoResource<?> && ((FlexoResource<?>) object).isLoaded()) {
 			return (FlexoObject) ((FlexoResource<?>) object).getLoadedResourceData();
 		}
+
+		TechnologyAdapterControllerService tacService = getApplicationContext().getTechnologyAdapterControllerService();
+		for (TechnologyAdapterPluginController<?> plugin : tacService.getActivatedPlugins()) {
+			if (plugin.handleObject(object)) {
+				return plugin.getRelevantObject(object);
+			}
+		}
+
 		return object;
 	}
 
