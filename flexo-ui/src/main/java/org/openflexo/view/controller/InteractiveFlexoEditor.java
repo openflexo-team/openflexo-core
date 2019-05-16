@@ -100,7 +100,11 @@ public class InteractiveFlexoEditor extends DefaultFlexoEditor {
 		}
 	}
 
-	private ModuleLoader getModuleLoader() {
+	public ApplicationContext getApplicationContext() {
+		return applicationContext;
+	}
+
+	public ModuleLoader getModuleLoader() {
 		return applicationContext.getModuleLoader();
 	}
 
