@@ -135,15 +135,6 @@ public class MenuItemAction<A extends FlexoAction<A, T1, T2>, T1 extends FlexoOb
 
 	public LocalizedDelegate getApplicableLocales() {
 
-		/*LocalizedDelegate returned = actionFactory.getLocales(editor.getServiceManager());
-		
-		if (actionFactory instanceof FlexoBehaviourActionFactory) {
-			System.out.println("OK on retourne les bonnes locales");
-			return actionFactory.getLocales(editor.getServiceManager());
-		}*/
-
-		System.out.println("Applicable locales for " + actionFactory + " : " + actionFactory.getLocales(editor.getServiceManager()));
-
 		if (getModuleClass() != null) {
 			FlexoModule<?> module;
 			try {
@@ -157,19 +148,6 @@ public class MenuItemAction<A extends FlexoAction<A, T1, T2>, T1 extends FlexoOb
 
 		return actionFactory.getLocales(editor.getServiceManager());
 
-		/*TechnologyAdapter ta;
-		if (getTechnologyAdapterClass() != null) {
-			ta = getEditor().getServiceManager().getTechnologyAdapterService().getTechnologyAdapter(getTechnologyAdapterClass());
-			System.out.println("Action liee au TA " + ta);
-		}
-		else if (getModelSlotClass() != null) {
-			ta = getEditor().getServiceManager().getTechnologyAdapterService().getTechnologyAdapterForModelSlot(getModelSlotClass());
-			System.out.println("Action liee au TA " + ta);
-		}
-		else {
-			ta = getEditor().getServiceManager().getTechnologyAdapterService().getTechnologyAdapter(FMLTechnologyAdapter.class);
-		}
-		return ta.getLocales();*/
 	}
 
 	public Class<? extends ModelSlot<?>> getModelSlotClass() {
