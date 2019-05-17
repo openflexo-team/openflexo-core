@@ -61,7 +61,7 @@ import org.openflexo.pamela.annotations.XMLElement;
  * @author sylvain
  *
  */
-@DeclareFlexoRoles({ FlexoConceptRole.class })
+@DeclareFlexoRoles({ FlexoConceptRole.class, FlexoPropertyRole.class, FlexoBehaviourRole.class })
 @DeclareEditionActions({ CreateFlexoConcept.class })
 // @DeclareFetchRequests({ SelectFlexoConceptInstance.class, SelectVirtualModelInstance.class })
 @DeclareActorReferences({ FMLModelSlotInstance.class, FMLObjectActorReference.class })
@@ -79,6 +79,12 @@ public interface FMLModelSlot extends ModelSlot<VirtualModel> {
 		public <PR extends FlexoRole<?>> String defaultFlexoRoleName(Class<PR> flexoRoleClass) {
 			if (FlexoConceptRole.class.isAssignableFrom(flexoRoleClass)) {
 				return "concept";
+			}
+			if (FlexoPropertyRole.class.isAssignableFrom(flexoRoleClass)) {
+				return "property";
+			}
+			if (FlexoBehaviourRole.class.isAssignableFrom(flexoRoleClass)) {
+				return "behaviour";
 			}
 			logger.warning("Unexpected role: " + flexoRoleClass.getName());
 			return null;

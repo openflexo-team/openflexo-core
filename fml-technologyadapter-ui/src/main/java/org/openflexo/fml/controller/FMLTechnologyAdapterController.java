@@ -116,7 +116,9 @@ import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstanceModelSlot;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
 import org.openflexo.foundation.fml.ta.CreateFlexoConcept;
+import org.openflexo.foundation.fml.ta.FlexoBehaviourRole;
 import org.openflexo.foundation.fml.ta.FlexoConceptRole;
+import org.openflexo.foundation.fml.ta.FlexoPropertyRole;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.resource.FlexoResourceType;
 import org.openflexo.foundation.resource.ResourceData;
@@ -342,15 +344,21 @@ public class FMLTechnologyAdapterController extends TechnologyAdapterController<
 	}
 
 	/**
-	 * Return icon representing supplied pattern property
+	 * Return icon representing supplied role class
 	 * 
 	 * @param patternRoleClass
-	 * @return icon representing supplied pattern property
+	 * @return icon representing supplied role class
 	 */
 	@Override
 	public ImageIcon getIconForFlexoRole(Class<? extends FlexoRole<?>> flexoRoleClass) {
 		if (FlexoConceptRole.class.isAssignableFrom(flexoRoleClass)) {
 			return FMLIconLibrary.FLEXO_CONCEPT_ICON;
+		}
+		if (FlexoPropertyRole.class.isAssignableFrom(flexoRoleClass)) {
+			return FMLIconLibrary.FLEXO_ROLE_ICON;
+		}
+		if (FlexoBehaviourRole.class.isAssignableFrom(flexoRoleClass)) {
+			return FMLIconLibrary.FLEXO_BEHAVIOUR_ICON;
 		}
 		return null;
 	}
