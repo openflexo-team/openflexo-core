@@ -1,4 +1,6 @@
 cannot_instantiate_enum=Cannot instantiate enum
+choose_virtual_model=Choose virtual model
+create_virtual_model_instance=Create virtual model instance
 define_new_concept_instance=Define new concept instance
 delete_virtual_model_instance=Delete virtual model instance
 describe_flexo_concept_instance=Describe flexo concept instance
@@ -7,6 +9,7 @@ initializing_adapter=Initializing adapter
 instantiate_flexo_concept=Instantiate flexo concept
 instantiate_virtual_model=Instantiate virtual model
 new=New
+no_virtual_model_type_selected=No virtual model type selected
 open_virtual_model_instance=Open virtual model instance
 please_supply_a_valid_type_for_instance_beeing_created=Please supply a valid type for instance beeing created
 property=Property

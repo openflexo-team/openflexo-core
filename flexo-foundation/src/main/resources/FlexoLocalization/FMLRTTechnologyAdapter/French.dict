@@ -1,4 +1,6 @@
 cannot_instantiate_enum=Impossible d'instancier l'\u00E9numeration
+choose_virtual_model=choose_virtual_model
+create_virtual_model_instance=create_virtual_model_instance
 define_new_concept_instance=D\u00E9finition d'un nouvelle instance
 delete_virtual_model_instance=Supprimer l'instance de VirtualModel
 describe_flexo_concept_instance=Description de l'instance
@@ -7,6 +9,7 @@ initializing_adapter=Initialisation du connecteur
 instantiate_flexo_concept=Instancier un concept
 instantiate_virtual_model=Instancier un VirtualModel
 new=Nouveau
+no_virtual_model_type_selected=no_virtual_model_type_selected
 open_virtual_model_instance=Ouvrir l'instance de VirtualModel
 please_supply_a_valid_type_for_instance_beeing_created=Veuillez saisir un type valide pour l'instance \u00E0 cr\u00E9er
 property=Propri\u00E9t\u00E9
