@@ -716,10 +716,17 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 						return returned;
 					} catch (TypeMismatchException e) {
 						e.printStackTrace();
+						logger.warning("Unexpected exception " + e + " while executing expression property=" + flexoProperty);
+						return null;
 					} catch (NullReferenceException e) {
 						e.printStackTrace();
+						logger.warning("Unexpected exception " + e + " while executing expression property=" + flexoProperty);
+						return null;
 					} catch (InvocationTargetException e) {
-						e.printStackTrace();
+						e.getTargetException().printStackTrace();
+						logger.warning(
+								"Unexpected exception " + e.getTargetException() + " while executing expression property=" + flexoProperty);
+						return null;
 					}
 				}
 				else if (flexoProperty instanceof GetProperty) {
@@ -736,6 +743,8 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 							return returnedValue;
 						} catch (FlexoException e) {
 							e.printStackTrace();
+							logger.warning("Unexpected exception " + e + " while executing get property=" + flexoProperty);
+							return null;
 						}
 					}
 				}
@@ -899,7 +908,6 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 				logger.warning("Unexpected null flexoProperty");
 				return null;
 			}
-
 			if (!flexoRole.getFlexoConcept().isAssignableFrom(getFlexoConcept())) {
 				FlexoConceptInstance container = getContainerFlexoConceptInstance();
 				while (container != null) {
