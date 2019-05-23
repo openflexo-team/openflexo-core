@@ -1058,7 +1058,7 @@ public interface VirtualModelInstance<VMI extends VirtualModelInstance<VMI, TA>,
 				return null;
 			for (FlexoConceptInstance flexoConceptInstance : getFlexoConceptInstances()) {
 				if (flexoConceptInstance.getFlexoConcept() != null) {
-					for (FlexoRole<?> fr : flexoConceptInstance.getFlexoConcept().getDeclaredProperties(FlexoRole.class)) {
+					for (FlexoRole<?> fr : flexoConceptInstance.getFlexoConcept().getAccessibleProperties(FlexoRole.class)) {
 						if (flexoConceptInstance.getFlexoActor(fr) == object) {
 							ObjectLookupResult answer = new ObjectLookupResult();
 							answer.flexoConceptInstance = flexoConceptInstance;
