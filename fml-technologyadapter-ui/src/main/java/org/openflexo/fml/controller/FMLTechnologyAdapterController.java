@@ -572,11 +572,11 @@ public class FMLTechnologyAdapterController extends TechnologyAdapterController<
 						new DataBinding<>("component.resourceCenter"), new DataBinding<>(containerBinding), true));
 			}
 		}
-		else {
+		//else {
 			// No container defined, set service manager
 			vmiSelector.addToAssignments(fibModelFactory.newFIBCustomAssignment(vmiSelector, new DataBinding<>("component.serviceManager"),
 					new DataBinding<>("controller.flexoController.applicationContext"), true));
-		}
+		//}
 
 		// vmiSelector.addToAssignments(fibModelFactory.newFIBCustomAssignment(vmiSelector, new DataBinding<Object>("component.view"),
 		// new DataBinding<Object>(containerBinding), true));

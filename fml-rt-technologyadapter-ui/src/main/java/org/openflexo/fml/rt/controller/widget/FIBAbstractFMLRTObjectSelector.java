@@ -288,13 +288,24 @@ public abstract class FIBAbstractFMLRTObjectSelector<T extends FlexoConceptInsta
 					return true;
 				}
 			}
-			// System.out.println("excluding folder " + view);
+			for (RepositoryFolder<?, ?> childFolder : folder.getChildren()) {
+				if (isFolderVisible(childFolder)) {
+					return true;
+				}
+			}
 			return false;
 		}
 		return true;
 	}
 
 	public boolean isVirtualModelInstanceVisible(VirtualModelInstance<?, ?> virtualModelInstance) {
+		if (virtualModelInstance.getVirtualModelInstances() != null && virtualModelInstance.getVirtualModelInstances().size() > 0) {
+			for (VirtualModelInstance<?, ?> containedVMI : virtualModelInstance.getVirtualModelInstances()) {
+				if (isVirtualModelInstanceVisible(containedVMI)) {
+					return true;
+				}
+			}
+		}
 		if (getExpectedType() instanceof VirtualModelInstanceType) {
 			// We are expecting a VMI of following type
 			VirtualModel vmType = ((VirtualModelInstanceType) getExpectedType()).getVirtualModel();
