@@ -76,7 +76,6 @@ import org.openflexo.foundation.resource.CannotRenameException;
 import org.openflexo.foundation.resource.FlexoResource;
 import org.openflexo.foundation.technologyadapter.FlexoModel;
 import org.openflexo.foundation.technologyadapter.ModelRepository;
-import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.technologyadapter.TechnologyObject;
 import org.openflexo.pamela.annotations.Adder;
@@ -964,20 +963,6 @@ public interface VirtualModelInstance<VMI extends VirtualModelInstance<VMI, TA>,
 		@Override
 		public VMI getResourceData() {
 			return (VMI) this;
-		}
-
-		@Override
-		public <T> T getFlexoActor(FlexoRole<T> flexoRole) {
-			if (flexoRole instanceof ModelSlot) {
-				ModelSlotInstance<?, ?> modelSlotInstance = getModelSlotInstance((ModelSlot) flexoRole);
-				if (modelSlotInstance != null) {
-					return (T) modelSlotInstance.getAccessedResourceData();
-				}
-			}
-			if (super.getFlexoActor(flexoRole) != null) {
-				return super.getFlexoActor(flexoRole);
-			}
-			return null;
 		}
 
 		// ==========================================================================

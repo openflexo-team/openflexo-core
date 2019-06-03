@@ -38,72 +38,20 @@
 
 package org.openflexo.foundation.fml.binding;
 
-import java.lang.reflect.Type;
 import java.util.logging.Logger;
 
-import org.openflexo.connie.BindingEvaluationContext;
 import org.openflexo.connie.binding.IBindingPathElement;
-import org.openflexo.connie.binding.SimplePathElement;
-import org.openflexo.connie.exception.NullReferenceException;
-import org.openflexo.connie.exception.TypeMismatchException;
-import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstance;
-import org.openflexo.foundation.fml.rt.ModelSlotInstance;
-import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 
-public class VirtualModelModelSlotPathElement<MS extends ModelSlot> extends SimplePathElement {
+public class VirtualModelModelSlotPathElement<MS extends ModelSlot<?>> extends FlexoConceptFlexoPropertyPathElement<MS> {
 
 	private static final Logger logger = Logger.getLogger(VirtualModelModelSlotPathElement.class.getPackage().getName());
 
-	private final MS modelSlot;
-
 	public VirtualModelModelSlotPathElement(IBindingPathElement parent, MS modelSlot) {
-		super(parent, modelSlot.getName(), modelSlot.getResultingType());
-		this.modelSlot = modelSlot;
+		super(parent, modelSlot);
 	}
 
 	public MS getModelSlot() {
-		return modelSlot;
+		return getFlexoProperty();
 	}
-
-	@Override
-	public String getLabel() {
-		return modelSlot.getName();
-	}
-
-	@Override
-	public String getTooltipText(Type resultingType) {
-		return modelSlot.getDescription();
-	}
-
-	@Override
-	public Object getBindingValue(Object target, BindingEvaluationContext context) throws TypeMismatchException, NullReferenceException {
-		if (target instanceof FMLRTVirtualModelInstance) {
-			VirtualModelInstance<?, ?> vmi = (VirtualModelInstance<?, ?>) target;
-			ModelSlotInstance<?, ?> msi = vmi.getModelSlotInstance(modelSlot);
-			if (msi != null) {
-				return msi.getAccessedResourceData();
-			}
-			return null;
-		}
-		logger.warning("Please implement me, modelSlot=" + modelSlot + " target=" + target + " context=" + context);
-		return null;
-	}
-
-	@Override
-	public void setBindingValue(Object value, Object target, BindingEvaluationContext context)
-			throws TypeMismatchException, NullReferenceException {
-
-		if (target instanceof FMLRTVirtualModelInstance) {
-
-			System.out.println("OK, on tente de mettre la valeur suivante a " + modelSlot + " : " + value);
-
-			VirtualModelInstance<?, ?> vmi = (FMLRTVirtualModelInstance) target;
-			vmi.setFlexoPropertyValue(modelSlot, value);
-			return;
-		}
-
-		logger.warning("Please implement me, modelSlot=" + modelSlot + " target=" + target + " context=" + context);
-	}
-
 }
