@@ -1452,4 +1452,12 @@ public abstract class FlexoProjectImpl<I> extends ResourceRepositoryImpl<FlexoRe
 		return getDelegateResourceCenter().containsArtefact(serializationArtefact);
 	}
 
+	@Override
+	public String relativePath(I serializationArtefact) {
+		if (getDelegateResourceCenter() != null) {
+			return getDelegateResourceCenter().relativePath(serializationArtefact);
+		}
+		return null;
+	}
+
 }
