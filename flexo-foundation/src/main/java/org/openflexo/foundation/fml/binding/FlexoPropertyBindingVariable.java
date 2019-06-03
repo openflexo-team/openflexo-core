@@ -44,10 +44,17 @@ import java.lang.reflect.Type;
 import java.util.logging.Logger;
 
 import org.openflexo.connie.BindingVariable;
+import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoProperty;
 import org.openflexo.foundation.fml.FlexoRole;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 
+/**
+ * A {@link BindingVariable} representing access to a {@link FlexoProperty} in a {@link FlexoConcept} instance context.
+ * 
+ * @author sylvain
+ *
+ */
 public class FlexoPropertyBindingVariable extends BindingVariable implements PropertyChangeListener {
 	static final Logger logger = Logger.getLogger(FlexoPropertyBindingVariable.class.getPackage().getName());
 

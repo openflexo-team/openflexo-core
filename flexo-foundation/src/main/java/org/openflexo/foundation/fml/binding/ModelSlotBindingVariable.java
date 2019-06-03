@@ -40,9 +40,17 @@ package org.openflexo.foundation.fml.binding;
 
 import java.util.logging.Logger;
 
+import org.openflexo.connie.BindingVariable;
+import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 
-public class ModelSlotBindingVariable extends FlexoPropertyBindingVariable {
+/**
+ * A {@link BindingVariable} representing access to a {@link ModelSlot} in a {@link FlexoConcept} instance context.
+ * 
+ * @author sylvain
+ *
+ */
+public class ModelSlotBindingVariable extends FlexoRoleBindingVariable {
 	static final Logger logger = Logger.getLogger(ModelSlotBindingVariable.class.getPackage().getName());
 
 	public ModelSlotBindingVariable(ModelSlot<?> modelSlot) {

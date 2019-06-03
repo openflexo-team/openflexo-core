@@ -121,10 +121,10 @@ public class FMLBindingFactory extends JavaBindingFactory {
 
 	protected SimplePathElement makeSimplePathElement(Object object, IBindingPathElement parent) {
 		if (object instanceof ModelSlot) {
-			return new VirtualModelModelSlotPathElement<ModelSlot<?>>(parent, (ModelSlot<?>) object);
+			return new ModelSlotPathElement<ModelSlot<?>>(parent, (ModelSlot<?>) object);
 		}
 		if (object instanceof FlexoProperty) {
-			return new FlexoConceptFlexoPropertyPathElement<FlexoProperty<?>>(parent, (FlexoProperty<?>) object);
+			return new FlexoPropertyPathElement<FlexoProperty<?>>(parent, (FlexoProperty<?>) object);
 		}
 		if (object instanceof FlexoBehaviourParameter) {
 			if (parent.getType() instanceof FlexoBehaviourParametersType) {

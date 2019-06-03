@@ -696,7 +696,7 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 			else {
 				if (flexoProperty instanceof FlexoRole) {
 					// Take care that we don't manage here the multiple cardinality !!!
-					// This is performed in both classes: FlexoConceptFlexoPropertyPathElement and FlexoPropertyBindingVariable
+					// This is performed in both classes: FlexoPropertyPathElement and FlexoPropertyBindingVariable
 					if (((FlexoRole<?>) flexoProperty).getCardinality().isMultipleCardinality()) {
 						return (T) getFlexoActorList((FlexoRole) flexoProperty);
 					}

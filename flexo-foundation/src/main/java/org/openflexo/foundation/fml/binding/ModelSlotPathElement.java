@@ -41,13 +41,24 @@ package org.openflexo.foundation.fml.binding;
 import java.util.logging.Logger;
 
 import org.openflexo.connie.binding.IBindingPathElement;
+import org.openflexo.connie.binding.SimplePathElement;
+import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 
-public class VirtualModelModelSlotPathElement<MS extends ModelSlot<?>> extends FlexoConceptFlexoPropertyPathElement<MS> {
+/**
+ * A {@link SimplePathElement} representing a {@link ModelSlot}, as a binding path applicable to an instance of a given
+ * {@link FlexoConcept}<br>
+ * Type of parent MUST be an instance of {@link FlexoConcept}
+ * 
+ * @author sylvain
+ *
+ * @param <P>
+ */
+public class ModelSlotPathElement<MS extends ModelSlot<?>> extends FlexoPropertyPathElement<MS> {
 
-	private static final Logger logger = Logger.getLogger(VirtualModelModelSlotPathElement.class.getPackage().getName());
+	private static final Logger logger = Logger.getLogger(ModelSlotPathElement.class.getPackage().getName());
 
-	public VirtualModelModelSlotPathElement(IBindingPathElement parent, MS modelSlot) {
+	public ModelSlotPathElement(IBindingPathElement parent, MS modelSlot) {
 		super(parent, modelSlot);
 	}
 

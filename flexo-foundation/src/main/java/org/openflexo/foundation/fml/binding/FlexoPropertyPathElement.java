@@ -57,14 +57,23 @@ import org.openflexo.foundation.fml.FlexoProperty;
 import org.openflexo.foundation.fml.FlexoRole;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 
-public class FlexoConceptFlexoPropertyPathElement<P extends FlexoProperty<?>> extends SimplePathElement implements PropertyChangeListener {
+/**
+ * A {@link SimplePathElement} representing a {@link FlexoProperty}, as a binding path applicable to an instance of a given
+ * {@link FlexoConcept}<br>
+ * Type of parent MUST be an instance of {@link FlexoConcept}
+ * 
+ * @author sylvain
+ *
+ * @param <P>
+ */
+public class FlexoPropertyPathElement<P extends FlexoProperty<?>> extends SimplePathElement implements PropertyChangeListener {
 
-	private static final Logger logger = Logger.getLogger(FlexoConceptFlexoPropertyPathElement.class.getPackage().getName());
+	private static final Logger logger = Logger.getLogger(FlexoPropertyPathElement.class.getPackage().getName());
 
 	private Type lastKnownType = null;
 	private final P flexoProperty;
 
-	public FlexoConceptFlexoPropertyPathElement(IBindingPathElement parent, P flexoProperty) {
+	public FlexoPropertyPathElement(IBindingPathElement parent, P flexoProperty) {
 		super(parent, flexoProperty.getPropertyName(), flexoProperty.getResultingType());
 		this.flexoProperty = flexoProperty;
 		lastKnownType = flexoProperty.getResultingType();
@@ -240,7 +249,7 @@ public class FlexoConceptFlexoPropertyPathElement<P extends FlexoProperty<?>> ex
 
 	@Override
 	public String toString() {
-		return "FlexoConceptFlexoPropertyPathElement " + getFlexoProperty().getName() + " (" + getBindingPath() + ")";
+		return "FlexoPropertyPathElement " + getFlexoProperty().getName() + " (" + getBindingPath() + ")";
 	}
 
 	@Override
