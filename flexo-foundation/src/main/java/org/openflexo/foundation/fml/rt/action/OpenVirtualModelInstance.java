@@ -46,9 +46,12 @@ import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.FlexoObject.FlexoObjectImpl;
 import org.openflexo.foundation.action.FlexoActionFactory;
 import org.openflexo.foundation.action.FlexoGUIAction;
+import org.openflexo.foundation.action.TechnologySpecificFlexoAction;
+import org.openflexo.foundation.fml.rt.FMLRTTechnologyAdapter;
 import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstance;
 
-public class OpenVirtualModelInstance extends FlexoGUIAction<OpenVirtualModelInstance, FMLRTVirtualModelInstance, FlexoObject> {
+public class OpenVirtualModelInstance extends FlexoGUIAction<OpenVirtualModelInstance, FMLRTVirtualModelInstance, FlexoObject>
+		implements TechnologySpecificFlexoAction<FMLRTTechnologyAdapter> {
 
 	private static final Logger logger = Logger.getLogger(OpenVirtualModelInstance.class.getPackage().getName());
 
@@ -82,6 +85,11 @@ public class OpenVirtualModelInstance extends FlexoGUIAction<OpenVirtualModelIns
 
 	OpenVirtualModelInstance(FMLRTVirtualModelInstance focusedObject, Vector<FlexoObject> globalSelection, FlexoEditor editor) {
 		super(actionType, focusedObject, globalSelection, editor);
+	}
+
+	@Override
+	public Class<? extends FMLRTTechnologyAdapter> getTechnologyAdapterClass() {
+		return FMLRTTechnologyAdapter.class;
 	}
 
 }

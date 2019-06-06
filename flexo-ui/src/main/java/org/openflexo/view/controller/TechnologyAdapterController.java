@@ -132,6 +132,8 @@ public abstract class TechnologyAdapterController<TA extends TechnologyAdapter<T
 
 	private final Map<Class<? extends CustomType>, CustomTypeEditor> customTypeEditors = new LinkedHashMap<>();
 
+	private List<TechnologyAdapterPluginController<TA>> plugins = new ArrayList<>();
+
 	/**
 	 * Returns applicable {@link ProjectNatureService}
 	 * 
@@ -222,6 +224,7 @@ public abstract class TechnologyAdapterController<TA extends TechnologyAdapter<T
 			if (module.activateAdvancedActions(getTechnologyAdapter())) {
 				initializeAdvancedActions(controller.getControllerActionInitializer());
 			}
+			activateActivablePlugins(module);
 		}
 	}
 
@@ -631,6 +634,14 @@ public abstract class TechnologyAdapterController<TA extends TechnologyAdapter<T
 		return returned;
 	}
 
+	public void addToTechnologyAdapterPlugins(TechnologyAdapterPluginController plugin) {
+		plugins.add(plugin);
+	}
+
+	public void removeFromTechnologyAdapterPlugins(TechnologyAdapterPluginController plugin) {
+		plugins.remove(plugin);
+	}
+
 	public void resourceLoading(TechnologyAdapterResource<?, TA> resource) {
 	}
 
@@ -643,6 +654,43 @@ public abstract class TechnologyAdapterController<TA extends TechnologyAdapter<T
 
 	public ValidationReport getValidationReport(ResourceData<?> resourceData) {
 		return null;
+	}
+
+	public void activateActivablePlugins() {
+		for (FlexoModule<?> flexoModule : getServiceManager().getModuleLoader().getLoadedModuleInstances()) {
+			if (flexoModule.isActive()) {
+				activateActivablePlugins(flexoModule);
+			}
+		}
+	}
+
+	public void activateActivablePlugins(FlexoModule<?> module) {
+		FlexoController controller = module.getFlexoController();
+		if (controller != null) {
+			for (TechnologyAdapterPluginController<TA> plugin : plugins) {
+				if (plugin.isActivable(module)) {
+					plugin.activate(module);
+				}
+			}
+		}
+	}
+
+	public <P extends TechnologyAdapterPluginController<?>> P getPlugin(Class<P> pluginClass) {
+		for (TechnologyAdapterPluginController<TA> plugin : plugins) {
+			if (pluginClass.isAssignableFrom(plugin.getClass())) {
+				return (P) plugin;
+			}
+		}
+		return null;
+	}
+
+	/**
+	 * Return list of all activated TechnologyAdapter Plugins
+	 * 
+	 * @return
+	 */
+	public List<TechnologyAdapterPluginController<TA>> getPlugins() {
+		return plugins;
 	}
 
 }

@@ -980,7 +980,7 @@ public interface VirtualModel extends FlexoConcept, FlexoMetaModel<VirtualModel>
 
 		@Override
 		public Object getObject(String objectURI) {
-			return null;
+			return getVirtualModelLibrary().getFMLObject(objectURI, true);
 		}
 
 		/**
@@ -1425,8 +1425,9 @@ public interface VirtualModel extends FlexoConcept, FlexoMetaModel<VirtualModel>
 				}
 				boolean editSupport = getResource().getIODelegate().getSerializationArtefactAsResource() instanceof FileResourceImpl;
 				logger.info("Reading locales from " + localizedDirectoryResource);
-				LocalizedDelegateImpl returned = new LocalizedDelegateImpl(localizedDirectoryResource, getContainerVirtualModel() != null
-						? getContainerVirtualModel().getLocales() : getServiceManager().getLocalizationService().getFlexoLocalizer(),
+				LocalizedDelegateImpl returned = new LocalizedDelegateImpl(localizedDirectoryResource,
+						getContainerVirtualModel() != null ? getContainerVirtualModel().getLocales()
+								: getServiceManager().getLocalizationService().getFlexoLocalizer(),
 						editSupport, editSupport);
 				returned.setLocalizationRetriever(new Runnable() {
 					@Override

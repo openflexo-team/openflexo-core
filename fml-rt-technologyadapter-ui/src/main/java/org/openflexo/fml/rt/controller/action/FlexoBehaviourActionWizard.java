@@ -42,7 +42,7 @@ import java.awt.Dimension;
 import java.awt.Image;
 import java.util.logging.Logger;
 
-import org.openflexo.components.wizard.FlexoWizard;
+import org.openflexo.components.wizard.FlexoActionWizard;
 import org.openflexo.components.wizard.WizardStep;
 import org.openflexo.foundation.DataModification;
 import org.openflexo.foundation.FlexoObservable;
@@ -58,20 +58,15 @@ import org.openflexo.icon.IconMarker;
 import org.openflexo.toolbox.StringUtils;
 import org.openflexo.view.controller.FlexoController;
 
-public abstract class FlexoBehaviourActionWizard<A extends FlexoBehaviourAction<A, FB, ?>, FB extends FlexoBehaviour> extends FlexoWizard {
+public abstract class FlexoBehaviourActionWizard<A extends FlexoBehaviourAction<A, FB, ?>, FB extends FlexoBehaviour>
+		extends FlexoActionWizard<A> {
 
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(FlexoBehaviourActionWizard.class.getPackage().getName());
 
 	private ConfigureFlexoBehaviour configureFlexoBehaviour;
 
-	private final A action;
-
 	private static final Dimension DIMENSIONS = new Dimension(600, 400);
-
-	public A getAction() {
-		return action;
-	}
 
 	@Override
 	public Dimension getPreferredSize() {
@@ -79,8 +74,7 @@ public abstract class FlexoBehaviourActionWizard<A extends FlexoBehaviourAction<
 	}
 
 	public FlexoBehaviourActionWizard(A action, FlexoController controller) {
-		super(controller);
-		this.action = action;
+		super(action, controller);
 
 		if (!isSkipable()) {
 			addStep(configureFlexoBehaviour = new ConfigureFlexoBehaviour());
@@ -89,9 +83,9 @@ public abstract class FlexoBehaviourActionWizard<A extends FlexoBehaviourAction<
 
 	public boolean isSkipable() {
 
-		boolean successfullyRetrievedDefaultParameters = action.retrieveDefaultParameters();
+		boolean successfullyRetrievedDefaultParameters = getAction().retrieveDefaultParameters();
 
-		if (successfullyRetrievedDefaultParameters && action.getFlexoBehaviour().getSkipConfirmationPanel()) {
+		if (successfullyRetrievedDefaultParameters && getAction().getFlexoBehaviour().getSkipConfirmationPanel()) {
 			return true;
 		}
 
@@ -129,15 +123,15 @@ public abstract class FlexoBehaviourActionWizard<A extends FlexoBehaviourAction<
 
 		public ConfigureFlexoBehaviour() {
 
-			if (action != null) {
-				action.addObserver(this);
+			if (getAction() != null) {
+				getAction().addObserver(this);
 			}
 		}
 
 		@Override
 		public void delete() {
-			if (action != null) {
-				action.deleteObserver(this);
+			if (getAction() != null) {
+				getAction().deleteObserver(this);
 			}
 			super.delete();
 		}
@@ -150,7 +144,7 @@ public abstract class FlexoBehaviourActionWizard<A extends FlexoBehaviourAction<
 		}
 
 		public A getAction() {
-			return action;
+			return FlexoBehaviourActionWizard.this.getAction();
 		}
 
 		@Override
@@ -168,7 +162,7 @@ public abstract class FlexoBehaviourActionWizard<A extends FlexoBehaviourAction<
 
 			for (FlexoBehaviourParameter parameter : getFlexoBehaviour().getParameters()) {
 
-				if (!parameter.isValid(action, action.getParameterValue(parameter))) {
+				if (!parameter.isValid(getAction(), getAction().getParameterValue(parameter))) {
 					// System.out.println(
 					// "Invalid parameter: " + parameter + " value=" + action.getCreationSchemeAction().getParameterValue(parameter));
 					setIssueMessage(getAction().getLocales().localizedForKey("invalid_parameter") + " : " + parameter.getName(),
@@ -181,7 +175,7 @@ public abstract class FlexoBehaviourActionWizard<A extends FlexoBehaviourAction<
 		}
 
 		public FB getFlexoBehaviour() {
-			return action.getFlexoBehaviour();
+			return getAction().getFlexoBehaviour();
 		}
 
 	}

@@ -48,7 +48,7 @@ import org.openflexo.foundation.fml.FMLObject;
 import org.openflexo.foundation.fml.FlexoConceptObject;
 import org.openflexo.foundation.fml.action.CreateFlexoConceptInstanceRole;
 import org.openflexo.gina.controller.FIBController.Status;
-import org.openflexo.icon.FMLIconLibrary;
+import org.openflexo.icon.FMLRTIconLibrary;
 import org.openflexo.view.controller.ActionInitializer;
 import org.openflexo.view.controller.ControllerActionInitializer;
 
@@ -75,7 +75,7 @@ public class CreateFlexoConceptInstanceRoleInitializer
 
 	@Override
 	protected Icon getEnabledIcon(FlexoActionFactory<CreateFlexoConceptInstanceRole, FlexoConceptObject, FMLObject> actionType) {
-		return FMLIconLibrary.FLEXO_ROLE_ICON;
+		return FMLRTIconLibrary.FLEXO_CONCEPT_INSTANCE_ICON;
 	}
 
 }

@@ -55,4 +55,10 @@ public class StandardFlexoConceptView extends FlexoConceptView<FlexoConcept> {
 		super(flexoConcept, CommonFIB.STANDARD_FLEXO_CONCEPT_VIEW_FIB, controller, perspective);
 	}
 
+	@Override
+	public void willShow() {
+		super.willShow();
+		getFlexoController().getControllerModel().setRightViewVisible(false);
+	}
+
 }

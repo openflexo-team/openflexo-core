@@ -85,6 +85,7 @@ import org.openflexo.view.ModuleView;
 import org.openflexo.view.controller.ControllerActionInitializer;
 import org.openflexo.view.controller.FlexoController;
 import org.openflexo.view.controller.TechnologyAdapterController;
+import org.openflexo.view.controller.TechnologyAdapterPluginController;
 import org.openflexo.view.controller.model.FlexoPerspective;
 
 /**
@@ -268,6 +269,12 @@ public class FMLRTTechnologyAdapterController extends TechnologyAdapterControlle
 	@Override
 	public boolean hasModuleViewForObject(TechnologyObject<FMLRTTechnologyAdapter> object, FlexoController controller) {
 
+		for (TechnologyAdapterPluginController<?> plugin : getTechnologyAdapterControllerService().getActivatedPlugins()) {
+			if (plugin.hasModuleViewForObject(object)) {
+				return true;
+			}
+		}
+
 		if (object instanceof FMLRTVirtualModelInstance) {
 			return true;
 		}
@@ -295,6 +302,12 @@ public class FMLRTTechnologyAdapterController extends TechnologyAdapterControlle
 	@Override
 	public ModuleView<?> createModuleViewForObject(TechnologyObject<FMLRTTechnologyAdapter> object, FlexoController controller,
 			FlexoPerspective perspective) {
+
+		for (TechnologyAdapterPluginController<?> plugin : getTechnologyAdapterControllerService().getActivatedPlugins()) {
+			if (plugin.hasModuleViewForObject(object)) {
+				return plugin.createModuleViewForObject(object, controller, perspective);
+			}
+		}
 
 		if (object instanceof FMLRTVirtualModelInstance) {
 			FMLRTVirtualModelInstance vmi = (FMLRTVirtualModelInstance) object;

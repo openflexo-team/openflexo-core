@@ -1,6 +1,7 @@
 /**
  * 
- * Copyright (c) 2014, Openflexo
+ * Copyright (c) 2013-2014, Openflexo
+ * Copyright (c) 2011-2012, AgileBirds
  * 
  * This file is part of Flexo-foundation, a component of the software infrastructure 
  * developed at Openflexo.
@@ -36,30 +37,19 @@
  * 
  */
 
-package org.openflexo.foundation.fml;
+package org.openflexo.foundation.fml.rt;
 
-import java.util.HashMap;
-import java.util.Map;
+import org.openflexo.foundation.FlexoException;
 
-import org.openflexo.foundation.fml.rm.VirtualModelResource;
-import org.openflexo.foundation.resource.FlexoResourceCenterService;
-import org.openflexo.foundation.technologyadapter.TechnologyContextManager;
-
-public class FMLTechnologyContextManager extends TechnologyContextManager<FMLTechnologyAdapter> {
-
-	protected Map<String, VirtualModelResource> virtualModels = new HashMap<>();
-
-	public FMLTechnologyContextManager(FMLTechnologyAdapter adapter, FlexoResourceCenterService resourceCenterService) {
-		super(adapter, resourceCenterService);
-	}
-
-	public VirtualModelResource getViewPointResource(String uri) {
-		return virtualModels.get(uri);
-	}
-
-	public void registerViewPoint(VirtualModelResource virtualModelResource) {
-		registerResource(virtualModelResource);
-		virtualModels.put(virtualModelResource.getURI(), virtualModelResource);
-	}
+/**
+ * This exception is thrown when a Cancel has been raised during execution of a FML control graph<br>
+ * 
+ * Common use is to manage compensation at FML level
+ * 
+ * @author sylvain
+ *
+ */
+@SuppressWarnings("serial")
+public class ActionExecutionCancelledException extends FlexoException {
 
 }

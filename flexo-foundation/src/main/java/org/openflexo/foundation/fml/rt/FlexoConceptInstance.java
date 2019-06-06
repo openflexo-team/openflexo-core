@@ -400,20 +400,24 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 	public boolean hasNature(FlexoConceptInstanceNature nature);
 
 	/**
-	 * Return {@link ModelSlotInstance} concretizing supplied modelSlot
+	 * Return {@link ModelSlotInstance} concretizing supplied modelSlot, asserting cardinality is single
 	 * 
 	 * @param modelSlot
+	 *            a model slot with single cardinality
 	 * @return
 	 */
+	@Deprecated
 	public <RD extends ResourceData<RD> & TechnologyObject<?>, MS extends ModelSlot<? extends RD>> ModelSlotInstance<MS, RD> getModelSlotInstance(
 			MS modelSlot);
 
 	/**
-	 * Return {@link ModelSlotInstance} concretizing modelSlot identified by supplied name
+	 * Return {@link ModelSlotInstance} concretizing modelSlot identified by supplied name, asserting cardinality is single
 	 * 
-	 * @param modelSlot
+	 * @param modelSlotName
+	 *            name of a model slot with single cardinality
 	 * @return
 	 */
+	@Deprecated
 	public <RD extends ResourceData<RD> & TechnologyObject<?>, MS extends ModelSlot<? extends RD>> ModelSlotInstance<MS, RD> getModelSlotInstance(
 			String modelSlotName);
 
@@ -690,21 +694,9 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 				return getVirtualModelInstance().getFlexoPropertyValue(flexoProperty);
 			}
 			else {
-				if (flexoProperty instanceof ModelSlot) {
-					ModelSlot ms = getFlexoConcept().getModelSlot(((ModelSlot) flexoProperty).getName());
-					if (ms != null) {
-						ModelSlotInstance<?, ?> modelSlotInstance = getModelSlotInstance(ms);
-						if (modelSlotInstance != null) {
-							return (T) modelSlotInstance.getAccessedResourceData();
-						}
-						// Do not warn: the model slot may be null here
-						// logger.warning("Unexpected null model slot instance for " + ms + " in " + this);
-						return null;
-					}
-				}
-				else if (flexoProperty instanceof FlexoRole) {
+				if (flexoProperty instanceof FlexoRole) {
 					// Take care that we don't manage here the multiple cardinality !!!
-					// This is performed in both classes: FlexoConceptFlexoPropertyPathElement and FlexoPropertyBindingVariable
+					// This is performed in both classes: FlexoPropertyPathElement and FlexoPropertyBindingVariable
 					if (((FlexoRole<?>) flexoProperty).getCardinality().isMultipleCardinality()) {
 						return (T) getFlexoActorList((FlexoRole) flexoProperty);
 					}
@@ -716,10 +708,17 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 						return returned;
 					} catch (TypeMismatchException e) {
 						e.printStackTrace();
+						logger.warning("Unexpected exception " + e + " while executing expression property=" + flexoProperty);
+						return null;
 					} catch (NullReferenceException e) {
 						e.printStackTrace();
+						logger.warning("Unexpected exception " + e + " while executing expression property=" + flexoProperty);
+						return null;
 					} catch (InvocationTargetException e) {
-						e.printStackTrace();
+						e.getTargetException().printStackTrace();
+						logger.warning(
+								"Unexpected exception " + e.getTargetException() + " while executing expression property=" + flexoProperty);
+						return null;
 					}
 				}
 				else if (flexoProperty instanceof GetProperty) {
@@ -736,6 +735,8 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 							return returnedValue;
 						} catch (FlexoException e) {
 							e.printStackTrace();
+							logger.warning("Unexpected exception " + e + " while executing get property=" + flexoProperty);
+							return null;
 						}
 					}
 				}
@@ -859,7 +860,7 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 		 *            the property to lookup
 		 */
 		@Override
-		public <T> T getFlexoPropertyValue(String propertyName) {
+		public final <T> T getFlexoPropertyValue(String propertyName) {
 			FlexoProperty<T> property = (FlexoProperty<T>) getFlexoConcept().getAccessibleProperty(propertyName);
 			if (property == null) {
 				logger.warning("Cannot lookup property " + propertyName);
@@ -877,7 +878,7 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 		 *            the new value to set
 		 */
 		@Override
-		public <T> void setFlexoPropertyValue(String propertyName, T value) {
+		public final <T> void setFlexoPropertyValue(String propertyName, T value) {
 			FlexoProperty<T> property = (FlexoProperty<T>) getFlexoConcept().getAccessibleProperty(propertyName);
 			if (property == null) {
 				logger.warning("Cannot lookup property " + propertyName);
@@ -899,7 +900,6 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 				logger.warning("Unexpected null flexoProperty");
 				return null;
 			}
-
 			if (!flexoRole.getFlexoConcept().isAssignableFrom(getFlexoConcept())) {
 				FlexoConceptInstance container = getContainerFlexoConceptInstance();
 				while (container != null) {
@@ -933,7 +933,7 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 		 *            the property to lookup
 		 */
 		@Override
-		public <T> T getFlexoActor(String flexoRoleName) {
+		public final <T> T getFlexoActor(String flexoRoleName) {
 			FlexoRole<T> role = (FlexoRole<T>) getFlexoConcept().getAccessibleProperty(flexoRoleName);
 			if (role == null) {
 				logger.warning("Cannot lookup property " + flexoRoleName);
@@ -1015,7 +1015,7 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 		 *            the property to lookup
 		 */
 		@Override
-		public <T> List<T> getFlexoActorList(String flexoRoleName) {
+		public final <T> List<T> getFlexoActorList(String flexoRoleName) {
 			FlexoRole<T> role = (FlexoRole<T>) getFlexoConcept().getAccessibleProperty(flexoRoleName);
 			if (role == null) {
 				logger.warning("Cannot lookup role " + flexoRoleName);
@@ -1032,7 +1032,7 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 		 *            the property to lookup
 		 */
 		@Override
-		public <T> ActorReference<T> getActorReference(FlexoRole<T> flexoRole) {
+		public final <T> ActorReference<T> getActorReference(FlexoRole<T> flexoRole) {
 			if (flexoRole == null) {
 				logger.warning("Unexpected null flexoProperty");
 				return null;
@@ -1055,7 +1055,7 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 		 *            the property to lookup
 		 */
 		@Override
-		public <T> List<ActorReference<T>> getActorReferenceList(FlexoRole<T> flexoRole) {
+		public final <T> List<ActorReference<T>> getActorReferenceList(FlexoRole<T> flexoRole) {
 			if (flexoRole == null) {
 				logger.warning("Unexpected null flexoProperty");
 				return null;
@@ -1156,7 +1156,7 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 		 *            the property to be considered
 		 */
 		@Override
-		public <T> void addToFlexoActors(T object, FlexoRole<T> flexoRole) {
+		public final <T> void addToFlexoActors(T object, FlexoRole<T> flexoRole) {
 
 			if (object != null) {
 				ActorReference<? extends T> actorReference = flexoRole.makeActorReference(object, this);
@@ -1174,7 +1174,7 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 		 * @return
 		 */
 		@Override
-		public <T> boolean hasFlexoActor(T object, FlexoRole<T> flexoRole) {
+		public final <T> boolean hasFlexoActor(T object, FlexoRole<T> flexoRole) {
 			return getActorReference(object, flexoRole) != null;
 		}
 
@@ -1188,7 +1188,7 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 		 * @return
 		 */
 		@Override
-		public <T> ActorReference<T> getActorReference(T object, FlexoRole<T> flexoRole) {
+		public final <T> ActorReference<T> getActorReference(T object, FlexoRole<T> flexoRole) {
 			List<ActorReference<T>> actorReferenceList = getActorReferenceList(flexoRole);
 			if (actorReferenceList != null) {
 				for (ActorReference<T> ar : actorReferenceList) {
@@ -1211,7 +1211,7 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 		 *            the property to be considered
 		 */
 		@Override
-		public <T> void removeFromFlexoActors(T object, FlexoRole<T> flexoRole) {
+		public final <T> void removeFromFlexoActors(T object, FlexoRole<T> flexoRole) {
 
 			if (object != null) {
 				List<ActorReference<T>> references = getReferences(flexoRole.getRoleName());
@@ -1236,12 +1236,12 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 		 * @param flexoProperty
 		 */
 		@Override
-		public <T> void nullifyFlexoActor(FlexoRole<T> flexoRole) {
+		public final <T> void nullifyFlexoActor(FlexoRole<T> flexoRole) {
 			setFlexoActor(null, flexoRole);
 		}
 
 		@Override
-		public <T> FlexoProperty<T> getPropertyForActor(T actor) {
+		public final <T> FlexoProperty<T> getPropertyForActor(T actor) {
 			for (FlexoProperty<?> role : getFlexoConcept().getAccessibleProperties()) {
 				List<ActorReference<?>> references = (List) getReferences(role.getPropertyName());
 				for (ActorReference<?> actorReference : references) {
@@ -1260,7 +1260,7 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 		 * @return
 		 */
 		@Override
-		public <RD extends ResourceData<RD> & TechnologyObject<?>, MS extends ModelSlot<? extends RD>> ModelSlotInstance<MS, RD> getModelSlotInstance(
+		public final <RD extends ResourceData<RD> & TechnologyObject<?>, MS extends ModelSlot<? extends RD>> ModelSlotInstance<MS, RD> getModelSlotInstance(
 				MS modelSlot) {
 
 			for (ActorReference<?> actorReference : getActors()) {
@@ -1288,9 +1288,6 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 			// System.out.println("Je suis: " + getFlexoConcept().getFMLRepresentation());
 			// System.out.println("Le model slot: " + modelSlot.getFlexoConcept().getFMLRepresentation());
 			// Thread.dumpStack();
-			/*if (getFlexoConcept() != null && !getFlexoConcept().getModelSlots().contains(modelSlot)) {
-				logger.warning("Worse than that, supplied ModelSlot is not part of concept " + getFlexoConcept());
-			}*/
 			return null;
 		}
 
@@ -1301,7 +1298,7 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 		 * @return
 		 */
 		@Override
-		public <RD extends ResourceData<RD> & TechnologyObject<?>, MS extends ModelSlot<? extends RD>> ModelSlotInstance<MS, RD> getModelSlotInstance(
+		public final <RD extends ResourceData<RD> & TechnologyObject<?>, MS extends ModelSlot<? extends RD>> ModelSlotInstance<MS, RD> getModelSlotInstance(
 				String modelSlotName) {
 
 			for (ActorReference<?> actorReference : getActors()) {
@@ -1316,7 +1313,7 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 		}
 
 		@Override
-		public List<ModelSlotInstance<?, ?>> getModelSlotInstances() {
+		public final List<ModelSlotInstance<?, ?>> getModelSlotInstances() {
 			List<ModelSlotInstance<?, ?>> returned = new ArrayList<>();
 			for (ActorReference<?> actorReference : getActors()) {
 				if (actorReference instanceof ModelSlotInstance) {
@@ -1418,7 +1415,7 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 		}
 
 		@Override
-		public List<FlexoConceptInstance> getEmbeddedFlexoConceptInstances(FlexoConcept flexoConcept) {
+		public final List<FlexoConceptInstance> getEmbeddedFlexoConceptInstances(FlexoConcept flexoConcept) {
 
 			if (flexoConcept == null) {
 				// logger.warning("Unexpected null FlexoConcept");
@@ -1437,7 +1434,7 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 		}
 
 		@Override
-		public void addToActors(ActorReference<?> actorReference) {
+		public final void addToActors(ActorReference<?> actorReference) {
 
 			// System.out.println("***** addToActors " + actorReference);
 
@@ -1463,7 +1460,7 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 		}
 
 		@Override
-		public void removeFromActors(ActorReference<?> actorReference) {
+		public final void removeFromActors(ActorReference<?> actorReference) {
 
 			if (actorReference.getFlexoRole() != null) {
 				// Remove the cache

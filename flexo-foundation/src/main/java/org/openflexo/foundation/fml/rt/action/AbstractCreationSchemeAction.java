@@ -269,4 +269,13 @@ public class AbstractCreationSchemeAction<A extends AbstractCreationSchemeAction
 		return (VirtualModelInstance<?, ?>) super.getFlexoConceptInstance();
 	}
 
+	@Override
+	protected void compensateCancelledExecution() {
+		// We will simply delete the created instance
+		if (newFlexoConceptInstance != null) {
+			System.out.println("Delete FlexoConceptInstance as compensation of Cancel");
+			newFlexoConceptInstance.delete();
+		}
+	}
+
 }

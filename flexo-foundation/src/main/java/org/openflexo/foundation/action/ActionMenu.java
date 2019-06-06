@@ -45,38 +45,40 @@ import org.openflexo.localization.LocalizedDelegate;
 
 public class ActionMenu {
 
+	private int _index;
 	private ActionMenu _parentMenu;
 	private ActionGroup _actionGroup;
 	private final String _actionMenuName;
 	private Icon _smallIcon;
 
-	protected ActionMenu(String actionMenuName) {
+	protected ActionMenu(String actionMenuName, int index) {
 		super();
 		_actionMenuName = actionMenuName;
+		_index = index;
 	}
 
-	protected ActionMenu(String actionMenuName, Icon icon) {
-		this(actionMenuName);
+	protected ActionMenu(String actionMenuName, int index, Icon icon) {
+		this(actionMenuName, index);
 		setSmallIcon(icon);
 	}
 
-	public ActionMenu(String actionMenuName, ActionGroup actionGroup) {
-		this(actionMenuName);
+	public ActionMenu(String actionMenuName, int index, ActionGroup actionGroup) {
+		this(actionMenuName, index);
 		setActionGroup(actionGroup);
 	}
 
-	protected ActionMenu(String actionMenuName, ActionGroup actionGroup, Icon icon) {
-		this(actionMenuName, actionGroup);
+	protected ActionMenu(String actionMenuName, int index, ActionGroup actionGroup, Icon icon) {
+		this(actionMenuName, index, actionGroup);
 		setSmallIcon(icon);
 	}
 
-	protected ActionMenu(String actionMenuName, ActionGroup actionGroup, Icon icon, ActionMenu parentMenu) {
-		this(actionMenuName, actionGroup, icon);
+	protected ActionMenu(String actionMenuName, int index, ActionGroup actionGroup, Icon icon, ActionMenu parentMenu) {
+		this(actionMenuName, index, actionGroup, icon);
 		_parentMenu = parentMenu;
 	}
 
-	protected ActionMenu(String actionMenuName, ActionGroup actionGroup, ActionMenu parentMenu) {
-		this(actionMenuName, actionGroup);
+	protected ActionMenu(String actionMenuName, int index, ActionGroup actionGroup, ActionMenu parentMenu) {
+		this(actionMenuName, index, actionGroup);
 		_parentMenu = parentMenu;
 	}
 
@@ -110,5 +112,9 @@ public class ActionMenu {
 
 	public ActionMenu getParentMenu() {
 		return _parentMenu;
+	}
+
+	public int getIndex() {
+		return _index;
 	}
 }

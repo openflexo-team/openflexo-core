@@ -80,4 +80,10 @@ public class VirtualModelInstanceView extends FIBModuleView<VirtualModelInstance
 		}*/
 	}
 
+	@Override
+	public void willShow() {
+		super.willShow();
+		getFlexoController().getControllerModel().setRightViewVisible(false);
+	}
+
 }

@@ -109,6 +109,12 @@ public interface RemoteResourceCenter extends FlexoResourceCenter<Object> {
 			return false;
 		}
 
+		@Override
+		public String relativePath(Object serializationArtefact) {
+			// TODO
+			return null;
+		}
+
 	}
 
 	@ModelEntity

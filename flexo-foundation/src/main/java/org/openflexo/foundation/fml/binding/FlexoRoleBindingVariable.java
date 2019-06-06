@@ -40,8 +40,16 @@ package org.openflexo.foundation.fml.binding;
 
 import java.util.logging.Logger;
 
+import org.openflexo.connie.BindingVariable;
+import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoRole;
 
+/**
+ * A {@link BindingVariable} representing access to a {@link FlexoRole} in a {@link FlexoConcept} instance context.
+ * 
+ * @author sylvain
+ *
+ */
 public class FlexoRoleBindingVariable extends FlexoPropertyBindingVariable {
 	static final Logger logger = Logger.getLogger(FlexoRoleBindingVariable.class.getPackage().getName());
 

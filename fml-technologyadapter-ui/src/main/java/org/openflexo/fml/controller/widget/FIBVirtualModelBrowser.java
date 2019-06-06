@@ -42,6 +42,8 @@ import java.util.logging.Logger;
 
 import org.openflexo.foundation.fml.FMLTechnologyAdapter;
 import org.openflexo.foundation.fml.VirtualModel;
+import org.openflexo.gina.model.FIBContainer;
+import org.openflexo.gina.swing.view.widget.JFIBBrowserWidget;
 import org.openflexo.rm.Resource;
 import org.openflexo.rm.ResourceLocator;
 import org.openflexo.view.FIBBrowserView;
@@ -61,6 +63,14 @@ public class FIBVirtualModelBrowser extends FIBBrowserView<VirtualModel> {
 
 	public FIBVirtualModelBrowser(VirtualModel virtualModel, FlexoController controller) {
 		super(virtualModel, controller, FIB_FILE, controller.getTechnologyAdapter(FMLTechnologyAdapter.class).getLocales());
+	}
+
+	public void setVirtualModel(VirtualModel virtualModel) {
+		setRootObject(virtualModel);
+	}
+
+	public JFIBBrowserWidget<?> getFIBBrowserWidget() {
+		return (JFIBBrowserWidget<?>) getFIBController().viewForComponent(retrieveFIBBrowser((FIBContainer) getFIBComponent()));
 	}
 
 	// Please uncomment this for a live test

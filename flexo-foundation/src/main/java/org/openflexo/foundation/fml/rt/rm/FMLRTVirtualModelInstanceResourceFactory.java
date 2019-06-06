@@ -23,11 +23,15 @@ package org.openflexo.foundation.fml.rt.rm;
 import java.io.IOException;
 import java.util.logging.Logger;
 
+import org.openflexo.foundation.fml.FMLTechnologyAdapter;
+import org.openflexo.foundation.fml.VirtualModelRepository;
 import org.openflexo.foundation.fml.rm.VirtualModelResource;
+import org.openflexo.foundation.fml.rm.VirtualModelResourceFactory;
 import org.openflexo.foundation.fml.rt.FMLRTTechnologyAdapter;
 import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstanceModelFactory;
 import org.openflexo.foundation.resource.FlexoIODelegate;
+import org.openflexo.foundation.resource.FlexoResource;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.resource.RepositoryFolder;
 import org.openflexo.foundation.resource.SaveResourceException;
@@ -209,11 +213,6 @@ public class FMLRTVirtualModelInstanceResourceFactory extends
 		if (resourceCenter.exists(serializationArtefact) && resourceCenter.isDirectory(serializationArtefact)
 				&& resourceCenter.canRead(serializationArtefact)
 				&& resourceCenter.retrieveName(serializationArtefact).endsWith(FML_RT_SUFFIX)) {
-			/*final String baseName = candidateFile.getName().substring(0,
-					candidateFile.getName().length() - ViewPointResource.VIEW_SUFFIX.length());
-			final File xmlFile = new File(candidateFile, baseName + ".xml");
-			return xmlFile.exists();*/
-
 			return true;
 		}
 		return false;
@@ -241,6 +240,24 @@ public class FMLRTVirtualModelInstanceResourceFactory extends
 
 		// Now look for virtual model instances and sub-views
 		exploreViewContents(resource);
+
+		// We lookup here resources with a null container which are defined inside a .fml directory
+		// This means that VirtualModelInstance inside are declared as ContainedVMI of the corresponding VirtualModel
+		if (resource.getContainer() == null) {
+			RepositoryFolder<FlexoResource<?>, I> parentFolder = resourceCenter.getParentFolder(resource);
+			if (parentFolder.getName().endsWith(VirtualModelResourceFactory.FML_SUFFIX)) {
+				FMLTechnologyAdapter fmlTA = resource.getServiceManager().getTechnologyAdapterService()
+						.getTechnologyAdapter(FMLTechnologyAdapter.class);
+				VirtualModelRepository<I> virtualModelRepository = fmlTA.getVirtualModelRepository(resourceCenter);
+				for (VirtualModelResource virtualModelResource : virtualModelRepository.getAllResources()) {
+					I serializationArtefact = (I) virtualModelResource.getIODelegate().getSerializationArtefact();
+					I parentSerializationArtefact = resourceCenter.getContainer(serializationArtefact);
+					if (parentSerializationArtefact.equals(parentFolder.getSerializationArtefact())) {
+						virtualModelResource.addToContainedVMI(resource);
+					}
+				}
+			}
+		}
 
 		return resource;
 	}

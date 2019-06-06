@@ -1140,6 +1140,16 @@ public interface FileSystemBasedResourceCenter extends FlexoResourceCenter<File>
 			return FileUtils.directoryContainsFile(getRootDirectory(), serializationArtefact, true);
 		}
 
+		@Override
+		public String relativePath(File serializationArtefact) {
+			try {
+				return FileUtils.makeFilePathRelativeToDir(serializationArtefact, getDirectory());
+			} catch (IOException e) {
+				e.printStackTrace();
+				return null;
+			}
+		}
+
 	}
 
 	@ModelEntity(isAbstract = true)

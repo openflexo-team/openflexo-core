@@ -53,10 +53,8 @@ import org.openflexo.foundation.action.FlexoAction;
 import org.openflexo.foundation.action.FlexoActionFactory;
 import org.openflexo.foundation.action.FlexoActionSource;
 import org.openflexo.foundation.action.TechnologySpecificFlexoAction;
-import org.openflexo.foundation.fml.FMLTechnologyAdapter;
 import org.openflexo.foundation.fml.editionaction.EditionAction;
 import org.openflexo.foundation.fml.editionaction.TechnologySpecificAction;
-import org.openflexo.foundation.fml.rt.action.FlexoBehaviourActionFactory;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.localization.LocalizedDelegate;
@@ -136,10 +134,7 @@ public class MenuItemAction<A extends FlexoAction<A, T1, T2>, T1 extends FlexoOb
 	}
 
 	public LocalizedDelegate getApplicableLocales() {
-		if (actionFactory instanceof FlexoBehaviourActionFactory) {
-			System.out.println("OK on retourne les bonnes locales");
-			return actionFactory.getLocales(editor.getServiceManager());
-		}
+
 		if (getModuleClass() != null) {
 			FlexoModule<?> module;
 			try {
@@ -150,19 +145,9 @@ public class MenuItemAction<A extends FlexoAction<A, T1, T2>, T1 extends FlexoOb
 				e.printStackTrace();
 			}
 		}
-		TechnologyAdapter ta;
-		if (getTechnologyAdapterClass() != null) {
-			ta = getEditor().getServiceManager().getTechnologyAdapterService().getTechnologyAdapter(getTechnologyAdapterClass());
-			System.out.println("Action liee au TA " + ta);
-		}
-		else if (getModelSlotClass() != null) {
-			ta = getEditor().getServiceManager().getTechnologyAdapterService().getTechnologyAdapterForModelSlot(getModelSlotClass());
-			System.out.println("Action liee au TA " + ta);
-		}
-		else {
-			ta = getEditor().getServiceManager().getTechnologyAdapterService().getTechnologyAdapter(FMLTechnologyAdapter.class);
-		}
-		return ta.getLocales();
+
+		return actionFactory.getLocales(editor.getServiceManager());
+
 	}
 
 	public Class<? extends ModelSlot<?>> getModelSlotClass() {

@@ -40,6 +40,7 @@
 package org.openflexo.view.controller;
 
 import java.util.Collection;
+import java.util.List;
 
 import org.openflexo.connie.type.CustomType;
 import org.openflexo.foundation.FlexoService;
@@ -135,5 +136,21 @@ public interface TechnologyAdapterControllerService extends FlexoService, Custom
 	 */
 	@Override
 	public <T extends CustomType> CustomTypeEditor<T> getCustomTypeEditor(Class<T> typeClass);
+
+	/**
+	 * Return singleton instance of supplied Plugin class
+	 * 
+	 * @param <P>
+	 * @param pluginClass
+	 * @return
+	 */
+	public <P extends TechnologyAdapterPluginController<?>> P getPlugin(Class<P> pluginClass);
+
+	/**
+	 * Return the list of all activated {@link TechnologyAdapterPluginController}
+	 * 
+	 * @return
+	 */
+	public List<TechnologyAdapterPluginController<?>> getActivatedPlugins();
 
 }

@@ -44,13 +44,17 @@ import org.openflexo.foundation.fml.FMLModelFactory;
 import org.openflexo.foundation.fml.FMLTechnologyAdapter;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.VirtualModelLibrary;
+import org.openflexo.foundation.fml.rt.rm.FMLRTVirtualModelInstanceResource;
 import org.openflexo.foundation.resource.DirectoryContainerResource;
 import org.openflexo.foundation.resource.PamelaResource;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterResource;
+import org.openflexo.pamela.annotations.Adder;
 import org.openflexo.pamela.annotations.Getter;
+import org.openflexo.pamela.annotations.Getter.Cardinality;
 import org.openflexo.pamela.annotations.ImplementationClass;
 import org.openflexo.pamela.annotations.ModelEntity;
+import org.openflexo.pamela.annotations.Remover;
 import org.openflexo.pamela.annotations.Setter;
 
 /**
@@ -65,6 +69,7 @@ public interface VirtualModelResource extends PamelaResource<VirtualModel, FMLMo
 		TechnologyAdapterResource<VirtualModel, FMLTechnologyAdapter> {
 
 	public static final String VIRTUAL_MODEL_LIBRARY = "virtualModelLibrary";
+	public static final String CONTAINED_VMI = "containedVMI";
 
 	/**
 	 * Return virtual model stored by this resource when loaded<br>
@@ -115,5 +120,34 @@ public interface VirtualModelResource extends PamelaResource<VirtualModel, FMLMo
 	 * @param useDeclarations
 	 */
 	public void updateFMLModelFactory(List<Class<? extends ModelSlot<?>>> useDeclarations);
+
+	/**
+	 * Returns a list of VMI resources located by this resource<br>
+	 * Those resources are generally used to represent container resource (the VirtualModel)
+	 * 
+	 * @return the list of VMI resources.
+	 */
+	@Getter(value = CONTAINED_VMI, cardinality = Cardinality.LIST)
+	public List<FMLRTVirtualModelInstanceResource> getContainedVMI();
+
+	/**
+	 * Adds a VMI resource<br>
+	 * Those resources are generally used to represent container resource (the VirtualModel)
+	 * 
+	 * @param resource
+	 *            the resource to add
+	 */
+	@Adder(CONTAINED_VMI)
+	public void addToContainedVMI(FMLRTVirtualModelInstanceResource resource);
+
+	/**
+	 * Removes a VMI resource<br>
+	 * Those resources are generally used to represent container resource (the VirtualModel)
+	 * 
+	 * @param resource
+	 *            the resource to remove
+	 */
+	@Remover(CONTAINED_VMI)
+	public void removeFromContainedVMI(FMLRTVirtualModelInstanceResource resource);
 
 }

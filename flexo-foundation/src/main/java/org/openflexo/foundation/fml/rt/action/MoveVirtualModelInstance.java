@@ -46,12 +46,14 @@ import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.FlexoObject.FlexoObjectImpl;
 import org.openflexo.foundation.action.FlexoAction;
 import org.openflexo.foundation.action.FlexoActionFactory;
+import org.openflexo.foundation.action.TechnologySpecificFlexoAction;
+import org.openflexo.foundation.fml.rt.FMLRTTechnologyAdapter;
 import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.foundation.fml.rt.rm.AbstractVirtualModelInstanceResource;
 import org.openflexo.foundation.resource.RepositoryFolder;
 
-public class MoveVirtualModelInstance
-		extends FlexoAction<MoveVirtualModelInstance, VirtualModelInstance<?, ?>, VirtualModelInstance<?, ?>> {
+public class MoveVirtualModelInstance extends FlexoAction<MoveVirtualModelInstance, VirtualModelInstance<?, ?>, VirtualModelInstance<?, ?>>
+		implements TechnologySpecificFlexoAction<FMLRTTechnologyAdapter> {
 
 	private static final Logger logger = Logger.getLogger(MoveVirtualModelInstance.class.getPackage().getName());
 
@@ -59,14 +61,12 @@ public class MoveVirtualModelInstance
 			"move_virtual_model_instance") {
 
 		@Override
-		public boolean isEnabledForSelection(VirtualModelInstance<?, ?> object,
-				Vector<VirtualModelInstance<?, ?>> globalSelection) {
+		public boolean isEnabledForSelection(VirtualModelInstance<?, ?> object, Vector<VirtualModelInstance<?, ?>> globalSelection) {
 			return true;
 		}
 
 		@Override
-		public boolean isVisibleForSelection(VirtualModelInstance<?, ?> object,
-				Vector<VirtualModelInstance<?, ?>> globalSelection) {
+		public boolean isVisibleForSelection(VirtualModelInstance<?, ?> object, Vector<VirtualModelInstance<?, ?>> globalSelection) {
 			return false;
 		}
 
@@ -84,9 +84,14 @@ public class MoveVirtualModelInstance
 		FlexoObjectImpl.addActionForClass(actionType, VirtualModelInstance.class);
 	}
 
-	protected MoveVirtualModelInstance(VirtualModelInstance<?, ?> focusedObject,
-			Vector<VirtualModelInstance<?, ?>> globalSelection, FlexoEditor editor) {
+	protected MoveVirtualModelInstance(VirtualModelInstance<?, ?> focusedObject, Vector<VirtualModelInstance<?, ?>> globalSelection,
+			FlexoEditor editor) {
 		super(actionType, focusedObject, globalSelection, editor);
+	}
+
+	@Override
+	public Class<? extends FMLRTTechnologyAdapter> getTechnologyAdapterClass() {
+		return FMLRTTechnologyAdapter.class;
 	}
 
 	@Override
@@ -100,8 +105,7 @@ public class MoveVirtualModelInstance
 		}
 	}
 
-	private void moveToFolder(VirtualModelInstance<?, ?> v,
-			RepositoryFolder<AbstractVirtualModelInstanceResource<?, ?>, ?> folder) {
+	private void moveToFolder(VirtualModelInstance<?, ?> v, RepositoryFolder<AbstractVirtualModelInstanceResource<?, ?>, ?> folder) {
 		// TODO: reimplement this
 		// RepositoryFolder<AbstractVirtualModelInstanceResource<?,?>, ?> oldFolder = v.getFolder();
 		// v.getViewLibrary().moveResource((ViewResource) v.getResource(), (RepositoryFolder) oldFolder, (RepositoryFolder) folder);

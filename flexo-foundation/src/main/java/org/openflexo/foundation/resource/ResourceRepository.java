@@ -88,6 +88,14 @@ public interface ResourceRepository<R extends FlexoResource<?>, I> {
 	R getResource(String resourceURI);
 
 	/**
+	 * Return first found resource matching supplied serialization artefact
+	 * 
+	 * @param serializationArtefact
+	 * @return
+	 */
+	R getResource(I serializationArtefact);
+
+	/**
 	 * Register supplied resource in default root folder
 	 * 
 	 * @param flexoResource

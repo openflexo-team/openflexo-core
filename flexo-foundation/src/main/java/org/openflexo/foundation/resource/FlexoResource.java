@@ -180,6 +180,12 @@ public interface FlexoResource<RD extends ResourceData<RD>> extends FlexoObject,
 	public Long getRevision();
 
 	/**
+	 * Sets the revision of this resource.
+	 */
+	@Setter(REVISION)
+	public void setRevision(Long revision);
+
+	/**
 	 * Returns the FlexoServiceManager where this resource is registered
 	 * 
 	 * @return the name of this resource.
@@ -513,4 +519,21 @@ public interface FlexoResource<RD extends ResourceData<RD>> extends FlexoObject,
 	@Setter(SPECIALIZED_VIRTUAL_MODEL_CLASS)
 	public void setSpecializedResourceDataClass(Class<? extends RD> specializedResourceDataClass);
 
+	/**
+	 * Return relative path of underlying serialization artefact, relatively to base artefact of supplied resource center
+	 * 
+	 * @param <I>
+	 * @param rc
+	 * @return
+	 */
+	public <I> String pathRelativeToResourceCenter(FlexoResourceCenter<I> rc);
+
+	/**
+	 * Return relative path of parent of underlying serialization artefact, relatively to base artefact of supplied resource center
+	 * 
+	 * @param <I>
+	 * @param rc
+	 * @return
+	 */
+	public <I> String parentPathRelativeToResourceCenter(FlexoResourceCenter<I> rc);
 }

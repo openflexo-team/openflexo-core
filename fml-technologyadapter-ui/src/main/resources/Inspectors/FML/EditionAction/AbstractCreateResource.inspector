@@ -36,9 +36,11 @@
 			<Label label="relative_path" align="right" index="12" name="RelativePathLabel"
 				constraints="twocols(expandHorizontally=true;expandVertically=false;index=6;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=5;location=left)"
 				localize="true" />
-			<TextField index="13" data="data.relativePath" 
-				constraints="twocols(expandHorizontally=true;expandVertically=false;index=7;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)"
-				name="RelativePathTextField" localize="true" columns="7"/>
+			<Custom componentClassName="org.openflexo.gina.swing.utils.BindingSelector"
+				localize="true" index="13" data="data.dynamicRelativePath" name="RelativePathBS"
+				constraints="twocols(expandHorizontally=true;expandVertically=false;index=7;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)">
+				<Assignment variable="component.bindable" value="data" />
+			</Custom>
 		</Tab>
 	</TabPanel>
 	<LocalizedDictionary>

@@ -52,9 +52,9 @@ import org.openflexo.connie.exception.TypeMismatchException;
 import org.openflexo.connie.expr.BindingValue;
 import org.openflexo.foundation.DataModification;
 import org.openflexo.foundation.fml.FMLRepresentationContext.FMLRepresentationOutput;
-import org.openflexo.foundation.fml.binding.FlexoConceptFlexoPropertyPathElement;
+import org.openflexo.foundation.fml.binding.FlexoPropertyPathElement;
 import org.openflexo.foundation.fml.binding.ModelSlotBindingVariable;
-import org.openflexo.foundation.fml.binding.VirtualModelModelSlotPathElement;
+import org.openflexo.foundation.fml.binding.ModelSlotPathElement;
 import org.openflexo.foundation.fml.rt.ActorReference;
 import org.openflexo.foundation.fml.rt.FMLRTModelSlot;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
@@ -273,12 +273,12 @@ public interface FlexoRole<T> extends FlexoProperty<T> {
 				if (lastPathElement instanceof ModelSlotBindingVariable) {
 					return ((ModelSlotBindingVariable) lastPathElement).getModelSlot();
 				}
-				else if (lastPathElement instanceof FlexoConceptFlexoPropertyPathElement
-						&& ((FlexoConceptFlexoPropertyPathElement<?>) lastPathElement).getFlexoProperty() instanceof ModelSlot) {
-					return (ModelSlot<?>) ((FlexoConceptFlexoPropertyPathElement<?>) lastPathElement).getFlexoProperty();
+				else if (lastPathElement instanceof FlexoPropertyPathElement
+						&& ((FlexoPropertyPathElement<?>) lastPathElement).getFlexoProperty() instanceof ModelSlot) {
+					return (ModelSlot<?>) ((FlexoPropertyPathElement<?>) lastPathElement).getFlexoProperty();
 				}
-				else if (lastPathElement instanceof VirtualModelModelSlotPathElement) {
-					return ((VirtualModelModelSlotPathElement<?>) lastPathElement).getModelSlot();
+				else if (lastPathElement instanceof ModelSlotPathElement) {
+					return ((ModelSlotPathElement<?>) lastPathElement).getModelSlot();
 				}
 
 			}

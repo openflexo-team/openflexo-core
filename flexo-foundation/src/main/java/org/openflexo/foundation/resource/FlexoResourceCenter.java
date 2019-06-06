@@ -570,4 +570,5 @@ public interface FlexoResourceCenter<I> extends Iterable<I>, ResourceRepository<
 
 	public boolean containsArtefact(I serializationArtefact);
 
+	public String relativePath(I serializationArtefact);
 }

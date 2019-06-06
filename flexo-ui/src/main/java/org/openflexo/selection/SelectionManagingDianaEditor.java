@@ -264,7 +264,8 @@ public class SelectionManagingDianaEditor<M extends FlexoObject> extends JDianaI
 							}
 						}
 					}
-					selectionManager.getContextualMenuManager().showPopupMenuForObject(o, (Component) view, newPoint);
+					selectionManager.getContextualMenuManager().showPopupMenuForObject(selectionManager.getFocusedObject(),
+							(Component) view, newPoint);
 					return true;
 				}
 			};

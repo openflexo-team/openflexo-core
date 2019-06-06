@@ -36,26 +36,34 @@
  * 
  */
 
-package org.openflexo.fml.controller.action;
+package org.openflexo.fml.controller.view;
 
-import org.openflexo.foundation.action.FlexoActionRunnable;
-import org.openflexo.foundation.fml.FMLObject;
-import org.openflexo.foundation.fml.action.ShowFMLRepresentation;
+import org.openflexo.fml.controller.CommonFIB;
+import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.rm.Resource;
-import org.openflexo.rm.ResourceLocator;
-import org.openflexo.view.controller.ActionInitializer;
-import org.openflexo.view.controller.ControllerActionInitializer;
+import org.openflexo.view.controller.FlexoController;
+import org.openflexo.view.controller.model.FlexoPerspective;
 
-public class ShowFMLRepresentationInitializer extends ActionInitializer<ShowFMLRepresentation, FMLObject, FMLObject> {
-	public static Resource SHOW_FML_REPRESENTATION_DIALOG_FIB = ResourceLocator
-			.locateResource("Fib/Dialog/ShowFMLRepresentationDialog.fib");
+/**
+ * This is the module view representing a {@link VirtualModel}<br>
+ * 
+ * @author sguerin
+ * 
+ */
+public class StandardVirtualModelView extends VirtualModelView {
 
-	public ShowFMLRepresentationInitializer(ControllerActionInitializer actionInitializer) {
-		super(ShowFMLRepresentation.actionType, actionInitializer);
+	public StandardVirtualModelView(VirtualModel virtualModel, FlexoController controller, FlexoPerspective perspective) {
+		super(virtualModel, CommonFIB.VIRTUAL_MODEL_VIEW_FIB, controller, perspective);
+	}
+
+	public StandardVirtualModelView(VirtualModel virtualModel, Resource fibFile, FlexoController controller, FlexoPerspective perspective) {
+		super(virtualModel, fibFile, controller, perspective);
 	}
 
 	@Override
-	protected FlexoActionRunnable<ShowFMLRepresentation, FMLObject, FMLObject> getDefaultInitializer() {
-		return (e, action) -> instanciateAndShowDialog(action, SHOW_FML_REPRESENTATION_DIALOG_FIB);
+	public void willShow() {
+		super.willShow();
+		getFlexoController().getControllerModel().setRightViewVisible(false);
 	}
+
 }

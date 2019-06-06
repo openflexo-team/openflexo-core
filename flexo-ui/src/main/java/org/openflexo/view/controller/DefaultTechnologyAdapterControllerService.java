@@ -39,14 +39,17 @@
 
 package org.openflexo.view.controller;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Map;
 import java.util.ServiceLoader;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.openflexo.connie.type.CustomType;
+import org.openflexo.connie.type.TypeUtils;
 import org.openflexo.foundation.FlexoService;
 import org.openflexo.foundation.FlexoServiceImpl;
 import org.openflexo.foundation.FlexoServiceManager.ServiceRegistered;
@@ -99,8 +102,6 @@ public abstract class DefaultTechnologyAdapterControllerService extends FlexoSer
 	 * Load all available technology adapters<br>
 	 * Retrieve all {@link TechnologyAdapter} available from classpath. <br>
 	 * Map contains the TechnologyAdapter class name as key and the TechnologyAdapter itself as value.
-	 * 
-	 * @return the retrieved TechnologyModuleDefinition map.
 	 */
 	private void loadAvailableTechnologyAdapterControllers() {
 		if (loadedAdapters == null) {
@@ -126,6 +127,25 @@ public abstract class DefaultTechnologyAdapterControllerService extends FlexoSer
 			loadedAdapters.put(technologyAdapterController.getClass(), technologyAdapterController);
 		}
 		logger.info("Loaded " + technologyAdapterController.getClass());
+	}
+
+	/**
+	 * Load all available technology adapters plugins<br>
+	 * Retrieve all {@link TechnologyAdapterPluginController} available from classpath. <br>
+	 * 
+	 */
+	private void loadAvailableTechnologyAdapterPlugins() {
+		logger.info("Loading available technology adapter plugins...");
+		for (TechnologyAdapterPluginController<?> plugin : ServiceLoader.load(TechnologyAdapterPluginController.class)) {
+			registerTechnologyAdapterPlugin(plugin);
+		}
+		logger.info("Loading available technology adapter plugins. Done.");
+	}
+
+	private void registerTechnologyAdapterPlugin(TechnologyAdapterPluginController<?> technologyAdapterPlugin) {
+		logger.fine("Loading plugin " + technologyAdapterPlugin.getClass());
+		technologyAdapterPlugin.setServiceManager(getServiceManager());
+		technologyAdapterPlugin.getTargetTechnologyAdapterController().addToTechnologyAdapterPlugins(technologyAdapterPlugin);
 	}
 
 	/**
@@ -283,6 +303,7 @@ public abstract class DefaultTechnologyAdapterControllerService extends FlexoSer
 				}
 			}
 		}
+		loadAvailableTechnologyAdapterPlugins();
 		status = Status.Started;
 	}
 
@@ -297,6 +318,10 @@ public abstract class DefaultTechnologyAdapterControllerService extends FlexoSer
 		TechnologyAdapterController<?> tac = getTechnologyAdapterController((TechnologyAdapter) technologyAdapter);
 		if (tac != null) {
 			tac.activate();
+		}
+
+		for (TechnologyAdapterController<?> technologyAdapterController : loadedAdapters.values()) {
+			technologyAdapterController.activateActivablePlugins();
 		}
 	}
 
@@ -351,6 +376,38 @@ public abstract class DefaultTechnologyAdapterControllerService extends FlexoSer
 			}
 		}
 		return null;
+	}
+
+	/**
+	 * Return singleton instance of supplied Plugin class
+	 * 
+	 * @param <P>
+	 * @param pluginClass
+	 * @return
+	 */
+	@Override
+	public <P extends TechnologyAdapterPluginController<?>> P getPlugin(Class<P> pluginClass) {
+		Class<? extends TechnologyAdapter> taClass = (Class<? extends TechnologyAdapter>) TypeUtils
+				.getBaseClass(TypeUtils.getTypeArgument(pluginClass, TechnologyAdapterPluginController.class, 0));
+		if (taClass != null) {
+			TechnologyAdapter ta = getServiceManager().getTechnologyAdapterService().getTechnologyAdapter(taClass);
+			return (P) getTechnologyAdapterController(ta).getPlugin(pluginClass);
+		}
+		return null;
+	}
+
+	/**
+	 * Return the list of all activated {@link TechnologyAdapterPluginController}
+	 * 
+	 * @return
+	 */
+	@Override
+	public List<TechnologyAdapterPluginController<?>> getActivatedPlugins() {
+		List<TechnologyAdapterPluginController<?>> returned = new ArrayList<>();
+		for (TechnologyAdapterController<?> technologyAdapterController : loadedAdapters.values()) {
+			returned.addAll(technologyAdapterController.getPlugins());
+		}
+		return returned;
 	}
 
 }

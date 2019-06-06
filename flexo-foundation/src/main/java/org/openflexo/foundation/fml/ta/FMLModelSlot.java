@@ -36,17 +36,19 @@
  * 
  */
 
-package org.openflexo.foundation.fml;
+package org.openflexo.foundation.fml.ta;
 
 import java.lang.reflect.Type;
 import java.util.logging.Logger;
 
+import org.openflexo.foundation.fml.FMLTechnologyAdapter;
+import org.openflexo.foundation.fml.FlexoRole;
+import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.annotations.DeclareActorReferences;
+import org.openflexo.foundation.fml.annotations.DeclareEditionActions;
 import org.openflexo.foundation.fml.annotations.DeclareFlexoRoles;
 import org.openflexo.foundation.fml.annotations.FML;
 import org.openflexo.foundation.fml.rt.AbstractVirtualModelInstanceModelFactory;
-import org.openflexo.foundation.fml.rt.FMLModelSlotInstance;
-import org.openflexo.foundation.fml.rt.FMLObjectActorReference;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.pamela.annotations.ImplementationClass;
@@ -59,8 +61,8 @@ import org.openflexo.pamela.annotations.XMLElement;
  * @author sylvain
  *
  */
-@DeclareFlexoRoles({ FlexoConceptRole.class })
-// @DeclareEditionActions({ AddFlexoConceptInstance.class, AddVirtualModelInstance.class })
+@DeclareFlexoRoles({ FlexoConceptRole.class, FlexoPropertyRole.class, FlexoBehaviourRole.class })
+@DeclareEditionActions({ CreateFlexoConcept.class })
 // @DeclareFetchRequests({ SelectFlexoConceptInstance.class, SelectVirtualModelInstance.class })
 @DeclareActorReferences({ FMLModelSlotInstance.class, FMLObjectActorReference.class })
 @ModelEntity
@@ -75,12 +77,15 @@ public interface FMLModelSlot extends ModelSlot<VirtualModel> {
 
 		@Override
 		public <PR extends FlexoRole<?>> String defaultFlexoRoleName(Class<PR> flexoRoleClass) {
-			/*if (FlexoConceptInstanceRole.class.isAssignableFrom(flexoRoleClass)) {
-				return "flexoConceptInstance";
+			if (FlexoConceptRole.class.isAssignableFrom(flexoRoleClass)) {
+				return "concept";
 			}
-			else if (PrimitiveRole.class.isAssignableFrom(flexoRoleClass)) {
-				return "primitive";
-			}*/
+			if (FlexoPropertyRole.class.isAssignableFrom(flexoRoleClass)) {
+				return "property";
+			}
+			if (FlexoBehaviourRole.class.isAssignableFrom(flexoRoleClass)) {
+				return "behaviour";
+			}
 			logger.warning("Unexpected role: " + flexoRoleClass.getName());
 			return null;
 		}

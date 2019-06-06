@@ -49,14 +49,17 @@ import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoObject.FlexoObjectImpl;
 import org.openflexo.foundation.action.FlexoAction;
 import org.openflexo.foundation.action.FlexoActionFactory;
+import org.openflexo.foundation.action.TechnologySpecificFlexoAction;
 import org.openflexo.foundation.action.copypaste.AbstractCopyAction.InvalidSelectionException;
 import org.openflexo.foundation.fml.FMLModelFactory;
+import org.openflexo.foundation.fml.FMLTechnologyAdapter;
 import org.openflexo.foundation.fml.FlexoConceptObject;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.rm.VirtualModelResource;
 import org.openflexo.pamela.factory.EmbeddingType;
 
-public class DeleteFlexoConceptObjects extends FlexoAction<DeleteFlexoConceptObjects, FlexoConceptObject, FlexoConceptObject> {
+public class DeleteFlexoConceptObjects extends FlexoAction<DeleteFlexoConceptObjects, FlexoConceptObject, FlexoConceptObject>
+		implements TechnologySpecificFlexoAction<FMLTechnologyAdapter> {
 
 	private static final Logger logger = Logger.getLogger(DeleteFlexoConceptObjects.class.getPackage().getName());
 
@@ -95,6 +98,11 @@ public class DeleteFlexoConceptObjects extends FlexoAction<DeleteFlexoConceptObj
 
 	private DeleteFlexoConceptObjects(FlexoConceptObject focusedObject, Vector<FlexoConceptObject> globalSelection, FlexoEditor editor) {
 		super(actionType, focusedObject, globalSelection, editor);
+	}
+
+	@Override
+	public Class<? extends FMLTechnologyAdapter> getTechnologyAdapterClass() {
+		return FMLTechnologyAdapter.class;
 	}
 
 	@Override

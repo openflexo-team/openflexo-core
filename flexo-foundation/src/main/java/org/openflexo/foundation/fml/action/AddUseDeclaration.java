@@ -45,7 +45,9 @@ import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoObject.FlexoObjectImpl;
 import org.openflexo.foundation.action.FlexoAction;
 import org.openflexo.foundation.action.FlexoActionFactory;
+import org.openflexo.foundation.action.TechnologySpecificFlexoAction;
 import org.openflexo.foundation.fml.FMLObject;
+import org.openflexo.foundation.fml.FMLTechnologyAdapter;
 import org.openflexo.foundation.fml.InconsistentFlexoConceptHierarchyException;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
@@ -58,12 +60,13 @@ import org.openflexo.foundation.technologyadapter.UseModelSlotDeclaration;
  * @author sylvain
  *
  */
-public class AddUseDeclaration extends FlexoAction<AddUseDeclaration, VirtualModel, FMLObject> {
+public class AddUseDeclaration extends FlexoAction<AddUseDeclaration, VirtualModel, FMLObject>
+		implements TechnologySpecificFlexoAction<FMLTechnologyAdapter> {
 
 	private static final Logger logger = Logger.getLogger(AddUseDeclaration.class.getPackage().getName());
 
 	public static FlexoActionFactory<AddUseDeclaration, VirtualModel, FMLObject> actionType = new FlexoActionFactory<AddUseDeclaration, VirtualModel, FMLObject>(
-			"declare_use_of_model_slot", FlexoActionFactory.defaultGroup, FlexoActionFactory.NORMAL_ACTION_TYPE) {
+			"declare_use_of_model_slot", FlexoActionFactory.advancedGroup, FlexoActionFactory.NORMAL_ACTION_TYPE) {
 
 		/**
 		 * Factory method
@@ -91,6 +94,11 @@ public class AddUseDeclaration extends FlexoAction<AddUseDeclaration, VirtualMod
 
 	private AddUseDeclaration(VirtualModel focusedObject, Vector<FMLObject> globalSelection, FlexoEditor editor) {
 		super(actionType, focusedObject, globalSelection, editor);
+	}
+
+	@Override
+	public Class<? extends FMLTechnologyAdapter> getTechnologyAdapterClass() {
+		return FMLTechnologyAdapter.class;
 	}
 
 	private UseModelSlotDeclaration newUseDeclaration;

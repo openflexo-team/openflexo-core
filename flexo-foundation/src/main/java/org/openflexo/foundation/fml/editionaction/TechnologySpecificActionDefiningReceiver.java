@@ -50,7 +50,7 @@ import org.openflexo.connie.exception.TypeMismatchException;
 import org.openflexo.connie.expr.BindingValue;
 import org.openflexo.connie.type.TypeUtils;
 import org.openflexo.foundation.fml.FMLRepresentationContext;
-import org.openflexo.foundation.fml.binding.FlexoConceptFlexoPropertyPathElement;
+import org.openflexo.foundation.fml.binding.FlexoPropertyPathElement;
 import org.openflexo.foundation.fml.binding.ModelSlotBindingVariable;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.foundation.technologyadapter.TechnologyObject;
@@ -132,9 +132,9 @@ public abstract interface TechnologySpecificActionDefiningReceiver<MS extends Mo
 				if (lastPathElement instanceof ModelSlotBindingVariable) {
 					return (MS) ((ModelSlotBindingVariable) lastPathElement).getModelSlot();
 				}
-				else if (lastPathElement instanceof FlexoConceptFlexoPropertyPathElement
-						&& ((FlexoConceptFlexoPropertyPathElement) lastPathElement).getFlexoProperty() instanceof ModelSlot) {
-					return (MS) ((FlexoConceptFlexoPropertyPathElement) lastPathElement).getFlexoProperty();
+				else if (lastPathElement instanceof FlexoPropertyPathElement
+						&& ((FlexoPropertyPathElement) lastPathElement).getFlexoProperty() instanceof ModelSlot) {
+					return (MS) ((FlexoPropertyPathElement) lastPathElement).getFlexoProperty();
 				}
 			}
 			return null;

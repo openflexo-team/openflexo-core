@@ -41,7 +41,7 @@ package org.openflexo.view.controller.action;
 import java.util.logging.Logger;
 
 import org.openflexo.ApplicationContext;
-import org.openflexo.components.wizard.FlexoWizard;
+import org.openflexo.components.wizard.FlexoActionWizard;
 import org.openflexo.components.wizard.WizardStep;
 import org.openflexo.foundation.DataModification;
 import org.openflexo.foundation.FlexoObservable;
@@ -60,20 +60,16 @@ import org.openflexo.toolbox.StringUtils;
 import org.openflexo.view.controller.FlexoController;
 
 public abstract class AbstractCreateVirtualModelInstanceWizard<A extends AbstractCreateVirtualModelInstance<?, ?, ?, ?>>
-		extends FlexoWizard {
+		extends FlexoActionWizard<A> {
 
 	private static final Logger logger = Logger.getLogger(AbstractCreateVirtualModelInstanceWizard.class.getPackage().getName());
-
-	protected final A action;
 
 	private final AbstractChooseVirtualModel chooseVirtualModel;
 	// private final List<ConfigureModelSlot<?, ?>> modelSlotConfigurationSteps;
 	private AbstractChooseAndConfigureCreationScheme chooseAndConfigureCreationScheme = null;
 
 	public AbstractCreateVirtualModelInstanceWizard(A action, FlexoController controller) {
-		super(controller);
-		this.action = action;
-		// modelSlotConfigurationSteps = new ArrayList<>();
+		super(action, controller);
 		addStep(chooseVirtualModel = makeChooseVirtualModel());
 	}
 
@@ -90,7 +86,7 @@ public abstract class AbstractCreateVirtualModelInstanceWizard<A extends Abstrac
 	public abstract class AbstractChooseVirtualModel extends WizardStep {
 
 		public A getAction() {
-			return action;
+			return AbstractCreateVirtualModelInstanceWizard.this.getAction();
 		}
 
 		public ApplicationContext getServiceManager() {
@@ -118,7 +114,7 @@ public abstract class AbstractCreateVirtualModelInstanceWizard<A extends Abstrac
 						IssueMessageType.ERROR);
 				return false;
 			}
-			if (!action.isValidVirtualModelInstanceName(getNewVirtualModelInstanceName())) {
+			if (!getAction().isValidVirtualModelInstanceName(getNewVirtualModelInstanceName())) {
 				setIssueMessage(getAction().getLocales().localizedForKey("a_virtual_model_instance_with_that_name_already_exists"),
 						IssueMessageType.ERROR);
 				return false;
@@ -139,14 +135,14 @@ public abstract class AbstractCreateVirtualModelInstanceWizard<A extends Abstrac
 		}
 
 		public String getNewVirtualModelInstanceName() {
-			return action.getNewVirtualModelInstanceName();
+			return getAction().getNewVirtualModelInstanceName();
 		}
 
 		public void setNewVirtualModelInstanceName(String newVirtualModelInstanceName) {
 			if (!newVirtualModelInstanceName.equals(getNewVirtualModelInstanceName())) {
 				String oldValue = getNewVirtualModelInstanceName();
 				String oldTitleValue = getNewVirtualModelInstanceTitle();
-				action.setNewVirtualModelInstanceName(newVirtualModelInstanceName);
+				getAction().setNewVirtualModelInstanceName(newVirtualModelInstanceName);
 				getPropertyChangeSupport().firePropertyChange("newVirtualModelInstanceName", oldValue, newVirtualModelInstanceName);
 				getPropertyChangeSupport().firePropertyChange("newVirtualModelInstanceTitle", oldTitleValue,
 						getNewVirtualModelInstanceTitle());
@@ -155,14 +151,14 @@ public abstract class AbstractCreateVirtualModelInstanceWizard<A extends Abstrac
 		}
 
 		public String getNewVirtualModelInstanceTitle() {
-			return action.getNewVirtualModelInstanceTitle();
+			return getAction().getNewVirtualModelInstanceTitle();
 		}
 
 		public void setNewVirtualModelInstanceTitle(String newVirtualModelInstanceTitle) {
 			if (!newVirtualModelInstanceTitle.equals(getNewVirtualModelInstanceTitle())) {
 				String oldValue = getNewVirtualModelInstanceTitle();
 				String oldNameValue = getNewVirtualModelInstanceName();
-				action.setNewVirtualModelInstanceTitle(newVirtualModelInstanceTitle);
+				getAction().setNewVirtualModelInstanceTitle(newVirtualModelInstanceTitle);
 				getPropertyChangeSupport().firePropertyChange("newVirtualModelInstanceTitle", oldValue, newVirtualModelInstanceTitle);
 				getPropertyChangeSupport().firePropertyChange("newVirtualModelInstanceName", oldNameValue,
 						getNewVirtualModelInstanceName());
@@ -171,13 +167,13 @@ public abstract class AbstractCreateVirtualModelInstanceWizard<A extends Abstrac
 		}
 
 		public VirtualModel getVirtualModel() {
-			return action.getVirtualModel();
+			return getAction().getVirtualModel();
 		}
 
 		public void setVirtualModel(VirtualModel virtualModel) {
 			if (virtualModel != getVirtualModel()) {
 				VirtualModel oldValue = getVirtualModel();
-				((AbstractCreateVirtualModelInstance) action).setVirtualModel(virtualModel);
+				((AbstractCreateVirtualModelInstance) getAction()).setVirtualModel(virtualModel);
 				getPropertyChangeSupport().firePropertyChange("virtualModel", oldValue, virtualModel);
 				getPropertyChangeSupport().firePropertyChange("creationScheme", null, getCreationScheme());
 				checkValidity();
@@ -185,8 +181,8 @@ public abstract class AbstractCreateVirtualModelInstanceWizard<A extends Abstrac
 		}
 
 		public VirtualModelResource getVirtualModelResource() {
-			if (action.getVirtualModel() != null) {
-				return (VirtualModelResource) action.getVirtualModel().getResource();
+			if (getAction().getVirtualModel() != null) {
+				return (VirtualModelResource) getAction().getVirtualModel().getResource();
 			}
 			return null;
 		}
@@ -195,10 +191,10 @@ public abstract class AbstractCreateVirtualModelInstanceWizard<A extends Abstrac
 			if (getVirtualModelResource() != virtualModelResource) {
 				VirtualModelResource oldValue = getVirtualModelResource();
 				if (virtualModelResource != null) {
-					((AbstractCreateVirtualModelInstance) action).setVirtualModel(virtualModelResource.getVirtualModel());
+					((AbstractCreateVirtualModelInstance) getAction()).setVirtualModel(virtualModelResource.getVirtualModel());
 				}
 				else {
-					action.setVirtualModel(null);
+					getAction().setVirtualModel(null);
 				}
 				getPropertyChangeSupport().firePropertyChange("virtualModelResource", oldValue, virtualModelResource);
 				checkValidity();
@@ -206,14 +202,14 @@ public abstract class AbstractCreateVirtualModelInstanceWizard<A extends Abstrac
 		}
 
 		public CreationScheme getCreationScheme() {
-			return action.getCreationScheme();
+			return getAction().getCreationScheme();
 		}
 
 		public void setCreationScheme(CreationScheme creationScheme) {
 
 			if (creationScheme != getCreationScheme()) {
 				CreationScheme oldValue = getCreationScheme();
-				action.setCreationScheme(creationScheme);
+				getAction().setCreationScheme(creationScheme);
 				getPropertyChangeSupport().firePropertyChange("creationScheme", oldValue, creationScheme);
 				checkValidity();
 			}
@@ -315,7 +311,7 @@ public abstract class AbstractCreateVirtualModelInstanceWizard<A extends Abstrac
 		}
 
 		public A getAction() {
-			return action;
+			return AbstractCreateVirtualModelInstanceWizard.this.getAction();
 		}
 
 		@Override
@@ -330,9 +326,10 @@ public abstract class AbstractCreateVirtualModelInstanceWizard<A extends Abstrac
 				return false;
 			}
 
-			for (FlexoBehaviourParameter parameter : action.getCreationScheme().getParameters()) {
+			for (FlexoBehaviourParameter parameter : getAction().getCreationScheme().getParameters()) {
 
-				if (!parameter.isValid(action.getCreationSchemeAction(), action.getCreationSchemeAction().getParameterValue(parameter))) {
+				if (!parameter.isValid(getAction().getCreationSchemeAction(),
+						getAction().getCreationSchemeAction().getParameterValue(parameter))) {
 					// System.out.println(
 					// "Invalid parameter: " + parameter + " value=" + action.getCreationSchemeAction().getParameterValue(parameter));
 					setIssueMessage(getAction().getLocales().localizedForKey("invalid_parameter") + " : " + parameter.getName(),
@@ -345,14 +342,14 @@ public abstract class AbstractCreateVirtualModelInstanceWizard<A extends Abstrac
 		}
 
 		public CreationScheme getCreationScheme() {
-			return action.getCreationScheme();
+			return getAction().getCreationScheme();
 		}
 
 		public void setCreationScheme(CreationScheme creationScheme) {
 
 			if (creationScheme != getCreationScheme()) {
 				CreationScheme oldValue = getCreationScheme();
-				action.setCreationScheme(creationScheme);
+				getAction().setCreationScheme(creationScheme);
 				getPropertyChangeSupport().firePropertyChange("creationScheme", oldValue, creationScheme);
 				checkValidity();
 			}

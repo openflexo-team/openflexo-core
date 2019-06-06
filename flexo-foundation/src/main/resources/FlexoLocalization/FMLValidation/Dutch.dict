@@ -1,3 +1,5 @@
+'componentName'_binding_is_required_and_must_be_valid='componentName' binding is required and must be valid
+'componentName'_binding_is_required_and_must_be_valid_description='componentName' binding is required and must be valid description
 'data'_binding_is_not_valid='data' binding is not valid
 'data'_binding_is_not_valid_description='data' binding is not valid description
 'expression'_binding_is_required_and_must_be_valid='expression' binding is required and must be valid
@@ -72,6 +74,7 @@ flexo_concept_has_no_deletion_scheme=Flexo concept has no deletion scheme
 flexo_concept_has_no_edition_scheme=Flexo concept has no edition scheme
 flexo_concept_role_has_no_role=Flexo concept role has no role
 flexo_concept_should_have_deletion_scheme_description=Flexo concept should have deletion scheme description
+flexo_concept_should_have_edition_scheme=Flexo concept should have edition scheme
 flexo_concept_should_have_edition_scheme_description=Flexo concept should have edition scheme description
 flexo_concept_should_have_roles_description=Flexo concept should have roles description
 flexo_property_has_no_name=Flexo property has no name

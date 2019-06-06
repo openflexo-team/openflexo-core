@@ -55,6 +55,7 @@ import org.openflexo.foundation.fml.binding.DeclarationBindingVariable;
 import org.openflexo.foundation.fml.binding.FMLBindingFactory;
 import org.openflexo.foundation.fml.binding.FlexoBehaviourBindingModel;
 import org.openflexo.foundation.fml.editionaction.EditionAction;
+import org.openflexo.foundation.fml.rt.ActionExecutionCancelledException;
 import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.FMLRunTimeEngine;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
@@ -358,7 +359,15 @@ public abstract class FlexoBehaviourAction<A extends FlexoBehaviourAction<A, FB,
 			} catch (ReturnException e) {
 				returnedValue = e.getReturnedValue();
 			} catch (OperationCancelledException e) {
-				throw e;
+				compensateCancelledExecution();
+				// TODO: let the UndoManager do the compensation job: too buggy yet
+				// throw e;
+				return;
+			} catch (ActionExecutionCancelledException e) {
+				compensateCancelledExecution();
+				// TODO: let the UndoManager do the compensation job: too buggy yet
+				// throw e;
+				return;
 			} catch (FlexoException e) {
 				logger.warning("Unexpected exception while executing FML control graph: " + e);
 				System.err.println(getFlexoBehaviour().getFMLRepresentation());
@@ -375,6 +384,11 @@ public abstract class FlexoBehaviourAction<A extends FlexoBehaviourAction<A, FB,
 			}
 		}
 
+	}
+
+	protected void compensateCancelledExecution() {
+		logger.info("compensateCancelledExecution hook");
+		Thread.dumpStack();
 	}
 
 	public Object getReturnedValue() {
