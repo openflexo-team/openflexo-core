@@ -228,6 +228,11 @@ public class VirtualModelResourceFactory
 	@Override
 	protected <I> VirtualModelResource initResourceForCreation(I serializationArtefact, FlexoResourceCenter<I> resourceCenter, String name,
 			String uri) throws ModelDefinitionException {
+
+		if (name.endsWith(FML_SUFFIX)) {
+			name = name.substring(0, name.length() - FML_SUFFIX.length());
+		}
+
 		VirtualModelResource returned = super.initResourceForCreation(serializationArtefact, resourceCenter, name, uri);
 
 		returned.setVersion(INITIAL_REVISION);
