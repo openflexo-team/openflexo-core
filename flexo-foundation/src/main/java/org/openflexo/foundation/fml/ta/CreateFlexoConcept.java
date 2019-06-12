@@ -62,14 +62,16 @@ import org.openflexo.pamela.annotations.XMLAttribute;
 import org.openflexo.pamela.annotations.XMLElement;
 
 @ModelEntity
-@ImplementationClass(CreateFlexoConcept.CreateFlexoConceptEditionActionImpl.class)
-@XMLElement
+@ImplementationClass(CreateFlexoConcept.CreateFlexoConceptImpl.class)
+@XMLElement(xmlTag = "CreateFlexoConcept")
 public interface CreateFlexoConcept extends TechnologySpecificActionDefiningReceiver<FMLModelSlot, VirtualModel, FlexoConcept> {
 
 	@PropertyIdentifier(type = DataBinding.class)
 	public static final String VALUE_KEY = "conceptName";
 	@PropertyIdentifier(type = DataBinding.class)
 	public static final String CONTAINER_KEY = "container";
+	@PropertyIdentifier(type = Boolean.class)
+	public static final String FORCE_EXECUTE_CONFIRMATION_PANEL_KEY = "forceExecuteConfirmationPanel";
 
 	@Getter(value = VALUE_KEY)
 	@XMLAttribute
@@ -85,7 +87,14 @@ public interface CreateFlexoConcept extends TechnologySpecificActionDefiningRece
 	@Setter(CONTAINER_KEY)
 	public void setContainer(DataBinding<FlexoConcept> container);
 
-	public static abstract class CreateFlexoConceptEditionActionImpl
+	@Getter(value = FORCE_EXECUTE_CONFIRMATION_PANEL_KEY, defaultValue = "false")
+	@XMLAttribute
+	public boolean getForceExecuteConfirmationPanel();
+
+	@Setter(FORCE_EXECUTE_CONFIRMATION_PANEL_KEY)
+	public void setForceExecuteConfirmationPanel(boolean forceExecuteConfirmationPanel);
+
+	public static abstract class CreateFlexoConceptImpl
 			extends TechnologySpecificActionDefiningReceiverImpl<FMLModelSlot, VirtualModel, FlexoConcept> implements CreateFlexoConcept {
 
 		private static final Logger logger = Logger.getLogger(CreateFlexoConcept.class.getPackage().getName());
@@ -177,7 +186,7 @@ public interface CreateFlexoConcept extends TechnologySpecificActionDefiningRece
 				org.openflexo.foundation.fml.action.CreateFlexoConcept action = org.openflexo.foundation.fml.action.CreateFlexoConcept.actionType
 						.makeNewEmbeddedAction(container, null, (FlexoBehaviourAction<?, ?, ?>) evaluationContext);
 				action.setNewFlexoConceptName(conceptName);
-				action.setForceExecuteConfirmationPanel(true);
+				action.setForceExecuteConfirmationPanel(getForceExecuteConfirmationPanel());
 				action.doAction();
 
 				if (action.hasBeenCancelled()) {
