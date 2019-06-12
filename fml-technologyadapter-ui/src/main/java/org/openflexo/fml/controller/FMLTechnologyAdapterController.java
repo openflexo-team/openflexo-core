@@ -115,7 +115,9 @@ import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstanceModelSlot;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
+import org.openflexo.foundation.fml.ta.CreateContainedVirtualModel;
 import org.openflexo.foundation.fml.ta.CreateFlexoConcept;
+import org.openflexo.foundation.fml.ta.CreateTopLevelVirtualModel;
 import org.openflexo.foundation.fml.ta.FlexoBehaviourRole;
 import org.openflexo.foundation.fml.ta.FlexoConceptRole;
 import org.openflexo.foundation.fml.ta.FlexoPropertyRole;
@@ -369,6 +371,12 @@ public class FMLTechnologyAdapterController extends TechnologyAdapterController<
 		if (CreateFlexoConcept.class.isAssignableFrom(editionActionClass)) {
 			return IconFactory.getImageIcon(FMLIconLibrary.FLEXO_CONCEPT_ICON, IconLibrary.DUPLICATE);
 		}
+		if (CreateTopLevelVirtualModel.class.isAssignableFrom(editionActionClass)) {
+			return IconFactory.getImageIcon(FMLIconLibrary.VIRTUAL_MODEL_ICON, IconLibrary.DUPLICATE);
+		}
+		if (CreateContainedVirtualModel.class.isAssignableFrom(editionActionClass)) {
+			return IconFactory.getImageIcon(FMLIconLibrary.VIRTUAL_MODEL_ICON, IconLibrary.DUPLICATE);
+		}
 		return super.getIconForEditionAction(editionActionClass);
 	}
 
@@ -572,11 +580,11 @@ public class FMLTechnologyAdapterController extends TechnologyAdapterController<
 						new DataBinding<>("component.resourceCenter"), new DataBinding<>(containerBinding), true));
 			}
 		}
-		//else {
-			// No container defined, set service manager
-			vmiSelector.addToAssignments(fibModelFactory.newFIBCustomAssignment(vmiSelector, new DataBinding<>("component.serviceManager"),
-					new DataBinding<>("controller.flexoController.applicationContext"), true));
-		//}
+		// else {
+		// No container defined, set service manager
+		vmiSelector.addToAssignments(fibModelFactory.newFIBCustomAssignment(vmiSelector, new DataBinding<>("component.serviceManager"),
+				new DataBinding<>("controller.flexoController.applicationContext"), true));
+		// }
 
 		// vmiSelector.addToAssignments(fibModelFactory.newFIBCustomAssignment(vmiSelector, new DataBinding<Object>("component.view"),
 		// new DataBinding<Object>(containerBinding), true));
