@@ -198,6 +198,13 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 	@Remover(EMBEDDED_FLEXO_CONCEPT_KEY)
 	public void removeFromEmbeddedFlexoConcepts(FlexoConcept aFlexoConcept);
 
+	/**
+	 * Return all accessible embedded FlexoConcept (those which are declared, and those accessed through inheritance)
+	 * 
+	 * @return
+	 */
+	public List<FlexoConcept> getAccessibleEmbeddedFlexoConcepts();
+
 	public List<FlexoBehaviour> getDeclaredFlexoBehaviours();
 
 	public List<FlexoBehaviour> getAccessibleFlexoBehaviours();
@@ -1167,6 +1174,24 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 				}
 			}
 			return requiredModelSlots;
+		}
+
+		/**
+		 * Return all accessible embedded FlexoConcept (those which are declared, and those accessed through inheritance)
+		 * 
+		 * @return
+		 */
+		@Override
+		public List<FlexoConcept> getAccessibleEmbeddedFlexoConcepts() {
+
+			// Implements a cache
+
+			List<FlexoConcept> returned = new ArrayList<>();
+			returned.addAll(getEmbeddedFlexoConcepts());
+			for (FlexoConcept parentConcept : getParentFlexoConcepts()) {
+				returned.addAll(parentConcept.getEmbeddedFlexoConcepts());
+			}
+			return returned;
 		}
 
 		@Override
