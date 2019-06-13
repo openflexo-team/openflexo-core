@@ -557,11 +557,11 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 
 		@Override
 		public void setContainerFlexoConceptInstance(FlexoConceptInstance aConceptInstance) {
+			boolean shouldRecompute = (getOwningVirtualModelInstance() != null && getContainerFlexoConceptInstance() != aConceptInstance);
 			performSuperSetter(CONTAINER_FLEXO_CONCEPT_INSTANCE_KEY, aConceptInstance);
-			if (getOwningVirtualModelInstance() != null) {
+			if (shouldRecompute) {
+				getOwningVirtualModelInstance().reindexAllConceptInstances();
 				getOwningVirtualModelInstance().notifyAllRootFlexoConceptInstancesMayHaveChanged();
-				// getOwningVirtualModelInstance().getPropertyChangeSupport().firePropertyChange("allRootFlexoConceptInstances", false,
-				// true);
 			}
 		}
 
