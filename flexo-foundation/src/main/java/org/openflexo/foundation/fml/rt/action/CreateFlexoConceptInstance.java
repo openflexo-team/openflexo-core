@@ -144,10 +144,11 @@ public class CreateFlexoConceptInstance extends FlexoAction<CreateFlexoConceptIn
 
 		// We add the FlexoConceptInstance to the container
 		if (getContainer() instanceof FMLRTVirtualModelInstance) {
-			// Nothing to do
+			// ((FMLRTVirtualModelInstance) getContainer()).addToFlexoConceptInstances(fciBeingCreated);
 		}
 		else {
 			getContainer().addToEmbeddedFlexoConceptInstances(fciBeingCreated);
+			//getFocusedObject().getVirtualModelInstance().removeFromFlexoConceptInstances(fciBeingCreated);
 		}
 	}
 

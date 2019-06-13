@@ -793,9 +793,10 @@ public interface VirtualModelInstance<VMI extends VirtualModelInstance<VMI, TA>,
 
 		private void ensureUnregisterFCIFromConcept(FlexoConceptInstance fci, FlexoConcept concept) {
 
-			if (fci.isRoot()) {
-				rootFlexoConceptInstances.remove(fci);
-			}
+			// remove inconditionnaly from roots
+			// if (fci.isRoot()) {
+			rootFlexoConceptInstances.remove(fci);
+			// }
 
 			List<FlexoConceptInstance> list = flexoConceptInstances.get(concept);
 			if (list != null && list.contains(fci)) {
