@@ -242,6 +242,14 @@ public interface VirtualModelInstance<VMI extends VirtualModelInstance<VMI, TA>,
 	public void setName(String name);
 
 	/**
+	 * Build a new FlexoConceptInstance<br>
+	 * Just instantiate, do not register yet
+	 * 
+	 * @return
+	 */
+	public FlexoConceptInstance buildNewFlexoConceptInstance(FlexoConcept concept);
+
+	/**
 	 * Instantiate and register a new {@link FlexoConceptInstance}
 	 * 
 	 * @param pattern
@@ -640,7 +648,8 @@ public interface VirtualModelInstance<VMI extends VirtualModelInstance<VMI, TA>,
 		 * 
 		 * @return
 		 */
-		protected FlexoConceptInstance buildNewFlexoConceptInstance(FlexoConcept concept) {
+		@Override
+		public FlexoConceptInstance buildNewFlexoConceptInstance(FlexoConcept concept) {
 			FlexoConceptInstance returned = getResource().getFactory().newInstance(FlexoConceptInstance.class);
 			returned.setFlexoConcept(concept);
 			return returned;
