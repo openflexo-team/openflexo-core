@@ -116,6 +116,7 @@ import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstanceModelSlot;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
 import org.openflexo.foundation.fml.ta.CreateContainedVirtualModel;
+import org.openflexo.foundation.fml.ta.CreateFlexoBehaviour;
 import org.openflexo.foundation.fml.ta.CreateFlexoConcept;
 import org.openflexo.foundation.fml.ta.CreatePrimitiveRole;
 import org.openflexo.foundation.fml.ta.CreateTopLevelVirtualModel;
@@ -380,6 +381,9 @@ public class FMLTechnologyAdapterController extends TechnologyAdapterController<
 		}
 		if (CreatePrimitiveRole.class.isAssignableFrom(editionActionClass)) {
 			return IconFactory.getImageIcon(FMLIconLibrary.FLEXO_ROLE_ICON, IconLibrary.DUPLICATE);
+		}
+		if (CreateFlexoBehaviour.class.isAssignableFrom(editionActionClass)) {
+			return IconFactory.getImageIcon(FMLIconLibrary.ACTION_SCHEME_ICON, IconLibrary.DUPLICATE);
 		}
 		return super.getIconForEditionAction(editionActionClass);
 	}

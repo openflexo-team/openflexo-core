@@ -46,11 +46,10 @@ import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.DataBinding.BindingDefinitionType;
 import org.openflexo.connie.exception.NullReferenceException;
 import org.openflexo.connie.exception.TypeMismatchException;
-import org.openflexo.connie.type.PrimitiveType;
+import org.openflexo.foundation.fml.FlexoBehaviour;
 import org.openflexo.foundation.fml.FlexoConcept;
-import org.openflexo.foundation.fml.PrimitiveRole;
-import org.openflexo.foundation.fml.PropertyCardinality;
 import org.openflexo.foundation.fml.VirtualModel;
+import org.openflexo.foundation.fml.action.CreateFlexoBehaviour.CreateActionScheme;
 import org.openflexo.foundation.fml.editionaction.TechnologySpecificActionDefiningReceiver;
 import org.openflexo.foundation.fml.rt.ActionExecutionCancelledException;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
@@ -65,25 +64,30 @@ import org.openflexo.pamela.annotations.XMLAttribute;
 import org.openflexo.pamela.annotations.XMLElement;
 
 @ModelEntity
-@ImplementationClass(CreatePrimitiveRole.CreatePrimitiveRoleImpl.class)
+@ImplementationClass(CreateFlexoBehaviour.CreateFlexoBehaviourImpl.class)
 @XMLElement
-public interface CreatePrimitiveRole extends TechnologySpecificActionDefiningReceiver<FMLModelSlot, VirtualModel, PrimitiveRole<?>> {
+public interface CreateFlexoBehaviour<B extends FlexoBehaviour>
+		extends TechnologySpecificActionDefiningReceiver<FMLModelSlot, VirtualModel, B> {
+
+	public enum BehaviourType {
+		ActionScheme, CreationScheme, DeletionScheme, EventListener, NavigationScheme, SynchronizationScheme, CloningScheme
+	}
 
 	@PropertyIdentifier(type = DataBinding.class)
-	public static final String ROLE_NAME_KEY = "roleName";
+	public static final String BEHAVIOUR_NAME_KEY = "behaviourName";
+	@PropertyIdentifier(type = BehaviourType.class)
+	public static final String BEHAVIOUR_TYPE_KEY = "behaviourType";
 	@PropertyIdentifier(type = DataBinding.class)
 	public static final String CONTAINER_KEY = "container";
-	@PropertyIdentifier(type = DataBinding.class)
-	public static final String PRIMITIVE_TYPE_KEY = "primitiveType";
 	@PropertyIdentifier(type = Boolean.class)
 	public static final String FORCE_EXECUTE_CONFIRMATION_PANEL_KEY = "forceExecuteConfirmationPanel";
 
-	@Getter(value = ROLE_NAME_KEY)
+	@Getter(value = BEHAVIOUR_NAME_KEY)
 	@XMLAttribute
-	public DataBinding<String> getRoleName();
+	public DataBinding<String> getBehaviourName();
 
-	@Setter(ROLE_NAME_KEY)
-	public void setRoleName(DataBinding<String> roleName);
+	@Setter(BEHAVIOUR_NAME_KEY)
+	public void setBehaviourName(DataBinding<String> behaviourName);
 
 	@Getter(value = CONTAINER_KEY)
 	@XMLAttribute
@@ -92,12 +96,12 @@ public interface CreatePrimitiveRole extends TechnologySpecificActionDefiningRec
 	@Setter(CONTAINER_KEY)
 	public void setContainer(DataBinding<FlexoConcept> container);
 
-	@Getter(value = PRIMITIVE_TYPE_KEY)
+	@Getter(value = BEHAVIOUR_TYPE_KEY)
 	@XMLAttribute
-	public DataBinding<PrimitiveType> getPrimitiveType();
+	public BehaviourType getBehaviourType();
 
-	@Setter(PRIMITIVE_TYPE_KEY)
-	public void setPrimitiveType(DataBinding<PrimitiveType> primitiveType);
+	@Setter(BEHAVIOUR_TYPE_KEY)
+	public void setBehaviourType(BehaviourType behaviourType);
 
 	@Getter(value = FORCE_EXECUTE_CONFIRMATION_PANEL_KEY, defaultValue = "false")
 	@XMLAttribute
@@ -106,31 +110,18 @@ public interface CreatePrimitiveRole extends TechnologySpecificActionDefiningRec
 	@Setter(FORCE_EXECUTE_CONFIRMATION_PANEL_KEY)
 	public void setForceExecuteConfirmationPanel(boolean forceExecuteConfirmationPanel);
 
-	public static abstract class CreatePrimitiveRoleImpl extends
-			TechnologySpecificActionDefiningReceiverImpl<FMLModelSlot, VirtualModel, PrimitiveRole<?>> implements CreatePrimitiveRole {
+	public static abstract class CreateFlexoBehaviourImpl<B extends FlexoBehaviour>
+			extends TechnologySpecificActionDefiningReceiverImpl<FMLModelSlot, VirtualModel, B> implements CreateFlexoBehaviour<B> {
 
-		private static final Logger logger = Logger.getLogger(CreatePrimitiveRole.class.getPackage().getName());
+		private static final Logger logger = Logger.getLogger(CreateFlexoBehaviour.class.getPackage().getName());
 
-		private DataBinding<String> roleName;
+		private DataBinding<String> behaviourName;
 		private DataBinding<FlexoConcept> container;
-		private DataBinding<PrimitiveType> primitiveType;
+		private BehaviourType behaviourType = BehaviourType.ActionScheme;
 
-		private String getRoleName(RunTimeEvaluationContext evaluationContext) {
+		private String getBehaviourName(RunTimeEvaluationContext evaluationContext) {
 			try {
-				return getRoleName().getBindingValue(evaluationContext);
-			} catch (TypeMismatchException e) {
-				e.printStackTrace();
-			} catch (NullReferenceException e) {
-				e.printStackTrace();
-			} catch (InvocationTargetException e) {
-				e.printStackTrace();
-			}
-			return null;
-		}
-
-		private PrimitiveType getPrimitiveType(RunTimeEvaluationContext evaluationContext) {
-			try {
-				return getPrimitiveType().getBindingValue(evaluationContext);
+				return getBehaviourName().getBindingValue(evaluationContext);
 			} catch (TypeMismatchException e) {
 				e.printStackTrace();
 			} catch (NullReferenceException e) {
@@ -155,23 +146,23 @@ public interface CreatePrimitiveRole extends TechnologySpecificActionDefiningRec
 		}
 
 		@Override
-		public DataBinding<String> getRoleName() {
-			if (roleName == null) {
-				roleName = new DataBinding<>(this, String.class, BindingDefinitionType.GET);
-				roleName.setBindingName("roleName");
+		public DataBinding<String> getBehaviourName() {
+			if (behaviourName == null) {
+				behaviourName = new DataBinding<>(this, String.class, BindingDefinitionType.GET);
+				behaviourName.setBindingName("behaviourName");
 			}
-			return roleName;
+			return behaviourName;
 		}
 
 		@Override
-		public void setRoleName(DataBinding<String> roleName) {
-			if (roleName != null) {
-				roleName.setOwner(this);
-				roleName.setBindingName("roleName");
-				roleName.setDeclaredType(String.class);
-				roleName.setBindingDefinitionType(BindingDefinitionType.GET);
+		public void setBehaviourName(DataBinding<String> behaviourName) {
+			if (behaviourName != null) {
+				behaviourName.setOwner(this);
+				behaviourName.setBindingName("behaviourName");
+				behaviourName.setDeclaredType(String.class);
+				behaviourName.setBindingDefinitionType(BindingDefinitionType.GET);
 			}
-			this.roleName = roleName;
+			this.behaviourName = behaviourName;
 		}
 
 		@Override
@@ -195,46 +186,68 @@ public interface CreatePrimitiveRole extends TechnologySpecificActionDefiningRec
 		}
 
 		@Override
-		public DataBinding<PrimitiveType> getPrimitiveType() {
-			if (primitiveType == null) {
-				primitiveType = new DataBinding<>(this, PrimitiveType.class, BindingDefinitionType.GET);
-				primitiveType.setBindingName("primitiveType");
-			}
-			return primitiveType;
+		public BehaviourType getBehaviourType() {
+			return behaviourType;
 		}
 
 		@Override
-		public void setPrimitiveType(DataBinding<PrimitiveType> primitiveType) {
-			if (primitiveType != null) {
-				primitiveType.setOwner(this);
-				primitiveType.setBindingName("primitiveType");
-				primitiveType.setDeclaredType(PrimitiveType.class);
-				primitiveType.setBindingDefinitionType(BindingDefinitionType.GET);
+		public void setBehaviourType(BehaviourType behaviourType) {
+			if ((behaviourType == null && this.behaviourType != null)
+					|| (behaviourType != null && !behaviourType.equals(this.behaviourType))) {
+				BehaviourType oldValue = this.behaviourType;
+				this.behaviourType = behaviourType;
+				getPropertyChangeSupport().firePropertyChange("behaviourType", oldValue, behaviourType);
 			}
-			this.primitiveType = primitiveType;
 		}
 
 		@Override
 		public Type getAssignableType() {
-			return PrimitiveRole.class;
+			return FlexoBehaviour.class;
 		}
 
 		@Override
-		public PrimitiveRole<?> execute(RunTimeEvaluationContext evaluationContext) throws ActionExecutionCancelledException {
+		public B execute(RunTimeEvaluationContext evaluationContext) throws ActionExecutionCancelledException {
 
 			if (evaluationContext instanceof FlexoBehaviourAction) {
 
-				String roleName = getRoleName(evaluationContext);
-				PrimitiveType primitiveType = getPrimitiveType(evaluationContext);
+				String behaviourName = getBehaviourName(evaluationContext);
 				FlexoConcept container = getContainer(evaluationContext);
 
-				logger.info("on cree une property " + roleName + " dans " + container);
+				logger.info("on cree une FlexoBehaviour " + behaviourName + " de type " + getBehaviourType() + " dans " + container);
 
-				org.openflexo.foundation.fml.action.CreatePrimitiveRole action = org.openflexo.foundation.fml.action.CreatePrimitiveRole.actionType
-						.makeNewEmbeddedAction(container, null, (FlexoBehaviourAction<?, ?, ?>) evaluationContext);
-				action.setRoleName(roleName);
-				action.setPrimitiveType(primitiveType);
-				action.setCardinality(PropertyCardinality.ZeroOne);
+				org.openflexo.foundation.fml.action.CreateFlexoBehaviour action = null;
+				switch (getBehaviourType()) {
+					case ActionScheme:
+						action = CreateActionScheme.createActionSchemeType.makeNewEmbeddedAction(container, null,
+								(FlexoBehaviourAction<?, ?, ?>) evaluationContext);
+						break;
+					case CreationScheme:
+						action = CreateActionScheme.createCreationSchemeType.makeNewEmbeddedAction(container, null,
+								(FlexoBehaviourAction<?, ?, ?>) evaluationContext);
+						break;
+					case DeletionScheme:
+						action = CreateActionScheme.createDeletionSchemeType.makeNewEmbeddedAction(container, null,
+								(FlexoBehaviourAction<?, ?, ?>) evaluationContext);
+						break;
+					case EventListener:
+						action = CreateActionScheme.createEventListenerType.makeNewEmbeddedAction(container, null,
+								(FlexoBehaviourAction<?, ?, ?>) evaluationContext);
+						break;
+					case NavigationScheme:
+						action = CreateActionScheme.createNavigationSchemeType.makeNewEmbeddedAction(container, null,
+								(FlexoBehaviourAction<?, ?, ?>) evaluationContext);
+						break;
+					case CloningScheme:
+						action = CreateActionScheme.createCloningSchemeType.makeNewEmbeddedAction(container, null,
+								(FlexoBehaviourAction<?, ?, ?>) evaluationContext);
+						break;
+					case SynchronizationScheme:
+						action = CreateActionScheme.createSynchronizationSchemeType.makeNewEmbeddedAction(container, null,
+								(FlexoBehaviourAction<?, ?, ?>) evaluationContext);
+						break;
+				}
+
+				action.setFlexoBehaviourName(behaviourName);
 				action.setForceExecuteConfirmationPanel(getForceExecuteConfirmationPanel());
 				action.doAction();
 
@@ -242,7 +255,7 @@ public interface CreatePrimitiveRole extends TechnologySpecificActionDefiningRec
 					throw new ActionExecutionCancelledException();
 				}
 
-				return action.getNewFlexoRole();
+				return (B) action.getNewFlexoBehaviour();
 			}
 
 			logger.warning("Unexpected context: " + evaluationContext);
@@ -251,39 +264,27 @@ public interface CreatePrimitiveRole extends TechnologySpecificActionDefiningRec
 	}
 
 	@DefineValidationRule
-	public static class RoleNameBindingIsRequiredAndMustBeValid extends BindingIsRequiredAndMustBeValid<CreatePrimitiveRole> {
-		public RoleNameBindingIsRequiredAndMustBeValid() {
-			super("'role_name'_binding_is_not_valid", CreatePrimitiveRole.class);
+	public static class BehaviourNameBindingIsRequiredAndMustBeValid extends BindingIsRequiredAndMustBeValid<CreateFlexoBehaviour> {
+		public BehaviourNameBindingIsRequiredAndMustBeValid() {
+			super("'role_name'_binding_is_not_valid", CreateFlexoBehaviour.class);
 		}
 
 		@Override
-		public DataBinding<?> getBinding(CreatePrimitiveRole object) {
-			return object.getRoleName();
+		public DataBinding<?> getBinding(CreateFlexoBehaviour object) {
+			return object.getBehaviourName();
 		}
 
 	}
 
 	@DefineValidationRule
-	public static class ContainerBindingIsRequiredAndMustBeValid extends BindingIsRequiredAndMustBeValid<CreatePrimitiveRole> {
+	public static class ContainerBindingIsRequiredAndMustBeValid extends BindingIsRequiredAndMustBeValid<CreateFlexoBehaviour> {
 		public ContainerBindingIsRequiredAndMustBeValid() {
-			super("'container'_binding_is_not_valid", CreatePrimitiveRole.class);
+			super("'container'_binding_is_not_valid", CreateFlexoBehaviour.class);
 		}
 
 		@Override
-		public DataBinding<?> getBinding(CreatePrimitiveRole object) {
+		public DataBinding<?> getBinding(CreateFlexoBehaviour object) {
 			return object.getContainer();
-		}
-	}
-
-	@DefineValidationRule
-	public static class PrimitiveTypeBindingIsRequiredAndMustBeValid extends BindingIsRequiredAndMustBeValid<CreatePrimitiveRole> {
-		public PrimitiveTypeBindingIsRequiredAndMustBeValid() {
-			super("'primitive_type'_binding_is_not_valid", CreatePrimitiveRole.class);
-		}
-
-		@Override
-		public DataBinding<?> getBinding(CreatePrimitiveRole object) {
-			return object.getPrimitiveType();
 		}
 	}
 
