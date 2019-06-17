@@ -41,32 +41,31 @@ package org.openflexo.foundation.fml.ta;
 import java.lang.reflect.Type;
 import java.util.logging.Logger;
 
-import org.openflexo.foundation.fml.FlexoProperty;
+import org.openflexo.foundation.fml.PrimitiveRole;
 import org.openflexo.foundation.fml.annotations.FML;
 import org.openflexo.pamela.annotations.ImplementationClass;
 import org.openflexo.pamela.annotations.ModelEntity;
 import org.openflexo.pamela.annotations.XMLElement;
 
 @ModelEntity
-@ImplementationClass(FlexoPropertyRole.FlexoPropertyRoleImpl.class)
+@ImplementationClass(PrimitiveRoleRole.FlexoPropertyRoleImpl.class)
 @XMLElement
-@FML("FlexoPropertyRole")
-public interface FlexoPropertyRole<P extends FlexoProperty<?>> extends FMLObjectRole<P> {
+@FML("PrimitiveRoleRole")
+public interface PrimitiveRoleRole extends FlexoPropertyRole<PrimitiveRole<?>> {
 
-	public static abstract class FlexoPropertyRoleImpl<P extends FlexoProperty<?>> extends FMLObjectRoleImpl<P>
-			implements FlexoPropertyRole<P> {
+	public static abstract class PrimitivePropertyRoleImpl extends FlexoPropertyRoleImpl<PrimitiveRole<?>> implements PrimitiveRoleRole {
 
 		@SuppressWarnings("unused")
-		private static final Logger logger = Logger.getLogger(FlexoPropertyRole.class.getPackage().getName());
+		private static final Logger logger = Logger.getLogger(PrimitiveRoleRole.class.getPackage().getName());
 
 		@Override
 		public Type getType() {
-			return FlexoProperty.class;
+			return PrimitiveRole.class;
 		}
 
 		@Override
 		public String getTypeDescription() {
-			return "FlexoProperty";
+			return "PrimitiveRole";
 		}
 
 	}
