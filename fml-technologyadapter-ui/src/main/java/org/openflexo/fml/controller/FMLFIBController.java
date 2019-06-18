@@ -108,6 +108,7 @@ import org.openflexo.foundation.resource.ResourceLoadingCancelledException;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.technologyadapter.UseModelSlotDeclaration;
+import org.openflexo.gina.controller.FIBController;
 import org.openflexo.gina.model.FIBComponent;
 import org.openflexo.gina.model.container.FIBTab;
 import org.openflexo.gina.utils.FIBInspector;
@@ -641,7 +642,7 @@ public class FMLFIBController extends FlexoFIBController {
 					// We have here to clone the component, because original component refers to a root container
 					// that we don't want to be displayed. So we clone the component, and define a clean API on it using setDataClass()
 					returned = (FIBTab) originalBasicTab.cloneObject();
-					returned.setControllerClass(FMLFIBInspectorController.class);
+					returned.setControllerClass(getInspectorControllerClass());
 					returned.setDataType(originalBasicTab.getRootComponent().getVariable(FIBComponent.DEFAULT_DATA_VARIABLE).getType());
 					basicInspectorTabs.put(inspector, returned);
 				}
@@ -649,6 +650,10 @@ public class FMLFIBController extends FlexoFIBController {
 			return returned;
 		}
 		return null;
+	}
+
+	public Class<? extends FIBController> getInspectorControllerClass() {
+		return FMLFIBInspectorController.class;
 	}
 
 	// Debug
