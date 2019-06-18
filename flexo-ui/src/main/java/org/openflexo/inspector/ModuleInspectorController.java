@@ -299,7 +299,13 @@ public class ModuleInspectorController extends Observable implements Observer {
 		for (InspectorGroup inspectorGroup : new ArrayList<>(inspectorGroups)) {
 			FIBInspector inspector = inspectorGroup.inspectorForClass(objectClass);
 			if (inspector != null) {
-				potentialInspectors.put(inspector.getInspectedClass(), inspector);
+				FIBInspector existingInspector = potentialInspectors.get(inspector.getInspectedClass());
+				if (existingInspector != null) {
+					// Already found an inspector with exactely same class, giving up (first found is the right one)
+				}
+				else {
+					potentialInspectors.put(inspector.getInspectedClass(), inspector);
+				}
 			}
 		}
 
@@ -309,6 +315,8 @@ public class ModuleInspectorController extends Observable implements Observer {
 		}
 
 		Class<?> mostSpecializedClass = TypeUtils.getMostSpecializedClass(potentialInspectors.keySet());
+
+		System.out.println("potentialInspectors for " + objectClass + ": " + potentialInspectors.values());
 
 		FIBInspector returned = potentialInspectors.get(mostSpecializedClass);
 
