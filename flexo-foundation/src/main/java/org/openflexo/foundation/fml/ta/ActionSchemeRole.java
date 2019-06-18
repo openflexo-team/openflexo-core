@@ -41,31 +41,30 @@ package org.openflexo.foundation.fml.ta;
 import java.lang.reflect.Type;
 import java.util.logging.Logger;
 
-import org.openflexo.foundation.fml.FlexoBehaviour;
+import org.openflexo.foundation.fml.ActionScheme;
 import org.openflexo.foundation.fml.annotations.FML;
 import org.openflexo.pamela.annotations.ImplementationClass;
 import org.openflexo.pamela.annotations.ModelEntity;
 import org.openflexo.pamela.annotations.XMLElement;
 
 @ModelEntity
-@ImplementationClass(FlexoBehaviourRole.FlexoBehaviourRoleImpl.class)
+@ImplementationClass(ActionSchemeRole.ActionSchemeRoleImpl.class)
 @XMLElement
-@FML("FlexoBehaviourRole")
-public interface FlexoBehaviourRole<B extends FlexoBehaviour> extends FMLObjectRole<B> {
+@FML("ActionSchemeRole")
+public interface ActionSchemeRole extends FlexoBehaviourRole<ActionScheme> {
 
-	public static abstract class FlexoBehaviourRoleImpl<B extends FlexoBehaviour> extends FMLObjectRoleImpl<B>
-			implements FlexoBehaviourRole<B> {
+	public static abstract class ActionSchemeRoleImpl extends FlexoBehaviourRoleImpl<ActionScheme> implements ActionSchemeRole {
 
-		private static final Logger logger = Logger.getLogger(FlexoBehaviourRole.class.getPackage().getName());
+		private static final Logger logger = Logger.getLogger(ActionSchemeRole.class.getPackage().getName());
 
 		@Override
 		public Type getType() {
-			return FlexoBehaviour.class;
+			return ActionScheme.class;
 		}
 
 		@Override
 		public String getTypeDescription() {
-			return "FlexoBehaviour";
+			return "ActionScheme";
 		}
 
 	}
