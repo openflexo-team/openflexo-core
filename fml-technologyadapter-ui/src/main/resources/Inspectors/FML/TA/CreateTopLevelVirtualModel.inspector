@@ -10,10 +10,10 @@
 			horizontalScrollbarPolicy="HORIZONTAL_SCROLLBAR_AS_NEEDED"
 			verticalScrollbarPolicy="VERTICAL_SCROLLBAR_AS_NEEDED"
 			name="BasicTab">
-			<Label name="ShowConfirmationLabel" localize="true" align="left" index="12"
+			<Label name="ShowConfirmationLabel" localize="true" align="left" index="14"
 				constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=left)"
 				label="show_confirmation" />
-			<CheckBox selected="true" name="checkbox"  index="13"
+			<CheckBox selected="true" name="checkbox"  index="15"
 				data="data.forceExecuteConfirmationPanel"
 				constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=right)" />
 		</Tab>
