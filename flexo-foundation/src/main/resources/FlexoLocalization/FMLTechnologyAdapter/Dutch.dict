@@ -273,6 +273,7 @@ technology=Technology
 template=Template
 template_diagram=template_diagram
 text_bindings=Text bindings
+this_name_is_already_used_please_choose_an_other_one=this_name_is_already_used_please_choose_an_other_one
 to=to
 to_shape=to_shape
 top_level=top_level
