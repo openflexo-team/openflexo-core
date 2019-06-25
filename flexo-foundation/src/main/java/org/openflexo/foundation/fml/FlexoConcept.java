@@ -540,6 +540,8 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 
 	public List<AbstractActionScheme> getAccessibleAbstractActionSchemes();
 
+	public List<CreationScheme> getAccessibleCreationSchemes();
+
 	public List<ActionScheme> getAccessibleActionSchemes();
 
 	public List<DeletionScheme> getAccessibleDeletionSchemes();
@@ -1355,6 +1357,11 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 		@Override
 		public List<AbstractActionScheme> getAccessibleAbstractActionSchemes() {
 			return getAccessibleFlexoBehaviours(AbstractActionScheme.class);
+		}
+
+		@Override
+		public List<CreationScheme> getAccessibleCreationSchemes() {
+			return getAccessibleFlexoBehaviours(CreationScheme.class);
 		}
 
 		@Override

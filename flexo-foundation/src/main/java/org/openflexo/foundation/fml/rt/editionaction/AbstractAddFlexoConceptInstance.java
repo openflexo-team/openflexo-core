@@ -520,19 +520,52 @@ public interface AbstractAddFlexoConceptInstance<FCI extends FlexoConceptInstanc
 					}
 					return newFCI;
 				}
+				else {
+					logger.warning("Failing execution of creationScheme: " + getCreationScheme());
+				}
 			}
 			else {
 				logger.warning("I should find default creationScheme for dynamic instantiation");
-				return newFCI;
+				CreationScheme applicableCreationScheme = findBestCreationSchemeForDynamicInstantiation(evaluationContext);
+				System.out.println("Found: " + applicableCreationScheme);
+				if (applicableCreationScheme != null) {
+					if (_performExecuteCreationScheme(applicableCreationScheme, newFCI, vmInstance, evaluationContext)) {
+						if (logger.isLoggable(Level.FINE)) {
+							logger.fine("Successfully performed performAddFlexoConcept " + evaluationContext);
+						}
+						return newFCI;
+					}
+					else {
+						logger.warning("Failing execution of creationScheme: " + applicableCreationScheme);
+					}
+				}
 			}
 
 			return null;
 		}
 
+		private CreationScheme findBestCreationSchemeForDynamicInstantiation(RunTimeEvaluationContext evaluationContext)
+				throws FlexoException {
+			FlexoConcept instantiatedFlexoConcept = retrieveFlexoConcept(evaluationContext);
+			if (instantiatedFlexoConcept != null) {
+				for (CreationScheme creationScheme : instantiatedFlexoConcept.getAccessibleCreationSchemes()) {
+					if (creationScheme.getParameters().size() == getParameters().size()) {
+						return creationScheme;
+					}
+				}
+			}
+			return null;
+		}
+
 		protected boolean executeCreationScheme(FCI newInstance, VirtualModelInstance<?, ?> vmInstance,
 				RunTimeEvaluationContext evaluationContext) {
+			return _performExecuteCreationScheme(getCreationScheme(), newInstance, vmInstance, evaluationContext);
+		}
+
+		private boolean _performExecuteCreationScheme(CreationScheme creationScheme, FCI newInstance, VirtualModelInstance<?, ?> vmInstance,
+				RunTimeEvaluationContext evaluationContext) {
 			if (evaluationContext instanceof FlexoBehaviourAction) {
-				CreationSchemeAction creationSchemeAction = new CreationSchemeAction(getCreationScheme(), vmInstance, null,
+				CreationSchemeAction creationSchemeAction = new CreationSchemeAction(creationScheme, vmInstance, null,
 						(FlexoBehaviourAction<?, ?, ?>) evaluationContext);
 				creationSchemeAction.initWithFlexoConceptInstance(newInstance);
 				for (AddFlexoConceptInstanceParameter p : getParameters()) {
