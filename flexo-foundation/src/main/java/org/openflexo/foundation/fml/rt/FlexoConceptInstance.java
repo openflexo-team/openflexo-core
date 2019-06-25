@@ -689,9 +689,10 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 					container = container.getContainerFlexoConceptInstance();
 				}
 			}
-			else if (getVirtualModelInstance() != this && flexoProperty.getFlexoConcept().isAssignableFrom(getFlexoConcept().getOwner())) {
-				// In this case the property concerns the owner FMLRTVirtualModelInstance
-				return getVirtualModelInstance().getFlexoPropertyValue(flexoProperty);
+			else if (getOwningVirtualModelInstance() != this
+					&& flexoProperty.getFlexoConcept().isAssignableFrom(getFlexoConcept().getOwner())) {
+				// In this case the property concerns the owning FMLRTVirtualModelInstance
+				return getOwningVirtualModelInstance().getFlexoPropertyValue(flexoProperty);
 			}
 			else {
 				if (flexoProperty instanceof FlexoRole) {
