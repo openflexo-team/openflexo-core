@@ -1404,7 +1404,12 @@ public interface VirtualModelInstance<VMI extends VirtualModelInstance<VMI, TA>,
 			performSuperAdder(VIRTUAL_MODEL_INSTANCES_KEY, virtualModelInstance);
 			// We notify now all properties from container
 			if (getVirtualModel() != null) {
+				System.out.println("Je suis " + this);
+				System.out.println("Je viens d'ajouter " + virtualModelInstance);
+				System.out.println("Mon VM: " + getVirtualModel());
+				System.out.println("Je notifie toutes les accessible properties");
 				for (FlexoProperty<?> property : getVirtualModel().getAccessibleProperties()) {
+					System.out.println("Je notifie: " + property + " pour " + this);
 					virtualModelInstance.getPropertyChangeSupport().firePropertyChange(property.getName(), null,
 							getFlexoPropertyValue(property));
 				}

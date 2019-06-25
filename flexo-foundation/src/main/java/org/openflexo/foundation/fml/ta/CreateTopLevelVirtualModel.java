@@ -64,8 +64,21 @@ import org.openflexo.pamela.exceptions.ModelDefinitionException;
 @XMLElement
 public interface CreateTopLevelVirtualModel extends AbstractCreateResource<FMLModelSlot, VirtualModel, FMLTechnologyAdapter> {
 
+	@PropertyIdentifier(type = String.class)
+	public static final String PARENT_VIRTUAL_MODEL_TYPE_URI_KEY = "parentVirtualModelTypeURI";
 	@PropertyIdentifier(type = Boolean.class)
 	public static final String FORCE_EXECUTE_CONFIRMATION_PANEL_KEY = "forceExecuteConfirmationPanel";
+
+	@Getter(value = PARENT_VIRTUAL_MODEL_TYPE_URI_KEY)
+	@XMLAttribute
+	public String _getParentVirtualModelTypeURI();
+
+	@Setter(PARENT_VIRTUAL_MODEL_TYPE_URI_KEY)
+	public void _setParentVirtualModelTypeURI(String virtualModelTypeURI);
+
+	public VirtualModelResource getParentVirtualModelType();
+
+	public void setParentVirtualModelType(VirtualModelResource virtualModelType);
 
 	@Getter(value = FORCE_EXECUTE_CONFIRMATION_PANEL_KEY, defaultValue = "false")
 	@XMLAttribute
@@ -78,6 +91,57 @@ public interface CreateTopLevelVirtualModel extends AbstractCreateResource<FMLMo
 			extends AbstractCreateResourceImpl<FMLModelSlot, VirtualModel, FMLTechnologyAdapter> implements CreateTopLevelVirtualModel {
 
 		private static final Logger logger = Logger.getLogger(CreateTopLevelVirtualModel.class.getPackage().getName());
+
+		private VirtualModelResource parentVirtualModelType;
+		private String parentVirtualModelTypeURI;
+
+		@Override
+		public String _getParentVirtualModelTypeURI() {
+			if (parentVirtualModelType != null) {
+				return parentVirtualModelType.getURI();
+			}
+			return parentVirtualModelTypeURI;
+		}
+
+		@Override
+		public void _setParentVirtualModelTypeURI(String virtualModelURI) {
+			this.parentVirtualModelTypeURI = virtualModelURI;
+		}
+
+		private boolean isComputingParentVirtualModelType = false;
+
+		@Override
+		public VirtualModelResource getParentVirtualModelType() {
+
+			if (!isComputingParentVirtualModelType && parentVirtualModelType == null && parentVirtualModelTypeURI != null) {
+				isComputingParentVirtualModelType = true;
+				try {
+					parentVirtualModelType = (VirtualModelResource) getVirtualModelLibrary().getVirtualModel(parentVirtualModelTypeURI)
+							.getResource();
+				} catch (FileNotFoundException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (ResourceLoadingCancelledException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (FlexoException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				isComputingParentVirtualModelType = false;
+			}
+
+			return parentVirtualModelType;
+		}
+
+		@Override
+		public void setParentVirtualModelType(VirtualModelResource parentVirtualModelType) {
+			if (parentVirtualModelType != this.parentVirtualModelType) {
+				VirtualModelResource oldValue = this.parentVirtualModelType;
+				this.parentVirtualModelType = parentVirtualModelType;
+				getPropertyChangeSupport().firePropertyChange("parentVirtualModelType", oldValue, oldValue);
+			}
+		}
 
 		@Override
 		public Type getAssignableType() {
@@ -98,6 +162,10 @@ public interface CreateTopLevelVirtualModel extends AbstractCreateResource<FMLMo
 				newVirtualModelResource.setIsModified();
 
 				VirtualModel virtualModel = newVirtualModelResource.getResourceData();
+
+				if (getParentVirtualModelType() != null) {
+					virtualModel.addToParentFlexoConcepts(getParentVirtualModelType().getResourceData());
+				}
 
 				System.out.println("Return " + virtualModel);
 				return virtualModel;

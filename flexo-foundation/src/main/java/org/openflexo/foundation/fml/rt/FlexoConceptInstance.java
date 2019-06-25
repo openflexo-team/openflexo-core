@@ -752,7 +752,14 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 					}
 				}
 			}
+
+			if (flexoProperty.getFlexoConcept().isAssignableFrom(getFlexoConcept().getOwner()) && getOwningVirtualModelInstance() == null) {
+				// TODO: check this
+				return null;
+			}
+
 			logger.warning("Not implemented: getValue() for " + this + " property=" + flexoProperty);
+
 			return null;
 		}
 

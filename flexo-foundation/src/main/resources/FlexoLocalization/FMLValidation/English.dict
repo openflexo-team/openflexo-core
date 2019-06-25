@@ -104,6 +104,7 @@ parameter_s_value_is_not_defined\:\ domain=Parameter s value is not defined\: do
 parameter_s_value_is_not_defined\:\ isFunctional=Parameter s value is not defined\: isFunctional
 parameter_s_value_is_not_defined\:\ isVariable=Parameter s value is not defined\: isVariable
 parameter_s_value_is_not_defined\:\ range=Parameter s value is not defined\: range
+parameter_s_value_is_not_valid\:\ aMachinery=Parameter s value is not valid\: aMachinery
 parameter_s_value_is_not_valid\:\ anElement=Parameter s value is not valid\: anElement
 parameter_s_value_is_not_valid\:\ diagramName=Parameter s value is not valid\: diagramName
 property_($validable.propertyName)_shadows_an_other_property=Property ($validable.propertyName) shadows an other property

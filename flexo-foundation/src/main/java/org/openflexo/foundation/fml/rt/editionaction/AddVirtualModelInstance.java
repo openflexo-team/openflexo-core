@@ -48,6 +48,7 @@ import org.openflexo.connie.exception.NullReferenceException;
 import org.openflexo.connie.exception.TypeMismatchException;
 import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.fml.CreationScheme;
+import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.VirtualModelInstanceType;
 import org.openflexo.foundation.fml.annotations.FML;
@@ -122,6 +123,11 @@ public interface AddVirtualModelInstance extends AbstractAddFlexoConceptInstance
 		@Override
 		public Class<FMLRTVirtualModelInstance> getVirtualModelInstanceClass() {
 			return FMLRTVirtualModelInstance.class;
+		}
+
+		@Override
+		protected Class<? extends FlexoConcept> getDynamicFlexoConceptTypeType() {
+			return VirtualModel.class;
 		}
 
 		@Override
@@ -222,7 +228,7 @@ public interface AddVirtualModelInstance extends AbstractAddFlexoConceptInstance
 		}
 
 		@Override
-		protected FMLRTVirtualModelInstance makeNewFlexoConceptInstance(RunTimeEvaluationContext evaluationContext) {
+		protected FMLRTVirtualModelInstance makeNewFlexoConceptInstance(RunTimeEvaluationContext evaluationContext) throws FlexoException {
 			FMLRTVirtualModelInstance container = getVirtualModelInstance(evaluationContext);
 			logger.info("container: " + container);
 			if (container == null) {
@@ -243,12 +249,14 @@ public interface AddVirtualModelInstance extends AbstractAddFlexoConceptInstance
 					e.printStackTrace();
 				}
 
+				VirtualModel instantiatedVirtualModel = (VirtualModel) retrieveFlexoConcept(evaluationContext);
+
 				CreateBasicVirtualModelInstance createVMIAction = CreateBasicVirtualModelInstance.actionType
 						.makeNewEmbeddedAction(container, null, (FlexoBehaviourAction<?, ?, ?>) evaluationContext);
 				createVMIAction.setSkipChoosePopup(true);
 				createVMIAction.setNewVirtualModelInstanceName(name);
 				createVMIAction.setNewVirtualModelInstanceTitle(title);
-				createVMIAction.setVirtualModel((VirtualModel) getFlexoConceptType());
+				createVMIAction.setVirtualModel(instantiatedVirtualModel);
 				// He we just want to create a PLAIN and EMPTY FMLRTVirtualModelInstance,
 				// eventual CreationScheme will be executed later
 				// DONT UNCOMMENT THIS !!!!
