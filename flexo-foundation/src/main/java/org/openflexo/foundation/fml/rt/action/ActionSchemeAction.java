@@ -112,18 +112,26 @@ public class ActionSchemeAction extends AbstractActionSchemeAction<ActionSchemeA
 			throw new InvalidParametersException("Cannot execute a FlexoConceptInstance with null concept: " + getFlexoConceptInstance());
 		}
 
-		if (getActionScheme() != null) {
-			if (getActionScheme().getFlexoConcept() == null) {
+		ActionScheme applicableActionScheme = getApplicableActionScheme();
+
+		if (applicableActionScheme != null) {
+
+			System.out.println("Hop, l'idee est d'invoquer l'action " + applicableActionScheme);
+			System.out.println("Et donc: " + applicableActionScheme.getFMLRepresentation());
+			System.out.println("Plutot que:");
+			System.out.println(getFlexoBehaviour().getFMLRepresentation());
+
+			if (applicableActionScheme.getFlexoConcept() == null) {
 				throw new InvalidParametersException(
-						"Inconsistent data: ActionScheme is not defined in any FlexoConcept: " + getActionScheme());
+						"Inconsistent data: ActionScheme is not defined in any FlexoConcept: " + applicableActionScheme);
 			}
-			if (getActionScheme().getFlexoConcept().isAssignableFrom(getFlexoConceptInstance().getFlexoConcept())) {
-				if (getActionScheme() != null && getActionScheme().evaluateCondition(getFlexoConceptInstance())) {
+			if (applicableActionScheme.getFlexoConcept().isAssignableFrom(getFlexoConceptInstance().getFlexoConcept())) {
+				if (applicableActionScheme != null && applicableActionScheme.evaluateCondition(getFlexoConceptInstance())) {
 					executeControlGraph();
 				}
 			}
 			else {
-				throw new InvalidParametersException("DeletionScheme " + getActionScheme() + " is not a behaviour defined for "
+				throw new InvalidParametersException("ActionScheme " + applicableActionScheme + " is not a behaviour defined for "
 						+ getFlexoConceptInstance().getFlexoConcept());
 			}
 		}

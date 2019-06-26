@@ -205,10 +205,6 @@ public class FlexoBehaviourPathElement extends FunctionPathElement implements Pr
 				AbstractActionSchemeActionFactory actionType = ((AbstractActionScheme) getFlexoBehaviour()).getActionFactory(fci);
 				AbstractActionSchemeAction<?, ?, ?> actionSchemeAction = null;
 
-				System.out.println("Hop, l'idee est d'invoquer l'action " + getFlexoBehaviour());
-				System.out.println("Target: " + target + " concept=" + fci.getFlexoConcept());
-				System.out.println("FML=" + getFlexoBehaviour().getFMLRepresentation());
-
 				if (context instanceof FlexoBehaviourAction) {
 					actionSchemeAction = (AbstractActionSchemeAction<?, ?, ?>) actionType
 							.makeNewEmbeddedAction(fci.getVirtualModelInstance(), null, (FlexoBehaviourAction<?, ?, ?>) context);
