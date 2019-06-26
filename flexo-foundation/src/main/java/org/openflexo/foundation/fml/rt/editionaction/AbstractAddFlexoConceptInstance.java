@@ -207,6 +207,22 @@ public interface AbstractAddFlexoConceptInstance<FCI extends FlexoConceptInstanc
 		private DataBinding<FlexoConceptInstance> container;
 		private DataBinding<FlexoConcept> dynamicFlexoConceptType;
 
+		@Override
+		public void setDynamicInstantiation(boolean dynamicInstanciation) {
+			performSuperSetter(DYNAMIC_INSTANTIATION_KEY, dynamicInstanciation);
+			getPropertyChangeSupport().firePropertyChange("requiresContainer", !requiresContainer(), requiresContainer());
+		}
+
+		public boolean requiresContainer() {
+			if (getDynamicInstantiation()) {
+				return true;
+			}
+			if (getFlexoConceptType() != null) {
+				return getFlexoConceptType().getContainerFlexoConcept() != null;
+			}
+			return false;
+		}
+
 		protected abstract Class<? extends FlexoConcept> getDynamicFlexoConceptTypeType();
 
 		@Override
@@ -314,6 +330,7 @@ public interface AbstractAddFlexoConceptInstance<FCI extends FlexoConceptInstanc
 				}
 				getPropertyChangeSupport().firePropertyChange(FLEXO_CONCEPT_TYPE_KEY, oldValue, flexoConceptType);
 				getPropertyChangeSupport().firePropertyChange("availableCreationSchemes", null, getAvailableCreationSchemes());
+				getPropertyChangeSupport().firePropertyChange("requiresContainer", !requiresContainer(), requiresContainer());
 			}
 		}
 

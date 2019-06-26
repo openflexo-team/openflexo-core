@@ -120,7 +120,7 @@ public interface AddFlexoConceptInstance<VMI extends VirtualModelInstance<VMI, ?
 		@Override
 		public ValidationIssue<AddFlexoConceptInstanceMustAddressACreationScheme, AddFlexoConceptInstance<?>> applyValidation(
 				AddFlexoConceptInstance<?> action) {
-			if (action.getCreationScheme() == null) {
+			if (!action.getDynamicInstantiation() && action.getCreationScheme() == null) {
 				if (action.getFlexoConceptType() == null) {
 					return new ValidationError<>(this, action, "add_flexo_concept_action_doesn't_define_any_flexo_concept");
 				}

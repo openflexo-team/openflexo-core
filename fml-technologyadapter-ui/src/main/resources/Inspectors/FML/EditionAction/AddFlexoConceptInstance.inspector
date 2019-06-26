@@ -11,10 +11,10 @@
 			verticalScrollbarPolicy="VERTICAL_SCROLLBAR_AS_NEEDED" name="BasicTab">
 			<Label name="containerLabel" label="container" align="right" index="12"
 				constraints="twocols(expandHorizontally=true;expandVertically=false;index=6;insetsBottom=0;insetsLeft=2;insetsRight=4;insetsTop=5;location=left)"
-				localize="true" visible="data.flexoConceptType.containerFlexoConcept != null"/>
+				localize="true" visible="data.requiresContainer"/>
 			<Custom name="containerBS" componentClassName="org.openflexo.gina.swing.utils.BindingSelector"
 				localize="true" manageDynamicModel="true" opaque="false" index="13"
-				data="data.container" visible="data.flexoConceptType.containerFlexoConcept != null"
+				data="data.container" visible="data.requiresContainer"
 				constraints="twocols(expandHorizontally=true;expandVertically=false;index=7;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)">
 				<Assignment variable="component.bindable" value="data" />
 			</Custom>
@@ -31,7 +31,7 @@
 				<Assignment variable="component.restrictToContext" value="true" />
 				<Assignment variable="component.inheritingContext" value="data.ownerVirtualModelType" />
 			</Custom>
-			<Label label="virtual_model" align="right" index="16" visible="data.dynamicInstantiation"
+			<Label label="flexo_concept" align="right" index="16" visible="data.dynamicInstantiation"
 				constraints="twocols(expandHorizontally=true;expandVertically=false;index=12;insetsBottom=0;insetsLeft=2;insetsRight=4;insetsTop=5;location=left)"
 				localize="true" />
 			<Custom componentClassName="org.openflexo.gina.swing.utils.BindingSelector" visible="data.dynamicInstantiation"

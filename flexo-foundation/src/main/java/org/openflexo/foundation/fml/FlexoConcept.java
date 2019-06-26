@@ -207,7 +207,7 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 
 	public List<FlexoBehaviour> getDeclaredFlexoBehaviours();
 
-	public List<FlexoBehaviour> getAccessibleFlexoBehaviours();
+	public List<FlexoBehaviour> getAccessibleFlexoBehaviours(boolean considerContainment);
 
 	@Getter(value = FLEXO_BEHAVIOURS_KEY, cardinality = Cardinality.LIST, inverse = FlexoBehaviour.FLEXO_CONCEPT_KEY)
 	@XMLElement(primary = true)
@@ -532,7 +532,7 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 
 	public <ES extends FlexoBehaviour> List<ES> getFlexoBehaviours(Class<ES> editionSchemeClass);
 
-	public <ES extends FlexoBehaviour> List<ES> getAccessibleFlexoBehaviours(Class<ES> editionSchemeClass);
+	public <ES extends FlexoBehaviour> List<ES> getAccessibleFlexoBehaviours(Class<ES> editionSchemeClass, boolean considerContainment);
 
 	public List<AbstractActionScheme> getAbstractActionSchemes();
 
@@ -1277,7 +1277,7 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 		 * @return
 		 */
 		@Override
-		public List<FlexoBehaviour> getAccessibleFlexoBehaviours() {
+		public List<FlexoBehaviour> getAccessibleFlexoBehaviours(boolean considerContainment) {
 
 			if (getParentFlexoConcepts().size() == 0) {
 				return getDeclaredFlexoBehaviours();
@@ -1289,13 +1289,12 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 			returned.addAll(getDeclaredFlexoBehaviours());
 
 			// Take behaviours obtained by containment
-			if (getContainerFlexoConcept() != null) {
-				returned.addAll(getContainerFlexoConcept().getAccessibleFlexoBehaviours());
+			if (considerContainment && getContainerFlexoConcept() != null) {
+				returned.addAll(getContainerFlexoConcept().getAccessibleFlexoBehaviours(considerContainment));
 			}
 
 			for (FlexoConcept parentConcept : getParentFlexoConcepts()) {
-				for (FlexoBehaviour behaviour : parentConcept.getAccessibleFlexoBehaviours()) {
-
+				for (FlexoBehaviour behaviour : parentConcept.getAccessibleFlexoBehaviours(considerContainment)) {
 					if (!behaviour.isOverridenInContext(this)) {
 						returned.add(behaviour);
 					}
@@ -1308,9 +1307,10 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 
 		@Override
 		@SuppressWarnings("unchecked")
-		public <ES extends FlexoBehaviour> List<ES> getAccessibleFlexoBehaviours(Class<ES> editionSchemeClass) {
+		public <ES extends FlexoBehaviour> List<ES> getAccessibleFlexoBehaviours(Class<ES> editionSchemeClass,
+				boolean considerContainment) {
 			List<ES> returned = new ArrayList<>();
-			for (FlexoBehaviour es : getAccessibleFlexoBehaviours()) {
+			for (FlexoBehaviour es : getAccessibleFlexoBehaviours(considerContainment)) {
 				if (editionSchemeClass.isAssignableFrom(es.getClass())) {
 					returned.add((ES) es);
 				}
@@ -1356,17 +1356,17 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 
 		@Override
 		public List<AbstractActionScheme> getAccessibleAbstractActionSchemes() {
-			return getAccessibleFlexoBehaviours(AbstractActionScheme.class);
+			return getAccessibleFlexoBehaviours(AbstractActionScheme.class, true);
 		}
 
 		@Override
 		public List<CreationScheme> getAccessibleCreationSchemes() {
-			return getAccessibleFlexoBehaviours(CreationScheme.class);
+			return getAccessibleFlexoBehaviours(CreationScheme.class, false);
 		}
 
 		@Override
 		public List<ActionScheme> getAccessibleActionSchemes() {
-			return getAccessibleFlexoBehaviours(ActionScheme.class);
+			return getAccessibleFlexoBehaviours(ActionScheme.class, true);
 		}
 
 		@Override
@@ -1381,7 +1381,7 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 		 */
 		@Override
 		public SynchronizationScheme getSynchronizationScheme() {
-			for (FlexoBehaviour es : getAccessibleFlexoBehaviours()) {
+			for (FlexoBehaviour es : getAccessibleFlexoBehaviours(false)) {
 				if (es instanceof SynchronizationScheme) {
 					return (SynchronizationScheme) es;
 				}
@@ -1396,7 +1396,7 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 
 		@Override
 		public List<DeletionScheme> getAccessibleDeletionSchemes() {
-			return getAccessibleFlexoBehaviours(DeletionScheme.class);
+			return getAccessibleFlexoBehaviours(DeletionScheme.class, false);
 		}
 
 		@Override
@@ -1416,7 +1416,7 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 
 		@Override
 		public boolean hasActionScheme() {
-			for (FlexoBehaviour es : getAccessibleFlexoBehaviours()) {
+			for (FlexoBehaviour es : getAccessibleFlexoBehaviours(true)) {
 				if (es instanceof ActionScheme) {
 					return true;
 				}
@@ -1426,7 +1426,7 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 
 		@Override
 		public boolean hasCreationScheme() {
-			for (FlexoBehaviour es : getAccessibleFlexoBehaviours()) {
+			for (FlexoBehaviour es : getAccessibleFlexoBehaviours(false)) {
 				if (es instanceof CreationScheme) {
 					return true;
 				}
@@ -1436,7 +1436,7 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 
 		@Override
 		public boolean hasDeletionScheme() {
-			for (FlexoBehaviour es : getAccessibleFlexoBehaviours()) {
+			for (FlexoBehaviour es : getAccessibleFlexoBehaviours(false)) {
 				if (es instanceof DeletionScheme) {
 					return true;
 				}
@@ -1446,7 +1446,7 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 
 		@Override
 		public boolean hasSynchronizationScheme() {
-			for (FlexoBehaviour es : getAccessibleFlexoBehaviours()) {
+			for (FlexoBehaviour es : getAccessibleFlexoBehaviours(false)) {
 				if (es instanceof SynchronizationScheme) {
 					return true;
 				}
@@ -1456,7 +1456,7 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 
 		@Override
 		public boolean hasNavigationScheme() {
-			for (FlexoBehaviour es : getAccessibleFlexoBehaviours()) {
+			for (FlexoBehaviour es : getAccessibleFlexoBehaviours(false)) {
 				if (es instanceof NavigationScheme) {
 					return true;
 				}
