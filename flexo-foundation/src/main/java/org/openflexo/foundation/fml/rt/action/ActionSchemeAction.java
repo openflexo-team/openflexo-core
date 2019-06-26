@@ -116,11 +116,6 @@ public class ActionSchemeAction extends AbstractActionSchemeAction<ActionSchemeA
 
 		if (applicableActionScheme != null) {
 
-			System.out.println("Hop, l'idee est d'invoquer l'action " + applicableActionScheme);
-			System.out.println("Et donc: " + applicableActionScheme.getFMLRepresentation());
-			System.out.println("Plutot que:");
-			System.out.println(getFlexoBehaviour().getFMLRepresentation());
-
 			if (applicableActionScheme.getFlexoConcept() == null) {
 				throw new InvalidParametersException(
 						"Inconsistent data: ActionScheme is not defined in any FlexoConcept: " + applicableActionScheme);
