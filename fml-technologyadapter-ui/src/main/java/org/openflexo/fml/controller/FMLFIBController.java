@@ -102,13 +102,13 @@ import org.openflexo.foundation.fml.editionaction.TechnologySpecificAction;
 import org.openflexo.foundation.fml.inspector.FlexoConceptInspector;
 import org.openflexo.foundation.fml.inspector.InspectorEntry;
 import org.openflexo.foundation.fml.rm.VirtualModelResource;
+import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.resource.FlexoResource;
 import org.openflexo.foundation.resource.RepositoryFolder;
 import org.openflexo.foundation.resource.ResourceLoadingCancelledException;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.technologyadapter.UseModelSlotDeclaration;
-import org.openflexo.gina.controller.FIBController;
 import org.openflexo.gina.model.FIBComponent;
 import org.openflexo.gina.model.container.FIBTab;
 import org.openflexo.gina.utils.FIBInspector;
@@ -652,7 +652,15 @@ public class FMLFIBController extends FlexoFIBController {
 		return null;
 	}
 
-	public Class<? extends FIBController> getInspectorControllerClass() {
+	public FIBComponent inspectorForFlexoConceptInstance(FlexoConceptInstance fci) {
+		if (getFlexoController() != null && getFlexoController().getModuleInspectorController() != null && fci != null) {
+			return getFlexoController().getModuleInspectorController().getFIBInspectorPanel(fci.getFlexoConcept(),
+					getInspectorControllerClass());
+		}
+		return null;
+	}
+
+	public Class<? extends FlexoFIBController> getInspectorControllerClass() {
 		return FMLFIBInspectorController.class;
 	}
 

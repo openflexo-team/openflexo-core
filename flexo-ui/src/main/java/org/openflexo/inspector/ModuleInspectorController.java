@@ -597,21 +597,25 @@ public class ModuleInspectorController extends Observable implements Observer {
 	private Map<FlexoConcept, FIBPanel> flexoConceptInspectorPanels = new HashMap<>();
 
 	public FIBPanel getFIBInspectorPanel(FlexoConcept flexoConcept) {
+		return getFIBInspectorPanel(flexoConcept, FlexoFIBController.class);
+	}
+
+	public FIBPanel getFIBInspectorPanel(FlexoConcept flexoConcept, Class<? extends FlexoFIBController> controllerClass) {
 		FIBPanel returned = flexoConceptInspectorPanels.get(flexoConcept);
 		if (returned == null) {
-			returned = makeFIBInspectorPanel(flexoConcept);
+			returned = makeFIBInspectorPanel(flexoConcept, controllerClass);
 			flexoConceptInspectorPanels.put(flexoConcept, returned);
 		}
 		return returned;
 
 	}
 
-	private FIBPanel makeFIBInspectorPanel(FlexoConcept flexoConcept) {
+	private FIBPanel makeFIBInspectorPanel(FlexoConcept flexoConcept, Class<? extends FlexoFIBController> controllerClass) {
 		FIBPanel inspector = getFactory().newFIBPanel();
 		inspector.setLayout(Layout.twocols);
 		inspector.setUseScrollBar(true);
 
-		inspector.setControllerClass(FlexoFIBController.class);
+		inspector.setControllerClass(controllerClass);
 
 		// We create a variable for inspector data
 		// This variable is called fci, with type FlexoConceptInstanceType<FlexoConcept>, and value 'data' (which is the
