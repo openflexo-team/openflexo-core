@@ -131,6 +131,7 @@ extend_parent_bounds_to_host_this_shape=extend_parent_bounds_to_host_this_shape
 fetch_request=fetch_request
 file=Fichier
 finished=finished
+flexo_behaviour=flexo_behaviour
 flexo_concept=flexo_concept
 flexo_concept_instance=flexo_concept_instance
 flexo_id=flexo_id
