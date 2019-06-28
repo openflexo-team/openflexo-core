@@ -72,6 +72,8 @@ import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstanceRepository;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.editionaction.AddFlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.editionaction.AddVirtualModelInstance;
+import org.openflexo.foundation.fml.rt.editionaction.ExecuteFML;
+import org.openflexo.foundation.fml.rt.editionaction.ExecuteFlexoBehaviour;
 import org.openflexo.foundation.fml.rt.editionaction.SelectFlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.editionaction.SelectVirtualModelInstance;
 import org.openflexo.foundation.technologyadapter.TechnologyObject;
@@ -235,6 +237,12 @@ public class FMLRTTechnologyAdapterController extends TechnologyAdapterControlle
 		}
 		else if (DeleteAction.class.isAssignableFrom(editionActionClass)) {
 			return IconFactory.getImageIcon(FMLRTIconLibrary.FLEXO_CONCEPT_INSTANCE_ICON, IconLibrary.DELETE);
+		}
+		else if (ExecuteFlexoBehaviour.class.isAssignableFrom(editionActionClass)) {
+			return FMLIconLibrary.FLEXO_BEHAVIOUR_ICON;
+		}
+		else if (ExecuteFML.class.isAssignableFrom(editionActionClass)) {
+			return FMLIconLibrary.FLEXO_BEHAVIOUR_ICON;
 		}
 
 		return super.getIconForEditionAction(editionActionClass);
