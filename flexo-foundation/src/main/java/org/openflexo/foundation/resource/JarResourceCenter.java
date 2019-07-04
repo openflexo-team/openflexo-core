@@ -82,6 +82,7 @@ import org.openflexo.rm.JarResourceImpl;
 import org.openflexo.rm.Resource;
 import org.openflexo.rm.ResourceLocator;
 import org.openflexo.toolbox.FlexoVersion;
+import org.openflexo.toolbox.JarUtils;
 import org.openflexo.xml.XMLRootElementInfo;
 import org.openflexo.xml.XMLRootElementReader;
 
@@ -867,7 +868,7 @@ public interface JarResourceCenter extends FlexoResourceCenter<InJarResourceImpl
 
 		@Override
 		public String relativePath(InJarResourceImpl serializationArtefact) {
-			return InJarResourceImpl.makePathRelativeTo(serializationArtefact, getBaseArtefact());
+			return JarUtils.makePathRelativeTo(serializationArtefact, getBaseArtefact());
 		}
 
 	}
