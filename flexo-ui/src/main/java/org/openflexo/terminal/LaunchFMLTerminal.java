@@ -15,7 +15,7 @@
  * SHALL NOT BE LIABLE FOR ANY DAMAGES SUFFERED BY LICENSEE AS A RESULT
  * OF USING, MODIFYING OR DISTRIBUTING THIS SOFTWARE OR ITS DERIVATIVES.
  */
-package org.openflexo.foundation.fml.cli;
+package org.openflexo.terminal;
 
 import java.io.File;
 import java.io.IOException;
@@ -47,7 +47,7 @@ import org.openflexo.logging.FlexoLoggingManager;
  * @author sylvain
  *
  */
-public class LaunchHeadlessFMLCLI {
+public class LaunchFMLTerminal {
 
 	public static class Options {
 
@@ -151,13 +151,8 @@ public class LaunchHeadlessFMLCLI {
 		// Settings.getInstance().setHistoryDisabled(true);
 		// Settings.getInstance().setHistoryPersistent(false);
 
-		CommandInterpreter ci = new CommandInterpreter(serviceManager, System.out, System.err, new File(System.getProperty("user.dir")));
-
-		// try {
-		ci.start();
-
-		System.out.println("Exiting application...");
-		System.exit(0);
+		FMLTerminal terminal = new FMLTerminal(serviceManager, new File(System.getProperty("user.dir")));
+		terminal.open(0, 0, 700, 700);
 
 		/*} catch (Exception e) {
 			System.out.println("Caught an Exception :");

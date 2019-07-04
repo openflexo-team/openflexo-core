@@ -41,7 +41,7 @@ package org.openflexo.foundation.fml.cli.command.directive;
 
 import java.util.logging.Logger;
 
-import org.openflexo.foundation.fml.cli.CommandInterpreter;
+import org.openflexo.foundation.fml.cli.AbstractCommandInterpreter;
 import org.openflexo.foundation.fml.cli.command.Directive;
 import org.openflexo.foundation.fml.cli.command.DirectiveDeclaration;
 import org.openflexo.foundation.fml.cli.parser.node.APwdDirective;
@@ -60,12 +60,12 @@ public class PwdDirective extends Directive {
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(PwdDirective.class.getPackage().getName());
 
-	public PwdDirective(APwdDirective node, CommandInterpreter commandInterpreter) {
+	public PwdDirective(APwdDirective node, AbstractCommandInterpreter commandInterpreter) {
 		super(node, commandInterpreter);
 	}
 
 	@Override
 	public void execute() {
-		System.out.println(getCommandInterpreter().getWorkingDirectory().getAbsolutePath());
+		getOutStream().println(getCommandInterpreter().getWorkingDirectory().getAbsolutePath());
 	}
 }

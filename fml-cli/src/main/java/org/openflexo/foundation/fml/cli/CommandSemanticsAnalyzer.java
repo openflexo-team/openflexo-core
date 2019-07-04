@@ -173,9 +173,9 @@ public class CommandSemanticsAnalyzer extends DepthFirstAdapter {
 
 	private final Map<Node, Expression> expressionNodes;
 	private AbstractCommand command;
-	private CommandInterpreter commandInterpreter;
+	private AbstractCommandInterpreter commandInterpreter;
 
-	public CommandSemanticsAnalyzer(CommandInterpreter commandInterpreter) {
+	public CommandSemanticsAnalyzer(AbstractCommandInterpreter commandInterpreter) {
 		expressionNodes = new Hashtable<>();
 		this.commandInterpreter = commandInterpreter;
 	}

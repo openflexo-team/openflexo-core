@@ -2,6 +2,7 @@ dependencies {
   // openflexo dep
   compile project(':flexo-foundation')
   compile project(':flexodocresourcemanager')
+  compile project(':fml-cli')
   compile connie()
   compile dianaApi()
   compile diana()

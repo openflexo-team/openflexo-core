@@ -39,9 +39,10 @@
 
 package org.openflexo.foundation.fml.cli.command.directive;
 
+import java.io.PrintStream;
 import java.util.logging.Logger;
 
-import org.openflexo.foundation.fml.cli.CommandInterpreter;
+import org.openflexo.foundation.fml.cli.AbstractCommandInterpreter;
 import org.openflexo.foundation.fml.cli.command.Directive;
 import org.openflexo.foundation.fml.cli.command.DirectiveDeclaration;
 import org.openflexo.foundation.fml.cli.command.FMLCommand;
@@ -63,7 +64,7 @@ public class HelpDirective extends Directive {
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(HelpDirective.class.getPackage().getName());
 
-	public HelpDirective(AHelpDirective node, CommandInterpreter commandInterpreter) {
+	public HelpDirective(AHelpDirective node, AbstractCommandInterpreter commandInterpreter) {
 		super(node, commandInterpreter);
 	}
 
@@ -72,20 +73,20 @@ public class HelpDirective extends Directive {
 		for (Class<? extends Directive> directiveClass : getCommandInterpreter().getAvailableDirectives()) {
 			String usage = directiveClass.getAnnotation(DirectiveDeclaration.class).usage();
 			String description = directiveClass.getAnnotation(DirectiveDeclaration.class).description();
-			displayDirectiveHelp(usage, description);
+			displayDirectiveHelp(usage, description, getOutStream());
 		}
 		for (Class<? extends FMLCommand> fmlCommandClass : getCommandInterpreter().getAvailableCommands()) {
 			String usage = fmlCommandClass.getAnnotation(FMLCommandDeclaration.class).usage();
 			String description = fmlCommandClass.getAnnotation(FMLCommandDeclaration.class).description();
-			displayFMLCommandHelp(usage, description);
+			displayFMLCommandHelp(usage, description, getOutStream());
 		}
 	}
 
-	private static void displayDirectiveHelp(String usage, String description) {
-		System.out.println(usage + StringUtils.buildWhiteSpaceIndentation(40 - usage.length()) + ": " + description);
+	private static void displayDirectiveHelp(String usage, String description, PrintStream outStream) {
+		outStream.println(usage + StringUtils.buildWhiteSpaceIndentation(40 - usage.length()) + ": " + description);
 	}
 
-	private static void displayFMLCommandHelp(String usage, String description) {
-		System.out.println(usage + StringUtils.buildWhiteSpaceIndentation(40 - usage.length()) + ": " + description);
+	private static void displayFMLCommandHelp(String usage, String description, PrintStream outStream) {
+		outStream.println(usage + StringUtils.buildWhiteSpaceIndentation(40 - usage.length()) + ": " + description);
 	}
 }

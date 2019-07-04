@@ -51,7 +51,7 @@ import org.openflexo.connie.expr.BinaryOperatorExpression;
 import org.openflexo.connie.expr.BindingValue;
 import org.openflexo.connie.expr.BooleanBinaryOperator;
 import org.openflexo.connie.expr.Expression;
-import org.openflexo.foundation.fml.cli.CommandInterpreter;
+import org.openflexo.foundation.fml.cli.AbstractCommandInterpreter;
 import org.openflexo.foundation.fml.cli.CommandSemanticsAnalyzer;
 import org.openflexo.foundation.fml.cli.command.FMLCommand;
 import org.openflexo.foundation.fml.cli.command.FMLCommandDeclaration;
@@ -72,7 +72,7 @@ public class FMLExpression extends FMLCommand {
 
 	private DataBinding<Object> expression;
 
-	public FMLExpression(AExprFmlCommand node, CommandInterpreter commandInterpreter, CommandSemanticsAnalyzer analyser) {
+	public FMLExpression(AExprFmlCommand node, AbstractCommandInterpreter commandInterpreter, CommandSemanticsAnalyzer analyser) {
 		super(node, commandInterpreter, null);
 		Expression exp = analyser.getExpression(node.getExpr());
 		expression = new DataBinding<>(exp.toString(), commandInterpreter, Object.class, BindingDefinitionType.GET);
@@ -115,40 +115,40 @@ public class FMLExpression extends FMLCommand {
 						}
 					}
 					else {
-						// System.out.println("Ca va pas avec " + left + " of " + left.getClass());
+						// getOutStream().println("Ca va pas avec " + left + " of " + left.getClass());
 						if (left.getExpression() instanceof BindingValue
 								&& ((BindingValue) left.getExpression()).getParsedBindingPath().size() == 1) {
 							String variableName = ((BindingValue) left.getExpression()).getParsedBindingPath().get(0)
 									.getSerializationRepresentation();
-							// System.out.println("variable=" + variableName);
+							// getOutStream().println("variable=" + variableName);
 							getCommandInterpreter().declareVariable(variableName, right.getAnalyzedType(), value);
 						}
 						else {
-							System.err.println("Cannot execute " + left + " : " + left.invalidBindingReason());
+							getErrStream().println("Cannot execute " + left + " : " + left.invalidBindingReason());
 						}
 					}
 				}
 				else {
-					System.err.println("Cannot execute " + right + " : " + right.invalidBindingReason());
+					getErrStream().println("Cannot execute " + right + " : " + right.invalidBindingReason());
 				}
 			}
 			else {
 				if (expression.isValid()) {
 					Object value = expression.getBindingValue(getCommandInterpreter());
-					System.out.println("Executed " + expression + " <- " + value);
+					getOutStream().println("Executed " + expression + " <- " + value);
 				}
 				else {
-					System.err.println("Cannot execute " + expression + " : " + expression.invalidBindingReason());
+					getErrStream().println("Cannot execute " + expression + " : " + expression.invalidBindingReason());
 				}
 			}
 		} catch (TypeMismatchException e) {
-			System.err.println("Cannot execute " + expression + " : " + e.getMessage());
+			getErrStream().println("Cannot execute " + expression + " : " + e.getMessage());
 		} catch (NullReferenceException e) {
-			System.err.println("Cannot execute " + expression + " : " + e.getMessage());
+			getErrStream().println("Cannot execute " + expression + " : " + e.getMessage());
 		} catch (InvocationTargetException e) {
-			System.err.println("Cannot execute " + expression + " : " + e.getMessage());
+			getErrStream().println("Cannot execute " + expression + " : " + e.getMessage());
 		} catch (NotSettableContextException e) {
-			System.err.println("Cannot execute " + expression + " : " + e.getMessage());
+			getErrStream().println("Cannot execute " + expression + " : " + e.getMessage());
 		}
 	}
 }

@@ -43,8 +43,8 @@ import java.util.logging.Logger;
 
 import org.openflexo.connie.BindingVariable;
 import org.openflexo.connie.type.TypeUtils;
+import org.openflexo.foundation.fml.cli.AbstractCommandInterpreter;
 import org.openflexo.foundation.fml.cli.CLIUtils;
-import org.openflexo.foundation.fml.cli.CommandInterpreter;
 import org.openflexo.foundation.fml.cli.CommandSemanticsAnalyzer;
 import org.openflexo.foundation.fml.cli.command.FMLCommand;
 import org.openflexo.foundation.fml.cli.command.FMLCommandDeclaration;
@@ -64,7 +64,7 @@ public class FMLContextCommand extends FMLCommand {
 
 	private static final Logger logger = Logger.getLogger(FMLContextCommand.class.getPackage().getName());
 
-	public FMLContextCommand(AContextFmlCommand node, CommandInterpreter commandInterpreter, CommandSemanticsAnalyzer analyser) {
+	public FMLContextCommand(AContextFmlCommand node, AbstractCommandInterpreter commandInterpreter, CommandSemanticsAnalyzer analyser) {
 		super(node, commandInterpreter, null);
 	}
 
@@ -72,7 +72,7 @@ public class FMLContextCommand extends FMLCommand {
 	public void execute() {
 		for (int i = 0; i < getCommandInterpreter().getBindingModel().getBindingVariablesCount(); i++) {
 			BindingVariable bv = getCommandInterpreter().getBindingModel().getBindingVariableAt(i);
-			System.out.println("[" + TypeUtils.simpleRepresentation(bv.getType()) + "] " + bv.getVariableName() + "="
+			getOutStream().println("[" + TypeUtils.simpleRepresentation(bv.getType()) + "] " + bv.getVariableName() + "="
 					+ CLIUtils.renderObject(getCommandInterpreter().getValue(bv)));
 		}
 	}

@@ -42,7 +42,7 @@ package org.openflexo.foundation.fml.cli.command.directive;
 import java.io.File;
 import java.util.logging.Logger;
 
-import org.openflexo.foundation.fml.cli.CommandInterpreter;
+import org.openflexo.foundation.fml.cli.AbstractCommandInterpreter;
 import org.openflexo.foundation.fml.cli.command.Directive;
 import org.openflexo.foundation.fml.cli.command.DirectiveDeclaration;
 import org.openflexo.foundation.fml.cli.parser.node.ALsDirective;
@@ -62,7 +62,7 @@ public class LsDirective extends Directive {
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(LsDirective.class.getPackage().getName());
 
-	public LsDirective(ALsDirective node, CommandInterpreter commandInterpreter) {
+	public LsDirective(ALsDirective node, AbstractCommandInterpreter commandInterpreter) {
 		super(node, commandInterpreter);
 	}
 
@@ -79,14 +79,14 @@ public class LsDirective extends Directive {
 		int i = 0;
 		for (File f : getCommandInterpreter().getWorkingDirectory().listFiles()) {
 			String name = getFileName(f);
-			System.out.print(name + StringUtils.buildWhiteSpaceIndentation(maxLength - name.length() + 1));
+			getOutStream().print(name + StringUtils.buildWhiteSpaceIndentation(maxLength - name.length() + 1));
 			i++;
 			if (i % cols == 0) {
-				System.out.println();
+				getOutStream().println();
 			}
 		}
 		if (i % cols != 0) {
-			System.out.println();
+			getOutStream().println();
 		}
 
 	}

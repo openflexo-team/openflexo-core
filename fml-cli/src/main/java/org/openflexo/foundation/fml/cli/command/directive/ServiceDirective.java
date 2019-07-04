@@ -45,7 +45,7 @@ import java.util.logging.Logger;
 
 import org.openflexo.foundation.FlexoService;
 import org.openflexo.foundation.FlexoService.ServiceOperation;
-import org.openflexo.foundation.fml.cli.CommandInterpreter;
+import org.openflexo.foundation.fml.cli.AbstractCommandInterpreter;
 import org.openflexo.foundation.fml.cli.command.Directive;
 import org.openflexo.foundation.fml.cli.command.DirectiveDeclaration;
 import org.openflexo.foundation.fml.cli.parser.node.AServiceDirective;
@@ -86,7 +86,7 @@ public class ServiceDirective<S extends FlexoService> extends Directive {
 	private List<?> options = new ArrayList<>();
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public ServiceDirective(AServiceDirective node, CommandInterpreter commandInterpreter) {
+	public ServiceDirective(AServiceDirective node, AbstractCommandInterpreter commandInterpreter) {
 		super(node, commandInterpreter);
 
 		service = getCommandInterpreter().getServiceManager().getService(node.getServiceName().getText());
@@ -119,10 +119,10 @@ public class ServiceDirective<S extends FlexoService> extends Directive {
 				}
 			}
 
-			/*System.out.println("Service: " + service);
-			System.out.println("Action: " + serviceOperation);
+			/*getOutStream().println("Service: " + service);
+			getOutStream().println("Action: " + serviceOperation);
 			for (PDirectiveOption pDirectiveOption : node.getOptions()) {
-				System.out.println(" > " + pDirectiveOption);
+				getOutStream().println(" > " + pDirectiveOption);
 			}*/
 
 		}

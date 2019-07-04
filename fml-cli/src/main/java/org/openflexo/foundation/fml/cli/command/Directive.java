@@ -42,7 +42,7 @@ package org.openflexo.foundation.fml.cli.command;
 import java.io.File;
 import java.util.logging.Logger;
 
-import org.openflexo.foundation.fml.cli.CommandInterpreter;
+import org.openflexo.foundation.fml.cli.AbstractCommandInterpreter;
 import org.openflexo.foundation.fml.cli.command.directive.ActivateTA;
 import org.openflexo.foundation.fml.cli.command.directive.CdDirective;
 import org.openflexo.foundation.fml.cli.command.directive.DisplayResource;
@@ -91,7 +91,7 @@ public abstract class Directive extends AbstractCommand {
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(Directive.class.getPackage().getName());
 
-	public Directive(Node node, CommandInterpreter commandInterpreter) {
+	public Directive(Node node, AbstractCommandInterpreter commandInterpreter) {
 		super(node, commandInterpreter);
 	}
 

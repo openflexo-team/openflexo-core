@@ -42,7 +42,7 @@ package org.openflexo.foundation.fml.cli.command.directive;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.FlexoObject;
-import org.openflexo.foundation.fml.cli.CommandInterpreter;
+import org.openflexo.foundation.fml.cli.AbstractCommandInterpreter;
 import org.openflexo.foundation.fml.cli.command.Directive;
 import org.openflexo.foundation.fml.cli.command.DirectiveDeclaration;
 import org.openflexo.foundation.fml.cli.parser.node.AEnterDirective;
@@ -74,7 +74,7 @@ public class EnterDirective extends Directive {
 	private FlexoResource<?> resource;
 	private FlexoObject object;
 
-	public EnterDirective(AEnterDirective node, CommandInterpreter commandInterpreter) {
+	public EnterDirective(AEnterDirective node, AbstractCommandInterpreter commandInterpreter) {
 		super(node, commandInterpreter);
 
 		PEnterDirective enterDirective = node.getEnterDirective();
@@ -100,11 +100,11 @@ public class EnterDirective extends Directive {
 			object = ((AbstractVirtualModelInstanceResource) getResource()).getVirtualModelInstance();
 		}
 		if (object != null) {
-			System.out.println("Entering in context " + object);
+			getOutStream().println("Entering in context " + object);
 			getCommandInterpreter().setFocusedObject(object);
 		}
 		else {
-			System.err.println("Cannot access denoted context");
+			getErrStream().println("Cannot access denoted context");
 		}
 	}
 }
