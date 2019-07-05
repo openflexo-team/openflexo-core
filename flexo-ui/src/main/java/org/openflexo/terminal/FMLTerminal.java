@@ -86,45 +86,66 @@ public class FMLTerminal extends JFrame {
 		textPane.addKeyListener(keyListener = new KeyListener());
 		font = DEFAULT_FONT2;
 		textPane.setFont(font);
-		// disableArrowKeys(textPane.getInputMap());
-		// disableArrowKeys(scrollPane.getInputMap());
 		disableArrowKeys(mainPane.getInputMap());
 		disableArrowKeys(textPane.getInputMap());
-		// setFocusTraversalKeysEnabled(false);
-		setFocusTraversalPolicy(new FocusTraversalPolicy() {
 
-			@Override
-			public Component getLastComponent(Container aContainer) {
-				// TODO Auto-generated method stub
-				return textPane;
-			}
+		// Prevent conflict between completion and focus traversal policy
+		preventIntempestiveTabManagement();
 
-			@Override
-			public Component getFirstComponent(Container aContainer) {
-				// TODO Auto-generated method stub
-				return textPane;
-			}
+		// Listen to component resize to adapt terminal width
+		listenToComponentResize();
 
-			@Override
-			public Component getDefaultComponent(Container aContainer) {
-				// TODO Auto-generated method stub
-				return textPane;
-			}
+		// Prevent UP and DOWN key to control scrollbar
+		disableScrollbarKeyManagement();
 
-			@Override
-			public Component getComponentBefore(Container aContainer, Component aComponent) {
-				// TODO Auto-generated method stub
-				return textPane;
-			}
+		TextPaneOutputStream out = new TextPaneOutputStream(textPane, Color.BLACK);
+		TextPaneOutputStream err = new TextPaneOutputStream(textPane, Color.RED);
 
+		// Initialize and start Command Interpreter
+		try {
+			commandInterpreter = new FMLCommandInterpreter(serviceManager, out, err, userDir);
+			commandInterpreter.start();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+	}
+
+	private int getTerminalWidth() {
+		return terminalWidth;
+	}
+
+	/**
+	 * Disable arrow keys
+	 * 
+	 * @param inputMap
+	 */
+	private void disableArrowKeys(InputMap inputMap) {
+		String[] keystrokeNames = { "UP", "DOWN", "LEFT", "RIGHT", "HOME" };
+		for (int i = 0; i < keystrokeNames.length; ++i)
+			inputMap.put(KeyStroke.getKeyStroke(keystrokeNames[i]), "none");
+	}
+
+	/**
+	 * Prevent UP and DOWN key to control scrollbar
+	 */
+	private void disableScrollbarKeyManagement() {
+		InputMap actionMap = (InputMap) UIManager.getDefaults().get("ScrollPane.ancestorInputMap");
+		actionMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_DOWN, 0), new AbstractAction() {
 			@Override
-			public Component getComponentAfter(Container aContainer, Component aComponent) {
-				// TODO Auto-generated method stub
-				return textPane;
+			public void actionPerformed(ActionEvent e) {
 			}
 		});
 
-		// Listen to component resize to adapt terminal width
+		actionMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_UP, 0), new AbstractAction() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+			}
+		});
+	}
+
+	private void listenToComponentResize() {
 		addComponentListener(new ComponentListener() {
 			@Override
 			public void componentShown(ComponentEvent e) {
@@ -152,43 +173,38 @@ public class FMLTerminal extends JFrame {
 			public void componentHidden(ComponentEvent e) {
 			}
 		});
-
-		// Prevent UP and DOWN key to control scrollbar
-		InputMap actionMap = (InputMap) UIManager.getDefaults().get("ScrollPane.ancestorInputMap");
-		actionMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_DOWN, 0), new AbstractAction() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-			}
-		});
-
-		actionMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_UP, 0), new AbstractAction() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-			}
-		});
-
-		TextPaneOutputStream out = new TextPaneOutputStream(textPane, Color.BLACK);
-		TextPaneOutputStream err = new TextPaneOutputStream(textPane, Color.RED);
-
-		// Initialize and start Command Interpreter
-		try {
-			commandInterpreter = new FMLCommandInterpreter(serviceManager, out, err, userDir);
-			commandInterpreter.start();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
 	}
 
-	private int getTerminalWidth() {
-		return terminalWidth;
-	}
+	/**
+	 * Prevent conflict between completion and focus traversal policy
+	 */
+	private void preventIntempestiveTabManagement() {
+		setFocusTraversalPolicy(new FocusTraversalPolicy() {
+			@Override
+			public Component getLastComponent(Container aContainer) {
+				return textPane;
+			}
 
-	private void disableArrowKeys(InputMap inputMap) {
-		String[] keystrokeNames = { "UP", "DOWN", "LEFT", "RIGHT", "HOME" };
-		for (int i = 0; i < keystrokeNames.length; ++i)
-			inputMap.put(KeyStroke.getKeyStroke(keystrokeNames[i]), "none");
+			@Override
+			public Component getFirstComponent(Container aContainer) {
+				return textPane;
+			}
+
+			@Override
+			public Component getDefaultComponent(Container aContainer) {
+				return textPane;
+			}
+
+			@Override
+			public Component getComponentBefore(Container aContainer, Component aComponent) {
+				return textPane;
+			}
+
+			@Override
+			public Component getComponentAfter(Container aContainer, Component aComponent) {
+				return textPane;
+			}
+		});
 	}
 
 	public void open(final int xLocation, final int yLocation, final int width, final int height) {
