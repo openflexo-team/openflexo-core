@@ -15,6 +15,7 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.AbstractAction;
@@ -53,6 +54,9 @@ public class FMLTerminal extends JFrame {
 
 	private FMLCommandInterpreter commandInterpreter;
 	private KeyListener keyListener;
+
+	private List<String> history = new ArrayList<String>();
+	private int historyIndex;
 
 	public FMLTerminal(FlexoServiceManager serviceManager, File userDir) {
 		setTitle("FMLTerminal");
@@ -103,10 +107,9 @@ public class FMLTerminal extends JFrame {
 
 		// Initialize and start Command Interpreter
 		try {
-			commandInterpreter = new FMLCommandInterpreter(serviceManager, out, err, userDir);
+			commandInterpreter = new FMLCommandInterpreter(serviceManager, out, err, userDir, this);
 			commandInterpreter.start();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
@@ -349,6 +352,50 @@ public class FMLTerminal extends JFrame {
 		});
 	}
 
+	private void replaceWithCommand(String command) {
+		try {
+			Document doc = textPane.getDocument();
+			String current = extractCommand();
+			doc.remove(doc.getLength() - current.length(), current.length());
+			doc.insertString(doc.getLength(), command, null);
+			textPane.setCaretPosition(doc.getLength());
+		} catch (BadLocationException e) {
+			UIManager.getLookAndFeel().provideErrorFeedback(textPane);
+		}
+	}
+
+	private void processUpPressed() {
+		// System.out.println("On fait UP");
+		if (historyIndex == history.size()) {
+			// Memorize current command
+			String current = extractCommand();
+			if (StringUtils.isNotEmpty(current.trim())) {
+				history.add(current);
+				// System.out.println("On ajoute: {" + current + "}");
+			}
+		}
+		if (historyIndex > 0) {
+			historyIndex--;
+			// System.out.println("On affiche: " + history.get(historyIndex));
+			replaceWithCommand(history.get(historyIndex));
+		}
+		else {
+			UIManager.getLookAndFeel().provideErrorFeedback(textPane);
+		}
+	}
+
+	private void processDownPressed() {
+		// System.out.println("On fait DOWN");
+		if (historyIndex < history.size() - 1) {
+			historyIndex++;
+			// System.out.println("On affiche: " + history.get(historyIndex));
+			replaceWithCommand(history.get(historyIndex));
+		}
+		else {
+			UIManager.getLookAndFeel().provideErrorFeedback(textPane);
+		}
+	}
+
 	private class KeyListener extends KeyAdapter {
 		private final int ENTER_KEY = KeyEvent.VK_ENTER;
 		private final int BACK_SPACE_KEY = KeyEvent.VK_BACK_SPACE;
@@ -383,12 +430,10 @@ public class FMLTerminal extends JFrame {
 				processTabPressed();
 			}
 			else if (keyCode == UP_KEY) {
-				System.out.println("On fait UP");
-				UIManager.getLookAndFeel().provideErrorFeedback(textPane);
+				processUpPressed();
 			}
 			else if (keyCode == DOWN_KEY) {
-				System.out.println("On fait UP");
-				UIManager.getLookAndFeel().provideErrorFeedback(textPane);
+				processDownPressed();
 			}
 		}
 
@@ -422,13 +467,18 @@ public class FMLTerminal extends JFrame {
 	}
 
 	private void executeCommand(String commandString) {
+		String commandWithoutLineSeparator = commandString.substring(0, commandString.indexOf(LINE_SEPARATOR));
 		try {
-			AbstractCommand executeCommand = commandInterpreter.executeCommand(commandString);
+			AbstractCommand executeCommand = commandInterpreter.executeCommand(commandWithoutLineSeparator);
 			if (executeCommand instanceof ExitDirective) {
 				close();
 			}
 		} catch (ParseException e) {
 			commandInterpreter.getErrStream().print("Syntax error : " + e.getMessage());
+		}
+		if (StringUtils.isNotEmpty(commandWithoutLineSeparator.trim())) {
+			history.add(commandWithoutLineSeparator);
+			historyIndex = history.size();
 		}
 	}
 
@@ -445,6 +495,16 @@ public class FMLTerminal extends JFrame {
 			return "";
 		else
 			return terminalText.substring(lastPromptIndex);
+	}
+
+	public void displayHistory() {
+		// String commandStart = extractCommand();
+		for (String command : history) {
+			appendText(command);
+			appendNewLine();
+		}
+		// showPrompt();
+		// appendText(commandStart);
 	}
 
 }

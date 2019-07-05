@@ -299,4 +299,9 @@ public class CommandInterpreter extends AbstractCommandInterpreter {
 		return consoleCommand;
 	}
 
+	@Override
+	public void displayHistory() {
+		// TODO Auto-generated method stub
+		getOutStream().println("History not available");
+	}
 }

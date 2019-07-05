@@ -68,6 +68,7 @@ import org.openflexo.foundation.fml.cli.command.directive.DisplayResource;
 import org.openflexo.foundation.fml.cli.command.directive.EnterDirective;
 import org.openflexo.foundation.fml.cli.command.directive.ExitDirective;
 import org.openflexo.foundation.fml.cli.command.directive.HelpDirective;
+import org.openflexo.foundation.fml.cli.command.directive.HistoryDirective;
 import org.openflexo.foundation.fml.cli.command.directive.LoadResource;
 import org.openflexo.foundation.fml.cli.command.directive.LsDirective;
 import org.openflexo.foundation.fml.cli.command.directive.OpenProject;
@@ -114,6 +115,7 @@ import org.openflexo.foundation.fml.cli.parser.node.AFunctionTerm;
 import org.openflexo.foundation.fml.cli.parser.node.AGtExprExpr;
 import org.openflexo.foundation.fml.cli.parser.node.AGteExprExpr;
 import org.openflexo.foundation.fml.cli.parser.node.AHelpDirective;
+import org.openflexo.foundation.fml.cli.parser.node.AHistoryDirective;
 import org.openflexo.foundation.fml.cli.parser.node.AIdentifierTypeReferencePath;
 import org.openflexo.foundation.fml.cli.parser.node.ALoadDirective;
 import org.openflexo.foundation.fml.cli.parser.node.ALogFuncFunction;
@@ -693,6 +695,12 @@ public class CommandSemanticsAnalyzer extends DepthFirstAdapter {
 	public void outACdDirective(ACdDirective node) {
 		super.outACdDirective(node);
 		registerCommand(node, new CdDirective(node, commandInterpreter));
+	}
+
+	@Override
+	public void outAHistoryDirective(AHistoryDirective node) {
+		super.outAHistoryDirective(node);
+		registerCommand(node, new HistoryDirective(node, commandInterpreter));
 	}
 
 	@Override

@@ -66,7 +66,7 @@ import org.openflexo.toolbox.PropertyChangedSupportDefaultImplementation;
  * An interpreter must be instantiated using a {@link FlexoServiceManager}
  * 
  */
-public class AbstractCommandInterpreter extends PropertyChangedSupportDefaultImplementation
+public abstract class AbstractCommandInterpreter extends PropertyChangedSupportDefaultImplementation
 		implements Bindable, SettableBindingEvaluationContext {
 
 	private File workingDirectory;
@@ -506,4 +506,6 @@ public class AbstractCommandInterpreter extends PropertyChangedSupportDefaultImp
 	public void stop() {
 		System.out.println("Stopping CommandInterpreter");
 	}
+
+	public abstract void displayHistory();
 }

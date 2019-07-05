@@ -86,6 +86,7 @@ Tokens
  
  // directives
  help = 'help';
+ history = 'history';
  pwd = 'pwd';
  ls = 'ls';
  cd = 'cd';
@@ -122,6 +123,7 @@ Productions
 
  directive =
   {help} help |
+  {history} history |
   {pwd} pwd |
   {ls} ls |
   {cd} cd path |

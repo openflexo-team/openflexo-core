@@ -33,15 +33,23 @@ import org.openflexo.foundation.fml.cli.AbstractCommandInterpreter;
  */
 public class FMLCommandInterpreter extends AbstractCommandInterpreter {
 
+	private FMLTerminal terminal;
+
 	/**
 	 * Create a new command interpreter attached to the passed in streams.
 	 * 
 	 * @throws IOException
 	 */
-	public FMLCommandInterpreter(FlexoServiceManager serviceManager, OutputStream out, OutputStream err, File workingDirectory)
-			throws IOException {
+	public FMLCommandInterpreter(FlexoServiceManager serviceManager, OutputStream out, OutputStream err, File workingDirectory,
+			FMLTerminal terminal) throws IOException {
 
 		super(serviceManager, out, err, workingDirectory);
+		this.terminal = terminal;
+	}
+
+	@Override
+	public void displayHistory() {
+		terminal.displayHistory();
 	}
 
 }
