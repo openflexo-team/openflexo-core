@@ -68,6 +68,7 @@ choose_a_creation_scheme=Choose a creation scheme
 class=Class
 clear=Clear
 click_to_activate...=Click to activate...
+close=Close
 close_module=Close module
 close_project=Close project
 composants=Composants
