@@ -159,15 +159,6 @@ public class FMLTerminal extends JFrame {
 			@Override
 			public void componentResized(ComponentEvent e) {
 				terminalWidth = getBounds().width / font.getSize() * 3 / 2;
-				// System.out.println("terminalWidth=" + terminalWidth);
-				/*String hop = StringUtils.buildString('A', terminalWidth);
-				try {
-					Document doc = textPane.getDocument();
-					doc.insertString(doc.getLength(), hop, null);
-					showNewLine();
-				} catch (BadLocationException e2) {
-					UIManager.getLookAndFeel().provideErrorFeedback(textPane);
-				}*/
 			}
 
 			@Override
@@ -273,36 +264,89 @@ public class FMLTerminal extends JFrame {
 		}
 	}
 
+	private void appendNewLine() {
+		appendText(LINE_SEPARATOR);
+	}
+
 	private void showPrompt() {
 		appendText(commandInterpreter.getPrompt(), true, false, Color.BLUE);
 		appendText(" > ");
 		keyListener.minCursorPosition = textPane.getCaretPosition();
-		/*try {
-			Document doc = textPane.getDocument();
-		
-			SimpleAttributeSet attributes = new SimpleAttributeSet();
-			attributes = new SimpleAttributeSet();
-			attributes.addAttribute(StyleConstants.CharacterConstants.Bold, Boolean.TRUE);
-			attributes.addAttribute(StyleConstants.CharacterConstants.Italic, Boolean.FALSE);
-			attributes.addAttribute(StyleConstants.CharacterConstants.Foreground, Color.BLUE);
-		
-			doc.insertString(doc.getLength(), commandInterpreter.getPrompt(), attributes);
-			doc.insertString(doc.getLength(), " > ", null);
-			textPane.setCaretPosition(doc.getLength());
-			keyListener.minCursorPosition = textPane.getCaretPosition();
-		} catch (BadLocationException e) {
-			UIManager.getLookAndFeel().provideErrorFeedback(textPane);
-		}*/
 	}
 
-	private void appendNewLine() {
-		appendText(LINE_SEPARATOR);
-		/*try {
-			Document doc = textPane.getDocument();
-			doc.insertString(doc.getLength(), LINE_SEPARATOR, null);
-		} catch (BadLocationException e) {
+	private void processEnterPressed() {
+		disableTerminal();
+		appendNewLine();
+		String command = extractCommand();
+		executeCommand(command);
+		// showNewLine();
+		showPrompt();
+		SwingUtilities.invokeLater(new Runnable() {
+			@Override
+			public void run() {
+				enableTerminal();
+			}
+		});
+	}
+
+	private void processTabPressed() {
+		disableTerminal();
+		// System.out.println("On appuie sur TAB");
+		String commandStart = extractCommand();
+		List<String> availableCompletion = commandInterpreter.getAvailableCompletion(commandStart);
+		if (availableCompletion.size() == 0) {
 			UIManager.getLookAndFeel().provideErrorFeedback(textPane);
-		}*/
+			SwingUtilities.invokeLater(new Runnable() {
+				@Override
+				public void run() {
+					enableTerminal();
+				}
+			});
+			return;
+		}
+		String commonCompletion = commandInterpreter.getCommonCompletion(availableCompletion);
+		// System.out.println("commandStart: " + commandStart);
+		// System.out.println("Available: " + availableCompletion);
+		// System.out.println("Common: " + commonCompletion);
+		String toAdd = commonCompletion.substring(commandStart.length());
+		// System.out.println("Ajouter donc " + toAdd);
+		if (toAdd.length() > 0) {
+			appendText(toAdd);
+		}
+		else {
+			appendNewLine();
+			int maxLength = -1;
+			for (String completion : availableCompletion) {
+				if (completion.length() > maxLength) {
+					maxLength = completion.length();
+				}
+			}
+			int cols = maxLength > -1 ? getTerminalWidth() / (maxLength + 1) : 1;
+			if (cols == 0) {
+				cols = 1;
+			}
+			Document doc = textPane.getDocument();
+			int i = 0;
+			for (String completion : availableCompletion) {
+				appendText(completion + StringUtils.buildWhiteSpaceIndentation(maxLength + 1 - completion.length()));
+				i++;
+				if (i % cols == 0) {
+					appendNewLine();
+				}
+			}
+			if (i % cols != 0) {
+				appendNewLine();
+			}
+			showPrompt();
+			appendText(commandStart);
+			textPane.setCaretPosition(doc.getLength());
+		}
+		SwingUtilities.invokeLater(new Runnable() {
+			@Override
+			public void run() {
+				enableTerminal();
+			}
+		});
 	}
 
 	private class KeyListener extends KeyAdapter {
@@ -311,6 +355,7 @@ public class FMLTerminal extends JFrame {
 		private final String BACK_SPACE_KEY_BINDING = getKeyBinding(textPane.getInputMap(), "BACK_SPACE");
 		private final int TAB_KEY = KeyEvent.VK_TAB;
 		private final int UP_KEY = KeyEvent.VK_UP;
+		private final int DOWN_KEY = KeyEvent.VK_DOWN;
 
 		private boolean isKeysDisabled;
 		private int minCursorPosition;
@@ -332,84 +377,16 @@ public class FMLTerminal extends JFrame {
 				}
 			}
 			else if (keyCode == ENTER_KEY) {
-				disableTerminal();
-
-				appendNewLine();
-				/*try {
-					Document doc = textPane.getDocument();
-					doc.insertString(doc.getLength(), LINE_SEPARATOR, null);
-					textPane.setCaretPosition(doc.getLength());
-				} catch (BadLocationException e) {
-					UIManager.getLookAndFeel().provideErrorFeedback(textPane);
-				}*/
-
-				String command = extractCommand();
-				executeCommand(command);
-				// showNewLine();
-				showPrompt();
-				SwingUtilities.invokeLater(new Runnable() {
-					@Override
-					public void run() {
-						enableTerminal();
-					}
-				});
+				processEnterPressed();
 			}
 			else if (keyCode == TAB_KEY) {
-				disableTerminal();
-				// System.out.println("On appuie sur TAB");
-				String commandStart = extractCommand();
-				List<String> availableCompletion = commandInterpreter.getAvailableCompletion(commandStart);
-				String commonCompletion = commandInterpreter.getCommonCompletion(availableCompletion);
-				// System.out.println("Available: " + availableCompletion);
-				// System.out.println("Common: " + commonCompletion);
-				String toAdd = commonCompletion.substring(commandStart.length());
-				// System.out.println("Ajouter donc " + toAdd);
-				if (toAdd.length() > 0) {
-					appendText(toAdd);
-					/*try {
-						Document doc = textPane.getDocument();
-						doc.insertString(doc.getLength(), toAdd, null);
-						textPane.setCaretPosition(doc.getLength());
-					} catch (BadLocationException e) {
-						UIManager.getLookAndFeel().provideErrorFeedback(textPane);
-					}*/
-				}
-				else {
-					appendNewLine();
-					int maxLength = -1;
-					for (String completion : availableCompletion) {
-						if (completion.length() > maxLength) {
-							maxLength = completion.length();
-						}
-					}
-					int cols = maxLength > -1 ? getTerminalWidth() / (maxLength + 1) : 1;
-					if (cols == 0) {
-						cols = 1;
-					}
-					Document doc = textPane.getDocument();
-					int i = 0;
-					for (String completion : availableCompletion) {
-						appendText(completion + StringUtils.buildWhiteSpaceIndentation(maxLength + 1 - completion.length()));
-						i++;
-						if (i % cols == 0) {
-							appendNewLine();
-						}
-					}
-					if (i % cols != 0) {
-						appendNewLine();
-					}
-					showPrompt();
-					appendText(commandStart);
-					textPane.setCaretPosition(doc.getLength());
-				}
-				SwingUtilities.invokeLater(new Runnable() {
-					@Override
-					public void run() {
-						enableTerminal();
-					}
-				});
+				processTabPressed();
 			}
 			else if (keyCode == UP_KEY) {
+				System.out.println("On fait UP");
+				UIManager.getLookAndFeel().provideErrorFeedback(textPane);
+			}
+			else if (keyCode == DOWN_KEY) {
 				System.out.println("On fait UP");
 				UIManager.getLookAndFeel().provideErrorFeedback(textPane);
 			}
@@ -434,9 +411,6 @@ public class FMLTerminal extends JFrame {
 			textPane.getInputMap().put(KeyStroke.getKeyStroke("BACK_SPACE"), BACK_SPACE_KEY_BINDING);
 		}
 
-		/*private void setMinCursorPosition() {
-			minCursorPosition = textPane.getCaretPosition();
-		}*/
 	}
 
 	public void enableTerminal() {
@@ -454,8 +428,7 @@ public class FMLTerminal extends JFrame {
 				close();
 			}
 		} catch (ParseException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			commandInterpreter.getErrStream().print("Syntax error : " + e.getMessage());
 		}
 	}
 
