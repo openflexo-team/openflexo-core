@@ -505,5 +505,6 @@ public class AbstractCommandInterpreter extends PropertyChangedSupportDefaultImp
 
 	public void stop() {
 		System.out.println("Stop not implemented");
+		Thread.dumpStack();
 	}
 }
