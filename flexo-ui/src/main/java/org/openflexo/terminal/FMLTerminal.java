@@ -112,6 +112,11 @@ public class FMLTerminal extends JFrame {
 
 	}
 
+	/**
+	 * Return terminal width in chars according to frame size
+	 * 
+	 * @return
+	 */
 	private int getTerminalWidth() {
 		return terminalWidth;
 	}
@@ -207,6 +212,14 @@ public class FMLTerminal extends JFrame {
 		});
 	}
 
+	/**
+	 * Shows the frame at specified location with specified size
+	 * 
+	 * @param xLocation
+	 * @param yLocation
+	 * @param width
+	 * @param height
+	 */
 	public void open(final int xLocation, final int yLocation, final int width, final int height) {
 		SwingUtilities.invokeLater(new Runnable() {
 			@Override
@@ -219,43 +232,77 @@ public class FMLTerminal extends JFrame {
 		});
 	}
 
+	/**
+	 * Close and dispose the FML terminal
+	 */
 	public void close() {
 		commandInterpreter.stop();
 		dispose();
 	}
 
+	/**
+	 * Clear FML terminal (erase all contents)
+	 */
 	public void clear() {
 		textPane.setText("");
 		showPrompt();
 	}
 
-	private void showPrompt() {
+	private void appendText(String text) {
 		try {
 			Document doc = textPane.getDocument();
+			doc.insertString(doc.getLength(), text, null);
+			textPane.setCaretPosition(doc.getLength());
+		} catch (BadLocationException e) {
+			UIManager.getLookAndFeel().provideErrorFeedback(textPane);
+		}
+	}
 
+	private void appendText(String text, boolean bold, boolean italic, Color color) {
+		try {
+			Document doc = textPane.getDocument();
+			SimpleAttributeSet attributes = new SimpleAttributeSet();
+			attributes = new SimpleAttributeSet();
+			attributes.addAttribute(StyleConstants.CharacterConstants.Bold, bold);
+			attributes.addAttribute(StyleConstants.CharacterConstants.Italic, italic);
+			attributes.addAttribute(StyleConstants.CharacterConstants.Foreground, color);
+			doc.insertString(doc.getLength(), text, attributes);
+			textPane.setCaretPosition(doc.getLength());
+		} catch (BadLocationException e) {
+			UIManager.getLookAndFeel().provideErrorFeedback(textPane);
+		}
+	}
+
+	private void showPrompt() {
+		appendText(commandInterpreter.getPrompt(), true, false, Color.BLUE);
+		appendText(" > ");
+		keyListener.minCursorPosition = textPane.getCaretPosition();
+		/*try {
+			Document doc = textPane.getDocument();
+		
 			SimpleAttributeSet attributes = new SimpleAttributeSet();
 			attributes = new SimpleAttributeSet();
 			attributes.addAttribute(StyleConstants.CharacterConstants.Bold, Boolean.TRUE);
 			attributes.addAttribute(StyleConstants.CharacterConstants.Italic, Boolean.FALSE);
 			attributes.addAttribute(StyleConstants.CharacterConstants.Foreground, Color.BLUE);
-
+		
 			doc.insertString(doc.getLength(), commandInterpreter.getPrompt(), attributes);
 			doc.insertString(doc.getLength(), " > ", null);
 			textPane.setCaretPosition(doc.getLength());
 			keyListener.minCursorPosition = textPane.getCaretPosition();
 		} catch (BadLocationException e) {
 			UIManager.getLookAndFeel().provideErrorFeedback(textPane);
-		}
+		}*/
 	}
 
-	private void showNewLine() {
-		// textPane.setText(textPane.getText() + LINE_SEPARATOR);
-		try {
+	private void appendNewLine() {
+		appendText(LINE_SEPARATOR);
+		/*try {
 			Document doc = textPane.getDocument();
 			doc.insertString(doc.getLength(), LINE_SEPARATOR, null);
 		} catch (BadLocationException e) {
 			UIManager.getLookAndFeel().provideErrorFeedback(textPane);
-		}
+		}*/
 	}
 
 	private class KeyListener extends KeyAdapter {
@@ -287,13 +334,14 @@ public class FMLTerminal extends JFrame {
 			else if (keyCode == ENTER_KEY) {
 				disableTerminal();
 
-				try {
+				appendNewLine();
+				/*try {
 					Document doc = textPane.getDocument();
 					doc.insertString(doc.getLength(), LINE_SEPARATOR, null);
 					textPane.setCaretPosition(doc.getLength());
 				} catch (BadLocationException e) {
 					UIManager.getLookAndFeel().provideErrorFeedback(textPane);
-				}
+				}*/
 
 				String command = extractCommand();
 				executeCommand(command);
@@ -317,16 +365,17 @@ public class FMLTerminal extends JFrame {
 				String toAdd = commonCompletion.substring(commandStart.length());
 				// System.out.println("Ajouter donc " + toAdd);
 				if (toAdd.length() > 0) {
-					try {
+					appendText(toAdd);
+					/*try {
 						Document doc = textPane.getDocument();
 						doc.insertString(doc.getLength(), toAdd, null);
 						textPane.setCaretPosition(doc.getLength());
 					} catch (BadLocationException e) {
 						UIManager.getLookAndFeel().provideErrorFeedback(textPane);
-					}
+					}*/
 				}
 				else {
-					showNewLine();
+					appendNewLine();
 					int maxLength = -1;
 					for (String completion : availableCompletion) {
 						if (completion.length() > maxLength) {
@@ -337,26 +386,21 @@ public class FMLTerminal extends JFrame {
 					if (cols == 0) {
 						cols = 1;
 					}
-					try {
-						Document doc = textPane.getDocument();
-						int i = 0;
-						for (String completion : availableCompletion) {
-							doc.insertString(doc.getLength(),
-									completion + StringUtils.buildWhiteSpaceIndentation(maxLength + 1 - completion.length()), null);
-							i++;
-							if (i % cols == 0) {
-								showNewLine();
-							}
+					Document doc = textPane.getDocument();
+					int i = 0;
+					for (String completion : availableCompletion) {
+						appendText(completion + StringUtils.buildWhiteSpaceIndentation(maxLength + 1 - completion.length()));
+						i++;
+						if (i % cols == 0) {
+							appendNewLine();
 						}
-						if (i % cols != 0) {
-							showNewLine();
-						}
-						showPrompt();
-						doc.insertString(doc.getLength(), commandStart, null);
-						textPane.setCaretPosition(doc.getLength());
-					} catch (BadLocationException e) {
-						UIManager.getLookAndFeel().provideErrorFeedback(textPane);
 					}
+					if (i % cols != 0) {
+						appendNewLine();
+					}
+					showPrompt();
+					appendText(commandStart);
+					textPane.setCaretPosition(doc.getLength());
 				}
 				SwingUtilities.invokeLater(new Runnable() {
 					@Override
@@ -367,6 +411,7 @@ public class FMLTerminal extends JFrame {
 			}
 			else if (keyCode == UP_KEY) {
 				System.out.println("On fait UP");
+				UIManager.getLookAndFeel().provideErrorFeedback(textPane);
 			}
 		}
 
