@@ -186,7 +186,7 @@ public class AbstractCommandInterpreter extends PropertyChangedSupportDefaultImp
 
 	public AbstractCommand executeCommand(String commandString) throws ParseException {
 		AbstractCommand command = makeCommand(commandString);
-		System.out.println("Typed: " + commandString + " command=" + command);
+		// System.out.println("Typed: " + commandString + " command=" + command);
 		if (command != null) {
 			if (command.isValid()) {
 				command.execute();
@@ -504,7 +504,6 @@ public class AbstractCommandInterpreter extends PropertyChangedSupportDefaultImp
 	}
 
 	public void stop() {
-		System.out.println("Stop not implemented");
-		Thread.dumpStack();
+		System.out.println("Stopping CommandInterpreter");
 	}
 }

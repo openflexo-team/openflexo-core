@@ -144,6 +144,6 @@ public class ServiceDirective<S extends FlexoService> extends Directive {
 
 	@Override
 	public void execute() {
-		serviceOperation.execute(service, options.toArray(new Object[options.size()]));
+		serviceOperation.execute(service, getOutStream(), getErrStream(), options.toArray(new Object[options.size()]));
 	}
 }

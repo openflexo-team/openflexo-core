@@ -41,6 +41,7 @@ package org.openflexo.foundation.resource;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.PrintStream;
 import java.io.StringWriter;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -445,7 +446,8 @@ public abstract class DefaultResourceCenterService extends FlexoServiceImpl impl
 	 * @author sylvain
 	 * 
 	 */
-	public class ResourceCenterListShouldBeStored implements ServiceNotification {}
+	public class ResourceCenterListShouldBeStored implements ServiceNotification {
+	}
 
 	@Override
 	public void initialize() {
@@ -477,7 +479,8 @@ public abstract class DefaultResourceCenterService extends FlexoServiceImpl impl
 	 * @author sylvain
 	 * 
 	 */
-	public class DefaultPackageResourceCenterIsNotInstalled implements ServiceNotification {}
+	public class DefaultPackageResourceCenterIsNotInstalled implements ServiceNotification {
+	}
 
 	private static void notifyWillWrite(File fileBeeingAdded, FileSystemBasedResourceCenter rc) {
 		File rootDirectory = rc.getRootDirectory();
@@ -730,14 +733,15 @@ public abstract class DefaultResourceCenterService extends FlexoServiceImpl impl
 		}
 
 		@Override
-		public void execute(FlexoResourceCenterService service, Object... options) {
+		public void execute(FlexoResourceCenterService service, PrintStream out, PrintStream err, Object... options) {
 			if (options.length > 0) {
 				File directory = (File) options[0];
-				System.out.println("Add ResourceCenter from directory " + directory);
+				out.println("Add ResourceCenter from directory " + directory);
 				DirectoryResourceCenter newRC;
 				try {
 					newRC = DirectoryResourceCenter.instanciateNewDirectoryResourceCenter(directory, service);
 					service.addToResourceCenters(newRC);
+					out.println("ResourceCenter has been registered");
 				} catch (IOException e) {
 					e.printStackTrace();
 				}

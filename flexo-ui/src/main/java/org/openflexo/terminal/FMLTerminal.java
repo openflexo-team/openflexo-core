@@ -17,6 +17,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
+import javax.swing.AbstractAction;
 import javax.swing.InputMap;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -85,6 +86,9 @@ public class FMLTerminal extends JFrame {
 		textPane.addKeyListener(keyListener = new KeyListener());
 		font = DEFAULT_FONT2;
 		textPane.setFont(font);
+		// disableArrowKeys(textPane.getInputMap());
+		// disableArrowKeys(scrollPane.getInputMap());
+		disableArrowKeys(mainPane.getInputMap());
 		disableArrowKeys(textPane.getInputMap());
 		// setFocusTraversalKeysEnabled(false);
 		setFocusTraversalPolicy(new FocusTraversalPolicy() {
@@ -120,17 +124,7 @@ public class FMLTerminal extends JFrame {
 			}
 		});
 
-		TextPaneOutputStream out = new TextPaneOutputStream(textPane, Color.BLACK);
-		TextPaneOutputStream err = new TextPaneOutputStream(textPane, Color.RED);
-
-		try {
-			commandInterpreter = new FMLCommandInterpreter(serviceManager, out, err, userDir);
-			commandInterpreter.start();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
+		// Listen to component resize to adapt terminal width
 		addComponentListener(new ComponentListener() {
 			@Override
 			public void componentShown(ComponentEvent e) {
@@ -158,6 +152,33 @@ public class FMLTerminal extends JFrame {
 			public void componentHidden(ComponentEvent e) {
 			}
 		});
+
+		// Prevent UP and DOWN key to control scrollbar
+		InputMap actionMap = (InputMap) UIManager.getDefaults().get("ScrollPane.ancestorInputMap");
+		actionMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_DOWN, 0), new AbstractAction() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+			}
+		});
+
+		actionMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_UP, 0), new AbstractAction() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+			}
+		});
+
+		TextPaneOutputStream out = new TextPaneOutputStream(textPane, Color.BLACK);
+		TextPaneOutputStream err = new TextPaneOutputStream(textPane, Color.RED);
+
+		// Initialize and start Command Interpreter
+		try {
+			commandInterpreter = new FMLCommandInterpreter(serviceManager, out, err, userDir);
+			commandInterpreter.start();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
 	}
 
 	private int getTerminalWidth() {
@@ -226,6 +247,7 @@ public class FMLTerminal extends JFrame {
 		private final int BACK_SPACE_KEY = KeyEvent.VK_BACK_SPACE;
 		private final String BACK_SPACE_KEY_BINDING = getKeyBinding(textPane.getInputMap(), "BACK_SPACE");
 		private final int TAB_KEY = KeyEvent.VK_TAB;
+		private final int UP_KEY = KeyEvent.VK_UP;
 
 		private boolean isKeysDisabled;
 		private int minCursorPosition;
@@ -326,6 +348,9 @@ public class FMLTerminal extends JFrame {
 						enableTerminal();
 					}
 				});
+			}
+			else if (keyCode == UP_KEY) {
+				System.out.println("On fait UP");
 			}
 		}
 
