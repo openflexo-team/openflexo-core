@@ -215,7 +215,36 @@ public class AbstractCommandInterpreter extends PropertyChangedSupportDefaultImp
 		return returned;
 	}
 
-	protected List<String> getAvailableCompletion(String startingBuffer) {
+	public String getCommonCompletion(List<String> availableCompletion) {
+		if (availableCompletion.size() == 0) {
+			return "";
+		}
+		else if (availableCompletion.size() == 1) {
+			return availableCompletion.get(0);
+		}
+		else {
+			StringBuffer sb = new StringBuffer();
+			String base = availableCompletion.get(0);
+			boolean allMatch = true;
+			int index = 0;
+			while (allMatch && index < base.length()) {
+				char c = base.charAt(index);
+				for (int i = 1; i < availableCompletion.size(); i++) {
+					if (index >= availableCompletion.get(i).length() || availableCompletion.get(i).charAt(index) != c) {
+						allMatch = false;
+						break;
+					}
+				}
+				if (allMatch) {
+					sb.append(c);
+					index++;
+				}
+			}
+			return sb.toString();
+		}
+	}
+
+	public List<String> getAvailableCompletion(String startingBuffer) {
 		List<String> tokens = tokenize(startingBuffer);
 		if (tokens.size() == 0) {
 			return Collections.emptyList();

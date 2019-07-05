@@ -175,7 +175,7 @@ public class CommandInterpreter extends AbstractCommandInterpreter {
 
 		ConsoleOutput line;
 		// console.pushToStdOut(ANSI.GREEN_TEXT());
-		while (!isStopping && (line = console.read(getPrompt())) != null) {
+		while (!isStopping && (line = console.read(getPrompt() + " > ")) != null) {
 			// exampleConsole.pushToStdOut("======>" + line.getBuffer() + "\n");
 
 			// exit on eof of the input stream

@@ -74,6 +74,7 @@ import org.openflexo.logging.FlexoLoggingManager;
 import org.openflexo.module.Module;
 import org.openflexo.project.AutoSaveService;
 import org.openflexo.project.InteractiveProjectLoader;
+import org.openflexo.terminal.FMLTerminal;
 import org.openflexo.view.FMLConsoleViewer;
 import org.openflexo.view.controller.FlexoController;
 import org.openflexo.view.controller.model.ControllerModel;
@@ -96,6 +97,7 @@ public class ToolsMenu extends FlexoMenu {
 	public JMenuItem manageResourceCenterItem;
 	public JMenuItem manageTechnologiesItem;
 
+	public JMenuItem fmlTerminalItem;
 	public JMenuItem fmlConsoleItem;
 	public JMenuItem loggingItem;
 
@@ -121,6 +123,7 @@ public class ToolsMenu extends FlexoMenu {
 		addSpecificItems();
 		add(manageResourceCenterItem = new ManageResourceCenterItem());
 		add(manageTechnologiesItem = new TechnologiesMenu(getController()));
+		add(fmlTerminalItem = new FMLTerminalItem());
 		add(fmlConsoleItem = new FMLConsoleItem());
 		add(loggingItem = new LoggingItem());
 		if (Flexo.isDev) {
@@ -240,6 +243,31 @@ public class ToolsMenu extends FlexoMenu {
 			getController().getApplicationContext().activateTechnologyAdapter(technologyAdapter, false);
 		}
 
+	}
+
+	// ===================================================================
+	// ========================== FML Terminal ============================
+	// ===================================================================
+
+	public class FMLTerminalItem extends FlexoMenuItem {
+
+		public FMLTerminalItem() {
+			super(new FMLTerminalAction(), "fml_terminal", KeyStroke.getKeyStroke(KeyEvent.VK_T, FlexoCst.META_MASK), getController(),
+					true);
+		}
+
+	}
+
+	public class FMLTerminalAction extends AbstractAction {
+		public FMLTerminalAction() {
+			super();
+		}
+
+		@Override
+		public void actionPerformed(ActionEvent arg0) {
+			FMLTerminal terminal = new FMLTerminal(getController().getApplicationContext(), new File(System.getProperty("user.dir")));
+			terminal.open(0, 0, 700, 700);
+		}
 	}
 
 	// ===================================================================
@@ -731,7 +759,8 @@ public class ToolsMenu extends FlexoMenu {
 		public TimeTravelAction() {
 			super();
 			setEnabled(false);
-			if (getController().getProject() == null) {}
+			if (getController().getProject() == null) {
+			}
 		}
 
 		@Override

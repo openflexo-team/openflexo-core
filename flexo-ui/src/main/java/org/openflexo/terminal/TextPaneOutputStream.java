@@ -11,13 +11,13 @@ import javax.swing.text.Document;
 import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 
-public class TextAreaOutputStream extends OutputStream {
+public class TextPaneOutputStream extends OutputStream {
 
 	private final JTextPane textPane;
 	private final StringBuilder sb = new StringBuilder();
 	private Color color;
 
-	public TextAreaOutputStream(final JTextPane textPane, Color color) {
+	public TextPaneOutputStream(final JTextPane textPane, Color color) {
 		this.textPane = textPane;
 		this.color = color;
 	}
