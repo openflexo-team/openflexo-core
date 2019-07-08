@@ -265,7 +265,15 @@ public class ToolsMenu extends FlexoMenu {
 
 		@Override
 		public void actionPerformed(ActionEvent arg0) {
-			FMLTerminal terminal = new FMLTerminal(getController().getApplicationContext(), new File(System.getProperty("user.dir")));
+			File currentDir;
+			if (getController().getProjectDirectory() instanceof File) {
+				currentDir = (File)getController().getProjectDirectory();
+			}
+			else {
+				currentDir = new File(System.getProperty("user.dir"));
+			}
+			
+			FMLTerminal terminal = new FMLTerminal(getController().getApplicationContext(), currentDir);
 			terminal.open(0, 0, 700, 700);
 		}
 	}
