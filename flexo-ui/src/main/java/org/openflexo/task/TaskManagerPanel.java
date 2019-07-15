@@ -281,6 +281,7 @@ public class TaskManagerPanel extends JDialog implements PropertyChangeListener 
 				}
 			});
 			cancelButton.setBorder(BorderFactory.createEmptyBorder(0, 5, 0, 5));
+			cancelButton.setContentAreaFilled(false);
 			cancelButton.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
