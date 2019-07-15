@@ -134,7 +134,7 @@ public class PreferencesService extends FlexoServiceImpl implements HasPropertyC
 			return (Class) ResourceCenterPreferences.class;
 		}
 		else if (service instanceof TechnologyAdapterService) {
-			return (Class) TechnologyAdapterPreferences.class;
+			return (Class) TechnologyAdapterServicePreferences.class;
 		}
 		else if (service instanceof ModuleLoader) {
 			return (Class) ModuleLoaderPreferences.class;
@@ -198,7 +198,7 @@ public class PreferencesService extends FlexoServiceImpl implements HasPropertyC
 		classes.add(PresentationPreferences.class);
 		classes.add(AdvancedPrefs.class);
 		classes.add(ResourceCenterPreferences.class);
-		classes.add(TechnologyAdapterPreferences.class);
+		classes.add(TechnologyAdapterServicePreferences.class);
 		classes.add(ModuleLoaderPreferences.class);
 		for (FlexoService service : getServiceManager().getRegisteredServices()) {
 			Class<?> servicePreferenceClass = getServicePreferencesClass(service);
@@ -288,8 +288,8 @@ public class PreferencesService extends FlexoServiceImpl implements HasPropertyC
 
 	}
 
-	public TechnologyAdapterPreferences getTechnologyAdapterPreferences() {
-		return (TechnologyAdapterPreferences) getServicePreferences(getServiceManager().getTechnologyAdapterService());
+	public TechnologyAdapterServicePreferences getTechnologyAdapterPreferences() {
+		return (TechnologyAdapterServicePreferences) getServicePreferences(getServiceManager().getTechnologyAdapterService());
 	}
 
 	public ModuleLoaderPreferences getModuleLoaderPreferences() {

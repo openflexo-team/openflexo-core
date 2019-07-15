@@ -106,13 +106,24 @@ public class PreferencesDialog extends JFIBDialog<FlexoPreferences> {
 						applicationContext.getApplicationFIBLibraryService().retrieveFIBComponent(PREFERENCES_FIB, true),
 						SwingViewFactory.INSTANCE));
 
+		System.out.println("Hop: avec " + applicationContext);
+		getController().applicationContext = applicationContext;
+		System.out.println("Et donc: " + getController().applicationContext);
+
 		setTitle("Preferences");
 
 		getController().objectAddedToSelection(applicationContext.getPreferencesService().getFlexoPreferences());
 
 	}
 
+	@Override
+	public PreferencesFIBController getController() {
+		return (PreferencesFIBController) super.getController();
+	}
+
 	public static class PreferencesFIBController extends FlexoFIBController {
+
+		private ApplicationContext applicationContext;
 
 		public PreferencesFIBController(FIBComponent component, GinaViewFactory<?> viewFactory) {
 			super(component, viewFactory);
@@ -123,6 +134,15 @@ public class PreferencesDialog extends JFIBDialog<FlexoPreferences> {
 		private final Map<PreferencesContainer, ImageIcon> bigIcons = new HashMap<>();
 		private final Map<PreferencesContainer, String> shortNames = new HashMap<>();
 		private final Map<PreferencesContainer, String> longNames = new HashMap<>();
+
+		public ApplicationContext getApplicationContext() {
+			System.out.println("Je retourne donc " + applicationContext);
+			return applicationContext;
+		}
+
+		public void setApplicationContext(ApplicationContext applicationContext) {
+			this.applicationContext = applicationContext;
+		}
 
 		@NotificationUnsafe
 		public Resource fibForPreferences(PreferencesContainer prefs) {

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Panel id="0" align="left" borderTop="5" borderLeft="0" trackViewPortHeight="true" trackViewPortWidth="true" borderBottom="0" border="empty" sizeAdjustment="OriginalSize" titleFont="Lucida Grande,0,13" layout="twocols" borderRight="0" height="99" width="99" controllerClassName="org.openflexo.components.PreferencesDialog$PreferencesFIBController" name="TechnologyAdapterServicePreferencesPanel">
+  <Table id="1" backgroundSelectionColor="41,90,209" visibleRowCount="5" backgroundNonSelectionColor="255,255,255" iteratorClassName="org.openflexo.foundation.technologyadapter.TechnologyAdapter&lt;org.openflexo.foundation.technologyadapter.TechnologyAdapter&lt;?&gt;&gt;" backgroundSecondarySelectionColor="173,215,255" textSelectionColor="255,255,255" autoSelectFirstRow="true" lookAndFeel="Classic" textNonSelectionColor="0,0,0" selectionMode="MultipleIntervalSelection" rowHeight="18" localize="true" manageDynamicModel="true" data="data.service.technologyAdapters" constraints="twocols(expandHorizontally=true;expandVertically=true;index=4;insetsBottom=0;insetsLeft=10;insetsRight=10;insetsTop=5;location=center)" index="0" font="Lucida Grande,0,11" name="TATable">
+    <IconColumn id="2" data="controller.iconForObject(iterator)" resizable="false" title="icon" displayTitle="false" columnWidth="20" showIcon="false" name="icon" />
+    <LabelColumn id="3" data="iterator.name" resizable="true" title="technology_adapter" displayTitle="true" columnWidth="300" showIcon="false" name="label" />
+    <LabelColumn id="4" data="(iterator.isActivated ? &quot;Activated&quot; : &quot;&quot;)" resizable="true" title="activated" displayTitle="true" columnWidth="100" showIcon="false" name="label" />
+  </Table>
+  <Label id="5" label="technology_adapter" align="left" localize="true" constraints="twocols(expandHorizontally=true;expandVertically=false;index=4;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=5;location=left)" index="4" name="ResourceCenterLabel" />
+  <TextField id="6" columns="7" text="TextField" readOnly="true" data="TATable.selected.name" constraints="twocols(expandHorizontally=true;expandVertically=false;index=5;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)" index="5" name="TANameTextField" />
+  <Label id="7" label="activated" align="left" localize="true" constraints="twocols(expandHorizontally=true;expandVertically=false;index=6;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=2;location=left)" index="6" name="ActivatedLabel" />
+  <CheckBox id="8" selected="true" readOnly="true" data="TATable.selected.isActivated" constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=right)" name="ActivatedCB" />
+  <Panel id="9" align="left" borderTop="0" flowAlignment="CENTER" borderLeft="0" trackViewPortHeight="true" trackViewPortWidth="true" borderBottom="0" border="empty" sizeAdjustment="OriginalSize" layout="flow" borderRight="0" vGap="5" hGap="5" constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=center)" name="Panel">
+    <Button id="10" buttonType="Trigger" action="controller.applicationContext.activateTechnologyAdapter(TATable.selected,false)" label="activate" enable="((TATable.selected != null) &amp; (!(TATable.selected.isActivated)))" constraints="flow()" name="Button" />
+    <Button id="11" buttonType="Trigger" action="controller.applicationContext.disactivateTechnologyAdapter(TATable.selected)" label="disactivate" enable="((TATable.selected != null) &amp; TATable.selected.isActivated)" constraints="flow()" name="Button2" />
+  </Panel>
+  <LocalizedDictionary id="12">
+    <Localized id="13" lang="English" value="Icon" key="icon" />
+    <Localized id="14" lang="Dutch" value="Icon" key="icon" />
+    <Localized id="15" lang="French" value="icon" key="icon" />
+    <Localized id="16" lang="English" value="Technology adapter" key="technology_adapter" />
+    <Localized id="17" lang="Dutch" value="Technology adapter" key="technology_adapter" />
+    <Localized id="18" lang="French" value="Connecteur technique" key="technology_adapter" />
+    <Localized id="19" lang="English" value="Activated" key="activated" />
+    <Localized id="20" lang="Dutch" value="Activated" key="activated" />
+    <Localized id="21" lang="French" value="Activé" key="activated" />
+  </LocalizedDictionary>
+  <FIBVariable id="22" type="org.openflexo.prefs.TechnologyAdapterServicePreferences" name="data" />
+</Panel>

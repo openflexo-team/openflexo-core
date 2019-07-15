@@ -50,14 +50,15 @@ import org.openflexo.pamela.annotations.XMLElement;
  * 
  */
 @ModelEntity
-@ImplementationClass(TechnologyAdapterPreferences.TechnologyAdapterPreferencesImpl.class)
+@ImplementationClass(TechnologyAdapterServicePreferences.TechnologyAdapterPreferencesImpl.class)
 @XMLElement
 @Preferences(
 		shortName = "Technology adapters",
 		longName = "Technology adapters Preferences",
-		FIBPanel = "Fib/Prefs/TechnologyAdapterPrefs.fib",
+		FIBPanel = "Fib/Prefs/TechnologyAdapterServicePreferences.fib",
 		smallIcon = "Icons/Common/TechnologyAdapter.png",
 		bigIcon = "Icons/Common/TechnologyAdapter_64x64.png")
-public interface TechnologyAdapterPreferences extends ServicePreferences<TechnologyAdapterService> {
-	public abstract class TechnologyAdapterPreferencesImpl extends PreferencesContainerImpl implements TechnologyAdapterPreferences {}
+public interface TechnologyAdapterServicePreferences extends ServicePreferences<TechnologyAdapterService> {
+	public abstract class TechnologyAdapterPreferencesImpl extends PreferencesContainerImpl implements TechnologyAdapterServicePreferences {
+	}
 }
