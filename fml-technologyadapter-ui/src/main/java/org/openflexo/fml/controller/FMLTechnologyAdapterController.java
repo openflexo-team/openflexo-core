@@ -710,4 +710,9 @@ public class FMLTechnologyAdapterController extends TechnologyAdapterController<
 		return virtualModelBrowser;
 	}
 
+	@Override
+	public Class<FMLPreferences> getPreferencesClass() {
+		return FMLPreferences.class;
+	}
+
 }

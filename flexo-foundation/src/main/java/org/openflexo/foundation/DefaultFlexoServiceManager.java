@@ -65,13 +65,15 @@ import org.openflexo.foundation.technologyadapter.TechnologyAdapterService;
 /**
  * Default implementation of {@link FlexoServiceManager}
  * 
+ * Provides a {@link FlexoEditor} and a base collection of {@link FlexoService} (for use in headless mode)
+ * 
  * 
  * @author sylvain
  * 
  */
 public class DefaultFlexoServiceManager extends FlexoServiceManager {
 
-	private final FlexoEditor applicationEditor;
+	private FlexoEditor applicationEditor;
 
 	/**
 	 * Initialize a new {@link DefaultFlexoServiceManager}

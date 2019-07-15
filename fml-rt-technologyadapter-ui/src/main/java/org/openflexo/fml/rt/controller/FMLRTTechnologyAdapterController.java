@@ -332,4 +332,9 @@ public class FMLRTTechnologyAdapterController extends TechnologyAdapterControlle
 	protected FIBTechnologyBrowser<FMLRTTechnologyAdapter> buildTechnologyBrowser(FlexoController controller) {
 		return new FIBVirtualModelInstanceRepositoriesBrowser(getTechnologyAdapter(), controller);
 	}
+
+	@Override
+	public Class<FMLRTPreferences> getPreferencesClass() {
+		return FMLRTPreferences.class;
+	}
 }
