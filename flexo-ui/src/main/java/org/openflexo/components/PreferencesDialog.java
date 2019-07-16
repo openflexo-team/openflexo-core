@@ -38,6 +38,7 @@
 
 package org.openflexo.components;
 
+import java.awt.Rectangle;
 import java.awt.Window;
 import java.util.HashMap;
 import java.util.Map;
@@ -51,6 +52,7 @@ import org.openflexo.connie.annotations.NotificationUnsafe;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.gina.model.FIBComponent;
 import org.openflexo.gina.swing.utils.JFIBDialog;
+import org.openflexo.gina.swing.utils.JFIBPreferences;
 import org.openflexo.gina.swing.view.SwingViewFactory;
 import org.openflexo.gina.view.GinaViewFactory;
 import org.openflexo.icon.IconLibrary;
@@ -64,6 +66,7 @@ import org.openflexo.prefs.PreferencesService;
 import org.openflexo.prefs.TechnologyAdapterPreferences;
 import org.openflexo.rm.Resource;
 import org.openflexo.rm.ResourceLocator;
+import org.openflexo.swing.ComponentBoundSaver;
 import org.openflexo.view.controller.FlexoFIBController;
 import org.openflexo.view.controller.TechnologyAdapterController;
 
@@ -108,6 +111,15 @@ public class PreferencesDialog extends JFIBDialog<FlexoPreferences> {
 		getController().applicationContext = applicationContext;
 
 		setTitle("Preferences");
+
+		setBounds(JFIBPreferences.getPreferencesBounds());
+		new ComponentBoundSaver(this) {
+
+			@Override
+			public void saveBounds(Rectangle bounds) {
+				JFIBPreferences.setPreferencesBounds(bounds);
+			}
+		};
 
 		getController().objectAddedToSelection(applicationContext.getPreferencesService().getFlexoPreferences());
 
