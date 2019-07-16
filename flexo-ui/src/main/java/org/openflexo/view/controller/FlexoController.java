@@ -519,7 +519,12 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 	}
 
 	public Object getProjectDirectory() {
-		return getProject().getProjectDirectory();
+		if (getProject() != null) {
+			return getProject().getProjectDirectory();
+		}
+		else {
+			return null;
+		}
 	}
 
 	private FlexoMenuBar inspectorMenuBar;
