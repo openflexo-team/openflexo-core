@@ -267,7 +267,7 @@ public class FMLTechnologyAdapterController extends TechnologyAdapterController<
 
 	@Override
 	public ImageIcon getTechnologyBigIcon() {
-		return FMLIconLibrary.VIRTUAL_MODEL_MEDIUM_ICON;
+		return FMLIconLibrary.VIRTUAL_MODEL_BIG_ICON;
 	}
 
 	/**
