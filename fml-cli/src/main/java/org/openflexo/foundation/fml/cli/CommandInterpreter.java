@@ -18,8 +18,10 @@
 
 package org.openflexo.foundation.fml.cli;
 
+import java.io.DataInputStream;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.List;
 
@@ -44,16 +46,25 @@ public class CommandInterpreter extends AbstractCommandInterpreter {
 	private Console console;
 	private ConsoleCommand consoleCommand;
 
+	private DataInputStream inStream;
+
 	/**
 	 * Create a new command interpreter attached to the passed in streams.
 	 * 
 	 * @throws IOException
 	 */
-	public CommandInterpreter(FlexoServiceManager serviceManager, OutputStream out, OutputStream err, File workingDirectory)
+	public CommandInterpreter(FlexoServiceManager serviceManager, InputStream in, OutputStream out, OutputStream err, File workingDirectory)
 			throws IOException {
 
 		super(serviceManager, out, err, workingDirectory);
 		console = new Console();
+
+		if (in instanceof DataInputStream) {
+			inStream = (DataInputStream) in;
+		}
+		else {
+			inStream = new DataInputStream(in);
+		}
 
 		consoleCommand = new ConsoleCommand(console) {
 

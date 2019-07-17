@@ -55,6 +55,7 @@ import org.openflexo.foundation.fml.cli.command.FMLCommand;
 import org.openflexo.foundation.fml.cli.command.FMLCommandDeclaration;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.VirtualModelInstance;
+import org.openflexo.foundation.fml.rt.rm.FMLRTVirtualModelInstanceResourceFactory;
 import org.openflexo.foundation.resource.FlexoResource;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
@@ -200,6 +201,7 @@ public abstract class AbstractCommandInterpreter extends PropertyChangedSupportD
 	}
 
 	protected AbstractCommand makeCommand(String commandString) throws ParseException {
+		System.out.println("makeCommand with " + commandString);
 		return CommandParser.parse(commandString, this);
 	}
 
@@ -299,12 +301,12 @@ public abstract class AbstractCommandInterpreter extends PropertyChangedSupportD
 
 		int index = tokens.size() - 1;
 
-		/*System.out.println("index=" + index);
-		
+		System.out.println("index=" + index);
+
 		System.out.println("syntax=" + syntax);
 		System.out.println("expectedSyntax=" + expectedSyntax);
 		System.out.println("expectedSyntax.size=" + expectedSyntax.size());
-		System.out.println("tokens.size=" + tokens.size());*/
+		System.out.println("tokens.size=" + tokens.size());
 
 		if (expectedSyntax.size() < tokens.size()) {
 			// Nothing else expected
@@ -314,7 +316,38 @@ public abstract class AbstractCommandInterpreter extends PropertyChangedSupportD
 		String currentToken = tokens.get(index);
 		String expectedTokenSyntax = expectedSyntax.get(index);
 
-		// System.out.println("Maintenant, on cherche a completer " + currentToken + " pour " + expectedTokenSyntax);
+		System.out.println("Maintenant, on cherche a completer " + currentToken + " pour " + expectedTokenSyntax);
+
+		return getAvailableCompletionForToken(currentToken, expectedTokenSyntax, directiveDeclaration, startingBuffer,
+				tokens.get(index - 1));
+
+	}
+
+	private List<String> getAvailableCompletionForToken(String currentToken, String expectedTokenSyntax,
+			DirectiveDeclaration directiveDeclaration, String startingBuffer, String previousToken) {
+		// System.out.println("Hop, on essaie de faire une completion pour " + directiveDeclaration);
+
+		if (expectedTokenSyntax.contains(("|"))) {
+			StringTokenizer st = new StringTokenizer(expectedTokenSyntax, "|");
+			List<String> returned = new ArrayList<String>();
+			while (st.hasMoreTokens()) {
+				String nextToken = st.nextToken();
+				returned.addAll(
+						getAvailableCompletionForToken(currentToken, nextToken, directiveDeclaration, startingBuffer, previousToken));
+			}
+			return returned;
+		}
+
+		if (expectedTokenSyntax.equals("<instance>")) {
+			List<String> returned = new ArrayList<>();
+			for (File f : getWorkingDirectory().listFiles()) {
+				// System.out.println("On rajoute " + f.getName());
+				if (f.getName().startsWith(currentToken) && f.getName().endsWith(FMLRTVirtualModelInstanceResourceFactory.FML_RT_SUFFIX)) {
+					returned.add(startingBuffer.substring(0, startingBuffer.length() - currentToken.length()) + f.getName());
+				}
+			}
+			return returned;
+		}
 
 		if (expectedTokenSyntax.equals("<path>")) {
 			List<String> returned = new ArrayList<>();
@@ -341,7 +374,7 @@ public abstract class AbstractCommandInterpreter extends PropertyChangedSupportD
 			// System.out.println("Plus dur, une operation pour " + tokens.get(index - 1));
 			FlexoService service = null;
 			for (FlexoService s : serviceManager.getRegisteredServices()) {
-				if (s.getServiceName().equals(tokens.get(index - 1))) {
+				if (s.getServiceName().equals(previousToken)) {
 					service = s;
 				}
 			}

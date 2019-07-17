@@ -679,6 +679,18 @@ public class CommandSemanticsAnalyzer extends DepthFirstAdapter {
 
 	// DIRECTIVES
 
+	/*@Override
+	public void defaultIn(Node node) {
+		System.out.println("IN " + node);
+		super.defaultIn(node);
+	}
+
+	@Override
+	public void defaultOut(Node node) {
+		System.out.println("OUT " + node);
+		super.defaultOut(node);
+	}*/
+
 	@Override
 	public void outAPwdDirective(APwdDirective node) {
 		super.outAPwdDirective(node);

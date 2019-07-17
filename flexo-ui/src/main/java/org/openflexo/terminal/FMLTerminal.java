@@ -474,7 +474,7 @@ public class FMLTerminal extends JFrame {
 				close();
 			}
 		} catch (ParseException e) {
-			commandInterpreter.getErrStream().print("Syntax error : " + e.getMessage());
+			commandInterpreter.getErrStream().println("Syntax error : " + e.getMessage());
 		}
 		if (StringUtils.isNotEmpty(commandWithoutLineSeparator.trim())) {
 			history.add(commandWithoutLineSeparator);

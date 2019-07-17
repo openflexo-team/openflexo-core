@@ -101,6 +101,9 @@ Tokens
  exit = 'exit';
  quit = 'quit';
  
+ // options
+ //minus_r = '-r';
+ 
  // commands
  context = 'context';
  
@@ -145,8 +148,9 @@ Productions
   {ta_rc} resources [technology_adapter]:identifier [resource_center]:resource_uri;
 
  enter_directive =
+  //{resource} enter minus_r resource_uri |
   {resource} enter resource_uri |
-  {object} enter binding;
+  {object} enter expr;
 
  directive_option = 
   {path} path |

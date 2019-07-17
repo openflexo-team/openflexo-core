@@ -57,6 +57,7 @@ public class LaunchFMLTerminal {
 
 		public final List<String> rcPaths = new ArrayList<>();
 
+		public String projectPath;
 	}
 
 	public static FlexoServiceManager createServiceManager(Options options) {
@@ -75,6 +76,7 @@ public class LaunchFMLTerminal {
 		usage.append("- -h|--help: show this help.\n");
 		usage.append("- -v|--verbose: verbose mode.\n");
 		usage.append("- --rc path: resource center to register (may have several).\n");
+		usage.append("- --p path: project to open.\n");
 		usage.append("\n");
 		usage.append("\n");
 
@@ -97,6 +99,15 @@ public class LaunchFMLTerminal {
 				case "--rc":
 					if (i + 1 < args.length) {
 						options.rcPaths.add(args[++i]);
+					}
+					else {
+						System.err.println("Option " + arg + " needs an argument.");
+						System.exit(1);
+					}
+					break;
+				case "--p":
+					if (i + 1 < args.length) {
+						options.projectPath = args[++i];
 					}
 					else {
 						System.err.println("Option " + arg + " needs an argument.");
@@ -151,7 +162,8 @@ public class LaunchFMLTerminal {
 		// Settings.getInstance().setHistoryDisabled(true);
 		// Settings.getInstance().setHistoryPersistent(false);
 
-		FMLTerminal terminal = new FMLTerminal(serviceManager, new File(System.getProperty("user.dir")));
+		FMLTerminal terminal = new FMLTerminal(serviceManager,
+				(options.projectPath != null ? new File(options.projectPath) : new File(System.getProperty("user.dir"))));
 		terminal.open(0, 0, 700, 700);
 
 		/*} catch (Exception e) {
