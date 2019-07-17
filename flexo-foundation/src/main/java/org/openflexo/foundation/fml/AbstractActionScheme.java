@@ -41,6 +41,7 @@ package org.openflexo.foundation.fml;
 import java.lang.reflect.InvocationTargetException;
 
 import org.openflexo.connie.DataBinding;
+import org.openflexo.connie.DataBinding.CachingStrategy;
 import org.openflexo.connie.exception.NullReferenceException;
 import org.openflexo.connie.exception.TypeMismatchException;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
@@ -85,21 +86,25 @@ public abstract interface AbstractActionScheme extends FlexoBehaviour {
 			super();
 		}
 
+		// TODO: we had to set caching strategy to NO_CACHING in dynamic instantiation context (CTA project)
 		@Override
 		public DataBinding<Boolean> getConditional() {
 			if (conditional == null) {
 				conditional = new DataBinding<>(this, Boolean.class, DataBinding.BindingDefinitionType.GET);
+				conditional.setCachingStrategy(CachingStrategy.NO_CACHING);
 				conditional.setBindingName("conditional");
 			}
 			return conditional;
 		}
 
+		// TODO: we had to set caching strategy to NO_CACHING in dynamic instantiation context (CTA project)
 		@Override
 		public void setConditional(DataBinding<Boolean> conditional) {
 			if (conditional != null) {
 				conditional.setOwner(this);
 				conditional.setDeclaredType(Boolean.class);
 				conditional.setBindingDefinitionType(DataBinding.BindingDefinitionType.GET);
+				conditional.setCachingStrategy(CachingStrategy.NO_CACHING);
 				conditional.setBindingName("conditional");
 			}
 			this.conditional = conditional;

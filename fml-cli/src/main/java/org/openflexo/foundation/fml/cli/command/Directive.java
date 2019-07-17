@@ -42,13 +42,14 @@ package org.openflexo.foundation.fml.cli.command;
 import java.io.File;
 import java.util.logging.Logger;
 
-import org.openflexo.foundation.fml.cli.CommandInterpreter;
+import org.openflexo.foundation.fml.cli.AbstractCommandInterpreter;
 import org.openflexo.foundation.fml.cli.command.directive.ActivateTA;
 import org.openflexo.foundation.fml.cli.command.directive.CdDirective;
 import org.openflexo.foundation.fml.cli.command.directive.DisplayResource;
 import org.openflexo.foundation.fml.cli.command.directive.EnterDirective;
 import org.openflexo.foundation.fml.cli.command.directive.ExitDirective;
 import org.openflexo.foundation.fml.cli.command.directive.HelpDirective;
+import org.openflexo.foundation.fml.cli.command.directive.HistoryDirective;
 import org.openflexo.foundation.fml.cli.command.directive.LoadResource;
 import org.openflexo.foundation.fml.cli.command.directive.LsDirective;
 import org.openflexo.foundation.fml.cli.command.directive.OpenProject;
@@ -81,17 +82,18 @@ import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
  * @author sylvain
  * 
  */
-@DeclareDirectives({ @DeclareDirective(value = HelpDirective.class), @DeclareDirective(CdDirective.class),
-		@DeclareDirective(PwdDirective.class), @DeclareDirective(LsDirective.class), @DeclareDirective(QuitDirective.class),
-		@DeclareDirective(ServicesDirective.class), @DeclareDirective(ServiceDirective.class), @DeclareDirective(ActivateTA.class),
-		@DeclareDirective(ResourcesDirective.class), @DeclareDirective(OpenProject.class), @DeclareDirective(LoadResource.class),
-		@DeclareDirective(DisplayResource.class), @DeclareDirective(EnterDirective.class), @DeclareDirective(ExitDirective.class) })
+@DeclareDirectives({ @DeclareDirective(value = HelpDirective.class), @DeclareDirective(HistoryDirective.class),
+		@DeclareDirective(CdDirective.class), @DeclareDirective(PwdDirective.class), @DeclareDirective(LsDirective.class),
+		@DeclareDirective(QuitDirective.class), @DeclareDirective(ServicesDirective.class), @DeclareDirective(ServiceDirective.class),
+		@DeclareDirective(ActivateTA.class), @DeclareDirective(ResourcesDirective.class), @DeclareDirective(OpenProject.class),
+		@DeclareDirective(LoadResource.class), @DeclareDirective(DisplayResource.class), @DeclareDirective(EnterDirective.class),
+		@DeclareDirective(ExitDirective.class) })
 public abstract class Directive extends AbstractCommand {
 
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(Directive.class.getPackage().getName());
 
-	public Directive(Node node, CommandInterpreter commandInterpreter) {
+	public Directive(Node node, AbstractCommandInterpreter commandInterpreter) {
 		super(node, commandInterpreter);
 	}
 

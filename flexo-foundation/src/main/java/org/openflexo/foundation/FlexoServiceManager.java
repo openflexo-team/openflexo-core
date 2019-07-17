@@ -57,21 +57,14 @@ import org.openflexo.foundation.resource.ProjectLoaded;
 import org.openflexo.foundation.resource.ResourceManager;
 import org.openflexo.foundation.task.FlexoTask;
 import org.openflexo.foundation.task.FlexoTaskManager;
-import org.openflexo.foundation.technologyadapter.FlexoMetaModel;
-import org.openflexo.foundation.technologyadapter.FlexoModel;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterService;
 
 /**
- * Default implementation of a manager of {@link FlexoService}<br>
+ * The {@link FlexoServiceManager} provides Run-Time environment for executing Openflexo infrastructure.
+ * 
+ * Implementation of a manager of {@link FlexoService}<br>
  * All {@link FlexoService} are registered in the {@link FlexoServiceManager} which broadcast all service events to all services<br>
- * 
- * Please note that this class provides the basic support for Information Space<br>
- * The Information Space is obtained through two services from the {@link FlexoServiceManager}, and results from the merging of the
- * {@link FlexoResourceCenterService} and the {@link ProjectNatureService}.<br>
- * For each {@link FlexoResourceCenter} and for each {@link TechnologyAdapter}, a repository of {@link FlexoModel} and
- * {@link FlexoMetaModel} are managed.
- * 
  * 
  * @author sylvain
  * 
@@ -85,11 +78,6 @@ public abstract class FlexoServiceManager {
 	public FlexoServiceManager() {
 		registeredServices = new ArrayList<>();
 	}
-
-	/*@Override
-	public String getFullyQualifiedName() {
-		return "FlexoServiceManager";
-	}*/
 
 	/**
 	 * Register the supplied service, by adding it in the list of all services managed by this {@link FlexoServiceManager} instance<br>
@@ -250,7 +238,8 @@ public abstract class FlexoServiceManager {
 		return getService(ScreenshotService.class);
 	}
 
-	public class ServiceRegistered implements ServiceNotification {}
+	public class ServiceRegistered implements ServiceNotification {
+	}
 
 	/**
 	 * Notification of a TechnologyAdapter that has been activated

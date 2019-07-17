@@ -41,7 +41,7 @@ package org.openflexo.foundation.fml.cli.command.directive;
 
 import java.util.logging.Logger;
 
-import org.openflexo.foundation.fml.cli.CommandInterpreter;
+import org.openflexo.foundation.fml.cli.AbstractCommandInterpreter;
 import org.openflexo.foundation.fml.cli.command.Directive;
 import org.openflexo.foundation.fml.cli.command.DirectiveDeclaration;
 import org.openflexo.foundation.fml.cli.parser.node.AActivateTaDirective;
@@ -65,7 +65,7 @@ public class ActivateTA extends Directive {
 
 	private TechnologyAdapter technologyAdapter;
 
-	public ActivateTA(AActivateTaDirective node, CommandInterpreter commandInterpreter) {
+	public ActivateTA(AActivateTaDirective node, AbstractCommandInterpreter commandInterpreter) {
 		super(node, commandInterpreter);
 
 		technologyAdapter = getTechnologyAdapter(node.getTechnologyAdapter().getText());
@@ -93,9 +93,10 @@ public class ActivateTA extends Directive {
 		if (!getTechnologyAdapter().isActivated()) {
 			getCommandInterpreter().getServiceManager().getTechnologyAdapterService().activateTechnologyAdapter(getTechnologyAdapter(),
 					true);
+			getOutStream().println("Technology adapter " + getTechnologyAdapter().getIdentifier() + " has been activated");
 		}
 		else {
-			System.out.println("Technology adapter " + getTechnologyAdapter().getIdentifier() + " is already activated");
+			getOutStream().println("Technology adapter " + getTechnologyAdapter().getIdentifier() + " is already activated");
 		}
 	}
 }

@@ -118,9 +118,11 @@ import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
 import org.openflexo.foundation.fml.ta.CreateContainedVirtualModel;
 import org.openflexo.foundation.fml.ta.CreateFlexoBehaviour;
 import org.openflexo.foundation.fml.ta.CreateFlexoConcept;
+import org.openflexo.foundation.fml.ta.CreateFlexoConceptInstanceRole;
 import org.openflexo.foundation.fml.ta.CreatePrimitiveRole;
 import org.openflexo.foundation.fml.ta.CreateTopLevelVirtualModel;
 import org.openflexo.foundation.fml.ta.FlexoBehaviourRole;
+import org.openflexo.foundation.fml.ta.FlexoConceptInstanceRoleRole;
 import org.openflexo.foundation.fml.ta.FlexoConceptRole;
 import org.openflexo.foundation.fml.ta.FlexoPropertyRole;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
@@ -265,7 +267,7 @@ public class FMLTechnologyAdapterController extends TechnologyAdapterController<
 
 	@Override
 	public ImageIcon getTechnologyBigIcon() {
-		return FMLIconLibrary.VIRTUAL_MODEL_MEDIUM_ICON;
+		return FMLIconLibrary.VIRTUAL_MODEL_BIG_ICON;
 	}
 
 	/**
@@ -358,6 +360,9 @@ public class FMLTechnologyAdapterController extends TechnologyAdapterController<
 		if (FlexoConceptRole.class.isAssignableFrom(flexoRoleClass)) {
 			return FMLIconLibrary.FLEXO_CONCEPT_ICON;
 		}
+		if (FlexoConceptInstanceRoleRole.class.isAssignableFrom(flexoRoleClass)) {
+			return FMLRTIconLibrary.FLEXO_CONCEPT_INSTANCE_ICON;
+		}
 		if (FlexoPropertyRole.class.isAssignableFrom(flexoRoleClass)) {
 			return FMLIconLibrary.FLEXO_ROLE_ICON;
 		}
@@ -381,6 +386,9 @@ public class FMLTechnologyAdapterController extends TechnologyAdapterController<
 		}
 		if (CreatePrimitiveRole.class.isAssignableFrom(editionActionClass)) {
 			return IconFactory.getImageIcon(FMLIconLibrary.FLEXO_ROLE_ICON, IconLibrary.DUPLICATE);
+		}
+		if (CreateFlexoConceptInstanceRole.class.isAssignableFrom(editionActionClass)) {
+			return IconFactory.getImageIcon(FMLRTIconLibrary.FLEXO_CONCEPT_INSTANCE_ICON, IconLibrary.DUPLICATE);
 		}
 		if (CreateFlexoBehaviour.class.isAssignableFrom(editionActionClass)) {
 			return IconFactory.getImageIcon(FMLIconLibrary.ACTION_SCHEME_ICON, IconLibrary.DUPLICATE);
@@ -700,6 +708,11 @@ public class FMLTechnologyAdapterController extends TechnologyAdapterController<
 
 	public FIBVirtualModelBrowser getVirtualModelBrowser() {
 		return virtualModelBrowser;
+	}
+
+	@Override
+	public Class<FMLPreferences> getPreferencesClass() {
+		return FMLPreferences.class;
 	}
 
 }

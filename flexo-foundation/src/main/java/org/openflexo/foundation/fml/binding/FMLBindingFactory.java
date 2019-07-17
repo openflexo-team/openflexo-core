@@ -422,7 +422,10 @@ public class FMLBindingFactory extends JavaBindingFactory {
 					// System.out.println("> " + args.get(i) + " of " + paramsTypes[i]);
 				}
 				// System.out.println("Returned: " + conceptType.getFlexoBehaviour(functionName, paramsTypes));
-				return conceptType.getFlexoBehaviour(functionName, paramsTypes);
+				Function returned = conceptType.getFlexoBehaviour(functionName, paramsTypes);
+				if (returned != null) {
+					return returned;
+				}
 			}
 		}
 		return super.retrieveFunction(parentType, functionName, args);

@@ -41,6 +41,7 @@ package org.openflexo.foundation.fml.rt.editionaction;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.FlexoException;
+import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.annotations.FML;
 import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
@@ -88,19 +89,24 @@ public interface AddFlexoConceptInstance<VMI extends VirtualModelInstance<VMI, ?
 		}
 
 		@Override
-		protected FlexoConceptInstance makeNewFlexoConceptInstance(RunTimeEvaluationContext evaluationContext) {
+		protected Class<? extends FlexoConcept> getDynamicFlexoConceptTypeType() {
+			return FlexoConcept.class;
+		}
+
+		@Override
+		protected FlexoConceptInstance makeNewFlexoConceptInstance(RunTimeEvaluationContext evaluationContext) throws FlexoException {
 			FlexoConceptInstance container = null;
 			VMI vmi = getVirtualModelInstance(evaluationContext);
-
-			if (getFlexoConceptType().getContainerFlexoConcept() != null) {
+			FlexoConcept instantiatedFlexoConcept = retrieveFlexoConcept(evaluationContext);
+			if (instantiatedFlexoConcept.getContainerFlexoConcept() != null) {
 				container = getContainer(evaluationContext);
 				if (container == null) {
-					logger.warning("null container while creating new concept " + getFlexoConceptType());
+					logger.warning("null container while creating new concept " + instantiatedFlexoConcept);
 					return null;
 				}
 			}
 
-			return vmi.makeNewFlexoConceptInstance(getFlexoConceptType(), container);
+			return vmi.makeNewFlexoConceptInstance(instantiatedFlexoConcept, container);
 		}
 	}
 
@@ -114,7 +120,7 @@ public interface AddFlexoConceptInstance<VMI extends VirtualModelInstance<VMI, ?
 		@Override
 		public ValidationIssue<AddFlexoConceptInstanceMustAddressACreationScheme, AddFlexoConceptInstance<?>> applyValidation(
 				AddFlexoConceptInstance<?> action) {
-			if (action.getCreationScheme() == null) {
+			if (!action.getDynamicInstantiation() && action.getCreationScheme() == null) {
 				if (action.getFlexoConceptType() == null) {
 					return new ValidationError<>(this, action, "add_flexo_concept_action_doesn't_define_any_flexo_concept");
 				}

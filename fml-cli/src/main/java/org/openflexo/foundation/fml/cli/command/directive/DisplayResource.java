@@ -43,7 +43,7 @@ import java.io.FileNotFoundException;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.FlexoException;
-import org.openflexo.foundation.fml.cli.CommandInterpreter;
+import org.openflexo.foundation.fml.cli.AbstractCommandInterpreter;
 import org.openflexo.foundation.fml.cli.command.Directive;
 import org.openflexo.foundation.fml.cli.command.DirectiveDeclaration;
 import org.openflexo.foundation.fml.cli.parser.node.ADisplayDirective;
@@ -71,7 +71,7 @@ public class DisplayResource extends Directive {
 
 	private FlexoResource<?> resource;
 
-	public DisplayResource(ADisplayDirective node, CommandInterpreter commandInterpreter) {
+	public DisplayResource(ADisplayDirective node, AbstractCommandInterpreter commandInterpreter) {
 		super(node, commandInterpreter);
 		resource = getResource(node.getResourceUri().getText());
 	}
@@ -86,16 +86,17 @@ public class DisplayResource extends Directive {
 			try {
 				resource.loadResourceData();
 			} catch (FileNotFoundException e) {
-				System.err.println("Cannot find resource " + resource.getURI());
-			} catch (ResourceLoadingCancelledException e) {} catch (FlexoException e) {
-				System.err.println("Cannot load resource " + resource.getURI() + " : " + e.getMessage());
+				getErrStream().println("Cannot find resource " + resource.getURI());
+			} catch (ResourceLoadingCancelledException e) {
+			} catch (FlexoException e) {
+				getErrStream().println("Cannot load resource " + resource.getURI() + " : " + e.getMessage());
 			}
 		}
 		if (resource instanceof VirtualModelResource) {
-			System.out.println(((VirtualModelResource) resource).getVirtualModel().getFMLRepresentation());
+			getOutStream().println(((VirtualModelResource) resource).getVirtualModel().getFMLRepresentation());
 		}
 		else {
-			System.err.println("No textual renderer for such data.");
+			getErrStream().println("No textual renderer for such data.");
 		}
 	}
 }

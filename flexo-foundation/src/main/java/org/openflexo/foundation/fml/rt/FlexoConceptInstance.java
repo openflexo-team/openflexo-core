@@ -689,9 +689,10 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 					container = container.getContainerFlexoConceptInstance();
 				}
 			}
-			else if (getVirtualModelInstance() != this && flexoProperty.getFlexoConcept().isAssignableFrom(getFlexoConcept().getOwner())) {
-				// In this case the property concerns the owner FMLRTVirtualModelInstance
-				return getVirtualModelInstance().getFlexoPropertyValue(flexoProperty);
+			else if (getOwningVirtualModelInstance() != this
+					&& flexoProperty.getFlexoConcept().isAssignableFrom(getFlexoConcept().getOwner())) {
+				// In this case the property concerns the owning FMLRTVirtualModelInstance
+				return getOwningVirtualModelInstance().getFlexoPropertyValue(flexoProperty);
 			}
 			else {
 				if (flexoProperty instanceof FlexoRole) {
@@ -752,7 +753,14 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 					}
 				}
 			}
+
+			if (flexoProperty.getFlexoConcept().isAssignableFrom(getFlexoConcept().getOwner()) && getOwningVirtualModelInstance() == null) {
+				// TODO: check this
+				return null;
+			}
+
 			logger.warning("Not implemented: getValue() for " + this + " property=" + flexoProperty);
+
 			return null;
 		}
 
@@ -1101,6 +1109,10 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 					}
 					container = container.getContainerFlexoConceptInstance();
 				}
+			}
+			if (getOwningVirtualModelInstance() != this && flexoRole.getFlexoConcept().isAssignableFrom(getFlexoConcept().getOwner())) {
+				// In this case the property concerns the owning FMLRTVirtualModelInstance
+				getOwningVirtualModelInstance().setFlexoPropertyValue(flexoRole, object);
 			}
 			else {
 

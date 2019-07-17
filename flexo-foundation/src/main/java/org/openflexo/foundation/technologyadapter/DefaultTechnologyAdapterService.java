@@ -39,6 +39,7 @@
 
 package org.openflexo.foundation.technologyadapter;
 
+import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -661,11 +662,12 @@ public abstract class DefaultTechnologyAdapterService extends FlexoServiceImpl i
 		}
 
 		@Override
-		public void execute(TechnologyAdapterService service, Object... options) {
+		public void execute(TechnologyAdapterService service, PrintStream out, PrintStream err, Object... options) {
 			if (options.length > 0) {
 				TechnologyAdapter ta = (TechnologyAdapter) options[0];
-				System.out.println("Activate TA " + ta);
+				out.println("Activate TechnologyAdapter " + ta);
 				service.activateTechnologyAdapter(ta, true);
+				out.println("TechnologyAdapter " + ta + " has been activated");
 			}
 		}
 	}

@@ -1,54 +1,56 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Panel id="0" borderLeft="0" height="600" sizeAdjustment="OriginalSize" controllerClassName="org.openflexo.components.PreferencesDialog$PreferencesFIBController" borderRight="0" border="empty" trackViewPortWidth="true" align="left" width="700" borderBottom="0" titleFont="Lucida Grande,0,13" borderTop="5" trackViewPortHeight="true" layout="border" name="PreferencesPanel">
-  <SplitPanel id="1" name="FIBSplitPanel" index="2" constraints="border(anchor=center;fill=both;gridHeight=1;gridWidth=0;gridX=-1;gridY=-1;index=1;insetsBottom=0;insetsLeft=5;insetsRight=5;insetsTop=0;location=center;padX=0;padY=0;weightX=1.0;weightY=1.0;x=0;y=0)">
-    <Panel id="2" borderLeft="2" sizeAdjustment="OriginalSize" borderRight="2" border="empty" trackViewPortWidth="true" align="left" constraints="split(splitIdentifier=left)" borderBottom="2" borderTop="2" trackViewPortHeight="true" layout="border" name="FIBPanel2">
-      <Panel id="3" borderLeft="2" sizeAdjustment="OriginalSize" borderRight="2" border="empty" trackViewPortWidth="true" align="left" constraints="border(location=north)" borderBottom="2" borderTitle="" borderTop="2" trackViewPortHeight="true" layout="border" name="FIBPanel">
-        <TextField id="4" columns="7" name="TextField" text="TextField" constraints="border(location=center)" />
-        <Button id="5" buttonType="Trigger" name="Button" localize="true" constraints="border(location=east)" label="search" />
+<Panel id="0" align="left" borderTop="5" borderLeft="0" trackViewPortHeight="true" trackViewPortWidth="true" borderBottom="0" border="empty" sizeAdjustment="OriginalSize" titleFont="Lucida Grande,0,13" layout="border" borderRight="0" height="600" width="700" controllerClassName="org.openflexo.components.PreferencesDialog$PreferencesFIBController" name="PreferencesPanel">
+  <SplitPanel id="1" constraints="border(anchor=center;fill=both;gridHeight=1;gridWidth=0;gridX=-1;gridY=-1;index=1;insetsBottom=0;insetsLeft=5;insetsRight=5;insetsTop=0;location=center;padX=0;padY=0;weightX=1.0;weightY=1.0;x=0;y=0)" index="2" name="FIBSplitPanel">
+    <RowSplit id="2" name="RowSplit" weight="0.0">
+      <Leaf id="3" name="left" weight="0.3" />
+      <Divider id="4" />
+      <Leaf id="5" name="right" weight="0.7" />
+    </RowSplit>
+    <Panel id="6" align="left" borderTop="2" borderLeft="2" trackViewPortHeight="true" trackViewPortWidth="true" borderBottom="2" border="empty" sizeAdjustment="OriginalSize" layout="border" borderRight="2" constraints="split(splitIdentifier=left)" name="FIBPanel2">
+      <Panel id="7" align="left" borderTop="2" borderTitle="" borderLeft="2" trackViewPortHeight="true" trackViewPortWidth="true" borderBottom="2" border="empty" sizeAdjustment="OriginalSize" layout="border" borderRight="2" constraints="border(location=north)" name="FIBPanel">
+        <TextField id="8" columns="7" text="TextField" constraints="border(location=center)" name="TextField" />
+        <Button id="9" buttonType="Trigger" label="search" localize="true" constraints="border(location=east)" name="Button" />
       </Panel>
-      <Browser id="6" showFooter="true" showRootsHandle="true" root="data" manageDynamicModel="true" selectionMode="DiscontiguousTreeSelection" boundToSelectionManager="true" constraints="border(location=center)" rowHeight="18" textSelectionColor="255,255,255" iteratorClassName="org.openflexo.prefs.PreferencesContainer" backgroundSelectionColor="9,80,208" backgroundNonSelectionColor="255,255,255" name="PreferencesBrowser" textNonSelectionColor="0,0,0" rootVisible="true" backgroundSecondarySelectionColor="178,215,255">
-        <BrowserElement id="7" icon="controller.iconForPreferences(prefContainer)" label="controller.shortNameForPreferences(prefContainer)" dataClassName="org.openflexo.prefs.PreferencesContainer" name="prefContainer" isEditable="false">
-          <Children id="8" name="children" data="prefContainer.contents" />
+      <Browser id="10" backgroundSelectionColor="9,80,208" backgroundNonSelectionColor="255,255,255" boundToSelectionManager="true" iteratorClassName="org.openflexo.prefs.PreferencesContainer" textSelectionColor="255,255,255" backgroundSecondarySelectionColor="178,215,255" showRootsHandle="true" showFooter="true" textNonSelectionColor="0,0,0" root="data" selectionMode="DiscontiguousTreeSelection" rowHeight="18" manageDynamicModel="true" constraints="border(location=center)" name="PreferencesBrowser">
+        <BrowserElement id="11" dataClassName="org.openflexo.prefs.PreferencesContainer" icon="controller.iconForPreferences(prefContainer)" label="controller.shortNameForPreferences(prefContainer)" isEditable="false" name="prefContainer">
+          <Children id="12" data="prefContainer.contents" name="children" />
         </BrowserElement>
       </Browser>
     </Panel>
-    <Panel id="9" borderLeft="0" sizeAdjustment="OriginalSize" borderRight="0" border="empty" trackViewPortWidth="true" align="left" constraints="split(splitIdentifier=right)" borderBottom="0" borderTitle="Panel" borderTop="0" trackViewPortHeight="true" layout="border" name="DetailsPanel">
-      <Panel id="10" backgroundColor="255,255,255" borderLeft="10" sizeAdjustment="OriginalSize" opaque="true" borderRight="10" border="empty" trackViewPortWidth="true" align="left" constraints="border(location=north)" borderBottom="10" borderTop="10" trackViewPortHeight="true" layout="border" name="Header">
-        <Image id="11" sizeAdjustment="OriginalSize" name="Image" data="controller.bigIconForPreferences(PreferencesBrowser.selected).image" imageHeight="64" align="left" constraints="border(location=east)" imageWidth="64" />
-        <Panel id="12" borderLeft="0" sizeAdjustment="OriginalSize" borderRight="0" border="empty" trackViewPortWidth="true" align="left" constraints="border(location=center)" borderBottom="0" borderTop="0" trackViewPortHeight="true" layout="border" name="FIBPanel">
-          <Label id="13" name="Label" data="controller.longNameForPreferences(PreferencesBrowser.selected)" font="SansSerif,1,16" align="left" constraints="border(location=center)" label="label" />
+    <Panel id="13" align="left" borderTop="0" borderTitle="Panel" borderLeft="0" trackViewPortHeight="true" trackViewPortWidth="true" borderBottom="0" border="empty" sizeAdjustment="OriginalSize" layout="border" borderRight="0" constraints="split(splitIdentifier=right)" name="DetailsPanel">
+      <Panel id="14" align="left" borderTop="10" borderLeft="10" trackViewPortHeight="true" trackViewPortWidth="true" borderBottom="10" border="empty" sizeAdjustment="OriginalSize" layout="border" borderRight="10" constraints="border(location=north)" backgroundColor="255,255,255" opaque="true" name="Header">
+        <Image id="15" imageWidth="64" sizeAdjustment="OriginalSize" align="left" imageHeight="64" data="controller.bigIconForPreferences(PreferencesBrowser.selected).image" constraints="border(location=east)" name="Image" />
+        <Panel id="16" align="left" borderTop="0" borderLeft="0" trackViewPortHeight="true" trackViewPortWidth="true" borderBottom="0" border="empty" sizeAdjustment="OriginalSize" layout="border" borderRight="0" constraints="border(location=center)" name="FIBPanel">
+          <Label id="17" label="label" align="left" data="controller.longNameForPreferences(PreferencesBrowser.selected)" constraints="border(location=center)" font="SansSerif,1,16" name="Label" />
         </Panel>
       </Panel>
-      <FIBReferencedComponent id="14" manageDynamicModel="true" opaque="false" name="PreferencesDetailsWidget" data="PreferencesBrowser.selected" index="15" dynamicComponentFile="controller.fibForPreferences(PreferencesBrowser.selected)" constraints="border(location=center)" />
-      <Panel id="15" vGap="5" borderLeft="10" hGap="5" sizeAdjustment="OriginalSize" borderRight="10" border="empty" trackViewPortWidth="true" align="left" constraints="border(location=south)" borderBottom="5" borderTop="5" trackViewPortHeight="true" layout="flow" name="ControlPanel" flowAlignment="RIGHT">
-        <Button id="16" buttonType="Trigger" name="Button2" action="controller.chooseQuitAndDispose()" localize="true" constraints="flow()" label="close" />
-        <Button id="17" buttonType="Trigger" name="RevertButton" action="controller.revert()" localize="true" constraints="flow()" label="revert" />
-        <Button id="18" buttonType="Trigger" name="SaveButton" action="controller.save()" localize="true" constraints="flow()" label="save" />
-        <Button id="19" buttonType="Trigger" name="ApplyButton" action="controller.apply()" localize="true" constraints="flow()" label="apply" />
+      <FIBReferencedComponent id="18" dynamicComponentFile="controller.fibForPreferences(PreferencesBrowser.selected)" manageDynamicModel="true" data="PreferencesBrowser.selected" constraints="border(location=center)" opaque="false" index="15" name="PreferencesDetailsWidget">
+        <ReferenceAssignment id="19" variable="controller.applicationContext" value="controller.applicationContext" mandatory="true" />
+      </FIBReferencedComponent>
+      <Panel id="20" align="left" borderTop="5" flowAlignment="RIGHT" borderLeft="10" trackViewPortHeight="true" trackViewPortWidth="true" borderBottom="5" border="empty" sizeAdjustment="OriginalSize" layout="flow" vGap="5" borderRight="10" hGap="5" constraints="border(location=south)" name="ControlPanel">
+        <Button id="21" buttonType="Trigger" action="controller.chooseQuitAndDispose()" label="close" localize="true" constraints="flow()" name="Button2" />
+        <Button id="22" buttonType="Trigger" action="controller.revert()" label="revert" localize="true" constraints="flow()" name="RevertButton" />
+        <Button id="23" buttonType="Trigger" action="controller.save()" label="save" localize="true" constraints="flow()" name="SaveButton" />
+        <Button id="24" buttonType="Trigger" action="controller.apply()" label="apply" localize="true" constraints="flow()" name="ApplyButton" />
       </Panel>
     </Panel>
-    <RowSplit id="20" weight="0.0" name="RowSplit">
-      <Leaf id="21" weight="0.3" name="left" />
-      <Divider id="22" />
-      <Leaf id="23" weight="0.7" name="right" />
-    </RowSplit>
   </SplitPanel>
-  <FIBVariable id="24" name="data" type="org.openflexo.prefs.FlexoPreferences" />
   <LocalizedDictionary id="25">
-    <Localized id="26" value="Search" lang="English" key="search" />
-    <Localized id="27" value="Zoeken" lang="Dutch" key="search" />
-    <Localized id="28" value="Rechercher" lang="French" key="search" />
-    <Localized id="29" value="Close" lang="English" key="close" />
-    <Localized id="30" value="Sluiten" lang="Dutch" key="close" />
-    <Localized id="31" value="Fermer" lang="French" key="close" />
-    <Localized id="32" value="Revert" lang="English" key="revert" />
-    <Localized id="33" value="Omkeren" lang="Dutch" key="revert" />
-    <Localized id="34" value="Revenir en arrière" lang="French" key="revert" />
-    <Localized id="35" value="Save" lang="English" key="save" />
-    <Localized id="36" value="Opslaan" lang="Dutch" key="save" />
-    <Localized id="37" value="Sauver" lang="French" key="save" />
-    <Localized id="38" value="Apply" lang="English" key="apply" />
-    <Localized id="39" value="Pas toe" lang="Dutch" key="apply" />
-    <Localized id="40" value="Appliquer" lang="French" key="apply" />
+    <Localized id="26" lang="English" value="Search" key="search" />
+    <Localized id="27" lang="Dutch" value="Zoeken" key="search" />
+    <Localized id="28" lang="French" value="Rechercher" key="search" />
+    <Localized id="29" lang="English" value="Close" key="close" />
+    <Localized id="30" lang="Dutch" value="Sluiten" key="close" />
+    <Localized id="31" lang="French" value="Fermer" key="close" />
+    <Localized id="32" lang="English" value="Revert" key="revert" />
+    <Localized id="33" lang="Dutch" value="Omkeren" key="revert" />
+    <Localized id="34" lang="French" value="Revenir en arrière" key="revert" />
+    <Localized id="35" lang="English" value="Save" key="save" />
+    <Localized id="36" lang="Dutch" value="Opslaan" key="save" />
+    <Localized id="37" lang="French" value="Sauver" key="save" />
+    <Localized id="38" lang="English" value="Apply" key="apply" />
+    <Localized id="39" lang="Dutch" value="Pas toe" key="apply" />
+    <Localized id="40" lang="French" value="Appliquer" key="apply" />
   </LocalizedDictionary>
+  <FIBVariable id="41" type="org.openflexo.prefs.FlexoPreferences" name="data" />
 </Panel>

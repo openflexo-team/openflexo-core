@@ -69,7 +69,7 @@ public class CommandParser {
 	 * @throws ParseException
 	 *             if parsing expression lead to an error
 	 */
-	public static AbstractCommand parse(String aCommand, CommandInterpreter commandInterpreter) throws ParseException {
+	public static AbstractCommand parse(String aCommand, AbstractCommandInterpreter commandInterpreter) throws ParseException {
 		try {
 			// System.out.println("Parsing: " + anExpression);
 

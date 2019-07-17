@@ -45,7 +45,7 @@ import java.util.logging.Logger;
 
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoProject;
-import org.openflexo.foundation.fml.cli.CommandInterpreter;
+import org.openflexo.foundation.fml.cli.AbstractCommandInterpreter;
 import org.openflexo.foundation.fml.cli.command.Directive;
 import org.openflexo.foundation.fml.cli.command.DirectiveDeclaration;
 import org.openflexo.foundation.fml.cli.parser.node.AOpenDirective;
@@ -75,7 +75,7 @@ public class OpenProject extends Directive {
 	private String projectPath;
 	private File projectDirectory;
 
-	public OpenProject(AOpenDirective node, CommandInterpreter commandInterpreter) {
+	public OpenProject(AOpenDirective node, AbstractCommandInterpreter commandInterpreter) {
 		super(node, commandInterpreter);
 		projectPath = retrievePath(node.getPath());
 	}
@@ -123,20 +123,20 @@ public class OpenProject extends Directive {
 
 			for (FlexoResourceCenter<?> rc : getCommandInterpreter().getServiceManager().getResourceCenterService().getResourceCenters()) {
 				if (rc instanceof FlexoProject && ((FlexoProject<?>) rc).getProjectDirectory().equals(getProjectDirectory())) {
-					System.out.println("This project is already opened");
+					getOutStream().println("This project is already opened");
 					return;
 				}
 			}
 
 			try {
-				System.out.println("Open project " + getProjectDirectory());
+				getOutStream().println("Open project " + getProjectDirectory());
 				FlexoEditor editor = getCommandInterpreter().getServiceManager().getProjectLoaderService()
 						.loadProject(getProjectDirectory());
 				FlexoProject<?> project = editor.getProject();
 				getCommandInterpreter().setWorkingDirectory(getProjectDirectory());
-				System.out.println("Project " + project.getName() + " successfully opened.");
+				getOutStream().println("Project " + project.getName() + " successfully opened.");
 			} catch (ProjectInitializerException e) {
-				System.err.println("Project initializing exception: " + e.getMessage());
+				getErrStream().println("Project initializing exception: " + e.getMessage());
 				e.printStackTrace();
 			} catch (ProjectLoadingCancelledException e) {
 			}

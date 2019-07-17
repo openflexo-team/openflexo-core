@@ -47,6 +47,7 @@ import org.openflexo.connie.DataBinding.BindingDefinitionType;
 import org.openflexo.connie.exception.NullReferenceException;
 import org.openflexo.connie.exception.TypeMismatchException;
 import org.openflexo.foundation.fml.FlexoConcept;
+import org.openflexo.foundation.fml.InconsistentFlexoConceptHierarchyException;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.editionaction.TechnologySpecificActionDefiningReceiver;
 import org.openflexo.foundation.fml.rt.ActionExecutionCancelledException;
@@ -72,6 +73,8 @@ public interface CreateFlexoConcept extends TechnologySpecificActionDefiningRece
 	public static final String CONTAINER_KEY = "container";
 	@PropertyIdentifier(type = Boolean.class)
 	public static final String FORCE_EXECUTE_CONFIRMATION_PANEL_KEY = "forceExecuteConfirmationPanel";
+	@PropertyIdentifier(type = String.class)
+	public static final String PARENT_FLEXO_CONCEPT_TYPE_URI_KEY = "parentFlexoConceptTypeURI";
 
 	@Getter(value = VALUE_KEY)
 	@XMLAttribute
@@ -87,6 +90,17 @@ public interface CreateFlexoConcept extends TechnologySpecificActionDefiningRece
 	@Setter(CONTAINER_KEY)
 	public void setContainer(DataBinding<FlexoConcept> container);
 
+	@Getter(value = PARENT_FLEXO_CONCEPT_TYPE_URI_KEY)
+	@XMLAttribute
+	public String _getParentFlexoConceptTypeURI();
+
+	@Setter(PARENT_FLEXO_CONCEPT_TYPE_URI_KEY)
+	public void _setParentFlexoConceptTypeURI(String flexoConceptTypeURI);
+
+	public FlexoConcept getParentFlexoConceptType();
+
+	public void setParentFlexoConceptType(FlexoConcept flexoConceptType);
+
 	@Getter(value = FORCE_EXECUTE_CONFIRMATION_PANEL_KEY, defaultValue = "false")
 	@XMLAttribute
 	public boolean getForceExecuteConfirmationPanel();
@@ -101,6 +115,9 @@ public interface CreateFlexoConcept extends TechnologySpecificActionDefiningRece
 
 		private DataBinding<String> conceptName;
 		private DataBinding<FlexoConcept> container;
+
+		private FlexoConcept parentFlexoConceptType;
+		private String parentFlexoConceptTypeURI;
 
 		private String getConceptName(RunTimeEvaluationContext evaluationContext) {
 			try {
@@ -169,12 +186,49 @@ public interface CreateFlexoConcept extends TechnologySpecificActionDefiningRece
 		}
 
 		@Override
+		public String _getParentFlexoConceptTypeURI() {
+			if (parentFlexoConceptType != null) {
+				return parentFlexoConceptType.getURI();
+			}
+			return parentFlexoConceptTypeURI;
+		}
+
+		@Override
+		public void _setParentFlexoConceptTypeURI(String flexoConceptURI) {
+			this.parentFlexoConceptTypeURI = flexoConceptURI;
+		}
+
+		private boolean isComputingParentFlexoConceptType = false;
+
+		@Override
+		public FlexoConcept getParentFlexoConceptType() {
+
+			if (!isComputingParentFlexoConceptType && parentFlexoConceptType == null && parentFlexoConceptTypeURI != null) {
+				isComputingParentFlexoConceptType = true;
+				parentFlexoConceptType = getVirtualModelLibrary().getFlexoConcept(parentFlexoConceptTypeURI);
+				isComputingParentFlexoConceptType = false;
+			}
+
+			return parentFlexoConceptType;
+		}
+
+		@Override
+		public void setParentFlexoConceptType(FlexoConcept flexoConceptType) {
+			if (flexoConceptType != this.parentFlexoConceptType) {
+				FlexoConcept oldValue = this.parentFlexoConceptType;
+				this.parentFlexoConceptType = flexoConceptType;
+				getPropertyChangeSupport().firePropertyChange("parentFlexoConceptType", oldValue, oldValue);
+			}
+		}
+
+		@Override
 		public Type getAssignableType() {
 			return FlexoConcept.class;
 		}
 
 		@Override
-		public FlexoConcept execute(RunTimeEvaluationContext evaluationContext) throws ActionExecutionCancelledException {
+		public FlexoConcept execute(RunTimeEvaluationContext evaluationContext)
+				throws ActionExecutionCancelledException, InconsistentFlexoConceptHierarchyException {
 
 			if (evaluationContext instanceof FlexoBehaviourAction) {
 
@@ -191,6 +245,10 @@ public interface CreateFlexoConcept extends TechnologySpecificActionDefiningRece
 
 				if (action.hasBeenCancelled()) {
 					throw new ActionExecutionCancelledException();
+				}
+
+				if (getParentFlexoConceptType() != null) {
+					action.getNewFlexoConcept().addToParentFlexoConcepts(getParentFlexoConceptType());
 				}
 
 				return action.getNewFlexoConcept();

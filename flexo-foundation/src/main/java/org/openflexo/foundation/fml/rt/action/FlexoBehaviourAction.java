@@ -348,14 +348,18 @@ public abstract class FlexoBehaviourAction<A extends FlexoBehaviourAction<A, FB,
 		}*/
 	}
 
+	public FB getApplicableFlexoBehaviour() {
+		return getFlexoBehaviour();
+	}
+
 	/**
 	 * This is the internal code performing execution of the control graph of {@link FlexoBehaviour}
 	 */
 	protected void executeControlGraph() throws OperationCancelledException, FlexoException {
 
-		if (getFlexoBehaviour() != null && getFlexoBehaviour().getControlGraph() != null) {
+		if (getApplicableFlexoBehaviour() != null && getApplicableFlexoBehaviour().getControlGraph() != null) {
 			try {
-				getFlexoBehaviour().getControlGraph().execute(this);
+				getApplicableFlexoBehaviour().getControlGraph().execute(this);
 			} catch (ReturnException e) {
 				returnedValue = e.getReturnedValue();
 			} catch (OperationCancelledException e) {
@@ -370,12 +374,12 @@ public abstract class FlexoBehaviourAction<A extends FlexoBehaviourAction<A, FB,
 				return;
 			} catch (FlexoException e) {
 				logger.warning("Unexpected exception while executing FML control graph: " + e);
-				System.err.println(getFlexoBehaviour().getFMLRepresentation());
+				System.err.println(getApplicableFlexoBehaviour().getFMLRepresentation());
 				e.printStackTrace();
 				throw e;
 			} catch (Exception e) {
 				logger.warning("Unexpected exception while executing FML control graph: " + e);
-				System.err.println(getFlexoBehaviour().getFMLRepresentation());
+				System.err.println(getApplicableFlexoBehaviour().getFMLRepresentation());
 				e.printStackTrace();
 				throw new FlexoException(e);
 			}

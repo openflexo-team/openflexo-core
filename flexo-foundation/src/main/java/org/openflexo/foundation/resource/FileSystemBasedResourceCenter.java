@@ -345,11 +345,13 @@ public interface FileSystemBasedResourceCenter extends FlexoResourceCenter<File>
 
 		private void appendFiles(File directory, List<File> files) {
 			if (directory.exists() && directory.isDirectory() && directory.canRead()) {
-				for (File f : directory.listFiles()) {
-					if (!isIgnorable(f, null)) {
-						files.add(f);
-						if (f.isDirectory())
-							appendFiles(f, files);
+				if (directory.listFiles() != null) {
+					for (File f : directory.listFiles()) {
+						if (!isIgnorable(f, null)) {
+							files.add(f);
+							if (f.isDirectory())
+								appendFiles(f, files);
+						}
 					}
 				}
 			}

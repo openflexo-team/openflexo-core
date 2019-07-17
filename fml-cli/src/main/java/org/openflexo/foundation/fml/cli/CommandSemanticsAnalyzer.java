@@ -68,6 +68,7 @@ import org.openflexo.foundation.fml.cli.command.directive.DisplayResource;
 import org.openflexo.foundation.fml.cli.command.directive.EnterDirective;
 import org.openflexo.foundation.fml.cli.command.directive.ExitDirective;
 import org.openflexo.foundation.fml.cli.command.directive.HelpDirective;
+import org.openflexo.foundation.fml.cli.command.directive.HistoryDirective;
 import org.openflexo.foundation.fml.cli.command.directive.LoadResource;
 import org.openflexo.foundation.fml.cli.command.directive.LsDirective;
 import org.openflexo.foundation.fml.cli.command.directive.OpenProject;
@@ -114,6 +115,7 @@ import org.openflexo.foundation.fml.cli.parser.node.AFunctionTerm;
 import org.openflexo.foundation.fml.cli.parser.node.AGtExprExpr;
 import org.openflexo.foundation.fml.cli.parser.node.AGteExprExpr;
 import org.openflexo.foundation.fml.cli.parser.node.AHelpDirective;
+import org.openflexo.foundation.fml.cli.parser.node.AHistoryDirective;
 import org.openflexo.foundation.fml.cli.parser.node.AIdentifierTypeReferencePath;
 import org.openflexo.foundation.fml.cli.parser.node.ALoadDirective;
 import org.openflexo.foundation.fml.cli.parser.node.ALogFuncFunction;
@@ -173,9 +175,9 @@ public class CommandSemanticsAnalyzer extends DepthFirstAdapter {
 
 	private final Map<Node, Expression> expressionNodes;
 	private AbstractCommand command;
-	private CommandInterpreter commandInterpreter;
+	private AbstractCommandInterpreter commandInterpreter;
 
-	public CommandSemanticsAnalyzer(CommandInterpreter commandInterpreter) {
+	public CommandSemanticsAnalyzer(AbstractCommandInterpreter commandInterpreter) {
 		expressionNodes = new Hashtable<>();
 		this.commandInterpreter = commandInterpreter;
 	}
@@ -677,6 +679,18 @@ public class CommandSemanticsAnalyzer extends DepthFirstAdapter {
 
 	// DIRECTIVES
 
+	/*@Override
+	public void defaultIn(Node node) {
+		System.out.println("IN " + node);
+		super.defaultIn(node);
+	}
+
+	@Override
+	public void defaultOut(Node node) {
+		System.out.println("OUT " + node);
+		super.defaultOut(node);
+	}*/
+
 	@Override
 	public void outAPwdDirective(APwdDirective node) {
 		super.outAPwdDirective(node);
@@ -693,6 +707,12 @@ public class CommandSemanticsAnalyzer extends DepthFirstAdapter {
 	public void outACdDirective(ACdDirective node) {
 		super.outACdDirective(node);
 		registerCommand(node, new CdDirective(node, commandInterpreter));
+	}
+
+	@Override
+	public void outAHistoryDirective(AHistoryDirective node) {
+		super.outAHistoryDirective(node);
+		registerCommand(node, new HistoryDirective(node, commandInterpreter));
 	}
 
 	@Override

@@ -116,10 +116,12 @@ public abstract class ApplicationContext extends DefaultFlexoServiceManager {
 
 		registerApplicationFIBLibraryService();
 		registerModuleLoaderService();
-		registerPreferencesService();
 
 		TechnologyAdapterControllerService technologyAdapterControllerService = createTechnologyAdapterControllerService();
 		registerService(technologyAdapterControllerService);
+
+		registerPreferencesService();
+
 		// BugReportService bugReportService = createBugReportService();
 		// registerService(bugReportService);
 		DocResourceManager docResourceManager = createDocResourceManager();
@@ -145,7 +147,6 @@ public abstract class ApplicationContext extends DefaultFlexoServiceManager {
 	}
 
 	private void registerPreferencesService() {
-		registerModuleLoaderService();
 		if (getPreferencesService() == null) {
 			PreferencesService preferencesService = createPreferencesService();
 			registerService(preferencesService);
@@ -278,9 +279,8 @@ public abstract class ApplicationContext extends DefaultFlexoServiceManager {
 
 	@Override
 	protected FlexoResourceCenterService createResourceCenterService() {
-		registerPreferencesService();
 		FlexoResourceCenterService returned = DefaultResourceCenterService
-				.getNewInstance(getPreferencesService().getResourceCenterPreferences().getResourceCenterEntries(), Flexo.isDev);
+				.getNewInstance(Flexo.isDev);
 		return returned;
 	}
 

@@ -116,6 +116,7 @@ import org.openflexo.module.FlexoModule;
 import org.openflexo.module.ModuleLoader;
 import org.openflexo.pamela.validation.ValidationModel;
 import org.openflexo.pamela.validation.ValidationReport;
+import org.openflexo.prefs.TechnologyAdapterPreferences;
 import org.openflexo.rm.Resource;
 import org.openflexo.rm.ResourceLocator;
 import org.openflexo.view.ModuleView;
@@ -703,6 +704,10 @@ public abstract class TechnologyAdapterController<TA extends TechnologyAdapter<T
 	 */
 	public List<TechnologyAdapterPluginController<TA>> getPlugins() {
 		return plugins;
+	}
+
+	public Class<? extends TechnologyAdapterPreferences<TA>> getPreferencesClass() {
+		return null;
 	}
 
 }

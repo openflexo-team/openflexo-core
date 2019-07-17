@@ -90,13 +90,13 @@ public abstract class DefaultFMLRunTimeEngine implements FMLRunTimeEngine, Prope
 		// System.out.println("************ Adding to ExecutionContext: " + (vmi != null ? vmi.getURI() : "null"));
 		virtualModelInstances.add(vmi);
 		if (vmi.getVirtualModel() != null) {
-			for (EventListener el : vmi.getVirtualModel().getAccessibleFlexoBehaviours(EventListener.class)) {
+			for (EventListener el : vmi.getVirtualModel().getAccessibleFlexoBehaviours(EventListener.class, false)) {
 				startEventListening(vmi, el, evaluationContext);
 			}
 			for (FlexoConcept concept : vmi.getVirtualModel().getFlexoConcepts()) {
 				if (requireEventListening(concept)) {
 					for (FlexoConceptInstance fci : vmi.getFlexoConceptInstances(concept)) {
-						for (EventListener el : concept.getAccessibleFlexoBehaviours(EventListener.class)) {
+						for (EventListener el : concept.getAccessibleFlexoBehaviours(EventListener.class, false)) {
 							startEventListening(fci, el, fci);
 						}
 					}
@@ -111,13 +111,13 @@ public abstract class DefaultFMLRunTimeEngine implements FMLRunTimeEngine, Prope
 		// System.out.println("************ Removing from ExecutionContext: " + (vmi != null ? vmi.getURI() : "null"));
 		virtualModelInstances.remove(vmi);
 		if (vmi.getVirtualModel() != null) {
-			for (EventListener el : vmi.getVirtualModel().getAccessibleFlexoBehaviours(EventListener.class)) {
+			for (EventListener el : vmi.getVirtualModel().getAccessibleFlexoBehaviours(EventListener.class, false)) {
 				stopEventListening(vmi, el, evaluationContext);
 			}
 			for (FlexoConcept concept : vmi.getVirtualModel().getFlexoConcepts()) {
 				if (requireEventListening(concept)) {
 					for (FlexoConceptInstance fci : vmi.getFlexoConceptInstances(concept)) {
-						for (EventListener el : concept.getAccessibleFlexoBehaviours(EventListener.class)) {
+						for (EventListener el : concept.getAccessibleFlexoBehaviours(EventListener.class, false)) {
 							stopEventListening(fci, el, evaluationContext);
 						}
 					}
@@ -138,7 +138,7 @@ public abstract class DefaultFMLRunTimeEngine implements FMLRunTimeEngine, Prope
 					&& evt.getNewValue() instanceof FlexoConceptInstance) {
 				FlexoConceptInstance newValue = (FlexoConceptInstance) evt.getNewValue();
 				if (requireEventListening(newValue.getFlexoConcept())) {
-					for (EventListener el : newValue.getFlexoConcept().getAccessibleFlexoBehaviours(EventListener.class)) {
+					for (EventListener el : newValue.getFlexoConcept().getAccessibleFlexoBehaviours(EventListener.class, false)) {
 						startEventListening(newValue, el, /*(FMLRTVirtualModelInstance) evt.getSource()*/newValue);
 					}
 				}
@@ -147,7 +147,7 @@ public abstract class DefaultFMLRunTimeEngine implements FMLRunTimeEngine, Prope
 					&& evt.getOldValue() instanceof FlexoConceptInstance) {
 				FlexoConceptInstance oldValue = (FlexoConceptInstance) evt.getOldValue();
 				if (requireEventListening(oldValue.getFlexoConcept())) {
-					for (EventListener el : oldValue.getFlexoConcept().getAccessibleFlexoBehaviours(EventListener.class)) {
+					for (EventListener el : oldValue.getFlexoConcept().getAccessibleFlexoBehaviours(EventListener.class, false)) {
 						stopEventListening(oldValue, el, (FMLRTVirtualModelInstance) evt.getSource());
 					}
 				}
@@ -160,7 +160,7 @@ public abstract class DefaultFMLRunTimeEngine implements FMLRunTimeEngine, Prope
 		if (concept == null) {
 			return false;
 		}
-		return concept.getAccessibleFlexoBehaviours(EventListener.class).size() > 0;
+		return concept.getAccessibleFlexoBehaviours(EventListener.class, false).size() > 0;
 	}
 
 	public class EventInstanceListener {

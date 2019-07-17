@@ -53,7 +53,6 @@ import org.openflexo.foundation.fml.FMLRepresentationContext;
 import org.openflexo.foundation.fml.binding.FlexoPropertyPathElement;
 import org.openflexo.foundation.fml.binding.ModelSlotBindingVariable;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
-import org.openflexo.foundation.technologyadapter.TechnologyObject;
 import org.openflexo.pamela.annotations.DefineValidationRule;
 import org.openflexo.pamela.annotations.Getter;
 import org.openflexo.pamela.annotations.ImplementationClass;
@@ -79,7 +78,7 @@ import org.openflexo.pamela.validation.ValidationIssue;
  */
 @ModelEntity(isAbstract = true)
 @ImplementationClass(TechnologySpecificActionDefiningReceiver.TechnologySpecificActionImpl.class)
-public abstract interface TechnologySpecificActionDefiningReceiver<MS extends ModelSlot<?>, R extends TechnologyObject<?>, T>
+public abstract interface TechnologySpecificActionDefiningReceiver<MS extends ModelSlot<?>, R /*extends TechnologyObject<?>*/, T>
 		extends TechnologySpecificAction<MS, T> {
 
 	@PropertyIdentifier(type = DataBinding.class)
@@ -114,7 +113,7 @@ public abstract interface TechnologySpecificActionDefiningReceiver<MS extends Mo
 	 */
 	public R getReceiver(BindingEvaluationContext evaluationContext);
 
-	public static abstract class TechnologySpecificActionDefiningReceiverImpl<MS extends ModelSlot<?>, R extends TechnologyObject<?>, T>
+	public static abstract class TechnologySpecificActionDefiningReceiverImpl<MS extends ModelSlot<?>, R /*extends TechnologyObject<?>*/, T>
 			extends TechnologySpecificActionImpl<MS, T> implements TechnologySpecificActionDefiningReceiver<MS, R, T> {
 		private DataBinding<R> receiver;
 

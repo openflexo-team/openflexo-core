@@ -38,6 +38,7 @@
 
 package org.openflexo.components;
 
+import java.awt.Rectangle;
 import java.awt.Window;
 import java.util.HashMap;
 import java.util.Map;
@@ -48,8 +49,10 @@ import javax.swing.ImageIcon;
 import org.apache.commons.lang3.StringUtils;
 import org.openflexo.ApplicationContext;
 import org.openflexo.connie.annotations.NotificationUnsafe;
+import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.gina.model.FIBComponent;
 import org.openflexo.gina.swing.utils.JFIBDialog;
+import org.openflexo.gina.swing.utils.JFIBPreferences;
 import org.openflexo.gina.swing.view.SwingViewFactory;
 import org.openflexo.gina.view.GinaViewFactory;
 import org.openflexo.icon.IconLibrary;
@@ -60,9 +63,12 @@ import org.openflexo.prefs.ModulePreferences;
 import org.openflexo.prefs.Preferences;
 import org.openflexo.prefs.PreferencesContainer;
 import org.openflexo.prefs.PreferencesService;
+import org.openflexo.prefs.TechnologyAdapterPreferences;
 import org.openflexo.rm.Resource;
 import org.openflexo.rm.ResourceLocator;
+import org.openflexo.swing.ComponentBoundSaver;
 import org.openflexo.view.controller.FlexoFIBController;
+import org.openflexo.view.controller.TechnologyAdapterController;
 
 /**
  * Dialog allowing to edit all {@link Preferences}
@@ -80,8 +86,6 @@ public class PreferencesDialog extends JFIBDialog<FlexoPreferences> {
 	private static PreferencesDialog dialog;
 
 	public static PreferencesDialog getPreferencesDialog(ApplicationContext applicationContext, Window parent) {
-		System.out.println("getPreferencesDialog with " + applicationContext);
-
 		if (dialog == null) {
 			dialog = new PreferencesDialog(applicationContext, parent);
 		}
@@ -90,8 +94,6 @@ public class PreferencesDialog extends JFIBDialog<FlexoPreferences> {
 	}
 
 	public static void showPreferencesDialog(ApplicationContext applicationContext, Window parent) {
-		System.out.println("showPreferencesDialog with " + applicationContext);
-
 		if (dialog == null) {
 			dialog = getPreferencesDialog(applicationContext, parent);
 		}
@@ -106,13 +108,31 @@ public class PreferencesDialog extends JFIBDialog<FlexoPreferences> {
 						applicationContext.getApplicationFIBLibraryService().retrieveFIBComponent(PREFERENCES_FIB, true),
 						SwingViewFactory.INSTANCE));
 
+		getController().applicationContext = applicationContext;
+
 		setTitle("Preferences");
+
+		setBounds(JFIBPreferences.getPreferencesBounds());
+		new ComponentBoundSaver(this) {
+
+			@Override
+			public void saveBounds(Rectangle bounds) {
+				JFIBPreferences.setPreferencesBounds(bounds);
+			}
+		};
 
 		getController().objectAddedToSelection(applicationContext.getPreferencesService().getFlexoPreferences());
 
 	}
 
+	@Override
+	public PreferencesFIBController getController() {
+		return (PreferencesFIBController) super.getController();
+	}
+
 	public static class PreferencesFIBController extends FlexoFIBController {
+
+		private ApplicationContext applicationContext;
 
 		public PreferencesFIBController(FIBComponent component, GinaViewFactory<?> viewFactory) {
 			super(component, viewFactory);
@@ -123,6 +143,14 @@ public class PreferencesDialog extends JFIBDialog<FlexoPreferences> {
 		private final Map<PreferencesContainer, ImageIcon> bigIcons = new HashMap<>();
 		private final Map<PreferencesContainer, String> shortNames = new HashMap<>();
 		private final Map<PreferencesContainer, String> longNames = new HashMap<>();
+
+		public ApplicationContext getApplicationContext() {
+			return applicationContext;
+		}
+
+		public void setApplicationContext(ApplicationContext applicationContext) {
+			this.applicationContext = applicationContext;
+		}
 
 		@NotificationUnsafe
 		public Resource fibForPreferences(PreferencesContainer prefs) {
@@ -215,6 +243,13 @@ public class PreferencesDialog extends JFIBDialog<FlexoPreferences> {
 				}
 			}
 
+			if (prefs instanceof TechnologyAdapterPreferences) {
+				TechnologyAdapter ta = ((TechnologyAdapterPreferences<?>) prefs).getTechnologyAdapter();
+				TechnologyAdapterController<?> tac = getApplicationContext().getTechnologyAdapterControllerService()
+						.getTechnologyAdapterController(ta);
+				return tac.getTechnologyIcon();
+			}
+
 			ImageIcon returned = smallIcons.get(prefs);
 
 			if (returned == null) {
@@ -247,6 +282,13 @@ public class PreferencesDialog extends JFIBDialog<FlexoPreferences> {
 				if (module != null) {
 					return module.getBigIcon();
 				}
+			}
+
+			if (prefs instanceof TechnologyAdapterPreferences) {
+				TechnologyAdapter ta = ((TechnologyAdapterPreferences<?>) prefs).getTechnologyAdapter();
+				TechnologyAdapterController<?> tac = getApplicationContext().getTechnologyAdapterControllerService()
+						.getTechnologyAdapterController(ta);
+				return tac.getTechnologyBigIcon();
 			}
 
 			ImageIcon returned = bigIcons.get(prefs);
