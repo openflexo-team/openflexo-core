@@ -109,7 +109,8 @@ public class ServiceDirective<S extends FlexoService> extends Directive {
 					// An argument is required
 					if (node.getArgument() != null) {
 						String argumentType = serviceOperation.getArgument();
-						argumentValue = evaluate(node.getArgument(), argumentType);
+						CommandTokenType tokenType = CommandTokenType.getType(argumentType);
+						argumentValue = evaluate(node.getArgument(), tokenType);
 						if (argumentValue != null) {
 							isValid = true;
 						}

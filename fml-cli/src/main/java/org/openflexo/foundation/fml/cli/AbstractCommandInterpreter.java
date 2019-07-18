@@ -45,6 +45,7 @@ import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.cli.command.AbstractCommand;
+import org.openflexo.foundation.fml.cli.command.AbstractCommand.CommandTokenType;
 import org.openflexo.foundation.fml.cli.command.DeclareCommand;
 import org.openflexo.foundation.fml.cli.command.DeclareCommands;
 import org.openflexo.foundation.fml.cli.command.DeclareDirective;
@@ -338,104 +339,101 @@ public abstract class AbstractCommandInterpreter extends PropertyChangedSupportD
 			return returned;
 		}
 
-		if (expectedTokenSyntax.equals("<instance>")) {
-			List<String> returned = new ArrayList<>();
-			for (File f : getWorkingDirectory().listFiles()) {
-				// System.out.println("On rajoute " + f.getName());
-				if (f.getName().startsWith(currentToken) && f.getName().endsWith(FMLRTVirtualModelInstanceResourceFactory.FML_RT_SUFFIX)) {
-					returned.add(startingBuffer.substring(0, startingBuffer.length() - currentToken.length()) + f.getName());
-				}
-			}
-			return returned;
-		}
+		CommandTokenType tokenType = CommandTokenType.getType(expectedTokenSyntax);
+		return getAvailableCompletionForTokenType(currentToken, tokenType, directiveDeclaration, startingBuffer, previousToken);
+	}
 
-		if (expectedTokenSyntax.equals("<path>")) {
-			List<String> returned = new ArrayList<>();
-			for (File f : getWorkingDirectory().listFiles()) {
-				// System.out.println("On rajoute " + f.getName());
-				if (f.getName().startsWith(currentToken)) {
-					returned.add(startingBuffer.substring(0, startingBuffer.length() - currentToken.length()) + f.getName());
-				}
-			}
-			return returned;
-		}
+	private List<String> getAvailableCompletionForTokenType(String currentToken, CommandTokenType tokenType,
+			DirectiveDeclaration directiveDeclaration, String startingBuffer, String previousToken) {
 
-		if (expectedTokenSyntax.equals("<service>")) {
-			List<String> returned = new ArrayList<>();
-			for (FlexoService service : serviceManager.getRegisteredServices()) {
-				if (service.getServiceName().startsWith(currentToken)) {
-					returned.add(startingBuffer.substring(0, startingBuffer.length() - currentToken.length()) + service.getServiceName());
-				}
-			}
-			return returned;
-		}
+		List<String> returned = new ArrayList<>();
+		String utileToken = currentToken;
 
-		if (expectedTokenSyntax.equals("<operation>")) {
-			// System.out.println("Plus dur, une operation pour " + tokens.get(index - 1));
-			FlexoService service = null;
-			for (FlexoService s : serviceManager.getRegisteredServices()) {
-				if (s.getServiceName().equals(previousToken)) {
-					service = s;
-				}
-			}
-			if (service != null) {
-				List<String> returned = new ArrayList<>();
-				for (ServiceOperation<?> serviceOperation : service.getAvailableServiceOperations()) {
-					if (serviceOperation.getOperationName().startsWith(currentToken)) {
-						returned.add(startingBuffer.substring(0, startingBuffer.length() - currentToken.length())
-								+ serviceOperation.getOperationName());
+		switch (tokenType) {
+			case Expression:
+
+				return returned;
+			case LocalReference:
+				for (File f : getWorkingDirectory().listFiles()) {
+					// System.out.println("On rajoute " + f.getName());
+					if (f.getName().startsWith(currentToken)
+							&& f.getName().endsWith(FMLRTVirtualModelInstanceResourceFactory.FML_RT_SUFFIX)) {
+						returned.add(startingBuffer.substring(0, startingBuffer.length() - currentToken.length()) + f.getName());
 					}
 				}
 				return returned;
-			}
-		}
-
-		if (expectedTokenSyntax.equals("<ta>")) {
-			List<String> returned = new ArrayList<>();
-			for (TechnologyAdapter ta : serviceManager.getTechnologyAdapterService().getTechnologyAdapters()) {
-				if (ta.getIdentifier().startsWith(currentToken)) {
-					returned.add(startingBuffer.substring(0, startingBuffer.length() - currentToken.length()) + ta.getIdentifier());
-				}
-			}
-			return returned;
-		}
-
-		if (expectedTokenSyntax.equals("<rc>")) {
-			String utileToken = currentToken;
-			if (utileToken.startsWith("[")) {
-				utileToken = utileToken.substring(1);
-			}
-			List<String> returned = new ArrayList<>();
-			for (FlexoResourceCenter<?> rc : serviceManager.getResourceCenterService().getResourceCenters()) {
-				if (rc.getDefaultBaseURI().startsWith(utileToken)) {
-					returned.add(startingBuffer.substring(0, startingBuffer.length() - currentToken.length()) + "[" + rc.getDefaultBaseURI()
-							+ "]");
-				}
-			}
-			return returned;
-		}
-
-		if (expectedTokenSyntax.equals("<resource>")) {
-			String utileToken = currentToken;
-			if (utileToken.startsWith("[")) {
-				utileToken = utileToken.substring(1);
-			}
-			List<String> returned = new ArrayList<>();
-			for (FlexoResourceCenter<?> rc : serviceManager.getResourceCenterService().getResourceCenters()) {
-				for (FlexoResource<?> r : rc.getAllResources()) {
-					if (r.getURI().startsWith(utileToken)) {
-						returned.add(startingBuffer.substring(0, startingBuffer.length() - currentToken.length()) + "[" + r.getURI() + "]");
+			case Path:
+				for (File f : getWorkingDirectory().listFiles()) {
+					// System.out.println("On rajoute " + f.getName());
+					if (f.getName().startsWith(currentToken)) {
+						returned.add(startingBuffer.substring(0, startingBuffer.length() - currentToken.length()) + f.getName());
 					}
-					/*if (r.getName().startsWith(utileToken)) {
-						returned.add(
-								startingBuffer.substring(0, startingBuffer.length() - currentToken.length()) + "[" + r.getName() + "]");
-					}*/
 				}
-			}
-			return returned;
+				return returned;
+			case Service:
+				for (FlexoService service : serviceManager.getRegisteredServices()) {
+					if (service.getServiceName().startsWith(currentToken)) {
+						returned.add(
+								startingBuffer.substring(0, startingBuffer.length() - currentToken.length()) + service.getServiceName());
+					}
+				}
+				return returned;
+			case Operation:
+				FlexoService service = null;
+				for (FlexoService s : serviceManager.getRegisteredServices()) {
+					if (s.getServiceName().equals(previousToken)) {
+						service = s;
+					}
+				}
+				if (service != null) {
+					for (ServiceOperation<?> serviceOperation : service.getAvailableServiceOperations()) {
+						if (serviceOperation.getOperationName().startsWith(currentToken)) {
+							returned.add(startingBuffer.substring(0, startingBuffer.length() - currentToken.length())
+									+ serviceOperation.getOperationName());
+						}
+					}
+				}
+				return returned;
+			case TA:
+				for (TechnologyAdapter ta : serviceManager.getTechnologyAdapterService().getTechnologyAdapters()) {
+					if (ta.getIdentifier().startsWith(currentToken)) {
+						returned.add(startingBuffer.substring(0, startingBuffer.length() - currentToken.length()) + ta.getIdentifier());
+					}
+				}
+				return returned;
+			case RC:
+				if (utileToken.startsWith("[")) {
+					utileToken = utileToken.substring(1);
+				}
+				for (FlexoResourceCenter<?> rc : serviceManager.getResourceCenterService().getResourceCenters()) {
+					if (rc.getDefaultBaseURI().startsWith(utileToken)) {
+						returned.add(startingBuffer.substring(0, startingBuffer.length() - currentToken.length()) + "["
+								+ rc.getDefaultBaseURI() + "]");
+					}
+				}
+				return returned;
+			case Resource:
+				if (utileToken.startsWith("[")) {
+					utileToken = utileToken.substring(1);
+				}
+				for (FlexoResourceCenter<?> rc : serviceManager.getResourceCenterService().getResourceCenters()) {
+					for (FlexoResource<?> r : rc.getAllResources()) {
+						if (r.getURI().startsWith(utileToken)) {
+							returned.add(
+									startingBuffer.substring(0, startingBuffer.length() - currentToken.length()) + "[" + r.getURI() + "]");
+						}
+						/*if (r.getName().startsWith(utileToken)) {
+							returned.add(
+									startingBuffer.substring(0, startingBuffer.length() - currentToken.length()) + "[" + r.getName() + "]");
+						}*/
+					}
+				}
+				return returned;
+			default:
+				break;
 		}
 
-		return Collections.emptyList();
+		return returned;
 	}
 
 	@Override

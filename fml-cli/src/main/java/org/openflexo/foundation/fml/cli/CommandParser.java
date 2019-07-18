@@ -90,7 +90,7 @@ public class CommandParser {
 			}
 
 		} catch (Exception e) {
-			e.printStackTrace();
+			// e.printStackTrace();
 			throw new ParseException(e.getMessage() + " while parsing " + aCommand);
 		}
 	}

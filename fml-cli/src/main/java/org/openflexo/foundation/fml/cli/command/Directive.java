@@ -40,8 +40,11 @@
 package org.openflexo.foundation.fml.cli.command;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.List;
 import java.util.logging.Logger;
 
+import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.fml.cli.CommandSemanticsAnalyzer;
 import org.openflexo.foundation.fml.cli.command.directive.ActivateTA;
 import org.openflexo.foundation.fml.cli.command.directive.CdDirective;
@@ -59,11 +62,16 @@ import org.openflexo.foundation.fml.cli.command.directive.ResourcesDirective;
 import org.openflexo.foundation.fml.cli.command.directive.ServiceDirective;
 import org.openflexo.foundation.fml.cli.command.directive.ServicesDirective;
 import org.openflexo.foundation.fml.cli.parser.node.ABindingPath;
+import org.openflexo.foundation.fml.cli.parser.node.ACall;
+import org.openflexo.foundation.fml.cli.parser.node.ACallBinding;
 import org.openflexo.foundation.fml.cli.parser.node.ADotPath;
 import org.openflexo.foundation.fml.cli.parser.node.ADotPathPath;
 import org.openflexo.foundation.fml.cli.parser.node.ADoubleDotPath;
 import org.openflexo.foundation.fml.cli.parser.node.ADoubleDotPathPath;
+import org.openflexo.foundation.fml.cli.parser.node.AIdentifierBinding;
 import org.openflexo.foundation.fml.cli.parser.node.APathPath;
+import org.openflexo.foundation.fml.cli.parser.node.ATail1Binding;
+import org.openflexo.foundation.fml.cli.parser.node.ATail2Binding;
 import org.openflexo.foundation.fml.cli.parser.node.Node;
 import org.openflexo.foundation.fml.cli.parser.node.PBinding;
 import org.openflexo.foundation.fml.cli.parser.node.PPath;
@@ -72,6 +80,8 @@ import org.openflexo.foundation.fml.rt.rm.FMLRTVirtualModelInstanceResourceFacto
 import org.openflexo.foundation.project.FlexoProjectResourceFactory;
 import org.openflexo.foundation.resource.FlexoResource;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
+import org.openflexo.foundation.resource.ResourceLoadingCancelledException;
+import org.openflexo.foundation.resource.ResourceManager;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 
 /**
@@ -187,9 +197,52 @@ public abstract class Directive extends AbstractCommand {
 		return getCommandInterpreter().getServiceManager().getResourceManager().getResource(resourceURI);
 	}
 
-	protected Object evaluate(PBinding value, String valueType) {
+	protected Object evaluate(PBinding value, CommandTokenType tokenType) {
 		System.out.println("On doit evaluer " + value);
-		System.out.println("En tant que " + valueType);
+		System.out.println("En tant que " + tokenType);
+
+		switch (tokenType) {
+			case Expression:
+				return null;
+			case LocalReference:
+				String valueAsString = getText(value);
+				System.out.println("Hop: " + valueAsString);
+				File referencedFile = new File(getCommandInterpreter().getWorkingDirectory(), valueAsString);
+				System.out.println("Fichier ? " + referencedFile);
+				if (referencedFile != null && referencedFile.exists()) {
+					System.out.println("existe ? " + (referencedFile != null ? referencedFile.exists() : "???"));
+					ResourceManager rm = getCommandInterpreter().getServiceManager().getResourceManager();
+					List<FlexoResource<?>> resources = rm.getResources(referencedFile);
+					System.out.println("found: " + resources);
+					if (resources.size() > 0) {
+						try {
+							return resources.get(0).getResourceData();
+						} catch (FileNotFoundException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						} catch (ResourceLoadingCancelledException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						} catch (FlexoException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+					}
+				}
+				return null;
+			case Path:
+				return null;
+			case Service:
+				return null;
+			case Operation:
+				return null;
+			case TA:
+				return null;
+			case RC:
+				return null;
+			case Resource:
+				return null;
+		}
 
 		/*if (valueType.equals("<path>") && pDirectiveOption instanceof APathDirectiveOption) {
 			return new File(getCommandInterpreter().getWorkingDirectory(),
@@ -209,4 +262,28 @@ public abstract class Directive extends AbstractCommand {
 		return null;
 	}
 
+	public String getText(PBinding binding) {
+		if (binding instanceof AIdentifierBinding) {
+			return ((AIdentifierBinding) binding).getIdentifier().getText();
+		}
+		else if (binding instanceof ACallBinding) {
+			return getText((ACall) ((ACallBinding) binding).getCall());
+		}
+		else if (binding instanceof ATail1Binding) {
+			return ((ATail1Binding) binding).getIdentifier().getText() + "." + getText(((ATail1Binding) binding).getBinding());
+		}
+		else if (binding instanceof ATail2Binding) {
+			return getText((ACall) ((ATail2Binding) binding).getCall()) + "." + getText(((ATail2Binding) binding).getBinding());
+		}
+		return null;
+	}
+
+	public String getText(ACall call) {
+		StringBuffer sb = new StringBuffer();
+		sb.append(call.getIdentifier());
+		sb.append("(");
+		sb.append("not_implemented_yet");
+		sb.append(")");
+		return sb.toString();
+	}
 }

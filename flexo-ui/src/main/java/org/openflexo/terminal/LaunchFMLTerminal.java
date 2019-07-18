@@ -32,6 +32,8 @@ import org.openflexo.foundation.fml.rt.FMLRTTechnologyAdapter;
 import org.openflexo.foundation.resource.DirectoryResourceCenter;
 import org.openflexo.foundation.resource.FlexoResourceCenterService;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterService;
+import org.openflexo.foundation.utils.ProjectInitializerException;
+import org.openflexo.foundation.utils.ProjectLoadingCancelledException;
 import org.openflexo.logging.FlexoLoggingManager;
 
 /**
@@ -162,8 +164,24 @@ public class LaunchFMLTerminal {
 		// Settings.getInstance().setHistoryDisabled(true);
 		// Settings.getInstance().setHistoryPersistent(false);
 
+		File projectDirectory = null;
+
+		if (options.projectPath != null) {
+			projectDirectory = new File(options.projectPath);
+			if (projectDirectory.exists()) {
+				try {
+					serviceManager.getProjectLoaderService().loadProject(projectDirectory);
+				} catch (ProjectLoadingCancelledException e) {
+					// Nothing to do
+				} catch (ProjectInitializerException e) {
+					e.printStackTrace();
+					System.err.println("could_not_open_project_located_at" + projectDirectory.getAbsolutePath());
+				}
+			}
+		}
+
 		FMLTerminal terminal = new FMLTerminal(serviceManager,
-				(options.projectPath != null ? new File(options.projectPath) : new File(System.getProperty("user.dir"))));
+				(options.projectPath != null ? projectDirectory : new File(System.getProperty("user.dir"))));
 		terminal.open(0, 0, 700, 700);
 
 		/*} catch (Exception e) {

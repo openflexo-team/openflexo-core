@@ -104,4 +104,67 @@ public abstract class AbstractCommand {
 	 * @return
 	 */
 	public abstract String invalidCommandReason();
+
+	public enum CommandTokenType {
+		Expression {
+			@Override
+			public String syntaxKeyword() {
+				return "<expression>";
+			}
+		},
+		LocalReference {
+			@Override
+			public String syntaxKeyword() {
+				return "<reference>";
+			}
+		},
+		Path {
+			@Override
+			public String syntaxKeyword() {
+				return "<path>";
+			}
+		},
+		TA {
+			@Override
+			public String syntaxKeyword() {
+				return "<ta>";
+			}
+		},
+		RC {
+			@Override
+			public String syntaxKeyword() {
+				return "<rc>";
+			}
+		},
+		Resource {
+			@Override
+			public String syntaxKeyword() {
+				return "<resource>";
+			}
+		},
+		Service {
+			@Override
+			public String syntaxKeyword() {
+				return "<service>";
+			}
+		},
+		Operation {
+			@Override
+			public String syntaxKeyword() {
+				return "<operation>";
+			}
+		};
+
+		public abstract String syntaxKeyword();
+
+		public static CommandTokenType getType(String syntaxKeyword) {
+			for (CommandTokenType commandTokenType : values()) {
+				if (commandTokenType.syntaxKeyword().equals(syntaxKeyword)) {
+					return commandTokenType;
+				}
+			}
+			logger.warning("Unexpected CommandTokenType: " + syntaxKeyword);
+			return null;
+		}
+	}
 }

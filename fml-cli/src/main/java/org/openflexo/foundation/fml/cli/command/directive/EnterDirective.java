@@ -48,8 +48,8 @@ import org.openflexo.foundation.fml.cli.command.DirectiveDeclaration;
 import org.openflexo.foundation.fml.cli.parser.node.AEnterDirective;
 import org.openflexo.foundation.fml.cli.parser.node.AObjectEnterDirective;
 import org.openflexo.foundation.fml.cli.parser.node.AResourceEnterDirective;
+import org.openflexo.foundation.fml.cli.parser.node.PBinding;
 import org.openflexo.foundation.fml.cli.parser.node.PEnterDirective;
-import org.openflexo.foundation.fml.cli.parser.node.PExpr;
 import org.openflexo.foundation.fml.rm.VirtualModelResource;
 import org.openflexo.foundation.fml.rt.rm.AbstractVirtualModelInstanceResource;
 import org.openflexo.foundation.resource.FlexoResource;
@@ -65,16 +65,16 @@ import org.openflexo.foundation.resource.FlexoResource;
  */
 @DirectiveDeclaration(
 		keyword = "enter",
-		usage = "enter <instance> | <expression> | -r <resource>",
-		description = "Enter in a given object, denoted by a resource, an expression or a local reference to a FML instance",
-		syntax = "enter <instance> | <expression> | -r <resource>")
+		usage = "enter <expression> | -r <resource>",
+		description = "Enter in a given object, denoted by a resource or an expression",
+		syntax = "enter <reference> | <expression> |-r <resource>")
 public class EnterDirective extends Directive {
 
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(EnterDirective.class.getPackage().getName());
 
 	private FlexoResource<?> resource;
-	private FlexoObject object;
+	private Object object;
 
 	public EnterDirective(AEnterDirective node, CommandSemanticsAnalyzer commandSemanticsAnalyzer) {
 		super(node, commandSemanticsAnalyzer);
@@ -87,8 +87,14 @@ public class EnterDirective extends Directive {
 			resource = getResource(((AResourceEnterDirective) enterDirective).getResourceUri().getText());
 		}
 		else if (enterDirective instanceof AObjectEnterDirective) {
-			PExpr expr = ((AObjectEnterDirective) enterDirective).getExpr();
-			System.out.println("On cherche l'objet: " + expr);
+			PBinding referencedObject = ((AObjectEnterDirective) enterDirective).getBinding();
+			System.out.println("On entre dans l'objet: " + referencedObject);
+			object = evaluate(referencedObject, CommandTokenType.LocalReference);
+			System.out.println("Found as local reference: " + object);
+			if (object == null) {
+				object = evaluate(referencedObject, CommandTokenType.Expression);
+				System.out.println("Found as expression: " + object);
+			}
 		}
 	}
 
@@ -104,9 +110,9 @@ public class EnterDirective extends Directive {
 		if (getResource() instanceof AbstractVirtualModelInstanceResource) {
 			object = ((AbstractVirtualModelInstanceResource) getResource()).getVirtualModelInstance();
 		}
-		if (object != null) {
+		if (object instanceof FlexoObject) {
 			getOutStream().println("Entering in context " + object);
-			getCommandInterpreter().setFocusedObject(object);
+			getCommandInterpreter().setFocusedObject((FlexoObject) object);
 		}
 		else {
 			getErrStream().println("Cannot access denoted context");

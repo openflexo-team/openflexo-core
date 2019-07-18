@@ -161,9 +161,9 @@ public class TestCLIParser extends OpenflexoTestCase {
 		assertParsable("enter Identifier");
 		assertParsable("enter Full.Qualified.Identifier");
 		assertParsable("enter a.full.expression(args)");
-		// assertParsable("enter -r [http://full/path/resource/uri]");
-		// assertParsable("enter -r [http://full/path/resource/uri.fml]");
-		// assertParsable("enter -r [http://ensta-bretagne.fr/cyber/cta/CTA.fml]");
+		assertParsable("enter -r [http://full/path/resource/uri]");
+		assertParsable("enter -r [http://full/path/resource/uri.fml]");
+		assertParsable("enter -r [http://ensta-bretagne.fr/cyber/cta/CTA.fml]");
 		assertNotParsable("enter");
 		assertNotParsable("enter -r");
 		assertNotParsable("enter expression1 expression2");
