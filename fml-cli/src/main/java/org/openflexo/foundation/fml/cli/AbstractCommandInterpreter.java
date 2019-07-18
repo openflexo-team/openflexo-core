@@ -193,7 +193,7 @@ public abstract class AbstractCommandInterpreter extends PropertyChangedSupportD
 				command.execute();
 			}
 			else {
-				System.err.println(command.invalidCommandReason());
+				getErrStream().println(command.invalidCommandReason());
 			}
 			return command;
 		}
@@ -201,7 +201,7 @@ public abstract class AbstractCommandInterpreter extends PropertyChangedSupportD
 	}
 
 	protected AbstractCommand makeCommand(String commandString) throws ParseException {
-		System.out.println("makeCommand with " + commandString);
+		// System.out.println("makeCommand with " + commandString);
 		return CommandParser.parse(commandString, this);
 	}
 

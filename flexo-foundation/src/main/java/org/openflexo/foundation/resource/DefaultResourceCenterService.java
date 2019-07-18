@@ -48,11 +48,11 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLDecoder;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.jar.JarFile;
 
 import javax.swing.SwingUtilities;
@@ -728,14 +728,19 @@ public abstract class DefaultResourceCenterService extends FlexoServiceImpl impl
 		}
 
 		@Override
-		public List<String> getOptions() {
-			return Arrays.asList("<path>");
+		public String getArgument() {
+			return "<path>";
 		}
 
 		@Override
-		public void execute(FlexoResourceCenterService service, PrintStream out, PrintStream err, Object... options) {
-			if (options.length > 0) {
-				File directory = (File) options[0];
+		public List<ServiceOperationOption> getOptions() {
+			return null;
+		}
+
+		@Override
+		public void execute(FlexoResourceCenterService service, PrintStream out, PrintStream err, Object argument, Map<String, ?> options) {
+			if (argument instanceof File) {
+				File directory = (File) argument;
 				out.println("Add ResourceCenter from directory " + directory);
 				DirectoryResourceCenter newRC;
 				try {

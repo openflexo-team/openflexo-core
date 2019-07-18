@@ -39,17 +39,16 @@
 
 package org.openflexo.foundation.fml.cli.command.directive;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.FlexoService;
 import org.openflexo.foundation.FlexoService.ServiceOperation;
-import org.openflexo.foundation.fml.cli.AbstractCommandInterpreter;
+import org.openflexo.foundation.fml.cli.CommandSemanticsAnalyzer;
 import org.openflexo.foundation.fml.cli.command.Directive;
 import org.openflexo.foundation.fml.cli.command.DirectiveDeclaration;
 import org.openflexo.foundation.fml.cli.parser.node.AServiceDirective;
-import org.openflexo.foundation.fml.cli.parser.node.PDirectiveOption;
 
 /**
  * Represents #service directive in FML command-line interpreter
@@ -82,12 +81,14 @@ public class ServiceDirective<S extends FlexoService> extends Directive {
 
 	private S service;
 	private ServiceOperation<S> serviceOperation;
+	private final boolean isValid;
 	private String invalidCommandReason = null;
-	private List<?> options = new ArrayList<>();
+	private Object argumentValue = null;
+	private Map<String, Object> optionValues = new HashMap<>();
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public ServiceDirective(AServiceDirective node, AbstractCommandInterpreter commandInterpreter) {
-		super(node, commandInterpreter);
+	public ServiceDirective(AServiceDirective node, CommandSemanticsAnalyzer commandSemanticsAnalyzer) {
+		super(node, commandSemanticsAnalyzer);
 
 		service = getCommandInterpreter().getServiceManager().getService(node.getServiceName().getText());
 
@@ -99,24 +100,57 @@ public class ServiceDirective<S extends FlexoService> extends Directive {
 				}
 			}
 			if (serviceOperation == null) {
+				isValid = false;
 				invalidCommandReason = "Operation " + node.getAction().getText() + " not found for service " + service.getServiceName();
 			}
 			else {
+				// argument
+				if (serviceOperation.getArgument() != null) {
+					// An argument is required
+					if (node.getArgument() != null) {
+						String argumentType = serviceOperation.getArgument();
+						argumentValue = evaluate(node.getArgument(), argumentType);
+						if (argumentValue != null) {
+							isValid = true;
+						}
+						else {
+							isValid = false;
+							invalidCommandReason = "Operation " + node.getAction().getText() + " cannot be processed: null argument";
+						}
+					}
+					else {
+						isValid = false;
+						invalidCommandReason = "Operation " + node.getAction().getText() + " cannot be processed: missing argument";
+					}
+				}
+				else {
+					if (node.getArgument() != null) {
+						isValid = false;
+						invalidCommandReason = "Operation " + node.getAction().getText() + " cannot be processed: unexpected argument";
+					}
+					else {
+						isValid = true;
+					}
+				}
+
 				// options
-				if (serviceOperation.getOptions() != null) {
+				// TODO
+				/*if (serviceOperation.getOptions() != null) {
+					// if (serviceOperation.getOptions().size() != node.getOptions().size()) {
 					if (serviceOperation.getOptions().size() != node.getOptions().size()) {
 						invalidCommandReason = "Operation " + node.getAction().getText() + " cannot be processed: wrong arguments number";
 					}
 					else {
 						int index = 0;
-						for (PDirectiveOption pDirectiveOption : node.getOptions()) {
-							String optionType = serviceOperation.getOptions().get(index);
-							Object optionValue = makeOption(pDirectiveOption, optionType);
-							((List) options).add(optionValue);
-							index++;
-						}
+						PDirectiveOption pDirectiveOption = node.getOptions();
+						// for (PDirectiveOption pDirectiveOption : node.getOptions()) {
+						String optionType = serviceOperation.getOptions().get(index);
+						Object optionValue = makeOption(pDirectiveOption, optionType);
+						((List) options).add(optionValue);
+						index++;
+						// }
 					}
-				}
+				}*/
 			}
 
 			/*getOutStream().println("Service: " + service);
@@ -127,14 +161,14 @@ public class ServiceDirective<S extends FlexoService> extends Directive {
 
 		}
 		else {
+			isValid = false;
 			invalidCommandReason = "Service " + node.getServiceName().getText() + " not found";
 		}
 	}
 
 	@Override
 	public boolean isValid() {
-		return service != null && serviceOperation != null
-				&& (serviceOperation.getOptions() == null || serviceOperation.getOptions().size() == options.size());
+		return service != null && serviceOperation != null && isValid;
 	}
 
 	@Override
@@ -144,6 +178,11 @@ public class ServiceDirective<S extends FlexoService> extends Directive {
 
 	@Override
 	public void execute() {
-		serviceOperation.execute(service, getOutStream(), getErrStream(), options.toArray(new Object[options.size()]));
+		if (!isValid()) {
+			getErrStream().println(invalidCommandReason());
+		}
+		else {
+			serviceOperation.execute(service, getOutStream(), getErrStream(), argumentValue, optionValues);
+		}
 	}
 }

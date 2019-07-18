@@ -28,8 +28,9 @@ Helpers
  any        = [0 .. 0xffff];
  not_hyphen = [any - '"' ];
  not_hyphen2 = [any - ''' ];
-// file_char = upper_case | lower_case | digit | '_' | '.';
- uri_char = upper_case | lower_case | digit | '_' | '.' | '/' | '-';
+ //file_char = upper_case | lower_case | digit | '_' | '.';
+ //file_char = upper_case | lower_case | digit | '_' | '.';
+ //uri_char = upper_case | lower_case | digit | '_' | '.' | '/';
 
 Tokens
  dollar = '$';
@@ -54,8 +55,8 @@ Tokens
  not = '!';
  l_par = '(';
  r_par = ')';
-// l_bra = '[';
-// r_bra = ']';
+ l_bra = '[';
+ r_bra = ']';
  dot = '.';
  double_dot = '..';
  comma = ',';
@@ -109,9 +110,9 @@ Tokens
  
  identifier = letter (letter | digit)*;
  
-// file_name = file_char (file_char)*;
+ //file_name = file_char (file_char)*;
  
- resource_uri = '[http://' (uri_char)* ']';
+ //resource_uri = '[http://' (uri_char)* ']';
  
  blank = (' ' | 13 | 10)+;
 
@@ -131,38 +132,41 @@ Productions
   {ls} ls |
   {cd} cd path |
   {services} services |
-  {service} service [service_name]:identifier [action]:identifier [argument]:binding? |
+  {service} service [service_name]:identifier [action]:identifier [options]:directive_option* |
   {activate_ta} activate [technology_adapter]:identifier |
   {resources} resources_directive |
   {open} open path |
-  {load} load resource_uri |
-  {display} display resource_uri |
+  //{load} load resource_uri |
+  //{display} display resource_uri |
   {enter} enter_directive |
   {exit} exit |
   {quit} quit;
 
  resources_directive =
   {exhaustive} resources |
-  {ta} resources [technology_adapter]:identifier |
-  {rc} resources mult [resource_center]:resource_uri |
-  {ta_rc} resources [technology_adapter]:identifier [resource_center]:resource_uri;
+  {ta} resources [technology_adapter]:identifier;
+  // |
+  //{rc} resources mult [resource_center]:resource_uri |
+  //{ta_rc} resources [technology_adapter]:identifier [resource_center]:resource_uri;
 
  enter_directive =
   //{resource} enter minus_r resource_uri |
-  {resource} enter resource_uri |
+  //{resource} enter resource_uri |
   {object} enter expr;
 
- //directive_option = 
- // {path} path |
- // {number} number;
+ directive_option = 
+  {path} path |
+  {number} number;
 
  path =
-  //{file_name} file_name |
-  //{identifier} identifier |
-  {binding} binding |
+ // {file_name} file_name |
+ // {identifier} identifier |
+  {dotted_identifier} dotted_identifier |
+ // {id_binding} identifier dot path |
   {dot} dot |
-  //{path} file_name div path |
-  {path} binding div path |
+ // {path} file_name div path |
+  {path} identifier div path |
+ // {id_binding_path} identifier dot binding div path |
   {dot_path} dot div path |
   {double_dot} double_dot |
   {double_dot_path} double_dot div path;
@@ -224,11 +228,14 @@ Productions
  additional_arg = 
   comma expr;
 
- binding = 
+ dotted_identifier = 
   {identifier} identifier |
+  {tail1} identifier dot dotted_identifier;
+
+ binding = 
+  {dotted_identifier} dotted_identifier |
   {call} call |
-  {tail1} identifier dot binding |
-  {tail2} call dot binding;
+  {tail} call dot binding;
 
  function =
   {cos_func} cos l_par expr2 r_par |

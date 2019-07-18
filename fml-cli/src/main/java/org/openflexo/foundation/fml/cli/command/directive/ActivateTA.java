@@ -41,7 +41,7 @@ package org.openflexo.foundation.fml.cli.command.directive;
 
 import java.util.logging.Logger;
 
-import org.openflexo.foundation.fml.cli.AbstractCommandInterpreter;
+import org.openflexo.foundation.fml.cli.CommandSemanticsAnalyzer;
 import org.openflexo.foundation.fml.cli.command.Directive;
 import org.openflexo.foundation.fml.cli.command.DirectiveDeclaration;
 import org.openflexo.foundation.fml.cli.parser.node.AActivateTaDirective;
@@ -65,8 +65,8 @@ public class ActivateTA extends Directive {
 
 	private TechnologyAdapter technologyAdapter;
 
-	public ActivateTA(AActivateTaDirective node, AbstractCommandInterpreter commandInterpreter) {
-		super(node, commandInterpreter);
+	public ActivateTA(AActivateTaDirective node, CommandSemanticsAnalyzer commandSemanticsAnalyzer) {
+		super(node, commandSemanticsAnalyzer);
 
 		technologyAdapter = getTechnologyAdapter(node.getTechnologyAdapter().getText());
 	}

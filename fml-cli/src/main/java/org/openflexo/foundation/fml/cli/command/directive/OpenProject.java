@@ -45,7 +45,7 @@ import java.util.logging.Logger;
 
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoProject;
-import org.openflexo.foundation.fml.cli.AbstractCommandInterpreter;
+import org.openflexo.foundation.fml.cli.CommandSemanticsAnalyzer;
 import org.openflexo.foundation.fml.cli.command.Directive;
 import org.openflexo.foundation.fml.cli.command.DirectiveDeclaration;
 import org.openflexo.foundation.fml.cli.parser.node.AOpenDirective;
@@ -75,8 +75,8 @@ public class OpenProject extends Directive {
 	private String projectPath;
 	private File projectDirectory;
 
-	public OpenProject(AOpenDirective node, AbstractCommandInterpreter commandInterpreter) {
-		super(node, commandInterpreter);
+	public OpenProject(AOpenDirective node, CommandSemanticsAnalyzer commandSemanticsAnalyzer) {
+		super(node, commandSemanticsAnalyzer);
 		projectPath = retrievePath(node.getPath());
 	}
 

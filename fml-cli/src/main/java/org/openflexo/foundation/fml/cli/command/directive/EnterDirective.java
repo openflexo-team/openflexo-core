@@ -42,7 +42,7 @@ package org.openflexo.foundation.fml.cli.command.directive;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.FlexoObject;
-import org.openflexo.foundation.fml.cli.AbstractCommandInterpreter;
+import org.openflexo.foundation.fml.cli.CommandSemanticsAnalyzer;
 import org.openflexo.foundation.fml.cli.command.Directive;
 import org.openflexo.foundation.fml.cli.command.DirectiveDeclaration;
 import org.openflexo.foundation.fml.cli.parser.node.AEnterDirective;
@@ -76,8 +76,8 @@ public class EnterDirective extends Directive {
 	private FlexoResource<?> resource;
 	private FlexoObject object;
 
-	public EnterDirective(AEnterDirective node, AbstractCommandInterpreter commandInterpreter) {
-		super(node, commandInterpreter);
+	public EnterDirective(AEnterDirective node, CommandSemanticsAnalyzer commandSemanticsAnalyzer) {
+		super(node, commandSemanticsAnalyzer);
 
 		System.out.println("New EnterDirective");
 

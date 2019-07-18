@@ -80,11 +80,17 @@ public class CommandParser {
 			Start tree = p.parse();
 
 			// Apply the semantics analyzer.
-			CommandSemanticsAnalyzer t = new CommandSemanticsAnalyzer(commandInterpreter);
-			tree.apply(t);
+			if (commandInterpreter != null) {
+				CommandSemanticsAnalyzer t = new CommandSemanticsAnalyzer(commandInterpreter);
+				tree.apply(t);
+				return t.getCommand();
+			}
+			else {
+				return null;
+			}
 
-			return t.getCommand();
 		} catch (Exception e) {
+			e.printStackTrace();
 			throw new ParseException(e.getMessage() + " while parsing " + aCommand);
 		}
 	}

@@ -43,7 +43,6 @@ import java.util.logging.Logger;
 
 import org.openflexo.connie.BindingVariable;
 import org.openflexo.connie.type.TypeUtils;
-import org.openflexo.foundation.fml.cli.AbstractCommandInterpreter;
 import org.openflexo.foundation.fml.cli.CLIUtils;
 import org.openflexo.foundation.fml.cli.CommandSemanticsAnalyzer;
 import org.openflexo.foundation.fml.cli.command.FMLCommand;
@@ -64,8 +63,8 @@ public class FMLContextCommand extends FMLCommand {
 
 	private static final Logger logger = Logger.getLogger(FMLContextCommand.class.getPackage().getName());
 
-	public FMLContextCommand(AContextFmlCommand node, AbstractCommandInterpreter commandInterpreter, CommandSemanticsAnalyzer analyser) {
-		super(node, commandInterpreter, null);
+	public FMLContextCommand(AContextFmlCommand node, CommandSemanticsAnalyzer commandSemanticsAnalyzer) {
+		super(node, commandSemanticsAnalyzer, null);
 	}
 
 	@Override

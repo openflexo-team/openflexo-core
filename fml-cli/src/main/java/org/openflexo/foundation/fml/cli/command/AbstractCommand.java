@@ -43,6 +43,7 @@ import java.io.PrintStream;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.fml.cli.AbstractCommandInterpreter;
+import org.openflexo.foundation.fml.cli.CommandSemanticsAnalyzer;
 import org.openflexo.foundation.fml.cli.parser.node.Node;
 
 /**
@@ -57,27 +58,31 @@ public abstract class AbstractCommand {
 	private static final Logger logger = Logger.getLogger(AbstractCommand.class.getPackage().getName());
 
 	private Node node;
-	private AbstractCommandInterpreter commandInterpreter;
+	private CommandSemanticsAnalyzer commandSemanticsAnalyzer;
 
-	public AbstractCommand(Node node, AbstractCommandInterpreter commandInterpreter) {
+	public AbstractCommand(Node node, CommandSemanticsAnalyzer commandSemanticsAnalyzer) {
 		this.node = node;
-		this.commandInterpreter = commandInterpreter;
+		this.commandSemanticsAnalyzer = commandSemanticsAnalyzer;
 	}
 
 	public Node getNode() {
 		return node;
 	}
 
+	public CommandSemanticsAnalyzer getCommandSemanticsAnalyzer() {
+		return commandSemanticsAnalyzer;
+	}
+
 	public AbstractCommandInterpreter getCommandInterpreter() {
-		return commandInterpreter;
+		return getCommandSemanticsAnalyzer().getCommandInterpreter();
 	}
 
 	public PrintStream getOutStream() {
-		return commandInterpreter.getOutStream();
+		return getCommandInterpreter().getOutStream();
 	}
 
 	public PrintStream getErrStream() {
-		return commandInterpreter.getErrStream();
+		return getCommandInterpreter().getErrStream();
 	}
 
 	/**

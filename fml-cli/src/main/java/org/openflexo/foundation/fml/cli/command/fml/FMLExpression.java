@@ -51,7 +51,6 @@ import org.openflexo.connie.expr.BinaryOperatorExpression;
 import org.openflexo.connie.expr.BindingValue;
 import org.openflexo.connie.expr.BooleanBinaryOperator;
 import org.openflexo.connie.expr.Expression;
-import org.openflexo.foundation.fml.cli.AbstractCommandInterpreter;
 import org.openflexo.foundation.fml.cli.CommandSemanticsAnalyzer;
 import org.openflexo.foundation.fml.cli.command.FMLCommand;
 import org.openflexo.foundation.fml.cli.command.FMLCommandDeclaration;
@@ -72,10 +71,10 @@ public class FMLExpression extends FMLCommand {
 
 	private DataBinding<Object> expression;
 
-	public FMLExpression(AExprFmlCommand node, AbstractCommandInterpreter commandInterpreter, CommandSemanticsAnalyzer analyser) {
-		super(node, commandInterpreter, null);
-		Expression exp = analyser.getExpression(node.getExpr());
-		expression = new DataBinding<>(exp.toString(), commandInterpreter, Object.class, BindingDefinitionType.GET);
+	public FMLExpression(AExprFmlCommand node, CommandSemanticsAnalyzer commandSemanticsAnalyzer) {
+		super(node, commandSemanticsAnalyzer, null);
+		Expression exp = commandSemanticsAnalyzer.getExpression(node.getExpr());
+		expression = new DataBinding<>(exp.toString(), getCommandInterpreter(), Object.class, BindingDefinitionType.GET);
 	}
 
 	@Override

@@ -281,8 +281,9 @@ public class FMLTerminal extends JFrame {
 		disableTerminal();
 		appendNewLine();
 		String command = extractCommand();
-		executeCommand(command);
-		// showNewLine();
+		if (StringUtils.isNotEmpty(command.trim())) {
+			executeCommand(command);
+		}
 		showPrompt();
 		SwingUtilities.invokeLater(new Runnable() {
 			@Override

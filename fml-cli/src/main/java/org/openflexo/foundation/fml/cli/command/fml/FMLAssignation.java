@@ -47,7 +47,6 @@ import org.openflexo.connie.DataBinding.BindingDefinitionType;
 import org.openflexo.connie.exception.NullReferenceException;
 import org.openflexo.connie.exception.TypeMismatchException;
 import org.openflexo.connie.expr.Expression;
-import org.openflexo.foundation.fml.cli.AbstractCommandInterpreter;
 import org.openflexo.foundation.fml.cli.CommandSemanticsAnalyzer;
 import org.openflexo.foundation.fml.cli.command.FMLCommand;
 import org.openflexo.foundation.fml.cli.command.FMLCommandDeclaration;
@@ -73,11 +72,11 @@ public class FMLAssignation extends FMLCommand {
 	private String variableName;
 	private DataBinding<Object> assignation;
 
-	public FMLAssignation(AAssignationFmlCommand node, AbstractCommandInterpreter commandInterpreter, CommandSemanticsAnalyzer analyser) {
-		super(node, commandInterpreter, null);
+	public FMLAssignation(AAssignationFmlCommand node, CommandSemanticsAnalyzer commandSemanticsAnalyzer) {
+		super(node, commandSemanticsAnalyzer, null);
 		variableName = node.getIdentifier().getText();
-		Expression exp = analyser.getExpression(node.getExpr());
-		assignation = new DataBinding<>(exp.toString(), commandInterpreter, Object.class, BindingDefinitionType.GET);
+		Expression exp = commandSemanticsAnalyzer.getExpression(node.getExpr());
+		assignation = new DataBinding<>(exp.toString(), getCommandInterpreter(), Object.class, BindingDefinitionType.GET);
 	}
 
 	public String getVariableName() {

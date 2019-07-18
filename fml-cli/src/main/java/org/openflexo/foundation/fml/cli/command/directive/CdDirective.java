@@ -43,7 +43,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.logging.Logger;
 
-import org.openflexo.foundation.fml.cli.AbstractCommandInterpreter;
+import org.openflexo.foundation.fml.cli.CommandSemanticsAnalyzer;
 import org.openflexo.foundation.fml.cli.command.Directive;
 import org.openflexo.foundation.fml.cli.command.DirectiveDeclaration;
 import org.openflexo.foundation.fml.cli.parser.node.ACdDirective;
@@ -65,8 +65,8 @@ public class CdDirective extends Directive {
 	private String path;
 	private File newDirectory;
 
-	public CdDirective(ACdDirective node, AbstractCommandInterpreter commandInterpreter) {
-		super(node, commandInterpreter);
+	public CdDirective(ACdDirective node, CommandSemanticsAnalyzer commandSemanticsAnalyzer) {
+		super(node, commandSemanticsAnalyzer);
 		path = retrievePath(node.getPath());
 	}
 

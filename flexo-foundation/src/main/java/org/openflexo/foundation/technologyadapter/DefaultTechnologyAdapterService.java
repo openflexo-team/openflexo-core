@@ -41,7 +41,6 @@ package org.openflexo.foundation.technologyadapter;
 
 import java.io.PrintStream;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Hashtable;
@@ -657,14 +656,19 @@ public abstract class DefaultTechnologyAdapterService extends FlexoServiceImpl i
 		}
 
 		@Override
-		public List<String> getOptions() {
-			return Arrays.asList("<ta>");
+		public String getArgument() {
+			return "<ta>";
 		}
 
 		@Override
-		public void execute(TechnologyAdapterService service, PrintStream out, PrintStream err, Object... options) {
-			if (options.length > 0) {
-				TechnologyAdapter ta = (TechnologyAdapter) options[0];
+		public List<ServiceOperationOption> getOptions() {
+			return null;
+		}
+
+		@Override
+		public void execute(TechnologyAdapterService service, PrintStream out, PrintStream err, Object argument, Map<String, ?> options) {
+			if (argument instanceof TechnologyAdapter) {
+				TechnologyAdapter ta = (TechnologyAdapter) argument;
 				out.println("Activate TechnologyAdapter " + ta);
 				service.activateTechnologyAdapter(ta, true);
 				out.println("TechnologyAdapter " + ta + " has been activated");

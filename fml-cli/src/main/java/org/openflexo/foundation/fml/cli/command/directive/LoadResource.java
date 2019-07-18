@@ -43,7 +43,7 @@ import java.io.FileNotFoundException;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.FlexoException;
-import org.openflexo.foundation.fml.cli.AbstractCommandInterpreter;
+import org.openflexo.foundation.fml.cli.CommandSemanticsAnalyzer;
 import org.openflexo.foundation.fml.cli.command.Directive;
 import org.openflexo.foundation.fml.cli.command.DirectiveDeclaration;
 import org.openflexo.foundation.fml.cli.parser.node.ALoadDirective;
@@ -70,8 +70,8 @@ public class LoadResource extends Directive {
 
 	private FlexoResource<?> resource;
 
-	public LoadResource(ALoadDirective node, AbstractCommandInterpreter commandInterpreter) {
-		super(node, commandInterpreter);
+	public LoadResource(ALoadDirective node, CommandSemanticsAnalyzer commandSemanticsAnalyzer) {
+		super(node, commandSemanticsAnalyzer);
 		resource = getResource(node.getResourceUri().getText());
 	}
 

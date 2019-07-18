@@ -42,7 +42,7 @@ package org.openflexo.foundation.fml.cli.command;
 import java.io.File;
 import java.util.logging.Logger;
 
-import org.openflexo.foundation.fml.cli.AbstractCommandInterpreter;
+import org.openflexo.foundation.fml.cli.CommandSemanticsAnalyzer;
 import org.openflexo.foundation.fml.cli.command.directive.ActivateTA;
 import org.openflexo.foundation.fml.cli.command.directive.CdDirective;
 import org.openflexo.foundation.fml.cli.command.directive.DisplayResource;
@@ -58,16 +58,14 @@ import org.openflexo.foundation.fml.cli.command.directive.QuitDirective;
 import org.openflexo.foundation.fml.cli.command.directive.ResourcesDirective;
 import org.openflexo.foundation.fml.cli.command.directive.ServiceDirective;
 import org.openflexo.foundation.fml.cli.command.directive.ServicesDirective;
+import org.openflexo.foundation.fml.cli.parser.node.ABindingPath;
 import org.openflexo.foundation.fml.cli.parser.node.ADotPath;
 import org.openflexo.foundation.fml.cli.parser.node.ADotPathPath;
 import org.openflexo.foundation.fml.cli.parser.node.ADoubleDotPath;
 import org.openflexo.foundation.fml.cli.parser.node.ADoubleDotPathPath;
-import org.openflexo.foundation.fml.cli.parser.node.AFileNamePath;
-import org.openflexo.foundation.fml.cli.parser.node.AIdentifierPath;
-import org.openflexo.foundation.fml.cli.parser.node.APathDirectiveOption;
 import org.openflexo.foundation.fml.cli.parser.node.APathPath;
 import org.openflexo.foundation.fml.cli.parser.node.Node;
-import org.openflexo.foundation.fml.cli.parser.node.PDirectiveOption;
+import org.openflexo.foundation.fml.cli.parser.node.PBinding;
 import org.openflexo.foundation.fml.cli.parser.node.PPath;
 import org.openflexo.foundation.fml.rm.VirtualModelResourceFactory;
 import org.openflexo.foundation.fml.rt.rm.FMLRTVirtualModelInstanceResourceFactory;
@@ -93,8 +91,8 @@ public abstract class Directive extends AbstractCommand {
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(Directive.class.getPackage().getName());
 
-	public Directive(Node node, AbstractCommandInterpreter commandInterpreter) {
-		super(node, commandInterpreter);
+	public Directive(Node node, CommandSemanticsAnalyzer commandSemanticsAnalyzer) {
+		super(node, commandSemanticsAnalyzer);
 	}
 
 	/*protected String retrieveFileName(PFileName fileName) {
@@ -120,16 +118,17 @@ public abstract class Directive extends AbstractCommand {
 		else if (path instanceof ADotPathPath) {
 			return "." + File.separator + retrievePath(((ADotPathPath) path).getPath());
 		}
-		else if (path instanceof AFileNamePath) {
-			return ((AFileNamePath) path).getFileName().getText();
-		}
-		else if (path instanceof AIdentifierPath) {
-			return ((AIdentifierPath) path).getIdentifier().getText();
+		else if (path instanceof ABindingPath) {
+			return retrievePathFromBinding(((ABindingPath) path).getBinding());
 		}
 		else if (path instanceof APathPath) {
-			return ((APathPath) path).getFileName().getText() + File.separator + retrievePath(((APathPath) path).getPath());
+			return retrievePathFromBinding(((APathPath) path).getBinding()) + File.separator + retrievePath(((APathPath) path).getPath());
 		}
 		return null;
+	}
+
+	private String retrievePathFromBinding(PBinding binding) {
+		return binding.toString();
 	}
 
 	@Override
@@ -188,12 +187,15 @@ public abstract class Directive extends AbstractCommand {
 		return getCommandInterpreter().getServiceManager().getResourceManager().getResource(resourceURI);
 	}
 
-	protected Object makeOption(PDirectiveOption pDirectiveOption, String optionType) {
-		if (optionType.equals("<path>") && pDirectiveOption instanceof APathDirectiveOption) {
+	protected Object evaluate(PBinding value, String valueType) {
+		System.out.println("On doit evaluer " + value);
+		System.out.println("En tant que " + valueType);
+
+		/*if (valueType.equals("<path>") && pDirectiveOption instanceof APathDirectiveOption) {
 			return new File(getCommandInterpreter().getWorkingDirectory(),
 					retrievePath(((APathDirectiveOption) pDirectiveOption).getPath()));
 		}
-		if (optionType.equals("<ta>") && pDirectiveOption instanceof APathDirectiveOption) {
+		if (valueType.equals("<ta>") && pDirectiveOption instanceof APathDirectiveOption) {
 			String taName = retrievePath(((APathDirectiveOption) pDirectiveOption).getPath());
 			for (TechnologyAdapter ta : getCommandInterpreter().getServiceManager().getTechnologyAdapterService().getTechnologyAdapters()) {
 				if (ta.getClass().getSimpleName().equals(taName)) {
@@ -201,7 +203,10 @@ public abstract class Directive extends AbstractCommand {
 				}
 			}
 		}
-		return pDirectiveOption.toString();
+		return pDirectiveOption.toString();*/
+
+		System.out.println("On retourne rien");
+		return null;
 	}
 
 }

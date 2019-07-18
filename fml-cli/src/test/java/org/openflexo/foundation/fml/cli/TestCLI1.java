@@ -1,9 +1,8 @@
 /**
  * 
- * Copyright (c) 2013-2014, Openflexo
- * Copyright (c) 2011-2012, AgileBirds
+ * Copyright (c) 2014, Openflexo
  * 
- * This file is part of Connie-core, a component of the software infrastructure 
+ * This file is part of Cartoeditor, a component of the software infrastructure 
  * developed at Openflexo.
  * 
  * 
@@ -37,41 +36,37 @@
  * 
  */
 
-package org.openflexo.foundation.fml.cli.command;
+package org.openflexo.foundation.fml.cli;
 
-import java.util.logging.Logger;
+import java.io.File;
+import java.io.IOException;
 
-import org.openflexo.foundation.fml.cli.CommandSemanticsAnalyzer;
-import org.openflexo.foundation.fml.cli.command.fml.FMLAssignation;
-import org.openflexo.foundation.fml.cli.command.fml.FMLContextCommand;
-import org.openflexo.foundation.fml.cli.command.fml.FMLExpression;
-import org.openflexo.foundation.fml.cli.parser.node.Node;
-import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
+import org.junit.BeforeClass;
+import org.junit.Test;
+import org.openflexo.foundation.fml.cli.command.AbstractCommand;
+import org.openflexo.foundation.test.OpenflexoTestCase;
 
 /**
- * Represents an FML command in command-line interpreter
+ * Test command parser
  * 
  * @author sylvain
- * 
+ *
  */
-@DeclareCommands({ @DeclareCommand(FMLContextCommand.class), @DeclareCommand(FMLExpression.class), @DeclareCommand(FMLAssignation.class) })
-public abstract class FMLCommand extends AbstractCommand {
+public class TestCLI1 extends OpenflexoTestCase {
 
-	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(FMLCommand.class.getPackage().getName());
+	private static CommandInterpreter commandInterpreter;
 
-	public FMLCommand(Node node, CommandSemanticsAnalyzer commandSemanticsAnalyzer, FlexoConceptInstance fci) {
-		super(node, commandSemanticsAnalyzer);
+	@BeforeClass
+	public static void initialize() throws IOException {
+		instanciateTestServiceManager();
+		commandInterpreter = new CommandInterpreter(serviceManager, System.in, System.out, System.err,
+				new File(System.getProperty("user.dir")));
 	}
 
-	@Override
-	public boolean isValid() {
-		return true;
-	}
-
-	@Override
-	public String invalidCommandReason() {
-		return null;
+	@Test
+	public void testHelp() throws ParseException {
+		AbstractCommand help = CommandParser.parse("help", commandInterpreter);
+		help.execute();
 	}
 
 }

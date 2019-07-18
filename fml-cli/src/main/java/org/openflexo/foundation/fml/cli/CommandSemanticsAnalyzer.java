@@ -182,6 +182,10 @@ public class CommandSemanticsAnalyzer extends DepthFirstAdapter {
 		this.commandInterpreter = commandInterpreter;
 	}
 
+	public AbstractCommandInterpreter getCommandInterpreter() {
+		return commandInterpreter;
+	}
+
 	public AbstractCommand getCommand() {
 		return command;
 	}
@@ -684,7 +688,7 @@ public class CommandSemanticsAnalyzer extends DepthFirstAdapter {
 		System.out.println("IN " + node);
 		super.defaultIn(node);
 	}
-
+	
 	@Override
 	public void defaultOut(Node node) {
 		System.out.println("OUT " + node);
@@ -694,92 +698,92 @@ public class CommandSemanticsAnalyzer extends DepthFirstAdapter {
 	@Override
 	public void outAPwdDirective(APwdDirective node) {
 		super.outAPwdDirective(node);
-		registerCommand(node, new PwdDirective(node, commandInterpreter));
+		registerCommand(node, new PwdDirective(node, this));
 	}
 
 	@Override
 	public void outALsDirective(ALsDirective node) {
 		super.outALsDirective(node);
-		registerCommand(node, new LsDirective(node, commandInterpreter));
+		registerCommand(node, new LsDirective(node, this));
 	}
 
 	@Override
 	public void outACdDirective(ACdDirective node) {
 		super.outACdDirective(node);
-		registerCommand(node, new CdDirective(node, commandInterpreter));
+		registerCommand(node, new CdDirective(node, this));
 	}
 
 	@Override
 	public void outAHistoryDirective(AHistoryDirective node) {
 		super.outAHistoryDirective(node);
-		registerCommand(node, new HistoryDirective(node, commandInterpreter));
+		registerCommand(node, new HistoryDirective(node, this));
 	}
 
 	@Override
 	public void outAServicesDirective(AServicesDirective node) {
 		super.outAServicesDirective(node);
-		registerCommand(node, new ServicesDirective(node, commandInterpreter));
+		registerCommand(node, new ServicesDirective(node, this));
 	}
 
 	@SuppressWarnings("rawtypes")
 	@Override
 	public void outAServiceDirective(AServiceDirective node) {
 		super.outAServiceDirective(node);
-		registerCommand(node, new ServiceDirective(node, commandInterpreter));
+		registerCommand(node, new ServiceDirective(node, this));
 	}
 
 	@Override
 	public void outAActivateTaDirective(AActivateTaDirective node) {
 		super.outAActivateTaDirective(node);
-		registerCommand(node, new ActivateTA(node, commandInterpreter));
+		registerCommand(node, new ActivateTA(node, this));
 	}
 
 	@Override
 	public void outAResourcesDirective(AResourcesDirective node) {
 		super.outAResourcesDirective(node);
-		registerCommand(node, new ResourcesDirective(node, commandInterpreter));
+		registerCommand(node, new ResourcesDirective(node, this));
 	}
 
 	@Override
 	public void outAOpenDirective(AOpenDirective node) {
 		super.outAOpenDirective(node);
-		registerCommand(node, new OpenProject(node, commandInterpreter));
+		registerCommand(node, new OpenProject(node, this));
 	}
 
 	@Override
 	public void outALoadDirective(ALoadDirective node) {
 		super.outALoadDirective(node);
-		registerCommand(node, new LoadResource(node, commandInterpreter));
+		registerCommand(node, new LoadResource(node, this));
 	}
 
 	@Override
 	public void outADisplayDirective(ADisplayDirective node) {
 		super.outADisplayDirective(node);
-		registerCommand(node, new DisplayResource(node, commandInterpreter));
+		registerCommand(node, new DisplayResource(node, this));
 	}
 
 	@Override
 	public void outAEnterDirective(AEnterDirective node) {
 		super.outAEnterDirective(node);
-		registerCommand(node, new EnterDirective(node, commandInterpreter));
+		registerCommand(node, new EnterDirective(node, this));
 	}
 
 	@Override
 	public void outAExitDirective(AExitDirective node) {
 		super.outAExitDirective(node);
-		registerCommand(node, new ExitDirective(node, commandInterpreter));
+		registerCommand(node, new ExitDirective(node, this));
 	}
 
 	@Override
 	public void outAQuitDirective(AQuitDirective node) {
 		super.outAQuitDirective(node);
-		registerCommand(node, new QuitDirective(node, commandInterpreter));
+		registerCommand(node, new QuitDirective(node, this));
 	}
 
 	@Override
 	public void outAHelpDirective(AHelpDirective node) {
 		super.outAHelpDirective(node);
-		registerCommand(node, new HelpDirective(node, commandInterpreter));
+		registerCommand(node, new HelpDirective(node, this));
 	}
 
 	// COMMANDS
@@ -787,18 +791,18 @@ public class CommandSemanticsAnalyzer extends DepthFirstAdapter {
 	@Override
 	public void outAContextFmlCommand(AContextFmlCommand node) {
 		super.outAContextFmlCommand(node);
-		registerCommand(node, new FMLContextCommand(node, commandInterpreter, this));
+		registerCommand(node, new FMLContextCommand(node, this));
 	}
 
 	@Override
 	public void outAAssignationFmlCommand(AAssignationFmlCommand node) {
 		super.outAAssignationFmlCommand(node);
-		registerCommand(node, new FMLAssignation(node, commandInterpreter, this));
+		registerCommand(node, new FMLAssignation(node, this));
 	}
 
 	@Override
 	public void outAExprFmlCommand(AExprFmlCommand node) {
 		super.outAExprFmlCommand(node);
-		registerCommand(node, new FMLExpression(node, commandInterpreter, this));
+		registerCommand(node, new FMLExpression(node, this));
 	}
 }
