@@ -13,6 +13,8 @@ import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -59,6 +61,8 @@ public class FMLTerminal extends JFrame {
 	private List<String> history = new ArrayList<String>();
 	private int historyIndex;
 
+	private int minCursorPosition;
+
 	public FMLTerminal(FlexoServiceManager serviceManager, File userDir) {
 		setTitle("FMLTerminal");
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -102,6 +106,17 @@ public class FMLTerminal extends JFrame {
 
 		// Prevent UP and DOWN key to control scrollbar
 		disableScrollbarKeyManagement();
+
+		// Prevent select a position before prompt
+		textPane.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				super.mouseClicked(e);
+				if (textPane.getCaretPosition() < minCursorPosition) {
+					textPane.setCaretPosition(minCursorPosition/* textPane.getDocument().getLength() */);
+				}
+			}
+		});
 
 		TextPaneOutputStream out = new TextPaneOutputStream(textPane, Color.BLACK);
 		TextPaneOutputStream err = new TextPaneOutputStream(textPane, Color.RED);
@@ -275,7 +290,7 @@ public class FMLTerminal extends JFrame {
 	private void showPrompt() {
 		appendText(commandInterpreter.getPrompt(), true, false, Color.BLUE);
 		appendText(" > ");
-		keyListener.minCursorPosition = textPane.getCaretPosition();
+		minCursorPosition = textPane.getCaretPosition();
 	}
 
 	private void processEnterPressed() {
@@ -407,7 +422,6 @@ public class FMLTerminal extends JFrame {
 		private final int DOWN_KEY = KeyEvent.VK_DOWN;
 
 		private boolean isKeysDisabled;
-		private int minCursorPosition;
 
 		private String getKeyBinding(InputMap inputMap, String name) {
 			return (String) inputMap.get(KeyStroke.getKeyStroke(name));
@@ -442,10 +456,11 @@ public class FMLTerminal extends JFrame {
 		@Override
 		public void keyReleased(KeyEvent evt) {
 			int keyCode = evt.getKeyCode();
-			/*if (keyCode == ENTER_KEY) {
-				textPane.setCaretPosition(textPane.getCaretPosition() - 1);
-				setMinCursorPosition();
-			}*/
+			/*
+			 * if (keyCode == ENTER_KEY) {
+			 * textPane.setCaretPosition(textPane.getCaretPosition() - 1);
+			 * setMinCursorPosition(); }
+			 */
 		}
 
 		private void disableBackspaceKey() {
