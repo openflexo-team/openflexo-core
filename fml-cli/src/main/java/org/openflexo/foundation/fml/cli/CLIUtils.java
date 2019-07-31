@@ -20,6 +20,7 @@ package org.openflexo.foundation.fml.cli;
 
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.VirtualModel;
+import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 
 /**
  * Utilities for FML command-line interpreter
@@ -27,7 +28,8 @@ import org.openflexo.foundation.fml.VirtualModel;
 public class CLIUtils {
 
 	/**
-	 * Generic method used to render a FlexoObject in the context of FML command-line interpreter
+	 * Generic method used to render a FlexoObject in the context of FML
+	 * command-line interpreter
 	 * 
 	 * @param object
 	 * @return
@@ -35,9 +37,11 @@ public class CLIUtils {
 	public static String renderObject(Object object) {
 		if (object instanceof VirtualModel) {
 			return ((VirtualModel) object).getName() + ".fml";
-		}
-		else if (object instanceof FlexoConcept) {
-			return ((FlexoConcept) object).getDeclaringVirtualModel().getName() + ".fml/" + ((FlexoConcept) object).getName();
+		} else if (object instanceof FlexoConcept) {
+			return ((FlexoConcept) object).getDeclaringVirtualModel().getName() + ".fml/"
+					+ ((FlexoConcept) object).getName();
+		} else if (object instanceof FlexoConceptInstance) {
+			return ((FlexoConceptInstance) object).getUserFriendlyIdentifier();
 		}
 		return object.toString();
 	}

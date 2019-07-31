@@ -498,6 +498,12 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 	 */
 	public boolean deleteWithScheme(DeletionScheme deletionScheme, RunTimeEvaluationContext evaluationContext);
 
+	/**
+	 * Return a identifier for this FlexoConceptInstance under the form 'ConceptName'+ID
+	 * @return
+	 */
+	public String getUserFriendlyIdentifier();
+
 	public static abstract class FlexoConceptInstanceImpl extends VirtualModelInstanceObjectImpl implements FlexoConceptInstance {
 
 		private static final Logger logger = FlexoLogger.getLogger(FlexoConceptInstance.class.getPackage().toString());
@@ -1968,6 +1974,14 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 			return returned;
 		}
 
+		/**
+		 * Return a identifier for this FlexoConceptInstance under the form 'ConceptName'+ID
+		 * @return
+		 */
+		public String getUserFriendlyIdentifier() {
+			return (getFlexoConcept() != null ? getFlexoConcept().getName() : "?FlexoConceptInstance?")+getFlexoID();
+		}
+		
 		/**
 		 * Calling this method will register a new variable in the run-time context provided by this {@link FlexoConceptInstance} in the
 		 * context of its implementation of {@link RunTimeEvaluationContext}.<br>
