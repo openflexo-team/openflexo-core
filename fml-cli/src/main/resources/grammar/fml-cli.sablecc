@@ -97,6 +97,7 @@ Tokens
  open = 'open';
  load = 'load';
  display = 'display';
+ contents = 'contents';
  enter = 'enter';
  exit = 'exit';
  quit = 'quit';
@@ -138,6 +139,7 @@ Productions
   {load} load resource_uri |
   {display} display resource_uri |
   {enter} enter_directive |
+  {contents} contents |
   {exit} exit |
   {quit} quit;
 

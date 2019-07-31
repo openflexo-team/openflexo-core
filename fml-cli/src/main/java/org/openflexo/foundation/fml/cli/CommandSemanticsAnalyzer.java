@@ -64,6 +64,7 @@ import org.openflexo.connie.expr.UnaryOperatorExpression;
 import org.openflexo.foundation.fml.cli.command.AbstractCommand;
 import org.openflexo.foundation.fml.cli.command.directive.ActivateTA;
 import org.openflexo.foundation.fml.cli.command.directive.CdDirective;
+import org.openflexo.foundation.fml.cli.command.directive.ContentsDirective;
 import org.openflexo.foundation.fml.cli.command.directive.DisplayResource;
 import org.openflexo.foundation.fml.cli.command.directive.EnterDirective;
 import org.openflexo.foundation.fml.cli.command.directive.ExitDirective;
@@ -96,6 +97,7 @@ import org.openflexo.foundation.fml.cli.parser.node.ACdDirective;
 import org.openflexo.foundation.fml.cli.parser.node.ACharsValueTerm;
 import org.openflexo.foundation.fml.cli.parser.node.ACondExprExpr;
 import org.openflexo.foundation.fml.cli.parser.node.AConstantNumber;
+import org.openflexo.foundation.fml.cli.parser.node.AContentsDirective;
 import org.openflexo.foundation.fml.cli.parser.node.AContextFmlCommand;
 import org.openflexo.foundation.fml.cli.parser.node.ACosFuncFunction;
 import org.openflexo.foundation.fml.cli.parser.node.ADecimalNumberNumber;
@@ -768,6 +770,12 @@ public class CommandSemanticsAnalyzer extends DepthFirstAdapter {
 		registerCommand(node, new EnterDirective(node, this));
 	}
 
+	@Override
+	public void outAContentsDirective(AContentsDirective node) {
+		super.outAContentsDirective(node);
+		registerCommand(node, new ContentsDirective(node, this));
+	}
+	
 	@Override
 	public void outAExitDirective(AExitDirective node) {
 		super.outAExitDirective(node);

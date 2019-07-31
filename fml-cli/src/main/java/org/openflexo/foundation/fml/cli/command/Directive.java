@@ -48,6 +48,7 @@ import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.fml.cli.CommandSemanticsAnalyzer;
 import org.openflexo.foundation.fml.cli.command.directive.ActivateTA;
 import org.openflexo.foundation.fml.cli.command.directive.CdDirective;
+import org.openflexo.foundation.fml.cli.command.directive.ContentsDirective;
 import org.openflexo.foundation.fml.cli.command.directive.DisplayResource;
 import org.openflexo.foundation.fml.cli.command.directive.EnterDirective;
 import org.openflexo.foundation.fml.cli.command.directive.ExitDirective;
@@ -95,7 +96,7 @@ import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 		@DeclareDirective(QuitDirective.class), @DeclareDirective(ServicesDirective.class), @DeclareDirective(ServiceDirective.class),
 		@DeclareDirective(ActivateTA.class), @DeclareDirective(ResourcesDirective.class), @DeclareDirective(OpenProject.class),
 		@DeclareDirective(LoadResource.class), @DeclareDirective(DisplayResource.class), @DeclareDirective(EnterDirective.class),
-		@DeclareDirective(ExitDirective.class) })
+		@DeclareDirective(ExitDirective.class), @DeclareDirective(ContentsDirective.class) })
 public abstract class Directive extends AbstractCommand {
 
 	@SuppressWarnings("unused")
