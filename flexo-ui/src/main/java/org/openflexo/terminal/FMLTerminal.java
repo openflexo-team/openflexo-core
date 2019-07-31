@@ -298,15 +298,34 @@ public class FMLTerminal extends JFrame {
 		appendNewLine();
 		String command = extractCommand();
 		if (StringUtils.isNotEmpty(command.trim())) {
-			executeCommand(command);
+			Thread executeCommandThread = new Thread() {
+				@Override
+				public void run() {
+					executeCommand(command);
+					showPrompt();
+					enableTerminal();
+				}
+			};
+			executeCommandThread.start();
+
+			/*SwingUtilities.invokeLater(new Runnable() {
+				@Override
+				public void run() {
+					executeCommand(command);
+					showPrompt();
+					enableTerminal();
+				}
+			});*/
 		}
-		showPrompt();
-		SwingUtilities.invokeLater(new Runnable() {
-			@Override
-			public void run() {
-				enableTerminal();
-			}
-		});
+		else {
+			SwingUtilities.invokeLater(new Runnable() {
+				@Override
+				public void run() {
+					showPrompt();
+					enableTerminal();
+				}
+			});
+		}
 	}
 
 	private void processTabPressed() {
