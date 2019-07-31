@@ -37,6 +37,7 @@ import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.fml.cli.ParseException;
 import org.openflexo.foundation.fml.cli.command.AbstractCommand;
 import org.openflexo.foundation.fml.cli.command.directive.ExitDirective;
+import org.openflexo.foundation.fml.cli.command.directive.QuitDirective;
 import org.openflexo.icon.IconLibrary;
 import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.toolbox.StringUtils;
@@ -470,8 +471,12 @@ public class FMLTerminal extends JFrame {
 	private void executeCommand(String commandString) {
 		String commandWithoutLineSeparator = commandString.substring(0, commandString.indexOf(LINE_SEPARATOR));
 		try {
+			boolean hadFocusedObject = (commandInterpreter.getFocusedObject() != null);
 			AbstractCommand executeCommand = commandInterpreter.executeCommand(commandWithoutLineSeparator);
-			if (executeCommand instanceof ExitDirective) {
+			if (executeCommand instanceof QuitDirective) {
+				close();
+			}
+			if (executeCommand instanceof ExitDirective && !hadFocusedObject) {
 				close();
 			}
 		} catch (ParseException e) {
