@@ -44,6 +44,8 @@ import java.io.FileNotFoundException;
 import java.util.List;
 import java.util.logging.Logger;
 
+import javax.swing.SwingUtilities;
+
 import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.fml.cli.CommandSemanticsAnalyzer;
 import org.openflexo.foundation.fml.cli.command.directive.ActivateTA;
@@ -199,25 +201,36 @@ public abstract class Directive extends AbstractCommand {
 	}
 
 	protected Object evaluate(PBinding value, CommandTokenType tokenType) {
-		System.out.println("On doit evaluer " + value);
-		System.out.println("En tant que " + tokenType);
+		// System.out.println("On doit evaluer " + value);
+		// System.out.println("En tant que " + tokenType);
+
+		Thread.dumpStack();
 
 		switch (tokenType) {
 			case Expression:
 				return null;
 			case LocalReference:
 				String valueAsString = getText(value);
-				System.out.println("Hop: " + valueAsString);
+				// System.out.println("Hop: " + valueAsString);
 				File referencedFile = new File(getCommandInterpreter().getWorkingDirectory(), valueAsString);
-				System.out.println("Fichier ? " + referencedFile);
+				// System.out.println("Fichier ? " + referencedFile);
 				if (referencedFile != null && referencedFile.exists()) {
-					System.out.println("existe ? " + (referencedFile != null ? referencedFile.exists() : "???"));
+					// System.out.println("existe ? " + (referencedFile != null ? referencedFile.exists() : "???"));
 					ResourceManager rm = getCommandInterpreter().getServiceManager().getResourceManager();
 					List<FlexoResource<?>> resources = rm.getResources(referencedFile);
-					System.out.println("found: " + resources);
+					// System.out.println("found: " + resources);
 					if (resources.size() > 0) {
+						FlexoResource<?> resource = resources.get(0);
 						try {
-							return resources.get(0).getResourceData();
+							if (!resource.isLoaded()) {
+								SwingUtilities.invokeLater(new Runnable() {
+									@Override
+									public void run() {
+										getOutStream().println("Loading resource " + referencedFile.getName() + "...");
+									}
+								});
+							}
+							return resource.getResourceData();
 						} catch (FileNotFoundException e) {
 							// TODO Auto-generated catch block
 							e.printStackTrace();

@@ -88,12 +88,12 @@ public class EnterDirective extends Directive {
 		}
 		else if (enterDirective instanceof AObjectEnterDirective) {
 			PBinding referencedObject = ((AObjectEnterDirective) enterDirective).getBinding();
-			System.out.println("On entre dans l'objet: " + referencedObject);
+			// System.out.println("On entre dans l'objet: " + referencedObject);
 			object = evaluate(referencedObject, CommandTokenType.LocalReference);
-			System.out.println("Found as local reference: " + object);
+			// System.out.println("Found as local reference: " + object);
 			if (object == null) {
 				object = evaluate(referencedObject, CommandTokenType.Expression);
-				System.out.println("Found as expression: " + object);
+				// System.out.println("Found as expression: " + object);
 			}
 		}
 	}
