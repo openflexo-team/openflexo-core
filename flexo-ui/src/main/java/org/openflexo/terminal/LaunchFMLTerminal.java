@@ -182,7 +182,7 @@ public class LaunchFMLTerminal {
 
 		FMLTerminal terminal = new FMLTerminal(serviceManager,
 				(options.projectPath != null ? projectDirectory : new File(System.getProperty("user.dir"))));
-		terminal.open(0, 0, 700, 700);
+		terminal.open(100, 100, 1024, 700);
 
 		/*} catch (Exception e) {
 			System.out.println("Caught an Exception :");
