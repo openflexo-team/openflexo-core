@@ -59,7 +59,10 @@ import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.foundation.fml.rt.rm.FMLRTVirtualModelInstanceResourceFactory;
 import org.openflexo.foundation.resource.FlexoResource;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
+import org.openflexo.foundation.resource.FlexoResourceCenterService;
+import org.openflexo.foundation.resource.ResourceManager;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
+import org.openflexo.foundation.technologyadapter.TechnologyAdapterService;
 import org.openflexo.toolbox.PropertyChangedSupportDefaultImplementation;
 
 /**
@@ -116,6 +119,10 @@ public abstract class AbstractCommandInterpreter extends PropertyChangedSupportD
 			this.workingDirectory = new File(System.getProperty("user.dir"));
 		}
 
+		declareVariable("serviceManager", serviceManager.getClass(), serviceManager);
+		declareVariable("resourceManager", ResourceManager.class, serviceManager.getResourceManager());
+		declareVariable("technologyAdapterService", TechnologyAdapterService.class, serviceManager.getTechnologyAdapterService());
+		declareVariable("resourceCenterService", FlexoResourceCenterService.class, serviceManager.getResourceCenterService());
 	}
 
 	protected String getWelcomeMessage() {
