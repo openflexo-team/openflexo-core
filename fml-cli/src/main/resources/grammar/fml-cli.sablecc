@@ -96,8 +96,7 @@ Tokens
  resources = 'resources';
  open = 'open';
  load = 'load';
- display = 'display';
- contents = 'contents';
+ more = 'more';
  enter = 'enter';
  exit = 'exit';
  quit = 'quit';
@@ -137,9 +136,8 @@ Productions
   {resources} resources_directive |
   {open} open path |
   {load} load resource_uri |
-  {display} display resource_uri |
+  {more} more_directive |
   {enter} enter_directive |
-  {contents} contents |
   {exit} exit |
   {quit} quit;
 
@@ -152,6 +150,11 @@ Productions
  enter_directive =
   {resource} enter minus_r resource_uri |
   {object} enter binding;
+
+ more_directive =
+  {plain} more |
+  {resource} more minus_r resource_uri |
+  {object} more binding;
 
  path =
   //{file_name} file_name |

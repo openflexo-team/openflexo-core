@@ -250,7 +250,11 @@ public abstract class AbstractCommandInterpreter extends PropertyChangedSupportD
 	public List<String> getAvailableCompletion(String startingBuffer) {
 		List<String> tokens = tokenize(startingBuffer);
 		if (tokens.size() == 0) {
-			return Collections.emptyList();
+			List<String> returned = new ArrayList<>();
+			for (BindingVariable bindingVariable : getBindingModel().getAccessibleBindingVariables()) {
+				returned.add(bindingVariable.getVariableName());
+			}
+			return returned;
 		}
 		if (tokens.size() == 1) {
 			// completion for a unique token
@@ -296,26 +300,87 @@ public abstract class AbstractCommandInterpreter extends PropertyChangedSupportD
 	private List<String> getAvailableCompletion(DirectiveDeclaration directiveDeclaration, String startingBuffer) {
 		// System.out.println("Hop, on essaie de faire une completion pour " + directiveDeclaration);
 
-		List<String> tokens = tokenize(startingBuffer);
+		// List<String> tokens = tokenize(startingBuffer);
 		String syntax = directiveDeclaration.syntax();
-		List<String> expectedSyntax = tokenize(syntax);
+		List<String> globalSyntax = tokenize(syntax);
 
-		int index = tokens.size() - 1;
+		// int index = tokens.size() - 1;
 
-		System.out.println("index=" + index);
+		System.out.println("OK on cherche toutes les completions pour toutes les syntaxes possibles");
 
 		System.out.println("syntax=" + syntax);
+		System.out.println("expectedSyntax=" + globalSyntax);
+		System.out.println("expectedSyntax.size=" + globalSyntax.size());
+
+		if (globalSyntax.get(0).equals(directiveDeclaration.keyword())) {
+			int i = 1;
+			List<List<String>> expectedSyntaxes = new ArrayList<>();
+			List<String> current = new ArrayList<>();
+			while (i < globalSyntax.size()) {
+				String t = globalSyntax.get(i);
+				if (t.equals("|")) {
+					expectedSyntaxes.add(current);
+					current = new ArrayList<>();
+				}
+				else {
+					current.add(t);
+				}
+				i++;
+			}
+			if (current.size() > 0) {
+				expectedSyntaxes.add(current);
+			}
+			System.out.println("Et donc: " + expectedSyntaxes);
+			List<String> returned = new ArrayList<>();
+			for (List<String> expectedSyntax : expectedSyntaxes) {
+				List<String> someCompletions = getAvailableCompletionForSyntax(directiveDeclaration, startingBuffer, expectedSyntax);
+				System.out.println("A ajouter: " + someCompletions);
+				returned.addAll(someCompletions);
+			}
+			return returned;
+		}
+		else {
+			getErrStream().println("Unexpected syntax");
+			return Collections.emptyList();
+		}
+
+		// System.out.println("tokens.size=" + tokens.size());
+
+		/*if (expectedSyntax.size() < tokens.size()) {
+			// Nothing else expected
+			return Collections.emptyList();
+		}
+		
+		String currentToken = tokens.get(index);
+		String expectedTokenSyntax = expectedSyntax.get(index);
+		
+		System.out.println("Maintenant, on cherche a completer " + currentToken + " pour " + expectedTokenSyntax);
+		
+		return getAvailableCompletionForToken(currentToken, expectedTokenSyntax, directiveDeclaration, startingBuffer,
+				tokens.get(index - 1));*/
+
+	}
+
+	private List<String> getAvailableCompletionForSyntax(DirectiveDeclaration directiveDeclaration, String startingBuffer,
+			List<String> expectedSyntax) {
+		// System.out.println("Hop, on essaie de faire une completion pour " + directiveDeclaration);
+
+		List<String> tokens = tokenize(startingBuffer);
+		int index = tokens.size() - 1;
+
+		System.out.println("Ok on cherche....");
+		System.out.println("index=" + index);
 		System.out.println("expectedSyntax=" + expectedSyntax);
 		System.out.println("expectedSyntax.size=" + expectedSyntax.size());
 		System.out.println("tokens.size=" + tokens.size());
 
-		if (expectedSyntax.size() < tokens.size()) {
+		if (expectedSyntax.size() < tokens.size() - 1) {
 			// Nothing else expected
 			return Collections.emptyList();
 		}
 
 		String currentToken = tokens.get(index);
-		String expectedTokenSyntax = expectedSyntax.get(index);
+		String expectedTokenSyntax = expectedSyntax.get(index - 1);
 
 		System.out.println("Maintenant, on cherche a completer " + currentToken + " pour " + expectedTokenSyntax);
 
@@ -340,7 +405,12 @@ public abstract class AbstractCommandInterpreter extends PropertyChangedSupportD
 		}
 
 		CommandTokenType tokenType = CommandTokenType.getType(expectedTokenSyntax);
-		return getAvailableCompletionForTokenType(currentToken, tokenType, directiveDeclaration, startingBuffer, previousToken);
+		if (tokenType != null) {
+			return getAvailableCompletionForTokenType(currentToken, tokenType, directiveDeclaration, startingBuffer, previousToken);
+		}
+		else {
+			return Collections.emptyList();
+		}
 	}
 
 	private List<String> getAvailableCompletionForTokenType(String currentToken, CommandTokenType tokenType,
