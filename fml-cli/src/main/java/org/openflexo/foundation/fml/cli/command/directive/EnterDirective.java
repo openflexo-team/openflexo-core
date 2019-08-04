@@ -118,6 +118,9 @@ public class EnterDirective extends Directive {
 			getOutStream().println("Entering in context " + object);
 			getCommandInterpreter().setFocusedObject((FlexoObject) object);
 		}
+		else if (object != null) {
+			getErrStream().println("Cannot enter into " + object.getClass() + " : " + object);
+		}
 		else {
 			getErrStream().println("Cannot access denoted context");
 		}

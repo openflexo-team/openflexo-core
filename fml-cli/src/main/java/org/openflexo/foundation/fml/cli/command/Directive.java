@@ -41,11 +41,16 @@ package org.openflexo.foundation.fml.cli.command;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import java.util.logging.Logger;
 
 import javax.swing.SwingUtilities;
 
+import org.openflexo.connie.DataBinding;
+import org.openflexo.connie.DataBinding.BindingDefinitionType;
+import org.openflexo.connie.exception.NullReferenceException;
+import org.openflexo.connie.exception.TypeMismatchException;
 import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.fml.cli.CommandSemanticsAnalyzer;
 import org.openflexo.foundation.fml.cli.command.directive.ActivateTA;
@@ -200,14 +205,23 @@ public abstract class Directive extends AbstractCommand {
 	}
 
 	protected Object evaluate(PBinding value, CommandTokenType tokenType) {
-		// System.out.println("On doit evaluer " + value);
-		// System.out.println("En tant que " + tokenType);
-
-		Thread.dumpStack();
 
 		switch (tokenType) {
 			case Expression:
-				return null;
+				System.out.println("On doit evaluer " + value);
+				System.out.println("En tant que " + tokenType);
+				DataBinding<?> toEvaluate = new DataBinding<>(getText(value), getCommandInterpreter(), Object.class,
+						BindingDefinitionType.GET);
+				System.out.println("Donc " + toEvaluate);
+				System.out.println("Valide: " + toEvaluate.isValid());
+				try {
+					return toEvaluate.getBindingValue(getCommandInterpreter());
+				} catch (TypeMismatchException | NullReferenceException | InvocationTargetException e1) {
+					getErrStream().println("Error evaluating " + toEvaluate);
+					e1.printStackTrace();
+					return null;
+				}
+
 			case LocalReference:
 				String valueAsString = getText(value);
 				// System.out.println("Hop: " + valueAsString);

@@ -103,7 +103,7 @@ public class FMLAssignation extends FMLCommand {
 		if (assignation.isValid()) {
 			try {
 				Object value = assignation.getBindingValue(getCommandInterpreter());
-				// getOutStream().println("value=" + value);
+				getOutStream().println("SET " + variableName + " = " + value);
 				getCommandInterpreter().declareVariable(variableName, assignation.getAnalyzedType(), value);
 			} catch (TypeMismatchException e) {
 				getErrStream().println("Cannot execute " + assignation + " : " + e.getMessage());

@@ -109,6 +109,7 @@ public class FMLExpression extends FMLCommand {
 							// getCommandInterpreter().declareVariable(variableName, assignation.getAnalyzedType(), value);
 							// }
 							// else {
+							getOutStream().println("SET " + left + " = " + value);
 							left.setBindingValue(value, getCommandInterpreter());
 							// }
 						}
@@ -120,6 +121,7 @@ public class FMLExpression extends FMLCommand {
 							String variableName = ((BindingValue) left.getExpression()).getParsedBindingPath().get(0)
 									.getSerializationRepresentation();
 							// getOutStream().println("variable=" + variableName);
+							getOutStream().println("SET " + variableName + " = " + value);
 							getCommandInterpreter().declareVariable(variableName, right.getAnalyzedType(), value);
 						}
 						else {

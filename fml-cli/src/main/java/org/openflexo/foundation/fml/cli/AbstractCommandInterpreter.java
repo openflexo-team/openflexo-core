@@ -37,7 +37,6 @@ import org.openflexo.connie.BindingVariable;
 import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.binding.SettableBindingEvaluationContext;
 import org.openflexo.connie.java.JavaBindingFactory;
-import org.openflexo.connie.type.TypeUtils;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.FlexoService;
 import org.openflexo.foundation.FlexoService.ServiceOperation;
@@ -257,28 +256,31 @@ public abstract class AbstractCommandInterpreter extends PropertyChangedSupportD
 	public List<String> getAvailableCompletion(String startingBuffer) {
 		List<String> tokens = tokenize(startingBuffer);
 		if (tokens.size() == 0) {
-			List<String> returned = new ArrayList<>();
+			return getBindingModel().getBindingValueAvailableCompletion("", Object.class, this);
+
+			/*List<String> returned = new ArrayList<>();
 			for (BindingVariable bindingVariable : getBindingModel().getAccessibleBindingVariables()) {
 				returned.add(bindingVariable.getVariableName());
 			}
-			return returned;
+			return returned;*/
 		}
 		if (tokens.size() == 1) {
 			// completion for a unique token
-			List<String> commands = new ArrayList<String>();
+			List<String> returned = new ArrayList<String>();
 			for (Class<? extends Directive> directiveClass : getAvailableDirectives()) {
 				String keyword = directiveClass.getAnnotation(DirectiveDeclaration.class).keyword();
 				if (keyword.startsWith(tokens.get(0))) {
-					commands.add(keyword);
+					returned.add(keyword);
 				}
 			}
 			for (Class<? extends FMLCommand> commandClass : getAvailableCommands()) {
 				String keyword = commandClass.getAnnotation(FMLCommandDeclaration.class).keyword();
 				if (keyword.startsWith(tokens.get(0))) {
-					commands.add(keyword);
+					returned.add(keyword);
 				}
 			}
-			return commands;
+			returned.addAll(getBindingModel().getBindingValueAvailableCompletion(tokens.get(0), Object.class, this));
+			return returned;
 		}
 
 		DirectiveDeclaration directiveClassDeclaration = null;
@@ -413,29 +415,42 @@ public abstract class AbstractCommandInterpreter extends PropertyChangedSupportD
 
 		CommandTokenType tokenType = CommandTokenType.getType(expectedTokenSyntax);
 		if (tokenType != null) {
-			return getAvailableCompletionForTokenType(currentToken, tokenType, directiveDeclaration, startingBuffer, previousToken);
+			return getAvailableCompletionForTokenTypeAndStartingBuffer(currentToken, tokenType, startingBuffer, previousToken);
 		}
 		else {
 			return Collections.emptyList();
 		}
 	}
 
-	private List<String> getAvailableCompletionForTokenType(String currentToken, CommandTokenType tokenType,
-			DirectiveDeclaration directiveDeclaration, String startingBuffer, String previousToken) {
+	private List<String> getAvailableCompletionForTokenTypeAndStartingBuffer(String currentToken, CommandTokenType tokenType,
+			String startingBuffer, String previousToken) {
+
+		List<String> returned = new ArrayList<>();
+		String startString = startingBuffer.substring(0, startingBuffer.length() - currentToken.length());
+
+		for (String completion : getAvailableCompletionForTokenType(currentToken, tokenType, previousToken)) {
+			returned.add(startString + completion);
+		}
+		return returned;
+	}
+
+	private List<String> getAvailableCompletionForTokenType(String currentToken, CommandTokenType tokenType, String previousToken) {
 
 		List<String> returned = new ArrayList<>();
 		String utileToken = currentToken;
 
 		switch (tokenType) {
 			case Expression:
-
+				for (String completion : getBindingModel().getBindingValueAvailableCompletion(currentToken, Object.class, this)) {
+					returned.add(completion);
+				}
 				return returned;
 			case LocalReference:
 				for (File f : getWorkingDirectory().listFiles()) {
 					// System.out.println("On rajoute " + f.getName());
 					if (f.getName().startsWith(currentToken)
 							&& f.getName().endsWith(FMLRTVirtualModelInstanceResourceFactory.FML_RT_SUFFIX)) {
-						returned.add(startingBuffer.substring(0, startingBuffer.length() - currentToken.length()) + f.getName());
+						returned.add(f.getName());
 					}
 				}
 				return returned;
@@ -443,15 +458,14 @@ public abstract class AbstractCommandInterpreter extends PropertyChangedSupportD
 				for (File f : getWorkingDirectory().listFiles()) {
 					// System.out.println("On rajoute " + f.getName());
 					if (f.getName().startsWith(currentToken)) {
-						returned.add(startingBuffer.substring(0, startingBuffer.length() - currentToken.length()) + f.getName());
+						returned.add(f.getName());
 					}
 				}
 				return returned;
 			case Service:
 				for (FlexoService service : serviceManager.getRegisteredServices()) {
 					if (service.getServiceName().startsWith(currentToken)) {
-						returned.add(
-								startingBuffer.substring(0, startingBuffer.length() - currentToken.length()) + service.getServiceName());
+						returned.add(service.getServiceName());
 					}
 				}
 				return returned;
@@ -465,8 +479,7 @@ public abstract class AbstractCommandInterpreter extends PropertyChangedSupportD
 				if (service != null) {
 					for (ServiceOperation<?> serviceOperation : service.getAvailableServiceOperations()) {
 						if (serviceOperation.getOperationName().startsWith(currentToken)) {
-							returned.add(startingBuffer.substring(0, startingBuffer.length() - currentToken.length())
-									+ serviceOperation.getOperationName());
+							returned.add(serviceOperation.getOperationName());
 						}
 					}
 				}
@@ -474,7 +487,7 @@ public abstract class AbstractCommandInterpreter extends PropertyChangedSupportD
 			case TA:
 				for (TechnologyAdapter ta : serviceManager.getTechnologyAdapterService().getTechnologyAdapters()) {
 					if (ta.getIdentifier().startsWith(currentToken)) {
-						returned.add(startingBuffer.substring(0, startingBuffer.length() - currentToken.length()) + ta.getIdentifier());
+						returned.add(ta.getIdentifier());
 					}
 				}
 				return returned;
@@ -484,8 +497,7 @@ public abstract class AbstractCommandInterpreter extends PropertyChangedSupportD
 				}
 				for (FlexoResourceCenter<?> rc : serviceManager.getResourceCenterService().getResourceCenters()) {
 					if (rc.getDefaultBaseURI().startsWith(utileToken)) {
-						returned.add(startingBuffer.substring(0, startingBuffer.length() - currentToken.length()) + "["
-								+ rc.getDefaultBaseURI() + "]");
+						returned.add("[" + rc.getDefaultBaseURI() + "]");
 					}
 				}
 				return returned;
@@ -496,13 +508,8 @@ public abstract class AbstractCommandInterpreter extends PropertyChangedSupportD
 				for (FlexoResourceCenter<?> rc : serviceManager.getResourceCenterService().getResourceCenters()) {
 					for (FlexoResource<?> r : rc.getAllResources()) {
 						if (r.getURI().startsWith(utileToken)) {
-							returned.add(
-									startingBuffer.substring(0, startingBuffer.length() - currentToken.length()) + "[" + r.getURI() + "]");
+							returned.add("[" + r.getURI() + "]");
 						}
-						/*if (r.getName().startsWith(utileToken)) {
-							returned.add(
-									startingBuffer.substring(0, startingBuffer.length() - currentToken.length()) + "[" + r.getName() + "]");
-						}*/
 					}
 				}
 				return returned;
@@ -552,7 +559,7 @@ public abstract class AbstractCommandInterpreter extends PropertyChangedSupportD
 	private Map<BindingVariable, Object> values = new HashMap<>();
 
 	public void declareVariable(String variableName, Type type, Object value) {
-		System.out.println(variableName + "<-" + value + "[" + TypeUtils.simpleRepresentation(type) + "]");
+		// System.out.println(variableName + "<-" + value + "[" + TypeUtils.simpleRepresentation(type) + "]");
 		BindingVariable variable = getBindingModel().getBindingVariableNamed(variableName);
 		if (variable == null) {
 			variable = new BindingVariable(variableName, type);
