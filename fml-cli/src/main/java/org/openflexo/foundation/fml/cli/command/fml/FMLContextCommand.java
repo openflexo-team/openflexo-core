@@ -48,6 +48,7 @@ import org.openflexo.foundation.fml.cli.CommandSemanticsAnalyzer;
 import org.openflexo.foundation.fml.cli.command.FMLCommand;
 import org.openflexo.foundation.fml.cli.command.FMLCommandDeclaration;
 import org.openflexo.foundation.fml.cli.parser.node.AContextFmlCommand;
+import org.openflexo.toolbox.StringUtils;
 
 /**
  * Represents context command in FML command-line interpreter<br>
@@ -69,9 +70,28 @@ public class FMLContextCommand extends FMLCommand {
 
 	@Override
 	public void execute() {
+		int maxTypeCols = -1;
+		int maxNameCols = -1;
+
 		for (int i = 0; i < getCommandInterpreter().getBindingModel().getBindingVariablesCount(); i++) {
 			BindingVariable bv = getCommandInterpreter().getBindingModel().getBindingVariableAt(i);
-			getOutStream().println("[" + TypeUtils.simpleRepresentation(bv.getType()) + "] " + bv.getVariableName() + "="
+			String type = "[" + TypeUtils.simpleRepresentation(bv.getType()) + "]";
+			String name = bv.getVariableName();
+			if (type.length() > maxTypeCols) {
+				maxTypeCols = type.length();
+			}
+			if (name.length() > maxNameCols) {
+				maxNameCols = name.length();
+			}
+		}
+
+		for (int i = 0; i < getCommandInterpreter().getBindingModel().getBindingVariablesCount(); i++) {
+			BindingVariable bv = getCommandInterpreter().getBindingModel().getBindingVariableAt(i);
+			String type = "[" + TypeUtils.simpleRepresentation(bv.getType()) + "]";
+			String name = bv.getVariableName();
+
+			getOutStream().println(type + StringUtils.buildWhiteSpaceIndentation(maxTypeCols - type.length()) + " "
+					+ StringUtils.buildWhiteSpaceIndentation(maxNameCols - name.length()) + name + " = "
 					+ CLIUtils.renderObject(getCommandInterpreter().getValue(bv)));
 		}
 	}

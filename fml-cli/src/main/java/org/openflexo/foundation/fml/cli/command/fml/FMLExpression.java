@@ -55,6 +55,7 @@ import org.openflexo.foundation.fml.cli.CommandSemanticsAnalyzer;
 import org.openflexo.foundation.fml.cli.command.FMLCommand;
 import org.openflexo.foundation.fml.cli.command.FMLCommandDeclaration;
 import org.openflexo.foundation.fml.cli.parser.node.AExprFmlCommand;
+import org.openflexo.toolbox.StringUtils;
 
 /**
  * Represents an expression in FML command-line interpreter
@@ -98,7 +99,7 @@ public class FMLExpression extends FMLCommand {
 				Expression leftArg = equalsExp.getLeftArgument();
 				Expression rightArg = equalsExp.getRightArgument();
 				DataBinding<Object> left = new DataBinding<>(leftArg.toString(), getCommandInterpreter(), Object.class,
-						BindingDefinitionType.GET);
+						BindingDefinitionType.SET);
 				DataBinding<Object> right = new DataBinding<>(rightArg.toString(), getCommandInterpreter(), Object.class,
 						BindingDefinitionType.GET);
 				if (right.isValid()) {
@@ -147,7 +148,8 @@ public class FMLExpression extends FMLCommand {
 		} catch (NullReferenceException e) {
 			getErrStream().println("Cannot execute " + expression + " : " + e.getMessage());
 		} catch (InvocationTargetException e) {
-			getErrStream().println("Cannot execute " + expression + " : " + e.getMessage());
+			getErrStream().println("Unexpected exception: " + e.getTargetException()
+					+ (StringUtils.isNotEmpty(e.getTargetException().getMessage()) ? " : " + e.getTargetException().getMessage() : ""));
 		} catch (NotSettableContextException e) {
 			getErrStream().println("Cannot execute " + expression + " : " + e.getMessage());
 		}

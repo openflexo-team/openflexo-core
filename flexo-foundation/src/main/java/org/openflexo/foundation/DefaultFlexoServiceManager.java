@@ -241,4 +241,9 @@ public class DefaultFlexoServiceManager extends FlexoServiceManager {
 		sb.append("**********************************************");
 		return sb.toString();
 	}
+
+	@Override
+	public String toString() {
+		return getClass().getSimpleName() + "@" + Integer.toHexString(hashCode());
+	}
 }

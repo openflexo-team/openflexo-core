@@ -754,4 +754,9 @@ public abstract class DefaultResourceCenterService extends FlexoServiceImpl impl
 		}
 	}
 
+	@Override
+	public String toString() {
+		return getClass().getSimpleName() + "@" + Integer.toHexString(hashCode());
+	}
+
 }

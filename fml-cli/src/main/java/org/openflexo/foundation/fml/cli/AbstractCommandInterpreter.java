@@ -118,10 +118,10 @@ public abstract class AbstractCommandInterpreter extends PropertyChangedSupportD
 			this.workingDirectory = new File(System.getProperty("user.dir"));
 		}
 
-		declareVariable("serviceManager", serviceManager.getClass(), serviceManager);
-		declareVariable("resourceManager", ResourceManager.class, serviceManager.getResourceManager());
-		declareVariable("technologyAdapterService", TechnologyAdapterService.class, serviceManager.getTechnologyAdapterService());
-		declareVariable("resourceCenterService", FlexoResourceCenterService.class, serviceManager.getResourceCenterService());
+		declareVariable("sm", serviceManager.getClass(), serviceManager);
+		declareVariable("rm", ResourceManager.class, serviceManager.getResourceManager());
+		declareVariable("taService", TechnologyAdapterService.class, serviceManager.getTechnologyAdapterService());
+		declareVariable("rcService", FlexoResourceCenterService.class, serviceManager.getResourceCenterService());
 	}
 
 	protected String getWelcomeMessage() {
@@ -255,6 +255,7 @@ public abstract class AbstractCommandInterpreter extends PropertyChangedSupportD
 
 	public List<String> getAvailableCompletion(String startingBuffer) {
 		List<String> tokens = tokenize(startingBuffer);
+		System.out.println("tokens=" + tokens);
 		if (tokens.size() == 0) {
 			return getBindingModel().getBindingValueAvailableCompletion("", Object.class, this);
 
@@ -264,6 +265,19 @@ public abstract class AbstractCommandInterpreter extends PropertyChangedSupportD
 			}
 			return returned;*/
 		}
+
+		if (tokens.size() == 3 && tokens.get(1).equals(":=")) {
+			System.out.println("Yes une assignation");
+		}
+
+		if (tokens.size() == 3 && tokens.get(1).equals("=")) {
+			System.out.println("Yes une assignation2");
+		}
+
+		if (tokens.size() == 1 && tokens.get(0).contains("=")) {
+			System.out.println("Yes une assignation3");
+		}
+
 		if (tokens.size() == 1) {
 			// completion for a unique token
 			List<String> returned = new ArrayList<String>();

@@ -445,6 +445,11 @@ public interface FMLObject extends FlexoObject, Bindable, InnerResourceData/*<Vi
 			return getFMLRepresentation();
 		}
 
+		@Override
+		public String render() {
+			return getFMLRepresentation();
+		}
+
 	}
 
 	public static abstract class BindingIsRecommandedAndShouldBeValid<C extends FMLObject>

@@ -676,4 +676,9 @@ public abstract class DefaultTechnologyAdapterService extends FlexoServiceImpl i
 		}
 	}
 
+	@Override
+	public String toString() {
+		return getClass().getSimpleName() + "@" + Integer.toHexString(hashCode());
+	}
+
 }

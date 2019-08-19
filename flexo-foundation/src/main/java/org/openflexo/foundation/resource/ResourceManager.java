@@ -499,4 +499,10 @@ public class ResourceManager extends FlexoServiceImpl implements ReferenceOwner 
 		}
 		return returned;
 	}
+
+	@Override
+	public String toString() {
+		return getClass().getSimpleName() + "@" + Integer.toHexString(hashCode());
+	}
+
 }
