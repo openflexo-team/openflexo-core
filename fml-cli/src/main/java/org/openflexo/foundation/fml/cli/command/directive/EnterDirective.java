@@ -116,7 +116,7 @@ public class EnterDirective extends Directive {
 		}
 		if (object instanceof FlexoObject) {
 			getOutStream().println("Entering in context " + object);
-			getCommandInterpreter().setFocusedObject((FlexoObject) object);
+			getCommandInterpreter().enterFocusedObject((FlexoObject) object);
 		}
 		else if (object != null) {
 			getErrStream().println("Cannot enter into " + object.getClass() + " : " + object);

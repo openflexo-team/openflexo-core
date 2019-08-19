@@ -76,7 +76,7 @@ public class ExitDirective extends Directive {
 			getCommandInterpreter().stop();
 		}
 		else {
-			getCommandInterpreter().setFocusedObject(null);
+			getCommandInterpreter().exitFocusedObject();
 		}
 	}
 }

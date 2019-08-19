@@ -28,6 +28,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Stack;
 import java.util.StringTokenizer;
 
 import org.openflexo.connie.Bindable;
@@ -76,7 +77,7 @@ public abstract class AbstractCommandInterpreter extends PropertyChangedSupportD
 	private File workingDirectory;
 	private FlexoServiceManager serviceManager;
 
-	private FlexoObject focusedObject;
+	private Stack<FlexoObject> focusedObjects;
 
 	@SuppressWarnings("unused")
 	private PrintStream errStream;
@@ -96,6 +97,8 @@ public abstract class AbstractCommandInterpreter extends PropertyChangedSupportD
 			throws IOException {
 
 		this.serviceManager = serviceManager;
+
+		focusedObjects = new Stack<>();
 
 		if (out instanceof PrintStream) {
 			outStream = (PrintStream) out;
@@ -460,11 +463,29 @@ public abstract class AbstractCommandInterpreter extends PropertyChangedSupportD
 				}
 				return returned;
 			case LocalReference:
-				for (File f : getWorkingDirectory().listFiles()) {
-					// System.out.println("On rajoute " + f.getName());
-					if (f.getName().startsWith(currentToken)
-							&& f.getName().endsWith(FMLRTVirtualModelInstanceResourceFactory.FML_RT_SUFFIX)) {
-						returned.add(f.getName());
+				if (getFocusedObject() == null) {
+					for (File f : getWorkingDirectory().listFiles()) {
+						// System.out.println("On rajoute " + f.getName());
+						if (f.getName().startsWith(currentToken)
+								&& f.getName().endsWith(FMLRTVirtualModelInstanceResourceFactory.FML_RT_SUFFIX)) {
+							returned.add(f.getName());
+						}
+					}
+				}
+				else if (getFocusedObject() instanceof VirtualModelInstance) {
+					VirtualModelInstance<?, ?> vmi = (VirtualModelInstance<?, ?>) getFocusedObject();
+					for (FlexoConceptInstance rootFCI : vmi.getAllRootFlexoConceptInstances()) {
+						if (rootFCI.getUserFriendlyIdentifier().startsWith(currentToken)) {
+							returned.add(rootFCI.getUserFriendlyIdentifier());
+						}
+					}
+				}
+				else if (getFocusedObject() instanceof FlexoConceptInstance) {
+					FlexoConceptInstance fci = (FlexoConceptInstance) getFocusedObject();
+					for (FlexoConceptInstance child : fci.getEmbeddedFlexoConceptInstances()) {
+						if (fci.getUserFriendlyIdentifier().startsWith(currentToken)) {
+							returned.add(fci.getUserFriendlyIdentifier());
+						}
 					}
 				}
 				return returned;
@@ -547,7 +568,7 @@ public abstract class AbstractCommandInterpreter extends PropertyChangedSupportD
 	@Override
 	public Object getValue(BindingVariable variable) {
 		if (variable == focusedBV) {
-			return focusedObject;
+			return getFocusedObject();
 		}
 		return values.get(variable);
 	}
@@ -588,38 +609,50 @@ public abstract class AbstractCommandInterpreter extends PropertyChangedSupportD
 	 * @return
 	 */
 	public FlexoObject getFocusedObject() {
-		return focusedObject;
+		if (!focusedObjects.isEmpty()) {
+			return focusedObjects.peek();
+		}
+		return null;
 	}
 
-	public void setFocusedObject(FlexoObject focusedObject) {
-		if ((focusedObject == null && this.focusedObject != null) || (focusedObject != null && !focusedObject.equals(this.focusedObject))) {
-			FlexoObject oldValue = this.focusedObject;
-			this.focusedObject = focusedObject;
+	public void enterFocusedObject(FlexoObject focusedObject) {
+		if (focusedObject != getFocusedObject() && focusedObject != null) {
+			FlexoObject oldValue = getFocusedObject();
+			focusedObjects.push(focusedObject);
+			updateFocusedBindingVariable();
 			getPropertyChangeSupport().firePropertyChange("focusedObject", oldValue, focusedObject);
-			if (focusedObject != null) {
-				if (focusedBV == null) {
-					focusedBV = new BindingVariable("this", FlexoObject.class);
-					getBindingModel().addToBindingVariables(focusedBV);
-				}
-				if (focusedObject instanceof VirtualModel) {
-					focusedBV.setType(VirtualModel.class);
-				}
-				else if (focusedObject instanceof FlexoConcept) {
-					focusedBV.setType(FlexoConcept.class);
-				}
-				else if (focusedObject instanceof VirtualModelInstance) {
-					focusedBV.setType(VirtualModelInstance.class);
-				}
-				else if (focusedObject instanceof FlexoConceptInstance) {
-					focusedBV.setType(FlexoConceptInstance.class);
-				}
+		}
+	}
+
+	public void exitFocusedObject() {
+		if (getFocusedObject() != null) {
+			FlexoObject oldValue = focusedObjects.pop();
+			updateFocusedBindingVariable();
+			getPropertyChangeSupport().firePropertyChange("focusedObject", oldValue, getFocusedObject());
+		}
+	}
+
+	private void updateFocusedBindingVariable() {
+		if (getFocusedObject() != null) {
+			if (focusedBV == null) {
+				focusedBV = new BindingVariable("this", FlexoObject.class);
+				getBindingModel().addToBindingVariables(focusedBV);
 			}
-			else { // focusedObject=null
-				if (focusedBV != null) {
-					getBindingModel().removeFromBindingVariables(focusedBV);
-					focusedBV = null;
-				}
+			if (getFocusedObject() instanceof VirtualModel) {
+				focusedBV.setType(VirtualModel.class);
 			}
+			else if (getFocusedObject() instanceof FlexoConcept) {
+				focusedBV.setType(FlexoConcept.class);
+			}
+			else if (getFocusedObject() instanceof VirtualModelInstance) {
+				focusedBV.setType(VirtualModelInstance.class);
+			}
+			else if (getFocusedObject() instanceof FlexoConceptInstance) {
+				focusedBV.setType(FlexoConceptInstance.class);
+			}
+		}
+		else {
+			getBindingModel().removeFromBindingVariables(focusedBV);
 		}
 	}
 
