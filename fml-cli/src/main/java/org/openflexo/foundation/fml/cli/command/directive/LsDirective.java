@@ -68,25 +68,32 @@ public class LsDirective extends Directive {
 
 	@Override
 	public void execute() {
-		int maxLength = 0;
-		for (File f : getCommandInterpreter().getWorkingDirectory().listFiles()) {
-			String name = getFileName(f);
-			if (name.length() > maxLength) {
-				maxLength = name.length();
+		if (getCommandInterpreter().getWorkingDirectory() != null) {
+			if (getCommandInterpreter().getWorkingDirectory().isDirectory()) {
+				int maxLength = 0;
+				for (File f : getCommandInterpreter().getWorkingDirectory().listFiles()) {
+					String name = getFileName(f);
+					if (name.length() > maxLength) {
+						maxLength = name.length();
+					}
+				}
+				int cols = 4;
+				int i = 0;
+				for (File f : getCommandInterpreter().getWorkingDirectory().listFiles()) {
+					String name = getFileName(f);
+					getOutStream().print(name + StringUtils.buildWhiteSpaceIndentation(maxLength - name.length() + 1));
+					i++;
+					if (i % cols == 0) {
+						getOutStream().println();
+					}
+				}
+				if (i % cols != 0) {
+					getOutStream().println();
+				}
 			}
-		}
-		int cols = 4;
-		int i = 0;
-		for (File f : getCommandInterpreter().getWorkingDirectory().listFiles()) {
-			String name = getFileName(f);
-			getOutStream().print(name + StringUtils.buildWhiteSpaceIndentation(maxLength - name.length() + 1));
-			i++;
-			if (i % cols == 0) {
-				getOutStream().println();
+			else {
+				getErrStream().println("" + getCommandInterpreter().getWorkingDirectory() + " is not a directory");
 			}
-		}
-		if (i % cols != 0) {
-			getOutStream().println();
 		}
 
 	}

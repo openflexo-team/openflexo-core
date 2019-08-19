@@ -92,7 +92,7 @@ public class FMLContextCommand extends FMLCommand {
 
 			getOutStream().println(type + StringUtils.buildWhiteSpaceIndentation(maxTypeCols - type.length()) + " "
 					+ StringUtils.buildWhiteSpaceIndentation(maxNameCols - name.length()) + name + " = "
-					+ CLIUtils.renderObject(getCommandInterpreter().getValue(bv)));
+					+ CLIUtils.denoteObject(getCommandInterpreter().getValue(bv)));
 		}
 	}
 }

@@ -42,8 +42,6 @@ import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.FlexoService;
 import org.openflexo.foundation.FlexoService.ServiceOperation;
 import org.openflexo.foundation.FlexoServiceManager;
-import org.openflexo.foundation.fml.FlexoConcept;
-import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.cli.command.AbstractCommand;
 import org.openflexo.foundation.fml.cli.command.AbstractCommand.CommandTokenType;
 import org.openflexo.foundation.fml.cli.command.DeclareCommand;
@@ -54,12 +52,12 @@ import org.openflexo.foundation.fml.cli.command.Directive;
 import org.openflexo.foundation.fml.cli.command.DirectiveDeclaration;
 import org.openflexo.foundation.fml.cli.command.FMLCommand;
 import org.openflexo.foundation.fml.cli.command.FMLCommandDeclaration;
-import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
-import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.foundation.fml.rt.rm.FMLRTVirtualModelInstanceResourceFactory;
+import org.openflexo.foundation.resource.DirectoryBasedIODelegate;
 import org.openflexo.foundation.resource.FlexoResource;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.resource.FlexoResourceCenterService;
+import org.openflexo.foundation.resource.ResourceData;
 import org.openflexo.foundation.resource.ResourceManager;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterService;
@@ -84,7 +82,8 @@ public abstract class AbstractCommandInterpreter extends PropertyChangedSupportD
 	private PrintStream outStream;
 
 	private BindingModel bindingModel = new BindingModel();
-	private BindingVariable focusedBV;
+	private BindingVariable focusedBindingVariable;
+	private List<BindingVariable> containedBindingVariables;
 
 	private JavaBindingFactory JAVA_BINDING_FACTORY = new JavaBindingFactory();
 
@@ -99,6 +98,7 @@ public abstract class AbstractCommandInterpreter extends PropertyChangedSupportD
 		this.serviceManager = serviceManager;
 
 		focusedObjects = new Stack<>();
+		containedBindingVariables = new ArrayList<>();
 
 		if (out instanceof PrintStream) {
 			outStream = (PrintStream) out;
@@ -140,7 +140,7 @@ public abstract class AbstractCommandInterpreter extends PropertyChangedSupportD
 	}
 
 	public String getPrompt() {
-		return (getFocusedObject() != null ? CLIUtils.renderObject(getFocusedObject()) + "@" : "") + workingDirectory.getName();
+		return (getFocusedObject() != null ? CLIUtils.denoteObject(getFocusedObject()) + "@" : "") + workingDirectory.getName();
 	}
 
 	public FlexoServiceManager getServiceManager() {
@@ -463,31 +463,22 @@ public abstract class AbstractCommandInterpreter extends PropertyChangedSupportD
 				}
 				return returned;
 			case LocalReference:
-				if (getFocusedObject() == null) {
-					for (File f : getWorkingDirectory().listFiles()) {
-						// System.out.println("On rajoute " + f.getName());
-						if (f.getName().startsWith(currentToken)
-								&& f.getName().endsWith(FMLRTVirtualModelInstanceResourceFactory.FML_RT_SUFFIX)) {
-							returned.add(f.getName());
-						}
+				// if (getFocusedObject() == null) {
+				for (File f : getWorkingDirectory().listFiles()) {
+					// System.out.println("On rajoute " + f.getName());
+					if (f.getName().startsWith(currentToken)
+							&& f.getName().endsWith(FMLRTVirtualModelInstanceResourceFactory.FML_RT_SUFFIX)) {
+						returned.add(f.getName());
 					}
 				}
-				else if (getFocusedObject() instanceof VirtualModelInstance) {
-					VirtualModelInstance<?, ?> vmi = (VirtualModelInstance<?, ?>) getFocusedObject();
-					for (FlexoConceptInstance rootFCI : vmi.getAllRootFlexoConceptInstances()) {
-						if (rootFCI.getUserFriendlyIdentifier().startsWith(currentToken)) {
-							returned.add(rootFCI.getUserFriendlyIdentifier());
+				// }
+				/*else {
+					for (FlexoObject contained : CLIUtils.getContainedObjects(getFocusedObject())) {
+						if (CLIUtils.denoteObject(contained).startsWith(currentToken)) {
+							returned.add(CLIUtils.denoteObject(contained));
 						}
 					}
-				}
-				else if (getFocusedObject() instanceof FlexoConceptInstance) {
-					FlexoConceptInstance fci = (FlexoConceptInstance) getFocusedObject();
-					for (FlexoConceptInstance child : fci.getEmbeddedFlexoConceptInstances()) {
-						if (fci.getUserFriendlyIdentifier().startsWith(currentToken)) {
-							returned.add(fci.getUserFriendlyIdentifier());
-						}
-					}
-				}
+				}*/
 				return returned;
 			case Path:
 				for (File f : getWorkingDirectory().listFiles()) {
@@ -567,7 +558,7 @@ public abstract class AbstractCommandInterpreter extends PropertyChangedSupportD
 
 	@Override
 	public Object getValue(BindingVariable variable) {
-		if (variable == focusedBV) {
+		if (variable == focusedBindingVariable) {
 			return getFocusedObject();
 		}
 		return values.get(variable);
@@ -633,26 +624,33 @@ public abstract class AbstractCommandInterpreter extends PropertyChangedSupportD
 	}
 
 	private void updateFocusedBindingVariable() {
+		for (BindingVariable bv : containedBindingVariables) {
+			getBindingModel().removeFromBindingVariables(bv);
+			setValue(null, bv);
+		}
+		containedBindingVariables.clear();
 		if (getFocusedObject() != null) {
-			if (focusedBV == null) {
-				focusedBV = new BindingVariable("this", FlexoObject.class);
-				getBindingModel().addToBindingVariables(focusedBV);
+			if (focusedBindingVariable == null) {
+				focusedBindingVariable = new BindingVariable("this", FlexoObject.class);
+				getBindingModel().addToBindingVariables(focusedBindingVariable);
 			}
-			if (getFocusedObject() instanceof VirtualModel) {
-				focusedBV.setType(VirtualModel.class);
-			}
-			else if (getFocusedObject() instanceof FlexoConcept) {
-				focusedBV.setType(FlexoConcept.class);
-			}
-			else if (getFocusedObject() instanceof VirtualModelInstance) {
-				focusedBV.setType(VirtualModelInstance.class);
-			}
-			else if (getFocusedObject() instanceof FlexoConceptInstance) {
-				focusedBV.setType(FlexoConceptInstance.class);
+			focusedBindingVariable.setType(CLIUtils.typeOf(getFocusedObject()));
+			for (FlexoObject contained : CLIUtils.getContainedObjects(getFocusedObject())) {
+				BindingVariable bv = new BindingVariable(CLIUtils.denoteObject(contained), CLIUtils.typeOf(contained));
+				getBindingModel().addToBindingVariables(bv);
+				containedBindingVariables.add(bv);
+				setValue(contained, bv);
 			}
 		}
 		else {
-			getBindingModel().removeFromBindingVariables(focusedBV);
+			getBindingModel().removeFromBindingVariables(focusedBindingVariable);
+		}
+		// Also change to right directory
+		if (getFocusedObject() instanceof ResourceData) {
+			FlexoResource<?> resource = (((ResourceData<?>) getFocusedObject()).getResource());
+			if (resource.getIODelegate() instanceof DirectoryBasedIODelegate) {
+				setWorkingDirectory(((DirectoryBasedIODelegate) resource.getIODelegate()).getDirectory());
+			}
 		}
 	}
 
