@@ -26,6 +26,8 @@ import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.VirtualModelInstance;
+import org.openflexo.foundation.resource.DirectoryBasedIODelegate;
+import org.openflexo.foundation.resource.ResourceData;
 
 /**
  * Utilities for FML command-line interpreter
@@ -39,6 +41,11 @@ public class CLIUtils {
 	 * @return
 	 */
 	public static String denoteObject(Object object) {
+		if (object instanceof ResourceData) {
+			if (((ResourceData<?>) object).getResource().getIODelegate() instanceof DirectoryBasedIODelegate) {
+				return ((DirectoryBasedIODelegate) ((ResourceData<?>) object).getResource().getIODelegate()).getDirectory().getName();
+			}
+		}
 		if (object instanceof VirtualModel) {
 			return ((VirtualModel) object).getName() + ".fml";
 		}
@@ -47,6 +54,42 @@ public class CLIUtils {
 		}
 		else if (object instanceof FlexoConceptInstance) {
 			return ((FlexoConceptInstance) object).getUserFriendlyIdentifier();
+		}
+		if (object != null) {
+			return object.toString();
+		}
+		return "null";
+	}
+
+	/**
+	 * Generic method used to denote a FlexoObject path in the context of FML command-line interpreter
+	 * 
+	 * @param object
+	 * @return
+	 */
+	public static String denoteObjectPath(Object object) {
+		if (object instanceof VirtualModel) {
+			return ((VirtualModel) object).getName() + ".fml";
+		}
+		else if (object instanceof FlexoConcept) {
+			return ((FlexoConcept) object).getDeclaringVirtualModel().getName() + ".fml/" + ((FlexoConcept) object).getName();
+		}
+		else if (object instanceof VirtualModelInstance) {
+			VirtualModelInstance<?, ?> vmi = (VirtualModelInstance<?, ?>) object;
+			if (vmi.getContainerVirtualModelInstance() != null) {
+				return denoteObjectPath(vmi.getContainerVirtualModelInstance()) + " > " + denoteObject(vmi);
+			}
+			return denoteObject(vmi);
+		}
+		else if (object instanceof FlexoConceptInstance) {
+			FlexoConceptInstance fci = (FlexoConceptInstance) object;
+			if (fci.getContainerFlexoConceptInstance() != null) {
+				return denoteObjectPath(fci.getContainerFlexoConceptInstance()) + " > " + fci.getUserFriendlyIdentifier();
+			}
+			else if (fci.getOwningVirtualModelInstance() != null) {
+				return denoteObjectPath(fci.getOwningVirtualModelInstance()) + " > " + denoteObject(fci);
+			}
+			return denoteObject(fci);
 		}
 		if (object != null) {
 			return object.toString();

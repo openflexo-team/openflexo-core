@@ -500,6 +500,7 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 
 	/**
 	 * Return a identifier for this FlexoConceptInstance under the form 'ConceptName'+ID
+	 * 
 	 * @return
 	 */
 	public String getUserFriendlyIdentifier();
@@ -1976,12 +1977,14 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 
 		/**
 		 * Return a identifier for this FlexoConceptInstance under the form 'ConceptName'+ID
+		 * 
 		 * @return
 		 */
+		@Override
 		public String getUserFriendlyIdentifier() {
-			return (getFlexoConcept() != null ? getFlexoConcept().getName() : "?FlexoConceptInstance?")+getFlexoID();
+			return (getFlexoConcept() != null ? getFlexoConcept().getName() : "?FlexoConceptInstance?") + getFlexoID();
 		}
-		
+
 		/**
 		 * Calling this method will register a new variable in the run-time context provided by this {@link FlexoConceptInstance} in the
 		 * context of its implementation of {@link RunTimeEvaluationContext}.<br>
@@ -2075,6 +2078,48 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 			returned.setFlexoConceptInstance(fci);
 			returned.setModellingElement(this);
 			return returned;
+		}
+
+		@Override
+		public String render() {
+			StringBuffer sb = new StringBuffer();
+			String line = StringUtils.buildString('-', 80) + "\n";
+			sb.append(line);
+			sb.append("FlexoConceptInstance : " + getUserFriendlyIdentifier() + "\n");
+			if (hasValidRenderer()) {
+				sb.append("Renderer             : " + getStringRepresentation() + "\n");
+			}
+			sb.append("FlexoConcept         : " + getFlexoConcept().getName() + "\n");
+			sb.append(line);
+			List<FlexoRole> roles = getFlexoConcept().getAccessibleProperties(FlexoRole.class);
+			if (roles.size() > 0) {
+				for (FlexoRole<?> role : roles) {
+					if (role.getFlexoConcept().isAssignableFrom(getFlexoConcept())) {
+						sb.append(role.getName() + " = " + getFlexoPropertyValue(role) + "\n");
+					}
+				}
+			}
+			else {
+				sb.append("No values" + "\n");
+			}
+			sb.append(line);
+			if (getEmbeddedFlexoConceptInstances().size() > 0) {
+				for (FlexoConceptInstance child : getEmbeddedFlexoConceptInstances()) {
+					appendFCI(child, sb, 0);
+				}
+			}
+			else {
+				sb.append("No contents" + "\n");
+			}
+			sb.append(line);
+			return sb.toString();
+		}
+
+		protected void appendFCI(FlexoConceptInstance fci, StringBuffer sb, int indent) {
+			sb.append(StringUtils.buildWhiteSpaceIndentation(indent * 2) + "> " + fci.getUserFriendlyIdentifier() + "\n");
+			for (FlexoConceptInstance child : fci.getEmbeddedFlexoConceptInstances()) {
+				appendFCI(child, sb, indent + 1);
+			}
 		}
 
 	}

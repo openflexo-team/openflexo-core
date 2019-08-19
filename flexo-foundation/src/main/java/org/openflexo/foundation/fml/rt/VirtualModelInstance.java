@@ -1440,24 +1440,39 @@ public interface VirtualModelInstance<VMI extends VirtualModelInstance<VMI, TA>,
 		@Override
 		public String render() {
 			StringBuffer sb = new StringBuffer();
-			sb.append(getImplementedInterface().getSimpleName() + " : " + getUserFriendlyIdentifier() + "\n");
+			String line = StringUtils.buildString('-', 80) + "\n";
+			sb.append(line);
+			sb.append("VirtualModelInstance : " + getUserFriendlyIdentifier() + "\n");
 			if (hasValidRenderer()) {
-				sb.append("Renderer: " + getStringRepresentation() + "\n");
+				sb.append("Renderer             : " + getStringRepresentation() + "\n");
 			}
-			sb.append("VirtualModel: " + getVirtualModel().getName() + ".fml\n");
-			sb.append("Instances: " + getFlexoConceptInstances().size() + "\n");
-			for (FlexoConceptInstance child : getAllRootFlexoConceptInstances()) {
-				appendFCI(child, sb, 0);
+			sb.append("VirtualModel         : " + getVirtualModel().getName() + "\n");
+			sb.append("Instances            : " + getFlexoConceptInstances().size() + "\n");
+			sb.append(line);
+			List<FlexoRole> roles = getFlexoConcept().getAccessibleProperties(FlexoRole.class);
+			if (roles.size() > 0) {
+				for (FlexoRole<?> role : roles) {
+					if (role.getFlexoConcept().isAssignableFrom(getVirtualModel())) {
+						sb.append(role.getName() + " = " + getFlexoPropertyValue(role) + "\n");
+					}
+				}
 			}
+			else {
+				sb.append("No values" + "\n");
+			}
+			sb.append(line);
+			if (getAllRootFlexoConceptInstances().size() > 0) {
+				for (FlexoConceptInstance child : getAllRootFlexoConceptInstances()) {
+					appendFCI(child, sb, 0);
+				}
+			}
+			else {
+				sb.append("No contents" + "\n");
+			}
+			sb.append(line);
 			return sb.toString();
 		}
 
-		private void appendFCI(FlexoConceptInstance fci, StringBuffer sb, int indent) {
-			sb.append(StringUtils.buildWhiteSpaceIndentation(indent * 2) + "> " + fci.getUserFriendlyIdentifier() + "\n");
-			for (FlexoConceptInstance child : fci.getEmbeddedFlexoConceptInstances()) {
-				appendFCI(child, sb, indent + 1);
-			}
-		}
 	}
 
 	public class ObjectLookupResult {

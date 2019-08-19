@@ -70,6 +70,11 @@ public class FMLContextCommand extends FMLCommand {
 
 	@Override
 	public void execute() {
+
+		if (getCommandInterpreter().getFocusedObject() != null) {
+			getOutStream().println(CLIUtils.denoteObjectPath(getCommandInterpreter().getFocusedObject()));
+		}
+
 		int maxTypeCols = -1;
 		int maxNameCols = -1;
 

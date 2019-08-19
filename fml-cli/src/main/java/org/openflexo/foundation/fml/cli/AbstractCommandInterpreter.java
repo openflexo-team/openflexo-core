@@ -52,6 +52,7 @@ import org.openflexo.foundation.fml.cli.command.Directive;
 import org.openflexo.foundation.fml.cli.command.DirectiveDeclaration;
 import org.openflexo.foundation.fml.cli.command.FMLCommand;
 import org.openflexo.foundation.fml.cli.command.FMLCommandDeclaration;
+import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.rm.FMLRTVirtualModelInstanceResourceFactory;
 import org.openflexo.foundation.resource.DirectoryBasedIODelegate;
 import org.openflexo.foundation.resource.FlexoResource;
@@ -140,7 +141,27 @@ public abstract class AbstractCommandInterpreter extends PropertyChangedSupportD
 	}
 
 	public String getPrompt() {
-		return (getFocusedObject() != null ? CLIUtils.denoteObject(getFocusedObject()) + "@" : "") + workingDirectory.getName();
+
+		if (getFocusedObject() == null) {
+			return workingDirectory.getName();
+		}
+
+		if (workingDirectory.equals(getExpectedDirectoryForObject(getFocusedObject()))) {
+			// Expected directory is the same
+			return CLIUtils.denoteObject(getFocusedObject());
+		}
+
+		// Otherwise prompt is computed using object and path
+		return CLIUtils.denoteObject(getFocusedObject()) + "@" + workingDirectory.getName();
+	}
+
+	private File getExpectedDirectoryForObject(FlexoObject object) {
+		if (object instanceof ResourceData) {
+			if (((ResourceData<?>) object).getResource().getIODelegate() instanceof DirectoryBasedIODelegate) {
+				return ((DirectoryBasedIODelegate) ((ResourceData<?>) object).getResource().getIODelegate()).getDirectory();
+			}
+		}
+		return null;
 	}
 
 	public FlexoServiceManager getServiceManager() {
@@ -548,6 +569,9 @@ public abstract class AbstractCommandInterpreter extends PropertyChangedSupportD
 
 	@Override
 	public BindingFactory getBindingFactory() {
+		if (getFocusedObject() instanceof FlexoConceptInstance) {
+			return ((FlexoConceptInstance) getFocusedObject()).getBindingFactory();
+		}
 		return JAVA_BINDING_FACTORY;
 	}
 
@@ -635,11 +659,13 @@ public abstract class AbstractCommandInterpreter extends PropertyChangedSupportD
 				getBindingModel().addToBindingVariables(focusedBindingVariable);
 			}
 			focusedBindingVariable.setType(CLIUtils.typeOf(getFocusedObject()));
-			for (FlexoObject contained : CLIUtils.getContainedObjects(getFocusedObject())) {
-				BindingVariable bv = new BindingVariable(CLIUtils.denoteObject(contained), CLIUtils.typeOf(contained));
-				getBindingModel().addToBindingVariables(bv);
-				containedBindingVariables.add(bv);
-				setValue(contained, bv);
+			if (CLIUtils.getContainedObjects(getFocusedObject()) != null) {
+				for (FlexoObject contained : CLIUtils.getContainedObjects(getFocusedObject())) {
+					BindingVariable bv = new BindingVariable(CLIUtils.denoteObject(contained), CLIUtils.typeOf(contained));
+					getBindingModel().addToBindingVariables(bv);
+					containedBindingVariables.add(bv);
+					setValue(contained, bv);
+				}
 			}
 		}
 		else {

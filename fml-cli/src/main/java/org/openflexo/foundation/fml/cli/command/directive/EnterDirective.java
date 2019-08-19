@@ -42,6 +42,7 @@ package org.openflexo.foundation.fml.cli.command.directive;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.FlexoObject;
+import org.openflexo.foundation.fml.cli.CLIUtils;
 import org.openflexo.foundation.fml.cli.CommandSemanticsAnalyzer;
 import org.openflexo.foundation.fml.cli.command.Directive;
 import org.openflexo.foundation.fml.cli.command.DirectiveDeclaration;
@@ -79,8 +80,6 @@ public class EnterDirective extends Directive {
 	public EnterDirective(AEnterDirective node, CommandSemanticsAnalyzer commandSemanticsAnalyzer) {
 		super(node, commandSemanticsAnalyzer);
 
-		System.out.println("New EnterDirective");
-
 		PEnterDirective enterDirective = node.getEnterDirective();
 
 		if (enterDirective instanceof AResourceEnterDirective) {
@@ -115,7 +114,7 @@ public class EnterDirective extends Directive {
 			object = ((AbstractVirtualModelInstanceResource) getResource()).getVirtualModelInstance();
 		}
 		if (object instanceof FlexoObject) {
-			getOutStream().println("Entering in context " + object);
+			getOutStream().println("Entering in context " + CLIUtils.denoteObject(object));
 			getCommandInterpreter().enterFocusedObject((FlexoObject) object);
 		}
 		else if (object != null) {
