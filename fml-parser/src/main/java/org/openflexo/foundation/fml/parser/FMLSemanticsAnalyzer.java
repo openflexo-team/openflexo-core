@@ -38,8 +38,26 @@
 
 package org.openflexo.foundation.fml.parser;
 
+import java.util.Stack;
+
+import org.openflexo.foundation.FlexoServiceManager;
+import org.openflexo.foundation.fml.FMLCompilationUnit;
 import org.openflexo.foundation.fml.FMLModelFactory;
+import org.openflexo.foundation.fml.parser.analysis.DepthFirstAdapter;
+import org.openflexo.foundation.fml.parser.fmlnodes.FMLCompilationUnitNode;
+import org.openflexo.foundation.fml.parser.fmlnodes.FlexoConceptNode;
+import org.openflexo.foundation.fml.parser.fmlnodes.JavaImportNode;
+import org.openflexo.foundation.fml.parser.fmlnodes.NamedJavaImportNode;
+import org.openflexo.foundation.fml.parser.fmlnodes.VirtualModelNode;
+import org.openflexo.foundation.fml.parser.node.ABehaviourDeclarationInnerConceptDeclaration;
+import org.openflexo.foundation.fml.parser.node.AConceptDeclaration;
+import org.openflexo.foundation.fml.parser.node.AFmlCompilationUnit;
+import org.openflexo.foundation.fml.parser.node.AJavaImportImportDeclaration;
+import org.openflexo.foundation.fml.parser.node.AModelDeclaration;
+import org.openflexo.foundation.fml.parser.node.ANamedJavaImportImportDeclaration;
+import org.openflexo.foundation.fml.parser.node.APropertyDeclarationInnerConceptDeclaration;
 import org.openflexo.foundation.fml.parser.node.Start;
+import org.openflexo.p2pp.P2PPNode;
 import org.openflexo.p2pp.RawSource;
 
 /**
@@ -48,10 +66,198 @@ import org.openflexo.p2pp.RawSource;
  * @author sylvain
  * 
  */
-public class FMLSemanticsAnalyzer extends FlexoBehaviourSemanticsAnalyzer {
+public class FMLSemanticsAnalyzer extends DepthFirstAdapter {
+
+	private final FMLModelFactory factory;
+
+	private final TypeFactory typeFactory;
+	private final FlexoPropertyFactory propertyFactory;
+	private final FlexoBehaviourFactory behaviourFactory;
+
+	// Stack of FMLObjectNode beeing build during semantics analyzing
+	protected Stack<FMLObjectNode<?, ?>> fmlNodes = new Stack<>();
+
+	// Raw source as when this analyzer was last parsed
+	private RawSource rawSource;
+
+	private FragmentManager fragmentManager;
+
+	private FMLCompilationUnitNode compilationUnitNode;
 
 	public FMLSemanticsAnalyzer(FMLModelFactory factory, Start tree, RawSource rawSource) {
-		super(factory, tree, rawSource);
+		this.factory = factory;
+		this.rawSource = rawSource;
+		fragmentManager = new FragmentManager(rawSource);
+		typeFactory = new TypeFactory(this);
+		propertyFactory = new FlexoPropertyFactory(this);
+		behaviourFactory = new FlexoBehaviourFactory(this);
+		tree.apply(this);
+		finalizeDeserialization();
+	}
+
+	public FMLModelFactory getFactory() {
+		return factory;
+	}
+
+	public FragmentManager getFragmentManager() {
+		return fragmentManager;
+	}
+
+	public TypeFactory getTypeFactory() {
+		return typeFactory;
+	}
+
+	public FlexoPropertyFactory getPropertyFactory() {
+		return propertyFactory;
+	}
+
+	public FlexoBehaviourFactory getBehaviourFactory() {
+		return behaviourFactory;
+	}
+
+	public FlexoServiceManager getServiceManager() {
+		return getFactory().getServiceManager();
+	}
+
+	protected final void finalizeDeserialization(FMLObjectNode<?, ?> node) {
+		node.finalizeDeserialization();
+		for (P2PPNode<?, ?> child : node.getChildren()) {
+			finalizeDeserialization((FMLObjectNode<?, ?>) child);
+		}
+	}
+
+	protected final void finalizeDeserialization() {
+		finalizeDeserialization(compilationUnitNode);
+		compilationUnitNode.initializePrettyPrint(compilationUnitNode, compilationUnitNode.makePrettyPrintContext());
+	}
+
+	public RawSource getRawSource() {
+		return rawSource;
+	}
+
+	protected void push(FMLObjectNode<?, ?> fmlNode) {
+		if (!fmlNodes.isEmpty()) {
+			FMLObjectNode<?, ?> current = fmlNodes.peek();
+			current.addToChildren(fmlNode);
+		}
+		fmlNodes.push(fmlNode);
+	}
+
+	protected <N extends FMLObjectNode<?, ?>> N pop() {
+		N builtFMLNode = (N) fmlNodes.pop();
+		builtFMLNode.deserialize();
+		// builtFMLNode.initializePrettyPrint();
+		return builtFMLNode;
+	}
+
+	/*@Override
+	public void defaultCase(Node node) {
+		super.defaultCase(node);
+		if (node instanceof Token && !fmlNodes.isEmpty()) {
+			FMLObjectNode<?, ?> currentNode = fmlNodes.peek();
+			if (currentNode != null) {
+				// System.out.println("Token: " + ((Token) node).getText() + " de " + ((Token) node).getLine() + ":" + ((Token)
+				// node).getPos()
+				// + ":" + ((Token) node).getOffset());
+				currentNode.handleToken((Token) node);
+			}
+		}
+	}*/
+
+	public FMLCompilationUnit getCompilationUnit() {
+		return compilationUnitNode.getModelObject();
+	}
+
+	public FMLCompilationUnitNode getCompilationUnitNode() {
+		return compilationUnitNode;
+	}
+
+	@Override
+	public void inAFmlCompilationUnit(AFmlCompilationUnit node) {
+		super.inAFmlCompilationUnit(node);
+		push(compilationUnitNode = new FMLCompilationUnitNode(node, this));
+	}
+
+	@Override
+	public void outAFmlCompilationUnit(AFmlCompilationUnit node) {
+		super.outAFmlCompilationUnit(node);
+		pop();
+	}
+
+	@Override
+	public void inAJavaImportImportDeclaration(AJavaImportImportDeclaration node) {
+		super.inAJavaImportImportDeclaration(node);
+		push(new JavaImportNode(node, this));
+	}
+
+	@Override
+	public void outAJavaImportImportDeclaration(AJavaImportImportDeclaration node) {
+		super.outAJavaImportImportDeclaration(node);
+		JavaImportNode returned = pop();
+		// System.out.println("Je cree un import depuis " + returned.getLastParsedFragment() + " which is ["
+		// + returned.getLastParsedFragment().getRawText() + "]");
+
+	}
+
+	@Override
+	public void inANamedJavaImportImportDeclaration(ANamedJavaImportImportDeclaration node) {
+		super.inANamedJavaImportImportDeclaration(node);
+		push(new NamedJavaImportNode(node, this));
+	}
+
+	@Override
+	public void outANamedJavaImportImportDeclaration(ANamedJavaImportImportDeclaration node) {
+		super.outANamedJavaImportImportDeclaration(node);
+		pop();
+	}
+
+	@Override
+	public void inAModelDeclaration(AModelDeclaration node) {
+		super.inAModelDeclaration(node);
+		push(new VirtualModelNode(node, this));
+	}
+
+	@Override
+	public void outAModelDeclaration(AModelDeclaration node) {
+		super.outAModelDeclaration(node);
+		pop();
+	}
+
+	@Override
+	public void inAConceptDeclaration(AConceptDeclaration node) {
+		super.inAConceptDeclaration(node);
+		// System.out.println("DEBUT Nouveau concept " + node.getIdentifier().getText());
+		push(new FlexoConceptNode(node, this));
+	}
+
+	@Override
+	public void outAConceptDeclaration(AConceptDeclaration node) {
+		super.outAConceptDeclaration(node);
+		pop();
+	}
+
+	@Override
+	public void inAPropertyDeclarationInnerConceptDeclaration(APropertyDeclarationInnerConceptDeclaration node) {
+		super.inAPropertyDeclarationInnerConceptDeclaration(node);
+		push(getPropertyFactory().makePropertyNode(node.getPropertyDeclaration()));
+	}
+
+	@Override
+	public void outAPropertyDeclarationInnerConceptDeclaration(APropertyDeclarationInnerConceptDeclaration node) {
+		super.outAPropertyDeclarationInnerConceptDeclaration(node);
+		pop();
+	}
+
+	@Override
+	public void inABehaviourDeclarationInnerConceptDeclaration(ABehaviourDeclarationInnerConceptDeclaration node) {
+		super.inABehaviourDeclarationInnerConceptDeclaration(node);
+		// push(new FlexoBehaviourNode(node, this));
+	}
+
+	@Override
+	public void outABehaviourDeclarationInnerConceptDeclaration(ABehaviourDeclarationInnerConceptDeclaration node) {
+		super.outABehaviourDeclarationInnerConceptDeclaration(node);
+		// pop();
 	}
 
 }

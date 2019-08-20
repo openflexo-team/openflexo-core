@@ -79,14 +79,12 @@ import org.openflexo.foundation.fml.parser.node.TIdentifier;
  * @author sylvain
  * 
  */
-public class TypeFactory {
+public class TypeFactory extends SemanticsAnalyzerFactory {
 
 	private static final Logger logger = Logger.getLogger(TypeFactory.class.getPackage().getName());
 
-	private FMLSemanticsAnalyzer analyser;
-
-	public TypeFactory(FMLSemanticsAnalyzer analyser) {
-		this.analyser = analyser;
+	public TypeFactory(FMLSemanticsAnalyzer analyzer) {
+		super(analyzer);
 	}
 
 	public List<String> makeFullQualifiedIdentifierList(TIdentifier identifier, List<PAdditionalIdentifier> additionalIdentifiers) {
@@ -118,7 +116,7 @@ public class TypeFactory {
 		} catch (ClassNotFoundException e) {
 			// OK, continue
 		}
-		for (JavaImportDeclaration javaImportDeclaration : analyser.getCompilationUnit().getJavaImports()) {
+		for (JavaImportDeclaration javaImportDeclaration : getAnalyzer().getCompilationUnit().getJavaImports()) {
 			if (typeName.equals(javaImportDeclaration.getClassName())) {
 				try {
 					return Class.forName(javaImportDeclaration.getFullQualifiedClassName());

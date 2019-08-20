@@ -38,33 +38,23 @@
 
 package org.openflexo.foundation.fml.parser;
 
-import org.openflexo.foundation.fml.FMLModelFactory;
-import org.openflexo.foundation.fml.parser.node.ABehaviourDeclarationInnerConceptDeclaration;
-import org.openflexo.foundation.fml.parser.node.Start;
-import org.openflexo.p2pp.RawSource;
+import java.util.logging.Logger;
+
+import org.openflexo.foundation.fml.FlexoBehaviour;
 
 /**
- * This class implements the semantics analyzer for a parsed FML compilation unit.<br>
+ * Handle {@link FlexoBehaviour} in the FML parser<br>
  * 
  * @author sylvain
  * 
  */
-public class FlexoBehaviourSemanticsAnalyzer extends FlexoPropertySemanticsAnalyzer {
+public class FlexoBehaviourFactory extends SemanticsAnalyzerFactory {
 
-	public FlexoBehaviourSemanticsAnalyzer(FMLModelFactory factory, Start tree, RawSource rawSource) {
-		super(factory, tree, rawSource);
-	}
+	@SuppressWarnings("unused")
+	private static final Logger logger = Logger.getLogger(FlexoBehaviourFactory.class.getPackage().getName());
 
-	@Override
-	public void inABehaviourDeclarationInnerConceptDeclaration(ABehaviourDeclarationInnerConceptDeclaration node) {
-		super.inABehaviourDeclarationInnerConceptDeclaration(node);
-		// push(new FlexoBehaviourNode(node, this));
-	}
-
-	@Override
-	public void outABehaviourDeclarationInnerConceptDeclaration(ABehaviourDeclarationInnerConceptDeclaration node) {
-		super.outABehaviourDeclarationInnerConceptDeclaration(node);
-		// pop();
+	public FlexoBehaviourFactory(FMLSemanticsAnalyzer analyzer) {
+		super(analyzer);
 	}
 
 }

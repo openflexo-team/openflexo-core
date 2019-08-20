@@ -41,7 +41,7 @@ package org.openflexo.foundation.fml.parser;
 import java.lang.reflect.Type;
 import java.util.logging.Logger;
 
-import org.openflexo.foundation.fml.FMLModelFactory;
+import org.openflexo.foundation.fml.FlexoProperty;
 import org.openflexo.foundation.fml.parser.fmlnodes.AbstractPropertyNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.ExpressionPropertyNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.FlexoPropertyNode;
@@ -55,33 +55,30 @@ import org.openflexo.foundation.fml.parser.node.AFmlBasicRoleDeclaration;
 import org.openflexo.foundation.fml.parser.node.AFmlFullyQualifiedBasicRoleDeclaration;
 import org.openflexo.foundation.fml.parser.node.AGetSetPropertyPropertyDeclaration;
 import org.openflexo.foundation.fml.parser.node.AJavaBasicRoleDeclaration;
-import org.openflexo.foundation.fml.parser.node.APropertyDeclarationInnerConceptDeclaration;
 import org.openflexo.foundation.fml.parser.node.PBasicRoleDeclaration;
 import org.openflexo.foundation.fml.parser.node.PExpressionPropertyDeclaration;
 import org.openflexo.foundation.fml.parser.node.PPropertyDeclaration;
-import org.openflexo.foundation.fml.parser.node.Start;
-import org.openflexo.p2pp.RawSource;
 
 /**
- * This class implements the semantics analyzer for a parsed FML compilation unit.<br>
+ * Handle {@link FlexoProperty} in the FML parser<br>
  * 
  * @author sylvain
  * 
  */
-public class FlexoPropertySemanticsAnalyzer extends FlexoConceptSemanticsAnalyzer {
+public class FlexoPropertyFactory extends SemanticsAnalyzerFactory {
 
 	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(FlexoPropertySemanticsAnalyzer.class.getPackage().getName());
+	private static final Logger logger = Logger.getLogger(FlexoPropertyFactory.class.getPackage().getName());
 
-	public FlexoPropertySemanticsAnalyzer(FMLModelFactory factory, Start tree, RawSource rawSource) {
-		super(factory, tree, rawSource);
+	public FlexoPropertyFactory(FMLSemanticsAnalyzer analyzer) {
+		super(analyzer);
 	}
 
-	private FlexoPropertyNode<?, ?> makePropertyNode(PPropertyDeclaration node) {
+	FlexoPropertyNode<?, ?> makePropertyNode(PPropertyDeclaration node) {
 		if (node instanceof AAbstractPropertyPropertyDeclaration) {
 			return new AbstractPropertyNode(
 					(AAbstractPropertyDeclaration) ((AAbstractPropertyPropertyDeclaration) node).getAbstractPropertyDeclaration(),
-					(FMLSemanticsAnalyzer) this);
+					getAnalyzer());
 		}
 		else if (node instanceof ABasicPropertyPropertyDeclaration) {
 			PBasicRoleDeclaration basicRoleDeclaration = ((ABasicPropertyPropertyDeclaration) node).getBasicRoleDeclaration();
@@ -89,10 +86,10 @@ public class FlexoPropertySemanticsAnalyzer extends FlexoConceptSemanticsAnalyze
 				Type type = getTypeFactory().makeType(((AJavaBasicRoleDeclaration) basicRoleDeclaration).getType());
 				// System.out.println("Tiens une basic property declaration java: " + node + " type=" + type);
 				if (getTypeFactory().getPrimitiveType(type) != null) {
-					return new PrimitiveRoleNode((AJavaBasicRoleDeclaration) basicRoleDeclaration, (FMLSemanticsAnalyzer) this);
+					return new PrimitiveRoleNode((AJavaBasicRoleDeclaration) basicRoleDeclaration, getAnalyzer());
 				}
 				else {
-					return new JavaRoleNode((AJavaBasicRoleDeclaration) basicRoleDeclaration, (FMLSemanticsAnalyzer) this);
+					return new JavaRoleNode((AJavaBasicRoleDeclaration) basicRoleDeclaration, getAnalyzer());
 				}
 			}
 			else if (basicRoleDeclaration instanceof AFmlBasicRoleDeclaration) {
@@ -105,7 +102,7 @@ public class FlexoPropertySemanticsAnalyzer extends FlexoConceptSemanticsAnalyze
 		else if (node instanceof AExpressionPropertyPropertyDeclaration) {
 			PExpressionPropertyDeclaration expressionPropertyDeclaration = ((AExpressionPropertyPropertyDeclaration) node)
 					.getExpressionPropertyDeclaration();
-			return new ExpressionPropertyNode(expressionPropertyDeclaration, (FMLSemanticsAnalyzer) this);
+			return new ExpressionPropertyNode(expressionPropertyDeclaration, getAnalyzer());
 
 		}
 		else if (node instanceof AGetSetPropertyPropertyDeclaration) {
@@ -114,18 +111,6 @@ public class FlexoPropertySemanticsAnalyzer extends FlexoConceptSemanticsAnalyze
 		logger.warning("Unexpected node: " + node + " of " + node.getClass());
 		Thread.dumpStack();
 		return null;
-	}
-
-	@Override
-	public void inAPropertyDeclarationInnerConceptDeclaration(APropertyDeclarationInnerConceptDeclaration node) {
-		super.inAPropertyDeclarationInnerConceptDeclaration(node);
-		push(makePropertyNode(node.getPropertyDeclaration()));
-	}
-
-	@Override
-	public void outAPropertyDeclarationInnerConceptDeclaration(APropertyDeclarationInnerConceptDeclaration node) {
-		super.outAPropertyDeclarationInnerConceptDeclaration(node);
-		pop();
 	}
 
 }

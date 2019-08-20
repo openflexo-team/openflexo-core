@@ -38,35 +38,48 @@
 
 package org.openflexo.foundation.fml.parser;
 
+import java.util.logging.Logger;
+
+import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.fml.FMLModelFactory;
-import org.openflexo.foundation.fml.parser.fmlnodes.FlexoConceptNode;
-import org.openflexo.foundation.fml.parser.node.AConceptDeclaration;
-import org.openflexo.foundation.fml.parser.node.Start;
-import org.openflexo.p2pp.RawSource;
+import org.openflexo.foundation.fml.FlexoProperty;
 
 /**
- * This class implements the semantics analyzer for a parsed FML compilation unit.<br>
+ * Handle {@link FlexoProperty} in the FML parser<br>
  * 
  * @author sylvain
  * 
  */
-public class FlexoConceptSemanticsAnalyzer extends VirtualModelSemanticsAnalyzer {
+public abstract class SemanticsAnalyzerFactory {
 
-	public FlexoConceptSemanticsAnalyzer(FMLModelFactory factory, Start tree, RawSource rawSource) {
-		super(factory, tree, rawSource);
+	@SuppressWarnings("unused")
+	private static final Logger logger = Logger.getLogger(SemanticsAnalyzerFactory.class.getPackage().getName());
+
+	private FMLSemanticsAnalyzer analyzer;
+
+	public SemanticsAnalyzerFactory(FMLSemanticsAnalyzer analyzer) {
+		super();
+		this.analyzer = analyzer;
 	}
 
-	@Override
-	public void inAConceptDeclaration(AConceptDeclaration node) {
-		super.inAConceptDeclaration(node);
-		// System.out.println("DEBUT Nouveau concept " + node.getIdentifier().getText());
-		push(new FlexoConceptNode(node, (FMLSemanticsAnalyzer) this));
+	public FMLSemanticsAnalyzer getAnalyzer() {
+		return analyzer;
 	}
 
-	@Override
-	public void outAConceptDeclaration(AConceptDeclaration node) {
-		super.outAConceptDeclaration(node);
-		pop();
+	public FMLModelFactory getFactory() {
+		return getAnalyzer().getFactory();
+	}
+
+	public FragmentManager getFragmentManager() {
+		return getAnalyzer().getFragmentManager();
+	}
+
+	public TypeFactory getTypeFactory() {
+		return getAnalyzer().getTypeFactory();
+	}
+
+	public FlexoServiceManager getServiceManager() {
+		return getAnalyzer().getServiceManager();
 	}
 
 }
