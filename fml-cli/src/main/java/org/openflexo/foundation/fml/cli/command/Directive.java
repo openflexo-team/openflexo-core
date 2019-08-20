@@ -75,12 +75,17 @@ import org.openflexo.foundation.fml.cli.parser.node.ADotPath;
 import org.openflexo.foundation.fml.cli.parser.node.ADotPathPath;
 import org.openflexo.foundation.fml.cli.parser.node.ADoubleDotPath;
 import org.openflexo.foundation.fml.cli.parser.node.ADoubleDotPathPath;
+import org.openflexo.foundation.fml.cli.parser.node.AEmptyListArgList;
 import org.openflexo.foundation.fml.cli.parser.node.AIdentifierBinding;
+import org.openflexo.foundation.fml.cli.parser.node.ANonEmptyListArgList;
 import org.openflexo.foundation.fml.cli.parser.node.APathPath;
 import org.openflexo.foundation.fml.cli.parser.node.ATail1Binding;
 import org.openflexo.foundation.fml.cli.parser.node.ATail2Binding;
 import org.openflexo.foundation.fml.cli.parser.node.Node;
+import org.openflexo.foundation.fml.cli.parser.node.PAdditionalArg;
 import org.openflexo.foundation.fml.cli.parser.node.PBinding;
+import org.openflexo.foundation.fml.cli.parser.node.PCall;
+import org.openflexo.foundation.fml.cli.parser.node.PExpr;
 import org.openflexo.foundation.fml.cli.parser.node.PPath;
 import org.openflexo.foundation.fml.rm.VirtualModelResourceFactory;
 import org.openflexo.foundation.fml.rt.rm.FMLRTVirtualModelInstanceResourceFactory;
@@ -123,6 +128,7 @@ public abstract class Directive extends AbstractCommand {
 	}*/
 
 	protected String retrievePath(PPath path) {
+		System.out.println("On recherche un path avec " + path + " of " + path.getClass());
 		if (path instanceof ADoubleDotPath) {
 			return "..";
 		}
@@ -145,7 +151,21 @@ public abstract class Directive extends AbstractCommand {
 	}
 
 	private String retrievePathFromBinding(PBinding binding) {
-		return binding.toString();
+		/*if (binding instanceof AIdentifierBinding) {
+			return ((AIdentifierBinding) binding).getIdentifier().getText();
+		}
+		else if (binding instanceof ACallBinding) {
+			return retrievePathFromCall((ACall) ((ACallBinding) binding).getCall());
+		}
+		else if (binding instanceof ATail1Binding) {
+		
+		}
+		else if (binding instanceof ATail2Binding) {
+		
+		}
+		logger.warning("Unexpected: " + binding);
+		return null;*/
+		return getText(binding);
 	}
 
 	@Override
@@ -294,23 +314,45 @@ public abstract class Directive extends AbstractCommand {
 			return ((AIdentifierBinding) binding).getIdentifier().getText();
 		}
 		else if (binding instanceof ACallBinding) {
-			return getText((ACall) ((ACallBinding) binding).getCall());
+			return getText(((ACallBinding) binding).getCall());
 		}
 		else if (binding instanceof ATail1Binding) {
 			return ((ATail1Binding) binding).getIdentifier().getText() + "." + getText(((ATail1Binding) binding).getBinding());
 		}
 		else if (binding instanceof ATail2Binding) {
-			return getText((ACall) ((ATail2Binding) binding).getCall()) + "." + getText(((ATail2Binding) binding).getBinding());
+			return getText(((ATail2Binding) binding).getCall()) + "." + getText(((ATail2Binding) binding).getBinding());
 		}
 		return null;
 	}
 
-	public String getText(ACall call) {
-		StringBuffer sb = new StringBuffer();
-		sb.append(call.getIdentifier());
-		sb.append("(");
-		sb.append("not_implemented_yet");
-		sb.append(")");
-		return sb.toString();
+	public String getText(PCall call) {
+
+		if (call instanceof ACall) {
+			if (((ACall) call).getArgList() instanceof AEmptyListArgList) {
+				return ((ACall) call).getIdentifier().getText() + "()";
+			}
+			if (((ACall) call).getArgList() instanceof ANonEmptyListArgList) {
+				ANonEmptyListArgList l = (ANonEmptyListArgList) ((ACall) call).getArgList();
+				StringBuffer sb = new StringBuffer();
+				sb.append(((ACall) call).getIdentifier().getText() + "(");
+				sb.append(getText(l.getExpr()));
+				for (PAdditionalArg pAdditionalArg : l.getAdditionalArgs()) {
+					sb.append("," + pAdditionalArg);
+				}
+				return sb.toString();
+			}
+		}
+		logger.warning("Unexpected: " + call);
+		return null;
+	}
+
+	public String getText(PExpr expr) {
+		logger.warning("Not implemented: getText(PExpr)");
+		return expr.toString();
+	}
+
+	public String getText(PAdditionalArg arg) {
+		logger.warning("Not implemented: getText(PAdditionalArg)");
+		return arg.toString();
 	}
 }
