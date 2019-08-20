@@ -38,9 +38,13 @@
 
 package org.openflexo.foundation.fml.parser;
 
+import java.lang.reflect.Type;
 import java.util.List;
 import java.util.logging.Logger;
 
+import org.openflexo.connie.Bindable;
+import org.openflexo.connie.DataBinding;
+import org.openflexo.connie.DataBinding.BindingDefinitionType;
 import org.openflexo.foundation.fml.AbstractProperty;
 import org.openflexo.foundation.fml.FMLModelFactory;
 import org.openflexo.foundation.fml.FMLObject;
@@ -63,6 +67,7 @@ import org.openflexo.foundation.fml.parser.node.AProtectedVisibility;
 import org.openflexo.foundation.fml.parser.node.APublicVisibility;
 import org.openflexo.foundation.fml.parser.node.Node;
 import org.openflexo.foundation.fml.parser.node.PAdditionalIdentifier;
+import org.openflexo.foundation.fml.parser.node.PExpression;
 import org.openflexo.foundation.fml.parser.node.PVisibility;
 import org.openflexo.foundation.fml.parser.node.TIdentifier;
 import org.openflexo.foundation.fml.parser.node.Token;
@@ -228,12 +233,34 @@ public abstract class FMLObjectNode<N extends Node, T extends FMLPrettyPrintable
 		return getAnalyser().getFragmentManager().getFragment(collection);
 	}
 
+	public String getText(Node node) {
+		return getFragment(node).getRawText();
+	}
+
 	public List<String> makeFullQualifiedIdentifierList(TIdentifier identifier, List<PAdditionalIdentifier> additionalIdentifiers) {
 		return getTypeFactory().makeFullQualifiedIdentifierList(identifier, additionalIdentifiers);
 	}
 
 	public String makeFullQualifiedIdentifier(TIdentifier identifier, List<PAdditionalIdentifier> additionalIdentifiers) {
 		return getTypeFactory().makeFullQualifiedIdentifier(identifier, additionalIdentifiers);
+	}
+
+	protected <T> DataBinding<T> makeBinding(PExpression pExpression, Type type, BindingDefinitionType bindingType, Bindable bindable) {
+		return new DataBinding(getText(pExpression), bindable, type, bindingType);
+	}
+
+	protected <T> DataBinding<T> makeBinding(PExpression pExpression, Bindable bindable) {
+		return new DataBinding(getText(pExpression), bindable, Object.class, BindingDefinitionType.GET);
+	}
+
+	protected <T> DataBinding<T> makeBinding(TIdentifier identifier, List<PAdditionalIdentifier> additionalIdentifiers, Type type,
+			BindingDefinitionType bindingType, Bindable bindable) {
+		return new DataBinding(makeFullQualifiedIdentifier(identifier, additionalIdentifiers), bindable, type, bindingType);
+	}
+
+	protected <T> DataBinding<T> makeBinding(TIdentifier identifier, List<PAdditionalIdentifier> additionalIdentifiers, Bindable bindable) {
+		return new DataBinding(makeFullQualifiedIdentifier(identifier, additionalIdentifiers), bindable, Object.class,
+				BindingDefinitionType.GET);
 	}
 
 	protected String getVisibilityAsString(Visibility visibility) {

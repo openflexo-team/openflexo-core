@@ -43,6 +43,7 @@ import java.util.logging.Logger;
 
 import org.openflexo.foundation.fml.FMLModelFactory;
 import org.openflexo.foundation.fml.parser.fmlnodes.AbstractPropertyNode;
+import org.openflexo.foundation.fml.parser.fmlnodes.ExpressionPropertyNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.FlexoPropertyNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.JavaRoleNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.PrimitiveRoleNode;
@@ -56,6 +57,7 @@ import org.openflexo.foundation.fml.parser.node.AGetSetPropertyPropertyDeclarati
 import org.openflexo.foundation.fml.parser.node.AJavaBasicRoleDeclaration;
 import org.openflexo.foundation.fml.parser.node.APropertyDeclarationInnerConceptDeclaration;
 import org.openflexo.foundation.fml.parser.node.PBasicRoleDeclaration;
+import org.openflexo.foundation.fml.parser.node.PExpressionPropertyDeclaration;
 import org.openflexo.foundation.fml.parser.node.PPropertyDeclaration;
 import org.openflexo.foundation.fml.parser.node.Start;
 import org.openflexo.p2pp.RawSource;
@@ -101,12 +103,15 @@ public class FlexoPropertySemanticsAnalyzer extends FlexoConceptSemanticsAnalyze
 			}
 		}
 		else if (node instanceof AExpressionPropertyPropertyDeclaration) {
+			PExpressionPropertyDeclaration expressionPropertyDeclaration = ((AExpressionPropertyPropertyDeclaration) node)
+					.getExpressionPropertyDeclaration();
+			return new ExpressionPropertyNode(expressionPropertyDeclaration, (FMLSemanticsAnalyzer) this);
 
 		}
 		else if (node instanceof AGetSetPropertyPropertyDeclaration) {
 
 		}
-		logger.warning("Unexpected node: " + node);
+		logger.warning("Unexpected node: " + node + " of " + node.getClass());
 		Thread.dumpStack();
 		return null;
 	}

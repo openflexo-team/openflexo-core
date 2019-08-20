@@ -218,7 +218,7 @@ Tokens
     public = 'public';
     protected = 'protected';
     private = 'private';
-    values = 'values';
+    is = 'is';
     abstract = 'abstract';
     get = 'get';
     set = 'set';
@@ -387,8 +387,8 @@ Productions
 		{multiple2} dot_dot_dot;
 
 	expression_property_declaration =
-        {identifier} visibility? type [identifier]:identifier values [expression_value]:identifier [additional_identifiers]:additional_identifier* semi |
-        {expression} visibility? type [identifier]:identifier values [expression_value]:expression semi;
+        {identifier} visibility? type [identifier]:identifier is [base_identifier]:identifier [additional_identifiers]:additional_identifier* semi |
+        {expression} visibility? type [identifier]:identifier is [expression_value]:expression semi;
 
 	abstract_property_declaration =
         visibility? abstract type variable_declarator semi;
