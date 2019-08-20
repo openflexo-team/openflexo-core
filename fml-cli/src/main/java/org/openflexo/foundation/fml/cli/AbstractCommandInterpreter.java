@@ -279,7 +279,7 @@ public abstract class AbstractCommandInterpreter extends PropertyChangedSupportD
 
 	public List<String> getAvailableCompletion(String startingBuffer) {
 		List<String> tokens = tokenize(startingBuffer);
-		System.out.println("tokens=" + tokens);
+		// System.out.println("tokens=" + tokens);
 		if (tokens.size() == 0) {
 			return getBindingModel().getBindingValueAvailableCompletion("", Object.class, this);
 
@@ -345,19 +345,13 @@ public abstract class AbstractCommandInterpreter extends PropertyChangedSupportD
 	}
 
 	private List<String> getAvailableCompletion(DirectiveDeclaration directiveDeclaration, String startingBuffer) {
-		// System.out.println("Hop, on essaie de faire une completion pour " + directiveDeclaration);
-
-		// List<String> tokens = tokenize(startingBuffer);
 		String syntax = directiveDeclaration.syntax();
 		List<String> globalSyntax = tokenize(syntax);
 
-		// int index = tokens.size() - 1;
-
-		System.out.println("OK on cherche toutes les completions pour toutes les syntaxes possibles");
-
-		System.out.println("syntax=" + syntax);
-		System.out.println("expectedSyntax=" + globalSyntax);
-		System.out.println("expectedSyntax.size=" + globalSyntax.size());
+		// System.out.println("OK on cherche toutes les completions pour toutes les syntaxes possibles");
+		// System.out.println("syntax=" + syntax);
+		// System.out.println("expectedSyntax=" + globalSyntax);
+		// System.out.println("expectedSyntax.size=" + globalSyntax.size());
 
 		if (globalSyntax.get(0).equals(directiveDeclaration.keyword())) {
 			int i = 1;
@@ -377,11 +371,11 @@ public abstract class AbstractCommandInterpreter extends PropertyChangedSupportD
 			if (current.size() > 0) {
 				expectedSyntaxes.add(current);
 			}
-			System.out.println("Et donc: " + expectedSyntaxes);
+			// System.out.println("Et donc: " + expectedSyntaxes);
 			List<String> returned = new ArrayList<>();
 			for (List<String> expectedSyntax : expectedSyntaxes) {
 				List<String> someCompletions = getAvailableCompletionForSyntax(directiveDeclaration, startingBuffer, expectedSyntax);
-				System.out.println("A ajouter: " + someCompletions);
+				// System.out.println("A ajouter: " + someCompletions);
 				returned.addAll(someCompletions);
 			}
 			return returned;
@@ -390,21 +384,6 @@ public abstract class AbstractCommandInterpreter extends PropertyChangedSupportD
 			getErrStream().println("Unexpected syntax");
 			return Collections.emptyList();
 		}
-
-		// System.out.println("tokens.size=" + tokens.size());
-
-		/*if (expectedSyntax.size() < tokens.size()) {
-			// Nothing else expected
-			return Collections.emptyList();
-		}
-		
-		String currentToken = tokens.get(index);
-		String expectedTokenSyntax = expectedSyntax.get(index);
-		
-		System.out.println("Maintenant, on cherche a completer " + currentToken + " pour " + expectedTokenSyntax);
-		
-		return getAvailableCompletionForToken(currentToken, expectedTokenSyntax, directiveDeclaration, startingBuffer,
-				tokens.get(index - 1));*/
 
 	}
 
@@ -415,11 +394,11 @@ public abstract class AbstractCommandInterpreter extends PropertyChangedSupportD
 		List<String> tokens = tokenize(startingBuffer);
 		int index = tokens.size() - 1;
 
-		System.out.println("Ok on cherche....");
-		System.out.println("index=" + index);
-		System.out.println("expectedSyntax=" + expectedSyntax);
-		System.out.println("expectedSyntax.size=" + expectedSyntax.size());
-		System.out.println("tokens.size=" + tokens.size());
+		// System.out.println("Ok on cherche....");
+		// System.out.println("index=" + index);
+		// System.out.println("expectedSyntax=" + expectedSyntax);
+		// System.out.println("expectedSyntax.size=" + expectedSyntax.size());
+		// System.out.println("tokens.size=" + tokens.size());
 
 		if (expectedSyntax.size() < tokens.size() - 1) {
 			// Nothing else expected
@@ -429,7 +408,7 @@ public abstract class AbstractCommandInterpreter extends PropertyChangedSupportD
 		String currentToken = tokens.get(index);
 		String expectedTokenSyntax = expectedSyntax.get(index - 1);
 
-		System.out.println("Maintenant, on cherche a completer " + currentToken + " pour " + expectedTokenSyntax);
+		// System.out.println("Maintenant, on cherche a completer " + currentToken + " pour " + expectedTokenSyntax);
 
 		return getAvailableCompletionForToken(currentToken, expectedTokenSyntax, directiveDeclaration, startingBuffer,
 				tokens.get(index - 1));
