@@ -339,6 +339,7 @@ public abstract class Directive extends AbstractCommand {
 				for (PAdditionalArg pAdditionalArg : l.getAdditionalArgs()) {
 					sb.append("," + pAdditionalArg);
 				}
+				sb.append(")");
 				return sb.toString();
 			}
 		}
