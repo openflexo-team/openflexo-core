@@ -72,14 +72,14 @@ public class NamedJavaImportNode extends AbstractJavaImportNode<ANamedJavaImport
 		if (hasParsedVersion) {
 			appendStaticContents("import", SPACE, getImportFragment());
 			appendDynamicContents(() -> getModelObject().getFullQualifiedClassName(), getFullQualifiedFragment());
-			appendStaticContents("as", SPACE, getAsFragment());
+			appendStaticContents(SPACE, "as", SPACE, getAsFragment());
 			appendDynamicContents(() -> getModelObject().getAbbrev(), getNameFragment());
 			appendStaticContents(";", getSemiFragment());
 		}
 		else {
 			appendStaticContents("import", SPACE);
 			appendDynamicContents(() -> getModelObject().getFullQualifiedClassName());
-			appendStaticContents("as", SPACE);
+			appendStaticContents(SPACE, "as", SPACE);
 			appendDynamicContents(() -> getModelObject().getAbbrev());
 			appendStaticContents(";");
 		}
