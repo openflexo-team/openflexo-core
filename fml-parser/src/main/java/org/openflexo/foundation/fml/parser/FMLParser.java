@@ -38,27 +38,34 @@
 
 package org.openflexo.foundation.fml.parser;
 
-import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.PushbackReader;
+import java.io.Reader;
+import java.io.StringReader;
 import java.util.logging.Logger;
 
+import org.apache.commons.io.IOUtils;
 import org.openflexo.foundation.fml.FMLCompilationUnit;
 import org.openflexo.foundation.fml.FMLModelFactory;
 import org.openflexo.foundation.fml.parser.lexer.Lexer;
+import org.openflexo.foundation.fml.parser.lexer.LexerException;
 import org.openflexo.foundation.fml.parser.node.Start;
 import org.openflexo.foundation.fml.parser.parser.Parser;
+import org.openflexo.foundation.fml.parser.parser.ParserException;
 import org.openflexo.p2pp.RawSource;
 
 /**
- * This class provides the parsing service for FML. This includes syntaxic and semantics analyzer.<br>
+ * This class provides the parsing service for FML.<br>
+ * This includes syntactic and semantics analyzer.<br>
  * 
- * SableCC is used to perform this. To compile and generate the grammar, please invoke {@link CompileFMLParser} located in src/dev/java. The
- * grammar is located in src/main/resources/FML/fml-grammar.sablecc<br>
+ * SableCC is used to generate the grammar located in src/main/resources<br>
+ *
+ * Compilation of the grammar is performed by gradle task. The grammar is located in src/main/resources/FML/fml-grammar.sablecc<br>
  * Generated code is located in org.openflexo.foundation.fml.parser.analysis, org.openflexo.foundation.fml.parser.lexer,
  * org.openflexo.foundation.fml.parser.node, org.openflexo.foundation.fml.parser.parser
  * 
@@ -70,34 +77,119 @@ public class FMLParser {
 	private static final Logger logger = Logger.getLogger(FMLParser.class.getPackage().getName());
 
 	/**
-	 * This is the method to invoke to perform a parsing. Syntaxic and (some) semantics analyzer are performed and returned value is an
-	 * Expression conform to AnTAR expression abstract syntaxic tree
+	 * This is the method to invoke to perform a parsing.<br>
+	 * Syntactic and semantics analyzer are performed and returned value is a {@link FMLCompilationUnit}
 	 * 
-	 * @param anExpression
+	 * @param data
+	 *            data to parse
 	 * @return
 	 * @throws ParseException
-	 *             if expression was not parsable
+	 * @throws IOException
 	 */
-	public static FMLCompilationUnit parse(File inputFile, FMLModelFactory modelFactory) throws ParseException {
+	public static FMLCompilationUnit parse(String data, FMLModelFactory modelFactory/*, EntryPointKind entryPointKind*/)
+			throws ParseException, IOException {
+		return parse(new StringReader(data), new StringReader(data), modelFactory/*, entryPointKind*/);
+	}
 
-		// TODO: handle close of all streams !!!!
+	/**
+	 * This is the method to invoke to perform a parsing.<br>
+	 * Syntactic and semantics analyzer are performed and returned value is a {@link FMLCompilationUnit}
+	 * 
+	 * @param data
+	 *            data to parse
+	 * @return
+	 * @throws ParseException
+	 * @throws IOException
+	 */
+	// public static FMLCompilationUnit parse(String data, FMLModelFactory modelFactory) throws ParseException, IOException {
+	// return parse(new StringReader(data), new StringReader(data), modelFactory/*, EntryPointKind.CompilationUnit*/);
+	// }
 
-		try (FileReader in = new FileReader(inputFile)) {
-			System.out.println("Parsing: " + inputFile);
+	/**
+	 * This is the method to invoke to perform a parsing.<br>
+	 * Syntactic and semantics analyzer are performed and returned value is a {@link FMLCompilationUnit}
+	 * 
+	 * @param inputStream
+	 *            source stream
+	 * @return
+	 * @throws ParseException
+	 *             if parsing expression lead to an error
+	 */
+	// public static FMLCompilationUnit parse(InputStream inputStream, FMLModelFactory modelFactory/*, EntryPointKind entryPointKind*/)
+	// throws ParseException, IOException {
+	//
+	// byte[] buf = IOUtils.toByteArray(inputStream);
+	// InputStream inputStream1 = new ByteArrayInputStream(buf);
+	// InputStream inputStream2 = new ByteArrayInputStream(buf);
+	//
+	// return parse(new InputStreamReader(inputStream1), new InputStreamReader(inputStream2), modelFactory/*, entryPointKind*/);
+	// }
+
+	/**
+	 * This is the method to invoke to perform a parsing.<br>
+	 * Syntactic and semantics analyzer are performed and returned value is a {@link FMLCompilationUnit}
+	 * 
+	 * @param inputStream
+	 *            source stream
+	 * @return
+	 * @throws ParseException
+	 *             if parsing expression lead to an error
+	 */
+	public static FMLCompilationUnit parse(InputStream inputStream, FMLModelFactory modelFactory) throws ParseException, IOException {
+
+		// InputStream rawSourceInputStream = IOUtils.toBufferedInputStream(inputStream);
+		// inputStream.reset();
+
+		byte[] buf = IOUtils.toByteArray(inputStream);
+		InputStream inputStream1 = new ByteArrayInputStream(buf);
+		InputStream inputStream2 = new ByteArrayInputStream(buf);
+
+		return parse(new InputStreamReader(inputStream1), new InputStreamReader(inputStream2),
+				modelFactory/*,
+							EntryPointKind.CompilationUnit*/);
+	}
+
+	/**
+	 * This is the method to invoke to perform a parsing.<br>
+	 * Syntactic and semantics analyzer are performed and returned value is a {@link FMLCompilationUnit}
+	 * 
+	 * @param inputStream
+	 *            source stream
+	 * @return
+	 * @throws ParseException
+	 *             if parsing expression lead to an error
+	 */
+	public static FMLCompilationUnit parse(File file, FMLModelFactory modelFactory) throws ParseException, IOException {
+
+		return parse(new FileInputStream(file), modelFactory);
+	}
+
+	private static FMLCompilationUnit parse(Reader reader, Reader rawSourceReader,
+			FMLModelFactory modelFactory/*,
+										EntryPointKind entryPointKind*/) throws ParseException, IOException {
+		try {
+			// System.out.println("Parsing: " + anExpression);
+
+			RawSource rawSource = readRawSource(rawSourceReader);
 
 			// Create a Parser instance.
-			Parser p = new Parser(new Lexer(new PushbackReader(new BufferedReader(in), 1024)));
+			Parser p = new Parser(new Lexer(new PushbackReader(reader)));
+			// Parser p = new Parser(new CustomLexer(new PushbackReader(reader), entryPointKind));
 
 			// Parse the input.
-			Start tree = p.parse();
+			Start tree;
+			tree = p.parse();
 
 			// Apply the semantics analyzer.
-			FMLSemanticsAnalyzer t = new FMLSemanticsAnalyzer(modelFactory, tree, readRawSource(new FileInputStream(inputFile)));
+			FMLSemanticsAnalyzer t = new FMLSemanticsAnalyzer(modelFactory, tree, rawSource);
+			// tree.apply(t);
 
 			return t.getCompilationUnit();
-		} catch (Exception e) {
+		} catch (ParserException e) {
 			e.printStackTrace();
-			throw new ParseException(e.getMessage() + " while parsing " + inputFile);
+			throw new ParseException(e.getMessage() + " while parsing " + reader);
+		} catch (LexerException e) {
+			throw new ParseException(e.getMessage() + " while parsing " + reader);
 		}
 	}
 
@@ -107,8 +199,50 @@ public class FMLParser {
 	 * @param ioDelegate
 	 * @throws IOException
 	 */
-	private static RawSource readRawSource(InputStream inputStream) throws IOException {
-		return new RawSource(inputStream);
+	private static RawSource readRawSource(Reader reader) throws IOException {
+		return new RawSource(reader);
 	}
+
+	/**
+	 * 
+	 * 
+	 * 
+	 * @param inputFile
+	 * @param modelFactory
+	 * @return
+	 * @throws ParseException
+	 */
+	/*public static FMLCompilationUnit parse(File inputFile, FMLModelFactory modelFactory) throws ParseException {
+	
+		// TODO: handle close of all streams !!!!
+	
+		try (FileReader in = new FileReader(inputFile)) {
+			System.out.println("Parsing: " + inputFile);
+	
+			// Create a Parser instance.
+			Parser p = new Parser(new Lexer(new PushbackReader(new BufferedReader(in), 1024)));
+	
+			// Parse the input.
+			Start tree = p.parse();
+	
+			// Apply the semantics analyzer.
+			FMLSemanticsAnalyzer t = new FMLSemanticsAnalyzer(modelFactory, tree, readRawSource(new FileInputStream(inputFile)));
+	
+			return t.getCompilationUnit();
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new ParseException(e.getMessage() + " while parsing " + inputFile);
+		}
+	}*/
+
+	/**
+	 * Read raw source of the file
+	 * 
+	 * @param ioDelegate
+	 * @throws IOException
+	 */
+	/*private static RawSource readRawSource(InputStream inputStream) throws IOException {
+		return new RawSource(inputStream);
+	}*/
 
 }

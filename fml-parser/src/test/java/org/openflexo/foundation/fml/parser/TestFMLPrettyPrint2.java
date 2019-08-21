@@ -41,6 +41,8 @@ package org.openflexo.foundation.fml.parser;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
+import java.io.IOException;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openflexo.foundation.DefaultFlexoEditor;
@@ -73,13 +75,13 @@ public class TestFMLPrettyPrint2 extends OpenflexoTestCase {
 
 	static FlexoEditor editor;
 
-	private static FMLCompilationUnit parseFile(Resource fileResource) throws ModelDefinitionException, ParseException {
+	private static FMLCompilationUnit parseFile(Resource fileResource) throws ModelDefinitionException, ParseException, IOException {
 		return FMLParser.parse(((FileResourceImpl) fileResource).getFile(), new FMLModelFactory(null, serviceManager));
 	}
 
 	@Test
 	@TestOrder(1)
-	public void initServiceManager() throws ParseException, ModelDefinitionException {
+	public void initServiceManager() throws ParseException, ModelDefinitionException, IOException {
 		instanciateTestServiceManager();
 
 		editor = new DefaultFlexoEditor(null, serviceManager);

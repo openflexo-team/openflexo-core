@@ -91,7 +91,7 @@ public class TestFMLPrettyPrint1 extends OpenflexoTestCase {
 
 	static FlexoEditor editor;
 
-	private static FMLCompilationUnit parseFile(Resource fileResource) throws ModelDefinitionException, ParseException {
+	private static FMLCompilationUnit parseFile(Resource fileResource) throws ModelDefinitionException, ParseException, IOException {
 		return FMLParser.parse(((FileResourceImpl) fileResource).getFile(), new FMLModelFactory(null, serviceManager));
 	}
 

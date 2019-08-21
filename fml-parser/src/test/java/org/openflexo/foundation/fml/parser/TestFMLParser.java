@@ -38,6 +38,10 @@
 
 package org.openflexo.foundation.fml.parser;
 
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
+import java.io.IOException;
 import java.util.Collection;
 
 import org.junit.BeforeClass;
@@ -80,7 +84,7 @@ public class TestFMLParser extends OpenflexoTestCase {
 	}
 
 	@Test
-	public void testResource() throws ModelDefinitionException, ParseException {
+	public void testResource() throws ModelDefinitionException, ParseException, IOException {
 		testFMLCompilationUnit(fmlResource);
 	}
 
@@ -89,12 +93,48 @@ public class TestFMLParser extends OpenflexoTestCase {
 		instanciateTestServiceManager();
 	}
 
-	private static void testFMLCompilationUnit(Resource fileResource) throws ModelDefinitionException, ParseException {
-		FMLCompilationUnit compilationUnit = FMLParser.parse(((FileResourceImpl) fileResource).getFile(),
-				new FMLModelFactory(null, serviceManager));
+	private static void testFMLCompilationUnit(Resource fileResource) throws ModelDefinitionException, ParseException, IOException {
+
+		FMLModelFactory fmlModelFactory = new FMLModelFactory(null, serviceManager);
+		FMLCompilationUnit compilationUnit = FMLParser.parse(((FileResourceImpl) fileResource).getFile(), fmlModelFactory);
 		FMLCompilationUnitNode rootNode = (FMLCompilationUnitNode) compilationUnit.getPrettyPrintDelegate();
 		debug(rootNode, 0);
 		System.out.println("FML=\n" + compilationUnit.getVirtualModel().getFMLPrettyPrint());
+
+		// Test syntax-preserving pretty-print
+		try {
+			String prettyPrint = compilationUnit.getFMLPrettyPrint();
+			System.out.println("prettyPrint=\n" + prettyPrint);
+			FMLCompilationUnit reparsedCompilationUnit = FMLParser.parse(prettyPrint, fmlModelFactory);
+			reparsedCompilationUnit.getVirtualModel().setResource(compilationUnit.getVirtualModel().getResource());
+			// System.out.println("compilationUnit=" + compilationUnit);
+			System.out.println("reparsedCompilationUnit=" + reparsedCompilationUnit);
+			assertTrue("Objects are not equals after pretty-print", compilationUnit.equalsObject(reparsedCompilationUnit));
+		} catch (ParseException e) {
+			e.printStackTrace();
+			fail(e.getMessage());
+		} catch (IOException e) {
+			e.printStackTrace();
+			fail(e.getMessage());
+		}
+
+		// Test normalized pretty-print
+		try {
+			String normalizedFML = compilationUnit.getNormalizedFML();
+			System.out.println("normalizedFML=\n" + normalizedFML);
+			FMLCompilationUnit reparsedCompilationUnit = FMLParser.parse(normalizedFML, fmlModelFactory);
+			reparsedCompilationUnit.getVirtualModel().setResource(compilationUnit.getVirtualModel().getResource());
+			// System.out.println("compilationUnit=" + compilationUnit);
+			System.out.println("reparsedCompilationUnit=" + reparsedCompilationUnit);
+			assertTrue("Objects are not equals after normalized pretty-print", compilationUnit.equalsObject(reparsedCompilationUnit));
+		} catch (ParseException e) {
+			e.printStackTrace();
+			fail(e.getMessage());
+		} catch (IOException e) {
+			e.printStackTrace();
+			fail(e.getMessage());
+		}
+
 	}
 
 	private static void debug(P2PPNode<?, ?> node, int indent) {
