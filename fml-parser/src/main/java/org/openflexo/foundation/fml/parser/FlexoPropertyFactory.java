@@ -45,6 +45,7 @@ import org.openflexo.foundation.fml.FlexoProperty;
 import org.openflexo.foundation.fml.parser.fmlnodes.AbstractPropertyNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.ExpressionPropertyNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.FlexoPropertyNode;
+import org.openflexo.foundation.fml.parser.fmlnodes.GetSetPropertyNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.JavaRoleNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.PrimitiveRoleNode;
 import org.openflexo.foundation.fml.parser.node.AAbstractPropertyDeclaration;
@@ -53,6 +54,7 @@ import org.openflexo.foundation.fml.parser.node.ABasicPropertyPropertyDeclaratio
 import org.openflexo.foundation.fml.parser.node.AExpressionPropertyPropertyDeclaration;
 import org.openflexo.foundation.fml.parser.node.AFmlBasicRoleDeclaration;
 import org.openflexo.foundation.fml.parser.node.AFmlFullyQualifiedBasicRoleDeclaration;
+import org.openflexo.foundation.fml.parser.node.AGetSetPropertyDeclaration;
 import org.openflexo.foundation.fml.parser.node.AGetSetPropertyPropertyDeclaration;
 import org.openflexo.foundation.fml.parser.node.AJavaBasicRoleDeclaration;
 import org.openflexo.foundation.fml.parser.node.PBasicRoleDeclaration;
@@ -106,6 +108,9 @@ public class FlexoPropertyFactory extends SemanticsAnalyzerFactory {
 
 		}
 		else if (node instanceof AGetSetPropertyPropertyDeclaration) {
+			AGetSetPropertyDeclaration getSetPropertyDeclaration = (AGetSetPropertyDeclaration) ((AGetSetPropertyPropertyDeclaration) node)
+					.getGetSetPropertyDeclaration();
+			return new GetSetPropertyNode(getSetPropertyDeclaration, getAnalyzer());
 
 		}
 		logger.warning("Unexpected node: " + node + " of " + node.getClass());

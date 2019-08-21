@@ -73,6 +73,9 @@ public abstract class FlexoPropertyNode<N extends Node, T extends FlexoProperty<
 		if (getParent() instanceof VirtualModelNode) {
 			((VirtualModelNode) getParent()).getModelObject().addToFlexoProperties(getModelObject());
 		}
+		if (getParent() instanceof FlexoConceptNode) {
+			((FlexoConceptNode) getParent()).getModelObject().addToFlexoProperties(getModelObject());
+		}
 		return this;
 	}
 

@@ -84,9 +84,12 @@ public class FMLSemanticsAnalyzer extends DepthFirstAdapter {
 
 	private FMLCompilationUnitNode compilationUnitNode;
 
+	private Start tree;
+
 	public FMLSemanticsAnalyzer(FMLModelFactory factory, Start tree, RawSource rawSource) {
 		this.factory = factory;
 		this.rawSource = rawSource;
+		this.tree = tree;
 		fragmentManager = new FragmentManager(rawSource);
 		typeFactory = new TypeFactory(this);
 		propertyFactory = new FlexoPropertyFactory(this);
@@ -101,6 +104,10 @@ public class FMLSemanticsAnalyzer extends DepthFirstAdapter {
 
 	public FragmentManager getFragmentManager() {
 		return fragmentManager;
+	}
+
+	public Start getTree() {
+		return tree;
 	}
 
 	public TypeFactory getTypeFactory() {
@@ -129,6 +136,7 @@ public class FMLSemanticsAnalyzer extends DepthFirstAdapter {
 	protected final void finalizeDeserialization() {
 		finalizeDeserialization(compilationUnitNode);
 		compilationUnitNode.initializePrettyPrint(compilationUnitNode, compilationUnitNode.makePrettyPrintContext());
+		typeFactory.resolveUnresovedTypes();
 	}
 
 	public RawSource getRawSource() {

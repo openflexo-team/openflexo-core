@@ -43,9 +43,9 @@ import java.util.List;
 
 import org.openflexo.connie.annotations.NotificationUnsafe;
 import org.openflexo.foundation.FlexoServiceManager;
-import org.openflexo.foundation.fml.FlexoConceptInstanceType.FlexoConceptInstanceTypeFactory;
+import org.openflexo.foundation.fml.FlexoConceptInstanceType.DefaultFlexoConceptInstanceTypeFactory;
 import org.openflexo.foundation.fml.FlexoEnumType.FlexoEnumTypeFactory;
-import org.openflexo.foundation.fml.VirtualModelInstanceType.VirtualModelInstanceTypeFactory;
+import org.openflexo.foundation.fml.VirtualModelInstanceType.DefaultVirtualModelInstanceTypeFactory;
 import org.openflexo.foundation.fml.annotations.DeclareModelSlots;
 import org.openflexo.foundation.fml.annotations.DeclareResourceFactories;
 import org.openflexo.foundation.fml.rm.VirtualModelResource;
@@ -111,9 +111,9 @@ public class FMLTechnologyAdapter extends TechnologyAdapter<FMLTechnologyAdapter
 	}
 
 	private FlexoResourceTypeFactory resourceTypeFactory;
-	private FlexoConceptInstanceTypeFactory fciFactory;
+	private DefaultFlexoConceptInstanceTypeFactory fciFactory;
 	private FlexoEnumTypeFactory enumFactory;
-	private VirtualModelInstanceTypeFactory vmiFactory;
+	private DefaultVirtualModelInstanceTypeFactory vmiFactory;
 
 	@Override
 	public void initTechnologySpecificTypes(TechnologyAdapterService taService) {
@@ -137,16 +137,16 @@ public class FMLTechnologyAdapter extends TechnologyAdapter<FMLTechnologyAdapter
 		return enumFactory;
 	}
 
-	public FlexoConceptInstanceTypeFactory getFlexoConceptInstanceTypeFactory() {
+	public DefaultFlexoConceptInstanceTypeFactory getFlexoConceptInstanceTypeFactory() {
 		if (fciFactory == null) {
-			fciFactory = new FlexoConceptInstanceTypeFactory(this);
+			fciFactory = new DefaultFlexoConceptInstanceTypeFactory(this);
 		}
 		return fciFactory;
 	}
 
-	public VirtualModelInstanceTypeFactory getVirtualModelInstanceTypeFactory() {
+	public DefaultVirtualModelInstanceTypeFactory getVirtualModelInstanceTypeFactory() {
 		if (vmiFactory == null) {
-			vmiFactory = new VirtualModelInstanceTypeFactory(this);
+			vmiFactory = new DefaultVirtualModelInstanceTypeFactory(this);
 		}
 		return vmiFactory;
 	}

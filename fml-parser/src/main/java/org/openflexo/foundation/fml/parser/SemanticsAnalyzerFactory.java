@@ -41,8 +41,11 @@ package org.openflexo.foundation.fml.parser;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.FlexoServiceManager;
+import org.openflexo.foundation.fml.FMLCompilationUnit;
 import org.openflexo.foundation.fml.FMLModelFactory;
+import org.openflexo.foundation.fml.FMLTechnologyAdapter;
 import org.openflexo.foundation.fml.FlexoProperty;
+import org.openflexo.foundation.fml.VirtualModel;
 
 /**
  * Handle {@link FlexoProperty} in the FML parser<br>
@@ -82,4 +85,15 @@ public abstract class SemanticsAnalyzerFactory {
 		return getAnalyzer().getServiceManager();
 	}
 
+	public FMLCompilationUnit getCompilationUnit() {
+		return getAnalyzer().getCompilationUnit();
+	}
+
+	public VirtualModel getVirtualModel() {
+		return getAnalyzer().getCompilationUnit().getVirtualModel();
+	}
+
+	public FMLTechnologyAdapter getFMLTechnologyAdapter() {
+		return getServiceManager().getTechnologyAdapterService().getTechnologyAdapter(FMLTechnologyAdapter.class);
+	}
 }

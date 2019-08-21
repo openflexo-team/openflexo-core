@@ -42,7 +42,6 @@ import java.lang.reflect.Type;
 import java.util.List;
 
 import org.openflexo.connie.type.CustomType;
-import org.openflexo.connie.type.CustomTypeFactory;
 
 /**
  * Represent the type of the list of all parameters of an FlexoBehaviour (definition layer)
@@ -115,7 +114,7 @@ public class FlexoBehaviourParametersType implements CustomType {
 	}
 
 	@Override
-	public void resolve(CustomTypeFactory<?> factory) {
+	public void resolve() {
 	}
 
 }

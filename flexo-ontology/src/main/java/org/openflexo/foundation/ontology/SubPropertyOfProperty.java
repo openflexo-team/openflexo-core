@@ -41,7 +41,6 @@ package org.openflexo.foundation.ontology;
 
 import java.lang.reflect.Type;
 
-import org.openflexo.connie.type.CustomTypeFactory;
 import org.openflexo.foundation.fml.TechnologyAdapterTypeFactory;
 import org.openflexo.foundation.fml.TechnologySpecificType;
 import org.openflexo.foundation.fml.rt.FMLRTTechnologyAdapter;
@@ -177,7 +176,7 @@ public class SubPropertyOfProperty<TA extends TechnologyAdapter<TA>> implements 
 	}
 
 	@Override
-	public void resolve(CustomTypeFactory<?> factory) {
+	public void resolve() {
 	}
 
 	@Override

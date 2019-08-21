@@ -198,6 +198,9 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 	@Remover(EMBEDDED_FLEXO_CONCEPT_KEY)
 	public void removeFromEmbeddedFlexoConcepts(FlexoConcept aFlexoConcept);
 
+	@Finder(collection = EMBEDDED_FLEXO_CONCEPT_KEY, attribute = FlexoConcept.NAME_KEY)
+	public FlexoConcept getEmbeddedFlexoConcept(String conceptName);
+
 	/**
 	 * Return all accessible embedded FlexoConcept (those which are declared, and those accessed through inheritance)
 	 * 

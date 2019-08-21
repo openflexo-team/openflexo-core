@@ -225,7 +225,13 @@ public class FlexoResourceType implements JavaCustomType {
 	}
 
 	@Override
-	public void resolve(CustomTypeFactory<?> factory) {
+	public void resolve() {
+		if (customTypeFactory != null) {
+			resolve(customTypeFactory);
+		}
+	}
+
+	private void resolve(CustomTypeFactory<?> factory) {
 		if (factory instanceof FlexoResourceTypeFactory) {
 
 			try {
