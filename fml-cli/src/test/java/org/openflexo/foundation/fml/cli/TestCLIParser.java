@@ -148,12 +148,13 @@ public class TestCLIParser extends OpenflexoTestCase {
 	}
 
 	@Test
-	public void testDisplay() throws ParseException {
-		assertParsable("display [http://full/path/resource/uri]");
-		assertParsable("display [http://full/path/resource/uri.fml]");
-		assertParsable("display [http://ensta-bretagne.fr/cyber/cta/CTA.fml]");
-		assertNotParsable("display");
-		assertNotParsable("display Foo");
+	public void testMore() throws ParseException {
+		assertParsable("more");
+		assertParsable("more Foo");
+		assertParsable("more -r [http://full/path/resource/uri]");
+		assertParsable("more -r[http://full/path/resource/uri.fml]");
+		assertParsable("more -r [http://ensta-bretagne.fr/cyber/cta/CTA.fml]");
+		assertNotParsable("more [http://full/path/resource/uri]");
 	}
 
 	@Test
