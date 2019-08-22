@@ -39,8 +39,6 @@
 package org.openflexo.foundation.fml.parser;
 
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 import java.io.IOException;
 
@@ -49,17 +47,11 @@ import org.junit.runner.RunWith;
 import org.openflexo.foundation.DefaultFlexoEditor;
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.fml.FMLCompilationUnit;
-import org.openflexo.foundation.fml.FMLModelFactory;
-import org.openflexo.foundation.fml.parser.fmlnodes.FMLCompilationUnitNode;
-import org.openflexo.foundation.test.OpenflexoTestCase;
-import org.openflexo.p2pp.P2PPNode;
 import org.openflexo.pamela.exceptions.ModelDefinitionException;
-import org.openflexo.rm.FileResourceImpl;
 import org.openflexo.rm.Resource;
 import org.openflexo.rm.ResourceLocator;
 import org.openflexo.test.OrderedRunner;
 import org.openflexo.test.TestOrder;
-import org.openflexo.toolbox.StringUtils;
 
 /**
  * A parameterized suite of unit tests iterating on FML files.
@@ -70,68 +62,9 @@ import org.openflexo.toolbox.StringUtils;
  *
  */
 @RunWith(OrderedRunner.class)
-public class TestProperties extends OpenflexoTestCase {
+public class TestProperties extends FMLParserTestCase {
 
 	static FlexoEditor editor;
-
-	/*private static void testFMLCompilationUnit(Resource fileResource) throws ModelDefinitionException, ParseException, IOException {
-	
-		FMLModelFactory fmlModelFactory = new FMLModelFactory(null, serviceManager);
-		FMLCompilationUnit compilationUnit = FMLParser.parse(((FileResourceImpl) fileResource).getFile(), fmlModelFactory);
-		FMLCompilationUnitNode rootNode = (FMLCompilationUnitNode) compilationUnit.getPrettyPrintDelegate();
-		debug(rootNode, 0);
-		System.out.println("FML=\n" + compilationUnit.getVirtualModel().getFMLPrettyPrint());
-	
-		// Test syntax-preserving pretty-print
-		try {
-			String prettyPrint = compilationUnit.getFMLPrettyPrint();
-			System.out.println("prettyPrint=\n" + prettyPrint);
-			FMLCompilationUnit reparsedCompilationUnit = FMLParser.parse(prettyPrint, fmlModelFactory);
-			reparsedCompilationUnit.getVirtualModel().setResource(compilationUnit.getVirtualModel().getResource());
-			// System.out.println("compilationUnit=" + compilationUnit);
-			System.out.println("reparsedCompilationUnit=" + reparsedCompilationUnit);
-			assertTrue("Objects are not equals after pretty-print", compilationUnit.equalsObject(reparsedCompilationUnit));
-		} catch (ParseException e) {
-			e.printStackTrace();
-			fail(e.getMessage());
-		} catch (IOException e) {
-			e.printStackTrace();
-			fail(e.getMessage());
-		}
-	
-		// Test normalized pretty-print
-		try {
-			String normalizedFML = compilationUnit.getNormalizedFML();
-			System.out.println("normalizedFML=\n" + normalizedFML);
-			FMLCompilationUnit reparsedCompilationUnit = FMLParser.parse(normalizedFML, fmlModelFactory);
-			reparsedCompilationUnit.getVirtualModel().setResource(compilationUnit.getVirtualModel().getResource());
-			// System.out.println("compilationUnit=" + compilationUnit);
-			System.out.println("reparsedCompilationUnit=" + reparsedCompilationUnit);
-			assertTrue("Objects are not equals after normalized pretty-print", compilationUnit.equalsObject(reparsedCompilationUnit));
-		} catch (ParseException e) {
-			e.printStackTrace();
-			fail(e.getMessage());
-		} catch (IOException e) {
-			e.printStackTrace();
-			fail(e.getMessage());
-		}
-	
-	}*/
-
-	private static void debug(P2PPNode<?, ?> node, int indent) {
-		System.out.println(StringUtils.buildWhiteSpaceIndentation(indent * 2) + " > " + node.getClass().getSimpleName() + " from "
-				+ node.getLastParsedFragment());
-		// System.err.println(node.getLastParsed());
-		// node.getLastParsed();
-		indent++;
-		for (P2PPNode<?, ?> child : node.getChildren()) {
-			debug(child, indent);
-		}
-	}
-
-	private static FMLCompilationUnit parseFile(Resource fileResource) throws ModelDefinitionException, ParseException, IOException {
-		return FMLParser.parse(((FileResourceImpl) fileResource).getFile(), new FMLModelFactory(null, serviceManager));
-	}
 
 	@Test
 	@TestOrder(1)
@@ -143,50 +76,6 @@ public class TestProperties extends OpenflexoTestCase {
 
 	}
 
-	private static void testFMLCompilationUnit(Resource fileResource) throws ModelDefinitionException, ParseException, IOException {
-
-		FMLModelFactory fmlModelFactory = new FMLModelFactory(null, serviceManager);
-		FMLCompilationUnit compilationUnit = FMLParser.parse(((FileResourceImpl) fileResource).getFile(), fmlModelFactory);
-		FMLCompilationUnitNode rootNode = (FMLCompilationUnitNode) compilationUnit.getPrettyPrintDelegate();
-		debug(rootNode, 0);
-		System.out.println("FML=\n" + compilationUnit.getVirtualModel().getFMLPrettyPrint());
-
-		// Test syntax-preserving pretty-print
-		try {
-			String prettyPrint = compilationUnit.getFMLPrettyPrint();
-			System.out.println("prettyPrint=\n" + prettyPrint);
-			FMLCompilationUnit reparsedCompilationUnit = FMLParser.parse(prettyPrint, fmlModelFactory);
-			reparsedCompilationUnit.getVirtualModel().setResource(compilationUnit.getVirtualModel().getResource());
-			// System.out.println("compilationUnit=" + compilationUnit);
-			System.out.println("reparsedCompilationUnit=" + reparsedCompilationUnit);
-			assertTrue("Objects are not equals after pretty-print", compilationUnit.equalsObject(reparsedCompilationUnit));
-		} catch (ParseException e) {
-			e.printStackTrace();
-			fail(e.getMessage());
-		} catch (IOException e) {
-			e.printStackTrace();
-			fail(e.getMessage());
-		}
-
-		// Test normalized pretty-print
-		try {
-			String normalizedFML = compilationUnit.getNormalizedFML();
-			System.out.println("normalizedFML=\n" + normalizedFML);
-			FMLCompilationUnit reparsedCompilationUnit = FMLParser.parse(normalizedFML, fmlModelFactory);
-			reparsedCompilationUnit.getVirtualModel().setResource(compilationUnit.getVirtualModel().getResource());
-			// System.out.println("compilationUnit=" + compilationUnit);
-			System.out.println("reparsedCompilationUnit=" + reparsedCompilationUnit);
-			assertTrue("Objects are not equals after normalized pretty-print", compilationUnit.equalsObject(reparsedCompilationUnit));
-		} catch (ParseException e) {
-			e.printStackTrace();
-			fail(e.getMessage());
-		} catch (IOException e) {
-			e.printStackTrace();
-			fail(e.getMessage());
-		}
-
-	}
-
 	@Test
 	@TestOrder(2)
 	public void loadInitialVersion() throws ParseException, ModelDefinitionException, IOException {
@@ -195,16 +84,8 @@ public class TestProperties extends OpenflexoTestCase {
 		log("Initial version");
 
 		final Resource fmlFile = ResourceLocator.locateResource("NewFMLExamples/TestProperties.fml");
-		FMLCompilationUnit compilationUnit = parseFile(fmlFile);
 
-		FMLCompilationUnitNode rootNode = (FMLCompilationUnitNode) compilationUnit.getPrettyPrintDelegate();
-		debug(rootNode, 0);
-
-		System.out.println("FML=\n" + compilationUnit.getVirtualModel().getFMLPrettyPrint());
-
-		System.out.println("Normalized FML=\n" + compilationUnit.getVirtualModel().getNormalizedFML());
-
-		testFMLCompilationUnit(fmlFile);
+		FMLCompilationUnit compilationUnit = testFMLCompilationUnit(fmlFile);
 
 		/*assertNotNull(virtualModel = compilationUnit.getVirtualModel());
 		assertEquals("MyModel", virtualModel.getName());

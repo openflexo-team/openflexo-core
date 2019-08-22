@@ -54,7 +54,6 @@ import org.openflexo.connie.type.PrimitiveType;
 import org.openflexo.foundation.DefaultFlexoEditor;
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.fml.FMLCompilationUnit;
-import org.openflexo.foundation.fml.FMLModelFactory;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoProperty;
 import org.openflexo.foundation.fml.JavaImportDeclaration;
@@ -64,17 +63,13 @@ import org.openflexo.foundation.fml.parser.fmlnodes.FMLCompilationUnitNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.FlexoPropertyNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.JavaImportNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.VirtualModelNode;
-import org.openflexo.foundation.test.OpenflexoTestCase;
-import org.openflexo.p2pp.P2PPNode;
 import org.openflexo.p2pp.RawSource;
 import org.openflexo.pamela.exceptions.ModelDefinitionException;
-import org.openflexo.rm.FileResourceImpl;
 import org.openflexo.rm.Resource;
 import org.openflexo.rm.ResourceLocator;
 import org.openflexo.test.OrderedRunner;
 import org.openflexo.test.TestOrder;
 import org.openflexo.toolbox.FileUtils;
-import org.openflexo.toolbox.StringUtils;
 
 /**
  * Parse a FML file, perform some edits and checks that pretty-print is correct
@@ -83,17 +78,13 @@ import org.openflexo.toolbox.StringUtils;
  *
  */
 @RunWith(OrderedRunner.class)
-public class TestFMLPrettyPrint1 extends OpenflexoTestCase {
+public class TestFMLPrettyPrint1 extends FMLParserTestCase {
 
 	private static FMLCompilationUnit compilationUnit;
 	private static VirtualModel virtualModel;
 	private static FlexoConcept conceptA;
 
 	static FlexoEditor editor;
-
-	private static FMLCompilationUnit parseFile(Resource fileResource) throws ModelDefinitionException, ParseException, IOException {
-		return FMLParser.parse(((FileResourceImpl) fileResource).getFile(), new FMLModelFactory(null, serviceManager));
-	}
 
 	@Test
 	@TestOrder(1)
@@ -198,14 +189,6 @@ public class TestFMLPrettyPrint1 extends OpenflexoTestCase {
 	private static JavaImportNode stringImportNode;
 	private static JavaImportNode listImportNode;
 	private static JavaImportNode dateImportNode;
-
-	private void debug(P2PPNode<?, ?> node, int indentLevel) {
-		System.out.println(StringUtils.buildWhiteSpaceIndentation(indentLevel * 2) + "> " + node.getClass().getSimpleName() + " "
-				+ node.getLastParsedFragment() + " prelude=" + node.getPrelude() + " postlude=" + node.getPostlude());
-		for (P2PPNode<?, ?> child : node.getChildren()) {
-			debug(child, indentLevel + 1);
-		}
-	}
 
 	@Test
 	@TestOrder(2)

@@ -48,13 +48,10 @@ import org.junit.runner.RunWith;
 import org.openflexo.foundation.DefaultFlexoEditor;
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.fml.FMLCompilationUnit;
-import org.openflexo.foundation.fml.FMLModelFactory;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.action.CreateFlexoConcept;
-import org.openflexo.foundation.test.OpenflexoTestCase;
 import org.openflexo.pamela.exceptions.ModelDefinitionException;
-import org.openflexo.rm.FileResourceImpl;
 import org.openflexo.rm.Resource;
 import org.openflexo.rm.ResourceLocator;
 import org.openflexo.test.OrderedRunner;
@@ -67,17 +64,13 @@ import org.openflexo.test.TestOrder;
  *
  */
 @RunWith(OrderedRunner.class)
-public class TestFMLPrettyPrint2 extends OpenflexoTestCase {
+public class TestFMLPrettyPrint2 extends FMLParserTestCase {
 
 	private static FMLCompilationUnit compilationUnit;
 	private static VirtualModel virtualModel;
 	private static FlexoConcept conceptA;
 
 	static FlexoEditor editor;
-
-	private static FMLCompilationUnit parseFile(Resource fileResource) throws ModelDefinitionException, ParseException, IOException {
-		return FMLParser.parse(((FileResourceImpl) fileResource).getFile(), new FMLModelFactory(null, serviceManager));
-	}
 
 	@Test
 	@TestOrder(1)

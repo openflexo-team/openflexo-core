@@ -46,12 +46,9 @@ import java.io.IOException;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.openflexo.foundation.fml.FMLCompilationUnit;
-import org.openflexo.foundation.fml.FMLModelFactory;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.VirtualModel;
-import org.openflexo.foundation.test.OpenflexoTestCase;
 import org.openflexo.pamela.exceptions.ModelDefinitionException;
-import org.openflexo.rm.FileResourceImpl;
 import org.openflexo.rm.Resource;
 import org.openflexo.rm.ResourceLocator;
 
@@ -61,11 +58,7 @@ import org.openflexo.rm.ResourceLocator;
  * @author sylvain
  *
  */
-public class TestFMLSemanticsAnalyzer extends OpenflexoTestCase {
-
-	private static FMLCompilationUnit parseFile(Resource fileResource) throws ModelDefinitionException, ParseException, IOException {
-		return FMLParser.parse(((FileResourceImpl) fileResource).getFile(), new FMLModelFactory(null, serviceManager));
-	}
+public class TestFMLSemanticsAnalyzer extends FMLParserTestCase {
 
 	@BeforeClass
 	public static void initServiceManager() {
