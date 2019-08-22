@@ -199,7 +199,8 @@ public class FlexoConceptInstanceType implements TechnologySpecificType<FMLTechn
 			return "UndefinedFlexoConceptInstanceType";
 		}
 		// IMPORTANT: do not use getFlexoConcept() here, as it may trigger too early type resolution !!!
-		return getClass().getSimpleName() + "<" + flexoConcept.getName() + ">";
+		// return getClass().getSimpleName() + "<" + flexoConcept.getName() + ">";
+		return flexoConcept.getName();
 	}
 
 	@Override
