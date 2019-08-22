@@ -194,6 +194,8 @@ public interface AbstractAddFlexoConceptInstance<FCI extends FlexoConceptInstanc
 	@Setter(DYNAMIC_FLEXO_CONCEPT_TYPE_KEY)
 	public void setDynamicFlexoConceptType(DataBinding<FlexoConcept> dynamicFlexoConceptType);
 
+	public boolean requiresContainer();
+
 	public static abstract class AbstractAddFlexoConceptInstanceImpl<FCI extends FlexoConceptInstance, VMI extends VirtualModelInstance<VMI, ?>>
 			extends FMLRTActionImpl<FCI, VMI> implements AbstractAddFlexoConceptInstance<FCI, VMI> {
 
@@ -213,6 +215,7 @@ public interface AbstractAddFlexoConceptInstance<FCI extends FlexoConceptInstanc
 			getPropertyChangeSupport().firePropertyChange("requiresContainer", !requiresContainer(), requiresContainer());
 		}
 
+		@Override
 		public boolean requiresContainer() {
 			if (getDynamicInstantiation()) {
 				return true;
