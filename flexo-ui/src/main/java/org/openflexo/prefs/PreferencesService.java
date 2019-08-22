@@ -252,7 +252,7 @@ public class PreferencesService extends FlexoServiceImpl implements HasPropertyC
 			for (TechnologyAdapter ta : applicationContext.getTechnologyAdapterService().getTechnologyAdapters()) {
 				TechnologyAdapterController tac = applicationContext.getTechnologyAdapterControllerService()
 						.getTechnologyAdapterController(ta);
-					if (tac.getPreferencesClass() != null) {
+				if (tac != null && tac.getPreferencesClass() != null) {
 					classes.add(tac.getPreferencesClass());
 				}
 			}
@@ -351,7 +351,10 @@ public class PreferencesService extends FlexoServiceImpl implements HasPropertyC
 			TA technologyAdapter) {
 		TechnologyAdapterController<TA> technologyAdapterController = getServiceManager().getTechnologyAdapterControllerService()
 				.getTechnologyAdapterController(technologyAdapter);
-		return technologyAdapterController.getPreferencesClass();
+		if (technologyAdapterController != null) {
+			return technologyAdapterController.getPreferencesClass();
+		}
+		return null;
 	}
 
 	public ModuleLoaderPreferences getModuleLoaderPreferences() {
