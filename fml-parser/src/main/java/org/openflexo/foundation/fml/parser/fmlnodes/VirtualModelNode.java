@@ -82,35 +82,38 @@ public class VirtualModelNode extends FMLObjectNode<AModelDeclaration, VirtualMo
 
 		super.preparePrettyPrint(hasParsedVersion);
 
-		if (hasParsedVersion && getVisibilityFragment() != null) {
+		appendDynamicContents(() -> getVisibilityAsString(getModelObject().getVisibility()), SPACE, getVisibilityFragment());
+
+		/*if (hasParsedVersion && getVisibilityFragment() != null) {
 			appendDynamicContents(() -> getVisibilityAsString(getModelObject().getVisibility()), SPACE, getVisibilityFragment());
 		}
 		else {
 			appendDynamicContents(() -> getVisibilityAsString(getModelObject().getVisibility()), SPACE);
-		}
+		}*/
 
-		if (hasParsedVersion) {
-			appendStaticContents("model", SPACE, getModelFragment());
-			appendDynamicContents(() -> getModelObject().getName(), getNameFragment());
-			appendStaticContents(SPACE, "{", LINE_SEPARATOR, getLBrcFragment());
-		}
+		// if (hasParsedVersion) {
+		appendStaticContents("model", SPACE, getModelFragment());
+		appendDynamicContents(() -> getModelObject().getName(), getNameFragment());
+		appendStaticContents(SPACE, "{", LINE_SEPARATOR, getLBrcFragment());
+		/*}
 		else {
 			appendStaticContents("model" + SPACE);
 			appendDynamicContents(() -> getModelObject().getName());
 			appendStaticContents(SPACE, "{", LINE_SEPARATOR);
-		}
+		}*/
+
 		appendToChildrenPrettyPrintContents("", () -> getModelObject().getFlexoProperties(), LINE_SEPARATOR, 1, FlexoProperty.class);
 		appendToChildrenPrettyPrintContents(LINE_SEPARATOR, () -> getModelObject().getFlexoBehaviours(), LINE_SEPARATOR, 1,
 				FlexoBehaviour.class);
 		appendToChildrenPrettyPrintContents(LINE_SEPARATOR, () -> getModelObject().getFlexoConcepts(), LINE_SEPARATOR, 1,
 				FlexoConcept.class);
 
-		if (getASTNode() != null) {
-			appendStaticContents("}", LINE_SEPARATOR, getRBrcFragment());
-		}
+		// if (getASTNode() != null) {
+		appendStaticContents("}", LINE_SEPARATOR, getRBrcFragment());
+		/*}
 		else {
 			appendStaticContents("}", LINE_SEPARATOR);
-		}
+		}*/
 	}
 
 	private RawSourceFragment getVisibilityFragment() {

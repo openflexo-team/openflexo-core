@@ -69,7 +69,7 @@ public class DeclarationActionNode extends AssignableActionNode<ALocalVariableDe
 	@Override
 	public DeclarationAction<?> buildModelObjectFromAST(ALocalVariableDeclarationStatement astNode) {
 		DeclarationAction<?> returned = getFactory().newDeclarationAction();
-		System.out.println(">>>>>> Declaration " + astNode);
+		// System.out.println(">>>>>> Declaration " + astNode);
 
 		returned.setName(getName(astNode.getVariableDeclarator()).getText());
 		returned.setDeclaredType(getTypeFactory().makeType(astNode.getType()));
@@ -88,35 +88,35 @@ public class DeclarationActionNode extends AssignableActionNode<ALocalVariableDe
 	public void preparePrettyPrint(boolean hasParsedVersion) {
 		super.preparePrettyPrint(hasParsedVersion);
 
-		if (hasParsedVersion) {
-			appendDynamicContents(() -> serializeType(getModelObject().getType()), SPACE, getTypeFragment());
-			appendDynamicContents(() -> getModelObject().getName(), getNameFragment());
-		}
+		// if (hasParsedVersion) {
+		appendDynamicContents(() -> serializeType(getModelObject().getType()), SPACE, getTypeFragment());
+		appendDynamicContents(() -> getModelObject().getName(), getNameFragment());
+		/*}
 		else {
 			appendDynamicContents(() -> serializeType(getModelObject().getType()), SPACE);
 			appendDynamicContents(() -> getModelObject().getName());
-		}
+		}*/
 
-		if (hasParsedVersion) {
-			if (hasInitializer()) {
-				appendStaticContents("=", getAssignOperatorFragment());
-				appendDynamicContents(() -> ((ExpressionAction) getModelObject().getAssignableAction()).getExpression().toString(),
-						getAssignmentFragment());
-			}
+		// if (hasParsedVersion) {
+		if (hasInitializer()) {
+			appendStaticContents("=", getAssignOperatorFragment());
+			appendDynamicContents(() -> ((ExpressionAction) getModelObject().getAssignableAction()).getExpression().toString(),
+					getAssignmentFragment());
 		}
+		/*}
 		else {
 			if (hasInitializer()) {
 				appendStaticContents("=");
 				appendDynamicContents(() -> ((ExpressionAction) getModelObject().getAssignableAction()).getExpression().toString());
 			}
-		}
+		}*/
 
-		if (hasParsedVersion) {
-			appendStaticContents(";", getSemiFragment());
-		}
+		// if (hasParsedVersion) {
+		appendStaticContents(";", getSemiFragment());
+		/*}
 		else {
 			appendStaticContents(";");
-		}
+		}*/
 
 	}
 

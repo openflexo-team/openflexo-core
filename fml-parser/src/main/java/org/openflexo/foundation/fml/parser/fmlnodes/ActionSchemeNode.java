@@ -85,25 +85,29 @@ public class ActionSchemeNode extends FlexoBehaviourNode<AMethodBehaviourDeclara
 	@Override
 	public void preparePrettyPrint(boolean hasParsedVersion) {
 		super.preparePrettyPrint(hasParsedVersion);
-		if (hasParsedVersion && getVisibilityFragment() != null) {
+
+		appendDynamicContents(() -> getVisibilityAsString(getModelObject().getVisibility()), SPACE, getVisibilityFragment());
+
+		/*if (hasParsedVersion && getVisibilityFragment() != null) {
 			appendDynamicContents(() -> getVisibilityAsString(getModelObject().getVisibility()), SPACE, getVisibilityFragment());
 		}
 		else {
 			appendDynamicContents(() -> getVisibilityAsString(getModelObject().getVisibility()), SPACE);
+		}*/
+
+		// if (hasParsedVersion) {
+		appendDynamicContents(() -> getModelObject().getName(), SPACE, getNameFragment());
+		appendStaticContents("(", getLParFragment());
+		appendStaticContents(")", getRParFragment());
+		if (getFlexoBehaviourBody() instanceof AEmptyFlexoBehaviourBody) {
+			appendStaticContents(";", getSemiFragment());
 		}
-		if (hasParsedVersion) {
-			appendDynamicContents(() -> getModelObject().getName(), SPACE, getNameFragment());
-			appendStaticContents("(", getLParFragment());
-			appendStaticContents(")", getRParFragment());
-			if (getFlexoBehaviourBody() instanceof AEmptyFlexoBehaviourBody) {
-				appendStaticContents(";", getSemiFragment());
-			}
-			else {
-				appendStaticContents(SPACE, "{", getLBrcFragment());
-				appendToChildPrettyPrintContents(LINE_SEPARATOR, () -> getModelObject().getControlGraph(), LINE_SEPARATOR, 0);
-				appendStaticContents(LINE_SEPARATOR, "}", getRBrcFragment());
-			}
+		else {
+			appendStaticContents(SPACE, "{", getLBrcFragment());
+			appendToChildPrettyPrintContents(LINE_SEPARATOR, () -> getModelObject().getControlGraph(), LINE_SEPARATOR, 0);
+			appendStaticContents(LINE_SEPARATOR, "}", getRBrcFragment());
 		}
+		/*}
 		else {
 			appendDynamicContents(() -> getModelObject().getName(), SPACE);
 			appendStaticContents("(");
@@ -111,7 +115,7 @@ public class ActionSchemeNode extends FlexoBehaviourNode<AMethodBehaviourDeclara
 			appendStaticContents(SPACE, "{");
 			appendToChildPrettyPrintContents(LINE_SEPARATOR, () -> getModelObject().getControlGraph(), LINE_SEPARATOR, 0);
 			appendStaticContents(LINE_SEPARATOR, "}");
-		}
+		}*/
 	}
 
 }

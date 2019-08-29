@@ -73,12 +73,12 @@ public class ExpressionActionNode extends AssignableActionNode<Node, ExpressionA
 	public void preparePrettyPrint(boolean hasParsedVersion) {
 		super.preparePrettyPrint(hasParsedVersion);
 
-		if (hasParsedVersion) {
-			appendDynamicContents(() -> getModelObject().getExpression().toString(), getExpressionFragment());
-		}
+		// if (hasParsedVersion) {
+		appendDynamicContents(() -> getModelObject().getExpression().toString(), getExpressionFragment());
+		/*}
 		else {
 			appendDynamicContents(() -> getModelObject().getExpression().toString());
-		}
+		}*/
 	}
 
 	private RawSourceFragment getExpressionFragment() {

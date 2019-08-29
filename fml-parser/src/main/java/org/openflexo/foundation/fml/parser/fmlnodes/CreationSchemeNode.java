@@ -104,29 +104,33 @@ public class CreationSchemeNode extends FlexoBehaviourNode<PBehaviourDeclaration
 	@Override
 	public void preparePrettyPrint(boolean hasParsedVersion) {
 		super.preparePrettyPrint(hasParsedVersion);
-		if (hasParsedVersion && getVisibilityFragment() != null) {
+
+		appendDynamicContents(() -> getVisibilityAsString(getModelObject().getVisibility()), SPACE, getVisibilityFragment());
+
+		/*if (hasParsedVersion && getVisibilityFragment() != null) {
 			appendDynamicContents(() -> getVisibilityAsString(getModelObject().getVisibility()), SPACE, getVisibilityFragment());
 		}
 		else {
 			appendDynamicContents(() -> getVisibilityAsString(getModelObject().getVisibility()), SPACE);
+		}*/
+
+		// if (hasParsedVersion) {
+		appendStaticContents("", "create", SPACE, getCreateFragment());
+		if (!isAnonymous()) {
+			appendStaticContents("::", getColonColonFragment());
+			appendDynamicContents(() -> getModelObject().getName(), getNameFragment());
 		}
-		if (hasParsedVersion) {
-			appendStaticContents("", "create", SPACE, getCreateFragment());
-			if (!isAnonymous()) {
-				appendStaticContents("::", getColonColonFragment());
-				appendDynamicContents(() -> getModelObject().getName(), getNameFragment());
-			}
-			appendStaticContents("(", getLParFragment());
-			appendStaticContents(")", getRParFragment());
-			if (getFlexoBehaviourBody() instanceof AEmptyFlexoBehaviourBody) {
-				appendStaticContents(";", getSemiFragment());
-			}
-			else {
-				appendStaticContents(SPACE, "{", getLBrcFragment());
-				appendToChildPrettyPrintContents(LINE_SEPARATOR, () -> getModelObject().getControlGraph(), LINE_SEPARATOR, 0);
-				appendStaticContents(LINE_SEPARATOR, "}", getRBrcFragment());
-			}
+		appendStaticContents("(", getLParFragment());
+		appendStaticContents(")", getRParFragment());
+		if (getFlexoBehaviourBody() instanceof AEmptyFlexoBehaviourBody) {
+			appendStaticContents(";", getSemiFragment());
 		}
+		else {
+			appendStaticContents(SPACE, "{", getLBrcFragment());
+			appendToChildPrettyPrintContents(LINE_SEPARATOR, () -> getModelObject().getControlGraph(), LINE_SEPARATOR, 0);
+			appendStaticContents(LINE_SEPARATOR, "}", getRBrcFragment());
+		}
+		/*}
 		else {
 			appendStaticContents("", "create", SPACE);
 			if (!isAnonymous()) {
@@ -138,7 +142,7 @@ public class CreationSchemeNode extends FlexoBehaviourNode<PBehaviourDeclaration
 			appendStaticContents(SPACE, "{");
 			appendToChildPrettyPrintContents(LINE_SEPARATOR, () -> getModelObject().getControlGraph(), LINE_SEPARATOR, 0);
 			appendStaticContents(LINE_SEPARATOR, "}");
-		}
+		}*/
 	}
 
 	private RawSourceFragment getCreateFragment() {

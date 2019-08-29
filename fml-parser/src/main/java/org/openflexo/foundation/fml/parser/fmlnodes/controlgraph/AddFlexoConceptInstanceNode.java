@@ -157,19 +157,19 @@ public class AddFlexoConceptInstanceNode extends AssignableActionNode<PConceptIn
 		// aConcept = new MyConcept::init(name);
 		// aConcept = new MyConcept(name);
 
-		if (hasParsedVersion) {
-			appendStaticContents("new", SPACE, getNewFragment());
-			appendDynamicContents(() -> serializeType(getModelObject().getFlexoConceptType()), getConceptNameFragment());
-			if (isFullQualified()) {
-				appendStaticContents("::", getColonColonFragment());
-				appendDynamicContents(() -> serializeFlexoBehaviour(getModelObject().getCreationScheme()), getConstructorNameFragment());
-			}
-			appendStaticContents("(", getLParFragment());
-			appendToChildrenPrettyPrintContents("", "", () -> getModelObject().getParameters(), ",", "", -1,
-					AddFlexoConceptInstanceParameter.class);
-			appendStaticContents(")", getRParFragment());
-
+		// if (hasParsedVersion) {
+		appendStaticContents("new", SPACE, getNewFragment());
+		appendDynamicContents(() -> serializeType(getModelObject().getFlexoConceptType()), getConceptNameFragment());
+		if (isFullQualified()) {
+			appendStaticContents("::", getColonColonFragment());
+			appendDynamicContents(() -> serializeFlexoBehaviour(getModelObject().getCreationScheme()), getConstructorNameFragment());
 		}
+		appendStaticContents("(", getLParFragment());
+		appendToChildrenPrettyPrintContents("", "", () -> getModelObject().getParameters(), ",", "", -1,
+				AddFlexoConceptInstanceParameter.class);
+		appendStaticContents(")", getRParFragment());
+
+		/*}
 		else {
 			appendStaticContents("new", SPACE);
 			appendDynamicContents(() -> serializeType(getModelObject().getFlexoConceptType()));
@@ -181,7 +181,7 @@ public class AddFlexoConceptInstanceNode extends AssignableActionNode<PConceptIn
 			appendToChildrenPrettyPrintContents("", "", () -> getModelObject().getParameters(), ",", "", -1,
 					AddFlexoConceptInstanceParameter.class);
 			appendStaticContents(")");
-		}
+		}*/
 
 	}
 

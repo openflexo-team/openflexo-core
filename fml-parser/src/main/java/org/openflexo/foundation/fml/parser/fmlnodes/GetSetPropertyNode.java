@@ -108,26 +108,30 @@ public class GetSetPropertyNode extends FlexoPropertyNode<AGetSetPropertyDeclara
 	@Override
 	public void preparePrettyPrint(boolean hasParsedVersion) {
 		super.preparePrettyPrint(hasParsedVersion);
-		if (hasParsedVersion && getVisibilityFragment() != null) {
+
+		appendDynamicContents(() -> getVisibilityAsString(getModelObject().getVisibility()), SPACE, getVisibilityFragment());
+
+		/*if (hasParsedVersion && getVisibilityFragment() != null) {
 			appendDynamicContents(() -> getVisibilityAsString(getModelObject().getVisibility()), SPACE, getVisibilityFragment());
 		}
 		else {
 			appendDynamicContents(() -> getVisibilityAsString(getModelObject().getVisibility()), SPACE);
-		}
-		if (hasParsedVersion) {
-			appendDynamicContents(() -> serializeType(getModelObject().getType()), SPACE, getTypeFragment());
-			appendDynamicContents(() -> getModelObject().getName(), SPACE, getNameFragment());
-			appendStaticContents("{}", SPACE);
-			// appendDynamicContents(() -> getModelObject().getExpression().toString(), getExpressionFragment());
-			appendStaticContents(";", getSemiFragment());
-		}
+		}*/
+
+		// if (hasParsedVersion) {
+		appendDynamicContents(() -> serializeType(getModelObject().getType()), SPACE, getTypeFragment());
+		appendDynamicContents(() -> getModelObject().getName(), SPACE, getNameFragment());
+		appendStaticContents("{}", SPACE, null);
+		// appendDynamicContents(() -> getModelObject().getExpression().toString(), getExpressionFragment());
+		appendStaticContents(";", getSemiFragment());
+		/*}
 		else {
 			appendDynamicContents(() -> serializeType(getModelObject().getType()), SPACE);
 			appendDynamicContents(() -> getModelObject().getName(), SPACE);
 			appendStaticContents("{}", SPACE);
 			// appendDynamicContents(() -> getModelObject().getExpression().toString());
 			appendStaticContents(";");
-		}
+		}*/
 	}
 
 	private RawSourceFragment getVisibilityFragment() {

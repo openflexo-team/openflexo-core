@@ -68,16 +68,16 @@ public class JavaImportNode extends AbstractJavaImportNode<AJavaImportImportDecl
 	public void preparePrettyPrint(boolean hasParsedVersion) {
 		super.preparePrettyPrint(hasParsedVersion);
 
-		if (hasParsedVersion) {
-			appendStaticContents("import", SPACE, getImportFragment());
-			appendDynamicContents(() -> getModelObject().getFullQualifiedClassName(), getFullQualifiedFragment());
-			appendStaticContents(";", getSemiFragment());
-		}
+		// if (hasParsedVersion) {
+		appendStaticContents("import", SPACE, getImportFragment());
+		appendDynamicContents(() -> getModelObject().getFullQualifiedClassName(), getFullQualifiedFragment());
+		appendStaticContents(";", getSemiFragment());
+		/*}
 		else {
 			appendStaticContents("import", SPACE);
 			appendDynamicContents(() -> getModelObject().getFullQualifiedClassName());
 			appendStaticContents(";");
-		}
+		}*/
 	}
 
 	private RawSourceFragment getImportFragment() {

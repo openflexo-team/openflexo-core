@@ -76,23 +76,27 @@ public class PrimitiveRoleNode extends FlexoPropertyNode<AJavaBasicRoleDeclarati
 	@Override
 	public void preparePrettyPrint(boolean hasParsedVersion) {
 		super.preparePrettyPrint(hasParsedVersion);
-		if (hasParsedVersion && getVisibilityFragment() != null) {
+
+		appendDynamicContents(() -> getVisibilityAsString(getModelObject().getVisibility()), SPACE, getVisibilityFragment());
+
+		/*if (hasParsedVersion && getVisibilityFragment() != null) {
 			appendDynamicContents(() -> getVisibilityAsString(getModelObject().getVisibility()), SPACE, getVisibilityFragment());
 		}
 		else {
 			appendDynamicContents(() -> getVisibilityAsString(getModelObject().getVisibility()), SPACE);
-		}
-		if (hasParsedVersion) {
-			appendDynamicContents(() -> serializeType(getModelObject().getType()), SPACE, getTypeFragment());
-			appendDynamicContents(() -> getModelObject().getName(), getNameFragment());
-			appendStaticContents(";", getSemiFragment());
-		}
+		}*/
+
+		// if (hasParsedVersion) {
+		appendDynamicContents(() -> serializeType(getModelObject().getType()), SPACE, getTypeFragment());
+		appendDynamicContents(() -> getModelObject().getName(), getNameFragment());
+		appendStaticContents(";", getSemiFragment());
+		/*}
 		else {
 			appendDynamicContents(() -> getVisibilityAsString(getModelObject().getVisibility()), SPACE);
 			appendDynamicContents(() -> serializeType(getModelObject().getType()), SPACE);
 			appendDynamicContents(() -> getModelObject().getName());
 			appendStaticContents(";");
-		}
+		}*/
 	}
 
 	private RawSourceFragment getVisibilityFragment() {

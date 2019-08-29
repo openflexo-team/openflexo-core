@@ -76,24 +76,28 @@ public class AbstractPropertyNode extends FlexoPropertyNode<AAbstractPropertyDec
 	@Override
 	public void preparePrettyPrint(boolean hasParsedVersion) {
 		super.preparePrettyPrint(hasParsedVersion);
-		if (hasParsedVersion && getVisibilityFragment() != null) {
+
+		appendDynamicContents(() -> getVisibilityAsString(getModelObject().getVisibility()), SPACE, getVisibilityFragment());
+
+		/*if (hasParsedVersion && getVisibilityFragment() != null) {
 			appendDynamicContents(() -> getVisibilityAsString(getModelObject().getVisibility()), SPACE, getVisibilityFragment());
 		}
 		else {
 			appendDynamicContents(() -> getVisibilityAsString(getModelObject().getVisibility()), SPACE);
-		}
-		appendStaticContents("abstract" + SPACE);
-		if (hasParsedVersion) {
-			appendDynamicContents(() -> serializeType(getModelObject().getType()), SPACE, getTypeFragment());
-			appendDynamicContents(() -> getModelObject().getName(), getNameFragment());
-			appendStaticContents(";", getSemiFragment());
-		}
+		}*/
+
+		appendStaticContents("abstract" + SPACE, getAbstractFragment());
+		// if (hasParsedVersion) {
+		appendDynamicContents(() -> serializeType(getModelObject().getType()), SPACE, getTypeFragment());
+		appendDynamicContents(() -> getModelObject().getName(), getNameFragment());
+		appendStaticContents(";", getSemiFragment());
+		/*}
 		else {
 			appendDynamicContents(() -> getVisibilityAsString(getModelObject().getVisibility()), SPACE);
 			appendDynamicContents(() -> serializeType(getModelObject().getType()), SPACE);
 			appendDynamicContents(() -> getModelObject().getName());
 			appendStaticContents(";");
-		}
+		}*/
 	}
 
 	private RawSourceFragment getVisibilityFragment() {
@@ -126,6 +130,13 @@ public class AbstractPropertyNode extends FlexoPropertyNode<AAbstractPropertyDec
 	private RawSourceFragment getSemiFragment() {
 		if (getASTNode() != null) {
 			return getFragment(getASTNode().getSemi());
+		}
+		return null;
+	}
+
+	private RawSourceFragment getAbstractFragment() {
+		if (getASTNode() != null) {
+			return getFragment(getASTNode().getAbstract());
 		}
 		return null;
 	}

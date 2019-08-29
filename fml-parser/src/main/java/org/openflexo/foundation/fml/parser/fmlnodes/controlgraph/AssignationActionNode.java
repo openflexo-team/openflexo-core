@@ -119,23 +119,23 @@ public class AssignationActionNode extends AssignableActionNode<AAssignmentState
 	public void preparePrettyPrint(boolean hasParsedVersion) {
 		super.preparePrettyPrint(hasParsedVersion);
 
-		if (hasParsedVersion) {
-			appendDynamicContents(() -> getModelObject().getAssignation().toString(), getLeftHandSideFragment());
-			appendDynamicContents(SPACE, () -> "=", getOperatorFragment());
-		}
+		// if (hasParsedVersion) {
+		appendDynamicContents(() -> getModelObject().getAssignation().toString(), getLeftHandSideFragment());
+		appendDynamicContents(SPACE, () -> "=", getOperatorFragment());
+		/*}
 		else {
 			appendDynamicContents(() -> getModelObject().getAssignation().toString());
 			appendDynamicContents(() -> "=");
-		}
+		}*/
 
 		appendToChildPrettyPrintContents(SPACE, () -> getModelObject().getAssignableAction(), "", -1);
 
-		if (hasParsedVersion) {
-			appendStaticContents(";", getSemiFragment());
-		}
+		// if (hasParsedVersion) {
+		appendStaticContents(";", getSemiFragment());
+		/*}
 		else {
 			appendStaticContents(";");
-		}
+		}*/
 
 	}
 

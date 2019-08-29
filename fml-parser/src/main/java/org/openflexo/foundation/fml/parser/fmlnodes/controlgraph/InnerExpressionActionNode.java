@@ -74,7 +74,7 @@ public class InnerExpressionActionNode extends AssignableActionNode<Node, Expres
 	@Override
 	public ExpressionAction<?> buildModelObjectFromAST(Node astNode) {
 		ExpressionAction<?> returned = getFactory().newExpressionAction();
-		System.out.println(">>>>>> Inner Expression " + astNode);
+		// System.out.println(">>>>>> Inner Expression " + astNode);
 		returned.setExpression(makeBinding(getIdentifier(), getAdditionalIdentifiers(), returned));
 		return returned;
 	}
@@ -83,12 +83,12 @@ public class InnerExpressionActionNode extends AssignableActionNode<Node, Expres
 	public void preparePrettyPrint(boolean hasParsedVersion) {
 		super.preparePrettyPrint(hasParsedVersion);
 
-		if (hasParsedVersion) {
-			appendDynamicContents(() -> getModelObject().getExpression().toString(), getExpressionFragment());
-		}
+		// if (hasParsedVersion) {
+		appendDynamicContents(() -> getModelObject().getExpression().toString(), getExpressionFragment());
+		/*}
 		else {
 			appendDynamicContents(() -> getModelObject().getExpression().toString());
-		}
+		}*/
 	}
 
 	private TIdentifier getIdentifier() {
