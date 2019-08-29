@@ -36,46 +36,51 @@
  * 
  */
 
-package org.openflexo.foundation.fml.parser.fmlnodes;
+package org.openflexo.foundation.fml.parser.fmlnodes.controlgraph;
 
 import java.util.logging.Logger;
 
-import org.openflexo.foundation.fml.FMLCompilationUnit;
-import org.openflexo.foundation.fml.FlexoProperty;
-import org.openflexo.foundation.fml.parser.FMLObjectNode;
-import org.openflexo.foundation.fml.parser.FMLSemanticsAnalyzer;
+import org.openflexo.foundation.fml.editionaction.AssignableAction;
+import org.openflexo.foundation.fml.parser.ControlGraphFactory;
+import org.openflexo.foundation.fml.parser.node.AExpressionStatement;
 import org.openflexo.foundation.fml.parser.node.Node;
+import org.openflexo.foundation.fml.parser.node.TSemi;
+import org.openflexo.p2pp.RawSource.RawSourceFragment;
 
 /**
  * @author sylvain
  * 
  */
-public abstract class FlexoPropertyNode<N extends Node, T extends FlexoProperty<?>> extends FMLObjectNode<N, T, FMLSemanticsAnalyzer> {
+public abstract class AssignableActionNode<N extends Node, T extends AssignableAction<?>> extends ControlGraphNode<N, T> {
 
-	private static final Logger logger = Logger.getLogger(FlexoPropertyNode.class.getPackage().getName());
+	private static final Logger logger = Logger.getLogger(AssignableActionNode.class.getPackage().getName());
 
-	public FlexoPropertyNode(N astNode, FMLSemanticsAnalyzer analyser) {
-		super(astNode, analyser);
+	private ControlGraphFactory cgFactory;
+
+	public AssignableActionNode(N astNode, ControlGraphFactory cgFactory) {
+		super(astNode, cgFactory);
 	}
 
-	public FlexoPropertyNode(T property, FMLSemanticsAnalyzer analyser) {
-		super(property, analyser);
+	public AssignableActionNode(T property, ControlGraphFactory cgFactory) {
+		super(property, cgFactory);
 	}
 
-	@Override
-	public FlexoPropertyNode<N, T> deserialize() {
-		if (getParent() instanceof VirtualModelNode) {
-			((VirtualModelNode) getParent()).getModelObject().addToFlexoProperties(getModelObject());
+	protected TSemi getSemi() {
+		Node current = getASTNode();
+		while (current.parent() != null) {
+			if (current instanceof AExpressionStatement) {
+				return ((AExpressionStatement) current).getSemi();
+			}
+			current = current.parent();
 		}
-		if (getParent() instanceof FlexoConceptNode) {
-			((FlexoConceptNode) getParent()).getModelObject().addToFlexoProperties(getModelObject());
-		}
-		return this;
+		return null;
 	}
 
-	@Override
-	protected FMLCompilationUnit getCompilationUnit() {
-		return getAnalyser().getCompilationUnit();
+	protected RawSourceFragment getSemiFragment() {
+		if (getSemi() != null) {
+			return getFragment(getSemi());
+		}
+		return null;
 	}
 
 }

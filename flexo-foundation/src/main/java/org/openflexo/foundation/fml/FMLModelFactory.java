@@ -339,6 +339,11 @@ public class FMLModelFactory extends ModelFactory implements PamelaResourceModel
 		return returned;
 	}
 
+	public Sequence newSequence() {
+		Sequence returned = newInstance(Sequence.class);
+		return returned;
+	}
+
 	public Sequence newSequence(FMLControlGraph cg1, FMLControlGraph cg2) {
 		Sequence returned = newInstance(Sequence.class);
 		returned.setControlGraph1(cg1);

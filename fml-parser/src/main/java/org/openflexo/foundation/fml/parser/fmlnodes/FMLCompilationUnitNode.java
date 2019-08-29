@@ -49,7 +49,7 @@ import org.openflexo.p2pp.RawSource.RawSourcePosition;
  * @author sylvain
  * 
  */
-public class FMLCompilationUnitNode extends FMLObjectNode<AFmlCompilationUnit, FMLCompilationUnit> {
+public class FMLCompilationUnitNode extends FMLObjectNode<AFmlCompilationUnit, FMLCompilationUnit, FMLSemanticsAnalyzer> {
 
 	private RawSourcePosition startPosition;
 	private RawSourcePosition endPosition;

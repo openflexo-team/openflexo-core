@@ -38,12 +38,8 @@
 
 package org.openflexo.foundation.fml.parser;
 
-import java.util.Stack;
-
-import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.fml.FMLCompilationUnit;
 import org.openflexo.foundation.fml.FMLModelFactory;
-import org.openflexo.foundation.fml.parser.analysis.DepthFirstAdapter;
 import org.openflexo.foundation.fml.parser.fmlnodes.FMLCompilationUnitNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.FlexoConceptNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.JavaImportNode;
@@ -57,7 +53,6 @@ import org.openflexo.foundation.fml.parser.node.AModelDeclaration;
 import org.openflexo.foundation.fml.parser.node.ANamedJavaImportImportDeclaration;
 import org.openflexo.foundation.fml.parser.node.APropertyDeclarationInnerConceptDeclaration;
 import org.openflexo.foundation.fml.parser.node.Start;
-import org.openflexo.p2pp.P2PPNode;
 import org.openflexo.p2pp.RawSource;
 
 /**
@@ -66,16 +61,11 @@ import org.openflexo.p2pp.RawSource;
  * @author sylvain
  * 
  */
-public class FMLSemanticsAnalyzer extends DepthFirstAdapter {
-
-	private final FMLModelFactory factory;
+public class FMLSemanticsAnalyzer extends AbstractSemanticsAnalyzer {
 
 	private final TypeFactory typeFactory;
 	private final FlexoPropertyFactory propertyFactory;
 	private final FlexoBehaviourFactory behaviourFactory;
-
-	// Stack of FMLObjectNode beeing build during semantics analyzing
-	protected Stack<FMLObjectNode<?, ?>> fmlNodes = new Stack<>();
 
 	// Raw source as when this analyzer was last parsed
 	private RawSource rawSource;
@@ -84,12 +74,9 @@ public class FMLSemanticsAnalyzer extends DepthFirstAdapter {
 
 	private FMLCompilationUnitNode compilationUnitNode;
 
-	private Start tree;
-
 	public FMLSemanticsAnalyzer(FMLModelFactory factory, Start tree, RawSource rawSource) {
-		this.factory = factory;
+		super(factory, tree);
 		this.rawSource = rawSource;
-		this.tree = tree;
 		fragmentManager = new FragmentManager(rawSource);
 		typeFactory = new TypeFactory(this);
 		propertyFactory = new FlexoPropertyFactory(this);
@@ -98,16 +85,19 @@ public class FMLSemanticsAnalyzer extends DepthFirstAdapter {
 		finalizeDeserialization();
 	}
 
-	public FMLModelFactory getFactory() {
-		return factory;
+	@Override
+	public FMLSemanticsAnalyzer getAnalyzer() {
+		return this;
 	}
 
+	@Override
+	public Start getRootNode() {
+		return (Start) super.getRootNode();
+	}
+
+	@Override
 	public FragmentManager getFragmentManager() {
 		return fragmentManager;
-	}
-
-	public Start getTree() {
-		return tree;
 	}
 
 	public TypeFactory getTypeFactory() {
@@ -122,40 +112,14 @@ public class FMLSemanticsAnalyzer extends DepthFirstAdapter {
 		return behaviourFactory;
 	}
 
-	public FlexoServiceManager getServiceManager() {
-		return getFactory().getServiceManager();
-	}
-
-	protected final void finalizeDeserialization(FMLObjectNode<?, ?> node) {
-		node.finalizeDeserialization();
-		for (P2PPNode<?, ?> child : node.getChildren()) {
-			finalizeDeserialization((FMLObjectNode<?, ?>) child);
-		}
-	}
-
 	protected final void finalizeDeserialization() {
-		finalizeDeserialization(compilationUnitNode);
 		compilationUnitNode.initializePrettyPrint(compilationUnitNode, compilationUnitNode.makePrettyPrintContext());
 		typeFactory.resolveUnresovedTypes();
+		finalizeDeserialization(compilationUnitNode);
 	}
 
 	public RawSource getRawSource() {
 		return rawSource;
-	}
-
-	protected void push(FMLObjectNode<?, ?> fmlNode) {
-		if (!fmlNodes.isEmpty()) {
-			FMLObjectNode<?, ?> current = fmlNodes.peek();
-			current.addToChildren(fmlNode);
-		}
-		fmlNodes.push(fmlNode);
-	}
-
-	protected <N extends FMLObjectNode<?, ?>> N pop() {
-		N builtFMLNode = (N) fmlNodes.pop();
-		builtFMLNode.deserialize();
-		// builtFMLNode.initializePrettyPrint();
-		return builtFMLNode;
 	}
 
 	/*@Override
@@ -259,13 +223,13 @@ public class FMLSemanticsAnalyzer extends DepthFirstAdapter {
 	@Override
 	public void inABehaviourDeclarationInnerConceptDeclaration(ABehaviourDeclarationInnerConceptDeclaration node) {
 		super.inABehaviourDeclarationInnerConceptDeclaration(node);
-		// push(new FlexoBehaviourNode(node, this));
+		push(getBehaviourFactory().makeBehaviourNode(node.getBehaviourDeclaration()));
 	}
 
 	@Override
 	public void outABehaviourDeclarationInnerConceptDeclaration(ABehaviourDeclarationInnerConceptDeclaration node) {
 		super.outABehaviourDeclarationInnerConceptDeclaration(node);
-		// pop();
+		pop();
 	}
 
 }

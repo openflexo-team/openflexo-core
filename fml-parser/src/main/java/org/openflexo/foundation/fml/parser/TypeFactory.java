@@ -314,7 +314,7 @@ public class TypeFactory extends SemanticsAnalyzerFactory {
 	 * @param typeName
 	 * @return
 	 */
-	private Type lookupConceptNamed(String typeName) {
+	public FlexoConceptInstanceType lookupConceptNamed(String typeName) {
 		if (StringUtils.isEmpty(typeName)) {
 			return null;
 		}
@@ -389,7 +389,7 @@ public class TypeFactory extends SemanticsAnalyzerFactory {
 		public ConceptRetriever(String conceptName) {
 			this.conceptName = conceptName;
 			nodes = new Stack<>();
-			getAnalyzer().getTree().apply(ConceptRetriever.this);
+			getAnalyzer().getRootNode().apply(ConceptRetriever.this);
 		}
 
 		public boolean isFound() {

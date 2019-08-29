@@ -36,46 +36,56 @@
  * 
  */
 
-package org.openflexo.foundation.fml.parser.fmlnodes;
+package org.openflexo.foundation.fml.parser.fmlnodes.controlgraph;
 
 import java.util.logging.Logger;
 
-import org.openflexo.foundation.fml.FMLCompilationUnit;
-import org.openflexo.foundation.fml.FlexoProperty;
-import org.openflexo.foundation.fml.parser.FMLObjectNode;
-import org.openflexo.foundation.fml.parser.FMLSemanticsAnalyzer;
+import org.openflexo.foundation.fml.editionaction.ExpressionAction;
+import org.openflexo.foundation.fml.parser.ControlGraphFactory;
 import org.openflexo.foundation.fml.parser.node.Node;
+import org.openflexo.p2pp.RawSource.RawSourceFragment;
 
 /**
  * @author sylvain
  * 
  */
-public abstract class FlexoPropertyNode<N extends Node, T extends FlexoProperty<?>> extends FMLObjectNode<N, T, FMLSemanticsAnalyzer> {
+public class ExpressionActionNode extends AssignableActionNode<Node, ExpressionAction<?>> {
 
-	private static final Logger logger = Logger.getLogger(FlexoPropertyNode.class.getPackage().getName());
+	private static final Logger logger = Logger.getLogger(ExpressionActionNode.class.getPackage().getName());
 
-	public FlexoPropertyNode(N astNode, FMLSemanticsAnalyzer analyser) {
-		super(astNode, analyser);
+	public ExpressionActionNode(Node astNode, ControlGraphFactory cgFactory) {
+		super(astNode, cgFactory);
 	}
 
-	public FlexoPropertyNode(T property, FMLSemanticsAnalyzer analyser) {
-		super(property, analyser);
-	}
-
-	@Override
-	public FlexoPropertyNode<N, T> deserialize() {
-		if (getParent() instanceof VirtualModelNode) {
-			((VirtualModelNode) getParent()).getModelObject().addToFlexoProperties(getModelObject());
-		}
-		if (getParent() instanceof FlexoConceptNode) {
-			((FlexoConceptNode) getParent()).getModelObject().addToFlexoProperties(getModelObject());
-		}
-		return this;
+	public ExpressionActionNode(ExpressionAction<?> action, ControlGraphFactory cgFactory) {
+		super(action, cgFactory);
 	}
 
 	@Override
-	protected FMLCompilationUnit getCompilationUnit() {
-		return getAnalyser().getCompilationUnit();
+	public ExpressionAction<?> buildModelObjectFromAST(Node astNode) {
+		ExpressionAction<?> returned = getFactory().newExpressionAction();
+		System.out.println(">>>>>> Expression " + astNode);
+		returned.setExpression(makeBinding(astNode, returned));
+		return returned;
+	}
+
+	@Override
+	public void preparePrettyPrint(boolean hasParsedVersion) {
+		super.preparePrettyPrint(hasParsedVersion);
+
+		if (hasParsedVersion) {
+			appendDynamicContents(() -> getModelObject().getExpression().toString(), getExpressionFragment());
+		}
+		else {
+			appendDynamicContents(() -> getModelObject().getExpression().toString());
+		}
+	}
+
+	private RawSourceFragment getExpressionFragment() {
+		if (getASTNode() != null) {
+			return getFragment(getASTNode());
+		}
+		return null;
 	}
 
 }

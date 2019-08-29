@@ -86,8 +86,8 @@ public class ControlGraphFactory extends AbstractSemanticsAnalyzer {
 	 * </pre>
 	 */
 
-	private int totalStatementsInCurrentSequence = 0;
-	private int remainingStatementsInCurrentSequence = 0;
+	// private int totalStatementsInCurrentSequence = 0;
+	// private int remainingStatementsInCurrentSequence = 0;
 	private ABlock currentBlockNode;
 
 	private List<ControlGraphNode<?, ?>> currentSequenceNodes;
@@ -98,8 +98,8 @@ public class ControlGraphFactory extends AbstractSemanticsAnalyzer {
 		super.inABlock(node);
 		System.out.println("Nouveau block de " + node.getBlockStatements().size() + " statements " + " avec " + node);
 		if (node.getBlockStatements().size() > 1) {
-			totalStatementsInCurrentSequence = node.getBlockStatements().size();
-			remainingStatementsInCurrentSequence = node.getBlockStatements().size();
+			// totalStatementsInCurrentSequence = node.getBlockStatements().size();
+			// remainingStatementsInCurrentSequence = node.getBlockStatements().size();
 			// push(new SequenceNode(node, this));
 			currentSequenceNodes = new ArrayList<>();
 			currentBlockNode = node;
@@ -109,14 +109,14 @@ public class ControlGraphFactory extends AbstractSemanticsAnalyzer {
 		}
 	}
 
-	private SequenceNode builtSequenceNode;
-	private SequenceNode rootSequenceNode;
+	// private SequenceNode builtSequenceNode;
+	// private SequenceNode rootSequenceNode;
 
-	private void appendInSequence(ControlGraphNode<?, ?> n, boolean isLast) {
-
+	/*private void appendInSequence(ControlGraphNode<?, ?> n, boolean isLast) {
+	
 		System.out.println("************ On ajoute en sequence " + n.getASTNode());
 		System.out.println("builtSequenceNode=" + builtSequenceNode);
-
+	
 		if (isLast) {
 			builtSequenceNode.addToChildren(n);
 			builtSequenceNode.getModelObject().setControlGraph2(n.getModelObject());
@@ -133,76 +133,54 @@ public class ControlGraphFactory extends AbstractSemanticsAnalyzer {
 				builtSequenceNode.getModelObject().setControlGraph2(newSequenceNode.getModelObject());
 			}
 			builtSequenceNode = newSequenceNode;
-			/*if (getCurrentNode() instanceof SequenceNode) {
-				getCurrentNode().addToChildren(n);
-				((SequenceNode) getCurrentNode()).getModelObject().setControlGraph1(n.getModelObject());
-			}*/
 		}
-
-		/*if (rootControlGraphNode == null) {
-			rootControlGraphNode = n;
-			super.push(n);
-		}
-		else {
-			getCurrentNode().addToChildren(n);
-		}*/
-	}
+	
+	}*/
 
 	@Override
 	public void outABlock(ABlock node) {
 		super.outABlock(node);
 		if (node.getBlockStatements().size() > 1) {
 			System.out.println("IL faut maintenant gerer " + currentSequenceNodes);
-			for (int i = 0; i < currentSequenceNodes.size(); i++) {
-				/*if (i < currentSequenceNodes.size() - 1) {
-					SequenceNode newSequenceNode = new SequenceNode(node, this);
-					appendInSequence(newSequenceNode);
-				}*/
-				appendInSequence(currentSequenceNodes.get(i), i == currentSequenceNodes.size() - 1);
+			SequenceNode builtSequenceNode = null;
+			SequenceNode rootSequenceNode = null;
+			if (currentSequenceNodes.size() == node.getBlockStatements().size()) {
+				ControlGraphNode<?, ?> lastNode = currentSequenceNodes.get(currentSequenceNodes.size() - 1);
+				for (int i = 0; i < currentSequenceNodes.size(); i++) {
+					ControlGraphNode<?, ?> n = currentSequenceNodes.get(i);
+					if (i == currentSequenceNodes.size() - 1) {
+						builtSequenceNode.addToChildren(n);
+						builtSequenceNode.getModelObject().setControlGraph2(n.getModelObject());
+					}
+					else {
+						SequenceNode newSequenceNode = new SequenceNode(currentBlockNode, n, lastNode, this);
+						newSequenceNode.addToChildren(n);
+						newSequenceNode.getModelObject().setControlGraph1(n.getModelObject());
+						if (builtSequenceNode == null) {
+							rootSequenceNode = newSequenceNode;
+						}
+						else {
+							builtSequenceNode.addToChildren(newSequenceNode);
+							builtSequenceNode.getModelObject().setControlGraph2(newSequenceNode.getModelObject());
+						}
+						builtSequenceNode = newSequenceNode;
+					}
+				}
+				currentBlockNode = null;
+				push(rootSequenceNode);
+				pop();
 			}
-			System.out.println("Et on pushe " + builtSequenceNode);
-			rootControlGraphNode = rootSequenceNode;
-			push(rootSequenceNode);
-			pop();
-			System.out.println("C'est fait");
-			// System.exit(-1);
+			else {
+				logger.warning("Expecting to find " + node.getBlockStatements().size() + " statements but having parsed only "
+						+ currentSequenceNodes.size() + ". Aborting");
+				System.err.println("currentBlockNode=" + currentBlockNode);
+				currentBlockNode = null;
+			}
 		}
 		if (node.getBlockStatements().size() == 0) {
 			pop();
 		}
 		currentBlockNode = null;
-	}
-
-	public void sequentiallyAppend(FMLControlGraph controlGraph) {
-		/*if (getCurrentNode() instanceof SequenceNode) {
-			SequenceNode sequenceNode = (SequenceNode) getCurrentNode();
-			System.out.println("Hop j'ajoute " + controlGraph + " remaining=" + remainingStatementsInCurrentSequence);
-			if (remainingStatementsInCurrentSequence == totalStatementsInCurrentSequence) {
-				// First statement
-				sequenceNode.getModelObject().setControlGraph1(controlGraph);
-			}
-			else if (remainingStatementsInCurrentSequence > 1) {
-				SequenceNode newSequenceNode = new SequenceNode(currentBlockNode, this);
-				push(newSequenceNode);
-				newSequenceNode.getModelObject().setControlGraph1(controlGraph);
-			}
-			else if (remainingStatementsInCurrentSequence == 1) {
-				// Last statement
-				sequenceNode.getModelObject().setControlGraph1(controlGraph);
-			}
-		
-			if (sequenceNode.getModelObject().getControlGraph1() == null) {
-				sequenceNode.getModelObject().setControlGraph1(controlGraph);
-			}
-			else if (sequenceNode.getModelObject().getControlGraph2() == null) {
-				sequenceNode.getModelObject().setControlGraph2(controlGraph);
-			}
-		
-			remainingStatementsInCurrentSequence--;
-		}
-		else {
-			logger.warning("Unexpected control graph to apprend: " + controlGraph + " parent=" + getCurrentNode());
-		}*/
 	}
 
 	@Override

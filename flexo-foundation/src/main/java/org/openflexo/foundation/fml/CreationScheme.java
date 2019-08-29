@@ -38,8 +38,12 @@
 
 package org.openflexo.foundation.fml;
 
+import org.openflexo.pamela.annotations.Getter;
 import org.openflexo.pamela.annotations.ImplementationClass;
 import org.openflexo.pamela.annotations.ModelEntity;
+import org.openflexo.pamela.annotations.PropertyIdentifier;
+import org.openflexo.pamela.annotations.Setter;
+import org.openflexo.pamela.annotations.XMLAttribute;
 import org.openflexo.pamela.annotations.XMLElement;
 
 @ModelEntity
@@ -47,10 +51,26 @@ import org.openflexo.pamela.annotations.XMLElement;
 @XMLElement
 public interface CreationScheme extends AbstractCreationScheme {
 
+	public static final String DEFAULT_CREATION_SCHEME_NAME = "DefaultCreationScheme";
+
+	@PropertyIdentifier(type = boolean.class)
+	public static final String IS_ANONYMOUS_KEY = "isAnonymous";
+
+	@Getter(value = IS_ANONYMOUS_KEY, defaultValue = "false")
+	@XMLAttribute
+	public boolean isAnonymous();
+
+	@Setter(IS_ANONYMOUS_KEY)
+	public void setAnonymous(boolean isAnonymous);
+
 	public static abstract class CreationSchemeImpl extends AbstractCreationSchemeImpl implements CreationScheme {
 
-		public CreationSchemeImpl() {
-			super();
+		@Override
+		public String getName() {
+			if (isAnonymous()) {
+				return DEFAULT_CREATION_SCHEME_NAME;
+			}
+			return super.getName();
 		}
 
 	}

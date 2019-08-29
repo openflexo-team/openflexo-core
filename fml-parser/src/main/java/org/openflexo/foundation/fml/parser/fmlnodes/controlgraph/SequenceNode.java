@@ -36,46 +36,48 @@
  * 
  */
 
-package org.openflexo.foundation.fml.parser.fmlnodes;
+package org.openflexo.foundation.fml.parser.fmlnodes.controlgraph;
 
 import java.util.logging.Logger;
 
-import org.openflexo.foundation.fml.FMLCompilationUnit;
-import org.openflexo.foundation.fml.FlexoProperty;
-import org.openflexo.foundation.fml.parser.FMLObjectNode;
-import org.openflexo.foundation.fml.parser.FMLSemanticsAnalyzer;
-import org.openflexo.foundation.fml.parser.node.Node;
+import org.openflexo.foundation.fml.controlgraph.Sequence;
+import org.openflexo.foundation.fml.parser.ControlGraphFactory;
+import org.openflexo.foundation.fml.parser.node.ABlock;
 
 /**
  * @author sylvain
  * 
  */
-public abstract class FlexoPropertyNode<N extends Node, T extends FlexoProperty<?>> extends FMLObjectNode<N, T, FMLSemanticsAnalyzer> {
+public class SequenceNode extends ControlGraphNode<ABlock, Sequence> {
 
-	private static final Logger logger = Logger.getLogger(FlexoPropertyNode.class.getPackage().getName());
+	private static final Logger logger = Logger.getLogger(SequenceNode.class.getPackage().getName());
 
-	public FlexoPropertyNode(N astNode, FMLSemanticsAnalyzer analyser) {
-		super(astNode, analyser);
+	public SequenceNode(ABlock astNode, ControlGraphNode<?, ?> relativeStart, ControlGraphNode<?, ?> relativeEnd,
+			ControlGraphFactory cgFactory) {
+		super(astNode, cgFactory);
+		if (relativeStart != null) {
+			setStartPosition(relativeStart.getStartPosition());
+		}
+		if (relativeEnd != null) {
+			setEndPosition(relativeEnd.getEndPosition());
+		}
 	}
 
-	public FlexoPropertyNode(T property, FMLSemanticsAnalyzer analyser) {
-		super(property, analyser);
+	public SequenceNode(Sequence sequence, ControlGraphFactory cgFactory) {
+		super(sequence, cgFactory);
 	}
 
 	@Override
-	public FlexoPropertyNode<N, T> deserialize() {
-		if (getParent() instanceof VirtualModelNode) {
-			((VirtualModelNode) getParent()).getModelObject().addToFlexoProperties(getModelObject());
-		}
-		if (getParent() instanceof FlexoConceptNode) {
-			((FlexoConceptNode) getParent()).getModelObject().addToFlexoProperties(getModelObject());
-		}
-		return this;
+	public Sequence buildModelObjectFromAST(ABlock astNode) {
+		Sequence returned = getFactory().newSequence();
+		return returned;
 	}
 
 	@Override
-	protected FMLCompilationUnit getCompilationUnit() {
-		return getAnalyser().getCompilationUnit();
+	public void preparePrettyPrint(boolean hasParsedVersion) {
+		super.preparePrettyPrint(hasParsedVersion);
+		appendToChildPrettyPrintContents("", () -> getModelObject().getControlGraph1(), LINE_SEPARATOR, 0);
+		appendToChildPrettyPrintContents("", () -> getModelObject().getControlGraph2(), "", 0);
 	}
 
 }

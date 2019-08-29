@@ -46,6 +46,7 @@ import org.openflexo.connie.BindingVariable;
 import org.openflexo.connie.DataBinding;
 import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.fml.FMLModelFactory;
+import org.openflexo.foundation.fml.FMLPrettyPrintable;
 import org.openflexo.foundation.fml.FMLRepresentationContext;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoConceptObject;
@@ -56,6 +57,7 @@ import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext.ReturnException;
 import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
 import org.openflexo.pamela.annotations.CloningStrategy;
+import org.openflexo.pamela.annotations.CloningStrategy.StrategyType;
 import org.openflexo.pamela.annotations.Getter;
 import org.openflexo.pamela.annotations.ImplementationClass;
 import org.openflexo.pamela.annotations.Import;
@@ -64,7 +66,6 @@ import org.openflexo.pamela.annotations.ModelEntity;
 import org.openflexo.pamela.annotations.PropertyIdentifier;
 import org.openflexo.pamela.annotations.Setter;
 import org.openflexo.pamela.annotations.XMLAttribute;
-import org.openflexo.pamela.annotations.CloningStrategy.StrategyType;
 
 /**
  * Abstract definition of a control graph node in control flow graph paradigm.<br>
@@ -81,7 +82,7 @@ import org.openflexo.pamela.annotations.CloningStrategy.StrategyType;
 @ModelEntity(isAbstract = true)
 @ImplementationClass(FMLControlGraph.FMLControlGraphImpl.class)
 @Imports({ @Import(EditionAction.class), @Import(EmptyControlGraph.class), @Import(Sequence.class) })
-public abstract interface FMLControlGraph extends FlexoConceptObject {
+public abstract interface FMLControlGraph extends FlexoConceptObject, FMLPrettyPrintable {
 
 	@PropertyIdentifier(type = FMLControlGraphOwner.class)
 	public static final String OWNER_KEY = "owner";

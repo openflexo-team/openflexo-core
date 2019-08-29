@@ -36,46 +36,48 @@
  * 
  */
 
-package org.openflexo.foundation.fml.parser.fmlnodes;
+package org.openflexo.foundation.fml.parser.fmlnodes.controlgraph;
 
 import java.util.logging.Logger;
 
-import org.openflexo.foundation.fml.FMLCompilationUnit;
-import org.openflexo.foundation.fml.FlexoProperty;
+import org.openflexo.foundation.fml.controlgraph.FMLControlGraph;
+import org.openflexo.foundation.fml.parser.ControlGraphFactory;
 import org.openflexo.foundation.fml.parser.FMLObjectNode;
-import org.openflexo.foundation.fml.parser.FMLSemanticsAnalyzer;
 import org.openflexo.foundation.fml.parser.node.Node;
 
 /**
  * @author sylvain
  * 
  */
-public abstract class FlexoPropertyNode<N extends Node, T extends FlexoProperty<?>> extends FMLObjectNode<N, T, FMLSemanticsAnalyzer> {
+public abstract class ControlGraphNode<N extends Node, T extends FMLControlGraph> extends FMLObjectNode<N, T, ControlGraphFactory> {
 
-	private static final Logger logger = Logger.getLogger(FlexoPropertyNode.class.getPackage().getName());
+	private static final Logger logger = Logger.getLogger(ControlGraphNode.class.getPackage().getName());
 
-	public FlexoPropertyNode(N astNode, FMLSemanticsAnalyzer analyser) {
-		super(astNode, analyser);
+	private ControlGraphFactory cgFactory;
+
+	public ControlGraphNode(N astNode, ControlGraphFactory cgFactory) {
+		super(astNode, cgFactory);
 	}
 
-	public FlexoPropertyNode(T property, FMLSemanticsAnalyzer analyser) {
-		super(property, analyser);
+	public ControlGraphNode(T property, ControlGraphFactory cgFactory) {
+		super(property, cgFactory);
 	}
 
 	@Override
-	public FlexoPropertyNode<N, T> deserialize() {
-		if (getParent() instanceof VirtualModelNode) {
-			((VirtualModelNode) getParent()).getModelObject().addToFlexoProperties(getModelObject());
-		}
-		if (getParent() instanceof FlexoConceptNode) {
-			((FlexoConceptNode) getParent()).getModelObject().addToFlexoProperties(getModelObject());
+	public ControlGraphNode<N, T> deserialize() {
+		// System.out.println("deserialize for " + getParent() + " modelObject: " + getModelObject());
+		if (getParent() instanceof SequenceNode) {
+			// getAbstractAnalyser().sequentiallyAppend(getModelObject());
+
+			/*if (((SequenceNode) getParent()).getModelObject().getControlGraph1() == null) {
+				((SequenceNode) getParent()).getModelObject().setControlGraph1(getModelObject());
+			}
+			else if (((SequenceNode) getParent()).getModelObject().getControlGraph2() == null) {
+				((SequenceNode) getParent()).getModelObject().setControlGraph2(getModelObject());
+			}*/
+			// System.out.println("Donc: " + ((SequenceNode) getParent()).getModelObject().getFMLRepresentation());
 		}
 		return this;
-	}
-
-	@Override
-	protected FMLCompilationUnit getCompilationUnit() {
-		return getAnalyser().getCompilationUnit();
 	}
 
 }

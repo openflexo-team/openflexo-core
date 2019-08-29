@@ -39,35 +39,45 @@
 package org.openflexo.foundation.fml.parser;
 
 import java.lang.reflect.Type;
+import java.util.Collections;
 import java.util.List;
 import java.util.logging.Logger;
 
 import org.openflexo.connie.Bindable;
 import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.DataBinding.BindingDefinitionType;
+import org.openflexo.connie.type.TypeUtils;
 import org.openflexo.foundation.fml.AbstractProperty;
+import org.openflexo.foundation.fml.FMLCompilationUnit;
 import org.openflexo.foundation.fml.FMLModelFactory;
 import org.openflexo.foundation.fml.FMLObject;
 import org.openflexo.foundation.fml.FMLPrettyPrintDelegate;
 import org.openflexo.foundation.fml.FMLPrettyPrintable;
+import org.openflexo.foundation.fml.FlexoBehaviour;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.JavaImportDeclaration;
 import org.openflexo.foundation.fml.JavaRole;
 import org.openflexo.foundation.fml.PrimitiveRole;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.Visibility;
+import org.openflexo.foundation.fml.controlgraph.Sequence;
+import org.openflexo.foundation.fml.editionaction.AssignationAction;
 import org.openflexo.foundation.fml.parser.fmlnodes.AbstractPropertyNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.FlexoConceptNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.JavaImportNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.JavaRoleNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.PrimitiveRoleNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.VirtualModelNode;
+import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.AssignationActionNode;
+import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.SequenceNode;
+import org.openflexo.foundation.fml.parser.node.AIdentifierVariableDeclarator;
+import org.openflexo.foundation.fml.parser.node.AInitializerVariableDeclarator;
 import org.openflexo.foundation.fml.parser.node.APrivateVisibility;
 import org.openflexo.foundation.fml.parser.node.AProtectedVisibility;
 import org.openflexo.foundation.fml.parser.node.APublicVisibility;
 import org.openflexo.foundation.fml.parser.node.Node;
 import org.openflexo.foundation.fml.parser.node.PAdditionalIdentifier;
-import org.openflexo.foundation.fml.parser.node.PExpression;
+import org.openflexo.foundation.fml.parser.node.PVariableDeclarator;
 import org.openflexo.foundation.fml.parser.node.PVisibility;
 import org.openflexo.foundation.fml.parser.node.TIdentifier;
 import org.openflexo.foundation.fml.parser.node.Token;
@@ -85,15 +95,15 @@ import org.openflexo.toolbox.ChainedCollection;
  * @author sylvain
  * 
  */
-public abstract class FMLObjectNode<N extends Node, T extends FMLPrettyPrintable> extends P2PPNode<N, T>
-		implements FMLPrettyPrintDelegate<T> {
+public abstract class FMLObjectNode<N extends Node, T extends FMLPrettyPrintable, A extends AbstractSemanticsAnalyzer>
+		extends P2PPNode<N, T> implements FMLPrettyPrintDelegate<T> {
 
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(FMLObjectNode.class.getPackage().getName());
 
-	private final FMLSemanticsAnalyzer analyser;
+	private final A analyser;
 
-	public FMLObjectNode(N astNode, FMLSemanticsAnalyzer analyser) {
+	public FMLObjectNode(N astNode, A analyser) {
 		super(null, astNode, analyser.getFragmentManager());
 		this.analyser = analyser;
 
@@ -102,7 +112,7 @@ public abstract class FMLObjectNode<N extends Node, T extends FMLPrettyPrintable
 		modelObject.initializeDeserialization(getFactory());
 	}
 
-	public FMLObjectNode(T aFMLObject, FMLSemanticsAnalyzer analyser) {
+	public FMLObjectNode(T aFMLObject, A analyser) {
 		super(aFMLObject, null, null);
 		this.analyser = analyser;
 
@@ -114,12 +124,20 @@ public abstract class FMLObjectNode<N extends Node, T extends FMLPrettyPrintable
 		return analyser.getFactory();
 	}
 
-	public FMLSemanticsAnalyzer getAnalyser() {
+	public A getAbstractAnalyser() {
 		return analyser;
 	}
 
+	public FMLSemanticsAnalyzer getAnalyser() {
+		return getAbstractAnalyser().getAnalyzer();
+	}
+
 	public TypeFactory getTypeFactory() {
-		return analyser.getTypeFactory();
+		return getAnalyser().getTypeFactory();
+	}
+
+	protected FMLCompilationUnit getCompilationUnit() {
+		return getAnalyser().getCompilationUnit();
 	}
 
 	// Make this method visible
@@ -163,7 +181,7 @@ public abstract class FMLObjectNode<N extends Node, T extends FMLPrettyPrintable
 	 */
 	@Override
 	public RawSource getRawSource() {
-		return analyser.getRawSource();
+		return getAnalyser().getRawSource();
 	}
 
 	@Override
@@ -197,6 +215,12 @@ public abstract class FMLObjectNode<N extends Node, T extends FMLPrettyPrintable
 		if (object instanceof AbstractProperty) {
 			return (P2PPNode<?, C>) new AbstractPropertyNode((AbstractProperty) object, getAnalyser());
 		}
+		if (object instanceof Sequence) {
+			return (P2PPNode<?, C>) new SequenceNode((Sequence) object, (ControlGraphFactory) getAbstractAnalyser());
+		}
+		if (object instanceof AssignationAction) {
+			return (P2PPNode<?, C>) new AssignationActionNode((AssignationAction) object, (ControlGraphFactory) getAbstractAnalyser());
+		}
 		System.err.println("Not supported: " + object);
 		Thread.dumpStack();
 		return null;
@@ -225,7 +249,16 @@ public abstract class FMLObjectNode<N extends Node, T extends FMLPrettyPrintable
 	 * @param token
 	 * @return
 	 */
-	// @Override
+	public RawSourceFragment getFragment(Node node, Node otherNode) {
+		return getFragment(node, Collections.singletonList(otherNode));
+	}
+
+	/**
+	 * Return fragment matching supplied nodes in AST
+	 * 
+	 * @param token
+	 * @return
+	 */
 	public RawSourceFragment getFragment(Node node, List<? extends Node> otherNodes) {
 		ChainedCollection<Node> collection = new ChainedCollection<>();
 		collection.add(node);
@@ -245,12 +278,12 @@ public abstract class FMLObjectNode<N extends Node, T extends FMLPrettyPrintable
 		return getTypeFactory().makeFullQualifiedIdentifier(identifier, additionalIdentifiers);
 	}
 
-	protected <T> DataBinding<T> makeBinding(PExpression pExpression, Type type, BindingDefinitionType bindingType, Bindable bindable) {
-		return new DataBinding(getText(pExpression), bindable, type, bindingType);
+	protected <T> DataBinding<T> makeBinding(Node node, Type type, BindingDefinitionType bindingType, Bindable bindable) {
+		return new DataBinding(getText(node), bindable, type, bindingType);
 	}
 
-	protected <T> DataBinding<T> makeBinding(PExpression pExpression, Bindable bindable) {
-		return new DataBinding(getText(pExpression), bindable, Object.class, BindingDefinitionType.GET);
+	protected <T> DataBinding<T> makeBinding(Node node, Bindable bindable) {
+		return new DataBinding(getText(node), bindable, Object.class, BindingDefinitionType.GET);
 	}
 
 	protected <T> DataBinding<T> makeBinding(TIdentifier identifier, List<PAdditionalIdentifier> additionalIdentifiers, Type type,
@@ -293,6 +326,38 @@ public abstract class FMLObjectNode<N extends Node, T extends FMLPrettyPrintable
 			return Visibility.Private;
 		}
 		return null;
+	}
+
+	protected TIdentifier getName(PVariableDeclarator variableDeclarator) {
+		if (variableDeclarator instanceof AIdentifierVariableDeclarator) {
+			return ((AIdentifierVariableDeclarator) variableDeclarator).getIdentifier();
+		}
+		if (variableDeclarator instanceof AInitializerVariableDeclarator) {
+			return ((AInitializerVariableDeclarator) variableDeclarator).getIdentifier();
+		}
+		return null;
+	}
+
+	protected final String serializeType(Type type) {
+		// TODO: generate required imports !
+		return TypeUtils.simpleRepresentation(type);
+
+	}
+
+	protected final String serializeType(FlexoConcept type) {
+		// TODO: generate required imports !
+		if (type == null) {
+			return "UndefinedConcept";
+		}
+		return type.getName();
+
+	}
+
+	protected String serializeFlexoBehaviour(FlexoBehaviour behaviour) {
+		if (behaviour != null) {
+			return behaviour.getName();
+		}
+		return "undefinedBehaviour";
 	}
 
 }

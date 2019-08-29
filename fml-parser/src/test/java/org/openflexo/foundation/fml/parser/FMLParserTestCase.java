@@ -84,6 +84,9 @@ public abstract class FMLParserTestCase extends OpenflexoTestCase {
 		FMLCompilationUnit compilationUnit = FMLParser.parse(((FileResourceImpl) fileResource).getFile(), fmlModelFactory);
 		FMLCompilationUnitNode rootNode = (FMLCompilationUnitNode) compilationUnit.getPrettyPrintDelegate();
 		debug(rootNode, 0);
+
+		System.out.println("normalizedFML=\n" + compilationUnit.getNormalizedFML());
+
 		System.out.println("FML=\n" + compilationUnit.getVirtualModel().getFMLPrettyPrint());
 
 		FMLCompilationUnit reparsedCompilationUnitFromPrettyPrint = null;
@@ -140,7 +143,8 @@ public abstract class FMLParserTestCase extends OpenflexoTestCase {
 	 */
 	protected final void debug(P2PPNode<?, ?> node, int indent) {
 		System.out.println(StringUtils.buildWhiteSpaceIndentation(indent * 2) + " > " + node.getClass().getSimpleName() + " from "
-				+ node.getLastParsedFragment());
+				+ node.getLastParsedFragment() /*+ " model:" + node.getModelObject()*/ + " pre=" + node.getPrelude() + " post="
+				+ node.getPostlude() /*+ " astNode=" + node.getASTNode() + " of " + node.getASTNode().getClass()*/);
 		// System.err.println(node.getLastParsed());
 		// node.getLastParsed();
 		indent++;

@@ -58,7 +58,7 @@ model MyModel {
 	}
 
 	// Test GetSetProperty
-	concept ConceptE {
+	/*concept ConceptE {
 		
 		private int internalValue;
 		
@@ -86,7 +86,7 @@ model MyModel {
 			set(int aValue) { internalValue = aValue; }
 		};
 		
-	}
+	}*/
 
 
 

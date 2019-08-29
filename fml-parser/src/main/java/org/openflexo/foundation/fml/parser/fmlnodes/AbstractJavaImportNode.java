@@ -47,7 +47,7 @@ import org.openflexo.foundation.fml.parser.node.Node;
  * @author sylvain
  * 
  */
-public abstract class AbstractJavaImportNode<N extends Node> extends FMLObjectNode<N, JavaImportDeclaration> {
+public abstract class AbstractJavaImportNode<N extends Node> extends FMLObjectNode<N, JavaImportDeclaration, FMLSemanticsAnalyzer> {
 
 	public AbstractJavaImportNode(N astNode, FMLSemanticsAnalyzer analyser) {
 		super(astNode, analyser);

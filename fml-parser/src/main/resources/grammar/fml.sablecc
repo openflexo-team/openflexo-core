@@ -491,7 +491,8 @@ Productions
         new identifier [additional_identifiers]:additional_identifier* type_arguments_or_diamond? l_par argument_list? r_par;
 		
     concept_instance_creation_expression =
-        new [concept_name]:identifier colon_colon [constructor_name]:identifier l_par argument_list? r_par;
+        {simplified} new [concept_name]:identifier l_par argument_list? r_par |
+        {full_qualified} new [concept_name]:identifier colon_colon [constructor_name]:identifier l_par argument_list? r_par;
 		
     technology_specific_edition_expression =
        [ta_id]:identifier colon_colon [edition_action]:identifier fml_parameters? in_clause? from_clause?;

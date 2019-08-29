@@ -1,8 +1,8 @@
 /**
  * 
- * Copyright (c) 2019, Openflexo
+ * Copyright (c) 2014, Openflexo
  * 
- * This file is part of FML-parser, a component of the software infrastructure 
+ * This file is part of Cartoeditor, a component of the software infrastructure 
  * developed at Openflexo.
  * 
  * 
@@ -36,46 +36,57 @@
  * 
  */
 
-package org.openflexo.foundation.fml.parser.fmlnodes;
+package org.openflexo.foundation.fml.parser;
 
-import java.util.logging.Logger;
+import static org.junit.Assert.assertNotNull;
 
+import java.io.IOException;
+
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.openflexo.foundation.DefaultFlexoEditor;
+import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.fml.FMLCompilationUnit;
-import org.openflexo.foundation.fml.FlexoProperty;
-import org.openflexo.foundation.fml.parser.FMLObjectNode;
-import org.openflexo.foundation.fml.parser.FMLSemanticsAnalyzer;
-import org.openflexo.foundation.fml.parser.node.Node;
+import org.openflexo.pamela.exceptions.ModelDefinitionException;
+import org.openflexo.rm.Resource;
+import org.openflexo.rm.ResourceLocator;
+import org.openflexo.test.OrderedRunner;
+import org.openflexo.test.TestOrder;
 
 /**
- * @author sylvain
+ * A parameterized suite of unit tests iterating on FML files.
  * 
+ * For each FML file, parse it.
+ * 
+ * @author sylvain
+ *
  */
-public abstract class FlexoPropertyNode<N extends Node, T extends FlexoProperty<?>> extends FMLObjectNode<N, T, FMLSemanticsAnalyzer> {
+@RunWith(OrderedRunner.class)
+public class TestBehaviours extends FMLParserTestCase {
 
-	private static final Logger logger = Logger.getLogger(FlexoPropertyNode.class.getPackage().getName());
+	static FlexoEditor editor;
 
-	public FlexoPropertyNode(N astNode, FMLSemanticsAnalyzer analyser) {
-		super(astNode, analyser);
+	@Test
+	@TestOrder(1)
+	public void initServiceManager() throws ParseException, ModelDefinitionException, IOException {
+		instanciateTestServiceManager();
+
+		editor = new DefaultFlexoEditor(null, serviceManager);
+		assertNotNull(editor);
+
 	}
 
-	public FlexoPropertyNode(T property, FMLSemanticsAnalyzer analyser) {
-		super(property, analyser);
-	}
+	@Test
+	@TestOrder(2)
+	public void loadInitialVersion() throws ParseException, ModelDefinitionException, IOException {
+		instanciateTestServiceManager();
 
-	@Override
-	public FlexoPropertyNode<N, T> deserialize() {
-		if (getParent() instanceof VirtualModelNode) {
-			((VirtualModelNode) getParent()).getModelObject().addToFlexoProperties(getModelObject());
-		}
-		if (getParent() instanceof FlexoConceptNode) {
-			((FlexoConceptNode) getParent()).getModelObject().addToFlexoProperties(getModelObject());
-		}
-		return this;
-	}
+		log("Initial version");
 
-	@Override
-	protected FMLCompilationUnit getCompilationUnit() {
-		return getAnalyser().getCompilationUnit();
+		final Resource fmlFile = ResourceLocator.locateResource("NewFMLExamples/TestBehaviours.fml");
+
+		FMLCompilationUnit compilationUnit = testFMLCompilationUnit(fmlFile);
+
 	}
 
 }

@@ -38,42 +38,189 @@
 
 package org.openflexo.foundation.fml.parser.fmlnodes;
 
-import org.openflexo.foundation.fml.FlexoConcept;
+import java.util.logging.Logger;
+
+import org.openflexo.foundation.fml.FlexoBehaviour;
 import org.openflexo.foundation.fml.parser.FMLObjectNode;
 import org.openflexo.foundation.fml.parser.FMLSemanticsAnalyzer;
-import org.openflexo.foundation.fml.parser.node.AConceptDeclaration;
+import org.openflexo.foundation.fml.parser.node.AAnonymousConstructorBehaviourDeclaration;
+import org.openflexo.foundation.fml.parser.node.AAnonymousDestructorBehaviourDeclaration;
+import org.openflexo.foundation.fml.parser.node.ABlock;
+import org.openflexo.foundation.fml.parser.node.ABlockFlexoBehaviourBody;
+import org.openflexo.foundation.fml.parser.node.AEmptyFlexoBehaviourBody;
+import org.openflexo.foundation.fml.parser.node.AMethodBehaviourDeclaration;
+import org.openflexo.foundation.fml.parser.node.ANamedConstructorBehaviourDeclaration;
+import org.openflexo.foundation.fml.parser.node.ANamedDestructorBehaviourDeclaration;
+import org.openflexo.foundation.fml.parser.node.Node;
+import org.openflexo.foundation.fml.parser.node.PFlexoBehaviourBody;
+import org.openflexo.foundation.fml.parser.node.PVisibility;
+import org.openflexo.foundation.fml.parser.node.TIdentifier;
+import org.openflexo.p2pp.RawSource.RawSourceFragment;
 
 /**
  * @author sylvain
  * 
  */
-public class FlexoBehaviourNode extends FMLObjectNode<AConceptDeclaration, FlexoConcept> {
+public abstract class FlexoBehaviourNode<N extends Node, T extends FlexoBehaviour> extends FMLObjectNode<N, T, FMLSemanticsAnalyzer> {
 
-	public FlexoBehaviourNode(AConceptDeclaration astNode, FMLSemanticsAnalyzer analyser) {
+	private static final Logger logger = Logger.getLogger(FlexoBehaviourNode.class.getPackage().getName());
+
+	public FlexoBehaviourNode(N astNode, FMLSemanticsAnalyzer analyser) {
 		super(astNode, analyser);
 	}
 
-	public FlexoBehaviourNode(FlexoConcept concept, FMLSemanticsAnalyzer analyser) {
-		super(concept, analyser);
+	public FlexoBehaviourNode(T property, FMLSemanticsAnalyzer analyser) {
+		super(property, analyser);
 	}
 
 	@Override
-	public FlexoConcept buildModelObjectFromAST(AConceptDeclaration astNode) {
-		FlexoConcept returned = getFactory().newFlexoConcept();
-		returned.setName(astNode.getIdentifier().getText());
-		return returned;
-	}
-
-	@Override
-	public FlexoBehaviourNode deserialize() {
+	public FlexoBehaviourNode<N, T> deserialize() {
 		if (getParent() instanceof VirtualModelNode) {
-			((VirtualModelNode) getParent()).getModelObject().addToFlexoConcepts(getModelObject());
+			((VirtualModelNode) getParent()).getModelObject().addToFlexoBehaviours(getModelObject());
+		}
+		if (getParent() instanceof FlexoConceptNode) {
+			((FlexoConceptNode) getParent()).getModelObject().addToFlexoBehaviours(getModelObject());
 		}
 		return this;
 	}
 
-	@Override
-	public void preparePrettyPrint(boolean hasParsedVersion) {
-		super.preparePrettyPrint(hasParsedVersion);
+	public PFlexoBehaviourBody getFlexoBehaviourBody() {
+		if (getASTNode() instanceof AAnonymousConstructorBehaviourDeclaration) {
+			return ((AAnonymousConstructorBehaviourDeclaration) getASTNode()).getFlexoBehaviourBody();
+		}
+		if (getASTNode() instanceof ANamedConstructorBehaviourDeclaration) {
+			return ((ANamedConstructorBehaviourDeclaration) getASTNode()).getFlexoBehaviourBody();
+		}
+		if (getASTNode() instanceof AAnonymousDestructorBehaviourDeclaration) {
+			return ((AAnonymousDestructorBehaviourDeclaration) getASTNode()).getFlexoBehaviourBody();
+		}
+		if (getASTNode() instanceof ANamedDestructorBehaviourDeclaration) {
+			return ((ANamedDestructorBehaviourDeclaration) getASTNode()).getFlexoBehaviourBody();
+		}
+		if (getASTNode() instanceof AMethodBehaviourDeclaration) {
+			return ((AMethodBehaviourDeclaration) getASTNode()).getFlexoBehaviourBody();
+		}
+		return null;
 	}
+
+	/**
+	 * Return Semi fragment (non-null only if behaviour body is not defined)
+	 * 
+	 * @return
+	 */
+	protected RawSourceFragment getSemiFragment() {
+		if (getFlexoBehaviourBody() instanceof AEmptyFlexoBehaviourBody) {
+			return getFragment(((AEmptyFlexoBehaviourBody) getFlexoBehaviourBody()).getSemi());
+		}
+		return null;
+	}
+
+	/**
+	 * Return LBrc fragment (non-null only if not simple semi)
+	 * 
+	 * @return
+	 */
+	protected RawSourceFragment getLBrcFragment() {
+		if (getFlexoBehaviourBody() instanceof ABlockFlexoBehaviourBody) {
+			return getFragment(((ABlock) ((ABlockFlexoBehaviourBody) getFlexoBehaviourBody()).getBlock()).getLBrc());
+		}
+		return null;
+	}
+
+	/**
+	 * Return LBrc fragment (non-null only if not simple semi)
+	 * 
+	 * @return
+	 */
+	protected RawSourceFragment getRBrcFragment() {
+		if (getFlexoBehaviourBody() instanceof ABlockFlexoBehaviourBody) {
+			return getFragment(((ABlock) ((ABlockFlexoBehaviourBody) getFlexoBehaviourBody()).getBlock()).getRBrc());
+		}
+		return null;
+	}
+
+	protected PVisibility getVisibility() {
+		if (getASTNode() instanceof AAnonymousConstructorBehaviourDeclaration) {
+			return ((AAnonymousConstructorBehaviourDeclaration) getASTNode()).getVisibility();
+		}
+		if (getASTNode() instanceof ANamedConstructorBehaviourDeclaration) {
+			return ((ANamedConstructorBehaviourDeclaration) getASTNode()).getVisibility();
+		}
+		if (getASTNode() instanceof AAnonymousDestructorBehaviourDeclaration) {
+			return ((AAnonymousDestructorBehaviourDeclaration) getASTNode()).getVisibility();
+		}
+		if (getASTNode() instanceof ANamedDestructorBehaviourDeclaration) {
+			return ((ANamedDestructorBehaviourDeclaration) getASTNode()).getVisibility();
+		}
+		if (getASTNode() instanceof AMethodBehaviourDeclaration) {
+			return ((AMethodBehaviourDeclaration) getASTNode()).getVisibility();
+		}
+		return null;
+	}
+
+	protected RawSourceFragment getVisibilityFragment() {
+		if (getVisibility() != null) {
+			return getFragment(getVisibility());
+		}
+		return null;
+	}
+
+	protected TIdentifier getName() {
+		if (getASTNode() instanceof ANamedConstructorBehaviourDeclaration) {
+			return ((ANamedConstructorBehaviourDeclaration) getASTNode()).getName();
+		}
+		if (getASTNode() instanceof ANamedDestructorBehaviourDeclaration) {
+			return ((ANamedDestructorBehaviourDeclaration) getASTNode()).getName();
+		}
+		if (getASTNode() instanceof AMethodBehaviourDeclaration) {
+			return ((AMethodBehaviourDeclaration) getASTNode()).getName();
+		}
+		return null;
+	}
+
+	protected RawSourceFragment getNameFragment() {
+		if (getName() != null) {
+			return getFragment(getName());
+		}
+		return null;
+	}
+
+	protected RawSourceFragment getLParFragment() {
+		if (getASTNode() instanceof AAnonymousConstructorBehaviourDeclaration) {
+			return getFragment(((AAnonymousConstructorBehaviourDeclaration) getASTNode()).getLPar());
+		}
+		if (getASTNode() instanceof ANamedConstructorBehaviourDeclaration) {
+			return getFragment(((ANamedConstructorBehaviourDeclaration) getASTNode()).getLPar());
+		}
+		if (getASTNode() instanceof AAnonymousDestructorBehaviourDeclaration) {
+			return getFragment(((AAnonymousDestructorBehaviourDeclaration) getASTNode()).getLPar());
+		}
+		if (getASTNode() instanceof ANamedDestructorBehaviourDeclaration) {
+			return getFragment(((ANamedDestructorBehaviourDeclaration) getASTNode()).getLPar());
+		}
+		if (getASTNode() instanceof AMethodBehaviourDeclaration) {
+			return getFragment(((AMethodBehaviourDeclaration) getASTNode()).getLPar());
+		}
+		return null;
+	}
+
+	protected RawSourceFragment getRParFragment() {
+		if (getASTNode() instanceof AAnonymousConstructorBehaviourDeclaration) {
+			return getFragment(((AAnonymousConstructorBehaviourDeclaration) getASTNode()).getRPar());
+		}
+		if (getASTNode() instanceof ANamedConstructorBehaviourDeclaration) {
+			return getFragment(((ANamedConstructorBehaviourDeclaration) getASTNode()).getRPar());
+		}
+		if (getASTNode() instanceof AAnonymousDestructorBehaviourDeclaration) {
+			return getFragment(((AAnonymousDestructorBehaviourDeclaration) getASTNode()).getRPar());
+		}
+		if (getASTNode() instanceof ANamedDestructorBehaviourDeclaration) {
+			return getFragment(((ANamedDestructorBehaviourDeclaration) getASTNode()).getRPar());
+		}
+		if (getASTNode() instanceof AMethodBehaviourDeclaration) {
+			return getFragment(((AMethodBehaviourDeclaration) getASTNode()).getRPar());
+		}
+		return null;
+	}
+
 }

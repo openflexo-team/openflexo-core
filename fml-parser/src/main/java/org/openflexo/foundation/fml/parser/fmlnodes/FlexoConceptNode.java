@@ -50,7 +50,7 @@ import org.openflexo.p2pp.RawSource.RawSourceFragment;
  * @author sylvain
  * 
  */
-public class FlexoConceptNode extends FMLObjectNode<AConceptDeclaration, FlexoConcept> {
+public class FlexoConceptNode extends FMLObjectNode<AConceptDeclaration, FlexoConcept, FMLSemanticsAnalyzer> {
 
 	public FlexoConceptNode(AConceptDeclaration astNode, FMLSemanticsAnalyzer analyser) {
 		super(astNode, analyser);
@@ -94,7 +94,7 @@ public class FlexoConceptNode extends FMLObjectNode<AConceptDeclaration, FlexoCo
 			appendStaticContents(SPACE, "{", LINE_SEPARATOR, getLBrcFragment());
 		}
 		else {
-			appendStaticContents("model" + SPACE);
+			appendStaticContents("concept" + SPACE);
 			appendDynamicContents(() -> getModelObject().getName());
 			appendStaticContents(SPACE, "{", LINE_SEPARATOR);
 		}

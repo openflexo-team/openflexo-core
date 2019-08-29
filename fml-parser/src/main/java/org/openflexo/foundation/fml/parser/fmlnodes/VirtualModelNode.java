@@ -51,7 +51,7 @@ import org.openflexo.p2pp.RawSource.RawSourceFragment;
  * @author sylvain
  * 
  */
-public class VirtualModelNode extends FMLObjectNode<AModelDeclaration, VirtualModel> {
+public class VirtualModelNode extends FMLObjectNode<AModelDeclaration, VirtualModel, FMLSemanticsAnalyzer> {
 
 	public VirtualModelNode(AModelDeclaration astNode, FMLSemanticsAnalyzer analyser) {
 		super(astNode, analyser);

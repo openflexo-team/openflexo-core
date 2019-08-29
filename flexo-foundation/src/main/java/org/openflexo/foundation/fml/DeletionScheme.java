@@ -40,8 +40,12 @@ package org.openflexo.foundation.fml;
 
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.action.DeletionSchemeActionFactory;
+import org.openflexo.pamela.annotations.Getter;
 import org.openflexo.pamela.annotations.ImplementationClass;
 import org.openflexo.pamela.annotations.ModelEntity;
+import org.openflexo.pamela.annotations.PropertyIdentifier;
+import org.openflexo.pamela.annotations.Setter;
+import org.openflexo.pamela.annotations.XMLAttribute;
 import org.openflexo.pamela.annotations.XMLElement;
 
 @ModelEntity
@@ -49,10 +53,26 @@ import org.openflexo.pamela.annotations.XMLElement;
 @XMLElement
 public interface DeletionScheme extends AbstractActionScheme {
 
+	public static final String DEFAULT_DELETION_SCHEME_NAME = "DefaultDeletionScheme";
+
+	@PropertyIdentifier(type = boolean.class)
+	public static final String IS_ANONYMOUS_KEY = "isAnonymous";
+
+	@Getter(value = IS_ANONYMOUS_KEY, defaultValue = "false")
+	@XMLAttribute
+	public boolean isAnonymous();
+
+	@Setter(IS_ANONYMOUS_KEY)
+	public void setAnonymous(boolean isAnonymous);
+
 	public static abstract class DeletionSchemeImpl extends AbstractActionSchemeImpl implements DeletionScheme {
 
-		public DeletionSchemeImpl() {
-			super();
+		@Override
+		public String getName() {
+			if (isAnonymous()) {
+				return DEFAULT_DELETION_SCHEME_NAME;
+			}
+			return super.getName();
 		}
 
 		@Override
