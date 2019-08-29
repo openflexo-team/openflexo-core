@@ -64,7 +64,7 @@ public class ExpressionActionNode extends AssignableActionNode<Node, ExpressionA
 	@Override
 	public ExpressionAction<?> buildModelObjectFromAST(Node astNode) {
 		ExpressionAction<?> returned = getFactory().newExpressionAction();
-		System.out.println(">>>>>> Expression " + astNode);
+		// System.out.println(">>>>>> Expression " + astNode);
 		returned.setExpression(makeBinding(astNode, returned));
 		return returned;
 	}

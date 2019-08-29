@@ -25,6 +25,12 @@ import org.openflexo.foundation.fml.parser.node.AWhileLoopStatement;
 import org.openflexo.foundation.fml.parser.node.Node;
 import org.openflexo.toolbox.StringUtils;
 
+/**
+ * A factory based on {@link FMLSemanticsAnalyzer}, used to instantiate {@link FMLControlGraph} from AST
+ * 
+ * @author sylvain
+ *
+ */
 public class ControlGraphFactory extends FMLSemanticsAnalyzer {
 
 	@SuppressWarnings("unused")
@@ -36,10 +42,15 @@ public class ControlGraphFactory extends FMLSemanticsAnalyzer {
 
 	private ControlGraphNode<?, ?> rootControlGraphNode = null;
 
-	public ControlGraphFactory(Node cgNode, MainSemanticsAnalyzer analyzer) {
+	public static ControlGraphNode<?, ?> makeControlGraphNode(Node cgNode, MainSemanticsAnalyzer analyzer) {
+		ControlGraphFactory f = new ControlGraphFactory(cgNode, analyzer);
+		cgNode.apply(f);
+		return f.rootControlGraphNode;
+	}
+
+	private ControlGraphFactory(Node cgNode, MainSemanticsAnalyzer analyzer) {
 		super(analyzer.getFactory(), cgNode);
 		this.mainAnalyzer = analyzer;
-		cgNode.apply(this);
 	}
 
 	@Override

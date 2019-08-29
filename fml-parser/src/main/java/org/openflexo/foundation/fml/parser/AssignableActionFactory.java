@@ -2,6 +2,7 @@ package org.openflexo.foundation.fml.parser;
 
 import org.openflexo.foundation.fml.editionaction.AssignableAction;
 import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.AddFlexoConceptInstanceNode;
+import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.AssignableActionNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.ControlGraphNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.ExpressionActionNode;
 import org.openflexo.foundation.fml.parser.node.AFmlInstanceCreationFmlActionExpression;
@@ -10,6 +11,11 @@ import org.openflexo.foundation.fml.parser.node.PFmlActionExpression;
 import org.openflexo.toolbox.StringUtils;
 
 /**
+ * A factory based on {@link FMLSemanticsAnalyzer}, used to instantiate base {@link AssignableAction} from AST
+ * 
+ * Today, this implementation is not clean, as it rely on Connie (DataBinding parsing in Connie), except for some FML constructions
+ *
+ * TODO: Reimplement this one day, with a Connie-compatible design (using a BindingFactory for example)
  * 
  * @author sylvain
  *
@@ -21,11 +27,17 @@ public class AssignableActionFactory extends FMLSemanticsAnalyzer {
 
 	private ControlGraphFactory cgFactory;
 
-	private ControlGraphNode<?, ?> rootControlGraphNode = null;
+	private AssignableActionNode<?, ?> rootControlGraphNode = null;
 
 	private PFmlActionExpression pFMLActionExpression;
 
-	public AssignableActionFactory(Node cgNode, ControlGraphFactory cgFactory) {
+	public static AssignableActionNode<?, ?> makeAssignableActionNode(Node cgNode, ControlGraphFactory cgFactory) {
+		AssignableActionFactory f = new AssignableActionFactory(cgNode, cgFactory);
+		cgNode.apply(f);
+		return f.rootControlGraphNode;
+	}
+
+	private AssignableActionFactory(Node cgNode, ControlGraphFactory cgFactory) {
 		super(cgFactory.getFactory(), cgNode);
 		this.cgFactory = cgFactory;
 		cgNode.apply(this);
@@ -58,8 +70,8 @@ public class AssignableActionFactory extends FMLSemanticsAnalyzer {
 
 	@Override
 	protected void push(FMLObjectNode<?, ?, ?> fmlNode) {
-		if (rootControlGraphNode == null && fmlNode instanceof ControlGraphNode) {
-			rootControlGraphNode = (ControlGraphNode<?, ?>) fmlNode;
+		if (rootControlGraphNode == null && fmlNode instanceof AssignableActionNode) {
+			rootControlGraphNode = (AssignableActionNode<?, ?>) fmlNode;
 		}
 		super.push(fmlNode);
 		// analyzer.push(fmlNode);

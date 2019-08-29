@@ -86,27 +86,24 @@ public class AssignationActionNode extends AssignableActionNode<AAssignmentState
 	@Override
 	public AssignationAction<?> buildModelObjectFromAST(AAssignmentStatementExpression astNode) {
 		AssignationAction<?> returned = getFactory().newAssignationAction();
-		System.out.println(">>>>>> Assignation " + astNode);
+		// System.out.println(">>>>>> Assignation " + astNode);
 
 		// Left
 		returned.setAssignation((DataBinding) extractLeft(returned));
 
+		// Right
 		PAssignment assignment = getASTNode().getAssignment();
 		if (assignment instanceof AExpressionAssignment) {
-			System.out.println("J'analyse ce que je trouve a droite: " + ((AExpressionAssignment) assignment).getRight());
-			// System.out.println("A priori c'est de type: " + ((AExpressionAssignment) assignment).getRight().getClass().getSimpleName());
-			AssignableActionFactory aaFactory = new AssignableActionFactory(((AExpressionAssignment) assignment).getRight(),
-					getAbstractAnalyser());
-			if (aaFactory.getAssignableAction() != null) {
-				returned.setAssignableAction((AssignableAction) aaFactory.getAssignableAction());
-				addToChildren(aaFactory.getRootControlGraphNode());
+			AssignableActionNode<?, ?> assignableActionNode = AssignableActionFactory
+					.makeAssignableActionNode(((AExpressionAssignment) assignment).getRight(), getAbstractAnalyser());
+
+			if (assignableActionNode != null) {
+				returned.setAssignableAction((AssignableAction) assignableActionNode.getModelObject());
+				addToChildren(assignableActionNode);
 			}
-			System.out.println("Et c'est: " + aaFactory.getAssignableAction());
-			// System.exit(-1);
 		}
 		else if (assignment instanceof AIdentifierAssignment) {
 			InnerExpressionActionNode expressionNode = new InnerExpressionActionNode(assignment, getAbstractAnalyser());
-			System.out.println("La c'est special, faut que je fasses un InnerExpressionAssignment");
 			expressionNode.deserialize();
 			returned.setAssignableAction((AssignableAction) expressionNode.getModelObject());
 			addToChildren(expressionNode);
