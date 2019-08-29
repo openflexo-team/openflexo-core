@@ -109,14 +109,14 @@ public class TypeFactory extends SemanticsAnalyzerFactory {
 		FLEXO_CONCEPT_INSTANCE_TYPE_FACTORY = new DefaultFlexoConceptInstanceTypeFactory(getFMLTechnologyAdapter()) {
 			@Override
 			public FlexoConcept resolveFlexoConcept(FlexoConceptInstanceType typeToResolve) {
-				System.out.println("Tiens, faut resoudre le concept " + typeToResolve);
+				// System.out.println("Tiens, faut resoudre le concept " + typeToResolve);
 				return tryToLookupConcept(typeToResolve.getConceptURI());
 			}
 		};
 		VIRTUAL_MODEL_INSTANCE_TYPE_FACTORY = new DefaultVirtualModelInstanceTypeFactory(getFMLTechnologyAdapter()) {
 			@Override
 			public VirtualModel resolveVirtualModel(VirtualModelInstanceType typeToResolve) {
-				System.out.println("Tiens, faut resoudre le model " + typeToResolve);
+				// System.out.println("Tiens, faut resoudre le model " + typeToResolve);
 				return tryToLookupVirtualModel(typeToResolve.getConceptURI());
 			}
 		};
