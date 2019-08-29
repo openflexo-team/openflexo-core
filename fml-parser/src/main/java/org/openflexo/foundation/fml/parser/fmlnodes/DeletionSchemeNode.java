@@ -42,7 +42,7 @@ import java.util.logging.Logger;
 
 import org.openflexo.foundation.fml.DeletionScheme;
 import org.openflexo.foundation.fml.parser.ControlGraphFactory;
-import org.openflexo.foundation.fml.parser.FMLSemanticsAnalyzer;
+import org.openflexo.foundation.fml.parser.MainSemanticsAnalyzer;
 import org.openflexo.foundation.fml.parser.node.AAnonymousDestructorBehaviourDeclaration;
 import org.openflexo.foundation.fml.parser.node.AEmptyFlexoBehaviourBody;
 import org.openflexo.foundation.fml.parser.node.ANamedDestructorBehaviourDeclaration;
@@ -62,11 +62,11 @@ public class DeletionSchemeNode extends FlexoBehaviourNode<PBehaviourDeclaration
 
 	private static final Logger logger = Logger.getLogger(DeletionSchemeNode.class.getPackage().getName());
 
-	public DeletionSchemeNode(PBehaviourDeclaration astNode, FMLSemanticsAnalyzer analyser) {
+	public DeletionSchemeNode(PBehaviourDeclaration astNode, MainSemanticsAnalyzer analyser) {
 		super(astNode, analyser);
 	}
 
-	public DeletionSchemeNode(DeletionScheme DeletionScheme, FMLSemanticsAnalyzer analyser) {
+	public DeletionSchemeNode(DeletionScheme DeletionScheme, MainSemanticsAnalyzer analyser) {
 		super(DeletionScheme, analyser);
 	}
 

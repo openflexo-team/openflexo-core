@@ -42,7 +42,7 @@ import java.util.logging.Logger;
 
 import org.openflexo.foundation.fml.CreationScheme;
 import org.openflexo.foundation.fml.parser.ControlGraphFactory;
-import org.openflexo.foundation.fml.parser.FMLSemanticsAnalyzer;
+import org.openflexo.foundation.fml.parser.MainSemanticsAnalyzer;
 import org.openflexo.foundation.fml.parser.node.AAnonymousConstructorBehaviourDeclaration;
 import org.openflexo.foundation.fml.parser.node.AEmptyFlexoBehaviourBody;
 import org.openflexo.foundation.fml.parser.node.ANamedConstructorBehaviourDeclaration;
@@ -62,11 +62,11 @@ public class CreationSchemeNode extends FlexoBehaviourNode<PBehaviourDeclaration
 
 	private static final Logger logger = Logger.getLogger(CreationSchemeNode.class.getPackage().getName());
 
-	public CreationSchemeNode(PBehaviourDeclaration astNode, FMLSemanticsAnalyzer analyser) {
+	public CreationSchemeNode(PBehaviourDeclaration astNode, MainSemanticsAnalyzer analyser) {
 		super(astNode, analyser);
 	}
 
-	public CreationSchemeNode(CreationScheme creationScheme, FMLSemanticsAnalyzer analyser) {
+	public CreationSchemeNode(CreationScheme creationScheme, MainSemanticsAnalyzer analyser) {
 		super(creationScheme, analyser);
 	}
 

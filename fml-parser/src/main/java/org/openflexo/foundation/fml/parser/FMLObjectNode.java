@@ -95,7 +95,7 @@ import org.openflexo.toolbox.ChainedCollection;
  * @author sylvain
  * 
  */
-public abstract class FMLObjectNode<N extends Node, T extends FMLPrettyPrintable, A extends AbstractSemanticsAnalyzer>
+public abstract class FMLObjectNode<N extends Node, T extends FMLPrettyPrintable, A extends FMLSemanticsAnalyzer>
 		extends P2PPNode<N, T> implements FMLPrettyPrintDelegate<T> {
 
 	@SuppressWarnings("unused")
@@ -128,8 +128,8 @@ public abstract class FMLObjectNode<N extends Node, T extends FMLPrettyPrintable
 		return analyser;
 	}
 
-	public FMLSemanticsAnalyzer getAnalyser() {
-		return getAbstractAnalyser().getAnalyzer();
+	public MainSemanticsAnalyzer getAnalyser() {
+		return getAbstractAnalyser().getMainAnalyzer();
 	}
 
 	public TypeFactory getTypeFactory() {

@@ -42,7 +42,7 @@ import org.openflexo.foundation.fml.FlexoBehaviour;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoProperty;
 import org.openflexo.foundation.fml.parser.FMLObjectNode;
-import org.openflexo.foundation.fml.parser.FMLSemanticsAnalyzer;
+import org.openflexo.foundation.fml.parser.MainSemanticsAnalyzer;
 import org.openflexo.foundation.fml.parser.node.AConceptDeclaration;
 import org.openflexo.p2pp.RawSource.RawSourceFragment;
 
@@ -50,13 +50,13 @@ import org.openflexo.p2pp.RawSource.RawSourceFragment;
  * @author sylvain
  * 
  */
-public class FlexoConceptNode extends FMLObjectNode<AConceptDeclaration, FlexoConcept, FMLSemanticsAnalyzer> {
+public class FlexoConceptNode extends FMLObjectNode<AConceptDeclaration, FlexoConcept, MainSemanticsAnalyzer> {
 
-	public FlexoConceptNode(AConceptDeclaration astNode, FMLSemanticsAnalyzer analyser) {
+	public FlexoConceptNode(AConceptDeclaration astNode, MainSemanticsAnalyzer analyser) {
 		super(astNode, analyser);
 	}
 
-	public FlexoConceptNode(FlexoConcept concept, FMLSemanticsAnalyzer analyser) {
+	public FlexoConceptNode(FlexoConcept concept, MainSemanticsAnalyzer analyser) {
 		super(concept, analyser);
 	}
 

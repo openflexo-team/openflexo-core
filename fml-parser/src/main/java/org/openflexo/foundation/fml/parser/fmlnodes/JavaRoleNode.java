@@ -41,7 +41,7 @@ package org.openflexo.foundation.fml.parser.fmlnodes;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.fml.JavaRole;
-import org.openflexo.foundation.fml.parser.FMLSemanticsAnalyzer;
+import org.openflexo.foundation.fml.parser.MainSemanticsAnalyzer;
 import org.openflexo.foundation.fml.parser.node.AIdentifierVariableDeclarator;
 import org.openflexo.foundation.fml.parser.node.AInitializerVariableDeclarator;
 import org.openflexo.foundation.fml.parser.node.AJavaBasicRoleDeclaration;
@@ -56,11 +56,11 @@ public class JavaRoleNode extends FlexoPropertyNode<AJavaBasicRoleDeclaration, J
 
 	private static final Logger logger = Logger.getLogger(JavaRoleNode.class.getPackage().getName());
 
-	public JavaRoleNode(AJavaBasicRoleDeclaration astNode, FMLSemanticsAnalyzer analyser) {
+	public JavaRoleNode(AJavaBasicRoleDeclaration astNode, MainSemanticsAnalyzer analyser) {
 		super(astNode, analyser);
 	}
 
-	public JavaRoleNode(JavaRole<?> property, FMLSemanticsAnalyzer analyser) {
+	public JavaRoleNode(JavaRole<?> property, MainSemanticsAnalyzer analyser) {
 		super(property, analyser);
 	}
 

@@ -72,7 +72,7 @@ public class FlexoPropertyFactory extends SemanticsAnalyzerFactory {
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(FlexoPropertyFactory.class.getPackage().getName());
 
-	public FlexoPropertyFactory(FMLSemanticsAnalyzer analyzer) {
+	public FlexoPropertyFactory(MainSemanticsAnalyzer analyzer) {
 		super(analyzer);
 	}
 

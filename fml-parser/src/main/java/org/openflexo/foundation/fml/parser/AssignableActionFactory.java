@@ -15,7 +15,7 @@ import org.openflexo.toolbox.StringUtils;
  *
  */
 // TODO reimplement this properly using BindingFactory
-public class AssignableActionFactory extends AbstractSemanticsAnalyzer {
+public class AssignableActionFactory extends FMLSemanticsAnalyzer {
 
 	public boolean debug = false;
 
@@ -39,8 +39,8 @@ public class AssignableActionFactory extends AbstractSemanticsAnalyzer {
 	}
 
 	@Override
-	public FMLSemanticsAnalyzer getAnalyzer() {
-		return cgFactory.getAnalyzer();
+	public MainSemanticsAnalyzer getMainAnalyzer() {
+		return cgFactory.getMainAnalyzer();
 	}
 
 	public ControlGraphNode<?, ?> getRootControlGraphNode() {

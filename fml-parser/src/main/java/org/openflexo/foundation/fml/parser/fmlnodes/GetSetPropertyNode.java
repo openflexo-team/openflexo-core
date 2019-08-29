@@ -43,7 +43,7 @@ import java.util.logging.Logger;
 import org.openflexo.foundation.fml.GetProperty;
 import org.openflexo.foundation.fml.GetSetProperty;
 import org.openflexo.foundation.fml.controlgraph.FMLControlGraph;
-import org.openflexo.foundation.fml.parser.FMLSemanticsAnalyzer;
+import org.openflexo.foundation.fml.parser.MainSemanticsAnalyzer;
 import org.openflexo.foundation.fml.parser.node.AGetDeclaration;
 import org.openflexo.foundation.fml.parser.node.AGetSetPropertyDeclaration;
 import org.openflexo.foundation.fml.parser.node.ASetDeclaration;
@@ -65,11 +65,11 @@ public class GetSetPropertyNode extends FlexoPropertyNode<AGetSetPropertyDeclara
 
 	private static final Logger logger = Logger.getLogger(GetSetPropertyNode.class.getPackage().getName());
 
-	public GetSetPropertyNode(AGetSetPropertyDeclaration astNode, FMLSemanticsAnalyzer analyser) {
+	public GetSetPropertyNode(AGetSetPropertyDeclaration astNode, MainSemanticsAnalyzer analyser) {
 		super(astNode, analyser);
 	}
 
-	public GetSetPropertyNode(GetProperty<?> property, FMLSemanticsAnalyzer analyser) {
+	public GetSetPropertyNode(GetProperty<?> property, MainSemanticsAnalyzer analyser) {
 		super(property, analyser);
 	}
 

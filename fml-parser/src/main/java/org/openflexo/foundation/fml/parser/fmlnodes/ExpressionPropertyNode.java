@@ -41,7 +41,7 @@ package org.openflexo.foundation.fml.parser.fmlnodes;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.fml.ExpressionProperty;
-import org.openflexo.foundation.fml.parser.FMLSemanticsAnalyzer;
+import org.openflexo.foundation.fml.parser.MainSemanticsAnalyzer;
 import org.openflexo.foundation.fml.parser.node.AExpressionExpressionPropertyDeclaration;
 import org.openflexo.foundation.fml.parser.node.AIdentifierExpressionPropertyDeclaration;
 import org.openflexo.foundation.fml.parser.node.PExpressionPropertyDeclaration;
@@ -62,11 +62,11 @@ public class ExpressionPropertyNode extends FlexoPropertyNode<PExpressionPropert
 
 	private static final Logger logger = Logger.getLogger(ExpressionPropertyNode.class.getPackage().getName());
 
-	public ExpressionPropertyNode(PExpressionPropertyDeclaration astNode, FMLSemanticsAnalyzer analyser) {
+	public ExpressionPropertyNode(PExpressionPropertyDeclaration astNode, MainSemanticsAnalyzer analyser) {
 		super(astNode, analyser);
 	}
 
-	public ExpressionPropertyNode(ExpressionProperty<?> property, FMLSemanticsAnalyzer analyser) {
+	public ExpressionPropertyNode(ExpressionProperty<?> property, MainSemanticsAnalyzer analyser) {
 		super(property, analyser);
 	}
 

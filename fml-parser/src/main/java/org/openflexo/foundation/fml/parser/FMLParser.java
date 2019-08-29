@@ -181,7 +181,7 @@ public class FMLParser {
 			tree = p.parse();
 
 			// Apply the semantics analyzer.
-			FMLSemanticsAnalyzer t = new FMLSemanticsAnalyzer(modelFactory, tree, rawSource);
+			MainSemanticsAnalyzer t = new MainSemanticsAnalyzer(modelFactory, tree, rawSource);
 			// tree.apply(t);
 
 			return t.getCompilationUnit();

@@ -43,7 +43,7 @@ import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoProperty;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.parser.FMLObjectNode;
-import org.openflexo.foundation.fml.parser.FMLSemanticsAnalyzer;
+import org.openflexo.foundation.fml.parser.MainSemanticsAnalyzer;
 import org.openflexo.foundation.fml.parser.node.AModelDeclaration;
 import org.openflexo.p2pp.RawSource.RawSourceFragment;
 
@@ -51,13 +51,13 @@ import org.openflexo.p2pp.RawSource.RawSourceFragment;
  * @author sylvain
  * 
  */
-public class VirtualModelNode extends FMLObjectNode<AModelDeclaration, VirtualModel, FMLSemanticsAnalyzer> {
+public class VirtualModelNode extends FMLObjectNode<AModelDeclaration, VirtualModel, MainSemanticsAnalyzer> {
 
-	public VirtualModelNode(AModelDeclaration astNode, FMLSemanticsAnalyzer analyser) {
+	public VirtualModelNode(AModelDeclaration astNode, MainSemanticsAnalyzer analyser) {
 		super(astNode, analyser);
 	}
 
-	public VirtualModelNode(VirtualModel virtualModel, FMLSemanticsAnalyzer analyser) {
+	public VirtualModelNode(VirtualModel virtualModel, MainSemanticsAnalyzer analyser) {
 		super(virtualModel, analyser);
 	}
 

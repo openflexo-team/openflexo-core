@@ -39,7 +39,7 @@
 package org.openflexo.foundation.fml.parser.fmlnodes;
 
 import org.openflexo.foundation.fml.JavaImportDeclaration;
-import org.openflexo.foundation.fml.parser.FMLSemanticsAnalyzer;
+import org.openflexo.foundation.fml.parser.MainSemanticsAnalyzer;
 import org.openflexo.foundation.fml.parser.node.AJavaImportImportDeclaration;
 import org.openflexo.p2pp.RawSource.RawSourceFragment;
 
@@ -49,11 +49,11 @@ import org.openflexo.p2pp.RawSource.RawSourceFragment;
  */
 public class JavaImportNode extends AbstractJavaImportNode<AJavaImportImportDeclaration> {
 
-	public JavaImportNode(AJavaImportImportDeclaration astNode, FMLSemanticsAnalyzer analyser) {
+	public JavaImportNode(AJavaImportImportDeclaration astNode, MainSemanticsAnalyzer analyser) {
 		super(astNode, analyser);
 	}
 
-	public JavaImportNode(JavaImportDeclaration importDeclaration, FMLSemanticsAnalyzer analyser) {
+	public JavaImportNode(JavaImportDeclaration importDeclaration, MainSemanticsAnalyzer analyser) {
 		super(importDeclaration, analyser);
 	}
 

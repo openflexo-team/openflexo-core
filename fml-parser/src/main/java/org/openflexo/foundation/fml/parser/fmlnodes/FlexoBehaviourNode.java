@@ -42,7 +42,7 @@ import java.util.logging.Logger;
 
 import org.openflexo.foundation.fml.FlexoBehaviour;
 import org.openflexo.foundation.fml.parser.FMLObjectNode;
-import org.openflexo.foundation.fml.parser.FMLSemanticsAnalyzer;
+import org.openflexo.foundation.fml.parser.MainSemanticsAnalyzer;
 import org.openflexo.foundation.fml.parser.node.AAnonymousConstructorBehaviourDeclaration;
 import org.openflexo.foundation.fml.parser.node.AAnonymousDestructorBehaviourDeclaration;
 import org.openflexo.foundation.fml.parser.node.ABlock;
@@ -61,15 +61,15 @@ import org.openflexo.p2pp.RawSource.RawSourceFragment;
  * @author sylvain
  * 
  */
-public abstract class FlexoBehaviourNode<N extends Node, T extends FlexoBehaviour> extends FMLObjectNode<N, T, FMLSemanticsAnalyzer> {
+public abstract class FlexoBehaviourNode<N extends Node, T extends FlexoBehaviour> extends FMLObjectNode<N, T, MainSemanticsAnalyzer> {
 
 	private static final Logger logger = Logger.getLogger(FlexoBehaviourNode.class.getPackage().getName());
 
-	public FlexoBehaviourNode(N astNode, FMLSemanticsAnalyzer analyser) {
+	public FlexoBehaviourNode(N astNode, MainSemanticsAnalyzer analyser) {
 		super(astNode, analyser);
 	}
 
-	public FlexoBehaviourNode(T property, FMLSemanticsAnalyzer analyser) {
+	public FlexoBehaviourNode(T property, MainSemanticsAnalyzer analyser) {
 		super(property, analyser);
 	}
 

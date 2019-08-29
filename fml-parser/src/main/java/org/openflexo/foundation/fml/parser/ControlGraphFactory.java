@@ -25,26 +25,26 @@ import org.openflexo.foundation.fml.parser.node.AWhileLoopStatement;
 import org.openflexo.foundation.fml.parser.node.Node;
 import org.openflexo.toolbox.StringUtils;
 
-public class ControlGraphFactory extends AbstractSemanticsAnalyzer {
+public class ControlGraphFactory extends FMLSemanticsAnalyzer {
 
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(ControlGraphFactory.class.getPackage().getName());
 
 	public boolean debug = false;
 
-	private FMLSemanticsAnalyzer analyzer;
+	private MainSemanticsAnalyzer mainAnalyzer;
 
 	private ControlGraphNode<?, ?> rootControlGraphNode = null;
 
-	public ControlGraphFactory(Node cgNode, FMLSemanticsAnalyzer analyzer) {
+	public ControlGraphFactory(Node cgNode, MainSemanticsAnalyzer analyzer) {
 		super(analyzer.getFactory(), cgNode);
-		this.analyzer = analyzer;
+		this.mainAnalyzer = analyzer;
 		cgNode.apply(this);
 	}
 
 	@Override
-	public FMLSemanticsAnalyzer getAnalyzer() {
-		return analyzer;
+	public MainSemanticsAnalyzer getMainAnalyzer() {
+		return mainAnalyzer;
 	}
 
 	public ControlGraphNode<?, ?> getRootControlGraphNode() {

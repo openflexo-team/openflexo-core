@@ -41,7 +41,7 @@ package org.openflexo.foundation.fml.parser.fmlnodes;
 import org.openflexo.foundation.fml.FMLCompilationUnit;
 import org.openflexo.foundation.fml.JavaImportDeclaration;
 import org.openflexo.foundation.fml.parser.FMLObjectNode;
-import org.openflexo.foundation.fml.parser.FMLSemanticsAnalyzer;
+import org.openflexo.foundation.fml.parser.MainSemanticsAnalyzer;
 import org.openflexo.foundation.fml.parser.node.AFmlCompilationUnit;
 import org.openflexo.p2pp.RawSource.RawSourcePosition;
 
@@ -49,12 +49,12 @@ import org.openflexo.p2pp.RawSource.RawSourcePosition;
  * @author sylvain
  * 
  */
-public class FMLCompilationUnitNode extends FMLObjectNode<AFmlCompilationUnit, FMLCompilationUnit, FMLSemanticsAnalyzer> {
+public class FMLCompilationUnitNode extends FMLObjectNode<AFmlCompilationUnit, FMLCompilationUnit, MainSemanticsAnalyzer> {
 
 	private RawSourcePosition startPosition;
 	private RawSourcePosition endPosition;
 
-	public FMLCompilationUnitNode(AFmlCompilationUnit astNode, FMLSemanticsAnalyzer analyser) {
+	public FMLCompilationUnitNode(AFmlCompilationUnit astNode, MainSemanticsAnalyzer analyser) {
 		super(astNode, analyser);
 		startPosition = getRawSource().getStartPosition();
 		endPosition = getRawSource().getEndPosition();

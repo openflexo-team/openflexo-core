@@ -104,7 +104,7 @@ public class TypeFactory extends SemanticsAnalyzerFactory {
 
 	private List<CustomType> unresolvedTypes;
 
-	public TypeFactory(FMLSemanticsAnalyzer analyzer) {
+	public TypeFactory(MainSemanticsAnalyzer analyzer) {
 		super(analyzer);
 		FLEXO_CONCEPT_INSTANCE_TYPE_FACTORY = new DefaultFlexoConceptInstanceTypeFactory(getFMLTechnologyAdapter()) {
 			@Override
