@@ -45,7 +45,6 @@ import org.openflexo.foundation.fml.parser.ControlGraphFactory;
 import org.openflexo.foundation.fml.parser.MainSemanticsAnalyzer;
 import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.ControlGraphNode;
 import org.openflexo.foundation.fml.parser.node.AAnonymousConstructorBehaviourDeclaration;
-import org.openflexo.foundation.fml.parser.node.AEmptyFlexoBehaviourBody;
 import org.openflexo.foundation.fml.parser.node.ANamedConstructorBehaviourDeclaration;
 import org.openflexo.foundation.fml.parser.node.PBehaviourDeclaration;
 import org.openflexo.p2pp.RawSource.RawSourceFragment;
@@ -72,11 +71,11 @@ public class CreationSchemeNode extends FlexoBehaviourNode<PBehaviourDeclaration
 	}
 
 	private boolean isAnonymous() {
-		if (getASTNode() != null) {
-			return getASTNode() instanceof AAnonymousConstructorBehaviourDeclaration;
+		if (getModelObject() != null) {
+			return getModelObject().isAnonymous();
 		}
 		else {
-			return getModelObject().isAnonymous();
+			return getASTNode() != null && getASTNode() instanceof AAnonymousConstructorBehaviourDeclaration;
 		}
 	}
 
@@ -105,16 +104,22 @@ public class CreationSchemeNode extends FlexoBehaviourNode<PBehaviourDeclaration
 	public void preparePrettyPrint(boolean hasParsedVersion) {
 		super.preparePrettyPrint(hasParsedVersion);
 
-		appendDynamicContents(() -> getVisibilityAsString(getModelObject().getVisibility()), SPACE, getVisibilityFragment());
+		// @formatter:off	
+		append(dynamicContents(() -> getVisibilityAsString(getModelObject().getVisibility()), SPACE), getVisibilityFragment());
+		append(staticContents("create"), getCreateFragment());
+		when(() -> !isAnonymous())
+				.thenAppend(staticContents("::"), getColonColonFragment())
+				.thenAppend(dynamicContents(() -> getModelObject().getName()), getNameFragment());
+		append(staticContents(SPACE, "(", ""), getLParFragment());
+		append(staticContents(")"), getRParFragment());
+		when(() -> isAbstract())
+				.thenAppend(staticContents(";"), getSemiFragment())
+				.elseAppend(staticContents(SPACE,"{", ""), getLBrcFragment())
+				.elseAppend(childContents(LINE_SEPARATOR, () -> getModelObject().getControlGraph(), LINE_SEPARATOR, 0))
+				.elseAppend(staticContents(LINE_SEPARATOR, "}", ""), getLBrcFragment());
+		// @formatter:on
 
-		/*if (hasParsedVersion && getVisibilityFragment() != null) {
-			appendDynamicContents(() -> getVisibilityAsString(getModelObject().getVisibility()), SPACE, getVisibilityFragment());
-		}
-		else {
-			appendDynamicContents(() -> getVisibilityAsString(getModelObject().getVisibility()), SPACE);
-		}*/
-
-		// if (hasParsedVersion) {
+		/*appendDynamicContents(() -> getVisibilityAsString(getModelObject().getVisibility()), SPACE, getVisibilityFragment());
 		appendStaticContents("", "create", SPACE, getCreateFragment());
 		if (!isAnonymous()) {
 			appendStaticContents("::", getColonColonFragment());
@@ -129,19 +134,6 @@ public class CreationSchemeNode extends FlexoBehaviourNode<PBehaviourDeclaration
 			appendStaticContents(SPACE, "{", getLBrcFragment());
 			appendToChildPrettyPrintContents(LINE_SEPARATOR, () -> getModelObject().getControlGraph(), LINE_SEPARATOR, 0);
 			appendStaticContents(LINE_SEPARATOR, "}", getRBrcFragment());
-		}
-		/*}
-		else {
-			appendStaticContents("", "create", SPACE);
-			if (!isAnonymous()) {
-				appendStaticContents("::");
-				appendDynamicContents(() -> getModelObject().getName());
-			}
-			appendStaticContents("(");
-			appendStaticContents(")");
-			appendStaticContents(SPACE, "{");
-			appendToChildPrettyPrintContents(LINE_SEPARATOR, () -> getModelObject().getControlGraph(), LINE_SEPARATOR, 0);
-			appendStaticContents(LINE_SEPARATOR, "}");
 		}*/
 	}
 

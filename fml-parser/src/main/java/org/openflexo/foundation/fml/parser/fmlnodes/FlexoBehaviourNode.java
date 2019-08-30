@@ -103,6 +103,15 @@ public abstract class FlexoBehaviourNode<N extends Node, T extends FlexoBehaviou
 		return null;
 	}
 
+	protected boolean isAbstract() {
+		if (getASTNode() != null) {
+			return (getFlexoBehaviourBody() instanceof AEmptyFlexoBehaviourBody);
+		}
+		else {
+			return getModelObject().isAbstract();
+		}
+	}
+
 	/**
 	 * Return Semi fragment (non-null only if behaviour body is not defined)
 	 * 

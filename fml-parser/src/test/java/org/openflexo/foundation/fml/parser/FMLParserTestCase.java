@@ -38,10 +38,15 @@
 
 package org.openflexo.foundation.fml.parser;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.StringReader;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.openflexo.foundation.fml.FMLCompilationUnit;
 import org.openflexo.foundation.fml.FMLModelFactory;
@@ -51,6 +56,8 @@ import org.openflexo.p2pp.P2PPNode;
 import org.openflexo.pamela.exceptions.ModelDefinitionException;
 import org.openflexo.rm.FileResourceImpl;
 import org.openflexo.rm.Resource;
+import org.openflexo.rm.ResourceLocator;
+import org.openflexo.toolbox.FileUtils;
 import org.openflexo.toolbox.StringUtils;
 
 /**
@@ -77,7 +84,7 @@ public abstract class FMLParserTestCase extends OpenflexoTestCase {
 	 * @throws ParseException
 	 * @throws IOException
 	 */
-	protected final FMLCompilationUnit testFMLCompilationUnit(Resource fileResource)
+	protected static FMLCompilationUnit testFMLCompilationUnit(Resource fileResource)
 			throws ModelDefinitionException, ParseException, IOException {
 
 		FMLModelFactory fmlModelFactory = new FMLModelFactory(null, serviceManager);
@@ -141,7 +148,7 @@ public abstract class FMLParserTestCase extends OpenflexoTestCase {
 	 * @param indent
 	 *            identation level
 	 */
-	protected final void debug(P2PPNode<?, ?> node, int indent) {
+	protected static void debug(P2PPNode<?, ?> node, int indent) {
 		System.out.println(StringUtils.buildWhiteSpaceIndentation(indent * 2) + " > " + node.getClass().getSimpleName() + " from "
 				+ node.getLastParsedFragment() /*+ " model:" + node.getModelObject()*/ + " pre=" + node.getPrelude() + " post="
 				+ node.getPostlude() /*+ " astNode=" + node.getASTNode() + " of " + node.getASTNode().getClass()*/);
@@ -162,8 +169,87 @@ public abstract class FMLParserTestCase extends OpenflexoTestCase {
 	 * @throws ParseException
 	 * @throws IOException
 	 */
-	protected FMLCompilationUnit parseFile(Resource fileResource) throws ModelDefinitionException, ParseException, IOException {
+	protected static FMLCompilationUnit parseFile(Resource fileResource) throws ModelDefinitionException, ParseException, IOException {
 		return FMLParser.parse(((FileResourceImpl) fileResource).getFile(), new FMLModelFactory(null, serviceManager));
+	}
+
+	protected static void testNormalizedFMLRepresentationEquals(FMLCompilationUnit compilationUnit, String resourceFile) {
+		// System.out.println("Normalized=");
+		// System.out.println(compilationUnit.getPrettyPrintDelegate()
+		// .getNormalizedRepresentation(compilationUnit.getPrettyPrintDelegate().makePrettyPrintContext()));
+		testFileContentsEquals(compilationUnit.getPrettyPrintDelegate()
+				.getNormalizedRepresentation(compilationUnit.getPrettyPrintDelegate().makePrettyPrintContext()), resourceFile);
+	}
+
+	protected static void testFMLPrettyPrintEquals(FMLCompilationUnit compilationUnit, String resourceFile) {
+		testFileContentsEquals(compilationUnit.getPrettyPrintDelegate()
+				.getRepresentation(compilationUnit.getPrettyPrintDelegate().makePrettyPrintContext()), resourceFile);
+	}
+
+	protected static void testFileContentsEquals(String expected, String resourceFile) {
+		final Resource resource = ResourceLocator.locateResource(resourceFile);
+		try {
+			String resourceContents = FileUtils.fileContents(resource.openInputStream(), null);
+			assertSameContents(expected, resourceContents);
+		} catch (IOException e) {
+			e.printStackTrace();
+			fail();
+		}
+	}
+
+	public static final boolean DEBUG = true;
+
+	protected static void assertSameContents(String s1, String s2) {
+
+		List<String> rows1 = new ArrayList<>();
+		List<String> rows2 = new ArrayList<>();
+		try (BufferedReader br = new BufferedReader(new StringReader(s1))) {
+			String nextLine = null;
+			do {
+				nextLine = br.readLine();
+				if (nextLine != null) {
+					rows1.add(nextLine);
+					if (DEBUG)
+						System.out.println("1> [" + rows1.size() + "] : " + nextLine);
+				}
+			} while (nextLine != null);
+		} catch (IOException e) {
+			e.printStackTrace();
+			fail();
+		}
+
+		if (rows1.get(rows1.size() - 1).trim().equals("")) {
+			rows1.remove(rows1.size() - 1);
+		}
+
+		try (BufferedReader br = new BufferedReader(new StringReader(s2))) {
+			String nextLine = null;
+			do {
+				nextLine = br.readLine();
+				if (nextLine != null) {
+					rows2.add(nextLine);
+					if (DEBUG)
+						System.out.println("2> [" + rows2.size() + "] : " + nextLine);
+				}
+			} while (nextLine != null);
+		} catch (IOException e) {
+			e.printStackTrace();
+			fail();
+		}
+
+		/*if (DEBUG) {
+			for (int i = 0; i < rows1.size(); i++) {
+				System.out.println("*1> [" + i + "] : " + rows1.get(i));
+			}
+			for (int i = 0; i < rows2.size(); i++) {
+				System.out.println("*2> [" + i + "] : " + rows2.get(i));
+			}
+		}*/
+
+		assertEquals("Row size differs", rows1.size(), rows2.size());
+		for (int i = 0; i < rows1.size(); i++) {
+			assertEquals(rows1.get(i)/*.trim()*/, rows2.get(i)/*.trim()*/);
+		}
 	}
 
 }
