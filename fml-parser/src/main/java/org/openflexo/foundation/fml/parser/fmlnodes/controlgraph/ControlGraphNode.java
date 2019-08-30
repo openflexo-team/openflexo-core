@@ -51,9 +51,8 @@ import org.openflexo.foundation.fml.parser.node.Node;
  */
 public abstract class ControlGraphNode<N extends Node, T extends FMLControlGraph> extends FMLObjectNode<N, T, ControlGraphFactory> {
 
+	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(ControlGraphNode.class.getPackage().getName());
-
-	private ControlGraphFactory cgFactory;
 
 	public ControlGraphNode(N astNode, ControlGraphFactory cgFactory) {
 		super(astNode, cgFactory);
@@ -67,15 +66,7 @@ public abstract class ControlGraphNode<N extends Node, T extends FMLControlGraph
 	public ControlGraphNode<N, T> deserialize() {
 		// System.out.println("deserialize for " + getParent() + " modelObject: " + getModelObject());
 		if (getParent() instanceof SequenceNode) {
-			// getAbstractAnalyser().sequentiallyAppend(getModelObject());
-
-			/*if (((SequenceNode) getParent()).getModelObject().getControlGraph1() == null) {
-				((SequenceNode) getParent()).getModelObject().setControlGraph1(getModelObject());
-			}
-			else if (((SequenceNode) getParent()).getModelObject().getControlGraph2() == null) {
-				((SequenceNode) getParent()).getModelObject().setControlGraph2(getModelObject());
-			}*/
-			// System.out.println("Donc: " + ((SequenceNode) getParent()).getModelObject().getFMLRepresentation());
+			// Nothing to to here: this is done in SequenceNode
 		}
 		return this;
 	}

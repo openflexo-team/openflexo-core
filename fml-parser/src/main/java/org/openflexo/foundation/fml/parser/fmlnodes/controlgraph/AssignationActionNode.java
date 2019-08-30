@@ -62,16 +62,14 @@ import org.openflexo.p2pp.RawSource.RawSourceFragment;
  */
 public class AssignationActionNode extends AssignableActionNode<AAssignmentStatementExpression, AssignationAction<?>> {
 
+	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(AssignationActionNode.class.getPackage().getName());
 
 	public AssignationActionNode(AAssignmentStatementExpression astNode, ControlGraphFactory cgFactory) {
 		super(astNode, cgFactory);
 
 		if (getSemiFragment() != null) {
-			System.out.println("Juste avant: endPosition=" + getEndPosition());
 			setEndPosition(getSemiFragment().getEndPosition());
-			System.out.println("Et maintenant endPosition=" + getEndPosition());
-			System.out.println("lastParsed: " + getLastParsedFragment() + " " + getLastParsedFragment().getRawText());
 		}
 
 	}
@@ -80,10 +78,7 @@ public class AssignationActionNode extends AssignableActionNode<AAssignmentState
 		super(action, cgFactory);
 	}
 
-	/*protected FMLControlGraph getSimpleControlGraph(PAssignmentExpression expression) {
-		if (expression ins)
-	}*/
-
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Override
 	public AssignationAction<?> buildModelObjectFromAST(AAssignmentStatementExpression astNode) {
 		AssignationAction<?> returned = getFactory().newAssignationAction();
@@ -104,7 +99,8 @@ public class AssignationActionNode extends AssignableActionNode<AAssignmentState
 			}
 		}
 		else if (assignment instanceof AIdentifierAssignment) {
-			InnerExpressionActionNode expressionNode = new InnerExpressionActionNode(assignment, getAbstractAnalyser());
+			InnerExpressionActionNode expressionNode = new InnerExpressionActionNode((AIdentifierAssignment) assignment,
+					getAbstractAnalyser());
 			expressionNode.deserialize();
 			returned.setAssignableAction((AssignableAction) expressionNode.getModelObject());
 			addToChildren(expressionNode);
@@ -120,23 +116,10 @@ public class AssignationActionNode extends AssignableActionNode<AAssignmentState
 	public void preparePrettyPrint(boolean hasParsedVersion) {
 		super.preparePrettyPrint(hasParsedVersion);
 
-		// if (hasParsedVersion) {
-		appendDynamicContents(() -> getModelObject().getAssignation().toString(), getLeftHandSideFragment());
-		appendDynamicContents(SPACE, () -> "=", getOperatorFragment());
-		/*}
-		else {
-			appendDynamicContents(() -> getModelObject().getAssignation().toString());
-			appendDynamicContents(() -> "=");
-		}*/
-
-		appendToChildPrettyPrintContents(SPACE, () -> getModelObject().getAssignableAction(), "", Indentation.DoNotIndent);
-
-		// if (hasParsedVersion) {
-		appendStaticContents(";", getSemiFragment());
-		/*}
-		else {
-			appendStaticContents(";");
-		}*/
+		append(dynamicContents(() -> getModelObject().getAssignation().toString()), getLeftHandSideFragment());
+		append(dynamicContents(SPACE, () -> "="), getOperatorFragment());
+		append(childContents(SPACE, () -> getModelObject().getAssignableAction(), "", Indentation.DoNotIndent));
+		append(staticContents(";"), getSemiFragment());
 
 	}
 

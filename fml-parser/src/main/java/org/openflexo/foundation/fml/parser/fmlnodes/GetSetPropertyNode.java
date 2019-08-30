@@ -63,6 +63,7 @@ import org.openflexo.p2pp.RawSource.RawSourceFragment;
  */
 public class GetSetPropertyNode extends FlexoPropertyNode<AGetSetPropertyDeclaration, GetProperty<?>> {
 
+	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(GetSetPropertyNode.class.getPackage().getName());
 
 	public GetSetPropertyNode(AGetSetPropertyDeclaration astNode, MainSemanticsAnalyzer analyser) {
@@ -109,29 +110,11 @@ public class GetSetPropertyNode extends FlexoPropertyNode<AGetSetPropertyDeclara
 	public void preparePrettyPrint(boolean hasParsedVersion) {
 		super.preparePrettyPrint(hasParsedVersion);
 
-		appendDynamicContents(() -> getVisibilityAsString(getModelObject().getVisibility()), SPACE, getVisibilityFragment());
-
-		/*if (hasParsedVersion && getVisibilityFragment() != null) {
-			appendDynamicContents(() -> getVisibilityAsString(getModelObject().getVisibility()), SPACE, getVisibilityFragment());
-		}
-		else {
-			appendDynamicContents(() -> getVisibilityAsString(getModelObject().getVisibility()), SPACE);
-		}*/
-
-		// if (hasParsedVersion) {
-		appendDynamicContents(() -> serializeType(getModelObject().getType()), SPACE, getTypeFragment());
-		appendDynamicContents(() -> getModelObject().getName(), SPACE, getNameFragment());
-		appendStaticContents("{}", SPACE, null);
-		// appendDynamicContents(() -> getModelObject().getExpression().toString(), getExpressionFragment());
-		appendStaticContents(";", getSemiFragment());
-		/*}
-		else {
-			appendDynamicContents(() -> serializeType(getModelObject().getType()), SPACE);
-			appendDynamicContents(() -> getModelObject().getName(), SPACE);
-			appendStaticContents("{}", SPACE);
-			// appendDynamicContents(() -> getModelObject().getExpression().toString());
-			appendStaticContents(";");
-		}*/
+		append(dynamicContents(() -> getVisibilityAsString(getModelObject().getVisibility()), SPACE), getVisibilityFragment());
+		append(dynamicContents(() -> serializeType(getModelObject().getType()), SPACE), getTypeFragment());
+		append(dynamicContents(() -> getModelObject().getName(), SPACE), getNameFragment());
+		append(staticContents("", "{}", SPACE), null);
+		append(staticContents(";"), getSemiFragment());
 	}
 
 	private RawSourceFragment getVisibilityFragment() {

@@ -44,6 +44,7 @@ import java.util.logging.Logger;
 import org.openflexo.foundation.fml.editionaction.ExpressionAction;
 import org.openflexo.foundation.fml.parser.ControlGraphFactory;
 import org.openflexo.foundation.fml.parser.node.AIdentifierAssignment;
+import org.openflexo.foundation.fml.parser.node.AIdentifierReturnStatement;
 import org.openflexo.foundation.fml.parser.node.Node;
 import org.openflexo.foundation.fml.parser.node.PAdditionalIdentifier;
 import org.openflexo.foundation.fml.parser.node.TIdentifier;
@@ -55,9 +56,20 @@ import org.openflexo.p2pp.RawSource.RawSourceFragment;
  */
 public class InnerExpressionActionNode extends AssignableActionNode<Node, ExpressionAction<?>> {
 
+	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(InnerExpressionActionNode.class.getPackage().getName());
 
-	public InnerExpressionActionNode(Node astNode, ControlGraphFactory cgFactory) {
+	public InnerExpressionActionNode(AIdentifierAssignment astNode, ControlGraphFactory cgFactory) {
+		super(astNode, cgFactory);
+
+		if (getExpressionFragment() != null) {
+			setStartPosition(getExpressionFragment().getStartPosition());
+			setEndPosition(getExpressionFragment().getEndPosition());
+		}
+
+	}
+
+	public InnerExpressionActionNode(AIdentifierReturnStatement astNode, ControlGraphFactory cgFactory) {
 		super(astNode, cgFactory);
 
 		if (getExpressionFragment() != null) {
@@ -83,17 +95,15 @@ public class InnerExpressionActionNode extends AssignableActionNode<Node, Expres
 	public void preparePrettyPrint(boolean hasParsedVersion) {
 		super.preparePrettyPrint(hasParsedVersion);
 
-		// if (hasParsedVersion) {
-		appendDynamicContents(() -> getModelObject().getExpression().toString(), getExpressionFragment());
-		/*}
-		else {
-			appendDynamicContents(() -> getModelObject().getExpression().toString());
-		}*/
+		append(dynamicContents(() -> getModelObject().getExpression().toString()), getExpressionFragment());
 	}
 
 	private TIdentifier getIdentifier() {
 		if (getASTNode() instanceof AIdentifierAssignment) {
 			return ((AIdentifierAssignment) getASTNode()).getIdentifier();
+		}
+		if (getASTNode() instanceof AIdentifierReturnStatement) {
+			return ((AIdentifierReturnStatement) getASTNode()).getIdentifier();
 		}
 		return null;
 	}
@@ -101,6 +111,9 @@ public class InnerExpressionActionNode extends AssignableActionNode<Node, Expres
 	private List<PAdditionalIdentifier> getAdditionalIdentifiers() {
 		if (getASTNode() instanceof AIdentifierAssignment) {
 			return ((AIdentifierAssignment) getASTNode()).getAdditionalIdentifiers();
+		}
+		if (getASTNode() instanceof AIdentifierReturnStatement) {
+			return ((AIdentifierReturnStatement) getASTNode()).getAdditionalIdentifiers();
 		}
 		return null;
 	}

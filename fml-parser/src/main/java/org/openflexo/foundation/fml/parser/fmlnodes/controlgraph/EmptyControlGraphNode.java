@@ -50,6 +50,7 @@ import org.openflexo.foundation.fml.parser.node.ABlock;
  */
 public class EmptyControlGraphNode extends ControlGraphNode<ABlock, EmptyControlGraph> {
 
+	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(EmptyControlGraphNode.class.getPackage().getName());
 
 	public EmptyControlGraphNode(ABlock astNode, ControlGraphFactory cgFactory) {
@@ -69,7 +70,7 @@ public class EmptyControlGraphNode extends ControlGraphNode<ABlock, EmptyControl
 	@Override
 	public void preparePrettyPrint(boolean hasParsedVersion) {
 		super.preparePrettyPrint(hasParsedVersion);
-		// TODO
+		// Nothing to do
 	}
 
 }

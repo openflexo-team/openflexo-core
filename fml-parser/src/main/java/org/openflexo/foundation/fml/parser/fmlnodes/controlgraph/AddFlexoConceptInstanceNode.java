@@ -59,6 +59,7 @@ import org.openflexo.p2pp.RawSource.RawSourceFragment;
  */
 public class AddFlexoConceptInstanceNode extends AssignableActionNode<PConceptInstanceCreationExpression, AddFlexoConceptInstance<?>> {
 
+	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(AddFlexoConceptInstanceNode.class.getPackage().getName());
 
 	public AddFlexoConceptInstanceNode(PConceptInstanceCreationExpression astNode, ControlGraphFactory cgFactory) {
@@ -155,43 +156,25 @@ public class AddFlexoConceptInstanceNode extends AssignableActionNode<PConceptIn
 	public void preparePrettyPrint(boolean hasParsedVersion) {
 		super.preparePrettyPrint(hasParsedVersion);
 
-		// aConcept = new MyConcept::init(name);
-		// aConcept = new MyConcept(name);
-
-		// if (hasParsedVersion) {
-		appendStaticContents("new", SPACE, getNewFragment());
-		appendDynamicContents(() -> serializeType(getModelObject().getFlexoConceptType()), getConceptNameFragment());
-		if (isFullQualified()) {
-			appendStaticContents("::", getColonColonFragment());
-			appendDynamicContents(() -> serializeFlexoBehaviour(getModelObject().getCreationScheme()), getConstructorNameFragment());
-		}
-		appendStaticContents("(", getLParFragment());
-		appendToChildrenPrettyPrintContents("", "", () -> getModelObject().getParameters(), ",", "", Indentation.DoNotIndent,
-				AddFlexoConceptInstanceParameter.class);
-		appendStaticContents(")", getRParFragment());
-
-		/*}
-		else {
-			appendStaticContents("new", SPACE);
-			appendDynamicContents(() -> serializeType(getModelObject().getFlexoConceptType()));
-			if (isFullQualified()) {
-				appendStaticContents("::");
-				appendDynamicContents(() -> serializeFlexoBehaviour(getModelObject().getCreationScheme()));
-			}
-			appendStaticContents("(");
-			appendToChildrenPrettyPrintContents("", "", () -> getModelObject().getParameters(), ",", "", -1,
-					AddFlexoConceptInstanceParameter.class);
-			appendStaticContents(")");
-		}*/
-
+		// @formatter:off	
+		append(staticContents("", "new", SPACE), getNewFragment());
+		append(dynamicContents(() -> serializeType(getModelObject().getFlexoConceptType())), getConceptNameFragment());
+		when(() -> isFullQualified())
+			.thenAppend(staticContents("::"), getColonColonFragment())
+			.thenAppend(dynamicContents(() -> serializeFlexoBehaviour(getModelObject().getCreationScheme())), getConstructorNameFragment());
+		append(staticContents("("), getLParFragment());
+		append(childrenContents("", "", () -> getModelObject().getParameters(), ",", "", Indentation.DoNotIndent,
+				AddFlexoConceptInstanceParameter.class));
+		append(staticContents(")"), getRParFragment());
+		// @formatter:on	
 	}
 
 	private boolean isFullQualified() {
-		if (getASTNode() != null) {
-			return getASTNode() instanceof AFullQualifiedConceptInstanceCreationExpression;
+		if (getModelObject() != null) {
+			return getModelObject().getFlexoConceptType().getCreationSchemes().size() > 1;
 		}
 		else {
-			return getModelObject().getFlexoConceptType().getCreationSchemes().size() > 1;
+			return getASTNode() != null && getASTNode() instanceof AFullQualifiedConceptInstanceCreationExpression;
 		}
 	}
 

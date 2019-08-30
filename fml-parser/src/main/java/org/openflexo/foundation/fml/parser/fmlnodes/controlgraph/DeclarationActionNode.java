@@ -66,6 +66,7 @@ public class DeclarationActionNode extends AssignableActionNode<ALocalVariableDe
 		super(action, cgFactory);
 	}
 
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
 	public DeclarationAction<?> buildModelObjectFromAST(ALocalVariableDeclarationStatement astNode) {
 		DeclarationAction<?> returned = getFactory().newDeclarationAction();
@@ -84,39 +85,20 @@ public class DeclarationActionNode extends AssignableActionNode<ALocalVariableDe
 		return returned;
 	}
 
+	@SuppressWarnings({ "rawtypes" })
 	@Override
 	public void preparePrettyPrint(boolean hasParsedVersion) {
 		super.preparePrettyPrint(hasParsedVersion);
 
-		// if (hasParsedVersion) {
-		appendDynamicContents(() -> serializeType(getModelObject().getType()), SPACE, getTypeFragment());
-		appendDynamicContents(() -> getModelObject().getName(), getNameFragment());
-		/*}
-		else {
-			appendDynamicContents(() -> serializeType(getModelObject().getType()), SPACE);
-			appendDynamicContents(() -> getModelObject().getName());
-		}*/
-
-		// if (hasParsedVersion) {
-		if (hasInitializer()) {
-			appendStaticContents("=", getAssignOperatorFragment());
-			appendDynamicContents(() -> ((ExpressionAction) getModelObject().getAssignableAction()).getExpression().toString(),
-					getAssignmentFragment());
-		}
-		/*}
-		else {
-			if (hasInitializer()) {
-				appendStaticContents("=");
-				appendDynamicContents(() -> ((ExpressionAction) getModelObject().getAssignableAction()).getExpression().toString());
-			}
-		}*/
-
-		// if (hasParsedVersion) {
-		appendStaticContents(";", getSemiFragment());
-		/*}
-		else {
-			appendStaticContents(";");
-		}*/
+		// @formatter:off	
+		append(dynamicContents(() -> serializeType(getModelObject().getType()), SPACE), getTypeFragment());
+		append(dynamicContents(() -> getModelObject().getName()), getNameFragment());
+		when(() -> hasInitializer())
+			.thenAppend(staticContents("="), getAssignOperatorFragment())
+			.thenAppend(dynamicContents(() -> ((ExpressionAction) getModelObject().getAssignableAction()).getExpression().toString()),
+				getAssignmentFragment());
+		append(staticContents(";"), getSemiFragment());
+		// @formatter:on	
 
 	}
 
@@ -141,7 +123,10 @@ public class DeclarationActionNode extends AssignableActionNode<ALocalVariableDe
 	}
 
 	private boolean hasInitializer() {
-		if (getASTNode() != null) {
+		if (getModelObject() != null) {
+			logger.warning("Il manque ici le code qui detecte l'initialiseur !!!!");
+		}
+		else if (getASTNode() != null) {
 			PVariableDeclarator variableDeclarator = getASTNode().getVariableDeclarator();
 			if (variableDeclarator instanceof AIdentifierVariableDeclarator) {
 				return false;
