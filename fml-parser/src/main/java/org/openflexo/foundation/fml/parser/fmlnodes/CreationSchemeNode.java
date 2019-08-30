@@ -47,6 +47,7 @@ import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.ControlGraphNod
 import org.openflexo.foundation.fml.parser.node.AAnonymousConstructorBehaviourDeclaration;
 import org.openflexo.foundation.fml.parser.node.ANamedConstructorBehaviourDeclaration;
 import org.openflexo.foundation.fml.parser.node.PBehaviourDeclaration;
+import org.openflexo.p2pp.PrettyPrintContext.Indentation;
 import org.openflexo.p2pp.RawSource.RawSourceFragment;
 
 /**
@@ -115,7 +116,7 @@ public class CreationSchemeNode extends FlexoBehaviourNode<PBehaviourDeclaration
 		when(() -> isAbstract())
 				.thenAppend(staticContents(";"), getSemiFragment())
 				.elseAppend(staticContents(SPACE,"{", ""), getLBrcFragment())
-				.elseAppend(childContents(LINE_SEPARATOR, () -> getModelObject().getControlGraph(), LINE_SEPARATOR, 0))
+				.elseAppend(childContents(LINE_SEPARATOR, () -> getModelObject().getControlGraph(), LINE_SEPARATOR, Indentation.Indent))
 				.elseAppend(staticContents(LINE_SEPARATOR, "}", ""), getLBrcFragment());
 		// @formatter:on
 

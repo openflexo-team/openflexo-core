@@ -50,6 +50,7 @@ import org.openflexo.foundation.fml.parser.node.PConceptInstanceCreationExpressi
 import org.openflexo.foundation.fml.parser.node.TIdentifier;
 import org.openflexo.foundation.fml.rt.editionaction.AddFlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.editionaction.AddFlexoConceptInstanceParameter;
+import org.openflexo.p2pp.PrettyPrintContext.Indentation;
 import org.openflexo.p2pp.RawSource.RawSourceFragment;
 
 /**
@@ -165,7 +166,7 @@ public class AddFlexoConceptInstanceNode extends AssignableActionNode<PConceptIn
 			appendDynamicContents(() -> serializeFlexoBehaviour(getModelObject().getCreationScheme()), getConstructorNameFragment());
 		}
 		appendStaticContents("(", getLParFragment());
-		appendToChildrenPrettyPrintContents("", "", () -> getModelObject().getParameters(), ",", "", -1,
+		appendToChildrenPrettyPrintContents("", "", () -> getModelObject().getParameters(), ",", "", Indentation.DoNotIndent,
 				AddFlexoConceptInstanceParameter.class);
 		appendStaticContents(")", getRParFragment());
 

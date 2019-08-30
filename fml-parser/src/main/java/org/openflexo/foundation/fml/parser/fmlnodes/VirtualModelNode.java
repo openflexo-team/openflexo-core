@@ -45,6 +45,7 @@ import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.parser.FMLObjectNode;
 import org.openflexo.foundation.fml.parser.MainSemanticsAnalyzer;
 import org.openflexo.foundation.fml.parser.node.AModelDeclaration;
+import org.openflexo.p2pp.PrettyPrintContext.Indentation;
 import org.openflexo.p2pp.RawSource.RawSourceFragment;
 
 /**
@@ -102,10 +103,11 @@ public class VirtualModelNode extends FMLObjectNode<AModelDeclaration, VirtualMo
 			appendStaticContents(SPACE, "{", LINE_SEPARATOR);
 		}*/
 
-		appendToChildrenPrettyPrintContents("", () -> getModelObject().getFlexoProperties(), LINE_SEPARATOR, 1, FlexoProperty.class);
-		appendToChildrenPrettyPrintContents(LINE_SEPARATOR, () -> getModelObject().getFlexoBehaviours(), LINE_SEPARATOR, 1,
+		appendToChildrenPrettyPrintContents("", () -> getModelObject().getFlexoProperties(), LINE_SEPARATOR, Indentation.Indent,
+				FlexoProperty.class);
+		appendToChildrenPrettyPrintContents(LINE_SEPARATOR, () -> getModelObject().getFlexoBehaviours(), LINE_SEPARATOR, Indentation.Indent,
 				FlexoBehaviour.class);
-		appendToChildrenPrettyPrintContents(LINE_SEPARATOR, () -> getModelObject().getFlexoConcepts(), LINE_SEPARATOR, 1,
+		appendToChildrenPrettyPrintContents(LINE_SEPARATOR, () -> getModelObject().getFlexoConcepts(), LINE_SEPARATOR, Indentation.Indent,
 				FlexoConcept.class);
 
 		// if (getASTNode() != null) {

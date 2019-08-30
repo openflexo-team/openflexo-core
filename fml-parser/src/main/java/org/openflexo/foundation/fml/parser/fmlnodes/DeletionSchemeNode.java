@@ -48,6 +48,7 @@ import org.openflexo.foundation.fml.parser.node.AAnonymousDestructorBehaviourDec
 import org.openflexo.foundation.fml.parser.node.AEmptyFlexoBehaviourBody;
 import org.openflexo.foundation.fml.parser.node.ANamedDestructorBehaviourDeclaration;
 import org.openflexo.foundation.fml.parser.node.PBehaviourDeclaration;
+import org.openflexo.p2pp.PrettyPrintContext.Indentation;
 import org.openflexo.p2pp.RawSource.RawSourceFragment;
 
 /**
@@ -127,7 +128,8 @@ public class DeletionSchemeNode extends FlexoBehaviourNode<PBehaviourDeclaration
 		}
 		else {
 			appendStaticContents(SPACE, "{", getLBrcFragment());
-			appendToChildPrettyPrintContents(LINE_SEPARATOR, () -> getModelObject().getControlGraph(), LINE_SEPARATOR, 0);
+			appendToChildPrettyPrintContents(LINE_SEPARATOR, () -> getModelObject().getControlGraph(), LINE_SEPARATOR,
+					Indentation.DoNotIndent);
 			appendStaticContents(LINE_SEPARATOR, "}", getRBrcFragment());
 		}
 		/*}

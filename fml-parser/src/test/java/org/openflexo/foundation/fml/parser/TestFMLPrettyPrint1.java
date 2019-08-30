@@ -152,7 +152,7 @@ public class TestFMLPrettyPrint1 extends FMLParserTestCase {
 
 		assertEquals("(6:0)-(6:22)", listImportNode.getLastParsedFragment().toString());
 		assertEquals(null, listImportNode.getPrelude());
-		assertEquals("(6:22)-(7:0)", listImportNode.getPostlude().toString());
+		assertEquals("(6:22)-(8:0)", listImportNode.getPostlude().toString());
 
 		assertEquals("(11:1)-(11:7)", iPropertyNode.getLastParsedFragment().toString());
 		assertEquals("(11:0)-(11:1)", iPropertyNode.getPrelude().toString());
@@ -182,7 +182,7 @@ public class TestFMLPrettyPrint1 extends FMLParserTestCase {
 
 		assertEquals("(6:0)-(6:22)", listImportNode.getLastParsedFragment().toString());
 		assertEquals(null, listImportNode.getPrelude());
-		assertEquals("(6:22)-(7:0)", listImportNode.getPostlude().toString());
+		assertEquals("(6:22)-(8:0)", listImportNode.getPostlude().toString());
 
 		assertEquals("(11:1)-(11:7)", iPropertyNode.getLastParsedFragment().toString());
 		assertEquals("(11:0)-(11:1)", iPropertyNode.getPrelude().toString());

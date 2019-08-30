@@ -43,6 +43,7 @@ import org.openflexo.foundation.fml.JavaImportDeclaration;
 import org.openflexo.foundation.fml.parser.FMLObjectNode;
 import org.openflexo.foundation.fml.parser.MainSemanticsAnalyzer;
 import org.openflexo.foundation.fml.parser.node.AFmlCompilationUnit;
+import org.openflexo.p2pp.PrettyPrintContext.Indentation;
 import org.openflexo.p2pp.RawSource.RawSourcePosition;
 
 /**
@@ -75,8 +76,9 @@ public class FMLCompilationUnitNode extends FMLObjectNode<AFmlCompilationUnit, F
 
 		super.preparePrettyPrint(hasParsedVersion);
 
-		appendToChildrenPrettyPrintContents("", () -> getModelObject().getJavaImports(), LINE_SEPARATOR, 0, JavaImportDeclaration.class);
-		appendToChildPrettyPrintContents(LINE_SEPARATOR, () -> getModelObject().getVirtualModel(), LINE_SEPARATOR, 0);
+		appendToChildrenPrettyPrintContents("", "", () -> getModelObject().getJavaImports(), LINE_SEPARATOR,
+				LINE_SEPARATOR + LINE_SEPARATOR, Indentation.DoNotIndent, JavaImportDeclaration.class);
+		appendToChildPrettyPrintContents("", () -> getModelObject().getVirtualModel(), LINE_SEPARATOR, Indentation.DoNotIndent);
 	}
 
 	@Override
