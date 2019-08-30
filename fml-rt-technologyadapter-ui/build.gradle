@@ -9,6 +9,3 @@ dependencies {
   testCompile project(':flexo-ui-test')
   testRuntime project(':fml-technologyadapter-ui')
 }
-tasks.withType(Test) {
-	jvmArgs += ["-Djava.awt.headless=true"]
-}
