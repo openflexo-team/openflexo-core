@@ -43,6 +43,7 @@ import java.util.logging.Logger;
 import org.openflexo.foundation.fml.controlgraph.Sequence;
 import org.openflexo.foundation.fml.parser.ControlGraphFactory;
 import org.openflexo.foundation.fml.parser.node.ABlock;
+import org.openflexo.p2pp.PrettyPrintContext.Indentation;
 
 /**
  * @author sylvain
@@ -76,8 +77,8 @@ public class SequenceNode extends ControlGraphNode<ABlock, Sequence> {
 	@Override
 	public void preparePrettyPrint(boolean hasParsedVersion) {
 		super.preparePrettyPrint(hasParsedVersion);
-		appendToChildPrettyPrintContents("", () -> getModelObject().getControlGraph1(), LINE_SEPARATOR, 0);
-		appendToChildPrettyPrintContents("", () -> getModelObject().getControlGraph2(), "", 0);
+		appendToChildPrettyPrintContents("", () -> getModelObject().getControlGraph1(), LINE_SEPARATOR, Indentation.DoNotIndent);
+		appendToChildPrettyPrintContents("", () -> getModelObject().getControlGraph2(), "", Indentation.DoNotIndent);
 	}
 
 }

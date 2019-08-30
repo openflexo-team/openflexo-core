@@ -46,6 +46,7 @@ import org.openflexo.foundation.fml.parser.MainSemanticsAnalyzer;
 import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.ControlGraphNode;
 import org.openflexo.foundation.fml.parser.node.AEmptyFlexoBehaviourBody;
 import org.openflexo.foundation.fml.parser.node.AMethodBehaviourDeclaration;
+import org.openflexo.p2pp.PrettyPrintContext.Indentation;
 
 /**
  * <pre>
@@ -104,7 +105,8 @@ public class ActionSchemeNode extends FlexoBehaviourNode<AMethodBehaviourDeclara
 		}
 		else {
 			appendStaticContents(SPACE, "{", getLBrcFragment());
-			appendToChildPrettyPrintContents(LINE_SEPARATOR, () -> getModelObject().getControlGraph(), LINE_SEPARATOR, 0);
+			appendToChildPrettyPrintContents(LINE_SEPARATOR, () -> getModelObject().getControlGraph(), LINE_SEPARATOR,
+					Indentation.DoNotIndent);
 			appendStaticContents(LINE_SEPARATOR, "}", getRBrcFragment());
 		}
 		/*}

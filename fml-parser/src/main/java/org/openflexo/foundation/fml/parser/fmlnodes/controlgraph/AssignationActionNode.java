@@ -53,6 +53,7 @@ import org.openflexo.foundation.fml.parser.node.AIdentifierLeftHandSide;
 import org.openflexo.foundation.fml.parser.node.PAssignment;
 import org.openflexo.foundation.fml.parser.node.PAssignmentOperator;
 import org.openflexo.foundation.fml.parser.node.PLeftHandSide;
+import org.openflexo.p2pp.PrettyPrintContext.Indentation;
 import org.openflexo.p2pp.RawSource.RawSourceFragment;
 
 /**
@@ -128,7 +129,7 @@ public class AssignationActionNode extends AssignableActionNode<AAssignmentState
 			appendDynamicContents(() -> "=");
 		}*/
 
-		appendToChildPrettyPrintContents(SPACE, () -> getModelObject().getAssignableAction(), "", -1);
+		appendToChildPrettyPrintContents(SPACE, () -> getModelObject().getAssignableAction(), "", Indentation.DoNotIndent);
 
 		// if (hasParsedVersion) {
 		appendStaticContents(";", getSemiFragment());

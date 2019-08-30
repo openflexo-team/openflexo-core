@@ -1,6 +1,6 @@
 model MyModel {
 
-	create () {
+	create::newConstructorName () {
 		int j=2;
 		i = 1;
 		i = j;
