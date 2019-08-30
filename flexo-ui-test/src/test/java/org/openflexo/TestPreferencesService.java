@@ -43,19 +43,17 @@ import static org.junit.Assert.assertNotNull;
 import java.util.logging.Logger;
 
 import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.experimental.categories.Category;
 import org.openflexo.gina.test.OpenflexoTestCaseWithGUI;
 import org.openflexo.gina.test.TestApplicationContext;
 import org.openflexo.logging.FlexoLogger;
 import org.openflexo.prefs.PreferencesService;
-import org.openflexo.test.OrderedRunner;
-import org.openflexo.test.TestOrder;
+import org.openflexo.test.UITest;
 
 /**
  * Test PreferencesService
  * 
  */
-@RunWith(OrderedRunner.class)
 public class TestPreferencesService extends OpenflexoTestCaseWithGUI {
 
 	@SuppressWarnings("unused")
@@ -79,7 +77,7 @@ public class TestPreferencesService extends OpenflexoTestCaseWithGUI {
 	}
 
 	@Test
-	@TestOrder(1)
+	@Category(UITest.class)
 	public void testPreferencesService() {
 		instanciateTestServiceManager();
 		assertNotNull(serviceManager.getPreferencesService());

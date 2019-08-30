@@ -45,6 +45,7 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 import org.openflexo.gina.ApplicationFIBLibrary.ApplicationFIBLibraryImpl;
 import org.openflexo.gina.controller.FIBController;
@@ -58,6 +59,7 @@ import org.openflexo.rm.Resource;
 import org.openflexo.rm.ResourceLocator;
 import org.openflexo.test.OrderedRunner;
 import org.openflexo.test.TestOrder;
+import org.openflexo.test.UITest;
 
 /**
  * Test the structural and behavioural features of FIBTextField widget
@@ -74,6 +76,7 @@ public class TestPreferences extends FIBTestCase {
 
 	@Test
 	@TestOrder(1)
+	@Category(UITest.class)
 	public void instanciateTestServiceManager() {
 		applicationContext = new TestApplicationContext() {
 			@Override
@@ -85,6 +88,7 @@ public class TestPreferences extends FIBTestCase {
 
 	@Test
 	@TestOrder(2)
+	@Category(UITest.class)
 	public void testInstanciateGeneralPreferences() {
 		Resource generalPreferences = ResourceLocator.locateResource("Fib/Prefs/GeneralPreferences.fib");
 
@@ -101,6 +105,7 @@ public class TestPreferences extends FIBTestCase {
 
 	@Test
 	@TestOrder(3)
+	@Category(UITest.class)
 	public void testInstanciateAdvancedPrefs() {
 		Resource advancedPrefs = ResourceLocator.locateResource("Fib/Prefs/AdvancedPrefs.fib");
 

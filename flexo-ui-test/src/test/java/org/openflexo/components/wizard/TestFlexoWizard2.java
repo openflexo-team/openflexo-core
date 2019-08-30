@@ -41,6 +41,7 @@ package org.openflexo.components.wizard;
 import static org.junit.Assert.assertFalse;
 
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.gina.swing.test.FIBDialogGraphicalContextDelegate;
@@ -49,6 +50,7 @@ import org.openflexo.rm.Resource;
 import org.openflexo.rm.ResourceLocator;
 import org.openflexo.test.OrderedRunner;
 import org.openflexo.test.TestOrder;
+import org.openflexo.test.UITest;
 
 /**
  * Test Wizard
@@ -78,6 +80,7 @@ public class TestFlexoWizard2 extends OpenflexoFIBTestCase {
 
 	@Test
 	@TestOrder(1)
+	@Category(UITest.class)
 	public void buildWizard() {
 
 		wizard = new FlexoWizard(null) {
@@ -120,6 +123,7 @@ public class TestFlexoWizard2 extends OpenflexoFIBTestCase {
 
 	@Test
 	@TestOrder(2)
+	@Category(UITest.class)
 	public void testDisplayWizard() {
 		WizardDialog dialog = new WizardDialog(wizard, null);
 
