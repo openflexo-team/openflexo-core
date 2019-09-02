@@ -36,18 +36,42 @@
  * 
  */
 
-package org.openflexo.foundation.fml.parser;
+package org.openflexo.foundation.fml.rm;
 
-@SuppressWarnings("serial")
-public class ParseException extends Exception {
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 
-	/**
-	 * Constructs a new parse exception with the specified detail message.
-	 * 
-	 * @param message
-	 *            the detail message. The detail message is saved for later retrieval by the {@link #getMessage()} method.
-	 */
-	public ParseException(String message) {
-		super(message);
+import org.openflexo.foundation.fml.FMLCompilationUnit;
+import org.openflexo.foundation.fml.FMLModelFactory;
+
+/**
+ * API specifying the parsing service for FML.<br>
+ * 
+ * @author sylvain
+ */
+public interface FMLParser {
+
+	public FMLCompilationUnit parse(String data, FMLModelFactory modelFactory/*, EntryPointKind entryPointKind*/)
+			throws ParseException, IOException;
+
+	public FMLCompilationUnit parse(InputStream inputStream, FMLModelFactory modelFactory) throws ParseException, IOException;
+
+	public FMLCompilationUnit parse(File file, FMLModelFactory modelFactory) throws ParseException, IOException;
+
+	public void initPrettyPrint(FMLCompilationUnit fmlCompilationUnit);
+
+	public static class ParseException extends Exception {
+
+		/**
+		 * Constructs a new parse exception with the specified detail message.
+		 * 
+		 * @param message
+		 *            the detail message. The detail message is saved for later retrieval by the {@link #getMessage()} method.
+		 */
+		public ParseException(String message) {
+			super(message);
+		}
+
 	}
 }

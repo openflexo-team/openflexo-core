@@ -59,6 +59,12 @@ public class FMLCompilationUnitNode extends FMLObjectNode<AFmlCompilationUnit, F
 		super(astNode, analyser);
 		startPosition = getRawSource().getStartPosition();
 		endPosition = getRawSource().getEndPosition();
+		Thread.dumpStack();
+		System.exit(-1);
+	}
+
+	public FMLCompilationUnitNode(FMLCompilationUnit compilationUnit, MainSemanticsAnalyzer analyser) {
+		super(compilationUnit, analyser);
 	}
 
 	@Override

@@ -52,13 +52,15 @@ import org.openflexo.foundation.IOFlexoException;
 import org.openflexo.foundation.InconsistentDataException;
 import org.openflexo.foundation.InvalidModelDefinitionException;
 import org.openflexo.foundation.InvalidXMLException;
+import org.openflexo.foundation.fml.FMLCompilationUnit;
 import org.openflexo.foundation.fml.FMLModelFactory;
-import org.openflexo.foundation.fml.FMLTechnologyAdapter;
 import org.openflexo.foundation.fml.FMLObject.BindingIsRequiredAndMustBeValid.InvalidRequiredBindingIssue;
+import org.openflexo.foundation.fml.FMLTechnologyAdapter;
 import org.openflexo.foundation.fml.FMLValidationModel;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.VirtualModelLibrary;
+import org.openflexo.foundation.fml.rm.FMLParser.ParseException;
 import org.openflexo.foundation.fml.rt.FMLRTTechnologyAdapter;
 import org.openflexo.foundation.fml.rt.rm.FMLRTVirtualModelInstanceResource;
 import org.openflexo.foundation.resource.CannotRenameException;
@@ -88,6 +90,39 @@ import org.openflexo.toolbox.FileUtils;
 public abstract class VirtualModelResourceImpl extends PamelaResourceImpl<VirtualModel, FMLModelFactory> implements VirtualModelResource {
 
 	private static final Logger logger = Logger.getLogger(VirtualModelResourceImpl.class.getPackage().getName());
+
+	public static FMLParserFactory FML_PARSER_FACTORY = null;
+	private FMLParser fmlParser;
+
+	static {
+
+		try {
+			Class<? extends FMLParserFactory> FACTORY_CLASS = (Class<? extends FMLParserFactory>) Class
+					.forName("org.openflexo.foundation.fml.parser.DefaultFMLParserFactory");
+			FML_PARSER_FACTORY = FACTORY_CLASS.newInstance();
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (InstantiationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	public FMLParser getFMLParser() {
+		if (fmlParser == null) {
+			if (FML_PARSER_FACTORY != null) {
+				fmlParser = FML_PARSER_FACTORY.makeFMLParser();
+			}
+			else {
+				logger.severe("FMLParserFactory not installed");
+			}
+		}
+		return fmlParser;
+	}
 
 	@Override
 	public String computeDefaultURI() {
@@ -476,6 +511,38 @@ public abstract class VirtualModelResourceImpl extends PamelaResourceImpl<Virtua
 				e.printStackTrace();
 			}
 		}
+	}
+
+	@Override
+	protected VirtualModel performLoad() throws IOException, Exception {
+		boolean requiresFMLPrettyPrintInitialization = false;
+		if (getIODelegate() instanceof DirectoryBasedIODelegate) {
+			DirectoryBasedIODelegate ioDelegate = (DirectoryBasedIODelegate) getIODelegate();
+			File fmlFile = new File(ioDelegate.getDirectory(), ioDelegate.getDirectory().getName());
+			System.out.println("Tiens faudrait aussi charger le fichier " + fmlFile);
+			if (fmlFile.exists()) {
+				try {
+					FMLCompilationUnit parsedCompilationUnit = getFMLParser().parse(fmlFile, getFactory());
+				} catch (ParseException e) {
+					logger.warning("Failed to parse " + fmlFile);
+					requiresFMLPrettyPrintInitialization = true;
+				}
+			}
+			else {
+				requiresFMLPrettyPrintInitialization = true;
+			}
+		}
+		VirtualModel returned = super.performLoad();
+		if (requiresFMLPrettyPrintInitialization) {
+			FMLCompilationUnit compilationUnit = returned.getCompilationUnit();
+			if (compilationUnit == null) {
+				compilationUnit = returned.getFMLModelFactory().newCompilationUnit();
+				compilationUnit.setVirtualModel(returned);
+			}
+			getFMLParser().initPrettyPrint(compilationUnit);
+			System.out.println(returned.getFMLPrettyPrint());
+		}
+		return returned;
 	}
 
 }

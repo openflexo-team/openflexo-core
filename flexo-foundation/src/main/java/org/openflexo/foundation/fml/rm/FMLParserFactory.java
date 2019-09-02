@@ -1,8 +1,8 @@
 /**
  * 
- * Copyright (c) 2014, Openflexo
+ * Copyright (c) 2019, Openflexo
  * 
- * This file is part of Cartoeditor, a component of the software infrastructure 
+ * This file is part of FML-parser, a component of the software infrastructure 
  * developed at Openflexo.
  * 
  * 
@@ -36,52 +36,14 @@
  * 
  */
 
-package org.openflexo.foundation.fml.parser;
-
-import java.io.IOException;
-import java.util.Collection;
-
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
-import org.openflexo.foundation.fml.rm.FMLParser.ParseException;
-import org.openflexo.pamela.exceptions.ModelDefinitionException;
-import org.openflexo.rm.Resource;
-import org.openflexo.rm.ResourceLocator;
-import org.openflexo.rm.Resources;
+package org.openflexo.foundation.fml.rm;
 
 /**
- * A parameterized suite of unit tests iterating on FML files.
- * 
- * For each FML file, parse it.
+ * API specifying the parsing service factory for FML.<br>
  * 
  * @author sylvain
- *
  */
-@RunWith(Parameterized.class)
-public class TestFMLParser extends FMLParserTestCase {
+public interface FMLParserFactory {
 
-	@Parameterized.Parameters(name = "{1}")
-	public static Collection<Object[]> generateData() {
-		return Resources.getMatchingResource(ResourceLocator.locateResource("NewFMLExamples"), ".fml");
-	}
-
-	private final Resource fmlResource;
-
-	public TestFMLParser(Resource fmlResource, String name) {
-		System.out.println("********* TestFMLParser " + fmlResource + " name=" + name);
-		this.fmlResource = fmlResource;
-	}
-
-	@Test
-	public void testResource() throws ModelDefinitionException, ParseException, IOException {
-		testFMLCompilationUnit(fmlResource);
-	}
-
-	@BeforeClass
-	public static void initServiceManager() {
-		instanciateTestServiceManager();
-	}
-
+	public FMLParser makeFMLParser();
 }

@@ -1,6 +1,7 @@
 dependencies {
   // openflexo dep
   compile project(':flexo-foundation')
+  compile project(':fml-parser')
   compile project(':flexo-ui')
   compile project(':flexo-ontology')
   compile project(':flexo-ontology-ui')
