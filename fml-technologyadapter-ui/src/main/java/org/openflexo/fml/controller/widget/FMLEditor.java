@@ -63,7 +63,6 @@ import org.fife.ui.rtextarea.Gutter;
 import org.fife.ui.rtextarea.RTextScrollPane;
 import org.fife.ui.rtextarea.SearchContext;
 import org.fife.ui.rtextarea.SearchEngine;
-import org.openflexo.fml.fib.widget.OnTheFlyFMLParser;
 import org.openflexo.foundation.fml.rm.VirtualModelResource;
 import org.openflexo.icon.IconLibrary;
 

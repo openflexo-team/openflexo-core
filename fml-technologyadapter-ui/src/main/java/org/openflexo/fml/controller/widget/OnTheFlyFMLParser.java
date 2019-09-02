@@ -1,4 +1,4 @@
-package org.openflexo.fml.fib.widget;
+package org.openflexo.fml.controller.widget;
 
 import org.fife.ui.rsyntaxtextarea.RSyntaxDocument;
 import org.fife.ui.rsyntaxtextarea.parser.AbstractParser;

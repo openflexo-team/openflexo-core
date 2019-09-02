@@ -28,6 +28,7 @@ import org.fife.ui.rtextarea.RTextScrollPane;
 import org.fife.ui.rtextarea.SearchContext;
 import org.fife.ui.rtextarea.SearchEngine;
 import org.fife.ui.rtextarea.SmartHighlightPainter;
+import org.openflexo.fml.controller.widget.OnTheFlyFMLParser;
 import org.openflexo.icon.IconLibrary;
 
 /**
