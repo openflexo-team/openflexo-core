@@ -516,7 +516,7 @@ public abstract class VirtualModelResourceImpl extends PamelaResourceImpl<Virtua
 	@Override
 	protected VirtualModel performLoad() throws IOException, Exception {
 		boolean requiresFMLPrettyPrintInitialization = false;
-		if (getIODelegate() instanceof DirectoryBasedIODelegate) {
+		if (getIODelegate() instanceof DirectoryBasedIODelegate && getFMLParser() != null) {
 			DirectoryBasedIODelegate ioDelegate = (DirectoryBasedIODelegate) getIODelegate();
 			File fmlFile = new File(ioDelegate.getDirectory(), ioDelegate.getDirectory().getName());
 			System.out.println("Tiens faudrait aussi charger le fichier " + fmlFile);
@@ -533,7 +533,7 @@ public abstract class VirtualModelResourceImpl extends PamelaResourceImpl<Virtua
 			}
 		}
 		VirtualModel returned = super.performLoad();
-		if (requiresFMLPrettyPrintInitialization) {
+		if (requiresFMLPrettyPrintInitialization && getFMLParser() != null) {
 			FMLCompilationUnit compilationUnit = returned.getCompilationUnit();
 			if (compilationUnit == null) {
 				compilationUnit = returned.getFMLModelFactory().newCompilationUnit();
