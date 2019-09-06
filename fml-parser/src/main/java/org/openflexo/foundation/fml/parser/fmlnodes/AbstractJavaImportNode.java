@@ -40,20 +40,20 @@ package org.openflexo.foundation.fml.parser.fmlnodes;
 
 import org.openflexo.foundation.fml.JavaImportDeclaration;
 import org.openflexo.foundation.fml.parser.FMLObjectNode;
-import org.openflexo.foundation.fml.parser.FMLSemanticsAnalyzer;
+import org.openflexo.foundation.fml.parser.MainSemanticsAnalyzer;
 import org.openflexo.foundation.fml.parser.node.Node;
 
 /**
  * @author sylvain
  * 
  */
-public abstract class AbstractJavaImportNode<N extends Node> extends FMLObjectNode<N, JavaImportDeclaration> {
+public abstract class AbstractJavaImportNode<N extends Node> extends FMLObjectNode<N, JavaImportDeclaration, MainSemanticsAnalyzer> {
 
-	public AbstractJavaImportNode(N astNode, FMLSemanticsAnalyzer analyser) {
+	public AbstractJavaImportNode(N astNode, MainSemanticsAnalyzer analyser) {
 		super(astNode, analyser);
 	}
 
-	public AbstractJavaImportNode(JavaImportDeclaration importDeclaration, FMLSemanticsAnalyzer analyser) {
+	public AbstractJavaImportNode(JavaImportDeclaration importDeclaration, MainSemanticsAnalyzer analyser) {
 		super(importDeclaration, analyser);
 	}
 

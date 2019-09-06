@@ -61,8 +61,10 @@ import org.openflexo.pamela.annotations.XMLElement;
  * @author sylvain
  *
  */
-@DeclareFlexoRoles({ FlexoConceptRole.class, FlexoPropertyRole.class, FlexoBehaviourRole.class })
-@DeclareEditionActions({ CreateFlexoConcept.class })
+@DeclareFlexoRoles({ FlexoConceptRole.class, FlexoPropertyRole.class, PrimitiveRoleRole.class, FlexoConceptInstanceRoleRole.class,
+		FlexoBehaviourRole.class, ActionSchemeRole.class })
+@DeclareEditionActions({ CreateFlexoConcept.class, CreateTopLevelVirtualModel.class, CreateContainedVirtualModel.class,
+		CreatePrimitiveRole.class, CreateFlexoConceptInstanceRole.class, CreateFlexoBehaviour.class })
 // @DeclareFetchRequests({ SelectFlexoConceptInstance.class, SelectVirtualModelInstance.class })
 @DeclareActorReferences({ FMLModelSlotInstance.class, FMLObjectActorReference.class })
 @ModelEntity

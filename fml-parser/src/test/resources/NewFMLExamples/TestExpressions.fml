@@ -11,15 +11,17 @@ model MyModel {
 		empty() {	
 		}
 		
-		preDecrement() {
+		// Not implemented yet
+		/*preDecrement() {
 			++test3;
 			--test4;
-		}
+		}*/
 		
-		postDecrement() {
+		// Not implemented yet
+		/*postDecrement() {
 			test1++;
 			test2--;
-		}
+		}*/
 		
 		assignment() {
 			test1 = a.path.to.something;

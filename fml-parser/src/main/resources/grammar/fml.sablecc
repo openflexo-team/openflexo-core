@@ -216,6 +216,7 @@ kw_beh = 'truc';
     kw_import = 'import';
     kw_in = 'in';
     kw_instanceof = 'instanceof';
+    kw_is = 'is';
     kw_listen = 'listen';
     kw_model = 'model';
     kw_namespace = 'namespace';
@@ -361,6 +362,7 @@ Productions
     variable_declarator =
         {identifier}  identifier |
         {initializer} identifier assign expression;
+// 2.0.0        {initializer} identifier assign assignment_expression;
 
     // ********************* Behaviours *******************
 
@@ -409,6 +411,7 @@ Productions
         {do_statement}         do_statement |
         {return_statement}     return_statement;
 
+// Supressed in 2.0.0 ?
     do_statement =
         {expression} kw_do statement kw_while l_par expression r_par semi |
         {identifier} kw_do statement kw_while l_par composite_ident r_par semi;
@@ -480,6 +483,7 @@ Productions
         // {super}      super dot non_wild_type_arguments? identifier l_par argument_list? r_par |
         // {class_name} [identifier1]:composite_ident [dot1]:dot super [dot2]:dot non_wild_type_arguments? [identifier2]:identifier l_par argument_list? r_par |
         // {type_name}  [identifier1]:composite_ident dot non_wild_type_arguments  [identifier2]:identifier l_par argument_list? r_par;
+
 
     // ************************* Expressions *************************
 
@@ -684,6 +688,11 @@ Productions
         {ta_edition_action}      [ta_id]:identifier colon_colon [edition_action]:identifier fml_parameters? in_clause? from_clause? |
         {delete_action}          delete_action_exp |
         {select_action}          kw_select [concept_name]:identifier from_clause where_clause?;
+
+// 2.0.0		
+//    concept_instance_creation_expression =
+//        {simplified} new [concept_name]:identifier l_par argument_list? r_par |
+//        {full_qualified} new [concept_name]:identifier colon_colon [constructor_name]:identifier l_par argument_list? r_par;
 
     type_arguments_or_diamond =
         {type_arguments} type_arguments |

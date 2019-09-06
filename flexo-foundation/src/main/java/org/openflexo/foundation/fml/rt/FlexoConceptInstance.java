@@ -498,6 +498,13 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 	 */
 	public boolean deleteWithScheme(DeletionScheme deletionScheme, RunTimeEvaluationContext evaluationContext);
 
+	/**
+	 * Return a identifier for this FlexoConceptInstance under the form 'ConceptName'+ID
+	 * 
+	 * @return
+	 */
+	public String getUserFriendlyIdentifier();
+
 	public static abstract class FlexoConceptInstanceImpl extends VirtualModelInstanceObjectImpl implements FlexoConceptInstance {
 
 		private static final Logger logger = FlexoLogger.getLogger(FlexoConceptInstance.class.getPackage().toString());
@@ -557,11 +564,11 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 
 		@Override
 		public void setContainerFlexoConceptInstance(FlexoConceptInstance aConceptInstance) {
+			boolean shouldRecompute = (getOwningVirtualModelInstance() != null && getContainerFlexoConceptInstance() != aConceptInstance);
 			performSuperSetter(CONTAINER_FLEXO_CONCEPT_INSTANCE_KEY, aConceptInstance);
-			if (getOwningVirtualModelInstance() != null) {
+			if (shouldRecompute) {
+				getOwningVirtualModelInstance().reindexAllConceptInstances();
 				getOwningVirtualModelInstance().notifyAllRootFlexoConceptInstancesMayHaveChanged();
-				// getOwningVirtualModelInstance().getPropertyChangeSupport().firePropertyChange("allRootFlexoConceptInstances", false,
-				// true);
 			}
 		}
 
@@ -689,9 +696,10 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 					container = container.getContainerFlexoConceptInstance();
 				}
 			}
-			else if (getVirtualModelInstance() != this && flexoProperty.getFlexoConcept().isAssignableFrom(getFlexoConcept().getOwner())) {
-				// In this case the property concerns the owner FMLRTVirtualModelInstance
-				return getVirtualModelInstance().getFlexoPropertyValue(flexoProperty);
+			else if (getOwningVirtualModelInstance() != this
+					&& flexoProperty.getFlexoConcept().isAssignableFrom(getFlexoConcept().getOwner())) {
+				// In this case the property concerns the owning FMLRTVirtualModelInstance
+				return getOwningVirtualModelInstance().getFlexoPropertyValue(flexoProperty);
 			}
 			else {
 				if (flexoProperty instanceof FlexoRole) {
@@ -752,7 +760,14 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 					}
 				}
 			}
+
+			if (flexoProperty.getFlexoConcept().isAssignableFrom(getFlexoConcept().getOwner()) && getOwningVirtualModelInstance() == null) {
+				// TODO: check this
+				return null;
+			}
+
 			logger.warning("Not implemented: getValue() for " + this + " property=" + flexoProperty);
+
 			return null;
 		}
 
@@ -1101,6 +1116,10 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 					}
 					container = container.getContainerFlexoConceptInstance();
 				}
+			}
+			if (getOwningVirtualModelInstance() != this && flexoRole.getFlexoConcept().isAssignableFrom(getFlexoConcept().getOwner())) {
+				// In this case the property concerns the owning FMLRTVirtualModelInstance
+				getOwningVirtualModelInstance().setFlexoPropertyValue(flexoRole, object);
 			}
 			else {
 
@@ -1957,6 +1976,16 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 		}
 
 		/**
+		 * Return a identifier for this FlexoConceptInstance under the form 'ConceptName'+ID
+		 * 
+		 * @return
+		 */
+		@Override
+		public String getUserFriendlyIdentifier() {
+			return (getFlexoConcept() != null ? getFlexoConcept().getName() : "?FlexoConceptInstance?") + getFlexoID();
+		}
+
+		/**
 		 * Calling this method will register a new variable in the run-time context provided by this {@link FlexoConceptInstance} in the
 		 * context of its implementation of {@link RunTimeEvaluationContext}.<br>
 		 * Variable is initialized with supplied name and value
@@ -2049,6 +2078,48 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 			returned.setFlexoConceptInstance(fci);
 			returned.setModellingElement(this);
 			return returned;
+		}
+
+		@Override
+		public String render() {
+			StringBuffer sb = new StringBuffer();
+			String line = StringUtils.buildString('-', 80) + "\n";
+			sb.append(line);
+			sb.append("FlexoConceptInstance : " + getUserFriendlyIdentifier() + "\n");
+			if (hasValidRenderer()) {
+				sb.append("Renderer             : " + getStringRepresentation() + "\n");
+			}
+			sb.append("FlexoConcept         : " + getFlexoConcept().getName() + "\n");
+			sb.append(line);
+			List<FlexoRole> roles = getFlexoConcept().getAccessibleProperties(FlexoRole.class);
+			if (roles.size() > 0) {
+				for (FlexoRole<?> role : roles) {
+					if (role.getFlexoConcept().isAssignableFrom(getFlexoConcept())) {
+						sb.append(role.getName() + " = " + getFlexoPropertyValue(role) + "\n");
+					}
+				}
+			}
+			else {
+				sb.append("No values" + "\n");
+			}
+			sb.append(line);
+			if (getEmbeddedFlexoConceptInstances().size() > 0) {
+				for (FlexoConceptInstance child : getEmbeddedFlexoConceptInstances()) {
+					appendFCI(child, sb, 0);
+				}
+			}
+			else {
+				sb.append("No contents" + "\n");
+			}
+			sb.append(line);
+			return sb.toString();
+		}
+
+		protected void appendFCI(FlexoConceptInstance fci, StringBuffer sb, int indent) {
+			sb.append(StringUtils.buildWhiteSpaceIndentation(indent * 2) + "> " + fci.getUserFriendlyIdentifier() + "\n");
+			for (FlexoConceptInstance child : fci.getEmbeddedFlexoConceptInstances()) {
+				appendFCI(child, sb, indent + 1);
+			}
 		}
 
 	}

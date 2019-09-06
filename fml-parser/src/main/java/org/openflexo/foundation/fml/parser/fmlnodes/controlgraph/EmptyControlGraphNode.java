@@ -36,37 +36,41 @@
  * 
  */
 
-package org.openflexo.foundation.fml.parser;
+package org.openflexo.foundation.fml.parser.fmlnodes.controlgraph;
 
-import org.openflexo.foundation.fml.FMLModelFactory;
-import org.openflexo.foundation.fml.parser.fmlnodes.FlexoConceptNode;
-import org.openflexo.foundation.fml.parser.node.AConceptDecl;
-import org.openflexo.foundation.fml.parser.node.Start;
-import org.openflexo.p2pp.RawSource;
+import java.util.logging.Logger;
+
+import org.openflexo.foundation.fml.controlgraph.EmptyControlGraph;
+import org.openflexo.foundation.fml.parser.ControlGraphFactory;
+import org.openflexo.foundation.fml.parser.node.ABlock;
 
 /**
- * This class implements the semantics analyzer for a parsed FML compilation unit.<br>
- * 
  * @author sylvain
  * 
  */
-public class FlexoConceptSemanticsAnalyzer extends VirtualModelSemanticsAnalyzer {
+public class EmptyControlGraphNode extends ControlGraphNode<ABlock, EmptyControlGraph> {
 
-	public FlexoConceptSemanticsAnalyzer(FMLModelFactory factory, Start tree, RawSource rawSource) {
-		super(factory, tree, rawSource);
+	@SuppressWarnings("unused")
+	private static final Logger logger = Logger.getLogger(EmptyControlGraphNode.class.getPackage().getName());
+
+	public EmptyControlGraphNode(ABlock astNode, ControlGraphFactory cgFactory) {
+		super(astNode, cgFactory);
+	}
+
+	public EmptyControlGraphNode(EmptyControlGraph sequence, ControlGraphFactory cgFactory) {
+		super(sequence, cgFactory);
 	}
 
 	@Override
-	public void inAConceptDecl(AConceptDecl node) {
-		super.inAConceptDecl(node);
-		// System.out.println("DEBUT Nouveau concept " + node.getIdentifier().getText());
-		push(new FlexoConceptNode(node, (FMLSemanticsAnalyzer) this));
+	public EmptyControlGraph buildModelObjectFromAST(ABlock astNode) {
+		EmptyControlGraph returned = getFactory().newEmptyControlGraph();
+		return returned;
 	}
 
 	@Override
-	public void outAConceptDecl(AConceptDecl node) {
-		super.outAConceptDecl(node);
-		pop();
+	public void preparePrettyPrint(boolean hasParsedVersion) {
+		super.preparePrettyPrint(hasParsedVersion);
+		// Nothing to do
 	}
 
 }

@@ -12,7 +12,7 @@ import [EXAMPLE_DIAGRAM:"SYL_78"] as BLUE_ARC;
 
 model MyModel {
 	
-	Diagram diagram with DIAGRAM::TypedDiagramModelSlot(templateDiagram = DIAGRAM_SPECIFICATION);	
+	/*Diagram diagram with DIAGRAM::TypedDiagramModelSlot(templateDiagram = DIAGRAM_SPECIFICATION);	
 	ConceptualModel conceptualModel;
 	
 	concept MyConceptGR {
@@ -61,7 +61,7 @@ model MyModel {
 			fromConcept.connectedWith = toConcept;			
 		}
 		
-	}
+	}*/
 
 
 }

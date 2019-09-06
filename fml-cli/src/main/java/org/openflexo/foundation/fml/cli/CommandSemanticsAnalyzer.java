@@ -64,12 +64,13 @@ import org.openflexo.connie.expr.UnaryOperatorExpression;
 import org.openflexo.foundation.fml.cli.command.AbstractCommand;
 import org.openflexo.foundation.fml.cli.command.directive.ActivateTA;
 import org.openflexo.foundation.fml.cli.command.directive.CdDirective;
-import org.openflexo.foundation.fml.cli.command.directive.DisplayResource;
 import org.openflexo.foundation.fml.cli.command.directive.EnterDirective;
 import org.openflexo.foundation.fml.cli.command.directive.ExitDirective;
 import org.openflexo.foundation.fml.cli.command.directive.HelpDirective;
+import org.openflexo.foundation.fml.cli.command.directive.HistoryDirective;
 import org.openflexo.foundation.fml.cli.command.directive.LoadResource;
 import org.openflexo.foundation.fml.cli.command.directive.LsDirective;
+import org.openflexo.foundation.fml.cli.command.directive.MoreDirective;
 import org.openflexo.foundation.fml.cli.command.directive.OpenProject;
 import org.openflexo.foundation.fml.cli.command.directive.PwdDirective;
 import org.openflexo.foundation.fml.cli.command.directive.QuitDirective;
@@ -98,7 +99,6 @@ import org.openflexo.foundation.fml.cli.parser.node.AConstantNumber;
 import org.openflexo.foundation.fml.cli.parser.node.AContextFmlCommand;
 import org.openflexo.foundation.fml.cli.parser.node.ACosFuncFunction;
 import org.openflexo.foundation.fml.cli.parser.node.ADecimalNumberNumber;
-import org.openflexo.foundation.fml.cli.parser.node.ADisplayDirective;
 import org.openflexo.foundation.fml.cli.parser.node.ADivExprExpr3;
 import org.openflexo.foundation.fml.cli.parser.node.AEnterDirective;
 import org.openflexo.foundation.fml.cli.parser.node.AEq2ExprExpr;
@@ -114,6 +114,7 @@ import org.openflexo.foundation.fml.cli.parser.node.AFunctionTerm;
 import org.openflexo.foundation.fml.cli.parser.node.AGtExprExpr;
 import org.openflexo.foundation.fml.cli.parser.node.AGteExprExpr;
 import org.openflexo.foundation.fml.cli.parser.node.AHelpDirective;
+import org.openflexo.foundation.fml.cli.parser.node.AHistoryDirective;
 import org.openflexo.foundation.fml.cli.parser.node.AIdentifierTypeReferencePath;
 import org.openflexo.foundation.fml.cli.parser.node.ALoadDirective;
 import org.openflexo.foundation.fml.cli.parser.node.ALogFuncFunction;
@@ -121,6 +122,7 @@ import org.openflexo.foundation.fml.cli.parser.node.ALsDirective;
 import org.openflexo.foundation.fml.cli.parser.node.ALtExprExpr;
 import org.openflexo.foundation.fml.cli.parser.node.ALteExprExpr;
 import org.openflexo.foundation.fml.cli.parser.node.AModExprExpr3;
+import org.openflexo.foundation.fml.cli.parser.node.AMoreDirective;
 import org.openflexo.foundation.fml.cli.parser.node.AMultExprExpr3;
 import org.openflexo.foundation.fml.cli.parser.node.ANegativeTerm;
 import org.openflexo.foundation.fml.cli.parser.node.ANeqExprExpr;
@@ -173,11 +175,15 @@ public class CommandSemanticsAnalyzer extends DepthFirstAdapter {
 
 	private final Map<Node, Expression> expressionNodes;
 	private AbstractCommand command;
-	private CommandInterpreter commandInterpreter;
+	private AbstractCommandInterpreter commandInterpreter;
 
-	public CommandSemanticsAnalyzer(CommandInterpreter commandInterpreter) {
+	public CommandSemanticsAnalyzer(AbstractCommandInterpreter commandInterpreter) {
 		expressionNodes = new Hashtable<>();
 		this.commandInterpreter = commandInterpreter;
+	}
+
+	public AbstractCommandInterpreter getCommandInterpreter() {
+		return commandInterpreter;
 	}
 
 	public AbstractCommand getCommand() {
@@ -677,89 +683,107 @@ public class CommandSemanticsAnalyzer extends DepthFirstAdapter {
 
 	// DIRECTIVES
 
+	/*@Override
+	public void defaultIn(Node node) {
+		System.out.println("IN " + node);
+		super.defaultIn(node);
+	}
+	
+	@Override
+	public void defaultOut(Node node) {
+		System.out.println("OUT " + node);
+		super.defaultOut(node);
+	}*/
+
 	@Override
 	public void outAPwdDirective(APwdDirective node) {
 		super.outAPwdDirective(node);
-		registerCommand(node, new PwdDirective(node, commandInterpreter));
+		registerCommand(node, new PwdDirective(node, this));
 	}
 
 	@Override
 	public void outALsDirective(ALsDirective node) {
 		super.outALsDirective(node);
-		registerCommand(node, new LsDirective(node, commandInterpreter));
+		registerCommand(node, new LsDirective(node, this));
 	}
 
 	@Override
 	public void outACdDirective(ACdDirective node) {
 		super.outACdDirective(node);
-		registerCommand(node, new CdDirective(node, commandInterpreter));
+		registerCommand(node, new CdDirective(node, this));
+	}
+
+	@Override
+	public void outAHistoryDirective(AHistoryDirective node) {
+		super.outAHistoryDirective(node);
+		registerCommand(node, new HistoryDirective(node, this));
 	}
 
 	@Override
 	public void outAServicesDirective(AServicesDirective node) {
 		super.outAServicesDirective(node);
-		registerCommand(node, new ServicesDirective(node, commandInterpreter));
+		registerCommand(node, new ServicesDirective(node, this));
 	}
 
 	@SuppressWarnings("rawtypes")
 	@Override
 	public void outAServiceDirective(AServiceDirective node) {
 		super.outAServiceDirective(node);
-		registerCommand(node, new ServiceDirective(node, commandInterpreter));
+		registerCommand(node, new ServiceDirective(node, this));
 	}
 
 	@Override
 	public void outAActivateTaDirective(AActivateTaDirective node) {
 		super.outAActivateTaDirective(node);
-		registerCommand(node, new ActivateTA(node, commandInterpreter));
+		registerCommand(node, new ActivateTA(node, this));
 	}
 
 	@Override
 	public void outAResourcesDirective(AResourcesDirective node) {
 		super.outAResourcesDirective(node);
-		registerCommand(node, new ResourcesDirective(node, commandInterpreter));
+		registerCommand(node, new ResourcesDirective(node, this));
 	}
 
 	@Override
 	public void outAOpenDirective(AOpenDirective node) {
 		super.outAOpenDirective(node);
-		registerCommand(node, new OpenProject(node, commandInterpreter));
+		registerCommand(node, new OpenProject(node, this));
 	}
 
 	@Override
 	public void outALoadDirective(ALoadDirective node) {
 		super.outALoadDirective(node);
-		registerCommand(node, new LoadResource(node, commandInterpreter));
+		registerCommand(node, new LoadResource(node, this));
 	}
 
 	@Override
-	public void outADisplayDirective(ADisplayDirective node) {
-		super.outADisplayDirective(node);
-		registerCommand(node, new DisplayResource(node, commandInterpreter));
+	public void outAMoreDirective(AMoreDirective node) {
+		super.outAMoreDirective(node);
+		registerCommand(node, new MoreDirective(node, this));
 	}
 
 	@Override
 	public void outAEnterDirective(AEnterDirective node) {
 		super.outAEnterDirective(node);
-		registerCommand(node, new EnterDirective(node, commandInterpreter));
+		registerCommand(node, new EnterDirective(node, this));
 	}
 
 	@Override
 	public void outAExitDirective(AExitDirective node) {
 		super.outAExitDirective(node);
-		registerCommand(node, new ExitDirective(node, commandInterpreter));
+		registerCommand(node, new ExitDirective(node, this));
 	}
 
 	@Override
 	public void outAQuitDirective(AQuitDirective node) {
 		super.outAQuitDirective(node);
-		registerCommand(node, new QuitDirective(node, commandInterpreter));
+		registerCommand(node, new QuitDirective(node, this));
 	}
 
 	@Override
 	public void outAHelpDirective(AHelpDirective node) {
 		super.outAHelpDirective(node);
-		registerCommand(node, new HelpDirective(node, commandInterpreter));
+		registerCommand(node, new HelpDirective(node, this));
 	}
 
 	// COMMANDS
@@ -767,18 +791,18 @@ public class CommandSemanticsAnalyzer extends DepthFirstAdapter {
 	@Override
 	public void outAContextFmlCommand(AContextFmlCommand node) {
 		super.outAContextFmlCommand(node);
-		registerCommand(node, new FMLContextCommand(node, commandInterpreter, this));
+		registerCommand(node, new FMLContextCommand(node, this));
 	}
 
 	@Override
 	public void outAAssignationFmlCommand(AAssignationFmlCommand node) {
 		super.outAAssignationFmlCommand(node);
-		registerCommand(node, new FMLAssignation(node, commandInterpreter, this));
+		registerCommand(node, new FMLAssignation(node, this));
 	}
 
 	@Override
 	public void outAExprFmlCommand(AExprFmlCommand node) {
 		super.outAExprFmlCommand(node);
-		registerCommand(node, new FMLExpression(node, commandInterpreter, this));
+		registerCommand(node, new FMLExpression(node, this));
 	}
 }

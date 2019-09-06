@@ -41,8 +41,8 @@ package org.openflexo.foundation.fml.parser.fmlnodes;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.fml.AbstractProperty;
-import org.openflexo.foundation.fml.parser.FMLSemanticsAnalyzer;
-import org.openflexo.foundation.fml.parser.node.AAbstractPropertyInnerConceptDecl;
+import org.openflexo.foundation.fml.parser.MainSemanticsAnalyzer;
+import org.openflexo.foundation.fml.parser.node.AAbstractPropertyDeclaration;
 import org.openflexo.foundation.fml.parser.node.AIdentifierVariableDeclarator;
 import org.openflexo.foundation.fml.parser.node.AInitializerVariableDeclarator;
 import org.openflexo.foundation.fml.parser.node.PVariableDeclarator;
@@ -54,13 +54,14 @@ import org.openflexo.p2pp.RawSource.RawSourceFragment;
  */
 public class AbstractPropertyNode extends FlexoPropertyNode<AAbstractPropertyInnerConceptDecl, AbstractProperty<?>> {
 
+	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(AbstractPropertyNode.class.getPackage().getName());
 
-	public AbstractPropertyNode(AAbstractPropertyInnerConceptDecl astNode, FMLSemanticsAnalyzer analyser) {
+	public AbstractPropertyNode(AAbstractPropertyDeclaration astNode, MainSemanticsAnalyzer analyser) {
 		super(astNode, analyser);
 	}
 
-	public AbstractPropertyNode(AbstractProperty<?> property, FMLSemanticsAnalyzer analyser) {
+	public AbstractPropertyNode(AbstractProperty<?> property, MainSemanticsAnalyzer analyser) {
 		super(property, analyser);
 	}
 
@@ -76,24 +77,12 @@ public class AbstractPropertyNode extends FlexoPropertyNode<AAbstractPropertyInn
 	@Override
 	public void preparePrettyPrint(boolean hasParsedVersion) {
 		super.preparePrettyPrint(hasParsedVersion);
-		if (hasParsedVersion && getVisibilityFragment() != null) {
-			appendDynamicContents(() -> getVisibilityAsString(getModelObject().getVisibility()), SPACE, getVisibilityFragment());
-		}
-		else {
-			appendDynamicContents(() -> getVisibilityAsString(getModelObject().getVisibility()), SPACE);
-		}
-		appendStaticContents("abstract" + SPACE);
-		if (hasParsedVersion) {
-			appendDynamicContents(() -> serializeType(getModelObject().getType()), SPACE, getTypeFragment());
-			appendDynamicContents(() -> getModelObject().getName(), getNameFragment());
-			appendStaticContents(";", getSemiFragment());
-		}
-		else {
-			appendDynamicContents(() -> getVisibilityAsString(getModelObject().getVisibility()), SPACE);
-			appendDynamicContents(() -> serializeType(getModelObject().getType()), SPACE);
-			appendDynamicContents(() -> getModelObject().getName());
-			appendStaticContents(";");
-		}
+
+		append(dynamicContents(() -> getVisibilityAsString(getModelObject().getVisibility()), SPACE), getVisibilityFragment());
+		append(staticContents("", "abstract", SPACE), getAbstractFragment());
+		append(dynamicContents(() -> serializeType(getModelObject().getType()), SPACE), getTypeFragment());
+		append(dynamicContents(() -> getModelObject().getName()), getNameFragment());
+		append(staticContents(";"), getSemiFragment());
 	}
 
 	private RawSourceFragment getVisibilityFragment() {
@@ -126,6 +115,13 @@ public class AbstractPropertyNode extends FlexoPropertyNode<AAbstractPropertyInn
 	private RawSourceFragment getSemiFragment() {
 		if (getASTNode() != null) {
 			return getFragment(getASTNode().getSemi());
+		}
+		return null;
+	}
+
+	private RawSourceFragment getAbstractFragment() {
+		if (getASTNode() != null) {
+			return getFragment(getASTNode().getAbstract());
 		}
 		return null;
 	}

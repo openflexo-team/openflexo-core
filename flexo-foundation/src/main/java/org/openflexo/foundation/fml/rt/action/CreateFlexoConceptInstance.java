@@ -130,6 +130,15 @@ public class CreateFlexoConceptInstance extends FlexoAction<CreateFlexoConceptIn
 		// We create the FCI
 		fciBeingCreated = getFocusedObject().getVirtualModelInstance().makeNewFlexoConceptInstance(getFlexoConcept());
 
+		// We add the FlexoConceptInstance to the container BEFORE to execute creation scheme
+		if (getContainer() instanceof FMLRTVirtualModelInstance) {
+			// ((FMLRTVirtualModelInstance) getContainer()).addToFlexoConceptInstances(fciBeingCreated);
+		}
+		else {
+			getContainer().addToEmbeddedFlexoConceptInstances(fciBeingCreated);
+			// getFocusedObject().getVirtualModelInstance().removeFromFlexoConceptInstances(fciBeingCreated);
+		}
+
 		// We init the new FCI using a creation scheme
 		if (creationSchemeAction != null) {
 
@@ -142,13 +151,6 @@ public class CreateFlexoConceptInstance extends FlexoAction<CreateFlexoConceptIn
 			fciBeingCreated = creationSchemeAction.getFlexoConceptInstance();
 		}
 
-		// We add the FlexoConceptInstance to the container
-		if (getContainer() instanceof FMLRTVirtualModelInstance) {
-			// Nothing to do
-		}
-		else {
-			getContainer().addToEmbeddedFlexoConceptInstances(fciBeingCreated);
-		}
 	}
 
 	@Override

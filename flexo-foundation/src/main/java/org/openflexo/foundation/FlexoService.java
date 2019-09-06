@@ -39,8 +39,10 @@
 
 package org.openflexo.foundation;
 
+import java.io.PrintStream;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 import org.openflexo.toolbox.StringUtils;
 
@@ -122,7 +124,8 @@ public interface FlexoService {
 	 * @author sylvain
 	 * 
 	 */
-	public static interface ServiceNotification {}
+	public static interface ServiceNotification {
+	}
 
 	/**
 	 * Represent the status of a {@link FlexoService}
@@ -149,9 +152,34 @@ public interface FlexoService {
 
 		public abstract String description();
 
-		public List<String> getOptions();
+		public String getArgument();
 
-		public void execute(S service, Object... options);
+		public List<ServiceOperationOption> getOptions();
+
+		public void execute(S service, PrintStream out, PrintStream err, Object argument, Map<String, ?> options);
+
+	}
+
+	public static class ServiceOperationOption {
+		private String optionName;
+		private String optionType;
+
+		public String getOptionName() {
+			return optionName;
+		}
+
+		public void setOptionName(String optionName) {
+			this.optionName = optionName;
+		}
+
+		public String getOptionType() {
+			return optionType;
+		}
+
+		public void setOptionType(String optionType) {
+			this.optionType = optionType;
+		}
+
 	}
 
 	public static HelpOnService HELP_ON_SERVICE = new HelpOnService();
@@ -180,15 +208,20 @@ public interface FlexoService {
 		}
 
 		@Override
-		public List<String> getOptions() {
+		public String getArgument() {
 			return null;
 		}
 
 		@Override
-		public void execute(FlexoService service, Object... options) {
-			System.out.println("Usage: ");
+		public List<ServiceOperationOption> getOptions() {
+			return null;
+		}
+
+		@Override
+		public void execute(FlexoService service, PrintStream out, PrintStream err, Object argument, Map<String, ?> options) {
+			out.println("Usage: ");
 			for (ServiceOperation serviceOperation : service.getAvailableServiceOperations()) {
-				System.out.println(" " + serviceOperation.usage(service)
+				out.println(" " + serviceOperation.usage(service)
 						+ StringUtils.buildWhiteSpaceIndentation(30 - serviceOperation.usage(service).length()) + " : "
 						+ serviceOperation.description());
 			}
@@ -215,13 +248,18 @@ public interface FlexoService {
 		}
 
 		@Override
-		public List<String> getOptions() {
+		public String getArgument() {
 			return null;
 		}
 
 		@Override
-		public void execute(FlexoService service, Object... options) {
-			System.out.println(service.getDisplayableStatus());
+		public List<ServiceOperationOption> getOptions() {
+			return null;
+		}
+
+		@Override
+		public void execute(FlexoService service, PrintStream out, PrintStream err, Object argument, Map<String, ?> options) {
+			out.println(service.getDisplayableStatus());
 		}
 	}
 
@@ -245,17 +283,23 @@ public interface FlexoService {
 		}
 
 		@Override
-		public List<String> getOptions() {
+		public String getArgument() {
 			return null;
 		}
 
 		@Override
-		public void execute(FlexoService service, Object... options) {
+		public List<ServiceOperationOption> getOptions() {
+			return null;
+		}
+
+		@Override
+		public void execute(FlexoService service, PrintStream out, PrintStream err, Object argument, Map<String, ?> options) {
 			if (service.getStatus() != Status.Started) {
 				service.initialize();
+				out.println("Service has been started");
 			}
 			else {
-				System.out.println("Service already started");
+				out.println("Service already started");
 			}
 		}
 	}
@@ -280,17 +324,23 @@ public interface FlexoService {
 		}
 
 		@Override
-		public List<String> getOptions() {
+		public String getArgument() {
 			return null;
 		}
 
 		@Override
-		public void execute(FlexoService service, Object... options) {
+		public List<ServiceOperationOption> getOptions() {
+			return null;
+		}
+
+		@Override
+		public void execute(FlexoService service, PrintStream out, PrintStream err, Object argument, Map<String, ?> options) {
 			if (service.getStatus() == Status.Started) {
 				service.stop();
+				out.println("Service has been stopped");
 			}
 			else {
-				System.out.println("Service not started");
+				out.println("Service not started");
 			}
 		}
 	}

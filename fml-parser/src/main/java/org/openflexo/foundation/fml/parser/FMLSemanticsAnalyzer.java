@@ -38,20 +38,83 @@
 
 package org.openflexo.foundation.fml.parser;
 
+import java.util.Stack;
+
+import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.fml.FMLModelFactory;
-import org.openflexo.foundation.fml.parser.node.Start;
-import org.openflexo.p2pp.RawSource;
+import org.openflexo.foundation.fml.parser.analysis.DepthFirstAdapter;
+import org.openflexo.foundation.fml.parser.node.Node;
+import org.openflexo.p2pp.P2PPNode;
 
 /**
- * This class implements the semantics analyzer for a parsed FML compilation unit.<br>
+ * Base class implementing semantics analyzer, based on sablecc grammar visitor<br>
  * 
  * @author sylvain
  * 
  */
-public class FMLSemanticsAnalyzer extends FlexoBehaviourSemanticsAnalyzer {
+public abstract class FMLSemanticsAnalyzer extends DepthFirstAdapter {
 
-	public FMLSemanticsAnalyzer(FMLModelFactory factory, Start tree, RawSource rawSource) {
-		super(factory, tree, rawSource);
+	private final FMLModelFactory factory;
+
+	// Stack of FMLObjectNode beeing build during semantics analyzing
+	protected Stack<FMLObjectNode<?, ?, ?>> fmlNodes = new Stack<>();
+
+	private Node rootNode;
+
+	public FMLSemanticsAnalyzer(FMLModelFactory factory, Node rootNode) {
+		this.factory = factory;
+		this.rootNode = rootNode;
+	}
+
+	public final FMLModelFactory getFactory() {
+		return factory;
+	}
+
+	public abstract MainSemanticsAnalyzer getMainAnalyzer();
+
+	public FragmentManager getFragmentManager() {
+		return getMainAnalyzer().getFragmentManager();
+	}
+
+	public Node getRootNode() {
+		return rootNode;
+	}
+
+	public final FlexoServiceManager getServiceManager() {
+		return getFactory().getServiceManager();
+	}
+
+	protected final void finalizeDeserialization(FMLObjectNode<?, ?, ?> node) {
+		node.finalizeDeserialization();
+		for (P2PPNode<?, ?> child : node.getChildren()) {
+			finalizeDeserialization((FMLObjectNode<?, ?, ?>) child);
+		}
+	}
+
+	protected void push(FMLObjectNode<?, ?, ?> fmlNode) {
+		if (!fmlNodes.isEmpty()) {
+			FMLObjectNode<?, ?, ?> current = fmlNodes.peek();
+			current.addToChildren(fmlNode);
+		}
+		fmlNodes.push(fmlNode);
+	}
+
+	protected <N extends FMLObjectNode<?, ?, ?>> N pop() {
+		N builtFMLNode = (N) fmlNodes.pop();
+		builtFMLNode.deserialize();
+		// builtFMLNode.initializePrettyPrint();
+		return builtFMLNode;
+	}
+
+	public FMLObjectNode<?, ?, ?> peek() {
+		if (!fmlNodes.isEmpty()) {
+			return fmlNodes.peek();
+		}
+		return null;
+	}
+
+	public FMLObjectNode<?, ?, ?> getCurrentNode() {
+		return peek();
 	}
 
 }

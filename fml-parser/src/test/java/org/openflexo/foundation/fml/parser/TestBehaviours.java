@@ -1,8 +1,8 @@
 /**
  * 
- * Copyright (c) 2019, Openflexo
+ * Copyright (c) 2014, Openflexo
  * 
- * This file is part of FML-parser, a component of the software infrastructure 
+ * This file is part of Cartoeditor, a component of the software infrastructure 
  * developed at Openflexo.
  * 
  * 
@@ -38,33 +38,56 @@
 
 package org.openflexo.foundation.fml.parser;
 
-import org.openflexo.foundation.fml.FMLModelFactory;
-import org.openflexo.foundation.fml.parser.fmlnodes.VirtualModelNode;
-import org.openflexo.foundation.fml.parser.node.AModelDecl;
-import org.openflexo.foundation.fml.parser.node.Start;
-import org.openflexo.p2pp.RawSource;
+import static org.junit.Assert.assertNotNull;
+
+import java.io.IOException;
+
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.openflexo.foundation.DefaultFlexoEditor;
+import org.openflexo.foundation.FlexoEditor;
+import org.openflexo.foundation.fml.FMLCompilationUnit;
+import org.openflexo.foundation.fml.rm.FMLParser.ParseException;
+import org.openflexo.pamela.exceptions.ModelDefinitionException;
+import org.openflexo.rm.Resource;
+import org.openflexo.rm.ResourceLocator;
+import org.openflexo.test.OrderedRunner;
+import org.openflexo.test.TestOrder;
 
 /**
- * This class implements the semantics analyzer for a parsed FML compilation unit.<br>
+ * A parameterized suite of unit tests iterating on FML files.
+ * 
+ * For each FML file, parse it.
  * 
  * @author sylvain
- * 
+ *
  */
-public class VirtualModelSemanticsAnalyzer extends CompilationUnitSemanticsAnalyzer {
+@RunWith(OrderedRunner.class)
+public class TestBehaviours extends FMLParserTestCase {
 
-	public VirtualModelSemanticsAnalyzer(FMLModelFactory factory, Start tree, RawSource rawSource) {
-		super(factory, tree, rawSource);
+	static FlexoEditor editor;
+
+	@Test
+	@TestOrder(1)
+	public void initServiceManager() throws ParseException, ModelDefinitionException, IOException {
+		instanciateTestServiceManager();
+
+		editor = new DefaultFlexoEditor(null, serviceManager);
+		assertNotNull(editor);
+
 	}
 
-	@Override
-	public void inAModelDecl(AModelDecl node) {
-		super.inAModelDecl(node);
-		push(new VirtualModelNode(node, (FMLSemanticsAnalyzer) this));
+	@Test
+	@TestOrder(2)
+	public void loadInitialVersion() throws ParseException, ModelDefinitionException, IOException {
+		instanciateTestServiceManager();
+
+		log("Initial version");
+
+		final Resource fmlFile = ResourceLocator.locateResource("NewFMLExamples/TestBehaviours.fml");
+
+		FMLCompilationUnit compilationUnit = testFMLCompilationUnit(fmlFile);
+
 	}
 
-	@Override
-	public void outAModelDecl(AModelDecl node) {
-		super.outAModelDecl(node);
-		pop();
-	}
 }

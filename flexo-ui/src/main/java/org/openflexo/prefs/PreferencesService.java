@@ -48,11 +48,14 @@ import org.openflexo.foundation.FlexoProject;
 import org.openflexo.foundation.FlexoService;
 import org.openflexo.foundation.FlexoServiceImpl;
 import org.openflexo.foundation.FlexoServiceManager.ServiceRegistered;
+import org.openflexo.foundation.FlexoServiceManager.TechnologyAdapterHasBeenActivated;
 import org.openflexo.foundation.resource.DefaultResourceCenterService.ResourceCenterAdded;
 import org.openflexo.foundation.resource.DefaultResourceCenterService.ResourceCenterRemoved;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
+import org.openflexo.foundation.resource.FlexoResourceCenter.ResourceCenterEntry;
 import org.openflexo.foundation.resource.FlexoResourceCenterService;
 import org.openflexo.foundation.resource.SaveResourceException;
+import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterService;
 import org.openflexo.module.Module;
 import org.openflexo.module.ModuleLoader;
@@ -61,6 +64,8 @@ import org.openflexo.pamela.exceptions.ModelDefinitionException;
 import org.openflexo.prefs.FlexoPreferencesResource.FlexoPreferencesResourceImpl;
 import org.openflexo.toolbox.HasPropertyChangeSupport;
 import org.openflexo.view.FlexoFrame;
+import org.openflexo.view.controller.TechnologyAdapterController;
+import org.openflexo.view.controller.TechnologyAdapterControllerService;
 
 /**
  * This service manages preferences<br>
@@ -86,6 +91,9 @@ public class PreferencesService extends FlexoServiceImpl implements HasPropertyC
 	}
 
 	public <P extends PreferencesContainer> P managePreferences(Class<P> prefClass, PreferencesContainer container) {
+		if (prefClass == null) {
+			return null;
+		}
 		P returned = getPreferences(prefClass);
 		if (returned == null) {
 			returned = getPreferencesFactory().newInstance(prefClass);
@@ -122,10 +130,24 @@ public class PreferencesService extends FlexoServiceImpl implements HasPropertyC
 			}
 		}
 
+		if (ac.getTechnologyAdapterService() != null && ac.getTechnologyAdapterControllerService() != null) {
+			for (TechnologyAdapter<?> technologyAdapter : ac.getTechnologyAdapterService().getTechnologyAdapters()) {
+				initializePreferencesForTechnologyAdapter((TechnologyAdapter) technologyAdapter);
+			}
+		}
+
 		managePreferences(LoggingPreferences.class, getFlexoPreferences());
 		managePreferences(BugReportPreferences.class, getFlexoPreferences());
 
 		status = Status.Started;
+
+		for (ResourceCenterEntry<?> entry : getResourceCenterPreferences().getResourceCenterEntries()) {
+			FlexoResourceCenter<?> rc = entry.makeResourceCenter(ac.getResourceCenterService());
+			if (rc != null) {
+				ac.getResourceCenterService().addToResourceCenters(rc);
+			}
+		}
+
 	}
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
@@ -134,7 +156,7 @@ public class PreferencesService extends FlexoServiceImpl implements HasPropertyC
 			return (Class) ResourceCenterPreferences.class;
 		}
 		else if (service instanceof TechnologyAdapterService) {
-			return (Class) TechnologyAdapterPreferences.class;
+			return (Class) TechnologyAdapterServicePreferences.class;
 		}
 		else if (service instanceof ModuleLoader) {
 			return (Class) ModuleLoaderPreferences.class;
@@ -162,6 +184,16 @@ public class PreferencesService extends FlexoServiceImpl implements HasPropertyC
 		return preferences;
 	}
 
+	private <TA extends TechnologyAdapter<TA>> TechnologyAdapterPreferences<TA> initializePreferencesForTechnologyAdapter(
+			TA technologyAdapter) {
+		TechnologyAdapterPreferences<TA> preferences = managePreferences(getTechnologyAdapterPreferencesClass(technologyAdapter),
+				getTechnologyAdapterServicePreferences());
+		if (preferences != null) {
+			preferences.setTechnologyAdapter(technologyAdapter);
+		}
+		return preferences;
+	}
+
 	@Override
 	public void receiveNotification(FlexoService caller, ServiceNotification notification) {
 		logger.fine("PreferencesService received notification " + notification + " from " + caller);
@@ -177,6 +209,11 @@ public class PreferencesService extends FlexoServiceImpl implements HasPropertyC
 				getResourceCenterPreferences().ensureResourceEntryIsNoMorePresent(
 						((ResourceCenterRemoved) notification).getRemovedResourceCenter().getResourceCenterEntry());
 				savePreferences();
+			}
+		}
+		if (caller instanceof TechnologyAdapterControllerService) {
+			if (notification instanceof TechnologyAdapterHasBeenActivated) {
+				initializePreferencesForTechnologyAdapter(((TechnologyAdapterHasBeenActivated) notification).getTechnologyAdapter());
 			}
 		}
 		if (notification instanceof ServiceRegistered) {
@@ -198,7 +235,7 @@ public class PreferencesService extends FlexoServiceImpl implements HasPropertyC
 		classes.add(PresentationPreferences.class);
 		classes.add(AdvancedPrefs.class);
 		classes.add(ResourceCenterPreferences.class);
-		classes.add(TechnologyAdapterPreferences.class);
+		classes.add(TechnologyAdapterServicePreferences.class);
 		classes.add(ModuleLoaderPreferences.class);
 		for (FlexoService service : getServiceManager().getRegisteredServices()) {
 			Class<?> servicePreferenceClass = getServicePreferencesClass(service);
@@ -209,6 +246,15 @@ public class PreferencesService extends FlexoServiceImpl implements HasPropertyC
 		if (applicationContext.getModuleLoader() != null) {
 			for (Module<?> m : applicationContext.getModuleLoader().getKnownModules()) {
 				classes.add(m.getPreferencesClass());
+			}
+		}
+		if (applicationContext.getTechnologyAdapterService() != null) {
+			for (TechnologyAdapter ta : applicationContext.getTechnologyAdapterService().getTechnologyAdapters()) {
+				TechnologyAdapterController tac = applicationContext.getTechnologyAdapterControllerService()
+						.getTechnologyAdapterController(ta);
+				if (tac != null && tac.getPreferencesClass() != null) {
+					classes.add(tac.getPreferencesClass());
+				}
 			}
 		}
 
@@ -285,15 +331,38 @@ public class PreferencesService extends FlexoServiceImpl implements HasPropertyC
 			return preferences;
 		}
 		return null;
+	}
+
+	public <TA extends TechnologyAdapter<TA>> TechnologyAdapterPreferences<TA> getTechnologyAdapterPreferences(TA technologyAdapter) {
+		Class<? extends TechnologyAdapterPreferences<TA>> preferencesClass = getTechnologyAdapterPreferencesClass(technologyAdapter);
+		// System.out.println("preferencesClass for " + service + " is " + preferencesClass);
+		if (preferencesClass != null) {
+			TechnologyAdapterPreferences<TA> preferences = managePreferences(preferencesClass, getTechnologyAdapterServicePreferences());
+			if (preferences != null) {
+				preferences.setTechnologyAdapter(technologyAdapter);
+			}
+			return preferences;
+		}
+		return null;
 
 	}
 
-	public TechnologyAdapterPreferences getTechnologyAdapterPreferences() {
-		return (TechnologyAdapterPreferences) getServicePreferences(getServiceManager().getTechnologyAdapterService());
+	private <TA extends TechnologyAdapter<TA>> Class<? extends TechnologyAdapterPreferences<TA>> getTechnologyAdapterPreferencesClass(
+			TA technologyAdapter) {
+		TechnologyAdapterController<TA> technologyAdapterController = getServiceManager().getTechnologyAdapterControllerService()
+				.getTechnologyAdapterController(technologyAdapter);
+		if (technologyAdapterController != null) {
+			return technologyAdapterController.getPreferencesClass();
+		}
+		return null;
 	}
 
 	public ModuleLoaderPreferences getModuleLoaderPreferences() {
 		return (ModuleLoaderPreferences) getServicePreferences(getServiceManager().getModuleLoader());
+	}
+
+	public TechnologyAdapterServicePreferences getTechnologyAdapterServicePreferences() {
+		return (TechnologyAdapterServicePreferences) getServicePreferences(getServiceManager().getTechnologyAdapterService());
 	}
 
 	public boolean readOnly() {

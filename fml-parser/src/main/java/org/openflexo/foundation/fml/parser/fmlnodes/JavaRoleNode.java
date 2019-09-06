@@ -41,7 +41,7 @@ package org.openflexo.foundation.fml.parser.fmlnodes;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.fml.JavaRole;
-import org.openflexo.foundation.fml.parser.FMLSemanticsAnalyzer;
+import org.openflexo.foundation.fml.parser.MainSemanticsAnalyzer;
 import org.openflexo.foundation.fml.parser.node.AIdentifierVariableDeclarator;
 import org.openflexo.foundation.fml.parser.node.AInitializerVariableDeclarator;
 import org.openflexo.foundation.fml.parser.node.AJavaInnerConceptDecl;
@@ -54,13 +54,14 @@ import org.openflexo.p2pp.RawSource.RawSourceFragment;
  */
 public class JavaRoleNode extends FlexoPropertyNode<AJavaInnerConceptDecl, JavaRole<?>> {
 
+	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(JavaRoleNode.class.getPackage().getName());
 
-	public JavaRoleNode(AJavaInnerConceptDecl astNode, FMLSemanticsAnalyzer analyser) {
+	public JavaRoleNode(AJavaBasicRoleDeclaration astNode, MainSemanticsAnalyzer analyser) {
 		super(astNode, analyser);
 	}
 
-	public JavaRoleNode(JavaRole<?> property, FMLSemanticsAnalyzer analyser) {
+	public JavaRoleNode(JavaRole<?> property, MainSemanticsAnalyzer analyser) {
 		super(property, analyser);
 	}
 
@@ -76,23 +77,11 @@ public class JavaRoleNode extends FlexoPropertyNode<AJavaInnerConceptDecl, JavaR
 	@Override
 	public void preparePrettyPrint(boolean hasParsedVersion) {
 		super.preparePrettyPrint(hasParsedVersion);
-		if (hasParsedVersion && getVisibilityFragment() != null) {
-			appendDynamicContents(() -> getVisibilityAsString(getModelObject().getVisibility()), SPACE, getVisibilityFragment());
-		}
-		else {
-			appendDynamicContents(() -> getVisibilityAsString(getModelObject().getVisibility()), SPACE);
-		}
-		if (hasParsedVersion) {
-			appendDynamicContents(() -> serializeType(getModelObject().getType()), SPACE, getTypeFragment());
-			appendDynamicContents(() -> getModelObject().getName(), getNameFragment());
-			appendStaticContents(";", getSemiFragment());
-		}
-		else {
-			appendDynamicContents(() -> getVisibilityAsString(getModelObject().getVisibility()), SPACE);
-			appendDynamicContents(() -> serializeType(getModelObject().getType()), SPACE);
-			appendDynamicContents(() -> getModelObject().getName());
-			appendStaticContents(";");
-		}
+
+		append(dynamicContents(() -> getVisibilityAsString(getModelObject().getVisibility()), SPACE), getVisibilityFragment());
+		append(dynamicContents(() -> serializeType(getModelObject().getType()), SPACE), getTypeFragment());
+		append(dynamicContents(() -> getModelObject().getName()), getNameFragment());
+		append(staticContents(";"), getSemiFragment());
 	}
 
 	private RawSourceFragment getVisibilityFragment() {

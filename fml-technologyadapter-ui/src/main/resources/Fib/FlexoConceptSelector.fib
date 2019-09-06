@@ -57,23 +57,28 @@
 			editableLabel="" filtered="false" defaultVisible="true" dynamicFont=""
 			name="virtualModel">
 			<Children data="virtualModel.virtualModels" name="subresources" />
-			<Children data="virtualModel.allRootFlexoConcepts" name="rootFlexoConcepts" />
+			<Children data="virtualModel.allSuperFlexoConcepts" name="allSuperFlexoConcepts" />
 		</BrowserElement>
 		<BrowserElement dataClassName="org.openflexo.foundation.fml.FlexoConcept"
 			label="flexoConcept.name" icon="controller.iconForObject(flexoConcept)"
 			enabled="data.isAcceptableValue(flexoConcept)"
 			tooltip="" visible="" isEditable="false" editableLabel=""
 			filtered="false" defaultVisible="true" dynamicFont="" name="flexoConcept">
-			<Children data="flexoConcept.embeddedFlexoConcepts" visible=""
+			<Children data="flexoConcept.childFlexoConcepts" visible=""
 				cast="" name="children" />
 		</BrowserElement>
-		<BrowserElement dataClassName="org.openflexo.foundation.fml.VirtualModel"
+		<BrowserElement 
+			dataClassName="org.openflexo.foundation.fml.FlexoEnum"
+			icon="controller.iconForObject(flexoEnum)" label="flexoEnum.name"
+			editableLabel="flexoEnum.name" isEditable="false" name="flexoEnum">
+		</BrowserElement>
+		<!--  <BrowserElement dataClassName="org.openflexo.foundation.fml.VirtualModel"
 			label="virtualModel.name" icon="controller.iconForObject(virtualModel)"
 			tooltip="" enabled="" visible="" isEditable="false" editableLabel=""
 			filtered="false" defaultVisible="true" dynamicFont="" name="virtualModel">
 			<Children data="virtualModel.allRootFlexoConcepts" visible=""
 				cast="" name="children" />
-		</BrowserElement>
+		</BrowserElement> -->
 	</Browser>
 	<Panel layout="flow" hGap="5" vGap="0" flowAlignment="CENTER"
 		borderTitle="Panel" darkLevel="0" index="3"

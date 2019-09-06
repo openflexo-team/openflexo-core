@@ -39,9 +39,8 @@
 package org.openflexo.foundation.fml.parser.fmlnodes;
 
 import org.openflexo.foundation.fml.JavaImportDeclaration;
-import org.openflexo.foundation.fml.parser.FMLSemanticsAnalyzer;
-import org.openflexo.foundation.fml.parser.node.ACompositeIdent;
-import org.openflexo.foundation.fml.parser.node.AJavaImportImportDecl;
+import org.openflexo.foundation.fml.parser.MainSemanticsAnalyzer;
+import org.openflexo.foundation.fml.parser.node.AJavaImportImportDeclaration;
 import org.openflexo.p2pp.RawSource.RawSourceFragment;
 
 /**
@@ -50,11 +49,11 @@ import org.openflexo.p2pp.RawSource.RawSourceFragment;
  */
 public class JavaImportNode extends AbstractJavaImportNode<AJavaImportImportDecl> {
 
-	public JavaImportNode(AJavaImportImportDecl astNode, FMLSemanticsAnalyzer analyser) {
+	public JavaImportNode(AJavaImportImportDeclaration astNode, MainSemanticsAnalyzer analyser) {
 		super(astNode, analyser);
 	}
 
-	public JavaImportNode(JavaImportDeclaration importDeclaration, FMLSemanticsAnalyzer analyser) {
+	public JavaImportNode(JavaImportDeclaration importDeclaration, MainSemanticsAnalyzer analyser) {
 		super(importDeclaration, analyser);
 	}
 
@@ -69,16 +68,13 @@ public class JavaImportNode extends AbstractJavaImportNode<AJavaImportImportDecl
 	public void preparePrettyPrint(boolean hasParsedVersion) {
 		super.preparePrettyPrint(hasParsedVersion);
 
-		if (hasParsedVersion) {
-			appendStaticContents("import", SPACE, getImportFragment());
-			appendDynamicContents(() -> getModelObject().getFullQualifiedClassName(), getFullQualifiedFragment());
-			appendStaticContents(";", getSemiFragment());
-		}
-		else {
-			appendStaticContents("import", SPACE);
-			appendDynamicContents(() -> getModelObject().getFullQualifiedClassName());
-			appendStaticContents(";");
-		}
+		append(staticContents("", "import", SPACE), getImportFragment());
+		append(dynamicContents(() -> getModelObject().getFullQualifiedClassName()), getFullQualifiedFragment());
+		append(staticContents(";"), getSemiFragment());
+
+		/*appendStaticContents("import", SPACE, getImportFragment());
+		appendDynamicContents(() -> getModelObject().getFullQualifiedClassName(), getFullQualifiedFragment());
+		appendStaticContents(";", getSemiFragment());*/
 	}
 
 	private RawSourceFragment getImportFragment() {

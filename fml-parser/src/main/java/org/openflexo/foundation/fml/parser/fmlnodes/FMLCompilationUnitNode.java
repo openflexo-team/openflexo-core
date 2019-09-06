@@ -41,23 +41,28 @@ package org.openflexo.foundation.fml.parser.fmlnodes;
 import org.openflexo.foundation.fml.FMLCompilationUnit;
 import org.openflexo.foundation.fml.JavaImportDeclaration;
 import org.openflexo.foundation.fml.parser.FMLObjectNode;
-import org.openflexo.foundation.fml.parser.FMLSemanticsAnalyzer;
+import org.openflexo.foundation.fml.parser.MainSemanticsAnalyzer;
 import org.openflexo.foundation.fml.parser.node.AFmlCompilationUnit;
+import org.openflexo.p2pp.PrettyPrintContext.Indentation;
 import org.openflexo.p2pp.RawSource.RawSourcePosition;
 
 /**
  * @author sylvain
  * 
  */
-public class FMLCompilationUnitNode extends FMLObjectNode<AFmlCompilationUnit, FMLCompilationUnit> {
+public class FMLCompilationUnitNode extends FMLObjectNode<AFmlCompilationUnit, FMLCompilationUnit, MainSemanticsAnalyzer> {
 
 	private RawSourcePosition startPosition;
 	private RawSourcePosition endPosition;
 
-	public FMLCompilationUnitNode(AFmlCompilationUnit astNode, FMLSemanticsAnalyzer analyser) {
+	public FMLCompilationUnitNode(AFmlCompilationUnit astNode, MainSemanticsAnalyzer analyser) {
 		super(astNode, analyser);
 		startPosition = getRawSource().getStartPosition();
 		endPosition = getRawSource().getEndPosition();
+	}
+
+	public FMLCompilationUnitNode(FMLCompilationUnit compilationUnit, MainSemanticsAnalyzer analyser) {
+		super(compilationUnit, analyser);
 	}
 
 	@Override
@@ -75,8 +80,14 @@ public class FMLCompilationUnitNode extends FMLObjectNode<AFmlCompilationUnit, F
 
 		super.preparePrettyPrint(hasParsedVersion);
 
-		appendToChildrenPrettyPrintContents("", () -> getModelObject().getJavaImports(), LINE_SEPARATOR, 0, JavaImportDeclaration.class);
-		appendToChildPrettyPrintContents(LINE_SEPARATOR, () -> getModelObject().getVirtualModel(), LINE_SEPARATOR, 0);
+		append(childrenContents("", "", () -> getModelObject().getJavaImports(), LINE_SEPARATOR, LINE_SEPARATOR + LINE_SEPARATOR,
+				Indentation.DoNotIndent, JavaImportDeclaration.class));
+
+		append(childContents("", () -> getModelObject().getVirtualModel(), LINE_SEPARATOR, Indentation.DoNotIndent));
+
+		/*appendToChildrenPrettyPrintContents("", "", () -> getModelObject().getJavaImports(), LINE_SEPARATOR,
+				LINE_SEPARATOR + LINE_SEPARATOR, Indentation.DoNotIndent, JavaImportDeclaration.class);
+		appendToChildPrettyPrintContents("", () -> getModelObject().getVirtualModel(), LINE_SEPARATOR, Indentation.DoNotIndent);*/
 	}
 
 	@Override

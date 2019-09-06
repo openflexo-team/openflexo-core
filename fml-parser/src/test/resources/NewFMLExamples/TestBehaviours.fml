@@ -79,9 +79,7 @@ model MyModel {
 	/**
 	 * An example of event listener
 	 */
-	concept ConceptC {
-
-		int n = -1;
+	/*concept ConceptC {
 
 		listen container.anObject receive(NodeAdded event) {
 			
@@ -91,14 +89,12 @@ model MyModel {
 			
 		}
 		
-	}
-
-	Diagram diagram with DIAGRAM::TypedDiagramModelSlot(templateDiagram = DIAGRAM_SPECIFICATION);	
+	}*/
 
 	/**
 	 * Some technology-specific behaviours
 	 */
-	concept ConceptD {
+	/*concept ConceptD {
 
 		// Pointing DropScheme in Diagram technology adapter
 		dropNewConcept(String name) with DIAGRAM::drop(target=topLevel) {
@@ -116,7 +112,7 @@ model MyModel {
 		linkConcepts() with link(fromTarget=MyConceptGR,toTarget=MyConceptGR) {
 		}
 		
-	}
+	}*/
 
 
 }

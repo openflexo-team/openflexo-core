@@ -149,6 +149,8 @@ public class IconLibrary {
 			ResourceLocator.locateResource("Icons/Actions/Refresh-disabled.png"));
 	public static final ImageIcon TIME_TRAVEL_ICON = new ImageIconResource(
 			ResourceLocator.locateResource("Icons/Actions/AutoSaveRestore.gif"));
+	public static final ImageIcon CLEAR_ICON = new ImageIconResource(ResourceLocator.locateResource("Icons/Actions/Clear.png"));
+	public static final ImageIcon CLOSE_ICON = new ImageIconResource(ResourceLocator.locateResource("Icons/Actions/Close.png"));
 
 	// GUI icons
 

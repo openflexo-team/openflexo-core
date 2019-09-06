@@ -38,6 +38,7 @@
 
 package org.openflexo.foundation.fml.editionaction;
 
+import java.lang.reflect.Type;
 import java.util.logging.Logger;
 
 import org.openflexo.connie.type.TypeUtils;
@@ -47,6 +48,7 @@ import org.openflexo.foundation.fml.FMLRepresentationContext.FMLRepresentationOu
 import org.openflexo.foundation.fml.binding.ControlGraphBindingModel;
 import org.openflexo.foundation.fml.binding.DeclarationActionBindingModel;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
+import org.openflexo.pamela.annotations.DefineValidationRule;
 import org.openflexo.pamela.annotations.Getter;
 import org.openflexo.pamela.annotations.ImplementationClass;
 import org.openflexo.pamela.annotations.ModelEntity;
@@ -54,6 +56,9 @@ import org.openflexo.pamela.annotations.PropertyIdentifier;
 import org.openflexo.pamela.annotations.Setter;
 import org.openflexo.pamela.annotations.XMLAttribute;
 import org.openflexo.pamela.annotations.XMLElement;
+import org.openflexo.pamela.validation.ValidationError;
+import org.openflexo.pamela.validation.ValidationIssue;
+import org.openflexo.pamela.validation.ValidationRule;
 
 @ModelEntity
 @ImplementationClass(DeclarationAction.DeclarationActionImpl.class)
@@ -62,6 +67,8 @@ public interface DeclarationAction<T> extends AbstractAssignationAction<T> {
 
 	@PropertyIdentifier(type = String.class)
 	public static final String VARIABLE_NAME_KEY = "variableName";
+	@PropertyIdentifier(type = Type.class)
+	public static final String DECLARED_TYPE_KEY = "declaredType";
 
 	@Getter(value = VARIABLE_NAME_KEY)
 	@XMLAttribute(xmlTag = "variable")
@@ -69,6 +76,17 @@ public interface DeclarationAction<T> extends AbstractAssignationAction<T> {
 
 	@Setter(VARIABLE_NAME_KEY)
 	public void setVariableName(String variableName);
+
+	@Getter(value = DECLARED_TYPE_KEY, isStringConvertable = true)
+	@XMLAttribute
+	public Type getDeclaredType();
+
+	@Setter(DECLARED_TYPE_KEY)
+	public void setDeclaredType(Type type);
+
+	public Type getAnalyzedType();
+
+	public Type getType();
 
 	public String getDeclarationTypeAsString();
 
@@ -117,6 +135,22 @@ public interface DeclarationAction<T> extends AbstractAssignationAction<T> {
 		}
 
 		@Override
+		public Type getAnalyzedType() {
+			if (getAssignableAction() != null) {
+				return getAssignableAction().getAssignableType();
+			}
+			return Object.class;
+		}
+
+		@Override
+		public Type getType() {
+			if (getDeclaredType() != null) {
+				return getDeclaredType();
+			}
+			return getAnalyzedType();
+		}
+
+		@Override
 		public String getDeclarationTypeAsString() {
 			if (getAssignableAction() != null) {
 				return TypeUtils.simpleRepresentation(getAssignableAction().getAssignableType());
@@ -131,6 +165,29 @@ public interface DeclarationAction<T> extends AbstractAssignationAction<T> {
 			}
 			return "null";
 		}
+	}
+
+	@DefineValidationRule
+	public static class DeclaredTypeShouldBeCompatibleWithAnalyzedType
+			extends ValidationRule<DeclaredTypeShouldBeCompatibleWithAnalyzedType, DeclarationAction<?>> {
+
+		public DeclaredTypeShouldBeCompatibleWithAnalyzedType() {
+			super(DeclarationAction.class, "declared_types_and_analyzed_types_must_be_compatible");
+		}
+
+		@Override
+		public ValidationIssue<DeclaredTypeShouldBeCompatibleWithAnalyzedType, DeclarationAction<?>> applyValidation(
+				DeclarationAction<?> anExpressionProperty) {
+			if (anExpressionProperty.getDeclaredType() != null && anExpressionProperty.getAnalyzedType() != null) {
+				if (!TypeUtils.isTypeAssignableFrom(anExpressionProperty.getDeclaredType(), anExpressionProperty.getAnalyzedType())
+						&& !TypeUtils.isTypeAssignableFrom(anExpressionProperty.getAnalyzedType(),
+								anExpressionProperty.getDeclaredType())) {
+					return new ValidationError<>(this, anExpressionProperty, "types_are_not_compatibles");
+				}
+			}
+			return null;
+		}
+
 	}
 
 	// @DefineValidationRule

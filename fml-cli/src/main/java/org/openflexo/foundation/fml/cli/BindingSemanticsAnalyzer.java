@@ -74,7 +74,7 @@ class BindingSemanticsAnalyzer extends CommandSemanticsAnalyzer {
 	 */
 	// private boolean weAreDealingWithTheRightBinding = true;
 
-	public BindingSemanticsAnalyzer(PBinding node, CommandInterpreter commandInterpreter) {
+	public BindingSemanticsAnalyzer(PBinding node, AbstractCommandInterpreter commandInterpreter) {
 		super(commandInterpreter);
 		path = new ArrayList<>();
 		// System.out.println(">>>> node=" + node + " of " + node.getClass());

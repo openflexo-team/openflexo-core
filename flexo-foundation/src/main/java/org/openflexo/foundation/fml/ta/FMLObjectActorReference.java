@@ -47,7 +47,6 @@ import org.openflexo.foundation.fml.FMLObject;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.annotations.FML;
 import org.openflexo.foundation.fml.rt.ActorReference;
-import org.openflexo.foundation.fml.rt.ActorReference.ActorReferenceImpl;
 import org.openflexo.foundation.resource.ResourceLoadingCancelledException;
 import org.openflexo.logging.FlexoLogger;
 import org.openflexo.pamela.annotations.Getter;
@@ -135,7 +134,6 @@ public interface FMLObjectActorReference<T extends FMLObject> extends ActorRefer
 			if (object == null && virtualModelURI != null && objectURI != null) {
 				// First find the VirtualModel
 				FlexoServiceManager sm = getFlexoConceptInstance().getServiceManager();
-				System.out.println("sm=" + sm);
 				VirtualModel virtualModel = null;
 				try {
 					virtualModel = sm.getVirtualModelLibrary().getVirtualModel(virtualModelURI);
@@ -146,10 +144,8 @@ public interface FMLObjectActorReference<T extends FMLObject> extends ActorRefer
 				} catch (FlexoException e) {
 					e.printStackTrace();
 				}
-				System.out.println("vm=" + virtualModel);
 				if (virtualModel != null) {
 					object = (T) virtualModel.getObject(objectURI);
-					System.out.println("object=" + object);
 				}
 			}
 			if (object == null) {

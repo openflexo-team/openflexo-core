@@ -323,6 +323,8 @@ public abstract class DefaultTechnologyAdapterControllerService extends FlexoSer
 		for (TechnologyAdapterController<?> technologyAdapterController : loadedAdapters.values()) {
 			technologyAdapterController.activateActivablePlugins();
 		}
+
+		getServiceManager().notify(this, getServiceManager().new TechnologyAdapterHasBeenActivated<>(technologyAdapter));
 	}
 
 	/**
@@ -334,6 +336,7 @@ public abstract class DefaultTechnologyAdapterControllerService extends FlexoSer
 	@Override
 	public void disactivateTechnology(TechnologyAdapter<?> technologyAdapter) {
 		getTechnologyAdapterController((TechnologyAdapter) technologyAdapter).disactivate();
+		getServiceManager().notify(this, getServiceManager().new TechnologyAdapterHasBeenDisactivated<>(technologyAdapter));
 	}
 
 	/**

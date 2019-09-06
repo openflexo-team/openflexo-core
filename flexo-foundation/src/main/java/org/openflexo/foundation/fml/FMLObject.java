@@ -445,6 +445,19 @@ public interface FMLObject extends FlexoObject, Bindable, InnerResourceData/*<Vi
 			return getFMLRepresentation();
 		}
 
+		public String getNormalizedFML() {
+			if (this instanceof FMLPrettyPrintable) {
+				FMLPrettyPrintDelegate<?> ppDelegate = ((FMLPrettyPrintable) this).getPrettyPrintDelegate();
+				return ppDelegate.getNormalizedRepresentation(ppDelegate.makePrettyPrintContext());
+			}
+			return getFMLRepresentation();
+		}
+
+		@Override
+		public String render() {
+			return getFMLRepresentation();
+		}
+
 	}
 
 	public static abstract class BindingIsRecommandedAndShouldBeValid<C extends FMLObject>

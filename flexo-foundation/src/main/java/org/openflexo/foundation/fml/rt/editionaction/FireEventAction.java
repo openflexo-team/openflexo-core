@@ -94,6 +94,11 @@ public interface FireEventAction<VMI extends VirtualModelInstance<VMI, ?>>
 			return null;
 		}
 
+		@Override
+		protected Class<? extends FlexoConcept> getDynamicFlexoConceptTypeType() {
+			return FlexoEvent.class;
+		}
+
 		@SuppressWarnings("unchecked")
 		@Override
 		public Class<VMI> getVirtualModelInstanceClass() {
@@ -101,9 +106,10 @@ public interface FireEventAction<VMI extends VirtualModelInstance<VMI, ?>>
 		}
 
 		@Override
-		protected FlexoEventInstance makeNewFlexoConceptInstance(RunTimeEvaluationContext evaluationContext) {
+		protected FlexoEventInstance makeNewFlexoConceptInstance(RunTimeEvaluationContext evaluationContext) throws FlexoException {
 			VMI vmi = getVirtualModelInstance(evaluationContext);
-			return vmi.makeNewEvent(getEventType());
+			FlexoEvent instantiatedFlexoConcept = (FlexoEvent) retrieveFlexoConcept(evaluationContext);
+			return vmi.makeNewEvent(instantiatedFlexoConcept);
 		}
 
 		@Override

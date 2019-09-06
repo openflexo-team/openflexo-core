@@ -48,12 +48,13 @@ import org.openflexo.pamela.annotations.ModelEntity;
 import org.openflexo.pamela.annotations.XMLElement;
 
 @ModelEntity
-@ImplementationClass(FlexoBehaviourRole.FlexoBehaviourImpl.class)
+@ImplementationClass(FlexoBehaviourRole.FlexoBehaviourRoleImpl.class)
 @XMLElement
 @FML("FlexoBehaviourRole")
-public interface FlexoBehaviourRole extends FMLObjectRole<FlexoBehaviour> {
+public interface FlexoBehaviourRole<B extends FlexoBehaviour> extends FMLObjectRole<B> {
 
-	public static abstract class FlexoBehaviourImpl extends FMLObjectRoleImpl<FlexoBehaviour> implements FlexoBehaviourRole {
+	public static abstract class FlexoBehaviourRoleImpl<B extends FlexoBehaviour> extends FMLObjectRoleImpl<B>
+			implements FlexoBehaviourRole<B> {
 
 		private static final Logger logger = Logger.getLogger(FlexoBehaviourRole.class.getPackage().getName());
 

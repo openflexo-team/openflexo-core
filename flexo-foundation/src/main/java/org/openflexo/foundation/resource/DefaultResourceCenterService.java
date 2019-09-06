@@ -41,17 +41,18 @@ package org.openflexo.foundation.resource;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.PrintStream;
 import java.io.StringWriter;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLDecoder;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.jar.JarFile;
 
 import javax.swing.SwingUtilities;
@@ -445,7 +446,8 @@ public abstract class DefaultResourceCenterService extends FlexoServiceImpl impl
 	 * @author sylvain
 	 * 
 	 */
-	public class ResourceCenterListShouldBeStored implements ServiceNotification {}
+	public class ResourceCenterListShouldBeStored implements ServiceNotification {
+	}
 
 	@Override
 	public void initialize() {
@@ -477,7 +479,8 @@ public abstract class DefaultResourceCenterService extends FlexoServiceImpl impl
 	 * @author sylvain
 	 * 
 	 */
-	public class DefaultPackageResourceCenterIsNotInstalled implements ServiceNotification {}
+	public class DefaultPackageResourceCenterIsNotInstalled implements ServiceNotification {
+	}
 
 	private static void notifyWillWrite(File fileBeeingAdded, FileSystemBasedResourceCenter rc) {
 		File rootDirectory = rc.getRootDirectory();
@@ -725,24 +728,35 @@ public abstract class DefaultResourceCenterService extends FlexoServiceImpl impl
 		}
 
 		@Override
-		public List<String> getOptions() {
-			return Arrays.asList("<path>");
+		public String getArgument() {
+			return "<path>";
 		}
 
 		@Override
-		public void execute(FlexoResourceCenterService service, Object... options) {
-			if (options.length > 0) {
-				File directory = (File) options[0];
-				System.out.println("Add ResourceCenter from directory " + directory);
+		public List<ServiceOperationOption> getOptions() {
+			return null;
+		}
+
+		@Override
+		public void execute(FlexoResourceCenterService service, PrintStream out, PrintStream err, Object argument, Map<String, ?> options) {
+			if (argument instanceof File) {
+				File directory = (File) argument;
+				out.println("Add ResourceCenter from directory " + directory);
 				DirectoryResourceCenter newRC;
 				try {
 					newRC = DirectoryResourceCenter.instanciateNewDirectoryResourceCenter(directory, service);
 					service.addToResourceCenters(newRC);
+					out.println("ResourceCenter has been registered");
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
 			}
 		}
+	}
+
+	@Override
+	public String toString() {
+		return getClass().getSimpleName() + "@" + Integer.toHexString(hashCode());
 	}
 
 }

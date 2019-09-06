@@ -40,24 +40,26 @@ package org.openflexo.foundation.fml.parser.fmlnodes;
 
 import java.util.logging.Logger;
 
+import org.openflexo.foundation.fml.FMLCompilationUnit;
 import org.openflexo.foundation.fml.FlexoProperty;
 import org.openflexo.foundation.fml.parser.FMLObjectNode;
-import org.openflexo.foundation.fml.parser.FMLSemanticsAnalyzer;
-import org.openflexo.foundation.fml.parser.node.PInnerConceptDecl;
+import org.openflexo.foundation.fml.parser.MainSemanticsAnalyzer;
+import org.openflexo.foundation.fml.parser.node.Node;
 
 /**
  * @author sylvain
  * 
  */
-public abstract class FlexoPropertyNode<N extends PInnerConceptDecl, T extends FlexoProperty<?>> extends FMLObjectNode<N, T> {
+public abstract class FlexoPropertyNode<N extends Node, T extends FlexoProperty<?>> extends FMLObjectNode<N, T, MainSemanticsAnalyzer> {
 
+	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(FlexoPropertyNode.class.getPackage().getName());
 
-	public FlexoPropertyNode(N astNode, FMLSemanticsAnalyzer analyser) {
+	public FlexoPropertyNode(N astNode, MainSemanticsAnalyzer analyser) {
 		super(astNode, analyser);
 	}
 
-	public FlexoPropertyNode(T property, FMLSemanticsAnalyzer analyser) {
+	public FlexoPropertyNode(T property, MainSemanticsAnalyzer analyser) {
 		super(property, analyser);
 	}
 
@@ -66,7 +68,15 @@ public abstract class FlexoPropertyNode<N extends PInnerConceptDecl, T extends F
 		if (getParent() instanceof VirtualModelNode) {
 			((VirtualModelNode) getParent()).getModelObject().addToFlexoProperties(getModelObject());
 		}
+		if (getParent() instanceof FlexoConceptNode) {
+			((FlexoConceptNode) getParent()).getModelObject().addToFlexoProperties(getModelObject());
+		}
 		return this;
+	}
+
+	@Override
+	protected FMLCompilationUnit getCompilationUnit() {
+		return getAnalyser().getCompilationUnit();
 	}
 
 }

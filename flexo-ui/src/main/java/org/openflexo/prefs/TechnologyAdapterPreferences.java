@@ -1,6 +1,7 @@
 /**
  * 
- * Copyright (c) 2014, Openflexo
+ * Copyright (c) 2013-2014, Openflexo
+ * Copyright (c) 2011-2012, AgileBirds
  * 
  * This file is part of Flexo-ui, a component of the software infrastructure 
  * developed at Openflexo.
@@ -38,26 +39,28 @@
 
 package org.openflexo.prefs;
 
-import org.openflexo.foundation.technologyadapter.TechnologyAdapterService;
-import org.openflexo.pamela.annotations.ImplementationClass;
+import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
+import org.openflexo.pamela.annotations.Getter;
 import org.openflexo.pamela.annotations.ModelEntity;
-import org.openflexo.pamela.annotations.XMLElement;
+import org.openflexo.pamela.annotations.PropertyIdentifier;
+import org.openflexo.pamela.annotations.Setter;
 
 /**
- * Preferences for the {@link TechnologyAdapterService}
+ * Preferences relative to a technology adapter
  * 
  * @author sguerin
  * 
  */
-@ModelEntity
-@ImplementationClass(TechnologyAdapterPreferences.TechnologyAdapterPreferencesImpl.class)
-@XMLElement
-@Preferences(
-		shortName = "Technology adapters",
-		longName = "Technology adapters Preferences",
-		FIBPanel = "Fib/Prefs/TechnologyAdapterPrefs.fib",
-		smallIcon = "Icons/Common/TechnologyAdapter.png",
-		bigIcon = "Icons/Common/TechnologyAdapter_64x64.png")
-public interface TechnologyAdapterPreferences extends ServicePreferences<TechnologyAdapterService> {
-	public abstract class TechnologyAdapterPreferencesImpl extends PreferencesContainerImpl implements TechnologyAdapterPreferences {}
+@ModelEntity(isAbstract = true)
+public interface TechnologyAdapterPreferences<TA extends TechnologyAdapter<TA>> extends PreferencesContainer {
+
+	@PropertyIdentifier(type = TechnologyAdapter.class)
+	public static final String TECHNOLOGY_ADAPTER_KEY = "technologyAdapter";
+
+	@Getter(value = TECHNOLOGY_ADAPTER_KEY, ignoreType = true)
+	public TA getTechnologyAdapter();
+
+	@Setter(TECHNOLOGY_ADAPTER_KEY)
+	public void setTechnologyAdapter(TA technologyAdapter);
+
 }

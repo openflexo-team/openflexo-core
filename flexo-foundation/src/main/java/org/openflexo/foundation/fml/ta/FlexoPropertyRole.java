@@ -51,10 +51,12 @@ import org.openflexo.pamela.annotations.XMLElement;
 @ImplementationClass(FlexoPropertyRole.FlexoPropertyRoleImpl.class)
 @XMLElement
 @FML("FlexoPropertyRole")
-public interface FlexoPropertyRole extends FMLObjectRole<FlexoProperty<?>> {
+public interface FlexoPropertyRole<P extends FlexoProperty<?>> extends FMLObjectRole<P> {
 
-	public static abstract class FlexoPropertyRoleImpl extends FMLObjectRoleImpl<FlexoProperty<?>> implements FlexoPropertyRole {
+	public static abstract class FlexoPropertyRoleImpl<P extends FlexoProperty<?>> extends FMLObjectRoleImpl<P>
+			implements FlexoPropertyRole<P> {
 
+		@SuppressWarnings("unused")
 		private static final Logger logger = Logger.getLogger(FlexoPropertyRole.class.getPackage().getName());
 
 		@Override

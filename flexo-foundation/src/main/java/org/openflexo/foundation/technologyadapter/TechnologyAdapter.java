@@ -62,6 +62,7 @@ import java.util.logging.Logger;
 import javax.swing.SwingUtilities;
 
 import org.apache.commons.io.IOUtils;
+import org.openflexo.connie.annotations.NotificationUnsafe;
 import org.openflexo.foundation.DataModification;
 import org.openflexo.foundation.FlexoObservable;
 import org.openflexo.foundation.FlexoServiceManager;
@@ -213,6 +214,7 @@ public abstract class TechnologyAdapter<TA extends TechnologyAdapter<TA>> extend
 	private boolean isActivated = false;
 	private boolean isActivating = false;
 
+	@NotificationUnsafe
 	public boolean isActivated() {
 		return isActivated;
 	}

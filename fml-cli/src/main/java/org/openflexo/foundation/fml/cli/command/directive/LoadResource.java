@@ -43,7 +43,7 @@ import java.io.FileNotFoundException;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.FlexoException;
-import org.openflexo.foundation.fml.cli.CommandInterpreter;
+import org.openflexo.foundation.fml.cli.CommandSemanticsAnalyzer;
 import org.openflexo.foundation.fml.cli.command.Directive;
 import org.openflexo.foundation.fml.cli.command.DirectiveDeclaration;
 import org.openflexo.foundation.fml.cli.parser.node.ALoadDirective;
@@ -70,8 +70,8 @@ public class LoadResource extends Directive {
 
 	private FlexoResource<?> resource;
 
-	public LoadResource(ALoadDirective node, CommandInterpreter commandInterpreter) {
-		super(node, commandInterpreter);
+	public LoadResource(ALoadDirective node, CommandSemanticsAnalyzer commandSemanticsAnalyzer) {
+		super(node, commandSemanticsAnalyzer);
 		resource = getResource(node.getResourceUri().getText());
 	}
 
@@ -82,16 +82,17 @@ public class LoadResource extends Directive {
 	@Override
 	public void execute() {
 		if (resource.isLoaded()) {
-			System.out.println("Resource " + resource.getURI() + " already loaded");
+			getOutStream().println("Resource " + resource.getURI() + " already loaded");
 		}
 		else {
 			try {
 				resource.loadResourceData();
-				System.out.println("Loaded " + resource.getURI() + ".");
+				getOutStream().println("Loaded " + resource.getURI() + ".");
 			} catch (FileNotFoundException e) {
-				System.err.println("Cannot find resource " + resource.getURI());
-			} catch (ResourceLoadingCancelledException e) {} catch (FlexoException e) {
-				System.err.println("Cannot load resource " + resource.getURI() + " : " + e.getMessage());
+				getErrStream().println("Cannot find resource " + resource.getURI());
+			} catch (ResourceLoadingCancelledException e) {
+			} catch (FlexoException e) {
+				getErrStream().println("Cannot load resource " + resource.getURI() + " : " + e.getMessage());
 			}
 		}
 	}

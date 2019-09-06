@@ -299,7 +299,13 @@ public class ModuleInspectorController extends Observable implements Observer {
 		for (InspectorGroup inspectorGroup : new ArrayList<>(inspectorGroups)) {
 			FIBInspector inspector = inspectorGroup.inspectorForClass(objectClass);
 			if (inspector != null) {
-				potentialInspectors.put(inspector.getInspectedClass(), inspector);
+				FIBInspector existingInspector = potentialInspectors.get(inspector.getInspectedClass());
+				if (existingInspector != null) {
+					// Already found an inspector with exactely same class, giving up (first found is the right one)
+				}
+				else {
+					potentialInspectors.put(inspector.getInspectedClass(), inspector);
+				}
 			}
 		}
 
@@ -591,21 +597,25 @@ public class ModuleInspectorController extends Observable implements Observer {
 	private Map<FlexoConcept, FIBPanel> flexoConceptInspectorPanels = new HashMap<>();
 
 	public FIBPanel getFIBInspectorPanel(FlexoConcept flexoConcept) {
+		return getFIBInspectorPanel(flexoConcept, FlexoFIBController.class);
+	}
+
+	public FIBPanel getFIBInspectorPanel(FlexoConcept flexoConcept, Class<? extends FlexoFIBController> controllerClass) {
 		FIBPanel returned = flexoConceptInspectorPanels.get(flexoConcept);
 		if (returned == null) {
-			returned = makeFIBInspectorPanel(flexoConcept);
+			returned = makeFIBInspectorPanel(flexoConcept, controllerClass);
 			flexoConceptInspectorPanels.put(flexoConcept, returned);
 		}
 		return returned;
 
 	}
 
-	private FIBPanel makeFIBInspectorPanel(FlexoConcept flexoConcept) {
+	private FIBPanel makeFIBInspectorPanel(FlexoConcept flexoConcept, Class<? extends FlexoFIBController> controllerClass) {
 		FIBPanel inspector = getFactory().newFIBPanel();
 		inspector.setLayout(Layout.twocols);
 		inspector.setUseScrollBar(true);
 
-		inspector.setControllerClass(FlexoFIBController.class);
+		inspector.setControllerClass(controllerClass);
 
 		// We create a variable for inspector data
 		// This variable is called fci, with type FlexoConceptInstanceType<FlexoConcept>, and value 'data' (which is the

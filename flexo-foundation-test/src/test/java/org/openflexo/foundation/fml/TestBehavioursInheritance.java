@@ -271,7 +271,7 @@ public class TestBehavioursInheritance extends OpenflexoProjectAtRunTimeTestCase
 
 		assertEquals(4, flexoConceptA.getFlexoBehaviours().size());
 		assertEquals(4, flexoConceptA.getDeclaredFlexoBehaviours().size());
-		assertEquals(4, flexoConceptA.getAccessibleFlexoBehaviours().size());
+		assertEquals(4, flexoConceptA.getAccessibleFlexoBehaviours(true).size());
 
 		((VirtualModelResource) virtualModel.getResource()).save();
 
@@ -328,7 +328,7 @@ public class TestBehavioursInheritance extends OpenflexoProjectAtRunTimeTestCase
 
 		assertEquals(3, flexoConceptB.getFlexoBehaviours().size());
 		assertEquals(3, flexoConceptB.getDeclaredFlexoBehaviours().size());
-		assertEquals(5, flexoConceptB.getAccessibleFlexoBehaviours().size());
+		assertEquals(5, flexoConceptB.getAccessibleFlexoBehaviours(true).size());
 
 		assertTrue(m2InB.overrides(m2InA));
 		assertTrue(m2InA.isOverridenInContext(flexoConceptB));
@@ -395,7 +395,7 @@ public class TestBehavioursInheritance extends OpenflexoProjectAtRunTimeTestCase
 
 		assertEquals(4, flexoConceptC.getFlexoBehaviours().size());
 		assertEquals(4, flexoConceptC.getDeclaredFlexoBehaviours().size());
-		assertEquals(7, flexoConceptC.getAccessibleFlexoBehaviours().size());
+		assertEquals(7, flexoConceptC.getAccessibleFlexoBehaviours(true).size());
 
 		assertTrue(m2InB.overrides(m2InA));
 		assertTrue(m2InA.isOverridenInContext(flexoConceptC));
@@ -472,11 +472,11 @@ public class TestBehavioursInheritance extends OpenflexoProjectAtRunTimeTestCase
 
 		assertEquals(4, flexoConceptA.getFlexoBehaviours().size());
 		assertEquals(4, flexoConceptA.getDeclaredFlexoBehaviours().size());
-		assertEquals(4, flexoConceptA.getAccessibleFlexoBehaviours().size());
+		assertEquals(4, flexoConceptA.getAccessibleFlexoBehaviours(true).size());
 
 		assertEquals(3, flexoConceptB.getFlexoBehaviours().size());
 		assertEquals(3, flexoConceptB.getDeclaredFlexoBehaviours().size());
-		assertEquals(5, flexoConceptB.getAccessibleFlexoBehaviours().size());
+		assertEquals(5, flexoConceptB.getAccessibleFlexoBehaviours(true).size());
 
 		assertTrue(m2InB.overrides(m2InA));
 		assertTrue(m2InA.isOverridenInContext(flexoConceptB));
@@ -486,7 +486,7 @@ public class TestBehavioursInheritance extends OpenflexoProjectAtRunTimeTestCase
 
 		assertEquals(4, flexoConceptC.getFlexoBehaviours().size());
 		assertEquals(4, flexoConceptC.getDeclaredFlexoBehaviours().size());
-		assertEquals(7, flexoConceptC.getAccessibleFlexoBehaviours().size());
+		assertEquals(7, flexoConceptC.getAccessibleFlexoBehaviours(true).size());
 
 		assertTrue(m2InB.overrides(m2InA));
 		assertTrue(m2InA.isOverridenInContext(flexoConceptC));

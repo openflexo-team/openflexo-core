@@ -39,63 +39,33 @@
 
 package org.openflexo.foundation.fml.cli.command.directive;
 
-import java.io.FileNotFoundException;
 import java.util.logging.Logger;
 
-import org.openflexo.foundation.FlexoException;
-import org.openflexo.foundation.fml.cli.CommandInterpreter;
+import org.openflexo.foundation.fml.cli.CommandSemanticsAnalyzer;
 import org.openflexo.foundation.fml.cli.command.Directive;
 import org.openflexo.foundation.fml.cli.command.DirectiveDeclaration;
-import org.openflexo.foundation.fml.cli.parser.node.ADisplayDirective;
-import org.openflexo.foundation.fml.rm.VirtualModelResource;
-import org.openflexo.foundation.resource.FlexoResource;
-import org.openflexo.foundation.resource.ResourceLoadingCancelledException;
+import org.openflexo.foundation.fml.cli.parser.node.AHistoryDirective;
 
 /**
- * Represents display resource directive in FML command-line interpreter
+ * Represents #history directive in FML command-line interpreter
  * 
- * Usage: display <resource> where <resource> represents a resource
+ * Usage: history
  * 
  * @author sylvain
  * 
  */
-@DirectiveDeclaration(
-		keyword = "display",
-		usage = "display <resource>",
-		description = "Display resource denoted by supplied resource uri",
-		syntax = "display <resource>")
-public class DisplayResource extends Directive {
+@DirectiveDeclaration(keyword = "history", usage = "history", description = "Display commands history", syntax = "history")
+public class HistoryDirective extends Directive {
 
 	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(DisplayResource.class.getPackage().getName());
+	private static final Logger logger = Logger.getLogger(HistoryDirective.class.getPackage().getName());
 
-	private FlexoResource<?> resource;
-
-	public DisplayResource(ADisplayDirective node, CommandInterpreter commandInterpreter) {
-		super(node, commandInterpreter);
-		resource = getResource(node.getResourceUri().getText());
-	}
-
-	public FlexoResource<?> getResource() {
-		return resource;
+	public HistoryDirective(AHistoryDirective node, CommandSemanticsAnalyzer commandSemanticsAnalyzer) {
+		super(node, commandSemanticsAnalyzer);
 	}
 
 	@Override
 	public void execute() {
-		if (!resource.isLoaded()) {
-			try {
-				resource.loadResourceData();
-			} catch (FileNotFoundException e) {
-				System.err.println("Cannot find resource " + resource.getURI());
-			} catch (ResourceLoadingCancelledException e) {} catch (FlexoException e) {
-				System.err.println("Cannot load resource " + resource.getURI() + " : " + e.getMessage());
-			}
-		}
-		if (resource instanceof VirtualModelResource) {
-			System.out.println(((VirtualModelResource) resource).getVirtualModel().getFMLRepresentation());
-		}
-		else {
-			System.err.println("No textual renderer for such data.");
-		}
+		getCommandInterpreter().displayHistory();
 	}
 }

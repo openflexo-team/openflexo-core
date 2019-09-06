@@ -177,6 +177,18 @@ public class FlexoPropertyPathElement<P extends FlexoProperty<?>> extends Simple
 				return flexoConceptInstance.getVirtualModelInstance().getFlexoPropertyValue(effectiveProperty);
 			}
 
+			// TODO: see https://bugs.openflexo.org/browse/CORE-309
+			// Should be aligned with FlexoPropertyBindingVariable#getValue()
+
+			// TO be tested !!!
+
+			/*if (flexoProperty instanceof FlexoRole) {
+				if (flexoProperty.getCardinality().isMultipleCardinality())
+					return flexoConceptInstance.getFlexoActorList((FlexoRole<?>) flexoProperty);
+				return flexoConceptInstance.getFlexoActor((FlexoRole<?>) flexoProperty);
+			}
+			return flexoConceptInstance.getFlexoPropertyValue(flexoProperty);*/
+
 			if (effectiveProperty instanceof FlexoRole) {
 				if (effectiveProperty.getCardinality().isMultipleCardinality()) {
 					return flexoConceptInstance.getFlexoActorList((FlexoRole<?>) effectiveProperty);

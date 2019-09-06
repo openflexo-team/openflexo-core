@@ -64,4 +64,6 @@ public interface FMLPrettyPrintable extends FMLObject {
 	public void setPrettyPrintDelegate(FMLPrettyPrintDelegate<?> delegate);
 
 	public String getFMLPrettyPrint();
+
+	public String getNormalizedFML();
 }

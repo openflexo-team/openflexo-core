@@ -42,7 +42,7 @@ package org.openflexo.foundation.fml.cli.command.directive;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.FlexoService;
-import org.openflexo.foundation.fml.cli.CommandInterpreter;
+import org.openflexo.foundation.fml.cli.CommandSemanticsAnalyzer;
 import org.openflexo.foundation.fml.cli.command.Directive;
 import org.openflexo.foundation.fml.cli.command.DirectiveDeclaration;
 import org.openflexo.foundation.fml.cli.parser.node.AServicesDirective;
@@ -68,15 +68,15 @@ public class ServicesDirective extends Directive {
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(ServicesDirective.class.getPackage().getName());
 
-	public ServicesDirective(AServicesDirective node, CommandInterpreter commandInterpreter) {
-		super(node, commandInterpreter);
+	public ServicesDirective(AServicesDirective node, CommandSemanticsAnalyzer commandSemanticsAnalyzer) {
+		super(node, commandSemanticsAnalyzer);
 	}
 
 	@Override
 	public void execute() {
-		System.out.println("Active services:");
+		getOutStream().println("Active services:");
 		for (FlexoService service : getCommandInterpreter().getServiceManager().getRegisteredServices()) {
-			System.out.println(service.getServiceName() + StringUtils.buildWhiteSpaceIndentation(30 - service.getServiceName().length())
+			getOutStream().println(service.getServiceName() + StringUtils.buildWhiteSpaceIndentation(30 - service.getServiceName().length())
 					+ service.getStatus());
 		}
 	}

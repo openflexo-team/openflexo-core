@@ -41,15 +41,15 @@ package org.openflexo.foundation.fml.parser;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
+import java.io.IOException;
+
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.openflexo.foundation.fml.FMLCompilationUnit;
-import org.openflexo.foundation.fml.FMLModelFactory;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.VirtualModel;
-import org.openflexo.foundation.test.OpenflexoTestCase;
+import org.openflexo.foundation.fml.rm.FMLParser.ParseException;
 import org.openflexo.pamela.exceptions.ModelDefinitionException;
-import org.openflexo.rm.FileResourceImpl;
 import org.openflexo.rm.Resource;
 import org.openflexo.rm.ResourceLocator;
 
@@ -59,11 +59,7 @@ import org.openflexo.rm.ResourceLocator;
  * @author sylvain
  *
  */
-public class TestFMLSemanticsAnalyzer extends OpenflexoTestCase {
-
-	private static FMLCompilationUnit parseFile(Resource fileResource) throws ModelDefinitionException, ParseException {
-		return FMLParser.parse(((FileResourceImpl) fileResource).getFile(), new FMLModelFactory(null, serviceManager));
-	}
+public class TestFMLSemanticsAnalyzer extends FMLParserTestCase {
 
 	@BeforeClass
 	public static void initServiceManager() {
@@ -71,7 +67,7 @@ public class TestFMLSemanticsAnalyzer extends OpenflexoTestCase {
 	}
 
 	@Test
-	public void testBasicTypes() throws ParseException, ModelDefinitionException {
+	public void testBasicTypes() throws ParseException, ModelDefinitionException, IOException {
 		final Resource fmlFile = ResourceLocator.locateResource("NewFMLExamples/TestBasicTypes.fml");
 		FMLCompilationUnit compilationUnit = parseFile(fmlFile);
 		VirtualModel virtualModel;

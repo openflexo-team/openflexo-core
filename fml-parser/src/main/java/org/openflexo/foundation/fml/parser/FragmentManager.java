@@ -72,6 +72,9 @@ public class FragmentManager extends DepthFirstAdapter implements FragmentRetrie
 
 	@Override
 	public RawSourceFragment retrieveFragment(Node node) {
+		if (node == null) {
+			return null;
+		}
 		startPosition = null;
 		endPosition = null;
 		node.apply(this);

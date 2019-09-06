@@ -6,7 +6,7 @@ use org.openflexo.foundation.fml.rt.FMLRTModelSlot as FMLRT;
 
 model TestMatch {
 	
-	a finir
+	/*a finir
 	
 	
 	public void action:updateDiagram () {  
@@ -79,6 +79,6 @@ for (conceptWithoutParent : (select Concept from domainModel where (selected.par
 		}
 		
 	}
-
+*/
 
 }

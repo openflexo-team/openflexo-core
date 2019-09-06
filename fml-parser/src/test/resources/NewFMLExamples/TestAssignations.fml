@@ -1,0 +1,52 @@
+/**
+ * Testing concept behaviours
+ */
+
+use org.openflexo.foundation.fml.rt.FMLRTModelSlot as FMLRT;
+
+model MyModel {
+
+	int j;
+
+	testAssignConstant() {
+		i = 1;
+	}
+	
+	testAssignNumericExpression() {
+		i = 1+2;
+	}
+	
+	testAssignAssignation() {
+		i = (j = 1);
+	}
+	
+	testAssignConditional() {
+		i = (j>0?1:2);
+	}
+	
+	testAssignBinding1() {
+		i = j;
+	}
+
+	testAssignBinding2() {
+		i = this.isa.binding;
+	}
+
+	testAssignBinding3() {
+		i = this.isa.another.binding(1,2);
+	}
+	
+	testAssignBinding4() {
+		i = (this.isa.another.binding(1,2)*8)/4-2*foo(2);
+	}
+	
+	testAssignNewInstance() {
+		aConcept = new MyConcept();
+	}
+	
+	concept MyConcept {
+		create() {
+		}
+	}
+
+}

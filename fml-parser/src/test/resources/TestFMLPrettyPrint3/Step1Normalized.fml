@@ -1,0 +1,8 @@
+model MyModel {
+
+	create () {
+		int j;
+		i = 1;
+		i = j;
+	}
+}

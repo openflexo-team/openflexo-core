@@ -44,7 +44,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.logging.Logger;
 
-import org.openflexo.foundation.fml.cli.CommandInterpreter;
+import org.openflexo.foundation.fml.cli.CommandSemanticsAnalyzer;
 import org.openflexo.foundation.fml.cli.command.Directive;
 import org.openflexo.foundation.fml.cli.command.DirectiveDeclaration;
 import org.openflexo.foundation.fml.cli.parser.node.ARcResourcesDirective;
@@ -91,8 +91,8 @@ public class ResourcesDirective extends Directive {
 	private TechnologyAdapter technologyAdapter;
 	private FlexoResourceCenter<?> resourceCenter;
 
-	public ResourcesDirective(AResourcesDirective node, CommandInterpreter commandInterpreter) {
-		super(node, commandInterpreter);
+	public ResourcesDirective(AResourcesDirective node, CommandSemanticsAnalyzer commandSemanticsAnalyzer) {
+		super(node, commandSemanticsAnalyzer);
 
 		PResourcesDirective resourcesDirective = node.getResourcesDirective();
 
@@ -181,7 +181,7 @@ public class ResourcesDirective extends Directive {
 			if (resource instanceof TechnologyAdapterResource) {
 				ta = ((TechnologyAdapterResource) resource).getTechnologyAdapter().getIdentifier();
 			}
-			System.out.println(name + StringUtils.buildWhiteSpaceIndentation(nameMaxLength - name.length() + 1) + type
+			getOutStream().println(name + StringUtils.buildWhiteSpaceIndentation(nameMaxLength - name.length() + 1) + type
 					+ StringUtils.buildWhiteSpaceIndentation(typeMaxLength - type.length() + 1) + ta
 					+ StringUtils.buildWhiteSpaceIndentation(taMaxLength - ta.length() + 1)
 					+ (resource.isLoaded() ? "[LOADED]   " : "[UNLOADED] ") + uri);

@@ -206,17 +206,12 @@ public interface FlexoObject extends AccessibleProxyObject, DeletableProxyObject
 	 */
 	public LocalizedDelegate getLocales();
 
-	/*default String getReferenceForSerialization(boolean serializeClassName) {
-		if (this instanceof InnerResourceData) {
-			ResourceData<?> resourceData = ((InnerResourceData<?>) this).getResourceData();
-			if (resourceData != null && resourceData.getResource() != null) {
-				FlexoResource<?> resource = resourceData.getResource();
-				return FlexoObjectReference.constructSerializationRepresentation(resource.getURI(), getUserIdentifier(),
-						Long.toString(getFlexoID()), serializeClassName ? getClass().getName() : null);
-			}
-		}
-		return null;
-	}*/
+	/**
+	 * Return a String rendering user-friendly informations on a {@link FlexoObject}
+	 * 
+	 * @return
+	 */
+	public String render();
 
 	public static abstract class FlexoObjectImpl extends FlexoObservable implements FlexoObject {
 
@@ -879,6 +874,15 @@ public interface FlexoObject extends AccessibleProxyObject, DeletableProxyObject
 			return getImplementedInterface().getSimpleName() + "[ID=" + getFlexoID() + "]" + "@" + hash();
 		}
 
+		/**
+		 * Default implementation for rendering
+		 * 
+		 * @return
+		 */
+		@Override
+		public String render() {
+			return toString();
+		}
 	}
 
 }

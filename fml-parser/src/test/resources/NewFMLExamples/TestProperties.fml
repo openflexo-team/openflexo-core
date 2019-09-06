@@ -4,6 +4,10 @@
 
 use org.openflexo.foundation.fml.rt.FMLRTModelSlot as FMLRT;
 
+import java.lang.String;
+import java.util.List;
+import java.util.Map;
+
 model MyModel {
 	
 	// Testing PrimitiveRole properties
@@ -17,6 +21,8 @@ model MyModel {
 	    String[2,8] auMoins2AuPlus8;
 	    int titi = 2+3;
 	    List<ConceptB>[0,*] aJavaListOfConceptB;
+	    List<List<ConceptB>>[0,*] aJavaListOfListOfConceptB;
+	    List<List<List<ConceptB>>>[0,*] aJavaListOfListOfListOfConceptB;
 	    
 	    // With a visibility identifier
 	    // Default visibility is public
@@ -37,9 +43,9 @@ model MyModel {
 	concept ConceptC {
 		
 		int aComputedValue = 0; // This is not an expression property, but a primitive with an init value
-		int aComputedValue values 0; // Always return 0
-		int aComputedValue values a.path.to.a.computed.value; // Compute that path
-		int anOtherComputedValue values a.path().to.a.computed.value(1,2,"foo"); // Compute that path
+		int aComputedValue is 1+1; // Always return 2
+		int aComputedValue is a.path.to.a.computed.value; // Compute that path
+		int anOtherComputedValue is a.path().to.a.computed.value(1,2,"foo"); // Compute that path
 	}
 
 	// Test AbstractProperty
@@ -52,7 +58,7 @@ model MyModel {
 	}
 
 	// Test GetSetProperty
-	concept ConceptE {
+	/*concept ConceptE {
 		
 		private int internalValue;
 		
@@ -80,7 +86,7 @@ model MyModel {
 			set(int aValue) { internalValue = aValue; }
 		};
 		
-	}
+	}*/
 
 
 

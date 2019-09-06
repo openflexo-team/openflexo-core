@@ -58,6 +58,7 @@ import org.openflexo.connie.type.TypeUtils;
 import org.openflexo.foundation.fml.FlexoBehaviour.FlexoBehaviourImpl;
 import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
 import org.openflexo.pamela.annotations.CloningStrategy;
+import org.openflexo.pamela.annotations.CloningStrategy.StrategyType;
 import org.openflexo.pamela.annotations.Getter;
 import org.openflexo.pamela.annotations.ImplementationClass;
 import org.openflexo.pamela.annotations.ModelEntity;
@@ -65,7 +66,6 @@ import org.openflexo.pamela.annotations.PropertyIdentifier;
 import org.openflexo.pamela.annotations.Setter;
 import org.openflexo.pamela.annotations.XMLAttribute;
 import org.openflexo.pamela.annotations.XMLElement;
-import org.openflexo.pamela.annotations.CloningStrategy.StrategyType;
 import org.openflexo.toolbox.StringUtils;
 
 /**
@@ -481,6 +481,9 @@ public interface FlexoBehaviourParameter extends FlexoBehaviourObject, FunctionA
 				return INTEGER_WIDGET_TYPES;
 			}
 			else if (TypeUtils.isList(type)) {
+				return LIST_WIDGET_TYPES;
+			}
+			else if (TypeUtils.isEnum(type)) {
 				return LIST_WIDGET_TYPES;
 			}
 			else if (type instanceof FlexoEnumType) {

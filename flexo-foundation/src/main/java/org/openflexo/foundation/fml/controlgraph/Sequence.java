@@ -49,6 +49,9 @@ import org.openflexo.connie.type.UndefinedType;
 import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.fml.FMLRepresentationContext;
 import org.openflexo.foundation.fml.FMLRepresentationContext.FMLRepresentationOutput;
+import org.openflexo.foundation.fml.FMLUtils;
+import org.openflexo.foundation.fml.FlexoConcept;
+import org.openflexo.foundation.fml.FlexoConceptInstanceType;
 import org.openflexo.foundation.fml.editionaction.AssignableAction;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext.ReturnException;
@@ -316,6 +319,19 @@ public interface Sequence extends FMLControlGraph, FMLControlGraphOwner {
 				return inferedType2;
 			}
 
+			if (inferedType1 instanceof FlexoConceptInstanceType && ((FlexoConceptInstanceType) inferedType1).getFlexoConcept() != null
+					&& inferedType2 instanceof FlexoConceptInstanceType
+					&& ((FlexoConceptInstanceType) inferedType2).getFlexoConcept() != null) {
+				// Both types are FCI, but not in the same hierarchy
+				FlexoConcept mostSpecializedAncestor = FMLUtils.getMostSpecializedAncestor(
+						((FlexoConceptInstanceType) inferedType1).getFlexoConcept(),
+						((FlexoConceptInstanceType) inferedType2).getFlexoConcept());
+				if (mostSpecializedAncestor != null) {
+					return mostSpecializedAncestor.getInstanceType();
+				}
+
+			}
+
 			return Void.class;
 		}
 
@@ -386,7 +402,8 @@ public interface Sequence extends FMLControlGraph, FMLControlGraphOwner {
 
 			if (!(inferedType1.equals(Void.class)) && !(inferedType2.equals(Void.class))
 					&& !TypeUtils.isTypeAssignableFrom(inferedType1, inferedType2)
-					&& !TypeUtils.isTypeAssignableFrom(inferedType2, inferedType1)) {
+					&& !TypeUtils.isTypeAssignableFrom(inferedType2, inferedType1)
+					&& !(inferedType1 instanceof FlexoConceptInstanceType && inferedType2 instanceof FlexoConceptInstanceType)) {
 				System.out.println("Types are not compatible in:");
 				System.out.println(sequence.getFMLRepresentation());
 				return new ValidationError<>(this, sequence, "types_are_not_compatible (" + TypeUtils.simpleRepresentation(inferedType1)

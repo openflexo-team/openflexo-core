@@ -58,7 +58,7 @@ public class FIBVirtualModelBrowserFIBController extends FMLFIBController {
 		Embedding, Hierarchical, Flat
 	}
 
-	private ViewMode viewMode;
+	private ViewMode viewMode = ViewMode.Hierarchical;
 
 	public FIBVirtualModelBrowserFIBController(FIBComponent component, GinaViewFactory<?> viewFactory) {
 		super(component, viewFactory);
@@ -66,7 +66,7 @@ public class FIBVirtualModelBrowserFIBController extends FMLFIBController {
 			@Override
 			public void run() {
 				try {
-					setViewMode(ViewMode.Embedding);
+					setViewMode(ViewMode.Hierarchical);
 				} catch (Exception e) {
 					// Ignore
 				}
@@ -79,7 +79,7 @@ public class FIBVirtualModelBrowserFIBController extends FMLFIBController {
 		SwingUtilities.invokeLater(new Runnable() {
 			@Override
 			public void run() {
-				setViewMode(ViewMode.Embedding);
+				setViewMode(ViewMode.Hierarchical);
 			}
 		});
 	}

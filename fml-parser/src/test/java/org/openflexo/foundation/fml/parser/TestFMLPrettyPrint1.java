@@ -40,13 +40,8 @@ package org.openflexo.foundation.fml.parser;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.fail;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.StringReader;
-import java.util.ArrayList;
-import java.util.List;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -54,7 +49,6 @@ import org.openflexo.connie.type.PrimitiveType;
 import org.openflexo.foundation.DefaultFlexoEditor;
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.fml.FMLCompilationUnit;
-import org.openflexo.foundation.fml.FMLModelFactory;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoProperty;
 import org.openflexo.foundation.fml.JavaImportDeclaration;
@@ -64,17 +58,13 @@ import org.openflexo.foundation.fml.parser.fmlnodes.FMLCompilationUnitNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.FlexoPropertyNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.JavaImportNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.VirtualModelNode;
-import org.openflexo.foundation.test.OpenflexoTestCase;
-import org.openflexo.p2pp.P2PPNode;
+import org.openflexo.foundation.fml.rm.FMLParser.ParseException;
 import org.openflexo.p2pp.RawSource;
 import org.openflexo.pamela.exceptions.ModelDefinitionException;
-import org.openflexo.rm.FileResourceImpl;
 import org.openflexo.rm.Resource;
 import org.openflexo.rm.ResourceLocator;
 import org.openflexo.test.OrderedRunner;
 import org.openflexo.test.TestOrder;
-import org.openflexo.toolbox.FileUtils;
-import org.openflexo.toolbox.StringUtils;
 
 /**
  * Parse a FML file, perform some edits and checks that pretty-print is correct
@@ -83,17 +73,13 @@ import org.openflexo.toolbox.StringUtils;
  *
  */
 @RunWith(OrderedRunner.class)
-public class TestFMLPrettyPrint1 extends OpenflexoTestCase {
+public class TestFMLPrettyPrint1 extends FMLParserTestCase {
 
 	private static FMLCompilationUnit compilationUnit;
 	private static VirtualModel virtualModel;
 	private static FlexoConcept conceptA;
 
 	static FlexoEditor editor;
-
-	private static FMLCompilationUnit parseFile(Resource fileResource) throws ModelDefinitionException, ParseException {
-		return FMLParser.parse(((FileResourceImpl) fileResource).getFile(), new FMLModelFactory(null, serviceManager));
-	}
 
 	@Test
 	@TestOrder(1)
@@ -103,79 +89,6 @@ public class TestFMLPrettyPrint1 extends OpenflexoTestCase {
 		editor = new DefaultFlexoEditor(null, serviceManager);
 		assertNotNull(editor);
 
-	}
-
-	private void testNormalizedFMLRepresentationEquals(String resourceFile) {
-		// System.out.println("Normalized=");
-		// System.out.println(compilationUnit.getPrettyPrintDelegate()
-		// .getNormalizedRepresentation(compilationUnit.getPrettyPrintDelegate().makePrettyPrintContext()));
-		testFileContentsEquals(compilationUnit.getPrettyPrintDelegate()
-				.getNormalizedRepresentation(compilationUnit.getPrettyPrintDelegate().makePrettyPrintContext()), resourceFile);
-	}
-
-	private void testFMLPrettyPrintEquals(String resourceFile) {
-		testFileContentsEquals(compilationUnit.getPrettyPrintDelegate()
-				.getRepresentation(compilationUnit.getPrettyPrintDelegate().makePrettyPrintContext()), resourceFile);
-	}
-
-	private void testFileContentsEquals(String expected, String resourceFile) {
-		final Resource resource = ResourceLocator.locateResource(resourceFile);
-		try {
-			String resourceContents = FileUtils.fileContents(resource.openInputStream(), null);
-			assertSameContents(expected, resourceContents);
-		} catch (IOException e) {
-			e.printStackTrace();
-			fail();
-		}
-	}
-
-	private void assertSameContents(String s1, String s2) {
-
-		List<String> rows1 = new ArrayList<>();
-		List<String> rows2 = new ArrayList<>();
-		try (BufferedReader br = new BufferedReader(new StringReader(s1))) {
-			String nextLine = null;
-			do {
-				nextLine = br.readLine();
-				if (nextLine != null) {
-					rows1.add(nextLine);
-					// System.out.println("1> [" + rows1.size() + "] : " + nextLine);
-				}
-			} while (nextLine != null);
-		} catch (IOException e) {
-			e.printStackTrace();
-			fail();
-		}
-
-		if (rows1.get(rows1.size() - 1).trim().equals("")) {
-			rows1.remove(rows1.size() - 1);
-		}
-
-		try (BufferedReader br = new BufferedReader(new StringReader(s2))) {
-			String nextLine = null;
-			do {
-				nextLine = br.readLine();
-				if (nextLine != null) {
-					rows2.add(nextLine);
-					// System.out.println("2> [" + rows2.size() + "] : " + nextLine);
-				}
-			} while (nextLine != null);
-		} catch (IOException e) {
-			e.printStackTrace();
-			fail();
-		}
-
-		/*for (int i = 0; i < rows1.size(); i++) {
-			System.out.println("*1> [" + i + "] : " + rows1.get(i));
-		}
-		for (int i = 0; i < rows2.size(); i++) {
-			System.out.println("*2> [" + i + "] : " + rows2.get(i));
-		}*/
-
-		assertEquals("Row size differs", rows1.size(), rows2.size());
-		for (int i = 0; i < rows1.size(); i++) {
-			assertEquals(rows1.get(i)/*.trim()*/, rows2.get(i)/*.trim()*/);
-		}
 	}
 
 	private static FMLCompilationUnitNode rootNode;
@@ -198,14 +111,6 @@ public class TestFMLPrettyPrint1 extends OpenflexoTestCase {
 	private static JavaImportNode stringImportNode;
 	private static JavaImportNode listImportNode;
 	private static JavaImportNode dateImportNode;
-
-	private void debug(P2PPNode<?, ?> node, int indentLevel) {
-		System.out.println(StringUtils.buildWhiteSpaceIndentation(indentLevel * 2) + "> " + node.getClass().getSimpleName() + " "
-				+ node.getLastParsedFragment() + " prelude=" + node.getPrelude() + " postlude=" + node.getPostlude());
-		for (P2PPNode<?, ?> child : node.getChildren()) {
-			debug(child, indentLevel + 1);
-		}
-	}
 
 	@Test
 	@TestOrder(2)
@@ -230,8 +135,8 @@ public class TestFMLPrettyPrint1 extends OpenflexoTestCase {
 
 		System.out.println("FML=\n" + compilationUnit.getFMLPrettyPrint());
 
-		testNormalizedFMLRepresentationEquals("TestFMLPrettyPrint1/Step1Normalized.fml");
-		testFMLPrettyPrintEquals("TestFMLPrettyPrint1/Step1PrettyPrint.fml");
+		testNormalizedFMLRepresentationEquals(compilationUnit, "TestFMLPrettyPrint1/Step1Normalized.fml");
+		testFMLPrettyPrintEquals(compilationUnit, "TestFMLPrettyPrint1/Step1PrettyPrint.fml");
 
 		assertNotNull(stringImportNode = (JavaImportNode) rootNode.getObjectNode(stringImport));
 		assertNotNull(listImportNode = (JavaImportNode) rootNode.getObjectNode(listImport));
@@ -248,7 +153,7 @@ public class TestFMLPrettyPrint1 extends OpenflexoTestCase {
 
 		assertEquals("(6:0)-(6:22)", listImportNode.getLastParsedFragment().toString());
 		assertEquals(null, listImportNode.getPrelude());
-		assertEquals("(6:22)-(7:0)", listImportNode.getPostlude().toString());
+		assertEquals("(6:22)-(8:0)", listImportNode.getPostlude().toString());
 
 		assertEquals("(11:1)-(11:7)", iPropertyNode.getLastParsedFragment().toString());
 		assertEquals("(11:0)-(11:1)", iPropertyNode.getPrelude().toString());
@@ -269,8 +174,8 @@ public class TestFMLPrettyPrint1 extends OpenflexoTestCase {
 		JavaImportDeclaration listDeclaration = compilationUnit.getJavaImports().get(1);
 		listDeclaration.setFullQualifiedClassName("java.util.ArrayList");
 		System.out.println("FML=\n" + compilationUnit.getFMLPrettyPrint());
-		testNormalizedFMLRepresentationEquals("TestFMLPrettyPrint1/Step2Normalized.fml");
-		testFMLPrettyPrintEquals("TestFMLPrettyPrint1/Step2PrettyPrint.fml");
+		testNormalizedFMLRepresentationEquals(compilationUnit, "TestFMLPrettyPrint1/Step2Normalized.fml");
+		testFMLPrettyPrintEquals(compilationUnit, "TestFMLPrettyPrint1/Step2PrettyPrint.fml");
 
 		assertEquals("(5:0)-(5:24)", stringImportNode.getLastParsedFragment().toString());
 		assertEquals(null, stringImportNode.getPrelude());
@@ -278,7 +183,7 @@ public class TestFMLPrettyPrint1 extends OpenflexoTestCase {
 
 		assertEquals("(6:0)-(6:22)", listImportNode.getLastParsedFragment().toString());
 		assertEquals(null, listImportNode.getPrelude());
-		assertEquals("(6:22)-(7:0)", listImportNode.getPostlude().toString());
+		assertEquals("(6:22)-(8:0)", listImportNode.getPostlude().toString());
 
 		assertEquals("(11:1)-(11:7)", iPropertyNode.getLastParsedFragment().toString());
 		assertEquals("(11:0)-(11:1)", iPropertyNode.getPrelude().toString());
@@ -301,8 +206,8 @@ public class TestFMLPrettyPrint1 extends OpenflexoTestCase {
 		createStringProperty.setPrimitiveType(PrimitiveType.String);
 		createStringProperty.doAction();
 		System.out.println("FML=\n" + compilationUnit.getFMLPrettyPrint());
-		testNormalizedFMLRepresentationEquals("TestFMLPrettyPrint1/Step3Normalized.fml");
-		testFMLPrettyPrintEquals("TestFMLPrettyPrint1/Step3PrettyPrint.fml");
+		testNormalizedFMLRepresentationEquals(compilationUnit, "TestFMLPrettyPrint1/Step3Normalized.fml");
+		testFMLPrettyPrintEquals(compilationUnit, "TestFMLPrettyPrint1/Step3PrettyPrint.fml");
 
 		assertNotNull(stringProperty = virtualModel.getAccessibleProperty("newString"));
 		assertNotNull(stringPropertyNode = (FlexoPropertyNode<?, ?>) vmNode.getObjectNode(stringProperty));
@@ -329,8 +234,8 @@ public class TestFMLPrettyPrint1 extends OpenflexoTestCase {
 		createDateProperty.setPrimitiveType(PrimitiveType.Date);
 		createDateProperty.doAction();
 		System.out.println("FML=\n" + compilationUnit.getFMLPrettyPrint());
-		testNormalizedFMLRepresentationEquals("TestFMLPrettyPrint1/Step4Normalized.fml");
-		testFMLPrettyPrintEquals("TestFMLPrettyPrint1/Step4PrettyPrint.fml");
+		testNormalizedFMLRepresentationEquals(compilationUnit, "TestFMLPrettyPrint1/Step4Normalized.fml");
+		testFMLPrettyPrintEquals(compilationUnit, "TestFMLPrettyPrint1/Step4PrettyPrint.fml");
 	}
 
 	@Test
@@ -351,8 +256,8 @@ public class TestFMLPrettyPrint1 extends OpenflexoTestCase {
 		System.out.println(rawSource.debug());
 		debug(rootNode, 0);
 
-		testNormalizedFMLRepresentationEquals("TestFMLPrettyPrint1/Step5Normalized.fml");
-		testFMLPrettyPrintEquals("TestFMLPrettyPrint1/Step5PrettyPrint.fml");
+		testNormalizedFMLRepresentationEquals(compilationUnit, "TestFMLPrettyPrint1/Step5Normalized.fml");
+		testFMLPrettyPrintEquals(compilationUnit, "TestFMLPrettyPrint1/Step5PrettyPrint.fml");
 
 	}
 
@@ -367,8 +272,8 @@ public class TestFMLPrettyPrint1 extends OpenflexoTestCase {
 		dateProperty.delete();
 
 		System.out.println("FML=\n" + compilationUnit.getFMLPrettyPrint());
-		testNormalizedFMLRepresentationEquals("TestFMLPrettyPrint1/Step6Normalized.fml");
-		testFMLPrettyPrintEquals("TestFMLPrettyPrint1/Step6PrettyPrint.fml");
+		testNormalizedFMLRepresentationEquals(compilationUnit, "TestFMLPrettyPrint1/Step6Normalized.fml");
+		testFMLPrettyPrintEquals(compilationUnit, "TestFMLPrettyPrint1/Step6PrettyPrint.fml");
 	}
 
 }

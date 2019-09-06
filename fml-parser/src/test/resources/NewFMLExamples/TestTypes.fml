@@ -4,6 +4,11 @@
 
 use org.openflexo.foundation.fml.rt.FMLRTModelSlot as FMLRT;
 
+import java.lang.String;
+import java.util.List;
+import java.util.Map;
+import java.util.Date;
+
 model MyModel {
 	
 	concept TestPrimitiveTypes {
@@ -24,8 +29,8 @@ model MyModel {
 	concept TestComplexTypes {
 		
 		List<String> someStringsInAJavaList;
-		List<? extends String> anOtherList;
-		List<?> aWildcardList;
+		//List<? extends String> anOtherList;
+		//List<?> aWildcardList;
 		Map<String,List<String>> aThirdList;
 	}
 

@@ -116,12 +116,9 @@ public class AssignActionWizard extends FlexoActionWizard<AssignAction> {
 
 		@Override
 		public void propertyChange(PropertyChangeEvent evt) {
-			System.out.println("Je recois " + evt + " de " + evt.getSource());
 			if (evt.getSource() == getAction()) {
 				if (evt.getPropertyName().equals("assignation")) {
-					System.out.println("JE check ");
 					checkValidity();
-					System.out.println("Fin du check");
 				}
 			}
 		}

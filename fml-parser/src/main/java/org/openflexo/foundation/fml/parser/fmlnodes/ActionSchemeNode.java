@@ -41,74 +41,77 @@ package org.openflexo.foundation.fml.parser.fmlnodes;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.fml.ActionScheme;
-import org.openflexo.foundation.fml.parser.FMLSemanticsAnalyzer;
-import org.openflexo.foundation.fml.parser.node.AMethodBehaviourDecl;
-import org.openflexo.p2pp.RawSource.RawSourceFragment;
+import org.openflexo.foundation.fml.parser.ControlGraphFactory;
+import org.openflexo.foundation.fml.parser.MainSemanticsAnalyzer;
+import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.ControlGraphNode;
+import org.openflexo.foundation.fml.parser.node.AMethodBehaviourDeclaration;
+import org.openflexo.p2pp.PrettyPrintContext.Indentation;
 
 /**
+ * <pre>
+ * 		{anonymous_constructor} [annotations]:annotation* visibility? create l_par formal_arguments_list? r_par flexo_behaviour_body |
+ * </pre>
+ * 
  * @author sylvain
  * 
  */
-public class ActionSchemeNode extends FlexoBehaviourNode<AMethodBehaviourDecl, ActionScheme> {
+public class ActionSchemeNode extends FlexoBehaviourNode<AMethodBehaviourDeclaration, ActionScheme> {
 
+	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(ActionSchemeNode.class.getPackage().getName());
 
-	public ActionSchemeNode(AMethodBehaviourDecl astNode, FMLSemanticsAnalyzer analyser) {
+	public ActionSchemeNode(AMethodBehaviourDeclaration astNode, MainSemanticsAnalyzer analyser) {
 		super(astNode, analyser);
 	}
 
-	public ActionSchemeNode(ActionScheme behaviour, FMLSemanticsAnalyzer analyser) {
-		super(behaviour, analyser);
+	public ActionSchemeNode(ActionScheme creationScheme, MainSemanticsAnalyzer analyser) {
+		super(creationScheme, analyser);
 	}
 
 	@Override
-	public ActionScheme buildModelObjectFromAST(AMethodBehaviourDecl astNode) {
+	public ActionScheme buildModelObjectFromAST(AMethodBehaviourDeclaration astNode) {
 		ActionScheme returned = getFactory().newActionScheme();
 		returned.setVisibility(getVisibility(astNode.getVisibility()));
 		returned.setName(astNode.getName().getText());
-		System.out.println("TODO: set return type to " + getTypeFactory().makeType(astNode.getType()));
-		// returned.setType(getTypeFactory().makeType(astNode.getType()));
+
+		ControlGraphNode<?, ?> cgNode = ControlGraphFactory.makeControlGraphNode(getFlexoBehaviourBody(), getAnalyser());
+		if (cgNode != null) {
+			returned.setControlGraph(cgNode.getModelObject());
+			addToChildren(cgNode);
+		}
+
 		return returned;
 	}
 
 	@Override
 	public void preparePrettyPrint(boolean hasParsedVersion) {
 		super.preparePrettyPrint(hasParsedVersion);
-		if (hasParsedVersion && getVisibilityFragment() != null) {
-			appendDynamicContents(() -> getVisibilityAsString(getModelObject().getVisibility()), SPACE, getVisibilityFragment());
+		// @formatter:off	
+		append(dynamicContents(() -> getVisibilityAsString(getModelObject().getVisibility()), SPACE), getVisibilityFragment());
+		append(dynamicContents(() -> getModelObject().getName(), SPACE), getNameFragment());
+		append(staticContents("("), getLParFragment());
+		append(staticContents(")"), getRParFragment());
+		when(() -> isAbstract())
+				.thenAppend(staticContents(";"), getSemiFragment())
+				.elseAppend(staticContents(SPACE,"{", ""), getLBrcFragment())
+				.elseAppend(childContents(LINE_SEPARATOR, () -> getModelObject().getControlGraph(), LINE_SEPARATOR, Indentation.Indent))
+				.elseAppend(staticContents(LINE_SEPARATOR, "}", ""), getLBrcFragment());
+		// @formatter:on
+
+		/*appendDynamicContents(() -> getVisibilityAsString(getModelObject().getVisibility()), SPACE, getVisibilityFragment());
+		
+		appendDynamicContents(() -> getModelObject().getName(), SPACE, getNameFragment());
+		appendStaticContents("(", getLParFragment());
+		appendStaticContents(")", getRParFragment());
+		if (getFlexoBehaviourBody() instanceof AEmptyFlexoBehaviourBody) {
+			appendStaticContents(";", getSemiFragment());
 		}
 		else {
-			appendDynamicContents(() -> getVisibilityAsString(getModelObject().getVisibility()), SPACE);
-		}
-		appendStaticContents("coucou la methode " + SPACE);
-		/**
-		 * if (hasParsedVersion) { appendDynamicContents(() -> serializeType(getModelObject().getType()), SPACE, getTypeFragment());
-		 * appendDynamicContents(() -> getModelObject().getName(), getNameFragment()); appendStaticContents(";", getSemiFragment()); } else
-		 * { appendDynamicContents(() -> getVisibilityAsString(getModelObject().getVisibility()), SPACE); appendDynamicContents(() ->
-		 * serializeType(getModelObject().getType()), SPACE); appendDynamicContents(() -> getModelObject().getName());
-		 * appendStaticContents(";"); }
-		 */
-	}
-
-	private RawSourceFragment getVisibilityFragment() {
-		if (getASTNode() != null && getASTNode().getVisibility() != null) {
-			return getFragment(getASTNode().getVisibility());
-		}
-		return null;
-	}
-
-	private RawSourceFragment getTypeFragment() {
-		if (getASTNode() != null) {
-			return getFragment(getASTNode().getType());
-		}
-		return null;
-	}
-
-	private RawSourceFragment getNameFragment() {
-		if (getASTNode() != null) {
-			return getFragment(getASTNode().getName());
-		}
-		return null;
+			appendStaticContents(SPACE, "{", getLBrcFragment());
+			appendToChildPrettyPrintContents(LINE_SEPARATOR, () -> getModelObject().getControlGraph(), LINE_SEPARATOR,
+					Indentation.DoNotIndent);
+			appendStaticContents(LINE_SEPARATOR, "}", getRBrcFragment());
+		}*/
 	}
 
 }

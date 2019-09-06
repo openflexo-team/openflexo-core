@@ -112,6 +112,8 @@ public interface FlexoBehaviour extends FlexoBehaviourObject, Function, FMLContr
 	public static final String STEPS_NUMBER_KEY = "stepsNumber";
 	@PropertyIdentifier(type = FMLControlGraph.class)
 	public static final String CONTROL_GRAPH_KEY = "controlGraph";
+	@PropertyIdentifier(type = boolean.class)
+	public static final String IS_ABSTRACT_KEY = "isAbstract";
 
 	@Getter(value = CONTROL_GRAPH_KEY, inverse = FMLControlGraph.OWNER_KEY)
 	@CloningStrategy(StrategyType.CLONE)
@@ -121,6 +123,13 @@ public interface FlexoBehaviour extends FlexoBehaviourObject, Function, FMLContr
 
 	@Setter(CONTROL_GRAPH_KEY)
 	public void setControlGraph(FMLControlGraph aControlGraph);
+
+	@Getter(value = IS_ABSTRACT_KEY, defaultValue = "false")
+	@XMLAttribute
+	public boolean isAbstract();
+
+	@Setter(IS_ABSTRACT_KEY)
+	public void setAbstract(boolean isAbstract);
 
 	@Override
 	@Getter(value = FLEXO_CONCEPT_KEY, inverse = FlexoConcept.FLEXO_BEHAVIOURS_KEY)

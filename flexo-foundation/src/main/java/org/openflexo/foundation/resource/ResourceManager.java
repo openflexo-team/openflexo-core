@@ -478,4 +478,31 @@ public class ResourceManager extends FlexoServiceImpl implements ReferenceOwner 
 
 	}
 
+	public List<FlexoResource<?>> getResources(Object serializationArtefact) {
+		List<FlexoResource<?>> returned = new ArrayList<>();
+		System.out.println("On cherche " + serializationArtefact);
+		for (FlexoResource<?> flexoResource : resources) {
+			System.out.println(" > " + flexoResource + " io=" + flexoResource.getIODelegate().getSerializationArtefact());
+			if (flexoResource.getIODelegate().getSerializationArtefact().equals(serializationArtefact)) {
+				returned.add(flexoResource);
+			}
+			else if (flexoResource.getIODelegate() instanceof DirectoryBasedIODelegate) {
+				if (((DirectoryBasedIODelegate) flexoResource.getIODelegate()).getDirectory().equals(serializationArtefact)) {
+					returned.add(flexoResource);
+				}
+			}
+			else if (flexoResource.getIODelegate() instanceof DirectoryBasedJarIODelegate) {
+				if (((DirectoryBasedJarIODelegate) flexoResource.getIODelegate()).getDirectory().equals(serializationArtefact)) {
+					returned.add(flexoResource);
+				}
+			}
+		}
+		return returned;
+	}
+
+	@Override
+	public String toString() {
+		return getClass().getSimpleName() + "@" + Integer.toHexString(hashCode());
+	}
+
 }
