@@ -11,10 +11,6 @@ dependencies {
 
 apply plugin: 'sablecc'
 
-tasks.withType(Test) {
-	jvmArgs += ["-Djava.awt.headless=true"]
-}
-
 // use with gradle --no-daemon --console plain fml-cli:run -q
 apply plugin: 'application'
 mainClassName = "org.openflexo.foundation.fml.cli.LaunchHeadlessFMLCLI"

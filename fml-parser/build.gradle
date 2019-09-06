@@ -12,6 +12,3 @@ dependencies {
 
 apply plugin: 'sablecc'
 
-tasks.withType(Test) {
-	jvmArgs += ["-Djava.awt.headless=true"]
-}

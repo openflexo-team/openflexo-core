@@ -1,5 +1,4 @@
 buildscript {
-    configurations.classpath.resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
     repositories {
         maven { url uri('https://maven.openflexo.org/artifactory/openflexo-deps/') }
     }

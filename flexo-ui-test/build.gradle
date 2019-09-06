@@ -11,22 +11,3 @@ dependencies {
   testCompile ginaSwingEditorTest()
   testCompile project(':flexo-test-resources')
 }
-task nonuiTest(type: Test) {
-  ignoreFailures = true
-  include '**/TestCommonFlexoDialogFibs.class'
-  include '**/TestCommonFlexoFibs.class'
-  include '**/TestCommonFlexoInspectors.class'
-  include '**/TestFlexoServerAddressBook.class'
-  jvmArgs += ["-Djava.awt.headless=true"]
-}
-
-task uiTest(type: Test,dependsOn: 'nonuiTest') {
-  ignoreFailures = true
-  exclude '**/TestCommonFlexoDialogFibs.class'
-  exclude '**/TestCommonFlexoFibs.class'
-  exclude '**/TestCommonFlexoInspectors.class'
-  exclude '**/TestFlexoServerAddressBook.class'
-}
-
-task test(overwrite: true,dependsOn: 'uiTest') {
-}

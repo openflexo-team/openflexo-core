@@ -41,6 +41,7 @@ package org.openflexo.fib;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 import org.openflexo.ApplicationContext;
 import org.openflexo.components.PreferencesDialog;
@@ -50,6 +51,7 @@ import org.openflexo.gina.test.TestApplicationContext;
 import org.openflexo.prefs.PreferencesService;
 import org.openflexo.test.OrderedRunner;
 import org.openflexo.test.TestOrder;
+import org.openflexo.test.UITest;
 
 /**
  * Test the ReviewUnsavedDialog widget
@@ -81,12 +83,14 @@ public class TestPreferencesDialog extends OpenflexoTestCaseWithGUI {
 
 	@Test
 	@TestOrder(1)
+	@Category(UITest.class)
 	public void testInstanciateTestServiceManager() {
 		instanciateTestServiceManager();
 	}
 
 	@Test
 	@TestOrder(2)
+	@Category(UITest.class)
 	public void testInstanciateWidget() {
 		PreferencesDialog dialog = PreferencesDialog.getPreferencesDialog(serviceManager, null);
 
