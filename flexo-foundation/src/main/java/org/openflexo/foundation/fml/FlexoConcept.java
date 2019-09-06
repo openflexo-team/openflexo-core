@@ -64,7 +64,6 @@ import org.openflexo.foundation.fml.editionaction.AssignationAction;
 import org.openflexo.foundation.fml.editionaction.DeleteAction;
 import org.openflexo.foundation.fml.inspector.FlexoConceptInspector;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
-import org.openflexo.foundation.resource.SaveResourceException;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.logging.FlexoLogger;
 import org.openflexo.pamela.annotations.Adder;
@@ -490,6 +489,9 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 	@Remover(PARENT_FLEXO_CONCEPTS_KEY)
 	public void removeFromParentFlexoConcepts(FlexoConcept parentFlexoConcept);
 
+	// Used in FML pettry-print
+	public String getParentFlexoConceptsDeclaration();
+
 	@Getter(value = CHILD_FLEXO_CONCEPTS_KEY, cardinality = Cardinality.LIST/*, inverse = PARENT_FLEXO_CONCEPTS_KEY*/)
 	// @XMLElement(context = "Child")
 	public List<FlexoConcept> getChildFlexoConcepts();
@@ -728,6 +730,14 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 		private ImageIcon bigIcon;
 		private ImageIcon mediumIcon;
 		private ImageIcon smallIcon;
+
+		@Override
+		public FMLCompilationUnit getResourceData() {
+			if (getOwner() != null) {
+				return getOwner().getResourceData();
+			}
+			return null;
+		}
 
 		@Override
 		public final boolean hasNature(FlexoConceptNature nature) {
@@ -1545,14 +1555,14 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 			System.out.println(getStringRepresentation());
 		}
 
-		@Deprecated
+		/*@Deprecated
 		public void save() {
 			try {
 				getOwningVirtualModel().getResource().save();
 			} catch (SaveResourceException e) {
 				e.printStackTrace();
 			}
-		}
+		}*/
 
 		@Override
 		public FlexoConceptBindingModel getBindingModel() {
@@ -1660,10 +1670,26 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 			return sb.toString();
 		}
 
+		@Override
+		public String getParentFlexoConceptsDeclaration() {
+			StringBuffer sb = new StringBuffer();
+			boolean isFirst = true;
+			for (FlexoConcept parent : getParentFlexoConcepts()) {
+				sb.append((isFirst ? "" : ",") + parent.getName());
+				isFirst = false;
+			}
+			return sb.toString();
+		}
+
 		private boolean isDecodingParentFlexoConceptList = false;
 
+		// Testing XML->FML migration
+		@Deprecated
+		public static boolean PREVENT_PARENT_CONCEPTS_DECODING = false;
+
 		private void decodeParentFlexoConceptList(boolean loadWhenRequired) {
-			if (parentFlexoConceptList != null && getVirtualModelLibrary() != null && !isDecodingParentFlexoConceptList) {
+			if (parentFlexoConceptList != null && getVirtualModelLibrary() != null && !isDecodingParentFlexoConceptList
+					&& !PREVENT_PARENT_CONCEPTS_DECODING) {
 				isDecodingParentFlexoConceptList = true;
 				StringTokenizer st = new StringTokenizer(parentFlexoConceptList, ",");
 				List<FlexoConcept> parentConcepts = new ArrayList<>();
@@ -1838,9 +1864,9 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 			if (StringUtils.isNotEmpty(getAuthor())) {
 				out.append(" * @author " + getAuthor() + StringUtils.LINE_SEPARATOR, context);
 			}
-			if (this instanceof VirtualModel) {
+			/*if (this instanceof VirtualModel) {
 				out.append(" * @version " + ((VirtualModel) this).getVersion() + StringUtils.LINE_SEPARATOR, context);
-			}
+			}*/
 			out.append(" */" + StringUtils.LINE_SEPARATOR, context);
 			return out.toString();
 		}

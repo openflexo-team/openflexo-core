@@ -44,6 +44,7 @@ import org.openflexo.foundation.fml.FlexoProperty;
 import org.openflexo.foundation.fml.parser.FMLObjectNode;
 import org.openflexo.foundation.fml.parser.MainSemanticsAnalyzer;
 import org.openflexo.foundation.fml.parser.node.AConceptDeclaration;
+import org.openflexo.foundation.fml.parser.node.ASuperClause;
 import org.openflexo.p2pp.PrettyPrintContext.Indentation;
 import org.openflexo.p2pp.RawSource.RawSourceFragment;
 
@@ -86,6 +87,12 @@ public class FlexoConceptNode extends FMLObjectNode<AConceptDeclaration, FlexoCo
 		append(dynamicContents(() -> getVisibilityAsString(getModelObject().getVisibility()), SPACE), getVisibilityFragment());
 		append(staticContents("","concept",SPACE), getConceptFragment());
 		append(dynamicContents(() -> getModelObject().getName()),getNameFragment());
+
+		when(() -> getModelObject().getParentFlexoConcepts().size()>0)
+		.thenAppend(staticContents(SPACE,"extends",SPACE), getExtendsFragment())
+		.thenAppend(dynamicContents(() -> getModelObject().getParentFlexoConceptsDeclaration()),getSuperTypeListFragment())
+		.elseAppend(staticContents(""), getSuperClauseFragment());
+
 		append(staticContents(SPACE, "{", LINE_SEPARATOR), getLBrcFragment());
 		append(childrenContents("", () -> getModelObject().getFlexoProperties(), LINE_SEPARATOR, Indentation.Indent,
 				FlexoProperty.class));
@@ -146,4 +153,28 @@ public class FlexoConceptNode extends FMLObjectNode<AConceptDeclaration, FlexoCo
 		}
 		return null;
 	}
+
+	private RawSourceFragment getSuperClauseFragment() {
+		if (getASTNode() != null && getASTNode().getSuperClause() != null) {
+			return getFragment(getASTNode().getSuperClause());
+		}
+		return null;
+	}
+
+	private RawSourceFragment getExtendsFragment() {
+		if (getASTNode() != null && getASTNode().getSuperClause() != null) {
+			ASuperClause superClause = (ASuperClause) getASTNode().getSuperClause();
+			return getFragment(superClause.getExtends());
+		}
+		return null;
+	}
+
+	private RawSourceFragment getSuperTypeListFragment() {
+		if (getASTNode() != null && getASTNode().getSuperClause() != null) {
+			ASuperClause superClause = (ASuperClause) getASTNode().getSuperClause();
+			return getFragment(superClause.getSuperTypeList());
+		}
+		return null;
+	}
+
 }

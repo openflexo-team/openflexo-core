@@ -46,7 +46,7 @@ import org.openflexo.foundation.action.FlexoActionFactory;
 import org.openflexo.foundation.action.FlexoActionRunnable;
 import org.openflexo.foundation.fml.FMLObject;
 import org.openflexo.foundation.fml.action.CreateTopLevelVirtualModel;
-import org.openflexo.foundation.fml.rm.VirtualModelResource;
+import org.openflexo.foundation.fml.rm.CompilationUnitResource;
 import org.openflexo.foundation.resource.RepositoryFolder;
 import org.openflexo.gina.controller.FIBController.Status;
 import org.openflexo.icon.FMLIconLibrary;
@@ -56,13 +56,13 @@ import org.openflexo.view.controller.ActionInitializer;
 import org.openflexo.view.controller.ControllerActionInitializer;
 
 public class CreateTopLevelVirtualModelInitializer
-		extends ActionInitializer<CreateTopLevelVirtualModel, RepositoryFolder<VirtualModelResource, ?>, FMLObject> {
+		extends ActionInitializer<CreateTopLevelVirtualModel, RepositoryFolder<CompilationUnitResource, ?>, FMLObject> {
 	public CreateTopLevelVirtualModelInitializer(ControllerActionInitializer actionInitializer) {
 		super(CreateTopLevelVirtualModel.actionType, actionInitializer);
 	}
 
 	@Override
-	protected FlexoActionRunnable<CreateTopLevelVirtualModel, RepositoryFolder<VirtualModelResource, ?>, FMLObject> getDefaultInitializer() {
+	protected FlexoActionRunnable<CreateTopLevelVirtualModel, RepositoryFolder<CompilationUnitResource, ?>, FMLObject> getDefaultInitializer() {
 		return (e, action) -> {
 			Wizard wizard = new CreateTopLevelVirtualModelWizard(action, getController());
 			WizardDialog dialog = new WizardDialog(wizard, getController());
@@ -77,7 +77,7 @@ public class CreateTopLevelVirtualModelInitializer
 	}
 
 	@Override
-	protected FlexoActionRunnable<CreateTopLevelVirtualModel, RepositoryFolder<VirtualModelResource, ?>, FMLObject> getDefaultFinalizer() {
+	protected FlexoActionRunnable<CreateTopLevelVirtualModel, RepositoryFolder<CompilationUnitResource, ?>, FMLObject> getDefaultFinalizer() {
 		return (e, action) -> {
 			action.getNewVirtualModel().setAuthor(getController().getApplicationContext().getGeneralPreferences().getUserName());
 			getController().selectAndFocusObject(action.getNewVirtualModel());
@@ -87,7 +87,7 @@ public class CreateTopLevelVirtualModelInitializer
 
 	@Override
 	protected Icon getEnabledIcon(
-			FlexoActionFactory<CreateTopLevelVirtualModel, RepositoryFolder<VirtualModelResource, ?>, FMLObject> actionType) {
+			FlexoActionFactory<CreateTopLevelVirtualModel, RepositoryFolder<CompilationUnitResource, ?>, FMLObject> actionType) {
 		return IconFactory.getImageIcon(FMLIconLibrary.VIRTUAL_MODEL_ICON, IconLibrary.NEW_MARKER);
 	}
 

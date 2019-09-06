@@ -39,6 +39,7 @@
 package org.openflexo.prefs;
 
 import java.io.File;
+import java.io.IOException;
 
 import org.openflexo.ApplicationContext;
 import org.openflexo.foundation.IOFlexoException;
@@ -47,17 +48,17 @@ import org.openflexo.foundation.InvalidModelDefinitionException;
 import org.openflexo.foundation.InvalidXMLException;
 import org.openflexo.foundation.resource.FileIODelegate;
 import org.openflexo.foundation.resource.FileIODelegate.FileIODelegateImpl;
+import org.openflexo.foundation.resource.FlexoFileNotFoundException;
+import org.openflexo.foundation.resource.FlexoResource;
+import org.openflexo.foundation.resource.PamelaXMLSerializableResource;
+import org.openflexo.foundation.resource.PamelaXMLSerializableResourceImpl;
+import org.openflexo.foundation.resource.SaveResourceException;
 import org.openflexo.pamela.ModelContextLibrary;
 import org.openflexo.pamela.annotations.ImplementationClass;
 import org.openflexo.pamela.annotations.ModelEntity;
 import org.openflexo.pamela.annotations.XMLElement;
 import org.openflexo.pamela.exceptions.ModelDefinitionException;
 import org.openflexo.pamela.factory.ModelFactory;
-import org.openflexo.foundation.resource.FlexoFileNotFoundException;
-import org.openflexo.foundation.resource.FlexoResource;
-import org.openflexo.foundation.resource.PamelaResource;
-import org.openflexo.foundation.resource.PamelaResourceImpl;
-import org.openflexo.foundation.resource.SaveResourceException;
 import org.openflexo.toolbox.FileUtils;
 
 /**
@@ -69,7 +70,7 @@ import org.openflexo.toolbox.FileUtils;
 @ModelEntity
 @ImplementationClass(FlexoPreferencesResource.FlexoPreferencesResourceImpl.class)
 @XMLElement
-public interface FlexoPreferencesResource extends PamelaResource<FlexoPreferences, FlexoPreferencesFactory> {
+public interface FlexoPreferencesResource extends PamelaXMLSerializableResource<FlexoPreferences, FlexoPreferencesFactory> {
 
 	public FlexoPreferences getFlexoPreferences();
 
@@ -80,8 +81,8 @@ public interface FlexoPreferencesResource extends PamelaResource<FlexoPreference
 	 * @author Sylvain
 	 * 
 	 */
-	public static abstract class FlexoPreferencesResourceImpl extends PamelaResourceImpl<FlexoPreferences, FlexoPreferencesFactory>
-			implements FlexoPreferencesResource {
+	public static abstract class FlexoPreferencesResourceImpl
+			extends PamelaXMLSerializableResourceImpl<FlexoPreferences, FlexoPreferencesFactory> implements FlexoPreferencesResource {
 
 		private static final String FLEXO_PREFS_FILE_NAME = "Flexo.prefs";
 
@@ -136,8 +137,7 @@ public interface FlexoPreferencesResource extends PamelaResource<FlexoPreference
 		}
 
 		@Override
-		public FlexoPreferences loadResourceData() throws FlexoFileNotFoundException, IOFlexoException, InvalidXMLException,
-				InconsistentDataException, InvalidModelDefinitionException {
+		protected FlexoPreferences performLoad() throws IOException, Exception {
 			try {
 				return super.loadResourceData();
 			} catch (InvalidXMLException e) {

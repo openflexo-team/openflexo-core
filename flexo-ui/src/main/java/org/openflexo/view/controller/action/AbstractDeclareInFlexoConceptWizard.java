@@ -49,7 +49,7 @@ import org.openflexo.foundation.action.transformation.FlexoConceptCreationStrate
 import org.openflexo.foundation.action.transformation.FlexoRoleCreationStrategy;
 import org.openflexo.foundation.action.transformation.FlexoRoleSettingStrategy;
 import org.openflexo.foundation.action.transformation.TransformationStrategy;
-import org.openflexo.foundation.fml.rm.VirtualModelResource;
+import org.openflexo.foundation.fml.rm.CompilationUnitResource;
 import org.openflexo.gina.annotation.FIBPanel;
 import org.openflexo.toolbox.StringUtils;
 import org.openflexo.view.controller.FlexoController;
@@ -125,14 +125,14 @@ public abstract class AbstractDeclareInFlexoConceptWizard<A extends AbstractDecl
 			}
 		}
 
-		public VirtualModelResource getVirtualModelResource() {
-			return getAction().getVirtualModelResource();
+		public CompilationUnitResource getVirtualModelResource() {
+			return getAction().getCompilationUnitResource();
 		}
 
-		public void setVirtualModelResource(VirtualModelResource virtualModelResource) {
+		public void setVirtualModelResource(CompilationUnitResource virtualModelResource) {
 			if (virtualModelResource != getVirtualModelResource()) {
-				VirtualModelResource oldValue = getVirtualModelResource();
-				getAction().setVirtualModelResource(virtualModelResource);
+				CompilationUnitResource oldValue = getVirtualModelResource();
+				getAction().setCompilationUnitResource(virtualModelResource);
 				getPropertyChangeSupport().firePropertyChange("virtualModelResource", oldValue, virtualModelResource);
 				checkValidity();
 			}

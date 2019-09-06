@@ -53,7 +53,7 @@ import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.FlexoProject;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.VirtualModelLibrary;
-import org.openflexo.foundation.fml.rm.VirtualModelResource;
+import org.openflexo.foundation.fml.rm.CompilationUnitResource;
 import org.openflexo.foundation.fml.rt.action.CreateBasicVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.rm.FMLRTVirtualModelInstanceResource;
 import org.openflexo.foundation.resource.ResourceLoadingCancelledException;
@@ -192,11 +192,11 @@ public class TestCreateVirtualModelInstanceFromExistingViewPoint extends Openfle
 		System.out.println("All resources=" + project.getAllResources());
 		assertNotNull(project.getResource(newView.getURI()));
 
-		VirtualModelResource vpRes = newViewResource.getVirtualModelResource();
-		viewPoint = vpRes.getResourceData();
+		CompilationUnitResource vpRes = newViewResource.getVirtualModelResource();
+		viewPoint = vpRes.getResourceData().getVirtualModel();
 		assertNotNull(viewPoint);
 
-		viewPoint.loadContainedVirtualModelsWhenUnloaded();
+		viewPoint.getCompilationUnit().loadContainedVirtualModelsWhenUnloaded();
 
 		assertEquals(1, viewPoint.getVirtualModels().size());
 		virtualModel = viewPoint.getVirtualModels().get(0);

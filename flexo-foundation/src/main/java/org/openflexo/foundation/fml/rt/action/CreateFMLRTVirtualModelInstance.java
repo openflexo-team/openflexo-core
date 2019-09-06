@@ -45,7 +45,7 @@ import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.action.FlexoActionFactory;
 import org.openflexo.foundation.fml.VirtualModel;
-import org.openflexo.foundation.fml.rm.VirtualModelResource;
+import org.openflexo.foundation.fml.rm.CompilationUnitResource;
 import org.openflexo.foundation.fml.rt.FMLRTTechnologyAdapter;
 import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.rm.AbstractVirtualModelInstanceResource;
@@ -85,14 +85,14 @@ public abstract class CreateFMLRTVirtualModelInstance<A extends CreateFMLRTVirtu
 		try {
 			if (getContainerVirtualModelInstance() != null) {
 				returned = factory.makeContainedFMLRTVirtualModelInstanceResource(getNewVirtualModelInstanceName(),
-						(VirtualModelResource) getVirtualModel().getResource(),
+						(CompilationUnitResource) getVirtualModel().getResource(),
 						(AbstractVirtualModelInstanceResource<?, ?>) getContainerVirtualModelInstance().getResource(),
 						fmlRTTechnologyAdapter.getTechnologyContextManager(), true);
 			}
 			else if (getFolder() != null) {
 				returned = factory.makeTopLevelFMLRTVirtualModelInstanceResource(getNewVirtualModelInstanceName(), null,
 						// Let URI be automatically computed
-						(VirtualModelResource) getVirtualModel().getResource(), getFolder(), true);
+						(CompilationUnitResource) getVirtualModel().getResource(), getFolder(), true);
 			}
 
 			if (returned != null) {

@@ -64,9 +64,9 @@ import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.fml.FMLObject;
 import org.openflexo.foundation.fml.FMLTechnologyAdapter;
 import org.openflexo.foundation.fml.VirtualModel;
-import org.openflexo.foundation.fml.VirtualModelRepository;
-import org.openflexo.foundation.fml.rm.VirtualModelResource;
-import org.openflexo.foundation.fml.rm.VirtualModelResourceFactory;
+import org.openflexo.foundation.fml.CompilationUnitRepository;
+import org.openflexo.foundation.fml.rm.CompilationUnitResource;
+import org.openflexo.foundation.fml.rm.CompilationUnitResourceFactory;
 import org.openflexo.foundation.fml.rt.FMLRTTechnologyAdapter;
 import org.openflexo.foundation.localization.LocalizationService;
 import org.openflexo.foundation.project.ProjectLoader;
@@ -497,13 +497,13 @@ public abstract class OpenflexoTestCase {
 	protected VirtualModel createTopLevelVirtualModel(FlexoResourceCenter<File> rc, String vmName, String vmURI)
 			throws org.openflexo.foundation.resource.SaveResourceException, ModelDefinitionException {
 		FMLTechnologyAdapter fmlTechnologyAdapter = getTA(FMLTechnologyAdapter.class);
-		VirtualModelResourceFactory factory = fmlTechnologyAdapter.getVirtualModelResourceFactory();
-		VirtualModelRepository<File> viewPointRepository = rc.getVirtualModelRepository();
-		VirtualModelResource viewPointResource = factory.makeTopLevelVirtualModelResource(vmName, vmURI,
+		CompilationUnitResourceFactory factory = fmlTechnologyAdapter.getCompilationUnitResourceFactory();
+		CompilationUnitRepository<File> viewPointRepository = rc.getVirtualModelRepository();
+		CompilationUnitResource viewPointResource = factory.makeTopLevelCompilationUnitResource(vmName, vmURI,
 				viewPointRepository.getRootFolder(), true);
 
 		viewPointResource.save();
-		return viewPointResource.getLoadedResourceData();
+		return viewPointResource.getLoadedResourceData().getVirtualModel();
 	}
 
 }

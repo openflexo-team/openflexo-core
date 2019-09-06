@@ -40,19 +40,20 @@ package org.openflexo.foundation.fml.rm;
 
 import java.util.List;
 
+import org.openflexo.foundation.fml.FMLCompilationUnit;
 import org.openflexo.foundation.fml.FMLModelFactory;
 import org.openflexo.foundation.fml.FMLTechnologyAdapter;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.VirtualModelLibrary;
 import org.openflexo.foundation.fml.rt.rm.FMLRTVirtualModelInstanceResource;
 import org.openflexo.foundation.resource.DirectoryContainerResource;
+import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.resource.PamelaResource;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterResource;
 import org.openflexo.pamela.annotations.Adder;
 import org.openflexo.pamela.annotations.Getter;
 import org.openflexo.pamela.annotations.Getter.Cardinality;
-import org.openflexo.pamela.annotations.ImplementationClass;
 import org.openflexo.pamela.annotations.ModelEntity;
 import org.openflexo.pamela.annotations.Remover;
 import org.openflexo.pamela.annotations.Setter;
@@ -64,31 +65,42 @@ import org.openflexo.pamela.annotations.Setter;
  *
  */
 @ModelEntity
-@ImplementationClass(VirtualModelResourceImpl.class)
-public interface VirtualModelResource extends PamelaResource<VirtualModel, FMLModelFactory>, DirectoryContainerResource<VirtualModel>,
-		TechnologyAdapterResource<VirtualModel, FMLTechnologyAdapter> {
+// @ImplementationClass(CompilationUnitResourceImpl.class)
+public interface CompilationUnitResource extends PamelaResource<FMLCompilationUnit, FMLModelFactory>,
+		DirectoryContainerResource<FMLCompilationUnit>, TechnologyAdapterResource<FMLCompilationUnit, FMLTechnologyAdapter> {
 
 	public static final String VIRTUAL_MODEL_LIBRARY = "virtualModelLibrary";
 	public static final String CONTAINED_VMI = "containedVMI";
+	public static final String VIRTUAL_MODEL_CLASS = "virtualModelClass";
+
+	String FACTORY = "factory";
+
+	@Override
+	@Getter(value = FACTORY, ignoreType = true)
+	public FMLModelFactory getFactory();
+
+	@Override
+	@Setter(FACTORY)
+	public void setFactory(FMLModelFactory factory);
 
 	/**
 	 * Return virtual model stored by this resource when loaded<br>
 	 * Force the resource data to be loaded when unloaded
 	 */
-	public VirtualModel getVirtualModel();
+	public FMLCompilationUnit getCompilationUnit();
 
 	/**
 	 * Return virtual model stored by this resource when loaded<br>
 	 * Do not force the resource data to be loaded
 	 */
-	public VirtualModel getLoadedVirtualModel();
+	public FMLCompilationUnit getLoadedCompilationUnit();
 
 	@Override
-	public VirtualModelResource getContainer();
+	public CompilationUnitResource getContainer();
 
-	public List<VirtualModelResource> getContainedVirtualModelResources();
+	public List<CompilationUnitResource> getContainedVirtualModelResources();
 
-	public VirtualModelResource getVirtualModelResource(String virtualModelNameOrURI);
+	public CompilationUnitResource getCompilationUnitResource(String virtualModelNameOrURI);
 
 	@Getter(value = VIRTUAL_MODEL_LIBRARY, ignoreType = true)
 	public VirtualModelLibrary getVirtualModelLibrary();
@@ -111,6 +123,9 @@ public interface VirtualModelResource extends PamelaResource<VirtualModel, FMLMo
 	 * @return
 	 */
 	public String getUsedModelSlotsAsString();
+
+	@Deprecated
+	public void setUsedModelSlots(String usedModelSlotClasses) throws ClassNotFoundException;
 
 	/**
 	 * Rebuild a new {@link FMLModelFactory} using supplied use declarations, and set this new factory as model factory to use for this
@@ -149,5 +164,38 @@ public interface VirtualModelResource extends PamelaResource<VirtualModel, FMLMo
 	 */
 	@Remover(CONTAINED_VMI)
 	public void removeFromContainedVMI(FMLRTVirtualModelInstanceResource resource);
+
+	@Getter(value = VIRTUAL_MODEL_CLASS, ignoreType = true)
+	public Class<? extends VirtualModel> getVirtualModelClass();
+
+	@Setter(VIRTUAL_MODEL_CLASS)
+	public void setVirtualModelClass(Class<? extends VirtualModel> virtualModelClass);
+
+	public String getRawSource();
+
+	public <I> VirtualModelInfo findVirtualModelInfo(FlexoResourceCenter<I> resourceCenter);
+
+	public static class VirtualModelInfo {
+		public String uri;
+		public String version;
+		public String name;
+		// public String modelVersion;
+		public String requiredModelSlotList;
+		public String virtualModelClassName;
+
+		VirtualModelInfo() {
+		}
+
+		VirtualModelInfo(String uri, String version, String name/*, String modelVersion*/, String requiredModelSlotList,
+				String virtualModelClassName) {
+			super();
+			this.uri = uri;
+			this.version = version;
+			this.name = name;
+			// this.modelVersion = modelVersion;
+			this.requiredModelSlotList = requiredModelSlotList;
+			this.virtualModelClassName = virtualModelClassName;
+		}
+	}
 
 }

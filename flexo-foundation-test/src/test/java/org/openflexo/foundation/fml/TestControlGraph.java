@@ -61,8 +61,8 @@ import org.openflexo.foundation.fml.controlgraph.FMLControlGraph;
 import org.openflexo.foundation.fml.controlgraph.Sequence;
 import org.openflexo.foundation.fml.editionaction.AssignationAction;
 import org.openflexo.foundation.fml.editionaction.ExpressionAction;
-import org.openflexo.foundation.fml.rm.VirtualModelResource;
-import org.openflexo.foundation.fml.rm.VirtualModelResourceFactory;
+import org.openflexo.foundation.fml.rm.CompilationUnitResource;
+import org.openflexo.foundation.fml.rm.CompilationUnitResourceFactory;
 import org.openflexo.foundation.resource.DirectoryResourceCenter;
 import org.openflexo.foundation.resource.SaveResourceException;
 import org.openflexo.foundation.test.OpenflexoTestCase;
@@ -110,18 +110,18 @@ public class TestControlGraph extends OpenflexoTestCase {
 
 		FMLTechnologyAdapter fmlTechnologyAdapter = serviceManager.getTechnologyAdapterService()
 				.getTechnologyAdapter(FMLTechnologyAdapter.class);
-		VirtualModelResourceFactory factory = fmlTechnologyAdapter.getVirtualModelResourceFactory();
+		CompilationUnitResourceFactory factory = fmlTechnologyAdapter.getCompilationUnitResourceFactory();
 
-		VirtualModelResource newVirtualModelResource = factory.makeTopLevelVirtualModelResource(VIEWPOINT_NAME, VIEWPOINT_URI,
+		CompilationUnitResource newVirtualModelResource = factory.makeTopLevelCompilationUnitResource(VIEWPOINT_NAME, VIEWPOINT_URI,
 				fmlTechnologyAdapter.getGlobalRepository(resourceCenter).getRootFolder(), true);
-		newViewPoint = newVirtualModelResource.getLoadedResourceData();
+		newViewPoint = newVirtualModelResource.getLoadedResourceData().getVirtualModel();
 
 		// assertTrue(((VirtualModelResource)
 		// newViewPoint.getResource()).getDirectory().exists());
 		// assertTrue(((VirtualModelResource)
 		// newViewPoint.getResource()).getFile().exists());
-		assertTrue(((VirtualModelResource) newViewPoint.getResource()).getDirectory() != null);
-		assertTrue(((VirtualModelResource) newViewPoint.getResource()).getIODelegate().exists());
+		assertTrue(newViewPoint.getResource().getDirectory() != null);
+		assertTrue(newViewPoint.getResource().getIODelegate().exists());
 	}
 
 	/**
@@ -135,13 +135,13 @@ public class TestControlGraph extends OpenflexoTestCase {
 
 		FMLTechnologyAdapter fmlTechnologyAdapter = serviceManager.getTechnologyAdapterService()
 				.getTechnologyAdapter(FMLTechnologyAdapter.class);
-		VirtualModelResourceFactory factory = fmlTechnologyAdapter.getVirtualModelResourceFactory();
-		VirtualModelResource newVMResource = factory.makeContainedVirtualModelResource(VIRTUAL_MODEL_NAME,
-				newViewPoint.getVirtualModelResource(), true);
-		newVirtualModel = newVMResource.getLoadedResourceData();
+		CompilationUnitResourceFactory factory = fmlTechnologyAdapter.getCompilationUnitResourceFactory();
+		CompilationUnitResource newVMResource = factory.makeContainedCompilationUnitResource(VIRTUAL_MODEL_NAME, newViewPoint.getResource(),
+				true);
+		newVirtualModel = newVMResource.getLoadedResourceData().getVirtualModel();
 
-		assertTrue(ResourceLocator.retrieveResourceAsFile(((VirtualModelResource) newVirtualModel.getResource()).getDirectory()).exists());
-		assertTrue(((VirtualModelResource) newVirtualModel.getResource()).getIODelegate().exists());
+		assertTrue(ResourceLocator.retrieveResourceAsFile(newVirtualModel.getResource().getDirectory()).exists());
+		assertTrue(newVirtualModel.getResource().getIODelegate().exists());
 	}
 
 	/**
@@ -170,11 +170,11 @@ public class TestControlGraph extends OpenflexoTestCase {
 		System.out.println("FlexoConcept A = " + flexoConcept);
 		assertNotNull(flexoConcept);
 
-		((VirtualModelResource) newVirtualModel.getResource()).save();
+		newVirtualModel.getResource().save();
 
 		// System.out.println("Saved: " + ((VirtualModelResource)
 		// newVirtualModel.getResource()).getFile());
-		System.out.println("Saved: " + ((VirtualModelResource) newVirtualModel.getResource()).getIODelegate().toString());
+		System.out.println("Saved: " + newVirtualModel.getResource().getIODelegate().toString());
 	}
 
 	@Test
@@ -247,7 +247,7 @@ public class TestControlGraph extends OpenflexoTestCase {
 		assertEquals(action1, seq1.getControlGraph1());
 		assertEquals(action2, seq1.getControlGraph2());
 
-		FMLModelFactory factory = ((VirtualModelResource) creationScheme.getOwningVirtualModel().getResource()).getFactory();
+		FMLModelFactory factory = creationScheme.getOwningVirtualModel().getResource().getFactory();
 		FMLControlGraph controlGraph = creationScheme.getControlGraph();
 
 		String cg = factory.stringRepresentation(creationScheme);
@@ -344,7 +344,7 @@ public class TestControlGraph extends OpenflexoTestCase {
 		ConditionalAction conditional1 = (ConditionalAction) createConditionAction1.getNewEditionAction();
 		conditional1.setCondition(new DataBinding<Boolean>("parameters.aFlag = true"));
 
-		FMLModelFactory factory = ((VirtualModelResource) actionScheme.getOwningVirtualModel().getResource()).getFactory();
+		FMLModelFactory factory = actionScheme.getOwningVirtualModel().getResource().getFactory();
 
 		// String cg = factory.stringRepresentation(actionScheme);
 		// System.out.println("1 - Control graph:\n" + cg);

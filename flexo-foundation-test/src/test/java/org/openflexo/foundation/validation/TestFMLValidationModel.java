@@ -106,8 +106,6 @@ public class TestFMLValidationModel extends OpenflexoTestCase {
 		assertTrue(validationModel.getValidationModelFactory().getModelContext()
 				.getModelEntity(org.openflexo.foundation.fml.FlexoConceptStructuralFacet.class) != null);
 		assertTrue(validationModel.getValidationModelFactory().getModelContext()
-				.getModelEntity(org.openflexo.foundation.fml.FMLLocalizedEntry.class) != null);
-		assertTrue(validationModel.getValidationModelFactory().getModelContext()
 				.getModelEntity(org.openflexo.foundation.fml.DeletionScheme.class) != null);
 		assertTrue(validationModel.getValidationModelFactory().getModelContext()
 				.getModelEntity(org.openflexo.foundation.fml.rt.editionaction.AddFlexoConceptInstanceParameter.class) != null);
@@ -163,8 +161,6 @@ public class TestFMLValidationModel extends OpenflexoTestCase {
 				.getModelEntity(org.openflexo.foundation.fml.SynchronizationScheme.class) != null);
 		assertTrue(validationModel.getValidationModelFactory().getModelContext()
 				.getModelEntity(org.openflexo.foundation.fml.editionaction.EditionAction.class) != null);
-		assertTrue(validationModel.getValidationModelFactory().getModelContext()
-				.getModelEntity(org.openflexo.foundation.fml.FMLLocalizedDictionary.class) != null);
 		assertTrue(validationModel.getValidationModelFactory().getModelContext()
 				.getModelEntity(org.openflexo.foundation.fml.FlexoRole.class) != null);
 		assertTrue(validationModel.getValidationModelFactory().getModelContext()

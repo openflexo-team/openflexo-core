@@ -65,8 +65,8 @@ import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.action.CreateFlexoBehaviour;
 import org.openflexo.foundation.fml.action.CreateFlexoConcept;
 import org.openflexo.foundation.fml.controlgraph.EmptyControlGraph;
-import org.openflexo.foundation.fml.rm.VirtualModelResource;
-import org.openflexo.foundation.fml.rm.VirtualModelResourceFactory;
+import org.openflexo.foundation.fml.rm.CompilationUnitResource;
+import org.openflexo.foundation.fml.rm.CompilationUnitResourceFactory;
 import org.openflexo.foundation.fml.rt.action.CreateBasicVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.action.CreationSchemeAction;
 import org.openflexo.foundation.fml.rt.action.DeletionSchemeAction;
@@ -126,18 +126,18 @@ public class TestPopulateVirtualModelInstance extends OpenflexoProjectAtRunTimeT
 
 		FMLTechnologyAdapter fmlTechnologyAdapter = serviceManager.getTechnologyAdapterService()
 				.getTechnologyAdapter(FMLTechnologyAdapter.class);
-		VirtualModelResourceFactory factory = fmlTechnologyAdapter.getVirtualModelResourceFactory();
+		CompilationUnitResourceFactory factory = fmlTechnologyAdapter.getCompilationUnitResourceFactory();
 
-		VirtualModelResource newVirtualModelResource = factory.makeTopLevelVirtualModelResource(VIEWPOINT_NAME, VIEWPOINT_URI,
+		CompilationUnitResource newVirtualModelResource = factory.makeTopLevelCompilationUnitResource(VIEWPOINT_NAME, VIEWPOINT_URI,
 				fmlTechnologyAdapter.getGlobalRepository(resourceCenter).getRootFolder(), true);
-		viewPoint = newVirtualModelResource.getLoadedResourceData();
+		viewPoint = newVirtualModelResource.getLoadedResourceData().getVirtualModel();
 
 		// assertTrue(((VirtualModelResource)
 		// newViewPoint.getResource()).getDirectory().exists());
 		// assertTrue(((VirtualModelResource)
 		// newViewPoint.getResource()).getFile().exists());
-		assertTrue(((VirtualModelResource) viewPoint.getResource()).getDirectory() != null);
-		assertTrue(((VirtualModelResource) viewPoint.getResource()).getIODelegate().exists());
+		assertTrue(viewPoint.getResource().getDirectory() != null);
+		assertTrue(viewPoint.getResource().getIODelegate().exists());
 
 	}
 
@@ -152,13 +152,13 @@ public class TestPopulateVirtualModelInstance extends OpenflexoProjectAtRunTimeT
 
 		FMLTechnologyAdapter fmlTechnologyAdapter = serviceManager.getTechnologyAdapterService()
 				.getTechnologyAdapter(FMLTechnologyAdapter.class);
-		VirtualModelResourceFactory factory = fmlTechnologyAdapter.getVirtualModelResourceFactory();
-		VirtualModelResource newVMResource = factory.makeContainedVirtualModelResource(VIRTUAL_MODEL_NAME,
-				viewPoint.getVirtualModelResource(), true);
-		virtualModel = newVMResource.getLoadedResourceData();
+		CompilationUnitResourceFactory factory = fmlTechnologyAdapter.getCompilationUnitResourceFactory();
+		CompilationUnitResource newVMResource = factory.makeContainedCompilationUnitResource(VIRTUAL_MODEL_NAME, viewPoint.getResource(),
+				true);
+		virtualModel = newVMResource.getLoadedResourceData().getVirtualModel();
 
-		assertTrue(ResourceLocator.retrieveResourceAsFile(((VirtualModelResource) virtualModel.getResource()).getDirectory()).exists());
-		assertTrue(((VirtualModelResource) virtualModel.getResource()).getIODelegate().exists());
+		assertTrue(ResourceLocator.retrieveResourceAsFile(virtualModel.getResource().getDirectory()).exists());
+		assertTrue(virtualModel.getResource().getIODelegate().exists());
 
 		assertSame(viewPoint, virtualModel.getContainerVirtualModel());
 
@@ -208,11 +208,11 @@ public class TestPopulateVirtualModelInstance extends OpenflexoProjectAtRunTimeT
 		DeletionScheme deletionScheme = (DeletionScheme) createDeletionScheme.getNewFlexoBehaviour();
 		assertTrue(deletionScheme.getControlGraph() instanceof EmptyControlGraph);
 
-		((VirtualModelResource) virtualModel.getResource()).save();
+		virtualModel.getResource().save();
 
 		// System.out.println("Saved: " + ((VirtualModelResource)
 		// newVirtualModel.getResource()).getFile());
-		System.out.println("Saved: " + ((VirtualModelResource) virtualModel.getResource()).getIODelegate().toString());
+		System.out.println("Saved: " + virtualModel.getResource().getIODelegate().toString());
 
 	}
 
@@ -248,9 +248,9 @@ public class TestPopulateVirtualModelInstance extends OpenflexoProjectAtRunTimeT
 		DeletionScheme deletionScheme = (DeletionScheme) createDeletionScheme.getNewFlexoBehaviour();
 		assertTrue(deletionScheme.getControlGraph() instanceof EmptyControlGraph);
 
-		((VirtualModelResource) virtualModel.getResource()).save();
+		virtualModel.getResource().save();
 
-		System.out.println("Saved: " + ((VirtualModelResource) virtualModel.getResource()).getIODelegate().toString());
+		System.out.println("Saved: " + virtualModel.getResource().getIODelegate().toString());
 
 	}
 
@@ -287,11 +287,11 @@ public class TestPopulateVirtualModelInstance extends OpenflexoProjectAtRunTimeT
 		DeletionScheme deletionScheme = (DeletionScheme) createDeletionScheme.getNewFlexoBehaviour();
 		assertTrue(deletionScheme.getControlGraph() instanceof EmptyControlGraph);
 
-		System.out.println("Saved: " + ((VirtualModelResource) virtualModel.getResource()).getIODelegate().toString());
+		System.out.println("Saved: " + virtualModel.getResource().getIODelegate().toString());
 
 		System.out.println("FML=\n" + virtualModel.getFMLRepresentation());
 
-		((VirtualModelResource) virtualModel.getResource()).save();
+		virtualModel.getResource().save();
 
 		// System.out.println("les unsaved: " + serviceManager.getResourceManager().getUnsavedResources());
 		/*virtualModel.getPropertyChangeSupport().addPropertyChangeListener(new PropertyChangeListener() {

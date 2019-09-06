@@ -72,8 +72,8 @@ import org.openflexo.foundation.fml.controlgraph.EmptyControlGraph;
 import org.openflexo.foundation.fml.editionaction.AssignationAction;
 import org.openflexo.foundation.fml.editionaction.ExpressionAction;
 import org.openflexo.foundation.fml.editionaction.FetchRequestCondition;
-import org.openflexo.foundation.fml.rm.VirtualModelResource;
-import org.openflexo.foundation.fml.rm.VirtualModelResourceFactory;
+import org.openflexo.foundation.fml.rm.CompilationUnitResource;
+import org.openflexo.foundation.fml.rm.CompilationUnitResourceFactory;
 import org.openflexo.foundation.fml.rt.action.ActionSchemeAction;
 import org.openflexo.foundation.fml.rt.action.ActionSchemeActionFactory;
 import org.openflexo.foundation.fml.rt.action.CreateBasicVirtualModelInstance;
@@ -141,14 +141,14 @@ public class TestVirtualModelInstanceIndexes extends OpenflexoProjectAtRunTimeTe
 
 		FMLTechnologyAdapter fmlTechnologyAdapter = serviceManager.getTechnologyAdapterService()
 				.getTechnologyAdapter(FMLTechnologyAdapter.class);
-		VirtualModelResourceFactory factory = fmlTechnologyAdapter.getVirtualModelResourceFactory();
+		CompilationUnitResourceFactory factory = fmlTechnologyAdapter.getCompilationUnitResourceFactory();
 
-		VirtualModelResource newVirtualModelResource = factory.makeTopLevelVirtualModelResource(VIEWPOINT_NAME, VIEWPOINT_URI,
+		CompilationUnitResource newVirtualModelResource = factory.makeTopLevelCompilationUnitResource(VIEWPOINT_NAME, VIEWPOINT_URI,
 				fmlTechnologyAdapter.getGlobalRepository(resourceCenter).getRootFolder(), true);
-		viewPoint = newVirtualModelResource.getLoadedResourceData();
+		viewPoint = newVirtualModelResource.getLoadedResourceData().getVirtualModel();
 
-		assertTrue(((VirtualModelResource) viewPoint.getResource()).getDirectory() != null);
-		assertTrue(((VirtualModelResource) viewPoint.getResource()).getIODelegate().exists());
+		assertTrue(viewPoint.getResource().getDirectory() != null);
+		assertTrue(viewPoint.getResource().getIODelegate().exists());
 
 		assertEquals(viewPoint, viewPoint.getFlexoConcept());
 	}
@@ -164,16 +164,16 @@ public class TestVirtualModelInstanceIndexes extends OpenflexoProjectAtRunTimeTe
 
 		FMLTechnologyAdapter fmlTechnologyAdapter = serviceManager.getTechnologyAdapterService()
 				.getTechnologyAdapter(FMLTechnologyAdapter.class);
-		VirtualModelResourceFactory factory = fmlTechnologyAdapter.getVirtualModelResourceFactory();
-		VirtualModelResource newVMResource = factory.makeContainedVirtualModelResource(VIRTUAL_MODEL_NAME,
-				viewPoint.getVirtualModelResource(), true);
-		virtualModel = newVMResource.getLoadedResourceData();
+		CompilationUnitResourceFactory factory = fmlTechnologyAdapter.getCompilationUnitResourceFactory();
+		CompilationUnitResource newVMResource = factory.makeContainedCompilationUnitResource(VIRTUAL_MODEL_NAME, viewPoint.getResource(),
+				true);
+		virtualModel = newVMResource.getLoadedResourceData().getVirtualModel();
 
-		assertTrue(ResourceLocator.retrieveResourceAsFile(((VirtualModelResource) virtualModel.getResource()).getDirectory()).exists());
-		assertTrue(((VirtualModelResource) virtualModel.getResource()).getIODelegate().exists());
+		assertTrue(ResourceLocator.retrieveResourceAsFile(virtualModel.getResource().getDirectory()).exists());
+		assertTrue(virtualModel.getResource().getIODelegate().exists());
 
 		assertEquals(viewPoint, virtualModel.getContainerVirtualModel());
-		assertEquals(virtualModel, virtualModel.getDeclaringVirtualModel());
+		assertEquals(virtualModel, virtualModel.getDeclaringCompilationUnit());
 		// assertEquals(null, newVirtualModel.getOwningVirtualModel());
 
 		assertEquals(viewPoint, virtualModel.getContainerVirtualModel());
@@ -292,11 +292,11 @@ public class TestVirtualModelInstanceIndexes extends OpenflexoProjectAtRunTimeTe
 		DeletionScheme deletionScheme = (DeletionScheme) createDeletionScheme.getNewFlexoBehaviour();
 		assertTrue(deletionScheme.getControlGraph() instanceof EmptyControlGraph);
 
-		((VirtualModelResource) virtualModel.getResource()).save();
+		virtualModel.getResource().save();
 
 		// System.out.println("Saved: " + ((VirtualModelResource)
 		// newVirtualModel.getResource()).getFile());
-		System.out.println("Saved: " + ((VirtualModelResource) virtualModel.getResource()).getIODelegate().toString());
+		System.out.println("Saved: " + virtualModel.getResource().getIODelegate().toString());
 
 	}
 
@@ -333,11 +333,11 @@ public class TestVirtualModelInstanceIndexes extends OpenflexoProjectAtRunTimeTe
 		DeletionScheme deletionScheme = (DeletionScheme) createDeletionScheme.getNewFlexoBehaviour();
 		assertTrue(deletionScheme.getControlGraph() instanceof EmptyControlGraph);
 
-		((VirtualModelResource) virtualModel.getResource()).save();
+		virtualModel.getResource().save();
 
 		// System.out.println("Saved: " + ((VirtualModelResource)
 		// newVirtualModel.getResource()).getFile());
-		System.out.println("Saved: " + ((VirtualModelResource) virtualModel.getResource()).getIODelegate().toString());
+		System.out.println("Saved: " + virtualModel.getResource().getIODelegate().toString());
 
 	}
 

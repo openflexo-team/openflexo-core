@@ -62,7 +62,6 @@ import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.AssignationActi
 import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.ControlGraphNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.ExpressionActionNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.SequenceNode;
-import org.openflexo.foundation.fml.rm.FMLParser.ParseException;
 import org.openflexo.p2pp.P2PPNode;
 import org.openflexo.pamela.exceptions.ModelDefinitionException;
 import org.openflexo.rm.Resource;

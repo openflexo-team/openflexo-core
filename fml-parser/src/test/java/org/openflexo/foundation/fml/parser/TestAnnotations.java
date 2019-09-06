@@ -1,8 +1,8 @@
 /**
  * 
- * Copyright (c) 2019, Openflexo
+ * Copyright (c) 2014, Openflexo
  * 
- * This file is part of FML-parser, a component of the software infrastructure 
+ * This file is part of Cartoeditor, a component of the software infrastructure 
  * developed at Openflexo.
  * 
  * 
@@ -36,42 +36,49 @@
  * 
  */
 
-package org.openflexo.foundation.fml.rm;
+package org.openflexo.foundation.fml.parser;
 
-import java.io.File;
+import static org.junit.Assert.assertNotNull;
+
 import java.io.IOException;
-import java.io.InputStream;
 
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.openflexo.foundation.DefaultFlexoEditor;
+import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.fml.FMLCompilationUnit;
-import org.openflexo.foundation.fml.FMLModelFactory;
+import org.openflexo.pamela.exceptions.ModelDefinitionException;
+import org.openflexo.rm.Resource;
+import org.openflexo.rm.ResourceLocator;
+import org.openflexo.test.OrderedRunner;
+import org.openflexo.test.TestOrder;
 
-/**
- * API specifying the parsing service for FML.<br>
- * 
- * @author sylvain
- */
-public interface FMLParser {
+@RunWith(OrderedRunner.class)
+public class TestAnnotations extends FMLParserTestCase {
 
-	public FMLCompilationUnit parse(String data, FMLModelFactory modelFactory/*, EntryPointKind entryPointKind*/)
-			throws ParseException, IOException;
+	static FlexoEditor editor;
 
-	public FMLCompilationUnit parse(InputStream inputStream, FMLModelFactory modelFactory) throws ParseException, IOException;
+	@Test
+	@TestOrder(1)
+	public void initServiceManager() throws ParseException, ModelDefinitionException, IOException {
+		instanciateTestServiceManager();
 
-	public FMLCompilationUnit parse(File file, FMLModelFactory modelFactory) throws ParseException, IOException;
-
-	public void initPrettyPrint(FMLCompilationUnit fmlCompilationUnit);
-
-	public static class ParseException extends Exception {
-
-		/**
-		 * Constructs a new parse exception with the specified detail message.
-		 * 
-		 * @param message
-		 *            the detail message. The detail message is saved for later retrieval by the {@link #getMessage()} method.
-		 */
-		public ParseException(String message) {
-			super(message);
-		}
+		editor = new DefaultFlexoEditor(null, serviceManager);
+		assertNotNull(editor);
 
 	}
+
+	@Test
+	@TestOrder(2)
+	public void loadInitialVersion() throws ParseException, ModelDefinitionException, IOException {
+		instanciateTestServiceManager();
+
+		log("Initial version");
+
+		final Resource fmlFile = ResourceLocator.locateResource("NewFMLExamples/TestAnnotations.fml");
+
+		FMLCompilationUnit compilationUnit = testFMLCompilationUnit(fmlFile);
+
+	}
+
 }

@@ -94,9 +94,9 @@ public class TestLoadViewPoint extends OpenflexoTestCase {
 		System.out.println("VPLibrary=" + vpLib);
 		assertNotNull(vpLib);
 
-		System.out.println("All vp= " + vpLib.getVirtualModels());
+		System.out.println("All vp= " + vpLib.getCompilationUnitResources());
 
-		assertEquals(0, vpLib.getLoadedVirtualModels().size());
+		assertEquals(0, vpLib.getLoadedCompilationUnits().size());
 
 		VirtualModel viewPoint = vpLib.getVirtualModel("http://openflexo.org/test/TestResourceCenter/TestViewPointA.fml");
 

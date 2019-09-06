@@ -55,7 +55,7 @@ import org.openflexo.foundation.fml.FMLModelFactory;
 import org.openflexo.foundation.fml.FMLTechnologyAdapter;
 import org.openflexo.foundation.fml.FlexoConceptObject;
 import org.openflexo.foundation.fml.VirtualModel;
-import org.openflexo.foundation.fml.rm.VirtualModelResource;
+import org.openflexo.foundation.fml.rm.CompilationUnitResource;
 import org.openflexo.pamela.factory.EmbeddingType;
 
 public class DeleteFlexoConceptObjects extends FlexoAction<DeleteFlexoConceptObjects, FlexoConceptObject, FlexoConceptObject>
@@ -125,17 +125,17 @@ public class DeleteFlexoConceptObjects extends FlexoAction<DeleteFlexoConceptObj
 
 		List<FlexoConceptObject> allObjects = new ArrayList<>();
 
-		VirtualModelResource resource = null;
+		CompilationUnitResource resource = null;
 		FMLModelFactory modelFactory = null;
 
 		for (FlexoConceptObject o : globalSelection) {
 			if (o.getResourceData() != null) {
 				if (resource == null) {
-					resource = (VirtualModelResource) o.getResourceData().getResource();
+					resource = (CompilationUnitResource) o.getResourceData().getResource();
 					modelFactory = resource.getFactory();
 				}
 				else {
-					if ((VirtualModelResource) o.getResourceData().getResource() != resource) {
+					if ((CompilationUnitResource) o.getResourceData().getResource() != resource) {
 						throw new InvalidSelectionException("Multiple virtual model impacted");
 					}
 				}

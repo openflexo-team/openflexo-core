@@ -52,7 +52,7 @@ import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoConceptObject;
 import org.openflexo.foundation.fml.FlexoConceptStructuralFacet;
 import org.openflexo.foundation.fml.VirtualModel;
-import org.openflexo.foundation.fml.rm.VirtualModelResource;
+import org.openflexo.foundation.fml.rm.CompilationUnitResource;
 import org.openflexo.foundation.fml.rt.FMLRTModelSlot;
 import org.openflexo.foundation.technologyadapter.FlexoMetaModel;
 import org.openflexo.foundation.technologyadapter.FlexoMetaModelResource;
@@ -98,7 +98,7 @@ public class CreateModelSlot extends AbstractCreateFlexoProperty<CreateModelSlot
 	private String description;
 	private TechnologyAdapter<?> technologyAdapter;
 	private FlexoMetaModelResource<?, ?, ?> mmRes;
-	private VirtualModelResource vmRes;
+	private CompilationUnitResource vmRes;
 	private boolean required = true;
 	private boolean readOnly = false;
 	private Class<? extends ModelSlot<?>> modelSlotClass;
@@ -292,11 +292,11 @@ public class CreateModelSlot extends AbstractCreateFlexoProperty<CreateModelSlot
 		getPropertyChangeSupport().firePropertyChange("mmRes", mmRes != null ? null : false, mmRes);
 	}
 
-	public VirtualModelResource getVmRes() {
+	public CompilationUnitResource getVmRes() {
 		return vmRes;
 	}
 
-	public void setVmRes(VirtualModelResource vmRes) {
+	public void setVmRes(CompilationUnitResource vmRes) {
 		this.vmRes = vmRes;
 		getPropertyChangeSupport().firePropertyChange("vmRes", null, vmRes);
 	}

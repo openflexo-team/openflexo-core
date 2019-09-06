@@ -43,6 +43,7 @@ import org.openflexo.foundation.fml.FMLModelFactory;
 import org.openflexo.foundation.fml.parser.fmlnodes.FMLCompilationUnitNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.FlexoConceptNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.JavaImportNode;
+import org.openflexo.foundation.fml.parser.fmlnodes.MetaDataNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.NamedJavaImportNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.VirtualModelNode;
 import org.openflexo.foundation.fml.parser.node.ABehaviourDeclarationInnerConceptDeclaration;
@@ -52,6 +53,8 @@ import org.openflexo.foundation.fml.parser.node.AJavaImportImportDeclaration;
 import org.openflexo.foundation.fml.parser.node.AModelDeclaration;
 import org.openflexo.foundation.fml.parser.node.ANamedJavaImportImportDeclaration;
 import org.openflexo.foundation.fml.parser.node.APropertyDeclarationInnerConceptDeclaration;
+import org.openflexo.foundation.fml.parser.node.ASingleAnnotation;
+import org.openflexo.foundation.fml.parser.node.AValueAnnotation;
 import org.openflexo.foundation.fml.parser.node.Start;
 import org.openflexo.p2pp.RawSource;
 
@@ -81,8 +84,10 @@ public class MainSemanticsAnalyzer extends FMLSemanticsAnalyzer {
 		typeFactory = new TypeFactory(this);
 		propertyFactory = new FlexoPropertyFactory(this);
 		behaviourFactory = new FlexoBehaviourFactory(this);
-		tree.apply(this);
-		finalizeDeserialization();
+		if (tree != null) {
+			tree.apply(this);
+			finalizeDeserialization();
+		}
 	}
 
 	@Override
@@ -187,12 +192,14 @@ public class MainSemanticsAnalyzer extends FMLSemanticsAnalyzer {
 	public void inAModelDeclaration(AModelDeclaration node) {
 		super.inAModelDeclaration(node);
 		push(new VirtualModelNode(node, this));
+		System.out.println(">>> On entre dans le modele");
 	}
 
 	@Override
 	public void outAModelDeclaration(AModelDeclaration node) {
 		super.outAModelDeclaration(node);
 		pop();
+		System.out.println("<<< On sort du modele");
 	}
 
 	@Override
@@ -229,6 +236,26 @@ public class MainSemanticsAnalyzer extends FMLSemanticsAnalyzer {
 	@Override
 	public void outABehaviourDeclarationInnerConceptDeclaration(ABehaviourDeclarationInnerConceptDeclaration node) {
 		super.outABehaviourDeclarationInnerConceptDeclaration(node);
+		pop();
+	}
+
+	@Override
+	public void inASingleAnnotation(ASingleAnnotation node) {
+		super.inASingleAnnotation(node);
+		System.out.println("Tiens une annotation: " + node);
+		System.exit(-1);
+	}
+
+	@Override
+	public void inAValueAnnotation(AValueAnnotation node) {
+		super.inAValueAnnotation(node);
+		System.out.println("Tiens une value annotation: " + node);
+		push(new MetaDataNode(node, this));
+	}
+
+	@Override
+	public void outAValueAnnotation(AValueAnnotation node) {
+		super.outAValueAnnotation(node);
 		pop();
 	}
 

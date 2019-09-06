@@ -110,7 +110,7 @@ public class CreateFlexoEnumWizard extends AbstractCreateFlexoConceptWizard<Crea
 		}
 
 		public VirtualModel getVirtualModel() {
-			return getAction().getFocusedObject().getDeclaringVirtualModel();
+			return getAction().getFocusedObject().getDeclaringCompilationUnit();
 		}
 
 		@Override
@@ -126,7 +126,7 @@ public class CreateFlexoEnumWizard extends AbstractCreateFlexoConceptWizard<Crea
 				return false;
 			}
 			else if (getAction().getFocusedObject() instanceof VirtualModel
-					&& getAction().getFocusedObject().getDeclaringVirtualModel().getFlexoConcept(getNewFlexoEnumName()) != null) {
+					&& getAction().getFocusedObject().getDeclaringCompilationUnit().getFlexoConcept(getNewFlexoEnumName()) != null) {
 				setIssueMessage(getAction().getLocales().localizedForKey(DUPLICATED_NAME), IssueMessageType.ERROR);
 				return false;
 			}

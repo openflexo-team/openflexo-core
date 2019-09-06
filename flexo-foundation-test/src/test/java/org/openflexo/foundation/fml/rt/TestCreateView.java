@@ -50,8 +50,8 @@ import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoProject;
 import org.openflexo.foundation.fml.FMLTechnologyAdapter;
 import org.openflexo.foundation.fml.VirtualModel;
-import org.openflexo.foundation.fml.rm.VirtualModelResource;
-import org.openflexo.foundation.fml.rm.VirtualModelResourceFactory;
+import org.openflexo.foundation.fml.rm.CompilationUnitResource;
+import org.openflexo.foundation.fml.rm.CompilationUnitResourceFactory;
 import org.openflexo.foundation.fml.rt.action.CreateBasicVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.rm.FMLRTVirtualModelInstanceResource;
 import org.openflexo.foundation.resource.DirectoryResourceCenter;
@@ -97,11 +97,11 @@ public class TestCreateView extends OpenflexoProjectAtRunTimeTestCase {
 
 		FMLTechnologyAdapter fmlTechnologyAdapter = serviceManager.getTechnologyAdapterService()
 				.getTechnologyAdapter(FMLTechnologyAdapter.class);
-		VirtualModelResourceFactory factory = fmlTechnologyAdapter.getVirtualModelResourceFactory();
+		CompilationUnitResourceFactory factory = fmlTechnologyAdapter.getCompilationUnitResourceFactory();
 
-		VirtualModelResource newVirtualModelResource = factory.makeTopLevelVirtualModelResource(VIEWPOINT_NAME, VIEWPOINT_URI,
+		CompilationUnitResource newVirtualModelResource = factory.makeTopLevelCompilationUnitResource(VIEWPOINT_NAME, VIEWPOINT_URI,
 				fmlTechnologyAdapter.getGlobalRepository(resourceCenter).getRootFolder(), true);
-		newViewPoint = newVirtualModelResource.getLoadedResourceData();
+		newViewPoint = newVirtualModelResource.getLoadedResourceData().getVirtualModel();
 
 		assertNotNull(newViewPoint);
 		assertNotNull(newViewPoint.getResource());
@@ -111,8 +111,8 @@ public class TestCreateView extends OpenflexoProjectAtRunTimeTestCase {
 		// newViewPoint.getResource()).getDirectory().exists());
 		// assertTrue(((VirtualModelResource)
 		// newViewPoint.getResource()).getFile().exists());
-		assertTrue(((VirtualModelResource) newViewPoint.getResource()).getDirectory() != null);
-		assertTrue(((VirtualModelResource) newViewPoint.getResource()).getIODelegate().exists());
+		assertTrue(newViewPoint.getResource().getDirectory() != null);
+		assertTrue(newViewPoint.getResource().getIODelegate().exists());
 	}
 
 	@Test

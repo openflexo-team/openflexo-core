@@ -49,8 +49,8 @@ import org.openflexo.foundation.action.copypaste.PastingContext;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoConceptObject;
 import org.openflexo.foundation.fml.VirtualModel;
-import org.openflexo.foundation.fml.rm.VirtualModelResource;
-import org.openflexo.foundation.fml.rm.VirtualModelResourceFactory;
+import org.openflexo.foundation.fml.rm.CompilationUnitResource;
+import org.openflexo.foundation.fml.rm.CompilationUnitResourceFactory;
 import org.openflexo.foundation.resource.SaveResourceException;
 import org.openflexo.pamela.ModelEntity;
 import org.openflexo.pamela.ModelProperty;
@@ -90,9 +90,9 @@ public class VirtualModelPasteHandler extends FlexoPasteHandler<VirtualModel> {
 		if (clipboard.getLeaderClipboard().isSingleObject()
 				&& (clipboard.getLeaderClipboard().getSingleContents() instanceof FlexoConcept)) {
 
-			if (focusedObject instanceof VirtualModelResource) {
+			if (focusedObject instanceof CompilationUnitResource) {
 				// In this case, FlexoConcept will be pasted as a FlexoConcept in a VirtualModel
-				return new DefaultPastingContext<>(((VirtualModelResource) focusedObject).getVirtualModel());
+				return new DefaultPastingContext<>(((CompilationUnitResource) focusedObject).getCompilationUnit());
 			}
 
 			if (focusedObject instanceof FlexoConceptObject) {
@@ -122,15 +122,15 @@ public class VirtualModelPasteHandler extends FlexoPasteHandler<VirtualModel> {
 				VirtualModel originalVM = (VirtualModel) clipboard.getLeaderClipboard().getOriginalContents()[0];
 				VirtualModel copy = (VirtualModel) clipboard.getLeaderClipboard().getSingleContents();
 
-				VirtualModelResourceFactory vmResFactory = originalVM.getTechnologyAdapter().getVirtualModelResourceFactory();
+				CompilationUnitResourceFactory vmResFactory = originalVM.getTechnologyAdapter().getCompilationUnitResourceFactory();
 
 				System.out.println("On doit cloner la resource " + originalVM.getResource());
 				System.out.println("vmResFactory=" + vmResFactory);
 
-				VirtualModelResource newResource;
+				CompilationUnitResource newResource;
 				try {
-					newResource = vmResFactory.makeContainedVirtualModelResource(originalVM.getResource().getName() + "-Copy",
-							pastingContext.getPastingPointHolder().getVirtualModelResource(), false);
+					newResource = vmResFactory.makeContainedCompilationUnitResource(originalVM.getResource().getName() + "-Copy",
+							pastingContext.getPastingPointHolder().getCompilationUnitResource(), false);
 					System.out.println("On vient de creer " + newResource);
 					copy.setResource(newResource);
 					newResource.setResourceData(copy);

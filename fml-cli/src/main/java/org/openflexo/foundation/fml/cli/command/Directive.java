@@ -87,7 +87,7 @@ import org.openflexo.foundation.fml.cli.parser.node.PBinding;
 import org.openflexo.foundation.fml.cli.parser.node.PCall;
 import org.openflexo.foundation.fml.cli.parser.node.PExpr;
 import org.openflexo.foundation.fml.cli.parser.node.PPath;
-import org.openflexo.foundation.fml.rm.VirtualModelResourceFactory;
+import org.openflexo.foundation.fml.rm.CompilationUnitResourceFactory;
 import org.openflexo.foundation.fml.rt.rm.FMLRTVirtualModelInstanceResourceFactory;
 import org.openflexo.foundation.project.FlexoProjectResourceFactory;
 import org.openflexo.foundation.resource.FlexoResource;
@@ -182,7 +182,7 @@ public abstract class Directive extends AbstractCommand {
 		if (f == null) {
 			return null;
 		}
-		if (f.isDirectory() && !f.getName().endsWith(VirtualModelResourceFactory.FML_SUFFIX)
+		if (f.isDirectory() && !f.getName().endsWith(CompilationUnitResourceFactory.FML_SUFFIX)
 				&& !f.getName().endsWith(FMLRTVirtualModelInstanceResourceFactory.FML_RT_SUFFIX)
 				&& !f.getName().endsWith(FlexoProjectResourceFactory.PROJECT_SUFFIX)) {
 			return f.getName() + File.separator;

@@ -101,7 +101,7 @@ import org.openflexo.foundation.fml.editionaction.EditionAction;
 import org.openflexo.foundation.fml.editionaction.TechnologySpecificAction;
 import org.openflexo.foundation.fml.inspector.FlexoConceptInspector;
 import org.openflexo.foundation.fml.inspector.InspectorEntry;
-import org.openflexo.foundation.fml.rm.VirtualModelResource;
+import org.openflexo.foundation.fml.rm.CompilationUnitResource;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.resource.FlexoResource;
 import org.openflexo.foundation.resource.RepositoryFolder;
@@ -794,7 +794,7 @@ public class FMLFIBController extends FlexoFIBController {
 
 	// Should be above to be available from everywhere
 	// TODO: refactor this (generic perspective should be adapted to FML in OpenflexoModeller)
-	public VirtualModel createTopLevelVirtualModel(RepositoryFolder<VirtualModelResource, ?> folder) {
+	public VirtualModel createTopLevelVirtualModel(RepositoryFolder<CompilationUnitResource, ?> folder) {
 		CreateTopLevelVirtualModel createTopLevelVirtualModel = CreateTopLevelVirtualModel.actionType.makeNewAction(folder, null,
 				getEditor());
 		createTopLevelVirtualModel.doAction();
@@ -849,7 +849,7 @@ public class FMLFIBController extends FlexoFIBController {
 		// System.out.println("alors: " + (concept != null && concept != container && concept.getContainerFlexoConcept() != container
 		// && concept.getDeclaringVirtualModel() != container));
 		return concept != null && concept != container && concept.getContainerFlexoConcept() != container
-				&& concept.getDeclaringVirtualModel() != container;
+				&& concept.getDeclaringCompilationUnit() != container;
 	}
 
 }

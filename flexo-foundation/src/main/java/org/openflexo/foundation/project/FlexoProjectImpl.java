@@ -64,7 +64,7 @@ import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoProject;
 import org.openflexo.foundation.FlexoService;
 import org.openflexo.foundation.FlexoServiceManager;
-import org.openflexo.foundation.fml.VirtualModelRepository;
+import org.openflexo.foundation.fml.CompilationUnitRepository;
 import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstanceRepository;
 import org.openflexo.foundation.nature.ProjectNature;
 import org.openflexo.foundation.resource.CannotRenameException;
@@ -1110,7 +1110,7 @@ public abstract class FlexoProjectImpl<I> extends ResourceRepositoryImpl<FlexoRe
 	}
 
 	@Override
-	public VirtualModelRepository<I> getVirtualModelRepository() {
+	public CompilationUnitRepository<I> getVirtualModelRepository() {
 		if (getDelegateResourceCenter() == null) {
 			return null;
 		}

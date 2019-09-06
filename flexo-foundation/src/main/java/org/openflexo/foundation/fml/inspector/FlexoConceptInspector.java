@@ -54,9 +54,11 @@ import org.openflexo.foundation.fml.binding.FlexoConceptInspectorBindingModel;
 import org.openflexo.logging.FlexoLogger;
 import org.openflexo.pamela.annotations.Adder;
 import org.openflexo.pamela.annotations.CloningStrategy;
+import org.openflexo.pamela.annotations.CloningStrategy.StrategyType;
 import org.openflexo.pamela.annotations.Embedded;
 import org.openflexo.pamela.annotations.Finder;
 import org.openflexo.pamela.annotations.Getter;
+import org.openflexo.pamela.annotations.Getter.Cardinality;
 import org.openflexo.pamela.annotations.ImplementationClass;
 import org.openflexo.pamela.annotations.ModelEntity;
 import org.openflexo.pamela.annotations.PropertyIdentifier;
@@ -65,8 +67,6 @@ import org.openflexo.pamela.annotations.Remover;
 import org.openflexo.pamela.annotations.Setter;
 import org.openflexo.pamela.annotations.XMLAttribute;
 import org.openflexo.pamela.annotations.XMLElement;
-import org.openflexo.pamela.annotations.CloningStrategy.StrategyType;
-import org.openflexo.pamela.annotations.Getter.Cardinality;
 
 /**
  * Represents inspector associated with an Edition Pattern

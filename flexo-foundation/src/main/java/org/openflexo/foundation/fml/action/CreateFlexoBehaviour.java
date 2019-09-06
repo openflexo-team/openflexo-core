@@ -305,15 +305,15 @@ public class CreateFlexoBehaviour extends FlexoAction<CreateFlexoBehaviour, Flex
 
 		behaviourClassMap = new LinkedHashMap<>();
 
-		behaviourClassMap.put(ActionScheme.class, focusedObject.getDeclaringVirtualModel().getTechnologyAdapter());
-		behaviourClassMap.put(CloningScheme.class, focusedObject.getDeclaringVirtualModel().getTechnologyAdapter());
-		behaviourClassMap.put(CreationScheme.class, focusedObject.getDeclaringVirtualModel().getTechnologyAdapter());
-		behaviourClassMap.put(DeletionScheme.class, focusedObject.getDeclaringVirtualModel().getTechnologyAdapter());
-		behaviourClassMap.put(EventListener.class, focusedObject.getDeclaringVirtualModel().getTechnologyAdapter());
-		behaviourClassMap.put(SynchronizationScheme.class, focusedObject.getDeclaringVirtualModel().getTechnologyAdapter());
-		behaviourClassMap.put(NavigationScheme.class, focusedObject.getDeclaringVirtualModel().getTechnologyAdapter());
+		behaviourClassMap.put(ActionScheme.class, focusedObject.getDeclaringCompilationUnit().getTechnologyAdapter());
+		behaviourClassMap.put(CloningScheme.class, focusedObject.getDeclaringCompilationUnit().getTechnologyAdapter());
+		behaviourClassMap.put(CreationScheme.class, focusedObject.getDeclaringCompilationUnit().getTechnologyAdapter());
+		behaviourClassMap.put(DeletionScheme.class, focusedObject.getDeclaringCompilationUnit().getTechnologyAdapter());
+		behaviourClassMap.put(EventListener.class, focusedObject.getDeclaringCompilationUnit().getTechnologyAdapter());
+		behaviourClassMap.put(SynchronizationScheme.class, focusedObject.getDeclaringCompilationUnit().getTechnologyAdapter());
+		behaviourClassMap.put(NavigationScheme.class, focusedObject.getDeclaringCompilationUnit().getTechnologyAdapter());
 
-		for (UseModelSlotDeclaration useMS : focusedObject.getDeclaringVirtualModel().getUseDeclarations()) {
+		for (UseModelSlotDeclaration useMS : focusedObject.getDeclaringCompilationUnit().getUseDeclarations()) {
 			Class<? extends ModelSlot<?>> msClass = useMS.getModelSlotClass();
 			if (editor != null && editor.getServiceManager() != null) {
 				for (Class<? extends FlexoBehaviour> behaviour : editor.getServiceManager().getTechnologyAdapterService()

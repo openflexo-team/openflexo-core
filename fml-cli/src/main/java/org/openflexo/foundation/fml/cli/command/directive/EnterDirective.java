@@ -51,7 +51,7 @@ import org.openflexo.foundation.fml.cli.parser.node.AObjectEnterDirective;
 import org.openflexo.foundation.fml.cli.parser.node.AResourceEnterDirective;
 import org.openflexo.foundation.fml.cli.parser.node.PBinding;
 import org.openflexo.foundation.fml.cli.parser.node.PEnterDirective;
-import org.openflexo.foundation.fml.rm.VirtualModelResource;
+import org.openflexo.foundation.fml.rm.CompilationUnitResource;
 import org.openflexo.foundation.fml.rt.rm.AbstractVirtualModelInstanceResource;
 import org.openflexo.foundation.resource.FlexoResource;
 
@@ -107,8 +107,8 @@ public class EnterDirective extends Directive {
 
 	@Override
 	public void execute() {
-		if (getResource() instanceof VirtualModelResource) {
-			object = ((VirtualModelResource) getResource()).getVirtualModel();
+		if (getResource() instanceof CompilationUnitResource) {
+			object = ((CompilationUnitResource) getResource()).getCompilationUnit();
 		}
 		if (getResource() instanceof AbstractVirtualModelInstanceResource) {
 			object = ((AbstractVirtualModelInstanceResource) getResource()).getVirtualModelInstance();

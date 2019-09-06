@@ -43,7 +43,7 @@ import javax.swing.Icon;
 import javax.swing.ImageIcon;
 
 import org.openflexo.foundation.FlexoServiceManager;
-import org.openflexo.foundation.fml.rm.VirtualModelResource;
+import org.openflexo.foundation.fml.rm.CompilationUnitResource;
 import org.openflexo.foundation.project.FlexoProjectResource;
 import org.openflexo.foundation.resource.FlexoResource;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
@@ -357,7 +357,7 @@ public class IconLibrary {
 		if (resource instanceof FlexoProjectResource) {
 			return OPENFLEXO_NOTEXT_16;
 		}
-		else if (resource instanceof VirtualModelResource) {
+		else if (resource instanceof CompilationUnitResource) {
 			return FMLIconLibrary.VIRTUAL_MODEL_ICON;
 		}
 		return null;

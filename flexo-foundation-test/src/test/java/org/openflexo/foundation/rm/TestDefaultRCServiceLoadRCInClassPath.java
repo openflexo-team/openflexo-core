@@ -49,7 +49,7 @@ import org.junit.runner.RunWith;
 import org.openflexo.foundation.FlexoProject;
 import org.openflexo.foundation.fml.FMLTechnologyAdapter;
 import org.openflexo.foundation.fml.VirtualModel;
-import org.openflexo.foundation.fml.rm.VirtualModelResource;
+import org.openflexo.foundation.fml.rm.CompilationUnitResource;
 import org.openflexo.foundation.fml.rt.FMLRTTechnologyAdapter;
 import org.openflexo.foundation.resource.DefaultResourceCenterService;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
@@ -116,12 +116,12 @@ public class TestDefaultRCServiceLoadRCInClassPath extends OpenflexoTestCase {
 		String viewPointURI = "http://openflexo.org/test/TestResourceCenter/TestViewPointA.fml";
 		log("Testing ViewPoint loading: " + viewPointURI);
 
-		VirtualModelResource vpRes = serviceManager.getVirtualModelLibrary().getVirtualModelResource(viewPointURI);
+		CompilationUnitResource vpRes = serviceManager.getVirtualModelLibrary().getCompilationUnitResource(viewPointURI);
 
 		assertNotNull(vpRes);
 		assertFalse(vpRes.isLoaded());
 
-		testVP = vpRes.getVirtualModel();
+		testVP = vpRes.getCompilationUnit().getVirtualModel();
 		assertTrue(vpRes.isLoaded());
 
 	}
@@ -133,7 +133,7 @@ public class TestDefaultRCServiceLoadRCInClassPath extends OpenflexoTestCase {
 		log("testViewPoint");
 
 		assertNotNull(testVP);
-		System.out.println("Found view point in " + ((VirtualModelResource) testVP.getResource()).getIODelegate().toString());
+		System.out.println("Found view point in " + testVP.getResource().getIODelegate().toString());
 		assertVirtualModelIsValid(testVP);
 
 	}

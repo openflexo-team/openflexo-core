@@ -81,7 +81,6 @@ public interface FlexoResource<RD extends ResourceData<RD>> extends FlexoObject,
 	public static final String SERVICE_MANAGER = "serviceManager";
 	public static final String RESOURCE_CENTER = "resourceCenter";
 	public static final String FLEXO_IO_DELEGATE = "flexoIODelegate";
-	public static final String SPECIALIZED_VIRTUAL_MODEL_CLASS = "specializedVirtualModelClass";
 
 	/**
 	 * Returns the name of this resource. The name of the resource is a displayable name that the end-user will understand. There are no
@@ -512,12 +511,6 @@ public interface FlexoResource<RD extends ResourceData<RD>> extends FlexoObject,
 	public boolean needsConversion();
 
 	public void setNeedsConversion();
-
-	@Getter(value = SPECIALIZED_VIRTUAL_MODEL_CLASS, ignoreType = true)
-	public Class<? extends RD> getSpecializedResourceDataClass();
-
-	@Setter(SPECIALIZED_VIRTUAL_MODEL_CLASS)
-	public void setSpecializedResourceDataClass(Class<? extends RD> specializedResourceDataClass);
 
 	/**
 	 * Return relative path of underlying serialization artefact, relatively to base artefact of supplied resource center

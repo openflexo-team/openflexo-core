@@ -71,7 +71,7 @@ public class ValidateActionizer extends ActionInitializer<ValidateAction, FMLObj
 	protected FlexoActionRunnable<ValidateAction, FMLObject, FlexoObject> getDefaultFinalizer() {
 		return (e, action) -> {
 			FMLValidationReport virtualModelReport = (FMLValidationReport) fmlTAController
-					.getValidationReport(action.getFocusedObject().getDeclaringVirtualModel());
+					.getValidationReport(action.getFocusedObject().getDeclaringCompilationUnit());
 			try {
 				virtualModelReport.revalidate(action.getFocusedObject());
 			} catch (InterruptedException e1) {

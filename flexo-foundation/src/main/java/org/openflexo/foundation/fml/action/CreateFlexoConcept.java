@@ -122,7 +122,7 @@ public class CreateFlexoConcept extends AbstractCreateFlexoConcept<CreateFlexoCo
 
 		// Unused FlexoConcept addressedConcept =
 		// getFocusedObject().getFlexoConcept();
-		VirtualModel virtualModel = getFocusedObject().getDeclaringVirtualModel();
+		VirtualModel virtualModel = getFocusedObject().getOwningVirtualModel();
 
 		virtualModel.addToFlexoConcepts(newFlexoConcept);
 
@@ -179,7 +179,7 @@ public class CreateFlexoConcept extends AbstractCreateFlexoConcept<CreateFlexoCo
 		if (StringUtils.isEmpty(newFlexoConceptName)) {
 			return false;
 		}
-		else if (getFocusedObject().getDeclaringVirtualModel().getFlexoConcept(newFlexoConceptName) != null) {
+		else if (getFocusedObject().getDeclaringCompilationUnit().getFlexoConcept(newFlexoConceptName) != null) {
 			return false;
 		}
 		return true;

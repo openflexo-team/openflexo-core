@@ -42,7 +42,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
-import org.openflexo.foundation.fml.rm.VirtualModelResource;
+import org.openflexo.foundation.fml.rm.CompilationUnitResource;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.resource.RepositoryFolder;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterResourceRepository;
@@ -52,24 +52,24 @@ import org.openflexo.pamela.exceptions.ModelDefinitionException;
 import org.openflexo.pamela.factory.ModelFactory;
 
 /**
- * A {@link VirtualModelRepository} references {@link VirtualModelResource} stored in a given {@link FlexoResourceCenter}
+ * A {@link CompilationUnitRepository} references {@link CompilationUnitResource} stored in a given {@link FlexoResourceCenter}
  * 
  * @author sylvain
  * 
  */
 @ModelEntity
-@ImplementationClass(VirtualModelRepository.VirtualModelRepositoryImpl.class)
-public interface VirtualModelRepository<I>
-		extends TechnologyAdapterResourceRepository<VirtualModelResource, FMLTechnologyAdapter, VirtualModel, I> {
+@ImplementationClass(CompilationUnitRepository.CompilationUnitRepositoryImpl.class)
+public interface CompilationUnitRepository<I>
+		extends TechnologyAdapterResourceRepository<CompilationUnitResource, FMLTechnologyAdapter, FMLCompilationUnit, I> {
 
-	public List<VirtualModelResource> getTopLevelVirtualModelResources();
+	public List<CompilationUnitResource> getTopLevelCompilationUnitResources();
 
-	public static <I> VirtualModelRepository<I> instanciateNewRepository(FMLTechnologyAdapter technologyAdapter,
+	public static <I> CompilationUnitRepository<I> instanciateNewRepository(FMLTechnologyAdapter technologyAdapter,
 			FlexoResourceCenter<I> resourceCenter) {
 		ModelFactory factory;
 		try {
-			factory = new ModelFactory(VirtualModelRepository.class);
-			VirtualModelRepository<I> newRepository = factory.newInstance(VirtualModelRepository.class);
+			factory = new ModelFactory(CompilationUnitRepository.class);
+			CompilationUnitRepository<I> newRepository = factory.newInstance(CompilationUnitRepository.class);
 			newRepository.setTechnologyAdapter(technologyAdapter);
 			newRepository.setResourceCenter(resourceCenter);
 			newRepository.setBaseArtefact(resourceCenter.getBaseArtefact());
@@ -81,47 +81,47 @@ public interface VirtualModelRepository<I>
 		return null;
 	}
 
-	public static abstract class VirtualModelRepositoryImpl<I>
-			extends TechnologyAdapterResourceRepositoryImpl<VirtualModelResource, FMLTechnologyAdapter, VirtualModel, I>
-			implements VirtualModelRepository<I> {
+	public static abstract class CompilationUnitRepositoryImpl<I>
+			extends TechnologyAdapterResourceRepositoryImpl<CompilationUnitResource, FMLTechnologyAdapter, FMLCompilationUnit, I>
+			implements CompilationUnitRepository<I> {
 
 		@SuppressWarnings("unused")
 		private static final Logger logger = Logger.getLogger(TechnologyAdapterResourceRepository.class.getPackage().getName());
 
-		private List<VirtualModelResource> topLevelVirtualModelResources = null;
+		private List<CompilationUnitResource> topLevelCompilationUnitResources = null;
 
 		@Override
-		public List<VirtualModelResource> getTopLevelVirtualModelResources() {
-			if (topLevelVirtualModelResources == null) {
-				topLevelVirtualModelResources = new ArrayList<>();
-				for (VirtualModelResource r : getAllResources()) {
+		public List<CompilationUnitResource> getTopLevelCompilationUnitResources() {
+			if (topLevelCompilationUnitResources == null) {
+				topLevelCompilationUnitResources = new ArrayList<>();
+				for (CompilationUnitResource r : getAllResources()) {
 					if (r.getContainer() == null) {
-						topLevelVirtualModelResources.add(r);
+						topLevelCompilationUnitResources.add(r);
 					}
 				}
 			}
-			return topLevelVirtualModelResources;
+			return topLevelCompilationUnitResources;
 		}
 
 		@Override
-		public void unregisterResource(VirtualModelResource flexoResource) {
+		public void unregisterResource(CompilationUnitResource flexoResource) {
 			super.unregisterResource(flexoResource);
-			topLevelVirtualModelResources = null;
-			getPropertyChangeSupport().firePropertyChange("topLevelVirtualModelResources", null, getTopLevelVirtualModelResources());
+			topLevelCompilationUnitResources = null;
+			getPropertyChangeSupport().firePropertyChange("topLevelCompilationUnitResources", null, getTopLevelCompilationUnitResources());
 		}
 
 		@Override
-		public void registerResource(VirtualModelResource resource, RepositoryFolder<VirtualModelResource, I> parentFolder) {
+		public void registerResource(CompilationUnitResource resource, RepositoryFolder<CompilationUnitResource, I> parentFolder) {
 			super.registerResource(resource, parentFolder);
-			topLevelVirtualModelResources = null;
-			getPropertyChangeSupport().firePropertyChange("topLevelVirtualModelResources", null, getTopLevelVirtualModelResources());
+			topLevelCompilationUnitResources = null;
+			getPropertyChangeSupport().firePropertyChange("topLevelCompilationUnitResources", null, getTopLevelCompilationUnitResources());
 		}
 
 		@Override
-		public void registerResource(VirtualModelResource resource, VirtualModelResource parentResource) {
+		public void registerResource(CompilationUnitResource resource, CompilationUnitResource parentResource) {
 			super.registerResource(resource, parentResource);
-			topLevelVirtualModelResources = null;
-			getPropertyChangeSupport().firePropertyChange("topLevelVirtualModelResources", null, getTopLevelVirtualModelResources());
+			topLevelCompilationUnitResources = null;
+			getPropertyChangeSupport().firePropertyChange("topLevelCompilationUnitResources", null, getTopLevelCompilationUnitResources());
 		}
 
 	}

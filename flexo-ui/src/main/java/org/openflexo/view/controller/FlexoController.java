@@ -113,7 +113,7 @@ import org.openflexo.foundation.fml.VirtualModelLibrary;
 import org.openflexo.foundation.fml.action.AbstractCreateFlexoConcept.ParentFlexoConceptEntry;
 import org.openflexo.foundation.fml.action.AbstractCreateVirtualModel.ModelSlotEntry;
 import org.openflexo.foundation.fml.action.CreateFlexoBehaviour.BehaviourParameterEntry;
-import org.openflexo.foundation.fml.rm.VirtualModelResource;
+import org.openflexo.foundation.fml.rm.CompilationUnitResource;
 import org.openflexo.foundation.fml.rt.FMLRTTechnologyAdapter;
 import org.openflexo.foundation.fml.rt.VirtualModelInstanceObject;
 import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
@@ -1995,8 +1995,8 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 				}
 			}
 		}
-		else if (object instanceof VirtualModelResource) {
-			return FMLIconLibrary.iconForObject((VirtualModelResource) object);
+		else if (object instanceof CompilationUnitResource) {
+			return FMLIconLibrary.iconForObject((CompilationUnitResource) object);
 		}
 		else if (object instanceof FMLRTVirtualModelInstanceResource) {
 			return FMLRTIconLibrary.iconForObject((FMLRTVirtualModelInstanceResource) object);

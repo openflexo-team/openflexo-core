@@ -40,7 +40,7 @@ package org.openflexo.fml.controller.widget;
 
 import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.fml.VirtualModelInstanceType;
-import org.openflexo.foundation.fml.rm.VirtualModelResource;
+import org.openflexo.foundation.fml.rm.CompilationUnitResource;
 import org.openflexo.gina.annotation.FIBPanel;
 
 /**
@@ -52,7 +52,7 @@ import org.openflexo.gina.annotation.FIBPanel;
 @FIBPanel("Fib/CustomType/VirtualModelInstanceTypeEditor.fib")
 public class VirtualModelInstanceTypeEditor extends AbstractFlexoConceptInstanceTypeEditor<VirtualModelInstanceType> {
 
-	private VirtualModelResource selectedVirtualModel = null;
+	private CompilationUnitResource selectedVirtualModel = null;
 
 	public VirtualModelInstanceTypeEditor(FlexoServiceManager serviceManager) {
 		super(serviceManager);
@@ -68,14 +68,14 @@ public class VirtualModelInstanceTypeEditor extends AbstractFlexoConceptInstance
 		return VirtualModelInstanceType.class;
 	}
 
-	public VirtualModelResource getSelectedVirtualModel() {
+	public CompilationUnitResource getSelectedVirtualModel() {
 		return selectedVirtualModel;
 	}
 
-	public void setSelectedVirtualModel(VirtualModelResource selectedVirtualModel) {
+	public void setSelectedVirtualModel(CompilationUnitResource selectedVirtualModel) {
 		if ((selectedVirtualModel == null && this.selectedVirtualModel != null)
 				|| (selectedVirtualModel != null && !selectedVirtualModel.equals(this.selectedVirtualModel))) {
-			VirtualModelResource oldValue = this.selectedVirtualModel;
+			CompilationUnitResource oldValue = this.selectedVirtualModel;
 			this.selectedVirtualModel = selectedVirtualModel;
 			getPropertyChangeSupport().firePropertyChange("selectedVirtualModel", oldValue, selectedVirtualModel);
 			System.out.println("on selectionne " + selectedVirtualModel);
@@ -85,7 +85,7 @@ public class VirtualModelInstanceTypeEditor extends AbstractFlexoConceptInstance
 	@Override
 	public VirtualModelInstanceType getEditedType() {
 		if (getSelectedVirtualModel() != null) {
-			return VirtualModelInstanceType.getVirtualModelInstanceType(getSelectedVirtualModel().getVirtualModel());
+			return VirtualModelInstanceType.getVirtualModelInstanceType(getSelectedVirtualModel().getCompilationUnit());
 		}
 		return VirtualModelInstanceType.UNDEFINED_VIRTUAL_MODEL_INSTANCE_TYPE;
 	}

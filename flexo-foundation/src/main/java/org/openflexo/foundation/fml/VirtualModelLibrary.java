@@ -52,8 +52,8 @@ import org.openflexo.foundation.DefaultFlexoObject;
 import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.FlexoService;
 import org.openflexo.foundation.FlexoServiceManager;
-import org.openflexo.foundation.fml.rm.VirtualModelResource;
-import org.openflexo.foundation.fml.rm.VirtualModelResourceFactory;
+import org.openflexo.foundation.fml.rm.CompilationUnitResource;
+import org.openflexo.foundation.fml.rm.CompilationUnitResourceFactory;
 import org.openflexo.foundation.resource.DefaultResourceCenterService.ResourceCenterAdded;
 import org.openflexo.foundation.resource.DefaultResourceCenterService.ResourceCenterRemoved;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
@@ -78,7 +78,7 @@ public class VirtualModelLibrary extends DefaultFlexoObject implements FlexoServ
 
 	public FMLValidationModel viewPointValidationModel;
 
-	private final Map<String, VirtualModelResource> map;
+	private final Map<String, CompilationUnitResource> map;
 
 	private FlexoServiceManager serviceManager;
 
@@ -122,15 +122,15 @@ public class VirtualModelLibrary extends DefaultFlexoObject implements FlexoServ
 	 */
 	public VirtualModel getVirtualModel(String virtualModelURI, boolean loadWhenRequired)
 			throws FileNotFoundException, ResourceLoadingCancelledException, FlexoException {
-		VirtualModelResource returned = getVirtualModelResource(virtualModelURI);
-		if (returned == null && !virtualModelURI.endsWith(VirtualModelResourceFactory.FML_SUFFIX)) {
-			returned = getVirtualModelResource(virtualModelURI + VirtualModelResourceFactory.FML_SUFFIX);
+		CompilationUnitResource returned = getCompilationUnitResource(virtualModelURI);
+		if (returned == null && !virtualModelURI.endsWith(CompilationUnitResourceFactory.FML_SUFFIX)) {
+			returned = getCompilationUnitResource(virtualModelURI + CompilationUnitResourceFactory.FML_SUFFIX);
 		}
 		if (returned != null) {
 			if (loadWhenRequired) {
-				return returned.getResourceData();
+				return returned.getResourceData().getVirtualModel();
 			}
-			return returned.getLoadedResourceData();
+			return returned.getLoadedResourceData().getVirtualModel();
 		}
 		/*if (returned == null) {
 			logger.warning("Cannot find virtual model:" + virtualModelURI);
@@ -139,17 +139,17 @@ public class VirtualModelLibrary extends DefaultFlexoObject implements FlexoServ
 	}
 
 	/**
-	 * Retrieve and return ViewPoint/VirtualModel resource identified by supplied URI, without loading it
+	 * Retrieve and return {@link CompilationUnitResource} identified by supplied URI, without loading it
 	 * 
-	 * @param viewpointURI
+	 * @param virtualModelURI
 	 * @return
 	 */
-	public VirtualModelResource getVirtualModelResource(String virtualModelURI) {
+	public CompilationUnitResource getCompilationUnitResource(String virtualModelURI) {
 		if (virtualModelURI.contains("/")) {
 			String containerVirtualModelURI = virtualModelURI.substring(0, virtualModelURI.lastIndexOf("/"));
-			VirtualModelResource vpres = getVirtualModelResource(containerVirtualModelURI);
+			CompilationUnitResource vpres = getCompilationUnitResource(containerVirtualModelURI);
 			if (vpres != null) {
-				VirtualModelResource returned = vpres.getVirtualModelResource(virtualModelURI);
+				CompilationUnitResource returned = vpres.getCompilationUnitResource(virtualModelURI);
 				if (returned != null) {
 					return returned;
 				}
@@ -159,59 +159,59 @@ public class VirtualModelLibrary extends DefaultFlexoObject implements FlexoServ
 	}
 
 	/**
-	 * Return all viewpoints contained in this library<br>
+	 * Return all {@link CompilationUnitResource} contained in this library<br>
 	 * No consideration is performed on underlying organization structure
 	 * 
 	 * @return
 	 */
-	public Collection<VirtualModelResource> getVirtualModels() {
+	public Collection<CompilationUnitResource> getCompilationUnitResources() {
 		return map.values();
 	}
 
 	/**
 	 * Return all loaded virtual models in the current library
 	 */
-	public Collection<VirtualModel> getLoadedVirtualModels() {
-		Vector<VirtualModel> returned = new Vector<>();
-		for (VirtualModelResource vpRes : getVirtualModels()) {
+	public Collection<FMLCompilationUnit> getLoadedCompilationUnits() {
+		Vector<FMLCompilationUnit> returned = new Vector<>();
+		for (CompilationUnitResource vpRes : getCompilationUnitResources()) {
 			if (vpRes.isLoaded()) {
-				returned.add(vpRes.getVirtualModel());
+				returned.add(vpRes.getCompilationUnit());
 			}
 		}
 		return returned;
 	}
 
 	/**
-	 * Register supplied ViewPointResource in this library
+	 * Register supplied {@link CompilationUnitResource} in this library
 	 * 
-	 * @param vpRes
+	 * @param resource
 	 * @return
 	 */
-	public VirtualModelResource registerVirtualModel(VirtualModelResource vpRes) {
+	public CompilationUnitResource registerCompilationUnit(CompilationUnitResource resource) {
 		// clearNotFoundObjects();
-		String uri = vpRes.getURI();
+		String uri = resource.getURI();
 		if (StringUtils.isNotEmpty(uri)) {
-			map.put(uri, vpRes);
+			map.put(uri, resource);
 			setChanged();
-			notifyObservers(new VirtualModelRegistered(vpRes));
-			return vpRes;
+			notifyObservers(new CompilationUnitRegistered(resource));
+			return resource;
 		}
 		return null;
 	}
 
 	/**
-	 * UnRegister supplied ViewPointResource in this library
+	 * UnRegister supplied {@link CompilationUnitResource} in this library
 	 * 
-	 * @param vpRes
+	 * @param resource
 	 * @return
 	 */
-	public VirtualModelResource unregisterVirtualModel(VirtualModelResource vpRes) {
+	public CompilationUnitResource unregisterCompilationUnit(CompilationUnitResource resource) {
 
 		// clearNotFoundObjects();
 		// Unregister the viewpoint resource from the viewpoint library
-		for (Iterator<Map.Entry<String, VirtualModelResource>> i = map.entrySet().iterator(); i.hasNext();) {
-			Map.Entry<String, VirtualModelResource> entry = i.next();
-			if ((entry.getValue().equals(vpRes))) {
+		for (Iterator<Map.Entry<String, CompilationUnitResource>> i = map.entrySet().iterator(); i.hasNext();) {
+			Map.Entry<String, CompilationUnitResource> entry = i.next();
+			if ((entry.getValue().equals(resource))) {
 				i.remove();
 			}
 		}
@@ -220,13 +220,13 @@ public class VirtualModelLibrary extends DefaultFlexoObject implements FlexoServ
 		FMLTechnologyAdapter vmTA = getTechnologyAdapterService().getTechnologyAdapter(FMLTechnologyAdapter.class);
 		List<FlexoResourceCenter<?>> resourceCenters = getResourceCenterService().getResourceCenters();
 		for (FlexoResourceCenter<?> rc : resourceCenters) {
-			VirtualModelRepository<?> vprfb = vmTA.getVirtualModelRepository(rc);
-			if ((vprfb != null) && (vprfb.getAllResources().contains(vpRes))) {
-				vprfb.unregisterResource(vpRes);
+			CompilationUnitRepository<?> vprfb = vmTA.getVirtualModelRepository(rc);
+			if ((vprfb != null) && (vprfb.getAllResources().contains(resource))) {
+				vprfb.unregisterResource(resource);
 			}
 		}
 		setChanged();
-		return vpRes;
+		return resource;
 	}
 
 	/**
@@ -243,19 +243,20 @@ public class VirtualModelLibrary extends DefaultFlexoObject implements FlexoServ
 			return null;
 		}
 
-		VirtualModelResource vmRes = getVirtualModelResource(objectURI);
+		CompilationUnitResource compilationUnitResource = getCompilationUnitResource(objectURI);
 
-		if (vmRes != null) {
-			return (loadWhenRequired ? (O) vmRes.getVirtualModel() : (O) vmRes.getLoadedVirtualModel());
+		if (compilationUnitResource != null) {
+			return (loadWhenRequired ? (O) compilationUnitResource.getCompilationUnit()
+					: (O) compilationUnitResource.getLoadedCompilationUnit());
 		}
 
 		if (objectURI.indexOf("#") > -1) {
 			String virtualModelURI = objectURI.substring(0, objectURI.indexOf("#"));
 			String uriRemains = objectURI.substring(objectURI.indexOf("#") + 1);
-			vmRes = getVirtualModelResource(virtualModelURI);
-			if (vmRes == null) {
-				vmRes = getVirtualModelResource(virtualModelURI + ".fml");
-				if (vmRes == null && virtualModelURI.contains("/")) {
+			compilationUnitResource = getCompilationUnitResource(virtualModelURI);
+			if (compilationUnitResource == null) {
+				compilationUnitResource = getCompilationUnitResource(virtualModelURI + ".fml");
+				if (compilationUnitResource == null && virtualModelURI.contains("/")) {
 					String vpURI = virtualModelURI.substring(0, virtualModelURI.lastIndexOf("/"));
 					if (vpURI.endsWith(".viewpoint")) {
 						vpURI = vpURI.substring(0, vpURI.length() - 10);
@@ -267,37 +268,38 @@ public class VirtualModelLibrary extends DefaultFlexoObject implements FlexoServ
 					if (!vmName.endsWith(".fml")) {
 						vmName = vmName + ".fml";
 					}
-					vmRes = getVirtualModelResource(vpURI + "/" + vmName);
+					compilationUnitResource = getCompilationUnitResource(vpURI + "/" + vmName);
 				}
-				logger.info("Attempt to retrieve VirtualModel from former URI form. Searched " + virtualModelURI + " Found: " + vmRes);
+				logger.info("Attempt to retrieve VirtualModel from former URI form. Searched " + virtualModelURI + " Found: "
+						+ compilationUnitResource);
 			}
-			if (vmRes != null) {
-				VirtualModel vm;
+			if (compilationUnitResource != null) {
+				FMLCompilationUnit compilationUnit;
 				if (loadWhenRequired) {
-					vm = vmRes.getVirtualModel();
+					compilationUnit = compilationUnitResource.getCompilationUnit();
 				}
 				else {
-					vm = vmRes.getLoadedResourceData();
+					compilationUnit = compilationUnitResource.getLoadedResourceData();
 				}
-				if (vm == null) {
+				if (compilationUnit == null) {
 					// VirtualModel is not loaded, return null
 					return null;
 				}
 
 				if (uriRemains.lastIndexOf(".") > -1) {
 					String flexoConceptName = uriRemains.substring(0, uriRemains.lastIndexOf("."));
-					FlexoConcept concept = vm.getFlexoConcept(flexoConceptName);
+					FlexoConcept concept = compilationUnit.getFlexoConcept(flexoConceptName);
 					uriRemains = uriRemains.substring(uriRemains.lastIndexOf(".") + 1);
 					if (concept != null) {
 						return getFMLObject(uriRemains, concept);
 					}
 					else {
-						logger.warning("Cannot find concept " + flexoConceptName + " in " + vm);
+						logger.warning("Cannot find concept " + flexoConceptName + " in " + compilationUnit);
 						return null;
 					}
 				}
 				else {
-					return (O) vm.getFlexoConcept(uriRemains);
+					return (O) compilationUnit.getFlexoConcept(uriRemains);
 				}
 			}
 		}
@@ -473,7 +475,7 @@ public class VirtualModelLibrary extends DefaultFlexoObject implements FlexoServ
 	@Override
 	public Collection<Validable> getEmbeddedValidableObjects() {
 		Collection<Validable> returned = new ArrayList<>();
-		returned.addAll(getLoadedVirtualModels());
+		returned.addAll(getLoadedCompilationUnits());
 		return returned;
 	}
 
@@ -545,15 +547,15 @@ public class VirtualModelLibrary extends DefaultFlexoObject implements FlexoServ
 
 			for (FlexoResourceCenter<?> rc : getResourceCenters()) {
 				// Register Viewpoint viewpoint resources
-				VirtualModelRepository<?> vprfb = fmlTA.getVirtualModelRepository(rc);
+				CompilationUnitRepository<?> vprfb = fmlTA.getVirtualModelRepository(rc);
 				// System.out.println("vprfb=" + vprfb);
 				if (vprfb == null) {
 					logger.warning("Could not retrieve VirtualModelRepository from RC: " + rc);
 				}
 				else {
-					for (VirtualModelResource vpRes : vprfb.getAllResources()) {
+					for (CompilationUnitResource vpRes : vprfb.getAllResources()) {
 						vpRes.setVirtualModelLibrary(this);
-						registerVirtualModel(vpRes);
+						registerCompilationUnit(vpRes);
 					}
 				}
 			}

@@ -42,12 +42,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.openflexo.foundation.FlexoServiceManager;
-import org.openflexo.foundation.fml.FMLTechnologyAdapter;
-import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.rt.rm.FMLRTVirtualModelInstanceResource;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.resource.RepositoryFolder;
-import org.openflexo.foundation.technologyadapter.ModelRepository;
+import org.openflexo.foundation.technologyadapter.TechnologyAdapterResourceRepository;
 import org.openflexo.pamela.annotations.ImplementationClass;
 import org.openflexo.pamela.annotations.ModelEntity;
 import org.openflexo.pamela.exceptions.ModelDefinitionException;
@@ -62,7 +60,7 @@ import org.openflexo.pamela.factory.ModelFactory;
 @ModelEntity
 @ImplementationClass(FMLRTVirtualModelInstanceRepository.FMLRTVirtualModelInstanceRepositoryImpl.class)
 public interface FMLRTVirtualModelInstanceRepository<I> extends
-		ModelRepository<FMLRTVirtualModelInstanceResource, FMLRTVirtualModelInstance, VirtualModel, FMLRTTechnologyAdapter, FMLTechnologyAdapter, I> {
+		TechnologyAdapterResourceRepository<FMLRTVirtualModelInstanceResource, FMLRTTechnologyAdapter, FMLRTVirtualModelInstance, I> {
 
 	public static <I> FMLRTVirtualModelInstanceRepository<I> instanciateNewRepository(FMLRTTechnologyAdapter technologyAdapter,
 			FlexoResourceCenter<I> resourceCenter) {
@@ -92,7 +90,9 @@ public interface FMLRTVirtualModelInstanceRepository<I> extends
 	public List<FMLRTVirtualModelInstanceResource> getTopLevelVirtualModelInstanceResources();
 
 	public static abstract class FMLRTVirtualModelInstanceRepositoryImpl<I> extends
-			ModelRepositoryImpl<FMLRTVirtualModelInstanceResource, FMLRTVirtualModelInstance, VirtualModel, FMLRTTechnologyAdapter, FMLTechnologyAdapter, I>
+			TechnologyAdapterResourceRepositoryImpl<FMLRTVirtualModelInstanceResource, FMLRTTechnologyAdapter, FMLRTVirtualModelInstance, I>
+			// ModelRepositoryImpl<FMLRTVirtualModelInstanceResource, FMLRTVirtualModelInstance, VirtualModel, FMLRTTechnologyAdapter,
+			// FMLTechnologyAdapter, I>
 			implements FMLRTVirtualModelInstanceRepository<I> {
 
 		@Override

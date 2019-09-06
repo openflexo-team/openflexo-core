@@ -83,19 +83,16 @@ public interface FlexoConceptObject extends FMLObject {
 
 	public abstract class FlexoConceptObjectImpl extends FMLObjectImpl implements FlexoConceptObject {
 
-		@Override
+		/*@Override
 		public FMLModelFactory getFMLModelFactory() {
-			if (getDeclaringVirtualModel() != null && getDeclaringVirtualModel().getFMLModelFactory() != null) {
-				return getDeclaringVirtualModel().getFMLModelFactory();
+			if (getDeclaringCompilationUnit() != null && getDeclaringCompilationUnit().getFMLModelFactory() != null) {
+				return getDeclaringCompilationUnit().getFMLModelFactory();
 			}
-			/*if (getOwningVirtualModel() != null && getOwningVirtualModel().getFMLModelFactory() != null) {
-				return getOwningVirtualModel().getFMLModelFactory();
-			}*/
 			if (getFlexoConcept() instanceof VirtualModel && ((VirtualModel) getFlexoConcept()).getFMLModelFactory() != null) {
 				return getFlexoConcept().getFMLModelFactory();
 			}
 			return getDeserializationFactory();
-		}
+		}*/
 
 		/**
 		 * Return
@@ -106,14 +103,19 @@ public interface FlexoConceptObject extends FMLObject {
 		public abstract FlexoConcept getFlexoConcept();
 
 		@Override
-		public VirtualModel getResourceData() {
-			if (getFlexoConcept() instanceof VirtualModel) {
+		public FMLCompilationUnit getResourceData() {
+			if (getFlexoConcept() != null) {
+				return (FMLCompilationUnit) getFlexoConcept().getResourceData();
+			}
+			return null;
+
+			/*if (getFlexoConcept() instanceof VirtualModel) {
 				return (VirtualModel) getFlexoConcept();
 			}
 			if (getFlexoConcept() != null && getFlexoConcept().getOwner() != null) {
 				return getFlexoConcept().getOwner();
 			}
-			return null;
+			return null;*/
 		}
 
 		@Override

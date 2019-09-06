@@ -38,8 +38,6 @@
 
 package org.openflexo.foundation.fml;
 
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -48,37 +46,26 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.Vector;
-import java.util.function.Consumer;
 import java.util.logging.Logger;
-import java.util.regex.Pattern;
 
 import org.openflexo.connie.Bindable;
 import org.openflexo.connie.BindingFactory;
-import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.fml.FMLRepresentationContext.FMLRepresentationOutput;
 import org.openflexo.foundation.fml.binding.FMLBindingFactory;
 import org.openflexo.foundation.fml.binding.VirtualModelBindingModel;
-import org.openflexo.foundation.fml.inspector.InspectorEntry;
-import org.openflexo.foundation.fml.rm.VirtualModelResource;
-import org.openflexo.foundation.fml.rm.VirtualModelResourceFactory;
+import org.openflexo.foundation.fml.rm.CompilationUnitResource;
+import org.openflexo.foundation.fml.rm.CompilationUnitResourceFactory;
 import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.InferedFMLRTModelSlot;
 import org.openflexo.foundation.fml.rt.editionaction.DeleteFlexoConceptInstanceParameter;
 import org.openflexo.foundation.resource.CannotRenameException;
-import org.openflexo.foundation.resource.FlexoResource;
-import org.openflexo.foundation.resource.ResourceData;
-import org.openflexo.foundation.resource.ResourceLoadingCancelledException;
-import org.openflexo.foundation.resource.SaveResourceException;
 import org.openflexo.foundation.technologyadapter.FlexoMetaModel;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterService;
 import org.openflexo.foundation.technologyadapter.TypeAwareModelSlot;
 import org.openflexo.foundation.technologyadapter.UseModelSlotDeclaration;
-import org.openflexo.localization.Language;
-import org.openflexo.localization.LocalizedDelegate;
-import org.openflexo.localization.LocalizedDelegateImpl;
 import org.openflexo.pamela.annotations.Adder;
 import org.openflexo.pamela.annotations.CloningStrategy;
 import org.openflexo.pamela.annotations.CloningStrategy.StrategyType;
@@ -96,14 +83,10 @@ import org.openflexo.pamela.annotations.Remover;
 import org.openflexo.pamela.annotations.Setter;
 import org.openflexo.pamela.annotations.XMLAttribute;
 import org.openflexo.pamela.annotations.XMLElement;
-import org.openflexo.pamela.undo.CompoundEdit;
 import org.openflexo.pamela.validation.Validable;
 import org.openflexo.pamela.validation.ValidationError;
 import org.openflexo.pamela.validation.ValidationIssue;
 import org.openflexo.pamela.validation.ValidationRule;
-import org.openflexo.rm.BasicResourceImpl.LocatorNotFoundException;
-import org.openflexo.rm.FileResourceImpl;
-import org.openflexo.rm.Resource;
 import org.openflexo.toolbox.FlexoVersion;
 import org.openflexo.toolbox.JavaUtils;
 import org.openflexo.toolbox.StringUtils;
@@ -125,23 +108,19 @@ import org.openflexo.toolbox.StringUtils;
 @Imports({ @Import(FlexoConceptStructuralFacet.class), @Import(FlexoConceptBehaviouralFacet.class), @Import(InnerConceptsFacet.class),
 		@Import(DeleteFlexoConceptInstanceParameter.class) })
 @XMLElement
-public interface VirtualModel extends FlexoConcept, FlexoMetaModel<VirtualModel>, ResourceData<VirtualModel> {
+public interface VirtualModel extends FlexoConcept {
 
-	public static final String RESOURCE = "resource";
-
-	@PropertyIdentifier(type = FlexoVersion.class)
-	public static final String VERSION_KEY = "version";
 	@PropertyIdentifier(type = String.class)
 	public static final String URI_KEY = "uri";
 	@PropertyIdentifier(type = FlexoVersion.class)
-	public static final String MODEL_VERSION_KEY = "modelVersion";
+	public static final String VERSION_KEY = "version";
 	@PropertyIdentifier(type = FlexoConcept.class, cardinality = Cardinality.LIST)
 	public static final String FLEXO_CONCEPTS_KEY = "flexoConcepts";
 	@PropertyIdentifier(type = UseModelSlotDeclaration.class, cardinality = Cardinality.LIST)
 	public static final String USE_DECLARATIONS_KEY = "useDeclarations";
 
-	@PropertyIdentifier(type = FMLLocalizedDictionary.class)
-	String LOCALIZED_DICTIONARY_KEY = "localizedDictionary";
+	@PropertyIdentifier(type = VirtualModel.class)
+	public static final String CONTAINER_VIRTUAL_MODEL_KEY = "containerVirtualModel";
 	@PropertyIdentifier(type = VirtualModel.class, cardinality = Cardinality.LIST)
 	String VIRTUAL_MODELS_KEY = "virtualModels";
 
@@ -156,11 +135,18 @@ public interface VirtualModel extends FlexoConcept, FlexoMetaModel<VirtualModel>
 	 * 
 	 * @return
 	 */
-	@Getter(value = COMPILATION_UNIT_KEY, ignoreType = true)
+	@Getter(value = COMPILATION_UNIT_KEY, ignoreType = true, isDerived = true)
 	public FMLCompilationUnit getCompilationUnit();
 
 	@Setter(COMPILATION_UNIT_KEY)
 	public void setCompilationUnit(FMLCompilationUnit virtualModel);
+
+	/**
+	 * Return the resource of {@link FMLCompilationUnit} where this {@link VirtualModel} is declared
+	 * 
+	 * @return
+	 */
+	public CompilationUnitResource getResource();
 
 	@Getter(value = MODEL_SLOT_NATURE_CLASS_KEY)
 	@XMLAttribute
@@ -181,62 +167,12 @@ public interface VirtualModel extends FlexoConcept, FlexoMetaModel<VirtualModel>
 	@Override
 	public FMLModelFactory getFMLModelFactory();
 
-	/**
-	 * Return resource for this virtual model
-	 * 
-	 * @return
-	 */
-	@Override
-	@Getter(value = RESOURCE, ignoreType = true)
-	// @CloningStrategy(value = StrategyType.FACTORY, factory = "cloneResource()")
-	@CloningStrategy(StrategyType.IGNORE)
-	public FlexoResource<VirtualModel> getResource();
-
-	/**
-	 * Sets resource for this virtual model
-	 * 
-	 * @param aName
-	 */
-	@Override
-	@Setter(value = RESOURCE)
-	public void setResource(FlexoResource<VirtualModel> aVirtualModelResource);
-
-	/**
-	 * Convenient method used to retrieved {@link VirtualModelResource}
-	 * 
-	 * @return
-	 */
-	public VirtualModelResource getVirtualModelResource();
-
-	/**
-	 * Called to clone the resource of this {@link VirtualModel}
-	 * 
-	 * @return
-	 */
-	// public FlexoResource<VM> cloneResource();
-
-	@Getter(value = VERSION_KEY, isStringConvertable = true)
-	@XMLAttribute
-	public FlexoVersion getVersion();
-
-	@Setter(VERSION_KEY)
-	public void setVersion(FlexoVersion version);
-
-	@Getter(value = MODEL_VERSION_KEY, isStringConvertable = true)
-	@XMLAttribute
-	public FlexoVersion getModelVersion();
-
-	@Setter(MODEL_VERSION_KEY)
-	public void setModelVersion(FlexoVersion modelVersion);
-
-	@Getter(value = LOCALIZED_DICTIONARY_KEY, inverse = FMLLocalizedDictionary.OWNER_KEY)
+	/*@Getter(value = LOCALIZED_DICTIONARY_KEY, inverse = FMLLocalizedDictionary.OWNER_KEY)
 	@XMLElement
 	FMLLocalizedDictionary getDeprecatedLocalizedDictionary();
-
+	
 	@Setter(LOCALIZED_DICTIONARY_KEY)
-	void setDeprecatedLocalizedDictionary(FMLLocalizedDictionary localizedDictionary);
-
-	public LocalizedDelegate getLocalizedDictionary();
+	void setDeprecatedLocalizedDictionary(FMLLocalizedDictionary localizedDictionary);*/
 
 	/**
 	 * Return list of {@link UseModelSlotDeclaration} accessible from this {@link VirtualModel}<br>
@@ -244,6 +180,7 @@ public interface VirtualModel extends FlexoConcept, FlexoMetaModel<VirtualModel>
 	 * 
 	 * @return
 	 */
+	@Deprecated
 	public List<UseModelSlotDeclaration> getAccessibleUseDeclarations();
 
 	/**
@@ -255,16 +192,19 @@ public interface VirtualModel extends FlexoConcept, FlexoMetaModel<VirtualModel>
 	@XMLElement
 	@Embedded
 	@CloningStrategy(StrategyType.CLONE)
+	@Deprecated
 	public List<UseModelSlotDeclaration> getUseDeclarations();
 
-	@Setter(USE_DECLARATIONS_KEY)
-	public void setUseDeclarations(List<UseModelSlotDeclaration> useDecls);
+	// @Setter(USE_DECLARATIONS_KEY)
+	// public void setUseDeclarations(List<UseModelSlotDeclaration> useDecls);
 
 	@Adder(USE_DECLARATIONS_KEY)
 	@PastingPoint
+	@Deprecated
 	public void addToUseDeclarations(UseModelSlotDeclaration useDecl);
 
 	@Remover(USE_DECLARATIONS_KEY)
+	@Deprecated
 	public void removeFromUseDeclarations(UseModelSlotDeclaration useDecl);
 
 	/**
@@ -273,6 +213,7 @@ public interface VirtualModel extends FlexoConcept, FlexoMetaModel<VirtualModel>
 	 * @param modelSlotClass
 	 * @return
 	 */
+	@Deprecated
 	public <MS extends ModelSlot<?>> boolean uses(Class<MS> modelSlotClass);
 
 	/**
@@ -281,6 +222,7 @@ public interface VirtualModel extends FlexoConcept, FlexoMetaModel<VirtualModel>
 	 * @param modelSlotClass
 	 * @return
 	 */
+	@Deprecated
 	public <MS extends ModelSlot<?>> UseModelSlotDeclaration declareUse(Class<MS> modelSlotClass);
 
 	/**
@@ -358,33 +300,6 @@ public interface VirtualModel extends FlexoConcept, FlexoMetaModel<VirtualModel>
 	public VirtualModelBindingModel getBindingModel();
 
 	/**
-	 * Return the list of {@link TechnologyAdapter} used in the context of this {@link VirtualModel}
-	 * 
-	 * @return
-	 */
-	public List<TechnologyAdapter> getRequiredTechnologyAdapters();
-
-	@PropertyIdentifier(type = VirtualModel.class)
-	public static final String CONTAINER_VIRTUAL_MODEL_KEY = "containerVirtualModel";
-
-	/**
-	 * Return the container VirtualModel<br>
-	 * This is the VirtualModel in which this VirtualModel is declared, it's might be null if this VirtualModel is at the root level
-	 * 
-	 * @return
-	 */
-	@Getter(value = CONTAINER_VIRTUAL_MODEL_KEY)
-	public VirtualModel getContainerVirtualModel();
-
-	/**
-	 * Sets container VirtualModel
-	 * 
-	 * @param aVirtualModel
-	 */
-	@Setter(CONTAINER_VIRTUAL_MODEL_KEY)
-	public void setContainerVirtualModel(VirtualModel aVirtualModel);
-
-	/**
 	 * Returns URI for this {@link VirtualModel}.<br>
 	 * Note that if this {@link VirtualModel} is contained in another {@link VirtualModel}, URI is computed from URI of container
 	 * VirtualModel
@@ -408,10 +323,34 @@ public interface VirtualModel extends FlexoConcept, FlexoMetaModel<VirtualModel>
 	@Setter(URI_KEY)
 	public void setURI(String anURI);
 
+	@Getter(value = VERSION_KEY, isStringConvertable = true)
+	@XMLAttribute
+	public FlexoVersion getVersion();
+
+	@Setter(VERSION_KEY)
+	public void setVersion(FlexoVersion version);
+
 	/**
 	 * Retrieves the type of a {@link FMLRTVirtualModelInstance} conform to this {@link VirtualModel}
 	 */
 	VirtualModelInstanceType getVirtualModelInstanceType();
+
+	/**
+	 * Return the container VirtualModel<br>
+	 * This is the VirtualModel in which this VirtualModel is declared, it's might be null if this VirtualModel is at the root level
+	 * 
+	 * @return
+	 */
+	@Getter(value = CONTAINER_VIRTUAL_MODEL_KEY)
+	public VirtualModel getContainerVirtualModel();
+
+	/**
+	 * Sets container VirtualModel
+	 * 
+	 * @param aVirtualModel
+	 */
+	@Setter(CONTAINER_VIRTUAL_MODEL_KEY)
+	public void setContainerVirtualModel(VirtualModel aVirtualModel);
 
 	/**
 	 * Return all loaded {@link VirtualModel} defined in this {@link VirtualModel}<br>
@@ -435,22 +374,14 @@ public interface VirtualModel extends FlexoConcept, FlexoMetaModel<VirtualModel>
 	 */
 	List<VirtualModel> getVirtualModels(boolean forceLoad);
 
-	@Setter(VIRTUAL_MODELS_KEY)
-	void setVirtualModels(List<VirtualModel> virtualModels);
+	// @Setter(VIRTUAL_MODELS_KEY)
+	// void setVirtualModels(List<VirtualModel> virtualModels);
 
 	@Adder(VIRTUAL_MODELS_KEY)
 	void addToVirtualModels(VirtualModel virtualModel);
 
 	@Remover(VIRTUAL_MODELS_KEY)
 	void removeFromVirtualModels(VirtualModel virtualModel);
-
-	VirtualModel getVirtualModelNamed(String virtualModelNameOrURI);
-
-	/**
-	 * Load eventually unloaded contained VirtualModels<br>
-	 * After this call return, we can safely assert that all contained {@link VirtualModel} are loaded.
-	 */
-	void loadContainedVirtualModelsWhenUnloaded();
 
 	/**
 	 * Return boolean indicating in this {@link VirtualModel} is contained in supplied {@link VirtualModel} with the recursive semantics
@@ -464,6 +395,13 @@ public interface VirtualModel extends FlexoConcept, FlexoMetaModel<VirtualModel>
 	public boolean isContainedIn(VirtualModel virtualModel);
 
 	/**
+	 * Return {@link VirtualModel} with supplied name or URI
+	 * 
+	 * @return
+	 */
+	public VirtualModel getVirtualModelNamed(String virtualModelNameOrURI);
+
+	/**
 	 * Default implementation for {@link VirtualModel} API
 	 * 
 	 * @author sylvain
@@ -473,8 +411,7 @@ public interface VirtualModel extends FlexoConcept, FlexoMetaModel<VirtualModel>
 
 		private static final Logger logger = Logger.getLogger(VirtualModel.class.getPackage().getName());
 
-		private VirtualModelResource resource;
-		private boolean readOnly = false;
+		// private boolean readOnly = false;
 		private VirtualModelInstanceType vmInstanceType;
 		private VirtualModelInstanceType defaultVMInstanceType = new VirtualModelInstanceType(this);
 
@@ -485,6 +422,25 @@ public interface VirtualModel extends FlexoConcept, FlexoMetaModel<VirtualModel>
 		}
 
 		@Override
+		public FMLCompilationUnit getResourceData() {
+			return getCompilationUnit();
+		}
+
+		/**
+		 * Return the resource of {@link FMLCompilationUnit} where this {@link VirtualModel} is declared
+		 * 
+		 * @return
+		 */
+		@Override
+		public CompilationUnitResource getResource() {
+			if (getCompilationUnit() != null) {
+				return (CompilationUnitResource) getCompilationUnit().getResource();
+			}
+			return null;
+		}
+
+		@Override
+		@Deprecated
 		public void addToUseDeclarations(UseModelSlotDeclaration useDecl) {
 			performSuperAdder(USE_DECLARATIONS_KEY, useDecl);
 			vmInstanceType = null;
@@ -493,6 +449,7 @@ public interface VirtualModel extends FlexoConcept, FlexoMetaModel<VirtualModel>
 		}
 
 		@Override
+		@Deprecated
 		public void removeFromUseDeclarations(UseModelSlotDeclaration useDecl) {
 			performSuperRemover(USE_DECLARATIONS_KEY, useDecl);
 			vmInstanceType = null;
@@ -544,16 +501,16 @@ public interface VirtualModel extends FlexoConcept, FlexoMetaModel<VirtualModel>
 			return getInstanceType();
 		}
 
-		@Override
+		/*@Override
 		public FMLModelFactory getFMLModelFactory() {
-			if (getDeserializationFactory() != null /*isDeserializing()*/) {
+			if (getDeserializationFactory() != null) {
 				return getDeserializationFactory();
 			}
 			if (getResource() != null) {
 				return getResource().getFactory();
 			}
 			return getDeserializationFactory();
-		}
+		}*/
 
 		@Override
 		public void finalizeDeserialization() {
@@ -590,10 +547,13 @@ public interface VirtualModel extends FlexoConcept, FlexoMetaModel<VirtualModel>
 		public String getURI() {
 			if (getContainerVirtualModel() != null) {
 				return getContainerVirtualModel().getURI() + "/" + getName()
-						+ (getName().endsWith(VirtualModelResourceFactory.FML_SUFFIX) ? "" : VirtualModelResourceFactory.FML_SUFFIX);
+						+ (getName().endsWith(CompilationUnitResourceFactory.FML_SUFFIX) ? "" : CompilationUnitResourceFactory.FML_SUFFIX);
 			}
-			if (getResource() != null) {
-				return getResource().getURI();
+			if (getMetaData("URI") != null) {
+				return getMetaData("URI").getValueAs(String.class);
+			}
+			if (getCompilationUnit() != null && getCompilationUnit().getResource() != null) {
+				return getCompilationUnit().getResource().getURI();
 			}
 			return null;
 		}
@@ -611,16 +571,52 @@ public interface VirtualModel extends FlexoConcept, FlexoMetaModel<VirtualModel>
 					// We prevent ',' so that we can use it as a delimiter in tags.
 					anURI = anURI.replace(",", "");
 				}
-				if (getResource() != null) {
-					getResource().setURI(anURI);
+				if (getMetaData("URI") != null) {
+					getMetaData("URI").setValueAs(anURI, String.class);
+				}
+				else if (getCompilationUnit() == null || getCompilationUnit().getResource() == null || anURI == null
+						|| !anURI.equals(getCompilationUnit().getResource().getURI())) {
+					FMLMetaData uriMD = getFMLModelFactory().newMetaData("URI", anURI, String.class);
+					addToMetaData(uriMD);
+				}
+				if (getCompilationUnit() != null && getCompilationUnit().getResource() != null) {
+					getCompilationUnit().getResource().setURI(anURI);
+				}
+			}
+		}
+
+		@Override
+		public FlexoVersion getVersion() {
+			if (getMetaData("Version") != null) {
+				return getMetaData("Version").getValueAs(FlexoVersion.class);
+			}
+			if (getCompilationUnit() != null && getCompilationUnit().getResource() != null) {
+				return getCompilationUnit().getResource().getVersion();
+			}
+			return null;
+		}
+
+		@Override
+		public void setVersion(FlexoVersion aVersion) {
+			if (isDeserializing() || requireChange(getVersion(), aVersion)) {
+				if (getMetaData("Version") != null) {
+					getMetaData("Version").setValueAs(aVersion, FlexoVersion.class);
+				}
+				else if (getCompilationUnit() == null || getCompilationUnit().getResource() == null || aVersion == null
+						|| !aVersion.equals(getCompilationUnit().getResource().getVersion())) {
+					FMLMetaData versionMD = getFMLModelFactory().newMetaData("Version", aVersion, FlexoVersion.class);
+					addToMetaData(versionMD);
+				}
+				if (getCompilationUnit() != null && getCompilationUnit().getResource() != null) {
+					getCompilationUnit().getResource().setVersion(aVersion);
 				}
 			}
 		}
 
 		@Override
 		public String getName() {
-			if (getResource() != null) {
-				return getResource().getName();
+			if (getCompilationUnit() != null && getCompilationUnit().getResource() != null) {
+				return getCompilationUnit().getResource().getName();
 			}
 			return super.getName();
 		}
@@ -629,9 +625,9 @@ public interface VirtualModel extends FlexoConcept, FlexoMetaModel<VirtualModel>
 		public void setName(String name) {
 			if (requireChange(getName(), name)) {
 				String oldValue = getName();
-				if (getResource() != null) {
+				if (getCompilationUnit() != null && getCompilationUnit().getResource() != null) {
 					try {
-						getResource().setName(name);
+						getCompilationUnit().getResource().setName(name);
 						getPropertyChangeSupport().firePropertyChange("name", oldValue, name);
 					} catch (CannotRenameException e) {
 						e.printStackTrace();
@@ -639,23 +635,6 @@ public interface VirtualModel extends FlexoConcept, FlexoMetaModel<VirtualModel>
 				}
 				else {
 					super.setName(name);
-				}
-			}
-		}
-
-		@Override
-		public FlexoVersion getVersion() {
-			if (getResource() != null) {
-				return getResource().getVersion();
-			}
-			return null;
-		}
-
-		@Override
-		public void setVersion(FlexoVersion aVersion) {
-			if (requireChange(getVersion(), aVersion)) {
-				if (getResource() != null) {
-					getResource().setVersion(aVersion);
 				}
 			}
 		}
@@ -757,11 +736,12 @@ public interface VirtualModel extends FlexoConcept, FlexoMetaModel<VirtualModel>
 
 			// Implemented lazy loading for VirtualModel while searching FlexoConcept from URI
 
-			if (flexoConceptNameOrURI.indexOf("#") > -1 && getResource() != null) {
+			if (flexoConceptNameOrURI.indexOf("#") > -1 && getCompilationUnit().getResource() != null) {
 				String virtualModelURI = flexoConceptNameOrURI.substring(0, flexoConceptNameOrURI.indexOf("#"));
-				VirtualModelResource vmRes = getResource().getContentWithURI(VirtualModelResource.class, virtualModelURI);
+				CompilationUnitResource vmRes = getCompilationUnit().getResource().getContentWithURI(CompilationUnitResource.class,
+						virtualModelURI);
 				if (vmRes != null) {
-					return vmRes.getVirtualModel().getFlexoConcept(flexoConceptNameOrURI);
+					return vmRes.getCompilationUnit().getFlexoConcept(flexoConceptNameOrURI);
 				}
 			}
 
@@ -853,71 +833,26 @@ public interface VirtualModel extends FlexoConcept, FlexoMetaModel<VirtualModel>
 			return returned;
 		}
 
-		@Override
+		/*@Override
 		public boolean isReadOnly() {
 			return readOnly;
 		}
-
+		
 		@Override
 		public void setIsReadOnly(boolean b) {
 			readOnly = b;
-		}
+		}*/
 
-		@Override
-		public FlexoVersion getModelVersion() {
-			if (getResource() != null) {
-				return getResource().getModelVersion();
-			}
-			return null;
-		}
-
-		@Override
-		public void setModelVersion(FlexoVersion aVersion) {
-			if (getResource() != null) {
-				getResource().setModelVersion(aVersion);
-			}
-		}
-
-		// Implementation of XMLStorageResourceData
-
-		@Override
-		public VirtualModelResource getResource() {
-			return resource;
-		}
-
-		@Override
-		public void setResource(FlexoResource<VirtualModel> resource) {
-			this.resource = (VirtualModelResource) resource;
-		}
-
-		/**
-		 * Convenient method used to retrieved {@link VirtualModelResource}
-		 * 
-		 * @return
-		 */
-		@Override
-		public VirtualModelResource getVirtualModelResource() {
-			return getResource();
-		}
-
-		@Override
+		/*@Override
 		public void save() {
-			logger.info("Saving ViewPoint to " + getResource().getIODelegate().toString() + "...");
-
+			logger.info("Saving FML to " + getResource().getIODelegate().toString() + "...");
+		
 			try {
 				getResource().save();
 			} catch (SaveResourceException e) {
 				e.printStackTrace();
 			}
-		}
-
-		@Override
-		public FMLTechnologyAdapter getTechnologyAdapter() {
-			if (getResource() != null) {
-				return getResource().getTechnologyAdapter();
-			}
-			return null;
-		}
+		}*/
 
 		@Override
 		protected String getFMLAnnotation(FMLRepresentationContext context) {
@@ -964,49 +899,10 @@ public interface VirtualModel extends FlexoConcept, FlexoMetaModel<VirtualModel>
 			return out.toString();
 		}
 
-		@Override
-		public VirtualModel getResourceData() {
-			return this;
-		}
-
-		// Developper's note: we implement here VirtualModelObject API
-		// Do not consider getOwningVirtualModel()
-		/*
-		@Override
-		public VirtualModel getVirtualModel() {
-			return this;
-		}
-		 */
-
-		@Override
+		/*@Override
 		public Object getObject(String objectURI) {
 			return getVirtualModelLibrary().getFMLObject(objectURI, true);
-		}
-
-		/**
-		 * Return the list of {@link TechnologyAdapter} used in the context of this {@link VirtualModel}
-		 * 
-		 * @return
-		 */
-		@Override
-		public List<TechnologyAdapter> getRequiredTechnologyAdapters() {
-			List<TechnologyAdapter> returned = new ArrayList<>();
-			returned.add(getTechnologyAdapter());
-			for (ModelSlot<?> ms : getModelSlots()) {
-				if (!returned.contains(ms.getModelSlotTechnologyAdapter())) {
-					returned.add(ms.getModelSlotTechnologyAdapter());
-				}
-			}
-			loadContainedVirtualModelsWhenUnloaded();
-			for (VirtualModel vm : getVirtualModels()) {
-				for (TechnologyAdapter<?> ta : vm.getRequiredTechnologyAdapters()) {
-					if (!returned.contains(ta)) {
-						returned.add(ta);
-					}
-				}
-			}
-			return returned;
-		}
+		}*/
 
 		/**
 		 * Return {@link FlexoProperty} identified by supplied name, which is to be retrieved in all accessible properties<br>
@@ -1054,8 +950,8 @@ public interface VirtualModel extends FlexoConcept, FlexoMetaModel<VirtualModel>
 			}
 
 			usedModelSlots.add(modelSlotClass);
-			if (getResource() != null) {
-				getResource().updateFMLModelFactory(usedModelSlots);
+			if (getCompilationUnit().getResource() != null) {
+				((CompilationUnitResource) getCompilationUnit().getResource()).updateFMLModelFactory(usedModelSlots);
 			}
 
 			UseModelSlotDeclaration useDeclaration = getFMLModelFactory().newUseModelSlotDeclaration(modelSlotClass);
@@ -1104,11 +1000,6 @@ public interface VirtualModel extends FlexoConcept, FlexoMetaModel<VirtualModel>
 
 		@Override
 		public boolean delete(Object... context) {
-
-			// Unregister the resource from the virtual model library
-			if (getResource() != null && getVirtualModelLibrary() != null) {
-				getVirtualModelLibrary().unregisterVirtualModel(getResource());
-			}
 
 			if (bindingModel != null) {
 				bindingModel.delete();
@@ -1187,46 +1078,10 @@ public interface VirtualModel extends FlexoConcept, FlexoMetaModel<VirtualModel>
 
 		@Override
 		public BindingFactory getBindingFactory() {
-			if (getDeclaringVirtualModel() != null && getDeclaringVirtualModel() != this) {
-				return getDeclaringVirtualModel().getBindingFactory();
-			}
 			if (bindingFactory == null) {
 				bindingFactory = new FMLBindingFactory(this);
 			}
 			return bindingFactory;
-		}
-
-		@Override
-		public VirtualModelLibrary getVirtualModelLibrary() {
-			if (getResource() != null) {
-				return getResource().getVirtualModelLibrary();
-			}
-			return null;
-		}
-
-		private boolean isLoading = false;
-
-		/**
-		 * Load eventually unloaded VirtualModels<br>
-		 * After this call return, we can safely assert that all {@link VirtualModel} are loaded.
-		 */
-		@Override
-		public void loadContainedVirtualModelsWhenUnloaded() {
-			if (isLoading) {
-				return;
-			}
-			if (!isLoading) {
-				isLoading = true;
-				if (getResource() != null) {
-					for (org.openflexo.foundation.resource.FlexoResource<?> r : getResource().getContents()) {
-						if (r instanceof VirtualModelResource) {
-							((VirtualModelResource) r).getVirtualModel();
-						}
-					}
-				}
-			}
-
-			isLoading = false;
 		}
 
 		private List<VirtualModel> virtualModels;
@@ -1275,16 +1130,16 @@ public interface VirtualModel extends FlexoConcept, FlexoMetaModel<VirtualModel>
 		@Override
 		public List<VirtualModel> getVirtualModels(boolean forceLoad) {
 			if (forceLoad) {
-				loadContainedVirtualModelsWhenUnloaded();
+				getCompilationUnit().loadContainedVirtualModelsWhenUnloaded();
 			}
 			return virtualModels;
 		}
 
-		@Override
+		/*@Override
 		public void setVirtualModels(List<VirtualModel> virtualModels) {
 			loadContainedVirtualModelsWhenUnloaded();
 			this.virtualModels = virtualModels;
-		}
+		}*/
 
 		@Override
 		public void addToVirtualModels(VirtualModel virtualModel) {
@@ -1300,62 +1155,6 @@ public interface VirtualModel extends FlexoConcept, FlexoMetaModel<VirtualModel>
 			getPropertyChangeSupport().firePropertyChange(VIRTUAL_MODELS_KEY, virtualModel, null);
 		}
 
-		/**
-		 * Return {@link VirtualModel} with supplied name or URI
-		 * 
-		 * @return
-		 */
-		@Override
-		public VirtualModel getVirtualModelNamed(String virtualModelNameOrURI) {
-
-			if (getResource() != null) {
-				VirtualModel returned = getContainedVirtualModelNamed(getResource(), virtualModelNameOrURI);
-				if (returned != null) {
-					return returned;
-				}
-			}
-
-			if (getContainerVirtualModel() != null) {
-				return getContainerVirtualModel().getVirtualModelNamed(virtualModelNameOrURI);
-			}
-
-			if (getVirtualModelLibrary() != null) {
-				try {
-					return getVirtualModelLibrary().getVirtualModel(virtualModelNameOrURI);
-				} catch (FileNotFoundException e) {
-					e.printStackTrace();
-				} catch (ResourceLoadingCancelledException e) {
-					e.printStackTrace();
-				} catch (FlexoException e) {
-					e.printStackTrace();
-				}
-			}
-
-			// Not found
-			return null;
-		}
-
-		private VirtualModel getContainedVirtualModelNamed(VirtualModelResource resource, String virtualModelNameOrURI) {
-
-			if (resource != null) {
-				for (VirtualModelResource vmRes : resource.getContents(VirtualModelResource.class)) {
-					if (vmRes.getName().equals(virtualModelNameOrURI)) {
-						return vmRes.getVirtualModel();
-					}
-					if (vmRes.getURI().equals(virtualModelNameOrURI)) {
-						return vmRes.getVirtualModel();
-					}
-					VirtualModel returned = getContainedVirtualModelNamed(vmRes, virtualModelNameOrURI);
-					if (returned != null) {
-						return returned;
-					}
-				}
-			}
-
-			// Not found
-			return null;
-		}
-
 		@Override
 		public String getStringRepresentation() {
 			return getURI();
@@ -1366,6 +1165,19 @@ public interface VirtualModel extends FlexoConcept, FlexoMetaModel<VirtualModel>
 			Collection<Validable> returned = super.getEmbeddedValidableObjects();
 			returned.addAll(getVirtualModels());
 			return returned;
+		}
+
+		/**
+		 * Return {@link VirtualModel} with supplied name or URI
+		 * 
+		 * @return
+		 */
+		@Override
+		public VirtualModel getVirtualModelNamed(String virtualModelNameOrURI) {
+			if (getCompilationUnit() != null) {
+				return getCompilationUnit().getVirtualModelNamed(virtualModelNameOrURI);
+			}
+			return null;
 		}
 
 		/**
@@ -1391,168 +1203,6 @@ public interface VirtualModel extends FlexoConcept, FlexoMetaModel<VirtualModel>
 		@Override
 		public Class<? extends VirtualModel> getVirtualModelClass() {
 			return (Class<? extends VirtualModel>) getImplementedInterface();
-		}
-
-		private LocalizedDelegateImpl localized;
-
-		private Resource getLocalizedDirectoryResource() {
-			Resource virtualModelDirectory = getResource().getIODelegate().getSerializationArtefactAsResource().getContainer();
-			List<? extends Resource> localizedDirs = virtualModelDirectory.getContents(Pattern.compile(".*/Localized"), false);
-			if (localizedDirs.size() > 0) {
-				return localizedDirs.get(0);
-			}
-			if (virtualModelDirectory instanceof FileResourceImpl) {
-				try {
-					return new FileResourceImpl(virtualModelDirectory.getLocator(),
-							new File(((FileResourceImpl) virtualModelDirectory).getFile(), "Localized"));
-				} catch (MalformedURLException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (LocatorNotFoundException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}
-			logger.warning("Cannot find localized directory for " + this);
-			return null;
-		}
-
-		private LocalizedDelegateImpl instantiateOrLoadLocales() {
-			if (getResource() != null) {
-				Resource localizedDirectoryResource = getLocalizedDirectoryResource();
-				if (localizedDirectoryResource == null) {
-					return null;
-				}
-				boolean editSupport = getResource().getIODelegate().getSerializationArtefactAsResource() instanceof FileResourceImpl;
-				logger.info("Reading locales from " + localizedDirectoryResource);
-				LocalizedDelegateImpl returned = new LocalizedDelegateImpl(localizedDirectoryResource,
-						getContainerVirtualModel() != null ? getContainerVirtualModel().getLocales()
-								: getServiceManager().getLocalizationService().getFlexoLocalizer(),
-						editSupport, editSupport);
-				returned.setLocalizationRetriever(new Runnable() {
-					@Override
-					public void run() {
-						searchNewLocalizedEntries();
-					}
-				});
-				return returned;
-
-			}
-			return null;
-		}
-
-		@Override
-		public LocalizedDelegate getLocalizedDictionary() {
-			if (localized == null) {
-				localized = instantiateOrLoadLocales();
-				if (localized == null) {
-					// Cannot load locales
-					if (getServiceManager() != null) {
-						return getServiceManager().getLocalizationService().getFlexoLocalizer();
-					}
-					return null;
-				}
-				// Converting old dictionaries
-				if (getDeprecatedLocalizedDictionary() != null) {
-					for (FMLLocalizedEntry fmlLocalizedEntry : getDeprecatedLocalizedDictionary().getLocalizedEntries()) {
-						localized.registerNewEntry(fmlLocalizedEntry.getKey(), Language.get(fmlLocalizedEntry.getLanguage()),
-								fmlLocalizedEntry.getValue());
-					}
-				}
-			}
-			return localized;
-		}
-
-		public void createLocalizedDictionaryWhenNonExistant() {
-			if (localized == null) {
-				logger.info("createLocalizedDictionary");
-				localized = instantiateOrLoadLocales();
-			}
-		}
-
-		@Override
-		public FMLLocalizedDictionary getDeprecatedLocalizedDictionary() {
-			if (isSerializing()) {
-				return null;
-			}
-			return (FMLLocalizedDictionary) performSuperGetter(LOCALIZED_DICTIONARY_KEY);
-		}
-
-		private void searchNewEntriesForConcept(FlexoConcept concept) {
-			// checkAndRegisterLocalized(concept.getName());
-			for (FlexoBehaviour es : concept.getFlexoBehaviours()) {
-				checkAndRegisterLocalized(es.getLabel(), normalizedKey -> es.setLabel(normalizedKey));
-				// checkAndRegisterLocalized(es.getDescription());
-				for (FlexoBehaviourParameter p : es.getParameters()) {
-					checkAndRegisterLocalized(p.getName());
-				}
-				for (InspectorEntry entry : concept.getInspector().getEntries()) {
-					checkAndRegisterLocalized(entry.getLabel(), normalizedKey -> entry.setLabel(normalizedKey));
-				}
-			}
-		}
-
-		private void searchNewLocalizedEntries() {
-			logger.info("Search new entries for " + this);
-
-			CompoundEdit ce = null;
-			FMLModelFactory factory = null;
-
-			if (getOwner() != null) {
-				factory = getFMLModelFactory();
-				if (factory != null) {
-					if (!factory.getEditingContext().getUndoManager().isBeeingRecording()) {
-						ce = factory.getEditingContext().getUndoManager().startRecording("localize_virtual_model");
-					}
-				}
-			}
-
-			searchNewEntriesForConcept(this);
-
-			for (FlexoConcept concept : getFlexoConcepts()) {
-				searchNewEntriesForConcept(concept);
-			}
-
-			if (factory != null) {
-				if (ce != null) {
-					factory.getEditingContext().getUndoManager().stopRecording(ce);
-				}
-				else if (factory.getEditingContext().getUndoManager().isBeeingRecording()) {
-					factory.getEditingContext().getUndoManager()
-							.stopRecording(factory.getEditingContext().getUndoManager().getCurrentEdition());
-				}
-			}
-
-			// getViewPoint().setChanged();
-			// getViewPoint().notifyObservers();
-		}
-
-		private String checkAndRegisterLocalized(String key, Consumer<String> updateKey) {
-
-			// System.out.println("checkAndRegisterLocalized for " + key);
-			if (StringUtils.isEmpty(key)) {
-				return null;
-			}
-
-			String normalizedKey = StringUtils.toLocalizedKey(key.trim());
-
-			if (!key.equals(normalizedKey)) {
-				updateKey.accept(normalizedKey);
-			}
-
-			getLocalizedDictionary().addEntry(normalizedKey);
-			return normalizedKey;
-		}
-
-		private String checkAndRegisterLocalized(String key) {
-
-			// System.out.println("checkAndRegisterLocalized for " + key);
-			if (StringUtils.isEmpty(key)) {
-				return null;
-			}
-
-			getLocalizedDictionary().addEntry(key);
-			return key;
 		}
 
 	}

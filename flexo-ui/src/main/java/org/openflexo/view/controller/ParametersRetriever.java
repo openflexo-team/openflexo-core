@@ -177,7 +177,7 @@ public class ParametersRetriever<ES extends FlexoBehaviour> {
 			returned.setMinHeight(flexoBehaviour.getHeight());
 		}
 
-		LocalizedDelegate dict = flexoBehaviour.getDeclaringVirtualModel().getLocalizedDictionary();
+		LocalizedDelegate dict = flexoBehaviour.getDeclaringCompilationUnit().getLocalizedDictionary();
 
 		int index = 0;
 		if (addTitle) {

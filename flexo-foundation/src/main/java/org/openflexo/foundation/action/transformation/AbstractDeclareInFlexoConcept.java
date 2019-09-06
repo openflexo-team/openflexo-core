@@ -38,19 +38,24 @@
 
 package org.openflexo.foundation.action.transformation;
 
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.FlexoEditor;
+import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.action.FlexoActionFactory;
+import org.openflexo.foundation.fml.FMLCompilationUnit;
 import org.openflexo.foundation.fml.FMLModelFactory;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoRole;
 import org.openflexo.foundation.fml.VirtualModel;
-import org.openflexo.foundation.fml.rm.VirtualModelResource;
+import org.openflexo.foundation.fml.rm.CompilationUnitResource;
 import org.openflexo.foundation.fml.rt.FMLRTModelSlot;
+import org.openflexo.foundation.resource.FlexoResource;
+import org.openflexo.foundation.resource.ResourceLoadingCancelledException;
 import org.openflexo.foundation.technologyadapter.FlexoMetaModel;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.foundation.technologyadapter.TechnologyObject;
@@ -66,7 +71,7 @@ import org.openflexo.foundation.technologyadapter.TypeAwareModelSlot;
  * </ul>
  * Some strategies should be implemented for each of that choices, defined as primary choices<br>
  * 
- * Note that to be valid, this class must be externally set with {@link VirtualModelResource}
+ * Note that to be valid, this class must be externally set with {@link CompilationUnitResource}
  * 
  * @author Sylvain, Vincent
  * 
@@ -83,7 +88,7 @@ public abstract class AbstractDeclareInFlexoConcept<A extends AbstractDeclareInF
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(AbstractDeclareInFlexoConcept.class.getPackage().getName());
 
-	private VirtualModelResource virtualModelResource;
+	private CompilationUnitResource getCompilationUnitResource;
 
 	/**
 	 * Stores the model slot used as source of information (data) in pattern proposal
@@ -218,29 +223,40 @@ public abstract class AbstractDeclareInFlexoConcept<A extends AbstractDeclareInF
 	 * This {@link VirtualModel} must be set with external API.
 	 */
 	public VirtualModel getVirtualModel() {
-		if (getVirtualModelResource() != null) {
-			return getVirtualModelResource().getVirtualModel();
+		if (getCompilationUnitResource() != null) {
+			try {
+				return getCompilationUnitResource().getResourceData().getVirtualModel();
+			} catch (FileNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (ResourceLoadingCancelledException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (FlexoException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 		return null;
 	}
 
 	/**
-	 * Return the VirtualModelResource on which we are working<br>
-	 * This {@link VirtualModelResource} must be set with external API.
+	 * Return the CompilationUnitResource on which we are working<br>
+	 * This {@link CompilationUnitResource} must be set with external API.
 	 */
-	public VirtualModelResource getVirtualModelResource() {
-		return virtualModelResource;
+	public CompilationUnitResource getCompilationUnitResource() {
+		return getCompilationUnitResource;
 	}
 
 	/**
-	 * Sets the VirtualModelResource on which we are working<br>
-	 * This {@link VirtualModelResource} must be set with external API.
+	 * Sets the CompilationUnitResource on which we are working<br>
+	 * This {@link CompilationUnitResource} must be set with external API.
 	 */
-	public void setVirtualModelResource(VirtualModelResource virtualModelResource) {
-		if (this.virtualModelResource != virtualModelResource) {
-			VirtualModelResource oldValue = this.virtualModelResource;
-			this.virtualModelResource = virtualModelResource;
-			getPropertyChangeSupport().firePropertyChange("virtualModelResource", oldValue, virtualModelResource);
+	public void setCompilationUnitResource(CompilationUnitResource compilationUnitResource) {
+		if (this.getCompilationUnitResource != compilationUnitResource) {
+			FlexoResource<FMLCompilationUnit> oldValue = this.getCompilationUnitResource;
+			this.getCompilationUnitResource = compilationUnitResource;
+			getPropertyChangeSupport().firePropertyChange("compilationUnitResource", oldValue, compilationUnitResource);
 		}
 	}
 
@@ -281,7 +297,7 @@ public abstract class AbstractDeclareInFlexoConcept<A extends AbstractDeclareInF
 		if (getFocusedObject() == null) {
 			return false;
 		}
-		if (getVirtualModelResource() == null) {
+		if (getCompilationUnitResource() == null) {
 			return false;
 		}
 		if (!super.isValid()) {
@@ -430,8 +446,8 @@ public abstract class AbstractDeclareInFlexoConcept<A extends AbstractDeclareInF
 		if (getFlexoConcept() != null) {
 			return getFlexoConcept().getFMLModelFactory();
 		}
-		else if (getVirtualModelResource() != null) {
-			return getVirtualModelResource().getFactory();
+		else if (getCompilationUnitResource() != null) {
+			return getCompilationUnitResource().getFactory();
 		}
 		return null;
 	}

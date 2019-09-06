@@ -74,7 +74,7 @@ public class FIBVirtualModelInstanceResourceSelector extends FIBProjectObjectSel
 	public FIBVirtualModelInstanceResourceSelector(FMLRTVirtualModelInstanceResource editedObject) {
 		super(editedObject);
 		defaultExpectedType = editedObject != null
-				? VirtualModelInstanceType.getVirtualModelInstanceType(editedObject.getVirtualModelResource().getVirtualModel())
+				? VirtualModelInstanceType.getVirtualModelInstanceType(editedObject.getVirtualModelResource().getCompilationUnit())
 				: VirtualModelInstanceType.UNDEFINED_VIRTUAL_MODEL_INSTANCE_TYPE;
 	}
 

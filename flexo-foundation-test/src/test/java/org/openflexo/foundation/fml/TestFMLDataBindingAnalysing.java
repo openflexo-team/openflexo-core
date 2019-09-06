@@ -63,8 +63,8 @@ import org.openflexo.foundation.fml.action.CreatePrimitiveRole;
 import org.openflexo.foundation.fml.controlgraph.ConditionalAction;
 import org.openflexo.foundation.fml.editionaction.AssignationAction;
 import org.openflexo.foundation.fml.editionaction.ExpressionAction;
-import org.openflexo.foundation.fml.rm.VirtualModelResource;
-import org.openflexo.foundation.fml.rm.VirtualModelResourceFactory;
+import org.openflexo.foundation.fml.rm.CompilationUnitResource;
+import org.openflexo.foundation.fml.rm.CompilationUnitResourceFactory;
 import org.openflexo.foundation.resource.DirectoryResourceCenter;
 import org.openflexo.foundation.resource.SaveResourceException;
 import org.openflexo.foundation.test.OpenflexoTestCase;
@@ -151,16 +151,16 @@ public class TestFMLDataBindingAnalysing extends OpenflexoTestCase {
 
 		FMLTechnologyAdapter fmlTechnologyAdapter = serviceManager.getTechnologyAdapterService()
 				.getTechnologyAdapter(FMLTechnologyAdapter.class);
-		VirtualModelResourceFactory factory = fmlTechnologyAdapter.getVirtualModelResourceFactory();
+		CompilationUnitResourceFactory factory = fmlTechnologyAdapter.getCompilationUnitResourceFactory();
 
-		VirtualModelResource newVirtualModelResource = factory.makeTopLevelVirtualModelResource(VIEWPOINT_NAME, VIEWPOINT_URI,
+		CompilationUnitResource newVirtualModelResource = factory.makeTopLevelCompilationUnitResource(VIEWPOINT_NAME, VIEWPOINT_URI,
 				fmlTechnologyAdapter.getGlobalRepository(resourceCenter).getRootFolder(), true);
-		topVirtualModel = newVirtualModelResource.getLoadedResourceData();
+		topVirtualModel = newVirtualModelResource.getLoadedResourceData().getVirtualModel();
 
-		assertTrue(((VirtualModelResource) topVirtualModel.getResource()).getDirectory() != null);
-		assertTrue(((VirtualModelResource) topVirtualModel.getResource()).getIODelegate().exists());
+		assertTrue(topVirtualModel.getResource().getDirectory() != null);
+		assertTrue(topVirtualModel.getResource().getIODelegate().exists());
 
-		assertEquals(topVirtualModel, topVirtualModel.getDeclaringVirtualModel());
+		assertEquals(topVirtualModel, topVirtualModel.getDeclaringCompilationUnit());
 		assertEquals(null, topVirtualModel.getContainerVirtualModel());
 		assertEquals(topVirtualModel, topVirtualModel.getFlexoConcept());
 		assertEquals(topVirtualModel, topVirtualModel.getResourceData());
@@ -177,13 +177,13 @@ public class TestFMLDataBindingAnalysing extends OpenflexoTestCase {
 
 		FMLTechnologyAdapter fmlTechnologyAdapter = serviceManager.getTechnologyAdapterService()
 				.getTechnologyAdapter(FMLTechnologyAdapter.class);
-		VirtualModelResourceFactory factory = fmlTechnologyAdapter.getVirtualModelResourceFactory();
-		VirtualModelResource newVMResource = factory.makeContainedVirtualModelResource(VIRTUAL_MODEL_NAME,
-				topVirtualModel.getVirtualModelResource(), true);
-		virtualModel = newVMResource.getLoadedResourceData();
+		CompilationUnitResourceFactory factory = fmlTechnologyAdapter.getCompilationUnitResourceFactory();
+		CompilationUnitResource newVMResource = factory.makeContainedCompilationUnitResource(VIRTUAL_MODEL_NAME, topVirtualModel.getResource(),
+				true);
+		virtualModel = newVMResource.getLoadedResourceData().getVirtualModel();
 
-		assertTrue(ResourceLocator.retrieveResourceAsFile(((VirtualModelResource) virtualModel.getResource()).getDirectory()).exists());
-		assertTrue(((VirtualModelResource) virtualModel.getResource()).getIODelegate().exists());
+		assertTrue(ResourceLocator.retrieveResourceAsFile(virtualModel.getResource().getDirectory()).exists());
+		assertTrue(virtualModel.getResource().getIODelegate().exists());
 
 		assertSame(topVirtualModel, virtualModel.getContainerVirtualModel());
 
@@ -230,11 +230,11 @@ public class TestFMLDataBindingAnalysing extends OpenflexoTestCase {
 		assertEquals(flexoConceptA, flexoConceptA.getFlexoConcept());
 		assertEquals(virtualModel, flexoConceptA.getResourceData());
 
-		((VirtualModelResource) virtualModel.getResource()).save();
+		virtualModel.getResource().save();
 
 		// System.out.println("Saved: " + ((VirtualModelResource)
 		// virtualModel.getResource()).getFile());
-		System.out.println("Saved: " + ((VirtualModelResource) virtualModel.getResource()).getIODelegate().toString());
+		System.out.println("Saved: " + virtualModel.getResource().getIODelegate().toString());
 
 	}
 
@@ -254,9 +254,9 @@ public class TestFMLDataBindingAnalysing extends OpenflexoTestCase {
 		System.out.println("FlexoConcept B = " + flexoConceptB);
 		assertNotNull(flexoConceptB);
 
-		((VirtualModelResource) virtualModel.getResource()).save();
+		virtualModel.getResource().save();
 
-		System.out.println("Saved: " + ((VirtualModelResource) virtualModel.getResource()).getIODelegate().toString());
+		System.out.println("Saved: " + virtualModel.getResource().getIODelegate().toString());
 
 	}
 

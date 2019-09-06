@@ -41,7 +41,7 @@ package org.openflexo.foundation.project;
 import org.openflexo.foundation.FlexoProject;
 import org.openflexo.foundation.resource.FlexoResource;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
-import org.openflexo.foundation.resource.PamelaResource;
+import org.openflexo.foundation.resource.PamelaXMLSerializableResource;
 import org.openflexo.pamela.annotations.ImplementationClass;
 import org.openflexo.pamela.annotations.ModelEntity;
 import org.openflexo.pamela.annotations.XMLElement;
@@ -55,7 +55,7 @@ import org.openflexo.pamela.annotations.XMLElement;
 @ModelEntity
 @ImplementationClass(FlexoProjectResourceImpl.class)
 @XMLElement
-public interface FlexoProjectResource<I> extends PamelaResource<FlexoProject<I>, FlexoProjectFactory> {
+public interface FlexoProjectResource<I> extends PamelaXMLSerializableResource<FlexoProject<I>, FlexoProjectFactory> {
 
 	public FlexoProject<I> getFlexoProject();
 

@@ -50,7 +50,7 @@ import org.openflexo.foundation.fml.FlexoRole;
 import org.openflexo.foundation.fml.PrimitiveRole;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.VirtualModelInstanceType;
-import org.openflexo.foundation.fml.rm.VirtualModelResource;
+import org.openflexo.foundation.fml.rm.CompilationUnitResource;
 import org.openflexo.foundation.resource.ResourceLoadingCancelledException;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
@@ -102,9 +102,9 @@ public interface FMLRTModelSlot<VMI extends VirtualModelInstance<VMI, TA>, TA ex
 	@Setter(VIRTUAL_MODEL_URI_KEY)
 	public void setAccessedVirtualModelURI(String virtualModelURI);
 
-	public VirtualModelResource getAccessedVirtualModelResource();
+	public CompilationUnitResource getAccessedVirtualModelResource();
 
-	public void setAccessedVirtualModelResource(VirtualModelResource virtualModelResource);
+	public void setAccessedVirtualModelResource(CompilationUnitResource virtualModelResource);
 
 	public VirtualModel getAccessedVirtualModel();
 
@@ -139,14 +139,14 @@ public interface FMLRTModelSlot<VMI extends VirtualModelInstance<VMI, TA>, TA ex
 			return null;
 		}
 
-		protected VirtualModelResource virtualModelResource;
+		protected CompilationUnitResource virtualModelResource;
 		private String virtualModelURI;
 
 		@Override
-		public VirtualModelResource getAccessedVirtualModelResource() {
+		public CompilationUnitResource getAccessedVirtualModelResource() {
 
 			if (virtualModelResource == null && StringUtils.isNotEmpty(virtualModelURI) && getVirtualModelLibrary() != null) {
-				virtualModelResource = getVirtualModelLibrary().getVirtualModelResource(virtualModelURI);
+				virtualModelResource = getVirtualModelLibrary().getCompilationUnitResource(virtualModelURI);
 				if (virtualModelResource != null) {
 					logger.info("Looked-up " + virtualModelResource);
 					getPropertyChangeSupport().firePropertyChange("type", null, getType());
@@ -158,8 +158,8 @@ public interface FMLRTModelSlot<VMI extends VirtualModelInstance<VMI, TA>, TA ex
 		}
 
 		@Override
-		public void setAccessedVirtualModelResource(VirtualModelResource virtualModelResource) {
-			VirtualModelResource oldValue = this.virtualModelResource;
+		public void setAccessedVirtualModelResource(CompilationUnitResource virtualModelResource) {
+			CompilationUnitResource oldValue = this.virtualModelResource;
 			this.virtualModelResource = virtualModelResource;
 			if (virtualModelResource == null) {
 				virtualModelURI = null;
@@ -210,7 +210,7 @@ public interface FMLRTModelSlot<VMI extends VirtualModelInstance<VMI, TA>, TA ex
 				// Do not load virtual model when unloaded
 				// return getAccessedVirtualModelResource().getLoadedResourceData();
 				try {
-					return getAccessedVirtualModelResource().getResourceData();
+					return getAccessedVirtualModelResource().getResourceData().getVirtualModel();
 				} catch (FileNotFoundException e) {
 					e.printStackTrace();
 				} catch (ResourceLoadingCancelledException e) {

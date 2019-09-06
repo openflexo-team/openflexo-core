@@ -40,11 +40,11 @@ package org.openflexo.foundation.fml.ta;
 
 import java.util.logging.Logger;
 
+import org.openflexo.foundation.fml.FMLCompilationUnit;
 import org.openflexo.foundation.fml.VirtualModel;
-import org.openflexo.foundation.fml.rm.VirtualModelResource;
+import org.openflexo.foundation.fml.rm.CompilationUnitResource;
 import org.openflexo.foundation.fml.rt.FMLRTModelSlot;
 import org.openflexo.foundation.fml.rt.ModelSlotInstance;
-import org.openflexo.foundation.fml.rt.ModelSlotInstance.ModelSlotInstanceImpl;
 import org.openflexo.pamela.annotations.Getter;
 import org.openflexo.pamela.annotations.ImplementationClass;
 import org.openflexo.pamela.annotations.ModelEntity;
@@ -66,7 +66,7 @@ import org.openflexo.toolbox.StringUtils;
 @ModelEntity
 @ImplementationClass(FMLModelSlotInstance.FMLModelSlotInstanceImpl.class)
 @XMLElement
-public interface FMLModelSlotInstance extends ModelSlotInstance<FMLModelSlot, VirtualModel> {
+public interface FMLModelSlotInstance extends ModelSlotInstance<FMLModelSlot, FMLCompilationUnit> {
 
 	@PropertyIdentifier(type = String.class)
 	public static final String VIRTUAL_MODEL_URI_KEY = "virtualModelURI";
@@ -78,7 +78,7 @@ public interface FMLModelSlotInstance extends ModelSlotInstance<FMLModelSlot, Vi
 	@Setter(VIRTUAL_MODEL_URI_KEY)
 	public void setVirtualModelURI(String virtualModelInstanceURI);
 
-	public static abstract class FMLModelSlotInstanceImpl extends ModelSlotInstanceImpl<FMLModelSlot, VirtualModel>
+	public static abstract class FMLModelSlotInstanceImpl extends ModelSlotInstanceImpl<FMLModelSlot, FMLCompilationUnit>
 			implements FMLModelSlotInstance {
 
 		private static final Logger logger = Logger.getLogger(FMLModelSlotInstance.class.getPackage().getName());
@@ -87,17 +87,17 @@ public interface FMLModelSlotInstance extends ModelSlotInstance<FMLModelSlot, Vi
 		private String virtualModelURI;
 
 		@Override
-		public VirtualModelResource getResource() {
+		public CompilationUnitResource getResource() {
 			if (getVirtualModelInstance() != null && resource == null && StringUtils.isNotEmpty(virtualModelURI)
 					&& getServiceManager() != null && getServiceManager().getResourceManager() != null) {
 
-				resource = (VirtualModelResource) getServiceManager().getResourceManager().getResource(virtualModelURI);
+				resource = (CompilationUnitResource) getServiceManager().getResourceManager().getResource(virtualModelURI);
 			}
 
 			if (resource == null && StringUtils.isNotEmpty(virtualModelURI)) {
 				logger.warning("Cannot find virtual model instance " + virtualModelURI);
 			}
-			return (VirtualModelResource) resource;
+			return (CompilationUnitResource) resource;
 		}
 
 		// Serialization/deserialization only, do not use

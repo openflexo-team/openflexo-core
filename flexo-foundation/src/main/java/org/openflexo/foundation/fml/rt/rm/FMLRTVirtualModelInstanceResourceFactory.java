@@ -24,9 +24,9 @@ import java.io.IOException;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.fml.FMLTechnologyAdapter;
-import org.openflexo.foundation.fml.VirtualModelRepository;
-import org.openflexo.foundation.fml.rm.VirtualModelResource;
-import org.openflexo.foundation.fml.rm.VirtualModelResourceFactory;
+import org.openflexo.foundation.fml.CompilationUnitRepository;
+import org.openflexo.foundation.fml.rm.CompilationUnitResource;
+import org.openflexo.foundation.fml.rm.CompilationUnitResourceFactory;
 import org.openflexo.foundation.fml.rt.FMLRTTechnologyAdapter;
 import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstanceModelFactory;
@@ -67,7 +67,7 @@ public class FMLRTVirtualModelInstanceResourceFactory extends
 
 	/**
 	 * Build a new {@link FMLRTVirtualModelInstanceResource} with supplied baseName and URI, conform to supplied
-	 * {@link VirtualModelResource} and located in supplied folder
+	 * {@link CompilationUnitResource} and located in supplied folder
 	 * 
 	 * @param baseName
 	 * @param uri
@@ -80,7 +80,7 @@ public class FMLRTVirtualModelInstanceResourceFactory extends
 	 * @throws ModelDefinitionException
 	 */
 	public <I> FMLRTVirtualModelInstanceResource makeTopLevelFMLRTVirtualModelInstanceResource(String baseName, String uri,
-			VirtualModelResource virtualModelResource, RepositoryFolder<FMLRTVirtualModelInstanceResource, I> folder,
+			CompilationUnitResource virtualModelResource, RepositoryFolder<FMLRTVirtualModelInstanceResource, I> folder,
 			boolean createEmptyContents) throws SaveResourceException, ModelDefinitionException {
 
 		FlexoResourceCenter<I> resourceCenter = folder.getResourceRepository().getResourceCenter();
@@ -93,7 +93,7 @@ public class FMLRTVirtualModelInstanceResourceFactory extends
 
 		if (createEmptyContents) {
 			FMLRTVirtualModelInstance resourceData = createEmptyContents(returned);
-			resourceData.setVirtualModel(virtualModelResource.getVirtualModel());
+			resourceData.setVirtualModel(virtualModelResource.getCompilationUnit().getVirtualModel());
 			returned.save();
 			if (resourceData.getFMLRunTimeEngine() != null) {
 				// TODO: today FMLRTVirtualModelInstance is a RunTimeEvaluationContext
@@ -108,7 +108,7 @@ public class FMLRTVirtualModelInstanceResourceFactory extends
 
 	/**
 	 * Build a new {@link FMLRTVirtualModelInstanceResource} with supplied baseName and URI, conform to supplied
-	 * {@link VirtualModelResource} and located in supplied container {@link AbstractVirtualModelInstanceResource}
+	 * {@link CompilationUnitResource} and located in supplied container {@link AbstractVirtualModelInstanceResource}
 	 * 
 	 * @param baseName
 	 * @param virtualModelResource
@@ -120,7 +120,7 @@ public class FMLRTVirtualModelInstanceResourceFactory extends
 	 * @throws ModelDefinitionException
 	 */
 	public <I> FMLRTVirtualModelInstanceResource makeContainedFMLRTVirtualModelInstanceResource(String baseName,
-			VirtualModelResource virtualModelResource, AbstractVirtualModelInstanceResource<?, ?> containerResource,
+			CompilationUnitResource virtualModelResource, AbstractVirtualModelInstanceResource<?, ?> containerResource,
 			TechnologyContextManager<FMLRTTechnologyAdapter> technologyContextManager, boolean createEmptyContents)
 			throws SaveResourceException, ModelDefinitionException {
 
@@ -137,7 +137,7 @@ public class FMLRTVirtualModelInstanceResourceFactory extends
 
 		if (createEmptyContents) {
 			FMLRTVirtualModelInstance resourceData = createEmptyContents(returned);
-			resourceData.setVirtualModel(virtualModelResource.getVirtualModel());
+			resourceData.setVirtualModel(virtualModelResource.getCompilationUnit().getVirtualModel());
 			returned.save();
 			if (resourceData.getFMLRunTimeEngine() != null) {
 				// TODO: today FMLRTVirtualModelInstance is a RunTimeEvaluationContext
@@ -245,11 +245,11 @@ public class FMLRTVirtualModelInstanceResourceFactory extends
 		// This means that VirtualModelInstance inside are declared as ContainedVMI of the corresponding VirtualModel
 		if (resource.getContainer() == null) {
 			RepositoryFolder<FlexoResource<?>, I> parentFolder = resourceCenter.getParentFolder(resource);
-			if (parentFolder.getName().endsWith(VirtualModelResourceFactory.FML_SUFFIX)) {
+			if (parentFolder.getName().endsWith(CompilationUnitResourceFactory.FML_SUFFIX)) {
 				FMLTechnologyAdapter fmlTA = resource.getServiceManager().getTechnologyAdapterService()
 						.getTechnologyAdapter(FMLTechnologyAdapter.class);
-				VirtualModelRepository<I> virtualModelRepository = fmlTA.getVirtualModelRepository(resourceCenter);
-				for (VirtualModelResource virtualModelResource : virtualModelRepository.getAllResources()) {
+				CompilationUnitRepository<I> virtualModelRepository = fmlTA.getVirtualModelRepository(resourceCenter);
+				for (CompilationUnitResource virtualModelResource : virtualModelRepository.getAllResources()) {
 					I serializationArtefact = (I) virtualModelResource.getIODelegate().getSerializationArtefact();
 					I parentSerializationArtefact = resourceCenter.getContainer(serializationArtefact);
 					if (parentSerializationArtefact.equals(parentFolder.getSerializationArtefact())) {
@@ -302,8 +302,8 @@ public class FMLRTVirtualModelInstanceResourceFactory extends
 				returned.setModelVersion(CURRENT_FML_RT_VERSION);
 			}
 			if (StringUtils.isNotEmpty(vmiInfo.virtualModelURI)) {
-				VirtualModelResource vmResource = resourceCenter.getServiceManager().getVirtualModelLibrary()
-						.getVirtualModelResource(vmiInfo.virtualModelURI);
+				CompilationUnitResource vmResource = resourceCenter.getServiceManager().getVirtualModelLibrary()
+						.getCompilationUnitResource(vmiInfo.virtualModelURI);
 				returned.setVirtualModelResource(vmResource);
 				if (vmResource == null) {
 					// In this case, serialize URI of virtual model, to give a chance to find it later

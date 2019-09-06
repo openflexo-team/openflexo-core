@@ -5,7 +5,7 @@ dependencies {
   // Still to be removed
   compile flexoGraphicUtils() // used for icon mgt in FlexoConcept
   //compile diana() // used by FMLModelFactory which inherit from DianaModelFactoryImpl
-
+  
   // external dep
   compile group: 'org.eclipse.jgit', name: 'org.eclipse.jgit', version: '4.3.1.201605051710-r'
   compile group: 'com.google.inject', name: 'guice', version: '4.1.0'

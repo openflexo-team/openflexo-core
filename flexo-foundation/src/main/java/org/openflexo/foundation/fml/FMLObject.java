@@ -38,6 +38,7 @@
 
 package org.openflexo.foundation.fml;
 
+import java.util.List;
 import java.util.logging.Logger;
 
 import org.openflexo.connie.Bindable;
@@ -46,16 +47,20 @@ import org.openflexo.connie.DataBinding;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.InnerResourceData;
-import org.openflexo.foundation.fml.rm.VirtualModelResource;
+import org.openflexo.foundation.fml.rm.CompilationUnitResource;
 import org.openflexo.foundation.resource.ResourceData;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterService;
 import org.openflexo.foundation.technologyadapter.TechnologyObject;
 import org.openflexo.localization.LocalizedDelegate;
+import org.openflexo.pamela.annotations.Adder;
 import org.openflexo.pamela.annotations.DeserializationInitializer;
+import org.openflexo.pamela.annotations.Finder;
 import org.openflexo.pamela.annotations.Getter;
+import org.openflexo.pamela.annotations.Getter.Cardinality;
 import org.openflexo.pamela.annotations.ImplementationClass;
 import org.openflexo.pamela.annotations.ModelEntity;
 import org.openflexo.pamela.annotations.PropertyIdentifier;
+import org.openflexo.pamela.annotations.Remover;
 import org.openflexo.pamela.annotations.Setter;
 import org.openflexo.pamela.annotations.XMLAttribute;
 import org.openflexo.pamela.annotations.XMLElement;
@@ -84,7 +89,7 @@ import org.openflexo.toolbox.StringUtils;
 @ModelEntity(isAbstract = true)
 @ImplementationClass(FMLObject.FMLObjectImpl.class)
 @XMLElement(idFactory = "userIdentifier+'-'+flexoID")
-public interface FMLObject extends FlexoObject, Bindable, InnerResourceData/*<VirtualModel>*/, TechnologyObject<FMLTechnologyAdapter> {
+public interface FMLObject extends FlexoObject, Bindable, InnerResourceData<FMLCompilationUnit>, TechnologyObject<FMLTechnologyAdapter> {
 
 	@PropertyIdentifier(type = String.class)
 	public static final String NAME_KEY = "name";
@@ -92,6 +97,8 @@ public interface FMLObject extends FlexoObject, Bindable, InnerResourceData/*<Vi
 	String DESCRIPTION_KEY = "description";
 	@PropertyIdentifier(type = String.class)
 	String AUTHOR_KEY = "author";
+	@PropertyIdentifier(type = FMLMetaData.class, cardinality = Cardinality.LIST)
+	public static final String META_DATA_KEY = "metaData";
 
 	@Getter(value = NAME_KEY)
 	@XMLAttribute
@@ -117,6 +124,23 @@ public interface FMLObject extends FlexoObject, Bindable, InnerResourceData/*<Vi
 	public boolean hasDescription();
 
 	/**
+	 * Return list of meta-data declared for this object
+	 * 
+	 * @return
+	 */
+	@Getter(value = META_DATA_KEY, cardinality = Cardinality.LIST, inverse = FMLMetaData.OWNER_KEY)
+	public List<FMLMetaData> getMetaData();
+
+	@Adder(META_DATA_KEY)
+	public void addToMetaData(FMLMetaData metaData);
+
+	@Remover(META_DATA_KEY)
+	public void removeFromMetaData(FMLMetaData metaData);
+
+	@Finder(collection = META_DATA_KEY, attribute = FMLMetaData.KEY_KEY)
+	public FMLMetaData getMetaData(String key);
+
+	/**
 	 * Return the URI of the {@link NamedFMLObject}<br>
 	 * The convention for URI are following: <viewpoint_uri>/<virtual_model_name>#<flexo_concept_name>.<behaviour_name> <br>
 	 * eg<br>
@@ -130,16 +154,16 @@ public interface FMLObject extends FlexoObject, Bindable, InnerResourceData/*<Vi
 	public FlexoServiceManager getServiceManager();
 
 	/**
-	 * Return the {@link VirtualModel} in which this {@link FMLObject} is declared<br>
+	 * Return the {@link FMLCompilationUnit} in which this {@link FMLObject} is declared<br>
 	 * 
 	 */
-	public VirtualModel getDeclaringVirtualModel();
+	public FMLCompilationUnit getDeclaringCompilationUnit();
 
 	/**
-	 * Return the {@link VirtualModelResource} in which this {@link FMLObject} is declared<br>
+	 * Return the {@link CompilationUnitResource} in which this {@link FMLObject} is declared<br>
 	 * 
 	 */
-	public VirtualModelResource getDeclaringVirtualModelResource();
+	public CompilationUnitResource getDeclaringCompilationUnitResource();
 
 	public VirtualModelLibrary getVirtualModelLibrary();
 
@@ -189,8 +213,8 @@ public interface FMLObject extends FlexoObject, Bindable, InnerResourceData/*<Vi
 	 * 
 	 * @return
 	 */
-	@Override
-	public VirtualModel getResourceData();
+	// @Override
+	// public VirtualModel getResourceData();
 
 	/**
 	 * Hook called when scope of a FMLObject changed.<br>
@@ -247,8 +271,8 @@ public interface FMLObject extends FlexoObject, Bindable, InnerResourceData/*<Vi
 
 		@Override
 		public final LocalizedDelegate getLocales() {
-			if (getDeclaringVirtualModel() != null) {
-				return getDeclaringVirtualModel().getLocalizedDictionary();
+			if (getDeclaringCompilationUnit() != null) {
+				return getDeclaringCompilationUnit().getLocalizedDictionary();
 			}
 			return super.getLocales();
 		}
@@ -256,7 +280,7 @@ public interface FMLObject extends FlexoObject, Bindable, InnerResourceData/*<Vi
 		@Override
 		public FlexoServiceManager getServiceManager() {
 			if (getVirtualModelLibrary() != null) {
-				return getDeclaringVirtualModel().getVirtualModelLibrary().getServiceManager();
+				return getDeclaringCompilationUnit().getVirtualModelLibrary().getServiceManager();
 			}
 			if (getDeserializationFactory() != null) {
 				return getDeserializationFactory().getServiceManager();
@@ -282,8 +306,8 @@ public interface FMLObject extends FlexoObject, Bindable, InnerResourceData/*<Vi
 
 		@Override
 		public VirtualModelLibrary getVirtualModelLibrary() {
-			if (getDeclaringVirtualModel() != null) {
-				return getDeclaringVirtualModel().getVirtualModelLibrary();
+			if (getDeclaringCompilationUnit() != null) {
+				return getDeclaringCompilationUnit().getVirtualModelLibrary();
 			}
 			return null;
 		}
@@ -291,12 +315,17 @@ public interface FMLObject extends FlexoObject, Bindable, InnerResourceData/*<Vi
 		/**
 		 * Return the {@link ResourceData} (the "container") of this {@link FMLObject}.<br>
 		 * The container is the {@link ResourceData} of this object.<br>
-		 * It is an instance of {@link VirtualModel} (a {@link VirtualModel} or a {@link VirtualModel})
+		 * It is an instance of {@link FMLCompilationUnit}
 		 * 
 		 * @return
 		 */
 		@Override
-		public abstract VirtualModel getResourceData();
+		public abstract FMLCompilationUnit getResourceData();
+
+		@Override
+		public final FMLCompilationUnit getDeclaringCompilationUnit() {
+			return getResourceData();
+		}
 
 		/**
 		 * Return the ViewPoint in which this {@link FMLObject} is defined<br>
@@ -304,15 +333,15 @@ public interface FMLObject extends FlexoObject, Bindable, InnerResourceData/*<Vi
 		 * Otherwise, container of this object is a {@link VirtualModel}, return ViewPoint of VirtualModel
 		 * 
 		 */
-		@Override
-		public VirtualModel getDeclaringVirtualModel() {
+		/*@Override
+		public VirtualModel getDeclaringCompilationUnit() {
 			return getResourceData();
-		}
+		}*/
 
 		@Override
-		public VirtualModelResource getDeclaringVirtualModelResource() {
-			if (getDeclaringVirtualModel() != null) {
-				return (VirtualModelResource) getDeclaringVirtualModel().getResource();
+		public CompilationUnitResource getDeclaringCompilationUnitResource() {
+			if (getDeclaringCompilationUnit() != null) {
+				return (CompilationUnitResource) getDeclaringCompilationUnit().getResource();
 			}
 			return null;
 		}
@@ -359,8 +388,8 @@ public interface FMLObject extends FlexoObject, Bindable, InnerResourceData/*<Vi
 
 		@Override
 		public BindingFactory getBindingFactory() {
-			if (getDeclaringVirtualModel() != null) {
-				return getDeclaringVirtualModel().getBindingFactory();
+			if (getDeclaringCompilationUnit() != null) {
+				return getDeclaringCompilationUnit().getBindingFactory();
 			}
 			return null;
 		}
@@ -411,9 +440,23 @@ public interface FMLObject extends FlexoObject, Bindable, InnerResourceData/*<Vi
 			fmlRepresentation = null;
 		}
 
+		/*@Override
+		public FMLModelFactory getFMLModelFactory() {
+			return ((CompilationUnitResource) getResourceData().getResource()).getFactory();
+		}*/
+
 		@Override
 		public FMLModelFactory getFMLModelFactory() {
-			return ((VirtualModelResource) getResourceData().getResource()).getFactory();
+			if (getDeclaringCompilationUnit() != null && getDeclaringCompilationUnit().getFMLModelFactory() != null) {
+				return getDeclaringCompilationUnit().getFMLModelFactory();
+			}
+			/*if (getOwningVirtualModel() != null && getOwningVirtualModel().getFMLModelFactory() != null) {
+				return getOwningVirtualModel().getFMLModelFactory();
+			}*/
+			/*if (getFlexoConcept() instanceof VirtualModel && ((VirtualModel) getFlexoConcept()).getFMLModelFactory() != null) {
+				return getFlexoConcept().getFMLModelFactory();
+			}*/
+			return getDeserializationFactory();
 		}
 
 		@Override

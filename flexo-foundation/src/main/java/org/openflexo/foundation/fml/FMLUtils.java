@@ -42,7 +42,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.openflexo.foundation.FlexoObject;
-import org.openflexo.foundation.fml.rm.VirtualModelResource;
+import org.openflexo.foundation.fml.rm.CompilationUnitResource;
 import org.openflexo.foundation.resource.RepositoryFolder;
 import org.openflexo.foundation.resource.ResourceRepositoryImpl;
 
@@ -157,8 +157,8 @@ public class FMLUtils {
 			return concept1;
 		}
 
-		VirtualModel vm1 = concept1.getDeclaringVirtualModel();
-		VirtualModel vm2 = concept2.getDeclaringVirtualModel();
+		VirtualModel vm1 = concept1.getOwner();
+		VirtualModel vm2 = concept2.getOwner();
 
 		return getMostSpecializedContainer(vm1, vm2);
 	}
@@ -218,8 +218,8 @@ public class FMLUtils {
 			}
 		}
 
-		VirtualModelResource r1 = (VirtualModelResource) vm1.getResource();
-		VirtualModelResource r2 = (VirtualModelResource) vm2.getResource();
+		CompilationUnitResource r1 = (CompilationUnitResource) vm1.getCompilationUnit().getResource();
+		CompilationUnitResource r2 = (CompilationUnitResource) vm2.getCompilationUnit().getResource();
 
 		if (r1.getResourceCenter() == r2.getResourceCenter()) {
 			FlexoObject returned = r1.getResourceCenter().getVirtualModelRepository().getMostSpecializedContainer(r1, r2);

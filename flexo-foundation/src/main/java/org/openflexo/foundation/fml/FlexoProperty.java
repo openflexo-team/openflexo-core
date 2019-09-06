@@ -281,7 +281,7 @@ public abstract interface FlexoProperty<T> extends FlexoConceptObject, FMLPretty
 		@Override
 		public void handleTypeDeclarationInImports() {
 
-			if (getDeclaringVirtualModel() == null || getDeclaringVirtualModel().getCompilationUnit() == null) {
+			if (getDeclaringCompilationUnit() == null) {
 				return;
 			}
 
@@ -290,7 +290,7 @@ public abstract interface FlexoProperty<T> extends FlexoConceptObject, FMLPretty
 			if (!TypeUtils.isPrimitive(rawType)) {
 
 				boolean typeWasFound = false;
-				for (JavaImportDeclaration importDeclaration : getDeclaringVirtualModel().getCompilationUnit().getJavaImports()) {
+				for (JavaImportDeclaration importDeclaration : getDeclaringCompilationUnit().getJavaImports()) {
 					if (importDeclaration.getFullQualifiedClassName().equals(rawType.getName())) {
 						typeWasFound = true;
 						break;
@@ -298,10 +298,10 @@ public abstract interface FlexoProperty<T> extends FlexoConceptObject, FMLPretty
 				}
 				if (!typeWasFound) {
 					// Adding import
-					JavaImportDeclaration newJavaImportDeclaration = getDeclaringVirtualModel().getFMLModelFactory()
+					JavaImportDeclaration newJavaImportDeclaration = getDeclaringCompilationUnit().getFMLModelFactory()
 							.newJavaImportDeclaration();
 					newJavaImportDeclaration.setFullQualifiedClassName(rawType.getName());
-					getDeclaringVirtualModel().getCompilationUnit().addToJavaImports(newJavaImportDeclaration);
+					getDeclaringCompilationUnit().addToJavaImports(newJavaImportDeclaration);
 				}
 			}
 

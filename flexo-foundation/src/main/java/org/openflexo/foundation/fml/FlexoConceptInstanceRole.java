@@ -249,8 +249,8 @@ public interface FlexoConceptInstanceRole extends FlexoRole<FlexoConceptInstance
 
 		@Override
 		public void _setFlexoConceptTypeURI(String uri) {
-			if (getDeclaringVirtualModel() != null) {
-				flexoConceptType = getDeclaringVirtualModel().getFlexoConcept(uri);
+			if (getDeclaringCompilationUnit() != null) {
+				flexoConceptType = getDeclaringCompilationUnit().getFlexoConcept(uri);
 			}
 			_flexoConceptTypeURI = uri;
 		}

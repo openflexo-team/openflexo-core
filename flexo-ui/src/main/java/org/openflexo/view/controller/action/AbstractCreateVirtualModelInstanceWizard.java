@@ -49,7 +49,7 @@ import org.openflexo.foundation.FlexoObserver;
 import org.openflexo.foundation.fml.CreationScheme;
 import org.openflexo.foundation.fml.FlexoBehaviourParameter;
 import org.openflexo.foundation.fml.VirtualModel;
-import org.openflexo.foundation.fml.rm.VirtualModelResource;
+import org.openflexo.foundation.fml.rm.CompilationUnitResource;
 import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.action.AbstractCreateVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.action.CreationSchemeAction;
@@ -180,18 +180,18 @@ public abstract class AbstractCreateVirtualModelInstanceWizard<A extends Abstrac
 			}
 		}
 
-		public VirtualModelResource getVirtualModelResource() {
+		public CompilationUnitResource getVirtualModelResource() {
 			if (getAction().getVirtualModel() != null) {
-				return (VirtualModelResource) getAction().getVirtualModel().getResource();
+				return (CompilationUnitResource) getAction().getVirtualModel().getResource();
 			}
 			return null;
 		}
 
-		public void setVirtualModelResource(VirtualModelResource virtualModelResource) {
+		public void setVirtualModelResource(CompilationUnitResource virtualModelResource) {
 			if (getVirtualModelResource() != virtualModelResource) {
-				VirtualModelResource oldValue = getVirtualModelResource();
+				CompilationUnitResource oldValue = getVirtualModelResource();
 				if (virtualModelResource != null) {
-					((AbstractCreateVirtualModelInstance) getAction()).setVirtualModel(virtualModelResource.getVirtualModel());
+					((AbstractCreateVirtualModelInstance) getAction()).setVirtualModel(virtualModelResource.getCompilationUnit());
 				}
 				else {
 					getAction().setVirtualModel(null);

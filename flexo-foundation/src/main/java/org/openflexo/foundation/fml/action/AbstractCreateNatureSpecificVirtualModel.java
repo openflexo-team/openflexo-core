@@ -47,8 +47,8 @@ import org.openflexo.foundation.action.FlexoActionFactory;
 import org.openflexo.foundation.fml.FMLObject;
 import org.openflexo.foundation.fml.FMLTechnologyAdapter;
 import org.openflexo.foundation.fml.VirtualModel;
-import org.openflexo.foundation.fml.rm.VirtualModelResource;
-import org.openflexo.foundation.fml.rm.VirtualModelResourceFactory;
+import org.openflexo.foundation.fml.rm.CompilationUnitResource;
+import org.openflexo.foundation.fml.rm.CompilationUnitResourceFactory;
 import org.openflexo.foundation.resource.RepositoryFolder;
 import org.openflexo.foundation.resource.SaveResourceException;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
@@ -90,23 +90,23 @@ public abstract class AbstractCreateNatureSpecificVirtualModel<A extends Abstrac
 
 	public abstract TechnologyAdapter getTechnologyAdapter();
 
-	protected VirtualModelResource makeVirtualModelResource() throws SaveResourceException, ModelDefinitionException {
+	protected CompilationUnitResource makeVirtualModelResource() throws SaveResourceException, ModelDefinitionException {
 
 		FMLTechnologyAdapter fmlTechnologyAdapter = getServiceManager().getTechnologyAdapterService()
 				.getTechnologyAdapter(FMLTechnologyAdapter.class);
-		VirtualModelResourceFactory factory = fmlTechnologyAdapter.getVirtualModelResourceFactory();
+		CompilationUnitResourceFactory factory = fmlTechnologyAdapter.getCompilationUnitResourceFactory();
 
 		if (getFocusedObject() instanceof RepositoryFolder) {
-			RepositoryFolder<VirtualModelResource, ?> folder = (RepositoryFolder<VirtualModelResource, ?>) getFocusedObject();
-			VirtualModelResource newTopLevelVirtualModelResource = factory.makeTopLevelVirtualModelResource(getNewVirtualModelName(),
+			RepositoryFolder<CompilationUnitResource, ?> folder = (RepositoryFolder<CompilationUnitResource, ?>) getFocusedObject();
+			CompilationUnitResource newTopLevelVirtualModelResource = factory.makeTopLevelCompilationUnitResource(getNewVirtualModelName(),
 					getNewVirtualModelURI(), folder, getSpecializedVirtualModelClass(), true);
 			return newTopLevelVirtualModelResource;
 		}
 
 		else if (getFocusedObject() instanceof VirtualModel) {
 			VirtualModel containerVM = (VirtualModel) getFocusedObject();
-			VirtualModelResource containedVirtualModelResource = factory.makeContainedVirtualModelResource(getNewVirtualModelName(),
-					(VirtualModelResource) containerVM.getResource(), getSpecializedVirtualModelClass(), true);
+			CompilationUnitResource containedVirtualModelResource = factory.makeContainedCompilationUnitResource(getNewVirtualModelName(),
+					(CompilationUnitResource) containerVM.getCompilationUnit().getResource(), getSpecializedVirtualModelClass(), true);
 			return containedVirtualModelResource;
 		}
 
@@ -160,7 +160,7 @@ public abstract class AbstractCreateNatureSpecificVirtualModel<A extends Abstrac
 			if (!baseURI.endsWith("/")) {
 				baseURI = baseURI + "/";
 			}
-			return baseURI + getBaseName() + VirtualModelResourceFactory.FML_SUFFIX;
+			return baseURI + getBaseName() + CompilationUnitResourceFactory.FML_SUFFIX;
 		}
 
 		return newVirtualModelURI;

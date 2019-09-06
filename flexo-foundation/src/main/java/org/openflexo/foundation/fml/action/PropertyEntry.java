@@ -59,7 +59,7 @@ import org.openflexo.foundation.fml.FlexoProperty;
 import org.openflexo.foundation.fml.FlexoRole;
 import org.openflexo.foundation.fml.PropertyCardinality;
 import org.openflexo.foundation.fml.VirtualModelInstanceType;
-import org.openflexo.foundation.fml.rm.VirtualModelResource;
+import org.openflexo.foundation.fml.rm.CompilationUnitResource;
 import org.openflexo.foundation.fml.rt.FMLRTModelSlot;
 import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.foundation.resource.ResourceData;
@@ -147,7 +147,7 @@ public class PropertyEntry<TA extends TechnologyAdapter<TA>> extends PropertyCha
 	private Class<? extends ModelSlot<?>> modelSlotClass;
 	private Class<? extends FlexoRole<?>> flexoRoleClass;
 
-	private VirtualModelResource virtualModelResource;
+	private CompilationUnitResource virtualModelResource;
 	private FlexoMetaModelResource<?, ?, ?> metaModelResource;
 	private FlexoConcept flexoConcept;
 
@@ -189,7 +189,7 @@ public class PropertyEntry<TA extends TechnologyAdapter<TA>> extends PropertyCha
 	public Type getType() {
 		if (getPropertyType() == PropertyType.MODEL_SLOT) {
 			if (isVirtualModelModelSlot() && getVirtualModelResource() != null) {
-				return getVirtualModelResource().getVirtualModel().getInstanceType();
+				return getVirtualModelResource().getCompilationUnit().getVirtualModel().getInstanceType();
 			}
 			if (getModelSlotClass() != null) {
 				return TypeUtils.getTypeArgument(getModelSlotClass(), ModelSlot.class, 0);
@@ -518,14 +518,14 @@ public class PropertyEntry<TA extends TechnologyAdapter<TA>> extends PropertyCha
 		}
 	}
 
-	public VirtualModelResource getVirtualModelResource() {
+	public CompilationUnitResource getVirtualModelResource() {
 		return virtualModelResource;
 	}
 
-	public void setVirtualModelResource(VirtualModelResource virtualModelResource) {
+	public void setVirtualModelResource(CompilationUnitResource virtualModelResource) {
 		if ((virtualModelResource == null && this.virtualModelResource != null)
 				|| (virtualModelResource != null && !virtualModelResource.equals(this.virtualModelResource))) {
-			VirtualModelResource oldValue = this.virtualModelResource;
+			CompilationUnitResource oldValue = this.virtualModelResource;
 			this.virtualModelResource = virtualModelResource;
 			getPropertyChangeSupport().firePropertyChange("virtualModelResource", oldValue, virtualModelResource);
 			getPropertyChangeSupport().firePropertyChange("type", null, getType());

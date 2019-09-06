@@ -41,6 +41,7 @@ package org.openflexo.foundation.fml.ta;
 import java.lang.reflect.Type;
 import java.util.logging.Logger;
 
+import org.openflexo.foundation.fml.FMLCompilationUnit;
 import org.openflexo.foundation.fml.FMLTechnologyAdapter;
 import org.openflexo.foundation.fml.FlexoRole;
 import org.openflexo.foundation.fml.VirtualModel;
@@ -71,9 +72,9 @@ import org.openflexo.pamela.annotations.XMLElement;
 @ImplementationClass(FMLModelSlot.FMLModelSlotImpl.class)
 @XMLElement
 @FML("FMLModelSlot")
-public interface FMLModelSlot extends ModelSlot<VirtualModel> {
+public interface FMLModelSlot extends ModelSlot<FMLCompilationUnit> {
 
-	public static abstract class FMLModelSlotImpl extends ModelSlotImpl<VirtualModel> implements FMLModelSlot {
+	public static abstract class FMLModelSlotImpl extends ModelSlotImpl<FMLCompilationUnit> implements FMLModelSlot {
 
 		private static final Logger logger = Logger.getLogger(FMLModelSlot.class.getPackage().getName());
 
@@ -99,7 +100,7 @@ public interface FMLModelSlot extends ModelSlot<VirtualModel> {
 
 		@Override
 		public String getTypeDescription() {
-			return "Virtual Model";
+			return "FMLCompilationUnit";
 		};
 
 		/**
@@ -109,7 +110,7 @@ public interface FMLModelSlot extends ModelSlot<VirtualModel> {
 		 * @return URI as String
 		 */
 		@Override
-		public String getURIForObject(VirtualModel resourceData, Object o) {
+		public String getURIForObject(FMLCompilationUnit resourceData, Object o) {
 			logger.warning("This method should be refined by child classes");
 			return null;
 		}
@@ -120,7 +121,7 @@ public interface FMLModelSlot extends ModelSlot<VirtualModel> {
 		 * @return the Object
 		 */
 		@Override
-		public Object retrieveObjectWithURI(VirtualModel resourceData, String objectURI) {
+		public Object retrieveObjectWithURI(FMLCompilationUnit resourceData, String objectURI) {
 			logger.warning("This method should be refined by child classes");
 			return null;
 		}
@@ -131,7 +132,7 @@ public interface FMLModelSlot extends ModelSlot<VirtualModel> {
 		}
 
 		@Override
-		public FMLModelSlotInstance makeActorReference(VirtualModel virtualModel, FlexoConceptInstance fci) {
+		public FMLModelSlotInstance makeActorReference(FMLCompilationUnit virtualModel, FlexoConceptInstance fci) {
 			AbstractVirtualModelInstanceModelFactory<?> factory = fci.getFactory();
 			FMLModelSlotInstance returned = factory.newInstance(FMLModelSlotInstance.class);
 			returned.setModelSlot(this);

@@ -42,23 +42,23 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.openflexo.foundation.fml.FMLTechnologyAdapter;
-import org.openflexo.foundation.fml.rm.VirtualModelResource;
+import org.openflexo.foundation.fml.rm.CompilationUnitResource;
 import org.openflexo.foundation.resource.FlexoResourceCenterService;
 import org.openflexo.foundation.technologyadapter.TechnologyContextManager;
 
 public class FMLTechnologyContextManager extends TechnologyContextManager<FMLTechnologyAdapter> {
 
-	protected Map<String, VirtualModelResource> virtualModels = new HashMap<>();
+	protected Map<String, CompilationUnitResource> virtualModels = new HashMap<>();
 
 	public FMLTechnologyContextManager(FMLTechnologyAdapter adapter, FlexoResourceCenterService resourceCenterService) {
 		super(adapter, resourceCenterService);
 	}
 
-	public VirtualModelResource getViewPointResource(String uri) {
+	public CompilationUnitResource getViewPointResource(String uri) {
 		return virtualModels.get(uri);
 	}
 
-	public void registerViewPoint(VirtualModelResource virtualModelResource) {
+	public void registerViewPoint(CompilationUnitResource virtualModelResource) {
 		registerResource(virtualModelResource);
 		virtualModels.put(virtualModelResource.getURI(), virtualModelResource);
 	}

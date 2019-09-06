@@ -1,8 +1,8 @@
 /**
  * 
- * Copyright (c) 2019, Openflexo
+ * Copyright (c) 2014, Openflexo
  * 
- * This file is part of FML-parser, a component of the software infrastructure 
+ * This file is part of Flexo-foundation, a component of the software infrastructure 
  * developed at Openflexo.
  * 
  * 
@@ -36,14 +36,21 @@
  * 
  */
 
-package org.openflexo.foundation.fml.rm;
+package org.openflexo.foundation.fml;
+
+import org.openflexo.foundation.DataModification;
+import org.openflexo.foundation.resource.FlexoResource;
 
 /**
- * API specifying the parsing service factory for FML.<br>
+ * Notify that a new {@link CompilationUnitResource} has been registered in VirtualModelLibrary
  * 
  * @author sylvain
+ * 
  */
-public interface FMLParserFactory {
+public class CompilationUnitRegistered extends DataModification<FlexoResource<FMLCompilationUnit>> {
 
-	public FMLParser makeFMLParser();
+	public CompilationUnitRegistered(FlexoResource<FMLCompilationUnit> newVirtualModelResource) {
+		super(null, newVirtualModelResource);
+	}
+
 }

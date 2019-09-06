@@ -39,7 +39,7 @@
 package org.openflexo.drm;
 
 import org.openflexo.foundation.resource.FlexoResource;
-import org.openflexo.foundation.resource.PamelaResource;
+import org.openflexo.foundation.resource.PamelaXMLSerializableResource;
 import org.openflexo.pamela.annotations.ImplementationClass;
 import org.openflexo.pamela.annotations.ModelEntity;
 import org.openflexo.pamela.annotations.XMLElement;
@@ -53,7 +53,7 @@ import org.openflexo.pamela.annotations.XMLElement;
 @ModelEntity
 @ImplementationClass(DocResourceCenterResourceImpl.class)
 @XMLElement
-public interface DocResourceCenterResource extends PamelaResource<DocResourceCenter, DRMModelFactory> {
+public interface DocResourceCenterResource extends PamelaXMLSerializableResource<DocResourceCenter, DRMModelFactory> {
 
 	public static final String DIAGRAM_SUFFIX = ".diagram";
 

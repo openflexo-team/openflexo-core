@@ -45,7 +45,7 @@ import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.FlexoProject;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.VirtualModelLibrary;
-import org.openflexo.foundation.fml.rm.VirtualModelResource;
+import org.openflexo.foundation.fml.rm.CompilationUnitResource;
 import org.openflexo.foundation.resource.ResourceLoadingCancelledException;
 import org.openflexo.logging.FlexoLogger;
 import org.openflexo.pamela.annotations.Getter;
@@ -76,9 +76,9 @@ public interface VirtualModelBasedNatureObject<N extends ProjectNature<N>> exten
 	@Setter(VIRTUAL_MODEL_URI_KEY)
 	public void setAccessedVirtualModelURI(String virtualModelURI);
 
-	public VirtualModelResource getAccessedVirtualModelResource();
+	public CompilationUnitResource getAccessedVirtualModelResource();
 
-	public void setAccessedVirtualModelResource(VirtualModelResource virtualModelResource);
+	public void setAccessedVirtualModelResource(CompilationUnitResource virtualModelResource);
 
 	public VirtualModel getAccessedVirtualModel();
 
@@ -89,11 +89,11 @@ public interface VirtualModelBasedNatureObject<N extends ProjectNature<N>> exten
 
 		private static final Logger logger = FlexoLogger.getLogger(VirtualModelBasedNatureObject.class.getPackage().getName());
 
-		protected VirtualModelResource virtualModelResource;
+		protected CompilationUnitResource virtualModelResource;
 		private String virtualModelURI;
 
 		@Override
-		public VirtualModelResource getAccessedVirtualModelResource() {
+		public CompilationUnitResource getAccessedVirtualModelResource() {
 
 			VirtualModelLibrary fmlLibrary = null;
 			if (getNature() != null && getNature().getProject() != null) {
@@ -101,7 +101,7 @@ public interface VirtualModelBasedNatureObject<N extends ProjectNature<N>> exten
 			}
 
 			if (virtualModelResource == null && StringUtils.isNotEmpty(virtualModelURI) && fmlLibrary != null) {
-				virtualModelResource = fmlLibrary.getVirtualModelResource(virtualModelURI);
+				virtualModelResource = fmlLibrary.getCompilationUnitResource(virtualModelURI);
 				if (virtualModelResource != null) {
 					logger.info("Looked-up " + virtualModelResource);
 				}
@@ -111,8 +111,8 @@ public interface VirtualModelBasedNatureObject<N extends ProjectNature<N>> exten
 		}
 
 		@Override
-		public void setAccessedVirtualModelResource(VirtualModelResource virtualModelResource) {
-			VirtualModelResource oldValue = this.virtualModelResource;
+		public void setAccessedVirtualModelResource(CompilationUnitResource virtualModelResource) {
+			CompilationUnitResource oldValue = this.virtualModelResource;
 			this.virtualModelResource = virtualModelResource;
 			if (virtualModelResource == null) {
 				virtualModelURI = null;
@@ -144,7 +144,7 @@ public interface VirtualModelBasedNatureObject<N extends ProjectNature<N>> exten
 				// Do not load virtual model when unloaded
 				// return getAccessedVirtualModelResource().getLoadedResourceData();
 				try {
-					return getAccessedVirtualModelResource().getResourceData();
+					return getAccessedVirtualModelResource().getResourceData().getVirtualModel();
 				} catch (FileNotFoundException e) {
 					e.printStackTrace();
 				} catch (ResourceLoadingCancelledException e) {
@@ -159,7 +159,7 @@ public interface VirtualModelBasedNatureObject<N extends ProjectNature<N>> exten
 		@Override
 		public void setAccessedVirtualModel(VirtualModel aVirtualModel) {
 			this.virtualModelURI = aVirtualModel.getURI();
-			this.virtualModelResource = (VirtualModelResource) aVirtualModel.getResource();
+			this.virtualModelResource = aVirtualModel.getResource();
 		}
 
 		@Override

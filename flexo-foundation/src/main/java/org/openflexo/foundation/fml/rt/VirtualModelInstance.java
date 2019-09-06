@@ -73,9 +73,7 @@ import org.openflexo.foundation.fml.rt.action.SynchronizationSchemeActionFactory
 import org.openflexo.foundation.fml.rt.rm.AbstractVirtualModelInstanceResource;
 import org.openflexo.foundation.fml.rt.rm.FMLRTVirtualModelInstanceResourceFactory;
 import org.openflexo.foundation.resource.CannotRenameException;
-import org.openflexo.foundation.resource.FlexoResource;
-import org.openflexo.foundation.technologyadapter.FlexoModel;
-import org.openflexo.foundation.technologyadapter.ModelRepository;
+import org.openflexo.foundation.resource.ResourceData;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.technologyadapter.TechnologyObject;
@@ -115,7 +113,8 @@ import org.openflexo.toolbox.StringUtils;
 @ModelEntity(isAbstract = true)
 @ImplementationClass(VirtualModelInstance.VirtualModelInstanceImpl.class)
 public interface VirtualModelInstance<VMI extends VirtualModelInstance<VMI, TA>, TA extends TechnologyAdapter<TA>>
-		extends FlexoConceptInstance, FlexoModel<VMI, VirtualModel>, TechnologyObject<TA>, IndexableContainer<FlexoConceptInstance> {
+		extends FlexoConceptInstance, ResourceData<VMI>, TechnologyObject<TA> /*, FlexoModel<VMI, VirtualModel>, TechnologyObject<TA>*/,
+		IndexableContainer<FlexoConceptInstance> {
 
 	public static final String EVENT_FIRED = "EventFired";
 
@@ -150,7 +149,7 @@ public interface VirtualModelInstance<VMI extends VirtualModelInstance<VMI, TA>,
 	 * 
 	 * @return String representing unique URI of this object
 	 */
-	@Override
+	// @Override
 	public String getURI();
 
 	/**
@@ -388,12 +387,20 @@ public interface VirtualModelInstance<VMI extends VirtualModelInstance<VMI, TA>,
 	 */
 	public List<TechnologyAdapter> getRequiredTechnologyAdapters();
 
-	public ModelRepository getVirtualModelInstanceRepository();
+	public FMLRTVirtualModelInstanceRepository<?> getVirtualModelInstanceRepository();
 
 	/**
 	 * Asynchronously execute firing of 'allRootFlexoConceptInstances' change event All notifications are merged and executed in EDT
 	 */
 	public void notifyAllRootFlexoConceptInstancesMayHaveChanged();
+
+	@Override
+	public AbstractVirtualModelInstanceResource<VMI, TA> getResource();
+
+	public void setResource(AbstractVirtualModelInstanceResource<VMI, TA> resource);
+
+	@Override
+	public TA getTechnologyAdapter();
 
 	/**
 	 * Base implementation for VirtualModelInstance
@@ -551,10 +558,10 @@ public interface VirtualModelInstance<VMI extends VirtualModelInstance<VMI, TA>,
 			super.setFlexoConceptURI(virtualModelURI);
 		}
 
-		@Override
+		/*@Override
 		public VirtualModel getMetaModel() {
 			return getFlexoConcept();
-		}
+		}*/
 
 		@Override
 		public FlexoVersion getModelVersion() {
@@ -950,8 +957,8 @@ public interface VirtualModelInstance<VMI extends VirtualModelInstance<VMI, TA>,
 		}
 
 		@Override
-		public void setResource(FlexoResource<VMI> resource) {
-			this.resource = (AbstractVirtualModelInstanceResource<VMI, TA>) resource;
+		public void setResource(AbstractVirtualModelInstanceResource<VMI, TA> resource) {
+			this.resource = resource;
 		}
 
 		@Override
@@ -1054,17 +1061,17 @@ public interface VirtualModelInstance<VMI extends VirtualModelInstance<VMI, TA>,
 			VirtualModel vm = getVirtualModel();
 			boolean synchronizable = vm != null && vm.hasSynchronizationScheme();
 			if (synchronizable) {
-				for (TechnologyAdapter<?> neededTA : vm.getRequiredTechnologyAdapters()) {
+				for (TechnologyAdapter<?> neededTA : vm.getCompilationUnit().getRequiredTechnologyAdapters()) {
 					synchronizable = synchronizable && neededTA.isActivated();
 				}
 			}
 			return synchronizable;
 		}
 
-		@Override
+		/*@Override
 		public Object getObject(String objectURI) {
 			return null;
-		}
+		}*/
 
 		@Override
 		public VirtualModelInstance<?, ?> getVirtualModelInstance() {
@@ -1405,7 +1412,7 @@ public interface VirtualModelInstance<VMI extends VirtualModelInstance<VMI, TA>,
 		@Override
 		public List<TechnologyAdapter> getRequiredTechnologyAdapters() {
 			if (getVirtualModel() != null) {
-				List<TechnologyAdapter> returned = getVirtualModel().getRequiredTechnologyAdapters();
+				List<TechnologyAdapter> returned = getVirtualModel().getCompilationUnit().getRequiredTechnologyAdapters();
 				if (!returned.contains(getTechnologyAdapter())) {
 					returned.add(getTechnologyAdapter());
 				}

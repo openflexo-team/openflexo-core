@@ -1,6 +1,6 @@
 /**
  * 
- * Copyright (c) 2014, Openflexo
+ * Copyright (c) 2014-2015, Openflexo
  * 
  * This file is part of Flexo-foundation, a component of the software infrastructure 
  * developed at Openflexo.
@@ -36,21 +36,21 @@
  * 
  */
 
-package org.openflexo.foundation.fml;
+package org.openflexo.foundation.resource;
 
-import org.openflexo.foundation.DataModification;
-import org.openflexo.foundation.fml.rm.VirtualModelResource;
+import org.openflexo.foundation.PamelaResourceModelFactory;
+import org.openflexo.pamela.annotations.ModelEntity;
+import org.openflexo.pamela.factory.ModelFactory;
 
 /**
- * Notify that a new {@link VirtualModel} has been registered in VirtualModelLibrary
+ * A {@link PamelaXMLSerializableResource} is a {@link PamelaResource} whose serialization is performed in XML
  * 
  * @author sylvain
  * 
+ * @param <RD>
  */
-public class VirtualModelRegistered extends DataModification<VirtualModelResource> {
-
-	public VirtualModelRegistered(VirtualModelResource newVirtualModelResource) {
-		super(null, newVirtualModelResource);
-	}
+@ModelEntity(isAbstract = true)
+public interface PamelaXMLSerializableResource<RD extends ResourceData<RD>, F extends ModelFactory & PamelaResourceModelFactory>
+		extends PamelaResource<RD, F> {
 
 }

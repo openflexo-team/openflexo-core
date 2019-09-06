@@ -20,60 +20,67 @@
 
 package org.openflexo.foundation.fml.rm;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.logging.Logger;
 
-import org.openflexo.foundation.FlexoProject;
+import org.openflexo.foundation.fml.FMLCompilationUnit;
 import org.openflexo.foundation.fml.FMLModelFactory;
 import org.openflexo.foundation.fml.FMLTechnologyAdapter;
 import org.openflexo.foundation.fml.VirtualModel;
-import org.openflexo.foundation.resource.FileSystemBasedResourceCenter;
+import org.openflexo.foundation.fml.rm.CompilationUnitResource.VirtualModelInfo;
 import org.openflexo.foundation.resource.FlexoIODelegate;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.resource.RepositoryFolder;
 import org.openflexo.foundation.resource.SaveResourceException;
+import org.openflexo.foundation.resource.TechnologySpecificFlexoResourceFactory;
 import org.openflexo.foundation.resource.TechnologySpecificPamelaResourceFactory;
 import org.openflexo.foundation.technologyadapter.TechnologyContextManager;
 import org.openflexo.pamela.exceptions.ModelDefinitionException;
-import org.openflexo.toolbox.FileSystemMetaDataManager;
 import org.openflexo.toolbox.FlexoVersion;
 import org.openflexo.toolbox.StringUtils;
-import org.openflexo.xml.XMLElementInfo;
 import org.openflexo.xml.XMLRootElementInfo;
 
 /**
- * Implementation of {@link TechnologySpecificPamelaResourceFactory} for {@link VirtualModelResource}<br>
+ * Implementation of {@link TechnologySpecificPamelaResourceFactory} for {@link CompilationUnitResource}<br>
  * 
  * This factory is responsible to create or retrieve {@link VirtualModel} objects
  * 
  * @author sylvain
  *
  */
-public class VirtualModelResourceFactory
-		extends TechnologySpecificPamelaResourceFactory<VirtualModelResource, VirtualModel, FMLTechnologyAdapter, FMLModelFactory> {
+public class CompilationUnitResourceFactory
+		extends TechnologySpecificFlexoResourceFactory<CompilationUnitResource, FMLCompilationUnit, FMLTechnologyAdapter> {
 
 	public static final FlexoVersion INITIAL_REVISION = new FlexoVersion("0.1");
-	public static final FlexoVersion CURRENT_FML_VERSION = new FlexoVersion("2.0");
+	// public static final FlexoVersion CURRENT_FML_VERSION = new FlexoVersion("2.0");
 	public static final String FML_SUFFIX = ".fml";
 	public static final String FML_XML_SUFFIX = ".fml.xml";
 
-	private static final Logger logger = Logger.getLogger(VirtualModelResourceFactory.class.getPackage().getName());
+	private static final Logger logger = Logger.getLogger(CompilationUnitResourceFactory.class.getPackage().getName());
 
 	/**
 	 * Build new VirtualModelResourceFactory
 	 * 
 	 * @throws ModelDefinitionException
 	 */
-	public VirtualModelResourceFactory() throws ModelDefinitionException {
-		super(VirtualModelResource.class);
+	public CompilationUnitResourceFactory() throws ModelDefinitionException {
+		super(CompilationUnitResource.class);
+		// TODO: find a better way to initialize this
+		try {
+			setImplementingClassForInterface(
+					(Class<? extends CompilationUnitResource>) Class.forName("org.openflexo.foundation.fml.rm.CompilationUnitResourceImpl"),
+					CompilationUnitResource.class);
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	/**
 	 * Build and return model factory to use for resource data managing
 	 */
-	@Override
-	public FMLModelFactory makeModelFactory(VirtualModelResource resource,
+	// @Override
+	public FMLModelFactory makeModelFactory(CompilationUnitResource resource,
 			TechnologyContextManager<FMLTechnologyAdapter> technologyContextManager) throws ModelDefinitionException {
 		return new FMLModelFactory(resource, technologyContextManager.getServiceManager());
 	}
@@ -84,25 +91,30 @@ public class VirtualModelResourceFactory
 	 * @return
 	 */
 	@Override
-	public VirtualModel makeEmptyResourceData(VirtualModelResource resource) {
-		if (resource.getSpecializedResourceDataClass() != null) {
+	public FMLCompilationUnit makeEmptyResourceData(CompilationUnitResource resource) {
+		/*if (resource.getSpecializedResourceDataClass() != null) {
 			// System.out.println("Plutot que de creer un VirtualModel, je cree un " + resource.getSpecializedResourceDataClass());
 			return resource.getFactory().newInstance(resource.getSpecializedResourceDataClass());
-		}
-		return resource.getFactory().newVirtualModel();
+		}*/
+		FMLCompilationUnit returned = resource.getFactory().newCompilationUnit();
+		VirtualModel virtualModel = resource.getFactory().newVirtualModel();
+		virtualModel.setName(resource.getName());
+		virtualModel.setURI(resource.getURI());
+		returned.setVirtualModel(virtualModel);
+		return returned;
 	}
 
 	@Override
-	protected VirtualModel createEmptyContents(VirtualModelResource resource) {
-		VirtualModel returned = super.createEmptyContents(resource);
+	protected FMLCompilationUnit createEmptyContents(CompilationUnitResource resource) {
+		FMLCompilationUnit returned = super.createEmptyContents(resource);
 		if (resource.getContainer() != null) {
-			resource.getContainer().getVirtualModel().addToVirtualModels(returned);
+			resource.getContainer().getCompilationUnit().getVirtualModel().addToVirtualModels(returned.getVirtualModel());
 		}
 		return returned;
 	}
 
 	/**
-	 * Build a new {@link VirtualModelResource} with supplied baseName and URI, and located in supplied folder No specialization for
+	 * Build a new {@link CompilationUnitResource} with supplied baseName and URI, and located in supplied folder No specialization for
 	 * resource data class
 	 * 
 	 * 
@@ -115,14 +127,14 @@ public class VirtualModelResourceFactory
 	 * @throws SaveResourceException
 	 * @throws ModelDefinitionException
 	 */
-	public <I> VirtualModelResource makeTopLevelVirtualModelResource(String baseName, String virtualModelURI,
-			RepositoryFolder<VirtualModelResource, I> folder, boolean createEmptyContents)
+	public <I> CompilationUnitResource makeTopLevelCompilationUnitResource(String baseName, String virtualModelURI,
+			RepositoryFolder<CompilationUnitResource, I> folder, boolean createEmptyContents)
 			throws SaveResourceException, ModelDefinitionException {
-		return makeTopLevelVirtualModelResource(baseName, virtualModelURI, folder, null, createEmptyContents);
+		return makeTopLevelCompilationUnitResource(baseName, virtualModelURI, folder, null, createEmptyContents);
 	}
 
 	/**
-	 * Build a new {@link VirtualModelResource} with supplied baseName and URI, and located in supplied folder
+	 * Build a new {@link CompilationUnitResource} with supplied baseName and URI, and located in supplied folder
 	 * 
 	 * 
 	 * @param baseName
@@ -134,59 +146,63 @@ public class VirtualModelResourceFactory
 	 * @throws SaveResourceException
 	 * @throws ModelDefinitionException
 	 */
-	public <I> VirtualModelResource makeTopLevelVirtualModelResource(String baseName, String virtualModelURI,
-			RepositoryFolder<VirtualModelResource, I> folder, Class<? extends VirtualModel> specializedVirtualModelClass,
+	public <I> CompilationUnitResource makeTopLevelCompilationUnitResource(String baseName, String virtualModelURI,
+			RepositoryFolder<CompilationUnitResource, I> folder, Class<? extends VirtualModel> specializedVirtualModelClass,
 			boolean createEmptyContents) throws SaveResourceException, ModelDefinitionException {
 
 		FlexoResourceCenter<I> resourceCenter = folder.getResourceRepository().getResourceCenter();
 		I serializationArtefact = resourceCenter.createDirectory(baseName.endsWith(FML_SUFFIX) ? baseName : baseName + FML_SUFFIX,
 				folder.getSerializationArtefact());
 
-		return makeResource(serializationArtefact, resourceCenter, baseName, virtualModelURI, specializedVirtualModelClass,
-				createEmptyContents);
+		CompilationUnitResource returned = makeResource(serializationArtefact, resourceCenter, baseName,
+				virtualModelURI/*, specializedVirtualModelClass*/, createEmptyContents);
+
+		returned.setVirtualModelClass(specializedVirtualModelClass);
+		return returned;
 	}
 
 	/**
-	 * Build a new {@link VirtualModelResource} with supplied baseName and URI, and located in supplied VirtualModelResource<br>
+	 * Build a new {@link CompilationUnitResource} with supplied baseName and URI, and located in supplied VirtualModelResource<br>
 	 * No specialization for resource data class
 	 * 
 	 * @param baseName
-	 * @param containerVirtualModelResource
+	 * @param containerCompilationUnitResource
 	 * @param technologyContextManager
 	 * @param createEmptyContents
 	 * @return
 	 * @throws SaveResourceException
 	 * @throws ModelDefinitionException
 	 */
-	public <I> VirtualModelResource makeContainedVirtualModelResource(String baseName, VirtualModelResource containerVirtualModelResource,
-			boolean createEmptyContents) throws SaveResourceException, ModelDefinitionException {
-		return makeContainedVirtualModelResource(baseName, containerVirtualModelResource, null, createEmptyContents);
+	public <I> CompilationUnitResource makeContainedCompilationUnitResource(String baseName,
+			CompilationUnitResource containerCompilationUnitResource, boolean createEmptyContents)
+			throws SaveResourceException, ModelDefinitionException {
+		return makeContainedCompilationUnitResource(baseName, containerCompilationUnitResource, null, createEmptyContents);
 	}
 
 	/**
-	 * Build a new {@link VirtualModelResource} with supplied baseName and URI, and located in supplied VirtualModelResource
+	 * Build a new {@link CompilationUnitResource} with supplied baseName and URI, and located in supplied VirtualModelResource
 	 * 
 	 * @param baseName
-	 * @param containerVirtualModelResource
+	 * @param containerCompilationUnitResource
 	 * @param technologyContextManager
 	 * @param createEmptyContents
 	 * @return
 	 * @throws SaveResourceException
 	 * @throws ModelDefinitionException
 	 */
-	public <I> VirtualModelResource makeContainedVirtualModelResource(String baseName, VirtualModelResource containerVirtualModelResource,
-			Class<? extends VirtualModel> specializedVirtualModelClass, boolean createEmptyContents)
-			throws SaveResourceException, ModelDefinitionException {
+	public <I> CompilationUnitResource makeContainedCompilationUnitResource(String baseName,
+			CompilationUnitResource containerCompilationUnitResource, Class<? extends VirtualModel> specializedVirtualModelClass,
+			boolean createEmptyContents) throws SaveResourceException, ModelDefinitionException {
 
-		FlexoResourceCenter<I> resourceCenter = (FlexoResourceCenter<I>) containerVirtualModelResource.getResourceCenter();
+		FlexoResourceCenter<I> resourceCenter = (FlexoResourceCenter<I>) containerCompilationUnitResource.getResourceCenter();
 		I serializationArtefact = resourceCenter.createDirectory(baseName.endsWith(FML_SUFFIX) ? baseName : baseName + FML_SUFFIX,
-				resourceCenter.getContainer((I) containerVirtualModelResource.getIODelegate().getSerializationArtefact()));
+				resourceCenter.getContainer((I) containerCompilationUnitResource.getIODelegate().getSerializationArtefact()));
 
-		VirtualModelResource returned = initResourceForCreation(serializationArtefact, resourceCenter, baseName,
-				containerVirtualModelResource.getURI() + "/" + baseName + (baseName.endsWith(FML_SUFFIX) ? "" : FML_SUFFIX));
-		returned.setSpecializedResourceDataClass(specializedVirtualModelClass);
+		CompilationUnitResource returned = initResourceForCreation(serializationArtefact, resourceCenter, baseName,
+				containerCompilationUnitResource.getURI() + "/" + baseName + (baseName.endsWith(FML_SUFFIX) ? "" : FML_SUFFIX));
+		returned.setVirtualModelClass(specializedVirtualModelClass);
 
-		containerVirtualModelResource.addToContents(returned);
+		containerCompilationUnitResource.addToContents(returned);
 
 		registerResource(returned, resourceCenter);
 
@@ -208,13 +224,13 @@ public class VirtualModelResourceFactory
 	 * @throws ModelDefinitionException
 	 * @throws IOException
 	 */
-	public <I> VirtualModelResource retrieveContainedVirtualModelResource(I serializationArtefact,
-			VirtualModelResource containerVirtualModelResource) throws ModelDefinitionException, IOException {
+	public <I> CompilationUnitResource retrieveContainedVirtualModelResource(I serializationArtefact,
+			CompilationUnitResource containerVirtualModelResource) throws ModelDefinitionException, IOException {
 
 		FlexoResourceCenter<I> resourceCenter = (FlexoResourceCenter<I>) containerVirtualModelResource.getResourceCenter();
 		String name = resourceCenter.retrieveName(serializationArtefact);
 
-		VirtualModelResource returned = initResourceForRetrieving(serializationArtefact, resourceCenter);
+		CompilationUnitResource returned = initResourceForRetrieving(serializationArtefact, resourceCenter);
 		returned.setURI(containerVirtualModelResource.getURI() + "/" + name);
 
 		containerVirtualModelResource.addToContents(returned);
@@ -226,33 +242,34 @@ public class VirtualModelResourceFactory
 	}
 
 	@Override
-	protected <I> VirtualModelResource initResourceForCreation(I serializationArtefact, FlexoResourceCenter<I> resourceCenter, String name,
-			String uri) throws ModelDefinitionException {
+	protected <I> CompilationUnitResource initResourceForCreation(I serializationArtefact, FlexoResourceCenter<I> resourceCenter,
+			String name, String uri) throws ModelDefinitionException {
 
 		if (name.endsWith(FML_SUFFIX)) {
 			name = name.substring(0, name.length() - FML_SUFFIX.length());
 		}
 
-		VirtualModelResource returned = super.initResourceForCreation(serializationArtefact, resourceCenter, name, uri);
+		CompilationUnitResource returned = super.initResourceForCreation(serializationArtefact, resourceCenter, name, uri);
 
 		returned.setVersion(INITIAL_REVISION);
-		returned.setModelVersion(CURRENT_FML_VERSION);
+		// returned.setModelVersion(CURRENT_FML_VERSION);
 
 		return returned;
 	}
 
 	@Override
-	protected <I> VirtualModelResource initResourceForRetrieving(I serializationArtefact, FlexoResourceCenter<I> resourceCenter)
+	protected <I> CompilationUnitResource initResourceForRetrieving(I serializationArtefact, FlexoResourceCenter<I> resourceCenter)
 			throws ModelDefinitionException, IOException {
 
-		VirtualModelResource returned = super.initResourceForRetrieving(serializationArtefact, resourceCenter);
+		CompilationUnitResource returned = super.initResourceForRetrieving(serializationArtefact, resourceCenter);
 
 		String artefactName = resourceCenter.retrieveName(serializationArtefact);
 		String baseName = artefactName.substring(0, artefactName.length() - FML_SUFFIX.length());
 
 		returned.initName(baseName);
 
-		VirtualModelInfo vpi = findVirtualModelInfo(returned, resourceCenter);
+		// VirtualModelInfo vpi = findVirtualModelInfo(returned, resourceCenter);
+		VirtualModelInfo vpi = returned.findVirtualModelInfo(resourceCenter);
 
 		if (vpi != null) {
 			returned.setURI(vpi.uri);
@@ -262,14 +279,14 @@ public class VirtualModelResourceFactory
 			else {
 				returned.setVersion(INITIAL_REVISION);
 			}
-			if (StringUtils.isNotEmpty(vpi.modelVersion)) {
+			/*if (StringUtils.isNotEmpty(vpi.modelVersion)) {
 				returned.setModelVersion(new FlexoVersion(vpi.modelVersion));
 			}
 			else {
 				returned.setModelVersion(CURRENT_FML_VERSION);
-			}
+			}*/
 			try {
-				((VirtualModelResourceImpl) returned).setUsedModelSlots(vpi.requiredModelSlotList);
+				returned.setUsedModelSlots(vpi.requiredModelSlotList);
 			} catch (ClassNotFoundException e) {
 				logger.warning("Could not find " + e.getMessage());
 			}
@@ -281,7 +298,7 @@ public class VirtualModelResourceFactory
 				Class<? extends VirtualModel> virtualModelClass = null;
 				try {
 					virtualModelClass = (Class<? extends VirtualModel>) Class.forName(vpi.virtualModelClassName);
-					returned.setSpecializedResourceDataClass(virtualModelClass);
+					returned.setVirtualModelClass(virtualModelClass);
 				} catch (ClassNotFoundException e) {
 					logger.warning("Cannot find class " + vpi.virtualModelClassName);
 				}
@@ -290,7 +307,7 @@ public class VirtualModelResourceFactory
 		else {
 			logger.warning("Cannot retrieve info from " + serializationArtefact);
 			returned.setVersion(INITIAL_REVISION);
-			returned.setModelVersion(CURRENT_FML_VERSION);
+			// returned.setModelVersion(CURRENT_FML_VERSION);
 		}
 
 		return returned;
@@ -298,7 +315,7 @@ public class VirtualModelResourceFactory
 
 	@Override
 	protected <I> FlexoIODelegate<I> makeFlexoIODelegate(I serializationArtefact, FlexoResourceCenter<I> resourceCenter) {
-		return resourceCenter.makeDirectoryBasedFlexoIODelegate(serializationArtefact, FML_SUFFIX, FML_XML_SUFFIX, this);
+		return resourceCenter.makeDirectoryBasedFlexoIODelegate(serializationArtefact, FML_SUFFIX, FML_SUFFIX, this);
 	}
 
 	/**
@@ -325,7 +342,7 @@ public class VirtualModelResourceFactory
 	}
 
 	@Override
-	protected <I> VirtualModelResource registerResource(VirtualModelResource resource, FlexoResourceCenter<I> resourceCenter) {
+	protected <I> CompilationUnitResource registerResource(CompilationUnitResource resource, FlexoResourceCenter<I> resourceCenter) {
 		super.registerResource(resource, resourceCenter);
 
 		// Register the resource in the VirtualModelRepository of supplied resource center
@@ -336,7 +353,7 @@ public class VirtualModelResourceFactory
 		// VirtualModelLibrary.initialize() method
 		if (resourceCenter.getServiceManager().getVirtualModelLibrary() != null) {
 			resource.setVirtualModelLibrary(resourceCenter.getServiceManager().getVirtualModelLibrary());
-			resourceCenter.getServiceManager().getVirtualModelLibrary().registerVirtualModel(resource);
+			resourceCenter.getServiceManager().getVirtualModelLibrary().registerCompilationUnit(resource);
 		}
 
 		// Now look for virtual models
@@ -347,12 +364,12 @@ public class VirtualModelResourceFactory
 	}
 
 	/**
-	 * Internally called to explore contained {@link VirtualModel} in supplied {@link VirtualModelResource}
+	 * Internally called to explore contained {@link VirtualModel} in supplied {@link CompilationUnitResource}
 	 * 
 	 * @param virtualModelResource
 	 * @param technologyContextManager
 	 */
-	private <I> void exploreVirtualModels(VirtualModelResource virtualModelResource) {
+	private <I> void exploreVirtualModels(CompilationUnitResource virtualModelResource) {
 
 		FlexoResourceCenter<I> resourceCenter = (FlexoResourceCenter<I>) virtualModelResource.getResourceCenter();
 		I directory = resourceCenter.getContainer((I) virtualModelResource.getIODelegate().getSerializationArtefact());
@@ -361,13 +378,13 @@ public class VirtualModelResourceFactory
 	}
 
 	/**
-	 * Internally called to explore contained {@link VirtualModel} in supplied {@link VirtualModelResource}
+	 * Internally called to explore contained {@link VirtualModel} in supplied {@link CompilationUnitResource}
 	 * 
 	 * @param serializationArtefact
 	 * @param virtualModelResource
 	 * @param technologyContextManager
 	 */
-	private <I> void exploreResource(I serializationArtefact, VirtualModelResource virtualModelResource) {
+	private <I> void exploreResource(I serializationArtefact, CompilationUnitResource virtualModelResource) {
 
 		if (serializationArtefact == null) {
 			return;
@@ -398,70 +415,77 @@ public class VirtualModelResourceFactory
 		}
 	}
 
-	private static class VirtualModelInfo {
+	/*private static class VirtualModelInfo {
 		public String uri;
 		public String version;
 		public String name;
-		public String modelVersion;
+		// public String modelVersion;
 		public String requiredModelSlotList;
 		public String virtualModelClassName;
-
+	
 		VirtualModelInfo() {
 		}
-
-		VirtualModelInfo(String uri, String version, String name, String modelVersion, String requiredModelSlotList,
+	
+		VirtualModelInfo(String uri, String version, String name, String requiredModelSlotList,
 				String virtualModelClassName) {
 			super();
 			this.uri = uri;
 			this.version = version;
 			this.name = name;
-			this.modelVersion = modelVersion;
+			// this.modelVersion = modelVersion;
 			this.requiredModelSlotList = requiredModelSlotList;
 			this.virtualModelClassName = virtualModelClassName;
 		}
 	}
-
-	private static <I> VirtualModelInfo findVirtualModelInfo(VirtualModelResource resource, FlexoResourceCenter<I> resourceCenter) {
-
+	
+	private static <I> VirtualModelInfo findVirtualModelInfo(CompilationUnitResource resource, FlexoResourceCenter<I> resourceCenter) {
+	
 		if (resourceCenter instanceof FlexoProject) {
 			resourceCenter = ((FlexoProject<I>) resourceCenter).getDelegateResourceCenter();
 		}
-
+	
 		if (resourceCenter instanceof FileSystemBasedResourceCenter) {
 			FileSystemMetaDataManager metaDataManager = ((FileSystemBasedResourceCenter) resourceCenter).getMetaDataManager();
 			File file = (File) resource.getIODelegate().getSerializationArtefact();
+	
+			System.out.println("Je cherche les metadonnees de " + file);
+			System.out.println("file.lastModified()=" + file.lastModified());
+			System.out.println("metaDataManager.metaDataLastModified(file)=" + metaDataManager.metaDataLastModified(file));
+	
 			if (file.lastModified() < metaDataManager.metaDataLastModified(file)) {
 				// OK, in this case the metadata file is there and more recent than .fml.xml file
 				// Attempt to retrieve metadata from cache
 				String uri = metaDataManager.getProperty("uri", file);
 				String name = metaDataManager.getProperty("name", file);
 				String version = metaDataManager.getProperty("version", file);
-				String modelVersion = metaDataManager.getProperty("modelVersion", file);
+				// String modelVersion = metaDataManager.getProperty("modelVersion", file);
 				String requiredModelSlotList = metaDataManager.getProperty("requiredModelSlotList", file);
 				String virtualModelClassName = metaDataManager.getProperty("virtualModelClassName", file);
-				if (uri != null && name != null && version != null && modelVersion != null && requiredModelSlotList != null) {
+				if (uri != null && name != null && version != null && requiredModelSlotList != null) {
 					// Metadata are present, take it from cache
-					return new VirtualModelInfo(uri, version, name, modelVersion, requiredModelSlotList, virtualModelClassName);
+					return new VirtualModelInfo(uri, version, name, requiredModelSlotList, virtualModelClassName);
 				}
+				System.out.println("prout");
+				System.exit(-1);
 			}
 			else {
 				// No way, metadata are either not present or older than file version, we should parse XML file, continuing...
 			}
 		}
-
+	
 		VirtualModelInfo returned = new VirtualModelInfo();
 		XMLRootElementInfo xmlRootElementInfo = resourceCenter
 				.getXMLRootElementInfo((I) resource.getIODelegate().getSerializationArtefact(), true, "UseModelSlotDeclaration");
 		if (xmlRootElementInfo == null) {
 			return null;
 		}
-
+	
 		returned.uri = xmlRootElementInfo.getAttribute("uri");
 		returned.name = xmlRootElementInfo.getAttribute("name");
 		returned.version = xmlRootElementInfo.getAttribute("version");
-		returned.modelVersion = xmlRootElementInfo.getAttribute("modelVersion");
+		// returned.modelVersion = xmlRootElementInfo.getAttribute("modelVersion");
 		returned.virtualModelClassName = xmlRootElementInfo.getAttribute("virtualModelClass");
-
+	
 		if (StringUtils.isEmpty(returned.name)) {
 			if (StringUtils.isNotEmpty(returned.uri)) {
 				if (returned.uri.indexOf("/") > -1) {
@@ -475,32 +499,32 @@ public class VirtualModelResourceFactory
 				}
 			}
 		}
-
+	
 		String requiredModelSlotList = "";
 		boolean isFirst = true;
 		for (XMLElementInfo elInfo : xmlRootElementInfo.getElements()) {
 			requiredModelSlotList = requiredModelSlotList + (isFirst ? "" : ",") + elInfo.getAttribute("modelSlotClass");
 			isFirst = false;
 		}
-
+	
 		returned.requiredModelSlotList = requiredModelSlotList;
-
+	
 		if (resourceCenter instanceof FileSystemBasedResourceCenter) {
 			// Save metadata !!!
 			FileSystemMetaDataManager metaDataManager = ((FileSystemBasedResourceCenter) resourceCenter).getMetaDataManager();
 			File file = (File) resource.getIODelegate().getSerializationArtefact();
-
+	
 			metaDataManager.setProperty("uri", returned.uri, file, false);
 			metaDataManager.setProperty("name", returned.name, file, false);
 			metaDataManager.setProperty("version", returned.version, file, false);
-			metaDataManager.setProperty("modelVersion", returned.modelVersion, file, false);
+			// metaDataManager.setProperty("modelVersion", returned.modelVersion, file, false);
 			metaDataManager.setProperty("requiredModelSlotList", returned.requiredModelSlotList, file, false);
 			metaDataManager.setProperty("virtualModelClassName", returned.virtualModelClassName, file, false);
-
+	
 			metaDataManager.saveMetaDataProperties(file);
 		}
-
+	
 		return returned;
-	}
+	}*/
 
 }

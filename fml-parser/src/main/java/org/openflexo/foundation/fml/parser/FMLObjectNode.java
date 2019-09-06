@@ -49,6 +49,7 @@ import org.openflexo.connie.DataBinding.BindingDefinitionType;
 import org.openflexo.connie.type.TypeUtils;
 import org.openflexo.foundation.fml.AbstractProperty;
 import org.openflexo.foundation.fml.FMLCompilationUnit;
+import org.openflexo.foundation.fml.FMLMetaData;
 import org.openflexo.foundation.fml.FMLModelFactory;
 import org.openflexo.foundation.fml.FMLObject;
 import org.openflexo.foundation.fml.FMLPrettyPrintDelegate;
@@ -66,6 +67,7 @@ import org.openflexo.foundation.fml.parser.fmlnodes.AbstractPropertyNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.FlexoConceptNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.JavaImportNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.JavaRoleNode;
+import org.openflexo.foundation.fml.parser.fmlnodes.MetaDataNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.PrimitiveRoleNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.VirtualModelNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.AssignationActionNode;
@@ -95,8 +97,8 @@ import org.openflexo.toolbox.ChainedCollection;
  * @author sylvain
  * 
  */
-public abstract class FMLObjectNode<N extends Node, T extends FMLPrettyPrintable, A extends FMLSemanticsAnalyzer>
-		extends P2PPNode<N, T> implements FMLPrettyPrintDelegate<T> {
+public abstract class FMLObjectNode<N extends Node, T extends FMLPrettyPrintable, A extends FMLSemanticsAnalyzer> extends P2PPNode<N, T>
+		implements FMLPrettyPrintDelegate<T> {
 
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(FMLObjectNode.class.getPackage().getName());
@@ -205,6 +207,9 @@ public abstract class FMLObjectNode<N extends Node, T extends FMLPrettyPrintable
 		}
 		if (object instanceof FlexoConcept) {
 			return (P2PPNode<?, C>) new FlexoConceptNode((FlexoConcept) object, getAnalyser());
+		}
+		if (object instanceof FMLMetaData) {
+			return (P2PPNode<?, C>) new MetaDataNode((FMLMetaData) object, getAnalyser());
 		}
 		if (object instanceof PrimitiveRole) {
 			return (P2PPNode<?, C>) new PrimitiveRoleNode((PrimitiveRole) object, getAnalyser());

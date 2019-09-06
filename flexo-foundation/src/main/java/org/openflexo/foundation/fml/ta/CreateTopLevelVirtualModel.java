@@ -43,11 +43,12 @@ import java.lang.reflect.Type;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.FlexoException;
+import org.openflexo.foundation.fml.FMLCompilationUnit;
 import org.openflexo.foundation.fml.FMLTechnologyAdapter;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.editionaction.AbstractCreateResource;
-import org.openflexo.foundation.fml.rm.VirtualModelResource;
-import org.openflexo.foundation.fml.rm.VirtualModelResourceFactory;
+import org.openflexo.foundation.fml.rm.CompilationUnitResource;
+import org.openflexo.foundation.fml.rm.CompilationUnitResourceFactory;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
 import org.openflexo.foundation.resource.ResourceLoadingCancelledException;
 import org.openflexo.pamela.annotations.Getter;
@@ -62,7 +63,7 @@ import org.openflexo.pamela.exceptions.ModelDefinitionException;
 @ModelEntity
 @ImplementationClass(CreateTopLevelVirtualModel.CreateTopLevelVirtualModelImpl.class)
 @XMLElement
-public interface CreateTopLevelVirtualModel extends AbstractCreateResource<FMLModelSlot, VirtualModel, FMLTechnologyAdapter> {
+public interface CreateTopLevelVirtualModel extends AbstractCreateResource<FMLModelSlot, FMLCompilationUnit, FMLTechnologyAdapter> {
 
 	@PropertyIdentifier(type = String.class)
 	public static final String PARENT_VIRTUAL_MODEL_TYPE_URI_KEY = "parentVirtualModelTypeURI";
@@ -76,9 +77,9 @@ public interface CreateTopLevelVirtualModel extends AbstractCreateResource<FMLMo
 	@Setter(PARENT_VIRTUAL_MODEL_TYPE_URI_KEY)
 	public void _setParentVirtualModelTypeURI(String virtualModelTypeURI);
 
-	public VirtualModelResource getParentVirtualModelType();
+	public CompilationUnitResource getParentVirtualModelType();
 
-	public void setParentVirtualModelType(VirtualModelResource virtualModelType);
+	public void setParentVirtualModelType(CompilationUnitResource virtualModelType);
 
 	@Getter(value = FORCE_EXECUTE_CONFIRMATION_PANEL_KEY, defaultValue = "false")
 	@XMLAttribute
@@ -87,12 +88,12 @@ public interface CreateTopLevelVirtualModel extends AbstractCreateResource<FMLMo
 	@Setter(FORCE_EXECUTE_CONFIRMATION_PANEL_KEY)
 	public void setForceExecuteConfirmationPanel(boolean forceExecuteConfirmationPanel);
 
-	public static abstract class CreateTopLevelVirtualModelImpl
-			extends AbstractCreateResourceImpl<FMLModelSlot, VirtualModel, FMLTechnologyAdapter> implements CreateTopLevelVirtualModel {
+	public static abstract class CreateTopLevelVirtualModelImpl extends
+			AbstractCreateResourceImpl<FMLModelSlot, FMLCompilationUnit, FMLTechnologyAdapter> implements CreateTopLevelVirtualModel {
 
 		private static final Logger logger = Logger.getLogger(CreateTopLevelVirtualModel.class.getPackage().getName());
 
-		private VirtualModelResource parentVirtualModelType;
+		private CompilationUnitResource parentVirtualModelType;
 		private String parentVirtualModelTypeURI;
 
 		@Override
@@ -111,13 +112,12 @@ public interface CreateTopLevelVirtualModel extends AbstractCreateResource<FMLMo
 		private boolean isComputingParentVirtualModelType = false;
 
 		@Override
-		public VirtualModelResource getParentVirtualModelType() {
+		public CompilationUnitResource getParentVirtualModelType() {
 
 			if (!isComputingParentVirtualModelType && parentVirtualModelType == null && parentVirtualModelTypeURI != null) {
 				isComputingParentVirtualModelType = true;
 				try {
-					parentVirtualModelType = (VirtualModelResource) getVirtualModelLibrary().getVirtualModel(parentVirtualModelTypeURI)
-							.getResource();
+					parentVirtualModelType = getVirtualModelLibrary().getVirtualModel(parentVirtualModelTypeURI).getResource();
 				} catch (FileNotFoundException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -135,9 +135,9 @@ public interface CreateTopLevelVirtualModel extends AbstractCreateResource<FMLMo
 		}
 
 		@Override
-		public void setParentVirtualModelType(VirtualModelResource parentVirtualModelType) {
+		public void setParentVirtualModelType(CompilationUnitResource parentVirtualModelType) {
 			if (parentVirtualModelType != this.parentVirtualModelType) {
-				VirtualModelResource oldValue = this.parentVirtualModelType;
+				CompilationUnitResource oldValue = this.parentVirtualModelType;
 				this.parentVirtualModelType = parentVirtualModelType;
 				getPropertyChangeSupport().firePropertyChange("parentVirtualModelType", oldValue, oldValue);
 			}
@@ -149,26 +149,27 @@ public interface CreateTopLevelVirtualModel extends AbstractCreateResource<FMLMo
 		}
 
 		@Override
-		public VirtualModel execute(RunTimeEvaluationContext evaluationContext) throws FlexoException {
+		public FMLCompilationUnit execute(RunTimeEvaluationContext evaluationContext) throws FlexoException {
 
 			FMLTechnologyAdapter fmlTA = getServiceManager().getTechnologyAdapterService().getTechnologyAdapter(FMLTechnologyAdapter.class);
 
-			VirtualModelResource newVirtualModelResource;
+			CompilationUnitResource newVirtualModelResource;
 			try {
-				newVirtualModelResource = createResource(fmlTA, VirtualModelResourceFactory.class, evaluationContext,
-						VirtualModelResourceFactory.FML_SUFFIX, true);
+				newVirtualModelResource = createResource(fmlTA, CompilationUnitResourceFactory.class, evaluationContext,
+						CompilationUnitResourceFactory.FML_SUFFIX, true);
 				System.out.println("Return new virtualModel resource: " + newVirtualModelResource);
 
 				newVirtualModelResource.setIsModified();
 
-				VirtualModel virtualModel = newVirtualModelResource.getResourceData();
+				FMLCompilationUnit compilationUnit = newVirtualModelResource.getResourceData();
 
 				if (getParentVirtualModelType() != null) {
-					virtualModel.addToParentFlexoConcepts(getParentVirtualModelType().getResourceData());
+					compilationUnit.getVirtualModel()
+							.addToParentFlexoConcepts(getParentVirtualModelType().getResourceData().getVirtualModel());
 				}
 
-				System.out.println("Return " + virtualModel);
-				return virtualModel;
+				System.out.println("Return " + compilationUnit);
+				return compilationUnit;
 			} catch (ModelDefinitionException | FileNotFoundException | ResourceLoadingCancelledException e) {
 				throw new FlexoException(e);
 			}

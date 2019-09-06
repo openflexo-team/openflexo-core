@@ -56,8 +56,8 @@ import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.fml.action.CreateFlexoBehaviour;
 import org.openflexo.foundation.fml.action.CreateFlexoConcept;
 import org.openflexo.foundation.fml.action.CreatePrimitiveRole;
-import org.openflexo.foundation.fml.rm.VirtualModelResource;
-import org.openflexo.foundation.fml.rm.VirtualModelResourceFactory;
+import org.openflexo.foundation.fml.rm.CompilationUnitResource;
+import org.openflexo.foundation.fml.rm.CompilationUnitResourceFactory;
 import org.openflexo.foundation.resource.DirectoryResourceCenter;
 import org.openflexo.foundation.resource.FileSystemBasedResourceCenter;
 import org.openflexo.foundation.resource.ResourceLoadingCancelledException;
@@ -84,11 +84,11 @@ public class TestURIManagement extends OpenflexoTestCase {
 	public static final String VIRTUAL_MODEL_NAME_2 = "VMLevel2";
 
 	static VirtualModel topLevelVM;
-	static VirtualModelResource topLevelVMResource;
+	static CompilationUnitResource topLevelVMResource;
 	static VirtualModel vmLevel1;
-	static VirtualModelResource vmLevel1Resource;
+	static CompilationUnitResource vmLevel1Resource;
 	static VirtualModel vmLevel2;
-	static VirtualModelResource vmLevel2Resource;
+	static CompilationUnitResource vmLevel2Resource;
 
 	private static DirectoryResourceCenter resourceCenter;
 	private static FlexoEditor editor;
@@ -144,11 +144,11 @@ public class TestURIManagement extends OpenflexoTestCase {
 
 		FMLTechnologyAdapter fmlTechnologyAdapter = serviceManager.getTechnologyAdapterService()
 				.getTechnologyAdapter(FMLTechnologyAdapter.class);
-		VirtualModelResourceFactory factory = fmlTechnologyAdapter.getVirtualModelResourceFactory();
+		CompilationUnitResourceFactory factory = fmlTechnologyAdapter.getCompilationUnitResourceFactory();
 
-		topLevelVMResource = factory.makeTopLevelVirtualModelResource(VIEWPOINT_NAME, VIEWPOINT_URI,
+		topLevelVMResource = factory.makeTopLevelCompilationUnitResource(VIEWPOINT_NAME, VIEWPOINT_URI,
 				fmlTechnologyAdapter.getGlobalRepository(resourceCenter).getRootFolder(), true);
-		topLevelVM = topLevelVMResource.getLoadedResourceData();
+		topLevelVM = topLevelVMResource.getLoadedResourceData().getVirtualModel();
 
 		System.out.println("newViewPoint.getURI()=" + topLevelVM.getURI());
 		assertSame(topLevelVM, serviceManager.getVirtualModelLibrary().getFMLObject(topLevelVM.getURI(), false));
@@ -207,9 +207,9 @@ public class TestURIManagement extends OpenflexoTestCase {
 
 		FMLTechnologyAdapter fmlTechnologyAdapter = serviceManager.getTechnologyAdapterService()
 				.getTechnologyAdapter(FMLTechnologyAdapter.class);
-		VirtualModelResourceFactory factory = fmlTechnologyAdapter.getVirtualModelResourceFactory();
-		vmLevel1Resource = factory.makeContainedVirtualModelResource(VIRTUAL_MODEL_NAME, topLevelVM.getVirtualModelResource(), true);
-		vmLevel1 = vmLevel1Resource.getLoadedResourceData();
+		CompilationUnitResourceFactory factory = fmlTechnologyAdapter.getCompilationUnitResourceFactory();
+		vmLevel1Resource = factory.makeContainedCompilationUnitResource(VIRTUAL_MODEL_NAME, topLevelVM.getResource(), true);
+		vmLevel1 = vmLevel1Resource.getLoadedResourceData().getVirtualModel();
 
 		System.out.println("vmLevel1.getURI()=" + vmLevel1.getURI());
 		assertSame(vmLevel1, serviceManager.getVirtualModelLibrary().getFMLObject(vmLevel1.getURI(), false));
@@ -267,9 +267,9 @@ public class TestURIManagement extends OpenflexoTestCase {
 
 		FMLTechnologyAdapter fmlTechnologyAdapter = serviceManager.getTechnologyAdapterService()
 				.getTechnologyAdapter(FMLTechnologyAdapter.class);
-		VirtualModelResourceFactory factory = fmlTechnologyAdapter.getVirtualModelResourceFactory();
-		vmLevel2Resource = factory.makeContainedVirtualModelResource(VIRTUAL_MODEL_NAME_2, vmLevel1.getVirtualModelResource(), true);
-		vmLevel2 = vmLevel2Resource.getLoadedResourceData();
+		CompilationUnitResourceFactory factory = fmlTechnologyAdapter.getCompilationUnitResourceFactory();
+		vmLevel2Resource = factory.makeContainedCompilationUnitResource(VIRTUAL_MODEL_NAME_2, vmLevel1.getResource(), true);
+		vmLevel2 = vmLevel2Resource.getLoadedResourceData().getVirtualModel();
 
 		System.out.println("vmLevel2.getURI()=" + vmLevel2.getURI());
 		assertSame(vmLevel2, serviceManager.getVirtualModelLibrary().getFMLObject(vmLevel2.getURI(), false));
@@ -338,7 +338,7 @@ public class TestURIManagement extends OpenflexoTestCase {
 			e.printStackTrace();
 		}
 
-		VirtualModelResource retrievedVPResource = serviceManager.getVirtualModelLibrary().getVirtualModelResource(VIEWPOINT_URI);
+		CompilationUnitResource retrievedVPResource = serviceManager.getVirtualModelLibrary().getCompilationUnitResource(VIEWPOINT_URI);
 		assertNotNull(retrievedVPResource);
 
 		assertFalse(retrievedVPResource.isLoaded());

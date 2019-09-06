@@ -40,18 +40,13 @@ package org.openflexo.drm;
 
 import java.util.logging.Logger;
 
-import org.openflexo.foundation.IOFlexoException;
-import org.openflexo.foundation.InconsistentDataException;
-import org.openflexo.foundation.InvalidModelDefinitionException;
-import org.openflexo.foundation.InvalidXMLException;
 import org.openflexo.foundation.resource.FileIODelegate;
 import org.openflexo.foundation.resource.FileIODelegate.FileIODelegateImpl;
+import org.openflexo.foundation.resource.FlexoResourceCenter;
+import org.openflexo.foundation.resource.PamelaXMLSerializableResourceImpl;
 import org.openflexo.pamela.ModelContextLibrary;
 import org.openflexo.pamela.exceptions.ModelDefinitionException;
 import org.openflexo.pamela.factory.ModelFactory;
-import org.openflexo.foundation.resource.FlexoFileNotFoundException;
-import org.openflexo.foundation.resource.FlexoResourceCenter;
-import org.openflexo.foundation.resource.PamelaResourceImpl;
 
 /**
  * Default implementation for {@link ProjectDataResource}
@@ -60,7 +55,7 @@ import org.openflexo.foundation.resource.PamelaResourceImpl;
  * @author Sylvain
  * 
  */
-public abstract class DocResourceCenterResourceImpl extends PamelaResourceImpl<DocResourceCenter, DRMModelFactory>
+public abstract class DocResourceCenterResourceImpl extends PamelaXMLSerializableResourceImpl<DocResourceCenter, DRMModelFactory>
 		implements DocResourceCenterResource {
 
 	static final Logger logger = Logger.getLogger(DocResourceCenterResourceImpl.class.getPackage().getName());
@@ -93,16 +88,6 @@ public abstract class DocResourceCenterResourceImpl extends PamelaResourceImpl<D
 	@Override
 	public Class<DocResourceCenter> getResourceDataClass() {
 		return DocResourceCenter.class;
-	}
-
-	@Override
-	public DocResourceCenter loadResourceData() throws FlexoFileNotFoundException, IOFlexoException, InvalidXMLException,
-			InconsistentDataException, InvalidModelDefinitionException {
-		// TODO
-		/*DocResourceCenter returned = super.loadResourceData(progress);
-		returned.clearIsModified();
-		return returned;*/
-		return null;
 	}
 
 }

@@ -105,7 +105,7 @@ public interface FMLObjectActorReference<T extends FMLObject> extends ActorRefer
 		@Override
 		public String getVirtualModelURI() {
 			if (object != null) {
-				return object.getDeclaringVirtualModel().getURI();
+				return object.getDeclaringCompilationUnit().getURI();
 			}
 			return virtualModelURI;
 		}
@@ -145,7 +145,7 @@ public interface FMLObjectActorReference<T extends FMLObject> extends ActorRefer
 					e.printStackTrace();
 				}
 				if (virtualModel != null) {
-					object = (T) virtualModel.getObject(objectURI);
+					object = (T) virtualModel.getCompilationUnit().getObject(objectURI);
 				}
 			}
 			if (object == null) {
@@ -159,7 +159,7 @@ public interface FMLObjectActorReference<T extends FMLObject> extends ActorRefer
 		public void setModellingElement(T object) {
 			this.object = object;
 			if (object != null) {
-				virtualModelURI = object.getDeclaringVirtualModel().getURI();
+				virtualModelURI = object.getDeclaringCompilationUnit().getURI();
 				objectURI = object.getURI();
 			}
 		}

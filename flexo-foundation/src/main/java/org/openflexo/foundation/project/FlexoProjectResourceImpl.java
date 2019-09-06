@@ -45,13 +45,8 @@ import java.util.logging.Logger;
 
 import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.FlexoProject;
-import org.openflexo.foundation.IOFlexoException;
-import org.openflexo.foundation.InconsistentDataException;
-import org.openflexo.foundation.InvalidModelDefinitionException;
-import org.openflexo.foundation.InvalidXMLException;
-import org.openflexo.foundation.resource.FlexoFileNotFoundException;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
-import org.openflexo.foundation.resource.PamelaResourceImpl;
+import org.openflexo.foundation.resource.PamelaXMLSerializableResourceImpl;
 import org.openflexo.foundation.resource.ResourceLoadingCancelledException;
 import org.openflexo.foundation.task.FlexoTask;
 
@@ -62,7 +57,7 @@ import org.openflexo.foundation.task.FlexoTask;
  * @author Sylvain
  * 
  */
-public abstract class FlexoProjectResourceImpl<I> extends PamelaResourceImpl<FlexoProject<I>, FlexoProjectFactory>
+public abstract class FlexoProjectResourceImpl<I> extends PamelaXMLSerializableResourceImpl<FlexoProject<I>, FlexoProjectFactory>
 		implements FlexoProjectResource<I> {
 
 	static final Logger logger = Logger.getLogger(FlexoProjectResourceImpl.class.getPackage().getName());
@@ -116,24 +111,16 @@ public abstract class FlexoProjectResourceImpl<I> extends PamelaResourceImpl<Fle
 		FlexoProject<I> returned = super.performLoad();
 		if (returned != null) {
 			setURI(returned.getProjectURI());
+			returned.setLastUniqueID(0);
+
+			// We add the newly created project as a ResourceCenter
+			FlexoTask addResourceCenterTask = getServiceManager().resourceCenterAdded(returned);
+
+			// If resource center adding is executing in a task, we have to wait the task to be finished
+			if (addResourceCenterTask != null) {
+				getServiceManager().getTaskManager().waitTask(addResourceCenterTask);
+			}
 		}
-		return returned;
-	}
-
-	@Override
-	public FlexoProject<I> loadResourceData() throws FlexoFileNotFoundException, IOFlexoException, InvalidXMLException,
-			InconsistentDataException, InvalidModelDefinitionException {
-		FlexoProject<I> returned = super.loadResourceData();
-		returned.setLastUniqueID(0);
-
-		// We add the newly created project as a ResourceCenter
-		FlexoTask addResourceCenterTask = getServiceManager().resourceCenterAdded(returned);
-
-		// If resource center adding is executing in a task, we have to wait the task to be finished
-		if (addResourceCenterTask != null) {
-			getServiceManager().getTaskManager().waitTask(addResourceCenterTask);
-		}
-
 		return returned;
 	}
 

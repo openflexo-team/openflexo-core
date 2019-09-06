@@ -63,7 +63,7 @@ import org.fife.ui.rtextarea.Gutter;
 import org.fife.ui.rtextarea.RTextScrollPane;
 import org.fife.ui.rtextarea.SearchContext;
 import org.fife.ui.rtextarea.SearchEngine;
-import org.openflexo.foundation.fml.rm.VirtualModelResource;
+import org.openflexo.foundation.fml.rm.CompilationUnitResource;
 import org.openflexo.icon.IconLibrary;
 
 /**
@@ -88,7 +88,7 @@ public class FMLEditor extends JPanel {
 	private JCheckBox matchCaseCB;
 	private TextFinder textFinder;
 
-	public FMLEditor(VirtualModelResource fmlResource) {
+	public FMLEditor(CompilationUnitResource fmlResource) {
 		super(new BorderLayout());
 
 		textArea = new RSyntaxTextArea();

@@ -51,7 +51,7 @@ import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.VirtualModelInstanceType;
 import org.openflexo.foundation.fml.editionaction.AbstractFetchRequest;
-import org.openflexo.foundation.fml.rm.VirtualModelResource;
+import org.openflexo.foundation.fml.rm.CompilationUnitResource;
 import org.openflexo.foundation.fml.rt.FMLRTModelSlot;
 import org.openflexo.foundation.fml.rt.FMLRTTechnologyAdapter;
 import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstance;
@@ -104,9 +104,9 @@ public interface AbstractSelectVirtualModelInstance<VMI extends VirtualModelInst
 	@Setter(VIRTUAL_MODEL_TYPE_URI_KEY)
 	public void _setVirtualModelTypeURI(String virtualModelTypeURI);
 
-	public VirtualModelResource getVirtualModelType();
+	public CompilationUnitResource getVirtualModelType();
 
-	public void setVirtualModelType(VirtualModelResource virtualModelType);
+	public void setVirtualModelType(CompilationUnitResource virtualModelType);
 
 	public VirtualModel getAddressedVirtualModel();
 
@@ -116,7 +116,7 @@ public interface AbstractSelectVirtualModelInstance<VMI extends VirtualModelInst
 
 		protected static final Logger logger = FlexoLogger.getLogger(AbstractSelectVirtualModelInstance.class.getPackage().getName());
 
-		private VirtualModelResource virtualModelType;
+		private CompilationUnitResource virtualModelType;
 		private String virtualModelTypeURI;
 
 		@Override
@@ -180,7 +180,7 @@ public interface AbstractSelectVirtualModelInstance<VMI extends VirtualModelInst
 				if (getVirtualModelType() != null) {
 					if (getVirtualModelType().isLoaded()) {
 						return VirtualModelInstanceType.getVirtualModelInstanceType(
-								getVirtualModelType() != null ? getVirtualModelType().getLoadedResourceData() : null);
+								getVirtualModelType() != null ? getVirtualModelType().getLoadedResourceData().getVirtualModel() : null);
 					}
 					return new VirtualModelInstanceType(_getVirtualModelTypeURI(),
 							getTechnologyAdapter().getVirtualModelInstanceTypeFactory());
@@ -208,11 +208,11 @@ public interface AbstractSelectVirtualModelInstance<VMI extends VirtualModelInst
 		}
 
 		@Override
-		public VirtualModelResource getVirtualModelType() {
+		public CompilationUnitResource getVirtualModelType() {
 			if (virtualModelType == null && virtualModelTypeURI != null && getAddressedVirtualModel() != null) {
 				VirtualModel vm = getAddressedVirtualModel().getVirtualModelNamed(virtualModelTypeURI);
 				if (vm != null) {
-					virtualModelType = (VirtualModelResource) vm.getResource();
+					virtualModelType = vm.getResource();
 				}
 				/*else {
 					logger.warning("?????????????????? je trouve pas " + virtualModelTypeURI);
@@ -235,9 +235,9 @@ public interface AbstractSelectVirtualModelInstance<VMI extends VirtualModelInst
 		}
 
 		@Override
-		public void setVirtualModelType(VirtualModelResource virtualModelType) {
+		public void setVirtualModelType(CompilationUnitResource virtualModelType) {
 			if (virtualModelType != this.virtualModelType) {
-				VirtualModelResource oldValue = this.virtualModelType;
+				CompilationUnitResource oldValue = this.virtualModelType;
 				this.virtualModelType = virtualModelType;
 				getPropertyChangeSupport().firePropertyChange("virtualModelType", oldValue, virtualModelType);
 			}
@@ -264,7 +264,8 @@ public interface AbstractSelectVirtualModelInstance<VMI extends VirtualModelInst
 			VirtualModelInstance<?, ?> container = getContainer(evaluationContext);
 			if (container != null) {
 				try {
-					return filterWithConditions(container.getVirtualModelInstancesForVirtualModel(getVirtualModelType().getResourceData()),
+					return filterWithConditions(
+							container.getVirtualModelInstancesForVirtualModel(getVirtualModelType().getResourceData().getVirtualModel()),
 							evaluationContext);
 				} catch (FileNotFoundException e) {
 					e.printStackTrace();

@@ -54,6 +54,7 @@ import org.openflexo.toolbox.StringUtils;
  * @author sylvain
  *
  */
+@Deprecated
 public class FMLRepresentationContext {
 
 	private static final Logger logger = Logger.getLogger(FMLRepresentationContext.class.getPackage().getName());
@@ -96,10 +97,10 @@ public class FMLRepresentationContext {
 		if (concept == null) {
 			return;
 		}
-		VirtualModel virtualModel = concept.getDeclaringVirtualModel();
+		/*VirtualModel virtualModel = concept.getDeclaringCompilationUnit();
 		if (!fmlImports.contains(virtualModel)) {
 			fmlImports.add(virtualModel);
-		}
+		}*/
 	}
 
 	private void ensureReferenceInImport(Class<?> usedClass) {

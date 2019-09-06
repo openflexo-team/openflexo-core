@@ -43,7 +43,7 @@ import java.util.logging.Logger;
 import org.openflexo.components.widget.FIBFlexoObjectSelector;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.fml.VirtualModelLibrary;
-import org.openflexo.foundation.fml.rm.VirtualModelResource;
+import org.openflexo.foundation.fml.rm.CompilationUnitResource;
 import org.openflexo.rm.Resource;
 import org.openflexo.rm.ResourceLocator;
 
@@ -54,13 +54,13 @@ import org.openflexo.rm.ResourceLocator;
  * 
  */
 @SuppressWarnings("serial")
-public class FIBVirtualModelSelector extends FIBFlexoObjectSelector<VirtualModelResource> {
+public class FIBVirtualModelSelector extends FIBFlexoObjectSelector<CompilationUnitResource> {
 
 	static final Logger logger = Logger.getLogger(FIBVirtualModelSelector.class.getPackage().getName());
 
 	public static Resource FIB_FILE = ResourceLocator.locateResource("Fib/VirtualModelSelector.fib");
 
-	public FIBVirtualModelSelector(VirtualModelResource editedObject) {
+	public FIBVirtualModelSelector(CompilationUnitResource editedObject) {
 		super(editedObject);
 	}
 
@@ -76,12 +76,12 @@ public class FIBVirtualModelSelector extends FIBFlexoObjectSelector<VirtualModel
 	}
 
 	@Override
-	public Class<VirtualModelResource> getRepresentedType() {
-		return VirtualModelResource.class;
+	public Class<CompilationUnitResource> getRepresentedType() {
+		return CompilationUnitResource.class;
 	}
 
 	@Override
-	public String renderedString(VirtualModelResource editedObject) {
+	public String renderedString(CompilationUnitResource editedObject) {
 		if (editedObject != null) {
 			return editedObject.getDisplayName();
 		}
@@ -99,14 +99,14 @@ public class FIBVirtualModelSelector extends FIBFlexoObjectSelector<VirtualModel
 		this.virtualModelLibrary = virtualModelLibrary;
 	}
 
-	private VirtualModelResource containedVirtualModel;
+	private CompilationUnitResource containedVirtualModel;
 
-	public VirtualModelResource getContainerVirtualModel() {
+	public CompilationUnitResource getContainerVirtualModel() {
 		return containedVirtualModel;
 	}
 
 	@CustomComponentParameter(name = "containerVirtualModel", type = CustomComponentParameter.Type.OPTIONAL)
-	public void setContainerVirtualModel(VirtualModelResource viewPoint) {
+	public void setContainerVirtualModel(CompilationUnitResource viewPoint) {
 		if (this.containedVirtualModel != viewPoint) {
 			FlexoObject oldRoot = getRootObject();
 			this.containedVirtualModel = viewPoint;

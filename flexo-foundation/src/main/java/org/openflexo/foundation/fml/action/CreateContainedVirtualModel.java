@@ -50,8 +50,8 @@ import org.openflexo.foundation.action.TechnologySpecificFlexoAction;
 import org.openflexo.foundation.fml.FMLObject;
 import org.openflexo.foundation.fml.FMLTechnologyAdapter;
 import org.openflexo.foundation.fml.VirtualModel;
-import org.openflexo.foundation.fml.rm.VirtualModelResource;
-import org.openflexo.foundation.fml.rm.VirtualModelResourceFactory;
+import org.openflexo.foundation.fml.rm.CompilationUnitResource;
+import org.openflexo.foundation.fml.rm.CompilationUnitResourceFactory;
 import org.openflexo.foundation.resource.SaveResourceException;
 import org.openflexo.foundation.task.Progress;
 import org.openflexo.pamela.exceptions.ModelDefinitionException;
@@ -123,12 +123,12 @@ public class CreateContainedVirtualModel extends AbstractCreateVirtualModel<Crea
 
 		FMLTechnologyAdapter fmlTechnologyAdapter = getServiceManager().getTechnologyAdapterService()
 				.getTechnologyAdapter(FMLTechnologyAdapter.class);
-		VirtualModelResourceFactory factory = fmlTechnologyAdapter.getVirtualModelResourceFactory();
+		CompilationUnitResourceFactory factory = fmlTechnologyAdapter.getCompilationUnitResourceFactory();
 
 		try {
-			VirtualModelResource vmResource = factory.makeContainedVirtualModelResource(getNewVirtualModelName(),
-					(VirtualModelResource) getFocusedObject().getResource(), null, true);
-			newVirtualModel = vmResource.getLoadedResourceData();
+			CompilationUnitResource vmResource = factory.makeContainedCompilationUnitResource(getNewVirtualModelName(),
+					getFocusedObject().getResource(), null, true);
+			newVirtualModel = vmResource.getLoadedResourceData().getVirtualModel();
 			newVirtualModel.setDescription(newVirtualModelDescription);
 		} catch (SaveResourceException e) {
 			throw new SaveResourceException(null);
@@ -196,7 +196,7 @@ public class CreateContainedVirtualModel extends AbstractCreateVirtualModel<Crea
 		if (!baseURI.endsWith("/")) {
 			baseURI = baseURI + "/";
 		}
-		return baseURI + getNewVirtualModelName() + VirtualModelResourceFactory.FML_SUFFIX;
+		return baseURI + getNewVirtualModelName() + CompilationUnitResourceFactory.FML_SUFFIX;
 	}
 
 	public String getNewVirtualModelDescription() {

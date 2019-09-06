@@ -50,7 +50,7 @@ public class CLIUtils {
 			return ((VirtualModel) object).getName() + ".fml";
 		}
 		else if (object instanceof FlexoConcept) {
-			return ((FlexoConcept) object).getDeclaringVirtualModel().getName() + ".fml/" + ((FlexoConcept) object).getName();
+			return ((FlexoConcept) object).getDeclaringCompilationUnit().getName() + ".fml/" + ((FlexoConcept) object).getName();
 		}
 		else if (object instanceof FlexoConceptInstance) {
 			return ((FlexoConceptInstance) object).getUserFriendlyIdentifier();
@@ -72,7 +72,7 @@ public class CLIUtils {
 			return ((VirtualModel) object).getName() + ".fml";
 		}
 		else if (object instanceof FlexoConcept) {
-			return ((FlexoConcept) object).getDeclaringVirtualModel().getName() + ".fml/" + ((FlexoConcept) object).getName();
+			return ((FlexoConcept) object).getDeclaringCompilationUnit().getName() + ".fml/" + ((FlexoConcept) object).getName();
 		}
 		else if (object instanceof VirtualModelInstance) {
 			VirtualModelInstance<?, ?> vmi = (VirtualModelInstance<?, ?>) object;

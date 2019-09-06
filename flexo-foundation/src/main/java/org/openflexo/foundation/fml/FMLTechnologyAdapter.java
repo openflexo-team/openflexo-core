@@ -48,8 +48,8 @@ import org.openflexo.foundation.fml.FlexoEnumType.FlexoEnumTypeFactory;
 import org.openflexo.foundation.fml.VirtualModelInstanceType.DefaultVirtualModelInstanceTypeFactory;
 import org.openflexo.foundation.fml.annotations.DeclareModelSlots;
 import org.openflexo.foundation.fml.annotations.DeclareResourceFactories;
-import org.openflexo.foundation.fml.rm.VirtualModelResource;
-import org.openflexo.foundation.fml.rm.VirtualModelResourceFactory;
+import org.openflexo.foundation.fml.rm.CompilationUnitResource;
+import org.openflexo.foundation.fml.rm.CompilationUnitResourceFactory;
 import org.openflexo.foundation.fml.ta.FMLModelSlot;
 import org.openflexo.foundation.fml.ta.FMLTechnologyContextManager;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
@@ -68,7 +68,7 @@ import org.openflexo.foundation.technologyadapter.TechnologyAdapterService;
  * 
  */
 @DeclareModelSlots({ FMLModelSlot.class })
-@DeclareResourceFactories({ VirtualModelResourceFactory.class })
+@DeclareResourceFactories({ CompilationUnitResourceFactory.class })
 public class FMLTechnologyAdapter extends TechnologyAdapter<FMLTechnologyAdapter> {
 	public FMLTechnologyAdapter() throws TechnologyAdapterInitializationException {
 	}
@@ -76,7 +76,7 @@ public class FMLTechnologyAdapter extends TechnologyAdapter<FMLTechnologyAdapter
 	@Override
 	protected void initResourceFactories() {
 		super.initResourceFactories();
-		getAvailableResourceTypes().add(VirtualModelResource.class);
+		getAvailableResourceTypes().add(CompilationUnitResource.class);
 	}
 
 	@Override
@@ -155,11 +155,11 @@ public class FMLTechnologyAdapter extends TechnologyAdapter<FMLTechnologyAdapter
 		return this.getServiceManager().getVirtualModelLibrary();
 	}
 
-	public <I> VirtualModelRepository<I> getVirtualModelRepository(FlexoResourceCenter<I> resourceCenter) {
-		VirtualModelRepository<I> returned = resourceCenter.retrieveRepository(VirtualModelRepository.class, this);
+	public <I> CompilationUnitRepository<I> getVirtualModelRepository(FlexoResourceCenter<I> resourceCenter) {
+		CompilationUnitRepository<I> returned = resourceCenter.retrieveRepository(CompilationUnitRepository.class, this);
 		if (returned == null) {
-			returned = VirtualModelRepository.instanciateNewRepository(this, resourceCenter);
-			resourceCenter.registerRepository(returned, VirtualModelRepository.class, this);
+			returned = CompilationUnitRepository.instanciateNewRepository(this, resourceCenter);
+			resourceCenter.registerRepository(returned, CompilationUnitRepository.class, this);
 		}
 		return returned;
 	}
@@ -169,13 +169,13 @@ public class FMLTechnologyAdapter extends TechnologyAdapter<FMLTechnologyAdapter
 		return "FML";
 	}
 
-	public VirtualModelResourceFactory getVirtualModelResourceFactory() {
-		return getResourceFactory(VirtualModelResourceFactory.class);
+	public CompilationUnitResourceFactory getCompilationUnitResourceFactory() {
+		return getResourceFactory(CompilationUnitResourceFactory.class);
 	}
 
 	@NotificationUnsafe
-	public List<VirtualModelRepository<?>> getVirtualModelRepositories() {
-		List<VirtualModelRepository<?>> returned = new ArrayList<>();
+	public List<CompilationUnitRepository<?>> getVirtualModelRepositories() {
+		List<CompilationUnitRepository<?>> returned = new ArrayList<>();
 		for (FlexoResourceCenter<?> rc : getServiceManager().getResourceCenterService().getResourceCenters()) {
 			if (!rc.isDeleted()) {
 				returned.add(getVirtualModelRepository(rc));
@@ -203,7 +203,7 @@ public class FMLTechnologyAdapter extends TechnologyAdapter<FMLTechnologyAdapter
 		}
 		// This allows to ignore all contained VirtualModel, that will be explored from their container resource
 		if (resourceCenter.isDirectory(contents)) {
-			if (FlexoResourceCenter.isContainedInDirectoryWithSuffix(resourceCenter, contents, VirtualModelResourceFactory.FML_SUFFIX)) {
+			if (FlexoResourceCenter.isContainedInDirectoryWithSuffix(resourceCenter, contents, CompilationUnitResourceFactory.FML_SUFFIX)) {
 				return true;
 			}
 		}
@@ -213,7 +213,7 @@ public class FMLTechnologyAdapter extends TechnologyAdapter<FMLTechnologyAdapter
 	@Override
 	protected <I> boolean isFolderIgnorable(FlexoResourceCenter<I> resourceCenter, I contents) {
 		if (resourceCenter.isDirectory(contents)) {
-			if (FlexoResourceCenter.isContainedInDirectoryWithSuffix(resourceCenter, contents, VirtualModelResourceFactory.FML_SUFFIX)) {
+			if (FlexoResourceCenter.isContainedInDirectoryWithSuffix(resourceCenter, contents, CompilationUnitResourceFactory.FML_SUFFIX)) {
 				return true;
 			}
 		}

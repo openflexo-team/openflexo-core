@@ -140,12 +140,12 @@ public class AddParentFlexoConceptWizard extends FlexoActionWizard<AddParentFlex
 				return ((VirtualModel) getAction().getFocusedObject()).getContainerVirtualModel();
 			}
 			else {
-				return getAction().getFocusedObject().getDeclaringVirtualModel();
+				return getAction().getFocusedObject().getDeclaringCompilationUnit();
 			}
 		}
 
 		public VirtualModelLibrary getVirtualModelLibrary() {
-			return getAction().getFocusedObject().getDeclaringVirtualModel().getVirtualModelLibrary();
+			return getAction().getFocusedObject().getDeclaringCompilationUnit().getVirtualModelLibrary();
 		}
 
 		@Override

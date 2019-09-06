@@ -83,7 +83,7 @@ public class FMLCompilationUnitNode extends FMLObjectNode<AFmlCompilationUnit, F
 		append(childrenContents("", "", () -> getModelObject().getJavaImports(), LINE_SEPARATOR, LINE_SEPARATOR + LINE_SEPARATOR,
 				Indentation.DoNotIndent, JavaImportDeclaration.class));
 
-		append(childContents("", () -> getModelObject().getVirtualModel(), LINE_SEPARATOR, Indentation.DoNotIndent));
+		append(childContents("", () -> getModelObject().getVirtualModel(), "", Indentation.DoNotIndent));
 
 		/*appendToChildrenPrettyPrintContents("", "", () -> getModelObject().getJavaImports(), LINE_SEPARATOR,
 				LINE_SEPARATOR + LINE_SEPARATOR, Indentation.DoNotIndent, JavaImportDeclaration.class);

@@ -106,7 +106,7 @@ public abstract class FMLRTVirtualModelInstanceResourceImpl
 	public List<FMLRTVirtualModelInstanceResource> getVirtualModelInstanceResources(VirtualModel virtualModel) {
 		List<FMLRTVirtualModelInstanceResource> returned = new ArrayList<>();
 		for (FMLRTVirtualModelInstanceResource vmiRes : getVirtualModelInstanceResources()) {
-			if (virtualModel.isAssignableFrom(vmiRes.getVirtualModelResource().getVirtualModel())) {
+			if (virtualModel.isAssignableFrom(vmiRes.getVirtualModelResource().getCompilationUnit().getVirtualModel())) {
 				returned.add(vmiRes);
 			}
 		}
@@ -135,15 +135,15 @@ public abstract class FMLRTVirtualModelInstanceResourceImpl
 		return null;
 	}
 
-	@Override
+	/*@Override
 	public FMLRTVirtualModelInstance getModelData() {
 		return getVirtualModelInstance();
-	}
+	}*/
 
-	@Override
+	/*@Override
 	public FMLRTVirtualModelInstance getModel() {
 		return getVirtualModelInstance();
-	}
+	}*/
 
 	@Override
 	public String computeDefaultURI() {

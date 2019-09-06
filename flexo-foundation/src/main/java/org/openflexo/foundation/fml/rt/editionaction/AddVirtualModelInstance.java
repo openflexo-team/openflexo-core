@@ -52,7 +52,7 @@ import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.VirtualModelInstanceType;
 import org.openflexo.foundation.fml.annotations.FML;
-import org.openflexo.foundation.fml.rm.VirtualModelResource;
+import org.openflexo.foundation.fml.rm.CompilationUnitResource;
 import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
 import org.openflexo.foundation.fml.rt.action.CreateBasicVirtualModelInstance;
@@ -101,16 +101,16 @@ public interface AddVirtualModelInstance extends AbstractAddFlexoConceptInstance
 	@Setter(VIRTUAL_MODEL_INSTANCE_TITLE_KEY)
 	public void setVirtualModelInstanceTitle(DataBinding<String> virtualModelInstanceTitle);
 
-	public VirtualModelResource getVirtualModelType();
+	public CompilationUnitResource getVirtualModelType();
 
-	public void setVirtualModelType(VirtualModelResource resource);
+	public void setVirtualModelType(CompilationUnitResource resource);
 
 	/**
 	 * Return type of View, when {@link #getVirtualModelInstance()} is set and valid
 	 * 
 	 * @return
 	 */
-	public VirtualModelResource getOwnerVirtualModelResource();
+	public CompilationUnitResource getOwnerVirtualModelResource();
 
 	public static abstract class AddVirtualModelInstanceImpl extends
 			AbstractAddFlexoConceptInstanceImpl<FMLRTVirtualModelInstance, FMLRTVirtualModelInstance> implements AddVirtualModelInstance {
@@ -177,20 +177,20 @@ public interface AddVirtualModelInstance extends AbstractAddFlexoConceptInstance
 		}
 
 		@Override
-		public VirtualModelResource getVirtualModelType() {
+		public CompilationUnitResource getVirtualModelType() {
 			if (getFlexoConceptType() instanceof VirtualModel) {
-				return (VirtualModelResource) ((VirtualModel) getFlexoConceptType()).getResource();
+				return ((VirtualModel) getFlexoConceptType()).getResource();
 			}
 			return null;
 		}
 
 		@Override
-		public void setVirtualModelType(VirtualModelResource resource) {
+		public void setVirtualModelType(CompilationUnitResource resource) {
 			CreationScheme oldCreationScheme = getCreationScheme();
-			VirtualModelResource oldVMType = getVirtualModelType();
+			CompilationUnitResource oldVMType = getVirtualModelType();
 			try {
 				setCreationScheme(null);
-				setFlexoConceptType(resource.getResourceData());
+				setFlexoConceptType(resource.getResourceData().getVirtualModel());
 			} catch (FileNotFoundException e) {
 				e.printStackTrace();
 			} catch (ResourceLoadingCancelledException e) {
@@ -209,11 +209,11 @@ public interface AddVirtualModelInstance extends AbstractAddFlexoConceptInstance
 		}
 
 		@Override
-		public VirtualModelResource getOwnerVirtualModelResource() {
+		public CompilationUnitResource getOwnerVirtualModelResource() {
 			if (getReceiver().isSet() && getReceiver().isValid()) {
 				Type type = getReceiver().getAnalyzedType();
 				if (type instanceof VirtualModelInstanceType) {
-					return (VirtualModelResource) ((VirtualModelInstanceType) type).getVirtualModel().getResource();
+					return ((VirtualModelInstanceType) type).getVirtualModel().getResource();
 				}
 			}
 			return null;

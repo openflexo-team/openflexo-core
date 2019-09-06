@@ -38,6 +38,7 @@
 
 package org.openflexo.foundation.fml.parser.fmlnodes;
 
+import org.openflexo.foundation.fml.FMLMetaData;
 import org.openflexo.foundation.fml.FlexoBehaviour;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoProperty;
@@ -84,6 +85,8 @@ public class VirtualModelNode extends FMLObjectNode<AModelDeclaration, VirtualMo
 		super.preparePrettyPrint(hasParsedVersion);
 
 		// @formatter:off	
+		append(childrenContents("", () -> getModelObject().getMetaData(), LINE_SEPARATOR, Indentation.DoNotIndent,
+				FMLMetaData.class));
 		append(dynamicContents(() -> getVisibilityAsString(getModelObject().getVisibility()), SPACE), getVisibilityFragment());
 		append(staticContents("","model",SPACE), getModelFragment());
 		append(dynamicContents(() -> getModelObject().getName()),getNameFragment());

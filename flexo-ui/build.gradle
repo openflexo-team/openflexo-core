@@ -1,6 +1,7 @@
 dependencies {
   // openflexo dep
   compile project(':flexo-foundation')
+  compile project(':flexo-foundation-rm')
   compile project(':flexodocresourcemanager')
   compile project(':fml-cli')
   compile connie()

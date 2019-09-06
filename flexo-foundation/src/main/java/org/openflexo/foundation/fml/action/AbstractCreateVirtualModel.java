@@ -57,7 +57,7 @@ import org.openflexo.foundation.fml.FlexoBehaviourParameter;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoConceptInstanceType;
 import org.openflexo.foundation.fml.VirtualModel;
-import org.openflexo.foundation.fml.rm.VirtualModelResource;
+import org.openflexo.foundation.fml.rm.CompilationUnitResource;
 import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstance;
 import org.openflexo.foundation.task.Progress;
 import org.openflexo.foundation.technologyadapter.FlexoMetaModelResource;
@@ -124,7 +124,7 @@ public abstract class AbstractCreateVirtualModel<A extends AbstractCreateVirtual
 		action.setTechnologyAdapter(entry.getTechnologyAdapter());
 		action.setModelSlotClass(entry.getModelSlotClass());
 		action.setMmRes(entry.getMetaModelResource());
-		action.setVmRes(entry.getVirtualModelResource());
+		action.setVmRes(entry.getCompilationUnitResource());
 		action.doAction();
 	}
 
@@ -152,7 +152,7 @@ public abstract class AbstractCreateVirtualModel<A extends AbstractCreateVirtual
 		private boolean readOnly = false;
 		private Class<? extends ModelSlot<?>> modelSlotClass;
 
-		private VirtualModelResource virtualModelResource;
+		private CompilationUnitResource compilationUnitResource;
 		private FlexoMetaModelResource<?, ?, ?> metaModelResource;
 
 		private LocalizedDelegate locales;
@@ -243,16 +243,16 @@ public abstract class AbstractCreateVirtualModel<A extends AbstractCreateVirtual
 			getPropertyChangeSupport().firePropertyChange("readOnly", null, readOnly);
 		}
 
-		public VirtualModelResource getVirtualModelResource() {
-			return virtualModelResource;
+		public CompilationUnitResource getCompilationUnitResource() {
+			return compilationUnitResource;
 		}
 
-		public void setVirtualModelResource(VirtualModelResource virtualModelResource) {
-			if ((virtualModelResource == null && this.virtualModelResource != null)
-					|| (virtualModelResource != null && !virtualModelResource.equals(this.virtualModelResource))) {
-				VirtualModelResource oldValue = this.virtualModelResource;
-				this.virtualModelResource = virtualModelResource;
-				getPropertyChangeSupport().firePropertyChange("virtualModelResource", oldValue, virtualModelResource);
+		public void setCompilationUnitResource(CompilationUnitResource compilationUnitResource) {
+			if ((compilationUnitResource == null && this.compilationUnitResource != null)
+					|| (compilationUnitResource != null && !compilationUnitResource.equals(this.compilationUnitResource))) {
+				CompilationUnitResource oldValue = this.compilationUnitResource;
+				this.compilationUnitResource = compilationUnitResource;
+				getPropertyChangeSupport().firePropertyChange("compilationUnitResource", oldValue, compilationUnitResource);
 			}
 		}
 

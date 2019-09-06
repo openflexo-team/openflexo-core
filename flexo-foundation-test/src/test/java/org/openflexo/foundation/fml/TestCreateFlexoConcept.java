@@ -59,8 +59,8 @@ import org.openflexo.foundation.fml.action.CreatePrimitiveRole;
 import org.openflexo.foundation.fml.controlgraph.ConditionalAction;
 import org.openflexo.foundation.fml.editionaction.AssignationAction;
 import org.openflexo.foundation.fml.editionaction.ExpressionAction;
-import org.openflexo.foundation.fml.rm.VirtualModelResource;
-import org.openflexo.foundation.fml.rm.VirtualModelResourceFactory;
+import org.openflexo.foundation.fml.rm.CompilationUnitResource;
+import org.openflexo.foundation.fml.rm.CompilationUnitResourceFactory;
 import org.openflexo.foundation.resource.DirectoryResourceCenter;
 import org.openflexo.foundation.resource.SaveResourceException;
 import org.openflexo.foundation.test.OpenflexoTestCase;
@@ -112,16 +112,16 @@ public class TestCreateFlexoConcept extends OpenflexoTestCase {
 
 		FMLTechnologyAdapter fmlTechnologyAdapter = serviceManager.getTechnologyAdapterService()
 				.getTechnologyAdapter(FMLTechnologyAdapter.class);
-		VirtualModelResourceFactory factory = fmlTechnologyAdapter.getVirtualModelResourceFactory();
+		CompilationUnitResourceFactory factory = fmlTechnologyAdapter.getCompilationUnitResourceFactory();
 
-		VirtualModelResource newVirtualModelResource = factory.makeTopLevelVirtualModelResource(VIEWPOINT_NAME, VIEWPOINT_URI,
+		CompilationUnitResource newVirtualModelResource = factory.makeTopLevelCompilationUnitResource(VIEWPOINT_NAME, VIEWPOINT_URI,
 				fmlTechnologyAdapter.getGlobalRepository(resourceCenter).getRootFolder(), true);
-		newViewPoint = newVirtualModelResource.getLoadedResourceData();
+		newViewPoint = newVirtualModelResource.getLoadedResourceData().getVirtualModel();
 
-		assertTrue(((VirtualModelResource) newViewPoint.getResource()).getDirectory() != null);
-		assertTrue(((VirtualModelResource) newViewPoint.getResource()).getIODelegate().exists());
+		assertTrue(newViewPoint.getResource().getDirectory() != null);
+		assertTrue(newViewPoint.getResource().getIODelegate().exists());
 
-		assertEquals(newViewPoint, newViewPoint.getDeclaringVirtualModel());
+		assertEquals(newViewPoint, newViewPoint.getDeclaringCompilationUnit());
 		assertEquals(null, newViewPoint.getContainerVirtualModel());
 		assertEquals(newViewPoint, newViewPoint.getFlexoConcept());
 		assertEquals(newViewPoint, newViewPoint.getResourceData());
@@ -138,13 +138,13 @@ public class TestCreateFlexoConcept extends OpenflexoTestCase {
 
 		FMLTechnologyAdapter fmlTechnologyAdapter = serviceManager.getTechnologyAdapterService()
 				.getTechnologyAdapter(FMLTechnologyAdapter.class);
-		VirtualModelResourceFactory factory = fmlTechnologyAdapter.getVirtualModelResourceFactory();
-		VirtualModelResource newVMResource = factory.makeContainedVirtualModelResource(VIRTUAL_MODEL_NAME,
-				newViewPoint.getVirtualModelResource(), true);
-		newVirtualModel = newVMResource.getLoadedResourceData();
+		CompilationUnitResourceFactory factory = fmlTechnologyAdapter.getCompilationUnitResourceFactory();
+		CompilationUnitResource newVMResource = factory.makeContainedCompilationUnitResource(VIRTUAL_MODEL_NAME, newViewPoint.getResource(),
+				true);
+		newVirtualModel = newVMResource.getLoadedResourceData().getVirtualModel();
 
-		assertTrue(ResourceLocator.retrieveResourceAsFile(((VirtualModelResource) newVirtualModel.getResource()).getDirectory()).exists());
-		assertTrue(((VirtualModelResource) newVirtualModel.getResource()).getIODelegate().exists());
+		assertTrue(ResourceLocator.retrieveResourceAsFile(newVirtualModel.getResource().getDirectory()).exists());
+		assertTrue(newVirtualModel.getResource().getIODelegate().exists());
 
 		assertSame(newViewPoint, newVirtualModel.getContainerVirtualModel());
 
@@ -183,11 +183,11 @@ public class TestCreateFlexoConcept extends OpenflexoTestCase {
 		assertEquals(flexoConceptA, flexoConceptA.getFlexoConcept());
 		assertEquals(newVirtualModel, flexoConceptA.getResourceData());
 
-		((VirtualModelResource) newVirtualModel.getResource()).save();
+		newVirtualModel.getResource().save();
 
 		// System.out.println("Saved: " + ((VirtualModelResource)
 		// newVirtualModel.getResource()).getFile());
-		System.out.println("Saved: " + ((VirtualModelResource) newVirtualModel.getResource()).getIODelegate().toString());
+		System.out.println("Saved: " + newVirtualModel.getResource().getIODelegate().toString());
 
 	}
 
@@ -207,9 +207,9 @@ public class TestCreateFlexoConcept extends OpenflexoTestCase {
 		System.out.println("FlexoConcept B = " + flexoConceptB);
 		assertNotNull(flexoConceptB);
 
-		((VirtualModelResource) newVirtualModel.getResource()).save();
+		newVirtualModel.getResource().save();
 
-		System.out.println("Saved: " + ((VirtualModelResource) newVirtualModel.getResource()).getIODelegate().toString());
+		System.out.println("Saved: " + newVirtualModel.getResource().getIODelegate().toString());
 
 	}
 
@@ -235,9 +235,9 @@ public class TestCreateFlexoConcept extends OpenflexoTestCase {
 		assertEquals(1, flexoConceptB.getChildFlexoConcepts().size());
 		assertEquals(flexoConceptC, flexoConceptB.getChildFlexoConcepts().get(0));
 
-		((VirtualModelResource) newVirtualModel.getResource()).save();
+		newVirtualModel.getResource().save();
 
-		System.out.println("Saved: " + ((VirtualModelResource) newVirtualModel.getResource()).getIODelegate().toString());
+		System.out.println("Saved: " + newVirtualModel.getResource().getIODelegate().toString());
 
 	}
 
@@ -264,9 +264,9 @@ public class TestCreateFlexoConcept extends OpenflexoTestCase {
 		assertEquals(flexoConceptC, flexoConceptB.getChildFlexoConcepts().get(0));
 		assertEquals(flexoConceptD, flexoConceptB.getChildFlexoConcepts().get(1));
 
-		((VirtualModelResource) newVirtualModel.getResource()).save();
+		newVirtualModel.getResource().save();
 
-		System.out.println("Saved: " + ((VirtualModelResource) newVirtualModel.getResource()).getIODelegate().toString());
+		System.out.println("Saved: " + newVirtualModel.getResource().getIODelegate().toString());
 
 	}
 
@@ -302,9 +302,9 @@ public class TestCreateFlexoConcept extends OpenflexoTestCase {
 		assertEquals(1, flexoConceptC.getChildFlexoConcepts().size());
 		assertEquals(flexoConceptE, flexoConceptC.getChildFlexoConcepts().get(0));
 
-		((VirtualModelResource) newVirtualModel.getResource()).save();
+		newVirtualModel.getResource().save();
 
-		System.out.println("Saved: " + ((VirtualModelResource) newVirtualModel.getResource()).getIODelegate().toString());
+		System.out.println("Saved: " + newVirtualModel.getResource().getIODelegate().toString());
 
 	}
 

@@ -57,7 +57,7 @@ public interface FMLPrettyPrintable extends FMLObject {
 	@PropertyIdentifier(type = FMLPrettyPrintDelegate.class)
 	public static final String PRETTY_PRINT_DELEGATE_KEY = "prettyPrintDelegate";
 
-	@Getter(value = PRETTY_PRINT_DELEGATE_KEY, ignoreType = true)
+	@Getter(value = PRETTY_PRINT_DELEGATE_KEY, ignoreType = true, ignoreForEquality = true)
 	public FMLPrettyPrintDelegate<?> getPrettyPrintDelegate();
 
 	@Setter(PRETTY_PRINT_DELEGATE_KEY)

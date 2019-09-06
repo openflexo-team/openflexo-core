@@ -54,7 +54,7 @@ import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.VirtualModelLibrary;
-import org.openflexo.foundation.fml.rm.VirtualModelResource;
+import org.openflexo.foundation.fml.rm.CompilationUnitResource;
 import org.openflexo.foundation.resource.ResourceLoadingCancelledException;
 import org.openflexo.gina.test.OpenflexoFIBTestCase;
 import org.openflexo.gina.test.SwingGraphicalContextDelegate;
@@ -104,7 +104,7 @@ public class TestFMLEditor extends OpenflexoFIBTestCase {
 		validateFIB(fibResource);
 	}*/
 
-	private static VirtualModelResource fmlResource;
+	private static CompilationUnitResource fmlResource;
 
 	@Test
 	@TestOrder(3)
@@ -115,7 +115,7 @@ public class TestFMLEditor extends OpenflexoFIBTestCase {
 		VirtualModel viewPoint = vpLib.getVirtualModel("http://openflexo.org/test/TestResourceCenter/TestViewPointA.fml");
 		assertNotNull(viewPoint);
 
-		fmlResource = (VirtualModelResource) viewPoint.getResource();
+		fmlResource = (CompilationUnitResource) viewPoint.getResource();
 		assertNotNull(fmlResource);
 
 		/*VirtualModel virtualModel = viewPoint.getVirtualModelNamed("TestVirtualModel");

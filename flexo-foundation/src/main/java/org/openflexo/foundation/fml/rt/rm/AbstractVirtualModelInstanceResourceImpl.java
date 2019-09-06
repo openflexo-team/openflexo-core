@@ -52,7 +52,7 @@ import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.rt.AbstractVirtualModelInstanceModelFactory;
 import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.foundation.resource.FlexoFileNotFoundException;
-import org.openflexo.foundation.resource.PamelaResourceImpl;
+import org.openflexo.foundation.resource.PamelaXMLSerializableResourceImpl;
 import org.openflexo.foundation.resource.ResourceLoadingCancelledException;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 
@@ -64,7 +64,7 @@ import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
  * 
  */
 public abstract class AbstractVirtualModelInstanceResourceImpl<VMI extends VirtualModelInstance<VMI, TA>, TA extends TechnologyAdapter<TA>>
-		extends PamelaResourceImpl<VMI, AbstractVirtualModelInstanceModelFactory<?>>
+		extends PamelaXMLSerializableResourceImpl<VMI, AbstractVirtualModelInstanceModelFactory<?>>
 		implements AbstractVirtualModelInstanceResource<VMI, TA> {
 
 	static final Logger logger = Logger.getLogger(AbstractVirtualModelInstanceResourceImpl.class.getPackage().getName());
@@ -72,7 +72,7 @@ public abstract class AbstractVirtualModelInstanceResourceImpl<VMI extends Virtu
 	@Override
 	public VirtualModel getVirtualModel() {
 		if (getVirtualModelResource() != null) {
-			return getVirtualModelResource().getVirtualModel();
+			return getVirtualModelResource().getCompilationUnit().getVirtualModel();
 		}
 		return null;
 	}
@@ -106,7 +106,7 @@ public abstract class AbstractVirtualModelInstanceResourceImpl<VMI extends Virtu
 		VMI returned = super.loadResourceData();
 
 		if (getVirtualModelResource() != null) {
-			returned.setVirtualModel(getVirtualModelResource().getVirtualModel());
+			returned.setVirtualModel(getVirtualModelResource().getCompilationUnit().getVirtualModel());
 		}
 
 		if (getContainer() != null && getContainer().getVirtualModelInstance() != null) {

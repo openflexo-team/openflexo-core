@@ -42,13 +42,13 @@ import java.util.logging.Logger;
 
 import org.openflexo.logging.FlexoLogger;
 import org.openflexo.pamela.annotations.CloningStrategy;
+import org.openflexo.pamela.annotations.CloningStrategy.StrategyType;
 import org.openflexo.pamela.annotations.Getter;
 import org.openflexo.pamela.annotations.ImplementationClass;
 import org.openflexo.pamela.annotations.ModelEntity;
 import org.openflexo.pamela.annotations.PropertyIdentifier;
 import org.openflexo.pamela.annotations.Setter;
 import org.openflexo.pamela.annotations.XMLElement;
-import org.openflexo.pamela.annotations.CloningStrategy.StrategyType;
 
 /**
  * A {@link FlexoEnumValue} represent the possible value of a {@link FlexoEnum}
@@ -88,9 +88,9 @@ public interface FlexoEnumValue extends FlexoConcept {
 		}
 
 		@Override
-		public VirtualModel getResourceData() {
-			if (getFlexoEnum() != null && getFlexoEnum().getOwner() != null) {
-				return getFlexoEnum().getOwner();
+		public FMLCompilationUnit getResourceData() {
+			if (getFlexoEnum() != null) {
+				return getFlexoEnum().getResourceData();
 			}
 			return null;
 		}

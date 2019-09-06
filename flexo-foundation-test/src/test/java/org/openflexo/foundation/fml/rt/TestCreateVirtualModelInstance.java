@@ -55,8 +55,8 @@ import org.openflexo.foundation.FlexoProject;
 import org.openflexo.foundation.fml.FMLTechnologyAdapter;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.action.CreateContainedVirtualModel;
-import org.openflexo.foundation.fml.rm.VirtualModelResource;
-import org.openflexo.foundation.fml.rm.VirtualModelResourceFactory;
+import org.openflexo.foundation.fml.rm.CompilationUnitResource;
+import org.openflexo.foundation.fml.rm.CompilationUnitResourceFactory;
 import org.openflexo.foundation.fml.rt.action.CreateBasicVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.rm.FMLRTVirtualModelInstanceResource;
 import org.openflexo.foundation.resource.DirectoryResourceCenter;
@@ -86,7 +86,7 @@ public class TestCreateVirtualModelInstance extends OpenflexoProjectAtRunTimeTes
 	private static FlexoProject<File> project;
 	private static FMLRTVirtualModelInstance newView;
 	private static FMLRTVirtualModelInstance newVirtualModelInstance;
-	private static VirtualModelResource newVirtualModelResource;
+	private static CompilationUnitResource newVirtualModelResource;
 
 	private static DirectoryResourceCenter resourceCenter;
 
@@ -110,11 +110,11 @@ public class TestCreateVirtualModelInstance extends OpenflexoProjectAtRunTimeTes
 
 		FMLTechnologyAdapter fmlTechnologyAdapter = serviceManager.getTechnologyAdapterService()
 				.getTechnologyAdapter(FMLTechnologyAdapter.class);
-		VirtualModelResourceFactory factory = fmlTechnologyAdapter.getVirtualModelResourceFactory();
+		CompilationUnitResourceFactory factory = fmlTechnologyAdapter.getCompilationUnitResourceFactory();
 
-		newVirtualModelResource = factory.makeTopLevelVirtualModelResource(VIEWPOINT_NAME, VIEWPOINT_URI,
+		newVirtualModelResource = factory.makeTopLevelCompilationUnitResource(VIEWPOINT_NAME, VIEWPOINT_URI,
 				fmlTechnologyAdapter.getGlobalRepository(resourceCenter).getRootFolder(), true);
-		newViewPoint = newVirtualModelResource.getLoadedResourceData();
+		newViewPoint = newVirtualModelResource.getLoadedResourceData().getVirtualModel();
 
 		// newViewPoint = ViewPointImpl.newViewPoint("TestViewPoint",
 		// "http://openflexo.org/test/TestViewPoint",
@@ -126,8 +126,8 @@ public class TestCreateVirtualModelInstance extends OpenflexoProjectAtRunTimeTes
 		// newViewPoint.getResource()).getDirectory().exists());
 		// assertTrue(((VirtualModelResource)
 		// newViewPoint.getResource()).getFile().exists());
-		assertTrue(((VirtualModelResource) newViewPoint.getResource()).getDirectory() != null);
-		assertTrue(((VirtualModelResource) newViewPoint.getResource()).getIODelegate().exists());
+		assertTrue(newViewPoint.getResource().getDirectory() != null);
+		assertTrue(newViewPoint.getResource().getIODelegate().exists());
 
 		CreateContainedVirtualModel action = CreateContainedVirtualModel.actionType.makeNewAction(newViewPoint, null, editor);
 		action.setNewVirtualModelName("TestVirtualModel");
@@ -136,8 +136,8 @@ public class TestCreateVirtualModelInstance extends OpenflexoProjectAtRunTimeTes
 		newVirtualModel = action.getNewVirtualModel();
 		// newVirtualModel =
 		// VirtualModelImpl.newVirtualModel("TestVirtualModel", newViewPoint);
-		assertTrue(ResourceLocator.retrieveResourceAsFile(((VirtualModelResource) newVirtualModel.getResource()).getDirectory()).exists());
-		assertTrue(((VirtualModelResource) newVirtualModel.getResource()).getIODelegate().exists());
+		assertTrue(ResourceLocator.retrieveResourceAsFile(newVirtualModel.getResource().getDirectory()).exists());
+		assertTrue(newVirtualModel.getResource().getIODelegate().exists());
 
 		newViewPoint.getResource().save();
 		newVirtualModel.getResource().save();

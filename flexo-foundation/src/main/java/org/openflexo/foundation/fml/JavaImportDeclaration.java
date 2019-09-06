@@ -98,11 +98,8 @@ public interface JavaImportDeclaration extends FMLPrettyPrintable {
 	public static abstract class JavaImportDeclarationImpl extends FMLObjectImpl implements JavaImportDeclaration {
 
 		@Override
-		public VirtualModel getResourceData() {
-			if (getCompilationUnit() != null) {
-				return getCompilationUnit().getVirtualModel();
-			}
-			return null;
+		public FMLCompilationUnit getResourceData() {
+			return getCompilationUnit();
 		}
 
 		@Override

@@ -71,9 +71,9 @@ public interface IFlexoResourceFactory<R extends FlexoResource<RD>, RD extends R
 	 * @throws SaveResourceException
 	 * @throws ModelDefinitionException
 	 */
-	<I> R makeResource(I serializationArtefact, FlexoResourceCenter<I> resourceCenter, String name, String uri,
+	/*<I> R makeResource(I serializationArtefact, FlexoResourceCenter<I> resourceCenter, String name, String uri,
 			Class<? extends RD> specializedResourceDataClass, boolean createEmptyContents)
-			throws SaveResourceException, ModelDefinitionException;
+			throws SaveResourceException, ModelDefinitionException;*/
 
 	/**
 	 * Retrieve resource for a given artefact, a resource center and a technology context manager.<br>

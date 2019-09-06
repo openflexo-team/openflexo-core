@@ -62,7 +62,7 @@ import java.util.logging.Logger;
 import org.openflexo.foundation.FlexoProject;
 import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.fml.FMLTechnologyAdapter;
-import org.openflexo.foundation.fml.VirtualModelRepository;
+import org.openflexo.foundation.fml.CompilationUnitRepository;
 import org.openflexo.foundation.fml.rt.FMLRTTechnologyAdapter;
 import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstanceRepository;
 import org.openflexo.foundation.project.FlexoProjectResource;
@@ -289,7 +289,7 @@ public interface FileSystemBasedResourceCenter extends FlexoResourceCenter<File>
 		}
 
 		@Override
-		public VirtualModelRepository<File> getVirtualModelRepository() {
+		public CompilationUnitRepository<File> getVirtualModelRepository() {
 			if (getServiceManager() != null) {
 				FMLTechnologyAdapter vmTA = getServiceManager().getTechnologyAdapterService()
 						.getTechnologyAdapter(FMLTechnologyAdapter.class);

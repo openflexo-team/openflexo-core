@@ -51,7 +51,7 @@ import org.openflexo.foundation.fml.FlexoConceptObject;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.VirtualModelLibrary;
 import org.openflexo.foundation.fml.action.CreateModelSlot;
-import org.openflexo.foundation.fml.rm.VirtualModelResource;
+import org.openflexo.foundation.fml.rm.CompilationUnitResource;
 import org.openflexo.foundation.fml.rt.FMLRTModelSlot;
 import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstance;
 import org.openflexo.foundation.technologyadapter.FlexoMetaModelResource;
@@ -239,13 +239,13 @@ public class CreateModelSlotWizard extends AbstractCreateFMLElementWizard<Create
 			}
 		}
 
-		public VirtualModelResource getVmRes() {
+		public CompilationUnitResource getVmRes() {
 			return getAction().getVmRes();
 		}
 
-		public void setVmRes(VirtualModelResource vmRes) {
+		public void setVmRes(CompilationUnitResource vmRes) {
 			if (getVmRes() != vmRes) {
-				VirtualModelResource oldValue = getVmRes();
+				CompilationUnitResource oldValue = getVmRes();
 				getAction().setVmRes(vmRes);
 				getPropertyChangeSupport().firePropertyChange("vmRes", oldValue, vmRes);
 				checkValidity();

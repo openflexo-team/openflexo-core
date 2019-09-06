@@ -52,8 +52,8 @@ import org.openflexo.foundation.fml.FMLObject;
 import org.openflexo.foundation.fml.FMLTechnologyAdapter;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.VirtualModelLibrary;
-import org.openflexo.foundation.fml.rm.VirtualModelResource;
-import org.openflexo.foundation.fml.rm.VirtualModelResourceFactory;
+import org.openflexo.foundation.fml.rm.CompilationUnitResource;
+import org.openflexo.foundation.fml.rm.CompilationUnitResourceFactory;
 import org.openflexo.foundation.resource.RepositoryFolder;
 import org.openflexo.foundation.resource.SaveResourceException;
 import org.openflexo.foundation.task.Progress;
@@ -69,12 +69,12 @@ import org.openflexo.toolbox.StringUtils;
  * 
  */
 public class CreateTopLevelVirtualModel
-		extends AbstractCreateVirtualModel<CreateTopLevelVirtualModel, RepositoryFolder<VirtualModelResource, ?>, FMLObject>
+		extends AbstractCreateVirtualModel<CreateTopLevelVirtualModel, RepositoryFolder<CompilationUnitResource, ?>, FMLObject>
 		implements TechnologySpecificFlexoAction<FMLTechnologyAdapter> {
 
 	private static final Logger logger = Logger.getLogger(CreateTopLevelVirtualModel.class.getPackage().getName());
 
-	public static FlexoActionFactory<CreateTopLevelVirtualModel, RepositoryFolder<VirtualModelResource, ?>, FMLObject> actionType = new FlexoActionFactory<CreateTopLevelVirtualModel, RepositoryFolder<VirtualModelResource, ?>, FMLObject>(
+	public static FlexoActionFactory<CreateTopLevelVirtualModel, RepositoryFolder<CompilationUnitResource, ?>, FMLObject> actionType = new FlexoActionFactory<CreateTopLevelVirtualModel, RepositoryFolder<CompilationUnitResource, ?>, FMLObject>(
 			"create_virtual_model", FlexoActionFactory.newVirtualModelMenu, FlexoActionFactory.defaultGroup,
 			FlexoActionFactory.ADD_ACTION_TYPE) {
 
@@ -82,18 +82,18 @@ public class CreateTopLevelVirtualModel
 		 * Factory method
 		 */
 		@Override
-		public CreateTopLevelVirtualModel makeNewAction(RepositoryFolder<VirtualModelResource, ?> focusedObject,
+		public CreateTopLevelVirtualModel makeNewAction(RepositoryFolder<CompilationUnitResource, ?> focusedObject,
 				Vector<FMLObject> globalSelection, FlexoEditor editor) {
 			return new CreateTopLevelVirtualModel(focusedObject, globalSelection, editor);
 		}
 
 		@Override
-		public boolean isVisibleForSelection(RepositoryFolder<VirtualModelResource, ?> object, Vector<FMLObject> globalSelection) {
+		public boolean isVisibleForSelection(RepositoryFolder<CompilationUnitResource, ?> object, Vector<FMLObject> globalSelection) {
 			return object.getResourceRepository() != null;
 		}
 
 		@Override
-		public boolean isEnabledForSelection(RepositoryFolder<VirtualModelResource, ?> object, Vector<FMLObject> globalSelection) {
+		public boolean isEnabledForSelection(RepositoryFolder<CompilationUnitResource, ?> object, Vector<FMLObject> globalSelection) {
 			return object != null;
 		}
 
@@ -108,7 +108,7 @@ public class CreateTopLevelVirtualModel
 	private String newVirtualModelDescription;
 	private VirtualModel newVirtualModel;
 
-	CreateTopLevelVirtualModel(RepositoryFolder<VirtualModelResource, ?> focusedObject, Vector<FMLObject> globalSelection,
+	CreateTopLevelVirtualModel(RepositoryFolder<CompilationUnitResource, ?> focusedObject, Vector<FMLObject> globalSelection,
 			FlexoEditor editor) {
 		super(actionType, focusedObject, globalSelection, editor);
 	}
@@ -133,12 +133,12 @@ public class CreateTopLevelVirtualModel
 
 		FMLTechnologyAdapter fmlTechnologyAdapter = getServiceManager().getTechnologyAdapterService()
 				.getTechnologyAdapter(FMLTechnologyAdapter.class);
-		VirtualModelResourceFactory factory = fmlTechnologyAdapter.getVirtualModelResourceFactory();
+		CompilationUnitResourceFactory factory = fmlTechnologyAdapter.getCompilationUnitResourceFactory();
 
 		try {
-			VirtualModelResource newVirtualModelResource = factory.makeTopLevelVirtualModelResource(getBaseName(), getNewVirtualModelURI(),
-					getVirtualModelFolder(), null, true);
-			newVirtualModel = newVirtualModelResource.getLoadedResourceData();
+			CompilationUnitResource newVirtualModelResource = factory.makeTopLevelCompilationUnitResource(getBaseName(),
+					getNewVirtualModelURI(), getVirtualModelFolder(), null, true);
+			newVirtualModel = newVirtualModelResource.getLoadedResourceData().getVirtualModel();
 			newVirtualModel.setDescription(getNewVirtualModelDescription());
 		} catch (SaveResourceException e) {
 			throw new SaveResourceException(null);
@@ -182,7 +182,7 @@ public class CreateTopLevelVirtualModel
 			if (!baseURI.endsWith("/")) {
 				baseURI = baseURI + "/";
 			}
-			return baseURI + getBaseName() + VirtualModelResourceFactory.FML_SUFFIX;
+			return baseURI + getBaseName() + CompilationUnitResourceFactory.FML_SUFFIX;
 		}
 
 		return newVirtualModelURI;
@@ -203,7 +203,7 @@ public class CreateTopLevelVirtualModel
 		getPropertyChangeSupport().firePropertyChange("newVirtualModelDescription", null, newVirtualModelDescription);
 	}
 
-	public RepositoryFolder<VirtualModelResource, ?> getVirtualModelFolder() {
+	public RepositoryFolder<CompilationUnitResource, ?> getVirtualModelFolder() {
 		return getFocusedObject();
 	}
 
@@ -226,7 +226,7 @@ public class CreateTopLevelVirtualModel
 		if (getVirtualModelLibrary() == null) {
 			return false;
 		}
-		if (getVirtualModelLibrary().getVirtualModelResource(getNewVirtualModelURI()) != null) {
+		if (getVirtualModelLibrary().getCompilationUnitResource(getNewVirtualModelURI()) != null) {
 			return false;
 		}
 

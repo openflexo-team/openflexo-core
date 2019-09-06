@@ -114,7 +114,7 @@ public class CreateFlexoEvent extends AbstractCreateFlexoConcept<CreateFlexoEven
 		newFlexoEvent = factory.newFlexoEvent();
 		newFlexoEvent.setName(getNewFlexoEventName());
 
-		VirtualModel virtualModel = getFocusedObject().getDeclaringVirtualModel();
+		VirtualModel virtualModel = getFocusedObject().getOwningVirtualModel();
 
 		virtualModel.addToFlexoConcepts(newFlexoEvent);
 
@@ -162,7 +162,7 @@ public class CreateFlexoEvent extends AbstractCreateFlexoConcept<CreateFlexoEven
 		if (StringUtils.isEmpty(newFlexoEventName)) {
 			return false;
 		}
-		else if (getFocusedObject().getDeclaringVirtualModel().getFlexoConcept(newFlexoEventName) != null) {
+		else if (getFocusedObject().getDeclaringCompilationUnit().getFlexoConcept(newFlexoEventName) != null) {
 			return false;
 		}
 		return true;

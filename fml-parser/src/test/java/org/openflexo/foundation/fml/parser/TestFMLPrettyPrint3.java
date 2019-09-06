@@ -50,7 +50,6 @@ import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.fml.CreationScheme;
 import org.openflexo.foundation.fml.FMLCompilationUnit;
 import org.openflexo.foundation.fml.VirtualModel;
-import org.openflexo.foundation.fml.rm.FMLParser.ParseException;
 import org.openflexo.pamela.exceptions.ModelDefinitionException;
 import org.openflexo.rm.Resource;
 import org.openflexo.rm.ResourceLocator;

@@ -71,7 +71,7 @@ import org.openflexo.foundation.action.copypaste.PasteAction;
 import org.openflexo.foundation.action.copypaste.PasteAction.PasteActionType;
 import org.openflexo.foundation.fml.FMLObject;
 import org.openflexo.foundation.fml.FMLValidationReport;
-import org.openflexo.foundation.fml.rm.VirtualModelResourceFactory;
+import org.openflexo.foundation.fml.rm.CompilationUnitResourceFactory;
 import org.openflexo.foundation.project.FlexoProjectReference;
 import org.openflexo.foundation.project.FlexoProjectResource;
 import org.openflexo.foundation.resource.FlexoResource;
@@ -524,7 +524,7 @@ public class FlexoFIBController extends FIBController implements GraphicalFlexoO
 	@NotificationUnsafe
 	public boolean shouldBeDisplayed(RepositoryFolder<?, ?> folder) {
 		// Folders representing a VirtualModel should not be displayed here
-		if (folder.getName().endsWith(VirtualModelResourceFactory.FML_SUFFIX)) {
+		if (folder.getName().endsWith(CompilationUnitResourceFactory.FML_SUFFIX)) {
 			return false;
 		}
 		if (folder.isRootFolder()) {

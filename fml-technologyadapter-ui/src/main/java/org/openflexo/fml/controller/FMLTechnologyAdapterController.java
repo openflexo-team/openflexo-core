@@ -110,7 +110,7 @@ import org.openflexo.foundation.fml.VirtualModelInstanceType;
 import org.openflexo.foundation.fml.WidgetContext;
 import org.openflexo.foundation.fml.action.DeleteFlexoConceptObjects;
 import org.openflexo.foundation.fml.editionaction.EditionAction;
-import org.openflexo.foundation.fml.rm.VirtualModelResource;
+import org.openflexo.foundation.fml.rm.CompilationUnitResource;
 import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstanceModelSlot;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
@@ -654,8 +654,8 @@ public class FMLTechnologyAdapterController extends TechnologyAdapterController<
 	public void resourceLoading(TechnologyAdapterResource<?, FMLTechnologyAdapter> resource) {
 		// logger.info("RESOURCE LOADED: " + resource);
 
-		if (resource instanceof VirtualModelResource) {
-			VirtualModel vm = ((VirtualModelResource) resource).getLoadedVirtualModel();
+		if (resource instanceof CompilationUnitResource) {
+			VirtualModel vm = ((CompilationUnitResource) resource).getLoadedCompilationUnit();
 			try {
 				if (logger.isLoggable(Level.INFO)) {
 					logger.info("Validating virtual model " + vm);

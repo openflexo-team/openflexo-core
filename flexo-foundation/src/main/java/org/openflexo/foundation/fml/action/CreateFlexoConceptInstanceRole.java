@@ -161,7 +161,7 @@ public class CreateFlexoConceptInstanceRole extends AbstractCreateFlexoRole<Crea
 			return getFlexoConcept().getOwner();
 		}
 		if (ms.getAccessedVirtualModelResource() != null) {
-			return ms.getAccessedVirtualModelResource().getVirtualModel();
+			return ms.getAccessedVirtualModelResource().getCompilationUnit().getVirtualModel();
 		}
 		return null;
 	}
@@ -288,7 +288,7 @@ public class CreateFlexoConceptInstanceRole extends AbstractCreateFlexoRole<Crea
 				return ((VirtualModelInstanceType) type).getVirtualModel();
 			}
 		}
-		return getFocusedObject().getDeclaringVirtualModel();
+		return getFocusedObject().getDeclaringCompilationUnit().getVirtualModel();
 	}
 
 	@Override

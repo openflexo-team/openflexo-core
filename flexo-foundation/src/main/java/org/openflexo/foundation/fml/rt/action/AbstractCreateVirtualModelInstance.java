@@ -53,7 +53,7 @@ import org.openflexo.foundation.action.FlexoActionFactory;
 import org.openflexo.foundation.fml.CreationScheme;
 import org.openflexo.foundation.fml.FlexoBehaviourParameter;
 import org.openflexo.foundation.fml.VirtualModel;
-import org.openflexo.foundation.fml.rm.VirtualModelResource;
+import org.openflexo.foundation.fml.rm.CompilationUnitResource;
 import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.foundation.fml.rt.rm.AbstractVirtualModelInstanceResource;
@@ -336,9 +336,9 @@ public abstract class AbstractCreateVirtualModelInstance<A extends AbstractCreat
 	 * 
 	 * @return
 	 */
-	public VirtualModelResource getContainerVirtualModelResource() {
+	public CompilationUnitResource getContainerVirtualModelResource() {
 		if (getContainerVirtualModel() != null) {
-			return (VirtualModelResource) getContainerVirtualModel().getResource();
+			return (CompilationUnitResource) getContainerVirtualModel().getResource();
 		}
 		return null;
 	}

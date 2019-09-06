@@ -2,6 +2,7 @@ dependencies {
   // openflexo dep
   compile group: 'junit', name: 'junit', version: '4.+'
   compile project(':flexo-foundation')
+  compile project(':flexo-foundation-rm')
   // external dep
 
   // testing dep

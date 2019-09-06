@@ -87,8 +87,8 @@ import org.openflexo.foundation.fml.editionaction.DeclarationAction;
 import org.openflexo.foundation.fml.editionaction.ExpressionAction;
 import org.openflexo.foundation.fml.editionaction.FetchRequestCondition;
 import org.openflexo.foundation.fml.inspector.FlexoConceptInspector;
-import org.openflexo.foundation.fml.rm.VirtualModelResource;
-import org.openflexo.foundation.fml.rm.VirtualModelResourceFactory;
+import org.openflexo.foundation.fml.rm.CompilationUnitResource;
+import org.openflexo.foundation.fml.rm.CompilationUnitResourceFactory;
 import org.openflexo.foundation.fml.rt.FMLRTModelSlot;
 import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstanceModelSlot;
@@ -173,14 +173,14 @@ public class TestFMLBindingModelManagement extends OpenflexoProjectAtRunTimeTest
 
 		FMLTechnologyAdapter fmlTechnologyAdapter = serviceManager.getTechnologyAdapterService()
 				.getTechnologyAdapter(FMLTechnologyAdapter.class);
-		VirtualModelResourceFactory factory = fmlTechnologyAdapter.getVirtualModelResourceFactory();
+		CompilationUnitResourceFactory factory = fmlTechnologyAdapter.getCompilationUnitResourceFactory();
 
-		VirtualModelResource newVirtualModelResource = factory.makeTopLevelVirtualModelResource(VIEWPOINT_NAME, VIEWPOINT_URI,
+		CompilationUnitResource newVirtualModelResource = factory.makeTopLevelCompilationUnitResource(VIEWPOINT_NAME, VIEWPOINT_URI,
 				fmlTechnologyAdapter.getGlobalRepository(resourceCenter).getRootFolder(), true);
-		viewPoint = newVirtualModelResource.getLoadedResourceData();
+		viewPoint = newVirtualModelResource.getLoadedResourceData().getVirtualModel();
 
-		assertTrue(((VirtualModelResource) viewPoint.getResource()).getDirectory() != null);
-		assertTrue(((VirtualModelResource) viewPoint.getResource()).getIODelegate().exists());
+		assertTrue(viewPoint.getResource().getDirectory() != null);
+		assertTrue(viewPoint.getResource().getIODelegate().exists());
 
 		System.out.println("ViewPoint BindingModel = " + viewPoint.getBindingModel());
 		assertNotNull(viewPoint.getBindingModel());
@@ -200,13 +200,13 @@ public class TestFMLBindingModelManagement extends OpenflexoProjectAtRunTimeTest
 
 		FMLTechnologyAdapter fmlTechnologyAdapter = serviceManager.getTechnologyAdapterService()
 				.getTechnologyAdapter(FMLTechnologyAdapter.class);
-		VirtualModelResourceFactory factory = fmlTechnologyAdapter.getVirtualModelResourceFactory();
-		VirtualModelResource newVMResource = factory.makeContainedVirtualModelResource("VM1", viewPoint.getVirtualModelResource(), true);
-		virtualModel1 = newVMResource.getLoadedResourceData();
+		CompilationUnitResourceFactory factory = fmlTechnologyAdapter.getCompilationUnitResourceFactory();
+		CompilationUnitResource newVMResource = factory.makeContainedCompilationUnitResource("VM1", viewPoint.getResource(), true);
+		virtualModel1 = newVMResource.getLoadedResourceData().getVirtualModel();
 
 		// virtualModel1 = VirtualModelImpl.newVirtualModel("VM1", viewPoint);
-		assertTrue(ResourceLocator.retrieveResourceAsFile(((VirtualModelResource) virtualModel1.getResource()).getDirectory()).exists());
-		assertTrue(((VirtualModelResource) virtualModel1.getResource()).getIODelegate().exists());
+		assertTrue(ResourceLocator.retrieveResourceAsFile(virtualModel1.getResource().getDirectory()).exists());
+		assertTrue(virtualModel1.getResource().getIODelegate().exists());
 
 		assertNotNull(virtualModel1.getBindingModel());
 
@@ -258,9 +258,9 @@ public class TestFMLBindingModelManagement extends OpenflexoProjectAtRunTimeTest
 		System.out.println("FlexoConcept A = " + flexoConceptA);
 		assertNotNull(flexoConceptA);
 
-		((VirtualModelResource) virtualModel1.getResource()).save();
+		virtualModel1.getResource().save();
 
-		System.out.println("Saved: " + ((VirtualModelResource) virtualModel1.getResource()).getIODelegate());
+		System.out.println("Saved: " + virtualModel1.getResource().getIODelegate());
 
 		System.out.println("FlexoConcept BindingModel = " + flexoConceptA.getBindingModel());
 
@@ -417,7 +417,7 @@ public class TestFMLBindingModelManagement extends OpenflexoProjectAtRunTimeTest
 		assertEquals(1, flexoConceptC.getFlexoProperties().size());
 		assertTrue(flexoConceptC.getFlexoProperties().contains(createRoleInFlexoConceptC.getNewFlexoRole()));
 
-		((VirtualModelResource) virtualModel1.getResource()).save();
+		virtualModel1.getResource().save();
 
 		assertEquals(3, flexoConceptB.getBindingModel().getBindingVariablesCount());
 		assertNotNull(flexoConceptB.getBindingModel().bindingVariableNamed(VirtualModelBindingModel.THIS_PROPERTY));
@@ -590,8 +590,8 @@ public class TestFMLBindingModelManagement extends OpenflexoProjectAtRunTimeTest
 		assertNotNull(flexoConceptD.getBindingModel().bindingVariableNamed("anOtherBooleanInA"));
 		assertEquals(Boolean.TYPE, flexoConceptD.getBindingModel().bindingVariableNamed("anOtherBooleanInA").getType());
 
-		((VirtualModelResource) virtualModel1.getResource()).save();
-		System.out.println("Saved: " + ((VirtualModelResource) virtualModel1.getResource()).getIODelegate().toString());
+		virtualModel1.getResource().save();
+		System.out.println("Saved: " + virtualModel1.getResource().getIODelegate().toString());
 
 	}
 
@@ -606,14 +606,14 @@ public class TestFMLBindingModelManagement extends OpenflexoProjectAtRunTimeTest
 
 		FMLTechnologyAdapter fmlTechnologyAdapter = serviceManager.getTechnologyAdapterService()
 				.getTechnologyAdapter(FMLTechnologyAdapter.class);
-		VirtualModelResourceFactory factory = fmlTechnologyAdapter.getVirtualModelResourceFactory();
+		CompilationUnitResourceFactory factory = fmlTechnologyAdapter.getCompilationUnitResourceFactory();
 
-		VirtualModelResource newVMResource2 = factory.makeContainedVirtualModelResource("VM2", viewPoint.getVirtualModelResource(), true);
-		virtualModel2 = newVMResource2.getLoadedResourceData();
+		CompilationUnitResource newVMResource2 = factory.makeContainedCompilationUnitResource("VM2", viewPoint.getResource(), true);
+		virtualModel2 = newVMResource2.getLoadedResourceData().getVirtualModel();
 
 		// virtualModel2 = VirtualModelImpl.newVirtualModel("VM2", viewPoint);
-		assertTrue(ResourceLocator.retrieveResourceAsFile(((VirtualModelResource) virtualModel2.getResource()).getDirectory()).exists());
-		assertTrue(((VirtualModelResource) virtualModel2.getResource()).getIODelegate().exists());
+		assertTrue(ResourceLocator.retrieveResourceAsFile(virtualModel2.getResource().getDirectory()).exists());
+		assertTrue(virtualModel2.getResource().getIODelegate().exists());
 
 		assertNotNull(virtualModel2.getBindingModel());
 		assertEquals(2, virtualModel2.getBindingModel().getBindingVariablesCount());
@@ -624,11 +624,11 @@ public class TestFMLBindingModelManagement extends OpenflexoProjectAtRunTimeTest
 		assertEquals(VirtualModelInstanceType.getVirtualModelInstanceType(virtualModel2),
 				virtualModel2.getBindingModel().bindingVariableNamed(VirtualModelBindingModel.THIS_PROPERTY).getType());
 
-		VirtualModelResource newVMResource3 = factory.makeContainedVirtualModelResource("VM3", viewPoint.getVirtualModelResource(), true);
-		virtualModel3 = newVMResource3.getLoadedResourceData();
+		CompilationUnitResource newVMResource3 = factory.makeContainedCompilationUnitResource("VM3", viewPoint.getResource(), true);
+		virtualModel3 = newVMResource3.getLoadedResourceData().getVirtualModel();
 		// virtualModel3 = VirtualModelImpl.newVirtualModel("VM3", viewPoint);
-		assertTrue(ResourceLocator.retrieveResourceAsFile(((VirtualModelResource) virtualModel3.getResource()).getDirectory()).exists());
-		assertTrue(((VirtualModelResource) virtualModel3.getResource()).getIODelegate().exists());
+		assertTrue(ResourceLocator.retrieveResourceAsFile(virtualModel3.getResource().getDirectory()).exists());
+		assertTrue(virtualModel3.getResource().getIODelegate().exists());
 
 		assertNotNull(virtualModel3.getBindingModel());
 		assertEquals(2, virtualModel3.getBindingModel().getBindingVariablesCount());
@@ -644,7 +644,7 @@ public class TestFMLBindingModelManagement extends OpenflexoProjectAtRunTimeTest
 		createMS1.setTechnologyAdapter(serviceManager.getTechnologyAdapterService().getTechnologyAdapter(FMLTechnologyAdapter.class));
 		createMS1.setModelSlotClass(FMLRTVirtualModelInstanceModelSlot.class);
 		createMS1.setModelSlotName("vm1");
-		createMS1.setVmRes((VirtualModelResource) virtualModel1.getResource());
+		createMS1.setVmRes(virtualModel1.getResource());
 		createMS1.doAction();
 		assertTrue(createMS1.hasActionExecutionSucceeded());
 
@@ -657,7 +657,7 @@ public class TestFMLBindingModelManagement extends OpenflexoProjectAtRunTimeTest
 		createMS2.setTechnologyAdapter(serviceManager.getTechnologyAdapterService().getTechnologyAdapter(FMLTechnologyAdapter.class));
 		createMS2.setModelSlotClass(FMLRTVirtualModelInstanceModelSlot.class);
 		createMS2.setModelSlotName("vm2");
-		createMS2.setVmRes((VirtualModelResource) virtualModel2.getResource());
+		createMS2.setVmRes(virtualModel2.getResource());
 		createMS2.doAction();
 		assertTrue(createMS2.hasActionExecutionSucceeded());
 

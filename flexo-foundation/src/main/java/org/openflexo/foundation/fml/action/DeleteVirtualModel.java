@@ -52,7 +52,7 @@ import org.openflexo.foundation.action.TechnologySpecificFlexoAction;
 import org.openflexo.foundation.fml.FMLObject;
 import org.openflexo.foundation.fml.FMLTechnologyAdapter;
 import org.openflexo.foundation.fml.VirtualModel;
-import org.openflexo.foundation.fml.rm.VirtualModelResource;
+import org.openflexo.foundation.fml.rm.CompilationUnitResource;
 
 public class DeleteVirtualModel extends FlexoAction<DeleteVirtualModel, VirtualModel, FMLObject>
 		implements TechnologySpecificFlexoAction<FMLTechnologyAdapter> {
@@ -106,11 +106,11 @@ public class DeleteVirtualModel extends FlexoAction<DeleteVirtualModel, VirtualM
 		}
 
 		// Then handle the resource
-		VirtualModelResource virtualModelResource = (VirtualModelResource) getFocusedObject().getResource();
+		CompilationUnitResource virtualModelResource = getFocusedObject().getResource();
 		if (virtualModelResource != null) {
-			VirtualModelResource containerResource = virtualModelResource.getContainer();
+			CompilationUnitResource containerResource = virtualModelResource.getContainer();
 			if (containerResource != null) {
-				containerResource.getVirtualModel().removeFromVirtualModels(getFocusedObject());
+				containerResource.getCompilationUnit().getVirtualModel().removeFromVirtualModels(getFocusedObject());
 			}
 
 			// Delete the VirtualModel itself

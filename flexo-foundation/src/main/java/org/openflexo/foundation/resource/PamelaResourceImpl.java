@@ -39,13 +39,10 @@
 package org.openflexo.foundation.resource;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
@@ -53,12 +50,7 @@ import java.util.logging.Logger;
 
 import javax.swing.undo.UndoableEdit;
 
-import org.jdom2.Document;
-import org.jdom2.Element;
 import org.jdom2.JDOMException;
-import org.jdom2.Parent;
-import org.jdom2.filter.ElementFilter;
-import org.jdom2.input.SAXBuilder;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.IOFlexoException;
 import org.openflexo.foundation.InconsistentDataException;
@@ -68,8 +60,6 @@ import org.openflexo.foundation.InvalidXMLException;
 import org.openflexo.foundation.PamelaResourceModelFactory;
 import org.openflexo.foundation.action.FlexoUndoManager;
 import org.openflexo.foundation.action.FlexoUndoManager.IgnoreHandler;
-import org.openflexo.foundation.utils.ProjectLoadingCancelledException;
-import org.openflexo.kvc.AccessorInvocationException;
 import org.openflexo.pamela.exceptions.InvalidDataException;
 import org.openflexo.pamela.exceptions.ModelDefinitionException;
 import org.openflexo.pamela.factory.AccessibleProxyObject;
@@ -162,23 +152,18 @@ public abstract class PamelaResourceImpl<RD extends ResourceData<RD> & Accessibl
 	}
 
 	@Override
-	public boolean isDeserializing() {
+	public final boolean isDeserializing() {
 		return isDeserializing;
 	}
 
 	@Override
-	public boolean isLoading() {
+	public final boolean isLoading() {
 		return isLoading;
 	}
 
 	/**
-	 * Load resource data by applying a special scheme handling XML versionning, ie to find right XML version of current resource file.<br>
-	 * If version of stored file is not conform to latest declared version, convert resource file and update it to latest version.
+	 * Load the resource data of this resource.
 	 * 
-	 * @throws ProjectLoadingCancelledException
-	 * @throws MalformedXMLException
-	 * 
-	 * @see org.openflexo.foundation.rm.FlexoResource#loadResourceData()
 	 */
 	@Override
 	public RD loadResourceData() throws FlexoFileNotFoundException, IOFlexoException, InvalidXMLException, InconsistentDataException,
@@ -191,34 +176,10 @@ public abstract class PamelaResourceImpl<RD extends ResourceData<RD> & Accessibl
 		startDeserializing();
 
 		isLoading = true;
-		// progress.setProgress(getLocales().localizedForKey("loading") + " " + this.getName());
-		// progress.resetSecondaryProgress(4);
-		// progress.setProgress(getLocales().localizedForKey("loading_from_disk"));
 
 		if (logger.isLoggable(Level.FINE)) {
 			logger.fine("Load resource data for " + this);
 		}
-		/*
-		 * TODO if (!getFile().exists()) { recoverFile(); if
-		 * (!getFile().exists()) { if (logger.isLoggable(Level.SEVERE)) {
-		 * logger.severe("File " + getFile().getAbsolutePath() +
-		 * " does not exist, throwing exception now!"); } throw new
-		 * FlexoFileNotFoundException(this); } }
-		 */
-
-		/*
-		 * EditingContext editingContext =
-		 * getServiceManager().getEditingContext(); IgnoreLoadingEdits
-		 * ignoreHandler = null; FlexoUndoManager undoManager = null;
-		 * 
-		 * if (editingContext != null && editingContext.getUndoManager()
-		 * instanceof FlexoUndoManager) { undoManager = (FlexoUndoManager)
-		 * editingContext.getUndoManager();
-		 * undoManager.addToIgnoreHandlers(ignoreHandler = new
-		 * IgnoreLoadingEdits(this)); //
-		 * System.out.println("@@@@@@@@@@@@@@@@ START LOADING RESOURCE " +
-		 * getURI()); }
-		 */
 
 		try {
 
@@ -244,12 +205,6 @@ public abstract class PamelaResourceImpl<RD extends ResourceData<RD> & Accessibl
 			e.printStackTrace();
 			logger.warning("Unhandled Exception");
 		} finally {
-			/*
-			 * if (ignoreHandler != null) {
-			 * undoManager.removeFromIgnoreHandlers(ignoreHandler); //
-			 * System.out.println("@@@@@@@@@@@@@@@@ END LOADING RESOURCE " +
-			 * getURI()); }
-			 */
 			stopDeserializing();
 			isLoading = false;
 
@@ -258,11 +213,14 @@ public abstract class PamelaResourceImpl<RD extends ResourceData<RD> & Accessibl
 
 	}
 
-	protected RD performLoad() throws IOException, Exception {
-		// Retrieve the data from an input stream given by the FlexoIOStream
-		// delegate of the resource
-		return (RD) getFactory().deserialize(getFlexoIOStreamDelegate().getInputStream());
-	}
+	/**
+	 * Should be implemented in sub-classes: do the effective loading
+	 * 
+	 * @return
+	 * @throws IOException
+	 * @throws Exception
+	 */
+	protected abstract RD performLoad() throws IOException, Exception;
 
 	/**
 	 * Delete (dereference) resource data if resource data is loaded<br>
@@ -303,7 +261,7 @@ public abstract class PamelaResourceImpl<RD extends ResourceData<RD> & Accessibl
 	 * @return
 	 */
 	@Override
-	public boolean isUpdatable() {
+	public final boolean isUpdatable() {
 		return true;
 	}
 
@@ -345,7 +303,7 @@ public abstract class PamelaResourceImpl<RD extends ResourceData<RD> & Accessibl
 	}
 
 	// This should be removed from Pamela Resource class
-	private File getFile() {
+	protected File getFile() {
 		return (File) getIODelegate().getSerializationArtefact();
 	}
 
@@ -390,7 +348,7 @@ public abstract class PamelaResourceImpl<RD extends ResourceData<RD> & Accessibl
 			throw new SaveResourcePermissionDeniedException(getIODelegate());
 		}
 		if (resourceData != null) {
-			_saveResourceData(clearIsModified);
+			performSave(clearIsModified);
 			if (logger.isLoggable(Level.FINE)) {
 				logger.fine("Succeeding to save Resource " + this + " : " + getFile().getName() + " version=" + getModelVersion()
 						+ " with date " + FileUtils.getDiskLastModifiedDate(getFile()));
@@ -407,105 +365,13 @@ public abstract class PamelaResourceImpl<RD extends ResourceData<RD> & Accessibl
 		}
 	}
 
-	protected void _saveResourceData(boolean clearIsModified) throws SaveResourceException {
-		File temporaryFile = null;
-		FileWritingLock lock = getFlexoIOStreamDelegate().willWriteOnDisk();
-
-		if (getFlexoIOStreamDelegate() != null && getFlexoIOStreamDelegate().getSaveToSourceResource()
-				&& getFlexoIOStreamDelegate().getSourceResource() != null) {
-			logger.info("Saving SOURCE resource " + this + " : " + getFlexoIOStreamDelegate().getSourceResource().getFile() + " version="
-					+ getModelVersion());
-		}
-		else {
-			if (logger.isLoggable(Level.INFO)) {
-				logger.info("Saving resource " + this + " : " + getFile() + " version=" + getModelVersion());
-			}
-		}
-		try {
-			/*
-			 * File dir = getFile().getParentFile(); willWrite(dir); if
-			 * (!dir.exists()) { dir.mkdirs(); } willWrite(getFile());
-			 */
-			// Make local copy
-			makeLocalCopy();
-			// Using temporary file
-
-			temporaryFile = File.createTempFile("temp", ".xml", getFile().getParentFile());
-			if (logger.isLoggable(Level.FINE)) {
-				logger.finer("Creating temp file " + temporaryFile.getAbsolutePath());
-			}
-			performXMLSerialization(/* handler, */temporaryFile);
-			if (logger.isLoggable(Level.FINE)) {
-				logger.finer("Renaming temp file " + temporaryFile.getAbsolutePath() + " to " + getFile().getAbsolutePath());
-			}
-			// Renaming temporary file is done in post serialization
-			postXMLSerialization(temporaryFile, lock, clearIsModified);
-		} catch (IOException e) {
-			e.printStackTrace();
-			if (temporaryFile != null) {
-				temporaryFile.delete();
-			}
-			if (logger.isLoggable(Level.WARNING)) {
-				logger.warning("Failed to save resource " + this + " with model version " + getModelVersion());
-			}
-			getFlexoIOStreamDelegate().hasWrittenOnDisk(lock);
-			throw new SaveResourceException(getIODelegate(), e);
-		} /*
-			* finally { hasWritten(getFile());
-			* hasWritten(getFile().getParentFile()); }
-			*/
-	}
-
 	/**
-	 * @param version
-	 * @param temporaryFile
-	 * @param lock
-	 * @param clearIsModified
-	 * @throws IOException
-	 */
-	private void postXMLSerialization(File temporaryFile, FileWritingLock lock, boolean clearIsModified) throws IOException {
-		if (getFlexoIOStreamDelegate() != null && getFlexoIOStreamDelegate().getSaveToSourceResource()
-				&& getFlexoIOStreamDelegate().getSourceResource() != null) {
-			FileUtils.rename(temporaryFile, getFlexoIOStreamDelegate().getSourceResource().getFile());
-		}
-		else {
-			FileUtils.rename(temporaryFile, getFile());
-		}
-		getFlexoIOStreamDelegate().hasWrittenOnDisk(lock);
-		if (clearIsModified) {
-			notifyResourceStatusChanged();
-		}
-	}
-
-	/**
-	 * @param version
-	 * @param handler
-	 * @param temporaryFile
-	 * @throws InvalidObjectSpecificationException
-	 * @throws InvalidModelException
-	 * @throws AccessorInvocationException
-	 * @throws DuplicateSerializationIdentifierException
-	 * @throws IOException
-	 */
-	private void performXMLSerialization(/* SerializationHandler handler, */File temporaryFile) throws IOException {
-		try (FileOutputStream out = new FileOutputStream(temporaryFile)) {
-			getFactory().serialize(resourceData, out);
-			out.flush();
-		} catch (Exception e) {
-			e.printStackTrace();
-			throw new IOException(e);
-		}
-	}
-
-	/*
-	 * private StringEncoder STRING_ENCODER = null;
+	 * Should be implemented in sub-classes: do the effective saving
 	 * 
-	 * @Override public StringEncoder getStringEncoder() { if (STRING_ENCODER ==
-	 * null) { if (this instanceof FlexoProjectResource) { STRING_ENCODER = new
-	 * StringEncoder(super.getStringEncoder(), ((FlexoProjectResource)
-	 * this).getProject() .getObjectReferenceConverter()); } else {
-	 * STRING_ENCODER = super.getStringEncoder(); } } return STRING_ENCODER; }
+	 * @param clearIsModified
+	 * @throws SaveResourceException
 	 */
+	protected abstract void performSave(boolean clearIsModified) throws SaveResourceException;
 
 	public void recoverFile() {
 		if (getFile() == null) {
@@ -529,22 +395,7 @@ public abstract class PamelaResourceImpl<RD extends ResourceData<RD> & Accessibl
 		}
 	}
 
-	/**
-	 * Manually converts resource file from version v1 to version v2. This methods only warns and does nothing, and must be overriden in
-	 * subclasses !
-	 * 
-	 * @param v1
-	 * @param v2
-	 * @return boolean indicating if conversion was sucessfull
-	 */
-	protected boolean convertResourceFileFromVersionToVersion(FlexoVersion v1, FlexoVersion v2) {
-		if (logger.isLoggable(Level.WARNING)) {
-			logger.warning("Unable to find converter for resource " + this + " from version " + v1 + " to version " + v2);
-		}
-		return false;
-	}
-
-	private void makeLocalCopy() throws IOException {
+	protected void makeLocalCopy() throws IOException {
 
 		File fileToSave = getFile();
 		if (getFlexoIOStreamDelegate() != null && getFlexoIOStreamDelegate().getSaveToSourceResource()
@@ -726,32 +577,6 @@ public abstract class PamelaResourceImpl<RD extends ResourceData<RD> & Accessibl
 			}
 		}
 
-		return null;
-	}
-
-	/**
-	 * Read an XML input stream from File and return the parsed Document
-	 */
-	public static Document readXMLFile(File f) throws JDOMException, IOException {
-		try (FileInputStream fio = new FileInputStream(f)) {
-			return readXMLInputStream(fio);
-		}
-	}
-
-	/**
-	 * Read an XML input stream and return the parsed Document
-	 */
-	public static Document readXMLInputStream(InputStream inputStream) throws JDOMException, IOException {
-		SAXBuilder parser = new SAXBuilder();
-		Document reply = parser.build(inputStream);
-		return reply;
-	}
-
-	public static Element getElement(Parent parent, String name) {
-		Iterator<Element> it = parent.getDescendants(new ElementFilter(name));
-		if (it.hasNext()) {
-			return it.next();
-		}
 		return null;
 	}
 

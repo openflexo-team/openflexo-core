@@ -47,7 +47,7 @@ import org.openflexo.ApplicationContext;
 import org.openflexo.components.wizard.WizardStep;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.action.CreateTopLevelVirtualModel;
-import org.openflexo.foundation.fml.rm.VirtualModelResource;
+import org.openflexo.foundation.fml.rm.CompilationUnitResource;
 import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstance;
 import org.openflexo.foundation.resource.RepositoryFolder;
 import org.openflexo.gina.annotation.FIBPanel;
@@ -134,7 +134,7 @@ public class CreateTopLevelVirtualModelWizard extends AbstractCreateVirtualModel
 				setIssueMessage(getAction().getLocales().localizedForKey("could_not_access_virtual_model_library"), IssueMessageType.ERROR);
 				return false;
 			}
-			else if (getAction().getVirtualModelLibrary().getVirtualModelResource(getNewVirtualModelURI()) != null) {
+			else if (getAction().getVirtualModelLibrary().getCompilationUnitResource(getNewVirtualModelURI()) != null) {
 				setIssueMessage(getAction().getLocales().localizedForKey("already_existing_virtual_model_uri"), IssueMessageType.ERROR);
 				return false;
 			}
@@ -150,7 +150,7 @@ public class CreateTopLevelVirtualModelWizard extends AbstractCreateVirtualModel
 			return true;
 		}
 
-		public RepositoryFolder<VirtualModelResource, ?> getViewPointFolder() {
+		public RepositoryFolder<CompilationUnitResource, ?> getViewPointFolder() {
 			return getAction().getVirtualModelFolder();
 		}
 

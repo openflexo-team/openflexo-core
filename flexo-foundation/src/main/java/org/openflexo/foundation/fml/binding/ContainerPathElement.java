@@ -88,7 +88,7 @@ public class ContainerPathElement extends SimplePathElement {
 			containerType = applicableFlexoConcept.getContainerFlexoConcept();
 		}
 		else {
-			containerType = applicableFlexoConcept.getDeclaringVirtualModel();
+			containerType = applicableFlexoConcept.getOwningVirtualModel();
 		}
 	}
 

@@ -46,5 +46,5 @@ package org.openflexo.foundation;
  * @author sguerin
  */
 public interface DataFlexoObserver extends FlexoObserver {
-	// to be implemented by observer
+	// to be implemented by observeru
 }

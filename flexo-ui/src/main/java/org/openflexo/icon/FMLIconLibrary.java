@@ -86,7 +86,7 @@ import org.openflexo.foundation.fml.editionaction.RemoveFromListAction;
 import org.openflexo.foundation.fml.editionaction.TechnologySpecificAction;
 import org.openflexo.foundation.fml.inspector.FlexoConceptInspector;
 import org.openflexo.foundation.fml.inspector.InspectorEntry;
-import org.openflexo.foundation.fml.rm.VirtualModelResource;
+import org.openflexo.foundation.fml.rm.CompilationUnitResource;
 import org.openflexo.foundation.fml.rt.editionaction.AddFlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.editionaction.FinalizeMatching;
 import org.openflexo.foundation.fml.rt.editionaction.FireEventAction;
@@ -495,7 +495,7 @@ public class FMLIconLibrary extends IconLibrary {
 		return UNKNOWN_ICON;
 	}
 
-	public static ImageIcon iconForObject(VirtualModelResource object) {
+	public static ImageIcon iconForObject(CompilationUnitResource object) {
 		return VIRTUAL_MODEL_ICON;
 	}
 

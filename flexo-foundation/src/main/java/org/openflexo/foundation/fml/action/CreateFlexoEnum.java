@@ -114,7 +114,7 @@ public class CreateFlexoEnum extends AbstractCreateFlexoConcept<CreateFlexoEnum,
 		newFlexoEnum = factory.newFlexoEnum();
 		newFlexoEnum.setName(getNewFlexoEnumName());
 
-		VirtualModel virtualModel = getFocusedObject().getDeclaringVirtualModel();
+		VirtualModel virtualModel = getFocusedObject().getOwningVirtualModel();
 
 		virtualModel.addToFlexoConcepts(newFlexoEnum);
 
@@ -162,7 +162,7 @@ public class CreateFlexoEnum extends AbstractCreateFlexoConcept<CreateFlexoEnum,
 		if (StringUtils.isEmpty(newFlexoEnumName)) {
 			return false;
 		}
-		else if (getFocusedObject().getDeclaringVirtualModel().getFlexoConcept(newFlexoEnumName) != null) {
+		else if (getFocusedObject().getDeclaringCompilationUnit().getFlexoConcept(newFlexoEnumName) != null) {
 			return false;
 		}
 		return true;

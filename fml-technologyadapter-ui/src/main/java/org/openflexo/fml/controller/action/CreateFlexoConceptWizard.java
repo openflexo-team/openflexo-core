@@ -104,7 +104,7 @@ public class CreateFlexoConceptWizard extends AbstractCreateFlexoConceptWizard<C
 		}
 
 		public VirtualModel getVirtualModel() {
-			return getAction().getFocusedObject().getDeclaringVirtualModel();
+			return getAction().getFocusedObject().getDeclaringCompilationUnit();
 		}
 
 		@Override
@@ -120,7 +120,7 @@ public class CreateFlexoConceptWizard extends AbstractCreateFlexoConceptWizard<C
 				return false;
 			}
 			else if (getAction().getFocusedObject() instanceof VirtualModel
-					&& getAction().getFocusedObject().getDeclaringVirtualModel().getFlexoConcept(getNewFlexoConceptName()) != null) {
+					&& getAction().getFocusedObject().getDeclaringCompilationUnit().getFlexoConcept(getNewFlexoConceptName()) != null) {
 				setIssueMessage(getAction().getLocales().localizedForKey(DUPLICATED_NAME), IssueMessageType.ERROR);
 				return false;
 			}

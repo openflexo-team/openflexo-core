@@ -1,5 +1,6 @@
 include 'flexo-test-resources',
         'flexo-foundation',
+        'flexo-foundation-rm', 
         'flexo-foundation-test', 
         'flexodocresourcemanager',
         'flexo-ui',
