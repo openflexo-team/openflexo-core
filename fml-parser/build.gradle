@@ -12,23 +12,6 @@ dependencies {
 
 apply plugin: 'sablecc'
 
-sablecc {
-  inputDir = "src/main/resources/grammar"
-  intermediateDir = "build/generated-sources/grammar"
-  outputDir = "build/generated-sources/sablecc"  //  outputDir = "src/main/java"
-}
-
-sourceSets {
- main {
-   java {
-     srcDir 'build/generated-sources/sablecc'
-   }
-   resources {
-     srcDir 'build/generated-sources/sablecc'
-     includes = [ "**/*.dat" ]
-   }
- }
-}
 tasks.withType(Test) {
 	jvmArgs += ["-Djava.awt.headless=true"]
 }

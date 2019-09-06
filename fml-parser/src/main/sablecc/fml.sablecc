@@ -1,0 +1,854 @@
+/*
+ * (c) Copyright 2014-2019 Openflexo
+ *
+ * This file is part of OpenFlexo.
+ *
+ * OpenFlexo is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * OpenFlexo is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with OpenFlexo. If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
+
+Package org.openflexo.foundation.fml.parser;
+
+// *****************************************************************************************
+Helpers
+
+   unicode_input_character = [0..0xffff];
+   ht  = 0x0009;
+   lf  = 0x000a;
+   ff  = 0x000c;
+   cr  = 0x000d;
+   sp  = ' ';
+
+   line_terminator = lf | cr | cr lf;
+   input_character = [unicode_input_character - [cr + lf]];
+
+   not_star =    [input_character - '*'] | line_terminator;
+   not_star_not_slash = [input_character - ['*' + '/']] | line_terminator;
+
+   unicode_letter =
+        [0x0041..0x005a] | [0x0061..0x007a] | [0x00aa..0x00aa] | [0x00b5..0x00b5] |
+        [0x00ba..0x00ba] | [0x00c0..0x00d6] | [0x00d8..0x00f6] | [0x00f8..0x01f5] |
+        [0x01fa..0x0217] | [0x0250..0x02a8] | [0x02b0..0x02b8] | [0x02bb..0x02c1] |
+        [0x02d0..0x02d1] | [0x02e0..0x02e4] | [0x037a..0x037a] | [0x0386..0x0386] |
+        [0x0388..0x038a] | [0x038c..0x038c] | [0x038e..0x03a1] | [0x03a3..0x03ce] |
+        [0x03d0..0x03d6] | [0x03da..0x03da] | [0x03dc..0x03dc] | [0x03de..0x03de] |
+        [0x03e0..0x03e0] | [0x03e2..0x03f3] | [0x0401..0x040c] | [0x040e..0x044f] |
+        [0x0451..0x045c] | [0x045e..0x0481] | [0x0490..0x04c4] | [0x04c7..0x04c8] |
+        [0x04cb..0x04cc] | [0x04d0..0x04eb] | [0x04ee..0x04f5] | [0x04f8..0x04f9] |
+        [0x0531..0x0556] | [0x0559..0x0559] | [0x0561..0x0587] | [0x05d0..0x05ea] |
+        [0x05f0..0x05f2] | [0x0621..0x063a] | [0x0640..0x064a] | [0x0671..0x06b7] |
+        [0x06ba..0x06be] | [0x06c0..0x06ce] | [0x06d0..0x06d3] | [0x06d5..0x06d5] |
+        [0x06e5..0x06e6] | [0x0905..0x0939] | [0x093d..0x093d] | [0x0958..0x0961] |
+        [0x0985..0x098c] | [0x098f..0x0990] | [0x0993..0x09a8] | [0x09aa..0x09b0] |
+        [0x09b2..0x09b2] | [0x09b6..0x09b9] | [0x09dc..0x09dd] | [0x09df..0x09e1] |
+        [0x09f0..0x09f1] | [0x0a05..0x0a0a] | [0x0a0f..0x0a10] | [0x0a13..0x0a28] |
+        [0x0a2a..0x0a30] | [0x0a32..0x0a33] | [0x0a35..0x0a36] | [0x0a38..0x0a39] |
+        [0x0a59..0x0a5c] | [0x0a5e..0x0a5e] | [0x0a72..0x0a74] | [0x0a85..0x0a8b] |
+        [0x0a8d..0x0a8d] | [0x0a8f..0x0a91] | [0x0a93..0x0aa8] | [0x0aaa..0x0ab0] |
+        [0x0ab2..0x0ab3] | [0x0ab5..0x0ab9] | [0x0abd..0x0abd] | [0x0ae0..0x0ae0] |
+        [0x0b05..0x0b0c] | [0x0b0f..0x0b10] | [0x0b13..0x0b28] | [0x0b2a..0x0b30] |
+        [0x0b32..0x0b33] | [0x0b36..0x0b39] | [0x0b3d..0x0b3d] | [0x0b5c..0x0b5d] |
+        [0x0b5f..0x0b61] | [0x0b85..0x0b8a] | [0x0b8e..0x0b90] | [0x0b92..0x0b95] |
+        [0x0b99..0x0b9a] | [0x0b9c..0x0b9c] | [0x0b9e..0x0b9f] | [0x0ba3..0x0ba4] |
+        [0x0ba8..0x0baa] | [0x0bae..0x0bb5] | [0x0bb7..0x0bb9] | [0x0c05..0x0c0c] |
+        [0x0c0e..0x0c10] | [0x0c12..0x0c28] | [0x0c2a..0x0c33] | [0x0c35..0x0c39] |
+        [0x0c60..0x0c61] | [0x0c85..0x0c8c] | [0x0c8e..0x0c90] | [0x0c92..0x0ca8] |
+        [0x0caa..0x0cb3] | [0x0cb5..0x0cb9] | [0x0cde..0x0cde] | [0x0ce0..0x0ce1] |
+        [0x0d05..0x0d0c] | [0x0d0e..0x0d10] | [0x0d12..0x0d28] | [0x0d2a..0x0d39] |
+        [0x0d60..0x0d61] | [0x0e01..0x0e2e] | [0x0e30..0x0e30] | [0x0e32..0x0e33] |
+        [0x0e40..0x0e46] | [0x0e81..0x0e82] | [0x0e84..0x0e84] | [0x0e87..0x0e88] |
+        [0x0e8a..0x0e8a] | [0x0e8d..0x0e8d] | [0x0e94..0x0e97] | [0x0e99..0x0e9f] |
+        [0x0ea1..0x0ea3] | [0x0ea5..0x0ea5] | [0x0ea7..0x0ea7] | [0x0eaa..0x0eab] |
+        [0x0ead..0x0eae] | [0x0eb0..0x0eb0] | [0x0eb2..0x0eb3] | [0x0ebd..0x0ebd] |
+        [0x0ec0..0x0ec4] | [0x0ec6..0x0ec6] | [0x0edc..0x0edd] | [0x0f40..0x0f47] |
+        [0x0f49..0x0f69] | [0x10a0..0x10c5] | [0x10d0..0x10f6] | [0x1100..0x1159] |
+        [0x115f..0x11a2] | [0x11a8..0x11f9] | [0x1e00..0x1e9b] | [0x1ea0..0x1ef9] |
+        [0x1f00..0x1f15] | [0x1f18..0x1f1d] | [0x1f20..0x1f45] | [0x1f48..0x1f4d] |
+        [0x1f50..0x1f57] | [0x1f59..0x1f59] | [0x1f5b..0x1f5b] | [0x1f5d..0x1f5d] |
+        [0x1f5f..0x1f7d] | [0x1f80..0x1fb4] | [0x1fb6..0x1fbc] | [0x1fbe..0x1fbe] |
+        [0x1fc2..0x1fc4] | [0x1fc6..0x1fcc] | [0x1fd0..0x1fd3] | [0x1fd6..0x1fdb] |
+        [0x1fe0..0x1fec] | [0x1ff2..0x1ff4] | [0x1ff6..0x1ffc] | [0x207f..0x207f] |
+        [0x2102..0x2102] | [0x2107..0x2107] | [0x210a..0x2113] | [0x2115..0x2115] |
+        [0x2118..0x211d] | [0x2124..0x2124] | [0x2126..0x2126] | [0x2128..0x2128] |
+        [0x212a..0x2131] | [0x2133..0x2138] | [0x3005..0x3005] | [0x3031..0x3035] |
+        [0x3041..0x3094] | [0x309b..0x309e] | [0x30a1..0x30fa] | [0x30fc..0x30fe] |
+        [0x3105..0x312c] | [0x3131..0x318e] | [0x4e00..0x9fa5] | [0xac00..0xd7a3] |
+        [0xf900..0xfa2d] | [0xfb00..0xfb06] | [0xfb13..0xfb17] | [0xfb1f..0xfb28] |
+        [0xfb2a..0xfb36] | [0xfb38..0xfb3c] | [0xfb3e..0xfb3e] | [0xfb40..0xfb41] |
+        [0xfb43..0xfb44] | [0xfb46..0xfbb1] | [0xfbd3..0xfd3d] | [0xfd50..0xfd8f] |
+        [0xfd92..0xfdc7] | [0xfdf0..0xfdfb] | [0xfe70..0xfe72] | [0xfe74..0xfe74] |
+        [0xfe76..0xfefc] | [0xff21..0xff3a] | [0xff41..0xff5a] | [0xff66..0xffbe] |
+        [0xffc2..0xffc7] | [0xffca..0xffcf] | [0xffd2..0xffd7] | [0xffda..0xffdc];
+
+   unicode_digit =
+        [0x0030..0x0039] | [0x0660..0x0669] | [0x06f0..0x06f9] | [0x0966..0x096f] |
+        [0x09e6..0x09ef] | [0x0a66..0x0a6f] | [0x0ae6..0x0aef] | [0x0b66..0x0b6f] |
+        [0x0be7..0x0bef] | [0x0c66..0x0c6f] | [0x0ce6..0x0cef] | [0x0d66..0x0d6f] |
+        [0x0e50..0x0e59] | [0x0ed0..0x0ed9] | [0x0f20..0x0f29] | [0xff10..0xff19];
+
+   letter = unicode_letter | '$' | '_';
+
+   letter_or_digit = unicode_letter | unicode_digit | '$' | '_';
+
+   // --------------------------------------------------------------------------------------
+   // Constructions for numeric litterals
+   // --------------------------------------------------------------------------------------
+   digit = ['0'..'9'];
+   hex_digit = ['0'..'9'] | ['a'..'f'] | ['A'..'F'];
+   octal_digit = ['0'..'7'];
+   zero_to_three = ['0'..'3'];
+
+   decimal_numeral = '0' | ['1'..'9'] digit*;
+   hex_numeral = '0' ('x' | 'X') hex_digit+;
+   octal_numeral = '0' octal_digit+;
+
+   integer_type_suffix = 'l' | 'L';
+
+   exponent_part = ('e' | 'E') ('+' | '-')? digit+;
+
+   float_type_suffix = 'f' | 'F' | 'd' | 'D';
+
+   // --------------------------------------------------------------------------------------
+   // Constructions for string litterals
+   // --------------------------------------------------------------------------------------
+    single_character = [input_character - [''' + '\']];
+    octal_escape = '\' (octal_digit octal_digit? | zero_to_three octal_digit octal_digit);
+    escape_sequence = '\b' | '\t' | '\n' | '\f' | '\r' | '\"' | '\' ''' | '\\' | octal_escape;
+    string_character = [input_character - ['"' + '\']] | escape_sequence;
+
+// *****************************************************************************************
+Tokens
+
+   // --------------------------------------------------------------------------------------
+   // Operators
+   // --------------------------------------------------------------------------------------
+   amp = '&';
+   amp_amp = '&&';
+   amp_assign = '&=';
+   assign = '=';
+   bar = '|';
+   bar_assign = '|=';
+   bar_bar = '||';
+   caret = '^';
+   caret_assign = '^=';
+   colon = ':';
+   emark = '!';
+   eq = '==';
+   gt = '>';
+   gteq = '>=';
+   lt = '<';
+   lteq = '<=';
+   minus = '-';
+   minus_assign = '-=';
+   minus_minus = '--';
+   neq = '!=';
+   percent = '%';
+   percent_assign = '%=';
+   plus = '+';
+   plus_assign = '+=';
+   plus_plus = '++';
+   qmark = '?';
+   shl = '<<';
+   shl_assign = '<<=';
+   shr = '>>';
+   shr_assign = '>>=';
+   slash = '/';
+   slash_assign = '/=';
+   star = '*';
+   star_assign = '*=';
+   tilde = '~';
+   ushr = '>>>';
+   ushr_assign = '>>>=';
+
+   // --------------------------------------------------------------------------------------
+   // Separators
+   // --------------------------------------------------------------------------------------
+   at = '@';
+   colon_colon = '::';
+   comma = ',';
+   dollar = '$';
+   dot = '.';
+   dot_dot_dot = '...';
+   semi  = ';';
+
+   l_par = '(';
+   r_par = ')';
+   l_bkt = '[';
+   r_bkt = ']';
+   l_brc = '{';
+   r_brc = '}';
+
+   // --------------------------------------------------------------------------------------
+   // Keywords
+   // --------------------------------------------------------------------------------------
+
+   // Mathematics
+   fn_acos = 'acos';
+   fn_asin = 'asin';
+   fn_atan = 'atan';
+   fn_cos = 'cos';
+   fn_exp = 'exp';
+   fn_log = 'log';
+   fn_pi = 'pi';
+   fn_sin = 'sin';
+   fn_sqrt = 'sqrt';
+   fn_tan = 'tan';
+
+   // FML Keywords
+//FD kw_beh = 'truc';
+   kw_abstract = 'abstract';
+   kw_as = 'as';
+   kw_concept = 'concept';
+   kw_create = 'create';
+   kw_delete = 'delete';
+   kw_do = 'do';
+   kw_else = 'else';
+   kw_extends = 'extends';
+   kw_for = 'for';
+   kw_from = 'from';
+   kw_get = 'get';
+   kw_if = 'if';
+   kw_import = 'import';
+   kw_in = 'in';
+   kw_instanceof = 'instanceof';
+   kw_is = 'is';
+   kw_listen = 'listen';
+   kw_model = 'model';
+   kw_namespace = 'namespace';
+   kw_new = 'new';
+   kw_private = 'private';
+   kw_protected = 'protected';
+   kw_public = 'public';
+   kw_receive = 'receive';
+   kw_return = 'return';
+   kw_select = 'select';
+   kw_set = 'set';
+   kw_super = 'super';
+   kw_then = 'then';
+   kw_use = 'use';
+   kw_values = 'values';
+   kw_where = 'where';
+   kw_while = 'while';
+   kw_with = 'with';
+
+   // Types
+   ty_boolean = 'boolean';
+   ty_int = 'int';
+   ty_float = 'float';
+   ty_void = 'void';
+
+   // --------------------------------------------------------------------------------------
+   // Literals
+   // --------------------------------------------------------------------------------------
+   lit_string = '"' string_character* '"';
+   lit_character = ''' (single_character | escape_sequence) ''';
+   lit_float =
+     digit+ '.' digit* exponent_part? float_type_suffix?
+   | '.' digit+ exponent_part? float_type_suffix?
+   | digit+ exponent_part float_type_suffix?
+   | digit+ exponent_part? float_type_suffix
+   ;
+   lit_integer =
+     decimal_numeral integer_type_suffix?
+   | hex_numeral integer_type_suffix?
+   | octal_numeral integer_type_suffix?
+   ;
+   lit_null = 'null';
+   lit_true = 'true';
+   lit_false = 'false';
+
+   // --------------------------------------------------------------------------------------
+   // Identifier
+   // --------------------------------------------------------------------------------------
+   identifier = letter letter_or_digit*;
+
+   // --------------------------------------------------------------------------------------
+   // White space and comments
+   // --------------------------------------------------------------------------------------
+   white_space = (sp | ht | ff | line_terminator)+;
+   traditional_comment = '/*' not_star+ '*'+ (not_star_not_slash not_star* '*'+)* '/';
+   documentation_comment =    '/**' '*'* (not_star_not_slash not_star* '*'+)* '/';
+   end_of_line_comment = '//' input_character* line_terminator?;
+
+// *****************************************************************************************
+Ignored Tokens
+    white_space
+  , traditional_comment
+  , documentation_comment
+  , end_of_line_comment
+  ;
+
+// *****************************************************************************************
+Productions
+
+   // --------------------------------------------------------------------------------------
+   // Entry point
+   // --------------------------------------------------------------------------------------
+   fml_compilation_unit =
+     [namespace_declaration]:namespace_decl*
+     [use_declarations]:use_decl*
+     [import_declarations]:import_decl*
+     model_decl
+   ;
+
+   // --------------------------------------------------------------------------------------
+   // General rules
+   // --------------------------------------------------------------------------------------
+   composite_ident = [identifier]:identifier [additional_identifiers]:additional_identifier*;
+   additional_identifier = dot identifier;
+
+   visibility =
+       {private}      kw_private
+     | {protected}    kw_protected
+     | {public}       kw_public
+     ;
+
+   cardinality =
+       {with_explicit_bounds} l_bkt [lower]:lit_integer comma [upper]:lit_integer r_bkt
+     | {with_lower_bounds} l_bkt [lower]:lit_integer comma [upper]:star r_bkt
+     | {with_upper_bounds} l_bkt [lower]:star comma [upper]:lit_integer r_bkt
+     | {multiple1} l_bkt [lower]:star comma [upper]:star r_bkt
+     | {multiple2} dot_dot_dot
+     ;
+
+   reference_by_uri =
+       {resource} l_bkt [resource]:expression r_bkt
+     | {object_in_resource} l_bkt [resource]:expression colon [object]:expression r_bkt
+     | {resource_id} l_bkt [identifier]:composite_ident r_bkt
+     | {object_in_resource_id} l_bkt [identifier]:composite_ident colon [object]:expression r_bkt
+     ;
+
+   annotation =
+       {single_annotation} at [identifier]:composite_ident
+     | {value_annotation}  at [identifier]:composite_ident l_par expression r_par
+     ;
+
+   // --------------------------------------------------------------------------------------
+   // Namespace declaration
+   // --------------------------------------------------------------------------------------
+   namespace_decl = kw_namespace [string_literal]:lit_string kw_as [ns_id]:identifier semi;
+
+   // --------------------------------------------------------------------------------------
+   // Use declaration
+   // --------------------------------------------------------------------------------------
+   use_decl = kw_use [identifier]:composite_ident kw_as [ta_id]:identifier semi;
+
+   // --------------------------------------------------------------------------------------
+   // Import declaration
+   // --------------------------------------------------------------------------------------
+   import_decl =
+       {java_import} kw_import [identifier]:composite_ident semi
+     | {named_java_import} kw_import [identifier]:composite_ident kw_as [name]:identifier semi
+     | {uri_import} kw_import [object]:reference_by_uri semi
+     | {named_uri_import} kw_import [object]:reference_by_uri kw_as [name]:identifier semi
+     ;
+
+   // --------------------------------------------------------------------------------------
+   // Model declaration
+   // --------------------------------------------------------------------------------------
+   model_decl = [annotations]:annotation* visibility? kw_abstract? kw_model identifier super_clause? l_brc  [inner_model_declaration]:inner_model_decl* r_brc;
+
+   super_clause = kw_extends super_type_list;
+
+   super_type_list =
+       {one}  [identifier]:composite_ident
+     | {many} super_type_list comma [identifier]:composite_ident
+     ;
+
+   inner_model_decl =
+      {concept_declaration} concept_decl
+     | {inner_concept_declaration} inner_concept_decl;
+
+   concept_decl = [annotations]:annotation* visibility? kw_abstract? kw_concept identifier super_clause? l_brc [inner_concept_declaration]:inner_concept_decl* r_brc;
+
+   inner_concept_decl =
+      // basic role declaration
+       {java} visibility? type cardinality? variable_declarator semi
+     | {fml} visibility? type cardinality? identifier kw_with [role]:identifier fml_parameters? semi
+     | {fml_fully_qualified} visibility? type cardinality? identifier kw_with [ta_id]:identifier colon_colon [role]:identifier fml_parameters? semi
+     // abstract property declaration
+     | {abstract_property} visibility? kw_abstract type variable_declarator semi
+     | {expression_property} expression_property_decl
+     // get set property declaration
+     | {get_set_property}    visibility? type identifier l_brc get_declaration set_declaration ? r_brc semi
+     | {behaviour_declaration} behaviour_decl
+     ;
+
+   get_declaration = type kw_get l_par r_par flexo_behaviour_body;
+
+   set_declaration = kw_set l_par type identifier r_par flexo_behaviour_body;
+
+   expression_property_decl =
+       {identifier} visibility? type [identifier]:identifier kw_values [expression_value]:composite_ident semi
+     | {expression} visibility? type [identifier]:identifier kw_values [expression_value]:expression semi
+     ;
+
+   variable_declarator =
+       {identifier}  identifier
+     | {initializer} identifier assign expression
+// 2.0.0       | {initializer} identifier assign assignment_expression
+     ;
+
+   // --------------------------------------------------------------------------------------
+   // Behaviours
+   // --------------------------------------------------------------------------------------
+   behaviour_decl =
+       {anonymous_constructor} [annotations]:annotation* visibility? kw_create l_par formal_arguments_list? r_par flexo_behaviour_body
+     | {named_constructor} [annotations]:annotation* visibility? kw_create colon_colon [name]:identifier l_par formal_arguments_list? r_par flexo_behaviour_body
+     | {anonymous_destructor} [annotations]:annotation* visibility? kw_delete l_par formal_arguments_list? r_par flexo_behaviour_body
+     | {named_destructor} [annotations]:annotation* visibility? kw_delete colon_colon [name]:identifier l_par formal_arguments_list? r_par flexo_behaviour_body
+     | {method} [annotations]:annotation* visibility? type? [name]:identifier l_par formal_arguments_list? r_par flexo_behaviour_body
+     | {listener_id} [annotations]:annotation* kw_listen [listened_identifier]:composite_ident kw_receive l_par [event_type_identifier]:composite_ident [event_name]:identifier r_par flexo_behaviour_body
+     | {listener_expr} [annotations]:annotation* kw_listen [listened]:expression kw_receive l_par [event_type_identifier]:composite_ident [event_name]:identifier r_par flexo_behaviour_body
+     | {fml} [annotations]:annotation* visibility? type? [name]:identifier l_par formal_arguments_list? r_par kw_with [behaviour]:identifier fml_parameters? flexo_behaviour_body
+     | {fml_fully_qualified} [annotations]:annotation* visibility? type? [name]:identifier l_par formal_arguments_list? r_par kw_with [ta_id]:identifier colon_colon [behaviour]:identifier fml_parameters? flexo_behaviour_body
+     //| {protocol_only} [annotations]:annotation* visibility? type? [protocol]:identifier fml_parameters? colon l_par formal_arguments_list? r_par flexo_behaviour_body
+     //| {name_only} [annotations]:annotation* visibility? type? [name]:identifier l_par formal_arguments_list? r_par flexo_behaviour_body
+     //| {name_and_protocol} [annotations]:annotation* visibility? type? [protocol]:identifier fml_parameters? colon [name]:identifier l_par formal_arguments_list? r_par flexo_behaviour_body
+     ;
+
+   formal_arguments_list =
+       {one}  formal_argument
+     | {many} formal_arguments_list comma formal_argument
+     ;
+
+   formal_argument =
+       {primitive} primitive_type [arg_name]:identifier
+     //| {simple} [identifier]:composite_ident [arg_name]:identifier
+     | {complex} reference_type [arg_name]:identifier
+     ;
+
+   flexo_behaviour_body =
+       {block} l_brc [block_statements]:block_statement* r_brc
+     | {empty} semi
+     ;
+
+   block_statement =
+       {variable_declaration} type variable_declarator semi
+     | {statement}            statement
+     ;
+
+   condition =
+       {expression} l_par expression r_par
+     | {identifier} l_par composite_ident r_par
+     ;
+
+   statement =
+       {no_trail}   statement_without_trailing_substatement
+     // if statements
+     | {if_simple} kw_if condition statement
+     | {if_else} kw_if condition statement_no_short_if kw_else statement
+     // while statement
+     | {while} kw_while condition statement
+     // for statement
+     | {for_basic}      kw_for l_par for_init? [semi1]:semi [semi2]:semi statement_expression? r_par statement
+     | {for_basic_expression} kw_for l_par for_init? [semi1]:semi expression [semi2]:semi statement_expression? r_par statement
+     | {for_basic_identifier} kw_for l_par for_init? [semi1]:semi composite_ident [semi2]:semi statement_expression? r_par statement
+     | {for_enhanced_expression} kw_for l_par type identifier colon expression r_par statement
+     | {for_enhanced_identifier} kw_for l_par type [identifier1]:identifier colon [identifier2]:identifier  [additional_identifiers]:additional_identifier* r_par statement
+     ;
+
+   for_init =
+       {statement}            statement_expression
+     | {variable_declaration} type variable_declarator
+     ;
+
+   statement_without_trailing_substatement =
+       {block}                l_brc [block_statements]:block_statement* r_brc
+     | {empty_statement}      semi
+     | {expression_statement} statement_expression semi
+     | {do_statement}         kw_do statement kw_while condition semi
+     // return statement
+     | {return_empty}      kw_return semi
+     | {return_expression} kw_return expression semi
+     | {return_identifier} kw_return composite_ident semi
+     ;
+
+   statement_no_short_if =
+       {statement_without_trailing_substatement} statement_without_trailing_substatement
+     | {if_then_else_statement_no_short_if}      if_then_else_statement_no_short_if
+     | {while_statement_no_short_if}             while_statement_no_short_if
+     | {for_statement_no_short_if}               for_statement_no_short_if
+     ;
+
+   if_then_else_statement_no_short_if =
+       {expression} kw_if l_par expression r_par [statement_no_short_if1]:statement_no_short_if kw_else [statement_no_short_if2]:statement_no_short_if
+     | {identifier} kw_if l_par composite_ident r_par [statement_no_short_if1]:statement_no_short_if kw_else [statement_no_short_if2]:statement_no_short_if
+     ;
+
+   while_statement_no_short_if =
+       {expression} kw_while l_par expression r_par statement_no_short_if
+     | {identifier} kw_while l_par composite_ident r_par statement_no_short_if
+     ;
+
+   for_statement_no_short_if =
+       {empty}      kw_for l_par for_init? [semi1]:semi [semi2]:semi statement_expression? r_par statement_no_short_if
+     | {expression} kw_for l_par for_init? [semi1]:semi expression [semi2]:semi statement_expression? r_par statement_no_short_if
+     | {identifier} kw_for l_par for_init? [semi1]:semi composite_ident [semi2]:semi statement_expression? r_par statement_no_short_if
+     ;
+
+   statement_expression =
+       {assignment}             assignment
+     | {pre_increment}          pre_incr_exp
+     | {pre_decrement}          pre_decr_exp
+     | {post_increment}         post_incr_exp
+     | {post_decrement}         post_decr_exp
+     | {method_invocation}      method_invocation
+//FD     | {fml_action_expression}  fml_action_exp
+     ;
+
+   method_invocation =
+       {simple}     composite_ident l_par argument_list? r_par
+     | {primary}    primary dot /*non_wild_type_arguments?*/ identifier l_par argument_list? r_par
+     //| {super}      super dot non_wild_type_arguments? identifier l_par argument_list? r_par
+     //| {class_name} [identifier1]:composite_ident [dot1]:dot super [dot2]:dot non_wild_type_arguments? [identifier2]:identifier l_par argument_list? r_par
+     //| {type_name}  [identifier1]:composite_ident dot non_wild_type_arguments  [identifier2]:identifier l_par argument_list? r_par
+     ;
+
+   // --------------------------------------------------------------------------------------
+   // Expressions
+   // --------------------------------------------------------------------------------------
+   expression =
+       {assignment}  assignment
+     | {conditional} conditional_exp 
+     ;
+
+   assignment =
+       {expression} [left]:left_hand_side assignment_operator [right]:expression
+     | {identifier} [left]:left_hand_side assignment_operator composite_ident
+     ;
+
+   left_hand_side =
+       {identifier} composite_ident
+     | {field}      field_access 
+     ;
+
+   assignment_operator =
+       {assign}         assign
+     | {star_assign}    star_assign
+     | {slash_assign}   slash_assign
+     | {percent_assign} percent_assign
+     | {plus_assign}    plus_assign
+     | {minus_assign}   minus_assign
+     | {shl_assign}     shl_assign
+     | {shr_assign}     shr_assign
+     | {ushr_assign}    ushr_assign
+     | {amp_assign}     amp_assign
+     | {caret_assign}   caret_assign
+     | {bar_assign}     bar_assign
+     ;
+
+   conditional_exp =
+       {simple}         conditional_or_exp
+     | {qmark_or_ex_or} conditional_or_exp qmark expression colon conditional_exp
+     | {qmark_or_ex_id} conditional_or_exp qmark expression colon composite_ident
+     | {qmark_or_id_or} conditional_or_exp qmark composite_ident colon conditional_exp
+     | {qmakr_or_id_id} conditional_or_exp qmark [identifier1]:composite_ident colon [identifier2]:composite_ident
+     | {qmakr_id_ex_or} composite_ident qmark expression colon conditional_exp
+     | {qmakr_id_ex_id} [identifier1]:composite_ident qmark expression colon [identifier2]:composite_ident
+     | {qmakr_id_id_or} [identifier1]:composite_ident qmark [identifier2]:composite_ident colon conditional_exp
+     | {qmakr_id_id_id} [identifier1]:composite_ident qmark [identifier2]:composite_ident colon [identifier3]:composite_ident
+     ;
+
+   conditional_or_exp =
+       {simple}        conditional_and_exp
+     | {bar_bar_or_or} conditional_or_exp bar_bar conditional_and_exp
+     | {bar_bar_or_id} conditional_or_exp bar_bar composite_ident
+     | {bar_bar_id_or} composite_ident bar_bar conditional_and_exp
+     | {bar_bar_id_id} [identifier1]:composite_ident bar_bar [identifier2]:composite_ident
+     ;
+
+   conditional_and_exp =
+       {simple}        inclusive_or_exp
+     | {amp_amp_an_or} conditional_and_exp amp_amp inclusive_or_exp
+     | {amp_amp_an_id} conditional_and_exp amp_amp composite_ident
+     | {amp_amp_id_or} composite_ident amp_amp inclusive_or_exp
+     | {amp_amp_id_id} [identifier1]:composite_ident amp_amp [identifier2]:composite_ident
+     ;
+
+   inclusive_or_exp =
+       {simple}    exclusive_or_exp
+     | {bar_or_or} inclusive_or_exp bar exclusive_or_exp
+     | {bar_or_id} inclusive_or_exp bar composite_ident
+     | {bar_id_or} composite_ident bar exclusive_or_exp
+     | {bar_id_id} [identifier1]:composite_ident bar [identifier2]:composite_ident
+     ;
+
+   exclusive_or_exp =
+       {simple}      and_exp
+     | {caret_or_an} exclusive_or_exp caret and_exp
+     | {caret_or_id} exclusive_or_exp caret composite_ident
+     | {caret_id_an} composite_ident caret and_exp
+     | {caret_id_id} [identifier1]:composite_ident caret [identifier2]:composite_ident
+     ;
+
+   and_exp =
+       {simple}    equality_exp
+     | {amp_an_eq} and_exp amp equality_exp
+     | {amp_an_id} and_exp amp composite_ident
+     | {amp_id_eq} composite_ident amp equality_exp
+     | {amp_id_id} [identifier1]:composite_ident amp [identifier2]:composite_ident
+     ;
+
+   equality_exp =
+       {simple}    relational_exp
+     | {eq_eq_re}  equality_exp eq  relational_exp
+     | {eq_eq_id}  equality_exp eq composite_ident
+     | {eq_id_re}  composite_ident eq  relational_exp
+     | {eq_id_id}  [identifier1]:composite_ident eq  [identifier2]:composite_ident
+     | {neq_eq_re} equality_exp neq relational_exp
+     | {neq_eq_id} equality_exp neq composite_ident
+     | {neq_id_re} composite_ident neq relational_exp
+     | {neq_id_id} [identifier1]:composite_ident neq [identifier2]:composite_ident
+     ;
+
+   relational_exp =
+       {simple}                  shift_exp
+     | {lt_sh_sh}                [shift_exp1]:shift_exp lt [shift_expression2]:shift_exp
+     | {lt_sh_id}                shift_exp lt composite_ident
+     | {lt_id_sh}                composite_ident lt shift_exp
+     | {lt_id_id}                [identifier1]:composite_ident lt [identifier2]:composite_ident
+     | {gt_sh_sh}                [shift_expression1]:shift_exp gt [shift_expression2]:shift_exp
+     | {gt_sh_id}                shift_exp gt composite_ident
+     | {gt_id_sh}                composite_ident gt shift_exp
+     | {gt_id_id}                [identifier1]:composite_ident gt [identifier2]:composite_ident
+     | {lteq_sh_sh}              [shift_expression1]:shift_exp lteq [shift_expression2]:shift_exp
+     | {lteq_sh_id}              shift_exp lteq composite_ident
+     | {lteq_id_sh}              composite_ident lteq shift_exp
+     | {lteq_id_id}              [identifier1]:composite_ident lteq [identifier2]:composite_ident
+     | {gteq_sh_sh}              [shift_expression1]:shift_exp gteq [shift_expression2]:shift_exp
+     | {gteq_sh_id}              shift_exp gteq composite_ident
+     | {gteq_id_sh}              composite_ident gteq shift_exp
+     | {gteq_id_id}              [identifier1]:composite_ident gteq [identifier2]:composite_ident
+     | {instanceof_sh_primitive} shift_exp kw_instanceof primitive_type [dims]:dim+
+     | {instanceof_id_primitive} composite_ident kw_instanceof primitive_type [dims]:dim+
+     ;
+
+   shift_exp =
+       {simple}     add_exp
+     | {shl_sh_ad}  shift_exp shl  add_exp
+     | {shl_sh_id}  shift_exp shl composite_ident
+     | {shl_id_ad}  composite_ident shl add_exp
+     | {shl_id_id}  [identifier1]:composite_ident shl  [identifier2]:composite_ident
+     | {shr_sh_ad}  shift_exp shr  add_exp
+     | {shr_sh_id}  shift_exp shr composite_ident
+     | {shr_id_ad}  composite_ident shr  add_exp
+     | {shr_id_id}  [identifier1]:composite_ident shr  [identifier2]:composite_ident
+     | {ushr_sh_ad} shift_exp ushr add_exp
+     | {ushr_sh_id} shift_exp ushr               composite_ident
+     | {ushr_id_ad} composite_ident ushr add_exp
+     | {ushr_id_id} [identifier1]:composite_ident ushr [identifier2]:composite_ident
+     ;
+
+   add_exp =
+       {simple}      mult_exp
+     | {plus_ad_mu}  add_exp plus mult_exp
+     | {plus_ad_id}  add_exp plus composite_ident
+     | {plus_id_mu}  composite_ident plus mult_exp
+     | {plus_id_id}  [identifier1]:composite_ident plus [identifier2]:composite_ident
+     | {minus_ad_mu} add_exp minus mult_exp
+     | {minus_ad_id} add_exp minus composite_ident
+     | {minus_id_mu} composite_ident minus mult_exp
+     | {minus_id_id} [identifier1]:composite_ident minus [identifier2]:composite_ident
+     ;
+
+   mult_exp =
+       {simple}        unary_exp
+     | {star_mu_un}    mult_exp star unary_exp
+     | {star_mu_id}    mult_exp star composite_ident
+     | {star_id_un}    composite_ident star unary_exp
+     | {star_id_id}    [identifier1]:composite_ident star [identifier2]:composite_ident
+     | {slash_mu_un}   mult_exp slash unary_exp
+     | {slash_mu_id}   mult_exp slash composite_ident
+     | {slash_id_un}   composite_ident slash unary_exp
+     | {slash_id_id}   [identifier1]:composite_ident slash [identifier2]:composite_ident
+     | {percent_mu_un} mult_exp percent unary_exp
+     | {percent_mu_id} mult_exp percent composite_ident
+     | {percent_id_un} composite_ident percent unary_exp
+     | {percent_id_id} [identifier1]:composite_ident percent [identifier2]:composite_ident
+     ;
+
+   unary_exp =
+       {pre_increment}    pre_incr_exp
+     | {pre_decrement}    pre_decr_exp
+     | {plus_expression}  plus  unary_exp
+     | {plus_identifier}  plus  composite_ident
+     | {minus_expression} minus unary_exp
+     | {minus_identifier} minus composite_ident
+     | {unary}            unary_exp_not_plus_minus
+     ;
+
+   pre_incr_exp =
+       {expression} plus_plus unary_exp
+     | {identifier} plus_plus composite_ident
+     ;
+
+   pre_decr_exp =
+       {expression} minus_minus unary_exp
+     | {identifier} minus_minus composite_ident
+     ;
+
+   unary_exp_not_plus_minus =
+       {postfix}          postfix_exp
+     | {tilde_expression} tilde unary_exp
+     | {tilde_identifier} tilde composite_ident
+     | {emark_expression} emark unary_exp
+     | {emark_identifier} emark composite_ident
+     | {cast}             cast_exp
+     ;
+
+   cast_exp =
+       {primitive_expression} l_par primitive_type [dims]:dim* r_par unary_exp
+     | {primitive_identifier} l_par primitive_type [dims]:dim* r_par composite_ident
+     ;
+
+   postfix_exp =
+       {primary}        primary
+     | {post_increment} post_incr_exp
+     | {post_decrement} post_decr_exp
+     ;
+
+   post_incr_exp =
+        {expression} postfix_exp plus_plus
+     | {identifier} composite_ident plus_plus
+     ;
+
+   post_decr_exp =
+       {expression} postfix_exp minus_minus
+     | {identifier} composite_ident minus_minus
+     ;
+
+   primary =
+       {literal}                literal
+     | {expression}             l_par expression r_par
+     | {identifier}             l_par composite_ident r_par
+     | {field}                  field_access
+     | {method}                 method_invocation
+//FD     | {fml_action_expression}  fml_action_exp
+     ;
+
+   fml_action_exp =
+       {java_instance_creation} kw_new composite_ident type_arguments_or_diamond? l_par argument_list? r_par
+     | {fml_instance_creation}  kw_new [concept_name]:identifier colon_colon [constructor_name]:identifier l_par argument_list? r_par
+     | {ta_edition_action}      [ta_id]:identifier colon_colon [edition_action]:identifier fml_parameters? in_clause? from_clause?
+     | {delete_action}          delete_action_exp
+     | {select_action}          kw_select [concept_name]:identifier from_clause where_clause?
+     ;
+
+   type_arguments_or_diamond =
+       {type_arguments} type_arguments
+     | {diamond} lt gt
+     ;
+
+   argument_list =
+       {one_ex} expression
+     | {one_id} composite_ident
+     | {many_ex} argument_list comma expression
+     | {many_id} argument_list comma composite_ident
+     ;
+
+   qualified_argument_list =
+       {one_ex} [arg_name]:identifier assign expression
+     | {one_id} [arg_name]:identifier assign [identifier]:composite_ident
+     | {many_ex} argument_list comma [arg_name]:identifier assign expression
+     | {many_id} argument_list comma [arg_name]:identifier assign [identifier]:composite_ident
+     ;
+
+   fml_parameters =
+       //{unqualified} l_par argument_list? r_par
+     | {full_qualified} l_par qualified_argument_list? r_par
+     ;
+
+   in_clause =
+       {expression} kw_in l_par expression r_par
+     | {identifier} kw_in l_par composite_ident r_par
+     ;
+
+   from_clause =
+       {expression} kw_from l_par expression r_par
+     | {identifier} kw_from l_par composite_ident r_par
+     ;
+
+   where_clause = kw_where l_par argument_list? r_par;
+
+   delete_action_exp =
+       {expression} kw_delete l_par expression r_par from_clause?
+     | {identifier} kw_delete l_par composite_ident r_par from_clause?
+     ;
+
+   field_access =
+       {primary} primary dot identifier
+     | {super} kw_super dot identifier
+     | {reference_super} [identifier1]:composite_ident [dot1]:dot kw_super [dot2]:dot [identifier2]:identifier
+     ;
+
+   literal =
+       {integer}        lit_integer
+     | {floating_point} lit_float
+     | {true}           lit_true
+     | {false}          lit_false
+     | {character}      lit_character
+     | {string}         lit_string
+     | {null}           lit_null
+     ;
+
+   // --------------------------------------------------------------------------------------
+   // Types
+   // --------------------------------------------------------------------------------------
+   type =
+       {primitive} primitive_type
+     | {complex} reference_type
+     | {void} ty_void
+     ;
+
+   primitive_type =
+       {int}   ty_int
+     | {float} ty_float
+     | {boolean} ty_boolean
+     ;
+
+   reference_type = [identifier]:composite_ident [args]:type_arguments?;
+
+   // Take care of the following lexical anomaly:
+   //   A<B<C>>  and  A<B<C<D>>>
+   // Notice the '>>' and '>>>" tokens.
+   //
+   // (Instead of)
+   // type_arguments =
+   //     lt type_argument_list gt;
+
+   type_arguments =
+       {gt} lt type_argument_list gt
+     | {shr} [lt1]:lt type_argument_list_head* [identifier]:composite_ident [lt2]:lt type_argument_list shr
+     | {ushr} [lt1]:lt [heads1]:type_argument_list_head* [specifier1]:composite_ident [lt2]:lt [heads2]:type_argument_list_head* [specifier2]:composite_ident [lt3]:lt type_argument_list ushr
+     ;
+
+   type_argument_list = type_argument_list_head* type_argument;
+
+   type_argument_list_head = type_argument comma;
+
+   type_argument =
+       {reference} reference_type
+     | {wildcard} wildcard
+     ;
+
+   wildcard = qmark wildcard_bounds?;
+
+   wildcard_bounds =
+       {extends} kw_extends reference_type
+     | {super} kw_super reference_type
+     ;
+
+// Autres trucs a regarder
+   dim = l_bkt r_bkt;
