@@ -59,6 +59,7 @@ import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.AddFlexoConcept
 import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.AssignationActionNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.ExpressionActionNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.InnerExpressionActionNode;
+import org.openflexo.foundation.fml.rm.FMLParser.ParseException;
 import org.openflexo.foundation.fml.rt.editionaction.AddFlexoConceptInstance;
 import org.openflexo.p2pp.P2PPNode;
 import org.openflexo.pamela.exceptions.ModelDefinitionException;

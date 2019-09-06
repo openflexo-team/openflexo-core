@@ -52,11 +52,13 @@ import java.util.logging.Logger;
 import org.apache.commons.io.IOUtils;
 import org.openflexo.foundation.fml.FMLCompilationUnit;
 import org.openflexo.foundation.fml.FMLModelFactory;
+import org.openflexo.foundation.fml.parser.fmlnodes.FMLCompilationUnitNode;
 import org.openflexo.foundation.fml.parser.lexer.Lexer;
 import org.openflexo.foundation.fml.parser.lexer.LexerException;
 import org.openflexo.foundation.fml.parser.node.Start;
 import org.openflexo.foundation.fml.parser.parser.Parser;
 import org.openflexo.foundation.fml.parser.parser.ParserException;
+import org.openflexo.foundation.fml.rm.FMLParser;
 import org.openflexo.p2pp.RawSource;
 
 /**
@@ -71,10 +73,10 @@ import org.openflexo.p2pp.RawSource;
  * 
  * @author sylvain
  */
-public class FMLParser {
+public class DefaultFMLParser implements FMLParser {
 
 	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(FMLParser.class.getPackage().getName());
+	private static final Logger logger = Logger.getLogger(DefaultFMLParser.class.getPackage().getName());
 
 	/**
 	 * This is the method to invoke to perform a parsing.<br>
@@ -86,7 +88,8 @@ public class FMLParser {
 	 * @throws ParseException
 	 * @throws IOException
 	 */
-	public static FMLCompilationUnit parse(String data, FMLModelFactory modelFactory/*, EntryPointKind entryPointKind*/)
+	@Override
+	public FMLCompilationUnit parse(String data, FMLModelFactory modelFactory/*, EntryPointKind entryPointKind*/)
 			throws ParseException, IOException {
 		return parse(new StringReader(data), new StringReader(data), modelFactory/*, entryPointKind*/);
 	}
@@ -135,7 +138,8 @@ public class FMLParser {
 	 * @throws ParseException
 	 *             if parsing expression lead to an error
 	 */
-	public static FMLCompilationUnit parse(InputStream inputStream, FMLModelFactory modelFactory) throws ParseException, IOException {
+	@Override
+	public FMLCompilationUnit parse(InputStream inputStream, FMLModelFactory modelFactory) throws ParseException, IOException {
 
 		// InputStream rawSourceInputStream = IOUtils.toBufferedInputStream(inputStream);
 		// inputStream.reset();
@@ -159,7 +163,8 @@ public class FMLParser {
 	 * @throws ParseException
 	 *             if parsing expression lead to an error
 	 */
-	public static FMLCompilationUnit parse(File file, FMLModelFactory modelFactory) throws ParseException, IOException {
+	@Override
+	public FMLCompilationUnit parse(File file, FMLModelFactory modelFactory) throws ParseException, IOException {
 
 		return parse(new FileInputStream(file), modelFactory);
 	}
@@ -244,5 +249,13 @@ public class FMLParser {
 	/*private static RawSource readRawSource(InputStream inputStream) throws IOException {
 		return new RawSource(inputStream);
 	}*/
+
+	@Override
+	public void initPrettyPrint(FMLCompilationUnit fmlCompilationUnit) {
+		System.out.println("fmlCompilationUnit=" + fmlCompilationUnit);
+		MainSemanticsAnalyzer semanticsAnalyzer = new MainSemanticsAnalyzer(fmlCompilationUnit.getFMLModelFactory(), null, null);
+		FMLCompilationUnitNode fmlCompilationUnitNode = new FMLCompilationUnitNode(fmlCompilationUnit, semanticsAnalyzer);
+		fmlCompilationUnitNode.finalizeDeserialization();
+	}
 
 }

@@ -51,6 +51,7 @@ import org.openflexo.p2pp.PrettyPrintContext.Indentation;
  */
 public class SequenceNode extends ControlGraphNode<ABlock, Sequence> {
 
+	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(SequenceNode.class.getPackage().getName());
 
 	public SequenceNode(ABlock astNode, ControlGraphNode<?, ?> relativeStart, ControlGraphNode<?, ?> relativeEnd,
@@ -77,8 +78,8 @@ public class SequenceNode extends ControlGraphNode<ABlock, Sequence> {
 	@Override
 	public void preparePrettyPrint(boolean hasParsedVersion) {
 		super.preparePrettyPrint(hasParsedVersion);
-		appendToChildPrettyPrintContents("", () -> getModelObject().getControlGraph1(), LINE_SEPARATOR, Indentation.DoNotIndent);
-		appendToChildPrettyPrintContents("", () -> getModelObject().getControlGraph2(), "", Indentation.DoNotIndent);
+		append(childContents("", () -> getModelObject().getControlGraph1(), LINE_SEPARATOR, Indentation.DoNotIndent));
+		append(childContents("", () -> getModelObject().getControlGraph2(), "", Indentation.DoNotIndent));
 	}
 
 }

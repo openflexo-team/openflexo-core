@@ -63,6 +63,7 @@ import org.openflexo.p2pp.RawSource.RawSourceFragment;
  */
 public abstract class FlexoBehaviourNode<N extends Node, T extends FlexoBehaviour> extends FMLObjectNode<N, T, MainSemanticsAnalyzer> {
 
+	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(FlexoBehaviourNode.class.getPackage().getName());
 
 	public FlexoBehaviourNode(N astNode, MainSemanticsAnalyzer analyser) {

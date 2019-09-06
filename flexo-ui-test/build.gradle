@@ -2,6 +2,7 @@ dependencies {
   // openflexo dep
   compile project(':flexo-ui')
   compile project(':flexo-foundation-test')
+  compile ginaTest()
   compile testUtils()
   // external dep
 

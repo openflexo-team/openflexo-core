@@ -51,6 +51,7 @@ import org.openflexo.p2pp.RawSource.RawSourceFragment;
  */
 public class ExpressionActionNode extends AssignableActionNode<Node, ExpressionAction<?>> {
 
+	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(ExpressionActionNode.class.getPackage().getName());
 
 	public ExpressionActionNode(Node astNode, ControlGraphFactory cgFactory) {
@@ -73,12 +74,7 @@ public class ExpressionActionNode extends AssignableActionNode<Node, ExpressionA
 	public void preparePrettyPrint(boolean hasParsedVersion) {
 		super.preparePrettyPrint(hasParsedVersion);
 
-		// if (hasParsedVersion) {
-		appendDynamicContents(() -> getModelObject().getExpression().toString(), getExpressionFragment());
-		/*}
-		else {
-			appendDynamicContents(() -> getModelObject().getExpression().toString());
-		}*/
+		append(dynamicContents(() -> getModelObject().getExpression().toString()), getExpressionFragment());
 	}
 
 	private RawSourceFragment getExpressionFragment() {

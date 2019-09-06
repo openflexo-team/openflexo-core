@@ -5,7 +5,7 @@ model MyModel {
 
 	// An anonymous constructor
 	create () {  
-		int j=2;
+		int j;
 		i = 1;
 		i = j;
 	}

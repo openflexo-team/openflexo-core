@@ -52,6 +52,7 @@ import org.openflexo.foundation.fml.parser.node.Node;
  */
 public abstract class FlexoPropertyNode<N extends Node, T extends FlexoProperty<?>> extends FMLObjectNode<N, T, MainSemanticsAnalyzer> {
 
+	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(FlexoPropertyNode.class.getPackage().getName());
 
 	public FlexoPropertyNode(N astNode, MainSemanticsAnalyzer analyser) {

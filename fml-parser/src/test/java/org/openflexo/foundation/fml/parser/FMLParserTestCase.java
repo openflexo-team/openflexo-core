@@ -51,6 +51,7 @@ import java.util.List;
 import org.openflexo.foundation.fml.FMLCompilationUnit;
 import org.openflexo.foundation.fml.FMLModelFactory;
 import org.openflexo.foundation.fml.parser.fmlnodes.FMLCompilationUnitNode;
+import org.openflexo.foundation.fml.rm.FMLParser.ParseException;
 import org.openflexo.foundation.test.OpenflexoTestCase;
 import org.openflexo.p2pp.P2PPNode;
 import org.openflexo.pamela.exceptions.ModelDefinitionException;
@@ -88,7 +89,8 @@ public abstract class FMLParserTestCase extends OpenflexoTestCase {
 			throws ModelDefinitionException, ParseException, IOException {
 
 		FMLModelFactory fmlModelFactory = new FMLModelFactory(null, serviceManager);
-		FMLCompilationUnit compilationUnit = FMLParser.parse(((FileResourceImpl) fileResource).getFile(), fmlModelFactory);
+		DefaultFMLParser parser = new DefaultFMLParser();
+		FMLCompilationUnit compilationUnit = parser.parse(((FileResourceImpl) fileResource).getFile(), fmlModelFactory);
 		FMLCompilationUnitNode rootNode = (FMLCompilationUnitNode) compilationUnit.getPrettyPrintDelegate();
 		debug(rootNode, 0);
 
@@ -103,7 +105,7 @@ public abstract class FMLParserTestCase extends OpenflexoTestCase {
 		try {
 			String prettyPrint = compilationUnit.getFMLPrettyPrint();
 			System.out.println("prettyPrint=\n" + prettyPrint);
-			reparsedCompilationUnitFromPrettyPrint = FMLParser.parse(prettyPrint, fmlModelFactory);
+			reparsedCompilationUnitFromPrettyPrint = parser.parse(prettyPrint, fmlModelFactory);
 			reparsedCompilationUnitFromPrettyPrint.getVirtualModel().setResource(compilationUnit.getVirtualModel().getResource());
 			// System.out.println("compilationUnit=" + compilationUnit);
 			System.out.println("reparsedCompilationUnit=" + reparsedCompilationUnitFromPrettyPrint);
@@ -120,7 +122,7 @@ public abstract class FMLParserTestCase extends OpenflexoTestCase {
 		try {
 			String normalizedFML = compilationUnit.getNormalizedFML();
 			System.out.println("normalizedFML=\n" + normalizedFML);
-			reparsedCompilationUnitFromNormalizedFML = FMLParser.parse(normalizedFML, fmlModelFactory);
+			reparsedCompilationUnitFromNormalizedFML = parser.parse(normalizedFML, fmlModelFactory);
 			reparsedCompilationUnitFromNormalizedFML.getVirtualModel().setResource(compilationUnit.getVirtualModel().getResource());
 			// System.out.println("compilationUnit=" + compilationUnit);
 			System.out.println("reparsedCompilationUnit=" + reparsedCompilationUnitFromNormalizedFML);
@@ -170,7 +172,8 @@ public abstract class FMLParserTestCase extends OpenflexoTestCase {
 	 * @throws IOException
 	 */
 	protected static FMLCompilationUnit parseFile(Resource fileResource) throws ModelDefinitionException, ParseException, IOException {
-		return FMLParser.parse(((FileResourceImpl) fileResource).getFile(), new FMLModelFactory(null, serviceManager));
+		DefaultFMLParser parser = new DefaultFMLParser();
+		return parser.parse(((FileResourceImpl) fileResource).getFile(), new FMLModelFactory(null, serviceManager));
 	}
 
 	protected static void testNormalizedFMLRepresentationEquals(FMLCompilationUnit compilationUnit, String resourceFile) {

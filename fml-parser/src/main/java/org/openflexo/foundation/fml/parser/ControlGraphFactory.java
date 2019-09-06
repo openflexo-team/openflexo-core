@@ -9,6 +9,7 @@ import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.AssignationActi
 import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.ControlGraphNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.DeclarationActionNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.EmptyControlGraphNode;
+import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.ReturnStatementNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.SequenceNode;
 import org.openflexo.foundation.fml.parser.node.AAssignmentStatementExpression;
 import org.openflexo.foundation.fml.parser.node.ABlock;
@@ -235,7 +236,6 @@ public class ControlGraphFactory extends FMLSemanticsAnalyzer {
 	public void inALocalVariableDeclarationStatement(ALocalVariableDeclarationStatement node) {
 		// TODO Auto-generated method stub
 		super.inALocalVariableDeclarationStatement(node);
-		System.out.println("Nouvelle declaration de variable " + node);
 		push(new DeclarationActionNode(node, this));
 	}
 
@@ -306,8 +306,14 @@ public class ControlGraphFactory extends FMLSemanticsAnalyzer {
 
 	@Override
 	public void inAReturnStatementStatementWithoutTrailingSubstatement(AReturnStatementStatementWithoutTrailingSubstatement node) {
-		// TODO Auto-generated method stub
 		super.inAReturnStatementStatementWithoutTrailingSubstatement(node);
+		push(new ReturnStatementNode(node.getReturnStatement(), this));
+	}
+
+	@Override
+	public void outAReturnStatementStatementWithoutTrailingSubstatement(AReturnStatementStatementWithoutTrailingSubstatement node) {
+		super.outAReturnStatementStatementWithoutTrailingSubstatement(node);
+		pop();
 	}
 
 	/*
@@ -330,7 +336,6 @@ public class ControlGraphFactory extends FMLSemanticsAnalyzer {
 	public void inAAssignmentStatementExpression(AAssignmentStatementExpression node) {
 		// TODO Auto-generated method stub
 		super.inAAssignmentStatementExpression(node);
-		System.out.println("Nouvelle assignation avec " + node);
 		push(new AssignationActionNode(node, this));
 	}
 
@@ -338,7 +343,6 @@ public class ControlGraphFactory extends FMLSemanticsAnalyzer {
 	public void outAAssignmentStatementExpression(AAssignmentStatementExpression node) {
 		super.outAAssignmentStatementExpression(node);
 		pop();
-		System.out.println("OK c'est bon pour la nouvelle assignation " + node);
 	}
 
 	@Override

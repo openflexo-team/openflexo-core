@@ -61,6 +61,7 @@ import org.openflexo.p2pp.RawSource.RawSourceFragment;
  */
 public class CreationSchemeNode extends FlexoBehaviourNode<PBehaviourDeclaration, CreationScheme> {
 
+	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(CreationSchemeNode.class.getPackage().getName());
 
 	public CreationSchemeNode(PBehaviourDeclaration astNode, MainSemanticsAnalyzer analyser) {

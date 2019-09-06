@@ -227,6 +227,7 @@ public class FMLModelFactory extends ModelFactory implements PamelaResourceModel
 	public static List<Class<?>> retrieveTechnologySpecificClasses(Class<? extends VirtualModel> baseClass,
 			List<Class<? extends ModelSlot<?>>> usedModelSlots) throws ModelDefinitionException {
 		List<Class<?>> classes = new ArrayList<>();
+		classes.add(FMLCompilationUnit.class);
 		classes.add(baseClass);
 		for (Class<? extends ModelSlot<?>> modelSlotClass : usedModelSlots) {
 			retrieveTechnologySpecificClassesForModelSlot(modelSlotClass, classes);

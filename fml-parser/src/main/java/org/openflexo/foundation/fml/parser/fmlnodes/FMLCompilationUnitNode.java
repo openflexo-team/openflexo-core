@@ -61,6 +61,10 @@ public class FMLCompilationUnitNode extends FMLObjectNode<AFmlCompilationUnit, F
 		endPosition = getRawSource().getEndPosition();
 	}
 
+	public FMLCompilationUnitNode(FMLCompilationUnit compilationUnit, MainSemanticsAnalyzer analyser) {
+		super(compilationUnit, analyser);
+	}
+
 	@Override
 	public FMLCompilationUnit buildModelObjectFromAST(AFmlCompilationUnit astNode) {
 		return getFactory().newCompilationUnit();
@@ -76,9 +80,14 @@ public class FMLCompilationUnitNode extends FMLObjectNode<AFmlCompilationUnit, F
 
 		super.preparePrettyPrint(hasParsedVersion);
 
-		appendToChildrenPrettyPrintContents("", "", () -> getModelObject().getJavaImports(), LINE_SEPARATOR,
+		append(childrenContents("", "", () -> getModelObject().getJavaImports(), LINE_SEPARATOR, LINE_SEPARATOR + LINE_SEPARATOR,
+				Indentation.DoNotIndent, JavaImportDeclaration.class));
+
+		append(childContents("", () -> getModelObject().getVirtualModel(), LINE_SEPARATOR, Indentation.DoNotIndent));
+
+		/*appendToChildrenPrettyPrintContents("", "", () -> getModelObject().getJavaImports(), LINE_SEPARATOR,
 				LINE_SEPARATOR + LINE_SEPARATOR, Indentation.DoNotIndent, JavaImportDeclaration.class);
-		appendToChildPrettyPrintContents("", () -> getModelObject().getVirtualModel(), LINE_SEPARATOR, Indentation.DoNotIndent);
+		appendToChildPrettyPrintContents("", () -> getModelObject().getVirtualModel(), LINE_SEPARATOR, Indentation.DoNotIndent);*/
 	}
 
 	@Override

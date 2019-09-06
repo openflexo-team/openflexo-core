@@ -23,12 +23,12 @@ import org.fife.ui.rsyntaxtextarea.SquiggleUnderlineHighlightPainter;
 import org.fife.ui.rsyntaxtextarea.SyntaxConstants;
 import org.fife.ui.rsyntaxtextarea.parser.ParseResult;
 import org.fife.ui.rsyntaxtextarea.parser.Parser;
-import org.fife.ui.rsyntaxtextarea.parser.XmlParser;
 import org.fife.ui.rtextarea.Gutter;
 import org.fife.ui.rtextarea.RTextScrollPane;
 import org.fife.ui.rtextarea.SearchContext;
 import org.fife.ui.rtextarea.SearchEngine;
 import org.fife.ui.rtextarea.SmartHighlightPainter;
+import org.openflexo.fml.controller.widget.OnTheFlyFMLParser;
 import org.openflexo.icon.IconLibrary;
 
 /**
@@ -58,7 +58,8 @@ public class FindAndReplaceDemo extends JFrame implements ActionListener {
 		textArea = new RSyntaxTextArea(20, 60);
 		textArea.setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_JAVA);
 		textArea.setCodeFoldingEnabled(true);
-		textArea.setText("Pipi caca prout\nPipi caca prout\nPipi caca prout\n");
+		textArea.setText(
+				"Une première ligne\nUne autre ligne arrive ensuite\nUne dernière ligne arrive à la fin\nUne dernière ligne arrive à la fin\nUne dernière ligne arrive à la fin\\nUne dernière ligne arrive à la fin\nUne dernière ligne arrive à la fin\nUne dernière ligne arrive à la fin\n");
 		RTextScrollPane sp = new RTextScrollPane(textArea);
 		cp.add(sp);
 
@@ -89,7 +90,7 @@ public class FindAndReplaceDemo extends JFrame implements ActionListener {
 		ErrorStrip errorStrip = new ErrorStrip(textArea);
 		cp.add(errorStrip, BorderLayout.LINE_END);
 
-		Parser p = new XmlParser();
+		Parser p = new OnTheFlyFMLParser();// new XmlParser();
 		textArea.addParser(p);
 		// p.parse(textArea.getD, style)
 
@@ -98,7 +99,9 @@ public class FindAndReplaceDemo extends JFrame implements ActionListener {
 		// gutter.setBookmarkIcon(IconLibrary.FIXABLE_ERROR_ICON);
 		gutter.setBookmarkingEnabled(true);
 		try {
+			gutter.addLineTrackingIcon(0, IconLibrary.FIXABLE_ERROR_ICON);
 			gutter.addLineTrackingIcon(1, IconLibrary.FIXABLE_ERROR_ICON);
+			gutter.addLineTrackingIcon(3, IconLibrary.FIXABLE_ERROR_ICON);
 		} catch (BadLocationException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();

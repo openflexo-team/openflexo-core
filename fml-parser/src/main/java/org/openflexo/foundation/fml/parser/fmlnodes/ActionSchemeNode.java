@@ -44,7 +44,6 @@ import org.openflexo.foundation.fml.ActionScheme;
 import org.openflexo.foundation.fml.parser.ControlGraphFactory;
 import org.openflexo.foundation.fml.parser.MainSemanticsAnalyzer;
 import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.ControlGraphNode;
-import org.openflexo.foundation.fml.parser.node.AEmptyFlexoBehaviourBody;
 import org.openflexo.foundation.fml.parser.node.AMethodBehaviourDeclaration;
 import org.openflexo.p2pp.PrettyPrintContext.Indentation;
 
@@ -58,6 +57,7 @@ import org.openflexo.p2pp.PrettyPrintContext.Indentation;
  */
 public class ActionSchemeNode extends FlexoBehaviourNode<AMethodBehaviourDeclaration, ActionScheme> {
 
+	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(ActionSchemeNode.class.getPackage().getName());
 
 	public ActionSchemeNode(AMethodBehaviourDeclaration astNode, MainSemanticsAnalyzer analyser) {
@@ -87,16 +87,20 @@ public class ActionSchemeNode extends FlexoBehaviourNode<AMethodBehaviourDeclara
 	public void preparePrettyPrint(boolean hasParsedVersion) {
 		super.preparePrettyPrint(hasParsedVersion);
 
-		appendDynamicContents(() -> getVisibilityAsString(getModelObject().getVisibility()), SPACE, getVisibilityFragment());
+		// @formatter:off	
+		append(dynamicContents(() -> getVisibilityAsString(getModelObject().getVisibility()), SPACE), getVisibilityFragment());
+		append(dynamicContents(() -> getModelObject().getName(), SPACE), getNameFragment());
+		append(staticContents("("), getLParFragment());
+		append(staticContents(")"), getRParFragment());
+		when(() -> isAbstract())
+				.thenAppend(staticContents(";"), getSemiFragment())
+				.elseAppend(staticContents(SPACE,"{", ""), getLBrcFragment())
+				.elseAppend(childContents(LINE_SEPARATOR, () -> getModelObject().getControlGraph(), LINE_SEPARATOR, Indentation.Indent))
+				.elseAppend(staticContents(LINE_SEPARATOR, "}", ""), getLBrcFragment());
+		// @formatter:on
 
-		/*if (hasParsedVersion && getVisibilityFragment() != null) {
-			appendDynamicContents(() -> getVisibilityAsString(getModelObject().getVisibility()), SPACE, getVisibilityFragment());
-		}
-		else {
-			appendDynamicContents(() -> getVisibilityAsString(getModelObject().getVisibility()), SPACE);
-		}*/
-
-		// if (hasParsedVersion) {
+		/*appendDynamicContents(() -> getVisibilityAsString(getModelObject().getVisibility()), SPACE, getVisibilityFragment());
+		
 		appendDynamicContents(() -> getModelObject().getName(), SPACE, getNameFragment());
 		appendStaticContents("(", getLParFragment());
 		appendStaticContents(")", getRParFragment());
@@ -108,15 +112,6 @@ public class ActionSchemeNode extends FlexoBehaviourNode<AMethodBehaviourDeclara
 			appendToChildPrettyPrintContents(LINE_SEPARATOR, () -> getModelObject().getControlGraph(), LINE_SEPARATOR,
 					Indentation.DoNotIndent);
 			appendStaticContents(LINE_SEPARATOR, "}", getRBrcFragment());
-		}
-		/*}
-		else {
-			appendDynamicContents(() -> getModelObject().getName(), SPACE);
-			appendStaticContents("(");
-			appendStaticContents(")");
-			appendStaticContents(SPACE, "{");
-			appendToChildPrettyPrintContents(LINE_SEPARATOR, () -> getModelObject().getControlGraph(), LINE_SEPARATOR, 0);
-			appendStaticContents(LINE_SEPARATOR, "}");
 		}*/
 	}
 

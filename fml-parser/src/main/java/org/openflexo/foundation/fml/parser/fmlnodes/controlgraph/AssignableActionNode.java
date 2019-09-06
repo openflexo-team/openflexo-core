@@ -53,9 +53,8 @@ import org.openflexo.p2pp.RawSource.RawSourceFragment;
  */
 public abstract class AssignableActionNode<N extends Node, T extends AssignableAction<?>> extends ControlGraphNode<N, T> {
 
+	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(AssignableActionNode.class.getPackage().getName());
-
-	private ControlGraphFactory cgFactory;
 
 	public AssignableActionNode(N astNode, ControlGraphFactory cgFactory) {
 		super(astNode, cgFactory);

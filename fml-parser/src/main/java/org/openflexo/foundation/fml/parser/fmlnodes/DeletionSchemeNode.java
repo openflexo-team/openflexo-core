@@ -45,7 +45,6 @@ import org.openflexo.foundation.fml.parser.ControlGraphFactory;
 import org.openflexo.foundation.fml.parser.MainSemanticsAnalyzer;
 import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.ControlGraphNode;
 import org.openflexo.foundation.fml.parser.node.AAnonymousDestructorBehaviourDeclaration;
-import org.openflexo.foundation.fml.parser.node.AEmptyFlexoBehaviourBody;
 import org.openflexo.foundation.fml.parser.node.ANamedDestructorBehaviourDeclaration;
 import org.openflexo.foundation.fml.parser.node.PBehaviourDeclaration;
 import org.openflexo.p2pp.PrettyPrintContext.Indentation;
@@ -62,6 +61,7 @@ import org.openflexo.p2pp.RawSource.RawSourceFragment;
  */
 public class DeletionSchemeNode extends FlexoBehaviourNode<PBehaviourDeclaration, DeletionScheme> {
 
+	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(DeletionSchemeNode.class.getPackage().getName());
 
 	public DeletionSchemeNode(PBehaviourDeclaration astNode, MainSemanticsAnalyzer analyser) {
@@ -106,16 +106,22 @@ public class DeletionSchemeNode extends FlexoBehaviourNode<PBehaviourDeclaration
 	public void preparePrettyPrint(boolean hasParsedVersion) {
 		super.preparePrettyPrint(hasParsedVersion);
 
-		appendDynamicContents(() -> getVisibilityAsString(getModelObject().getVisibility()), SPACE, getVisibilityFragment());
+		// @formatter:off	
+		append(dynamicContents(() -> getVisibilityAsString(getModelObject().getVisibility()), SPACE), getVisibilityFragment());
+		append(staticContents("delete"), getDeleteFragment());
+		when(() -> !isAnonymous())
+				.thenAppend(staticContents("::"), getColonColonFragment())
+				.thenAppend(dynamicContents(() -> getModelObject().getName()), getNameFragment());
+		append(staticContents(SPACE, "(", ""), getLParFragment());
+		append(staticContents(")"), getRParFragment());
+		when(() -> isAbstract())
+				.thenAppend(staticContents(";"), getSemiFragment())
+				.elseAppend(staticContents(SPACE,"{", ""), getLBrcFragment())
+				.elseAppend(childContents(LINE_SEPARATOR, () -> getModelObject().getControlGraph(), LINE_SEPARATOR, Indentation.Indent))
+				.elseAppend(staticContents(LINE_SEPARATOR, "}", ""), getLBrcFragment());
+		// @formatter:on
 
-		/*if (hasParsedVersion && getVisibilityFragment() != null) {
-			appendDynamicContents(() -> getVisibilityAsString(getModelObject().getVisibility()), SPACE, getVisibilityFragment());
-		}
-		else {
-			appendDynamicContents(() -> getVisibilityAsString(getModelObject().getVisibility()), SPACE);
-		}*/
-
-		// if (hasParsedVersion) {
+		/*appendDynamicContents(() -> getVisibilityAsString(getModelObject().getVisibility()), SPACE, getVisibilityFragment());
 		appendStaticContents("", "delete", SPACE, getDeleteFragment());
 		if (!isAnonymous()) {
 			appendStaticContents("::", getColonColonFragment());
@@ -131,19 +137,6 @@ public class DeletionSchemeNode extends FlexoBehaviourNode<PBehaviourDeclaration
 			appendToChildPrettyPrintContents(LINE_SEPARATOR, () -> getModelObject().getControlGraph(), LINE_SEPARATOR,
 					Indentation.DoNotIndent);
 			appendStaticContents(LINE_SEPARATOR, "}", getRBrcFragment());
-		}
-		/*}
-		else {
-			appendStaticContents("", "delete", SPACE);
-			if (!isAnonymous()) {
-				appendStaticContents("::");
-				appendDynamicContents(() -> getModelObject().getName());
-			}
-			appendStaticContents("(");
-			appendStaticContents(")");
-			appendStaticContents(SPACE, "{");
-			appendToChildPrettyPrintContents(LINE_SEPARATOR, () -> getModelObject().getControlGraph(), LINE_SEPARATOR, 0);
-			appendStaticContents(LINE_SEPARATOR, "}");
 		}*/
 	}
 

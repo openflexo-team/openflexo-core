@@ -54,6 +54,7 @@ import org.openflexo.p2pp.RawSource.RawSourceFragment;
  */
 public class PrimitiveRoleNode extends FlexoPropertyNode<AJavaBasicRoleDeclaration, PrimitiveRole<?>> {
 
+	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(PrimitiveRoleNode.class.getPackage().getName());
 
 	public PrimitiveRoleNode(AJavaBasicRoleDeclaration astNode, MainSemanticsAnalyzer analyser) {
@@ -77,26 +78,10 @@ public class PrimitiveRoleNode extends FlexoPropertyNode<AJavaBasicRoleDeclarati
 	public void preparePrettyPrint(boolean hasParsedVersion) {
 		super.preparePrettyPrint(hasParsedVersion);
 
-		appendDynamicContents(() -> getVisibilityAsString(getModelObject().getVisibility()), SPACE, getVisibilityFragment());
-
-		/*if (hasParsedVersion && getVisibilityFragment() != null) {
-			appendDynamicContents(() -> getVisibilityAsString(getModelObject().getVisibility()), SPACE, getVisibilityFragment());
-		}
-		else {
-			appendDynamicContents(() -> getVisibilityAsString(getModelObject().getVisibility()), SPACE);
-		}*/
-
-		// if (hasParsedVersion) {
-		appendDynamicContents(() -> serializeType(getModelObject().getType()), SPACE, getTypeFragment());
-		appendDynamicContents(() -> getModelObject().getName(), getNameFragment());
-		appendStaticContents(";", getSemiFragment());
-		/*}
-		else {
-			appendDynamicContents(() -> getVisibilityAsString(getModelObject().getVisibility()), SPACE);
-			appendDynamicContents(() -> serializeType(getModelObject().getType()), SPACE);
-			appendDynamicContents(() -> getModelObject().getName());
-			appendStaticContents(";");
-		}*/
+		append(dynamicContents(() -> getVisibilityAsString(getModelObject().getVisibility()), SPACE), getVisibilityFragment());
+		append(dynamicContents(() -> serializeType(getModelObject().getType()), SPACE), getTypeFragment());
+		append(dynamicContents(() -> getModelObject().getName()), getNameFragment());
+		append(staticContents(";"), getSemiFragment());
 	}
 
 	private RawSourceFragment getVisibilityFragment() {

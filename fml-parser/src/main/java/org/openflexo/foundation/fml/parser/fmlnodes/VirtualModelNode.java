@@ -83,39 +83,34 @@ public class VirtualModelNode extends FMLObjectNode<AModelDeclaration, VirtualMo
 
 		super.preparePrettyPrint(hasParsedVersion);
 
-		appendDynamicContents(() -> getVisibilityAsString(getModelObject().getVisibility()), SPACE, getVisibilityFragment());
+		// @formatter:off	
+		append(dynamicContents(() -> getVisibilityAsString(getModelObject().getVisibility()), SPACE), getVisibilityFragment());
+		append(staticContents("","model",SPACE), getModelFragment());
+		append(dynamicContents(() -> getModelObject().getName()),getNameFragment());
+		append(staticContents(SPACE, "{", LINE_SEPARATOR), getLBrcFragment());
+		append(childrenContents("", () -> getModelObject().getFlexoProperties(), LINE_SEPARATOR, Indentation.Indent,
+				FlexoProperty.class));
+		append(childrenContents(LINE_SEPARATOR, () -> getModelObject().getFlexoBehaviours(), LINE_SEPARATOR, Indentation.Indent,
+				FlexoBehaviour.class));
+		append(childrenContents(LINE_SEPARATOR, () -> getModelObject().getFlexoConcepts(), LINE_SEPARATOR, Indentation.Indent,
+				FlexoConcept.class));
+		append(staticContents("", "}", LINE_SEPARATOR), getRBrcFragment());
+		// @formatter:on
 
-		/*if (hasParsedVersion && getVisibilityFragment() != null) {
-			appendDynamicContents(() -> getVisibilityAsString(getModelObject().getVisibility()), SPACE, getVisibilityFragment());
-		}
-		else {
-			appendDynamicContents(() -> getVisibilityAsString(getModelObject().getVisibility()), SPACE);
-		}*/
-
-		// if (hasParsedVersion) {
+		/*appendDynamicContents(() -> getVisibilityAsString(getModelObject().getVisibility()), SPACE, getVisibilityFragment());
+		
 		appendStaticContents("model", SPACE, getModelFragment());
 		appendDynamicContents(() -> getModelObject().getName(), getNameFragment());
 		appendStaticContents(SPACE, "{", LINE_SEPARATOR, getLBrcFragment());
-		/*}
-		else {
-			appendStaticContents("model" + SPACE);
-			appendDynamicContents(() -> getModelObject().getName());
-			appendStaticContents(SPACE, "{", LINE_SEPARATOR);
-		}*/
-
+		
 		appendToChildrenPrettyPrintContents("", () -> getModelObject().getFlexoProperties(), LINE_SEPARATOR, Indentation.Indent,
 				FlexoProperty.class);
 		appendToChildrenPrettyPrintContents(LINE_SEPARATOR, () -> getModelObject().getFlexoBehaviours(), LINE_SEPARATOR, Indentation.Indent,
 				FlexoBehaviour.class);
 		appendToChildrenPrettyPrintContents(LINE_SEPARATOR, () -> getModelObject().getFlexoConcepts(), LINE_SEPARATOR, Indentation.Indent,
 				FlexoConcept.class);
-
-		// if (getASTNode() != null) {
-		appendStaticContents("}", LINE_SEPARATOR, getRBrcFragment());
-		/*}
-		else {
-			appendStaticContents("}", LINE_SEPARATOR);
-		}*/
+		
+		appendStaticContents("}", LINE_SEPARATOR, getRBrcFragment());*/
 	}
 
 	private RawSourceFragment getVisibilityFragment() {

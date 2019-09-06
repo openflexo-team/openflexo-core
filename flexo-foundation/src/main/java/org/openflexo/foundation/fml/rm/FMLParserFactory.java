@@ -36,41 +36,14 @@
  * 
  */
 
-package org.openflexo.foundation.fml.parser.fmlnodes.controlgraph;
-
-import java.util.logging.Logger;
-
-import org.openflexo.foundation.fml.controlgraph.EmptyControlGraph;
-import org.openflexo.foundation.fml.parser.ControlGraphFactory;
-import org.openflexo.foundation.fml.parser.node.ABlock;
+package org.openflexo.foundation.fml.rm;
 
 /**
- * @author sylvain
+ * API specifying the parsing service factory for FML.<br>
  * 
+ * @author sylvain
  */
-public class EmptyControlGraphNode extends ControlGraphNode<ABlock, EmptyControlGraph> {
+public interface FMLParserFactory {
 
-	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(EmptyControlGraphNode.class.getPackage().getName());
-
-	public EmptyControlGraphNode(ABlock astNode, ControlGraphFactory cgFactory) {
-		super(astNode, cgFactory);
-	}
-
-	public EmptyControlGraphNode(EmptyControlGraph sequence, ControlGraphFactory cgFactory) {
-		super(sequence, cgFactory);
-	}
-
-	@Override
-	public EmptyControlGraph buildModelObjectFromAST(ABlock astNode) {
-		EmptyControlGraph returned = getFactory().newEmptyControlGraph();
-		return returned;
-	}
-
-	@Override
-	public void preparePrettyPrint(boolean hasParsedVersion) {
-		super.preparePrettyPrint(hasParsedVersion);
-		// Nothing to do
-	}
-
+	public FMLParser makeFMLParser();
 }
