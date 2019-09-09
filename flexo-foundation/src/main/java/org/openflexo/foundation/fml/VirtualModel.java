@@ -736,7 +736,7 @@ public interface VirtualModel extends FlexoConcept {
 
 			// Implemented lazy loading for VirtualModel while searching FlexoConcept from URI
 
-			if (flexoConceptNameOrURI.indexOf("#") > -1 && getCompilationUnit().getResource() != null) {
+			if (flexoConceptNameOrURI.indexOf("#") > -1 && getCompilationUnit() != null && getCompilationUnit().getResource() != null) {
 				String virtualModelURI = flexoConceptNameOrURI.substring(0, flexoConceptNameOrURI.indexOf("#"));
 				CompilationUnitResource vmRes = getCompilationUnit().getResource().getContentWithURI(CompilationUnitResource.class,
 						virtualModelURI);

@@ -121,9 +121,9 @@ public class TestDeleteAction extends OpenflexoProjectAtRunTimeTestCase {
 		assertTrue(virtualModel.getResource().getIODelegate().exists());
 
 		assertEquals(viewPoint, virtualModel.getContainerVirtualModel());
-		assertEquals(virtualModel, virtualModel.getDeclaringCompilationUnit());
+		assertEquals(virtualModel, virtualModel.getDeclaringCompilationUnit().getVirtualModel());
 		assertEquals(virtualModel, virtualModel.getFlexoConcept());
-		assertEquals(virtualModel, virtualModel.getResourceData());
+		assertEquals(virtualModel, virtualModel.getResourceData().getVirtualModel());
 
 		CreateFlexoConcept addEP = CreateFlexoConcept.actionType.makeNewAction(virtualModel, null, editor);
 		addEP.setNewFlexoConceptName("FlexoConcept");
@@ -136,7 +136,7 @@ public class TestDeleteAction extends OpenflexoProjectAtRunTimeTestCase {
 		assertEquals(virtualModel, flexoConcept.getOwner());
 		assertEquals(virtualModel, flexoConcept.getOwningVirtualModel());
 		assertEquals(flexoConcept, flexoConcept.getFlexoConcept());
-		assertEquals(virtualModel, flexoConcept.getResourceData());
+		assertEquals(virtualModel, flexoConcept.getResourceData().getVirtualModel());
 
 		try {
 			virtualModel.getResource().save();
