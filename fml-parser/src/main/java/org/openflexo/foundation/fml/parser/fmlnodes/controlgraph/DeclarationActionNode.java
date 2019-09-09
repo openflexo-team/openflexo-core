@@ -92,7 +92,7 @@ public class DeclarationActionNode extends AssignableActionNode<ALocalVariableDe
 
 		// @formatter:off	
 		append(dynamicContents(() -> serializeType(getModelObject().getType()), SPACE), getTypeFragment());
-		append(dynamicContents(() -> getModelObject().getName()), getNameFragment());
+		append(dynamicContents(() -> getModelObject().getVariableName()), getNameFragment());
 		when(() -> hasInitializer())
 			.thenAppend(staticContents("="), getAssignOperatorFragment())
 			.thenAppend(dynamicContents(() -> ((ExpressionAction) getModelObject().getAssignableAction()).getExpression().toString()),
