@@ -39,12 +39,16 @@
 package org.openflexo.foundation.project;
 
 import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.util.Calendar;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.FlexoProject;
+import org.openflexo.foundation.IOFlexoException;
+import org.openflexo.foundation.InconsistentDataException;
+import org.openflexo.foundation.InvalidModelDefinitionException;
+import org.openflexo.foundation.InvalidXMLException;
+import org.openflexo.foundation.resource.FlexoFileNotFoundException;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.resource.PamelaXMLSerializableResourceImpl;
 import org.openflexo.foundation.resource.ResourceLoadingCancelledException;
@@ -86,8 +90,27 @@ public abstract class FlexoProjectResourceImpl<I> extends PamelaXMLSerializableR
 		}
 	}
 
+	private boolean isClosing = false;
+	private boolean isClosed = false;
+
+	@Override
+	public void setClosing() {
+		isClosing = true;
+	}
+
+	@Override
+	public void setClosed() {
+		isClosed = true;
+	}
+
 	@Override
 	public FlexoProject<I> getFlexoProject() {
+		if (isClosing) {
+			return getLoadedResourceData();
+		}
+		if (isClosed) {
+			return null;
+		}
 		try {
 			return getResourceData();
 		} catch (FileNotFoundException e) {
@@ -107,20 +130,19 @@ public abstract class FlexoProjectResourceImpl<I> extends PamelaXMLSerializableR
 	}
 
 	@Override
-	protected FlexoProject<I> performLoad() throws IOException, Exception {
-		FlexoProject<I> returned = super.performLoad();
-		if (returned != null) {
-			setURI(returned.getProjectURI());
-			returned.setLastUniqueID(0);
+	public FlexoProject<I> loadResourceData() throws FlexoFileNotFoundException, IOFlexoException, InvalidXMLException,
+			InconsistentDataException, InvalidModelDefinitionException {
+		FlexoProject<I> returned = super.loadResourceData();
+		returned.setLastUniqueID(0);
 
-			// We add the newly created project as a ResourceCenter
-			FlexoTask addResourceCenterTask = getServiceManager().resourceCenterAdded(returned);
+		// We add the newly created project as a ResourceCenter
+		FlexoTask addResourceCenterTask = getServiceManager().resourceCenterAdded(returned);
 
-			// If resource center adding is executing in a task, we have to wait the task to be finished
-			if (addResourceCenterTask != null) {
-				getServiceManager().getTaskManager().waitTask(addResourceCenterTask);
-			}
+		// If resource center adding is executing in a task, we have to wait the task to be finished
+		if (addResourceCenterTask != null) {
+			getServiceManager().getTaskManager().waitTask(addResourceCenterTask);
 		}
+
 		return returned;
 	}
 

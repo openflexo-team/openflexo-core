@@ -72,4 +72,8 @@ public interface FlexoProjectResource<I> extends PamelaXMLSerializableResource<F
 	 * @return
 	 */
 	public boolean isStandAlone();
+
+	public void setClosing();
+
+	public void setClosed();
 }

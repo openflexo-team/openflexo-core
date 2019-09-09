@@ -545,6 +545,11 @@ public abstract class FlexoProjectImpl<I> extends ResourceRepositoryImpl<FlexoRe
 		if (dw != null) {
 			dw.cancel();
 		}
+
+		if (getProjectResource() != null) {
+			getProjectResource().setClosing();
+		}
+
 		// Removes from resourceCenters
 		FlexoServiceManager svcManager = getServiceManager();
 		if (svcManager != null) {
@@ -555,6 +560,11 @@ public abstract class FlexoProjectImpl<I> extends ResourceRepositoryImpl<FlexoRe
 			logger.info("Closing project...");
 		}
 		deleteObservers();
+
+		if (getProjectResource() != null) {
+			getProjectResource().setClosed();
+		}
+
 		if (logger.isLoggable(Level.INFO)) {
 			logger.info("Closing project... DONE");
 		}

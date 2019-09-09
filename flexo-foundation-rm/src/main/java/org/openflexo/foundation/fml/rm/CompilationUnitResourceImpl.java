@@ -62,13 +62,16 @@ import org.openflexo.foundation.InvalidModelDefinitionException;
 import org.openflexo.foundation.InvalidXMLException;
 import org.openflexo.foundation.fml.FMLCompilationUnit;
 import org.openflexo.foundation.fml.FMLModelFactory;
+import org.openflexo.foundation.fml.FMLObject.BindingIsRequiredAndMustBeValid.InvalidRequiredBindingIssue;
 import org.openflexo.foundation.fml.FMLTechnologyAdapter;
+import org.openflexo.foundation.fml.FMLValidationModel;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.VirtualModelLibrary;
 import org.openflexo.foundation.fml.parser.FMLParser;
 import org.openflexo.foundation.fml.parser.ParseException;
 import org.openflexo.foundation.fml.rt.FMLRTTechnologyAdapter;
+import org.openflexo.foundation.fml.rt.rm.FMLRTVirtualModelInstanceResource;
 import org.openflexo.foundation.resource.CannotRenameException;
 import org.openflexo.foundation.resource.DirectoryBasedIODelegate;
 import org.openflexo.foundation.resource.DirectoryBasedJarIODelegate;
@@ -81,11 +84,14 @@ import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.resource.PamelaResourceImpl;
 import org.openflexo.foundation.resource.ResourceLoadingCancelledException;
 import org.openflexo.foundation.resource.SaveResourceException;
+import org.openflexo.foundation.resource.SaveResourcePermissionDeniedException;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterService;
 import org.openflexo.kvc.AccessorInvocationException;
 import org.openflexo.pamela.exceptions.ModelDefinitionException;
+import org.openflexo.pamela.validation.ValidationIssue;
+import org.openflexo.pamela.validation.ValidationReport;
 import org.openflexo.rm.InJarResourceImpl;
 import org.openflexo.rm.Resource;
 import org.openflexo.rm.ResourceLocator;
@@ -292,9 +298,7 @@ public abstract class CompilationUnitResourceImpl extends PamelaResourceImpl<FML
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		// isLoading = false;
 
-		/*FMLCompilationUnit returned = super.loadResourceData();
 		// We notify a deserialization start on ViewPoint AND VirtualModel, to avoid addToVirtualModel() and setViewPoint() to notify
 		// UndoManager
 		boolean containerWasDeserializing = getContainer() != null ? getContainer().isDeserializing() : true;
@@ -305,20 +309,20 @@ public abstract class CompilationUnitResourceImpl extends PamelaResourceImpl<FML
 		if (getContainer() != null) {
 			VirtualModel virtualModel = getContainer().getCompilationUnit().getVirtualModel();
 			if (virtualModel != null)
-				virtualModel.addToVirtualModels(returned.getVirtualModel());
+				virtualModel.addToVirtualModels(resourceData.getVirtualModel());
 		}
-		returned.clearIsModified();
+		resourceData.clearIsModified();
 		// And, we notify a deserialization stop
 		stopDeserializing();
 		if (!containerWasDeserializing) {
 			getContainer().stopDeserializing();
 		}
-		
+
 		if (needsConversion() || (getContainer() != null && getContainer().needsConversion())) {
 			logger.info("Converting " + this);
 			FMLValidationModel validationModel = getServiceManager().getVirtualModelLibrary().getFMLValidationModel();
 			try {
-				ValidationReport validationReport = validationModel.validate(returned);
+				ValidationReport validationReport = validationModel.validate(resourceData);
 				for (ValidationIssue<?, ?> issue : validationReport.getAllIssues()) {
 					if (issue instanceof InvalidRequiredBindingIssue) {
 						InvalidRequiredBindingIssue<?> invalidBinding = (InvalidRequiredBindingIssue<?>) issue;
@@ -335,9 +339,9 @@ public abstract class CompilationUnitResourceImpl extends PamelaResourceImpl<FML
 			} catch (SaveResourceException e) {
 				e.printStackTrace();
 			}
-		
+
 		}
-		
+
 		try {
 			// When some contained VMI are declared for this resource, load them now
 			for (FMLRTVirtualModelInstanceResource containedVMIResource : getContainedVMI()) {
@@ -350,8 +354,6 @@ public abstract class CompilationUnitResourceImpl extends PamelaResourceImpl<FML
 			e.printStackTrace();
 			logger.warning("Unhandled Exception");
 		}
-		
-		return returned;*/
 
 		return resourceData;
 	}

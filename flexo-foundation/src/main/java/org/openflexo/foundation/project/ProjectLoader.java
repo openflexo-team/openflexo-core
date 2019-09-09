@@ -370,6 +370,9 @@ public class ProjectLoader extends FlexoServiceImpl {
 	 * @return
 	 */
 	public final FlexoEditor getEditorForProject(FlexoProject<?> project) {
+		if (project == null) {
+			return null;
+		}
 		FlexoEditor returned = editors.get(project);
 		if (returned == null) {
 			returned = makeFlexoEditor(project);
