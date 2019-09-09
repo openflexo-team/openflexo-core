@@ -104,10 +104,10 @@ public class TestCreateViewPoint extends OpenflexoTestCase {
 
 		assertNotNull(newViewPoint.getCompilationUnit().getLocalizedDictionary());
 
-		assertEquals(newViewPoint, newViewPoint.getDeclaringCompilationUnit());
+		assertEquals(newViewPoint, newViewPoint.getDeclaringCompilationUnit().getVirtualModel());
 		assertEquals(null, newViewPoint.getContainerVirtualModel());
 		assertEquals(newViewPoint, newViewPoint.getFlexoConcept());
-		assertEquals(newViewPoint, newViewPoint.getResourceData());
+		assertEquals(newViewPoint, newViewPoint.getResourceData().getVirtualModel());
 
 		assertEquals(VIEWPOINT_URI, newViewPoint.getURI());
 
@@ -144,10 +144,10 @@ public class TestCreateViewPoint extends OpenflexoTestCase {
 		assertSame(retrievedVPResource1, retrievedVPResource2);
 
 		VirtualModel reloadedViewPoint = retrievedVPResource1.getCompilationUnit().getVirtualModel();
-		assertEquals(reloadedViewPoint, reloadedViewPoint.getDeclaringCompilationUnit());
+		assertEquals(reloadedViewPoint, reloadedViewPoint.getDeclaringCompilationUnit().getVirtualModel());
 		assertEquals(null, reloadedViewPoint.getContainerVirtualModel());
 		assertEquals(reloadedViewPoint, reloadedViewPoint.getFlexoConcept());
-		assertEquals(reloadedViewPoint, reloadedViewPoint.getResourceData());
+		assertEquals(reloadedViewPoint, reloadedViewPoint.getResourceData().getVirtualModel());
 
 	}
 

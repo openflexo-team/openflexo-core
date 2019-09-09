@@ -246,8 +246,10 @@ public class VirtualModelLibrary extends DefaultFlexoObject implements FlexoServ
 		CompilationUnitResource compilationUnitResource = getCompilationUnitResource(objectURI);
 
 		if (compilationUnitResource != null) {
-			return (loadWhenRequired ? (O) compilationUnitResource.getCompilationUnit()
-					: (O) compilationUnitResource.getLoadedCompilationUnit());
+			return (loadWhenRequired ? (O) compilationUnitResource.getCompilationUnit().getVirtualModel()
+					: (compilationUnitResource.getLoadedCompilationUnit() != null
+							? (O) compilationUnitResource.getLoadedCompilationUnit().getVirtualModel()
+							: null));
 		}
 
 		if (objectURI.indexOf("#") > -1) {
