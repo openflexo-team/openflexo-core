@@ -48,6 +48,7 @@ import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.DataBinding.BindingDefinitionType;
 import org.openflexo.connie.type.TypeUtils;
 import org.openflexo.foundation.fml.AbstractProperty;
+import org.openflexo.foundation.fml.ActionScheme;
 import org.openflexo.foundation.fml.FMLCompilationUnit;
 import org.openflexo.foundation.fml.FMLMetaData;
 import org.openflexo.foundation.fml.FMLModelFactory;
@@ -63,7 +64,9 @@ import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.Visibility;
 import org.openflexo.foundation.fml.controlgraph.Sequence;
 import org.openflexo.foundation.fml.editionaction.AssignationAction;
+import org.openflexo.foundation.fml.editionaction.DeclarationAction;
 import org.openflexo.foundation.fml.parser.fmlnodes.AbstractPropertyNode;
+import org.openflexo.foundation.fml.parser.fmlnodes.ActionSchemeNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.FlexoConceptNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.JavaImportNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.JavaRoleNode;
@@ -71,6 +74,7 @@ import org.openflexo.foundation.fml.parser.fmlnodes.MetaDataNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.PrimitiveRoleNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.VirtualModelNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.AssignationActionNode;
+import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.DeclarationActionNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.SequenceNode;
 import org.openflexo.foundation.fml.parser.node.AIdentifierVariableDeclarator;
 import org.openflexo.foundation.fml.parser.node.AInitializerVariableDeclarator;
@@ -220,14 +224,33 @@ public abstract class FMLObjectNode<N extends Node, T extends FMLPrettyPrintable
 		if (object instanceof AbstractProperty) {
 			return (P2PPNode<?, C>) new AbstractPropertyNode((AbstractProperty) object, getAnalyser());
 		}
+		if (object instanceof ActionScheme) {
+			return (P2PPNode<?, C>) new ActionSchemeNode((ActionScheme) object, getAnalyser());
+		}
 		if (object instanceof Sequence) {
-			return (P2PPNode<?, C>) new SequenceNode((Sequence) object, (ControlGraphFactory) getAbstractAnalyser());
+			return (P2PPNode<?, C>) new SequenceNode((Sequence) object, getControlGraphFactory());
 		}
 		if (object instanceof AssignationAction) {
-			return (P2PPNode<?, C>) new AssignationActionNode((AssignationAction) object, (ControlGraphFactory) getAbstractAnalyser());
+			return (P2PPNode<?, C>) new AssignationActionNode((AssignationAction) object, getControlGraphFactory());
+		}
+		if (object instanceof DeclarationAction) {
+			return (P2PPNode<?, C>) new DeclarationActionNode((DeclarationAction) object, getControlGraphFactory());
 		}
 		System.err.println("Not supported: " + object);
 		Thread.dumpStack();
+		return null;
+	}
+
+	public ControlGraphFactory getControlGraphFactory() {
+		System.out.println("Je suis le noeud " + this.getClass().getSimpleName());
+		System.out.println("Et on me demande un ControlGraphFactory");
+
+		if (getAbstractAnalyser() instanceof ControlGraphFactory) {
+			return (ControlGraphFactory) getAbstractAnalyser();
+		}
+		if (getParent() instanceof FMLObjectNode) {
+			return ((FMLObjectNode) getParent()).getControlGraphFactory();
+		}
 		return null;
 	}
 

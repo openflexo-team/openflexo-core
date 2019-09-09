@@ -41,6 +41,7 @@ package org.openflexo.foundation.fml.parser.fmlnodes;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.fml.FlexoBehaviour;
+import org.openflexo.foundation.fml.parser.ControlGraphFactory;
 import org.openflexo.foundation.fml.parser.FMLObjectNode;
 import org.openflexo.foundation.fml.parser.MainSemanticsAnalyzer;
 import org.openflexo.foundation.fml.parser.node.AAnonymousConstructorBehaviourDeclaration;
@@ -66,12 +67,23 @@ public abstract class FlexoBehaviourNode<N extends Node, T extends FlexoBehaviou
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(FlexoBehaviourNode.class.getPackage().getName());
 
+	private ControlGraphFactory controlGraphFactory;
+
 	public FlexoBehaviourNode(N astNode, MainSemanticsAnalyzer analyser) {
 		super(astNode, analyser);
 	}
 
 	public FlexoBehaviourNode(T property, MainSemanticsAnalyzer analyser) {
 		super(property, analyser);
+		controlGraphFactory = new ControlGraphFactory(null, analyser);
+	}
+
+	@Override
+	public ControlGraphFactory getControlGraphFactory() {
+		if (controlGraphFactory == null) {
+			controlGraphFactory = new ControlGraphFactory(getFlexoBehaviourBody(getASTNode()), getAnalyser());
+		}
+		return controlGraphFactory;
 	}
 
 	@Override
@@ -85,28 +97,28 @@ public abstract class FlexoBehaviourNode<N extends Node, T extends FlexoBehaviou
 		return this;
 	}
 
-	public PFlexoBehaviourBody getFlexoBehaviourBody() {
-		if (getASTNode() instanceof AAnonymousConstructorBehaviourDeclaration) {
-			return ((AAnonymousConstructorBehaviourDeclaration) getASTNode()).getFlexoBehaviourBody();
+	public PFlexoBehaviourBody getFlexoBehaviourBody(N astNode) {
+		if (astNode instanceof AAnonymousConstructorBehaviourDeclaration) {
+			return ((AAnonymousConstructorBehaviourDeclaration) astNode).getFlexoBehaviourBody();
 		}
-		if (getASTNode() instanceof ANamedConstructorBehaviourDeclaration) {
-			return ((ANamedConstructorBehaviourDeclaration) getASTNode()).getFlexoBehaviourBody();
+		if (astNode instanceof ANamedConstructorBehaviourDeclaration) {
+			return ((ANamedConstructorBehaviourDeclaration) astNode).getFlexoBehaviourBody();
 		}
-		if (getASTNode() instanceof AAnonymousDestructorBehaviourDeclaration) {
-			return ((AAnonymousDestructorBehaviourDeclaration) getASTNode()).getFlexoBehaviourBody();
+		if (astNode instanceof AAnonymousDestructorBehaviourDeclaration) {
+			return ((AAnonymousDestructorBehaviourDeclaration) astNode).getFlexoBehaviourBody();
 		}
-		if (getASTNode() instanceof ANamedDestructorBehaviourDeclaration) {
-			return ((ANamedDestructorBehaviourDeclaration) getASTNode()).getFlexoBehaviourBody();
+		if (astNode instanceof ANamedDestructorBehaviourDeclaration) {
+			return ((ANamedDestructorBehaviourDeclaration) astNode).getFlexoBehaviourBody();
 		}
-		if (getASTNode() instanceof AMethodBehaviourDeclaration) {
-			return ((AMethodBehaviourDeclaration) getASTNode()).getFlexoBehaviourBody();
+		if (astNode instanceof AMethodBehaviourDeclaration) {
+			return ((AMethodBehaviourDeclaration) astNode).getFlexoBehaviourBody();
 		}
 		return null;
 	}
 
 	protected boolean isAbstract() {
 		if (getASTNode() != null) {
-			return (getFlexoBehaviourBody() instanceof AEmptyFlexoBehaviourBody);
+			return (getFlexoBehaviourBody(getASTNode()) instanceof AEmptyFlexoBehaviourBody);
 		}
 		else {
 			return getModelObject().isAbstract();
@@ -119,8 +131,8 @@ public abstract class FlexoBehaviourNode<N extends Node, T extends FlexoBehaviou
 	 * @return
 	 */
 	protected RawSourceFragment getSemiFragment() {
-		if (getFlexoBehaviourBody() instanceof AEmptyFlexoBehaviourBody) {
-			return getFragment(((AEmptyFlexoBehaviourBody) getFlexoBehaviourBody()).getSemi());
+		if (getFlexoBehaviourBody(getASTNode()) instanceof AEmptyFlexoBehaviourBody) {
+			return getFragment(((AEmptyFlexoBehaviourBody) getFlexoBehaviourBody(getASTNode())).getSemi());
 		}
 		return null;
 	}
@@ -131,8 +143,8 @@ public abstract class FlexoBehaviourNode<N extends Node, T extends FlexoBehaviou
 	 * @return
 	 */
 	protected RawSourceFragment getLBrcFragment() {
-		if (getFlexoBehaviourBody() instanceof ABlockFlexoBehaviourBody) {
-			return getFragment(((ABlock) ((ABlockFlexoBehaviourBody) getFlexoBehaviourBody()).getBlock()).getLBrc());
+		if (getFlexoBehaviourBody(getASTNode()) instanceof ABlockFlexoBehaviourBody) {
+			return getFragment(((ABlock) ((ABlockFlexoBehaviourBody) getFlexoBehaviourBody(getASTNode())).getBlock()).getLBrc());
 		}
 		return null;
 	}
@@ -143,8 +155,8 @@ public abstract class FlexoBehaviourNode<N extends Node, T extends FlexoBehaviou
 	 * @return
 	 */
 	protected RawSourceFragment getRBrcFragment() {
-		if (getFlexoBehaviourBody() instanceof ABlockFlexoBehaviourBody) {
-			return getFragment(((ABlock) ((ABlockFlexoBehaviourBody) getFlexoBehaviourBody()).getBlock()).getRBrc());
+		if (getFlexoBehaviourBody(getASTNode()) instanceof ABlockFlexoBehaviourBody) {
+			return getFragment(((ABlock) ((ABlockFlexoBehaviourBody) getFlexoBehaviourBody(getASTNode())).getBlock()).getRBrc());
 		}
 		return null;
 	}
