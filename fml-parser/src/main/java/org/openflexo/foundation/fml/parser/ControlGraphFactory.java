@@ -40,18 +40,22 @@ public class ControlGraphFactory extends FMLSemanticsAnalyzer {
 	public boolean debug = false;
 
 	private MainSemanticsAnalyzer mainAnalyzer;
-
 	private ControlGraphNode<?, ?> rootControlGraphNode = null;
 
-	public static ControlGraphNode<?, ?> makeControlGraphNode(Node cgNode, MainSemanticsAnalyzer analyzer) {
+	/*public static ControlGraphNode<?, ?> makeControlGraphNode(Node cgNode, MainSemanticsAnalyzer analyzer) {
 		ControlGraphFactory f = new ControlGraphFactory(cgNode, analyzer);
 		cgNode.apply(f);
 		return f.rootControlGraphNode;
-	}
+	}*/
 
-	private ControlGraphFactory(Node cgNode, MainSemanticsAnalyzer analyzer) {
+	public ControlGraphFactory(Node cgNode, MainSemanticsAnalyzer analyzer) {
 		super(analyzer.getFactory(), cgNode);
 		this.mainAnalyzer = analyzer;
+	}
+
+	public ControlGraphNode<?, ?> makeControlGraphNode() {
+		getRootNode().apply(this);
+		return rootControlGraphNode;
 	}
 
 	@Override

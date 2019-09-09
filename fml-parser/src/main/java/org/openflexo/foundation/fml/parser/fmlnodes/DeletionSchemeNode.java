@@ -41,7 +41,6 @@ package org.openflexo.foundation.fml.parser.fmlnodes;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.fml.DeletionScheme;
-import org.openflexo.foundation.fml.parser.ControlGraphFactory;
 import org.openflexo.foundation.fml.parser.MainSemanticsAnalyzer;
 import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.ControlGraphNode;
 import org.openflexo.foundation.fml.parser.node.AAnonymousDestructorBehaviourDeclaration;
@@ -93,7 +92,7 @@ public class DeletionSchemeNode extends FlexoBehaviourNode<PBehaviourDeclaration
 		}
 		returned.setVisibility(getVisibility(getVisibility()));
 
-		ControlGraphNode<?, ?> cgNode = ControlGraphFactory.makeControlGraphNode(getFlexoBehaviourBody(), getAnalyser());
+		ControlGraphNode<?, ?> cgNode = getControlGraphFactory().makeControlGraphNode();
 		if (cgNode != null) {
 			returned.setControlGraph(cgNode.getModelObject());
 			addToChildren(cgNode);
