@@ -38,6 +38,7 @@
 
 package org.openflexo.foundation.fml;
 
+import org.openflexo.connie.BindingModel;
 import org.openflexo.connie.DataBinding;
 import org.openflexo.pamela.StringConverterLibrary.Converter;
 import org.openflexo.pamela.annotations.Getter;
@@ -100,6 +101,28 @@ public abstract interface FMLMetaData extends FMLObject, FMLPrettyPrintable {
 	public static abstract class FMLMetaDataImpl extends FMLObjectImpl implements FMLMetaData {
 
 		private Class<?> type;
+
+		@Override
+		public String getURI() {
+			// Not applicable
+			// TODO
+			return null;
+		}
+
+		@Override
+		public String getFMLRepresentation(FMLRepresentationContext context) {
+			// Not applicable
+			// TODO
+			return null;
+		}
+
+		@Override
+		public BindingModel getBindingModel() {
+			if (getOwner() != null) {
+				return getOwner().getBindingModel();
+			}
+			return null;
+		}
 
 		@Override
 		public FMLCompilationUnit getResourceData() {

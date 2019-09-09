@@ -685,6 +685,38 @@ public interface FMLCompilationUnit extends FMLObject, FMLPrettyPrintable, Resou
 			return key;
 		}
 
+		/**
+		 * Return list of {@link UseModelSlotDeclaration} accessible from this {@link VirtualModel}<br>
+		 * It includes the list of uses declarations accessible from parent and container
+		 * 
+		 * @return
+		 */
+		@Override
+		public List<UseModelSlotDeclaration> getAccessibleUseDeclarations() {
+			// TODO: make better implementation
+			if (getVirtualModel() != null) {
+				return getVirtualModel().getAccessibleUseDeclarations();
+			}
+			return null;
+		}
+
+		@Override
+		public <MS extends ModelSlot<?>> boolean uses(Class<MS> modelSlotClass) {
+			// TODO: make better implementation
+			if (getVirtualModel() != null) {
+				return getVirtualModel().uses(modelSlotClass);
+			}
+			return false;
+		}
+
+		@Override
+		public <MS extends ModelSlot<?>> UseModelSlotDeclaration declareUse(Class<MS> modelSlotClass) {
+			// TODO: make better implementation
+			if (getVirtualModel() != null) {
+				return getVirtualModel().declareUse(modelSlotClass);
+			}
+			return null;
+		}
 	}
 
 }
