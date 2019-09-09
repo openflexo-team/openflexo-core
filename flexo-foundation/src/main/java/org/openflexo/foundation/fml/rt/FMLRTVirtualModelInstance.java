@@ -68,8 +68,8 @@ public interface FMLRTVirtualModelInstance extends VirtualModelInstance<FMLRTVir
 
 		@Override
 		public FMLRTTechnologyAdapter getTechnologyAdapter() {
-			if (getResource() != null) {
-				return getResource().getTechnologyAdapter();
+			if (getVirtualModelInstanceResource() != null) {
+				return getVirtualModelInstanceResource().getTechnologyAdapter();
 			}
 			return null;
 		}

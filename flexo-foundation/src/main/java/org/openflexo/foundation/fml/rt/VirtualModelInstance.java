@@ -73,6 +73,7 @@ import org.openflexo.foundation.fml.rt.action.SynchronizationSchemeActionFactory
 import org.openflexo.foundation.fml.rt.rm.AbstractVirtualModelInstanceResource;
 import org.openflexo.foundation.fml.rt.rm.FMLRTVirtualModelInstanceResourceFactory;
 import org.openflexo.foundation.resource.CannotRenameException;
+import org.openflexo.foundation.resource.FlexoResource;
 import org.openflexo.foundation.resource.ResourceData;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
@@ -395,9 +396,10 @@ public interface VirtualModelInstance<VMI extends VirtualModelInstance<VMI, TA>,
 	public void notifyAllRootFlexoConceptInstancesMayHaveChanged();
 
 	@Override
-	public AbstractVirtualModelInstanceResource<VMI, TA> getResource();
+	public FlexoResource<VMI> getResource();
 
-	public void setResource(AbstractVirtualModelInstanceResource<VMI, TA> resource);
+	@Override
+	public void setResource(FlexoResource<VMI> resource);
 
 	@Override
 	public TA getTechnologyAdapter();
@@ -453,8 +455,8 @@ public interface VirtualModelInstance<VMI extends VirtualModelInstance<VMI, TA>,
 
 		@Override
 		public AbstractVirtualModelInstanceModelFactory<?> getFactory() {
-			if (getResource() != null) {
-				return getResource().getFactory();
+			if (getVirtualModelInstanceResource() != null) {
+				return getVirtualModelInstanceResource().getFactory();
 			}
 			return null;
 		}
@@ -515,8 +517,8 @@ public interface VirtualModelInstance<VMI extends VirtualModelInstance<VMI, TA>,
 
 		@Override
 		public VirtualModelInstance<?, ?> getContainerVirtualModelInstance() {
-			if (getResource() != null && getResource().getContainer() != null) {
-				return getResource().getContainer().getVirtualModelInstance();
+			if (getVirtualModelInstanceResource() != null && getVirtualModelInstanceResource().getContainer() != null) {
+				return getVirtualModelInstanceResource().getContainer().getVirtualModelInstance();
 			}
 			return null;
 		}
@@ -528,12 +530,12 @@ public interface VirtualModelInstance<VMI extends VirtualModelInstance<VMI, TA>,
 					&& flexoConcept == null && StringUtils.isNotEmpty(flexoConceptURI)) {
 				flexoConcept = getContainerVirtualModelInstance().getVirtualModel().getVirtualModelNamed(flexoConceptURI);
 			}
-			if (flexoConcept == null && getResource() != null) {
+			if (flexoConcept == null && getVirtualModelInstanceResource() != null) {
 				// We can sometimes arrive here: flexoConcept is still not set
 				// But we have another chance to retrieve the VirtualModel while requesting it
 				// to the resource
 				// Then set the FlexoConcept
-				flexoConcept = getResource().getVirtualModel();
+				flexoConcept = getVirtualModelInstanceResource().getVirtualModel();
 			}
 			return (VirtualModel) flexoConcept;
 		}
@@ -565,16 +567,16 @@ public interface VirtualModelInstance<VMI extends VirtualModelInstance<VMI, TA>,
 
 		@Override
 		public FlexoVersion getModelVersion() {
-			if (getResource() != null) {
-				return getResource().getModelVersion();
+			if (getVirtualModelInstanceResource() != null) {
+				return getVirtualModelInstanceResource().getModelVersion();
 			}
 			return null;
 		}
 
 		@Override
 		public void setModelVersion(FlexoVersion aVersion) {
-			if (getResource() != null) {
-				getResource().setModelVersion(aVersion);
+			if (getVirtualModelInstanceResource() != null) {
+				getVirtualModelInstanceResource().setModelVersion(aVersion);
 			}
 		}
 
@@ -668,7 +670,7 @@ public interface VirtualModelInstance<VMI extends VirtualModelInstance<VMI, TA>,
 		 */
 		@Override
 		public FlexoConceptInstance buildNewFlexoConceptInstance(FlexoConcept concept) {
-			FlexoConceptInstance returned = getResource().getFactory().newInstance(FlexoConceptInstance.class);
+			FlexoConceptInstance returned = getVirtualModelInstanceResource().getFactory().newInstance(FlexoConceptInstance.class);
 			returned.setFlexoConcept(concept);
 			return returned;
 		}
@@ -682,7 +684,7 @@ public interface VirtualModelInstance<VMI extends VirtualModelInstance<VMI, TA>,
 		@Override
 		public FlexoEventInstance makeNewEvent(FlexoEvent event) {
 
-			FlexoEventInstance returned = getResource().getFactory().newInstance(FlexoEventInstance.class);
+			FlexoEventInstance returned = getVirtualModelInstanceResource().getFactory().newInstance(FlexoEventInstance.class);
 			returned.setFlexoConcept(event);
 			returned.setSourceVirtualModelInstance(this);
 
@@ -951,14 +953,18 @@ public interface VirtualModelInstance<VMI extends VirtualModelInstance<VMI, TA>,
 			return returned;
 		}
 
-		@Override
-		public AbstractVirtualModelInstanceResource<VMI, TA> getResource() {
+		public final AbstractVirtualModelInstanceResource<VMI, TA> getVirtualModelInstanceResource() {
 			return resource;
 		}
 
 		@Override
-		public void setResource(AbstractVirtualModelInstanceResource<VMI, TA> resource) {
-			this.resource = resource;
+		public final FlexoResource<VMI>/*AbstractVirtualModelInstanceResource<VMI, TA>*/ getResource() {
+			return resource;
+		}
+
+		@Override
+		public final void setResource(FlexoResource<VMI>/*AbstractVirtualModelInstanceResource<VMI, TA>*/ resource) {
+			this.resource = (AbstractVirtualModelInstanceResource<VMI, TA>) resource;
 		}
 
 		@Override

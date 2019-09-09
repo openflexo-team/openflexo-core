@@ -338,7 +338,7 @@ public abstract class AbstractCreateVirtualModelInstance<A extends AbstractCreat
 	 */
 	public CompilationUnitResource getContainerVirtualModelResource() {
 		if (getContainerVirtualModel() != null) {
-			return (CompilationUnitResource) getContainerVirtualModel().getResource();
+			return getContainerVirtualModel().getResource();
 		}
 		return null;
 	}
