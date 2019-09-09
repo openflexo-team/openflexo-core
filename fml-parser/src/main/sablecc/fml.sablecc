@@ -193,20 +193,7 @@ Tokens
    // Keywords
    // --------------------------------------------------------------------------------------
 
-   // Mathematics
-   fn_acos = 'acos';
-   fn_asin = 'asin';
-   fn_atan = 'atan';
-   fn_cos = 'cos';
-   fn_exp = 'exp';
-   fn_log = 'log';
-   fn_pi = 'pi';
-   fn_sin = 'sin';
-   fn_sqrt = 'sqrt';
-   fn_tan = 'tan';
-
    // FML Keywords
-//FD kw_beh = 'truc';
    kw_abstract = 'abstract';
    kw_as = 'as';
    kw_concept = 'concept';
@@ -325,8 +312,6 @@ Productions
    reference_by_uri =
        {resource} l_bkt [resource]:expression r_bkt
      | {object_in_resource} l_bkt [resource]:expression colon [object]:expression r_bkt
-     | {resource_id} l_bkt [identifier]:composite_ident r_bkt
-     | {object_in_resource_id} l_bkt [identifier]:composite_ident colon [object]:expression r_bkt
      ;
 
    annotation =
@@ -367,8 +352,9 @@ Productions
      ;
 
    inner_model_decl =
-      {concept_declaration} concept_decl
-     | {inner_concept_declaration} inner_concept_decl;
+       {concept_declaration} concept_decl
+     | {inner_concept_declaration} inner_concept_decl
+     ;
 
    concept_decl = [annotations]:annotation* visibility? kw_abstract? kw_concept identifier super_clause? l_brc [inner_concept_declaration]:inner_concept_decl* r_brc;
 
@@ -379,25 +365,19 @@ Productions
      | {fml_fully_qualified} visibility? type cardinality? identifier kw_with [ta_id]:identifier colon_colon [role]:identifier fml_parameters? semi
      // abstract property declaration
      | {abstract_property} visibility? kw_abstract type variable_declarator semi
-     | {expression_property} expression_property_decl
+     | {expression_property} visibility? type [identifier]:identifier kw_values [expression_value]:expression semi
      // get set property declaration
-     | {get_set_property}    visibility? type identifier l_brc get_declaration set_declaration ? r_brc semi
+     | {get_set_property}    visibility? type identifier l_brc get_decl set_decl ? r_brc semi
      | {behaviour_declaration} behaviour_decl
      ;
 
-   get_declaration = type kw_get l_par r_par flexo_behaviour_body;
+   get_decl = type kw_get l_par r_par flexo_behaviour_body;
 
-   set_declaration = kw_set l_par type identifier r_par flexo_behaviour_body;
-
-   expression_property_decl =
-       {identifier} visibility? type [identifier]:identifier kw_values [expression_value]:composite_ident semi
-     | {expression} visibility? type [identifier]:identifier kw_values [expression_value]:expression semi
-     ;
+   set_decl = kw_set l_par type identifier r_par flexo_behaviour_body;
 
    variable_declarator =
        {identifier}  identifier
      | {initializer} identifier assign expression
-// 2.0.0       | {initializer} identifier assign assignment_expression
      ;
 
    // --------------------------------------------------------------------------------------
@@ -409,8 +389,7 @@ Productions
      | {anonymous_destructor} [annotations]:annotation* visibility? kw_delete l_par formal_arguments_list? r_par flexo_behaviour_body
      | {named_destructor} [annotations]:annotation* visibility? kw_delete colon_colon [name]:identifier l_par formal_arguments_list? r_par flexo_behaviour_body
      | {method} [annotations]:annotation* visibility? type? [name]:identifier l_par formal_arguments_list? r_par flexo_behaviour_body
-     | {listener_id} [annotations]:annotation* kw_listen [listened_identifier]:composite_ident kw_receive l_par [event_type_identifier]:composite_ident [event_name]:identifier r_par flexo_behaviour_body
-     | {listener_expr} [annotations]:annotation* kw_listen [listened]:expression kw_receive l_par [event_type_identifier]:composite_ident [event_name]:identifier r_par flexo_behaviour_body
+     | {listener} [annotations]:annotation* kw_listen [listened]:expression kw_receive l_par [event_type_identifier]:composite_ident [event_name]:identifier r_par flexo_behaviour_body
      | {fml} [annotations]:annotation* visibility? type? [name]:identifier l_par formal_arguments_list? r_par kw_with [behaviour]:identifier fml_parameters? flexo_behaviour_body
      | {fml_fully_qualified} [annotations]:annotation* visibility? type? [name]:identifier l_par formal_arguments_list? r_par kw_with [ta_id]:identifier colon_colon [behaviour]:identifier fml_parameters? flexo_behaviour_body
      //| {protocol_only} [annotations]:annotation* visibility? type? [protocol]:identifier fml_parameters? colon l_par formal_arguments_list? r_par flexo_behaviour_body
@@ -439,24 +418,17 @@ Productions
      | {statement}            statement
      ;
 
-   condition =
-       {expression} l_par expression r_par
-     | {identifier} l_par composite_ident r_par
-     ;
-
    statement =
        {no_trail}   statement_without_trailing_substatement
      // if statements
-     | {if_simple} kw_if condition statement
-     | {if_else} kw_if condition statement_no_short_if kw_else statement
+     | {if_simple} kw_if l_par expression r_par statement
+     | {if_else} kw_if l_par expression r_par statement_no_short_if kw_else statement
      // while statement
-     | {while} kw_while condition statement
+     | {while} kw_while l_par expression r_par statement
      // for statement
      | {for_basic}      kw_for l_par for_init? [semi1]:semi [semi2]:semi statement_expression? r_par statement
      | {for_basic_expression} kw_for l_par for_init? [semi1]:semi expression [semi2]:semi statement_expression? r_par statement
-     | {for_basic_identifier} kw_for l_par for_init? [semi1]:semi composite_ident [semi2]:semi statement_expression? r_par statement
-     | {for_enhanced_expression} kw_for l_par type identifier colon expression r_par statement
-     | {for_enhanced_identifier} kw_for l_par type [identifier1]:identifier colon [identifier2]:identifier  [additional_identifiers]:additional_identifier* r_par statement
+     | {for_enhanced} kw_for l_par type identifier colon expression r_par statement
      ;
 
    for_init =
@@ -468,49 +440,36 @@ Productions
        {block}                l_brc [block_statements]:block_statement* r_brc
      | {empty_statement}      semi
      | {expression_statement} statement_expression semi
-     | {do_statement}         kw_do statement kw_while condition semi
+     | {do_statement}         kw_do statement kw_while l_par expression r_par semi
      // return statement
      | {return_empty}      kw_return semi
-     | {return_expression} kw_return expression semi
-     | {return_identifier} kw_return composite_ident semi
+     | {return} kw_return expression semi
      ;
 
    statement_no_short_if =
        {statement_without_trailing_substatement} statement_without_trailing_substatement
-     | {if_then_else_statement_no_short_if}      if_then_else_statement_no_short_if
-     | {while_statement_no_short_if}             while_statement_no_short_if
+     | {if_then_else_statement_no_short_if}      kw_if l_par expression r_par [statement_no_short_if1]:statement_no_short_if kw_else [statement_no_short_if2]:statement_no_short_if
+     | {while_statement_no_short_if}             kw_while l_par expression r_par statement_no_short_if
      | {for_statement_no_short_if}               for_statement_no_short_if
-     ;
-
-   if_then_else_statement_no_short_if =
-       {expression} kw_if l_par expression r_par [statement_no_short_if1]:statement_no_short_if kw_else [statement_no_short_if2]:statement_no_short_if
-     | {identifier} kw_if l_par composite_ident r_par [statement_no_short_if1]:statement_no_short_if kw_else [statement_no_short_if2]:statement_no_short_if
-     ;
-
-   while_statement_no_short_if =
-       {expression} kw_while l_par expression r_par statement_no_short_if
-     | {identifier} kw_while l_par composite_ident r_par statement_no_short_if
      ;
 
    for_statement_no_short_if =
        {empty}      kw_for l_par for_init? [semi1]:semi [semi2]:semi statement_expression? r_par statement_no_short_if
      | {expression} kw_for l_par for_init? [semi1]:semi expression [semi2]:semi statement_expression? r_par statement_no_short_if
-     | {identifier} kw_for l_par for_init? [semi1]:semi composite_ident [semi2]:semi statement_expression? r_par statement_no_short_if
      ;
 
    statement_expression =
-       {assignment}             assignment
+       {assignment}             [left]:left_hand_side assignment_operator [right]:expression
      | {pre_increment}          pre_incr_exp
      | {pre_decrement}          pre_decr_exp
      | {post_increment}         post_incr_exp
      | {post_decrement}         post_decr_exp
      | {method_invocation}      method_invocation
-//FD     | {fml_action_expression}  fml_action_exp
+     | {fml_action_expression}  fml_action_exp
      ;
 
    method_invocation =
-       {simple}     composite_ident l_par argument_list? r_par
-     | {primary}    primary dot /*non_wild_type_arguments?*/ identifier l_par argument_list? r_par
+       {primary}    primary /*dot *//*non_wild_type_arguments?*//* identifier*/ l_par argument_list? r_par
      //| {super}      super dot non_wild_type_arguments? identifier l_par argument_list? r_par
      //| {class_name} [identifier1]:composite_ident [dot1]:dot super [dot2]:dot non_wild_type_arguments? [identifier2]:identifier l_par argument_list? r_par
      //| {type_name}  [identifier1]:composite_ident dot non_wild_type_arguments  [identifier2]:identifier l_par argument_list? r_par
@@ -520,18 +479,13 @@ Productions
    // Expressions
    // --------------------------------------------------------------------------------------
    expression =
-       {assignment}  assignment
-     | {conditional} conditional_exp 
-     ;
-
-   assignment =
-       {expression} [left]:left_hand_side assignment_operator [right]:expression
-     | {identifier} [left]:left_hand_side assignment_operator composite_ident
+       {assignment}  [left]:left_hand_side assignment_operator [right]:expression
+     | {conditional} conditional_exp
      ;
 
    left_hand_side =
        {identifier} composite_ident
-     | {field}      field_access 
+     | {field}      field_access
      ;
 
    assignment_operator =
@@ -550,167 +504,86 @@ Productions
      ;
 
    conditional_exp =
-       {simple}         conditional_or_exp
-     | {qmark_or_ex_or} conditional_or_exp qmark expression colon conditional_exp
-     | {qmark_or_ex_id} conditional_or_exp qmark expression colon composite_ident
-     | {qmark_or_id_or} conditional_or_exp qmark composite_ident colon conditional_exp
-     | {qmakr_or_id_id} conditional_or_exp qmark [identifier1]:composite_ident colon [identifier2]:composite_ident
-     | {qmakr_id_ex_or} composite_ident qmark expression colon conditional_exp
-     | {qmakr_id_ex_id} [identifier1]:composite_ident qmark expression colon [identifier2]:composite_ident
-     | {qmakr_id_id_or} [identifier1]:composite_ident qmark [identifier2]:composite_ident colon conditional_exp
-     | {qmakr_id_id_id} [identifier1]:composite_ident qmark [identifier2]:composite_ident colon [identifier3]:composite_ident
+       {simple} conditional_or_exp
+     | {qmark}  conditional_or_exp qmark expression colon conditional_exp
      ;
 
    conditional_or_exp =
-       {simple}        conditional_and_exp
-     | {bar_bar_or_or} conditional_or_exp bar_bar conditional_and_exp
-     | {bar_bar_or_id} conditional_or_exp bar_bar composite_ident
-     | {bar_bar_id_or} composite_ident bar_bar conditional_and_exp
-     | {bar_bar_id_id} [identifier1]:composite_ident bar_bar [identifier2]:composite_ident
+       {simple}  conditional_and_exp
+     | {bar_bar} conditional_or_exp bar_bar conditional_and_exp
      ;
 
    conditional_and_exp =
-       {simple}        inclusive_or_exp
-     | {amp_amp_an_or} conditional_and_exp amp_amp inclusive_or_exp
-     | {amp_amp_an_id} conditional_and_exp amp_amp composite_ident
-     | {amp_amp_id_or} composite_ident amp_amp inclusive_or_exp
-     | {amp_amp_id_id} [identifier1]:composite_ident amp_amp [identifier2]:composite_ident
+       {simple}  inclusive_or_exp
+     | {amp_amp} conditional_and_exp amp_amp inclusive_or_exp
      ;
 
    inclusive_or_exp =
-       {simple}    exclusive_or_exp
-     | {bar_or_or} inclusive_or_exp bar exclusive_or_exp
-     | {bar_or_id} inclusive_or_exp bar composite_ident
-     | {bar_id_or} composite_ident bar exclusive_or_exp
-     | {bar_id_id} [identifier1]:composite_ident bar [identifier2]:composite_ident
+       {simple} exclusive_or_exp
+     | {bar}    inclusive_or_exp bar exclusive_or_exp
      ;
 
    exclusive_or_exp =
-       {simple}      and_exp
-     | {caret_or_an} exclusive_or_exp caret and_exp
-     | {caret_or_id} exclusive_or_exp caret composite_ident
-     | {caret_id_an} composite_ident caret and_exp
-     | {caret_id_id} [identifier1]:composite_ident caret [identifier2]:composite_ident
+       {simple} and_exp
+     | {caret}  exclusive_or_exp caret and_exp
      ;
 
    and_exp =
-       {simple}    equality_exp
-     | {amp_an_eq} and_exp amp equality_exp
-     | {amp_an_id} and_exp amp composite_ident
-     | {amp_id_eq} composite_ident amp equality_exp
-     | {amp_id_id} [identifier1]:composite_ident amp [identifier2]:composite_ident
+       {simple} equality_exp
+     | {amp}    and_exp amp equality_exp
      ;
 
    equality_exp =
-       {simple}    relational_exp
-     | {eq_eq_re}  equality_exp eq  relational_exp
-     | {eq_eq_id}  equality_exp eq composite_ident
-     | {eq_id_re}  composite_ident eq  relational_exp
-     | {eq_id_id}  [identifier1]:composite_ident eq  [identifier2]:composite_ident
-     | {neq_eq_re} equality_exp neq relational_exp
-     | {neq_eq_id} equality_exp neq composite_ident
-     | {neq_id_re} composite_ident neq relational_exp
-     | {neq_id_id} [identifier1]:composite_ident neq [identifier2]:composite_ident
+       {simple} relational_exp
+     | {eq}     equality_exp eq  relational_exp
+     | {neq}    equality_exp neq relational_exp
      ;
 
    relational_exp =
-       {simple}                  shift_exp
-     | {lt_sh_sh}                [shift_exp1]:shift_exp lt [shift_expression2]:shift_exp
-     | {lt_sh_id}                shift_exp lt composite_ident
-     | {lt_id_sh}                composite_ident lt shift_exp
-     | {lt_id_id}                [identifier1]:composite_ident lt [identifier2]:composite_ident
-     | {gt_sh_sh}                [shift_expression1]:shift_exp gt [shift_expression2]:shift_exp
-     | {gt_sh_id}                shift_exp gt composite_ident
-     | {gt_id_sh}                composite_ident gt shift_exp
-     | {gt_id_id}                [identifier1]:composite_ident gt [identifier2]:composite_ident
-     | {lteq_sh_sh}              [shift_expression1]:shift_exp lteq [shift_expression2]:shift_exp
-     | {lteq_sh_id}              shift_exp lteq composite_ident
-     | {lteq_id_sh}              composite_ident lteq shift_exp
-     | {lteq_id_id}              [identifier1]:composite_ident lteq [identifier2]:composite_ident
-     | {gteq_sh_sh}              [shift_expression1]:shift_exp gteq [shift_expression2]:shift_exp
-     | {gteq_sh_id}              shift_exp gteq composite_ident
-     | {gteq_id_sh}              composite_ident gteq shift_exp
-     | {gteq_id_id}              [identifier1]:composite_ident gteq [identifier2]:composite_ident
-     | {instanceof_sh_primitive} shift_exp kw_instanceof primitive_type [dims]:dim+
-     | {instanceof_id_primitive} composite_ident kw_instanceof primitive_type [dims]:dim+
+       {simple}     shift_exp
+     | {lt}         [shift_exp1]:shift_exp lt [shift_expression2]:shift_exp
+     | {gt}         [shift_expression1]:shift_exp gt [shift_expression2]:shift_exp
+     | {lteq}       [shift_expression1]:shift_exp lteq [shift_expression2]:shift_exp
+     | {gteq}       [shift_expression1]:shift_exp gteq [shift_expression2]:shift_exp
+     | {instanceof} shift_exp kw_instanceof primitive_type [dims]:dim+
      ;
 
    shift_exp =
-       {simple}     add_exp
-     | {shl_sh_ad}  shift_exp shl  add_exp
-     | {shl_sh_id}  shift_exp shl composite_ident
-     | {shl_id_ad}  composite_ident shl add_exp
-     | {shl_id_id}  [identifier1]:composite_ident shl  [identifier2]:composite_ident
-     | {shr_sh_ad}  shift_exp shr  add_exp
-     | {shr_sh_id}  shift_exp shr composite_ident
-     | {shr_id_ad}  composite_ident shr  add_exp
-     | {shr_id_id}  [identifier1]:composite_ident shr  [identifier2]:composite_ident
-     | {ushr_sh_ad} shift_exp ushr add_exp
-     | {ushr_sh_id} shift_exp ushr               composite_ident
-     | {ushr_id_ad} composite_ident ushr add_exp
-     | {ushr_id_id} [identifier1]:composite_ident ushr [identifier2]:composite_ident
+       {simple} add_exp
+     | {shl}    shift_exp shl  add_exp
+     | {shr}    shift_exp shr  add_exp
+     | {ushr}   shift_exp ushr add_exp
      ;
 
    add_exp =
-       {simple}      mult_exp
-     | {plus_ad_mu}  add_exp plus mult_exp
-     | {plus_ad_id}  add_exp plus composite_ident
-     | {plus_id_mu}  composite_ident plus mult_exp
-     | {plus_id_id}  [identifier1]:composite_ident plus [identifier2]:composite_ident
-     | {minus_ad_mu} add_exp minus mult_exp
-     | {minus_ad_id} add_exp minus composite_ident
-     | {minus_id_mu} composite_ident minus mult_exp
-     | {minus_id_id} [identifier1]:composite_ident minus [identifier2]:composite_ident
+       {simple} mult_exp
+     | {plus}   add_exp plus mult_exp
+     | {minus}  add_exp minus mult_exp
      ;
 
    mult_exp =
-       {simple}        unary_exp
-     | {star_mu_un}    mult_exp star unary_exp
-     | {star_mu_id}    mult_exp star composite_ident
-     | {star_id_un}    composite_ident star unary_exp
-     | {star_id_id}    [identifier1]:composite_ident star [identifier2]:composite_ident
-     | {slash_mu_un}   mult_exp slash unary_exp
-     | {slash_mu_id}   mult_exp slash composite_ident
-     | {slash_id_un}   composite_ident slash unary_exp
-     | {slash_id_id}   [identifier1]:composite_ident slash [identifier2]:composite_ident
-     | {percent_mu_un} mult_exp percent unary_exp
-     | {percent_mu_id} mult_exp percent composite_ident
-     | {percent_id_un} composite_ident percent unary_exp
-     | {percent_id_id} [identifier1]:composite_ident percent [identifier2]:composite_ident
+       {simple}  unary_exp
+     | {star}    mult_exp star unary_exp
+     | {slash}   mult_exp slash unary_exp
+     | {percent} mult_exp percent unary_exp
      ;
 
    unary_exp =
-       {pre_increment}    pre_incr_exp
-     | {pre_decrement}    pre_decr_exp
-     | {plus_expression}  plus  unary_exp
-     | {plus_identifier}  plus  composite_ident
-     | {minus_expression} minus unary_exp
-     | {minus_identifier} minus composite_ident
-     | {unary}            unary_exp_not_plus_minus
+       {pre_increment} pre_incr_exp
+     | {pre_decrement} pre_decr_exp
+     | {plus}          plus  unary_exp
+     | {minus}         minus unary_exp
+     | {unary}         unary_exp_not_plus_minus
      ;
 
-   pre_incr_exp =
-       {expression} plus_plus unary_exp
-     | {identifier} plus_plus composite_ident
-     ;
-
-   pre_decr_exp =
-       {expression} minus_minus unary_exp
-     | {identifier} minus_minus composite_ident
-     ;
+   pre_incr_exp = plus_plus unary_exp;
+   pre_decr_exp = minus_minus unary_exp;
 
    unary_exp_not_plus_minus =
-       {postfix}          postfix_exp
-     | {tilde_expression} tilde unary_exp
-     | {tilde_identifier} tilde composite_ident
-     | {emark_expression} emark unary_exp
-     | {emark_identifier} emark composite_ident
-     | {cast}             cast_exp
-     ;
-
-   cast_exp =
-       {primitive_expression} l_par primitive_type [dims]:dim* r_par unary_exp
-     | {primitive_identifier} l_par primitive_type [dims]:dim* r_par composite_ident
+       {postfix} postfix_exp
+     | {tilde}   tilde unary_exp
+     | {emark}   emark unary_exp
+     | {cast}    l_par primitive_type [dims]:dim* r_par unary_exp
      ;
 
    postfix_exp =
@@ -719,30 +592,24 @@ Productions
      | {post_decrement} post_decr_exp
      ;
 
-   post_incr_exp =
-        {expression} postfix_exp plus_plus
-     | {identifier} composite_ident plus_plus
-     ;
-
-   post_decr_exp =
-       {expression} postfix_exp minus_minus
-     | {identifier} composite_ident minus_minus
-     ;
+   post_incr_exp = postfix_exp plus_plus;
+   post_decr_exp = postfix_exp minus_minus;
 
    primary =
        {literal}                literal
      | {expression}             l_par expression r_par
-     | {identifier}             l_par composite_ident r_par
+     | {identifier}             composite_ident
      | {field}                  field_access
      | {method}                 method_invocation
-//FD     | {fml_action_expression}  fml_action_exp
+     | {fml_action_expression}  fml_action_exp
      ;
 
    fml_action_exp =
        {java_instance_creation} kw_new composite_ident type_arguments_or_diamond? l_par argument_list? r_par
+//FD: conflict with previous  {simplified} new [concept_name]:identifier l_par argument_list? r_par
      | {fml_instance_creation}  kw_new [concept_name]:identifier colon_colon [constructor_name]:identifier l_par argument_list? r_par
-     | {ta_edition_action}      [ta_id]:identifier colon_colon [edition_action]:identifier fml_parameters? in_clause? from_clause?
-     | {delete_action}          delete_action_exp
+     | {ta_edition_action}      [ta_id]:identifier colon_colon [edition_action]:identifier fml_parameters in_clause? from_clause? //FD remove ? on fml_parameters
+     | {delete_action}          kw_delete l_par expression r_par from_clause?
      | {select_action}          kw_select [concept_name]:identifier from_clause where_clause?
      ;
 
@@ -752,44 +619,26 @@ Productions
      ;
 
    argument_list =
-       {one_ex} expression
-     | {one_id} composite_ident
-     | {many_ex} argument_list comma expression
-     | {many_id} argument_list comma composite_ident
+       {one}  expression
+     | {many} argument_list comma expression
      ;
 
    qualified_argument_list =
-       {one_ex} [arg_name]:identifier assign expression
-     | {one_id} [arg_name]:identifier assign [identifier]:composite_ident
-     | {many_ex} argument_list comma [arg_name]:identifier assign expression
-     | {many_id} argument_list comma [arg_name]:identifier assign [identifier]:composite_ident
+       {one}  [arg_name]:identifier assign expression
+     | {many} argument_list comma [arg_name]:identifier assign expression
      ;
 
    fml_parameters =
-       //{unqualified} l_par argument_list? r_par
-     | {full_qualified} l_par qualified_argument_list? r_par
+       {full_qualified} l_par qualified_argument_list? r_par
+//     | {unqualified} l_par argument_list? r_par
      ;
 
-   in_clause =
-       {expression} kw_in l_par expression r_par
-     | {identifier} kw_in l_par composite_ident r_par
-     ;
-
-   from_clause =
-       {expression} kw_from l_par expression r_par
-     | {identifier} kw_from l_par composite_ident r_par
-     ;
-
+   in_clause    = kw_in l_par expression r_par;
+   from_clause  = kw_from l_par expression r_par;
    where_clause = kw_where l_par argument_list? r_par;
 
-   delete_action_exp =
-       {expression} kw_delete l_par expression r_par from_clause?
-     | {identifier} kw_delete l_par composite_ident r_par from_clause?
-     ;
-
    field_access =
-       {primary} primary dot identifier
-     | {super} kw_super dot identifier
+       {super} kw_super dot identifier
      | {reference_super} [identifier1]:composite_ident [dot1]:dot kw_super [dot2]:dot [identifier2]:identifier
      ;
 
@@ -840,10 +689,8 @@ Productions
 
    type_argument =
        {reference} reference_type
-     | {wildcard} wildcard
+     | {wildcard} qmark wildcard_bounds?
      ;
-
-   wildcard = qmark wildcard_bounds?;
 
    wildcard_bounds =
        {extends} kw_extends reference_type
