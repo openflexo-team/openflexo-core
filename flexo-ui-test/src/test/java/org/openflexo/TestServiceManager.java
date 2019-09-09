@@ -45,6 +45,7 @@ import static org.junit.Assert.assertNotNull;
 import java.util.logging.Logger;
 
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 import org.openflexo.foundation.project.ProjectLoader;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
@@ -55,6 +56,7 @@ import org.openflexo.gina.test.TestApplicationContext;
 import org.openflexo.module.ModuleLoader;
 import org.openflexo.test.OrderedRunner;
 import org.openflexo.test.TestOrder;
+import org.openflexo.test.UITest;
 import org.openflexo.view.controller.TechnologyAdapterControllerService;
 
 @RunWith(OrderedRunner.class)
@@ -70,6 +72,7 @@ public class TestServiceManager extends OpenflexoTestCase {
 	 */
 	@Test
 	@TestOrder(1)
+	@Category(UITest.class)
 	public void test0UseTestApplicationContext() {
 		log("test0UseTestApplicationContext()");
 		testApplicationContext = new TestApplicationContext();
@@ -91,6 +94,7 @@ public class TestServiceManager extends OpenflexoTestCase {
 	 */
 	@Test
 	@TestOrder(2)
+	@Category(UITest.class)
 	public void test1ModuleLoading() {
 		ModuleLoader moduleLoader = testApplicationContext.getModuleLoader();
 		assertEquals(moduleLoader, testApplicationContext.getService(ModuleLoader.class));
