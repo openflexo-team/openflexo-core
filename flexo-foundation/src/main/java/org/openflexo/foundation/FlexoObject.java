@@ -98,11 +98,12 @@ public interface FlexoObject extends AccessibleProxyObject, DeletableProxyObject
 	@Setter(USER_IDENTIFIER_KEY)
 	public void setUserIdentifier(String userIdentifier);
 
-	@Getter(value = FLEXO_ID_KEY, defaultValue = "0", ignoreForEquality = true)
+	@Getter(value = FLEXO_ID_KEY, defaultValue = "0"/*, ignoreForEquality = true*/)
 	// Here, we dont want to have the FlexoID duplicated (never a good idea for
 	// an ID !!!)
 	// We delegate here the computation of a new ID to the PamelaResource
 	@CloningStrategy(value = StrategyType.FACTORY, factory = "obtainNewFlexoID()")
+	@XMLAttribute
 	public long getFlexoID();
 
 	/**
