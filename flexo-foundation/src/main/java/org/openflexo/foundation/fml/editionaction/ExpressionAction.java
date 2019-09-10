@@ -42,6 +42,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Type;
 import java.util.logging.Logger;
 
+import org.openflexo.connie.BindingFactory;
 import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.exception.NullReferenceException;
 import org.openflexo.connie.type.UndefinedType;
@@ -98,12 +99,35 @@ public interface ExpressionAction<T> extends AssignableAction<T> {
 			getAssignableType();
 		}
 
+		private boolean isAnalyzingType = false;
+
 		@Override
 		public Type getAssignableType() {
 
-			if (getExpression() != null && getExpression().isSet() && getExpression().isValid()) {
-				return getExpression().getAnalyzedType();
+			if (isAnalyzingType) {
+				return UndefinedType.INSTANCE;
 			}
+
+			if (getExpression() != null && getExpression().isSet() && getExpression().isValid()) {
+				isAnalyzingType = true;				
+				Type returned = getExpression().getAnalyzedType();
+				isAnalyzingType = false;
+				return returned;
+			}
+
+			// TODO
+			// Gros hack ici: le probleme est que la BindingFactory n'etait pas valide au moment de l'analyse
+			// Il faut donc ecouter les modifications de getBindingFactory()
+			
+			if (getExpression() != null && !getExpression().isValid()) {
+				isAnalyzingType = true;				
+				getExpression().forceRevalidate();
+				isAnalyzingType = false;
+				if (getExpression().isValid()) {
+					return getExpression().getAnalyzedType();
+				}
+			}
+
 			return UndefinedType.INSTANCE;
 
 			/*if (assignableType == null && !isComputingAssignableType) {
