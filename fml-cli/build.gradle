@@ -5,6 +5,7 @@ dependencies {
   compile group: 'org.jboss.jreadline', name: 'jreadline', version: '0.20'
 
   // testing dep
+  testCompile testUtils()
   testCompile project(':flexo-foundation-test')
   testCompile project(':flexo-test-resources')
 }
