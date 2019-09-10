@@ -191,7 +191,7 @@ public abstract class AbstractCreateVirtualModelInstanceWizard<A extends Abstrac
 			if (getVirtualModelResource() != virtualModelResource) {
 				CompilationUnitResource oldValue = getVirtualModelResource();
 				if (virtualModelResource != null) {
-					((AbstractCreateVirtualModelInstance) getAction()).setVirtualModel(virtualModelResource.getCompilationUnit());
+					((AbstractCreateVirtualModelInstance) getAction()).setVirtualModel(virtualModelResource.getCompilationUnit().getVirtualModel());
 				}
 				else {
 					getAction().setVirtualModel(null);

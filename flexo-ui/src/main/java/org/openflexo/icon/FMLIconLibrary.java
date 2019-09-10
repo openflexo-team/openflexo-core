@@ -50,7 +50,6 @@ import org.openflexo.foundation.fml.CreationScheme;
 import org.openflexo.foundation.fml.DeletionScheme;
 import org.openflexo.foundation.fml.EventListener;
 import org.openflexo.foundation.fml.ExpressionProperty;
-import org.openflexo.foundation.fml.FMLLocalizedDictionary;
 import org.openflexo.foundation.fml.FMLObject;
 import org.openflexo.foundation.fml.FlexoBehaviour;
 import org.openflexo.foundation.fml.FlexoBehaviourParameter;
@@ -467,9 +466,6 @@ public class FMLIconLibrary extends IconLibrary {
 		}
 		else if (object instanceof FlexoRole) {
 			return FLEXO_ROLE_ICON;
-		}
-		else if (object instanceof FMLLocalizedDictionary) {
-			return LOCALIZATION_ICON;
 		}
 		else if (object instanceof InspectorEntry) {
 			InspectorEntry entry = (InspectorEntry) object;
