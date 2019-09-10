@@ -139,7 +139,7 @@ public interface FlexoPreferencesResource extends PamelaXMLSerializableResource<
 		@Override
 		protected FlexoPreferences performLoad() throws IOException, Exception {
 			try {
-				return super.loadResourceData();
+				return super.performLoad();
 			} catch (InvalidXMLException e) {
 
 				// Preferences file is not readable, perhaps this is because it is an old version of Openflexo

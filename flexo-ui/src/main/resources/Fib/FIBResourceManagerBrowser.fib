@@ -36,7 +36,7 @@
 			<Children id="6" data="folder.resources" name="resource" />
 		</BrowserElement>
 		<BrowserElement id="7"
-			dataClassName="org.openflexo.foundation.fml.rm.VirtualModelResource"
+			dataClassName="org.openflexo.foundation.fml.rm.CompilationUnitResource"
 			icon="controller.iconForObject(virtualModelResource)"
 			label="(virtualModelResource.name + &quot;.fml&quot;)"
 			enabled="virtualModelResource.isLoaded"
