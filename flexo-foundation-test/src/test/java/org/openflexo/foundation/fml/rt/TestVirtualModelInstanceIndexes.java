@@ -173,7 +173,7 @@ public class TestVirtualModelInstanceIndexes extends OpenflexoProjectAtRunTimeTe
 		assertTrue(virtualModel.getResource().getIODelegate().exists());
 
 		assertEquals(viewPoint, virtualModel.getContainerVirtualModel());
-		assertEquals(virtualModel, virtualModel.getDeclaringCompilationUnit());
+		assertEquals(virtualModel, virtualModel.getDeclaringCompilationUnit().getVirtualModel());
 		// assertEquals(null, newVirtualModel.getOwningVirtualModel());
 
 		assertEquals(viewPoint, virtualModel.getContainerVirtualModel());
@@ -210,7 +210,7 @@ public class TestVirtualModelInstanceIndexes extends OpenflexoProjectAtRunTimeTe
 		assertEquals(virtualModel, flexoConcept.getOwner());
 		assertEquals(virtualModel, flexoConcept.getOwningVirtualModel());
 		assertEquals(flexoConcept, flexoConcept.getFlexoConcept());
-		assertEquals(virtualModel, flexoConcept.getResourceData());
+		assertEquals(virtualModel, flexoConcept.getResourceData().getVirtualModel());
 
 		CreatePrimitiveRole createFirstNameRoleInFlexoConcept = CreatePrimitiveRole.actionType.makeNewAction(flexoConcept, null, editor);
 		createFirstNameRoleInFlexoConcept.setRoleName("firstName");
@@ -319,7 +319,7 @@ public class TestVirtualModelInstanceIndexes extends OpenflexoProjectAtRunTimeTe
 		assertEquals(virtualModel, flexoConceptA.getOwner());
 		assertEquals(virtualModel, flexoConceptA.getOwningVirtualModel());
 		assertEquals(flexoConceptA, flexoConceptA.getFlexoConcept());
-		assertEquals(virtualModel, flexoConceptA.getResourceData());
+		assertEquals(virtualModel, flexoConceptA.getResourceData().getVirtualModel());
 
 		CreateFlexoBehaviour createCreationScheme = CreateFlexoBehaviour.actionType.makeNewAction(flexoConceptA, null, editor);
 		createCreationScheme.setFlexoBehaviourClass(CreationScheme.class);

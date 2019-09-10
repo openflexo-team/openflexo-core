@@ -160,10 +160,10 @@ public class TestFMLDataBindingAnalysing extends OpenflexoTestCase {
 		assertTrue(topVirtualModel.getResource().getDirectory() != null);
 		assertTrue(topVirtualModel.getResource().getIODelegate().exists());
 
-		assertEquals(topVirtualModel, topVirtualModel.getDeclaringCompilationUnit());
+		assertEquals(topVirtualModel, topVirtualModel.getDeclaringCompilationUnit().getVirtualModel());
 		assertEquals(null, topVirtualModel.getContainerVirtualModel());
 		assertEquals(topVirtualModel, topVirtualModel.getFlexoConcept());
-		assertEquals(topVirtualModel, topVirtualModel.getResourceData());
+		assertEquals(topVirtualModel, topVirtualModel.getResourceData().getVirtualModel());
 	}
 
 	/**
@@ -228,7 +228,7 @@ public class TestFMLDataBindingAnalysing extends OpenflexoTestCase {
 		assertEquals(virtualModel, flexoConceptA.getOwner());
 		assertEquals(virtualModel, flexoConceptA.getOwningVirtualModel());
 		assertEquals(flexoConceptA, flexoConceptA.getFlexoConcept());
-		assertEquals(virtualModel, flexoConceptA.getResourceData());
+		assertEquals(virtualModel, flexoConceptA.getResourceData().getVirtualModel());
 
 		virtualModel.getResource().save();
 
@@ -292,15 +292,15 @@ public class TestFMLDataBindingAnalysing extends OpenflexoTestCase {
 
 		assertEquals(virtualModel, stringProperty2.getOwningVirtualModel());
 		assertEquals(flexoConceptA, stringProperty2.getFlexoConcept());
-		assertEquals(virtualModel, stringProperty2.getResourceData());
+		assertEquals(virtualModel, stringProperty2.getResourceData().getVirtualModel());
 
 		assertEquals(virtualModel, booleanProperty2.getOwningVirtualModel());
 		assertEquals(flexoConceptA, booleanProperty2.getFlexoConcept());
-		assertEquals(virtualModel, booleanProperty2.getResourceData());
+		assertEquals(virtualModel, booleanProperty2.getResourceData().getVirtualModel());
 
 		assertEquals(virtualModel, intProperty2.getOwningVirtualModel());
 		assertEquals(flexoConceptA, intProperty2.getFlexoConcept());
-		assertEquals(virtualModel, intProperty2.getResourceData());
+		assertEquals(virtualModel, intProperty2.getResourceData().getVirtualModel());
 
 	}
 

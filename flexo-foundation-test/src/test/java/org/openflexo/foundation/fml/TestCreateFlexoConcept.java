@@ -121,10 +121,10 @@ public class TestCreateFlexoConcept extends OpenflexoTestCase {
 		assertTrue(newViewPoint.getResource().getDirectory() != null);
 		assertTrue(newViewPoint.getResource().getIODelegate().exists());
 
-		assertEquals(newViewPoint, newViewPoint.getDeclaringCompilationUnit());
+		assertEquals(newViewPoint, newViewPoint.getDeclaringCompilationUnit().getVirtualModel());
 		assertEquals(null, newViewPoint.getContainerVirtualModel());
 		assertEquals(newViewPoint, newViewPoint.getFlexoConcept());
-		assertEquals(newViewPoint, newViewPoint.getResourceData());
+		assertEquals(newViewPoint, newViewPoint.getResourceData().getVirtualModel());
 	}
 
 	/**
@@ -181,7 +181,7 @@ public class TestCreateFlexoConcept extends OpenflexoTestCase {
 		assertEquals(newVirtualModel, flexoConceptA.getOwner());
 		assertEquals(newVirtualModel, flexoConceptA.getOwningVirtualModel());
 		assertEquals(flexoConceptA, flexoConceptA.getFlexoConcept());
-		assertEquals(newVirtualModel, flexoConceptA.getResourceData());
+		assertEquals(newVirtualModel, flexoConceptA.getResourceData().getVirtualModel());
 
 		newVirtualModel.getResource().save();
 
@@ -340,15 +340,15 @@ public class TestCreateFlexoConcept extends OpenflexoTestCase {
 
 		assertEquals(newVirtualModel, role1.getOwningVirtualModel());
 		assertEquals(flexoConceptA, role1.getFlexoConcept());
-		assertEquals(newVirtualModel, role1.getResourceData());
+		assertEquals(newVirtualModel, role1.getResourceData().getVirtualModel());
 
 		assertEquals(newVirtualModel, role2.getOwningVirtualModel());
 		assertEquals(flexoConceptA, role2.getFlexoConcept());
-		assertEquals(newVirtualModel, role2.getResourceData());
+		assertEquals(newVirtualModel, role2.getResourceData().getVirtualModel());
 
 		assertEquals(newVirtualModel, role3.getOwningVirtualModel());
 		assertEquals(flexoConceptA, role3.getFlexoConcept());
-		assertEquals(newVirtualModel, role3.getResourceData());
+		assertEquals(newVirtualModel, role3.getResourceData().getVirtualModel());
 
 	}
 

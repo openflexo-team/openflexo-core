@@ -194,7 +194,7 @@ public class TestPopulateVirtualModelInstance extends OpenflexoProjectAtRunTimeT
 		assertEquals(virtualModel, flexoConceptA.getOwner());
 		assertEquals(virtualModel, flexoConceptA.getOwningVirtualModel());
 		assertEquals(flexoConceptA, flexoConceptA.getFlexoConcept());
-		assertEquals(virtualModel, flexoConceptA.getResourceData());
+		assertEquals(virtualModel, flexoConceptA.getResourceData().getVirtualModel());
 
 		CreateFlexoBehaviour createCreationScheme = CreateFlexoBehaviour.actionType.makeNewAction(flexoConceptA, null, editor);
 		createCreationScheme.setFlexoBehaviourClass(CreationScheme.class);

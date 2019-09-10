@@ -45,6 +45,7 @@ import java.util.logging.Logger;
 
 import org.junit.Test;
 import org.openflexo.foundation.fml.rm.CompilationUnitResource;
+import org.openflexo.foundation.fml.rm.CompilationUnitResourceImpl;
 import org.openflexo.foundation.fml.rt.rm.FMLRTVirtualModelInstanceResource;
 import org.openflexo.logging.FlexoLogger;
 import org.openflexo.pamela.ModelContext;
@@ -67,6 +68,7 @@ public class ResourceModelFactoryTest {
 			System.out.println("Instanciating VirtualModelResource ModelFactory");
 
 			ModelFactory factory = new ModelFactory(CompilationUnitResource.class);
+			factory.setImplementingClassForInterface(CompilationUnitResourceImpl.class, CompilationUnitResource.class);
 			ModelContext modelContext = factory.getModelContext();
 			for (Iterator<ModelEntity> it = modelContext.getEntities(); it.hasNext();) {
 				// FD unused ModelEntity e =
