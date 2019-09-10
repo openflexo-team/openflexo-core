@@ -655,7 +655,7 @@ public class FMLTechnologyAdapterController extends TechnologyAdapterController<
 		// logger.info("RESOURCE LOADED: " + resource);
 
 		if (resource instanceof CompilationUnitResource) {
-			VirtualModel vm = ((CompilationUnitResource) resource).getLoadedCompilationUnit();
+			VirtualModel vm = ((CompilationUnitResource) resource).getLoadedCompilationUnit().getVirtualModel();
 			try {
 				if (logger.isLoggable(Level.INFO)) {
 					logger.info("Validating virtual model " + vm);

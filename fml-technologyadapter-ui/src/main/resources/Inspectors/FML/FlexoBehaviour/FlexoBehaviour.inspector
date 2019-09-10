@@ -265,7 +265,7 @@
 				constraints="twocols(expandHorizontally=false;expandVertically=false;index=0;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=left)"
 				label="viewpoint" />
 			<TextField id="59" columns="10" name="ViewPointTextField"
-				data="data.declaringVirtualModel.name" index="3" localize="true"
+				data="data.declaringCompilationUnit.virtualModel.name" index="3" localize="true"
 				constraints="twocols(expandHorizontally=true;expandVertically=false;index=1;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=right)"
 				readOnly="true" />
 			<Label id="60" name="URILabel" index="4" localize="true" align="left"

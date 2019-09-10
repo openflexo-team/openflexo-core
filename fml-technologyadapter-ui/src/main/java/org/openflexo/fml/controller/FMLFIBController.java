@@ -56,6 +56,7 @@ import org.openflexo.foundation.fml.CloningScheme;
 import org.openflexo.foundation.fml.CreationScheme;
 import org.openflexo.foundation.fml.DeletionScheme;
 import org.openflexo.foundation.fml.ExpressionProperty;
+import org.openflexo.foundation.fml.FMLCompilationUnit;
 import org.openflexo.foundation.fml.FMLObject;
 import org.openflexo.foundation.fml.FMLValidationReport;
 import org.openflexo.foundation.fml.FlexoBehaviour;
@@ -736,7 +737,7 @@ public class FMLFIBController extends FlexoFIBController {
 		if (getServiceManager() != null) {
 			FMLTechnologyAdapterController tac = getServiceManager().getTechnologyAdapterControllerService()
 					.getTechnologyAdapterController(FMLTechnologyAdapterController.class);
-			FMLValidationReport virtualModelReport = (FMLValidationReport) tac.getValidationReport(virtualModel);
+			FMLValidationReport virtualModelReport = (FMLValidationReport) tac.getValidationReport(virtualModel.getCompilationUnit());
 			RevalidationTask validationTask = new RevalidationTask(virtualModelReport);
 			getServiceManager().getTaskManager().scheduleExecution(validationTask);
 		}
@@ -803,19 +804,19 @@ public class FMLFIBController extends FlexoFIBController {
 
 	// Should be above to be available from everywhere
 	// TODO: refactor this (generic perspective should be adapted to FML in OpenflexoModeller)
-	public VirtualModel createContainedVirtualModel(FlexoResource<VirtualModel> containerVirtualModelResource)
+	public VirtualModel createContainedVirtualModel(FlexoResource<FMLCompilationUnit> containerVirtualModelResource)
 			throws FileNotFoundException, ResourceLoadingCancelledException, FlexoException {
 		CreateContainedVirtualModel createContainedVirtualModel = CreateContainedVirtualModel.actionType
-				.makeNewAction(containerVirtualModelResource.getResourceData(), null, getEditor());
+				.makeNewAction(containerVirtualModelResource.getResourceData().getVirtualModel(), null, getEditor());
 		createContainedVirtualModel.doAction();
 		return createContainedVirtualModel.getNewVirtualModel();
 	}
 
 	// Should be above to be available from everywhere
 	// TODO: refactor this (generic perspective should be adapted to FML in OpenflexoModeller)
-	public void deleteVirtualModel(FlexoResource<VirtualModel> virtualModelResource)
+	public void deleteVirtualModel(FlexoResource<FMLCompilationUnit> virtualModelResource)
 			throws FileNotFoundException, ResourceLoadingCancelledException, FlexoException {
-		DeleteVirtualModel deleteVirtualModel = DeleteVirtualModel.actionType.makeNewAction(virtualModelResource.getResourceData(), null,
+		DeleteVirtualModel deleteVirtualModel = DeleteVirtualModel.actionType.makeNewAction(virtualModelResource.getResourceData().getVirtualModel(), null,
 				getEditor());
 		deleteVirtualModel.doAction();
 	}

@@ -110,7 +110,7 @@ public class CreateFlexoEnumWizard extends AbstractCreateFlexoConceptWizard<Crea
 		}
 
 		public VirtualModel getVirtualModel() {
-			return getAction().getFocusedObject().getDeclaringCompilationUnit();
+			return getAction().getFocusedObject().getDeclaringCompilationUnit().getVirtualModel();
 		}
 
 		@Override

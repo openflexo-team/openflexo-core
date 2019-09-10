@@ -123,7 +123,7 @@ public class CreateFlexoEventWizard extends AbstractCreateFlexoConceptWizard<Cre
 		}
 
 		public VirtualModel getVirtualModel() {
-			return getAction().getFocusedObject().getDeclaringCompilationUnit();
+			return getAction().getFocusedObject().getDeclaringCompilationUnit().getVirtualModel();
 		}
 
 		@Override

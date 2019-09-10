@@ -104,7 +104,7 @@ public class CreateFlexoConceptWizard extends AbstractCreateFlexoConceptWizard<C
 		}
 
 		public VirtualModel getVirtualModel() {
-			return getAction().getFocusedObject().getDeclaringCompilationUnit();
+			return getAction().getFocusedObject().getDeclaringCompilationUnit().getVirtualModel();
 		}
 
 		@Override

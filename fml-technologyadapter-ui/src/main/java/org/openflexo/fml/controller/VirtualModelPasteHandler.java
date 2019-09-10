@@ -92,7 +92,7 @@ public class VirtualModelPasteHandler extends FlexoPasteHandler<VirtualModel> {
 
 			if (focusedObject instanceof CompilationUnitResource) {
 				// In this case, FlexoConcept will be pasted as a FlexoConcept in a VirtualModel
-				return new DefaultPastingContext<>(((CompilationUnitResource) focusedObject).getCompilationUnit());
+				return new DefaultPastingContext<>(((CompilationUnitResource) focusedObject).getCompilationUnit().getVirtualModel());
 			}
 
 			if (focusedObject instanceof FlexoConceptObject) {
@@ -130,10 +130,10 @@ public class VirtualModelPasteHandler extends FlexoPasteHandler<VirtualModel> {
 				CompilationUnitResource newResource;
 				try {
 					newResource = vmResFactory.makeContainedCompilationUnitResource(originalVM.getResource().getName() + "-Copy",
-							pastingContext.getPastingPointHolder().getCompilationUnitResource(), false);
+							(CompilationUnitResource)pastingContext.getPastingPointHolder().getCompilationUnit().getResource(), false);
 					System.out.println("On vient de creer " + newResource);
-					copy.setResource(newResource);
-					newResource.setResourceData(copy);
+					copy.getCompilationUnit().setResource(newResource);
+					newResource.setResourceData(copy.getCompilationUnit());
 					newResource.save();
 				} catch (SaveResourceException e) {
 					e.printStackTrace();

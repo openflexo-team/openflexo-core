@@ -79,7 +79,7 @@ public class CreateBasicVirtualModelInstanceInitializer
 					&& ((FMLRTVirtualModelInstance) action.getFocusedObject()).getVirtualModel() != null) {
 				// @Brutal
 				// TODO: Instead of doing this, it would be better to handle resources in wizard FIB
-				((FMLRTVirtualModelInstance) action.getFocusedObject()).getVirtualModel().loadContainedVirtualModelsWhenUnloaded();
+				((FMLRTVirtualModelInstance) action.getFocusedObject()).getVirtualModel().getCompilationUnit().loadContainedVirtualModelsWhenUnloaded();
 			}
 			Wizard wizard = new CreateBasicVirtualModelInstanceWizard(action, getController());
 			WizardDialog dialog = new WizardDialog(wizard, getController());

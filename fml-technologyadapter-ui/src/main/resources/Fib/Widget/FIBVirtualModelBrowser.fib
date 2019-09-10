@@ -36,7 +36,7 @@
 		constraints="twocols(expandHorizontally=true;expandVertically=true;index=0;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=center)"
 		index="0" name="EmbeddingVirtualModelBrowser" visible="controller.viewMode.name='Embedding'">
 		<BrowserElement 
-			dataClassName="org.openflexo.foundation.fml.rm.VirtualModelResource"
+			dataClassName="org.openflexo.foundation.fml.rm.CompilationUnitResource"
 			icon="controller.iconForObject(virtualModelResource)"
 			label="(virtualModelResource.name + &quot;.fml&quot;)"
 			enabled="virtualModelResource.isLoaded"
@@ -45,13 +45,13 @@
 			<Children visible="virtualModelResource.isLoaded"
 				data="virtualModelResource.containedVirtualModelResources" name="subresources" />
 			<Children visible="virtualModelResource.isLoaded"
-				data="virtualModelResource.loadedVirtualModel.allRootFlexoConcepts"
+				data="virtualModelResource.loadedCompilationUnit.virtualModel.allRootFlexoConcepts"
 				name="rootFlexoConcepts" />
 			<BrowserRemoveAction 
 				method="controller.deleteVirtualModel(selected)"
 				name="delete_virtual_model" />
 			<BrowserAddAction 
-				method="controller.createFlexoConceptInVirtualModel(selected.virtualModel)"
+				method="controller.createFlexoConceptInVirtualModel(selected.compilationUnit.virtualModel)"
 				name="create_flexo_concept" />
 		</BrowserElement>
 		<BrowserElement 
@@ -83,9 +83,9 @@
 				action="controller.moveFlexoConcept(dragged,target)"
 				name="drag_concept_into_concept" />
 			<DragOperation 
-				isAvailable="controller.canMoveFlexoConcept(dragged,target.virtualModel)"
+				isAvailable="controller.canMoveFlexoConcept(dragged,target.compilationUnit.virtualModel)"
 				targetElementName="virtualModelResource"
-				action="controller.moveFlexoConcept(dragged,target.virtualModel)"
+				action="controller.moveFlexoConcept(dragged,target.compilationUnit.virtualModel)"
 				name="drag_concept_into_virtual_model" />
 			<Children data="flexoConcept.embeddedFlexoConcepts"
 				name="children" />
@@ -123,7 +123,7 @@
 		constraints="twocols(expandHorizontally=true;expandVertically=true;index=0;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=center)"
 		index="0" name="HierarchicalVirtualModelBrowser" visible="controller.viewMode.name='Hierarchical'">
 		<BrowserElement 
-			dataClassName="org.openflexo.foundation.fml.rm.VirtualModelResource"
+			dataClassName="org.openflexo.foundation.fml.rm.CompilationUnitResource"
 			icon="controller.iconForObject(virtualModelResource)"
 			label="(virtualModelResource.name + &quot;.fml&quot;)"
 			enabled="virtualModelResource.isLoaded"
@@ -132,13 +132,13 @@
 			<Children visible="virtualModelResource.isLoaded"
 				data="virtualModelResource.containedVirtualModelResources" name="subresources" />
 			<Children visible="virtualModelResource.isLoaded"
-				data="virtualModelResource.loadedVirtualModel.allSuperFlexoConcepts"
+				data="virtualModelResource.loadedCompilationUnit.virtualModel.allSuperFlexoConcepts"
 				name="rootFlexoConcepts" />
 			<BrowserRemoveAction 
 				method="controller.deleteVirtualModel(selected)"
 				name="delete_virtual_model" />
 			<BrowserAddAction 
-				method="controller.createFlexoConceptInVirtualModel(selected.virtualModel)"
+				method="controller.createFlexoConceptInVirtualModel(selected.compilationUnit.virtualModel)"
 				name="create_flexo_concept" />
 		</BrowserElement>
 		<BrowserElement 
@@ -170,9 +170,9 @@
 				action="controller.moveFlexoConcept(dragged,target)"
 				name="drag_concept_into_concept" />
 			<DragOperation 
-				isAvailable="controller.canMoveFlexoConcept(dragged,target.virtualModel)"
+				isAvailable="controller.canMoveFlexoConcept(dragged,target.compilationUnit.virtualModel)"
 				targetElementName="virtualModelResource"
-				action="controller.moveFlexoConcept(dragged,target.virtualModel)"
+				action="controller.moveFlexoConcept(dragged,target.compilationUnit.virtualModel)"
 				name="drag_concept_into_virtual_model" />
 			<Children data="flexoConcept.childFlexoConcepts"
 				name="children" />
@@ -210,7 +210,7 @@
 		constraints="twocols(expandHorizontally=true;expandVertically=true;index=0;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=center)"
 		index="0" name="FlatVirtualModelBrowser" visible="controller.viewMode.name='Flat'">
 		<BrowserElement 
-			dataClassName="org.openflexo.foundation.fml.rm.VirtualModelResource"
+			dataClassName="org.openflexo.foundation.fml.rm.CompilationUnitResource"
 			icon="controller.iconForObject(virtualModelResource)"
 			label="(virtualModelResource.name + &quot;.fml&quot;)"
 			enabled="virtualModelResource.isLoaded"
@@ -219,13 +219,13 @@
 			<Children visible="virtualModelResource.isLoaded"
 				data="virtualModelResource.containedVirtualModelResources" name="subresources" />
 			<Children visible="virtualModelResource.isLoaded"
-				data="virtualModelResource.loadedVirtualModel.flexoConcepts"
+				data="virtualModelResource.loadedCompilationUnit.virtualModel.flexoConcepts"
 				name="flexoConcepts" />
 			<BrowserRemoveAction 
 				method="controller.deleteVirtualModel(selected)"
 				name="delete_virtual_model" />
 			<BrowserAddAction 
-				method="controller.createFlexoConceptInVirtualModel(selected.virtualModel)"
+				method="controller.createFlexoConceptInVirtualModel(selected.compilationUnit.virtualModel)"
 				name="create_flexo_concept" />
 		</BrowserElement>
 		<BrowserElement 
@@ -257,15 +257,15 @@
 				action="controller.moveFlexoConcept(dragged,target)"
 				name="drag_concept_into_concept" />
 			<DragOperation 
-				isAvailable="controller.canMoveFlexoConcept(dragged,target.virtualModel)"
+				isAvailable="controller.canMoveFlexoConcept(dragged,target.compilationUnit.virtualModel)"
 				targetElementName="virtualModelResource"
-				action="controller.moveFlexoConcept(dragged,target.virtualModel)"
+				action="controller.moveFlexoConcept(dragged,target.compilationUnit.virtualModel)"
 				name="drag_concept_into_virtual_model" />
 			<BrowserRemoveAction 
 				method="controller.deleteFlexoConcept(selected)"
 				name="delete_flexo_concept" />
 			<BrowserAddAction 
-				method="controller.createFlexoConcept(selected.declaringVirtualModel)"
+				method="controller.createFlexoConcept(selected.declaringCompilationUnit.virtualModel)"
 				name="create_flexo_concept" />
 		</BrowserElement>
 		<BrowserElement 

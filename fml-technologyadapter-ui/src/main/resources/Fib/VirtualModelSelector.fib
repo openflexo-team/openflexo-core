@@ -25,10 +25,10 @@
 		clickAction="controller.selectedObjectChanged()" doubleClickAction="controller.apply()"
 		enterPressedAction="controller.apply()"
 		list="data.matchingValues" showIcon="true"
-		iteratorClassName="org.openflexo.foundation.fml.rm.VirtualModelResource"
+		iteratorClassName="org.openflexo.foundation.fml.rm.CompilationUnitResource"
 		autoSelectFirstRow="true" />
 	<Browser root="data.rootObject" deepExploration="true"
-		iteratorClassName="org.openflexo.foundation.fml.rm.VirtualModelResource"
+		iteratorClassName="org.openflexo.foundation.fml.rm.CompilationUnitResource"
 		visibleRowCount="5" rowHeight="18" boundToSelectionManager="false"
 		selectionMode="DiscontiguousTreeSelection" selected="data.selectedValue"
 		showFooter="true" rootVisible="true" showRootsHandle="true" format=""
@@ -55,7 +55,7 @@
 			<Children data="viewPointFolder.resources" visible="" cast=""
 				name="viewPoints" />
 		</BrowserElement>
-		<BrowserElement dataClassName="org.openflexo.foundation.fml.rm.VirtualModelResource"
+		<BrowserElement dataClassName="org.openflexo.foundation.fml.rm.CompilationUnitResource"
 			label="virtualModel.displayName" icon="controller.iconForObject(virtualModel)"
 			tooltip="" enabled="virtualModel.isLoaded" visible="" isEditable="false"
 			editableLabel="" filtered="false" defaultVisible="true" dynamicFont=""

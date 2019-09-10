@@ -85,7 +85,7 @@ public class VirtualModelInstanceTypeEditor extends AbstractFlexoConceptInstance
 	@Override
 	public VirtualModelInstanceType getEditedType() {
 		if (getSelectedVirtualModel() != null) {
-			return VirtualModelInstanceType.getVirtualModelInstanceType(getSelectedVirtualModel().getCompilationUnit());
+			return VirtualModelInstanceType.getVirtualModelInstanceType(getSelectedVirtualModel().getCompilationUnit().getVirtualModel());
 		}
 		return VirtualModelInstanceType.UNDEFINED_VIRTUAL_MODEL_INSTANCE_TYPE;
 	}
