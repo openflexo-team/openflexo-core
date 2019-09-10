@@ -179,7 +179,7 @@ public abstract class CompilationUnitResourceImpl extends PamelaResourceImpl<FML
 		return null;
 	}
 
-	/*@Override
+	@Override
 	public void stopDeserializing() {
 		// NPE Protection and warning
 		FMLCompilationUnit data = getLoadedResourceData();
@@ -196,7 +196,7 @@ public abstract class CompilationUnitResourceImpl extends PamelaResourceImpl<FML
 			}
 		}
 		super.stopDeserializing();
-	}*/
+	}
 
 	@Override
 	public boolean delete(Object... context) {
@@ -286,6 +286,8 @@ public abstract class CompilationUnitResourceImpl extends PamelaResourceImpl<FML
 
 		// Now we have to activate all required technologies
 		activateRequiredTechnologies();
+
+		startDeserializing();
 
 		try {
 			resourceData = performLoad();
