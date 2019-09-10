@@ -453,7 +453,7 @@ public class TestBehavioursInheritance extends OpenflexoProjectAtRunTimeTestCase
 		VirtualModel reloadedViewPoint = retrievedVPResource.getCompilationUnit().getVirtualModel();
 		assertEquals(null, reloadedViewPoint.getContainerVirtualModel());
 		assertEquals(reloadedViewPoint, reloadedViewPoint.getFlexoConcept());
-		assertEquals(reloadedViewPoint, reloadedViewPoint.getResourceData());
+		assertEquals(reloadedViewPoint, reloadedViewPoint.getResourceData().getVirtualModel());
 
 		VirtualModel reloadedVirtualModel = reloadedViewPoint.getVirtualModelNamed(VIRTUAL_MODEL_NAME);
 		assertNotNull(reloadedVirtualModel);
