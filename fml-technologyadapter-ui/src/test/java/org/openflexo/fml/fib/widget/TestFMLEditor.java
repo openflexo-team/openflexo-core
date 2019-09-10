@@ -46,6 +46,7 @@ import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openflexo.fml.controller.widget.FMLEditor;
@@ -69,6 +70,7 @@ import org.openflexo.test.TestOrder;
  * 
  */
 @RunWith(OrderedRunner.class)
+@Ignore
 public class TestFMLEditor extends OpenflexoFIBTestCase {
 
 	private static SwingGraphicalContextDelegate gcDelegate;
