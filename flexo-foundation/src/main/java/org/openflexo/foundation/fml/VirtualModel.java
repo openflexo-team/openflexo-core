@@ -401,6 +401,8 @@ public interface VirtualModel extends FlexoConcept {
 	 */
 	public VirtualModel getVirtualModelNamed(String virtualModelNameOrURI);
 
+	public CompilationUnitResource getCompilationUnitResource();
+	
 	/**
 	 * Default implementation for {@link VirtualModel} API
 	 * 
@@ -1203,6 +1205,13 @@ public interface VirtualModel extends FlexoConcept {
 		@Override
 		public Class<? extends VirtualModel> getVirtualModelClass() {
 			return (Class<? extends VirtualModel>) getImplementedInterface();
+		}
+
+		public CompilationUnitResource getCompilationUnitResource() {
+			if (getCompilationUnit() != null) {
+				return (CompilationUnitResource)getCompilationUnit().getResource();
+			}
+			return null;
 		}
 
 	}
