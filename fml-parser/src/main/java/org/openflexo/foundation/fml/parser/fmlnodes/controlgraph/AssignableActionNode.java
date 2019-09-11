@@ -65,12 +65,14 @@ public abstract class AssignableActionNode<N extends Node, T extends AssignableA
 	}
 
 	protected TSemi getSemi() {
-		Node current = getASTNode();
-		while (current.parent() != null) {
-			if (current instanceof AExpressionStatement) {
-				return ((AExpressionStatement) current).getSemi();
+		if (getASTNode() != null) {
+			Node current = getASTNode();
+			while (current.parent() != null) {
+				if (current instanceof AExpressionStatement) {
+					return ((AExpressionStatement) current).getSemi();
+				}
+				current = current.parent();
 			}
-			current = current.parent();
 		}
 		return null;
 	}
