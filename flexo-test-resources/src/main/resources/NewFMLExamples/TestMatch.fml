@@ -1,0 +1,84 @@
+/**
+ * Testing FML-controlled diagram
+ */
+
+use org.openflexo.foundation.fml.rt.FMLRTModelSlot as FMLRT;
+
+model TestMatch {
+	
+	/*a finir
+	
+	
+	public void action:updateDiagram () {  
+		GoalRequirementMapping... matchingSet = (begin match GoalRequirementMapping from this);
+		for (requirement : element.requirements) {
+			match GoalRequirementMapping 
+				in matchingSet 
+				from this 
+				where (selected.requirement=requirement)
+				create:createNewGoal(requirement);
+		}
+		end match in matchingSet;
+	}
+
+
+
+Set<?> set = begin match AbstractConceptSetMapping from this; 
+for (conceptWithoutParent : (select Concept from domainModel where (selected.parentConcept = null))) {
+	match AbstractConceptSetMapping from this where (matched.domainConcept = conceptWithoutParent)
+}
+	
+	
+	Diagram diagram with DIAGRAM::TypedDiagramModelSlot(templateDiagram = DIAGRAM_SPECIFICATION);	
+	ConceptualModel conceptualModel;
+	
+	concept MyConceptGR {
+		
+		MyConcept myConcept;
+		DiagramShape shape with DIAGRAM::ShapeRole (
+			metaModelElement = RED_SHAPE,
+			label = myConcept.name
+		);
+		
+		// DropScheme
+		dropNewConcept(String name) with drop(target=topLevel) {
+			myConcept = new MyConcept::init(name);
+			shape = DIAGRAM::AddShape(container=topLevel) in (diagram);
+		}
+		
+		delete::deleteConcept() {
+			delete (myConcept);
+			delete (shape);
+		}
+		
+		delete::removeFromDiagram() {
+			myConcept = null;
+			delete (shape);
+		}
+	}
+	
+	concept LinkGR {
+		
+		MyConceptGR fromGR;
+		MyConceptGR toGR;
+		DiagramConnector connector with DIAGRAM::ConnectorRole (
+			metaModelElement = BLUE_ARC,
+			label = "connected with"
+		);
+		
+		// LinkScheme
+		linkConcepts() with link(fromTarget=MyConceptGR,toTarget=MyConceptGR) {
+			fromGR = fromTarget;
+			toGR = toTarget;
+			performLink(fromTarget.myConcept,toTarget.myConcept);
+			connector = DIAGRAM::AddConnector(fromShape=fromGR.shape,toShape=toGR.shape) in (diagram);
+		}
+		
+		performLink(MyConcept fromConcept, MyConcept toConcept) {
+			fromConcept.connectedWith = toConcept;			
+		}
+		
+	}
+*/
+
+}

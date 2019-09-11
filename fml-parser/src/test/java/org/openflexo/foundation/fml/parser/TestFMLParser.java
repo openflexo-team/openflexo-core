@@ -38,17 +38,35 @@
 
 package org.openflexo.foundation.fml.parser;
 
+import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collection;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
+import org.openflexo.foundation.DefaultFlexoEditor;
+import org.openflexo.foundation.DefaultFlexoServiceManager;
+import org.openflexo.foundation.FlexoEditingContext;
+import org.openflexo.foundation.FlexoServiceManager;
+import org.openflexo.foundation.fml.FMLCompilationUnit;
+import org.openflexo.foundation.fml.FMLModelFactory;
+import org.openflexo.foundation.fml.FMLTechnologyAdapter;
+import org.openflexo.foundation.fml.parser.fmlnodes.FMLCompilationUnitNode;
+import org.openflexo.foundation.fml.rt.FMLRTTechnologyAdapter;
+import org.openflexo.foundation.localization.LocalizationService;
+import org.openflexo.foundation.project.ProjectLoader;
+import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
+import org.openflexo.foundation.technologyadapter.TechnologyAdapterService;
+import org.openflexo.p2pp.P2PPNode;
 import org.openflexo.pamela.exceptions.ModelDefinitionException;
+import org.openflexo.rm.FileResourceImpl;
 import org.openflexo.rm.Resource;
 import org.openflexo.rm.ResourceLocator;
 import org.openflexo.rm.Resources;
+import org.openflexo.toolbox.StringUtils;
 
 /**
  * A parameterized suite of unit tests iterating on FML files.
@@ -59,7 +77,7 @@ import org.openflexo.rm.Resources;
  *
  */
 @RunWith(Parameterized.class)
-public class TestFMLParser extends FMLParserTestCase {
+public class TestFMLParser /*extends FMLParserTestCase*/ {
 
 	@Parameterized.Parameters(name = "{1}")
 	public static Collection<Object[]> generateData() {
@@ -75,12 +93,83 @@ public class TestFMLParser extends FMLParserTestCase {
 
 	@Test
 	public void testResource() throws ModelDefinitionException, ParseException, IOException {
-		testFMLCompilationUnit(fmlResource);
+		//testFMLCompilationUnit(fmlResource);
+		System.out.println("On teste la resource "+fmlResource);
+		FMLModelFactory fmlModelFactory = new FMLModelFactory(null, serviceManager);
+		FMLParser parser = new FMLParser();
+		FMLCompilationUnit compilationUnit = parser.parse(((FileResourceImpl) fmlResource).getFile(), fmlModelFactory);
+		FMLCompilationUnitNode rootNode = (FMLCompilationUnitNode) compilationUnit.getPrettyPrintDelegate();
+		debug(rootNode, 0);
+
 	}
 
 	@BeforeClass
 	public static void initServiceManager() {
 		instanciateTestServiceManager();
 	}
+
+	/**
+	 * Display in console AbstractSyntaxTree of supplied node
+	 * 
+	 * @param node
+	 *            node to display
+	 * @param indent
+	 *            identation level
+	 */
+	protected static void debug(P2PPNode<?, ?> node, int indent) {
+		System.out.println(StringUtils.buildWhiteSpaceIndentation(indent * 2) + " > " + node.getClass().getSimpleName() + " from "
+				+ node.getLastParsedFragment() /*+ " model:" + node.getModelObject()*/ + " pre=" + node.getPrelude() + " post="
+				+ node.getPostlude() /*+ " astNode=" + node.getASTNode() + " of " + node.getASTNode().getClass()*/);
+		// System.err.println(node.getLastParsed());
+		// node.getLastParsed();
+		indent++;
+		for (P2PPNode<?, ?> child : node.getChildren()) {
+			debug(child, indent);
+		}
+	}
+	
+	protected static FlexoServiceManager serviceManager;
+	
+	protected static FlexoServiceManager instanciateTestServiceManager() {
+		serviceManager = new DefaultFlexoServiceManager(null, true) {
+
+			@Override
+			protected LocalizationService createLocalizationService(String relativePath) {
+				LocalizationService returned = super.createLocalizationService(relativePath);
+				returned.setAutomaticSaving(false);
+				return returned;
+			}
+
+			@Override
+			protected FlexoEditingContext createEditingContext() {
+				// In unit tests, we do NOT want to be warned against unexpected
+				// edits
+				return FlexoEditingContext.createInstance(false);
+			}
+
+			@Override
+			protected DefaultFlexoEditor createApplicationEditor() {
+				return new DefaultFlexoEditor(null, this);
+			}
+
+			@Override
+			protected ProjectLoader createProjectLoaderService() {
+				return new ProjectLoader();
+			}
+
+		};
+
+		serviceManager.getLocalizationService().setAutomaticSaving(false);
+
+		// Activate both FML and FML@RT technology adapters
+		TechnologyAdapterService taService = serviceManager.getTechnologyAdapterService();
+		taService.activateTechnologyAdapter(taService.getTechnologyAdapter(FMLTechnologyAdapter.class), true);
+		taService.activateTechnologyAdapter(taService.getTechnologyAdapter(FMLRTTechnologyAdapter.class), true);
+
+		return serviceManager;
+	}
+
+
+
 
 }

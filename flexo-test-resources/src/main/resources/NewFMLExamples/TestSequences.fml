@@ -1,0 +1,39 @@
+/**
+ * Testing concept behaviours
+ */
+
+use org.openflexo.foundation.fml.rt.FMLRTModelSlot as FMLRT;
+
+model MyModel {
+
+
+	int i;
+
+	testAbstract();
+		
+	testNoStatement() {
+	}
+		
+	testOneStatement() {
+		i=1;
+	}
+	
+	testTwoStatements() {
+		i=1;
+		i=2;
+	}
+	
+	testThreeStatements() {
+		i=1;
+		i=2;
+		i=3;
+	}
+	
+	testFourStatements() {
+		i=1;
+		i=2;
+		i=3;
+		i=4;
+	}
+
+}

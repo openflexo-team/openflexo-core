@@ -1,0 +1,41 @@
+/**
+ * Testing types
+ */
+
+use org.openflexo.foundation.fml.rt.FMLRTModelSlot as FMLRT;
+
+import java.lang.String;
+import java.util.List;
+import java.util.Map;
+import java.util.Date;
+
+model MyModel {
+	
+	concept TestPrimitiveTypes {
+		
+		int a;
+		boolean h;
+		float i;
+		
+	}
+
+	concept TestBasicTypes {
+		
+		Date a;
+		String b;
+		ConceptB d;
+	}
+
+	concept TestComplexTypes {
+		
+		List<String> someStringsInAJavaList;
+		//List<? extends String> anOtherList;
+		//List<?> aWildcardList;
+		Map<String,List<String>> aThirdList;
+	}
+
+	concept ConceptB {
+	}
+
+
+}

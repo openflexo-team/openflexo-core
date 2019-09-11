@@ -1,0 +1,11 @@
+/**
+ * Test annotation
+ */
+
+// This is the main declaration
+@Author("Sylvain")
+@URI("base_uri/MyModel.fml")
+@Version("1.2")
+model MyModel {
+	
+}

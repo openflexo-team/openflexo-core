@@ -1,0 +1,51 @@
+/**
+ * Testing concepts
+ */
+
+use org.openflexo.foundation.fml.rt.FMLRTModelSlot as FMLRT;
+
+model MyModel {
+	
+	concept ConceptA {
+		
+		empty() {	
+		}
+		
+		// Not implemented yet
+		/*preDecrement() {
+			++test3;
+			--test4;
+		}*/
+		
+		// Not implemented yet
+		/*postDecrement() {
+			test1++;
+			test2--;
+		}*/
+		
+		assignment() {
+			test1 = a.path.to.something;
+			test2 = a+b*c-9;
+		}
+		
+		calls() {
+			test2 = call();
+			test3 = call(1);
+			test4 = call(1,"aString",3+3);
+			test5 = a.path.to.something();
+			test6 = a.path.to.something().b;
+			test7 = a.path.to.something().wiz.some.paths.after;
+			test8 = a.path.to.something().wiz.some.calls(1,2);
+			test9 = call().b.call();
+		}
+		
+		conditionals() {
+			test1 = aTest ? 2 : 7;
+			test2 = aTest ? true : (7 != 8);
+			test3 = a.path.to.something() ? callYes() : callNo();
+		}
+		
+	}
+
+
+}
