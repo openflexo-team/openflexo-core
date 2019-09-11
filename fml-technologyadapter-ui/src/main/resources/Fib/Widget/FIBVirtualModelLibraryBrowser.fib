@@ -1,27 +1,82 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Panel id="0" align="left" borderTop="0" borderLeft="0" trackViewPortHeight="true" trackViewPortWidth="true" borderBottom="0" border="empty" sizeAdjustment="OriginalSize" layout="twocols" borderRight="0" controllerClassName="org.openflexo.fml.controller.FMLFIBController">
-  <Browser id="1" backgroundSelectionColor="9,80,208" visibleRowCount="5" boundToSelectionManager="true" backgroundNonSelectionColor="255,255,255" iteratorClassName="java.lang.Object" textSelectionColor="255,255,255" backgroundSecondarySelectionColor="178,215,255" showRootsHandle="true" showFooter="true" textNonSelectionColor="0,0,0" root="data" selectionMode="DiscontiguousTreeSelection" rootVisible="true" rowHeight="18" localize="true" manageDynamicModel="true" rightClickAction="controller.rightClick(ViewPointLibraryBrowser.selected,event)" doubleClickAction="controller.doubleClick(ViewPointLibraryBrowser.selected)" clickAction="controller.singleClick(ViewPointLibraryBrowser.selected)" index="0" constraints="twocols(expandHorizontally=true;expandVertically=true;index=0;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=center)" name="ViewPointLibraryBrowser">
-    <BrowserElement id="2" dataClassName="org.openflexo.foundation.fml.FMLTechnologyAdapter" icon="controller.iconForObject(technologyAdapter)" label="technologyAdapter.name" isEditable="false" name="technologyAdapter">
-      <Children id="3" cast="child.rootFolder" data="data.getVirtualModelRepositories()" name="repositories" />
-    </BrowserElement>
-    <BrowserElement id="4" visible="controller.shouldBeDisplayed(viewPointFolder)" dataClassName="org.openflexo.foundation.resource.RepositoryFolder" icon="controller.iconForObject(viewPointFolder)" label="viewPointFolder.displayableName" isEditable="false" name="viewPointFolder">
-      <Children id="5" data="viewPointFolder.children" name="subFolders" />
-      <Children id="6" data="viewPointFolder.resources" name="resource" />
-      <BrowserAddAction id="7" method="controller.createTopLevelVirtualModel(selected)" name="create_virtual_model" />
-    </BrowserElement>
-    <BrowserElement id="21" dataClassName="org.openflexo.foundation.fml.rm.VirtualModelResource" icon="controller.iconForObject(virtualModel)" label="(virtualModel.name + &quot;.fml&quot;)" enabled="virtualModel.isLoaded" editableLabel="virtualModel.name" name="virtualModel">
-      <Children id="22" visible="virtualModel.isLoaded" data="virtualModel.contents" name="subresources" />
-      <Children id="23" visible="virtualModel.isLoaded" data="virtualModel.loadedVirtualModel.allRootFlexoConcepts" name="rootFlexoConcepts" />
-      <BrowserRemoveAction id="24" method="controller.deleteVirtualModel(selected)" name="delete_virtual_model" />
-      <BrowserAddAction id="25" method="controller.createFlexoConcept(selected.virtualModel)" name="create_flexo_concept" />
-      <BrowserAddAction method="controller.createContainedVirtualModel(selected)" name="create_virtual_model" />
-    </BrowserElement>
-    <BrowserElement id="49" dataClassName="org.openflexo.foundation.fml.FlexoConcept" icon="controller.iconForObject(flexoConcept)" label="flexoConcept.name" editableLabel="flexoConcept.name" name="flexoConcept">
-      <Children id="50" data="flexoConcept.embeddedFlexoConcepts" name="children" />
-      <BrowserRemoveAction id="51" method="controller.deleteFlexoConcept(selected)" name="delete_flexo_concept" />
-      <BrowserAddAction id="52" method="controller.createFlexoConcept(selected)" name="create_flexo_concept" />
-    </BrowserElement>
-  </Browser>
-  <FIBVariable id="64" type="org.openflexo.foundation.fml.FMLTechnologyAdapter" name="data" />
-  <LocalizedDictionary id="65" />
+<Panel id="0" align="left" borderTop="0" borderLeft="0"
+	trackViewPortHeight="true" trackViewPortWidth="true" borderBottom="0"
+	border="empty" sizeAdjustment="OriginalSize" layout="twocols"
+	borderRight="0"
+	controllerClassName="org.openflexo.fml.controller.FMLFIBController">
+	<Browser id="1" backgroundSelectionColor="9,80,208"
+		visibleRowCount="5" boundToSelectionManager="true"
+		backgroundNonSelectionColor="255,255,255"
+		iteratorClassName="java.lang.Object" textSelectionColor="255,255,255"
+		backgroundSecondarySelectionColor="178,215,255" showRootsHandle="true"
+		showFooter="true" textNonSelectionColor="0,0,0" root="data"
+		selectionMode="DiscontiguousTreeSelection" rootVisible="true"
+		rowHeight="18" localize="true" manageDynamicModel="true"
+		rightClickAction="controller.rightClick(ViewPointLibraryBrowser.selected,event)"
+		doubleClickAction="controller.doubleClick(ViewPointLibraryBrowser.selected)"
+		clickAction="controller.singleClick(ViewPointLibraryBrowser.selected)"
+		index="0"
+		constraints="twocols(expandHorizontally=true;expandVertically=true;index=0;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=center)"
+		name="ViewPointLibraryBrowser">
+		<BrowserElement id="2"
+			dataClassName="org.openflexo.foundation.fml.FMLTechnologyAdapter"
+			icon="controller.iconForObject(technologyAdapter)"
+			label="technologyAdapter.name" isEditable="false"
+			name="technologyAdapter">
+			<Children id="3" cast="child.rootFolder"
+				data="data.getVirtualModelRepositories()" name="repositories" />
+		</BrowserElement>
+		<BrowserElement id="4"
+			visible="controller.shouldBeDisplayed(viewPointFolder)"
+			dataClassName="org.openflexo.foundation.resource.RepositoryFolder"
+			icon="controller.iconForObject(viewPointFolder)"
+			label="viewPointFolder.displayableName" isEditable="false"
+			name="viewPointFolder">
+			<Children id="5" data="viewPointFolder.children"
+				name="subFolders" />
+			<Children id="6" data="viewPointFolder.resources"
+				name="resource" />
+			<BrowserAddAction id="7"
+				method="controller.createTopLevelVirtualModel(selected)"
+				name="create_virtual_model" />
+		</BrowserElement>
+		<BrowserElement id="21"
+			dataClassName="org.openflexo.foundation.fml.rm.CompilationUnitResource"
+			icon="controller.iconForObject(virtualModel)"
+			label="(virtualModel.name + &quot;.fml&quot;)"
+			enabled="virtualModel.isLoaded" editableLabel="virtualModel.name"
+			name="virtualModel">
+			<Children id="22" visible="virtualModel.isLoaded"
+				data="virtualModel.contents" name="subresources" />
+			<Children id="23" visible="virtualModel.isLoaded"
+				data="virtualModel.loadedCompilationUnit.virtualModel.allRootFlexoConcepts"
+				name="rootFlexoConcepts" />
+			<BrowserRemoveAction id="24"
+				method="controller.deleteVirtualModel(selected)"
+				name="delete_virtual_model" />
+			<BrowserAddAction id="25"
+				method="controller.createFlexoConcept(selected.compilationUnit.virtualModel)"
+				name="create_flexo_concept" />
+			<BrowserAddAction
+				method="controller.createContainedVirtualModel(selected)"
+				name="create_virtual_model" />
+		</BrowserElement>
+		<BrowserElement id="49"
+			dataClassName="org.openflexo.foundation.fml.FlexoConcept"
+			icon="controller.iconForObject(flexoConcept)"
+			label="flexoConcept.name" editableLabel="flexoConcept.name"
+			name="flexoConcept">
+			<Children id="50" data="flexoConcept.embeddedFlexoConcepts"
+				name="children" />
+			<BrowserRemoveAction id="51"
+				method="controller.deleteFlexoConcept(selected)"
+				name="delete_flexo_concept" />
+			<BrowserAddAction id="52"
+				method="controller.createFlexoConcept(selected)"
+				name="create_flexo_concept" />
+		</BrowserElement>
+	</Browser>
+	<FIBVariable id="64"
+		type="org.openflexo.foundation.fml.FMLTechnologyAdapter" name="data" />
+	<LocalizedDictionary id="65" />
 </Panel>

@@ -77,7 +77,7 @@
 		name="Label10" />
 	<Custom id="32"
 		componentClassName="org.openflexo.fml.controller.widget.FIBVirtualModelSelector"
-		dataClassForComponent="org.openflexo.foundation.fml.rm.VirtualModelResource"
+		dataClassForComponent="org.openflexo.foundation.fml.rm.CompilationUnitResource"
 		localize="true" manageDynamicModel="true" data="data.virtualModelResource"
 		visible="(((data.propertyType = &quot;MODEL_SLOT&quot;)) &amp; data.isVirtualModelModelSlot)"
 		index="9"
