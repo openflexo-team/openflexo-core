@@ -28,7 +28,7 @@
 			visible="((data.matchingValues.size != 1) &amp; data.isFiltered)"
 			name="MatchesLabel" localize="false" />
 	</Panel>
-	<Browser root="data.rootObject" iteratorClassName="org.openflexo.foundation.fml.rm.VirtualModelResource" deepExploration="true"
+	<Browser root="data.rootObject" iteratorClassName="org.openflexo.foundation.fml.rm.CompilationUnitResource" deepExploration="true"
 		visibleRowCount="5" rowHeight="18" boundToSelectionManager="false"
 		selectionMode="DiscontiguousTreeSelection" selected="data.selectedVirtualModel"
 		showFooter="true" rootVisible="true" showRootsHandle="true" format=""
@@ -49,7 +49,7 @@
 			<Children data="folder.children" name="subFolders" />
 			<Children data="folder.resources" name="resources" />
 		</BrowserElement>
-		<BrowserElement dataClassName="org.openflexo.foundation.fml.rm.VirtualModelResource"
+		<BrowserElement dataClassName="org.openflexo.foundation.fml.rm.CompilationUnitResource"
 			label="virtualModel.name" icon="controller.iconForObject(virtualModel)"
 			tooltip="" enabled="virtualModel.isLoaded" isEditable="false"
 			editableLabel="" filtered="false" defaultVisible="true" dynamicFont=""

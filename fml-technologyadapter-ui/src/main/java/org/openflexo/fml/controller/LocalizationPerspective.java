@@ -44,6 +44,7 @@ import javax.swing.ImageIcon;
 
 import org.openflexo.fml.controller.view.FMLLocalizedDictionaryView;
 import org.openflexo.foundation.FlexoObject;
+import org.openflexo.foundation.fml.FMLCompilationUnit;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.icon.FMLIconLibrary;
 import org.openflexo.view.ModuleView;
@@ -78,6 +79,9 @@ public class LocalizationPerspective extends GenericPerspective {
 	@Override
 	@SuppressWarnings("unchecked")
 	public boolean hasModuleViewForObject(FlexoObject object) {
+		if (object instanceof FMLCompilationUnit) {
+			return true;
+		}
 		if (object instanceof VirtualModel) {
 			return true;
 		}
@@ -86,8 +90,11 @@ public class LocalizationPerspective extends GenericPerspective {
 
 	@Override
 	public ModuleView<?> createModuleViewForObject(FlexoObject object) {
+		if (object instanceof FMLCompilationUnit) {
+			return new FMLLocalizedDictionaryView((FMLCompilationUnit) object, getController(), this);
+		}
 		if (object instanceof VirtualModel) {
-			return new FMLLocalizedDictionaryView((VirtualModel) object, getController(), this);
+			return new FMLLocalizedDictionaryView(((VirtualModel) object).getCompilationUnit(), getController(), this);
 		}
 		return super.createModuleViewForObject(object);
 	}

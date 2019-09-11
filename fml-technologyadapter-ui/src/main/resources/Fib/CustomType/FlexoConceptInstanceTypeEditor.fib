@@ -49,14 +49,14 @@
 			<Children data="folder.children" name="subFolders" />
 			<Children data="folder.resources" name="resources" />
 		</BrowserElement>
-		<BrowserElement dataClassName="org.openflexo.foundation.fml.rm.VirtualModelResource"
+		<BrowserElement dataClassName="org.openflexo.foundation.fml.rm.CompilationUnitResource"
 			label="virtualModel.name" icon="controller.iconForObject(virtualModel)"
 			enabled="virtualModel.isLoaded" isEditable="false"
 			filtered="false" defaultVisible="true" dynamicFont=""
 			name="virtualModel">
 			<Children data="virtualModel.contents" visible="virtualModel.isLoaded"
 				cast="" name="subresources" />
-			<Children data="virtualModel.loadedVirtualModel.allRootFlexoConcepts"
+			<Children data="virtualModel.loadedCompilationUnit.virtualModel.allRootFlexoConcepts"
 				visible="virtualModel.isLoaded" cast="" name="rootFlexoConcepts" />
 		</BrowserElement>
 
