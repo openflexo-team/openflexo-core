@@ -6,4 +6,5 @@ dependencies {
   // external dep
 
   // testing dep
+  testCompile testUtils()
 }
