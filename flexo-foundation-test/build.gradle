@@ -10,6 +10,3 @@ dependencies {
   testCompile project(':flexo-test-resources')
   testRuntime group: "org.openflexo", name: "testViewpoint2", version: "1.0"
 }
-tasks.withType(Test) {
-	jvmArgs += ["-Djava.awt.headless=true"]
-}

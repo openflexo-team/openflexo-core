@@ -45,6 +45,7 @@ import java.io.File;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 import org.openflexo.ApplicationContext;
 import org.openflexo.OpenflexoProjectAtRunTimeTestCaseWithGUI;
@@ -54,6 +55,7 @@ import org.openflexo.foundation.FlexoProject;
 import org.openflexo.gina.swing.test.FIBDialogGraphicalContextDelegate;
 import org.openflexo.test.OrderedRunner;
 import org.openflexo.test.TestOrder;
+import org.openflexo.test.UITest;
 
 /**
  * Test the ReviewUnsavedDialog widget
@@ -71,6 +73,7 @@ public class TestReviewUnsavedDialog extends OpenflexoProjectAtRunTimeTestCaseWi
 
 	@Test
 	@TestOrder(1)
+	@Category(UITest.class)
 	public void testCreateProject() {
 		serviceManager = instanciateTestServiceManager();
 		editor = createStandaloneProject("TestProject");
@@ -81,6 +84,7 @@ public class TestReviewUnsavedDialog extends OpenflexoProjectAtRunTimeTestCaseWi
 
 	@Test
 	@TestOrder(2)
+	@Category(UITest.class)
 	public void testInstanciateWidget() {
 		System.out.println(">>>>>>>>>>>>> serviceManager=" + serviceManager);
 		ReviewUnsavedDialog dialog = new ReviewUnsavedDialog((ApplicationContext) serviceManager, serviceManager.getResourceManager());

@@ -49,6 +49,7 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.type.PrimitiveType;
@@ -78,6 +79,7 @@ import org.openflexo.rm.Resource;
 import org.openflexo.rm.ResourceLocator;
 import org.openflexo.test.OrderedRunner;
 import org.openflexo.test.TestOrder;
+import org.openflexo.test.UITest;
 
 /**
  * Test StandardFlexoConceptView fib
@@ -113,6 +115,7 @@ public class TestStandardFlexoConceptView extends OpenflexoFIBTestCase {
 
 	@Test
 	@TestOrder(1)
+	@Category(UITest.class)
 	public void testLoadWidget() {
 
 		fibResource = ResourceLocator.locateResource("Fib/FML/StandardFlexoConceptView.fib");
@@ -121,6 +124,7 @@ public class TestStandardFlexoConceptView extends OpenflexoFIBTestCase {
 
 	@Test
 	@TestOrder(2)
+	@Category(UITest.class)
 	public void testValidateWidget() throws InterruptedException {
 
 		validateFIB(fibResource);
@@ -128,6 +132,7 @@ public class TestStandardFlexoConceptView extends OpenflexoFIBTestCase {
 
 	@Test
 	@TestOrder(3)
+	@Category(UITest.class)
 	public void loadConcepts() throws FileNotFoundException, ResourceLoadingCancelledException, FlexoException {
 
 		VirtualModelLibrary vpLib = serviceManager.getVirtualModelLibrary();
@@ -273,6 +278,7 @@ public class TestStandardFlexoConceptView extends OpenflexoFIBTestCase {
 
 	@Test
 	@TestOrder(4)
+	@Category(UITest.class)
 	public void testInstanciateWidgetForConceptA() {
 
 		FIBJPanel<FlexoConcept> widget = instanciateFIB(fibResource, flexoConceptA, FlexoConcept.class);
@@ -282,6 +288,7 @@ public class TestStandardFlexoConceptView extends OpenflexoFIBTestCase {
 
 	@Test
 	@TestOrder(5)
+	@Category(UITest.class)
 	public void testInstanciateWidgetForConceptB() {
 
 		FIBJPanel<FlexoConcept> widget = instanciateFIB(fibResource, flexoConceptB, FlexoConcept.class);
@@ -291,6 +298,7 @@ public class TestStandardFlexoConceptView extends OpenflexoFIBTestCase {
 
 	@Test
 	@TestOrder(6)
+	@Category(UITest.class)
 	public void testInstanciateWidgetForConceptC() {
 
 		FIBJPanel<FlexoConcept> widget = instanciateFIB(fibResource, flexoConceptC, FlexoConcept.class);
@@ -300,6 +308,7 @@ public class TestStandardFlexoConceptView extends OpenflexoFIBTestCase {
 
 	@Test
 	@TestOrder(7)
+	@Category(UITest.class)
 	public void testInstanciateWidgetForConceptD() {
 
 		FIBJPanel<FlexoConcept> widget = instanciateFIB(fibResource, flexoConceptD, FlexoConcept.class);
@@ -309,6 +318,7 @@ public class TestStandardFlexoConceptView extends OpenflexoFIBTestCase {
 
 	@Test
 	@TestOrder(8)
+	@Category(UITest.class)
 	public void testInstanciateWidgetForConceptE() {
 
 		FIBJPanel<FlexoConcept> widget = instanciateFIB(fibResource, flexoConceptE, FlexoConcept.class);
