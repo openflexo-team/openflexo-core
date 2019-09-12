@@ -97,7 +97,7 @@ public class TestFMLParser /*extends FMLParserTestCase*/ {
 		System.out.println("On teste la resource "+fmlResource);
 		FMLModelFactory fmlModelFactory = new FMLModelFactory(null, serviceManager);
 		FMLParser parser = new FMLParser();
-		FMLCompilationUnit compilationUnit = parser.parse(((FileResourceImpl) fmlResource).getFile(), fmlModelFactory);
+		FMLCompilationUnit compilationUnit = parser.parse(fmlResource.openInputStream(), fmlModelFactory);
 		FMLCompilationUnitNode rootNode = (FMLCompilationUnitNode) compilationUnit.getPrettyPrintDelegate();
 		debug(rootNode, 0);
 
