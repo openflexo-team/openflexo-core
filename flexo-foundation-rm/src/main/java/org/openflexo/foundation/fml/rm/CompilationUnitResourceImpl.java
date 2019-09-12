@@ -98,6 +98,7 @@ import org.openflexo.rm.FileResourceImpl;
 import org.openflexo.rm.InJarResourceImpl;
 import org.openflexo.rm.Resource;
 import org.openflexo.rm.ResourceLocator;
+import org.openflexo.rm.ResourceLocatorDelegate;
 import org.openflexo.toolbox.FileSystemMetaDataManager;
 import org.openflexo.toolbox.FileUtils;
 import org.openflexo.toolbox.StringUtils;
@@ -826,7 +827,9 @@ implements CompilationUnitResource {
 			String artefactName = ioDelegate.getDirectory().getName();
 			String baseName = artefactName.substring(0, artefactName.length() - CompilationUnitResourceFactory.FML_SUFFIX.length());
 			File f = new File(ioDelegate.getDirectory(), baseName + CompilationUnitResourceFactory.FML_XML_SUFFIX);
-			return new FileResourceImpl(f);
+			ResourceLocatorDelegate locator = ioDelegate.getSerializationArtefactAsResource().getLocator();		
+			return new FileResourceImpl(locator,f);
+			//return new FileResourceImpl(f);
 		}
 		if (getIODelegate() instanceof DirectoryBasedJarIODelegate) {
 			DirectoryBasedJarIODelegate ioDelegate = (DirectoryBasedJarIODelegate) getIODelegate();
