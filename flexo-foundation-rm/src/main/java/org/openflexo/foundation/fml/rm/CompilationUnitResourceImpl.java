@@ -102,7 +102,7 @@ import org.openflexo.xml.XMLElementInfo;
 import org.openflexo.xml.XMLRootElementInfo;
 
 public abstract class CompilationUnitResourceImpl extends PamelaResourceImpl<FMLCompilationUnit, FMLModelFactory>
-		implements CompilationUnitResource {
+implements CompilationUnitResource {
 
 	private static final Logger logger = Logger.getLogger(CompilationUnitResourceImpl.class.getPackage().getName());
 
@@ -280,7 +280,7 @@ public abstract class CompilationUnitResourceImpl extends PamelaResourceImpl<FML
 	 */
 	@Override
 	public FMLCompilationUnit loadResourceData() throws FlexoFileNotFoundException, IOFlexoException, InvalidXMLException,
-			InconsistentDataException, InvalidModelDefinitionException {
+	InconsistentDataException, InvalidModelDefinitionException {
 
 		logger.info("*************** Loading " + this);
 
@@ -486,10 +486,12 @@ public abstract class CompilationUnitResourceImpl extends PamelaResourceImpl<FML
 	@Deprecated
 	public void setUsedModelSlots(String usedModelSlotClasses) throws ClassNotFoundException {
 		usedModelSlots.clear();
-		StringTokenizer st = new StringTokenizer(usedModelSlotClasses, ",");
-		while (st.hasMoreTokens()) {
-			String next = st.nextToken();
-			usedModelSlots.add((Class<? extends ModelSlot<?>>) Class.forName(next));
+		if (usedModelSlotClasses != null) {
+			StringTokenizer st = new StringTokenizer(usedModelSlotClasses, ",");
+			while (st.hasMoreTokens()) {
+				String next = st.nextToken();
+				usedModelSlots.add((Class<? extends ModelSlot<?>>) Class.forName(next));
+			}
 		}
 	}
 
@@ -550,7 +552,7 @@ public abstract class CompilationUnitResourceImpl extends PamelaResourceImpl<FML
 	}
 
 	/*public class FMLAndXMLDontMatchException extends Exception {
-	
+
 		public FMLAndXMLDontMatchException(String message) {
 			super(message);
 		}
@@ -567,13 +569,13 @@ public abstract class CompilationUnitResourceImpl extends PamelaResourceImpl<FML
 	@Override
 	protected FMLCompilationUnit performLoad() throws IOException, ParseException {
 		switch (getPersistencyStrategy()) {
-			case XML:
-				return loadFromXML();
-			case FML:
-				return loadFromFML();
+		case XML:
+			return loadFromXML();
+		case FML:
+			return loadFromFML();
 
-			default:
-				return null;
+		default:
+			return null;
 		}
 
 		/*switch (PERSISTENCY_STRATEGY) {
@@ -587,14 +589,14 @@ public abstract class CompilationUnitResourceImpl extends PamelaResourceImpl<FML
 				}
 				break;
 			case XML_SAVE_FML_AND_CHECK:
-		
+
 				FlexoConceptImpl.PREVENT_PARENT_CONCEPTS_DECODING = true;
-		
+
 				returned = loadFromXML();
-		
+
 				System.out.println("Ce que je lis dans le XML: ");
 				System.out.println("Concepts: " + returned.getVirtualModel().getFlexoConcepts());
-		
+
 				try {
 					saveToFML(returned);
 				} catch (SaveResourceException e1) {
@@ -612,18 +614,18 @@ public abstract class CompilationUnitResourceImpl extends PamelaResourceImpl<FML
 				// System.out.println("PP2: " + reload.getFMLPrettyPrint());
 				// System.out.println("N: " + returned.getNormalizedFML());
 				// System.out.println("N2: " + reload.getNormalizedFML());
-		
+
 				if (!reload.equalsObject(returned)) {
-		
+
 					System.out.println("Probleme avec: ");
 					System.out.println(reload.getFMLPrettyPrint());
-		
+
 					throw new FMLAndXMLDontMatchException("Re-serialized FML version do not match initial XML version: " + getXMLFile()
 							+ " and " + getIODelegate().getSerializationArtefact());
 				}
-		
+
 				FlexoConceptImpl.PREVENT_PARENT_CONCEPTS_DECODING = false;
-		
+
 				break;
 			case CHECK_BOTH_VERSIONS:
 				FMLCompilationUnit xmlVersion = loadFromXML();
@@ -660,12 +662,12 @@ public abstract class CompilationUnitResourceImpl extends PamelaResourceImpl<FML
 		// TODO: XML Loading
 		FMLCompilationUnit returned = performXMLDeserialization();
 		returned.setResource(this);
-		
+
 		System.out.println("OK, j'ai " + returned);
 		System.out.println("factory: " + getFactory());
 		System.out.println("sm: " + getFactory().getServiceManager());
 		getFMLParser().initPrettyPrint(returned);
-		
+
 		System.out.println("Hop:>>>>>>>>>");
 		System.out.println(returned.getFMLPrettyPrint());
 		System.out.println("<<<<<<<<<<<<");
@@ -711,7 +713,7 @@ public abstract class CompilationUnitResourceImpl extends PamelaResourceImpl<FML
 		returned.setResource(this);
 		return returned;
 		/*
-		
+
 			if (getIODelegate() instanceof DirectoryBasedIODelegate && getFMLParser() != null) {
 				DirectoryBasedIODelegate ioDelegate = (DirectoryBasedIODelegate) getIODelegate();
 				File fmlFile = new File(ioDelegate.getDirectory(), ioDelegate.getDirectory().getName());
@@ -932,9 +934,9 @@ public abstract class CompilationUnitResourceImpl extends PamelaResourceImpl<FML
 			// getFlexoIOStreamDelegate().hasWrittenOnDisk(lock);
 			throw new SaveResourceException(getIODelegate(), e);
 		} /*
-			* finally { hasWritten(getFile());
-			* hasWritten(getFile().getParentFile()); }
-			*/
+		 * finally { hasWritten(getFile());
+		 * hasWritten(getFile().getParentFile()); }
+		 */
 	}
 
 	/**
