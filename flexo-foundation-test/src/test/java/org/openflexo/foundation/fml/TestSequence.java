@@ -113,7 +113,7 @@ public class TestSequence extends OpenflexoTestCase {
 
 		assertEquals(0, vpLib.getLoadedCompilationUnits().size());
 
-		VirtualModel viewPoint = vpLib.getVirtualModel("http://openflexo.org/test/flexo-test-resources/TestResourceCenter/TestSequence.fml");
+		VirtualModel viewPoint = vpLib.getVirtualModel("http://openflexo.org/test/TestResourceCenter/TestSequence.fml");
 
 		System.out.println("ViewPoint=" + viewPoint);
 
