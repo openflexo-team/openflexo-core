@@ -97,6 +97,7 @@ import org.openflexo.rm.FileResourceImpl;
 import org.openflexo.rm.InJarResourceImpl;
 import org.openflexo.rm.Resource;
 import org.openflexo.rm.ResourceLocator;
+import org.openflexo.rm.ResourceLocatorDelegate;
 import org.openflexo.toolbox.FileSystemMetaDataManager;
 import org.openflexo.toolbox.FileUtils;
 import org.openflexo.toolbox.StringUtils;
@@ -818,7 +819,7 @@ public abstract class CompilationUnitResourceImpl extends PamelaResourceImpl<FML
 	 * @throws FileNotFoundException
 	 */
 	@Deprecated
-	private <I> I getXMLArtefact() throws MalformedURLException, LocatorNotFoundException {
+	private <I> I getXMLArtefact() {
 		if (getIODelegate() instanceof DirectoryBasedIODelegate) {
 			DirectoryBasedIODelegate ioDelegate = (DirectoryBasedIODelegate) getIODelegate();
 
@@ -846,6 +847,30 @@ public abstract class CompilationUnitResourceImpl extends PamelaResourceImpl<FML
 		return null;
 	}
 
+	private Resource getXMLArtefactResource() throws MalformedURLException, LocatorNotFoundException {
+		if (getIODelegate() instanceof DirectoryBasedIODelegate) {
+			DirectoryBasedIODelegate ioDelegate = (DirectoryBasedIODelegate) getIODelegate();
+			String artefactName = ioDelegate.getDirectory().getName();
+			String baseName = artefactName.substring(0, artefactName.length() - CompilationUnitResourceFactory.FML_SUFFIX.length());
+			File f = new File(ioDelegate.getDirectory(), baseName + CompilationUnitResourceFactory.FML_XML_SUFFIX);
+			ResourceLocatorDelegate locator = ioDelegate.getSerializationArtefactAsResource().getLocator();
+			return new FileResourceImpl(locator, f);
+		}
+		if (getIODelegate() instanceof DirectoryBasedJarIODelegate) {
+			DirectoryBasedJarIODelegate ioDelegate = (DirectoryBasedJarIODelegate) getIODelegate();
+			String artefactName = ioDelegate.getDirectory().getName();
+			String baseName = artefactName.substring(0, artefactName.length() - CompilationUnitResourceFactory.FML_SUFFIX.length());
+			List<? extends Resource> contents = ioDelegate.getDirectory().getContents();
+			for (Resource child : contents) {
+				InJarResourceImpl entry = (InJarResourceImpl) child;
+				if (entry.getName().contains(CompilationUnitResourceFactory.FML_XML_SUFFIX)) {
+					return entry;
+				}
+			}
+		}
+		return null;
+	}
+
 	/**
 	 * Return XML input stream (deprecated)
 	 * 
@@ -856,9 +881,9 @@ public abstract class CompilationUnitResourceImpl extends PamelaResourceImpl<FML
 	 */
 	@Deprecated
 	private InputStream getXMLInputStream() throws FileNotFoundException, MalformedURLException, LocatorNotFoundException {
-		Resource xmlArtefact = getXMLArtefact();
-		if (xmlArtefact != null) {
-			return xmlArtefact.openInputStream();
+		Resource xmlArtefactResource = getXMLArtefactResource();
+		if (xmlArtefactResource != null) {
+			return xmlArtefactResource.openInputStream();
 		}
 		return null;
 	}
@@ -880,7 +905,9 @@ public abstract class CompilationUnitResourceImpl extends PamelaResourceImpl<FML
 			e.printStackTrace();
 		} finally {
 			try {
-				ioStream.close();
+				if (ioStream != null) {
+					ioStream.close();
+				}
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -952,14 +979,8 @@ public abstract class CompilationUnitResourceImpl extends PamelaResourceImpl<FML
 	 * @throws IOException
 	 */
 	private void postXMLSerialization(File temporaryFile/*, FileWritingLock lock*/) throws IOException {
-		Resource xmlArtefact;
-		try {
-			xmlArtefact = getXMLArtefact();
-		} catch (LocatorNotFoundException e) {
-			throw new IOException(e);
-		}
-		if (xmlArtefact instanceof FileResourceImpl) {
-			File xmlFile = ((FileResourceImpl) xmlArtefact).getFile();
+		if (getXMLArtefact() instanceof File) {
+			File xmlFile = (File) getXMLArtefact();
 			FileUtils.rename(temporaryFile, xmlFile);
 		}
 		// getFlexoIOStreamDelegate().hasWrittenOnDisk(lock);
@@ -1054,16 +1075,7 @@ public abstract class CompilationUnitResourceImpl extends PamelaResourceImpl<FML
 
 		VirtualModelInfo returned = new VirtualModelInfo();
 
-		XMLRootElementInfo xmlRootElementInfo = null;
-		try {
-			xmlRootElementInfo = resourceCenter.getXMLRootElementInfo(getXMLArtefact());
-		} catch (MalformedURLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (LocatorNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		XMLRootElementInfo xmlRootElementInfo = resourceCenter.getXMLRootElementInfo(getXMLArtefact());
 
 		if (xmlRootElementInfo == null) {
 			return null;
