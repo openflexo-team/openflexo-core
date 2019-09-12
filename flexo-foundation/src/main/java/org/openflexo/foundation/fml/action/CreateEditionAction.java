@@ -104,7 +104,7 @@ import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.technologyadapter.UseModelSlotDeclaration;
 
 public class CreateEditionAction extends FlexoAction<CreateEditionAction, FMLControlGraph, FMLObject>
-		implements Bindable, PropertyChangeListener, TechnologySpecificFlexoAction<FMLTechnologyAdapter> {
+implements Bindable, PropertyChangeListener, TechnologySpecificFlexoAction<FMLTechnologyAdapter> {
 
 	private static final Logger logger = Logger.getLogger(CreateEditionAction.class.getPackage().getName());
 
@@ -437,7 +437,7 @@ public class CreateEditionAction extends FlexoAction<CreateEditionAction, FMLCon
 				return false;
 			}
 			return true;
-		
+
 		default:
 			return false;
 		}*/
@@ -625,31 +625,31 @@ public class CreateEditionAction extends FlexoAction<CreateEditionAction, FMLCon
 	/*public Class<? extends EditionAction> getBuiltInActionClass() {
 		return builtInActionClass;
 	}
-	
+
 	public void setBuiltInActionClass(Class<? extends EditionAction> builtInActionClass) {
 		this.builtInActionClass = builtInActionClass;
 	}
-	
+
 	public Class<? extends EditionAction> getControlActionClass() {
 		return controlActionClass;
 	}
-	
+
 	public void setControlActionClass(Class<? extends ControlStructureAction> controlActionClass) {
 		this.controlActionClass = controlActionClass;
 	}
-	
+
 	public Class<? extends EditionAction> getModelSlotSpecificActionClass() {
 		return modelSlotSpecificActionClass;
 	}
-	
+
 	public void setModelSlotSpecificActionClass(Class<? extends TechnologySpecificAction<?, ?, ?>> modelSlotSpecificActionClass) {
 		this.modelSlotSpecificActionClass = modelSlotSpecificActionClass;
 	}
-	
+
 	public Class<? extends FetchRequest<?, ?, ?>> getRequestActionClass() {
 		return requestActionClass;
 	}
-	
+
 	public void setRequestActionClass(Class<? extends FetchRequest<?, ?, ?>> requestActionClass) {
 		this.requestActionClass = requestActionClass;
 	}*/
@@ -665,11 +665,13 @@ public class CreateEditionAction extends FlexoAction<CreateEditionAction, FMLCon
 	 * @return
 	 */
 	public VirtualModel getVirtualModel() {
-		if (getFocusedObject().getOwner().getFlexoConcept() instanceof VirtualModel) {
-			return (VirtualModel) getFocusedObject().getOwner().getFlexoConcept();
-		}
-		else if (getFocusedObject().getOwner().getOwningVirtualModel() != null) {
-			return getFocusedObject().getOwner().getOwningVirtualModel();
+		if (getFocusedObject() != null && getFocusedObject().getOwner() != null) {
+			if (getFocusedObject().getOwner().getFlexoConcept() instanceof VirtualModel) {
+				return (VirtualModel) getFocusedObject().getOwner().getFlexoConcept();
+			}
+			else if (getFocusedObject().getOwner().getOwningVirtualModel() != null) {
+				return getFocusedObject().getOwner().getOwningVirtualModel();
+			}
 		}
 		return null;
 	}
@@ -833,18 +835,18 @@ public class CreateEditionAction extends FlexoAction<CreateEditionAction, FMLCon
 		FMLModelFactory factory = getFocusedObject().getFMLModelFactory();
 		if (iterationAction != null) {
 			switch (getIterationType()) {
-				case Expression:
-					ExpressionAction exp = factory.newExpressionAction(getIterationExpression());
-					iterationAction.setIterationAction(exp);
-					break;
-				case FetchRequest:
-					FetchRequest<?, ?, ?> fetchRequest = factory.newInstance(getFetchRequestClass());
-					iterationAction.setIterationAction(fetchRequest);
-					// Unused List<ModelSlot<?>> availableMS =
-					getAvailableModelSlotsForAction(getFetchRequestClass());
-					break;
-				default:
-					break;
+			case Expression:
+				ExpressionAction exp = factory.newExpressionAction(getIterationExpression());
+				iterationAction.setIterationAction(exp);
+				break;
+			case FetchRequest:
+				FetchRequest<?, ?, ?> fetchRequest = factory.newInstance(getFetchRequestClass());
+				iterationAction.setIterationAction(fetchRequest);
+				// Unused List<ModelSlot<?>> availableMS =
+				getAvailableModelSlotsForAction(getFetchRequestClass());
+				break;
+			default:
+				break;
 			}
 		}
 	}
