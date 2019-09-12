@@ -173,9 +173,9 @@ public abstract class FMLParserTestCase extends OpenflexoTestCase {
 	 * @throws ParseException
 	 * @throws IOException
 	 */
-	protected static FMLCompilationUnit parseFile(Resource fileResource) throws ModelDefinitionException, ParseException, IOException {
+	protected static FMLCompilationUnit parseFile(Resource resource) throws ModelDefinitionException, ParseException, IOException {
 		FMLParser parser = new FMLParser();
-		return parser.parse(((FileResourceImpl) fileResource).getFile(), new FMLModelFactory(null, serviceManager));
+		return parser.parse(resource.openInputStream(), new FMLModelFactory(null, serviceManager));
 	}
 
 	protected static void testNormalizedFMLRepresentationEquals(FMLCompilationUnit compilationUnit, String resourceFile) {
