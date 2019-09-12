@@ -72,7 +72,7 @@ public class DeclarationActionNode extends AssignableActionNode<ALocalVariableDe
 		DeclarationAction<?> returned = getFactory().newDeclarationAction();
 		// System.out.println(">>>>>> Declaration " + astNode);
 
-		returned.setName(getName(astNode.getVariableDeclarator()).getText());
+		returned.setVariableName(getName(astNode.getVariableDeclarator()).getText());
 		returned.setDeclaredType(getTypeFactory().makeType(astNode.getType()));
 
 		if (astNode.getVariableDeclarator() instanceof AInitializerVariableDeclarator) {
