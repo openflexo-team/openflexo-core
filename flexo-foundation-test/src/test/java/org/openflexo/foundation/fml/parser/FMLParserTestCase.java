@@ -54,6 +54,7 @@ import org.openflexo.foundation.test.OpenflexoTestCase;
 import org.openflexo.p2pp.P2PPNode;
 import org.openflexo.pamela.exceptions.ModelDefinitionException;
 import org.openflexo.rm.FileResourceImpl;
+import org.openflexo.rm.InJarResourceImpl;
 import org.openflexo.rm.Resource;
 import org.openflexo.rm.ResourceLocator;
 import org.openflexo.toolbox.FileUtils;
@@ -88,7 +89,7 @@ public abstract class FMLParserTestCase extends OpenflexoTestCase {
 
 		FMLModelFactory fmlModelFactory = new FMLModelFactory(null, serviceManager);
 		FMLParser parser = new FMLParser();
-		FMLCompilationUnit compilationUnit = parser.parse(((FileResourceImpl) fileResource).getFile(), fmlModelFactory);
+		FMLCompilationUnit compilationUnit = parser.parse(fileResource.openInputStream(), fmlModelFactory);
 		FMLCompilationUnitNode rootNode = (FMLCompilationUnitNode) compilationUnit.getPrettyPrintDelegate();
 		debug(rootNode, 0);
 
