@@ -40,7 +40,6 @@ package org.openflexo.foundation.fml.rm;
 
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -98,7 +97,6 @@ import org.openflexo.rm.FileResourceImpl;
 import org.openflexo.rm.InJarResourceImpl;
 import org.openflexo.rm.Resource;
 import org.openflexo.rm.ResourceLocator;
-import org.openflexo.rm.ResourceLocatorDelegate;
 import org.openflexo.toolbox.FileSystemMetaDataManager;
 import org.openflexo.toolbox.FileUtils;
 import org.openflexo.toolbox.StringUtils;
@@ -106,7 +104,7 @@ import org.openflexo.xml.XMLElementInfo;
 import org.openflexo.xml.XMLRootElementInfo;
 
 public abstract class CompilationUnitResourceImpl extends PamelaResourceImpl<FMLCompilationUnit, FMLModelFactory>
-implements CompilationUnitResource {
+		implements CompilationUnitResource {
 
 	private static final Logger logger = Logger.getLogger(CompilationUnitResourceImpl.class.getPackage().getName());
 
@@ -284,7 +282,7 @@ implements CompilationUnitResource {
 	 */
 	@Override
 	public FMLCompilationUnit loadResourceData() throws FlexoFileNotFoundException, IOFlexoException, InvalidXMLException,
-	InconsistentDataException, InvalidModelDefinitionException {
+			InconsistentDataException, InvalidModelDefinitionException {
 
 		logger.info("*************** Loading " + this);
 
@@ -556,7 +554,7 @@ implements CompilationUnitResource {
 	}
 
 	/*public class FMLAndXMLDontMatchException extends Exception {
-
+	
 		public FMLAndXMLDontMatchException(String message) {
 			super(message);
 		}
@@ -573,13 +571,13 @@ implements CompilationUnitResource {
 	@Override
 	protected FMLCompilationUnit performLoad() throws IOException, ParseException {
 		switch (getPersistencyStrategy()) {
-		case XML:
-			return loadFromXML();
-		case FML:
-			return loadFromFML();
+			case XML:
+				return loadFromXML();
+			case FML:
+				return loadFromFML();
 
-		default:
-			return null;
+			default:
+				return null;
 		}
 
 		/*switch (PERSISTENCY_STRATEGY) {
@@ -593,14 +591,14 @@ implements CompilationUnitResource {
 				}
 				break;
 			case XML_SAVE_FML_AND_CHECK:
-
+		
 				FlexoConceptImpl.PREVENT_PARENT_CONCEPTS_DECODING = true;
-
+		
 				returned = loadFromXML();
-
+		
 				System.out.println("Ce que je lis dans le XML: ");
 				System.out.println("Concepts: " + returned.getVirtualModel().getFlexoConcepts());
-
+		
 				try {
 					saveToFML(returned);
 				} catch (SaveResourceException e1) {
@@ -618,18 +616,18 @@ implements CompilationUnitResource {
 				// System.out.println("PP2: " + reload.getFMLPrettyPrint());
 				// System.out.println("N: " + returned.getNormalizedFML());
 				// System.out.println("N2: " + reload.getNormalizedFML());
-
+		
 				if (!reload.equalsObject(returned)) {
-
+		
 					System.out.println("Probleme avec: ");
 					System.out.println(reload.getFMLPrettyPrint());
-
+		
 					throw new FMLAndXMLDontMatchException("Re-serialized FML version do not match initial XML version: " + getXMLFile()
 							+ " and " + getIODelegate().getSerializationArtefact());
 				}
-
+		
 				FlexoConceptImpl.PREVENT_PARENT_CONCEPTS_DECODING = false;
-
+		
 				break;
 			case CHECK_BOTH_VERSIONS:
 				FMLCompilationUnit xmlVersion = loadFromXML();
@@ -666,12 +664,12 @@ implements CompilationUnitResource {
 		// TODO: XML Loading
 		FMLCompilationUnit returned = performXMLDeserialization();
 		returned.setResource(this);
-
+		
 		System.out.println("OK, j'ai " + returned);
 		System.out.println("factory: " + getFactory());
 		System.out.println("sm: " + getFactory().getServiceManager());
 		getFMLParser().initPrettyPrint(returned);
-
+		
 		System.out.println("Hop:>>>>>>>>>");
 		System.out.println(returned.getFMLPrettyPrint());
 		System.out.println("<<<<<<<<<<<<");
@@ -717,7 +715,7 @@ implements CompilationUnitResource {
 		returned.setResource(this);
 		return returned;
 		/*
-
+		
 			if (getIODelegate() instanceof DirectoryBasedIODelegate && getFMLParser() != null) {
 				DirectoryBasedIODelegate ioDelegate = (DirectoryBasedIODelegate) getIODelegate();
 				File fmlFile = new File(ioDelegate.getDirectory(), ioDelegate.getDirectory().getName());
@@ -815,21 +813,23 @@ implements CompilationUnitResource {
 	 * Return XML file when relevant and existant (deprecated)
 	 * 
 	 * @return
-	 * @throws LocatorNotFoundException 
-	 * @throws MalformedURLException 
+	 * @throws LocatorNotFoundException
+	 * @throws MalformedURLException
 	 * @throws FileNotFoundException
 	 */
 	@Deprecated
-	private Resource getXMLArtefact() throws MalformedURLException, LocatorNotFoundException {
+	private <I> I getXMLArtefact() throws MalformedURLException, LocatorNotFoundException {
 		if (getIODelegate() instanceof DirectoryBasedIODelegate) {
 			DirectoryBasedIODelegate ioDelegate = (DirectoryBasedIODelegate) getIODelegate();
 
 			String artefactName = ioDelegate.getDirectory().getName();
 			String baseName = artefactName.substring(0, artefactName.length() - CompilationUnitResourceFactory.FML_SUFFIX.length());
+			return (I) new File(ioDelegate.getDirectory(), baseName + CompilationUnitResourceFactory.FML_XML_SUFFIX);
+			/*
 			File f = new File(ioDelegate.getDirectory(), baseName + CompilationUnitResourceFactory.FML_XML_SUFFIX);
 			ResourceLocatorDelegate locator = ioDelegate.getSerializationArtefactAsResource().getLocator();		
-			return new FileResourceImpl(locator,f);
-			//return new FileResourceImpl(f);
+			return new FileResourceImpl(locator,f);*/
+			// return new FileResourceImpl(f);
 		}
 		if (getIODelegate() instanceof DirectoryBasedJarIODelegate) {
 			DirectoryBasedJarIODelegate ioDelegate = (DirectoryBasedJarIODelegate) getIODelegate();
@@ -839,7 +839,7 @@ implements CompilationUnitResource {
 			for (Resource child : contents) {
 				InJarResourceImpl entry = (InJarResourceImpl) child;
 				if (entry.getName().contains(CompilationUnitResourceFactory.FML_XML_SUFFIX)) {
-					return entry;
+					return (I) entry;
 				}
 			}
 		}
@@ -851,8 +851,8 @@ implements CompilationUnitResource {
 	 * 
 	 * @return
 	 * @throws FileNotFoundException
-	 * @throws LocatorNotFoundException 
-	 * @throws MalformedURLException 
+	 * @throws LocatorNotFoundException
+	 * @throws MalformedURLException
 	 */
 	@Deprecated
 	private InputStream getXMLInputStream() throws FileNotFoundException, MalformedURLException, LocatorNotFoundException {
@@ -939,9 +939,9 @@ implements CompilationUnitResource {
 			// getFlexoIOStreamDelegate().hasWrittenOnDisk(lock);
 			throw new SaveResourceException(getIODelegate(), e);
 		} /*
-		 * finally { hasWritten(getFile());
-		 * hasWritten(getFile().getParentFile()); }
-		 */
+			* finally { hasWritten(getFile());
+			* hasWritten(getFile().getParentFile()); }
+			*/
 	}
 
 	/**
@@ -959,7 +959,7 @@ implements CompilationUnitResource {
 			throw new IOException(e);
 		}
 		if (xmlArtefact instanceof FileResourceImpl) {
-			File xmlFile = ((FileResourceImpl)xmlArtefact).getFile();
+			File xmlFile = ((FileResourceImpl) xmlArtefact).getFile();
 			FileUtils.rename(temporaryFile, xmlFile);
 		}
 		// getFlexoIOStreamDelegate().hasWrittenOnDisk(lock);
@@ -1019,10 +1019,10 @@ implements CompilationUnitResource {
 
 		VirtualModelInfo returned = null;
 		// TODO: inverse order !
-		
+
 		try {
-			if (getXMLArtefact() != null && getXMLArtefact().exists()) {
-			returned = retrieveInfoFromXML(resourceCenter);
+			if (getXMLArtefact() != null) {
+				returned = retrieveInfoFromXML(resourceCenter);
 			}
 			else {
 				returned = retrieveInfoFromFML(resourceCenter);
