@@ -865,7 +865,6 @@ implements CompilationUnitResource {
 
 	private FMLCompilationUnit loadFromXML() {
 
-		DirectoryBasedIODelegate ioDelegate = (DirectoryBasedIODelegate) getIODelegate();
 		VirtualModel virtualModel = null;
 		InputStream ioStream = null;
 		try {
