@@ -77,6 +77,7 @@ import org.openflexo.foundation.fml.editionaction.ReturnStatement;
 import org.openflexo.foundation.fml.inspector.FlexoConceptInspector;
 import org.openflexo.foundation.fml.inspector.InspectorEntry;
 import org.openflexo.foundation.fml.rm.CompilationUnitResource;
+import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstanceModelSlot;
 import org.openflexo.foundation.fml.rt.editionaction.AddFlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.editionaction.AddFlexoConceptInstanceParameter;
 import org.openflexo.foundation.fml.rt.editionaction.AddVirtualModelInstance;
@@ -92,6 +93,7 @@ import org.openflexo.foundation.fml.rt.editionaction.MatchFlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.editionaction.MatchingCriteria;
 import org.openflexo.foundation.fml.rt.editionaction.SelectFlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.editionaction.SelectVirtualModelInstance;
+import org.openflexo.foundation.fml.ta.FMLModelSlot;
 import org.openflexo.foundation.resource.PamelaResourceImpl.IgnoreLoadingEdits;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
@@ -209,6 +211,8 @@ public class FMLModelFactory extends ModelFactory implements PamelaResourceModel
 	public static List<Class<?>> retrieveTechnologySpecificClasses(TechnologyAdapterService taService) throws ModelDefinitionException {
 		List<Class<?>> classes = new ArrayList<>();
 		classes.add(FMLCompilationUnit.class);
+		retrieveTechnologySpecificClassesForModelSlot(FMLModelSlot.class, classes);
+		retrieveTechnologySpecificClassesForModelSlot(FMLRTVirtualModelInstanceModelSlot.class, classes);
 		for (TechnologyAdapter<?> ta : taService.getTechnologyAdapters()) {
 			for (Class<? extends ModelSlot<?>> modelSlotClass : new ArrayList<>(ta.getAvailableModelSlotTypes())) {
 				retrieveTechnologySpecificClassesForModelSlot(modelSlotClass, classes);
@@ -230,7 +234,8 @@ public class FMLModelFactory extends ModelFactory implements PamelaResourceModel
 			List<Class<? extends ModelSlot<?>>> usedModelSlots) throws ModelDefinitionException {
 		List<Class<?>> classes = new ArrayList<>();
 		classes.add(FMLCompilationUnit.class);
-		classes.add(baseClass);
+		retrieveTechnologySpecificClassesForModelSlot(FMLModelSlot.class, classes);
+		retrieveTechnologySpecificClassesForModelSlot(FMLRTVirtualModelInstanceModelSlot.class, classes);
 		for (Class<? extends ModelSlot<?>> modelSlotClass : usedModelSlots) {
 			retrieveTechnologySpecificClassesForModelSlot(modelSlotClass, classes);
 		}
@@ -241,6 +246,7 @@ public class FMLModelFactory extends ModelFactory implements PamelaResourceModel
 	private static void retrieveTechnologySpecificClassesForModelSlot(Class<? extends ModelSlot<?>> modelSlotClass,
 			List<Class<?>> classes) {
 		classes.add(modelSlotClass);
+
 		DeclareFlexoRoles prDeclarations = modelSlotClass.getAnnotation(DeclareFlexoRoles.class);
 		if (prDeclarations != null) {
 			for (Class<? extends FlexoRole> roleClass : prDeclarations.value()) {
