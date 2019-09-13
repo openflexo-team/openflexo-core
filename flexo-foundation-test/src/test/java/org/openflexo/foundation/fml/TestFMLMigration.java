@@ -112,7 +112,7 @@ public class TestFMLMigration extends OpenflexoTestCase {
 		FMLCompilationUnit initialXMLVersion = viewpointAResource.getCompilationUnit();
 
 		((CompilationUnitResourceImpl) viewpointAResource).setPersistencyStrategy(PersistencyStrategy.FML);
-		viewpointAResource.save();
+		// viewpointAResource.save();
 		viewpointAResource.unloadResourceData(false);
 
 		assertNull(viewpointAResource.getLoadedResourceData());
