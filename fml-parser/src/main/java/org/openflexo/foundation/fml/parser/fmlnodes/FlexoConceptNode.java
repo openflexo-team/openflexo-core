@@ -63,7 +63,7 @@ public class FlexoConceptNode extends FMLObjectNode<AConceptDeclaration, FlexoCo
 	}
 
 	@Override
-	public FlexoConcept buildModelObjectFromAST(AConceptDeclaration astNode) {
+	public FlexoConcept buildModelObjectFromAST(AConceptDecl astNode) {
 		FlexoConcept returned = getFactory().newFlexoConcept();
 		returned.setName(astNode.getIdentifier().getText());
 		returned.setVisibility(getVisibility(astNode.getVisibility()));
@@ -128,7 +128,7 @@ public class FlexoConceptNode extends FMLObjectNode<AConceptDeclaration, FlexoCo
 
 	private RawSourceFragment getConceptFragment() {
 		if (getASTNode() != null) {
-			return getFragment(getASTNode().getConcept());
+			return getFragment(getASTNode().getKwConcept());
 		}
 		return null;
 	}

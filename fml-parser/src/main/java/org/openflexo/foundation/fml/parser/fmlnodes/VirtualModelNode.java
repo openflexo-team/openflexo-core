@@ -64,7 +64,7 @@ public class VirtualModelNode extends FMLObjectNode<AModelDeclaration, VirtualMo
 	}
 
 	@Override
-	public VirtualModel buildModelObjectFromAST(AModelDeclaration astNode) {
+	public VirtualModel buildModelObjectFromAST(AModelDecl astNode) {
 		VirtualModel returned = getFactory().newVirtualModel();
 		returned.setName(astNode.getIdentifier().getText());
 		returned.setVisibility(getVisibility(astNode.getVisibility()));
@@ -125,7 +125,7 @@ public class VirtualModelNode extends FMLObjectNode<AModelDeclaration, VirtualMo
 
 	private RawSourceFragment getModelFragment() {
 		if (getASTNode() != null) {
-			return getFragment(getASTNode().getModel());
+			return getFragment(getASTNode().getKwModel());
 		}
 		return null;
 	}

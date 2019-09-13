@@ -52,7 +52,7 @@ import org.openflexo.p2pp.RawSource.RawSourceFragment;
  * @author sylvain
  * 
  */
-public class AbstractPropertyNode extends FlexoPropertyNode<AAbstractPropertyDeclaration, AbstractProperty<?>> {
+public class AbstractPropertyNode extends FlexoPropertyNode<AAbstractPropertyInnerConceptDecl, AbstractProperty<?>> {
 
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(AbstractPropertyNode.class.getPackage().getName());
@@ -66,7 +66,7 @@ public class AbstractPropertyNode extends FlexoPropertyNode<AAbstractPropertyDec
 	}
 
 	@Override
-	public AbstractProperty<?> buildModelObjectFromAST(AAbstractPropertyDeclaration astNode) {
+	public AbstractProperty<?> buildModelObjectFromAST(AAbstractPropertyInnerConceptDecl astNode) {
 		AbstractProperty<?> returned = getFactory().newAbstractProperty();
 		returned.setVisibility(getVisibility(astNode.getVisibility()));
 		returned.setName(getName(astNode.getVariableDeclarator()).getText());

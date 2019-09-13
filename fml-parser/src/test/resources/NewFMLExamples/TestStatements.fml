@@ -97,8 +97,9 @@ model MyModel {
 		new MyConcept::init(name);
 		MyConcept myConcept = new MyConcept::init(name);
    }
-
-	testTAEditionAction() {
+*/
+	
+/*	testTAEditionAction() {
 		DIAGRAM::AddShape(container=topLevel) in (diagram);
 		shape = DIAGRAM::AddShape(container=topLevel) in (diagram);
    }
@@ -117,5 +118,4 @@ model MyModel {
 			myConcept.doSomething();
 		}
    }*/
-
 }

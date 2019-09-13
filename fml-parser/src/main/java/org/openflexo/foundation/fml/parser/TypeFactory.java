@@ -73,14 +73,12 @@ import org.openflexo.foundation.fml.parser.node.APrimitiveType;
 import org.openflexo.foundation.fml.parser.node.AReferenceType;
 import org.openflexo.foundation.fml.parser.node.AReferenceTypeArgument;
 import org.openflexo.foundation.fml.parser.node.AShrTypeArguments;
-import org.openflexo.foundation.fml.parser.node.ASimpleType;
 import org.openflexo.foundation.fml.parser.node.ATypeArgumentList;
 import org.openflexo.foundation.fml.parser.node.ATypeArgumentListHead;
 import org.openflexo.foundation.fml.parser.node.AUshrTypeArguments;
 import org.openflexo.foundation.fml.parser.node.AVoidType;
 import org.openflexo.foundation.fml.parser.node.Node;
 import org.openflexo.foundation.fml.parser.node.PAdditionalIdentifier;
-import org.openflexo.foundation.fml.parser.node.PNumericType;
 import org.openflexo.foundation.fml.parser.node.PPrimitiveType;
 import org.openflexo.foundation.fml.parser.node.PReferenceType;
 import org.openflexo.foundation.fml.parser.node.PType;
@@ -179,7 +177,31 @@ public class TypeFactory extends SemanticsAnalyzerFactory {
 		return new UnresolvedType(typeName);
 	}
 
+	/*
+		public Type makeType(TIdentifier identifier, List<PAdditionalIdentifier> additionalIdentifiers) {
+			String typeName = makeFullQualifiedIdentifier(identifier, additionalIdentifiers);
+			try {
+				return Class.forName(typeName);
+			} catch (ClassNotFoundException e) {
+				// OK, continue
+			}
+			for (JavaImportDeclaration javaImportDeclaration : analyser.getCompilationUnit().getJavaImports()) {
+				if (typeName.equals(javaImportDeclaration.getClassName())) {
+					try {
+						return Class.forName(javaImportDeclaration.getFullQualifiedClassName());
+					} catch (ClassNotFoundException e) {
+						// OK, continue
+					}
+				}
+			}
+			return new UnresolvedType(typeName);
+		}
+	*/
 	public Type makeType(PType pType) {
+		if (pType == null) {
+			logger.warning("Unexpected null type");
+			return null;
+		}
 		if (pType instanceof AVoidType) {
 			return Void.TYPE;
 		}
@@ -188,19 +210,16 @@ public class TypeFactory extends SemanticsAnalyzerFactory {
 			if (primitiveType instanceof ABooleanPrimitiveType) {
 				return Boolean.TYPE;
 			}
-			else if (primitiveType instanceof ANumericPrimitiveType) {
-				PNumericType numericType = ((ANumericPrimitiveType) primitiveType).getNumericType();
-				if (numericType instanceof AIntNumericType) {
-					return Integer.TYPE;
-				}
-				else if (numericType instanceof AFloatNumericType) {
-					return Float.TYPE;
-				}
+			else if (primitiveType instanceof AIntPrimitiveType) {
+				return Integer.TYPE;
+			}
+			else if (primitiveType instanceof AFloatPrimitiveType) {
+				return Float.TYPE;
 			}
 		}
-		else if (pType instanceof ASimpleType) {
-			return makeType(((ASimpleType) pType).getIdentifier(), ((ASimpleType) pType).getAdditionalIdentifiers());
-		}
+		// else if (pType instanceof ASimpleType) {
+		// return makeType(((ASimpleType) pType).getIdentifier(), ((ASimpleType) pType).getAdditionalIdentifiers());
+		// }
 		else if (pType instanceof AComplexType) {
 			return makeType(((AComplexType) pType).getReferenceType());
 		}
@@ -211,8 +230,12 @@ public class TypeFactory extends SemanticsAnalyzerFactory {
 	public Type makeType(PReferenceType referenceType) {
 		if (referenceType instanceof AReferenceType) {
 			if (((AReferenceType) referenceType).getArgs() == null) {
-				return makeType(((AReferenceType) referenceType).getIdentifier(),
-						((AReferenceType) referenceType).getAdditionalIdentifiers());
+				return makeType((ACompositeIdent) ((AReferenceType) referenceType).getIdentifier());
+			}
+			Type baseType = makeType((ACompositeIdent) ((AReferenceType) referenceType).getIdentifier());
+			if (baseType instanceof Class) {
+				List<Type> typeArguments = makeTypeArguments(((AReferenceType) referenceType).getArgs());
+				return new ParameterizedTypeImpl((Class) baseType, typeArguments.toArray(new Type[typeArguments.size()]));
 			}
 			else {
 				Type baseType = makeType(((AReferenceType) referenceType).getIdentifier(),

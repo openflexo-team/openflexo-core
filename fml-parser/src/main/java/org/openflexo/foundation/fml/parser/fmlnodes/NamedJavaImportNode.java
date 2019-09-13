@@ -47,7 +47,7 @@ import org.openflexo.p2pp.RawSource.RawSourceFragment;
  * @author sylvain
  * 
  */
-public class NamedJavaImportNode extends AbstractJavaImportNode<ANamedJavaImportImportDeclaration> {
+public class NamedJavaImportNode extends AbstractJavaImportNode<ANamedJavaImportImportDecl> {
 
 	public NamedJavaImportNode(ANamedJavaImportImportDeclaration astNode, MainSemanticsAnalyzer analyser) {
 		super(astNode, analyser);
@@ -58,9 +58,9 @@ public class NamedJavaImportNode extends AbstractJavaImportNode<ANamedJavaImport
 	}
 
 	@Override
-	public JavaImportDeclaration buildModelObjectFromAST(ANamedJavaImportImportDeclaration astNode) {
+	public JavaImportDeclaration buildModelObjectFromAST(ANamedJavaImportImportDecl astNode) {
 		JavaImportDeclaration returned = super.buildModelObjectFromAST(astNode);
-		returned.setFullQualifiedClassName(makeFullQualifiedIdentifier(astNode.getIdentifier(), astNode.getAdditionalIdentifiers()));
+		returned.setFullQualifiedClassName(makeFullQualifiedIdentifier((ACompositeIdent) astNode.getIdentifier()));
 		returned.setAbbrev(astNode.getName().getText());
 		return returned;
 	}
@@ -78,21 +78,21 @@ public class NamedJavaImportNode extends AbstractJavaImportNode<ANamedJavaImport
 
 	private RawSourceFragment getImportFragment() {
 		if (getASTNode() != null) {
-			return getFragment(getASTNode().getImport());
+			return getFragment(getASTNode().getKwImport());
 		}
 		return null;
 	}
 
 	private RawSourceFragment getFullQualifiedFragment() {
 		if (getASTNode() != null) {
-			return getFragment(getASTNode().getIdentifier(), getASTNode().getAdditionalIdentifiers());
+			return getFragment(getASTNode().getIdentifier());
 		}
 		return null;
 	}
 
 	private RawSourceFragment getAsFragment() {
 		if (getASTNode() != null) {
-			return getFragment(getASTNode().getAs());
+			return getFragment(getASTNode().getKwAs());
 		}
 		return null;
 	}

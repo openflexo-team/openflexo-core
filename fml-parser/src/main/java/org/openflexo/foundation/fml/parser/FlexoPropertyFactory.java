@@ -100,6 +100,13 @@ public class FlexoPropertyFactory extends SemanticsAnalyzerFactory {
 			else if (basicRoleDeclaration instanceof AFmlFullyQualifiedBasicRoleDeclaration) {
 				// System.out.println("Tiens une basic property declaration FML fully-qualified: " + node);
 			}
+			return new JavaRoleNode((AJavaInnerConceptDecl) node, (FMLSemanticsAnalyzer) this);
+		}
+		else if (node instanceof AFmlInnerConceptDecl) {
+			// System.out.println("Tiens une basic property declaration FML: " + node);
+		}
+		else if (node instanceof AFmlFullyQualifiedInnerConceptDecl) {
+			// System.out.println("Tiens une basic property declaration FML fully-qualified: " + node);
 		}
 		else if (node instanceof AExpressionPropertyPropertyDeclaration) {
 			PExpressionPropertyDeclaration expressionPropertyDeclaration = ((AExpressionPropertyPropertyDeclaration) node)
@@ -117,5 +124,4 @@ public class FlexoPropertyFactory extends SemanticsAnalyzerFactory {
 		Thread.dumpStack();
 		return null;
 	}
-
 }
