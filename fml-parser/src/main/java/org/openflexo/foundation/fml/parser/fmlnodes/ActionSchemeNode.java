@@ -43,7 +43,7 @@ import java.util.logging.Logger;
 import org.openflexo.foundation.fml.ActionScheme;
 import org.openflexo.foundation.fml.parser.MainSemanticsAnalyzer;
 import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.ControlGraphNode;
-import org.openflexo.foundation.fml.parser.node.AMethodBehaviourDeclaration;
+import org.openflexo.foundation.fml.parser.node.AMethodBehaviourDecl;
 import org.openflexo.p2pp.PrettyPrintContext.Indentation;
 
 /**
@@ -54,12 +54,12 @@ import org.openflexo.p2pp.PrettyPrintContext.Indentation;
  * @author sylvain
  * 
  */
-public class ActionSchemeNode extends FlexoBehaviourNode<AMethodBehaviourDeclaration, ActionScheme> {
+public class ActionSchemeNode extends FlexoBehaviourNode<AMethodBehaviourDecl, ActionScheme> {
 
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(ActionSchemeNode.class.getPackage().getName());
 
-	public ActionSchemeNode(AMethodBehaviourDeclaration astNode, MainSemanticsAnalyzer analyser) {
+	public ActionSchemeNode(AMethodBehaviourDecl astNode, MainSemanticsAnalyzer analyser) {
 		super(astNode, analyser);
 	}
 
@@ -68,7 +68,7 @@ public class ActionSchemeNode extends FlexoBehaviourNode<AMethodBehaviourDeclara
 	}
 
 	@Override
-	public ActionScheme buildModelObjectFromAST(AMethodBehaviourDeclaration astNode) {
+	public ActionScheme buildModelObjectFromAST(AMethodBehaviourDecl astNode) {
 		ActionScheme returned = getFactory().newActionScheme();
 		returned.setVisibility(getVisibility(astNode.getVisibility()));
 		returned.setName(astNode.getName().getText());

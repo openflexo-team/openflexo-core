@@ -40,48 +40,35 @@ package org.openflexo.foundation.fml.parser.fmlnodes.controlgraph;
 
 import java.util.logging.Logger;
 
-import org.openflexo.foundation.fml.editionaction.AssignableAction;
 import org.openflexo.foundation.fml.editionaction.ReturnStatement;
-import org.openflexo.foundation.fml.parser.AssignableActionFactory;
 import org.openflexo.foundation.fml.parser.ControlGraphFactory;
-import org.openflexo.foundation.fml.parser.node.AReturnStatementWithoutTrailingSubstatement;
-import org.openflexo.p2pp.PrettyPrintContext.Indentation;
+import org.openflexo.foundation.fml.parser.node.AReturnEmptyStatementWithoutTrailingSubstatement;
 import org.openflexo.p2pp.RawSource.RawSourceFragment;
 
 /**
  * @author sylvain
  * 
  */
-public class ReturnStatementNode extends AssignableActionNode<AReturnStatementWithoutTrailingSubstatement, ReturnStatement<?>> {
+public class EmptyReturnStatementNode extends AssignableActionNode<AReturnEmptyStatementWithoutTrailingSubstatement, ReturnStatement<?>> {
 
 	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(ReturnStatementNode.class.getPackage().getName());
+	private static final Logger logger = Logger.getLogger(EmptyReturnStatementNode.class.getPackage().getName());
 
-	public ReturnStatementNode(AReturnStatementWithoutTrailingSubstatement astNode, ControlGraphFactory cgFactory) {
+	public EmptyReturnStatementNode(AReturnEmptyStatementWithoutTrailingSubstatement astNode, ControlGraphFactory cgFactory) {
 		super(astNode, cgFactory);
-
 		if (getSemiFragment() != null) {
 			setEndPosition(getSemiFragment().getEndPosition());
 		}
-
 	}
 
-	public ReturnStatementNode(ReturnStatement<?> action, ControlGraphFactory cgFactory) {
+	public EmptyReturnStatementNode(ReturnStatement<?> action, ControlGraphFactory cgFactory) {
 		super(action, cgFactory);
 	}
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Override
-	public ReturnStatement<?> buildModelObjectFromAST(AReturnStatementWithoutTrailingSubstatement astNode) {
+	public ReturnStatement<?> buildModelObjectFromAST(AReturnEmptyStatementWithoutTrailingSubstatement astNode) {
 		ReturnStatement<?> returned = getFactory().newReturnStatement();
-
-		AssignableActionNode<?, ?> assignableActionNode = AssignableActionFactory.makeAssignableActionNode(getASTNode().getExpression(),
-				getAbstractAnalyser());
-		if (assignableActionNode != null) {
-			returned.setAssignableAction((AssignableAction) assignableActionNode.getModelObject());
-			addToChildren(assignableActionNode);
-		}
-
 		return returned;
 	}
 
@@ -90,7 +77,6 @@ public class ReturnStatementNode extends AssignableActionNode<AReturnStatementWi
 		super.preparePrettyPrint(hasParsedVersion);
 
 		append(staticContents("return"), getReturnFragment());
-		append(childContents(SPACE, () -> getModelObject().getAssignableAction(), "", Indentation.DoNotIndent));
 		append(staticContents(";"), getSemiFragment());
 
 	}

@@ -9,20 +9,24 @@ import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.AssignationActi
 import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.ControlGraphNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.DeclarationActionNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.EmptyControlGraphNode;
+import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.EmptyReturnStatementNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.ReturnStatementNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.SequenceNode;
 import org.openflexo.foundation.fml.parser.node.AAssignmentStatementExpression;
 import org.openflexo.foundation.fml.parser.node.ABlock;
 import org.openflexo.foundation.fml.parser.node.ADoStatementStatementWithoutTrailingSubstatement;
-import org.openflexo.foundation.fml.parser.node.AEmptyStatement;
+import org.openflexo.foundation.fml.parser.node.AEmptyStatementStatementWithoutTrailingSubstatement;
 import org.openflexo.foundation.fml.parser.node.AFmlActionExpressionStatementExpression;
-import org.openflexo.foundation.fml.parser.node.AForLoopStatement;
+import org.openflexo.foundation.fml.parser.node.AForBasicExpressionStatement;
+import org.openflexo.foundation.fml.parser.node.AForBasicStatement;
+import org.openflexo.foundation.fml.parser.node.AForEnhancedStatement;
 import org.openflexo.foundation.fml.parser.node.AIfElseStatement;
-import org.openflexo.foundation.fml.parser.node.AIfStatement;
-import org.openflexo.foundation.fml.parser.node.ALocalVariableDeclarationStatement;
+import org.openflexo.foundation.fml.parser.node.AIfSimpleStatement;
 import org.openflexo.foundation.fml.parser.node.AMethodInvocationStatementExpression;
-import org.openflexo.foundation.fml.parser.node.AReturnStatementStatementWithoutTrailingSubstatement;
-import org.openflexo.foundation.fml.parser.node.AWhileLoopStatement;
+import org.openflexo.foundation.fml.parser.node.AReturnEmptyStatementWithoutTrailingSubstatement;
+import org.openflexo.foundation.fml.parser.node.AReturnStatementWithoutTrailingSubstatement;
+import org.openflexo.foundation.fml.parser.node.AVariableDeclarationBlockStatement;
+import org.openflexo.foundation.fml.parser.node.AWhileStatement;
 import org.openflexo.foundation.fml.parser.node.Node;
 import org.openflexo.toolbox.StringUtils;
 
@@ -237,34 +241,37 @@ public class ControlGraphFactory extends FMLSemanticsAnalyzer {
 	 */
 
 	@Override
-	public void inALocalVariableDeclarationStatement(ALocalVariableDeclarationStatement node) {
-		// TODO Auto-generated method stub
-		super.inALocalVariableDeclarationStatement(node);
+	public void inAVariableDeclarationBlockStatement(AVariableDeclarationBlockStatement node) {
+		super.inAVariableDeclarationBlockStatement(node);
 		push(new DeclarationActionNode(node, this));
 	}
 
 	@Override
-	public void outALocalVariableDeclarationStatement(ALocalVariableDeclarationStatement node) {
-		super.outALocalVariableDeclarationStatement(node);
+	public void outAVariableDeclarationBlockStatement(AVariableDeclarationBlockStatement node) {
+		super.outAVariableDeclarationBlockStatement(node);
 		pop();
 	}
 
 	/*
 	 * <pre>
 	 *  statement =
-	 *      {no_trail}   statement_without_trailing_substatement |
-	 *      {if}         if_then_statement |
-	 *      {if_else}    if_then_else_statement |
-	 *      {while_loop} while_statement |
-	 *      {for_loop}   for_statement;
+	 *      {no_trail}   statement_without_trailing_substatement
+	 *    // if statements
+	 *    | {if_simple} kw_if l_par expression r_par statement
+	 *    | {if_else} kw_if l_par expression r_par statement_no_short_if kw_else statement
+	 *    // while statement
+	 *    | {while} kw_while l_par expression r_par statement
+	 *    // for statement
+	 *    | {for_basic}      kw_for l_par for_init? [semi1]:semi [semi2]:semi statement_expression? r_par statement
+	 *    | {for_basic_expression} kw_for l_par for_init? [semi1]:semi expression [semi2]:semi statement_expression? r_par statement
+	 *    | {for_enhanced} kw_for l_par type identifier colon expression r_par statement
+	 *    ;
 	 * </pre>
 	 */
 
 	@Override
-	public void inAIfStatement(AIfStatement node) {
-		// TODO Auto-generated method stub
-		super.inAIfStatement(node);
-		System.out.println("Nouvelle conditionnelle avec " + node);
+	public void inAIfSimpleStatement(AIfSimpleStatement node) {
+		super.inAIfSimpleStatement(node);
 	}
 
 	@Override
@@ -274,49 +281,73 @@ public class ControlGraphFactory extends FMLSemanticsAnalyzer {
 	}
 
 	@Override
-	public void inAWhileLoopStatement(AWhileLoopStatement node) {
-		// TODO Auto-generated method stub
-		super.inAWhileLoopStatement(node);
+	public void inAWhileStatement(AWhileStatement node) {
+		super.inAWhileStatement(node);
 	}
 
 	@Override
-	public void inAForLoopStatement(AForLoopStatement node) {
+	public void inAForBasicStatement(AForBasicStatement node) {
 		// TODO Auto-generated method stub
-		super.inAForLoopStatement(node);
+		super.inAForBasicStatement(node);
+	}
+
+	@Override
+	public void inAForBasicExpressionStatement(AForBasicExpressionStatement node) {
+		// TODO Auto-generated method stub
+		super.inAForBasicExpressionStatement(node);
+	}
+
+	@Override
+	public void inAForEnhancedStatement(AForEnhancedStatement node) {
+		// TODO Auto-generated method stub
+		super.inAForEnhancedStatement(node);
 	}
 
 	/*
 	 * <pre>
-	 * statement_without_trailing_substatement =
-	 *     {block}                  block |
-	 *     {empty_statement}        empty_statement |
-	 *     {expression_statement}   expression_statement |
-	 *     {do_statement}           do_statement |
-	 *     {return_statement}       return_statement;
+	 *   statement_without_trailing_substatement =
+	 *       {block}                l_brc [block_statements]:block_statement* r_brc
+	 *     | {empty_statement}      semi
+	 *     | {expression_statement} statement_expression semi
+	 *     | {do_statement}         kw_do statement kw_while l_par expression r_par semi
+	 *     // return statement
+	 *     | {return_empty}      kw_return semi
+	 *     | {return} kw_return expression semi
+	 *     ;
 	 * </pre>
 	 */
 
 	@Override
-	public void inAEmptyStatement(AEmptyStatement node) {
-		// TODO Auto-generated method stub
-		super.inAEmptyStatement(node);
+	public void inAEmptyStatementStatementWithoutTrailingSubstatement(AEmptyStatementStatementWithoutTrailingSubstatement node) {
+		super.inAEmptyStatementStatementWithoutTrailingSubstatement(node);
 	}
 
 	@Override
 	public void inADoStatementStatementWithoutTrailingSubstatement(ADoStatementStatementWithoutTrailingSubstatement node) {
-		// TODO Auto-generated method stub
 		super.inADoStatementStatementWithoutTrailingSubstatement(node);
 	}
 
 	@Override
-	public void inAReturnStatementStatementWithoutTrailingSubstatement(AReturnStatementStatementWithoutTrailingSubstatement node) {
-		super.inAReturnStatementStatementWithoutTrailingSubstatement(node);
-		push(new ReturnStatementNode(node.getReturnStatement(), this));
+	public void inAReturnStatementWithoutTrailingSubstatement(AReturnStatementWithoutTrailingSubstatement node) {
+		super.inAReturnStatementWithoutTrailingSubstatement(node);
+		push(new ReturnStatementNode(node, this));
 	}
 
 	@Override
-	public void outAReturnStatementStatementWithoutTrailingSubstatement(AReturnStatementStatementWithoutTrailingSubstatement node) {
-		super.outAReturnStatementStatementWithoutTrailingSubstatement(node);
+	public void outAReturnStatementWithoutTrailingSubstatement(AReturnStatementWithoutTrailingSubstatement node) {
+		super.outAReturnStatementWithoutTrailingSubstatement(node);
+		pop();
+	}
+
+	@Override
+	public void inAReturnEmptyStatementWithoutTrailingSubstatement(AReturnEmptyStatementWithoutTrailingSubstatement node) {
+		super.inAReturnEmptyStatementWithoutTrailingSubstatement(node);
+		push(new EmptyReturnStatementNode(node, this));
+	}
+
+	@Override
+	public void outAReturnEmptyStatementWithoutTrailingSubstatement(AReturnEmptyStatementWithoutTrailingSubstatement node) {
+		super.outAReturnEmptyStatementWithoutTrailingSubstatement(node);
 		pop();
 	}
 

@@ -41,16 +41,16 @@ package org.openflexo.foundation.fml.parser.fmlnodes;
 import org.openflexo.foundation.fml.FMLMetaData;
 import org.openflexo.foundation.fml.parser.FMLObjectNode;
 import org.openflexo.foundation.fml.parser.MainSemanticsAnalyzer;
-import org.openflexo.foundation.fml.parser.node.AValueAnnotation;
+import org.openflexo.foundation.fml.parser.node.AValueAnnotationAnnotation;
 import org.openflexo.p2pp.RawSource.RawSourceFragment;
 
 /**
  * @author sylvain
  * 
  */
-public class MetaDataNode extends FMLObjectNode<AValueAnnotation, FMLMetaData, MainSemanticsAnalyzer> {
+public class MetaDataNode extends FMLObjectNode<AValueAnnotationAnnotation, FMLMetaData, MainSemanticsAnalyzer> {
 
-	public MetaDataNode(AValueAnnotation astNode, MainSemanticsAnalyzer analyser) {
+	public MetaDataNode(AValueAnnotationAnnotation astNode, MainSemanticsAnalyzer analyser) {
 		super(astNode, analyser);
 	}
 
@@ -70,8 +70,8 @@ public class MetaDataNode extends FMLObjectNode<AValueAnnotation, FMLMetaData, M
 	}
 
 	@Override
-	public FMLMetaData buildModelObjectFromAST(AValueAnnotation astNode) {
-		String key = makeFullQualifiedIdentifier(astNode.getIdentifier(), astNode.getAdditionalIdentifiers());
+	public FMLMetaData buildModelObjectFromAST(AValueAnnotationAnnotation astNode) {
+		String key = makeFullQualifiedIdentifier(astNode.getIdentifier());
 		String value = getText(astNode.getExpression());
 		return getFactory().newMetaData(key, value);
 	}
@@ -89,7 +89,7 @@ public class MetaDataNode extends FMLObjectNode<AValueAnnotation, FMLMetaData, M
 
 	private RawSourceFragment getKeyFragment() {
 		if (getASTNode() != null) {
-			return getFragment(getASTNode().getIdentifier(), getASTNode().getAdditionalIdentifiers());
+			return getFragment(getASTNode().getIdentifier());
 		}
 		return null;
 	}

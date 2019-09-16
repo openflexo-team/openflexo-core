@@ -44,14 +44,14 @@ import org.openflexo.foundation.fml.FlexoBehaviour;
 import org.openflexo.foundation.fml.parser.ControlGraphFactory;
 import org.openflexo.foundation.fml.parser.FMLObjectNode;
 import org.openflexo.foundation.fml.parser.MainSemanticsAnalyzer;
-import org.openflexo.foundation.fml.parser.node.AAnonymousConstructorBehaviourDeclaration;
-import org.openflexo.foundation.fml.parser.node.AAnonymousDestructorBehaviourDeclaration;
+import org.openflexo.foundation.fml.parser.node.AAnonymousConstructorBehaviourDecl;
+import org.openflexo.foundation.fml.parser.node.AAnonymousDestructorBehaviourDecl;
 import org.openflexo.foundation.fml.parser.node.ABlock;
 import org.openflexo.foundation.fml.parser.node.ABlockFlexoBehaviourBody;
 import org.openflexo.foundation.fml.parser.node.AEmptyFlexoBehaviourBody;
-import org.openflexo.foundation.fml.parser.node.AMethodBehaviourDeclaration;
-import org.openflexo.foundation.fml.parser.node.ANamedConstructorBehaviourDeclaration;
-import org.openflexo.foundation.fml.parser.node.ANamedDestructorBehaviourDeclaration;
+import org.openflexo.foundation.fml.parser.node.AMethodBehaviourDecl;
+import org.openflexo.foundation.fml.parser.node.ANamedConstructorBehaviourDecl;
+import org.openflexo.foundation.fml.parser.node.ANamedDestructorBehaviourDecl;
 import org.openflexo.foundation.fml.parser.node.Node;
 import org.openflexo.foundation.fml.parser.node.PFlexoBehaviourBody;
 import org.openflexo.foundation.fml.parser.node.PVisibility;
@@ -98,20 +98,20 @@ public abstract class FlexoBehaviourNode<N extends Node, T extends FlexoBehaviou
 	}
 
 	public PFlexoBehaviourBody getFlexoBehaviourBody(N astNode) {
-		if (astNode instanceof AAnonymousConstructorBehaviourDeclaration) {
-			return ((AAnonymousConstructorBehaviourDeclaration) astNode).getFlexoBehaviourBody();
+		if (astNode instanceof AAnonymousConstructorBehaviourDecl) {
+			return ((AAnonymousConstructorBehaviourDecl) astNode).getFlexoBehaviourBody();
 		}
-		if (astNode instanceof ANamedConstructorBehaviourDeclaration) {
-			return ((ANamedConstructorBehaviourDeclaration) astNode).getFlexoBehaviourBody();
+		if (astNode instanceof ANamedConstructorBehaviourDecl) {
+			return ((ANamedConstructorBehaviourDecl) astNode).getFlexoBehaviourBody();
 		}
-		if (astNode instanceof AAnonymousDestructorBehaviourDeclaration) {
-			return ((AAnonymousDestructorBehaviourDeclaration) astNode).getFlexoBehaviourBody();
+		if (astNode instanceof AAnonymousDestructorBehaviourDecl) {
+			return ((AAnonymousDestructorBehaviourDecl) astNode).getFlexoBehaviourBody();
 		}
-		if (astNode instanceof ANamedDestructorBehaviourDeclaration) {
-			return ((ANamedDestructorBehaviourDeclaration) astNode).getFlexoBehaviourBody();
+		if (astNode instanceof ANamedDestructorBehaviourDecl) {
+			return ((ANamedDestructorBehaviourDecl) astNode).getFlexoBehaviourBody();
 		}
-		if (astNode instanceof AMethodBehaviourDeclaration) {
-			return ((AMethodBehaviourDeclaration) astNode).getFlexoBehaviourBody();
+		if (astNode instanceof AMethodBehaviourDecl) {
+			return ((AMethodBehaviourDecl) astNode).getFlexoBehaviourBody();
 		}
 		return null;
 	}
@@ -162,20 +162,20 @@ public abstract class FlexoBehaviourNode<N extends Node, T extends FlexoBehaviou
 	}
 
 	protected PVisibility getVisibility() {
-		if (getASTNode() instanceof AAnonymousConstructorBehaviourDeclaration) {
-			return ((AAnonymousConstructorBehaviourDeclaration) getASTNode()).getVisibility();
+		if (getASTNode() instanceof AAnonymousConstructorBehaviourDecl) {
+			return ((AAnonymousConstructorBehaviourDecl) getASTNode()).getVisibility();
 		}
-		if (getASTNode() instanceof ANamedConstructorBehaviourDeclaration) {
-			return ((ANamedConstructorBehaviourDeclaration) getASTNode()).getVisibility();
+		if (getASTNode() instanceof ANamedConstructorBehaviourDecl) {
+			return ((ANamedConstructorBehaviourDecl) getASTNode()).getVisibility();
 		}
-		if (getASTNode() instanceof AAnonymousDestructorBehaviourDeclaration) {
-			return ((AAnonymousDestructorBehaviourDeclaration) getASTNode()).getVisibility();
+		if (getASTNode() instanceof AAnonymousDestructorBehaviourDecl) {
+			return ((AAnonymousDestructorBehaviourDecl) getASTNode()).getVisibility();
 		}
-		if (getASTNode() instanceof ANamedDestructorBehaviourDeclaration) {
-			return ((ANamedDestructorBehaviourDeclaration) getASTNode()).getVisibility();
+		if (getASTNode() instanceof ANamedDestructorBehaviourDecl) {
+			return ((ANamedDestructorBehaviourDecl) getASTNode()).getVisibility();
 		}
-		if (getASTNode() instanceof AMethodBehaviourDeclaration) {
-			return ((AMethodBehaviourDeclaration) getASTNode()).getVisibility();
+		if (getASTNode() instanceof AMethodBehaviourDecl) {
+			return ((AMethodBehaviourDecl) getASTNode()).getVisibility();
 		}
 		return null;
 	}
@@ -188,14 +188,14 @@ public abstract class FlexoBehaviourNode<N extends Node, T extends FlexoBehaviou
 	}
 
 	protected TIdentifier getName() {
-		if (getASTNode() instanceof ANamedConstructorBehaviourDeclaration) {
-			return ((ANamedConstructorBehaviourDeclaration) getASTNode()).getName();
+		if (getASTNode() instanceof ANamedConstructorBehaviourDecl) {
+			return ((ANamedConstructorBehaviourDecl) getASTNode()).getName();
 		}
-		if (getASTNode() instanceof ANamedDestructorBehaviourDeclaration) {
-			return ((ANamedDestructorBehaviourDeclaration) getASTNode()).getName();
+		if (getASTNode() instanceof ANamedDestructorBehaviourDecl) {
+			return ((ANamedDestructorBehaviourDecl) getASTNode()).getName();
 		}
-		if (getASTNode() instanceof AMethodBehaviourDeclaration) {
-			return ((AMethodBehaviourDeclaration) getASTNode()).getName();
+		if (getASTNode() instanceof AMethodBehaviourDecl) {
+			return ((AMethodBehaviourDecl) getASTNode()).getName();
 		}
 		return null;
 	}
@@ -208,39 +208,39 @@ public abstract class FlexoBehaviourNode<N extends Node, T extends FlexoBehaviou
 	}
 
 	protected RawSourceFragment getLParFragment() {
-		if (getASTNode() instanceof AAnonymousConstructorBehaviourDeclaration) {
-			return getFragment(((AAnonymousConstructorBehaviourDeclaration) getASTNode()).getLPar());
+		if (getASTNode() instanceof AAnonymousConstructorBehaviourDecl) {
+			return getFragment(((AAnonymousConstructorBehaviourDecl) getASTNode()).getLPar());
 		}
-		if (getASTNode() instanceof ANamedConstructorBehaviourDeclaration) {
-			return getFragment(((ANamedConstructorBehaviourDeclaration) getASTNode()).getLPar());
+		if (getASTNode() instanceof ANamedConstructorBehaviourDecl) {
+			return getFragment(((ANamedConstructorBehaviourDecl) getASTNode()).getLPar());
 		}
-		if (getASTNode() instanceof AAnonymousDestructorBehaviourDeclaration) {
-			return getFragment(((AAnonymousDestructorBehaviourDeclaration) getASTNode()).getLPar());
+		if (getASTNode() instanceof AAnonymousDestructorBehaviourDecl) {
+			return getFragment(((AAnonymousDestructorBehaviourDecl) getASTNode()).getLPar());
 		}
-		if (getASTNode() instanceof ANamedDestructorBehaviourDeclaration) {
-			return getFragment(((ANamedDestructorBehaviourDeclaration) getASTNode()).getLPar());
+		if (getASTNode() instanceof ANamedDestructorBehaviourDecl) {
+			return getFragment(((ANamedDestructorBehaviourDecl) getASTNode()).getLPar());
 		}
-		if (getASTNode() instanceof AMethodBehaviourDeclaration) {
-			return getFragment(((AMethodBehaviourDeclaration) getASTNode()).getLPar());
+		if (getASTNode() instanceof AMethodBehaviourDecl) {
+			return getFragment(((AMethodBehaviourDecl) getASTNode()).getLPar());
 		}
 		return null;
 	}
 
 	protected RawSourceFragment getRParFragment() {
-		if (getASTNode() instanceof AAnonymousConstructorBehaviourDeclaration) {
-			return getFragment(((AAnonymousConstructorBehaviourDeclaration) getASTNode()).getRPar());
+		if (getASTNode() instanceof AAnonymousConstructorBehaviourDecl) {
+			return getFragment(((AAnonymousConstructorBehaviourDecl) getASTNode()).getRPar());
 		}
-		if (getASTNode() instanceof ANamedConstructorBehaviourDeclaration) {
-			return getFragment(((ANamedConstructorBehaviourDeclaration) getASTNode()).getRPar());
+		if (getASTNode() instanceof ANamedConstructorBehaviourDecl) {
+			return getFragment(((ANamedConstructorBehaviourDecl) getASTNode()).getRPar());
 		}
-		if (getASTNode() instanceof AAnonymousDestructorBehaviourDeclaration) {
-			return getFragment(((AAnonymousDestructorBehaviourDeclaration) getASTNode()).getRPar());
+		if (getASTNode() instanceof AAnonymousDestructorBehaviourDecl) {
+			return getFragment(((AAnonymousDestructorBehaviourDecl) getASTNode()).getRPar());
 		}
-		if (getASTNode() instanceof ANamedDestructorBehaviourDeclaration) {
-			return getFragment(((ANamedDestructorBehaviourDeclaration) getASTNode()).getRPar());
+		if (getASTNode() instanceof ANamedDestructorBehaviourDecl) {
+			return getFragment(((ANamedDestructorBehaviourDecl) getASTNode()).getRPar());
 		}
-		if (getASTNode() instanceof AMethodBehaviourDeclaration) {
-			return getFragment(((AMethodBehaviourDeclaration) getASTNode()).getRPar());
+		if (getASTNode() instanceof AMethodBehaviourDecl) {
+			return getFragment(((AMethodBehaviourDecl) getASTNode()).getRPar());
 		}
 		return null;
 	}

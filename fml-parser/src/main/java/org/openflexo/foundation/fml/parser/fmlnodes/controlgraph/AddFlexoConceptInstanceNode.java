@@ -44,9 +44,7 @@ import org.openflexo.foundation.fml.CreationScheme;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoConceptInstanceType;
 import org.openflexo.foundation.fml.parser.ControlGraphFactory;
-import org.openflexo.foundation.fml.parser.node.AFullQualifiedConceptInstanceCreationExpression;
-import org.openflexo.foundation.fml.parser.node.ASimplifiedConceptInstanceCreationExpression;
-import org.openflexo.foundation.fml.parser.node.PConceptInstanceCreationExpression;
+import org.openflexo.foundation.fml.parser.node.AFmlInstanceCreationFmlActionExp;
 import org.openflexo.foundation.fml.parser.node.TIdentifier;
 import org.openflexo.foundation.fml.rt.editionaction.AddFlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.editionaction.AddFlexoConceptInstanceParameter;
@@ -57,12 +55,12 @@ import org.openflexo.p2pp.RawSource.RawSourceFragment;
  * @author sylvain
  * 
  */
-public class AddFlexoConceptInstanceNode extends AssignableActionNode<PConceptInstanceCreationExpression, AddFlexoConceptInstance<?>> {
+public class AddFlexoConceptInstanceNode extends AssignableActionNode<AFmlInstanceCreationFmlActionExp, AddFlexoConceptInstance<?>> {
 
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(AddFlexoConceptInstanceNode.class.getPackage().getName());
 
-	public AddFlexoConceptInstanceNode(PConceptInstanceCreationExpression astNode, ControlGraphFactory cgFactory) {
+	public AddFlexoConceptInstanceNode(AFmlInstanceCreationFmlActionExp astNode, ControlGraphFactory cgFactory) {
 		super(astNode, cgFactory);
 	}
 
@@ -102,7 +100,7 @@ public class AddFlexoConceptInstanceNode extends AssignableActionNode<PConceptIn
 	}
 
 	@Override
-	public AddFlexoConceptInstance<?> buildModelObjectFromAST(PConceptInstanceCreationExpression astNode) {
+	public AddFlexoConceptInstance<?> buildModelObjectFromAST(AFmlInstanceCreationFmlActionExp astNode) {
 		AddFlexoConceptInstance<?> returned = getFactory().newAddFlexoConceptInstance();
 		System.out.println(">>>>>> New FCI " + astNode);
 
@@ -174,26 +172,21 @@ public class AddFlexoConceptInstanceNode extends AssignableActionNode<PConceptIn
 			return getModelObject().getFlexoConceptType().getCreationSchemes().size() > 1;
 		}
 		else {
-			return getASTNode() != null && getASTNode() instanceof AFullQualifiedConceptInstanceCreationExpression;
+			// return getASTNode() != null && getASTNode() instanceof AFullQualifiedConceptInstanceCreationExpression;
 		}
+		return true;
 	}
 
 	private RawSourceFragment getNewFragment() {
-		if (getASTNode() instanceof AFullQualifiedConceptInstanceCreationExpression) {
-			return getFragment(((AFullQualifiedConceptInstanceCreationExpression) getASTNode()).getNew());
-		}
-		if (getASTNode() instanceof ASimplifiedConceptInstanceCreationExpression) {
-			return getFragment(((ASimplifiedConceptInstanceCreationExpression) getASTNode()).getNew());
+		if (getASTNode() != null) {
+			return getFragment(getASTNode().getKwNew());
 		}
 		return null;
 	}
 
 	private TIdentifier getConceptName() {
-		if (getASTNode() instanceof AFullQualifiedConceptInstanceCreationExpression) {
-			return ((AFullQualifiedConceptInstanceCreationExpression) getASTNode()).getConceptName();
-		}
-		if (getASTNode() instanceof ASimplifiedConceptInstanceCreationExpression) {
-			return ((ASimplifiedConceptInstanceCreationExpression) getASTNode()).getConceptName();
+		if (getASTNode() != null) {
+			return getASTNode().getConceptName();
 		}
 		return null;
 	}
@@ -206,42 +199,36 @@ public class AddFlexoConceptInstanceNode extends AssignableActionNode<PConceptIn
 	}
 
 	private RawSourceFragment getColonColonFragment() {
-		if (getASTNode() instanceof AFullQualifiedConceptInstanceCreationExpression) {
-			return getFragment(((AFullQualifiedConceptInstanceCreationExpression) getASTNode()).getColonColon());
+		if (getASTNode() != null) {
+			return getFragment(getASTNode().getColonColon());
 		}
 		return null;
 	}
 
 	private TIdentifier getConstructorName() {
-		if (getASTNode() instanceof AFullQualifiedConceptInstanceCreationExpression) {
-			return ((AFullQualifiedConceptInstanceCreationExpression) getASTNode()).getConstructorName();
+		if (getASTNode() != null) {
+			return getASTNode().getConstructorName();
 		}
 		return null;
 	}
 
 	private RawSourceFragment getConstructorNameFragment() {
-		if (getASTNode() instanceof AFullQualifiedConceptInstanceCreationExpression) {
-			return getFragment(((AFullQualifiedConceptInstanceCreationExpression) getASTNode()).getConstructorName());
+		if (getASTNode() != null) {
+			return getFragment(getConstructorName());
 		}
 		return null;
 	}
 
 	private RawSourceFragment getLParFragment() {
-		if (getASTNode() instanceof AFullQualifiedConceptInstanceCreationExpression) {
-			return getFragment(((AFullQualifiedConceptInstanceCreationExpression) getASTNode()).getLPar());
-		}
-		if (getASTNode() instanceof ASimplifiedConceptInstanceCreationExpression) {
-			return getFragment(((ASimplifiedConceptInstanceCreationExpression) getASTNode()).getLPar());
+		if (getASTNode() != null) {
+			return getFragment(getASTNode().getLPar());
 		}
 		return null;
 	}
 
 	private RawSourceFragment getRParFragment() {
-		if (getASTNode() instanceof AFullQualifiedConceptInstanceCreationExpression) {
-			return getFragment(((AFullQualifiedConceptInstanceCreationExpression) getASTNode()).getRPar());
-		}
-		if (getASTNode() instanceof ASimplifiedConceptInstanceCreationExpression) {
-			return getFragment(((ASimplifiedConceptInstanceCreationExpression) getASTNode()).getRPar());
+		if (getASTNode() != null) {
+			return getFragment(getASTNode().getRPar());
 		}
 		return null;
 	}

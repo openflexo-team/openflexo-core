@@ -45,16 +45,15 @@ import org.openflexo.foundation.fml.parser.fmlnodes.ActionSchemeNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.CreationSchemeNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.DeletionSchemeNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.FlexoBehaviourNode;
-import org.openflexo.foundation.fml.parser.node.AAnonymousConstructorBehaviourDeclaration;
-import org.openflexo.foundation.fml.parser.node.AAnonymousDestructorBehaviourDeclaration;
-import org.openflexo.foundation.fml.parser.node.AFmlBehaviourDeclaration;
-import org.openflexo.foundation.fml.parser.node.AFmlFullyQualifiedBehaviourDeclaration;
-import org.openflexo.foundation.fml.parser.node.AListenerExprBehaviourDeclaration;
-import org.openflexo.foundation.fml.parser.node.AListenerIdBehaviourDeclaration;
-import org.openflexo.foundation.fml.parser.node.AMethodBehaviourDeclaration;
-import org.openflexo.foundation.fml.parser.node.ANamedConstructorBehaviourDeclaration;
-import org.openflexo.foundation.fml.parser.node.ANamedDestructorBehaviourDeclaration;
-import org.openflexo.foundation.fml.parser.node.PBehaviourDeclaration;
+import org.openflexo.foundation.fml.parser.node.AAnonymousConstructorBehaviourDecl;
+import org.openflexo.foundation.fml.parser.node.AAnonymousDestructorBehaviourDecl;
+import org.openflexo.foundation.fml.parser.node.AFmlBehaviourDecl;
+import org.openflexo.foundation.fml.parser.node.AFmlFullyQualifiedBehaviourDecl;
+import org.openflexo.foundation.fml.parser.node.AListenerBehaviourDecl;
+import org.openflexo.foundation.fml.parser.node.AMethodBehaviourDecl;
+import org.openflexo.foundation.fml.parser.node.ANamedConstructorBehaviourDecl;
+import org.openflexo.foundation.fml.parser.node.ANamedDestructorBehaviourDecl;
+import org.openflexo.foundation.fml.parser.node.PBehaviourDecl;
 
 /**
  * Handle {@link FlexoBehaviour} in the FML parser<br>
@@ -71,29 +70,27 @@ public class FlexoBehaviourFactory extends SemanticsAnalyzerFactory {
 		super(analyzer);
 	}
 
-	FlexoBehaviourNode<?, ?> makeBehaviourNode(PBehaviourDeclaration node) {
-		if (node instanceof AAnonymousConstructorBehaviourDeclaration) {
+	FlexoBehaviourNode<?, ?> makeBehaviourNode(PBehaviourDecl node) {
+		if (node instanceof AAnonymousConstructorBehaviourDecl) {
 			return new CreationSchemeNode(node, getAnalyzer());
 		}
-		else if (node instanceof ANamedConstructorBehaviourDeclaration) {
+		else if (node instanceof ANamedConstructorBehaviourDecl) {
 			return new CreationSchemeNode(node, getAnalyzer());
 		}
-		else if (node instanceof AAnonymousDestructorBehaviourDeclaration) {
+		else if (node instanceof AAnonymousDestructorBehaviourDecl) {
 			return new DeletionSchemeNode(node, getAnalyzer());
 		}
-		else if (node instanceof ANamedDestructorBehaviourDeclaration) {
+		else if (node instanceof ANamedDestructorBehaviourDecl) {
 			return new DeletionSchemeNode(node, getAnalyzer());
 		}
-		else if (node instanceof AFmlBehaviourDeclaration) {
+		else if (node instanceof AFmlBehaviourDecl) {
 		}
-		else if (node instanceof AFmlFullyQualifiedBehaviourDeclaration) {
+		else if (node instanceof AFmlFullyQualifiedBehaviourDecl) {
 		}
-		else if (node instanceof AListenerExprBehaviourDeclaration) {
+		else if (node instanceof AListenerBehaviourDecl) {
 		}
-		else if (node instanceof AListenerIdBehaviourDeclaration) {
-		}
-		else if (node instanceof AMethodBehaviourDeclaration) {
-			return new ActionSchemeNode((AMethodBehaviourDeclaration) node, getAnalyzer());
+		else if (node instanceof AMethodBehaviourDecl) {
+			return new ActionSchemeNode((AMethodBehaviourDecl) node, getAnalyzer());
 		}
 		logger.warning("Unexpected node: " + node + " of " + node.getClass());
 		Thread.dumpStack();

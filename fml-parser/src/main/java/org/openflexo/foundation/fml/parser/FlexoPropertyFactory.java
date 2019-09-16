@@ -43,23 +43,15 @@ import java.util.logging.Logger;
 
 import org.openflexo.foundation.fml.FlexoProperty;
 import org.openflexo.foundation.fml.parser.fmlnodes.AbstractPropertyNode;
+import org.openflexo.foundation.fml.parser.fmlnodes.BasicPropertyNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.ExpressionPropertyNode;
-import org.openflexo.foundation.fml.parser.fmlnodes.FlexoPropertyNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.GetSetPropertyNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.JavaRoleNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.PrimitiveRoleNode;
-import org.openflexo.foundation.fml.parser.node.AAbstractPropertyDeclaration;
-import org.openflexo.foundation.fml.parser.node.AAbstractPropertyPropertyDeclaration;
-import org.openflexo.foundation.fml.parser.node.ABasicPropertyPropertyDeclaration;
-import org.openflexo.foundation.fml.parser.node.AExpressionPropertyPropertyDeclaration;
-import org.openflexo.foundation.fml.parser.node.AFmlBasicRoleDeclaration;
-import org.openflexo.foundation.fml.parser.node.AFmlFullyQualifiedBasicRoleDeclaration;
-import org.openflexo.foundation.fml.parser.node.AGetSetPropertyDeclaration;
-import org.openflexo.foundation.fml.parser.node.AGetSetPropertyPropertyDeclaration;
-import org.openflexo.foundation.fml.parser.node.AJavaBasicRoleDeclaration;
-import org.openflexo.foundation.fml.parser.node.PBasicRoleDeclaration;
-import org.openflexo.foundation.fml.parser.node.PExpressionPropertyDeclaration;
-import org.openflexo.foundation.fml.parser.node.PPropertyDeclaration;
+import org.openflexo.foundation.fml.parser.node.AAbstractPropertyInnerConceptDecl;
+import org.openflexo.foundation.fml.parser.node.AExpressionPropertyInnerConceptDecl;
+import org.openflexo.foundation.fml.parser.node.AGetSetPropertyInnerConceptDecl;
+import org.openflexo.foundation.fml.parser.node.AJavaInnerConceptDecl;
 
 /**
  * Handle {@link FlexoProperty} in the FML parser<br>
@@ -76,13 +68,30 @@ public class FlexoPropertyFactory extends SemanticsAnalyzerFactory {
 		super(analyzer);
 	}
 
-	FlexoPropertyNode<?, ?> makePropertyNode(PPropertyDeclaration node) {
-		if (node instanceof AAbstractPropertyPropertyDeclaration) {
-			return new AbstractPropertyNode(
-					(AAbstractPropertyDeclaration) ((AAbstractPropertyPropertyDeclaration) node).getAbstractPropertyDeclaration(),
-					getAnalyzer());
+	AbstractPropertyNode makeAbstractPropertyNode(AAbstractPropertyInnerConceptDecl node) {
+		return new AbstractPropertyNode(node, getAnalyzer());
+	}
+
+	BasicPropertyNode<?> makeBasicPropertyNode(AJavaInnerConceptDecl node) {
+		Type type = getTypeFactory().makeType(node.getType());
+		if (getTypeFactory().getPrimitiveType(type) != null) {
+			return new PrimitiveRoleNode(node, getAnalyzer());
 		}
-		else if (node instanceof ABasicPropertyPropertyDeclaration) {
+		else {
+			return new JavaRoleNode(node, getAnalyzer());
+		}
+	}
+
+	ExpressionPropertyNode makeExpressionPropertyNode(AExpressionPropertyInnerConceptDecl node) {
+		return new ExpressionPropertyNode(node, getAnalyzer());
+	}
+
+	GetSetPropertyNode makeGetSetPropertyNode(AGetSetPropertyInnerConceptDecl node) {
+		return new GetSetPropertyNode(node, getAnalyzer());
+	}
+
+	/*FlexoPropertyNode<?, ?> makePropertyNode(PInnerConceptDecl node) {
+		if (node instanceof ABasicPropertyPropertyDeclaration) {
 			PBasicRoleDeclaration basicRoleDeclaration = ((ABasicPropertyPropertyDeclaration) node).getBasicRoleDeclaration();
 			if (basicRoleDeclaration instanceof AJavaBasicRoleDeclaration) {
 				Type type = getTypeFactory().makeType(((AJavaBasicRoleDeclaration) basicRoleDeclaration).getType());
@@ -112,16 +121,16 @@ public class FlexoPropertyFactory extends SemanticsAnalyzerFactory {
 			PExpressionPropertyDeclaration expressionPropertyDeclaration = ((AExpressionPropertyPropertyDeclaration) node)
 					.getExpressionPropertyDeclaration();
 			return new ExpressionPropertyNode(expressionPropertyDeclaration, getAnalyzer());
-
+	
 		}
 		else if (node instanceof AGetSetPropertyPropertyDeclaration) {
 			AGetSetPropertyDeclaration getSetPropertyDeclaration = (AGetSetPropertyDeclaration) ((AGetSetPropertyPropertyDeclaration) node)
 					.getGetSetPropertyDeclaration();
 			return new GetSetPropertyNode(getSetPropertyDeclaration, getAnalyzer());
-
+	
 		}
 		logger.warning("Unexpected node: " + node + " of " + node.getClass());
 		Thread.dumpStack();
 		return null;
-	}
+	}*/
 }

@@ -46,7 +46,7 @@ import org.openflexo.foundation.fml.editionaction.ExpressionAction;
 import org.openflexo.foundation.fml.parser.ControlGraphFactory;
 import org.openflexo.foundation.fml.parser.node.AIdentifierVariableDeclarator;
 import org.openflexo.foundation.fml.parser.node.AInitializerVariableDeclarator;
-import org.openflexo.foundation.fml.parser.node.ALocalVariableDeclarationStatement;
+import org.openflexo.foundation.fml.parser.node.AVariableDeclarationBlockStatement;
 import org.openflexo.foundation.fml.parser.node.PVariableDeclarator;
 import org.openflexo.p2pp.RawSource.RawSourceFragment;
 
@@ -54,11 +54,11 @@ import org.openflexo.p2pp.RawSource.RawSourceFragment;
  * @author sylvain
  * 
  */
-public class DeclarationActionNode extends AssignableActionNode<ALocalVariableDeclarationStatement, DeclarationAction<?>> {
+public class DeclarationActionNode extends AssignableActionNode<AVariableDeclarationBlockStatement, DeclarationAction<?>> {
 
 	private static final Logger logger = Logger.getLogger(DeclarationActionNode.class.getPackage().getName());
 
-	public DeclarationActionNode(ALocalVariableDeclarationStatement astNode, ControlGraphFactory cgFactory) {
+	public DeclarationActionNode(AVariableDeclarationBlockStatement astNode, ControlGraphFactory cgFactory) {
 		super(astNode, cgFactory);
 	}
 
@@ -68,7 +68,7 @@ public class DeclarationActionNode extends AssignableActionNode<ALocalVariableDe
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
-	public DeclarationAction<?> buildModelObjectFromAST(ALocalVariableDeclarationStatement astNode) {
+	public DeclarationAction<?> buildModelObjectFromAST(AVariableDeclarationBlockStatement astNode) {
 		DeclarationAction<?> returned = getFactory().newDeclarationAction();
 		// System.out.println(">>>>>> Declaration " + astNode);
 
@@ -77,8 +77,8 @@ public class DeclarationActionNode extends AssignableActionNode<ALocalVariableDe
 
 		if (astNode.getVariableDeclarator() instanceof AInitializerVariableDeclarator) {
 			// TODO: on doit plutot trouver une autre action, c'est plus complique que ca
-			DataBinding<Object> initValue = makeBinding(
-					((AInitializerVariableDeclarator) astNode.getVariableDeclarator()).getAssignmentExpression(), returned);
+			DataBinding<Object> initValue = makeBinding(((AInitializerVariableDeclarator) astNode.getVariableDeclarator()).getExpression(),
+					returned);
 			returned.setAssignableAction((ExpressionAction) getFactory().newExpressionAction(initValue));
 		}
 
@@ -140,7 +140,7 @@ public class DeclarationActionNode extends AssignableActionNode<ALocalVariableDe
 
 	private RawSourceFragment getAssignmentFragment() {
 		if (hasInitializer()) {
-			return getFragment(((AInitializerVariableDeclarator) getASTNode().getVariableDeclarator()).getAssignmentExpression());
+			return getFragment(((AInitializerVariableDeclarator) getASTNode().getVariableDeclarator()).getExpression());
 		}
 		return null;
 	}

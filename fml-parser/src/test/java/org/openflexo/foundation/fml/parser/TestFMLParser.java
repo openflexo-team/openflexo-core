@@ -38,9 +38,7 @@
 
 package org.openflexo.foundation.fml.parser;
 
-import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Collection;
 
 import org.junit.BeforeClass;
@@ -58,11 +56,9 @@ import org.openflexo.foundation.fml.parser.fmlnodes.FMLCompilationUnitNode;
 import org.openflexo.foundation.fml.rt.FMLRTTechnologyAdapter;
 import org.openflexo.foundation.localization.LocalizationService;
 import org.openflexo.foundation.project.ProjectLoader;
-import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterService;
 import org.openflexo.p2pp.P2PPNode;
 import org.openflexo.pamela.exceptions.ModelDefinitionException;
-import org.openflexo.rm.FileResourceImpl;
 import org.openflexo.rm.Resource;
 import org.openflexo.rm.ResourceLocator;
 import org.openflexo.rm.Resources;
@@ -81,6 +77,8 @@ public class TestFMLParser /*extends FMLParserTestCase*/ {
 
 	@Parameterized.Parameters(name = "{1}")
 	public static Collection<Object[]> generateData() {
+		System.out.println("Prout");
+		System.out.println("hop: " + ResourceLocator.locateResource("NewFMLExamples"));
 		return Resources.getMatchingResource(ResourceLocator.locateResource("NewFMLExamples"), ".fml");
 	}
 
@@ -93,8 +91,8 @@ public class TestFMLParser /*extends FMLParserTestCase*/ {
 
 	@Test
 	public void testResource() throws ModelDefinitionException, ParseException, IOException {
-		//testFMLCompilationUnit(fmlResource);
-		System.out.println("On teste la resource "+fmlResource);
+		// testFMLCompilationUnit(fmlResource);
+		System.out.println("On teste la resource " + fmlResource);
 		FMLModelFactory fmlModelFactory = new FMLModelFactory(null, serviceManager);
 		FMLParser parser = new FMLParser();
 		FMLCompilationUnit compilationUnit = parser.parse(fmlResource.openInputStream(), fmlModelFactory);
@@ -127,9 +125,9 @@ public class TestFMLParser /*extends FMLParserTestCase*/ {
 			debug(child, indent);
 		}
 	}
-	
+
 	protected static FlexoServiceManager serviceManager;
-	
+
 	protected static FlexoServiceManager instanciateTestServiceManager() {
 		serviceManager = new DefaultFlexoServiceManager(null, true) {
 
@@ -168,8 +166,5 @@ public class TestFMLParser /*extends FMLParserTestCase*/ {
 
 		return serviceManager;
 	}
-
-
-
 
 }

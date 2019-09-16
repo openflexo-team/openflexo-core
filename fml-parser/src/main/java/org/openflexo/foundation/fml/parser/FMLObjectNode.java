@@ -76,6 +76,7 @@ import org.openflexo.foundation.fml.parser.fmlnodes.VirtualModelNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.AssignationActionNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.DeclarationActionNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.SequenceNode;
+import org.openflexo.foundation.fml.parser.node.ACompositeIdent;
 import org.openflexo.foundation.fml.parser.node.AIdentifierVariableDeclarator;
 import org.openflexo.foundation.fml.parser.node.AInitializerVariableDeclarator;
 import org.openflexo.foundation.fml.parser.node.APrivateVisibility;
@@ -83,6 +84,7 @@ import org.openflexo.foundation.fml.parser.node.AProtectedVisibility;
 import org.openflexo.foundation.fml.parser.node.APublicVisibility;
 import org.openflexo.foundation.fml.parser.node.Node;
 import org.openflexo.foundation.fml.parser.node.PAdditionalIdentifier;
+import org.openflexo.foundation.fml.parser.node.PCompositeIdent;
 import org.openflexo.foundation.fml.parser.node.PVariableDeclarator;
 import org.openflexo.foundation.fml.parser.node.PVisibility;
 import org.openflexo.foundation.fml.parser.node.TIdentifier;
@@ -302,6 +304,14 @@ public abstract class FMLObjectNode<N extends Node, T extends FMLPrettyPrintable
 		return getTypeFactory().makeFullQualifiedIdentifierList(identifier, additionalIdentifiers);
 	}
 
+	public String makeFullQualifiedIdentifier(PCompositeIdent compositeIdentifier) {
+		if (compositeIdentifier instanceof ACompositeIdent) {
+			return getTypeFactory().makeFullQualifiedIdentifier(((ACompositeIdent) compositeIdentifier).getIdentifier(),
+					((ACompositeIdent) compositeIdentifier).getAdditionalIdentifiers());
+		}
+		return null;
+	}
+
 	public String makeFullQualifiedIdentifier(TIdentifier identifier, List<PAdditionalIdentifier> additionalIdentifiers) {
 		return getTypeFactory().makeFullQualifiedIdentifier(identifier, additionalIdentifiers);
 	}
@@ -314,14 +324,13 @@ public abstract class FMLObjectNode<N extends Node, T extends FMLPrettyPrintable
 		return new DataBinding(getText(node), bindable, Object.class, BindingDefinitionType.GET);
 	}
 
-	protected <T> DataBinding<T> makeBinding(TIdentifier identifier, List<PAdditionalIdentifier> additionalIdentifiers, Type type,
-			BindingDefinitionType bindingType, Bindable bindable) {
-		return new DataBinding(makeFullQualifiedIdentifier(identifier, additionalIdentifiers), bindable, type, bindingType);
+	protected <T> DataBinding<T> makeBinding(PCompositeIdent compositeIdentifier, Type type, BindingDefinitionType bindingType,
+			Bindable bindable) {
+		return new DataBinding(makeFullQualifiedIdentifier(compositeIdentifier), bindable, type, bindingType);
 	}
 
-	protected <T> DataBinding<T> makeBinding(TIdentifier identifier, List<PAdditionalIdentifier> additionalIdentifiers, Bindable bindable) {
-		return new DataBinding(makeFullQualifiedIdentifier(identifier, additionalIdentifiers), bindable, Object.class,
-				BindingDefinitionType.GET);
+	protected <T> DataBinding<T> makeBinding(PCompositeIdent compositeIdentifier, Bindable bindable) {
+		return new DataBinding(makeFullQualifiedIdentifier(compositeIdentifier), bindable, Object.class, BindingDefinitionType.GET);
 	}
 
 	protected String getVisibilityAsString(Visibility visibility) {

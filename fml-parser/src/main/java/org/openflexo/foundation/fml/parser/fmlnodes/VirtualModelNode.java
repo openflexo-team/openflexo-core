@@ -45,7 +45,7 @@ import org.openflexo.foundation.fml.FlexoProperty;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.parser.FMLObjectNode;
 import org.openflexo.foundation.fml.parser.MainSemanticsAnalyzer;
-import org.openflexo.foundation.fml.parser.node.AModelDeclaration;
+import org.openflexo.foundation.fml.parser.node.AModelDecl;
 import org.openflexo.p2pp.PrettyPrintContext.Indentation;
 import org.openflexo.p2pp.RawSource.RawSourceFragment;
 
@@ -53,9 +53,9 @@ import org.openflexo.p2pp.RawSource.RawSourceFragment;
  * @author sylvain
  * 
  */
-public class VirtualModelNode extends FMLObjectNode<AModelDeclaration, VirtualModel, MainSemanticsAnalyzer> {
+public class VirtualModelNode extends FMLObjectNode<AModelDecl, VirtualModel, MainSemanticsAnalyzer> {
 
-	public VirtualModelNode(AModelDeclaration astNode, MainSemanticsAnalyzer analyser) {
+	public VirtualModelNode(AModelDecl astNode, MainSemanticsAnalyzer analyser) {
 		super(astNode, analyser);
 	}
 

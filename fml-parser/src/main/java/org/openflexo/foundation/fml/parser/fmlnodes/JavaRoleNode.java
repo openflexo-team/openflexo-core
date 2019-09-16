@@ -42,22 +42,18 @@ import java.util.logging.Logger;
 
 import org.openflexo.foundation.fml.JavaRole;
 import org.openflexo.foundation.fml.parser.MainSemanticsAnalyzer;
-import org.openflexo.foundation.fml.parser.node.AIdentifierVariableDeclarator;
-import org.openflexo.foundation.fml.parser.node.AInitializerVariableDeclarator;
 import org.openflexo.foundation.fml.parser.node.AJavaInnerConceptDecl;
-import org.openflexo.foundation.fml.parser.node.PVariableDeclarator;
-import org.openflexo.p2pp.RawSource.RawSourceFragment;
 
 /**
  * @author sylvain
  * 
  */
-public class JavaRoleNode extends FlexoPropertyNode<AJavaInnerConceptDecl, JavaRole<?>> {
+public class JavaRoleNode extends BasicPropertyNode<JavaRole<?>> {
 
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(JavaRoleNode.class.getPackage().getName());
 
-	public JavaRoleNode(AJavaBasicRoleDeclaration astNode, MainSemanticsAnalyzer analyser) {
+	public JavaRoleNode(AJavaInnerConceptDecl astNode, MainSemanticsAnalyzer analyser) {
 		super(astNode, analyser);
 	}
 
@@ -72,50 +68,6 @@ public class JavaRoleNode extends FlexoPropertyNode<AJavaInnerConceptDecl, JavaR
 		returned.setName(getName(astNode.getVariableDeclarator()).getText());
 		returned.setType(getTypeFactory().makeType(astNode.getType()));
 		return returned;
-	}
-
-	@Override
-	public void preparePrettyPrint(boolean hasParsedVersion) {
-		super.preparePrettyPrint(hasParsedVersion);
-
-		append(dynamicContents(() -> getVisibilityAsString(getModelObject().getVisibility()), SPACE), getVisibilityFragment());
-		append(dynamicContents(() -> serializeType(getModelObject().getType()), SPACE), getTypeFragment());
-		append(dynamicContents(() -> getModelObject().getName()), getNameFragment());
-		append(staticContents(";"), getSemiFragment());
-	}
-
-	private RawSourceFragment getVisibilityFragment() {
-		if (getASTNode() != null && getASTNode().getVisibility() != null) {
-			return getFragment(getASTNode().getVisibility());
-		}
-		return null;
-	}
-
-	private RawSourceFragment getTypeFragment() {
-		if (getASTNode() != null) {
-			return getFragment(getASTNode().getType());
-		}
-		return null;
-	}
-
-	private RawSourceFragment getNameFragment() {
-		if (getASTNode() != null) {
-			PVariableDeclarator variableDeclarator = getASTNode().getVariableDeclarator();
-			if (variableDeclarator instanceof AIdentifierVariableDeclarator) {
-				return getFragment(((AIdentifierVariableDeclarator) variableDeclarator).getIdentifier());
-			}
-			else if (variableDeclarator instanceof AInitializerVariableDeclarator) {
-				return getFragment(((AInitializerVariableDeclarator) variableDeclarator).getIdentifier());
-			}
-		}
-		return null;
-	}
-
-	private RawSourceFragment getSemiFragment() {
-		if (getASTNode() != null) {
-			return getFragment(getASTNode().getSemi());
-		}
-		return null;
 	}
 
 }

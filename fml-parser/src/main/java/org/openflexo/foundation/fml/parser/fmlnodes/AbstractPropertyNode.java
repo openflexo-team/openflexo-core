@@ -42,7 +42,7 @@ import java.util.logging.Logger;
 
 import org.openflexo.foundation.fml.AbstractProperty;
 import org.openflexo.foundation.fml.parser.MainSemanticsAnalyzer;
-import org.openflexo.foundation.fml.parser.node.AAbstractPropertyDeclaration;
+import org.openflexo.foundation.fml.parser.node.AAbstractPropertyInnerConceptDecl;
 import org.openflexo.foundation.fml.parser.node.AIdentifierVariableDeclarator;
 import org.openflexo.foundation.fml.parser.node.AInitializerVariableDeclarator;
 import org.openflexo.foundation.fml.parser.node.PVariableDeclarator;
@@ -57,7 +57,7 @@ public class AbstractPropertyNode extends FlexoPropertyNode<AAbstractPropertyInn
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(AbstractPropertyNode.class.getPackage().getName());
 
-	public AbstractPropertyNode(AAbstractPropertyDeclaration astNode, MainSemanticsAnalyzer analyser) {
+	public AbstractPropertyNode(AAbstractPropertyInnerConceptDecl astNode, MainSemanticsAnalyzer analyser) {
 		super(astNode, analyser);
 	}
 
@@ -121,7 +121,7 @@ public class AbstractPropertyNode extends FlexoPropertyNode<AAbstractPropertyInn
 
 	private RawSourceFragment getAbstractFragment() {
 		if (getASTNode() != null) {
-			return getFragment(getASTNode().getAbstract());
+			return getFragment(getASTNode().getKwAbstract());
 		}
 		return null;
 	}

@@ -5,9 +5,9 @@ import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.AddFlexoConcept
 import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.AssignableActionNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.ControlGraphNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.ExpressionActionNode;
-import org.openflexo.foundation.fml.parser.node.AFmlInstanceCreationFmlActionExpression;
+import org.openflexo.foundation.fml.parser.node.AFmlInstanceCreationFmlActionExp;
 import org.openflexo.foundation.fml.parser.node.Node;
-import org.openflexo.foundation.fml.parser.node.PFmlActionExpression;
+import org.openflexo.foundation.fml.parser.node.PFmlActionExp;
 import org.openflexo.toolbox.StringUtils;
 
 /**
@@ -29,7 +29,7 @@ public class AssignableActionFactory extends FMLSemanticsAnalyzer {
 
 	private AssignableActionNode<?, ?> rootControlGraphNode = null;
 
-	private PFmlActionExpression pFMLActionExpression;
+	private PFmlActionExp pFMLActionExpression;
 
 	public static AssignableActionNode<?, ?> makeAssignableActionNode(Node cgNode, ControlGraphFactory cgFactory) {
 		AssignableActionFactory f = new AssignableActionFactory(cgNode, cgFactory);
@@ -120,76 +120,31 @@ public class AssignableActionFactory extends FMLSemanticsAnalyzer {
 	 * </pre>
 	 */
 
-	/*@Override
-	public void inALiteralPrimary(ALiteralPrimary node) {
-		super.inALiteralPrimary(node);
-		push(new ExpressionActionNode(node, analyzer));
-	}
-	
-	@Override
-	public void outALiteralPrimary(ALiteralPrimary node) {
-		super.outALiteralPrimary(node);
-		pop();
-	}
-	
-	@Override
-	public void inAExpressionPrimary(AExpressionPrimary node) {
-		super.inAExpressionPrimary(node);
-		push(new ExpressionActionNode(node, analyzer));
-	}
-	
-	@Override
-	public void outAExpressionPrimary(AExpressionPrimary node) {
-		super.outAExpressionPrimary(node);
-		pop();
-	}
-	
-	@Override
-	public void inAIdentifierPrimary(AIdentifierPrimary node) {
-		super.inAIdentifierPrimary(node);
-		push(new ExpressionActionNode(node, analyzer));
-	}
-	
-	@Override
-	public void outAIdentifierPrimary(AIdentifierPrimary node) {
-		super.outAIdentifierPrimary(node);
-		pop();
-	}
-	
-	@Override
-	public void inAFieldPrimary(AFieldPrimary node) {
-		super.inAFieldPrimary(node);
-		push(new ExpressionActionNode(node, analyzer));
-	}
-	
-	@Override
-	public void outAFieldPrimary(AFieldPrimary node) {
-		super.outAFieldPrimary(node);
-		pop();
-	}
-	
-	@Override
-	public void inAMethodPrimary(AMethodPrimary node) {
-		super.inAMethodPrimary(node);
-		push(new ExpressionActionNode(node, analyzer));
-	}
-	
-	@Override
-	public void outAMethodPrimary(AMethodPrimary node) {
-		super.outAMethodPrimary(node);
-		pop();
-	}*/
+	/*
+	 * <pre>
+	   fml_action_exp =
+	       {java_instance_creation} kw_new composite_ident type_arguments_or_diamond? l_par argument_list? r_par
+	//FD: conflict with previous  {simplified} new [concept_name]:identifier l_par argument_list? r_par
+	     | {fml_instance_creation}  kw_new [concept_name]:identifier colon_colon [constructor_name]:identifier l_par argument_list? r_par
+	     | {ta_edition_action}      [ta_id]:identifier colon_colon [edition_action]:identifier fml_parameters in_clause? from_clause? //FD remove ? on fml_parameters
+	     | {delete_action}          kw_delete l_par expression r_par from_clause?
+	     | {select_action}          kw_select [concept_name]:identifier from_clause where_clause?
+	     ;
+	 * </pre>
+	 */
+
+	// TODO: simplified constructor for FML instances
 
 	@Override
-	public void inAFmlInstanceCreationFmlActionExpression(AFmlInstanceCreationFmlActionExpression node) {
-		super.inAFmlInstanceCreationFmlActionExpression(node);
+	public void inAFmlInstanceCreationFmlActionExp(AFmlInstanceCreationFmlActionExp node) {
+		super.inAFmlInstanceCreationFmlActionExp(node);
 		pFMLActionExpression = node;
-		push(new AddFlexoConceptInstanceNode(node.getConceptInstanceCreationExpression(), cgFactory));
+		push(new AddFlexoConceptInstanceNode(node, cgFactory));
 	}
 
 	@Override
-	public void outAFmlInstanceCreationFmlActionExpression(AFmlInstanceCreationFmlActionExpression node) {
-		super.outAFmlInstanceCreationFmlActionExpression(node);
+	public void outAFmlInstanceCreationFmlActionExp(AFmlInstanceCreationFmlActionExp node) {
+		super.outAFmlInstanceCreationFmlActionExp(node);
 		pop();
 	}
 

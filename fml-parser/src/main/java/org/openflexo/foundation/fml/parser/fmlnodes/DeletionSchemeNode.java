@@ -43,9 +43,9 @@ import java.util.logging.Logger;
 import org.openflexo.foundation.fml.DeletionScheme;
 import org.openflexo.foundation.fml.parser.MainSemanticsAnalyzer;
 import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.ControlGraphNode;
-import org.openflexo.foundation.fml.parser.node.AAnonymousDestructorBehaviourDeclaration;
-import org.openflexo.foundation.fml.parser.node.ANamedDestructorBehaviourDeclaration;
-import org.openflexo.foundation.fml.parser.node.PBehaviourDeclaration;
+import org.openflexo.foundation.fml.parser.node.AAnonymousDestructorBehaviourDecl;
+import org.openflexo.foundation.fml.parser.node.ANamedDestructorBehaviourDecl;
+import org.openflexo.foundation.fml.parser.node.PBehaviourDecl;
 import org.openflexo.p2pp.PrettyPrintContext.Indentation;
 import org.openflexo.p2pp.RawSource.RawSourceFragment;
 
@@ -58,12 +58,12 @@ import org.openflexo.p2pp.RawSource.RawSourceFragment;
  * @author sylvain
  * 
  */
-public class DeletionSchemeNode extends FlexoBehaviourNode<PBehaviourDeclaration, DeletionScheme> {
+public class DeletionSchemeNode extends FlexoBehaviourNode<PBehaviourDecl, DeletionScheme> {
 
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(DeletionSchemeNode.class.getPackage().getName());
 
-	public DeletionSchemeNode(PBehaviourDeclaration astNode, MainSemanticsAnalyzer analyser) {
+	public DeletionSchemeNode(PBehaviourDecl astNode, MainSemanticsAnalyzer analyser) {
 		super(astNode, analyser);
 	}
 
@@ -73,7 +73,7 @@ public class DeletionSchemeNode extends FlexoBehaviourNode<PBehaviourDeclaration
 
 	private boolean isAnonymous() {
 		if (getASTNode() != null) {
-			return getASTNode() instanceof AAnonymousDestructorBehaviourDeclaration;
+			return getASTNode() instanceof AAnonymousDestructorBehaviourDecl;
 		}
 		else {
 			return getModelObject().isAnonymous();
@@ -81,7 +81,7 @@ public class DeletionSchemeNode extends FlexoBehaviourNode<PBehaviourDeclaration
 	}
 
 	@Override
-	public DeletionScheme buildModelObjectFromAST(PBehaviourDeclaration astNode) {
+	public DeletionScheme buildModelObjectFromAST(PBehaviourDecl astNode) {
 		DeletionScheme returned = getFactory().newDeletionScheme();
 		if (isAnonymous()) {
 			returned.setAnonymous(true);
@@ -140,18 +140,18 @@ public class DeletionSchemeNode extends FlexoBehaviourNode<PBehaviourDeclaration
 	}
 
 	private RawSourceFragment getDeleteFragment() {
-		if (getASTNode() instanceof AAnonymousDestructorBehaviourDeclaration) {
-			return getFragment(((AAnonymousDestructorBehaviourDeclaration) getASTNode()).getDelete());
+		if (getASTNode() instanceof AAnonymousDestructorBehaviourDecl) {
+			return getFragment(((AAnonymousDestructorBehaviourDecl) getASTNode()).getKwDelete());
 		}
-		if (getASTNode() instanceof ANamedDestructorBehaviourDeclaration) {
-			return getFragment(((ANamedDestructorBehaviourDeclaration) getASTNode()).getDelete());
+		if (getASTNode() instanceof ANamedDestructorBehaviourDecl) {
+			return getFragment(((ANamedDestructorBehaviourDecl) getASTNode()).getKwDelete());
 		}
 		return null;
 	}
 
 	private RawSourceFragment getColonColonFragment() {
-		if (getASTNode() instanceof ANamedDestructorBehaviourDeclaration) {
-			return getFragment(((ANamedDestructorBehaviourDeclaration) getASTNode()).getColonColon());
+		if (getASTNode() instanceof ANamedDestructorBehaviourDecl) {
+			return getFragment(((ANamedDestructorBehaviourDecl) getASTNode()).getColonColon());
 		}
 		return null;
 	}

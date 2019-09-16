@@ -407,11 +407,14 @@ Productions
      //| {simple} [identifier]:composite_ident [arg_name]:identifier
      | {complex} reference_type [arg_name]:identifier
      ;
-
+     
    flexo_behaviour_body =
-       {block} l_brc [block_statements]:block_statement* r_brc
+       {block} block
      | {empty} semi
      ;
+
+   block =
+    	l_brc [block_statements]:block_statement* r_brc;
 
    block_statement =
        {variable_declaration} type variable_declarator semi

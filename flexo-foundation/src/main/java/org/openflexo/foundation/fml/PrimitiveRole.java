@@ -45,10 +45,8 @@ import org.openflexo.connie.type.PrimitiveType;
 import org.openflexo.foundation.fml.annotations.FML;
 import org.openflexo.foundation.fml.rt.AbstractVirtualModelInstanceModelFactory;
 import org.openflexo.foundation.fml.rt.ActorReference;
-import org.openflexo.foundation.fml.rt.FMLRTTechnologyAdapter;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.PrimitiveActorReference;
-import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.logging.FlexoLogger;
 import org.openflexo.pamela.annotations.Getter;
@@ -68,11 +66,12 @@ import org.openflexo.pamela.annotations.XMLElement;
  *
  * @param <T>
  */
+// TODO: rename to PrimitiveProperty
 @ModelEntity
 @ImplementationClass(PrimitiveRole.PrimitiveRoleImpl.class)
-@XMLElement
+@XMLElement(xmlTag = "PrimitiveRole")
 @FML("PrimitiveRole")
-public interface PrimitiveRole<T> extends FlexoRole<T> {
+public interface PrimitiveRole<T> extends BasicProperty<T> {
 
 	@PropertyIdentifier(type = PrimitiveType.class)
 	public static final String PRIMITIVE_TYPE_KEY = "primitiveType";
@@ -84,22 +83,11 @@ public interface PrimitiveRole<T> extends FlexoRole<T> {
 	@Setter(PRIMITIVE_TYPE_KEY)
 	public void setPrimitiveType(PrimitiveType primitiveType);
 
-	public static abstract class PrimitiveRoleImpl<T> extends FlexoRoleImpl<T> implements PrimitiveRole<T> {
+	public static abstract class PrimitiveRoleImpl<T> extends BasicPropertyImpl<T> implements PrimitiveRole<T> {
 
 		protected static final Logger logger = FlexoLogger.getLogger(PrimitiveRole.class.getPackage().getName());
 
 		private PrimitiveType primitiveType;
-
-		public PrimitiveRoleImpl() {
-			super();
-		}
-
-		/*@Override
-		public String getFMLRepresentation(FMLRepresentationContext context) {
-			FMLRepresentationOutput out = new FMLRepresentationOutput(context);
-			out.append("FlexoRole " + getName() + " as " + getTypeDescription() + " cardinality=" + getCardinality() + ";", context);
-			return out.toString();
-		}*/
 
 		@Override
 		public PrimitiveType getPrimitiveType() {
@@ -133,21 +121,6 @@ public interface PrimitiveRole<T> extends FlexoRole<T> {
 
 		}
 
-		/**
-		 * Encodes the default cloning strategy
-		 * 
-		 * @return
-		 */
-		@Override
-		public RoleCloningStrategy defaultCloningStrategy() {
-			return RoleCloningStrategy.Clone;
-		}
-
-		@Override
-		public boolean defaultBehaviourIsToBeDeleted() {
-			return true;
-		}
-
 		@Override
 		public ActorReference<T> makeActorReference(T object, FlexoConceptInstance fci) {
 			AbstractVirtualModelInstanceModelFactory<?> factory = fci.getFactory();
@@ -155,11 +128,6 @@ public interface PrimitiveRole<T> extends FlexoRole<T> {
 			returned.setFlexoRole(this);
 			returned.setModellingElement(object);
 			return returned;
-		}
-
-		@Override
-		public Class<? extends TechnologyAdapter> getRoleTechnologyAdapterClass() {
-			return FMLRTTechnologyAdapter.class;
 		}
 
 	}

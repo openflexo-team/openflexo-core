@@ -1,8 +1,8 @@
 /**
  * 
- * Copyright (c) 2019, Openflexo
+ * Copyright (c) 2014-2015, Openflexo
  * 
- * This file is part of FML-parser, a component of the software infrastructure 
+ * This file is part of Flexo-foundation, a component of the software infrastructure 
  * developed at Openflexo.
  * 
  * 
@@ -36,38 +36,48 @@
  * 
  */
 
-package org.openflexo.foundation.fml.parser.fmlnodes;
+package org.openflexo.foundation.fml;
 
 import java.util.logging.Logger;
 
-import org.openflexo.foundation.fml.PrimitiveRole;
-import org.openflexo.foundation.fml.parser.MainSemanticsAnalyzer;
-import org.openflexo.foundation.fml.parser.node.AJavaInnerConceptDecl;
+import org.openflexo.foundation.fml.rt.FMLRTTechnologyAdapter;
+import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
+import org.openflexo.logging.FlexoLogger;
+import org.openflexo.pamela.annotations.ModelEntity;
 
 /**
- * @author sylvain
+ * A plain property
  * 
+ * @author sylvain
+ *
+ * @param <T>
  */
-public class PrimitiveRoleNode extends BasicPropertyNode<PrimitiveRole<?>> {
+@ModelEntity(isAbstract = true)
+public interface BasicProperty<T> extends FlexoRole<T> {
 
-	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(PrimitiveRoleNode.class.getPackage().getName());
+	public static abstract class BasicPropertyImpl<T> extends FlexoRoleImpl<T> implements BasicProperty<T> {
 
-	public PrimitiveRoleNode(AJavaInnerConceptDecl astNode, MainSemanticsAnalyzer analyser) {
-		super(astNode, analyser);
+		protected static final Logger logger = FlexoLogger.getLogger(BasicProperty.class.getPackage().getName());
+
+		/**
+		 * Encodes the default cloning strategy
+		 * 
+		 * @return
+		 */
+		@Override
+		public final RoleCloningStrategy defaultCloningStrategy() {
+			return RoleCloningStrategy.Clone;
+		}
+
+		@Override
+		public final boolean defaultBehaviourIsToBeDeleted() {
+			return true;
+		}
+
+		@Override
+		public final Class<? extends TechnologyAdapter> getRoleTechnologyAdapterClass() {
+			return FMLRTTechnologyAdapter.class;
+		}
+
 	}
-
-	public PrimitiveRoleNode(PrimitiveRole<?> property, MainSemanticsAnalyzer analyser) {
-		super(property, analyser);
-	}
-
-	@Override
-	public PrimitiveRole<?> buildModelObjectFromAST(AJavaInnerConceptDecl astNode) {
-		PrimitiveRole<?> returned = getFactory().newPrimitiveRole();
-		returned.setVisibility(getVisibility(astNode.getVisibility()));
-		returned.setName(getName(astNode.getVariableDeclarator()).getText());
-		returned.setPrimitiveType(getTypeFactory().getPrimitiveType(astNode.getType()));
-		return returned;
-	}
-
 }

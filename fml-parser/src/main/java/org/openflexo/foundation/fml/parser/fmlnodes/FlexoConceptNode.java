@@ -43,7 +43,7 @@ import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoProperty;
 import org.openflexo.foundation.fml.parser.FMLObjectNode;
 import org.openflexo.foundation.fml.parser.MainSemanticsAnalyzer;
-import org.openflexo.foundation.fml.parser.node.AConceptDeclaration;
+import org.openflexo.foundation.fml.parser.node.AConceptDecl;
 import org.openflexo.foundation.fml.parser.node.ASuperClause;
 import org.openflexo.p2pp.PrettyPrintContext.Indentation;
 import org.openflexo.p2pp.RawSource.RawSourceFragment;
@@ -52,9 +52,9 @@ import org.openflexo.p2pp.RawSource.RawSourceFragment;
  * @author sylvain
  * 
  */
-public class FlexoConceptNode extends FMLObjectNode<AConceptDeclaration, FlexoConcept, MainSemanticsAnalyzer> {
+public class FlexoConceptNode extends FMLObjectNode<AConceptDecl, FlexoConcept, MainSemanticsAnalyzer> {
 
-	public FlexoConceptNode(AConceptDeclaration astNode, MainSemanticsAnalyzer analyser) {
+	public FlexoConceptNode(AConceptDecl astNode, MainSemanticsAnalyzer analyser) {
 		super(astNode, analyser);
 	}
 
@@ -164,7 +164,7 @@ public class FlexoConceptNode extends FMLObjectNode<AConceptDeclaration, FlexoCo
 	private RawSourceFragment getExtendsFragment() {
 		if (getASTNode() != null && getASTNode().getSuperClause() != null) {
 			ASuperClause superClause = (ASuperClause) getASTNode().getSuperClause();
-			return getFragment(superClause.getExtends());
+			return getFragment(superClause.getKwExtends());
 		}
 		return null;
 	}

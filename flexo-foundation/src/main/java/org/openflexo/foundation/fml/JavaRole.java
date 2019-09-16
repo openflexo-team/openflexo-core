@@ -43,9 +43,7 @@ import java.util.logging.Logger;
 
 import org.openflexo.foundation.fml.annotations.FML;
 import org.openflexo.foundation.fml.rt.ActorReference;
-import org.openflexo.foundation.fml.rt.FMLRTTechnologyAdapter;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
-import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.logging.FlexoLogger;
 import org.openflexo.pamela.annotations.Getter;
 import org.openflexo.pamela.annotations.ImplementationClass;
@@ -64,11 +62,12 @@ import org.openflexo.pamela.annotations.XMLElement;
  *
  * @param <T>
  */
+// TODO: rename to JavaProperty
 @ModelEntity
 @ImplementationClass(JavaRole.JavaRoleImpl.class)
-@XMLElement
+@XMLElement(xmlTag = "JavaRole")
 @FML("JavaRole")
-public interface JavaRole<T> extends FlexoRole<T> {
+public interface JavaRole<T> extends BasicProperty<T> {
 
 	@PropertyIdentifier(type = Type.class)
 	public static final String TYPE_KEY = "type";
@@ -81,7 +80,7 @@ public interface JavaRole<T> extends FlexoRole<T> {
 	@Setter(TYPE_KEY)
 	public void setType(Type type);
 
-	public static abstract class JavaRoleImpl<T> extends FlexoRoleImpl<T> implements JavaRole<T> {
+	public static abstract class JavaRoleImpl<T> extends BasicPropertyImpl<T> implements JavaRole<T> {
 
 		protected static final Logger logger = FlexoLogger.getLogger(JavaRole.class.getPackage().getName());
 
@@ -102,30 +101,10 @@ public interface JavaRole<T> extends FlexoRole<T> {
 			}
 		}
 
-		/**
-		 * Encodes the default cloning strategy
-		 * 
-		 * @return
-		 */
-		@Override
-		public RoleCloningStrategy defaultCloningStrategy() {
-			return RoleCloningStrategy.Clone;
-		}
-
-		@Override
-		public boolean defaultBehaviourIsToBeDeleted() {
-			return true;
-		}
-
 		@Override
 		public ActorReference<T> makeActorReference(T object, FlexoConceptInstance fci) {
 			// Never serialized
 			return null;
-		}
-
-		@Override
-		public Class<? extends TechnologyAdapter> getRoleTechnologyAdapterClass() {
-			return FMLRTTechnologyAdapter.class;
 		}
 
 	}

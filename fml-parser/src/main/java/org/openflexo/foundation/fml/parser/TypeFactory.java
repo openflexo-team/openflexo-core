@@ -63,12 +63,12 @@ import org.openflexo.foundation.fml.parser.analysis.DepthFirstAdapter;
 import org.openflexo.foundation.fml.parser.node.AAdditionalIdentifier;
 import org.openflexo.foundation.fml.parser.node.ABooleanPrimitiveType;
 import org.openflexo.foundation.fml.parser.node.AComplexType;
-import org.openflexo.foundation.fml.parser.node.AConceptDeclaration;
-import org.openflexo.foundation.fml.parser.node.AFloatNumericType;
+import org.openflexo.foundation.fml.parser.node.ACompositeIdent;
+import org.openflexo.foundation.fml.parser.node.AConceptDecl;
+import org.openflexo.foundation.fml.parser.node.AFloatPrimitiveType;
 import org.openflexo.foundation.fml.parser.node.AGtTypeArguments;
-import org.openflexo.foundation.fml.parser.node.AIntNumericType;
-import org.openflexo.foundation.fml.parser.node.AModelDeclaration;
-import org.openflexo.foundation.fml.parser.node.ANumericPrimitiveType;
+import org.openflexo.foundation.fml.parser.node.AIntPrimitiveType;
+import org.openflexo.foundation.fml.parser.node.AModelDecl;
 import org.openflexo.foundation.fml.parser.node.APrimitiveType;
 import org.openflexo.foundation.fml.parser.node.AReferenceType;
 import org.openflexo.foundation.fml.parser.node.AReferenceTypeArgument;
@@ -149,6 +149,10 @@ public class TypeFactory extends SemanticsAnalyzerFactory {
 		return returned.toString();
 	}
 
+	public Type makeType(ACompositeIdent compositeIdentifier) {
+		return makeType(compositeIdentifier.getIdentifier(), compositeIdentifier.getAdditionalIdentifiers());
+	}
+
 	public Type makeType(TIdentifier identifier, List<PAdditionalIdentifier> additionalIdentifiers) {
 		String typeName = makeFullQualifiedIdentifier(identifier, additionalIdentifiers);
 
@@ -196,7 +200,7 @@ public class TypeFactory extends SemanticsAnalyzerFactory {
 			}
 			return new UnresolvedType(typeName);
 		}
-	*/
+	 */
 	public Type makeType(PType pType) {
 		if (pType == null) {
 			logger.warning("Unexpected null type");
@@ -238,15 +242,7 @@ public class TypeFactory extends SemanticsAnalyzerFactory {
 				return new ParameterizedTypeImpl((Class) baseType, typeArguments.toArray(new Type[typeArguments.size()]));
 			}
 			else {
-				Type baseType = makeType(((AReferenceType) referenceType).getIdentifier(),
-						((AReferenceType) referenceType).getAdditionalIdentifiers());
-				if (baseType instanceof Class) {
-					List<Type> typeArguments = makeTypeArguments(((AReferenceType) referenceType).getArgs());
-					return new ParameterizedTypeImpl((Class) baseType, typeArguments.toArray(new Type[typeArguments.size()]));
-				}
-				else {
-					logger.warning("Unexpected base type " + baseType + " for " + referenceType);
-				}
+				logger.warning("Unexpected base type " + baseType + " for " + referenceType);
 			}
 		}
 		logger.warning("Unexpected " + referenceType + " of " + referenceType.getClass());
@@ -430,27 +426,27 @@ public class TypeFactory extends SemanticsAnalyzerFactory {
 			while (!nodes.isEmpty()) {
 				relativeURI = getIdentifier(nodes.pop()) + "." + relativeURI;
 			}
-			if (foundNode instanceof AModelDeclaration) {
+			if (foundNode instanceof AModelDecl) {
 				type = new VirtualModelInstanceType(relativeURI, VIRTUAL_MODEL_INSTANCE_TYPE_FACTORY);
 			}
-			if (foundNode instanceof AConceptDeclaration) {
+			if (foundNode instanceof AConceptDecl) {
 				type = new FlexoConceptInstanceType(relativeURI, FLEXO_CONCEPT_INSTANCE_TYPE_FACTORY);
 			}
 		}
 
 		private String getIdentifier(Node node) {
-			if (node instanceof AModelDeclaration) {
-				return ((AModelDeclaration) node).getIdentifier().getText();
+			if (node instanceof AModelDecl) {
+				return ((AModelDecl) node).getIdentifier().getText();
 			}
-			if (node instanceof AConceptDeclaration) {
-				return ((AConceptDeclaration) node).getIdentifier().getText();
+			if (node instanceof AConceptDecl) {
+				return ((AConceptDecl) node).getIdentifier().getText();
 			}
 			return null;
 		}
 
 		@Override
-		public void inAModelDeclaration(AModelDeclaration node) {
-			super.inAModelDeclaration(node);
+		public void inAModelDecl(AModelDecl node) {
+			super.inAModelDecl(node);
 			if (!found) {
 				nodes.push(node);
 				if (conceptName.equals(node.getIdentifier().getText())) {
@@ -460,16 +456,16 @@ public class TypeFactory extends SemanticsAnalyzerFactory {
 		}
 
 		@Override
-		public void outAModelDeclaration(AModelDeclaration node) {
-			super.outAModelDeclaration(node);
+		public void outAModelDecl(AModelDecl node) {
+			super.outAModelDecl(node);
 			if (!found) {
 				nodes.pop();
 			}
 		}
 
 		@Override
-		public void inAConceptDeclaration(AConceptDeclaration node) {
-			super.inAConceptDeclaration(node);
+		public void inAConceptDecl(AConceptDecl node) {
+			super.inAConceptDecl(node);
 			if (!found) {
 				nodes.push(node);
 				if (conceptName.equals(node.getIdentifier().getText())) {
@@ -479,8 +475,8 @@ public class TypeFactory extends SemanticsAnalyzerFactory {
 		}
 
 		@Override
-		public void outAConceptDeclaration(AConceptDeclaration node) {
-			super.outAConceptDeclaration(node);
+		public void outAConceptDecl(AConceptDecl node) {
+			super.outAConceptDecl(node);
 			if (!found) {
 				nodes.pop();
 			}

@@ -44,9 +44,9 @@ import org.openflexo.foundation.fml.GetProperty;
 import org.openflexo.foundation.fml.GetSetProperty;
 import org.openflexo.foundation.fml.controlgraph.FMLControlGraph;
 import org.openflexo.foundation.fml.parser.MainSemanticsAnalyzer;
-import org.openflexo.foundation.fml.parser.node.AGetDeclaration;
-import org.openflexo.foundation.fml.parser.node.AGetSetPropertyDeclaration;
-import org.openflexo.foundation.fml.parser.node.ASetDeclaration;
+import org.openflexo.foundation.fml.parser.node.AGetDecl;
+import org.openflexo.foundation.fml.parser.node.AGetSetPropertyInnerConceptDecl;
+import org.openflexo.foundation.fml.parser.node.ASetDecl;
 import org.openflexo.foundation.fml.parser.node.PFlexoBehaviourBody;
 import org.openflexo.p2pp.RawSource.RawSourceFragment;
 
@@ -61,12 +61,12 @@ import org.openflexo.p2pp.RawSource.RawSourceFragment;
  * @author sylvain
  * 
  */
-public class GetSetPropertyNode extends FlexoPropertyNode<AGetSetPropertyDeclaration, GetProperty<?>> {
+public class GetSetPropertyNode extends FlexoPropertyNode<AGetSetPropertyInnerConceptDecl, GetProperty<?>> {
 
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(GetSetPropertyNode.class.getPackage().getName());
 
-	public GetSetPropertyNode(AGetSetPropertyDeclaration astNode, MainSemanticsAnalyzer analyser) {
+	public GetSetPropertyNode(AGetSetPropertyInnerConceptDecl astNode, MainSemanticsAnalyzer analyser) {
 		super(astNode, analyser);
 	}
 
@@ -75,11 +75,11 @@ public class GetSetPropertyNode extends FlexoPropertyNode<AGetSetPropertyDeclara
 	}
 
 	@Override
-	public GetProperty<?> buildModelObjectFromAST(AGetSetPropertyDeclaration astNode) {
+	public GetProperty<?> buildModelObjectFromAST(AGetSetPropertyInnerConceptDecl astNode) {
 
 		GetProperty<?> returned;
 
-		if (astNode.getSetDeclaration() == null) {
+		if (astNode.getSetDecl() == null) {
 			// This is a Get property
 			returned = getFactory().newGetProperty();
 		}
@@ -91,11 +91,11 @@ public class GetSetPropertyNode extends FlexoPropertyNode<AGetSetPropertyDeclara
 		returned.setName(astNode.getIdentifier().getText());
 		returned.setDeclaredType(getTypeFactory().makeType(astNode.getType()));
 
-		AGetDeclaration getDeclaration = (AGetDeclaration) astNode.getGetDeclaration();
+		AGetDecl getDeclaration = (AGetDecl) astNode.getGetDecl();
 		returned.setGetControlGraph(makeControlGraph(getDeclaration.getFlexoBehaviourBody()));
 
-		if (astNode.getSetDeclaration() != null) {
-			ASetDeclaration setDeclaration = (ASetDeclaration) astNode.getSetDeclaration();
+		if (astNode.getSetDecl() != null) {
+			ASetDecl setDeclaration = (ASetDecl) astNode.getSetDecl();
 			((GetSetProperty<?>) returned).setSetControlGraph(makeControlGraph(setDeclaration.getFlexoBehaviourBody()));
 		}
 

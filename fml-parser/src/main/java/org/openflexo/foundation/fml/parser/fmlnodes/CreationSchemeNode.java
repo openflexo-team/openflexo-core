@@ -43,9 +43,9 @@ import java.util.logging.Logger;
 import org.openflexo.foundation.fml.CreationScheme;
 import org.openflexo.foundation.fml.parser.MainSemanticsAnalyzer;
 import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.ControlGraphNode;
-import org.openflexo.foundation.fml.parser.node.AAnonymousConstructorBehaviourDeclaration;
-import org.openflexo.foundation.fml.parser.node.ANamedConstructorBehaviourDeclaration;
-import org.openflexo.foundation.fml.parser.node.PBehaviourDeclaration;
+import org.openflexo.foundation.fml.parser.node.AAnonymousConstructorBehaviourDecl;
+import org.openflexo.foundation.fml.parser.node.ANamedConstructorBehaviourDecl;
+import org.openflexo.foundation.fml.parser.node.PBehaviourDecl;
 import org.openflexo.p2pp.PrettyPrintContext.Indentation;
 import org.openflexo.p2pp.RawSource.RawSourceFragment;
 
@@ -58,12 +58,12 @@ import org.openflexo.p2pp.RawSource.RawSourceFragment;
  * @author sylvain
  * 
  */
-public class CreationSchemeNode extends FlexoBehaviourNode<PBehaviourDeclaration, CreationScheme> {
+public class CreationSchemeNode extends FlexoBehaviourNode<PBehaviourDecl, CreationScheme> {
 
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(CreationSchemeNode.class.getPackage().getName());
 
-	public CreationSchemeNode(PBehaviourDeclaration astNode, MainSemanticsAnalyzer analyser) {
+	public CreationSchemeNode(PBehaviourDecl astNode, MainSemanticsAnalyzer analyser) {
 		super(astNode, analyser);
 	}
 
@@ -76,12 +76,12 @@ public class CreationSchemeNode extends FlexoBehaviourNode<PBehaviourDeclaration
 			return getModelObject().isAnonymous();
 		}
 		else {
-			return getASTNode() != null && getASTNode() instanceof AAnonymousConstructorBehaviourDeclaration;
+			return getASTNode() != null && getASTNode() instanceof AAnonymousConstructorBehaviourDecl;
 		}
 	}
 
 	@Override
-	public CreationScheme buildModelObjectFromAST(PBehaviourDeclaration astNode) {
+	public CreationScheme buildModelObjectFromAST(PBehaviourDecl astNode) {
 		CreationScheme returned = getFactory().newCreationScheme();
 		if (isAnonymous()) {
 			returned.setAnonymous(true);
@@ -139,18 +139,18 @@ public class CreationSchemeNode extends FlexoBehaviourNode<PBehaviourDeclaration
 	}
 
 	private RawSourceFragment getCreateFragment() {
-		if (getASTNode() instanceof AAnonymousConstructorBehaviourDeclaration) {
-			return getFragment(((AAnonymousConstructorBehaviourDeclaration) getASTNode()).getCreate());
+		if (getASTNode() instanceof AAnonymousConstructorBehaviourDecl) {
+			return getFragment(((AAnonymousConstructorBehaviourDecl) getASTNode()).getKwCreate());
 		}
-		if (getASTNode() instanceof ANamedConstructorBehaviourDeclaration) {
-			return getFragment(((ANamedConstructorBehaviourDeclaration) getASTNode()).getCreate());
+		if (getASTNode() instanceof ANamedConstructorBehaviourDecl) {
+			return getFragment(((ANamedConstructorBehaviourDecl) getASTNode()).getKwCreate());
 		}
 		return null;
 	}
 
 	private RawSourceFragment getColonColonFragment() {
-		if (getASTNode() instanceof ANamedConstructorBehaviourDeclaration) {
-			return getFragment(((ANamedConstructorBehaviourDeclaration) getASTNode()).getColonColon());
+		if (getASTNode() instanceof ANamedConstructorBehaviourDecl) {
+			return getFragment(((ANamedConstructorBehaviourDecl) getASTNode()).getColonColon());
 		}
 		return null;
 	}

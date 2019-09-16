@@ -46,15 +46,18 @@ import org.openflexo.foundation.fml.parser.fmlnodes.JavaImportNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.MetaDataNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.NamedJavaImportNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.VirtualModelNode;
-import org.openflexo.foundation.fml.parser.node.ABehaviourDeclarationInnerConceptDeclaration;
-import org.openflexo.foundation.fml.parser.node.AConceptDeclaration;
+import org.openflexo.foundation.fml.parser.node.AAbstractPropertyInnerConceptDecl;
+import org.openflexo.foundation.fml.parser.node.ABehaviourDeclarationInnerConceptDecl;
+import org.openflexo.foundation.fml.parser.node.AConceptDecl;
+import org.openflexo.foundation.fml.parser.node.AExpressionPropertyInnerConceptDecl;
 import org.openflexo.foundation.fml.parser.node.AFmlCompilationUnit;
-import org.openflexo.foundation.fml.parser.node.AJavaImportImportDeclaration;
-import org.openflexo.foundation.fml.parser.node.AModelDeclaration;
-import org.openflexo.foundation.fml.parser.node.ANamedJavaImportImportDeclaration;
-import org.openflexo.foundation.fml.parser.node.APropertyDeclarationInnerConceptDeclaration;
-import org.openflexo.foundation.fml.parser.node.ASingleAnnotation;
-import org.openflexo.foundation.fml.parser.node.AValueAnnotation;
+import org.openflexo.foundation.fml.parser.node.AGetSetPropertyInnerConceptDecl;
+import org.openflexo.foundation.fml.parser.node.AJavaImportImportDecl;
+import org.openflexo.foundation.fml.parser.node.AJavaInnerConceptDecl;
+import org.openflexo.foundation.fml.parser.node.AModelDecl;
+import org.openflexo.foundation.fml.parser.node.ANamedJavaImportImportDecl;
+import org.openflexo.foundation.fml.parser.node.ASingleAnnotationAnnotation;
+import org.openflexo.foundation.fml.parser.node.AValueAnnotationAnnotation;
 import org.openflexo.foundation.fml.parser.node.Start;
 import org.openflexo.p2pp.RawSource;
 
@@ -162,100 +165,132 @@ public class MainSemanticsAnalyzer extends FMLSemanticsAnalyzer {
 	}
 
 	@Override
-	public void inAJavaImportImportDeclaration(AJavaImportImportDeclaration node) {
-		super.inAJavaImportImportDeclaration(node);
+	public void inAJavaImportImportDecl(AJavaImportImportDecl node) {
+		super.inAJavaImportImportDecl(node);
 		push(new JavaImportNode(node, this));
 	}
 
 	@Override
-	public void outAJavaImportImportDeclaration(AJavaImportImportDeclaration node) {
-		super.outAJavaImportImportDeclaration(node);
-		JavaImportNode returned = pop();
-		// System.out.println("Je cree un import depuis " + returned.getLastParsedFragment() + " which is ["
-		// + returned.getLastParsedFragment().getRawText() + "]");
-
+	public void outAJavaImportImportDecl(AJavaImportImportDecl node) {
+		super.outAJavaImportImportDecl(node);
+		pop();
 	}
 
 	@Override
-	public void inANamedJavaImportImportDeclaration(ANamedJavaImportImportDeclaration node) {
-		super.inANamedJavaImportImportDeclaration(node);
+	public void inANamedJavaImportImportDecl(ANamedJavaImportImportDecl node) {
+		super.inANamedJavaImportImportDecl(node);
 		push(new NamedJavaImportNode(node, this));
 	}
 
 	@Override
-	public void outANamedJavaImportImportDeclaration(ANamedJavaImportImportDeclaration node) {
-		super.outANamedJavaImportImportDeclaration(node);
+	public void outANamedJavaImportImportDecl(ANamedJavaImportImportDecl node) {
+		super.outANamedJavaImportImportDecl(node);
 		pop();
 	}
 
 	@Override
-	public void inAModelDeclaration(AModelDeclaration node) {
-		super.inAModelDeclaration(node);
+	public void inAModelDecl(AModelDecl node) {
+		super.inAModelDecl(node);
 		push(new VirtualModelNode(node, this));
-		System.out.println(">>> On entre dans le modele");
 	}
 
 	@Override
-	public void outAModelDeclaration(AModelDeclaration node) {
-		super.outAModelDeclaration(node);
+	public void outAModelDecl(AModelDecl node) {
+		super.outAModelDecl(node);
 		pop();
-		System.out.println("<<< On sort du modele");
 	}
 
 	@Override
-	public void inAConceptDeclaration(AConceptDeclaration node) {
-		super.inAConceptDeclaration(node);
-		// System.out.println("DEBUT Nouveau concept " + node.getIdentifier().getText());
+	public void inAConceptDecl(AConceptDecl node) {
+		super.inAConceptDecl(node);
 		push(new FlexoConceptNode(node, this));
 	}
 
 	@Override
-	public void outAConceptDeclaration(AConceptDeclaration node) {
-		super.outAConceptDeclaration(node);
+	public void outAConceptDecl(AConceptDecl node) {
+		super.outAConceptDecl(node);
 		pop();
 	}
 
 	@Override
-	public void inAPropertyDeclarationInnerConceptDeclaration(APropertyDeclarationInnerConceptDeclaration node) {
-		super.inAPropertyDeclarationInnerConceptDeclaration(node);
-		push(getPropertyFactory().makePropertyNode(node.getPropertyDeclaration()));
+	public void inAAbstractPropertyInnerConceptDecl(AAbstractPropertyInnerConceptDecl node) {
+		super.inAAbstractPropertyInnerConceptDecl(node);
+		push(getPropertyFactory().makeAbstractPropertyNode(node));
 	}
 
 	@Override
-	public void outAPropertyDeclarationInnerConceptDeclaration(APropertyDeclarationInnerConceptDeclaration node) {
-		super.outAPropertyDeclarationInnerConceptDeclaration(node);
+	public void outAAbstractPropertyInnerConceptDecl(AAbstractPropertyInnerConceptDecl node) {
+		super.outAAbstractPropertyInnerConceptDecl(node);
 		pop();
 	}
 
 	@Override
-	public void inABehaviourDeclarationInnerConceptDeclaration(ABehaviourDeclarationInnerConceptDeclaration node) {
-		super.inABehaviourDeclarationInnerConceptDeclaration(node);
-		push(getBehaviourFactory().makeBehaviourNode(node.getBehaviourDeclaration()));
+	public void inAJavaInnerConceptDecl(AJavaInnerConceptDecl node) {
+		super.inAJavaInnerConceptDecl(node);
+		push(getPropertyFactory().makeBasicPropertyNode(node));
 	}
 
 	@Override
-	public void outABehaviourDeclarationInnerConceptDeclaration(ABehaviourDeclarationInnerConceptDeclaration node) {
-		super.outABehaviourDeclarationInnerConceptDeclaration(node);
+	public void outAJavaInnerConceptDecl(AJavaInnerConceptDecl node) {
+		super.outAJavaInnerConceptDecl(node);
 		pop();
 	}
 
 	@Override
-	public void inASingleAnnotation(ASingleAnnotation node) {
-		super.inASingleAnnotation(node);
-		System.out.println("Tiens une annotation: " + node);
-		System.exit(-1);
+	public void inAExpressionPropertyInnerConceptDecl(AExpressionPropertyInnerConceptDecl node) {
+		super.inAExpressionPropertyInnerConceptDecl(node);
+		push(getPropertyFactory().makeExpressionPropertyNode(node));
 	}
 
 	@Override
-	public void inAValueAnnotation(AValueAnnotation node) {
-		super.inAValueAnnotation(node);
-		System.out.println("Tiens une value annotation: " + node);
+	public void outAExpressionPropertyInnerConceptDecl(AExpressionPropertyInnerConceptDecl node) {
+		super.outAExpressionPropertyInnerConceptDecl(node);
+		pop();
+	}
+
+	@Override
+	public void inAGetSetPropertyInnerConceptDecl(AGetSetPropertyInnerConceptDecl node) {
+		super.inAGetSetPropertyInnerConceptDecl(node);
+		push(getPropertyFactory().makeGetSetPropertyNode(node));
+	}
+
+	@Override
+	public void outAGetSetPropertyInnerConceptDecl(AGetSetPropertyInnerConceptDecl node) {
+		super.outAGetSetPropertyInnerConceptDecl(node);
+		pop();
+	}
+
+	@Override
+	public void inABehaviourDeclarationInnerConceptDecl(ABehaviourDeclarationInnerConceptDecl node) {
+		push(getBehaviourFactory().makeBehaviourNode(node.getBehaviourDecl()));
+	}
+
+	@Override
+	public void outABehaviourDeclarationInnerConceptDecl(ABehaviourDeclarationInnerConceptDecl node) {
+		pop();
+	}
+
+	@Override
+	public void inASingleAnnotationAnnotation(ASingleAnnotationAnnotation node) {
+		super.inASingleAnnotationAnnotation(node);
+		// TODO
+	}
+
+	@Override
+	public void outASingleAnnotationAnnotation(ASingleAnnotationAnnotation node) {
+		super.outASingleAnnotationAnnotation(node);
+		// TODO
+	}
+
+	@Override
+	public void inAValueAnnotationAnnotation(AValueAnnotationAnnotation node) {
+		super.inAValueAnnotationAnnotation(node);
 		push(new MetaDataNode(node, this));
 	}
 
 	@Override
-	public void outAValueAnnotation(AValueAnnotation node) {
-		super.outAValueAnnotation(node);
+	public void outAValueAnnotationAnnotation(AValueAnnotationAnnotation node) {
+		super.outAValueAnnotationAnnotation(node);
 		pop();
 	}
 

@@ -40,42 +40,29 @@ package org.openflexo.foundation.fml.parser.fmlnodes;
 
 import java.util.logging.Logger;
 
-import org.openflexo.foundation.fml.ExpressionProperty;
+import org.openflexo.foundation.fml.BasicProperty;
 import org.openflexo.foundation.fml.parser.MainSemanticsAnalyzer;
-import org.openflexo.foundation.fml.parser.node.AExpressionPropertyInnerConceptDecl;
+import org.openflexo.foundation.fml.parser.node.AIdentifierVariableDeclarator;
+import org.openflexo.foundation.fml.parser.node.AInitializerVariableDeclarator;
+import org.openflexo.foundation.fml.parser.node.AJavaInnerConceptDecl;
+import org.openflexo.foundation.fml.parser.node.PVariableDeclarator;
 import org.openflexo.p2pp.RawSource.RawSourceFragment;
 
 /**
- * 
- * <pre>
- * 	expression_property_declaration =
- *       {identifier} visibility? type [identifier]:identifier is [base_identifier]:identifier [additional_identifiers]:additional_identifier* semi |
- *       {expression} visibility? type [identifier]:identifier is [expression_value]:expression semi;
- * </pre>
- * 
  * @author sylvain
  * 
  */
-public class ExpressionPropertyNode extends FlexoPropertyNode<AExpressionPropertyInnerConceptDecl, ExpressionProperty<?>> {
+public abstract class BasicPropertyNode<T extends BasicProperty<?>> extends FlexoPropertyNode<AJavaInnerConceptDecl, T> {
 
-	private static final Logger logger = Logger.getLogger(ExpressionPropertyNode.class.getPackage().getName());
+	@SuppressWarnings("unused")
+	private static final Logger logger = Logger.getLogger(BasicPropertyNode.class.getPackage().getName());
 
-	public ExpressionPropertyNode(AExpressionPropertyInnerConceptDecl astNode, MainSemanticsAnalyzer analyser) {
+	public BasicPropertyNode(AJavaInnerConceptDecl astNode, MainSemanticsAnalyzer analyser) {
 		super(astNode, analyser);
 	}
 
-	public ExpressionPropertyNode(ExpressionProperty<?> property, MainSemanticsAnalyzer analyser) {
+	public BasicPropertyNode(T property, MainSemanticsAnalyzer analyser) {
 		super(property, analyser);
-	}
-
-	@Override
-	public ExpressionProperty<?> buildModelObjectFromAST(AExpressionPropertyInnerConceptDecl astNode) {
-		ExpressionProperty<?> returned = getFactory().newExpressionProperty();
-		returned.setVisibility(getVisibility(astNode.getVisibility()));
-		returned.setName(astNode.getIdentifier().getText());
-		returned.setDeclaredType(getTypeFactory().makeType(astNode.getType()));
-		returned.setExpression(makeBinding(astNode.getExpressionValue(), returned));
-		return returned;
 	}
 
 	@Override
@@ -84,14 +71,12 @@ public class ExpressionPropertyNode extends FlexoPropertyNode<AExpressionPropert
 
 		append(dynamicContents(() -> getVisibilityAsString(getModelObject().getVisibility()), SPACE), getVisibilityFragment());
 		append(dynamicContents(() -> serializeType(getModelObject().getType()), SPACE), getTypeFragment());
-		append(dynamicContents(() -> getModelObject().getName(), SPACE), getNameFragment());
-		append(staticContents("", "values", SPACE), getValuesFragment());
-		append(dynamicContents(() -> getModelObject().getExpression().toString()), getExpressionFragment());
+		append(dynamicContents(() -> getModelObject().getName()), getNameFragment());
 		append(staticContents(";"), getSemiFragment());
 	}
 
 	private RawSourceFragment getVisibilityFragment() {
-		if (getASTNode() != null) {
+		if (getASTNode() != null && getASTNode().getVisibility() != null) {
 			return getFragment(getASTNode().getVisibility());
 		}
 		return null;
@@ -106,21 +91,13 @@ public class ExpressionPropertyNode extends FlexoPropertyNode<AExpressionPropert
 
 	private RawSourceFragment getNameFragment() {
 		if (getASTNode() != null) {
-			return getFragment(getASTNode().getIdentifier());
-		}
-		return null;
-	}
-
-	private RawSourceFragment getValuesFragment() {
-		if (getASTNode() != null) {
-			return getFragment(getASTNode().getKwValues());
-		}
-		return null;
-	}
-
-	private RawSourceFragment getExpressionFragment() {
-		if (getASTNode() != null) {
-			return getFragment(getASTNode().getExpressionValue());
+			PVariableDeclarator variableDeclarator = getASTNode().getVariableDeclarator();
+			if (variableDeclarator instanceof AIdentifierVariableDeclarator) {
+				return getFragment(((AIdentifierVariableDeclarator) variableDeclarator).getIdentifier());
+			}
+			else if (variableDeclarator instanceof AInitializerVariableDeclarator) {
+				return getFragment(((AInitializerVariableDeclarator) variableDeclarator).getIdentifier());
+			}
 		}
 		return null;
 	}

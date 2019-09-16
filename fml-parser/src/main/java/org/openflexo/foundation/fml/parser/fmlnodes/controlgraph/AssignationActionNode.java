@@ -46,11 +46,8 @@ import org.openflexo.foundation.fml.editionaction.AssignationAction;
 import org.openflexo.foundation.fml.parser.AssignableActionFactory;
 import org.openflexo.foundation.fml.parser.ControlGraphFactory;
 import org.openflexo.foundation.fml.parser.node.AAssignmentStatementExpression;
-import org.openflexo.foundation.fml.parser.node.AExpressionAssignment;
 import org.openflexo.foundation.fml.parser.node.AFieldLeftHandSide;
-import org.openflexo.foundation.fml.parser.node.AIdentifierAssignment;
 import org.openflexo.foundation.fml.parser.node.AIdentifierLeftHandSide;
-import org.openflexo.foundation.fml.parser.node.PAssignment;
 import org.openflexo.foundation.fml.parser.node.PAssignmentOperator;
 import org.openflexo.foundation.fml.parser.node.PLeftHandSide;
 import org.openflexo.p2pp.PrettyPrintContext.Indentation;
@@ -88,26 +85,14 @@ public class AssignationActionNode extends AssignableActionNode<AAssignmentState
 		returned.setAssignation((DataBinding) extractLeft(returned));
 
 		// Right
-		PAssignment assignment = getASTNode().getAssignment();
-		if (assignment instanceof AExpressionAssignment) {
-			AssignableActionNode<?, ?> assignableActionNode = AssignableActionFactory
-					.makeAssignableActionNode(((AExpressionAssignment) assignment).getRight(), getAbstractAnalyser());
 
-			if (assignableActionNode != null) {
-				returned.setAssignableAction((AssignableAction) assignableActionNode.getModelObject());
-				addToChildren(assignableActionNode);
-			}
-		}
-		else if (assignment instanceof AIdentifierAssignment) {
-			InnerExpressionActionNode expressionNode = new InnerExpressionActionNode((AIdentifierAssignment) assignment,
-					getAbstractAnalyser());
-			expressionNode.deserialize();
-			returned.setAssignableAction((AssignableAction) expressionNode.getModelObject());
-			addToChildren(expressionNode);
-		}
+		AssignableActionNode<?, ?> assignableActionNode = AssignableActionFactory.makeAssignableActionNode(astNode.getRight(),
+				getAbstractAnalyser());
 
-		// Right
-		// returned.setAssignableAction((ExpressionAction) getFactory().newExpressionAction(extractRight(returned)));
+		if (assignableActionNode != null) {
+			returned.setAssignableAction((AssignableAction) assignableActionNode.getModelObject());
+			addToChildren(assignableActionNode);
+		}
 
 		return returned;
 	}
@@ -125,26 +110,14 @@ public class AssignationActionNode extends AssignableActionNode<AAssignmentState
 
 	private PLeftHandSide getLefthandSide() {
 		if (getASTNode() != null) {
-			PAssignment assignment = getASTNode().getAssignment();
-			if (assignment instanceof AExpressionAssignment) {
-				return ((AExpressionAssignment) assignment).getLeft();
-			}
-			else if (assignment instanceof AIdentifierAssignment) {
-				return ((AIdentifierAssignment) assignment).getLeft();
-			}
+			return getASTNode().getLeft();
 		}
 		return null;
 	}
 
 	private PAssignmentOperator getOperator() {
 		if (getASTNode() != null) {
-			PAssignment assignment = getASTNode().getAssignment();
-			if (assignment instanceof AExpressionAssignment) {
-				return ((AExpressionAssignment) assignment).getAssignmentOperator();
-			}
-			else if (assignment instanceof AIdentifierAssignment) {
-				return ((AIdentifierAssignment) assignment).getAssignmentOperator();
-			}
+			return getASTNode().getAssignmentOperator();
 		}
 		return null;
 	}
@@ -154,8 +127,7 @@ public class AssignationActionNode extends AssignableActionNode<AAssignmentState
 			return makeBinding((AFieldLeftHandSide) getLefthandSide(), bindable);
 		}
 		else if (getLefthandSide() instanceof AIdentifierLeftHandSide) {
-			return makeBinding(((AIdentifierLeftHandSide) getLefthandSide()).getIdentifier(),
-					((AIdentifierLeftHandSide) getLefthandSide()).getAdditionalIdentifiers(), bindable);
+			return makeBinding(((AIdentifierLeftHandSide) getLefthandSide()).getCompositeIdent(), bindable);
 		}
 		return null;
 	}
