@@ -1,0 +1,16 @@
+/**
+ * Testing structural properties
+ */
+
+use org.openflexo.foundation.fml.rt.FMLRTModelSlot as FMLRT;
+
+import java.lang.String;
+import java.util.List;
+import java.util.Map;
+
+model MyModel {
+	
+	int aComputedValue values a.path.to.a.computed.value; // A binding without any FML keyword
+	int aAnOtherValue values a.path.with.a.keyword; // 'with' is a reserved keyword
+
+}
