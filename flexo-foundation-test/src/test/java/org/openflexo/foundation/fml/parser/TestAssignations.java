@@ -58,7 +58,6 @@ import org.openflexo.foundation.fml.parser.fmlnodes.FlexoBehaviourNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.AddFlexoConceptInstanceNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.AssignationActionNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.ExpressionActionNode;
-import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.InnerExpressionActionNode;
 import org.openflexo.foundation.fml.rt.editionaction.AddFlexoConceptInstance;
 import org.openflexo.p2pp.P2PPNode;
 import org.openflexo.pamela.exceptions.ModelDefinitionException;
@@ -272,7 +271,7 @@ public class TestAssignations extends FMLParserTestCase {
 		assertEquals("j", expAction.getExpression().toString());
 
 		AssignationActionNode assignationNode = (AssignationActionNode) (P2PPNode) rootNode.getObjectNode(assignationAction);
-		InnerExpressionActionNode expressionNode = (InnerExpressionActionNode) (P2PPNode) rootNode.getObjectNode(expAction);
+		ExpressionActionNode expressionNode = (ExpressionActionNode) (P2PPNode) rootNode.getObjectNode(expAction);
 
 		assertEquals("(27:1)-(29:2)", behaviourNode.getLastParsedFragment().toString());
 		assertEquals("(26:1)-(27:0)", behaviourNode.getPrelude().toString());
@@ -311,7 +310,7 @@ public class TestAssignations extends FMLParserTestCase {
 		assertEquals("this.isa.binding", expAction.getExpression().toString());
 
 		AssignationActionNode assignationNode = (AssignationActionNode) (P2PPNode) rootNode.getObjectNode(assignationAction);
-		InnerExpressionActionNode expressionNode = (InnerExpressionActionNode) (P2PPNode) rootNode.getObjectNode(expAction);
+		ExpressionActionNode expressionNode = (ExpressionActionNode) (P2PPNode) rootNode.getObjectNode(expAction);
 
 		assertEquals("(31:1)-(33:2)", behaviourNode.getLastParsedFragment().toString());
 		assertEquals("(30:0)-(31:0)", behaviourNode.getPrelude().toString());

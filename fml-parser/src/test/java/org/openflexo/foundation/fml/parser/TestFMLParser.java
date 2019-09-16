@@ -73,13 +73,11 @@ import org.openflexo.toolbox.StringUtils;
  *
  */
 @RunWith(Parameterized.class)
-public class TestFMLParser /*extends FMLParserTestCase*/ {
+public class TestFMLParser {
 
 	@Parameterized.Parameters(name = "{1}")
 	public static Collection<Object[]> generateData() {
-		System.out.println("Prout");
-		System.out.println("hop: " + ResourceLocator.locateResource("NewFMLExamples"));
-		return Resources.getMatchingResource(ResourceLocator.locateResource("NewFMLExamples"), ".fml");
+		return Resources.getMatchingResource(ResourceLocator.locateResource("FMLExamples"), ".fml");
 	}
 
 	private final Resource fmlResource;
@@ -90,9 +88,9 @@ public class TestFMLParser /*extends FMLParserTestCase*/ {
 	}
 
 	@Test
-	public void testResource() throws ModelDefinitionException, ParseException, IOException {
+	public void parseFMLResource() throws ModelDefinitionException, ParseException, IOException {
 		// testFMLCompilationUnit(fmlResource);
-		System.out.println("On teste la resource " + fmlResource);
+		System.out.println("Parsing FML resource " + fmlResource);
 		FMLModelFactory fmlModelFactory = new FMLModelFactory(null, serviceManager);
 		FMLParser parser = new FMLParser();
 		FMLCompilationUnit compilationUnit = parser.parse(fmlResource.openInputStream(), fmlModelFactory);
