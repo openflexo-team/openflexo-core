@@ -43,9 +43,9 @@ model MyModel {
 	concept ConceptC {
 		
 		int aComputedValue = 0; // This is not an expression property, but a primitive with an init value
-		int aComputedValue is 1+1; // Always return 2
-		int aComputedValue is a.path.to.a.computed.value; // Compute that path
-		int anOtherComputedValue is a.path().to.a.computed.value(1,2,"foo"); // Compute that path
+		int aComputedValue values 1+1; // Always return 2
+		int aComputedValue values a.path.to.a.computed.value; // Compute that path
+		int anOtherComputedValue values a.path().to.a.computed.value(1,2,"foo"); // Compute that path
 	}
 
 	// Test AbstractProperty

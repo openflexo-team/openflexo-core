@@ -83,7 +83,7 @@ public class TestAnonymousCreationScheme extends FMLParserTestCase {
 
 		log("Initial version");
 
-		final Resource fmlFile = ResourceLocator.locateResource("NewFMLExamples/TestAnonymousCreationScheme.fml");
+		final Resource fmlFile = ResourceLocator.locateResource("FMLExamples/TestAnonymousCreationScheme.fml");
 
 		FMLCompilationUnit compilationUnit = testFMLCompilationUnit(fmlFile);
 

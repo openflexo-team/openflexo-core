@@ -93,7 +93,7 @@ public class TestAddFlexoConceptInstance extends FMLParserTestCase {
 	public void loadCompilationUnit() throws ParseException, ModelDefinitionException, IOException {
 		log("Initial version");
 
-		final Resource fmlFile = ResourceLocator.locateResource("NewFMLExamples/TestAddFlexoConceptInstance.fml");
+		final Resource fmlFile = ResourceLocator.locateResource("FMLExamples/TestAddFlexoConceptInstance.fml");
 
 		compilationUnit = testFMLCompilationUnit(fmlFile);
 		assertNotNull(rootNode = (FMLCompilationUnitNode) compilationUnit.getPrettyPrintDelegate());

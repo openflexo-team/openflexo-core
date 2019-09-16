@@ -67,7 +67,7 @@ public class TestFMLSemanticsAnalyzer extends FMLParserTestCase {
 
 	@Test
 	public void testBasicTypes() throws ParseException, ModelDefinitionException, IOException {
-		final Resource fmlFile = ResourceLocator.locateResource("NewFMLExamples/TestBasicTypes.fml");
+		final Resource fmlFile = ResourceLocator.locateResource("FMLExamples/TestBasicTypes.fml");
 		FMLCompilationUnit compilationUnit = parseFile(fmlFile);
 		VirtualModel virtualModel;
 		FlexoConcept conceptA;
@@ -88,7 +88,7 @@ public class TestFMLSemanticsAnalyzer extends FMLParserTestCase {
 
 	/*@Test
 	public void testTestProperties() throws ParseException, ModelDefinitionException {
-		final Resource fmlFile = ResourceLocator.locateResource("NewFMLExamples/TestProperties.fml");
+		final Resource fmlFile = ResourceLocator.locateResource("FMLExamples/TestProperties.fml");
 		FMLCompilationUnit compilationUnit = parseFile(fmlFile);
 		VirtualModel virtualModel;
 		FlexoConcept conceptA, conceptB, conceptC, conceptD, conceptE;
@@ -109,7 +109,7 @@ public class TestFMLSemanticsAnalyzer extends FMLParserTestCase {
 
 	/*@Test
 	public void testTestFMLDiagram() throws ParseException, ModelDefinitionException {
-		final Resource fmlFile = ResourceLocator.locateResource("NewFMLExamples/TestFMLDiagram.fml");
+		final Resource fmlFile = ResourceLocator.locateResource("FMLExamples/TestFMLDiagram.fml");
 		FMLCompilationUnit compilationUnit = parseFile(fmlFile);
 		VirtualModel virtualModel;
 		FlexoConcept myConceptGR;

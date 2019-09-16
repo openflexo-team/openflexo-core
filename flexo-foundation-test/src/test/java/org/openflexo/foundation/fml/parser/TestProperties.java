@@ -83,7 +83,7 @@ public class TestProperties extends FMLParserTestCase {
 
 		log("Initial version");
 
-		final Resource fmlFile = ResourceLocator.locateResource("NewFMLExamples/TestProperties.fml");
+		final Resource fmlFile = ResourceLocator.locateResource("FMLExamples/TestProperties.fml");
 
 		FMLCompilationUnit compilationUnit = testFMLCompilationUnit(fmlFile);
 

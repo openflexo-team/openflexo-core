@@ -83,7 +83,7 @@ public class TestBehaviours extends FMLParserTestCase {
 
 		log("Initial version");
 
-		final Resource fmlFile = ResourceLocator.locateResource("NewFMLExamples/TestBehaviours.fml");
+		final Resource fmlFile = ResourceLocator.locateResource("FMLExamples/TestBehaviours.fml");
 
 		FMLCompilationUnit compilationUnit = testFMLCompilationUnit(fmlFile);
 

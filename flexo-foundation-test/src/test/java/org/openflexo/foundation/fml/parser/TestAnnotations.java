@@ -75,7 +75,7 @@ public class TestAnnotations extends FMLParserTestCase {
 
 		log("Initial version");
 
-		final Resource fmlFile = ResourceLocator.locateResource("NewFMLExamples/TestAnnotations.fml");
+		final Resource fmlFile = ResourceLocator.locateResource("FMLExamples/TestAnnotations.fml");
 
 		FMLCompilationUnit compilationUnit = testFMLCompilationUnit(fmlFile);
 

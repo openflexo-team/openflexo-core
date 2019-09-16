@@ -95,7 +95,7 @@ public class TestAssignations extends FMLParserTestCase {
 	public void loadCompilationUnit() throws ParseException, ModelDefinitionException, IOException {
 		log("Initial version");
 
-		final Resource fmlFile = ResourceLocator.locateResource("NewFMLExamples/TestAssignations.fml");
+		final Resource fmlFile = ResourceLocator.locateResource("FMLExamples/TestAssignations.fml");
 
 		compilationUnit = testFMLCompilationUnit(fmlFile);
 		assertNotNull(rootNode = (FMLCompilationUnitNode) compilationUnit.getPrettyPrintDelegate());
