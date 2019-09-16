@@ -128,6 +128,11 @@ Helpers
     string_character = [input_character - ['"' + '\']] | escape_sequence;
 
 // *****************************************************************************************
+States
+  normal,
+  binding;
+
+// *****************************************************************************************
 Tokens
 
    // --------------------------------------------------------------------------------------
@@ -180,7 +185,7 @@ Tokens
    dollar = '$';
    dot = '.';
    dot_dot_dot = '...';
-   semi  = ';';
+   {normal,binding-> normal} semi  = ';';
 
    l_par = '(';
    r_par = ')';
@@ -194,40 +199,39 @@ Tokens
    // --------------------------------------------------------------------------------------
 
    // FML Keywords
-   kw_abstract = 'abstract';
-   kw_as = 'as';
-   kw_concept = 'concept';
-   kw_create = 'create';
-   kw_delete = 'delete';
-   kw_do = 'do';
-   kw_else = 'else';
-   kw_extends = 'extends';
-   kw_for = 'for';
-   kw_from = 'from';
-   kw_get = 'get';
-   kw_if = 'if';
-   kw_import = 'import';
-   kw_in = 'in';
-   kw_instanceof = 'instanceof';
-   kw_is = 'is';
-   kw_listen = 'listen';
-   kw_model = 'model';
-   kw_namespace = 'namespace';
-   kw_new = 'new';
-   kw_private = 'private';
-   kw_protected = 'protected';
-   kw_public = 'public';
-   kw_receive = 'receive';
-   kw_return = 'return';
-   kw_select = 'select';
-   kw_set = 'set';
-   kw_super = 'super';
-   kw_then = 'then';
-   kw_use = 'use';
-   kw_values = 'values';
-   kw_where = 'where';
-   kw_while = 'while';
-   kw_with = 'with';
+   {normal} kw_abstract = 'abstract';
+   {normal} kw_as = 'as';
+   {normal} kw_concept = 'concept';
+   {normal} kw_create = 'create';
+   {normal} kw_delete = 'delete';
+   {normal} kw_do = 'do';
+   {normal} kw_else = 'else';
+   {normal} kw_extends = 'extends';
+   {normal} kw_for = 'for';
+   {normal} kw_from = 'from';
+   {normal} kw_get = 'get';
+   {normal} kw_if = 'if';
+   {normal} kw_import = 'import';
+   {normal} kw_in = 'in';
+   {normal} kw_instanceof = 'instanceof';
+   {normal} kw_listen = 'listen';
+   {normal} kw_model = 'model';
+   {normal} kw_namespace = 'namespace';
+   {normal} kw_new = 'new';
+   {normal} kw_private = 'private';
+   {normal} kw_protected = 'protected';
+   {normal} kw_public = 'public';
+   {normal} kw_receive = 'receive';
+   {normal} kw_return = 'return';
+   {normal} kw_select = 'select';
+   {normal} kw_set = 'set';
+   {normal} kw_super = 'super';
+   {normal} kw_then = 'then';
+   {normal} kw_use = 'use';
+   {normal -> binding} kw_values = 'values';
+   {normal} kw_where = 'where';
+   {normal} kw_while = 'while';
+   {normal} kw_with = 'with';
 
    // Types
    ty_boolean = 'boolean';
