@@ -599,9 +599,13 @@ Productions
    post_decr_exp = postfix_exp minus_minus;
 
    primary =
+       {primary_no_id}          primary_no_id
+     | {identifier}             composite_ident
+     ;
+
+   primary_no_id =
        {literal}                literal
      | {expression}             l_par expression r_par
-     | {identifier}             composite_ident
      | {field}                  field_access
      | {method}                 method_invocation
      | {fml_action_expression}  fml_action_exp
@@ -643,6 +647,7 @@ Productions
    field_access =
        {super} kw_super dot identifier
      | {reference_super} [identifier1]:composite_ident [dot1]:dot kw_super [dot2]:dot [identifier2]:identifier
+     | {primary} primary_no_id dot identifier
      ;
 
    literal =
