@@ -38,25 +38,26 @@
 
 package org.openflexo.foundation.fml;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collection;
 
-import org.junit.Ignore;
+import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.openflexo.foundation.FlexoException;
+import org.junit.runners.MethodSorters;
+import org.junit.runners.Parameterized;
+import org.openflexo.foundation.fml.parser.ParseException;
 import org.openflexo.foundation.fml.rm.CompilationUnitResource;
 import org.openflexo.foundation.fml.rm.CompilationUnitResourceImpl;
 import org.openflexo.foundation.fml.rm.CompilationUnitResourceImpl.PersistencyStrategy;
-import org.openflexo.foundation.resource.ResourceLoadingCancelledException;
+import org.openflexo.foundation.resource.SaveResourceException;
 import org.openflexo.foundation.test.OpenflexoTestCase;
-import org.openflexo.test.OrderedRunner;
-import org.openflexo.test.TestOrder;
+import org.openflexo.pamela.exceptions.ModelDefinitionException;
 
 /**
  * This unit test is intended to test ViewPoint loading
@@ -64,118 +65,77 @@ import org.openflexo.test.TestOrder;
  * @author sylvain
  * 
  */
-@RunWith(OrderedRunner.class)
-@Ignore
+@RunWith(Parameterized.class)
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class TestFMLMigration extends OpenflexoTestCase {
 
-	/**
-	 * Instanciate compound test resource center
-	 * 
-	 * @throws IOException
-	 */
-	@Test
-	@TestOrder(1)
-	public void testinstanciateTestServiceManager() throws IOException {
+	@Parameterized.Parameters(name = "{1}")
+	public static Collection<Object[]> generateData() {
 		instanciateTestServiceManager();
 
 		System.out.println("ServiceManager= " + serviceManager);
 		assertNotNull(serviceManager);
 
-	}
+		Collection<Object[]> returned = new ArrayList<>();
 
-	/**
-	 * Test the loading
-	 * 
-	 * @throws FlexoException
-	 * @throws ResourceLoadingCancelledException
-	 * @throws FileNotFoundException
-	 */
-	@Test
-	@TestOrder(2)
-	public void testLoadViewPoint() throws FileNotFoundException, ResourceLoadingCancelledException, FlexoException {
-
-		VirtualModelLibrary vpLib = serviceManager.getVirtualModelLibrary();
-
-		System.out.println("VPLibrary=" + vpLib);
-		assertNotNull(vpLib);
-
-		System.out.println("All vp= " + vpLib.getCompilationUnitResources());
-
-		assertEquals(0, vpLib.getLoadedCompilationUnits().size());
-
-		CompilationUnitResource viewpointAResource = vpLib
-				.getCompilationUnitResource("http://openflexo.org/test/TestResourceCenter/TestViewPointA.fml");
-
-		System.out.println("viewpointAResource=" + viewpointAResource.getCompilationUnit());
-		assertNotNull(viewpointAResource.getCompilationUnit());
-
-		System.out.println(viewpointAResource.getCompilationUnit().getFMLPrettyPrint());
-
-		FMLCompilationUnit initialXMLVersion = viewpointAResource.getCompilationUnit();
-
-		((CompilationUnitResourceImpl) viewpointAResource).setPersistencyStrategy(PersistencyStrategy.FML);
-		// viewpointAResource.save();
-		viewpointAResource.unloadResourceData(false);
-
-		assertNull(viewpointAResource.getLoadedResourceData());
-
-		FMLCompilationUnit fmlVersion = viewpointAResource.getCompilationUnit();
-
-		assertTrue(initialXMLVersion.equalsObject(fmlVersion));
-
-		// System.exit(-1);
-
-		VirtualModel viewPoint = viewpointAResource.getCompilationUnit().getVirtualModel();
-
-		System.out.println("On charge le TestVirtualModel");
-		VirtualModel virtualModel = viewPoint.getVirtualModelNamed("TestVirtualModel");
-		System.out.println("virtualModel=" + virtualModel);
-
-		if (virtualModel.getFlexoConcept("FlexoConceptC") != null) {
-			System.out.println("Et maintenant le concept FlexoConceptC");
-			FlexoConcept conceptC = virtualModel.getFlexoConcept("FlexoConceptC");
-			System.out.println("parents:" + conceptC.getParentFlexoConcepts());
-			System.out.println("parents:" + conceptC._getParentFlexoConceptsList());
+		for (CompilationUnitResource compilationUnitResource : serviceManager.getResourceManager()
+				.getRegisteredResources(CompilationUnitResource.class)) {
+			Object[] o = new Object[2];
+			o[0] = compilationUnitResource;
+			o[1] = compilationUnitResource.getURI();
+			returned.add(o);
 		}
 
-		// System.exit(-1);
+		return returned;
+	}
 
-		assertNotNull(virtualModel);
+	private CompilationUnitResource fmlResource;
+	private FMLCompilationUnit initialXMLVersion;
+	private FMLCompilationUnit reloadedFMLVersion;
 
-		FlexoConcept flexoConceptA = virtualModel.getFlexoConcept("FlexoConceptA");
-		System.out.println("flexoConcept=" + flexoConceptA);
-		assertNotNull(flexoConceptA);
+	public TestFMLMigration(CompilationUnitResource fmlResource, String name) {
+		System.out.println("********* TestFMLMigration " + fmlResource + " name=" + name);
+		this.fmlResource = fmlResource;
+	}
 
-		FlexoConcept flexoConceptB = virtualModel.getFlexoConcept("FlexoConceptB");
-		System.out.println("flexoConceptB=" + flexoConceptB);
-		assertNotNull(flexoConceptB);
+	@Test
+	public void test() throws ModelDefinitionException, ParseException, IOException, SaveResourceException {
+		step1_loadInitialXMLVersion();
+		step2_prettyPrintInitialXMLVersion();
+		step3_saveAsFML();
+		step4_reloadFMLVersion();
+		step5_compareBothVersions();
+	}
 
-		FlexoConcept flexoConceptC = virtualModel.getFlexoConcept("FlexoConceptC");
-		System.out.println("flexoConceptC=" + flexoConceptC);
-		assertNotNull(flexoConceptC);
+	public void step1_loadInitialXMLVersion() throws ModelDefinitionException, ParseException, IOException, SaveResourceException {
+		System.out.println("Loading XML version for " + fmlResource);
+		initialXMLVersion = fmlResource.getCompilationUnit();
+		assertNotNull(initialXMLVersion);
+		System.out.println("XML:");
+		System.out.println(initialXMLVersion.getFMLModelFactory().stringRepresentation(initialXMLVersion.getVirtualModel()));
+	}
 
-		FlexoConcept flexoConceptD = virtualModel.getFlexoConcept("FlexoConceptD");
-		System.out.println("flexoConceptD=" + flexoConceptD);
-		assertNotNull(flexoConceptD);
+	public void step2_prettyPrintInitialXMLVersion() throws ModelDefinitionException, ParseException, IOException, SaveResourceException {
+		System.out.println("Pretty-print FML version for " + fmlResource);
+		System.out.println(initialXMLVersion.getFMLPrettyPrint());
+	}
 
-		FlexoConcept flexoConceptE = virtualModel.getFlexoConcept("FlexoConceptE");
-		System.out.println("flexoConceptE=" + flexoConceptE);
-		assertNotNull(flexoConceptE);
+	public void step3_saveAsFML() throws ModelDefinitionException, ParseException, IOException, SaveResourceException {
+		System.out.println("Saving FML version for " + fmlResource);
+		((CompilationUnitResourceImpl) fmlResource).setPersistencyStrategy(PersistencyStrategy.FML);
+		fmlResource.save();
+		fmlResource.unloadResourceData(false);
+		assertNull(fmlResource.getLoadedResourceData());
+	}
 
-		assertEquals(3, flexoConceptE.getParentFlexoConcepts().size());
-		assertEquals(flexoConceptA, flexoConceptE.getParentFlexoConcepts().get(0));
-		assertEquals(flexoConceptB, flexoConceptE.getParentFlexoConcepts().get(1));
-		assertEquals(flexoConceptC, flexoConceptE.getParentFlexoConcepts().get(2));
+	public void step4_reloadFMLVersion() throws ModelDefinitionException, ParseException, IOException, SaveResourceException {
+		System.out.println("Reload FML version for " + fmlResource);
+		reloadedFMLVersion = fmlResource.getCompilationUnit();
+	}
 
-		assertEquals(1, flexoConceptA.getChildFlexoConcepts().size());
-		assertEquals(flexoConceptE, flexoConceptA.getChildFlexoConcepts().get(0));
-		assertEquals(3, flexoConceptB.getChildFlexoConcepts().size());
-		assertEquals(flexoConceptC, flexoConceptB.getChildFlexoConcepts().get(0));
-		assertEquals(flexoConceptD, flexoConceptB.getChildFlexoConcepts().get(1));
-		assertEquals(flexoConceptE, flexoConceptB.getChildFlexoConcepts().get(2));
-		assertEquals(1, flexoConceptC.getChildFlexoConcepts().size());
-		assertEquals(flexoConceptE, flexoConceptC.getChildFlexoConcepts().get(0));
-
+	public void step5_compareBothVersions() throws ModelDefinitionException, ParseException, IOException, SaveResourceException {
+		System.out.println("Compare both versions for " + fmlResource);
+		assertTrue(initialXMLVersion.equalsObject(reloadedFMLVersion));
 	}
 
 }
