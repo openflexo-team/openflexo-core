@@ -712,9 +712,15 @@ public abstract class CompilationUnitResourceImpl extends PamelaResourceImpl<FML
 	}
 
 	private FMLCompilationUnit loadFromFML() throws ParseException, IOException {
-		FMLCompilationUnit returned = getFMLParser().parse(getInputStream(), getFactory());
-		returned.setResource(this);
-		return returned;
+		try {
+			FMLCompilationUnit returned = getFMLParser().parse(getInputStream(), getFactory());
+			returned.setResource(this);
+			return returned;
+		} catch (ParseException e) {
+			System.out.println("ParseException while reading " + getIODelegate().getSerializationArtefact());
+			throw e;
+		}
+
 		/*
 		
 			if (getIODelegate() instanceof DirectoryBasedIODelegate && getFMLParser() != null) {
