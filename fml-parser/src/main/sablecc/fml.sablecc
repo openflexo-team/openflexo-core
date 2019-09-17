@@ -346,18 +346,13 @@ Productions
    // --------------------------------------------------------------------------------------
    // Model declaration
    // --------------------------------------------------------------------------------------
-   model_decl = [annotations]:annotation* visibility? kw_abstract? kw_model identifier super_clause? l_brc  [inner_model_declaration]:inner_model_decl* r_brc;
+   model_decl = [annotations]:annotation* visibility? kw_abstract? kw_model identifier super_clause? l_brc  [inner_model_declaration]:inner_concept_decl* r_brc;
 
    super_clause = kw_extends super_type_list;
 
    super_type_list =
        {one}  [identifier]:composite_ident
      | {many} super_type_list comma [identifier]:composite_ident
-     ;
-
-   inner_model_decl =
-       {concept_declaration} concept_decl
-     | {inner_concept_declaration} inner_concept_decl
      ;
 
    concept_decl = [annotations]:annotation* visibility? kw_abstract? kw_concept identifier super_clause? l_brc [inner_concept_declaration]:inner_concept_decl* r_brc;
@@ -373,6 +368,7 @@ Productions
      // get set property declaration
      | {get_set_property}    visibility? type identifier l_brc get_decl set_decl ? r_brc semi
      | {behaviour_declaration} behaviour_decl
+     | {concept_declaration} concept_decl
      ;
 
    get_decl = type kw_get l_par r_par flexo_behaviour_body;
