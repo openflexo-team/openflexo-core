@@ -81,7 +81,7 @@ public class TestFMLMigration extends OpenflexoTestCase {
 		for (CompilationUnitResource compilationUnitResource : serviceManager.getResourceManager()
 				.getRegisteredResources(CompilationUnitResource.class)) {
 			Object[] o = new Object[2];
-			o[0] = compilationUnitResource;
+			o[0] = new TestInfo(compilationUnitResource);
 			o[1] = compilationUnitResource.getURI();
 			returned.add(o);
 		}
@@ -89,53 +89,64 @@ public class TestFMLMigration extends OpenflexoTestCase {
 		return returned;
 	}
 
-	private CompilationUnitResource fmlResource;
-	private FMLCompilationUnit initialXMLVersion;
-	private FMLCompilationUnit reloadedFMLVersion;
+	private TestInfo testInfo;
 
-	public TestFMLMigration(CompilationUnitResource fmlResource, String name) {
-		System.out.println("********* TestFMLMigration " + fmlResource + " name=" + name);
-		this.fmlResource = fmlResource;
+	static class TestInfo {
+		private CompilationUnitResource fmlResource;
+		private FMLCompilationUnit initialXMLVersion;
+		private FMLCompilationUnit reloadedFMLVersion;
+
+		public TestInfo(CompilationUnitResource fmlResource) {
+			this.fmlResource = fmlResource;
+		}
+	}
+
+	public TestFMLMigration(TestInfo testInfo, String name) {
+		System.out.println("********* TestFMLMigration " + testInfo.fmlResource + " name=" + name);
+		this.testInfo = testInfo;
 	}
 
 	@Test
-	public void test() throws ModelDefinitionException, ParseException, IOException, SaveResourceException {
-		step1_loadInitialXMLVersion();
-		step2_prettyPrintInitialXMLVersion();
-		step3_saveAsFML();
-		step4_reloadFMLVersion();
-		step5_compareBothVersions();
-	}
-
 	public void step1_loadInitialXMLVersion() throws ModelDefinitionException, ParseException, IOException, SaveResourceException {
-		System.out.println("Loading XML version for " + fmlResource);
-		initialXMLVersion = fmlResource.getCompilationUnit();
-		assertNotNull(initialXMLVersion);
+		System.out.println("Loading XML version for " + testInfo.fmlResource);
+		testInfo.initialXMLVersion = testInfo.fmlResource.getCompilationUnit();
+		assertNotNull(testInfo.initialXMLVersion);
 		System.out.println("XML:");
-		System.out.println(initialXMLVersion.getFMLModelFactory().stringRepresentation(initialXMLVersion.getVirtualModel()));
+		System.out.println(
+				testInfo.initialXMLVersion.getFMLModelFactory().stringRepresentation(testInfo.initialXMLVersion.getVirtualModel()));
 	}
 
+	@Test
 	public void step2_prettyPrintInitialXMLVersion() throws ModelDefinitionException, ParseException, IOException, SaveResourceException {
-		System.out.println("Pretty-print FML version for " + fmlResource);
-		System.out.println(initialXMLVersion.getFMLPrettyPrint());
+		System.out.println("Pretty-print FML version for " + testInfo.fmlResource);
+		System.out.println(testInfo.initialXMLVersion.getFMLPrettyPrint());
 	}
 
+	@Test
 	public void step3_saveAsFML() throws ModelDefinitionException, ParseException, IOException, SaveResourceException {
-		System.out.println("Saving FML version for " + fmlResource);
-		((CompilationUnitResourceImpl) fmlResource).setPersistencyStrategy(PersistencyStrategy.FML);
-		fmlResource.save();
-		fmlResource.unloadResourceData(false);
-		assertNull(fmlResource.getLoadedResourceData());
+		System.out.println("Saving FML version for " + testInfo.fmlResource);
+		((CompilationUnitResourceImpl) testInfo.fmlResource).setPersistencyStrategy(PersistencyStrategy.FML);
+		testInfo.fmlResource.save();
+		testInfo.fmlResource.unloadResourceData(false);
+		assertNull(testInfo.fmlResource.getLoadedResourceData());
 	}
 
+	@Test
 	public void step4_reloadFMLVersion() throws ModelDefinitionException, ParseException, IOException, SaveResourceException {
-		System.out.println("Reload FML version for " + fmlResource);
-		reloadedFMLVersion = fmlResource.getCompilationUnit();
+		System.out.println("Reload FML version for " + testInfo.fmlResource);
+		testInfo.reloadedFMLVersion = testInfo.fmlResource.getCompilationUnit();
 	}
 
+	@Test
 	public void step5_compareBothVersions() throws ModelDefinitionException, ParseException, IOException, SaveResourceException {
-		System.out.println("Compare both versions for " + fmlResource);
-		assertTrue(initialXMLVersion.equalsObject(reloadedFMLVersion));
+		System.out.println("Compare both versions for " + testInfo.fmlResource);
+
+		System.out.println("D'un cote: ");
+		System.out.println(testInfo.initialXMLVersion.getNormalizedFML());
+		System.out.println("De l'autre: ");
+		System.out.println(testInfo.reloadedFMLVersion.getNormalizedFML());
+
+		assertTrue(testInfo.initialXMLVersion.equalsObject(testInfo.reloadedFMLVersion));
 	}
 
 }
