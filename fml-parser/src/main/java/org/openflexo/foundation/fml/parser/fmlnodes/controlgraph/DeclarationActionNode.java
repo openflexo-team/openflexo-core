@@ -48,6 +48,7 @@ import org.openflexo.foundation.fml.parser.node.AIdentifierVariableDeclarator;
 import org.openflexo.foundation.fml.parser.node.AInitializerVariableDeclarator;
 import org.openflexo.foundation.fml.parser.node.AVariableDeclarationBlockStatement;
 import org.openflexo.foundation.fml.parser.node.PVariableDeclarator;
+import org.openflexo.p2pp.PrettyPrintContext.Indentation;
 import org.openflexo.p2pp.RawSource.RawSourceFragment;
 
 /**
@@ -94,9 +95,8 @@ public class DeclarationActionNode extends AssignableActionNode<AVariableDeclara
 		append(dynamicContents(() -> serializeType(getModelObject().getType()), SPACE), getTypeFragment());
 		append(dynamicContents(() -> getModelObject().getVariableName()), getNameFragment());
 		when(() -> hasInitializer())
-			.thenAppend(staticContents("="), getAssignOperatorFragment())
-			.thenAppend(dynamicContents(() -> ((ExpressionAction) getModelObject().getAssignableAction()).getExpression().toString()),
-				getAssignmentFragment());
+			.thenAppend(staticContents(SPACE,"=",SPACE), getAssignOperatorFragment())
+			.thenAppend(childContents("", () -> getModelObject().getAssignableAction(), "", Indentation.DoNotIndent));
 		append(staticContents(";"), getSemiFragment());
 		// @formatter:on	
 
@@ -124,7 +124,7 @@ public class DeclarationActionNode extends AssignableActionNode<AVariableDeclara
 
 	private boolean hasInitializer() {
 		if (getModelObject() != null) {
-			logger.warning("Il manque ici le code qui detecte l'initialiseur !!!!");
+			return getModelObject().getAssignableAction() != null;
 		}
 		else if (getASTNode() != null) {
 			PVariableDeclarator variableDeclarator = getASTNode().getVariableDeclarator();
@@ -146,7 +146,7 @@ public class DeclarationActionNode extends AssignableActionNode<AVariableDeclara
 	}
 
 	private RawSourceFragment getAssignOperatorFragment() {
-		if (hasInitializer()) {
+		if (hasInitializer() && getASTNode() != null) {
 			return getFragment(((AInitializerVariableDeclarator) getASTNode().getVariableDeclarator()).getAssign());
 		}
 		return null;

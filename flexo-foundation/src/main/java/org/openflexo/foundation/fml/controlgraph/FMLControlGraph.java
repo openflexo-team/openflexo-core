@@ -91,7 +91,7 @@ public abstract interface FMLControlGraph extends FlexoConceptObject, FMLPrettyP
 	// @PropertyIdentifier(type = Type.class)
 	// public static final String TYPE_KEY = "type";
 
-	@Getter(value = OWNER_KEY)
+	@Getter(value = OWNER_KEY, isDerived = true)
 	@CloningStrategy(StrategyType.IGNORE)
 	public FMLControlGraphOwner getOwner();
 

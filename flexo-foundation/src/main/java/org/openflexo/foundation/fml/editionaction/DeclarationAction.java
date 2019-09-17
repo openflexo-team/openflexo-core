@@ -43,6 +43,7 @@ import java.util.logging.Logger;
 
 import org.openflexo.connie.type.TypeUtils;
 import org.openflexo.foundation.FlexoException;
+import org.openflexo.foundation.fml.FMLMigration;
 import org.openflexo.foundation.fml.FMLRepresentationContext;
 import org.openflexo.foundation.fml.FMLRepresentationContext.FMLRepresentationOutput;
 import org.openflexo.foundation.fml.binding.ControlGraphBindingModel;
@@ -77,7 +78,8 @@ public interface DeclarationAction<T> extends AbstractAssignationAction<T> {
 	@Setter(VARIABLE_NAME_KEY)
 	public void setVariableName(String variableName);
 
-	@Getter(value = DECLARED_TYPE_KEY, isStringConvertable = true)
+	@FMLMigration("ignoreForEquality=true to be removed")
+	@Getter(value = DECLARED_TYPE_KEY, isStringConvertable = true, ignoreForEquality = true)
 	@XMLAttribute
 	public Type getDeclaredType();
 
