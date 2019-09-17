@@ -41,7 +41,6 @@ package org.openflexo.foundation.fml.parser.fmlnodes;
 import org.openflexo.foundation.fml.FlexoBehaviour;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoProperty;
-import org.openflexo.foundation.fml.parser.FMLObjectNode;
 import org.openflexo.foundation.fml.parser.MainSemanticsAnalyzer;
 import org.openflexo.foundation.fml.parser.node.AConceptDecl;
 import org.openflexo.foundation.fml.parser.node.ASuperClause;
@@ -52,7 +51,7 @@ import org.openflexo.p2pp.RawSource.RawSourceFragment;
  * @author sylvain
  * 
  */
-public class FlexoConceptNode extends FMLObjectNode<AConceptDecl, FlexoConcept, MainSemanticsAnalyzer> {
+public class FlexoConceptNode extends AbstractFlexoConceptNode<AConceptDecl, FlexoConcept> {
 
 	public FlexoConceptNode(AConceptDecl astNode, MainSemanticsAnalyzer analyser) {
 		super(astNode, analyser);
@@ -67,6 +66,7 @@ public class FlexoConceptNode extends FMLObjectNode<AConceptDecl, FlexoConcept, 
 		FlexoConcept returned = getFactory().newFlexoConcept();
 		returned.setName(astNode.getIdentifier().getText());
 		returned.setVisibility(getVisibility(astNode.getVisibility()));
+		buildParentConcepts(returned, astNode.getSuperClause());
 		return returned;
 	}
 
@@ -119,7 +119,8 @@ public class FlexoConceptNode extends FMLObjectNode<AConceptDecl, FlexoConcept, 
 		appendStaticContents("}", LINE_SEPARATOR, getRBrcFragment());*/
 	}
 
-	private RawSourceFragment getVisibilityFragment() {
+	@Override
+	protected RawSourceFragment getVisibilityFragment() {
 		if (getASTNode() != null && getASTNode().getVisibility() != null) {
 			return getFragment(getASTNode().getVisibility());
 		}
@@ -133,35 +134,40 @@ public class FlexoConceptNode extends FMLObjectNode<AConceptDecl, FlexoConcept, 
 		return null;
 	}
 
-	private RawSourceFragment getNameFragment() {
+	@Override
+	protected RawSourceFragment getNameFragment() {
 		if (getASTNode() != null) {
 			return getFragment(getASTNode().getIdentifier());
 		}
 		return null;
 	}
 
-	private RawSourceFragment getLBrcFragment() {
+	@Override
+	protected RawSourceFragment getLBrcFragment() {
 		if (getASTNode() != null) {
 			return getFragment(getASTNode().getLBrc());
 		}
 		return null;
 	}
 
-	private RawSourceFragment getRBrcFragment() {
+	@Override
+	protected RawSourceFragment getRBrcFragment() {
 		if (getASTNode() != null) {
 			return getFragment(getASTNode().getRBrc());
 		}
 		return null;
 	}
 
-	private RawSourceFragment getSuperClauseFragment() {
+	@Override
+	protected RawSourceFragment getSuperClauseFragment() {
 		if (getASTNode() != null && getASTNode().getSuperClause() != null) {
 			return getFragment(getASTNode().getSuperClause());
 		}
 		return null;
 	}
 
-	private RawSourceFragment getExtendsFragment() {
+	@Override
+	protected RawSourceFragment getExtendsFragment() {
 		if (getASTNode() != null && getASTNode().getSuperClause() != null) {
 			ASuperClause superClause = (ASuperClause) getASTNode().getSuperClause();
 			return getFragment(superClause.getKwExtends());
@@ -169,7 +175,8 @@ public class FlexoConceptNode extends FMLObjectNode<AConceptDecl, FlexoConcept, 
 		return null;
 	}
 
-	private RawSourceFragment getSuperTypeListFragment() {
+	@Override
+	protected RawSourceFragment getSuperTypeListFragment() {
 		if (getASTNode() != null && getASTNode().getSuperClause() != null) {
 			ASuperClause superClause = (ASuperClause) getASTNode().getSuperClause();
 			return getFragment(superClause.getSuperTypeList());

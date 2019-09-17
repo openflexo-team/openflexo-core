@@ -43,9 +43,9 @@ import org.openflexo.foundation.fml.FlexoBehaviour;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoProperty;
 import org.openflexo.foundation.fml.VirtualModel;
-import org.openflexo.foundation.fml.parser.FMLObjectNode;
 import org.openflexo.foundation.fml.parser.MainSemanticsAnalyzer;
 import org.openflexo.foundation.fml.parser.node.AModelDecl;
+import org.openflexo.foundation.fml.parser.node.ASuperClause;
 import org.openflexo.p2pp.PrettyPrintContext.Indentation;
 import org.openflexo.p2pp.RawSource.RawSourceFragment;
 
@@ -53,7 +53,7 @@ import org.openflexo.p2pp.RawSource.RawSourceFragment;
  * @author sylvain
  * 
  */
-public class VirtualModelNode extends FMLObjectNode<AModelDecl, VirtualModel, MainSemanticsAnalyzer> {
+public class VirtualModelNode extends AbstractFlexoConceptNode<AModelDecl, VirtualModel> {
 
 	public VirtualModelNode(AModelDecl astNode, MainSemanticsAnalyzer analyser) {
 		super(astNode, analyser);
@@ -68,6 +68,7 @@ public class VirtualModelNode extends FMLObjectNode<AModelDecl, VirtualModel, Ma
 		VirtualModel returned = getFactory().newVirtualModel();
 		returned.setName(astNode.getIdentifier().getText());
 		returned.setVisibility(getVisibility(astNode.getVisibility()));
+		buildParentConcepts(returned, astNode.getSuperClause());
 		return returned;
 	}
 
@@ -90,6 +91,12 @@ public class VirtualModelNode extends FMLObjectNode<AModelDecl, VirtualModel, Ma
 		append(dynamicContents(() -> getVisibilityAsString(getModelObject().getVisibility()), SPACE), getVisibilityFragment());
 		append(staticContents("","model",SPACE), getModelFragment());
 		append(dynamicContents(() -> getModelObject().getName()),getNameFragment());
+		
+		when(() -> getModelObject().getParentFlexoConcepts().size()>0)
+		.thenAppend(staticContents(SPACE,"extends",SPACE), getExtendsFragment())
+		.thenAppend(dynamicContents(() -> getModelObject().getParentFlexoConceptsDeclaration()),getSuperTypeListFragment())
+		.elseAppend(staticContents(""), getSuperClauseFragment());
+
 		append(staticContents(SPACE, "{", LINE_SEPARATOR), getLBrcFragment());
 		append(childrenContents("", () -> getModelObject().getFlexoProperties(), LINE_SEPARATOR, Indentation.Indent,
 				FlexoProperty.class));
@@ -116,7 +123,8 @@ public class VirtualModelNode extends FMLObjectNode<AModelDecl, VirtualModel, Ma
 		appendStaticContents("}", LINE_SEPARATOR, getRBrcFragment());*/
 	}
 
-	private RawSourceFragment getVisibilityFragment() {
+	@Override
+	protected RawSourceFragment getVisibilityFragment() {
 		if (getASTNode() != null && getASTNode().getVisibility() != null) {
 			return getFragment(getASTNode().getVisibility());
 		}
@@ -130,24 +138,54 @@ public class VirtualModelNode extends FMLObjectNode<AModelDecl, VirtualModel, Ma
 		return null;
 	}
 
-	private RawSourceFragment getNameFragment() {
+	@Override
+	protected RawSourceFragment getNameFragment() {
 		if (getASTNode() != null) {
 			return getFragment(getASTNode().getIdentifier());
 		}
 		return null;
 	}
 
-	private RawSourceFragment getLBrcFragment() {
+	@Override
+	protected RawSourceFragment getLBrcFragment() {
 		if (getASTNode() != null) {
 			return getFragment(getASTNode().getLBrc());
 		}
 		return null;
 	}
 
-	private RawSourceFragment getRBrcFragment() {
+	@Override
+	protected RawSourceFragment getRBrcFragment() {
 		if (getASTNode() != null) {
 			return getFragment(getASTNode().getRBrc());
 		}
 		return null;
 	}
+
+	@Override
+	protected RawSourceFragment getSuperClauseFragment() {
+		if (getASTNode() != null && getASTNode().getSuperClause() != null) {
+			return getFragment(getASTNode().getSuperClause());
+		}
+		return null;
+	}
+
+	@Override
+	protected RawSourceFragment getExtendsFragment() {
+		if (getASTNode() != null && getASTNode().getSuperClause() != null) {
+			ASuperClause superClause = (ASuperClause) getASTNode().getSuperClause();
+			return getFragment(superClause.getKwExtends());
+		}
+		return null;
+	}
+
+	@Override
+	protected RawSourceFragment getSuperTypeListFragment() {
+		if (getASTNode() != null && getASTNode().getSuperClause() != null) {
+			ASuperClause superClause = (ASuperClause) getASTNode().getSuperClause();
+			return getFragment(superClause.getSuperTypeList());
+		}
+		return null;
+	}
+
 }

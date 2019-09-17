@@ -397,4 +397,12 @@ public abstract class FMLObjectNode<N extends Node, T extends FMLPrettyPrintable
 		return "undefinedBehaviour";
 	}
 
+	protected void throwIssue(String errorMessage) {
+		throwIssue(errorMessage);
+	}
+
+	protected void throwIssue(String errorMessage, RawSourceFragment fragment) {
+		logger.warning("Compilation issue: " + errorMessage + " " + (fragment != null ? fragment.getStartPosition() : getStartPosition()));
+	}
+
 }
