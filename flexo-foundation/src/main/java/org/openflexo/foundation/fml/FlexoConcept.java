@@ -477,7 +477,7 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 	@Setter(PARENT_FLEXO_CONCEPTS_LIST_KEY)
 	public void _setParentFlexoConceptsList(String conceptsList);
 
-	@Getter(value = PARENT_FLEXO_CONCEPTS_KEY, cardinality = Cardinality.LIST, inverse = CHILD_FLEXO_CONCEPTS_KEY)
+	@Getter(value = PARENT_FLEXO_CONCEPTS_KEY, cardinality = Cardinality.LIST, inverse = CHILD_FLEXO_CONCEPTS_KEY, ignoreForEquality = true)
 	public List<FlexoConcept> getParentFlexoConcepts();
 
 	@Setter(PARENT_FLEXO_CONCEPTS_KEY)
