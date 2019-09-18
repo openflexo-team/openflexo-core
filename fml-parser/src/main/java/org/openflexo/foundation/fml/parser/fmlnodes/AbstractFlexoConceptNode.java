@@ -83,14 +83,14 @@ public abstract class AbstractFlexoConceptNode<N extends Node, T extends FlexoCo
 		super.finalizeDeserialization();
 		if (parentTypes != null) {
 			for (FlexoConceptInstanceType parentType : parentTypes) {
-				if (parentType.getFlexoConcept() != null) {
+				if (parentType != null && parentType.getFlexoConcept() != null) {
 					try {
 						getModelObject().addToParentFlexoConcepts(parentType.getFlexoConcept());
 					} catch (InconsistentFlexoConceptHierarchyException e) {
 						throwIssue("Inconsistent concept hierarchy", getSuperTypeListFragment());
 					}
 				}
-				else {
+				else if (parentType != null) {
 					throwIssue("Parent concept " + parentType.getSerializationRepresentation() + " not found", getSuperTypeListFragment());
 				}
 			}
@@ -100,7 +100,13 @@ public abstract class AbstractFlexoConceptNode<N extends Node, T extends FlexoCo
 	private void buildParentConcepts(FlexoConcept returned, PSuperTypeList superTypeList) {
 		parentTypes = new ArrayList<>();
 		for (PCompositeIdent pCompositeIdent : extractIdentifiers(superTypeList)) {
-			parentTypes.add(getTypeFactory().lookupConceptNamed(getText(pCompositeIdent)));
+			FlexoConceptInstanceType parentType = getTypeFactory().lookupConceptNamed(getText(pCompositeIdent));
+			if (parentType != null) {
+				parentTypes.add(parentType);
+			}
+			else {
+				throwIssue("Undefined parent concept " + getText(pCompositeIdent), getSuperTypeListFragment());
+			}
 		}
 	}
 
