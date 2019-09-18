@@ -42,6 +42,7 @@ import java.util.logging.Logger;
 
 import org.openflexo.foundation.fml.GetProperty;
 import org.openflexo.foundation.fml.GetSetProperty;
+import org.openflexo.foundation.fml.controlgraph.FMLControlGraph;
 import org.openflexo.foundation.fml.parser.ControlGraphFactory;
 import org.openflexo.foundation.fml.parser.MainSemanticsAnalyzer;
 import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.ControlGraphNode;
@@ -130,7 +131,7 @@ public class GetSetPropertyNode extends FlexoPropertyNode<AGetSetPropertyInnerCo
 		append(staticContents("("), getGetLParFragment());
 		append(staticContents(")"), getGetRParFragment());
 		append(staticContents(SPACE, "{", ""), getGetLBrcFragment());
-		append(childContents(LINE_SEPARATOR, () -> getModelObject().getGetControlGraph(), LINE_SEPARATOR, Indentation.Indent));
+		append(childContents(LINE_SEPARATOR, () -> getGetControlGraph(), LINE_SEPARATOR, Indentation.Indent));
 		append(staticContents(LINE_SEPARATOR+DOUBLE_SPACE, "}", ""), getGetRBrcFragment());
 
 		when(() -> isSettable())
@@ -140,13 +141,27 @@ public class GetSetPropertyNode extends FlexoPropertyNode<AGetSetPropertyInnerCo
 			.thenAppend(dynamicContents(() -> ((GetSetProperty<?>)getModelObject()).getValueVariableName()), getSetVariableValueFragment())
 			.thenAppend(staticContents(")"), getSetRParFragment())
 			.thenAppend(staticContents(SPACE, "{", ""), getSetLBrcFragment())
-			.thenAppend(childContents(LINE_SEPARATOR, () -> ((GetSetProperty<?>)getModelObject()).getSetControlGraph(), LINE_SEPARATOR, Indentation.Indent))
+			.thenAppend(childContents(LINE_SEPARATOR, () -> getSetControlGraph(), LINE_SEPARATOR, Indentation.Indent))
 			.thenAppend(staticContents(LINE_SEPARATOR+DOUBLE_SPACE, "}", ""), getSetRBrcFragment());
 	
 		append(staticContents(LINE_SEPARATOR, "}", ""), getRBrcFragment());
 
 		append(staticContents(";"), getSemiFragment());
 		// @formatter:on
+	}
+
+	private FMLControlGraph getGetControlGraph() {
+		if (getModelObject() != null) {
+			return getModelObject().getGetControlGraph();
+		}
+		return null;
+	}
+
+	private FMLControlGraph getSetControlGraph() {
+		if (getModelObject() instanceof GetSetProperty) {
+			return ((GetSetProperty<?>) getModelObject()).getSetControlGraph();
+		}
+		return null;
 	}
 
 	protected boolean isSettable() {
@@ -251,35 +266,35 @@ public class GetSetPropertyNode extends FlexoPropertyNode<AGetSetPropertyInnerCo
 	}
 
 	private RawSourceFragment getSetFragment() {
-		if (getASTNode() != null) {
+		if (getASTNode() != null && getASTNode().getSetDecl() != null) {
 			return getFragment(((ASetDecl) getASTNode().getSetDecl()).getKwSet());
 		}
 		return null;
 	}
 
 	private RawSourceFragment getSetTypeFragment() {
-		if (getASTNode() != null) {
+		if (getASTNode() != null && getASTNode().getSetDecl() != null) {
 			return getFragment(((ASetDecl) getASTNode().getSetDecl()).getType());
 		}
 		return null;
 	}
 
 	private RawSourceFragment getSetVariableValueFragment() {
-		if (getASTNode() != null) {
+		if (getASTNode() != null && getASTNode().getSetDecl() != null) {
 			return getFragment(((ASetDecl) getASTNode().getSetDecl()).getIdentifier());
 		}
 		return null;
 	}
 
 	private RawSourceFragment getSetLParFragment() {
-		if (getASTNode() != null) {
+		if (getASTNode() != null && getASTNode().getSetDecl() != null) {
 			return getFragment(((ASetDecl) getASTNode().getSetDecl()).getLPar());
 		}
 		return null;
 	}
 
 	private RawSourceFragment getSetRParFragment() {
-		if (getASTNode() != null) {
+		if (getASTNode() != null && getASTNode().getSetDecl() != null) {
 			return getFragment(((ASetDecl) getASTNode().getSetDecl()).getRPar());
 		}
 		return null;
