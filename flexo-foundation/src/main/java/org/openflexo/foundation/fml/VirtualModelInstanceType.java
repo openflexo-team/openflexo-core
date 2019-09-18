@@ -92,7 +92,9 @@ public class VirtualModelInstanceType extends FlexoConceptInstanceType {
 	@Override
 	public String simpleRepresentation() {
 		if (flexoConcept == null) {
-			return "UndefinedVirtualModelInstanceType";
+			if (getLastPath() != null) {
+				return getLastPath();
+			}
 		}
 		return super.simpleRepresentation();
 	}

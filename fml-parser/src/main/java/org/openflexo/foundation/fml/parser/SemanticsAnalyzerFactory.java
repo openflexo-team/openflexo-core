@@ -38,6 +38,8 @@
 
 package org.openflexo.foundation.fml.parser;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.FlexoServiceManager;
@@ -46,6 +48,9 @@ import org.openflexo.foundation.fml.FMLModelFactory;
 import org.openflexo.foundation.fml.FMLTechnologyAdapter;
 import org.openflexo.foundation.fml.FlexoProperty;
 import org.openflexo.foundation.fml.VirtualModel;
+import org.openflexo.foundation.fml.parser.node.Node;
+import org.openflexo.p2pp.RawSource.RawSourceFragment;
+import org.openflexo.toolbox.ChainedCollection;
 
 /**
  * Handle {@link FlexoProperty} in the FML parser<br>
@@ -96,4 +101,42 @@ public abstract class SemanticsAnalyzerFactory {
 	public FMLTechnologyAdapter getFMLTechnologyAdapter() {
 		return getServiceManager().getTechnologyAdapterService().getTechnologyAdapter(FMLTechnologyAdapter.class);
 	}
+
+	/**
+	 * Return fragment matching supplied node in AST
+	 * 
+	 * @param token
+	 * @return
+	 */
+	public RawSourceFragment getFragment(Node node) {
+		return analyzer.getFragmentManager().retrieveFragment(node);
+	}
+
+	/**
+	 * Return fragment matching supplied nodes in AST
+	 * 
+	 * @param token
+	 * @return
+	 */
+	public RawSourceFragment getFragment(Node node, Node otherNode) {
+		return getFragment(node, Collections.singletonList(otherNode));
+	}
+
+	/**
+	 * Return fragment matching supplied nodes in AST
+	 * 
+	 * @param token
+	 * @return
+	 */
+	public RawSourceFragment getFragment(Node node, List<? extends Node> otherNodes) {
+		ChainedCollection<Node> collection = new ChainedCollection<>();
+		collection.add(node);
+		collection.add(otherNodes);
+		return analyzer.getFragmentManager().getFragment(collection);
+	}
+
+	public String getText(Node node) {
+		return getFragment(node).getRawText();
+	}
+
 }

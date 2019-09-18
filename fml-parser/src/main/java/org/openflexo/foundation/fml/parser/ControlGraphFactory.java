@@ -6,10 +6,12 @@ import java.util.logging.Logger;
 
 import org.openflexo.foundation.fml.controlgraph.FMLControlGraph;
 import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.AssignationActionNode;
+import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.ConditionalNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.ControlGraphNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.DeclarationActionNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.EmptyControlGraphNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.EmptyReturnStatementNode;
+import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.FetchRequestNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.LogActionNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.ReturnStatementNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.SequenceNode;
@@ -27,6 +29,7 @@ import org.openflexo.foundation.fml.parser.node.ALogActionFmlActionExp;
 import org.openflexo.foundation.fml.parser.node.AMethodInvocationStatementExpression;
 import org.openflexo.foundation.fml.parser.node.AReturnEmptyStatementWithoutTrailingSubstatement;
 import org.openflexo.foundation.fml.parser.node.AReturnStatementWithoutTrailingSubstatement;
+import org.openflexo.foundation.fml.parser.node.ASelectActionFmlActionExp;
 import org.openflexo.foundation.fml.parser.node.AVariableDeclarationBlockStatement;
 import org.openflexo.foundation.fml.parser.node.AWhileStatement;
 import org.openflexo.foundation.fml.parser.node.Node;
@@ -274,12 +277,25 @@ public class ControlGraphFactory extends FMLSemanticsAnalyzer {
 	@Override
 	public void inAIfSimpleStatement(AIfSimpleStatement node) {
 		super.inAIfSimpleStatement(node);
+		push(new ConditionalNode(node, this));
+	}
+
+	@Override
+	public void outAIfSimpleStatement(AIfSimpleStatement node) {
+		super.outAIfSimpleStatement(node);
+		pop();
 	}
 
 	@Override
 	public void inAIfElseStatement(AIfElseStatement node) {
-		// TODO Auto-generated method stub
 		super.inAIfElseStatement(node);
+		push(new ConditionalNode(node, this));
+	}
+
+	@Override
+	public void outAIfElseStatement(AIfElseStatement node) {
+		super.outAIfElseStatement(node);
+		pop();
 	}
 
 	@Override
@@ -403,6 +419,18 @@ public class ControlGraphFactory extends FMLSemanticsAnalyzer {
 	@Override
 	public void outALogActionFmlActionExp(ALogActionFmlActionExp node) {
 		super.outALogActionFmlActionExp(node);
+		pop();
+	}
+
+	@Override
+	public void inASelectActionFmlActionExp(ASelectActionFmlActionExp node) {
+		super.inASelectActionFmlActionExp(node);
+		push(new FetchRequestNode(node, this));
+	}
+
+	@Override
+	public void outASelectActionFmlActionExp(ASelectActionFmlActionExp node) {
+		super.outASelectActionFmlActionExp(node);
 		pop();
 	}
 

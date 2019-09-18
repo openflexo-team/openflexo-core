@@ -69,6 +69,7 @@ import org.openflexo.foundation.fml.parser.node.AFloatPrimitiveType;
 import org.openflexo.foundation.fml.parser.node.AGtTypeArguments;
 import org.openflexo.foundation.fml.parser.node.AIntPrimitiveType;
 import org.openflexo.foundation.fml.parser.node.AModelDecl;
+import org.openflexo.foundation.fml.parser.node.ANamedUriImportImportDecl;
 import org.openflexo.foundation.fml.parser.node.APrimitiveType;
 import org.openflexo.foundation.fml.parser.node.AReferenceType;
 import org.openflexo.foundation.fml.parser.node.AReferenceTypeArgument;
@@ -79,6 +80,7 @@ import org.openflexo.foundation.fml.parser.node.AUshrTypeArguments;
 import org.openflexo.foundation.fml.parser.node.AVoidType;
 import org.openflexo.foundation.fml.parser.node.Node;
 import org.openflexo.foundation.fml.parser.node.PAdditionalIdentifier;
+import org.openflexo.foundation.fml.parser.node.PCompositeIdent;
 import org.openflexo.foundation.fml.parser.node.PPrimitiveType;
 import org.openflexo.foundation.fml.parser.node.PReferenceType;
 import org.openflexo.foundation.fml.parser.node.PType;
@@ -147,6 +149,14 @@ public class TypeFactory extends SemanticsAnalyzerFactory {
 			}
 		}
 		return returned.toString();
+	}
+
+	public String makeFullQualifiedIdentifier(PCompositeIdent compositeIdentifier) {
+		if (compositeIdentifier instanceof ACompositeIdent) {
+			return makeFullQualifiedIdentifier(((ACompositeIdent) compositeIdentifier).getIdentifier(),
+					((ACompositeIdent) compositeIdentifier).getAdditionalIdentifiers());
+		}
+		return null;
 	}
 
 	public Type makeType(ACompositeIdent compositeIdentifier) {
@@ -328,6 +338,17 @@ public class TypeFactory extends SemanticsAnalyzerFactory {
 	}
 
 	/**
+	 * Try to find FlexoConcept with supplied compositeIdentifier, with a semantics compatible with loading life-cyle of underlying
+	 * VirtualModel
+	 * 
+	 * @param typeName
+	 * @return
+	 */
+	public FlexoConceptInstanceType lookupConceptNamed(PCompositeIdent compositeIdentifier) {
+		return lookupConceptNamed(makeFullQualifiedIdentifier(compositeIdentifier));
+	}
+
+	/**
 	 * Try to find FlexoConcept with supplied name, with a semantics compatible with loading life-cyle of underlying VirtualModel
 	 * 
 	 * @param typeName
@@ -384,13 +405,15 @@ public class TypeFactory extends SemanticsAnalyzerFactory {
 		StringTokenizer st = new StringTokenizer(relativeURI, ".");
 		if (st.hasMoreTokens()) {
 			VirtualModel vm = tryToLookupVirtualModel(st.nextToken());
-			while (st.hasMoreTokens()) {
-				String next = st.nextToken();
-				if (current == null) {
-					current = vm.getFlexoConcept(next);
-				}
-				else {
-					current = current.getEmbeddedFlexoConcept(next);
+			if (vm != null) {
+				while (st.hasMoreTokens()) {
+					String next = st.nextToken();
+					if (current == null) {
+						current = vm.getFlexoConcept(next);
+					}
+					else {
+						current = current.getEmbeddedFlexoConcept(next);
+					}
 				}
 			}
 		}
@@ -399,14 +422,20 @@ public class TypeFactory extends SemanticsAnalyzerFactory {
 
 	class ConceptRetriever extends DepthFirstAdapter {
 
-		private String conceptName;
+		private String fullQualifiedConceptName;
+		private List<String> fullQualifiedConceptNamePath;
 		private Stack<Node> nodes;
 		private String relativeURI;
 		private boolean found = false;
 		private FlexoConceptInstanceType type;
 
 		public ConceptRetriever(String conceptName) {
-			this.conceptName = conceptName;
+			this.fullQualifiedConceptName = conceptName;
+			fullQualifiedConceptNamePath = new ArrayList<String>();
+			StringTokenizer st = new StringTokenizer(conceptName, ".");
+			while (st.hasMoreTokens()) {
+				fullQualifiedConceptNamePath.add(st.nextToken());
+			}
 			nodes = new Stack<>();
 			getAnalyzer().getRootNode().apply(ConceptRetriever.this);
 		}
@@ -449,7 +478,7 @@ public class TypeFactory extends SemanticsAnalyzerFactory {
 			super.inAModelDecl(node);
 			if (!found) {
 				nodes.push(node);
-				if (conceptName.equals(node.getIdentifier().getText())) {
+				if (fullQualifiedConceptName.equals(node.getIdentifier().getText())) {
 					found();
 				}
 			}
@@ -468,7 +497,7 @@ public class TypeFactory extends SemanticsAnalyzerFactory {
 			super.inAConceptDecl(node);
 			if (!found) {
 				nodes.push(node);
-				if (conceptName.equals(node.getIdentifier().getText())) {
+				if (fullQualifiedConceptName.equals(node.getIdentifier().getText())) {
 					found();
 				}
 			}
@@ -482,5 +511,19 @@ public class TypeFactory extends SemanticsAnalyzerFactory {
 			}
 		}
 
+		@Override
+		public void inANamedUriImportImportDecl(ANamedUriImportImportDecl node) {
+			super.inANamedUriImportImportDecl(node);
+			if (fullQualifiedConceptNamePath.size() > 0 && fullQualifiedConceptNamePath.get(0).equals(node.getName().getText())) {
+				found = true;
+				// TODO: implement this properly: search right type etc...
+				if (fullQualifiedConceptNamePath.size() == 1) {
+					type = new VirtualModelInstanceType(node.getObject().toString(), VIRTUAL_MODEL_INSTANCE_TYPE_FACTORY);
+				}
+				else {
+					type = new FlexoConceptInstanceType(node.getObject().toString(), FLEXO_CONCEPT_INSTANCE_TYPE_FACTORY);
+				}
+			}
+		}
 	}
 }

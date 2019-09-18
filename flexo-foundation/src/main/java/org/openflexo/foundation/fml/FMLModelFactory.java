@@ -92,6 +92,8 @@ import org.openflexo.foundation.fml.rt.editionaction.MatchCondition;
 import org.openflexo.foundation.fml.rt.editionaction.MatchFlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.editionaction.MatchingCriteria;
 import org.openflexo.foundation.fml.rt.editionaction.SelectFlexoConceptInstance;
+import org.openflexo.foundation.fml.rt.editionaction.SelectUniqueFlexoConceptInstance;
+import org.openflexo.foundation.fml.rt.editionaction.SelectUniqueVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.editionaction.SelectVirtualModelInstance;
 import org.openflexo.foundation.fml.ta.FMLModelSlot;
 import org.openflexo.foundation.resource.PamelaResourceImpl.IgnoreLoadingEdits;
@@ -479,8 +481,16 @@ public class FMLModelFactory extends ModelFactory implements PamelaResourceModel
 		return newInstance(SelectFlexoConceptInstance.class);
 	}
 
+	public SelectUniqueFlexoConceptInstance<?> newSelectUniqueFlexoConceptInstance() {
+		return newInstance(SelectUniqueFlexoConceptInstance.class);
+	}
+
 	public SelectVirtualModelInstance<?> newSelectVirtualModelInstance() {
 		return newInstance(SelectVirtualModelInstance.class);
+	}
+
+	public SelectUniqueVirtualModelInstance<?> newSelectUniqueVirtualModelInstance() {
+		return newInstance(SelectUniqueVirtualModelInstance.class);
 	}
 
 	public FlexoConcept newFlexoConcept() {

@@ -1,0 +1,43 @@
+/**
+ * Testing statements
+ */
+
+use org.openflexo.foundation.fml.rt.FMLRTModelSlot as FMLRT;
+
+import ["http://some_uri/AnOtherModel.fml"] as AnOtherModel; // Import FML model addressed by specified URI
+
+model MyModel {
+	
+	concept MyConcept {
+		String name;
+	}
+	
+	testSelectConcept() {
+		select MyConcept from (this);
+		select MyConcept from (this) where (selected.name = "toto");
+		select MyConcept from (this) where (selected.name = "toto", selected.name != "titi");
+		select MyConcept from (this) where (selected.name == "toto" && selected.name != "toto");
+		select MyConcept from (this) where (selected.name == "toto" || selected.name == "titi");
+	}
+	
+	testSelectUniqueConcept() {
+		select unique MyConcept from (this);
+		select unique MyConcept from (this) where (selected.name = "toto");
+		select unique MyConcept from (this) where (selected.name = "toto", selected.name != "titi");
+		select unique MyConcept from (this) where (selected.name == "toto" && selected.name != "toto");
+		select unique MyConcept from (this) where (selected.name == "toto" || selected.name == "titi");
+	}
+	
+	testSelectVirtualModel() {
+		select MyModel from (container);
+	}
+	
+	testSelectExternalVirtualModel() {
+		select AnOtherModel from (container.container);
+	}
+	
+	testSelectExternalFlexoConcept() {
+		select AnOtherModel.AConcept from (instanceOfAnOtherModel);
+	}
+	
+}

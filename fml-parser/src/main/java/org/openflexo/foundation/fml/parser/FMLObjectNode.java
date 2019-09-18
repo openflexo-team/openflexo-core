@@ -66,8 +66,10 @@ import org.openflexo.foundation.fml.JavaRole;
 import org.openflexo.foundation.fml.PrimitiveRole;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.Visibility;
+import org.openflexo.foundation.fml.controlgraph.ConditionalAction;
 import org.openflexo.foundation.fml.controlgraph.EmptyControlGraph;
 import org.openflexo.foundation.fml.controlgraph.Sequence;
+import org.openflexo.foundation.fml.editionaction.AbstractFetchRequest;
 import org.openflexo.foundation.fml.editionaction.AssignationAction;
 import org.openflexo.foundation.fml.editionaction.DeclarationAction;
 import org.openflexo.foundation.fml.editionaction.ExpressionAction;
@@ -87,9 +89,11 @@ import org.openflexo.foundation.fml.parser.fmlnodes.PrimitiveRoleNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.VirtualModelNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.AddFlexoConceptInstanceNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.AssignationActionNode;
+import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.ConditionalNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.DeclarationActionNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.EmptyControlGraphNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.ExpressionActionNode;
+import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.FetchRequestNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.LogActionNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.ReturnStatementNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.SequenceNode;
@@ -280,11 +284,17 @@ public abstract class FMLObjectNode<N extends Node, T extends FMLPrettyPrintable
 		if (object instanceof ReturnStatement) {
 			return (P2PPNode<?, C>) new ReturnStatementNode((ReturnStatement) object, getControlGraphFactory());
 		}
+		if (object instanceof ConditionalAction) {
+			return (P2PPNode<?, C>) new ConditionalNode((ConditionalAction) object, getControlGraphFactory());
+		}
 		if (object instanceof AddFlexoConceptInstance) {
 			return (P2PPNode<?, C>) new AddFlexoConceptInstanceNode((AddFlexoConceptInstance) object, getControlGraphFactory());
 		}
 		if (object instanceof LogAction) {
 			return (P2PPNode<?, C>) new LogActionNode((LogAction) object, getControlGraphFactory());
+		}
+		if (object instanceof AbstractFetchRequest) {
+			return new FetchRequestNode((AbstractFetchRequest) object, getControlGraphFactory());
 		}
 		System.err.println("Not supported: " + object);
 		Thread.dumpStack();

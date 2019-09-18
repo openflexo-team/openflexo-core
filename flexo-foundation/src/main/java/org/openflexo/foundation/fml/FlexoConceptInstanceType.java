@@ -190,11 +190,28 @@ public class FlexoConceptInstanceType implements TechnologySpecificType<FMLTechn
 		return getFlexoConcept() != null && getFlexoConcept().isAssignableFrom(((FlexoConceptInstance) object).getFlexoConcept());
 	}
 
+	protected String getLastPath() {
+		if (conceptURI != null) {
+			String returned = conceptURI;
+			if (returned.contains("/")) {
+				returned = returned.substring(returned.lastIndexOf("/") + 1);
+			}
+			if (returned.contains("#")) {
+				returned = returned.substring(returned.lastIndexOf("#"));
+			}
+			if (returned.endsWith(".fml")) {
+				returned = returned.substring(0, returned.length() - 4);
+			}
+			return returned;
+		}
+		return null;
+	}
+
 	@Override
 	public String simpleRepresentation() {
 		if (flexoConcept == null) {
-			if (conceptURI != null) {
-				return "UndefinedFlexoConceptInstanceType<" + conceptURI + ">";
+			if (getLastPath() != null) {
+				return getLastPath();
 			}
 			return "UndefinedFlexoConceptInstanceType";
 		}

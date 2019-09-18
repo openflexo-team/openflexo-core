@@ -1,0 +1,15 @@
+/**
+ * Testing statements
+ */
+
+use org.openflexo.foundation.fml.rt.FMLRTModelSlot as FMLRT;
+
+model MyModel {
+	
+	// Testing logs
+	testLogs() {
+		log("Hello world!");
+		log("Hello"+"world!");
+	}
+	
+}
