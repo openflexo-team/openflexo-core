@@ -215,6 +215,7 @@ Tokens
    {normal} kw_in = 'in';
    {normal} kw_instanceof = 'instanceof';
    {normal} kw_listen = 'listen';
+   {normal} kw_log = 'log';
    {normal} kw_model = 'model';
    {normal} kw_namespace = 'namespace';
    {normal} kw_new = 'new';
@@ -618,6 +619,7 @@ Productions
      | {ta_edition_action}      [ta_id]:identifier colon_colon [edition_action]:identifier fml_parameters in_clause? from_clause? //FD remove ? on fml_parameters
      | {delete_action}          kw_delete l_par expression r_par from_clause?
      | {select_action}          kw_select [concept_name]:identifier from_clause where_clause?
+     | {log_action}             kw_log l_par expression r_par
      ;
 
    type_arguments_or_diamond =
