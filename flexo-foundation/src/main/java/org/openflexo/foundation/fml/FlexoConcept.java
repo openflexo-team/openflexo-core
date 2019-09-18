@@ -492,7 +492,7 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 	// Used in FML pettry-print
 	public String getParentFlexoConceptsDeclaration();
 
-	@Getter(value = CHILD_FLEXO_CONCEPTS_KEY, cardinality = Cardinality.LIST/*, inverse = PARENT_FLEXO_CONCEPTS_KEY*/)
+	@Getter(value = CHILD_FLEXO_CONCEPTS_KEY, cardinality = Cardinality.LIST, isDerived = true/*, inverse = PARENT_FLEXO_CONCEPTS_KEY*/)
 	// @XMLElement(context = "Child")
 	public List<FlexoConcept> getChildFlexoConcepts();
 

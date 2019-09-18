@@ -97,7 +97,7 @@ public abstract interface FlexoProperty<T> extends FlexoConceptObject, FMLPretty
 	public static final String DESCRIPTION_KEY = "description";
 
 	@Override
-	@Getter(value = FLEXO_CONCEPT_KEY /*, inverse = FlexoConcept.FLEXO_PROPERTIES_KEY*/)
+	@Getter(value = FLEXO_CONCEPT_KEY, isDerived = true /*, inverse = FlexoConcept.FLEXO_PROPERTIES_KEY*/)
 	@CloningStrategy(StrategyType.IGNORE)
 	public FlexoConcept getFlexoConcept();
 
