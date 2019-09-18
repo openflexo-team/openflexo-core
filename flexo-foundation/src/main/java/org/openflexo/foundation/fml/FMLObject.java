@@ -264,6 +264,30 @@ public interface FMLObject extends FlexoObject, Bindable, InnerResourceData<FMLC
 			}
 		}
 
+		public <T> T getMetaData(String key, Class<T> type) {
+			if (getMetaData(key) != null) {
+				return getMetaData(key).getValueAs(type);
+			}
+			return null;
+		}
+
+		public <T> void setMetaData(String key, T value, Class<T> type) {
+			if (value != null) {
+				if (getMetaData(key) != null) {
+					getMetaData(key).setValueAs(value, type);
+				}
+				else {
+					FMLMetaData newMD = getFMLModelFactory().newMetaData(key, value, type);
+					addToMetaData(newMD);
+				}
+			}
+			else {
+				if (getMetaData(key) != null) {
+					removeFromMetaData(getMetaData(key));
+				}
+			}
+		}
+
 		@Override
 		public boolean hasDescription() {
 			return StringUtils.isNotEmpty(getDescription());
