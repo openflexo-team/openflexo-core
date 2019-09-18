@@ -303,9 +303,6 @@ public interface FlexoBehaviour extends FlexoBehaviourObject, Function, FMLContr
 
 		protected static final Logger logger = FlexoLogger.getLogger(FlexoBehaviour.class.getPackage().getName());
 
-		private String name;
-		private String label;
-
 		private int width = 800;
 		private int height = 600;
 
@@ -410,15 +407,15 @@ public interface FlexoBehaviour extends FlexoBehaviourObject, Function, FMLContr
 
 		@Override
 		public String getLabel() {
-			if (label == null || StringUtils.isEmpty(label) || label.equals(name)) {
+			if (StringUtils.isEmpty(getMetaData(LABEL_KEY, String.class)) || getMetaData(LABEL_KEY, String.class).equals(getName())) {
 				return getName();
 			}
-			return label;
+			return getMetaData(LABEL_KEY, String.class);
 		}
 
 		@Override
 		public void setLabel(String label) {
-			this.label = label;
+			setMetaData(LABEL_KEY, label, String.class);
 		}
 
 		@Override
