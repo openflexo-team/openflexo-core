@@ -61,7 +61,7 @@ import org.openflexo.pamela.annotations.XMLAttribute;
 import org.openflexo.pamela.validation.ValidationIssue;
 
 /**
- * A parameter used to parameterize a FML behaviour call
+ * An instance of a parameter used to parameterize a FML behaviour call
  * 
  * @author sylvain
  *

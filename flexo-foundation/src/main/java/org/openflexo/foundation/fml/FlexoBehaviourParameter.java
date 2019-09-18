@@ -69,7 +69,7 @@ import org.openflexo.pamela.annotations.XMLElement;
 import org.openflexo.toolbox.StringUtils;
 
 /**
- * Represents a parameter of a {@link FlexoBehaviour}
+ * Represents a parameter definition of a {@link FlexoBehaviour}
  * 
  * @author sylvain
  * 
