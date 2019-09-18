@@ -14,7 +14,7 @@
     </GetControlGraph_ReturnStatement>
   </GetSetProperty>
   <PrimitiveRole id="FLX-18" primitiveType="String" cloningStrategy="Clone" cardinality="ZeroOne" name="myValue" userID="FLX" flexoID="18" />
-  <CreationScheme id="FLX-23" name="create" width="800" label="create" height="600" userID="FLX" flexoID="23">
+  <CreationScheme id="FLX-23" name="createNew" width="800" label="create_new" height="600" userID="FLX" flexoID="23">
     <BehaviourControlGraph_AssignationAction id="FLX-26" assign="myValue" userID="FLX" flexoID="26">
       <AssignableAction_ExpressionAction id="FLX-25" expression="&quot;Hello world !&quot;" userID="FLX" flexoID="25" />
     </BehaviourControlGraph_AssignationAction>

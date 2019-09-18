@@ -42,12 +42,16 @@ import java.util.logging.Logger;
 
 import org.openflexo.foundation.fml.GetProperty;
 import org.openflexo.foundation.fml.GetSetProperty;
-import org.openflexo.foundation.fml.controlgraph.FMLControlGraph;
+import org.openflexo.foundation.fml.parser.ControlGraphFactory;
 import org.openflexo.foundation.fml.parser.MainSemanticsAnalyzer;
+import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.ControlGraphNode;
+import org.openflexo.foundation.fml.parser.node.ABlock;
+import org.openflexo.foundation.fml.parser.node.ABlockFlexoBehaviourBody;
 import org.openflexo.foundation.fml.parser.node.AGetDecl;
 import org.openflexo.foundation.fml.parser.node.AGetSetPropertyInnerConceptDecl;
 import org.openflexo.foundation.fml.parser.node.ASetDecl;
 import org.openflexo.foundation.fml.parser.node.PFlexoBehaviourBody;
+import org.openflexo.p2pp.PrettyPrintContext.Indentation;
 import org.openflexo.p2pp.RawSource.RawSourceFragment;
 
 /**
@@ -92,29 +96,66 @@ public class GetSetPropertyNode extends FlexoPropertyNode<AGetSetPropertyInnerCo
 		returned.setDeclaredType(getTypeFactory().makeType(astNode.getType()));
 
 		AGetDecl getDeclaration = (AGetDecl) astNode.getGetDecl();
-		returned.setGetControlGraph(makeControlGraph(getDeclaration.getFlexoBehaviourBody()));
+		ControlGraphNode<?, ?> getCGNode = makeControlGraphNode(getDeclaration.getFlexoBehaviourBody());
+		returned.setGetControlGraph(getCGNode.getModelObject());
 
 		if (astNode.getSetDecl() != null) {
 			ASetDecl setDeclaration = (ASetDecl) astNode.getSetDecl();
-			((GetSetProperty<?>) returned).setSetControlGraph(makeControlGraph(setDeclaration.getFlexoBehaviourBody()));
+			ControlGraphNode<?, ?> setCGNode = makeControlGraphNode(setDeclaration.getFlexoBehaviourBody());
+			((GetSetProperty<?>) returned).setSetControlGraph(setCGNode.getModelObject());
 		}
 
 		return returned;
 	}
 
-	protected FMLControlGraph makeControlGraph(PFlexoBehaviourBody body) {
-		return getFactory().newEmptyControlGraph();
+	protected ControlGraphNode<?, ?> makeControlGraphNode(PFlexoBehaviourBody body) {
+
+		ControlGraphFactory controlGraphFactory = new ControlGraphFactory(body, getAnalyser());
+		return controlGraphFactory.makeControlGraphNode();
 	}
 
 	@Override
 	public void preparePrettyPrint(boolean hasParsedVersion) {
 		super.preparePrettyPrint(hasParsedVersion);
 
+		// @formatter:off	
 		append(dynamicContents(() -> getVisibilityAsString(getModelObject().getVisibility()), SPACE), getVisibilityFragment());
 		append(dynamicContents(() -> serializeType(getModelObject().getType()), SPACE), getTypeFragment());
 		append(dynamicContents(() -> getModelObject().getName(), SPACE), getNameFragment());
-		append(staticContents("", "{}", SPACE), null);
+
+		append(staticContents(SPACE, "{", LINE_SEPARATOR), getLBrcFragment());
+
+		append(dynamicContents(DOUBLE_SPACE, () -> serializeType(getModelObject().getType()), SPACE), getGetTypeFragment());
+		append(staticContents("get"), getGetFragment());
+		append(staticContents("("), getGetLParFragment());
+		append(staticContents(")"), getGetRParFragment());
+		append(staticContents(SPACE, "{", ""), getGetLBrcFragment());
+		append(childContents(LINE_SEPARATOR, () -> getModelObject().getGetControlGraph(), LINE_SEPARATOR, Indentation.Indent));
+		append(staticContents(LINE_SEPARATOR+DOUBLE_SPACE, "}", ""), getGetRBrcFragment());
+
+		when(() -> isSettable())
+			.thenAppend(staticContents(LINE_SEPARATOR+DOUBLE_SPACE,"set",""), getSetFragment())
+			.thenAppend(staticContents("("), getSetLParFragment())
+			.thenAppend(dynamicContents(() -> serializeType(getModelObject().getType()), SPACE), getSetTypeFragment())
+			.thenAppend(dynamicContents(() -> ((GetSetProperty<?>)getModelObject()).getValueVariableName()), getSetVariableValueFragment())
+			.thenAppend(staticContents(")"), getSetRParFragment())
+			.thenAppend(staticContents(SPACE, "{", ""), getSetLBrcFragment())
+			.thenAppend(childContents(LINE_SEPARATOR, () -> ((GetSetProperty<?>)getModelObject()).getSetControlGraph(), LINE_SEPARATOR, Indentation.Indent))
+			.thenAppend(staticContents(LINE_SEPARATOR+DOUBLE_SPACE, "}", ""), getSetRBrcFragment());
+	
+		append(staticContents(LINE_SEPARATOR, "}", ""), getRBrcFragment());
+
 		append(staticContents(";"), getSemiFragment());
+		// @formatter:on
+	}
+
+	protected boolean isSettable() {
+		if (getASTNode() != null) {
+			return (getASTNode().getSetDecl() != null);
+		}
+		else {
+			return getModelObject() instanceof GetSetProperty;
+		}
 	}
 
 	private RawSourceFragment getVisibilityFragment() {
@@ -141,6 +182,127 @@ public class GetSetPropertyNode extends FlexoPropertyNode<AGetSetPropertyInnerCo
 	private RawSourceFragment getSemiFragment() {
 		if (getASTNode() != null) {
 			return getFragment(getASTNode().getSemi());
+		}
+		return null;
+	}
+
+	private RawSourceFragment getLBrcFragment() {
+		if (getASTNode() != null) {
+			return getFragment(getASTNode().getLBrc());
+		}
+		return null;
+	}
+
+	private RawSourceFragment getRBrcFragment() {
+		if (getASTNode() != null) {
+			return getFragment(getASTNode().getRBrc());
+		}
+		return null;
+	}
+
+	private RawSourceFragment getGetFragment() {
+		if (getASTNode() != null) {
+			return getFragment(((AGetDecl) getASTNode().getGetDecl()).getKwGet());
+		}
+		return null;
+	}
+
+	private RawSourceFragment getGetTypeFragment() {
+		if (getASTNode() != null) {
+			return getFragment(((AGetDecl) getASTNode().getGetDecl()).getType());
+		}
+		return null;
+	}
+
+	private RawSourceFragment getGetLParFragment() {
+		if (getASTNode() != null) {
+			return getFragment(((AGetDecl) getASTNode().getGetDecl()).getLPar());
+		}
+		return null;
+	}
+
+	private RawSourceFragment getGetRParFragment() {
+		if (getASTNode() != null) {
+			return getFragment(((AGetDecl) getASTNode().getGetDecl()).getRPar());
+		}
+		return null;
+	}
+
+	protected RawSourceFragment getGetLBrcFragment() {
+		if (getASTNode() != null && getASTNode().getGetDecl() instanceof AGetDecl
+				&& ((AGetDecl) getASTNode().getGetDecl()).getFlexoBehaviourBody() != null) {
+			PFlexoBehaviourBody flexoBehaviourBody = ((AGetDecl) getASTNode().getGetDecl()).getFlexoBehaviourBody();
+			if (flexoBehaviourBody instanceof ABlockFlexoBehaviourBody) {
+				return getFragment(((ABlock) ((ABlockFlexoBehaviourBody) flexoBehaviourBody).getBlock()).getLBrc());
+			}
+		}
+		return null;
+	}
+
+	protected RawSourceFragment getGetRBrcFragment() {
+		if (getASTNode() != null && getASTNode().getGetDecl() instanceof AGetDecl
+				&& ((AGetDecl) getASTNode().getGetDecl()).getFlexoBehaviourBody() != null) {
+			PFlexoBehaviourBody flexoBehaviourBody = ((AGetDecl) getASTNode().getGetDecl()).getFlexoBehaviourBody();
+			if (flexoBehaviourBody instanceof ABlockFlexoBehaviourBody) {
+				return getFragment(((ABlock) ((ABlockFlexoBehaviourBody) flexoBehaviourBody).getBlock()).getRBrc());
+			}
+		}
+		return null;
+	}
+
+	private RawSourceFragment getSetFragment() {
+		if (getASTNode() != null) {
+			return getFragment(((ASetDecl) getASTNode().getSetDecl()).getKwSet());
+		}
+		return null;
+	}
+
+	private RawSourceFragment getSetTypeFragment() {
+		if (getASTNode() != null) {
+			return getFragment(((ASetDecl) getASTNode().getSetDecl()).getType());
+		}
+		return null;
+	}
+
+	private RawSourceFragment getSetVariableValueFragment() {
+		if (getASTNode() != null) {
+			return getFragment(((ASetDecl) getASTNode().getSetDecl()).getIdentifier());
+		}
+		return null;
+	}
+
+	private RawSourceFragment getSetLParFragment() {
+		if (getASTNode() != null) {
+			return getFragment(((ASetDecl) getASTNode().getSetDecl()).getLPar());
+		}
+		return null;
+	}
+
+	private RawSourceFragment getSetRParFragment() {
+		if (getASTNode() != null) {
+			return getFragment(((ASetDecl) getASTNode().getSetDecl()).getRPar());
+		}
+		return null;
+	}
+
+	protected RawSourceFragment getSetLBrcFragment() {
+		if (getASTNode() != null && getASTNode().getSetDecl() instanceof ASetDecl
+				&& ((ASetDecl) getASTNode().getSetDecl()).getFlexoBehaviourBody() != null) {
+			PFlexoBehaviourBody flexoBehaviourBody = ((ASetDecl) getASTNode().getSetDecl()).getFlexoBehaviourBody();
+			if (flexoBehaviourBody instanceof ABlockFlexoBehaviourBody) {
+				return getFragment(((ABlock) ((ABlockFlexoBehaviourBody) flexoBehaviourBody).getBlock()).getLBrc());
+			}
+		}
+		return null;
+	}
+
+	protected RawSourceFragment getSetRBrcFragment() {
+		if (getASTNode() != null && getASTNode().getSetDecl() instanceof ASetDecl
+				&& ((ASetDecl) getASTNode().getSetDecl()).getFlexoBehaviourBody() != null) {
+			PFlexoBehaviourBody flexoBehaviourBody = ((ASetDecl) getASTNode().getSetDecl()).getFlexoBehaviourBody();
+			if (flexoBehaviourBody instanceof ABlockFlexoBehaviourBody) {
+				return getFragment(((ABlock) ((ABlockFlexoBehaviourBody) flexoBehaviourBody).getBlock()).getRBrc());
+			}
 		}
 		return null;
 	}

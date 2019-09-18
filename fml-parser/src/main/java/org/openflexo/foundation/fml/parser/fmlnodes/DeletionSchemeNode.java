@@ -41,6 +41,7 @@ package org.openflexo.foundation.fml.parser.fmlnodes;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.fml.DeletionScheme;
+import org.openflexo.foundation.fml.FMLMetaData;
 import org.openflexo.foundation.fml.parser.MainSemanticsAnalyzer;
 import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.ControlGraphNode;
 import org.openflexo.foundation.fml.parser.node.AAnonymousDestructorBehaviourDecl;
@@ -106,6 +107,8 @@ public class DeletionSchemeNode extends FlexoBehaviourNode<PBehaviourDecl, Delet
 		super.preparePrettyPrint(hasParsedVersion);
 
 		// @formatter:off	
+		append(childrenContents("", () -> getModelObject().getMetaData(), LINE_SEPARATOR, Indentation.DoNotIndent,
+				FMLMetaData.class));
 		append(dynamicContents(() -> getVisibilityAsString(getModelObject().getVisibility()), SPACE), getVisibilityFragment());
 		append(staticContents("delete"), getDeleteFragment());
 		when(() -> !isAnonymous())
@@ -117,7 +120,7 @@ public class DeletionSchemeNode extends FlexoBehaviourNode<PBehaviourDecl, Delet
 				.thenAppend(staticContents(";"), getSemiFragment())
 				.elseAppend(staticContents(SPACE,"{", ""), getLBrcFragment())
 				.elseAppend(childContents(LINE_SEPARATOR, () -> getModelObject().getControlGraph(), LINE_SEPARATOR, Indentation.Indent))
-				.elseAppend(staticContents(LINE_SEPARATOR, "}", ""), getLBrcFragment());
+				.elseAppend(staticContents(LINE_SEPARATOR, "}", ""), getRBrcFragment());
 		// @formatter:on
 
 		/*appendDynamicContents(() -> getVisibilityAsString(getModelObject().getVisibility()), SPACE, getVisibilityFragment());

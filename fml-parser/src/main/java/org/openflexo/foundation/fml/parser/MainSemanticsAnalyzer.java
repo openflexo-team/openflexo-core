@@ -51,6 +51,7 @@ import org.openflexo.foundation.fml.parser.node.ABehaviourDeclarationInnerConcep
 import org.openflexo.foundation.fml.parser.node.AConceptDecl;
 import org.openflexo.foundation.fml.parser.node.AExpressionPropertyInnerConceptDecl;
 import org.openflexo.foundation.fml.parser.node.AFmlCompilationUnit;
+import org.openflexo.foundation.fml.parser.node.AGetDecl;
 import org.openflexo.foundation.fml.parser.node.AGetSetPropertyInnerConceptDecl;
 import org.openflexo.foundation.fml.parser.node.AJavaImportImportDecl;
 import org.openflexo.foundation.fml.parser.node.AJavaInnerConceptDecl;
@@ -258,6 +259,12 @@ public class MainSemanticsAnalyzer extends FMLSemanticsAnalyzer {
 	public void outAGetSetPropertyInnerConceptDecl(AGetSetPropertyInnerConceptDecl node) {
 		super.outAGetSetPropertyInnerConceptDecl(node);
 		pop();
+	}
+
+	@Override
+	public void inAGetDecl(AGetDecl node) {
+		// TODO Auto-generated method stub
+		super.inAGetDecl(node);
 	}
 
 	@Override

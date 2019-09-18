@@ -71,6 +71,8 @@ import org.openflexo.foundation.fml.controlgraph.Sequence;
 import org.openflexo.foundation.fml.editionaction.AssignationAction;
 import org.openflexo.foundation.fml.editionaction.DeclarationAction;
 import org.openflexo.foundation.fml.editionaction.ExpressionAction;
+import org.openflexo.foundation.fml.editionaction.LogAction;
+import org.openflexo.foundation.fml.editionaction.ReturnStatement;
 import org.openflexo.foundation.fml.parser.fmlnodes.AbstractPropertyNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.ActionSchemeNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.CreationSchemeNode;
@@ -88,6 +90,8 @@ import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.AssignationActi
 import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.DeclarationActionNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.EmptyControlGraphNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.ExpressionActionNode;
+import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.LogActionNode;
+import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.ReturnStatementNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.SequenceNode;
 import org.openflexo.foundation.fml.parser.node.ACompositeIdent;
 import org.openflexo.foundation.fml.parser.node.AIdentifierVariableDeclarator;
@@ -273,8 +277,14 @@ public abstract class FMLObjectNode<N extends Node, T extends FMLPrettyPrintable
 		if (object instanceof ExpressionAction) {
 			return (P2PPNode<?, C>) new ExpressionActionNode((ExpressionAction) object, getControlGraphFactory());
 		}
+		if (object instanceof ReturnStatement) {
+			return (P2PPNode<?, C>) new ReturnStatementNode((ReturnStatement) object, getControlGraphFactory());
+		}
 		if (object instanceof AddFlexoConceptInstance) {
 			return (P2PPNode<?, C>) new AddFlexoConceptInstanceNode((AddFlexoConceptInstance) object, getControlGraphFactory());
+		}
+		if (object instanceof LogAction) {
+			return (P2PPNode<?, C>) new LogActionNode((LogAction) object, getControlGraphFactory());
 		}
 		System.err.println("Not supported: " + object);
 		Thread.dumpStack();
@@ -282,9 +292,6 @@ public abstract class FMLObjectNode<N extends Node, T extends FMLPrettyPrintable
 	}
 
 	public ControlGraphFactory getControlGraphFactory() {
-		System.out.println("Je suis le noeud " + this.getClass().getSimpleName());
-		System.out.println("Et on me demande un ControlGraphFactory");
-
 		if (getAbstractAnalyser() instanceof ControlGraphFactory) {
 			return (ControlGraphFactory) getAbstractAnalyser();
 		}

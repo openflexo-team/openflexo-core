@@ -10,6 +10,7 @@ import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.ControlGraphNod
 import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.DeclarationActionNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.EmptyControlGraphNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.EmptyReturnStatementNode;
+import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.LogActionNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.ReturnStatementNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.SequenceNode;
 import org.openflexo.foundation.fml.parser.node.AAssignmentStatementExpression;
@@ -22,6 +23,7 @@ import org.openflexo.foundation.fml.parser.node.AForBasicStatement;
 import org.openflexo.foundation.fml.parser.node.AForEnhancedStatement;
 import org.openflexo.foundation.fml.parser.node.AIfElseStatement;
 import org.openflexo.foundation.fml.parser.node.AIfSimpleStatement;
+import org.openflexo.foundation.fml.parser.node.ALogActionFmlActionExp;
 import org.openflexo.foundation.fml.parser.node.AMethodInvocationStatementExpression;
 import org.openflexo.foundation.fml.parser.node.AReturnEmptyStatementWithoutTrailingSubstatement;
 import org.openflexo.foundation.fml.parser.node.AReturnStatementWithoutTrailingSubstatement;
@@ -392,102 +394,16 @@ public class ControlGraphFactory extends FMLSemanticsAnalyzer {
 		super.inAFmlActionExpressionStatementExpression(node);
 	}
 
-	/*
-	 * <pre>
-	 * assignment_expression =
-	 *    {conditional} conditional_expression |
-	 *    {assignment}  assignment ;
-	 * </pre>
-	 */
+	@Override
+	public void inALogActionFmlActionExp(ALogActionFmlActionExp node) {
+		super.inALogActionFmlActionExp(node);
+		push(new LogActionNode(node, this));
+	}
 
-	/*@Override
-	public void inAConditionalAssignmentExpression(AConditionalAssignmentExpression node) {
-		super.inAConditionalAssignmentExpression(node);
-		System.out.println("-----> YES-1 je choppe " + node + " of "+node.getClass().getSimpleName());
-	}
-	
 	@Override
-	public void inAAssignmentAssignmentExpression(AAssignmentAssignmentExpression node) {
-		// TODO Auto-generated method stub
-		super.inAAssignmentAssignmentExpression(node);
-		System.out.println("-----> YES-2 je choppe " + node+ " of "+node.getClass().getSimpleName());
-	}*/
-
-	/*
-	 * <pre>
-	primary =
-	    {literal}                literal |
-	    //   {primitive}  primitive_type                                             [dims]:dim* dot class_token |
-	    //   {reference}  identifier [additional_identifiers]:additional_identifier* [dims]:dim* dot class_token |
-	    //   {void}       void dot class_token |
-	    //   {this}       this |
-	    //   {class}      identifier [additional_identifiers]:additional_identifier* dot this |
-	    {expression}             l_par expression                                                 r_par |
-	    {identifier}             l_par identifier [additional_identifiers]:additional_identifier* r_par |
-	    {field}                  field_access |
-	    {method}                 method_invocation |
-	    {fml_action_expression}  fml_action_expression;
-	 * </pre>
-	 */
-
-	/*@Override
-	public void inALiteralPrimary(ALiteralPrimary node) {
-		super.inALiteralPrimary(node);
-		push(new ExpressionActionNode(node, analyzer));
-	}
-	
-	@Override
-	public void outALiteralPrimary(ALiteralPrimary node) {
-		super.outALiteralPrimary(node);
+	public void outALogActionFmlActionExp(ALogActionFmlActionExp node) {
+		super.outALogActionFmlActionExp(node);
 		pop();
 	}
-	
-	@Override
-	public void inAExpressionPrimary(AExpressionPrimary node) {
-		super.inAExpressionPrimary(node);
-		push(new ExpressionActionNode(node, analyzer));
-	}
-	
-	@Override
-	public void outAExpressionPrimary(AExpressionPrimary node) {
-		super.outAExpressionPrimary(node);
-		pop();
-	}
-	
-	@Override
-	public void inAIdentifierPrimary(AIdentifierPrimary node) {
-		super.inAIdentifierPrimary(node);
-		push(new ExpressionActionNode(node, analyzer));
-	}
-	
-	@Override
-	public void outAIdentifierPrimary(AIdentifierPrimary node) {
-		super.outAIdentifierPrimary(node);
-		pop();
-	}
-	
-	@Override
-	public void inAFieldPrimary(AFieldPrimary node) {
-		super.inAFieldPrimary(node);
-		push(new ExpressionActionNode(node, analyzer));
-	}
-	
-	@Override
-	public void outAFieldPrimary(AFieldPrimary node) {
-		super.outAFieldPrimary(node);
-		pop();
-	}
-	
-	@Override
-	public void inAMethodPrimary(AMethodPrimary node) {
-		super.inAMethodPrimary(node);
-		push(new ExpressionActionNode(node, analyzer));
-	}
-	
-	@Override
-	public void outAMethodPrimary(AMethodPrimary node) {
-		super.outAMethodPrimary(node);
-		pop();
-	}*/
 
 }

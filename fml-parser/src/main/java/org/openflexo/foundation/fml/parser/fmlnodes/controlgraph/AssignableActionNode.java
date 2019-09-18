@@ -42,10 +42,7 @@ import java.util.logging.Logger;
 
 import org.openflexo.foundation.fml.editionaction.AssignableAction;
 import org.openflexo.foundation.fml.parser.ControlGraphFactory;
-import org.openflexo.foundation.fml.parser.node.AExpressionStatementStatementWithoutTrailingSubstatement;
 import org.openflexo.foundation.fml.parser.node.Node;
-import org.openflexo.foundation.fml.parser.node.TSemi;
-import org.openflexo.p2pp.RawSource.RawSourceFragment;
 
 /**
  * @author sylvain
@@ -62,26 +59,6 @@ public abstract class AssignableActionNode<N extends Node, T extends AssignableA
 
 	public AssignableActionNode(T property, ControlGraphFactory cgFactory) {
 		super(property, cgFactory);
-	}
-
-	protected TSemi getSemi() {
-		if (getASTNode() != null) {
-			Node current = getASTNode();
-			while (current.parent() != null) {
-				if (current instanceof AExpressionStatementStatementWithoutTrailingSubstatement) {
-					return ((AExpressionStatementStatementWithoutTrailingSubstatement) current).getSemi();
-				}
-				current = current.parent();
-			}
-		}
-		return null;
-	}
-
-	protected RawSourceFragment getSemiFragment() {
-		if (getSemi() != null) {
-			return getFragment(getSemi());
-		}
-		return null;
 	}
 
 }

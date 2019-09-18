@@ -40,56 +40,81 @@ package org.openflexo.foundation.fml.parser.fmlnodes.controlgraph;
 
 import java.util.logging.Logger;
 
-import org.openflexo.foundation.fml.controlgraph.FMLControlGraph;
+import org.openflexo.foundation.fml.editionaction.LogAction;
 import org.openflexo.foundation.fml.parser.ControlGraphFactory;
-import org.openflexo.foundation.fml.parser.FMLObjectNode;
-import org.openflexo.foundation.fml.parser.node.AExpressionStatementStatementWithoutTrailingSubstatement;
-import org.openflexo.foundation.fml.parser.node.Node;
-import org.openflexo.foundation.fml.parser.node.TSemi;
+import org.openflexo.foundation.fml.parser.node.ALogActionFmlActionExp;
+import org.openflexo.foundation.fml.rt.logging.FMLConsole.LogLevel;
 import org.openflexo.p2pp.RawSource.RawSourceFragment;
 
 /**
  * @author sylvain
  * 
  */
-public abstract class ControlGraphNode<N extends Node, T extends FMLControlGraph> extends FMLObjectNode<N, T, ControlGraphFactory> {
+public class LogActionNode extends ControlGraphNode<ALogActionFmlActionExp, LogAction> {
 
 	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(ControlGraphNode.class.getPackage().getName());
+	private static final Logger logger = Logger.getLogger(LogActionNode.class.getPackage().getName());
 
-	public ControlGraphNode(N astNode, ControlGraphFactory cgFactory) {
+	public LogActionNode(ALogActionFmlActionExp astNode, ControlGraphFactory cgFactory) {
 		super(astNode, cgFactory);
+
+		if (getSemiFragment() != null) {
+			setEndPosition(getSemiFragment().getEndPosition());
+		}
+
 	}
 
-	public ControlGraphNode(T property, ControlGraphFactory cgFactory) {
-		super(property, cgFactory);
+	public LogActionNode(LogAction action, ControlGraphFactory cgFactory) {
+		super(action, cgFactory);
+	}
+
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	@Override
+	public LogAction buildModelObjectFromAST(ALogActionFmlActionExp astNode) {
+		LogAction returned = getFactory().newLogAction();
+
+		returned.setLogString(makeBinding(getASTNode().getExpression(), returned));
+		returned.setLogLevel(LogLevel.INFO);
+
+		return returned;
 	}
 
 	@Override
-	public ControlGraphNode<N, T> deserialize() {
-		// System.out.println("deserialize for " + getParent() + " modelObject: " + getModelObject());
-		if (getParent() instanceof SequenceNode) {
-			// Nothing to to here: this is done in SequenceNode
-		}
-		return this;
+	public void preparePrettyPrint(boolean hasParsedVersion) {
+		super.preparePrettyPrint(hasParsedVersion);
+
+		append(staticContents("log"), getLogFragment());
+		append(staticContents("("), getLParFragment());
+		append(dynamicContents(() -> getModelObject().getLogString().toString()), getExpressionFragment());
+		append(staticContents(")"), getRParFragment());
+		append(staticContents(";"), getSemiFragment());
+
 	}
 
-	protected TSemi getSemi() {
+	protected RawSourceFragment getLogFragment() {
 		if (getASTNode() != null) {
-			Node current = getASTNode();
-			while (current.parent() != null) {
-				if (current instanceof AExpressionStatementStatementWithoutTrailingSubstatement) {
-					return ((AExpressionStatementStatementWithoutTrailingSubstatement) current).getSemi();
-				}
-				current = current.parent();
-			}
+			return getFragment(getASTNode().getKwLog());
 		}
 		return null;
 	}
 
-	protected RawSourceFragment getSemiFragment() {
-		if (getSemi() != null) {
-			return getFragment(getSemi());
+	protected RawSourceFragment getLParFragment() {
+		if (getASTNode() != null) {
+			return getFragment(getASTNode().getLPar());
+		}
+		return null;
+	}
+
+	protected RawSourceFragment getExpressionFragment() {
+		if (getASTNode() != null) {
+			return getFragment(getASTNode().getExpression());
+		}
+		return null;
+	}
+
+	protected RawSourceFragment getRParFragment() {
+		if (getASTNode() != null) {
+			return getFragment(getASTNode().getRPar());
 		}
 		return null;
 	}

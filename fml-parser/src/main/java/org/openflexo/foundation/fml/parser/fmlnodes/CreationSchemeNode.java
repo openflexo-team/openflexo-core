@@ -41,6 +41,7 @@ package org.openflexo.foundation.fml.parser.fmlnodes;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.fml.CreationScheme;
+import org.openflexo.foundation.fml.FMLMetaData;
 import org.openflexo.foundation.fml.parser.MainSemanticsAnalyzer;
 import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.ControlGraphNode;
 import org.openflexo.foundation.fml.parser.node.AAnonymousConstructorBehaviourDecl;
@@ -89,6 +90,7 @@ public class CreationSchemeNode extends FlexoBehaviourNode<PBehaviourDecl, Creat
 		else {
 			returned.setAnonymous(false);
 			returned.setName(getName().getText());
+			// returned.setLabel("create_new");
 		}
 		returned.setVisibility(getVisibility(getVisibility()));
 
@@ -106,6 +108,8 @@ public class CreationSchemeNode extends FlexoBehaviourNode<PBehaviourDecl, Creat
 		super.preparePrettyPrint(hasParsedVersion);
 
 		// @formatter:off	
+		append(childrenContents("", () -> getModelObject().getMetaData(), LINE_SEPARATOR, Indentation.DoNotIndent,
+				FMLMetaData.class));
 		append(dynamicContents(() -> getVisibilityAsString(getModelObject().getVisibility()), SPACE), getVisibilityFragment());
 		append(staticContents("create"), getCreateFragment());
 		when(() -> !isAnonymous())
@@ -117,7 +121,7 @@ public class CreationSchemeNode extends FlexoBehaviourNode<PBehaviourDecl, Creat
 				.thenAppend(staticContents(";"), getSemiFragment())
 				.elseAppend(staticContents(SPACE,"{", ""), getLBrcFragment())
 				.elseAppend(childContents(LINE_SEPARATOR, () -> getModelObject().getControlGraph(), LINE_SEPARATOR, Indentation.Indent))
-				.elseAppend(staticContents(LINE_SEPARATOR, "}", ""), getLBrcFragment());
+				.elseAppend(staticContents(LINE_SEPARATOR, "}", ""), getRBrcFragment());
 		// @formatter:on
 
 		/*appendDynamicContents(() -> getVisibilityAsString(getModelObject().getVisibility()), SPACE, getVisibilityFragment());
