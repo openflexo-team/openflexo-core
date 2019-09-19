@@ -33,6 +33,7 @@ import org.openflexo.foundation.fml.parser.node.ASelectActionFmlActionExp;
 import org.openflexo.foundation.fml.parser.node.AVariableDeclarationBlockStatement;
 import org.openflexo.foundation.fml.parser.node.AWhileStatement;
 import org.openflexo.foundation.fml.parser.node.Node;
+import org.openflexo.foundation.fml.parser.node.PBlockStatement;
 import org.openflexo.toolbox.StringUtils;
 
 /**
@@ -112,8 +113,22 @@ public class ControlGraphFactory extends FMLSemanticsAnalyzer {
 	 */
 
 	private ABlock currentBlockNode;
-
 	private List<ControlGraphNode<?, ?>> currentSequenceNodes;
+	private List<PBlockStatement> expectedBlockStatements;
+
+	private boolean isInExpectedBlockStatements(Node n) {
+		if (n == null) {
+			return false;
+		}
+		if (n == getRootNode()) {
+			return false;
+		}
+		if (expectedBlockStatements.contains(n)) {
+			expectedBlockStatements.remove(n);
+			return true;
+		}
+		return isInExpectedBlockStatements(n.parent());
+	}
 
 	@Override
 	public void inABlock(ABlock node) {
@@ -121,6 +136,7 @@ public class ControlGraphFactory extends FMLSemanticsAnalyzer {
 		System.out.println("Nouveau block de " + node.getBlockStatements().size() + " statements " + " avec " + node);
 		if (node.getBlockStatements().size() > 1) {
 			currentSequenceNodes = new ArrayList<>();
+			expectedBlockStatements = new ArrayList<>(node.getBlockStatements());
 			currentBlockNode = node;
 		}
 		if (node.getBlockStatements().size() == 0) {
@@ -180,7 +196,10 @@ public class ControlGraphFactory extends FMLSemanticsAnalyzer {
 			if (currentBlockNode != null) {
 				System.out.println("*************** Tiens on cree " + fmlNode.getASTNode() + " dans " + currentBlockNode + " current="
 						+ getCurrentNode());
-				currentSequenceNodes.add((ControlGraphNode<?, ?>) fmlNode);
+				if (isInExpectedBlockStatements(fmlNode.getASTNode())) {
+					System.out.println("C'est un que je cherche !");
+					currentSequenceNodes.add((ControlGraphNode<?, ?>) fmlNode);
+				}
 			}
 			else {
 				if (rootControlGraphNode == null) {
