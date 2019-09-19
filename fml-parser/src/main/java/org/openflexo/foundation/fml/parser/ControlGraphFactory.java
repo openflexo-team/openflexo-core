@@ -111,21 +111,15 @@ public class ControlGraphFactory extends FMLSemanticsAnalyzer {
 	 * </pre>
 	 */
 
-	// private int totalStatementsInCurrentSequence = 0;
-	// private int remainingStatementsInCurrentSequence = 0;
 	private ABlock currentBlockNode;
 
 	private List<ControlGraphNode<?, ?>> currentSequenceNodes;
 
 	@Override
 	public void inABlock(ABlock node) {
-		// TODO Auto-generated method stub
 		super.inABlock(node);
 		System.out.println("Nouveau block de " + node.getBlockStatements().size() + " statements " + " avec " + node);
 		if (node.getBlockStatements().size() > 1) {
-			// totalStatementsInCurrentSequence = node.getBlockStatements().size();
-			// remainingStatementsInCurrentSequence = node.getBlockStatements().size();
-			// push(new SequenceNode(node, this));
 			currentSequenceNodes = new ArrayList<>();
 			currentBlockNode = node;
 		}
@@ -133,34 +127,6 @@ public class ControlGraphFactory extends FMLSemanticsAnalyzer {
 			push(new EmptyControlGraphNode(node, this));
 		}
 	}
-
-	// private SequenceNode builtSequenceNode;
-	// private SequenceNode rootSequenceNode;
-
-	/*private void appendInSequence(ControlGraphNode<?, ?> n, boolean isLast) {
-	
-		System.out.println("************ On ajoute en sequence " + n.getASTNode());
-		System.out.println("builtSequenceNode=" + builtSequenceNode);
-	
-		if (isLast) {
-			builtSequenceNode.addToChildren(n);
-			builtSequenceNode.getModelObject().setControlGraph2(n.getModelObject());
-		}
-		else {
-			SequenceNode newSequenceNode = new SequenceNode(currentBlockNode, this);
-			newSequenceNode.addToChildren(n);
-			newSequenceNode.getModelObject().setControlGraph1(n.getModelObject());
-			if (builtSequenceNode == null) {
-				rootSequenceNode = newSequenceNode;
-			}
-			else {
-				builtSequenceNode.addToChildren(newSequenceNode);
-				builtSequenceNode.getModelObject().setControlGraph2(newSequenceNode.getModelObject());
-			}
-			builtSequenceNode = newSequenceNode;
-		}
-	
-	}*/
 
 	@Override
 	public void outABlock(ABlock node) {
@@ -226,7 +192,6 @@ public class ControlGraphFactory extends FMLSemanticsAnalyzer {
 		else {
 			super.push(fmlNode);
 		}
-		// analyzer.push(fmlNode);
 	}
 
 	@Override
