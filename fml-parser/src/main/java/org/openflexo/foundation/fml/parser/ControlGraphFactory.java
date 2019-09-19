@@ -2,9 +2,11 @@ package org.openflexo.foundation.fml.parser;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Stack;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.fml.controlgraph.FMLControlGraph;
+import org.openflexo.foundation.fml.controlgraph.Sequence;
 import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.AssignationActionNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.ConditionalNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.ControlGraphNode;
@@ -112,46 +114,54 @@ public class ControlGraphFactory extends FMLSemanticsAnalyzer {
 	 * </pre>
 	 */
 
-	private ABlock currentBlockNode;
-	private List<ControlGraphNode<?, ?>> currentSequenceNodes;
-	private List<PBlockStatement> expectedBlockStatements;
+	private Stack<BlockSequenceInfo> blocks = new Stack<>();
 
-	private boolean isInExpectedBlockStatements(Node n) {
-		if (n == null) {
-			return false;
-		}
-		if (n == getRootNode()) {
-			return false;
-		}
-		if (expectedBlockStatements.contains(n)) {
-			expectedBlockStatements.remove(n);
-			return true;
-		}
-		return isInExpectedBlockStatements(n.parent());
-	}
+	/**
+	 * Internal data structure used to manage alignment between Block sequences obtained from parsing, the {@link Sequence} FML structure
+	 * (chained Sequence objects)
+	 * 
+	 * @author sylvain
+	 *
+	 */
+	class BlockSequenceInfo {
+		private ABlock currentBlockNode;
+		private List<ControlGraphNode<?, ?>> currentSequenceNodes;
+		private List<PBlockStatement> expectedBlockStatements;
 
-	@Override
-	public void inABlock(ABlock node) {
-		super.inABlock(node);
-		System.out.println("Nouveau block de " + node.getBlockStatements().size() + " statements " + " avec " + node);
-		if (node.getBlockStatements().size() > 1) {
+		BlockSequenceInfo(ABlock blockNode) {
+			currentBlockNode = blockNode;
 			currentSequenceNodes = new ArrayList<>();
-			expectedBlockStatements = new ArrayList<>(node.getBlockStatements());
-			currentBlockNode = node;
+			expectedBlockStatements = new ArrayList<>(blockNode.getBlockStatements());
 		}
-		if (node.getBlockStatements().size() == 0) {
-			push(new EmptyControlGraphNode(node, this));
-		}
-	}
 
-	@Override
-	public void outABlock(ABlock node) {
-		super.outABlock(node);
-		if (node.getBlockStatements().size() > 1) {
+		boolean handleNode(ControlGraphNode<?, ?> controlGraphNode) {
+			PBlockStatement matchedBlockStatement = matchExpectedBlockStatements(controlGraphNode.getASTNode());
+			if (matchedBlockStatement != null) {
+				expectedBlockStatements.remove(matchedBlockStatement);
+				currentSequenceNodes.add(controlGraphNode);
+				return true;
+			}
+			return false;
+		}
+
+		private PBlockStatement matchExpectedBlockStatements(Node n) {
+			if (n == null) {
+				return null;
+			}
+			if (n == getRootNode()) {
+				return null;
+			}
+			if (expectedBlockStatements.contains(n)) {
+				return (PBlockStatement) n;
+			}
+			return matchExpectedBlockStatements(n.parent());
+		}
+
+		void finalizeBlockStatements() {
 			System.out.println("IL faut maintenant gerer " + currentSequenceNodes);
 			SequenceNode builtSequenceNode = null;
 			SequenceNode rootSequenceNode = null;
-			if (currentSequenceNodes.size() == node.getBlockStatements().size()) {
+			if (currentSequenceNodes.size() == currentBlockNode.getBlockStatements().size()) {
 				ControlGraphNode<?, ?> lastNode = currentSequenceNodes.get(currentSequenceNodes.size() - 1);
 				for (int i = 0; i < currentSequenceNodes.size(); i++) {
 					ControlGraphNode<?, ?> n = currentSequenceNodes.get(i);
@@ -160,7 +170,7 @@ public class ControlGraphFactory extends FMLSemanticsAnalyzer {
 						builtSequenceNode.getModelObject().setControlGraph2(n.getModelObject());
 					}
 					else {
-						SequenceNode newSequenceNode = new SequenceNode(currentBlockNode, n, lastNode, this);
+						SequenceNode newSequenceNode = new SequenceNode(currentBlockNode, n, lastNode, ControlGraphFactory.this);
 						newSequenceNode.addToChildren(n);
 						newSequenceNode.getModelObject().setControlGraph1(n.getModelObject());
 						if (builtSequenceNode == null) {
@@ -178,29 +188,55 @@ public class ControlGraphFactory extends FMLSemanticsAnalyzer {
 				pop();
 			}
 			else {
-				logger.warning("Expecting to find " + node.getBlockStatements().size() + " statements but having parsed only "
+				logger.warning("Expecting to find " + currentBlockNode.getBlockStatements().size() + " statements but having parsed only "
 						+ currentSequenceNodes.size() + ". Aborting");
 				System.err.println("currentBlockNode=" + currentBlockNode);
 				currentBlockNode = null;
 			}
+
+		}
+	}
+
+	@Override
+	public void inABlock(ABlock node) {
+		super.inABlock(node);
+		System.out.println("Nouveau block de " + node.getBlockStatements().size() + " statements " + " avec " + node);
+		if (node.getBlockStatements().size() > 1) {
+			BlockSequenceInfo bsInfo = new BlockSequenceInfo(node);
+			blocks.push(bsInfo);
+		}
+		if (node.getBlockStatements().size() == 0) {
+			push(new EmptyControlGraphNode(node, this));
+		}
+	}
+
+	@Override
+	public void outABlock(ABlock node) {
+		super.outABlock(node);
+		if (node.getBlockStatements().size() > 1) {
+			blocks.pop().finalizeBlockStatements();
 		}
 		if (node.getBlockStatements().size() == 0) {
 			pop();
 		}
-		currentBlockNode = null;
 	}
 
 	@Override
 	protected void push(FMLObjectNode<?, ?, ?> fmlNode) {
 		if (fmlNode instanceof ControlGraphNode) {
-			if (currentBlockNode != null) {
+			if (!blocks.isEmpty()) {
+				BlockSequenceInfo bsInfo = blocks.peek();
+				bsInfo.handleNode((ControlGraphNode<?, ?>) fmlNode);
+			}
+
+			/*if (currentBlockNode != null) {
 				System.out.println("*************** Tiens on cree " + fmlNode.getASTNode() + " dans " + currentBlockNode + " current="
 						+ getCurrentNode());
 				if (isInExpectedBlockStatements(fmlNode.getASTNode())) {
 					System.out.println("C'est un que je cherche !");
 					currentSequenceNodes.add((ControlGraphNode<?, ?>) fmlNode);
 				}
-			}
+			}*/
 			else {
 				if (rootControlGraphNode == null) {
 					rootControlGraphNode = (ControlGraphNode<?, ?>) fmlNode;
@@ -215,7 +251,8 @@ public class ControlGraphFactory extends FMLSemanticsAnalyzer {
 
 	@Override
 	protected <N extends FMLObjectNode<?, ?, ?>> N pop() {
-		if (currentBlockNode == null) {
+		if (blocks.isEmpty()) {
+			// if (currentBlockNode == null) {
 			return super.pop();
 		}
 		return null;
