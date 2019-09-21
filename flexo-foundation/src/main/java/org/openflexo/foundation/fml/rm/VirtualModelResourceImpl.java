@@ -52,7 +52,6 @@ import org.openflexo.foundation.IOFlexoException;
 import org.openflexo.foundation.InconsistentDataException;
 import org.openflexo.foundation.InvalidModelDefinitionException;
 import org.openflexo.foundation.InvalidXMLException;
-import org.openflexo.foundation.fml.FMLCompilationUnit;
 import org.openflexo.foundation.fml.FMLModelFactory;
 import org.openflexo.foundation.fml.FMLObject.BindingIsRequiredAndMustBeValid.InvalidRequiredBindingIssue;
 import org.openflexo.foundation.fml.FMLTechnologyAdapter;
@@ -60,7 +59,6 @@ import org.openflexo.foundation.fml.FMLValidationModel;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.VirtualModelLibrary;
-import org.openflexo.foundation.fml.rm.FMLParser.ParseException;
 import org.openflexo.foundation.fml.rt.FMLRTTechnologyAdapter;
 import org.openflexo.foundation.fml.rt.rm.FMLRTVirtualModelInstanceResource;
 import org.openflexo.foundation.resource.CannotRenameException;
@@ -515,8 +513,8 @@ public abstract class VirtualModelResourceImpl extends PamelaResourceImpl<Virtua
 
 	@Override
 	protected VirtualModel performLoad() throws IOException, Exception {
-		boolean requiresFMLPrettyPrintInitialization = false;
-		if (getIODelegate() instanceof DirectoryBasedIODelegate && getFMLParser() != null) {
+		// boolean requiresFMLPrettyPrintInitialization = false;
+		/*if (getIODelegate() instanceof DirectoryBasedIODelegate && getFMLParser() != null) {
 			DirectoryBasedIODelegate ioDelegate = (DirectoryBasedIODelegate) getIODelegate();
 			File fmlFile = new File(ioDelegate.getDirectory(), ioDelegate.getDirectory().getName());
 			System.out.println("Tiens faudrait aussi charger le fichier " + fmlFile);
@@ -531,17 +529,17 @@ public abstract class VirtualModelResourceImpl extends PamelaResourceImpl<Virtua
 			else {
 				requiresFMLPrettyPrintInitialization = true;
 			}
-		}
+		}*/
 		VirtualModel returned = super.performLoad();
-		if (requiresFMLPrettyPrintInitialization && getFMLParser() != null) {
+		/*if (requiresFMLPrettyPrintInitialization && getFMLParser() != null) {
 			FMLCompilationUnit compilationUnit = returned.getCompilationUnit();
 			if (compilationUnit == null) {
 				compilationUnit = returned.getFMLModelFactory().newCompilationUnit();
 				compilationUnit.setVirtualModel(returned);
 			}
-			getFMLParser().initPrettyPrint(compilationUnit);
-			System.out.println(returned.getFMLPrettyPrint());
-		}
+			//getFMLParser().initPrettyPrint(compilationUnit);
+			//System.out.println(returned.getFMLPrettyPrint());
+		}*/
 		return returned;
 	}
 
