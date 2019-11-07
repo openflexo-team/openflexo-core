@@ -43,7 +43,7 @@ import java.util.logging.Logger;
 import org.openflexo.connie.DataBinding;
 import org.openflexo.foundation.fml.editionaction.DeclarationAction;
 import org.openflexo.foundation.fml.editionaction.ExpressionAction;
-import org.openflexo.foundation.fml.parser.ControlGraphFactory;
+import org.openflexo.foundation.fml.parser.MainSemanticsAnalyzer;
 import org.openflexo.foundation.fml.parser.node.AIdentifierVariableDeclarator;
 import org.openflexo.foundation.fml.parser.node.AInitializerVariableDeclarator;
 import org.openflexo.foundation.fml.parser.node.AVariableDeclarationBlockStatement;
@@ -59,12 +59,12 @@ public class DeclarationActionNode extends AssignableActionNode<AVariableDeclara
 
 	private static final Logger logger = Logger.getLogger(DeclarationActionNode.class.getPackage().getName());
 
-	public DeclarationActionNode(AVariableDeclarationBlockStatement astNode, ControlGraphFactory cgFactory) {
-		super(astNode, cgFactory);
+	public DeclarationActionNode(AVariableDeclarationBlockStatement astNode, MainSemanticsAnalyzer analyser) {
+		super(astNode, analyser);
 	}
 
-	public DeclarationActionNode(DeclarationAction<?> action, ControlGraphFactory cgFactory) {
-		super(action, cgFactory);
+	public DeclarationActionNode(DeclarationAction<?> action, MainSemanticsAnalyzer analyser) {
+		super(action, analyser);
 	}
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })

@@ -41,7 +41,7 @@ package org.openflexo.foundation.fml.parser.fmlnodes.controlgraph;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.fml.controlgraph.ConditionalAction;
-import org.openflexo.foundation.fml.parser.ControlGraphFactory;
+import org.openflexo.foundation.fml.parser.MainSemanticsAnalyzer;
 import org.openflexo.foundation.fml.parser.node.AIfElseStatement;
 import org.openflexo.foundation.fml.parser.node.AIfSimpleStatement;
 import org.openflexo.foundation.fml.parser.node.Node;
@@ -57,12 +57,12 @@ public class ConditionalNode extends ControlGraphNode<Node, ConditionalAction> {
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(ConditionalNode.class.getPackage().getName());
 
-	public ConditionalNode(Node astNode, ControlGraphFactory cgFactory) {
-		super(astNode, cgFactory);
+	public ConditionalNode(Node astNode, MainSemanticsAnalyzer analyser) {
+		super(astNode, analyser);
 	}
 
-	public ConditionalNode(ConditionalAction sequence, ControlGraphFactory cgFactory) {
-		super(sequence, cgFactory);
+	public ConditionalNode(ConditionalAction sequence, MainSemanticsAnalyzer analyser) {
+		super(sequence, analyser);
 	}
 
 	@Override

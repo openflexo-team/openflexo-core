@@ -67,10 +67,13 @@ public abstract interface AbstractActionScheme extends FlexoBehaviour {
 	@PropertyIdentifier(type = DataBinding.class)
 	public static final String CONDITIONAL_KEY = "conditional";
 
+	// Not sure this is a good idea in the language
+	@Deprecated
 	@Getter(value = CONDITIONAL_KEY)
 	@XMLAttribute
 	public DataBinding<Boolean> getConditional();
 
+	@Deprecated
 	@Setter(CONDITIONAL_KEY)
 	public void setConditional(DataBinding<Boolean> conditional);
 
@@ -88,6 +91,7 @@ public abstract interface AbstractActionScheme extends FlexoBehaviour {
 
 		// TODO: we had to set caching strategy to NO_CACHING in dynamic instantiation context (CTA project)
 		@Override
+		@Deprecated
 		public DataBinding<Boolean> getConditional() {
 			if (conditional == null) {
 				conditional = new DataBinding<>(this, Boolean.class, DataBinding.BindingDefinitionType.GET);
@@ -99,6 +103,7 @@ public abstract interface AbstractActionScheme extends FlexoBehaviour {
 
 		// TODO: we had to set caching strategy to NO_CACHING in dynamic instantiation context (CTA project)
 		@Override
+		@Deprecated
 		public void setConditional(DataBinding<Boolean> conditional) {
 			if (conditional != null) {
 				conditional.setOwner(this);

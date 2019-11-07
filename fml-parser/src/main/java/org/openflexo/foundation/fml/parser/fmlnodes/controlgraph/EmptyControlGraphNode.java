@@ -41,7 +41,7 @@ package org.openflexo.foundation.fml.parser.fmlnodes.controlgraph;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.fml.controlgraph.EmptyControlGraph;
-import org.openflexo.foundation.fml.parser.ControlGraphFactory;
+import org.openflexo.foundation.fml.parser.MainSemanticsAnalyzer;
 import org.openflexo.foundation.fml.parser.node.ABlock;
 
 /**
@@ -53,12 +53,12 @@ public class EmptyControlGraphNode extends ControlGraphNode<ABlock, EmptyControl
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(EmptyControlGraphNode.class.getPackage().getName());
 
-	public EmptyControlGraphNode(ABlock astNode, ControlGraphFactory cgFactory) {
-		super(astNode, cgFactory);
+	public EmptyControlGraphNode(ABlock astNode, MainSemanticsAnalyzer analyser) {
+		super(astNode, analyser);
 	}
 
-	public EmptyControlGraphNode(EmptyControlGraph sequence, ControlGraphFactory cgFactory) {
-		super(sequence, cgFactory);
+	public EmptyControlGraphNode(EmptyControlGraph sequence, MainSemanticsAnalyzer analyser) {
+		super(sequence, analyser);
 	}
 
 	@Override

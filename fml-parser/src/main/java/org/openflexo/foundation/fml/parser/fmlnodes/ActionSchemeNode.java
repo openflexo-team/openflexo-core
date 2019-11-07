@@ -42,6 +42,7 @@ import java.util.logging.Logger;
 
 import org.openflexo.foundation.fml.ActionScheme;
 import org.openflexo.foundation.fml.FMLMetaData;
+import org.openflexo.foundation.fml.parser.ControlGraphFactory;
 import org.openflexo.foundation.fml.parser.MainSemanticsAnalyzer;
 import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.ControlGraphNode;
 import org.openflexo.foundation.fml.parser.node.AMethodBehaviourDecl;
@@ -73,7 +74,7 @@ public class ActionSchemeNode extends FlexoBehaviourNode<AMethodBehaviourDecl, A
 		ActionScheme returned = getFactory().newActionScheme();
 		returned.setVisibility(getVisibility(astNode.getVisibility()));
 		returned.setName(astNode.getName().getText());
-		ControlGraphNode<?, ?> cgNode = getControlGraphFactory().makeControlGraphNode();
+		ControlGraphNode<?, ?> cgNode = ControlGraphFactory.makeControlGraphNode(getFlexoBehaviourBody(astNode), getAnalyser());
 		if (cgNode != null) {
 			returned.setControlGraph(cgNode.getModelObject());
 			addToChildren(cgNode);

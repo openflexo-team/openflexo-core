@@ -43,7 +43,7 @@ import java.util.logging.Logger;
 import org.openflexo.foundation.fml.FlexoConceptInstanceType;
 import org.openflexo.foundation.fml.VirtualModelInstanceType;
 import org.openflexo.foundation.fml.editionaction.AbstractFetchRequest;
-import org.openflexo.foundation.fml.parser.ControlGraphFactory;
+import org.openflexo.foundation.fml.parser.MainSemanticsAnalyzer;
 import org.openflexo.foundation.fml.parser.node.ASelectActionFmlActionExp;
 import org.openflexo.p2pp.RawSource.RawSourceFragment;
 
@@ -56,12 +56,12 @@ public class FetchRequestNode<FR extends AbstractFetchRequest<?, ?, ?, ?>> exten
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(FetchRequestNode.class.getPackage().getName());
 
-	public FetchRequestNode(ASelectActionFmlActionExp astNode, ControlGraphFactory cgFactory) {
-		super(astNode, cgFactory);
+	public FetchRequestNode(ASelectActionFmlActionExp astNode, MainSemanticsAnalyzer analyser) {
+		super(astNode, analyser);
 	}
 
-	public FetchRequestNode(FR action, ControlGraphFactory cgFactory) {
-		super(action, cgFactory);
+	public FetchRequestNode(FR action, MainSemanticsAnalyzer analyser) {
+		super(action, analyser);
 	}
 
 	/*protected FMLControlGraph getSimpleControlGraph(PAssignmentExpression expression) {

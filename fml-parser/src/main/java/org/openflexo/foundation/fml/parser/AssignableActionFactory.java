@@ -25,34 +25,34 @@ public class AssignableActionFactory extends FMLSemanticsAnalyzer {
 
 	public boolean debug = false;
 
-	private ControlGraphFactory cgFactory;
+	private MainSemanticsAnalyzer analyser;
 
 	private AssignableActionNode<?, ?> rootControlGraphNode = null;
 
 	private PFmlActionExp pFMLActionExpression;
 
-	public static AssignableActionNode<?, ?> makeAssignableActionNode(Node cgNode, ControlGraphFactory cgFactory) {
-		AssignableActionFactory f = new AssignableActionFactory(cgNode, cgFactory);
+	public static AssignableActionNode<?, ?> makeAssignableActionNode(Node cgNode, MainSemanticsAnalyzer analyser) {
+		AssignableActionFactory f = new AssignableActionFactory(cgNode, analyser);
 		cgNode.apply(f);
 		return f.rootControlGraphNode;
 	}
 
-	private AssignableActionFactory(Node cgNode, ControlGraphFactory cgFactory) {
-		super(cgFactory.getFactory(), cgNode);
-		this.cgFactory = cgFactory;
+	private AssignableActionFactory(Node cgNode, MainSemanticsAnalyzer analyser) {
+		super(analyser.getFactory(), cgNode);
+		this.analyser = analyser;
 		cgNode.apply(this);
 		if (pFMLActionExpression != null) {
 			// We consider only this FML action and ignore everything else
 		}
 		else {
-			push(new ExpressionActionNode(cgNode, cgFactory));
+			push(new ExpressionActionNode(cgNode, analyser));
 			pop();
 		}
 	}
 
 	@Override
 	public MainSemanticsAnalyzer getMainAnalyzer() {
-		return cgFactory.getMainAnalyzer();
+		return analyser;
 	}
 
 	public ControlGraphNode<?, ?> getRootControlGraphNode() {
@@ -139,7 +139,7 @@ public class AssignableActionFactory extends FMLSemanticsAnalyzer {
 	public void inAFmlInstanceCreationFmlActionExp(AFmlInstanceCreationFmlActionExp node) {
 		super.inAFmlInstanceCreationFmlActionExp(node);
 		pFMLActionExpression = node;
-		push(new AddFlexoConceptInstanceNode(node, cgFactory));
+		push(new AddFlexoConceptInstanceNode(node, analyser));
 	}
 
 	@Override

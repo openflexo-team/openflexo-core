@@ -36,6 +36,7 @@ import org.openflexo.foundation.fml.parser.node.AVariableDeclarationBlockStateme
 import org.openflexo.foundation.fml.parser.node.AWhileStatement;
 import org.openflexo.foundation.fml.parser.node.Node;
 import org.openflexo.foundation.fml.parser.node.PBlockStatement;
+import org.openflexo.foundation.fml.parser.node.PFlexoBehaviourBody;
 import org.openflexo.toolbox.StringUtils;
 
 /**
@@ -54,21 +55,25 @@ public class ControlGraphFactory extends FMLSemanticsAnalyzer {
 	private MainSemanticsAnalyzer mainAnalyzer;
 	private ControlGraphNode<?, ?> rootControlGraphNode = null;
 
-	/*public static ControlGraphNode<?, ?> makeControlGraphNode(Node cgNode, MainSemanticsAnalyzer analyzer) {
+	public static ControlGraphNode<?, ?> makeControlGraphNode(PFlexoBehaviourBody cgNode, MainSemanticsAnalyzer analyzer) {
+		return _makeControlGraphNode(cgNode, analyzer);
+	}
+
+	private static ControlGraphNode<?, ?> _makeControlGraphNode(Node cgNode, MainSemanticsAnalyzer analyzer) {
 		ControlGraphFactory f = new ControlGraphFactory(cgNode, analyzer);
 		cgNode.apply(f);
 		return f.rootControlGraphNode;
-	}*/
+	}
 
-	public ControlGraphFactory(Node cgNode, MainSemanticsAnalyzer analyzer) {
+	private ControlGraphFactory(Node cgNode, MainSemanticsAnalyzer analyzer) {
 		super(analyzer.getFactory(), cgNode);
 		this.mainAnalyzer = analyzer;
 	}
 
-	public ControlGraphNode<?, ?> makeControlGraphNode() {
+	/*public ControlGraphNode<?, ?> makeControlGraphNode() {
 		getRootNode().apply(this);
 		return rootControlGraphNode;
-	}
+	}*/
 
 	@Override
 	public MainSemanticsAnalyzer getMainAnalyzer() {
@@ -170,7 +175,7 @@ public class ControlGraphFactory extends FMLSemanticsAnalyzer {
 						builtSequenceNode.getModelObject().setControlGraph2(n.getModelObject());
 					}
 					else {
-						SequenceNode newSequenceNode = new SequenceNode(currentBlockNode, n, lastNode, ControlGraphFactory.this);
+						SequenceNode newSequenceNode = new SequenceNode(currentBlockNode, n, lastNode, getMainAnalyzer());
 						newSequenceNode.addToChildren(n);
 						newSequenceNode.getModelObject().setControlGraph1(n.getModelObject());
 						if (builtSequenceNode == null) {
@@ -206,7 +211,7 @@ public class ControlGraphFactory extends FMLSemanticsAnalyzer {
 			blocks.push(bsInfo);
 		}
 		if (node.getBlockStatements().size() == 0) {
-			push(new EmptyControlGraphNode(node, this));
+			push(new EmptyControlGraphNode(node, getMainAnalyzer()));
 		}
 	}
 
@@ -269,7 +274,7 @@ public class ControlGraphFactory extends FMLSemanticsAnalyzer {
 	@Override
 	public void inAVariableDeclarationBlockStatement(AVariableDeclarationBlockStatement node) {
 		super.inAVariableDeclarationBlockStatement(node);
-		push(new DeclarationActionNode(node, this));
+		push(new DeclarationActionNode(node, getMainAnalyzer()));
 	}
 
 	@Override
@@ -298,7 +303,7 @@ public class ControlGraphFactory extends FMLSemanticsAnalyzer {
 	@Override
 	public void inAIfSimpleStatement(AIfSimpleStatement node) {
 		super.inAIfSimpleStatement(node);
-		push(new ConditionalNode(node, this));
+		push(new ConditionalNode(node, getMainAnalyzer()));
 	}
 
 	@Override
@@ -310,7 +315,7 @@ public class ControlGraphFactory extends FMLSemanticsAnalyzer {
 	@Override
 	public void inAIfElseStatement(AIfElseStatement node) {
 		super.inAIfElseStatement(node);
-		push(new ConditionalNode(node, this));
+		push(new ConditionalNode(node, getMainAnalyzer()));
 	}
 
 	@Override
@@ -369,7 +374,7 @@ public class ControlGraphFactory extends FMLSemanticsAnalyzer {
 	@Override
 	public void inAReturnStatementWithoutTrailingSubstatement(AReturnStatementWithoutTrailingSubstatement node) {
 		super.inAReturnStatementWithoutTrailingSubstatement(node);
-		push(new ReturnStatementNode(node, this));
+		push(new ReturnStatementNode(node, getMainAnalyzer()));
 	}
 
 	@Override
@@ -381,7 +386,7 @@ public class ControlGraphFactory extends FMLSemanticsAnalyzer {
 	@Override
 	public void inAReturnEmptyStatementWithoutTrailingSubstatement(AReturnEmptyStatementWithoutTrailingSubstatement node) {
 		super.inAReturnEmptyStatementWithoutTrailingSubstatement(node);
-		push(new EmptyReturnStatementNode(node, this));
+		push(new EmptyReturnStatementNode(node, getMainAnalyzer()));
 	}
 
 	@Override
@@ -410,7 +415,7 @@ public class ControlGraphFactory extends FMLSemanticsAnalyzer {
 	public void inAAssignmentStatementExpression(AAssignmentStatementExpression node) {
 		// TODO Auto-generated method stub
 		super.inAAssignmentStatementExpression(node);
-		push(new AssignationActionNode(node, this));
+		push(new AssignationActionNode(node, getMainAnalyzer()));
 	}
 
 	@Override
@@ -434,7 +439,7 @@ public class ControlGraphFactory extends FMLSemanticsAnalyzer {
 	@Override
 	public void inALogActionFmlActionExp(ALogActionFmlActionExp node) {
 		super.inALogActionFmlActionExp(node);
-		push(new LogActionNode(node, this));
+		push(new LogActionNode(node, getMainAnalyzer()));
 	}
 
 	@Override
@@ -446,7 +451,7 @@ public class ControlGraphFactory extends FMLSemanticsAnalyzer {
 	@Override
 	public void inASelectActionFmlActionExp(ASelectActionFmlActionExp node) {
 		super.inASelectActionFmlActionExp(node);
-		push(new FetchRequestNode(node, this));
+		push(new FetchRequestNode(node, getMainAnalyzer()));
 	}
 
 	@Override

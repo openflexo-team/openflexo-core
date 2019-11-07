@@ -44,7 +44,7 @@ import org.openflexo.connie.DataBinding;
 import org.openflexo.foundation.fml.editionaction.AssignableAction;
 import org.openflexo.foundation.fml.editionaction.AssignationAction;
 import org.openflexo.foundation.fml.parser.AssignableActionFactory;
-import org.openflexo.foundation.fml.parser.ControlGraphFactory;
+import org.openflexo.foundation.fml.parser.MainSemanticsAnalyzer;
 import org.openflexo.foundation.fml.parser.node.AAssignmentStatementExpression;
 import org.openflexo.foundation.fml.parser.node.AFieldLeftHandSide;
 import org.openflexo.foundation.fml.parser.node.AIdentifierLeftHandSide;
@@ -62,8 +62,8 @@ public class AssignationActionNode extends AssignableActionNode<AAssignmentState
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(AssignationActionNode.class.getPackage().getName());
 
-	public AssignationActionNode(AAssignmentStatementExpression astNode, ControlGraphFactory cgFactory) {
-		super(astNode, cgFactory);
+	public AssignationActionNode(AAssignmentStatementExpression astNode, MainSemanticsAnalyzer analyser) {
+		super(astNode, analyser);
 
 		if (getSemiFragment() != null) {
 			setEndPosition(getSemiFragment().getEndPosition());
@@ -71,8 +71,8 @@ public class AssignationActionNode extends AssignableActionNode<AAssignmentState
 
 	}
 
-	public AssignationActionNode(AssignationAction<?> action, ControlGraphFactory cgFactory) {
-		super(action, cgFactory);
+	public AssignationActionNode(AssignationAction<?> action, MainSemanticsAnalyzer analyser) {
+		super(action, analyser);
 	}
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
@@ -87,7 +87,7 @@ public class AssignationActionNode extends AssignableActionNode<AAssignmentState
 		// Right
 
 		AssignableActionNode<?, ?> assignableActionNode = AssignableActionFactory.makeAssignableActionNode(astNode.getRight(),
-				getAbstractAnalyser());
+				getAnalyser());
 
 		if (assignableActionNode != null) {
 			returned.setAssignableAction((AssignableAction) assignableActionNode.getModelObject());

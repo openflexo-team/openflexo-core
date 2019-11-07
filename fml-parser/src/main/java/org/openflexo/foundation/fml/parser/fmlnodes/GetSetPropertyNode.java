@@ -111,8 +111,7 @@ public class GetSetPropertyNode extends FlexoPropertyNode<AGetSetPropertyInnerCo
 
 	protected ControlGraphNode<?, ?> makeControlGraphNode(PFlexoBehaviourBody body) {
 
-		ControlGraphFactory controlGraphFactory = new ControlGraphFactory(body, getAnalyser());
-		return controlGraphFactory.makeControlGraphNode();
+		return ControlGraphFactory.makeControlGraphNode(body, getAnalyser());
 	}
 
 	@Override

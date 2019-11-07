@@ -41,7 +41,7 @@ package org.openflexo.foundation.fml.parser.fmlnodes.controlgraph;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.fml.editionaction.LogAction;
-import org.openflexo.foundation.fml.parser.ControlGraphFactory;
+import org.openflexo.foundation.fml.parser.MainSemanticsAnalyzer;
 import org.openflexo.foundation.fml.parser.node.ALogActionFmlActionExp;
 import org.openflexo.foundation.fml.rt.logging.FMLConsole.LogLevel;
 import org.openflexo.p2pp.RawSource.RawSourceFragment;
@@ -55,8 +55,8 @@ public class LogActionNode extends ControlGraphNode<ALogActionFmlActionExp, LogA
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(LogActionNode.class.getPackage().getName());
 
-	public LogActionNode(ALogActionFmlActionExp astNode, ControlGraphFactory cgFactory) {
-		super(astNode, cgFactory);
+	public LogActionNode(ALogActionFmlActionExp astNode, MainSemanticsAnalyzer analyser) {
+		super(astNode, analyser);
 
 		if (getSemiFragment() != null) {
 			setEndPosition(getSemiFragment().getEndPosition());
@@ -64,8 +64,8 @@ public class LogActionNode extends ControlGraphNode<ALogActionFmlActionExp, LogA
 
 	}
 
-	public LogActionNode(LogAction action, ControlGraphFactory cgFactory) {
-		super(action, cgFactory);
+	public LogActionNode(LogAction action, MainSemanticsAnalyzer analyser) {
+		super(action, analyser);
 	}
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })

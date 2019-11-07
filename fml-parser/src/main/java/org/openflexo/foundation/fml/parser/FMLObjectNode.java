@@ -133,9 +133,9 @@ public abstract class FMLObjectNode<N extends Node, T extends FMLPrettyPrintable
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(FMLObjectNode.class.getPackage().getName());
 
-	private final A analyser;
+	private final MainSemanticsAnalyzer analyser;
 
-	public FMLObjectNode(N astNode, A analyser) {
+	public FMLObjectNode(N astNode, MainSemanticsAnalyzer analyser) {
 		super(null, astNode, analyser.getFragmentManager());
 		this.analyser = analyser;
 
@@ -144,7 +144,7 @@ public abstract class FMLObjectNode<N extends Node, T extends FMLPrettyPrintable
 		modelObject.initializeDeserialization(getFactory());
 	}
 
-	public FMLObjectNode(T aFMLObject, A analyser) {
+	public FMLObjectNode(T aFMLObject, MainSemanticsAnalyzer analyser) {
 		super(aFMLObject, null, null);
 		this.analyser = analyser;
 
@@ -156,12 +156,16 @@ public abstract class FMLObjectNode<N extends Node, T extends FMLPrettyPrintable
 		return analyser.getFactory();
 	}
 
-	public A getAbstractAnalyser() {
+	/*public A getAbstractAnalyser() {
 		return analyser;
 	}
-
+	
 	public MainSemanticsAnalyzer getAnalyser() {
 		return getAbstractAnalyser().getMainAnalyzer();
+	}*/
+
+	public MainSemanticsAnalyzer getAnalyser() {
+		return analyser;
 	}
 
 	public TypeFactory getTypeFactory() {
@@ -272,41 +276,41 @@ public abstract class FMLObjectNode<N extends Node, T extends FMLPrettyPrintable
 			return (P2PPNode<?, C>) new DeletionSchemeNode((DeletionScheme) object, getAnalyser());
 		}
 		if (object instanceof EmptyControlGraph) {
-			return (P2PPNode<?, C>) new EmptyControlGraphNode((EmptyControlGraph) object, getControlGraphFactory());
+			return (P2PPNode<?, C>) new EmptyControlGraphNode((EmptyControlGraph) object, getAnalyser());
 		}
 		if (object instanceof Sequence) {
-			return (P2PPNode<?, C>) new SequenceNode((Sequence) object, getControlGraphFactory());
+			return (P2PPNode<?, C>) new SequenceNode((Sequence) object, getAnalyser());
 		}
 		if (object instanceof AssignationAction) {
-			return (P2PPNode<?, C>) new AssignationActionNode((AssignationAction) object, getControlGraphFactory());
+			return (P2PPNode<?, C>) new AssignationActionNode((AssignationAction) object, getAnalyser());
 		}
 		if (object instanceof DeclarationAction) {
-			return (P2PPNode<?, C>) new DeclarationActionNode((DeclarationAction) object, getControlGraphFactory());
+			return (P2PPNode<?, C>) new DeclarationActionNode((DeclarationAction) object, getAnalyser());
 		}
 		if (object instanceof ExpressionAction) {
-			return (P2PPNode<?, C>) new ExpressionActionNode((ExpressionAction) object, getControlGraphFactory());
+			return (P2PPNode<?, C>) new ExpressionActionNode((ExpressionAction) object, getAnalyser());
 		}
 		if (object instanceof ReturnStatement) {
-			return (P2PPNode<?, C>) new ReturnStatementNode((ReturnStatement) object, getControlGraphFactory());
+			return (P2PPNode<?, C>) new ReturnStatementNode((ReturnStatement) object, getAnalyser());
 		}
 		if (object instanceof ConditionalAction) {
-			return (P2PPNode<?, C>) new ConditionalNode((ConditionalAction) object, getControlGraphFactory());
+			return (P2PPNode<?, C>) new ConditionalNode((ConditionalAction) object, getAnalyser());
 		}
 		if (object instanceof AddFlexoConceptInstance) {
-			return (P2PPNode<?, C>) new AddFlexoConceptInstanceNode((AddFlexoConceptInstance) object, getControlGraphFactory());
+			return (P2PPNode<?, C>) new AddFlexoConceptInstanceNode((AddFlexoConceptInstance) object, getAnalyser());
 		}
 		if (object instanceof LogAction) {
-			return (P2PPNode<?, C>) new LogActionNode((LogAction) object, getControlGraphFactory());
+			return (P2PPNode<?, C>) new LogActionNode((LogAction) object, getAnalyser());
 		}
 		if (object instanceof AbstractFetchRequest) {
-			return new FetchRequestNode((AbstractFetchRequest) object, getControlGraphFactory());
+			return new FetchRequestNode((AbstractFetchRequest) object, getAnalyser());
 		}
 		System.err.println("Not supported: " + object);
 		Thread.dumpStack();
 		return null;
 	}
 
-	public ControlGraphFactory getControlGraphFactory() {
+	/*public ControlGraphFactory getControlGraphFactory() {
 		if (getAbstractAnalyser() instanceof ControlGraphFactory) {
 			return (ControlGraphFactory) getAbstractAnalyser();
 		}
@@ -314,7 +318,7 @@ public abstract class FMLObjectNode<N extends Node, T extends FMLPrettyPrintable
 			return ((FMLObjectNode) getParent()).getControlGraphFactory();
 		}
 		return null;
-	}
+	}*/
 
 	/**
 	 * Return fragment matching supplied node in AST

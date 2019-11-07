@@ -43,7 +43,7 @@ import java.util.logging.Logger;
 import org.openflexo.foundation.fml.editionaction.AssignableAction;
 import org.openflexo.foundation.fml.editionaction.ReturnStatement;
 import org.openflexo.foundation.fml.parser.AssignableActionFactory;
-import org.openflexo.foundation.fml.parser.ControlGraphFactory;
+import org.openflexo.foundation.fml.parser.MainSemanticsAnalyzer;
 import org.openflexo.foundation.fml.parser.node.AReturnStatementWithoutTrailingSubstatement;
 import org.openflexo.p2pp.PrettyPrintContext.Indentation;
 import org.openflexo.p2pp.RawSource.RawSourceFragment;
@@ -57,8 +57,8 @@ public class ReturnStatementNode extends AssignableActionNode<AReturnStatementWi
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(ReturnStatementNode.class.getPackage().getName());
 
-	public ReturnStatementNode(AReturnStatementWithoutTrailingSubstatement astNode, ControlGraphFactory cgFactory) {
-		super(astNode, cgFactory);
+	public ReturnStatementNode(AReturnStatementWithoutTrailingSubstatement astNode, MainSemanticsAnalyzer analyser) {
+		super(astNode, analyser);
 
 		if (getSemiFragment() != null) {
 			setEndPosition(getSemiFragment().getEndPosition());
@@ -66,8 +66,8 @@ public class ReturnStatementNode extends AssignableActionNode<AReturnStatementWi
 
 	}
 
-	public ReturnStatementNode(ReturnStatement<?> action, ControlGraphFactory cgFactory) {
-		super(action, cgFactory);
+	public ReturnStatementNode(ReturnStatement<?> action, MainSemanticsAnalyzer analyser) {
+		super(action, analyser);
 	}
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
@@ -76,7 +76,7 @@ public class ReturnStatementNode extends AssignableActionNode<AReturnStatementWi
 		ReturnStatement<?> returned = getFactory().newReturnStatement();
 
 		AssignableActionNode<?, ?> assignableActionNode = AssignableActionFactory.makeAssignableActionNode(getASTNode().getExpression(),
-				getAbstractAnalyser());
+				getAnalyser());
 		if (assignableActionNode != null) {
 			returned.setAssignableAction((AssignableAction) assignableActionNode.getModelObject());
 			addToChildren(assignableActionNode);

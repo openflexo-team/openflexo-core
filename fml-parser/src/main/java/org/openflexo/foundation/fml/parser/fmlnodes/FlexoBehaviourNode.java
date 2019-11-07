@@ -41,7 +41,6 @@ package org.openflexo.foundation.fml.parser.fmlnodes;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.fml.FlexoBehaviour;
-import org.openflexo.foundation.fml.parser.ControlGraphFactory;
 import org.openflexo.foundation.fml.parser.FMLObjectNode;
 import org.openflexo.foundation.fml.parser.MainSemanticsAnalyzer;
 import org.openflexo.foundation.fml.parser.node.AAnonymousConstructorBehaviourDecl;
@@ -67,7 +66,7 @@ public abstract class FlexoBehaviourNode<N extends Node, T extends FlexoBehaviou
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(FlexoBehaviourNode.class.getPackage().getName());
 
-	private ControlGraphFactory controlGraphFactory;
+	// private ControlGraphFactory controlGraphFactory;
 
 	public FlexoBehaviourNode(N astNode, MainSemanticsAnalyzer analyser) {
 		super(astNode, analyser);
@@ -75,16 +74,16 @@ public abstract class FlexoBehaviourNode<N extends Node, T extends FlexoBehaviou
 
 	public FlexoBehaviourNode(T property, MainSemanticsAnalyzer analyser) {
 		super(property, analyser);
-		controlGraphFactory = new ControlGraphFactory(null, analyser);
+		// controlGraphFactory = new ControlGraphFactory(null, analyser);
 	}
 
-	@Override
+	/*@Override
 	public ControlGraphFactory getControlGraphFactory() {
 		if (controlGraphFactory == null) {
 			controlGraphFactory = new ControlGraphFactory(getFlexoBehaviourBody(getASTNode()), getAnalyser());
 		}
 		return controlGraphFactory;
-	}
+	}*/
 
 	@Override
 	public FlexoBehaviourNode<N, T> deserialize() {

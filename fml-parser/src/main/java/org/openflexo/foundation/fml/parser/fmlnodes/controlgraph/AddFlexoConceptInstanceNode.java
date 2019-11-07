@@ -43,7 +43,7 @@ import java.util.logging.Logger;
 import org.openflexo.foundation.fml.CreationScheme;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoConceptInstanceType;
-import org.openflexo.foundation.fml.parser.ControlGraphFactory;
+import org.openflexo.foundation.fml.parser.MainSemanticsAnalyzer;
 import org.openflexo.foundation.fml.parser.node.AFmlInstanceCreationFmlActionExp;
 import org.openflexo.foundation.fml.parser.node.TIdentifier;
 import org.openflexo.foundation.fml.rt.editionaction.AddFlexoConceptInstance;
@@ -60,12 +60,12 @@ public class AddFlexoConceptInstanceNode extends AssignableActionNode<AFmlInstan
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(AddFlexoConceptInstanceNode.class.getPackage().getName());
 
-	public AddFlexoConceptInstanceNode(AFmlInstanceCreationFmlActionExp astNode, ControlGraphFactory cgFactory) {
-		super(astNode, cgFactory);
+	public AddFlexoConceptInstanceNode(AFmlInstanceCreationFmlActionExp astNode, MainSemanticsAnalyzer analyser) {
+		super(astNode, analyser);
 	}
 
-	public AddFlexoConceptInstanceNode(AddFlexoConceptInstance<?> action, ControlGraphFactory cgFactory) {
-		super(action, cgFactory);
+	public AddFlexoConceptInstanceNode(AddFlexoConceptInstance<?> action, MainSemanticsAnalyzer analyser) {
+		super(action, analyser);
 	}
 
 	/*protected FMLControlGraph getSimpleControlGraph(PAssignmentExpression expression) {

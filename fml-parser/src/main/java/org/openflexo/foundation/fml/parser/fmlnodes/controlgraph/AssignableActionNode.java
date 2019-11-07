@@ -41,7 +41,7 @@ package org.openflexo.foundation.fml.parser.fmlnodes.controlgraph;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.fml.editionaction.AssignableAction;
-import org.openflexo.foundation.fml.parser.ControlGraphFactory;
+import org.openflexo.foundation.fml.parser.MainSemanticsAnalyzer;
 import org.openflexo.foundation.fml.parser.node.Node;
 
 /**
@@ -53,12 +53,12 @@ public abstract class AssignableActionNode<N extends Node, T extends AssignableA
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(AssignableActionNode.class.getPackage().getName());
 
-	public AssignableActionNode(N astNode, ControlGraphFactory cgFactory) {
-		super(astNode, cgFactory);
+	public AssignableActionNode(N astNode, MainSemanticsAnalyzer analyser) {
+		super(astNode, analyser);
 	}
 
-	public AssignableActionNode(T property, ControlGraphFactory cgFactory) {
-		super(property, cgFactory);
+	public AssignableActionNode(T property, MainSemanticsAnalyzer analyser) {
+		super(property, analyser);
 	}
 
 }
