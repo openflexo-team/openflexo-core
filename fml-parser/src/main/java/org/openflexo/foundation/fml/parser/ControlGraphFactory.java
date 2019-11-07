@@ -37,6 +37,8 @@ import org.openflexo.foundation.fml.parser.node.AWhileStatement;
 import org.openflexo.foundation.fml.parser.node.Node;
 import org.openflexo.foundation.fml.parser.node.PBlockStatement;
 import org.openflexo.foundation.fml.parser.node.PFlexoBehaviourBody;
+import org.openflexo.foundation.fml.parser.node.PStatement;
+import org.openflexo.foundation.fml.parser.node.PStatementNoShortIf;
 import org.openflexo.toolbox.StringUtils;
 
 /**
@@ -56,6 +58,14 @@ public class ControlGraphFactory extends FMLSemanticsAnalyzer {
 	private ControlGraphNode<?, ?> rootControlGraphNode = null;
 
 	public static ControlGraphNode<?, ?> makeControlGraphNode(PFlexoBehaviourBody cgNode, MainSemanticsAnalyzer analyzer) {
+		return _makeControlGraphNode(cgNode, analyzer);
+	}
+
+	public static ControlGraphNode<?, ?> makeControlGraphNode(PStatement cgNode, MainSemanticsAnalyzer analyzer) {
+		return _makeControlGraphNode(cgNode, analyzer);
+	}
+
+	public static ControlGraphNode<?, ?> makeControlGraphNode(PStatementNoShortIf cgNode, MainSemanticsAnalyzer analyzer) {
 		return _makeControlGraphNode(cgNode, analyzer);
 	}
 
