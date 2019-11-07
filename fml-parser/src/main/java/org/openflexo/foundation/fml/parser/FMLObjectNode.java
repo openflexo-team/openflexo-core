@@ -380,19 +380,27 @@ public abstract class FMLObjectNode<N extends Node, T extends FMLPrettyPrintable
 		return getTypeFactory().makeFullQualifiedIdentifier(identifier, additionalIdentifiers);
 	}
 
+	// We should parse expression instead
+	@Deprecated
 	protected <T> DataBinding<T> makeBinding(Node node, Type type, BindingDefinitionType bindingType, Bindable bindable) {
 		return new DataBinding(getText(node), bindable, type, bindingType);
 	}
 
+	// We should parse expression instead
+	@Deprecated
 	protected <T> DataBinding<T> makeBinding(Node node, Bindable bindable) {
 		return new DataBinding(getText(node), bindable, Object.class, BindingDefinitionType.GET);
 	}
 
+	// We should parse expression instead
+	@Deprecated
 	protected <T> DataBinding<T> makeBinding(PCompositeIdent compositeIdentifier, Type type, BindingDefinitionType bindingType,
 			Bindable bindable) {
 		return new DataBinding(makeFullQualifiedIdentifier(compositeIdentifier), bindable, type, bindingType);
 	}
 
+	// We should parse expression instead
+	@Deprecated
 	protected <T> DataBinding<T> makeBinding(PCompositeIdent compositeIdentifier, Bindable bindable) {
 		return new DataBinding(makeFullQualifiedIdentifier(compositeIdentifier), bindable, Object.class, BindingDefinitionType.GET);
 	}
