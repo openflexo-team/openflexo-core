@@ -91,7 +91,7 @@ public interface FlexoObject extends AccessibleProxyObject, DeletableProxyObject
 	@PropertyIdentifier(type = long.class)
 	String FLEXO_ID_KEY = "flexoID";
 
-	@Getter(value = USER_IDENTIFIER_KEY)
+	@Getter(value = USER_IDENTIFIER_KEY, ignoreForEquality = true)
 	@XMLAttribute(xmlTag = "userID")
 	public String getUserIdentifier();
 

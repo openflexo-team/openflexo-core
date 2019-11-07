@@ -88,6 +88,7 @@ import org.openflexo.foundation.resource.SaveResourcePermissionDeniedException;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterService;
+import org.openflexo.foundation.technologyadapter.UseModelSlotDeclaration;
 import org.openflexo.kvc.AccessorInvocationException;
 import org.openflexo.pamela.exceptions.ModelDefinitionException;
 import org.openflexo.pamela.validation.ValidationIssue;
@@ -922,6 +923,13 @@ public abstract class CompilationUnitResourceImpl extends PamelaResourceImpl<FML
 
 		FMLCompilationUnit returned = getFactory().newCompilationUnit();
 		returned.setVirtualModel(virtualModel);
+		for (UseModelSlotDeclaration useModelSlotDeclaration : virtualModel.getUseDeclarations()) {
+			System.out.println("Hop: " + useModelSlotDeclaration + " of " + useModelSlotDeclaration.getClass());
+			returned.addToUseDeclarations(useModelSlotDeclaration);
+		}
+		for (UseModelSlotDeclaration useModelSlotDeclaration : new ArrayList<UseModelSlotDeclaration>(virtualModel.getUseDeclarations())) {
+			virtualModel.removeFromUseDeclarations(useModelSlotDeclaration);
+		}
 		returned.setResource(this);
 		getFMLParser().initPrettyPrint(returned);
 

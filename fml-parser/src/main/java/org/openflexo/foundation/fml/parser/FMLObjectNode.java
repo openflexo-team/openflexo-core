@@ -86,6 +86,7 @@ import org.openflexo.foundation.fml.parser.fmlnodes.JavaImportNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.JavaRoleNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.MetaDataNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.PrimitiveRoleNode;
+import org.openflexo.foundation.fml.parser.fmlnodes.UseDeclarationNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.VirtualModelNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.AddFlexoConceptInstanceNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.AssignationActionNode;
@@ -111,6 +112,7 @@ import org.openflexo.foundation.fml.parser.node.PVisibility;
 import org.openflexo.foundation.fml.parser.node.TIdentifier;
 import org.openflexo.foundation.fml.parser.node.Token;
 import org.openflexo.foundation.fml.rt.editionaction.AddFlexoConceptInstance;
+import org.openflexo.foundation.technologyadapter.UseModelSlotDeclaration;
 import org.openflexo.p2pp.P2PPNode;
 import org.openflexo.p2pp.PrettyPrintContext;
 import org.openflexo.p2pp.RawSource;
@@ -227,6 +229,9 @@ public abstract class FMLObjectNode<N extends Node, T extends FMLPrettyPrintable
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
 	public <C> P2PPNode<?, C> makeObjectNode(C object) {
+		if (object instanceof UseModelSlotDeclaration) {
+			return (P2PPNode<?, C>) new UseDeclarationNode((UseModelSlotDeclaration) object, getAnalyser());
+		}
 		if (object instanceof JavaImportDeclaration) {
 			return (P2PPNode<?, C>) new JavaImportNode((JavaImportDeclaration) object, getAnalyser());
 		}

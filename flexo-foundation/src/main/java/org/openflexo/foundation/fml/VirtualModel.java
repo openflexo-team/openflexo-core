@@ -188,7 +188,7 @@ public interface VirtualModel extends FlexoConcept {
 	 * 
 	 * @return
 	 */
-	@Getter(value = USE_DECLARATIONS_KEY, cardinality = Cardinality.LIST, inverse = UseModelSlotDeclaration.VIRTUAL_MODEL_KEY)
+	@Getter(value = USE_DECLARATIONS_KEY, cardinality = Cardinality.LIST/*, inverse = UseModelSlotDeclaration.VIRTUAL_MODEL_KEY*/, ignoreForEquality = true)
 	@XMLElement
 	@Embedded
 	@CloningStrategy(StrategyType.CLONE)
@@ -402,7 +402,7 @@ public interface VirtualModel extends FlexoConcept {
 	public VirtualModel getVirtualModelNamed(String virtualModelNameOrURI);
 
 	public CompilationUnitResource getCompilationUnitResource();
-	
+
 	/**
 	 * Default implementation for {@link VirtualModel} API
 	 * 
@@ -1207,9 +1207,10 @@ public interface VirtualModel extends FlexoConcept {
 			return (Class<? extends VirtualModel>) getImplementedInterface();
 		}
 
+		@Override
 		public CompilationUnitResource getCompilationUnitResource() {
 			if (getCompilationUnit() != null) {
-				return (CompilationUnitResource)getCompilationUnit().getResource();
+				return (CompilationUnitResource) getCompilationUnit().getResource();
 			}
 			return null;
 		}

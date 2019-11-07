@@ -39,8 +39,13 @@
 package org.openflexo.foundation.technologyadapter;
 
 import org.openflexo.foundation.FlexoObject;
+import org.openflexo.foundation.fml.FMLCompilationUnit;
+import org.openflexo.foundation.fml.FMLPrettyPrintable;
 import org.openflexo.foundation.fml.VirtualModel;
+import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstanceModelSlot;
+import org.openflexo.foundation.fml.ta.FMLModelSlot;
 import org.openflexo.pamela.annotations.CloningStrategy;
+import org.openflexo.pamela.annotations.CloningStrategy.StrategyType;
 import org.openflexo.pamela.annotations.Getter;
 import org.openflexo.pamela.annotations.ImplementationClass;
 import org.openflexo.pamela.annotations.ModelEntity;
@@ -48,7 +53,6 @@ import org.openflexo.pamela.annotations.PropertyIdentifier;
 import org.openflexo.pamela.annotations.Setter;
 import org.openflexo.pamela.annotations.XMLAttribute;
 import org.openflexo.pamela.annotations.XMLElement;
-import org.openflexo.pamela.annotations.CloningStrategy.StrategyType;
 
 /**
  * 
@@ -59,12 +63,14 @@ import org.openflexo.pamela.annotations.CloningStrategy.StrategyType;
 @ModelEntity
 @ImplementationClass(UseModelSlotDeclaration.UseModelSlotDeclarationImpl.class)
 @XMLElement
-public interface UseModelSlotDeclaration extends FlexoObject {
+public interface UseModelSlotDeclaration extends FlexoObject, FMLPrettyPrintable {
 
-	@PropertyIdentifier(type = VirtualModel.class)
-	public static final String VIRTUAL_MODEL_KEY = "virtualModel";
+	@PropertyIdentifier(type = FMLCompilationUnit.class)
+	public static final String COMPILATION_UNIT_KEY = "compilationUnit";
 	@PropertyIdentifier(type = Class.class)
 	public static final String MODEL_SLOT_CLASS_KEY = "modelSlotClass";
+	@PropertyIdentifier(type = String.class)
+	public static final String ABBREV_KEY = "abbrev";
 
 	@Getter(value = MODEL_SLOT_CLASS_KEY)
 	@XMLAttribute
@@ -73,17 +79,51 @@ public interface UseModelSlotDeclaration extends FlexoObject {
 	@Setter(MODEL_SLOT_CLASS_KEY)
 	public void setModelSlotClass(Class<? extends ModelSlot<?>> modelSlotClass);
 
-	@Getter(value = VIRTUAL_MODEL_KEY, inverse = VirtualModel.USE_DECLARATIONS_KEY)
+	@Getter(value = COMPILATION_UNIT_KEY, inverse = VirtualModel.USE_DECLARATIONS_KEY)
 	@CloningStrategy(StrategyType.IGNORE)
-	public VirtualModel getVirtualModel();
+	public FMLCompilationUnit getCompilationUnit();
 
-	@Setter(VIRTUAL_MODEL_KEY)
-	public void setVirtualModel(VirtualModel virtualModel);
+	@Setter(COMPILATION_UNIT_KEY)
+	public void setCompilationUnit(FMLCompilationUnit compilationUnit);
 
-	public abstract class UseModelSlotDeclarationImpl extends FlexoObjectImpl implements UseModelSlotDeclaration {
+	@Getter(value = ABBREV_KEY)
+	@XMLAttribute
+	public String getAbbrev();
+
+	@Setter(ABBREV_KEY)
+	public void setAbbrev(String abbrev);
+
+	public abstract class UseModelSlotDeclarationImpl extends FMLObjectImpl implements UseModelSlotDeclaration {
+
+		@Override
+		public FMLCompilationUnit getResourceData() {
+			return getCompilationUnit();
+		}
+
 		@Override
 		public String toString() {
 			return "UseModelSlotDeclaration:" + getModelSlotClass();
+		}
+
+		@Override
+		public String getAbbrev() {
+			String returned = (String) performSuperGetter(ABBREV_KEY);
+			if (returned == null) {
+				if (FMLRTVirtualModelInstanceModelSlot.class.isAssignableFrom(getModelSlotClass())) {
+					return "FMLRT";
+				}
+				if (FMLModelSlot.class.isAssignableFrom(getModelSlotClass())) {
+					return "FMLRT";
+				}
+				if (getModelSlotClass() != null && getCompilationUnit() != null) {
+					TechnologyAdapter ta = getCompilationUnit().getTechnologyAdapterService()
+							.getTechnologyAdapterForModelSlot(getModelSlotClass());
+					if (ta != null) {
+						return ta.getIdentifier();
+					}
+				}
+			}
+			return returned;
 		}
 	}
 }

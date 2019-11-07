@@ -1983,8 +1983,8 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 		}
 		else if (object instanceof UseModelSlotDeclaration) {
 			UseModelSlotDeclaration useDeclaration = (UseModelSlotDeclaration) object;
-			if (useDeclaration.getVirtualModel() != null) {
-				TechnologyAdapter modelSlotTA = useDeclaration.getVirtualModel().getTechnologyAdapterService()
+			if (useDeclaration.getCompilationUnit() != null) {
+				TechnologyAdapter modelSlotTA = useDeclaration.getCompilationUnit().getTechnologyAdapterService()
 						.getTechnologyAdapterForModelSlot(useDeclaration.getModelSlotClass());
 				TechnologyAdapterController<?> tac = getTechnologyAdapterController(modelSlotTA);
 				if (tac != null) {
