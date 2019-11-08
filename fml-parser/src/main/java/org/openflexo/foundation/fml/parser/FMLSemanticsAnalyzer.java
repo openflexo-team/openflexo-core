@@ -38,13 +38,19 @@
 
 package org.openflexo.foundation.fml.parser;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.Stack;
 
 import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.fml.FMLModelFactory;
 import org.openflexo.foundation.fml.parser.analysis.DepthFirstAdapter;
 import org.openflexo.foundation.fml.parser.node.Node;
+import org.openflexo.foundation.fml.parser.node.Token;
 import org.openflexo.p2pp.P2PPNode;
+import org.openflexo.p2pp.RawSource;
+import org.openflexo.p2pp.RawSource.RawSourceFragment;
+import org.openflexo.toolbox.ChainedCollection;
 
 /**
  * Base class implementing semantics analyzer, based on sablecc grammar visitor<br>
@@ -71,10 +77,6 @@ public abstract class FMLSemanticsAnalyzer extends DepthFirstAdapter {
 	}
 
 	public abstract MainSemanticsAnalyzer getMainAnalyzer();
-
-	public FragmentManager getFragmentManager() {
-		return getMainAnalyzer().getFragmentManager();
-	}
 
 	public Node getRootNode() {
 		return rootNode;
@@ -115,6 +117,63 @@ public abstract class FMLSemanticsAnalyzer extends DepthFirstAdapter {
 
 	public FMLObjectNode<?, ?, ?> getCurrentNode() {
 		return peek();
+	}
+
+	public FragmentManager getFragmentManager() {
+		return getMainAnalyzer().getFragmentManager();
+	}
+
+	/**
+	 * Return original version of last serialized raw source, FOR THE ENTIRE compilation unit
+	 * 
+	 * @return
+	 */
+	public RawSource getRawSource() {
+		return getMainAnalyzer().getRawSource();
+	}
+
+	/**
+	 * Return fragment matching supplied node in AST
+	 * 
+	 * @param token
+	 * @return
+	 */
+	public RawSourceFragment getFragment(Node node) {
+		if (node instanceof Token) {
+			Token token = (Token) node;
+			return getRawSource().makeFragment(getRawSource().makePositionBeforeChar(token.getLine(), token.getPos()),
+					getRawSource().makePositionBeforeChar(token.getLine(), token.getPos() + token.getText().length()));
+		}
+		else {
+			return getMainAnalyzer().getFragmentManager().retrieveFragment(node);
+		}
+	}
+
+	/**
+	 * Return fragment matching supplied nodes in AST
+	 * 
+	 * @param token
+	 * @return
+	 */
+	public RawSourceFragment getFragment(Node node, Node otherNode) {
+		return getFragment(node, Collections.singletonList(otherNode));
+	}
+
+	/**
+	 * Return fragment matching supplied nodes in AST
+	 * 
+	 * @param token
+	 * @return
+	 */
+	public RawSourceFragment getFragment(Node node, List<? extends Node> otherNodes) {
+		ChainedCollection<Node> collection = new ChainedCollection<>();
+		collection.add(node);
+		collection.add(otherNodes);
+		return getMainAnalyzer().getFragmentManager().getFragment(collection);
+	}
+
+	public String getText(Node node) {
+		return getFragment(node).getRawText();
 	}
 
 }

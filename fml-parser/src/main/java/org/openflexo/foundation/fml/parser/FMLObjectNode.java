@@ -140,8 +140,10 @@ public abstract class FMLObjectNode<N extends Node, T extends FMLPrettyPrintable
 		this.analyser = analyser;
 
 		modelObject = buildModelObjectFromAST(astNode);
-		modelObject.setPrettyPrintDelegate(this);
-		modelObject.initializeDeserialization(getFactory());
+		if (modelObject != null) {
+			modelObject.setPrettyPrintDelegate(this);
+			modelObject.initializeDeserialization(getFactory());
+		}
 	}
 
 	public FMLObjectNode(T aFMLObject, MainSemanticsAnalyzer analyser) {
@@ -154,6 +156,12 @@ public abstract class FMLObjectNode<N extends Node, T extends FMLPrettyPrintable
 
 	public FMLModelFactory getFactory() {
 		return analyser.getFactory();
+	}
+
+	@Override
+	public void setModelObject(T modelObject) {
+		super.setModelObject(modelObject);
+		modelObject.setPrettyPrintDelegate(this);
 	}
 
 	/*public A getAbstractAnalyser() {

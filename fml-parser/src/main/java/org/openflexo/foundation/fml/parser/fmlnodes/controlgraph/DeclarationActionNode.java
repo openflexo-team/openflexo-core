@@ -40,9 +40,9 @@ package org.openflexo.foundation.fml.parser.fmlnodes.controlgraph;
 
 import java.util.logging.Logger;
 
-import org.openflexo.connie.DataBinding;
+import org.openflexo.foundation.fml.editionaction.AssignableAction;
 import org.openflexo.foundation.fml.editionaction.DeclarationAction;
-import org.openflexo.foundation.fml.editionaction.ExpressionAction;
+import org.openflexo.foundation.fml.parser.ControlGraphFactory;
 import org.openflexo.foundation.fml.parser.MainSemanticsAnalyzer;
 import org.openflexo.foundation.fml.parser.node.AIdentifierVariableDeclarator;
 import org.openflexo.foundation.fml.parser.node.AInitializerVariableDeclarator;
@@ -77,10 +77,21 @@ public class DeclarationActionNode extends AssignableActionNode<AVariableDeclara
 		returned.setDeclaredType(getTypeFactory().makeType(astNode.getType()));
 
 		if (astNode.getVariableDeclarator() instanceof AInitializerVariableDeclarator) {
-			// TODO: on doit plutot trouver une autre action, c'est plus complique que ca
-			DataBinding<Object> initValue = makeBinding(((AInitializerVariableDeclarator) astNode.getVariableDeclarator()).getExpression(),
-					returned);
-			returned.setAssignableAction((ExpressionAction) getFactory().newExpressionAction(initValue));
+
+			ControlGraphNode<?, ?> assignableActionNode = ControlGraphFactory.makeControlGraphNode(
+					((AInitializerVariableDeclarator) astNode.getVariableDeclarator()).getExpression(), getAnalyser());
+
+			if (assignableActionNode != null) {
+				if (assignableActionNode.getModelObject() instanceof AssignableAction) {
+					returned.setAssignableAction((AssignableAction) assignableActionNode.getModelObject());
+					addToChildren(assignableActionNode);
+				}
+				else {
+					System.err.println("Unexpected " + assignableActionNode.getModelObject());
+					Thread.dumpStack();
+				}
+			}
+
 		}
 
 		return returned;

@@ -7,12 +7,14 @@ import java.util.logging.Logger;
 
 import org.openflexo.foundation.fml.controlgraph.FMLControlGraph;
 import org.openflexo.foundation.fml.controlgraph.Sequence;
+import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.AddFlexoConceptInstanceNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.AssignationActionNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.ConditionalNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.ControlGraphNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.DeclarationActionNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.EmptyControlGraphNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.EmptyReturnStatementNode;
+import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.ExpressionActionNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.FetchRequestNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.LogActionNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.ReturnStatementNode;
@@ -22,6 +24,7 @@ import org.openflexo.foundation.fml.parser.node.ABlock;
 import org.openflexo.foundation.fml.parser.node.ADoStatementStatementWithoutTrailingSubstatement;
 import org.openflexo.foundation.fml.parser.node.AEmptyStatementStatementWithoutTrailingSubstatement;
 import org.openflexo.foundation.fml.parser.node.AFmlActionExpressionStatementExpression;
+import org.openflexo.foundation.fml.parser.node.AFmlInstanceCreationFmlActionExp;
 import org.openflexo.foundation.fml.parser.node.AForBasicExpressionStatement;
 import org.openflexo.foundation.fml.parser.node.AForBasicStatement;
 import org.openflexo.foundation.fml.parser.node.AForEnhancedStatement;
@@ -36,6 +39,7 @@ import org.openflexo.foundation.fml.parser.node.AVariableDeclarationBlockStateme
 import org.openflexo.foundation.fml.parser.node.AWhileStatement;
 import org.openflexo.foundation.fml.parser.node.Node;
 import org.openflexo.foundation.fml.parser.node.PBlockStatement;
+import org.openflexo.foundation.fml.parser.node.PExpression;
 import org.openflexo.foundation.fml.parser.node.PFlexoBehaviourBody;
 import org.openflexo.foundation.fml.parser.node.PStatement;
 import org.openflexo.foundation.fml.parser.node.PStatementNoShortIf;
@@ -69,9 +73,16 @@ public class ControlGraphFactory extends FMLSemanticsAnalyzer {
 		return _makeControlGraphNode(cgNode, analyzer);
 	}
 
+	public static ControlGraphNode<?, ?> makeControlGraphNode(PExpression cgNode, MainSemanticsAnalyzer analyzer) {
+		return _makeControlGraphNode(cgNode, analyzer);
+	}
+
 	private static ControlGraphNode<?, ?> _makeControlGraphNode(Node cgNode, MainSemanticsAnalyzer analyzer) {
 		ControlGraphFactory f = new ControlGraphFactory(cgNode, analyzer);
 		cgNode.apply(f);
+		if (f.rootControlGraphNode == null) {
+			f.rootControlGraphNode = new ExpressionActionNode(cgNode, analyzer);
+		}
 		return f.rootControlGraphNode;
 	}
 
@@ -467,6 +478,18 @@ public class ControlGraphFactory extends FMLSemanticsAnalyzer {
 	@Override
 	public void outASelectActionFmlActionExp(ASelectActionFmlActionExp node) {
 		super.outASelectActionFmlActionExp(node);
+		pop();
+	}
+
+	@Override
+	public void inAFmlInstanceCreationFmlActionExp(AFmlInstanceCreationFmlActionExp node) {
+		super.inAFmlInstanceCreationFmlActionExp(node);
+		push(new AddFlexoConceptInstanceNode(node, getMainAnalyzer()));
+	}
+
+	@Override
+	public void outAFmlInstanceCreationFmlActionExp(AFmlInstanceCreationFmlActionExp node) {
+		super.outAFmlInstanceCreationFmlActionExp(node);
 		pop();
 	}
 

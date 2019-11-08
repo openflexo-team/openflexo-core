@@ -188,7 +188,10 @@ public interface VirtualModel extends FlexoConcept {
 	 * 
 	 * @return
 	 */
-	@Getter(value = USE_DECLARATIONS_KEY, cardinality = Cardinality.LIST/*, inverse = UseModelSlotDeclaration.VIRTUAL_MODEL_KEY*/, ignoreForEquality = true)
+	@Getter(
+			value = USE_DECLARATIONS_KEY,
+			cardinality = Cardinality.LIST/*, inverse = UseModelSlotDeclaration.VIRTUAL_MODEL_KEY*/,
+			ignoreForEquality = true)
 	@XMLElement
 	@Embedded
 	@CloningStrategy(StrategyType.CLONE)
@@ -611,6 +614,27 @@ public interface VirtualModel extends FlexoConcept {
 				}
 				if (getCompilationUnit() != null && getCompilationUnit().getResource() != null) {
 					getCompilationUnit().getResource().setVersion(aVersion);
+				}
+			}
+		}
+
+		@Override
+		public String getAuthor() {
+			if (getMetaData("Author") != null) {
+				return getMetaData("Author").getValueAs(String.class);
+			}
+			return null;
+		}
+
+		@Override
+		public void setAuthor(String author) {
+			if (isDeserializing() || requireChange(getAuthor(), author)) {
+				if (getMetaData("Author") != null) {
+					getMetaData("Author").setValueAs(author, String.class);
+				}
+				else {
+					FMLMetaData authorMD = getFMLModelFactory().newMetaData("Author", author, String.class);
+					addToMetaData(authorMD);
 				}
 			}
 		}

@@ -42,7 +42,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Type;
 import java.util.logging.Logger;
 
-import org.openflexo.connie.BindingFactory;
 import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.exception.NullReferenceException;
 import org.openflexo.connie.type.UndefinedType;
@@ -109,7 +108,7 @@ public interface ExpressionAction<T> extends AssignableAction<T> {
 			}
 
 			if (getExpression() != null && getExpression().isSet() && getExpression().isValid()) {
-				isAnalyzingType = true;				
+				isAnalyzingType = true;
 				Type returned = getExpression().getAnalyzedType();
 				isAnalyzingType = false;
 				return returned;
@@ -118,9 +117,9 @@ public interface ExpressionAction<T> extends AssignableAction<T> {
 			// TODO
 			// Gros hack ici: le probleme est que la BindingFactory n'etait pas valide au moment de l'analyse
 			// Il faut donc ecouter les modifications de getBindingFactory()
-			
+
 			if (getExpression() != null && !getExpression().isValid()) {
-				isAnalyzingType = true;				
+				isAnalyzingType = true;
 				getExpression().forceRevalidate();
 				isAnalyzingType = false;
 				if (getExpression().isValid()) {
@@ -198,6 +197,12 @@ public interface ExpressionAction<T> extends AssignableAction<T> {
 
 		@Override
 		public void setExpression(DataBinding<T> expression) {
+
+			if (expression.toString().startsWith("select")) {
+				System.out.println("Qui est le con ?");
+				Thread.dumpStack();
+			}
+
 			if (expression != null) {
 				expression.setOwner(this);
 				expression.setDeclaredType(Object.class);
@@ -245,6 +250,12 @@ public interface ExpressionAction<T> extends AssignableAction<T> {
 		@Override
 		public String getFMLRepresentation(FMLRepresentationContext context) {
 			return getExpression().toString();
+		}
+
+		@Override
+		public String toString() {
+			// A virer bien sur !!!
+			return "Coucou l'expression avec " + getExpression() + " valid=" + getExpression().isValid();
 		}
 
 	}

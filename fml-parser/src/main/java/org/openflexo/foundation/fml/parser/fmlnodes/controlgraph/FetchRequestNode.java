@@ -40,11 +40,22 @@ package org.openflexo.foundation.fml.parser.fmlnodes.controlgraph;
 
 import java.util.logging.Logger;
 
+import org.openflexo.connie.DataBinding;
+import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoConceptInstanceType;
+import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.VirtualModelInstanceType;
 import org.openflexo.foundation.fml.editionaction.AbstractFetchRequest;
+import org.openflexo.foundation.fml.parser.ExpressionFactory;
 import org.openflexo.foundation.fml.parser.MainSemanticsAnalyzer;
+import org.openflexo.foundation.fml.parser.node.AFromClause;
 import org.openflexo.foundation.fml.parser.node.ASelectActionFmlActionExp;
+import org.openflexo.foundation.fml.parser.node.PExpression;
+import org.openflexo.foundation.fml.parser.node.PFromClause;
+import org.openflexo.foundation.fml.rt.editionaction.AbstractSelectFlexoConceptInstance;
+import org.openflexo.foundation.fml.rt.editionaction.AbstractSelectVirtualModelInstance;
+import org.openflexo.foundation.fml.rt.editionaction.SelectUniqueFlexoConceptInstance;
+import org.openflexo.foundation.fml.rt.editionaction.SelectUniqueVirtualModelInstance;
 import org.openflexo.p2pp.RawSource.RawSourceFragment;
 
 /**
@@ -64,37 +75,6 @@ public class FetchRequestNode<FR extends AbstractFetchRequest<?, ?, ?, ?>> exten
 		super(action, analyser);
 	}
 
-	/*protected FMLControlGraph getSimpleControlGraph(PAssignmentExpression expression) {
-		if (expression ins)
-	}*/
-
-	// private FlexoConceptInstanceType conceptType;
-	// private String creationSchemeName;
-
-	/*@Override
-	public void finalizeDeserialization() {
-		super.finalizeDeserialization();
-		if (conceptType != null && conceptType.isResolved()) {
-			FlexoConcept flexoConceptType = conceptType.getFlexoConcept();
-			if (flexoConceptType != null) {
-				getModelObject().setFlexoConceptType(flexoConceptType);
-				if (flexoConceptType.getCreationSchemes().size() == 0) {
-					// No constructor: !! problem
-					// TODO
-				}
-				else if (flexoConceptType.getCreationSchemes().size() == 1) {
-					getModelObject().setCreationScheme(flexoConceptType.getCreationSchemes().get(0));
-				}
-				else  {
-					// TODO
-					getModelObject().setCreationScheme((CreationScheme) flexoConceptType.getFlexoBehaviour(creationSchemeName));
-				}
-	
-			}
-	
-		}
-	}*/
-
 	@Override
 	public FR buildModelObjectFromAST(ASelectActionFmlActionExp astNode) {
 		FR returned = null;
@@ -102,23 +82,48 @@ public class FetchRequestNode<FR extends AbstractFetchRequest<?, ?, ?, ?>> exten
 		FlexoConceptInstanceType type = getTypeFactory().lookupConceptNamed(astNode.getSelectedTypeName());
 
 		if (type instanceof VirtualModelInstanceType) {
+			AbstractSelectVirtualModelInstance selectAction = null;
 			if (astNode.getKwUnique() != null) {
-				returned = (FR) getFactory().newSelectUniqueVirtualModelInstance();
+				selectAction = getFactory().newSelectUniqueVirtualModelInstance();
 			}
 			else {
 				returned = (FR) getFactory().newSelectVirtualModelInstance();
 			}
+			VirtualModel vm = ((VirtualModelInstanceType) type).getVirtualModel();
+			if (vm != null && selectAction != null) {
+				selectAction.setVirtualModelType(vm);
+			}
+			if (astNode.getFromClause() instanceof AFromClause) {
+				PExpression fromExpression = ((AFromClause) astNode.getFromClause()).getExpression();
+				DataBinding<?> container = ExpressionFactory.makeExpression(fromExpression, getAnalyser(), selectAction);
+				selectAction.setContainer(container);
+				selectAction.setReceiver(container);
+			}
+			returned = (FR) selectAction;
 		}
 		else if (type instanceof FlexoConceptInstanceType) {
+			AbstractSelectFlexoConceptInstance selectAction = null;
 			if (astNode.getKwUnique() != null) {
-				returned = (FR) getFactory().newSelectUniqueFlexoConceptInstance();
+				selectAction = getFactory().newSelectUniqueFlexoConceptInstance();
 			}
 			else {
-				returned = (FR) getFactory().newSelectFlexoConceptInstance();
+				selectAction = getFactory().newSelectFlexoConceptInstance();
 			}
+			FlexoConcept concept = type.getFlexoConcept();
+			if (concept != null && selectAction != null) {
+				selectAction.setFlexoConceptType(concept);
+			}
+			if (astNode.getFromClause() instanceof AFromClause) {
+				PExpression fromExpression = ((AFromClause) astNode.getFromClause()).getExpression();
+				DataBinding<?> container = ExpressionFactory.makeExpression(fromExpression, getAnalyser(), selectAction);
+				selectAction.setContainer(container);
+				selectAction.setReceiver(container);
+			}
+			returned = (FR) selectAction;
 		}
 		else {
-			returned = (FR) getFactory().newSelectFlexoConceptInstance();
+			// TODO...
+			returned = null;
 		}
 		return returned;
 
@@ -126,9 +131,7 @@ public class FetchRequestNode<FR extends AbstractFetchRequest<?, ?, ?, ?>> exten
 
 	/*
 	 * <pre>
-	 * concept_instance_creation_expression =
-	 *   {simplified} new [concept_name]:identifier l_par argument_list? r_par |
-	 *   {full_qualified} new [concept_name]:identifier colon_colon [constructor_name]:identifier l_par argument_list? r_par;
+	 * kw_select kw_unique? [selected_type_name]:composite_ident from_clause where_clause?
 	 * </pre>
 	 */
 
@@ -137,21 +140,103 @@ public class FetchRequestNode<FR extends AbstractFetchRequest<?, ?, ?, ?>> exten
 		super.preparePrettyPrint(hasParsedVersion);
 
 		// @formatter:off	
-		append(staticContents("", "select Toto from (this)", SPACE), getSelectFragment());
-		/*append(dynamicContents(() -> serializeType(getModelObject().getFlexoConceptType())), getConceptNameFragment());
-		when(() -> isFullQualified())
-			.thenAppend(staticContents("::"), getColonColonFragment())
-			.thenAppend(dynamicContents(() -> serializeFlexoBehaviour(getModelObject().getCreationScheme())), getConstructorNameFragment());
-		append(staticContents("("), getLParFragment());
-		append(childrenContents("", "", () -> getModelObject().getParameters(), ",", "", Indentation.DoNotIndent,
-				AddFlexoConceptInstanceParameter.class));
-		append(staticContents(")"), getRParFragment());*/
+
+		append(staticContents("select"), getSelectFragment());
+
+		when(() -> isUnique())
+		.thenAppend(staticContents(SPACE,"unique",""), getUniqueFragment());
+
+		append(dynamicContents(SPACE, () -> serializeType(getModelObject().getFetchedType())), getTypeFragment());
+
+		append(staticContents(SPACE, "from",""), getFromFragment());
+		append(staticContents(SPACE, "(",""), getLParFromFragment());
+		append(dynamicContents(() -> getFromAsString()), getFromExpressionFragment());
+		append(staticContents(")"), getRParFromFragment());
+		//append(staticContents(";"), getSemiFragment());
 		// @formatter:on	
+	}
+
+	private String getFromAsString() {
+		if (getModelObject() instanceof AbstractSelectFlexoConceptInstance) {
+			return ((AbstractSelectFlexoConceptInstance) getModelObject()).getContainer().toString();
+		}
+		if (getModelObject() instanceof AbstractSelectVirtualModelInstance) {
+			return ((AbstractSelectVirtualModelInstance) getModelObject()).getContainer().toString();
+		}
+		if (getModelObject() != null) {
+			return getModelObject().getReceiver().toString();
+		}
+		return null;
+	}
+
+	private boolean isUnique() {
+		if (getASTNode() != null && getASTNode().getKwUnique() != null) {
+			return true;
+		}
+		if (getModelObject() != null) {
+			return (getModelObject() instanceof SelectUniqueFlexoConceptInstance)
+					|| (getModelObject() instanceof SelectUniqueVirtualModelInstance);
+		}
+		return false;
 	}
 
 	private RawSourceFragment getSelectFragment() {
 		if (getASTNode() != null) {
 			return getFragment(getASTNode().getKwSelect());
+		}
+		return null;
+	}
+
+	private RawSourceFragment getUniqueFragment() {
+		if (getASTNode() != null) {
+			return getFragment(getASTNode().getKwUnique());
+		}
+		return null;
+	}
+
+	private RawSourceFragment getTypeFragment() {
+		if (getASTNode() != null) {
+			return getFragment(getASTNode().getSelectedTypeName());
+		}
+		return null;
+	}
+
+	private RawSourceFragment getFromFragment() {
+		if (getASTNode() != null) {
+			PFromClause fromClause = getASTNode().getFromClause();
+			if (fromClause instanceof AFromClause) {
+				return getFragment(((AFromClause) fromClause).getKwFrom());
+			}
+		}
+		return null;
+	}
+
+	private RawSourceFragment getLParFromFragment() {
+		if (getASTNode() != null) {
+			PFromClause fromClause = getASTNode().getFromClause();
+			if (fromClause instanceof AFromClause) {
+				return getFragment(((AFromClause) fromClause).getLPar());
+			}
+		}
+		return null;
+	}
+
+	private RawSourceFragment getRParFromFragment() {
+		if (getASTNode() != null) {
+			PFromClause fromClause = getASTNode().getFromClause();
+			if (fromClause instanceof AFromClause) {
+				return getFragment(((AFromClause) fromClause).getRPar());
+			}
+		}
+		return null;
+	}
+
+	private RawSourceFragment getFromExpressionFragment() {
+		if (getASTNode() != null) {
+			PFromClause fromClause = getASTNode().getFromClause();
+			if (fromClause instanceof AFromClause) {
+				return getFragment(((AFromClause) fromClause).getExpression());
+			}
 		}
 		return null;
 	}

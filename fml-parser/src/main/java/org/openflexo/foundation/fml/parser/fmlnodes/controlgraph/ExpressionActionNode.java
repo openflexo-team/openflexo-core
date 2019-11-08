@@ -40,7 +40,9 @@ package org.openflexo.foundation.fml.parser.fmlnodes.controlgraph;
 
 import java.util.logging.Logger;
 
+import org.openflexo.connie.DataBinding;
 import org.openflexo.foundation.fml.editionaction.ExpressionAction;
+import org.openflexo.foundation.fml.parser.ExpressionFactory;
 import org.openflexo.foundation.fml.parser.MainSemanticsAnalyzer;
 import org.openflexo.foundation.fml.parser.node.Node;
 import org.openflexo.p2pp.RawSource.RawSourceFragment;
@@ -66,7 +68,9 @@ public class ExpressionActionNode extends AssignableActionNode<Node, ExpressionA
 	public ExpressionAction<?> buildModelObjectFromAST(Node astNode) {
 		ExpressionAction<?> returned = getFactory().newExpressionAction();
 		// System.out.println(">>>>>> Expression " + astNode);
-		returned.setExpression(makeBinding(astNode, returned));
+
+		DataBinding expression = ExpressionFactory.makeExpression(astNode, getAnalyser(), returned);
+		returned.setExpression(expression);
 		return returned;
 	}
 

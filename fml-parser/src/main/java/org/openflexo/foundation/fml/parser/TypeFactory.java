@@ -124,9 +124,17 @@ public class TypeFactory extends SemanticsAnalyzerFactory {
 	}
 
 	public void resolveUnresovedTypes() {
+
+		// System.out.println("resolveUnresovedTypes");
+
 		for (CustomType unresolvedType : unresolvedTypes) {
+			// System.out.println(" **** " + unresolvedType);
 			unresolvedType.resolve();
+			// System.out.println("resolved: " + unresolvedType.isResolved());
 		}
+
+		// System.out.println("Done");
+		// Thread.dumpStack();
 	}
 
 	public List<String> makeFullQualifiedIdentifierList(TIdentifier identifier, List<PAdditionalIdentifier> additionalIdentifiers) {
@@ -360,7 +368,7 @@ public class TypeFactory extends SemanticsAnalyzerFactory {
 		}
 		ConceptRetriever r = new ConceptRetriever(typeName);
 		if (r.isFound()) {
-			System.out.println("Tiens, je trouve " + r.getType());
+			r.getType().resolve();
 			unresolvedTypes.add(r.getType());
 			return r.getType();
 		}
@@ -388,8 +396,19 @@ public class TypeFactory extends SemanticsAnalyzerFactory {
 		if (getVirtualModel() != null && getVirtualModel().getName().equals(virtualModelName)) {
 			return getVirtualModel();
 		}
-		logger.warning("Cannot find " + virtualModelName);
+		if (virtualModelBeingDeserialized != null && virtualModelBeingDeserialized.getName().equals(virtualModelName)) {
+			return virtualModelBeingDeserialized;
+		}
+		logger.warning("Cannot find " + virtualModelName + " getVirtualModel()=" + getVirtualModel() + " virtualModelBeingDeserialized="
+				+ virtualModelBeingDeserialized);
+		Thread.dumpStack();
 		return null;
+	}
+
+	private VirtualModel virtualModelBeingDeserialized;
+
+	public void setDeserializedVirtualModel(VirtualModel returned) {
+		virtualModelBeingDeserialized = returned;
 	}
 
 	/**
@@ -526,4 +545,5 @@ public class TypeFactory extends SemanticsAnalyzerFactory {
 			}
 		}
 	}
+
 }

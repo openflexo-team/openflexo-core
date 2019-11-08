@@ -43,7 +43,7 @@ import java.util.logging.Logger;
 import org.openflexo.connie.DataBinding;
 import org.openflexo.foundation.fml.editionaction.AssignableAction;
 import org.openflexo.foundation.fml.editionaction.AssignationAction;
-import org.openflexo.foundation.fml.parser.AssignableActionFactory;
+import org.openflexo.foundation.fml.parser.ControlGraphFactory;
 import org.openflexo.foundation.fml.parser.MainSemanticsAnalyzer;
 import org.openflexo.foundation.fml.parser.node.AAssignmentStatementExpression;
 import org.openflexo.foundation.fml.parser.node.AFieldLeftHandSide;
@@ -85,15 +85,17 @@ public class AssignationActionNode extends AssignableActionNode<AAssignmentState
 		returned.setAssignation((DataBinding) extractLeft(returned));
 
 		// Right
-
-		AssignableActionNode<?, ?> assignableActionNode = AssignableActionFactory.makeAssignableActionNode(astNode.getRight(),
-				getAnalyser());
-
+		ControlGraphNode<?, ?> assignableActionNode = ControlGraphFactory.makeControlGraphNode(astNode.getRight(), getAnalyser());
 		if (assignableActionNode != null) {
-			returned.setAssignableAction((AssignableAction) assignableActionNode.getModelObject());
-			addToChildren(assignableActionNode);
+			if (assignableActionNode.getModelObject() instanceof AssignableAction) {
+				returned.setAssignableAction((AssignableAction) assignableActionNode.getModelObject());
+				addToChildren(assignableActionNode);
+			}
+			else {
+				System.err.println("Unexpected " + assignableActionNode.getModelObject());
+				Thread.dumpStack();
+			}
 		}
-
 		return returned;
 	}
 

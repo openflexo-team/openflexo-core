@@ -42,7 +42,7 @@ import java.util.logging.Logger;
 
 import org.openflexo.foundation.fml.editionaction.AssignableAction;
 import org.openflexo.foundation.fml.editionaction.ReturnStatement;
-import org.openflexo.foundation.fml.parser.AssignableActionFactory;
+import org.openflexo.foundation.fml.parser.ControlGraphFactory;
 import org.openflexo.foundation.fml.parser.MainSemanticsAnalyzer;
 import org.openflexo.foundation.fml.parser.node.AReturnStatementWithoutTrailingSubstatement;
 import org.openflexo.p2pp.PrettyPrintContext.Indentation;
@@ -75,11 +75,19 @@ public class ReturnStatementNode extends AssignableActionNode<AReturnStatementWi
 	public ReturnStatement<?> buildModelObjectFromAST(AReturnStatementWithoutTrailingSubstatement astNode) {
 		ReturnStatement<?> returned = getFactory().newReturnStatement();
 
-		AssignableActionNode<?, ?> assignableActionNode = AssignableActionFactory.makeAssignableActionNode(getASTNode().getExpression(),
-				getAnalyser());
+		// Right
+
+		ControlGraphNode<?, ?> assignableActionNode = ControlGraphFactory.makeControlGraphNode(astNode.getExpression(), getAnalyser());
+
 		if (assignableActionNode != null) {
-			returned.setAssignableAction((AssignableAction) assignableActionNode.getModelObject());
-			addToChildren(assignableActionNode);
+			if (assignableActionNode.getModelObject() instanceof AssignableAction) {
+				returned.setAssignableAction((AssignableAction) assignableActionNode.getModelObject());
+				addToChildren(assignableActionNode);
+			}
+			else {
+				System.err.println("Unexpected " + assignableActionNode.getModelObject());
+				Thread.dumpStack();
+			}
 		}
 
 		return returned;

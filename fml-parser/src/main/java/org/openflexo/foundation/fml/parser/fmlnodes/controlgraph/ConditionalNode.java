@@ -209,10 +209,6 @@ public class ConditionalNode extends ControlGraphNode<Node, ConditionalAction> {
 			System.out.println("Je cherche le LEFT dans " + statement + " of " + statement.getClass());
 		}
 
-		if (getASTNode() != null) {
-			System.exit(-1);
-		}
-
 		return null;
 	}
 

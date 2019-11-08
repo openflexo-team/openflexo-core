@@ -68,6 +68,7 @@ public class VirtualModelNode extends AbstractFlexoConceptNode<AModelDecl, Virtu
 		VirtualModel returned = getFactory().newVirtualModel();
 		returned.setName(astNode.getIdentifier().getText());
 		returned.setVisibility(getVisibility(astNode.getVisibility()));
+		getTypeFactory().setDeserializedVirtualModel(returned);
 		buildParentConcepts(returned, astNode.getSuperClause());
 		return returned;
 	}
