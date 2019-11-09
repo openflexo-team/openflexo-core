@@ -44,6 +44,7 @@ import java.util.logging.Logger;
 import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.exception.NullReferenceException;
 import org.openflexo.connie.exception.TypeMismatchException;
+import org.openflexo.foundation.fml.FMLPrettyPrintable;
 import org.openflexo.foundation.fml.FlexoBehaviour;
 import org.openflexo.foundation.fml.FlexoBehaviourObject;
 import org.openflexo.foundation.fml.FlexoBehaviourParameter;
@@ -68,7 +69,7 @@ import org.openflexo.pamela.validation.ValidationIssue;
  */
 @ModelEntity(isAbstract = true)
 @ImplementationClass(BehaviourParameter.BehaviourParameterImpl.class)
-public interface BehaviourParameter<T extends FlexoConceptObject> extends FlexoBehaviourObject {
+public interface BehaviourParameter<T extends FlexoConceptObject> extends FlexoBehaviourObject, FMLPrettyPrintable {
 
 	@PropertyIdentifier(type = FlexoConceptObject.class)
 	public static final String OWNER_KEY = "owner";
@@ -123,6 +124,13 @@ public interface BehaviourParameter<T extends FlexoConceptObject> extends FlexoB
 		private DataBinding<Object> value;
 
 		private BehaviourParameterBindingModel bindingModel;
+
+		/*@Override
+		public FMLCompilationUnit getResourceData() {
+			if (getOwner() != null) {
+			return getOwner().getCompilationUnit();
+			}
+		}*/
 
 		public FlexoBehaviourParameter getParameter() {
 			return param;

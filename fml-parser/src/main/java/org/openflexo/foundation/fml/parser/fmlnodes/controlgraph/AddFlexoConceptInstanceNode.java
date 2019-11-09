@@ -45,6 +45,10 @@ import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoConceptInstanceType;
 import org.openflexo.foundation.fml.parser.MainSemanticsAnalyzer;
 import org.openflexo.foundation.fml.parser.node.AFmlInstanceCreationFmlActionExp;
+import org.openflexo.foundation.fml.parser.node.AManyArgumentList;
+import org.openflexo.foundation.fml.parser.node.AOneArgumentList;
+import org.openflexo.foundation.fml.parser.node.PArgumentList;
+import org.openflexo.foundation.fml.parser.node.PExpression;
 import org.openflexo.foundation.fml.parser.node.TIdentifier;
 import org.openflexo.foundation.fml.rt.editionaction.AddFlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.editionaction.AddFlexoConceptInstanceParameter;
@@ -99,6 +103,21 @@ public class AddFlexoConceptInstanceNode extends AssignableActionNode<AFmlInstan
 		}
 	}
 
+	private void handleArguments(PArgumentList argumentList) {
+		if (argumentList instanceof AManyArgumentList) {
+			AManyArgumentList l = (AManyArgumentList) argumentList;
+			handleArgument(l.getExpression());
+			handleArguments(l.getArgumentList());
+		}
+		else if (argumentList instanceof AOneArgumentList) {
+			handleArgument(((AOneArgumentList) argumentList).getExpression());
+		}
+	}
+
+	private void handleArgument(PExpression expression) {
+		System.out.println("On gere l'expression " + expression);
+	}
+
 	@Override
 	public AddFlexoConceptInstance<?> buildModelObjectFromAST(AFmlInstanceCreationFmlActionExp astNode) {
 		AddFlexoConceptInstance<?> returned = getFactory().newAddFlexoConceptInstance();
@@ -110,6 +129,8 @@ public class AddFlexoConceptInstanceNode extends AssignableActionNode<AFmlInstan
 		}
 
 		System.out.println("conceptType:" + conceptType);
+
+		handleArguments(astNode.getArgumentList());
 
 		// Left
 		/*returned.setAssignation((DataBinding) extractLeft(returned));

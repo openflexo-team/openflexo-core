@@ -75,6 +75,9 @@ public class FlexoConceptNode extends AbstractFlexoConceptNode<AConceptDecl, Fle
 		if (getParent() instanceof VirtualModelNode) {
 			((VirtualModelNode) getParent()).getModelObject().addToFlexoConcepts(getModelObject());
 		}
+		if (getParent() instanceof FlexoConceptNode) {
+			((FlexoConceptNode) getParent()).getModelObject().addToEmbeddedFlexoConcepts(getModelObject());
+		}
 		return this;
 	}
 
