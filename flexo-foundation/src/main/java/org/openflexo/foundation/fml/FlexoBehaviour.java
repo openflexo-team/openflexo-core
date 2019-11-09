@@ -562,6 +562,16 @@ public interface FlexoBehaviour extends FlexoBehaviourObject, Function, FMLContr
 
 		@Override
 		public void setName(String name) {
+			// Avoid keyword
+			if (name.equals("create")) {
+				setName("_create");
+				return;
+			}
+			if (name.equals("delete")) {
+				setName("_delete");
+				return;
+			}
+
 			String oldSignature = getSignature();
 			super.setName(name);
 			updateSignature(oldSignature);

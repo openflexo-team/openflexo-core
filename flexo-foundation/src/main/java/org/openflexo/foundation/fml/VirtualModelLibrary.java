@@ -328,6 +328,24 @@ public class VirtualModelLibrary extends DefaultFlexoObject implements FlexoServ
 		if (property != null) {
 			return (O) property;
 		}
+
+		if (uriRemains.equals("create")) {
+			uriRemains = "_create";
+			System.out.println("On cherche plutot " + uriRemains);
+		}
+		if (uriRemains.equals("delete")) {
+			uriRemains = "_delete";
+			System.out.println("On cherche plutot " + uriRemains);
+		}
+		if (uriRemains.startsWith("create(")) {
+			uriRemains = "_" + uriRemains;
+			System.out.println("On cherche plutot " + uriRemains);
+		}
+		if (uriRemains.equals("delete(")) {
+			uriRemains = "_" + uriRemains;
+			System.out.println("On cherche plutot " + uriRemains);
+		}
+
 		if (uriRemains.contains("(")) {
 			FlexoBehaviour behaviour = expectedConcept.getDeclaredFlexoBehaviour(uriRemains);
 			if (behaviour != null) {
