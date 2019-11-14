@@ -321,9 +321,19 @@ Productions
      ;
 
    annotation =
-       {single_annotation} at [identifier]:composite_ident
-     | {value_annotation}  at [identifier]:composite_ident l_par expression r_par
+       {basic_annotation} at [identifier]:composite_ident
+     | {single_annotation}  at [identifier]:composite_ident l_par conditional_exp r_par
+     | {complex_annotation}  at [identifier]:composite_ident l_par annotation_key_value_pairs r_par
+     | {list_annotation}  at [identifier]:composite_ident l_par annotation* r_par
      ;
+   
+   annotation_key_value_pairs =
+       {one}  annotation_key_value_pair
+     | {many} annotation_key_value_pairs comma annotation_key_value_pair
+     ;
+   
+   
+   annotation_key_value_pair = [identifier]:composite_ident assign conditional_exp;
 
    // --------------------------------------------------------------------------------------
    // Namespace declaration

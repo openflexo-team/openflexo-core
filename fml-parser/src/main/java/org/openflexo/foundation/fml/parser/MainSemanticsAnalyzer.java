@@ -47,8 +47,12 @@ import org.openflexo.foundation.fml.parser.fmlnodes.MetaDataNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.NamedJavaImportNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.UseDeclarationNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.VirtualModelNode;
+import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.BehaviourParameterNode;
 import org.openflexo.foundation.fml.parser.node.AAbstractPropertyInnerConceptDecl;
+import org.openflexo.foundation.fml.parser.node.ABasicAnnotationAnnotation;
 import org.openflexo.foundation.fml.parser.node.ABehaviourDeclarationInnerConceptDecl;
+import org.openflexo.foundation.fml.parser.node.AComplexAnnotationAnnotation;
+import org.openflexo.foundation.fml.parser.node.AComplexFormalArgument;
 import org.openflexo.foundation.fml.parser.node.AConceptDecl;
 import org.openflexo.foundation.fml.parser.node.AExpressionPropertyInnerConceptDecl;
 import org.openflexo.foundation.fml.parser.node.AFmlCompilationUnit;
@@ -58,9 +62,9 @@ import org.openflexo.foundation.fml.parser.node.AJavaImportImportDecl;
 import org.openflexo.foundation.fml.parser.node.AJavaInnerConceptDecl;
 import org.openflexo.foundation.fml.parser.node.AModelDecl;
 import org.openflexo.foundation.fml.parser.node.ANamedJavaImportImportDecl;
+import org.openflexo.foundation.fml.parser.node.APrimitiveFormalArgument;
 import org.openflexo.foundation.fml.parser.node.ASingleAnnotationAnnotation;
 import org.openflexo.foundation.fml.parser.node.AUseDecl;
-import org.openflexo.foundation.fml.parser.node.AValueAnnotationAnnotation;
 import org.openflexo.foundation.fml.parser.node.Start;
 import org.openflexo.p2pp.RawSource;
 
@@ -129,6 +133,7 @@ public class MainSemanticsAnalyzer extends FMLSemanticsAnalyzer {
 		finalizeDeserialization(compilationUnitNode);
 	}
 
+	@Override
 	public RawSource getRawSource() {
 		return rawSource;
 	}
@@ -292,27 +297,62 @@ public class MainSemanticsAnalyzer extends FMLSemanticsAnalyzer {
 	}
 
 	@Override
+	public void inABasicAnnotationAnnotation(ABasicAnnotationAnnotation node) {
+		super.inABasicAnnotationAnnotation(node);
+		// TODO
+	}
+
+	@Override
+	public void outABasicAnnotationAnnotation(ABasicAnnotationAnnotation node) {
+		super.inABasicAnnotationAnnotation(node);
+		// TODO
+	}
+
+	@Override
 	public void inASingleAnnotationAnnotation(ASingleAnnotationAnnotation node) {
 		super.inASingleAnnotationAnnotation(node);
-		// TODO
+		push(new MetaDataNode(node, this));
 	}
 
 	@Override
 	public void outASingleAnnotationAnnotation(ASingleAnnotationAnnotation node) {
 		super.outASingleAnnotationAnnotation(node);
-		// TODO
-	}
-
-	@Override
-	public void inAValueAnnotationAnnotation(AValueAnnotationAnnotation node) {
-		super.inAValueAnnotationAnnotation(node);
-		push(new MetaDataNode(node, this));
-	}
-
-	@Override
-	public void outAValueAnnotationAnnotation(AValueAnnotationAnnotation node) {
-		super.outAValueAnnotationAnnotation(node);
 		pop();
 	}
 
+	@Override
+	public void inAComplexAnnotationAnnotation(AComplexAnnotationAnnotation node) {
+		// TODO
+		super.inAComplexAnnotationAnnotation(node);
+	}
+
+	@Override
+	public void outAComplexAnnotationAnnotation(AComplexAnnotationAnnotation node) {
+		// TODO
+		super.outAComplexAnnotationAnnotation(node);
+	}
+
+	@Override
+	public void inAPrimitiveFormalArgument(APrimitiveFormalArgument node) {
+		super.inAPrimitiveFormalArgument(node);
+		push(new BehaviourParameterNode(node, this));
+	}
+
+	@Override
+	public void outAPrimitiveFormalArgument(APrimitiveFormalArgument node) {
+		super.outAPrimitiveFormalArgument(node);
+		pop();
+	}
+
+	@Override
+	public void inAComplexFormalArgument(AComplexFormalArgument node) {
+		super.inAComplexFormalArgument(node);
+		push(new BehaviourParameterNode(node, this));
+	}
+
+	@Override
+	public void outAComplexFormalArgument(AComplexFormalArgument node) {
+		super.outAComplexFormalArgument(node);
+		pop();
+	}
 }

@@ -3,9 +3,20 @@
  */
 
 // This is the main declaration
-@Author("Sylvain")
-@URI("base_uri/MyModel.fml")
-@Version("1.2")
+@BasicAnnotation
+@SingleAnnotation("value")
+@ComplexAnnotation(key1="aValue",key2="anOtherValue")
+@SomeAnnotations("value1")
+@SomeAnnotations("value2")
+@SomeAnnotations("value3")
+@ListAnnotation(
+	@BasicAnnotation
+	@SingleAnnotation("value")
+	@ComplexAnnotation(key1="aValue",key2="anOtherValue")
+	@SomeAnnotations("value1")
+	@SomeAnnotations("value2")
+	@SomeAnnotations("value3")
+)
 model MyModel {
 	
 }
