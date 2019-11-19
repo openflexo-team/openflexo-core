@@ -407,15 +407,16 @@ public interface FlexoBehaviour extends FlexoBehaviourObject, Function, FMLContr
 
 		@Override
 		public String getLabel() {
-			if (StringUtils.isEmpty(getMetaData(LABEL_KEY, String.class)) || getMetaData(LABEL_KEY, String.class).equals(getName())) {
+			if (StringUtils.isEmpty(getSingleMetaData(LABEL_KEY, String.class))
+					|| getSingleMetaData(LABEL_KEY, String.class).equals(getName())) {
 				return getName();
 			}
-			return getMetaData(LABEL_KEY, String.class);
+			return getSingleMetaData(LABEL_KEY, String.class);
 		}
 
 		@Override
 		public void setLabel(String label) {
-			setMetaData(LABEL_KEY, label, String.class);
+			setSingleMetaData(LABEL_KEY, label, String.class);
 		}
 
 		@Override

@@ -36,37 +36,35 @@
  * 
  */
 
-package org.openflexo.foundation.fml;
+package org.openflexo.foundation.fml.md;
 
 import org.openflexo.connie.BindingModel;
-import org.openflexo.connie.DataBinding;
-import org.openflexo.pamela.StringConverterLibrary.Converter;
+import org.openflexo.foundation.fml.FMLCompilationUnit;
+import org.openflexo.foundation.fml.FMLObject;
+import org.openflexo.foundation.fml.FMLPrettyPrintable;
+import org.openflexo.foundation.fml.FMLRepresentationContext;
 import org.openflexo.pamela.annotations.Getter;
 import org.openflexo.pamela.annotations.ImplementationClass;
+import org.openflexo.pamela.annotations.Import;
+import org.openflexo.pamela.annotations.Imports;
 import org.openflexo.pamela.annotations.ModelEntity;
 import org.openflexo.pamela.annotations.PropertyIdentifier;
 import org.openflexo.pamela.annotations.Setter;
-import org.openflexo.pamela.annotations.XMLElement;
-import org.openflexo.pamela.exceptions.InvalidDataException;
 
 /**
- * A {@link FMLMetaData} is a key-value data<br>
- * 
- * The stored value is a {@link String}
+ * Represents a meta-data related to a FMLObject
  * 
  * 
  * @author sylvain
  * 
  */
-@ModelEntity
+@ModelEntity(isAbstract = false)
 @ImplementationClass(FMLMetaData.FMLMetaDataImpl.class)
-@XMLElement
-public abstract interface FMLMetaData extends FMLObject, FMLPrettyPrintable {
+@Imports({ @Import(SingleMetaData.class), @Import(BasicMetaData.class), @Import(MultiValuedMetaData.class), @Import(ListMetaData.class) })
+public interface FMLMetaData extends FMLObject, FMLPrettyPrintable {
 
 	@PropertyIdentifier(type = String.class)
 	public static final String KEY_KEY = "key";
-	@PropertyIdentifier(type = DataBinding.class)
-	public static final String STRING_VALUE_REPRESENTATION_KEY = "stringValueRepresentation";
 	@PropertyIdentifier(type = FMLObject.class)
 	public static final String OWNER_KEY = "owner";
 
@@ -76,31 +74,13 @@ public abstract interface FMLMetaData extends FMLObject, FMLPrettyPrintable {
 	@Setter(KEY_KEY)
 	public void setKey(String aKey);
 
-	@Getter(value = STRING_VALUE_REPRESENTATION_KEY)
-	public String getStringValueRepresentation();
-
-	@Setter(STRING_VALUE_REPRESENTATION_KEY)
-	public void setStringValueRepresentation(String stringValueRepresentation);
-
-	public <T> T getValueAs(Class<T> type);
-
-	public <T> void setValueAs(T aValue, Class<T> type);
-
-	@Getter(value = OWNER_KEY)
+	@Getter(value = OWNER_KEY, ignoreForEquality = true)
 	public FMLObject getOwner();
 
 	@Setter(OWNER_KEY)
 	public void setOwner(FMLObject anObject);
 
-	public String getFMLValueRepresentation();
-
-	public void setFMLValueRepresentation(String fmlValueRepresentation);
-
-	public Class<?> getType();
-
 	public static abstract class FMLMetaDataImpl extends FMLObjectImpl implements FMLMetaData {
-
-		private Class<?> type;
 
 		@Override
 		public String getURI() {
@@ -130,53 +110,6 @@ public abstract interface FMLMetaData extends FMLObject, FMLPrettyPrintable {
 				return getOwner().getResourceData();
 			}
 			return null;
-		}
-
-		private <T> Converter<T> converterForClass(Class<T> objectType) {
-			return getFMLModelFactory().getStringEncoder().converterForClass(objectType);
-		}
-
-		@Override
-		public <T> T getValueAs(Class<T> type) {
-			Converter<T> converter = converterForClass(type);
-			try {
-				return converter.convertFromString(getStringValueRepresentation(), getFMLModelFactory());
-			} catch (InvalidDataException e) {
-				e.printStackTrace();
-				return null;
-			}
-		}
-
-		@Override
-		public <T> void setValueAs(T aValue, Class<T> type) {
-			this.type = type;
-			Converter<T> converter = converterForClass(type);
-			setStringValueRepresentation(converter.convertToString(aValue));
-		}
-
-		@Override
-		public Class<?> getType() {
-			return type;
-		}
-
-		@Override
-		public String getFMLValueRepresentation() {
-			if (type != null && type.equals(String.class)) {
-				return "\"" + getStringValueRepresentation() + "\"";
-			}
-			return getStringValueRepresentation();
-		}
-
-		@Override
-		public void setFMLValueRepresentation(String fmlValueRepresentation) {
-			if (fmlValueRepresentation != null && fmlValueRepresentation.startsWith("\"") && fmlValueRepresentation.endsWith("\"")) {
-				setStringValueRepresentation(fmlValueRepresentation.substring(1, fmlValueRepresentation.length() - 1));
-				type = String.class;
-			}
-			else {
-				setStringValueRepresentation(fmlValueRepresentation);
-			}
-
 		}
 
 	}

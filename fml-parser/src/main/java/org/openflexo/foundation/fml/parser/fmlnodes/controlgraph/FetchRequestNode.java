@@ -87,7 +87,7 @@ public class FetchRequestNode<FR extends AbstractFetchRequest<?, ?, ?, ?>> exten
 				selectAction = getFactory().newSelectUniqueVirtualModelInstance();
 			}
 			else {
-				returned = (FR) getFactory().newSelectVirtualModelInstance();
+				selectAction = getFactory().newSelectVirtualModelInstance();
 			}
 			VirtualModel vm = ((VirtualModelInstanceType) type).getVirtualModel();
 			if (vm != null && selectAction != null) {

@@ -1,6 +1,6 @@
 /**
  * 
- * Copyright (c) 2014, Openflexo
+ * Copyright (c) 2014-2015, Openflexo
  * 
  * This file is part of Flexo-foundation, a component of the software infrastructure 
  * developed at Openflexo.
@@ -36,53 +36,26 @@
  * 
  */
 
-package org.openflexo.foundation.fml.binding;
+package org.openflexo.foundation.fml.md;
 
-import java.beans.PropertyChangeEvent;
-
-import org.openflexo.connie.BindingModel;
-import org.openflexo.foundation.fml.rt.editionaction.BehaviourCallArgument;
+import org.openflexo.pamela.annotations.ImplementationClass;
+import org.openflexo.pamela.annotations.ModelEntity;
+import org.openflexo.pamela.annotations.XMLElement;
 
 /**
- * This is the {@link BindingModel} exposed by a {@link BehaviourCallArgument}<br>
+ * A {@link BasicMetaData} is a basic present or not present meta-data identified by a key
+ * 
  * 
  * @author sylvain
  * 
  */
-public class BehaviourParameterBindingModel extends BindingModel {
+@ModelEntity
+@ImplementationClass(BasicMetaData.BasicMetaDataImpl.class)
+@XMLElement
+public interface BasicMetaData extends FMLMetaData {
 
-	private final BehaviourCallArgument<?> parameter;
+	public static abstract class BasicMetaDataImpl extends FMLMetaDataImpl implements BasicMetaData {
 
-	public BehaviourParameterBindingModel(BehaviourCallArgument<?> parameter) {
-		super(parameter.getOwner() != null ? parameter.getOwner().getBindingModel() : null);
-		this.parameter = parameter;
-		if (parameter.getPropertyChangeSupport() != null) {
-			parameter.getPropertyChangeSupport().addPropertyChangeListener(this);
-		}
 	}
 
-	/**
-	 * Delete this {@link BindingModel}
-	 */
-	@Override
-	public void delete() {
-		if (parameter != null && parameter.getPropertyChangeSupport() != null) {
-			parameter.getPropertyChangeSupport().removePropertyChangeListener(this);
-		}
-		super.delete();
-	}
-
-	@Override
-	public void propertyChange(PropertyChangeEvent evt) {
-		super.propertyChange(evt);
-		if (evt.getSource() == parameter) {
-			if (evt.getPropertyName().equals(BehaviourCallArgument.OWNER_KEY)) {
-				setBaseBindingModel(parameter.getOwner() != null ? parameter.getOwner().getBindingModel() : null);
-			}
-		}
-	}
-
-	public BehaviourCallArgument<?> getParameter() {
-		return parameter;
-	}
 }

@@ -77,7 +77,7 @@ import org.openflexo.toolbox.StringUtils;
 @ModelEntity
 @ImplementationClass(FlexoBehaviourParameter.FlexoBehaviourParameterImpl.class)
 @XMLElement(xmlTag = "GenericBehaviourParameter")
-public interface FlexoBehaviourParameter extends FlexoBehaviourObject, FunctionArgument, WidgetContext {
+public interface FlexoBehaviourParameter extends FlexoBehaviourObject, FunctionArgument, WidgetContext, FMLPrettyPrintable {
 
 	public static enum WidgetType {
 		TEXT_FIELD,

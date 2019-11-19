@@ -1,6 +1,6 @@
 /**
  * 
- * Copyright (c) 2014, Openflexo
+ * Copyright (c) 2014-2015, Openflexo
  * 
  * This file is part of Flexo-foundation, a component of the software infrastructure 
  * developed at Openflexo.
@@ -36,53 +36,50 @@
  * 
  */
 
-package org.openflexo.foundation.fml.binding;
+package org.openflexo.foundation.fml.md;
 
-import java.beans.PropertyChangeEvent;
+import java.util.List;
 
-import org.openflexo.connie.BindingModel;
-import org.openflexo.foundation.fml.rt.editionaction.BehaviourCallArgument;
+import org.openflexo.pamela.annotations.Adder;
+import org.openflexo.pamela.annotations.Getter;
+import org.openflexo.pamela.annotations.Getter.Cardinality;
+import org.openflexo.pamela.annotations.ImplementationClass;
+import org.openflexo.pamela.annotations.ModelEntity;
+import org.openflexo.pamela.annotations.PropertyIdentifier;
+import org.openflexo.pamela.annotations.Remover;
+import org.openflexo.pamela.annotations.XMLElement;
 
 /**
- * This is the {@link BindingModel} exposed by a {@link BehaviourCallArgument}<br>
+ * A {@link ListMetaData} represent a list of meta-data associated with a key
+ * 
  * 
  * @author sylvain
  * 
  */
-public class BehaviourParameterBindingModel extends BindingModel {
+@ModelEntity
+@ImplementationClass(ListMetaData.ListMetaDataImpl.class)
+@XMLElement
+public interface ListMetaData extends FMLMetaData {
 
-	private final BehaviourCallArgument<?> parameter;
-
-	public BehaviourParameterBindingModel(BehaviourCallArgument<?> parameter) {
-		super(parameter.getOwner() != null ? parameter.getOwner().getBindingModel() : null);
-		this.parameter = parameter;
-		if (parameter.getPropertyChangeSupport() != null) {
-			parameter.getPropertyChangeSupport().addPropertyChangeListener(this);
-		}
-	}
+	@PropertyIdentifier(type = FMLMetaData.class, cardinality = Cardinality.LIST)
+	public static final String METADATA_LIST_KEY = "metaDataList";
 
 	/**
-	 * Delete this {@link BindingModel}
+	 * Return list of meta-data declared for this object
+	 * 
+	 * @return
 	 */
-	@Override
-	public void delete() {
-		if (parameter != null && parameter.getPropertyChangeSupport() != null) {
-			parameter.getPropertyChangeSupport().removePropertyChangeListener(this);
-		}
-		super.delete();
+	@Getter(value = METADATA_LIST_KEY, cardinality = Cardinality.LIST, inverse = FMLMetaData.OWNER_KEY)
+	public List<FMLMetaData> getMetaDataList();
+
+	@Adder(METADATA_LIST_KEY)
+	public void addToMetaDataList(FMLMetaData metaData);
+
+	@Remover(METADATA_LIST_KEY)
+	public void removeFromMetaDataList(FMLMetaData metaData);
+
+	public static abstract class ListMetaDataImpl extends FMLMetaDataImpl implements ListMetaData {
+
 	}
 
-	@Override
-	public void propertyChange(PropertyChangeEvent evt) {
-		super.propertyChange(evt);
-		if (evt.getSource() == parameter) {
-			if (evt.getPropertyName().equals(BehaviourCallArgument.OWNER_KEY)) {
-				setBaseBindingModel(parameter.getOwner() != null ? parameter.getOwner().getBindingModel() : null);
-			}
-		}
-	}
-
-	public BehaviourCallArgument<?> getParameter() {
-		return parameter;
-	}
 }

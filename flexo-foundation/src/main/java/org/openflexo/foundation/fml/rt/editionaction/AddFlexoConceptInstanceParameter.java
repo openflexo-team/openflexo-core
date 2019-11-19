@@ -59,10 +59,10 @@ import org.openflexo.pamela.validation.ValidationIssue;
 @ModelEntity
 @ImplementationClass(AddFlexoConceptInstanceParameter.AddFlexoConceptInstanceParameterImpl.class)
 @XMLElement
-public interface AddFlexoConceptInstanceParameter extends BehaviourParameter<AbstractAddFlexoConceptInstance<?, ?>> {
+public interface AddFlexoConceptInstanceParameter extends BehaviourCallArgument<AbstractAddFlexoConceptInstance<?, ?>> {
 
-	public static abstract class AddFlexoConceptInstanceParameterImpl extends BehaviourParameterImpl<AbstractAddFlexoConceptInstance<?, ?>>
-			implements AddFlexoConceptInstanceParameter {
+	public static abstract class AddFlexoConceptInstanceParameterImpl
+			extends BehaviourCallArgumentImpl<AbstractAddFlexoConceptInstance<?, ?>> implements AddFlexoConceptInstanceParameter {
 
 		static final Logger logger = Logger.getLogger(AddFlexoConceptInstanceParameter.class.getPackage().getName());
 

@@ -42,11 +42,17 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import org.openflexo.connie.Bindable;
+import org.openflexo.connie.BindingEvaluationContext;
 import org.openflexo.connie.BindingFactory;
 import org.openflexo.connie.DataBinding;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.InnerResourceData;
+import org.openflexo.foundation.fml.md.BasicMetaData;
+import org.openflexo.foundation.fml.md.FMLMetaData;
+import org.openflexo.foundation.fml.md.ListMetaData;
+import org.openflexo.foundation.fml.md.MultiValuedMetaData;
+import org.openflexo.foundation.fml.md.SingleMetaData;
 import org.openflexo.foundation.fml.rm.CompilationUnitResource;
 import org.openflexo.foundation.resource.ResourceData;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterService;
@@ -140,6 +146,20 @@ public interface FMLObject extends FlexoObject, Bindable, InnerResourceData<FMLC
 	@Finder(collection = META_DATA_KEY, attribute = FMLMetaData.KEY_KEY)
 	public FMLMetaData getMetaData(String key);
 
+	public boolean hasMetaData(String key);
+
+	public BasicMetaData getBasicMetaData(String key);
+
+	public void setBasicMetaData(String key);
+
+	public <T> T getSingleMetaData(String key, Class<T> type);
+
+	public <T> void setSingleMetaData(String key, T value, Class<T> type);
+
+	public MultiValuedMetaData getMultiValuedMetaData(String key);
+
+	public ListMetaData getListMetaData(String key);
+
 	/**
 	 * Return the URI of the {@link NamedFMLObject}<br>
 	 * The convention for URI are following: <viewpoint_uri>/<virtual_model_name>#<flexo_concept_name>.<behaviour_name> <br>
@@ -230,6 +250,13 @@ public interface FMLObject extends FlexoObject, Bindable, InnerResourceData<FMLC
 
 	public TechnologyAdapterService getTechnologyAdapterService();
 
+	/**
+	 * Return reflected BindingEvaluationContext, obtained at metadata conceptual level
+	 * 
+	 * @return
+	 */
+	public BindingEvaluationContext getReflectedBindingEvaluationContext();
+
 	public static abstract class FMLObjectImpl extends FlexoObjectImpl implements FMLObject {
 
 		private static final Logger logger = Logger.getLogger(FMLObject.class.getPackage().getName());
@@ -247,6 +274,19 @@ public interface FMLObject extends FlexoObject, Bindable, InnerResourceData<FMLC
 		 */
 		@Override
 		public abstract String getURI();
+
+		/**
+		 * Return reflected BindingEvaluationContext, obtained at metadata conceptual level
+		 * 
+		 * @return
+		 */
+		@Override
+		public BindingEvaluationContext getReflectedBindingEvaluationContext() {
+			if (getResourceData() != null) {
+				return getResourceData().getReflectedBindingEvaluationContext();
+			}
+			return null;
+		}
 
 		@Override
 		public String getName() {
@@ -266,28 +306,60 @@ public interface FMLObject extends FlexoObject, Bindable, InnerResourceData<FMLC
 
 		@Override
 		public String getDescription() {
-			return getMetaData(DESCRIPTION_KEY, String.class);
+			return getSingleMetaData(DESCRIPTION_KEY, String.class);
 		}
 
 		@Override
 		public void setDescription(String description) {
-			setMetaData(DESCRIPTION_KEY, description, String.class);
+			setSingleMetaData(DESCRIPTION_KEY, description, String.class);
 		}
 
-		public <T> T getMetaData(String key, Class<T> type) {
-			if (getMetaData(key) != null) {
-				return getMetaData(key).getValueAs(type);
+		@Override
+		public boolean hasDescription() {
+			return StringUtils.isNotEmpty(getDescription());
+		}
+
+		@Override
+		public boolean hasMetaData(String key) {
+			return getMetaData(key) != null;
+		}
+
+		@Override
+		public BasicMetaData getBasicMetaData(String key) {
+			if (getMetaData(key) instanceof BasicMetaData) {
+				return (BasicMetaData) getMetaData(key);
 			}
 			return null;
 		}
 
-		public <T> void setMetaData(String key, T value, Class<T> type) {
+		@Override
+		public void setBasicMetaData(String key) {
+			if (getMetaData(key) != null) {
+				if (!(getMetaData(key) instanceof BasicMetaData)) {
+					logger.warning("Unexpected meta-data: " + getMetaData(key));
+				}
+				return;
+			}
+			BasicMetaData newMD = getFMLModelFactory().newBasicMetaData(key);
+			addToMetaData(newMD);
+		}
+
+		@Override
+		public <T> T getSingleMetaData(String key, Class<T> type) {
+			if (getMetaData(key) instanceof SingleMetaData) {
+				return ((SingleMetaData<T>) getMetaData(key)).getValue(type);
+			}
+			return null;
+		}
+
+		@Override
+		public <T> void setSingleMetaData(String key, T value, Class<T> type) {
 			if (value != null) {
-				if (getMetaData(key) != null) {
-					getMetaData(key).setValueAs(value, type);
+				if (getMetaData(key) instanceof SingleMetaData) {
+					((SingleMetaData<T>) getMetaData(key)).setValue(value, type);
 				}
 				else {
-					FMLMetaData newMD = getFMLModelFactory().newMetaData(key, value, type);
+					SingleMetaData<T> newMD = getFMLModelFactory().newSingleMetaData(key, value, type);
 					addToMetaData(newMD);
 				}
 			}
@@ -299,8 +371,19 @@ public interface FMLObject extends FlexoObject, Bindable, InnerResourceData<FMLC
 		}
 
 		@Override
-		public boolean hasDescription() {
-			return StringUtils.isNotEmpty(getDescription());
+		public MultiValuedMetaData getMultiValuedMetaData(String key) {
+			if (getMetaData(key) instanceof MultiValuedMetaData) {
+				return (MultiValuedMetaData) getMetaData(key);
+			}
+			return null;
+		}
+
+		@Override
+		public ListMetaData getListMetaData(String key) {
+			if (getMetaData(key) instanceof ListMetaData) {
+				return (ListMetaData) getMetaData(key);
+			}
+			return null;
 		}
 
 		@Override

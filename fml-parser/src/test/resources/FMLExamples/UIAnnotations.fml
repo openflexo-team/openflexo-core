@@ -1,0 +1,35 @@
+/**
+ * A model with some UI annotations
+ */
+
+use org.openflexo.foundation.fml.rt.FMLRTModelSlot as FMLRT;
+use some.package.name.AModelSlot as MS;
+
+import java.lang.String;
+import java.util.List;
+import aClass;
+
+// We test annotations
+model MyModel {
+	
+	concept ConceptC {
+		String c1;
+		boolean c2;
+		@ui(
+			@label("create")
+			@TextField(value="aC1", label="give_a_c1")
+			@CheckBox(value="aC2", label="give_a_c2")
+			@CheckBox(value="aC3", label="give_a_c3")
+		)
+		create::_create (
+			required String aC1 default="toto", 
+			required Boolean aC2,
+			Boolean aC3 default=true) {
+			c1 = parameters.aC1;
+			c2 = parameters.aC2;
+		}
+		@label("delete")
+		delete::_delete () {
+		}
+	}
+}

@@ -53,12 +53,12 @@ import org.openflexo.foundation.fml.CreationScheme;
 import org.openflexo.foundation.fml.DeletionScheme;
 import org.openflexo.foundation.fml.ExpressionProperty;
 import org.openflexo.foundation.fml.FMLCompilationUnit;
-import org.openflexo.foundation.fml.FMLMetaData;
 import org.openflexo.foundation.fml.FMLModelFactory;
 import org.openflexo.foundation.fml.FMLObject;
 import org.openflexo.foundation.fml.FMLPrettyPrintDelegate;
 import org.openflexo.foundation.fml.FMLPrettyPrintable;
 import org.openflexo.foundation.fml.FlexoBehaviour;
+import org.openflexo.foundation.fml.FlexoBehaviourParameter;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.GetSetProperty;
 import org.openflexo.foundation.fml.JavaImportDeclaration;
@@ -75,8 +75,14 @@ import org.openflexo.foundation.fml.editionaction.DeclarationAction;
 import org.openflexo.foundation.fml.editionaction.ExpressionAction;
 import org.openflexo.foundation.fml.editionaction.LogAction;
 import org.openflexo.foundation.fml.editionaction.ReturnStatement;
+import org.openflexo.foundation.fml.md.BasicMetaData;
+import org.openflexo.foundation.fml.md.ListMetaData;
+import org.openflexo.foundation.fml.md.MetaDataKeyValue;
+import org.openflexo.foundation.fml.md.MultiValuedMetaData;
+import org.openflexo.foundation.fml.md.SingleMetaData;
 import org.openflexo.foundation.fml.parser.fmlnodes.AbstractPropertyNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.ActionSchemeNode;
+import org.openflexo.foundation.fml.parser.fmlnodes.BasicMetaDataNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.CreationSchemeNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.DeletionSchemeNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.ExpressionPropertyNode;
@@ -84,12 +90,16 @@ import org.openflexo.foundation.fml.parser.fmlnodes.FlexoConceptNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.GetSetPropertyNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.JavaImportNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.JavaRoleNode;
-import org.openflexo.foundation.fml.parser.fmlnodes.MetaDataNode;
+import org.openflexo.foundation.fml.parser.fmlnodes.ListMetaDataNode;
+import org.openflexo.foundation.fml.parser.fmlnodes.MetaDataKeyValueNode;
+import org.openflexo.foundation.fml.parser.fmlnodes.MultiValuedMetaDataNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.PrimitiveRoleNode;
+import org.openflexo.foundation.fml.parser.fmlnodes.SingleMetaDataNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.UseDeclarationNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.VirtualModelNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.AddFlexoConceptInstanceNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.AssignationActionNode;
+import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.BehaviourCallArgumentNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.BehaviourParameterNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.ConditionalNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.DeclarationActionNode;
@@ -99,21 +109,29 @@ import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.FetchRequestNod
 import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.LogActionNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.ReturnStatementNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.SequenceNode;
+import org.openflexo.foundation.fml.parser.node.ACharacterLiteral;
 import org.openflexo.foundation.fml.parser.node.ACompositeIdent;
+import org.openflexo.foundation.fml.parser.node.AFalseLiteral;
+import org.openflexo.foundation.fml.parser.node.AFloatingPointLiteral;
 import org.openflexo.foundation.fml.parser.node.AIdentifierVariableDeclarator;
 import org.openflexo.foundation.fml.parser.node.AInitializerVariableDeclarator;
+import org.openflexo.foundation.fml.parser.node.AIntegerLiteral;
+import org.openflexo.foundation.fml.parser.node.ANullLiteral;
 import org.openflexo.foundation.fml.parser.node.APrivateVisibility;
 import org.openflexo.foundation.fml.parser.node.AProtectedVisibility;
 import org.openflexo.foundation.fml.parser.node.APublicVisibility;
+import org.openflexo.foundation.fml.parser.node.AStringLiteral;
+import org.openflexo.foundation.fml.parser.node.ATrueLiteral;
 import org.openflexo.foundation.fml.parser.node.Node;
 import org.openflexo.foundation.fml.parser.node.PAdditionalIdentifier;
 import org.openflexo.foundation.fml.parser.node.PCompositeIdent;
+import org.openflexo.foundation.fml.parser.node.PLiteral;
 import org.openflexo.foundation.fml.parser.node.PVariableDeclarator;
 import org.openflexo.foundation.fml.parser.node.PVisibility;
 import org.openflexo.foundation.fml.parser.node.TIdentifier;
 import org.openflexo.foundation.fml.parser.node.Token;
 import org.openflexo.foundation.fml.rt.editionaction.AddFlexoConceptInstance;
-import org.openflexo.foundation.fml.rt.editionaction.BehaviourParameter;
+import org.openflexo.foundation.fml.rt.editionaction.BehaviourCallArgument;
 import org.openflexo.foundation.technologyadapter.UseModelSlotDeclaration;
 import org.openflexo.p2pp.P2PPNode;
 import org.openflexo.p2pp.PrettyPrintContext;
@@ -249,14 +267,29 @@ public abstract class FMLObjectNode<N extends Node, T extends FMLPrettyPrintable
 		if (object instanceof JavaImportDeclaration) {
 			return (P2PPNode<?, C>) new JavaImportNode((JavaImportDeclaration) object, getAnalyser());
 		}
+		if (object instanceof BasicMetaData) {
+			return (P2PPNode<?, C>) new BasicMetaDataNode((BasicMetaData) object, getAnalyser());
+		}
+		if (object instanceof SingleMetaData) {
+			return (P2PPNode<?, C>) new SingleMetaDataNode((SingleMetaData) object, getAnalyser());
+		}
+		if (object instanceof MultiValuedMetaData) {
+			return (P2PPNode<?, C>) new MultiValuedMetaDataNode((MultiValuedMetaData) object, getAnalyser());
+		}
+		if (object instanceof MetaDataKeyValue) {
+			return (P2PPNode<?, C>) new MetaDataKeyValueNode((MetaDataKeyValue) object, getAnalyser());
+		}
+		if (object instanceof ListMetaData) {
+			return (P2PPNode<?, C>) new ListMetaDataNode((ListMetaData) object, getAnalyser());
+		}
 		if (object instanceof VirtualModel) {
 			return (P2PPNode<?, C>) new VirtualModelNode((VirtualModel) object, getAnalyser());
 		}
 		if (object instanceof FlexoConcept) {
 			return (P2PPNode<?, C>) new FlexoConceptNode((FlexoConcept) object, getAnalyser());
 		}
-		if (object instanceof FMLMetaData) {
-			return (P2PPNode<?, C>) new MetaDataNode((FMLMetaData) object, getAnalyser());
+		if (object instanceof SingleMetaData) {
+			return (P2PPNode<?, C>) new SingleMetaDataNode((SingleMetaData) object, getAnalyser());
 		}
 		if (object instanceof PrimitiveRole) {
 			return (P2PPNode<?, C>) new PrimitiveRoleNode((PrimitiveRole) object, getAnalyser());
@@ -284,6 +317,9 @@ public abstract class FMLObjectNode<N extends Node, T extends FMLPrettyPrintable
 		}
 		if (object instanceof DeletionScheme) {
 			return (P2PPNode<?, C>) new DeletionSchemeNode((DeletionScheme) object, getAnalyser());
+		}
+		if (object instanceof FlexoBehaviourParameter) {
+			return (P2PPNode<?, C>) new BehaviourParameterNode((FlexoBehaviourParameter) object, getAnalyser());
 		}
 		if (object instanceof EmptyControlGraph) {
 			return (P2PPNode<?, C>) new EmptyControlGraphNode((EmptyControlGraph) object, getAnalyser());
@@ -315,8 +351,8 @@ public abstract class FMLObjectNode<N extends Node, T extends FMLPrettyPrintable
 		if (object instanceof AbstractFetchRequest) {
 			return new FetchRequestNode((AbstractFetchRequest) object, getAnalyser());
 		}
-		if (object instanceof BehaviourParameter) {
-			return (P2PPNode<?, C>) new BehaviourParameterNode((BehaviourParameter) object, getAnalyser());
+		if (object instanceof BehaviourCallArgument) {
+			return (P2PPNode<?, C>) new BehaviourCallArgumentNode((BehaviourCallArgument) object, getAnalyser());
 		}
 		System.err.println("Not supported: " + object);
 		Thread.dumpStack();
@@ -375,6 +411,42 @@ public abstract class FMLObjectNode<N extends Node, T extends FMLPrettyPrintable
 
 	public String getText(Node node) {
 		return getFragment(node).getRawText();
+	}
+
+	public Object getLiteralValue(PLiteral node) throws ParseException {
+		if (node instanceof ACharacterLiteral) {
+			return ((ACharacterLiteral) node).getLitCharacter().getText().charAt(1);
+		}
+		else if (node instanceof AFalseLiteral) {
+			return false;
+		}
+		else if (node instanceof ATrueLiteral) {
+			return true;
+		}
+		else if (node instanceof AStringLiteral) {
+			String t = ((AStringLiteral) node).getLitString().getText();
+			return t.substring(1, t.length() - 2);
+		}
+		else if (node instanceof AFloatingPointLiteral) {
+			String f = ((AFloatingPointLiteral) node).getLitFloat().getText();
+			try {
+				return Double.parseDouble(f);
+			} catch (NumberFormatException e) {
+				throw new ParseException("Cannot parse as double: " + f);
+			}
+		}
+		else if (node instanceof AIntegerLiteral) {
+			String f = ((AIntegerLiteral) node).getLitInteger().getText();
+			try {
+				return Long.parseLong(f);
+			} catch (NumberFormatException e) {
+				throw new ParseException("Cannot parse as long: " + f);
+			}
+		}
+		else if (node instanceof ANullLiteral) {
+			return null;
+		}
+		throw new ParseException("Unexpected " + node);
 	}
 
 	public List<String> makeFullQualifiedIdentifierList(TIdentifier identifier, List<PAdditionalIdentifier> additionalIdentifiers) {

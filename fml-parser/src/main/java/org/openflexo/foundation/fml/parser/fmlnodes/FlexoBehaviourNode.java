@@ -41,6 +41,7 @@ package org.openflexo.foundation.fml.parser.fmlnodes;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.fml.FlexoBehaviour;
+import org.openflexo.foundation.fml.md.FMLMetaData;
 import org.openflexo.foundation.fml.parser.FMLObjectNode;
 import org.openflexo.foundation.fml.parser.MainSemanticsAnalyzer;
 import org.openflexo.foundation.fml.parser.node.AAnonymousConstructorBehaviourDecl;
@@ -55,6 +56,7 @@ import org.openflexo.foundation.fml.parser.node.Node;
 import org.openflexo.foundation.fml.parser.node.PFlexoBehaviourBody;
 import org.openflexo.foundation.fml.parser.node.PVisibility;
 import org.openflexo.foundation.fml.parser.node.TIdentifier;
+import org.openflexo.p2pp.PrettyPrintContext.Indentation;
 import org.openflexo.p2pp.RawSource.RawSourceFragment;
 
 /**
@@ -86,6 +88,12 @@ public abstract class FlexoBehaviourNode<N extends Node, T extends FlexoBehaviou
 	}*/
 
 	@Override
+	public void preparePrettyPrint(boolean hasParsedVersion) {
+		super.preparePrettyPrint(hasParsedVersion);
+		append(childrenContents("", () -> getModelObject().getMetaData(), LINE_SEPARATOR, Indentation.DoNotIndent, FMLMetaData.class));
+	}
+
+	@Override
 	public FlexoBehaviourNode<N, T> deserialize() {
 		if (getParent() instanceof VirtualModelNode) {
 			((VirtualModelNode) getParent()).getModelObject().addToFlexoBehaviours(getModelObject());
@@ -93,6 +101,7 @@ public abstract class FlexoBehaviourNode<N extends Node, T extends FlexoBehaviou
 		if (getParent() instanceof FlexoConceptNode) {
 			((FlexoConceptNode) getParent()).getModelObject().addToFlexoBehaviours(getModelObject());
 		}
+		getModelObject().getLabel();
 		return this;
 	}
 
@@ -114,6 +123,51 @@ public abstract class FlexoBehaviourNode<N extends Node, T extends FlexoBehaviou
 		}
 		return null;
 	}
+
+	/*protected void handleParameters(PBehaviourDecl behaviourDecl) {
+		if (behaviourDecl instanceof AAnonymousConstructorBehaviourDecl) {
+			handleParameters(((AAnonymousConstructorBehaviourDecl) behaviourDecl).getFormalArgumentsList());
+		}
+		else if (behaviourDecl instanceof AAnonymousDestructorBehaviourDecl) {
+			handleParameters(((AAnonymousDestructorBehaviourDecl) behaviourDecl).getFormalArgumentsList());
+		}
+		else if (behaviourDecl instanceof AFmlBehaviourDecl) {
+			handleParameters(((AFmlBehaviourDecl) behaviourDecl).getFormalArgumentsList());
+		}
+		else if (behaviourDecl instanceof AFmlFullyQualifiedBehaviourDecl) {
+			handleParameters(((AFmlFullyQualifiedBehaviourDecl) behaviourDecl).getFormalArgumentsList());
+		}
+	else if(behaviourDecl instanceof AMethodBehaviourDecl)
+	
+	{
+		handleParameters(((AMethodBehaviourDecl) behaviourDecl).getFormalArgumentsList());
+	}else if(behaviourDecl instanceof ANamedConstructorBehaviourDecl)
+	{
+		handleParameters(((ANamedConstructorBehaviourDecl) behaviourDecl).getFormalArgumentsList());
+	}else if(behaviourDecl instanceof ANamedDestructorBehaviourDecl)
+	{
+		handleParameters(((ANamedDestructorBehaviourDecl) behaviourDecl).getFormalArgumentsList());
+	}
+	}
+	
+	private void handleParameters(PFormalArgumentsList parametersList) {
+		if (parametersList instanceof AManyFormalArgumentsList) {
+			AManyFormalArgumentsList l = (AManyFormalArgumentsList) parametersList;
+			handleParameter(l.getFormalArgument());
+			handleParameters(l.getFormalArgumentsList());
+		}
+		else if (parametersList instanceof AOneFormalArgumentsList) {
+			handleParameter(((AOneFormalArgumentsList) parametersList).getFormalArgument());
+		}
+	}
+	
+	private void handleParameter(PFormalArgument parameter) {
+		System.out.println("On gere le parametre " + parameter);
+		System.out.println("On gere rien en fait");
+		System.exit(-1);
+		
+		BehaviourParameterNode paramNode = new BehaviourParameterNode(parameter, getAnalyser());
+	}*/
 
 	protected boolean isAbstract() {
 		if (getASTNode() != null) {

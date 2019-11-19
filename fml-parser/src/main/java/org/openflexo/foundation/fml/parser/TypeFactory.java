@@ -171,6 +171,19 @@ public class TypeFactory extends SemanticsAnalyzerFactory {
 		return makeType(compositeIdentifier.getIdentifier(), compositeIdentifier.getAdditionalIdentifiers());
 	}
 
+	public PrimitiveType makePrimitiveType(PPrimitiveType primitiveType) {
+		if (primitiveType instanceof ABooleanPrimitiveType) {
+			return PrimitiveType.Boolean;
+		}
+		else if (primitiveType instanceof AFloatPrimitiveType) {
+			return PrimitiveType.Float;
+		}
+		else if (primitiveType instanceof AIntPrimitiveType) {
+			return PrimitiveType.Integer;
+		}
+		return null;
+	}
+
 	public Type makeType(TIdentifier identifier, List<PAdditionalIdentifier> additionalIdentifiers) {
 		String typeName = makeFullQualifiedIdentifier(identifier, additionalIdentifiers);
 

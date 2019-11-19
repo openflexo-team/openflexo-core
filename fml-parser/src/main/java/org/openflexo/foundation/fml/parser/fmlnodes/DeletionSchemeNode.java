@@ -41,7 +41,7 @@ package org.openflexo.foundation.fml.parser.fmlnodes;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.fml.DeletionScheme;
-import org.openflexo.foundation.fml.FMLMetaData;
+import org.openflexo.foundation.fml.FlexoBehaviourParameter;
 import org.openflexo.foundation.fml.parser.ControlGraphFactory;
 import org.openflexo.foundation.fml.parser.MainSemanticsAnalyzer;
 import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.ControlGraphNode;
@@ -94,6 +94,8 @@ public class DeletionSchemeNode extends FlexoBehaviourNode<PBehaviourDecl, Delet
 		}
 		returned.setVisibility(getVisibility(getVisibility()));
 
+		// handleParameters(astNode);
+
 		ControlGraphNode<?, ?> cgNode = ControlGraphFactory.makeControlGraphNode(getFlexoBehaviourBody(astNode), getAnalyser());
 		if (cgNode != null) {
 			returned.setControlGraph(cgNode.getModelObject());
@@ -108,14 +110,16 @@ public class DeletionSchemeNode extends FlexoBehaviourNode<PBehaviourDecl, Delet
 		super.preparePrettyPrint(hasParsedVersion);
 
 		// @formatter:off	
-		append(childrenContents("", () -> getModelObject().getMetaData(), LINE_SEPARATOR, Indentation.DoNotIndent,
-				FMLMetaData.class));
+		//append(childrenContents("", () -> getModelObject().getMetaData(), LINE_SEPARATOR, Indentation.DoNotIndent,
+		//		FMLMetaData.class));
 		append(dynamicContents(() -> getVisibilityAsString(getModelObject().getVisibility()), SPACE), getVisibilityFragment());
 		append(staticContents("delete"), getDeleteFragment());
 		when(() -> !isAnonymous())
 				.thenAppend(staticContents("::"), getColonColonFragment())
 				.thenAppend(dynamicContents(() -> getModelObject().getName()), getNameFragment());
 		append(staticContents(SPACE, "(", ""), getLParFragment());
+		append(childrenContents("", "", () -> getModelObject().getParameters(), ","+SPACE, "", Indentation.DoNotIndent,
+				FlexoBehaviourParameter.class));
 		append(staticContents(")"), getRParFragment());
 		when(() -> isAbstract())
 				.thenAppend(staticContents(";"), getSemiFragment())

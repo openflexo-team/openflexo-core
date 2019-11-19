@@ -108,7 +108,7 @@ public interface UseModelSlotDeclaration extends FlexoObject, FMLPrettyPrintable
 		@Override
 		public String getAbbrev() {
 			String returned = (String) performSuperGetter(ABBREV_KEY);
-			if (returned == null) {
+			if (returned == null && getModelSlotClass() != null) {
 				if (FMLRTVirtualModelInstanceModelSlot.class.isAssignableFrom(getModelSlotClass())) {
 					return "FMLRT";
 				}

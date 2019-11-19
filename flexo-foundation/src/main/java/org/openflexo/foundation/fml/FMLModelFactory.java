@@ -76,6 +76,11 @@ import org.openflexo.foundation.fml.editionaction.RemoveFromListAction;
 import org.openflexo.foundation.fml.editionaction.ReturnStatement;
 import org.openflexo.foundation.fml.inspector.FlexoConceptInspector;
 import org.openflexo.foundation.fml.inspector.InspectorEntry;
+import org.openflexo.foundation.fml.md.BasicMetaData;
+import org.openflexo.foundation.fml.md.ListMetaData;
+import org.openflexo.foundation.fml.md.MetaDataKeyValue;
+import org.openflexo.foundation.fml.md.MultiValuedMetaData;
+import org.openflexo.foundation.fml.md.SingleMetaData;
 import org.openflexo.foundation.fml.rm.CompilationUnitResource;
 import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstanceModelSlot;
 import org.openflexo.foundation.fml.rt.editionaction.AddFlexoConceptInstance;
@@ -289,18 +294,49 @@ public class FMLModelFactory extends ModelFactory implements PamelaResourceModel
 		return returned;
 	}
 
-	public <T> FMLMetaData newMetaData(String key, T value, Class<T> type) {
-		FMLMetaData returned = newInstance(FMLMetaData.class);
-		returned.initializeDeserialization(this);
+	public BasicMetaData newBasicMetaData(String key) {
+		BasicMetaData returned = newInstance(BasicMetaData.class);
 		returned.setKey(key);
-		returned.setValueAs(value, type);
 		return returned;
 	}
 
-	public FMLMetaData newMetaData(String key, String fmlValueRepresentation) {
-		FMLMetaData returned = newInstance(FMLMetaData.class);
+	public <T> SingleMetaData<T> newSingleMetaData(String key) {
+		SingleMetaData<T> returned = newInstance(SingleMetaData.class);
 		returned.setKey(key);
-		returned.setFMLValueRepresentation(fmlValueRepresentation);
+		return returned;
+	}
+
+	public <T> SingleMetaData<T> newSingleMetaData(String key, T value, Class<T> type) {
+		SingleMetaData<T> returned = newInstance(SingleMetaData.class);
+		returned.initializeDeserialization(this);
+		returned.setKey(key);
+		returned.setValue(value, type);
+		return returned;
+	}
+
+	public MultiValuedMetaData newMultiValuedMetaData(String key) {
+		MultiValuedMetaData returned = newInstance(MultiValuedMetaData.class);
+		returned.setKey(key);
+		return returned;
+	}
+
+	public <T> MetaDataKeyValue<T> newMetaDataKeyValue(String key) {
+		MetaDataKeyValue<T> returned = newInstance(MetaDataKeyValue.class);
+		returned.setKey(key);
+		return returned;
+	}
+
+	public <T> MetaDataKeyValue<T> newMetaDataKeyValue(String key, T value, Class<T> type) {
+		MetaDataKeyValue<T> returned = newInstance(MetaDataKeyValue.class);
+		returned.initializeDeserialization(this);
+		returned.setKey(key);
+		returned.setValue(value, type);
+		return returned;
+	}
+
+	public ListMetaData newListMetaData(String key) {
+		ListMetaData returned = newInstance(ListMetaData.class);
+		returned.setKey(key);
 		return returned;
 	}
 
@@ -415,7 +451,9 @@ public class FMLModelFactory extends ModelFactory implements PamelaResourceModel
 
 	public FlexoBehaviourParameter newParameter(FlexoBehaviour behaviour) {
 		FlexoBehaviourParameter returned = newInstance(FlexoBehaviourParameter.class);
-		behaviour.addToParameters(returned);
+		if (behaviour != null) {
+			behaviour.addToParameters(returned);
+		}
 		return returned;
 	}
 

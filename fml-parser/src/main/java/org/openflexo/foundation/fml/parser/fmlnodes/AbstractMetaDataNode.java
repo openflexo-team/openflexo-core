@@ -1,8 +1,8 @@
 /**
  * 
- * Copyright (c) 2014, Openflexo
+ * Copyright (c) 2019, Openflexo
  * 
- * This file is part of Flexo-foundation, a component of the software infrastructure 
+ * This file is part of FML-parser, a component of the software infrastructure 
  * developed at Openflexo.
  * 
  * 
@@ -36,53 +36,43 @@
  * 
  */
 
-package org.openflexo.foundation.fml.binding;
+package org.openflexo.foundation.fml.parser.fmlnodes;
 
-import java.beans.PropertyChangeEvent;
-
-import org.openflexo.connie.BindingModel;
-import org.openflexo.foundation.fml.rt.editionaction.BehaviourCallArgument;
+import org.openflexo.foundation.fml.md.FMLMetaData;
+import org.openflexo.foundation.fml.parser.FMLObjectNode;
+import org.openflexo.foundation.fml.parser.FMLSemanticsAnalyzer;
+import org.openflexo.foundation.fml.parser.MainSemanticsAnalyzer;
+import org.openflexo.foundation.fml.parser.node.Node;
 
 /**
- * This is the {@link BindingModel} exposed by a {@link BehaviourCallArgument}<br>
- * 
  * @author sylvain
  * 
  */
-public class BehaviourParameterBindingModel extends BindingModel {
+public abstract class AbstractMetaDataNode<N extends Node, T extends FMLMetaData, A extends FMLSemanticsAnalyzer>
+		extends FMLObjectNode<N, T, A> {
 
-	private final BehaviourCallArgument<?> parameter;
-
-	public BehaviourParameterBindingModel(BehaviourCallArgument<?> parameter) {
-		super(parameter.getOwner() != null ? parameter.getOwner().getBindingModel() : null);
-		this.parameter = parameter;
-		if (parameter.getPropertyChangeSupport() != null) {
-			parameter.getPropertyChangeSupport().addPropertyChangeListener(this);
-		}
+	public AbstractMetaDataNode(N astNode, MainSemanticsAnalyzer analyser) {
+		super(astNode, analyser);
 	}
 
-	/**
-	 * Delete this {@link BindingModel}
-	 */
-	@Override
-	public void delete() {
-		if (parameter != null && parameter.getPropertyChangeSupport() != null) {
-			parameter.getPropertyChangeSupport().removePropertyChangeListener(this);
-		}
-		super.delete();
+	public AbstractMetaDataNode(T metaData, MainSemanticsAnalyzer analyser) {
+		super(metaData, analyser);
 	}
 
 	@Override
-	public void propertyChange(PropertyChangeEvent evt) {
-		super.propertyChange(evt);
-		if (evt.getSource() == parameter) {
-			if (evt.getPropertyName().equals(BehaviourCallArgument.OWNER_KEY)) {
-				setBaseBindingModel(parameter.getOwner() != null ? parameter.getOwner().getBindingModel() : null);
-			}
+	public final AbstractMetaDataNode<N, T, A> deserialize() {
+		if (getParent() instanceof FMLObjectNode) {
+			System.out.println("Adding to meta data for " + getParent().getModelObject() + " -> " + getModelObject().getKey() + "="
+					+ getModelObject());
+			((FMLObjectNode<?, ?, ?>) getParent()).getModelObject().addToMetaData(getModelObject());
 		}
+		if (getParent() instanceof ListMetaDataNode) {
+			System.out.println("Adding to meta data for " + getParent().getModelObject() + " -> " + getModelObject().getKey() + "="
+					+ getModelObject());
+			((ListMetaDataNode) getParent()).getModelObject().addToMetaDataList(getModelObject());
+		}
+
+		return this;
 	}
 
-	public BehaviourCallArgument<?> getParameter() {
-		return parameter;
-	}
 }

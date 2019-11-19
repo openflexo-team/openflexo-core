@@ -203,7 +203,8 @@ Tokens
    {normal} kw_as = 'as';
    {normal} kw_concept = 'concept';
    {normal} kw_create = 'create';
-   {normal} kw_delete = 'delete';
+   {normal} kw_default = 'default';
+   {normal} kw_delete = 'delete';  
    {normal} kw_do = 'do';
    {normal} kw_else = 'else';
    {normal} kw_extends = 'extends';
@@ -223,6 +224,7 @@ Tokens
    {normal} kw_protected = 'protected';
    {normal} kw_public = 'public';
    {normal} kw_receive = 'receive';
+   {normal} kw_required = 'required';
    {normal} kw_return = 'return';
    {normal} kw_select = 'select';
    {normal} kw_set = 'set';
@@ -415,10 +417,12 @@ Productions
      ;
 
    formal_argument =
-       {primitive} primitive_type [arg_name]:identifier
+       {primitive} kw_required? primitive_type [arg_name]:identifier default_argument_value?
      //| {simple} [identifier]:composite_ident [arg_name]:identifier
-     | {complex} reference_type [arg_name]:identifier
+     | {complex} kw_required? reference_type [arg_name]:identifier default_argument_value?
      ;
+     
+   default_argument_value = kw_default assign expression;
      
    flexo_behaviour_body =
        {block} block

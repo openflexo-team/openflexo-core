@@ -68,8 +68,8 @@ import org.openflexo.pamela.validation.ValidationIssue;
  *
  */
 @ModelEntity(isAbstract = true)
-@ImplementationClass(BehaviourParameter.BehaviourParameterImpl.class)
-public interface BehaviourParameter<T extends FlexoConceptObject> extends FlexoBehaviourObject, FMLPrettyPrintable {
+@ImplementationClass(BehaviourCallArgument.BehaviourCallArgumentImpl.class)
+public interface BehaviourCallArgument<T extends FlexoConceptObject> extends FlexoBehaviourObject, FMLPrettyPrintable {
 
 	@PropertyIdentifier(type = FlexoConceptObject.class)
 	public static final String OWNER_KEY = "owner";
@@ -112,10 +112,10 @@ public interface BehaviourParameter<T extends FlexoConceptObject> extends FlexoB
 	@Override
 	public BehaviourParameterBindingModel getBindingModel();
 
-	public static abstract class BehaviourParameterImpl<T extends FlexoConceptObject> extends FlexoBehaviourObjectImpl
-			implements BehaviourParameter<T> {
+	public static abstract class BehaviourCallArgumentImpl<T extends FlexoConceptObject> extends FlexoBehaviourObjectImpl
+			implements BehaviourCallArgument<T> {
 
-		static final Logger logger = Logger.getLogger(BehaviourParameter.class.getPackage().getName());
+		static final Logger logger = Logger.getLogger(BehaviourCallArgument.class.getPackage().getName());
 
 		// AddFlexoConceptInstance action;
 
@@ -248,19 +248,19 @@ public interface BehaviourParameter<T extends FlexoConceptObject> extends FlexoB
 	}
 
 	@DefineValidationRule
-	public static class ValueBindingMustBeValid extends BindingIsRequiredAndMustBeValid<BehaviourParameter> {
+	public static class ValueBindingMustBeValid extends BindingIsRequiredAndMustBeValid<BehaviourCallArgument> {
 		public ValueBindingMustBeValid() {
-			super("'value'_binding_is_required_and_must_be_valid", BehaviourParameter.class);
+			super("'value'_binding_is_required_and_must_be_valid", BehaviourCallArgument.class);
 		}
 
 		@Override
-		public DataBinding<?> getBinding(BehaviourParameter object) {
+		public DataBinding<?> getBinding(BehaviourCallArgument object) {
 			return object.getValue();
 		}
 
 		@Override
-		public ValidationIssue<BindingIsRequiredAndMustBeValid<BehaviourParameter>, BehaviourParameter> applyValidation(
-				BehaviourParameter object) {
+		public ValidationIssue<BindingIsRequiredAndMustBeValid<BehaviourCallArgument>, BehaviourCallArgument> applyValidation(
+				BehaviourCallArgument object) {
 			// Should return an issue only if parameter is required
 			if (object.getParam() != null && object.getParam().getIsRequired()) {
 				return super.applyValidation(object);

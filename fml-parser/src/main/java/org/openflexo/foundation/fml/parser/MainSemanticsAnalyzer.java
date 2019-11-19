@@ -40,15 +40,20 @@ package org.openflexo.foundation.fml.parser;
 
 import org.openflexo.foundation.fml.FMLCompilationUnit;
 import org.openflexo.foundation.fml.FMLModelFactory;
+import org.openflexo.foundation.fml.parser.fmlnodes.BasicMetaDataNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.FMLCompilationUnitNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.FlexoConceptNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.JavaImportNode;
-import org.openflexo.foundation.fml.parser.fmlnodes.MetaDataNode;
+import org.openflexo.foundation.fml.parser.fmlnodes.ListMetaDataNode;
+import org.openflexo.foundation.fml.parser.fmlnodes.MetaDataKeyValueNode;
+import org.openflexo.foundation.fml.parser.fmlnodes.MultiValuedMetaDataNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.NamedJavaImportNode;
+import org.openflexo.foundation.fml.parser.fmlnodes.SingleMetaDataNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.UseDeclarationNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.VirtualModelNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.BehaviourParameterNode;
 import org.openflexo.foundation.fml.parser.node.AAbstractPropertyInnerConceptDecl;
+import org.openflexo.foundation.fml.parser.node.AAnnotationKeyValuePair;
 import org.openflexo.foundation.fml.parser.node.ABasicAnnotationAnnotation;
 import org.openflexo.foundation.fml.parser.node.ABehaviourDeclarationInnerConceptDecl;
 import org.openflexo.foundation.fml.parser.node.AComplexAnnotationAnnotation;
@@ -60,6 +65,7 @@ import org.openflexo.foundation.fml.parser.node.AGetDecl;
 import org.openflexo.foundation.fml.parser.node.AGetSetPropertyInnerConceptDecl;
 import org.openflexo.foundation.fml.parser.node.AJavaImportImportDecl;
 import org.openflexo.foundation.fml.parser.node.AJavaInnerConceptDecl;
+import org.openflexo.foundation.fml.parser.node.AListAnnotationAnnotation;
 import org.openflexo.foundation.fml.parser.node.AModelDecl;
 import org.openflexo.foundation.fml.parser.node.ANamedJavaImportImportDecl;
 import org.openflexo.foundation.fml.parser.node.APrimitiveFormalArgument;
@@ -299,19 +305,19 @@ public class MainSemanticsAnalyzer extends FMLSemanticsAnalyzer {
 	@Override
 	public void inABasicAnnotationAnnotation(ABasicAnnotationAnnotation node) {
 		super.inABasicAnnotationAnnotation(node);
-		// TODO
+		push(new BasicMetaDataNode(node, this));
 	}
 
 	@Override
 	public void outABasicAnnotationAnnotation(ABasicAnnotationAnnotation node) {
 		super.inABasicAnnotationAnnotation(node);
-		// TODO
+		pop();
 	}
 
 	@Override
 	public void inASingleAnnotationAnnotation(ASingleAnnotationAnnotation node) {
 		super.inASingleAnnotationAnnotation(node);
-		push(new MetaDataNode(node, this));
+		push(new SingleMetaDataNode(node, this));
 	}
 
 	@Override
@@ -322,14 +328,38 @@ public class MainSemanticsAnalyzer extends FMLSemanticsAnalyzer {
 
 	@Override
 	public void inAComplexAnnotationAnnotation(AComplexAnnotationAnnotation node) {
-		// TODO
 		super.inAComplexAnnotationAnnotation(node);
+		push(new MultiValuedMetaDataNode(node, this));
 	}
 
 	@Override
 	public void outAComplexAnnotationAnnotation(AComplexAnnotationAnnotation node) {
-		// TODO
 		super.outAComplexAnnotationAnnotation(node);
+		pop();
+	}
+
+	@Override
+	public void inAAnnotationKeyValuePair(AAnnotationKeyValuePair node) {
+		super.inAAnnotationKeyValuePair(node);
+		push(new MetaDataKeyValueNode(node, this));
+	}
+
+	@Override
+	public void outAAnnotationKeyValuePair(AAnnotationKeyValuePair node) {
+		super.outAAnnotationKeyValuePair(node);
+		pop();
+	}
+
+	@Override
+	public void inAListAnnotationAnnotation(AListAnnotationAnnotation node) {
+		super.inAListAnnotationAnnotation(node);
+		push(new ListMetaDataNode(node, this));
+	}
+
+	@Override
+	public void outAListAnnotationAnnotation(AListAnnotationAnnotation node) {
+		super.outAListAnnotationAnnotation(node);
+		pop();
 	}
 
 	@Override

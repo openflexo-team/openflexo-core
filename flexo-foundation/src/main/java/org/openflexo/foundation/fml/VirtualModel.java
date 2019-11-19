@@ -53,6 +53,8 @@ import org.openflexo.connie.BindingFactory;
 import org.openflexo.foundation.fml.FMLRepresentationContext.FMLRepresentationOutput;
 import org.openflexo.foundation.fml.binding.FMLBindingFactory;
 import org.openflexo.foundation.fml.binding.VirtualModelBindingModel;
+import org.openflexo.foundation.fml.md.FMLMetaData;
+import org.openflexo.foundation.fml.md.SingleMetaData;
 import org.openflexo.foundation.fml.rm.CompilationUnitResource;
 import org.openflexo.foundation.fml.rm.CompilationUnitResourceFactory;
 import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstance;
@@ -519,6 +521,8 @@ public interface VirtualModel extends FlexoConcept {
 
 		@Override
 		public void finalizeDeserialization() {
+			// getVersion();
+			// getURI();
 			for (FlexoConcept concept : getFlexoConcepts()) {
 				concept.finalizeDeserialization();
 			}
@@ -554,8 +558,8 @@ public interface VirtualModel extends FlexoConcept {
 				return getContainerVirtualModel().getURI() + "/" + getName()
 						+ (getName().endsWith(CompilationUnitResourceFactory.FML_SUFFIX) ? "" : CompilationUnitResourceFactory.FML_SUFFIX);
 			}
-			if (getMetaData("URI") != null) {
-				return getMetaData("URI").getValueAs(String.class);
+			if (getMetaData("URI") instanceof SingleMetaData) {
+				return ((SingleMetaData<String>) getMetaData("URI")).getValue(String.class);
 			}
 			if (getCompilationUnit() != null && getCompilationUnit().getResource() != null) {
 				return getCompilationUnit().getResource().getURI();
@@ -576,12 +580,12 @@ public interface VirtualModel extends FlexoConcept {
 					// We prevent ',' so that we can use it as a delimiter in tags.
 					anURI = anURI.replace(",", "");
 				}
-				if (getMetaData("URI") != null) {
-					getMetaData("URI").setValueAs(anURI, String.class);
+				if (getMetaData("URI") instanceof SingleMetaData) {
+					((SingleMetaData<String>) getMetaData("URI")).setValue(anURI, String.class);
 				}
 				else if (getCompilationUnit() == null || getCompilationUnit().getResource() == null || anURI == null
 						|| !anURI.equals(getCompilationUnit().getResource().getURI())) {
-					FMLMetaData uriMD = getFMLModelFactory().newMetaData("URI", anURI, String.class);
+					FMLMetaData uriMD = getFMLModelFactory().newSingleMetaData("URI", anURI, String.class);
 					addToMetaData(uriMD);
 				}
 				if (getCompilationUnit() != null && getCompilationUnit().getResource() != null) {
@@ -592,8 +596,8 @@ public interface VirtualModel extends FlexoConcept {
 
 		@Override
 		public FlexoVersion getVersion() {
-			if (getMetaData("Version") != null) {
-				return getMetaData("Version").getValueAs(FlexoVersion.class);
+			if (getMetaData("Version") instanceof SingleMetaData) {
+				return ((SingleMetaData<FlexoVersion>) getMetaData("Version")).getValue(FlexoVersion.class);
 			}
 			if (getCompilationUnit() != null && getCompilationUnit().getResource() != null) {
 				return getCompilationUnit().getResource().getVersion();
@@ -604,12 +608,12 @@ public interface VirtualModel extends FlexoConcept {
 		@Override
 		public void setVersion(FlexoVersion aVersion) {
 			if (isDeserializing() || requireChange(getVersion(), aVersion)) {
-				if (getMetaData("Version") != null) {
-					getMetaData("Version").setValueAs(aVersion, FlexoVersion.class);
+				if (getMetaData("Version") instanceof SingleMetaData) {
+					((SingleMetaData<FlexoVersion>) getMetaData("Version")).setValue(aVersion, FlexoVersion.class);
 				}
 				else if (getCompilationUnit() == null || getCompilationUnit().getResource() == null || aVersion == null
 						|| !aVersion.equals(getCompilationUnit().getResource().getVersion())) {
-					FMLMetaData versionMD = getFMLModelFactory().newMetaData("Version", aVersion, FlexoVersion.class);
+					FMLMetaData versionMD = getFMLModelFactory().newSingleMetaData("Version", aVersion, FlexoVersion.class);
 					addToMetaData(versionMD);
 				}
 				if (getCompilationUnit() != null && getCompilationUnit().getResource() != null) {
@@ -620,22 +624,13 @@ public interface VirtualModel extends FlexoConcept {
 
 		@Override
 		public String getAuthor() {
-			if (getMetaData("Author") != null) {
-				return getMetaData("Author").getValueAs(String.class);
-			}
-			return null;
+			return getSingleMetaData("Author", String.class);
 		}
 
 		@Override
 		public void setAuthor(String author) {
 			if (isDeserializing() || requireChange(getAuthor(), author)) {
-				if (getMetaData("Author") != null) {
-					getMetaData("Author").setValueAs(author, String.class);
-				}
-				else {
-					FMLMetaData authorMD = getFMLModelFactory().newMetaData("Author", author, String.class);
-					addToMetaData(authorMD);
-				}
+				setSingleMetaData("Author", author, String.class);
 			}
 		}
 

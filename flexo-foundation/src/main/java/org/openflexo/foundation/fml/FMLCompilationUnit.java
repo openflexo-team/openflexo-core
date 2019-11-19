@@ -47,8 +47,10 @@ import java.util.function.Consumer;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
 
+import org.openflexo.connie.BindingEvaluationContext;
 import org.openflexo.connie.BindingFactory;
 import org.openflexo.connie.BindingModel;
+import org.openflexo.connie.BindingVariable;
 import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.fml.inspector.InspectorEntry;
 import org.openflexo.foundation.fml.rm.CompilationUnitResource;
@@ -255,6 +257,25 @@ public interface FMLCompilationUnit extends FMLObject, FMLPrettyPrintable, Resou
 		private static final Logger logger = Logger.getLogger(FMLCompilationUnitImpl.class.getPackage().getName());
 
 		private CompilationUnitResource resource;
+		private BindingEvaluationContext reflectedBindingEvaluationContext = new ReflectedBindingEvaluationContext();
+
+		class ReflectedBindingEvaluationContext implements BindingEvaluationContext {
+			@Override
+			public Object getValue(BindingVariable arg0) {
+				// TODO Auto-generated method stub
+				return null;
+			}
+		}
+
+		/**
+		 * Return reflected BindingEvaluationContext, obtained at metadata conceptual level
+		 * 
+		 * @return
+		 */
+		@Override
+		public BindingEvaluationContext getReflectedBindingEvaluationContext() {
+			return reflectedBindingEvaluationContext;
+		}
 
 		@Override
 		public FMLModelFactory getFMLModelFactory() {

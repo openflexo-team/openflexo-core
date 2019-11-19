@@ -41,6 +41,7 @@ package org.openflexo.foundation.fml.parser.fmlnodes;
 import org.openflexo.foundation.fml.FlexoBehaviour;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoProperty;
+import org.openflexo.foundation.fml.md.FMLMetaData;
 import org.openflexo.foundation.fml.parser.MainSemanticsAnalyzer;
 import org.openflexo.foundation.fml.parser.node.AConceptDecl;
 import org.openflexo.foundation.fml.parser.node.ASuperClause;
@@ -87,6 +88,8 @@ public class FlexoConceptNode extends AbstractFlexoConceptNode<AConceptDecl, Fle
 		super.preparePrettyPrint(hasParsedVersion);
 
 		// @formatter:off	
+		append(childrenContents("", () -> getModelObject().getMetaData(), LINE_SEPARATOR, Indentation.DoNotIndent,
+				FMLMetaData.class));
 		append(dynamicContents(() -> getVisibilityAsString(getModelObject().getVisibility()), SPACE), getVisibilityFragment());
 		append(staticContents("","concept",SPACE), getConceptFragment());
 		append(dynamicContents(() -> getModelObject().getName()),getNameFragment());
@@ -104,6 +107,7 @@ public class FlexoConceptNode extends AbstractFlexoConceptNode<AConceptDecl, Fle
 		append(childrenContents(LINE_SEPARATOR, () -> getModelObject().getEmbeddedFlexoConcepts(), LINE_SEPARATOR, Indentation.Indent,
 				FlexoConcept.class));
 		append(staticContents("", "}", LINE_SEPARATOR), getRBrcFragment());
+	
 		// @formatter:on
 
 		/*appendDynamicContents(() -> getVisibilityAsString(getModelObject().getVisibility()), SPACE, getVisibilityFragment());

@@ -38,53 +38,65 @@
 
 package org.openflexo.foundation.fml.parser.fmlnodes;
 
-import org.openflexo.foundation.fml.FMLMetaData;
+import org.openflexo.connie.DataBinding;
+import org.openflexo.connie.expr.Constant;
+import org.openflexo.foundation.fml.md.MetaDataKeyValue;
+import org.openflexo.foundation.fml.parser.ExpressionFactory;
 import org.openflexo.foundation.fml.parser.FMLObjectNode;
 import org.openflexo.foundation.fml.parser.MainSemanticsAnalyzer;
-import org.openflexo.foundation.fml.parser.node.AValueAnnotationAnnotation;
+import org.openflexo.foundation.fml.parser.node.AAnnotationKeyValuePair;
 import org.openflexo.p2pp.RawSource.RawSourceFragment;
 
 /**
  * @author sylvain
  * 
  */
-public class MetaDataNode extends FMLObjectNode<AValueAnnotationAnnotation, FMLMetaData, MainSemanticsAnalyzer> {
+public class MetaDataKeyValueNode extends FMLObjectNode<AAnnotationKeyValuePair, MetaDataKeyValue<?>, MainSemanticsAnalyzer> {
 
-	public MetaDataNode(AValueAnnotationAnnotation astNode, MainSemanticsAnalyzer analyser) {
+	public MetaDataKeyValueNode(AAnnotationKeyValuePair astNode, MainSemanticsAnalyzer analyser) {
 		super(astNode, analyser);
 	}
 
-	public MetaDataNode(FMLMetaData importDeclaration, MainSemanticsAnalyzer analyser) {
-		super(importDeclaration, analyser);
+	public MetaDataKeyValueNode(MetaDataKeyValue<?> metaData, MainSemanticsAnalyzer analyser) {
+		super(metaData, analyser);
 	}
 
 	@Override
-	public MetaDataNode deserialize() {
-		if (getParent() instanceof FMLObjectNode) {
+	public MetaDataKeyValueNode deserialize() {
+		if (getParent() instanceof MultiValuedMetaDataNode) {
 			System.out.println("Adding to meta data for " + getParent().getModelObject() + " -> " + getModelObject().getKey() + "="
-					+ getModelObject().getFMLValueRepresentation());
-			((FMLObjectNode<?, ?, ?>) getParent()).getModelObject().addToMetaData(getModelObject());
+					+ getModelObject());
+			((MultiValuedMetaDataNode) getParent()).getModelObject().addToKeyValues(getModelObject());
 		}
 
 		return this;
 	}
 
 	@Override
-	public FMLMetaData buildModelObjectFromAST(AValueAnnotationAnnotation astNode) {
+	public MetaDataKeyValue<?> buildModelObjectFromAST(AAnnotationKeyValuePair astNode) {
 		String key = makeFullQualifiedIdentifier(astNode.getIdentifier());
-		String value = getText(astNode.getExpression());
-		return getFactory().newMetaData(key, value);
+
+		MetaDataKeyValue<?> returned = getFactory().newMetaDataKeyValue(key);
+
+		DataBinding<?> valueExpression = ExpressionFactory.makeExpression(astNode.getConditionalExp(), getAnalyser(), returned);
+
+		if (valueExpression.getExpression() instanceof Constant) {
+			returned.setSerializationRepresentation(getText(astNode.getConditionalExp()));
+		}
+		else {
+			returned.setValueExpression((DataBinding) valueExpression);
+		}
+
+		return returned;
 	}
 
 	@Override
 	public void preparePrettyPrint(boolean hasParsedVersion) {
 		super.preparePrettyPrint(hasParsedVersion);
 
-		append(staticContents("@"), getAtFragment());
 		append(dynamicContents(() -> getModelObject().getKey()), getKeyFragment());
-		append(staticContents("("), getLParFragment());
-		append(dynamicContents(() -> getModelObject().getFMLValueRepresentation()), getValueFragment());
-		append(staticContents(")"), getRParFragment());
+		append(staticContents("="), getAssignFragment());
+		append(dynamicContents(() -> getModelObject().getSerializationRepresentation()), getValueFragment());
 	}
 
 	private RawSourceFragment getKeyFragment() {
@@ -96,28 +108,14 @@ public class MetaDataNode extends FMLObjectNode<AValueAnnotationAnnotation, FMLM
 
 	private RawSourceFragment getValueFragment() {
 		if (getASTNode() != null) {
-			return getFragment(getASTNode().getExpression());
+			return getFragment(getASTNode().getConditionalExp());
 		}
 		return null;
 	}
 
-	private RawSourceFragment getAtFragment() {
+	private RawSourceFragment getAssignFragment() {
 		if (getASTNode() != null) {
-			return getFragment(getASTNode().getAt());
-		}
-		return null;
-	}
-
-	protected RawSourceFragment getLParFragment() {
-		if (getASTNode() != null) {
-			return getFragment(getASTNode().getLPar());
-		}
-		return null;
-	}
-
-	protected RawSourceFragment getRParFragment() {
-		if (getASTNode() != null) {
-			return getFragment(getASTNode().getRPar());
+			return getFragment(getASTNode().getAssign());
 		}
 		return null;
 	}

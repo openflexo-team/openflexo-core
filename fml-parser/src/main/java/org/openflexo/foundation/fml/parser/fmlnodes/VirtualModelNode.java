@@ -38,11 +38,11 @@
 
 package org.openflexo.foundation.fml.parser.fmlnodes;
 
-import org.openflexo.foundation.fml.FMLMetaData;
 import org.openflexo.foundation.fml.FlexoBehaviour;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoProperty;
 import org.openflexo.foundation.fml.VirtualModel;
+import org.openflexo.foundation.fml.md.FMLMetaData;
 import org.openflexo.foundation.fml.parser.MainSemanticsAnalyzer;
 import org.openflexo.foundation.fml.parser.node.AModelDecl;
 import org.openflexo.foundation.fml.parser.node.ASuperClause;
@@ -78,6 +78,8 @@ public class VirtualModelNode extends AbstractFlexoConceptNode<AModelDecl, Virtu
 		if (getParent() instanceof FMLCompilationUnitNode) {
 			((FMLCompilationUnitNode) getParent()).getModelObject().setVirtualModel(getModelObject());
 		}
+		getModelObject().getVersion();
+		getModelObject().getURI();
 		return this;
 	}
 
