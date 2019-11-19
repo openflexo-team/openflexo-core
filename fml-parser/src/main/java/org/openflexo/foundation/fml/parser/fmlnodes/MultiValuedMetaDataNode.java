@@ -74,7 +74,7 @@ public class MultiValuedMetaDataNode
 
 		append(staticContents("@"), getAtFragment());
 		append(dynamicContents(() -> getModelObject().getKey()), getKeyFragment());
-		append(staticContents(SPACE, "(", ""), getLParFragment());
+		append(staticContents("("), getLParFragment());
 		append(childrenContents("", "", () -> getModelObject().getKeyValues(), "," + SPACE, "", Indentation.DoNotIndent,
 				MetaDataKeyValue.class));
 		append(staticContents(")"), getRParFragment());

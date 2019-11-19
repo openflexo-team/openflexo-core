@@ -296,12 +296,14 @@ public class FMLModelFactory extends ModelFactory implements PamelaResourceModel
 
 	public BasicMetaData newBasicMetaData(String key) {
 		BasicMetaData returned = newInstance(BasicMetaData.class);
+		returned.initializeDeserialization(this);
 		returned.setKey(key);
 		return returned;
 	}
 
 	public <T> SingleMetaData<T> newSingleMetaData(String key) {
 		SingleMetaData<T> returned = newInstance(SingleMetaData.class);
+		returned.initializeDeserialization(this);
 		returned.setKey(key);
 		return returned;
 	}
@@ -316,12 +318,14 @@ public class FMLModelFactory extends ModelFactory implements PamelaResourceModel
 
 	public MultiValuedMetaData newMultiValuedMetaData(String key) {
 		MultiValuedMetaData returned = newInstance(MultiValuedMetaData.class);
+		returned.initializeDeserialization(this);
 		returned.setKey(key);
 		return returned;
 	}
 
 	public <T> MetaDataKeyValue<T> newMetaDataKeyValue(String key) {
 		MetaDataKeyValue<T> returned = newInstance(MetaDataKeyValue.class);
+		returned.initializeDeserialization(this);
 		returned.setKey(key);
 		return returned;
 	}
@@ -336,6 +340,7 @@ public class FMLModelFactory extends ModelFactory implements PamelaResourceModel
 
 	public ListMetaData newListMetaData(String key) {
 		ListMetaData returned = newInstance(ListMetaData.class);
+		returned.initializeDeserialization(this);
 		returned.setKey(key);
 		return returned;
 	}
@@ -451,6 +456,7 @@ public class FMLModelFactory extends ModelFactory implements PamelaResourceModel
 
 	public FlexoBehaviourParameter newParameter(FlexoBehaviour behaviour) {
 		FlexoBehaviourParameter returned = newInstance(FlexoBehaviourParameter.class);
+		returned.initializeDeserialization(this);
 		if (behaviour != null) {
 			behaviour.addToParameters(returned);
 		}

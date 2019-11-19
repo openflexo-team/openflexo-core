@@ -38,6 +38,7 @@
 
 package org.openflexo.foundation.fml.md;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.openflexo.pamela.annotations.Adder;
@@ -78,7 +79,103 @@ public interface ListMetaData extends FMLMetaData {
 	@Remover(METADATA_LIST_KEY)
 	public void removeFromMetaDataList(FMLMetaData metaData);
 
+	public FMLMetaData getSingleMetaData(String key);
+
+	public List<FMLMetaData> getMultipleMetaData(String key);
+
+	public List<FMLMetaData> getMultipleMetaData(List<String> keys);
+
 	public static abstract class ListMetaDataImpl extends FMLMetaDataImpl implements ListMetaData {
+
+		@Override
+		public void setKey(String aKey) {
+			performSuperSetter(KEY_KEY, aKey);
+			if (aKey.equals("TextField")) {
+				System.out.println("Ca vient d'ou");
+				Thread.dumpStack();
+				System.exit(-1);
+			}
+		}
+
+		@Override
+		public List<FMLMetaData> getMetaData() {
+			return getMetaDataList();
+		}
+
+		@Override
+		public void addToMetaData(FMLMetaData metaData) {
+			addToMetaDataList(metaData);
+		}
+
+		@Override
+		public void removeFromMetaData(FMLMetaData metaData) {
+			removeFromMetaDataList(metaData);
+		}
+
+		@Override
+		public FMLMetaData getMetaData(String key) {
+			return getSingleMetaData(key);
+		}
+
+		@Override
+		public FMLMetaData getSingleMetaData(String key) {
+			for (FMLMetaData metaData : getMetaDataList()) {
+				if (metaData.getKey().equals(key)) {
+					return metaData;
+				}
+			}
+			return null;
+		}
+
+		@Override
+		public List<FMLMetaData> getMultipleMetaData(String key) {
+			List<FMLMetaData> returned = new ArrayList<>();
+			for (FMLMetaData metaData : getMetaDataList()) {
+				if (metaData.getKey().equals(key)) {
+					returned.add(metaData);
+				}
+			}
+			return returned;
+		}
+
+		@Override
+		public List<FMLMetaData> getMultipleMetaData(List<String> keys) {
+			List<FMLMetaData> returned = new ArrayList<>();
+			for (FMLMetaData metaData : getMetaDataList()) {
+				for (String key : keys) {
+					if (metaData.getKey().equals(key)) {
+						returned.add(metaData);
+					}
+				}
+			}
+			return returned;
+		}
+
+		@Override
+		public <T> T getSingleMetaData(String key, Class<T> type) {
+			if (getSingleMetaData(key) instanceof SingleMetaData) {
+				return ((SingleMetaData<T>) getMetaData(key)).getValue(type);
+			}
+			return null;
+		}
+
+		@Override
+		public <T> void setSingleMetaData(String key, T value, Class<T> type) {
+			if (value != null) {
+				if (getMetaData(key) instanceof SingleMetaData) {
+					((SingleMetaData<T>) getMetaData(key)).setValue(value, type);
+				}
+				else {
+					SingleMetaData<T> newMD = getFMLModelFactory().newSingleMetaData(key, value, type);
+					addToMetaDataList(newMD);
+				}
+			}
+			else {
+				if (getMetaData(key) != null) {
+					removeFromMetaDataList(getMetaData(key));
+				}
+			}
+		}
 
 	}
 

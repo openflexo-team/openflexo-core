@@ -534,6 +534,11 @@ public abstract class FMLObjectNode<N extends Node, T extends FMLPrettyPrintable
 
 	protected final String serializeType(Type type) {
 		// TODO: generate required imports !
+		/*if (type != null) {
+			if (type.equals(Boolean.class)) {
+				return "boolean";
+			}
+		}*/
 		return TypeUtils.simpleRepresentation(type);
 
 	}

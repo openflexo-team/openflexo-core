@@ -86,6 +86,8 @@ public interface MultiValuedMetaData extends FMLMetaData {
 
 	public <T> T getValue(String key, Class<T> type);
 
+	public <T> void setValue(String key, T value, Class<T> type);
+
 	public static abstract class MultiValuedMetaDataImpl extends FMLMetaDataImpl implements MultiValuedMetaData {
 
 		@Override
@@ -100,6 +102,24 @@ public interface MultiValuedMetaData extends FMLMetaData {
 			}
 			return null;
 
+		}
+
+		@Override
+		public <T> void setValue(String key, T value, Class<T> type) {
+			if (value != null) {
+				if (getKeyValue(key) != null) {
+					((MetaDataKeyValue<T>) getKeyValue(key)).setValue(value, type);
+				}
+				else {
+					MetaDataKeyValue<T> newKV = getFMLModelFactory().newMetaDataKeyValue(key, value, type);
+					addToKeyValues(newKV);
+				}
+			}
+			else {
+				if (getKeyValue(key) != null) {
+					removeFromKeyValues(getKeyValue(key));
+				}
+			}
 		}
 
 	}

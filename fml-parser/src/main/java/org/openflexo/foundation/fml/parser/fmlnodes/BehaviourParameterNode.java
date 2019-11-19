@@ -120,7 +120,7 @@ public class BehaviourParameterNode extends FMLObjectNode<PFormalArgument, Flexo
 				logger.warning("Unexpected: " + ((APrimitiveFormalArgument) astNode).getPrimitiveType());
 			}
 			returned.setName(((APrimitiveFormalArgument) astNode).getArgName().getText());
-			returned.setIsRequired(((AComplexFormalArgument) astNode).getKwRequired() != null);
+			returned.setIsRequired(((APrimitiveFormalArgument) astNode).getKwRequired() != null);
 			handleDefaultArgumentValue(returned, ((APrimitiveFormalArgument) astNode).getDefaultArgumentValue());
 		}
 		else if (astNode instanceof AComplexFormalArgument) {

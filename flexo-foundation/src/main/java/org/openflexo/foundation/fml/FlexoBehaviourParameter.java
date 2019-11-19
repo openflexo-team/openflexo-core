@@ -40,6 +40,7 @@ package org.openflexo.foundation.fml;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Logger;
@@ -56,6 +57,8 @@ import org.openflexo.connie.exception.TypeMismatchException;
 import org.openflexo.connie.type.ParameterizedTypeImpl;
 import org.openflexo.connie.type.TypeUtils;
 import org.openflexo.foundation.fml.FlexoBehaviour.FlexoBehaviourImpl;
+import org.openflexo.foundation.fml.md.ListMetaData;
+import org.openflexo.foundation.fml.md.MultiValuedMetaData;
 import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
 import org.openflexo.pamela.annotations.CloningStrategy;
 import org.openflexo.pamela.annotations.CloningStrategy.StrategyType;
@@ -80,18 +83,80 @@ import org.openflexo.toolbox.StringUtils;
 public interface FlexoBehaviourParameter extends FlexoBehaviourObject, FunctionArgument, WidgetContext, FMLPrettyPrintable {
 
 	public static enum WidgetType {
-		TEXT_FIELD,
-		TEXT_AREA,
-		DATE,
-		URI,
-		LOCALIZED_TEXT_FIELD,
-		INTEGER,
-		FLOAT,
-		CHECKBOX,
-		DROPDOWN,
-		RADIO_BUTTON,
-		CHECKBOX_LIST,
-		CUSTOM_WIDGET;
+		TEXT_FIELD {
+			@Override
+			public String getAnnotation() {
+				return "TextField";
+			}
+		},
+		TEXT_AREA {
+			@Override
+			public String getAnnotation() {
+				return "TextArea";
+			}
+		},
+		DATE {
+			@Override
+			public String getAnnotation() {
+				return "DateWidget";
+			}
+		},
+		URI {
+			@Override
+			public String getAnnotation() {
+				return "URITextField";
+			}
+		},
+		LOCALIZED_TEXT_FIELD {
+			@Override
+			public String getAnnotation() {
+				return "LocalizedTextField";
+			}
+		},
+		INTEGER {
+			@Override
+			public String getAnnotation() {
+				return "IntegerWidget";
+			}
+		},
+		FLOAT {
+			@Override
+			public String getAnnotation() {
+				return "FloatWidget";
+			}
+		},
+		CHECKBOX {
+			@Override
+			public String getAnnotation() {
+				return "Checkbox";
+			}
+		},
+		DROPDOWN {
+			@Override
+			public String getAnnotation() {
+				return "DropDown";
+			}
+		},
+		RADIO_BUTTON {
+			@Override
+			public String getAnnotation() {
+				return "RadioButton";
+			}
+		},
+		CHECKBOX_LIST {
+			@Override
+			public String getAnnotation() {
+				return "Checkboxist";
+			}
+		},
+		CUSTOM_WIDGET {
+			@Override
+			public String getAnnotation() {
+				return "CustomWidget";
+			}
+		};
+
+		public abstract String getAnnotation();
 	}
 
 	@PropertyIdentifier(type = String.class)
@@ -188,6 +253,10 @@ public interface FlexoBehaviourParameter extends FlexoBehaviourObject, FunctionA
 
 	public boolean isListType();
 
+	public MultiValuedMetaData makeParameterMetaData();
+
+	public MultiValuedMetaData getParameterMetaData(boolean ensureExistence);
+
 	public static abstract class FlexoBehaviourParameterImpl extends FlexoBehaviourObjectImpl implements FlexoBehaviourParameter {
 
 		private static final Logger logger = Logger.getLogger(FlexoBehaviourParameter.class.getPackage().getName());
@@ -195,6 +264,14 @@ public interface FlexoBehaviourParameter extends FlexoBehaviourObject, FunctionA
 		private DataBinding<?> defaultValue;
 		private DataBinding<?> container;
 		private DataBinding<List<?>> list;
+
+		public static final List<String> AVAILABLE_ANNOTATIONS = new ArrayList<>();
+
+		static {
+			for (WidgetType widgetType : WidgetType.values()) {
+				AVAILABLE_ANNOTATIONS.add(widgetType.getAnnotation());
+			}
+		}
 
 		public FlexoBehaviourParameterImpl() {
 			super();
@@ -224,6 +301,9 @@ public interface FlexoBehaviourParameter extends FlexoBehaviourObject, FunctionA
 		public void setName(String name) {
 			String oldSignature = getFlexoBehaviour() != null ? getFlexoBehaviour().getSignature() : null;
 			super.setName(name);
+			if (getParameterMetaData(false) != null) {
+				getParameterMetaData(false).setSingleMetaData("value", name, String.class);
+			}
 			if (getFlexoBehaviour() != null) {
 				((FlexoBehaviourImpl) getFlexoBehaviour()).updateSignature(oldSignature);
 			}
@@ -231,6 +311,33 @@ public interface FlexoBehaviourParameter extends FlexoBehaviourObject, FunctionA
 
 		@Override
 		public void setType(Type aType) {
+
+			// TODO: to be removed: Conversion from XML
+			if (aType != null && aType.equals(Boolean.class)) {
+				aType = Boolean.TYPE;
+			}
+			if (aType != null && aType.equals(Byte.class)) {
+				aType = Byte.TYPE;
+			}
+			if (aType != null && aType.equals(Short.class)) {
+				aType = Short.TYPE;
+			}
+			if (aType != null && aType.equals(Integer.class)) {
+				aType = Integer.TYPE;
+			}
+			if (aType != null && aType.equals(Long.class)) {
+				aType = Long.TYPE;
+			}
+			if (aType != null && aType.equals(Float.class)) {
+				aType = Float.TYPE;
+			}
+			if (aType != null && aType.equals(Double.class)) {
+				aType = Double.TYPE;
+			}
+			if (aType != null && aType.equals(Character.class)) {
+				aType = Character.TYPE;
+			}
+
 			performSuperSetter(TYPE_KEY, aType);
 			listType = null;
 			if (list != null) {
@@ -241,9 +348,82 @@ public interface FlexoBehaviourParameter extends FlexoBehaviourObject, FunctionA
 			}
 			getPropertyChangeSupport().firePropertyChange("availableWidgetTypes", null, getAvailableWidgetTypes());
 			getPropertyChangeSupport().firePropertyChange("isListType", !isListType(), isListType());
-			if (!getAvailableWidgetTypes().contains(getWidget()) && getAvailableWidgetTypes().size() > 0) {
+			/*if (!getAvailableWidgetTypes().contains(getWidget()) && getAvailableWidgetTypes().size() > 0) {
 				setWidget(getAvailableWidgetTypes().get(0));
+			}*/
+		}
+
+		private WidgetType getWidgetType(String metaDataKey) {
+			for (WidgetType widgetType : WidgetType.values()) {
+				if (metaDataKey.equals(widgetType.getAnnotation())) {
+					return widgetType;
+				}
 			}
+			return null;
+		}
+
+		private MultiValuedMetaData parameterMetaData;
+
+		@Override
+		public MultiValuedMetaData makeParameterMetaData() {
+			MultiValuedMetaData returned = getFMLModelFactory()
+					.newMultiValuedMetaData(getWidget() != null ? getWidget().getAnnotation() : "???");
+			returned.setValue("value", getName(), String.class);
+			return returned;
+		}
+
+		@Override
+		public MultiValuedMetaData getParameterMetaData(boolean ensureExistence) {
+			if (getFlexoBehaviour() != null) {
+				if (parameterMetaData != null) {
+					MultiValuedMetaData returned = parameterMetaData;
+					ListMetaData md = getFlexoBehaviour().getUIMetaData(true);
+					if (md != null) {
+						parameterMetaData.setValue("value", getName(), String.class);
+						md.addToMetaDataList(parameterMetaData);
+						parameterMetaData = null;
+					}
+					return returned;
+				}
+				return getFlexoBehaviour().getMetaDataForParameter(this, ensureExistence);
+			}
+			if (parameterMetaData == null && ensureExistence) {
+				parameterMetaData = makeParameterMetaData();
+			}
+			return parameterMetaData;
+		}
+
+		public WidgetType getDefaultWidget() {
+			if (getAvailableWidgetTypes() != null && getAvailableWidgetTypes().size() > 0) {
+				return getAvailableWidgetTypes().get(0);
+			}
+			return null;
+		}
+
+		@Override
+		public WidgetType getWidget() {
+			MultiValuedMetaData md = getParameterMetaData(false);
+			if (md != null) {
+				return getWidgetType(md.getKey());
+			}
+			return getDefaultWidget();
+		}
+
+		@Override
+		public void setWidget(WidgetType widget) {
+			/*if (widget == WidgetType.CUSTOM_WIDGET) {
+				System.out.println("Tiens, ca vient d'ou ca ?");
+				Thread.dumpStack();
+				System.exit(-1);
+			}*/
+			// System.out.println("On fait setWidget avec " + widget);
+			if (widget != getWidget()) {
+				MultiValuedMetaData md = getParameterMetaData(true);
+				md.setKey(widget.getAnnotation());
+				// System.out.println("KEY: " + widget.getAnnotation());
+			}
+			// System.out.println("getWidget=" + widget);
+			// System.out.println("md=" + getParameterMetaData(false).getKey());
 		}
 
 		@Override

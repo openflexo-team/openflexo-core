@@ -134,7 +134,8 @@ public interface FMLObject extends FlexoObject, Bindable, InnerResourceData<FMLC
 	 * 
 	 * @return
 	 */
-	@Getter(value = META_DATA_KEY, cardinality = Cardinality.LIST, inverse = FMLMetaData.OWNER_KEY)
+	// TODO: ignoreForEquality to be removed once conversion from XML to FML is done
+	@Getter(value = META_DATA_KEY, cardinality = Cardinality.LIST, inverse = FMLMetaData.OWNER_KEY, ignoreForEquality = true)
 	public List<FMLMetaData> getMetaData();
 
 	@Adder(META_DATA_KEY)

@@ -73,7 +73,7 @@ public class ListMetaDataNode extends AbstractMetaDataNode<AListAnnotationAnnota
 
 		append(staticContents("@"), getAtFragment());
 		append(dynamicContents(() -> getModelObject().getKey()), getKeyFragment());
-		append(staticContents(SPACE, "(", ""), getLParFragment());
+		append(staticContents("("), getLParFragment());
 		append(childrenContents(LINE_SEPARATOR, "", () -> getModelObject().getMetaDataList(), LINE_SEPARATOR, LINE_SEPARATOR,
 				Indentation.Indent, FMLMetaData.class));
 		append(staticContents(")"), getRParFragment());

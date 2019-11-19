@@ -50,10 +50,14 @@ import org.openflexo.connie.binding.Function;
 import org.openflexo.connie.type.TypeUtils;
 import org.openflexo.foundation.DataModification;
 import org.openflexo.foundation.fml.FMLRepresentationContext.FMLRepresentationOutput;
+import org.openflexo.foundation.fml.FlexoBehaviourParameter.FlexoBehaviourParameterImpl;
 import org.openflexo.foundation.fml.binding.FlexoBehaviourBindingModel;
 import org.openflexo.foundation.fml.controlgraph.FMLControlGraph;
 import org.openflexo.foundation.fml.controlgraph.FMLControlGraphOwner;
 import org.openflexo.foundation.fml.controlgraph.FMLControlGraphVisitor;
+import org.openflexo.foundation.fml.md.FMLMetaData;
+import org.openflexo.foundation.fml.md.ListMetaData;
+import org.openflexo.foundation.fml.md.MultiValuedMetaData;
 import org.openflexo.logging.FlexoLogger;
 import org.openflexo.pamela.annotations.Adder;
 import org.openflexo.pamela.annotations.CloningStrategy;
@@ -297,6 +301,10 @@ public interface FlexoBehaviour extends FlexoBehaviourObject, Function, FMLContr
 	 */
 	public boolean supportParameters();
 
+	public ListMetaData getUIMetaData(boolean ensureExistence);
+
+	public MultiValuedMetaData getMetaDataForParameter(FlexoBehaviourParameter parameter, boolean ensureExistence);
+
 	public static abstract class FlexoBehaviourImpl extends FlexoBehaviourObjectImpl implements FlexoBehaviour {
 
 		protected FlexoBehaviourBindingModel bindingModel;
@@ -406,17 +414,51 @@ public interface FlexoBehaviour extends FlexoBehaviourObject, Function, FMLContr
 		}
 
 		@Override
-		public String getLabel() {
-			if (StringUtils.isEmpty(getSingleMetaData(LABEL_KEY, String.class))
-					|| getSingleMetaData(LABEL_KEY, String.class).equals(getName())) {
-				return getName();
+		public ListMetaData getUIMetaData(boolean ensureExistence) {
+			ListMetaData returned = getListMetaData("UI");
+			if (returned == null && ensureExistence) {
+				returned = getFMLModelFactory().newListMetaData("UI");
+				addToMetaData(returned);
 			}
-			return getSingleMetaData(LABEL_KEY, String.class);
+			return returned;
+		}
+
+		@Override
+		public MultiValuedMetaData getMetaDataForParameter(FlexoBehaviourParameter parameter, boolean ensureExistence) {
+			ListMetaData md = getUIMetaData(ensureExistence);
+			if (md != null) {
+				List<FMLMetaData> allMetaData = md.getMultipleMetaData(FlexoBehaviourParameterImpl.AVAILABLE_ANNOTATIONS);
+				for (FMLMetaData metaData : allMetaData) {
+					if (metaData instanceof MultiValuedMetaData) {
+						if (parameter.getName().equals(((MultiValuedMetaData) metaData).getValue("value", String.class))) {
+							return (MultiValuedMetaData) metaData;
+						}
+					}
+				}
+				if (ensureExistence) {
+					MultiValuedMetaData returned = parameter.makeParameterMetaData();
+					md.addToMetaDataList(returned);
+				}
+			}
+			return null;
+		}
+
+		@Override
+		public String getLabel() {
+			if (getUIMetaData(false) != null) {
+				String returned = getUIMetaData(false).getSingleMetaData(LABEL_KEY, String.class);
+				if (returned != null) {
+					return returned;
+				}
+			}
+			return getName();
 		}
 
 		@Override
 		public void setLabel(String label) {
-			setSingleMetaData(LABEL_KEY, label, String.class);
+			if ((label == null && getLabel() != null) || (label != null && !label.equals(getLabel()))) {
+				getUIMetaData(true).setSingleMetaData(LABEL_KEY, label, String.class);
+			}
 		}
 
 		@Override
