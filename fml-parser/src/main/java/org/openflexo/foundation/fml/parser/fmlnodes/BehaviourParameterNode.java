@@ -36,18 +36,21 @@
  * 
  */
 
-package org.openflexo.foundation.fml.parser.fmlnodes.controlgraph;
+package org.openflexo.foundation.fml.parser.fmlnodes;
 
 import java.util.logging.Logger;
 
+import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.type.PrimitiveType;
 import org.openflexo.foundation.fml.FlexoBehaviour;
 import org.openflexo.foundation.fml.FlexoBehaviourParameter;
+import org.openflexo.foundation.fml.parser.ExpressionFactory;
 import org.openflexo.foundation.fml.parser.FMLObjectNode;
 import org.openflexo.foundation.fml.parser.MainSemanticsAnalyzer;
-import org.openflexo.foundation.fml.parser.fmlnodes.FlexoBehaviourNode;
 import org.openflexo.foundation.fml.parser.node.AComplexFormalArgument;
+import org.openflexo.foundation.fml.parser.node.ADefaultArgumentValue;
 import org.openflexo.foundation.fml.parser.node.APrimitiveFormalArgument;
+import org.openflexo.foundation.fml.parser.node.PDefaultArgumentValue;
 import org.openflexo.foundation.fml.parser.node.PFormalArgument;
 import org.openflexo.p2pp.RawSource.RawSourceFragment;
 
@@ -117,20 +120,80 @@ public class BehaviourParameterNode extends FMLObjectNode<PFormalArgument, Flexo
 				logger.warning("Unexpected: " + ((APrimitiveFormalArgument) astNode).getPrimitiveType());
 			}
 			returned.setName(((APrimitiveFormalArgument) astNode).getArgName().getText());
+			returned.setIsRequired(((AComplexFormalArgument) astNode).getKwRequired() != null);
+			handleDefaultArgumentValue(returned, ((APrimitiveFormalArgument) astNode).getDefaultArgumentValue());
 		}
 		else if (astNode instanceof AComplexFormalArgument) {
 			returned.setType(getTypeFactory().makeType(((AComplexFormalArgument) astNode).getReferenceType()));
 			returned.setName(((AComplexFormalArgument) astNode).getArgName().getText());
+			returned.setIsRequired(((AComplexFormalArgument) astNode).getKwRequired() != null);
+			handleDefaultArgumentValue(returned, ((AComplexFormalArgument) astNode).getDefaultArgumentValue());
 		}
 		return returned;
+	}
+
+	private void handleDefaultArgumentValue(FlexoBehaviourParameter param, PDefaultArgumentValue anArgValue) {
+		if (anArgValue instanceof ADefaultArgumentValue) {
+			ADefaultArgumentValue argValue = (ADefaultArgumentValue) anArgValue;
+			DataBinding<?> expression = ExpressionFactory.makeExpression(argValue.getExpression(), getAnalyser(), param);
+			param.setDefaultValue(expression);
+		}
 	}
 
 	@Override
 	public void preparePrettyPrint(boolean hasParsedVersion) {
 		super.preparePrettyPrint(hasParsedVersion);
 
+		// @formatter:off	
+		when(() -> isRequired())
+			.thenAppend(staticContents("", "required", SPACE), getRequiredFragment());
+
 		append(dynamicContents(() -> serializeType(getModelObject().getType())), getTypeFragment());
 		append(dynamicContents(SPACE, () -> getModelObject().getName()), getNameFragment());
+
+		when(() -> hasDefaultValue())
+//			.thenAppend(staticContents(SPACE, "default",""), getDefaultFragment())
+			.thenAppend(staticContents("="), getDefaultAssignFragment())
+			.thenAppend(dynamicContents(() -> getModelObject().getDefaultValue().toString()), getDefaultExpressionFragment());
+		// @formatter:on	
+	}
+
+	private boolean isRequired() {
+		if (getASTNode() instanceof APrimitiveFormalArgument && ((APrimitiveFormalArgument) getASTNode()).getKwRequired() != null) {
+			return true;
+		}
+		if (getASTNode() instanceof AComplexFormalArgument && ((AComplexFormalArgument) getASTNode()).getKwRequired() != null) {
+			return true;
+		}
+		if (getModelObject() != null) {
+			return getModelObject().getIsRequired();
+		}
+		return false;
+	}
+
+	private boolean hasDefaultValue() {
+		if (getASTNode() instanceof APrimitiveFormalArgument
+				&& ((APrimitiveFormalArgument) getASTNode()).getDefaultArgumentValue() != null) {
+			return true;
+		}
+		if (getASTNode() instanceof AComplexFormalArgument && ((AComplexFormalArgument) getASTNode()).getDefaultArgumentValue() != null) {
+			return true;
+		}
+		if (getModelObject() != null) {
+			return getModelObject().getDefaultValue() != null && getModelObject().getDefaultValue().isSet()
+					&& getModelObject().getDefaultValue().isValid();
+		}
+		return false;
+	}
+
+	protected RawSourceFragment getRequiredFragment() {
+		if (getASTNode() instanceof APrimitiveFormalArgument) {
+			return getFragment(((APrimitiveFormalArgument) getASTNode()).getKwRequired());
+		}
+		if (getASTNode() instanceof AComplexFormalArgument) {
+			return getFragment(((AComplexFormalArgument) getASTNode()).getKwRequired());
+		}
+		return null;
 	}
 
 	protected RawSourceFragment getTypeFragment() {
@@ -152,4 +215,36 @@ public class BehaviourParameterNode extends FMLObjectNode<PFormalArgument, Flexo
 		}
 		return null;
 	}
+
+	private ADefaultArgumentValue getDefaultArgumentValue() {
+		if (getASTNode() instanceof APrimitiveFormalArgument) {
+			return (ADefaultArgumentValue) ((APrimitiveFormalArgument) getASTNode()).getDefaultArgumentValue();
+		}
+		if (getASTNode() instanceof AComplexFormalArgument) {
+			return (ADefaultArgumentValue) ((AComplexFormalArgument) getASTNode()).getDefaultArgumentValue();
+		}
+		return null;
+	}
+
+	/*protected RawSourceFragment getDefaultFragment() {
+		if (getDefaultArgumentValue() != null) {
+			return getFragment(getDefaultArgumentValue().getKwDefault());
+		}
+		return null;
+	}*/
+
+	protected RawSourceFragment getDefaultAssignFragment() {
+		if (getDefaultArgumentValue() != null) {
+			return getFragment(getDefaultArgumentValue().getAssign());
+		}
+		return null;
+	}
+
+	protected RawSourceFragment getDefaultExpressionFragment() {
+		if (getDefaultArgumentValue() != null) {
+			return getFragment(getDefaultArgumentValue().getExpression());
+		}
+		return null;
+	}
+
 }

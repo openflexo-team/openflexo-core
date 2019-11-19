@@ -422,7 +422,9 @@ Productions
      | {complex} kw_required? reference_type [arg_name]:identifier default_argument_value?
      ;
      
-   default_argument_value = kw_default assign expression;
+   //default_argument_value = kw_default assign expression;
+ 
+   default_argument_value = assign expression;
      
    flexo_behaviour_body =
        {block} block
