@@ -38,6 +38,8 @@
 
 package org.openflexo.foundation.fml.parser.fmlnodes;
 
+import java.util.ArrayList;
+
 import org.openflexo.foundation.fml.FlexoBehaviour;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoProperty;
@@ -78,9 +80,22 @@ public class VirtualModelNode extends AbstractFlexoConceptNode<AModelDecl, Virtu
 		if (getParent() instanceof FMLCompilationUnitNode) {
 			((FMLCompilationUnitNode) getParent()).getModelObject().setVirtualModel(getModelObject());
 		}
+		for (FlexoConcept concept : new ArrayList<>(getModelObject().getFlexoConcepts())) {
+			bindEmbeddedFlexoConcepts(concept);
+		}
+
 		getModelObject().getVersion();
 		getModelObject().getURI();
 		return this;
+	}
+
+	// TODO: remove getFlexoConcepts() property in VirtualModel
+	@Deprecated
+	private void bindEmbeddedFlexoConcepts(FlexoConcept concept) {
+		for (FlexoConcept childConcept : concept.getEmbeddedFlexoConcepts()) {
+			getModelObject().addToFlexoConcepts(childConcept);
+			bindEmbeddedFlexoConcepts(childConcept);
+		}
 	}
 
 	@Override
@@ -105,7 +120,7 @@ public class VirtualModelNode extends AbstractFlexoConceptNode<AModelDecl, Virtu
 				FlexoProperty.class));
 		append(childrenContents(LINE_SEPARATOR, () -> getModelObject().getFlexoBehaviours(), LINE_SEPARATOR, Indentation.Indent,
 				FlexoBehaviour.class));
-		append(childrenContents(LINE_SEPARATOR, () -> getModelObject().getFlexoConcepts(), LINE_SEPARATOR, Indentation.Indent,
+		append(childrenContents(LINE_SEPARATOR, () -> getModelObject().getAllRootFlexoConcepts(), LINE_SEPARATOR, Indentation.Indent,
 				FlexoConcept.class));
 		append(staticContents("", "}", LINE_SEPARATOR), getRBrcFragment());
 		// @formatter:on
