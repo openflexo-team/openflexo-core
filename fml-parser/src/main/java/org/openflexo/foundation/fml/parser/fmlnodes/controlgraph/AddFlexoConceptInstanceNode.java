@@ -113,11 +113,9 @@ public class AddFlexoConceptInstanceNode extends AssignableActionNode<PFmlAction
 				if (getModelObject().getCreationScheme() != null) {
 					int index = 0;
 					for (FlexoBehaviourParameter flexoBehaviourParameter : getModelObject().getCreationScheme().getParameters()) {
-						AddFlexoConceptInstanceParameter arg = getModelObject().getFMLModelFactory()
-								.newAddFlexoConceptInstanceParameter(flexoBehaviourParameter);
+						AddFlexoConceptInstanceParameter arg = getModelObject().getParameter(flexoBehaviourParameter);
 						if (index < args.size()) {
 							arg.setValue((DataBinding) args.get(index));
-							getModelObject().addToParameters(arg);
 							index++;
 						}
 						else {
@@ -187,8 +185,9 @@ public class AddFlexoConceptInstanceNode extends AssignableActionNode<PFmlAction
 			returned.setContainer(new DataBinding<>(container));
 		}
 		else {
-			returned.setContainer(new DataBinding<>(FlexoConceptBindingModel.THIS_PROPERTY));
+			// returned.setContainer(new DataBinding<>(FlexoConceptBindingModel.THIS_PROPERTY));
 		}
+		returned.setReceiver(new DataBinding<>(FlexoConceptBindingModel.THIS_PROPERTY));
 
 		if (astNode instanceof AFmlInstanceCreationFmlActionExp) {
 			handleArguments(((AFmlInstanceCreationFmlActionExp) astNode).getArgumentList(), returned);
