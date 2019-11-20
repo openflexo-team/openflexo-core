@@ -198,10 +198,11 @@ public interface ExpressionAction<T> extends AssignableAction<T> {
 		@Override
 		public void setExpression(DataBinding<T> expression) {
 
-			if (expression.toString().startsWith("select")) {
+			/*if (expression.toString().startsWith("new ConceptC")) {
 				System.out.println("Qui est le con ?");
 				Thread.dumpStack();
-			}
+				System.exit(-1);
+			}*/
 
 			if (expression != null) {
 				expression.setOwner(this);

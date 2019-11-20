@@ -1,10 +1,12 @@
 package org.openflexo.foundation.fml.parser;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
 import java.util.logging.Logger;
 
+import org.openflexo.foundation.fml.FlexoConceptInstanceType;
 import org.openflexo.foundation.fml.controlgraph.FMLControlGraph;
 import org.openflexo.foundation.fml.controlgraph.Sequence;
 import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.AddFlexoConceptInstanceNode;
@@ -30,6 +32,7 @@ import org.openflexo.foundation.fml.parser.node.AForBasicStatement;
 import org.openflexo.foundation.fml.parser.node.AForEnhancedStatement;
 import org.openflexo.foundation.fml.parser.node.AIfElseStatement;
 import org.openflexo.foundation.fml.parser.node.AIfSimpleStatement;
+import org.openflexo.foundation.fml.parser.node.AJavaInstanceCreationFmlActionExp;
 import org.openflexo.foundation.fml.parser.node.ALogActionFmlActionExp;
 import org.openflexo.foundation.fml.parser.node.AMethodInvocationStatementExpression;
 import org.openflexo.foundation.fml.parser.node.AReturnEmptyStatementWithoutTrailingSubstatement;
@@ -99,6 +102,10 @@ public class ControlGraphFactory extends FMLSemanticsAnalyzer {
 	@Override
 	public MainSemanticsAnalyzer getMainAnalyzer() {
 		return mainAnalyzer;
+	}
+
+	public TypeFactory getTypeFactory() {
+		return getMainAnalyzer().getTypeFactory();
 	}
 
 	public ControlGraphNode<?, ?> getRootControlGraphNode() {
@@ -249,6 +256,7 @@ public class ControlGraphFactory extends FMLSemanticsAnalyzer {
 
 	@Override
 	protected void push(FMLObjectNode<?, ?, ?> fmlNode) {
+		System.out.println("PUSH avec " + fmlNode);
 		if (fmlNode instanceof ControlGraphNode) {
 			if (!blocks.isEmpty()) {
 				BlockSequenceInfo bsInfo = blocks.peek();
@@ -490,6 +498,27 @@ public class ControlGraphFactory extends FMLSemanticsAnalyzer {
 	@Override
 	public void outAFmlInstanceCreationFmlActionExp(AFmlInstanceCreationFmlActionExp node) {
 		super.outAFmlInstanceCreationFmlActionExp(node);
+		pop();
+	}
+
+	@Override
+	public void inAJavaInstanceCreationFmlActionExp(AJavaInstanceCreationFmlActionExp node) {
+		super.inAJavaInstanceCreationFmlActionExp(node);
+
+		Type type = getTypeFactory().makeType(node.getCompositeIdent());
+		if (type instanceof FlexoConceptInstanceType) {
+			push(new AddFlexoConceptInstanceNode(node, getMainAnalyzer()));
+		}
+		else {
+			System.out.println("Trouve type " + type + " of " + type.getClass());
+			System.out.println("A implementer");
+			System.exit(-1);
+		}
+	}
+
+	@Override
+	public void outAJavaInstanceCreationFmlActionExp(AJavaInstanceCreationFmlActionExp node) {
+		super.outAJavaInstanceCreationFmlActionExp(node);
 		pop();
 	}
 

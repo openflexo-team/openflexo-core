@@ -167,8 +167,15 @@ public class TypeFactory extends SemanticsAnalyzerFactory {
 		return null;
 	}
 
-	public Type makeType(ACompositeIdent compositeIdentifier) {
-		return makeType(compositeIdentifier.getIdentifier(), compositeIdentifier.getAdditionalIdentifiers());
+	public Type makeType(PCompositeIdent compositeIdentifier) {
+		if (compositeIdentifier instanceof ACompositeIdent) {
+			return makeType(((ACompositeIdent) compositeIdentifier).getIdentifier(),
+					((ACompositeIdent) compositeIdentifier).getAdditionalIdentifiers());
+		}
+		else {
+			logger.warning("Unexpected " + compositeIdentifier);
+			return null;
+		}
 	}
 
 	public PrimitiveType makePrimitiveType(PPrimitiveType primitiveType) {
@@ -265,9 +272,9 @@ public class TypeFactory extends SemanticsAnalyzerFactory {
 	public Type makeType(PReferenceType referenceType) {
 		if (referenceType instanceof AReferenceType) {
 			if (((AReferenceType) referenceType).getArgs() == null) {
-				return makeType((ACompositeIdent) ((AReferenceType) referenceType).getIdentifier());
+				return makeType(((AReferenceType) referenceType).getIdentifier());
 			}
-			Type baseType = makeType((ACompositeIdent) ((AReferenceType) referenceType).getIdentifier());
+			Type baseType = makeType(((AReferenceType) referenceType).getIdentifier());
 			if (baseType instanceof Class) {
 				List<Type> typeArguments = makeTypeArguments(((AReferenceType) referenceType).getArgs());
 				return new ParameterizedTypeImpl((Class) baseType, typeArguments.toArray(new Type[typeArguments.size()]));
