@@ -47,11 +47,13 @@ import org.openflexo.foundation.fml.CreationScheme;
 import org.openflexo.foundation.fml.FlexoBehaviourParameter;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoConceptInstanceType;
+import org.openflexo.foundation.fml.binding.FlexoConceptBindingModel;
 import org.openflexo.foundation.fml.parser.ExpressionFactory;
 import org.openflexo.foundation.fml.parser.MainSemanticsAnalyzer;
 import org.openflexo.foundation.fml.parser.node.AFmlInstanceCreationFmlActionExp;
 import org.openflexo.foundation.fml.parser.node.AJavaInstanceCreationFmlActionExp;
 import org.openflexo.foundation.fml.parser.node.AManyArgumentList;
+import org.openflexo.foundation.fml.parser.node.ANewContainmentClause;
 import org.openflexo.foundation.fml.parser.node.AOneArgumentList;
 import org.openflexo.foundation.fml.parser.node.PArgumentList;
 import org.openflexo.foundation.fml.parser.node.PExpression;
@@ -60,6 +62,7 @@ import org.openflexo.foundation.fml.rt.editionaction.AddFlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.editionaction.AddFlexoConceptInstanceParameter;
 import org.openflexo.p2pp.PrettyPrintContext.Indentation;
 import org.openflexo.p2pp.RawSource.RawSourceFragment;
+import org.openflexo.toolbox.StringUtils;
 
 /**
  * 
@@ -170,14 +173,22 @@ public class AddFlexoConceptInstanceNode extends AssignableActionNode<PFmlAction
 	@Override
 	public AddFlexoConceptInstance<?> buildModelObjectFromAST(PFmlActionExp astNode) {
 		AddFlexoConceptInstance<?> returned = getFactory().newAddFlexoConceptInstance();
-		//System.out.println(">>>>>> New FCI " + astNode);
+		// System.out.println(">>>>>> New FCI " + astNode);
 
 		conceptType = getTypeFactory().lookupConceptNamed(getConceptName());
 		if (astNode instanceof AFmlInstanceCreationFmlActionExp) {
 			creationSchemeName = ((AFmlInstanceCreationFmlActionExp) astNode).getConstructorName().getText();
 		}
 
-		//System.out.println("conceptType:" + conceptType);
+		// System.out.println("conceptType:" + conceptType);
+
+		if (getContainmentClause() != null) {
+			String container = makeFullQualifiedIdentifier(getContainmentClause().getCompositeIdent());
+			returned.setContainer(new DataBinding<>(container));
+		}
+		else {
+			returned.setContainer(new DataBinding<>(FlexoConceptBindingModel.THIS_PROPERTY));
+		}
 
 		if (astNode instanceof AFmlInstanceCreationFmlActionExp) {
 			handleArguments(((AFmlInstanceCreationFmlActionExp) astNode).getArgumentList(), returned);
@@ -195,6 +206,9 @@ public class AddFlexoConceptInstanceNode extends AssignableActionNode<PFmlAction
 		super.preparePrettyPrint(hasParsedVersion);
 
 		// @formatter:off	
+		when(() -> isContainerFullQualified())
+		.thenAppend(dynamicContents(() -> getModelObject().getContainer().toString()), getContainerFragment())
+		.thenAppend(staticContents("."), getContainerDotFragment());
 		append(staticContents("", "new", SPACE), getNewFragment());
 		append(dynamicContents(() -> serializeType(getModelObject().getFlexoConceptType())), getConceptNameFragment());
 		when(() -> isFullQualified())
@@ -214,6 +228,40 @@ public class AddFlexoConceptInstanceNode extends AssignableActionNode<PFmlAction
 		else {
 			return getASTNode() != null && getASTNode() instanceof AFmlInstanceCreationFmlActionExp;
 		}
+	}
+
+	private boolean isContainerFullQualified() {
+		if (getModelObject() != null) {
+			return StringUtils.isNotEmpty(getModelObject().getContainer().toString())
+					&& !FlexoConceptBindingModel.THIS_PROPERTY.equals(getModelObject().getContainer().toString());
+		}
+		else {
+			return getContainmentClause() != null;
+		}
+	}
+
+	private ANewContainmentClause getContainmentClause() {
+		if (getASTNode() instanceof AFmlInstanceCreationFmlActionExp) {
+			return (ANewContainmentClause) ((AFmlInstanceCreationFmlActionExp) getASTNode()).getNewContainmentClause();
+		}
+		if (getASTNode() instanceof AJavaInstanceCreationFmlActionExp) {
+			return (ANewContainmentClause) ((AJavaInstanceCreationFmlActionExp) getASTNode()).getNewContainmentClause();
+		}
+		return null;
+	}
+
+	private RawSourceFragment getContainerFragment() {
+		if (getContainmentClause() != null) {
+			return getFragment(getContainmentClause().getCompositeIdent());
+		}
+		return null;
+	}
+
+	private RawSourceFragment getContainerDotFragment() {
+		if (getContainmentClause() != null) {
+			return getFragment(getContainmentClause().getDot());
+		}
+		return null;
 	}
 
 	private RawSourceFragment getNewFragment() {
@@ -252,16 +300,6 @@ public class AddFlexoConceptInstanceNode extends AssignableActionNode<PFmlAction
 		}
 		return null;
 	}
-
-	/*private TIdentifier getConstructorName() {
-		if (getASTNode() instanceof AFmlInstanceCreationFmlActionExp) {
-			return getFragment(((AFmlInstanceCreationFmlActionExp) getASTNode()).getConstructorName());
-		}
-		if (getASTNode() != null) {
-			return getASTNode().getConstructorName();
-		}
-		return null;
-	}*/
 
 	private RawSourceFragment getConstructorNameFragment() {
 		if (getASTNode() instanceof AFmlInstanceCreationFmlActionExp) {

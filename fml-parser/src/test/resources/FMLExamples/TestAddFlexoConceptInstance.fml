@@ -26,6 +26,13 @@ model MyModel {
 		aConcept = new ConceptB::constructor4("test",3);
 	}
 	
+	testQualifiedContainerSimpleInstance() {
+		aConceptA = this.new ConceptA(name);
+		aConceptB = this.new ConceptB::constructor2();
+		aConceptC = this.aConceptB.new ConceptC();
+	}
+	
+	
 	/**
 	 * A concept with default constructor
 	 */
@@ -73,6 +80,12 @@ model MyModel {
 			foo = aString;
 		}
 
+		concept ConceptC {
+		
+			create() {  
+			}
+		
+		}
 	
 	}
 

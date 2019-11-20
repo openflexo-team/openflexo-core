@@ -630,14 +630,15 @@ Productions
      ;
 
    fml_action_exp =
-       {java_instance_creation} kw_new composite_ident type_arguments_or_diamond? l_par argument_list? r_par
-//FD: conflict with previous  {simplified} new [concept_name]:identifier l_par argument_list? r_par
-     | {fml_instance_creation}  kw_new [concept_name]:identifier colon_colon [constructor_name]:identifier l_par argument_list? r_par
+       {java_instance_creation} new_containment_clause? kw_new composite_ident type_arguments_or_diamond? l_par argument_list? r_par
+     | {fml_instance_creation}  new_containment_clause? kw_new [concept_name]:identifier colon_colon [constructor_name]:identifier l_par argument_list? r_par
      | {ta_edition_action}      [ta_id]:identifier colon_colon [edition_action]:identifier fml_parameters in_clause? from_clause? //FD remove ? on fml_parameters
      | {delete_action}          kw_delete l_par expression r_par from_clause?
      | {select_action}          kw_select kw_unique? [selected_type_name]:composite_ident from_clause where_clause?
      | {log_action}             kw_log l_par expression r_par
      ;
+     
+   new_containment_clause = composite_ident dot;
 
    type_arguments_or_diamond =
        {type_arguments} type_arguments
