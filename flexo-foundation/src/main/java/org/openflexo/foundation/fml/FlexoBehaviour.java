@@ -670,7 +670,16 @@ public interface FlexoBehaviour extends FlexoBehaviourObject, Function, FMLContr
 
 		@Override
 		public void setControlGraph(FMLControlGraph controlGraph, String ownerContext) {
+
 			setControlGraph(controlGraph);
+		}
+
+		@Override
+		public void setControlGraph(FMLControlGraph aControlGraph) {
+			performSuperSetter(CONTROL_GRAPH_KEY, aControlGraph);
+			if (aControlGraph != null) {
+				aControlGraph.setOwnerContext(null);
+			}
 		}
 
 		/**
