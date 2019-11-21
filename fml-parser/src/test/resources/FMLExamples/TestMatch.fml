@@ -18,13 +18,13 @@ model TestMatch {
 	public void updateDiagram () {  
 		MatchingSet<MyConceptGR> matchingSet 
 			= (begin match MyConceptGR from (this) where (selected.myConcept!=null));
-		//for (aConcept : conceptualModel.allConcepts) {
+		for (MyConcept aConcept : conceptualModel.allConcepts) {
 			match MyConceptGR 
 				in (matchingSet) 
 				from (this) 
 				where (selected.myConcept=aConcept)
 				create::representNewConcept(aConcept);
-		//}
+		}
 		end match MyConceptGR in (matchingSet) delete::removeFromDiagram();
 	}
 
