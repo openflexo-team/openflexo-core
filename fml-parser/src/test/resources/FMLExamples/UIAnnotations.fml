@@ -22,9 +22,9 @@ model MyModel {
 			@CheckBox(value="aC3", label="give_a_c3")
 		)
 		create::_create (
-			required String aC1 default="toto", 
+			required String aC1="toto", 
 			required Boolean aC2,
-			Boolean aC3 default=true) {
+			Boolean aC3=true) {
 			c1 = parameters.aC1;
 			c2 = parameters.aC2;
 		}
