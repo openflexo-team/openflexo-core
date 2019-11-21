@@ -1,44 +1,45 @@
 /**
- * Testing FML-controlled diagram
+ * Testing match operators
  */
 
 use org.openflexo.foundation.fml.rt.FMLRTModelSlot as FMLRT;
+use org.openflexo.technologyadapter.diagram.TypedDiagramModelSlot as DIAGRAM;
+
+import ["http://some_uri/ADiagSpecification.diagramspecification"] as DIAGRAM_SPECIFICATION;
+import [DIAGRAM_SPECIFICATION+"/ExampleDiagram.diagram"] as EXAMPLE_DIAGRAM;
+import [EXAMPLE_DIAGRAM:"SYL_56"] as RED_SHAPE;
+import [EXAMPLE_DIAGRAM:"SYL_78"] as BLUE_ARC;
 
 model TestMatch {
 	
-	/*a finir
+	//Diagram diagram with DIAGRAM::TypedDiagramModelSlot(templateDiagram = DIAGRAM_SPECIFICATION);	
+	//ConceptualModel conceptualModel;
 	
-	
-	public void action:updateDiagram () {  
-		GoalRequirementMapping... matchingSet = (begin match GoalRequirementMapping from this);
-		for (requirement : element.requirements) {
-			match GoalRequirementMapping 
-				in matchingSet 
-				from this 
-				where (selected.requirement=requirement)
-				create:createNewGoal(requirement);
-		}
-		end match in matchingSet;
+	public void updateDiagram () {  
+		MatchingSet<MyConceptGR> matchingSet 
+			= (begin match MyConceptGR from (this) where (selected.myConcept!=null));
+		//for (aConcept : conceptualModel.allConcepts) {
+			match MyConceptGR 
+				in (matchingSet) 
+				from (this) 
+				where (selected.myConcept=aConcept)
+				create::representNewConcept(aConcept);
+		//}
+		end match MyConceptGR in (matchingSet) delete::removeFromDiagram();
 	}
 
-
-
-Set<?> set = begin match AbstractConceptSetMapping from this; 
-for (conceptWithoutParent : (select Concept from domainModel where (selected.parentConcept = null))) {
-	match AbstractConceptSetMapping from this where (matched.domainConcept = conceptWithoutParent)
-}
-	
-	
-	Diagram diagram with DIAGRAM::TypedDiagramModelSlot(templateDiagram = DIAGRAM_SPECIFICATION);	
-	ConceptualModel conceptualModel;
-	
-	concept MyConceptGR {
+	/*concept MyConceptGR {
 		
 		MyConcept myConcept;
 		DiagramShape shape with DIAGRAM::ShapeRole (
 			metaModelElement = RED_SHAPE,
 			label = myConcept.name
 		);
+		
+		representNewConcept(MyConcept concept) {
+			myConcept = parameters.concept;
+			shape = DIAGRAM::AddShape(container=diagram) in (diagram);
+		}
 		
 		// DropScheme
 		dropNewConcept(String name) with drop(target=topLevel) {
@@ -78,7 +79,7 @@ for (conceptWithoutParent : (select Concept from domainModel where (selected.par
 			fromConcept.connectedWith = toConcept;			
 		}
 		
-	}
-*/
+	}*/
+
 
 }

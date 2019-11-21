@@ -200,13 +200,16 @@ Tokens
 
    // FML Keywords
    {normal} kw_abstract = 'abstract';
+   {normal} kw_action = 'action';
    {normal} kw_as = 'as';
+   {normal} kw_begin = 'begin';
    {normal} kw_concept = 'concept';
    {normal} kw_create = 'create';
    {normal} kw_default = 'default';
    {normal} kw_delete = 'delete';  
    {normal} kw_do = 'do';
    {normal} kw_else = 'else';
+   {normal} kw_end = 'end';
    {normal} kw_extends = 'extends';
    {normal} kw_for = 'for';
    {normal} kw_from = 'from';
@@ -217,6 +220,7 @@ Tokens
    {normal} kw_instanceof = 'instanceof';
    {normal} kw_listen = 'listen';
    {normal} kw_log = 'log';
+   {normal} kw_match = 'match';
    {normal} kw_model = 'model';
    {normal} kw_namespace = 'namespace';
    {normal} kw_new = 'new';
@@ -636,8 +640,22 @@ Productions
      | {delete_action}          kw_delete l_par expression r_par from_clause?
      | {select_action}          kw_select kw_unique? [selected_type_name]:composite_ident from_clause where_clause?
      | {log_action}             kw_log l_par expression r_par
+     | {begin_match_action}     kw_begin kw_match [concept_name]:identifier from_clause where_clause?
+     | {match_action}           kw_match [concept_name]:identifier in_clause from_clause where_clause create_clause
+     | {end_match_action}       kw_end kw_match [concept_name]:identifier in_clause abstract_action_clause
      ;
      
+   create_clause = kw_create colon_colon [constructor_name]:identifier l_par argument_list? r_par;
+
+   delete_clause = kw_delete colon_colon [destructor_name]:identifier l_par argument_list? r_par;
+
+   action_clause = kw_action colon_colon [action_name]:identifier l_par argument_list? r_par;
+    
+   abstract_action_clause =
+     | {normal}  				action_clause
+     | {delete}  				delete_clause
+     ;
+    
    new_containment_clause = composite_ident dot;
 
    type_arguments_or_diamond =
