@@ -76,6 +76,8 @@ import org.openflexo.pamela.annotations.Remover;
 import org.openflexo.pamela.annotations.Setter;
 import org.openflexo.pamela.annotations.XMLAttribute;
 import org.openflexo.pamela.annotations.XMLElement;
+import org.openflexo.pamela.factory.PAMELAVisitor;
+import org.openflexo.pamela.factory.PAMELAVisitor.VisitingStrategy;
 import org.openflexo.pamela.undo.CompoundEdit;
 import org.openflexo.rm.BasicResourceImpl.LocatorNotFoundException;
 import org.openflexo.rm.FileResourceImpl;
@@ -90,10 +92,10 @@ public interface FMLCompilationUnit extends FMLObject, FMLPrettyPrintable, Resou
 	public static final String RESOURCE = "resource";
 	@PropertyIdentifier(type = FlexoVersion.class)
 	public static final String VERSION_KEY = "version";
-	// @PropertyIdentifier(type = FlexoVersion.class)
-	// public static final String MODEL_VERSION_KEY = "modelVersion";
 	@PropertyIdentifier(type = JavaImportDeclaration.class, cardinality = Cardinality.LIST)
 	public static final String JAVA_IMPORTS_KEY = "javaImports";
+	@PropertyIdentifier(type = ElementImportDeclaration.class, cardinality = Cardinality.LIST)
+	public static final String ELEMENT_IMPORTS_KEY = "elementImports";
 	@PropertyIdentifier(type = UseModelSlotDeclaration.class, cardinality = Cardinality.LIST)
 	public static final String USE_DECLARATIONS_KEY = "useDeclarations";
 	@PropertyIdentifier(type = VirtualModel.class)
@@ -113,6 +115,21 @@ public interface FMLCompilationUnit extends FMLObject, FMLPrettyPrintable, Resou
 
 	@Remover(JAVA_IMPORTS_KEY)
 	public void removeFromJavaImports(JavaImportDeclaration javaImportDeclaration);
+
+	/**
+	 * Return list of {@link ElementImportDeclaration} explicitely declared in this {@link FMLCompilationUnit}
+	 * 
+	 * @return
+	 */
+	@Getter(value = ELEMENT_IMPORTS_KEY, cardinality = Cardinality.LIST, inverse = ElementImportDeclaration.COMPILATION_UNIT_KEY)
+	@CloningStrategy(StrategyType.CLONE)
+	public List<ElementImportDeclaration> getElementImports();
+
+	@Adder(ELEMENT_IMPORTS_KEY)
+	public void addToElementImports(ElementImportDeclaration elementImportDeclaration);
+
+	@Remover(ELEMENT_IMPORTS_KEY)
+	public void removeFromElementImports(ElementImportDeclaration elementImportDeclaration);
 
 	/**
 	 * Return the {@link VirtualModel} defined by this FMLCompilationUnit
@@ -251,6 +268,11 @@ public interface FMLCompilationUnit extends FMLObject, FMLPrettyPrintable, Resou
 	public VirtualModel getVirtualModelNamed(String virtualModelNameOrURI);
 
 	public FMLObject getObject(String objectURI);
+
+	/**
+	 * Analyze the whole structure of the compilation unit, and declare required imports
+	 */
+	public void manageImports();
 
 	public abstract class FMLCompilationUnitImpl extends FMLObjectImpl implements FMLCompilationUnit {
 
@@ -738,6 +760,21 @@ public interface FMLCompilationUnit extends FMLObject, FMLPrettyPrintable, Resou
 			}
 			return null;
 		}
+
+		/**
+		 * Analyze the whole structure of the compilation unit, and declare required imports
+		 */
+		@Override
+		public void manageImports() {
+			accept(new PAMELAVisitor() {
+
+				@Override
+				public void visit(Object object) {
+					System.out.println("Visit " + object);
+				}
+			}, VisitingStrategy.Exhaustive);
+		}
+
 	}
 
 }

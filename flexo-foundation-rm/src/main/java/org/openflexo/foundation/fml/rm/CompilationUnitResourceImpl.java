@@ -698,6 +698,8 @@ public abstract class CompilationUnitResourceImpl extends PamelaResourceImpl<FML
 	@Override
 	protected void performSave(boolean clearIsModified) throws SaveResourceException {
 
+		getLoadedResourceData().manageImports();
+
 		if (getPersistencyStrategy() == PersistencyStrategy.XML) {
 			saveToXML(getLoadedResourceData());
 		}

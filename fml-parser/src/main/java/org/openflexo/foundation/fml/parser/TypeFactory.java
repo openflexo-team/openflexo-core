@@ -393,6 +393,9 @@ public class TypeFactory extends SemanticsAnalyzerFactory {
 			return r.getType();
 		}
 
+		System.out.println(">>>>> On trouve pas " + typeName);
+		System.out.println("Resource=" + getAnalyzer().getCompilationUnit().getResource());
+
 		/*if (r.modelDeclaration != null) {
 			return new VirtualModelInstanceType(getVirtualModel());
 		}

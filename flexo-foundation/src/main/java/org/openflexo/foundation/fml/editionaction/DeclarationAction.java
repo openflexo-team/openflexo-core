@@ -100,6 +100,30 @@ public interface DeclarationAction<T> extends AbstractAssignationAction<T> {
 
 		private ControlGraphBindingModel<?> inferedBindingModel = null;
 
+		/*@Override
+		public void setVariableName(String variableName) {
+			if (variableName.equals("model")) {
+				setVariableName("_model");
+			}
+			else {
+				performSuperSetter(VARIABLE_NAME_KEY, variableName);
+			}
+		}*/
+
+		/*@Override
+		public void setAssignableAction(AssignableAction<T> assignableAction) {
+			performSuperSetter(ASSIGNABLE_ACTION_KEY, assignableAction);
+			if (assignableAction instanceof AddVirtualModelInstance) {
+				System.out.println("--------> Virer ce truc !!!!");
+				Thread.dumpStack();
+				ElementImportDeclaration importDeclaration = getFMLModelFactory().newElementImportDeclaration();
+				importDeclaration.setResourceReference(
+						new DataBinding<>('"' + ((AddVirtualModelInstance) assignableAction).getVirtualModelType().getURI() + '"'));
+				getDeclaringCompilationUnit().addToElementImports(importDeclaration);
+				System.exit(-1);
+			}
+		}*/
+
 		@Override
 		public T execute(RunTimeEvaluationContext evaluationContext) throws FlexoException {
 			T value = getAssignationValue(evaluationContext);

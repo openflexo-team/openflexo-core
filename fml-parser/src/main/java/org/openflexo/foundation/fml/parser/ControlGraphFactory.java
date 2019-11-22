@@ -7,6 +7,7 @@ import java.util.Stack;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.fml.FlexoConceptInstanceType;
+import org.openflexo.foundation.fml.VirtualModelInstanceType;
 import org.openflexo.foundation.fml.controlgraph.FMLControlGraph;
 import org.openflexo.foundation.fml.controlgraph.Sequence;
 import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.AddFlexoConceptInstanceNode;
@@ -22,9 +23,11 @@ import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.LogActionNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.ReturnStatementNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.SequenceNode;
 import org.openflexo.foundation.fml.parser.node.AAssignmentStatementExpression;
+import org.openflexo.foundation.fml.parser.node.ABeginMatchActionFmlActionExp;
 import org.openflexo.foundation.fml.parser.node.ABlock;
 import org.openflexo.foundation.fml.parser.node.ADoStatementStatementWithoutTrailingSubstatement;
 import org.openflexo.foundation.fml.parser.node.AEmptyStatementStatementWithoutTrailingSubstatement;
+import org.openflexo.foundation.fml.parser.node.AEndMatchActionFmlActionExp;
 import org.openflexo.foundation.fml.parser.node.AFmlActionExpressionStatementExpression;
 import org.openflexo.foundation.fml.parser.node.AFmlInstanceCreationFmlActionExp;
 import org.openflexo.foundation.fml.parser.node.AForBasicExpressionStatement;
@@ -34,6 +37,7 @@ import org.openflexo.foundation.fml.parser.node.AIfElseStatement;
 import org.openflexo.foundation.fml.parser.node.AIfSimpleStatement;
 import org.openflexo.foundation.fml.parser.node.AJavaInstanceCreationFmlActionExp;
 import org.openflexo.foundation.fml.parser.node.ALogActionFmlActionExp;
+import org.openflexo.foundation.fml.parser.node.AMatchActionFmlActionExp;
 import org.openflexo.foundation.fml.parser.node.AMethodInvocationStatementExpression;
 import org.openflexo.foundation.fml.parser.node.AReturnEmptyStatementWithoutTrailingSubstatement;
 import org.openflexo.foundation.fml.parser.node.AReturnStatementWithoutTrailingSubstatement;
@@ -492,6 +496,18 @@ public class ControlGraphFactory extends FMLSemanticsAnalyzer {
 	@Override
 	public void inAFmlInstanceCreationFmlActionExp(AFmlInstanceCreationFmlActionExp node) {
 		super.inAFmlInstanceCreationFmlActionExp(node);
+
+		Type type = getTypeFactory().lookupConceptNamed(node.getConceptName().getText());
+
+		if (type instanceof VirtualModelInstanceType) {
+			System.out.println("VirtualModelInstanceType=" + type);
+			System.exit(-1);
+			push(new AddFlexoConceptInstanceNode(node, getMainAnalyzer()));
+		}
+		if (type instanceof FlexoConceptInstanceType) {
+			push(new AddFlexoConceptInstanceNode(node, getMainAnalyzer()));
+		}
+
 		push(new AddFlexoConceptInstanceNode(node, getMainAnalyzer()));
 	}
 
@@ -522,4 +538,39 @@ public class ControlGraphFactory extends FMLSemanticsAnalyzer {
 		pop();
 	}
 
+	@Override
+	public void inABeginMatchActionFmlActionExp(ABeginMatchActionFmlActionExp node) {
+		// TODO Auto-generated method stub
+		super.inABeginMatchActionFmlActionExp(node);
+	}
+
+	@Override
+	public void outABeginMatchActionFmlActionExp(ABeginMatchActionFmlActionExp node) {
+		// TODO Auto-generated method stub
+		super.outABeginMatchActionFmlActionExp(node);
+	}
+
+	@Override
+	public void inAMatchActionFmlActionExp(AMatchActionFmlActionExp node) {
+		// TODO Auto-generated method stub
+		super.inAMatchActionFmlActionExp(node);
+	}
+
+	@Override
+	public void outAMatchActionFmlActionExp(AMatchActionFmlActionExp node) {
+		// TODO Auto-generated method stub
+		super.outAMatchActionFmlActionExp(node);
+	}
+
+	@Override
+	public void inAEndMatchActionFmlActionExp(AEndMatchActionFmlActionExp node) {
+		// TODO Auto-generated method stub
+		super.inAEndMatchActionFmlActionExp(node);
+	}
+
+	@Override
+	public void outAEndMatchActionFmlActionExp(AEndMatchActionFmlActionExp node) {
+		// TODO Auto-generated method stub
+		super.outAEndMatchActionFmlActionExp(node);
+	}
 }

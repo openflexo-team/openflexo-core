@@ -288,6 +288,10 @@ public class FMLModelFactory extends ModelFactory implements PamelaResourceModel
 		return newInstance(JavaImportDeclaration.class);
 	}
 
+	public ElementImportDeclaration newElementImportDeclaration() {
+		return newInstance(ElementImportDeclaration.class);
+	}
+
 	public VirtualModel newVirtualModel() {
 		VirtualModel returned = newInstance(VirtualModel.class);
 		returned.initializeDeserialization(this);
