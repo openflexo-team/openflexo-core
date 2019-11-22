@@ -190,6 +190,8 @@ public class InteractiveFlexoEditor extends DefaultFlexoEditor {
 		try {
 			runAction(action);
 		} catch (FlexoException exception) {
+			System.out.println("Unexpected exception raised during action execution: " + action);
+			exception.printStackTrace();
 			if (!runExceptionHandler(exception, action)) {
 				return;
 			}
