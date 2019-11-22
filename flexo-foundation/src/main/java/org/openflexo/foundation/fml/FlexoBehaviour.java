@@ -706,7 +706,12 @@ public interface FlexoBehaviour extends FlexoBehaviourObject, Function, FMLContr
 		public void notifiedScopeChanged() {
 			super.notifiedScopeChanged();
 			if (getControlGraph() != null) {
-				getControlGraph().accept(controlGraph -> controlGraph.notifiedScopeChanged());
+				getControlGraph().accept(new FMLControlGraphVisitor() {
+					@Override
+					public void visit(FMLControlGraph controlGraph) {
+						controlGraph.notifiedScopeChanged();
+					}
+				});
 			}
 		}
 
