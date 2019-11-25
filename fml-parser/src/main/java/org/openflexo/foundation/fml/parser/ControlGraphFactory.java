@@ -11,6 +11,7 @@ import org.openflexo.foundation.fml.VirtualModelInstanceType;
 import org.openflexo.foundation.fml.controlgraph.FMLControlGraph;
 import org.openflexo.foundation.fml.controlgraph.Sequence;
 import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.AddFlexoConceptInstanceNode;
+import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.AddVirtualModelInstanceNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.AssignationActionNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.ConditionalNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.ControlGraphNode;
@@ -195,7 +196,7 @@ public class ControlGraphFactory extends FMLSemanticsAnalyzer {
 		}
 
 		void finalizeBlockStatements() {
-			System.out.println("IL faut maintenant gerer " + currentSequenceNodes);
+			// System.out.println("IL faut maintenant gerer " + currentSequenceNodes);
 			SequenceNode builtSequenceNode = null;
 			SequenceNode rootSequenceNode = null;
 			if (currentSequenceNodes.size() == currentBlockNode.getBlockStatements().size()) {
@@ -237,7 +238,7 @@ public class ControlGraphFactory extends FMLSemanticsAnalyzer {
 	@Override
 	public void inABlock(ABlock node) {
 		super.inABlock(node);
-		System.out.println("Nouveau block de " + node.getBlockStatements().size() + " statements " + " avec " + node);
+		// System.out.println("Nouveau block de " + node.getBlockStatements().size() + " statements " + " avec " + node);
 		if (node.getBlockStatements().size() > 1) {
 			BlockSequenceInfo bsInfo = new BlockSequenceInfo(node);
 			blocks.push(bsInfo);
@@ -260,7 +261,7 @@ public class ControlGraphFactory extends FMLSemanticsAnalyzer {
 
 	@Override
 	protected void push(FMLObjectNode<?, ?, ?> fmlNode) {
-		System.out.println("PUSH avec " + fmlNode);
+		// System.out.println("PUSH avec " + fmlNode);
 		if (fmlNode instanceof ControlGraphNode) {
 			if (!blocks.isEmpty()) {
 				BlockSequenceInfo bsInfo = blocks.peek();
@@ -500,15 +501,11 @@ public class ControlGraphFactory extends FMLSemanticsAnalyzer {
 		Type type = getTypeFactory().lookupConceptNamed(node.getConceptName().getText());
 
 		if (type instanceof VirtualModelInstanceType) {
-			System.out.println("VirtualModelInstanceType=" + type);
-			System.exit(-1);
+			push(new AddVirtualModelInstanceNode(node, getMainAnalyzer()));
+		}
+		else if (type instanceof FlexoConceptInstanceType) {
 			push(new AddFlexoConceptInstanceNode(node, getMainAnalyzer()));
 		}
-		if (type instanceof FlexoConceptInstanceType) {
-			push(new AddFlexoConceptInstanceNode(node, getMainAnalyzer()));
-		}
-
-		push(new AddFlexoConceptInstanceNode(node, getMainAnalyzer()));
 	}
 
 	@Override
@@ -522,13 +519,14 @@ public class ControlGraphFactory extends FMLSemanticsAnalyzer {
 		super.inAJavaInstanceCreationFmlActionExp(node);
 
 		Type type = getTypeFactory().makeType(node.getCompositeIdent());
-		if (type instanceof FlexoConceptInstanceType) {
-			push(new AddFlexoConceptInstanceNode(node, getMainAnalyzer()));
+
+		// System.out.println("Found type " + type + " of " + type.getClass());
+
+		if (type instanceof VirtualModelInstanceType) {
+			push(new AddVirtualModelInstanceNode(node, getMainAnalyzer()));
 		}
-		else {
-			System.out.println("Trouve type " + type + " of " + type.getClass());
-			System.out.println("A implementer");
-			System.exit(-1);
+		else if (type instanceof FlexoConceptInstanceType) {
+			push(new AddFlexoConceptInstanceNode(node, getMainAnalyzer()));
 		}
 	}
 

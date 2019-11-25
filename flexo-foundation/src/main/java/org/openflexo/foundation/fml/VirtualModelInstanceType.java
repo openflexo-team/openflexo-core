@@ -74,6 +74,10 @@ public class VirtualModelInstanceType extends FlexoConceptInstanceType {
 		return (VirtualModel) getFlexoConcept();
 	}
 
+	public void redefineWithURI(String virtualModelURI) {
+		this.conceptURI = virtualModelURI;
+	}
+
 	@Override
 	protected void resolve(CustomTypeFactory<?> factory) {
 		if (factory instanceof VirtualModelInstanceTypeFactory) {

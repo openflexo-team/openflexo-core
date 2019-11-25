@@ -119,7 +119,14 @@ public class TestFMLMigration extends OpenflexoTestCase {
 	@Test
 	public void step2_prettyPrintInitialXMLVersion() throws ModelDefinitionException, ParseException, IOException, SaveResourceException {
 		System.out.println("Pretty-print FML version for " + testInfo.fmlResource);
+		testInfo.initialXMLVersion.manageImports();
 		System.out.println(testInfo.initialXMLVersion.getFMLPrettyPrint());
+
+		/*VirtualModel virtualModel = testInfo.initialXMLVersion.getVirtualModel();
+		System.out.println("virtualModel=" + virtualModel);
+		System.out.println("cs:" + virtualModel.getCreationSchemes().get(0));
+		System.out.println(virtualModel.getCreationSchemes().get(0).getNormalizedFML());
+		System.exit(-1);*/
 	}
 
 	@Test
@@ -127,8 +134,23 @@ public class TestFMLMigration extends OpenflexoTestCase {
 		System.out.println("Saving FML version for " + testInfo.fmlResource);
 		((CompilationUnitResourceImpl) testInfo.fmlResource).setPersistencyStrategy(PersistencyStrategy.FML);
 		testInfo.fmlResource.save();
+
+		System.out.println("contained: " + testInfo.fmlResource.getContainedVirtualModelResources());
+		for (CompilationUnitResource compilationUnitResource : testInfo.fmlResource.getContainedVirtualModelResources()) {
+			System.out.println(" > " + compilationUnitResource + " container: " + compilationUnitResource.getContainer());
+		}
+
+		for (CompilationUnitResource compilationUnitResource : testInfo.fmlResource.getContainedVirtualModelResources()) {
+			compilationUnitResource.unloadResourceData(false);
+		}
+
 		testInfo.fmlResource.unloadResourceData(false);
 		assertNull(testInfo.fmlResource.getLoadedResourceData());
+
+		System.out.println("contained: " + testInfo.fmlResource.getContainedVirtualModelResources());
+		for (CompilationUnitResource compilationUnitResource : testInfo.fmlResource.getContainedVirtualModelResources()) {
+			System.out.println(" > " + compilationUnitResource + " container: " + compilationUnitResource.getContainer());
+		}
 	}
 
 	@Test
@@ -145,6 +167,11 @@ public class TestFMLMigration extends OpenflexoTestCase {
 		System.out.println(testInfo.initialXMLVersion.getNormalizedFML());
 		System.out.println("De l'autre: ");
 		System.out.println(testInfo.reloadedFMLVersion.getNormalizedFML());
+
+		System.out.println("VMs pour :" + testInfo.initialXMLVersion.getVirtualModel() + " : "
+				+ testInfo.initialXMLVersion.getVirtualModel().getVirtualModels());
+		System.out.println("VMs la:   " + testInfo.reloadedFMLVersion.getVirtualModel() + " : "
+				+ testInfo.reloadedFMLVersion.getVirtualModel().getVirtualModels());
 
 		assertTrue(testInfo.initialXMLVersion.equalsObject(testInfo.reloadedFMLVersion));
 	}

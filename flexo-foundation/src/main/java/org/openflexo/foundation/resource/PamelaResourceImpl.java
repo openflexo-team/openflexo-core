@@ -157,7 +157,7 @@ public abstract class PamelaResourceImpl<RD extends ResourceData<RD> & Accessibl
 	}
 
 	@Override
-	public final boolean isLoading() {
+	public boolean isLoading() {
 		return isLoading;
 	}
 

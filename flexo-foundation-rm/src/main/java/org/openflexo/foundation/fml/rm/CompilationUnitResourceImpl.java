@@ -272,6 +272,25 @@ public abstract class CompilationUnitResourceImpl extends PamelaResourceImpl<FML
 		return FMLCompilationUnit.class;
 	}
 
+	private boolean hasParseErrors = false;
+
+	@Override
+	public boolean isLoadable() {
+		return super.isLoadable() && !hasParseErrors;
+	}
+
+	@Override
+	public boolean isLoading() {
+		return isLoading;
+	}
+
+	@Override
+	public void setLoading(boolean isLoading) {
+		this.isLoading = isLoading;
+	}
+
+	private boolean isLoading;
+
 	/**
 	 * Load the &quot;real&quot; load resource data of this resource.
 	 * 
@@ -286,7 +305,10 @@ public abstract class CompilationUnitResourceImpl extends PamelaResourceImpl<FML
 	public FMLCompilationUnit loadResourceData() throws FlexoFileNotFoundException, IOFlexoException, InvalidXMLException,
 			InconsistentDataException, InvalidModelDefinitionException {
 
-		logger.info("*************** Loading " + this);
+		logger.info("*************** Loading " + getName() + " uri=" + getURI());
+		Thread.dumpStack();
+
+		setLoading(true);
 
 		// Now we have to activate all required technologies
 		activateRequiredTechnologies();
@@ -300,9 +322,17 @@ public abstract class CompilationUnitResourceImpl extends PamelaResourceImpl<FML
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+
+			hasParseErrors = true;
+
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		} finally {
+			setLoading(false);
 		}
 
 		// We notify a deserialization start on ViewPoint AND VirtualModel, to avoid addToVirtualModel() and setViewPoint() to notify
@@ -314,10 +344,15 @@ public abstract class CompilationUnitResourceImpl extends PamelaResourceImpl<FML
 		startDeserializing();
 		if (getContainer() != null) {
 			VirtualModel virtualModel = getContainer().getCompilationUnit().getVirtualModel();
-			if (virtualModel != null)
+			if (virtualModel != null) {
+				System.out.println("loadResourceData() for " + this);
+				System.out.println("   ----> On met " + resourceData.getVirtualModel() + " dans " + virtualModel);
 				virtualModel.addToVirtualModels(resourceData.getVirtualModel());
+			}
 		}
-		resourceData.clearIsModified();
+		if (resourceData != null) {
+			resourceData.clearIsModified();
+		}
 		// And, we notify a deserialization stop
 		stopDeserializing();
 		if (!containerWasDeserializing) {
@@ -926,7 +961,7 @@ public abstract class CompilationUnitResourceImpl extends PamelaResourceImpl<FML
 		FMLCompilationUnit returned = getFactory().newCompilationUnit();
 		returned.setVirtualModel(virtualModel);
 		for (UseModelSlotDeclaration useModelSlotDeclaration : virtualModel.getUseDeclarations()) {
-			System.out.println("Hop: " + useModelSlotDeclaration + " of " + useModelSlotDeclaration.getClass());
+			// System.out.println("Hop: " + useModelSlotDeclaration + " of " + useModelSlotDeclaration.getClass());
 			returned.addToUseDeclarations(useModelSlotDeclaration);
 		}
 		for (UseModelSlotDeclaration useModelSlotDeclaration : new ArrayList<UseModelSlotDeclaration>(virtualModel.getUseDeclarations())) {
@@ -1136,4 +1171,8 @@ public abstract class CompilationUnitResourceImpl extends PamelaResourceImpl<FML
 		return returned;
 	}
 
+	@Override
+	public String toString() {
+		return "CompilationUnitResource@" + Integer.toHexString(hashCode()) + "/" + getName();
+	}
 }

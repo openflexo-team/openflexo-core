@@ -247,7 +247,7 @@ public class FMLParser {
 	}*/
 
 	public void initPrettyPrint(FMLCompilationUnit fmlCompilationUnit) {
-		System.out.println("fmlCompilationUnit=" + fmlCompilationUnit);
+		// System.out.println("fmlCompilationUnit=" + fmlCompilationUnit);
 		MainSemanticsAnalyzer semanticsAnalyzer = new MainSemanticsAnalyzer(fmlCompilationUnit.getFMLModelFactory(), null, null);
 		FMLCompilationUnitNode fmlCompilationUnitNode = new FMLCompilationUnitNode(fmlCompilationUnit, semanticsAnalyzer);
 		// fmlCompilationUnitNode.finalizeDeserialization();

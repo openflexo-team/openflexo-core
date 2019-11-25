@@ -38,8 +38,21 @@
 
 package org.openflexo.foundation.fml;
 
+import java.io.FileNotFoundException;
+import java.lang.reflect.InvocationTargetException;
+import java.util.logging.Logger;
+
 import org.openflexo.connie.BindingModel;
 import org.openflexo.connie.DataBinding;
+import org.openflexo.connie.exception.NullReferenceException;
+import org.openflexo.connie.exception.TypeMismatchException;
+import org.openflexo.foundation.FlexoException;
+import org.openflexo.foundation.FlexoObject;
+import org.openflexo.foundation.FlexoServiceManager;
+import org.openflexo.foundation.resource.FlexoResource;
+import org.openflexo.foundation.resource.FlexoResourceCenter;
+import org.openflexo.foundation.resource.ResourceData;
+import org.openflexo.foundation.resource.ResourceLoadingCancelledException;
 import org.openflexo.pamela.annotations.CloningStrategy;
 import org.openflexo.pamela.annotations.CloningStrategy.StrategyType;
 import org.openflexo.pamela.annotations.Getter;
@@ -72,19 +85,19 @@ public interface ElementImportDeclaration extends FMLPrettyPrintable {
 
 	@Getter(value = RESOURCE_REFERENCE_KEY)
 	@XMLAttribute
-	public DataBinding<?> getResourceReference();
+	public DataBinding<String> getResourceReference();
 
 	@Setter(RESOURCE_REFERENCE_KEY)
-	public void setResourceReference(DataBinding<?> resourceReference);
+	public void setResourceReference(DataBinding<String> resourceReference);
 
 	@Getter(value = OBJECT_REFERENCE_KEY)
 	@XMLAttribute
-	public DataBinding<?> getObjectReference();
+	public DataBinding<String> getObjectReference();
 
 	@Setter(OBJECT_REFERENCE_KEY)
-	public void setObjectReference(DataBinding<?> objectReference);
+	public void setObjectReference(DataBinding<String> objectReference);
 
-	@Getter(value = COMPILATION_UNIT_KEY, inverse = FMLCompilationUnit.JAVA_IMPORTS_KEY)
+	@Getter(value = COMPILATION_UNIT_KEY, inverse = FMLCompilationUnit.ELEMENT_IMPORTS_KEY)
 	@CloningStrategy(StrategyType.IGNORE)
 	public FMLCompilationUnit getCompilationUnit();
 
@@ -98,7 +111,19 @@ public interface ElementImportDeclaration extends FMLPrettyPrintable {
 	@Setter(ABBREV_KEY)
 	public void setAbbrev(String abbrev);
 
+	/**
+	 * Retrieve and return object referenced by this import
+	 * 
+	 * @return
+	 */
+	public FlexoObject getReferencedObject();
+
 	public static abstract class ElementImportDeclarationImpl extends FMLObjectImpl implements ElementImportDeclaration {
+
+		private static final Logger logger = Logger.getLogger(ElementImportDeclarationImpl.class.getPackage().getName());
+
+		private DataBinding<String> resourceReference;
+		private DataBinding<String> objectReference;
 
 		@Override
 		public FMLCompilationUnit getResourceData() {
@@ -123,17 +148,16 @@ public interface ElementImportDeclaration extends FMLPrettyPrintable {
 
 		@Override
 		public BindingModel getBindingModel() {
-			// TODO Auto-generated method stub
+			if (getCompilationUnit() != null) {
+				return getCompilationUnit().getBindingModel();
+			}
 			return null;
 		}
 
-		private DataBinding<?> resourceReference;
-		private DataBinding<?> objectReference;
-
 		@Override
-		public DataBinding<?> getResourceReference() {
+		public DataBinding<String> getResourceReference() {
 			if (resourceReference == null) {
-				resourceReference = new DataBinding<Object>(this, Object.class, DataBinding.BindingDefinitionType.GET);
+				resourceReference = new DataBinding<String>(this, String.class, DataBinding.BindingDefinitionType.GET);
 				resourceReference.setBindingName("resourceReference");
 				resourceReference.setMandatory(true);
 
@@ -142,9 +166,9 @@ public interface ElementImportDeclaration extends FMLPrettyPrintable {
 		}
 
 		@Override
-		public void setResourceReference(DataBinding<?> resourceReference) {
+		public void setResourceReference(DataBinding<String> resourceReference) {
 			if (resourceReference != null) {
-				this.resourceReference = new DataBinding<Object>(resourceReference.toString(), this, Object.class,
+				this.resourceReference = new DataBinding<String>(resourceReference.toString(), this, String.class,
 						DataBinding.BindingDefinitionType.GET);
 				this.resourceReference.setBindingName("resourceReference");
 				this.resourceReference.setMandatory(true);
@@ -153,9 +177,9 @@ public interface ElementImportDeclaration extends FMLPrettyPrintable {
 		}
 
 		@Override
-		public DataBinding<?> getObjectReference() {
+		public DataBinding<String> getObjectReference() {
 			if (objectReference == null) {
-				objectReference = new DataBinding<Object>(this, Object.class, DataBinding.BindingDefinitionType.GET);
+				objectReference = new DataBinding<String>(this, String.class, DataBinding.BindingDefinitionType.GET);
 				objectReference.setBindingName("objectReference");
 				objectReference.setMandatory(true);
 
@@ -164,9 +188,9 @@ public interface ElementImportDeclaration extends FMLPrettyPrintable {
 		}
 
 		@Override
-		public void setObjectReference(DataBinding<?> objectReference) {
+		public void setObjectReference(DataBinding<String> objectReference) {
 			if (objectReference != null) {
-				this.objectReference = new DataBinding<Object>(objectReference.toString(), this, Object.class,
+				this.objectReference = new DataBinding<String>(objectReference.toString(), this, String.class,
 						DataBinding.BindingDefinitionType.GET);
 				this.objectReference.setBindingName("objectReference");
 				this.objectReference.setMandatory(true);
@@ -174,5 +198,105 @@ public interface ElementImportDeclaration extends FMLPrettyPrintable {
 			notifiedBindingChanged(objectReference);
 		}
 
+		private FlexoObject referencedObject;
+
+		@Override
+		public FlexoObject getReferencedObject() {
+			if (referencedObject == null) {
+				try {
+					referencedObject = buildReferencedObject();
+				} catch (TypeMismatchException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (NullReferenceException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (InvocationTargetException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (FileNotFoundException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (ResourceLoadingCancelledException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (FlexoException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+			return referencedObject;
+		}
+
+		private boolean isBuildingReferencedObject = false;
+
+		private FlexoObject buildReferencedObject() throws TypeMismatchException, NullReferenceException, InvocationTargetException,
+				FileNotFoundException, ResourceLoadingCancelledException, FlexoException {
+
+			if (isBuildingReferencedObject) {
+				return null;
+			}
+
+			isBuildingReferencedObject = true;
+
+			try {
+
+				if (getResourceData() != null && getResourceData().getServiceManager() != null) {
+
+					FlexoServiceManager serviceManager = getResourceData().getServiceManager();
+
+					String resourceURI = null;
+					if (getResourceReference().isSet() && getResourceReference().isValid()) {
+						resourceURI = getResourceReference().getBindingValue(getReflectedBindingEvaluationContext());
+					}
+					String objectReference = null;
+					if (getObjectReference().isSet() && getObjectReference().isValid()) {
+						objectReference = getObjectReference().getBindingValue(getReflectedBindingEvaluationContext());
+					}
+
+					if (resourceURI == null) {
+						// logger.warning("Cannot find object with null URI ");
+						return null;
+					}
+
+					// Is that a ResourceCenter ?
+					FlexoResourceCenter<?> rc = serviceManager.getResourceCenterService().getFlexoResourceCenter(resourceURI);
+					if (rc != null) {
+						return rc;
+					}
+
+					// Is that a Resource ?
+					FlexoResource<?> resource = serviceManager.getResourceManager().getResource(resourceURI);
+					if (resource != null) {
+
+						ResourceData<?> resourceData = resource.getResourceData();
+
+						if (resourceData instanceof FMLCompilationUnit) {
+							return ((FMLCompilationUnit) resourceData).getVirtualModel();
+						}
+
+						if (objectReference == null) {
+							return (FlexoObject) resourceData;
+						}
+
+						// Find the right object in resource
+						else {
+							// TODO:
+							System.out.println("Il me faut trouver l'objet avec l'ID: " + objectReference + " dans " + resourceData);
+							return null;
+						}
+					}
+
+					logger.warning("Cannot find object with URI " + resourceURI);
+					return null;
+				}
+			} finally {
+				isBuildingReferencedObject = false;
+			}
+
+			logger.warning("Cannot access FlexoServiceManager ");
+			return null;
+
+		}
 	}
 }

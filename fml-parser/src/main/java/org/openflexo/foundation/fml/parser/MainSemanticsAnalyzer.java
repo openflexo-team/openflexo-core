@@ -42,6 +42,7 @@ import org.openflexo.foundation.fml.FMLCompilationUnit;
 import org.openflexo.foundation.fml.FMLModelFactory;
 import org.openflexo.foundation.fml.parser.fmlnodes.BasicMetaDataNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.BehaviourParameterNode;
+import org.openflexo.foundation.fml.parser.fmlnodes.ElementImportNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.FMLCompilationUnitNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.FlexoConceptNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.JavaImportNode;
@@ -68,8 +69,10 @@ import org.openflexo.foundation.fml.parser.node.AJavaInnerConceptDecl;
 import org.openflexo.foundation.fml.parser.node.AListAnnotationAnnotation;
 import org.openflexo.foundation.fml.parser.node.AModelDecl;
 import org.openflexo.foundation.fml.parser.node.ANamedJavaImportImportDecl;
+import org.openflexo.foundation.fml.parser.node.ANamedUriImportImportDecl;
 import org.openflexo.foundation.fml.parser.node.APrimitiveFormalArgument;
 import org.openflexo.foundation.fml.parser.node.ASingleAnnotationAnnotation;
+import org.openflexo.foundation.fml.parser.node.AUriImportImportDecl;
 import org.openflexo.foundation.fml.parser.node.AUseDecl;
 import org.openflexo.foundation.fml.parser.node.Start;
 import org.openflexo.p2pp.RawSource;
@@ -211,6 +214,30 @@ public class MainSemanticsAnalyzer extends FMLSemanticsAnalyzer {
 	@Override
 	public void outANamedJavaImportImportDecl(ANamedJavaImportImportDecl node) {
 		super.outANamedJavaImportImportDecl(node);
+		pop();
+	}
+
+	@Override
+	public void inAUriImportImportDecl(AUriImportImportDecl node) {
+		super.inAUriImportImportDecl(node);
+		push(new ElementImportNode(node, this));
+	}
+
+	@Override
+	public void outAUriImportImportDecl(AUriImportImportDecl node) {
+		super.outAUriImportImportDecl(node);
+		pop();
+	}
+
+	@Override
+	public void inANamedUriImportImportDecl(ANamedUriImportImportDecl node) {
+		super.inANamedUriImportImportDecl(node);
+		push(new ElementImportNode(node, this));
+	}
+
+	@Override
+	public void outANamedUriImportImportDecl(ANamedUriImportImportDecl node) {
+		super.outANamedUriImportImportDecl(node);
 		pop();
 	}
 

@@ -47,14 +47,19 @@ import java.util.function.Consumer;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
 
+import org.openflexo.connie.Bindable;
 import org.openflexo.connie.BindingEvaluationContext;
 import org.openflexo.connie.BindingFactory;
-import org.openflexo.connie.BindingModel;
 import org.openflexo.connie.BindingVariable;
+import org.openflexo.connie.DataBinding;
 import org.openflexo.foundation.FlexoException;
+import org.openflexo.foundation.FlexoObject;
+import org.openflexo.foundation.fml.binding.CompilationUnitBindingModel;
+import org.openflexo.foundation.fml.binding.NamedImportBindingVariable;
 import org.openflexo.foundation.fml.inspector.InspectorEntry;
 import org.openflexo.foundation.fml.rm.CompilationUnitResource;
 import org.openflexo.foundation.resource.FlexoResource;
+import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.resource.ResourceData;
 import org.openflexo.foundation.resource.ResourceLoadingCancelledException;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
@@ -274,17 +279,31 @@ public interface FMLCompilationUnit extends FMLObject, FMLPrettyPrintable, Resou
 	 */
 	public void manageImports();
 
+	public String ensureImport(FlexoResourceCenter<?> rc);
+
+	public String ensureImport(VirtualModel virtualModel);
+
 	public abstract class FMLCompilationUnitImpl extends FMLObjectImpl implements FMLCompilationUnit {
 
 		private static final Logger logger = Logger.getLogger(FMLCompilationUnitImpl.class.getPackage().getName());
 
 		private CompilationUnitResource resource;
 		private BindingEvaluationContext reflectedBindingEvaluationContext = new ReflectedBindingEvaluationContext();
+		private CompilationUnitBindingModel bindingModel;
 
 		class ReflectedBindingEvaluationContext implements BindingEvaluationContext {
 			@Override
-			public Object getValue(BindingVariable arg0) {
-				// TODO Auto-generated method stub
+			public Object getValue(BindingVariable bindingVariable) {
+				if (bindingVariable instanceof NamedImportBindingVariable) {
+					FlexoObject referencedObject = ((NamedImportBindingVariable) bindingVariable).getElementImportDeclaration()
+							.getReferencedObject();
+					if (referencedObject instanceof FlexoResourceCenter<?>) {
+						return ((FlexoResourceCenter<?>) referencedObject).getDefaultBaseURI();
+					}
+					if (referencedObject instanceof FMLObject) {
+						return ((FMLObject) referencedObject).getURI();
+					}
+				}
 				return null;
 			}
 		}
@@ -340,9 +359,12 @@ public interface FMLCompilationUnit extends FMLObject, FMLPrettyPrintable, Resou
 		}
 
 		@Override
-		public BindingModel getBindingModel() {
-			// TODO Auto-generated method stub
-			return null;
+		public CompilationUnitBindingModel getBindingModel() {
+			if (bindingModel == null) {
+				bindingModel = new CompilationUnitBindingModel(this);
+				getPropertyChangeSupport().firePropertyChange(Bindable.BINDING_MODEL_PROPERTY, null, bindingModel);
+			}
+			return bindingModel;
 		}
 
 		@Override
@@ -770,9 +792,56 @@ public interface FMLCompilationUnit extends FMLObject, FMLPrettyPrintable, Resou
 
 				@Override
 				public void visit(Object object) {
-					System.out.println("Visit " + object);
+					if (object instanceof FMLObject && ((FMLObject) object).getDeclaringCompilationUnit() == FMLCompilationUnitImpl.this) {
+						((FMLObject) object).handleRequiredImports(FMLCompilationUnitImpl.this);
+					}
 				}
 			}, VisitingStrategy.Exhaustive);
+		}
+
+		private ElementImportDeclaration retrieveImportDeclaration(FlexoObject object) {
+			for (ElementImportDeclaration elementImportDeclaration : getElementImports()) {
+				if (elementImportDeclaration.getReferencedObject() == object) {
+					return elementImportDeclaration;
+				}
+			}
+			return null;
+		}
+
+		@Override
+		public String ensureImport(FlexoResourceCenter<?> rc) {
+			ElementImportDeclaration rcDeclaration = retrieveImportDeclaration(rc);
+			if (rcDeclaration == null) {
+				rcDeclaration = getFMLModelFactory().newElementImportDeclaration();
+				rcDeclaration.setResourceReference(new DataBinding<>('"' + rc.getDefaultBaseURI() + '"'));
+				rcDeclaration.setAbbrev(rc.getName());
+				getDeclaringCompilationUnit().addToElementImports(rcDeclaration);
+			}
+			return rcDeclaration.getAbbrev();
+		}
+
+		@Override
+		public String ensureImport(VirtualModel virtualModel) {
+
+			ElementImportDeclaration vmDeclaration = retrieveImportDeclaration(virtualModel);
+			if (vmDeclaration == null) {
+				FlexoResourceCenter<?> resourceCenter = virtualModel.getResource().getResourceCenter();
+				// System.out.println("rc=" + resourceCenter.getDefaultBaseURI());
+				String uri = virtualModel.getURI();
+				vmDeclaration = getFMLModelFactory().newElementImportDeclaration();
+				if (uri.startsWith(resourceCenter.getDefaultBaseURI())) {
+					String remainingURI = uri.substring(resourceCenter.getDefaultBaseURI().length());
+					String rcAbbrev = ensureImport(resourceCenter);
+					vmDeclaration.setResourceReference(new DataBinding<>(rcAbbrev + "+\"" + remainingURI + "\""));
+					// System.out.println("---" + rcAbbrev + "+\"" + remainingURI + "\"");
+				}
+				else {
+					vmDeclaration.setResourceReference(new DataBinding<>("\"" + uri + "\""));
+				}
+				vmDeclaration.setAbbrev(virtualModel.getName());
+				getDeclaringCompilationUnit().addToElementImports(vmDeclaration);
+			}
+			return vmDeclaration.getAbbrev();
 		}
 
 	}

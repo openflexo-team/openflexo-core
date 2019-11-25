@@ -48,6 +48,7 @@ import org.openflexo.connie.exception.NullReferenceException;
 import org.openflexo.connie.exception.TypeMismatchException;
 import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.fml.CreationScheme;
+import org.openflexo.foundation.fml.FMLCompilationUnit;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.VirtualModelInstanceType;
@@ -272,5 +273,10 @@ public interface AddVirtualModelInstance extends AbstractAddFlexoConceptInstance
 
 		}
 
+		@Override
+		public void handleRequiredImports(FMLCompilationUnit compilationUnit) {
+			super.handleRequiredImports(compilationUnit);
+			compilationUnit.ensureImport(getVirtualModelType().getCompilationUnit().getVirtualModel());
+		}
 	}
 }

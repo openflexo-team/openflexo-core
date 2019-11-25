@@ -258,6 +258,11 @@ public interface FMLObject extends FlexoObject, Bindable, InnerResourceData<FMLC
 	 */
 	public BindingEvaluationContext getReflectedBindingEvaluationContext();
 
+	/**
+	 * Ensure required imports are declared in CompilationUnit
+	 */
+	public void handleRequiredImports(FMLCompilationUnit compilationUnit);
+
 	public static abstract class FMLObjectImpl extends FlexoObjectImpl implements FMLObject {
 
 		private static final Logger logger = Logger.getLogger(FMLObject.class.getPackage().getName());
@@ -609,7 +614,10 @@ public interface FMLObject extends FlexoObject, Bindable, InnerResourceData<FMLC
 		public String getNormalizedFML() {
 			if (this instanceof FMLPrettyPrintable) {
 				FMLPrettyPrintDelegate<?> ppDelegate = ((FMLPrettyPrintable) this).getPrettyPrintDelegate();
-				return ppDelegate.getNormalizedRepresentation(ppDelegate.makePrettyPrintContext());
+				if (ppDelegate != null) {
+					return ppDelegate.getNormalizedRepresentation(ppDelegate.makePrettyPrintContext());
+				}
+				return null;
 			}
 			return getFMLRepresentation();
 		}
@@ -617,6 +625,14 @@ public interface FMLObject extends FlexoObject, Bindable, InnerResourceData<FMLC
 		@Override
 		public String render() {
 			return getFMLRepresentation();
+		}
+
+		/**
+		 * Ensure required imports are declared in CompilationUnit
+		 */
+		@Override
+		public void handleRequiredImports(FMLCompilationUnit compilationUnit) {
+			// Default implementation does nothing
 		}
 
 	}

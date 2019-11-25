@@ -51,6 +51,7 @@ import org.openflexo.foundation.fml.AbstractProperty;
 import org.openflexo.foundation.fml.ActionScheme;
 import org.openflexo.foundation.fml.CreationScheme;
 import org.openflexo.foundation.fml.DeletionScheme;
+import org.openflexo.foundation.fml.ElementImportDeclaration;
 import org.openflexo.foundation.fml.ExpressionProperty;
 import org.openflexo.foundation.fml.FMLCompilationUnit;
 import org.openflexo.foundation.fml.FMLModelFactory;
@@ -86,6 +87,7 @@ import org.openflexo.foundation.fml.parser.fmlnodes.BasicMetaDataNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.BehaviourParameterNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.CreationSchemeNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.DeletionSchemeNode;
+import org.openflexo.foundation.fml.parser.fmlnodes.ElementImportNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.ExpressionPropertyNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.FlexoConceptNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.GetSetPropertyNode;
@@ -268,6 +270,9 @@ public abstract class FMLObjectNode<N extends Node, T extends FMLPrettyPrintable
 		}
 		if (object instanceof JavaImportDeclaration) {
 			return (P2PPNode<?, C>) new JavaImportNode((JavaImportDeclaration) object, getAnalyser());
+		}
+		if (object instanceof ElementImportDeclaration) {
+			return (P2PPNode<?, C>) new ElementImportNode((ElementImportDeclaration) object, getAnalyser());
 		}
 		if (object instanceof BasicMetaData) {
 			return (P2PPNode<?, C>) new BasicMetaDataNode((BasicMetaData) object, getAnalyser());

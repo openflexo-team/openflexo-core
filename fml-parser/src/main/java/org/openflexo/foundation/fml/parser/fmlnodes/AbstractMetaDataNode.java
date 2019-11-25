@@ -62,13 +62,13 @@ public abstract class AbstractMetaDataNode<N extends Node, T extends FMLMetaData
 	@Override
 	public final AbstractMetaDataNode<N, T, A> deserialize() {
 		if (getParent() instanceof FMLObjectNode) {
-			System.out.println("Adding to meta data for " + getParent().getModelObject() + " -> " + getModelObject().getKey() + "="
-					+ getModelObject());
+			// System.out.println("Adding to meta data for " + getParent().getModelObject() + " -> " + getModelObject().getKey() + "="
+			// + getModelObject());
 			((FMLObjectNode<?, ?, ?>) getParent()).getModelObject().addToMetaData(getModelObject());
 		}
 		if (getParent() instanceof ListMetaDataNode) {
-			System.out.println("Adding to meta data for " + getParent().getModelObject() + " -> " + getModelObject().getKey() + "="
-					+ getModelObject());
+			// System.out.println("Adding to meta data for " + getParent().getModelObject() + " -> " + getModelObject().getKey() + "="
+			// + getModelObject());
 			((ListMetaDataNode) getParent()).getModelObject().addToMetaDataList(getModelObject());
 		}
 

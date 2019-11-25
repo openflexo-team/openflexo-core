@@ -662,7 +662,7 @@ public interface VirtualModel extends FlexoConcept {
 
 		@Override
 		public String toString() {
-			return "VirtualModel:" + getName();
+			return "VirtualModel:" + getName() + "-" + Integer.toHexString(hashCode());
 		}
 
 		/**

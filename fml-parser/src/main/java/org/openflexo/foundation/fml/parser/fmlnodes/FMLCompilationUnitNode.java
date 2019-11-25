@@ -38,6 +38,7 @@
 
 package org.openflexo.foundation.fml.parser.fmlnodes;
 
+import org.openflexo.foundation.fml.ElementImportDeclaration;
 import org.openflexo.foundation.fml.FMLCompilationUnit;
 import org.openflexo.foundation.fml.JavaImportDeclaration;
 import org.openflexo.foundation.fml.parser.FMLObjectNode;
@@ -86,6 +87,9 @@ public class FMLCompilationUnitNode extends FMLObjectNode<AFmlCompilationUnit, F
 
 		append(childrenContents("", "", () -> getModelObject().getJavaImports(), LINE_SEPARATOR, LINE_SEPARATOR + LINE_SEPARATOR,
 				Indentation.DoNotIndent, JavaImportDeclaration.class));
+
+		append(childrenContents("", "", () -> getModelObject().getElementImports(), LINE_SEPARATOR, LINE_SEPARATOR + LINE_SEPARATOR,
+				Indentation.DoNotIndent, ElementImportDeclaration.class));
 
 		append(childContents("", () -> getModelObject().getVirtualModel(), "", Indentation.DoNotIndent));
 
