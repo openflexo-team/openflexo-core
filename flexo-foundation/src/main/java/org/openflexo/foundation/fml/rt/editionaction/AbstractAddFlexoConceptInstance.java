@@ -449,14 +449,66 @@ public interface AbstractAddFlexoConceptInstance<FCI extends FlexoConceptInstanc
 				if (addEPParam.getParam() == p) {
 					return addEPParam;
 				}
+				if (addEPParam._getParamName() != null && addEPParam._getParamName().equals(p.getName())) {
+					return addEPParam;
+				}
+
 			}
 			return null;
 		}
 
 		private void updateParameters() {
+
+			// System.out.println("****** updateParameters() for " + creationScheme);
+
 			if (parameters == null) {
 				parameters = new ArrayList<>();
 			}
+
+			if (creationScheme == null) {
+				return;
+			}
+
+			for (int i = 0; i < creationScheme.getParameters().size(); i++) {
+				FlexoBehaviourParameter p = creationScheme.getParameters().get(i);
+				if (i < getParameters().size()) {
+					getParameters().get(i).setParam(p);
+				}
+				else {
+					if (getFMLModelFactory() != null) {
+						AddFlexoConceptInstanceParameter newAddFlexoConceptInstanceParameter = getFMLModelFactory()
+								.newAddFlexoConceptInstanceParameter(p);
+						addToParameters(newAddFlexoConceptInstanceParameter);
+					}
+				}
+			}
+
+			int argsToRemove = getParameters().size() - creationScheme.getParameters().size();
+
+			while (argsToRemove > 0) {
+				removeFromParameters(getParameters().get(getParameters().size() - 1));
+				argsToRemove--;
+			}
+
+		}
+
+		/*private void updateParameters2() {
+		
+			System.out.println("****** updateParameters() for " + creationScheme);
+		
+			if (creationScheme != null) {
+				System.out.println("concept" + creationScheme.getFlexoConcept());
+				for (FlexoBehaviourParameter p : creationScheme.getParameters()) {
+					System.out.println(" param " + p.getName() + " " + p.getArgumentName());
+				}
+			}
+		
+			if (parameters == null) {
+				parameters = new ArrayList<>();
+			}
+		
+			System.out.println("On avait: " + parameters);
+		
 			List<AddFlexoConceptInstanceParameter> oldValue = new ArrayList<>(parameters);
 			List<AddFlexoConceptInstanceParameter> parametersToRemove = new ArrayList<>(parameters);
 			if (creationScheme != null) {
@@ -478,11 +530,14 @@ public interface AbstractAddFlexoConceptInstance<FCI extends FlexoConceptInstanc
 					}
 				}
 				for (AddFlexoConceptInstanceParameter removeThis : parametersToRemove) {
+					System.out.println("****** updateParameters() for " + creationScheme);
 					removeFromParameters(removeThis);
+					Thread.dumpStack();
 				}
 			}
+			System.out.println("On a maintenant: " + parameters);
 			getPropertyChangeSupport().firePropertyChange(PARAMETERS_KEY, oldValue, parameters);
-		}
+		}*/
 
 		@Override
 		public FCI execute(RunTimeEvaluationContext evaluationContext) throws FlexoException {
