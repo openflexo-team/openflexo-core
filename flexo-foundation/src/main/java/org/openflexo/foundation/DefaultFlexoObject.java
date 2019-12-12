@@ -39,8 +39,12 @@
 package org.openflexo.foundation;
 
 import java.lang.reflect.Type;
+import java.util.List;
 
 import org.openflexo.foundation.FlexoObject.FlexoObjectImpl;
+import org.openflexo.pamela.factory.AccessibleProxyObject;
+import org.openflexo.pamela.factory.PAMELAVisitor;
+import org.openflexo.pamela.factory.PAMELAVisitor.VisitingStrategy;
 
 /**
  * This is the default non-abstract implementation of {@link FlexoObject}.<br>
@@ -254,6 +258,30 @@ public class DefaultFlexoObject extends FlexoObjectImpl {
 	 */
 	@Override
 	public Type getTypeForKey(String key) {
+		return null;
+	}
+
+	@Override
+	public void accept(PAMELAVisitor visitor) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void accept(PAMELAVisitor visitor, VisitingStrategy strategy) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public List<? extends AccessibleProxyObject> getEmbeddedObjects() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<? extends AccessibleProxyObject> getReferencedObjects() {
+		// TODO Auto-generated method stub
 		return null;
 	}
 
