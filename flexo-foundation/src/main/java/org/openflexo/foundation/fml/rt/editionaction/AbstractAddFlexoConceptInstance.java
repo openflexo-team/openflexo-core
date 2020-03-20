@@ -38,6 +38,8 @@
 
 package org.openflexo.foundation.fml.rt.editionaction;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -197,7 +199,7 @@ public interface AbstractAddFlexoConceptInstance<FCI extends FlexoConceptInstanc
 	public boolean requiresContainer();
 
 	public static abstract class AbstractAddFlexoConceptInstanceImpl<FCI extends FlexoConceptInstance, VMI extends VirtualModelInstance<VMI, ?>>
-			extends FMLRTActionImpl<FCI, VMI> implements AbstractAddFlexoConceptInstance<FCI, VMI> {
+			extends FMLRTActionImpl<FCI, VMI> implements AbstractAddFlexoConceptInstance<FCI, VMI>, PropertyChangeListener {
 
 		static final Logger logger = Logger.getLogger(AbstractAddFlexoConceptInstance.class.getPackage().getName());
 
@@ -208,6 +210,17 @@ public interface AbstractAddFlexoConceptInstance<FCI extends FlexoConceptInstanc
 
 		private DataBinding<FlexoConceptInstance> container;
 		private DataBinding<FlexoConcept> dynamicFlexoConceptType;
+
+		@Override
+		public boolean delete(Object... context) {
+			if (flexoConceptType != null) {
+				flexoConceptType.getPropertyChangeSupport().removePropertyChangeListener(this);
+			}
+			if (creationScheme != null) {
+				creationScheme.getPropertyChangeSupport().removePropertyChangeListener(this);
+			}
+			return super.delete(context);
+		}
 
 		@Override
 		public void setDynamicInstantiation(boolean dynamicInstanciation) {
@@ -316,6 +329,9 @@ public interface AbstractAddFlexoConceptInstance<FCI extends FlexoConceptInstanc
 		public void setFlexoConceptType(FlexoConcept flexoConceptType) {
 			if (this.flexoConceptType != flexoConceptType) {
 				FlexoConcept oldValue = this.flexoConceptType;
+				if (oldValue != null) {
+					oldValue.getPropertyChangeSupport().removePropertyChangeListener(this);
+				}
 				this.flexoConceptType = flexoConceptType;
 				if (getCreationScheme() != null && getCreationScheme().getFlexoConcept() != flexoConceptType) {
 					if (flexoConceptType.getCreationSchemes().size() > 0) {
@@ -334,6 +350,9 @@ public interface AbstractAddFlexoConceptInstance<FCI extends FlexoConceptInstanc
 				getPropertyChangeSupport().firePropertyChange(FLEXO_CONCEPT_TYPE_KEY, oldValue, flexoConceptType);
 				getPropertyChangeSupport().firePropertyChange("availableCreationSchemes", null, getAvailableCreationSchemes());
 				getPropertyChangeSupport().firePropertyChange("requiresContainer", !requiresContainer(), requiresContainer());
+				if (flexoConceptType != null) {
+					flexoConceptType.getPropertyChangeSupport().addPropertyChangeListener(this);
+				}
 			}
 		}
 
@@ -349,6 +368,10 @@ public interface AbstractAddFlexoConceptInstance<FCI extends FlexoConceptInstanc
 		public void _setCreationSchemeURI(String uri) {
 			if (getVirtualModelLibrary() != null) {
 				creationScheme = (CreationScheme) getVirtualModelLibrary().getFlexoBehaviour(uri, true);
+				if (creationScheme != null) {
+					creationScheme.getPropertyChangeSupport().addPropertyChangeListener(this);
+					creationScheme.getFlexoConcept().getPropertyChangeSupport().addPropertyChangeListener(this);
+				}
 			}
 			_creationSchemeURI = uri;
 		}
@@ -356,6 +379,10 @@ public interface AbstractAddFlexoConceptInstance<FCI extends FlexoConceptInstanc
 		private void loadMetaModelWhenRequired() {
 			if (creationScheme == null && _creationSchemeURI != null && getVirtualModelLibrary() != null) {
 				creationScheme = (CreationScheme) getVirtualModelLibrary().getFlexoBehaviour(_creationSchemeURI, true);
+				if (creationScheme != null) {
+					creationScheme.getPropertyChangeSupport().addPropertyChangeListener(this);
+					creationScheme.getFlexoConcept().getPropertyChangeSupport().addPropertyChangeListener(this);
+				}
 				updateParameters();
 			}
 		}
@@ -365,10 +392,18 @@ public interface AbstractAddFlexoConceptInstance<FCI extends FlexoConceptInstanc
 
 			if (creationScheme == null && _creationSchemeURI != null && getVirtualModelLibrary() != null) {
 				creationScheme = (CreationScheme) getVirtualModelLibrary().getFlexoBehaviour(_creationSchemeURI, false);
+				if (creationScheme != null) {
+					creationScheme.getPropertyChangeSupport().addPropertyChangeListener(this);
+					creationScheme.getFlexoConcept().getPropertyChangeSupport().addPropertyChangeListener(this);
+				}
 				updateParameters();
 			}
 			if (creationScheme == null && getAssignedFlexoProperty() instanceof FlexoConceptInstanceRole) {
 				creationScheme = ((FlexoConceptInstanceRole) getAssignedFlexoProperty()).getCreationScheme();
+				if (creationScheme != null) {
+					creationScheme.getPropertyChangeSupport().addPropertyChangeListener(this);
+					creationScheme.getFlexoConcept().getPropertyChangeSupport().addPropertyChangeListener(this);
+				}
 				updateParameters();
 			}
 			return creationScheme;
@@ -378,6 +413,9 @@ public interface AbstractAddFlexoConceptInstance<FCI extends FlexoConceptInstanc
 		public void setCreationScheme(CreationScheme creationScheme) {
 			if (this.creationScheme != creationScheme) {
 				CreationScheme oldValue = this.creationScheme;
+				if (oldValue != null) {
+					oldValue.getPropertyChangeSupport().removePropertyChangeListener(this);
+				}
 				this.creationScheme = creationScheme;
 				if (creationScheme != null) {
 					_creationSchemeURI = creationScheme.getURI();
@@ -388,6 +426,9 @@ public interface AbstractAddFlexoConceptInstance<FCI extends FlexoConceptInstanc
 				updateParameters();
 				getPropertyChangeSupport().firePropertyChange(CREATION_SCHEME_KEY, oldValue, creationScheme);
 				getPropertyChangeSupport().firePropertyChange(FLEXO_CONCEPT_TYPE_KEY, null, getFlexoConceptType());
+				if (creationScheme != null) {
+					creationScheme.getPropertyChangeSupport().addPropertyChangeListener(this);
+				}
 			}
 		}
 
@@ -453,6 +494,19 @@ public interface AbstractAddFlexoConceptInstance<FCI extends FlexoConceptInstanc
 			return null;
 		}
 
+		@Override
+		public void propertyChange(PropertyChangeEvent evt) {
+			if (evt.getSource() == getFlexoConceptType()) {
+				// System.out.println("Tiens je recois l'event du Concept " + evt.getPropertyName() + " evt=" + evt);
+			}
+			if (evt.getSource() == getCreationScheme()) {
+				// System.out.println("Tiens je recois l'event du CreationScheme " + evt.getPropertyName() + " evt=" + evt);
+				if (evt.getPropertyName().equals(CreationScheme.PARAMETERS_KEY)) {
+					updateParameters();
+				}
+			}
+		}
+
 		private void updateParameters() {
 			if (parameters == null) {
 				parameters = new ArrayList<>();
@@ -479,6 +533,7 @@ public interface AbstractAddFlexoConceptInstance<FCI extends FlexoConceptInstanc
 				}
 				for (AddFlexoConceptInstanceParameter removeThis : parametersToRemove) {
 					removeFromParameters(removeThis);
+					removeThis.delete();
 				}
 			}
 			getPropertyChangeSupport().firePropertyChange(PARAMETERS_KEY, oldValue, parameters);
