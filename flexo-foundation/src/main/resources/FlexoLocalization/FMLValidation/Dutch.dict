@@ -31,6 +31,8 @@ FlexoRole_should_not_have_reflexive_model_slot_no_more_description=FlexoRole sho
 JsonRequestBehaviour_($validable.name)_doesn't_define_any_returned_flexo_concept_type=JsonRequestBehaviour ($validable.name) doesn't define any returned flexo concept type
 ModelSlot_($validable.name)_doesn't_define_any_meta_model=ModelSlot ($validable.name) doesn't define any meta model
 Unexpected\ exception\:\ null=Unexpected exception\: null
+abstract_behaviour_cannot_have_control_graph=Abstract behaviour cannot have control graph
+abstract_behaviour_cannot_have_control_graph_description=Abstract behaviour cannot have control graph description
 action_does_not_define_any_model_slot=Action does not define any model slot
 action_does_not_define_any_role=Action does not define any role
 add_connector_action_does_not_have_a_valid_ending_shape=Add connector action does not have a valid ending shape
@@ -54,6 +56,7 @@ binding_'($binding.bindingName)'_is_required_but_set_value_is_invalid\:\ ($bindi
 binding_'($binding.bindingName)'_is_required_but_value_is_invalid\:\ ($binding)=Binding '($binding.bindingName)' is required but value is invalid\: ($binding)
 binding_'($binding.bindingName)'_is_required_but_was_not_set=Binding '($binding.bindingName)' is required but was not set
 consistency_check_ok=Consistency check ok
+control_graph_declared_for_abstract_behaviour=Control graph declared for abstract behaviour
 controlling_property_shadowing=Controlling property shadowing
 controlling_property_shadowing_description=Controlling property shadowing description
 create_default_deletion_scheme=Create default deletion scheme

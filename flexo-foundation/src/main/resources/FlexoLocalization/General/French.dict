@@ -23,6 +23,7 @@ Exit=Exit
 Expression=Expression
 FLEXO_CONCEPT_INSTANCE=FLEXO_CONCEPT_INSTANCE
 FLOAT=FLOAT
+FML_list_of=FML_list_of
 FetchRequest=FetchRequest
 French=Fran\u00E7ais
 GET_PROPERTY=GET_PROPERTY
