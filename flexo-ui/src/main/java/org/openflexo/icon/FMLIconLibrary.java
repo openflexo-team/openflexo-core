@@ -262,6 +262,13 @@ public class FMLIconLibrary extends IconLibrary {
 	public static final ImageIcon GET_SET_PROPERTY_ICON = IconFactory.getImageIcon(FLEXO_BEHAVIOUR_ICON, PROPERTY_MARKER);
 
 	public static ImageIcon iconForObject(FMLObject object) {
+		if (object instanceof FlexoBehaviour && ((FlexoBehaviour) object).isAbstract()) {
+			return IconFactory.getImageIcon(_iconForObject(object), ABSTRACT_MARKER);
+		}
+		return _iconForObject(object);
+	}
+
+	private static ImageIcon _iconForObject(FMLObject object) {
 		if (object == null) {
 			return null;
 		}

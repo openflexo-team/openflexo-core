@@ -58,6 +58,7 @@ import org.openflexo.logging.FlexoLogger;
 import org.openflexo.pamela.annotations.Adder;
 import org.openflexo.pamela.annotations.CloningStrategy;
 import org.openflexo.pamela.annotations.CloningStrategy.StrategyType;
+import org.openflexo.pamela.annotations.DefineValidationRule;
 import org.openflexo.pamela.annotations.Embedded;
 import org.openflexo.pamela.annotations.Finder;
 import org.openflexo.pamela.annotations.Getter;
@@ -72,6 +73,9 @@ import org.openflexo.pamela.annotations.Remover;
 import org.openflexo.pamela.annotations.Setter;
 import org.openflexo.pamela.annotations.XMLAttribute;
 import org.openflexo.pamela.annotations.XMLElement;
+import org.openflexo.pamela.validation.ValidationError;
+import org.openflexo.pamela.validation.ValidationIssue;
+import org.openflexo.pamela.validation.ValidationRule;
 import org.openflexo.toolbox.StringUtils;
 
 /**
@@ -114,6 +118,8 @@ public interface FlexoBehaviour extends FlexoBehaviourObject, Function, FMLContr
 	public static final String CONTROL_GRAPH_KEY = "controlGraph";
 	@PropertyIdentifier(type = boolean.class)
 	public static final String IS_ABSTRACT_KEY = "isAbstract";
+	@PropertyIdentifier(type = Type.class)
+	public static final String DECLARED_TYPE_KEY = "declaredType";
 
 	@Getter(value = CONTROL_GRAPH_KEY, inverse = FMLControlGraph.OWNER_KEY)
 	@CloningStrategy(StrategyType.CLONE)
@@ -139,8 +145,17 @@ public interface FlexoBehaviour extends FlexoBehaviourObject, Function, FMLContr
 	@Setter(FLEXO_CONCEPT_KEY)
 	public void setFlexoConcept(FlexoConcept flexoConcept);
 
+	@Getter(value = DECLARED_TYPE_KEY, isStringConvertable = true)
+	@XMLAttribute
+	public Type getDeclaredType();
+
+	@Setter(DECLARED_TYPE_KEY)
+	public void setDeclaredType(Type type);
+
 	@Override
 	public Type getReturnType();
+
+	public Type getAnalyzedReturnType();
 
 	@Override
 	@Getter(value = NAME_KEY)
@@ -318,10 +333,21 @@ public interface FlexoBehaviour extends FlexoBehaviourObject, Function, FMLContr
 
 		@Override
 		public Type getReturnType() {
+			if (getDeclaredType() != null) {
+				return getDeclaredType();
+			}
+			if (getControlGraph() != null) {
+				return getAnalyzedReturnType();
+			}
+			return Void.TYPE;
+		}
+
+		@Override
+		public Type getAnalyzedReturnType() {
 			if (getControlGraph() != null) {
 				return getControlGraph().getInferedType();
 			}
-			return Void.TYPE;
+			return null;
 		}
 
 		@Override
@@ -748,4 +774,43 @@ public interface FlexoBehaviour extends FlexoBehaviourObject, Function, FMLContr
 		}
 
 	}
+
+	@DefineValidationRule
+	public static class DeclaredTypeShouldBeCompatibleWithAnalyzedType
+			extends ValidationRule<DeclaredTypeShouldBeCompatibleWithAnalyzedType, FlexoBehaviour> {
+
+		public DeclaredTypeShouldBeCompatibleWithAnalyzedType() {
+			super(FlexoBehaviour.class, "declared_types_and_analyzed_types_must_be_compatible");
+		}
+
+		@Override
+		public ValidationIssue<DeclaredTypeShouldBeCompatibleWithAnalyzedType, FlexoBehaviour> applyValidation(FlexoBehaviour behaviour) {
+			if (behaviour.getDeclaredType() != null && behaviour.getAnalyzedReturnType() != null) {
+				if (!TypeUtils.isTypeAssignableFrom(behaviour.getDeclaredType(), behaviour.getAnalyzedReturnType())) {
+					return new ValidationError<>(this, behaviour, "types_are_not_compatibles");
+				}
+			}
+			return null;
+		}
+
+	}
+
+	@DefineValidationRule
+	public static class NonAbstractConceptCannotDeclareAbstractBehaviour
+			extends ValidationRule<NonAbstractConceptCannotDeclareAbstractBehaviour, FlexoBehaviour> {
+
+		public NonAbstractConceptCannotDeclareAbstractBehaviour() {
+			super(FlexoBehaviour.class, "non_abstract_concept_cannot_declare_abstract_behaviour");
+		}
+
+		@Override
+		public ValidationIssue<NonAbstractConceptCannotDeclareAbstractBehaviour, FlexoBehaviour> applyValidation(FlexoBehaviour behaviour) {
+			if (behaviour.getFlexoConcept() != null && !behaviour.getFlexoConcept().isAbstract() && behaviour.isAbstract()) {
+				return new ValidationError<>(this, behaviour, "non_abstract_concept_declares_abstract_behaviour");
+			}
+			return null;
+		}
+
+	}
+
 }
