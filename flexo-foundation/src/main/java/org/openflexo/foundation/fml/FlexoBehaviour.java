@@ -51,6 +51,7 @@ import org.openflexo.connie.type.TypeUtils;
 import org.openflexo.foundation.DataModification;
 import org.openflexo.foundation.fml.FMLRepresentationContext.FMLRepresentationOutput;
 import org.openflexo.foundation.fml.binding.FlexoBehaviourBindingModel;
+import org.openflexo.foundation.fml.controlgraph.EmptyControlGraph;
 import org.openflexo.foundation.fml.controlgraph.FMLControlGraph;
 import org.openflexo.foundation.fml.controlgraph.FMLControlGraphOwner;
 import org.openflexo.foundation.fml.controlgraph.FMLControlGraphVisitor;
@@ -785,10 +786,29 @@ public interface FlexoBehaviour extends FlexoBehaviourObject, Function, FMLContr
 
 		@Override
 		public ValidationIssue<DeclaredTypeShouldBeCompatibleWithAnalyzedType, FlexoBehaviour> applyValidation(FlexoBehaviour behaviour) {
-			if (behaviour.getDeclaredType() != null && behaviour.getAnalyzedReturnType() != null) {
+			if (behaviour.getDeclaredType() != null && behaviour.getAnalyzedReturnType() != null && !(behaviour.isAbstract())) {
 				if (!TypeUtils.isTypeAssignableFrom(behaviour.getDeclaredType(), behaviour.getAnalyzedReturnType())) {
 					return new ValidationError<>(this, behaviour, "types_are_not_compatibles");
 				}
+			}
+			return null;
+		}
+
+	}
+
+	@DefineValidationRule
+	public static class AbstractBehaviourCannotHaveControlGraph
+			extends ValidationRule<AbstractBehaviourCannotHaveControlGraph, FlexoBehaviour> {
+
+		public AbstractBehaviourCannotHaveControlGraph() {
+			super(FlexoBehaviour.class, "abstract_behaviour_cannot_have_control_graph");
+		}
+
+		@Override
+		public ValidationIssue<AbstractBehaviourCannotHaveControlGraph, FlexoBehaviour> applyValidation(FlexoBehaviour behaviour) {
+			if (behaviour.isAbstract() && behaviour.getControlGraph() != null
+					&& !(behaviour.getControlGraph() instanceof EmptyControlGraph)) {
+				return new ValidationError<>(this, behaviour, "control_graph_declared_for_abstract_behaviour");
 			}
 			return null;
 		}
