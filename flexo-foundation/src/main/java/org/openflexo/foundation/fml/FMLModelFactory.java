@@ -81,6 +81,7 @@ import org.openflexo.foundation.fml.rt.editionaction.AddFlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.editionaction.AddFlexoConceptInstanceParameter;
 import org.openflexo.foundation.fml.rt.editionaction.AddVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.editionaction.CreateFlexoConceptInstanceParameter;
+import org.openflexo.foundation.fml.rt.editionaction.CreateTopLevelVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.editionaction.DeleteFlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.editionaction.DeleteFlexoConceptInstanceParameter;
 import org.openflexo.foundation.fml.rt.editionaction.ExecuteBehaviourParameter;
@@ -448,6 +449,10 @@ public class FMLModelFactory extends ModelFactory implements PamelaResourceModel
 
 	public AddVirtualModelInstance newAddVirtualModelInstance() {
 		return newInstance(AddVirtualModelInstance.class);
+	}
+
+	public CreateTopLevelVirtualModelInstance newCreateTopLevelVirtualModelInstance() {
+		return newInstance(CreateTopLevelVirtualModelInstance.class);
 	}
 
 	public SelectFlexoConceptInstance<?> newSelectFlexoConceptInstance() {

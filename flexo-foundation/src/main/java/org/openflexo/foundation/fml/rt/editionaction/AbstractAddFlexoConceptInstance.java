@@ -376,7 +376,7 @@ public interface AbstractAddFlexoConceptInstance<FCI extends FlexoConceptInstanc
 			_creationSchemeURI = uri;
 		}
 
-		private void loadMetaModelWhenRequired() {
+		protected void loadMetaModelWhenRequired() {
 			if (creationScheme == null && _creationSchemeURI != null && getVirtualModelLibrary() != null) {
 				creationScheme = (CreationScheme) getVirtualModelLibrary().getFlexoBehaviour(_creationSchemeURI, true);
 				if (creationScheme != null) {
@@ -619,7 +619,7 @@ public interface AbstractAddFlexoConceptInstance<FCI extends FlexoConceptInstanc
 			return null;
 		}
 
-		private CreationScheme findBestCreationSchemeForDynamicInstantiation(RunTimeEvaluationContext evaluationContext)
+		protected CreationScheme findBestCreationSchemeForDynamicInstantiation(RunTimeEvaluationContext evaluationContext)
 				throws FlexoException {
 			FlexoConcept instantiatedFlexoConcept = retrieveFlexoConcept(evaluationContext);
 			if (instantiatedFlexoConcept != null) {
@@ -637,8 +637,8 @@ public interface AbstractAddFlexoConceptInstance<FCI extends FlexoConceptInstanc
 			return _performExecuteCreationScheme(getCreationScheme(), newInstance, vmInstance, evaluationContext);
 		}
 
-		private boolean _performExecuteCreationScheme(CreationScheme creationScheme, FCI newInstance, VirtualModelInstance<?, ?> vmInstance,
-				RunTimeEvaluationContext evaluationContext) {
+		protected boolean _performExecuteCreationScheme(CreationScheme creationScheme, FCI newInstance,
+				VirtualModelInstance<?, ?> vmInstance, RunTimeEvaluationContext evaluationContext) {
 			if (evaluationContext instanceof FlexoBehaviourAction) {
 				CreationSchemeAction creationSchemeAction = new CreationSchemeAction(creationScheme, vmInstance, null,
 						(FlexoBehaviourAction<?, ?, ?>) evaluationContext);
@@ -777,6 +777,11 @@ public interface AbstractAddFlexoConceptInstance<FCI extends FlexoConceptInstanc
 		@Override
 		public ValidationIssue<BindingIsRequiredAndMustBeValid<AbstractAddFlexoConceptInstance>, AbstractAddFlexoConceptInstance> applyValidation(
 				AbstractAddFlexoConceptInstance object) {
+
+			if (!object.isReceiverMandatory()) {
+				return null;
+			}
+
 			ValidationIssue<BindingIsRequiredAndMustBeValid<AbstractAddFlexoConceptInstance>, AbstractAddFlexoConceptInstance> returned = super.applyValidation(
 					object);
 			if (returned instanceof UndefinedRequiredBindingIssue) {

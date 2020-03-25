@@ -90,6 +90,7 @@ import org.openflexo.foundation.fml.editionaction.TechnologySpecificAction;
 import org.openflexo.foundation.fml.editionaction.TechnologySpecificActionDefiningReceiver;
 import org.openflexo.foundation.fml.rt.editionaction.AddFlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.editionaction.AddVirtualModelInstance;
+import org.openflexo.foundation.fml.rt.editionaction.CreateTopLevelVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.editionaction.DeleteFlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.editionaction.FinalizeMatching;
 import org.openflexo.foundation.fml.rt.editionaction.FireEventAction;
@@ -191,6 +192,7 @@ public class CreateEditionAction extends FlexoAction<CreateEditionAction, FMLCon
 		addToAvailableActions(IncrementalIterationAction.class, fmlTA);
 		addToAvailableActions(RemoveFromListAction.class, fmlTA);
 		addToAvailableActions(AddFlexoConceptInstance.class, fmlTA);
+		addToAvailableActions(CreateTopLevelVirtualModelInstance.class, fmlTA);
 		addToAvailableActions(AddVirtualModelInstance.class, fmlTA);
 		addToAvailableActions(InitiateMatching.class, fmlTA);
 		addToAvailableActions(MatchFlexoConceptInstance.class, fmlTA);
@@ -489,6 +491,9 @@ public class CreateEditionAction extends FlexoAction<CreateEditionAction, FMLCon
 		}
 		else if (AddClassInstance.class.isAssignableFrom(editionActionClass)) {
 			returned = factory.newAddClassInstance();
+		}
+		else if (CreateTopLevelVirtualModelInstance.class.isAssignableFrom(editionActionClass)) {
+			returned = factory.newCreateTopLevelVirtualModelInstance();
 		}
 		else if (AddVirtualModelInstance.class.isAssignableFrom(editionActionClass)) {
 			returned = factory.newAddVirtualModelInstance();

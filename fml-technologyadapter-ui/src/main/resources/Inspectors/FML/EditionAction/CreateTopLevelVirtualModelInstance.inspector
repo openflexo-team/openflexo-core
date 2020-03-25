@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Panel className="org.openflexo.gina.utils.FIBInspector" layout="border"
+	titleFont="SansSerif,0,12" darkLevel="0"
+	dataClassName="org.openflexo.foundation.fml.rt.editionaction.CreateTopLevelVirtualModelInstance"
+	controllerClassName="org.openflexo.fml.controller.FMLFIBInspectorController"
+	font="SansSerif,0,12" name="Inspector">
+	<TabPanel name="Tab" constraints="border(location=center)">
+		<Tab title="Basic" layout="twocols" titleFont="SansSerif,0,11"
+			darkLevel="0" index="0" font="SansSerif,0,11" useScrollBar="true"
+			horizontalScrollbarPolicy="HORIZONTAL_SCROLLBAR_AS_NEEDED"
+			verticalScrollbarPolicy="VERTICAL_SCROLLBAR_AS_NEEDED" name="BasicTab">
+
+			<Label name="ReceiverLabel">
+				<Parameter name="hidden" value="true" />
+			</Label>
+			<Custom name="ReceiverSelector">
+				<Parameter name="hidden" value="true" />
+			</Custom>
+
+			<Label label="resource_uri" align="right" index="20" name="ResourceURILabel"
+				constraints="twocols(expandHorizontally=true;expandVertically=false;index=6;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=5;location=left)"
+				localize="true" />
+			<Custom componentClassName="org.openflexo.gina.swing.utils.BindingSelector"
+				localize="true" index="21" data="data.resourceURI" name="ResourceURIBS"
+				constraints="twocols(expandHorizontally=true;expandVertically=false;index=7;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)">
+				<Assignment variable="component.bindable" value="data" />
+			</Custom>
+			<Label label="resource_center" align="right" index="22"
+				constraints="twocols(expandHorizontally=true;expandVertically=false;index=6;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=5;location=left)"
+				localize="true" name="ResourceCenterLabel"/>
+			<Custom componentClassName="org.openflexo.gina.swing.utils.BindingSelector"
+				localize="true" index="23" data="data.resourceCenter" name="ResourceCenterBS"
+				constraints="twocols(expandHorizontally=true;expandVertically=false;index=7;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)">
+				<Assignment variable="component.bindable" value="data" />
+			</Custom>
+			<Label label="relative_path" align="right" index="24" name="RelativePathLabel"
+				constraints="twocols(expandHorizontally=true;expandVertically=false;index=6;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=5;location=left)"
+				localize="true" />
+			<Custom componentClassName="org.openflexo.gina.swing.utils.BindingSelector"
+				localize="true" index="25" data="data.dynamicRelativePath" name="RelativePathBS"
+				constraints="twocols(expandHorizontally=true;expandVertically=false;index=7;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)">
+				<Assignment variable="component.bindable" value="data" />
+			</Custom>
+
+		</Tab>
+	</TabPanel>
+	<LocalizedDictionary>
+		<Localized key="Advanced" lang="French" value="Avancé" />
+		<Localized key="Basic" lang="French" value="Basique" />
+	</LocalizedDictionary>
+	<Parameter name="title" value="AddVirtualModelInstance action" />
+</Panel>
