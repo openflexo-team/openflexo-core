@@ -65,9 +65,9 @@ import org.openflexo.pamela.annotations.Setter;
 import org.openflexo.pamela.annotations.XMLAttribute;
 import org.openflexo.pamela.exceptions.ModelDefinitionException;
 import org.openflexo.pamela.validation.FixProposal;
+import org.openflexo.pamela.validation.ValidationError;
 import org.openflexo.pamela.validation.ValidationIssue;
 import org.openflexo.pamela.validation.ValidationRule;
-import org.openflexo.pamela.validation.ValidationWarning;
 
 /**
  * Abstract edition action allowing to create an empty resource in a {@link FlexoResourceCenter}, at a specified relative path<br>
@@ -331,26 +331,27 @@ public interface AbstractCreateResource<MS extends ModelSlot<?>, RD extends Reso
 				TechnologySpecificAction<?, ?> anAction) {
 			DataBinding<?> rcbinding = ((AbstractCreateResource<?, ?, ?>) anAction).getResourceCenter();
 			if (rcbinding == null || rcbinding.isNull() || rcbinding.getExpression() == null) {
-				SetResourceCenterBeingProjectByDefault fixProposal = new SetResourceCenterBeingProjectByDefault(anAction);
-				return new ValidationWarning<>(this, anAction, "CreateResource_should_not_have_null_RC", fixProposal);
+				SetResourceCenterBeingCurrentResourceCenterByDefault fixProposal = new SetResourceCenterBeingCurrentResourceCenterByDefault(
+						anAction);
+				return new ValidationError<>(this, anAction, "CreateResource_should_not_have_null_resource_center", fixProposal);
 
 			}
 			return null;
 		}
 
-		protected static class SetResourceCenterBeingProjectByDefault
+		protected static class SetResourceCenterBeingCurrentResourceCenterByDefault
 				extends FixProposal<ResourceCenterShouldNotBeNull, TechnologySpecificAction<?, ?>> {
 
 			private final TechnologySpecificAction<?, ?> action;
 
-			public SetResourceCenterBeingProjectByDefault(TechnologySpecificAction<?, ?> anAction) {
-				super("set_rc_defaulting_to_project");
+			public SetResourceCenterBeingCurrentResourceCenterByDefault(TechnologySpecificAction<?, ?> anAction) {
+				super("set_resource_center_to_'this.resourceCenter'");
 				this.action = anAction;
 			}
 
 			@Override
 			protected void fixAction() {
-				((AbstractCreateResource<?, ?, ?>) action).getResourceCenter().setUnparsedBinding("project");
+				((AbstractCreateResource<?, ?, ?>) action).getResourceCenter().setUnparsedBinding("this.resourceCenter");
 			}
 		}
 
