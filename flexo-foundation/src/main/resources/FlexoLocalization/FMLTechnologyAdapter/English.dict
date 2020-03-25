@@ -235,6 +235,7 @@ perform_post_processings=Perform post processings
 please_choose_a_behaviour_type=Please choose a behaviour type
 please_choose_a_role_type=Please choose a role type
 please_choose_a_valid_metamodel=Please choose a valid metamodel
+please_choose_a_valid_virtual_model=Please choose a valid virtual model
 please_choose_type_of_flexo_concept=Please choose type of flexo concept
 please_define_an_expression=Please define an expression
 please_supply_a_type_for_the_new_parameter=Please supply a type for the new parameter

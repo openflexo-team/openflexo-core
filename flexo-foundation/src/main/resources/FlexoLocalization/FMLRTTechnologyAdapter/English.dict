@@ -14,6 +14,7 @@ instantiate_virtual_model=Instantiate virtual model
 invalid_parameter=Invalid parameter
 new=New
 no_virtual_model_instance_name_defined=No virtual model instance name defined
+no_virtual_model_instance_title_defined=No virtual model instance title defined
 no_virtual_model_type_selected=No virtual model type selected
 open_virtual_model_instance=Open virtual model instance
 please_supply_a_valid_type_for_instance_beeing_created=Please supply a valid type for instance beeing created
