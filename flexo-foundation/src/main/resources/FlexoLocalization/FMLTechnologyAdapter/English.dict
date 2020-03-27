@@ -129,6 +129,7 @@ describe_flexo_behaviour=Describe flexo behaviour
 describe_flexo_concept=Describe flexo concept
 describe_flexo_event=Describe flexo event
 describe_flexo_role=Describe flexo role
+describe_get_set_property=Describe get set property
 describe_inspector_entry=Describe inspector entry
 describe_model_slot=Describe model slot
 describe_new_variable=Describe new variable
