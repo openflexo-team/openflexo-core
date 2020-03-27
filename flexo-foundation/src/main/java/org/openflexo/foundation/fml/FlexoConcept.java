@@ -527,11 +527,12 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 	public boolean isRoot();
 
 	/**
-	 * Return boolean indicating whether this concept has no parent in this VirtualModel (inheritance semantics)
+	 * Return boolean indicating whether this concept has no parent in this VirtualModel (inheritance semantics), or have parents
+	 * exclusively outside container {@link VirtualModel}
 	 * 
 	 * @return
 	 */
-	public boolean isSuperConcept();
+	public boolean isSuperConceptOfContainerVirtualModel();
 
 	public <ES extends FlexoBehaviour> List<ES> getFlexoBehaviours(Class<ES> editionSchemeClass);
 
@@ -1565,8 +1566,16 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 		}
 
 		@Override
-		public boolean isSuperConcept() {
-			return getParentFlexoConcepts().size() == 0;
+		public boolean isSuperConceptOfContainerVirtualModel() {
+			if (getParentFlexoConcepts().size() == 0) {
+				return true;
+			}
+			for (FlexoConcept flexoConcept : getParentFlexoConcepts()) {
+				if (flexoConcept.getOwner() == getOwner()) {
+					return false;
+				}
+			}
+			return true;
 		}
 
 		@Override

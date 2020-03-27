@@ -684,7 +684,8 @@ public interface VirtualModel extends FlexoConcept, FlexoMetaModel<VirtualModel>
 		}
 
 		/**
-		 * Return all {@link FlexoConcept} defined in this {@link VirtualModel} which have no parent (inheritance semantics)
+		 * Return all {@link FlexoConcept} defined in this {@link VirtualModel} which have no parent (inheritance semantics), or have
+		 * parents exclusively outside this {@link VirtualModel}
 		 * 
 		 * @return
 		 */
@@ -692,7 +693,7 @@ public interface VirtualModel extends FlexoConcept, FlexoMetaModel<VirtualModel>
 		public List<FlexoConcept> getAllSuperFlexoConcepts() {
 			ArrayList<FlexoConcept> returned = new ArrayList<>();
 			for (FlexoConcept fc : getFlexoConcepts()) {
-				if (fc.isSuperConcept()) {
+				if (fc.isSuperConceptOfContainerVirtualModel()) {
 					returned.add(fc);
 				}
 			}
