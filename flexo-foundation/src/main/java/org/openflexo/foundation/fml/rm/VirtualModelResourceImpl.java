@@ -268,7 +268,7 @@ public abstract class VirtualModelResourceImpl extends PamelaResourceImpl<Virtua
 	public VirtualModel loadResourceData() throws FlexoFileNotFoundException, IOFlexoException, InvalidXMLException,
 			InconsistentDataException, InvalidModelDefinitionException {
 
-		logger.info("*************** Loading " + this);
+		logger.info("*************** Loading " + this+ " from: " + getIODelegate().getSerializationArtefact());
 
 		// Now we have to activate all required technologies
 		activateRequiredTechnologies();
