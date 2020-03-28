@@ -39,13 +39,16 @@
 package org.openflexo.foundation.fml.rt.editionaction;
 
 import java.io.FileNotFoundException;
+import java.lang.reflect.Type;
 import java.util.logging.Logger;
 
 import org.openflexo.connie.DataBinding;
 import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.fml.CreationScheme;
 import org.openflexo.foundation.fml.FlexoConcept;
+import org.openflexo.foundation.fml.FlexoConceptInstanceType;
 import org.openflexo.foundation.fml.VirtualModel;
+import org.openflexo.foundation.fml.VirtualModelInstanceType;
 import org.openflexo.foundation.fml.rm.VirtualModelResource;
 import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
@@ -158,6 +161,14 @@ public interface AbstractAddVirtualModelInstance
 		public FMLRTVirtualModelInstance execute(RunTimeEvaluationContext evaluationContext) throws FlexoException {
 			System.out.println("Now create a FMLRTVirtualModelInstance");
 			return super.execute(evaluationContext);
+		}
+
+		@Override
+		public Type getAssignableType() {
+			if (getFlexoConceptType() != null) {
+				return FlexoConceptInstanceType.getFlexoConceptInstanceType(getFlexoConceptType());
+			}
+			return VirtualModelInstanceType.UNDEFINED_VIRTUAL_MODEL_INSTANCE_TYPE;
 		}
 
 		@Override

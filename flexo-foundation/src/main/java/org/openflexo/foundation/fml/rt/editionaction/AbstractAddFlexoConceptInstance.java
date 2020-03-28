@@ -87,6 +87,7 @@ import org.openflexo.pamela.validation.FixProposal;
 import org.openflexo.pamela.validation.ValidationError;
 import org.openflexo.pamela.validation.ValidationIssue;
 import org.openflexo.pamela.validation.ValidationRule;
+import org.openflexo.toolbox.StringUtils;
 
 /**
  * Generic base action used to instanciate a {@link FlexoConceptInstance} in a given {@link FMLRTVirtualModelInstance}.
@@ -110,6 +111,8 @@ public interface AbstractAddFlexoConceptInstance<FCI extends FlexoConceptInstanc
 
 	@PropertyIdentifier(type = String.class)
 	public static final String CREATION_SCHEME_URI_KEY = "creationSchemeURI";
+	@PropertyIdentifier(type = String.class)
+	public static final String FLEXO_CONCEPT_TYPE_URI_KEY = "flexoConceptTypeURI";
 	@PropertyIdentifier(type = List.class)
 	public static final String PARAMETERS_KEY = "parameters";
 
@@ -160,6 +163,13 @@ public interface AbstractAddFlexoConceptInstance<FCI extends FlexoConceptInstanc
 	public AddFlexoConceptInstanceParameter getParameter(String paramName);
 
 	public AddFlexoConceptInstanceParameter getParameter(FlexoBehaviourParameter p);
+
+	@Getter(value = FLEXO_CONCEPT_TYPE_URI_KEY)
+	@XMLAttribute
+	public String _getFlexoConceptTypeURI();
+
+	@Setter(FLEXO_CONCEPT_TYPE_URI_KEY)
+	public void _setFlexoConceptTypeURI(String conceptTypeURI);
 
 	/**
 	 * Get concept as type to be created by this action
@@ -322,6 +332,9 @@ public interface AbstractAddFlexoConceptInstance<FCI extends FlexoConceptInstanc
 			if (getCreationScheme() != null) {
 				return getCreationScheme().getFlexoConcept();
 			}
+			if (flexoConceptType == null && StringUtils.isNotEmpty(_flexoConceptTypeURI) && getVirtualModelLibrary() != null) {
+				flexoConceptType = getVirtualModelLibrary().getFlexoConcept(_flexoConceptTypeURI, false);
+			}
 			return flexoConceptType;
 		}
 
@@ -374,6 +387,24 @@ public interface AbstractAddFlexoConceptInstance<FCI extends FlexoConceptInstanc
 				}
 			}
 			_creationSchemeURI = uri;
+		}
+
+		private String _flexoConceptTypeURI;
+
+		@Override
+		public String _getFlexoConceptTypeURI() {
+			if (getFlexoConceptType() != null) {
+				return getFlexoConceptType().getURI();
+			}
+			return _flexoConceptTypeURI;
+		}
+
+		@Override
+		public void _setFlexoConceptTypeURI(String uri) {
+			if (getVirtualModelLibrary() != null) {
+				flexoConceptType = getVirtualModelLibrary().getFlexoConcept(uri, true);
+			}
+			_flexoConceptTypeURI = uri;
 		}
 
 		protected void loadMetaModelWhenRequired() {
@@ -681,7 +712,7 @@ public interface AbstractAddFlexoConceptInstance<FCI extends FlexoConceptInstanc
 
 		@Override
 		public Type getAssignableType() {
-			if (getFlexoConcept() != null) {
+			if (getFlexoConceptType() != null) {
 				return FlexoConceptInstanceType.getFlexoConceptInstanceType(getFlexoConceptType());
 			}
 			return FlexoConceptInstanceType.UNDEFINED_FLEXO_CONCEPT_INSTANCE_TYPE;
