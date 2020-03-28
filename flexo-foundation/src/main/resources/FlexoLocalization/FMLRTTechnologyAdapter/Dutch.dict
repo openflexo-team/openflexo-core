@@ -19,6 +19,7 @@ no_virtual_model_type_selected=no_virtual_model_type_selected
 open_virtual_model_instance=open_virtual_model_instance
 please_supply_a_valid_type_for_instance_beeing_created=Please supply a valid type for instance beeing created
 property=property
+really_delete_this_virtual_model_instance_?=really_delete_this_virtual_model_instance_?
 saving=Bezig met opslaan
 select_a_creation_scheme=Select a creation scheme
 value=value
