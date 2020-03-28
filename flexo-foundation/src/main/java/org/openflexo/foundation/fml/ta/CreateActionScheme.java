@@ -46,6 +46,7 @@ import org.openflexo.pamela.annotations.ImplementationClass;
 import org.openflexo.pamela.annotations.ModelEntity;
 import org.openflexo.pamela.annotations.XMLElement;
 
+@Deprecated
 @ModelEntity
 @ImplementationClass(CreateActionScheme.CreateFlexoBehaviourImpl.class)
 @XMLElement
