@@ -449,7 +449,7 @@ public interface VirtualModelInstance<VMI extends VirtualModelInstance<VMI, TA>,
 			if (getResource() != null) {
 				return getResource().getFactory();
 			}
-			return null;
+			return super.getFactory();
 		}
 
 		@Override

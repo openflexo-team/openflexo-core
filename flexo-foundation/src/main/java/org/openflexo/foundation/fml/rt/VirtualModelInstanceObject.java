@@ -77,6 +77,8 @@ public interface VirtualModelInstanceObject extends InnerResourceData<VirtualMod
 	 */
 	public FlexoResourceCenter<?> getResourceCenter();
 
+	public void setLocalFactory(AbstractVirtualModelInstanceModelFactory<?> localFactory);
+
 	public abstract class VirtualModelInstanceObjectImpl extends FlexoObjectImpl implements VirtualModelInstanceObject {
 
 		private static final Logger logger = Logger.getLogger(VirtualModelInstanceObject.class.getPackage().getName());
@@ -121,7 +123,15 @@ public interface VirtualModelInstanceObject extends InnerResourceData<VirtualMod
 			if (getVirtualModelInstance() != null && getVirtualModelInstance().getResource() != null) {
 				return ((AbstractVirtualModelInstanceResource<?, ?>) getVirtualModelInstance().getResource()).getFactory();
 			}
-			return null;
+			return localFactory;
 		}
+
+		private AbstractVirtualModelInstanceModelFactory<?> localFactory;
+
+		@Override
+		public void setLocalFactory(AbstractVirtualModelInstanceModelFactory<?> localFactory) {
+			this.localFactory = localFactory;
+		}
+
 	}
 }
