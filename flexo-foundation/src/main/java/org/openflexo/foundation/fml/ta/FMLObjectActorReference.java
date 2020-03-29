@@ -133,7 +133,13 @@ public interface FMLObjectActorReference<T extends FMLObject> extends ActorRefer
 		public T getModellingElement(boolean forceLoading) {
 			if (object == null && virtualModelURI != null && objectURI != null) {
 				// First find the VirtualModel
+				if (getFlexoConceptInstance() == null) {
+					return null;
+				}
 				FlexoServiceManager sm = getFlexoConceptInstance().getServiceManager();
+				if (sm == null || sm.getVirtualModelLibrary() == null) {
+					return null;
+				}
 				VirtualModel virtualModel = null;
 				try {
 					virtualModel = sm.getVirtualModelLibrary().getVirtualModel(virtualModelURI);
