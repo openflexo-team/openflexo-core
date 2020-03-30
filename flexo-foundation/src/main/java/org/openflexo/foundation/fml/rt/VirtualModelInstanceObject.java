@@ -41,6 +41,7 @@ package org.openflexo.foundation.fml.rt;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.FlexoObject;
+import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.InnerResourceData;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.rt.rm.AbstractVirtualModelInstanceResource;
@@ -105,6 +106,15 @@ public interface VirtualModelInstanceObject extends InnerResourceData<VirtualMod
 			if (resource == null)
 				return null;
 			return resource.getResourceCenter();
+		}
+
+		@Override
+		public FlexoServiceManager getServiceManager() {
+			VirtualModelInstance<?, ?> virtualModelInstance = getVirtualModelInstance();
+			if (virtualModelInstance != null && virtualModelInstance != this) {
+				return virtualModelInstance.getServiceManager();
+			}
+			return super.getServiceManager();
 		}
 
 		/**

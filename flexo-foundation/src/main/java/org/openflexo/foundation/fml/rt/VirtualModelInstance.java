@@ -44,6 +44,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Hashtable;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Map;
 import java.util.WeakHashMap;
 import java.util.logging.Level;
@@ -58,6 +59,7 @@ import org.openflexo.connie.binding.BindingValueChangeListener;
 import org.openflexo.connie.exception.NullReferenceException;
 import org.openflexo.connie.exception.TypeMismatchException;
 import org.openflexo.foundation.FlexoEditor;
+import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.IndexableContainer;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoConceptInstanceType;
@@ -396,6 +398,19 @@ public interface VirtualModelInstance<VMI extends VirtualModelInstance<VMI, TA>,
 	public void notifyAllRootFlexoConceptInstancesMayHaveChanged();
 
 	/**
+	 * Clone this {@link FlexoConceptInstance} given supplied factory.<br>
+	 * Clone is computed using roles, where property values are kept references<br>
+	 * Inside {@link FlexoConceptInstance} are cloned using same semantics
+	 * 
+	 * @param factory
+	 * @return
+	 */
+	@Override
+	public VirtualModelInstance<VMI, TA> cloneUsingRoles(AbstractVirtualModelInstanceModelFactory<?> factory);
+
+	public void setLocalServiceManager(FlexoServiceManager localServiceManager);
+
+	/**
 	 * Base implementation for VirtualModelInstance
 	 * 
 	 * @author sylvain
@@ -427,6 +442,22 @@ public interface VirtualModelInstance<VMI extends VirtualModelInstance<VMI, TA>,
 		public VirtualModelInstanceImpl() {
 			super();
 			flexoConceptInstances = new Hashtable<>();
+		}
+
+		private FlexoServiceManager localServiceManager = null;
+
+		@Override
+		public FlexoServiceManager getServiceManager() {
+			FlexoServiceManager returned = super.getServiceManager();
+			if (returned != null) {
+				return returned;
+			}
+			return localServiceManager;
+		}
+
+		@Override
+		public void setLocalServiceManager(FlexoServiceManager localServiceManager) {
+			this.localServiceManager = localServiceManager;
 		}
 
 		/**
@@ -1471,6 +1502,105 @@ public interface VirtualModelInstance<VMI extends VirtualModelInstance<VMI, TA>,
 			}
 			sb.append(line);
 			return sb.toString();
+		}
+
+		/**
+		 * Clone this {@link VirtualModelInstance} given supplied factory.<br>
+		 * Clone is computed using roles, where property values are kept references<br>
+		 * Inside {@link FlexoConceptInstance} are cloned using same semantics
+		 * 
+		 * @param factory
+		 * @return
+		 */
+		@Override
+		public VirtualModelInstance<VMI, TA> cloneUsingRoles(AbstractVirtualModelInstanceModelFactory<?> factory) {
+
+			// VirtualModelInstance<VMI, TA> clone = (VirtualModelInstance<VMI, TA>) factory.newInstance(getImplementedInterface());
+			VirtualModelInstance<VMI, TA> clone = (VirtualModelInstance<VMI, TA>) factory.newInstance(FMLRTVirtualModelInstance.class);
+			clone.setVirtualModel(getVirtualModel());
+			clone.setLocalFactory(factory);
+			clone.setLocalServiceManager(getServiceManager());
+			for (FlexoRole flexoRole : getVirtualModel().getAccessibleRoles()) {
+				Object value = getFlexoPropertyValue(flexoRole);
+				clone.setFlexoPropertyValue(flexoRole, value);
+			}
+			for (FlexoConceptInstance fci : getFlexoConceptInstances()) {
+				FlexoConceptInstance clonedFCI = fci.cloneUsingRoles(factory);
+				clone.addToFlexoConceptInstances(clonedFCI);
+			}
+			return clone;
+		}
+
+		/**
+		 * An {@link #equals(Object)} implementation for {@link FlexoConceptInstance}, focused on roles
+		 * 
+		 * @param obj
+		 * @return
+		 */
+		@Override
+		public boolean equalsUsingRoles(Object obj) {
+
+			if (this == obj) {
+				return true;
+			}
+			if (obj == null) {
+				return false;
+			}
+			if (!(obj instanceof VirtualModelInstance)) {
+				return false;
+			}
+			VirtualModelInstance<?, ?> other = (VirtualModelInstance<?, ?>) obj;
+			if (getVirtualModel() != other.getVirtualModel()) {
+				return false;
+			}
+			for (FlexoRole<?> flexoRole : getFlexoConcept().getAccessibleRoles()) {
+				Object value = getFlexoPropertyValue(flexoRole);
+				Object otherValue = other.getFlexoPropertyValue(flexoRole);
+				if (value == null) {
+					if (otherValue != null) {
+						return false;
+					}
+				}
+				else if (!value.equals(otherValue)) {
+					return false;
+				}
+			}
+
+			ListIterator<FlexoConceptInstance> e1 = getFlexoConceptInstances().listIterator();
+			ListIterator<FlexoConceptInstance> e2 = other.getFlexoConceptInstances().listIterator();
+
+			while (e1.hasNext() && e2.hasNext()) {
+				FlexoConceptInstance o1 = e1.next();
+				FlexoConceptInstance o2 = e2.next();
+				if (!(o1 == null ? o2 == null : o1.equalsUsingRoles(o2))) {
+					return false;
+				}
+			}
+			if (e1.hasNext() || e2.hasNext()) {
+				return false;
+			}
+
+			return true;
+		}
+
+		/**
+		 * A {@link #hashCode()} implementation for {@link FlexoConceptInstance}, focused on roles
+		 * 
+		 * @return
+		 */
+		@Override
+		public int hashCodeUsingRoles() {
+			final int prime = 31;
+			int result = 1;
+			result = prime * result + ((getVirtualModel() == null) ? 0 : getVirtualModel().hashCode());
+			for (FlexoRole<?> flexoRole : getFlexoConcept().getAccessibleRoles()) {
+				Object value = getFlexoPropertyValue(flexoRole);
+				result = prime * result + ((value == null) ? 0 : value.hashCode());
+			}
+			for (FlexoConceptInstance flexoConceptInstance : getFlexoConceptInstances()) {
+				result = prime * result + ((flexoConceptInstance == null) ? 0 : flexoConceptInstance.hashCodeUsingRoles());
+			}
+			return result;
 		}
 
 	}

@@ -43,6 +43,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Map;
 import java.util.Vector;
 import java.util.logging.Level;
@@ -505,6 +506,31 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 	 */
 	public String getUserFriendlyIdentifier();
 
+	/**
+	 * Clone this {@link FlexoConceptInstance} given supplied factory.<br>
+	 * Clone is computed using roles, where property values are kept references<br>
+	 * Embedded {@link FlexoConceptInstance} are cloned using same semantics
+	 * 
+	 * @param factory
+	 * @return
+	 */
+	public FlexoConceptInstance cloneUsingRoles(AbstractVirtualModelInstanceModelFactory<?> factory);
+
+	/**
+	 * An {@link #equals(Object)} implementation for {@link FlexoConceptInstance}, focused on roles
+	 * 
+	 * @param obj
+	 * @return
+	 */
+	public boolean equalsUsingRoles(Object obj);
+
+	/**
+	 * A {@link #hashCode()} implementation for {@link FlexoConceptInstance}, focused on roles
+	 * 
+	 * @return
+	 */
+	public int hashCodeUsingRoles();
+
 	public static abstract class FlexoConceptInstanceImpl extends VirtualModelInstanceObjectImpl implements FlexoConceptInstance {
 
 		private static final Logger logger = FlexoLogger.getLogger(FlexoConceptInstance.class.getPackage().toString());
@@ -696,8 +722,8 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 					container = container.getContainerFlexoConceptInstance();
 				}
 			}
-			else if (getOwningVirtualModelInstance() != this
-					&& flexoProperty.getFlexoConcept().isAssignableFrom(getFlexoConcept().getOwner())) {
+
+			if (getOwningVirtualModelInstance() != this && flexoProperty.getFlexoConcept().isAssignableFrom(getFlexoConcept().getOwner())) {
 				// In this case the property concerns the owning FMLRTVirtualModelInstance
 				return getOwningVirtualModelInstance().getFlexoPropertyValue(flexoProperty);
 			}
@@ -1775,21 +1801,6 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 		}
 
 		/**
-		 * Clone this FlexoConcept instance using default CloningScheme
-		 */
-		// TODO: not implemented yet
-		public FlexoConceptInstanceImpl cloneFlexoConceptInstance() {
-			/*if (getFlexoConcept().getDefaultDeletionScheme() != null) {
-				delete(getFlexoConcept().getDefaultDeletionScheme());
-			} else {
-				// Generate on-the-fly default deletion scheme
-				delete(getFlexoConcept().generateDefaultDeletionScheme());
-			}*/
-			System.out.println("cloneFlexoConceptInstance() in FlexoConceptInstance");
-			return null;
-		}
-
-		/**
 		 * Delete this FlexoConcept instance using supplied DeletionScheme
 		 */
 		// TODO: not implemented yet
@@ -2122,5 +2133,102 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 			}
 		}
 
+		/**
+		 * Clone this {@link FlexoConceptInstance} given supplied factory.<br>
+		 * Clone is computed using roles, where property values are kept references<br>
+		 * Embedded {@link FlexoConceptInstance} are cloned using same semantics
+		 * 
+		 * @param factory
+		 * @return
+		 */
+		@Override
+		public FlexoConceptInstance cloneUsingRoles(AbstractVirtualModelInstanceModelFactory<?> factory) {
+			FlexoConceptInstance clone = factory.newInstance(FlexoConceptInstance.class);
+			clone.setFlexoConcept(getFlexoConcept());
+			clone.setLocalFactory(factory);
+			for (FlexoRole flexoRole : getFlexoConcept().getAccessibleRoles()) {
+				Object value = getFlexoPropertyValue(flexoRole);
+				clone.setFlexoPropertyValue(flexoRole, value);
+			}
+			for (FlexoConceptInstance fci : getEmbeddedFlexoConceptInstances()) {
+				FlexoConceptInstance clonedFCI = fci.cloneUsingRoles(factory);
+				clone.addToEmbeddedFlexoConceptInstances(clonedFCI);
+			}
+			return clone;
+
+		}
+
+		/**
+		 * An {@link #equals(Object)} implementation for {@link FlexoConceptInstance}, focused on roles
+		 * 
+		 * @param obj
+		 * @return
+		 */
+		@Override
+		public boolean equalsUsingRoles(Object obj) {
+			if (this == obj) {
+				return true;
+			}
+			if (obj == null) {
+				return false;
+			}
+			if (!(obj instanceof FlexoConceptInstance)) {
+				return false;
+			}
+			FlexoConceptInstance other = (FlexoConceptInstance) obj;
+			if (getFlexoConcept() != other.getFlexoConcept()) {
+				return false;
+			}
+			for (FlexoRole<?> flexoRole : getFlexoConcept().getAccessibleRoles()) {
+				Object value = getFlexoPropertyValue(flexoRole);
+				Object otherValue = other.getFlexoPropertyValue(flexoRole);
+				if (value == null) {
+					if (otherValue != null) {
+						return false;
+					}
+				}
+				else if (!value.equals(otherValue)) {
+					return false;
+				}
+			}
+
+			ListIterator<FlexoConceptInstance> e1 = getEmbeddedFlexoConceptInstances().listIterator();
+			ListIterator<FlexoConceptInstance> e2 = other.getEmbeddedFlexoConceptInstances().listIterator();
+
+			while (e1.hasNext() && e2.hasNext()) {
+				FlexoConceptInstance o1 = e1.next();
+				FlexoConceptInstance o2 = e2.next();
+				if (!(o1 == null ? o2 == null : o1.equalsUsingRoles(o2))) {
+					return false;
+				}
+			}
+			if (e1.hasNext() || e2.hasNext()) {
+				return false;
+			}
+
+			return true;
+		}
+
+		/**
+		 * A {@link #hashCode()} implementation for {@link FlexoConceptInstance}, focused on roles
+		 * 
+		 * @return
+		 */
+		@Override
+		public int hashCodeUsingRoles() {
+			final int prime = 31;
+			int result = 1;
+			result = prime * result + ((getFlexoConcept() == null) ? 0 : getFlexoConcept().hashCode());
+			for (FlexoRole<?> flexoRole : getFlexoConcept().getAccessibleRoles()) {
+				Object value = getFlexoPropertyValue(flexoRole);
+				result = prime * result + ((value == null) ? 0 : value.hashCode());
+			}
+			for (FlexoConceptInstance flexoConceptInstance : getEmbeddedFlexoConceptInstances()) {
+				result = prime * result + ((flexoConceptInstance == null) ? 0 : flexoConceptInstance.hashCodeUsingRoles());
+			}
+			return result;
+		}
+
 	}
+
 }
