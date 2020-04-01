@@ -43,31 +43,24 @@ import org.openflexo.foundation.DataModification;
 import org.openflexo.foundation.FlexoService.ServiceNotification;
 
 /**
- * This {@link DataModification} is thrown when a {@link FlexoResource} has just been loaded
+ * This {@link DataModification} is thrown when a {@link FlexoResource} is about to be loaded
  * 
  * @author sylvain
  * 
  */
-public class ResourceLoaded<RD extends ResourceData<RD>> extends DataModification<RD> implements ServiceNotification {
+public class ResourceWillLoad extends DataModification<Boolean> implements ServiceNotification {
 
-	private FlexoResource<RD> resource;
-
-	/**
-	 * @param resource
-	 */
-	public ResourceLoaded(FlexoResource<RD> resource) {
-		this(resource, resource.getLoadedResourceData());
-	}
+	private FlexoResource<?> resource;
 
 	/**
 	 * @param resource
 	 */
-	public ResourceLoaded(FlexoResource<RD> resource, RD resourceData) {
-		super("isLoaded", null, resourceData);
+	public ResourceWillLoad(FlexoResource<?> resource) {
+		super("willLoad", false, true);
 		this.resource = resource;
 	}
 
-	public FlexoResource<RD> getLoadedResource() {
+	public FlexoResource<?> getLoadingResource() {
 		return resource;
 	}
 

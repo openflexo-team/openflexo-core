@@ -120,18 +120,20 @@ public abstract class FlexoResourceImpl<RD extends ResourceData<RD>> extends Fle
 			return null;
 		}
 		if (isLoading()) {
-			// logger.warning("trying to load a resource data from itself,
-			// please investigate");
+			if (getServiceManager() != null) {
+				getServiceManager().getResourceManager().crossReferencesLoadingSchemeDetected(this);
+			}
+			else {
+				logger.warning("Resource " + this + " does not refer to any ServiceManager. Please investigate...");
+			}
 			return resourceData;
+			// throw new CrossReferencesResourceLoadingException(this);
 		}
 		if (resourceData == null && isLoadable() && !isLoading()) {
 			// The resourceData is null, we try to load it
 			setLoading(true);
 			resourceData = loadResourceData();
 			setLoading(false);
-			// That's fine, resource is loaded, now let's notify the loading of
-			// the resources
-			notifyResourceLoaded();
 		}
 		return resourceData;
 	}
@@ -175,7 +177,7 @@ public abstract class FlexoResourceImpl<RD extends ResourceData<RD>> extends Fle
 	@Override
 	public void setResourceData(RD resourceData) {
 		this.resourceData = resourceData;
-		notifyResourceLoaded();
+		// notifyResourceLoaded();
 	}
 
 	/**
@@ -221,6 +223,19 @@ public abstract class FlexoResourceImpl<RD extends ResourceData<RD>> extends Fle
 		performSuperSetter(NAME, aName);
 	}
 
+	@Override
+	public void notifyResourceWillLoad() {
+		ResourceWillLoad notification = new ResourceWillLoad(this);
+		setChanged();
+		notifyObservers(notification);
+		if (getServiceManager() != null) {
+			getServiceManager().getResourceManager().resourceWillLoad(this, notification);
+		}
+		else {
+			logger.warning("Resource " + this + " does not refer to any ServiceManager. Please investigate...");
+		}
+	}
+
 	/**
 	 * Called to notify that a resource has successfully been loaded
 	 */
@@ -235,7 +250,7 @@ public abstract class FlexoResourceImpl<RD extends ResourceData<RD>> extends Fle
 		setChanged();
 		notifyObservers(new DataModification<>("contents", null, getContents()));
 		if (getServiceManager() != null) {
-			getServiceManager().notify(getServiceManager().getResourceManager(), notification);
+			getServiceManager().getResourceManager().resourceLoaded(this, notification);
 		}
 		else {
 			logger.warning("Resource " + this + " does not refer to any ServiceManager. Please investigate...");
@@ -256,7 +271,7 @@ public abstract class FlexoResourceImpl<RD extends ResourceData<RD>> extends Fle
 		setChanged();
 		notifyObservers(new DataModification<>("contents", null, null));
 		if (getServiceManager() != null) {
-			getServiceManager().notify(getServiceManager().getResourceManager(), notification);
+			getServiceManager().getResourceManager().resourceUnloaded(this, notification);
 		}
 		else {
 			logger.warning("Resource " + this + " does not refer to any ServiceManager. Please investigate...");
@@ -480,6 +495,16 @@ public abstract class FlexoResourceImpl<RD extends ResourceData<RD>> extends Fle
 			notifyResourceUnloaded();
 			isUnloading = false;
 		}
+	}
+
+	/**
+	 * Callback called when a cycle was detected in Resource Loading Scheme, and when the resource beeing requested has finally been loaded.
+	 * 
+	 * @param requestedResource
+	 */
+	@Override
+	public void resolvedCrossReferenceDependency(FlexoResource<?> requestedResource) {
+		// Override when required
 	}
 
 	/**

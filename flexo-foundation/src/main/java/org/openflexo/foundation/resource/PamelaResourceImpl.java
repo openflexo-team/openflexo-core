@@ -188,6 +188,8 @@ public abstract class PamelaResourceImpl<RD extends ResourceData<RD> & Accessibl
 			return resourceData;
 		}
 
+		notifyResourceWillLoad();
+
 		startDeserializing();
 
 		isLoading = true;
@@ -252,6 +254,9 @@ public abstract class PamelaResourceImpl<RD extends ResourceData<RD> & Accessibl
 			 */
 			stopDeserializing();
 			isLoading = false;
+			// That's fine, resource is loaded, now let's notify the loading of
+			// the resources
+			notifyResourceLoaded();
 
 		}
 		return null;

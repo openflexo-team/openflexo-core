@@ -417,6 +417,11 @@ public interface FlexoResource<RD extends ResourceData<RD>> extends FlexoObject,
 	public void save() throws SaveResourceException;
 
 	/**
+	 * Called to notify that a resource is beeing loading
+	 */
+	public void notifyResourceWillLoad();
+
+	/**
 	 * Called to notify that a resource has successfully been loaded
 	 */
 	public void notifyResourceLoaded();
@@ -536,4 +541,11 @@ public interface FlexoResource<RD extends ResourceData<RD>> extends FlexoObject,
 	 * @return
 	 */
 	public <I> String parentPathRelativeToResourceCenter(FlexoResourceCenter<I> rc);
+
+	/**
+	 * Callback called when a cycle was detected in Resource Loading Scheme, and when the resource beeing requested has finally been loaded.
+	 * 
+	 * @param requestedResource
+	 */
+	public void resolvedCrossReferenceDependency(FlexoResource<?> requestedResource);
 }

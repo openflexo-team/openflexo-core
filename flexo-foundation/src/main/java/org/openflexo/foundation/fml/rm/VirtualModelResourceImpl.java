@@ -543,4 +543,9 @@ public abstract class VirtualModelResourceImpl extends PamelaResourceImpl<Virtua
 		return returned;
 	}
 
+	@Override
+	public void resolvedCrossReferenceDependency(FlexoResource<?> requestedResource) {
+		super.resolvedCrossReferenceDependency(requestedResource);
+		//System.out.println("resolvedCrossReferenceDependancy for " + getName());
+	}
 }
