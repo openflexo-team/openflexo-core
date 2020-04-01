@@ -69,7 +69,7 @@ import org.openflexo.pamela.annotations.XMLElement;
 @ImplementationClass(AddVirtualModelInstance.AddVirtualModelInstanceImpl.class)
 @XMLElement
 @FML("AddVirtualModelInstance")
-public interface AddVirtualModelInstance extends AbstractAddVirtualModelInstance {
+public interface AddVirtualModelInstance extends AbstractAddFMLRTVirtualModelInstance {
 
 	/**
 	 * Return type of View, when {@link #getVirtualModelInstance()} is set and valid
@@ -78,7 +78,7 @@ public interface AddVirtualModelInstance extends AbstractAddVirtualModelInstance
 	 */
 	public VirtualModelResource getOwnerVirtualModelResource();
 
-	public static abstract class AddVirtualModelInstanceImpl extends AbstractAddVirtualModelInstanceImpl
+	public static abstract class AddVirtualModelInstanceImpl extends AbstractAddFMLRTVirtualModelInstanceImpl
 			implements AddVirtualModelInstance {
 
 		static final Logger logger = Logger.getLogger(AddVirtualModelInstance.class.getPackage().getName());

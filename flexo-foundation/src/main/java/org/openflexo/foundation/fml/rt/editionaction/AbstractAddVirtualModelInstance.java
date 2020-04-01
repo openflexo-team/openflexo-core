@@ -50,8 +50,9 @@ import org.openflexo.foundation.fml.FlexoConceptInstanceType;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.VirtualModelInstanceType;
 import org.openflexo.foundation.fml.rm.VirtualModelResource;
-import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstance;
+import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
+import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.foundation.resource.ResourceLoadingCancelledException;
 import org.openflexo.pamela.annotations.DefineValidationRule;
 import org.openflexo.pamela.annotations.Getter;
@@ -62,18 +63,20 @@ import org.openflexo.pamela.annotations.Setter;
 import org.openflexo.pamela.annotations.XMLAttribute;
 
 /**
- * Generic base action used to instanciate a {@link FMLRTVirtualModelInstance} at top-level or in a given {@link FMLRTVirtualModelInstance}.
+ * Generic base action used to instanciate a {@link VirtualModelInstance} at top-level or in a given {@link VirtualModelInstance}.
  * 
  * @author sylvain
  * 
  * @param <FCI>
- *            type of {@link FMLRTVirtualModelInstance} beeing created by this action
+ *            type of {@link FlexoConceptInstance} beeing created by this action
+ * @param <VMI>
+ *            type of the container of of {@link FlexoConceptInstance} beeing created by this action
  */
 
 @ModelEntity(isAbstract = true)
 @ImplementationClass(AbstractAddVirtualModelInstance.AbstractAddVirtualModelInstanceImpl.class)
-public interface AbstractAddVirtualModelInstance
-		extends AbstractAddFlexoConceptInstance<FMLRTVirtualModelInstance, FMLRTVirtualModelInstance> {
+public interface AbstractAddVirtualModelInstance<FCI extends FlexoConceptInstance, VMI extends VirtualModelInstance<VMI, ?>>
+		extends AbstractAddFlexoConceptInstance<FCI, VMI> {
 
 	@PropertyIdentifier(type = DataBinding.class)
 	public static final String VIRTUAL_MODEL_INSTANCE_NAME_KEY = "virtualModelInstanceName";
@@ -98,19 +101,13 @@ public interface AbstractAddVirtualModelInstance
 
 	public void setVirtualModelType(VirtualModelResource resource);
 
-	public static abstract class AbstractAddVirtualModelInstanceImpl
-			extends AbstractAddFlexoConceptInstanceImpl<FMLRTVirtualModelInstance, FMLRTVirtualModelInstance>
-			implements AbstractAddVirtualModelInstance {
+	public static abstract class AbstractAddVirtualModelInstanceImpl<FCI extends FlexoConceptInstance, VMI extends VirtualModelInstance<VMI, ?>>
+			extends AbstractAddFlexoConceptInstanceImpl<FCI, VMI> implements AbstractAddVirtualModelInstance<FCI, VMI> {
 
 		static final Logger logger = Logger.getLogger(AbstractAddVirtualModelInstance.class.getPackage().getName());
 
 		private DataBinding<String> virtualModelInstanceName;
 		private DataBinding<String> virtualModelInstanceTitle;
-
-		@Override
-		public Class<FMLRTVirtualModelInstance> getVirtualModelInstanceClass() {
-			return FMLRTVirtualModelInstance.class;
-		}
 
 		@Override
 		protected Class<? extends FlexoConcept> getDynamicFlexoConceptTypeType() {
@@ -155,12 +152,6 @@ public interface AbstractAddVirtualModelInstance
 				aVirtualModelInstanceTitle.setBindingDefinitionType(DataBinding.BindingDefinitionType.GET);
 			}
 			this.virtualModelInstanceTitle = aVirtualModelInstanceTitle;
-		}
-
-		@Override
-		public FMLRTVirtualModelInstance execute(RunTimeEvaluationContext evaluationContext) throws FlexoException {
-			System.out.println("Now create a FMLRTVirtualModelInstance");
-			return super.execute(evaluationContext);
 		}
 
 		@Override

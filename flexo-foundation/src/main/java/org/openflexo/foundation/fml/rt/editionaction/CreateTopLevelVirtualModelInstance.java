@@ -81,7 +81,7 @@ import org.openflexo.pamela.validation.ValidationRule;
 @ModelEntity
 @ImplementationClass(CreateTopLevelVirtualModelInstance.CreateTopLevelVirtualModelInstanceImpl.class)
 @XMLElement
-public interface CreateTopLevelVirtualModelInstance extends AbstractAddVirtualModelInstance {
+public interface CreateTopLevelVirtualModelInstance extends AbstractAddFMLRTVirtualModelInstance {
 
 	@PropertyIdentifier(type = DataBinding.class)
 	public static final String RESOURCE_URI_KEY = "resourceURI";
@@ -111,7 +111,7 @@ public interface CreateTopLevelVirtualModelInstance extends AbstractAddVirtualMo
 	@Setter(DYNAMIC_RELATIVE_PATH_KEY)
 	public void setDynamicRelativePath(DataBinding<String> relativePath);
 
-	public static abstract class CreateTopLevelVirtualModelInstanceImpl extends AbstractAddVirtualModelInstanceImpl
+	public static abstract class CreateTopLevelVirtualModelInstanceImpl extends AbstractAddFMLRTVirtualModelInstanceImpl
 			implements CreateTopLevelVirtualModelInstance {
 
 		private static final Logger logger = Logger.getLogger(CreateTopLevelVirtualModelInstance.class.getPackage().getName());
