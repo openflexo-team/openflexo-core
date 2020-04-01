@@ -142,5 +142,7 @@ types_are_not_compatible\ (VirtualModelInstanceType<Phase>\ and\ Object)=Types a
 types_are_not_compatible\ (Void\ and\ VirtualModelInstanceType<DiagrammeOrganigrammePublication>)=Types are not compatible (Void and VirtualModelInstanceType<DiagrammeOrganigrammePublication>)
 types_are_not_compatibles=Types are not compatibles
 validating=Validating
+virtual_model_is_required=Virtual model is required
+virtual_model_is_required_description=Virtual model is required description
 virtual_model_should_not_have_reflexive_model_slot_no_more=Virtual model should not have reflexive model slot no more
 virtual_model_should_not_have_reflexive_model_slot_no_more_description=Virtual model should not have reflexive model slot no more description
