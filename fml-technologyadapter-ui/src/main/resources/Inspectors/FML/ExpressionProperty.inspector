@@ -19,6 +19,21 @@
 				visible="">
 				<Assignment variable="component.bindable" value="data" />
 			</Custom>
+			
+			<!--
+			<Label label="declared_type" index="100"
+				constraints="twocols(expandHorizontally=false;expandVertically=false;index=0;location=left)"
+				name="DeclaredTypeLabel" localize="true" />
+			<TextField index="101" data="data.declaredType.toString()" readOnly="true"
+				constraints="twocols(expandHorizontally=true;expandVertically=false;index=1;location=right)"
+				name="DeclaredTypeTextField" localize="true" columns="10" />
+			<Label label="analyzed_type" index="102"
+				constraints="twocols(expandHorizontally=false;expandVertically=false;index=0;location=left)"
+				name="AnalyzedTypeLabel" localize="true" />
+			<TextField index="103" data="data.analyzedType.toString()" readOnly="true"
+				constraints="twocols(expandHorizontally=true;expandVertically=false;index=1;location=right)"
+				name="AnalyzedTypeTextField" localize="true" columns="10" />
+			-->
 		</Tab>
 	</TabPanel>
 	<LocalizedDictionary>
