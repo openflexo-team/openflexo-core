@@ -1515,8 +1515,7 @@ public interface VirtualModelInstance<VMI extends VirtualModelInstance<VMI, TA>,
 		@Override
 		public VirtualModelInstance<VMI, TA> cloneUsingRoles(AbstractVirtualModelInstanceModelFactory<?> factory) {
 
-			// VirtualModelInstance<VMI, TA> clone = (VirtualModelInstance<VMI, TA>) factory.newInstance(getImplementedInterface());
-			VirtualModelInstance<VMI, TA> clone = (VirtualModelInstance<VMI, TA>) factory.newInstance(FMLRTVirtualModelInstance.class);
+			VirtualModelInstance<VMI, TA> clone = (VirtualModelInstance<VMI, TA>) factory.newInstance(getImplementedInterface());
 			clone.setVirtualModel(getVirtualModel());
 			clone.setLocalFactory(factory);
 			clone.setLocalServiceManager(getServiceManager());
