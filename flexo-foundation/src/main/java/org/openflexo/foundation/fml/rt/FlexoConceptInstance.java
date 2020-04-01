@@ -723,7 +723,8 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 				}
 			}
 
-			if (getOwningVirtualModelInstance() != this && flexoProperty.getFlexoConcept().isAssignableFrom(getFlexoConcept().getOwner())) {
+			if (getOwningVirtualModelInstance() != null && getOwningVirtualModelInstance() != this
+					&& flexoProperty.getFlexoConcept().isAssignableFrom(getFlexoConcept().getOwner())) {
 				// In this case the property concerns the owning FMLRTVirtualModelInstance
 				return getOwningVirtualModelInstance().getFlexoPropertyValue(flexoProperty);
 			}
