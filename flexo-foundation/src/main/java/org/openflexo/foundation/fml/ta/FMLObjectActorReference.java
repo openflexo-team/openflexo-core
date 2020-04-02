@@ -104,7 +104,7 @@ public interface FMLObjectActorReference<T extends FMLObject> extends ActorRefer
 		// Serialization/deserialization only, do not use
 		@Override
 		public String getVirtualModelURI() {
-			if (object != null) {
+			if (object != null && object.getDeclaringVirtualModel() != null) {
 				return object.getDeclaringVirtualModel().getURI();
 			}
 			return virtualModelURI;
