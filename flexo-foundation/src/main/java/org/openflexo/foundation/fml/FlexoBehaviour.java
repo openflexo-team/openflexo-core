@@ -261,6 +261,8 @@ public interface FlexoBehaviour extends FlexoBehaviourObject, Function, FMLContr
 
 	public String getSignature();
 
+	public Type[] getParameterTypes();
+
 	@Override
 	public List<FlexoBehaviourParameter> getArguments();
 
@@ -446,6 +448,15 @@ public interface FlexoBehaviour extends FlexoBehaviourObject, Function, FMLContr
 		@Override
 		public void setLabel(String label) {
 			this.label = label;
+		}
+
+		@Override
+		public Type[] getParameterTypes() {
+			Type[] returned = new Type[getParameters().size()];
+			for (int i = 0; i < getParameters().size(); i++) {
+				returned[i] = getParameters().get(i).getArgumentType();
+			}
+			return returned;
 		}
 
 		@Override

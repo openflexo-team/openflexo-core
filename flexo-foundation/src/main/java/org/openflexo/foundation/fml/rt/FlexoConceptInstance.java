@@ -1575,11 +1575,44 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 			return null;
 		}
 
+		public class SuperReference {
+
+			private FlexoConcept superConcept;
+
+			public SuperReference(FlexoConcept superConcept) {
+				super();
+				this.superConcept = superConcept;
+			}
+
+			public FlexoConcept getSuperConcept() {
+				return superConcept;
+			}
+
+			public FlexoConceptInstance getInstance() {
+				return FlexoConceptInstanceImpl.this;
+			}
+		}
+
+		private Map<FlexoConcept, SuperReference> superReferences = new HashMap<>();
+
+		private SuperReference getSuperReference(FlexoConcept superConcept) {
+			SuperReference returned = superReferences.get(superConcept);
+			if (returned == null) {
+				returned = new SuperReference(superConcept);
+				superReferences.put(superConcept, returned);
+			}
+			return returned;
+		}
+
 		@Override
 		public Object getValue(BindingVariable variable) {
 
 			if (variable.getVariableName().equals(FlexoConceptBindingModel.THIS_PROPERTY)) {
 				return this;
+			}
+			else if (getFlexoConcept() != null && getFlexoConcept().getParentFlexoConcepts().size() == 1
+					&& variable.getVariableName().equals(FlexoConceptBindingModel.SUPER_PROPERTY)) {
+				return getSuperReference(getFlexoConcept().getParentFlexoConcepts().get(0));
 			}
 			else if (variable.getVariableName().equals(FlexoConceptBindingModel.CONTAINER_PROPERTY) && getFlexoConcept() != null) {
 				if (getFlexoConcept().getContainerFlexoConcept() != null) {
@@ -1614,6 +1647,7 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 				return variables.get(variable.getVariableName());
 			}
 
+			logger.warning("Cannot find BindingVariable " + variable);
 			return null;
 		}
 

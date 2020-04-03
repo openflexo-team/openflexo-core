@@ -42,33 +42,25 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.FlexoEditor;
+import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.action.FlexoAction;
-import org.openflexo.foundation.fml.AbstractActionScheme;
+import org.openflexo.foundation.action.InvalidParametersException;
+import org.openflexo.foundation.fml.CreationScheme;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.VirtualModelInstanceObject;
 
 /**
- * Provides execution environment of a {@link AbstractActionScheme} on a given {@link FlexoConceptInstance} as a {@link FlexoAction}
- *
- * Abstract base implementation for a {@link FlexoAction} which aims at executing a {@link AbstractActionScheme}
+ * Provides execution environment of the call of a super {@link CreationScheme} on a given {@link FlexoConceptInstance}
  * 
- * An {@link AbstractActionSchemeAction} represents the execution (in the "instances" world) of an {@link AbstractActionScheme}.<br>
- * To be used and executed on Openflexo platform, it is wrapped in a {@link FlexoAction}.<br>
+ * Note that this action can only be executed in the context of a more specialized {@link CreationScheme} execution
  * 
  * @author sylvain
  * 
- * @param <A>
- *            type of {@link AbstractActionSchemeAction} being executed
- * @param <FB>
- *            type of {@link AbstractActionScheme}
- * @param <O>
- *            type of {@link FlexoConceptInstance} on which this action applies
  */
-public abstract class AbstractActionSchemeAction<A extends AbstractActionSchemeAction<A, FB, O>, FB extends AbstractActionScheme, O extends FlexoConceptInstance>
-		extends FlexoBehaviourAction<A, FB, O> {
+public class SuperCreationSchemeAction extends FlexoBehaviourAction<SuperCreationSchemeAction, CreationScheme, FlexoConceptInstance> {
 
 	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(AbstractActionSchemeAction.class.getPackage().getName());
+	private static final Logger logger = Logger.getLogger(SuperCreationSchemeAction.class.getPackage().getName());
 
 	/**
 	 * Constructor to be used with a factory
@@ -78,7 +70,7 @@ public abstract class AbstractActionSchemeAction<A extends AbstractActionSchemeA
 	 * @param globalSelection
 	 * @param editor
 	 */
-	public AbstractActionSchemeAction(AbstractActionSchemeActionFactory<A, FB, O> actionFactory, O focusedObject,
+	public SuperCreationSchemeAction(SuperCreationSchemeActionFactory actionFactory, FlexoConceptInstance focusedObject,
 			List<VirtualModelInstanceObject> globalSelection, FlexoEditor editor) {
 		super(actionFactory, focusedObject, globalSelection, editor);
 	}
@@ -91,9 +83,9 @@ public abstract class AbstractActionSchemeAction<A extends AbstractActionSchemeA
 	 * @param globalSelection
 	 * @param editor
 	 */
-	public AbstractActionSchemeAction(FB abstractActionScheme, O focusedObject, List<VirtualModelInstanceObject> globalSelection,
-			FlexoEditor editor) {
-		super(abstractActionScheme, focusedObject, globalSelection, editor);
+	public SuperCreationSchemeAction(CreationScheme creationScheme, FlexoConceptInstance focusedObject,
+			List<VirtualModelInstanceObject> globalSelection, FlexoEditor editor) {
+		super(creationScheme, focusedObject, globalSelection, editor);
 	}
 
 	/**
@@ -105,18 +97,51 @@ public abstract class AbstractActionSchemeAction<A extends AbstractActionSchemeA
 	 * @param ownerAction
 	 *            Action in which action to be created will be embedded
 	 */
-	public AbstractActionSchemeAction(FB abstractActionScheme, O focusedObject, List<VirtualModelInstanceObject> globalSelection,
-			FlexoAction<?, ?, ?> ownerAction) {
-		super(abstractActionScheme, focusedObject, globalSelection, ownerAction);
+	public SuperCreationSchemeAction(CreationScheme creationScheme, FlexoConceptInstance focusedObject,
+			List<VirtualModelInstanceObject> globalSelection, FlexoAction<?, ?, ?> ownerAction) {
+		super(creationScheme, focusedObject, globalSelection, ownerAction);
 	}
 
 	@Override
-	public AbstractActionSchemeActionFactory<A, FB, O> getActionFactory() {
-		return (AbstractActionSchemeActionFactory<A, FB, O>) super.getActionFactory();
+	public SuperCreationSchemeActionFactory getActionFactory() {
+		return (SuperCreationSchemeActionFactory) super.getActionFactory();
 	}
 
-	public final FB getApplicableActionScheme() {
+	public final CreationScheme getApplicableCreationScheme() {
 		return getApplicableFlexoBehaviour();
 	}
 
+	@Override
+	protected void doAction(Object context) throws FlexoException {
+
+		if (getFlexoConceptInstance() == null) {
+			throw new InvalidParametersException("Cannot execute a null FlexoConceptInstance");
+		}
+		if (getFlexoConceptInstance().getFlexoConcept() == null) {
+			throw new InvalidParametersException("Cannot execute a FlexoConceptInstance with null concept: " + getFlexoConceptInstance());
+		}
+
+		CreationScheme applicableCreationScheme = getApplicableCreationScheme();
+
+		if (applicableCreationScheme != null) {
+
+			if (applicableCreationScheme.getFlexoConcept() == null) {
+				throw new InvalidParametersException(
+						"Inconsistent data: ActionScheme is not defined in any FlexoConcept: " + applicableCreationScheme);
+			}
+			if (applicableCreationScheme.getFlexoConcept().isAssignableFrom(getFlexoConceptInstance().getFlexoConcept())) {
+				if (applicableCreationScheme != null) {
+					executeControlGraph();
+				}
+			}
+			else {
+				throw new InvalidParametersException("ActionScheme " + applicableCreationScheme + " is not a behaviour defined for "
+						+ getFlexoConceptInstance().getFlexoConcept());
+			}
+		}
+		else {
+			throw new InvalidParametersException("Cannot execute a null CreationScheme for " + getFlexoConceptInstance());
+		}
+
+	}
 }

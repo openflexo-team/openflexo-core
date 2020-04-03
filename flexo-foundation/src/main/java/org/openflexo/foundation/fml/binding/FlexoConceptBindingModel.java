@@ -75,16 +75,16 @@ public class FlexoConceptBindingModel extends BindingModel {
 
 	private final FlexoConcept flexoConcept;
 
-	// private BindingVariable reflexiveAccessBindingVariable;
 	private final Map<FlexoProperty<?>, FlexoPropertyBindingVariable> propertyVariablesMap;
 	private final List<FlexoConcept> knownParentConcepts = new ArrayList<>();
 	private FlexoConcept lastKnownContainer = null;
 
-	private BindingVariable flexoConceptInstanceBindingVariable;
+	private BindingVariable thisBindingVariable;
 	protected BindingVariable containerBindingVariable;
+	protected BindingVariable superBindingVariable;
 
-	// public static final String REFLEXIVE_ACCESS_PROPERTY = "conceptDefinition";
 	public static final String THIS_PROPERTY = "this";
+	public static final String SUPER_PROPERTY = "super";
 	public static final String CONTAINER_PROPERTY = "container";
 
 	/**
@@ -111,12 +111,10 @@ public class FlexoConceptBindingModel extends BindingModel {
 			flexoConcept.getPropertyChangeSupport().addPropertyChangeListener(this);
 		}
 
-		flexoConceptInstanceBindingVariable = new FlexoConceptBindingVariable(THIS_PROPERTY, flexoConcept);
-		addToBindingVariables(flexoConceptInstanceBindingVariable);
-		/*if (flexoConcept.getContainerFlexoConcept() != null) {
-			containerBindingVariable = new BindingVariable(CONTAINER_PROPERTY, flexoConcept.getContainerFlexoConcept().getInstanceType());
-			addToBindingVariables(containerBindingVariable);
-		}*/
+		thisBindingVariable = new FlexoConceptBindingVariable(THIS_PROPERTY, flexoConcept);
+		addToBindingVariables(thisBindingVariable);
+
+		updateSuperBindingVariable();
 
 		updateContainerBindingVariable();
 
@@ -126,18 +124,8 @@ public class FlexoConceptBindingModel extends BindingModel {
 		updateParentFlexoConceptListeners();
 	}
 
-	/**
-	 * Return the reflexive access {@link BindingVariable}<br>
-	 * (Allows reflexive access to the {@link FlexoConcept} itself)
-	 * 
-	 * @return
-	 */
-	/*public BindingVariable getReflexiveAccessBindingVariable() {
-		return reflexiveAccessBindingVariable;
-	}*/
-
-	public BindingVariable getFlexoConceptInstanceBindingVariable() {
-		return flexoConceptInstanceBindingVariable;
+	public BindingVariable getThisBindingVariable() {
+		return thisBindingVariable;
 	}
 
 	public FlexoConcept getFlexoConcept() {
@@ -154,8 +142,8 @@ public class FlexoConceptBindingModel extends BindingModel {
 			if (evt.getPropertyName().equals(FlexoConcept.OWNER_KEY)) {
 				// The FlexoConcept changes it's VirtualModel
 				setBaseBindingModel(flexoConcept.getOwner() != null ? flexoConcept.getOwner().getBindingModel() : null);
-				if (flexoConceptInstanceBindingVariable != null) {
-					flexoConceptInstanceBindingVariable.setType(FlexoConceptInstanceType.getFlexoConceptInstanceType(flexoConcept));
+				if (thisBindingVariable != null) {
+					thisBindingVariable.setType(FlexoConceptInstanceType.getFlexoConceptInstanceType(flexoConcept));
 				}
 				updateContainerBindingVariable();
 				// virtualModelInstanceBindingVariable.setType(flexoConcept.getVirtualModel() != null ? VirtualModelInstanceType
@@ -167,6 +155,7 @@ public class FlexoConceptBindingModel extends BindingModel {
 			}
 			else if (evt.getPropertyName().equals(FlexoConcept.PARENT_FLEXO_CONCEPTS_KEY)) {
 				updateParentFlexoConceptListeners();
+				updateSuperBindingVariable();
 				updatePropertyVariables();
 			}
 			else if (evt.getPropertyName().equals(FlexoConcept.CONTAINER_FLEXO_CONCEPT_KEY)) {
@@ -213,6 +202,22 @@ public class FlexoConceptBindingModel extends BindingModel {
 					removeFromBindingVariables(containerBindingVariable);
 					containerBindingVariable = null;
 				}
+			}
+		}
+	}
+
+	protected void updateSuperBindingVariable() {
+		if (flexoConcept.getParentFlexoConcepts().size() == 1) {
+			if (superBindingVariable == null) {
+				superBindingVariable = new BindingVariable(SUPER_PROPERTY, flexoConcept.getParentFlexoConcepts().get(0).getInstanceType());
+				addToBindingVariables(superBindingVariable);
+			}
+			superBindingVariable.setType(flexoConcept.getParentFlexoConcepts().get(0).getInstanceType());
+		}
+		else {
+			if (superBindingVariable != null) {
+				removeFromBindingVariables(superBindingVariable);
+				superBindingVariable = null;
 			}
 		}
 	}
