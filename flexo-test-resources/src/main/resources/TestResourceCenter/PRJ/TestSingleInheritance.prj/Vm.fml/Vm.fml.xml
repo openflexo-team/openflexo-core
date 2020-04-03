@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<VirtualModel id="SYL-1" virtualModelClass="org.openflexo.foundation.fml.VirtualModel" modelVersion="2.0" uri="http://www.openflexo.org/projects/2020/4/TestSingleInheritance_1585907148412.prj/Vm.fml" version="0.1" name="Vm" author="sylvain" userID="SYL" flexoID="1">
+  <FlexoConcept id="SYL-6" name="A" author="sylvain" userID="SYL" flexoID="6">
+    <Inspector id="SYL-7" inspectorTitle="A" userID="SYL" flexoID="7" />
+    <CreationScheme id="SYL-11" label="create" name="create" width="800" height="600" userID="SYL" flexoID="11">
+      <BehaviourControlGraph_EmptyControlGraph id="SYL-20" userID="SYL" flexoID="20" />
+    </CreationScheme>
+    <DeletionScheme id="SYL-12" label="delete" name="delete" width="800" height="600" userID="SYL" flexoID="12">
+      <BehaviourControlGraph_EmptyControlGraph id="SYL-21" userID="SYL" flexoID="21" />
+    </DeletionScheme>
+  </FlexoConcept>
+  <FlexoConcept id="SYL-13" parentFlexoConceptsList="http://www.openflexo.org/projects/2020/4/TestSingleInheritance_1585907148412.prj/Vm.fml#A" name="B" author="sylvain" userID="SYL" flexoID="13">
+    <Inspector id="SYL-14" inspectorTitle="B" userID="SYL" flexoID="14" />
+    <CreationScheme id="SYL-18" label="create" name="create" width="800" height="600" userID="SYL" flexoID="18">
+      <BehaviourControlGraph_EmptyControlGraph id="SYL-22" userID="SYL" flexoID="22" />
+    </CreationScheme>
+    <DeletionScheme id="SYL-19" label="delete" name="delete" width="800" height="600" userID="SYL" flexoID="19">
+      <BehaviourControlGraph_EmptyControlGraph id="SYL-23" userID="SYL" flexoID="23" />
+    </DeletionScheme>
+  </FlexoConcept>
+  <Inspector id="SYL-2" inspectorTitle="Vm" userID="SYL" flexoID="2" />
+</VirtualModel>
