@@ -315,6 +315,13 @@ public interface FlexoBehaviour extends FlexoBehaviourObject, Function, FMLContr
 	 */
 	public boolean supportParameters();
 
+	/**
+	 * Return boolean indicating if this property overrides at least one property
+	 * 
+	 * @return
+	 */
+	public boolean overrides();
+
 	public static abstract class FlexoBehaviourImpl extends FlexoBehaviourObjectImpl implements FlexoBehaviour {
 
 		protected FlexoBehaviourBindingModel bindingModel;
@@ -448,15 +455,6 @@ public interface FlexoBehaviour extends FlexoBehaviourObject, Function, FMLContr
 		@Override
 		public void setLabel(String label) {
 			this.label = label;
-		}
-
-		@Override
-		public Type[] getParameterTypes() {
-			Type[] returned = new Type[getParameters().size()];
-			for (int i = 0; i < getParameters().size(); i++) {
-				returned[i] = getParameters().get(i).getArgumentType();
-			}
-			return returned;
 		}
 
 		@Override
@@ -722,12 +720,32 @@ public interface FlexoBehaviour extends FlexoBehaviourObject, Function, FMLContr
 		 */
 		@Override
 		public FlexoBehaviour getMostSpecializedBehaviour(FlexoConcept context) {
-			Type[] signature = new Type[getParameters().size()];
-			for (int i = 0; i < getParameters().size(); i++) {
-				signature[i] = getParameters().get(i).getType();
-			}
-			return context.getFlexoBehaviour(getName(), signature);
+			return context.getFlexoBehaviour(getName(), getParameterTypes());
 
+		}
+
+		@Override
+		public Type[] getParameterTypes() {
+			Type[] returned = new Type[getParameters().size()];
+			for (int i = 0; i < getParameters().size(); i++) {
+				returned[i] = getParameters().get(i).getArgumentType();
+			}
+			return returned;
+		}
+
+		// TODO: perfs issues
+		@Override
+		public boolean overrides() {
+			if (getFlexoConcept() != null) {
+				if (getFlexoConcept().getParentFlexoConcepts().size() > 0) {
+					for (FlexoConcept parent : getFlexoConcept().getParentFlexoConcepts()) {
+						if (getMostSpecializedBehaviour(parent) != null) {
+							return true;
+						}
+					}
+				}
+			}
+			return false;
 		}
 
 		/**

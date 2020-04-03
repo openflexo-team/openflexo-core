@@ -251,7 +251,11 @@ public class FMLIconLibrary extends IconLibrary {
 
 	// Markers
 	public static final IconMarker ABSTRACT_MARKER = new IconMarker(
-			new ImageIconResource(ResourceLocator.locateResource("Icons/Model/VPM/Markers/Abstract.png")), 0, 0);
+			new ImageIconResource(ResourceLocator.locateResource("Icons/Model/VPM/Markers/Abstract.png")), 14, 0);
+	public static final IconMarker EMPTY_MARKER = new IconMarker(
+			new ImageIconResource(ResourceLocator.locateResource("Icons/Model/VPM/Markers/Empty.png")), 14, 0);
+	public static final IconMarker OVERRIDES_MARKER = new IconMarker(
+			new ImageIconResource(ResourceLocator.locateResource("Icons/Model/VPM/Markers/Overrides.png")), 14, 10);
 	public static final IconMarker PROPERTY_MARKER = new IconMarker(
 			new ImageIconResource(ResourceLocator.locateResource("Icons/Model/VPM/Markers/Property.png")), 8, 8);
 	public static final IconMarker MODEL_SLOT_ICON_MARKER = new IconMarker(
@@ -262,10 +266,30 @@ public class FMLIconLibrary extends IconLibrary {
 	public static final ImageIcon GET_SET_PROPERTY_ICON = IconFactory.getImageIcon(FLEXO_BEHAVIOUR_ICON, PROPERTY_MARKER);
 
 	public static ImageIcon iconForObject(FMLObject object) {
-		if (object instanceof FlexoBehaviour && ((FlexoBehaviour) object).isAbstract()) {
-			return IconFactory.getImageIcon(_iconForObject(object), ABSTRACT_MARKER);
+
+		ImageIcon returned = _iconForObject(object);
+		if (object instanceof FlexoConcept) {
+			if (((FlexoConcept) object).isAbstract()) {
+				return IconFactory.getImageIcon(returned, ABSTRACT_MARKER);
+			}
 		}
-		return _iconForObject(object);
+		if (object instanceof FlexoBehaviour) {
+			if (((FlexoBehaviour) object).isAbstract()) {
+				return IconFactory.getImageIcon(returned, ABSTRACT_MARKER);
+			}
+			else if (((FlexoBehaviour) object).overrides()) {
+				return IconFactory.getImageIcon(returned, OVERRIDES_MARKER);
+			}
+			else {
+				return IconFactory.getImageIcon(returned, EMPTY_MARKER);
+			}
+		}
+		if (object instanceof FlexoProperty) {
+			if (((FlexoProperty) object).overrides()) {
+				return IconFactory.getImageIcon(returned, OVERRIDES_MARKER);
+			}
+		}
+		return returned;
 	}
 
 	private static ImageIcon _iconForObject(FMLObject object) {
