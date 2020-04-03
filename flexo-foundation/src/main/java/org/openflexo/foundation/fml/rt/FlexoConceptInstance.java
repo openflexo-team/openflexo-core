@@ -79,6 +79,7 @@ import org.openflexo.foundation.fml.binding.FlexoConceptBindingModel;
 import org.openflexo.foundation.fml.binding.FlexoPropertyBindingVariable;
 import org.openflexo.foundation.fml.binding.FlexoRoleBindingVariable;
 import org.openflexo.foundation.fml.binding.SetValueBindingVariable;
+import org.openflexo.foundation.fml.binding.SuperBindingVariable;
 import org.openflexo.foundation.fml.controlgraph.FMLControlGraph;
 import org.openflexo.foundation.fml.inspector.FlexoConceptInspector;
 import org.openflexo.foundation.resource.ResourceData;
@@ -1610,9 +1611,8 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 			if (variable.getVariableName().equals(FlexoConceptBindingModel.THIS_PROPERTY)) {
 				return this;
 			}
-			else if (getFlexoConcept() != null && getFlexoConcept().getParentFlexoConcepts().size() == 1
-					&& variable.getVariableName().equals(FlexoConceptBindingModel.SUPER_PROPERTY)) {
-				return getSuperReference(getFlexoConcept().getParentFlexoConcepts().get(0));
+			else if (variable instanceof SuperBindingVariable) {
+				return getSuperReference(((SuperBindingVariable) variable).getSuperConcept());
 			}
 			else if (variable.getVariableName().equals(FlexoConceptBindingModel.CONTAINER_PROPERTY) && getFlexoConcept() != null) {
 				if (getFlexoConcept().getContainerFlexoConcept() != null) {

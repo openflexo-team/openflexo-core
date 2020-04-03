@@ -243,11 +243,12 @@ public class FlexoBehaviourPathElement extends FunctionPathElement implements Pr
 
 				// This is a special context, where we are executing a CreationScheme and where we want to
 				// call a super-concept CreationScheme
-				else if (context instanceof CreationSchemeAction && getFlexoBehaviour() instanceof CreationScheme) {
+				else if (((context instanceof CreationSchemeAction) || (context instanceof SuperCreationSchemeAction))
+						&& getFlexoBehaviour() instanceof CreationScheme) {
 					SuperCreationSchemeActionFactory actionType = ((CreationScheme) getFlexoBehaviour())
 							.getSuperCreationSchemeActionFactory(fci);
 					SuperCreationSchemeAction actionSchemeAction = actionType.makeNewEmbeddedAction(fci.getVirtualModelInstance(), null,
-							(CreationSchemeAction) context);
+							(FlexoBehaviourAction) context);
 
 					actionSchemeAction.setDeclaredConceptualLevel(conceptualLevel);
 
