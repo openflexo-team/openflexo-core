@@ -51,7 +51,7 @@ public class AddRepositoryFolder extends FlexoAction<AddRepositoryFolder, Reposi
 	private static final Logger logger = Logger.getLogger(AddRepositoryFolder.class.getPackage().getName());
 
 	public static FlexoActionFactory<AddRepositoryFolder, RepositoryFolder, RepositoryFolder> actionType = new FlexoActionFactory<AddRepositoryFolder, RepositoryFolder, RepositoryFolder>(
-			"create_folder", FlexoActionFactory.newMenu, FlexoActionFactory.defaultGroup, FlexoActionFactory.ADD_ACTION_TYPE) {
+			"folder", FlexoActionFactory.newMenu, FlexoActionFactory.defaultGroup, FlexoActionFactory.ADD_ACTION_TYPE) {
 
 		/**
 		 * Factory method

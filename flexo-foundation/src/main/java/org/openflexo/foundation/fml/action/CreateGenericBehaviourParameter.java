@@ -72,7 +72,7 @@ public class CreateGenericBehaviourParameter extends FlexoAction<CreateGenericBe
 	private static final Logger logger = Logger.getLogger(CreateGenericBehaviourParameter.class.getPackage().getName());
 
 	public static FlexoActionFactory<CreateGenericBehaviourParameter, FlexoBehaviourObject, FMLObject> actionType = new FlexoActionFactory<CreateGenericBehaviourParameter, FlexoBehaviourObject, FMLObject>(
-			"create_behaviour_parameter", FlexoActionFactory.newMenu, FlexoActionFactory.defaultGroup, FlexoActionFactory.ADD_ACTION_TYPE) {
+			"behaviour_parameter", FlexoActionFactory.newMenu, FlexoActionFactory.defaultGroup, FlexoActionFactory.ADD_ACTION_TYPE) {
 
 		/**
 		 * Factory method
