@@ -237,6 +237,7 @@ put_to_palette=Put to palette
 quit=Quit
 read_only=Read only
 ready_to_execute=Ready to execute
+really_delete_this_view_folder_and_all_its_contents_?=Really delete this view folder and all its contents ?
 really_quit=Do you really want to quit ?
 receiver=Receiver
 recent_projects=Recent projects
