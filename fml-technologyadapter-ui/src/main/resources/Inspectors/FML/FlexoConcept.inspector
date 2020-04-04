@@ -172,9 +172,9 @@
 		<Localized key="name" lang="English" value="Name" />
 		<Localized key="name" lang="French" value="Nom" />
 		<Localized key="name" lang="Dutch" value="Name" />
-		<Localized key="abstract_concept" lang="English" value="abstract_concept" />
-		<Localized key="abstract_concept" lang="French" value="concept_abstrait" />
-		<Localized key="abstract_concept" lang="Dutch" value="abstract_concept" />
+		<Localized key="abstract_concept" lang="English" value="Abstract concept" />
+		<Localized key="abstract_concept" lang="French" value="Concept abstrait" />
+		<Localized key="abstract_concept" lang="Dutch" value="Abstract concept" />
 	</LocalizedDictionary>
 	<Parameter name="title" value="FlexoConcept" />
 </Panel>
