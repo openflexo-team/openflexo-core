@@ -38,9 +38,11 @@
 
 package org.openflexo.fml.controller.widget;
 
+import java.awt.Color;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.logging.Logger;
 
-import javax.swing.BorderFactory;
 import javax.swing.SwingUtilities;
 
 import org.openflexo.fml.controller.FMLFIBController;
@@ -101,24 +103,99 @@ public class FIBVirtualModelBrowserFIBController extends FMLFIBController {
 	}
 
 	public void setViewMode(ViewMode viewMode) {
-		if ((viewMode == null && this.viewMode != null) || (viewMode != null && !viewMode.equals(this.viewMode))) {
+		setViewMode(viewMode, false);
+	}
+
+	public void setViewMode(ViewMode viewMode, boolean force) {
+		if (force || (viewMode == null && this.viewMode != null) || (viewMode != null && !viewMode.equals(this.viewMode))) {
 			ViewMode oldValue = this.viewMode;
 			this.viewMode = viewMode;
 			getPropertyChangeSupport().firePropertyChange("viewMode", oldValue, viewMode);
-
 			JFIBImageWidget flatIconWidget = (JFIBImageWidget) viewForComponent("FlatIcon");
 			JFIBImageWidget hierarchicalIconWidget = (JFIBImageWidget) viewForComponent("HierarchicalIcon");
 			JFIBImageWidget embeddingIconWidget = (JFIBImageWidget) viewForComponent("EmbeddingIcon");
 
-			if (flatIconWidget != null)
-				flatIconWidget.getJComponent()
-						.setBorder(viewMode == ViewMode.Flat ? BorderFactory.createEtchedBorder() : BorderFactory.createEmptyBorder());
-			if (hierarchicalIconWidget != null)
-				hierarchicalIconWidget.getJComponent().setBorder(
-						viewMode == ViewMode.Hierarchical ? BorderFactory.createEtchedBorder() : BorderFactory.createEmptyBorder());
-			if (embeddingIconWidget != null)
-				embeddingIconWidget.getJComponent()
-						.setBorder(viewMode == ViewMode.Embedding ? BorderFactory.createEtchedBorder() : BorderFactory.createEmptyBorder());
+			if (flatIconWidget != null) {
+				if (flatButtonAdapter == null) {
+					flatButtonAdapter = new ButtonMouseAdapter(flatIconWidget);
+					flatIconWidget.getJComponent().addMouseListener(flatButtonAdapter);
+				}
+				flatButtonAdapter.setSelected(viewMode == ViewMode.Flat);
+			}
+			if (hierarchicalIconWidget != null) {
+				if (hierarchicalButtonAdapter == null) {
+					hierarchicalButtonAdapter = new ButtonMouseAdapter(hierarchicalIconWidget);
+					hierarchicalIconWidget.getJComponent().addMouseListener(hierarchicalButtonAdapter);
+				}
+				hierarchicalButtonAdapter.setSelected(viewMode == ViewMode.Hierarchical);
+			}
+			if (embeddingIconWidget != null) {
+				if (embeddingButtonAdapter == null) {
+					embeddingButtonAdapter = new ButtonMouseAdapter(embeddingIconWidget);
+					embeddingIconWidget.getJComponent().addMouseListener(embeddingButtonAdapter);
+				}
+				embeddingButtonAdapter.setSelected(viewMode == ViewMode.Embedding);
+			}
+
+		}
+	}
+
+	// private static Color selectionColor = UIManager.getLookAndFeelDefaults().getColor("Table.selectionInactiveBackground");
+	// private static Color selectionColor = UIManager.getLookAndFeelDefaults().getColor("Table.selectionBackground");
+	// private static Color focusColor = new Color(173, 215, 255);
+
+	private static Color focusColor = new Color(212, 212, 212);
+	private static Color selectionColor = new Color(180, 180, 180);
+
+	private ButtonMouseAdapter flatButtonAdapter = null;
+	private ButtonMouseAdapter hierarchicalButtonAdapter = null;
+	private ButtonMouseAdapter embeddingButtonAdapter = null;
+
+	class ButtonMouseAdapter extends MouseAdapter {
+		private JFIBImageWidget imageWidget;
+		private boolean selected;
+
+		public ButtonMouseAdapter(JFIBImageWidget imageWidget) {
+			this.imageWidget = imageWidget;
+
+			System.out.println("selectionColor: " + selectionColor.toString());
+			System.out.println("focusColor: " + focusColor.toString());
+		}
+
+		@Override
+		public void mouseEntered(MouseEvent e) {
+			if (imageWidget.getJComponent().isEnabled()) {
+				imageWidget.getJComponent().setOpaque(true);
+				imageWidget.getJComponent().setBackground(selected ? selectionColor : focusColor);
+			}
+		}
+
+		@Override
+		public void mouseExited(MouseEvent e) {
+			if (selected) {
+				imageWidget.getJComponent().setOpaque(true);
+				imageWidget.getJComponent().setBackground(selectionColor);
+			}
+			else {
+				imageWidget.getJComponent().setOpaque(false);
+				imageWidget.getJComponent().setBackground(null);
+			}
+		}
+
+		public boolean isSelected() {
+			return selected;
+		}
+
+		public void setSelected(boolean selected) {
+			this.selected = selected;
+			if (selected) {
+				imageWidget.getJComponent().setOpaque(true);
+				imageWidget.getJComponent().setBackground(selectionColor);
+			}
+			else {
+				imageWidget.getJComponent().setOpaque(false);
+				imageWidget.getJComponent().setBackground(null);
+			}
 		}
 	}
 
