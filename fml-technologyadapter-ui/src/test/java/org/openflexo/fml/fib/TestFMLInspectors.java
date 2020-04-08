@@ -96,8 +96,8 @@ public class TestFMLInspectors extends GenericFIBInspectorTestCase {
 	}
 
 	@Test
-	public void testAddVirtualModelInstanceInspector() {
-		validateFIB("Inspectors/FML/EditionAction/AddVirtualModelInstance.inspector");
+	public void testAbstractAddVirtualModelInstanceInspector() {
+		validateFIB("Inspectors/FML/EditionAction/AbstractAddVirtualModelInstance.inspector");
 	}
 
 	@Test

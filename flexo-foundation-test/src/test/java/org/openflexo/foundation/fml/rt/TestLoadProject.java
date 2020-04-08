@@ -92,22 +92,24 @@ public class TestLoadProject extends OpenflexoProjectAtRunTimeTestCase {
 
 		System.out.println("projectResource=" + projectResource);
 
-		File projectDirectory = ((File) projectResource.getIODelegate().getSerializationArtefact()).getParentFile();
-		System.out.println("projectDirectory=" + projectDirectory);
+		if (projectResource.getIODelegate().getSerializationArtefact() instanceof File) {
 
-		editor = loadProject(projectDirectory);
-		FlexoProject<?> project = editor.getProject();
+			File projectDirectory = ((File) projectResource.getIODelegate().getSerializationArtefact()).getParentFile();
+			System.out.println("projectDirectory=" + projectDirectory);
 
-		System.out.println("Toutes les resources du projet:");
-		for (FlexoResource<?> resource : project.getAllResources()) {
-			System.out.println(" > " + resource.getURI());
+			editor = loadProject(projectDirectory);
+			FlexoProject<?> project = editor.getProject();
+
+			System.out.println("Toutes les resources du projet:");
+			for (FlexoResource<?> resource : project.getAllResources()) {
+				System.out.println(" > " + resource.getURI());
+			}
+
+			VirtualModelResource virtualModelResource = (VirtualModelResource) project.getResource(PROJECT_URI + "/Vm.fml");
+			assertNotNull(virtualModelResource);
+
+			virtualModel = virtualModelResource.getVirtualModel();
 		}
-
-		VirtualModelResource virtualModelResource = (VirtualModelResource) project.getResource(PROJECT_URI + "/Vm.fml");
-		assertNotNull(virtualModelResource);
-
-		virtualModel = virtualModelResource.getVirtualModel();
-
 	}
 
 	/*@Test
