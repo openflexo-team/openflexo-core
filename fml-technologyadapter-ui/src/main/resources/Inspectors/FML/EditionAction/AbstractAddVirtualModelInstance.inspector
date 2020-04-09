@@ -19,7 +19,7 @@
 				constraints="twocols(anchor=west;expandHorizontally=true;expandVertically=false;fill=horizontal;gridHeight=1;gridWidth=0;gridX=-1;gridY=-1;index=9;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right;padX=0;padY=0;weightX=0.0;weightY=0.0)"
 				minWidth="200" minHeight="25">
 				<Assignment variable="component.virtualModelLibrary" value="data.virtualModelLibrary" />
-				<Assignment variable="component.containerVirtualModel" value="data.ownerVirtualModelResource" />
+				<!--  <Assignment variable="component.containerVirtualModel" value="data.ownerVirtualModelResource" /> -->
 			</Custom>
 			<Label label="virtual_model" align="right" index="14" visible="data.dynamicInstantiation"
 				constraints="twocols(expandHorizontally=true;expandVertically=false;index=12;insetsBottom=0;insetsLeft=2;insetsRight=4;insetsTop=5;location=left)"
