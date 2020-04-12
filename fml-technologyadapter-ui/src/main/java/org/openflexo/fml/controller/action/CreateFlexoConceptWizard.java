@@ -46,6 +46,7 @@ import org.openflexo.ApplicationContext;
 import org.openflexo.components.wizard.WizardStep;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.VirtualModel;
+import org.openflexo.foundation.fml.Visibility;
 import org.openflexo.foundation.fml.action.AbstractCreateFlexoConcept.ParentFlexoConceptEntry;
 import org.openflexo.foundation.fml.action.CreateFlexoConcept;
 import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstance;
@@ -171,6 +172,31 @@ public class CreateFlexoConceptWizard extends AbstractCreateFlexoConceptWizard<C
 				FlexoConcept oldValue = getContainerFlexoConcept();
 				getAction().setContainerFlexoConcept(containerFlexoConcept);
 				getPropertyChangeSupport().firePropertyChange("containerFlexoConcept", oldValue, containerFlexoConcept);
+			}
+		}
+
+		public boolean getIsAbstract() {
+			return getAction().getIsAbstract();
+		}
+
+		public void setIsAbstract(boolean isAbstract) {
+			if (isAbstract != getIsAbstract()) {
+				getAction().setIsAbstract(isAbstract);
+				getPropertyChangeSupport().firePropertyChange("isAbstract", !isAbstract, isAbstract);
+				checkValidity();
+			}
+		}
+
+		public Visibility getVisibility() {
+			return getAction().getVisibility();
+		}
+
+		public void setVisibility(Visibility visibility) {
+			if ((visibility == null && getVisibility() != null) || (visibility != null && !visibility.equals(getVisibility()))) {
+				Visibility oldValue = getVisibility();
+				getAction().setVisibility(visibility);
+				getPropertyChangeSupport().firePropertyChange("visibility", oldValue, visibility);
+				checkValidity();
 			}
 		}
 
