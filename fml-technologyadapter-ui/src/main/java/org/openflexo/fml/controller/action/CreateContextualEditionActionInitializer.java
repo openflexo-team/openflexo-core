@@ -40,54 +40,40 @@ package org.openflexo.fml.controller.action;
 
 import javax.swing.Icon;
 
-import org.openflexo.components.wizard.Wizard;
-import org.openflexo.components.wizard.WizardDialog;
 import org.openflexo.foundation.action.FlexoActionFactory;
 import org.openflexo.foundation.action.FlexoActionRunnable;
 import org.openflexo.foundation.fml.FMLObject;
-import org.openflexo.foundation.fml.action.CreateEditionAction;
-import org.openflexo.foundation.fml.controlgraph.FMLControlGraph;
-import org.openflexo.gina.controller.FIBController.Status;
+import org.openflexo.foundation.fml.action.CreateContextualEditionAction;
 import org.openflexo.icon.FMLIconLibrary;
 import org.openflexo.icon.IconFactory;
 import org.openflexo.icon.IconLibrary;
 import org.openflexo.view.controller.ActionInitializer;
 import org.openflexo.view.controller.ControllerActionInitializer;
 
-public class CreateEditionActionInitializer extends ActionInitializer<CreateEditionAction, FMLControlGraph, FMLObject> {
-	// public static Resource CREATE_EDITION_ACTION_DIALOG_FIB = ResourceLocator.locateResource("Fib/Dialog/CreateEditionActionDialog.fib");
+public class CreateContextualEditionActionInitializer extends ActionInitializer<CreateContextualEditionAction, FMLObject, FMLObject> {
 
-	public CreateEditionActionInitializer(ControllerActionInitializer actionInitializer) {
-		super(CreateEditionAction.actionType, actionInitializer);
+	public CreateContextualEditionActionInitializer(ControllerActionInitializer actionInitializer) {
+		super(CreateContextualEditionAction.sequentialActionType, actionInitializer);
+		actionInitializer.registerInitializer(CreateContextualEditionAction.thenActionType, this);
+		actionInitializer.registerInitializer(CreateContextualEditionAction.elseActionType, this);
+		actionInitializer.registerInitializer(CreateContextualEditionAction.iterationActionType, this);
+		actionInitializer.registerInitializer(CreateContextualEditionAction.whileActionType, this);
+		actionInitializer.registerInitializer(CreateContextualEditionAction.getActionType, this);
+		actionInitializer.registerInitializer(CreateContextualEditionAction.setActionType, this);
+
 	}
 
 	@Override
-	protected FlexoActionRunnable<CreateEditionAction, FMLControlGraph, FMLObject> getDefaultInitializer() {
+	protected FlexoActionRunnable<CreateContextualEditionAction, FMLObject, FMLObject> getDefaultFinalizer() {
 		return (e, action) -> {
-			Wizard wizard = new CreateEditionActionWizard(action, getController());
-			WizardDialog dialog = new WizardDialog(wizard, getController());
-			dialog.showDialog();
-			if (dialog.getStatus() != Status.VALIDATED) {
-				// Operation cancelled
-				return false;
-			}
-			return true;
-			// return instanciateAndShowDialog(action, CREATE_EDITION_ACTION_DIALOG_FIB);
-		};
-	}
-
-	@Override
-	protected FlexoActionRunnable<CreateEditionAction, FMLControlGraph, FMLObject> getDefaultFinalizer() {
-		return (e, action) -> {
-			// getController().setCurrentEditedObjectAsModuleView(action.getNewEditionAction(),
-			// getController().getCurrentPerspective());
 			getController().selectAndFocusObject(action.getNewEditionAction());
 			return true;
 		};
+
 	}
 
 	@Override
-	protected Icon getEnabledIcon(FlexoActionFactory<CreateEditionAction, FMLControlGraph, FMLObject> actionType) {
+	protected Icon getEnabledIcon(FlexoActionFactory<CreateContextualEditionAction, FMLObject, FMLObject> actionType) {
 		return IconFactory.getImageIcon(FMLIconLibrary.FLEXO_CONCEPT_ACTION_ICON, IconLibrary.NEW_MARKER);
 	}
 

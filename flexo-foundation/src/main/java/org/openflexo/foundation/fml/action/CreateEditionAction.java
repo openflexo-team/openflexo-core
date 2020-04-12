@@ -110,7 +110,7 @@ public class CreateEditionAction extends FlexoAction<CreateEditionAction, FMLCon
 	private static final Logger logger = Logger.getLogger(CreateEditionAction.class.getPackage().getName());
 
 	public static FlexoActionFactory<CreateEditionAction, FMLControlGraph, FMLObject> actionType = new FlexoActionFactory<CreateEditionAction, FMLControlGraph, FMLObject>(
-			"create_edition_action", FlexoActionFactory.newMenu, FlexoActionFactory.defaultGroup, FlexoActionFactory.ADD_ACTION_TYPE) {
+			"add_edition_action", FlexoActionFactory.newMenu, FlexoActionFactory.defaultGroup, FlexoActionFactory.ADD_ACTION_TYPE) {
 
 		/**
 		 * Factory method
