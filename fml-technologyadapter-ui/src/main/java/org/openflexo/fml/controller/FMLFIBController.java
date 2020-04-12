@@ -678,10 +678,15 @@ public class FMLFIBController extends FlexoFIBController {
 	}
 
 	public void moveControlGraph(FMLControlGraph controlGraph, FMLControlGraph receiver) {
-		System.out.println("On veut bouger le graphe de controle");
+
+		if (controlGraph == receiver) {
+			return;
+		}
+
+		/*System.out.println("On veut bouger le graphe de controle");
 		System.out.println(controlGraph.getFMLRepresentation());
 		System.out.println("Juste apres:");
-		System.out.println(receiver.getFMLRepresentation());
+		System.out.println(receiver.getFMLRepresentation());*/
 
 		controlGraph.moveWhileSequentiallyAppendingTo(receiver);
 	}
