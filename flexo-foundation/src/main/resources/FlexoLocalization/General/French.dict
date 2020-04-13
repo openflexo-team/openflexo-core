@@ -279,6 +279,7 @@ show_palette=Voir la palette
 simulation_name=simulation_name
 software_version=software_version
 submit_bug_report=Soumettre un rapport d'anomalie
+target_directory=target_directory
 technology=technology
 technology_adapter=technology_adapter
 technology_adapters=Connecteurs technologiques

@@ -279,6 +279,7 @@ show_palette=Het palet vertonen
 simulation_name=Simulation name
 software_version=Software version
 submit_bug_report=Bug report indienen
+target_directory=Target directory
 technology=Technology
 technology_adapter=Technology adapter
 technology_adapters=Technology adapters
