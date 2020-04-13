@@ -83,7 +83,7 @@ public class CreateFlexoEventWizard extends AbstractCreateFlexoConceptWizard<Cre
 
 	@Override
 	public Image getDefaultPageImage() {
-		return IconFactory.getImageIcon(FMLIconLibrary.FLEXO_EVENT_BIG_ICON, IconLibrary.NEW_32_32).getImage();
+		return IconFactory.getImageIcon(FMLIconLibrary.FLEXO_EVENT_BIG_ICON, IconLibrary.BIG_NEW_MARKER).getImage();
 	}
 
 	public DescribeFlexoEvent getDescribeFlexoEvent() {

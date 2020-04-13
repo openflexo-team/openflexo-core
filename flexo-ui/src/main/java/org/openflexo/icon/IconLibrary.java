@@ -244,12 +244,15 @@ public class IconLibrary {
 	public static final IconMarker SYNC = new IconMarker(
 			new ImageIconResource(ResourceLocator.locateResource("Icons/Utils/Markers/Sync.png")), 10, 7);
 	public static final ImageIcon QUESTION_ICON = new ImageIconResource(ResourceLocator.locateResource("Icons/Utils/Markers/Question.gif"));
-	public static final IconMarker NEW_32_32 = new IconMarker(
-			new ImageIconResource(ResourceLocator.locateResource("Icons/Utils/Markers/Plus16x16.png")), 45, 0);
 	public static final IconMarker NEW_MARKER = new IconMarker(
 			new ImageIconResource(ResourceLocator.locateResource("Icons/Utils/Markers/Plus.png")), 8, 0);
 	public static final IconMarker NOTIFY_MARKER = new IconMarker(
 			new ImageIconResource(ResourceLocator.locateResource("Icons/Utils/Markers/Notify.png")), 6, 0);
+
+	public static final IconMarker BIG_NEW_MARKER = new IconMarker(
+			new ImageIconResource(ResourceLocator.locateResource("Icons/Utils/Markers/Plus16x16.png")), 45, 0);
+	public static final IconMarker BIG_GENERATE_MARKER = new IconMarker(
+			new ImageIconResource(ResourceLocator.locateResource("Icons/Utils/Markers/GenerateBig.gif")), 45, 0);
 
 	// Cursors
 	public static final ImageIcon DROP_OK_CURSOR = new ImageIconResource(
