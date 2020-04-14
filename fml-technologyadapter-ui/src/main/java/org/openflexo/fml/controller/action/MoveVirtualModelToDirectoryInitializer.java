@@ -62,6 +62,9 @@ public class MoveVirtualModelToDirectoryInitializer extends ActionInitializer<Mo
 	@Override
 	protected FlexoActionRunnable<MoveVirtualModelToDirectory, VirtualModel, FMLObject> getDefaultInitializer() {
 		return (e, action) -> {
+			if (action.getNewFolder() != null && action.isValid()) {
+				return true;
+			}
 			Wizard wizard = new MoveVirtualModelToDirectoryWizard(action, getController());
 			WizardDialog dialog = new WizardDialog(wizard, getController());
 			dialog.showDialog();

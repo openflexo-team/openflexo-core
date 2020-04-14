@@ -857,4 +857,16 @@ public class FMLFIBController extends FlexoFIBController {
 				&& concept.getDeclaringVirtualModel() != container;
 	}
 
+	@Override
+	public void moveVirtualModelInFolder(VirtualModelResource vmResource, RepositoryFolder receiver) {
+		super.moveVirtualModelInFolder(vmResource, receiver);
+		revalidate(vmResource.getVirtualModel());
+	}
+
+	@Override
+	public void moveVirtualModelInVirtualModel(VirtualModelResource vmResource, VirtualModelResource container) {
+		super.moveVirtualModelInVirtualModel(vmResource, container);
+		revalidate(vmResource.getVirtualModel());
+	}
+
 }
