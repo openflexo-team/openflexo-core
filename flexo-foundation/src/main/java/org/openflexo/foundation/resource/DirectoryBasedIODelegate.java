@@ -91,6 +91,8 @@ public interface DirectoryBasedIODelegate extends FileIODelegate {
 	@Override
 	public File getFile();
 
+	public void moveToDirectory(File newDirectory);
+
 	/*@Getter(FILE_EXTENSION)
 	@XMLAttribute
 	public String getFileExtension();
@@ -192,6 +194,14 @@ public interface DirectoryBasedIODelegate extends FileIODelegate {
 
 			resetDiskLastModifiedDate();
 
+		}
+
+		@Override
+		public void moveToDirectory(File newDirectory) {
+			String filename = getFileName();
+			setDirectory(newDirectory);
+			setFile(new File(newDirectory, filename));
+			resetDiskLastModifiedDate();
 		}
 
 		@Override

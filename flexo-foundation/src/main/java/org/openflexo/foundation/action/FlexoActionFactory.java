@@ -93,11 +93,14 @@ public abstract class FlexoActionFactory<A extends FlexoAction<A, T1, T2>, T1 ex
 	public static final ActionMenu newPropertyMenu = new ActionMenu("property", 2, newMenuGroup1, newMenu);
 	public static final ActionMenu newBehaviourMenu = new ActionMenu("behaviour", 3, newMenuGroup1, newMenu);
 
-	public static final ActionMenu importMenu = new ActionMenu("import", 4, defaultGroup);
-	public static final ActionMenu exportMenu = new ActionMenu("export", 5, defaultGroup);
-	public static final ActionMenu convertMenu = new ActionMenu("convert_to", 6, defaultGroup);
+	public static final ActionMenu refactorMenu = new ActionMenu("refactor", 5, defaultGroup);
+	public static final ActionMenu generateMenu = new ActionMenu("generate", 6, defaultGroup);
 
-	public static final ActionMenu executionModelMenu = new ActionMenu("execution_model", 7, defaultGroup);
+	public static final ActionMenu importMenu = new ActionMenu("import", 7, defaultGroup);
+	public static final ActionMenu exportMenu = new ActionMenu("export", 8, defaultGroup);
+	public static final ActionMenu convertMenu = new ActionMenu("convert_to", 9, defaultGroup);
+
+	public static final ActionMenu executionModelMenu = new ActionMenu("execution_model", 10, defaultGroup);
 
 	public static final int NORMAL_ACTION_TYPE = 0;
 	public static final int ADD_ACTION_TYPE = 1;

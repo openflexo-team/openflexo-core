@@ -234,9 +234,15 @@ public class RepositoryFolder<R extends FlexoResource<?>, I> extends DefaultFlex
 	}
 
 	public boolean isFatherOf(RepositoryFolder<R, I> folder) {
+		if (folder == null) {
+			return false;
+		}
 		RepositoryFolder<R, I> f = folder.getParentFolder();
 		while (f != null) {
 			if (f.equals(this)) {
+				return true;
+			}
+			if (f.getSerializationArtefact().equals(getSerializationArtefact())) {
 				return true;
 			}
 			f = f.getParentFolder();
