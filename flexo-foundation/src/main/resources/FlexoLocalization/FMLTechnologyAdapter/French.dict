@@ -323,4 +323,5 @@ west=west
 widget=El\u00E9ment graphique
 would_you_really_like_to_delete_this_object_?=would_you_really_like_to_delete_this_object_?
 would_you_really_like_to_delete_this_virtual_model=would_you_really_like_to_delete_this_virtual_model
+you_are_about_to_move_embedded_virtual_model_in_directory_causing_possible_inconsistencies=Attention, vous d\u00E9placez un VirtualModel qui \u00E9tait inclus dans un autre (possible inconsistance).
 you_must_define_target_folder=Vous devez choisir un r\u00E9pertoire de destination

@@ -323,4 +323,5 @@ west=West
 widget=Widget
 would_you_really_like_to_delete_this_object_?=Would you really like to delete this object ?
 would_you_really_like_to_delete_this_virtual_model=Would you really like to delete this virtual model
+you_are_about_to_move_embedded_virtual_model_in_directory_causing_possible_inconsistencies=You are about to move embedded virtual model in directory causing possible inconsistencies
 you_must_define_target_folder=You must define target folder
