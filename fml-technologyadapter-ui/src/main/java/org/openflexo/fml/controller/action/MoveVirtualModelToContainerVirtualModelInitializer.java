@@ -63,6 +63,9 @@ public class MoveVirtualModelToContainerVirtualModelInitializer
 	@Override
 	protected FlexoActionRunnable<MoveVirtualModelToContainerVirtualModel, VirtualModel, FMLObject> getDefaultInitializer() {
 		return (e, action) -> {
+			if (action.getContainerResource() != null && action.isValid()) {
+				return true;
+			}
 			Wizard wizard = new MoveVirtualModelToContainerVirtualModelWizard(action, getController());
 			WizardDialog dialog = new WizardDialog(wizard, getController());
 			dialog.showDialog();

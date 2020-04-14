@@ -60,6 +60,7 @@ import org.openflexo.foundation.resource.FileIODelegate.WillWriteFileOnDiskNotif
 import org.openflexo.foundation.resource.FlexoResource;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.resource.RepositoryFolder;
+import org.openflexo.toolbox.FileUtils;
 
 public class MoveVirtualModelToDirectory extends AbstractMoveVirtualModel<MoveVirtualModelToDirectory>
 		implements TechnologySpecificFlexoAction<FMLTechnologyAdapter> {
@@ -175,16 +176,18 @@ public class MoveVirtualModelToDirectory extends AbstractMoveVirtualModel<MoveVi
 
 	@Override
 	public boolean isValid() {
-		RepositoryFolder currentFolder = getFocusedObject().getResource().getResourceCenter()
-				.getRepositoryFolder(getFocusedObject().getResource());
-
 		if (getNewFolder() == null) {
 			return false;
 		}
-		else if (currentFolder.isFatherOf(getNewFolder())) {
-			return false;
+		if (getFocusedObject().getResource().getIODelegate() instanceof DirectoryBasedIODelegate
+				&& getNewFolder().getSerializationArtefact() instanceof File) {
+			File virtualModelDirectory = ((DirectoryBasedIODelegate) getFocusedObject().getResource().getIODelegate()).getDirectory();
+			if (FileUtils.isFileContainedIn((File) getNewFolder().getSerializationArtefact(), virtualModelDirectory)) {
+				return false;
+			}
+			return true;
 		}
-		return true;
+		return false;
 	}
 
 }
