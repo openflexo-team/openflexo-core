@@ -97,6 +97,7 @@ public class MoveVirtualModelToDirectory extends FlexoAction<MoveVirtualModelToD
 	}
 
 	private RepositoryFolder<VirtualModelResource, ?> newFolder;
+
 	// private VirtualModelResource movedResource;
 
 	MoveVirtualModelToDirectory(VirtualModel focusedObject, Vector<FMLObject> globalSelection, FlexoEditor editor) {
@@ -183,9 +184,16 @@ public class MoveVirtualModelToDirectory extends FlexoAction<MoveVirtualModelToD
 		List<MovedResourceInfo> allVMResourceInfos = getAllVirtualModelResourceInfos(
 				(VirtualModelResource) getFocusedObject().getResource(), oldDirectory, newDirectory);
 
-		RepositoryFolder<FlexoResource<?>, ?> oldFolder = getFocusedObject().getResource().getResourceCenter()
-				.getRepositoryFolder(getFocusedObject().getResource());
-		oldFolder.removeFromResources(getFocusedObject().getResource());
+		if (getFocusedObject().getOwningVirtualModel() != null) {
+			VirtualModelResource container = (VirtualModelResource) getFocusedObject().getResource().getContainer();
+			container.removeFromContents(getFocusedObject().getResource());
+			container.getVirtualModel().removeFromVirtualModels(getFocusedObject());
+		}
+		else {
+			RepositoryFolder<FlexoResource<?>, ?> oldFolder = getFocusedObject().getResource().getResourceCenter()
+					.getRepositoryFolder(getFocusedObject().getResource());
+			oldFolder.removeFromResources(getFocusedObject().getResource());
+		}
 
 		for (MovedResourceInfo movedResourceInfo : allVMResourceInfos) {
 			resourceFactory.unregisterResource(movedResourceInfo.resource, oldResourceCenter);

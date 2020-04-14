@@ -66,8 +66,8 @@ public class MoveVirtualModelToDirectoryWizard extends FlexoActionWizard<MoveVir
 	private static final String INVALID_FOLDER = "cannot_move_virtual_model_in_that_folder";
 	private static final String NO_FOLDER_DEFINED = "you_must_define_target_folder";
 	private static final String CANNOT_MOVE = "cannot_move_such_virtual_model";
-
-	private static final Dimension DIMENSIONS = new Dimension(500, 300);
+	private static final String POSSIBLE_INCONSISTENCY = "you_are_about_to_move_embedded_virtual_model_in_directory_causing_possible_inconsistencies";
+	private static final Dimension DIMENSIONS = new Dimension(700, 300);
 
 	private final MoveVirtualModelInfo moveVirtualModelInfo;
 
@@ -128,6 +128,9 @@ public class MoveVirtualModelToDirectoryWizard extends FlexoActionWizard<MoveVir
 					if (FileUtils.isFileContainedIn((File) getNewFolder().getSerializationArtefact(), virtualModelDirectory)) {
 						setIssueMessage(getAction().getLocales().localizedForKey(INVALID_FOLDER), IssueMessageType.ERROR);
 						return false;
+					}
+					if (getVirtualModel().getOwningVirtualModel() != null) {
+						setIssueMessage(getAction().getLocales().localizedForKey(POSSIBLE_INCONSISTENCY), IssueMessageType.WARNING);
 					}
 					return true;
 				}
