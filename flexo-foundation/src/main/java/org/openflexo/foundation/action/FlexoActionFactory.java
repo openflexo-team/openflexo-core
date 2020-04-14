@@ -88,12 +88,13 @@ public abstract class FlexoActionFactory<A extends FlexoAction<A, T1, T2>, T1 ex
 	public static final ActionGroup newMenuGroup2 = new ActionGroup("new_group_2", 2);
 	public static final ActionGroup newMenuGroup3 = new ActionGroup("new_group_3", 3);
 	public static final ActionGroup newMenuGroup4 = new ActionGroup("new_group_4", 4);
-
 	public static final ActionMenu newVirtualModelMenu = new ActionMenu("virtual_model", 1, newMenuGroup1, newMenu);
 	public static final ActionMenu newPropertyMenu = new ActionMenu("property", 2, newMenuGroup1, newMenu);
 	public static final ActionMenu newBehaviourMenu = new ActionMenu("behaviour", 3, newMenuGroup1, newMenu);
 
 	public static final ActionMenu refactorMenu = new ActionMenu("refactor", 5, defaultGroup);
+	public static final ActionMenu moveToMenu = new ActionMenu("move_to", 2, defaultGroup, refactorMenu);
+
 	public static final ActionMenu generateMenu = new ActionMenu("generate", 6, defaultGroup);
 
 	public static final ActionMenu importMenu = new ActionMenu("import", 7, defaultGroup);

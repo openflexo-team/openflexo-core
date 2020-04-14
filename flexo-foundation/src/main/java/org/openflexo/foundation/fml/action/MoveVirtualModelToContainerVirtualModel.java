@@ -61,21 +61,22 @@ import org.openflexo.foundation.resource.FlexoResource;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.resource.RepositoryFolder;
 
-public class MoveVirtualModelToDirectory extends AbstractMoveVirtualModel<MoveVirtualModelToDirectory>
+public class MoveVirtualModelToContainerVirtualModel extends AbstractMoveVirtualModel<MoveVirtualModelToContainerVirtualModel>
 		implements TechnologySpecificFlexoAction<FMLTechnologyAdapter> {
 
-	private static final Logger logger = Logger.getLogger(MoveVirtualModelToDirectory.class.getPackage().getName());
+	private static final Logger logger = Logger.getLogger(MoveVirtualModelToContainerVirtualModel.class.getPackage().getName());
 
-	public static FlexoActionFactory<MoveVirtualModelToDirectory, VirtualModel, FMLObject> actionType = new FlexoActionFactory<MoveVirtualModelToDirectory, VirtualModel, FMLObject>(
-			"directory", FlexoActionFactory.moveToMenu, FlexoActionFactory.defaultGroup, FlexoActionFactory.NORMAL_ACTION_TYPE) {
+	public static FlexoActionFactory<MoveVirtualModelToContainerVirtualModel, VirtualModel, FMLObject> actionType = new FlexoActionFactory<MoveVirtualModelToContainerVirtualModel, VirtualModel, FMLObject>(
+			"container_virtual_model", FlexoActionFactory.moveToMenu, FlexoActionFactory.defaultGroup,
+			FlexoActionFactory.NORMAL_ACTION_TYPE) {
 
 		/**
 		 * Factory method
 		 */
 		@Override
-		public MoveVirtualModelToDirectory makeNewAction(VirtualModel focusedObject, Vector<FMLObject> globalSelection,
+		public MoveVirtualModelToContainerVirtualModel makeNewAction(VirtualModel focusedObject, Vector<FMLObject> globalSelection,
 				FlexoEditor editor) {
-			return new MoveVirtualModelToDirectory(focusedObject, globalSelection, editor);
+			return new MoveVirtualModelToContainerVirtualModel(focusedObject, globalSelection, editor);
 		}
 
 		@Override
@@ -91,26 +92,25 @@ public class MoveVirtualModelToDirectory extends AbstractMoveVirtualModel<MoveVi
 	};
 
 	static {
-		FlexoObjectImpl.addActionForClass(MoveVirtualModelToDirectory.actionType, VirtualModel.class);
+		FlexoObjectImpl.addActionForClass(MoveVirtualModelToContainerVirtualModel.actionType, VirtualModel.class);
 	}
 
-	private RepositoryFolder<VirtualModelResource, ?> newFolder;
+	private VirtualModelResource containerResource;
 
-	// private VirtualModelResource movedResource;
-
-	MoveVirtualModelToDirectory(VirtualModel focusedObject, Vector<FMLObject> globalSelection, FlexoEditor editor) {
+	MoveVirtualModelToContainerVirtualModel(VirtualModel focusedObject, Vector<FMLObject> globalSelection, FlexoEditor editor) {
 		super(actionType, focusedObject, globalSelection, editor);
 	}
 
 	@Override
 	protected void doAction(Object context) {
 
-		System.out.println("Move VM to " + getNewFolder());
+		System.out.println("Move VM to " + getContainerResource());
 
 		File oldDirectory = ((DirectoryBasedIODelegate) getFocusedObject().getResource().getIODelegate()).getDirectory();
-		File newDirectory = new File((File) getNewFolder().getSerializationArtefact(), oldDirectory.getName());
+		File newDirectory = new File(((DirectoryBasedIODelegate) getContainerResource().getIODelegate()).getDirectory(),
+				oldDirectory.getName());
 
-		FlexoResourceCenter<?> oldResourceCenter = getFocusedObject().getResource().getResourceCenter();
+		FlexoResourceCenter<?> resourceCenter = getFocusedObject().getResource().getResourceCenter();
 		VirtualModelResourceFactory resourceFactory = getFMLTechnologyAdapter().getVirtualModelResourceFactory();
 
 		List<MovedResourceInfo> allVMResourceInfos = getAllVirtualModelResourceInfos(
@@ -128,7 +128,7 @@ public class MoveVirtualModelToDirectory extends AbstractMoveVirtualModel<MoveVi
 		}
 
 		for (MovedResourceInfo movedResourceInfo : allVMResourceInfos) {
-			resourceFactory.unregisterResource(movedResourceInfo.resource, oldResourceCenter);
+			resourceFactory.unregisterResource(movedResourceInfo.resource, resourceCenter);
 		}
 
 		try {
@@ -136,6 +136,9 @@ public class MoveVirtualModelToDirectory extends AbstractMoveVirtualModel<MoveVi
 			getServiceManager().notify(null, new WillWriteFileOnDiskNotification(oldDirectory));
 			getServiceManager().notify(null, new WillWriteFileOnDiskNotification(newDirectory));
 
+			System.out.println("Move");
+			System.out.println("From oldDirectory=" + oldDirectory);
+			System.out.println("To newDirectory=" + newDirectory);
 			Files.move(oldDirectory.toPath(), newDirectory.toPath());
 
 			// moved the resources
@@ -143,12 +146,11 @@ public class MoveVirtualModelToDirectory extends AbstractMoveVirtualModel<MoveVi
 				((DirectoryBasedIODelegate) movedResourceInfo.resource.getIODelegate()).moveToDirectory(movedResourceInfo.newfile);
 			}
 
-			FlexoResourceCenter<File> newResourceCenter = (FlexoResourceCenter<File>) getNewFolder().getResourceRepository()
-					.getResourceCenter();
-			// movedResource = resourceFactory.retrieveResource(newDirectory, newResourceCenter);
+			getContainerResource().addToContents(getFocusedObject().getResource());
+			getContainerResource().getVirtualModel().addToVirtualModels(getFocusedObject());
 
 			for (MovedResourceInfo movedResourceInfo : allVMResourceInfos) {
-				resourceFactory.registerResource(movedResourceInfo.resource, newResourceCenter, false);
+				resourceFactory.registerResource(movedResourceInfo.resource, resourceCenter, false);
 				// System.out.println("Resource: " + movedResourceInfo.resource.getName() + " container="
 				// + movedResourceInfo.resource.getContainer() + " contents=" + movedResourceInfo.resource.getContents());
 			}
@@ -161,27 +163,22 @@ public class MoveVirtualModelToDirectory extends AbstractMoveVirtualModel<MoveVi
 
 	}
 
-	public RepositoryFolder<VirtualModelResource, ?> getNewFolder() {
-		return newFolder;
+	public VirtualModelResource getContainerResource() {
+		return containerResource;
 	}
 
-	public void setNewFolder(RepositoryFolder<VirtualModelResource, ?> newFolder) {
-		if ((newFolder == null && this.newFolder != null) || (newFolder != null && !newFolder.equals(this.newFolder))) {
-			RepositoryFolder<VirtualModelResource, ?> oldValue = this.newFolder;
-			this.newFolder = newFolder;
-			getPropertyChangeSupport().firePropertyChange("newFolder", oldValue, newFolder);
+	public void setContainerResource(VirtualModelResource containerResource) {
+		if ((containerResource == null && this.containerResource != null)
+				|| (containerResource != null && !containerResource.equals(this.containerResource))) {
+			VirtualModelResource oldValue = this.containerResource;
+			this.containerResource = containerResource;
+			getPropertyChangeSupport().firePropertyChange("containerResource", oldValue, containerResource);
 		}
 	}
 
 	@Override
 	public boolean isValid() {
-		RepositoryFolder currentFolder = getFocusedObject().getResource().getResourceCenter()
-				.getRepositoryFolder(getFocusedObject().getResource());
-
-		if (getNewFolder() == null) {
-			return false;
-		}
-		else if (currentFolder.isFatherOf(getNewFolder())) {
+		if (getContainerResource() == null) {
 			return false;
 		}
 		return true;
