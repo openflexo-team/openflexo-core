@@ -103,7 +103,7 @@ public abstract class TechnologySpecificFlexoResourceFactory<R extends Technolog
 	 * @return
 	 */
 	@Override
-	protected <I> R registerResource(R resource, FlexoResourceCenter<I> resourceCenter) {
+	public <I> R registerResource(R resource, FlexoResourceCenter<I> resourceCenter) {
 
 		R returned = super.registerResource(resource, resourceCenter);
 

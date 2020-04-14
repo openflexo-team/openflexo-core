@@ -231,7 +231,7 @@ public abstract class FlexoResourceFactory<R extends FlexoResource<RD>, RD exten
 	 * @param technologyContextManager
 	 * @return
 	 */
-	protected <I> R registerResource(R resource, FlexoResourceCenter<I> resourceCenter) {
+	public <I> R registerResource(R resource, FlexoResourceCenter<I> resourceCenter) {
 
 		resource.setResourceCenter(resourceCenter);
 
@@ -259,7 +259,11 @@ public abstract class FlexoResourceFactory<R extends FlexoResource<RD>, RD exten
 	 * @param technologyContextManager
 	 * @return
 	 */
-	protected <I> R unregisterResource(R resource, FlexoResourceCenter<I> resourceCenter) {
+	public <I> R unregisterResource(R resource, FlexoResourceCenter<I> resourceCenter) {
+
+		if (resourceCenter.getServiceManager() != null && resourceCenter.getServiceManager().getResourceManager() != null) {
+			resourceCenter.getServiceManager().getResourceManager().unregisterResource(resource);
+		}
 
 		if (resourceCenter != null && resource != null && resource.getIODelegate() != null) {
 			resourceCenter.unregisterResource(resource, (I) resource.getIODelegate().getSerializationArtefact());
@@ -293,6 +297,10 @@ public abstract class FlexoResourceFactory<R extends FlexoResource<RD>, RD exten
 		else {
 			resourceRepository.registerResource(resource, (R) resource.getContainer());
 		}
+	}
+
+	protected <I> void unregisterResourceInResourceRepository(R resource, ResourceRepository<R, I> resourceRepository) {
+		resourceRepository.unregisterResource(resource);
 	}
 
 	/* (non-Javadoc)
