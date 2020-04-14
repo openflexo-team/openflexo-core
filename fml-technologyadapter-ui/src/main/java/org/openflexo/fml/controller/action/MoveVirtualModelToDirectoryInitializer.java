@@ -87,7 +87,7 @@ public class MoveVirtualModelToDirectoryInitializer extends ActionInitializer<Mo
 
 	@Override
 	protected Icon getEnabledIcon(FlexoActionFactory<MoveVirtualModelToDirectory, VirtualModel, FMLObject> actionType) {
-		return IconFactory.getImageIcon(FMLIconLibrary.VIRTUAL_MODEL_ICON, IconLibrary.GENERATE);
+		return IconFactory.getImageIcon(FMLIconLibrary.FOLDER_ICON, IconLibrary.GENERATE);
 	}
 
 }
