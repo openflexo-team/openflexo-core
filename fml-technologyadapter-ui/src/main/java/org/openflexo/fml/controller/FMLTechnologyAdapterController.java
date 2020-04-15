@@ -77,6 +77,7 @@ import org.openflexo.fml.controller.action.CreateTopLevelVirtualModelInitializer
 import org.openflexo.fml.controller.action.DeclareNewVariableActionInitializer;
 import org.openflexo.fml.controller.action.DeleteFlexoConceptObjectsInitializer;
 import org.openflexo.fml.controller.action.DeleteVirtualModelInitializer;
+import org.openflexo.fml.controller.action.DuplicateVirtualModelInitializer;
 import org.openflexo.fml.controller.action.MoveVirtualModelToContainerVirtualModelInitializer;
 import org.openflexo.fml.controller.action.MoveVirtualModelToDirectoryInitializer;
 import org.openflexo.fml.controller.action.RenameVirtualModelInitializer;
@@ -269,6 +270,7 @@ public class FMLTechnologyAdapterController extends TechnologyAdapterController<
 		new MoveVirtualModelToDirectoryInitializer(actionInitializer);
 		new MoveVirtualModelToContainerVirtualModelInitializer(actionInitializer);
 		new RenameVirtualModelInitializer(actionInitializer);
+		new DuplicateVirtualModelInitializer(actionInitializer);
 
 		FlexoActionFactory.newVirtualModelMenu.setSmallIcon(FMLIconLibrary.VIRTUAL_MODEL_ICON);
 		FlexoActionFactory.newPropertyMenu.setSmallIcon(FMLIconLibrary.FLEXO_ROLE_ICON);
