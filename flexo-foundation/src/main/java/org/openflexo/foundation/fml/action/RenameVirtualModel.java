@@ -54,6 +54,7 @@ import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.VirtualModelLibrary;
 import org.openflexo.foundation.fml.rm.VirtualModelResourceFactory;
 import org.openflexo.foundation.resource.RepositoryFolder;
+import org.openflexo.foundation.resource.SaveResourceException;
 import org.openflexo.toolbox.JavaUtils;
 import org.openflexo.toolbox.StringUtils;
 
@@ -97,6 +98,9 @@ public class RenameVirtualModel extends FlexoAction<RenameVirtualModel, VirtualM
 		super(actionType, focusedObject, globalSelection, editor);
 		newVirtualModelName = focusedObject.getName();
 		newVirtualModelDescription = focusedObject.getDescription();
+		if (!focusedObject.getResource().computeDefaultURI().equals(focusedObject.getURI())) {
+			newVirtualModelURI = focusedObject.getURI();
+		}
 	}
 
 	@Override
@@ -108,6 +112,12 @@ public class RenameVirtualModel extends FlexoAction<RenameVirtualModel, VirtualM
 		getFocusedObject().setURI(getNewVirtualModelURI());
 		getFocusedObject().setDescription(getNewVirtualModelDescription());
 
+		try {
+			getFocusedObject().getResource().save();
+		} catch (SaveResourceException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	@Override

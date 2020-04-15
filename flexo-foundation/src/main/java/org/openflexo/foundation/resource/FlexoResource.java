@@ -129,6 +129,8 @@ public interface FlexoResource<RD extends ResourceData<RD>> extends FlexoObject,
 	@Setter(URI)
 	public void setURI(String anURI);
 
+	public String computeDefaultURI();
+
 	/**
 	 * Returns a displayable version that the end-user will understand.
 	 * 

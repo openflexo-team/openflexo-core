@@ -62,7 +62,7 @@ public class RenameVirtualModelWizard extends FlexoActionWizard<RenameVirtualMod
 	private static final String NO_NAME_DEFINED = "please_provide_a_valid_name";
 	private static final String NO_URI_DEFINED = "please_provide_a_valid_URI";
 	private static final String MALFORMED_URI = "malformed_URI";
-	private static final String UNCHANGED_NAME = "unchanged_name";
+	private static final String UNCHANGED_NAME_AND_URI = "unchanged_name_and_uri";
 	private static final String ALREADY_EXISTING_URI = "already_existing_uri";
 	private static final Dimension DIMENSIONS = new Dimension(700, 400);
 
@@ -109,7 +109,7 @@ public class RenameVirtualModelWizard extends FlexoActionWizard<RenameVirtualMod
 
 		@Override
 		public String getTitle() {
-			return getAction().getLocales().localizedForKey("choose_a_valid_new_name");
+			return getAction().getLocales().localizedForKey("choose_a_valid_new_name_and_or_uri");
 		}
 
 		@Override
@@ -119,8 +119,9 @@ public class RenameVirtualModelWizard extends FlexoActionWizard<RenameVirtualMod
 				setIssueMessage(getAction().getLocales().localizedForKey(NO_NAME_DEFINED), IssueMessageType.ERROR);
 				return false;
 			}
-			if (getAction().getFocusedObject().getName().equals(getNewVirtualModelName())) {
-				setIssueMessage(getAction().getLocales().localizedForKey(UNCHANGED_NAME), IssueMessageType.ERROR);
+			if (getAction().getFocusedObject().getName().equals(getNewVirtualModelName())
+					&& getAction().getFocusedObject().getURI().equals(getNewVirtualModelURI())) {
+				setIssueMessage(getAction().getLocales().localizedForKey(UNCHANGED_NAME_AND_URI), IssueMessageType.ERROR);
 				return false;
 			}
 			if (StringUtils.isEmpty(getNewVirtualModelURI())) {
