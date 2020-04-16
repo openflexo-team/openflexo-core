@@ -100,7 +100,10 @@ public class VirtualModelPasteHandler extends FlexoPasteHandler<VirtualModel> {
 
 			if (focusedObject instanceof FlexoConceptObject) {
 				// In this case, FlexoConcept will be pasted as a FlexoConcept in a VirtualModel
-				return new DefaultPastingContext<>(((FlexoConceptObject) focusedObject).getOwningVirtualModel());
+				FlexoConcept relatedConcept = ((FlexoConceptObject) focusedObject).getFlexoConcept();
+				if (relatedConcept instanceof VirtualModel) {
+					return new DefaultPastingContext<>((VirtualModel) relatedConcept);
+				}
 			}
 		}
 

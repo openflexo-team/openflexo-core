@@ -48,7 +48,11 @@ import org.openflexo.foundation.action.copypaste.FlexoPasteHandler;
 import org.openflexo.foundation.action.copypaste.PastingContext;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoConceptObject;
-import org.openflexo.toolbox.StringUtils;
+import org.openflexo.foundation.fml.VirtualModel;
+import org.openflexo.pamela.ModelEntity;
+import org.openflexo.pamela.ModelProperty;
+import org.openflexo.pamela.exceptions.ModelDefinitionException;
+import org.openflexo.pamela.exceptions.ModelExecutionException;
 
 /**
  * Paste Handler suitable for pasting something into a {@link FlexoConcept}
@@ -133,34 +137,138 @@ public class FlexoConceptPasteHandler extends FlexoPasteHandler<FlexoConcept> {
 	}*/
 
 	@Override
+	public Object paste(FlexoClipboard clipboard, PastingContext<FlexoConcept> pastingContext) {
+		if (pastingContext.getPastingPointHolder() == null) {
+			return null;
+		}
+
+		FlexoConcept container = pastingContext.getPastingPointHolder();
+
+		if (clipboard.getLeaderClipboard().isSingleObject()) {
+
+			Object copiedObject = clipboard.getLeaderClipboard().getSingleContents();
+
+			if (copiedObject instanceof VirtualModel) {
+				// cannot copy
+				return null;
+			}
+
+			if (copiedObject instanceof FlexoConcept) {
+				System.out.println("Pasting a FlexoConcept");
+
+				if (container instanceof VirtualModel) {
+					// We copy a FlexoConcept in a VirtualModel
+					System.out.println("In a VirtualModel");
+					try {
+						ModelEntity<VirtualModel> vmEntity = clipboard.getLeaderClipboard().getModelFactory().getModelContext()
+								.getModelEntity(VirtualModel.class);
+						ModelProperty<? super VirtualModel> conceptProperty = vmEntity.getModelProperty(VirtualModel.FLEXO_CONCEPTS_KEY);
+						translateNameWhenRequired((FlexoConcept) copiedObject, (VirtualModel) container);
+						return clipboard.getLeaderClipboard().getModelFactory().paste(clipboard.getLeaderClipboard(), conceptProperty,
+								pastingContext.getPastingPointHolder());
+					} catch (ModelExecutionException e) {
+						e.printStackTrace();
+					} catch (ModelDefinitionException e) {
+						e.printStackTrace();
+					} catch (CloneNotSupportedException e) {
+						e.printStackTrace();
+					}
+				}
+
+				else {
+					// We copy a FlexoConcept in a FlexoConcept
+					System.out.println("In a FlexoConcept");
+					try {
+						ModelEntity<FlexoConcept> conceptEntity = clipboard.getLeaderClipboard().getModelFactory().getModelContext()
+								.getModelEntity(FlexoConcept.class);
+						ModelProperty<? super FlexoConcept> conceptProperty = conceptEntity
+								.getModelProperty(FlexoConcept.EMBEDDED_FLEXO_CONCEPT_KEY);
+						translateNameWhenRequired((FlexoConcept) copiedObject, container);
+						return clipboard.getLeaderClipboard().getModelFactory().paste(clipboard.getLeaderClipboard(), conceptProperty,
+								pastingContext.getPastingPointHolder());
+					} catch (ModelExecutionException e) {
+						e.printStackTrace();
+					} catch (ModelDefinitionException e) {
+						e.printStackTrace();
+					} catch (CloneNotSupportedException e) {
+						e.printStackTrace();
+					}
+				}
+
+			}
+			return null;
+		}
+		else { // Multiple objects in clipboard, not implemented yet
+
+			/*System.out.println("MultipleContents= " + clipboard.getLeaderClipboard().getMultipleContents());
+			
+			for (int i = 0; i < clipboard.getLeaderClipboard().getMultipleContents().size(); i++) {
+				Object originalContent = clipboard.getLeaderClipboard().getOriginalContents()[i];
+				Object copiedContent = clipboard.getLeaderClipboard().getMultipleContents().get(i);
+				System.out.println("**** originalContent=" + originalContent);
+				System.out.println("     copiedContent=" + copiedContent);
+			}*/
+
+			return null;
+		}
+
+	}
+
+	@Override
 	public void finalizePasting(FlexoClipboard clipboard, PastingContext<FlexoConcept> pastingContext) {
 		// Nothing to do
 	}
 
-	private static String translateName(FlexoConceptObject object) {
-		String oldName = object.getName();
-		if (StringUtils.isEmpty(oldName)) {
-			return null;
+	private static void translateNameWhenRequired(FlexoConcept copiedConcept, VirtualModel virtualModel) {
+
+		String baseName = copiedConcept.getName();
+
+		if (virtualModel.getFlexoConcept(baseName) == null) {
+			return;
 		}
-		String newName;
-		if (oldName.endsWith(COPY_SUFFIX)) {
-			newName = oldName + "2";
+
+		char charAt = baseName.charAt(baseName.length() - 1);
+		int index;
+		try {
+			index = Integer.parseInt("" + charAt) + 1;
+			baseName = baseName.substring(0, baseName.length() - 1);
+		} catch (NumberFormatException e) {
+			index = 2;
 		}
-		else if (oldName.contains(COPY_SUFFIX)) {
-			try {
-				int currentIndex = Integer.parseInt(oldName.substring(oldName.lastIndexOf(COPY_SUFFIX) + COPY_SUFFIX.length()));
-				newName = oldName.substring(0, oldName.lastIndexOf(COPY_SUFFIX)) + COPY_SUFFIX + (currentIndex + 1);
-			} catch (NumberFormatException e) {
-				logger.warning("Could not parse as int " + oldName.substring(oldName.lastIndexOf(COPY_SUFFIX)));
-				newName = oldName + COPY_SUFFIX;
-			}
+
+		String testedName = baseName + index;
+		while (virtualModel.getFlexoConcept(testedName) != null && index < 1000) {
+			index++;
+			testedName = baseName + index;
 		}
-		else {
-			newName = oldName + COPY_SUFFIX;
+
+		copiedConcept.setName(testedName);
+	}
+
+	private static void translateNameWhenRequired(FlexoConcept copiedConcept, FlexoConcept container) {
+
+		String baseName = copiedConcept.getName();
+
+		if (container.getEmbeddedFlexoConcept(baseName) == null) {
+			return;
 		}
-		System.out.println("translating name from " + oldName + " to " + newName);
-		object.setName(newName);
-		return newName;
+
+		char charAt = baseName.charAt(baseName.length() - 1);
+		int index;
+		try {
+			index = Integer.parseInt("" + charAt) + 1;
+			baseName = baseName.substring(0, baseName.length() - 1);
+		} catch (NumberFormatException e) {
+			index = 2;
+		}
+
+		String testedName = baseName + index;
+		while (container.getEmbeddedFlexoConcept(testedName) != null && index < 1000) {
+			index++;
+			testedName = baseName + index;
+		}
+
+		copiedConcept.setName(testedName);
 	}
 
 }
