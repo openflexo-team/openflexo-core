@@ -56,7 +56,6 @@ import org.openflexo.pamela.ModelProperty;
 import org.openflexo.pamela.exceptions.ModelDefinitionException;
 import org.openflexo.pamela.exceptions.ModelExecutionException;
 import org.openflexo.pamela.factory.Clipboard;
-import org.openflexo.toolbox.StringUtils;
 
 /**
  * Paste Handler suitable for pasting something into a {@link VirtualModel}<br>
@@ -212,10 +211,10 @@ public class VirtualModelPasteHandler extends FlexoPasteHandler<VirtualModel> {
 		if (clipboard.getLeaderClipboard().isSingleObject()) {
 
 			if (clipboard.getLeaderClipboard().getSingleContents() instanceof VirtualModel) {
-				System.out.println("OK on paste un VM dans un autre VM");
-				System.out.println("Copying " + clipboard.getLeaderClipboard().getSingleContents());
-				System.out.println("In " + pastingContext);
-				System.out.println("Holder " + pastingContext.getPastingPointHolder());
+				System.out.println("Pasting a VirtualModel in another VirtualModel");
+				// System.out.println("Copying " + clipboard.getLeaderClipboard().getSingleContents());
+				// System.out.println("In " + pastingContext);
+				// System.out.println("Holder " + pastingContext.getPastingPointHolder());
 
 				VirtualModel originalVirtualModel = (VirtualModel) clipboard.getLeaderClipboard().getOriginalContents()[0];
 				VirtualModel targetVirtualModel = pastingContext.getPastingPointHolder();
@@ -224,7 +223,7 @@ public class VirtualModelPasteHandler extends FlexoPasteHandler<VirtualModel> {
 			}
 
 			else if (clipboard.getLeaderClipboard().getSingleContents() instanceof FlexoConcept) {
-				System.out.println("OK on paste un FlexoConcept dans un VM");
+				System.out.println("Pasting a FlexoConcept in a VirtualModel");
 
 				try {
 
@@ -232,15 +231,18 @@ public class VirtualModelPasteHandler extends FlexoPasteHandler<VirtualModel> {
 							.getModelEntity(VirtualModel.class);
 					ModelProperty<? super VirtualModel> conceptProperty = vmEntity.getModelProperty(VirtualModel.FLEXO_CONCEPTS_KEY);
 
-					System.out.println("OK, je copie le concept dans le VM " + pastingContext.getPastingPointHolder());
+					// System.out.println("OK, je copie le concept dans le VM " + pastingContext.getPastingPointHolder());
+					// System.out.println("vmEntity=" + vmEntity);
+					// System.out.println("conceptProperty=" + conceptProperty);
 
-					System.out.println("vmEntity=" + vmEntity);
-					System.out.println("conceptProperty=" + conceptProperty);
+					FlexoConcept copiedConcept = (FlexoConcept) clipboard.getLeaderClipboard().getSingleContents();
+					translateNameWhenRequired(copiedConcept, pastingContext.getPastingPointHolder());
 
-					System.out.println(((FlexoConcept) clipboard.getLeaderClipboard().getSingleContents()).getFMLRepresentation());
+					// System.out.println(copiedConcept.getFMLRepresentation());
 
 					return clipboard.getLeaderClipboard().getModelFactory().paste(clipboard.getLeaderClipboard(), conceptProperty,
 							pastingContext.getPastingPointHolder());
+
 				} catch (ModelExecutionException e) {
 					e.printStackTrace();
 				} catch (ModelDefinitionException e) {
@@ -273,30 +275,30 @@ public class VirtualModelPasteHandler extends FlexoPasteHandler<VirtualModel> {
 		// Nothing to do
 	}
 
-	private static String translateName(FlexoConceptObject object) {
-		String oldName = object.getName();
-		if (StringUtils.isEmpty(oldName)) {
-			return null;
+	private static void translateNameWhenRequired(FlexoConcept copiedConcept, VirtualModel virtualModel) {
+
+		String baseName = copiedConcept.getName();
+
+		if (virtualModel.getFlexoConcept(baseName) == null) {
+			return;
 		}
-		String newName;
-		if (oldName.endsWith(COPY_SUFFIX)) {
-			newName = oldName + "2";
+
+		char charAt = baseName.charAt(baseName.length() - 1);
+		int index;
+		try {
+			index = Integer.parseInt("" + charAt) + 1;
+			baseName = baseName.substring(0, baseName.length() - 1);
+		} catch (NumberFormatException e) {
+			index = 2;
 		}
-		else if (oldName.contains(COPY_SUFFIX)) {
-			try {
-				int currentIndex = Integer.parseInt(oldName.substring(oldName.lastIndexOf(COPY_SUFFIX) + COPY_SUFFIX.length()));
-				newName = oldName.substring(0, oldName.lastIndexOf(COPY_SUFFIX)) + COPY_SUFFIX + (currentIndex + 1);
-			} catch (NumberFormatException e) {
-				logger.warning("Could not parse as int " + oldName.substring(oldName.lastIndexOf(COPY_SUFFIX)));
-				newName = oldName + COPY_SUFFIX;
-			}
+
+		String testedName = baseName + index;
+		while (virtualModel.getFlexoConcept(testedName) != null && index < 1000) {
+			index++;
+			testedName = baseName + index;
 		}
-		else {
-			newName = oldName + COPY_SUFFIX;
-		}
-		System.out.println("translating name from " + oldName + " to " + newName);
-		object.setName(newName);
-		return newName;
+
+		copiedConcept.setName(testedName);
 	}
 
 }
