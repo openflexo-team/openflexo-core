@@ -396,6 +396,7 @@ public interface VirtualModel extends FlexoConcept, FlexoMetaModel<VirtualModel>
 	 */
 	@Override
 	@Getter(value = URI_KEY)
+	@CloningStrategy(value = StrategyType.IGNORE)
 	@XMLAttribute
 	public abstract String getURI();
 

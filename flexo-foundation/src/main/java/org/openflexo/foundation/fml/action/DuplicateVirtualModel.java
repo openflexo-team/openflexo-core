@@ -267,13 +267,17 @@ public class DuplicateVirtualModel extends FlexoAction<DuplicateVirtualModel, Vi
 	public String getNewVirtualModelURI() {
 		if (newVirtualModelURI == null) {
 			String baseURI;
-			if (getFocusedObject().getOwningVirtualModel() != null) {
-				baseURI = getFocusedObject().getOwningVirtualModel().getURI();
+			if (getFocusedObject().getContainerVirtualModel() != null) {
+				VirtualModel containerVirtualModel = (getTargetContainer() != null ? getTargetContainer().getVirtualModel()
+						: getFocusedObject().getContainerVirtualModel());
+				// baseURI = getFocusedObject().getOwningVirtualModel().getURI();fds
+				baseURI = containerVirtualModel.getURI();
 			}
 			else {
 				RepositoryFolder currentFolder = getFocusedObject().getResource().getResourceCenter()
 						.getRepositoryFolder(getFocusedObject().getResource());
-				baseURI = currentFolder.getDefaultBaseURI();
+				RepositoryFolder folder = (getTargetFolder() != null ? getTargetFolder() : currentFolder);
+				baseURI = folder.getDefaultBaseURI();
 			}
 			if (!baseURI.endsWith("/")) {
 				baseURI = baseURI + "/";
@@ -296,18 +300,23 @@ public class DuplicateVirtualModel extends FlexoAction<DuplicateVirtualModel, Vi
 
 	public boolean isNewVirtualModelNameValid() {
 		if (StringUtils.isEmpty(getNewVirtualModelName())) {
+			//System.out.println("Empty name: " + getNewVirtualModelName());
 			return false;
 		}
 
 		if (getFocusedObject().getContainerVirtualModel() == null) {
 			RepositoryFolder currentFolder = getFocusedObject().getResource().getResourceCenter()
 					.getRepositoryFolder(getFocusedObject().getResource());
-			if (currentFolder.getResourceWithName(getNewVirtualModelName()) != null) {
+			RepositoryFolder folder = (getTargetFolder() != null ? getTargetFolder() : currentFolder);
+			if (folder.getResourceWithName(getNewVirtualModelName()) != null) {
 				return false;
 			}
 		}
 		else {
-			if (getFocusedObject().getContainerVirtualModel().getVirtualModelNamed(getNewVirtualModelName()) != null) {
+			VirtualModel containerVirtualModel = (getTargetContainer() != null ? getTargetContainer().getVirtualModel()
+					: getFocusedObject().getContainerVirtualModel());
+			if (containerVirtualModel.getVirtualModelNamed(getNewVirtualModelName()) != null) {
+				//System.out.println("Existing resource : " + getNewVirtualModelName() + " in container " + containerVirtualModel);
 				return false;
 			}
 		}
@@ -340,6 +349,7 @@ public class DuplicateVirtualModel extends FlexoAction<DuplicateVirtualModel, Vi
 			return false;
 		}
 		if (!isNewVirtualModelURIValid()) {
+			//System.out.println("URI not valid: " + getNewVirtualModelURI());
 			return false;
 		}
 		return true;
