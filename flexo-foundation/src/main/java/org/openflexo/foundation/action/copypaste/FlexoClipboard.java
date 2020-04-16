@@ -44,6 +44,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.openflexo.exceptions.CopyException;
+import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.InnerResourceData;
 import org.openflexo.foundation.fml.FlexoRole.RoleCloningStrategy;
@@ -75,8 +76,9 @@ public class FlexoClipboard {
 
 	private final Map<PamelaResource<?, ?>, Clipboard> clipboards;
 	private PamelaResource<?, ?> leaderResource;
+	private FlexoEditor editor;
 
-	private FlexoClipboard() {
+	private FlexoClipboard(FlexoEditor editor) {
 		clipboards = new HashMap<>();
 	}
 
@@ -98,6 +100,10 @@ public class FlexoClipboard {
 		}
 
 		return returned;
+	}
+
+	public FlexoEditor getEditor() {
+		return editor;
 	}
 
 	public Clipboard getClipboard(PamelaResource<?, ?> resource) {
@@ -153,12 +159,12 @@ public class FlexoClipboard {
 	}
 
 	public static FlexoClipboard copy(Map<PamelaResource<?, ?>, List<FlexoObject>> objectsToBeCopied, FlexoObject leader,
-			Object copyContext) throws CopyException {
+			Object copyContext, FlexoEditor editor) throws CopyException {
 
 		// This map will be augmented by all modelling element which are actors of a FlexoRole
 		Map<PamelaResource<?, ?>, List<FlexoObject>> extendedObjectsToBeCopied = extendsMapOfObjectsToBeCopied(objectsToBeCopied);
 
-		FlexoClipboard returned = new FlexoClipboard();
+		FlexoClipboard returned = new FlexoClipboard(editor);
 		for (PamelaResource<?, ?> pamelaResource : extendedObjectsToBeCopied.keySet()) {
 
 			Clipboard clipboard;
@@ -217,13 +223,13 @@ public class FlexoClipboard {
 		return returned;
 	}
 
-	public static FlexoClipboard cut(Map<PamelaResource<?, ?>, List<FlexoObject>> objectsToBeCut, FlexoObject leader, Object copyContext)
-			throws CopyException {
+	public static FlexoClipboard cut(Map<PamelaResource<?, ?>, List<FlexoObject>> objectsToBeCut, FlexoObject leader, Object copyContext,
+			FlexoEditor editor) throws CopyException {
 
 		// This map will be augmented by all modelling element which are actors of a FlexoRole
 		Map<PamelaResource<?, ?>, List<FlexoObject>> extendedObjectsToBeCut = extendsMapOfObjectsToBeCopied(objectsToBeCut);
 
-		FlexoClipboard returned = new FlexoClipboard();
+		FlexoClipboard returned = new FlexoClipboard(editor);
 
 		for (PamelaResource<?, ?> pamelaResource : extendedObjectsToBeCut.keySet()) {
 

@@ -45,6 +45,7 @@ import java.util.logging.Logger;
 
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoObject.FlexoObjectImpl;
+import org.openflexo.foundation.action.FlexoAction;
 import org.openflexo.foundation.action.FlexoActionFactory;
 import org.openflexo.foundation.action.TechnologySpecificFlexoAction;
 import org.openflexo.foundation.fml.FMLObject;
@@ -59,7 +60,7 @@ import org.openflexo.pamela.exceptions.ModelDefinitionException;
 import org.openflexo.toolbox.JavaUtils;
 import org.openflexo.toolbox.StringUtils;
 
-public class DuplicateVirtualModel extends AbstractMoveVirtualModel<DuplicateVirtualModel>
+public class DuplicateVirtualModel extends FlexoAction<DuplicateVirtualModel, VirtualModel, FMLObject>
 		implements TechnologySpecificFlexoAction<FMLTechnologyAdapter> {
 
 	private static final Logger logger = Logger.getLogger(DuplicateVirtualModel.class.getPackage().getName());
@@ -105,117 +106,60 @@ public class DuplicateVirtualModel extends AbstractMoveVirtualModel<DuplicateVir
 	}
 
 	private VirtualModel duplicate;
+	private RepositoryFolder<VirtualModelResource, ?> targetFolder;
+	private VirtualModelResource targetContainer;
 
-	/*protected void doAction2(Object context) {
-	
-		System.out.println("Duplicate " + getFocusedObject());
-	
-		if (getFocusedObject().getOwningVirtualModel() == null) {
-			// This is a top-level VM
-			System.out.println("Duplicate top-level VM");
-			RepositoryFolder currentFolder = getFocusedObject().getResource().getResourceCenter()
-					.getRepositoryFolder(getFocusedObject().getResource());
-	
-			String newName = getNewVirtualModelName();
-			if (!newName.endsWith(VirtualModelResourceFactory.FML_SUFFIX)) {
-				newName = newName + VirtualModelResourceFactory.FML_SUFFIX;
-			}
-			File oldDirectory = ((DirectoryBasedIODelegate) getFocusedObject().getResource().getIODelegate()).getDirectory();
-			File newDirectory = new File((File) currentFolder.getSerializationArtefact(), newName);
-	
-			FlexoResourceCenter<?> resourceCenter = getFocusedObject().getResource().getResourceCenter();
-			VirtualModelResourceFactory resourceFactory = getFMLTechnologyAdapter().getVirtualModelResourceFactory();
-	
-			List<MovedResourceInfo> allVMResourceInfos = getAllVirtualModelResourceInfos(
-					(VirtualModelResource) getFocusedObject().getResource(), oldDirectory, newDirectory);
-	
-			try {
-	
-				// getServiceManager().notify(null, new WillWriteFileOnDiskNotification(oldDirectory));
-				getServiceManager().notify(null, new WillWriteFileOnDiskNotification(newDirectory));
-	
-				newDirectory.mkdirs();
-				System.out.println("oldDirectory: " + oldDirectory);
-				System.out.println("newDirectory: " + newDirectory);
-				FileUtils.copyContentDirToDir(oldDirectory, newDirectory);
-	
-				// moved the resources
-	
-				// FlexoResourceCenter<File> newResourceCenter = (FlexoResourceCenter<File>) getNewFolder().getResourceRepository()
-				// .getResourceCenter();
-				// movedResource = resourceFactory.retrieveResource(newDirectory, newResourceCenter);
-	
-				for (MovedResourceInfo movedResourceInfo : allVMResourceInfos) {
-					resourceFactory.registerResource(movedResourceInfo.resource, resourceCenter, false);
-					// System.out.println("Resource: " + movedResourceInfo.resource.getName() + " container="
-					// + movedResourceInfo.resource.getContainer() + " contents=" + movedResourceInfo.resource.getContents());
-				}
-	
-				// getServiceManager().notify(null, new FileHasBeenWrittenOnDiskNotification(oldDirectory));
-				getServiceManager().notify(null, new FileHasBeenWrittenOnDiskNotification(newDirectory));
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
+	public RepositoryFolder<VirtualModelResource, ?> getTargetFolder() {
+		return targetFolder;
+	}
+
+	public void setTargetFolder(RepositoryFolder<VirtualModelResource, ?> targetFolder) {
+		if ((targetFolder == null && this.targetFolder != null) || (targetFolder != null && !targetFolder.equals(this.targetFolder))) {
+			RepositoryFolder<VirtualModelResource, ?> oldValue = this.targetFolder;
+			this.targetFolder = targetFolder;
+			getPropertyChangeSupport().firePropertyChange("targetFolder", oldValue, targetFolder);
 		}
-	}*/
+	}
+
+	public VirtualModelResource getTargetContainer() {
+		return targetContainer;
+	}
+
+	public void setTargetContainer(VirtualModelResource targetContainer) {
+		if ((targetContainer == null && this.targetContainer != null)
+				|| (targetContainer != null && !targetContainer.equals(this.targetContainer))) {
+			VirtualModelResource oldValue = this.targetContainer;
+			this.targetContainer = targetContainer;
+			getPropertyChangeSupport().firePropertyChange("targetContainer", oldValue, targetContainer);
+		}
+	}
 
 	@Override
 	protected void doAction(Object context) {
 
-		System.out.println("Duplicate " + getFocusedObject());
+		// System.out.println("Duplicate " + getFocusedObject());
+
+		getFocusedObject().loadContainedVirtualModelsWhenUnloaded();
 
 		if (getFocusedObject().getContainerVirtualModel() == null) {
 			RepositoryFolder currentFolder = getFocusedObject().getResource().getResourceCenter()
 					.getRepositoryFolder(getFocusedObject().getResource());
-			duplicate = duplicateVirtualModel(getFocusedObject(), currentFolder, getNewVirtualModelName(), getNewVirtualModelURI(),
-					getNewVirtualModelDescription());
+			duplicate = duplicateVirtualModel(getFocusedObject(), getTargetFolder() != null ? getTargetFolder() : currentFolder,
+					getNewVirtualModelName(), getNewVirtualModelURI(), getNewVirtualModelDescription());
 		}
 		else {
 			duplicate = duplicateVirtualModel(getFocusedObject(),
-					(VirtualModelResource) getFocusedObject().getContainerVirtualModel().getResource(), getNewVirtualModelName(),
-					getNewVirtualModelDescription());
+					getTargetContainer() != null ? getTargetContainer()
+							: (VirtualModelResource) getFocusedObject().getContainerVirtualModel().getResource(),
+					getNewVirtualModelName(), getNewVirtualModelDescription());
 		}
-
-		/*VirtualModelResourceFactory resourceFactory = getFMLTechnologyAdapter().getVirtualModelResourceFactory();
-		try {
-			VirtualModelResource virtualModelResource = null;
-			if (getFocusedObject().getContainerVirtualModel() == null) {
-				// This is a top-level VM
-				System.out.println("Duplicate top-level VM");
-				RepositoryFolder currentFolder = getFocusedObject().getResource().getResourceCenter()
-						.getRepositoryFolder(getFocusedObject().getResource());
-				virtualModelResource = resourceFactory.makeTopLevelVirtualModelResource(getNewVirtualModelName(), null, currentFolder,
-						false);
-			}
-			else {
-				virtualModelResource = resourceFactory.makeContainedVirtualModelResource(getNewVirtualModelName(),
-						(VirtualModelResource) getFocusedObject().getContainerVirtualModel().getResource(), false);
-			}
-			duplicate = (VirtualModel) getFocusedObject().cloneObject();
-			System.out.println(getFocusedObject().getFMLModelFactory().stringRepresentation(duplicate));
-			// Take care to disconnect the resource !
-			duplicate.setResource(null);
-			duplicate.setName(getNewVirtualModelName());
-			duplicate.setURI(getNewVirtualModelURI());
-			duplicate.setDescription(getNewVirtualModelDescription());
-			virtualModelResource.setResourceData(duplicate);
-			duplicate.setResource(virtualModelResource);
-			virtualModelResource.save();
-		
-		} catch (SaveResourceException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (ModelDefinitionException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}*/
 
 	}
 
 	private VirtualModel duplicateVirtualModel(VirtualModel source, RepositoryFolder folder, String newName, String newURI,
 			String newDescription) {
 
-		System.out.println("Duplicate top-level VM " + source);
+		// System.out.println("Duplicate top-level VM " + source);
 
 		VirtualModel returned = null;
 
@@ -252,7 +196,7 @@ public class DuplicateVirtualModel extends AbstractMoveVirtualModel<DuplicateVir
 	private VirtualModel duplicateVirtualModel(VirtualModel source, VirtualModelResource containerResource, String newName,
 			String newDescription) {
 
-		System.out.println("Duplicate contained VM " + source);
+		// System.out.println("Duplicate contained VM " + source);
 
 		VirtualModel returned = null;
 
@@ -293,7 +237,6 @@ public class DuplicateVirtualModel extends AbstractMoveVirtualModel<DuplicateVir
 		return FMLTechnologyAdapter.class;
 	}
 
-	@Override
 	public FMLTechnologyAdapter getFMLTechnologyAdapter() {
 		return getServiceManager().getTechnologyAdapterService().getTechnologyAdapter(FMLTechnologyAdapter.class);
 	}
@@ -355,6 +298,20 @@ public class DuplicateVirtualModel extends AbstractMoveVirtualModel<DuplicateVir
 		if (StringUtils.isEmpty(getNewVirtualModelName())) {
 			return false;
 		}
+
+		if (getFocusedObject().getContainerVirtualModel() == null) {
+			RepositoryFolder currentFolder = getFocusedObject().getResource().getResourceCenter()
+					.getRepositoryFolder(getFocusedObject().getResource());
+			if (currentFolder.getResourceWithName(getNewVirtualModelName()) != null) {
+				return false;
+			}
+		}
+		else {
+			if (getFocusedObject().getContainerVirtualModel().getVirtualModelNamed(getNewVirtualModelName()) != null) {
+				return false;
+			}
+		}
+
 		return true;
 	}
 

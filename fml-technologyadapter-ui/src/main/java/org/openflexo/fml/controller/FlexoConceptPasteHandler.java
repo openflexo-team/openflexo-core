@@ -48,7 +48,6 @@ import org.openflexo.foundation.action.copypaste.FlexoPasteHandler;
 import org.openflexo.foundation.action.copypaste.PastingContext;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoConceptObject;
-import org.openflexo.pamela.factory.Clipboard;
 import org.openflexo.toolbox.StringUtils;
 
 /**
@@ -78,11 +77,11 @@ public class FlexoConceptPasteHandler extends FlexoPasteHandler<FlexoConcept> {
 		return null;
 	}
 
-	@Override
+	/*@Override
 	public void prepareClipboardForPasting(FlexoClipboard clipboard, PastingContext<FlexoConcept> pastingContext) {
-
+	
 		Clipboard leaderClipboard = clipboard.getLeaderClipboard();
-
+	
 		// Translating names
 		if (leaderClipboard.isSingleObject()) {
 			if (leaderClipboard.getSingleContents() instanceof FlexoConceptObject) {
@@ -96,7 +95,7 @@ public class FlexoConceptPasteHandler extends FlexoPasteHandler<FlexoConcept> {
 				}
 			}
 		}
-	}
+	}*/
 
 	/*@Override
 	public Object paste(FlexoClipboard clipboard, PastingContext<FlexoConcept> pastingContext) {
