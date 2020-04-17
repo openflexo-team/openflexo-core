@@ -46,8 +46,10 @@ import org.openflexo.foundation.action.copypaste.DefaultPastingContext;
 import org.openflexo.foundation.action.copypaste.FlexoClipboard;
 import org.openflexo.foundation.action.copypaste.FlexoPasteHandler;
 import org.openflexo.foundation.action.copypaste.PastingContext;
+import org.openflexo.foundation.fml.FlexoBehaviour;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoConceptObject;
+import org.openflexo.foundation.fml.FlexoProperty;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.pamela.ModelEntity;
 import org.openflexo.pamela.ModelProperty;
@@ -196,7 +198,20 @@ public class FlexoConceptPasteHandler extends FlexoPasteHandler<FlexoConcept> {
 				}
 
 			}
-			return null;
+
+			else if (copiedObject instanceof FlexoBehaviour) {
+				System.out.println("Pasting a FlexoBehaviour");
+				translateNameWhenRequired((FlexoBehaviour) copiedObject, container);
+				return super.paste(clipboard, pastingContext);
+			}
+
+			else if (copiedObject instanceof FlexoProperty) {
+				System.out.println("Pasting a FlexoProperty");
+				translateNameWhenRequired((FlexoProperty) copiedObject, container);
+				return super.paste(clipboard, pastingContext);
+			}
+
+			return super.paste(clipboard, pastingContext);
 		}
 		else { // Multiple objects in clipboard, not implemented yet
 
@@ -209,6 +224,7 @@ public class FlexoConceptPasteHandler extends FlexoPasteHandler<FlexoConcept> {
 				System.out.println("     copiedContent=" + copiedContent);
 			}*/
 
+			System.out.println("Multiple objects in clipboard, not implemented yet");
 			return null;
 		}
 
@@ -269,6 +285,58 @@ public class FlexoConceptPasteHandler extends FlexoPasteHandler<FlexoConcept> {
 		}
 
 		copiedConcept.setName(testedName);
+	}
+
+	private static void translateNameWhenRequired(FlexoBehaviour copiedBehaviour, FlexoConcept container) {
+
+		String baseName = copiedBehaviour.getName();
+
+		if (container.getFlexoBehaviour(baseName, copiedBehaviour.getParameterTypes()) == null) {
+			return;
+		}
+
+		char charAt = baseName.charAt(baseName.length() - 1);
+		int index;
+		try {
+			index = Integer.parseInt("" + charAt) + 1;
+			baseName = baseName.substring(0, baseName.length() - 1);
+		} catch (NumberFormatException e) {
+			index = 2;
+		}
+
+		String testedName = baseName + index;
+		while (container.getFlexoBehaviour(testedName, copiedBehaviour.getParameterTypes()) != null && index < 1000) {
+			index++;
+			testedName = baseName + index;
+		}
+
+		copiedBehaviour.setName(testedName);
+	}
+
+	private static void translateNameWhenRequired(FlexoProperty<?> copiedProperty, FlexoConcept container) {
+
+		String baseName = copiedProperty.getName();
+
+		if (container.getAccessibleProperty(baseName) == null) {
+			return;
+		}
+
+		char charAt = baseName.charAt(baseName.length() - 1);
+		int index;
+		try {
+			index = Integer.parseInt("" + charAt) + 1;
+			baseName = baseName.substring(0, baseName.length() - 1);
+		} catch (NumberFormatException e) {
+			index = 2;
+		}
+
+		String testedName = baseName + index;
+		while (container.getAccessibleProperty(testedName) != null && index < 1000) {
+			index++;
+			testedName = baseName + index;
+		}
+
+		copiedProperty.setName(testedName);
 	}
 
 }
