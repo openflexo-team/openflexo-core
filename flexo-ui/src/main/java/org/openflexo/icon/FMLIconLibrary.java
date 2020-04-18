@@ -192,8 +192,14 @@ public class FMLIconLibrary extends IconLibrary {
 			ResourceLocator.locateResource("Icons/Model/VPM/SynchronizationSchemeIcon.png"));
 	public static final ImageIconResource CLONING_SCHEME_ICON = new ImageIconResource(
 			ResourceLocator.locateResource("Icons/Model/VPM/CloningSchemeIcon.png"));
+
 	public static final ImageIconResource CREATION_SCHEME_ICON = new ImageIconResource(
 			ResourceLocator.locateResource("Icons/Model/VPM/CreationSchemeIcon.png"));
+	public static final ImageIconResource CREATION_SCHEME_MEDIUM_ICON = new ImageIconResource(
+			ResourceLocator.locateResource("Icons/Model/VPM/CreationSchemeIcon_32x32.png"));
+	public static final ImageIconResource CREATION_SCHEME_BIG_ICON = new ImageIconResource(
+			ResourceLocator.locateResource("Icons/Model/VPM/CreationSchemeIcon_64x64.png"));
+
 	public static final ImageIconResource DELETION_SCHEME_ICON = new ImageIconResource(
 			ResourceLocator.locateResource("Icons/Model/VPM/DeletionSchemeIcon.png"));
 	public static final ImageIconResource NAVIGATION_SCHEME_ICON = new ImageIconResource(

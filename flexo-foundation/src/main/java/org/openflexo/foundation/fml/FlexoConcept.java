@@ -376,6 +376,19 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 	public List<FlexoProperty<?>> getAccessibleProperties();
 
 	/**
+	 * Build and return all end-properties for this {@link FlexoConcept}<br>
+	 * Such properties are those that are available in the most specialized context<br>
+	 * Some properties may be shadowed by a more specialized property and are not retrieved here.
+	 * 
+	 * This returned {@link List} includes all declared properties for this FlexoConcept, augmented with all properties of parent
+	 * {@link FlexoConcept} which are not parent properties of this concept declared properties.<br>
+	 * This means that only leaf nodes of inheritance graph inferred by this {@link FlexoConcept} hierarchy will be returned.
+	 * 
+	 * @return
+	 */
+	public List<FlexoProperty<?>> retrieveAccessibleProperties(boolean considerContainment);
+
+	/**
 	 * Return {@link FlexoProperty} identified by supplied name, which is to be retrieved in all accessible properties<br>
 	 * Note that returned property is not necessary one of declared property, but might be inherited.
 	 * 
@@ -897,55 +910,69 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 			// Do not recompute accessible properties when not required
 
 			if (accessibleProperties == null) {
-
-				List<FlexoProperty<?>> computedAccessibleProperties = new ArrayList<>();
-				Map<String, FlexoProperty<?>> inheritedProperties = new HashMap<>();
-
-				// First take declared properties
-				computedAccessibleProperties.addAll(getDeclaredProperties());
-
-				// Take properties obtained by containment
-				if (getContainerFlexoConcept() != null) {
-					computedAccessibleProperties.addAll(getContainerFlexoConcept().getAccessibleProperties());
-				}
-
-				// Take inherited properties
-				for (FlexoConcept parentConcept : getParentFlexoConcepts()) {
-					for (FlexoProperty<?> p : parentConcept.getAccessibleProperties()) {
-						if (getDeclaredProperty(p.getPropertyName()) == null) {
-							// This property is inherited but not overriden
-							// We check that we don't have this property yet
-							if (inheritedProperties.get(p.getName()) == null) {
-								inheritedProperties.put(p.getName(), p);
-							}
-							else if (inheritedProperties.get(p.getName()).isSuperPropertyOf(p)) {
-								inheritedProperties.put(p.getName(), p);
-							}
-						}
-					}
-				}
-
-				VirtualModel owner = getOwner();
-				if (owner != null && owner != this) {
-					for (FlexoProperty<?> p : owner.getAccessibleProperties()) {
-						if (getDeclaredProperty(p.getPropertyName()) == null) {
-							// This property is inherited but not overridden
-							// We check that we don't have this property yet
-							if (inheritedProperties.get(p.getName()) == null) {
-								inheritedProperties.put(p.getName(), p);
-							}
-						}
-					}
-				}
-
-				try {
-					computedAccessibleProperties.addAll(inheritedProperties.values());
-				} catch (NullPointerException e) {
-					logger.warning("Something wrong in getAccessibleProperty() evaluation for " + this);
-				}
-				accessibleProperties = computedAccessibleProperties;
+				accessibleProperties = retrieveAccessibleProperties(true);
 			}
 			return accessibleProperties;
+		}
+
+		/**
+		 * Build and return all end-properties for this {@link FlexoConcept}<br>
+		 * Such properties are those that are available in the most specialized context<br>
+		 * Some properties may be shadowed by a more specialized property and are not retrieved here.
+		 * 
+		 * This returned {@link List} includes all declared properties for this FlexoConcept, augmented with all properties of parent
+		 * {@link FlexoConcept} which are not parent properties of this concept declared properties.<br>
+		 * This means that only leaf nodes of inheritance graph infered by this {@link FlexoConcept} hierarchy will be returned.
+		 * 
+		 * 
+		 * @return
+		 */
+		@Override
+		public List<FlexoProperty<?>> retrieveAccessibleProperties(boolean considerContainment) {
+
+			List<FlexoProperty<?>> computedAccessibleProperties = new ArrayList<>();
+			Map<String, FlexoProperty<?>> inheritedProperties = new HashMap<>();
+
+			// First take declared properties
+			computedAccessibleProperties.addAll(getDeclaredProperties());
+
+			// Take properties obtained by containment
+			if (getContainerFlexoConcept() != null && considerContainment) {
+				computedAccessibleProperties.addAll(getContainerFlexoConcept().retrieveAccessibleProperties(considerContainment));
+			}
+
+			// Take inherited properties
+			for (FlexoConcept parentConcept : getParentFlexoConcepts()) {
+				for (FlexoProperty<?> p : parentConcept.retrieveAccessibleProperties(considerContainment)) {
+					if (getDeclaredProperty(p.getPropertyName()) == null) {
+						// This property is inherited but not overriden
+						// We check that we don't have this property yet
+						if (inheritedProperties.get(p.getName()) == null) {
+							inheritedProperties.put(p.getName(), p);
+						}
+						else if (inheritedProperties.get(p.getName()).isSuperPropertyOf(p)) {
+							inheritedProperties.put(p.getName(), p);
+						}
+					}
+				}
+			}
+
+			VirtualModel owner = getOwner();
+			if (owner != null && owner != this && considerContainment) {
+				for (FlexoProperty<?> p : owner.getAccessibleProperties()) {
+					if (getDeclaredProperty(p.getPropertyName()) == null) {
+						// This property is inherited but not overridden
+						// We check that we don't have this property yet
+						if (inheritedProperties.get(p.getName()) == null) {
+							inheritedProperties.put(p.getName(), p);
+						}
+					}
+				}
+			}
+
+			computedAccessibleProperties.addAll(inheritedProperties.values());
+
+			return computedAccessibleProperties;
 		}
 
 		/**
