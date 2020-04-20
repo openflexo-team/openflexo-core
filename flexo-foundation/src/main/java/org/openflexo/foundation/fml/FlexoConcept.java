@@ -88,6 +88,7 @@ import org.openflexo.pamela.annotations.XMLElement;
 import org.openflexo.pamela.undo.CompoundEdit;
 import org.openflexo.pamela.validation.FixProposal;
 import org.openflexo.pamela.validation.Validable;
+import org.openflexo.pamela.validation.ValidationError;
 import org.openflexo.pamela.validation.ValidationIssue;
 import org.openflexo.pamela.validation.ValidationRule;
 import org.openflexo.pamela.validation.ValidationWarning;
@@ -862,9 +863,9 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 
 		@Override
 		public boolean isAbstract() {
-			if (abstractRequired()) {
+			/*if (abstractRequired()) {
 				return true;
-			}
+			}*/
 			return (Boolean) performSuperGetter(IS_ABSTRACT_KEY);
 		}
 
@@ -2050,6 +2051,24 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 				smallIcon = new ImageIcon(ImageUtils.loadImageFromResource(getSmallIconResource()));
 			}
 			return smallIcon;
+		}
+	}
+
+	@DefineValidationRule
+	public static class NonAbstractFlexoConceptMustImplementAllPropertiesAndbehaviours
+			extends ValidationRule<NonAbstractFlexoConceptMustImplementAllPropertiesAndbehaviours, FlexoConcept> {
+		public NonAbstractFlexoConceptMustImplementAllPropertiesAndbehaviours() {
+			super(FlexoConcept.class, "non_abstract_flexo_concept_must_implement_all_properties_and_behaviours");
+		}
+
+		@Override
+		public ValidationIssue<NonAbstractFlexoConceptMustImplementAllPropertiesAndbehaviours, FlexoConcept> applyValidation(
+				FlexoConcept flexoConcept) {
+			if (!(flexoConcept.isAbstract()) && flexoConcept.abstractRequired()) {
+				return new ValidationError<>(this, flexoConcept,
+						"non_abstract_flexo_concept_does_not_implement_all_properties_and_behaviours");
+			}
+			return null;
 		}
 	}
 
