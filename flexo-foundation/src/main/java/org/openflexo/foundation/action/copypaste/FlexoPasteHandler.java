@@ -94,6 +94,18 @@ public abstract class FlexoPasteHandler<T extends FlexoObject> implements PasteH
 	@Override
 	public void finalizePasting(FlexoClipboard clipboard, PastingContext<T> pastingContext) {
 		PasteAction.logger.info("finalizePasting() called in DefaultPasteHandler");
+		try {
+			clipboard.getLeaderClipboard().consume();
+		} catch (ModelExecutionException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ModelDefinitionException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (CloneNotSupportedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 }

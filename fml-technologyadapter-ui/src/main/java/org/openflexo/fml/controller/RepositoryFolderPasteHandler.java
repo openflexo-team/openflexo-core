@@ -192,9 +192,4 @@ public class RepositoryFolderPasteHandler extends FlexoPasteHandler<RepositoryFo
 		return null;
 	}
 
-	@Override
-	public void finalizePasting(FlexoClipboard clipboard, PastingContext<RepositoryFolder> pastingContext) {
-		// Nothing to do
-	}
-
 }

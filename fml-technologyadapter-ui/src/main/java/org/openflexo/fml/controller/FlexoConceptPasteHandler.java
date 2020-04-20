@@ -230,11 +230,6 @@ public class FlexoConceptPasteHandler extends FlexoPasteHandler<FlexoConcept> {
 
 	}
 
-	@Override
-	public void finalizePasting(FlexoClipboard clipboard, PastingContext<FlexoConcept> pastingContext) {
-		// Nothing to do
-	}
-
 	private static void translateNameWhenRequired(FlexoConcept copiedConcept, VirtualModel virtualModel) {
 
 		String baseName = copiedConcept.getName();
