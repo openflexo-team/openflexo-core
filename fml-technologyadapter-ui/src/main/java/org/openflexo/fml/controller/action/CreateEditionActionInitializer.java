@@ -49,6 +49,8 @@ import org.openflexo.foundation.fml.action.CreateEditionAction;
 import org.openflexo.foundation.fml.controlgraph.FMLControlGraph;
 import org.openflexo.gina.controller.FIBController.Status;
 import org.openflexo.icon.FMLIconLibrary;
+import org.openflexo.icon.IconFactory;
+import org.openflexo.icon.IconLibrary;
 import org.openflexo.view.controller.ActionInitializer;
 import org.openflexo.view.controller.ControllerActionInitializer;
 
@@ -86,7 +88,7 @@ public class CreateEditionActionInitializer extends ActionInitializer<CreateEdit
 
 	@Override
 	protected Icon getEnabledIcon(FlexoActionFactory<CreateEditionAction, FMLControlGraph, FMLObject> actionType) {
-		return FMLIconLibrary.FLEXO_CONCEPT_ACTION_ICON;
+		return IconFactory.getImageIcon(FMLIconLibrary.FLEXO_CONCEPT_ACTION_ICON, IconLibrary.NEW_MARKER);
 	}
 
 }

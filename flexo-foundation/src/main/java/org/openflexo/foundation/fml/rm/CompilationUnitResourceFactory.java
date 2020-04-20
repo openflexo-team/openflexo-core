@@ -342,7 +342,12 @@ public class CompilationUnitResourceFactory
 	}
 
 	@Override
-	protected <I> CompilationUnitResource registerResource(CompilationUnitResource resource, FlexoResourceCenter<I> resourceCenter) {
+	public <I> CompilationUnitResource registerResource(CompilationUnitResource resource, FlexoResourceCenter<I> resourceCenter) {
+		return registerResource(resource, resourceCenter, true);
+	}
+
+	public <I> CompilationUnitResource registerResource(CompilationUnitResource resource, FlexoResourceCenter<I> resourceCenter,
+			boolean exploreVirtualModels) {
 		super.registerResource(resource, resourceCenter);
 
 		// Register the resource in the VirtualModelRepository of supplied resource center
@@ -357,7 +362,9 @@ public class CompilationUnitResourceFactory
 		}
 
 		// Now look for virtual models
-		exploreVirtualModels(resource);
+		if (exploreVirtualModels) {
+			exploreVirtualModels(resource);
+		}
 
 		return resource;
 

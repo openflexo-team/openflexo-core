@@ -129,6 +129,8 @@ public class CreateFlexoConcept extends AbstractCreateFlexoConcept<CreateFlexoCo
 		}
 		newFlexoConcept.setName(getNewFlexoConceptName());
 		newFlexoConcept.setDescription(getNewFlexoConceptDescription());
+		newFlexoConcept.setVisibility(getVisibility());
+		newFlexoConcept.setAbstract(getIsAbstract());
 
 		// Unused FlexoConcept addressedConcept =
 		// getFocusedObject().getFlexoConcept();

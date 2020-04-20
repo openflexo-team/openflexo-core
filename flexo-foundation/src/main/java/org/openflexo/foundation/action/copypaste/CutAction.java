@@ -112,7 +112,7 @@ public class CutAction extends AbstractCopyAction<CutAction> {
 	 */
 	private FlexoClipboard cut() throws CopyException, InvalidSelectionException {
 
-		clipboard = FlexoClipboard.cut(objectsToBeCopied, getFocusedObject(), null);
+		clipboard = FlexoClipboard.cut(objectsToBeCopied, getFocusedObject(), null, getEditor());
 		return clipboard;
 	}
 

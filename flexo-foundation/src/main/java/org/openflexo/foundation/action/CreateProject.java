@@ -76,7 +76,7 @@ public class CreateProject extends FlexoAction<CreateProject, RepositoryFolder<F
 	private static final Logger logger = Logger.getLogger(CreateProject.class.getPackage().getName());
 
 	public static FlexoActionFactory<CreateProject, RepositoryFolder<FlexoProjectResource<?>, ?>, FlexoObject> actionType = new FlexoActionFactory<CreateProject, RepositoryFolder<FlexoProjectResource<?>, ?>, FlexoObject>(
-			"create_project", FlexoActionFactory.newMenu, FlexoActionFactory.defaultGroup, FlexoActionFactory.ADD_ACTION_TYPE) {
+			"project", FlexoActionFactory.newMenu, FlexoActionFactory.defaultGroup, FlexoActionFactory.ADD_ACTION_TYPE) {
 
 		/**
 		 * Factory method

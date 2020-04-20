@@ -51,6 +51,11 @@
 			enabled="virtualModelResource.isLoaded"
 			editableLabel="virtualModelResource.name" isEditable="false"
 			name="virtualModelResource">
+			<DragOperation
+				isAvailable="controller.canMoveVirtualModelInVirtualModel(dragged,target)"
+				targetElementName="virtualModelResource"
+				action="controller.moveVirtualModelInVirtualModel(dragged,target)"
+				name="drag_to_virtual_model" />
 			<Children visible="virtualModelResource.isLoaded"
 				data="virtualModelResource.containedVirtualModelResources"
 				name="subresources" />
@@ -140,6 +145,11 @@
 			enabled="virtualModelResource.isLoaded"
 			editableLabel="virtualModelResource.name" isEditable="false"
 			name="virtualModelResource">
+			<DragOperation
+				isAvailable="controller.canMoveVirtualModelInVirtualModel(dragged,target)"
+				targetElementName="virtualModelResource"
+				action="controller.moveVirtualModelInVirtualModel(dragged,target)"
+				name="drag_to_virtual_model" />
 			<Children visible="virtualModelResource.isLoaded"
 				data="virtualModelResource.containedVirtualModelResources"
 				name="subresources" />
@@ -229,6 +239,11 @@
 			enabled="virtualModelResource.isLoaded"
 			editableLabel="virtualModelResource.name" isEditable="false"
 			name="virtualModelResource">
+			<DragOperation
+				isAvailable="controller.canMoveVirtualModelInVirtualModel(dragged,target)"
+				targetElementName="virtualModelResource"
+				action="controller.moveVirtualModelInVirtualModel(dragged,target)"
+				name="drag_to_virtual_model" />
 			<Children visible="virtualModelResource.isLoaded"
 				data="virtualModelResource.containedVirtualModelResources"
 				name="subresources" />

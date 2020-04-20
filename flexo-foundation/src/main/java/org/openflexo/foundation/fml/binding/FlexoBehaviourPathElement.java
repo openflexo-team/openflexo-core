@@ -60,12 +60,18 @@ import org.openflexo.connie.type.TypeUtils;
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoProject;
 import org.openflexo.foundation.fml.AbstractActionScheme;
+import org.openflexo.foundation.fml.CreationScheme;
 import org.openflexo.foundation.fml.FlexoBehaviour;
 import org.openflexo.foundation.fml.FlexoBehaviourParameter;
+import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
+import org.openflexo.foundation.fml.rt.FlexoConceptInstance.FlexoConceptInstanceImpl.SuperReference;
 import org.openflexo.foundation.fml.rt.action.AbstractActionSchemeAction;
 import org.openflexo.foundation.fml.rt.action.AbstractActionSchemeActionFactory;
+import org.openflexo.foundation.fml.rt.action.CreationSchemeAction;
 import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
+import org.openflexo.foundation.fml.rt.action.SuperCreationSchemeAction;
+import org.openflexo.foundation.fml.rt.action.SuperCreationSchemeActionFactory;
 
 /**
  * Modelize a call for execution of an FlexoBehaviour
@@ -173,78 +179,111 @@ public class FlexoBehaviourPathElement extends FunctionPathElement implements Pr
 	public Object getBindingValue(Object target, BindingEvaluationContext context)
 			throws TypeMismatchException, NullReferenceException, InvocationTargetTransformException {
 
-		// System.out.println("****************** Computing FlexoBehaviourPathElement");
-		// System.out.println("getFunction()=" + getFunction());
-		// System.out.println("target=" + target);
-		// System.out.println("context=" + context);
-
-		// System.out.println("Evaluating getBindingValue() in FlexoBehaviourPathElement for " + getFlexoBehaviour().getSignature() + " in "
-		// + getFlexoBehaviour().getFlexoConcept());
-		// Thread.dumpStack();
-
-		// Object[] args = new Object[getFunction().getArguments().size()];
-		/*int i = 0;
-		
-		for (FlexoBehaviourParameter param : getFunction().getArguments()) {
-			try {
-				args[i] = TypeUtils.castTo(getParameter(param).getBindingValue(context), param.getType());
-				// System.out.println("> " + param.getArgumentName() + " " + getParameter(param) + "=" + args[i]);
-			} catch (InvocationTargetException e) {
-				throw new InvocationTargetTransformException(e);
-			}
-			i++;
-		}*/
 		try {
-			// logger.warning("Please implements execution of FlexoBehaviourPathElement here !!!! context=" + context + " of "
-			// + context.getClass() + " target=" + target);
+
+			FlexoConcept conceptualLevel = null;
+
+			// In this case, caller is 'super', we should identify the conceptual level of execution
+			if (target instanceof SuperReference) {
+				conceptualLevel = ((SuperReference) target).getSuperConcept();
+				target = ((SuperReference) target).getInstance();
+			}
 
 			if (target instanceof FlexoConceptInstance) {
 
-				// FlexoBehaviourAction action = (FlexoBehaviourAction) context;
 				FlexoConceptInstance fci = (FlexoConceptInstance) target;
-				AbstractActionSchemeActionFactory actionType = ((AbstractActionScheme) getFlexoBehaviour()).getActionFactory(fci);
-				AbstractActionSchemeAction<?, ?, ?> actionSchemeAction = null;
 
-				if (context instanceof FlexoBehaviourAction) {
-					actionSchemeAction = (AbstractActionSchemeAction<?, ?, ?>) actionType
-							.makeNewEmbeddedAction(fci.getVirtualModelInstance(), null, (FlexoBehaviourAction<?, ?, ?>) context);
+				// This is "normal" execution context
+				if (getFlexoBehaviour() instanceof AbstractActionScheme) {
+
+					AbstractActionSchemeActionFactory actionType = ((AbstractActionScheme) getFlexoBehaviour()).getActionFactory(fci);
+					AbstractActionSchemeAction<?, ?, ?> actionSchemeAction = null;
+
+					if (context instanceof FlexoBehaviourAction) {
+						actionSchemeAction = (AbstractActionSchemeAction<?, ?, ?>) actionType
+								.makeNewEmbeddedAction(fci.getVirtualModelInstance(), null, (FlexoBehaviourAction<?, ?, ?>) context);
+					}
+					else {
+						FlexoEditor editor = null;
+						if (fci.getResourceCenter() != null) {
+							if (fci.getResourceCenter() instanceof FlexoProject) {
+								FlexoProject<?> prj = (FlexoProject<?>) fci.getResourceCenter();
+								editor = prj.getServiceManager().getProjectLoaderService().getEditorForProject(prj);
+							}
+							else if (fci.getResourceCenter().getDelegatingProjectResource() != null) {
+								FlexoProject<?> prj = fci.getResourceCenter().getDelegatingProjectResource().getFlexoProject();
+								editor = prj.getServiceManager().getProjectLoaderService().getEditorForProject(prj);
+							}
+
+							actionSchemeAction = (AbstractActionSchemeAction<?, ?, ?>) actionType
+									.makeNewAction(fci.getVirtualModelInstance(), null, editor);
+						}
+					}
+					actionSchemeAction.setDeclaredConceptualLevel(conceptualLevel);
+
+					for (FlexoBehaviourParameter p : getFlexoBehaviour().getParameters()) {
+						DataBinding<?> param = getParameter(p);
+						Object paramValue = TypeUtils.castTo(param.getBindingValue(context), p.getType());
+						// logger.fine("For parameter " + param + " value is " + paramValue);
+						if (paramValue != null) {
+							actionSchemeAction.setParameterValue(p, paramValue);
+						}
+					}
+					actionSchemeAction.doAction();
+
+					if (actionSchemeAction.hasActionExecutionSucceeded()) {
+						logger.fine("Successfully performed FlexoBehaviour " + getFlexoBehaviour() + " for " + fci);
+						return actionSchemeAction.getReturnedValue();
+					}
+					if (actionSchemeAction.getThrownException() != null) {
+						throw new InvocationTargetTransformException(
+								new InvocationTargetException(actionSchemeAction.getThrownException()));
+					}
 				}
+
+				// This is a special context, where we are executing a CreationScheme and where we want to
+				// call a super-concept CreationScheme
+				else if (((context instanceof CreationSchemeAction) || (context instanceof SuperCreationSchemeAction))
+						&& getFlexoBehaviour() instanceof CreationScheme) {
+					SuperCreationSchemeActionFactory actionType = ((CreationScheme) getFlexoBehaviour())
+							.getSuperCreationSchemeActionFactory(fci);
+					SuperCreationSchemeAction actionSchemeAction = actionType.makeNewEmbeddedAction(fci.getVirtualModelInstance(), null,
+							(FlexoBehaviourAction) context);
+
+					actionSchemeAction.setDeclaredConceptualLevel(conceptualLevel);
+
+					for (FlexoBehaviourParameter p : getFlexoBehaviour().getParameters()) {
+						DataBinding<?> param = getParameter(p);
+						Object paramValue = TypeUtils.castTo(param.getBindingValue(context), p.getType());
+						// logger.fine("For parameter " + param + " value is " + paramValue);
+						if (paramValue != null) {
+							actionSchemeAction.setParameterValue(p, paramValue);
+						}
+					}
+					actionSchemeAction.doAction();
+
+					if (actionSchemeAction.hasActionExecutionSucceeded()) {
+						logger.fine("Successfully performed FlexoBehaviour " + getFlexoBehaviour() + " for " + fci);
+						return actionSchemeAction.getReturnedValue();
+					}
+					if (actionSchemeAction.getThrownException() != null) {
+						throw new InvocationTargetTransformException(
+								new InvocationTargetException(actionSchemeAction.getThrownException()));
+					}
+				}
+
 				else {
-					FlexoEditor editor = null;
-					if (fci.getResourceCenter() != null) {
-						if (fci.getResourceCenter() instanceof FlexoProject) {
-							FlexoProject<?> prj = (FlexoProject<?>) fci.getResourceCenter();
-							editor = prj.getServiceManager().getProjectLoaderService().getEditorForProject(prj);
-						}
-						else if (fci.getResourceCenter().getDelegatingProjectResource() != null) {
-							FlexoProject<?> prj = fci.getResourceCenter().getDelegatingProjectResource().getFlexoProject();
-							editor = prj.getServiceManager().getProjectLoaderService().getEditorForProject(prj);
-						}
-
-						actionSchemeAction = (AbstractActionSchemeAction<?, ?, ?>) actionType.makeNewAction(fci.getVirtualModelInstance(),
-								null, editor);
-					}
-				}
-				for (FlexoBehaviourParameter p : getFlexoBehaviour().getParameters()) {
-					DataBinding<?> param = getParameter(p);
-					Object paramValue = TypeUtils.castTo(param.getBindingValue(context), p.getType());
-					// logger.fine("For parameter " + param + " value is " + paramValue);
-					if (paramValue != null) {
-						actionSchemeAction.setParameterValue(p, paramValue);
-					}
-				}
-				actionSchemeAction.doAction();
-
-				if (actionSchemeAction.hasActionExecutionSucceeded()) {
-					logger.fine("Successfully performed ActionScheme " + getFlexoBehaviour() + " for " + fci);
-					return actionSchemeAction.getReturnedValue();
-				}
-				if (actionSchemeAction.getThrownException() != null) {
-					throw new InvocationTargetTransformException(new InvocationTargetException(actionSchemeAction.getThrownException()));
+					logger.warning("Unexpected behaviour " + getFlexoBehaviour().getSignature() + " for context: " + context);
 				}
 			}
+
+			else {
+				logger.warning("Don't know what to do with " + target);
+			}
 			// return getMethodDefinition().getMethod().invoke(target, args);
-		} catch (IllegalArgumentException e) {
+		} catch (
+
+		IllegalArgumentException e) {
 			StringBuffer warningMessage = new StringBuffer(
 					"While evaluating edition scheme " + getFlexoBehaviour() + " exception occured: " + e.getMessage());
 			warningMessage.append(", object = " + target);

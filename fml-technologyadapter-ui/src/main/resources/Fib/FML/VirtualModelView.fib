@@ -238,6 +238,8 @@
 				dataClassName="org.openflexo.foundation.fml.InnerConceptsFacet"
 				icon="controller.iconForObject(innerConceptsFacet)" label="&quot;Inner concepts&quot;"
 				isEditable="false" name="innerConceptsFacet">
+				<Children 
+					data="innerConceptsFacet.containedVirtualModels" name="containedVirtualModels" />
 				<Children id="77"
 					data="innerConceptsFacet.embeddingRootFlexoConcepts" name="children" />
 				<BrowserAddAction id="78"

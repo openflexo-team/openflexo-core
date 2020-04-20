@@ -115,6 +115,9 @@ public interface FlexoConceptObject extends FMLObject {
 			if (getFlexoConcept() != null && getFlexoConcept().getOwner() != null) {
 				return getFlexoConcept().getOwner();
 			}
+			if (getFlexoConcept() != null && getFlexoConcept().getContainerFlexoConcept() != null) {
+				return getFlexoConcept().getContainerFlexoConcept().getResourceData();
+			}
 			return null;*/
 		}
 

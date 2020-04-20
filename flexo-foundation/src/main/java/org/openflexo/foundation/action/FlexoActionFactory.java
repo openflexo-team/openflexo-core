@@ -88,16 +88,20 @@ public abstract class FlexoActionFactory<A extends FlexoAction<A, T1, T2>, T1 ex
 	public static final ActionGroup newMenuGroup2 = new ActionGroup("new_group_2", 2);
 	public static final ActionGroup newMenuGroup3 = new ActionGroup("new_group_3", 3);
 	public static final ActionGroup newMenuGroup4 = new ActionGroup("new_group_4", 4);
+	public static final ActionMenu newVirtualModelMenu = new ActionMenu("virtual_model", 1, newMenuGroup1, newMenu);
+	public static final ActionMenu newPropertyMenu = new ActionMenu("property", 2, newMenuGroup1, newMenu);
+	public static final ActionMenu newBehaviourMenu = new ActionMenu("behaviour", 3, newMenuGroup1, newMenu);
 
-	public static final ActionMenu newVirtualModelMenu = new ActionMenu("new_virtual_model", 1, defaultGroup);
-	public static final ActionMenu newPropertyMenu = new ActionMenu("new_property", 2, defaultGroup);
-	public static final ActionMenu newBehaviourMenu = new ActionMenu("new_behaviour", 3, defaultGroup);
+	public static final ActionMenu refactorMenu = new ActionMenu("refactor", 5, defaultGroup);
+	public static final ActionMenu moveToMenu = new ActionMenu("move_to", 2, defaultGroup, refactorMenu);
 
-	public static final ActionMenu importMenu = new ActionMenu("import", 4, defaultGroup);
-	public static final ActionMenu exportMenu = new ActionMenu("export", 5, defaultGroup);
-	public static final ActionMenu convertMenu = new ActionMenu("convert_to", 6, defaultGroup);
+	public static final ActionMenu generateMenu = new ActionMenu("generate", 6, defaultGroup);
 
-	public static final ActionMenu executionModelMenu = new ActionMenu("execution_model", 7, defaultGroup);
+	public static final ActionMenu importMenu = new ActionMenu("import", 7, defaultGroup);
+	public static final ActionMenu exportMenu = new ActionMenu("export", 8, defaultGroup);
+	public static final ActionMenu convertMenu = new ActionMenu("convert_to", 9, defaultGroup);
+
+	public static final ActionMenu executionModelMenu = new ActionMenu("execution_model", 10, defaultGroup);
 
 	public static final int NORMAL_ACTION_TYPE = 0;
 	public static final int ADD_ACTION_TYPE = 1;

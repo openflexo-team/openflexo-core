@@ -85,6 +85,14 @@ public interface InnerConceptsFacet extends FlexoConceptObject, FlexoFacet<Flexo
 	 */
 	public List<FlexoConcept> getEmbeddingRootFlexoConcepts();
 
+	/**
+	 * Return all {@link VirtualModel} that are contained in this {@link VirtualModel} if {@link #getFlexoConcept()} is a
+	 * {@link VirtualModel}
+	 * 
+	 * @return
+	 */
+	public List<VirtualModel> getContainedVirtualModels();
+
 	public void notifiedConceptsChanged();
 
 	public abstract class InnerConceptsFacetImpl extends FlexoConceptObjectImpl implements InnerConceptsFacet {
@@ -119,6 +127,14 @@ public interface InnerConceptsFacet extends FlexoConceptObject, FlexoFacet<Flexo
 		@Override
 		public String getURI() {
 			return getFlexoConcept().getURI();
+		}
+
+		@Override
+		public List<VirtualModel> getContainedVirtualModels() {
+			if (getFlexoConcept() instanceof VirtualModel) {
+				return ((VirtualModel) getFlexoConcept()).getVirtualModels();
+			}
+			return null;
 		}
 
 		@Override

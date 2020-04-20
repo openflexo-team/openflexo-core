@@ -56,7 +56,6 @@ import org.openflexo.connie.binding.IBindingPathElement;
 import org.openflexo.connie.binding.SimplePathElement;
 import org.openflexo.connie.expr.Constant.ObjectConstant;
 import org.openflexo.connie.java.JavaBindingFactory;
-import org.openflexo.foundation.fml.AbstractActionScheme;
 import org.openflexo.foundation.fml.CreationScheme;
 import org.openflexo.foundation.fml.FlexoBehaviour;
 import org.openflexo.foundation.fml.FlexoBehaviourActionType;
@@ -338,8 +337,8 @@ public class FMLBindingFactory extends JavaBindingFactory {
 		if (returned == null || forceUpdate) {
 			returned = new ArrayList<>();
 			if (concept != null) {
-				for (AbstractActionScheme as : concept.getAccessibleAbstractActionSchemes()) {
-					returned.add(new FlexoBehaviourPathElement(parent, as, null));
+				for (FlexoBehaviour behaviour : concept.getAccessibleFlexoBehaviours(true)) {
+					returned.add(new FlexoBehaviourPathElement(parent, behaviour, null));
 				}
 				map.put(concept, returned);
 			}

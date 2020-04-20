@@ -66,7 +66,7 @@ public class CreateBasicVirtualModelInstance extends CreateFMLRTVirtualModelInst
 	private static final Logger logger = Logger.getLogger(CreateBasicVirtualModelInstance.class.getPackage().getName());
 
 	public static FlexoActionFactory<CreateBasicVirtualModelInstance, FlexoObject, FlexoObject> actionType = new FlexoActionFactory<CreateBasicVirtualModelInstance, FlexoObject, FlexoObject>(
-			"instantiate_virtual_model", FlexoActionFactory.newMenu, FlexoActionFactory.defaultGroup, FlexoActionFactory.ADD_ACTION_TYPE) {
+			"virtual_model_instance", FlexoActionFactory.newMenu, FlexoActionFactory.defaultGroup, FlexoActionFactory.ADD_ACTION_TYPE) {
 
 		/**
 		 * Factory method

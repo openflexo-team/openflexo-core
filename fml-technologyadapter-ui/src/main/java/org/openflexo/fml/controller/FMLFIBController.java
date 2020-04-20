@@ -679,10 +679,15 @@ public class FMLFIBController extends FlexoFIBController {
 	}
 
 	public void moveControlGraph(FMLControlGraph controlGraph, FMLControlGraph receiver) {
-		System.out.println("On veut bouger le graphe de controle");
+
+		if (controlGraph == receiver) {
+			return;
+		}
+
+		/*System.out.println("On veut bouger le graphe de controle");
 		System.out.println(controlGraph.getFMLRepresentation());
 		System.out.println("Juste apres:");
-		System.out.println(receiver.getFMLRepresentation());
+		System.out.println(receiver.getFMLRepresentation());*/
 
 		controlGraph.moveWhileSequentiallyAppendingTo(receiver);
 	}
@@ -816,8 +821,8 @@ public class FMLFIBController extends FlexoFIBController {
 	// TODO: refactor this (generic perspective should be adapted to FML in OpenflexoModeller)
 	public void deleteVirtualModel(FlexoResource<FMLCompilationUnit> virtualModelResource)
 			throws FileNotFoundException, ResourceLoadingCancelledException, FlexoException {
-		DeleteVirtualModel deleteVirtualModel = DeleteVirtualModel.actionType.makeNewAction(virtualModelResource.getResourceData().getVirtualModel(), null,
-				getEditor());
+		DeleteVirtualModel deleteVirtualModel = DeleteVirtualModel.actionType
+				.makeNewAction(virtualModelResource.getResourceData().getVirtualModel(), null, getEditor());
 		deleteVirtualModel.doAction();
 	}
 
@@ -851,6 +856,18 @@ public class FMLFIBController extends FlexoFIBController {
 		// && concept.getDeclaringVirtualModel() != container));
 		return concept != null && concept != container && concept.getContainerFlexoConcept() != container
 				&& concept.getDeclaringCompilationUnit() != container;
+	}
+
+	@Override
+	public void moveVirtualModelInFolder(CompilationUnitResource vmResource, RepositoryFolder receiver) {
+		super.moveVirtualModelInFolder(vmResource, receiver);
+		revalidate(vmResource.getCompilationUnit().getVirtualModel());
+	}
+
+	@Override
+	public void moveVirtualModelInVirtualModel(CompilationUnitResource vmResource, CompilationUnitResource container) {
+		super.moveVirtualModelInVirtualModel(vmResource, container);
+		revalidate(vmResource.getCompilationUnit().getVirtualModel());
 	}
 
 }

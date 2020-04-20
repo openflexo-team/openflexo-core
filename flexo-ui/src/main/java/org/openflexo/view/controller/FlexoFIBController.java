@@ -41,6 +41,7 @@ package org.openflexo.view.controller;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -71,9 +72,13 @@ import org.openflexo.foundation.action.copypaste.PasteAction;
 import org.openflexo.foundation.action.copypaste.PasteAction.PasteActionType;
 import org.openflexo.foundation.fml.FMLObject;
 import org.openflexo.foundation.fml.FMLValidationReport;
+import org.openflexo.foundation.fml.action.MoveVirtualModelToContainerVirtualModel;
+import org.openflexo.foundation.fml.action.MoveVirtualModelToDirectory;
+import org.openflexo.foundation.fml.rm.CompilationUnitResource;
 import org.openflexo.foundation.fml.rm.CompilationUnitResourceFactory;
 import org.openflexo.foundation.project.FlexoProjectReference;
 import org.openflexo.foundation.project.FlexoProjectResource;
+import org.openflexo.foundation.resource.DirectoryBasedIODelegate;
 import org.openflexo.foundation.resource.FlexoResource;
 import org.openflexo.foundation.resource.RepositoryFolder;
 import org.openflexo.foundation.resource.ResourceData;
@@ -99,6 +104,7 @@ import org.openflexo.pamela.validation.ValidationReport;
 import org.openflexo.pamela.validation.ValidationWarning;
 import org.openflexo.prefs.PresentationPreferences;
 import org.openflexo.selection.SelectionManager;
+import org.openflexo.toolbox.FileUtils;
 
 /**
  * Represents the controller of a FIBComponent in Openflexo graphical context (at this time, Swing)<br>
@@ -621,6 +627,52 @@ public class FlexoFIBController extends FIBController implements GraphicalFlexoO
 			return false;
 		}
 		return !resource.isDeleted();
+	}
+
+	public void moveVirtualModelInFolder(CompilationUnitResource vmResource, RepositoryFolder receiver) {
+		MoveVirtualModelToDirectory action = MoveVirtualModelToDirectory.actionType
+				.makeNewAction(vmResource.getCompilationUnit().getVirtualModel(), null, getEditor());
+		action.setNewFolder(receiver);
+		action.doAction();
+	}
+
+	public boolean canMoveVirtualModelInFolder(CompilationUnitResource vmResource, RepositoryFolder receiver) {
+		RepositoryFolder currentFolder = vmResource.getResourceCenter().getRepositoryFolder(vmResource);
+		if (currentFolder != null && currentFolder == receiver) {
+			return false;
+		}
+		if (vmResource.getIODelegate() instanceof DirectoryBasedIODelegate && receiver.getSerializationArtefact() instanceof File) {
+			File virtualModelDirectory = ((DirectoryBasedIODelegate) vmResource.getIODelegate()).getDirectory();
+			if (FileUtils.isFileContainedIn((File) receiver.getSerializationArtefact(), virtualModelDirectory)) {
+				return false;
+			}
+			return true;
+		}
+
+		return false;
+	}
+
+	public void moveVirtualModelInVirtualModel(CompilationUnitResource vmResource, CompilationUnitResource container) {
+		MoveVirtualModelToContainerVirtualModel action = MoveVirtualModelToContainerVirtualModel.actionType
+				.makeNewAction(vmResource.getCompilationUnit().getVirtualModel(), null, getEditor());
+		action.setContainerResource(container);
+		action.doAction();
+	}
+
+	public boolean canMoveVirtualModelInVirtualModel(CompilationUnitResource vmResource, CompilationUnitResource container) {
+		if (vmResource.getContainer() == container) {
+			return false;
+		}
+		if (vmResource.getIODelegate() instanceof DirectoryBasedIODelegate
+				&& container.getIODelegate() instanceof DirectoryBasedIODelegate) {
+			File virtualModelDirectory = ((DirectoryBasedIODelegate) vmResource.getIODelegate()).getDirectory();
+			if (FileUtils.isFileContainedIn(((DirectoryBasedIODelegate) container.getIODelegate()).getDirectory(), virtualModelDirectory)) {
+				return false;
+			}
+			return true;
+		}
+
+		return false;
 	}
 
 }

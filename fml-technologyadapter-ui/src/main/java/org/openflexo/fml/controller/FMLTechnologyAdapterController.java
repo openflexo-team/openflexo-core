@@ -57,6 +57,7 @@ import org.openflexo.fml.controller.action.AddUseDeclarationInitializer;
 import org.openflexo.fml.controller.action.AssignActionInitializer;
 import org.openflexo.fml.controller.action.CreateAbstractPropertyInitializer;
 import org.openflexo.fml.controller.action.CreateContainedVirtualModelInitializer;
+import org.openflexo.fml.controller.action.CreateContextualEditionActionInitializer;
 import org.openflexo.fml.controller.action.CreateEditionActionInitializer;
 import org.openflexo.fml.controller.action.CreateExpressionPropertyInitializer;
 import org.openflexo.fml.controller.action.CreateFlexoBehaviourInitializer;
@@ -76,6 +77,13 @@ import org.openflexo.fml.controller.action.CreateTopLevelVirtualModelInitializer
 import org.openflexo.fml.controller.action.DeclareNewVariableActionInitializer;
 import org.openflexo.fml.controller.action.DeleteFlexoConceptObjectsInitializer;
 import org.openflexo.fml.controller.action.DeleteVirtualModelInitializer;
+import org.openflexo.fml.controller.action.DuplicateVirtualModelInitializer;
+import org.openflexo.fml.controller.action.GenerateCreationSchemeInitializer;
+import org.openflexo.fml.controller.action.GenerateUnimplementedPropertiesAndBehavioursInitializer;
+import org.openflexo.fml.controller.action.MoveVirtualModelToContainerVirtualModelInitializer;
+import org.openflexo.fml.controller.action.MoveVirtualModelToDirectoryInitializer;
+import org.openflexo.fml.controller.action.RenameFlexoConceptInitializer;
+import org.openflexo.fml.controller.action.RenameVirtualModelInitializer;
 import org.openflexo.fml.controller.validation.ValidateActionizer;
 import org.openflexo.fml.controller.view.StandardFlexoConceptView;
 import org.openflexo.fml.controller.view.StandardVirtualModelView;
@@ -206,6 +214,7 @@ public class FMLTechnologyAdapterController extends TechnologyAdapterController<
 	protected void initializeActions(ControllerActionInitializer actionInitializer) {
 
 		// Add paste handlers
+		actionInitializer.getEditingContext().registerPasteHandler(new RepositoryFolderPasteHandler());
 		actionInitializer.getEditingContext().registerPasteHandler(new VirtualModelPasteHandler());
 		actionInitializer.getEditingContext().registerPasteHandler(new FlexoConceptPasteHandler());
 		actionInitializer.getEditingContext().registerPasteHandler(new FlexoPropertyPasteHandler());
@@ -246,6 +255,8 @@ public class FMLTechnologyAdapterController extends TechnologyAdapterController<
 		new CreateGenericBehaviourParameterInitializer(actionInitializer);
 		new CreateInspectorEntryInitializer(actionInitializer);
 
+		new CreateContextualEditionActionInitializer(actionInitializer);
+
 		new DeclareNewVariableActionInitializer(actionInitializer);
 		new AssignActionInitializer(actionInitializer);
 		new AddToListActionInitializer(actionInitializer);
@@ -259,6 +270,15 @@ public class FMLTechnologyAdapterController extends TechnologyAdapterController<
 		}
 
 		new AddParentFlexoConceptInitializer(actionInitializer);
+
+		new MoveVirtualModelToDirectoryInitializer(actionInitializer);
+		new MoveVirtualModelToContainerVirtualModelInitializer(actionInitializer);
+		new RenameVirtualModelInitializer(actionInitializer);
+		new DuplicateVirtualModelInitializer(actionInitializer);
+
+		new RenameFlexoConceptInitializer(actionInitializer);
+		new GenerateCreationSchemeInitializer(actionInitializer);
+		new GenerateUnimplementedPropertiesAndBehavioursInitializer(actionInitializer);
 
 		FlexoActionFactory.newVirtualModelMenu.setSmallIcon(FMLIconLibrary.VIRTUAL_MODEL_ICON);
 		FlexoActionFactory.newPropertyMenu.setSmallIcon(FMLIconLibrary.FLEXO_ROLE_ICON);

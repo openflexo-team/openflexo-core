@@ -57,6 +57,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.FlexoProject;
@@ -516,8 +517,10 @@ public interface FileSystemBasedResourceCenter extends FlexoResourceCenter<File>
 		 */
 		@Override
 		public void fileAdded(File file) {
-			System.out.println(
-					"File ADDED in resource center " + this + " : " + file.getName() + " in " + file.getParentFile().getAbsolutePath());
+			if (logger.isLoggable(Level.FINE)) {
+				logger.fine(
+						"File ADDED in resource center " + this + " : " + file.getName() + " in " + file.getParentFile().getAbsolutePath());
+			}
 			if (getServiceManager() != null && getServiceManager().getTechnologyAdapterService() != null) {
 				for (TechnologyAdapter<?> adapter : getServiceManager().getTechnologyAdapterService().getTechnologyAdapters()) {
 					if (!isIgnorable(file, adapter)) {
@@ -536,7 +539,9 @@ public interface FileSystemBasedResourceCenter extends FlexoResourceCenter<File>
 				}
 
 			}
-			System.out.println("Done: File ADDED " + file.getName() + " in " + file.getParentFile().getAbsolutePath());
+			if (logger.isLoggable(Level.FINE)) {
+				logger.fine("Done: File ADDED " + file.getName() + " in " + file.getParentFile().getAbsolutePath());
+			}
 		}
 
 		@Override
@@ -548,7 +553,9 @@ public interface FileSystemBasedResourceCenter extends FlexoResourceCenter<File>
 						List<File> filesToBeNotified = addedFilesToBeRenotified.get(adapter);
 						if (filesToBeNotified != null && filesToBeNotified.size() > 0) {
 							for (File f : new ArrayList<>(filesToBeNotified)) {
-								logger.info("fileAdded (discovered later)" + f + " with adapter " + adapter.getName() + " : " + f);
+								if (logger.isLoggable(Level.FINE)) {
+									logger.fine("fileAdded (discovered later)" + f + " with adapter " + adapter.getName() + " : " + f);
+								}
 								adapter.contentsAdded(this, f);
 								filesToBeNotified.remove(f);
 							}
@@ -563,7 +570,9 @@ public interface FileSystemBasedResourceCenter extends FlexoResourceCenter<File>
 
 		@Override
 		public void fileDeleted(File file) {
-			System.out.println("File DELETED " + file.getName() + " in " + file.getParentFile().getAbsolutePath());
+			if (logger.isLoggable(Level.FINE)) {
+				logger.fine("File DELETED " + file.getName() + " in " + file.getParentFile().getAbsolutePath());
+			}
 			if (getServiceManager() != null) {
 				for (TechnologyAdapter<?> adapter : getServiceManager().getTechnologyAdapterService().getTechnologyAdapters()) {
 					if (!isIgnorable(file, adapter)) {
@@ -573,7 +582,9 @@ public interface FileSystemBasedResourceCenter extends FlexoResourceCenter<File>
 							removedFilesToBeRenotified.put(adapter, filesToBeNotified);
 						}
 						if (adapter.isActivated()) {
-							logger.info("fileDeleted " + file + " with adapter " + adapter.getName());
+							if (logger.isLoggable(Level.FINE)) {
+								logger.fine("fileDeleted " + file + " with adapter " + adapter.getName());
+							}
 							if (TechnologyAdapter.contentsDeleted(this, file)) {
 								filesToBeNotified.remove(file);
 							}
@@ -597,9 +608,14 @@ public interface FileSystemBasedResourceCenter extends FlexoResourceCenter<File>
 							for (File f : new ArrayList<>(filesToBeNotified)) {
 								if (TechnologyAdapter.contentsDeleted(this, f)) {
 									filesToBeNotified.remove(f);
-									logger.info("fileDeleted (discovered later)" + f + " with adapter " + adapter.getName() + " : " + f);
+									if (logger.isLoggable(Level.FINE)) {
+										logger.fine(
+												"fileDeleted (discovered later)" + f + " with adapter " + adapter.getName() + " : " + f);
+									}
 								}
-								logger.info("fileDeleted but ignored for adapter " + adapter.getName() + " : " + f);
+								if (logger.isLoggable(Level.FINE)) {
+									logger.fine("fileDeleted but ignored for adapter " + adapter.getName() + " : " + f);
+								}
 							}
 						}
 					}
@@ -613,8 +629,10 @@ public interface FileSystemBasedResourceCenter extends FlexoResourceCenter<File>
 
 		protected void fileRenamed(File oldFile, File renamedFile) {
 			if (!isIgnorable(renamedFile, null)) {
-				System.out.println("File RENAMED from  " + oldFile.getName() + " to " + renamedFile.getName() + " in "
-						+ renamedFile.getParentFile().getAbsolutePath());
+				if (logger.isLoggable(Level.FINE)) {
+					logger.fine("File RENAMED from  " + oldFile.getName() + " to " + renamedFile.getName() + " in "
+							+ renamedFile.getParentFile().getAbsolutePath());
+				}
 				/*if (technologyAdapterService != null) {
 					for (TechnologyAdapter adapter : technologyAdapterService.getTechnologyAdapters()) {
 						logger.info("fileDeleted " + file + " with adapter " + adapter.getName());

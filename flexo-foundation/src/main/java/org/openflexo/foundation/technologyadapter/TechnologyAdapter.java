@@ -852,6 +852,10 @@ public abstract class TechnologyAdapter<TA extends TechnologyAdapter<TA>> extend
 							// replace with directory from source code (development mode)
 							String dirPath = URLDecoder.decode(url.getPath().substring(0, url.getPath().indexOf("META-INF")), "UTF-8")
 									.replace("target/classes", "src/main/resources");
+							if (getServiceManager().getResourceCenterService().isDevMode()) {
+								dirPath = dirPath.replace("/bin/main", "/src/main/resources/");
+								dirPath = dirPath.replace("build/resources/main", "/src/main/resources/");
+							}
 							File rcDir = new File(dirPath);
 							if (rcDir.exists()) {
 								rc = DirectoryResourceCenter.instanciateNewDirectoryResourceCenter(rcDir,

@@ -55,6 +55,13 @@ public class ResourceLoaded<RD extends ResourceData<RD>> extends DataModificatio
 	/**
 	 * @param resource
 	 */
+	public ResourceLoaded(FlexoResource<RD> resource) {
+		this(resource, resource.getLoadedResourceData());
+	}
+
+	/**
+	 * @param resource
+	 */
 	public ResourceLoaded(FlexoResource<RD> resource, RD resourceData) {
 		super("isLoaded", null, resourceData);
 		this.resource = resource;

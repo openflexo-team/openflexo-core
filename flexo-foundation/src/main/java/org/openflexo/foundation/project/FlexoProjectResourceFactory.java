@@ -231,7 +231,7 @@ public class FlexoProjectResourceFactory<I> extends PamelaResourceFactory<FlexoP
 	}
 
 	@Override
-	protected <I2> FlexoProjectResource<I> registerResource(FlexoProjectResource<I> resource, FlexoResourceCenter<I2> resourceCenter) {
+	public <I2> FlexoProjectResource<I> registerResource(FlexoProjectResource<I> resource, FlexoResourceCenter<I2> resourceCenter) {
 
 		// the ResourceCenter might be null here, so we "force" the ServiceManager
 		resource.setServiceManager(serviceManager);

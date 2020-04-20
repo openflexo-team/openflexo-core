@@ -72,7 +72,7 @@ public class CreateGenericBehaviourParameter extends FlexoAction<CreateGenericBe
 	private static final Logger logger = Logger.getLogger(CreateGenericBehaviourParameter.class.getPackage().getName());
 
 	public static FlexoActionFactory<CreateGenericBehaviourParameter, FlexoBehaviourObject, FMLObject> actionType = new FlexoActionFactory<CreateGenericBehaviourParameter, FlexoBehaviourObject, FMLObject>(
-			"create_behaviour_parameter", FlexoActionFactory.newMenu, FlexoActionFactory.defaultGroup, FlexoActionFactory.ADD_ACTION_TYPE) {
+			"behaviour_parameter", FlexoActionFactory.newMenu, FlexoActionFactory.defaultGroup, FlexoActionFactory.ADD_ACTION_TYPE) {
 
 		/**
 		 * Factory method
@@ -199,6 +199,7 @@ public class CreateGenericBehaviourParameter extends FlexoAction<CreateGenericBe
 		newParameter = factory.newParameter(getFlexoBehaviour());
 		newParameter.setName(getParameterName());
 		newParameter.setType(getParameterType());
+		newParameter.setWidget(getWidgetType());
 		newParameter.setContainer(getContainer());
 		newParameter.setDefaultValue(getDefaultValue());
 		newParameter.setList(getList());
@@ -213,19 +214,15 @@ public class CreateGenericBehaviourParameter extends FlexoAction<CreateGenericBe
 	@Override
 	public boolean isValid() {
 		if (StringUtils.isEmpty(getParameterName())) {
-			System.out.println("hop1 " + getParameterName());
 			return false;
 		}
 		else if (getFlexoBehaviour().getParameter(getParameterName()) != null) {
-			System.out.println("hop2 " + getParameterName());
 			return false;
 		}
 		if (getParameterType() == null) {
-			System.out.println("hop3 " + getParameterType());
 			return false;
 		}
 		if (getWidgetType() == null) {
-			System.out.println("hop4 " + getWidgetType());
 			return false;
 		}
 		return true;

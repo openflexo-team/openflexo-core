@@ -164,7 +164,7 @@ public abstract class DefaultResourceCenterService extends FlexoServiceImpl impl
 				boolean rcExists = false;
 				while (urlList.hasMoreElements()) {
 					URL url = urlList.nextElement();
-
+					logger.info("Loading ResourceCenter " + url);
 					StringWriter writer = new StringWriter();
 					IOUtils.copy(url.openStream(), writer, "UTF-8");
 					String rcBaseUri = writer.toString().trim();

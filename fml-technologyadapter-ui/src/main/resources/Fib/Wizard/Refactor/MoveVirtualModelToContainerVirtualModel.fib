@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Panel id="0" align="left" borderTop="0" borderLeft="0"
+	trackViewPortHeight="true" trackViewPortWidth="true" borderBottom="0"
+	border="empty" sizeAdjustment="OriginalSize"
+	titleFont="Lucida Grande,0,13" layout="twocols" borderRight="0"
+	controllerClassName="org.openflexo.view.controller.FlexoFIBController"
+	name="Panel">
+	<Label id="1" label="container" align="left" localize="true"
+		constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=left)"
+		name="NewContainerLabel" />
+	<Custom index="2"
+		componentClassName="org.openflexo.fml.controller.widget.FIBVirtualModelSelector"
+		dataClassForComponent="org.openflexo.foundation.fml.rm.VirtualModelResource"
+		localize="true" manageDynamicModel="true"
+		data="data.containerResource"
+		constraints="twocols(expandHorizontally=true;expandVertically=false;index=13;insetsBottom=0;insetsLeft=0;insetsRight=20;insetsTop=0;location=right)"
+		name="VirtualModelSelector">
+		<Assignment id="11"
+			variable="component.virtualModelLibrary"
+			value="data.virtualModel.virtualModelLibrary" mandatory="true" />
+	</Custom>
+	<LocalizedDictionary id="9">
+		<Localized id="10" lang="English" value="Target directory"
+			key="target_directory" />
+		<Localized id="11" lang="Dutch" value="Target directory"
+			key="target_directory" />
+		<Localized id="12" lang="French" value="Répertoire"
+			key="target_directory" />
+	</LocalizedDictionary>
+	<FIBVariable id="13"
+		type="org.openflexo.fml.controller.action.MoveVirtualModelToContainerVirtualModelWizard$MoveVirtualModelInfo"
+		name="data" />
+</Panel>

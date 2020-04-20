@@ -116,12 +116,7 @@ public abstract class AbstractActionSchemeAction<A extends AbstractActionSchemeA
 	}
 
 	public final FB getApplicableActionScheme() {
-		return (FB) getFlexoBehaviour().getMostSpecializedBehaviour(getFlexoConceptInstance().getFlexoConcept());
-	}
-
-	@Override
-	public FB getApplicableFlexoBehaviour() {
-		return getApplicableActionScheme();
+		return getApplicableFlexoBehaviour();
 	}
 
 }

@@ -72,6 +72,7 @@ import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstanceRepository;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.editionaction.AddFlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.editionaction.AddVirtualModelInstance;
+import org.openflexo.foundation.fml.rt.editionaction.CreateTopLevelVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.editionaction.ExecuteFML;
 import org.openflexo.foundation.fml.rt.editionaction.ExecuteFlexoBehaviour;
 import org.openflexo.foundation.fml.rt.editionaction.SelectFlexoConceptInstance;
@@ -223,7 +224,10 @@ public class FMLRTTechnologyAdapterController extends TechnologyAdapterControlle
 		if (AddFlexoConceptInstance.class.isAssignableFrom(editionActionClass)) {
 			return IconFactory.getImageIcon(FMLRTIconLibrary.FLEXO_CONCEPT_INSTANCE_ICON, IconLibrary.DUPLICATE);
 		}
-		if (AddVirtualModelInstance.class.isAssignableFrom(editionActionClass)) {
+		else if (CreateTopLevelVirtualModelInstance.class.isAssignableFrom(editionActionClass)) {
+			return IconFactory.getImageIcon(FMLRTIconLibrary.VIRTUAL_MODEL_INSTANCE_ICON, IconLibrary.DUPLICATE);
+		}
+		else if (AddVirtualModelInstance.class.isAssignableFrom(editionActionClass)) {
 			return IconFactory.getImageIcon(FMLRTIconLibrary.VIRTUAL_MODEL_INSTANCE_ICON, IconLibrary.DUPLICATE);
 		}
 		else if (AddClassInstance.class.isAssignableFrom(editionActionClass)) {

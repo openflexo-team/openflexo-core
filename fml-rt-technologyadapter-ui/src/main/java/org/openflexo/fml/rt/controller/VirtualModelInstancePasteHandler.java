@@ -131,6 +131,8 @@ public class VirtualModelInstancePasteHandler extends FlexoPasteHandler<VirtualM
 		}
 
 		System.out.println("Done notify.........");
+
+		super.finalizePasting(clipboard, pastingContext);
 	}
 
 	public Object getModelSlotSpecificPastingPointHolder(ModelSlotInstance<?, ?> modelSlotInstance,

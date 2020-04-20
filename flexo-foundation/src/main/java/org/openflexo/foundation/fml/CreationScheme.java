@@ -38,6 +38,8 @@
 
 package org.openflexo.foundation.fml;
 
+import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
+import org.openflexo.foundation.fml.rt.action.SuperCreationSchemeActionFactory;
 import org.openflexo.pamela.annotations.Getter;
 import org.openflexo.pamela.annotations.ImplementationClass;
 import org.openflexo.pamela.annotations.ModelEntity;
@@ -63,6 +65,8 @@ public interface CreationScheme extends AbstractCreationScheme {
 	@Setter(IS_ANONYMOUS_KEY)
 	public void setAnonymous(boolean isAnonymous);
 
+	SuperCreationSchemeActionFactory getSuperCreationSchemeActionFactory(FlexoConceptInstance fci);
+
 	public static abstract class CreationSchemeImpl extends AbstractCreationSchemeImpl implements CreationScheme {
 
 		@Override
@@ -71,6 +75,11 @@ public interface CreationScheme extends AbstractCreationScheme {
 				return DEFAULT_CREATION_SCHEME_NAME;
 			}
 			return super.getName();
+		}
+
+		@Override
+		public SuperCreationSchemeActionFactory getSuperCreationSchemeActionFactory(FlexoConceptInstance fci) {
+			return new SuperCreationSchemeActionFactory(this, fci);
 		}
 
 	}

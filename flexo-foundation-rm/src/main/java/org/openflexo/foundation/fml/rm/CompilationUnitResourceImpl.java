@@ -1174,4 +1174,11 @@ public abstract class CompilationUnitResourceImpl extends PamelaResourceImpl<FML
 	public String toString() {
 		return "CompilationUnitResource@" + Integer.toHexString(hashCode()) + "/" + getName();
 	}
+
+	@Override
+	public void resolvedCrossReferenceDependency(FlexoResource<?> requestedResource) {
+		super.resolvedCrossReferenceDependency(requestedResource);
+		// System.out.println("resolvedCrossReferenceDependancy for " + getName());
+	}
+
 }

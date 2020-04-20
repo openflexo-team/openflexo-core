@@ -67,6 +67,12 @@ public class FIBVirtualModelBrowser extends FIBBrowserView<VirtualModel> {
 
 	public void setVirtualModel(VirtualModel virtualModel) {
 		setRootObject(virtualModel);
+		getFIBController().setViewMode(getFIBController().getViewMode(), true);
+	}
+
+	@Override
+	public FIBVirtualModelBrowserFIBController getFIBController() {
+		return (FIBVirtualModelBrowserFIBController) super.getFIBController();
 	}
 
 	public JFIBBrowserWidget<?> getFIBBrowserWidget() {

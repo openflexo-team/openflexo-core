@@ -104,7 +104,7 @@ public interface FMLObjectActorReference<T extends FMLObject> extends ActorRefer
 		// Serialization/deserialization only, do not use
 		@Override
 		public String getVirtualModelURI() {
-			if (object != null) {
+			if (object != null && object.getDeclaringCompilationUnit() != null) {
 				return object.getDeclaringCompilationUnit().getURI();
 			}
 			return virtualModelURI;
@@ -133,7 +133,13 @@ public interface FMLObjectActorReference<T extends FMLObject> extends ActorRefer
 		public T getModellingElement(boolean forceLoading) {
 			if (object == null && virtualModelURI != null && objectURI != null) {
 				// First find the VirtualModel
+				if (getFlexoConceptInstance() == null) {
+					return null;
+				}
 				FlexoServiceManager sm = getFlexoConceptInstance().getServiceManager();
+				if (sm == null || sm.getVirtualModelLibrary() == null) {
+					return null;
+				}
 				VirtualModel virtualModel = null;
 				try {
 					virtualModel = sm.getVirtualModelLibrary().getVirtualModel(virtualModelURI);

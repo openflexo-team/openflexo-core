@@ -140,6 +140,8 @@ public class CreateTopLevelVirtualModel
 					getNewVirtualModelURI(), getVirtualModelFolder(), null, true);
 			newVirtualModel = newVirtualModelResource.getLoadedResourceData().getVirtualModel();
 			newVirtualModel.setDescription(getNewVirtualModelDescription());
+			newVirtualModel.setVisibility(getVisibility());
+			newVirtualModel.setAbstract(getIsAbstract());
 		} catch (SaveResourceException e) {
 			throw new SaveResourceException(null);
 		} catch (ModelDefinitionException e) {

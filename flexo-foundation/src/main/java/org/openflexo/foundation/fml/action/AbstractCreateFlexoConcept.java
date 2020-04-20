@@ -57,6 +57,7 @@ import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoConceptObject;
 import org.openflexo.foundation.fml.InconsistentFlexoConceptHierarchyException;
 import org.openflexo.foundation.fml.SynchronizationScheme;
+import org.openflexo.foundation.fml.Visibility;
 import org.openflexo.foundation.fml.action.CreateFlexoBehaviour.BehaviourParameterEntry;
 import org.openflexo.foundation.fml.editionaction.AssignationAction;
 import org.openflexo.foundation.fml.editionaction.ExpressionAction;
@@ -76,6 +77,9 @@ public abstract class AbstractCreateFlexoConcept<A extends FlexoAction<A, T1, T2
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(AbstractCreateFlexoConcept.class.getPackage().getName());
 
+	private boolean isAbstract = false;
+	private Visibility visibility = Visibility.Public;
+
 	private final List<ParentFlexoConceptEntry> parentFlexoConceptEntries;
 
 	private final List<PropertyEntry<?>> propertiesEntries;
@@ -93,6 +97,28 @@ public abstract class AbstractCreateFlexoConcept<A extends FlexoAction<A, T1, T2
 	}
 
 	public abstract FlexoConcept getNewFlexoConcept();
+
+	public boolean getIsAbstract() {
+		return isAbstract;
+	}
+
+	public void setIsAbstract(boolean isAbstract) {
+		boolean wasValid = isValid();
+		this.isAbstract = isAbstract;
+		getPropertyChangeSupport().firePropertyChange("isAbstract", null, isAbstract);
+		getPropertyChangeSupport().firePropertyChange("isValid", wasValid, isValid());
+	}
+
+	public Visibility getVisibility() {
+		return visibility;
+	}
+
+	public void setVisibility(Visibility visibility) {
+		boolean wasValid = isValid();
+		this.visibility = visibility;
+		getPropertyChangeSupport().firePropertyChange("visibility", null, visibility);
+		getPropertyChangeSupport().firePropertyChange("isValid", wasValid, isValid());
+	}
 
 	public List<ParentFlexoConceptEntry> getParentFlexoConceptEntries() {
 		return parentFlexoConceptEntries;

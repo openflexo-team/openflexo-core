@@ -98,8 +98,8 @@ public abstract class TechnologySpecificPamelaResourceFactory<R extends Technolo
 	 * @return
 	 */
 	@Override
-	protected <I> R registerResource(R resource, FlexoResourceCenter<I> resourceCenter) { // I must be used cause it is needed in the super
-																							// class
+	public <I> R registerResource(R resource, FlexoResourceCenter<I> resourceCenter) { // I must be used cause it is needed in the super
+																						// class
 		R returned = super.registerResource(resource, resourceCenter);
 		// Register the resource in the global repository of technology adapter
 		if (resourceCenter != null) {
