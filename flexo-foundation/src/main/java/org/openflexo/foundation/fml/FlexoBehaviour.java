@@ -416,7 +416,7 @@ public interface FlexoBehaviour extends FlexoBehaviourObject, Function, FMLContr
 		@Override
 		public ListMetaData getUIMetaData(boolean ensureExistence) {
 			ListMetaData returned = getListMetaData("UI");
-			if (returned == null && ensureExistence) {
+			if (returned == null && ensureExistence && getFMLModelFactory() != null) {
 				returned = getFMLModelFactory().newListMetaData("UI");
 				addToMetaData(returned);
 			}
@@ -457,7 +457,9 @@ public interface FlexoBehaviour extends FlexoBehaviourObject, Function, FMLContr
 		@Override
 		public void setLabel(String label) {
 			if ((label == null && getLabel() != null) || (label != null && !label.equals(getLabel()))) {
-				getUIMetaData(true).setSingleMetaData(LABEL_KEY, label, String.class);
+				if (getUIMetaData(true) != null) {
+					getUIMetaData(true).setSingleMetaData(LABEL_KEY, label, String.class);
+				}
 			}
 		}
 
@@ -605,12 +607,12 @@ public interface FlexoBehaviour extends FlexoBehaviourObject, Function, FMLContr
 
 		@Override
 		public void setName(String name) {
-			// Avoid keyword
-			if (name.equals("create")) {
+			// Avoid keywords
+			if ("create".equals(name)) {
 				setName("_create");
 				return;
 			}
-			if (name.equals("delete")) {
+			if ("delete".equals(name)) {
 				setName("_delete");
 				return;
 			}

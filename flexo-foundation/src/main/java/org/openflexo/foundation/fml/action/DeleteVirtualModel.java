@@ -109,9 +109,9 @@ public class DeleteVirtualModel extends FlexoAction<DeleteVirtualModel, VirtualM
 		CompilationUnitResource virtualModelResource = getFocusedObject().getResource();
 		if (virtualModelResource != null) {
 			CompilationUnitResource containerResource = virtualModelResource.getContainer();
-			if (containerResource != null) {
+			/*if (containerResource != null) {
 				containerResource.getCompilationUnit().getVirtualModel().removeFromVirtualModels(getFocusedObject());
-			}
+			}*/
 
 			// Delete the VirtualModel itself
 			getFocusedObject().delete();

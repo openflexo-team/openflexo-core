@@ -107,9 +107,9 @@ public class CompilationUnitResourceFactory
 	@Override
 	protected FMLCompilationUnit createEmptyContents(CompilationUnitResource resource) {
 		FMLCompilationUnit returned = super.createEmptyContents(resource);
-		if (resource.getContainer() != null) {
+		/*if (resource.getContainer() != null) {
 			resource.getContainer().getCompilationUnit().getVirtualModel().addToVirtualModels(returned.getVirtualModel());
-		}
+		}*/
 		return returned;
 	}
 

@@ -192,9 +192,8 @@ public class TestBehavioursInheritance extends OpenflexoProjectAtRunTimeTestCase
 		assertEquals(VirtualModelInstanceType.getVirtualModelInstanceType(virtualModel),
 				virtualModel.getBindingModel().bindingVariableNamed(VirtualModelBindingModel.THIS_PROPERTY).getType());
 
-		// We disconnect VirtualModel from ViewPoint, and we check BindingModel
-		// evolution
-		viewPoint.removeFromVirtualModels(virtualModel);
+		// We disconnect VirtualModel from ViewPoint, and we check BindingModel evolution
+		viewPoint.getResource().removeFromContents(virtualModel.getResource());
 		System.out.println("VirtualModel BindingModel = " + virtualModel.getBindingModel());
 		assertNotNull(virtualModel.getBindingModel());
 		assertEquals(1, virtualModel.getBindingModel().getBindingVariablesCount());
@@ -203,7 +202,7 @@ public class TestBehavioursInheritance extends OpenflexoProjectAtRunTimeTestCase
 				virtualModel.getBindingModel().bindingVariableNamed(VirtualModelBindingModel.THIS_PROPERTY).getType());
 
 		// We reconnect VirtualModel again, and we check BindingModel evolution
-		viewPoint.addToVirtualModels(virtualModel);
+		viewPoint.getResource().addToContents(virtualModel.getResource());
 		System.out.println("VirtualModel BindingModel = " + virtualModel.getBindingModel());
 		assertEquals(2, virtualModel.getBindingModel().getBindingVariablesCount());
 		assertNotNull(virtualModel.getBindingModel().bindingVariableNamed(VirtualModelBindingModel.THIS_PROPERTY));

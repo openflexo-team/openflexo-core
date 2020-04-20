@@ -88,14 +88,14 @@ public interface AddVirtualModelInstance extends AbstractAddFlexoConceptInstance
 	@PropertyIdentifier(type = DataBinding.class)
 	public static final String VIRTUAL_MODEL_INSTANCE_TITLE_KEY = "virtualModelInstanceTitle";
 
-	@Getter(value = VIRTUAL_MODEL_INSTANCE_NAME_KEY)
+	@Getter(value = VIRTUAL_MODEL_INSTANCE_NAME_KEY, ignoreForEquality = true)
 	@XMLAttribute
 	public DataBinding<String> getVirtualModelInstanceName();
 
 	@Setter(VIRTUAL_MODEL_INSTANCE_NAME_KEY)
 	public void setVirtualModelInstanceName(DataBinding<String> virtualModelInstanceName);
 
-	@Getter(value = VIRTUAL_MODEL_INSTANCE_TITLE_KEY)
+	@Getter(value = VIRTUAL_MODEL_INSTANCE_TITLE_KEY, ignoreForEquality = true)
 	@XMLAttribute
 	public DataBinding<String> getVirtualModelInstanceTitle();
 

@@ -306,7 +306,6 @@ public abstract class CompilationUnitResourceImpl extends PamelaResourceImpl<FML
 			InconsistentDataException, InvalidModelDefinitionException {
 
 		logger.info("*************** Loading " + getName() + " uri=" + getURI());
-		Thread.dumpStack();
 
 		setLoading(true);
 
@@ -342,12 +341,12 @@ public abstract class CompilationUnitResourceImpl extends PamelaResourceImpl<FML
 			getContainer().startDeserializing();
 		}
 		startDeserializing();
-		if (getContainer() != null) {
+		if (getContainer() != null && getContainer().getCompilationUnit() != null) {
 			VirtualModel virtualModel = getContainer().getCompilationUnit().getVirtualModel();
 			if (virtualModel != null) {
 				System.out.println("loadResourceData() for " + this);
 				System.out.println("   ----> On met " + resourceData.getVirtualModel() + " dans " + virtualModel);
-				virtualModel.addToVirtualModels(resourceData.getVirtualModel());
+				// virtualModel.addToVirtualModels(resourceData.getVirtualModel());
 			}
 		}
 		if (resourceData != null) {

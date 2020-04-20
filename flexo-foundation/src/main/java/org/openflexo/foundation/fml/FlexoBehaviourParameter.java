@@ -417,7 +417,7 @@ public interface FlexoBehaviourParameter extends FlexoBehaviourObject, FunctionA
 				System.exit(-1);
 			}*/
 			// System.out.println("On fait setWidget avec " + widget);
-			if (widget != getWidget()) {
+			if (widget != null && widget != getWidget()) {
 				MultiValuedMetaData md = getParameterMetaData(true);
 				md.setKey(widget.getAnnotation());
 				// System.out.println("KEY: " + widget.getAnnotation());

@@ -222,7 +222,7 @@ public class TestFMLBindingModelManagement extends OpenflexoProjectAtRunTimeTest
 
 		// We disconnect VirtualModel from ViewPoint, and we check BindingModel
 		// evolution
-		viewPoint.removeFromVirtualModels(virtualModel1);
+		viewPoint.getResource().removeFromContents(virtualModel1.getResource());
 		assertNotNull(virtualModel1.getBindingModel());
 		assertEquals(1, virtualModel1.getBindingModel().getBindingVariablesCount());
 		assertNotNull(virtualModel1.getBindingModel().bindingVariableNamed(VirtualModelBindingModel.THIS_PROPERTY));
@@ -230,7 +230,7 @@ public class TestFMLBindingModelManagement extends OpenflexoProjectAtRunTimeTest
 				virtualModel1.getBindingModel().bindingVariableNamed(VirtualModelBindingModel.THIS_PROPERTY).getType());
 
 		// We reconnect VirtualModel again, and we check BindingModel evolution
-		viewPoint.addToVirtualModels(virtualModel1);
+		viewPoint.getResource().addToContents(virtualModel1.getResource());
 		System.out.println("BM = " + virtualModel1.getBindingModel());
 		assertEquals(2, virtualModel1.getBindingModel().getBindingVariablesCount());
 		assertNotNull(virtualModel1.getBindingModel().bindingVariableNamed(VirtualModelBindingModel.THIS_PROPERTY));

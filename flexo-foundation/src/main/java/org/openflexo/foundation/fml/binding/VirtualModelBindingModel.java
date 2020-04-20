@@ -46,6 +46,8 @@ import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
+import org.openflexo.foundation.fml.rt.VirtualModelInstance;
+import org.openflexo.foundation.resource.FlexoResource;
 
 /**
  * This is the {@link BindingModel} exposed by a {@link VirtualModel}<br>
@@ -71,6 +73,9 @@ public class VirtualModelBindingModel extends FlexoConceptBindingModel {
 		super(virtualModel.getContainerVirtualModel() != null && virtualModel != virtualModel.getContainerVirtualModel()
 				? virtualModel.getContainerVirtualModel().getBindingModel()
 				: null, virtualModel);
+		if (virtualModel != null && virtualModel.getResource() != null && virtualModel.getResource().getPropertyChangeSupport() != null) {
+			virtualModel.getResource().getPropertyChangeSupport().addPropertyChangeListener(this);
+		}
 	}
 
 	public VirtualModel getVirtualModel() {
@@ -102,7 +107,7 @@ public class VirtualModelBindingModel extends FlexoConceptBindingModel {
 		// + evt.getSource() + " evt=" + evt);
 		super.propertyChange(evt);
 		if (evt.getSource() == getVirtualModel()) {
-			if (evt.getPropertyName().equals(VirtualModel.CONTAINER_VIRTUAL_MODEL_KEY)) {
+			/*if (evt.getPropertyName().equals(VirtualModel.CONTAINER_VIRTUAL_MODEL_KEY)) {
 				// The VirtualModel changes it's container virtual model
 				setBaseBindingModel(getVirtualModel().getContainerVirtualModel() != null
 						? getVirtualModel().getContainerVirtualModel().getBindingModel()
@@ -111,9 +116,22 @@ public class VirtualModelBindingModel extends FlexoConceptBindingModel {
 				updateContainerVirtualModelListener();
 				updateContainerBindingVariable();
 				updatePropertyVariables();
-			}
+			}*/
 
 			if (evt.getPropertyName().equals(FlexoConcept.CONTAINER_FLEXO_CONCEPT_KEY)) {
+				updateContainerVirtualModelListener();
+				updateContainerBindingVariable();
+				updatePropertyVariables();
+			}
+		}
+		if (getVirtualModel() != null && evt.getSource() == getVirtualModel().getResource()) {
+			if (evt.getPropertyName().equals(FlexoResource.CONTAINER)) {
+				System.out.println("OK la resource me notifie " + evt.getPropertyName());
+				// The VirtualModel changes it's container virtual model
+				setBaseBindingModel(getVirtualModel().getContainerVirtualModel() != null
+						? getVirtualModel().getContainerVirtualModel().getBindingModel()
+						: null);
+				// virtualModelInstanceBindingVariable.setType(getVirtualModelInstanceType());
 				updateContainerVirtualModelListener();
 				updateContainerBindingVariable();
 				updatePropertyVariables();
@@ -130,10 +148,17 @@ public class VirtualModelBindingModel extends FlexoConceptBindingModel {
 				if (lastKnownContainer.getPropertyChangeSupport() != null) {
 					lastKnownContainer.getPropertyChangeSupport().removePropertyChangeListener(this);
 				}
+				if (lastKnownContainer.getResource() != null && lastKnownContainer.getResource().getPropertyChangeSupport() != null) {
+					lastKnownContainer.getResource().getPropertyChangeSupport().removePropertyChangeListener(this);
+				}
 			}
 			if (getVirtualModel().getContainerVirtualModel() != null) {
 				if (getVirtualModel().getContainerVirtualModel().getPropertyChangeSupport() != null) {
 					getVirtualModel().getContainerVirtualModel().getPropertyChangeSupport().addPropertyChangeListener(this);
+				}
+				if (getVirtualModel().getContainerVirtualModel().getResource() != null
+						&& getVirtualModel().getContainerVirtualModel().getResource().getPropertyChangeSupport() != null) {
+					getVirtualModel().getContainerVirtualModel().getResource().getPropertyChangeSupport().addPropertyChangeListener(this);
 				}
 			}
 			lastKnownContainer = getVirtualModel().getContainerVirtualModel();

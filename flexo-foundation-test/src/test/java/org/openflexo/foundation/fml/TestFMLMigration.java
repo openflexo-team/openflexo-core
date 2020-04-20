@@ -38,6 +38,7 @@
 
 package org.openflexo.foundation.fml;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
@@ -168,10 +169,17 @@ public class TestFMLMigration extends OpenflexoTestCase {
 		System.out.println("De l'autre: ");
 		System.out.println(testInfo.reloadedFMLVersion.getNormalizedFML());
 
-		System.out.println("VMs pour :" + testInfo.initialXMLVersion.getVirtualModel() + " : "
-				+ testInfo.initialXMLVersion.getVirtualModel().getVirtualModels());
+		assertEquals(testInfo.initialXMLVersion.getVirtualModel().getVirtualModels(true),
+				testInfo.reloadedFMLVersion.getVirtualModel().getVirtualModels(true));
+
+		/*System.out.println("VMs pour :" + testInfo.initialXMLVersion.getVirtualModel() + " : "
+				+ testInfo.initialXMLVersion.getVirtualModel().getVirtualModels(true));
 		System.out.println("VMs la:   " + testInfo.reloadedFMLVersion.getVirtualModel() + " : "
-				+ testInfo.reloadedFMLVersion.getVirtualModel().getVirtualModels());
+				+ testInfo.reloadedFMLVersion.getVirtualModel().getVirtualModels(true));
+		
+		System.out.println("testInfo.initialXMLVersion.getResource()=" + testInfo.initialXMLVersion.getResource());
+		System.out.println(
+				"testInfo.initialXMLVersion.getResource().getContainer()=" + testInfo.initialXMLVersion.getResource().getContainer());*/
 
 		assertTrue(testInfo.initialXMLVersion.equalsObject(testInfo.reloadedFMLVersion));
 	}

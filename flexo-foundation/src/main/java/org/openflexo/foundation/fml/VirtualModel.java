@@ -38,6 +38,7 @@
 
 package org.openflexo.foundation.fml;
 
+import java.io.FileNotFoundException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -50,6 +51,7 @@ import java.util.logging.Logger;
 
 import org.openflexo.connie.Bindable;
 import org.openflexo.connie.BindingFactory;
+import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.fml.FMLRepresentationContext.FMLRepresentationOutput;
 import org.openflexo.foundation.fml.binding.FMLBindingFactory;
 import org.openflexo.foundation.fml.binding.VirtualModelBindingModel;
@@ -62,6 +64,7 @@ import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.InferedFMLRTModelSlot;
 import org.openflexo.foundation.fml.rt.editionaction.DeleteFlexoConceptInstanceParameter;
 import org.openflexo.foundation.resource.CannotRenameException;
+import org.openflexo.foundation.resource.ResourceLoadingCancelledException;
 import org.openflexo.foundation.technologyadapter.FlexoMetaModel;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
@@ -121,10 +124,10 @@ public interface VirtualModel extends FlexoConcept {
 	@PropertyIdentifier(type = UseModelSlotDeclaration.class, cardinality = Cardinality.LIST)
 	public static final String USE_DECLARATIONS_KEY = "useDeclarations";
 
-	@PropertyIdentifier(type = VirtualModel.class)
-	public static final String CONTAINER_VIRTUAL_MODEL_KEY = "containerVirtualModel";
-	@PropertyIdentifier(type = VirtualModel.class, cardinality = Cardinality.LIST)
-	String VIRTUAL_MODELS_KEY = "virtualModels";
+	// @PropertyIdentifier(type = VirtualModel.class)
+	// public static final String CONTAINER_VIRTUAL_MODEL_KEY = "containerVirtualModel";
+	// @PropertyIdentifier(type = VirtualModel.class, cardinality = Cardinality.LIST)
+	// String VIRTUAL_MODELS_KEY = "virtualModels";
 
 	@PropertyIdentifier(type = Class.class)
 	public static final String MODEL_SLOT_NATURE_CLASS_KEY = "modelSlotNatureClass";
@@ -346,7 +349,7 @@ public interface VirtualModel extends FlexoConcept {
 	 * 
 	 * @return
 	 */
-	@Getter(value = CONTAINER_VIRTUAL_MODEL_KEY)
+	// @Getter(value = CONTAINER_VIRTUAL_MODEL_KEY)
 	public VirtualModel getContainerVirtualModel();
 
 	/**
@@ -354,8 +357,8 @@ public interface VirtualModel extends FlexoConcept {
 	 * 
 	 * @param aVirtualModel
 	 */
-	@Setter(CONTAINER_VIRTUAL_MODEL_KEY)
-	public void setContainerVirtualModel(VirtualModel aVirtualModel);
+	// @Setter(CONTAINER_VIRTUAL_MODEL_KEY)
+	// public void setContainerVirtualModel(VirtualModel aVirtualModel);
 
 	/**
 	 * Return all loaded {@link VirtualModel} defined in this {@link VirtualModel}<br>
@@ -364,12 +367,12 @@ public interface VirtualModel extends FlexoConcept {
 	 * 
 	 * @return
 	 */
-	@Getter(
+	/*@Getter(
 			value = VIRTUAL_MODELS_KEY,
 			cardinality = Cardinality.LIST,
 			inverse = VirtualModel.CONTAINER_VIRTUAL_MODEL_KEY,
-			ignoreType = true)
-	List<VirtualModel> getVirtualModels();
+			ignoreType = true)*/
+	public List<VirtualModel> getVirtualModels();
 
 	/**
 	 * Return all {@link VirtualModel} defined in this {@link VirtualModel}<br>
@@ -377,16 +380,16 @@ public interface VirtualModel extends FlexoConcept {
 	 * 
 	 * @return
 	 */
-	List<VirtualModel> getVirtualModels(boolean forceLoad);
+	public List<VirtualModel> getVirtualModels(boolean forceLoad);
 
 	// @Setter(VIRTUAL_MODELS_KEY)
 	// void setVirtualModels(List<VirtualModel> virtualModels);
 
-	@Adder(VIRTUAL_MODELS_KEY)
+	/*@Adder(VIRTUAL_MODELS_KEY)
 	void addToVirtualModels(VirtualModel virtualModel);
-
+	
 	@Remover(VIRTUAL_MODELS_KEY)
-	void removeFromVirtualModels(VirtualModel virtualModel);
+	void removeFromVirtualModels(VirtualModel virtualModel);*/
 
 	/**
 	 * Return boolean indicating in this {@link VirtualModel} is contained in supplied {@link VirtualModel} with the recursive semantics
@@ -425,7 +428,7 @@ public interface VirtualModel extends FlexoConcept {
 		// Used during deserialization, do not use it
 		public VirtualModelImpl() {
 			super();
-			virtualModels = new ArrayList<>();
+			// virtualModels = new ArrayList<>();
 		}
 
 		@Override
@@ -991,15 +994,33 @@ public interface VirtualModel extends FlexoConcept {
 
 		// DEBUT: provient de VirtualModel
 
-		private VirtualModel containerVirtualModel;
+		// private VirtualModel containerVirtualModel;
 		private VirtualModelBindingModel bindingModel;
 
 		@Override
 		public VirtualModel getContainerVirtualModel() {
-			return containerVirtualModel;
+			if (getResource() != null && getResource().getContainer() != null) {
+				FMLCompilationUnit containerCompilationUnit;
+				try {
+					containerCompilationUnit = getResource().getContainer().getResourceData();
+				} catch (FileNotFoundException e) {
+					e.printStackTrace();
+					return null;
+				} catch (ResourceLoadingCancelledException e) {
+					e.printStackTrace();
+					return null;
+				} catch (FlexoException e) {
+					e.printStackTrace();
+					return null;
+				}
+				if (containerCompilationUnit != null) {
+					return containerCompilationUnit.getVirtualModel();
+				}
+			}
+			return null;
 		}
 
-		@Override
+		/*@Override
 		public void setContainerVirtualModel(VirtualModel containerVirtualModel) {
 			if (this.containerVirtualModel != containerVirtualModel) {
 				VirtualModel oldViewPoint = this.containerVirtualModel;
@@ -1008,7 +1029,7 @@ public interface VirtualModel extends FlexoConcept {
 				getPropertyChangeSupport().firePropertyChange(CONTAINER_VIRTUAL_MODEL_KEY, oldViewPoint, containerVirtualModel);
 				notifiedScopeChanged();
 			}
-		}
+		}*/
 
 		@Override
 		public VirtualModelBindingModel getBindingModel() {
@@ -1105,7 +1126,7 @@ public interface VirtualModel extends FlexoConcept {
 			return bindingFactory;
 		}
 
-		private List<VirtualModel> virtualModels;
+		// private List<VirtualModel> virtualModels;
 
 		/**
 		 * Return all VirtualModel of a given class.<br>
@@ -1150,10 +1171,22 @@ public interface VirtualModel extends FlexoConcept {
 		 */
 		@Override
 		public List<VirtualModel> getVirtualModels(boolean forceLoad) {
+			if (getResource() == null) {
+				return null;
+			}
 			if (forceLoad) {
 				getCompilationUnit().loadContainedVirtualModelsWhenUnloaded();
 			}
-			return virtualModels;
+			List<VirtualModel> returned = new ArrayList<>();
+			for (CompilationUnitResource compilationUnitResource : getResource().getContainedVirtualModelResources()) {
+				if (compilationUnitResource.getLoadedResourceData() != null) {
+					VirtualModel vm = compilationUnitResource.getLoadedResourceData().getVirtualModel();
+					if (vm != null) {
+						returned.add(vm);
+					}
+				}
+			}
+			return returned;
 		}
 
 		/*@Override
@@ -1162,19 +1195,19 @@ public interface VirtualModel extends FlexoConcept {
 			this.virtualModels = virtualModels;
 		}*/
 
-		@Override
+		/*@Override
 		public void addToVirtualModels(VirtualModel virtualModel) {
 			virtualModel.setContainerVirtualModel(this);
 			virtualModels.add(virtualModel);
 			getPropertyChangeSupport().firePropertyChange(VIRTUAL_MODELS_KEY, null, virtualModel);
 		}
-
+		
 		@Override
 		public void removeFromVirtualModels(VirtualModel virtualModel) {
 			virtualModel.setContainerVirtualModel(null);
 			virtualModels.remove(virtualModel);
 			getPropertyChangeSupport().firePropertyChange(VIRTUAL_MODELS_KEY, virtualModel, null);
-		}
+		}*/
 
 		@Override
 		public String getStringRepresentation() {
