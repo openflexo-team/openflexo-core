@@ -38,9 +38,11 @@
 
 package org.openflexo.foundation.technologyadapter;
 
+import org.openflexo.connie.BindingModel;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.fml.FMLCompilationUnit;
 import org.openflexo.foundation.fml.FMLPrettyPrintable;
+import org.openflexo.foundation.fml.FMLRepresentationContext;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstanceModelSlot;
 import org.openflexo.foundation.fml.ta.FMLModelSlot;
@@ -94,6 +96,19 @@ public interface UseModelSlotDeclaration extends FlexoObject, FMLPrettyPrintable
 	public void setAbbrev(String abbrev);
 
 	public abstract class UseModelSlotDeclarationImpl extends FMLObjectImpl implements UseModelSlotDeclaration {
+
+		@Deprecated
+		@Override
+		public String getFMLRepresentation(FMLRepresentationContext context) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public BindingModel getBindingModel() {
+			// TODO Auto-generated method stub
+			return null;
+		}
 
 		@Override
 		public FMLCompilationUnit getResourceData() {
