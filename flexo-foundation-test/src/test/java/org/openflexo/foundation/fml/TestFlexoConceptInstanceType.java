@@ -212,8 +212,8 @@ public class TestFlexoConceptInstanceType extends OpenflexoProjectAtRunTimeTestC
 		assertEquals(FlexoConceptInstanceType.UNDEFINED_FLEXO_CONCEPT_INSTANCE_TYPE, property4InA.getType());
 		assertEquals(FlexoConceptInstanceType.UNDEFINED_FLEXO_CONCEPT_INSTANCE_TYPE, property4InA.getResultingType());
 
-		// Because concept define some abstract properties, it is abstract
-		assertTrue(flexoConceptA.isAbstract());
+		// Because concept define some abstract properties, abstract is required
+		assertTrue(flexoConceptA.abstractRequired());
 
 		System.out.println("FML=" + virtualModel.getFMLRepresentation());
 
@@ -261,7 +261,7 @@ public class TestFlexoConceptInstanceType extends OpenflexoProjectAtRunTimeTestC
 		assertSameList(property4InB.getAllSuperProperties(), property4InA);
 
 		// Because concept define some abstract properties, it is abstract
-		assertTrue(flexoConceptB.isAbstract());
+		assertTrue(flexoConceptB.abstractRequired());
 
 		System.out.println("FML=" + virtualModel.getFMLRepresentation());
 
@@ -321,7 +321,13 @@ public class TestFlexoConceptInstanceType extends OpenflexoProjectAtRunTimeTestC
 
 	@Test
 	@TestOrder(19)
-	public void testViewPointIsValid() {
+	public void testViewPointIsValid() throws SaveResourceException {
+
+		assertEquals(2, validate(viewPoint).getErrorsCount());
+
+		flexoConceptA.setAbstract(true);
+		flexoConceptB.setAbstract(true);
+		virtualModel.getResource().save();
 
 		assertVirtualModelIsValid(viewPoint);
 
@@ -384,7 +390,7 @@ public class TestFlexoConceptInstanceType extends OpenflexoProjectAtRunTimeTestC
 		assertEquals(flexoConceptA.getDeclaredProperties(), flexoConceptA.getAccessibleProperties());
 
 		// Because concept define some abstract properties, it is abstract
-		assertTrue(flexoConceptA.isAbstract());
+		assertTrue(flexoConceptA.abstractRequired());
 
 		assertNotNull(property4InB = (AbstractProperty<FlexoConceptInstanceType>) flexoConceptB.getAccessibleProperty("property4"));
 
