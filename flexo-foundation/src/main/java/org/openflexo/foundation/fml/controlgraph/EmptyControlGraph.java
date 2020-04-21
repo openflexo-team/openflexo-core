@@ -63,11 +63,6 @@ public interface EmptyControlGraph extends FMLControlGraph {
 	public static abstract class EmptyControlGraphImpl extends FMLControlGraphImpl implements EmptyControlGraph {
 
 		@Override
-		public String getURI() {
-			return null;
-		}
-
-		@Override
 		public void sequentiallyAppend(FMLControlGraph controlGraph) {
 			FMLControlGraphOwner owner = getOwner();
 			String ownerContext = getOwnerContext();

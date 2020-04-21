@@ -44,6 +44,9 @@ import java.util.logging.Logger;
 import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.fml.FMLObject;
+import org.openflexo.foundation.fml.FlexoBehaviour;
+import org.openflexo.foundation.fml.FlexoConcept;
+import org.openflexo.foundation.fml.FlexoProperty;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.annotations.FML;
 import org.openflexo.foundation.fml.rt.ActorReference;
@@ -105,7 +108,7 @@ public interface FMLObjectActorReference<T extends FMLObject> extends ActorRefer
 		@Override
 		public String getVirtualModelURI() {
 			if (object != null && object.getDeclaringCompilationUnit() != null) {
-				return object.getDeclaringCompilationUnit().getURI();
+				return object.getDeclaringCompilationUnit().getVirtualModel().getURI();
 			}
 			return virtualModelURI;
 		}
@@ -119,7 +122,15 @@ public interface FMLObjectActorReference<T extends FMLObject> extends ActorRefer
 		@Override
 		public String getObjectURI() {
 			if (object != null) {
-				return object.getURI();
+				if (object instanceof FlexoConcept) {
+					return ((FlexoConcept) object).getURI();
+				}
+				if (object instanceof FlexoProperty) {
+					return ((FlexoProperty<?>) object).getURI();
+				}
+				if (object instanceof FlexoBehaviour) {
+					return ((FlexoBehaviour) object).getURI();
+				}
 			}
 			return objectURI;
 		}
@@ -165,8 +176,8 @@ public interface FMLObjectActorReference<T extends FMLObject> extends ActorRefer
 		public void setModellingElement(T object) {
 			this.object = object;
 			if (object != null) {
-				virtualModelURI = object.getDeclaringCompilationUnit().getURI();
-				objectURI = object.getURI();
+				virtualModelURI = object.getDeclaringCompilationUnit().getVirtualModel().getURI();
+				objectURI = getObjectURI();
 			}
 		}
 

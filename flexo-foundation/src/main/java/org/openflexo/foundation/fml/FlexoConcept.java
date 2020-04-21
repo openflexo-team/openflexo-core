@@ -163,6 +163,16 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 	@Setter(NAME_KEY)
 	public void setName(String name);
 
+	/**
+	 * Return the URI of the {@link NamedFMLObject}<br>
+	 * The convention for URI are following: <viewpoint_uri>/<virtual_model_name>#<flexo_concept_name>.<behaviour_name> <br>
+	 * eg<br>
+	 * http://www.mydomain.org/MyViewPoint/MyVirtualModel#MyFlexoConcept.MyBehaviour
+	 * 
+	 * @return String representing unique URI of this object
+	 */
+	public String getURI();
+
 	@Getter(value = VISIBILITY_KEY, defaultValue = "Default")
 	@XMLAttribute
 	public Visibility getVisibility();

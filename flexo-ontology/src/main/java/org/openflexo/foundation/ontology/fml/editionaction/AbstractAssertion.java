@@ -91,21 +91,6 @@ public abstract interface AbstractAssertion extends FlexoConceptObject {
 		}
 
 		@Override
-		public String getURI() {
-			return null;
-		}
-
-		/*@Override
-		public void setAction(AddIndividual<?, ?> action) {
-			_action = action;
-		}
-		
-		@Override
-		public AddIndividual<?, ?> getAction() {
-			return _action;
-		}*/
-
-		@Override
 		public FlexoConcept getFlexoConcept() {
 			if (getAction() != null) {
 				return getAction().getFlexoConcept();

@@ -123,11 +123,6 @@ public interface ColumnTableBinding<D extends FlexoDocument<D, TA>, TA extends T
 		private DataBinding<String> value;
 
 		@Override
-		public String getURI() {
-			return null;
-		}
-
-		@Override
 		public DataBinding<String> getValue() {
 			if (value == null) {
 				value = new DataBinding<>(this, String.class, DataBinding.BindingDefinitionType.GET);

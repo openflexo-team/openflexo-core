@@ -125,11 +125,6 @@ public interface FetchRequestCondition extends FlexoConceptObject {
 		}
 
 		@Override
-		public String getURI() {
-			return getAction().getURI() + "/Constraints_" + Integer.toHexString(hashCode());
-		}
-
-		@Override
 		public DataBinding<Boolean> getCondition() {
 			if (condition == null) {
 				condition = new DataBinding<>(this, Boolean.class, BindingDefinitionType.GET);

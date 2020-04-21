@@ -136,12 +136,6 @@ public interface ElementImportDeclaration extends FMLPrettyPrintable {
 		}
 
 		@Override
-		public String getURI() {
-			// TODO Auto-generated method stub
-			return null;
-		}
-
-		@Override
 		public String getFMLRepresentation(FMLRepresentationContext context) {
 			return "<not_implemented:" + getStringRepresentation() + ">";
 		}

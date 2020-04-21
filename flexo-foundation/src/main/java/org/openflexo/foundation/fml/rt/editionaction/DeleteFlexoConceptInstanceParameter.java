@@ -235,11 +235,6 @@ public interface DeleteFlexoConceptInstanceParameter extends FlexoBehaviourObjec
 			this.paramName = param;
 		}
 
-		@Override
-		public String getURI() {
-			return null;
-		}
-
 	}
 
 	@DefineValidationRule

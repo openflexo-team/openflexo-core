@@ -330,6 +330,15 @@ public interface FlexoBehaviour extends FlexoBehaviourObject, Function, FMLContr
 
 	public MultiValuedMetaData getMetaDataForParameter(FlexoBehaviourParameter parameter, boolean ensureExistence);
 
+	/**
+	 * Return the URI of the {@link NamedFMLObject}<br>
+	 * The convention for URI are following: <viewpoint_uri>/<virtual_model_name>#<flexo_concept_name>.<behaviour_name> <br>
+	 * eg<br>
+	 * http://www.mydomain.org/MyViewPoint/MyVirtualModel#MyFlexoConcept.MyBehaviour
+	 * 
+	 * @return String representing unique URI of this object
+	 */
+	public String getURI();
 
 	public static abstract class FlexoBehaviourImpl extends FlexoBehaviourObjectImpl implements FlexoBehaviour {
 

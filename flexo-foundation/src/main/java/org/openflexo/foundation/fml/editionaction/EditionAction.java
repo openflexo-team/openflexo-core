@@ -117,11 +117,6 @@ public abstract interface EditionAction extends FMLControlGraph {
 
 		private ControlGraphBindingModel<?> bindingModel;
 
-		@Override
-		public String getURI() {
-			return null;
-		}
-
 		/**
 		 * Execute edition action in the context provided by supplied {@link FlexoBehaviourAction}<br>
 		 * Note than returned object will be used to be further reinjected in finalizer

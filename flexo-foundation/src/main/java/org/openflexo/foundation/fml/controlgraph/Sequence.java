@@ -116,11 +116,6 @@ public interface Sequence extends FMLControlGraph, FMLControlGraphOwner {
 	public static abstract class SequenceImpl extends FMLControlGraphImpl implements Sequence {
 
 		@Override
-		public String getURI() {
-			return null;
-		}
-
-		@Override
 		public void setControlGraph1(FMLControlGraph aControlGraph) {
 			if (aControlGraph != null) {
 				aControlGraph.setOwnerContext(CONTROL_GRAPH1_KEY);

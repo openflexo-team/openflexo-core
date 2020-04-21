@@ -88,11 +88,6 @@ public interface FlexoConceptBehaviouralFacet extends FlexoConceptObject, FlexoF
 		}
 
 		@Override
-		public String getURI() {
-			return getFlexoConcept().getURI();
-		}
-
-		@Override
 		public List<FlexoBehaviour> getBehaviours() {
 			return getFlexoConcept().getDeclaredFlexoBehaviours();
 		}

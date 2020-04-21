@@ -137,7 +137,7 @@ public interface FMLModelSlot extends ModelSlot<FMLCompilationUnit> {
 			FMLModelSlotInstance returned = factory.newInstance(FMLModelSlotInstance.class);
 			returned.setModelSlot(this);
 			returned.setFlexoConceptInstance(fci);
-			returned.setVirtualModelURI(virtualModel.getURI());
+			returned.setVirtualModelURI(virtualModel.getVirtualModel().getURI());
 			return returned;
 		}
 

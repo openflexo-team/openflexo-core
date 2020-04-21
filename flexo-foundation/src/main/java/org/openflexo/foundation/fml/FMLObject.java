@@ -169,7 +169,7 @@ public interface FMLObject extends FlexoObject, Bindable, InnerResourceData<FMLC
 	 * 
 	 * @return String representing unique URI of this object
 	 */
-	public String getURI();
+	// public String getURI();
 
 	@Override
 	public FlexoServiceManager getServiceManager();
@@ -278,8 +278,8 @@ public interface FMLObject extends FlexoObject, Bindable, InnerResourceData<FMLC
 		 * 
 		 * @return String representing unique URI of this object
 		 */
-		@Override
-		public abstract String getURI();
+		// @Override
+		// public abstract String getURI();
 
 		/**
 		 * Return reflected BindingEvaluationContext, obtained at metadata conceptual level

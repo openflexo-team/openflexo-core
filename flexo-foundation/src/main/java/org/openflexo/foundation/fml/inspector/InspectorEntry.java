@@ -206,15 +206,6 @@ public interface InspectorEntry extends FlexoConceptObject, WidgetContext {
 		}
 
 		@Override
-		public String getURI() {
-			return null;
-		}
-
-		/*public Type getType() {
-			return getDefaultDataClass();
-		}*/
-
-		@Override
 		public void setType(Type aType) {
 			performSuperSetter(TYPE_KEY, aType);
 			listType = null;

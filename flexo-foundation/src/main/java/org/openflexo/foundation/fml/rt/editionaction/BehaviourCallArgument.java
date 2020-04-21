@@ -240,11 +240,6 @@ public interface BehaviourCallArgument<T extends FlexoConceptObject> extends Fle
 			this.paramName = param;
 		}
 
-		@Override
-		public String getURI() {
-			return null;
-		}
-
 	}
 
 	@DefineValidationRule

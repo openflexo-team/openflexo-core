@@ -300,8 +300,14 @@ public interface FMLCompilationUnit extends FMLObject, FMLPrettyPrintable, Resou
 					if (referencedObject instanceof FlexoResourceCenter<?>) {
 						return ((FlexoResourceCenter<?>) referencedObject).getDefaultBaseURI();
 					}
-					if (referencedObject instanceof FMLObject) {
-						return ((FMLObject) referencedObject).getURI();
+					if (referencedObject instanceof FlexoConcept) {
+						return ((FlexoConcept) referencedObject).getURI();
+					}
+					if (referencedObject instanceof FlexoProperty) {
+						return ((FlexoProperty) referencedObject).getURI();
+					}
+					if (referencedObject instanceof FlexoBehaviour) {
+						return ((FlexoBehaviour) referencedObject).getURI();
 					}
 				}
 				return null;
@@ -350,12 +356,6 @@ public interface FMLCompilationUnit extends FMLObject, FMLPrettyPrintable, Resou
 		@Override
 		public String toString() {
 			return "FMLCompilationUnit";
-		}
-
-		@Override
-		public String getURI() {
-			// TODO Auto-generated method stub
-			return null;
 		}
 
 		@Override

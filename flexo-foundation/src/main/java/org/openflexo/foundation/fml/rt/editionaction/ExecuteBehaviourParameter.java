@@ -233,11 +233,6 @@ public interface ExecuteBehaviourParameter extends FlexoBehaviourObject {
 			this.paramName = param;
 		}
 
-		@Override
-		public String getURI() {
-			return null;
-		}
-
 	}
 
 	@DefineValidationRule

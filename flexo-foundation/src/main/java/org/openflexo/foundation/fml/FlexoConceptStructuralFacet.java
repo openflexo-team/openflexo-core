@@ -88,24 +88,8 @@ public interface FlexoConceptStructuralFacet extends FlexoConceptObject, FlexoFa
 		}
 
 		@Override
-		public String getURI() {
-			return getFlexoConcept().getURI();
-		}
-
-		// private List<FlexoProperty<?>> properties = null;
-
-		@Override
 		public List<FlexoProperty<?>> getProperties() {
 			return getFlexoConcept().getDeclaredProperties();
-			/*if (properties == null) {
-				if (getFlexoConcept() instanceof VirtualModel) {
-					properties = new ConcatenedList<FlexoProperty<?>>(((VirtualModel) getFlexoConcept()).getModelSlots(),
-							getFlexoConcept().getFlexoProperties());
-				} else if (getFlexoConcept() != null) {
-					properties = getFlexoConcept().getFlexoProperties();
-				}
-			}
-			return properties;*/
 		}
 
 		public void notifiedPropertiesChanged(FlexoProperty<?> oldValue, FlexoProperty<?> newValue) {

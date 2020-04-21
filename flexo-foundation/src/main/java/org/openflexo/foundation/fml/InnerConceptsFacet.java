@@ -125,11 +125,6 @@ public interface InnerConceptsFacet extends FlexoConceptObject, FlexoFacet<Flexo
 		}
 
 		@Override
-		public String getURI() {
-			return getFlexoConcept().getURI();
-		}
-
-		@Override
 		public List<VirtualModel> getContainedVirtualModels() {
 			if (getFlexoConcept() instanceof VirtualModel) {
 				return ((VirtualModel) getFlexoConcept()).getVirtualModels();

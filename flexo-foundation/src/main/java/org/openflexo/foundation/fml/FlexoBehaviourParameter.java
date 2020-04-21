@@ -278,14 +278,6 @@ public interface FlexoBehaviourParameter extends FlexoBehaviourObject, FunctionA
 		}
 
 		@Override
-		public String getURI() {
-			if (getFlexoBehaviour() != null) {
-				return getFlexoBehaviour().getURI() + "." + getName();
-			}
-			return null;
-		}
-
-		@Override
 		public String getStringRepresentation() {
 			return (getOwningVirtualModel() != null ? getOwningVirtualModel().getStringRepresentation() : "null") + "#"
 					+ (getFlexoConcept() != null ? getFlexoConcept().getName() : "null") + "."

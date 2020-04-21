@@ -169,11 +169,6 @@ public interface FlexoConceptInspector extends FlexoConceptObject {
 		}
 
 		@Override
-		public String getURI() {
-			return null;
-		}
-
-		@Override
 		public FlexoConceptFormatter getFormatter() {
 			return formatter;
 		}

@@ -83,13 +83,6 @@ public interface FMLMetaData extends FMLObject, FMLPrettyPrintable {
 	public static abstract class FMLMetaDataImpl extends FMLObjectImpl implements FMLMetaData {
 
 		@Override
-		public String getURI() {
-			// Not applicable
-			// TODO
-			return null;
-		}
-
-		@Override
 		public String getFMLRepresentation(FMLRepresentationContext context) {
 			// Not applicable
 			// TODO

@@ -210,6 +210,16 @@ public abstract interface FlexoProperty<T> extends FlexoConceptObject, FMLPretty
 	 */
 	public boolean isKeyProperty();
 
+	/**
+	 * Return the URI of the {@link NamedFMLObject}<br>
+	 * The convention for URI are following: <viewpoint_uri>/<virtual_model_name>#<flexo_concept_name>.<behaviour_name> <br>
+	 * eg<br>
+	 * http://www.mydomain.org/MyViewPoint/MyVirtualModel#MyFlexoConcept.MyBehaviour
+	 * 
+	 * @return String representing unique URI of this object
+	 */
+	public String getURI();
+
 	public static abstract class FlexoPropertyImpl<T> extends FlexoConceptObjectImpl implements FlexoProperty<T> {
 
 		// private static final Logger logger = Logger.getLogger(FlexoRole.class.getPackage().getName());

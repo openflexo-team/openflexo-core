@@ -193,11 +193,6 @@ public interface TextBinding<D extends FlexoDocument<D, TA>, TA extends Technolo
 			return returned;
 		}
 
-		@Override
-		public String getURI() {
-			return null;
-		}
-
 		public int getIndex() {
 			if (getFragmentRole() != null) {
 				return getFragmentRole().getTextBindings().indexOf(this);
