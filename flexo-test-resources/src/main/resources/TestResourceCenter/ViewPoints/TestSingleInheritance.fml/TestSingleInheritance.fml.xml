@@ -3,7 +3,7 @@
   <FlexoConcept id="SYL-6" name="A" author="sylvain" userID="SYL" flexoID="6">
     <Inspector id="SYL-7" inspectorTitle="A" userID="SYL" flexoID="7" />
     <PrimitiveRole id="SYL-52" primitiveType="String" cloningStrategy="Clone" cardinality="ZeroOne" name="foo" userID="SYL" flexoID="52" />
-    <CreationScheme id="SYL-11" label="create" name="create" width="800" height="600" userID="SYL" flexoID="11">
+    <CreationScheme id="SYL-11" label="init" name="init" width="800" height="600" userID="SYL" flexoID="11">
       <BehaviourControlGraph_Sequence id="SYL-53" userID="SYL" flexoID="53">
         <ControlGraph2_AssignationAction id="SYL-36" assign="foo" ownerContext="controlGraph2" userID="SYL" flexoID="36">
           <AssignableAction_ExpressionAction id="SYL-35" expression="&quot;A&quot;" userID="SYL" flexoID="35" />
@@ -25,7 +25,7 @@
   </FlexoConcept>
   <FlexoConcept id="SYL-13" parentFlexoConceptsList="http://openflexo.org/test/TestResourceCenter/TestSingleInheritance.fml#A" name="B" author="sylvain" userID="SYL" flexoID="13">
     <Inspector id="SYL-14" inspectorTitle="B" userID="SYL" flexoID="14" />
-    <CreationScheme id="SYL-18" label="create" name="create" width="800" height="600" userID="SYL" flexoID="18">
+    <CreationScheme id="SYL-18" label="init" name="init" width="800" height="600" userID="SYL" flexoID="18">
       <BehaviourControlGraph_Sequence id="SYL-55" userID="SYL" flexoID="55">
         <ControlGraph2_Sequence id="SYL-56" ownerContext="controlGraph2" userID="SYL" flexoID="56">
           <ControlGraph2_AssignationAction id="SYL-46" assign="foo" ownerContext="controlGraph2" userID="SYL" flexoID="46">
@@ -33,7 +33,7 @@
           </ControlGraph2_AssignationAction>
           <ControlGraph1_LogAction id="SYL-44" logLevel="INFO" logString="&quot;Creating B instance&quot;" ownerContext="controlGraph1" userID="SYL" flexoID="44" />
         </ControlGraph2_Sequence>
-        <ControlGraph1_ExpressionAction id="SYL-42" expression="super.create()" ownerContext="controlGraph1" userID="SYL" flexoID="42" />
+        <ControlGraph1_ExpressionAction id="SYL-42" expression="super.init()" ownerContext="controlGraph1" userID="SYL" flexoID="42" />
       </BehaviourControlGraph_Sequence>
     </CreationScheme>
     <DeletionScheme id="SYL-19" label="delete" name="delete" width="800" height="600" userID="SYL" flexoID="19">
