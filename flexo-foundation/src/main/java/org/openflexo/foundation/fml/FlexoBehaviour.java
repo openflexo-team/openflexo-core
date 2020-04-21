@@ -484,6 +484,7 @@ public interface FlexoBehaviour extends FlexoBehaviourObject, Function, FMLContr
 				if (ensureExistence) {
 					MultiValuedMetaData returned = parameter.makeParameterMetaData();
 					md.addToMetaDataList(returned);
+					return returned;
 				}
 			}
 			return null;
