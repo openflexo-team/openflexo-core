@@ -121,6 +121,9 @@ public class VirtualModelBindingModel extends FlexoConceptBindingModel {
 
 	@Override
 	public void update() {
+		if (isDeleted()) {
+			return;
+		}
 		super.update();
 		updateCompilationUnitResourceListener();
 	}
@@ -188,6 +191,16 @@ public class VirtualModelBindingModel extends FlexoConceptBindingModel {
 			}
 			lastKnownContainer = getVirtualModel().getContainerVirtualModel();
 		}
-
 	}
+
+	@Override
+	public void delete() {
+		if (lastKnownContainer != null) {
+			if (lastKnownContainer.getPropertyChangeSupport() != null) {
+				lastKnownContainer.getPropertyChangeSupport().removePropertyChangeListener(this);
+			}
+		}
+		super.delete();
+	}
+
 }

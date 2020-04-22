@@ -372,9 +372,19 @@ public class FlexoConceptBindingModel extends BindingModel {
 			}
 		}
 		super.delete();
+		deleted = true;
+	}
+
+	private boolean deleted = false;
+
+	public boolean isDeleted() {
+		return deleted;
 	}
 
 	public void update() {
+		if (isDeleted()) {
+			return;
+		}
 		updateSuperBindingVariables();
 		updateContainerBindingVariable();
 		updatePropertyVariables();
