@@ -373,4 +373,14 @@ public class FlexoConceptBindingModel extends BindingModel {
 		}
 		super.delete();
 	}
+
+	public void update() {
+		updateSuperBindingVariables();
+		updateContainerBindingVariable();
+		updatePropertyVariables();
+		updateContainerFlexoConceptListener();
+		updateParentFlexoConceptListeners();
+
+	}
+
 }

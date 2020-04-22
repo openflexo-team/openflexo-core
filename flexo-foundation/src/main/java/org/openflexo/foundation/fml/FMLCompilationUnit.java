@@ -375,6 +375,9 @@ public interface FMLCompilationUnit extends FMLObject, FMLPrettyPrintable, Resou
 		@Override
 		public void setResource(FlexoResource<FMLCompilationUnit> resource) {
 			this.resource = (CompilationUnitResource) resource;
+			if (getVirtualModel() != null) {
+				getVirtualModel().getBindingModel().update();
+			}
 		}
 
 		/**

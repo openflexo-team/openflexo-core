@@ -44,6 +44,7 @@ import org.openflexo.connie.BindingModel;
 import org.openflexo.connie.BindingVariable;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.VirtualModel;
+import org.openflexo.foundation.fml.rm.CompilationUnitResource;
 import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
 import org.openflexo.foundation.fml.rt.VirtualModelInstance;
@@ -64,6 +65,8 @@ import org.openflexo.foundation.resource.FlexoResource;
  */
 public class VirtualModelBindingModel extends FlexoConceptBindingModel {
 
+	private CompilationUnitResource lastKnownResource = null;
+
 	/**
 	 * Build a new {@link BindingModel} dedicated to a VirtualModel
 	 * 
@@ -73,9 +76,25 @@ public class VirtualModelBindingModel extends FlexoConceptBindingModel {
 		super(virtualModel.getContainerVirtualModel() != null && virtualModel != virtualModel.getContainerVirtualModel()
 				? virtualModel.getContainerVirtualModel().getBindingModel()
 				: null, virtualModel);
-		if (virtualModel != null && virtualModel.getResource() != null && virtualModel.getResource().getPropertyChangeSupport() != null) {
-			virtualModel.getResource().getPropertyChangeSupport().addPropertyChangeListener(this);
+		updateCompilationUnitResourceListener();
+	}
+
+	private void updateCompilationUnitResourceListener() {
+
+		if (lastKnownResource != getVirtualModel().getResource()) {
+			if (lastKnownResource != null) {
+				if (lastKnownResource.getPropertyChangeSupport() != null) {
+					lastKnownResource.getPropertyChangeSupport().removePropertyChangeListener(this);
+				}
+			}
+			if (getVirtualModel().getResource() != null) {
+				if (getVirtualModel().getResource().getPropertyChangeSupport() != null) {
+					getVirtualModel().getResource().getPropertyChangeSupport().addPropertyChangeListener(this);
+				}
+			}
+			lastKnownResource = getVirtualModel().getResource();
 		}
+
 	}
 
 	public VirtualModel getVirtualModel() {
@@ -98,6 +117,12 @@ public class VirtualModelBindingModel extends FlexoConceptBindingModel {
 				containerBindingVariable = null;
 			}
 		}
+	}
+
+	@Override
+	public void update() {
+		super.update();
+		updateCompilationUnitResourceListener();
 	}
 
 	@Override
