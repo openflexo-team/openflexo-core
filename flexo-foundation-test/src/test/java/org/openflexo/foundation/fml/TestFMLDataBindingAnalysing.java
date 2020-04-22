@@ -178,8 +178,8 @@ public class TestFMLDataBindingAnalysing extends OpenflexoTestCase {
 		FMLTechnologyAdapter fmlTechnologyAdapter = serviceManager.getTechnologyAdapterService()
 				.getTechnologyAdapter(FMLTechnologyAdapter.class);
 		CompilationUnitResourceFactory factory = fmlTechnologyAdapter.getCompilationUnitResourceFactory();
-		CompilationUnitResource newVMResource = factory.makeContainedCompilationUnitResource(VIRTUAL_MODEL_NAME, topVirtualModel.getResource(),
-				true);
+		CompilationUnitResource newVMResource = factory.makeContainedCompilationUnitResource(VIRTUAL_MODEL_NAME,
+				topVirtualModel.getResource(), true);
 		virtualModel = newVMResource.getLoadedResourceData().getVirtualModel();
 
 		assertTrue(ResourceLocator.retrieveResourceAsFile(virtualModel.getResource().getDirectory()).exists());
@@ -528,7 +528,7 @@ public class TestFMLDataBindingAnalysing extends OpenflexoTestCase {
 
 		System.out.println("*********** testChangeParameterName");
 
-		DataBinding<?> db = makeBinding(actionScheme, "parameters.aFlag", true, Boolean.class);
+		DataBinding<?> db = makeBinding(actionScheme, "parameters.aFlag", true, Boolean.TYPE);
 
 		assertTrue(db.isValid());
 
