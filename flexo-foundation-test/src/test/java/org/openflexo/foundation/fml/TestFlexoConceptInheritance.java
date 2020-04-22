@@ -315,12 +315,10 @@ public class TestFlexoConceptInheritance extends OpenflexoProjectAtRunTimeTestCa
 		assertEquals(String.class, property6InA.getResultingType());
 
 		// Because concept define some abstract properties, it is abstract
-		assertTrue(flexoConceptA.isAbstract());
+		assertTrue(flexoConceptA.abstractRequired());
 
-		// We try to force to make it non abstract, and check that it is still
-		// abstract
-		flexoConceptA.setAbstract(false);
-		assertTrue(flexoConceptA.isAbstract());
+		// We set it abstract
+		flexoConceptA.setAbstract(true);
 
 		System.out.println("FML=" + virtualModel.getFMLRepresentation());
 
@@ -402,11 +400,8 @@ public class TestFlexoConceptInheritance extends OpenflexoProjectAtRunTimeTestCa
 		assertEquals(0, property7InB.getAllSuperProperties().size());
 
 		// Because concept define some abstract properties, it is abstract
-		assertTrue(flexoConceptB.isAbstract());
-
-		// We try to force to make it non abstract, and check that it is still
-		// abstract
-		flexoConceptB.setAbstract(false);
+		assertTrue(flexoConceptB.abstractRequired());
+		flexoConceptB.setAbstract(true);
 		assertTrue(flexoConceptB.isAbstract());
 
 		System.out.println("FML=" + virtualModel.getFMLRepresentation());
@@ -472,11 +467,8 @@ public class TestFlexoConceptInheritance extends OpenflexoProjectAtRunTimeTestCa
 		assertEquals(0, property8InC.getAllSuperProperties().size());
 
 		// Because concept define some abstract properties, it is abstract
-		assertTrue(flexoConceptC.isAbstract());
-
-		// We try to force to make it non abstract, and check that it is still
-		// abstract
-		flexoConceptC.setAbstract(false);
+		assertTrue(flexoConceptC.abstractRequired());
+		flexoConceptC.setAbstract(true);
 		assertTrue(flexoConceptC.isAbstract());
 
 		System.out.println("FML=" + virtualModel.getFMLRepresentation());
@@ -727,12 +719,7 @@ public class TestFlexoConceptInheritance extends OpenflexoProjectAtRunTimeTestCa
 		assertEquals(flexoConceptA.getDeclaredProperties(), flexoConceptA.getAccessibleProperties());
 
 		// Because concept define some abstract properties, it is abstract
-		assertTrue(flexoConceptA.isAbstract());
-
-		// We try to force to make it non abstract, and check that it is still
-		// abstract
-		flexoConceptA.setAbstract(false);
-		assertTrue(flexoConceptA.isAbstract());
+		assertTrue(flexoConceptA.abstractRequired());
 
 		System.out.println("FML= " + virtualModel.getFMLRepresentation());
 	}
