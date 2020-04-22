@@ -45,7 +45,9 @@ import org.openflexo.foundation.fml.FlexoBehaviourParameter;
 import org.openflexo.foundation.fml.parser.ControlGraphFactory;
 import org.openflexo.foundation.fml.parser.MainSemanticsAnalyzer;
 import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.ControlGraphNode;
+import org.openflexo.foundation.fml.parser.node.ABlockFlexoBehaviourBody;
 import org.openflexo.foundation.fml.parser.node.AMethodBehaviourDecl;
+import org.openflexo.foundation.fml.parser.node.PFlexoBehaviourBody;
 import org.openflexo.p2pp.PrettyPrintContext.Indentation;
 
 /**
@@ -77,10 +79,17 @@ public class ActionSchemeNode extends FlexoBehaviourNode<AMethodBehaviourDecl, A
 		// handleParameters(astNode);
 
 		returned.setName(astNode.getName().getText());
-		ControlGraphNode<?, ?> cgNode = ControlGraphFactory.makeControlGraphNode(getFlexoBehaviourBody(astNode), getAnalyser());
-		if (cgNode != null) {
-			returned.setControlGraph(cgNode.getModelObject());
-			addToChildren(cgNode);
+
+		PFlexoBehaviourBody flexoBehaviourBody = getFlexoBehaviourBody(astNode);
+		if (flexoBehaviourBody instanceof ABlockFlexoBehaviourBody) {
+			ControlGraphNode<?, ?> cgNode = ControlGraphFactory.makeControlGraphNode(getFlexoBehaviourBody(astNode), getAnalyser());
+			if (cgNode != null) {
+				returned.setControlGraph(cgNode.getModelObject());
+				addToChildren(cgNode);
+			}
+		}
+		else {
+			// AEmptyFlexoBehaviourBody : keep the ControlGraph null
 		}
 
 		return returned;
@@ -99,10 +108,10 @@ public class ActionSchemeNode extends FlexoBehaviourNode<AMethodBehaviourDecl, A
 				FlexoBehaviourParameter.class));
 		append(staticContents(")"), getRParFragment());
 		when(() -> isAbstract())
-				.thenAppend(staticContents(";"), getSemiFragment())
-				.elseAppend(staticContents(SPACE,"{", ""), getLBrcFragment())
-				.elseAppend(childContents(LINE_SEPARATOR, () -> getModelObject().getControlGraph(), LINE_SEPARATOR, Indentation.Indent))
-				.elseAppend(staticContents(LINE_SEPARATOR, "}", ""), getRBrcFragment());
+		.thenAppend(staticContents(";"), getSemiFragment())
+		.elseAppend(staticContents(SPACE,"{", ""), getLBrcFragment())
+		.elseAppend(childContents(LINE_SEPARATOR, () -> getModelObject().getControlGraph(), LINE_SEPARATOR, Indentation.Indent))
+		.elseAppend(staticContents(LINE_SEPARATOR, "}", ""), getRBrcFragment());
 		// @formatter:on
 
 		/*appendDynamicContents(() -> getVisibilityAsString(getModelObject().getVisibility()), SPACE, getVisibilityFragment());

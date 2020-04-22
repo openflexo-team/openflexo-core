@@ -46,8 +46,10 @@ import org.openflexo.foundation.fml.parser.ControlGraphFactory;
 import org.openflexo.foundation.fml.parser.MainSemanticsAnalyzer;
 import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.ControlGraphNode;
 import org.openflexo.foundation.fml.parser.node.AAnonymousConstructorBehaviourDecl;
+import org.openflexo.foundation.fml.parser.node.ABlockFlexoBehaviourBody;
 import org.openflexo.foundation.fml.parser.node.ANamedConstructorBehaviourDecl;
 import org.openflexo.foundation.fml.parser.node.PBehaviourDecl;
+import org.openflexo.foundation.fml.parser.node.PFlexoBehaviourBody;
 import org.openflexo.p2pp.PrettyPrintContext.Indentation;
 import org.openflexo.p2pp.RawSource.RawSourceFragment;
 
@@ -97,10 +99,16 @@ public class CreationSchemeNode extends FlexoBehaviourNode<PBehaviourDecl, Creat
 
 		// handleParameters(astNode);
 
-		ControlGraphNode<?, ?> cgNode = ControlGraphFactory.makeControlGraphNode(getFlexoBehaviourBody(astNode), getAnalyser());
-		if (cgNode != null) {
-			returned.setControlGraph(cgNode.getModelObject());
-			addToChildren(cgNode);
+		PFlexoBehaviourBody flexoBehaviourBody = getFlexoBehaviourBody(astNode);
+		if (flexoBehaviourBody instanceof ABlockFlexoBehaviourBody) {
+			ControlGraphNode<?, ?> cgNode = ControlGraphFactory.makeControlGraphNode(getFlexoBehaviourBody(astNode), getAnalyser());
+			if (cgNode != null) {
+				returned.setControlGraph(cgNode.getModelObject());
+				addToChildren(cgNode);
+			}
+		}
+		else {
+			// AEmptyFlexoBehaviourBody : keep the ControlGraph null
 		}
 
 		return returned;
