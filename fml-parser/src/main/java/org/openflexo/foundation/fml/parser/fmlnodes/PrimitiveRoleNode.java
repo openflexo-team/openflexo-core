@@ -67,8 +67,8 @@ public class PrimitiveRoleNode extends BasicPropertyNode<PrimitiveRole<?>> {
 
 		append(dynamicContents(() -> getVisibilityAsString(getModelObject().getVisibility()), SPACE), getVisibilityFragment());
 		append(dynamicContents(() -> serializeType(getModelObject().getType())), getTypeFragment());
-		append(dynamicContents(() -> serializeCardinality(getModelObject().getCardinality()), SPACE), getCardinalityFragment());
-		append(dynamicContents(() -> getModelObject().getName()), getNameFragment());
+		append(dynamicContents(() -> serializeCardinality(getModelObject().getCardinality())), getCardinalityFragment());
+		append(dynamicContents(SPACE, () -> getModelObject().getName()), getNameFragment());
 		append(staticContents(";"), getSemiFragment());
 	}
 

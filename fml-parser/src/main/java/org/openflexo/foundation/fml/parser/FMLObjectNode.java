@@ -555,6 +555,9 @@ public abstract class FMLObjectNode<N extends Node, T extends FMLPrettyPrintable
 	}
 
 	protected PropertyCardinality getCardinality(PCardinality cardinality) {
+		if (cardinality == null) {
+			return PropertyCardinality.ZeroOne;
+		}
 		Integer upperBounds = null;
 		Integer lowerBounds = null;
 		if (cardinality instanceof AWithExplicitBoundsCardinality) {
