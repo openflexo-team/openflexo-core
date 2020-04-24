@@ -65,6 +65,7 @@ import org.openflexo.foundation.fml.GetSetProperty;
 import org.openflexo.foundation.fml.JavaImportDeclaration;
 import org.openflexo.foundation.fml.JavaRole;
 import org.openflexo.foundation.fml.PrimitiveRole;
+import org.openflexo.foundation.fml.PropertyCardinality;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.Visibility;
 import org.openflexo.foundation.fml.controlgraph.ConditionalAction;
@@ -119,19 +120,26 @@ import org.openflexo.foundation.fml.parser.node.AFloatingPointLiteral;
 import org.openflexo.foundation.fml.parser.node.AIdentifierVariableDeclarator;
 import org.openflexo.foundation.fml.parser.node.AInitializerVariableDeclarator;
 import org.openflexo.foundation.fml.parser.node.AIntegerLiteral;
+import org.openflexo.foundation.fml.parser.node.AMultiple1Cardinality;
+import org.openflexo.foundation.fml.parser.node.AMultiple2Cardinality;
 import org.openflexo.foundation.fml.parser.node.ANullLiteral;
 import org.openflexo.foundation.fml.parser.node.APrivateVisibility;
 import org.openflexo.foundation.fml.parser.node.AProtectedVisibility;
 import org.openflexo.foundation.fml.parser.node.APublicVisibility;
 import org.openflexo.foundation.fml.parser.node.AStringLiteral;
 import org.openflexo.foundation.fml.parser.node.ATrueLiteral;
+import org.openflexo.foundation.fml.parser.node.AWithExplicitBoundsCardinality;
+import org.openflexo.foundation.fml.parser.node.AWithLowerBoundsCardinality;
+import org.openflexo.foundation.fml.parser.node.AWithUpperBoundsCardinality;
 import org.openflexo.foundation.fml.parser.node.Node;
 import org.openflexo.foundation.fml.parser.node.PAdditionalIdentifier;
+import org.openflexo.foundation.fml.parser.node.PCardinality;
 import org.openflexo.foundation.fml.parser.node.PCompositeIdent;
 import org.openflexo.foundation.fml.parser.node.PLiteral;
 import org.openflexo.foundation.fml.parser.node.PVariableDeclarator;
 import org.openflexo.foundation.fml.parser.node.PVisibility;
 import org.openflexo.foundation.fml.parser.node.TIdentifier;
+import org.openflexo.foundation.fml.parser.node.TLitInteger;
 import org.openflexo.foundation.fml.parser.node.Token;
 import org.openflexo.foundation.fml.rt.editionaction.AddFlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.editionaction.AddVirtualModelInstance;
@@ -202,6 +210,10 @@ public abstract class FMLObjectNode<N extends Node, T extends FMLPrettyPrintable
 
 	public TypeFactory getTypeFactory() {
 		return getAnalyser().getTypeFactory();
+	}
+
+	public RoleFactory getRoleFactory() {
+		return getAnalyser().getRoleFactory();
 	}
 
 	protected FMLCompilationUnit getCompilationUnit() {
@@ -423,6 +435,16 @@ public abstract class FMLObjectNode<N extends Node, T extends FMLPrettyPrintable
 		return getFragment(node).getRawText();
 	}
 
+	public int getLiteralValue(TLitInteger node) {
+		String f = node.getText();
+		try {
+			return Integer.parseInt(f);
+		} catch (NumberFormatException e) {
+			(new ParseException("Cannot parse as long: " + f)).printStackTrace();
+			return -1;
+		}
+	}
+
 	public Object getLiteralValue(PLiteral node) throws ParseException {
 		if (node instanceof ACharacterLiteral) {
 			return ((ACharacterLiteral) node).getLitCharacter().getText().charAt(1);
@@ -530,6 +552,67 @@ public abstract class FMLObjectNode<N extends Node, T extends FMLPrettyPrintable
 			return Visibility.Private;
 		}
 		return null;
+	}
+
+	protected PropertyCardinality getCardinality(PCardinality cardinality) {
+		Integer upperBounds = null;
+		Integer lowerBounds = null;
+		if (cardinality instanceof AWithExplicitBoundsCardinality) {
+			lowerBounds = getLiteralValue(((AWithExplicitBoundsCardinality) cardinality).getLower());
+			upperBounds = getLiteralValue(((AWithExplicitBoundsCardinality) cardinality).getUpper());
+		}
+		else if (cardinality instanceof AWithLowerBoundsCardinality) {
+			lowerBounds = getLiteralValue(((AWithLowerBoundsCardinality) cardinality).getLower());
+			upperBounds = null;
+		}
+		else if (cardinality instanceof AWithUpperBoundsCardinality) {
+			lowerBounds = null;
+			upperBounds = getLiteralValue(((AWithUpperBoundsCardinality) cardinality).getUpper());
+		}
+		else if (cardinality instanceof AMultiple1Cardinality) {
+			lowerBounds = null;
+			upperBounds = null;
+		}
+		else if (cardinality instanceof AMultiple2Cardinality) {
+			lowerBounds = null;
+			upperBounds = null;
+		}
+		if (lowerBounds != null && lowerBounds == 0) {
+			if (upperBounds != null && upperBounds == 1) {
+				return PropertyCardinality.ZeroOne;
+			}
+			else {
+				return PropertyCardinality.ZeroMany;
+			}
+		}
+		if (lowerBounds != null && lowerBounds == 1) {
+			if (upperBounds != null && upperBounds == 1) {
+				return PropertyCardinality.One;
+			}
+			else {
+				return PropertyCardinality.OneMany;
+			}
+		}
+		return PropertyCardinality.ZeroMany;
+	}
+
+	protected final String serializeCardinality(PropertyCardinality cardinality) {
+		if (cardinality == null) {
+			return "";
+		}
+		switch (cardinality) {
+			case One:
+				return "";
+			case ZeroOne:
+				return "";
+			case ZeroMany:
+				return "[0,*]";
+			case OneMany:
+				return "[1,*]";
+			default:
+				return "";
+		}
+
 	}
 
 	protected TIdentifier getName(PVariableDeclarator variableDeclarator) {

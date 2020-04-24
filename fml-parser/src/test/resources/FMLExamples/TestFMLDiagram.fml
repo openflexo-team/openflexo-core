@@ -12,7 +12,7 @@ import [EXAMPLE_DIAGRAM:"SYL_78"] as BLUE_ARC;
 
 model MyModel {
 	
-	/*Diagram diagram with DIAGRAM::TypedDiagramModelSlot(templateDiagram = DIAGRAM_SPECIFICATION);	
+	Diagram diagram with DIAGRAM::TypedDiagramModelSlot(templateDiagram = DIAGRAM_SPECIFICATION);	
 	ConceptualModel conceptualModel;
 	
 	concept MyConceptGR {
@@ -24,10 +24,10 @@ model MyModel {
 		);
 		
 		// DropScheme
-		dropNewConcept(String name) with drop(target=topLevel) {
+		/*dropNewConcept(String name) with drop(target=topLevel) {
 			myConcept = new MyConcept::init(name);
 			shape = DIAGRAM::AddShape(container=topLevel) in (diagram);
-		}
+		}*/
 		
 		delete::deleteConcept() {
 			delete (myConcept);
@@ -50,18 +50,18 @@ model MyModel {
 		);
 		
 		// LinkScheme
-		linkConcepts() with link(fromTarget=MyConceptGR,toTarget=MyConceptGR) {
+		/*linkConcepts() with link(fromTarget=MyConceptGR,toTarget=MyConceptGR) {
 			fromGR = fromTarget;
 			toGR = toTarget;
 			performLink(fromTarget.myConcept,toTarget.myConcept);
 			connector = DIAGRAM::AddConnector(fromShape=fromGR.shape,toShape=toGR.shape) in (diagram);
-		}
+		}*/
 		
 		performLink(MyConcept fromConcept, MyConcept toConcept) {
 			fromConcept.connectedWith = toConcept;			
 		}
 		
-	}*/
+	}
 
 
 }

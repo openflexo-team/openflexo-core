@@ -65,31 +65,28 @@ public abstract class BasicPropertyNode<T extends BasicProperty<?>> extends Flex
 		super(property, analyser);
 	}
 
-	@Override
-	public void preparePrettyPrint(boolean hasParsedVersion) {
-		super.preparePrettyPrint(hasParsedVersion);
-
-		append(dynamicContents(() -> getVisibilityAsString(getModelObject().getVisibility()), SPACE), getVisibilityFragment());
-		append(dynamicContents(() -> serializeType(getModelObject().getType()), SPACE), getTypeFragment());
-		append(dynamicContents(() -> getModelObject().getName()), getNameFragment());
-		append(staticContents(";"), getSemiFragment());
-	}
-
-	private RawSourceFragment getVisibilityFragment() {
+	protected RawSourceFragment getVisibilityFragment() {
 		if (getASTNode() != null && getASTNode().getVisibility() != null) {
 			return getFragment(getASTNode().getVisibility());
 		}
 		return null;
 	}
 
-	private RawSourceFragment getTypeFragment() {
+	protected RawSourceFragment getCardinalityFragment() {
+		if (getASTNode() != null && getASTNode().getCardinality() != null) {
+			return getFragment(getASTNode().getCardinality());
+		}
+		return null;
+	}
+
+	protected RawSourceFragment getTypeFragment() {
 		if (getASTNode() != null) {
 			return getFragment(getASTNode().getType());
 		}
 		return null;
 	}
 
-	private RawSourceFragment getNameFragment() {
+	protected RawSourceFragment getNameFragment() {
 		if (getASTNode() != null) {
 			PVariableDeclarator variableDeclarator = getASTNode().getVariableDeclarator();
 			if (variableDeclarator instanceof AIdentifierVariableDeclarator) {
@@ -102,7 +99,7 @@ public abstract class BasicPropertyNode<T extends BasicProperty<?>> extends Flex
 		return null;
 	}
 
-	private RawSourceFragment getSemiFragment() {
+	protected RawSourceFragment getSemiFragment() {
 		if (getASTNode() != null) {
 			return getFragment(getASTNode().getSemi());
 		}

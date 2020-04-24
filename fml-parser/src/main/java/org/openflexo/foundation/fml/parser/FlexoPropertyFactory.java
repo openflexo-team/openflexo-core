@@ -45,11 +45,15 @@ import org.openflexo.foundation.fml.FlexoProperty;
 import org.openflexo.foundation.fml.parser.fmlnodes.AbstractPropertyNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.BasicPropertyNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.ExpressionPropertyNode;
+import org.openflexo.foundation.fml.parser.fmlnodes.FlexoRolePropertyNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.GetSetPropertyNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.JavaRoleNode;
+import org.openflexo.foundation.fml.parser.fmlnodes.ModelSlotPropertyNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.PrimitiveRoleNode;
 import org.openflexo.foundation.fml.parser.node.AAbstractPropertyInnerConceptDecl;
 import org.openflexo.foundation.fml.parser.node.AExpressionPropertyInnerConceptDecl;
+import org.openflexo.foundation.fml.parser.node.AFmlFullyQualifiedInnerConceptDecl;
+import org.openflexo.foundation.fml.parser.node.AFmlInnerConceptDecl;
 import org.openflexo.foundation.fml.parser.node.AGetSetPropertyInnerConceptDecl;
 import org.openflexo.foundation.fml.parser.node.AJavaInnerConceptDecl;
 
@@ -80,6 +84,22 @@ public class FlexoPropertyFactory extends SemanticsAnalyzerFactory {
 		else {
 			return new JavaRoleNode(node, getAnalyzer());
 		}
+	}
+
+	ModelSlotPropertyNode<?, ?> makeModelSlotPropertyNode(AFmlFullyQualifiedInnerConceptDecl node) {
+		return new ModelSlotPropertyNode(node, getAnalyzer());
+	}
+
+	ModelSlotPropertyNode<?, ?> makeModelSlotPropertyNode(AFmlInnerConceptDecl node) {
+		return new ModelSlotPropertyNode(node, getAnalyzer());
+	}
+
+	FlexoRolePropertyNode<?, ?> makeFlexoRolePropertyNode(AFmlFullyQualifiedInnerConceptDecl node) {
+		return new FlexoRolePropertyNode(node, getAnalyzer());
+	}
+
+	FlexoRolePropertyNode<?, ?> makeFlexoRolePropertyNode(AFmlInnerConceptDecl node) {
+		return new FlexoRolePropertyNode(node, getAnalyzer());
 	}
 
 	ExpressionPropertyNode makeExpressionPropertyNode(AExpressionPropertyInnerConceptDecl node) {

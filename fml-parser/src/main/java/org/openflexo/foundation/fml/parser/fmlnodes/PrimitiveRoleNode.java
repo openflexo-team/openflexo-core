@@ -62,11 +62,23 @@ public class PrimitiveRoleNode extends BasicPropertyNode<PrimitiveRole<?>> {
 	}
 
 	@Override
+	public void preparePrettyPrint(boolean hasParsedVersion) {
+		super.preparePrettyPrint(hasParsedVersion);
+
+		append(dynamicContents(() -> getVisibilityAsString(getModelObject().getVisibility()), SPACE), getVisibilityFragment());
+		append(dynamicContents(() -> serializeType(getModelObject().getType())), getTypeFragment());
+		append(dynamicContents(() -> serializeCardinality(getModelObject().getCardinality()), SPACE), getCardinalityFragment());
+		append(dynamicContents(() -> getModelObject().getName()), getNameFragment());
+		append(staticContents(";"), getSemiFragment());
+	}
+
+	@Override
 	public PrimitiveRole<?> buildModelObjectFromAST(AJavaInnerConceptDecl astNode) {
 		PrimitiveRole<?> returned = getFactory().newPrimitiveRole();
 		returned.setVisibility(getVisibility(astNode.getVisibility()));
 		returned.setName(getName(astNode.getVariableDeclarator()).getText());
 		returned.setPrimitiveType(getTypeFactory().getPrimitiveType(astNode.getType()));
+		returned.setCardinality(getCardinality(astNode.getCardinality()));
 		return returned;
 	}
 

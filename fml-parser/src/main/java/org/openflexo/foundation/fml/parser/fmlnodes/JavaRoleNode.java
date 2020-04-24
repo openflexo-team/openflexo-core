@@ -62,6 +62,16 @@ public class JavaRoleNode extends BasicPropertyNode<JavaRole<?>> {
 	}
 
 	@Override
+	public void preparePrettyPrint(boolean hasParsedVersion) {
+		super.preparePrettyPrint(hasParsedVersion);
+
+		append(dynamicContents(() -> getVisibilityAsString(getModelObject().getVisibility()), SPACE), getVisibilityFragment());
+		append(dynamicContents(() -> serializeType(getModelObject().getType())), getTypeFragment());
+		append(dynamicContents(() -> getModelObject().getName()), getNameFragment());
+		append(staticContents(";"), getSemiFragment());
+	}
+
+	@Override
 	public JavaRole<?> buildModelObjectFromAST(AJavaInnerConceptDecl astNode) {
 		JavaRole<?> returned = getFactory().newJavaRole();
 		returned.setVisibility(getVisibility(astNode.getVisibility()));

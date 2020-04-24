@@ -41,6 +41,7 @@ package org.openflexo.foundation.fml;
 import java.beans.PropertyChangeSupport;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.openflexo.connie.BindingEvaluationContext;
@@ -236,6 +237,15 @@ public interface FlexoRole<T> extends FlexoProperty<T> {
 	 */
 	public List<? extends ActorReference<? extends T>> selfInstantiate(FlexoConceptInstance fci);
 
+	public boolean hasParameters();
+
+	/**
+	 * Build the parameters for serialization
+	 * 
+	 * @return
+	 */
+	public List<RolePropertyValue<?>> buildParameters();
+
 	abstract class FlexoRoleImpl<T> extends FlexoPropertyImpl<T> implements FlexoRole<T> {
 
 		// private static final Logger logger = Logger.getLogger(FlexoRole.class.getPackage().getName());
@@ -243,6 +253,17 @@ public interface FlexoRole<T> extends FlexoProperty<T> {
 		private ModelSlot<?> modelSlot;
 		private DataBinding<?> defaultValue;
 		private DataBinding<?> container;
+
+		@Override
+		public boolean hasParameters() {
+			// TODO
+			return false;
+		}
+
+		@Override
+		public List<RolePropertyValue<?>> buildParameters() {
+			return new ArrayList<>();
+		}
 
 		/**
 		 * Return flag indicating whether this property is abstract
