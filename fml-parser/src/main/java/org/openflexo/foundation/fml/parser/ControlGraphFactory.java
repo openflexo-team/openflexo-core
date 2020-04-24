@@ -504,7 +504,7 @@ public class ControlGraphFactory extends FMLSemanticsAnalyzer {
 		if (type instanceof VirtualModelInstanceType) {
 			push(new AddVirtualModelInstanceNode(node, getMainAnalyzer()));
 		}
-		else if (type instanceof FlexoConceptInstanceType) {
+		else /*if (type instanceof FlexoConceptInstanceType)*/ {
 			push(new AddFlexoConceptInstanceNode(node, getMainAnalyzer()));
 		}
 	}
