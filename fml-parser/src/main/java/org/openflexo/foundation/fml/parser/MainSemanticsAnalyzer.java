@@ -51,6 +51,7 @@ import org.openflexo.foundation.fml.parser.fmlnodes.ListMetaDataNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.MetaDataKeyValueNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.MultiValuedMetaDataNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.NamedJavaImportNode;
+import org.openflexo.foundation.fml.parser.fmlnodes.NamespaceDeclarationNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.SingleMetaDataNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.UseDeclarationNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.VirtualModelNode;
@@ -73,6 +74,7 @@ import org.openflexo.foundation.fml.parser.node.AListAnnotationAnnotation;
 import org.openflexo.foundation.fml.parser.node.AModelDecl;
 import org.openflexo.foundation.fml.parser.node.ANamedJavaImportImportDecl;
 import org.openflexo.foundation.fml.parser.node.ANamedUriImportImportDecl;
+import org.openflexo.foundation.fml.parser.node.ANamespaceDecl;
 import org.openflexo.foundation.fml.parser.node.APrimitiveFormalArgument;
 import org.openflexo.foundation.fml.parser.node.ASingleAnnotationAnnotation;
 import org.openflexo.foundation.fml.parser.node.AUriImportImportDecl;
@@ -189,6 +191,18 @@ public class MainSemanticsAnalyzer extends FMLSemanticsAnalyzer {
 	@Override
 	public void outAFmlCompilationUnit(AFmlCompilationUnit node) {
 		super.outAFmlCompilationUnit(node);
+		pop();
+	}
+
+	@Override
+	public void inANamespaceDecl(ANamespaceDecl node) {
+		super.inANamespaceDecl(node);
+		push(new NamespaceDeclarationNode(node, this));
+	}
+
+	@Override
+	public void outANamespaceDecl(ANamespaceDecl node) {
+		super.outANamespaceDecl(node);
 		pop();
 	}
 

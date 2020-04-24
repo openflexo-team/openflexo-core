@@ -47,7 +47,9 @@ import java.util.Map;
 import org.openflexo.connie.BindingModel;
 import org.openflexo.foundation.fml.ElementImportDeclaration;
 import org.openflexo.foundation.fml.FMLCompilationUnit;
+import org.openflexo.foundation.fml.NamespaceDeclaration;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
+import org.openflexo.toolbox.StringUtils;
 
 /**
  * This is the {@link BindingModel} exposed by a {@link FMLCompilationUnit}<br>
@@ -66,6 +68,7 @@ public class CompilationUnitBindingModel extends BindingModel {
 	private final FMLCompilationUnit compilationUnit;
 
 	private final Map<ElementImportDeclaration, NamedImportBindingVariable> namedImportVariablesMap;
+	private final Map<NamespaceDeclaration, NamespaceBindingVariable> namespaceVariablesMap;
 
 	public CompilationUnitBindingModel(FMLCompilationUnit compilationUnit) {
 		super();
@@ -74,7 +77,10 @@ public class CompilationUnitBindingModel extends BindingModel {
 			compilationUnit.getPropertyChangeSupport().addPropertyChangeListener(this);
 		}
 
+		namespaceVariablesMap = new HashMap<>();
 		namedImportVariablesMap = new HashMap<>();
+
+		updateNamespaceVariables();
 		updateNamedImportsVariables();
 	}
 
@@ -92,6 +98,9 @@ public class CompilationUnitBindingModel extends BindingModel {
 			if (evt.getPropertyName().equals(FMLCompilationUnit.ELEMENT_IMPORTS_KEY)) {
 				updateNamedImportsVariables();
 			}
+			if (evt.getPropertyName().equals(FMLCompilationUnit.NAMESPACES_KEY)) {
+				updateNamespaceVariables();
+			}
 		}
 	}
 
@@ -103,7 +112,7 @@ public class CompilationUnitBindingModel extends BindingModel {
 			if (importsToBeDeleted.contains(importDeclaration)) {
 				importsToBeDeleted.remove(importDeclaration);
 			}
-			else if (namedImportVariablesMap.get(importDeclaration) == null) {
+			else if (namedImportVariablesMap.get(importDeclaration) == null && StringUtils.isNotEmpty(importDeclaration.getAbbrev())) {
 				NamedImportBindingVariable bv = new NamedImportBindingVariable(importDeclaration);
 				addToBindingVariables(bv);
 				namedImportVariablesMap.put(importDeclaration, bv);
@@ -114,6 +123,29 @@ public class CompilationUnitBindingModel extends BindingModel {
 			NamedImportBindingVariable bvToRemove = namedImportVariablesMap.get(r);
 			removeFromBindingVariables(bvToRemove);
 			namedImportVariablesMap.remove(r);
+			bvToRemove.delete();
+		}
+	}
+
+	protected void updateNamespaceVariables() {
+
+		List<NamespaceDeclaration> nsToBeDeleted = new ArrayList<>(namespaceVariablesMap.keySet());
+
+		for (NamespaceDeclaration nsDeclaration : compilationUnit.getNamespaces()) {
+			if (nsToBeDeleted.contains(nsDeclaration)) {
+				nsToBeDeleted.remove(nsDeclaration);
+			}
+			else if (namespaceVariablesMap.get(nsDeclaration) == null && StringUtils.isNotEmpty(nsDeclaration.getAbbrev())) {
+				NamespaceBindingVariable bv = new NamespaceBindingVariable(nsDeclaration);
+				addToBindingVariables(bv);
+				namespaceVariablesMap.put(nsDeclaration, bv);
+			}
+		}
+
+		for (NamespaceDeclaration r : nsToBeDeleted) {
+			NamespaceBindingVariable bvToRemove = namespaceVariablesMap.get(r);
+			removeFromBindingVariables(bvToRemove);
+			namespaceVariablesMap.remove(r);
 			bvToRemove.delete();
 		}
 	}

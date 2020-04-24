@@ -134,9 +134,25 @@ public class TypeFactory extends SemanticsAnalyzerFactory {
 										.getBindingValue(getAnalyzer().getCompilationUnit().getReflectedBindingEvaluationContext());
 								String objectReferenceValue = importDeclaration.getObjectReference()
 										.getBindingValue(getAnalyzer().getCompilationUnit().getReflectedBindingEvaluationContext());
-
-								System.out.println("On parle du VirtualModelInstanceType " + resourceReferenceValue);
-								typeToResolve.redefineWithURI(resourceReferenceValue);
+								/*System.out.println("Tiens, c'est la que ca se passe !!!");
+								System.out.println("resourceReferenceValue " + importDeclaration.getResourceReference() + "="
+										+ resourceReferenceValue);
+								System.out.println(
+										"objectReferenceValue= " + importDeclaration.getObjectReference() + "=" + objectReferenceValue);
+								DataBinding<String> resourceReference = importDeclaration.getResourceReference();
+								System.out.println("binding: " + resourceReference);
+								System.out.println(
+										"valid: " + resourceReference.isValid() + " reason: " + resourceReference.invalidBindingReason());
+								System.out.println("BM: " + resourceReference.getOwner().getBindingModel());
+								for (int i = 0; i < resourceReference.getOwner().getBindingModel().getBindingVariablesCount(); i++) {
+									BindingVariable bv = resourceReference.getOwner().getBindingModel().getBindingVariableAt(i);
+									System.out.println(
+											"  > " + bv.getLabel() + " = " + bv.getType() + " of " + bv.getClass().getSimpleName());
+								}
+								*/
+								if (resourceReferenceValue != null) {
+									typeToResolve.redefineWithURI(resourceReferenceValue);
+								}
 								// System.out.println(getAnalyzer().getCompilationUnit().getServiceManager().getVirtualModelLibrary()
 								// .getCompilationUnitResource(resourceReferenceValue));
 								// System.exit(-1);
@@ -178,6 +194,12 @@ public class TypeFactory extends SemanticsAnalyzerFactory {
 	public void resolveUnresovedTypes() {
 
 		// System.out.println("resolveUnresovedTypes");
+
+		/*for (CustomType unresolvedType : unresolvedTypes) {
+			System.out.println(" **** " + unresolvedType);
+		}*/
+
+		// System.out.println("OK on y va");
 
 		for (CustomType unresolvedType : unresolvedTypes) {
 			// System.out.println(" **** " + unresolvedType);
@@ -438,10 +460,21 @@ public class TypeFactory extends SemanticsAnalyzerFactory {
 		if (StringUtils.isEmpty(typeName)) {
 			return null;
 		}
+		// Looking up concept 'typeName'
 		ConceptRetriever r = new ConceptRetriever(typeName);
-		// System.out.println("On cherche " + typeName);
 		if (r.isFound()) {
+			/*System.out.println("Was: " + r.getType());
+			if (r.getType() instanceof FlexoConceptInstanceType) {
+				System.out.println("uri: " + r.getType().getConceptURI());
+				System.out.println("Hash: " + Integer.toHexString(r.getType().hashCode()));
+				System.out.println("factory: " + r.getType().getCustomTypeFactory().getClass());
+			}*/
 			r.getType().resolve();
+			/*System.out.println("After resolution: " + r.getType());
+			if (r.getType() instanceof FlexoConceptInstanceType) {
+				System.out.println("uri: " + r.getType().getConceptURI());
+				System.out.println("Hash: " + Integer.toHexString(r.getType().hashCode()));
+			}*/
 			unresolvedTypes.add(r.getType());
 			return r.getType();
 		}
@@ -468,6 +501,14 @@ public class TypeFactory extends SemanticsAnalyzerFactory {
 	 * @return
 	 */
 	private VirtualModel tryToLookupVirtualModel(String virtualModelName) {
+
+		System.out.println("virtualModelName=" + virtualModelName);
+		System.out.println("getAnalyzer()=" + getAnalyzer());
+
+		if (virtualModelName == null) {
+			System.out.println("Merde alors");
+			Thread.dumpStack();
+		}
 
 		if (virtualModelName.startsWith("@") && getAnalyzer().getCompilationUnit() != null) {
 			String id = virtualModelName.substring(1).trim();
@@ -568,9 +609,11 @@ public class TypeFactory extends SemanticsAnalyzerFactory {
 				relativeURI = getIdentifier(nodes.pop()) + "." + relativeURI;
 			}
 			if (foundNode instanceof AModelDecl) {
+				System.out.println("ici1 avec " + relativeURI);
 				type = new VirtualModelInstanceType(relativeURI, VIRTUAL_MODEL_INSTANCE_TYPE_FACTORY);
 			}
 			if (foundNode instanceof AConceptDecl) {
+				System.out.println("ici2 avec " + relativeURI);
 				type = new FlexoConceptInstanceType(relativeURI, FLEXO_CONCEPT_INSTANCE_TYPE_FACTORY);
 			}
 		}
@@ -629,9 +672,12 @@ public class TypeFactory extends SemanticsAnalyzerFactory {
 			if (fullQualifiedConceptNamePath.size() > 0 && fullQualifiedConceptNamePath.get(0).equals(node.getName().getText())) {
 				found = true;
 				if (fullQualifiedConceptNamePath.size() == 1) {
+					System.out.println("ici3 avec " + "@" + node.getName());
 					type = new VirtualModelInstanceType("@" + node.getName(), VIRTUAL_MODEL_INSTANCE_TYPE_FACTORY);
+					System.out.println("Hash: " + Integer.toHexString(type.hashCode()));
 				}
 				else {
+					System.out.println("ici4 avec " + "@" + node.getName());
 					type = new FlexoConceptInstanceType("@" + node.getName(), FLEXO_CONCEPT_INSTANCE_TYPE_FACTORY);
 				}
 			}

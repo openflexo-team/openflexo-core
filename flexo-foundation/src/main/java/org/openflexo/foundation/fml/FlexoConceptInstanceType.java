@@ -148,6 +148,10 @@ public class FlexoConceptInstanceType implements TechnologySpecificType<FMLTechn
 		this.customTypeFactory = customTypeFactory;
 	}
 
+	public CustomTypeFactory<?> getCustomTypeFactory() {
+		return customTypeFactory;
+	}
+
 	public String getConceptURI() {
 		return conceptURI;
 	}
@@ -213,7 +217,7 @@ public class FlexoConceptInstanceType implements TechnologySpecificType<FMLTechn
 			if (getLastPath() != null) {
 				return getLastPath();
 			}
-			return "UndefinedFlexoConceptInstanceType";
+			return "UndefinedFlexoConceptInstanceType(" + getConceptURI() + ")";
 		}
 		// IMPORTANT: do not use getFlexoConcept() here, as it may trigger too early type resolution !!!
 		// return getClass().getSimpleName() + "<" + flexoConcept.getName() + ">";
@@ -271,6 +275,7 @@ public class FlexoConceptInstanceType implements TechnologySpecificType<FMLTechn
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
+		result = prime * result + ((conceptURI == null) ? 0 : conceptURI.hashCode());
 		result = prime * result + ((flexoConcept == null) ? 0 : flexoConcept.hashCode());
 		return result;
 	}
@@ -284,13 +289,18 @@ public class FlexoConceptInstanceType implements TechnologySpecificType<FMLTechn
 		if (getClass() != obj.getClass())
 			return false;
 		FlexoConceptInstanceType other = (FlexoConceptInstanceType) obj;
+		if (conceptURI == null) {
+			if (other.conceptURI != null)
+				return false;
+		}
+		else if (!conceptURI.equals(other.conceptURI))
+			return false;
 		if (flexoConcept == null) {
 			if (other.flexoConcept != null)
 				return false;
 		}
-		else if (!flexoConcept.equals(other.flexoConcept)) {
+		else if (!flexoConcept.equals(other.flexoConcept))
 			return false;
-		}
 		return true;
 	}
 
@@ -300,4 +310,5 @@ public class FlexoConceptInstanceType implements TechnologySpecificType<FMLTechn
 		// logger.warning("Trying to get a InstanceType for a null FlexoConcept");
 		return UNDEFINED_FLEXO_CONCEPT_INSTANCE_TYPE;
 	}
+
 }

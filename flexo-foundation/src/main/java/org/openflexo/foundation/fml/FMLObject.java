@@ -512,6 +512,9 @@ public interface FMLObject extends FlexoObject, Bindable, InnerResourceData<FMLC
 		@Override
 		public BindingFactory getBindingFactory() {
 			if (getDeclaringCompilationUnit() != null) {
+				if (getDeclaringCompilationUnit().getVirtualModel() != null) {
+					return getDeclaringCompilationUnit().getVirtualModel().getBindingFactory();
+				}
 				return getDeclaringCompilationUnit().getBindingFactory();
 			}
 			return null;

@@ -52,10 +52,12 @@ import org.openflexo.connie.BindingEvaluationContext;
 import org.openflexo.connie.BindingFactory;
 import org.openflexo.connie.BindingVariable;
 import org.openflexo.connie.DataBinding;
+import org.openflexo.connie.java.JavaBindingFactory;
 import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.fml.binding.CompilationUnitBindingModel;
 import org.openflexo.foundation.fml.binding.NamedImportBindingVariable;
+import org.openflexo.foundation.fml.binding.NamespaceBindingVariable;
 import org.openflexo.foundation.fml.inspector.InspectorEntry;
 import org.openflexo.foundation.fml.rm.CompilationUnitResource;
 import org.openflexo.foundation.resource.FlexoResource;
@@ -64,7 +66,6 @@ import org.openflexo.foundation.resource.ResourceData;
 import org.openflexo.foundation.resource.ResourceLoadingCancelledException;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
-import org.openflexo.foundation.technologyadapter.UseModelSlotDeclaration;
 import org.openflexo.localization.LocalizedDelegate;
 import org.openflexo.localization.LocalizedDelegateImpl;
 import org.openflexo.pamela.annotations.Adder;
@@ -101,6 +102,8 @@ public interface FMLCompilationUnit extends FMLObject, FMLPrettyPrintable, Resou
 	public static final String JAVA_IMPORTS_KEY = "javaImports";
 	@PropertyIdentifier(type = ElementImportDeclaration.class, cardinality = Cardinality.LIST)
 	public static final String ELEMENT_IMPORTS_KEY = "elementImports";
+	@PropertyIdentifier(type = NamespaceDeclaration.class, cardinality = Cardinality.LIST)
+	public static final String NAMESPACES_KEY = "namespaces";
 	@PropertyIdentifier(type = UseModelSlotDeclaration.class, cardinality = Cardinality.LIST)
 	public static final String USE_DECLARATIONS_KEY = "useDeclarations";
 	@PropertyIdentifier(type = VirtualModel.class)
@@ -150,7 +153,25 @@ public interface FMLCompilationUnit extends FMLObject, FMLPrettyPrintable, Resou
 	public void setVirtualModel(VirtualModel virtualModel);
 
 	/**
-	 * Return list of {@link UseModelSlotDeclaration} accessible from this {@link VirtualModel}<br>
+	 * Return list of {@link NamespaceDeclaration} explicitely declared in this {@link FMLCompilationUnit}
+	 * 
+	 * @return
+	 */
+	@Getter(value = NAMESPACES_KEY, cardinality = Cardinality.LIST, inverse = NamespaceDeclaration.COMPILATION_UNIT_KEY)
+	@XMLElement
+	@Embedded
+	@CloningStrategy(StrategyType.CLONE)
+	public List<NamespaceDeclaration> getNamespaces();
+
+	@Adder(NAMESPACES_KEY)
+	@PastingPoint
+	public void addToNamespaces(NamespaceDeclaration nsDecl);
+
+	@Remover(NAMESPACES_KEY)
+	public void removeFromNamespaces(NamespaceDeclaration nsDecl);
+
+	/**
+	 * Return list of {@link UseModelSlotDeclaration} accessible from this {@link FMLCompilationUnit}<br>
 	 * It includes the list of uses declarations accessible from parent and container
 	 * 
 	 * @return
@@ -294,6 +315,7 @@ public interface FMLCompilationUnit extends FMLObject, FMLPrettyPrintable, Resou
 		class ReflectedBindingEvaluationContext implements BindingEvaluationContext {
 			@Override
 			public Object getValue(BindingVariable bindingVariable) {
+				System.out.println("On me demande " + bindingVariable + " of " + bindingVariable.getClass());
 				if (bindingVariable instanceof NamedImportBindingVariable) {
 					FlexoObject referencedObject = ((NamedImportBindingVariable) bindingVariable).getElementImportDeclaration()
 							.getReferencedObject();
@@ -309,6 +331,9 @@ public interface FMLCompilationUnit extends FMLObject, FMLPrettyPrintable, Resou
 					if (referencedObject instanceof FlexoBehaviour) {
 						return ((FlexoBehaviour) referencedObject).getURI();
 					}
+				}
+				if (bindingVariable instanceof NamespaceBindingVariable) {
+					return ((NamespaceBindingVariable) bindingVariable).getNamespaceDeclaration().getValue();
 				}
 				return null;
 			}
@@ -335,12 +360,14 @@ public interface FMLCompilationUnit extends FMLObject, FMLPrettyPrintable, Resou
 			}
 		}
 
+		private BindingFactory BINDING_FACTORY = new JavaBindingFactory();
+
 		@Override
 		public BindingFactory getBindingFactory() {
-			if (getVirtualModel() != null) {
+			/*if (getVirtualModel() != null) {
 				return getVirtualModel().getBindingFactory();
-			}
-			return null;
+			}*/
+			return BINDING_FACTORY;
 		}
 
 		@Override

@@ -41,10 +41,10 @@ package org.openflexo.foundation.fml.parser;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.fml.FlexoRole;
+import org.openflexo.foundation.fml.UseModelSlotDeclaration;
 import org.openflexo.foundation.fml.parser.node.TIdentifier;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
-import org.openflexo.foundation.technologyadapter.UseModelSlotDeclaration;
 
 /**
  * @author sylvain

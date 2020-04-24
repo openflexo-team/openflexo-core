@@ -42,6 +42,7 @@ import java.io.FileNotFoundException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.logging.Logger;
 
+import org.openflexo.connie.BindingFactory;
 import org.openflexo.connie.BindingModel;
 import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.exception.NullReferenceException;
@@ -144,6 +145,14 @@ public interface ElementImportDeclaration extends FMLPrettyPrintable {
 		public BindingModel getBindingModel() {
 			if (getCompilationUnit() != null) {
 				return getCompilationUnit().getBindingModel();
+			}
+			return null;
+		}
+
+		@Override
+		public BindingFactory getBindingFactory() {
+			if (getCompilationUnit() != null) {
+				return getCompilationUnit().getBindingFactory();
 			}
 			return null;
 		}

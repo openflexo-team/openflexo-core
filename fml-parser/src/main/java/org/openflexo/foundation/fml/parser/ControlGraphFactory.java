@@ -13,6 +13,7 @@ import org.openflexo.foundation.fml.controlgraph.Sequence;
 import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.AddFlexoConceptInstanceNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.AddVirtualModelInstanceNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.AssignationActionNode;
+import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.BeginMatchActionNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.ConditionalNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.ControlGraphNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.DeclarationActionNode;
@@ -538,8 +539,10 @@ public class ControlGraphFactory extends FMLSemanticsAnalyzer {
 
 	@Override
 	public void inABeginMatchActionFmlActionExp(ABeginMatchActionFmlActionExp node) {
-		// TODO Auto-generated method stub
 		super.inABeginMatchActionFmlActionExp(node);
+		// System.out.println("on s'arrete la");
+		// System.exit(-1);
+		push(new BeginMatchActionNode(node, getMainAnalyzer()));
 	}
 
 	@Override

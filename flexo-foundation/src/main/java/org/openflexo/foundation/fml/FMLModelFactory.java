@@ -106,7 +106,6 @@ import org.openflexo.foundation.resource.PamelaResourceImpl.IgnoreLoadingEdits;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterService;
-import org.openflexo.foundation.technologyadapter.UseModelSlotDeclaration;
 import org.openflexo.foundation.utils.FlexoObjectReferenceConverter;
 import org.openflexo.pamela.ModelContextLibrary;
 import org.openflexo.pamela.converter.DataBindingConverter;
@@ -354,6 +353,10 @@ public class FMLModelFactory extends ModelFactory implements PamelaResourceModel
 		UseModelSlotDeclaration returned = newInstance(UseModelSlotDeclaration.class);
 		returned.setModelSlotClass(modelSlotClass);
 		return returned;
+	}
+
+	public NamespaceDeclaration newNamespaceDeclaration() {
+		return newInstance(NamespaceDeclaration.class);
 	}
 
 	public SynchronizationScheme newSynchronizationScheme() {

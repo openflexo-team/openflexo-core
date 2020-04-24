@@ -38,44 +38,43 @@
 
 package org.openflexo.foundation.fml.parser.fmlnodes;
 
-import org.openflexo.foundation.fml.UseModelSlotDeclaration;
+import org.openflexo.foundation.fml.NamespaceDeclaration;
 import org.openflexo.foundation.fml.parser.FMLObjectNode;
 import org.openflexo.foundation.fml.parser.MainSemanticsAnalyzer;
-import org.openflexo.foundation.fml.parser.node.AUseDecl;
-import org.openflexo.foundation.technologyadapter.ModelSlot;
+import org.openflexo.foundation.fml.parser.node.ANamespaceDecl;
 import org.openflexo.p2pp.RawSource.RawSourceFragment;
 
 /**
+ * 
+ * <pre>
+ *   namespace_decl = kw_namespace [string_literal]:lit_string kw_as [ns_id]:identifier semi;
+ * </pre>
+ * 
  * @author sylvain
  * 
  */
-public class UseDeclarationNode extends FMLObjectNode<AUseDecl, UseModelSlotDeclaration, MainSemanticsAnalyzer> {
+public class NamespaceDeclarationNode extends FMLObjectNode<ANamespaceDecl, NamespaceDeclaration, MainSemanticsAnalyzer> {
 
-	public UseDeclarationNode(AUseDecl astNode, MainSemanticsAnalyzer analyser) {
+	public NamespaceDeclarationNode(ANamespaceDecl astNode, MainSemanticsAnalyzer analyser) {
 		super(astNode, analyser);
 	}
 
-	public UseDeclarationNode(UseModelSlotDeclaration importDeclaration, MainSemanticsAnalyzer analyser) {
+	public NamespaceDeclarationNode(NamespaceDeclaration importDeclaration, MainSemanticsAnalyzer analyser) {
 		super(importDeclaration, analyser);
 	}
 
 	@Override
-	public UseModelSlotDeclaration buildModelObjectFromAST(AUseDecl astNode) {
-		Class<? extends ModelSlot<?>> modelSlotClass = null;
-		try {
-			modelSlotClass = (Class<? extends ModelSlot<?>>) Class.forName(makeFullQualifiedIdentifier(astNode.getIdentifier()));
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
-		}
-		UseModelSlotDeclaration returned = getFactory().newUseModelSlotDeclaration(modelSlotClass);
-		returned.setAbbrev(astNode.getTaId().getText());
+	public NamespaceDeclaration buildModelObjectFromAST(ANamespaceDecl astNode) {
+		NamespaceDeclaration returned = getFactory().newNamespaceDeclaration();
+		returned.setValue(astNode.getStringLiteral().getText().substring(1, astNode.getStringLiteral().getText().length() - 1));
+		returned.setAbbrev(astNode.getNsId().getText());
 		return returned;
 	}
 
 	@Override
-	public UseDeclarationNode deserialize() {
+	public NamespaceDeclarationNode deserialize() {
 		if (getParent() instanceof FMLCompilationUnitNode) {
-			((FMLCompilationUnitNode) getParent()).getModelObject().addToUseDeclarations(getModelObject());
+			((FMLCompilationUnitNode) getParent()).getModelObject().addToNamespaces(getModelObject());
 		}
 
 		return this;
@@ -85,23 +84,30 @@ public class UseDeclarationNode extends FMLObjectNode<AUseDecl, UseModelSlotDecl
 	public void preparePrettyPrint(boolean hasParsedVersion) {
 		super.preparePrettyPrint(hasParsedVersion);
 
-		append(staticContents("", "use", SPACE), getUseFragment());
-		append(dynamicContents(() -> getModelObject().getModelSlotClass().getCanonicalName()), getModelSlotClassFragment());
+		append(staticContents("", "namespace", SPACE), getNamespaceFragment());
+		append(dynamicContents("\"", () -> getModelObject().getValue(), "\""), getStringLiteralFragment());
 		append(staticContents(SPACE, "as", SPACE), getAsFragment());
-		append(dynamicContents(() -> getModelObject().getAbbrev()), getTaIdFragment());
+		append(dynamicContents(() -> getModelObject().getAbbrev()), getNsIdFragment());
 		append(staticContents(";"), getSemiFragment());
 	}
 
-	private RawSourceFragment getUseFragment() {
+	private RawSourceFragment getNamespaceFragment() {
 		if (getASTNode() != null) {
-			return getFragment(getASTNode().getKwUse());
+			return getFragment(getASTNode().getKwNamespace());
 		}
 		return null;
 	}
 
-	private RawSourceFragment getModelSlotClassFragment() {
+	private RawSourceFragment getStringLiteralFragment() {
 		if (getASTNode() != null) {
-			return getFragment(getASTNode().getIdentifier());
+			return getFragment(getASTNode().getStringLiteral());
+		}
+		return null;
+	}
+
+	private RawSourceFragment getNsIdFragment() {
+		if (getASTNode() != null) {
+			return getFragment(getASTNode().getNsId());
 		}
 		return null;
 	}
@@ -109,13 +115,6 @@ public class UseDeclarationNode extends FMLObjectNode<AUseDecl, UseModelSlotDecl
 	private RawSourceFragment getAsFragment() {
 		if (getASTNode() != null) {
 			return getFragment(getASTNode().getKwAs());
-		}
-		return null;
-	}
-
-	private RawSourceFragment getTaIdFragment() {
-		if (getASTNode() != null) {
-			return getFragment(getASTNode().getTaId());
 		}
 		return null;
 	}

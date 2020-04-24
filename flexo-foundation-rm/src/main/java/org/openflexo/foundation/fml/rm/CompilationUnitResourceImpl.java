@@ -66,6 +66,7 @@ import org.openflexo.foundation.fml.FMLObject.BindingIsRequiredAndMustBeValid.In
 import org.openflexo.foundation.fml.FMLTechnologyAdapter;
 import org.openflexo.foundation.fml.FMLValidationModel;
 import org.openflexo.foundation.fml.FlexoConcept;
+import org.openflexo.foundation.fml.UseModelSlotDeclaration;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.VirtualModelLibrary;
 import org.openflexo.foundation.fml.parser.FMLParser;
@@ -88,7 +89,6 @@ import org.openflexo.foundation.resource.SaveResourcePermissionDeniedException;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterService;
-import org.openflexo.foundation.technologyadapter.UseModelSlotDeclaration;
 import org.openflexo.kvc.AccessorInvocationException;
 import org.openflexo.pamela.exceptions.ModelDefinitionException;
 import org.openflexo.pamela.validation.ValidationIssue;

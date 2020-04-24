@@ -63,6 +63,7 @@ import org.openflexo.foundation.fml.FMLModelFactory;
 import org.openflexo.foundation.fml.FMLObject;
 import org.openflexo.foundation.fml.FMLTechnologyAdapter;
 import org.openflexo.foundation.fml.FlexoRole;
+import org.openflexo.foundation.fml.UseModelSlotDeclaration;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.controlgraph.ConditionalAction;
 import org.openflexo.foundation.fml.controlgraph.DefaultFMLControlGraphOwner;
@@ -102,7 +103,6 @@ import org.openflexo.foundation.fml.rt.editionaction.SelectUniqueVirtualModelIns
 import org.openflexo.foundation.fml.rt.editionaction.SelectVirtualModelInstance;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
-import org.openflexo.foundation.technologyadapter.UseModelSlotDeclaration;
 
 public class CreateEditionAction extends FlexoAction<CreateEditionAction, FMLControlGraph, FMLObject>
 implements Bindable, PropertyChangeListener, TechnologySpecificFlexoAction<FMLTechnologyAdapter> {
