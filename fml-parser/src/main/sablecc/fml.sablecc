@@ -670,7 +670,7 @@ Productions
 
    qualified_argument_list =
        {one}  [arg_name]:identifier assign expression
-     | {many} argument_list comma [arg_name]:identifier assign expression
+     | {many} qualified_argument_list comma [arg_name]:identifier assign expression
      ;
 
    fml_parameters =
