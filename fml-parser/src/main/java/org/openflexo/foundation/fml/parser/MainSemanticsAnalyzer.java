@@ -40,6 +40,7 @@ package org.openflexo.foundation.fml.parser;
 
 import org.openflexo.foundation.fml.FMLCompilationUnit;
 import org.openflexo.foundation.fml.FMLModelFactory;
+import org.openflexo.foundation.fml.FlexoRole;
 import org.openflexo.foundation.fml.parser.fmlnodes.BasicMetaDataNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.BehaviourParameterNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.ElementImportNode;
@@ -62,6 +63,8 @@ import org.openflexo.foundation.fml.parser.node.AComplexFormalArgument;
 import org.openflexo.foundation.fml.parser.node.AConceptDecl;
 import org.openflexo.foundation.fml.parser.node.AExpressionPropertyInnerConceptDecl;
 import org.openflexo.foundation.fml.parser.node.AFmlCompilationUnit;
+import org.openflexo.foundation.fml.parser.node.AFmlFullyQualifiedInnerConceptDecl;
+import org.openflexo.foundation.fml.parser.node.AFmlInnerConceptDecl;
 import org.openflexo.foundation.fml.parser.node.AGetDecl;
 import org.openflexo.foundation.fml.parser.node.AGetSetPropertyInnerConceptDecl;
 import org.openflexo.foundation.fml.parser.node.AJavaImportImportDecl;
@@ -75,6 +78,7 @@ import org.openflexo.foundation.fml.parser.node.ASingleAnnotationAnnotation;
 import org.openflexo.foundation.fml.parser.node.AUriImportImportDecl;
 import org.openflexo.foundation.fml.parser.node.AUseDecl;
 import org.openflexo.foundation.fml.parser.node.Start;
+import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.p2pp.RawSource;
 
 /**
@@ -88,6 +92,7 @@ public class MainSemanticsAnalyzer extends FMLSemanticsAnalyzer {
 	private final TypeFactory typeFactory;
 	private final FlexoPropertyFactory propertyFactory;
 	private final FlexoBehaviourFactory behaviourFactory;
+	private final RoleFactory roleFactory;
 
 	// Raw source as when this analyzer was last parsed
 	private RawSource rawSource;
@@ -101,8 +106,10 @@ public class MainSemanticsAnalyzer extends FMLSemanticsAnalyzer {
 		this.rawSource = rawSource;
 		fragmentManager = new FragmentManager(rawSource);
 		typeFactory = new TypeFactory(this);
+		roleFactory = new RoleFactory(this);
 		propertyFactory = new FlexoPropertyFactory(this);
 		behaviourFactory = new FlexoBehaviourFactory(this);
+
 		if (tree != null) {
 			tree.apply(this);
 			finalizeDeserialization();
@@ -126,6 +133,10 @@ public class MainSemanticsAnalyzer extends FMLSemanticsAnalyzer {
 
 	public TypeFactory getTypeFactory() {
 		return typeFactory;
+	}
+
+	public RoleFactory getRoleFactory() {
+		return roleFactory;
 	}
 
 	public FlexoPropertyFactory getPropertyFactory() {
@@ -286,6 +297,42 @@ public class MainSemanticsAnalyzer extends FMLSemanticsAnalyzer {
 	@Override
 	public void outAJavaInnerConceptDecl(AJavaInnerConceptDecl node) {
 		super.outAJavaInnerConceptDecl(node);
+		pop();
+	}
+
+	@Override
+	public void inAFmlInnerConceptDecl(AFmlInnerConceptDecl node) {
+		super.inAFmlInnerConceptDecl(node);
+		Class<? extends FlexoRole<?>> roleClass = getRoleFactory().getRoleClass(node.getRole());
+		if (ModelSlot.class.isAssignableFrom(roleClass)) {
+			push(getPropertyFactory().makeModelSlotPropertyNode(node));
+		}
+		else {
+			push(getPropertyFactory().makeFlexoRolePropertyNode(node));
+		}
+	}
+
+	@Override
+	public void outAFmlInnerConceptDecl(AFmlInnerConceptDecl node) {
+		super.outAFmlInnerConceptDecl(node);
+		pop();
+	}
+
+	@Override
+	public void inAFmlFullyQualifiedInnerConceptDecl(AFmlFullyQualifiedInnerConceptDecl node) {
+		super.inAFmlFullyQualifiedInnerConceptDecl(node);
+		Class<? extends FlexoRole<?>> roleClass = getRoleFactory().getRoleClass(node.getTaId(), node.getRole());
+		if (ModelSlot.class.isAssignableFrom(roleClass)) {
+			push(getPropertyFactory().makeModelSlotPropertyNode(node));
+		}
+		else {
+			push(getPropertyFactory().makeFlexoRolePropertyNode(node));
+		}
+	}
+
+	@Override
+	public void outAFmlFullyQualifiedInnerConceptDecl(AFmlFullyQualifiedInnerConceptDecl node) {
+		super.outAFmlFullyQualifiedInnerConceptDecl(node);
 		pop();
 	}
 
