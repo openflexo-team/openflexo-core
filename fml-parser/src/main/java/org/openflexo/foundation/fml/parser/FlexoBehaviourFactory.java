@@ -44,6 +44,7 @@ import org.openflexo.foundation.fml.FlexoBehaviour;
 import org.openflexo.foundation.fml.parser.fmlnodes.ActionSchemeNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.CreationSchemeNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.DeletionSchemeNode;
+import org.openflexo.foundation.fml.parser.fmlnodes.FMLBehaviourNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.FlexoBehaviourNode;
 import org.openflexo.foundation.fml.parser.node.AAnonymousConstructorBehaviourDecl;
 import org.openflexo.foundation.fml.parser.node.AAnonymousDestructorBehaviourDecl;
@@ -84,21 +85,10 @@ public class FlexoBehaviourFactory extends SemanticsAnalyzerFactory {
 			return new DeletionSchemeNode(node, getAnalyzer());
 		}
 		else if (node instanceof AFmlBehaviourDecl) { // fml.sablecc l 411/412
-			/*Type type = getTypeFactory().makeType(((AFmlBehaviourDecl) node).getType());
-			System.out.println("node: " + node);
-			System.out.println("type: " + type + " for " + ((AFmlBehaviourDecl) node).getType());
-			System.exit(-1);*/
-
-			/*if (type instanceof VirtualModelInstanceType) {
-				push(new AddVirtualModelInstanceNode(node, getMainAnalyzer()));
-			}
-			else if (type instanceof FlexoConceptInstanceType) {
-				push(new AddFlexoConceptInstanceNode(node, getMainAnalyzer()));
-			}
-			
-			ici faire des trucs !!!!*/
+			return new FMLBehaviourNode(node, getAnalyzer());
 		}
 		else if (node instanceof AFmlFullyQualifiedBehaviourDecl) {
+			return new FMLBehaviourNode(node, getAnalyzer());
 		}
 		else if (node instanceof AListenerBehaviourDecl) {
 		}

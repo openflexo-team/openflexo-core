@@ -94,7 +94,7 @@ public class MainSemanticsAnalyzer extends FMLSemanticsAnalyzer {
 	private final TypeFactory typeFactory;
 	private final FlexoPropertyFactory propertyFactory;
 	private final FlexoBehaviourFactory behaviourFactory;
-	private final RoleFactory roleFactory;
+	private final FMLFactory fmlFactory;
 
 	// Raw source as when this analyzer was last parsed
 	private RawSource rawSource;
@@ -108,7 +108,7 @@ public class MainSemanticsAnalyzer extends FMLSemanticsAnalyzer {
 		this.rawSource = rawSource;
 		fragmentManager = new FragmentManager(rawSource);
 		typeFactory = new TypeFactory(this);
-		roleFactory = new RoleFactory(this);
+		fmlFactory = new FMLFactory(this);
 		propertyFactory = new FlexoPropertyFactory(this);
 		behaviourFactory = new FlexoBehaviourFactory(this);
 
@@ -137,8 +137,8 @@ public class MainSemanticsAnalyzer extends FMLSemanticsAnalyzer {
 		return typeFactory;
 	}
 
-	public RoleFactory getRoleFactory() {
-		return roleFactory;
+	public FMLFactory getFMLFactory() {
+		return fmlFactory;
 	}
 
 	public FlexoPropertyFactory getPropertyFactory() {
@@ -317,7 +317,7 @@ public class MainSemanticsAnalyzer extends FMLSemanticsAnalyzer {
 	@Override
 	public void inAFmlInnerConceptDecl(AFmlInnerConceptDecl node) {
 		super.inAFmlInnerConceptDecl(node);
-		Class<? extends FlexoRole<?>> roleClass = getRoleFactory().getRoleClass(node.getRole());
+		Class<? extends FlexoRole<?>> roleClass = getFMLFactory().getRoleClass(node.getRole());
 		if (ModelSlot.class.isAssignableFrom(roleClass)) {
 			push(getPropertyFactory().makeModelSlotPropertyNode(node));
 		}
@@ -335,7 +335,7 @@ public class MainSemanticsAnalyzer extends FMLSemanticsAnalyzer {
 	@Override
 	public void inAFmlFullyQualifiedInnerConceptDecl(AFmlFullyQualifiedInnerConceptDecl node) {
 		super.inAFmlFullyQualifiedInnerConceptDecl(node);
-		Class<? extends FlexoRole<?>> roleClass = getRoleFactory().getRoleClass(node.getTaId(), node.getRole());
+		Class<? extends FlexoRole<?>> roleClass = getFMLFactory().getRoleClass(node.getTaId(), node.getRole());
 		if (ModelSlot.class.isAssignableFrom(roleClass)) {
 			push(getPropertyFactory().makeModelSlotPropertyNode(node));
 		}

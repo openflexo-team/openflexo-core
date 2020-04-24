@@ -212,8 +212,8 @@ public abstract class FMLObjectNode<N extends Node, T extends FMLPrettyPrintable
 		return getAnalyser().getTypeFactory();
 	}
 
-	public RoleFactory getRoleFactory() {
-		return getAnalyser().getRoleFactory();
+	public FMLFactory getFMLFactory() {
+		return getAnalyser().getFMLFactory();
 	}
 
 	protected FMLCompilationUnit getCompilationUnit() {

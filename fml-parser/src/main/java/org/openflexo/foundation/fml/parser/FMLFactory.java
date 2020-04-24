@@ -40,28 +40,38 @@ package org.openflexo.foundation.fml.parser;
 
 import java.util.logging.Logger;
 
+import org.openflexo.foundation.fml.FlexoBehaviour;
 import org.openflexo.foundation.fml.FlexoRole;
 import org.openflexo.foundation.fml.UseModelSlotDeclaration;
+import org.openflexo.foundation.fml.editionaction.EditionAction;
 import org.openflexo.foundation.fml.parser.node.TIdentifier;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 
 /**
+ * 
+ * This factory is responsible for handling FML data structures exposed by a {@link TechnologyAdapter}:
+ * <ul>
+ * <li>{@link ModelSlot}</li>
+ * <li>{@link FlexoRole}</li>
+ * <li>{@link FlexoBehaviour}</li>
+ * <li>{@link EditionAction}</li>
+ * </ul>
+ * 
  * @author sylvain
  * 
  */
-public class RoleFactory extends SemanticsAnalyzerFactory {
+public class FMLFactory extends SemanticsAnalyzerFactory {
 
-	private static final Logger logger = Logger.getLogger(RoleFactory.class.getPackage().getName());
-	private Class<? extends FlexoRole<?>> roleClass;
+	private static final Logger logger = Logger.getLogger(FMLFactory.class.getPackage().getName());
 
-	public RoleFactory(MainSemanticsAnalyzer analyzer) {
+	public FMLFactory(MainSemanticsAnalyzer analyzer) {
 		super(analyzer);
 	}
 
 	public Class<? extends FlexoRole<?>> getRoleClass(TIdentifier roleIdentifier) {
 		for (UseModelSlotDeclaration useModelSlotDeclaration : getAnalyzer().getCompilationUnit().getUseDeclarations()) {
-			roleClass = getRoleClass(roleIdentifier, useModelSlotDeclaration.getModelSlotClass());
+			Class<? extends FlexoRole<?>> roleClass = getRoleClass(roleIdentifier, useModelSlotDeclaration.getModelSlotClass());
 			if (roleClass != null) {
 				return roleClass;
 			}
@@ -137,6 +147,30 @@ public class RoleFactory extends SemanticsAnalyzerFactory {
 			}
 		}
 		return null;
+	}
+
+	public Class<? extends FlexoBehaviour> getBehaviourClass(TIdentifier behaviourIdentifier) {
+		for (UseModelSlotDeclaration useModelSlotDeclaration : getAnalyzer().getCompilationUnit().getUseDeclarations()) {
+			Class<? extends FlexoBehaviour> behaviourClass = getBehaviourClass(behaviourIdentifier,
+					useModelSlotDeclaration.getModelSlotClass());
+			if (behaviourClass != null) {
+				return behaviourClass;
+			}
+		}
+		return null;
+	}
+
+	public Class<? extends FlexoBehaviour> getBehaviourClass(TIdentifier taIdentifier, TIdentifier behaviourIdentifier) {
+		Class<? extends ModelSlot<?>> modelSlotClass = getModelSlotClass(taIdentifier);
+		if (modelSlotClass != null) {
+			return getBehaviourClass(behaviourIdentifier, modelSlotClass);
+		}
+		return null;
+	}
+
+	private Class<? extends FlexoBehaviour> getBehaviourClass(TIdentifier behaviourIdentifier,
+			Class<? extends ModelSlot<?>> modelSlotClass) {
+		return getServiceManager().getTechnologyAdapterService().getFlexoBehaviour(modelSlotClass, behaviourIdentifier.getText());
 	}
 
 }

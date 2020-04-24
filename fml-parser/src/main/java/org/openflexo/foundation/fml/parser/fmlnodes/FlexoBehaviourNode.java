@@ -49,6 +49,8 @@ import org.openflexo.foundation.fml.parser.node.AAnonymousDestructorBehaviourDec
 import org.openflexo.foundation.fml.parser.node.ABlock;
 import org.openflexo.foundation.fml.parser.node.ABlockFlexoBehaviourBody;
 import org.openflexo.foundation.fml.parser.node.AEmptyFlexoBehaviourBody;
+import org.openflexo.foundation.fml.parser.node.AFmlBehaviourDecl;
+import org.openflexo.foundation.fml.parser.node.AFmlFullyQualifiedBehaviourDecl;
 import org.openflexo.foundation.fml.parser.node.AMethodBehaviourDecl;
 import org.openflexo.foundation.fml.parser.node.ANamedConstructorBehaviourDecl;
 import org.openflexo.foundation.fml.parser.node.ANamedDestructorBehaviourDecl;
@@ -120,6 +122,12 @@ public abstract class FlexoBehaviourNode<N extends Node, T extends FlexoBehaviou
 		}
 		if (astNode instanceof AMethodBehaviourDecl) {
 			return ((AMethodBehaviourDecl) astNode).getFlexoBehaviourBody();
+		}
+		if (astNode instanceof AFmlBehaviourDecl) {
+			return ((AFmlBehaviourDecl) astNode).getFlexoBehaviourBody();
+		}
+		if (astNode instanceof AFmlFullyQualifiedBehaviourDecl) {
+			return ((AFmlFullyQualifiedBehaviourDecl) astNode).getFlexoBehaviourBody();
 		}
 		return null;
 	}
@@ -230,6 +238,12 @@ public abstract class FlexoBehaviourNode<N extends Node, T extends FlexoBehaviou
 		if (getASTNode() instanceof AMethodBehaviourDecl) {
 			return ((AMethodBehaviourDecl) getASTNode()).getVisibility();
 		}
+		if (getASTNode() instanceof AFmlBehaviourDecl) {
+			return ((AFmlBehaviourDecl) getASTNode()).getVisibility();
+		}
+		if (getASTNode() instanceof AFmlFullyQualifiedBehaviourDecl) {
+			return ((AFmlFullyQualifiedBehaviourDecl) getASTNode()).getVisibility();
+		}
 		return null;
 	}
 
@@ -249,6 +263,12 @@ public abstract class FlexoBehaviourNode<N extends Node, T extends FlexoBehaviou
 		}
 		if (getASTNode() instanceof AMethodBehaviourDecl) {
 			return ((AMethodBehaviourDecl) getASTNode()).getName();
+		}
+		if (getASTNode() instanceof AFmlBehaviourDecl) {
+			return ((AFmlBehaviourDecl) getASTNode()).getName();
+		}
+		if (getASTNode() instanceof AFmlFullyQualifiedBehaviourDecl) {
+			return ((AFmlFullyQualifiedBehaviourDecl) getASTNode()).getName();
 		}
 		return null;
 	}
@@ -276,6 +296,12 @@ public abstract class FlexoBehaviourNode<N extends Node, T extends FlexoBehaviou
 		if (getASTNode() instanceof AMethodBehaviourDecl) {
 			return getFragment(((AMethodBehaviourDecl) getASTNode()).getLPar());
 		}
+		if (getASTNode() instanceof AFmlBehaviourDecl) {
+			return getFragment(((AFmlBehaviourDecl) getASTNode()).getLPar());
+		}
+		if (getASTNode() instanceof AFmlFullyQualifiedBehaviourDecl) {
+			return getFragment(((AFmlFullyQualifiedBehaviourDecl) getASTNode()).getLPar());
+		}
 		return null;
 	}
 
@@ -294,6 +320,12 @@ public abstract class FlexoBehaviourNode<N extends Node, T extends FlexoBehaviou
 		}
 		if (getASTNode() instanceof AMethodBehaviourDecl) {
 			return getFragment(((AMethodBehaviourDecl) getASTNode()).getRPar());
+		}
+		if (getASTNode() instanceof AFmlBehaviourDecl) {
+			return getFragment(((AFmlBehaviourDecl) getASTNode()).getRPar());
+		}
+		if (getASTNode() instanceof AFmlFullyQualifiedBehaviourDecl) {
+			return getFragment(((AFmlFullyQualifiedBehaviourDecl) getASTNode()).getRPar());
 		}
 		return null;
 	}

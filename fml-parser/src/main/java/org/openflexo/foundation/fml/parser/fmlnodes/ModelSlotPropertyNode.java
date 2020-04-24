@@ -77,10 +77,10 @@ public class ModelSlotPropertyNode<N extends PInnerConceptDecl, MS extends Model
 
 		Class<? extends FlexoRole<?>> roleClass = null;
 		if (astNode instanceof AFmlInnerConceptDecl) {
-			roleClass = getRoleFactory().getRoleClass(((AFmlInnerConceptDecl) astNode).getRole());
+			roleClass = getFMLFactory().getRoleClass(((AFmlInnerConceptDecl) astNode).getRole());
 		}
 		if (astNode instanceof AFmlFullyQualifiedInnerConceptDecl) {
-			roleClass = getRoleFactory().getRoleClass(((AFmlFullyQualifiedInnerConceptDecl) astNode).getTaId(),
+			roleClass = getFMLFactory().getRoleClass(((AFmlFullyQualifiedInnerConceptDecl) astNode).getTaId(),
 					((AFmlFullyQualifiedInnerConceptDecl) astNode).getRole());
 		}
 		MS returned = (MS) getFactory().newInstance(roleClass);
@@ -112,7 +112,7 @@ public class ModelSlotPropertyNode<N extends PInnerConceptDecl, MS extends Model
 		append(dynamicContents(() -> getModelObject().getName(), SPACE), getNameFragment());
 		append(staticContents("", "with", SPACE), getWithFragment());
 		when(() -> isFullQualified())
-		.thenAppend(dynamicContents(() -> getRoleFactory().serializeTAId(getModelObject())), getTaIdFragment())
+		.thenAppend(dynamicContents(() -> getFMLFactory().serializeTAId(getModelObject())), getTaIdFragment())
 		.thenAppend(staticContents("::"), getColonColonFragment());
 		append(dynamicContents(() -> serializeFlexoRoleName(getModelObject())), getRoleFragment());
 		when(() -> hasParameters())

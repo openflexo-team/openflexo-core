@@ -62,6 +62,7 @@ import org.openflexo.foundation.fml.annotations.DeclareEditionActions;
 import org.openflexo.foundation.fml.annotations.DeclareFetchRequests;
 import org.openflexo.foundation.fml.annotations.DeclareFlexoBehaviours;
 import org.openflexo.foundation.fml.annotations.DeclareFlexoRoles;
+import org.openflexo.foundation.fml.annotations.FML;
 import org.openflexo.foundation.fml.editionaction.AbstractFetchRequest;
 import org.openflexo.foundation.fml.editionaction.EditionAction;
 import org.openflexo.foundation.fml.editionaction.FetchRequest;
@@ -99,6 +100,8 @@ public abstract class DefaultTechnologyAdapterService extends FlexoServiceImpl i
 	private Map<Class<? extends ModelSlot<?>>, List<Class<? extends EditionAction>>> availableEditionActionTypes;
 	private Map<Class<? extends ModelSlot<?>>, List<Class<? extends AbstractFetchRequest<?, ?, ?, ?>>>> availableAbstractFetchRequestActionTypes;
 	private Map<Class<? extends ModelSlot<?>>, List<Class<? extends FetchRequest<?, ?, ?>>>> availableFetchRequestActionTypes;
+
+	private Map<String, Class<? extends FlexoBehaviour>> availableBehavioursByFMLKeyword;
 
 	// private Map<Class<? extends ModelSlot<?>>, List<Class<? extends FlexoBehaviourParameter>>> availableFlexoBehaviourParameterTypes;
 	// private Map<Class<? extends ModelSlot<?>>, List<Class<? extends InspectorEntry>>> availableInspectorEntryTypes;
@@ -244,6 +247,7 @@ public abstract class DefaultTechnologyAdapterService extends FlexoServiceImpl i
 		availableEditionActionTypes = new HashMap<>();
 		availableFetchRequestActionTypes = new HashMap<>();
 		availableFlexoBehaviourTypes = new HashMap<>();
+		availableBehavioursByFMLKeyword = new HashMap<>();
 		loadAvailableTechnologyAdapters();
 		status = Status.Started;
 	}
@@ -508,8 +512,23 @@ public abstract class DefaultTechnologyAdapterService extends FlexoServiceImpl i
 			returned = new ArrayList<>();
 			appendFlexoBehaviourTypes(returned, modelSlotClass);
 			availableFlexoBehaviourTypes.put(modelSlotClass, returned);
+			for (Class<? extends FlexoBehaviour> behaviourClass : returned) {
+				FML annotation = behaviourClass.getAnnotation(FML.class);
+				if (annotation != null) {
+					availableBehavioursByFMLKeyword.put(annotation.value(), behaviourClass);
+					System.out.println("store " + behaviourClass + " for " + annotation.value());
+				}
+				availableBehavioursByFMLKeyword.put(behaviourClass.getSimpleName(), behaviourClass);
+				System.out.println("store " + behaviourClass + " for " + behaviourClass.getSimpleName());
+			}
 		}
 		return returned;
+	}
+
+	@Override
+	public <MS extends ModelSlot<?>> Class<? extends FlexoBehaviour> getFlexoBehaviour(Class<MS> modelSlotClass, String behaviourKeyword) {
+		getAvailableFlexoBehaviourTypes(modelSlotClass);
+		return availableBehavioursByFMLKeyword.get(behaviourKeyword);
 	}
 
 	private static void appendDeclareFlexoRoles(List<Class<? extends FlexoRole<?>>> aList, Class<?> cl) {
