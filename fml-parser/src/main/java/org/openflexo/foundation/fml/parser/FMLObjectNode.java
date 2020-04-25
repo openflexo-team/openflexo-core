@@ -61,9 +61,11 @@ import org.openflexo.foundation.fml.FMLPrettyPrintable;
 import org.openflexo.foundation.fml.FlexoBehaviour;
 import org.openflexo.foundation.fml.FlexoBehaviourParameter;
 import org.openflexo.foundation.fml.FlexoConcept;
+import org.openflexo.foundation.fml.FlexoRole;
 import org.openflexo.foundation.fml.GetSetProperty;
 import org.openflexo.foundation.fml.JavaImportDeclaration;
 import org.openflexo.foundation.fml.JavaRole;
+import org.openflexo.foundation.fml.NamespaceDeclaration;
 import org.openflexo.foundation.fml.PrimitiveRole;
 import org.openflexo.foundation.fml.PropertyCardinality;
 import org.openflexo.foundation.fml.UseModelSlotDeclaration;
@@ -91,13 +93,17 @@ import org.openflexo.foundation.fml.parser.fmlnodes.CreationSchemeNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.DeletionSchemeNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.ElementImportNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.ExpressionPropertyNode;
+import org.openflexo.foundation.fml.parser.fmlnodes.FMLBehaviourNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.FlexoConceptNode;
+import org.openflexo.foundation.fml.parser.fmlnodes.FlexoRolePropertyNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.GetSetPropertyNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.JavaImportNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.JavaRoleNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.ListMetaDataNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.MetaDataKeyValueNode;
+import org.openflexo.foundation.fml.parser.fmlnodes.ModelSlotPropertyNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.MultiValuedMetaDataNode;
+import org.openflexo.foundation.fml.parser.fmlnodes.NamespaceDeclarationNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.PrimitiveRoleNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.SingleMetaDataNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.UseDeclarationNode;
@@ -145,6 +151,7 @@ import org.openflexo.foundation.fml.parser.node.Token;
 import org.openflexo.foundation.fml.rt.editionaction.AddFlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.editionaction.AddVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.editionaction.BehaviourCallArgument;
+import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.p2pp.P2PPNode;
 import org.openflexo.p2pp.PrettyPrintContext;
 import org.openflexo.p2pp.RawSource;
@@ -277,6 +284,9 @@ public abstract class FMLObjectNode<N extends Node, T extends FMLPrettyPrintable
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
 	public <C> P2PPNode<?, C> makeObjectNode(C object) {
+		if (object instanceof NamespaceDeclaration) {
+			return (P2PPNode<?, C>) new NamespaceDeclarationNode((NamespaceDeclaration) object, getAnalyser());
+		}
 		if (object instanceof UseModelSlotDeclaration) {
 			return (P2PPNode<?, C>) new UseDeclarationNode((UseModelSlotDeclaration) object, getAnalyser());
 		}
@@ -328,6 +338,12 @@ public abstract class FMLObjectNode<N extends Node, T extends FMLPrettyPrintable
 		if (object instanceof AbstractProperty) {
 			return (P2PPNode<?, C>) new AbstractPropertyNode((AbstractProperty) object, getAnalyser());
 		}
+		if (object instanceof ModelSlot) {
+			return new ModelSlotPropertyNode((ModelSlot) object, getAnalyser());
+		}
+		if (object instanceof FlexoRole) {
+			return new FlexoRolePropertyNode((FlexoRole) object, getAnalyser());
+		}
 		if (object instanceof ActionScheme) {
 			return (P2PPNode<?, C>) new ActionSchemeNode((ActionScheme) object, getAnalyser());
 		}
@@ -336,6 +352,9 @@ public abstract class FMLObjectNode<N extends Node, T extends FMLPrettyPrintable
 		}
 		if (object instanceof DeletionScheme) {
 			return (P2PPNode<?, C>) new DeletionSchemeNode((DeletionScheme) object, getAnalyser());
+		}
+		if (object instanceof FlexoBehaviour) {
+			return new FMLBehaviourNode((DeletionScheme) object, getAnalyser());
 		}
 		if (object instanceof FlexoBehaviourParameter) {
 			return (P2PPNode<?, C>) new BehaviourParameterNode((FlexoBehaviourParameter) object, getAnalyser());
@@ -361,6 +380,9 @@ public abstract class FMLObjectNode<N extends Node, T extends FMLPrettyPrintable
 		if (object instanceof ConditionalAction) {
 			return (P2PPNode<?, C>) new ConditionalNode((ConditionalAction) object, getAnalyser());
 		}
+		/*if (object instanceof IterationAction) {
+			return (P2PPNode<?, C>) new IterationActionNode((IterationAction) object, getAnalyser());
+		}*/
 		if (object instanceof AddFlexoConceptInstance) {
 			return (P2PPNode<?, C>) new AddFlexoConceptInstanceNode((AddFlexoConceptInstance) object, getAnalyser());
 		}
