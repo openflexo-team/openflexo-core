@@ -1,0 +1,57 @@
+/**
+ * Testing statements
+ */
+
+use org.openflexo.foundation.fml.rt.FMLRTModelSlot as FMLRT;
+
+import java.util.ArrayList;
+
+model MyModel {
+	
+	/*testForBasic() { //AForBasicStatement
+		for (int i=0; ; i++) {
+			something_todo(i);
+		}
+	}
+
+	testForBasicExpression() { //AForBasicExpressionStatement
+		for (int i=0; i<10; i++) {
+			something_todo(i);
+		}
+	}*/
+
+	testEnhancedFor() { // AForEnhancedStatement
+		List<String> someItems;
+		for (String item : someItems) {
+			something_todo(item);
+		}
+	}
+
+	testEnhancedFor2() { // AForEnhancedStatement
+		List<String> someItems;
+		for (String item : new ArrayList(someItems)) {
+			something_todo(item);
+		}
+	}
+	
+	/*testEnhancedFor3() { // AForEnhancedStatement
+		for (MyConcept item : (select MyConcept from (this) where (selected.name = "toto"))) {
+			something_todo(item);
+		}
+	}
+	
+	testWhile() {
+		while (some.condition) {
+			something_todo();
+		}
+	}
+
+	testDo() {
+		do {
+			something_todo();
+		}
+		while (some.condition);
+	}*/
+
+	
+}

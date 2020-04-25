@@ -21,6 +21,7 @@ import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.EmptyControlGra
 import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.EmptyReturnStatementNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.ExpressionActionNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.FetchRequestNode;
+import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.IterationActionNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.LogActionNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.ReturnStatementNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.SequenceNode;
@@ -366,20 +367,38 @@ public class ControlGraphFactory extends FMLSemanticsAnalyzer {
 
 	@Override
 	public void inAForBasicStatement(AForBasicStatement node) {
-		// TODO Auto-generated method stub
 		super.inAForBasicStatement(node);
+		logger.warning("AForBasicStatement not implemented YET");
+		// See TestIterations.fml, l9
+	}
+
+	@Override
+	public void outAForBasicStatement(AForBasicStatement node) {
+		super.outAForBasicStatement(node);
 	}
 
 	@Override
 	public void inAForBasicExpressionStatement(AForBasicExpressionStatement node) {
-		// TODO Auto-generated method stub
 		super.inAForBasicExpressionStatement(node);
+		logger.warning("AForBasicExpressionStatement not implemented YET");
+		// See TestIterations.fml, l16
+	}
+
+	@Override
+	public void outAForBasicExpressionStatement(AForBasicExpressionStatement node) {
+		super.outAForBasicExpressionStatement(node);
 	}
 
 	@Override
 	public void inAForEnhancedStatement(AForEnhancedStatement node) {
-		// TODO Auto-generated method stub
 		super.inAForEnhancedStatement(node);
+		push(new IterationActionNode(node, getMainAnalyzer()));
+	}
+
+	@Override
+	public void outAForEnhancedStatement(AForEnhancedStatement node) {
+		super.outAForEnhancedStatement(node);
+		pop();
 	}
 
 	/*
@@ -529,6 +548,10 @@ public class ControlGraphFactory extends FMLSemanticsAnalyzer {
 		else if (type instanceof FlexoConceptInstanceType) {
 			push(new AddFlexoConceptInstanceNode(node, getMainAnalyzer()));
 		}
+		else {
+			System.out.println("Hop, on fait un new avec " + type);
+			System.exit(-1);
+		}
 	}
 
 	@Override
@@ -540,8 +563,8 @@ public class ControlGraphFactory extends FMLSemanticsAnalyzer {
 	@Override
 	public void inABeginMatchActionFmlActionExp(ABeginMatchActionFmlActionExp node) {
 		super.inABeginMatchActionFmlActionExp(node);
-		// System.out.println("on s'arrete la");
-		// System.exit(-1);
+		System.out.println("on s'arrete la");
+		System.exit(-1);
 		push(new BeginMatchActionNode(node, getMainAnalyzer()));
 	}
 
