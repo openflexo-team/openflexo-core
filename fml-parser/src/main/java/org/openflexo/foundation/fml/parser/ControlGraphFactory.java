@@ -10,6 +10,7 @@ import org.openflexo.foundation.fml.FlexoConceptInstanceType;
 import org.openflexo.foundation.fml.VirtualModelInstanceType;
 import org.openflexo.foundation.fml.controlgraph.FMLControlGraph;
 import org.openflexo.foundation.fml.controlgraph.Sequence;
+import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.AddClassInstanceNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.AddFlexoConceptInstanceNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.AddVirtualModelInstanceNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.AssignationActionNode;
@@ -549,8 +550,7 @@ public class ControlGraphFactory extends FMLSemanticsAnalyzer {
 			push(new AddFlexoConceptInstanceNode(node, getMainAnalyzer()));
 		}
 		else {
-			System.out.println("Hop, on fait un new avec " + type);
-			System.exit(-1);
+			push(new AddClassInstanceNode(node, getMainAnalyzer()));
 		}
 	}
 

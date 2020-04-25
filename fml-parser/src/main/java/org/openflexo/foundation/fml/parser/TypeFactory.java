@@ -69,6 +69,7 @@ import org.openflexo.foundation.fml.parser.node.ABooleanPrimitiveType;
 import org.openflexo.foundation.fml.parser.node.AComplexType;
 import org.openflexo.foundation.fml.parser.node.ACompositeIdent;
 import org.openflexo.foundation.fml.parser.node.AConceptDecl;
+import org.openflexo.foundation.fml.parser.node.ADiamondTypeArgumentsOrDiamond;
 import org.openflexo.foundation.fml.parser.node.AFloatPrimitiveType;
 import org.openflexo.foundation.fml.parser.node.AGtTypeArguments;
 import org.openflexo.foundation.fml.parser.node.AIntPrimitiveType;
@@ -80,6 +81,7 @@ import org.openflexo.foundation.fml.parser.node.AReferenceTypeArgument;
 import org.openflexo.foundation.fml.parser.node.AShrTypeArguments;
 import org.openflexo.foundation.fml.parser.node.ATypeArgumentList;
 import org.openflexo.foundation.fml.parser.node.ATypeArgumentListHead;
+import org.openflexo.foundation.fml.parser.node.ATypeArgumentsTypeArgumentsOrDiamond;
 import org.openflexo.foundation.fml.parser.node.AUshrTypeArguments;
 import org.openflexo.foundation.fml.parser.node.AVoidType;
 import org.openflexo.foundation.fml.parser.node.Node;
@@ -92,6 +94,7 @@ import org.openflexo.foundation.fml.parser.node.PTypeArgument;
 import org.openflexo.foundation.fml.parser.node.PTypeArgumentList;
 import org.openflexo.foundation.fml.parser.node.PTypeArgumentListHead;
 import org.openflexo.foundation.fml.parser.node.PTypeArguments;
+import org.openflexo.foundation.fml.parser.node.PTypeArgumentsOrDiamond;
 import org.openflexo.foundation.fml.parser.node.TIdentifier;
 import org.openflexo.toolbox.StringUtils;
 
@@ -250,6 +253,35 @@ public class TypeFactory extends SemanticsAnalyzerFactory {
 			logger.warning("Unexpected " + compositeIdentifier);
 			return null;
 		}
+	}
+
+	public Type makeType(PCompositeIdent compositeIdentifier, PTypeArgumentsOrDiamond args) {
+
+		Type baseType = makeType(compositeIdentifier);
+		if (args != null) {
+			if (args instanceof ADiamondTypeArgumentsOrDiamond) {
+				return baseType;
+			}
+			else if (args instanceof ATypeArgumentsTypeArgumentsOrDiamond) {
+				if (baseType instanceof Class) {
+					ATypeArgumentsTypeArgumentsOrDiamond tArgs = (ATypeArgumentsTypeArgumentsOrDiamond) args;
+					List<Type> typeArgs = makeTypeArguments(tArgs.getTypeArguments());
+					if (((Class) baseType).getTypeParameters().length == typeArgs.size()) {
+						return new ParameterizedTypeImpl((Class) baseType, typeArgs.toArray(new Type[typeArgs.size()]));
+					}
+					else {
+						logger.warning("Inconsistent arguments size for " + baseType + " args: " + typeArgs);
+						return baseType;
+					}
+				}
+				else {
+					logger.warning("Unexpected " + args + " for type " + baseType);
+					return baseType;
+				}
+			}
+			logger.warning("Unimplemented " + compositeIdentifier);
+		}
+		return baseType;
 	}
 
 	public PrimitiveType makePrimitiveType(PPrimitiveType primitiveType) {

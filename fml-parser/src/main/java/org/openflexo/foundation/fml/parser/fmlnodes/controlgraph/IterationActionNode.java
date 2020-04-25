@@ -118,27 +118,45 @@ public class IterationActionNode extends ControlGraphNode<AForEnhancedStatement,
 	}
 
 	protected RawSourceFragment getForFragment() {
-		return getFragment(getASTNode().getKwFor());
+		if (getASTNode() != null) {
+			return getFragment(getASTNode().getKwFor());
+		}
+		return null;
 	}
 
 	protected RawSourceFragment getLParFragment() {
-		return getFragment(getASTNode().getLPar());
+		if (getASTNode() != null) {
+			return getFragment(getASTNode().getLPar());
+		}
+		return null;
 	}
 
 	protected RawSourceFragment getTypeFragment() {
-		return getFragment(getASTNode().getType());
+		if (getASTNode() != null) {
+			return getFragment(getASTNode().getType());
+		}
+		return null;
 	}
 
 	protected RawSourceFragment getIteratorNameFragment() {
-		return getFragment(getASTNode().getIdentifier());
+		if (getASTNode() != null) {
+			return getFragment(getASTNode().getIdentifier());
+		}
+		return null;
 	}
 
 	protected RawSourceFragment getIterationActionFragment() {
-		return getFragment(getASTNode().getExpression());
+		if (getASTNode() != null) {
+			return getFragment(getASTNode().getExpression());
+		}
+		return null;
 	}
 
 	protected RawSourceFragment getRParFragment() {
-		return getFragment(getASTNode().getRPar());
+		if (getASTNode() != null) {
+			return getFragment(getASTNode().getRPar());
+		}
+		return null;
 	}
 
 	protected RawSourceFragment getLBrcFragment() {

@@ -29,7 +29,7 @@ model MyModel {
 
 	testEnhancedFor2() { // AForEnhancedStatement
 		List<String> someItems;
-		for (String item : new ArrayList(someItems)) {
+		for (String item : new ArrayList<String>(someItems)) {
 			something_todo(item);
 		}
 	}

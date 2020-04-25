@@ -56,17 +56,18 @@ import org.openflexo.foundation.fml.editionaction.AddClassInstance.AddClassInsta
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
 import org.openflexo.pamela.annotations.Adder;
 import org.openflexo.pamela.annotations.CloningStrategy;
+import org.openflexo.pamela.annotations.CloningStrategy.StrategyType;
 import org.openflexo.pamela.annotations.DefineValidationRule;
 import org.openflexo.pamela.annotations.Embedded;
 import org.openflexo.pamela.annotations.Getter;
+import org.openflexo.pamela.annotations.Getter.Cardinality;
 import org.openflexo.pamela.annotations.ImplementationClass;
 import org.openflexo.pamela.annotations.ModelEntity;
+import org.openflexo.pamela.annotations.PropertyIdentifier;
 import org.openflexo.pamela.annotations.Remover;
 import org.openflexo.pamela.annotations.Setter;
 import org.openflexo.pamela.annotations.XMLAttribute;
 import org.openflexo.pamela.annotations.XMLElement;
-import org.openflexo.pamela.annotations.CloningStrategy.StrategyType;
-import org.openflexo.pamela.annotations.Getter.Cardinality;
 import org.openflexo.pamela.validation.ValidationError;
 import org.openflexo.pamela.validation.ValidationIssue;
 import org.openflexo.pamela.validation.ValidationRule;
@@ -86,6 +87,9 @@ public interface AddClassInstance extends AssignableAction<Object> {
 	String TYPE = "type";
 	String PARAMETERS = "parameters";
 
+	@PropertyIdentifier(type = DataBinding.class)
+	public static final String CONTAINER_KEY = "container";
+
 	@Getter(value = TYPE, isStringConvertable = true)
 	@XMLAttribute
 	Type getType();
@@ -97,32 +101,61 @@ public interface AddClassInstance extends AssignableAction<Object> {
 	@XMLElement(xmlTag = "parameter")
 	@Embedded
 	@CloningStrategy(StrategyType.CLONE)
-	List<DataBinding<Object>> getParameters();
+	List<DataBinding<?>> getParameters();
 
 	@Setter(PARAMETERS)
-	void setParameters(List<DataBinding<Object>> parameters);
+	void setParameters(List<DataBinding<?>> parameters);
 
 	@Adder(PARAMETERS)
-	void addToParameters(DataBinding<Object> aParameter);
+	void addToParameters(DataBinding<?> aParameter);
 
 	void createParameter();
 
 	@Remover(PARAMETERS)
-	void removeFromParameters(DataBinding<Object> aParameter);
+	void removeFromParameters(DataBinding<?> aParameter);
+
+	@Getter(value = CONTAINER_KEY)
+	@XMLAttribute
+	public DataBinding<?> getContainer();
+
+	@Setter(CONTAINER_KEY)
+	public void setContainer(DataBinding<?> container);
 
 	abstract class AddClassInstanceImpl extends AssignableActionImpl<Object> implements AddClassInstance {
 
 		static final Logger logger = Logger.getLogger(AddClassInstance.class.getPackage().getName());
 
+		private DataBinding<?> container;
+
+		@Override
+		public DataBinding<?> getContainer() {
+			if (container == null) {
+				container = new DataBinding<>(this, Object.class, DataBinding.BindingDefinitionType.GET);
+				container.setBindingName("container");
+			}
+			return container;
+		}
+
+		@Override
+		public void setContainer(DataBinding<?> aContainer) {
+			if (aContainer != null) {
+				aContainer.setOwner(this);
+				aContainer.setBindingName("container");
+				aContainer.setDeclaredType(Object.class);
+				aContainer.setBindingDefinitionType(DataBinding.BindingDefinitionType.GET);
+			}
+			this.container = aContainer;
+		}
+
 		@Override
 		public Object execute(RunTimeEvaluationContext evaluationContext) {
 			try {
-				List<DataBinding<Object>> parameterDataBindings = getParameters();
+				List<DataBinding<?>> parameterDataBindings = getParameters();
 				Object[] parameters = new Object[parameterDataBindings.size()];
 				Class<?>[] parameterTypes = new Class[parameterDataBindings.size()];
 
 				int n = 0;
-				for (DataBinding<Object> dataBinding : parameterDataBindings) {
+				for (DataBinding<?> dataBinding : parameterDataBindings) {
 					Object value = dataBinding.getBindingValue(evaluationContext);
 					parameters[n] = value;
 					parameterTypes[n] = value == null ? Object.class : parameters[n].getClass();
