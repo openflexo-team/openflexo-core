@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<VirtualModel id="SYL-1" virtualModelClass="org.openflexo.foundation.fml.VirtualModel" modelVersion="2.0" uri="http://openflexo.org/test/flexo-test-resources/TestResourceCenter/ViewPoints/TestReference.fml/VMA.fml" version="0.1" visibility="Public" name="VMA" author="sylvain" userID="SYL" flexoID="1">
+  <UseModelSlotDeclaration id="0" modelSlotClass="org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstanceModelSlot" userID="SYL" flexoID="-1" />
+  <Inspector id="SYL-2" inspectorTitle="VMA" userID="SYL" flexoID="2" />
+  <FMLRTVirtualModelInstanceModelSlot id="SYL-6" virtualModelURI="http://openflexo.org/test/flexo-test-resources/TestResourceCenter/ViewPoints/TestReference.fml/VMB.fml" cloningStrategy="Reference" cardinality="ZeroOne" name="vmB" userID="SYL" flexoID="6" />
+  <FlexoConceptInstanceRole id="SYL-10" virtualModelInstance="vmB" flexoConceptTypeURI="http://openflexo.org/test/flexo-test-resources/TestResourceCenter/ViewPoints/TestReference.fml/VMB.fml#ConceptInB" cloningStrategy="Reference" cardinality="ZeroOne" name="conceptInB" userID="SYL" flexoID="10" />
+  <FlexoConceptInstanceRole id="SYL-11" virtualModelInstance="container.vmC" flexoConceptTypeURI="http://openflexo.org/test/flexo-test-resources/TestResourceCenter/ViewPoints/TestReference.fml/VMC.fml#ConceptInC" cloningStrategy="Reference" cardinality="ZeroOne" name="conceptInC" userID="SYL" flexoID="11" />
+</VirtualModel>

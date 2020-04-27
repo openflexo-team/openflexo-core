@@ -1,0 +1,25 @@
+
+/**
+ * 
+ * @author sylvain
+ * @version 0.1
+ */
+@VirtualModel(uri="http://openflexo.org/test/flexo-test-resources/TestResourceCenter/ViewPoints/TestReference.fml/VMB.fml")
+public class VMB {
+
+  @FlexoConcept  
+  public class ConceptInB {  
+  
+    @CreationScheme    
+    ConceptInB:create() {    
+      
+    }    
+  
+    @DeletionScheme    
+    Void delete() {    
+      
+    }    
+  
+  }  
+
+}

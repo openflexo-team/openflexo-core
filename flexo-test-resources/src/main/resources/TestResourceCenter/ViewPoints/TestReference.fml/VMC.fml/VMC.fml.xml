@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<VirtualModel id="SYL-1" virtualModelClass="org.openflexo.foundation.fml.VirtualModel" modelVersion="2.0" uri="http://openflexo.org/test/flexo-test-resources/TestResourceCenter/ViewPoints/TestReference.fml/VMC.fml" version="0.1" visibility="Public" name="VMC" author="sylvain" userID="SYL" flexoID="1">
+  <FlexoConcept id="SYL-6" visibility="Public" name="ConceptInC" author="sylvain" userID="SYL" flexoID="6">
+    <Inspector id="SYL-7" inspectorTitle="ConceptInC" userID="SYL" flexoID="7" />
+    <CreationScheme id="SYL-11" label="create" name="create" width="800" height="600" userID="SYL" flexoID="11">
+      <BehaviourControlGraph_EmptyControlGraph id="SYL-13" userID="SYL" flexoID="13" />
+    </CreationScheme>
+    <DeletionScheme id="SYL-12" label="delete" name="delete" width="800" height="600" userID="SYL" flexoID="12">
+      <BehaviourControlGraph_EmptyControlGraph id="SYL-14" userID="SYL" flexoID="14" />
+    </DeletionScheme>
+  </FlexoConcept>
+  <Inspector id="SYL-2" inspectorTitle="VMC" userID="SYL" flexoID="2" />
+</VirtualModel>

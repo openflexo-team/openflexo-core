@@ -1,0 +1,14 @@
+use org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstanceModelSlot;
+
+/**
+ * 
+ * @author sylvain
+ * @version 0.1
+ */
+@VirtualModel(uri="http://openflexo.org/test/flexo-test-resources/TestResourceCenter/ViewPoints/TestReference.fml/VMA.fml")
+public class VMA {
+
+  public VMB vmB;
+  public ConceptInB conceptInB;
+  public ConceptInC conceptInC;
+}
