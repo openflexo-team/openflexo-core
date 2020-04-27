@@ -2088,6 +2088,26 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 			}
 			return smallIcon;
 		}
+
+		@Override
+		public String getAuthor() {
+			String returned = getSingleMetaData("Author", String.class);
+			if (returned != null) {
+				return returned;
+			}
+			if (getOwner() != null) {
+				return getOwner().getAuthor();
+			}
+			return null;
+		}
+
+		@Override
+		public void setAuthor(String author) {
+			if (isDeserializing() || requireChange(getAuthor(), author)) {
+				setSingleMetaData("Author", author, String.class);
+			}
+		}
+
 	}
 
 	@DefineValidationRule
