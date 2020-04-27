@@ -20,10 +20,12 @@ import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.ControlGraphNod
 import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.DeclarationActionNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.EmptyControlGraphNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.EmptyReturnStatementNode;
+import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.EndMatchActionNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.ExpressionActionNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.FetchRequestNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.IterationActionNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.LogActionNode;
+import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.MatchActionNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.ReturnStatementNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.SequenceNode;
 import org.openflexo.foundation.fml.parser.node.AAssignmentStatementExpression;
@@ -563,38 +565,36 @@ public class ControlGraphFactory extends FMLSemanticsAnalyzer {
 	@Override
 	public void inABeginMatchActionFmlActionExp(ABeginMatchActionFmlActionExp node) {
 		super.inABeginMatchActionFmlActionExp(node);
-		System.out.println("on s'arrete la");
-		System.exit(-1);
 		push(new BeginMatchActionNode(node, getMainAnalyzer()));
 	}
 
 	@Override
 	public void outABeginMatchActionFmlActionExp(ABeginMatchActionFmlActionExp node) {
-		// TODO Auto-generated method stub
 		super.outABeginMatchActionFmlActionExp(node);
+		pop();
 	}
 
 	@Override
 	public void inAMatchActionFmlActionExp(AMatchActionFmlActionExp node) {
-		// TODO Auto-generated method stub
 		super.inAMatchActionFmlActionExp(node);
+		push(new MatchActionNode(node, getMainAnalyzer()));
 	}
 
 	@Override
 	public void outAMatchActionFmlActionExp(AMatchActionFmlActionExp node) {
-		// TODO Auto-generated method stub
 		super.outAMatchActionFmlActionExp(node);
+		pop();
 	}
 
 	@Override
 	public void inAEndMatchActionFmlActionExp(AEndMatchActionFmlActionExp node) {
-		// TODO Auto-generated method stub
 		super.inAEndMatchActionFmlActionExp(node);
+		push(new EndMatchActionNode(node, getMainAnalyzer()));
 	}
 
 	@Override
 	public void outAEndMatchActionFmlActionExp(AEndMatchActionFmlActionExp node) {
-		// TODO Auto-generated method stub
 		super.outAEndMatchActionFmlActionExp(node);
+		pop();
 	}
 }

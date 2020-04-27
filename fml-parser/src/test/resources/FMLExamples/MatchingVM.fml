@@ -1,0 +1,54 @@
+use org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstanceModelSlot as FMLRT;
+
+import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
+import java.lang.String;
+import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstance;
+
+@URI("http://openflexo.org/test/TestResourceCenter/TestMatchFlexoConceptInstance.fml/MatchingVM.fml")
+@Version("0.1")
+model MatchingVM {
+	VM _model with FMLRTVirtualModelInstanceModelSlot;
+
+	@UI(
+		@label("create")
+	)
+	create::_create (required VM _model) {
+		_model = parameters._model;
+		log((">>>> Parametre model : " + parameters._model));
+	}
+
+	@UI(
+		@label("synchronize")
+	)
+	synchronizeUsingMatchingSet () {
+		MatchingSet matchingSet = begin match MatchedConcept from (this);;
+		for (Concept _concept : select Concept from (_model)) {
+			match MatchedConcept in (matchingSet) from (this) create::toto(_concept,(_concept.p + "-matched"));
+		}
+		end match MatchedConcept in (matchingSet) delete::tutu();
+	}
+
+	defaultSynchronize () {
+		for (Concept _concept : select Concept from (_model)) {
+			match MatchedConcept in (matchingSet) from (this) create::tutu(_concept,(_concept.p + "-default"));
+		}
+	}
+
+	concept MatchedConcept {
+		Concept _concept with FlexoConceptInstanceRole;
+		String p2;
+		@UI(
+			@label("create")
+			@TextField(value="aP2")
+		)
+		create::_create (required Concept aConcept, required String aP2) {
+			_concept = parameters.aConcept;
+			p2 = parameters.aP2;
+		}
+		@UI(
+			@label("delete")
+		)
+		delete::_delete () {
+		}
+	}
+}

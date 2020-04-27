@@ -40,11 +40,26 @@ package org.openflexo.foundation.fml.parser.fmlnodes.controlgraph;
 
 import java.util.logging.Logger;
 
+import org.openflexo.connie.DataBinding;
+import org.openflexo.foundation.fml.FlexoConcept;
+import org.openflexo.foundation.fml.FlexoConceptInstanceType;
+import org.openflexo.foundation.fml.parser.ExpressionFactory;
 import org.openflexo.foundation.fml.parser.MainSemanticsAnalyzer;
 import org.openflexo.foundation.fml.parser.node.ABeginMatchActionFmlActionExp;
+import org.openflexo.foundation.fml.parser.node.AFromClause;
+import org.openflexo.foundation.fml.parser.node.PExpression;
+import org.openflexo.foundation.fml.parser.node.PFromClause;
+import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.editionaction.InitiateMatching;
+import org.openflexo.p2pp.RawSource.RawSourceFragment;
 
 /**
+ * Represents a {@link InitiateMatching} in FML source code
+ * 
+ * <pre>
+ *    {begin_match_action}     kw_begin kw_match [concept_name]:identifier from_clause where_clause?
+ * </pre>
+ * 
  * @author sylvain
  * 
  */
@@ -71,50 +86,117 @@ public class BeginMatchActionNode extends ControlGraphNode<ABeginMatchActionFmlA
 	public InitiateMatching buildModelObjectFromAST(ABeginMatchActionFmlActionExp astNode) {
 		InitiateMatching returned = getFactory().newInitiateMatching();
 
-		// returned.setLogString(makeBinding(getASTNode().getExpression(), returned));
-		// returned.setLogLevel(LogLevel.INFO);
+		FlexoConceptInstanceType type = getTypeFactory().lookupConceptNamed(astNode.getConceptName().getText());
 
+		if (type instanceof FlexoConceptInstanceType) {
+
+			FlexoConcept concept = type.getFlexoConcept();
+			if (concept != null) {
+				returned.setFlexoConceptType(concept);
+			}
+			if (astNode.getFromClause() instanceof AFromClause) {
+				PExpression fromExpression = ((AFromClause) astNode.getFromClause()).getExpression();
+				DataBinding<FlexoConceptInstance> container = (DataBinding) ExpressionFactory.makeExpression(fromExpression, getAnalyser(),
+						returned);
+				returned.setContainer(container);
+			}
+		}
+		else {
+			throwIssue("Unexpected type: " + type, getFragment(astNode.getConceptName()));
+		}
 		return returned;
+
 	}
+
+	/*
+	 * <pre>
+	 * kw_select kw_unique? [selected_type_name]:composite_ident from_clause where_clause?
+	 * </pre>
+	 */
 
 	@Override
 	public void preparePrettyPrint(boolean hasParsedVersion) {
 		super.preparePrettyPrint(hasParsedVersion);
 
-		/*append(staticContents("log"), getLogFragment());
-		append(staticContents("("), getLParFragment());
-		append(dynamicContents(() -> getModelObject().getLogString().toString()), getExpressionFragment());
-		append(staticContents(")"), getRParFragment());
-		append(staticContents(";"), getSemiFragment());*/
+		// @formatter:off	
 
+		append(staticContents("begin"), getBeginFragment());
+		append(staticContents(SPACE,"match",""), getMatchFragment());
+		append(dynamicContents(SPACE, () -> serializeType(getModelObject().getMatchedType())), getConceptNameFragment());
+		append(staticContents(SPACE, "from",""), getFromFragment());
+		append(staticContents(SPACE, "(",""), getLParFromFragment());
+		append(dynamicContents(() -> getFromAsString()), getFromExpressionFragment());
+		append(staticContents(")"), getRParFromFragment());
+		//append(staticContents(";"), getSemiFragment());
+		// @formatter:on	
 	}
 
-	/*protected RawSourceFragment getLogFragment() {
-		if (getASTNode() != null) {
-			return getFragment(getASTNode().getKwLog());
+	private String getFromAsString() {
+		if (getModelObject() != null) {
+			return getModelObject().getContainer().toString();
 		}
 		return null;
 	}
-	
-	protected RawSourceFragment getLParFragment() {
+
+	private RawSourceFragment getBeginFragment() {
 		if (getASTNode() != null) {
-			return getFragment(getASTNode().getLPar());
+			return getFragment(getASTNode().getKwBegin());
 		}
 		return null;
 	}
-	
-	protected RawSourceFragment getExpressionFragment() {
+
+	private RawSourceFragment getMatchFragment() {
 		if (getASTNode() != null) {
-			return getFragment(getASTNode().getExpression());
+			return getFragment(getASTNode().getKwMatch());
 		}
 		return null;
 	}
-	
-	protected RawSourceFragment getRParFragment() {
+
+	private RawSourceFragment getConceptNameFragment() {
 		if (getASTNode() != null) {
-			return getFragment(getASTNode().getRPar());
+			return getFragment(getASTNode().getConceptName());
 		}
 		return null;
-	}*/
+	}
+
+	private RawSourceFragment getFromFragment() {
+		if (getASTNode() != null) {
+			PFromClause fromClause = getASTNode().getFromClause();
+			if (fromClause instanceof AFromClause) {
+				return getFragment(((AFromClause) fromClause).getKwFrom());
+			}
+		}
+		return null;
+	}
+
+	private RawSourceFragment getLParFromFragment() {
+		if (getASTNode() != null) {
+			PFromClause fromClause = getASTNode().getFromClause();
+			if (fromClause instanceof AFromClause) {
+				return getFragment(((AFromClause) fromClause).getLPar());
+			}
+		}
+		return null;
+	}
+
+	private RawSourceFragment getRParFromFragment() {
+		if (getASTNode() != null) {
+			PFromClause fromClause = getASTNode().getFromClause();
+			if (fromClause instanceof AFromClause) {
+				return getFragment(((AFromClause) fromClause).getRPar());
+			}
+		}
+		return null;
+	}
+
+	private RawSourceFragment getFromExpressionFragment() {
+		if (getASTNode() != null) {
+			PFromClause fromClause = getASTNode().getFromClause();
+			if (fromClause instanceof AFromClause) {
+				return getFragment(((AFromClause) fromClause).getExpression());
+			}
+		}
+		return null;
+	}
 
 }

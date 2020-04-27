@@ -1,0 +1,426 @@
+/**
+ * 
+ * Copyright (c) 2019, Openflexo
+ * 
+ * This file is part of FML-parser, a component of the software infrastructure 
+ * developed at Openflexo.
+ * 
+ * 
+ * Openflexo is dual-licensed under the European Union Public License (EUPL, either 
+ * version 1.1 of the License, or any later version ), which is available at 
+ * https://joinup.ec.europa.eu/software/page/eupl/licence-eupl
+ * and the GNU General Public License (GPL, either version 3 of the License, or any 
+ * later version), which is available at http://www.gnu.org/licenses/gpl.html .
+ * 
+ * You can redistribute it and/or modify under the terms of either of these licenses
+ * 
+ * If you choose to redistribute it and/or modify under the terms of the GNU GPL, you
+ * must include the following additional permission.
+ *
+ *          Additional permission under GNU GPL version 3 section 7
+ *
+ *          If you modify this Program, or any covered work, by linking or 
+ *          combining it with software containing parts covered by the terms 
+ *          of EPL 1.0, the licensors of this Program grant you additional permission
+ *          to convey the resulting work. * 
+ * 
+ * This software is distributed in the hope that it will be useful, but WITHOUT ANY 
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+ * PARTICULAR PURPOSE. 
+ *
+ * See http://www.openflexo.org/license.html for details.
+ * 
+ * 
+ * Please contact Openflexo (openflexo-contacts@openflexo.org)
+ * or visit www.openflexo.org if you need additional information.
+ * 
+ */
+
+package org.openflexo.foundation.fml.parser.fmlnodes.controlgraph;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.logging.Logger;
+
+import org.openflexo.connie.DataBinding;
+import org.openflexo.foundation.fml.CreationScheme;
+import org.openflexo.foundation.fml.FlexoBehaviourParameter;
+import org.openflexo.foundation.fml.FlexoConcept;
+import org.openflexo.foundation.fml.FlexoConceptInstanceType;
+import org.openflexo.foundation.fml.parser.ExpressionFactory;
+import org.openflexo.foundation.fml.parser.MainSemanticsAnalyzer;
+import org.openflexo.foundation.fml.parser.node.ACreateClause;
+import org.openflexo.foundation.fml.parser.node.AFromClause;
+import org.openflexo.foundation.fml.parser.node.AInClause;
+import org.openflexo.foundation.fml.parser.node.AManyArgumentList;
+import org.openflexo.foundation.fml.parser.node.AMatchActionFmlActionExp;
+import org.openflexo.foundation.fml.parser.node.AOneArgumentList;
+import org.openflexo.foundation.fml.parser.node.PArgumentList;
+import org.openflexo.foundation.fml.parser.node.PCreateClause;
+import org.openflexo.foundation.fml.parser.node.PExpression;
+import org.openflexo.foundation.fml.parser.node.PFromClause;
+import org.openflexo.foundation.fml.parser.node.PInClause;
+import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
+import org.openflexo.foundation.fml.rt.action.MatchingSet;
+import org.openflexo.foundation.fml.rt.editionaction.CreateFlexoConceptInstanceParameter;
+import org.openflexo.foundation.fml.rt.editionaction.MatchFlexoConceptInstance;
+import org.openflexo.p2pp.RawSource.RawSourceFragment;
+
+/**
+ * Represents a {@link MatchFlexoConceptInstance} in FML source code
+ * 
+ * <pre>
+ *    {match_action}           kw_match [concept_name]:identifier in_clause from_clause where_clause create_clause
+ * </pre>
+ * 
+ * @author sylvain
+ * 
+ */
+public class MatchActionNode extends ControlGraphNode<AMatchActionFmlActionExp, MatchFlexoConceptInstance> {
+
+	@SuppressWarnings("unused")
+	private static final Logger logger = Logger.getLogger(MatchActionNode.class.getPackage().getName());
+
+	private FlexoConceptInstanceType conceptType;
+	private String constructorName;
+	private List<DataBinding<?>> constructorArgs;
+
+	public MatchActionNode(AMatchActionFmlActionExp astNode, MainSemanticsAnalyzer analyser) {
+		super(astNode, analyser);
+
+		if (getSemiFragment() != null) {
+			setEndPosition(getSemiFragment().getEndPosition());
+		}
+
+	}
+
+	public MatchActionNode(MatchFlexoConceptInstance action, MainSemanticsAnalyzer analyser) {
+		super(action, analyser);
+	}
+
+	private void handleArguments(PArgumentList argumentList, MatchFlexoConceptInstance modelObject) {
+		if (argumentList instanceof AManyArgumentList) {
+			AManyArgumentList l = (AManyArgumentList) argumentList;
+			handleArguments(l.getArgumentList(), modelObject);
+			handleArgument(l.getExpression(), modelObject);
+		}
+		else if (argumentList instanceof AOneArgumentList) {
+			handleArgument(((AOneArgumentList) argumentList).getExpression(), modelObject);
+		}
+	}
+
+	private void handleArgument(PExpression expression, MatchFlexoConceptInstance modelObject) {
+		DataBinding<?> argValue = ExpressionFactory.makeExpression(expression, getAnalyser(), modelObject);
+
+		if (constructorArgs == null) {
+			constructorArgs = new ArrayList<>();
+		}
+
+		constructorArgs.add(argValue);
+	}
+
+	@Override
+	public void finalizeDeserialization() {
+		super.finalizeDeserialization();
+		if (conceptType != null && conceptType.isResolved()) {
+			FlexoConcept flexoConceptType = conceptType.getFlexoConcept();
+			if (flexoConceptType != null) {
+				getModelObject().setFlexoConceptType(flexoConceptType);
+				if (flexoConceptType.getCreationSchemes().size() == 0) {
+					// No constructor: !! problem
+					throwIssue("No constructor for concept " + flexoConceptType, getConceptNameFragment());
+				}
+				else if (flexoConceptType.getCreationSchemes().size() == 1) {
+					getModelObject().setCreationScheme(flexoConceptType.getCreationSchemes().get(0));
+				}
+				else /* flexoConceptType.getCreationSchemes().size() > 1 */ {
+					// TODO
+					getModelObject().setCreationScheme((CreationScheme) flexoConceptType.getFlexoBehaviour(constructorName));
+				}
+
+				if (getModelObject().getCreationScheme() != null) {
+					int index = 0;
+					for (FlexoBehaviourParameter flexoBehaviourParameter : getModelObject().getCreationScheme().getParameters()) {
+						CreateFlexoConceptInstanceParameter arg = getModelObject().getParameter(flexoBehaviourParameter);
+						if (index < constructorArgs.size()) {
+							arg.setValue(constructorArgs.get(index));
+							index++;
+						}
+						else {
+							throwIssue("Missing argument value for parameter " + flexoBehaviourParameter, getConceptNameFragment());
+							break;
+						}
+					}
+				}
+			}
+			else {
+				throwIssue("Unknown concept " + getConceptName(), getConceptNameFragment());
+			}
+
+		}
+	}
+
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	@Override
+	public MatchFlexoConceptInstance buildModelObjectFromAST(AMatchActionFmlActionExp astNode) {
+		MatchFlexoConceptInstance returned = getFactory().newMatchFlexoConceptInstance();
+
+		conceptType = getTypeFactory().lookupConceptNamed(astNode.getConceptName().getText());
+
+		if (conceptType instanceof FlexoConceptInstanceType) {
+			FlexoConcept concept = conceptType.getFlexoConcept();
+			if (concept != null) {
+				returned.setFlexoConceptType(concept);
+			}
+			if (astNode.getInClause() instanceof AInClause) {
+				PExpression inExpression = ((AInClause) astNode.getInClause()).getExpression();
+				DataBinding<MatchingSet> matchingSet = (DataBinding) ExpressionFactory.makeExpression(inExpression, getAnalyser(),
+						returned);
+				returned.setMatchingSet(matchingSet);
+			}
+			if (astNode.getFromClause() instanceof AFromClause) {
+				PExpression fromExpression = ((AFromClause) astNode.getFromClause()).getExpression();
+				DataBinding<FlexoConceptInstance> container = (DataBinding) ExpressionFactory.makeExpression(fromExpression, getAnalyser(),
+						returned);
+				returned.setContainer(container);
+			}
+			if (astNode.getCreateClause() instanceof ACreateClause) {
+				constructorName = ((ACreateClause) astNode.getCreateClause()).getConstructorName().getText();
+				handleArguments(((ACreateClause) astNode.getCreateClause()).getArgumentList(), returned);
+			}
+		}
+		else {
+			throwIssue("Unexpected type: " + conceptType, getFragment(astNode.getConceptName()));
+		}
+		return returned;
+
+	}
+
+	/**
+	 * <pre>
+	 *    {match_action} kw_match [concept_name]:identifier in_clause from_clause where_clause create_clause
+	 * </pre>
+	 */
+	@Override
+	public void preparePrettyPrint(boolean hasParsedVersion) {
+		super.preparePrettyPrint(hasParsedVersion);
+
+		// @formatter:off	
+
+		append(staticContents("match"), getMatchFragment());
+		append(dynamicContents(SPACE, () -> serializeType(getModelObject().getMatchedType())), getConceptNameFragment());
+		when(() -> hasInClause())
+			.thenAppend(staticContents(SPACE, "in",""), getInFragment())
+			.thenAppend(staticContents(SPACE, "(",""), getLParInFragment())
+			.thenAppend(dynamicContents(() -> getInAsString()), getInExpressionFragment())
+			.thenAppend(staticContents(")"), getRParInFragment());
+		append(staticContents(SPACE, "from",""), getFromFragment());
+		append(staticContents(SPACE, "(",""), getLParFromFragment());
+		append(dynamicContents(() -> getFromAsString()), getFromExpressionFragment());
+		append(staticContents(")"), getRParFromFragment());
+		append(staticContents(SPACE,"create",""), getCreateFragment());
+		append(staticContents("::"), getColonColonFragment());
+		append(dynamicContents(() -> getModelObject().getCreationScheme().getName()), getConstructorNameFragment());
+		append(staticContents("("), getCreateLParFragment());
+		append(dynamicContents(() -> serializeArguments(getModelObject().getParameters())), getCreateArgumentsFragment());
+		append(staticContents(")"), getCreateRParFragment());
+		append(staticContents(";"), getSemiFragment());
+		// @formatter:on	
+	}
+
+	private boolean hasInClause() {
+		if (getModelObject() != null) {
+			return getModelObject().getMatchingSet().isSet();
+		}
+		else {
+			return getASTNode() != null && getASTNode().getInClause() != null;
+		}
+	}
+
+	private String getConceptName() {
+		if (getASTNode() != null) {
+			return getASTNode().getConceptName().getText();
+		}
+		return null;
+	}
+
+	private String getInAsString() {
+		if (getModelObject() != null) {
+			return getModelObject().getMatchingSet().toString();
+		}
+		return null;
+	}
+
+	private String getFromAsString() {
+		if (getModelObject() != null) {
+			if (getModelObject().getContainer().isSet()) {
+				return getModelObject().getContainer().toString();
+			}
+			return getModelObject().getReceiver().toString();
+		}
+		return null;
+	}
+
+	private RawSourceFragment getMatchFragment() {
+		if (getASTNode() != null) {
+			return getFragment(getASTNode().getKwMatch());
+		}
+		return null;
+	}
+
+	private RawSourceFragment getConceptNameFragment() {
+		if (getASTNode() != null) {
+			return getFragment(getASTNode().getConceptName());
+		}
+		return null;
+	}
+
+	private RawSourceFragment getFromFragment() {
+		if (getASTNode() != null) {
+			PFromClause fromClause = getASTNode().getFromClause();
+			if (fromClause instanceof AFromClause) {
+				return getFragment(((AFromClause) fromClause).getKwFrom());
+			}
+		}
+		return null;
+	}
+
+	private RawSourceFragment getLParFromFragment() {
+		if (getASTNode() != null) {
+			PFromClause fromClause = getASTNode().getFromClause();
+			if (fromClause instanceof AFromClause) {
+				return getFragment(((AFromClause) fromClause).getLPar());
+			}
+		}
+		return null;
+	}
+
+	private RawSourceFragment getRParFromFragment() {
+		if (getASTNode() != null) {
+			PFromClause fromClause = getASTNode().getFromClause();
+			if (fromClause instanceof AFromClause) {
+				return getFragment(((AFromClause) fromClause).getRPar());
+			}
+		}
+		return null;
+	}
+
+	private RawSourceFragment getFromExpressionFragment() {
+		if (getASTNode() != null) {
+			PFromClause fromClause = getASTNode().getFromClause();
+			if (fromClause instanceof AFromClause) {
+				return getFragment(((AFromClause) fromClause).getExpression());
+			}
+		}
+		return null;
+	}
+
+	private RawSourceFragment getInFragment() {
+		if (getASTNode() != null) {
+			PInClause inClause = getASTNode().getInClause();
+			if (inClause instanceof AInClause) {
+				return getFragment(((AInClause) inClause).getKwIn());
+			}
+		}
+		return null;
+	}
+
+	private RawSourceFragment getLParInFragment() {
+		if (getASTNode() != null) {
+			PInClause inClause = getASTNode().getInClause();
+			if (inClause instanceof AInClause) {
+				return getFragment(((AInClause) inClause).getLPar());
+			}
+		}
+		return null;
+	}
+
+	private RawSourceFragment getRParInFragment() {
+		if (getASTNode() != null) {
+			PInClause inClause = getASTNode().getInClause();
+			if (inClause instanceof AInClause) {
+				return getFragment(((AInClause) inClause).getRPar());
+			}
+		}
+		return null;
+	}
+
+	private RawSourceFragment getInExpressionFragment() {
+		if (getASTNode() != null) {
+			PInClause inClause = getASTNode().getInClause();
+			if (inClause instanceof AInClause) {
+				return getFragment(((AInClause) inClause).getExpression());
+			}
+		}
+		return null;
+	}
+
+	private RawSourceFragment getCreateFragment() {
+		if (getASTNode() != null) {
+			PCreateClause createClause = getASTNode().getCreateClause();
+			if (createClause instanceof ACreateClause) {
+				return getFragment(((ACreateClause) createClause).getKwCreate());
+			}
+		}
+		return null;
+	}
+
+	private RawSourceFragment getColonColonFragment() {
+		if (getASTNode() != null) {
+			PCreateClause createClause = getASTNode().getCreateClause();
+			if (createClause instanceof ACreateClause) {
+				return getFragment(((ACreateClause) createClause).getColonColon());
+			}
+		}
+		return null;
+	}
+
+	private RawSourceFragment getConstructorNameFragment() {
+		if (getASTNode() != null) {
+			PCreateClause createClause = getASTNode().getCreateClause();
+			if (createClause instanceof ACreateClause) {
+				return getFragment(((ACreateClause) createClause).getConstructorName());
+			}
+		}
+		return null;
+	}
+
+	private RawSourceFragment getCreateLParFragment() {
+		if (getASTNode() != null) {
+			PCreateClause createClause = getASTNode().getCreateClause();
+			if (createClause instanceof ACreateClause) {
+				return getFragment(((ACreateClause) createClause).getLPar());
+			}
+		}
+		return null;
+	}
+
+	private RawSourceFragment getCreateArgumentsFragment() {
+		if (getASTNode() != null) {
+			PCreateClause createClause = getASTNode().getCreateClause();
+			if (createClause instanceof ACreateClause) {
+				return getFragment(((ACreateClause) createClause).getArgumentList());
+			}
+		}
+		return null;
+	}
+
+	private RawSourceFragment getCreateRParFragment() {
+		if (getASTNode() != null) {
+			PCreateClause createClause = getASTNode().getCreateClause();
+			if (createClause instanceof ACreateClause) {
+				return getFragment(((ACreateClause) createClause).getRPar());
+			}
+		}
+		return null;
+	}
+
+	private String serializeArguments(List<CreateFlexoConceptInstanceParameter> arguments) {
+		StringBuffer sb = new StringBuffer();
+		for (int i = 0; i < arguments.size(); i++) {
+			sb.append((i > 0 ? "," : "") + arguments.get(i).getValue().toString());
+		}
+		return sb.toString();
+	}
+
+}

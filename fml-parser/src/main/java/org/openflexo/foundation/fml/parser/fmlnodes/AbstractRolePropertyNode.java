@@ -68,7 +68,7 @@ public abstract class AbstractRolePropertyNode<N extends PInnerConceptDecl, R ex
 	}
 
 	protected String serializeFlexoRoleName(FlexoRole<?> role) {
-		return role.getClass().getSimpleName();
+		return role.getImplementedInterface().getSimpleName();
 	}
 
 	protected boolean isFullQualified() {

@@ -158,10 +158,14 @@ public class FetchRequestNode<FR extends AbstractFetchRequest<?, ?, ?, ?>> exten
 
 	private String getFromAsString() {
 		if (getModelObject() instanceof AbstractSelectFlexoConceptInstance) {
-			return ((AbstractSelectFlexoConceptInstance) getModelObject()).getContainer().toString();
+			if (((AbstractSelectFlexoConceptInstance) getModelObject()).getContainer().isSet()) {
+				return ((AbstractSelectFlexoConceptInstance) getModelObject()).getContainer().toString();
+			}
 		}
 		if (getModelObject() instanceof AbstractSelectVirtualModelInstance) {
-			return ((AbstractSelectVirtualModelInstance) getModelObject()).getContainer().toString();
+			if (((AbstractSelectVirtualModelInstance) getModelObject()).getContainer().isSet()) {
+				return ((AbstractSelectVirtualModelInstance) getModelObject()).getContainer().toString();
+			}
 		}
 		if (getModelObject() != null) {
 			return getModelObject().getReceiver().toString();

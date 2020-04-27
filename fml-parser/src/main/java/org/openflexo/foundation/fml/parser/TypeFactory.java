@@ -534,13 +534,13 @@ public class TypeFactory extends SemanticsAnalyzerFactory {
 	 */
 	private VirtualModel tryToLookupVirtualModel(String virtualModelName) {
 
-		System.out.println("virtualModelName=" + virtualModelName);
-		System.out.println("getAnalyzer()=" + getAnalyzer());
+		// System.out.println("virtualModelName=" + virtualModelName);
+		// System.out.println("getAnalyzer()=" + getAnalyzer());
 
-		if (virtualModelName == null) {
+		/*if (virtualModelName == null) {
 			System.out.println("Merde alors");
 			Thread.dumpStack();
-		}
+		}*/
 
 		if (virtualModelName.startsWith("@") && getAnalyzer().getCompilationUnit() != null) {
 			String id = virtualModelName.substring(1).trim();
@@ -641,11 +641,9 @@ public class TypeFactory extends SemanticsAnalyzerFactory {
 				relativeURI = getIdentifier(nodes.pop()) + "." + relativeURI;
 			}
 			if (foundNode instanceof AModelDecl) {
-				System.out.println("ici1 avec " + relativeURI);
 				type = new VirtualModelInstanceType(relativeURI, VIRTUAL_MODEL_INSTANCE_TYPE_FACTORY);
 			}
 			if (foundNode instanceof AConceptDecl) {
-				System.out.println("ici2 avec " + relativeURI);
 				type = new FlexoConceptInstanceType(relativeURI, FLEXO_CONCEPT_INSTANCE_TYPE_FACTORY);
 			}
 		}

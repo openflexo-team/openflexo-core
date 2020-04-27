@@ -186,6 +186,8 @@ public interface MatchFlexoConceptInstance extends FMLRTAction<FlexoConceptInsta
 
 	public VirtualModel getAddressedVirtualModel();
 
+	public FlexoConceptInstanceType getMatchedType();
+
 	public static abstract class MatchFlexoConceptInstanceImpl extends FMLRTActionImpl<FlexoConceptInstance, FMLRTVirtualModelInstance>
 			implements MatchFlexoConceptInstance, PropertyChangeListener {
 
@@ -708,6 +710,11 @@ public interface MatchFlexoConceptInstance extends FMLRTAction<FlexoConceptInsta
 		}
 
 		@Override
+		public FlexoConceptInstanceType getMatchedType() {
+			return FlexoConceptInstanceType.getFlexoConceptInstanceType(getFlexoConceptType());
+		}
+
+		@Override
 		public Class<FMLRTVirtualModelInstance> getVirtualModelInstanceClass() {
 			return FMLRTVirtualModelInstance.class;
 		}
@@ -720,7 +727,8 @@ public interface MatchFlexoConceptInstance extends FMLRTAction<FlexoConceptInsta
 				container = new DataBinding<>(this, FlexoConceptInstance.class, DataBinding.BindingDefinitionType.GET);
 				container.setBindingName("container");
 				container.setDeclaredType(getFlexoConceptType() != null && getFlexoConceptType().getContainerFlexoConcept() != null
-						? getFlexoConceptType().getContainerFlexoConcept().getInstanceType() : FlexoConceptInstance.class);
+						? getFlexoConceptType().getContainerFlexoConcept().getInstanceType()
+						: FlexoConceptInstance.class);
 			}
 			return container;
 		}
@@ -731,7 +739,8 @@ public interface MatchFlexoConceptInstance extends FMLRTAction<FlexoConceptInsta
 				aContainer.setOwner(this);
 				aContainer.setBindingName("container");
 				aContainer.setDeclaredType(getFlexoConceptType() != null && getFlexoConceptType().getContainerFlexoConcept() != null
-						? getFlexoConceptType().getContainerFlexoConcept().getInstanceType() : FlexoConceptInstance.class);
+						? getFlexoConceptType().getContainerFlexoConcept().getInstanceType()
+						: FlexoConceptInstance.class);
 				aContainer.setBindingDefinitionType(DataBinding.BindingDefinitionType.GET);
 			}
 			this.container = aContainer;

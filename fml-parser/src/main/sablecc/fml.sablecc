@@ -641,15 +641,32 @@ Productions
      | {select_action}          kw_select kw_unique? [selected_type_name]:composite_ident from_clause where_clause?
      | {log_action}             kw_log l_par expression r_par
      | {begin_match_action}     kw_begin kw_match [concept_name]:identifier from_clause where_clause?
-     | {match_action}           kw_match [concept_name]:identifier in_clause from_clause where_clause create_clause
+     | {match_action}           kw_match [concept_name]:identifier in_clause? from_clause where_clause? create_clause
      | {end_match_action}       kw_end kw_match [concept_name]:identifier in_clause abstract_action_clause
      ;
-     
+    
    create_clause = kw_create colon_colon [constructor_name]:identifier l_par argument_list? r_par;
 
    delete_clause = kw_delete colon_colon [destructor_name]:identifier l_par argument_list? r_par;
 
    action_clause = kw_action colon_colon [action_name]:identifier l_par argument_list? r_par;
+    
+   // reduce/reduce conflict
+   /*create_clause = 
+     | {named_constructor}      kw_create colon_colon [constructor_name]:identifier l_par argument_list? r_par
+     | {anonymous_constructor}  kw_create l_par argument_list? r_par
+     ;
+
+   delete_clause = 
+     | {named_destructor}       kw_delete colon_colon [destructor_name]:identifier l_par argument_list? r_par
+     | {anonymous_destructor}   kw_delete l_par argument_list? r_par
+     ;
+     
+   action_clause = 
+     | {named_action}           kw_action colon_colon [action_name]:identifier l_par argument_list? r_par
+     | {anonymous_action}       kw_action l_par argument_list? r_par
+     ;
+    */
     
    abstract_action_clause =
      | {normal}  				action_clause

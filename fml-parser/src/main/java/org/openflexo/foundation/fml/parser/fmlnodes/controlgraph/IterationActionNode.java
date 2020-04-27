@@ -105,7 +105,8 @@ public class IterationActionNode extends ControlGraphNode<AForEnhancedStatement,
 		append(staticContents("for"), getForFragment());
 		append(staticContents(SPACE, "(",""), getLParFragment());
 		append(dynamicContents(() -> serializeType(getModelObject().getItemType()),SPACE), getTypeFragment());
-		append(dynamicContents(() -> getModelObject().getIteratorName(),SPACE), getIteratorNameFragment());
+		append(dynamicContents(() -> getModelObject().getIteratorName()), getIteratorNameFragment());
+		append(staticContents(SPACE,":",SPACE), getColonFragment());
 		append(childContents("",() -> getModelObject().getIterationAction(),"",Indentation.DoNotIndent));
 		append(staticContents(")"), getLParFragment());
 
@@ -120,6 +121,13 @@ public class IterationActionNode extends ControlGraphNode<AForEnhancedStatement,
 	protected RawSourceFragment getForFragment() {
 		if (getASTNode() != null) {
 			return getFragment(getASTNode().getKwFor());
+		}
+		return null;
+	}
+
+	protected RawSourceFragment getColonFragment() {
+		if (getASTNode() != null) {
+			return getFragment(getASTNode().getColon());
 		}
 		return null;
 	}

@@ -46,6 +46,7 @@ import java.util.logging.Logger;
 import org.openflexo.connie.Bindable;
 import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.DataBinding.BindingDefinitionType;
+import org.openflexo.connie.type.CustomType;
 import org.openflexo.connie.type.TypeUtils;
 import org.openflexo.foundation.fml.AbstractProperty;
 import org.openflexo.foundation.fml.ActionScheme;
@@ -119,10 +120,12 @@ import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.BehaviourCallAr
 import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.ConditionalNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.DeclarationActionNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.EmptyControlGraphNode;
+import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.EndMatchActionNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.ExpressionActionNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.FetchRequestNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.IterationActionNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.LogActionNode;
+import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.MatchActionNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.ReturnStatementNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.SequenceNode;
 import org.openflexo.foundation.fml.parser.node.ACharacterLiteral;
@@ -156,7 +159,9 @@ import org.openflexo.foundation.fml.parser.node.Token;
 import org.openflexo.foundation.fml.rt.editionaction.AddFlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.editionaction.AddVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.editionaction.BehaviourCallArgument;
+import org.openflexo.foundation.fml.rt.editionaction.FinalizeMatching;
 import org.openflexo.foundation.fml.rt.editionaction.InitiateMatching;
+import org.openflexo.foundation.fml.rt.editionaction.MatchFlexoConceptInstance;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.p2pp.P2PPNode;
 import org.openflexo.p2pp.PrettyPrintContext;
@@ -409,6 +414,12 @@ public abstract class FMLObjectNode<N extends Node, T extends FMLPrettyPrintable
 		}
 		if (object instanceof InitiateMatching) {
 			return (P2PPNode<?, C>) new BeginMatchActionNode((InitiateMatching) object, getAnalyser());
+		}
+		if (object instanceof MatchFlexoConceptInstance) {
+			return (P2PPNode<?, C>) new MatchActionNode((MatchFlexoConceptInstance) object, getAnalyser());
+		}
+		if (object instanceof FinalizeMatching) {
+			return (P2PPNode<?, C>) new EndMatchActionNode((FinalizeMatching) object, getAnalyser());
 		}
 		System.err.println("Not supported: " + object);
 		Thread.dumpStack();
@@ -669,7 +680,30 @@ public abstract class FMLObjectNode<N extends Node, T extends FMLPrettyPrintable
 				return "boolean";
 			}
 		}*/
-		return TypeUtils.simpleRepresentation(type);
+		if (type instanceof CustomType) {
+			if (!((CustomType) type).isResolved()) {
+				((CustomType) type).resolve();
+			}
+		}
+		String returned = TypeUtils.simpleRepresentation(type);
+		/*if (returned.startsWith("#")) {
+			System.out.println("Nimporte quoi: " + type);
+			System.out.println("type: " + type.getClass());
+			if (type instanceof FlexoConceptInstanceType) {
+				FlexoConceptInstanceType fciType = (FlexoConceptInstanceType) type;
+				System.out.println("uri: " + fciType.getConceptURI());
+				System.out.println("concept: " + fciType.getFlexoConcept());
+				if (fciType.getFlexoConcept() != null) {
+					System.out.println("concept.name: " + fciType.getFlexoConcept().getName());
+					System.out.println("resolved: " + fciType.isResolved());
+					System.out.println("simpleRepresentation: " + fciType.simpleRepresentation());
+					System.out.println("simpleRepresentation: " + TypeUtils.simpleRepresentation(type));
+				}
+			}
+			Thread.dumpStack();
+			System.exit(-1);
+		}*/
+		return returned;
 
 	}
 

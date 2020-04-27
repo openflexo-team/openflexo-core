@@ -107,8 +107,8 @@ public class FlexoRolePropertyNode<N extends PInnerConceptDecl, R extends FlexoR
 		// @formatter:off	
 		append(dynamicContents(() -> getVisibilityAsString(getModelObject().getVisibility()), SPACE), getVisibilityFragment());
 		append(dynamicContents(() -> serializeType(getModelObject().getType())), getTypeFragment());
-		append(dynamicContents(() -> serializeCardinality(getModelObject().getCardinality()), SPACE), getCardinalityFragment());
-		append(dynamicContents(() -> getModelObject().getName(), SPACE), getNameFragment());
+		append(dynamicContents(() -> serializeCardinality(getModelObject().getCardinality())), getCardinalityFragment());
+		append(dynamicContents(SPACE,() -> getModelObject().getName(), SPACE), getNameFragment());
 		append(staticContents("", "with", SPACE), getWithFragment());
 		when(() -> isFullQualified())
 		.thenAppend(dynamicContents(() -> getFMLFactory().serializeTAId(getModelObject())), getTaIdFragment())

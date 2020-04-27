@@ -138,10 +138,11 @@ public class AddClassInstanceNode extends AssignableActionNode<AJavaInstanceCrea
 		returned.setType(type);
 
 		handleArguments(astNode.getArgumentList(), returned);
-		for (DataBinding arg : args) {
-			returned.addToParameters(arg);
+		if (args != null) {
+			for (DataBinding arg : args) {
+				returned.addToParameters(arg);
+			}
 		}
-
 		return returned;
 
 	}
