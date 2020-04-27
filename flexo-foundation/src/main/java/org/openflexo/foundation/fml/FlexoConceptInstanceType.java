@@ -89,6 +89,11 @@ public class FlexoConceptInstanceType implements TechnologySpecificType<FMLTechn
 
 		@Override
 		public FlexoConceptInstanceType makeCustomType(String configuration) {
+
+			if ("null".equals(configuration)) {
+				configuration = null;
+			}
+
 			FlexoConcept concept = null;
 
 			if (configuration != null) {
@@ -275,8 +280,10 @@ public class FlexoConceptInstanceType implements TechnologySpecificType<FMLTechn
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((conceptURI == null) ? 0 : conceptURI.hashCode());
 		result = prime * result + ((flexoConcept == null) ? 0 : flexoConcept.hashCode());
+		if (flexoConcept == null) {
+			result = prime * result + ((conceptURI == null) ? 0 : conceptURI.hashCode());
+		}
 		return result;
 	}
 
@@ -289,18 +296,20 @@ public class FlexoConceptInstanceType implements TechnologySpecificType<FMLTechn
 		if (getClass() != obj.getClass())
 			return false;
 		FlexoConceptInstanceType other = (FlexoConceptInstanceType) obj;
-		if (conceptURI == null) {
-			if (other.conceptURI != null)
-				return false;
-		}
-		else if (!conceptURI.equals(other.conceptURI))
-			return false;
 		if (flexoConcept == null) {
 			if (other.flexoConcept != null)
 				return false;
 		}
 		else if (!flexoConcept.equals(other.flexoConcept))
 			return false;
+		if (flexoConcept == null && other.flexoConcept == null) {
+			if (conceptURI == null) {
+				if (other.conceptURI != null)
+					return false;
+			}
+			else if (!conceptURI.equals(other.conceptURI))
+				return false;
+		}
 		return true;
 	}
 
