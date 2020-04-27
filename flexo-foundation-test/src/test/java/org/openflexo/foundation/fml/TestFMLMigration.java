@@ -181,6 +181,17 @@ public class TestFMLMigration extends OpenflexoTestCase {
 		System.out.println(
 				"testInfo.initialXMLVersion.getResource().getContainer()=" + testInfo.initialXMLVersion.getResource().getContainer());*/
 
+		/*VirtualModel initialVM = testInfo.initialXMLVersion.getVirtualModel();
+		FlexoConcept initialConcept = initialVM.getFlexoConcepts().get(0);
+		VirtualModel reloadedVM = testInfo.reloadedFMLVersion.getVirtualModel();
+		FlexoConcept reloadedConcept = reloadedVM.getFlexoConcepts().get(0);
+		
+		System.out.println("author initial: " + initialVM.getAuthor());
+		System.out.println("author reloaded: " + reloadedVM.getAuthor());
+		
+		System.out.println("concept author initial: " + initialConcept.getAuthor());
+		System.out.println("concept author reloaded: " + reloadedConcept.getAuthor());*/
+
 		assertTrue(testInfo.initialXMLVersion.equalsObject(testInfo.reloadedFMLVersion));
 	}
 

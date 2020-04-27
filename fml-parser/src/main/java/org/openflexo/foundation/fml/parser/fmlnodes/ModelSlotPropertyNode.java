@@ -40,6 +40,7 @@ package org.openflexo.foundation.fml.parser.fmlnodes;
 
 import java.util.logging.Logger;
 
+import org.openflexo.connie.type.CustomType;
 import org.openflexo.foundation.fml.FlexoRole;
 import org.openflexo.foundation.fml.RolePropertyValue;
 import org.openflexo.foundation.fml.parser.MainSemanticsAnalyzer;
@@ -88,11 +89,25 @@ public class ModelSlotPropertyNode<N extends PInnerConceptDecl, MS extends Model
 			returned.setVisibility(getVisibility(((AFmlInnerConceptDecl) astNode).getVisibility()));
 			returned.setName(((AFmlInnerConceptDecl) astNode).getIdentifier().getText());
 			returned.setCardinality(getCardinality(((AFmlInnerConceptDecl) astNode).getCardinality()));
+			CustomType type = (CustomType) getTypeFactory().makeType(((AFmlInnerConceptDecl) astNode).getType(), returned);
+			returned.setType(type);
+
+			// returned.getType()
+
+			/*Type type = getTypeFactory().makeType(((AFmlInnerConceptDecl) astNode).getType());
+			System.out.println("type: " + type + " of " + type.getClass());
+			// System.exit(-1);
+			if (FMLRTModelSlot.class.isAssignableFrom(roleClass) && type instanceof VirtualModelInstanceType) {
+				((FMLRTModelSlot) returned).setAccessedVirtualModel(((VirtualModelInstanceType) type).getVirtualModel());
+			}*/
+
 		}
 		if (astNode instanceof AFmlFullyQualifiedInnerConceptDecl) {
 			returned.setVisibility(getVisibility(((AFmlFullyQualifiedInnerConceptDecl) astNode).getVisibility()));
 			returned.setName(((AFmlFullyQualifiedInnerConceptDecl) astNode).getIdentifier().getText());
 			returned.setCardinality(getCardinality(((AFmlFullyQualifiedInnerConceptDecl) astNode).getCardinality()));
+			CustomType type = (CustomType) getTypeFactory().makeType(((AFmlFullyQualifiedInnerConceptDecl) astNode).getType(), returned);
+			returned.setType(type);
 		}
 		return returned;
 	}

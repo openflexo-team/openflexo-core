@@ -150,9 +150,21 @@ public class MainSemanticsAnalyzer extends FMLSemanticsAnalyzer {
 	}
 
 	protected final void finalizeDeserialization() {
+
+		/*System.out.println("Bon, on resout maintenant les types a resoudre");
+		for (CustomType unresolvedType : typeFactory.getUnresolvedTypes()) {
+			System.out.println(" > " + unresolvedType);
+		}*/
 		compilationUnitNode.initializePrettyPrint(compilationUnitNode, compilationUnitNode.makePrettyPrintContext());
 		typeFactory.resolveUnresovedTypes();
 		finalizeDeserialization(compilationUnitNode);
+		if (typeFactory.getUnresolvedTypes().size() > 0) {
+			/*System.out.println("Ben c'est fait, mais il reste toujours a resoudre:");
+			for (CustomType unresolvedType : typeFactory.getUnresolvedTypes()) {
+			System.out.println(" > " + unresolvedType);
+			}*/
+			typeFactory.resolveUnresovedTypes();
+		}
 	}
 
 	@Override

@@ -298,14 +298,14 @@ public abstract interface FlexoProperty<T> extends FlexoConceptObject, FMLPretty
 		@Override
 		public void handleTypeDeclarationInImports() {
 
-			if (getDeclaringCompilationUnit() == null) {
+			/*if (getDeclaringCompilationUnit() == null) {
 				return;
 			}
-
+			
 			Class<?> rawType = TypeUtils.getRawType(getType());
-
+			
 			if (!TypeUtils.isPrimitive(rawType)) {
-
+			
 				boolean typeWasFound = false;
 				for (JavaImportDeclaration importDeclaration : getDeclaringCompilationUnit().getJavaImports()) {
 					if (importDeclaration.getFullQualifiedClassName().equals(rawType.getName())) {
@@ -320,7 +320,7 @@ public abstract interface FlexoProperty<T> extends FlexoConceptObject, FMLPretty
 					newJavaImportDeclaration.setFullQualifiedClassName(rawType.getName());
 					getDeclaringCompilationUnit().addToJavaImports(newJavaImportDeclaration);
 				}
-			}
+			}*/
 
 		}
 

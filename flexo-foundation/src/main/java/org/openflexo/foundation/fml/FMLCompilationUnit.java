@@ -55,6 +55,7 @@ import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.java.JavaBindingFactory;
 import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.FlexoObject;
+import org.openflexo.foundation.InnerResourceData;
 import org.openflexo.foundation.fml.binding.CompilationUnitBindingModel;
 import org.openflexo.foundation.fml.binding.NamedImportBindingVariable;
 import org.openflexo.foundation.fml.binding.NamespaceBindingVariable;
@@ -72,6 +73,7 @@ import org.openflexo.pamela.annotations.Adder;
 import org.openflexo.pamela.annotations.CloningStrategy;
 import org.openflexo.pamela.annotations.CloningStrategy.StrategyType;
 import org.openflexo.pamela.annotations.Embedded;
+import org.openflexo.pamela.annotations.Finder;
 import org.openflexo.pamela.annotations.Getter;
 import org.openflexo.pamela.annotations.Getter.Cardinality;
 import org.openflexo.pamela.annotations.ImplementationClass;
@@ -89,6 +91,7 @@ import org.openflexo.rm.BasicResourceImpl.LocatorNotFoundException;
 import org.openflexo.rm.FileResourceImpl;
 import org.openflexo.rm.Resource;
 import org.openflexo.toolbox.FlexoVersion;
+import org.openflexo.toolbox.JavaUtils;
 import org.openflexo.toolbox.StringUtils;
 
 @ModelEntity
@@ -138,6 +141,9 @@ public interface FMLCompilationUnit extends FMLObject, FMLPrettyPrintable, Resou
 
 	@Remover(ELEMENT_IMPORTS_KEY)
 	public void removeFromElementImports(ElementImportDeclaration elementImportDeclaration);
+
+	@Finder(collection = ELEMENT_IMPORTS_KEY, attribute = ElementImportDeclaration.ABBREV_KEY)
+	public ElementImportDeclaration getElementImport(String abbrev);
 
 	/**
 	 * Return the {@link VirtualModel} defined by this FMLCompilationUnit
@@ -300,9 +306,20 @@ public interface FMLCompilationUnit extends FMLObject, FMLPrettyPrintable, Resou
 	 */
 	public void manageImports();
 
-	public String ensureImport(FlexoResourceCenter<?> rc);
+	/**
+	 * Ensures that the supplied RC will be referenced in element import of this {@link FMLCompilationUnit}
+	 * 
+	 * @param rc
+	 * @return
+	 */
+	public String ensureResourceCenterImport(FlexoResourceCenter<?> rc);
 
-	public String ensureImport(VirtualModel virtualModel);
+	public <RD extends ResourceData<RD> & FlexoObject> String ensureResourceImport(RD resourceData);
+
+	public <RD extends ResourceData<RD> & FlexoObject, R extends FlexoResource<RD>> String ensureResourceImport(R resource)
+			throws FileNotFoundException, ResourceLoadingCancelledException, FlexoException;
+
+	public <RD extends ResourceData<RD> & FlexoObject> String ensureImport(InnerResourceData<RD> innerResourceData);
 
 	public abstract class FMLCompilationUnitImpl extends FMLObjectImpl implements FMLCompilationUnit {
 
@@ -813,16 +830,26 @@ public interface FMLCompilationUnit extends FMLObject, FMLPrettyPrintable, Resou
 			return null;
 		}
 
+		@Override
+		public String getFMLPrettyPrint() {
+			manageImports();
+			return super.getFMLPrettyPrint();
+		}
+
 		/**
 		 * Analyze the whole structure of the compilation unit, and declare required imports
 		 */
 		@Override
 		public void manageImports() {
+
+			// System.out.println("--------------> manageImports() in " + this);
+
 			accept(new PAMELAVisitor() {
 
 				@Override
 				public void visit(Object object) {
 					if (object instanceof FMLObject && ((FMLObject) object).getDeclaringCompilationUnit() == FMLCompilationUnitImpl.this) {
+						// System.out.println("> On visite " + object + " of " + object.getClass().getSimpleName());
 						((FMLObject) object).handleRequiredImports(FMLCompilationUnitImpl.this);
 					}
 				}
@@ -831,6 +858,7 @@ public interface FMLCompilationUnit extends FMLObject, FMLPrettyPrintable, Resou
 
 		private ElementImportDeclaration retrieveImportDeclaration(FlexoObject object) {
 			for (ElementImportDeclaration elementImportDeclaration : getElementImports()) {
+				// System.out.println("> J'ai deja: " + elementImportDeclaration.getReferencedObject());
 				if (elementImportDeclaration.getReferencedObject() == object) {
 					return elementImportDeclaration;
 				}
@@ -838,40 +866,103 @@ public interface FMLCompilationUnit extends FMLObject, FMLPrettyPrintable, Resou
 			return null;
 		}
 
+		private String findUniqueRCAbbrev(FlexoResourceCenter<?> rc) {
+			String initialName = rc.getName();
+			if (initialName.contains("/")) {
+				initialName = initialName.substring(initialName.lastIndexOf("/"));
+			}
+			if (initialName.contains("\\")) {
+				initialName = initialName.substring(initialName.lastIndexOf("\\"));
+			}
+			String baseName = JavaUtils.getJavaName(initialName).toUpperCase();
+			String returned = baseName;
+			int i = 2;
+			while (getElementImport(returned) != null) {
+				returned = baseName + i;
+				i++;
+			}
+			return returned;
+		}
+
+		private <RD extends ResourceData<?> & FlexoObject> String findUniqueAbbrev(RD resourceData) {
+			String initialName = resourceData.getResource().getName();
+			if (initialName.contains("/")) {
+				initialName = initialName.substring(initialName.lastIndexOf("/"));
+			}
+			if (initialName.contains("\\")) {
+				initialName = initialName.substring(initialName.lastIndexOf("\\"));
+			}
+			String baseName = JavaUtils.getJavaName(initialName);
+			String returned = baseName;
+			int i = 2;
+			while (getElementImport(returned) != null) {
+				returned = baseName + i;
+				i++;
+			}
+			return returned;
+		}
+
 		@Override
-		public String ensureImport(FlexoResourceCenter<?> rc) {
+		public String ensureResourceCenterImport(FlexoResourceCenter<?> rc) {
 			ElementImportDeclaration rcDeclaration = retrieveImportDeclaration(rc);
 			if (rcDeclaration == null) {
 				rcDeclaration = getFMLModelFactory().newElementImportDeclaration();
 				rcDeclaration.setResourceReference(new DataBinding<>('"' + rc.getDefaultBaseURI() + '"'));
-				rcDeclaration.setAbbrev(rc.getName());
+				rcDeclaration.setAbbrev(findUniqueRCAbbrev(rc));
 				getDeclaringCompilationUnit().addToElementImports(rcDeclaration);
 			}
 			return rcDeclaration.getAbbrev();
 		}
 
 		@Override
-		public String ensureImport(VirtualModel virtualModel) {
-
-			ElementImportDeclaration vmDeclaration = retrieveImportDeclaration(virtualModel);
+		public <RD extends ResourceData<RD> & FlexoObject> String ensureResourceImport(RD resourceData) {
+			ElementImportDeclaration vmDeclaration = retrieveImportDeclaration(resourceData);
 			if (vmDeclaration == null) {
-				FlexoResourceCenter<?> resourceCenter = virtualModel.getResource().getResourceCenter();
+				FlexoResourceCenter<?> resourceCenter = resourceData.getResource().getResourceCenter();
 				// System.out.println("rc=" + resourceCenter.getDefaultBaseURI());
-				String uri = virtualModel.getURI();
+				String uri = resourceData.getResource().getURI();
 				vmDeclaration = getFMLModelFactory().newElementImportDeclaration();
 				if (uri.startsWith(resourceCenter.getDefaultBaseURI())) {
 					String remainingURI = uri.substring(resourceCenter.getDefaultBaseURI().length());
-					String rcAbbrev = ensureImport(resourceCenter);
+					String rcAbbrev = ensureResourceCenterImport(resourceCenter);
 					vmDeclaration.setResourceReference(new DataBinding<>(rcAbbrev + "+\"" + remainingURI + "\""));
 					// System.out.println("---" + rcAbbrev + "+\"" + remainingURI + "\"");
 				}
 				else {
 					vmDeclaration.setResourceReference(new DataBinding<>("\"" + uri + "\""));
 				}
-				vmDeclaration.setAbbrev(virtualModel.getName());
+				String abbrev = findUniqueAbbrev(resourceData);
+				vmDeclaration.setAbbrev(abbrev);
 				getDeclaringCompilationUnit().addToElementImports(vmDeclaration);
 			}
 			return vmDeclaration.getAbbrev();
+		}
+
+		@Override
+		public <RD extends ResourceData<RD> & FlexoObject, R extends FlexoResource<RD>> String ensureResourceImport(R resource)
+				throws FileNotFoundException, ResourceLoadingCancelledException, FlexoException {
+			return ensureResourceImport(resource.getResourceData());
+		}
+
+		@Override
+		public <RD extends ResourceData<RD> & FlexoObject> String ensureImport(InnerResourceData<RD> innerResourceData) {
+			return ensureResourceImport(innerResourceData.getResourceData());
+		}
+
+		// TODO remove this
+		@Override
+		public void addToElementImports(ElementImportDeclaration elementImportDeclaration) {
+			performSuperAdder(ELEMENT_IMPORTS_KEY, elementImportDeclaration);
+			System.out.println("Added import " + elementImportDeclaration);
+			// Thread.dumpStack();
+		}
+
+		// TODO remove this
+		@Override
+		public void addToJavaImports(JavaImportDeclaration javaImportDeclaration) {
+			performSuperAdder(JAVA_IMPORTS_KEY, javaImportDeclaration);
+			System.out.println("Added java import " + javaImportDeclaration);
+			// Thread.dumpStack();
 		}
 
 	}

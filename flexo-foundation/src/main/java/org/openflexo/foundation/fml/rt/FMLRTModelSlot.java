@@ -42,7 +42,10 @@ import java.io.FileNotFoundException;
 import java.lang.reflect.Type;
 import java.util.logging.Logger;
 
+import org.openflexo.connie.type.CustomType;
 import org.openflexo.foundation.FlexoException;
+import org.openflexo.foundation.fml.ElementImportDeclaration;
+import org.openflexo.foundation.fml.FMLCompilationUnit;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoConceptInstanceRole;
 import org.openflexo.foundation.fml.FlexoConceptInstanceType;
@@ -50,6 +53,8 @@ import org.openflexo.foundation.fml.FlexoRole;
 import org.openflexo.foundation.fml.PrimitiveRole;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.VirtualModelInstanceType;
+import org.openflexo.foundation.fml.VirtualModelInstanceType.DefaultVirtualModelInstanceTypeFactory;
+import org.openflexo.foundation.fml.VirtualModelInstanceType.VirtualModelInstanceTypeFactory;
 import org.openflexo.foundation.fml.rm.CompilationUnitResource;
 import org.openflexo.foundation.resource.ResourceLoadingCancelledException;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
@@ -168,25 +173,6 @@ public interface FMLRTModelSlot<VMI extends VirtualModelInstance<VMI, TA>, TA ex
 		}
 
 		@Override
-		public Type getType() {
-			if (getAccessedVirtualModel() == null) {
-				if (StringUtils.isNotEmpty(getAccessedVirtualModelURI()) && getTechnologyAdapter() != null
-						&& getTechnologyAdapter().getVirtualModelInstanceTypeFactory() != null) {
-					return getTechnologyAdapter().getVirtualModelInstanceTypeFactory().makeCustomType(getAccessedVirtualModelURI());
-				}
-				else {
-					return VirtualModelInstanceType.UNDEFINED_VIRTUAL_MODEL_INSTANCE_TYPE;
-				}
-			}
-			return FlexoConceptInstanceType.getFlexoConceptInstanceType(getAccessedVirtualModel());
-		}
-
-		@Override
-		public String getTypeDescription() {
-			return "VirtualModel instance";
-		};
-
-		@Override
 		public String getAccessedVirtualModelURI() {
 			if (virtualModelResource != null) {
 				return virtualModelResource.getURI();
@@ -271,6 +257,97 @@ public interface FMLRTModelSlot<VMI extends VirtualModelInstance<VMI, TA>, TA ex
 			returned.setVirtualModelInstanceURI(object.getURI());
 			return returned;
 
+		}
+
+		@Override
+		public void handleRequiredImports(FMLCompilationUnit compilationUnit) {
+			super.handleRequiredImports(compilationUnit);
+			if (getAccessedVirtualModel() != null) {
+				compilationUnit.ensureResourceImport(getAccessedVirtualModel().getCompilationUnit());
+			}
+		}
+
+		/**
+		 * Build {@link CustomType} represented by supplied serialized version, asserting this type is the accessed type through this role
+		 * 
+		 * @param serializedType
+		 * @return
+		 */
+		@Override
+		public FlexoConceptInstanceType buildType(String serializedType) {
+			return new VirtualModelInstanceType(serializedType, getVirtualModelInstanceTypeFactory());
+		}
+
+		private VirtualModelInstanceType type = VirtualModelInstanceType.UNDEFINED_VIRTUAL_MODEL_INSTANCE_TYPE;
+
+		@Override
+		public Type getType() {
+			if (getAccessedVirtualModel() == null) {
+				if (StringUtils.isNotEmpty(getAccessedVirtualModelURI()) && getTechnologyAdapter() != null
+						&& getTechnologyAdapter().getVirtualModelInstanceTypeFactory() != null) {
+					type = getTechnologyAdapter().getVirtualModelInstanceTypeFactory().makeCustomType(getAccessedVirtualModelURI());
+				}
+				return type;
+			}
+			return FlexoConceptInstanceType.getFlexoConceptInstanceType(getAccessedVirtualModel());
+		}
+
+		@Override
+		public String getTypeDescription() {
+			if (getAccessedVirtualModel() != null) {
+				return getAccessedVirtualModel().getName();
+			}
+			return "VirtualModel";
+		}
+
+		/**
+		 * Declare supplied type as the the accessed type through this role
+		 * 
+		 * @param type
+		 */
+		@Override
+		public void setType(CustomType type) {
+			if (type instanceof VirtualModelInstanceType) {
+				this.type = (VirtualModelInstanceType) type;
+				if (type.isResolved()) {
+					setAccessedVirtualModel(((VirtualModelInstanceType) type).getVirtualModel());
+				}
+			}
+			else {
+				logger.warning("Unexpected type: " + type);
+			}
+		}
+
+		private VirtualModelInstanceTypeFactory customTypeFactory;
+
+		private VirtualModelInstanceTypeFactory getVirtualModelInstanceTypeFactory() {
+			if (customTypeFactory == null) {
+				customTypeFactory = new DefaultVirtualModelInstanceTypeFactory(getTechnologyAdapter()) {
+
+					@Override
+					public VirtualModel resolveVirtualModel(VirtualModelInstanceType typeToResolve) {
+						System.out.println("Resolving VirtualModel" + typeToResolve);
+						if (getDeclaringCompilationUnit() != null) {
+							for (ElementImportDeclaration elementImportDeclaration : getDeclaringCompilationUnit().getElementImports()) {
+								if (elementImportDeclaration.getReferencedObject() instanceof FMLCompilationUnit) {
+									FMLCompilationUnit referencedCompilationUnit = (FMLCompilationUnit) elementImportDeclaration
+											.getReferencedObject();
+									if (referencedCompilationUnit.getVirtualModel() != null
+											&& referencedCompilationUnit.getVirtualModel().getURI().equals(typeToResolve.getConceptURI())) {
+										if (typeToResolve == type) {
+											setAccessedVirtualModel(referencedCompilationUnit.getVirtualModel());
+										}
+										return referencedCompilationUnit.getVirtualModel();
+									}
+								}
+							}
+						}
+						return null;
+
+					}
+				};
+			}
+			return customTypeFactory;
 		}
 
 	}

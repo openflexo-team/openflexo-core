@@ -42,6 +42,9 @@ import java.lang.reflect.Type;
 import java.util.logging.Logger;
 
 import org.openflexo.connie.DataBinding;
+import org.openflexo.connie.type.CustomType;
+import org.openflexo.foundation.fml.FlexoConceptInstanceType.DefaultFlexoConceptInstanceTypeFactory;
+import org.openflexo.foundation.fml.FlexoConceptInstanceType.FlexoConceptInstanceTypeFactory;
 import org.openflexo.foundation.fml.annotations.FML;
 import org.openflexo.foundation.fml.rt.ActorReference;
 import org.openflexo.foundation.fml.rt.FMLRTTechnologyAdapter;
@@ -121,6 +124,9 @@ public interface FlexoConceptInstanceRole extends FlexoRole<FlexoConceptInstance
 	
 	public void setVirtualModelModelSlot(FMLRTModelSlot<?, ?> modelSlot);*/
 
+	@Override
+	public FlexoConceptInstanceType buildType(String serializedType);
+
 	public static abstract class FlexoConceptInstanceRoleImpl extends FlexoRoleImpl<FlexoConceptInstance>
 			implements FlexoConceptInstanceRole {
 
@@ -130,50 +136,6 @@ public interface FlexoConceptInstanceRole extends FlexoRole<FlexoConceptInstance
 		private CreationScheme creationScheme;
 		private String _creationSchemeURI;
 		private String _flexoConceptTypeURI;
-
-		public FlexoConceptInstanceRoleImpl() {
-			super();
-			// logger.severe("############# Created FlexoConceptInstanceRole " + Integer.toHexString(hashCode()) +
-			// " model version="
-			// + builder.getModelVersion() + " file=" + builder.resource.getFile().getAbsolutePath());
-		}
-
-		/*@Override
-		public void finalizeDeserialization(Object builder) {
-			super.finalizeDeserialization(builder);
-			logger.severe("############# Finalized FlexoConceptInstanceRole " + Integer.toHexString(hashCode()) + toString());
-		}*/
-
-		/*@Override
-		public String getFMLRepresentation(FMLRepresentationContext context) {
-			FMLRepresentationOutput out = new FMLRepresentationOutput(context);
-			out.append("FlexoRole " + getName() + " as FlexoConceptInstance conformTo " + getTypeDescription() + " cardinality="
-					+ getCardinality() + ";", context);
-			return out.toString();
-		}*/
-
-		@Override
-		public Type getType() {
-
-			if (getFlexoConceptType() == null) {
-				if (StringUtils.isNotEmpty(_getFlexoConceptTypeURI()) && getTechnologyAdapter() != null
-						&& getTechnologyAdapter().getFlexoConceptInstanceTypeFactory() != null) {
-					return getTechnologyAdapter().getFlexoConceptInstanceTypeFactory().makeCustomType(_getFlexoConceptTypeURI());
-				}
-				else {
-					return FlexoConceptInstanceType.UNDEFINED_FLEXO_CONCEPT_INSTANCE_TYPE;
-				}
-			}
-			return getFlexoConceptType().getInstanceType();
-		}
-
-		@Override
-		public String getTypeDescription() {
-			if (getFlexoConceptType() != null) {
-				return getFlexoConceptType().getName();
-			}
-			return "FlexoConcept";
-		}
 
 		/*@Override
 		public boolean getIsPrimaryRole() {
@@ -382,6 +344,90 @@ public interface FlexoConceptInstanceRole extends FlexoRole<FlexoConceptInstance
 			return FMLRTTechnologyAdapter.class;
 		}
 
+		@Override
+		public void handleRequiredImports(FMLCompilationUnit compilationUnit) {
+			super.handleRequiredImports(compilationUnit);
+			if (getFlexoConceptType() != null) {
+				compilationUnit.ensureImport(getFlexoConceptType());
+			}
+		}
+
+		@Override
+		public FlexoConceptInstanceType buildType(String serializedType) {
+			return new FlexoConceptInstanceType(serializedType, getFlexoConceptInstanceTypeFactory());
+		}
+
+		private FlexoConceptInstanceType type = FlexoConceptInstanceType.UNDEFINED_FLEXO_CONCEPT_INSTANCE_TYPE;
+
+		@Override
+		public Type getType() {
+
+			if (getFlexoConceptType() == null) {
+				if (StringUtils.isNotEmpty(_getFlexoConceptTypeURI()) && getTechnologyAdapter() != null
+						&& getTechnologyAdapter().getFlexoConceptInstanceTypeFactory() != null) {
+					type = getTechnologyAdapter().getFlexoConceptInstanceTypeFactory().makeCustomType(_getFlexoConceptTypeURI());
+				}
+				return type;
+			}
+			return getFlexoConceptType().getInstanceType();
+		}
+
+		@Override
+		public String getTypeDescription() {
+			if (getFlexoConceptType() != null) {
+				return getFlexoConceptType().getName();
+			}
+			return "FlexoConcept";
+		}
+
+		@Override
+		public void setType(CustomType type) {
+			if (type instanceof FlexoConceptInstanceType) {
+				this.type = (FlexoConceptInstanceType) type;
+				if (type.isResolved()) {
+					setFlexoConceptType(((FlexoConceptInstanceType) type).getFlexoConcept());
+				}
+			}
+			else {
+				logger.warning("Unexpected type: " + type);
+			}
+		}
+
+		private FlexoConceptInstanceTypeFactory customTypeFactory;
+
+		private FlexoConceptInstanceTypeFactory getFlexoConceptInstanceTypeFactory() {
+			if (customTypeFactory == null) {
+				customTypeFactory = new DefaultFlexoConceptInstanceTypeFactory(getTechnologyAdapter()) {
+					@Override
+					public FlexoConcept resolveFlexoConcept(FlexoConceptInstanceType typeToResolve) {
+						System.out.println("Resolving " + typeToResolve);
+						// Thread.dumpStack();
+
+						if (getDeclaringCompilationUnit() != null) {
+							for (ElementImportDeclaration elementImportDeclaration : getDeclaringCompilationUnit().getElementImports()) {
+								if (elementImportDeclaration.getReferencedObject() instanceof FMLCompilationUnit) {
+									FMLCompilationUnit referencedCompilationUnit = (FMLCompilationUnit) elementImportDeclaration
+											.getReferencedObject();
+									if (referencedCompilationUnit.getVirtualModel() != null) {
+										FlexoConcept flexoConcept = referencedCompilationUnit.getVirtualModel()
+												.getFlexoConcept(typeToResolve.getConceptURI());
+										if (flexoConcept != null) {
+											if (typeToResolve == type) {
+												setFlexoConceptType(flexoConcept);
+											}
+											return flexoConcept;
+										}
+									}
+								}
+							}
+						}
+						return null;
+
+					}
+				};
+			}
+			return customTypeFactory;
+		}
 	}
 
 	@DefineValidationRule

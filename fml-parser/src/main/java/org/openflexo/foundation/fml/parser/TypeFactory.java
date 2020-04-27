@@ -54,10 +54,12 @@ import org.openflexo.connie.type.PrimitiveType;
 import org.openflexo.connie.type.TypeUtils;
 import org.openflexo.connie.type.UnresolvedType;
 import org.openflexo.foundation.fml.ElementImportDeclaration;
+import org.openflexo.foundation.fml.FMLCompilationUnit;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoConceptInstanceType;
 import org.openflexo.foundation.fml.FlexoConceptInstanceType.DefaultFlexoConceptInstanceTypeFactory;
 import org.openflexo.foundation.fml.FlexoConceptInstanceType.FlexoConceptInstanceTypeFactory;
+import org.openflexo.foundation.fml.FlexoRole;
 import org.openflexo.foundation.fml.JavaImportDeclaration;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.VirtualModelInstanceType;
@@ -116,13 +118,16 @@ public class TypeFactory extends SemanticsAnalyzerFactory {
 		FLEXO_CONCEPT_INSTANCE_TYPE_FACTORY = new DefaultFlexoConceptInstanceTypeFactory(getFMLTechnologyAdapter()) {
 			@Override
 			public FlexoConcept resolveFlexoConcept(FlexoConceptInstanceType typeToResolve) {
-				// System.out.println("Tiens, faut resoudre le concept " + typeToResolve);
+				// System.out.println("Tiens, faut resoudre le FlexoConcept " + typeToResolve);
+				// Thread.dumpStack();
 				return tryToLookupConcept(typeToResolve.getConceptURI());
 			}
 		};
 		VIRTUAL_MODEL_INSTANCE_TYPE_FACTORY = new DefaultVirtualModelInstanceTypeFactory(getFMLTechnologyAdapter()) {
 			@Override
 			public VirtualModel resolveVirtualModel(VirtualModelInstanceType typeToResolve) {
+				// System.out.println("Tiens, faut resoudre le VirtualModel " + typeToResolve);
+				// Thread.dumpStack();
 				VirtualModel returned = tryToLookupVirtualModel(typeToResolve.getConceptURI());
 				if (returned != null) {
 					return returned;
@@ -152,7 +157,7 @@ public class TypeFactory extends SemanticsAnalyzerFactory {
 									System.out.println(
 											"  > " + bv.getLabel() + " = " + bv.getType() + " of " + bv.getClass().getSimpleName());
 								}
-								*/
+								 */
 								if (resourceReferenceValue != null) {
 									typeToResolve.redefineWithURI(resourceReferenceValue);
 								}
@@ -204,14 +209,21 @@ public class TypeFactory extends SemanticsAnalyzerFactory {
 
 		// System.out.println("OK on y va");
 
-		for (CustomType unresolvedType : unresolvedTypes) {
+		for (CustomType unresolvedType : new ArrayList<>(unresolvedTypes)) {
 			// System.out.println(" **** " + unresolvedType);
 			unresolvedType.resolve();
+			if (unresolvedType.isResolved()) {
+				unresolvedTypes.remove(unresolvedType);
+			}
 			// System.out.println("resolved: " + unresolvedType.isResolved());
 		}
 
 		// System.out.println("Done");
 		// Thread.dumpStack();
+	}
+
+	public List<CustomType> getUnresolvedTypes() {
+		return unresolvedTypes;
 	}
 
 	public List<String> makeFullQualifiedIdentifierList(TIdentifier identifier, List<PAdditionalIdentifier> additionalIdentifiers) {
@@ -244,10 +256,27 @@ public class TypeFactory extends SemanticsAnalyzerFactory {
 		return null;
 	}
 
+	/**
+	 * Build type encoded in {@link PCompositeIdent} node
+	 * 
+	 * @param compositeIdentifier
+	 * @return
+	 */
 	public Type makeType(PCompositeIdent compositeIdentifier) {
+		return makeType(compositeIdentifier, (FlexoRole) null);
+	}
+
+	/**
+	 * Build type encoded in {@link PCompositeIdent} node, asserting context given by supplied role
+	 *
+	 * @param compositeIdentifier
+	 * @param role
+	 * @return
+	 */
+	public Type makeType(PCompositeIdent compositeIdentifier, FlexoRole<?> role) {
 		if (compositeIdentifier instanceof ACompositeIdent) {
 			return makeType(((ACompositeIdent) compositeIdentifier).getIdentifier(),
-					((ACompositeIdent) compositeIdentifier).getAdditionalIdentifiers());
+					((ACompositeIdent) compositeIdentifier).getAdditionalIdentifiers(), role);
 		}
 		else {
 			logger.warning("Unexpected " + compositeIdentifier);
@@ -297,7 +326,26 @@ public class TypeFactory extends SemanticsAnalyzerFactory {
 		return null;
 	}
 
+	/**
+	 * Build type encoded in {@link TIdentifier} and {@link PAdditionalIdentifier} nodes
+	 * 
+	 * @param identifier
+	 * @param additionalIdentifiers
+	 * @return
+	 */
 	public Type makeType(TIdentifier identifier, List<PAdditionalIdentifier> additionalIdentifiers) {
+		return makeType(identifier, additionalIdentifiers, null);
+	}
+
+	/**
+	 * Build type encoded in {@link TIdentifier} and {@link PAdditionalIdentifier} nodes, asserting context given by supplied role
+	 * 
+	 * @param identifier
+	 * @param additionalIdentifiers
+	 * @param role
+	 * @return
+	 */
+	public Type makeType(TIdentifier identifier, List<PAdditionalIdentifier> additionalIdentifiers, FlexoRole<?> role) {
 		String typeName = makeFullQualifiedIdentifier(identifier, additionalIdentifiers);
 
 		try {
@@ -319,33 +367,37 @@ public class TypeFactory extends SemanticsAnalyzerFactory {
 		if (conceptType != null) {
 			return conceptType;
 		}
-
-		logger.warning("Not found type: " + typeName);
-
-		return new UnresolvedType(typeName);
-	}
-
-	/*
-		public Type makeType(TIdentifier identifier, List<PAdditionalIdentifier> additionalIdentifiers) {
-			String typeName = makeFullQualifiedIdentifier(identifier, additionalIdentifiers);
-			try {
-				return Class.forName(typeName);
-			} catch (ClassNotFoundException e) {
-				// OK, continue
+		else if (role != null) {
+			CustomType type = role.buildType(typeName);
+			if (!type.isResolved()) {
+				unresolvedTypes.add(type);
 			}
-			for (JavaImportDeclaration javaImportDeclaration : analyser.getCompilationUnit().getJavaImports()) {
-				if (typeName.equals(javaImportDeclaration.getClassName())) {
-					try {
-						return Class.forName(javaImportDeclaration.getFullQualifiedClassName());
-					} catch (ClassNotFoundException e) {
-						// OK, continue
-					}
-				}
-			}
+			return type;
+		}
+		else {
+			logger.warning("Not found type: " + typeName);
 			return new UnresolvedType(typeName);
 		}
+	}
+
+	/**
+	 * Build type encoded in {@link PType} node
+	 * 
+	 * @param pType
+	 * @return
 	 */
 	public Type makeType(PType pType) {
+		return makeType(pType, null);
+	}
+
+	/**
+	 * Build type encoded in {@link PType} node, asserting context given by supplied role
+	 * 
+	 * @param pType
+	 * @param role
+	 * @return
+	 */
+	public Type makeType(PType pType, FlexoRole<?> role) {
 		if (pType == null) {
 			logger.warning("Unexpected null type");
 			return null;
@@ -369,18 +421,35 @@ public class TypeFactory extends SemanticsAnalyzerFactory {
 		// return makeType(((ASimpleType) pType).getIdentifier(), ((ASimpleType) pType).getAdditionalIdentifiers());
 		// }
 		else if (pType instanceof AComplexType) {
-			return makeType(((AComplexType) pType).getReferenceType());
+			return makeType(((AComplexType) pType).getReferenceType(), role);
 		}
 		logger.warning("Unexpected " + pType + " of " + pType.getClass());
 		return null;
 	}
 
+	/**
+	 * Build type encoded in {@link PReferenceType} node
+	 * 
+	 * @param referenceType
+	 * @return
+	 */
 	public Type makeType(PReferenceType referenceType) {
+		return makeType(referenceType, null);
+	}
+
+	/**
+	 * Build type encoded in {@link PReferenceType} node, asserting context given by supplied role
+	 * 
+	 * @param referenceType
+	 * @param role
+	 * @return
+	 */
+	public Type makeType(PReferenceType referenceType, FlexoRole<?> role) {
 		if (referenceType instanceof AReferenceType) {
 			if (((AReferenceType) referenceType).getArgs() == null) {
-				return makeType(((AReferenceType) referenceType).getIdentifier());
+				return makeType(((AReferenceType) referenceType).getIdentifier(), role);
 			}
-			Type baseType = makeType(((AReferenceType) referenceType).getIdentifier());
+			Type baseType = makeType(((AReferenceType) referenceType).getIdentifier(), role);
 			if (baseType instanceof Class) {
 				List<Type> typeArguments = makeTypeArguments(((AReferenceType) referenceType).getArgs());
 				return new ParameterizedTypeImpl((Class) baseType, typeArguments.toArray(new Type[typeArguments.size()]));
@@ -507,11 +576,13 @@ public class TypeFactory extends SemanticsAnalyzerFactory {
 				System.out.println("uri: " + r.getType().getConceptURI());
 				System.out.println("Hash: " + Integer.toHexString(r.getType().hashCode()));
 			}*/
-			unresolvedTypes.add(r.getType());
+			if (!r.getType().isResolved()) {
+				unresolvedTypes.add(r.getType());
+			}
 			return r.getType();
 		}
 
-		System.err.println("Cannot find " + typeName);
+		// System.err.println("Cannot find " + typeName);
 
 		/*if (r.modelDeclaration != null) {
 			return new VirtualModelInstanceType(getVirtualModel());
@@ -550,9 +621,9 @@ public class TypeFactory extends SemanticsAnalyzerFactory {
 				// System.out.println("> " + importDeclaration.getAbbrev().equals(id));
 				if (StringUtils.isNotEmpty(importDeclaration.getAbbrev()) && importDeclaration.getAbbrev().equals(id)) {
 					// System.out.println(">>>>>> " + importDeclaration.getReferencedObject());
-					if (importDeclaration.getReferencedObject() instanceof VirtualModel) {
+					if (importDeclaration.getReferencedObject() instanceof FMLCompilationUnit) {
 						// System.out.println("On retourne " + importDeclaration.getReferencedObject());
-						return (VirtualModel) importDeclaration.getReferencedObject();
+						return ((FMLCompilationUnit) importDeclaration.getReferencedObject()).getVirtualModel();
 					}
 					else {
 						logger.warning("Unexpected " + importDeclaration.getReferencedObject());
@@ -586,6 +657,7 @@ public class TypeFactory extends SemanticsAnalyzerFactory {
 	 * @return
 	 */
 	private FlexoConcept tryToLookupConcept(String relativeURI) {
+
 		FlexoConcept current = null;
 		StringTokenizer st = new StringTokenizer(relativeURI, ".");
 		if (st.hasMoreTokens()) {

@@ -51,6 +51,7 @@ import org.openflexo.connie.binding.IBindingPathElement;
 import org.openflexo.connie.exception.NullReferenceException;
 import org.openflexo.connie.exception.TypeMismatchException;
 import org.openflexo.connie.expr.BindingValue;
+import org.openflexo.connie.type.CustomType;
 import org.openflexo.foundation.DataModification;
 import org.openflexo.foundation.fml.FMLRepresentationContext.FMLRepresentationOutput;
 import org.openflexo.foundation.fml.binding.FlexoPropertyPathElement;
@@ -245,6 +246,21 @@ public interface FlexoRole<T> extends FlexoProperty<T> {
 	 * @return
 	 */
 	public List<RolePropertyValue<?>> buildParameters();
+
+	/**
+	 * Build {@link CustomType} represented by supplied serialized version, asserting this type is the accessed type through this role
+	 * 
+	 * @param serializedType
+	 * @return
+	 */
+	public CustomType buildType(String serializedType);
+
+	/**
+	 * Declare supplied type as the the accessed type through this role
+	 * 
+	 * @param type
+	 */
+	public void setType(CustomType type);
 
 	abstract class FlexoRoleImpl<T> extends FlexoPropertyImpl<T> implements FlexoRole<T> {
 

@@ -274,9 +274,9 @@ public interface ElementImportDeclaration extends FMLPrettyPrintable {
 
 						ResourceData<?> resourceData = resource.getResourceData();
 
-						if (resourceData instanceof FMLCompilationUnit) {
+						/*if (resourceData instanceof FMLCompilationUnit) {
 							return ((FMLCompilationUnit) resourceData).getVirtualModel();
-						}
+						}*/
 
 						if (objectReference == null) {
 							return (FlexoObject) resourceData;

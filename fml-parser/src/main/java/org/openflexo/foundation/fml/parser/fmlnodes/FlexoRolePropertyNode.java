@@ -40,6 +40,7 @@ package org.openflexo.foundation.fml.parser.fmlnodes;
 
 import java.util.logging.Logger;
 
+import org.openflexo.connie.type.CustomType;
 import org.openflexo.foundation.fml.FlexoRole;
 import org.openflexo.foundation.fml.RolePropertyValue;
 import org.openflexo.foundation.fml.parser.MainSemanticsAnalyzer;
@@ -87,11 +88,15 @@ public class FlexoRolePropertyNode<N extends PInnerConceptDecl, R extends FlexoR
 			returned.setVisibility(getVisibility(((AFmlInnerConceptDecl) astNode).getVisibility()));
 			returned.setName(((AFmlInnerConceptDecl) astNode).getIdentifier().getText());
 			returned.setCardinality(getCardinality(((AFmlInnerConceptDecl) astNode).getCardinality()));
+			CustomType type = (CustomType) getTypeFactory().makeType(((AFmlInnerConceptDecl) astNode).getType(), returned);
+			returned.setType(type);
 		}
 		if (astNode instanceof AFmlFullyQualifiedInnerConceptDecl) {
 			returned.setVisibility(getVisibility(((AFmlFullyQualifiedInnerConceptDecl) astNode).getVisibility()));
 			returned.setName(((AFmlFullyQualifiedInnerConceptDecl) astNode).getIdentifier().getText());
 			returned.setCardinality(getCardinality(((AFmlFullyQualifiedInnerConceptDecl) astNode).getCardinality()));
+			CustomType type = (CustomType) getTypeFactory().makeType(((AFmlFullyQualifiedInnerConceptDecl) astNode).getType(), returned);
+			returned.setType(type);
 		}
 		return returned;
 	}
