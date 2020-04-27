@@ -41,6 +41,7 @@ package org.openflexo.foundation.fml;
 import java.lang.reflect.Type;
 import java.util.logging.Logger;
 
+import org.openflexo.connie.type.TypeUtils;
 import org.openflexo.foundation.fml.annotations.FML;
 import org.openflexo.foundation.fml.rt.ActorReference;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
@@ -105,6 +106,35 @@ public interface JavaRole<T> extends BasicProperty<T> {
 		public ActorReference<T> makeActorReference(T object, FlexoConceptInstance fci) {
 			// Never serialized
 			return null;
+		}
+
+		@Override
+		public void handleTypeDeclarationInImports() {
+
+			if (getDeclaringCompilationUnit() == null) {
+				return;
+			}
+
+			Class<?> rawType = TypeUtils.getRawType(getType());
+
+			if (!TypeUtils.isPrimitive(rawType)) {
+
+				boolean typeWasFound = false;
+				for (JavaImportDeclaration importDeclaration : getDeclaringCompilationUnit().getJavaImports()) {
+					if (importDeclaration.getFullQualifiedClassName().equals(rawType.getName())) {
+						typeWasFound = true;
+						break;
+					}
+				}
+				if (!typeWasFound) {
+					// Adding import
+					JavaImportDeclaration newJavaImportDeclaration = getDeclaringCompilationUnit().getFMLModelFactory()
+							.newJavaImportDeclaration();
+					newJavaImportDeclaration.setFullQualifiedClassName(rawType.getName());
+					getDeclaringCompilationUnit().addToJavaImports(newJavaImportDeclaration);
+				}
+			}
+
 		}
 
 	}
