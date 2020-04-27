@@ -38,6 +38,7 @@
 
 package org.openflexo.foundation.fml;
 
+import org.openflexo.connie.BindingModel;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.pamela.annotations.CloningStrategy;
 import org.openflexo.pamela.annotations.CloningStrategy.StrategyType;
@@ -89,6 +90,24 @@ public interface NamespaceDeclaration extends FlexoObject, FMLPrettyPrintable {
 	public void setAbbrev(String abbrev);
 
 	public abstract class NamespaceDeclarationImpl extends FMLObjectImpl implements NamespaceDeclaration {
+		@Override
+		public String getFMLRepresentation(FMLRepresentationContext context) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public BindingModel getBindingModel() {
+			if (getCompilationUnit() != null) {
+				return getCompilationUnit().getBindingModel();
+			}
+			return null;
+		}
+
+		@Override
+		public FMLCompilationUnit getResourceData() {
+			return getCompilationUnit();
+		}
 
 	}
 
