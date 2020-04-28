@@ -99,7 +99,7 @@ public class CreateModelSlot extends AbstractCreateFlexoProperty<CreateModelSlot
 	private TechnologyAdapter<?> technologyAdapter;
 	private FlexoMetaModelResource<?, ?, ?> mmRes;
 	private CompilationUnitResource vmRes;
-	private boolean required = true;
+	private boolean required = false;
 	private boolean readOnly = false;
 	private Class<? extends ModelSlot<?>> modelSlotClass;
 

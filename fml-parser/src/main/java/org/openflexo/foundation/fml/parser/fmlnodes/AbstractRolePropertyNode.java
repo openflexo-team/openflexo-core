@@ -68,7 +68,8 @@ public abstract class AbstractRolePropertyNode<N extends PInnerConceptDecl, R ex
 	}
 
 	protected String serializeFlexoRoleName(FlexoRole<?> role) {
-		return role.getImplementedInterface().getSimpleName();
+		return role.getFMLKeyword(getFactory());
+		// return role.getImplementedInterface().getSimpleName();
 	}
 
 	protected boolean isFullQualified() {
@@ -78,12 +79,12 @@ public abstract class AbstractRolePropertyNode<N extends PInnerConceptDecl, R ex
 		return false;
 	}
 
-	protected boolean hasParameters() {
+	protected boolean hasFMLProperties() {
 		if (getFMLParameters() != null) {
 			return true;
 		}
 		if (getModelObject() != null) {
-			return getModelObject().hasParameters();
+			return getModelObject().hasFMLProperties(getFactory());
 		}
 		return false;
 	}
@@ -178,6 +179,13 @@ public abstract class AbstractRolePropertyNode<N extends PInnerConceptDecl, R ex
 		}
 		if (getASTNode() instanceof AFmlFullyQualifiedInnerConceptDecl) {
 			return ((AFmlFullyQualifiedInnerConceptDecl) getASTNode()).getFmlParameters();
+		}
+		return null;
+	}
+
+	protected RawSourceFragment getFMLParametersFragment() {
+		if (getFMLParameters() != null) {
+			return getFragment(getFMLParameters());
 		}
 		return null;
 	}

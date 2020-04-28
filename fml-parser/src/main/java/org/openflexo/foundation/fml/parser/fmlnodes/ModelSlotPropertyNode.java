@@ -42,13 +42,11 @@ import java.util.logging.Logger;
 
 import org.openflexo.connie.type.CustomType;
 import org.openflexo.foundation.fml.FlexoRole;
-import org.openflexo.foundation.fml.RolePropertyValue;
 import org.openflexo.foundation.fml.parser.MainSemanticsAnalyzer;
 import org.openflexo.foundation.fml.parser.node.AFmlFullyQualifiedInnerConceptDecl;
 import org.openflexo.foundation.fml.parser.node.AFmlInnerConceptDecl;
 import org.openflexo.foundation.fml.parser.node.PInnerConceptDecl;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
-import org.openflexo.p2pp.PrettyPrintContext.Indentation;
 
 /**
  * Represents a {@link ModelSlot} declaration in FML source code
@@ -91,16 +89,7 @@ public class ModelSlotPropertyNode<N extends PInnerConceptDecl, MS extends Model
 			returned.setCardinality(getCardinality(((AFmlInnerConceptDecl) astNode).getCardinality()));
 			CustomType type = (CustomType) getTypeFactory().makeType(((AFmlInnerConceptDecl) astNode).getType(), returned);
 			returned.setType(type);
-
-			// returned.getType()
-
-			/*Type type = getTypeFactory().makeType(((AFmlInnerConceptDecl) astNode).getType());
-			System.out.println("type: " + type + " of " + type.getClass());
-			// System.exit(-1);
-			if (FMLRTModelSlot.class.isAssignableFrom(roleClass) && type instanceof VirtualModelInstanceType) {
-				((FMLRTModelSlot) returned).setAccessedVirtualModel(((VirtualModelInstanceType) type).getVirtualModel());
-			}*/
-
+			decodeFMLProperties(((AFmlInnerConceptDecl) astNode).getFmlParameters(), returned);
 		}
 		if (astNode instanceof AFmlFullyQualifiedInnerConceptDecl) {
 			returned.setVisibility(getVisibility(((AFmlFullyQualifiedInnerConceptDecl) astNode).getVisibility()));
@@ -108,6 +97,7 @@ public class ModelSlotPropertyNode<N extends PInnerConceptDecl, MS extends Model
 			returned.setCardinality(getCardinality(((AFmlFullyQualifiedInnerConceptDecl) astNode).getCardinality()));
 			CustomType type = (CustomType) getTypeFactory().makeType(((AFmlFullyQualifiedInnerConceptDecl) astNode).getType(), returned);
 			returned.setType(type);
+			decodeFMLProperties(((AFmlFullyQualifiedInnerConceptDecl) astNode).getFmlParameters(), returned);
 		}
 		return returned;
 	}
@@ -130,10 +120,11 @@ public class ModelSlotPropertyNode<N extends PInnerConceptDecl, MS extends Model
 		.thenAppend(dynamicContents(() -> getFMLFactory().serializeTAId(getModelObject())), getTaIdFragment())
 		.thenAppend(staticContents("::"), getColonColonFragment());
 		append(dynamicContents(() -> serializeFlexoRoleName(getModelObject())), getRoleFragment());
-		when(() -> hasParameters())
+		when(() -> hasFMLProperties())
 		.thenAppend(staticContents("("), getLParFragment())
-		.thenAppend(childrenContents("", "", () -> getModelObject().buildParameters(), ",", "", Indentation.DoNotIndent,
-				RolePropertyValue.class))
+		//.thenAppend(childrenContents("", "", () -> getModelObject().buildParameters(), ",", "", Indentation.DoNotIndent,
+		//		RolePropertyValue.class))
+		.thenAppend(dynamicContents(() -> getModelObject().encodeFMLProperties(getFactory())), getFMLParametersFragment())
 		.thenAppend(staticContents(")"), getRParFragment());
 		append(staticContents(";"), getSemiFragment());
 		// @formatter:on	

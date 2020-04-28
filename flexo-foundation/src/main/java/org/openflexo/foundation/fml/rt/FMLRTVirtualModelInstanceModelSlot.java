@@ -74,7 +74,7 @@ import org.openflexo.pamela.annotations.XMLElement;
 @ModelEntity
 @ImplementationClass(FMLRTVirtualModelInstanceModelSlot.FMLRTVirtualModelInstanceModelSlotImpl.class)
 @XMLElement(xmlTag = "FMLRTVirtualModelInstanceModelSlot", deprecatedXMLTags = "ViewModelSlot,VirtualModelInstanceModelSlot")
-@FML("FMLRTVirtualModelInstanceModelSlot")
+@FML("ModelInstance")
 public interface FMLRTVirtualModelInstanceModelSlot extends FMLRTModelSlot<FMLRTVirtualModelInstance, FMLRTTechnologyAdapter> {
 
 	public static abstract class FMLRTVirtualModelInstanceModelSlotImpl
@@ -92,5 +92,14 @@ public interface FMLRTVirtualModelInstanceModelSlot extends FMLRTModelSlot<FMLRT
 			return "FMLRTVirtualModelInstanceModelSlot";
 		}
 
+		/*@Override
+		public boolean hasFMLProperties() {
+			return true;
+		}
+		
+		@Override
+		public String encodeFMLProperties() {
+			return "isRequired=" + getIsRequired() + "";
+		}*/
 	}
 }

@@ -52,6 +52,7 @@ import org.openflexo.pamela.annotations.XMLAttribute;
 
 @ModelEntity
 @ImplementationClass(RolePropertyValue.RolePropertyValueImpl.class)
+@Deprecated
 public interface RolePropertyValue<T extends FlexoRole<?>> {
 
 	@PropertyIdentifier(type = FlexoRole.class)

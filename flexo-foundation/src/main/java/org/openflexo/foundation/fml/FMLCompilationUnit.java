@@ -332,7 +332,7 @@ public interface FMLCompilationUnit extends FMLObject, FMLPrettyPrintable, Resou
 		class ReflectedBindingEvaluationContext implements BindingEvaluationContext {
 			@Override
 			public Object getValue(BindingVariable bindingVariable) {
-				System.out.println("On me demande " + bindingVariable + " of " + bindingVariable.getClass());
+				// System.out.println("getValue() for " + bindingVariable + " of " + bindingVariable.getClass());
 				if (bindingVariable instanceof NamedImportBindingVariable) {
 					FlexoObject referencedObject = ((NamedImportBindingVariable) bindingVariable).getElementImportDeclaration()
 							.getReferencedObject();

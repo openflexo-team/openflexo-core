@@ -102,6 +102,7 @@ public abstract class DefaultTechnologyAdapterService extends FlexoServiceImpl i
 	private Map<Class<? extends ModelSlot<?>>, List<Class<? extends FetchRequest<?, ?, ?>>>> availableFetchRequestActionTypes;
 
 	private Map<String, Class<? extends FlexoBehaviour>> availableBehavioursByFMLKeyword;
+	private Map<String, Class<? extends FlexoRole<?>>> availableRolesByFMLKeyword;
 
 	// private Map<Class<? extends ModelSlot<?>>, List<Class<? extends FlexoBehaviourParameter>>> availableFlexoBehaviourParameterTypes;
 	// private Map<Class<? extends ModelSlot<?>>, List<Class<? extends InspectorEntry>>> availableInspectorEntryTypes;
@@ -248,6 +249,7 @@ public abstract class DefaultTechnologyAdapterService extends FlexoServiceImpl i
 		availableFetchRequestActionTypes = new HashMap<>();
 		availableFlexoBehaviourTypes = new HashMap<>();
 		availableBehavioursByFMLKeyword = new HashMap<>();
+		availableRolesByFMLKeyword = new HashMap<>();
 		loadAvailableTechnologyAdapters();
 		status = Status.Started;
 	}
@@ -441,6 +443,26 @@ public abstract class DefaultTechnologyAdapterService extends FlexoServiceImpl i
 			returned = new ArrayList<>();
 			appendDeclareFlexoRoles(returned, modelSlotClass);
 			availableFlexoRoleTypes.put(modelSlotClass, returned);
+			for (Class<? extends FlexoRole<?>> roleClass : returned) {
+				FML annotation = roleClass.getAnnotation(FML.class);
+				if (annotation != null) {
+					availableRolesByFMLKeyword.put(annotation.value(), roleClass);
+					// System.out.println("store " + roleClass + " for " + annotation.value());
+				}
+				// Also store it using class name
+				availableRolesByFMLKeyword.put(roleClass.getSimpleName(), roleClass);
+				// System.out.println("store " + roleClass + " for " + roleClass.getSimpleName());
+			}
+			// Do it for the ModelSlot itself
+			FML annotation = modelSlotClass.getAnnotation(FML.class);
+			if (annotation != null) {
+				availableRolesByFMLKeyword.put(annotation.value(), modelSlotClass);
+				// System.out.println("store " + modelSlotClass + " for " + annotation.value());
+			}
+			// Also store it using class name
+			availableRolesByFMLKeyword.put(modelSlotClass.getSimpleName(), modelSlotClass);
+			// System.out.println("store " + modelSlotClass + " for " + modelSlotClass.getSimpleName());
+
 		}
 		return returned;
 	}
@@ -518,6 +540,7 @@ public abstract class DefaultTechnologyAdapterService extends FlexoServiceImpl i
 					availableBehavioursByFMLKeyword.put(annotation.value(), behaviourClass);
 					System.out.println("store " + behaviourClass + " for " + annotation.value());
 				}
+				// Also store it using class name
 				availableBehavioursByFMLKeyword.put(behaviourClass.getSimpleName(), behaviourClass);
 				System.out.println("store " + behaviourClass + " for " + behaviourClass.getSimpleName());
 			}
@@ -529,6 +552,12 @@ public abstract class DefaultTechnologyAdapterService extends FlexoServiceImpl i
 	public <MS extends ModelSlot<?>> Class<? extends FlexoBehaviour> getFlexoBehaviour(Class<MS> modelSlotClass, String behaviourKeyword) {
 		getAvailableFlexoBehaviourTypes(modelSlotClass);
 		return availableBehavioursByFMLKeyword.get(behaviourKeyword);
+	}
+
+	@Override
+	public <MS extends ModelSlot<?>> Class<? extends FlexoRole<?>> getFlexoRole(Class<MS> modelSlotClass, String roleKeyword) {
+		getAvailableFlexoRoleTypes(modelSlotClass);
+		return availableRolesByFMLKeyword.get(roleKeyword);
 	}
 
 	private static void appendDeclareFlexoRoles(List<Class<? extends FlexoRole<?>>> aList, Class<?> cl) {

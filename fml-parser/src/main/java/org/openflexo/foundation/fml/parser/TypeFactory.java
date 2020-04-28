@@ -774,12 +774,9 @@ public class TypeFactory extends SemanticsAnalyzerFactory {
 			if (fullQualifiedConceptNamePath.size() > 0 && fullQualifiedConceptNamePath.get(0).equals(node.getName().getText())) {
 				found = true;
 				if (fullQualifiedConceptNamePath.size() == 1) {
-					System.out.println("ici3 avec " + "@" + node.getName());
 					type = new VirtualModelInstanceType("@" + node.getName(), VIRTUAL_MODEL_INSTANCE_TYPE_FACTORY);
-					System.out.println("Hash: " + Integer.toHexString(type.hashCode()));
 				}
 				else {
-					System.out.println("ici4 avec " + "@" + node.getName());
 					type = new FlexoConceptInstanceType("@" + node.getName(), FLEXO_CONCEPT_INSTANCE_TYPE_FACTORY);
 				}
 			}

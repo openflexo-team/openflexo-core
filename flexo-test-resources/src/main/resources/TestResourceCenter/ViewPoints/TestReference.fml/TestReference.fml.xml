@@ -2,5 +2,5 @@
 <VirtualModel id="SYL-1" virtualModelClass="org.openflexo.foundation.fml.VirtualModel" modelVersion="2.0" uri="http://openflexo.org/test/flexo-test-resources/TestResourceCenter/ViewPoints/TestReference.fml" version="0.1" visibility="Public" name="TestReference" author="sylvain" userID="SYL" flexoID="1">
   <UseModelSlotDeclaration id="0" modelSlotClass="org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstanceModelSlot" userID="SYL" flexoID="-1" />
   <Inspector id="SYL-2" inspectorTitle="TestReference" userID="SYL" flexoID="2" />
-  <FMLRTVirtualModelInstanceModelSlot id="SYL-6" virtualModelURI="http://openflexo.org/test/flexo-test-resources/TestResourceCenter/ViewPoints/TestReference.fml/VMC.fml" isRequired="true" cloningStrategy="Reference" cardinality="ZeroOne" name="vmC" userID="SYL" flexoID="6" />
+  <FMLRTVirtualModelInstanceModelSlot id="SYL-6" virtualModelURI="http://openflexo.org/test/flexo-test-resources/TestResourceCenter/ViewPoints/TestReference.fml/VMC.fml" isRequired="false" cloningStrategy="Reference" cardinality="ZeroOne" name="vmC" userID="SYL" flexoID="6" />
 </VirtualModel>

@@ -50,6 +50,7 @@ import org.openflexo.foundation.fml.FMLModelFactory;
 import org.openflexo.foundation.fml.FlexoBehaviour;
 import org.openflexo.foundation.fml.FlexoRole;
 import org.openflexo.foundation.fml.VirtualModel;
+import org.openflexo.foundation.fml.annotations.FMLAttribute;
 import org.openflexo.foundation.fml.editionaction.AbstractFetchRequest;
 import org.openflexo.foundation.fml.editionaction.EditionAction;
 import org.openflexo.foundation.fml.editionaction.FetchRequest;
@@ -102,6 +103,7 @@ public interface ModelSlot<RD extends ResourceData<RD> & TechnologyObject<?>> ex
 	@Override
 	@Getter(value = IS_REQUIRED_KEY, defaultValue = "false")
 	@XMLAttribute
+	@FMLAttribute(value = IS_REQUIRED_KEY, required = false)
 	public boolean getIsRequired();
 
 	@Override
@@ -110,6 +112,7 @@ public interface ModelSlot<RD extends ResourceData<RD> & TechnologyObject<?>> ex
 
 	@Getter(value = IS_READ_ONLY_KEY, defaultValue = "false")
 	@XMLAttribute
+	@FMLAttribute(value = IS_READ_ONLY_KEY, required = false)
 	public boolean getIsReadOnly();
 
 	@Setter(IS_READ_ONLY_KEY)

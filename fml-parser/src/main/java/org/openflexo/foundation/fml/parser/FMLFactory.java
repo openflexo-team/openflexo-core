@@ -98,18 +98,20 @@ public class FMLFactory extends SemanticsAnalyzerFactory {
 
 	private Class<? extends FlexoRole<?>> getRoleClass(TIdentifier roleIdentifier, Class<? extends ModelSlot<?>> modelSlotClass) {
 
-		if (roleIdentifier.getText().equals(modelSlotClass.getSimpleName())) {
+		return getServiceManager().getTechnologyAdapterService().getFlexoRole(modelSlotClass, roleIdentifier.getText());
+
+		/*if (roleIdentifier.getText().equals(modelSlotClass.getSimpleName())) {
 			return modelSlotClass;
 		}
-
+		
 		for (Class<? extends FlexoRole<?>> roleClass : getServiceManager().getTechnologyAdapterService()
 				.getAvailableFlexoRoleTypes(modelSlotClass)) {
 			if (roleIdentifier.getText().equals(roleClass.getSimpleName())) {
 				return roleClass;
 			}
 		}
-
-		return null;
+		
+		return null;*/
 	}
 
 	public String serializeTAId(ModelSlot<?> modelSlot) {

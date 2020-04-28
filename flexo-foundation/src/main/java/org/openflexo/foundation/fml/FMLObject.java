@@ -39,6 +39,8 @@
 package org.openflexo.foundation.fml;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.logging.Logger;
 
 import org.openflexo.connie.Bindable;
@@ -48,6 +50,8 @@ import org.openflexo.connie.DataBinding;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.InnerResourceData;
+import org.openflexo.foundation.fml.FMLModelContext.FMLEntity;
+import org.openflexo.foundation.fml.FMLModelContext.FMLProperty;
 import org.openflexo.foundation.fml.md.BasicMetaData;
 import org.openflexo.foundation.fml.md.FMLMetaData;
 import org.openflexo.foundation.fml.md.ListMetaData;
@@ -70,6 +74,7 @@ import org.openflexo.pamela.annotations.Remover;
 import org.openflexo.pamela.annotations.Setter;
 import org.openflexo.pamela.annotations.XMLAttribute;
 import org.openflexo.pamela.annotations.XMLElement;
+import org.openflexo.pamela.exceptions.InvalidDataException;
 import org.openflexo.pamela.validation.FixProposal;
 import org.openflexo.pamela.validation.ValidationError;
 import org.openflexo.pamela.validation.ValidationIssue;
@@ -262,6 +267,22 @@ public interface FMLObject extends FlexoObject, Bindable, InnerResourceData<FMLC
 	 * Ensure required imports are declared in CompilationUnit
 	 */
 	public void handleRequiredImports(FMLCompilationUnit compilationUnit);
+
+	public Class<?> getImplementedInterface(FMLModelFactory modelFactory);
+
+	public String getFMLKeyword(FMLModelFactory modelFactory);
+
+	public boolean hasFMLProperties(FMLModelFactory modelFactory);
+
+	public Set<FMLProperty> getFMLProperties(FMLModelFactory modelFactory);
+
+	public FMLProperty getFMLProperty(String propertyName, FMLModelFactory modelFactory);
+
+	public Map<FMLProperty, Object> getFMLPropertyValues(FMLModelFactory modelFactory);
+
+	public String encodeFMLProperties(FMLModelFactory modelFactory);
+
+	// public void decodeFMLProperties(String serializedMap);
 
 	public static abstract class FMLObjectImpl extends FlexoObjectImpl implements FMLObject {
 
@@ -637,6 +658,89 @@ public interface FMLObject extends FlexoObject, Bindable, InnerResourceData<FMLC
 		public void handleRequiredImports(FMLCompilationUnit compilationUnit) {
 			// Default implementation does nothing
 		}
+
+		@Override
+		public Class<?> getImplementedInterface(FMLModelFactory modelFactory) {
+			return modelFactory.getModelEntityForInstance(this).getImplementedInterface();
+		}
+
+		protected FMLEntity<?> getFMLEntity(FMLModelFactory modelFactory) {
+			// chercher ici l'interface avec la factory fournie !
+			return FMLModelContext.getFMLEntity(getImplementedInterface(modelFactory), modelFactory);
+		}
+
+		@Override
+		public final String getFMLKeyword(FMLModelFactory modelFactory) {
+			if (getFMLEntity(modelFactory) != null) {
+				return getFMLEntity(modelFactory).getFmlAnnotation().value();
+			}
+			return null;
+		}
+
+		@Override
+		public final boolean hasFMLProperties(FMLModelFactory modelFactory) {
+			if (getFMLEntity(modelFactory) != null) {
+				return getFMLEntity(modelFactory).getProperties().size() > 0;
+			}
+			return false;
+		}
+
+		@Override
+		public Set<FMLProperty> getFMLProperties(FMLModelFactory modelFactory) {
+			if (getFMLEntity(modelFactory) != null) {
+				return (Set) getFMLEntity(modelFactory).getProperties();
+			}
+			return null;
+		}
+
+		@Override
+		public FMLProperty getFMLProperty(String propertyName, FMLModelFactory modelFactory) {
+			for (FMLProperty fmlProperty : getFMLProperties(modelFactory)) {
+				if (fmlProperty.getName().equals(propertyName)) {
+					return fmlProperty;
+				}
+			}
+			return null;
+		}
+
+		@Override
+		public final Map<FMLProperty, Object> getFMLPropertyValues(FMLModelFactory modelFactory) {
+			if (getFMLEntity(modelFactory) != null) {
+				return ((FMLEntity) getFMLEntity(modelFactory)).getFMLPropertyValues(this);
+			}
+			return null;
+		}
+
+		@Override
+		public final String encodeFMLProperties(FMLModelFactory modelFactory) {
+			Map<FMLProperty, Object> fmlPropertyValues = getFMLPropertyValues(modelFactory);
+			boolean isFirst = true;
+			StringBuffer sb = new StringBuffer();
+			FMLModelFactory factory = ((CompilationUnitResource) getResourceData().getResource()).getFactory();
+			for (FMLProperty fmlProperty : fmlPropertyValues.keySet()) {
+				try {
+					sb.append((isFirst ? "" : ",") + fmlProperty.getName() + "="
+							+ factory.getStringEncoder().toString(fmlPropertyValues.get(fmlProperty)));
+				} catch (InvalidDataException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				isFirst = false;
+			}
+			return sb.toString();
+		}
+
+		/*@Override
+		public final void decodeFMLProperties(String serializedMap) {
+			StringTokenizer st = new StringTokenizer(serializedMap, ",");
+			while (st.hasMoreTokens()) {
+				String next = st.nextToken();
+				String propertyName = next.substring(0, next.indexOf("="));
+				String propertyValue = next.substring(next.indexOf("=") + 1);
+				System.out.println(propertyName + " = [" + propertyValue + "]");
+				System.exit(-1);
+			}
+		}*/
 
 	}
 

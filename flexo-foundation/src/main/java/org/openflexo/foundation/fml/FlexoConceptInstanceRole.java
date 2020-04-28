@@ -46,6 +46,7 @@ import org.openflexo.connie.type.CustomType;
 import org.openflexo.foundation.fml.FlexoConceptInstanceType.DefaultFlexoConceptInstanceTypeFactory;
 import org.openflexo.foundation.fml.FlexoConceptInstanceType.FlexoConceptInstanceTypeFactory;
 import org.openflexo.foundation.fml.annotations.FML;
+import org.openflexo.foundation.fml.annotations.FMLAttribute;
 import org.openflexo.foundation.fml.rt.ActorReference;
 import org.openflexo.foundation.fml.rt.FMLRTTechnologyAdapter;
 import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstance;
@@ -68,7 +69,7 @@ import org.openflexo.toolbox.StringUtils;
 @ModelEntity
 @ImplementationClass(FlexoConceptInstanceRole.FlexoConceptInstanceRoleImpl.class)
 @XMLElement
-@FML("FlexoConceptInstanceRole")
+@FML("ConceptInstance")
 public interface FlexoConceptInstanceRole extends FlexoRole<FlexoConceptInstance> {
 
 	@PropertyIdentifier(type = FlexoConcept.class)
@@ -107,6 +108,7 @@ public interface FlexoConceptInstanceRole extends FlexoRole<FlexoConceptInstance
 	 */
 	@Getter(value = VIRTUAL_MODEL_INSTANCE_KEY)
 	@XMLAttribute
+	@FMLAttribute(value = VIRTUAL_MODEL_INSTANCE_KEY, required = false)
 	public DataBinding<VirtualModelInstance<?, ?>> getVirtualModelInstance();
 
 	@Setter(VIRTUAL_MODEL_INSTANCE_KEY)
@@ -395,14 +397,16 @@ public interface FlexoConceptInstanceRole extends FlexoRole<FlexoConceptInstance
 
 		private FlexoConceptInstanceTypeFactory customTypeFactory;
 
+		/**
+		 * Retrieve an internal factory which will be used to resolve type of {@link FlexoConceptInstance}
+		 * 
+		 * @return
+		 */
 		private FlexoConceptInstanceTypeFactory getFlexoConceptInstanceTypeFactory() {
 			if (customTypeFactory == null) {
 				customTypeFactory = new DefaultFlexoConceptInstanceTypeFactory(getTechnologyAdapter()) {
 					@Override
 					public FlexoConcept resolveFlexoConcept(FlexoConceptInstanceType typeToResolve) {
-						System.out.println("Resolving " + typeToResolve);
-						// Thread.dumpStack();
-
 						if (getDeclaringCompilationUnit() != null) {
 							for (ElementImportDeclaration elementImportDeclaration : getDeclaringCompilationUnit().getElementImports()) {
 								if (elementImportDeclaration.getReferencedObject() instanceof FMLCompilationUnit) {
@@ -413,7 +417,7 @@ public interface FlexoConceptInstanceRole extends FlexoRole<FlexoConceptInstance
 												.getFlexoConcept(typeToResolve.getConceptURI());
 										if (flexoConcept != null) {
 											if (typeToResolve == type) {
-												setFlexoConceptType(flexoConcept);
+												FlexoConceptInstanceRoleImpl.this.setFlexoConceptType(flexoConcept);
 											}
 											return flexoConcept;
 										}

@@ -307,6 +307,8 @@ public abstract class CompilationUnitResourceImpl extends PamelaResourceImpl<FML
 
 		logger.info("*************** Loading " + getName() + " uri=" + getURI());
 
+		// System.out.println("File: " + getIODelegate().getSerializationArtefact());
+
 		setLoading(true);
 
 		// Now we have to activate all required technologies

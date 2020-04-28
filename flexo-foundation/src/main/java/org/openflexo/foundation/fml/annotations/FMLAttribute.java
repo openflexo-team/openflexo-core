@@ -52,7 +52,7 @@ import java.lang.annotation.Target;
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(value = ElementType.METHOD)
-public @interface FMLProperty {
+public @interface FMLAttribute {
 
 	public static final String UNDEFINED = "";
 
