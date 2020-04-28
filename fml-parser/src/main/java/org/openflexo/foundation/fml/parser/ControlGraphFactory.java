@@ -93,7 +93,9 @@ public class ControlGraphFactory extends FMLSemanticsAnalyzer {
 	private static ControlGraphNode<?, ?> _makeControlGraphNode(Node cgNode, MainSemanticsAnalyzer analyzer) {
 		ControlGraphFactory f = new ControlGraphFactory(cgNode, analyzer);
 		cgNode.apply(f);
+		//System.out.println("J'essaie de faire un graphe de controle avec " + cgNode);
 		if (f.rootControlGraphNode == null) {
+			//System.out.println("---------> Mais la ca marche pas");
 			f.rootControlGraphNode = new ExpressionActionNode(cgNode, analyzer);
 		}
 		return f.rootControlGraphNode;
@@ -181,6 +183,7 @@ public class ControlGraphFactory extends FMLSemanticsAnalyzer {
 			PBlockStatement matchedBlockStatement = matchExpectedBlockStatements(controlGraphNode.getASTNode());
 			if (matchedBlockStatement != null) {
 				expectedBlockStatements.remove(matchedBlockStatement);
+				//System.out.println("Handle node " + controlGraphNode + " for " + controlGraphNode.getASTNode());
 				currentSequenceNodes.add(controlGraphNode);
 				return true;
 			}
@@ -284,6 +287,8 @@ public class ControlGraphFactory extends FMLSemanticsAnalyzer {
 			else {
 				if (rootControlGraphNode == null) {
 					rootControlGraphNode = (ControlGraphNode<?, ?>) fmlNode;
+					// System.out.println("SET rootControlGraphNode with " + fmlNode);
+					// Thread.dumpStack();
 				}
 				super.push(fmlNode);
 			}
@@ -483,8 +488,14 @@ public class ControlGraphFactory extends FMLSemanticsAnalyzer {
 
 	@Override
 	public void inAMethodInvocationStatementExpression(AMethodInvocationStatementExpression node) {
-		// TODO Auto-generated method stub
 		super.inAMethodInvocationStatementExpression(node);
+		push(new ExpressionActionNode(node, getMainAnalyzer()));
+	}
+
+	@Override
+	public void outAMethodInvocationStatementExpression(AMethodInvocationStatementExpression node) {
+		super.outAMethodInvocationStatementExpression(node);
+		pop();
 	}
 
 	@Override
@@ -597,4 +608,5 @@ public class ControlGraphFactory extends FMLSemanticsAnalyzer {
 		super.outAEndMatchActionFmlActionExp(node);
 		pop();
 	}
+
 }

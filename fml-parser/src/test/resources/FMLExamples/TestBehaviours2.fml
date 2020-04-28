@@ -1,0 +1,14 @@
+/**
+ * Testing concept behaviours
+ */
+
+use org.openflexo.foundation.fml.rt.FMLRTModelSlot as FMLRT;
+
+model MyModel {
+
+	create () {  
+		super.init();
+		log("this is a log");
+		log("and an other log");
+	}
+}

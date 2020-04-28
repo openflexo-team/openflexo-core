@@ -198,7 +198,7 @@ public interface ExpressionAction<T> extends AssignableAction<T> {
 		@Override
 		public void setExpression(DataBinding<T> expression) {
 
-			/*if (expression.toString().startsWith("new ConceptC")) {
+			/*if (expression.toString().contains("log(\"CreationScheme in B\")")) {
 				System.out.println("Qui est le con ?");
 				Thread.dumpStack();
 				System.exit(-1);
