@@ -41,6 +41,7 @@ package org.openflexo.foundation.fml.parser;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Stack;
 import java.util.StringTokenizer;
@@ -353,6 +354,15 @@ public class TypeFactory extends SemanticsAnalyzerFactory {
 		} catch (ClassNotFoundException e) {
 			// OK, continue
 		}
+
+		// Handle some basic types
+		if (typeName.equals("String")) {
+			return String.class;
+		}
+		if (typeName.equals("Date")) {
+			return Date.class;
+		}
+
 		for (JavaImportDeclaration javaImportDeclaration : getAnalyzer().getCompilationUnit().getJavaImports()) {
 			if (typeName.equals(javaImportDeclaration.getClassName())) {
 				try {
