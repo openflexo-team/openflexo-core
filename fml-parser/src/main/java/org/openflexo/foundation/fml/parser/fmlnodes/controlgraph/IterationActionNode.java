@@ -168,7 +168,7 @@ public class IterationActionNode extends ControlGraphNode<AForEnhancedStatement,
 	}
 
 	protected RawSourceFragment getLBrcFragment() {
-		System.out.println("getASTNode()=" + getASTNode());
+		// System.out.println("getASTNode()=" + getASTNode());
 
 		/*if (getASTNode() instanceof AIfSimpleStatement) {
 			PStatement statement = ((AIfSimpleStatement) getASTNode()).getStatement();

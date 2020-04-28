@@ -198,7 +198,7 @@ public class ConditionalNode extends ControlGraphNode<Node, ConditionalAction> {
 				return getFragment(((ABlock) ((ABlockFlexoBehaviourBody) flexoBehaviourBody).getBlock()).getLBrc());
 			}
 		}*/
-		System.out.println("getASTNode()=" + getASTNode());
+		// System.out.println("getASTNode()=" + getASTNode());
 
 		if (getASTNode() instanceof AIfSimpleStatement) {
 			PStatement statement = ((AIfSimpleStatement) getASTNode()).getStatement();
