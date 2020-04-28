@@ -38,6 +38,8 @@
 
 package org.openflexo.foundation.fml.parser;
 
+import org.openflexo.connie.type.CustomType;
+import org.openflexo.foundation.fml.ElementImportDeclaration;
 import org.openflexo.foundation.fml.FMLCompilationUnit;
 import org.openflexo.foundation.fml.FMLModelFactory;
 import org.openflexo.foundation.fml.FlexoRole;
@@ -158,12 +160,30 @@ public class MainSemanticsAnalyzer extends FMLSemanticsAnalyzer {
 		compilationUnitNode.initializePrettyPrint(compilationUnitNode, compilationUnitNode.makePrettyPrintContext());
 		typeFactory.resolveUnresovedTypes();
 		finalizeDeserialization(compilationUnitNode);
+
+		// Now ensure load of required imports, before to resolve all types
+		for (ElementImportDeclaration elementImportDeclaration : getCompilationUnit().getElementImports()) {
+			elementImportDeclaration.getReferencedObject();
+			// System.out.println(" > Loading " + elementImportDeclaration.getReferencedObject());
+			// System.out.println("resourceReference=" + elementImportDeclaration.getResourceReference());
+			// System.out.println("objectReference=" + elementImportDeclaration.getObjectReference());
+			if (elementImportDeclaration.getReferencedObject() instanceof FMLCompilationUnit) {
+				System.out.println(((FMLCompilationUnit) elementImportDeclaration.getReferencedObject()).getResource());
+			}
+		}
+
 		if (typeFactory.getUnresolvedTypes().size() > 0) {
-			/*System.out.println("Ben c'est fait, mais il reste toujours a resoudre:");
+			System.out.println("Some more unresolved types, trying again");
 			for (CustomType unresolvedType : typeFactory.getUnresolvedTypes()) {
-			System.out.println(" > " + unresolvedType);
-			}*/
+				System.out.println(" > " + unresolvedType);
+			}
 			typeFactory.resolveUnresovedTypes();
+			if (typeFactory.getUnresolvedTypes().size() > 0) {
+				System.out.println("Atfer types resolution still some types unresolved");
+				for (CustomType unresolvedType : typeFactory.getUnresolvedTypes()) {
+					System.out.println(" > " + unresolvedType);
+				}
+			}
 		}
 	}
 

@@ -53,7 +53,6 @@ import org.openflexo.connie.type.CustomType;
 import org.openflexo.connie.type.ParameterizedTypeImpl;
 import org.openflexo.connie.type.PrimitiveType;
 import org.openflexo.connie.type.TypeUtils;
-import org.openflexo.connie.type.UnresolvedType;
 import org.openflexo.foundation.fml.ElementImportDeclaration;
 import org.openflexo.foundation.fml.FMLCompilationUnit;
 import org.openflexo.foundation.fml.FlexoConcept;
@@ -99,6 +98,7 @@ import org.openflexo.foundation.fml.parser.node.PTypeArgumentListHead;
 import org.openflexo.foundation.fml.parser.node.PTypeArguments;
 import org.openflexo.foundation.fml.parser.node.PTypeArgumentsOrDiamond;
 import org.openflexo.foundation.fml.parser.node.TIdentifier;
+import org.openflexo.foundation.fml.rt.action.MatchingSet;
 import org.openflexo.toolbox.StringUtils;
 
 /**
@@ -362,6 +362,9 @@ public class TypeFactory extends SemanticsAnalyzerFactory {
 		if (typeName.equals("Date")) {
 			return Date.class;
 		}
+		if (typeName.equals("MatchingSet")) {
+			return MatchingSet.class;
+		}
 
 		for (JavaImportDeclaration javaImportDeclaration : getAnalyzer().getCompilationUnit().getJavaImports()) {
 			if (typeName.equals(javaImportDeclaration.getClassName())) {
@@ -385,8 +388,15 @@ public class TypeFactory extends SemanticsAnalyzerFactory {
 			return type;
 		}
 		else {
-			logger.warning("Not found type: " + typeName);
-			return new UnresolvedType(typeName);
+			FlexoConceptInstanceType returned = new FlexoConceptInstanceType(typeName, FLEXO_CONCEPT_INSTANCE_TYPE_FACTORY);
+			if (!returned.isResolved()) {
+				unresolvedTypes.add(returned);
+			}
+			return returned;
+
+			/*logger.warning("Not found type: " + typeName);
+			Thread.dumpStack();
+			return new UnresolvedType(typeName);*/
 		}
 	}
 
@@ -649,6 +659,26 @@ public class TypeFactory extends SemanticsAnalyzerFactory {
 		if (virtualModelBeingDeserialized != null && virtualModelBeingDeserialized.getName().equals(virtualModelName)) {
 			return virtualModelBeingDeserialized;
 		}
+
+		if (getAnalyzer().getCompilationUnit() != null) {
+			for (ElementImportDeclaration importDeclaration : getAnalyzer().getCompilationUnit().getElementImports()) {
+				// System.out.println("> " + importDeclaration.getAbbrev());
+				// System.out.println("> " + importDeclaration.getAbbrev().equals(id));
+				if (StringUtils.isNotEmpty(importDeclaration.getAbbrev()) && importDeclaration.getAbbrev().equals(virtualModelName)) {
+					// System.out.println(">>>>>> " + importDeclaration.getReferencedObject());
+					if (importDeclaration.getReferencedObject() instanceof FMLCompilationUnit) {
+						// System.out.println("On retourne " + importDeclaration.getReferencedObject());
+						return ((FMLCompilationUnit) importDeclaration.getReferencedObject()).getVirtualModel();
+					}
+					else {
+						logger.warning("Unexpected " + importDeclaration.getReferencedObject());
+						return null;
+					}
+				}
+			}
+		}
+		// Not found
+
 		return null;
 	}
 
@@ -666,10 +696,10 @@ public class TypeFactory extends SemanticsAnalyzerFactory {
 	 * @param vm
 	 * @return
 	 */
-	private FlexoConcept tryToLookupConcept(String relativeURI) {
+	private FlexoConcept tryToLookupConcept(String nameOrURI) {
 
 		FlexoConcept current = null;
-		StringTokenizer st = new StringTokenizer(relativeURI, ".");
+		StringTokenizer st = new StringTokenizer(nameOrURI, ".");
 		if (st.hasMoreTokens()) {
 			VirtualModel vm = tryToLookupVirtualModel(st.nextToken());
 			if (vm != null) {
@@ -684,6 +714,41 @@ public class TypeFactory extends SemanticsAnalyzerFactory {
 				}
 			}
 		}
+
+		// We look in all imports !
+		if (current == null) {
+			if (getAnalyzer().getCompilationUnit() != null) {
+				for (ElementImportDeclaration importDeclaration : getAnalyzer().getCompilationUnit().getElementImports()) {
+					if (importDeclaration.isReferencedObjectLoaded()) {
+						if (importDeclaration.getReferencedObject() instanceof FMLCompilationUnit) {
+							if (((FMLCompilationUnit) importDeclaration.getReferencedObject()).getVirtualModel() != null) {
+								current = ((FMLCompilationUnit) importDeclaration.getReferencedObject()).getVirtualModel()
+										.getFlexoConcept(nameOrURI);
+								if (current != null) {
+									//System.out.println("Found " + nameOrURI);
+									break;
+								}
+							}
+						}
+					}
+
+					// System.out.println("> " + importDeclaration.getAbbrev());
+					// System.out.println("> " + importDeclaration.getAbbrev().equals(id));
+					/*if (StringUtils.isNotEmpty(importDeclaration.getAbbrev()) && importDeclaration.getAbbrev().equals(virtualModelName)) {
+						// System.out.println(">>>>>> " + importDeclaration.getReferencedObject());
+						if (importDeclaration.getReferencedObject() instanceof FMLCompilationUnit) {
+							// System.out.println("On retourne " + importDeclaration.getReferencedObject());
+							return ((FMLCompilationUnit) importDeclaration.getReferencedObject()).getVirtualModel();
+						}
+						else {
+							logger.warning("Unexpected " + importDeclaration.getReferencedObject());
+							return null;
+						}
+					}*/
+				}
+			}
+		}
+
 		return current;
 	}
 

@@ -119,6 +119,8 @@ public interface ElementImportDeclaration extends FMLPrettyPrintable {
 	 */
 	public FlexoObject getReferencedObject();
 
+	public boolean isReferencedObjectLoaded();
+
 	public static abstract class ElementImportDeclarationImpl extends FMLObjectImpl implements ElementImportDeclaration {
 
 		private static final Logger logger = Logger.getLogger(ElementImportDeclarationImpl.class.getPackage().getName());
@@ -202,6 +204,11 @@ public interface ElementImportDeclaration extends FMLPrettyPrintable {
 		}
 
 		private FlexoObject referencedObject;
+
+		@Override
+		public boolean isReferencedObjectLoaded() {
+			return referencedObject != null;
+		}
 
 		@Override
 		public FlexoObject getReferencedObject() {

@@ -329,15 +329,17 @@ public interface FMLRTModelSlot<VMI extends VirtualModelInstance<VMI, TA>, TA ex
 						System.out.println("Resolving VirtualModel" + typeToResolve);
 						if (getDeclaringCompilationUnit() != null) {
 							for (ElementImportDeclaration elementImportDeclaration : getDeclaringCompilationUnit().getElementImports()) {
-								if (elementImportDeclaration.getReferencedObject() instanceof FMLCompilationUnit) {
-									FMLCompilationUnit referencedCompilationUnit = (FMLCompilationUnit) elementImportDeclaration
-											.getReferencedObject();
-									if (referencedCompilationUnit.getVirtualModel() != null
-											&& referencedCompilationUnit.getVirtualModel().getURI().equals(typeToResolve.getConceptURI())) {
-										if (typeToResolve == type) {
-											setAccessedVirtualModel(referencedCompilationUnit.getVirtualModel());
+								if (elementImportDeclaration.isReferencedObjectLoaded()) {
+									if (elementImportDeclaration.getReferencedObject() instanceof FMLCompilationUnit) {
+										FMLCompilationUnit referencedCompilationUnit = (FMLCompilationUnit) elementImportDeclaration
+												.getReferencedObject();
+										if (referencedCompilationUnit.getVirtualModel() != null && referencedCompilationUnit
+												.getVirtualModel().getURI().equals(typeToResolve.getConceptURI())) {
+											if (typeToResolve == type) {
+												setAccessedVirtualModel(referencedCompilationUnit.getVirtualModel());
+											}
+											return referencedCompilationUnit.getVirtualModel();
 										}
-										return referencedCompilationUnit.getVirtualModel();
 									}
 								}
 							}

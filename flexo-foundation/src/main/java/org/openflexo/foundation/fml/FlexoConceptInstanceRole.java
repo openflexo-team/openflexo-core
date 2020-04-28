@@ -409,17 +409,19 @@ public interface FlexoConceptInstanceRole extends FlexoRole<FlexoConceptInstance
 					public FlexoConcept resolveFlexoConcept(FlexoConceptInstanceType typeToResolve) {
 						if (getDeclaringCompilationUnit() != null) {
 							for (ElementImportDeclaration elementImportDeclaration : getDeclaringCompilationUnit().getElementImports()) {
-								if (elementImportDeclaration.getReferencedObject() instanceof FMLCompilationUnit) {
-									FMLCompilationUnit referencedCompilationUnit = (FMLCompilationUnit) elementImportDeclaration
-											.getReferencedObject();
-									if (referencedCompilationUnit.getVirtualModel() != null) {
-										FlexoConcept flexoConcept = referencedCompilationUnit.getVirtualModel()
-												.getFlexoConcept(typeToResolve.getConceptURI());
-										if (flexoConcept != null) {
-											if (typeToResolve == type) {
-												FlexoConceptInstanceRoleImpl.this.setFlexoConceptType(flexoConcept);
+								if (elementImportDeclaration.isReferencedObjectLoaded()) {
+									if (elementImportDeclaration.getReferencedObject() instanceof FMLCompilationUnit) {
+										FMLCompilationUnit referencedCompilationUnit = (FMLCompilationUnit) elementImportDeclaration
+												.getReferencedObject();
+										if (referencedCompilationUnit.getVirtualModel() != null) {
+											FlexoConcept flexoConcept = referencedCompilationUnit.getVirtualModel()
+													.getFlexoConcept(typeToResolve.getConceptURI());
+											if (flexoConcept != null) {
+												if (typeToResolve == type) {
+													FlexoConceptInstanceRoleImpl.this.setFlexoConceptType(flexoConcept);
+												}
+												return flexoConcept;
 											}
-											return flexoConcept;
 										}
 									}
 								}
