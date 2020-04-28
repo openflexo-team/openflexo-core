@@ -114,7 +114,7 @@ public class AddVirtualModelInstanceNode extends AssignableActionNode<PFmlAction
 					int index = 0;
 					for (FlexoBehaviourParameter flexoBehaviourParameter : getModelObject().getCreationScheme().getParameters()) {
 						AddFlexoConceptInstanceParameter arg = getModelObject().getParameter(flexoBehaviourParameter);
-						if (index < args.size()) {
+						if (args != null && index < args.size()) {
 							arg.setValue((DataBinding) args.get(index));
 							index++;
 						}
