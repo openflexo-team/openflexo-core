@@ -160,6 +160,8 @@ public class AddClassInstanceNode extends AssignableActionNode<AJavaInstanceCrea
 		append(staticContents("("), getLParFragment());
 		append(dynamicContents(() -> serializeArguments(getModelObject().getParameters())), getArgumentsFragment());
 		append(staticContents(")"), getRParFragment());
+		// Append semi only when required
+		when(() -> requiresSemi()).thenAppend(staticContents(";"), getSemiFragment());
 		// @formatter:on	
 
 	}

@@ -40,6 +40,7 @@ package org.openflexo.foundation.fml.parser.fmlnodes.controlgraph;
 
 import java.util.logging.Logger;
 
+import org.openflexo.foundation.fml.editionaction.AbstractAssignationAction;
 import org.openflexo.foundation.fml.editionaction.AssignableAction;
 import org.openflexo.foundation.fml.parser.MainSemanticsAnalyzer;
 import org.openflexo.foundation.fml.parser.node.Node;
@@ -59,6 +60,11 @@ public abstract class AssignableActionNode<N extends Node, T extends AssignableA
 
 	public AssignableActionNode(T property, MainSemanticsAnalyzer analyser) {
 		super(property, analyser);
+	}
+
+	protected boolean requiresSemi() {
+		// System.out.println("parent: " + getParent() + " of " + getParent().getClass());
+		return !(getParent().getModelObject() instanceof AbstractAssignationAction);
 	}
 
 }

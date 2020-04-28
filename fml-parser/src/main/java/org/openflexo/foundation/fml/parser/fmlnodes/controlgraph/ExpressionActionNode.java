@@ -79,6 +79,9 @@ public class ExpressionActionNode extends AssignableActionNode<Node, ExpressionA
 		super.preparePrettyPrint(hasParsedVersion);
 
 		append(dynamicContents(() -> getModelObject().getExpression().toString()), getExpressionFragment());
+
+		// Append semi only when required
+		when(() -> requiresSemi()).thenAppend(staticContents(";"), getSemiFragment());
 	}
 
 	private RawSourceFragment getExpressionFragment() {

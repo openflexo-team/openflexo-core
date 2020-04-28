@@ -106,7 +106,8 @@ public class AssignationActionNode extends AssignableActionNode<AAssignmentState
 		append(dynamicContents(() -> getModelObject().getAssignation().toString()), getLeftHandSideFragment());
 		append(dynamicContents(SPACE, () -> "="), getOperatorFragment());
 		append(childContents(SPACE, () -> getModelObject().getAssignableAction(), "", Indentation.DoNotIndent));
-		append(staticContents(";"), getSemiFragment());
+		// Append semi only when required
+		when(() -> requiresSemi()).thenAppend(staticContents(";"), getSemiFragment());
 
 	}
 

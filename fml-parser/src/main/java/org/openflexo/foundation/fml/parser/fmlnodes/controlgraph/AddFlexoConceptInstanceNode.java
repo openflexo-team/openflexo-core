@@ -217,6 +217,8 @@ public class AddFlexoConceptInstanceNode extends AssignableActionNode<PFmlAction
 		append(childrenContents("", "", () -> getModelObject().getParameters(), ",", "", Indentation.DoNotIndent,
 				AddFlexoConceptInstanceParameter.class));
 		append(staticContents(")"), getRParFragment());
+		// Append semi only when required
+		when(() -> requiresSemi()).thenAppend(staticContents(";"), getSemiFragment());
 		// @formatter:on	
 	}
 
