@@ -778,13 +778,15 @@ public abstract class FMLObjectNode<N extends Node, T extends FMLPrettyPrintable
 		// System.out.println("value=" + value);
 		if (value.isConstant()) {
 			Object constantValue = ((Constant) value.getExpression()).getValue();
-			if (TypeUtils.isTypeAssignableFrom(fmlProperty.getType(), constantValue.getClass())) {
-				// logger.info("Set " + fmlProperty.getName() + " = " + constantValue);
-				fmlProperty.set(constantValue, modelObject);
-			}
-			else {
-				logger.warning("Invalid value for property " + fmlProperty.getName() + " expected type: " + fmlProperty.getType()
-						+ " value: " + constantValue);
+			if (constantValue != null) {
+				if (TypeUtils.isTypeAssignableFrom(fmlProperty.getType(), constantValue.getClass())) {
+					// logger.info("Set " + fmlProperty.getName() + " = " + constantValue);
+					fmlProperty.set(constantValue, modelObject);
+				}
+				else {
+					logger.warning("Invalid value for property " + fmlProperty.getName() + " expected type: " + fmlProperty.getType()
+							+ " value: " + constantValue);
+				}
 			}
 		}
 		else if (TypeUtils.getBaseClass(fmlProperty.getType()).equals(DataBinding.class)) {
