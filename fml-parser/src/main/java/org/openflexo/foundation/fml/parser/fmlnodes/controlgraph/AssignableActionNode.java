@@ -63,8 +63,11 @@ public abstract class AssignableActionNode<N extends Node, T extends AssignableA
 	}
 
 	protected boolean requiresSemi() {
-		// System.out.println("parent: " + getParent() + " of " + getParent().getClass());
-		return !(getParent().getModelObject() instanceof AbstractAssignationAction);
+		/*if (getModelObject() instanceof FetchRequest) {
+			System.out.println("pour " + getASTNode());
+			System.out.println("parent: " + getParent() + " of " + getParent().getClass());
+		}*/
+		return !((getParent().getModelObject() instanceof AbstractAssignationAction) || (getParent() instanceof IterationActionNode));
 	}
 
 }
