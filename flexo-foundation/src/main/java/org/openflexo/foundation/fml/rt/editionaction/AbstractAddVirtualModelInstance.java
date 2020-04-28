@@ -221,6 +221,14 @@ public interface AbstractAddVirtualModelInstance<FCI extends FlexoConceptInstanc
 			return null;
 		}
 
+		/*@Override
+		public void handleRequiredImports(FMLCompilationUnit compilationUnit) {
+			super.handleRequiredImports(compilationUnit);
+			if (getVirtualModelType() != null) {
+				compilationUnit.ensureResourceImport(getVirtualModelType().getCompilationUnit());
+			}
+		}*/
+
 	}
 
 	@DefineValidationRule

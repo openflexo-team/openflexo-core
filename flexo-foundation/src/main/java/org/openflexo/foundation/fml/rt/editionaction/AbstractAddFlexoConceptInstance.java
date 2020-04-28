@@ -53,6 +53,7 @@ import org.openflexo.connie.exception.NullReferenceException;
 import org.openflexo.connie.exception.TypeMismatchException;
 import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.fml.CreationScheme;
+import org.openflexo.foundation.fml.FMLCompilationUnit;
 import org.openflexo.foundation.fml.FMLRepresentationContext;
 import org.openflexo.foundation.fml.FlexoBehaviourParameter;
 import org.openflexo.foundation.fml.FlexoConcept;
@@ -752,6 +753,14 @@ public interface AbstractAddFlexoConceptInstance<FCI extends FlexoConceptInstanc
 				isFirst = false;
 			}
 			return returned.toString();
+		}
+
+		@Override
+		public void handleRequiredImports(FMLCompilationUnit compilationUnit) {
+			super.handleRequiredImports(compilationUnit);
+			if (getFlexoConceptType() != null) {
+				compilationUnit.ensureResourceImport(getFlexoConceptType().getDeclaringCompilationUnit());
+			}
 		}
 
 	}
