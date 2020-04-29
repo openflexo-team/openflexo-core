@@ -483,7 +483,7 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 
 	public <MS extends ModelSlot<?>> List<MS> getModelSlots(Class<MS> msType);
 
-	@Getter(value = INSPECTOR_KEY, inverse = FlexoConceptInspector.FLEXO_CONCEPT_KEY)
+	@Getter(value = INSPECTOR_KEY, inverse = FlexoConceptInspector.FLEXO_CONCEPT_KEY, ignoreForEquality = true)
 	@XMLElement(xmlTag = "Inspector")
 	@CloningStrategy(StrategyType.CLONE)
 	@Embedded
