@@ -641,7 +641,7 @@ Productions
      | {select_action}          kw_select kw_unique? [selected_type_name]:composite_ident from_clause where_clause?
      | {log_action}             kw_log l_par expression r_par
      | {begin_match_action}     kw_begin kw_match [concept_name]:identifier from_clause where_clause?
-     | {match_action}           kw_match [concept_name]:identifier in_clause? from_clause where_clause? create_clause
+     | {match_action}           kw_match [concept_name]:identifier in_clause? from_clause qualified_where_clause? create_clause
      | {end_match_action}       kw_end kw_match [concept_name]:identifier in_clause abstract_action_clause
      ;
     
@@ -698,6 +698,7 @@ Productions
    in_clause    = kw_in l_par expression r_par;
    from_clause  = kw_from l_par expression r_par;
    where_clause = kw_where l_par argument_list? r_par;
+   qualified_where_clause = kw_where l_par qualified_argument_list? r_par;
 
    field_access =
        {super} kw_super dot identifier

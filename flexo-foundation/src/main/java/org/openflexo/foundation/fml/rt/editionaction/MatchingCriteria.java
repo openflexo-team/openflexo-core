@@ -220,6 +220,10 @@ public interface MatchingCriteria extends FlexoConceptObject {
 			this.propertyName = patternRoleName;
 		}
 
+		@Override
+		public String toString() {
+			return "MatchingCriteria[" + _getPatternRoleName() + "=" + getValue() + "]";
+		}
 	}
 
 	@DefineValidationRule

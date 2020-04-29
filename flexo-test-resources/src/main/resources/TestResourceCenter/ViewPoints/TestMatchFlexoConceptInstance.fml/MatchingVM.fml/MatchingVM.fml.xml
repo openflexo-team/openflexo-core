@@ -108,8 +108,6 @@
 						<MatchingCriteria id="FLX-44"
 							patternRoleName="_concept" value="_concept" userID="FLX"
 							flexoID="44" />
-						<MatchingCriteria id="FLX-45"
-							patternRoleName="p2" userID="FLX" flexoID="45" />
 						<CreateFlexoConceptInstanceParameter
 							id="FLX-42" paramName="aConcept" value="_concept" userID="FLX"
 							flexoID="42" />
@@ -148,8 +146,6 @@
 				<MatchingCriteria id="FLX-70"
 					patternRoleName="_concept" value="_concept" userID="FLX"
 					flexoID="70" />
-				<MatchingCriteria id="FLX-71" patternRoleName="p2"
-					userID="FLX" flexoID="71" />
 				<CreateFlexoConceptInstanceParameter
 					id="FLX-68" paramName="aConcept" value="_concept" userID="FLX"
 					flexoID="68" />

@@ -53,17 +53,24 @@ import org.openflexo.foundation.fml.parser.node.ACreateClause;
 import org.openflexo.foundation.fml.parser.node.AFromClause;
 import org.openflexo.foundation.fml.parser.node.AInClause;
 import org.openflexo.foundation.fml.parser.node.AManyArgumentList;
+import org.openflexo.foundation.fml.parser.node.AManyQualifiedArgumentList;
 import org.openflexo.foundation.fml.parser.node.AMatchActionFmlActionExp;
 import org.openflexo.foundation.fml.parser.node.AOneArgumentList;
+import org.openflexo.foundation.fml.parser.node.AOneQualifiedArgumentList;
+import org.openflexo.foundation.fml.parser.node.AQualifiedWhereClause;
 import org.openflexo.foundation.fml.parser.node.PArgumentList;
 import org.openflexo.foundation.fml.parser.node.PCreateClause;
 import org.openflexo.foundation.fml.parser.node.PExpression;
 import org.openflexo.foundation.fml.parser.node.PFromClause;
 import org.openflexo.foundation.fml.parser.node.PInClause;
+import org.openflexo.foundation.fml.parser.node.PQualifiedArgumentList;
+import org.openflexo.foundation.fml.parser.node.PQualifiedWhereClause;
+import org.openflexo.foundation.fml.parser.node.TIdentifier;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.action.MatchingSet;
 import org.openflexo.foundation.fml.rt.editionaction.CreateFlexoConceptInstanceParameter;
 import org.openflexo.foundation.fml.rt.editionaction.MatchFlexoConceptInstance;
+import org.openflexo.foundation.fml.rt.editionaction.MatchingCriteria;
 import org.openflexo.p2pp.RawSource.RawSourceFragment;
 
 /**
@@ -76,7 +83,7 @@ import org.openflexo.p2pp.RawSource.RawSourceFragment;
  * @author sylvain
  * 
  */
-public class MatchActionNode extends ControlGraphNode<AMatchActionFmlActionExp, MatchFlexoConceptInstance> {
+public class MatchActionNode extends AssignableActionNode<AMatchActionFmlActionExp, MatchFlexoConceptInstance> {
 
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(MatchActionNode.class.getPackage().getName());
@@ -117,6 +124,28 @@ public class MatchActionNode extends ControlGraphNode<AMatchActionFmlActionExp, 
 		}
 
 		constructorArgs.add(argValue);
+	}
+
+	private void handleMatchingCriterias(PQualifiedArgumentList argumentList, MatchFlexoConceptInstance modelObject) {
+		if (argumentList instanceof AManyQualifiedArgumentList) {
+			AManyQualifiedArgumentList l = (AManyQualifiedArgumentList) argumentList;
+			handleMatchingCriterias(l.getQualifiedArgumentList(), modelObject);
+			handleMatchingCriteria(l.getArgName(), l.getExpression(), modelObject);
+		}
+		else if (argumentList instanceof AOneQualifiedArgumentList) {
+			handleMatchingCriteria(((AOneQualifiedArgumentList) argumentList).getArgName(),
+					((AOneQualifiedArgumentList) argumentList).getExpression(), modelObject);
+		}
+	}
+
+	private void handleMatchingCriteria(TIdentifier argName, PExpression expression, MatchFlexoConceptInstance modelObject) {
+		String propertyName = argName.getText();
+		DataBinding<?> argValue = ExpressionFactory.makeExpression(expression, getAnalyser(), modelObject);
+
+		MatchingCriteria newMatchingCriteria = getFactory().newMatchingCriteria(null);
+		newMatchingCriteria._setPatternRoleName(propertyName);
+		newMatchingCriteria.setValue(argValue);
+		modelObject.addToMatchingCriterias(newMatchingCriteria);
 	}
 
 	@Override
@@ -183,6 +212,11 @@ public class MatchActionNode extends ControlGraphNode<AMatchActionFmlActionExp, 
 					returned);
 			returned.setContainer(container);
 		}
+
+		if (astNode.getQualifiedWhereClause() != null) {
+			handleMatchingCriterias(((AQualifiedWhereClause) astNode.getQualifiedWhereClause()).getQualifiedArgumentList(), returned);
+		}
+
 		if (astNode.getCreateClause() instanceof ACreateClause) {
 			constructorName = ((ACreateClause) astNode.getCreateClause()).getConstructorName().getText();
 			handleArguments(((ACreateClause) astNode.getCreateClause()).getArgumentList(), returned);
@@ -206,23 +240,40 @@ public class MatchActionNode extends ControlGraphNode<AMatchActionFmlActionExp, 
 		append(staticContents("match"), getMatchFragment());
 		append(dynamicContents(SPACE, () -> serializeType(getModelObject().getMatchedType())), getConceptNameFragment());
 		when(() -> hasInClause())
-			.thenAppend(staticContents(SPACE, "in",""), getInFragment())
-			.thenAppend(staticContents(SPACE, "(",""), getLParInFragment())
-			.thenAppend(dynamicContents(() -> getInAsString()), getInExpressionFragment())
-			.thenAppend(staticContents(")"), getRParInFragment());
+		.thenAppend(staticContents(SPACE, "in",""), getInFragment())
+		.thenAppend(staticContents(SPACE, "(",""), getLParInFragment())
+		.thenAppend(dynamicContents(() -> getInAsString()), getInExpressionFragment())
+		.thenAppend(staticContents(")"), getRParInFragment());
 		append(staticContents(SPACE, "from",""), getFromFragment());
 		append(staticContents(SPACE, "(",""), getLParFromFragment());
 		append(dynamicContents(() -> getFromAsString()), getFromExpressionFragment());
 		append(staticContents(")"), getRParFromFragment());
+		when(() -> hasWhereClause())
+		.thenAppend(staticContents(SPACE, "where",""), getWhereFragment())
+		.thenAppend(staticContents(SPACE, "(",""), getLParWhereFragment())
+		.thenAppend(dynamicContents(() -> getWhereAsString()), getWhereCriteriasFragment())
+		.thenAppend(staticContents(")"), getRParWhereFragment());
 		append(staticContents(SPACE,"create",""), getCreateFragment());
 		append(staticContents("::"), getColonColonFragment());
 		append(dynamicContents(() -> getModelObject().getCreationScheme().getName()), getConstructorNameFragment());
 		append(staticContents("("), getCreateLParFragment());
 		append(dynamicContents(() -> serializeArguments(getModelObject().getParameters())), getCreateArgumentsFragment());
 		append(staticContents(")"), getCreateRParFragment());
-		append(staticContents(";"), getSemiFragment());
+		// Append semi only when required
+		when(() -> requiresSemi()).thenAppend(staticContents(";"), getSemiFragment());
 		// @formatter:on	
 	}
+
+	/*@Override
+	protected boolean requiresSemi() {
+		boolean returned = super.requiresSemi();
+		if (!returned) {
+			System.out.println("Zut alors pas de ; pour " + getModelObject().getFMLRepresentation());
+			System.out.println("Parent: " + getParent().getModelObject());
+			System.exit(-1);
+		}
+		return returned;
+	}*/
 
 	private boolean hasInClause() {
 		if (getModelObject() != null) {
@@ -230,6 +281,15 @@ public class MatchActionNode extends ControlGraphNode<AMatchActionFmlActionExp, 
 		}
 		else {
 			return getASTNode() != null && getASTNode().getInClause() != null;
+		}
+	}
+
+	private boolean hasWhereClause() {
+		if (getModelObject() != null) {
+			return getModelObject().getMatchingCriterias().size() > 0;
+		}
+		else {
+			return getASTNode() != null && getASTNode().getQualifiedWhereClause() != null;
 		}
 	}
 
@@ -253,6 +313,21 @@ public class MatchActionNode extends ControlGraphNode<AMatchActionFmlActionExp, 
 				return getModelObject().getContainer().toString();
 			}
 			return getModelObject().getReceiver().toString();
+		}
+		return null;
+	}
+
+	private String getWhereAsString() {
+		if (getModelObject() != null) {
+			StringBuffer sb = new StringBuffer();
+			boolean isFirst = true;
+			for (MatchingCriteria matchingCriteria : getModelObject().getMatchingCriterias()) {
+				if (matchingCriteria.getValue().isSet()) {
+					sb.append((isFirst ? "" : ",") + matchingCriteria.getFlexoProperty().getName() + "=" + matchingCriteria.getValue());
+					isFirst = false;
+				}
+			}
+			return sb.toString();
 		}
 		return null;
 	}
@@ -346,6 +421,46 @@ public class MatchActionNode extends ControlGraphNode<AMatchActionFmlActionExp, 
 			PInClause inClause = getASTNode().getInClause();
 			if (inClause instanceof AInClause) {
 				return getFragment(((AInClause) inClause).getExpression());
+			}
+		}
+		return null;
+	}
+
+	private RawSourceFragment getWhereFragment() {
+		if (getASTNode() != null) {
+			PQualifiedWhereClause whereClause = getASTNode().getQualifiedWhereClause();
+			if (whereClause instanceof AQualifiedWhereClause) {
+				return getFragment(((AQualifiedWhereClause) whereClause).getKwWhere());
+			}
+		}
+		return null;
+	}
+
+	private RawSourceFragment getLParWhereFragment() {
+		if (getASTNode() != null) {
+			PQualifiedWhereClause whereClause = getASTNode().getQualifiedWhereClause();
+			if (whereClause instanceof AQualifiedWhereClause) {
+				return getFragment(((AQualifiedWhereClause) whereClause).getLPar());
+			}
+		}
+		return null;
+	}
+
+	private RawSourceFragment getRParWhereFragment() {
+		if (getASTNode() != null) {
+			PQualifiedWhereClause whereClause = getASTNode().getQualifiedWhereClause();
+			if (whereClause instanceof AQualifiedWhereClause) {
+				return getFragment(((AQualifiedWhereClause) whereClause).getRPar());
+			}
+		}
+		return null;
+	}
+
+	private RawSourceFragment getWhereCriteriasFragment() {
+		if (getASTNode() != null) {
+			PQualifiedWhereClause whereClause = getASTNode().getQualifiedWhereClause();
+			if (whereClause instanceof AQualifiedWhereClause) {
+				return getFragment(((AQualifiedWhereClause) whereClause).getQualifiedArgumentList());
 			}
 		}
 		return null;

@@ -151,6 +151,12 @@ public interface InitiateMatching extends AssignableAction<MatchingSet> {
 			if (flexoConceptType != null) {
 				return flexoConceptType.getURI();
 			}
+			if (matchedType != null) {
+				if (matchedType.isResolved()) {
+					return matchedType.getFlexoConcept().getURI();
+				}
+				return matchedType.getConceptURI();
+			}
 			return flexoConceptTypeURI;
 		}
 

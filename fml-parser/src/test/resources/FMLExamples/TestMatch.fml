@@ -22,7 +22,7 @@ model TestMatch {
 			match MyConceptGR 
 				in (matchingSet) 
 				from (this) 
-				where (selected.myConcept=aConcept)
+				where (myConcept=aConcept)
 				create::representNewConcept(aConcept);
 		}
 		end match MyConceptGR in (matchingSet) delete::removeFromDiagram();
