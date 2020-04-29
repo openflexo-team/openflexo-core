@@ -622,10 +622,10 @@ public class TypeFactory extends SemanticsAnalyzerFactory {
 			return null;
 		}
 		// Looking up concept 'typeName'
-		System.out.println("Looking up " + typeName);
+		// System.out.println("Looking up " + typeName);
 		ConceptRetriever r = new ConceptRetriever(typeName);
 		if (r.isFound()) {
-			System.out.println("J'ai trouve: " + r.getType());
+			// System.out.println("J'ai trouve: " + r.getType());
 			/*System.out.println("Was: " + r.getType());
 			if (r.getType() instanceof FlexoConceptInstanceType) {
 				System.out.println("uri: " + r.getType().getConceptURI());
