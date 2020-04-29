@@ -108,8 +108,7 @@ public class DeclarationActionNode extends AssignableActionNode<AVariableDeclara
 		when(() -> hasInitializer())
 			.thenAppend(staticContents(SPACE,"=",SPACE), getAssignOperatorFragment())
 			.thenAppend(childContents("", () -> getModelObject().getAssignableAction(), "", Indentation.DoNotIndent));
-		// Append semi only when required
-		when(() -> requiresSemi()).thenAppend(staticContents(";"), getSemiFragment());
+		append(staticContents(";"), getSemiFragment());
 		// @formatter:on	
 
 	}
