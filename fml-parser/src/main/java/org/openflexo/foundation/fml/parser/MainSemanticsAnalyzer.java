@@ -81,8 +81,10 @@ import org.openflexo.foundation.fml.parser.node.APrimitiveFormalArgument;
 import org.openflexo.foundation.fml.parser.node.ASingleAnnotationAnnotation;
 import org.openflexo.foundation.fml.parser.node.AUriImportImportDecl;
 import org.openflexo.foundation.fml.parser.node.AUseDecl;
+import org.openflexo.foundation.fml.parser.node.Node;
 import org.openflexo.foundation.fml.parser.node.Start;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
+import org.openflexo.p2pp.P2PPNode;
 import org.openflexo.p2pp.RawSource;
 
 /**
@@ -128,6 +130,26 @@ public class MainSemanticsAnalyzer extends FMLSemanticsAnalyzer {
 	@Override
 	public Start getRootNode() {
 		return (Start) super.getRootNode();
+	}
+
+	public FMLObjectNode<?, ?, ?> getFMLNode(Node astNode) {
+		return retrieveFMLNode(astNode, compilationUnitNode);
+	}
+
+	private FMLObjectNode<?, ?, ?> retrieveFMLNode(Node astNode, FMLObjectNode<?, ?, ?> node) {
+		if (node.getASTNode() == astNode) {
+			return node;
+		}
+		FMLObjectNode<?, ?, ?> returned = null;
+		for (P2PPNode<?, ?> childrenNode : node.getChildren()) {
+			if (childrenNode instanceof FMLObjectNode) {
+				returned = retrieveFMLNode(astNode, (FMLObjectNode) childrenNode);
+				if (returned != null) {
+					return returned;
+				}
+			}
+		}
+		return null;
 	}
 
 	@Override

@@ -57,9 +57,11 @@ import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
 import org.openflexo.foundation.fml.rt.action.MatchingSet;
 import org.openflexo.pamela.annotations.Adder;
 import org.openflexo.pamela.annotations.CloningStrategy;
+import org.openflexo.pamela.annotations.CloningStrategy.StrategyType;
 import org.openflexo.pamela.annotations.DefineValidationRule;
 import org.openflexo.pamela.annotations.Embedded;
 import org.openflexo.pamela.annotations.Getter;
+import org.openflexo.pamela.annotations.Getter.Cardinality;
 import org.openflexo.pamela.annotations.ImplementationClass;
 import org.openflexo.pamela.annotations.ModelEntity;
 import org.openflexo.pamela.annotations.PropertyIdentifier;
@@ -67,8 +69,6 @@ import org.openflexo.pamela.annotations.Remover;
 import org.openflexo.pamela.annotations.Setter;
 import org.openflexo.pamela.annotations.XMLAttribute;
 import org.openflexo.pamela.annotations.XMLElement;
-import org.openflexo.pamela.annotations.CloningStrategy.StrategyType;
-import org.openflexo.pamela.annotations.Getter.Cardinality;
 import org.openflexo.toolbox.StringUtils;
 
 /**
@@ -124,6 +124,8 @@ public interface InitiateMatching extends AssignableAction<MatchingSet> {
 
 	public FlexoConceptInstanceType getMatchedType();
 
+	public void setMatchedType(FlexoConceptInstanceType matchedType);
+
 	public FlexoConcept getOwnerConcept();
 
 	public MatchCondition createCondition();
@@ -139,6 +141,8 @@ public interface InitiateMatching extends AssignableAction<MatchingSet> {
 		private DataBinding<FlexoConceptInstance> container;
 		private String flexoConceptTypeURI;
 		private FlexoConcept flexoConceptType;
+
+		private FlexoConceptInstanceType matchedType;
 
 		@Getter(value = CONTAINER_KEY)
 		@XMLAttribute
@@ -249,7 +253,18 @@ public interface InitiateMatching extends AssignableAction<MatchingSet> {
 
 		@Override
 		public FlexoConceptInstanceType getMatchedType() {
-			return FlexoConceptInstanceType.getFlexoConceptInstanceType(getFlexoConceptType());
+			if (getFlexoConceptType() != null) {
+				return getFlexoConceptType().getInstanceType();
+			}
+			return matchedType;
+		}
+
+		@Override
+		public void setMatchedType(FlexoConceptInstanceType matchedType) {
+			this.matchedType = matchedType;
+			if (matchedType.isResolved()) {
+				flexoConceptType = matchedType.getFlexoConcept();
+			}
 		}
 
 		@Override

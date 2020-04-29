@@ -112,7 +112,7 @@ public interface FinalizeMatching extends EditionAction {
 	@Setter(MATCHING_SET_KEY)
 	public void setMatchingSet(DataBinding<MatchingSet> matchingSet);
 
-	@Getter(value = CONTAINER_KEY)
+	@Getter(value = CONTAINER_KEY, ignoreForEquality = true)
 	@XMLAttribute
 	public DataBinding<FlexoConceptInstance> getContainer();
 
@@ -166,6 +166,8 @@ public interface FinalizeMatching extends EditionAction {
 
 	public FlexoConceptInstanceType getMatchedType();
 
+	public void setMatchedType(FlexoConceptInstanceType matchedType);
+
 	public static abstract class FinalizeMatchingMatchingImpl extends EditionActionImpl
 			implements FinalizeMatching, PropertyChangeListener {
 
@@ -178,6 +180,7 @@ public interface FinalizeMatching extends EditionAction {
 		private DataBinding<FlexoConceptInstance> container;
 		private String flexoConceptTypeURI;
 		private FlexoConcept flexoConceptType;
+		private FlexoConceptInstanceType matchedType;
 
 		@Override
 		public String getStringRepresentation() {
@@ -504,7 +507,18 @@ public interface FinalizeMatching extends EditionAction {
 
 		@Override
 		public FlexoConceptInstanceType getMatchedType() {
-			return FlexoConceptInstanceType.getFlexoConceptInstanceType(getFlexoConceptType());
+			if (getFlexoConceptType() != null) {
+				return getFlexoConceptType().getInstanceType();
+			}
+			return matchedType;
+		}
+
+		@Override
+		public void setMatchedType(FlexoConceptInstanceType matchedType) {
+			this.matchedType = matchedType;
+			if (matchedType.isResolved()) {
+				flexoConceptType = matchedType.getFlexoConcept();
+			}
 		}
 
 	}

@@ -165,33 +165,29 @@ public class MatchActionNode extends ControlGraphNode<AMatchActionFmlActionExp, 
 	public MatchFlexoConceptInstance buildModelObjectFromAST(AMatchActionFmlActionExp astNode) {
 		MatchFlexoConceptInstance returned = getFactory().newMatchFlexoConceptInstance();
 
-		conceptType = getTypeFactory().lookupConceptNamed(astNode.getConceptName().getText());
+		conceptType = getTypeFactory().makeFlexoConceptType(astNode.getConceptName().getText());
+		returned.setMatchedType(conceptType);
 
-		if (conceptType instanceof FlexoConceptInstanceType) {
-			FlexoConcept concept = conceptType.getFlexoConcept();
-			if (concept != null) {
-				returned.setFlexoConceptType(concept);
-			}
-			if (astNode.getInClause() instanceof AInClause) {
-				PExpression inExpression = ((AInClause) astNode.getInClause()).getExpression();
-				DataBinding<MatchingSet> matchingSet = (DataBinding) ExpressionFactory.makeExpression(inExpression, getAnalyser(),
-						returned);
-				returned.setMatchingSet(matchingSet);
-			}
-			if (astNode.getFromClause() instanceof AFromClause) {
-				PExpression fromExpression = ((AFromClause) astNode.getFromClause()).getExpression();
-				DataBinding<FlexoConceptInstance> container = (DataBinding) ExpressionFactory.makeExpression(fromExpression, getAnalyser(),
-						returned);
-				returned.setContainer(container);
-			}
-			if (astNode.getCreateClause() instanceof ACreateClause) {
-				constructorName = ((ACreateClause) astNode.getCreateClause()).getConstructorName().getText();
-				handleArguments(((ACreateClause) astNode.getCreateClause()).getArgumentList(), returned);
-			}
+		/*FlexoConcept concept = conceptType.getFlexoConcept();
+		if (concept != null) {
+			returned.setFlexoConceptType(concept);
+		}*/
+		if (astNode.getInClause() instanceof AInClause) {
+			PExpression inExpression = ((AInClause) astNode.getInClause()).getExpression();
+			DataBinding<MatchingSet> matchingSet = (DataBinding) ExpressionFactory.makeExpression(inExpression, getAnalyser(), returned);
+			returned.setMatchingSet(matchingSet);
 		}
-		else {
-			throwIssue("Unexpected type: " + conceptType, getFragment(astNode.getConceptName()));
+		if (astNode.getFromClause() instanceof AFromClause) {
+			PExpression fromExpression = ((AFromClause) astNode.getFromClause()).getExpression();
+			DataBinding<FlexoConceptInstance> container = (DataBinding) ExpressionFactory.makeExpression(fromExpression, getAnalyser(),
+					returned);
+			returned.setContainer(container);
 		}
+		if (astNode.getCreateClause() instanceof ACreateClause) {
+			constructorName = ((ACreateClause) astNode.getCreateClause()).getConstructorName().getText();
+			handleArguments(((ACreateClause) astNode.getCreateClause()).getArgumentList(), returned);
+		}
+
 		return returned;
 
 	}

@@ -41,7 +41,6 @@ package org.openflexo.foundation.fml.parser.fmlnodes.controlgraph;
 import java.util.logging.Logger;
 
 import org.openflexo.connie.DataBinding;
-import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoConceptInstanceType;
 import org.openflexo.foundation.fml.parser.ExpressionFactory;
 import org.openflexo.foundation.fml.parser.MainSemanticsAnalyzer;
@@ -86,24 +85,18 @@ public class BeginMatchActionNode extends ControlGraphNode<ABeginMatchActionFmlA
 	public InitiateMatching buildModelObjectFromAST(ABeginMatchActionFmlActionExp astNode) {
 		InitiateMatching returned = getFactory().newInitiateMatching();
 
-		FlexoConceptInstanceType type = getTypeFactory().lookupConceptNamed(astNode.getConceptName().getText());
+		System.out.println("---------> On cherche: " + astNode.getConceptName().getText());
 
-		if (type instanceof FlexoConceptInstanceType) {
+		FlexoConceptInstanceType matchedType = getTypeFactory().makeFlexoConceptType(astNode.getConceptName().getText());
+		returned.setMatchedType(matchedType);
 
-			FlexoConcept concept = type.getFlexoConcept();
-			if (concept != null) {
-				returned.setFlexoConceptType(concept);
-			}
-			if (astNode.getFromClause() instanceof AFromClause) {
-				PExpression fromExpression = ((AFromClause) astNode.getFromClause()).getExpression();
-				DataBinding<FlexoConceptInstance> container = (DataBinding) ExpressionFactory.makeExpression(fromExpression, getAnalyser(),
-						returned);
-				returned.setContainer(container);
-			}
+		if (astNode.getFromClause() instanceof AFromClause) {
+			PExpression fromExpression = ((AFromClause) astNode.getFromClause()).getExpression();
+			DataBinding<FlexoConceptInstance> container = (DataBinding) ExpressionFactory.makeExpression(fromExpression, getAnalyser(),
+					returned);
+			returned.setContainer(container);
 		}
-		else {
-			throwIssue("Unexpected type: " + type, getFragment(astNode.getConceptName()));
-		}
+
 		return returned;
 
 	}

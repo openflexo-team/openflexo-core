@@ -66,6 +66,8 @@ import org.openflexo.foundation.fml.VirtualModelInstanceType;
 import org.openflexo.foundation.fml.VirtualModelInstanceType.DefaultVirtualModelInstanceTypeFactory;
 import org.openflexo.foundation.fml.VirtualModelInstanceType.VirtualModelInstanceTypeFactory;
 import org.openflexo.foundation.fml.parser.analysis.DepthFirstAdapter;
+import org.openflexo.foundation.fml.parser.fmlnodes.FlexoConceptNode;
+import org.openflexo.foundation.fml.parser.fmlnodes.VirtualModelNode;
 import org.openflexo.foundation.fml.parser.node.AAdditionalIdentifier;
 import org.openflexo.foundation.fml.parser.node.ABooleanPrimitiveType;
 import org.openflexo.foundation.fml.parser.node.AComplexType;
@@ -572,6 +574,32 @@ public class TypeFactory extends SemanticsAnalyzerFactory {
 	}
 
 	/**
+	 * Instantiate a {@link FlexoConceptInstanceType}, asserting supplied typeName represent the concept name
+	 * 
+	 * Returned {@link FlexoConceptInstanceType} may be resolved (when concept was found), or not
+	 * 
+	 * @param typeName
+	 * @return
+	 */
+	public FlexoConceptInstanceType makeFlexoConceptType(String typeName) {
+		FlexoConceptInstanceType conceptType = lookupConceptNamed(typeName);
+		if (conceptType != null) {
+			return conceptType;
+		}
+		else {
+			FlexoConceptInstanceType returned = new FlexoConceptInstanceType(typeName, FLEXO_CONCEPT_INSTANCE_TYPE_FACTORY);
+			if (!returned.isResolved()) {
+				unresolvedTypes.add(returned);
+			}
+			return returned;
+
+			/*logger.warning("Not found type: " + typeName);
+			Thread.dumpStack();
+			return new UnresolvedType(typeName);*/
+		}
+	}
+
+	/**
 	 * Try to find FlexoConcept with supplied name, with a semantics compatible with loading life-cyle of underlying VirtualModel
 	 * 
 	 * @param typeName
@@ -582,8 +610,10 @@ public class TypeFactory extends SemanticsAnalyzerFactory {
 			return null;
 		}
 		// Looking up concept 'typeName'
+		System.out.println("Looking up " + typeName);
 		ConceptRetriever r = new ConceptRetriever(typeName);
 		if (r.isFound()) {
+			System.out.println("J'ai trouve: " + r.getType());
 			/*System.out.println("Was: " + r.getType());
 			if (r.getType() instanceof FlexoConceptInstanceType) {
 				System.out.println("uri: " + r.getType().getConceptURI());
@@ -725,7 +755,7 @@ public class TypeFactory extends SemanticsAnalyzerFactory {
 								current = ((FMLCompilationUnit) importDeclaration.getReferencedObject()).getVirtualModel()
 										.getFlexoConcept(nameOrURI);
 								if (current != null) {
-									//System.out.println("Found " + nameOrURI);
+									// System.out.println("Found " + nameOrURI);
 									break;
 								}
 							}
@@ -757,9 +787,10 @@ public class TypeFactory extends SemanticsAnalyzerFactory {
 		private String fullQualifiedConceptName;
 		private List<String> fullQualifiedConceptNamePath;
 		private Stack<Node> nodes;
-		private String relativeURI;
+		// private String relativeURI;
 		private boolean found = false;
 		private FlexoConceptInstanceType type;
+		// private String relativeURI;
 
 		public ConceptRetriever(String conceptName) {
 			this.fullQualifiedConceptName = conceptName;
@@ -783,16 +814,59 @@ public class TypeFactory extends SemanticsAnalyzerFactory {
 		private void found() {
 			found = true;
 			Node foundNode = nodes.pop();
-			relativeURI = getIdentifier(foundNode);
-			while (!nodes.isEmpty()) {
+			// relativeURI = getIdentifier(foundNode);
+
+			// System.out.println("Paf, on tombe dessus avec " + relativeURI);
+
+			/*while (!nodes.isEmpty()) {
 				relativeURI = getIdentifier(nodes.pop()) + "." + relativeURI;
-			}
+			}*/
 			if (foundNode instanceof AModelDecl) {
-				type = new VirtualModelInstanceType(relativeURI, VIRTUAL_MODEL_INSTANCE_TYPE_FACTORY);
+				type = new VirtualModelInstanceType(fullQualifiedConceptName, makeVirtualModelInstanceTypeFactory((AModelDecl) foundNode));
 			}
 			if (foundNode instanceof AConceptDecl) {
-				type = new FlexoConceptInstanceType(relativeURI, FLEXO_CONCEPT_INSTANCE_TYPE_FACTORY);
+				type = new FlexoConceptInstanceType(fullQualifiedConceptName,
+						makeFlexoConceptInstanceTypeFactory((AConceptDecl) foundNode));
 			}
+		}
+
+		/**
+		 * Instantiate a {@link FlexoConceptInstanceTypeFactory} where look-up was done on an AST node (AConceptDecl)
+		 * 
+		 * @param astNode
+		 * @return
+		 */
+		private DefaultFlexoConceptInstanceTypeFactory makeFlexoConceptInstanceTypeFactory(AConceptDecl astNode) {
+			return new DefaultFlexoConceptInstanceTypeFactory(getFMLTechnologyAdapter()) {
+				@Override
+				public FlexoConcept resolveFlexoConcept(FlexoConceptInstanceType typeToResolve) {
+					if (astNode != null) {
+						FMLObjectNode<?, ?, ?> fmlObjectNode = getAnalyzer().getFMLNode(astNode);
+						if (fmlObjectNode instanceof FlexoConceptNode) {
+							// System.out.println("Found inlined concept: " + fmlObjectNode.getModelObject());
+							return ((FlexoConceptNode) fmlObjectNode).getModelObject();
+						}
+					}
+					return null;
+				}
+			};
+
+		}
+
+		private DefaultVirtualModelInstanceTypeFactory makeVirtualModelInstanceTypeFactory(AModelDecl astNode) {
+			return new DefaultVirtualModelInstanceTypeFactory(getFMLTechnologyAdapter()) {
+				@Override
+				public VirtualModel resolveVirtualModel(VirtualModelInstanceType typeToResolve) {
+					if (astNode != null) {
+						FMLObjectNode<?, ?, ?> fmlObjectNode = getAnalyzer().getFMLNode(astNode);
+						if (fmlObjectNode instanceof VirtualModelNode) {
+							// System.out.println("Found inlined virtual model: " + fmlObjectNode.getModelObject());
+							return ((VirtualModelNode) fmlObjectNode).getModelObject();
+						}
+					}
+					return null;
+				}
+			};
 		}
 
 		private String getIdentifier(Node node) {

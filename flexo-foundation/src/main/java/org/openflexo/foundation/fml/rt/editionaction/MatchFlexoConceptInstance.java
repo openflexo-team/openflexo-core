@@ -188,6 +188,8 @@ public interface MatchFlexoConceptInstance extends FMLRTAction<FlexoConceptInsta
 
 	public FlexoConceptInstanceType getMatchedType();
 
+	public void setMatchedType(FlexoConceptInstanceType matchedType);
+
 	public static abstract class MatchFlexoConceptInstanceImpl extends FMLRTActionImpl<FlexoConceptInstance, FMLRTVirtualModelInstance>
 			implements MatchFlexoConceptInstance, PropertyChangeListener {
 
@@ -195,6 +197,7 @@ public interface MatchFlexoConceptInstance extends FMLRTAction<FlexoConceptInsta
 		private CreationScheme creationScheme;
 		private String _creationSchemeURI;
 		private DataBinding<MatchingSet> matchingSet;
+		private FlexoConceptInstanceType matchedType;
 
 		@Override
 		public DataBinding<MatchingSet> getMatchingSet() {
@@ -706,12 +709,23 @@ public interface MatchFlexoConceptInstance extends FMLRTAction<FlexoConceptInsta
 
 		@Override
 		public Type getAssignableType() {
-			return FlexoConceptInstanceType.getFlexoConceptInstanceType(getFlexoConceptType());
+			return getMatchedType();
 		}
 
 		@Override
 		public FlexoConceptInstanceType getMatchedType() {
-			return FlexoConceptInstanceType.getFlexoConceptInstanceType(getFlexoConceptType());
+			if (getFlexoConceptType() != null) {
+				return getFlexoConceptType().getInstanceType();
+			}
+			return matchedType;
+		}
+
+		@Override
+		public void setMatchedType(FlexoConceptInstanceType matchedType) {
+			this.matchedType = matchedType;
+			if (matchedType.isResolved()) {
+				flexoConceptType = matchedType.getFlexoConcept();
+			}
 		}
 
 		@Override

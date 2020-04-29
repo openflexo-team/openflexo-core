@@ -155,34 +155,25 @@ public class EndMatchActionNode extends ControlGraphNode<AEndMatchActionFmlActio
 	public FinalizeMatching buildModelObjectFromAST(AEndMatchActionFmlActionExp astNode) {
 		FinalizeMatching returned = getFactory().newFinalizeMatching();
 
-		conceptType = getTypeFactory().lookupConceptNamed(astNode.getConceptName().getText());
+		conceptType = getTypeFactory().makeFlexoConceptType(astNode.getConceptName().getText());
+		returned.setMatchedType(conceptType);
 
-		if (conceptType instanceof FlexoConceptInstanceType) {
-			FlexoConcept concept = conceptType.getFlexoConcept();
-			if (concept != null) {
-				returned.setFlexoConceptType(concept);
-			}
-			if (astNode.getInClause() instanceof AInClause) {
-				PExpression inExpression = ((AInClause) astNode.getInClause()).getExpression();
-				DataBinding<MatchingSet> matchingSet = (DataBinding) ExpressionFactory.makeExpression(inExpression, getAnalyser(),
-						returned);
-				returned.setMatchingSet(matchingSet);
-			}
-			if (astNode.getAbstractActionClause() instanceof ANormalAbstractActionClause) {
-				AActionClause actionClause = (AActionClause) ((ANormalAbstractActionClause) astNode.getAbstractActionClause())
-						.getActionClause();
-				behaviourName = actionClause.getActionName().getText();
-				handleArguments(actionClause.getArgumentList(), returned);
-			}
-			if (astNode.getAbstractActionClause() instanceof ADeleteAbstractActionClause) {
-				ADeleteClause actionClause = (ADeleteClause) ((ADeleteAbstractActionClause) astNode.getAbstractActionClause())
-						.getDeleteClause();
-				behaviourName = actionClause.getDestructorName().getText();
-				handleArguments(actionClause.getArgumentList(), returned);
-			}
+		if (astNode.getInClause() instanceof AInClause) {
+			PExpression inExpression = ((AInClause) astNode.getInClause()).getExpression();
+			DataBinding<MatchingSet> matchingSet = (DataBinding) ExpressionFactory.makeExpression(inExpression, getAnalyser(), returned);
+			returned.setMatchingSet(matchingSet);
 		}
-		else {
-			throwIssue("Unexpected type: " + conceptType, getFragment(astNode.getConceptName()));
+		if (astNode.getAbstractActionClause() instanceof ANormalAbstractActionClause) {
+			AActionClause actionClause = (AActionClause) ((ANormalAbstractActionClause) astNode.getAbstractActionClause())
+					.getActionClause();
+			behaviourName = actionClause.getActionName().getText();
+			handleArguments(actionClause.getArgumentList(), returned);
+		}
+		if (astNode.getAbstractActionClause() instanceof ADeleteAbstractActionClause) {
+			ADeleteClause actionClause = (ADeleteClause) ((ADeleteAbstractActionClause) astNode.getAbstractActionClause())
+					.getDeleteClause();
+			behaviourName = actionClause.getDestructorName().getText();
+			handleArguments(actionClause.getArgumentList(), returned);
 		}
 		return returned;
 
