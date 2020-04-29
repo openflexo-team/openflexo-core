@@ -181,6 +181,9 @@ public class FMLParser {
 			Start tree;
 			tree = p.parse();
 
+			// Print the AST
+			//new ASTDebugger(tree);
+
 			// Apply the semantics analyzer.
 			MainSemanticsAnalyzer t = new MainSemanticsAnalyzer(modelFactory, tree, rawSource);
 			// tree.apply(t);
