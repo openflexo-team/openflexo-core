@@ -241,6 +241,12 @@ public interface FinalizeMatching extends EditionAction {
 			if (flexoConceptType != null) {
 				return flexoConceptType.getURI();
 			}
+			if (matchedType != null) {
+				if (matchedType.isResolved()) {
+					return matchedType.getFlexoConcept().getURI();
+				}
+				return matchedType.getConceptURI();
+			}
 			return flexoConceptTypeURI;
 		}
 
