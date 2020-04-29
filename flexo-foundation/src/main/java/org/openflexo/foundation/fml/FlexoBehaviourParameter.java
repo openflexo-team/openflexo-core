@@ -222,7 +222,7 @@ public interface FlexoBehaviourParameter extends FlexoBehaviourObject, FunctionA
 	public Object getDefaultValue(BindingEvaluationContext evaluationContext);
 
 	@Override
-	@Getter(value = CONTAINER_KEY)
+	@Getter(value = CONTAINER_KEY, ignoreForEquality = true)
 	@XMLAttribute
 	public DataBinding<?> getContainer();
 
