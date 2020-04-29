@@ -84,11 +84,13 @@ public abstract interface TechnologySpecificActionDefiningReceiver<MS extends Mo
 	@PropertyIdentifier(type = DataBinding.class)
 	String RECEIVER_KEY = "receiver";
 
-	@Getter(value = RECEIVER_KEY)
+	@Getter(value = RECEIVER_KEY, ignoreForEquality = true)
 	@XMLAttribute
+	@Deprecated
 	DataBinding<R> getReceiver();
 
 	@Setter(RECEIVER_KEY)
+	@Deprecated
 	void setReceiver(DataBinding<R> receiver);
 
 	public Class<? extends R> getReceiverClass();
