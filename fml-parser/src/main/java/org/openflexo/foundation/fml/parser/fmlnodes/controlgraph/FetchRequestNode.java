@@ -79,7 +79,11 @@ public class FetchRequestNode<FR extends AbstractFetchRequest<?, ?, ?, ?>> exten
 	public FR buildModelObjectFromAST(ASelectActionFmlActionExp astNode) {
 		FR returned = null;
 
-		FlexoConceptInstanceType type = getTypeFactory().lookupConceptNamed(astNode.getSelectedTypeName());
+		// FlexoConceptInstanceType type = getTypeFactory().lookupConceptNamed(astNode.getSelectedTypeName());
+
+		FlexoConceptInstanceType type = getTypeFactory().makeFlexoConceptType(astNode.getSelectedTypeName());
+
+		// System.out.println("Found type: " + type);
 
 		if (type instanceof VirtualModelInstanceType) {
 			AbstractSelectVirtualModelInstance selectAction = null;

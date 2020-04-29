@@ -581,6 +581,18 @@ public class TypeFactory extends SemanticsAnalyzerFactory {
 	 * @param typeName
 	 * @return
 	 */
+	public FlexoConceptInstanceType makeFlexoConceptType(PCompositeIdent compositeIdentifier) {
+		return makeFlexoConceptType(makeFullQualifiedIdentifier(compositeIdentifier));
+	}
+
+	/**
+	 * Instantiate a {@link FlexoConceptInstanceType}, asserting supplied typeName represent the concept name
+	 * 
+	 * Returned {@link FlexoConceptInstanceType} may be resolved (when concept was found), or not
+	 * 
+	 * @param typeName
+	 * @return
+	 */
 	public FlexoConceptInstanceType makeFlexoConceptType(String typeName) {
 		FlexoConceptInstanceType conceptType = lookupConceptNamed(typeName);
 		if (conceptType != null) {
