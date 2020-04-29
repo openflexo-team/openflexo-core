@@ -62,7 +62,7 @@ import org.openflexo.p2pp.RawSource.RawSourceFragment;
  * @author sylvain
  * 
  */
-public class BeginMatchActionNode extends ControlGraphNode<ABeginMatchActionFmlActionExp, InitiateMatching> {
+public class BeginMatchActionNode extends AssignableActionNode<ABeginMatchActionFmlActionExp, InitiateMatching> {
 
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(BeginMatchActionNode.class.getPackage().getName());
@@ -120,7 +120,8 @@ public class BeginMatchActionNode extends ControlGraphNode<ABeginMatchActionFmlA
 		append(staticContents(SPACE, "(",""), getLParFromFragment());
 		append(dynamicContents(() -> getFromAsString()), getFromExpressionFragment());
 		append(staticContents(")"), getRParFromFragment());
-		//append(staticContents(";"), getSemiFragment());
+		// Append semi only when required
+		when(() -> requiresSemi()).thenAppend(staticContents(";"), getSemiFragment());
 		// @formatter:on	
 	}
 
