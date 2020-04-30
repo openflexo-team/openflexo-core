@@ -42,19 +42,20 @@ import java.util.logging.Logger;
 
 import org.openflexo.foundation.fml.controlgraph.Sequence;
 import org.openflexo.foundation.fml.parser.MainSemanticsAnalyzer;
-import org.openflexo.foundation.fml.parser.node.ABlock;
+import org.openflexo.foundation.fml.parser.node.Node;
 import org.openflexo.p2pp.PrettyPrintContext.Indentation;
 
 /**
  * @author sylvain
  * 
  */
-public class SequenceNode extends ControlGraphNode<ABlock, Sequence> {
+// Node is either ABlock or ABlockStatementWithoutTrailingSubstatement
+public class SequenceNode extends ControlGraphNode<Node, Sequence> {
 
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(SequenceNode.class.getPackage().getName());
 
-	public SequenceNode(ABlock astNode, ControlGraphNode<?, ?> relativeStart, ControlGraphNode<?, ?> relativeEnd,
+	public SequenceNode(Node astNode, ControlGraphNode<?, ?> relativeStart, ControlGraphNode<?, ?> relativeEnd,
 			MainSemanticsAnalyzer analyser) {
 		super(astNode, analyser);
 		if (relativeStart != null) {
@@ -70,7 +71,7 @@ public class SequenceNode extends ControlGraphNode<ABlock, Sequence> {
 	}
 
 	@Override
-	public Sequence buildModelObjectFromAST(ABlock astNode) {
+	public Sequence buildModelObjectFromAST(Node astNode) {
 		Sequence returned = getFactory().newSequence();
 		return returned;
 	}

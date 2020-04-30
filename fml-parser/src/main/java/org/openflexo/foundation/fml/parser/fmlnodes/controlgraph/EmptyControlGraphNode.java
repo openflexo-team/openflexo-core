@@ -42,18 +42,18 @@ import java.util.logging.Logger;
 
 import org.openflexo.foundation.fml.controlgraph.EmptyControlGraph;
 import org.openflexo.foundation.fml.parser.MainSemanticsAnalyzer;
-import org.openflexo.foundation.fml.parser.node.ABlock;
+import org.openflexo.foundation.fml.parser.node.Node;
 
 /**
  * @author sylvain
  * 
  */
-public class EmptyControlGraphNode extends ControlGraphNode<ABlock, EmptyControlGraph> {
+public class EmptyControlGraphNode extends ControlGraphNode<Node, EmptyControlGraph> {
 
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(EmptyControlGraphNode.class.getPackage().getName());
 
-	public EmptyControlGraphNode(ABlock astNode, MainSemanticsAnalyzer analyser) {
+	public EmptyControlGraphNode(Node astNode, MainSemanticsAnalyzer analyser) {
 		super(astNode, analyser);
 	}
 
@@ -62,7 +62,7 @@ public class EmptyControlGraphNode extends ControlGraphNode<ABlock, EmptyControl
 	}
 
 	@Override
-	public EmptyControlGraph buildModelObjectFromAST(ABlock astNode) {
+	public EmptyControlGraph buildModelObjectFromAST(Node astNode) {
 		EmptyControlGraph returned = getFactory().newEmptyControlGraph();
 		return returned;
 	}

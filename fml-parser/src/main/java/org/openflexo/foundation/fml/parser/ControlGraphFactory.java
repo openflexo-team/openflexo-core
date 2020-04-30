@@ -31,6 +31,7 @@ import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.SequenceNode;
 import org.openflexo.foundation.fml.parser.node.AAssignmentStatementExpression;
 import org.openflexo.foundation.fml.parser.node.ABeginMatchActionFmlActionExp;
 import org.openflexo.foundation.fml.parser.node.ABlock;
+import org.openflexo.foundation.fml.parser.node.ABlockStatementWithoutTrailingSubstatement;
 import org.openflexo.foundation.fml.parser.node.ADoStatementStatementWithoutTrailingSubstatement;
 import org.openflexo.foundation.fml.parser.node.AEmptyStatementStatementWithoutTrailingSubstatement;
 import org.openflexo.foundation.fml.parser.node.AEndMatchActionFmlActionExp;
@@ -93,9 +94,9 @@ public class ControlGraphFactory extends FMLSemanticsAnalyzer {
 	private static ControlGraphNode<?, ?> _makeControlGraphNode(Node cgNode, MainSemanticsAnalyzer analyzer) {
 		ControlGraphFactory f = new ControlGraphFactory(cgNode, analyzer);
 		cgNode.apply(f);
-		//System.out.println("J'essaie de faire un graphe de controle avec " + cgNode);
+		// System.out.println("J'essaie de faire un graphe de controle avec " + cgNode);
 		if (f.rootControlGraphNode == null) {
-			//System.out.println("---------> Mais la ca marche pas");
+			// System.out.println("---------> Mais la ca marche pas");
 			f.rootControlGraphNode = new ExpressionActionNode(cgNode, analyzer);
 		}
 		return f.rootControlGraphNode;
@@ -105,11 +106,6 @@ public class ControlGraphFactory extends FMLSemanticsAnalyzer {
 		super(analyzer.getFactory(), cgNode);
 		this.mainAnalyzer = analyzer;
 	}
-
-	/*public ControlGraphNode<?, ?> makeControlGraphNode() {
-		getRootNode().apply(this);
-		return rootControlGraphNode;
-	}*/
 
 	@Override
 	public MainSemanticsAnalyzer getMainAnalyzer() {
@@ -169,24 +165,50 @@ public class ControlGraphFactory extends FMLSemanticsAnalyzer {
 	 *
 	 */
 	class BlockSequenceInfo {
-		private ABlock currentBlockNode;
+
+		private Node currentBlockNode; // Either ABlock or ABlockStatementWithoutTrailingSubstatement
 		private List<ControlGraphNode<?, ?>> currentSequenceNodes;
 		private List<PBlockStatement> expectedBlockStatements;
+		private List<PBlockStatement> initialBlockStatements;
 
 		BlockSequenceInfo(ABlock blockNode) {
 			currentBlockNode = blockNode;
 			currentSequenceNodes = new ArrayList<>();
+			initialBlockStatements = new ArrayList<>(blockNode.getBlockStatements());
 			expectedBlockStatements = new ArrayList<>(blockNode.getBlockStatements());
+			/*System.out.println("-------------------> AU DEBUT:");
+			for (PBlockStatement pBlockStatement : expectedBlockStatements) {
+				System.out.println("   > " + pBlockStatement);
+			}*/
+		}
+
+		BlockSequenceInfo(ABlockStatementWithoutTrailingSubstatement blockNode) {
+			currentBlockNode = blockNode;
+			currentSequenceNodes = new ArrayList<>();
+			initialBlockStatements = new ArrayList<>(blockNode.getBlockStatements());
+			expectedBlockStatements = new ArrayList<>(blockNode.getBlockStatements());
+			/*System.out.println("-------------------> AU DEBUT:");
+			for (PBlockStatement pBlockStatement : expectedBlockStatements) {
+				System.out.println("   > " + pBlockStatement);
+			}*/
 		}
 
 		boolean handleNode(ControlGraphNode<?, ?> controlGraphNode) {
+			// System.out.println("Handle node with " + controlGraphNode.getASTNode());
+
 			PBlockStatement matchedBlockStatement = matchExpectedBlockStatements(controlGraphNode.getASTNode());
 			if (matchedBlockStatement != null) {
 				expectedBlockStatements.remove(matchedBlockStatement);
-				//System.out.println("Handle node " + controlGraphNode + " for " + controlGraphNode.getASTNode());
+				// System.out.println("Handle node " + controlGraphNode + " for " + controlGraphNode.getASTNode());
 				currentSequenceNodes.add(controlGraphNode);
 				return true;
 			}
+			// else {
+			/*System.out.println("expectedBlockStatements:");
+			for (PBlockStatement pBlockStatement : expectedBlockStatements) {
+				System.out.println("   > " + pBlockStatement);
+			}*/
+			// }
 			return false;
 		}
 
@@ -207,7 +229,7 @@ public class ControlGraphFactory extends FMLSemanticsAnalyzer {
 			// System.out.println("IL faut maintenant gerer " + currentSequenceNodes);
 			SequenceNode builtSequenceNode = null;
 			SequenceNode rootSequenceNode = null;
-			if (currentSequenceNodes.size() == currentBlockNode.getBlockStatements().size()) {
+			if (currentSequenceNodes.size() == initialBlockStatements.size()) {
 				ControlGraphNode<?, ?> lastNode = currentSequenceNodes.get(currentSequenceNodes.size() - 1);
 				for (int i = 0; i < currentSequenceNodes.size(); i++) {
 					ControlGraphNode<?, ?> n = currentSequenceNodes.get(i);
@@ -234,7 +256,7 @@ public class ControlGraphFactory extends FMLSemanticsAnalyzer {
 				pop();
 			}
 			else {
-				logger.warning("Expecting to find " + currentBlockNode.getBlockStatements().size() + " statements but having parsed only "
+				logger.warning("Expecting to find " + initialBlockStatements.size() + " statements but having parsed only "
 						+ currentSequenceNodes.size() + ". Aborting");
 				System.err.println("currentBlockNode=" + currentBlockNode);
 				currentBlockNode = null;
@@ -252,7 +274,7 @@ public class ControlGraphFactory extends FMLSemanticsAnalyzer {
 			blocks.push(bsInfo);
 		}
 		if (node.getBlockStatements().size() == 0) {
-			push(new EmptyControlGraphNode(node, getMainAnalyzer()));
+			push(getMainAnalyzer().retrieveFMLNode(node, n -> new EmptyControlGraphNode(n, getMainAnalyzer())));
 		}
 	}
 
@@ -268,9 +290,34 @@ public class ControlGraphFactory extends FMLSemanticsAnalyzer {
 	}
 
 	@Override
+	public void inABlockStatementWithoutTrailingSubstatement(ABlockStatementWithoutTrailingSubstatement node) {
+		super.inABlockStatementWithoutTrailingSubstatement(node);
+		// System.out.println("2 -Nouveau block de " + node.getBlockStatements().size() + " statements " + " avec " + node);
+		if (node.getBlockStatements().size() > 1) {
+			BlockSequenceInfo bsInfo = new BlockSequenceInfo(node);
+			blocks.push(bsInfo);
+		}
+		if (node.getBlockStatements().size() == 0) {
+			push(getMainAnalyzer().retrieveFMLNode(node, n -> new EmptyControlGraphNode(n, getMainAnalyzer())));
+		}
+	}
+
+	@Override
+	public void outABlockStatementWithoutTrailingSubstatement(ABlockStatementWithoutTrailingSubstatement node) {
+		super.outABlockStatementWithoutTrailingSubstatement(node);
+		if (node.getBlockStatements().size() > 1) {
+			blocks.pop().finalizeBlockStatements();
+		}
+		if (node.getBlockStatements().size() == 0) {
+			pop();
+		}
+	}
+
+	@Override
 	protected void push(FMLObjectNode<?, ?, ?> fmlNode) {
 		// System.out.println("PUSH avec " + fmlNode);
 		if (fmlNode instanceof ControlGraphNode) {
+
 			if (!blocks.isEmpty()) {
 				BlockSequenceInfo bsInfo = blocks.peek();
 				bsInfo.handleNode((ControlGraphNode<?, ?>) fmlNode);
@@ -318,7 +365,7 @@ public class ControlGraphFactory extends FMLSemanticsAnalyzer {
 	@Override
 	public void inAVariableDeclarationBlockStatement(AVariableDeclarationBlockStatement node) {
 		super.inAVariableDeclarationBlockStatement(node);
-		push(new DeclarationActionNode(node, getMainAnalyzer()));
+		push(getMainAnalyzer().retrieveFMLNode(node, n -> new DeclarationActionNode(n, getMainAnalyzer())));
 	}
 
 	@Override
@@ -347,7 +394,7 @@ public class ControlGraphFactory extends FMLSemanticsAnalyzer {
 	@Override
 	public void inAIfSimpleStatement(AIfSimpleStatement node) {
 		super.inAIfSimpleStatement(node);
-		push(new ConditionalNode(node, getMainAnalyzer()));
+		push(getMainAnalyzer().retrieveFMLNode(node, n -> new ConditionalNode(n, getMainAnalyzer())));
 	}
 
 	@Override
@@ -359,7 +406,7 @@ public class ControlGraphFactory extends FMLSemanticsAnalyzer {
 	@Override
 	public void inAIfElseStatement(AIfElseStatement node) {
 		super.inAIfElseStatement(node);
-		push(new ConditionalNode(node, getMainAnalyzer()));
+		push(getMainAnalyzer().retrieveFMLNode(node, n -> new ConditionalNode(n, getMainAnalyzer())));
 	}
 
 	@Override
@@ -400,7 +447,7 @@ public class ControlGraphFactory extends FMLSemanticsAnalyzer {
 	@Override
 	public void inAForEnhancedStatement(AForEnhancedStatement node) {
 		super.inAForEnhancedStatement(node);
-		push(new IterationActionNode(node, getMainAnalyzer()));
+		push(getMainAnalyzer().retrieveFMLNode(node, n -> new IterationActionNode(n, getMainAnalyzer())));
 	}
 
 	@Override
@@ -436,7 +483,7 @@ public class ControlGraphFactory extends FMLSemanticsAnalyzer {
 	@Override
 	public void inAReturnStatementWithoutTrailingSubstatement(AReturnStatementWithoutTrailingSubstatement node) {
 		super.inAReturnStatementWithoutTrailingSubstatement(node);
-		push(new ReturnStatementNode(node, getMainAnalyzer()));
+		push(getMainAnalyzer().retrieveFMLNode(node, n -> new ReturnStatementNode(n, getMainAnalyzer())));
 	}
 
 	@Override
@@ -448,7 +495,7 @@ public class ControlGraphFactory extends FMLSemanticsAnalyzer {
 	@Override
 	public void inAReturnEmptyStatementWithoutTrailingSubstatement(AReturnEmptyStatementWithoutTrailingSubstatement node) {
 		super.inAReturnEmptyStatementWithoutTrailingSubstatement(node);
-		push(new EmptyReturnStatementNode(node, getMainAnalyzer()));
+		push(getMainAnalyzer().retrieveFMLNode(node, n -> new EmptyReturnStatementNode(n, getMainAnalyzer())));
 	}
 
 	@Override
@@ -477,7 +524,7 @@ public class ControlGraphFactory extends FMLSemanticsAnalyzer {
 	public void inAAssignmentStatementExpression(AAssignmentStatementExpression node) {
 		// TODO Auto-generated method stub
 		super.inAAssignmentStatementExpression(node);
-		push(new AssignationActionNode(node, getMainAnalyzer()));
+		push(getMainAnalyzer().retrieveFMLNode(node, n -> new AssignationActionNode(n, getMainAnalyzer())));
 	}
 
 	@Override
@@ -489,7 +536,7 @@ public class ControlGraphFactory extends FMLSemanticsAnalyzer {
 	@Override
 	public void inAMethodInvocationStatementExpression(AMethodInvocationStatementExpression node) {
 		super.inAMethodInvocationStatementExpression(node);
-		push(new ExpressionActionNode(node, getMainAnalyzer()));
+		push(getMainAnalyzer().retrieveFMLNode(node, n -> new ExpressionActionNode(n, getMainAnalyzer())));
 	}
 
 	@Override
@@ -507,7 +554,7 @@ public class ControlGraphFactory extends FMLSemanticsAnalyzer {
 	@Override
 	public void inALogActionFmlActionExp(ALogActionFmlActionExp node) {
 		super.inALogActionFmlActionExp(node);
-		push(new LogActionNode(node, getMainAnalyzer()));
+		push(getMainAnalyzer().retrieveFMLNode(node, n -> new LogActionNode(n, getMainAnalyzer())));
 	}
 
 	@Override
@@ -519,7 +566,7 @@ public class ControlGraphFactory extends FMLSemanticsAnalyzer {
 	@Override
 	public void inASelectActionFmlActionExp(ASelectActionFmlActionExp node) {
 		super.inASelectActionFmlActionExp(node);
-		push(new FetchRequestNode(node, getMainAnalyzer()));
+		push(getMainAnalyzer().retrieveFMLNode(node, n -> new FetchRequestNode(n, getMainAnalyzer())));
 	}
 
 	@Override
@@ -535,10 +582,10 @@ public class ControlGraphFactory extends FMLSemanticsAnalyzer {
 		Type type = getTypeFactory().lookupConceptNamed(node.getConceptName().getText());
 
 		if (type instanceof VirtualModelInstanceType) {
-			push(new AddVirtualModelInstanceNode(node, getMainAnalyzer()));
+			push(getMainAnalyzer().retrieveFMLNode(node, n -> new AddVirtualModelInstanceNode(n, getMainAnalyzer())));
 		}
 		else /*if (type instanceof FlexoConceptInstanceType)*/ {
-			push(new AddFlexoConceptInstanceNode(node, getMainAnalyzer()));
+			push(getMainAnalyzer().retrieveFMLNode(node, n -> new AddFlexoConceptInstanceNode(n, getMainAnalyzer())));
 		}
 	}
 
@@ -557,13 +604,13 @@ public class ControlGraphFactory extends FMLSemanticsAnalyzer {
 		// System.out.println("Found type " + type + " of " + type.getClass());
 
 		if (type instanceof VirtualModelInstanceType) {
-			push(new AddVirtualModelInstanceNode(node, getMainAnalyzer()));
+			push(getMainAnalyzer().retrieveFMLNode(node, n -> new AddVirtualModelInstanceNode(n, getMainAnalyzer())));
 		}
 		else if (type instanceof FlexoConceptInstanceType) {
-			push(new AddFlexoConceptInstanceNode(node, getMainAnalyzer()));
+			push(getMainAnalyzer().retrieveFMLNode(node, n -> new AddFlexoConceptInstanceNode(n, getMainAnalyzer())));
 		}
 		else {
-			push(new AddClassInstanceNode(node, getMainAnalyzer()));
+			push(getMainAnalyzer().retrieveFMLNode(node, n -> new AddClassInstanceNode(n, getMainAnalyzer())));
 		}
 	}
 
@@ -576,7 +623,7 @@ public class ControlGraphFactory extends FMLSemanticsAnalyzer {
 	@Override
 	public void inABeginMatchActionFmlActionExp(ABeginMatchActionFmlActionExp node) {
 		super.inABeginMatchActionFmlActionExp(node);
-		push(new BeginMatchActionNode(node, getMainAnalyzer()));
+		push(getMainAnalyzer().retrieveFMLNode(node, n -> new BeginMatchActionNode(n, getMainAnalyzer())));
 	}
 
 	@Override
@@ -588,7 +635,7 @@ public class ControlGraphFactory extends FMLSemanticsAnalyzer {
 	@Override
 	public void inAMatchActionFmlActionExp(AMatchActionFmlActionExp node) {
 		super.inAMatchActionFmlActionExp(node);
-		push(new MatchActionNode(node, getMainAnalyzer()));
+		push(getMainAnalyzer().retrieveFMLNode(node, n -> new MatchActionNode(n, getMainAnalyzer())));
 	}
 
 	@Override
@@ -600,7 +647,7 @@ public class ControlGraphFactory extends FMLSemanticsAnalyzer {
 	@Override
 	public void inAEndMatchActionFmlActionExp(AEndMatchActionFmlActionExp node) {
 		super.inAEndMatchActionFmlActionExp(node);
-		push(new EndMatchActionNode(node, getMainAnalyzer()));
+		push(getMainAnalyzer().retrieveFMLNode(node, n -> new EndMatchActionNode(n, getMainAnalyzer())));
 	}
 
 	@Override
