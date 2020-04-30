@@ -152,7 +152,7 @@ public class MainSemanticsAnalyzer extends FMLSemanticsAnalyzer {
 		return returned;
 	}*/
 
-	public <N extends Node, FMLN extends FMLObjectNode<N, ?, ?>> FMLN retrieveFMLNode(N node, Function<N, FMLN> function) {
+	public <N extends Node, FMLN extends FMLObjectNode> FMLN retrieveFMLNode(N node, Function<N, FMLN> function) {
 		FMLN returned = (FMLN) nodesForAST.get(node);
 		if (returned == null) {
 			returned = function.apply(node);
