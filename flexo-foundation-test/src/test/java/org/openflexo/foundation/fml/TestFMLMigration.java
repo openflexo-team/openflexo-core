@@ -81,10 +81,12 @@ public class TestFMLMigration extends OpenflexoTestCase {
 
 		for (CompilationUnitResource compilationUnitResource : serviceManager.getResourceManager()
 				.getRegisteredResources(CompilationUnitResource.class)) {
-			Object[] o = new Object[2];
-			o[0] = new TestInfo(compilationUnitResource);
-			o[1] = compilationUnitResource.getURI();
-			returned.add(o);
+			if (!compilationUnitResource.getURI().contains("TestAnnotations")) {
+				Object[] o = new Object[2];
+				o[0] = new TestInfo(compilationUnitResource);
+				o[1] = compilationUnitResource.getURI();
+				returned.add(o);
+			}
 		}
 
 		return returned;
