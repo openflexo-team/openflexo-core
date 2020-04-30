@@ -383,9 +383,9 @@ public class TypeFactory extends SemanticsAnalyzerFactory {
 			return conceptType;
 		}
 		else if (role != null) {
-			CustomType type = role.buildType(typeName);
-			if (!type.isResolved()) {
-				unresolvedTypes.add(type);
+			Type type = role.buildType(typeName);
+			if (type instanceof CustomType && !((CustomType) type).isResolved()) {
+				unresolvedTypes.add((CustomType) type);
 			}
 			return type;
 		}

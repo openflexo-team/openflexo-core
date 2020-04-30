@@ -306,10 +306,10 @@ public interface FMLRTModelSlot<VMI extends VirtualModelInstance<VMI, TA>, TA ex
 		 * @param type
 		 */
 		@Override
-		public void setType(CustomType type) {
+		public void setType(Type type) {
 			if (type instanceof VirtualModelInstanceType) {
 				this.type = (VirtualModelInstanceType) type;
-				if (type.isResolved()) {
+				if (((VirtualModelInstanceType) type).isResolved()) {
 					setAccessedVirtualModel(((VirtualModelInstanceType) type).getVirtualModel());
 				}
 			}

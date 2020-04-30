@@ -71,6 +71,7 @@ import org.openflexo.pamela.annotations.ModelEntity;
 import org.openflexo.pamela.annotations.PropertyIdentifier;
 import org.openflexo.pamela.annotations.Setter;
 import org.openflexo.pamela.annotations.XMLAttribute;
+import org.openflexo.pamela.exceptions.InvalidDataException;
 import org.openflexo.pamela.validation.FixProposal;
 import org.openflexo.pamela.validation.ValidationError;
 import org.openflexo.pamela.validation.ValidationIssue;
@@ -243,14 +244,14 @@ public interface FlexoRole<T> extends FlexoProperty<T> {
 	 * @param serializedType
 	 * @return
 	 */
-	public CustomType buildType(String serializedType);
+	public Type buildType(String serializedType);
 
 	/**
 	 * Declare supplied type as the the accessed type through this role
 	 * 
 	 * @param type
 	 */
-	public void setType(CustomType type);
+	public void setType(Type type);
 
 	abstract class FlexoRoleImpl<T> extends FlexoPropertyImpl<T> implements FlexoRole<T> {
 
@@ -555,6 +556,24 @@ public interface FlexoRole<T> extends FlexoProperty<T> {
 		@Override
 		public boolean isNotificationSafe() {
 			return true;
+		}
+
+		/**
+		 * Build {@link CustomType} represented by supplied serialized version, asserting this type is the accessed type through this role
+		 * 
+		 * @param serializedType
+		 * @return
+		 */
+		@Override
+		public Type buildType(String serializedType) {
+			if (getFMLModelFactory() != null) {
+				try {
+					return getFMLModelFactory().getTypeConverter().convertFromString(serializedType, getFMLModelFactory());
+				} catch (InvalidDataException e) {
+					e.printStackTrace();
+				}
+			}
+			return null;
 		}
 
 	}

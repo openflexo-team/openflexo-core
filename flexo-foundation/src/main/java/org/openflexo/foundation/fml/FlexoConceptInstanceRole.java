@@ -42,7 +42,6 @@ import java.lang.reflect.Type;
 import java.util.logging.Logger;
 
 import org.openflexo.connie.DataBinding;
-import org.openflexo.connie.type.CustomType;
 import org.openflexo.foundation.fml.FlexoConceptInstanceType.DefaultFlexoConceptInstanceTypeFactory;
 import org.openflexo.foundation.fml.FlexoConceptInstanceType.FlexoConceptInstanceTypeFactory;
 import org.openflexo.foundation.fml.annotations.FML;
@@ -383,10 +382,10 @@ public interface FlexoConceptInstanceRole extends FlexoRole<FlexoConceptInstance
 		}
 
 		@Override
-		public void setType(CustomType type) {
+		public void setType(Type type) {
 			if (type instanceof FlexoConceptInstanceType) {
 				this.type = (FlexoConceptInstanceType) type;
-				if (type.isResolved()) {
+				if (((FlexoConceptInstanceType) type).isResolved()) {
 					setFlexoConceptType(((FlexoConceptInstanceType) type).getFlexoConcept());
 				}
 			}

@@ -38,6 +38,7 @@
 
 package org.openflexo.foundation.fml.ta;
 
+import java.lang.reflect.Type;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.fml.FMLObject;
@@ -95,6 +96,11 @@ public interface FMLObjectRole<T extends FMLObject> extends FlexoRole<T> {
 			returned.setFlexoConceptInstance(fci);
 			returned.setModellingElement(object);
 			return returned;
+		}
+
+		@Override
+		public final void setType(Type type) {
+			// Not applicable
 		}
 
 	}

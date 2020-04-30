@@ -99,6 +99,11 @@ public interface FMLModelSlot extends ModelSlot<FMLCompilationUnit> {
 		}
 
 		@Override
+		public void setType(Type type) {
+			// Not applicable
+		}
+
+		@Override
 		public String getTypeDescription() {
 			return "FMLCompilationUnit";
 		};
