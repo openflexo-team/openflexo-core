@@ -41,6 +41,7 @@ package org.openflexo.foundation.task;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openflexo.foundation.task.FlexoTask.TaskStatus;
@@ -49,6 +50,7 @@ import org.openflexo.foundation.test.task.ExampleTask;
 import org.openflexo.test.OrderedRunner;
 import org.openflexo.test.TestOrder;
 
+@Ignore
 @RunWith(OrderedRunner.class)
 public class TestFlexoTaskManager {
 
