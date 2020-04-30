@@ -123,19 +123,21 @@ public class TestMatchFlexoConceptInstances extends OpenflexoProjectAtRunTimeTes
 		assertNotNull(matchedConceptA = matchingVM2.getFlexoConcept("MatchedConceptA"));
 		assertNotNull(matchedConceptB = matchingVM2.getFlexoConcept("MatchedConceptB"));
 
-		System.out.println("VM: " + vm.getFMLRepresentation());
+		System.out.println("VM: " + vm.getCompilationUnit().getFMLPrettyPrint());
 		assertVirtualModelIsValid(vm);
 
-		System.out.println("VM2: " + vm2.getFMLRepresentation());
+		System.out.println("VM2: " + vm2.getCompilationUnit().getFMLPrettyPrint());
 		assertVirtualModelIsValid(vm2);
 
-		System.out.println("matchingVM: " + matchingVM.getFMLRepresentation());
+		System.out.println("matchingVM: " + matchingVM.getCompilationUnit().getFMLPrettyPrint());
 		assertVirtualModelIsValid(matchingVM);
 
-		System.out.println("matchingVM2: " + matchingVM2.getFMLRepresentation());
+		System.out.println("matchingVM2: " + matchingVM2.getCompilationUnit().getFMLPrettyPrint());
 		assertVirtualModelIsValid(matchingVM2);
 
-		System.out.println("VP: " + viewPoint.getFMLRepresentation());
+		System.out.println(viewPoint.getFMLModelFactory().stringRepresentation(viewPoint));
+
+		System.out.println("VP: " + viewPoint.getCompilationUnit().getFMLPrettyPrint());
 		assertVirtualModelIsValid(viewPoint);
 
 	}
