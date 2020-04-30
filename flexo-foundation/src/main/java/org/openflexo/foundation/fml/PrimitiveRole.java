@@ -140,9 +140,11 @@ public interface PrimitiveRole<T> extends BasicProperty<T> {
 		@Override
 		public void handleRequiredImports(FMLCompilationUnit compilationUnit) {
 			super.handleRequiredImports(compilationUnit);
-			Class<?> rawType = TypeUtils.getRawType(getType());
-			if (!TypeUtils.isPrimitive(rawType)) {
-				compilationUnit.ensureJavaImport(rawType);
+			if (compilationUnit != null) {
+				Class<?> rawType = TypeUtils.getRawType(getType());
+				if (!TypeUtils.isPrimitive(rawType)) {
+					compilationUnit.ensureJavaImport(rawType);
+				}
 			}
 		}
 

@@ -78,6 +78,7 @@ public interface JavaRole<T> extends BasicProperty<T> {
 	@XMLAttribute
 	public Type getType();
 
+	@Override
 	@Setter(TYPE_KEY)
 	public void setType(Type type);
 
@@ -111,23 +112,25 @@ public interface JavaRole<T> extends BasicProperty<T> {
 		@Override
 		public void handleRequiredImports(FMLCompilationUnit compilationUnit) {
 			super.handleRequiredImports(compilationUnit);
-			Class<?> rawType = TypeUtils.getRawType(getType());
-			if (!TypeUtils.isPrimitive(rawType)) {
-				compilationUnit.ensureJavaImport(rawType);
+			if (compilationUnit != null) {
+				Class<?> rawType = TypeUtils.getRawType(getType());
+				if (!TypeUtils.isPrimitive(rawType)) {
+					compilationUnit.ensureJavaImport(rawType);
+				}
 			}
 		}
 
-		@Override
+		/*@Override
 		public void handleTypeDeclarationInImports() {
-
+		
 			if (getDeclaringCompilationUnit() == null) {
 				return;
 			}
-
+		
 			Class<?> rawType = TypeUtils.getRawType(getType());
-
+		
 			if (!TypeUtils.isPrimitive(rawType)) {
-
+		
 				boolean typeWasFound = false;
 				for (JavaImportDeclaration importDeclaration : getDeclaringCompilationUnit().getJavaImports()) {
 					if (importDeclaration.getFullQualifiedClassName().equals(rawType.getName())) {
@@ -143,8 +146,8 @@ public interface JavaRole<T> extends BasicProperty<T> {
 					getDeclaringCompilationUnit().addToJavaImports(newJavaImportDeclaration);
 				}
 			}
-
-		}
+		
+		}*/
 
 	}
 }

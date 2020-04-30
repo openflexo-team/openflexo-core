@@ -1029,7 +1029,7 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 			availablePropertiesNames = null;
 			performSuperAdder(FLEXO_PROPERTIES_KEY, aProperty);
 			notifiedPropertiesChanged(null, aProperty);
-			aProperty.handleTypeDeclarationInImports();
+			aProperty.handleRequiredImports(getDeclaringCompilationUnit());
 		}
 
 		@Override

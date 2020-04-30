@@ -348,8 +348,10 @@ public interface FlexoConceptInstanceRole extends FlexoRole<FlexoConceptInstance
 		@Override
 		public void handleRequiredImports(FMLCompilationUnit compilationUnit) {
 			super.handleRequiredImports(compilationUnit);
-			if (getFlexoConceptType() != null) {
-				compilationUnit.ensureImport(getFlexoConceptType());
+			if (compilationUnit != null) {
+				if (getFlexoConceptType() != null) {
+					compilationUnit.ensureImport(getFlexoConceptType());
+				}
 			}
 		}
 

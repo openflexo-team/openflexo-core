@@ -262,8 +262,10 @@ public interface FMLRTModelSlot<VMI extends VirtualModelInstance<VMI, TA>, TA ex
 		@Override
 		public void handleRequiredImports(FMLCompilationUnit compilationUnit) {
 			super.handleRequiredImports(compilationUnit);
-			if (getAccessedVirtualModel() != null) {
-				compilationUnit.ensureResourceImport(getAccessedVirtualModel().getCompilationUnit());
+			if (compilationUnit != null) {
+				if (getAccessedVirtualModel() != null) {
+					compilationUnit.ensureResourceImport(getAccessedVirtualModel().getCompilationUnit());
+				}
 			}
 		}
 

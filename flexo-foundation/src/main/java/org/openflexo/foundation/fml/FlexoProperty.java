@@ -201,7 +201,7 @@ public abstract interface FlexoProperty<T> extends FlexoConceptObject, FMLPretty
 	 */
 	public boolean isNotificationSafe();
 
-	public void handleTypeDeclarationInImports();
+	// public void handleTypeDeclarationInImports();
 
 	/**
 	 * Return boolean indicating if this {@link FlexoProperty} is a key property (declared in key properties of its declaring FlexoConcept)
@@ -295,38 +295,39 @@ public abstract interface FlexoProperty<T> extends FlexoConceptObject, FMLPretty
 			return PropertyCardinality.ZeroOne;
 		}
 
-		@Override
-		public void handleTypeDeclarationInImports() {
+		// @Override
+		// public void handleTypeDeclarationInImports() {
 
-			/*if (getDeclaringCompilationUnit() == null) {
-				return;
-			}
-			
-			Class<?> rawType = TypeUtils.getRawType(getType());
-			
-			if (!TypeUtils.isPrimitive(rawType)) {
-			
-				boolean typeWasFound = false;
-				for (JavaImportDeclaration importDeclaration : getDeclaringCompilationUnit().getJavaImports()) {
-					if (importDeclaration.getFullQualifiedClassName().equals(rawType.getName())) {
-						typeWasFound = true;
-						break;
-					}
-				}
-				if (!typeWasFound) {
-					// Adding import
-					JavaImportDeclaration newJavaImportDeclaration = getDeclaringCompilationUnit().getFMLModelFactory()
-							.newJavaImportDeclaration();
-					newJavaImportDeclaration.setFullQualifiedClassName(rawType.getName());
-					getDeclaringCompilationUnit().addToJavaImports(newJavaImportDeclaration);
-				}
-			}*/
-
+		/*if (getDeclaringCompilationUnit() == null) {
+			return;
 		}
+		
+		Class<?> rawType = TypeUtils.getRawType(getType());
+		
+		if (!TypeUtils.isPrimitive(rawType)) {
+		
+			boolean typeWasFound = false;
+			for (JavaImportDeclaration importDeclaration : getDeclaringCompilationUnit().getJavaImports()) {
+				if (importDeclaration.getFullQualifiedClassName().equals(rawType.getName())) {
+					typeWasFound = true;
+					break;
+				}
+			}
+			if (!typeWasFound) {
+				// Adding import
+				JavaImportDeclaration newJavaImportDeclaration = getDeclaringCompilationUnit().getFMLModelFactory()
+						.newJavaImportDeclaration();
+				newJavaImportDeclaration.setFullQualifiedClassName(rawType.getName());
+				getDeclaringCompilationUnit().addToJavaImports(newJavaImportDeclaration);
+			}
+		}*/
+
+		// }
 
 		protected void notifyResultingTypeChanged() {
 
-			handleTypeDeclarationInImports();
+			// handleTypeDeclarationInImports();
+			handleRequiredImports(getDeclaringCompilationUnit());
 
 			resultingType = null;
 			getPropertyChangeSupport().firePropertyChange(RESULTING_TYPE_PROPERTY, null, getResultingType());
@@ -401,11 +402,11 @@ public abstract interface FlexoProperty<T> extends FlexoConceptObject, FMLPretty
 			return TypeUtils.simpleRepresentation(getType());
 		}
 
-		@Override
+		/*@Override
 		public void finalizeDeserialization() {
 			super.finalizeDeserialization();
 			handleTypeDeclarationInImports();
-		}
+		}*/
 
 		@Override
 		public final BindingModel getBindingModel() {
