@@ -124,8 +124,8 @@ public abstract class ApplicationContext extends DefaultFlexoServiceManager {
 
 		// BugReportService bugReportService = createBugReportService();
 		// registerService(bugReportService);
-		DocResourceManager docResourceManager = createDocResourceManager();
-		registerService(docResourceManager);
+		// DocResourceManager docResourceManager = createDocResourceManager();
+		// registerService(docResourceManager);
 		FlexoServerInstanceManager flexoServerInstanceManager = createFlexoServerInstanceManager();
 		registerService(flexoServerInstanceManager);
 		ResourceConsistencyService resourceConsistencyService = createResourceConsistencyService();
@@ -279,8 +279,7 @@ public abstract class ApplicationContext extends DefaultFlexoServiceManager {
 
 	@Override
 	protected FlexoResourceCenterService createResourceCenterService() {
-		FlexoResourceCenterService returned = DefaultResourceCenterService
-				.getNewInstance(Flexo.isDev);
+		FlexoResourceCenterService returned = DefaultResourceCenterService.getNewInstance(Flexo.isDev);
 		return returned;
 	}
 
