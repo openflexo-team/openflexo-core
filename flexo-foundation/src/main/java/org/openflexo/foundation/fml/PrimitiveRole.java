@@ -42,6 +42,7 @@ import java.lang.reflect.Type;
 import java.util.logging.Logger;
 
 import org.openflexo.connie.type.PrimitiveType;
+import org.openflexo.connie.type.TypeUtils;
 import org.openflexo.foundation.fml.annotations.FML;
 import org.openflexo.foundation.fml.rt.AbstractVirtualModelInstanceModelFactory;
 import org.openflexo.foundation.fml.rt.ActorReference;
@@ -128,6 +129,15 @@ public interface PrimitiveRole<T> extends BasicProperty<T> {
 			returned.setFlexoRole(this);
 			returned.setModellingElement(object);
 			return returned;
+		}
+
+		@Override
+		public void handleRequiredImports(FMLCompilationUnit compilationUnit) {
+			super.handleRequiredImports(compilationUnit);
+			Class<?> rawType = TypeUtils.getRawType(getType());
+			if (!TypeUtils.isPrimitive(rawType)) {
+				compilationUnit.ensureJavaImport(rawType);
+			}
 		}
 
 	}

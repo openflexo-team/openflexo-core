@@ -321,6 +321,8 @@ public interface FMLCompilationUnit extends FMLObject, FMLPrettyPrintable, Resou
 
 	public <RD extends ResourceData<RD> & FlexoObject> String ensureImport(InnerResourceData<RD> innerResourceData);
 
+	public void ensureJavaImport(Class<?> javaClass);
+
 	public abstract class FMLCompilationUnitImpl extends FMLObjectImpl implements FMLCompilationUnit {
 
 		private static final Logger logger = Logger.getLogger(FMLCompilationUnitImpl.class.getPackage().getName());
@@ -947,6 +949,23 @@ public interface FMLCompilationUnit extends FMLObject, FMLPrettyPrintable, Resou
 		@Override
 		public <RD extends ResourceData<RD> & FlexoObject> String ensureImport(InnerResourceData<RD> innerResourceData) {
 			return ensureResourceImport(innerResourceData.getResourceData());
+		}
+
+		@Override
+		public void ensureJavaImport(Class<?> javaClass) {
+			boolean typeWasFound = false;
+			for (JavaImportDeclaration importDeclaration : getJavaImports()) {
+				if (importDeclaration.getFullQualifiedClassName().equals(javaClass.getName())) {
+					typeWasFound = true;
+					break;
+				}
+			}
+			if (!typeWasFound) {
+				// Adding import
+				JavaImportDeclaration newJavaImportDeclaration = getFMLModelFactory().newJavaImportDeclaration();
+				newJavaImportDeclaration.setFullQualifiedClassName(javaClass.getName());
+				addToJavaImports(newJavaImportDeclaration);
+			}
 		}
 
 		// TODO remove this
