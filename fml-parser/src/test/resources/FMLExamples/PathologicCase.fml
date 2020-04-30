@@ -1,0 +1,23 @@
+/**
+ * Testing a pathologic case
+ */
+
+model MyModel {
+
+	method () {
+		if (true) {
+			int a=0;
+			prout();
+		}
+	}
+	
+	synchronize () {
+		MatchingSet matchingSet = begin match MatchedConceptA from (this);
+		for (ConceptA conceptA : select ConceptA from (_model)) {
+			MatchedConceptA matchedA = match MatchedConceptA in (matchingSet) from (this) where (conceptA=conceptA) create::_create(conceptA,(conceptA.nameA + "-matched"));
+			matchedA.synchronize();
+		}
+		end match MatchedConceptA in (matchingSet) delete::_delete();
+	}
+	
+}

@@ -204,7 +204,7 @@
 							<AssignableAction_MatchFlexoConceptInstance
 								id="FLX-75"
 								creationSchemeURI="http://openflexo.org/test/TestResourceCenter/TestMatchFlexoConceptInstance.fml/MatchingVM2.fml#MatchedConceptA.create"
-								matchingSet="matchingSet" receiver="this" userID="FLX"
+								matchingSet="matchingSet" receiver="this" container="this" userID="FLX"
 								flexoID="75">
 								<MatchingCriteria id="FLX-78"
 									patternRoleName="conceptA" value="conceptA" userID="FLX"
