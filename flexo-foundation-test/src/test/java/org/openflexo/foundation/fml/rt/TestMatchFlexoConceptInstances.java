@@ -169,10 +169,10 @@ public class TestMatchFlexoConceptInstances extends OpenflexoProjectAtRunTimeTes
 		assertNotNull(newView = action.getNewVirtualModelInstance());
 		assertNotNull(model = (FMLRTVirtualModelInstance) newView.getVirtualModelInstance("model"));
 		assertNotNull(matchingModel = (FMLRTVirtualModelInstance) newView.getVirtualModelInstance("matchingModel"));
-		assertEquals(model, matchingModel.getFlexoPropertyValue("model"));
+		assertEquals(model, matchingModel.getFlexoPropertyValue("_model"));
 		assertNotNull(model2 = (FMLRTVirtualModelInstance) newView.getVirtualModelInstance("model2"));
 		assertNotNull(matchingModel2 = (FMLRTVirtualModelInstance) newView.getVirtualModelInstance("matchingModel2"));
-		assertEquals(model2, matchingModel2.getFlexoPropertyValue("model"));
+		assertEquals(model2, matchingModel2.getFlexoPropertyValue("_model"));
 
 	}
 
@@ -213,9 +213,9 @@ public class TestMatchFlexoConceptInstances extends OpenflexoProjectAtRunTimeTes
 		FlexoConceptInstance matchedC2 = matchingModel.getFlexoConceptInstances().get(1);
 		FlexoConceptInstance matchedC3 = matchingModel.getFlexoConceptInstances().get(2);
 
-		assertEquals(c1, matchedC1.getFlexoPropertyValue("concept"));
-		assertEquals(c2, matchedC2.getFlexoPropertyValue("concept"));
-		assertEquals(c3, matchedC3.getFlexoPropertyValue("concept"));
+		assertEquals(c1, matchedC1.getFlexoPropertyValue("_concept"));
+		assertEquals(c2, matchedC2.getFlexoPropertyValue("_concept"));
+		assertEquals(c3, matchedC3.getFlexoPropertyValue("_concept"));
 		assertEquals("c1-matched", matchedC1.getFlexoPropertyValue("p2"));
 		assertEquals("c2-matched", matchedC2.getFlexoPropertyValue("p2"));
 		assertEquals("c3-matched", matchedC3.getFlexoPropertyValue("p2"));
@@ -232,7 +232,7 @@ public class TestMatchFlexoConceptInstances extends OpenflexoProjectAtRunTimeTes
 		synchronizeMatchingModelUsingMatchingSet();
 		assertEquals(3, matchingModel.getFlexoConceptInstances().size());
 		matchedC1 = matchingModel.getFlexoConceptInstances().get(2);
-		assertEquals(c1, matchedC1.getFlexoPropertyValue("concept"));
+		assertEquals(c1, matchedC1.getFlexoPropertyValue("_concept"));
 		assertEquals("c1-matched", matchedC1.getFlexoPropertyValue("p2"));
 
 		FlexoConceptInstance matchedC4 = createInstance(matchedConcept, matchingModel, null, "c4-matched");
@@ -257,7 +257,7 @@ public class TestMatchFlexoConceptInstances extends OpenflexoProjectAtRunTimeTes
 		synchronizeMatchingModelUsingMatchingSet();
 		assertEquals(4, matchingModel.getFlexoConceptInstances().size());
 		matchedC4 = matchingModel.getFlexoConceptInstances().get(3);
-		assertEquals(c4, matchedC4.getFlexoPropertyValue("concept"));
+		assertEquals(c4, matchedC4.getFlexoPropertyValue("_concept"));
 		assertEquals("c4-matched", matchedC4.getFlexoPropertyValue("p2"));
 
 		c4.delete();
@@ -289,9 +289,9 @@ public class TestMatchFlexoConceptInstances extends OpenflexoProjectAtRunTimeTes
 		FlexoConceptInstance matchedC2 = matchingModel.getFlexoConceptInstances().get(1);
 		FlexoConceptInstance matchedC3 = matchingModel.getFlexoConceptInstances().get(2);
 
-		assertEquals(c1, matchedC1.getFlexoPropertyValue("concept"));
-		assertEquals(c2, matchedC2.getFlexoPropertyValue("concept"));
-		assertEquals(c3, matchedC3.getFlexoPropertyValue("concept"));
+		assertEquals(c1, matchedC1.getFlexoPropertyValue("_concept"));
+		assertEquals(c2, matchedC2.getFlexoPropertyValue("_concept"));
+		assertEquals(c3, matchedC3.getFlexoPropertyValue("_concept"));
 		assertEquals("c1-default", matchedC1.getFlexoPropertyValue("p2"));
 		assertEquals("c2-default", matchedC2.getFlexoPropertyValue("p2"));
 		assertEquals("c3-default", matchedC3.getFlexoPropertyValue("p2"));
@@ -308,7 +308,7 @@ public class TestMatchFlexoConceptInstances extends OpenflexoProjectAtRunTimeTes
 		synchronizeMatchingModelUsingDefaultScheme();
 		assertEquals(3, matchingModel.getFlexoConceptInstances().size());
 		matchedC1 = matchingModel.getFlexoConceptInstances().get(2);
-		assertEquals(c1, matchedC1.getFlexoPropertyValue("concept"));
+		assertEquals(c1, matchedC1.getFlexoPropertyValue("_concept"));
 		assertEquals("c1-default", matchedC1.getFlexoPropertyValue("p2"));
 
 		FlexoConceptInstance matchedC4 = createInstance(matchedConcept, matchingModel, null, "c4-default");
@@ -333,7 +333,7 @@ public class TestMatchFlexoConceptInstances extends OpenflexoProjectAtRunTimeTes
 		synchronizeMatchingModelUsingDefaultScheme();
 		assertEquals(4, matchingModel.getFlexoConceptInstances().size());
 		matchedC4 = matchingModel.getFlexoConceptInstances().get(3);
-		assertEquals(c4, matchedC4.getFlexoPropertyValue("concept"));
+		assertEquals(c4, matchedC4.getFlexoPropertyValue("_concept"));
 		assertEquals("c4-default", matchedC4.getFlexoPropertyValue("p2"));
 
 		c4.delete();
