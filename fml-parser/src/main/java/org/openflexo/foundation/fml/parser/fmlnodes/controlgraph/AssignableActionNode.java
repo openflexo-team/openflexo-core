@@ -62,12 +62,17 @@ public abstract class AssignableActionNode<N extends Node, T extends AssignableA
 		super(property, analyser);
 	}
 
+	/**
+	 * Return boolean indicating if this node requires a final semi in its pretty-print
+	 * 
+	 * @return
+	 */
 	protected boolean requiresSemi() {
-		/*if (getModelObject() instanceof FetchRequest) {
-			System.out.println("pour " + getASTNode());
-			System.out.println("parent: " + getParent() + " of " + getParent().getClass());
-		}*/
-		return !((getParent().getModelObject() instanceof AbstractAssignationAction) || (getParent() instanceof IterationActionNode));
+		// We define here the conditions under which this action requires a final semi
+		return !((getParent().getModelObject() instanceof AbstractAssignationAction)
+				// If parent id AbstractAssignationAction, the parent will do it
+				|| ((getParent() instanceof IterationActionNode) && getIndex() == 0));
+		// For iteration, only first element should avoid final semi
 	}
 
 }
