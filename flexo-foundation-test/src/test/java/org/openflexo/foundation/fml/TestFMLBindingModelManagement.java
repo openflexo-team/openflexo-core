@@ -1402,20 +1402,23 @@ public class TestFMLBindingModelManagement extends OpenflexoProjectAtRunTimeTest
 		matchFlexoConceptInstance.setCreationScheme(creationScheme);
 
 		// We check here that matching criterias were updated
-		assertEquals(4, matchFlexoConceptInstance.getMatchingCriterias().size());
+		// assertEquals(4, matchFlexoConceptInstance.getMatchingCriterias().size());
 
-		MatchingCriteria criteria1 = matchFlexoConceptInstance.getMatchingCriteria(flexoConceptA.getAccessibleProperty("aStringInA"));
+		/*MatchingCriteria criteria1 = matchFlexoConceptInstance.getMatchingCriteria(flexoConceptA.getAccessibleProperty("aStringInA"));
 		MatchingCriteria criteria2 = matchFlexoConceptInstance.getMatchingCriteria(flexoConceptA.getAccessibleProperty("aBooleanInA"));
 		MatchingCriteria criteria3 = matchFlexoConceptInstance.getMatchingCriteria(flexoConceptA.getAccessibleProperty("anIntegerInA"));
 		MatchingCriteria criteria4 = matchFlexoConceptInstance
 				.getMatchingCriteria(flexoConceptA.getAccessibleProperty("anOtherBooleanInA"));
-
+		
 		assertNotNull(criteria1);
 		assertNotNull(criteria2);
 		assertNotNull(criteria3);
 		assertNotNull(criteria4);
+		
+		criteria1.setValue(new DataBinding<>("item.aStringInA"));*/
 
-		criteria1.setValue(new DataBinding<>("item.aStringInA"));
+		MatchingCriteria criteria1 = matchFlexoConceptInstance.addToMatchingCriteria(flexoConceptA.getAccessibleProperty("aStringInA"),
+				new DataBinding<>("item.aStringInA"));
 
 		System.out.println("FML=" + actionScheme.getFMLRepresentation());
 
@@ -1434,15 +1437,15 @@ public class TestFMLBindingModelManagement extends OpenflexoProjectAtRunTimeTest
 		createRole.doAction();
 		FlexoRole<?> newRole = createRole.getNewFlexoRole();
 
-		assertEquals(5, matchFlexoConceptInstance.getMatchingCriterias().size());
-		assertNotNull(matchFlexoConceptInstance.getMatchingCriteria(newRole));
+		// assertEquals(5, matchFlexoConceptInstance.getMatchingCriterias().size());
+		// assertNotNull(matchFlexoConceptInstance.getMatchingCriteria(newRole));
 
 		// We remove the property
 		// We check here that matching criterias were updated: the criteria
 		// should disappear
 		flexoConceptA.removeFromFlexoProperties(newRole);
 
-		assertEquals(4, matchFlexoConceptInstance.getMatchingCriterias().size());
+		// assertEquals(4, matchFlexoConceptInstance.getMatchingCriterias().size());
 
 		// We check here that create parameters were updated
 

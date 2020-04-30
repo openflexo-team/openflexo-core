@@ -150,6 +150,8 @@ public interface MatchFlexoConceptInstance extends FMLRTAction<FlexoConceptInsta
 	@Remover(MATCHING_CRITERIAS_KEY)
 	public void removeFromMatchingCriterias(MatchingCriteria aMatchingCriteria);
 
+	public MatchingCriteria addToMatchingCriteria(FlexoProperty<?> property, DataBinding<?> value);
+
 	public MatchingCriteria getMatchingCriteria(FlexoProperty<?> flexoProperty);
 
 	@Getter(value = PARAMETERS_KEY, cardinality = Cardinality.LIST, inverse = CreateFlexoConceptInstanceParameter.ACTION_KEY)
@@ -793,6 +795,18 @@ public interface MatchFlexoConceptInstance extends FMLRTAction<FlexoConceptInsta
 				return getInferedModelSlot().getAccessedVirtualModel();
 			}
 			return getOwningVirtualModel();
+		}
+
+		@Override
+		public MatchingCriteria addToMatchingCriteria(FlexoProperty<?> property, DataBinding<?> argValue) {
+			if (getFMLModelFactory() != null) {
+				MatchingCriteria newMatchingCriteria = getFMLModelFactory().newMatchingCriteria(null);
+				newMatchingCriteria.setFlexoProperty(property);
+				newMatchingCriteria.setValue(argValue);
+				addToMatchingCriterias(newMatchingCriteria);
+				return newMatchingCriteria;
+			}
+			return null;
 		}
 
 	}
