@@ -183,8 +183,7 @@ public class ParametersRetriever<ES extends FlexoBehaviour> {
 		if (addTitle) {
 			FIBLabel titleLabel = fibModelFactory.newFIBLabel();
 			titleLabel.setAlign(Align.center);
-			titleLabel.setLabel(
-					dict.localizedForKey(flexoBehaviour.getLabel() != null ? flexoBehaviour.getLabel() : flexoBehaviour.getName()));
+			titleLabel.setLabel(dict.localizedForKey(flexoBehaviour.getName()));
 			returned.addToSubComponents(titleLabel, new TwoColsLayoutConstraints(TwoColsLayoutLocation.center, true, false), 0);
 			index++;
 

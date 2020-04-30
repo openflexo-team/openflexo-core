@@ -69,7 +69,7 @@ public abstract class FlexoBehaviourActionFactory<A extends FlexoBehaviourAction
 	private final O flexoConceptInstance;
 
 	public FlexoBehaviourActionFactory(FB behaviour, O flexoConceptInstance, ActionGroup actionGroup, int actionCategory) {
-		super(behaviour.getLabel(), actionGroup, actionCategory);
+		super(behaviour.getName(), actionGroup, actionCategory);
 		this.behaviour = behaviour;
 		this.flexoConceptInstance = flexoConceptInstance;
 	}

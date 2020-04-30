@@ -97,8 +97,8 @@ public interface FlexoBehaviour extends FlexoBehaviourObject, Function, FMLContr
 	public static final String FLEXO_CONCEPT_KEY = "flexoConcept";
 	@PropertyIdentifier(type = String.class)
 	public static final String NAME_KEY = "name";
-	@PropertyIdentifier(type = String.class)
-	public static final String LABEL_KEY = "label";
+	// @PropertyIdentifier(type = String.class)
+	// public static final String LABEL_KEY = "label";
 	@PropertyIdentifier(type = Visibility.class)
 	public static final String VISIBILITY_KEY = "visibility";
 	@PropertyIdentifier(type = boolean.class)
@@ -169,12 +169,12 @@ public interface FlexoBehaviour extends FlexoBehaviourObject, Function, FMLContr
 	@Setter(NAME_KEY)
 	public void setName(String name);
 
-	@Getter(value = LABEL_KEY)
+	/*@Getter(value = LABEL_KEY)
 	@XMLAttribute
 	public String getLabel();
-
+	
 	@Setter(LABEL_KEY)
-	public void setLabel(String label);
+	public void setLabel(String label);*/
 
 	@Getter(value = VISIBILITY_KEY, defaultValue = "Default")
 	@XMLAttribute
@@ -467,25 +467,25 @@ public interface FlexoBehaviour extends FlexoBehaviourObject, Function, FMLContr
 			return null;
 		}
 
-		@Override
-		public String getLabel() {
-			if (getUIMetaData(false) != null) {
-				String returned = getUIMetaData(false).getSingleMetaData(LABEL_KEY, String.class);
-				if (returned != null) {
-					return returned;
+		/*		@Override
+				public String getLabel() {
+					if (getUIMetaData(false) != null) {
+						String returned = getUIMetaData(false).getSingleMetaData(LABEL_KEY, String.class);
+						if (returned != null) {
+							return returned;
+						}
+					}
+					return getName();
 				}
-			}
-			return getName();
-		}
-
-		@Override
-		public void setLabel(String label) {
-			if ((label == null && getLabel() != null) || (label != null && !label.equals(getLabel()))) {
-				if (getUIMetaData(true) != null) {
-					getUIMetaData(true).setSingleMetaData(LABEL_KEY, label, String.class);
-				}
-			}
-		}
+		
+				@Override
+				public void setLabel(String label) {
+					if ((label == null && getLabel() != null) || (label != null && !label.equals(getLabel()))) {
+						if (getUIMetaData(true) != null) {
+							getUIMetaData(true).setSingleMetaData(LABEL_KEY, label, String.class);
+						}
+					}
+				}*/
 
 		@Override
 		public void setParameters(List<FlexoBehaviourParameter> someParameters) {

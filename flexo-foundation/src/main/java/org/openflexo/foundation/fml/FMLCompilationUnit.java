@@ -722,7 +722,7 @@ public interface FMLCompilationUnit extends FMLObject, FMLPrettyPrintable, Resou
 		private void searchNewEntriesForConcept(FlexoConcept concept) {
 			// checkAndRegisterLocalized(concept.getName());
 			for (FlexoBehaviour es : concept.getFlexoBehaviours()) {
-				checkAndRegisterLocalized(es.getLabel(), normalizedKey -> es.setLabel(normalizedKey));
+				// checkAndRegisterLocalized(es.getName(), normalizedKey -> es.setLabel(normalizedKey));
 				// checkAndRegisterLocalized(es.getDescription());
 				for (FlexoBehaviourParameter p : es.getParameters()) {
 					checkAndRegisterLocalized(p.getName());
