@@ -51,8 +51,6 @@ import org.openflexo.connie.type.ExplicitNullType;
 import org.openflexo.connie.type.TypeUtils;
 import org.openflexo.connie.type.UndefinedType;
 import org.openflexo.foundation.FlexoException;
-import org.openflexo.foundation.fml.FMLRepresentationContext;
-import org.openflexo.foundation.fml.FMLRepresentationContext.FMLRepresentationOutput;
 import org.openflexo.foundation.fml.binding.ControlGraphBindingModel;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext.ReturnException;
@@ -70,7 +68,6 @@ import org.openflexo.pamela.annotations.XMLElement;
 import org.openflexo.pamela.validation.ValidationError;
 import org.openflexo.pamela.validation.ValidationIssue;
 import org.openflexo.pamela.validation.ValidationRule;
-import org.openflexo.toolbox.StringUtils;
 
 @ModelEntity
 @ImplementationClass(ConditionalAction.ConditionalActionImpl.class)
@@ -169,27 +166,6 @@ public interface ConditionalAction extends ControlStructureAction, FMLControlGra
 		@Override
 		protected ControlGraphBindingModel<?> makeInferedBindingModel() {
 			return getBindingModel();
-		}
-
-		@Override
-		public String getFMLRepresentation(FMLRepresentationContext context) {
-			FMLRepresentationOutput out = new FMLRepresentationOutput(context);
-			out.append("if " + getCondition().toString() + "", context);
-			out.append(" {", context);
-			out.append(StringUtils.LINE_SEPARATOR, context);
-			if (getThenControlGraph() != null) {
-				out.append(getThenControlGraph().getFMLRepresentation(context), context, 1);
-				out.append(StringUtils.LINE_SEPARATOR, context);
-			}
-			out.append("}", context);
-			if (getElseControlGraph() != null) {
-				out.append(" else {", context);
-				out.append(StringUtils.LINE_SEPARATOR, context);
-				out.append(getElseControlGraph().getFMLRepresentation(context), context, 1);
-				out.append(StringUtils.LINE_SEPARATOR, context);
-				out.append("}", context);
-			}
-			return out.toString();
 		}
 
 		@Override

@@ -90,11 +90,6 @@ public interface NamespaceDeclaration extends FlexoObject, FMLPrettyPrintable {
 	public void setAbbrev(String abbrev);
 
 	public abstract class NamespaceDeclarationImpl extends FMLObjectImpl implements NamespaceDeclaration {
-		@Override
-		public String getFMLRepresentation(FMLRepresentationContext context) {
-			// TODO Auto-generated method stub
-			return null;
-		}
 
 		@Override
 		public BindingModel getBindingModel() {

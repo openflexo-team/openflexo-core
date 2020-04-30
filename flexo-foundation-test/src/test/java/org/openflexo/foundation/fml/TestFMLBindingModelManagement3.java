@@ -372,7 +372,7 @@ public class TestFMLBindingModelManagement3 extends OpenflexoProjectAtRunTimeTes
 
 		// assertEquals(3, creationScheme.getActions().size());
 
-		System.out.println("FML=\n" + creationScheme.getFlexoConcept().getFMLRepresentation());
+		System.out.println("FML=\n" + creationScheme.getFlexoConcept().getFMLPrettyPrint());
 
 	}
 
@@ -380,7 +380,7 @@ public class TestFMLBindingModelManagement3 extends OpenflexoProjectAtRunTimeTes
 	@TestOrder(5)
 	public void testViewPointIsValid() {
 
-		System.out.println("FML=" + virtualModel1.getFMLRepresentation());
+		System.out.println("FML=" + virtualModel1.getFMLPrettyPrint());
 
 		assertVirtualModelIsValid(viewPoint);
 
@@ -492,7 +492,7 @@ public class TestFMLBindingModelManagement3 extends OpenflexoProjectAtRunTimeTes
 		assertEquals(String.class, virtualModel3.getBindingModel().bindingVariableNamed("aStringInVM3").getType());
 		assertEquals((String) null, vmi3.execute("aStringInVM3"));
 
-		System.out.println("FML=" + virtualModel3.getFMLRepresentation());
+		System.out.println("FML=" + virtualModel3.getFMLPrettyPrint());
 
 		vmi3.setFlexoActor("toto", (FlexoRole) vmi3.getVirtualModel().getAccessibleProperty("aStringInVM3"));
 		assertEquals("toto", vmi3.execute("aStringInVM3"));
@@ -543,7 +543,7 @@ public class TestFMLBindingModelManagement3 extends OpenflexoProjectAtRunTimeTes
 		assertNotNull(creationScheme);
 
 		System.out.println("Instanciate using: ");
-		System.out.println(creationScheme.getFMLRepresentation());
+		System.out.println(creationScheme.getFMLPrettyPrint());
 
 		CreationSchemeAction creationSchemeCreationAction = new CreationSchemeAction(creationScheme, vmi1, null, editor);
 		assertNotNull(creationSchemeCreationAction);

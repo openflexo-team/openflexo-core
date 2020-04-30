@@ -49,8 +49,6 @@ import org.openflexo.connie.exception.NullReferenceException;
 import org.openflexo.connie.exception.TypeMismatchException;
 import org.openflexo.connie.type.TypeUtils;
 import org.openflexo.foundation.FlexoException;
-import org.openflexo.foundation.fml.FMLRepresentationContext;
-import org.openflexo.foundation.fml.FMLRepresentationContext.FMLRepresentationOutput;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext.ReturnException;
 import org.openflexo.pamela.annotations.DefineValidationRule;
@@ -64,7 +62,6 @@ import org.openflexo.pamela.annotations.XMLElement;
 import org.openflexo.pamela.validation.ValidationError;
 import org.openflexo.pamela.validation.ValidationIssue;
 import org.openflexo.pamela.validation.ValidationRule;
-import org.openflexo.toolbox.StringUtils;
 
 @ModelEntity
 @ImplementationClass(IncrementalIterationAction.IncrementalIterationActionImpl.class)
@@ -106,23 +103,6 @@ public interface IncrementalIterationAction extends AbstractIterationAction {
 		private DataBinding<Number> startValue;
 		private DataBinding<Number> exclusiveEndValue;
 		private DataBinding<Number> increment;
-
-		@Override
-		public String getFMLRepresentation(FMLRepresentationContext context) {
-			FMLRepresentationOutput out = new FMLRepresentationOutput(context);
-			out.append(
-					"for (" + org.openflexo.connie.type.TypeUtils.simpleRepresentation(getItemType()) + " " + getIteratorName() + "="
-							+ getStartValue() + " ; " + getIteratorName() + "<" + getExclusiveEndValue() + " ; " + getIncrement() + "++",
-					context);
-			out.append(") {", context);
-			out.append(StringUtils.LINE_SEPARATOR, context);
-			if (getControlGraph() != null) {
-				out.append(getControlGraph().getFMLRepresentation(context), context, 1);
-				out.append(StringUtils.LINE_SEPARATOR, context);
-			}
-			out.append("}", context);
-			return out.toString();
-		}
 
 		@Override
 		public DataBinding<Number> getStartValue() {

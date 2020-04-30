@@ -139,11 +139,6 @@ public interface ElementImportDeclaration extends FMLPrettyPrintable {
 		}
 
 		@Override
-		public String getFMLRepresentation(FMLRepresentationContext context) {
-			return "<not_implemented:" + getStringRepresentation() + ">";
-		}
-
-		@Override
 		public BindingModel getBindingModel() {
 			if (getCompilationUnit() != null) {
 				return getCompilationUnit().getBindingModel();

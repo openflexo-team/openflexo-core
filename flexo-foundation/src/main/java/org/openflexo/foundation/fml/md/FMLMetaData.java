@@ -42,7 +42,6 @@ import org.openflexo.connie.BindingModel;
 import org.openflexo.foundation.fml.FMLCompilationUnit;
 import org.openflexo.foundation.fml.FMLObject;
 import org.openflexo.foundation.fml.FMLPrettyPrintable;
-import org.openflexo.foundation.fml.FMLRepresentationContext;
 import org.openflexo.pamela.annotations.Getter;
 import org.openflexo.pamela.annotations.ImplementationClass;
 import org.openflexo.pamela.annotations.Import;
@@ -81,13 +80,6 @@ public interface FMLMetaData extends FMLObject, FMLPrettyPrintable {
 	public void setOwner(FMLObject anObject);
 
 	public static abstract class FMLMetaDataImpl extends FMLObjectImpl implements FMLMetaData {
-
-		@Override
-		public String getFMLRepresentation(FMLRepresentationContext context) {
-			// Not applicable
-			// TODO
-			return null;
-		}
 
 		@Override
 		public BindingModel getBindingModel() {

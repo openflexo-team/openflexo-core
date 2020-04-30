@@ -46,8 +46,6 @@ import java.util.logging.Logger;
 
 import org.openflexo.connie.type.ParameterizedTypeImpl;
 import org.openflexo.foundation.FlexoException;
-import org.openflexo.foundation.fml.FMLRepresentationContext;
-import org.openflexo.foundation.fml.FMLRepresentationContext.FMLRepresentationOutput;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext.ReturnException;
 import org.openflexo.foundation.resource.ResourceData;
@@ -121,7 +119,7 @@ public abstract interface AbstractFetchRequest<MS extends ModelSlot<RD>, RD exte
 
 		private static final Logger logger = Logger.getLogger(AbstractFetchRequestImpl.class.getPackage().getName());
 
-		protected String getWhereClausesFMLRepresentation(FMLRepresentationContext context) {
+		protected String getWhereClausesFMLRepresentation() {
 			if (getConditions().size() > 0) {
 				StringBuffer sb = new StringBuffer();
 				sb.append("where=");
@@ -197,16 +195,7 @@ public abstract interface AbstractFetchRequest<MS extends ModelSlot<RD>, RD exte
 
 		@Override
 		public String getParametersStringRepresentation() {
-			return "(" + getWhereClausesFMLRepresentation(null) + ")";
-		}
-
-		@Override
-		public String getFMLRepresentation(FMLRepresentationContext context) {
-			FMLRepresentationOutput out = new FMLRepresentationOutput(context);
-			out.append((getReceiver().isValid() ? getReceiver().toString() + "." : "") + getTechnologyAdapterIdentifier() + "::"
-					+ getImplementedInterface().getSimpleName()
-					+ (getConditions().size() > 0 ? " " + getWhereClausesFMLRepresentation(context) : "()"), context);
-			return out.toString();
+			return "(" + getWhereClausesFMLRepresentation() + ")";
 		}
 
 		@Override

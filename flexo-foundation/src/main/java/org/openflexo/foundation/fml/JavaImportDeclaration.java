@@ -119,11 +119,6 @@ public interface JavaImportDeclaration extends FMLPrettyPrintable {
 		}
 
 		@Override
-		public String getFMLRepresentation(FMLRepresentationContext context) {
-			return "<not_implemented:" + getStringRepresentation() + ">";
-		}
-
-		@Override
 		public BindingModel getBindingModel() {
 			// TODO Auto-generated method stub
 			return null;

@@ -52,7 +52,6 @@ import org.openflexo.connie.exception.TypeMismatchException;
 import org.openflexo.connie.expr.BindingValue;
 import org.openflexo.connie.type.CustomType;
 import org.openflexo.foundation.DataModification;
-import org.openflexo.foundation.fml.FMLRepresentationContext.FMLRepresentationOutput;
 import org.openflexo.foundation.fml.binding.FlexoPropertyPathElement;
 import org.openflexo.foundation.fml.binding.ModelSlotBindingVariable;
 import org.openflexo.foundation.fml.binding.ModelSlotPathElement;
@@ -493,36 +492,6 @@ public interface FlexoRole<T> extends FlexoProperty<T> {
 			}
 			return out.toString();
 		}*/
-
-		/**
-		 * Computes and return canonical FML representation of a role
-		 * 
-		 * <pre>
-		 * [public|private] [key] <ReturnType>[..] roleName with [TA::]RoleType(p1=v1,...,pn=vn);
-		 * </pre>
-		 * 
-		 */
-		@Override
-		public String getFMLRepresentation(FMLRepresentationContext context) {
-			FMLRepresentationOutput out = new FMLRepresentationOutput(context);
-			// out.append(getFMLAnnotation(context), context);
-			// out.append(StringUtils.LINE_SEPARATOR, context);
-			// if (detailedFMLSpecifications(context) == null) {
-			out.append("public " + context.serializeType(getResultingType()) + " " + getName() + ";", context);
-			/*}
-			else {
-				out.append("public " + TypeUtils.simpleRepresentation(getResultingType()) + " " + getName() + " {", context);
-				out.append(StringUtils.LINE_SEPARATOR, context);
-				// out.append(detailedFMLSpecifications(context), context, 1);
-				// out.append(StringUtils.LINE_SEPARATOR, context);
-				out.append("}", context);
-			}*/
-			return out.toString();
-		}
-
-		public String detailedFMLSpecifications(FMLRepresentationContext context) {
-			return null;
-		}
 
 		/**
 		 * Return a boolean indicating if this {@link FlexoRole} handles itself instantiation and management of related ActorReference

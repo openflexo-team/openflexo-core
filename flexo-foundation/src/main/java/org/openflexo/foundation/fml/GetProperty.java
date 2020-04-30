@@ -44,8 +44,6 @@ import java.lang.reflect.Type;
 import org.openflexo.connie.BindingModel;
 import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.type.TypeUtils;
-import org.openflexo.foundation.fml.FMLRepresentationContext.FMLRepresentationOutput;
-import org.openflexo.foundation.fml.controlgraph.EmptyControlGraph;
 import org.openflexo.foundation.fml.controlgraph.FMLControlGraph;
 import org.openflexo.foundation.fml.controlgraph.FMLControlGraphOwner;
 import org.openflexo.pamela.annotations.CloningStrategy;
@@ -178,25 +176,6 @@ public abstract interface GetProperty<T> extends FlexoProperty<T>, FMLControlGra
 			if (getGetControlGraph() instanceof FMLControlGraphOwner) {
 				((FMLControlGraphOwner) getGetControlGraph()).reduce();
 			}
-		}
-
-		private String getGetFMLAnnotation(FMLRepresentationContext context) {
-			return "@" + getImplementedInterface().getSimpleName() + "(value=" + '"' + getName() + '"' + ", access=get)";
-		}
-
-		@Override
-		public String getFMLRepresentation(FMLRepresentationContext context) {
-			FMLRepresentationOutput out = new FMLRepresentationOutput(context);
-			if (getGetControlGraph() != null && !(getGetControlGraph() instanceof EmptyControlGraph)) {
-				out.append(getGetFMLAnnotation(context), context);
-				out.append(StringUtils.LINE_SEPARATOR, context);
-				out.append("public " + TypeUtils.simpleRepresentation(getResultingType()) + " " + getGetAccessorName() + " {", context);
-				out.append(StringUtils.LINE_SEPARATOR, context);
-				out.append(getGetControlGraph().getFMLRepresentation(context), context, 1);
-				out.append(StringUtils.LINE_SEPARATOR, context);
-				out.append("}", context);
-			}
-			return out.toString();
 		}
 
 		private String getGetAccessorName() {

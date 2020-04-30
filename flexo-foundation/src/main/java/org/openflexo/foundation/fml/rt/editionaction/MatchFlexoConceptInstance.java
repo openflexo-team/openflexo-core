@@ -54,8 +54,6 @@ import org.openflexo.connie.DataBinding.BindingDefinitionType;
 import org.openflexo.connie.exception.NullReferenceException;
 import org.openflexo.connie.exception.TypeMismatchException;
 import org.openflexo.foundation.fml.CreationScheme;
-import org.openflexo.foundation.fml.FMLRepresentationContext;
-import org.openflexo.foundation.fml.FMLRepresentationContext.FMLRepresentationOutput;
 import org.openflexo.foundation.fml.FlexoBehaviourParameter;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoConceptInstanceType;
@@ -224,28 +222,10 @@ public interface MatchFlexoConceptInstance extends FMLRTAction<FlexoConceptInsta
 		@Override
 		public String getParametersStringRepresentation() {
 			return "(type=" + (getFlexoConceptType() != null ? getFlexoConceptType().getName() : "null") + ","
-					+ getMatchingCriteriasFMLRepresentation(null) + ")";
+					+ getMatchingCriteriasFMLRepresentation() + ")";
 		}
 
-		@Override
-		public String getFMLRepresentation(FMLRepresentationContext context) {
-			FMLRepresentationOutput out = new FMLRepresentationOutput(context);
-			/*if (getAssignation().isSet()) {
-				out.append(getAssignation().toString() + " = (", context);
-			}*/
-			out.append(getTechnologyAdapterIdentifier() + "::" + getImplementedInterface().getSimpleName() + " as "
-					+ (getFlexoConceptType() != null ? getFlexoConceptType().getName() : "no type specified") + " "
-					+ getMatchingCriteriasFMLRepresentation(context) + " using "
-					+ (getCreationScheme() != null ? getCreationScheme().getFlexoConcept().getName() : "no creation scheme specified") + ":"
-					+ (getCreationScheme() != null ? getCreationScheme().getName() : "no creation scheme specified") + "("
-					+ getCreationSchemeParametersFMLRepresentation(context) + ")", context);
-			/*if (getAssignation().isSet()) {
-				out.append(")", context);
-			}*/
-			return out.toString();
-		}
-
-		protected String getMatchingCriteriasFMLRepresentation(FMLRepresentationContext context) {
+		protected String getMatchingCriteriasFMLRepresentation() {
 
 			List<MatchingCriteria> matchingCriterias = getMatchingCriterias();
 			if (matchingCriterias.size() > 0) {
@@ -271,7 +251,7 @@ public interface MatchFlexoConceptInstance extends FMLRTAction<FlexoConceptInsta
 			return null;
 		}
 
-		protected String getCreationSchemeParametersFMLRepresentation(FMLRepresentationContext context) {
+		protected String getCreationSchemeParametersFMLRepresentation() {
 			if (getParameters().size() > 0) {
 				StringBuffer sb = new StringBuffer();
 				boolean isFirst = true;

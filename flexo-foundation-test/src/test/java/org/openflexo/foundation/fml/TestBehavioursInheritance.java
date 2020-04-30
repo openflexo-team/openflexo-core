@@ -266,7 +266,7 @@ public class TestBehavioursInheritance extends OpenflexoProjectAtRunTimeTestCase
 		assertTrue(createM6InA.hasActionExecutionSucceeded());
 		assertNotNull(m6InA = createM6InA.getNewFlexoBehaviour());
 
-		System.out.println("FML=" + virtualModel.getFMLRepresentation());
+		System.out.println("FML=" + virtualModel.getFMLPrettyPrint());
 
 		assertEquals(4, flexoConceptA.getFlexoBehaviours().size());
 		assertEquals(4, flexoConceptA.getDeclaredFlexoBehaviours().size());
@@ -323,7 +323,7 @@ public class TestBehavioursInheritance extends OpenflexoProjectAtRunTimeTestCase
 		assertTrue(createM6InB.hasActionExecutionSucceeded());
 		assertNotNull(m6InB = createM6InB.getNewFlexoBehaviour());
 
-		System.out.println("FML=" + virtualModel.getFMLRepresentation());
+		System.out.println("FML=" + virtualModel.getFMLPrettyPrint());
 
 		assertEquals(3, flexoConceptB.getFlexoBehaviours().size());
 		assertEquals(3, flexoConceptB.getDeclaredFlexoBehaviours().size());
@@ -390,7 +390,7 @@ public class TestBehavioursInheritance extends OpenflexoProjectAtRunTimeTestCase
 		assertTrue(createM6InC.hasActionExecutionSucceeded());
 		assertNotNull(m6InC = createM6InC.getNewFlexoBehaviour());
 
-		System.out.println("FML=" + virtualModel.getFMLRepresentation());
+		System.out.println("FML=" + virtualModel.getFMLPrettyPrint());
 
 		assertEquals(4, flexoConceptC.getFlexoBehaviours().size());
 		assertEquals(4, flexoConceptC.getDeclaredFlexoBehaviours().size());

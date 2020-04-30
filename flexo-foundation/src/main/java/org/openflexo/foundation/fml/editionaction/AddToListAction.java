@@ -52,8 +52,6 @@ import org.openflexo.connie.type.ParameterizedTypeImpl;
 import org.openflexo.connie.type.TypeUtils;
 import org.openflexo.connie.type.WilcardTypeImpl;
 import org.openflexo.foundation.FlexoException;
-import org.openflexo.foundation.fml.FMLRepresentationContext;
-import org.openflexo.foundation.fml.FMLRepresentationContext.FMLRepresentationOutput;
 import org.openflexo.foundation.fml.controlgraph.FMLControlGraph;
 import org.openflexo.foundation.fml.controlgraph.FMLControlGraphOwner;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
@@ -116,14 +114,6 @@ public interface AddToListAction<T> extends AssignableAction<T>, FMLControlGraph
 
 		private DataBinding<T> value;
 		private DataBinding<? extends List<T>> list;
-
-		@Override
-		public String getFMLRepresentation(FMLRepresentationContext context) {
-			FMLRepresentationOutput out = new FMLRepresentationOutput(context);
-			out.append((getList() != null ? getList().toString() + "." : "") + "add("
-					+ (getAssignableAction() != null ? getAssignableAction().getStringRepresentation() : "") + ")", context);
-			return out.toString();
-		}
 
 		@Override
 		public String getStringRepresentation() {

@@ -55,7 +55,6 @@ import javax.swing.ImageIcon;
 import org.openflexo.connie.Bindable;
 import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.type.TypeUtils;
-import org.openflexo.foundation.fml.FMLRepresentationContext.FMLRepresentationOutput;
 import org.openflexo.foundation.fml.FlexoConceptBehaviouralFacet.FlexoConceptBehaviouralFacetImpl;
 import org.openflexo.foundation.fml.FlexoConceptStructuralFacet.FlexoConceptStructuralFacetImpl;
 import org.openflexo.foundation.fml.action.CreateFlexoBehaviour;
@@ -95,7 +94,6 @@ import org.openflexo.rm.BasicResourceImpl.LocatorNotFoundException;
 import org.openflexo.rm.FileResourceImpl;
 import org.openflexo.rm.Resource;
 import org.openflexo.swing.ImageUtils;
-import org.openflexo.toolbox.StringUtils;
 
 /**
  * An FlexoConcept aggregates modelling elements from different modelling element resources (models, metamodels, graphical representation,
@@ -1880,103 +1878,6 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 				}
 			}
 			return false;
-		}
-
-		protected String getExtends(FMLRepresentationContext context) {
-			if (getParentFlexoConcepts().size() > 0) {
-				StringBuffer sb = new StringBuffer();
-				sb.append(" extends ");
-				boolean isFirst = true;
-				for (FlexoConcept parent : getParentFlexoConcepts()) {
-					sb.append((isFirst ? "" : ",") + parent.getName());
-					isFirst = false;
-				}
-				sb.append(" ");
-				return sb.toString();
-			}
-			return "";
-		}
-
-		protected String getFMLAnnotation(FMLRepresentationContext context) {
-			return "@FlexoConcept";
-		}
-
-		protected String getFMLDocHeader(FMLRepresentationContext context) {
-			FMLRepresentationOutput out = new FMLRepresentationOutput(context);
-			out.append("/**" + StringUtils.LINE_SEPARATOR, context);
-			if (getDescription() != null && StringUtils.isNotEmpty(getDescription().trim())) {
-				out.append(" * " + getDescription().trim() + StringUtils.LINE_SEPARATOR, context);
-			}
-			out.append(" * " + StringUtils.LINE_SEPARATOR, context);
-			if (StringUtils.isNotEmpty(getAuthor())) {
-				out.append(" * @author " + getAuthor() + StringUtils.LINE_SEPARATOR, context);
-			}
-			/*if (this instanceof VirtualModel) {
-				out.append(" * @version " + ((VirtualModel) this).getVersion() + StringUtils.LINE_SEPARATOR, context);
-			}*/
-			out.append(" */" + StringUtils.LINE_SEPARATOR, context);
-			return out.toString();
-		}
-
-		protected String getFMLDeclaredProperties(FMLRepresentationContext context) {
-			FMLRepresentationOutput out = new FMLRepresentationOutput(context);
-			if (getDeclaredProperties().size() > 0) {
-				out.append(StringUtils.LINE_SEPARATOR, context);
-				for (FlexoProperty<?> pr : getDeclaredProperties()) {
-					out.append(pr.getFMLRepresentation(context), context, 1);
-					out.append(StringUtils.LINE_SEPARATOR, context);
-				}
-			}
-			return out.toString();
-		}
-
-		protected String getFMLDeclaredBehaviours(FMLRepresentationContext context) {
-			FMLRepresentationOutput out = new FMLRepresentationOutput(context);
-			if (getFlexoBehaviours().size() > 0) {
-				out.append(StringUtils.LINE_SEPARATOR, context);
-				for (FlexoBehaviour es : getFlexoBehaviours()) {
-					out.append(es.getFMLRepresentation(context), context, 1);
-					out.append(StringUtils.LINE_SEPARATOR, context);
-				}
-			}
-			return out.toString();
-		}
-
-		protected String getFMLDeclaredInnerConcepts(FMLRepresentationContext context) {
-			FMLRepresentationOutput out = new FMLRepresentationOutput(context);
-			if (getEmbeddedFlexoConcepts().size() > 0) {
-				out.append(StringUtils.LINE_SEPARATOR, context);
-				for (FlexoConcept ep : getEmbeddedFlexoConcepts()) {
-					out.append(ep.getFMLRepresentation(context), context, 1);
-					out.append(StringUtils.LINE_SEPARATOR, context);
-				}
-			}
-			return out.toString();
-		}
-
-		@Override
-		public String getFMLRepresentation(FMLRepresentationContext context) {
-			FMLRepresentationOutput out = new FMLRepresentationOutput(context);
-
-			if (StringUtils.isNotEmpty(getDescription())) {
-				out.append(getFMLDocHeader(context), context);
-			}
-
-			out.append(getFMLAnnotation(context), context);
-			out.append(StringUtils.LINE_SEPARATOR, context);
-
-			out.append("public class " + getName() + getExtends(context), context);
-			out.append(" {" + StringUtils.LINE_SEPARATOR, context);
-
-			out.append(getFMLDeclaredProperties(context), context);
-
-			out.append(getFMLDeclaredBehaviours(context), context);
-
-			out.append(getFMLDeclaredInnerConcepts(context), context);
-
-			out.append("}" + StringUtils.LINE_SEPARATOR, context);
-
-			return out.toString();
 		}
 
 		/**

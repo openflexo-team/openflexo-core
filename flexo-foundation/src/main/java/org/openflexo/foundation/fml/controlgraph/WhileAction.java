@@ -48,12 +48,11 @@ import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.exception.NullReferenceException;
 import org.openflexo.connie.exception.TypeMismatchException;
 import org.openflexo.foundation.FlexoException;
-import org.openflexo.foundation.fml.FMLRepresentationContext;
-import org.openflexo.foundation.fml.FMLRepresentationContext.FMLRepresentationOutput;
 import org.openflexo.foundation.fml.binding.ControlGraphBindingModel;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext.ReturnException;
 import org.openflexo.pamela.annotations.CloningStrategy;
+import org.openflexo.pamela.annotations.CloningStrategy.StrategyType;
 import org.openflexo.pamela.annotations.DefineValidationRule;
 import org.openflexo.pamela.annotations.Embedded;
 import org.openflexo.pamela.annotations.Getter;
@@ -63,8 +62,6 @@ import org.openflexo.pamela.annotations.PropertyIdentifier;
 import org.openflexo.pamela.annotations.Setter;
 import org.openflexo.pamela.annotations.XMLAttribute;
 import org.openflexo.pamela.annotations.XMLElement;
-import org.openflexo.pamela.annotations.CloningStrategy.StrategyType;
-import org.openflexo.toolbox.StringUtils;
 
 @ModelEntity
 @ImplementationClass(WhileAction.WhileActionImpl.class)
@@ -143,32 +140,6 @@ public interface WhileAction extends ControlStructureAction, FMLControlGraphOwne
 		@Override
 		protected ControlGraphBindingModel<?> makeInferedBindingModel() {
 			return getBindingModel();
-		}
-
-		@Override
-		public String getFMLRepresentation(FMLRepresentationContext context) {
-			FMLRepresentationOutput out = new FMLRepresentationOutput(context);
-			if (getEvaluateConditionAfterCycle()) {
-				out.append("do {", context);
-				out.append(StringUtils.LINE_SEPARATOR, context);
-				if (getControlGraph() != null) {
-					out.append(getControlGraph().getFMLRepresentation(context), context, 1);
-					out.append(StringUtils.LINE_SEPARATOR, context);
-				}
-				out.append("} while " + getCondition().toString() + "", context);
-			}
-			else {
-				out.append("while " + getCondition().toString() + "", context);
-				out.append(" {", context);
-				out.append(StringUtils.LINE_SEPARATOR, context);
-				if (getControlGraph() != null) {
-					out.append(getControlGraph().getFMLRepresentation(context), context, 1);
-					out.append(StringUtils.LINE_SEPARATOR, context);
-				}
-				out.append("}", context);
-			}
-
-			return out.toString();
 		}
 
 		@Override

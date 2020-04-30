@@ -42,8 +42,6 @@ import java.beans.PropertyChangeSupport;
 import java.lang.reflect.Type;
 
 import org.openflexo.connie.DataBinding;
-import org.openflexo.connie.type.TypeUtils;
-import org.openflexo.foundation.fml.FMLRepresentationContext.FMLRepresentationOutput;
 import org.openflexo.pamela.annotations.Getter;
 import org.openflexo.pamela.annotations.ImplementationClass;
 import org.openflexo.pamela.annotations.ModelEntity;
@@ -51,7 +49,6 @@ import org.openflexo.pamela.annotations.PropertyIdentifier;
 import org.openflexo.pamela.annotations.Setter;
 import org.openflexo.pamela.annotations.XMLAttribute;
 import org.openflexo.pamela.annotations.XMLElement;
-import org.openflexo.toolbox.StringUtils;
 
 /**
  * A {@link AbstractProperty} represents a pure declaration of a {@link FlexoProperty} with no implementation<br>
@@ -103,15 +100,6 @@ public abstract interface AbstractProperty<T> extends FlexoProperty<T> {
 		@Override
 		public boolean isAbstract() {
 			return true;
-		}
-
-		@Override
-		public final String getFMLRepresentation(FMLRepresentationContext context) {
-			FMLRepresentationOutput out = new FMLRepresentationOutput(context);
-			// out.append(getFMLAnnotation(context), context);
-			out.append(StringUtils.LINE_SEPARATOR, context);
-			out.append("abstract " + TypeUtils.simpleRepresentation(getResultingType()) + " " + getName() + ";", context);
-			return out.toString();
 		}
 
 		/**

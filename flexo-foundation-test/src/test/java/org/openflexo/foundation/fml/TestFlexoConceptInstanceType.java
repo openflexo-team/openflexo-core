@@ -215,7 +215,7 @@ public class TestFlexoConceptInstanceType extends OpenflexoProjectAtRunTimeTestC
 		// Because concept define some abstract properties, abstract is required
 		assertTrue(flexoConceptA.abstractRequired());
 
-		System.out.println("FML=" + virtualModel.getFMLRepresentation());
+		System.out.println("FML=" + virtualModel.getFMLPrettyPrint());
 
 		virtualModel.getResource().save();
 
@@ -263,7 +263,7 @@ public class TestFlexoConceptInstanceType extends OpenflexoProjectAtRunTimeTestC
 		// Because concept define some abstract properties, it is abstract
 		assertTrue(flexoConceptB.abstractRequired());
 
-		System.out.println("FML=" + virtualModel.getFMLRepresentation());
+		System.out.println("FML=" + virtualModel.getFMLPrettyPrint());
 
 		virtualModel.getResource().save();
 
@@ -313,7 +313,7 @@ public class TestFlexoConceptInstanceType extends OpenflexoProjectAtRunTimeTestC
 		// Because concept define no abstract properties, it is not abstract
 		assertFalse(flexoConceptC.isAbstract());
 
-		System.out.println("FML=" + virtualModel.getFMLRepresentation());
+		System.out.println("FML=" + virtualModel.getFMLPrettyPrint());
 
 		virtualModel.getResource().save();
 

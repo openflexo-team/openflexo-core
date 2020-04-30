@@ -571,7 +571,7 @@ public class TestFMLBindingModelManagement extends OpenflexoProjectAtRunTimeTest
 		flexoConceptD.addToParentFlexoConcepts(flexoConceptC);
 		flexoConceptD.addToParentFlexoConcepts(flexoConceptB);
 
-		System.out.println("FML: " + virtualModel1.getFMLRepresentation());
+		System.out.println("FML: " + virtualModel1.getFMLPrettyPrint());
 		System.out.println("BM=" + flexoConceptD.getBindingModel());
 
 		assertEquals(10, flexoConceptD.getBindingModel().getBindingVariablesCount());
@@ -764,7 +764,7 @@ public class TestFMLBindingModelManagement extends OpenflexoProjectAtRunTimeTest
 
 		// assertEquals(3, creationScheme.getActions().size());
 
-		System.out.println("FML=\n" + creationScheme.getFlexoConcept().getFMLRepresentation());
+		System.out.println("FML=\n" + creationScheme.getFlexoConcept().getFMLPrettyPrint());
 
 		System.out.println("BM=" + creationScheme.getBindingModel());
 
@@ -931,7 +931,7 @@ public class TestFMLBindingModelManagement extends OpenflexoProjectAtRunTimeTest
 
 		FMLModelFactory factory = actionScheme.getFMLModelFactory();
 		System.out.println("actionScheme =\n" + factory.stringRepresentation(actionScheme));
-		System.out.println("FML=\n" + actionScheme.getFMLRepresentation());
+		System.out.println("FML=\n" + actionScheme.getFMLPrettyPrint());
 		System.out.println("bm=" + declareFlexoRoleInIteration1.getInferedBindingModel());
 		System.out.println("iteration.getControlGraph()=" + iteration.getControlGraph());
 		System.out.println("declareFlexoRoleInIteration1=" + declareFlexoRoleInIteration1);
@@ -955,7 +955,7 @@ public class TestFMLBindingModelManagement extends OpenflexoProjectAtRunTimeTest
 		((ExpressionAction<?>) declareFlexoRoleInIteration2.getAssignableAction())
 				.setExpression(new DataBinding<>("fci.toString.substring(3,4) != aStringInA"));
 
-		System.out.println("FML=\n" + actionScheme.getFMLRepresentation());
+		System.out.println("FML=\n" + actionScheme.getFMLPrettyPrint());
 
 		assertEquals(8, declareFlexoRoleInIteration2.getBindingModel().getBindingVariablesCount());
 		assertNotNull(declareFlexoRoleInIteration2.getBindingModel().bindingVariableNamed("fci"));
@@ -984,7 +984,7 @@ public class TestFMLBindingModelManagement extends OpenflexoProjectAtRunTimeTest
 
 		System.out.println(factory.stringRepresentation(actionScheme));
 
-		System.out.println("FML=\n" + actionScheme.getFMLRepresentation());
+		System.out.println("FML=\n" + actionScheme.getFMLPrettyPrint());
 
 		assertTrue(actionScheme.getControlGraph() instanceof Sequence);
 		assertEquals(2, ((Sequence) actionScheme.getControlGraph()).getFlattenedSequence().size());
@@ -1001,7 +1001,7 @@ public class TestFMLBindingModelManagement extends OpenflexoProjectAtRunTimeTest
 				((ExpressionAction<?>) declareFlexoRoleInIteration2.getAssignableAction()).getExpression().toString());
 		assertTrue(((ExpressionAction<?>) declareFlexoRoleInIteration2.getAssignableAction()).getExpression().isValid());
 
-		System.out.println("FML=\n" + actionScheme.getFMLRepresentation());
+		System.out.println("FML=\n" + actionScheme.getFMLPrettyPrint());
 
 		FMLControlGraphOwner owner = declareFlexoRoleInIteration2.getOwner();
 		String ownerContext = declareFlexoRoleInIteration2.getOwnerContext();
@@ -1106,7 +1106,7 @@ public class TestFMLBindingModelManagement extends OpenflexoProjectAtRunTimeTest
 		FetchRequestCondition condition2 = selectFlexoConceptInstance.createCondition();
 		condition2.setCondition(new DataBinding<>("selected.aStringInA = parameters.aString"));
 
-		System.out.println("FML: " + actionScheme.getFMLRepresentation());
+		System.out.println("FML: " + actionScheme.getFMLPrettyPrint());
 		System.out.println("BM: " + selectFlexoConceptInstance.getBindingModel());
 		System.out.println("BM2: " + condition1.getBindingModel());
 
@@ -1254,7 +1254,7 @@ public class TestFMLBindingModelManagement extends OpenflexoProjectAtRunTimeTest
 		assertTrue(assignation2.getAssignation().isValid());
 		assertTrue(((ExpressionAction<?>) assignation2.getAssignableAction()).getExpression().isValid());
 
-		// System.out.println("FML: " + actionScheme.getFMLRepresentation());
+		// System.out.println("FML: " + actionScheme.getFMLPrettyPrint());
 
 		assertEquals("myConceptInstance.aStringInA", assignation2.getAssignation().toString());
 
@@ -1397,7 +1397,7 @@ public class TestFMLBindingModelManagement extends OpenflexoProjectAtRunTimeTest
 		assertTrue(((ExpressionAction<?>) action2.getAssignableAction()).getExpression().isValid());
 
 		assertNotNull(actionScheme);
-		System.out.println("FML=" + actionScheme.getFMLRepresentation());
+		System.out.println("FML=" + actionScheme.getFMLPrettyPrint());
 
 		matchFlexoConceptInstance.setCreationScheme(creationScheme);
 
@@ -1420,7 +1420,7 @@ public class TestFMLBindingModelManagement extends OpenflexoProjectAtRunTimeTest
 		MatchingCriteria criteria1 = matchFlexoConceptInstance.addToMatchingCriteria(flexoConceptA.getAccessibleProperty("aStringInA"),
 				new DataBinding<>("item.aStringInA"));
 
-		System.out.println("FML=" + actionScheme.getFMLRepresentation());
+		System.out.println("FML=" + actionScheme.getFMLPrettyPrint());
 
 		assertTrue(criteria1.getValue().isValid());
 
@@ -1497,7 +1497,7 @@ public class TestFMLBindingModelManagement extends OpenflexoProjectAtRunTimeTest
 
 		assertEquals(8, createFCIParam1.getBindingModel().getBindingVariablesCount());
 
-		System.out.println("FML: " + actionScheme.getFMLRepresentation());
+		System.out.println("FML: " + actionScheme.getFMLPrettyPrint());
 
 	}
 
@@ -1561,7 +1561,7 @@ public class TestFMLBindingModelManagement extends OpenflexoProjectAtRunTimeTest
 	@TestOrder(19)
 	public void testViewPointIsValid() {
 
-		System.out.println("FML=" + virtualModel1.getFMLRepresentation());
+		System.out.println("FML=" + virtualModel1.getFMLPrettyPrint());
 
 		assertVirtualModelIsValid(viewPoint);
 
@@ -1688,7 +1688,7 @@ public class TestFMLBindingModelManagement extends OpenflexoProjectAtRunTimeTest
 		checkBindingVariableAccess("aStringInVM3", virtualModel3, vmi3, null);
 		assertEquals((String) null, vmi3.execute("aStringInVM3"));
 
-		System.out.println("FML=" + virtualModel3.getFMLRepresentation());
+		System.out.println("FML=" + virtualModel3.getFMLPrettyPrint());
 
 		vmi3.setFlexoActor("toto", (FlexoRole) vmi3.getVirtualModel().getAccessibleProperty("aStringInVM3"));
 		checkBindingVariableAccess("aStringInVM3", virtualModel3, vmi3, "toto");
@@ -1713,7 +1713,7 @@ public class TestFMLBindingModelManagement extends OpenflexoProjectAtRunTimeTest
 		assertNotNull(creationScheme);
 
 		System.out.println("Instanciate using: ");
-		System.out.println(creationScheme.getFMLRepresentation());
+		System.out.println(creationScheme.getFMLPrettyPrint());
 
 		CreationSchemeAction creationSchemeCreationAction = new CreationSchemeAction(creationScheme, vmi1, null, editor);
 		assertNotNull(creationSchemeCreationAction);
@@ -1782,7 +1782,7 @@ public class TestFMLBindingModelManagement extends OpenflexoProjectAtRunTimeTest
 
 		System.out.println("Applying " + actionScheme.getFMLModelFactory().stringRepresentation(actionScheme));
 
-		System.out.println("Soit en FML:\n" + actionScheme.getFMLRepresentation());
+		System.out.println("Soit en FML:\n" + actionScheme.getFMLPrettyPrint());
 
 		ActionSchemeActionFactory actionType = new ActionSchemeActionFactory(actionScheme, fci);
 

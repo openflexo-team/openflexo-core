@@ -153,7 +153,7 @@ public interface AbstractSelectVirtualModelInstance<VMI extends VirtualModelInst
 
 		@Override
 		public String getParametersStringRepresentation() {
-			String whereClauses = getWhereClausesFMLRepresentation(null);
+			String whereClauses = getWhereClausesFMLRepresentation();
 			return "(type=" + (getVirtualModelType() != null ? getVirtualModelType().getName() : "null")
 					+ (whereClauses != null ? "," + whereClauses : "") + ")";
 		}

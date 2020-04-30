@@ -296,7 +296,7 @@ public class TestControlGraph extends OpenflexoTestCase {
 		assertEquals(creationScheme, seq2.getRootOwner());
 
 		System.out.println("creationScheme:\n" + factory.stringRepresentation(creationScheme));
-		System.out.println("creationScheme.getControlGraph()=\n" + creationScheme.getControlGraph().getFMLRepresentation());
+		System.out.println("creationScheme.getControlGraph()=\n" + creationScheme.getControlGraph().getFMLPrettyPrint());
 
 		// We check that getFlattenedSequence() is correct for a chained
 		// sequence structure
@@ -307,7 +307,7 @@ public class TestControlGraph extends OpenflexoTestCase {
 		action2.delete();
 
 		System.out.println("creationScheme:\n" + factory.stringRepresentation(creationScheme));
-		System.out.println("creationScheme.getControlGraph()=\n" + creationScheme.getControlGraph().getFMLRepresentation());
+		System.out.println("creationScheme.getControlGraph()=\n" + creationScheme.getControlGraph().getFMLPrettyPrint());
 
 		assertEquals(2, seq1.getFlattenedSequence().size());
 		assertSameList(seq1.getFlattenedSequence(), action1, action3);

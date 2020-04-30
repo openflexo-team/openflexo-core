@@ -102,13 +102,13 @@ public class TestInferedTypes extends OpenflexoTestCase {
 
 		assertNotNull(viewPoint);
 
-		System.out.println("FML: " + viewPoint.getFMLRepresentation());
+		// System.out.println("FML: " + viewPoint.getFMLPrettyPrint());
 
 		assertNotNull(viewPoint.getDeclaredProperty("property"));
 		GetProperty<?> p = (GetProperty<?>) viewPoint.getDeclaredProperty("property");
-		
-		System.out.println("Type: "+p.getType());
-		
+
+		System.out.println("Type: " + p.getType());
+
 		assertTrue(p.getType() instanceof VirtualModelInstanceType);
 		assertSame(viewPoint, ((VirtualModelInstanceType) p.getType()).getVirtualModel());
 	}

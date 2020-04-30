@@ -95,13 +95,6 @@ public interface UseModelSlotDeclaration extends FlexoObject, FMLPrettyPrintable
 
 	public abstract class UseModelSlotDeclarationImpl extends FMLObjectImpl implements UseModelSlotDeclaration {
 
-		@Deprecated
-		@Override
-		public String getFMLRepresentation(FMLRepresentationContext context) {
-			// TODO Auto-generated method stub
-			return null;
-		}
-
 		@Override
 		public BindingModel getBindingModel() {
 			// TODO Auto-generated method stub

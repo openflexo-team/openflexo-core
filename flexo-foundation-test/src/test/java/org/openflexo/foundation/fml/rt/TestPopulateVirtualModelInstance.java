@@ -289,7 +289,7 @@ public class TestPopulateVirtualModelInstance extends OpenflexoProjectAtRunTimeT
 
 		System.out.println("Saved: " + virtualModel.getResource().getIODelegate().toString());
 
-		System.out.println("FML=\n" + virtualModel.getFMLRepresentation());
+		System.out.println("FML=\n" + virtualModel.getFMLPrettyPrint());
 
 		virtualModel.getResource().save();
 

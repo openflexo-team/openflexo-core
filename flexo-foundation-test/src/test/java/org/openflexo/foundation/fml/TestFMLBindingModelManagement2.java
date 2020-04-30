@@ -398,7 +398,7 @@ public class TestFMLBindingModelManagement2 extends OpenflexoProjectAtRunTimeTes
 		assertNotNull(assignation1.getInferedBindingModel().bindingVariableNamed("name"));
 		assertEquals(String.class, assignation1.getInferedBindingModel().bindingVariableNamed("name").getType());
 
-		System.out.println("FML: " + actionScheme.getFMLRepresentation());
+		System.out.println("FML: " + actionScheme.getFMLPrettyPrint());
 	}
 
 	@Test
@@ -438,7 +438,7 @@ public class TestFMLBindingModelManagement2 extends OpenflexoProjectAtRunTimeTes
 		FetchRequestCondition condition1 = selectFlexoConceptInstance.createCondition();
 		condition1.setCondition(new DataBinding<Boolean>("selected.aBooleanInA = !(parameters.aBoolean)"));
 
-		System.out.println("FML: " + actionScheme.getFMLRepresentation());
+		System.out.println("FML: " + actionScheme.getFMLPrettyPrint());
 
 		assertEquals(7, iteration2.getBindingModel().getBindingVariablesCount());
 
@@ -453,7 +453,7 @@ public class TestFMLBindingModelManagement2 extends OpenflexoProjectAtRunTimeTes
 		assertEquals(FlexoConceptInstanceType.getFlexoConceptInstanceType(flexoConcept),
 				condition1.getBindingModel().bindingVariableNamed(FetchRequestCondition.SELECTED).getType());
 
-		System.out.println("FML: " + actionScheme.getFMLRepresentation());
+		System.out.println("FML: " + actionScheme.getFMLPrettyPrint());
 
 	}
 
@@ -477,10 +477,10 @@ public class TestFMLBindingModelManagement2 extends OpenflexoProjectAtRunTimeTes
 		// ...}
 		// }
 
-		System.out.println("FML WAS : " + actionScheme.getFMLRepresentation());
+		System.out.println("FML WAS : " + actionScheme.getFMLPrettyPrint());
 
-		System.out.println("Iteration1: " + iteration1.getFMLRepresentation());
-		System.out.println("Iteration2: " + iteration2.getFMLRepresentation());
+		System.out.println("Iteration1: " + iteration1.getFMLPrettyPrint());
+		System.out.println("Iteration2: " + iteration2.getFMLPrettyPrint());
 
 		FMLControlGraph cg = iteration1.getControlGraph();
 		iteration1.setControlGraph(null);
@@ -488,12 +488,12 @@ public class TestFMLBindingModelManagement2 extends OpenflexoProjectAtRunTimeTes
 
 		System.out.println("CG is a " + cg.getClass());
 
-		System.out.println("FML NOW : " + actionScheme.getFMLRepresentation());
+		System.out.println("FML NOW : " + actionScheme.getFMLPrettyPrint());
 
 		assertEquals(iteration2, cg.getOwner());
 
-		System.out.println("Assignation1: " + assignation1 + " FML=" + assignation1.getFMLRepresentation());
-		System.out.println("Assignation2: " + assignation2 + " FML=" + assignation2.getFMLRepresentation());
+		System.out.println("Assignation1: " + assignation1 + " FML=" + assignation1.getFMLPrettyPrint());
+		System.out.println("Assignation2: " + assignation2 + " FML=" + assignation2.getFMLPrettyPrint());
 
 		assertEquals(iteration2.getInferedBindingModel(), assignation1.getBindingModel().getBaseBindingModel());
 		assertEquals(iteration2.getInferedBindingModel(), assignation2.getBindingModel().getBaseBindingModel().getBaseBindingModel());
@@ -514,7 +514,7 @@ public class TestFMLBindingModelManagement2 extends OpenflexoProjectAtRunTimeTes
 		assignation2.setAssignation(new DataBinding<String>("item2.aStringInA"));
 		assertTrue(assignation2.getAssignation().isValid());
 
-		System.out.println("FML: " + actionScheme.getFMLRepresentation());
+		System.out.println("FML: " + actionScheme.getFMLPrettyPrint());
 	}
 
 	@Test

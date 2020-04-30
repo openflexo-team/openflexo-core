@@ -54,7 +54,6 @@ import org.openflexo.connie.exception.TypeMismatchException;
 import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.fml.CreationScheme;
 import org.openflexo.foundation.fml.FMLCompilationUnit;
-import org.openflexo.foundation.fml.FMLRepresentationContext;
 import org.openflexo.foundation.fml.FlexoBehaviourParameter;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoConceptInstanceRole;
@@ -735,14 +734,6 @@ public interface AbstractAddFlexoConceptInstance<FCI extends FlexoConceptInstanc
 				return getFlexoConceptType().getName() + "." + getCreationScheme().getName() + "(" + getParameterValuesAsString() + ")";
 			}
 			return super.getStringRepresentation();
-		}
-
-		@Override
-		public String getFMLRepresentation(FMLRepresentationContext context) {
-			if (getFlexoConceptType() != null && getCreationScheme() != null) {
-				return getFlexoConceptType().getName() + "." + getCreationScheme().getName() + "(" + getParameterValuesAsString() + ")";
-			}
-			return super.getFMLRepresentation(context);
 		}
 
 		protected String getParameterValuesAsString() {

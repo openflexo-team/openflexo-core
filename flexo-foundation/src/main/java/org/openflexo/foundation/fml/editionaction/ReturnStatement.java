@@ -41,8 +41,6 @@ package org.openflexo.foundation.fml.editionaction;
 import java.lang.reflect.Type;
 
 import org.openflexo.foundation.FlexoException;
-import org.openflexo.foundation.fml.FMLRepresentationContext;
-import org.openflexo.foundation.fml.FMLRepresentationContext.FMLRepresentationOutput;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext.ReturnException;
 import org.openflexo.pamela.annotations.ImplementationClass;
@@ -73,13 +71,6 @@ public interface ReturnStatement<T> extends AbstractAssignationAction<T> {
 		public T execute(RunTimeEvaluationContext evaluationContext) throws ReturnException, FlexoException {
 			T value = getAssignationValue(evaluationContext);
 			throw new ReturnException(value);
-		}
-
-		@Override
-		public String getFMLRepresentation(FMLRepresentationContext context) {
-			FMLRepresentationOutput out = new FMLRepresentationOutput(context);
-			out.append("return " + (getAssignableAction() != null ? getAssignableAction().getFMLRepresentation() : "") + ";", context);
-			return out.toString();
 		}
 
 		@Override

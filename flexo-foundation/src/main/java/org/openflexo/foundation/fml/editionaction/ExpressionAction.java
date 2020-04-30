@@ -46,7 +46,6 @@ import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.exception.NullReferenceException;
 import org.openflexo.connie.type.UndefinedType;
 import org.openflexo.foundation.FlexoException;
-import org.openflexo.foundation.fml.FMLRepresentationContext;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
 import org.openflexo.pamela.annotations.DefineValidationRule;
 import org.openflexo.pamela.annotations.Getter;
@@ -246,11 +245,6 @@ public interface ExpressionAction<T> extends AssignableAction<T> {
 				e.printStackTrace();
 				throw new FlexoException(e);
 			}
-		}
-
-		@Override
-		public String getFMLRepresentation(FMLRepresentationContext context) {
-			return getExpression().toString();
 		}
 
 		@Override

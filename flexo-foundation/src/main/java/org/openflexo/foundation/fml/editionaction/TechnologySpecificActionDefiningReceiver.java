@@ -49,7 +49,6 @@ import org.openflexo.connie.exception.NullReferenceException;
 import org.openflexo.connie.exception.TypeMismatchException;
 import org.openflexo.connie.expr.BindingValue;
 import org.openflexo.connie.type.TypeUtils;
-import org.openflexo.foundation.fml.FMLRepresentationContext;
 import org.openflexo.foundation.fml.binding.FlexoPropertyPathElement;
 import org.openflexo.foundation.fml.binding.ModelSlotBindingVariable;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
@@ -149,11 +148,6 @@ public abstract interface TechnologySpecificActionDefiningReceiver<MS extends Mo
 		public String getStringRepresentation() {
 			return getHeaderContext() + getReceiver().toString() + "." + getImplementedInterface().getSimpleName()
 					+ getParametersStringRepresentation();
-		}
-
-		@Override
-		public String getFMLRepresentation(FMLRepresentationContext context) {
-			return getReceiver().toString() + "." + getImplementedInterface().getSimpleName() + "()";
 		}
 
 		@Override

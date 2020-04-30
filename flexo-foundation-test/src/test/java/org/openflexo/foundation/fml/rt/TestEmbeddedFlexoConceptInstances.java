@@ -280,7 +280,7 @@ public class TestEmbeddedFlexoConceptInstances extends OpenflexoProjectAtRunTime
 
 		vmi2.getResource().save();
 
-		System.out.println("FML=" + actionScheme.getFMLRepresentation());
+		System.out.println("FML=" + actionScheme.getFMLPrettyPrint());
 
 		FlexoConceptInstance a, b1, b2;// Unused , c1, c2
 

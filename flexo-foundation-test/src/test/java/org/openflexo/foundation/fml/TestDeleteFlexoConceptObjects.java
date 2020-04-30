@@ -281,7 +281,7 @@ public class TestDeleteFlexoConceptObjects extends OpenflexoProjectAtRunTimeTest
 
 		assertVirtualModelIsValid(viewPoint);
 
-		System.out.println("FML=" + virtualModel.getFMLRepresentation());
+		System.out.println("FML=" + virtualModel.getFMLPrettyPrint());
 
 	}
 
@@ -374,7 +374,7 @@ public class TestDeleteFlexoConceptObjects extends OpenflexoProjectAtRunTimeTest
 
 		System.out.println("creationScheme cg = " + creationScheme.getControlGraph());
 
-		System.out.println("FML=" + virtualModel.getFMLRepresentation());
+		System.out.println("FML=" + virtualModel.getFMLPrettyPrint());
 
 		assertVirtualModelIsValid(viewPoint);
 
@@ -399,7 +399,7 @@ public class TestDeleteFlexoConceptObjects extends OpenflexoProjectAtRunTimeTest
 
 		assertEquals(0, flexoConcept1.getFlexoBehaviours().size());
 
-		System.out.println("FML=" + virtualModel.getFMLRepresentation());
+		System.out.println("FML=" + virtualModel.getFMLPrettyPrint());
 
 		assertVirtualModelIsValid(viewPoint);
 
@@ -426,7 +426,7 @@ public class TestDeleteFlexoConceptObjects extends OpenflexoProjectAtRunTimeTest
 
 		assertEquals(0, virtualModel.getFlexoConcepts().size());
 
-		System.out.println("FML=" + virtualModel.getFMLRepresentation());
+		System.out.println("FML=" + virtualModel.getFMLPrettyPrint());
 
 		assertVirtualModelIsValid(viewPoint);
 

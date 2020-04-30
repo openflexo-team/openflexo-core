@@ -299,7 +299,7 @@ public class TestFlexoRoleCardinality extends OpenflexoProjectAtRunTimeTestCase 
 		assertTrue(flexoConcept2.getFlexoBehaviours().contains(creationScheme2));
 		assertTrue(flexoConcept2.getCreationSchemes().contains(creationScheme2));
 
-		System.out.println("FML=" + virtualModel.getFMLRepresentation());
+		System.out.println("FML=" + virtualModel.getFMLPrettyPrint());
 	}
 
 	@Test

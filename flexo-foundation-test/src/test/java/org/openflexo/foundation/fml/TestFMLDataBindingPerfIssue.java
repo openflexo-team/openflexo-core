@@ -238,11 +238,11 @@ public class TestFMLDataBindingPerfIssue extends OpenflexoTestCase {
 	@TestOrder(20)
 	public void testTrivialCase() {
 
-		System.out.println(virtualModel.getFMLRepresentation());
+		System.out.println(virtualModel.getFMLPrettyPrint());
 
 		stringProperty1.setName("renamedProperty");
 
-		System.out.println(virtualModel.getFMLRepresentation());
+		System.out.println(virtualModel.getFMLPrettyPrint());
 
 		assertTrue(expr1.isValid());
 		assertEquals("renamedProperty", expr1.toString());

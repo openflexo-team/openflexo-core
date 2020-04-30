@@ -370,12 +370,12 @@ public abstract class FlexoBehaviourAction<A extends FlexoBehaviourAction<A, FB,
 				return;
 			} catch (FlexoException e) {
 				logger.warning("Unexpected exception while executing FML control graph: " + e);
-				System.err.println(getApplicableFlexoBehaviour().getFMLRepresentation());
+				System.err.println(getApplicableFlexoBehaviour().getFMLPrettyPrint());
 				e.printStackTrace();
 				throw e;
 			} catch (Exception e) {
 				logger.warning("Unexpected exception while executing FML control graph: " + e);
-				System.err.println(getApplicableFlexoBehaviour().getFMLRepresentation());
+				System.err.println(getApplicableFlexoBehaviour().getFMLPrettyPrint());
 				e.printStackTrace();
 				throw new FlexoException(e);
 			}

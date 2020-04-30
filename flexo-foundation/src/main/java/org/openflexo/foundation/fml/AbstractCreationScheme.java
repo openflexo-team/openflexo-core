@@ -38,37 +38,14 @@
 
 package org.openflexo.foundation.fml;
 
-import org.openflexo.foundation.fml.FMLRepresentationContext.FMLRepresentationOutput;
 import org.openflexo.pamela.annotations.ImplementationClass;
 import org.openflexo.pamela.annotations.ModelEntity;
-import org.openflexo.toolbox.StringUtils;
 
 @ModelEntity(isAbstract = true)
 @ImplementationClass(AbstractCreationScheme.AbstractCreationSchemeImpl.class)
 public abstract interface AbstractCreationScheme extends FlexoBehaviour {
 
 	public static abstract class AbstractCreationSchemeImpl extends FlexoBehaviourImpl implements AbstractCreationScheme {
-
-		public AbstractCreationSchemeImpl() {
-			super();
-		}
-
-		@Override
-		public final String getFMLRepresentation(FMLRepresentationContext context) {
-			FMLRepresentationOutput out = new FMLRepresentationOutput(context);
-			out.append(getFMLAnnotation(context), context);
-			out.append(StringUtils.LINE_SEPARATOR, context);
-			out.append(getVisibility().getFMLRepresentation() + getFlexoConcept().getName() + ":" + getName() + "("
-					+ getParametersFMLRepresentation(context) + ") {", context);
-			out.append(StringUtils.LINE_SEPARATOR, context);
-			if (getControlGraph() != null) {
-				out.append(getControlGraph().getFMLRepresentation(context), context, 1);
-			}
-			out.append(StringUtils.LINE_SEPARATOR, context);
-			out.append("}", context);
-			out.append(StringUtils.LINE_SEPARATOR, context);
-			return out.toString();
-		}
 
 	}
 }

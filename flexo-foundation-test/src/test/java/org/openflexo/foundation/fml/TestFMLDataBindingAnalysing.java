@@ -447,7 +447,7 @@ public class TestFMLDataBindingAnalysing extends OpenflexoTestCase {
 	@TestOrder(20)
 	public void testTrivialCase() {
 
-		// System.out.println(virtualModel.getFMLRepresentation());
+		// System.out.println(virtualModel.getFMLPrettyPrint());
 
 		System.out.println("*********** testTrivialCase");
 
@@ -474,7 +474,7 @@ public class TestFMLDataBindingAnalysing extends OpenflexoTestCase {
 	@TestOrder(21)
 	public void testChangePropertyName() {
 
-		// System.out.println(virtualModel.getFMLRepresentation());
+		// System.out.println(virtualModel.getFMLPrettyPrint());
 
 		System.out.println("*********** testChangePropertyName");
 
@@ -498,7 +498,7 @@ public class TestFMLDataBindingAnalysing extends OpenflexoTestCase {
 	@TestOrder(22)
 	public void testChangePropertyName2() {
 
-		// System.out.println(virtualModel.getFMLRepresentation());
+		// System.out.println(virtualModel.getFMLPrettyPrint());
 
 		System.out.println("*********** testChangePropertyName2");
 
@@ -524,7 +524,7 @@ public class TestFMLDataBindingAnalysing extends OpenflexoTestCase {
 	@TestOrder(23)
 	public void testChangeParameterName() {
 
-		// System.out.println(virtualModel.getFMLRepresentation());
+		// System.out.println(virtualModel.getFMLPrettyPrint());
 
 		System.out.println("*********** testChangeParameterName");
 
@@ -548,7 +548,7 @@ public class TestFMLDataBindingAnalysing extends OpenflexoTestCase {
 	@TestOrder(24)
 	public void testChangeParameterName2() {
 
-		// System.out.println(virtualModel.getFMLRepresentation());
+		// System.out.println(virtualModel.getFMLPrettyPrint());
 
 		System.out.println("*********** testChangeParameterName2");
 
@@ -573,7 +573,7 @@ public class TestFMLDataBindingAnalysing extends OpenflexoTestCase {
 	@TestOrder(25)
 	public void testChangeBehaviourName() {
 
-		// System.out.println(virtualModel.getFMLRepresentation());
+		// System.out.println(virtualModel.getFMLPrettyPrint());
 
 		System.out.println("*********** testChangeBehaviourName");
 
@@ -597,7 +597,7 @@ public class TestFMLDataBindingAnalysing extends OpenflexoTestCase {
 	@TestOrder(26)
 	public void testChangeBehaviourAndParametersName() {
 
-		// System.out.println(virtualModel.getFMLRepresentation());
+		// System.out.println(virtualModel.getFMLPrettyPrint());
 
 		System.out.println("*********** testChangeBehaviourAndParametersName");
 

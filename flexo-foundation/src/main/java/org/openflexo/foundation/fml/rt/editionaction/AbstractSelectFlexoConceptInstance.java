@@ -54,7 +54,6 @@ import org.openflexo.connie.exception.TypeMismatchException;
 import org.openflexo.connie.expr.BinaryOperatorExpression;
 import org.openflexo.connie.expr.BooleanBinaryOperator;
 import org.openflexo.connie.expr.Expression;
-import org.openflexo.foundation.fml.FMLRepresentationContext;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoConceptInstanceType;
 import org.openflexo.foundation.fml.VirtualModel;
@@ -165,16 +164,9 @@ public interface AbstractSelectFlexoConceptInstance<VMI extends VirtualModelInst
 
 		@Override
 		public String getParametersStringRepresentation() {
-			String whereClauses = getWhereClausesFMLRepresentation(null);
+			String whereClauses = getWhereClausesFMLRepresentation();
 			return "(type=" + (getFlexoConceptType() != null ? getFlexoConceptType().getName() : "null")
 					+ (whereClauses != null ? "," + whereClauses : "") + ")";
-		}
-
-		@Override
-		public String getFMLRepresentation(FMLRepresentationContext context) {
-			return getReceiver().toString() + "." + getImplementedInterface().getSimpleName() + "("
-					+ (getFlexoConceptType() != null ? "type=" + getFlexoConceptType().getName() : "type=?")
-					+ (getConditions().size() > 0 ? ",where=" + getWhereClausesFMLRepresentation(context) : "") + ")";
 		}
 
 		@Override
@@ -382,7 +374,7 @@ public interface AbstractSelectFlexoConceptInstance<VMI extends VirtualModelInst
 			logger.warning("fci=" + evaluationContext.getFlexoConceptInstance());
 			logger.warning("vmi=" + evaluationContext.getVirtualModelInstance());
 			*/
-			logger.warning(getOwner().getFMLRepresentation());
+			// logger.warning(getOwner().getFMLRepresentation());
 			return null;
 		}
 

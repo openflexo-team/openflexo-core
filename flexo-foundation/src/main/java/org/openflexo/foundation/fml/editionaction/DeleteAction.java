@@ -47,8 +47,6 @@ import org.openflexo.connie.DataBinding.BindingDefinitionType;
 import org.openflexo.connie.exception.NullReferenceException;
 import org.openflexo.connie.exception.TypeMismatchException;
 import org.openflexo.foundation.FlexoObject;
-import org.openflexo.foundation.fml.FMLRepresentationContext;
-import org.openflexo.foundation.fml.FMLRepresentationContext.FMLRepresentationOutput;
 import org.openflexo.foundation.fml.FlexoProperty;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
@@ -91,13 +89,6 @@ public interface DeleteAction<T extends FlexoObject> extends AssignableAction<T>
 		@Override
 		public String getStringRepresentation() {
 			return "delete " + getObject().toString();
-		}
-
-		@Override
-		public String getFMLRepresentation(FMLRepresentationContext context) {
-			FMLRepresentationOutput out = new FMLRepresentationOutput(context);
-			out.append("delete " + getObject().toString() + ";", context);
-			return out.toString();
 		}
 
 		public Object getDeclaredObject(FlexoBehaviourAction<?, ?, ?> action) {

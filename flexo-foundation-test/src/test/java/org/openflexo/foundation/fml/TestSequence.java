@@ -182,7 +182,7 @@ public class TestSequence extends OpenflexoTestCase {
 		declaration4 = (DeclarationAction<?>) createDeclaration4.getNewEditionAction();
 		((ExpressionAction<?>) declaration4.getAssignableAction()).setExpression(new DataBinding<>("4"));
 
-		System.out.println("FML=" + behaviour.getFMLRepresentation());
+		System.out.println("FML=" + behaviour.getFMLPrettyPrint());
 
 		assertTrue(behaviour.getControlGraph() instanceof Sequence);
 		Sequence sequence1 = (Sequence) behaviour.getControlGraph();

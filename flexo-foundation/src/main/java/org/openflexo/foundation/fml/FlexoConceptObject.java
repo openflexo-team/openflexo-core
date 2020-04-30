@@ -72,27 +72,7 @@ public interface FlexoConceptObject extends FMLObject {
 	// TODO harmonize with Get Owner from FlexoConcept
 	public VirtualModel getOwningVirtualModel();
 
-	/**
-	 * Build and return a String encoding this {@link FMLObject} in FML textual language
-	 * 
-	 * @param context
-	 * @return
-	 */
-	@Override
-	public String getFMLRepresentation(FMLRepresentationContext context);
-
 	public abstract class FlexoConceptObjectImpl extends FMLObjectImpl implements FlexoConceptObject {
-
-		/*@Override
-		public FMLModelFactory getFMLModelFactory() {
-			if (getDeclaringCompilationUnit() != null && getDeclaringCompilationUnit().getFMLModelFactory() != null) {
-				return getDeclaringCompilationUnit().getFMLModelFactory();
-			}
-			if (getFlexoConcept() instanceof VirtualModel && ((VirtualModel) getFlexoConcept()).getFMLModelFactory() != null) {
-				return getFlexoConcept().getFMLModelFactory();
-			}
-			return getDeserializationFactory();
-		}*/
 
 		/**
 		 * Return
@@ -105,20 +85,10 @@ public interface FlexoConceptObject extends FMLObject {
 		@Override
 		public FMLCompilationUnit getResourceData() {
 			if (getFlexoConcept() != null) {
-				return (FMLCompilationUnit) getFlexoConcept().getResourceData();
+				return getFlexoConcept().getResourceData();
 			}
 			return null;
 
-			/*if (getFlexoConcept() instanceof VirtualModel) {
-				return (VirtualModel) getFlexoConcept();
-			}
-			if (getFlexoConcept() != null && getFlexoConcept().getOwner() != null) {
-				return getFlexoConcept().getOwner();
-			}
-			if (getFlexoConcept() != null && getFlexoConcept().getContainerFlexoConcept() != null) {
-				return getFlexoConcept().getContainerFlexoConcept().getResourceData();
-			}
-			return null;*/
 		}
 
 		@Override
@@ -137,11 +107,6 @@ public interface FlexoConceptObject extends FMLObject {
 		public String getStringRepresentation() {
 			return (getOwningVirtualModel() != null ? getOwningVirtualModel().getStringRepresentation() : "null") + "#"
 					+ (getFlexoConcept() != null ? getFlexoConcept().getName() : "null") + "." + getClass().getSimpleName();
-		}
-
-		@Override
-		public String getFMLRepresentation(FMLRepresentationContext context) {
-			return "<not_implemented:" + getStringRepresentation() + ">";
 		}
 
 	}

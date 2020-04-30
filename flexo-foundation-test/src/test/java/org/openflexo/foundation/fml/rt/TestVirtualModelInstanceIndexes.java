@@ -351,7 +351,7 @@ public class TestVirtualModelInstanceIndexes extends OpenflexoProjectAtRunTimeTe
 		makeRequest("selectLastNamePlusAge", "selected.lastName+'-'+selected.age = 'Smith-43'");
 		makeRequest("selectLastNameAndAge", "selected.lastName = 'Smith'", "selected.age=43");
 
-		System.out.println("FML=\n" + virtualModel.getFMLRepresentation());
+		System.out.println("FML=\n" + virtualModel.getFMLPrettyPrint());
 
 	}
 
@@ -516,8 +516,8 @@ public class TestVirtualModelInstanceIndexes extends OpenflexoProjectAtRunTimeTe
 	@TestOrder(10)
 	public void testIndexes1() {
 
-		System.out.println("FML VP: " + viewPoint.getFMLRepresentation());
-		System.out.println("FML VM: " + virtualModel.getFMLRepresentation());
+		System.out.println("FML VP: " + viewPoint.getFMLPrettyPrint());
+		System.out.println("FML VM: " + virtualModel.getFMLPrettyPrint());
 
 		performRequest("selectFirstName", john);
 

@@ -40,8 +40,6 @@ package org.openflexo.foundation.ontology.fml;
 
 import java.lang.reflect.Type;
 
-import org.openflexo.foundation.fml.FMLRepresentationContext;
-import org.openflexo.foundation.fml.FMLRepresentationContext.FMLRepresentationOutput;
 import org.openflexo.foundation.fml.rt.AbstractVirtualModelInstanceModelFactory;
 import org.openflexo.foundation.fml.rt.ActorReference;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
@@ -94,15 +92,6 @@ public interface PropertyRole<T extends IFlexoOntologyStructuralProperty> extend
 
 		private String parentPropertyURI;
 		private String domainURI;
-
-		@Override
-		public String getFMLRepresentation(FMLRepresentationContext context) {
-			FMLRepresentationOutput out = new FMLRepresentationOutput(context);
-			out.append(
-					"FlexoRole " + getName() + " as Property " + " from " + (getModelSlot() != null ? getModelSlot().getName() : "") + " ;",
-					context);
-			return out.toString();
-		}
 
 		@Override
 		public Type getType() {

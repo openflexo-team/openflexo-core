@@ -46,12 +46,11 @@ import java.util.logging.Logger;
 import org.openflexo.connie.BindingModel;
 import org.openflexo.connie.DataBinding;
 import org.openflexo.foundation.FlexoException;
-import org.openflexo.foundation.fml.FMLRepresentationContext;
-import org.openflexo.foundation.fml.FMLRepresentationContext.FMLRepresentationOutput;
 import org.openflexo.foundation.fml.editionaction.AssignableAction;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext.ReturnException;
 import org.openflexo.pamela.annotations.CloningStrategy;
+import org.openflexo.pamela.annotations.CloningStrategy.StrategyType;
 import org.openflexo.pamela.annotations.DefineValidationRule;
 import org.openflexo.pamela.annotations.Embedded;
 import org.openflexo.pamela.annotations.Getter;
@@ -61,11 +60,9 @@ import org.openflexo.pamela.annotations.PropertyIdentifier;
 import org.openflexo.pamela.annotations.Setter;
 import org.openflexo.pamela.annotations.XMLAttribute;
 import org.openflexo.pamela.annotations.XMLElement;
-import org.openflexo.pamela.annotations.CloningStrategy.StrategyType;
 import org.openflexo.pamela.validation.ValidationError;
 import org.openflexo.pamela.validation.ValidationIssue;
 import org.openflexo.pamela.validation.ValidationRule;
-import org.openflexo.toolbox.StringUtils;
 
 @ModelEntity
 @ImplementationClass(IterationAction.IterationActionImpl.class)
@@ -91,21 +88,6 @@ public interface IterationAction extends AbstractIterationAction {
 	public static abstract class IterationActionImpl extends AbstractIterationActionImpl implements IterationAction {
 
 		private static final Logger logger = Logger.getLogger(IterationAction.class.getPackage().getName());
-
-		@Override
-		public String getFMLRepresentation(FMLRepresentationContext context) {
-			FMLRepresentationOutput out = new FMLRepresentationOutput(context);
-			out.append("for (" + getIteratorName() + " : "
-					+ (getIterationAction() != null ? getIterationAction().getFMLRepresentation() : "null"), context);
-			out.append(") {", context);
-			out.append(StringUtils.LINE_SEPARATOR, context);
-			if (getControlGraph() != null) {
-				out.append(getControlGraph().getFMLRepresentation(context), context, 1);
-				out.append(StringUtils.LINE_SEPARATOR, context);
-			}
-			out.append("}", context);
-			return out.toString();
-		}
 
 		private DataBinding<List<?>> iteration;
 

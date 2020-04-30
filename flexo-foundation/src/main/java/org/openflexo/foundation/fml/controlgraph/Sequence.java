@@ -47,8 +47,6 @@ import org.openflexo.connie.type.ExplicitNullType;
 import org.openflexo.connie.type.TypeUtils;
 import org.openflexo.connie.type.UndefinedType;
 import org.openflexo.foundation.FlexoException;
-import org.openflexo.foundation.fml.FMLRepresentationContext;
-import org.openflexo.foundation.fml.FMLRepresentationContext.FMLRepresentationOutput;
 import org.openflexo.foundation.fml.FMLUtils;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoConceptInstanceType;
@@ -68,7 +66,6 @@ import org.openflexo.pamela.annotations.XMLElement;
 import org.openflexo.pamela.validation.ValidationError;
 import org.openflexo.pamela.validation.ValidationIssue;
 import org.openflexo.pamela.validation.ValidationRule;
-import org.openflexo.toolbox.StringUtils;
 
 /**
  * Encodes a sequence as a sequential definition of two control graphs
@@ -218,22 +215,6 @@ public interface Sequence extends FMLControlGraph, FMLControlGraphOwner {
 		}
 
 		@Override
-		public String getFMLRepresentation(FMLRepresentationContext context) {
-			FMLRepresentationOutput out = new FMLRepresentationOutput(context);
-			boolean isFirst = true;
-			for (FMLControlGraph cg : getFlattenedSequence()) {
-				if (!isFirst) {
-					out.append(StringUtils.LINE_SEPARATOR, context);
-				}
-				if (cg != null) {
-					out.append(cg.getFMLRepresentation(context), context);
-				}
-				isFirst = false;
-			}
-			return out.toString();
-		}
-
-		@Override
 		public Object execute(RunTimeEvaluationContext evaluationContext) throws ReturnException, FlexoException {
 			getControlGraph1().execute(evaluationContext);
 			getControlGraph2().execute(evaluationContext);
@@ -354,7 +335,6 @@ public interface Sequence extends FMLControlGraph, FMLControlGraphOwner {
 
 			if (sequence.getControlGraph1() == null) {
 				System.err.println("Missing control graph for " + sequence);
-				System.err.println(sequence.getRootOwner().getFMLRepresentation());
 				return new ValidationError<>(this, sequence, "missing_control_graph_(first_statement)");
 			}
 			return null;
@@ -372,7 +352,6 @@ public interface Sequence extends FMLControlGraph, FMLControlGraphOwner {
 
 			if (sequence.getControlGraph2() == null) {
 				System.err.println("Missing control graph for " + sequence);
-				System.err.println(sequence.getRootOwner().getFMLRepresentation());
 				return new ValidationError<>(this, sequence, "missing_control_graph_(second_statement)");
 			}
 			return null;
@@ -400,7 +379,7 @@ public interface Sequence extends FMLControlGraph, FMLControlGraphOwner {
 					&& !TypeUtils.isTypeAssignableFrom(inferedType2, inferedType1)
 					&& !(inferedType1 instanceof FlexoConceptInstanceType && inferedType2 instanceof FlexoConceptInstanceType)) {
 				System.out.println("Types are not compatible in:");
-				System.out.println(sequence.getFMLRepresentation());
+				System.out.println(sequence.getFMLPrettyPrint());
 				return new ValidationError<>(this, sequence, "types_are_not_compatible (" + TypeUtils.simpleRepresentation(inferedType1)
 						+ " and " + TypeUtils.simpleRepresentation(inferedType2) + ")");
 			}

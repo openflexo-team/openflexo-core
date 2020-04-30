@@ -255,7 +255,7 @@ public class MatchActionNode extends AssignableActionNode<AMatchActionFmlActionE
 		.thenAppend(staticContents(")"), getRParWhereFragment());
 		append(staticContents(SPACE,"create",""), getCreateFragment());
 		append(staticContents("::"), getColonColonFragment());
-		append(dynamicContents(() -> getModelObject().getCreationScheme().getName()), getConstructorNameFragment());
+		append(dynamicContents(() -> getModelObject().getCreationScheme() != null ? getModelObject().getCreationScheme().getName():""), getConstructorNameFragment());
 		append(staticContents("("), getCreateLParFragment());
 		append(dynamicContents(() -> serializeArguments(getModelObject().getParameters())), getCreateArgumentsFragment());
 		append(staticContents(")"), getCreateRParFragment());

@@ -48,8 +48,6 @@ import org.openflexo.connie.DataBinding.BindingDefinitionType;
 import org.openflexo.connie.exception.NullReferenceException;
 import org.openflexo.connie.exception.TypeMismatchException;
 import org.openflexo.connie.type.ParameterizedTypeImpl;
-import org.openflexo.foundation.fml.FMLRepresentationContext;
-import org.openflexo.foundation.fml.FMLRepresentationContext.FMLRepresentationOutput;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
 import org.openflexo.pamela.annotations.DefineValidationRule;
 import org.openflexo.pamela.annotations.Getter;
@@ -90,13 +88,6 @@ public interface RemoveFromListAction<T> extends AssignableAction<T> {
 
 		private DataBinding<T> value;
 		private DataBinding<? extends List<T>> list;
-
-		@Override
-		public String getFMLRepresentation(FMLRepresentationContext context) {
-			FMLRepresentationOutput out = new FMLRepresentationOutput(context);
-			out.append(getList().toString() + ".remove(" + getValue().toString() + ");", context);
-			return out.toString();
-		}
 
 		public T getDeclaredObject(RunTimeEvaluationContext evaluationContext) {
 			try {

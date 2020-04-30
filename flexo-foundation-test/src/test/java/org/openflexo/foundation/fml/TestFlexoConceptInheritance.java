@@ -320,7 +320,7 @@ public class TestFlexoConceptInheritance extends OpenflexoProjectAtRunTimeTestCa
 		// We set it abstract
 		flexoConceptA.setAbstract(true);
 
-		System.out.println("FML=" + virtualModel.getFMLRepresentation());
+		System.out.println("FML=" + virtualModel.getFMLPrettyPrint());
 
 		virtualModel.getResource().save();
 
@@ -404,7 +404,7 @@ public class TestFlexoConceptInheritance extends OpenflexoProjectAtRunTimeTestCa
 		flexoConceptB.setAbstract(true);
 		assertTrue(flexoConceptB.isAbstract());
 
-		System.out.println("FML=" + virtualModel.getFMLRepresentation());
+		System.out.println("FML=" + virtualModel.getFMLPrettyPrint());
 
 		virtualModel.getResource().save();
 
@@ -471,7 +471,7 @@ public class TestFlexoConceptInheritance extends OpenflexoProjectAtRunTimeTestCa
 		flexoConceptC.setAbstract(true);
 		assertTrue(flexoConceptC.isAbstract());
 
-		System.out.println("FML=" + virtualModel.getFMLRepresentation());
+		System.out.println("FML=" + virtualModel.getFMLPrettyPrint());
 
 		virtualModel.getResource().save();
 
@@ -549,7 +549,7 @@ public class TestFlexoConceptInheritance extends OpenflexoProjectAtRunTimeTestCa
 
 		assertSame(property3InD, flexoConceptD.getAccessibleProperty("property3"));
 
-		System.out.println("FML=" + flexoConceptD.getFMLRepresentation());
+		System.out.println("FML=" + flexoConceptD.getFMLPrettyPrint());
 
 		System.out.println("Exp=" + property3InD.getExpression() + " valid=" + property3InD.getExpression().isValid());
 		System.out.println("reason: " + property3InD.getExpression().invalidBindingReason());
@@ -587,7 +587,7 @@ public class TestFlexoConceptInheritance extends OpenflexoProjectAtRunTimeTestCa
 
 		flexoConceptD.setAbstract(false);
 
-		System.out.println("FML=" + virtualModel.getFMLRepresentation());
+		System.out.println("FML=" + virtualModel.getFMLPrettyPrint());
 
 		virtualModel.getResource().save();
 
@@ -721,7 +721,7 @@ public class TestFlexoConceptInheritance extends OpenflexoProjectAtRunTimeTestCa
 		// Because concept define some abstract properties, it is abstract
 		assertTrue(flexoConceptA.abstractRequired());
 
-		System.out.println("FML= " + virtualModel.getFMLRepresentation());
+		System.out.println("FML= " + virtualModel.getFMLPrettyPrint());
 	}
 
 	@Test

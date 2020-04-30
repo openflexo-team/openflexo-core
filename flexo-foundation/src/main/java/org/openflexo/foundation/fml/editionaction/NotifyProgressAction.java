@@ -46,8 +46,6 @@ import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.DataBinding.BindingDefinitionType;
 import org.openflexo.connie.exception.NullReferenceException;
 import org.openflexo.connie.exception.TypeMismatchException;
-import org.openflexo.foundation.fml.FMLRepresentationContext;
-import org.openflexo.foundation.fml.FMLRepresentationContext.FMLRepresentationOutput;
 import org.openflexo.foundation.fml.FlexoBehaviour;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
 import org.openflexo.foundation.fml.rt.logging.FMLConsole.LogLevel;
@@ -90,13 +88,6 @@ public interface NotifyProgressAction extends EditionAction {
 		@Override
 		public String getStringRepresentation() {
 			return getHeaderContext() + "progress " + getLogString();
-		}
-
-		@Override
-		public String getFMLRepresentation(FMLRepresentationContext context) {
-			FMLRepresentationOutput out = new FMLRepresentationOutput(context);
-			out.append("progress " + getLogString().toString(), context);
-			return out.toString();
 		}
 
 		@Override

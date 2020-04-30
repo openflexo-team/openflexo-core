@@ -47,7 +47,6 @@ import org.openflexo.connie.DataBinding;
 import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.fml.FMLModelFactory;
 import org.openflexo.foundation.fml.FMLPrettyPrintable;
-import org.openflexo.foundation.fml.FMLRepresentationContext;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoConceptObject;
 import org.openflexo.foundation.fml.binding.ControlGraphBindingModel;
@@ -104,15 +103,6 @@ public abstract interface FMLControlGraph extends FlexoConceptObject, FMLPrettyP
 
 	@Setter(OWNER_CONTEXT_KEY)
 	public void setOwnerContext(String context);
-
-	/**
-	 * Build and return a String encoding this {@link FMLControlGraph} in FML textual language
-	 * 
-	 * @param context
-	 * @return
-	 */
-	@Override
-	public String getFMLRepresentation(FMLRepresentationContext context);
 
 	/**
 	 * Sequentially append supplied control graph to this control graph<br>

@@ -196,26 +196,6 @@ public interface FMLObject extends FlexoObject, Bindable, InnerResourceData<FMLC
 	public FMLModelFactory getFMLModelFactory();
 
 	/**
-	 * Build and return a String encoding this {@link FMLObject} in FML textual language
-	 * 
-	 * @param context
-	 * @return
-	 */
-	@Deprecated
-	public String getFMLRepresentation(FMLRepresentationContext context);
-
-	/**
-	 * Build and return a String encoding this {@link FMLObject} in FML textual language
-	 * 
-	 * @return
-	 */
-	@Deprecated
-	public String getFMLRepresentation();
-
-	@Deprecated
-	public void clearFMLRepresentation();
-
-	/**
 	 * Return a string representation suitable for a common user<br>
 	 * This representation will used in all GUIs
 	 */
@@ -493,7 +473,6 @@ public interface FMLObject extends FlexoObject, Bindable, InnerResourceData<FMLC
 		@Override
 		public synchronized void setIsModified() {
 			super.setIsModified();
-			fmlRepresentation = null;
 			getPropertyChangeSupport().firePropertyChange("fMLRepresentation", false, true);
 			getPropertyChangeSupport().firePropertyChange("stringRepresentation", false, true);
 		}
@@ -565,44 +544,11 @@ public interface FMLObject extends FlexoObject, Bindable, InnerResourceData<FMLC
 			return getDeclaringVirtualModel().getLocalizedDictionary();
 		}*/
 
-		// Voir du cote de GeneratorFormatter pour formatter tout ca
-		@Override
-		@Deprecated
-		public abstract String getFMLRepresentation(FMLRepresentationContext context);
-
-		@Deprecated
-		private String fmlRepresentation;
-
-		@Override
-		@Deprecated
-		public final String getFMLRepresentation() {
-			if (fmlRepresentation == null) {
-				fmlRepresentation = getFMLRepresentation(new FMLRepresentationContext());
-			}
-			return fmlRepresentation;
-		}
-
-		@Override
-		public void clearFMLRepresentation() {
-			fmlRepresentation = null;
-		}
-
-		/*@Override
-		public FMLModelFactory getFMLModelFactory() {
-			return ((CompilationUnitResource) getResourceData().getResource()).getFactory();
-		}*/
-
 		@Override
 		public FMLModelFactory getFMLModelFactory() {
 			if (getDeclaringCompilationUnit() != null && getDeclaringCompilationUnit().getFMLModelFactory() != null) {
 				return getDeclaringCompilationUnit().getFMLModelFactory();
 			}
-			/*if (getOwningVirtualModel() != null && getOwningVirtualModel().getFMLModelFactory() != null) {
-				return getOwningVirtualModel().getFMLModelFactory();
-			}*/
-			/*if (getFlexoConcept() instanceof VirtualModel && ((VirtualModel) getFlexoConcept()).getFMLModelFactory() != null) {
-				return getFlexoConcept().getFMLModelFactory();
-			}*/
 			return getDeserializationFactory();
 		}
 
@@ -642,7 +588,7 @@ public interface FMLObject extends FlexoObject, Bindable, InnerResourceData<FMLC
 				}
 				return ppDelegate.getRepresentation(ppDelegate.makePrettyPrintContext());
 			}
-			return getFMLRepresentation();
+			return "Not pretty-printable";
 		}
 
 		public String getNormalizedFML() {
@@ -653,12 +599,12 @@ public interface FMLObject extends FlexoObject, Bindable, InnerResourceData<FMLC
 				}
 				return null;
 			}
-			return getFMLRepresentation();
+			return "Not pretty-printable";
 		}
 
 		@Override
 		public String render() {
-			return getFMLRepresentation();
+			return getFMLPrettyPrint();
 		}
 
 		/**

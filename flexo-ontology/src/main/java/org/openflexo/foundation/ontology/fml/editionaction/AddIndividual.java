@@ -44,7 +44,6 @@ import java.util.Vector;
 import java.util.logging.Logger;
 
 import org.openflexo.connie.DataBinding;
-import org.openflexo.foundation.fml.FMLRepresentationContext;
 import org.openflexo.foundation.fml.editionaction.AssignationAction;
 import org.openflexo.foundation.ontology.IFlexoOntologyClass;
 import org.openflexo.foundation.ontology.IFlexoOntologyIndividual;
@@ -59,9 +58,11 @@ import org.openflexo.gina.annotation.FIBPanel;
 import org.openflexo.logging.FlexoLogger;
 import org.openflexo.pamela.annotations.Adder;
 import org.openflexo.pamela.annotations.CloningStrategy;
+import org.openflexo.pamela.annotations.CloningStrategy.StrategyType;
 import org.openflexo.pamela.annotations.DefineValidationRule;
 import org.openflexo.pamela.annotations.Embedded;
 import org.openflexo.pamela.annotations.Getter;
+import org.openflexo.pamela.annotations.Getter.Cardinality;
 import org.openflexo.pamela.annotations.ImplementationClass;
 import org.openflexo.pamela.annotations.ModelEntity;
 import org.openflexo.pamela.annotations.PropertyIdentifier;
@@ -69,13 +70,10 @@ import org.openflexo.pamela.annotations.Remover;
 import org.openflexo.pamela.annotations.Setter;
 import org.openflexo.pamela.annotations.XMLAttribute;
 import org.openflexo.pamela.annotations.XMLElement;
-import org.openflexo.pamela.annotations.CloningStrategy.StrategyType;
-import org.openflexo.pamela.annotations.Getter.Cardinality;
 import org.openflexo.pamela.validation.FixProposal;
 import org.openflexo.pamela.validation.ValidationError;
 import org.openflexo.pamela.validation.ValidationIssue;
 import org.openflexo.pamela.validation.ValidationRule;
-import org.openflexo.toolbox.StringUtils;
 
 @FIBPanel("Fib/FML/AddIndividualPanel.fib")
 @ModelEntity(isAbstract = true)
@@ -177,44 +175,6 @@ public abstract interface AddIndividual<MS extends TypeAwareModelSlot<M, ?>, M e
 
 		private DataBinding<String> individualName;
 
-		/*@Override
-		public String getFMLRepresentation(FMLRepresentationContext context) {
-			FMLRepresentationOutput out = new FMLRepresentationOutput(context);
-			if (getAssignation().isSet()) {
-				out.append(getAssignation().toString() + " = (", context);
-			}
-			out.append(getClass().getSimpleName() + (getOntologyClass() != null ? " conformTo " + getOntologyClass().getName() : "")
-					+ " from " + (getModelSlot() != null ? getModelSlot().getName() : "") + " {" + StringUtils.LINE_SEPARATOR, context);
-			out.append(getAssertionsFMLRepresentation(context), context);
-			out.append("}", context);
-			if (getAssignation().isSet()) {
-				out.append(")", context);
-			}
-			return out.toString();
-		}*/
-
-		protected String getAssertionsFMLRepresentation(FMLRepresentationContext context) {
-			if (getDataAssertions().size() > 0) {
-				StringBuffer sb = new StringBuffer();
-				for (DataPropertyAssertion a : getDataAssertions()) {
-					if (a.getOntologyProperty() != null) {
-						sb.append("  " + a.getOntologyProperty().getName() + " = " + a.getValue().toString() + ";"
-								+ StringUtils.LINE_SEPARATOR);
-					}
-				}
-				return sb.toString();
-			}
-			if (getObjectAssertions().size() > 0) {
-				StringBuffer sb = new StringBuffer();
-				for (ObjectPropertyAssertion a : getObjectAssertions()) {
-					sb.append(
-							"  " + a.getOntologyProperty().getName() + " = " + a.getObject().toString() + ";" + StringUtils.LINE_SEPARATOR);
-				}
-				return sb.toString();
-			}
-			return null;
-		}
-
 		public abstract Class<T> getOntologyIndividualClass();
 
 		@Override
@@ -246,7 +206,8 @@ public abstract interface AddIndividual<MS extends TypeAwareModelSlot<M, ?>, M e
 			if (ontologyClass != null) {
 				if (getAssignedFlexoProperty() != null) {
 					if (getAssignedFlexoProperty().getOntologicType() != null) {
-						if (getAssignedFlexoProperty().getOntologicType().isSuperConceptOf(ontologyClass)) {}
+						if (getAssignedFlexoProperty().getOntologicType().isSuperConceptOf(ontologyClass)) {
+						}
 						else {
 							getAssignedFlexoProperty().setOntologicType(ontologyClass);
 						}

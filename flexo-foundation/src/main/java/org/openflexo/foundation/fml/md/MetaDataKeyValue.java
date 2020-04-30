@@ -48,7 +48,6 @@ import org.openflexo.connie.exception.TypeMismatchException;
 import org.openflexo.foundation.fml.FMLCompilationUnit;
 import org.openflexo.foundation.fml.FMLObject;
 import org.openflexo.foundation.fml.FMLPrettyPrintable;
-import org.openflexo.foundation.fml.FMLRepresentationContext;
 import org.openflexo.pamela.StringConverterLibrary.Converter;
 import org.openflexo.pamela.annotations.Getter;
 import org.openflexo.pamela.annotations.ImplementationClass;
@@ -104,13 +103,6 @@ public interface MetaDataKeyValue<T> extends FMLObject, FMLPrettyPrintable {
 		private DataBinding<T> valueExpression;
 		private T value;
 		private String serializationRepresentation;
-
-		@Deprecated
-		@Override
-		public String getFMLRepresentation(FMLRepresentationContext context) {
-			// TODO Auto-generated method stub
-			return null;
-		}
 
 		private Converter<T> converterForClass(Class<?> objectType) {
 			return (Converter<T>) getFMLModelFactory().getStringEncoder().converterForClass(objectType);

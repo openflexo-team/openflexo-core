@@ -50,7 +50,6 @@ import org.openflexo.connie.DataBinding.BindingDefinitionType;
 import org.openflexo.connie.exception.NullReferenceException;
 import org.openflexo.connie.exception.TypeMismatchException;
 import org.openflexo.connie.type.TypeUtils;
-import org.openflexo.foundation.fml.FMLRepresentationContext;
 import org.openflexo.foundation.fml.annotations.FML;
 import org.openflexo.foundation.fml.editionaction.AddClassInstance.AddClassInstanceImpl;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
@@ -183,11 +182,6 @@ public interface AddClassInstance extends AssignableAction<Object> {
 		public void createParameter() {
 			DataBinding<Object> aParameter = new DataBinding<>("\"value\"", this, Object.class, BindingDefinitionType.GET);
 			addToParameters(aParameter);
-		}
-
-		@Override
-		public String getFMLRepresentation(FMLRepresentationContext context) {
-			return "new " + TypeUtils.simpleRepresentation(getType()) + "()";
 		}
 
 		@Override
