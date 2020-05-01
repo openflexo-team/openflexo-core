@@ -1127,7 +1127,7 @@ public abstract class CompilationUnitResourceImpl extends PamelaResourceImpl<FML
 
 		VirtualModelInfo returned = new VirtualModelInfo();
 
-		XMLRootElementInfo xmlRootElementInfo = resourceCenter.getXMLRootElementInfo(getXMLArtefact());
+		XMLRootElementInfo xmlRootElementInfo = resourceCenter.getXMLRootElementInfo(getXMLArtefact(), true, "UseModelSlotDeclaration");
 
 		if (xmlRootElementInfo == null) {
 			return null;
