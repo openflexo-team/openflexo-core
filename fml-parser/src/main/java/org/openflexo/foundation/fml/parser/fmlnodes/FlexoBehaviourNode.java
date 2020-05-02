@@ -56,6 +56,7 @@ import org.openflexo.foundation.fml.parser.node.ANamedConstructorBehaviourDecl;
 import org.openflexo.foundation.fml.parser.node.ANamedDestructorBehaviourDecl;
 import org.openflexo.foundation.fml.parser.node.Node;
 import org.openflexo.foundation.fml.parser.node.PFlexoBehaviourBody;
+import org.openflexo.foundation.fml.parser.node.PType;
 import org.openflexo.foundation.fml.parser.node.PVisibility;
 import org.openflexo.foundation.fml.parser.node.TIdentifier;
 import org.openflexo.p2pp.PrettyPrintContext.Indentation;
@@ -276,6 +277,26 @@ public abstract class FlexoBehaviourNode<N extends Node, T extends FlexoBehaviou
 	protected RawSourceFragment getNameFragment() {
 		if (getName() != null) {
 			return getFragment(getName());
+		}
+		return null;
+	}
+
+	protected PType getType() {
+		if (getASTNode() instanceof AMethodBehaviourDecl) {
+			return ((AMethodBehaviourDecl) getASTNode()).getType();
+		}
+		if (getASTNode() instanceof AFmlBehaviourDecl) {
+			return ((AFmlBehaviourDecl) getASTNode()).getType();
+		}
+		if (getASTNode() instanceof AFmlFullyQualifiedBehaviourDecl) {
+			return ((AFmlFullyQualifiedBehaviourDecl) getASTNode()).getType();
+		}
+		return null;
+	}
+
+	protected RawSourceFragment getTypeFragment() {
+		if (getName() != null) {
+			return getFragment(getType());
 		}
 		return null;
 	}

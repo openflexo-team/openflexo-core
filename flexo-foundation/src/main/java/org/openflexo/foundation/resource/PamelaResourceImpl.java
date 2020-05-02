@@ -485,12 +485,26 @@ public abstract class PamelaResourceImpl<RD extends ResourceData<RD> & Accessibl
 	 * 
 	 * @param objectIdentifier
 	 * @param userIdentifier
+	 * @return
+	 */
+	@Override
+	public FlexoObject findObject(String objectIdentifier, String userIdentifier) {
+		return getFlexoObject(Long.parseLong(objectIdentifier), userIdentifier);
+	}
+
+	/**
+	 * Generic method used to retrieve in this resource an object with supplied objectIdentifier, userIdentifier, and type identifier<br>
+	 * 
+	 * Note that for certain resources, some parameters might not be used (for example userIdentifier or typeIdentifier)
+	 * 
+	 * @param objectIdentifier
+	 * @param userIdentifier
 	 * @param typeIdentifier
 	 * @return
 	 */
 	@Override
 	public FlexoObject findObject(String objectIdentifier, String userIdentifier, String typeIdentifier) {
-		return getFlexoObject(Long.parseLong(objectIdentifier), userIdentifier);
+		return findObject(objectIdentifier, userIdentifier);
 	}
 
 	/**

@@ -182,7 +182,7 @@ public class FMLParser {
 			tree = p.parse();
 
 			// Print the AST
-			//new ASTDebugger(tree);
+			// new ASTDebugger(tree);
 
 			// Apply the semantics analyzer.
 			MainSemanticsAnalyzer t = new MainSemanticsAnalyzer(modelFactory, tree, rawSource);
@@ -251,7 +251,7 @@ public class FMLParser {
 
 	public void initPrettyPrint(FMLCompilationUnit fmlCompilationUnit) {
 		// System.out.println("fmlCompilationUnit=" + fmlCompilationUnit);
-		MainSemanticsAnalyzer semanticsAnalyzer = new MainSemanticsAnalyzer(fmlCompilationUnit.getFMLModelFactory(), null, null);
+		MainSemanticsAnalyzer semanticsAnalyzer = new MainSemanticsAnalyzer(fmlCompilationUnit);
 		FMLCompilationUnitNode fmlCompilationUnitNode = new FMLCompilationUnitNode(fmlCompilationUnit, semanticsAnalyzer);
 		// fmlCompilationUnitNode.finalizeDeserialization();
 	}

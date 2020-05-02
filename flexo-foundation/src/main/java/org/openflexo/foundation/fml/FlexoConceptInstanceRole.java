@@ -350,7 +350,7 @@ public interface FlexoConceptInstanceRole extends FlexoRole<FlexoConceptInstance
 			super.handleRequiredImports(compilationUnit);
 			if (compilationUnit != null) {
 				if (getFlexoConceptType() != null) {
-					compilationUnit.ensureImport(getFlexoConceptType());
+					compilationUnit.ensureResourceImport(getFlexoConceptType().getDeclaringCompilationUnit());
 				}
 			}
 		}

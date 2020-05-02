@@ -190,14 +190,14 @@ public abstract class AbstractRolePropertyNode<N extends PInnerConceptDecl, R ex
 		return null;
 	}
 
-	protected RawSourceFragment getLParFragment() {
+	protected RawSourceFragment getFMLParametersLParFragment() {
 		if (getFMLParameters() instanceof AFullQualifiedFmlParameters) {
 			return getFragment(((AFullQualifiedFmlParameters) getFMLParameters()).getLPar());
 		}
 		return null;
 	}
 
-	protected RawSourceFragment getRParFragment() {
+	protected RawSourceFragment getFMLParametersRParFragment() {
 		if (getFMLParameters() instanceof AFullQualifiedFmlParameters) {
 			return getFragment(((AFullQualifiedFmlParameters) getFMLParameters()).getRPar());
 		}

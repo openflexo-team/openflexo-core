@@ -53,7 +53,9 @@ import org.openflexo.foundation.fml.annotations.FML;
 import org.openflexo.foundation.fml.annotations.FMLAttribute;
 import org.openflexo.pamela.ModelEntity;
 import org.openflexo.pamela.ModelProperty;
+import org.openflexo.pamela.exceptions.InvalidDataException;
 import org.openflexo.pamela.exceptions.ModelDefinitionException;
+import org.openflexo.pamela.factory.ModelFactory;
 
 /**
  * 
@@ -130,6 +132,23 @@ public class FMLModelContext {
 
 		public Type getType() {
 			return modelProperty.getType();
+		}
+
+		public boolean isRequired() {
+			return fmlAnnotation.required();
+		}
+
+		public ModelProperty<I> getModelProperty() {
+			return modelProperty;
+		}
+
+		public T getDefaultValue(ModelFactory factory) {
+			try {
+				return (T) getModelProperty().getDefaultValue(factory);
+			} catch (InvalidDataException e) {
+				e.printStackTrace();
+				return null;
+			}
 		}
 
 		public T get(I object) {

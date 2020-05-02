@@ -134,11 +134,11 @@ public class FlexoRolePropertyNode<N extends PInnerConceptDecl, R extends FlexoR
 		.thenAppend(staticContents("::"), getColonColonFragment());
 		append(dynamicContents(() -> serializeFlexoRoleName(getModelObject())), getRoleFragment());
 		when(() -> hasFMLProperties())
-		.thenAppend(staticContents("("), getLParFragment())
+		.thenAppend(staticContents("("), getFMLParametersLParFragment())
 		//.thenAppend(childrenContents("", "", () -> getModelObject().buildParameters(), ",", "", Indentation.DoNotIndent,
 		//		RolePropertyValue.class))
 		.thenAppend(dynamicContents(() -> getModelObject().encodeFMLProperties(getFactory())), getFMLParametersFragment())
-		.thenAppend(staticContents(")"), getRParFragment());
+		.thenAppend(staticContents(")"), getFMLParametersRParFragment());
 		append(staticContents(";"), getSemiFragment());
 		// @formatter:on	
 	}

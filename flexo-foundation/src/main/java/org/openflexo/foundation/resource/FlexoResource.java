@@ -495,6 +495,18 @@ public interface FlexoResource<RD extends ResourceData<RD>> extends FlexoObject,
 	 * @param typeIdentifier
 	 * @return
 	 */
+	public Object findObject(String objectIdentifier, String userIdentifier);
+
+	/**
+	 * Generic method used to retrieve in this resource an object with supplied objectIdentifier, userIdentifier, and type identifier<br>
+	 * 
+	 * Note that for certain resources, some parameters might not be used (for example userIdentifier or typeIdentifier)
+	 * 
+	 * @param objectIdentifier
+	 * @param userIdentifier
+	 * @param typeIdentifier
+	 * @return
+	 */
 	public Object findObject(String objectIdentifier, String userIdentifier, String typeIdentifier);
 
 	/**

@@ -672,18 +672,57 @@ public interface FMLObject extends FlexoObject, Bindable, InnerResourceData<FMLC
 			Map<FMLProperty, Object> fmlPropertyValues = getFMLPropertyValues(modelFactory);
 			boolean isFirst = true;
 			StringBuffer sb = new StringBuffer();
-			FMLModelFactory factory = ((CompilationUnitResource) getResourceData().getResource()).getFactory();
 			for (FMLProperty fmlProperty : fmlPropertyValues.keySet()) {
-				try {
-					sb.append((isFirst ? "" : ",") + fmlProperty.getName() + "="
-							+ factory.getStringEncoder().toString(fmlPropertyValues.get(fmlProperty)));
-				} catch (InvalidDataException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+				String encodedProperty = encodeFMLProperty(fmlProperty, fmlPropertyValues.get(fmlProperty), modelFactory);
+				if (encodedProperty != null) {
+					sb.append((isFirst ? "" : ",") + encodedProperty);
+					isFirst = false;
 				}
-				isFirst = false;
 			}
 			return sb.toString();
+		}
+
+		private <T> String encodeFMLProperty(FMLProperty<?, T> fmlProperty, T value, FMLModelFactory modelFactory) {
+			if (value == null) {
+				if (fmlProperty.isRequired()) {
+					return fmlProperty.getName() + "=null";
+				}
+				return null;
+			}
+			else {
+				if (!fmlProperty.isRequired() && value.equals(fmlProperty.getDefaultValue(modelFactory))) {
+					// No need to serialize this
+					return null;
+				}
+
+				String valueAsString = null;
+				if (getDeclaringCompilationUnit() != null) {
+					for (ElementImportDeclaration elementImportDeclaration : getDeclaringCompilationUnit().getElementImports()) {
+						if (elementImportDeclaration.getReferencedObject() == value) {
+							valueAsString = elementImportDeclaration.getAbbrev();
+							break;
+						}
+					}
+				}
+
+				if (valueAsString == null) {
+					try {
+						valueAsString = modelFactory.getStringEncoder().toString(value);
+						if (value instanceof String) {
+							valueAsString = "\"" + valueAsString + "\"";
+						}
+					} catch (InvalidDataException e) {
+						logger.warning("Don't know what to do with " + value);
+						e.printStackTrace();
+						return null;
+					}
+				}
+
+				if (valueAsString != null) {
+					return fmlProperty.getName() + "=" + valueAsString;
+				}
+				return null;
+			}
 		}
 
 		/*@Override

@@ -87,6 +87,7 @@ import org.openflexo.foundation.fml.editionaction.DeclarationAction;
 import org.openflexo.foundation.fml.editionaction.ExpressionAction;
 import org.openflexo.foundation.fml.editionaction.LogAction;
 import org.openflexo.foundation.fml.editionaction.ReturnStatement;
+import org.openflexo.foundation.fml.editionaction.TechnologySpecificAction;
 import org.openflexo.foundation.fml.md.BasicMetaData;
 import org.openflexo.foundation.fml.md.ListMetaData;
 import org.openflexo.foundation.fml.md.MetaDataKeyValue;
@@ -126,6 +127,7 @@ import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.DeclarationActi
 import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.EmptyControlGraphNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.EndMatchActionNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.ExpressionActionNode;
+import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.FMLEditionActionNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.FetchRequestNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.IterationActionNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.LogActionNode;
@@ -375,7 +377,7 @@ public abstract class FMLObjectNode<N extends Node, T extends FMLPrettyPrintable
 			return (P2PPNode<?, C>) new DeletionSchemeNode((DeletionScheme) object, getAnalyser());
 		}
 		if (object instanceof FlexoBehaviour) {
-			return new FMLBehaviourNode((DeletionScheme) object, getAnalyser());
+			return new FMLBehaviourNode((FlexoBehaviour) object, getAnalyser());
 		}
 		if (object instanceof FlexoBehaviourParameter) {
 			return (P2PPNode<?, C>) new BehaviourParameterNode((FlexoBehaviourParameter) object, getAnalyser());
@@ -430,6 +432,9 @@ public abstract class FMLObjectNode<N extends Node, T extends FMLPrettyPrintable
 		}
 		if (object instanceof FinalizeMatching) {
 			return (P2PPNode<?, C>) new EndMatchActionNode((FinalizeMatching) object, getAnalyser());
+		}
+		if (object instanceof TechnologySpecificAction) {
+			return new FMLEditionActionNode((TechnologySpecificAction) object, getAnalyser());
 		}
 		System.err.println("Not supported: " + object);
 		Thread.dumpStack();
@@ -683,6 +688,13 @@ public abstract class FMLObjectNode<N extends Node, T extends FMLPrettyPrintable
 		return null;
 	}
 
+	protected final String serializeType(Type type, boolean escapeVoid) {
+		if (escapeVoid && ((Void.class.equals(type)) || (Void.TYPE.equals(type)))) {
+			return "";
+		}
+		return serializeType(type);
+	}
+
 	protected final String serializeType(Type type) {
 		// TODO: generate required imports !
 		/*if (type != null) {
@@ -773,9 +785,12 @@ public abstract class FMLObjectNode<N extends Node, T extends FMLPrettyPrintable
 			Map<FMLProperty<?, ?>, Object> propertyValues) {
 		// logger.info("Decoding " + propertyName.getText() + "=" + expressionValue);
 		FMLProperty fmlProperty = modelObject.getFMLProperty(propertyName.getText(), getFactory());
+		if (fmlProperty == null) {
+			logger.warning("Cannot retrieve FMLProperty " + propertyName + " for " + modelObject);
+			return;
+		}
 		DataBinding<Object> value = makeBinding(expressionValue, modelObject);
-		// System.out.println("FMLProperty=" + fmlProperty);
-		// System.out.println("value=" + value);
+		System.out.println("FMLProperty=" + fmlProperty);
 		if (value.isConstant()) {
 			Object constantValue = ((Constant) value.getExpression()).getValue();
 			if (constantValue != null) {
@@ -789,11 +804,23 @@ public abstract class FMLObjectNode<N extends Node, T extends FMLPrettyPrintable
 				}
 			}
 		}
-		else if (TypeUtils.getBaseClass(fmlProperty.getType()).equals(DataBinding.class)) {
+		else if (DataBinding.class.equals(TypeUtils.getBaseClass(fmlProperty.getType()))) {
 			// logger.info("Set " + fmlProperty.getName() + " = " + value);
 			fmlProperty.set(value, modelObject);
 		}
 		else {
+			if (getCompilationUnit() != null) {
+				for (ElementImportDeclaration elementImportDeclaration : getCompilationUnit().getElementImports()) {
+					// System.out.println(
+					// "> J'ai deja: " + elementImportDeclaration.getAbbrev() + "=" + elementImportDeclaration.getReferencedObject());
+					if (elementImportDeclaration.getAbbrev().equals(value.toString())) {
+						// System.out.println("Trouve !!!");
+						fmlProperty.set(elementImportDeclaration.getReferencedObject(), modelObject);
+						break;
+					}
+				}
+			}
+
 			logger.warning("Unexpected value for property " + fmlProperty.getName() + " expected type: " + fmlProperty.getType()
 					+ " value: " + value);
 		}

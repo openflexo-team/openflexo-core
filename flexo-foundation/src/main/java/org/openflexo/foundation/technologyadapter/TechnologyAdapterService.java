@@ -258,4 +258,6 @@ public interface TechnologyAdapterService extends FlexoService, CustomTypeManage
 
 	public <MS extends ModelSlot<?>> Class<? extends FlexoRole<?>> getFlexoRole(Class<MS> modelSlotClass, String roleKeyword);
 
+	public <MS extends ModelSlot<?>> Class<? extends TechnologySpecificAction<?, ?>> getEditionAction(Class<MS> modelSlotClass,
+			String editionActionKeyword);
 }

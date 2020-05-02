@@ -38,6 +38,7 @@
 
 package org.openflexo.foundation.fml.parser.fmlnodes;
 
+import java.lang.reflect.Type;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.fml.FlexoBehaviour;
@@ -48,14 +49,19 @@ import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.ControlGraphNod
 import org.openflexo.foundation.fml.parser.node.ABlockFlexoBehaviourBody;
 import org.openflexo.foundation.fml.parser.node.AFmlBehaviourDecl;
 import org.openflexo.foundation.fml.parser.node.AFmlFullyQualifiedBehaviourDecl;
+import org.openflexo.foundation.fml.parser.node.AFmlFullyQualifiedInnerConceptDecl;
+import org.openflexo.foundation.fml.parser.node.AFmlInnerConceptDecl;
+import org.openflexo.foundation.fml.parser.node.AFullQualifiedFmlParameters;
 import org.openflexo.foundation.fml.parser.node.Node;
 import org.openflexo.foundation.fml.parser.node.PFlexoBehaviourBody;
+import org.openflexo.foundation.fml.parser.node.PFmlParameters;
 import org.openflexo.p2pp.PrettyPrintContext.Indentation;
+import org.openflexo.p2pp.RawSource.RawSourceFragment;
 
 /**
  * <pre>
-     | {fml} [annotations]:annotation* visibility? type? [name]:identifier l_par formal_arguments_list? r_par kw_with [behaviour]:identifier fml_parameters? flexo_behaviour_body
-     | {fml_fully_qualified} [annotations]:annotation* visibility? type? [name]:identifier l_par formal_arguments_list? r_par kw_with [ta_id]:identifier colon_colon [behaviour]:identifier fml_parameters? flexo_behaviour_body
+ *   | {fml} [annotations]:annotation* visibility? type? [name]:identifier l_par formal_arguments_list? r_par kw_with [behaviour]:identifier fml_parameters? flexo_behaviour_body
+ *   | {fml_fully_qualified} [annotations]:annotation* visibility? type? [name]:identifier l_par formal_arguments_list? r_par kw_with [ta_id]:identifier colon_colon [behaviour]:identifier fml_parameters? flexo_behaviour_body
  * </pre>
  * 
  * @author sylvain
@@ -70,8 +76,8 @@ public class FMLBehaviourNode<N extends Node, B extends FlexoBehaviour> extends 
 		super(astNode, analyser);
 	}
 
-	public FMLBehaviourNode(B creationScheme, MainSemanticsAnalyzer analyser) {
-		super(creationScheme, analyser);
+	public FMLBehaviourNode(B behaviour, MainSemanticsAnalyzer analyser) {
+		super(behaviour, analyser);
 	}
 
 	@Override
@@ -113,6 +119,12 @@ public class FMLBehaviourNode<N extends Node, B extends FlexoBehaviour> extends 
 		return returned;
 	}
 
+	/**
+	 * <pre>
+	 * [annotations]:annotation* visibility? type? [name]:identifier l_par formal_arguments_list? r_par kw_with [behaviour]:identifier fml_parameters? flexo_behaviour_body
+	 * [annotations]:annotation* visibility? type? [name]:identifier l_par formal_arguments_list? r_par kw_with [ta_id]:identifier colon_colon [behaviour]:identifier fml_parameters? flexo_behaviour_body
+	 * </pre>
+	 */
 	@Override
 	public void preparePrettyPrint(boolean hasParsedVersion) {
 		super.preparePrettyPrint(hasParsedVersion);
@@ -120,17 +132,125 @@ public class FMLBehaviourNode<N extends Node, B extends FlexoBehaviour> extends 
 		//append(childrenContents("", () -> getModelObject().getMetaData(), LINE_SEPARATOR, Indentation.DoNotIndent,
 		//		FMLMetaData.class));
 		append(dynamicContents(() -> getVisibilityAsString(getModelObject().getVisibility()), SPACE), getVisibilityFragment());
-		append(dynamicContents(() -> getModelObject().getName(), SPACE), getNameFragment());
+		when(() -> hasReturnType())
+			.thenAppend(dynamicContents(() -> serializeType(getModelObject().getReturnType()),SPACE), getTypeFragment());
+		append(dynamicContents(() -> getModelObject().getName()), getNameFragment());
 		append(staticContents("("), getLParFragment());
 		append(childrenContents("", "", () -> getModelObject().getParameters(), ","+SPACE, "", Indentation.DoNotIndent,
 				FlexoBehaviourParameter.class));
 		append(staticContents(")"), getRParFragment());
+	
+		append(staticContents(SPACE, "with", SPACE), getWithFragment());
+		when(() -> isFullQualified())
+			.thenAppend(dynamicContents(() -> getFMLFactory().serializeTAId(getModelObject())), getTaIdFragment())
+			.thenAppend(staticContents("::"), getColonColonFragment());
+		append(dynamicContents(() -> serializeFlexoBehaviourName(getModelObject())), getBehaviourFragment());
+		when(() -> hasFMLProperties())
+			.thenAppend(staticContents("("), getFMLParametersLParFragment())
+			.thenAppend(dynamicContents(() -> getModelObject().encodeFMLProperties(getFactory())), getFMLParametersFragment())
+			.thenAppend(staticContents(")"), getFMLParametersRParFragment());
+
 		when(() -> isAbstract())
-		.thenAppend(staticContents(";"), getSemiFragment())
-		.elseAppend(staticContents(SPACE,"{", ""), getLBrcFragment())
-		.elseAppend(childContents(LINE_SEPARATOR, () -> getModelObject().getControlGraph(), LINE_SEPARATOR, Indentation.Indent))
-		.elseAppend(staticContents(LINE_SEPARATOR, "}", ""), getRBrcFragment());
+			.thenAppend(staticContents(";"), getSemiFragment())
+			.elseAppend(staticContents(SPACE,"{", ""), getLBrcFragment())
+			.elseAppend(childContents(LINE_SEPARATOR, () -> getModelObject().getControlGraph(), LINE_SEPARATOR, Indentation.Indent))
+			.elseAppend(staticContents(LINE_SEPARATOR, "}", ""), getRBrcFragment());
 		// @formatter:on
+
+	}
+
+	protected boolean isFullQualified() {
+		if (getASTNode() instanceof AFmlFullyQualifiedBehaviourDecl) {
+			return true;
+		}
+		return false;
+	}
+
+	protected boolean hasReturnType() {
+		if (getASTNode() != null) {
+			return getType() != null;
+		}
+		if (getModelObject() != null) {
+			Type returnedType = getModelObject().getReturnType();
+			return !(((Void.class.equals(returnedType)) || (Void.TYPE.equals(returnedType))));
+		}
+		return false;
+	}
+
+	protected String serializeFlexoBehaviourName(FlexoBehaviour behaviour) {
+		return behaviour.getFMLKeyword(getFactory());
+	}
+
+	protected boolean hasFMLProperties() {
+		if (getFMLParameters() != null) {
+			return true;
+		}
+		if (getModelObject() != null) {
+			return getModelObject().hasFMLProperties(getFactory());
+		}
+		return false;
+	}
+
+	protected RawSourceFragment getWithFragment() {
+		if (getASTNode() instanceof AFmlBehaviourDecl) {
+			return getFragment(((AFmlBehaviourDecl) getASTNode()).getKwWith());
+		}
+		if (getASTNode() instanceof AFmlFullyQualifiedBehaviourDecl) {
+			return getFragment(((AFmlFullyQualifiedBehaviourDecl) getASTNode()).getKwWith());
+		}
+		return null;
+	}
+
+	protected RawSourceFragment getTaIdFragment() {
+		if (getASTNode() instanceof AFmlFullyQualifiedBehaviourDecl) {
+			return getFragment(((AFmlFullyQualifiedBehaviourDecl) getASTNode()).getTaId());
+		}
+		return null;
+	}
+
+	protected RawSourceFragment getColonColonFragment() {
+		if (getASTNode() instanceof AFmlFullyQualifiedBehaviourDecl) {
+			return getFragment(((AFmlFullyQualifiedBehaviourDecl) getASTNode()).getColonColon());
+		}
+		return null;
+	}
+
+	protected RawSourceFragment getBehaviourFragment() {
+		if (getASTNode() instanceof AFmlFullyQualifiedBehaviourDecl) {
+			return getFragment(((AFmlFullyQualifiedBehaviourDecl) getASTNode()).getBehaviour());
+		}
+		return null;
+	}
+
+	protected PFmlParameters getFMLParameters() {
+		if (getASTNode() instanceof AFmlInnerConceptDecl) {
+			return ((AFmlInnerConceptDecl) getASTNode()).getFmlParameters();
+		}
+		if (getASTNode() instanceof AFmlFullyQualifiedInnerConceptDecl) {
+			return ((AFmlFullyQualifiedInnerConceptDecl) getASTNode()).getFmlParameters();
+		}
+		return null;
+	}
+
+	protected RawSourceFragment getFMLParametersFragment() {
+		if (getFMLParameters() != null) {
+			return getFragment(getFMLParameters());
+		}
+		return null;
+	}
+
+	protected RawSourceFragment getFMLParametersLParFragment() {
+		if (getFMLParameters() instanceof AFullQualifiedFmlParameters) {
+			return getFragment(((AFullQualifiedFmlParameters) getFMLParameters()).getLPar());
+		}
+		return null;
+	}
+
+	protected RawSourceFragment getFMLParametersRParFragment() {
+		if (getFMLParameters() instanceof AFullQualifiedFmlParameters) {
+			return getFragment(((AFullQualifiedFmlParameters) getFMLParameters()).getRPar());
+		}
+		return null;
 	}
 
 }

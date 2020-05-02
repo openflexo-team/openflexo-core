@@ -22,6 +22,7 @@ import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.EmptyControlGra
 import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.EmptyReturnStatementNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.EndMatchActionNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.ExpressionActionNode;
+import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.FMLEditionActionNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.FetchRequestNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.IterationActionNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.LogActionNode;
@@ -35,7 +36,6 @@ import org.openflexo.foundation.fml.parser.node.ABlockStatementWithoutTrailingSu
 import org.openflexo.foundation.fml.parser.node.ADoStatementStatementWithoutTrailingSubstatement;
 import org.openflexo.foundation.fml.parser.node.AEmptyStatementStatementWithoutTrailingSubstatement;
 import org.openflexo.foundation.fml.parser.node.AEndMatchActionFmlActionExp;
-import org.openflexo.foundation.fml.parser.node.AFmlActionExpressionStatementExpression;
 import org.openflexo.foundation.fml.parser.node.AFmlInstanceCreationFmlActionExp;
 import org.openflexo.foundation.fml.parser.node.AForBasicExpressionStatement;
 import org.openflexo.foundation.fml.parser.node.AForBasicStatement;
@@ -49,6 +49,7 @@ import org.openflexo.foundation.fml.parser.node.AMethodInvocationStatementExpres
 import org.openflexo.foundation.fml.parser.node.AReturnEmptyStatementWithoutTrailingSubstatement;
 import org.openflexo.foundation.fml.parser.node.AReturnStatementWithoutTrailingSubstatement;
 import org.openflexo.foundation.fml.parser.node.ASelectActionFmlActionExp;
+import org.openflexo.foundation.fml.parser.node.ATaEditionActionFmlActionExp;
 import org.openflexo.foundation.fml.parser.node.AVariableDeclarationBlockStatement;
 import org.openflexo.foundation.fml.parser.node.AWhileStatement;
 import org.openflexo.foundation.fml.parser.node.Node;
@@ -546,9 +547,15 @@ public class ControlGraphFactory extends FMLSemanticsAnalyzer {
 	}
 
 	@Override
-	public void inAFmlActionExpressionStatementExpression(AFmlActionExpressionStatementExpression node) {
-		// TODO Auto-generated method stub
-		super.inAFmlActionExpressionStatementExpression(node);
+	public void inATaEditionActionFmlActionExp(ATaEditionActionFmlActionExp node) {
+		super.inATaEditionActionFmlActionExp(node);
+		push(getMainAnalyzer().retrieveFMLNode(node, n -> new FMLEditionActionNode(n, getMainAnalyzer())));
+	}
+
+	@Override
+	public void outATaEditionActionFmlActionExp(ATaEditionActionFmlActionExp node) {
+		super.outATaEditionActionFmlActionExp(node);
+		pop();
 	}
 
 	@Override

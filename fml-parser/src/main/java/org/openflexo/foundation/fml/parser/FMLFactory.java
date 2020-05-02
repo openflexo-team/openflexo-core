@@ -44,6 +44,7 @@ import org.openflexo.foundation.fml.FlexoBehaviour;
 import org.openflexo.foundation.fml.FlexoRole;
 import org.openflexo.foundation.fml.UseModelSlotDeclaration;
 import org.openflexo.foundation.fml.editionaction.EditionAction;
+import org.openflexo.foundation.fml.editionaction.TechnologySpecificAction;
 import org.openflexo.foundation.fml.parser.node.TIdentifier;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
@@ -133,6 +134,18 @@ public class FMLFactory extends SemanticsAnalyzerFactory {
 
 	}
 
+	public String serializeTAId(FlexoBehaviour behaviour) {
+		Class<? extends ModelSlot<?>> modelSlotClass = getModelSlotClass(behaviour);
+		return serializeTAId(modelSlotClass);
+
+	}
+
+	public String serializeTAId(TechnologySpecificAction<?, ?> editionAction) {
+		Class<? extends ModelSlot<?>> modelSlotClass = getModelSlotClass(editionAction);
+		return serializeTAId(modelSlotClass);
+
+	}
+
 	public Class<? extends ModelSlot<?>> getModelSlotClass(FlexoRole<?> role) {
 		if (role instanceof ModelSlot) {
 			return (Class<? extends ModelSlot<?>>) role.getClass();
@@ -142,6 +155,36 @@ public class FMLFactory extends SemanticsAnalyzerFactory {
 				for (Class<? extends FlexoRole<?>> roleClass : getAnalyzer().getServiceManager().getTechnologyAdapterService()
 						.getAvailableFlexoRoleTypes(modelSlotClass)) {
 					if (roleClass.isAssignableFrom(role.getClass())) {
+						return modelSlotClass;
+					}
+				}
+
+			}
+		}
+		return null;
+	}
+
+	public Class<? extends ModelSlot<?>> getModelSlotClass(FlexoBehaviour behaviour) {
+		for (TechnologyAdapter<?> ta : getAnalyzer().getServiceManager().getTechnologyAdapterService().getTechnologyAdapters()) {
+			for (Class<? extends ModelSlot<?>> modelSlotClass : ta.getAvailableModelSlotTypes()) {
+				for (Class<? extends FlexoBehaviour> behaviourClass : getAnalyzer().getServiceManager().getTechnologyAdapterService()
+						.getAvailableFlexoBehaviourTypes(modelSlotClass)) {
+					if (behaviourClass.isAssignableFrom(behaviour.getClass())) {
+						return modelSlotClass;
+					}
+				}
+
+			}
+		}
+		return null;
+	}
+
+	public Class<? extends ModelSlot<?>> getModelSlotClass(TechnologySpecificAction<?, ?> editionAction) {
+		for (TechnologyAdapter<?> ta : getAnalyzer().getServiceManager().getTechnologyAdapterService().getTechnologyAdapters()) {
+			for (Class<? extends ModelSlot<?>> modelSlotClass : ta.getAvailableModelSlotTypes()) {
+				for (Class<? extends EditionAction> editionActionClass : getAnalyzer().getServiceManager().getTechnologyAdapterService()
+						.getAvailableEditionActionTypes(modelSlotClass)) {
+					if (editionActionClass.isAssignableFrom(editionAction.getClass())) {
 						return modelSlotClass;
 					}
 				}
@@ -173,6 +216,19 @@ public class FMLFactory extends SemanticsAnalyzerFactory {
 	private Class<? extends FlexoBehaviour> getBehaviourClass(TIdentifier behaviourIdentifier,
 			Class<? extends ModelSlot<?>> modelSlotClass) {
 		return getServiceManager().getTechnologyAdapterService().getFlexoBehaviour(modelSlotClass, behaviourIdentifier.getText());
+	}
+
+	public Class<? extends TechnologySpecificAction<?, ?>> getEditionActionClass(TIdentifier taIdentifier, TIdentifier roleIdentifier) {
+		Class<? extends ModelSlot<?>> modelSlotClass = getModelSlotClass(taIdentifier);
+		if (modelSlotClass != null) {
+			return getEditionActionClass(roleIdentifier, modelSlotClass);
+		}
+		return null;
+	}
+
+	private Class<? extends TechnologySpecificAction<?, ?>> getEditionActionClass(TIdentifier editionActionIdentifier,
+			Class<? extends ModelSlot<?>> modelSlotClass) {
+		return getServiceManager().getTechnologyAdapterService().getEditionAction(modelSlotClass, editionActionIdentifier.getText());
 	}
 
 }

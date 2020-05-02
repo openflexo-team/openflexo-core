@@ -40,6 +40,7 @@ package org.openflexo.foundation.fml;
 
 import java.io.FileNotFoundException;
 import java.lang.reflect.InvocationTargetException;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.openflexo.connie.BindingFactory;
@@ -135,7 +136,8 @@ public interface ElementImportDeclaration extends FMLPrettyPrintable {
 
 		@Override
 		public String toString() {
-			return "ElementImportDeclaration(" + getResourceReference() + (getObjectReference() != null ? getObjectReference() : "") + ")";
+			return "ElementImportDeclaration(" + getResourceReference() + (getObjectReference() != null ? ":" + getObjectReference() : "")
+					+ ")";
 		}
 
 		@Override
@@ -259,6 +261,24 @@ public interface ElementImportDeclaration extends FMLPrettyPrintable {
 						objectReference = getObjectReference().getBindingValue(getReflectedBindingEvaluationContext());
 					}
 
+					/*if (getResourceReference().isSet() && getResourceReference().isValid()) {
+						System.out.println("----> On cherche l'uri pour " + getResourceReference());
+						for (ElementImportDeclaration imp : getDeclaringCompilationUnit().getElementImports()) {
+							System.out.println("imp: " + imp);
+						}
+						resourceURI = getResourceReference().getBindingValue(getReflectedBindingEvaluationContext());
+						System.out.println("resourceURI=" + resourceURI);
+					}
+					else {
+						System.out.println("----> not valid: " + getResourceReference());
+						System.out.println("reason: " + getResourceReference().invalidBindingReason());
+					}*/
+
+					// System.out.println("resourceURI=" + resourceURI);
+					// System.out.println("getObjectReference()=" + getObjectReference());
+					// System.out.println("Et objectReference=" + objectReference);
+					// System.out.println("reason: " + getObjectReference().invalidBindingReason());
+
 					if (resourceURI == null) {
 						// logger.warning("Cannot find object with null URI ");
 						return null;
@@ -286,9 +306,7 @@ public interface ElementImportDeclaration extends FMLPrettyPrintable {
 
 						// Find the right object in resource
 						else {
-							// TODO:
-							System.out.println("Il me faut trouver l'objet avec l'ID: " + objectReference + " dans " + resourceData);
-							return null;
+							return findObjectInResource(resource, objectReference);
 						}
 					}
 
@@ -303,5 +321,21 @@ public interface ElementImportDeclaration extends FMLPrettyPrintable {
 			return null;
 
 		}
+
+		private FlexoObject findObjectInResource(FlexoResource<?> resource, String identifier) {
+			String userIdentifier = identifier.substring(0, identifier.indexOf("-"));
+			String objectIdentifier = identifier.substring(identifier.indexOf("-") + 1);
+			try {
+				// Ensure the resource is loaded
+				resource.getResourceData();
+				// System.out.println("On retourne " + resource.findObject(objectIdentifier, userIdentifier));
+				return (FlexoObject) resource.findObject(objectIdentifier, userIdentifier);
+			} catch (RuntimeException | FileNotFoundException | ResourceLoadingCancelledException | FlexoException e) {
+				logger.log(Level.SEVERE, "Error while finding object in resource '" + resource.getURI() + "'", e);
+			}
+			logger.warning("Cannot find object " + userIdentifier + "_" + objectIdentifier + " in resource " + resource);
+			return null;
+		}
+
 	}
 }

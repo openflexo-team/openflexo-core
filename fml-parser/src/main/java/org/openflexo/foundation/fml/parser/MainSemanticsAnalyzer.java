@@ -111,6 +111,17 @@ public class MainSemanticsAnalyzer extends FMLSemanticsAnalyzer {
 	private FragmentManager fragmentManager;
 
 	private FMLCompilationUnitNode compilationUnitNode;
+	private FMLCompilationUnit compilationUnit;
+
+	public MainSemanticsAnalyzer(FMLCompilationUnit compilationUnit) {
+		super(compilationUnit.getFMLModelFactory(), null);
+		this.compilationUnit = compilationUnit;
+		fragmentManager = new FragmentManager(null);
+		typeFactory = new TypeFactory(this);
+		fmlFactory = new FMLFactory(this);
+		propertyFactory = new FlexoPropertyFactory(this);
+		behaviourFactory = new FlexoBehaviourFactory(this);
+	}
 
 	public MainSemanticsAnalyzer(FMLModelFactory factory, Start tree, RawSource rawSource) {
 		super(factory, tree);
@@ -120,7 +131,6 @@ public class MainSemanticsAnalyzer extends FMLSemanticsAnalyzer {
 		fmlFactory = new FMLFactory(this);
 		propertyFactory = new FlexoPropertyFactory(this);
 		behaviourFactory = new FlexoBehaviourFactory(this);
-
 		if (tree != null) {
 			tree.apply(this);
 			finalizeDeserialization();
@@ -254,7 +264,10 @@ public class MainSemanticsAnalyzer extends FMLSemanticsAnalyzer {
 	}*/
 
 	public FMLCompilationUnit getCompilationUnit() {
-		return compilationUnitNode.getModelObject();
+		if (compilationUnitNode != null) {
+			return compilationUnitNode.getModelObject();
+		}
+		return compilationUnit;
 	}
 
 	public FMLCompilationUnitNode getCompilationUnitNode() {
@@ -263,6 +276,7 @@ public class MainSemanticsAnalyzer extends FMLSemanticsAnalyzer {
 
 	@Override
 	public void inAFmlCompilationUnit(AFmlCompilationUnit node) {
+
 		super.inAFmlCompilationUnit(node);
 		push(compilationUnitNode = new FMLCompilationUnitNode(node, this));
 		nodesForAST.put(node, compilationUnitNode);
