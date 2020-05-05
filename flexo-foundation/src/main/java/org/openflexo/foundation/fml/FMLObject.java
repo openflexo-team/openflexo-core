@@ -657,9 +657,12 @@ public interface FMLObject extends FlexoObject, Bindable, InnerResourceData<FMLC
 
 		@Override
 		public FMLProperty getFMLProperty(String propertyName, FMLModelFactory modelFactory) {
-			for (FMLProperty fmlProperty : getFMLProperties(modelFactory)) {
-				if (fmlProperty.getName().equals(propertyName)) {
-					return fmlProperty;
+			Set<FMLProperty> fmlProperties = getFMLProperties(modelFactory);
+			if (fmlProperties != null) {
+				for (FMLProperty fmlProperty : getFMLProperties(modelFactory)) {
+					if (fmlProperty.getName().equals(propertyName)) {
+						return fmlProperty;
+					}
 				}
 			}
 			return null;
@@ -674,7 +677,9 @@ public interface FMLObject extends FlexoObject, Bindable, InnerResourceData<FMLC
 					FMLPropertyValue pValue = fmlPropertyValues.get(fmlProperty);
 					if (pValue == null) {
 						pValue = fmlProperty.makeFMLPropertyValue(this);
-						fmlPropertyValues.put(fmlProperty, pValue);
+						if (pValue != null) {
+							fmlPropertyValues.put(fmlProperty, pValue);
+						}
 					}
 				}
 				List<FMLPropertyValue<?, ?>> returned = new ArrayList<>();
