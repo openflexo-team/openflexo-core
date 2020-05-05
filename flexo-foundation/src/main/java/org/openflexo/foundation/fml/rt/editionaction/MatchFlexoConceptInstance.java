@@ -60,6 +60,7 @@ import org.openflexo.foundation.fml.FlexoConceptInstanceType;
 import org.openflexo.foundation.fml.FlexoProperty;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.VirtualModelInstanceType;
+import org.openflexo.foundation.fml.annotations.FML;
 import org.openflexo.foundation.fml.rt.FMLRTModelSlot;
 import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
@@ -102,6 +103,7 @@ import org.openflexo.pamela.validation.ValidationRule;
 @ModelEntity
 @ImplementationClass(MatchFlexoConceptInstance.MatchFlexoConceptInstanceImpl.class)
 @XMLElement
+@FML("MatchFlexoConceptInstance")
 public interface MatchFlexoConceptInstance extends FMLRTAction<FlexoConceptInstance, FMLRTVirtualModelInstance> {
 
 	// @PropertyIdentifier(type = DataBinding.class)
