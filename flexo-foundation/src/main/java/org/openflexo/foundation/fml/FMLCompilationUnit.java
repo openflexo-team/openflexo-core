@@ -890,6 +890,9 @@ public interface FMLCompilationUnit extends FMLObject, FMLPrettyPrintable, Resou
 		}
 
 		private <RD extends ResourceData<?> & FlexoObject> String findUniqueAbbrev(RD resourceData) {
+			if (resourceData instanceof FMLCompilationUnit) {
+				return resourceData.getResource().getName();
+			}
 			String initialName = resourceData.getResource().getName();
 			if (initialName.contains(".")) {
 				initialName = initialName.substring(0, initialName.lastIndexOf("."));
