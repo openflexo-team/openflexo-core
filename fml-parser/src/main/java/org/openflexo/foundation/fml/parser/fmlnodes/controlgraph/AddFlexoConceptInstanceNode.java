@@ -223,7 +223,7 @@ public class AddFlexoConceptInstanceNode extends AssignableActionNode<PFmlAction
 	}
 
 	private boolean isFullQualified() {
-		if (getModelObject() != null) {
+		if (getModelObject() != null && getModelObject().getFlexoConceptType() != null) {
 			return getModelObject().getFlexoConceptType().getCreationSchemes().size() > 1;
 		}
 		else {
