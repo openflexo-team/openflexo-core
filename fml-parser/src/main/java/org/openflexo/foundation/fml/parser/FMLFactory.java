@@ -40,6 +40,7 @@ package org.openflexo.foundation.fml.parser;
 
 import java.util.logging.Logger;
 
+import org.openflexo.foundation.fml.FMLObject;
 import org.openflexo.foundation.fml.FlexoBehaviour;
 import org.openflexo.foundation.fml.FlexoRole;
 import org.openflexo.foundation.fml.UseModelSlotDeclaration;
@@ -229,6 +230,59 @@ public class FMLFactory extends SemanticsAnalyzerFactory {
 	private Class<? extends TechnologySpecificAction<?, ?>> getEditionActionClass(TIdentifier editionActionIdentifier,
 			Class<? extends ModelSlot<?>> modelSlotClass) {
 		return getServiceManager().getTechnologyAdapterService().getEditionAction(modelSlotClass, editionActionIdentifier.getText());
+	}
+
+	/*public <O extends FMLObject> Class<O> getFMLObjectClass(FMLObject modelObject, String instanceType) {
+		if (modelObject.getFMLModelFactory() != null) {
+			Iterator<ModelEntity> entities = modelObject.getFMLModelFactory().getModelContext().getEntities();
+			while (entities.hasNext()) {
+				ModelEntity entity = entities.next();
+				Class implementedInterface = entity.getImplementedInterface();
+				if (implement)
+			}
+		}
+		return null;
+	}
+	
+	public <O extends FMLObject> Class<O> getFMLObjectClass(FMLObject modelObject, String taID, String instanceType) {
+		// TODO Auto-generated method stub
+		return null;
+	}*/
+
+	public Class<? extends FMLObject> getFMLObjectClass(TIdentifier objectIdentifier) {
+		for (UseModelSlotDeclaration useModelSlotDeclaration : getAnalyzer().getCompilationUnit().getUseDeclarations()) {
+			Class<? extends FMLObject> objectClass = getFMLObjectClass(objectIdentifier, useModelSlotDeclaration.getModelSlotClass());
+			if (objectClass != null) {
+				return objectClass;
+			}
+		}
+		return null;
+	}
+
+	public Class<? extends FMLObject> getFMLObjectClass(TIdentifier taIdentifier, TIdentifier objectIdentifier) {
+		Class<? extends ModelSlot<?>> modelSlotClass = getModelSlotClass(taIdentifier);
+		if (modelSlotClass != null) {
+			return getFMLObjectClass(objectIdentifier, modelSlotClass);
+		}
+		return null;
+	}
+
+	private Class<? extends FMLObject> getFMLObjectClass(TIdentifier objectIdentifier, Class<? extends ModelSlot<?>> modelSlotClass) {
+
+		return getServiceManager().getTechnologyAdapterService().getFlexoRole(modelSlotClass, objectIdentifier.getText());
+
+		/*if (roleIdentifier.getText().equals(modelSlotClass.getSimpleName())) {
+			return modelSlotClass;
+		}
+		
+		for (Class<? extends FlexoRole<?>> roleClass : getServiceManager().getTechnologyAdapterService()
+				.getAvailableFlexoRoleTypes(modelSlotClass)) {
+			if (roleIdentifier.getText().equals(roleClass.getSimpleName())) {
+				return roleClass;
+			}
+		}
+		
+		return null;*/
 	}
 
 }

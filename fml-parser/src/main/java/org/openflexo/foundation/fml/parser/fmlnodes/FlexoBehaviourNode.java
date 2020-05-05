@@ -59,6 +59,7 @@ import org.openflexo.foundation.fml.parser.node.PFlexoBehaviourBody;
 import org.openflexo.foundation.fml.parser.node.PType;
 import org.openflexo.foundation.fml.parser.node.PVisibility;
 import org.openflexo.foundation.fml.parser.node.TIdentifier;
+import org.openflexo.p2pp.P2PPNode;
 import org.openflexo.p2pp.PrettyPrintContext.Indentation;
 import org.openflexo.p2pp.RawSource.RawSourceFragment;
 
@@ -174,7 +175,7 @@ public abstract class FlexoBehaviourNode<N extends Node, T extends FlexoBehaviou
 		System.out.println("On gere le parametre " + parameter);
 		System.out.println("On gere rien en fait");
 		System.exit(-1);
-		
+	
 		BehaviourParameterNode paramNode = new BehaviourParameterNode(parameter, getAnalyser());
 	}*/
 
@@ -350,5 +351,20 @@ public abstract class FlexoBehaviourNode<N extends Node, T extends FlexoBehaviou
 		}
 		return null;
 	}
+
+	/*@Override
+	public void addToChildren(P2PPNode<?, ?> child) {
+		if ((child instanceof FMLSimplePropertyValueNode) && child.getASTNode() != null && ((((FMLSimplePropertyValueNode<?, ?>) child)
+				.getASTNode().getArgName().getText().contains("extendParentBoundsToHostThisShape")))) {
+			System.out.println("C'est la que y'a un probleme");
+
+			System.out.println("ASTNode: " + getASTNode());
+			System.out.println(((Node) child.getASTNode()).parent());
+
+			Thread.dumpStack();
+			System.exit(-1);
+		}
+		super.addToChildren(child);
+	}*/
 
 }

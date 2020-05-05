@@ -48,6 +48,7 @@ import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.PamelaResourceModelFactory;
 import org.openflexo.foundation.action.FlexoUndoManager;
 import org.openflexo.foundation.fml.FMLCompilationUnit.FMLCompilationUnitImpl;
+import org.openflexo.foundation.fml.FMLModelContext.FMLProperty;
 import org.openflexo.foundation.fml.annotations.DeclareEditionActions;
 import org.openflexo.foundation.fml.annotations.DeclareFetchRequests;
 import org.openflexo.foundation.fml.annotations.DeclareFlexoBehaviours;
@@ -694,6 +695,18 @@ public class FMLModelFactory extends ModelFactory implements PamelaResourceModel
 
 	public SelectFlexoConceptInstance newSelectFlexoConceptInstanceAction() {
 		return newInstance(SelectFlexoConceptInstance.class);
+	}
+
+	public <M extends FMLObject, T> FMLSimplePropertyValue<M, T> newSimplePropertyValue(FMLProperty<M, T> property, T value) {
+		FMLSimplePropertyValue<M, T> returned = newInstance(FMLSimplePropertyValue.class);
+		returned.setProperty(property);
+		returned.setValue(value);
+		return returned;
+	}
+
+	public <M extends FMLObject, T> FMLSimplePropertyValue<M, T> newSimplePropertyValue() {
+		FMLSimplePropertyValue<M, T> returned = newInstance(FMLSimplePropertyValue.class);
+		return returned;
 	}
 
 	@Override

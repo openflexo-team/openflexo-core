@@ -40,10 +40,12 @@
 package org.openflexo.foundation.technologyadapter;
 
 import java.io.PrintStream;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -55,6 +57,7 @@ import org.openflexo.connie.type.CustomTypeFactory;
 import org.openflexo.foundation.FlexoService;
 import org.openflexo.foundation.FlexoServiceImpl;
 import org.openflexo.foundation.FlexoServiceManager;
+import org.openflexo.foundation.fml.FMLObject;
 import org.openflexo.foundation.fml.FMLTechnologyAdapter;
 import org.openflexo.foundation.fml.FlexoBehaviour;
 import org.openflexo.foundation.fml.FlexoRole;
@@ -63,6 +66,7 @@ import org.openflexo.foundation.fml.annotations.DeclareFetchRequests;
 import org.openflexo.foundation.fml.annotations.DeclareFlexoBehaviours;
 import org.openflexo.foundation.fml.annotations.DeclareFlexoRoles;
 import org.openflexo.foundation.fml.annotations.FML;
+import org.openflexo.foundation.fml.annotations.FMLAttribute;
 import org.openflexo.foundation.fml.editionaction.AbstractFetchRequest;
 import org.openflexo.foundation.fml.editionaction.EditionAction;
 import org.openflexo.foundation.fml.editionaction.FetchRequest;
@@ -79,6 +83,10 @@ import org.openflexo.foundation.resource.ResourceRepository;
 import org.openflexo.foundation.resource.ResourceRepositoryImpl;
 import org.openflexo.foundation.task.FlexoTask;
 import org.openflexo.foundation.task.Progress;
+import org.openflexo.pamela.ModelContext;
+import org.openflexo.pamela.ModelContextLibrary;
+import org.openflexo.pamela.ModelEntity;
+import org.openflexo.pamela.ModelProperty;
 import org.openflexo.pamela.exceptions.ModelDefinitionException;
 import org.openflexo.pamela.factory.ModelFactory;
 import org.openflexo.toolbox.StringUtils;
@@ -98,12 +106,14 @@ public abstract class DefaultTechnologyAdapterService extends FlexoServiceImpl i
 	private Map<Class<? extends ModelSlot<?>>, List<Class<? extends FlexoRole<?>>>> availableFlexoRoleTypes;
 	private Map<Class<? extends ModelSlot<?>>, List<Class<? extends FlexoBehaviour>>> availableFlexoBehaviourTypes;
 	private Map<Class<? extends ModelSlot<?>>, List<Class<? extends EditionAction>>> availableEditionActionTypes;
+	private Map<Class<? extends ModelSlot<?>>, List<Class<? extends FMLObject>>> availableFMLObjectsTypes;
 	private Map<Class<? extends ModelSlot<?>>, List<Class<? extends AbstractFetchRequest<?, ?, ?, ?>>>> availableAbstractFetchRequestActionTypes;
 	private Map<Class<? extends ModelSlot<?>>, List<Class<? extends FetchRequest<?, ?, ?>>>> availableFetchRequestActionTypes;
 
 	private Map<String, Class<? extends FlexoBehaviour>> availableBehavioursByFMLKeyword;
 	private Map<String, Class<? extends FlexoRole<?>>> availableRolesByFMLKeyword;
 	private Map<String, Class<? extends EditionAction>> availableEditionActionsByFMLKeyword;
+	private Map<String, Class<? extends FMLObject>> availableFMLObjectsByFMLKeyword;
 
 	// private Map<Class<? extends ModelSlot<?>>, List<Class<? extends FlexoBehaviourParameter>>> availableFlexoBehaviourParameterTypes;
 	// private Map<Class<? extends ModelSlot<?>>, List<Class<? extends InspectorEntry>>> availableInspectorEntryTypes;
@@ -247,11 +257,13 @@ public abstract class DefaultTechnologyAdapterService extends FlexoServiceImpl i
 	public void initialize() {
 		availableFlexoRoleTypes = new HashMap<>();
 		availableEditionActionTypes = new HashMap<>();
+		availableFMLObjectsTypes = new HashMap<>();
 		availableFetchRequestActionTypes = new HashMap<>();
 		availableFlexoBehaviourTypes = new HashMap<>();
 		availableBehavioursByFMLKeyword = new HashMap<>();
 		availableRolesByFMLKeyword = new HashMap<>();
 		availableEditionActionsByFMLKeyword = new HashMap<>();
+		availableFMLObjectsByFMLKeyword = new HashMap<>();
 		loadAvailableTechnologyAdapters();
 		status = Status.Started;
 	}
@@ -498,6 +510,42 @@ public abstract class DefaultTechnologyAdapterService extends FlexoServiceImpl i
 	}
 
 	/**
+	 * Return the list of {@link FMLObject} class available for supplied modelSlotClass
+	 * 
+	 * @param modelSlotClass
+	 * @return
+	 */
+	@Override
+	public <MS extends ModelSlot<?>> List<Class<? extends FMLObject>> getAvailableFMLObjectTypes(Class<MS> modelSlotClass) {
+		List<Class<? extends FMLObject>> returned = availableFMLObjectsTypes.get(modelSlotClass);
+		if (returned == null) {
+			returned = new ArrayList<>();
+			ModelContext modelContext;
+			try {
+				modelContext = ModelContextLibrary.getModelContext(modelSlotClass);
+				appendFMLObjectsTypes(returned, modelSlotClass, modelContext);
+				availableFMLObjectsTypes.put(modelSlotClass, returned);
+				for (Class<? extends FMLObject> objectClass : returned) {
+					FML annotation = objectClass.getAnnotation(FML.class);
+					if (annotation != null) {
+						availableFMLObjectsByFMLKeyword.put(annotation.value(), objectClass);
+						System.out.println("store " + objectClass + " for " + annotation.value());
+					}
+					// Also store it using class name
+					availableFMLObjectsByFMLKeyword.put(objectClass.getSimpleName(), objectClass);
+					System.out.println("store " + objectClass + " for " + objectClass.getSimpleName());
+					System.exit(-1);
+				}
+			} catch (ModelDefinitionException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		return returned;
+
+	}
+
+	/**
 	 * Return the list of {@link AbstractFetchRequest} class available for supplied modelSlotClass
 	 * 
 	 * @param modelSlotClass
@@ -579,6 +627,12 @@ public abstract class DefaultTechnologyAdapterService extends FlexoServiceImpl i
 		return (Class<? extends TechnologySpecificAction<?, ?>>) availableEditionActionsByFMLKeyword.get(editionActionKeyword);
 	}
 
+	@Override
+	public <MS extends ModelSlot<?>> Class<? extends FMLObject> getFMLObject(Class<MS> modelSlotClass, String objectKeyword) {
+		getAvailableFMLObjectTypes(modelSlotClass);
+		return availableFMLObjectsByFMLKeyword.get(objectKeyword);
+	}
+
 	private static void appendDeclareFlexoRoles(List<Class<? extends FlexoRole<?>>> aList, Class<?> cl) {
 		if (cl.isAnnotationPresent(DeclareFlexoRoles.class)) {
 			DeclareFlexoRoles allFlexoRoles = cl.getAnnotation(DeclareFlexoRoles.class);
@@ -616,6 +670,29 @@ public abstract class DefaultTechnologyAdapterService extends FlexoServiceImpl i
 		}
 		for (Class<?> superInterface : cl.getInterfaces()) {
 			appendEditionActionTypes(aList, superInterface);
+		}
+	}
+
+	private static void appendFMLObjectsTypes(List<Class<? extends FMLObject>> aList, Class<? extends FMLObject> cl,
+			ModelContext modelContext) throws ModelDefinitionException {
+
+		ModelEntity<?> modelEntity = modelContext.getModelEntity(cl);
+
+		if (cl.isAnnotationPresent(FML.class) && !FlexoRole.class.isAssignableFrom(cl) && !FlexoBehaviour.class.isAssignableFrom(cl)
+				&& !EditionAction.class.isAssignableFrom(cl)) {
+			// Good candidate
+			aList.add(cl);
+		}
+
+		Iterator<ModelProperty<?>> properties = (Iterator) modelEntity.getProperties();
+		while (properties.hasNext()) {
+			ModelProperty<?> property = properties.next();
+			Method getterMethod = property.getGetterMethod();
+			if (getterMethod != null && getterMethod.isAnnotationPresent(FMLAttribute.class)
+					&& FMLObject.class.isAssignableFrom(property.getType())) {
+				appendFMLObjectsTypes(aList, (Class<? extends FMLObject>) property.getType(), modelContext);
+			}
+
 		}
 	}
 

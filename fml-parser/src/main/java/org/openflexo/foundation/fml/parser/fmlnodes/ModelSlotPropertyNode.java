@@ -41,12 +41,14 @@ package org.openflexo.foundation.fml.parser.fmlnodes;
 import java.util.logging.Logger;
 
 import org.openflexo.connie.type.CustomType;
+import org.openflexo.foundation.fml.FMLPropertyValue;
 import org.openflexo.foundation.fml.FlexoRole;
 import org.openflexo.foundation.fml.parser.MainSemanticsAnalyzer;
 import org.openflexo.foundation.fml.parser.node.AFmlFullyQualifiedInnerConceptDecl;
 import org.openflexo.foundation.fml.parser.node.AFmlInnerConceptDecl;
 import org.openflexo.foundation.fml.parser.node.PInnerConceptDecl;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
+import org.openflexo.p2pp.PrettyPrintContext.Indentation;
 
 /**
  * Represents a {@link ModelSlot} declaration in FML source code
@@ -122,9 +124,8 @@ public class ModelSlotPropertyNode<N extends PInnerConceptDecl, MS extends Model
 		append(dynamicContents(() -> serializeFlexoRoleName(getModelObject())), getRoleFragment());
 		when(() -> hasFMLProperties())
 		.thenAppend(staticContents("("), getFMLParametersLParFragment())
-		//.thenAppend(childrenContents("", "", () -> getModelObject().buildParameters(), ",", "", Indentation.DoNotIndent,
-		//		RolePropertyValue.class))
-		.thenAppend(dynamicContents(() -> getModelObject().encodeFMLProperties(getFactory())), getFMLParametersFragment())
+		.thenAppend(childrenContents("","", () -> getModelObject().getFMLPropertyValues(getFactory()), ", ","", Indentation.DoNotIndent,
+				FMLPropertyValue.class))
 		.thenAppend(staticContents(")"), getFMLParametersRParFragment());
 		append(staticContents(";"), getSemiFragment());
 		// @formatter:on	

@@ -38,6 +38,8 @@
 
 package org.openflexo.foundation.fml;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -68,13 +70,14 @@ import org.openflexo.pamela.annotations.Finder;
 import org.openflexo.pamela.annotations.Getter;
 import org.openflexo.pamela.annotations.Getter.Cardinality;
 import org.openflexo.pamela.annotations.ImplementationClass;
+import org.openflexo.pamela.annotations.Import;
+import org.openflexo.pamela.annotations.Imports;
 import org.openflexo.pamela.annotations.ModelEntity;
 import org.openflexo.pamela.annotations.PropertyIdentifier;
 import org.openflexo.pamela.annotations.Remover;
 import org.openflexo.pamela.annotations.Setter;
 import org.openflexo.pamela.annotations.XMLAttribute;
 import org.openflexo.pamela.annotations.XMLElement;
-import org.openflexo.pamela.exceptions.InvalidDataException;
 import org.openflexo.pamela.validation.FixProposal;
 import org.openflexo.pamela.validation.ValidationError;
 import org.openflexo.pamela.validation.ValidationIssue;
@@ -100,6 +103,7 @@ import org.openflexo.toolbox.StringUtils;
 @ModelEntity(isAbstract = true)
 @ImplementationClass(FMLObject.FMLObjectImpl.class)
 @XMLElement(idFactory = "userIdentifier+'-'+flexoID")
+@Imports({ @Import(FMLPropertyValue.class) })
 public interface FMLObject extends FlexoObject, Bindable, InnerResourceData<FMLCompilationUnit>, TechnologyObject<FMLTechnologyAdapter> {
 
 	@PropertyIdentifier(type = String.class)
@@ -258,9 +262,11 @@ public interface FMLObject extends FlexoObject, Bindable, InnerResourceData<FMLC
 
 	public FMLProperty getFMLProperty(String propertyName, FMLModelFactory modelFactory);
 
-	public Map<FMLProperty, Object> getFMLPropertyValues(FMLModelFactory modelFactory);
+	public List<FMLPropertyValue<?, ?>> getFMLPropertyValues(FMLModelFactory modelFactory);
 
-	public String encodeFMLProperties(FMLModelFactory modelFactory);
+	public void addToFMLPropertyValues(FMLPropertyValue<?, ?> propertyValue);
+
+	// public String encodeFMLProperties(FMLModelFactory modelFactory);
 
 	// public void decodeFMLProperties(String serializedMap);
 
@@ -622,7 +628,7 @@ public interface FMLObject extends FlexoObject, Bindable, InnerResourceData<FMLC
 
 		protected FMLEntity<?> getFMLEntity(FMLModelFactory modelFactory) {
 			// chercher ici l'interface avec la factory fournie !
-			return FMLModelContext.getFMLEntity(getImplementedInterface(modelFactory), modelFactory);
+			return FMLModelContext.getFMLEntity((Class) getImplementedInterface(modelFactory), modelFactory);
 		}
 
 		@Override
@@ -659,17 +665,40 @@ public interface FMLObject extends FlexoObject, Bindable, InnerResourceData<FMLC
 			return null;
 		}
 
+		private Map<FMLProperty, FMLPropertyValue> fmlPropertyValues = new HashMap<>();
+
 		@Override
-		public final Map<FMLProperty, Object> getFMLPropertyValues(FMLModelFactory modelFactory) {
+		public final List<FMLPropertyValue<?, ?>> getFMLPropertyValues(FMLModelFactory modelFactory) {
 			if (getFMLEntity(modelFactory) != null) {
-				return ((FMLEntity) getFMLEntity(modelFactory)).getFMLPropertyValues(this);
+				for (FMLProperty fmlProperty : getFMLEntity(modelFactory).getProperties()) {
+					FMLPropertyValue pValue = fmlPropertyValues.get(fmlProperty);
+					if (pValue == null) {
+						pValue = fmlProperty.makeFMLPropertyValue(this);
+						fmlPropertyValues.put(fmlProperty, pValue);
+					}
+				}
+				List<FMLPropertyValue<?, ?>> returned = new ArrayList<>();
+				for (FMLPropertyValue fmlPropertyValue : fmlPropertyValues.values()) {
+					if (fmlPropertyValue != null) {
+						returned.add(fmlPropertyValue);
+					}
+				}
+
+				System.out.println("Returning " + returned);
+				return returned;
+				// return new ArrayList<>(fmlPropertyValues.values());
 			}
 			return null;
 		}
 
 		@Override
+		public void addToFMLPropertyValues(FMLPropertyValue<?, ?> propertyValue) {
+			fmlPropertyValues.put(propertyValue.getProperty(), propertyValue);
+		}
+
+		/*@Override
 		public final String encodeFMLProperties(FMLModelFactory modelFactory) {
-			Map<FMLProperty, Object> fmlPropertyValues = getFMLPropertyValues(modelFactory);
+			List<FMLPropertyValue<?, ?>> fmlPropertyValues = getFMLPropertyValues(modelFactory);
 			boolean isFirst = true;
 			StringBuffer sb = new StringBuffer();
 			for (FMLProperty fmlProperty : fmlPropertyValues.keySet()) {
@@ -680,9 +709,9 @@ public interface FMLObject extends FlexoObject, Bindable, InnerResourceData<FMLC
 				}
 			}
 			return sb.toString();
-		}
+		}*/
 
-		private <T> String encodeFMLProperty(FMLProperty<?, T> fmlProperty, T value, FMLModelFactory modelFactory) {
+		/*private <T> String encodeFMLProperty(FMLProperty<?, T> fmlProperty, T value, FMLModelFactory modelFactory) {
 			if (value == null) {
 				if (fmlProperty.isRequired()) {
 					return fmlProperty.getName() + "=null";
@@ -694,7 +723,7 @@ public interface FMLObject extends FlexoObject, Bindable, InnerResourceData<FMLC
 					// No need to serialize this
 					return null;
 				}
-
+		
 				String valueAsString = null;
 				if (getDeclaringCompilationUnit() != null) {
 					for (ElementImportDeclaration elementImportDeclaration : getDeclaringCompilationUnit().getElementImports()) {
@@ -704,7 +733,7 @@ public interface FMLObject extends FlexoObject, Bindable, InnerResourceData<FMLC
 						}
 					}
 				}
-
+		
 				if (valueAsString == null) {
 					try {
 						valueAsString = modelFactory.getStringEncoder().toString(value);
@@ -717,13 +746,13 @@ public interface FMLObject extends FlexoObject, Bindable, InnerResourceData<FMLC
 						return null;
 					}
 				}
-
+		
 				if (valueAsString != null) {
 					return fmlProperty.getName() + "=" + valueAsString;
 				}
 				return null;
 			}
-		}
+		}*/
 
 		/*@Override
 		public final void decodeFMLProperties(String serializedMap) {

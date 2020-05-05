@@ -41,6 +41,7 @@ package org.openflexo.foundation.fml.parser.fmlnodes;
 import java.lang.reflect.Type;
 import java.util.logging.Logger;
 
+import org.openflexo.foundation.fml.FMLPropertyValue;
 import org.openflexo.foundation.fml.FlexoBehaviour;
 import org.openflexo.foundation.fml.FlexoBehaviourParameter;
 import org.openflexo.foundation.fml.parser.ControlGraphFactory;
@@ -146,9 +147,10 @@ public class FMLBehaviourNode<N extends Node, B extends FlexoBehaviour> extends 
 			.thenAppend(staticContents("::"), getColonColonFragment());
 		append(dynamicContents(() -> serializeFlexoBehaviourName(getModelObject())), getBehaviourFragment());
 		when(() -> hasFMLProperties())
-			.thenAppend(staticContents("("), getFMLParametersLParFragment())
-			.thenAppend(dynamicContents(() -> getModelObject().encodeFMLProperties(getFactory())), getFMLParametersFragment())
-			.thenAppend(staticContents(")"), getFMLParametersRParFragment());
+		.thenAppend(staticContents("("), getFMLParametersLParFragment())
+		.thenAppend(childrenContents("","", () -> getModelObject().getFMLPropertyValues(getFactory()), ", ","", Indentation.DoNotIndent,
+				FMLPropertyValue.class))
+		.thenAppend(staticContents(")"), getFMLParametersRParFragment());
 
 		when(() -> isAbstract())
 			.thenAppend(staticContents(";"), getSemiFragment())

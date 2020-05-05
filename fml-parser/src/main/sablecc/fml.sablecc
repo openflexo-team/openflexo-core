@@ -686,14 +686,30 @@ Productions
      ;
 
    qualified_argument_list =
-       {one}  [arg_name]:identifier assign expression
-     | {many} qualified_argument_list comma [arg_name]:identifier assign expression
+       {one}  qualified_argument
+     | {many} qualified_argument_list comma qualified_argument
+     ;
+
+   qualified_instance =
+       {simple}         [arg_type]:identifier colon fml_parameters
+     | {full_qualified} [ta_id]:identifier colon_colon [arg_type]:identifier colon fml_parameters
+      ;
+
+   qualified_argument_list_instances =
+       {one}  qualified_instance
+     | {many} qualified_argument_list_instances comma qualified_instance
+     ;
+
+   qualified_argument =
+       {simple}         [arg_name]:identifier assign expression
+     | {instance}       [arg_name]:identifier assign qualified_instance
+     | {list_instances} [arg_name]:identifier assign l_brc qualified_argument_list_instances? r_brc
      ;
 
    fml_parameters =
        {full_qualified} l_par qualified_argument_list? r_par
 //     | {unqualified} l_par argument_list? r_par
-     ;
+      ;
 
    in_clause    = kw_in l_par expression r_par;
    from_clause  = kw_from l_par expression r_par;

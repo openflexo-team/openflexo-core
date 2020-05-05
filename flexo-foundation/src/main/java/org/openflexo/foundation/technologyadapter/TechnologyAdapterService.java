@@ -47,6 +47,7 @@ import org.openflexo.connie.type.CustomTypeFactory;
 import org.openflexo.connie.type.CustomTypeManager;
 import org.openflexo.foundation.FlexoService;
 import org.openflexo.foundation.FlexoServiceManager;
+import org.openflexo.foundation.fml.FMLObject;
 import org.openflexo.foundation.fml.FlexoBehaviour;
 import org.openflexo.foundation.fml.FlexoRole;
 import org.openflexo.foundation.fml.editionaction.AbstractFetchRequest;
@@ -227,6 +228,14 @@ public interface TechnologyAdapterService extends FlexoService, CustomTypeManage
 	public <MS extends ModelSlot<?>> List<Class<? extends EditionAction>> getAvailableEditionActionTypes(Class<MS> modelSlotClass);
 
 	/**
+	 * Return the list of extra {@link FMLObject} class involved in supplied {@link ModelSlot} definition
+	 * 
+	 * @param modelSlotClass
+	 * @return
+	 */
+	public <MS extends ModelSlot<?>> List<Class<? extends FMLObject>> getAvailableFMLObjectTypes(Class<MS> modelSlotClass);
+
+	/**
 	 * Return the list of {@link AbstractFetchRequest} class available for supplied modelSlotClass
 	 * 
 	 * @param modelSlotClass
@@ -260,4 +269,7 @@ public interface TechnologyAdapterService extends FlexoService, CustomTypeManage
 
 	public <MS extends ModelSlot<?>> Class<? extends TechnologySpecificAction<?, ?>> getEditionAction(Class<MS> modelSlotClass,
 			String editionActionKeyword);
+
+	public <MS extends ModelSlot<?>> Class<? extends FMLObject> getFMLObject(Class<MS> modelSlotClass, String objectKeyword);
+
 }

@@ -79,4 +79,10 @@ public @interface FMLAttribute {
 	 */
 	public String defaultValue() default UNDEFINED;
 
+	public AttributeKind kind() default AttributeKind.PropertyValue;
+
+	public static enum AttributeKind {
+		PropertyValue, Instance, InstanceList
+	}
+
 }

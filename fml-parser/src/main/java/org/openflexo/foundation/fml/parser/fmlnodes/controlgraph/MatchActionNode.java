@@ -58,14 +58,15 @@ import org.openflexo.foundation.fml.parser.node.AMatchActionFmlActionExp;
 import org.openflexo.foundation.fml.parser.node.AOneArgumentList;
 import org.openflexo.foundation.fml.parser.node.AOneQualifiedArgumentList;
 import org.openflexo.foundation.fml.parser.node.AQualifiedWhereClause;
+import org.openflexo.foundation.fml.parser.node.ASimpleQualifiedArgument;
 import org.openflexo.foundation.fml.parser.node.PArgumentList;
 import org.openflexo.foundation.fml.parser.node.PCreateClause;
 import org.openflexo.foundation.fml.parser.node.PExpression;
 import org.openflexo.foundation.fml.parser.node.PFromClause;
 import org.openflexo.foundation.fml.parser.node.PInClause;
+import org.openflexo.foundation.fml.parser.node.PQualifiedArgument;
 import org.openflexo.foundation.fml.parser.node.PQualifiedArgumentList;
 import org.openflexo.foundation.fml.parser.node.PQualifiedWhereClause;
-import org.openflexo.foundation.fml.parser.node.TIdentifier;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.action.MatchingSet;
 import org.openflexo.foundation.fml.rt.editionaction.CreateFlexoConceptInstanceParameter;
@@ -130,22 +131,28 @@ public class MatchActionNode extends AssignableActionNode<AMatchActionFmlActionE
 		if (argumentList instanceof AManyQualifiedArgumentList) {
 			AManyQualifiedArgumentList l = (AManyQualifiedArgumentList) argumentList;
 			handleMatchingCriterias(l.getQualifiedArgumentList(), modelObject);
-			handleMatchingCriteria(l.getArgName(), l.getExpression(), modelObject);
+			handleMatchingCriteria(l.getQualifiedArgument(), modelObject);
 		}
 		else if (argumentList instanceof AOneQualifiedArgumentList) {
-			handleMatchingCriteria(((AOneQualifiedArgumentList) argumentList).getArgName(),
-					((AOneQualifiedArgumentList) argumentList).getExpression(), modelObject);
+			handleMatchingCriteria(((AOneQualifiedArgumentList) argumentList).getQualifiedArgument(), modelObject);
 		}
 	}
 
-	private void handleMatchingCriteria(TIdentifier argName, PExpression expression, MatchFlexoConceptInstance modelObject) {
-		String propertyName = argName.getText();
-		DataBinding<?> argValue = ExpressionFactory.makeExpression(expression, getAnalyser(), modelObject);
+	private void handleMatchingCriteria(PQualifiedArgument qualifiedArgument, MatchFlexoConceptInstance modelObject) {
 
-		MatchingCriteria newMatchingCriteria = getFactory().newMatchingCriteria(null);
-		newMatchingCriteria._setPatternRoleName(propertyName);
-		newMatchingCriteria.setValue(argValue);
-		modelObject.addToMatchingCriterias(newMatchingCriteria);
+		if (qualifiedArgument instanceof ASimpleQualifiedArgument) {
+			String propertyName = ((ASimpleQualifiedArgument) qualifiedArgument).getArgName().getText();
+			PExpression expression = ((ASimpleQualifiedArgument) qualifiedArgument).getExpression();
+			DataBinding<?> argValue = ExpressionFactory.makeExpression(expression, getAnalyser(), modelObject);
+
+			MatchingCriteria newMatchingCriteria = getFactory().newMatchingCriteria(null);
+			newMatchingCriteria._setPatternRoleName(propertyName);
+			newMatchingCriteria.setValue(argValue);
+			modelObject.addToMatchingCriterias(newMatchingCriteria);
+		}
+		else {
+			logger.warning("Unexpected qualified argument: " + qualifiedArgument);
+		}
 	}
 
 	@Override

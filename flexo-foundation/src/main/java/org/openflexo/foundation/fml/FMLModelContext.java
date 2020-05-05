@@ -51,6 +51,7 @@ import java.util.logging.Logger;
 
 import org.openflexo.foundation.fml.annotations.FML;
 import org.openflexo.foundation.fml.annotations.FMLAttribute;
+import org.openflexo.foundation.fml.annotations.FMLAttribute.AttributeKind;
 import org.openflexo.pamela.ModelEntity;
 import org.openflexo.pamela.ModelProperty;
 import org.openflexo.pamela.exceptions.InvalidDataException;
@@ -66,7 +67,7 @@ public class FMLModelContext {
 
 	protected static final Logger logger = Logger.getLogger(FMLModelContext.class.getPackage().getName());
 
-	public static class FMLEntity<I> {
+	public static class FMLEntity<I extends FMLObject> {
 		private ModelEntity<I> modelEntity;
 		private FML fmlAnnotation;
 		private Set<FMLProperty<? super I, ?>> properties;
@@ -101,14 +102,23 @@ public class FMLModelContext {
 			return properties;
 		}
 
-		public Map<FMLProperty<? super I, ?>, Object> getFMLPropertyValues(I object) {
-			Map<FMLProperty<? super I, ?>, Object> returned = new HashMap<>();
+		/*public List<FMLPropertyValue<? super I, ?>> getFMLPropertyValues(I object) {
+		
+			List<FMLPropertyValue<? super I, ?>> returned = new ArrayList<>();
+		
 			for (FMLProperty<? super I, ?> fmlProperty : properties) {
 				Object value = fmlProperty.get(object);
-				returned.put(fmlProperty, value);
+				FMLPropertyValue<? super I, ?> propertyValue = null;
+				switch (fmlProperty.getKind()) {
+					case PropertyValue:
+						propertyValue = object.getFMLModelFactory().newSimplePropertyValue((FMLProperty) fmlProperty, value);
+						returned.add(propertyValue);
+					default:
+		
+				}
 			}
 			return returned;
-		}
+		}*/
 
 		@Override
 		public String toString() {
@@ -116,7 +126,7 @@ public class FMLModelContext {
 		}
 	}
 
-	public static class FMLProperty<I, T> {
+	public static class FMLProperty<I extends FMLObject, T> {
 		private ModelProperty<I> modelProperty;
 		private FMLAttribute fmlAnnotation;
 
@@ -132,6 +142,10 @@ public class FMLModelContext {
 
 		public Type getType() {
 			return modelProperty.getType();
+		}
+
+		public AttributeKind getKind() {
+			return fmlAnnotation.kind();
 		}
 
 		public boolean isRequired() {
@@ -181,11 +195,25 @@ public class FMLModelContext {
 				e.printStackTrace();
 			}
 		}
+
+		public FMLPropertyValue<I, T> makeFMLPropertyValue(I object) {
+
+			T value = get(object);
+			FMLPropertyValue<? super I, ?> propertyValue = null;
+			switch (getKind()) {
+				case PropertyValue:
+					return object.getFMLModelFactory().newSimplePropertyValue(this, value);
+				default:
+
+			}
+			return null;
+		}
+
 	}
 
 	private static Map<Class<?>, FMLEntity<?>> fmlEntities = new HashMap<>();
 
-	public static <I> FMLEntity<I> getFMLEntity(Class<I> implementedInterface, FMLModelFactory modelFactory) {
+	public static <I extends FMLObject> FMLEntity<I> getFMLEntity(Class<I> implementedInterface, FMLModelFactory modelFactory) {
 		FMLEntity returned = fmlEntities.get(implementedInterface);
 		if (returned == null) {
 			if (modelFactory == null) {

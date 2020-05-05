@@ -38,6 +38,7 @@
 
 package org.openflexo.foundation.fml.parser.fmlnodes.controlgraph;
 
+import org.openflexo.foundation.fml.FMLPropertyValue;
 import org.openflexo.foundation.fml.editionaction.TechnologySpecificAction;
 import org.openflexo.foundation.fml.editionaction.TechnologySpecificActionDefiningReceiver;
 import org.openflexo.foundation.fml.parser.MainSemanticsAnalyzer;
@@ -48,6 +49,7 @@ import org.openflexo.foundation.fml.parser.node.ATaEditionActionFmlActionExp;
 import org.openflexo.foundation.fml.parser.node.PFmlParameters;
 import org.openflexo.foundation.fml.parser.node.PFromClause;
 import org.openflexo.foundation.fml.parser.node.PInClause;
+import org.openflexo.p2pp.PrettyPrintContext.Indentation;
 import org.openflexo.p2pp.RawSource.RawSourceFragment;
 import org.openflexo.p2pp.RawSource.RawSourcePosition;
 
@@ -121,9 +123,8 @@ public class FMLEditionActionNode<EA extends TechnologySpecificAction<?, ?>>
 		append(dynamicContents(() -> serializeEditionActionName(getModelObject())), getEditionActionFragment());
 		when(() -> hasFMLProperties())
 		.thenAppend(staticContents("("), getFMLParametersLParFragment())
-		//.thenAppend(childrenContents("", "", () -> getModelObject().buildParameters(), ",", "", Indentation.DoNotIndent,
-		//		RolePropertyValue.class))
-		.thenAppend(dynamicContents(() -> getModelObject().encodeFMLProperties(getFactory())), getFMLParametersFragment())
+		.thenAppend(childrenContents("","", () -> getModelObject().getFMLPropertyValues(getFactory()), ", ","", Indentation.DoNotIndent,
+				FMLPropertyValue.class))
 		.thenAppend(staticContents(")"), getFMLParametersRParFragment());
 
 		when(() -> hasInClause())

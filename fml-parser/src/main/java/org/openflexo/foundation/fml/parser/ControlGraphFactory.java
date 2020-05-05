@@ -10,6 +10,7 @@ import org.openflexo.foundation.fml.FlexoConceptInstanceType;
 import org.openflexo.foundation.fml.VirtualModelInstanceType;
 import org.openflexo.foundation.fml.controlgraph.FMLControlGraph;
 import org.openflexo.foundation.fml.controlgraph.Sequence;
+import org.openflexo.foundation.fml.parser.fmlnodes.FMLSimplePropertyValueNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.AddClassInstanceNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.AddFlexoConceptInstanceNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.AddVirtualModelInstanceNode;
@@ -42,13 +43,16 @@ import org.openflexo.foundation.fml.parser.node.AForBasicStatement;
 import org.openflexo.foundation.fml.parser.node.AForEnhancedStatement;
 import org.openflexo.foundation.fml.parser.node.AIfElseStatement;
 import org.openflexo.foundation.fml.parser.node.AIfSimpleStatement;
+import org.openflexo.foundation.fml.parser.node.AInstanceQualifiedArgument;
 import org.openflexo.foundation.fml.parser.node.AJavaInstanceCreationFmlActionExp;
+import org.openflexo.foundation.fml.parser.node.AListInstancesQualifiedArgument;
 import org.openflexo.foundation.fml.parser.node.ALogActionFmlActionExp;
 import org.openflexo.foundation.fml.parser.node.AMatchActionFmlActionExp;
 import org.openflexo.foundation.fml.parser.node.AMethodInvocationStatementExpression;
 import org.openflexo.foundation.fml.parser.node.AReturnEmptyStatementWithoutTrailingSubstatement;
 import org.openflexo.foundation.fml.parser.node.AReturnStatementWithoutTrailingSubstatement;
 import org.openflexo.foundation.fml.parser.node.ASelectActionFmlActionExp;
+import org.openflexo.foundation.fml.parser.node.ASimpleQualifiedArgument;
 import org.openflexo.foundation.fml.parser.node.ATaEditionActionFmlActionExp;
 import org.openflexo.foundation.fml.parser.node.AVariableDeclarationBlockStatement;
 import org.openflexo.foundation.fml.parser.node.AWhileStatement;
@@ -661,6 +665,30 @@ public class ControlGraphFactory extends FMLSemanticsAnalyzer {
 	public void outAEndMatchActionFmlActionExp(AEndMatchActionFmlActionExp node) {
 		super.outAEndMatchActionFmlActionExp(node);
 		pop();
+	}
+
+	@Override
+	public void inASimpleQualifiedArgument(ASimpleQualifiedArgument node) {
+		super.inASimpleQualifiedArgument(node);
+		push(getMainAnalyzer().retrieveFMLNode(node, n -> new FMLSimplePropertyValueNode(n, getMainAnalyzer())));
+	}
+
+	@Override
+	public void outASimpleQualifiedArgument(ASimpleQualifiedArgument node) {
+		super.outASimpleQualifiedArgument(node);
+		pop();
+	}
+
+	@Override
+	public void inAInstanceQualifiedArgument(AInstanceQualifiedArgument node) {
+		// TODO Auto-generated method stub
+		super.inAInstanceQualifiedArgument(node);
+	}
+
+	@Override
+	public void inAListInstancesQualifiedArgument(AListInstancesQualifiedArgument node) {
+		// TODO Auto-generated method stub
+		super.inAListInstancesQualifiedArgument(node);
 	}
 
 }
