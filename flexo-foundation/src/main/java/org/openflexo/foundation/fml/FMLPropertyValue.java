@@ -68,8 +68,6 @@ public interface FMLPropertyValue<M extends FMLObject, T> extends FMLPrettyPrint
 	@Setter(PROPERTY_KEY)
 	public void setProperty(FMLProperty<? super M, T> property);
 
-	public T get(M object);
-
 	public void apply(M object);
 
 	public T getValue();
