@@ -71,23 +71,10 @@ public interface FMLSimplePropertyValue<M extends FMLObject, T> extends FMLPrope
 
 		protected static final Logger logger = FlexoLogger.getLogger(FMLSimplePropertyValue.class.getPackage().getName());
 
-		public Exception creationException;
-
-		public FMLSimplePropertyValueImpl() {
-			super();
-			creationException = new Exception();
-		}
-
-		public void toto() {
-			System.err.println(toString());
-			System.err.println("-----------> Cet objet a ete cree comme ca: ");
-			creationException.printStackTrace();
-		}
-
 		@Override
 		public String toString() {
 
-			return "FMLSimplePropertyValue[" + getProperty().getName() + "=" + getValue() + "]";
+			return "FMLSimplePropertyValue[" + (getProperty() != null ? getProperty().getName() : "null") + "=" + getValue() + "]";
 		}
 
 	}
