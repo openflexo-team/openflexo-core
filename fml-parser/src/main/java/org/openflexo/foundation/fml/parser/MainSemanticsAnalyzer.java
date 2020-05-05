@@ -566,7 +566,7 @@ public class MainSemanticsAnalyzer extends FMLSemanticsAnalyzer {
 	@Override
 	public void inASimpleQualifiedArgument(ASimpleQualifiedArgument node) {
 		super.inASimpleQualifiedArgument(node);
-		if (!insideBehaviourBody) {
+		if (!insideBehaviourBody && !insideMatchAction) {
 			System.out.println("ENTER in " + peek() + " with " + node);
 			push(retrieveFMLNode(node, n -> new FMLSimplePropertyValueNode(n, getMainAnalyzer())));
 		}
@@ -575,7 +575,7 @@ public class MainSemanticsAnalyzer extends FMLSemanticsAnalyzer {
 	@Override
 	public void outASimpleQualifiedArgument(ASimpleQualifiedArgument node) {
 		super.outASimpleQualifiedArgument(node);
-		if (!insideBehaviourBody) {
+		if (!insideBehaviourBody && !insideMatchAction) {
 			pop();
 			System.out.println("EXIT from " + peek() + " with " + node);
 		}

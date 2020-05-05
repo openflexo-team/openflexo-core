@@ -670,13 +670,17 @@ public class ControlGraphFactory extends FMLSemanticsAnalyzer {
 	@Override
 	public void inASimpleQualifiedArgument(ASimpleQualifiedArgument node) {
 		super.inASimpleQualifiedArgument(node);
-		push(getMainAnalyzer().retrieveFMLNode(node, n -> new FMLSimplePropertyValueNode(n, getMainAnalyzer())));
+		if (!insideMatchAction) {
+			push(getMainAnalyzer().retrieveFMLNode(node, n -> new FMLSimplePropertyValueNode(n, getMainAnalyzer())));
+		}
 	}
 
 	@Override
 	public void outASimpleQualifiedArgument(ASimpleQualifiedArgument node) {
 		super.outASimpleQualifiedArgument(node);
-		pop();
+		if (!insideMatchAction) {
+			pop();
+		}
 	}
 
 	@Override

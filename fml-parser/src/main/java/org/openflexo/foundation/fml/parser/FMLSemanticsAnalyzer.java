@@ -45,6 +45,7 @@ import java.util.Stack;
 import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.fml.FMLModelFactory;
 import org.openflexo.foundation.fml.parser.analysis.DepthFirstAdapter;
+import org.openflexo.foundation.fml.parser.node.AMatchActionFmlActionExp;
 import org.openflexo.foundation.fml.parser.node.Node;
 import org.openflexo.foundation.fml.parser.node.Token;
 import org.openflexo.p2pp.P2PPNode;
@@ -174,6 +175,23 @@ public abstract class FMLSemanticsAnalyzer extends DepthFirstAdapter {
 
 	public String getText(Node node) {
 		return getFragment(node).getRawText();
+	}
+
+	// Hack used to detect that we are not deserializing FML property values but a MatchingCriteria
+	// MatchingCriterias must be replaced with MatchCondition as in InitiateMatching
+	// TODO fix this hack
+	protected boolean insideMatchAction = false;
+
+	@Override
+	public void inAMatchActionFmlActionExp(AMatchActionFmlActionExp node) {
+		super.inAMatchActionFmlActionExp(node);
+		insideMatchAction = true;
+	}
+
+	@Override
+	public void outAMatchActionFmlActionExp(AMatchActionFmlActionExp node) {
+		super.outAMatchActionFmlActionExp(node);
+		insideMatchAction = false;
 	}
 
 }
