@@ -49,6 +49,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.logging.Logger;
 
+import org.openflexo.connie.DataBinding;
 import org.openflexo.foundation.fml.annotations.FML;
 import org.openflexo.foundation.fml.annotations.FMLAttribute;
 import org.openflexo.foundation.fml.annotations.FMLAttribute.AttributeKind;
@@ -199,6 +200,10 @@ public class FMLModelContext {
 		public FMLPropertyValue<I, T> makeFMLPropertyValue(I object) {
 
 			T value = get(object);
+			if (value instanceof DataBinding && !((DataBinding) value).isSet()) {
+				// Prevent empty DataBinding to be serialized
+				return null;
+			}
 			FMLPropertyValue<? super I, ?> propertyValue = null;
 			switch (getKind()) {
 				case PropertyValue:
