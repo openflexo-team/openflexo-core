@@ -40,15 +40,12 @@ package org.openflexo.foundation.fml.parser;
 
 import java.lang.reflect.Type;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.logging.Logger;
 
 import org.openflexo.connie.Bindable;
 import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.DataBinding.BindingDefinitionType;
-import org.openflexo.connie.expr.Constant;
 import org.openflexo.connie.type.CustomType;
 import org.openflexo.connie.type.TypeUtils;
 import org.openflexo.foundation.fml.AbstractProperty;
@@ -58,7 +55,8 @@ import org.openflexo.foundation.fml.DeletionScheme;
 import org.openflexo.foundation.fml.ElementImportDeclaration;
 import org.openflexo.foundation.fml.ExpressionProperty;
 import org.openflexo.foundation.fml.FMLCompilationUnit;
-import org.openflexo.foundation.fml.FMLModelContext.FMLProperty;
+import org.openflexo.foundation.fml.FMLInstancePropertyValue;
+import org.openflexo.foundation.fml.FMLInstancesListPropertyValue;
 import org.openflexo.foundation.fml.FMLModelFactory;
 import org.openflexo.foundation.fml.FMLObject;
 import org.openflexo.foundation.fml.FMLPrettyPrintDelegate;
@@ -77,6 +75,7 @@ import org.openflexo.foundation.fml.PropertyCardinality;
 import org.openflexo.foundation.fml.UseModelSlotDeclaration;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.Visibility;
+import org.openflexo.foundation.fml.WrappedFMLObject;
 import org.openflexo.foundation.fml.controlgraph.ConditionalAction;
 import org.openflexo.foundation.fml.controlgraph.EmptyControlGraph;
 import org.openflexo.foundation.fml.controlgraph.IterationAction;
@@ -103,6 +102,8 @@ import org.openflexo.foundation.fml.parser.fmlnodes.DeletionSchemeNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.ElementImportNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.ExpressionPropertyNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.FMLBehaviourNode;
+import org.openflexo.foundation.fml.parser.fmlnodes.FMLInstancePropertyValueNode;
+import org.openflexo.foundation.fml.parser.fmlnodes.FMLInstancesListPropertyValueNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.FMLSimplePropertyValueNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.FlexoConceptNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.FlexoRolePropertyNode;
@@ -118,6 +119,7 @@ import org.openflexo.foundation.fml.parser.fmlnodes.PrimitiveRoleNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.SingleMetaDataNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.UseDeclarationNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.VirtualModelNode;
+import org.openflexo.foundation.fml.parser.fmlnodes.WrappedFMLObjectNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.AddClassInstanceNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.AddFlexoConceptInstanceNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.AddVirtualModelInstanceNode;
@@ -140,23 +142,15 @@ import org.openflexo.foundation.fml.parser.node.ACharacterLiteral;
 import org.openflexo.foundation.fml.parser.node.ACompositeIdent;
 import org.openflexo.foundation.fml.parser.node.AFalseLiteral;
 import org.openflexo.foundation.fml.parser.node.AFloatingPointLiteral;
-import org.openflexo.foundation.fml.parser.node.AFullQualifiedFmlParameters;
-import org.openflexo.foundation.fml.parser.node.AFullQualifiedQualifiedInstance;
 import org.openflexo.foundation.fml.parser.node.AIdentifierVariableDeclarator;
 import org.openflexo.foundation.fml.parser.node.AInitializerVariableDeclarator;
-import org.openflexo.foundation.fml.parser.node.AInstanceQualifiedArgument;
 import org.openflexo.foundation.fml.parser.node.AIntegerLiteral;
-import org.openflexo.foundation.fml.parser.node.AListInstancesQualifiedArgument;
-import org.openflexo.foundation.fml.parser.node.AManyQualifiedArgumentList;
 import org.openflexo.foundation.fml.parser.node.AMultiple1Cardinality;
 import org.openflexo.foundation.fml.parser.node.AMultiple2Cardinality;
 import org.openflexo.foundation.fml.parser.node.ANullLiteral;
-import org.openflexo.foundation.fml.parser.node.AOneQualifiedArgumentList;
 import org.openflexo.foundation.fml.parser.node.APrivateVisibility;
 import org.openflexo.foundation.fml.parser.node.AProtectedVisibility;
 import org.openflexo.foundation.fml.parser.node.APublicVisibility;
-import org.openflexo.foundation.fml.parser.node.ASimpleQualifiedArgument;
-import org.openflexo.foundation.fml.parser.node.ASimpleQualifiedInstance;
 import org.openflexo.foundation.fml.parser.node.AStringLiteral;
 import org.openflexo.foundation.fml.parser.node.ATrueLiteral;
 import org.openflexo.foundation.fml.parser.node.AWithExplicitBoundsCardinality;
@@ -166,12 +160,7 @@ import org.openflexo.foundation.fml.parser.node.Node;
 import org.openflexo.foundation.fml.parser.node.PAdditionalIdentifier;
 import org.openflexo.foundation.fml.parser.node.PCardinality;
 import org.openflexo.foundation.fml.parser.node.PCompositeIdent;
-import org.openflexo.foundation.fml.parser.node.PExpression;
-import org.openflexo.foundation.fml.parser.node.PFmlParameters;
 import org.openflexo.foundation.fml.parser.node.PLiteral;
-import org.openflexo.foundation.fml.parser.node.PQualifiedArgument;
-import org.openflexo.foundation.fml.parser.node.PQualifiedArgumentList;
-import org.openflexo.foundation.fml.parser.node.PQualifiedInstance;
 import org.openflexo.foundation.fml.parser.node.PVariableDeclarator;
 import org.openflexo.foundation.fml.parser.node.PVisibility;
 import org.openflexo.foundation.fml.parser.node.TIdentifier;
@@ -447,6 +436,15 @@ public abstract class FMLObjectNode<N extends Node, T extends FMLPrettyPrintable
 		}
 		if (object instanceof FMLSimplePropertyValue) {
 			return new FMLSimplePropertyValueNode((FMLSimplePropertyValue) object, getAnalyser());
+		}
+		if (object instanceof FMLInstancePropertyValue) {
+			return new FMLInstancePropertyValueNode((FMLInstancePropertyValue) object, getAnalyser());
+		}
+		if (object instanceof FMLInstancesListPropertyValue) {
+			return new FMLInstancesListPropertyValueNode((FMLInstancesListPropertyValue) object, getAnalyser());
+		}
+		if (object instanceof WrappedFMLObject) {
+			return new WrappedFMLObjectNode((WrappedFMLObject) object, getAnalyser());
 		}
 		System.err.println("Not supported: " + object);
 		Thread.dumpStack();
@@ -765,7 +763,7 @@ public abstract class FMLObjectNode<N extends Node, T extends FMLPrettyPrintable
 		logger.warning("Compilation issue: " + errorMessage + " " + (fragment != null ? fragment.getStartPosition() : getStartPosition()));
 	}
 
-	protected void decodeFMLProperties(PFmlParameters properties, T modelObject) {
+	/*protected void decodeFMLProperties(PFmlParameters properties, T modelObject) {
 		if (properties == null) {
 			return;
 		}
@@ -778,10 +776,10 @@ public abstract class FMLObjectNode<N extends Node, T extends FMLPrettyPrintable
 			decodeFMLProperties(qualifiedArgumentList, modelObject, propertyValues);
 			// modelObject.decodeFMLProperties(serializedMap);
 		}
+	
+	}*/
 
-	}
-
-	private void decodeFMLProperties(PQualifiedArgumentList argList, T modelObject, Map<FMLProperty<?, ?>, Object> propertyValues) {
+	/*private void decodeFMLProperties(PQualifiedArgumentList argList, T modelObject, Map<FMLProperty<?, ?>, Object> propertyValues) {
 		if (argList instanceof AOneQualifiedArgumentList) {
 			AOneQualifiedArgumentList one = (AOneQualifiedArgumentList) argList;
 			// decodeFMLProperty(one.getArgName(), one.getExpression(), modelObject, propertyValues);
@@ -794,7 +792,7 @@ public abstract class FMLObjectNode<N extends Node, T extends FMLPrettyPrintable
 			decodeFMLProperties(many.getQualifiedArgumentList(), modelObject, propertyValues);
 		}
 	}
-
+	
 	private void decodeFMLProperty(PQualifiedArgument qualifiedArg, T modelObject, Map<FMLProperty<?, ?>, Object> propertyValues) {
 		if (qualifiedArg instanceof ASimpleQualifiedArgument) {
 			decodeSimpleFMLProperty(((ASimpleQualifiedArgument) qualifiedArg).getArgName(),
@@ -805,11 +803,11 @@ public abstract class FMLObjectNode<N extends Node, T extends FMLPrettyPrintable
 					((AInstanceQualifiedArgument) qualifiedArg).getQualifiedInstance(), modelObject, propertyValues);
 		}
 		else if (qualifiedArg instanceof AListInstancesQualifiedArgument) {
-
+	
 		}
-
+	
 	}
-
+	
 	private void decodeSimpleFMLProperty(TIdentifier propertyName, PExpression expressionValue, T modelObject,
 			Map<FMLProperty<?, ?>, Object> propertyValues) {
 		// logger.info("Decoding " + propertyName.getText() + "=" + expressionValue);
@@ -830,6 +828,7 @@ public abstract class FMLObjectNode<N extends Node, T extends FMLPrettyPrintable
 				else {
 					logger.warning("Invalid value for property " + fmlProperty.getName() + " expected type: " + fmlProperty.getType()
 							+ " value: " + constantValue);
+					Thread.dumpStack();
 				}
 			}
 		}
@@ -849,12 +848,12 @@ public abstract class FMLObjectNode<N extends Node, T extends FMLPrettyPrintable
 					}
 				}
 			}
-
+	
 			logger.warning("Unexpected value for property " + fmlProperty.getName() + " expected type: " + fmlProperty.getType()
 					+ " value: " + value);
 		}
 	}
-
+	
 	private <O extends FMLObject> O decodeInstanceFMLProperty(TIdentifier propertyName, PQualifiedInstance qualifiedInstance, T modelObject,
 			Map<FMLProperty<?, ?>, Object> propertyValues) {
 		Class<O> objectClass = null;
@@ -867,9 +866,9 @@ public abstract class FMLObjectNode<N extends Node, T extends FMLPrettyPrintable
 			TIdentifier instanceType = ((AFullQualifiedQualifiedInstance) qualifiedInstance).getArgType();
 			objectClass = (Class<O>) getFMLFactory().getFMLObjectClass(taID, instanceType);
 		}
-
+	
 		O returned = getFactory().newInstance(objectClass);
 		return returned;
-	}
+	}*/
 
 }

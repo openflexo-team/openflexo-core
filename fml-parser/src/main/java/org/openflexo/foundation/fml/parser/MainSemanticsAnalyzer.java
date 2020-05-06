@@ -50,7 +50,6 @@ import org.openflexo.foundation.fml.parser.fmlnodes.BasicMetaDataNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.BehaviourParameterNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.ElementImportNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.FMLCompilationUnitNode;
-import org.openflexo.foundation.fml.parser.fmlnodes.FMLSimplePropertyValueNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.FlexoBehaviourNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.FlexoConceptNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.FlexoRolePropertyNode;
@@ -78,17 +77,14 @@ import org.openflexo.foundation.fml.parser.node.AFmlFullyQualifiedInnerConceptDe
 import org.openflexo.foundation.fml.parser.node.AFmlInnerConceptDecl;
 import org.openflexo.foundation.fml.parser.node.AGetDecl;
 import org.openflexo.foundation.fml.parser.node.AGetSetPropertyInnerConceptDecl;
-import org.openflexo.foundation.fml.parser.node.AInstanceQualifiedArgument;
 import org.openflexo.foundation.fml.parser.node.AJavaImportImportDecl;
 import org.openflexo.foundation.fml.parser.node.AJavaInnerConceptDecl;
 import org.openflexo.foundation.fml.parser.node.AListAnnotationAnnotation;
-import org.openflexo.foundation.fml.parser.node.AListInstancesQualifiedArgument;
 import org.openflexo.foundation.fml.parser.node.AModelDecl;
 import org.openflexo.foundation.fml.parser.node.ANamedJavaImportImportDecl;
 import org.openflexo.foundation.fml.parser.node.ANamedUriImportImportDecl;
 import org.openflexo.foundation.fml.parser.node.ANamespaceDecl;
 import org.openflexo.foundation.fml.parser.node.APrimitiveFormalArgument;
-import org.openflexo.foundation.fml.parser.node.ASimpleQualifiedArgument;
 import org.openflexo.foundation.fml.parser.node.ASingleAnnotationAnnotation;
 import org.openflexo.foundation.fml.parser.node.AUriImportImportDecl;
 import org.openflexo.foundation.fml.parser.node.AUseDecl;
@@ -564,33 +560,8 @@ public class MainSemanticsAnalyzer extends FMLSemanticsAnalyzer {
 	}
 
 	@Override
-	public void inASimpleQualifiedArgument(ASimpleQualifiedArgument node) {
-		super.inASimpleQualifiedArgument(node);
-		if (!insideBehaviourBody && !insideMatchAction) {
-			System.out.println("ENTER in " + peek() + " with " + node);
-			push(retrieveFMLNode(node, n -> new FMLSimplePropertyValueNode(n, getMainAnalyzer())));
-		}
-	}
-
-	@Override
-	public void outASimpleQualifiedArgument(ASimpleQualifiedArgument node) {
-		super.outASimpleQualifiedArgument(node);
-		if (!insideBehaviourBody && !insideMatchAction) {
-			pop();
-			System.out.println("EXIT from " + peek() + " with " + node);
-		}
-	}
-
-	@Override
-	public void inAInstanceQualifiedArgument(AInstanceQualifiedArgument node) {
-		// TODO Auto-generated method stub
-		super.inAInstanceQualifiedArgument(node);
-	}
-
-	@Override
-	public void inAListInstancesQualifiedArgument(AListInstancesQualifiedArgument node) {
-		// TODO Auto-generated method stub
-		super.inAListInstancesQualifiedArgument(node);
+	protected boolean handleFMLArgument() {
+		return !insideBehaviourBody && !insideMatchAction;
 	}
 
 }

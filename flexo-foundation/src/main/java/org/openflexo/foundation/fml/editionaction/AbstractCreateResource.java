@@ -47,6 +47,7 @@ import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.exception.NullReferenceException;
 import org.openflexo.connie.exception.TypeMismatchException;
 import org.openflexo.foundation.fml.FlexoProperty;
+import org.openflexo.foundation.fml.annotations.FMLAttribute;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.resource.ITechnologySpecificFlexoResourceFactory;
@@ -99,6 +100,7 @@ public interface AbstractCreateResource<MS extends ModelSlot<?>, RD extends Reso
 
 	@Getter(value = RESOURCE_NAME_KEY)
 	@XMLAttribute
+	@FMLAttribute(RESOURCE_NAME_KEY)
 	public DataBinding<String> getResourceName();
 
 	@Setter(RESOURCE_NAME_KEY)
@@ -106,6 +108,7 @@ public interface AbstractCreateResource<MS extends ModelSlot<?>, RD extends Reso
 
 	@Getter(value = RESOURCE_URI_KEY)
 	@XMLAttribute
+	@FMLAttribute(RESOURCE_URI_KEY)
 	public DataBinding<String> getResourceURI();
 
 	@Setter(RESOURCE_URI_KEY)
@@ -113,12 +116,13 @@ public interface AbstractCreateResource<MS extends ModelSlot<?>, RD extends Reso
 
 	@Getter(value = RESOURCE_CENTER_KEY)
 	@XMLAttribute
+	@FMLAttribute(RESOURCE_CENTER_KEY)
 	public DataBinding<FlexoResourceCenter<?>> getResourceCenter();
 
 	@Setter(RESOURCE_CENTER_KEY)
 	public void setResourceCenter(DataBinding<FlexoResourceCenter<?>> resourceCenter);
 
-	@Getter(value = RELATIVE_PATH_KEY)
+	@Getter(value = RELATIVE_PATH_KEY, ignoreForEquality = true)
 	@XMLAttribute
 	@Deprecated // Use getDynamicRelativePath() instead
 	public String getRelativePath();
@@ -129,6 +133,7 @@ public interface AbstractCreateResource<MS extends ModelSlot<?>, RD extends Reso
 
 	@Getter(value = DYNAMIC_RELATIVE_PATH_KEY)
 	@XMLAttribute
+	@FMLAttribute(DYNAMIC_RELATIVE_PATH_KEY)
 	public DataBinding<String> getDynamicRelativePath();
 
 	@Setter(DYNAMIC_RELATIVE_PATH_KEY)
@@ -297,8 +302,11 @@ public interface AbstractCreateResource<MS extends ModelSlot<?>, RD extends Reso
 		@Override
 		@Deprecated
 		public void setRelativePath(String relativePath) {
+			if (relativePath.startsWith("/")) {
+				relativePath = relativePath.substring(1);
+			}
 			performSuperSetter(RELATIVE_PATH_KEY, relativePath);
-			setDynamicRelativePath(new DataBinding("'" + relativePath + "'"));
+			setDynamicRelativePath(new DataBinding("\"" + relativePath + "\""));
 		}
 
 	}

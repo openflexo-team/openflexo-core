@@ -38,13 +38,19 @@
 
 package org.openflexo.foundation.fml;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Logger;
 
+import org.openflexo.foundation.fml.FMLModelContext.FMLProperty;
 import org.openflexo.logging.FlexoLogger;
+import org.openflexo.pamela.annotations.Adder;
 import org.openflexo.pamela.annotations.Getter;
+import org.openflexo.pamela.annotations.Getter.Cardinality;
 import org.openflexo.pamela.annotations.ImplementationClass;
 import org.openflexo.pamela.annotations.ModelEntity;
 import org.openflexo.pamela.annotations.PropertyIdentifier;
+import org.openflexo.pamela.annotations.Remover;
 import org.openflexo.pamela.annotations.Setter;
 
 /**
@@ -53,33 +59,50 @@ import org.openflexo.pamela.annotations.Setter;
  *
  */
 @ModelEntity
-@ImplementationClass(FMLSimplePropertyValue.FMLSimplePropertyValueImpl.class)
-public interface FMLSimplePropertyValue<M extends FMLObject, T> extends FMLPropertyValue<M, T> {
+@ImplementationClass(FMLInstancesListPropertyValue.FMLInstancesListPropertyValueImpl.class)
+public interface FMLInstancesListPropertyValue<M extends FMLObject, T extends FMLObject> extends FMLPropertyValue<M, List<T>> {
 
-	@PropertyIdentifier(type = Object.class)
-	public static final String VALUE_KEY = "value";
+	@PropertyIdentifier(type = WrappedFMLObject.class, cardinality = Cardinality.LIST)
+	public static final String INSTANCES_KEY = "instances";
 
-	@Override
-	@Getter(value = VALUE_KEY, ignoreType = true)
-	public T getValue();
+	@Getter(value = INSTANCES_KEY, cardinality = Cardinality.LIST)
+	public List<WrappedFMLObject<T>> getInstances();
 
-	@Setter(VALUE_KEY)
-	public void setValue(T value);
+	@Setter(INSTANCES_KEY)
+	public void setInstances(List<WrappedFMLObject<T>> values);
 
-	public static abstract class FMLSimplePropertyValueImpl<M extends FMLObject, T> extends FMLPropertyValueImpl<M, T>
-			implements FMLSimplePropertyValue<M, T> {
+	@Adder(INSTANCES_KEY)
+	public void addToInstances(WrappedFMLObject<T> aValue);
 
-		protected static final Logger logger = FlexoLogger.getLogger(FMLSimplePropertyValue.class.getPackage().getName());
+	@Remover(INSTANCES_KEY)
+	public void removeFromInstances(WrappedFMLObject<T> aValue);
+
+	public static abstract class FMLInstancesListPropertyValueImpl<M extends FMLObject, T extends FMLObject>
+			extends FMLPropertyValueImpl<M, List<T>> implements FMLInstancesListPropertyValue<M, T> {
+
+		protected static final Logger logger = FlexoLogger.getLogger(FMLInstancesListPropertyValue.class.getPackage().getName());
 
 		@Override
 		public void apply(M object) {
-			getProperty().set(getValue(), object);
+			for (T v : getValue()) {
+				((FMLProperty) getProperty()).addTo(v, object);
+			}
+
+		}
+
+		@Override
+		public List<T> getValue() {
+			List<T> returned = new ArrayList<>();
+			for (WrappedFMLObject<T> wrappedFMLObject : getInstances()) {
+				returned.add(wrappedFMLObject.getObject());
+			}
+			return returned;
 		}
 
 		@Override
 		public String toString() {
 
-			return "FMLSimplePropertyValue[" + (getProperty() != null ? getProperty().getName() : "null") + "=" + getValue() + "]";
+			return "FMLInstancesListPropertyValue[" + (getProperty() != null ? getProperty().getName() : "null") + "=" + getValue() + "]";
 		}
 
 	}

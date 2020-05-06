@@ -83,7 +83,7 @@ public class FMLEditionActionNode<EA extends TechnologySpecificAction<?, ?>>
 		Class<EA> editionActionClass = null;
 		editionActionClass = (Class<EA>) getFMLFactory().getEditionActionClass(astNode.getTaId(), astNode.getEditionAction());
 		EA returned = getFactory().newInstance(editionActionClass);
-		decodeFMLProperties(astNode.getFmlParameters(), returned);
+		// decodeFMLProperties(astNode.getFmlParameters(), returned);
 
 		/*
 		if (astNode instanceof AFmlInnerConceptDecl) {
@@ -121,11 +121,11 @@ public class FMLEditionActionNode<EA extends TechnologySpecificAction<?, ?>>
 		append(dynamicContents(() -> getFMLFactory().serializeTAId(getModelObject())), getTaIdFragment());
 		append(staticContents("::"), getColonColonFragment());
 		append(dynamicContents(() -> serializeEditionActionName(getModelObject())), getEditionActionFragment());
+		append(staticContents("("), getFMLParametersLParFragment());
 		when(() -> hasFMLProperties())
-		.thenAppend(staticContents("("), getFMLParametersLParFragment())
 		.thenAppend(childrenContents("","", () -> getModelObject().getFMLPropertyValues(getFactory()), ", ","", Indentation.DoNotIndent,
-				FMLPropertyValue.class))
-		.thenAppend(staticContents(")"), getFMLParametersRParFragment());
+				FMLPropertyValue.class));
+		append(staticContents(")"), getFMLParametersRParFragment());
 
 		when(() -> hasInClause())
 		.thenAppend(staticContents(SPACE, "in",""), getInFragment())

@@ -38,7 +38,10 @@
 
 package org.openflexo.foundation.fml;
 
+import java.text.Collator;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -269,6 +272,8 @@ public interface FMLObject extends FlexoObject, Bindable, InnerResourceData<FMLC
 	// public String encodeFMLProperties(FMLModelFactory modelFactory);
 
 	// public void decodeFMLProperties(String serializedMap);
+
+	public <O extends FMLObject> WrappedFMLObject<O> getWrappedFMLObject(O object);
 
 	public static abstract class FMLObjectImpl extends FlexoObjectImpl implements FMLObject {
 
@@ -627,7 +632,6 @@ public interface FMLObject extends FlexoObject, Bindable, InnerResourceData<FMLC
 		}
 
 		protected FMLEntity<?> getFMLEntity(FMLModelFactory modelFactory) {
-			// chercher ici l'interface avec la factory fournie !
 			return FMLModelContext.getFMLEntity((Class) getImplementedInterface(modelFactory), modelFactory);
 		}
 
@@ -671,13 +675,13 @@ public interface FMLObject extends FlexoObject, Bindable, InnerResourceData<FMLC
 		private Map<FMLProperty, FMLPropertyValue> fmlPropertyValues = new HashMap<>();
 
 		@Override
-		public final List<FMLPropertyValue<?, ?>> getFMLPropertyValues(FMLModelFactory modelFactory) {
+		public List<FMLPropertyValue<?, ?>> getFMLPropertyValues(FMLModelFactory modelFactory) {
 			if (getFMLEntity(modelFactory) != null) {
 				for (FMLProperty fmlProperty : getFMLEntity(modelFactory).getProperties()) {
 					FMLPropertyValue pValue = fmlPropertyValues.get(fmlProperty);
 					if (pValue == null) {
 						pValue = fmlProperty.makeFMLPropertyValue(this);
-						if (pValue != null) {
+						if (pValue != null && pValue.isRequired(modelFactory)) {
 							fmlPropertyValues.put(fmlProperty, pValue);
 						}
 					}
@@ -689,6 +693,17 @@ public interface FMLObject extends FlexoObject, Bindable, InnerResourceData<FMLC
 					}
 				}
 
+				// Sort properties to get nice and persistent pretty print
+				Collections.sort(returned, new Comparator<FMLPropertyValue<?, ?>>() {
+					@Override
+					public int compare(FMLPropertyValue<?, ?> o1, FMLPropertyValue<?, ?> o2) {
+						if (o1.getProperty().getKind() != o2.getProperty().getKind()) {
+							return o2.getProperty().getKind().ordinal() - o1.getProperty().getKind().ordinal();
+						}
+						return Collator.getInstance().compare(o1.getProperty().getName(), o2.getProperty().getName());
+					}
+				});
+
 				System.out.println("Returning " + returned);
 				return returned;
 				// return new ArrayList<>(fmlPropertyValues.values());
@@ -699,6 +714,18 @@ public interface FMLObject extends FlexoObject, Bindable, InnerResourceData<FMLC
 		@Override
 		public void addToFMLPropertyValues(FMLPropertyValue<?, ?> propertyValue) {
 			fmlPropertyValues.put(propertyValue.getProperty(), propertyValue);
+		}
+
+		private Map<FMLObject, WrappedFMLObject<?>> wrappedObjects = new HashMap<>();
+
+		@Override
+		public <O extends FMLObject> WrappedFMLObject<O> getWrappedFMLObject(O object) {
+			WrappedFMLObject<O> returned = (WrappedFMLObject<O>) wrappedObjects.get(object);
+			if (returned == null) {
+				returned = getFMLModelFactory().newWrappedFMLObject(object);
+				wrappedObjects.put(object, returned);
+			}
+			return returned;
 		}
 
 		/*@Override

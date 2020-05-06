@@ -82,7 +82,7 @@ public @interface FMLAttribute {
 	public AttributeKind kind() default AttributeKind.PropertyValue;
 
 	public static enum AttributeKind {
-		PropertyValue, Instance, InstanceList
+		PropertyValue, Instance, InstancesList
 	}
 
 }

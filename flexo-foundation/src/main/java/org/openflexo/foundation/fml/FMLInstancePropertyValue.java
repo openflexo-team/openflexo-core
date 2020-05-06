@@ -53,23 +53,22 @@ import org.openflexo.pamela.annotations.Setter;
  *
  */
 @ModelEntity
-@ImplementationClass(FMLSimplePropertyValue.FMLSimplePropertyValueImpl.class)
-public interface FMLSimplePropertyValue<M extends FMLObject, T> extends FMLPropertyValue<M, T> {
+@ImplementationClass(FMLInstancePropertyValue.FMLInstancePropertyValueImpl.class)
+public interface FMLInstancePropertyValue<M extends FMLObject, T extends FMLObject> extends FMLPropertyValue<M, T> {
 
-	@PropertyIdentifier(type = Object.class)
-	public static final String VALUE_KEY = "value";
+	@PropertyIdentifier(type = WrappedFMLObject.class)
+	public static final String INSTANCE_KEY = "instance";
 
-	@Override
-	@Getter(value = VALUE_KEY, ignoreType = true)
-	public T getValue();
+	@Getter(value = INSTANCE_KEY)
+	public WrappedFMLObject<T> getInstance();
 
-	@Setter(VALUE_KEY)
-	public void setValue(T value);
+	@Setter(INSTANCE_KEY)
+	public void setInstance(WrappedFMLObject<T> value);
 
-	public static abstract class FMLSimplePropertyValueImpl<M extends FMLObject, T> extends FMLPropertyValueImpl<M, T>
-			implements FMLSimplePropertyValue<M, T> {
+	public static abstract class FMLInstancePropertyValueImpl<M extends FMLObject, T extends FMLObject> extends FMLPropertyValueImpl<M, T>
+			implements FMLInstancePropertyValue<M, T> {
 
-		protected static final Logger logger = FlexoLogger.getLogger(FMLSimplePropertyValue.class.getPackage().getName());
+		protected static final Logger logger = FlexoLogger.getLogger(FMLInstancePropertyValue.class.getPackage().getName());
 
 		@Override
 		public void apply(M object) {
@@ -77,9 +76,17 @@ public interface FMLSimplePropertyValue<M extends FMLObject, T> extends FMLPrope
 		}
 
 		@Override
+		public T getValue() {
+			if (getInstance() != null) {
+				return getInstance().getObject();
+			}
+			return null;
+		}
+
+		@Override
 		public String toString() {
 
-			return "FMLSimplePropertyValue[" + (getProperty() != null ? getProperty().getName() : "null") + "=" + getValue() + "]";
+			return "FMLInstancePropertyValue[" + (getProperty() != null ? getProperty().getName() : "null") + "=" + getValue() + "]";
 		}
 
 	}

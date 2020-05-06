@@ -42,6 +42,7 @@ import java.util.logging.Logger;
 
 import org.openflexo.foundation.fml.FMLObject;
 import org.openflexo.foundation.fml.FMLPropertyValue;
+import org.openflexo.foundation.fml.WrappedFMLObject;
 import org.openflexo.foundation.fml.parser.FMLObjectNode;
 import org.openflexo.foundation.fml.parser.MainSemanticsAnalyzer;
 import org.openflexo.foundation.fml.parser.node.Node;
@@ -66,16 +67,20 @@ public abstract class AbstractFMLPropertyValueNode<N extends Node, P extends FML
 
 	@Override
 	public AbstractFMLPropertyValueNode<N, P, M, T> deserialize() {
-		/*if (getParent() instanceof VirtualModelNode) {
-			((VirtualModelNode) getParent()).getModelObject().addToFlexoProperties(getModelObject());
+		//System.out.println("J'arrive la avec " + getASTNode());
+		//System.out.println("getParent().getModelObject()=" + getParent().getModelObject());
+		//System.out.println("property:" + getModelObject().getProperty());
+		//System.out.println("class: " + getModelObject().getImplementedInterface());
+
+		if (getParent().getModelObject() instanceof WrappedFMLObject) {
+			WrappedFMLObject<M> wrappedObject = (WrappedFMLObject<M>) getParent().getModelObject();
+			wrappedObject.getObject().addToFMLPropertyValues(getModelObject());
+			getModelObject().apply(wrappedObject.getObject());
 		}
-		if (getParent() instanceof FlexoConceptNode) {
-			((FlexoConceptNode) getParent()).getModelObject().addToFlexoProperties(getModelObject());
-		}*/
-
-		((M) getParent().getModelObject()).addToFMLPropertyValues(getModelObject());
-		getModelObject().apply((M) getParent().getModelObject());
-
+		else {
+			((M) getParent().getModelObject()).addToFMLPropertyValues(getModelObject());
+			getModelObject().apply((M) getParent().getModelObject());
+		}
 		// System.out.println("Tiens faudrait appliquer la propriete " + getModelObject() + " a " + getParent().getModelObject());
 		return this;
 	}

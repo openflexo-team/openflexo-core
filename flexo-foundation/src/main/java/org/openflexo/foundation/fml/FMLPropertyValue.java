@@ -56,7 +56,7 @@ import org.openflexo.pamela.annotations.Setter;
  *
  */
 @ModelEntity(isAbstract = true)
-@Imports({ @Import(FMLSimplePropertyValue.class) })
+@Imports({ @Import(FMLSimplePropertyValue.class), @Import(FMLInstancePropertyValue.class), @Import(FMLInstancesListPropertyValue.class) })
 public interface FMLPropertyValue<M extends FMLObject, T> extends FMLPrettyPrintable {
 
 	@PropertyIdentifier(type = FMLProperty.class)
@@ -77,11 +77,6 @@ public interface FMLPropertyValue<M extends FMLObject, T> extends FMLPrettyPrint
 	public static abstract class FMLPropertyValueImpl<M extends FMLObject, T> extends FMLObjectImpl implements FMLPropertyValue<M, T> {
 
 		protected static final Logger logger = FlexoLogger.getLogger(FMLPropertyValue.class.getPackage().getName());
-
-		@Override
-		public void apply(M object) {
-			getProperty().set(getValue(), object);
-		}
 
 		@Override
 		public boolean isRequired(FMLModelFactory factory) {

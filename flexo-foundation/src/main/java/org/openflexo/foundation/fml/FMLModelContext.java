@@ -45,6 +45,7 @@ import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Logger;
@@ -197,6 +198,21 @@ public class FMLModelContext {
 			}
 		}
 
+		public void addTo(T value, I object) {
+			try {
+				modelProperty.getAdderMethod().invoke(object, value);
+			} catch (IllegalAccessException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IllegalArgumentException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (InvocationTargetException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+
 		public FMLPropertyValue<I, T> makeFMLPropertyValue(I object) {
 
 			T value = get(object);
@@ -208,6 +224,30 @@ public class FMLModelContext {
 			switch (getKind()) {
 				case PropertyValue:
 					return object.getFMLModelFactory().newSimplePropertyValue(this, value);
+				case Instance:
+					if (value instanceof FMLObject) {
+						FMLInstancePropertyValue returnedInstance = object.getFMLModelFactory()
+								.newInstancePropertyValue((FMLProperty) this);
+						returnedInstance.setInstance(object.getWrappedFMLObject((FMLObject) value));
+						return returnedInstance;
+					}
+					else {
+						logger.warning("Unexpected value in FMLInstancePropertyValue: " + value);
+						return null;
+					}
+				case InstancesList:
+					if (value instanceof List) {
+						FMLInstancesListPropertyValue returnedInstancesList = object.getFMLModelFactory()
+								.newInstancesListPropertyValue((FMLProperty) this);
+						for (FMLObject o : ((List<FMLObject>) value)) {
+							returnedInstancesList.addToInstances(object.getWrappedFMLObject(o));
+						}
+						return returnedInstancesList;
+					}
+					else {
+						logger.warning("Unexpected value in FMLInstancesListPropertyValue: " + value);
+						return null;
+					}
 				default:
 
 			}
@@ -228,6 +268,7 @@ public class FMLModelContext {
 			FML fmlAnnotation = implementedInterface.getAnnotation(FML.class);
 			if (fmlAnnotation == null) {
 				logger.warning("Cannot find @FML annotation in " + implementedInterface);
+				Thread.dumpStack();
 				return null;
 			}
 			ModelEntity<I> modelEntity = modelFactory.getModelContext().getModelEntity(implementedInterface);

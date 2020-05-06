@@ -45,7 +45,16 @@ import java.util.Stack;
 import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.fml.FMLModelFactory;
 import org.openflexo.foundation.fml.parser.analysis.DepthFirstAdapter;
+import org.openflexo.foundation.fml.parser.fmlnodes.FMLInstancePropertyValueNode;
+import org.openflexo.foundation.fml.parser.fmlnodes.FMLInstancesListPropertyValueNode;
+import org.openflexo.foundation.fml.parser.fmlnodes.FMLSimplePropertyValueNode;
+import org.openflexo.foundation.fml.parser.fmlnodes.WrappedFMLObjectNode;
+import org.openflexo.foundation.fml.parser.node.AFullQualifiedQualifiedInstance;
+import org.openflexo.foundation.fml.parser.node.AInstanceQualifiedArgument;
+import org.openflexo.foundation.fml.parser.node.AListInstancesQualifiedArgument;
 import org.openflexo.foundation.fml.parser.node.AMatchActionFmlActionExp;
+import org.openflexo.foundation.fml.parser.node.ASimpleQualifiedArgument;
+import org.openflexo.foundation.fml.parser.node.ASimpleQualifiedInstance;
 import org.openflexo.foundation.fml.parser.node.Node;
 import org.openflexo.foundation.fml.parser.node.Token;
 import org.openflexo.p2pp.P2PPNode;
@@ -192,6 +201,100 @@ public abstract class FMLSemanticsAnalyzer extends DepthFirstAdapter {
 	public void outAMatchActionFmlActionExp(AMatchActionFmlActionExp node) {
 		super.outAMatchActionFmlActionExp(node);
 		insideMatchAction = false;
+	}
+
+	protected boolean handleFMLArgument() {
+		return !insideMatchAction;
+	}
+
+	@Override
+	public final void inASimpleQualifiedArgument(ASimpleQualifiedArgument node) {
+		super.inASimpleQualifiedArgument(node);
+		if (handleFMLArgument()) {
+			System.out.println("ENTER in " + peek() + " with " + node);
+			push(getMainAnalyzer().retrieveFMLNode(node, n -> new FMLSimplePropertyValueNode(n, getMainAnalyzer())));
+		}
+	}
+
+	@Override
+	public final void outASimpleQualifiedArgument(ASimpleQualifiedArgument node) {
+		super.outASimpleQualifiedArgument(node);
+		if (handleFMLArgument()) {
+			pop();
+			System.out.println("EXIT from " + peek() + " with " + node);
+		}
+	}
+
+	@Override
+	public final void inAInstanceQualifiedArgument(AInstanceQualifiedArgument node) {
+		super.inAInstanceQualifiedArgument(node);
+		if (handleFMLArgument()) {
+			System.out.println("ENTER in " + peek() + " with " + node);
+			push(getMainAnalyzer().retrieveFMLNode(node, n -> new FMLInstancePropertyValueNode(n, getMainAnalyzer())));
+		}
+	}
+
+	@Override
+	public final void outAInstanceQualifiedArgument(AInstanceQualifiedArgument node) {
+		super.outAInstanceQualifiedArgument(node);
+		if (handleFMLArgument()) {
+			pop();
+			System.out.println("EXIT from " + peek() + " with " + node);
+		}
+	}
+
+	@Override
+	public final void inAListInstancesQualifiedArgument(AListInstancesQualifiedArgument node) {
+		super.inAListInstancesQualifiedArgument(node);
+		if (handleFMLArgument()) {
+			System.out.println("ENTER in " + peek() + " with " + node);
+			push(getMainAnalyzer().retrieveFMLNode(node, n -> new FMLInstancesListPropertyValueNode(n, getMainAnalyzer())));
+		}
+	}
+
+	@Override
+	public final void outAListInstancesQualifiedArgument(AListInstancesQualifiedArgument node) {
+		super.outAListInstancesQualifiedArgument(node);
+		if (handleFMLArgument()) {
+			pop();
+			System.out.println("EXIT from " + peek() + " with " + node);
+		}
+	}
+
+	@Override
+	public final void inASimpleQualifiedInstance(ASimpleQualifiedInstance node) {
+		super.inASimpleQualifiedInstance(node);
+		if (handleFMLArgument()) {
+			System.out.println("ENTER in " + peek() + " with " + node);
+			push(getMainAnalyzer().retrieveFMLNode(node, n -> new WrappedFMLObjectNode(n, getMainAnalyzer())));
+		}
+	}
+
+	@Override
+	public final void outASimpleQualifiedInstance(ASimpleQualifiedInstance node) {
+		super.outASimpleQualifiedInstance(node);
+		if (handleFMLArgument()) {
+			pop();
+			System.out.println("EXIT from " + peek() + " with " + node);
+		}
+	}
+
+	@Override
+	public final void inAFullQualifiedQualifiedInstance(AFullQualifiedQualifiedInstance node) {
+		super.inAFullQualifiedQualifiedInstance(node);
+		if (handleFMLArgument()) {
+			System.out.println("ENTER in " + peek() + " with " + node);
+			push(getMainAnalyzer().retrieveFMLNode(node, n -> new WrappedFMLObjectNode(n, getMainAnalyzer())));
+		}
+	}
+
+	@Override
+	public final void outAFullQualifiedQualifiedInstance(AFullQualifiedQualifiedInstance node) {
+		super.outAFullQualifiedQualifiedInstance(node);
+		if (handleFMLArgument()) {
+			pop();
+			System.out.println("EXIT from " + peek() + " with " + node);
+		}
 	}
 
 }

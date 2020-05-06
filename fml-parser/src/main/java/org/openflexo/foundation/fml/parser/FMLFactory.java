@@ -269,20 +269,8 @@ public class FMLFactory extends SemanticsAnalyzerFactory {
 
 	private Class<? extends FMLObject> getFMLObjectClass(TIdentifier objectIdentifier, Class<? extends ModelSlot<?>> modelSlotClass) {
 
-		return getServiceManager().getTechnologyAdapterService().getFlexoRole(modelSlotClass, objectIdentifier.getText());
+		return getServiceManager().getTechnologyAdapterService().getFMLObject(modelSlotClass, objectIdentifier.getText());
 
-		/*if (roleIdentifier.getText().equals(modelSlotClass.getSimpleName())) {
-			return modelSlotClass;
-		}
-		
-		for (Class<? extends FlexoRole<?>> roleClass : getServiceManager().getTechnologyAdapterService()
-				.getAvailableFlexoRoleTypes(modelSlotClass)) {
-			if (roleIdentifier.getText().equals(roleClass.getSimpleName())) {
-				return roleClass;
-			}
-		}
-		
-		return null;*/
 	}
 
 }

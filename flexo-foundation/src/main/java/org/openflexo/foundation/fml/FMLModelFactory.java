@@ -697,6 +697,11 @@ public class FMLModelFactory extends ModelFactory implements PamelaResourceModel
 		return newInstance(SelectFlexoConceptInstance.class);
 	}
 
+	public <M extends FMLObject, T> FMLSimplePropertyValue<M, T> newSimplePropertyValue() {
+		FMLSimplePropertyValue<M, T> returned = newInstance(FMLSimplePropertyValue.class);
+		return returned;
+	}
+
 	public <M extends FMLObject, T> FMLSimplePropertyValue<M, T> newSimplePropertyValue(FMLProperty<M, T> property, T value) {
 		FMLSimplePropertyValue<M, T> returned = newInstance(FMLSimplePropertyValue.class);
 		returned.setProperty(property);
@@ -704,8 +709,36 @@ public class FMLModelFactory extends ModelFactory implements PamelaResourceModel
 		return returned;
 	}
 
-	public <M extends FMLObject, T> FMLSimplePropertyValue<M, T> newSimplePropertyValue() {
-		FMLSimplePropertyValue<M, T> returned = newInstance(FMLSimplePropertyValue.class);
+	public <M extends FMLObject, T extends FMLObject> FMLInstancePropertyValue<M, T> newInstancePropertyValue() {
+		FMLInstancePropertyValue<M, T> returned = newInstance(FMLInstancePropertyValue.class);
+		return returned;
+	}
+
+	public <M extends FMLObject, T extends FMLObject> FMLInstancePropertyValue<M, T> newInstancePropertyValue(FMLProperty<M, T> property) {
+		FMLInstancePropertyValue<M, T> returned = newInstance(FMLInstancePropertyValue.class);
+		returned.setProperty(property);
+		return returned;
+	}
+
+	public <M extends FMLObject, T extends FMLObject> FMLInstancesListPropertyValue<M, T> newInstancesListPropertyValue() {
+		FMLInstancesListPropertyValue<M, T> returned = newInstance(FMLInstancesListPropertyValue.class);
+		return returned;
+	}
+
+	public <M extends FMLObject, T extends FMLObject> FMLInstancesListPropertyValue<M, T> newInstancesListPropertyValue(
+			FMLProperty<M, List<T>> property) {
+		FMLInstancesListPropertyValue<M, T> returned = newInstance(FMLInstancesListPropertyValue.class);
+		returned.setProperty(property);
+		return returned;
+	}
+
+	public <O extends FMLObject> WrappedFMLObject<O> newWrappedFMLObject() {
+		return newInstance(WrappedFMLObject.class);
+	}
+
+	public <O extends FMLObject> WrappedFMLObject<O> newWrappedFMLObject(O object) {
+		WrappedFMLObject<O> returned = newInstance(WrappedFMLObject.class);
+		returned.setObject(object);
 		return returned;
 	}
 

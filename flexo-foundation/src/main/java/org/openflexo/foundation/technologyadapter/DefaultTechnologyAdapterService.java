@@ -534,7 +534,6 @@ public abstract class DefaultTechnologyAdapterService extends FlexoServiceImpl i
 					// Also store it using class name
 					availableFMLObjectsByFMLKeyword.put(objectClass.getSimpleName(), objectClass);
 					System.out.println("store " + objectClass + " for " + objectClass.getSimpleName());
-					System.exit(-1);
 				}
 			} catch (ModelDefinitionException e) {
 				// TODO Auto-generated catch block

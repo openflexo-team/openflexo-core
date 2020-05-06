@@ -50,6 +50,7 @@ import org.openflexo.connie.binding.Function;
 import org.openflexo.connie.type.TypeUtils;
 import org.openflexo.foundation.DataModification;
 import org.openflexo.foundation.fml.FlexoBehaviourParameter.FlexoBehaviourParameterImpl;
+import org.openflexo.foundation.fml.annotations.FMLAttribute;
 import org.openflexo.foundation.fml.binding.FlexoBehaviourBindingModel;
 import org.openflexo.foundation.fml.controlgraph.EmptyControlGraph;
 import org.openflexo.foundation.fml.controlgraph.FMLControlGraph;
@@ -185,6 +186,7 @@ public interface FlexoBehaviour extends FlexoBehaviourObject, Function, FMLContr
 
 	@Getter(value = SKIP_CONFIRMATION_PANEL_KEY, defaultValue = "true")
 	@XMLAttribute
+	@FMLAttribute(SKIP_CONFIRMATION_PANEL_KEY)
 	public boolean getSkipConfirmationPanel();
 
 	@Setter(SKIP_CONFIRMATION_PANEL_KEY)
@@ -192,37 +194,47 @@ public interface FlexoBehaviour extends FlexoBehaviourObject, Function, FMLContr
 
 	@Getter(value = LONG_RUNNING_ACTION_KEY, defaultValue = "false")
 	@XMLAttribute
+	@Deprecated
 	public boolean getLongRunningAction();
 
 	@Setter(LONG_RUNNING_ACTION_KEY)
+	@Deprecated
 	public void setLongRunningAction(boolean isLongRunningAction);
 
 	@Getter(value = STEPS_NUMBER_KEY)
 	@XMLAttribute
+	@Deprecated
 	public DataBinding<Integer> getStepsNumber();
 
 	@Setter(STEPS_NUMBER_KEY)
+	@Deprecated
 	public void setStepsNumber(DataBinding<Integer> stepsNumber);
 
 	@Getter(value = DEFINE_POPUP_DEFAULT_SIZE_KEY, defaultValue = "false")
 	@XMLAttribute
+	@Deprecated
 	public boolean getDefinePopupDefaultSize();
 
 	@Setter(DEFINE_POPUP_DEFAULT_SIZE_KEY)
+	@Deprecated
 	public void setDefinePopupDefaultSize(boolean definePopupDefaultSize);
 
 	@Getter(value = WIDTH_KEY, defaultValue = "0")
 	@XMLAttribute
+	@Deprecated
 	public int getWidth();
 
 	@Setter(WIDTH_KEY)
+	@Deprecated
 	public void setWidth(int width);
 
 	@Getter(value = HEIGHT_KEY, defaultValue = "0")
 	@XMLAttribute
+	@Deprecated
 	public int getHeight();
 
 	@Setter(HEIGHT_KEY)
+	@Deprecated
 	public void setHeight(int height);
 
 	/*@Override

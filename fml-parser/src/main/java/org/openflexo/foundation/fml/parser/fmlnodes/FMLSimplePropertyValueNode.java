@@ -78,18 +78,22 @@ public class FMLSimplePropertyValueNode<M extends FMLObject, T>
 	public FMLSimplePropertyValueNode<M, T> deserialize() {
 
 		String propertyName = getASTNode().getArgName().getText();
-
-		// System.out.println("Pour la propriete: " + propertyName);
-		// System.out.println("parent: " + getParent().getModelObject());
-
+		//System.out.println("Node: " + getASTNode());
+		//System.out.println("Pour la propriete: " + propertyName);
+		//System.out.println("parent: " + getParent().getModelObject());
 		FMLProperty fmlProperty = ((FMLObject) getParent().getModelObject()).getFMLProperty(propertyName, getFactory());
-
-		// System.out.println("fmlProperty: " + fmlProperty);
+		//System.out.println("fmlProperty: " + fmlProperty);
 		getModelObject().setProperty(fmlProperty);
 
 		DataBinding<Object> value = makeBinding(getASTNode().getExpression(), modelObject);
+		//System.out.println("value=" + value);
 
-		if (value.isConstant()) {
+		if (DataBinding.class.equals(TypeUtils.getBaseClass(fmlProperty.getType()))) {
+			// logger.info("Set " + fmlProperty.getName() + " = " + value);
+			// fmlProperty.set(value, modelObject);
+			getModelObject().setValue((T) value);
+		}
+		else if (value.isConstant()) {
 			Object constantValue = ((Constant) value.getExpression()).getValue();
 			if (constantValue != null) {
 				if (TypeUtils.isTypeAssignableFrom(fmlProperty.getType(), constantValue.getClass())) {
@@ -99,16 +103,12 @@ public class FMLSimplePropertyValueNode<M extends FMLObject, T>
 				}
 				else {
 					logger.warning("Invalid value for property " + fmlProperty.getName() + " expected type: " + fmlProperty.getType()
-							+ " value: " + constantValue);
+							+ " value: " + constantValue + " of " + constantValue.getClass());
 				}
 			}
 		}
-		else if (DataBinding.class.equals(TypeUtils.getBaseClass(fmlProperty.getType()))) {
-			// logger.info("Set " + fmlProperty.getName() + " = " + value);
-			// fmlProperty.set(value, modelObject);
-			getModelObject().setValue((T) value);
-		}
 		else {
+			boolean found = false;
 			if (getCompilationUnit() != null) {
 				for (ElementImportDeclaration elementImportDeclaration : getCompilationUnit().getElementImports()) {
 					// System.out.println(
@@ -116,13 +116,16 @@ public class FMLSimplePropertyValueNode<M extends FMLObject, T>
 					if (elementImportDeclaration.getAbbrev().equals(value.toString())) {
 						// System.out.println("Trouve !!!");
 						// fmlProperty.set(elementImportDeclaration.getReferencedObject(), modelObject);
+						found = true;
 						getModelObject().setValue((T) elementImportDeclaration.getReferencedObject());
 					}
 				}
 			}
 
-			logger.warning("Unexpected value for property " + fmlProperty.getName() + " expected type: " + fmlProperty.getType()
-					+ " value: " + value);
+			if (!found) {
+				logger.warning("Unexpected value for property " + fmlProperty.getName() + " expected type: " + fmlProperty.getType()
+						+ " value: " + value);
+			}
 		}
 
 		return (FMLSimplePropertyValueNode<M, T>) super.deserialize();
@@ -139,17 +142,9 @@ public class FMLSimplePropertyValueNode<M extends FMLObject, T>
 	public void preparePrettyPrint(boolean hasParsedVersion) {
 		super.preparePrettyPrint(hasParsedVersion);
 
-		when(() -> isRequired()).thenAppend(dynamicContents(() -> getModelObject().getProperty().getName(), SPACE), getArgNameFragment())
-				.thenAppend(staticContents("", "=", SPACE), getAssignFragment())
-				.thenAppend(dynamicContents(() -> encodeFMLProperty(getModelObject().getValue())), getValueFragment());
-	}
-
-	private boolean isRequired() {
-		return true;
-		/*if (getModelObject() != null) {
-			return getModelObject().isRequired(getFactory());
-		}
-		return false;*/
+		append(dynamicContents(() -> getModelObject().getProperty().getName(), SPACE), getArgNameFragment());
+		append(staticContents("", "=", SPACE), getAssignFragment());
+		append(dynamicContents(() -> encodeFMLProperty(getModelObject().getValue())), getValueFragment());
 	}
 
 	private String encodeFMLProperty(T value) {

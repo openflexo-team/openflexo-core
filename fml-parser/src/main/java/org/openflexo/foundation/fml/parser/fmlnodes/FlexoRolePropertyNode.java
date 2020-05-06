@@ -72,20 +72,6 @@ public class FlexoRolePropertyNode<N extends PInnerConceptDecl, R extends FlexoR
 		super(modelSlot, analyser);
 	}
 
-	/*@Override
-	public void finalizeDeserialization() {
-		super.finalizeDeserialization();
-		System.out.println("YES !!!!!!!");
-		if (getASTNode() instanceof AFmlInnerConceptDecl) {
-			decodeFMLProperties(((AFmlInnerConceptDecl) getASTNode()).getFmlParameters(), getModelObject());
-		}
-		if (getASTNode() instanceof AFmlFullyQualifiedInnerConceptDecl) {
-			decodeFMLProperties(((AFmlFullyQualifiedInnerConceptDecl) getASTNode()).getFmlParameters(), getModelObject());
-		}
-		System.out.println("DONE !!!!!!!");
-		Thread.dumpStack();
-	}*/
-
 	@Override
 	public R buildModelObjectFromAST(PInnerConceptDecl astNode) {
 
@@ -104,7 +90,7 @@ public class FlexoRolePropertyNode<N extends PInnerConceptDecl, R extends FlexoR
 			returned.setCardinality(getCardinality(((AFmlInnerConceptDecl) astNode).getCardinality()));
 			CustomType type = (CustomType) getTypeFactory().makeType(((AFmlInnerConceptDecl) astNode).getType(), returned);
 			returned.setType(type);
-			decodeFMLProperties(((AFmlInnerConceptDecl) astNode).getFmlParameters(), returned);
+			// decodeFMLProperties(((AFmlInnerConceptDecl) astNode).getFmlParameters(), returned);
 		}
 		if (astNode instanceof AFmlFullyQualifiedInnerConceptDecl) {
 			returned.setVisibility(getVisibility(((AFmlFullyQualifiedInnerConceptDecl) astNode).getVisibility()));
@@ -112,7 +98,7 @@ public class FlexoRolePropertyNode<N extends PInnerConceptDecl, R extends FlexoR
 			returned.setCardinality(getCardinality(((AFmlFullyQualifiedInnerConceptDecl) astNode).getCardinality()));
 			CustomType type = (CustomType) getTypeFactory().makeType(((AFmlFullyQualifiedInnerConceptDecl) astNode).getType(), returned);
 			returned.setType(type);
-			decodeFMLProperties(((AFmlFullyQualifiedInnerConceptDecl) astNode).getFmlParameters(), returned);
+			// decodeFMLProperties(((AFmlFullyQualifiedInnerConceptDecl) astNode).getFmlParameters(), returned);
 		}
 		return returned;
 	}

@@ -38,8 +38,12 @@
 
 package org.openflexo.foundation.fml;
 
+import java.util.List;
 import java.util.logging.Logger;
 
+import org.openflexo.connie.BindingModel;
+import org.openflexo.foundation.fml.FMLModelContext.FMLEntity;
+import org.openflexo.foundation.fml.FMLModelContext.FMLProperty;
 import org.openflexo.logging.FlexoLogger;
 import org.openflexo.pamela.annotations.Getter;
 import org.openflexo.pamela.annotations.ImplementationClass;
@@ -53,33 +57,60 @@ import org.openflexo.pamela.annotations.Setter;
  *
  */
 @ModelEntity
-@ImplementationClass(FMLSimplePropertyValue.FMLSimplePropertyValueImpl.class)
-public interface FMLSimplePropertyValue<M extends FMLObject, T> extends FMLPropertyValue<M, T> {
+@ImplementationClass(WrappedFMLObject.WrappedFMLObjectImpl.class)
+public interface WrappedFMLObject<O extends FMLObject> extends FMLPrettyPrintable {
 
-	@PropertyIdentifier(type = Object.class)
-	public static final String VALUE_KEY = "value";
+	@PropertyIdentifier(type = FMLObject.class)
+	public static final String OBJECT_KEY = "object";
 
-	@Override
-	@Getter(value = VALUE_KEY, ignoreType = true)
-	public T getValue();
+	@Getter(value = OBJECT_KEY, ignoreType = true)
+	public O getObject();
 
-	@Setter(VALUE_KEY)
-	public void setValue(T value);
+	@Setter(OBJECT_KEY)
+	public void setObject(O anObject);
 
-	public static abstract class FMLSimplePropertyValueImpl<M extends FMLObject, T> extends FMLPropertyValueImpl<M, T>
-			implements FMLSimplePropertyValue<M, T> {
+	public static abstract class WrappedFMLObjectImpl<O extends FMLObject> extends FMLObjectImpl implements WrappedFMLObject<O> {
 
-		protected static final Logger logger = FlexoLogger.getLogger(FMLSimplePropertyValue.class.getPackage().getName());
+		protected static final Logger logger = FlexoLogger.getLogger(WrappedFMLObject.class.getPackage().getName());
 
 		@Override
-		public void apply(M object) {
-			getProperty().set(getValue(), object);
+		public FMLCompilationUnit getResourceData() {
+			if (getObject() != null) {
+				return getObject().getResourceData();
+			}
+			return null;
 		}
 
 		@Override
-		public String toString() {
+		public BindingModel getBindingModel() {
+			if (getObject() != null) {
+				return getObject().getBindingModel();
+			}
+			return null;
+		}
 
-			return "FMLSimplePropertyValue[" + (getProperty() != null ? getProperty().getName() : "null") + "=" + getValue() + "]";
+		@Override
+		protected FMLEntity<?> getFMLEntity(FMLModelFactory modelFactory) {
+			if (getObject() != null) {
+				return FMLModelContext.getFMLEntity((Class) getObject().getImplementedInterface(modelFactory), modelFactory);
+			}
+			return null;
+		}
+
+		@Override
+		public final List<FMLPropertyValue<?, ?>> getFMLPropertyValues(FMLModelFactory modelFactory) {
+			if (getObject() != null) {
+				return getObject().getFMLPropertyValues(modelFactory);
+			}
+			return null;
+		}
+
+		@Override
+		public FMLProperty getFMLProperty(String propertyName, FMLModelFactory modelFactory) {
+			if (getObject() != null) {
+				return getObject().getFMLProperty(propertyName, modelFactory);
+			}
+			return null;
 		}
 
 	}
