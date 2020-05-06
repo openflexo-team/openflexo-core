@@ -253,7 +253,7 @@
 			constraints="split(index=0;location=north;splitIdentifier=right)"
 			name="FIBPanel">
 			<Editor validateOnReturn="true" columns="8" rows="3" text="Editor" name="FMLEditor"
-				syntaxStyle="Java" index="2" data="data.fMLRepresentation"
+				syntaxStyle="Java" index="2" data="data.fMLPrettyPrint"
 				constraints="twocols(expandHorizontally=true;expandVertically=true;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=center)"
 				useScrollBar="true" horizontalScrollbarPolicy="HORIZONTAL_SCROLLBAR_AS_NEEDED"
 				verticalScrollbarPolicy="VERTICAL_SCROLLBAR_AS_NEEDED" localize="true" />
