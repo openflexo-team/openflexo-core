@@ -43,6 +43,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -134,6 +135,10 @@ public class TestFMLMigration extends OpenflexoTestCase {
 
 	@Test
 	public void step3_saveAsFML() throws ModelDefinitionException, ParseException, IOException, SaveResourceException {
+		if (!(testInfo.fmlResource.getIODelegate().getSerializationArtefact() instanceof File)) {
+			return;
+		}
+
 		System.out.println("Saving FML version for " + testInfo.fmlResource);
 		((CompilationUnitResourceImpl) testInfo.fmlResource).setPersistencyStrategy(PersistencyStrategy.FML);
 		testInfo.fmlResource.save();
@@ -158,12 +163,18 @@ public class TestFMLMigration extends OpenflexoTestCase {
 
 	@Test
 	public void step4_reloadFMLVersion() throws ModelDefinitionException, ParseException, IOException, SaveResourceException {
+		if (!(testInfo.fmlResource.getIODelegate().getSerializationArtefact() instanceof File)) {
+			return;
+		}
 		System.out.println("Reload FML version for " + testInfo.fmlResource);
 		testInfo.reloadedFMLVersion = testInfo.fmlResource.getCompilationUnit();
 	}
 
 	@Test
 	public void step5_compareBothVersions() throws ModelDefinitionException, ParseException, IOException, SaveResourceException {
+		if (!(testInfo.fmlResource.getIODelegate().getSerializationArtefact() instanceof File)) {
+			return;
+		}
 		System.out.println("Compare both versions for " + testInfo.fmlResource);
 
 		System.out.println("D'un cote: ");
