@@ -105,6 +105,16 @@ public class CreateFlexoEvent extends AbstractCreateFlexoConcept<CreateFlexoEven
 		return FMLTechnologyAdapter.class;
 	}
 
+	public VirtualModel getFocusedVirtualModel() {
+		if (getFocusedObject() instanceof VirtualModel) {
+			return (VirtualModel) getFocusedObject();
+		}
+		if (getFocusedObject() != null) {
+			return getFocusedObject().getDeclaringCompilationUnit().getVirtualModel();
+		}
+		return null;
+	}
+
 	@Override
 	protected void doAction(Object context)
 			throws NotImplementedException, InvalidParameterException, InconsistentFlexoConceptHierarchyException {
