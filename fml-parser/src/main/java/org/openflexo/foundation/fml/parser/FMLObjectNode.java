@@ -510,7 +510,7 @@ public abstract class FMLObjectNode<N extends Node, T extends FMLPrettyPrintable
 		try {
 			return Integer.parseInt(f);
 		} catch (NumberFormatException e) {
-			(new ParseException("Cannot parse as long: " + f)).printStackTrace();
+			throwIssue("Cannot parse as integer: " + f, getFragment(node));
 			return -1;
 		}
 	}
@@ -534,7 +534,8 @@ public abstract class FMLObjectNode<N extends Node, T extends FMLPrettyPrintable
 			try {
 				return Double.parseDouble(f);
 			} catch (NumberFormatException e) {
-				throw new ParseException("Cannot parse as double: " + f);
+				throwIssue("Cannot parse as double: " + f, getFragment(node));
+				return null;
 			}
 		}
 		else if (node instanceof AIntegerLiteral) {
@@ -542,13 +543,16 @@ public abstract class FMLObjectNode<N extends Node, T extends FMLPrettyPrintable
 			try {
 				return Long.parseLong(f);
 			} catch (NumberFormatException e) {
-				throw new ParseException("Cannot parse as long: " + f);
+				throwIssue("Cannot parse as long: " + f, getFragment(node));
+				return null;
 			}
 		}
 		else if (node instanceof ANullLiteral) {
 			return null;
 		}
-		throw new ParseException("Unexpected " + node);
+		RawSourceFragment fragment = getFragment(node);
+		throwIssue("Unexpected " + node, fragment);
+		return null;
 	}
 
 	public List<String> makeFullQualifiedIdentifierList(TIdentifier identifier, List<PAdditionalIdentifier> additionalIdentifiers) {

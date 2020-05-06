@@ -28,7 +28,7 @@ import org.fife.ui.rtextarea.RTextScrollPane;
 import org.fife.ui.rtextarea.SearchContext;
 import org.fife.ui.rtextarea.SearchEngine;
 import org.fife.ui.rtextarea.SmartHighlightPainter;
-import org.openflexo.fml.controller.widget.OnTheFlyFMLParser;
+import org.openflexo.fml.controller.widget.fmleditor.OnTheFlyFMLParser;
 import org.openflexo.icon.IconLibrary;
 
 /**
@@ -90,7 +90,7 @@ public class FindAndReplaceDemo extends JFrame implements ActionListener {
 		ErrorStrip errorStrip = new ErrorStrip(textArea);
 		cp.add(errorStrip, BorderLayout.LINE_END);
 
-		Parser p = new OnTheFlyFMLParser();// new XmlParser();
+		Parser p = new OnTheFlyFMLParser(null);// new XmlParser();
 		textArea.addParser(p);
 		// p.parse(textArea.getD, style)
 

@@ -191,9 +191,9 @@ public class FMLParser {
 			return t.getCompilationUnit();
 		} catch (ParserException e) {
 			e.printStackTrace();
-			throw new ParseException(e.getMessage() + " while parsing " + reader);
+			throw new ParseException(e.getMessage(), e.getToken().getLine(), e.getToken().getPos());
 		} catch (LexerException e) {
-			throw new ParseException(e.getMessage() + " while parsing " + reader);
+			throw new ParseException(e.getMessage(), e.getToken().getLine(), e.getToken().getPos());
 		}
 	}
 

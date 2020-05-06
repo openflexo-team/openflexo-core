@@ -36,35 +36,31 @@
  * 
  */
 
-package org.openflexo.fml.controller.widget;
+package org.openflexo.fml.controller.widget.fmleditor;
 
 import java.awt.BorderLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Logger;
 
-import javax.swing.JButton;
-import javax.swing.JCheckBox;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JTextField;
-import javax.swing.JToolBar;
-import javax.swing.text.BadLocationException;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 
 import org.fife.ui.rsyntaxtextarea.AbstractTokenMakerFactory;
 import org.fife.ui.rsyntaxtextarea.ErrorStrip;
-import org.fife.ui.rsyntaxtextarea.RSyntaxDocument;
 import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
 import org.fife.ui.rsyntaxtextarea.SyntaxConstants;
 import org.fife.ui.rsyntaxtextarea.TokenMakerFactory;
-import org.fife.ui.rsyntaxtextarea.parser.ParseResult;
 import org.fife.ui.rsyntaxtextarea.parser.Parser;
 import org.fife.ui.rtextarea.Gutter;
 import org.fife.ui.rtextarea.RTextScrollPane;
-import org.fife.ui.rtextarea.SearchContext;
-import org.fife.ui.rtextarea.SearchEngine;
+import org.openflexo.foundation.fml.FMLCompilationUnit;
+import org.openflexo.foundation.fml.FMLModelFactory;
+import org.openflexo.foundation.fml.parser.FMLParser;
+import org.openflexo.foundation.fml.parser.ParseException;
 import org.openflexo.foundation.fml.rm.CompilationUnitResource;
-import org.openflexo.icon.IconLibrary;
 
 /**
  * Widget allowing to edit a FML virtual model
@@ -73,7 +69,7 @@ import org.openflexo.icon.IconLibrary;
  * 
  */
 @SuppressWarnings("serial")
-public class FMLEditor extends JPanel {
+public class FMLEditor extends JPanel implements DocumentListener {
 
 	static final Logger logger = Logger.getLogger(FMLEditor.class.getPackage().getName());
 
@@ -82,14 +78,19 @@ public class FMLEditor extends JPanel {
 		atmf.putMapping("text/fml", "org.openflexo.fml.controller.view.FMLTokenMaker");
 	}
 
+	private final CompilationUnitResource fmlResource;
+	private final FMLParser fmlParser;
+
 	private RSyntaxTextArea textArea;
-	private JTextField searchField;
-	private JCheckBox regexCB;
-	private JCheckBox matchCaseCB;
-	private TextFinder textFinder;
+	private Gutter gutter;
+	private TextFinderPanel finderToolbar;
 
 	public FMLEditor(CompilationUnitResource fmlResource) {
 		super(new BorderLayout());
+
+		fmlParser = new FMLParser();
+
+		this.fmlResource = fmlResource;
 
 		textArea = new RSyntaxTextArea();
 		textArea.setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_JAVA);
@@ -103,56 +104,36 @@ public class FMLEditor extends JPanel {
 		((RSyntaxTextArea) sp.getTextArea()).setSyntaxEditingStyle("text/fml");
 		add(sp, BorderLayout.CENTER);
 
-		// Create a toolbar with searching options.
-		textFinder = new TextFinder();
-		JToolBar toolBar = new JToolBar();
-		searchField = new JTextField(30);
-		toolBar.add(searchField);
-		final JButton nextButton = new JButton("Find Next");
-		nextButton.setActionCommand("FindNext");
-		nextButton.addActionListener(textFinder);
-		toolBar.add(nextButton);
-		searchField.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				nextButton.doClick(0);
-			}
-		});
-		JButton prevButton = new JButton("Find Previous");
-		prevButton.setActionCommand("FindPrev");
-		prevButton.addActionListener(textFinder);
-		toolBar.add(prevButton);
-		regexCB = new JCheckBox("Regex");
-		toolBar.add(regexCB);
-		matchCaseCB = new JCheckBox("Match Case");
-		toolBar.add(matchCaseCB);
-		add(toolBar, BorderLayout.NORTH);
+		finderToolbar = new TextFinderPanel(this);
+		add(finderToolbar, BorderLayout.SOUTH);
+
+		gutter = sp.getGutter();
+		// gutter.setBookmarkIcon(new ImageIcon("bookmark.png"));
+		// gutter.setBookmarkIcon(IconLibrary.FIXABLE_ERROR_ICON);
+		gutter.setBookmarkingEnabled(true);
 
 		ErrorStrip errorStrip = new ErrorStrip(textArea);
 		add(errorStrip, BorderLayout.LINE_END);
 
-		Parser p = new OnTheFlyFMLParser();// new XmlParser();
+		Parser p = new OnTheFlyFMLParser(this);// new XmlParser();
 		textArea.addParser(p);
 		// p.parse(textArea.getD, style)
 
-		Gutter gutter = sp.getGutter();
-		// gutter.setBookmarkIcon(new ImageIcon("bookmark.png"));
-		// gutter.setBookmarkIcon(IconLibrary.FIXABLE_ERROR_ICON);
-		gutter.setBookmarkingEnabled(true);
-		try {
+		/*try {
 			gutter.addLineTrackingIcon(0, IconLibrary.FIXABLE_ERROR_ICON);
 			gutter.addLineTrackingIcon(1, IconLibrary.FIXABLE_ERROR_ICON);
 			gutter.addLineTrackingIcon(3, IconLibrary.FIXABLE_ERROR_ICON);
 		} catch (BadLocationException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
-		}
+		}*/
 
-		RSyntaxDocument doc = (RSyntaxDocument) textArea.getDocument();
-		String style = textArea.getSyntaxEditingStyle();
-		ParseResult res = p.parse(doc, style);
+		// textArea.getDocument().addDocumentListener(this);
 
-		System.out.println("res=" + res.getNotices());
+		// RSyntaxDocument doc = (RSyntaxDocument) textArea.getDocument();
+		// String style = textArea.getSyntaxEditingStyle();
+		// ParseResult res = p.parse(doc, style);
+		// System.out.println("res=" + res.getNotices());
 
 		/*RSyntaxTextAreaHighlighter h = (RSyntaxTextAreaHighlighter) textArea.getHighlighter();
 		
@@ -186,32 +167,73 @@ public class FMLEditor extends JPanel {
 
 	}
 
-	public class TextFinder implements ActionListener {
-		@Override
-		public void actionPerformed(ActionEvent e) {
+	public Gutter getGutter() {
+		return gutter;
+	}
 
-			// "FindNext" => search forward, "FindPrev" => search backward
-			String command = e.getActionCommand();
-			boolean forward = "FindNext".equals(command);
+	@Override
+	public void insertUpdate(DocumentEvent e) {
+		System.out.println("insertUpdate with " + e);
+		parse();
+	}
 
-			// Create an object defining our search parameters.
-			SearchContext context = new SearchContext();
-			String text = searchField.getText();
-			if (text.length() == 0) {
-				return;
-			}
-			context.setSearchFor(text);
-			context.setMatchCase(matchCaseCB.isSelected());
-			context.setRegularExpression(regexCB.isSelected());
-			context.setSearchForward(forward);
-			context.setWholeWord(false);
+	@Override
+	public void removeUpdate(DocumentEvent e) {
+		System.out.println("removeUpdate with " + e);
+		parse();
+	}
 
-			boolean found = SearchEngine.find(textArea, context).wasFound();
-			if (!found) {
-				JOptionPane.showMessageDialog(FMLEditor.this, "Text not found");
-			}
+	@Override
+	public void changedUpdate(DocumentEvent e) {
+		System.out.println("changedUpdate with " + e);
+		parse();
+	}
 
+	public FMLModelFactory getFactory() {
+		return fmlResource.getFactory();
+	}
+
+	public FMLParser getFMLParser() {
+		return fmlParser;
+	}
+
+	public RSyntaxTextArea getTextArea() {
+		return textArea;
+	}
+
+	public void parse() {
+		System.out.println("On parse");
+		List<Issue> issues = new ArrayList<>();
+		try {
+			FMLCompilationUnit returned = getFMLParser().parse(textArea.getText(), getFactory());
+			System.out.println("OK c'est bien parse !!!");
+			updateWithIssues(issues);
+			return;
+		} catch (ParseException e) {
+			System.out.println("Le parsing a foire...");
+			issues.add(new Issue("Syntax error", e.getLine(), e.getPosition()));
+			updateWithIssues(issues);
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
 
 	}
+
+	private void updateWithIssues(List<Issue> issues) {
+
+	}
+
+	public static class Issue {
+		private String message;
+		private int line;
+		private int position;
+
+		public Issue(String message, int line, int position) {
+			super();
+			this.message = message;
+			this.line = line;
+			this.position = position;
+		}
+	}
+
 }

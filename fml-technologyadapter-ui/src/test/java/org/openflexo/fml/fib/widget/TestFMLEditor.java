@@ -46,13 +46,11 @@ import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.openflexo.fml.controller.widget.FMLEditor;
+import org.openflexo.fml.controller.widget.fmleditor.FMLEditor;
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoException;
-import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.VirtualModelLibrary;
 import org.openflexo.foundation.fml.rm.CompilationUnitResource;
@@ -64,13 +62,12 @@ import org.openflexo.test.OrderedRunner;
 import org.openflexo.test.TestOrder;
 
 /**
- * Test FlexoConceptPanel fib
+ * Test {@link FMLEditor} component
  * 
  * @author sylvain
  * 
  */
 @RunWith(OrderedRunner.class)
-@Ignore
 public class TestFMLEditor extends OpenflexoFIBTestCase {
 
 	private static SwingGraphicalContextDelegate gcDelegate;
@@ -79,32 +76,11 @@ public class TestFMLEditor extends OpenflexoFIBTestCase {
 
 	static FlexoEditor editor;
 
-	static FlexoConcept flexoConceptA;
-	static FlexoConcept flexoConceptB;
-	static FlexoConcept flexoConceptC;
-	static FlexoConcept flexoConceptD;
-	static FlexoConcept flexoConceptE;
-
 	@BeforeClass
 	public static void setupClass() {
 		instanciateTestServiceManager();
 		initGUI();
 	}
-
-	/*@Test
-	@TestOrder(1)
-	public void testLoadWidget() {
-	
-		fibResource = ResourceLocator.locateResource("Fib/FML/FlexoConceptPanel.fib");
-		assertTrue(fibResource != null);
-	}
-	
-	@Test
-	@TestOrder(2)
-	public void testValidateWidget() throws InterruptedException {
-	
-		validateFIB(fibResource);
-	}*/
 
 	private static CompilationUnitResource fmlResource;
 
@@ -117,57 +93,14 @@ public class TestFMLEditor extends OpenflexoFIBTestCase {
 		VirtualModel viewPoint = vpLib.getVirtualModel("http://openflexo.org/test/TestResourceCenter/TestViewPointA.fml");
 		assertNotNull(viewPoint);
 
-		fmlResource = (CompilationUnitResource) viewPoint.getResource();
+		fmlResource = viewPoint.getResource();
 		assertNotNull(fmlResource);
 
-		/*VirtualModel virtualModel = viewPoint.getVirtualModelNamed("TestVirtualModel");
-		assertNotNull(virtualModel);
-		
-		flexoConceptA = virtualModel.getFlexoConcept("FlexoConceptA");
-		System.out.println("flexoConcept=" + flexoConceptA);
-		assertNotNull(flexoConceptA);
-		
-		flexoConceptB = virtualModel.getFlexoConcept("FlexoConceptB");
-		System.out.println("flexoConceptB=" + flexoConceptB);
-		assertNotNull(flexoConceptB);
-		
-		flexoConceptC = virtualModel.getFlexoConcept("FlexoConceptC");
-		System.out.println("flexoConceptC=" + flexoConceptC);
-		assertNotNull(flexoConceptC);
-		
-		flexoConceptD = virtualModel.getFlexoConcept("FlexoConceptD");
-		System.out.println("flexoConceptD=" + flexoConceptD);
-		assertNotNull(flexoConceptD);
-		
-		flexoConceptE = virtualModel.getFlexoConcept("FlexoConceptE");
-		System.out.println("flexoConceptE=" + flexoConceptE);
-		assertNotNull(flexoConceptE);
-		
-		editor = new DefaultFlexoEditor(null, serviceManager);
-		assertNotNull(editor);
-		
-		CreatePrimitiveRole createPR1 = CreatePrimitiveRole.actionType.makeNewAction(flexoConceptA, null, editor);
-		createPR1.setRoleName("aString");
-		createPR1.setPrimitiveType(PrimitiveType.String);
-		createPR1.doAction();
-		
-		CreatePrimitiveRole createPR2 = CreatePrimitiveRole.actionType.makeNewAction(flexoConceptA, null, editor);
-		createPR2.setRoleName("aBoolean");
-		createPR2.setPrimitiveType(PrimitiveType.Boolean);
-		createPR2.doAction();
-		
-		CreatePrimitiveRole createPR3 = CreatePrimitiveRole.actionType.makeNewAction(flexoConceptA, null, editor);
-		createPR3.setRoleName("anInteger");
-		createPR3.setPrimitiveType(PrimitiveType.Integer);
-		createPR3.doAction();
-		*/
 	}
 
 	@Test
 	@TestOrder(4)
 	public void testInstanciateFMLEditor() {
-
-		// FIBJPanel<FlexoConcept> widget = instanciateFIB(fibResource, flexoConceptA, FlexoConcept.class);
 
 		FMLEditor editor = new FMLEditor(fmlResource);
 		gcDelegate.addTab(fmlResource.getName(), editor);

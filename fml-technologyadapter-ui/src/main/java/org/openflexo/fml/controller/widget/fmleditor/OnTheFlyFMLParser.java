@@ -1,18 +1,24 @@
-package org.openflexo.fml.controller.widget;
+package org.openflexo.fml.controller.widget.fmleditor;
+
+import javax.swing.text.BadLocationException;
 
 import org.fife.ui.rsyntaxtextarea.RSyntaxDocument;
 import org.fife.ui.rsyntaxtextarea.parser.AbstractParser;
 import org.fife.ui.rsyntaxtextarea.parser.DefaultParseResult;
 import org.fife.ui.rsyntaxtextarea.parser.DefaultParserNotice;
 import org.fife.ui.rsyntaxtextarea.parser.ParseResult;
+import org.openflexo.icon.IconLibrary;
 
 public class OnTheFlyFMLParser extends AbstractParser {
+
+	private final FMLEditor editor;
 
 	// private SAXParserFactory spf;
 	private DefaultParseResult result;
 	// private EntityResolver entityResolver;
 
-	public OnTheFlyFMLParser() {
+	public OnTheFlyFMLParser(FMLEditor editor) {
+		this.editor = editor;
 		result = new DefaultParseResult(this);
 	}
 
@@ -32,6 +38,8 @@ public class OnTheFlyFMLParser extends AbstractParser {
 	@Override
 	public ParseResult parse(RSyntaxDocument doc, String style) {
 
+		System.out.println("---------> tiens, je reparse mon document......");
+
 		result.clearNotices();
 		// Element root = doc.getDefaultRootElement();
 		result.setParsedLines(0, 10);
@@ -39,6 +47,15 @@ public class OnTheFlyFMLParser extends AbstractParser {
 		result.addNotice(new DefaultParserNotice(this, "Premiere erreur", 0, 3, -1));
 		result.addNotice(new DefaultParserNotice(this, "Deuxieme erreur", 1, 25, 4));
 		result.addNotice(new DefaultParserNotice(this, "Troisieme erreur", 3, -1, -1));
+
+		try {
+			editor.getGutter().addLineTrackingIcon(0, IconLibrary.FIXABLE_ERROR_ICON);
+			editor.getGutter().addLineTrackingIcon(1, IconLibrary.FIXABLE_ERROR_ICON);
+			editor.getGutter().addLineTrackingIcon(3, IconLibrary.FIXABLE_ERROR_ICON);
+		} catch (BadLocationException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
 
 		/*if (spf == null || doc.getLength() == 0) {
 			return result;
