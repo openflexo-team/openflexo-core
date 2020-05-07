@@ -71,6 +71,7 @@ public class FlexoConceptNode extends AbstractFlexoConceptNode<AConceptDecl, Fle
 		} catch (InvalidNameException e) {
 			throwIssue("Invalid name: " + astNode.getIdentifier().getText());
 		}
+		returned.setAbstract(astNode.getKwAbstract() != null);
 		returned.setVisibility(getVisibility(astNode.getVisibility()));
 		buildParentConcepts(returned, astNode.getSuperClause());
 		return returned;
