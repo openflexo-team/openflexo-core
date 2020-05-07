@@ -42,6 +42,7 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.FlexoObject;
+import org.openflexo.foundation.InvalidNameException;
 import org.openflexo.foundation.action.copypaste.DefaultPastingContext;
 import org.openflexo.foundation.action.copypaste.FlexoClipboard;
 import org.openflexo.foundation.action.copypaste.FlexoPasteHandler;
@@ -296,7 +297,12 @@ public class VirtualModelPasteHandler extends FlexoPasteHandler<VirtualModel> {
 			testedName = baseName + index;
 		}
 
-		copiedConcept.setName(testedName);
+		try {
+			copiedConcept.setName(testedName);
+		} catch (InvalidNameException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 }

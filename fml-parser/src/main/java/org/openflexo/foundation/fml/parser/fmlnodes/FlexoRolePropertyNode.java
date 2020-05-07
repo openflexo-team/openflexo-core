@@ -41,6 +41,7 @@ package org.openflexo.foundation.fml.parser.fmlnodes;
 import java.util.logging.Logger;
 
 import org.openflexo.connie.type.CustomType;
+import org.openflexo.foundation.InvalidNameException;
 import org.openflexo.foundation.fml.FMLPropertyValue;
 import org.openflexo.foundation.fml.FlexoRole;
 import org.openflexo.foundation.fml.parser.MainSemanticsAnalyzer;
@@ -86,7 +87,11 @@ public class FlexoRolePropertyNode<N extends PInnerConceptDecl, R extends FlexoR
 		R returned = (R) getFactory().newInstance(roleClass);
 		if (astNode instanceof AFmlInnerConceptDecl) {
 			returned.setVisibility(getVisibility(((AFmlInnerConceptDecl) astNode).getVisibility()));
-			returned.setName(((AFmlInnerConceptDecl) astNode).getIdentifier().getText());
+			try {
+				returned.setName(((AFmlInnerConceptDecl) astNode).getIdentifier().getText());
+			} catch (InvalidNameException e) {
+				throwIssue("Invalid name: " + ((AFmlInnerConceptDecl) astNode).getIdentifier().getText());
+			}
 			returned.setCardinality(getCardinality(((AFmlInnerConceptDecl) astNode).getCardinality()));
 			CustomType type = (CustomType) getTypeFactory().makeType(((AFmlInnerConceptDecl) astNode).getType(), returned);
 			returned.setType(type);
@@ -94,7 +99,11 @@ public class FlexoRolePropertyNode<N extends PInnerConceptDecl, R extends FlexoR
 		}
 		if (astNode instanceof AFmlFullyQualifiedInnerConceptDecl) {
 			returned.setVisibility(getVisibility(((AFmlFullyQualifiedInnerConceptDecl) astNode).getVisibility()));
-			returned.setName(((AFmlFullyQualifiedInnerConceptDecl) astNode).getIdentifier().getText());
+			try {
+				returned.setName(((AFmlFullyQualifiedInnerConceptDecl) astNode).getIdentifier().getText());
+			} catch (InvalidNameException e) {
+				throwIssue("Invalid name: " + ((AFmlFullyQualifiedInnerConceptDecl) astNode).getIdentifier().getText());
+			}
 			returned.setCardinality(getCardinality(((AFmlFullyQualifiedInnerConceptDecl) astNode).getCardinality()));
 			CustomType type = (CustomType) getTypeFactory().makeType(((AFmlFullyQualifiedInnerConceptDecl) astNode).getType(), returned);
 			returned.setType(type);

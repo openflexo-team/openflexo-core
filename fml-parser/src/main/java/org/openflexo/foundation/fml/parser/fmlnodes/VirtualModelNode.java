@@ -40,6 +40,7 @@ package org.openflexo.foundation.fml.parser.fmlnodes;
 
 import java.util.ArrayList;
 
+import org.openflexo.foundation.InvalidNameException;
 import org.openflexo.foundation.fml.FlexoBehaviour;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoProperty;
@@ -68,7 +69,11 @@ public class VirtualModelNode extends AbstractFlexoConceptNode<AModelDecl, Virtu
 	@Override
 	public VirtualModel buildModelObjectFromAST(AModelDecl astNode) {
 		VirtualModel returned = getFactory().newVirtualModel();
-		returned.setName(astNode.getIdentifier().getText());
+		try {
+			returned.setName(astNode.getIdentifier().getText());
+		} catch (InvalidNameException e) {
+			throwIssue("Invalid name: " + astNode.getIdentifier().getText());
+		}
 		returned.setVisibility(getVisibility(astNode.getVisibility()));
 		getTypeFactory().setDeserializedVirtualModel(returned);
 		buildParentConcepts(returned, astNode.getSuperClause());

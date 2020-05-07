@@ -55,6 +55,7 @@ import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.type.PrimitiveType;
 import org.openflexo.foundation.DefaultFlexoEditor;
 import org.openflexo.foundation.FlexoEditor;
+import org.openflexo.foundation.InvalidNameException;
 import org.openflexo.foundation.fml.action.CreateEditionAction;
 import org.openflexo.foundation.fml.action.CreateFlexoBehaviour;
 import org.openflexo.foundation.fml.action.CreatePrimitiveRole;
@@ -236,7 +237,7 @@ public class TestFMLDataBindingPerfIssue extends OpenflexoTestCase {
 
 	@Test
 	@TestOrder(20)
-	public void testTrivialCase() {
+	public void testTrivialCase() throws InvalidNameException {
 
 		System.out.println(virtualModel.getFMLPrettyPrint());
 

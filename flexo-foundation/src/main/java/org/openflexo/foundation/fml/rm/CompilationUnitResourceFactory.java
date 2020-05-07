@@ -23,6 +23,7 @@ package org.openflexo.foundation.fml.rm;
 import java.io.IOException;
 import java.util.logging.Logger;
 
+import org.openflexo.foundation.InvalidNameException;
 import org.openflexo.foundation.fml.FMLCompilationUnit;
 import org.openflexo.foundation.fml.FMLModelFactory;
 import org.openflexo.foundation.fml.FMLTechnologyAdapter;
@@ -89,6 +90,7 @@ public class CompilationUnitResourceFactory
 	 * Build and return an empty VirtualModel for the supplied resource
 	 * 
 	 * @return
+	 * @throws InvalidNameException
 	 */
 	@Override
 	public FMLCompilationUnit makeEmptyResourceData(CompilationUnitResource resource) {
@@ -98,7 +100,12 @@ public class CompilationUnitResourceFactory
 		}*/
 		FMLCompilationUnit returned = resource.getFactory().newCompilationUnit();
 		VirtualModel virtualModel = resource.getFactory().newVirtualModel();
-		virtualModel.setName(resource.getName());
+		try {
+			virtualModel.setName(resource.getName());
+		} catch (InvalidNameException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		virtualModel.setURI(resource.getURI());
 		returned.setVirtualModel(virtualModel);
 		return returned;

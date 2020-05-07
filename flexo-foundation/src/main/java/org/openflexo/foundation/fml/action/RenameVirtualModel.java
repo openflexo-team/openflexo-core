@@ -45,6 +45,7 @@ import java.util.logging.Logger;
 
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoObject.FlexoObjectImpl;
+import org.openflexo.foundation.InvalidNameException;
 import org.openflexo.foundation.action.FlexoAction;
 import org.openflexo.foundation.action.FlexoActionFactory;
 import org.openflexo.foundation.action.TechnologySpecificFlexoAction;
@@ -104,7 +105,7 @@ public class RenameVirtualModel extends FlexoAction<RenameVirtualModel, VirtualM
 	}
 
 	@Override
-	protected void doAction(Object context) {
+	protected void doAction(Object context) throws InvalidNameException {
 
 		System.out.println("Rename VM to " + getNewVirtualModelName());
 

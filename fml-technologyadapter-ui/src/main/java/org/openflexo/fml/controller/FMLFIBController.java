@@ -49,6 +49,7 @@ import org.openflexo.fml.controller.validation.FixIssueDialog;
 import org.openflexo.fml.controller.validation.IssueFixing;
 import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.FlexoObject;
+import org.openflexo.foundation.InvalidNameException;
 import org.openflexo.foundation.action.DeleteRepositoryFolder;
 import org.openflexo.foundation.fml.AbstractProperty;
 import org.openflexo.foundation.fml.ActionScheme;
@@ -254,14 +255,24 @@ public class FMLFIBController extends FlexoFIBController {
 	 */
 	public FlexoBehaviour duplicateFlexoBehaviour(FlexoBehaviour flexoBehaviour, String newName) {
 		FlexoBehaviour newFlexoBehaviour = (FlexoBehaviour) flexoBehaviour.cloneObject();
-		newFlexoBehaviour.setName(newName);
+		try {
+			newFlexoBehaviour.setName(newName);
+		} catch (InvalidNameException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		flexoBehaviour.getFlexoConcept().addToFlexoBehaviours(newFlexoBehaviour);
 		return newFlexoBehaviour;
 	}
 
 	public SynchronizationScheme createSynchronizationScheme(VirtualModel virtualModel) {
 		SynchronizationScheme newEditionScheme = virtualModel.getFMLModelFactory().newSynchronizationScheme();
-		newEditionScheme.setName("synchronization");
+		try {
+			newEditionScheme.setName("synchronization");
+		} catch (InvalidNameException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		newEditionScheme.setControlGraph(virtualModel.getFMLModelFactory().newEmptyControlGraph());
 		virtualModel.addToFlexoBehaviours(newEditionScheme);
 		return newEditionScheme;
@@ -269,7 +280,12 @@ public class FMLFIBController extends FlexoFIBController {
 
 	public CreationScheme createCreationScheme(FlexoConcept flexoConcept) {
 		CreationScheme newEditionScheme = flexoConcept.getFMLModelFactory().newCreationScheme();
-		newEditionScheme.setName("creation");
+		try {
+			newEditionScheme.setName("creation");
+		} catch (InvalidNameException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		newEditionScheme.setControlGraph(flexoConcept.getFMLModelFactory().newEmptyControlGraph());
 		flexoConcept.addToFlexoBehaviours(newEditionScheme);
 		return newEditionScheme;
@@ -277,7 +293,12 @@ public class FMLFIBController extends FlexoFIBController {
 
 	public DeletionScheme createDeletionScheme(FlexoConcept flexoConcept) {
 		DeletionScheme newEditionScheme = flexoConcept.getFMLModelFactory().newDeletionScheme();
-		newEditionScheme.setName("deletion");
+		try {
+			newEditionScheme.setName("deletion");
+		} catch (InvalidNameException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		newEditionScheme.setControlGraph(flexoConcept.getFMLModelFactory().newEmptyControlGraph());
 		flexoConcept.addToFlexoBehaviours(newEditionScheme);
 		return newEditionScheme;
@@ -285,7 +306,12 @@ public class FMLFIBController extends FlexoFIBController {
 
 	public ActionScheme createActionScheme(FlexoConcept flexoConcept) {
 		ActionScheme newEditionScheme = flexoConcept.getFMLModelFactory().newActionScheme();
-		newEditionScheme.setName("action");
+		try {
+			newEditionScheme.setName("newAction");
+		} catch (InvalidNameException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		newEditionScheme.setControlGraph(flexoConcept.getFMLModelFactory().newEmptyControlGraph());
 		flexoConcept.addToFlexoBehaviours(newEditionScheme);
 		return newEditionScheme;
@@ -299,7 +325,12 @@ public class FMLFIBController extends FlexoFIBController {
 
 	public CloningScheme createCloningScheme(FlexoConcept flexoConcept) {
 		CloningScheme newEditionScheme = flexoConcept.getFMLModelFactory().newCloningScheme();
-		newEditionScheme.setName("clone");
+		try {
+			newEditionScheme.setName("newClone");
+		} catch (InvalidNameException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		newEditionScheme.setControlGraph(flexoConcept.getFMLModelFactory().newEmptyControlGraph());
 		flexoConcept.addToFlexoBehaviours(newEditionScheme);
 		return newEditionScheme;

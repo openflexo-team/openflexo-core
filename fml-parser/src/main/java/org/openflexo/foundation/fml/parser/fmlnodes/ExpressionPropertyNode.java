@@ -40,6 +40,7 @@ package org.openflexo.foundation.fml.parser.fmlnodes;
 
 import java.util.logging.Logger;
 
+import org.openflexo.foundation.InvalidNameException;
 import org.openflexo.foundation.fml.ExpressionProperty;
 import org.openflexo.foundation.fml.parser.MainSemanticsAnalyzer;
 import org.openflexo.foundation.fml.parser.node.AExpressionPropertyInnerConceptDecl;
@@ -72,7 +73,11 @@ public class ExpressionPropertyNode extends FlexoPropertyNode<AExpressionPropert
 	public ExpressionProperty<?> buildModelObjectFromAST(AExpressionPropertyInnerConceptDecl astNode) {
 		ExpressionProperty<?> returned = getFactory().newExpressionProperty();
 		returned.setVisibility(getVisibility(astNode.getVisibility()));
-		returned.setName(astNode.getIdentifier().getText());
+		try {
+			returned.setName(astNode.getIdentifier().getText());
+		} catch (InvalidNameException e) {
+			throwIssue("Invalid name: " + astNode.getIdentifier().getText());
+		}
 		returned.setDeclaredType(getTypeFactory().makeType(astNode.getType()));
 		returned.setExpression(makeBinding(astNode.getExpressionValue(), returned));
 		return returned;

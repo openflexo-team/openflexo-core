@@ -52,6 +52,7 @@ import java.util.logging.Logger;
 import org.openflexo.connie.Bindable;
 import org.openflexo.connie.BindingFactory;
 import org.openflexo.foundation.FlexoException;
+import org.openflexo.foundation.InvalidNameException;
 import org.openflexo.foundation.fml.binding.FMLBindingFactory;
 import org.openflexo.foundation.fml.binding.VirtualModelBindingModel;
 import org.openflexo.foundation.fml.md.FMLMetaData;
@@ -645,7 +646,7 @@ public interface VirtualModel extends FlexoConcept {
 		}
 
 		@Override
-		public void setName(String name) {
+		public void setName(String name) throws InvalidNameException {
 			if (requireChange(getName(), name)) {
 				String oldValue = getName();
 				if (getCompilationUnit() != null && getCompilationUnit().getResource() != null) {
@@ -784,7 +785,12 @@ public interface VirtualModel extends FlexoConcept {
 		public SynchronizationScheme createSynchronizationScheme() {
 			SynchronizationScheme newSynchronizationScheme = getFMLModelFactory().newSynchronizationScheme();
 			newSynchronizationScheme.setSynchronizedVirtualModel(this);
-			newSynchronizationScheme.setName("synchronization");
+			try {
+				newSynchronizationScheme.setName("synchronization");
+			} catch (InvalidNameException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			addToFlexoBehaviours(newSynchronizationScheme);
 			return newSynchronizationScheme;
 		}

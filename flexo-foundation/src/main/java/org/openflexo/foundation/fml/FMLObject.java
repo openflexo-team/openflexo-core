@@ -55,6 +55,7 @@ import org.openflexo.connie.DataBinding;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.InnerResourceData;
+import org.openflexo.foundation.InvalidNameException;
 import org.openflexo.foundation.fml.FMLModelContext.FMLEntity;
 import org.openflexo.foundation.fml.FMLModelContext.FMLProperty;
 import org.openflexo.foundation.fml.md.BasicMetaData;
@@ -123,7 +124,7 @@ public interface FMLObject extends FlexoObject, Bindable, InnerResourceData<FMLC
 	public String getName();
 
 	@Setter(NAME_KEY)
-	public void setName(String name);
+	public void setName(String name) throws InvalidNameException;
 
 	@Getter(value = AUTHOR_KEY)
 	@XMLAttribute
@@ -312,7 +313,10 @@ public interface FMLObject extends FlexoObject, Bindable, InnerResourceData<FMLC
 		}
 
 		@Override
-		public void setName(String name) {
+		public void setName(String name) throws InvalidNameException {
+			if (FMLKeywords.isKeyword(name)) {
+				throw new InvalidNameException(this, name);
+			}
 			if (requireChange(this.name, name)) {
 				String oldName = this.name;
 				this.name = name;

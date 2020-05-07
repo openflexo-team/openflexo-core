@@ -45,6 +45,7 @@ import java.util.logging.Logger;
 
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoObject.FlexoObjectImpl;
+import org.openflexo.foundation.InvalidNameException;
 import org.openflexo.foundation.action.FlexoAction;
 import org.openflexo.foundation.action.FlexoActionFactory;
 import org.openflexo.foundation.action.TechnologySpecificFlexoAction;
@@ -136,7 +137,7 @@ public class DuplicateVirtualModel extends FlexoAction<DuplicateVirtualModel, Vi
 	}
 
 	@Override
-	protected void doAction(Object context) {
+	protected void doAction(Object context) throws InvalidNameException {
 
 		// System.out.println("Duplicate " + getFocusedObject());
 
@@ -158,7 +159,7 @@ public class DuplicateVirtualModel extends FlexoAction<DuplicateVirtualModel, Vi
 	}
 
 	private FMLCompilationUnit duplicateVirtualModel(VirtualModel source, RepositoryFolder folder, String newName, String newURI,
-			String newDescription) {
+			String newDescription) throws InvalidNameException {
 
 		// System.out.println("Duplicate top-level VM " + source);
 
@@ -195,7 +196,7 @@ public class DuplicateVirtualModel extends FlexoAction<DuplicateVirtualModel, Vi
 	}
 
 	private FMLCompilationUnit duplicateVirtualModel(VirtualModel source, CompilationUnitResource containerResource, String newName,
-			String newDescription) {
+			String newDescription) throws InvalidNameException {
 
 		// System.out.println("Duplicate contained VM " + source);
 

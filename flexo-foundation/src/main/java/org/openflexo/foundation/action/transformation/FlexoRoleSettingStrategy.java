@@ -40,6 +40,7 @@ package org.openflexo.foundation.action.transformation;
 
 import java.util.List;
 
+import org.openflexo.foundation.InvalidNameException;
 import org.openflexo.foundation.fml.FlexoRole;
 import org.openflexo.foundation.technologyadapter.TechnologyObject;
 
@@ -111,5 +112,5 @@ public abstract class FlexoRoleSettingStrategy<A extends AbstractDeclareInFlexoC
 	 * @return role beeing modified
 	 */
 	@Override
-	public abstract R performStrategy();
+	public abstract R performStrategy() throws InvalidNameException;
 }

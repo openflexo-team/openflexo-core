@@ -38,6 +38,7 @@
 
 package org.openflexo.foundation.fml.parser.fmlnodes;
 
+import org.openflexo.foundation.InvalidNameException;
 import org.openflexo.foundation.fml.FlexoBehaviour;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoProperty;
@@ -65,7 +66,11 @@ public class FlexoConceptNode extends AbstractFlexoConceptNode<AConceptDecl, Fle
 	@Override
 	public FlexoConcept buildModelObjectFromAST(AConceptDecl astNode) {
 		FlexoConcept returned = getFactory().newFlexoConcept();
-		returned.setName(astNode.getIdentifier().getText());
+		try {
+			returned.setName(astNode.getIdentifier().getText());
+		} catch (InvalidNameException e) {
+			throwIssue("Invalid name: " + astNode.getIdentifier().getText());
+		}
 		returned.setVisibility(getVisibility(astNode.getVisibility()));
 		buildParentConcepts(returned, astNode.getSuperClause());
 		return returned;

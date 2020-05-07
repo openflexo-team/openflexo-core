@@ -39,6 +39,8 @@
 package org.openflexo.foundation.action.transformation;
 
 import java.beans.PropertyChangeSupport;
+
+import org.openflexo.foundation.InvalidNameException;
 import org.openflexo.localization.LocalizedDelegate;
 import org.openflexo.toolbox.HasPropertyChangeSupport;
 import org.openflexo.toolbox.StringUtils;
@@ -101,7 +103,7 @@ public abstract class TransformationStrategy<A extends TransformationAction<A, ?
 	 * @see #isValid()
 	 * @return
 	 */
-	public abstract Object performStrategy();
+	public abstract Object performStrategy() throws InvalidNameException;
 
 	protected void checkValidity() {
 
@@ -120,7 +122,7 @@ public abstract class TransformationStrategy<A extends TransformationAction<A, ?
 					messageTypeIsToBeDisplayed());
 			getPropertyChangeSupport().firePropertyChange("issueMessage", null, getIssueMessage());
 			getPropertyChangeSupport().firePropertyChange("issueMessageType", null, getIssueMessageType());
-			//getPropertyChangeSupport().firePropertyChange("issueMessageIcon", null, getIssueMessageIcon());
+			// getPropertyChangeSupport().firePropertyChange("issueMessageIcon", null, getIssueMessageIcon());
 		}
 		else {
 			// Nothing to do
@@ -161,7 +163,7 @@ public abstract class TransformationStrategy<A extends TransformationAction<A, ?
 			IssueMessageType oldValue = this.issueMessageType;
 			this.issueMessageType = issueMessageType;
 			getPropertyChangeSupport().firePropertyChange("issueMessageType", oldValue, issueMessageType);
-			//getPropertyChangeSupport().firePropertyChange("issueMessageIcon", null, getIssueMessageIcon());
+			// getPropertyChangeSupport().firePropertyChange("issueMessageIcon", null, getIssueMessageIcon());
 		}
 	}
 

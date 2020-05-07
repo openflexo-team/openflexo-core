@@ -40,6 +40,7 @@ package org.openflexo.foundation.fml.parser.fmlnodes;
 
 import java.util.logging.Logger;
 
+import org.openflexo.foundation.InvalidNameException;
 import org.openflexo.foundation.fml.JavaRole;
 import org.openflexo.foundation.fml.parser.MainSemanticsAnalyzer;
 import org.openflexo.foundation.fml.parser.node.AJavaInnerConceptDecl;
@@ -75,7 +76,11 @@ public class JavaRoleNode extends BasicPropertyNode<JavaRole<?>> {
 	public JavaRole<?> buildModelObjectFromAST(AJavaInnerConceptDecl astNode) {
 		JavaRole<?> returned = getFactory().newJavaRole();
 		returned.setVisibility(getVisibility(astNode.getVisibility()));
-		returned.setName(getName(astNode.getVariableDeclarator()).getText());
+		try {
+			returned.setName(getName(astNode.getVariableDeclarator()).getText());
+		} catch (InvalidNameException e) {
+			throwIssue("Invalid name: " + getName(astNode.getVariableDeclarator()).getText());
+		}
 		returned.setType(getTypeFactory().makeType(astNode.getType()));
 		return returned;
 	}

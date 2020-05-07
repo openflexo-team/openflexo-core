@@ -56,6 +56,7 @@ import org.openflexo.connie.exception.NullReferenceException;
 import org.openflexo.connie.exception.TypeMismatchException;
 import org.openflexo.connie.type.ParameterizedTypeImpl;
 import org.openflexo.connie.type.TypeUtils;
+import org.openflexo.foundation.InvalidNameException;
 import org.openflexo.foundation.fml.FlexoBehaviour.FlexoBehaviourImpl;
 import org.openflexo.foundation.fml.md.ListMetaData;
 import org.openflexo.foundation.fml.md.MultiValuedMetaData;
@@ -185,7 +186,7 @@ public interface FlexoBehaviourParameter extends FlexoBehaviourObject, FunctionA
 
 	@Override
 	@Setter(NAME_KEY)
-	public void setName(String name);
+	public void setName(String name) throws InvalidNameException;
 
 	@Override
 	@Getter(value = TYPE_KEY, isStringConvertable = true)
@@ -290,7 +291,7 @@ public interface FlexoBehaviourParameter extends FlexoBehaviourObject, FunctionA
 		}
 
 		@Override
-		public void setName(String name) {
+		public void setName(String name) throws InvalidNameException {
 			String oldSignature = getFlexoBehaviour() != null ? getFlexoBehaviour().getSignature() : null;
 			super.setName(name);
 			if (getParameterMetaData(false) != null) {

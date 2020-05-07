@@ -45,6 +45,7 @@ import java.util.logging.Logger;
 
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoObject.FlexoObjectImpl;
+import org.openflexo.foundation.InvalidNameException;
 import org.openflexo.foundation.action.FlexoActionFactory;
 import org.openflexo.foundation.action.NotImplementedException;
 import org.openflexo.foundation.fml.AbstractProperty;
@@ -130,7 +131,7 @@ public class CreateAbstractProperty extends AbstractCreateFlexoProperty<CreateAb
 	}
 
 	@Override
-	protected void doAction(Object context) throws NotImplementedException, InvalidParameterException {
+	protected void doAction(Object context) throws NotImplementedException, InvalidParameterException, InvalidNameException {
 
 		if (getPropertyType() != null) {
 			FMLModelFactory factory = getFocusedObject().getFMLModelFactory();

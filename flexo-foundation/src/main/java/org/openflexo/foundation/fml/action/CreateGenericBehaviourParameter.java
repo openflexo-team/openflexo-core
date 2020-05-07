@@ -53,6 +53,7 @@ import org.openflexo.connie.DataBinding.BindingDefinitionType;
 import org.openflexo.connie.type.TypeUtils;
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoObject.FlexoObjectImpl;
+import org.openflexo.foundation.InvalidNameException;
 import org.openflexo.foundation.action.FlexoAction;
 import org.openflexo.foundation.action.FlexoActionFactory;
 import org.openflexo.foundation.action.NotImplementedException;
@@ -192,7 +193,7 @@ public class CreateGenericBehaviourParameter extends FlexoAction<CreateGenericBe
 	}
 
 	@Override
-	protected void doAction(Object context) throws NotImplementedException, InvalidParameterException {
+	protected void doAction(Object context) throws NotImplementedException, InvalidParameterException, InvalidNameException {
 		logger.info("Add FlexoBehaviourParameter, name=" + getParameterName() + " type=" + getParameterType());
 
 		FMLModelFactory factory = getFocusedObject().getFMLModelFactory();

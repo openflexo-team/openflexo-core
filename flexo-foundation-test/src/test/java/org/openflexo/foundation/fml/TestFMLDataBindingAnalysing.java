@@ -55,6 +55,7 @@ import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.type.PrimitiveType;
 import org.openflexo.foundation.DefaultFlexoEditor;
 import org.openflexo.foundation.FlexoEditor;
+import org.openflexo.foundation.InvalidNameException;
 import org.openflexo.foundation.fml.action.CreateEditionAction;
 import org.openflexo.foundation.fml.action.CreateFlexoBehaviour;
 import org.openflexo.foundation.fml.action.CreateFlexoConcept;
@@ -306,7 +307,7 @@ public class TestFMLDataBindingAnalysing extends OpenflexoTestCase {
 
 	@Test
 	@TestOrder(10)
-	public void testCreateACreationSchemeInConceptA() {
+	public void testCreateACreationSchemeInConceptA() throws InvalidNameException {
 
 		CreateFlexoBehaviour createCreationScheme = CreateFlexoBehaviour.actionType.makeNewAction(flexoConceptA, null, editor);
 		createCreationScheme.setFlexoBehaviourClass(CreationScheme.class);
@@ -472,7 +473,7 @@ public class TestFMLDataBindingAnalysing extends OpenflexoTestCase {
 
 	@Test
 	@TestOrder(21)
-	public void testChangePropertyName() {
+	public void testChangePropertyName() throws InvalidNameException {
 
 		// System.out.println(virtualModel.getFMLPrettyPrint());
 
@@ -496,7 +497,7 @@ public class TestFMLDataBindingAnalysing extends OpenflexoTestCase {
 
 	@Test
 	@TestOrder(22)
-	public void testChangePropertyName2() {
+	public void testChangePropertyName2() throws InvalidNameException {
 
 		// System.out.println(virtualModel.getFMLPrettyPrint());
 
@@ -522,7 +523,7 @@ public class TestFMLDataBindingAnalysing extends OpenflexoTestCase {
 
 	@Test
 	@TestOrder(23)
-	public void testChangeParameterName() {
+	public void testChangeParameterName() throws InvalidNameException {
 
 		// System.out.println(virtualModel.getFMLPrettyPrint());
 
@@ -546,7 +547,7 @@ public class TestFMLDataBindingAnalysing extends OpenflexoTestCase {
 
 	@Test
 	@TestOrder(24)
-	public void testChangeParameterName2() {
+	public void testChangeParameterName2() throws InvalidNameException {
 
 		// System.out.println(virtualModel.getFMLPrettyPrint());
 
@@ -571,7 +572,7 @@ public class TestFMLDataBindingAnalysing extends OpenflexoTestCase {
 
 	@Test
 	@TestOrder(25)
-	public void testChangeBehaviourName() {
+	public void testChangeBehaviourName() throws InvalidNameException {
 
 		// System.out.println(virtualModel.getFMLPrettyPrint());
 
@@ -595,7 +596,7 @@ public class TestFMLDataBindingAnalysing extends OpenflexoTestCase {
 
 	@Test
 	@TestOrder(26)
-	public void testChangeBehaviourAndParametersName() {
+	public void testChangeBehaviourAndParametersName() throws InvalidNameException {
 
 		// System.out.println(virtualModel.getFMLPrettyPrint());
 

@@ -40,6 +40,7 @@ package org.openflexo.foundation.fml.parser.fmlnodes;
 
 import java.util.logging.Logger;
 
+import org.openflexo.foundation.InvalidNameException;
 import org.openflexo.foundation.fml.DeletionScheme;
 import org.openflexo.foundation.fml.FlexoBehaviourParameter;
 import org.openflexo.foundation.fml.parser.ControlGraphFactory;
@@ -92,7 +93,11 @@ public class DeletionSchemeNode extends FlexoBehaviourNode<PBehaviourDecl, Delet
 		}
 		else {
 			returned.setAnonymous(false);
-			returned.setName(getName().getText());
+			try {
+				returned.setName(getName().getText());
+			} catch (InvalidNameException e) {
+				throwIssue("Invalid name: " + getName().getText());
+			}
 		}
 		returned.setVisibility(getVisibility(getVisibility()));
 

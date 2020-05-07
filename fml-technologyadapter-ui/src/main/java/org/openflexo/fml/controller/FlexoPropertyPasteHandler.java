@@ -42,6 +42,7 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.FlexoObject;
+import org.openflexo.foundation.InvalidNameException;
 import org.openflexo.foundation.action.copypaste.FlexoClipboard;
 import org.openflexo.foundation.action.copypaste.FlexoPasteHandler;
 import org.openflexo.foundation.action.copypaste.PastingContext;
@@ -122,7 +123,12 @@ public class FlexoPropertyPasteHandler extends FlexoPasteHandler<FlexoProperty> 
 			newName = oldName + COPY_SUFFIX;
 		}
 		System.out.println("translating name from " + oldName + " to " + newName);
-		object.setName(newName);
+		try {
+			object.setName(newName);
+		} catch (InvalidNameException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		return newName;
 	}
 

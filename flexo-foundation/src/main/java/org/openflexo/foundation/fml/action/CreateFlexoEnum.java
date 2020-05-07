@@ -44,6 +44,7 @@ import java.util.logging.Logger;
 
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoObject.FlexoObjectImpl;
+import org.openflexo.foundation.InvalidNameException;
 import org.openflexo.foundation.action.FlexoActionFactory;
 import org.openflexo.foundation.action.NotImplementedException;
 import org.openflexo.foundation.action.TechnologySpecificFlexoAction;
@@ -117,7 +118,7 @@ public class CreateFlexoEnum extends AbstractCreateFlexoConcept<CreateFlexoEnum,
 
 	@Override
 	protected void doAction(Object context)
-			throws NotImplementedException, InvalidParameterException, InconsistentFlexoConceptHierarchyException {
+			throws NotImplementedException, InvalidParameterException, InconsistentFlexoConceptHierarchyException, InvalidNameException {
 
 		FMLModelFactory factory = getFocusedObject().getFMLModelFactory();
 

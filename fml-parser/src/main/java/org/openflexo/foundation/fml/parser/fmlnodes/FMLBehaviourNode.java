@@ -41,6 +41,7 @@ package org.openflexo.foundation.fml.parser.fmlnodes;
 import java.lang.reflect.Type;
 import java.util.logging.Logger;
 
+import org.openflexo.foundation.InvalidNameException;
 import org.openflexo.foundation.fml.FMLPropertyValue;
 import org.openflexo.foundation.fml.FlexoBehaviour;
 import org.openflexo.foundation.fml.FlexoBehaviourParameter;
@@ -98,11 +99,19 @@ public class FMLBehaviourNode<N extends Node, B extends FlexoBehaviour> extends 
 		B returned = getFactory().newInstance(behaviourClass);
 		if (astNode instanceof AFmlBehaviourDecl) {
 			returned.setVisibility(getVisibility(((AFmlBehaviourDecl) astNode).getVisibility()));
-			returned.setName(((AFmlBehaviourDecl) astNode).getName().getText());
+			try {
+				returned.setName(((AFmlBehaviourDecl) astNode).getName().getText());
+			} catch (InvalidNameException e) {
+				throwIssue("Invalid name: " + ((AFmlBehaviourDecl) astNode).getName().getText());
+			}
 		}
 		if (astNode instanceof AFmlFullyQualifiedBehaviourDecl) {
 			returned.setVisibility(getVisibility(((AFmlFullyQualifiedBehaviourDecl) astNode).getVisibility()));
-			returned.setName(((AFmlFullyQualifiedBehaviourDecl) astNode).getName().getText());
+			try {
+				returned.setName(((AFmlFullyQualifiedBehaviourDecl) astNode).getName().getText());
+			} catch (InvalidNameException e) {
+				throwIssue("Invalid name: " + ((AFmlFullyQualifiedBehaviourDecl) astNode).getName().getText());
+			}
 		}
 
 		PFlexoBehaviourBody flexoBehaviourBody = getFlexoBehaviourBody(astNode);

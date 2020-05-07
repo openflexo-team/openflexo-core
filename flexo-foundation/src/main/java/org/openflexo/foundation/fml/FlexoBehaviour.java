@@ -49,6 +49,7 @@ import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.binding.Function;
 import org.openflexo.connie.type.TypeUtils;
 import org.openflexo.foundation.DataModification;
+import org.openflexo.foundation.InvalidNameException;
 import org.openflexo.foundation.fml.FlexoBehaviourParameter.FlexoBehaviourParameterImpl;
 import org.openflexo.foundation.fml.annotations.FMLAttribute;
 import org.openflexo.foundation.fml.binding.FlexoBehaviourBindingModel;
@@ -168,7 +169,7 @@ public interface FlexoBehaviour extends FlexoBehaviourObject, Function, FMLContr
 
 	@Override
 	@Setter(NAME_KEY)
-	public void setName(String name);
+	public void setName(String name) throws InvalidNameException;
 
 	/*@Getter(value = LABEL_KEY)
 	@XMLAttribute
@@ -642,7 +643,7 @@ public interface FlexoBehaviour extends FlexoBehaviourObject, Function, FMLContr
 		}
 
 		@Override
-		public void setName(String name) {
+		public void setName(String name) throws InvalidNameException {
 			// Avoid keywords
 			if ("create".equals(name)) {
 				setName("_create");

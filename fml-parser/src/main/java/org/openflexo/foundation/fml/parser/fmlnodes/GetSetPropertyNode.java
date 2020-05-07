@@ -40,6 +40,7 @@ package org.openflexo.foundation.fml.parser.fmlnodes;
 
 import java.util.logging.Logger;
 
+import org.openflexo.foundation.InvalidNameException;
 import org.openflexo.foundation.fml.GetProperty;
 import org.openflexo.foundation.fml.GetSetProperty;
 import org.openflexo.foundation.fml.controlgraph.FMLControlGraph;
@@ -93,7 +94,11 @@ public class GetSetPropertyNode extends FlexoPropertyNode<AGetSetPropertyInnerCo
 		}
 
 		returned.setVisibility(getVisibility(astNode.getVisibility()));
-		returned.setName(astNode.getIdentifier().getText());
+		try {
+			returned.setName(astNode.getIdentifier().getText());
+		} catch (InvalidNameException e) {
+			throwIssue("Invalid name: " + astNode.getIdentifier().getText());
+		}
 		returned.setDeclaredType(getTypeFactory().makeType(astNode.getType()));
 
 		AGetDecl getDeclaration = (AGetDecl) astNode.getGetDecl();

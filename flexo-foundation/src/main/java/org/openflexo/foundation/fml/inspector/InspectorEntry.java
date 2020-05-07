@@ -50,6 +50,7 @@ import org.openflexo.connie.exception.NullReferenceException;
 import org.openflexo.connie.exception.TypeMismatchException;
 import org.openflexo.connie.type.ParameterizedTypeImpl;
 import org.openflexo.connie.type.TypeUtils;
+import org.openflexo.foundation.InvalidNameException;
 import org.openflexo.foundation.fml.FlexoBehaviourParameter.FlexoBehaviourParameterImpl;
 import org.openflexo.foundation.fml.FlexoBehaviourParameter.WidgetType;
 import org.openflexo.foundation.fml.FlexoConcept;
@@ -119,7 +120,7 @@ public interface InspectorEntry extends FlexoConceptObject, WidgetContext {
 
 	@Override
 	@Setter(NAME_KEY)
-	public void setName(String name);
+	public void setName(String name) throws InvalidNameException;
 
 	@Getter(value = IS_READ_ONLY_KEY, defaultValue = "false")
 	@XMLAttribute(xmlTag = "readOnly")

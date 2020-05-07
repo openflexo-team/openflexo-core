@@ -42,6 +42,7 @@ import org.openflexo.connie.Bindable;
 import org.openflexo.connie.BindingFactory;
 import org.openflexo.connie.BindingModel;
 import org.openflexo.connie.DataBinding;
+import org.openflexo.foundation.InvalidNameException;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.toolbox.StringUtils;
 
@@ -98,9 +99,10 @@ public abstract class FlexoConceptCreationStrategy<A extends AbstractDeclareInFl
 	 * 
 	 * @see #isValid()
 	 * @return {@link FlexoConcept} which has been created
+	 * @throws InvalidNameException
 	 */
 	@Override
-	public FlexoConcept performStrategy() {
+	public FlexoConcept performStrategy() throws InvalidNameException {
 		// Create new flexo concept
 		newFlexoConcept = getTransformationAction().getFactory().newFlexoConcept();
 		newFlexoConcept.setName(getFlexoConceptName());

@@ -43,6 +43,7 @@ import java.util.logging.Logger;
 
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoObject;
+import org.openflexo.foundation.InvalidNameException;
 import org.openflexo.foundation.action.FlexoAction;
 import org.openflexo.foundation.action.FlexoActionFactory;
 
@@ -96,7 +97,7 @@ public abstract class TransformationAction<A extends TransformationAction<A, T1,
 	}
 
 	@Override
-	protected final void doAction(Object context) {
+	protected final void doAction(Object context) throws InvalidNameException {
 
 		if (isValid()) {
 			getTransformationStrategy().performStrategy();

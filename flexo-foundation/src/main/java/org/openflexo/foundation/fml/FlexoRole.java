@@ -52,6 +52,7 @@ import org.openflexo.connie.exception.TypeMismatchException;
 import org.openflexo.connie.expr.BindingValue;
 import org.openflexo.connie.type.CustomType;
 import org.openflexo.foundation.DataModification;
+import org.openflexo.foundation.InvalidNameException;
 import org.openflexo.foundation.fml.binding.FlexoPropertyPathElement;
 import org.openflexo.foundation.fml.binding.ModelSlotBindingVariable;
 import org.openflexo.foundation.fml.binding.ModelSlotPathElement;
@@ -114,7 +115,7 @@ public interface FlexoRole<T> extends FlexoProperty<T> {
 	String getRoleName();
 
 	@Setter(ROLE_NAME_KEY)
-	void setRoleName(String patternRoleName);
+	void setRoleName(String patternRoleName) throws InvalidNameException;
 
 	@Getter(value = MODEL_SLOT_KEY)
 	@Embedded // TODO Why this property is embedded ?
@@ -333,7 +334,7 @@ public interface FlexoRole<T> extends FlexoProperty<T> {
 		}
 
 		@Override
-		public void setRoleName(String patternRoleName) {
+		public void setRoleName(String patternRoleName) throws InvalidNameException {
 			setName(patternRoleName);
 		}
 

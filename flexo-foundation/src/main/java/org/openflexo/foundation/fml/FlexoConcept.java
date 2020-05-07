@@ -55,6 +55,7 @@ import javax.swing.ImageIcon;
 import org.openflexo.connie.Bindable;
 import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.type.TypeUtils;
+import org.openflexo.foundation.InvalidNameException;
 import org.openflexo.foundation.fml.FlexoConceptBehaviouralFacet.FlexoConceptBehaviouralFacetImpl;
 import org.openflexo.foundation.fml.FlexoConceptStructuralFacet.FlexoConceptStructuralFacetImpl;
 import org.openflexo.foundation.fml.action.CreateFlexoBehaviour;
@@ -159,7 +160,7 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 
 	@Override
 	@Setter(NAME_KEY)
-	public void setName(String name);
+	public void setName(String name) throws InvalidNameException;
 
 	/**
 	 * Return the URI of the {@link NamedFMLObject}<br>
@@ -872,7 +873,7 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 		}
 
 		@Override
-		public void setName(String name) {
+		public void setName(String name) throws InvalidNameException {
 			if (name != null) {
 				// We prevent ',' so that we can use it as a delimiter in tags.
 				super.setName(name.replace(",", ""));
@@ -1528,7 +1529,8 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 				return null;
 			}
 			DeletionScheme newDeletionScheme = getFMLModelFactory().newDeletionScheme();
-			newDeletionScheme.setName("delete");
+			// newDeletionScheme.setName("delete");
+			newDeletionScheme.setAnonymous(true);
 			newDeletionScheme.setControlGraph(getFMLModelFactory().newEmptyControlGraph());
 			addToFlexoBehaviours(newDeletionScheme);
 

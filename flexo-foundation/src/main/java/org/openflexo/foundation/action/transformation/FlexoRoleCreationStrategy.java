@@ -38,6 +38,7 @@
 
 package org.openflexo.foundation.action.transformation;
 
+import org.openflexo.foundation.InvalidNameException;
 import org.openflexo.foundation.fml.FlexoProperty;
 import org.openflexo.foundation.fml.FlexoRole;
 import org.openflexo.foundation.technologyadapter.TechnologyObject;
@@ -95,7 +96,12 @@ public abstract class FlexoRoleCreationStrategy<A extends AbstractDeclareInFlexo
 			String oldValue = getNewRoleName();
 			this.newRoleName = newRoleName;
 			if (getNewFlexoRole() != null) {
-				getNewFlexoRole().setName(newRoleName);
+				try {
+					getNewFlexoRole().setName(newRoleName);
+				} catch (InvalidNameException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
 			getPropertyChangeSupport().firePropertyChange("newRoleName", oldValue, newRoleName);
 		}
@@ -140,7 +146,7 @@ public abstract class FlexoRoleCreationStrategy<A extends AbstractDeclareInFlexo
 	 * @return role beeing created
 	 */
 	@Override
-	public final R performStrategy() {
+	public final R performStrategy() throws InvalidNameException {
 		if (getNewFlexoRole() == null) {
 			createNewFlexoRole();
 		}
@@ -155,7 +161,7 @@ public abstract class FlexoRoleCreationStrategy<A extends AbstractDeclareInFlexo
 	 * 
 	 * @return role beeing created
 	 */
-	protected abstract R createNewFlexoRole();
+	protected abstract R createNewFlexoRole() throws InvalidNameException;
 
 	public abstract R getNewFlexoRole();
 }

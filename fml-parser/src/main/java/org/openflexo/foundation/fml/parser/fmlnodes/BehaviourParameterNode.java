@@ -42,6 +42,7 @@ import java.util.logging.Logger;
 
 import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.type.PrimitiveType;
+import org.openflexo.foundation.InvalidNameException;
 import org.openflexo.foundation.fml.FlexoBehaviour;
 import org.openflexo.foundation.fml.FlexoBehaviourParameter;
 import org.openflexo.foundation.fml.parser.ExpressionFactory;
@@ -119,13 +120,21 @@ public class BehaviourParameterNode extends FMLObjectNode<PFormalArgument, Flexo
 			else {
 				logger.warning("Unexpected: " + ((APrimitiveFormalArgument) astNode).getPrimitiveType());
 			}
-			returned.setName(((APrimitiveFormalArgument) astNode).getArgName().getText());
+			try {
+				returned.setName(((APrimitiveFormalArgument) astNode).getArgName().getText());
+			} catch (InvalidNameException e) {
+				throwIssue("Invalid name: " + ((APrimitiveFormalArgument) astNode).getArgName().getText());
+			}
 			returned.setIsRequired(((APrimitiveFormalArgument) astNode).getKwRequired() != null);
 			handleDefaultArgumentValue(returned, ((APrimitiveFormalArgument) astNode).getDefaultArgumentValue());
 		}
 		else if (astNode instanceof AComplexFormalArgument) {
 			returned.setType(getTypeFactory().makeType(((AComplexFormalArgument) astNode).getReferenceType()));
-			returned.setName(((AComplexFormalArgument) astNode).getArgName().getText());
+			try {
+				returned.setName(((AComplexFormalArgument) astNode).getArgName().getText());
+			} catch (InvalidNameException e) {
+				throwIssue("Invalid name: " + ((AComplexFormalArgument) astNode).getArgName().getText());
+			}
 			returned.setIsRequired(((AComplexFormalArgument) astNode).getKwRequired() != null);
 			handleDefaultArgumentValue(returned, ((AComplexFormalArgument) astNode).getDefaultArgumentValue());
 		}

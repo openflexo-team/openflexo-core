@@ -54,6 +54,7 @@ import org.openflexo.connie.type.ParameterizedTypeImpl;
 import org.openflexo.connie.type.PrimitiveType;
 import org.openflexo.foundation.DefaultFlexoEditor;
 import org.openflexo.foundation.FlexoEditor;
+import org.openflexo.foundation.InvalidNameException;
 import org.openflexo.foundation.action.copypaste.AbstractCopyAction.InvalidSelectionException;
 import org.openflexo.foundation.fml.action.CreateEditionAction;
 import org.openflexo.foundation.fml.action.CreateFlexoBehaviour;
@@ -173,10 +174,12 @@ public class TestDeleteFlexoConceptObjects extends OpenflexoProjectAtRunTimeTest
 
 	/**
 	 * Create some objects
+	 * 
+	 * @throws InvalidNameException
 	 */
 	@Test
 	@TestOrder(4)
-	public void testCreateFMLModel() throws SaveResourceException {
+	public void testCreateFMLModel() throws SaveResourceException, InvalidNameException {
 
 		CreateFlexoConcept addEP1 = CreateFlexoConcept.actionType.makeNewAction(virtualModel, null, editor);
 		addEP1.setNewFlexoConceptName("FlexoConcept1");

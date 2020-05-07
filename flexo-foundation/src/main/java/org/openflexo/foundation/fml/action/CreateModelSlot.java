@@ -45,6 +45,7 @@ import java.util.logging.Logger;
 import org.apache.commons.lang3.reflect.TypeUtils;
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoObject.FlexoObjectImpl;
+import org.openflexo.foundation.InvalidNameException;
 import org.openflexo.foundation.action.FlexoActionFactory;
 import org.openflexo.foundation.action.NotImplementedException;
 import org.openflexo.foundation.fml.FMLObject;
@@ -110,7 +111,7 @@ public class CreateModelSlot extends AbstractCreateFlexoProperty<CreateModelSlot
 	}
 
 	@Override
-	protected void doAction(Object context) throws NotImplementedException, InvalidParameterException {
+	protected void doAction(Object context) throws NotImplementedException, InvalidParameterException, InvalidNameException {
 		logger.info("Add model slot, technologyAdapter=" + technologyAdapter + " modelSlotClass=" + getModelSlotClass());
 
 		if (technologyAdapter == null) {

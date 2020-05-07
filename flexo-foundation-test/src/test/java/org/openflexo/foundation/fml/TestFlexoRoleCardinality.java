@@ -59,6 +59,7 @@ import org.openflexo.foundation.DefaultFlexoEditor;
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.FlexoProject;
+import org.openflexo.foundation.InvalidNameException;
 import org.openflexo.foundation.fml.action.CreateEditionAction;
 import org.openflexo.foundation.fml.action.CreateFlexoBehaviour;
 import org.openflexo.foundation.fml.action.CreateFlexoConcept;
@@ -193,10 +194,12 @@ public class TestFlexoRoleCardinality extends OpenflexoProjectAtRunTimeTestCase 
 
 	/**
 	 * Test FlexoConcept creation, check BindingModel
+	 * 
+	 * @throws InvalidNameException
 	 */
 	@Test
 	@TestOrder(4)
-	public void testCreateFlexoConcept() throws SaveResourceException {
+	public void testCreateFlexoConcept() throws SaveResourceException, InvalidNameException {
 
 		CreateFlexoConcept addEP1 = CreateFlexoConcept.actionType.makeNewAction(virtualModel, null, editor);
 		addEP1.setNewFlexoConceptName("FlexoConcept1");

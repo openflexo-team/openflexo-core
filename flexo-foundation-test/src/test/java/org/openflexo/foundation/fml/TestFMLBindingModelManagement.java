@@ -66,6 +66,7 @@ import org.openflexo.connie.type.PrimitiveType;
 import org.openflexo.foundation.DefaultFlexoEditor;
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoProject;
+import org.openflexo.foundation.InvalidNameException;
 import org.openflexo.foundation.fml.action.CreateEditionAction;
 import org.openflexo.foundation.fml.action.CreateFlexoBehaviour;
 import org.openflexo.foundation.fml.action.CreateFlexoConcept;
@@ -293,7 +294,7 @@ public class TestFMLBindingModelManagement extends OpenflexoProjectAtRunTimeTest
 
 	@Test
 	@TestOrder(5)
-	public void testFlexoRoleBindingModelManagement() {
+	public void testFlexoRoleBindingModelManagement() throws InvalidNameException {
 
 		CreatePrimitiveRole createPR1 = CreatePrimitiveRole.actionType.makeNewAction(flexoConceptA, null, editor);
 		createPR1.setRoleName("aStringInA");
@@ -387,7 +388,8 @@ public class TestFMLBindingModelManagement extends OpenflexoProjectAtRunTimeTest
 
 	@Test
 	@TestOrder(6)
-	public void testFlexoConceptBindingModelManagement() throws SaveResourceException, InconsistentFlexoConceptHierarchyException {
+	public void testFlexoConceptBindingModelManagement()
+			throws SaveResourceException, InconsistentFlexoConceptHierarchyException, InvalidNameException {
 
 		CreateFlexoConcept addFlexoConceptB = CreateFlexoConcept.actionType.makeNewAction(virtualModel1, null, editor);
 		addFlexoConceptB.setNewFlexoConceptName("FlexoConceptB");
@@ -709,7 +711,7 @@ public class TestFMLBindingModelManagement extends OpenflexoProjectAtRunTimeTest
 
 	@Test
 	@TestOrder(9)
-	public void testFlexoBehaviourBindingModelManagement() {
+	public void testFlexoBehaviourBindingModelManagement() throws InvalidNameException {
 
 		CreateFlexoBehaviour createCreationScheme = CreateFlexoBehaviour.actionType.makeNewAction(flexoConceptA, null, editor);
 		createCreationScheme.setFlexoBehaviourClass(CreationScheme.class);

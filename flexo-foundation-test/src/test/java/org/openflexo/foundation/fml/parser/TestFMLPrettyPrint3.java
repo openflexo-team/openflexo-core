@@ -47,6 +47,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openflexo.foundation.DefaultFlexoEditor;
 import org.openflexo.foundation.FlexoEditor;
+import org.openflexo.foundation.InvalidNameException;
 import org.openflexo.foundation.fml.CreationScheme;
 import org.openflexo.foundation.fml.FMLCompilationUnit;
 import org.openflexo.foundation.fml.VirtualModel;
@@ -100,7 +101,7 @@ public class TestFMLPrettyPrint3 extends FMLParserTestCase {
 
 	@Test
 	@TestOrder(3)
-	public void changeAnonymous() {
+	public void changeAnonymous() throws InvalidNameException {
 
 		log("changeAnonymous");
 

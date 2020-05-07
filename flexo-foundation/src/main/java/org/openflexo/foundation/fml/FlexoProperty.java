@@ -50,6 +50,7 @@ import org.openflexo.connie.BindingModel;
 import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.type.ParameterizedTypeImpl;
 import org.openflexo.connie.type.TypeUtils;
+import org.openflexo.foundation.InvalidNameException;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.pamela.annotations.CloningStrategy;
 import org.openflexo.pamela.annotations.CloningStrategy.StrategyType;
@@ -108,7 +109,7 @@ public abstract interface FlexoProperty<T> extends FlexoConceptObject, FMLPretty
 	public String getPropertyName();
 
 	@Setter(PROPERTY_NAME_KEY)
-	public void setPropertyName(String propertyName);
+	public void setPropertyName(String propertyName) throws InvalidNameException;
 
 	@Getter(value = VISIBILITY_KEY, defaultValue = "Default")
 	@XMLAttribute
@@ -277,7 +278,7 @@ public abstract interface FlexoProperty<T> extends FlexoConceptObject, FMLPretty
 		}
 
 		@Override
-		public void setPropertyName(String patternRoleName) {
+		public void setPropertyName(String patternRoleName) throws InvalidNameException {
 			setName(patternRoleName);
 		}
 

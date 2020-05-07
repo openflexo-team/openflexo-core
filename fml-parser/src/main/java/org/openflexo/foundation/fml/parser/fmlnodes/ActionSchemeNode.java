@@ -40,6 +40,7 @@ package org.openflexo.foundation.fml.parser.fmlnodes;
 
 import java.util.logging.Logger;
 
+import org.openflexo.foundation.InvalidNameException;
 import org.openflexo.foundation.fml.ActionScheme;
 import org.openflexo.foundation.fml.FlexoBehaviourParameter;
 import org.openflexo.foundation.fml.parser.ControlGraphFactory;
@@ -78,7 +79,11 @@ public class ActionSchemeNode extends FlexoBehaviourNode<AMethodBehaviourDecl, A
 
 		// handleParameters(astNode);
 
-		returned.setName(astNode.getName().getText());
+		try {
+			returned.setName(astNode.getName().getText());
+		} catch (InvalidNameException e) {
+			throwIssue("Invalid name: " + astNode.getName().getText());
+		}
 
 		PFlexoBehaviourBody flexoBehaviourBody = getFlexoBehaviourBody(astNode);
 		if (flexoBehaviourBody instanceof ABlockFlexoBehaviourBody) {
