@@ -555,7 +555,7 @@ public interface MatchFlexoConceptInstance extends FMLRTAction<FlexoConceptInsta
 						// System.out.println("ADD " + property.getName() + " updateMatchingCriterias for " +
 						// Integer.toHexString(hashCode()));
 						// addToMatchingCriterias(getFMLModelFactory().newMatchingCriteria(property));
-						System.out.println("addToMatchingCriterias for " + property);
+						// System.out.println("addToMatchingCriterias for " + property);
 						// System.exit(-1);
 					}
 				}
