@@ -83,6 +83,7 @@ import org.openflexo.pamela.annotations.Imports;
 import org.openflexo.pamela.annotations.ModelEntity;
 import org.openflexo.pamela.annotations.PastingPoint;
 import org.openflexo.pamela.annotations.PropertyIdentifier;
+import org.openflexo.pamela.annotations.Reindexer;
 import org.openflexo.pamela.annotations.Remover;
 import org.openflexo.pamela.annotations.Setter;
 import org.openflexo.pamela.annotations.XMLAttribute;
@@ -252,6 +253,9 @@ public interface VirtualModel extends FlexoConcept {
 
 	@Remover(FLEXO_CONCEPTS_KEY)
 	public void removeFromFlexoConcepts(FlexoConcept aFlexoConcept);
+
+	@Reindexer(FLEXO_CONCEPTS_KEY)
+	public void moveFlexoConceptToIndex(FlexoConcept aFlexoConcept, int index);
 
 	/**
 	 * Return FlexoConcept matching supplied id represented as a string, which could be either the name of FlexoConcept, or its URI

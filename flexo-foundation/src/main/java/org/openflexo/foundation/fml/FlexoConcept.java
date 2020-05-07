@@ -80,6 +80,7 @@ import org.openflexo.pamela.annotations.Imports;
 import org.openflexo.pamela.annotations.ModelEntity;
 import org.openflexo.pamela.annotations.PastingPoint;
 import org.openflexo.pamela.annotations.PropertyIdentifier;
+import org.openflexo.pamela.annotations.Reindexer;
 import org.openflexo.pamela.annotations.Remover;
 import org.openflexo.pamela.annotations.Setter;
 import org.openflexo.pamela.annotations.XMLAttribute;
@@ -237,6 +238,9 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 	@Remover(FLEXO_BEHAVIOURS_KEY)
 	public void removeFromFlexoBehaviours(FlexoBehaviour aFlexoBehaviour);
 
+	@Reindexer(FLEXO_BEHAVIOURS_KEY)
+	public void moveFlexoBehaviourToIndex(FlexoBehaviour aFlexoBehaviour, int index);
+
 	/**
 	 * Return first found declared FlexoBehaviour matching supplied name<br>
 	 * Use this method with caution as it does not guarantee unicity of the result nor of returned type
@@ -313,6 +317,9 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 	 */
 	@Remover(FLEXO_PROPERTIES_KEY)
 	public void removeFromFlexoProperties(FlexoProperty<?> aProperty);
+
+	@Reindexer(FLEXO_PROPERTIES_KEY)
+	public void moveFlexoPropertyToIndex(FlexoProperty<?> aProperty, int index);
 
 	/**
 	 * Return properties used to uniquely identify an instance of this concept
