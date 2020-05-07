@@ -190,10 +190,12 @@ public class FMLParser {
 
 			return t.getCompilationUnit();
 		} catch (ParserException e) {
-			e.printStackTrace();
-			throw new ParseException(e.getMessage(), e.getToken().getLine(), e.getToken().getPos());
+			// e.printStackTrace();
+			System.out.println("Nouvelle exception token:" + e.getToken() + " line:" + e.getToken().getLine() + " length:"
+					+ e.getToken().getText().length());
+			throw new ParseException(e.getMessage(), e.getToken().getLine(), e.getToken().getPos(), e.getToken().getText().length());
 		} catch (LexerException e) {
-			throw new ParseException(e.getMessage(), e.getToken().getLine(), e.getToken().getPos());
+			throw new ParseException(e.getMessage(), e.getToken().getLine(), e.getToken().getPos(), e.getToken().getText().length());
 		}
 	}
 

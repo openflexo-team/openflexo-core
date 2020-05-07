@@ -1,6 +1,6 @@
 /**
  * 
- * Copyright (c) 2014, Openflexo
+ * Copyright (c) 2020, Openflexo
  * 
  * This file is part of Fml-technologyadapter-ui, a component of the software infrastructure 
  * developed at Openflexo.
@@ -39,27 +39,20 @@
 package org.openflexo.fml.controller.widget.fmleditor;
 
 import java.awt.BorderLayout;
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
 import javax.swing.JPanel;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
 
 import org.fife.ui.rsyntaxtextarea.AbstractTokenMakerFactory;
 import org.fife.ui.rsyntaxtextarea.ErrorStrip;
 import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
 import org.fife.ui.rsyntaxtextarea.SyntaxConstants;
 import org.fife.ui.rsyntaxtextarea.TokenMakerFactory;
-import org.fife.ui.rsyntaxtextarea.parser.Parser;
+import org.fife.ui.rsyntaxtextarea.parser.ParserNotice;
 import org.fife.ui.rtextarea.Gutter;
 import org.fife.ui.rtextarea.RTextScrollPane;
-import org.openflexo.foundation.fml.FMLCompilationUnit;
 import org.openflexo.foundation.fml.FMLModelFactory;
-import org.openflexo.foundation.fml.parser.FMLParser;
-import org.openflexo.foundation.fml.parser.ParseException;
 import org.openflexo.foundation.fml.rm.CompilationUnitResource;
 
 /**
@@ -69,7 +62,7 @@ import org.openflexo.foundation.fml.rm.CompilationUnitResource;
  * 
  */
 @SuppressWarnings("serial")
-public class FMLEditor extends JPanel implements DocumentListener {
+public class FMLEditor extends JPanel {
 
 	static final Logger logger = Logger.getLogger(FMLEditor.class.getPackage().getName());
 
@@ -79,20 +72,19 @@ public class FMLEditor extends JPanel implements DocumentListener {
 	}
 
 	private final CompilationUnitResource fmlResource;
-	private final FMLParser fmlParser;
 
-	private RSyntaxTextArea textArea;
+	private FMLRSyntaxTextArea textArea;
 	private Gutter gutter;
 	private TextFinderPanel finderToolbar;
+
+	private FMLEditorParser parser;
 
 	public FMLEditor(CompilationUnitResource fmlResource) {
 		super(new BorderLayout());
 
-		fmlParser = new FMLParser();
-
 		this.fmlResource = fmlResource;
 
-		textArea = new RSyntaxTextArea();
+		textArea = new FMLRSyntaxTextArea();
 		textArea.setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_JAVA);
 		textArea.setCodeFoldingEnabled(true);
 		// textArea.setText(
@@ -111,12 +103,14 @@ public class FMLEditor extends JPanel implements DocumentListener {
 		// gutter.setBookmarkIcon(new ImageIcon("bookmark.png"));
 		// gutter.setBookmarkIcon(IconLibrary.FIXABLE_ERROR_ICON);
 		gutter.setBookmarkingEnabled(true);
+		// gutter.setFoldIndicatorEnabled(true);
+		// gutter.setFoldIcons(IconLibrary.NAVIGATION_BACKWARD_ICON, IconLibrary.NAVIGATION_FORWARD_ICON);
 
 		ErrorStrip errorStrip = new ErrorStrip(textArea);
 		add(errorStrip, BorderLayout.LINE_END);
 
-		Parser p = new OnTheFlyFMLParser(this);// new XmlParser();
-		textArea.addParser(p);
+		parser = new FMLEditorParser(this);// new XmlParser();
+		textArea.addParser(parser);
 		// p.parse(textArea.getD, style)
 
 		/*try {
@@ -167,73 +161,24 @@ public class FMLEditor extends JPanel implements DocumentListener {
 
 	}
 
+	public CompilationUnitResource getFMLResource() {
+		return fmlResource;
+	}
+
 	public Gutter getGutter() {
 		return gutter;
-	}
-
-	@Override
-	public void insertUpdate(DocumentEvent e) {
-		System.out.println("insertUpdate with " + e);
-		parse();
-	}
-
-	@Override
-	public void removeUpdate(DocumentEvent e) {
-		System.out.println("removeUpdate with " + e);
-		parse();
-	}
-
-	@Override
-	public void changedUpdate(DocumentEvent e) {
-		System.out.println("changedUpdate with " + e);
-		parse();
 	}
 
 	public FMLModelFactory getFactory() {
 		return fmlResource.getFactory();
 	}
 
-	public FMLParser getFMLParser() {
-		return fmlParser;
-	}
-
 	public RSyntaxTextArea getTextArea() {
 		return textArea;
 	}
 
-	public void parse() {
-		System.out.println("On parse");
-		List<Issue> issues = new ArrayList<>();
-		try {
-			FMLCompilationUnit returned = getFMLParser().parse(textArea.getText(), getFactory());
-			System.out.println("OK c'est bien parse !!!");
-			updateWithIssues(issues);
-			return;
-		} catch (ParseException e) {
-			System.out.println("Le parsing a foire...");
-			issues.add(new Issue("Syntax error", e.getLine(), e.getPosition()));
-			updateWithIssues(issues);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
-	}
-
-	private void updateWithIssues(List<Issue> issues) {
-
-	}
-
-	public static class Issue {
-		private String message;
-		private int line;
-		private int position;
-
-		public Issue(String message, int line, int position) {
-			super();
-			this.message = message;
-			this.line = line;
-			this.position = position;
-		}
+	public List<ParserNotice> getParserNotices(int line) {
+		return parser.getParserNotices(line);
 	}
 
 }

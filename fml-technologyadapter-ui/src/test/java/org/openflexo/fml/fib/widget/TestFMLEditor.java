@@ -39,6 +39,7 @@
 package org.openflexo.fml.fib.widget;
 
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.io.FileNotFoundException;
 
@@ -47,7 +48,9 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
+import org.openflexo.fml.controller.FMLFIBController;
 import org.openflexo.fml.controller.widget.fmleditor.FMLEditor;
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoException;
@@ -55,11 +58,16 @@ import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.VirtualModelLibrary;
 import org.openflexo.foundation.fml.rm.CompilationUnitResource;
 import org.openflexo.foundation.resource.ResourceLoadingCancelledException;
+import org.openflexo.gina.ApplicationFIBLibrary.ApplicationFIBLibraryImpl;
+import org.openflexo.gina.swing.utils.FIBJPanel;
 import org.openflexo.gina.test.OpenflexoFIBTestCase;
 import org.openflexo.gina.test.SwingGraphicalContextDelegate;
+import org.openflexo.gina.utils.InspectorGroup;
 import org.openflexo.rm.Resource;
+import org.openflexo.rm.ResourceLocator;
 import org.openflexo.test.OrderedRunner;
 import org.openflexo.test.TestOrder;
+import org.openflexo.test.UITest;
 
 /**
  * Test {@link FMLEditor} component
@@ -100,10 +108,30 @@ public class TestFMLEditor extends OpenflexoFIBTestCase {
 
 	@Test
 	@TestOrder(4)
+	@Category(UITest.class)
 	public void testInstanciateFMLEditor() {
 
 		FMLEditor editor = new FMLEditor(fmlResource);
-		gcDelegate.addTab(fmlResource.getName(), editor);
+		gcDelegate.addTab("FML Editor", editor);
+	}
+
+	@Test
+	@TestOrder(5)
+	@Category(UITest.class)
+	public void testInstanciateWidget() {
+
+		fibResource = ResourceLocator.locateResource("Fib/FML/VirtualModelView.fib");
+		assertTrue(fibResource != null);
+		FIBJPanel<VirtualModel> widget = instanciateFIB(fibResource, fmlResource.getCompilationUnit().getVirtualModel(),
+				VirtualModel.class);
+		FMLFIBController fibController = (FMLFIBController) widget.getController();
+		InspectorGroup fmlInspectorGroup = new InspectorGroup(ResourceLocator.locateResource("Inspectors/FML"),
+				ApplicationFIBLibraryImpl.instance(), null);
+		fibController.setDefaultInspectorGroup(fmlInspectorGroup);
+
+		// ModuleInspectorController inspectorController = new ModuleInspectorController(null);
+		// fibController.setInspectorController
+		gcDelegate.addTab("Standard GUI", widget.getController());
 	}
 
 	public static void initGUI() {

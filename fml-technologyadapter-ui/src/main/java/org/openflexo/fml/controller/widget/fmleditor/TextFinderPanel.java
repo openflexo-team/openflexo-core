@@ -1,6 +1,6 @@
 /**
  * 
- * Copyright (c) 2014, Openflexo
+ * Copyright (c) 2020, Openflexo
  * 
  * This file is part of Fml-technologyadapter-ui, a component of the software infrastructure 
  * developed at Openflexo.
