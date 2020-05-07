@@ -331,8 +331,10 @@ public class FlexoMainPane extends JPanel implements PropertyChangeListener {
 					logger.severe("willShow call failed on " + moduleView);
 				}
 			}
-			getController().getApplicationContext().getDocResourceManager().setHelpItem((JComponent) moduleView, getController()
-					.getApplicationContext().getDocResourceManager().getModuleViewItemFor(controller.getModule(), moduleView));
+			if (getController().getApplicationContext().getDocResourceManager() != null) {
+				getController().getApplicationContext().getDocResourceManager().setHelpItem((JComponent) moduleView, getController()
+						.getApplicationContext().getDocResourceManager().getModuleViewItemFor(controller.getModule(), moduleView));
+			}
 			newCenterView.setBorder(MODULE_VIEW_BORDER);
 		}
 		else {
@@ -453,7 +455,7 @@ public class FlexoMainPane extends JPanel implements PropertyChangeListener {
 					 child.setBounds(new Rectangle());
 				}
 			}
-			*/
+			 */
 			centerPanel.revalidate();
 		}
 	}

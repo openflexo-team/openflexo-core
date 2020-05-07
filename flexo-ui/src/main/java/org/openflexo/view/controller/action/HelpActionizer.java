@@ -67,18 +67,20 @@ public class HelpActionizer extends ActionInitializer<HelpAction, FlexoObject, F
 	@Override
 	protected FlexoActionRunnable<HelpAction, FlexoObject, FlexoObject> getDefaultFinalizer() {
 		return (e, action) -> {
-			DocItem item = getController().getApplicationContext().getDocResourceManager().getDocItemFor(action.getFocusedObject());
-			if (item != null) {
-				try {
-					logger.info("Trying to display help for " + item.getIdentifier());
-					FlexoHelp.getHelpBroker().setCurrentID(item.getIdentifier());
-					FlexoHelp.getHelpBroker().setDisplayed(true);
-				} catch (BadIDException exception) {
-					FlexoController.showError(FlexoLocalization.getMainLocalizer().localizedForKey("sorry_no_help_available_for") + " "
-							+ item.getIdentifier());
-					return false;
+			if (getController().getApplicationContext().getDocResourceManager() != null) {
+				DocItem item = getController().getApplicationContext().getDocResourceManager().getDocItemFor(action.getFocusedObject());
+				if (item != null) {
+					try {
+						logger.info("Trying to display help for " + item.getIdentifier());
+						FlexoHelp.getHelpBroker().setCurrentID(item.getIdentifier());
+						FlexoHelp.getHelpBroker().setDisplayed(true);
+					} catch (BadIDException exception) {
+						FlexoController.showError(FlexoLocalization.getMainLocalizer().localizedForKey("sorry_no_help_available_for") + " "
+								+ item.getIdentifier());
+						return false;
+					}
+					return true;
 				}
-				return true;
 			}
 			return false;
 		};

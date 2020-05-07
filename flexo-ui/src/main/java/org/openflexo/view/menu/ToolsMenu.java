@@ -267,12 +267,12 @@ public class ToolsMenu extends FlexoMenu {
 		public void actionPerformed(ActionEvent arg0) {
 			File currentDir;
 			if (getController().getProjectDirectory() instanceof File) {
-				currentDir = (File)getController().getProjectDirectory();
+				currentDir = (File) getController().getProjectDirectory();
 			}
 			else {
 				currentDir = new File(System.getProperty("user.dir"));
 			}
-			
+
 			FMLTerminal terminal = new FMLTerminal(getController().getApplicationContext(), currentDir);
 			terminal.open(0, 0, 700, 700);
 		}
@@ -680,10 +680,12 @@ public class ToolsMenu extends FlexoMenu {
 						savedFile = chooser.getSelectedFile();
 					}
 					DocResourceManager drm = getController().getApplicationContext().getDocResourceManager();
-					drm.getSessionSubmissions().save(savedFile);
-					drm.getSessionSubmissions().clear();
-					FlexoController
-							.notify(FlexoLocalization.getMainLocalizer().localizedForKey("doc_submission_report_successfully_saved"));
+					if (drm != null) {
+						drm.getSessionSubmissions().save(savedFile);
+						drm.getSessionSubmissions().clear();
+						FlexoController
+								.notify(FlexoLocalization.getMainLocalizer().localizedForKey("doc_submission_report_successfully_saved"));
+					}
 				} catch (Exception e1) {
 					e1.printStackTrace();
 					return;
