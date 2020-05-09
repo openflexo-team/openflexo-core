@@ -52,8 +52,12 @@ import org.fife.ui.rsyntaxtextarea.TokenMakerFactory;
 import org.fife.ui.rsyntaxtextarea.parser.ParserNotice;
 import org.fife.ui.rtextarea.Gutter;
 import org.fife.ui.rtextarea.RTextScrollPane;
+import org.openflexo.fml.controller.FMLTechnologyAdapterController;
 import org.openflexo.foundation.fml.FMLModelFactory;
+import org.openflexo.foundation.fml.FMLTechnologyAdapter;
 import org.openflexo.foundation.fml.rm.CompilationUnitResource;
+import org.openflexo.foundation.technologyadapter.TechnologyAdapterService;
+import org.openflexo.view.controller.TechnologyAdapterControllerService;
 
 /**
  * Widget allowing to edit a FML virtual model
@@ -179,6 +183,17 @@ public class FMLEditor extends JPanel {
 
 	public List<ParserNotice> getParserNotices(int line) {
 		return parser.getParserNotices(line);
+	}
+
+	public FMLTechnologyAdapterController getFMLTechnologyAdapterController() {
+		if (fmlResource != null) {
+			TechnologyAdapterService taService = fmlResource.getServiceManager().getService(TechnologyAdapterService.class);
+			TechnologyAdapterControllerService tacService = fmlResource.getServiceManager()
+					.getService(TechnologyAdapterControllerService.class);
+			FMLTechnologyAdapter fmlTA = taService.getTechnologyAdapter(FMLTechnologyAdapter.class);
+			return tacService.getTechnologyAdapterController(fmlTA);
+		}
+		return null;
 	}
 
 }

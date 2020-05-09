@@ -48,7 +48,6 @@ import org.openflexo.foundation.fml.parser.node.PExpression;
 import org.openflexo.foundation.fml.rt.editionaction.AddFlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.editionaction.AddFlexoConceptInstanceParameter;
 import org.openflexo.foundation.fml.rt.editionaction.BehaviourCallArgument;
-import org.openflexo.p2pp.RawSource.RawSourceFragment;
 
 /**
  * @author sylvain
@@ -112,10 +111,4 @@ public class BehaviourCallArgumentNode extends FMLObjectNode<PExpression, Behavi
 		append(dynamicContents(() -> getModelObject().getValue().toString()), getFragment());
 	}
 
-	protected RawSourceFragment getFragment() {
-		if (getASTNode() != null) {
-			return getFragment(getASTNode());
-		}
-		return null;
-	}
 }

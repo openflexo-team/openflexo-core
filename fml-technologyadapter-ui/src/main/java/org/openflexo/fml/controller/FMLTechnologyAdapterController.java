@@ -99,6 +99,7 @@ import org.openflexo.foundation.fml.CloningScheme;
 import org.openflexo.foundation.fml.CreationScheme;
 import org.openflexo.foundation.fml.DeletionScheme;
 import org.openflexo.foundation.fml.EventListener;
+import org.openflexo.foundation.fml.FMLCompilationUnit;
 import org.openflexo.foundation.fml.FMLTechnologyAdapter;
 import org.openflexo.foundation.fml.FMLValidationModel;
 import org.openflexo.foundation.fml.FMLValidationReport;
@@ -174,7 +175,7 @@ public class FMLTechnologyAdapterController extends TechnologyAdapterController<
 	private InspectorGroup fmlInspectors;
 
 	private FMLValidationModel validationModel;
-	private Map<VirtualModel, FMLValidationReport> validationReports = new HashMap<>();
+	private Map<FMLCompilationUnit, FMLValidationReport> validationReports = new HashMap<>();
 
 	private FIBVirtualModelBrowser virtualModelBrowser;
 
@@ -668,32 +669,15 @@ public class FMLTechnologyAdapterController extends TechnologyAdapterController<
 				new DataBinding<>(variableName + "." + widgetContext.getWidgetDefinitionAccess() + ".type"), true));
 		return viewSelector;
 	}
-	*/
+	 */
 
 	@Override
 	public void resourceLoading(TechnologyAdapterResource<?, FMLTechnologyAdapter> resource) {
 		// logger.info("RESOURCE LOADED: " + resource);
 
 		if (resource instanceof CompilationUnitResource) {
-			VirtualModel vm = ((CompilationUnitResource) resource).getLoadedCompilationUnit().getVirtualModel();
-			try {
-				if (logger.isLoggable(Level.INFO)) {
-					logger.info("Validating virtual model " + vm);
-				}
-				Progress.progress(getLocales().localizedForKey("validating_virtual_model..."));
-				FMLValidationReport validationReport = (FMLValidationReport) getFMLValidationModel().validate(vm);
-				validationReports.put(vm, validationReport);
-				if (logger.isLoggable(Level.INFO)) {
-					logger.info("End validating virtual model " + vm);
-					logger.info("Errors=" + validationReport.getAllErrors().size());
-					for (ValidationError<?, ?> e : validationReport.getAllErrors()) {
-						logger.info(" > " + validationReport.getValidationModel().localizedIssueMessage(e) + " details="
-								+ validationReport.getValidationModel().localizedIssueDetailedInformations(e));
-					}
-				}
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
+			FMLCompilationUnit cu = ((CompilationUnitResource) resource).getLoadedCompilationUnit();
+			buildFMLValidationReport(cu);
 		}
 	}
 
@@ -712,16 +696,43 @@ public class FMLTechnologyAdapterController extends TechnologyAdapterController<
 
 	@Override
 	public ValidationModel getValidationModel(Class<? extends ResourceData<?>> resourceDataClass) {
-		if (VirtualModel.class.isAssignableFrom(resourceDataClass)) {
+		if (FMLCompilationUnit.class.isAssignableFrom(resourceDataClass)) {
 			return getFMLValidationModel();
 		}
 		return null;
 	}
 
+	private FMLValidationReport buildFMLValidationReport(FMLCompilationUnit cu) {
+		FMLValidationReport validationReport = null;
+		try {
+			if (logger.isLoggable(Level.INFO)) {
+				logger.info("Validating compilation unit " + cu);
+			}
+			Progress.progress(getLocales().localizedForKey("validating_virtual_model..."));
+			validationReport = (FMLValidationReport) getFMLValidationModel().validate(cu);
+			validationReports.put(cu, validationReport);
+			if (logger.isLoggable(Level.INFO)) {
+				logger.info("End validating virtual model " + cu);
+				logger.info("Errors=" + validationReport.getAllErrors().size());
+				for (ValidationError<?, ?> e : validationReport.getAllErrors()) {
+					logger.info(" > " + validationReport.getValidationModel().localizedIssueMessage(e) + " details="
+							+ validationReport.getValidationModel().localizedIssueDetailedInformations(e));
+				}
+			}
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		return validationReport;
+	}
+
 	@Override
 	public ValidationReport getValidationReport(ResourceData<?> resourceData) {
-		if (resourceData instanceof VirtualModel) {
-			return validationReports.get(resourceData);
+		if (resourceData instanceof FMLCompilationUnit) {
+			ValidationReport returned = validationReports.get(resourceData);
+			if (returned == null) {
+				returned = buildFMLValidationReport((FMLCompilationUnit) resourceData);
+			}
+			return returned;
 		}
 		return null;
 	}

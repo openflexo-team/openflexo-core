@@ -74,11 +74,11 @@ public class FMLValidationReport extends ValidationReport {
 
 	private static final Logger logger = Logger.getLogger(FMLValidationReport.class.getPackage().getName());
 
-	private VirtualModel virtualModel;
+	private FMLCompilationUnit compilationUnit;
 
-	public FMLValidationReport(ValidationModel validationModel, VirtualModel virtualModel) {
-		super(validationModel, virtualModel);
-		this.virtualModel = virtualModel;
+	public FMLValidationReport(ValidationModel validationModel, FMLCompilationUnit compilationUnit) {
+		super(validationModel, compilationUnit);
+		this.compilationUnit = compilationUnit;
 	}
 
 	public boolean hasErrors(FMLObject object) {

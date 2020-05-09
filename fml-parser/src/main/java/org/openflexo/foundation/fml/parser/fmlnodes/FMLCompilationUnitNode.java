@@ -38,6 +38,9 @@
 
 package org.openflexo.foundation.fml.parser.fmlnodes;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.openflexo.foundation.fml.ElementImportDeclaration;
 import org.openflexo.foundation.fml.FMLCompilationUnit;
 import org.openflexo.foundation.fml.JavaImportDeclaration;
@@ -46,6 +49,7 @@ import org.openflexo.foundation.fml.parser.FMLObjectNode;
 import org.openflexo.foundation.fml.parser.MainSemanticsAnalyzer;
 import org.openflexo.foundation.fml.parser.node.AFmlCompilationUnit;
 import org.openflexo.p2pp.PrettyPrintContext.Indentation;
+import org.openflexo.p2pp.RawSource.RawSourceFragment;
 import org.openflexo.p2pp.RawSource.RawSourcePosition;
 
 /**
@@ -106,6 +110,19 @@ public class FMLCompilationUnitNode extends FMLObjectNode<AFmlCompilationUnit, F
 	@Override
 	public RawSourcePosition getEndPosition() {
 		return endPosition;
+	}
+
+	private List<SemanticAnalysisIssue> semanticAnalysisIssues = new ArrayList<>();
+
+	@Override
+	public List<SemanticAnalysisIssue> getSemanticAnalysisIssues() {
+		return semanticAnalysisIssues;
+	}
+
+	@Override
+	public void throwIssue(String errorMessage, RawSourceFragment fragment) {
+		SemanticAnalysisIssue issue = new SemanticAnalysisIssue(errorMessage, fragment);
+		semanticAnalysisIssues.add(issue);
 	}
 
 }

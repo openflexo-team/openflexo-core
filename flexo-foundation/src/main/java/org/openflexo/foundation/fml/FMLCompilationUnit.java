@@ -80,6 +80,7 @@ import org.openflexo.pamela.annotations.ImplementationClass;
 import org.openflexo.pamela.annotations.ModelEntity;
 import org.openflexo.pamela.annotations.PastingPoint;
 import org.openflexo.pamela.annotations.PropertyIdentifier;
+import org.openflexo.pamela.annotations.Reindexer;
 import org.openflexo.pamela.annotations.Remover;
 import org.openflexo.pamela.annotations.Setter;
 import org.openflexo.pamela.annotations.XMLAttribute;
@@ -127,6 +128,9 @@ public interface FMLCompilationUnit extends FMLObject, FMLPrettyPrintable, Resou
 	@Remover(JAVA_IMPORTS_KEY)
 	public void removeFromJavaImports(JavaImportDeclaration javaImportDeclaration);
 
+	@Reindexer(JAVA_IMPORTS_KEY)
+	public void moveJavaImportDeclarationToIndex(JavaImportDeclaration javaImportDeclaration, int index);
+
 	/**
 	 * Return list of {@link ElementImportDeclaration} explicitely declared in this {@link FMLCompilationUnit}
 	 * 
@@ -144,6 +148,9 @@ public interface FMLCompilationUnit extends FMLObject, FMLPrettyPrintable, Resou
 
 	@Finder(collection = ELEMENT_IMPORTS_KEY, attribute = ElementImportDeclaration.ABBREV_KEY)
 	public ElementImportDeclaration getElementImport(String abbrev);
+
+	@Reindexer(ELEMENT_IMPORTS_KEY)
+	public void moveElementImportDeclarationToIndex(ElementImportDeclaration elementImportDeclaration, int index);
 
 	/**
 	 * Return the {@link VirtualModel} defined by this FMLCompilationUnit
@@ -204,6 +211,9 @@ public interface FMLCompilationUnit extends FMLObject, FMLPrettyPrintable, Resou
 
 	@Remover(USE_DECLARATIONS_KEY)
 	public void removeFromUseDeclarations(UseModelSlotDeclaration useDecl);
+
+	@Reindexer(USE_DECLARATIONS_KEY)
+	public void moveUseModelSlotDeclarationToIndex(UseModelSlotDeclaration useModelSlotDeclaration, int index);
 
 	/**
 	 * Return boolean indicating if this VirtualModel uses supplied modelSlotClass

@@ -43,7 +43,7 @@ import java.util.logging.Logger;
 import org.openflexo.foundation.fml.parser.ParseException;
 
 /**
- * A {@link ParseException} notice
+ * A {@link FMLNotice} wrapping a {@link ParseException}
  * 
  * @author sguerin
  * 

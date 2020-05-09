@@ -48,10 +48,14 @@ import org.fife.ui.rsyntaxtextarea.parser.AbstractParser;
 import org.fife.ui.rsyntaxtextarea.parser.DefaultParseResult;
 import org.fife.ui.rsyntaxtextarea.parser.ParseResult;
 import org.fife.ui.rsyntaxtextarea.parser.ParserNotice;
+import org.openflexo.fml.controller.FMLTechnologyAdapterController;
 import org.openflexo.foundation.fml.FMLCompilationUnit;
+import org.openflexo.foundation.fml.FMLPrettyPrintDelegate.SemanticAnalysisIssue;
+import org.openflexo.foundation.fml.FMLValidationReport;
 import org.openflexo.foundation.fml.parser.FMLParser;
 import org.openflexo.foundation.fml.parser.ParseException;
 import org.openflexo.foundation.fml.rm.CompilationUnitResource;
+import org.openflexo.pamela.validation.ValidationIssue;
 
 /**
  * An {@link AbstractParser} implementation for FML language
@@ -100,6 +104,15 @@ public class FMLEditorParser extends AbstractParser {
 			FMLCompilationUnit existingData = editor.getFMLResource().getCompilationUnit();
 			existingData.updateWith(returned);
 
+			for (SemanticAnalysisIssue semanticAnalysisIssue : existingData.getPrettyPrintDelegate().getSemanticAnalysisIssues()) {
+				result.addNotice(new SemanticAnalyzerNotice(this, semanticAnalysisIssue));
+			}
+
+			FMLValidationReport validationReport = validate(existingData);
+			for (ValidationIssue<?, ?> validationIssue : validationReport.getAllIssues()) {
+				result.addNotice(new ValidationIssueNotice(this, validationIssue));
+			}
+
 		} catch (ParseException e) {
 			System.out.println("Le parsing a foire...");
 			// issues.add(new Issue("Syntax error", e.getLine(), e.getPosition()));
@@ -133,6 +146,21 @@ public class FMLEditorParser extends AbstractParser {
 			}
 		}
 		return returned;
+	}
+
+	public FMLTechnologyAdapterController getFMLTechnologyAdapterController() {
+		return editor.getFMLTechnologyAdapterController();
+	}
+
+	private FMLValidationReport validate(FMLCompilationUnit compilationUnit) {
+		FMLValidationReport virtualModelReport = (FMLValidationReport) getFMLTechnologyAdapterController()
+				.getValidationReport(compilationUnit);
+		try {
+			virtualModelReport.revalidate(compilationUnit);
+		} catch (InterruptedException e1) {
+			e1.printStackTrace();
+		}
+		return virtualModelReport;
 	}
 
 }

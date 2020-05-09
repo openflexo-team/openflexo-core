@@ -1,8 +1,8 @@
 /**
  * 
- * Copyright (c) 2014-2015, Openflexo
+ * Copyright (c) 2020, Openflexo
  * 
- * This file is part of Flexo-foundation, a component of the software infrastructure 
+ * This file is part of Fml-technologyadapter-ui, a component of the software infrastructure 
  * developed at Openflexo.
  * 
  * 
@@ -36,65 +36,30 @@
  * 
  */
 
-package org.openflexo.foundation.fml;
+package org.openflexo.fml.controller.widget.fmleditor;
 
-import java.util.List;
+import java.util.logging.Logger;
 
-import org.openflexo.p2pp.PrettyPrintDelegate;
-import org.openflexo.p2pp.RawSource.RawSourceFragment;
-import org.openflexo.p2pp.RawSource.RawSourcePosition;
+import org.openflexo.foundation.fml.FMLPrettyPrintDelegate.SemanticAnalysisIssue;
 
 /**
- * A delegate providing pretty-print to an FMLObject.<br>
+ * A {@link FMLNotice} wrapping a {@link SemanticAnalysisIssue}
  * 
- * @author sylvain
+ * @author sguerin
  * 
  */
-public interface FMLPrettyPrintDelegate<T extends FMLObject> extends PrettyPrintDelegate<T> {
+@SuppressWarnings("serial")
+public class SemanticAnalyzerNotice extends FMLNotice {
 
-	/**
-	 * Return fragment matching AST node
-	 * 
-	 * @return
-	 */
-	public RawSourceFragment getFragment();
+	static final Logger logger = Logger.getLogger(SemanticAnalyzerNotice.class.getPackage().getName());
 
-	public RawSourcePosition getStartLocation();
+	public SemanticAnalyzerNotice(FMLEditorParser parser, SemanticAnalysisIssue issue) {
+		super(parser, issue.getMessage(), issue.getLine(), issue.getOffset(), issue.getLength());
+		setLevel(Level.ERROR);
+	}
 
-	public RawSourcePosition getEndLocation();
-
-	public List<SemanticAnalysisIssue> getSemanticAnalysisIssues();
-
-	public static class SemanticAnalysisIssue {
-		private String message;
-		private int line = -1;
-		private int offset = -1;
-		private int length = -1;
-
-		public SemanticAnalysisIssue(String errorMessage, RawSourceFragment fragment) {
-			super();
-			this.message = errorMessage;
-			if (fragment != null) {
-				this.line = fragment.getStartPosition().getLine();
-				this.offset = fragment.getStartPosition().getPos();
-				this.length = fragment.getLength();
-			}
-		}
-
-		public String getMessage() {
-			return message;
-		}
-
-		public int getLine() {
-			return line;
-		}
-
-		public int getOffset() {
-			return offset;
-		}
-
-		public int getLength() {
-			return length;
-		}
+	@Override
+	public boolean isFixable() {
+		return false;
 	}
 }

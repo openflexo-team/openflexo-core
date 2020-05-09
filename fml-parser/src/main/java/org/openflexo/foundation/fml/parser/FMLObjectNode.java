@@ -177,6 +177,7 @@ import org.openflexo.p2pp.P2PPNode;
 import org.openflexo.p2pp.PrettyPrintContext;
 import org.openflexo.p2pp.RawSource;
 import org.openflexo.p2pp.RawSource.RawSourceFragment;
+import org.openflexo.p2pp.RawSource.RawSourcePosition;
 import org.openflexo.toolbox.ChainedCollection;
 
 /**
@@ -224,13 +225,35 @@ public abstract class FMLObjectNode<N extends Node, T extends FMLPrettyPrintable
 		modelObject.setPrettyPrintDelegate(this);
 	}
 
-	/*public A getAbstractAnalyser() {
-		return analyser;
+	/**
+	 * Return fragment matching AST node
+	 * 
+	 * @return
+	 */
+	public RawSourceFragment getFragment() {
+		if (getASTNode() != null) {
+			return getFragment(getASTNode());
+		}
+		return null;
 	}
-	
-	public MainSemanticsAnalyzer getAnalyser() {
-		return getAbstractAnalyser().getMainAnalyzer();
-	}*/
+
+	@Override
+	public RawSourcePosition getStartLocation() {
+		RawSourceFragment fragment = getFragment();
+		if (fragment != null) {
+			return fragment.getStartPosition();
+		}
+		return null;
+	}
+
+	@Override
+	public RawSourcePosition getEndLocation() {
+		RawSourceFragment fragment = getFragment();
+		if (fragment != null) {
+			return fragment.getEndPosition();
+		}
+		return null;
+	}
 
 	public MainSemanticsAnalyzer getAnalyser() {
 		return analyser;
@@ -760,11 +783,23 @@ public abstract class FMLObjectNode<N extends Node, T extends FMLPrettyPrintable
 	}
 
 	protected void throwIssue(String errorMessage) {
-		throwIssue(errorMessage);
+		throwIssue(errorMessage, null);
 	}
 
 	protected void throwIssue(String errorMessage, RawSourceFragment fragment) {
-		logger.warning("Compilation issue: " + errorMessage + " " + (fragment != null ? fragment.getStartPosition() : getStartPosition()));
+		if (analyser != null) {
+			logger.warning("-------->>>>> Compilation issue: " + errorMessage + " "
+					+ (fragment != null ? fragment.getStartPosition() : getStartPosition()));
+			analyser.getCompilationUnitNode().throwIssue(errorMessage, fragment);
+		}
+	}
+
+	@Override
+	public List<SemanticAnalysisIssue> getSemanticAnalysisIssues() {
+		if (analyser != null) {
+			return analyser.getCompilationUnitNode().getSemanticAnalysisIssues();
+		}
+		return null;
 	}
 
 	/*protected void decodeFMLProperties(PFmlParameters properties, T modelObject) {
