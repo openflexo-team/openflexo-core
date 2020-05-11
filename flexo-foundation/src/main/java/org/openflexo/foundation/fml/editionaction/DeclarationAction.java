@@ -118,7 +118,6 @@ public interface DeclarationAction<T> extends AbstractAssignationAction<T> {
 				importDeclaration.setResourceReference(
 						new DataBinding<>('"' + ((AddVirtualModelInstance) assignableAction).getVirtualModelType().getURI() + '"'));
 				getDeclaringCompilationUnit().addToElementImports(importDeclaration);
-				System.exit(-1);
 			}
 		}*/
 

@@ -277,7 +277,6 @@ public class MatchActionNode extends AssignableActionNode<AMatchActionFmlActionE
 		if (!returned) {
 			System.out.println("Zut alors pas de ; pour " + getModelObject().getFMLRepresentation());
 			System.out.println("Parent: " + getParent().getModelObject());
-			System.exit(-1);
 		}
 		return returned;
 	}*/

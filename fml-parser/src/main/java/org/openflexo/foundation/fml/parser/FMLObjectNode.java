@@ -761,7 +761,6 @@ public abstract class FMLObjectNode<N extends Node, T extends FMLPrettyPrintable
 				}
 			}
 			Thread.dumpStack();
-			System.exit(-1);
 		}*/
 		return returned;
 

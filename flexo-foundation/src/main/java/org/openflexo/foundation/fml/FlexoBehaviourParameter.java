@@ -407,7 +407,6 @@ public interface FlexoBehaviourParameter extends FlexoBehaviourObject, FunctionA
 			/*if (widget == WidgetType.CUSTOM_WIDGET) {
 				System.out.println("Tiens, ca vient d'ou ca ?");
 				Thread.dumpStack();
-				System.exit(-1);
 			}*/
 			// System.out.println("On fait setWidget avec " + widget);
 			if (widget != null && widget != getWidget()) {

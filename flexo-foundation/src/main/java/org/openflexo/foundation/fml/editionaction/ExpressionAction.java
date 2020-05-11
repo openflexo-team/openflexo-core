@@ -200,7 +200,6 @@ public interface ExpressionAction<T> extends AssignableAction<T> {
 			/*if (expression.toString().contains("log(\"CreationScheme in B\")")) {
 				System.out.println("Qui est le con ?");
 				Thread.dumpStack();
-				System.exit(-1);
 			}*/
 
 			if (expression != null) {

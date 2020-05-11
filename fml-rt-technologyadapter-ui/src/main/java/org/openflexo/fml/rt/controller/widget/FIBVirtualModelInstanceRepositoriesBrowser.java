@@ -82,7 +82,6 @@ public class FIBVirtualModelInstanceRepositoriesBrowser extends FIBTechnologyBro
 		final ViewLibrary viewLibrary = project.getViewLibrary();
 	
 		// System.out.println("Resource centers=" + viewPointLibrary.getResourceCenterService().getResourceCenters());
-		// System.exit(-1);
 	
 		FIBAbstractEditor editor = new FIBAbstractEditor() {
 			@Override

@@ -88,16 +88,6 @@ public interface ListMetaData extends FMLMetaData {
 	public static abstract class ListMetaDataImpl extends FMLMetaDataImpl implements ListMetaData {
 
 		@Override
-		public void setKey(String aKey) {
-			performSuperSetter(KEY_KEY, aKey);
-			if (aKey.equals("TextField")) {
-				System.out.println("Ca vient d'ou");
-				Thread.dumpStack();
-				System.exit(-1);
-			}
-		}
-
-		@Override
 		public List<FMLMetaData> getMetaData() {
 			return getMetaDataList();
 		}

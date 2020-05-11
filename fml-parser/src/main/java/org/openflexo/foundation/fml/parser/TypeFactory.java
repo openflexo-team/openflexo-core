@@ -166,7 +166,6 @@ public class TypeFactory extends SemanticsAnalyzerFactory {
 								}
 								// System.out.println(getAnalyzer().getCompilationUnit().getServiceManager().getVirtualModelLibrary()
 								// .getCompilationUnitResource(resourceReferenceValue));
-								// System.exit(-1);
 
 								return null;
 							} catch (TypeMismatchException e) {
@@ -179,7 +178,6 @@ public class TypeFactory extends SemanticsAnalyzerFactory {
 								// TODO Auto-generated catch block
 								e.printStackTrace();
 							}
-							// System.exit(-1);
 						}
 					}
 				}
@@ -192,8 +190,7 @@ public class TypeFactory extends SemanticsAnalyzerFactory {
 				for (ElementImportDeclaration importDeclaration : getAnalyzer().getCompilationUnit().getElementImports()) {
 					System.out.println(" > " + importDeclaration.getAbbrev() + " " + importDeclaration);
 				}
-				Thread.dumpStack();
-				System.exit(-1);*/
+				Thread.dumpStack();*/
 
 				return null;
 

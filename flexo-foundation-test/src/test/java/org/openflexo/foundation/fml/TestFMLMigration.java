@@ -129,8 +129,7 @@ public class TestFMLMigration extends OpenflexoTestCase {
 		/*VirtualModel virtualModel = testInfo.initialXMLVersion.getVirtualModel();
 		System.out.println("virtualModel=" + virtualModel);
 		System.out.println("cs:" + virtualModel.getCreationSchemes().get(0));
-		System.out.println(virtualModel.getCreationSchemes().get(0).getNormalizedFML());
-		System.exit(-1);*/
+		System.out.println(virtualModel.getCreationSchemes().get(0).getNormalizedFML());*/
 	}
 
 	@Test

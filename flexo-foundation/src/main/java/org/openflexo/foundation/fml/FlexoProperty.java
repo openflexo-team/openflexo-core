@@ -247,7 +247,6 @@ public abstract interface FlexoProperty<T> extends FlexoConceptObject, FMLPretty
 												&& ((FlexoPropertyBindingVariable) l[i]).getFlexoProperty() == ((FlexoPropertyBindingVariable) listener)
 														.getFlexoProperty()) {
 											System.out.println("Merde 2 fois le meme objet pour " + listener);
-											System.exit(-1);
 										}
 									}
 		
@@ -262,7 +261,6 @@ public abstract interface FlexoProperty<T> extends FlexoConceptObject, FMLPretty
 								for (int i = 0; i < l.length; i++) {
 									if (l[i] == listener) {
 										System.out.println("Merde 2 fois le meme objet2");
-										System.exit(-1);
 									}
 								}
 								super.addPropertyChangeListener(propertyName, listener);

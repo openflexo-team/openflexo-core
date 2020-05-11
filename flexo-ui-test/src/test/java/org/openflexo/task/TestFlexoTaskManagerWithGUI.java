@@ -113,7 +113,6 @@ public class TestFlexoTaskManagerWithGUI {
 					public void run() {
 						taskManager.shutdown();
 						System.out.println("OK c'est fini");
-						System.exit(-1);
 					}
 				});*/
 			}

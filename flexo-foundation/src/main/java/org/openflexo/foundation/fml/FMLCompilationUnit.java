@@ -994,7 +994,6 @@ public interface FMLCompilationUnit extends FMLObject, FMLPrettyPrintable, Resou
 				// System.out.println("objectReference: " + elementDeclaration.getObjectReference());
 				// System.out.println("abbrev: " + abbrev);
 				// System.out.println("au final: " + elementDeclaration.getReferencedObject());
-				// System.exit(-1);
 
 			}
 			return elementDeclaration;

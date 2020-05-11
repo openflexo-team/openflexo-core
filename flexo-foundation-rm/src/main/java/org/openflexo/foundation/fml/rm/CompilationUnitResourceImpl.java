@@ -711,7 +711,6 @@ public abstract class CompilationUnitResourceImpl extends PamelaResourceImpl<FML
 		System.out.println("Hop:>>>>>>>>>");
 		System.out.println(returned.getFMLPrettyPrint());
 		System.out.println("<<<<<<<<<<<<");
-		System.exit(-1);
 		 */
 
 		/*if (requiresFMLPrettyPrintInitialization && getFMLParser() != null) {

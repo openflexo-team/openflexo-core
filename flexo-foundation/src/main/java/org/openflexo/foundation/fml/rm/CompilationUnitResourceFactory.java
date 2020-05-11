@@ -480,7 +480,6 @@ public class CompilationUnitResourceFactory
 					return new VirtualModelInfo(uri, version, name, requiredModelSlotList, virtualModelClassName);
 				}
 				System.out.println("prout");
-				System.exit(-1);
 			}
 			else {
 				// No way, metadata are either not present or older than file version, we should parse XML file, continuing...

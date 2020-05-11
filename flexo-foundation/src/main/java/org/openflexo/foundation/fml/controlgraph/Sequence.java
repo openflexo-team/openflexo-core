@@ -245,8 +245,6 @@ public interface Sequence extends FMLControlGraph, FMLControlGraphOwner {
 						System.out.println("c'est bien ca, c'est un " + getControlGraph1().getInferedBindingModel().getClass());
 						System.out.println("Base BM = " + getControlGraph1().getInferedBindingModel().getBaseBindingModel());
 					}
-				
-					// System.exit(-1);
 				}*/
 			}
 		}

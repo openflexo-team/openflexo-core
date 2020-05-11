@@ -813,7 +813,6 @@ public interface FMLObject extends FlexoObject, Bindable, InnerResourceData<FMLC
 				String propertyName = next.substring(0, next.indexOf("="));
 				String propertyValue = next.substring(next.indexOf("=") + 1);
 				System.out.println(propertyName + " = [" + propertyValue + "]");
-				System.exit(-1);
 			}
 		}*/
 
