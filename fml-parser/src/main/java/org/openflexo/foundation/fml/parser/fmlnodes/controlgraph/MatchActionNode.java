@@ -330,7 +330,9 @@ public class MatchActionNode extends AssignableActionNode<AMatchActionFmlActionE
 			boolean isFirst = true;
 			for (MatchingCriteria matchingCriteria : getModelObject().getMatchingCriterias()) {
 				if (matchingCriteria.getValue().isSet()) {
-					sb.append((isFirst ? "" : ",") + matchingCriteria.getFlexoProperty().getName() + "=" + matchingCriteria.getValue());
+					sb.append((isFirst ? "" : ",")
+							+ (matchingCriteria.getFlexoProperty() != null ? matchingCriteria.getFlexoProperty().getName() : "?") + "="
+							+ matchingCriteria.getValue());
 					isFirst = false;
 				}
 			}

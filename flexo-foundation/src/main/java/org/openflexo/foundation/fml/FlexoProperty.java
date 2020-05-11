@@ -600,10 +600,12 @@ public abstract interface FlexoProperty<T> extends FlexoConceptObject, FMLPretty
 					return new ValidationWarning<>(this, property, "property_($validable.propertyName)_shadows_an_other_property");
 				}
 			}
-			VirtualModel vm = property.getFlexoConcept().getOwner();
-			if (vm != null && vm != property.getFlexoConcept()) {
-				if (vm.getAccessibleProperty(property.getName()) != null) {
-					return new ValidationWarning<>(this, property, "property_($validable.propertyName)_shadows_an_other_property");
+			if (property.getFlexoConcept() != null) {
+				VirtualModel vm = property.getFlexoConcept().getOwner();
+				if (vm != null && vm != property.getFlexoConcept()) {
+					if (vm.getAccessibleProperty(property.getName()) != null) {
+						return new ValidationWarning<>(this, property, "property_($validable.propertyName)_shadows_an_other_property");
+					}
 				}
 			}
 			return null;
