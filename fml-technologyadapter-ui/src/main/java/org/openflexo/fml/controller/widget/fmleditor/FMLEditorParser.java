@@ -37,9 +37,9 @@
  */
 package org.openflexo.fml.controller.widget.fmleditor;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 import javax.swing.text.BadLocationException;
 
@@ -65,13 +65,11 @@ import org.openflexo.pamela.validation.ValidationIssue;
  */
 public class FMLEditorParser extends AbstractParser {
 
+	static final Logger logger = Logger.getLogger(FMLEditor.class.getPackage().getName());
+
 	private final FMLEditor editor;
-
 	private final FMLParser fmlParser;
-
-	// private SAXParserFactory spf;
 	private DefaultParseResult result;
-	// private EntityResolver entityResolver;
 
 	public FMLEditorParser(FMLEditor editor) {
 		this.editor = editor;
@@ -93,16 +91,32 @@ public class FMLEditorParser extends AbstractParser {
 	@Override
 	public ParseResult parse(RSyntaxDocument doc, String style) {
 
+		if (fmlWillChange) {
+			return result;
+		}
+
 		System.out.println("---------> tiens, je reparse mon document......");
 
 		result.clearNotices();
 		editor.getGutter().removeAllTrackingIcons();
 
 		try {
+			// Prevent editor from concurrent modification
+			editor.modelWillChange();
+
 			FMLCompilationUnit returned = getFMLParser().parse(editor.getTextArea().getText(), editor.getFactory());
 			System.out.println("OK c'est bien parse !!!");
+
 			FMLCompilationUnit existingData = editor.getFMLResource().getCompilationUnit();
 			existingData.updateWith(returned);
+
+			/*PAMELAVisitor visitor = new PAMELAVisitor() {
+				@Override
+				public void visit(Object object) {
+					System.out.println("> visit: " + object);
+				}
+			};
+			existingData.accept(visitor);*/
 
 			for (SemanticAnalysisIssue semanticAnalysisIssue : existingData.getPrettyPrintDelegate().getSemanticAnalysisIssues()) {
 				result.addNotice(new SemanticAnalyzerNotice(this, semanticAnalysisIssue));
@@ -114,12 +128,12 @@ public class FMLEditorParser extends AbstractParser {
 			}
 
 		} catch (ParseException e) {
-			System.out.println("Le parsing a foire...");
-			// issues.add(new Issue("Syntax error", e.getLine(), e.getPosition()));
-			// updateWithIssues(issues);
+			// Parse error: cannot do more than display position when parsing failed
 			result.addNotice(new ParseErrorNotice(this, e));
-		} catch (IOException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
+		} finally {
+			editor.modelHasChanged();
 		}
 
 		// Element root = doc.getDefaultRootElement();
@@ -128,7 +142,12 @@ public class FMLEditorParser extends AbstractParser {
 		for (ParserNotice parserNotice : result.getNotices()) {
 			try {
 				System.out.println("On ajoute line " + parserNotice.getLine() + " message: " + parserNotice.getMessage());
-				editor.getGutter().addLineTrackingIcon(parserNotice.getLine() - 1, ((FMLNotice) parserNotice).getIcon());
+				if (parserNotice.getLine() > 0) {
+					editor.getGutter().addLineTrackingIcon(parserNotice.getLine() - 1, ((FMLNotice) parserNotice).getIcon());
+				}
+				else {
+					logger.warning("Unexpected notice at line:" + parserNotice.getLength() + " " + parserNotice);
+				}
 			} catch (BadLocationException e) {
 				e.printStackTrace();
 			}
@@ -161,6 +180,16 @@ public class FMLEditorParser extends AbstractParser {
 			e1.printStackTrace();
 		}
 		return virtualModelReport;
+	}
+
+	private boolean fmlWillChange = false;
+
+	protected void fmlWillChange() {
+		fmlWillChange = true;
+	}
+
+	protected void fmlHasChanged() {
+		fmlWillChange = false;
 	}
 
 }

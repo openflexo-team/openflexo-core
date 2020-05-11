@@ -488,7 +488,7 @@ public interface FMLObject extends FlexoObject, Bindable, InnerResourceData<FMLC
 		@Override
 		public synchronized void setIsModified() {
 			super.setIsModified();
-			getPropertyChangeSupport().firePropertyChange("fMLRepresentation", false, true);
+			getPropertyChangeSupport().firePropertyChange("FMLPrettyPrint", false, true);
 			getPropertyChangeSupport().firePropertyChange("stringRepresentation", false, true);
 		}
 
@@ -620,6 +620,21 @@ public interface FMLObject extends FlexoObject, Bindable, InnerResourceData<FMLC
 		@Override
 		public String render() {
 			return getFMLPrettyPrint();
+		}
+
+		public void setPrettyPrintDelegate(FMLPrettyPrintDelegate<?> delegate) {
+			System.out.println("Hop, je mets bien a jour le FMLPrettyPrintDelegate ");
+			System.out.println("WAS: " + performSuperGetter(FMLPrettyPrintable.PRETTY_PRINT_DELEGATE_KEY));
+			performSuperSetter(FMLPrettyPrintable.PRETTY_PRINT_DELEGATE_KEY, delegate);
+			System.out.println("NOW: " + delegate);
+			if (delegate != null && delegate.getModelObject() != null && delegate.getModelObject() != this) {
+				((FMLPrettyPrintDelegate) delegate).setModelObject(this);
+			}
+
+			/*System.out.println("Normalized:");
+			System.out.println(getNormalizedFML());
+			System.out.println("PP:");
+			System.out.println(getFMLPrettyPrint());*/
 		}
 
 		/**

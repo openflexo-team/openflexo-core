@@ -230,6 +230,7 @@ public abstract class FMLObjectNode<N extends Node, T extends FMLPrettyPrintable
 	 * 
 	 * @return
 	 */
+	@Override
 	public RawSourceFragment getFragment() {
 		if (getASTNode() != null) {
 			return getFragment(getASTNode());
@@ -910,4 +911,8 @@ public abstract class FMLObjectNode<N extends Node, T extends FMLPrettyPrintable
 		return returned;
 	}*/
 
+	@Override
+	public String toString() {
+		return getClass().getSimpleName() + " " + getASTNode();
+	}
 }

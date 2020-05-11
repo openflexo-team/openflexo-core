@@ -39,6 +39,9 @@
 package org.openflexo.fml.controller.widget.fmleditor;
 
 import java.awt.BorderLayout;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.io.FileNotFoundException;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -53,20 +56,23 @@ import org.fife.ui.rsyntaxtextarea.parser.ParserNotice;
 import org.fife.ui.rtextarea.Gutter;
 import org.fife.ui.rtextarea.RTextScrollPane;
 import org.openflexo.fml.controller.FMLTechnologyAdapterController;
+import org.openflexo.foundation.FlexoException;
+import org.openflexo.foundation.fml.FMLCompilationUnit;
 import org.openflexo.foundation.fml.FMLModelFactory;
 import org.openflexo.foundation.fml.FMLTechnologyAdapter;
 import org.openflexo.foundation.fml.rm.CompilationUnitResource;
+import org.openflexo.foundation.resource.ResourceLoadingCancelledException;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterService;
 import org.openflexo.view.controller.TechnologyAdapterControllerService;
 
 /**
- * Widget allowing to edit a FML virtual model
+ * Widget allowing to edit a {@link FMLCompilationUnit} using FML textual syntax
  * 
  * @author sguerin
  * 
  */
 @SuppressWarnings("serial")
-public class FMLEditor extends JPanel {
+public class FMLEditor extends JPanel implements PropertyChangeListener {
 
 	static final Logger logger = Logger.getLogger(FMLEditor.class.getPackage().getName());
 
@@ -91,11 +97,24 @@ public class FMLEditor extends JPanel {
 		textArea = new FMLRSyntaxTextArea();
 		textArea.setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_JAVA);
 		textArea.setCodeFoldingEnabled(true);
-		// textArea.setText(
-		// "Une première ligne\nUne autre ligne arrive ensuite\nUne dernière ligne arrive à la fin\nUne dernière ligne arrive à la fin\nUne
-		// dernière ligne arrive à la fin\\nUne dernière ligne arrive à la fin\nUne dernière ligne arrive à la fin\nUne dernière ligne
-		// arrive à la fin\n");
+
+		try {
+			fmlResource.loadResourceData();
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ResourceLoadingCancelledException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (FlexoException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
 		textArea.setText(fmlResource.getLoadedResourceData().getFMLPrettyPrint());
+
+		fmlResource.getLoadedResourceData().getPropertyChangeSupport().addPropertyChangeListener(this);
+
 		RTextScrollPane sp = new RTextScrollPane(textArea);
 		((RSyntaxTextArea) sp.getTextArea()).setSyntaxEditingStyle("text/fml");
 		add(sp, BorderLayout.CENTER);
@@ -194,6 +213,40 @@ public class FMLEditor extends JPanel {
 			return tacService.getTechnologyAdapterController(fmlTA);
 		}
 		return null;
+	}
+
+	@Override
+	public void propertyChange(PropertyChangeEvent evt) {
+		if (modelWillChange) {
+			return;
+		}
+		if (evt.getPropertyName().equals("FMLPrettyPrint")) {
+			System.out.println("Received " + evt);
+			parser.fmlWillChange();
+			getTextArea().setText(fmlResource.getCompilationUnit().getFMLPrettyPrint());
+			parser.fmlHasChanged();
+		}
+	}
+
+	private boolean modelWillChange = false;
+
+	protected void modelWillChange() {
+		modelWillChange = true;
+	}
+
+	protected void modelHasChanged() {
+		modelWillChange = false;
+		String fmlPrettyPrint = fmlResource.getCompilationUnit().getFMLPrettyPrint().trim();
+		if (!getTextArea().getText().trim().equals(fmlPrettyPrint)) {
+			logger.warning("Found different FML pretty-print, please investigate");
+			System.out.println("Expected: ");
+			System.out.println(getTextArea().getText().trim());
+			System.out.println("Pretty-print: ");
+			System.out.println(fmlPrettyPrint);
+			/*parser.fmlWillChange();
+			getTextArea().setText(fmlPrettyPrint);
+			parser.fmlHasChanged();*/
+		}
 	}
 
 }
