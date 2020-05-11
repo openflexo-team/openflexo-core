@@ -86,7 +86,7 @@ public class FMLEditorParser extends AbstractParser {
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * Parse contents of editor, and update model accordingly
 	 */
 	@Override
 	public ParseResult parse(RSyntaxDocument doc, String style) {
@@ -105,23 +105,18 @@ public class FMLEditorParser extends AbstractParser {
 			editor.modelWillChange();
 
 			FMLCompilationUnit returned = getFMLParser().parse(editor.getTextArea().getText(), editor.getFactory());
-			System.out.println("OK c'est bien parse !!!");
+			// System.out.println("Parsing succeeded");
 
+			// This is the update process
 			FMLCompilationUnit existingData = editor.getFMLResource().getCompilationUnit();
 			existingData.updateWith(returned);
 
-			/*PAMELAVisitor visitor = new PAMELAVisitor() {
-				@Override
-				public void visit(Object object) {
-					System.out.println("> visit: " + object);
-				}
-			};
-			existingData.accept(visitor);*/
-
+			// Then we browse SemanticAnalysisIssue as raised by semantics analyzing
 			for (SemanticAnalysisIssue semanticAnalysisIssue : existingData.getPrettyPrintDelegate().getSemanticAnalysisIssues()) {
 				result.addNotice(new SemanticAnalyzerNotice(this, semanticAnalysisIssue));
 			}
 
+			// We finally perform a full validation to detect validation issues
 			FMLValidationReport validationReport = validate(existingData);
 			for (ValidationIssue<?, ?> validationIssue : validationReport.getAllIssues()) {
 				result.addNotice(new ValidationIssueNotice(this, validationIssue));
@@ -129,6 +124,7 @@ public class FMLEditorParser extends AbstractParser {
 
 		} catch (ParseException e) {
 			// Parse error: cannot do more than display position when parsing failed
+			// TODO: handle errors during parsing
 			result.addNotice(new ParseErrorNotice(this, e));
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -136,12 +132,11 @@ public class FMLEditorParser extends AbstractParser {
 			editor.modelHasChanged();
 		}
 
-		// Element root = doc.getDefaultRootElement();
 		result.setParsedLines(0, editor.getTextArea().getLineCount());
 
 		for (ParserNotice parserNotice : result.getNotices()) {
 			try {
-				System.out.println("On ajoute line " + parserNotice.getLine() + " message: " + parserNotice.getMessage());
+				// System.out.println("Adding line " + parserNotice.getLine() + " message: " + parserNotice.getMessage());
 				if (parserNotice.getLine() > 0) {
 					editor.getGutter().addLineTrackingIcon(parserNotice.getLine() - 1, ((FMLNotice) parserNotice).getIcon());
 				}

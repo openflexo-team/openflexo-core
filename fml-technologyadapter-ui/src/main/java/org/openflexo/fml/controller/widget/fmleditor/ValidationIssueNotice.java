@@ -40,9 +40,10 @@ package org.openflexo.fml.controller.widget.fmleditor;
 
 import java.util.logging.Logger;
 
+import org.apache.commons.lang3.StringUtils;
+import org.openflexo.foundation.fml.FMLPrettyPrintDelegate.FragmentContext;
 import org.openflexo.foundation.fml.FMLPrettyPrintable;
 import org.openflexo.p2pp.RawSource.RawSourceFragment;
-import org.openflexo.p2pp.RawSource.RawSourcePosition;
 import org.openflexo.pamela.validation.InformationIssue;
 import org.openflexo.pamela.validation.ProblemIssue;
 import org.openflexo.pamela.validation.ValidationError;
@@ -65,12 +66,6 @@ public class ValidationIssueNotice extends FMLNotice {
 	public ValidationIssueNotice(FMLEditorParser parser, ValidationIssue<?, ?> issue) {
 		super(parser, issue.getValidationReport().getValidationModel().localizedIssueMessage(issue), -1, -1, -1);
 
-		/*ValidationModel validationModel = issue.getValidationReport().getValidationModel();
-		String localizedIssueMessage = validationModel.localizedIssueMessage(issue);
-		
-		System.out.println("Message: " + issue.getMessage());
-		System.out.println("Message: " + localizedIssueMessage);*/
-
 		this.issue = issue;
 		if (issue instanceof InformationIssue) {
 			setLevel(Level.INFO);
@@ -89,35 +84,42 @@ public class ValidationIssueNotice extends FMLNotice {
 		return (issue instanceof ProblemIssue) && ((ProblemIssue) issue).isFixable();
 	}
 
+	public RawSourceFragment getFragment() {
+		if (issue != null && issue.getValidable() instanceof FMLPrettyPrintable) {
+			if (StringUtils.isNotEmpty(issue.getCause().getFragmentContext())) {
+				FragmentContext context = FragmentContext.valueOf(issue.getCause().getFragmentContext());
+				if (context != null) {
+					return ((FMLPrettyPrintable) issue.getValidable()).getPrettyPrintDelegate().getFragment(context);
+				}
+			}
+			return ((FMLPrettyPrintable) issue.getValidable()).getPrettyPrintDelegate().getFragment();
+		}
+		return null;
+	}
+
 	@Override
 	public int getLine() {
-		if (issue != null && issue.getValidable() instanceof FMLPrettyPrintable) {
-			RawSourcePosition startLocation = ((FMLPrettyPrintable) issue.getValidable()).getPrettyPrintDelegate().getStartLocation();
-			if (startLocation != null) {
-				return startLocation.getLine();
-			}
+		if (getFragment() != null) {
+			// System.out.println("For " + issue.getMessage() + " line: " + getFragment().getStartPosition().getLine());
+			return getFragment().getStartPosition().getLine();
 		}
-		return super.getLine();
+		return 0;
 	}
 
 	@Override
 	public int getOffset() {
-		if (issue != null && issue.getValidable() instanceof FMLPrettyPrintable) {
-			RawSourcePosition startLocation = ((FMLPrettyPrintable) issue.getValidable()).getPrettyPrintDelegate().getStartLocation();
-			if (startLocation != null) {
-				return startLocation.getPos();
-			}
+		if (getFragment() != null) {
+			// System.out.println("For " + issue.getMessage() + " offset: " + getFragment().getStartPosition().getOffset());
+			return getFragment().getStartPosition().getOffset();
 		}
 		return super.getOffset();
 	}
 
 	@Override
 	public int getLength() {
-		if (issue != null && issue.getValidable() instanceof FMLPrettyPrintable) {
-			RawSourceFragment fragment = ((FMLPrettyPrintable) issue.getValidable()).getPrettyPrintDelegate().getFragment();
-			if (fragment != null) {
-				return fragment.getLength();
-			}
+		if (getFragment() != null) {
+			// System.out.println("For " + issue.getMessage() + " length: " + getFragment().getLength());
+			return getFragment().getLength();
 		}
 		return super.getLength();
 	}

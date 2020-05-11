@@ -56,6 +56,7 @@ import org.openflexo.connie.Bindable;
 import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.type.TypeUtils;
 import org.openflexo.foundation.InvalidNameException;
+import org.openflexo.foundation.fml.FMLPrettyPrintDelegate.FragmentContext;
 import org.openflexo.foundation.fml.FlexoConceptBehaviouralFacet.FlexoConceptBehaviouralFacetImpl;
 import org.openflexo.foundation.fml.FlexoConceptStructuralFacet.FlexoConceptStructuralFacetImpl;
 import org.openflexo.foundation.fml.action.CreateFlexoBehaviour;
@@ -2028,6 +2029,11 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 		}
 
 		@Override
+		public String getFragmentContext() {
+			return FragmentContext.NAME.name();
+		}
+
+		@Override
 		public ValidationIssue<NonAbstractFlexoConceptMustImplementAllPropertiesAndbehaviours, FlexoConcept> applyValidation(
 				FlexoConcept flexoConcept) {
 			if (!(flexoConcept.isAbstract()) && flexoConcept.abstractRequired()) {
@@ -2043,6 +2049,11 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 			extends ValidationRule<NonAbstractFlexoConceptShouldHaveProperties, FlexoConcept> {
 		public NonAbstractFlexoConceptShouldHaveProperties() {
 			super(FlexoConcept.class, "non_abstract_flexo_concept_should_have_properties");
+		}
+
+		@Override
+		public String getFragmentContext() {
+			return FragmentContext.NAME.name();
 		}
 
 		@Override
@@ -2063,18 +2074,29 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 		}
 
 		@Override
+		public String getFragmentContext() {
+			return FragmentContext.NAME.name();
+		}
+
+		@Override
 		public ValidationIssue<FlexoConceptShouldHaveFlexoBehaviours, FlexoConcept> applyValidation(FlexoConcept flexoConcept) {
 			if (!flexoConcept.isAbstract() && !(flexoConcept instanceof FlexoEnum) && flexoConcept.getFlexoBehaviours().size() == 0) {
 				return new ValidationWarning<>(this, flexoConcept, "non_abstract_flexo_concept_($validable.name)_has_no_behaviours");
 			}
 			return null;
 		}
+
 	}
 
 	@DefineValidationRule
 	public static class FlexoConceptShouldHaveDeletionScheme extends ValidationRule<FlexoConceptShouldHaveDeletionScheme, FlexoConcept> {
 		public FlexoConceptShouldHaveDeletionScheme() {
 			super(FlexoConcept.class, "non_abstract_flexo_concept_should_have_deletion_scheme");
+		}
+
+		@Override
+		public String getFragmentContext() {
+			return FragmentContext.NAME.name();
 		}
 
 		@Override

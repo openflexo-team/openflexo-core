@@ -140,4 +140,16 @@ public abstract class AbstractFlexoConceptNode<N extends Node, T extends FlexoCo
 
 	protected abstract RawSourceFragment getSuperTypeListFragment();
 
+	@Override
+	public RawSourceFragment getFragment(FragmentContext context) {
+		if (context != null) {
+			switch (context) {
+				case NAME:
+					return getNameFragment();
+				default:
+					break;
+			}
+		}
+		return super.getFragment(context);
+	}
 }

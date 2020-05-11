@@ -915,4 +915,10 @@ public abstract class FMLObjectNode<N extends Node, T extends FMLPrettyPrintable
 	public String toString() {
 		return getClass().getSimpleName() + " " + getASTNode();
 	}
+
+	// MUST be overriden to be usefull
+	@Override
+	public RawSourceFragment getFragment(FragmentContext context) {
+		return getFragment();
+	}
 }

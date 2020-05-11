@@ -59,11 +59,22 @@ public interface FMLPrettyPrintDelegate<T extends FMLObject> extends PrettyPrint
 	 */
 	public RawSourceFragment getFragment();
 
+	/**
+	 * Return fragment matching supplied context
+	 * 
+	 * @return
+	 */
+	public RawSourceFragment getFragment(FragmentContext context);
+
 	public RawSourcePosition getStartLocation();
 
 	public RawSourcePosition getEndLocation();
 
 	public List<SemanticAnalysisIssue> getSemanticAnalysisIssues();
+
+	public enum FragmentContext {
+		NAME, URI, HEADER
+	}
 
 	public static class SemanticAnalysisIssue {
 		private String message;
