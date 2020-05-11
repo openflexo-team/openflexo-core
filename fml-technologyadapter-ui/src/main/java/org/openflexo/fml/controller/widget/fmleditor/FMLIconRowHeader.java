@@ -94,15 +94,15 @@ public class FMLIconRowHeader extends FoldingAwareIconRowHeader implements Mouse
 
 		super.mouseEntered(e);
 		// System.out.println("mouseEntered with " + e);
-		ParserNotice focused = getFocusedNotice(e);
+		int focused = getFocusedNoticesLineNumber(e);
 
-		System.out.println("------> mouseEntered()");
+		/*System.out.println("------> mouseEntered()");
 		System.out.println("focused=" + focused);
 		System.out.println("currentlyShownNotice=" + currentlyShownNotice);
-		System.out.println("currentlyFocusedNotice=" + currentlyFocusedNotice);
+		System.out.println("currentlyFocusedNotice=" + currentlyFocusedNotice);*/
 
 		if (focused != currentlyFocusedNotice) {
-			if (focused != null) {
+			if (focused != -1) {
 				triggerTooltipAppearing(focused, e);
 			}
 		}
@@ -113,28 +113,26 @@ public class FMLIconRowHeader extends FoldingAwareIconRowHeader implements Mouse
 
 	@Override
 	public void mouseMoved(MouseEvent e) {
-		ParserNotice focused = getFocusedNotice(e);
+		int focused = getFocusedNoticesLineNumber(e);
 
-		System.out.println("------> mouseMoved()");
+		/*System.out.println("------> mouseMoved()");
 		System.out.println("focused=" + focused);
 		System.out.println("currentlyShownNotice=" + currentlyShownNotice);
-		System.out.println("currentlyFocusedNotice=" + currentlyFocusedNotice);
+		System.out.println("currentlyFocusedNotice=" + currentlyFocusedNotice);*/
 
-		if (currentlyShownNotice != null) {
+		if (currentlyShownNotice != -1) {
 			if (focused != currentlyShownNotice) {
 				hideTooltip(currentlyShownNotice);
 				setCursor(Cursor.getDefaultCursor());
 			}
 		}
-		else { // currentlyShownNotice = null
-				// if (focused != currentlyFocusedNotice) {
-			if (focused != null) {
+		else {
+			if (focused != -1) {
 				triggerTooltipAppearing(focused, e);
 			}
 			else {
 				setCursor(Cursor.getDefaultCursor());
 			}
-			// }
 		}
 
 		currentlyFocusedNotice = focused;
@@ -143,53 +141,62 @@ public class FMLIconRowHeader extends FoldingAwareIconRowHeader implements Mouse
 
 	@Override
 	public void mouseExited(MouseEvent e) {
-		ParserNotice focused = getFocusedNotice(e);
-		// System.out.println("mouseExited with " + e);
+		int focused = getFocusedNoticesLineNumber(e);
 
-		System.out.println("------> mouseExited()");
+		/*System.out.println("------> mouseExited()");
 		System.out.println("focused=" + focused);
 		System.out.println("currentlyShownNotice=" + currentlyShownNotice);
-		System.out.println("currentlyFocusedNotice=" + currentlyFocusedNotice);
+		System.out.println("currentlyFocusedNotice=" + currentlyFocusedNotice);*/
 
-		if (focused == null && currentlyShownNotice != null) {
+		if (focused == -1 && currentlyShownNotice != -1) {
 			hideTooltip(currentlyShownNotice);
 		}
 		setCursor(Cursor.getDefaultCursor());
 	}
 
-	private ParserNotice getFocusedNotice(MouseEvent e) {
+	private List<ParserNotice> getFocusedNotices(MouseEvent e) {
 		try {
 			int line = viewToModelLine(e.getPoint()) + 1;
-			List<ParserNotice> parserNotices = getParserNotices(line);
-			if (parserNotices.size() > 0) {
-				return parserNotices.get(0);
-			}
+			return getParserNotices(line);
 		} catch (BadLocationException ble) {
 			ble.printStackTrace(); // Never happens
 		}
 		return null;
 	}
 
-	private ParserNotice currentlyFocusedNotice = null;
-	private ParserNotice currentlyShownNotice = null;
-	private ParserNotice noticeScheludedForShowing = null;
+	private int getFocusedNoticesLineNumber(MouseEvent e) {
+		try {
+			int line = viewToModelLine(e.getPoint()) + 1;
+			List<ParserNotice> parserNotices = getParserNotices(line);
+			if (parserNotices.size() > 0) {
+				return line;
+			}
+		} catch (BadLocationException ble) {
+			ble.printStackTrace(); // Never happens
+		}
+		return -1;
+	}
 
-	private void triggerTooltipAppearing(ParserNotice notice, MouseEvent e) {
+	private int currentlyFocusedNotice = -1;
+	private int currentlyShownNotice = -1;
+	private int noticeScheludedForShowing = -1;
+
+	private void triggerTooltipAppearing(int lineNumber, MouseEvent e) {
 		setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-		if (notice == noticeScheludedForShowing) {
+		if (lineNumber == noticeScheludedForShowing) {
 			return;
 		}
-		noticeScheludedForShowing = notice;
+		noticeScheludedForShowing = lineNumber;
 		new Thread(new Runnable() {
 			@Override
 			public void run() {
 				try {
 					Thread.sleep(1000);
-					noticeScheludedForShowing = null;
-					if (notice == currentlyFocusedNotice) {
+					noticeScheludedForShowing = -1;
+					if (lineNumber == currentlyFocusedNotice) {
 						Point point = new Point(e.getPoint());
 						SwingUtilities.convertPointToScreen(point, (Component) e.getSource());
-						showToolTip(notice, (int) point.getX(), (int) point.getY());
+						showToolTip(lineNumber, (int) point.getX(), (int) point.getY());
 					}
 				} catch (InterruptedException e) {
 					// TODO Auto-generated catch block
@@ -205,44 +212,61 @@ public class FMLIconRowHeader extends FoldingAwareIconRowHeader implements Mouse
 
 	}
 
-	private Map<ParserNotice, JToolTip> toolTipMap = new HashMap();
-	private Map<ParserNotice, Popup> toolTipContainerMap = new HashMap();
+	private Map<Integer, JToolTip> toolTipMap = new HashMap();
+	private Map<Integer, Popup> toolTipContainerMap = new HashMap();
 
-	private void showToolTip(ParserNotice notice, int x, int y) {
-		JToolTip tooltip = toolTipMap.get(notice);
+	private void showToolTip(int lineNumber, int x, int y) {
+		JToolTip tooltip = toolTipMap.get(lineNumber);
 
 		// System.out.println("showToolTip with " + notice.getMessage());
 
-		currentlyShownNotice = notice;
+		currentlyShownNotice = lineNumber;
 
 		if (tooltip == null) {
 			tooltip = createToolTip();
-			toolTipMap.put(notice, tooltip);
+			toolTipMap.put(lineNumber, tooltip);
 			PopupFactory popupFactory = PopupFactory.getSharedInstance();
-			tooltip.setTipText(notice.getToolTipText());
+			tooltip.setTipText(getTooltipText(lineNumber));
 			final Popup tooltipContainer = popupFactory.getPopup(this, tooltip, x, y);
-			toolTipContainerMap.put(notice, tooltipContainer);
+			toolTipContainerMap.put(lineNumber, tooltipContainer);
 			tooltipContainer.show();
 			tooltip.addMouseListener(new MouseAdapter() {
 				@Override
 				public void mouseClicked(MouseEvent e) {
-					hideTooltip(notice);
+					hideTooltip(lineNumber);
 				}
 			});
 		}
 	}
 
-	private void hideTooltip(ParserNotice notice) {
-		JToolTip tooltip = toolTipMap.get(notice);
-		Popup tooltipContainer = toolTipContainerMap.get(notice);
+	private void hideTooltip(int lineNumber) {
+		// JToolTip tooltip = toolTipMap.get(lineNumber);
+		Popup tooltipContainer = toolTipContainerMap.get(lineNumber);
 		if (tooltipContainer != null) {
 			tooltipContainer.hide();
 		}
-		toolTipMap.remove(notice);
-		toolTipContainerMap.remove(notice);
-		currentlyShownNotice = null;
+		toolTipMap.remove(lineNumber);
+		toolTipContainerMap.remove(lineNumber);
+		currentlyShownNotice = -1;
 		setCursor(Cursor.getDefaultCursor());
 		// Thread.dumpStack();
+	}
+
+	private String getTooltipText(int lineNumber) {
+		List<ParserNotice> notices = getParserNotices(lineNumber);
+		if (notices.size() == 1) {
+			return notices.get(0).getMessage();
+		}
+		else if (notices.size() > 1) {
+			StringBuffer sb = new StringBuffer();
+			sb.append("<html>many_marks_on_this_line:<br>");
+			for (ParserNotice notice : notices) {
+				sb.append(" - " + notice.getMessage() + "<br>");
+			}
+			sb.append("</html>");
+			return sb.toString();
+		}
+		return null;
 	}
 
 }
