@@ -623,10 +623,10 @@ public interface FMLObject extends FlexoObject, Bindable, InnerResourceData<FMLC
 		}
 
 		public void setPrettyPrintDelegate(FMLPrettyPrintDelegate<?> delegate) {
-			System.out.println("Hop, je mets bien a jour le FMLPrettyPrintDelegate ");
-			System.out.println("WAS: " + performSuperGetter(FMLPrettyPrintable.PRETTY_PRINT_DELEGATE_KEY));
+			// System.out.println("setPrettyPrintDelegate");
+			// System.out.println("WAS: " + performSuperGetter(FMLPrettyPrintable.PRETTY_PRINT_DELEGATE_KEY));
 			performSuperSetter(FMLPrettyPrintable.PRETTY_PRINT_DELEGATE_KEY, delegate);
-			System.out.println("NOW: " + delegate);
+			// System.out.println("NOW: " + delegate);
 			if (delegate != null && delegate.getModelObject() != null && delegate.getModelObject() != this) {
 				((FMLPrettyPrintDelegate) delegate).setModelObject(this);
 			}
