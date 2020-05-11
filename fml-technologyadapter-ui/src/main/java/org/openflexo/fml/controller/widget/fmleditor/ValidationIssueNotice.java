@@ -63,7 +63,14 @@ public class ValidationIssueNotice extends FMLNotice {
 	private ValidationIssue<?, ?> issue;
 
 	public ValidationIssueNotice(FMLEditorParser parser, ValidationIssue<?, ?> issue) {
-		super(parser, issue.getMessage(), -1, -1, -1);
+		super(parser, issue.getValidationReport().getValidationModel().localizedIssueMessage(issue), -1, -1, -1);
+
+		/*ValidationModel validationModel = issue.getValidationReport().getValidationModel();
+		String localizedIssueMessage = validationModel.localizedIssueMessage(issue);
+		
+		System.out.println("Message: " + issue.getMessage());
+		System.out.println("Message: " + localizedIssueMessage);*/
+
 		this.issue = issue;
 		if (issue instanceof InformationIssue) {
 			setLevel(Level.INFO);
