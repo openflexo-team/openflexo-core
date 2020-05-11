@@ -91,9 +91,15 @@ public class FMLIconRowHeader extends FoldingAwareIconRowHeader implements Mouse
 
 	@Override
 	public void mouseEntered(MouseEvent e) {
+
 		super.mouseEntered(e);
 		// System.out.println("mouseEntered with " + e);
 		ParserNotice focused = getFocusedNotice(e);
+
+		System.out.println("------> mouseEntered()");
+		System.out.println("focused=" + focused);
+		System.out.println("currentlyShownNotice=" + currentlyShownNotice);
+		System.out.println("currentlyFocusedNotice=" + currentlyFocusedNotice);
 
 		if (focused != currentlyFocusedNotice) {
 			if (focused != null) {
@@ -109,15 +115,26 @@ public class FMLIconRowHeader extends FoldingAwareIconRowHeader implements Mouse
 	public void mouseMoved(MouseEvent e) {
 		ParserNotice focused = getFocusedNotice(e);
 
+		System.out.println("------> mouseMoved()");
+		System.out.println("focused=" + focused);
+		System.out.println("currentlyShownNotice=" + currentlyShownNotice);
+		System.out.println("currentlyFocusedNotice=" + currentlyFocusedNotice);
+
 		if (currentlyShownNotice != null) {
 			if (focused != currentlyShownNotice) {
 				hideTooltip(currentlyShownNotice);
+				setCursor(Cursor.getDefaultCursor());
 			}
 		}
-		else if (focused != currentlyFocusedNotice) {
+		else { // currentlyShownNotice = null
+				// if (focused != currentlyFocusedNotice) {
 			if (focused != null) {
 				triggerTooltipAppearing(focused, e);
 			}
+			else {
+				setCursor(Cursor.getDefaultCursor());
+			}
+			// }
 		}
 
 		currentlyFocusedNotice = focused;
@@ -126,11 +143,18 @@ public class FMLIconRowHeader extends FoldingAwareIconRowHeader implements Mouse
 
 	@Override
 	public void mouseExited(MouseEvent e) {
-		super.mouseExited(e);
+		ParserNotice focused = getFocusedNotice(e);
 		// System.out.println("mouseExited with " + e);
-		if (currentlyShownNotice != null) {
+
+		System.out.println("------> mouseExited()");
+		System.out.println("focused=" + focused);
+		System.out.println("currentlyShownNotice=" + currentlyShownNotice);
+		System.out.println("currentlyFocusedNotice=" + currentlyFocusedNotice);
+
+		if (focused == null && currentlyShownNotice != null) {
 			hideTooltip(currentlyShownNotice);
 		}
+		setCursor(Cursor.getDefaultCursor());
 	}
 
 	private ParserNotice getFocusedNotice(MouseEvent e) {
@@ -148,13 +172,20 @@ public class FMLIconRowHeader extends FoldingAwareIconRowHeader implements Mouse
 
 	private ParserNotice currentlyFocusedNotice = null;
 	private ParserNotice currentlyShownNotice = null;
+	private ParserNotice noticeScheludedForShowing = null;
 
 	private void triggerTooltipAppearing(ParserNotice notice, MouseEvent e) {
+		setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		if (notice == noticeScheludedForShowing) {
+			return;
+		}
+		noticeScheludedForShowing = notice;
 		new Thread(new Runnable() {
 			@Override
 			public void run() {
 				try {
 					Thread.sleep(1000);
+					noticeScheludedForShowing = null;
 					if (notice == currentlyFocusedNotice) {
 						Point point = new Point(e.getPoint());
 						SwingUtilities.convertPointToScreen(point, (Component) e.getSource());
@@ -192,7 +223,6 @@ public class FMLIconRowHeader extends FoldingAwareIconRowHeader implements Mouse
 			final Popup tooltipContainer = popupFactory.getPopup(this, tooltip, x, y);
 			toolTipContainerMap.put(notice, tooltipContainer);
 			tooltipContainer.show();
-			setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 			tooltip.addMouseListener(new MouseAdapter() {
 				@Override
 				public void mouseClicked(MouseEvent e) {
@@ -205,11 +235,14 @@ public class FMLIconRowHeader extends FoldingAwareIconRowHeader implements Mouse
 	private void hideTooltip(ParserNotice notice) {
 		JToolTip tooltip = toolTipMap.get(notice);
 		Popup tooltipContainer = toolTipContainerMap.get(notice);
-		tooltipContainer.hide();
+		if (tooltipContainer != null) {
+			tooltipContainer.hide();
+		}
 		toolTipMap.remove(notice);
 		toolTipContainerMap.remove(notice);
 		currentlyShownNotice = null;
 		setCursor(Cursor.getDefaultCursor());
+		// Thread.dumpStack();
 	}
 
 }
