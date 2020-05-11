@@ -203,6 +203,7 @@ log_level=Niveau de Log
 log_string=Log
 make_editor_for_project=Construction de l'\u00E9diteur pour le projet
 manage_resource_centers=G\u00E9rer les centres de resources...
+many_marks_on_this_line:=Plusieurs rep\u00E8res sur cette ligne:
 matching_criterias=matching_criterias
 matching_set=matching_set
 modelslot_behaviour=modelslot_behaviour

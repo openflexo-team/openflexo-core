@@ -3,6 +3,8 @@ package org.openflexo.fml.controller.widget.fmleditor;
 import java.awt.Component;
 import java.awt.Cursor;
 import java.awt.Point;
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionListener;
@@ -24,6 +26,23 @@ public class FMLIconRowHeader extends FoldingAwareIconRowHeader implements Mouse
 
 	public FMLIconRowHeader(FMLRSyntaxTextArea textArea) {
 		super(textArea);
+		textArea.addFocusListener(new FocusAdapter() {
+			@Override
+			public void focusGained(FocusEvent e) {
+				if (currentlyShownNotice != -1) {
+					hideTooltip(currentlyShownNotice);
+				}
+			}
+		});
+		textArea.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				if (currentlyShownNotice != -1) {
+					hideTooltip(currentlyShownNotice);
+				}
+			}
+		});
+
 	}
 
 	public FMLRSyntaxTextArea getTextArea() {
@@ -34,6 +53,10 @@ public class FMLIconRowHeader extends FoldingAwareIconRowHeader implements Mouse
 	protected void init() {
 		super.init();
 		addMouseMotionListener(this);
+	}
+
+	public FMLEditor getEditor() {
+		return getTextArea().getEditor();
 	}
 
 	@Override
@@ -259,9 +282,11 @@ public class FMLIconRowHeader extends FoldingAwareIconRowHeader implements Mouse
 		}
 		else if (notices.size() > 1) {
 			StringBuffer sb = new StringBuffer();
-			sb.append("<html>many_marks_on_this_line:<br>");
+			sb.append("<html>");
+			sb.append(getEditor().getFlexoLocalizer().localizedForKey("many_marks_on_this_line:"));
+			sb.append("<br>");
 			for (ParserNotice notice : notices) {
-				sb.append(" - " + notice.getMessage() + "<br>");
+				sb.append("&nbsp; - " + notice.getMessage() + "<br>");
 			}
 			sb.append("</html>");
 			return sb.toString();

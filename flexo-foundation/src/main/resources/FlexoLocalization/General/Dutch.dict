@@ -204,6 +204,7 @@ log_string=Log string
 make_editor_for_project=make_editor_for_project
 manage_resource_centers=Manage resource centers
 matching_criterias=Matching criterias
+many_marks_on_this_line:=Many marks on this line:
 matching_set=Matching set
 modelslot_behaviour=Modelslot behaviour
 modified=Modified

@@ -9,6 +9,16 @@ import org.fife.ui.rtextarea.RTextAreaUI;
  */
 public class FMLRSyntaxTextArea extends RSyntaxTextArea {
 
+	private final FMLEditor editor;
+
+	public FMLRSyntaxTextArea(FMLEditor editor) {
+		this.editor = editor;
+	}
+
+	public FMLEditor getEditor() {
+		return editor;
+	}
+
 	/**
 	 * Returns the a real UI to install on this text area.
 	 *

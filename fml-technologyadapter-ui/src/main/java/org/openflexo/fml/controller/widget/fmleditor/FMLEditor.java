@@ -57,12 +57,14 @@ import org.fife.ui.rtextarea.Gutter;
 import org.fife.ui.rtextarea.RTextScrollPane;
 import org.openflexo.fml.controller.FMLTechnologyAdapterController;
 import org.openflexo.foundation.FlexoException;
+import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.fml.FMLCompilationUnit;
 import org.openflexo.foundation.fml.FMLModelFactory;
 import org.openflexo.foundation.fml.FMLTechnologyAdapter;
 import org.openflexo.foundation.fml.rm.CompilationUnitResource;
 import org.openflexo.foundation.resource.ResourceLoadingCancelledException;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterService;
+import org.openflexo.localization.LocalizedDelegate;
 import org.openflexo.view.controller.TechnologyAdapterControllerService;
 
 /**
@@ -94,7 +96,7 @@ public class FMLEditor extends JPanel implements PropertyChangeListener {
 
 		this.fmlResource = fmlResource;
 
-		textArea = new FMLRSyntaxTextArea();
+		textArea = new FMLRSyntaxTextArea(this);
 		textArea.setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_JAVA);
 		textArea.setCodeFoldingEnabled(true);
 
@@ -186,6 +188,27 @@ public class FMLEditor extends JPanel implements PropertyChangeListener {
 
 	public CompilationUnitResource getFMLResource() {
 		return fmlResource;
+	}
+
+	public FlexoServiceManager getServiceManager() {
+		if (fmlResource != null) {
+			return fmlResource.getServiceManager();
+		}
+		return null;
+	}
+
+	public LocalizedDelegate getFlexoLocalizer() {
+		if (getServiceManager() != null) {
+			return getServiceManager().getLocalizationService().getFlexoLocalizer();
+		}
+		return null;
+	}
+
+	public LocalizedDelegate getFMLLocalizer() {
+		if (getFMLTechnologyAdapterController() != null) {
+			getFMLTechnologyAdapterController().getLocales();
+		}
+		return null;
 	}
 
 	public Gutter getGutter() {
