@@ -87,7 +87,7 @@ public interface FMLPrettyPrintDelegate<T extends FMLObject> extends PrettyPrint
 			this.message = errorMessage;
 			if (fragment != null) {
 				this.line = fragment.getStartPosition().getLine();
-				this.offset = fragment.getStartPosition().getPos();
+				this.offset = fragment.getStartPosition().getOffset();
 				this.length = fragment.getLength();
 			}
 		}
