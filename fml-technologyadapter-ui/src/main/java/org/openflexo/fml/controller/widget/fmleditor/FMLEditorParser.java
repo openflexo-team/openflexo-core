@@ -111,6 +111,12 @@ public class FMLEditorParser extends AbstractParser {
 			FMLCompilationUnit existingData = editor.getFMLResource().getCompilationUnit();
 			existingData.updateWith(returned);
 
+			// There is a trick here: the update has nullified the resource
+			// (this is normal, just parsed FMLCompilationUnit does not knows the resource)
+			// So set the resource again at the end of the update process
+			existingData.setResource(editor.getFMLResource());
+			// System.out.println("Check also: " + (editor.getFMLResource().getResourceData() == existingData));
+
 			// Then we browse SemanticAnalysisIssue as raised by semantics analyzing
 			for (SemanticAnalysisIssue semanticAnalysisIssue : existingData.getPrettyPrintDelegate().getSemanticAnalysisIssues()) {
 				result.addNotice(new SemanticAnalyzerNotice(this, semanticAnalysisIssue));

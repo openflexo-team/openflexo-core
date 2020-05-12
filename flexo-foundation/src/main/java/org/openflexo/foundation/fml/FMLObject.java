@@ -723,7 +723,7 @@ public interface FMLObject extends FlexoObject, Bindable, InnerResourceData<FMLC
 					}
 				});
 
-				System.out.println("Returning " + returned);
+				// System.out.println("Returning " + returned);
 				return returned;
 				// return new ArrayList<>(fmlPropertyValues.values());
 			}

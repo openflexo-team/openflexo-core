@@ -272,7 +272,7 @@ public class FMLModelContext {
 				return null;
 			}
 			ModelEntity<I> modelEntity = modelFactory.getModelContext().getModelEntity(implementedInterface);
-			System.out.println("modelEntity=" + modelEntity);
+			// System.out.println("modelEntity=" + modelEntity);
 
 			returned = new FMLEntity<I>(fmlAnnotation, modelEntity);
 			fmlEntities.put(implementedInterface, returned);

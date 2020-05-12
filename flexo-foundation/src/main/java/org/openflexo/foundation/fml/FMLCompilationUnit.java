@@ -953,7 +953,7 @@ public interface FMLCompilationUnit extends FMLObject, FMLPrettyPrintable, Resou
 		@Override
 		public <RD extends ResourceData<RD> & FlexoObject> ElementImportDeclaration ensureResourceImport(RD resourceData) {
 			ElementImportDeclaration vmDeclaration = retrieveImportDeclaration(resourceData);
-			if (vmDeclaration == null) {
+			if (vmDeclaration == null && resourceData.getResource() != null) {
 				FlexoResourceCenter<?> resourceCenter = resourceData.getResource().getResourceCenter();
 				// System.out.println("rc=" + resourceCenter.getDefaultBaseURI());
 				String uri = resourceData.getResource().getURI();

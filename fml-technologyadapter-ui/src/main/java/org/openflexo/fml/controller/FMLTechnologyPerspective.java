@@ -42,9 +42,11 @@ import java.util.logging.Logger;
 
 import javax.swing.ImageIcon;
 
-import org.openflexo.fml.controller.view.FMLVirtualModelView;
+import org.openflexo.fml.controller.view.FMLCompilationUnitView;
 import org.openflexo.foundation.FlexoObject;
+import org.openflexo.foundation.fml.FMLCompilationUnit;
 import org.openflexo.foundation.fml.VirtualModel;
+import org.openflexo.foundation.fml.rm.CompilationUnitResource;
 import org.openflexo.icon.FMLIconLibrary;
 import org.openflexo.view.ModuleView;
 import org.openflexo.view.controller.FlexoController;
@@ -78,7 +80,7 @@ public class FMLTechnologyPerspective extends GenericPerspective {
 	@Override
 	@SuppressWarnings("unchecked")
 	public boolean hasModuleViewForObject(FlexoObject object) {
-		if (object instanceof VirtualModel) {
+		if (object instanceof FMLCompilationUnit) {
 			return true;
 		}
 		return super.hasModuleViewForObject(object);
@@ -86,9 +88,14 @@ public class FMLTechnologyPerspective extends GenericPerspective {
 
 	@Override
 	public ModuleView<?> createModuleViewForObject(FlexoObject object) {
-		if (object instanceof VirtualModel) {
-			return new FMLVirtualModelView((VirtualModel) object, getController(), this);
+		if (object instanceof FMLCompilationUnit) {
+			CompilationUnitResource resource = (CompilationUnitResource) ((FMLCompilationUnit) object).getResource();
+			return new FMLCompilationUnitView(resource, getController(), this);
 		}
+		/*if (object instanceof FMLObject) {
+			CompilationUnitResource resource = ((FMLObject) object).getDeclaringCompilationUnitResource();
+			return new FMLCompilationUnitView(resource, getController(), this);
+		}*/
 		return super.createModuleViewForObject(object);
 	}
 

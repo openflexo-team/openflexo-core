@@ -186,6 +186,10 @@ public class FMLEditor extends JPanel implements PropertyChangeListener {
 
 	}
 
+	public void delete() {
+		logger.warning("delete() not implemented for FMLEditor");
+	}
+
 	public CompilationUnitResource getFMLResource() {
 		return fmlResource;
 	}

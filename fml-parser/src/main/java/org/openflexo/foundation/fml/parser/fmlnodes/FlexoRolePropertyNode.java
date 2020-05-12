@@ -95,7 +95,6 @@ public class FlexoRolePropertyNode<N extends PInnerConceptDecl, R extends FlexoR
 			returned.setCardinality(getCardinality(((AFmlInnerConceptDecl) astNode).getCardinality()));
 			CustomType type = (CustomType) getTypeFactory().makeType(((AFmlInnerConceptDecl) astNode).getType(), returned);
 			returned.setType(type);
-			// decodeFMLProperties(((AFmlInnerConceptDecl) astNode).getFmlParameters(), returned);
 		}
 		if (astNode instanceof AFmlFullyQualifiedInnerConceptDecl) {
 			returned.setVisibility(getVisibility(((AFmlFullyQualifiedInnerConceptDecl) astNode).getVisibility()));
@@ -107,7 +106,6 @@ public class FlexoRolePropertyNode<N extends PInnerConceptDecl, R extends FlexoR
 			returned.setCardinality(getCardinality(((AFmlFullyQualifiedInnerConceptDecl) astNode).getCardinality()));
 			CustomType type = (CustomType) getTypeFactory().makeType(((AFmlFullyQualifiedInnerConceptDecl) astNode).getType(), returned);
 			returned.setType(type);
-			// decodeFMLProperties(((AFmlFullyQualifiedInnerConceptDecl) astNode).getFmlParameters(), returned);
 		}
 		return returned;
 	}

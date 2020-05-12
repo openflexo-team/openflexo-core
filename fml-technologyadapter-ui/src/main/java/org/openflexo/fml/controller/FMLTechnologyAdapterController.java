@@ -446,6 +446,9 @@ public class FMLTechnologyAdapterController extends TechnologyAdapterController<
 	@Override
 	public boolean hasModuleViewForObject(TechnologyObject<FMLTechnologyAdapter> object, FlexoController controller) {
 
+		if (object instanceof FMLCompilationUnit) {
+			return true;
+		}
 		if (object instanceof FlexoConcept) {
 			return true;
 		}
@@ -455,8 +458,8 @@ public class FMLTechnologyAdapterController extends TechnologyAdapterController<
 
 	@Override
 	public String getWindowTitleforObject(TechnologyObject<FMLTechnologyAdapter> object, FlexoController controller) {
-		if (object instanceof VirtualModel) {
-			return ((VirtualModel) object).getName();
+		if (object instanceof FMLCompilationUnit) {
+			return ((FMLCompilationUnit) object).getVirtualModel().getName();
 		}
 		if (object instanceof FlexoConcept) {
 			return ((FlexoConcept) object).getName();
@@ -477,6 +480,9 @@ public class FMLTechnologyAdapterController extends TechnologyAdapterController<
 	@Override
 	public ModuleView<?> createModuleViewForObject(TechnologyObject<FMLTechnologyAdapter> object, FlexoController controller,
 			FlexoPerspective perspective) {
+		if (object instanceof FMLCompilationUnit) {
+			return new StandardVirtualModelView(((FMLCompilationUnit) object).getVirtualModel(), controller, perspective);
+		}
 		if (object instanceof FlexoConcept) {
 			FlexoConcept ep = (FlexoConcept) object;
 			if (ep instanceof VirtualModel) {

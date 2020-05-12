@@ -42,6 +42,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 
+import org.openflexo.connie.type.CustomType;
 import org.openflexo.foundation.fml.ElementImportDeclaration;
 import org.openflexo.foundation.fml.FMLCompilationUnit;
 import org.openflexo.foundation.fml.FMLModelFactory;
@@ -211,12 +212,13 @@ public class MainSemanticsAnalyzer extends FMLSemanticsAnalyzer {
 				System.out.println(" > " + unresolvedType);
 			}*/
 			typeFactory.resolveUnresovedTypes();
-			/*if (typeFactory.getUnresolvedTypes().size() > 0) {
+			if (typeFactory.getUnresolvedTypes().size() > 0) {
 				System.out.println("Atfer types resolution still some types unresolved");
 				for (CustomType unresolvedType : typeFactory.getUnresolvedTypes()) {
-					System.out.println(" > " + unresolvedType);
+					// System.out.println(" > " + unresolvedType);
+					getCompilationUnitNode().throwIssue("cannot_resolve " + unresolvedType);
 				}
-			}*/
+			}
 		}
 	}
 
@@ -388,18 +390,26 @@ public class MainSemanticsAnalyzer extends FMLSemanticsAnalyzer {
 	public void inAFmlInnerConceptDecl(AFmlInnerConceptDecl node) {
 		super.inAFmlInnerConceptDecl(node);
 		Class<? extends FlexoRole<?>> roleClass = getFMLFactory().getRoleClass(node.getRole());
-		if (ModelSlot.class.isAssignableFrom(roleClass)) {
-			push(retrieveFMLNode(node, n -> (ModelSlotPropertyNode) getPropertyFactory().makeModelSlotPropertyNode(n)));
+		if (roleClass != null) {
+			if (ModelSlot.class.isAssignableFrom(roleClass)) {
+				push(retrieveFMLNode(node, n -> (ModelSlotPropertyNode) getPropertyFactory().makeModelSlotPropertyNode(n)));
+			}
+			else {
+				push(retrieveFMLNode(node, n -> (FlexoRolePropertyNode) getPropertyFactory().makeFlexoRolePropertyNode(n)));
+			}
 		}
 		else {
-			push(retrieveFMLNode(node, n -> (FlexoRolePropertyNode) getPropertyFactory().makeFlexoRolePropertyNode(n)));
+			compilationUnitNode.throwIssue("role_not_found: " + node.getRole().getText(), getFragment(node.getRole()));
 		}
 	}
 
 	@Override
 	public void outAFmlInnerConceptDecl(AFmlInnerConceptDecl node) {
 		super.outAFmlInnerConceptDecl(node);
-		pop();
+		Class<? extends FlexoRole<?>> roleClass = getFMLFactory().getRoleClass(node.getRole());
+		if (roleClass != null) {
+			pop();
+		}
 	}
 
 	@Override
