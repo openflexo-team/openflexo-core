@@ -1014,7 +1014,7 @@ public interface FMLCompilationUnit extends FMLObject, FMLPrettyPrintable, Resou
 					break;
 				}
 			}
-			if (!typeWasFound) {
+			if (!typeWasFound && getFMLModelFactory() != null) {
 				// Adding import
 				JavaImportDeclaration newJavaImportDeclaration = getFMLModelFactory().newJavaImportDeclaration();
 				newJavaImportDeclaration.setFullQualifiedClassName(javaClass.getName());
