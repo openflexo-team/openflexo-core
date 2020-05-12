@@ -49,7 +49,6 @@ import org.openflexo.logging.FlexoLogger;
 import org.openflexo.pamela.annotations.Getter;
 import org.openflexo.pamela.annotations.ImplementationClass;
 import org.openflexo.pamela.annotations.ModelEntity;
-import org.openflexo.pamela.annotations.PropertyIdentifier;
 import org.openflexo.pamela.annotations.Setter;
 import org.openflexo.pamela.annotations.XMLAttribute;
 import org.openflexo.pamela.annotations.XMLElement;
@@ -69,9 +68,6 @@ import org.openflexo.pamela.annotations.XMLElement;
 @XMLElement(xmlTag = "JavaRole")
 @FML("JavaRole")
 public interface JavaRole<T> extends BasicProperty<T> {
-
-	@PropertyIdentifier(type = Type.class)
-	public static final String TYPE_KEY = "type";
 
 	@Override
 	@Getter(value = TYPE_KEY, isStringConvertable = true)

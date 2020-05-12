@@ -99,7 +99,12 @@ public interface FMLRTModelSlot<VMI extends VirtualModelInstance<VMI, TA>, TA ex
 
 	@PropertyIdentifier(type = String.class)
 	public static final String VIRTUAL_MODEL_URI_KEY = "virtualModelURI";
+	@PropertyIdentifier(type = CompilationUnitResource.class)
+	public static final String ACCESSED_VIRTUAL_MODEL_RESOURCE_KEY = "accessedVirtualModelResource";
+	@PropertyIdentifier(type = VirtualModel.class)
+	public static final String ACCESSED_VIRTUAL_MODEL_KEY = "accessedVirtualModel";
 
+	// This property remains the persistent way to store the accessed VirtualModel
 	@Getter(value = VIRTUAL_MODEL_URI_KEY)
 	@XMLAttribute(xmlTag = "virtualModelURI")
 	public String getAccessedVirtualModelURI();
@@ -107,12 +112,16 @@ public interface FMLRTModelSlot<VMI extends VirtualModelInstance<VMI, TA>, TA ex
 	@Setter(VIRTUAL_MODEL_URI_KEY)
 	public void setAccessedVirtualModelURI(String virtualModelURI);
 
+	@Getter(ACCESSED_VIRTUAL_MODEL_RESOURCE_KEY)
 	public CompilationUnitResource getAccessedVirtualModelResource();
 
+	@Setter(ACCESSED_VIRTUAL_MODEL_RESOURCE_KEY)
 	public void setAccessedVirtualModelResource(CompilationUnitResource virtualModelResource);
 
+	@Getter(ACCESSED_VIRTUAL_MODEL_KEY)
 	public VirtualModel getAccessedVirtualModel();
 
+	@Setter(ACCESSED_VIRTUAL_MODEL_KEY)
 	public void setAccessedVirtualModel(VirtualModel aVirtualModel);
 
 	public FlexoConceptInstanceRole makeFlexoConceptInstanceRole(FlexoConcept flexoConcept);
@@ -145,31 +154,51 @@ public interface FMLRTModelSlot<VMI extends VirtualModelInstance<VMI, TA>, TA ex
 		}
 
 		protected CompilationUnitResource virtualModelResource;
+
 		private String virtualModelURI;
 
 		@Override
 		public CompilationUnitResource getAccessedVirtualModelResource() {
 
-			if (virtualModelResource == null && StringUtils.isNotEmpty(virtualModelURI) && getVirtualModelLibrary() != null) {
-				virtualModelResource = getVirtualModelLibrary().getCompilationUnitResource(virtualModelURI);
+			if (virtualModelResource == null && StringUtils.isNotEmpty(getAccessedVirtualModelURI()) && getVirtualModelLibrary() != null) {
+				virtualModelResource = getVirtualModelLibrary().getCompilationUnitResource(getAccessedVirtualModelURI());
 				if (virtualModelResource != null) {
 					logger.info("Looked-up " + virtualModelResource);
-					getPropertyChangeSupport().firePropertyChange("type", null, getType());
+					getPropertyChangeSupport().firePropertyChange(ACCESSED_VIRTUAL_MODEL_KEY, null, getAccessedVirtualModel());
+					getPropertyChangeSupport().firePropertyChange(TYPE_KEY, null, getType());
 					getPropertyChangeSupport().firePropertyChange("resultingType", null, getResultingType());
 				}
 			}
-
+			if (type != null && type.isResolved() && type.getVirtualModel() != null) {
+				virtualModelResource = type.getVirtualModel().getCompilationUnitResource();
+			}
 			return virtualModelResource;
 		}
 
 		@Override
 		public void setAccessedVirtualModelResource(CompilationUnitResource virtualModelResource) {
-			CompilationUnitResource oldValue = this.virtualModelResource;
-			this.virtualModelResource = virtualModelResource;
-			if (virtualModelResource == null) {
-				virtualModelURI = null;
+			if ((virtualModelResource == null && this.virtualModelResource != null)
+					|| (virtualModelResource != null && !virtualModelResource.equals(this.virtualModelResource))) {
+				CompilationUnitResource oldResource = getAccessedVirtualModelResource();
+				VirtualModel oldVirtualModel = getAccessedVirtualModel();
+				Type oldType = getType();
+				String oldURI = getAccessedVirtualModelURI();
+				this.virtualModelResource = virtualModelResource;
+				if (virtualModelResource != null) {
+					this.virtualModelURI = virtualModelResource.getURI();
+					this.type = virtualModelResource.getCompilationUnit().getVirtualModel().getVirtualModelInstanceType();
+				}
+				else {
+					this.virtualModelURI = null;
+					this.type = null;
+				}
+				getPropertyChangeSupport().firePropertyChange(VIRTUAL_MODEL_URI_KEY, oldURI, getAccessedVirtualModelURI());
+				getPropertyChangeSupport().firePropertyChange(ACCESSED_VIRTUAL_MODEL_RESOURCE_KEY, oldResource,
+						getAccessedVirtualModelResource());
+				getPropertyChangeSupport().firePropertyChange(ACCESSED_VIRTUAL_MODEL_KEY, oldVirtualModel, getAccessedVirtualModel());
+				getPropertyChangeSupport().firePropertyChange(TYPE_KEY, oldType, getType());
+				notifyResultingTypeChanged();
 			}
-			getPropertyChangeSupport().firePropertyChange("accessedVirtualModelResource", oldValue, virtualModelResource);
 		}
 
 		@Override
@@ -177,12 +206,35 @@ public interface FMLRTModelSlot<VMI extends VirtualModelInstance<VMI, TA>, TA ex
 			if (virtualModelResource != null) {
 				return virtualModelResource.getURI();
 			}
+			if (type != null) {
+				if (type.isResolved() && type.getVirtualModel() != null) {
+					return type.getVirtualModel().getURI();
+				}
+				else {
+					return type.getConceptURI();
+				}
+			}
 			return virtualModelURI;
 		}
 
 		@Override
-		public void setAccessedVirtualModelURI(String metaModelURI) {
-			this.virtualModelURI = metaModelURI;
+		public void setAccessedVirtualModelURI(String virtualModelURI) {
+			if ((virtualModelURI == null && getAccessedVirtualModelURI() != null)
+					|| (virtualModelURI != null && !virtualModelURI.equals(getAccessedVirtualModelURI()))) {
+				String oldValue = getAccessedVirtualModelURI();
+				CompilationUnitResource oldResource = getAccessedVirtualModelResource();
+				VirtualModel oldVirtualModel = getAccessedVirtualModel();
+				Type oldType = getType();
+				this.virtualModelURI = virtualModelURI;
+				this.virtualModelResource = null;
+				this.type = null;
+				getPropertyChangeSupport().firePropertyChange(VIRTUAL_MODEL_URI_KEY, oldValue, getAccessedVirtualModelURI());
+				getPropertyChangeSupport().firePropertyChange(ACCESSED_VIRTUAL_MODEL_RESOURCE_KEY, oldResource,
+						getAccessedVirtualModelResource());
+				getPropertyChangeSupport().firePropertyChange(ACCESSED_VIRTUAL_MODEL_KEY, oldVirtualModel, getAccessedVirtualModel());
+				getPropertyChangeSupport().firePropertyChange(TYPE_KEY, oldType, getType());
+				notifyResultingTypeChanged();
+			}
 		}
 
 		/**
@@ -205,13 +257,20 @@ public interface FMLRTModelSlot<VMI extends VirtualModelInstance<VMI, TA>, TA ex
 					e.printStackTrace();
 				}
 			}
+			if (type != null && type.isResolved()) {
+				return type.getVirtualModel();
+			}
 			return null;
 		}
 
 		@Override
 		public void setAccessedVirtualModel(VirtualModel aVirtualModel) {
-			this.virtualModelURI = aVirtualModel.getURI();
-			notifyResultingTypeChanged();
+			if (aVirtualModel == null) {
+				setAccessedVirtualModelResource(null);
+			}
+			else {
+				setAccessedVirtualModelResource(aVirtualModel.getCompilationUnitResource());
+			}
 		}
 
 		/**
@@ -263,7 +322,7 @@ public interface FMLRTModelSlot<VMI extends VirtualModelInstance<VMI, TA>, TA ex
 		public void handleRequiredImports(FMLCompilationUnit compilationUnit) {
 			super.handleRequiredImports(compilationUnit);
 			if (compilationUnit != null) {
-				if (getAccessedVirtualModel() != null) {
+				if (getAccessedVirtualModel() != null && getAccessedVirtualModel().getCompilationUnit() != null) {
 					compilationUnit.ensureResourceImport(getAccessedVirtualModel().getCompilationUnit());
 				}
 			}
@@ -310,10 +369,21 @@ public interface FMLRTModelSlot<VMI extends VirtualModelInstance<VMI, TA>, TA ex
 		@Override
 		public void setType(Type type) {
 			if (type instanceof VirtualModelInstanceType) {
+				CompilationUnitResource oldResource = getAccessedVirtualModelResource();
+				VirtualModel oldVirtualModel = getAccessedVirtualModel();
+				Type oldType = getType();
+				String oldURI = getAccessedVirtualModelURI();
+				virtualModelResource = null;
+				virtualModelURI = null;
 				this.type = (VirtualModelInstanceType) type;
-				if (((VirtualModelInstanceType) type).isResolved()) {
-					setAccessedVirtualModel(((VirtualModelInstanceType) type).getVirtualModel());
-				}
+
+				getPropertyChangeSupport().firePropertyChange(VIRTUAL_MODEL_URI_KEY, oldURI, getAccessedVirtualModelURI());
+				getPropertyChangeSupport().firePropertyChange(ACCESSED_VIRTUAL_MODEL_RESOURCE_KEY, oldResource,
+						getAccessedVirtualModelResource());
+				getPropertyChangeSupport().firePropertyChange(ACCESSED_VIRTUAL_MODEL_KEY, oldVirtualModel, getAccessedVirtualModel());
+				getPropertyChangeSupport().firePropertyChange(TYPE_KEY, oldType, getType());
+				notifyResultingTypeChanged();
+
 			}
 			else {
 				logger.warning("Unexpected type: " + type);
@@ -328,7 +398,7 @@ public interface FMLRTModelSlot<VMI extends VirtualModelInstance<VMI, TA>, TA ex
 
 					@Override
 					public VirtualModel resolveVirtualModel(VirtualModelInstanceType typeToResolve) {
-						System.out.println("Resolving VirtualModel" + typeToResolve);
+						// System.out.println("Resolving VirtualModel " + typeToResolve);
 						if (getDeclaringCompilationUnit() != null) {
 							for (ElementImportDeclaration elementImportDeclaration : getDeclaringCompilationUnit().getElementImports()) {
 								if (elementImportDeclaration.isReferencedObjectLoaded()) {
@@ -340,12 +410,14 @@ public interface FMLRTModelSlot<VMI extends VirtualModelInstance<VMI, TA>, TA ex
 											if (typeToResolve == type) {
 												setAccessedVirtualModel(referencedCompilationUnit.getVirtualModel());
 											}
+											// System.out.println("Found: " + referencedCompilationUnit.getVirtualModel());
 											return referencedCompilationUnit.getVirtualModel();
 										}
 									}
 								}
 							}
 						}
+						// System.out.println("Not found " + typeToResolve);
 						return null;
 
 					}

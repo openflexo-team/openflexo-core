@@ -97,6 +97,8 @@ public interface FlexoRole<T> extends FlexoProperty<T> {
 
 	@PropertyIdentifier(type = String.class)
 	String ROLE_NAME_KEY = "roleName";
+	@PropertyIdentifier(type = Type.class)
+	String TYPE_KEY = "type";
 	@PropertyIdentifier(type = ModelSlot.class)
 	String MODEL_SLOT_KEY = "modelSlot";
 	@PropertyIdentifier(type = RoleCloningStrategy.class)
@@ -168,17 +170,6 @@ public interface FlexoRole<T> extends FlexoProperty<T> {
 	Object getContainer(BindingEvaluationContext evaluationContext);
 
 	/**
-	 * Return the type of any instance of modelling element handled by this property.<br>
-	 * Note that if the cardinality of this property is multiple, this method will return the type of each modelling element.<br>
-	 * Getting type of the list of all modelling elements for a multiple cardinality property is obtained by {@link #getResultingType()}
-	 * method.
-	 * 
-	 * @return
-	 */
-	@Override
-	Type getType();
-
-	/**
 	 * Return the {@link TechnologyAdapter} managing this kind of role
 	 */
 	TechnologyAdapter getRoleTechnologyAdapter();
@@ -247,10 +238,23 @@ public interface FlexoRole<T> extends FlexoProperty<T> {
 	public Type buildType(String serializedType);
 
 	/**
+	 * Return the type of any instance of modelling element handled by this property.<br>
+	 * Note that if the cardinality of this property is multiple, this method will return the type of each modelling element.<br>
+	 * Getting type of the list of all modelling elements for a multiple cardinality property is obtained by {@link #getResultingType()}
+	 * method.
+	 * 
+	 * @return
+	 */
+	@Override
+	@Getter(value = TYPE_KEY, ignoreType = true)
+	Type getType();
+
+	/**
 	 * Declare supplied type as the the accessed type through this role
 	 * 
 	 * @param type
 	 */
+	@Setter(TYPE_KEY)
 	public void setType(Type type);
 
 	abstract class FlexoRoleImpl<T> extends FlexoPropertyImpl<T> implements FlexoRole<T> {

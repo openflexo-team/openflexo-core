@@ -694,33 +694,9 @@ public class TypeFactory extends SemanticsAnalyzerFactory {
 	 */
 	private VirtualModel tryToLookupVirtualModel(String virtualModelName) {
 
-		// System.out.println("virtualModelName=" + virtualModelName);
-		// System.out.println("getAnalyzer()=" + getAnalyzer());
-
-		/*if (virtualModelName == null) {
-			System.out.println("Merde alors");
-			Thread.dumpStack();
-		}*/
-
 		if (virtualModelName.startsWith("@") && getAnalyzer().getCompilationUnit() != null) {
 			String id = virtualModelName.substring(1).trim();
-			System.out.println("Hop ici, id = [" + id + "]");
 			for (ElementImportDeclaration importDeclaration : getAnalyzer().getCompilationUnit().getElementImports()) {
-				// System.out.println("> " + importDeclaration.getAbbrev());
-				// System.out.println("> " + importDeclaration.getAbbrev().equals(id));
-				System.out.println("> PROUT importDeclaration: " + importDeclaration + " with " + importDeclaration.getReferencedObject());
-				/*boolean matches = false;
-				if (importDeclaration.getReferencedObject() instanceof FMLCompilationUnit) {
-					System.out.println("On compare : "
-							+ ((FMLCompilationUnit) importDeclaration.getReferencedObject()).getVirtualModel().getName() + " et " + id);
-					if (((FMLCompilationUnit) importDeclaration.getReferencedObject()).getVirtualModel().getName().equals(id)) {
-						matches = true;
-					}
-				}
-				if (StringUtils.isNotEmpty(importDeclaration.getAbbrev()) && importDeclaration.getAbbrev().equals(id)) {
-					matches = true;
-				}
-				System.out.println("Matches: " + matches);*/
 				if (matchesImport(importDeclaration, id)) {
 					// System.out.println(">>>>>> " + importDeclaration.getReferencedObject());
 					if (importDeclaration.getReferencedObject() instanceof FMLCompilationUnit) {
@@ -815,20 +791,6 @@ public class TypeFactory extends SemanticsAnalyzerFactory {
 							}
 						}
 					}
-
-					// System.out.println("> " + importDeclaration.getAbbrev());
-					// System.out.println("> " + importDeclaration.getAbbrev().equals(id));
-					/*if (StringUtils.isNotEmpty(importDeclaration.getAbbrev()) && importDeclaration.getAbbrev().equals(virtualModelName)) {
-						// System.out.println(">>>>>> " + importDeclaration.getReferencedObject());
-						if (importDeclaration.getReferencedObject() instanceof FMLCompilationUnit) {
-							// System.out.println("On retourne " + importDeclaration.getReferencedObject());
-							return ((FMLCompilationUnit) importDeclaration.getReferencedObject()).getVirtualModel();
-						}
-						else {
-							logger.warning("Unexpected " + importDeclaration.getReferencedObject());
-							return null;
-						}
-					}*/
 				}
 			}
 		}
