@@ -520,6 +520,9 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 	@Remover(PARENT_FLEXO_CONCEPTS_KEY)
 	public void removeFromParentFlexoConcepts(FlexoConcept parentFlexoConcept);
 
+	@Reindexer(PARENT_FLEXO_CONCEPTS_KEY)
+	public void moveParentFlexoConceptToIndex(FlexoConcept parentFlexoConcept, int index);
+
 	// Used in FML pettry-print
 	public String getParentFlexoConceptsDeclaration();
 
