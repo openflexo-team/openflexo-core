@@ -95,7 +95,7 @@ public class FMLEditorParser extends AbstractParser {
 			return result;
 		}
 
-		System.out.println("---------> tiens, je reparse mon document......");
+		System.out.println("---------> Parsing FML document......");
 
 		result.clearNotices();
 		editor.getGutter().removeAllTrackingIcons();

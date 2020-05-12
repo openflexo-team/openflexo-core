@@ -46,6 +46,7 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
 
 import org.fife.ui.rsyntaxtextarea.AbstractTokenMakerFactory;
 import org.fife.ui.rsyntaxtextarea.ErrorStrip;
@@ -242,16 +243,40 @@ public class FMLEditor extends JPanel implements PropertyChangeListener {
 		return null;
 	}
 
+	private boolean isUpdatingText = false;
+
 	@Override
 	public void propertyChange(PropertyChangeEvent evt) {
 		if (modelWillChange) {
 			return;
 		}
+		if (isUpdatingText) {
+			return;
+		}
 		if (evt.getPropertyName().equals("FMLPrettyPrint")) {
-			System.out.println("Received " + evt);
-			parser.fmlWillChange();
+			// System.out.println("Received " + evt);
+			if (SwingUtilities.isEventDispatchThread()) {
+				updateFMLAsText();
+			}
+			else {
+				SwingUtilities.invokeLater(new Runnable() {
+					@Override
+					public void run() {
+						updateFMLAsText();
+					}
+				});
+			}
+		}
+	}
+
+	private void updateFMLAsText() {
+		isUpdatingText = true;
+		parser.fmlWillChange();
+		try {
 			getTextArea().setText(fmlResource.getCompilationUnit().getFMLPrettyPrint());
+		} finally {
 			parser.fmlHasChanged();
+			isUpdatingText = false;
 		}
 	}
 
@@ -262,8 +287,8 @@ public class FMLEditor extends JPanel implements PropertyChangeListener {
 	}
 
 	protected void modelHasChanged() {
-		modelWillChange = false;
 		String fmlPrettyPrint = fmlResource.getCompilationUnit().getFMLPrettyPrint().trim();
+		modelWillChange = false;
 		if (!getTextArea().getText().trim().equals(fmlPrettyPrint)) {
 			logger.warning("Found different FML pretty-print, please investigate");
 			System.out.println("Expected: ");
