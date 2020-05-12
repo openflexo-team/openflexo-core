@@ -101,6 +101,7 @@ import org.openflexo.foundation.fml.parser.node.PTypeArguments;
 import org.openflexo.foundation.fml.parser.node.PTypeArgumentsOrDiamond;
 import org.openflexo.foundation.fml.parser.node.TIdentifier;
 import org.openflexo.foundation.fml.rt.action.MatchingSet;
+import org.openflexo.p2pp.RawSource.RawSourceFragment;
 import org.openflexo.toolbox.StringUtils;
 
 /**
@@ -114,7 +115,18 @@ public class TypeFactory extends SemanticsAnalyzerFactory {
 	private FlexoConceptInstanceTypeFactory FLEXO_CONCEPT_INSTANCE_TYPE_FACTORY;
 	private VirtualModelInstanceTypeFactory<VirtualModelInstanceType> VIRTUAL_MODEL_INSTANCE_TYPE_FACTORY;
 
-	private List<CustomType> unresolvedTypes;
+	private List<UnresolvedTypeReference> unresolvedTypes;
+
+	class UnresolvedTypeReference {
+		RawSourceFragment fragment;
+		CustomType type;
+
+		public UnresolvedTypeReference(CustomType type, RawSourceFragment fragment) {
+			super();
+			this.fragment = fragment;
+			this.type = type;
+		}
+	}
 
 	public TypeFactory(MainSemanticsAnalyzer analyzer) {
 		super(analyzer);
@@ -201,19 +213,14 @@ public class TypeFactory extends SemanticsAnalyzerFactory {
 
 	public void resolveUnresovedTypes() {
 
-		// System.out.println("resolveUnresovedTypes");
-
-		/*for (CustomType unresolvedType : unresolvedTypes) {
-			System.out.println(" **** " + unresolvedType);
-		}*/
-
-		// System.out.println("OK on y va");
-
-		for (CustomType unresolvedType : new ArrayList<>(unresolvedTypes)) {
+		for (UnresolvedTypeReference unresolvedTypeReference : new ArrayList<>(unresolvedTypes)) {
 			// System.out.println(" **** " + unresolvedType);
+
+			CustomType unresolvedType = unresolvedTypeReference.type;
+
 			unresolvedType.resolve();
 			if (unresolvedType.isResolved()) {
-				unresolvedTypes.remove(unresolvedType);
+				unresolvedTypes.remove(unresolvedTypeReference);
 			}
 			// System.out.println("resolved: " + unresolvedType.isResolved());
 		}
@@ -222,7 +229,7 @@ public class TypeFactory extends SemanticsAnalyzerFactory {
 		// Thread.dumpStack();
 	}
 
-	public List<CustomType> getUnresolvedTypes() {
+	public List<UnresolvedTypeReference> getUnresolvedTypes() {
 		return unresolvedTypes;
 	}
 
@@ -375,21 +382,23 @@ public class TypeFactory extends SemanticsAnalyzerFactory {
 			}
 		}
 
-		Type conceptType = lookupConceptNamed(typeName);
+		RawSourceFragment fragment = getFragment(identifier, additionalIdentifiers);
+
+		Type conceptType = lookupConceptNamed(typeName, fragment);
 		if (conceptType != null) {
 			return conceptType;
 		}
 		else if (role != null) {
 			Type type = role.buildType(typeName);
 			if (type instanceof CustomType && !((CustomType) type).isResolved()) {
-				unresolvedTypes.add((CustomType) type);
+				unresolvedTypes.add(new UnresolvedTypeReference((CustomType) type, fragment));
 			}
 			return type;
 		}
 		else {
 			FlexoConceptInstanceType returned = new FlexoConceptInstanceType(typeName, FLEXO_CONCEPT_INSTANCE_TYPE_FACTORY);
 			if (!returned.isResolved()) {
-				unresolvedTypes.add(returned);
+				unresolvedTypes.add(new UnresolvedTypeReference(returned, fragment));
 			}
 			return returned;
 
@@ -567,7 +576,7 @@ public class TypeFactory extends SemanticsAnalyzerFactory {
 	 * @return
 	 */
 	public FlexoConceptInstanceType lookupConceptNamed(PCompositeIdent compositeIdentifier) {
-		return lookupConceptNamed(makeFullQualifiedIdentifier(compositeIdentifier));
+		return lookupConceptNamed(makeFullQualifiedIdentifier(compositeIdentifier), getFragment(compositeIdentifier));
 	}
 
 	/**
@@ -579,7 +588,7 @@ public class TypeFactory extends SemanticsAnalyzerFactory {
 	 * @return
 	 */
 	public FlexoConceptInstanceType makeFlexoConceptType(PCompositeIdent compositeIdentifier) {
-		return makeFlexoConceptType(makeFullQualifiedIdentifier(compositeIdentifier));
+		return makeFlexoConceptType(makeFullQualifiedIdentifier(compositeIdentifier), getFragment(compositeIdentifier));
 	}
 
 	/**
@@ -590,15 +599,15 @@ public class TypeFactory extends SemanticsAnalyzerFactory {
 	 * @param typeName
 	 * @return
 	 */
-	public FlexoConceptInstanceType makeFlexoConceptType(String typeName) {
-		FlexoConceptInstanceType conceptType = lookupConceptNamed(typeName);
+	public FlexoConceptInstanceType makeFlexoConceptType(String typeName, RawSourceFragment fragment) {
+		FlexoConceptInstanceType conceptType = lookupConceptNamed(typeName, fragment);
 		if (conceptType != null) {
 			return conceptType;
 		}
 		else {
 			FlexoConceptInstanceType returned = new FlexoConceptInstanceType(typeName, FLEXO_CONCEPT_INSTANCE_TYPE_FACTORY);
 			if (!returned.isResolved()) {
-				unresolvedTypes.add(returned);
+				unresolvedTypes.add(new UnresolvedTypeReference(returned, fragment));
 			}
 			return returned;
 
@@ -614,7 +623,7 @@ public class TypeFactory extends SemanticsAnalyzerFactory {
 	 * @param typeName
 	 * @return
 	 */
-	public FlexoConceptInstanceType lookupConceptNamed(String typeName) {
+	public FlexoConceptInstanceType lookupConceptNamed(String typeName, RawSourceFragment fragment) {
 		if (StringUtils.isEmpty(typeName)) {
 			return null;
 		}
@@ -636,7 +645,7 @@ public class TypeFactory extends SemanticsAnalyzerFactory {
 				System.out.println("Hash: " + Integer.toHexString(r.getType().hashCode()));
 			}*/
 			if (!r.getType().isResolved()) {
-				unresolvedTypes.add(r.getType());
+				unresolvedTypes.add(new UnresolvedTypeReference(r.getType(), fragment));
 			}
 			return r.getType();
 		}

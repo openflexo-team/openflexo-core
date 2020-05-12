@@ -42,11 +42,11 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 
-import org.openflexo.connie.type.CustomType;
 import org.openflexo.foundation.fml.ElementImportDeclaration;
 import org.openflexo.foundation.fml.FMLCompilationUnit;
 import org.openflexo.foundation.fml.FMLModelFactory;
 import org.openflexo.foundation.fml.FlexoRole;
+import org.openflexo.foundation.fml.parser.TypeFactory.UnresolvedTypeReference;
 import org.openflexo.foundation.fml.parser.fmlnodes.BasicMetaDataNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.BehaviourParameterNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.ElementImportNode;
@@ -214,9 +214,9 @@ public class MainSemanticsAnalyzer extends FMLSemanticsAnalyzer {
 			typeFactory.resolveUnresovedTypes();
 			if (typeFactory.getUnresolvedTypes().size() > 0) {
 				System.out.println("Atfer types resolution still some types unresolved");
-				for (CustomType unresolvedType : typeFactory.getUnresolvedTypes()) {
+				for (UnresolvedTypeReference unresolvedTypeReference : typeFactory.getUnresolvedTypes()) {
 					// System.out.println(" > " + unresolvedType);
-					getCompilationUnitNode().throwIssue("cannot_resolve " + unresolvedType);
+					getCompilationUnitNode().throwIssue("cannot_resolve " + unresolvedTypeReference.type, unresolvedTypeReference.fragment);
 				}
 			}
 		}
@@ -377,6 +377,8 @@ public class MainSemanticsAnalyzer extends FMLSemanticsAnalyzer {
 	@Override
 	public void inAJavaInnerConceptDecl(AJavaInnerConceptDecl node) {
 		super.inAJavaInnerConceptDecl(node);
+		// TODO handle short version of FlexoConceptInstanceRole declaration
+		System.out.println("Ici avec " + node);
 		push(retrieveFMLNode(node, n -> getPropertyFactory().makeBasicPropertyNode(n)));
 	}
 

@@ -586,7 +586,7 @@ public class ControlGraphFactory extends FMLSemanticsAnalyzer {
 	public void inAFmlInstanceCreationFmlActionExp(AFmlInstanceCreationFmlActionExp node) {
 		super.inAFmlInstanceCreationFmlActionExp(node);
 
-		Type type = getTypeFactory().lookupConceptNamed(node.getConceptName().getText());
+		Type type = getTypeFactory().lookupConceptNamed(node.getConceptName().getText(), getFragment(node.getConceptName()));
 
 		if (type instanceof VirtualModelInstanceType) {
 			push(getMainAnalyzer().retrieveFMLNode(node, n -> new AddVirtualModelInstanceNode(n, getMainAnalyzer())));

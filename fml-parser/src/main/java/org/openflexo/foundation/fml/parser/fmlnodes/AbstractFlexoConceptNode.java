@@ -100,7 +100,8 @@ public abstract class AbstractFlexoConceptNode<N extends Node, T extends FlexoCo
 	private void buildParentConcepts(FlexoConcept returned, PSuperTypeList superTypeList) {
 		parentTypes = new ArrayList<>();
 		for (PCompositeIdent pCompositeIdent : extractIdentifiers(superTypeList)) {
-			FlexoConceptInstanceType parentType = getTypeFactory().lookupConceptNamed(getText(pCompositeIdent));
+			FlexoConceptInstanceType parentType = getTypeFactory().lookupConceptNamed(getText(pCompositeIdent),
+					getFragment(pCompositeIdent));
 			if (parentType != null) {
 				parentTypes.add(parentType);
 			}

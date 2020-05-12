@@ -155,7 +155,7 @@ public class EndMatchActionNode extends ControlGraphNode<AEndMatchActionFmlActio
 	public FinalizeMatching buildModelObjectFromAST(AEndMatchActionFmlActionExp astNode) {
 		FinalizeMatching returned = getFactory().newFinalizeMatching();
 
-		conceptType = getTypeFactory().makeFlexoConceptType(astNode.getConceptName().getText());
+		conceptType = getTypeFactory().makeFlexoConceptType(astNode.getConceptName().getText(), getFragment(astNode.getConceptName()));
 		returned.setMatchedType(conceptType);
 
 		if (astNode.getInClause() instanceof AInClause) {

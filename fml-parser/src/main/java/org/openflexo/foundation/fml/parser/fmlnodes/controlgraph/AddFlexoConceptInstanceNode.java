@@ -55,6 +55,7 @@ import org.openflexo.foundation.fml.parser.node.AJavaInstanceCreationFmlActionEx
 import org.openflexo.foundation.fml.parser.node.AManyArgumentList;
 import org.openflexo.foundation.fml.parser.node.ANewContainmentClause;
 import org.openflexo.foundation.fml.parser.node.AOneArgumentList;
+import org.openflexo.foundation.fml.parser.node.Node;
 import org.openflexo.foundation.fml.parser.node.PArgumentList;
 import org.openflexo.foundation.fml.parser.node.PExpression;
 import org.openflexo.foundation.fml.parser.node.PFmlActionExp;
@@ -173,7 +174,7 @@ public class AddFlexoConceptInstanceNode extends AssignableActionNode<PFmlAction
 		AddFlexoConceptInstance<?> returned = getFactory().newAddFlexoConceptInstance();
 		// System.out.println(">>>>>> New FCI " + astNode);
 
-		conceptType = getTypeFactory().lookupConceptNamed(getConceptName());
+		conceptType = getTypeFactory().lookupConceptNamed(getConceptName(), getFragment(getConceptNameNode()));
 		if (astNode instanceof AFmlInstanceCreationFmlActionExp) {
 			creationSchemeName = ((AFmlInstanceCreationFmlActionExp) astNode).getConstructorName().getText();
 		}
@@ -281,6 +282,16 @@ public class AddFlexoConceptInstanceNode extends AssignableActionNode<PFmlAction
 		}
 		if (getASTNode() instanceof AJavaInstanceCreationFmlActionExp) {
 			return getText(((AJavaInstanceCreationFmlActionExp) getASTNode()).getCompositeIdent());
+		}
+		return null;
+	}
+
+	private Node getConceptNameNode() {
+		if (getASTNode() instanceof AFmlInstanceCreationFmlActionExp) {
+			return ((AFmlInstanceCreationFmlActionExp) getASTNode()).getConceptName();
+		}
+		if (getASTNode() instanceof AJavaInstanceCreationFmlActionExp) {
+			return ((AJavaInstanceCreationFmlActionExp) getASTNode()).getCompositeIdent();
 		}
 		return null;
 	}

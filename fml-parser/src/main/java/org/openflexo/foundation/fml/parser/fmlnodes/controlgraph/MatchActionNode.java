@@ -201,7 +201,7 @@ public class MatchActionNode extends AssignableActionNode<AMatchActionFmlActionE
 	public MatchFlexoConceptInstance buildModelObjectFromAST(AMatchActionFmlActionExp astNode) {
 		MatchFlexoConceptInstance returned = getFactory().newMatchFlexoConceptInstance();
 
-		conceptType = getTypeFactory().makeFlexoConceptType(astNode.getConceptName().getText());
+		conceptType = getTypeFactory().makeFlexoConceptType(astNode.getConceptName().getText(), getFragment(astNode.getConceptName()));
 		returned.setMatchedType(conceptType);
 
 		/*FlexoConcept concept = conceptType.getFlexoConcept();

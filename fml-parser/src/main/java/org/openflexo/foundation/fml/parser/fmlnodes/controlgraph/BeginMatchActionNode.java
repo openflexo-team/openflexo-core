@@ -87,7 +87,8 @@ public class BeginMatchActionNode extends AssignableActionNode<ABeginMatchAction
 
 		System.out.println("---------> On cherche: " + astNode.getConceptName().getText());
 
-		FlexoConceptInstanceType matchedType = getTypeFactory().makeFlexoConceptType(astNode.getConceptName().getText());
+		FlexoConceptInstanceType matchedType = getTypeFactory().makeFlexoConceptType(astNode.getConceptName().getText(),
+				getFragment(astNode.getConceptName()));
 		returned.setMatchedType(matchedType);
 
 		if (astNode.getFromClause() instanceof AFromClause) {
