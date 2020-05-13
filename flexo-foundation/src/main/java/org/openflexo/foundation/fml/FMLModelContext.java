@@ -220,6 +220,10 @@ public class FMLModelContext {
 				// Prevent empty DataBinding to be serialized
 				return null;
 			}
+			if (object.getFMLModelFactory() == null) {
+				logger.warning("No FMLModelFactory for " + object);
+				return null;
+			}
 			FMLPropertyValue<? super I, ?> propertyValue = null;
 			switch (getKind()) {
 				case PropertyValue:
