@@ -1948,6 +1948,9 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 		if (object instanceof FlexoResource<?> && ((FlexoResource<?>) object).isLoaded()) {
 			return statelessIconForObject(((FlexoResource<?>) object).getLoadedResourceData());
 		}
+		else if (object instanceof CompilationUnitResource) {
+			return FMLIconLibrary.FML_ICON;
+		}
 		else if (object instanceof FMLRTVirtualModelInstanceResource) {
 			return FMLRTIconLibrary.VIRTUAL_MODEL_INSTANCE_ICON;
 		}

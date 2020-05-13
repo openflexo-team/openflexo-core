@@ -50,6 +50,7 @@ import org.openflexo.foundation.fml.CreationScheme;
 import org.openflexo.foundation.fml.DeletionScheme;
 import org.openflexo.foundation.fml.EventListener;
 import org.openflexo.foundation.fml.ExpressionProperty;
+import org.openflexo.foundation.fml.FMLCompilationUnit;
 import org.openflexo.foundation.fml.FMLObject;
 import org.openflexo.foundation.fml.FlexoBehaviour;
 import org.openflexo.foundation.fml.FlexoBehaviourParameter;
@@ -302,7 +303,10 @@ public class FMLIconLibrary extends IconLibrary {
 			return null;
 		}
 
-		if (object instanceof VirtualModel) {
+		if (object instanceof FMLCompilationUnit) {
+			return FML_ICON;
+		}
+		else if (object instanceof VirtualModel) {
 			return VIRTUAL_MODEL_ICON;
 		}
 		else if (object instanceof ModelSlot) {
@@ -529,7 +533,7 @@ public class FMLIconLibrary extends IconLibrary {
 	}
 
 	public static ImageIcon iconForObject(CompilationUnitResource object) {
-		return VIRTUAL_MODEL_ICON;
+		return FML_ICON;
 	}
 
 	public static <TA extends TechnologyAdapter<TA>> ImageIcon iconForModelSlot(TA ta) {
