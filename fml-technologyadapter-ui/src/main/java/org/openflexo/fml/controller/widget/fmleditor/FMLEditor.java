@@ -42,16 +42,20 @@ import java.awt.BorderLayout;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.List;
 import java.util.logging.Logger;
 
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 
 import org.fife.ui.rsyntaxtextarea.AbstractTokenMakerFactory;
 import org.fife.ui.rsyntaxtextarea.ErrorStrip;
 import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
 import org.fife.ui.rsyntaxtextarea.SyntaxConstants;
+import org.fife.ui.rsyntaxtextarea.Theme;
 import org.fife.ui.rsyntaxtextarea.TokenMakerFactory;
 import org.fife.ui.rsyntaxtextarea.parser.ParserNotice;
 import org.fife.ui.rtextarea.Gutter;
@@ -75,7 +79,7 @@ import org.openflexo.view.controller.TechnologyAdapterControllerService;
  * 
  */
 @SuppressWarnings("serial")
-public class FMLEditor extends JPanel implements PropertyChangeListener {
+public class FMLEditor extends JPanel implements PropertyChangeListener, DocumentListener {
 
 	static final Logger logger = Logger.getLogger(FMLEditor.class.getPackage().getName());
 
@@ -100,6 +104,21 @@ public class FMLEditor extends JPanel implements PropertyChangeListener {
 		textArea = new FMLRSyntaxTextArea(this);
 		textArea.setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_JAVA);
 		textArea.setCodeFoldingEnabled(true);
+
+		textArea.getDocument().addDocumentListener(this);
+
+		try {
+			// Theme theme = Theme.load(getClass().getResourceAsStream("/org/fife/ui/rsyntaxtextarea/themes/dark.xml"));
+			Theme theme = Theme.load(getClass().getResourceAsStream("/org/fife/ui/rsyntaxtextarea/themes/default.xml"));
+			// Theme theme = Theme.load(getClass().getResourceAsStream("/org/fife/ui/rsyntaxtextarea/themes/default-alt.xml"));
+			// Theme theme = Theme.load(getClass().getResourceAsStream("/org/fife/ui/rsyntaxtextarea/themes/eclipse.xml"));
+			// Theme theme = Theme.load(getClass().getResourceAsStream("/org/fife/ui/rsyntaxtextarea/themes/idea.xml"));
+			// Theme theme = Theme.load(getClass().getResourceAsStream("/org/fife/ui/rsyntaxtextarea/themes/monokai.xml"));
+			// Theme theme = Theme.load(getClass().getResourceAsStream("/org/fife/ui/rsyntaxtextarea/themes/vs.xml"));
+			theme.apply(textArea);
+		} catch (IOException ioe) { // Never happens
+			ioe.printStackTrace();
+		}
 
 		try {
 			fmlResource.loadResourceData();
@@ -254,7 +273,7 @@ public class FMLEditor extends JPanel implements PropertyChangeListener {
 			return;
 		}
 		if (evt.getPropertyName().equals("FMLPrettyPrint")) {
-			// System.out.println("Received " + evt);
+			System.out.println("Received " + evt);
 			if (SwingUtilities.isEventDispatchThread()) {
 				updateFMLAsText();
 			}
@@ -277,6 +296,7 @@ public class FMLEditor extends JPanel implements PropertyChangeListener {
 		} finally {
 			parser.fmlHasChanged();
 			isUpdatingText = false;
+			documentModified = false;
 		}
 	}
 
@@ -299,6 +319,28 @@ public class FMLEditor extends JPanel implements PropertyChangeListener {
 			getTextArea().setText(fmlPrettyPrint);
 			parser.fmlHasChanged();*/
 		}
+		documentModified = false;
+	}
+
+	private boolean documentModified = false;
+
+	public boolean isDocumentModified() {
+		return documentModified;
+	}
+
+	@Override
+	public void insertUpdate(DocumentEvent e) {
+		documentModified = true;
+	}
+
+	@Override
+	public void removeUpdate(DocumentEvent e) {
+		documentModified = true;
+	}
+
+	@Override
+	public void changedUpdate(DocumentEvent e) {
+		documentModified = true;
 	}
 
 }

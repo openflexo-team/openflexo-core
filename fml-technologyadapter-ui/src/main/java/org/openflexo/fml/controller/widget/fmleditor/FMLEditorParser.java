@@ -95,6 +95,10 @@ public class FMLEditorParser extends AbstractParser {
 			return result;
 		}
 
+		if (!editor.isDocumentModified()) {
+			return result;
+		}
+
 		System.out.println("---------> Parsing FML document......");
 
 		result.clearNotices();
