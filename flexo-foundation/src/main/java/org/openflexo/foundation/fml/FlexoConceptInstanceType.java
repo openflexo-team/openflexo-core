@@ -125,10 +125,10 @@ public class FlexoConceptInstanceType implements TechnologySpecificType<FMLTechn
 			}
 		}
 
-		@Override
+		/*@Override
 		public String toString() {
 			return "Instance of FlexoConcept";
-		}
+		}*/
 
 		@Override
 		public void configureFactory(FlexoConceptInstanceType type) {
