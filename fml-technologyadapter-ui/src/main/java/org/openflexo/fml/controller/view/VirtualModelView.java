@@ -40,7 +40,7 @@ package org.openflexo.fml.controller.view;
 
 import org.openflexo.fml.controller.CommonFIB;
 import org.openflexo.fml.controller.FMLTechnologyAdapterController;
-import org.openflexo.fml.controller.widget.FIBVirtualModelBrowser;
+import org.openflexo.fml.controller.widget.FIBCompilationUnitBrowser;
 import org.openflexo.foundation.fml.FMLTechnologyAdapter;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.rm.Resource;
@@ -66,8 +66,8 @@ public abstract class VirtualModelView extends FlexoConceptView<VirtualModel> {
 	@Override
 	public void willShow() {
 		super.willShow();
-		getVirtualModelBrowser().setVirtualModel(getRepresentedObject());
-		getPerspective().setBottomLeftView(getVirtualModelBrowser());
+		getCompilationUnitBrowser().setVirtualModel(getRepresentedObject());
+		getPerspective().setBottomLeftView(getCompilationUnitBrowser());
 	}
 
 	@Override
@@ -76,10 +76,10 @@ public abstract class VirtualModelView extends FlexoConceptView<VirtualModel> {
 		getPerspective().setBottomLeftView(null);
 	}
 
-	public FIBVirtualModelBrowser getVirtualModelBrowser() {
+	public FIBCompilationUnitBrowser getCompilationUnitBrowser() {
 		FMLTechnologyAdapterController technologyAdapterController = (FMLTechnologyAdapterController) getFlexoController()
 				.getTechnologyAdapterController(FMLTechnologyAdapter.class);
-		return technologyAdapterController.getVirtualModelBrowser();
+		return technologyAdapterController.getCompilationUnitBrowser();
 	}
 
 }

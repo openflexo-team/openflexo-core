@@ -56,12 +56,12 @@ import org.openflexo.view.controller.FlexoController;
  * 
  */
 @SuppressWarnings("serial")
-public class FIBVirtualModelBrowser extends FIBBrowserView<VirtualModel> {
-	static final Logger logger = Logger.getLogger(FIBVirtualModelBrowser.class.getPackage().getName());
+public class FIBCompilationUnitBrowser extends FIBBrowserView<VirtualModel> {
+	static final Logger logger = Logger.getLogger(FIBCompilationUnitBrowser.class.getPackage().getName());
 
-	public static final Resource FIB_FILE = ResourceLocator.locateResource("Fib/Widget/FIBVirtualModelBrowser.fib");
+	public static final Resource FIB_FILE = ResourceLocator.locateResource("Fib/Widget/FIBCompilationUnitBrowser.fib");
 
-	public FIBVirtualModelBrowser(VirtualModel virtualModel, FlexoController controller) {
+	public FIBCompilationUnitBrowser(VirtualModel virtualModel, FlexoController controller) {
 		super(virtualModel, controller, FIB_FILE, controller.getTechnologyAdapter(FMLTechnologyAdapter.class).getLocales());
 	}
 
@@ -71,8 +71,8 @@ public class FIBVirtualModelBrowser extends FIBBrowserView<VirtualModel> {
 	}
 
 	@Override
-	public FIBVirtualModelBrowserFIBController getFIBController() {
-		return (FIBVirtualModelBrowserFIBController) super.getFIBController();
+	public FIBCompilationUnitBrowserFIBController getFIBController() {
+		return (FIBCompilationUnitBrowserFIBController) super.getFIBController();
 	}
 
 	public JFIBBrowserWidget<?> getFIBBrowserWidget() {

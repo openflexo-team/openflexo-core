@@ -3,7 +3,7 @@
 	trackViewPortHeight="true" trackViewPortWidth="true" borderBottom="0"
 	border="empty" sizeAdjustment="OriginalSize" layout="twocols"
 	borderRight="0"
-	controllerClassName="org.openflexo.fml.controller.widget.FIBVirtualModelBrowserFIBController"
+	controllerClassName="org.openflexo.fml.controller.widget.FIBCompilationUnitBrowserFIBController"
 	name="Panel">
 	<Panel id="1" align="left" borderTop="0" flowAlignment="TRAILING"
 		borderLeft="0" trackViewPortHeight="true" trackViewPortWidth="true"
@@ -46,18 +46,18 @@
 		visible="controller.viewMode.name='Embedding'">
 		<BrowserElement
 			dataClassName="org.openflexo.foundation.fml.rm.CompilationUnitResource"
-			icon="controller.iconForObject(virtualModelResource)"
-			label="(virtualModelResource.name + &quot;.fml&quot;)"
-			enabled="virtualModelResource.isLoaded"
-			editableLabel="virtualModelResource.name" isEditable="false"
-			name="virtualModelResource">
+			icon="controller.iconForObject(compilationUnitResource)"
+			label="(compilationUnitResource.name + &quot;.fml&quot;)"
+			enabled="compilationUnitResource.isLoaded"
+			editableLabel="compilationUnitResource.name" isEditable="false"
+			name="compilationUnitResource">
 			<DragOperation
 				isAvailable="controller.canMoveVirtualModelInVirtualModel(dragged,target)"
-				targetElementName="virtualModelResource"
+				targetElementName="compilationUnitResource"
 				action="controller.moveVirtualModelInVirtualModel(dragged,target)"
 				name="drag_to_virtual_model" />
-			<Children visible="virtualModelResource.isLoaded"
-				data="virtualModelResource.compilationUnit.virtualModel"
+			<Children visible="compilationUnitResource.isLoaded"
+				data="compilationUnitResource.compilationUnit.virtualModel"
 				name="subresources" />
 		</BrowserElement>
 		<BrowserElement
@@ -105,7 +105,7 @@
 				name="drag_concept_into_concept" />
 			<DragOperation
 				isAvailable="controller.canMoveFlexoConcept(dragged,target.compilationUnit.virtualModel)"
-				targetElementName="virtualModelResource"
+				targetElementName="compilationUnitResource"
 				action="controller.moveFlexoConcept(dragged,target.compilationUnit.virtualModel)"
 				name="drag_concept_into_virtual_model" />
 			<Children data="flexoConcept.embeddedFlexoConcepts"
@@ -146,18 +146,18 @@
 		visible="controller.viewMode.name='Hierarchical'">
 		<BrowserElement
 			dataClassName="org.openflexo.foundation.fml.rm.CompilationUnitResource"
-			icon="controller.iconForObject(virtualModelResource)"
-			label="(virtualModelResource.name + &quot;.fml&quot;)"
-			enabled="virtualModelResource.isLoaded"
-			editableLabel="virtualModelResource.name" isEditable="false"
-			name="virtualModelResource">
+			icon="controller.iconForObject(compilationUnitResource)"
+			label="(compilationUnitResource.name + &quot;.fml&quot;)"
+			enabled="compilationUnitResource.isLoaded"
+			editableLabel="compilationUnitResource.name" isEditable="false"
+			name="compilationUnitResource">
 			<DragOperation
 				isAvailable="controller.canMoveVirtualModelInVirtualModel(dragged,target)"
-				targetElementName="virtualModelResource"
+				targetElementName="compilationUnitResource"
 				action="controller.moveVirtualModelInVirtualModel(dragged,target)"
 				name="drag_to_virtual_model" />
-			<Children visible="virtualModelResource.isLoaded"
-				data="virtualModelResource.compilationUnit.virtualModel"
+			<Children visible="compilationUnitResource.isLoaded"
+				data="compilationUnitResource.compilationUnit.virtualModel"
 				name="subresources" />
 		</BrowserElement>
 		<BrowserElement
@@ -205,7 +205,7 @@
 				name="drag_concept_into_concept" />
 			<DragOperation
 				isAvailable="controller.canMoveFlexoConcept(dragged,target.compilationUnit.virtualModel)"
-				targetElementName="virtualModelResource"
+				targetElementName="compilationUnitResource"
 				action="controller.moveFlexoConcept(dragged,target.compilationUnit.virtualModel)"
 				name="drag_concept_into_virtual_model" />
 			<Children data="flexoConcept.childFlexoConcepts"
@@ -246,18 +246,18 @@
 		visible="controller.viewMode.name='Flat'">
 		<BrowserElement
 			dataClassName="org.openflexo.foundation.fml.rm.CompilationUnitResource"
-			icon="controller.iconForObject(virtualModelResource)"
-			label="(virtualModelResource.name + &quot;.fml&quot;)"
-			enabled="virtualModelResource.isLoaded"
-			editableLabel="virtualModelResource.name" isEditable="false"
-			name="virtualModelResource">
+			icon="controller.iconForObject(compilationUnitResource)"
+			label="(compilationUnitResource.name + &quot;.fml&quot;)"
+			enabled="compilationUnitResource.isLoaded"
+			editableLabel="compilationUnitResource.name" isEditable="false"
+			name="compilationUnitResource">
 			<DragOperation
 				isAvailable="controller.canMoveVirtualModelInVirtualModel(dragged,target)"
-				targetElementName="virtualModelResource"
+				targetElementName="compilationUnitResource"
 				action="controller.moveVirtualModelInVirtualModel(dragged,target)"
 				name="drag_to_virtual_model" />
-			<Children visible="virtualModelResource.isLoaded"
-				data="virtualModelResource.compilationUnit.virtualModel"
+			<Children visible="compilationUnitResource.isLoaded"
+				data="compilationUnitResource.compilationUnit.virtualModel"
 				name="subresources" />
 		</BrowserElement>
 		<BrowserElement
@@ -305,7 +305,7 @@
 				name="drag_concept_into_concept" />
 			<DragOperation
 				isAvailable="controller.canMoveFlexoConcept(dragged,target.compilationUnit.virtualModel)"
-				targetElementName="virtualModelResource"
+				targetElementName="compilationUnitResource"
 				action="controller.moveFlexoConcept(dragged,target.compilationUnit.virtualModel)"
 				name="drag_concept_into_virtual_model" />
 			<BrowserRemoveAction

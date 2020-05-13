@@ -52,9 +52,9 @@ import org.openflexo.gina.view.GinaViewFactory;
 import org.openflexo.logging.FlexoLogger;
 import org.openflexo.view.controller.FlexoController;
 
-public class FIBVirtualModelBrowserFIBController extends FMLFIBController {
+public class FIBCompilationUnitBrowserFIBController extends FMLFIBController {
 
-	protected static final Logger logger = FlexoLogger.getLogger(FIBVirtualModelBrowserFIBController.class.getPackage().getName());
+	protected static final Logger logger = FlexoLogger.getLogger(FIBCompilationUnitBrowserFIBController.class.getPackage().getName());
 
 	public enum ViewMode {
 		Embedding, Hierarchical, Flat
@@ -62,7 +62,7 @@ public class FIBVirtualModelBrowserFIBController extends FMLFIBController {
 
 	private ViewMode viewMode = ViewMode.Hierarchical;
 
-	public FIBVirtualModelBrowserFIBController(FIBComponent component, GinaViewFactory<?> viewFactory) {
+	public FIBCompilationUnitBrowserFIBController(FIBComponent component, GinaViewFactory<?> viewFactory) {
 		super(component, viewFactory);
 		SwingUtilities.invokeLater(new Runnable() {
 			@Override
@@ -76,7 +76,7 @@ public class FIBVirtualModelBrowserFIBController extends FMLFIBController {
 		});
 	}
 
-	public FIBVirtualModelBrowserFIBController(FIBComponent component, GinaViewFactory<?> viewFactory, FlexoController controller) {
+	public FIBCompilationUnitBrowserFIBController(FIBComponent component, GinaViewFactory<?> viewFactory, FlexoController controller) {
 		super(component, viewFactory, controller);
 		SwingUtilities.invokeLater(new Runnable() {
 			@Override

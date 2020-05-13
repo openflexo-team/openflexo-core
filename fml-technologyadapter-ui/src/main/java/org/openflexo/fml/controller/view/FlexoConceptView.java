@@ -43,7 +43,7 @@ import java.util.logging.Logger;
 import javax.swing.SwingUtilities;
 
 import org.openflexo.fml.controller.FMLTechnologyAdapterController;
-import org.openflexo.fml.controller.widget.FIBVirtualModelBrowser;
+import org.openflexo.fml.controller.widget.FIBCompilationUnitBrowser;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.fml.FMLObject;
 import org.openflexo.foundation.fml.FMLTechnologyAdapter;
@@ -131,17 +131,17 @@ public abstract class FlexoConceptView<EP extends FlexoConcept> extends FIBModul
 		super.fireObjectDeselected(object);
 	}
 
-	public FIBVirtualModelBrowser getVirtualModelBrowser() {
+	public FIBCompilationUnitBrowser getCompilationUnitBrowser() {
 		FMLTechnologyAdapterController technologyAdapterController = (FMLTechnologyAdapterController) getFlexoController()
 				.getTechnologyAdapterController(FMLTechnologyAdapter.class);
-		return technologyAdapterController.getVirtualModelBrowser();
+		return technologyAdapterController.getCompilationUnitBrowser();
 	}
 
 	@Override
 	public void willShow() {
 		super.willShow();
-		getVirtualModelBrowser().setVirtualModel(getRepresentedObject().getDeclaringCompilationUnit().getVirtualModel());
-		getPerspective().setBottomLeftView(getVirtualModelBrowser());
+		getCompilationUnitBrowser().setVirtualModel(getRepresentedObject().getDeclaringCompilationUnit().getVirtualModel());
+		getPerspective().setBottomLeftView(getCompilationUnitBrowser());
 		SwingUtilities.invokeLater(() -> {
 			if (getFIBView("FlexoConceptBrowser") instanceof JFIBBrowserWidget) {
 				JFIBBrowserWidget<FMLObject> browser = (JFIBBrowserWidget<FMLObject>) getFIBView("FlexoConceptBrowser");
