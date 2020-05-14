@@ -971,26 +971,29 @@ public interface FMLCompilationUnit extends FMLObject, FMLPrettyPrintable, Resou
 
 		@Override
 		public <RD extends ResourceData<RD> & FlexoObject> ElementImportDeclaration ensureResourceImport(RD resourceData) {
-			ElementImportDeclaration vmDeclaration = retrieveImportDeclaration(resourceData);
-			if (vmDeclaration == null && resourceData.getResource() != null) {
+			ElementImportDeclaration importDeclaration = retrieveImportDeclaration(resourceData);
+			if (getFMLModelFactory() == null) {
+				return importDeclaration;
+			}
+			if (importDeclaration == null && resourceData.getResource() != null) {
 				FlexoResourceCenter<?> resourceCenter = resourceData.getResource().getResourceCenter();
 				// System.out.println("rc=" + resourceCenter.getDefaultBaseURI());
 				String uri = resourceData.getResource().getURI();
-				vmDeclaration = getFMLModelFactory().newElementImportDeclaration();
+				importDeclaration = getFMLModelFactory().newElementImportDeclaration();
 				if (uri.startsWith(resourceCenter.getDefaultBaseURI())) {
 					String remainingURI = uri.substring(resourceCenter.getDefaultBaseURI().length());
 					String rcAbbrev = ensureResourceCenterImport(resourceCenter).getAbbrev();
-					vmDeclaration.setResourceReference(new DataBinding<>(rcAbbrev + "+\"" + remainingURI + "\""));
+					importDeclaration.setResourceReference(new DataBinding<>(rcAbbrev + "+\"" + remainingURI + "\""));
 					// System.out.println("---" + rcAbbrev + "+\"" + remainingURI + "\"");
 				}
 				else {
-					vmDeclaration.setResourceReference(new DataBinding<>("\"" + uri + "\""));
+					importDeclaration.setResourceReference(new DataBinding<>("\"" + uri + "\""));
 				}
 				String abbrev = findUniqueAbbrev(resourceData);
-				vmDeclaration.setAbbrev(abbrev);
-				getDeclaringCompilationUnit().addToElementImports(vmDeclaration);
+				importDeclaration.setAbbrev(abbrev);
+				getDeclaringCompilationUnit().addToElementImports(importDeclaration);
 			}
-			return vmDeclaration;
+			return importDeclaration;
 		}
 
 		@Override
