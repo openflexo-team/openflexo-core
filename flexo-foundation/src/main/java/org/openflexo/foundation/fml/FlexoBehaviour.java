@@ -75,6 +75,7 @@ import org.openflexo.pamela.annotations.Imports;
 import org.openflexo.pamela.annotations.ModelEntity;
 import org.openflexo.pamela.annotations.PastingPoint;
 import org.openflexo.pamela.annotations.PropertyIdentifier;
+import org.openflexo.pamela.annotations.Reindexer;
 import org.openflexo.pamela.annotations.Remover;
 import org.openflexo.pamela.annotations.Setter;
 import org.openflexo.pamela.annotations.XMLAttribute;
@@ -262,6 +263,9 @@ public interface FlexoBehaviour extends FlexoBehaviourObject, Function, FMLContr
 
 	@Remover(PARAMETERS_KEY)
 	public void removeFromParameters(FlexoBehaviourParameter aParameter);
+
+	@Reindexer(PARAMETERS_KEY)
+	public void moveParameterToIndex(FlexoBehaviourParameter aParameter, int index);
 
 	@Finder(collection = PARAMETERS_KEY, attribute = FlexoBehaviourParameter.NAME_KEY)
 	public FlexoBehaviourParameter getParameter(String name);
