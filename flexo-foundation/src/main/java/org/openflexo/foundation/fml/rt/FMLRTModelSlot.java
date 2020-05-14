@@ -112,7 +112,7 @@ public interface FMLRTModelSlot<VMI extends VirtualModelInstance<VMI, TA>, TA ex
 	@Setter(VIRTUAL_MODEL_URI_KEY)
 	public void setAccessedVirtualModelURI(String virtualModelURI);
 
-	@Getter(ACCESSED_VIRTUAL_MODEL_RESOURCE_KEY)
+	@Getter(value = ACCESSED_VIRTUAL_MODEL_RESOURCE_KEY, ignoreType = true)
 	public CompilationUnitResource getAccessedVirtualModelResource();
 
 	@Setter(ACCESSED_VIRTUAL_MODEL_RESOURCE_KEY)
