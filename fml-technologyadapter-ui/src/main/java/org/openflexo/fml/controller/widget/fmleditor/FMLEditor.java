@@ -262,16 +262,16 @@ public class FMLEditor extends JPanel implements PropertyChangeListener, Documen
 		return null;
 	}
 
-	private boolean isUpdatingText = false;
+	// private boolean isUpdatingText = false;
 
 	@Override
 	public void propertyChange(PropertyChangeEvent evt) {
 		if (modelWillChange) {
 			return;
 		}
-		if (isUpdatingText) {
+		/*if (isUpdatingText) {
 			return;
-		}
+		}*/
 		if (evt.getPropertyName().equals("FMLPrettyPrint")) {
 			System.out.println("Received " + evt);
 			if (SwingUtilities.isEventDispatchThread()) {
@@ -289,13 +289,13 @@ public class FMLEditor extends JPanel implements PropertyChangeListener, Documen
 	}
 
 	private void updateFMLAsText() {
-		isUpdatingText = true;
+		// isUpdatingText = true;
 		// parser.fmlWillChange();
 		try {
 			getTextArea().setText(fmlResource.getCompilationUnit().getFMLPrettyPrint());
 		} finally {
 			// parser.fmlHasChanged();
-			isUpdatingText = false;
+			// isUpdatingText = false;
 			// documentModified = false;
 		}
 	}
