@@ -85,8 +85,8 @@ import org.openflexo.fml.controller.action.MoveVirtualModelToDirectoryInitialize
 import org.openflexo.fml.controller.action.RenameFlexoConceptInitializer;
 import org.openflexo.fml.controller.action.RenameVirtualModelInitializer;
 import org.openflexo.fml.controller.validation.ValidateActionizer;
+import org.openflexo.fml.controller.view.StandardCompilationUnitView;
 import org.openflexo.fml.controller.view.StandardFlexoConceptView;
-import org.openflexo.fml.controller.view.StandardVirtualModelView;
 import org.openflexo.fml.controller.widget.FIBCompilationUnitBrowser;
 import org.openflexo.fml.controller.widget.FIBVirtualModelLibraryBrowser;
 import org.openflexo.fml.controller.widget.FlexoConceptInstanceTypeEditor;
@@ -481,13 +481,10 @@ public class FMLTechnologyAdapterController extends TechnologyAdapterController<
 	public ModuleView<?> createModuleViewForObject(TechnologyObject<FMLTechnologyAdapter> object, FlexoController controller,
 			FlexoPerspective perspective) {
 		if (object instanceof FMLCompilationUnit) {
-			return new StandardVirtualModelView(((FMLCompilationUnit) object).getVirtualModel(), controller, perspective);
+			return new StandardCompilationUnitView((FMLCompilationUnit) object, controller, perspective);
 		}
 		if (object instanceof FlexoConcept) {
 			FlexoConcept ep = (FlexoConcept) object;
-			if (ep instanceof VirtualModel) {
-				return new StandardVirtualModelView((VirtualModel) ep, controller, perspective);
-			}
 			return new StandardFlexoConceptView(ep, controller, perspective);
 		}
 

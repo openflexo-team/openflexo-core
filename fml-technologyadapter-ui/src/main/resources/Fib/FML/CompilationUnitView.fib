@@ -26,6 +26,12 @@
 			clickAction="controller.singleClick(FlexoConceptBrowser.selected)"
 			constraints="split(index=0;location=north;splitIdentifier=left)"
 			index="0" name="FlexoConceptBrowser">
+			<BrowserElement 
+				dataClassName="org.openflexo.foundation.fml.FMLCompilationUnit" icon="controller.iconForObject(compilationUnit)"
+				label="compilationUnit.name" editableLabel="compilationUnit.name"
+				isEditable="false" name="compilationUnit">
+				<Children data="compilationUnit.virtualModel" name="virtuaModel" />
+			</BrowserElement>
 			<BrowserElement id="7"
 				dataClassName="org.openflexo.foundation.fml.VirtualModel" icon="controller.iconForObject(virtualModel)"
 				label="virtualModel.name" editableLabel="virtualModel.name"
@@ -457,6 +463,6 @@
 		<Localized id="163" lang="French" value="errors/warnings"
 			key="errors/warnings" />
 	</LocalizedDictionary>
-	<FIBVariable id="164" type="org.openflexo.foundation.fml.VirtualModel"
+	<FIBVariable id="164" type="org.openflexo.foundation.fml.FMLCompilationUnit"
 		name="data" />
 </Panel>

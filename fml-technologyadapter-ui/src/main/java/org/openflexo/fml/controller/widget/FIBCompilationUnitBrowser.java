@@ -40,6 +40,7 @@ package org.openflexo.fml.controller.widget;
 
 import java.util.logging.Logger;
 
+import org.openflexo.foundation.fml.FMLCompilationUnit;
 import org.openflexo.foundation.fml.FMLTechnologyAdapter;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.gina.model.FIBContainer;
@@ -56,17 +57,17 @@ import org.openflexo.view.controller.FlexoController;
  * 
  */
 @SuppressWarnings("serial")
-public class FIBCompilationUnitBrowser extends FIBBrowserView<VirtualModel> {
+public class FIBCompilationUnitBrowser extends FIBBrowserView<FMLCompilationUnit> {
 	static final Logger logger = Logger.getLogger(FIBCompilationUnitBrowser.class.getPackage().getName());
 
 	public static final Resource FIB_FILE = ResourceLocator.locateResource("Fib/Widget/FIBCompilationUnitBrowser.fib");
 
-	public FIBCompilationUnitBrowser(VirtualModel virtualModel, FlexoController controller) {
-		super(virtualModel, controller, FIB_FILE, controller.getTechnologyAdapter(FMLTechnologyAdapter.class).getLocales());
+	public FIBCompilationUnitBrowser(FMLCompilationUnit compilationUnit, FlexoController controller) {
+		super(compilationUnit, controller, FIB_FILE, controller.getTechnologyAdapter(FMLTechnologyAdapter.class).getLocales());
 	}
 
-	public void setVirtualModel(VirtualModel virtualModel) {
-		setRootObject(virtualModel);
+	public void setCompilationUnit(FMLCompilationUnit compilationUnit) {
+		setRootObject(compilationUnit);
 		getFIBController().setViewMode(getFIBController().getViewMode(), true);
 	}
 

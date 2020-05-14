@@ -55,7 +55,7 @@ public class CommonFIB {
 	// General components
 	public static Resource FML_LOCALIZED_DICTIONARY_VIEW_FIB = ResourceLocator.locateResource("Fib/FML/FMLLocalizedDictionaryView.fib");
 	public static Resource STANDARD_FLEXO_CONCEPT_VIEW_FIB = ResourceLocator.locateResource("Fib/FML/StandardFlexoConceptView.fib");
-	public static Resource VIRTUAL_MODEL_VIEW_FIB = ResourceLocator.locateResource("Fib/FML/VirtualModelView.fib");
-	public static Resource FML_VIRTUAL_MODEL_VIEW_FIB = ResourceLocator.locateResource("Fib/FML/FMLVirtualModelView.fib");
+	public static Resource COMPILATION_UNIT_VIEW_FIB = ResourceLocator.locateResource("Fib/FML/CompilationUnitView.fib");
+	// public static Resource FML_VIRTUAL_MODEL_VIEW_FIB = ResourceLocator.locateResource("Fib/FML/FMLVirtualModelView.fib");
 
 }

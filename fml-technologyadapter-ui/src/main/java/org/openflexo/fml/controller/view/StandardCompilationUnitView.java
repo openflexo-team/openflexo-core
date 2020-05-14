@@ -39,25 +39,26 @@
 package org.openflexo.fml.controller.view;
 
 import org.openflexo.fml.controller.CommonFIB;
-import org.openflexo.foundation.fml.VirtualModel;
+import org.openflexo.foundation.fml.FMLCompilationUnit;
 import org.openflexo.rm.Resource;
 import org.openflexo.view.controller.FlexoController;
 import org.openflexo.view.controller.model.FlexoPerspective;
 
 /**
- * This is the module view representing a {@link VirtualModel}<br>
+ * This is the module view representing a {@link FMLCompilationUnit}<br>
  * 
  * @author sguerin
  * 
  */
-public class StandardVirtualModelView extends VirtualModelView {
+public class StandardCompilationUnitView extends CompilationUnitView {
 
-	public StandardVirtualModelView(VirtualModel virtualModel, FlexoController controller, FlexoPerspective perspective) {
-		super(virtualModel, CommonFIB.VIRTUAL_MODEL_VIEW_FIB, controller, perspective);
+	public StandardCompilationUnitView(FMLCompilationUnit compilationUnit, FlexoController controller, FlexoPerspective perspective) {
+		super(compilationUnit, CommonFIB.COMPILATION_UNIT_VIEW_FIB, controller, perspective);
 	}
 
-	public StandardVirtualModelView(VirtualModel virtualModel, Resource fibFile, FlexoController controller, FlexoPerspective perspective) {
-		super(virtualModel, fibFile, controller, perspective);
+	public StandardCompilationUnitView(FMLCompilationUnit compilationUnit, Resource fibFile, FlexoController controller,
+			FlexoPerspective perspective) {
+		super(compilationUnit, fibFile, controller, perspective);
 	}
 
 	@Override

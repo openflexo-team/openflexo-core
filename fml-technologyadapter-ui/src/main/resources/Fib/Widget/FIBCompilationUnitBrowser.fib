@@ -329,5 +329,5 @@
 
 	<LocalizedDictionary />
 	<FIBVariable
-		type="org.openflexo.foundation.fml.VirtualModel" name="data" />
+		type="org.openflexo.foundation.fml.FMLCompilationUnit" name="data" />
 </Panel>

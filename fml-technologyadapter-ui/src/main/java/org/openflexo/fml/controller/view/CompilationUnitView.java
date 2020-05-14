@@ -1,6 +1,6 @@
 /**
  * 
- * Copyright (c) 2014-2015, Openflexo
+ * Copyright (c) 2014, Openflexo
  * 
  * This file is part of Fml-technologyadapter-ui, a component of the software infrastructure 
  * developed at Openflexo.
@@ -38,56 +38,42 @@
 
 package org.openflexo.fml.controller.view;
 
-import java.util.logging.Logger;
-
-import javax.swing.SwingUtilities;
-
+import org.openflexo.fml.controller.CommonFIB;
 import org.openflexo.fml.controller.FMLTechnologyAdapterController;
 import org.openflexo.fml.controller.widget.FIBCompilationUnitBrowser;
 import org.openflexo.foundation.FlexoObject;
-import org.openflexo.foundation.fml.FMLObject;
+import org.openflexo.foundation.fml.FMLCompilationUnit;
 import org.openflexo.foundation.fml.FMLTechnologyAdapter;
-import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.controlgraph.FMLControlGraph;
 import org.openflexo.foundation.fml.controlgraph.IterationAction;
 import org.openflexo.foundation.fml.editionaction.AbstractAssignationAction;
 import org.openflexo.foundation.fml.editionaction.FetchRequestCondition;
 import org.openflexo.foundation.fml.inspector.InspectorEntry;
-import org.openflexo.gina.swing.view.widget.JFIBBrowserWidget;
-import org.openflexo.localization.LocalizedDelegate;
 import org.openflexo.rm.Resource;
-import org.openflexo.rm.ResourceLocator;
 import org.openflexo.view.FIBModuleView;
 import org.openflexo.view.controller.FlexoController;
 import org.openflexo.view.controller.model.FlexoPerspective;
 
 /**
- * This is the module view representing an FlexoConcept<br>
- * Because an FlexoConcept can be of multiple forms, this class is abstract and must be subclassed with a specific FIB
+ * Abstract base class for a module view representing a {@link FMLCompilationUnit}<br>
  * 
  * @author sguerin
  * 
  */
 @SuppressWarnings("serial")
-public abstract class FlexoConceptView extends FIBModuleView<FlexoConcept> {
-
-	private static final Logger logger = Logger.getLogger(FlexoConceptView.class.getPackage().getName());
+public abstract class CompilationUnitView extends FIBModuleView<FMLCompilationUnit> {
 
 	private final FlexoPerspective perspective;
 
-	public FlexoConceptView(FlexoConcept flexoConcept, Resource fibFile, FlexoController controller, FlexoPerspective perspective) {
-		super(flexoConcept, controller, fibFile, controller.getTechnologyAdapter(FMLTechnologyAdapter.class).getLocales());
+	public CompilationUnitView(FMLCompilationUnit compilationUnit, FlexoController controller, FlexoPerspective perspective) {
+		super(compilationUnit, controller, CommonFIB.COMPILATION_UNIT_VIEW_FIB,
+				controller.getTechnologyAdapter(FMLTechnologyAdapter.class).getLocales());
 		this.perspective = perspective;
-
-		// Fixed CORE-101 FlexoConceptView does not display FlexoConcept at creation
-		// SGU: I don't like this design, but i don't see other solutions unless getting deeply in the code: not enough time yet
-		getFIBView().getController().objectAddedToSelection(flexoConcept);
-
 	}
 
-	public FlexoConceptView(FlexoConcept flexoConcept, String fibFileName, FlexoController controller, FlexoPerspective perspective,
-			LocalizedDelegate locales) {
-		super(flexoConcept, controller, ResourceLocator.locateResource(fibFileName), locales);
+	public CompilationUnitView(FMLCompilationUnit compilationUnit, Resource fibFile, FlexoController controller,
+			FlexoPerspective perspective) {
+		super(compilationUnit, controller, fibFile, controller.getTechnologyAdapter(FMLTechnologyAdapter.class).getLocales());
 		this.perspective = perspective;
 	}
 
@@ -132,31 +118,31 @@ public abstract class FlexoConceptView extends FIBModuleView<FlexoConcept> {
 		super.fireObjectDeselected(object);
 	}
 
-	public FIBCompilationUnitBrowser getCompilationUnitBrowser() {
-		FMLTechnologyAdapterController technologyAdapterController = (FMLTechnologyAdapterController) getFlexoController()
-				.getTechnologyAdapterController(FMLTechnologyAdapter.class);
-		return technologyAdapterController.getCompilationUnitBrowser();
-	}
-
 	@Override
 	public void willShow() {
 		super.willShow();
-		getCompilationUnitBrowser().setCompilationUnit(getRepresentedObject().getDeclaringCompilationUnit());
+		getCompilationUnitBrowser().setCompilationUnit(getRepresentedObject());
 		getPerspective().setBottomLeftView(getCompilationUnitBrowser());
-		SwingUtilities.invokeLater(() -> {
+		/*SwingUtilities.invokeLater(() -> {
 			if (getFIBView("FlexoConceptBrowser") instanceof JFIBBrowserWidget) {
 				JFIBBrowserWidget<FMLObject> browser = (JFIBBrowserWidget<FMLObject>) getFIBView("FlexoConceptBrowser");
 				browser.performExpand(getRepresentedObject().getStructuralFacet());
 				browser.performExpand(getRepresentedObject().getBehaviouralFacet());
 				browser.performExpand(getRepresentedObject().getInnerConceptsFacet());
 			}
-		});
+		});*/
 	}
 
 	@Override
 	public void willHide() {
 		super.willHide();
 		getPerspective().setBottomLeftView(null);
+	}
+
+	public FIBCompilationUnitBrowser getCompilationUnitBrowser() {
+		FMLTechnologyAdapterController technologyAdapterController = (FMLTechnologyAdapterController) getFlexoController()
+				.getTechnologyAdapterController(FMLTechnologyAdapter.class);
+		return technologyAdapterController.getCompilationUnitBrowser();
 	}
 
 }
