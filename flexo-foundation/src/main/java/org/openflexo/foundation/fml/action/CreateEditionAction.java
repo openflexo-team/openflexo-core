@@ -105,7 +105,7 @@ import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 
 public class CreateEditionAction extends FlexoAction<CreateEditionAction, FMLControlGraph, FMLObject>
-implements Bindable, PropertyChangeListener, TechnologySpecificFlexoAction<FMLTechnologyAdapter> {
+		implements Bindable, PropertyChangeListener, TechnologySpecificFlexoAction<FMLTechnologyAdapter> {
 
 	private static final Logger logger = Logger.getLogger(CreateEditionAction.class.getPackage().getName());
 
@@ -206,17 +206,19 @@ implements Bindable, PropertyChangeListener, TechnologySpecificFlexoAction<FMLTe
 		addToAvailableActions(FireEventAction.class, fmlTA);
 		addToAvailableActions(NotifyPropertyChangedAction.class, fmlTA);
 
-		for (UseModelSlotDeclaration useDecl : getVirtualModel().getAccessibleUseDeclarations()) {
-			Class<? extends ModelSlot<?>> modelSlotClass = useDecl.getModelSlotClass();
-			TechnologyAdapter<?> modelSlotTA = getServiceManager().getTechnologyAdapterService()
-					.getTechnologyAdapterForModelSlot(modelSlotClass);
-			for (Class<? extends EditionAction> eaClass : getServiceManager().getTechnologyAdapterService()
-					.getAvailableEditionActionTypes(modelSlotClass)) {
-				addToAvailableActions(eaClass, modelSlotTA);
-			}
-			for (Class<? extends FetchRequest<?, ?, ?>> frClass : getServiceManager().getTechnologyAdapterService()
-					.getAvailableFetchRequestActionTypes(modelSlotClass)) {
-				addToAvailableActions(frClass, modelSlotTA);
+		if (getVirtualModel().getCompilationUnit() != null && getVirtualModel().getCompilationUnit().getUseDeclarations() != null) {
+			for (UseModelSlotDeclaration useDecl : getVirtualModel().getCompilationUnit().getUseDeclarations()) {
+				Class<? extends ModelSlot<?>> modelSlotClass = useDecl.getModelSlotClass();
+				TechnologyAdapter<?> modelSlotTA = getServiceManager().getTechnologyAdapterService()
+						.getTechnologyAdapterForModelSlot(modelSlotClass);
+				for (Class<? extends EditionAction> eaClass : getServiceManager().getTechnologyAdapterService()
+						.getAvailableEditionActionTypes(modelSlotClass)) {
+					addToAvailableActions(eaClass, modelSlotTA);
+				}
+				for (Class<? extends FetchRequest<?, ?, ?>> frClass : getServiceManager().getTechnologyAdapterService()
+						.getAvailableFetchRequestActionTypes(modelSlotClass)) {
+					addToAvailableActions(frClass, modelSlotTA);
+				}
 			}
 		}
 
@@ -439,7 +441,7 @@ implements Bindable, PropertyChangeListener, TechnologySpecificFlexoAction<FMLTe
 				return false;
 			}
 			return true;
-
+		
 		default:
 			return false;
 		}*/
@@ -632,31 +634,31 @@ implements Bindable, PropertyChangeListener, TechnologySpecificFlexoAction<FMLTe
 	/*public Class<? extends EditionAction> getBuiltInActionClass() {
 		return builtInActionClass;
 	}
-
+	
 	public void setBuiltInActionClass(Class<? extends EditionAction> builtInActionClass) {
 		this.builtInActionClass = builtInActionClass;
 	}
-
+	
 	public Class<? extends EditionAction> getControlActionClass() {
 		return controlActionClass;
 	}
-
+	
 	public void setControlActionClass(Class<? extends ControlStructureAction> controlActionClass) {
 		this.controlActionClass = controlActionClass;
 	}
-
+	
 	public Class<? extends EditionAction> getModelSlotSpecificActionClass() {
 		return modelSlotSpecificActionClass;
 	}
-
+	
 	public void setModelSlotSpecificActionClass(Class<? extends TechnologySpecificAction<?, ?, ?>> modelSlotSpecificActionClass) {
 		this.modelSlotSpecificActionClass = modelSlotSpecificActionClass;
 	}
-
+	
 	public Class<? extends FetchRequest<?, ?, ?>> getRequestActionClass() {
 		return requestActionClass;
 	}
-
+	
 	public void setRequestActionClass(Class<? extends FetchRequest<?, ?, ?>> requestActionClass) {
 		this.requestActionClass = requestActionClass;
 	}*/
@@ -842,18 +844,18 @@ implements Bindable, PropertyChangeListener, TechnologySpecificFlexoAction<FMLTe
 		FMLModelFactory factory = getFocusedObject().getFMLModelFactory();
 		if (iterationAction != null) {
 			switch (getIterationType()) {
-			case Expression:
-				ExpressionAction exp = factory.newExpressionAction(getIterationExpression());
-				iterationAction.setIterationAction(exp);
-				break;
-			case FetchRequest:
-				FetchRequest<?, ?, ?> fetchRequest = factory.newInstance(getFetchRequestClass());
-				iterationAction.setIterationAction(fetchRequest);
-				// Unused List<ModelSlot<?>> availableMS =
-				getAvailableModelSlotsForAction(getFetchRequestClass());
-				break;
-			default:
-				break;
+				case Expression:
+					ExpressionAction exp = factory.newExpressionAction(getIterationExpression());
+					iterationAction.setIterationAction(exp);
+					break;
+				case FetchRequest:
+					FetchRequest<?, ?, ?> fetchRequest = factory.newInstance(getFetchRequestClass());
+					iterationAction.setIterationAction(fetchRequest);
+					// Unused List<ModelSlot<?>> availableMS =
+					getAvailableModelSlotsForAction(getFetchRequestClass());
+					break;
+				default:
+					break;
 			}
 		}
 	}
