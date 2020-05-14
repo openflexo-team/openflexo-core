@@ -305,6 +305,10 @@ public abstract class CompilationUnitResourceImpl extends PamelaResourceImpl<FML
 	public FMLCompilationUnit loadResourceData() throws FlexoFileNotFoundException, IOFlexoException, InvalidXMLException,
 			InconsistentDataException, InvalidModelDefinitionException {
 
+		if (isLoaded()) {
+			return resourceData;
+		}
+
 		logger.info("*************** Loading " + getName() + " uri=" + getURI());
 
 		// System.out.println("File: " + getIODelegate().getSerializationArtefact());
