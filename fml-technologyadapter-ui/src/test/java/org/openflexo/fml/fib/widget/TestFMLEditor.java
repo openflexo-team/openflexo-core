@@ -54,6 +54,7 @@ import org.openflexo.fml.controller.FMLFIBController;
 import org.openflexo.fml.controller.widget.fmleditor.FMLEditor;
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoException;
+import org.openflexo.foundation.fml.FMLCompilationUnit;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.VirtualModelLibrary;
 import org.openflexo.foundation.fml.rm.CompilationUnitResource;
@@ -120,10 +121,9 @@ public class TestFMLEditor extends OpenflexoFIBTestCase {
 	@Category(UITest.class)
 	public void testInstanciateWidget() {
 
-		fibResource = ResourceLocator.locateResource("Fib/FML/VirtualModelView.fib");
+		fibResource = ResourceLocator.locateResource("Fib/FML/CompilationUnitView.fib");
 		assertTrue(fibResource != null);
-		FIBJPanel<VirtualModel> widget = instanciateFIB(fibResource, fmlResource.getCompilationUnit().getVirtualModel(),
-				VirtualModel.class);
+		FIBJPanel<FMLCompilationUnit> widget = instanciateFIB(fibResource, fmlResource.getCompilationUnit(), FMLCompilationUnit.class);
 		FMLFIBController fibController = (FMLFIBController) widget.getController();
 		InspectorGroup fmlInspectorGroup = new InspectorGroup(ResourceLocator.locateResource("Inspectors/FML"),
 				ApplicationFIBLibraryImpl.instance(), null);

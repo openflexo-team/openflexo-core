@@ -711,6 +711,12 @@ public interface VirtualModel extends FlexoConcept {
 		@Override
 		public void addToFlexoConcepts(FlexoConcept aFlexoConcept) {
 			performSuperAdder(FLEXO_CONCEPTS_KEY, aFlexoConcept);
+
+			/*System.out.println("Creating new FlexoConcept " + aFlexoConcept + " in FMLCompilationUnitImpl ");
+			System.out.println("hash=" + Integer.toHexString(getCompilationUnit().hashCode()));
+			System.out.println("allRootFlexoConcepts=" + getAllRootFlexoConcepts());
+			Thread.dumpStack();*/
+
 			getPropertyChangeSupport().firePropertyChange("allRootFlexoConcepts", null, aFlexoConcept);
 			getPropertyChangeSupport().firePropertyChange("allSuperFlexoConcepts", null, aFlexoConcept);
 			if (aFlexoConcept.getParentFlexoConcepts() != null) {

@@ -290,13 +290,13 @@ public class FMLEditor extends JPanel implements PropertyChangeListener, Documen
 
 	private void updateFMLAsText() {
 		isUpdatingText = true;
-		parser.fmlWillChange();
+		// parser.fmlWillChange();
 		try {
 			getTextArea().setText(fmlResource.getCompilationUnit().getFMLPrettyPrint());
 		} finally {
-			parser.fmlHasChanged();
+			// parser.fmlHasChanged();
 			isUpdatingText = false;
-			documentModified = false;
+			// documentModified = false;
 		}
 	}
 
@@ -306,20 +306,38 @@ public class FMLEditor extends JPanel implements PropertyChangeListener, Documen
 		modelWillChange = true;
 	}
 
-	protected void modelHasChanged() {
+	/*protected void modelHasChanged(boolean successfullParsing) {
 		String fmlPrettyPrint = fmlResource.getCompilationUnit().getFMLPrettyPrint().trim();
 		modelWillChange = false;
-		if (!getTextArea().getText().trim().equals(fmlPrettyPrint)) {
-			logger.warning("Found different FML pretty-print, please investigate");
-			System.out.println("Expected: ");
-			System.out.println(getTextArea().getText().trim());
-			System.out.println("Pretty-print: ");
-			System.out.println(fmlPrettyPrint);
-			/*parser.fmlWillChange();
-			getTextArea().setText(fmlPrettyPrint);
-			parser.fmlHasChanged();*/
+		if (successfullParsing) {
+			if (!getTextArea().getText().trim().equals(fmlPrettyPrint)) {
+				// Found different FML
+				SwingUtilities.invokeLater(new Runnable() {
+					@Override
+					public void run() {
+						System.out.println("Updating FML....");
+						parser.fmlWillChange();
+						getTextArea().setText(fmlPrettyPrint);
+						parser.fmlHasChanged();
+						documentModified = false;
+					}
+				});
+			}
 		}
 		documentModified = false;
+	}*/
+
+	protected void modelHasChanged(boolean requiresNewPrettyPrint) {
+		modelWillChange = false;
+		if (requiresNewPrettyPrint) {
+			SwingUtilities.invokeLater(new Runnable() {
+				@Override
+				public void run() {
+					updateFMLAsText();
+				}
+			});
+		}
+		// documentModified = false;
 	}
 
 	private boolean documentModified = false;

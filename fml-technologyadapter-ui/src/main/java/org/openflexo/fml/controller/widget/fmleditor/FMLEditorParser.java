@@ -37,6 +37,8 @@
  */
 package org.openflexo.fml.controller.widget.fmleditor;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
@@ -91,18 +93,20 @@ public class FMLEditorParser extends AbstractParser {
 	@Override
 	public ParseResult parse(RSyntaxDocument doc, String style) {
 
-		if (fmlWillChange) {
+		/*if (fmlWillChange) {
 			return result;
-		}
+		}*/
 
-		if (!editor.isDocumentModified()) {
+		/*if (!editor.isDocumentModified()) {
 			return result;
-		}
+		}*/
 
 		System.out.println("---------> Parsing FML document......");
 
 		result.clearNotices();
 		editor.getGutter().removeAllTrackingIcons();
+
+		boolean requiresNewPrettyPrint = false;
 
 		try {
 			// Prevent editor from concurrent modification
@@ -113,6 +117,7 @@ public class FMLEditorParser extends AbstractParser {
 
 			// This is the update process
 			FMLCompilationUnit existingData = editor.getFMLResource().getCompilationUnit();
+			RequiresNewPrettyPrintListener pcListener = new RequiresNewPrettyPrintListener(existingData);
 			existingData.updateWith(returned);
 
 			// There is a trick here: the update has nullified the resource
@@ -120,6 +125,13 @@ public class FMLEditorParser extends AbstractParser {
 			// So set the resource again at the end of the update process
 			existingData.setResource(editor.getFMLResource());
 			// System.out.println("Check also: " + (editor.getFMLResource().getResourceData() == existingData));
+
+			System.out.println(">>>>>>> On regarde les imports maintenant");
+			existingData.getPropertyChangeSupport().addPropertyChangeListener(pcListener);
+			existingData.manageImports();
+			existingData.getPropertyChangeSupport().removePropertyChangeListener(pcListener);
+			requiresNewPrettyPrint = pcListener.requiresNewPrettyPrint();
+			System.out.println("<<<<<<< On a fini de regarder les imports maintenant");
 
 			// Then we browse SemanticAnalysisIssue as raised by semantics analyzing
 			for (SemanticAnalysisIssue semanticAnalysisIssue : existingData.getPrettyPrintDelegate().getSemanticAnalysisIssues()) {
@@ -139,7 +151,7 @@ public class FMLEditorParser extends AbstractParser {
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
-			editor.modelHasChanged();
+			editor.modelHasChanged(requiresNewPrettyPrint);
 		}
 
 		result.setParsedLines(0, editor.getTextArea().getLineCount());
@@ -187,14 +199,52 @@ public class FMLEditorParser extends AbstractParser {
 		return virtualModelReport;
 	}
 
-	private boolean fmlWillChange = false;
-
+	/*private boolean fmlWillChange = false;
+	
 	protected void fmlWillChange() {
 		fmlWillChange = true;
 	}
-
+	
 	protected void fmlHasChanged() {
 		fmlWillChange = false;
+	}*/
+
+	/**
+	 * A {@link PropertyChangeListener} tracking needs to rebuild new pretty-print
+	 * 
+	 * @author sylvain
+	 *
+	 */
+	class RequiresNewPrettyPrintListener implements PropertyChangeListener {
+		private final FMLCompilationUnit existingData;
+		private boolean requiresNewPrettyPrint = false;
+
+		private RequiresNewPrettyPrintListener(FMLCompilationUnit existingData) {
+			this.existingData = existingData;
+		}
+
+		public boolean requiresNewPrettyPrint() {
+			return requiresNewPrettyPrint;
+		}
+
+		@Override
+		public void propertyChange(PropertyChangeEvent evt) {
+			if (evt.getSource() == existingData) {
+				if (evt.getPropertyName().equals(FMLCompilationUnit.JAVA_IMPORTS_KEY)) {
+					System.out.println("Attention, nouveau Java import");
+					requiresNewPrettyPrint = true;
+				}
+				else if (evt.getPropertyName().equals(FMLCompilationUnit.ELEMENT_IMPORTS_KEY)) {
+					requiresNewPrettyPrint = true;
+				}
+				else if (evt.getPropertyName().equals(FMLCompilationUnit.USE_DECLARATIONS_KEY)) {
+					requiresNewPrettyPrint = true;
+				}
+				else if (evt.getPropertyName().equals(FMLCompilationUnit.NAMESPACES_KEY)) {
+					requiresNewPrettyPrint = true;
+				}
+			}
+		}
 	}
 
 }
