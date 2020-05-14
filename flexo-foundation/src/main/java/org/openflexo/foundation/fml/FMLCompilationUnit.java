@@ -61,6 +61,7 @@ import org.openflexo.foundation.fml.binding.NamedImportBindingVariable;
 import org.openflexo.foundation.fml.binding.NamespaceBindingVariable;
 import org.openflexo.foundation.fml.inspector.InspectorEntry;
 import org.openflexo.foundation.fml.rm.CompilationUnitResource;
+import org.openflexo.foundation.fml.rm.CompilationUnitResourceFactory;
 import org.openflexo.foundation.resource.FlexoResource;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.resource.ResourceData;
@@ -376,6 +377,13 @@ public interface FMLCompilationUnit extends FMLObject, FMLPrettyPrintable, Resou
 			}
 		}
 
+		/*public FMLCompilationUnitImpl() {
+			super();
+			System.out.println("Creating new FMLCompilationUnitImpl");
+			System.out.println("hash=" + Integer.toHexString(hashCode()));
+			Thread.dumpStack();
+		}*/
+
 		/**
 		 * Return reflected BindingEvaluationContext, obtained at metadata conceptual level
 		 * 
@@ -410,6 +418,17 @@ public interface FMLCompilationUnit extends FMLObject, FMLPrettyPrintable, Resou
 		@Override
 		public FMLCompilationUnit getResourceData() {
 			return this;
+		}
+
+		@Override
+		public String getName() {
+			if (getResource() != null) {
+				if (!getResource().getName().endsWith(CompilationUnitResourceFactory.FML_SUFFIX)) {
+					return getResource().getName() + CompilationUnitResourceFactory.FML_SUFFIX;
+				}
+				return getResource().getName();
+			}
+			return super.getName();
 		}
 
 		@Override
@@ -864,7 +883,7 @@ public interface FMLCompilationUnit extends FMLObject, FMLPrettyPrintable, Resou
 				@Override
 				public void visit(Object object) {
 					if (object instanceof FMLObject && ((FMLObject) object).getDeclaringCompilationUnit() == FMLCompilationUnitImpl.this) {
-						// System.out.println("> On visite " + object + " of " + object.getClass().getSimpleName());
+						// System.out.println("> Visiting " + object + " of " + object.getClass().getSimpleName());
 						((FMLObject) object).handleRequiredImports(FMLCompilationUnitImpl.this);
 					}
 				}
@@ -1028,14 +1047,14 @@ public interface FMLCompilationUnit extends FMLObject, FMLPrettyPrintable, Resou
 			performSuperAdder(ELEMENT_IMPORTS_KEY, elementImportDeclaration);
 			System.out.println("Added import " + elementImportDeclaration);
 			// Thread.dumpStack();
-		}
-		
+		}*/
+
 		// TODO remove this
-		@Override
+		/*@Override
 		public void addToJavaImports(JavaImportDeclaration javaImportDeclaration) {
 			performSuperAdder(JAVA_IMPORTS_KEY, javaImportDeclaration);
 			System.out.println("Added java import " + javaImportDeclaration);
-			// Thread.dumpStack();
+			Thread.dumpStack();
 		}*/
 
 	}
