@@ -422,13 +422,13 @@ public class CreateFlexoBehaviour extends FlexoAction<CreateFlexoBehaviour, Flex
 	private String defaultFlexoBehaviourBaseName() {
 		if (flexoBehaviourClass != null) {
 			if (CreationScheme.class.isAssignableFrom(flexoBehaviourClass)) {
-				return "create";
+				return "createInstance";
 			}
 			else if (DeletionScheme.class.isAssignableFrom(flexoBehaviourClass)) {
-				return "delete";
+				return "deleteInstance";
 			}
 			else if (ActionScheme.class.isAssignableFrom(flexoBehaviourClass)) {
-				return "action";
+				return "doSomething";
 			}
 			else if (CloningScheme.class.isAssignableFrom(flexoBehaviourClass)) {
 				return "clone";
