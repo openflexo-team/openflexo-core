@@ -578,7 +578,7 @@ public class TestFMLDataBindingAnalysing extends OpenflexoTestCase {
 
 		System.out.println("*********** testChangeBehaviourName");
 
-		DataBinding<?> db = makeBinding(actionScheme, "this.action2(false)", true, Void.class);
+		DataBinding<?> db = makeBinding(actionScheme, "this.doSomething2(false)", true, Void.class);
 
 		assertTrue(db.isValid());
 
