@@ -159,7 +159,7 @@ public class TestURIManagement extends OpenflexoTestCase {
 		assertSame(pVM, serviceManager.getVirtualModelLibrary().getFMLObject(pVM.getURI(), false));
 		assertSame(pVM, serviceManager.getVirtualModelLibrary().getFlexoProperty(pVM.getURI(), false));
 
-		ActionScheme asVM = makeActionScheme("action", topLevelVM);
+		ActionScheme asVM = makeActionScheme("_action", topLevelVM);
 		System.out.println("as1.getURI()=" + asVM.getURI());
 		assertSame(asVM, serviceManager.getVirtualModelLibrary().getFMLObject(asVM.getURI(), false));
 		assertSame(asVM, serviceManager.getVirtualModelLibrary().getFlexoBehaviour(asVM.getURI(), false));
@@ -219,7 +219,7 @@ public class TestURIManagement extends OpenflexoTestCase {
 		assertSame(pVM1, serviceManager.getVirtualModelLibrary().getFMLObject(pVM1.getURI(), false));
 		assertSame(pVM1, serviceManager.getVirtualModelLibrary().getFlexoProperty(pVM1.getURI(), false));
 
-		ActionScheme asVM1 = makeActionScheme("action", vmLevel1);
+		ActionScheme asVM1 = makeActionScheme("_action", vmLevel1);
 		System.out.println("asVM1.getURI()=" + asVM1.getURI());
 		assertSame(asVM1, serviceManager.getVirtualModelLibrary().getFMLObject(asVM1.getURI(), false));
 		assertSame(asVM1, serviceManager.getVirtualModelLibrary().getFlexoBehaviour(asVM1.getURI(), false));
@@ -279,7 +279,7 @@ public class TestURIManagement extends OpenflexoTestCase {
 		assertSame(pVM2, serviceManager.getVirtualModelLibrary().getFMLObject(pVM2.getURI(), false));
 		assertSame(pVM2, serviceManager.getVirtualModelLibrary().getFlexoProperty(pVM2.getURI(), false));
 
-		ActionScheme asVM2 = makeActionScheme("action", vmLevel2);
+		ActionScheme asVM2 = makeActionScheme("_action", vmLevel2);
 		System.out.println("asVM2.getURI()=" + asVM2.getURI());
 		assertSame(asVM2, serviceManager.getVirtualModelLibrary().getFMLObject(asVM2.getURI(), false));
 		assertSame(asVM2, serviceManager.getVirtualModelLibrary().getFlexoBehaviour(asVM2.getURI(), false));
