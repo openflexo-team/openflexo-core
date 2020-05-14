@@ -241,6 +241,7 @@ public abstract class CompilationUnitResourceImpl extends PamelaResourceImpl<FML
 		List<TechnologyAdapter<?>> requiredTAList = new ArrayList<>();
 		requiredTAList.add(taService.getTechnologyAdapter(FMLRTTechnologyAdapter.class));
 		for (Class<? extends ModelSlot<?>> msClass : getUsedModelSlots()) {
+			System.out.println("msClass:" + msClass);
 			TechnologyAdapter<?> requiredTA = taService.getTechnologyAdapterForModelSlot(msClass);
 			if (!requiredTAList.contains(requiredTA)) {
 				requiredTAList.add(requiredTA);
@@ -320,6 +321,8 @@ public abstract class CompilationUnitResourceImpl extends PamelaResourceImpl<FML
 
 		startDeserializing();
 
+		notifyResourceWillLoad();
+
 		try {
 			resourceData = performLoad();
 			resourceData.setResource(this);
@@ -338,6 +341,7 @@ public abstract class CompilationUnitResourceImpl extends PamelaResourceImpl<FML
 			e.printStackTrace();
 		} finally {
 			setLoading(false);
+			notifyResourceLoaded();
 		}
 
 		// We notify a deserialization start on ViewPoint AND VirtualModel, to avoid addToVirtualModel() and setViewPoint() to notify
@@ -350,8 +354,8 @@ public abstract class CompilationUnitResourceImpl extends PamelaResourceImpl<FML
 		if (getContainer() != null && getContainer().getCompilationUnit() != null) {
 			VirtualModel virtualModel = getContainer().getCompilationUnit().getVirtualModel();
 			if (virtualModel != null) {
-				System.out.println("loadResourceData() for " + this);
-				System.out.println("   ----> On met " + resourceData.getVirtualModel() + " dans " + virtualModel);
+				// System.out.println("loadResourceData() for " + this);
+				// System.out.println(" ----> On met " + resourceData.getVirtualModel() + " dans " + virtualModel);
 				// virtualModel.addToVirtualModels(resourceData.getVirtualModel());
 			}
 		}
@@ -407,8 +411,8 @@ public abstract class CompilationUnitResourceImpl extends PamelaResourceImpl<FML
 	@Override
 	public void notifyResourceLoaded() {
 		super.notifyResourceLoaded();
-		getPropertyChangeSupport().firePropertyChange("virtualModel", null, getLoadedResourceData());
-		getPropertyChangeSupport().firePropertyChange("loadedVirtualModel", null, getLoadedResourceData());
+		getPropertyChangeSupport().firePropertyChange("compilationUnit", null, getLoadedResourceData());
+		getPropertyChangeSupport().firePropertyChange("loadedCompilationUnit", null, getLoadedResourceData());
 	}
 
 	@Override

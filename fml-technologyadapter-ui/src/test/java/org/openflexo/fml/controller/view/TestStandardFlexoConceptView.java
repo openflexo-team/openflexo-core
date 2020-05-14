@@ -53,6 +53,7 @@ import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.type.PrimitiveType;
+import org.openflexo.fml.controller.FMLFIBController;
 import org.openflexo.foundation.DefaultFlexoEditor;
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoException;
@@ -72,9 +73,11 @@ import org.openflexo.foundation.fml.controlgraph.ConditionalAction;
 import org.openflexo.foundation.fml.editionaction.AssignationAction;
 import org.openflexo.foundation.fml.editionaction.ExpressionAction;
 import org.openflexo.foundation.resource.ResourceLoadingCancelledException;
+import org.openflexo.gina.ApplicationFIBLibrary.ApplicationFIBLibraryImpl;
 import org.openflexo.gina.swing.utils.FIBJPanel;
 import org.openflexo.gina.test.OpenflexoFIBTestCase;
 import org.openflexo.gina.test.SwingGraphicalContextDelegate;
+import org.openflexo.gina.utils.InspectorGroup;
 import org.openflexo.rm.Resource;
 import org.openflexo.rm.ResourceLocator;
 import org.openflexo.test.OrderedRunner;
@@ -276,12 +279,19 @@ public class TestStandardFlexoConceptView extends OpenflexoFIBTestCase {
 
 	}
 
+	private static InspectorGroup fmlInspectorGroup;
+
 	@Test
 	@TestOrder(4)
 	@Category(UITest.class)
 	public void testInstanciateWidgetForConceptA() {
 
 		FIBJPanel<FlexoConcept> widget = instanciateFIB(fibResource, flexoConceptA, FlexoConcept.class);
+
+		FMLFIBController fibController = (FMLFIBController) widget.getController();
+		fmlInspectorGroup = new InspectorGroup(ResourceLocator.locateResource("Inspectors/FML"), ApplicationFIBLibraryImpl.instance(),
+				null);
+		fibController.setDefaultInspectorGroup(fmlInspectorGroup);
 
 		gcDelegate.addTab("FlexoConceptA", widget.getController());
 	}
@@ -292,6 +302,8 @@ public class TestStandardFlexoConceptView extends OpenflexoFIBTestCase {
 	public void testInstanciateWidgetForConceptB() {
 
 		FIBJPanel<FlexoConcept> widget = instanciateFIB(fibResource, flexoConceptB, FlexoConcept.class);
+		FMLFIBController fibController = (FMLFIBController) widget.getController();
+		fibController.setDefaultInspectorGroup(fmlInspectorGroup);
 
 		gcDelegate.addTab("FlexoConceptB", widget.getController());
 	}
@@ -302,6 +314,8 @@ public class TestStandardFlexoConceptView extends OpenflexoFIBTestCase {
 	public void testInstanciateWidgetForConceptC() {
 
 		FIBJPanel<FlexoConcept> widget = instanciateFIB(fibResource, flexoConceptC, FlexoConcept.class);
+		FMLFIBController fibController = (FMLFIBController) widget.getController();
+		fibController.setDefaultInspectorGroup(fmlInspectorGroup);
 
 		gcDelegate.addTab("FlexoConceptC", widget.getController());
 	}
@@ -312,6 +326,8 @@ public class TestStandardFlexoConceptView extends OpenflexoFIBTestCase {
 	public void testInstanciateWidgetForConceptD() {
 
 		FIBJPanel<FlexoConcept> widget = instanciateFIB(fibResource, flexoConceptD, FlexoConcept.class);
+		FMLFIBController fibController = (FMLFIBController) widget.getController();
+		fibController.setDefaultInspectorGroup(fmlInspectorGroup);
 
 		gcDelegate.addTab("FlexoConceptD", widget.getController());
 	}
@@ -322,6 +338,8 @@ public class TestStandardFlexoConceptView extends OpenflexoFIBTestCase {
 	public void testInstanciateWidgetForConceptE() {
 
 		FIBJPanel<FlexoConcept> widget = instanciateFIB(fibResource, flexoConceptE, FlexoConcept.class);
+		FMLFIBController fibController = (FMLFIBController) widget.getController();
+		fibController.setDefaultInspectorGroup(fmlInspectorGroup);
 
 		gcDelegate.addTab("FlexoConceptE", widget.getController());
 	}

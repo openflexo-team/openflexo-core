@@ -223,7 +223,9 @@ public class FMLModelFactory extends ModelFactory implements PamelaResourceModel
 		retrieveTechnologySpecificClassesForModelSlot(FMLRTVirtualModelInstanceModelSlot.class, classes);
 		for (TechnologyAdapter<?> ta : taService.getTechnologyAdapters()) {
 			for (Class<? extends ModelSlot<?>> modelSlotClass : new ArrayList<>(ta.getAvailableModelSlotTypes())) {
-				retrieveTechnologySpecificClassesForModelSlot(modelSlotClass, classes);
+				if (modelSlotClass != null) {
+					retrieveTechnologySpecificClassesForModelSlot(modelSlotClass, classes);
+				}
 			}
 		}
 

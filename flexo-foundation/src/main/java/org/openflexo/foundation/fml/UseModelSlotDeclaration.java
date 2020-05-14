@@ -121,7 +121,8 @@ public interface UseModelSlotDeclaration extends FlexoObject, FMLPrettyPrintable
 				if (FMLModelSlot.class.isAssignableFrom(getModelSlotClass())) {
 					return "FMLRT";
 				}
-				if (getModelSlotClass() != null && getCompilationUnit() != null) {
+				if (getModelSlotClass() != null && getCompilationUnit() != null
+						&& getCompilationUnit().getTechnologyAdapterService() != null) {
 					TechnologyAdapter ta = getCompilationUnit().getTechnologyAdapterService()
 							.getTechnologyAdapterForModelSlot(getModelSlotClass());
 					if (ta != null) {

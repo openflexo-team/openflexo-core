@@ -750,17 +750,17 @@ public class FMLFIBController extends FlexoFIBController {
 
 	public void fixIssue(ValidationIssue<?, ?> issue) {
 		if (issue instanceof ProblemIssue) {
-			VirtualModel vmToRevalidate = null;
-			if (issue.getValidationReport().getRootObject() instanceof VirtualModel) {
-				vmToRevalidate = (VirtualModel) issue.getValidationReport().getRootObject();
+			FMLCompilationUnit compilationUnitToRevalidate = null;
+			if (issue.getValidationReport().getRootObject() instanceof FMLCompilationUnit) {
+				compilationUnitToRevalidate = (FMLCompilationUnit) issue.getValidationReport().getRootObject();
 			}
 			IssueFixing<?, ?> fixing = new IssueFixing<>((ProblemIssue<?, ?>) issue, getFlexoController());
 			FixIssueDialog dialog = new FixIssueDialog(fixing, getFlexoController());
 			dialog.showDialog();
 			if (dialog.getStatus() == Status.VALIDATED) {
 				fixing.fix();
-				if (vmToRevalidate != null) {
-					revalidate(vmToRevalidate);
+				if (compilationUnitToRevalidate != null) {
+					revalidate(compilationUnitToRevalidate);
 				}
 			}
 			else if (dialog.getStatus() == Status.NO) {
@@ -769,11 +769,11 @@ public class FMLFIBController extends FlexoFIBController {
 		}
 	}
 
-	public void revalidate(VirtualModel virtualModel) {
+	public void revalidate(FMLCompilationUnit compilationUnit) {
 		if (getServiceManager() != null) {
 			FMLTechnologyAdapterController tac = getServiceManager().getTechnologyAdapterControllerService()
 					.getTechnologyAdapterController(FMLTechnologyAdapterController.class);
-			FMLValidationReport virtualModelReport = (FMLValidationReport) tac.getValidationReport(virtualModel.getCompilationUnit());
+			FMLValidationReport virtualModelReport = (FMLValidationReport) tac.getValidationReport(compilationUnit);
 			RevalidationTask validationTask = new RevalidationTask(virtualModelReport);
 			getServiceManager().getTaskManager().scheduleExecution(validationTask);
 		}
@@ -877,7 +877,7 @@ public class FMLFIBController extends FlexoFIBController {
 			container.getOwner().addToFlexoConcepts(concept);
 			container.addToEmbeddedFlexoConcepts(concept);
 		}
-		revalidate(concept.getOwner());
+		revalidate(concept.getDeclaringCompilationUnit());
 	}
 
 	@NotificationUnsafe
@@ -892,13 +892,13 @@ public class FMLFIBController extends FlexoFIBController {
 	@Override
 	public void moveVirtualModelInFolder(CompilationUnitResource vmResource, RepositoryFolder receiver) {
 		super.moveVirtualModelInFolder(vmResource, receiver);
-		revalidate(vmResource.getCompilationUnit().getVirtualModel());
+		revalidate(vmResource.getCompilationUnit());
 	}
 
 	@Override
 	public void moveVirtualModelInVirtualModel(CompilationUnitResource vmResource, CompilationUnitResource container) {
 		super.moveVirtualModelInVirtualModel(vmResource, container);
-		revalidate(vmResource.getCompilationUnit().getVirtualModel());
+		revalidate(vmResource.getCompilationUnit());
 	}
 
 }

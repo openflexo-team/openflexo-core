@@ -415,7 +415,7 @@ public class CompilationUnitResourceFactory
 					if (result != null && (result.getName().equals("VirtualModel")
 							|| StringUtils.isNotEmpty(result.getAttribute("virtualModelClass")))) {
 						try {
-							// Unused VirtualModelResource childVirtualModelResource =
+							// Unused CompilationUnitResource childCompilationUnitResource =
 							retrieveContainedVirtualModelResource(child, virtualModelResource);
 						} catch (ModelDefinitionException e) {
 							e.printStackTrace();

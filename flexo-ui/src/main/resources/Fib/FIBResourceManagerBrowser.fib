@@ -54,8 +54,8 @@
 				name="drag_to_virtual_model" />
 			<Children visible="virtualModelResource.isLoaded"
 				data="virtualModelResource.containedVMI" name="containedVMI" />
-			<Children id="8" visible="virtualModelResource.isLoaded"
-				data="virtualModelResource.contents" name="subresources" />
+			<Children visible="virtualModelResource.isLoaded"
+				data="virtualModelResource.contents" name="subresources" /> <!--  -->
 			<!-- <BrowserRemoveAction id="10" method="controller.deleteVirtualModel(selected)" 
 				name="delete_virtual_model" /> <BrowserAddAction id="11" method="controller.createFlexoConcept(selected.virtualModelResource)" 
 				name="create_flexo_concept" /> -->

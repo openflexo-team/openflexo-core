@@ -435,8 +435,10 @@ public abstract class DefaultTechnologyAdapterService extends FlexoServiceImpl i
 			return null;
 		}
 		for (TechnologyAdapter<?> ta : getTechnologyAdapters()) {
+			// System.out.println("ta: " + ta);
 			for (Class<? extends ModelSlot<?>> msType : ta.getAvailableModelSlotTypes()) {
-				if (modelSlotClass.isAssignableFrom(msType)) {
+				// System.out.println("msType=" + msType + " modelSlotClass=" + modelSlotClass);
+				if (msType != null && modelSlotClass.isAssignableFrom(msType)) {
 					return ta;
 				}
 			}
@@ -651,6 +653,9 @@ public abstract class DefaultTechnologyAdapterService extends FlexoServiceImpl i
 	}
 
 	private static void appendEditionActionTypes(List<Class<? extends EditionAction>> aList, Class<?> cl) {
+		if (cl == null) {
+			return;
+		}
 		if (cl.isAnnotationPresent(DeclareEditionActions.class)) {
 			DeclareEditionActions allEditionActions = cl.getAnnotation(DeclareEditionActions.class);
 			/*for (Class<? extends TechnologySpecificAction> editionActionClass : allEditionActions.value()) {

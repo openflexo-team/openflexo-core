@@ -43,6 +43,7 @@ import java.util.logging.Logger;
 import javax.swing.ImageIcon;
 
 import org.openflexo.foundation.FlexoObject;
+import org.openflexo.foundation.fml.FMLCompilationUnit;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoConceptNature;
 import org.openflexo.foundation.fml.VirtualModel;
@@ -168,8 +169,8 @@ public abstract class SpecificNaturePerspective<TA extends TechnologyAdapter<TA>
 			}
 		}
 
-		if (object instanceof VirtualModel) {
-			return createModuleViewForVirtualModel((VirtualModel) object);
+		if (object instanceof FMLCompilationUnit) {
+			return createModuleViewForCompilationUnit((FMLCompilationUnit) object);
 		}
 		if (object instanceof FlexoConcept) {
 			return createModuleViewForFlexoConcept((FlexoConcept) object);
@@ -183,7 +184,7 @@ public abstract class SpecificNaturePerspective<TA extends TechnologyAdapter<TA>
 		return super.createModuleViewForObject(object);
 	}
 
-	protected abstract ModuleView<VirtualModel> createModuleViewForVirtualModel(VirtualModel virtualModel);
+	protected abstract ModuleView<FMLCompilationUnit> createModuleViewForCompilationUnit(FMLCompilationUnit compilationUnit);
 
 	protected abstract ModuleView<FlexoConcept> createModuleViewForFlexoConcept(FlexoConcept flexoConcept);
 
