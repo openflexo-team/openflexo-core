@@ -236,7 +236,20 @@ public abstract class DefaultResourceCenterService extends FlexoServiceImpl impl
 		if (!getResourceCenters().contains(resourceCenter)) {
 			// logger.info("###################################
 			// addToResourceCenters() " + resourceCenter);
+			if (resourceCenter instanceof FileSystemBasedResourceCenter) {
+				File dir = ((FileSystemBasedResourceCenter) resourceCenter).getRootDirectory();
+				for (FlexoResourceCenter<?> rc : getResourceCenters()) {
+					if (rc instanceof FileSystemBasedResourceCenter) {
+						File d = ((FileSystemBasedResourceCenter) rc).getRootDirectory();
+						if (FileUtils.isFileContainedIn(dir, d)) {
+							logger.warning("Prevent from loading same (or contained) FS-based directory twice: " + dir);
+							return;
+						}
+					}
+				}
+			}
 			performSuperAdder(RESOURCE_CENTERS, resourceCenter);
+
 			if (getServiceManager() != null) {
 				getServiceManager().notify(this, new ResourceCenterAdded(resourceCenter));
 			}
