@@ -551,14 +551,16 @@ public abstract class CompilationUnitResourceImpl extends PamelaResourceImpl<FML
 	 * @param useDeclarations
 	 */
 	@Override
-	public void updateFMLModelFactory(List<Class<? extends ModelSlot<?>>> usedModelSlots) {
+	public FMLModelFactory updateFMLModelFactory(List<Class<? extends ModelSlot<?>>> usedModelSlots) {
 		this.usedModelSlots = usedModelSlots;
 		try {
 			FMLModelFactory modelFactory = new FMLModelFactory(this, getServiceManager());
 			setFactory(modelFactory);
+			return modelFactory;
 		} catch (ModelDefinitionException e) {
 			e.printStackTrace();
 		}
+		return null;
 	}
 
 	@Override
@@ -759,7 +761,9 @@ public abstract class CompilationUnitResourceImpl extends PamelaResourceImpl<FML
 
 	private FMLCompilationUnit loadFromFML() throws ParseException, IOException {
 		try {
-			FMLCompilationUnit returned = getFMLParser().parse(getInputStream(), getFactory());
+			FMLCompilationUnit returned = getFMLParser().parse(getInputStream(), getFactory(), (modelSlotClasses) -> {
+				return updateFMLModelFactory(modelSlotClasses);
+			});
 			returned.setResource(this);
 			return returned;
 		} catch (ParseException e) {

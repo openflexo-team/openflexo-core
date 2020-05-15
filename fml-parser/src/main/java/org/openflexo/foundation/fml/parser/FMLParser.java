@@ -47,6 +47,8 @@ import java.io.InputStreamReader;
 import java.io.PushbackReader;
 import java.io.Reader;
 import java.io.StringReader;
+import java.util.List;
+import java.util.function.Function;
 import java.util.logging.Logger;
 
 import org.apache.commons.io.IOUtils;
@@ -58,6 +60,7 @@ import org.openflexo.foundation.fml.parser.lexer.LexerException;
 import org.openflexo.foundation.fml.parser.node.Start;
 import org.openflexo.foundation.fml.parser.parser.Parser;
 import org.openflexo.foundation.fml.parser.parser.ParserException;
+import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.p2pp.RawSource;
 
 /**
@@ -87,56 +90,24 @@ public class FMLParser {
 	 * @throws ParseException
 	 * @throws IOException
 	 */
-	public FMLCompilationUnit parse(String data, FMLModelFactory modelFactory/*, EntryPointKind entryPointKind*/)
+	public FMLCompilationUnit parse(String data, FMLModelFactory modelFactory,
+			Function<List<Class<? extends ModelSlot<?>>>, FMLModelFactory> modelFactoryUpdater/*, EntryPointKind entryPointKind*/)
 			throws ParseException, IOException {
-		return parse(new StringReader(data), new StringReader(data), modelFactory/*, entryPointKind*/);
+		return parse(new StringReader(data), new StringReader(data), modelFactory, modelFactoryUpdater/*, entryPointKind*/);
 	}
 
 	/**
 	 * This is the method to invoke to perform a parsing.<br>
 	 * Syntactic and semantics analyzer are performed and returned value is a {@link FMLCompilationUnit}
 	 * 
-	 * @param data
-	 *            data to parse
-	 * @return
-	 * @throws ParseException
-	 * @throws IOException
-	 */
-	// public static FMLCompilationUnit parse(String data, FMLModelFactory modelFactory) throws ParseException, IOException {
-	// return parse(new StringReader(data), new StringReader(data), modelFactory/*, EntryPointKind.CompilationUnit*/);
-	// }
-
-	/**
-	 * This is the method to invoke to perform a parsing.<br>
-	 * Syntactic and semantics analyzer are performed and returned value is a {@link FMLCompilationUnit}
-	 * 
 	 * @param inputStream
 	 *            source stream
 	 * @return
 	 * @throws ParseException
 	 *             if parsing expression lead to an error
 	 */
-	// public static FMLCompilationUnit parse(InputStream inputStream, FMLModelFactory modelFactory/*, EntryPointKind entryPointKind*/)
-	// throws ParseException, IOException {
-	//
-	// byte[] buf = IOUtils.toByteArray(inputStream);
-	// InputStream inputStream1 = new ByteArrayInputStream(buf);
-	// InputStream inputStream2 = new ByteArrayInputStream(buf);
-	//
-	// return parse(new InputStreamReader(inputStream1), new InputStreamReader(inputStream2), modelFactory/*, entryPointKind*/);
-	// }
-
-	/**
-	 * This is the method to invoke to perform a parsing.<br>
-	 * Syntactic and semantics analyzer are performed and returned value is a {@link FMLCompilationUnit}
-	 * 
-	 * @param inputStream
-	 *            source stream
-	 * @return
-	 * @throws ParseException
-	 *             if parsing expression lead to an error
-	 */
-	public FMLCompilationUnit parse(InputStream inputStream, FMLModelFactory modelFactory) throws ParseException, IOException {
+	public FMLCompilationUnit parse(InputStream inputStream, FMLModelFactory modelFactory,
+			Function<List<Class<? extends ModelSlot<?>>>, FMLModelFactory> modelFactoryUpdater) throws ParseException, IOException {
 
 		// InputStream rawSourceInputStream = IOUtils.toBufferedInputStream(inputStream);
 		// inputStream.reset();
@@ -145,9 +116,9 @@ public class FMLParser {
 		InputStream inputStream1 = new ByteArrayInputStream(buf);
 		InputStream inputStream2 = new ByteArrayInputStream(buf);
 
-		return parse(new InputStreamReader(inputStream1), new InputStreamReader(inputStream2),
-				modelFactory/*,
-							EntryPointKind.CompilationUnit*/);
+		return parse(new InputStreamReader(inputStream1), new InputStreamReader(inputStream2), modelFactory,
+				modelFactoryUpdater/*,
+									EntryPointKind.CompilationUnit*/);
 	}
 
 	/**
@@ -160,14 +131,16 @@ public class FMLParser {
 	 * @throws ParseException
 	 *             if parsing expression lead to an error
 	 */
-	public FMLCompilationUnit parse(File file, FMLModelFactory modelFactory) throws ParseException, IOException {
+	public FMLCompilationUnit parse(File file, FMLModelFactory modelFactory,
+			Function<List<Class<? extends ModelSlot<?>>>, FMLModelFactory> modelFactoryUpdater) throws ParseException, IOException {
 
-		return parse(new FileInputStream(file), modelFactory);
+		return parse(new FileInputStream(file), modelFactory, modelFactoryUpdater);
 	}
 
-	private static FMLCompilationUnit parse(Reader reader, Reader rawSourceReader,
-			FMLModelFactory modelFactory/*,
-										EntryPointKind entryPointKind*/) throws ParseException, IOException {
+	private static FMLCompilationUnit parse(Reader reader, Reader rawSourceReader, FMLModelFactory modelFactory,
+			Function<List<Class<? extends ModelSlot<?>>>, FMLModelFactory> modelFactoryUpdater/*,
+																								EntryPointKind entryPointKind*/)
+			throws ParseException, IOException {
 		try {
 			// System.out.println("Parsing: " + anExpression);
 
@@ -184,11 +157,24 @@ public class FMLParser {
 			// Print the AST
 			// new ASTDebugger(tree);
 
-			// Apply the semantics analyzer.
-			MainSemanticsAnalyzer t = new MainSemanticsAnalyzer(modelFactory, tree, rawSource);
-			// tree.apply(t);
+			// Creates the semantics analyzer.
+			MainSemanticsAnalyzer analyzer = new MainSemanticsAnalyzer(modelFactory, tree, rawSource);
 
-			return t.getCompilationUnit();
+			// Find uses declarations
+			UseDeclarationsExplorer e = new UseDeclarationsExplorer(analyzer);
+			tree.apply(e);
+			FMLModelFactory updatedModelFactory = modelFactoryUpdater.apply(e.getModelSlotClasses());
+			if (updatedModelFactory != null) {
+				analyzer.setFactory(updatedModelFactory);
+			}
+
+			// Apply the semantics analyzer.
+			if (tree != null) {
+				tree.apply(analyzer);
+				analyzer.finalizeDeserialization();
+			}
+
+			return analyzer.getCompilationUnit();
 		} catch (ParserException e) {
 			// e.printStackTrace();
 			System.out.println("Nouvelle exception token:" + e.getToken() + " line:" + e.getToken().getLine() + " length:"

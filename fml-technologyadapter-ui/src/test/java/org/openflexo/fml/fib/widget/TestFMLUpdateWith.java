@@ -119,7 +119,10 @@ public class TestFMLUpdateWith extends OpenflexoTestCase {
 
 		String toParse = testInfo.fmlResource.getCompilationUnit().getFMLPrettyPrint();
 		FMLParser fmlParser = new FMLParser();
-		FMLCompilationUnit returned = fmlParser.parse(toParse, testInfo.fmlResource.getFactory());
+		FMLCompilationUnit returned = fmlParser.parse(toParse, testInfo.fmlResource.getFactory(), (modelSlotClasses) -> {
+			// We dont expect to have particular ModelSlots in this context, but be aware of that
+			return null;
+		});
 		System.out.println("OK c'est bien parse !!!");
 
 		// assertTrue(testInfo.initialVersion.equalsObject(returned));

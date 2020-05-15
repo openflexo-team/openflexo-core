@@ -53,8 +53,6 @@ import org.openflexo.foundation.fml.parser.fmlnodes.FMLCompilationUnitNode;
 import org.openflexo.foundation.test.OpenflexoTestCase;
 import org.openflexo.p2pp.P2PPNode;
 import org.openflexo.pamela.exceptions.ModelDefinitionException;
-import org.openflexo.rm.FileResourceImpl;
-import org.openflexo.rm.InJarResourceImpl;
 import org.openflexo.rm.Resource;
 import org.openflexo.rm.ResourceLocator;
 import org.openflexo.toolbox.FileUtils;
@@ -89,7 +87,10 @@ public abstract class FMLParserTestCase extends OpenflexoTestCase {
 
 		FMLModelFactory fmlModelFactory = new FMLModelFactory(null, serviceManager);
 		FMLParser parser = new FMLParser();
-		FMLCompilationUnit compilationUnit = parser.parse(fileResource.openInputStream(), fmlModelFactory);
+		FMLCompilationUnit compilationUnit = parser.parse(fileResource.openInputStream(), fmlModelFactory, (modelSlotClasses) -> {
+			// We dont expect to have particular ModelSlots in this context, but be aware of that
+			return null;
+		});
 		FMLCompilationUnitNode rootNode = (FMLCompilationUnitNode) compilationUnit.getPrettyPrintDelegate();
 		debug(rootNode, 0);
 
@@ -175,7 +176,10 @@ public abstract class FMLParserTestCase extends OpenflexoTestCase {
 	 */
 	protected static FMLCompilationUnit parseFile(Resource resource) throws ModelDefinitionException, ParseException, IOException {
 		FMLParser parser = new FMLParser();
-		return parser.parse(resource.openInputStream(), new FMLModelFactory(null, serviceManager));
+		return parser.parse(resource.openInputStream(), new FMLModelFactory(null, serviceManager), (modelSlotClasses) -> {
+			// We dont expect to have particular ModelSlots in this context, but be aware of that
+			return null;
+		});
 	}
 
 	protected static void testNormalizedFMLRepresentationEquals(FMLCompilationUnit compilationUnit, String resourceFile) {

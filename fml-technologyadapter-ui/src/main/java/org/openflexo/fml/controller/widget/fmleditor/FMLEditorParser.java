@@ -112,7 +112,11 @@ public class FMLEditorParser extends AbstractParser {
 			// Prevent editor from concurrent modification
 			editor.modelWillChange();
 
-			FMLCompilationUnit returned = getFMLParser().parse(editor.getTextArea().getText(), editor.getFactory());
+			FMLCompilationUnit returned = getFMLParser().parse(editor.getTextArea().getText(), editor.getFactory(), (modelSlotClasses) -> {
+				System.out.println("Je parse: " + editor.getTextArea().getText());
+				System.out.println("Uses model slot classes : " + modelSlotClasses);
+				return editor.getFMLResource().updateFMLModelFactory(modelSlotClasses);
+			});
 			// System.out.println("Parsing succeeded");
 
 			// This is the update process

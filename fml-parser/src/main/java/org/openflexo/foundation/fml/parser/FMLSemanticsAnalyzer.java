@@ -70,7 +70,7 @@ import org.openflexo.toolbox.ChainedCollection;
  */
 public abstract class FMLSemanticsAnalyzer extends DepthFirstAdapter {
 
-	private final FMLModelFactory factory;
+	private FMLModelFactory factory;
 
 	// Stack of FMLObjectNode beeing build during semantics analyzing
 	protected Stack<FMLObjectNode<?, ?, ?>> fmlNodes = new Stack<>();
@@ -84,6 +84,10 @@ public abstract class FMLSemanticsAnalyzer extends DepthFirstAdapter {
 
 	public final FMLModelFactory getFactory() {
 		return factory;
+	}
+
+	public final void setFactory(FMLModelFactory factory) {
+		this.factory = factory;
 	}
 
 	public abstract MainSemanticsAnalyzer getMainAnalyzer();

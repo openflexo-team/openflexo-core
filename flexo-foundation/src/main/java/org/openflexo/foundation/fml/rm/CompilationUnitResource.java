@@ -134,7 +134,7 @@ public interface CompilationUnitResource extends PamelaResource<FMLCompilationUn
 	 * 
 	 * @param useDeclarations
 	 */
-	public void updateFMLModelFactory(List<Class<? extends ModelSlot<?>>> useDeclarations);
+	public FMLModelFactory updateFMLModelFactory(List<Class<? extends ModelSlot<?>>> useDeclarations);
 
 	/**
 	 * Returns a list of VMI resources located by this resource<br>

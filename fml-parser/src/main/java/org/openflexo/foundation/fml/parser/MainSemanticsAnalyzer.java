@@ -133,10 +133,6 @@ public class MainSemanticsAnalyzer extends FMLSemanticsAnalyzer {
 		fmlFactory = new FMLFactory(this);
 		propertyFactory = new FlexoPropertyFactory(this);
 		behaviourFactory = new FlexoBehaviourFactory(this);
-		if (tree != null) {
-			tree.apply(this);
-			finalizeDeserialization();
-		}
 	}
 
 	@Override
