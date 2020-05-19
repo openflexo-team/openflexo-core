@@ -5,6 +5,8 @@
 <html>build_a_new_concept_without_connection_to_any_data_source</html>=<html>build_a_new_concept_without_connection_to_any_data_source</html>
 <html>your_preferences_hide_empty_folder<br>would_you_like_to_show_empty_folders_?<br>you_can_change_this_option_in_presentation_preferences</html>=<html>\n  <head>\n    \n  </head>\n  <body>\n    Vos pr&\#233;f&\#233;rences sont r&\#233;gl&\#233;es pour cacher les r&\#233;pertoires vides.<br>Voulez \n    vous les modifier pour voir les r&\#233;pertoires vides ?<br>Vous pouvez \n    modifier cette options dans les pr&\#233;f&\#233;rences.\n  </body>\n</html>\n
 ABSTRACT_PROPERTY=ABSTRACT_PROPERTY
+Advanced=Advanced
+Basic=Basic
 Boolean=Boolean
 CHECKBOX=Checkbox
 CHECKBOX_LIST=CHECKBOX_LIST
@@ -203,7 +205,8 @@ log_level=Niveau de Log
 log_string=Log
 make_editor_for_project=Construction de l'\u00E9diteur pour le projet
 manage_resource_centers=G\u00E9rer les centres de resources...
-many_marks_on_this_line=\=Plusieurs rep\u00E8res sur cette ligne\:
+many_marks_on_this_line=Plusieurs rep\u00E8res sur cette ligne\:
+many_marks_on_this_line\:=Plusieurs rep\u00E8res sur cette ligne\:
 matching_criterias=matching_criterias
 matching_set=matching_set
 modelslot_behaviour=modelslot_behaviour

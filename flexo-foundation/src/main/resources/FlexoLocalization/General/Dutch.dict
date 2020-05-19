@@ -5,6 +5,8 @@
 <html>build_a_new_concept_without_connection_to_any_data_source</html>=<html>build_a_new_concept_without_connection_to_any_data_source</html>
 <html>your_preferences_hide_empty_folder<br>would_you_like_to_show_empty_folders_?<br>you_can_change_this_option_in_presentation_preferences</html>=<html>your preferences hide empty folder<br>would you like to show empty folders ?<br>you can change this option in presentation preferences</html>
 ABSTRACT_PROPERTY=ABSTRACT PROPERTY
+Advanced=Advanced
+Basic=Basic
 Boolean=Boolean
 CHECKBOX=CHECKBOX
 CHECKBOX_LIST=CHECKBOX LIST
@@ -203,7 +205,8 @@ log_level=Log level
 log_string=Log string
 make_editor_for_project=make_editor_for_project
 manage_resource_centers=Manage resource centers
-many_marks_on_this_line=\=Many marks on this line\:
+many_marks_on_this_line=Many marks on this line\:
+many_marks_on_this_line\:=Many marks on this line\:
 matching_criterias=Matching criterias
 matching_set=Matching set
 modelslot_behaviour=Modelslot behaviour
