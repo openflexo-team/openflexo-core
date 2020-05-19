@@ -42,6 +42,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.logging.Logger;
 
+import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JOptionPane;
@@ -51,6 +52,7 @@ import javax.swing.JToolBar;
 import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
 import org.fife.ui.rtextarea.SearchContext;
 import org.fife.ui.rtextarea.SearchEngine;
+import org.openflexo.icon.IconLibrary;
 
 /**
  * Widget allowing find text
@@ -76,9 +78,10 @@ public class TextFinderPanel extends JToolBar implements ActionListener {
 
 		searchField = new JTextField(30);
 		add(searchField);
-		final JButton nextButton = new JButton("Find Next");
+		final JButton nextButton = new JButton(IconLibrary.NAVIGATION_FORWARD_ICON /*"Find Next"*/);
 		nextButton.setActionCommand("FindNext");
 		nextButton.addActionListener(this);
+		nextButton.setBorder(BorderFactory.createEmptyBorder());
 		add(nextButton);
 		searchField.addActionListener(new ActionListener() {
 			@Override
@@ -86,13 +89,16 @@ public class TextFinderPanel extends JToolBar implements ActionListener {
 				nextButton.doClick(0);
 			}
 		});
-		JButton prevButton = new JButton("Find Previous");
+		JButton prevButton = new JButton(IconLibrary.NAVIGATION_BACKWARD_ICON /*"Find Previous"*/);
 		prevButton.setActionCommand("FindPrev");
 		prevButton.addActionListener(this);
+		prevButton.setBorder(BorderFactory.createEmptyBorder());
 		add(prevButton);
 		regexCB = new JCheckBox("Regex");
+		regexCB.setFont(getFont().deriveFont(11f));
 		add(regexCB);
 		matchCaseCB = new JCheckBox("Match Case");
+		matchCaseCB.setFont(getFont().deriveFont(11f));
 		add(matchCaseCB);
 	}
 

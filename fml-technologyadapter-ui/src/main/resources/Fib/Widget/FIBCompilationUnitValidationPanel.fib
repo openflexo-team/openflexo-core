@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Panel id="0" align="left" borderTop="10" borderTitle="Panel"
+	borderLeft="0" trackViewPortHeight="true" trackViewPortWidth="true"
+	borderBottom="0" border="empty" sizeAdjustment="OriginalSize"
+	titleFont="SansSerif,0,11" layout="border" borderRight="0"
+	opaque="false"
+	controllerClassName="org.openflexo.fml.controller.FMLFIBController"
+	font="SansSerif,0,12" name="main">
+		<Panel align="left" borderTop="0" borderLeft="0"
+			trackViewPortHeight="true" trackViewPortWidth="true" borderBottom="0"
+			border="empty" sizeAdjustment="OriginalSize"
+			titleFont="SansSerif,0,12" layout="twocols" borderRight="0"
+			constraints="border(location=center)"
+			index="0" name="FIBPanel">
+			<Panel id="88" align="right" borderTop="0" borderLeft="0"
+				trackViewPortHeight="true" trackViewPortWidth="true"
+				borderBottom="0" border="empty" sizeAdjustment="OriginalSize"
+				titleFont="SansSerif,0,12" layout="gridbag" borderRight="0"
+				constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=right)"
+				name="ValidationPanel">
+				<Label id="89" label="" align="left"
+					data="((((&quot;&quot; + controller.getValidationReport(data).errorIssuesRegarding(data).size) + &quot; errors, &quot;) + controller.getValidationReport(data).warningIssuesRegarding(data).size) + &quot; warnings&quot;)"
+					constraints="gridbag(anchor=west;fill=horizontal;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;padX=0;padY=0;weightX=1.0;weightY=0.0)"
+					font="SansSerif,2,11" name="Label" />
+				<Label id="90"
+					label="&lt;html&gt;&lt;a href=&quot;&quot;&gt;show_errors_warnings&lt;/a&gt;&lt;/html&gt;"
+					align="left" localize="true"
+					clickAction="controller.setShowErrorsWarnings(true)"
+					constraints="gridbag(anchor=center;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;padX=0;padY=0;weightX=0.0;weightY=0.0)"
+					visible="(!(controller.showErrorsWarnings))" font="SansSerif,0,10"
+					name="Label3" />
+				<Label id="91"
+					label="&lt;html&gt;&lt;a href=&quot;&quot;&gt;hide_errors_warnings&lt;/a&gt;&lt;/html&gt;"
+					align="left" localize="true"
+					clickAction="controller.setShowErrorsWarnings(false)"
+					constraints="gridbag(anchor=center;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;padX=0;padY=0;weightX=0.0;weightY=0.0)"
+					visible="controller.showErrorsWarnings" font="SansSerif,0,10"
+					name="Label4" />
+				<Label id="92"
+					label="&lt;html&gt;&lt;a href=&quot;&quot;&gt;revalidate&lt;/a&gt;&lt;/html&gt;"
+					align="left" localize="true"
+					clickAction="controller.revalidate(data)"
+					constraints="gridbag(anchor=center;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;padX=0;padY=0;weightX=0.0;weightY=0.0)"
+					font="SansSerif,0,10" name="Label5" />
+			</Panel>
+			<Table id="93" visibleRowCount="5"
+				backgroundNonSelectionColor="255,255,255"
+				iteratorClassName="org.openflexo.pamela.validation.ValidationIssue"
+				backgroundSecondarySelectionColor="178,215,255" showFooter="false"
+				lookAndFeel="Classic" selectionMode="MultipleIntervalSelection"
+				rowHeight="18" manageDynamicModel="true"
+				doubleClickAction="controller.fixIssue(IssuesTable.selected)"
+				data="controller.getValidationReport(data).issuesRegarding(data)"
+				clickAction="controller.showIssue(IssuesTable.selected)"
+				constraints="twocols(expandHorizontally=true;expandVertically=true;insetsBottom=5;insetsLeft=0;insetsRight=5;insetsTop=0;location=right)"
+				visible="controller.showErrorsWarnings" name="IssuesTable">
+				<IconColumn id="94"
+					data="controller.iconForObject(iterator)" resizable="false"
+					title="icon" displayTitle="false" columnWidth="20" showIcon="false"
+					name="icon" />
+				<LabelColumn id="95"
+					data="controller.getValidationModel(data).localizedIssueMessage(iterator)"
+					resizable="true" title="errors/warnings" displayTitle="true"
+					columnWidth="250" showIcon="false" name="label" />
+			</Table>
+		</Panel>
+	<LocalizedDictionary id="96">
+		<Localized id="149" lang="English"
+			value="&lt;html&gt;&lt;a href=&quot;&quot;&gt;Show errors/warnings&lt;/a&gt;&lt;/html&gt;"
+			key="&lt;html&gt;&lt;a href=&quot;&quot;&gt;show_errors_warnings&lt;/a&gt;&lt;/html&gt;" />
+		<Localized id="150" lang="Dutch"
+			value="&lt;html&gt;&lt;a href=&quot;&quot;&gt;Voir les erreurs&lt;/a&gt;&lt;/html&gt;"
+			key="&lt;html&gt;&lt;a href=&quot;&quot;&gt;show_errors_warnings&lt;/a&gt;&lt;/html&gt;" />
+		<Localized id="151" lang="French"
+			value="&lt;html&gt;&lt;a href=&quot;&quot;&gt;Show errors/warnings&lt;/a&gt;&lt;/html&gt;"
+			key="&lt;html&gt;&lt;a href=&quot;&quot;&gt;show_errors_warnings&lt;/a&gt;&lt;/html&gt;" />
+		<Localized id="152" lang="English"
+			value="&lt;html&gt;&lt;a href=&quot;&quot;&gt;Hide errors/warnings&lt;/a&gt;&lt;/html&gt;"
+			key="&lt;html&gt;&lt;a href=&quot;&quot;&gt;hide_errors_warnings&lt;/a&gt;&lt;/html&gt;" />
+		<Localized id="153" lang="Dutch"
+			value="&lt;html&gt;&lt;a href=&quot;&quot;&gt;Hide errors/warnings&lt;/a&gt;&lt;/html&gt;"
+			key="&lt;html&gt;&lt;a href=&quot;&quot;&gt;hide_errors_warnings&lt;/a&gt;&lt;/html&gt;" />
+		<Localized id="154" lang="French"
+			value="&lt;html&gt;&lt;a href=&quot;&quot;&gt;Cacher les erreurs&lt;/a&gt;&lt;/html&gt;"
+			key="&lt;html&gt;&lt;a href=&quot;&quot;&gt;hide_errors_warnings&lt;/a&gt;&lt;/html&gt;" />
+		<Localized id="155" lang="English"
+			value="&lt;html&gt;&lt;a href=&quot;&quot;&gt;Revalidate&lt;/a&gt;&lt;/html&gt;"
+			key="&lt;html&gt;&lt;a href=&quot;&quot;&gt;revalidate&lt;/a&gt;&lt;/html&gt;" />
+		<Localized id="156" lang="Dutch"
+			value="&lt;html&gt;&lt;a href=&quot;&quot;&gt;Revalidate&lt;/a&gt;&lt;/html&gt;"
+			key="&lt;html&gt;&lt;a href=&quot;&quot;&gt;revalidate&lt;/a&gt;&lt;/html&gt;" />
+		<Localized id="157" lang="French"
+			value="&lt;html&gt;&lt;a href=&quot;&quot;&gt;Revalider&lt;/a&gt;&lt;/html&gt;"
+			key="&lt;html&gt;&lt;a href=&quot;&quot;&gt;revalidate&lt;/a&gt;&lt;/html&gt;" />
+		<Localized id="158" lang="English" value="Icon" key="icon" />
+		<Localized id="159" lang="Dutch" value="Icon" key="icon" />
+		<Localized id="160" lang="French" value="icon" key="icon" />
+		<Localized id="161" lang="English" value="Errors/warnings"
+			key="errors/warnings" />
+		<Localized id="162" lang="Dutch" value="Errors/warnings"
+			key="errors/warnings" />
+		<Localized id="163" lang="French" value="errors/warnings"
+			key="errors/warnings" />
+	</LocalizedDictionary>
+	<FIBVariable id="164"
+		type="org.openflexo.foundation.fml.FMLCompilationUnit" name="data" />
+</Panel>

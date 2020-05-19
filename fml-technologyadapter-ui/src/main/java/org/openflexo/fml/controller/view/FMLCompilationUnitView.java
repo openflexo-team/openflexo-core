@@ -76,7 +76,7 @@ public class FMLCompilationUnitView extends JPanel implements ModuleView<FMLComp
 		this.perspective = perspective;
 		this.flexoController = flexoController;
 
-		editor = new FMLEditor(fmlResource);
+		editor = new FMLEditor(fmlResource, flexoController);
 
 		// add(editor.getToolsPanel(), BorderLayout.NORTH);
 		add(editor, BorderLayout.CENTER);

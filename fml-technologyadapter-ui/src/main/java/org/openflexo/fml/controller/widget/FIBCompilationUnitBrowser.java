@@ -63,7 +63,8 @@ public class FIBCompilationUnitBrowser extends FIBBrowserView<FMLCompilationUnit
 	public static final Resource FIB_FILE = ResourceLocator.locateResource("Fib/Widget/FIBCompilationUnitBrowser.fib");
 
 	public FIBCompilationUnitBrowser(FMLCompilationUnit compilationUnit, FlexoController controller) {
-		super(compilationUnit, controller, FIB_FILE, controller.getTechnologyAdapter(FMLTechnologyAdapter.class).getLocales());
+		super(compilationUnit, controller, FIB_FILE,
+				controller != null ? controller.getTechnologyAdapter(FMLTechnologyAdapter.class).getLocales() : null);
 	}
 
 	public void setCompilationUnit(FMLCompilationUnit compilationUnit) {

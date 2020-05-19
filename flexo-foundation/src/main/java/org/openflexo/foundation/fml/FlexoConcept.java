@@ -209,6 +209,9 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 	@Remover(EMBEDDED_FLEXO_CONCEPT_KEY)
 	public void removeFromEmbeddedFlexoConcepts(FlexoConcept aFlexoConcept);
 
+	@Reindexer(EMBEDDED_FLEXO_CONCEPT_KEY)
+	public void moveEmbeddedFlexoConceptToIndex(FlexoConcept aFlexoConcept, int index);
+
 	@Finder(collection = EMBEDDED_FLEXO_CONCEPT_KEY, attribute = FlexoConcept.NAME_KEY)
 	public FlexoConcept getEmbeddedFlexoConcept(String conceptName);
 

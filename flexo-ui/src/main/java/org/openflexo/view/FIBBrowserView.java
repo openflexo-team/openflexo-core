@@ -48,6 +48,7 @@ import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.FlexoObject.FlexoObjectImpl;
 import org.openflexo.foundation.action.FlexoAction;
 import org.openflexo.foundation.action.FlexoActionFactory;
+import org.openflexo.gina.ApplicationFIBLibrary.ApplicationFIBLibraryImpl;
 import org.openflexo.gina.model.FIBComponent;
 import org.openflexo.gina.model.FIBContainer;
 import org.openflexo.gina.model.listener.FIBSelectionListener;
@@ -80,9 +81,13 @@ public abstract class FIBBrowserView<O> extends SelectionSynchronizedFIBView imp
 
 	public FIBBrowserView(O representedObject, FlexoController controller, Resource fibResource, LocalizedDelegate locales,
 			boolean addScrollBar) {
-		this(representedObject, controller, controller.getApplicationFIBLibraryService().retrieveFIBComponent(fibResource), locales,
-				addScrollBar);
-		controller.willLoad(fibResource);
+		this(representedObject, controller,
+				controller != null ? controller.getApplicationFIBLibraryService().retrieveFIBComponent(fibResource)
+						: ApplicationFIBLibraryImpl.instance().retrieveFIBComponent(fibResource),
+				locales, addScrollBar);
+		if (controller != null) {
+			controller.willLoad(fibResource);
+		}
 	}
 
 	public FIBBrowserView(O representedObject, ApplicationFIBLibraryService appFIBLibraryService, Resource fibResource,

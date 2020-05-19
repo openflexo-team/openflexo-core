@@ -112,7 +112,7 @@ public class TestFMLEditor extends OpenflexoFIBTestCase {
 	@Category(UITest.class)
 	public void testInstanciateFMLEditor() {
 
-		FMLEditor editor = new FMLEditor(fmlResource);
+		FMLEditor editor = new FMLEditor(fmlResource, null);
 		gcDelegate.addTab("FML Editor", editor);
 	}
 
