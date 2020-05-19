@@ -228,6 +228,8 @@ public class TestFMLPrettyPrint1 extends FMLParserTestCase {
 
 		log("Add Date property");
 
+		debug(rootNode, 0);
+
 		CreatePrimitiveRole createDateProperty = CreatePrimitiveRole.actionType.makeNewAction(virtualModel, null, editor);
 		createDateProperty.setRoleName("newDate");
 		createDateProperty.setPrimitiveType(PrimitiveType.Date);
