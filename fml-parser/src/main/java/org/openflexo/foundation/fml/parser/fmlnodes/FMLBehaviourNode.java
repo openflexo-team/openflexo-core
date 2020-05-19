@@ -157,7 +157,7 @@ public class FMLBehaviourNode<N extends Node, B extends FlexoBehaviour> extends 
 		append(dynamicContents(() -> serializeFlexoBehaviourName(getModelObject())), getBehaviourFragment());
 		when(() -> hasFMLProperties())
 		.thenAppend(staticContents("("), getFMLParametersLParFragment())
-		.thenAppend(childrenContents("","", () -> getModelObject().getFMLPropertyValues(getFactory()), ", ","", Indentation.DoNotIndent,
+		.thenAppend(childrenContents("","", () -> getModelObject().getFMLPropertyValues(getFactory()), ",","", Indentation.DoNotIndent,
 				FMLPropertyValue.class))
 		.thenAppend(staticContents(")"), getFMLParametersRParFragment());
 
@@ -227,6 +227,9 @@ public class FMLBehaviourNode<N extends Node, B extends FlexoBehaviour> extends 
 	}
 
 	protected RawSourceFragment getBehaviourFragment() {
+		if (getASTNode() instanceof AFmlBehaviourDecl) {
+			return getFragment(((AFmlBehaviourDecl) getASTNode()).getBehaviour());
+		}
 		if (getASTNode() instanceof AFmlFullyQualifiedBehaviourDecl) {
 			return getFragment(((AFmlFullyQualifiedBehaviourDecl) getASTNode()).getBehaviour());
 		}
