@@ -157,16 +157,25 @@ public interface FMLRTModelSlot<VMI extends VirtualModelInstance<VMI, TA>, TA ex
 
 		private String virtualModelURI;
 
+		private boolean isNotifying = false;
+
 		@Override
 		public CompilationUnitResource getAccessedVirtualModelResource() {
 
 			if (virtualModelResource == null && StringUtils.isNotEmpty(getAccessedVirtualModelURI()) && getVirtualModelLibrary() != null) {
 				virtualModelResource = getVirtualModelLibrary().getCompilationUnitResource(getAccessedVirtualModelURI());
 				if (virtualModelResource != null) {
-					logger.info("Looked-up " + virtualModelResource);
-					getPropertyChangeSupport().firePropertyChange(ACCESSED_VIRTUAL_MODEL_KEY, null, getAccessedVirtualModel());
-					getPropertyChangeSupport().firePropertyChange(TYPE_KEY, null, getType());
-					getPropertyChangeSupport().firePropertyChange("resultingType", null, getResultingType());
+					// logger.info("Looked-up " + virtualModelResource);
+					if (!isNotifying) {
+						try {
+							isNotifying = true;
+							getPropertyChangeSupport().firePropertyChange(ACCESSED_VIRTUAL_MODEL_KEY, null, getAccessedVirtualModel());
+							getPropertyChangeSupport().firePropertyChange(TYPE_KEY, null, getType());
+							getPropertyChangeSupport().firePropertyChange("resultingType", null, getResultingType());
+						} finally {
+							isNotifying = false;
+						}
+					}
 				}
 			}
 			if (type != null && type.isResolved() && type.getVirtualModel() != null) {
