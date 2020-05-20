@@ -38,25 +38,26 @@
 
 package org.openflexo.fml.controller.widget;
 
-import org.openflexo.foundation.fml.FMLCompilationUnit;
 import org.openflexo.foundation.fml.FMLTechnologyAdapter;
+import org.openflexo.foundation.fml.FMLValidationReport;
+import org.openflexo.pamela.validation.ValidationReport;
 import org.openflexo.rm.Resource;
 import org.openflexo.rm.ResourceLocator;
 import org.openflexo.view.SelectionSynchronizedFIBView;
 import org.openflexo.view.controller.FlexoController;
 
 /**
- * Browser allowing to browse details of a {@link FMLCompilationUnit}<br>
+ * Browser allowing to display a {@link ValidationReport}<br>
  * 
  * @author sguerin
  * 
  */
 @SuppressWarnings("serial")
-public class FIBCompilationUnitValidationPanel extends SelectionSynchronizedFIBView {
-	private static final Resource FIB_FILE = ResourceLocator.locateResource("Fib/Widget/FIBCompilationUnitValidationPanel.fib");
+public class ValidationPanel extends SelectionSynchronizedFIBView {
+	private static final Resource FIB_FILE = ResourceLocator.locateResource("Fib/Widget/ValidationPanel.fib");
 
-	public FIBCompilationUnitValidationPanel(FMLCompilationUnit compilationUnit, FlexoController controller) {
-		super(compilationUnit, controller, FIB_FILE,
+	public ValidationPanel(FMLValidationReport validationReport, FlexoController controller) {
+		super(validationReport, controller, FIB_FILE,
 				controller != null ? controller.getTechnologyAdapter(FMLTechnologyAdapter.class).getLocales() : null);
 	}
 

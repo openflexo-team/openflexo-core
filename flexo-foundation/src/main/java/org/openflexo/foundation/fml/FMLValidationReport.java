@@ -141,4 +141,15 @@ public class FMLValidationReport extends ValidationReport {
 		super.revalidate();
 	}
 
+	public ValidationError appendValidationError(String message) {
+		ValidationError error = new ValidationError<>(null, null, message);
+		getRootNode().addToValidationIssues(error);
+		notifyChange();
+		return error;
+	}
+
+	public void removeValidationError(ValidationError error) {
+		getRootNode().removeFromValidationIssues(error);
+		notifyChange();
+	}
 }

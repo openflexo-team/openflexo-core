@@ -47,7 +47,6 @@ import javax.swing.text.BadLocationException;
 
 import org.fife.ui.rsyntaxtextarea.RSyntaxDocument;
 import org.fife.ui.rsyntaxtextarea.parser.AbstractParser;
-import org.fife.ui.rsyntaxtextarea.parser.DefaultParseResult;
 import org.fife.ui.rsyntaxtextarea.parser.ParseResult;
 import org.fife.ui.rsyntaxtextarea.parser.ParserNotice;
 import org.openflexo.fml.controller.FMLTechnologyAdapterController;
@@ -71,12 +70,12 @@ public class FMLEditorParser extends AbstractParser {
 
 	private final FMLEditor editor;
 	private final FMLParser fmlParser;
-	private DefaultParseResult result;
+	private FMLParseResult result;
 
 	public FMLEditorParser(FMLEditor editor) {
 		this.editor = editor;
 		fmlParser = new FMLParser();
-		result = new DefaultParseResult(this);
+		result = new FMLParseResult(this);
 	}
 
 	public FMLParser getFMLParser() {
@@ -85,6 +84,14 @@ public class FMLEditorParser extends AbstractParser {
 
 	public CompilationUnitResource getFMLResource() {
 		return editor.getFMLResource();
+	}
+
+	public FMLParseResult getParseResult() {
+		return result;
+	}
+
+	public FMLValidationReport getValidationReport() {
+		return result.getValidationReport();
 	}
 
 	/**
@@ -137,21 +144,24 @@ public class FMLEditorParser extends AbstractParser {
 			requiresNewPrettyPrint = pcListener.requiresNewPrettyPrint();
 			System.out.println("<<<<<<< On a fini de regarder les imports maintenant");
 
+			// We perform a full validation to detect validation issues
+			FMLValidationReport validationReport = validate(existingData);
+			result.setValidationReport(validationReport);
+			for (ValidationIssue<?, ?> validationIssue : validationReport.getAllIssues()) {
+				result.addNotice(new ValidationIssueNotice(this, validationIssue));
+			}
+
 			// Then we browse SemanticAnalysisIssue as raised by semantics analyzing
 			for (SemanticAnalysisIssue semanticAnalysisIssue : existingData.getPrettyPrintDelegate().getSemanticAnalysisIssues()) {
 				result.addNotice(new SemanticAnalyzerNotice(this, semanticAnalysisIssue));
-			}
-
-			// We finally perform a full validation to detect validation issues
-			FMLValidationReport validationReport = validate(existingData);
-			for (ValidationIssue<?, ?> validationIssue : validationReport.getAllIssues()) {
-				result.addNotice(new ValidationIssueNotice(this, validationIssue));
+				result.addSemanticAnalysisIssue(semanticAnalysisIssue);
 			}
 
 		} catch (ParseException e) {
 			// Parse error: cannot do more than display position when parsing failed
 			// TODO: handle errors during parsing
 			result.addNotice(new ParseErrorNotice(this, e));
+			result.addParseError(e);
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {

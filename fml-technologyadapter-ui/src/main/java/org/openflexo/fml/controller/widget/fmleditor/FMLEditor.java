@@ -67,12 +67,13 @@ import org.fife.ui.rtextarea.Gutter;
 import org.fife.ui.rtextarea.RTextScrollPane;
 import org.openflexo.fml.controller.FMLTechnologyAdapterController;
 import org.openflexo.fml.controller.widget.FIBCompilationUnitDetailedBrowser;
-import org.openflexo.fml.controller.widget.FIBCompilationUnitValidationPanel;
+import org.openflexo.fml.controller.widget.ValidationPanel;
 import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.fml.FMLCompilationUnit;
 import org.openflexo.foundation.fml.FMLModelFactory;
 import org.openflexo.foundation.fml.FMLTechnologyAdapter;
+import org.openflexo.foundation.fml.FMLValidationReport;
 import org.openflexo.foundation.fml.rm.CompilationUnitResource;
 import org.openflexo.foundation.resource.ResourceLoadingCancelledException;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterService;
@@ -115,6 +116,9 @@ public class FMLEditor extends JPanel implements PropertyChangeListener, Documen
 	private MultiSplitLayout centerLayout;
 
 	private FlexoController flexoController;
+
+	FIBCompilationUnitDetailedBrowser browser;
+	ValidationPanel validationPanel;
 
 	public FMLEditor(CompilationUnitResource fmlResource, FlexoController flexoController) {
 		super(new BorderLayout());
@@ -223,12 +227,10 @@ public class FMLEditor extends JPanel implements PropertyChangeListener, Documen
 
 		splitPanel.add(editorPanel, LayoutPosition.CENTER.name());
 
-		FIBCompilationUnitDetailedBrowser browser = new FIBCompilationUnitDetailedBrowser(fmlResource.getLoadedResourceData(),
-				flexoController);
+		browser = new FIBCompilationUnitDetailedBrowser(fmlResource.getLoadedResourceData(), flexoController);
 		splitPanel.add(browser, LayoutPosition.RIGHT.name());
 
-		FIBCompilationUnitValidationPanel validationPanel = new FIBCompilationUnitValidationPanel(fmlResource.getLoadedResourceData(),
-				flexoController);
+		validationPanel = new ValidationPanel(getValidationReport(), flexoController);
 		splitPanel.add(validationPanel, LayoutPosition.BOTTOM.name());
 
 	}
@@ -292,18 +294,20 @@ public class FMLEditor extends JPanel implements PropertyChangeListener, Documen
 		return null;
 	}
 
-	// private boolean isUpdatingText = false;
+	public FMLValidationReport getValidationReport() {
+		if (parser != null) {
+			return parser.getValidationReport();
+		}
+		return null;
+	}
 
 	@Override
 	public void propertyChange(PropertyChangeEvent evt) {
 		if (modelWillChange) {
 			return;
 		}
-		/*if (isUpdatingText) {
-			return;
-		}*/
 		if (evt.getPropertyName().equals("FMLPrettyPrint")) {
-			System.out.println("Received " + evt);
+			// System.out.println("Received " + evt);
 			if (SwingUtilities.isEventDispatchThread()) {
 				updateFMLAsText();
 			}
@@ -319,15 +323,7 @@ public class FMLEditor extends JPanel implements PropertyChangeListener, Documen
 	}
 
 	private void updateFMLAsText() {
-		// isUpdatingText = true;
-		// parser.fmlWillChange();
-		try {
-			getTextArea().setText(fmlResource.getCompilationUnit().getFMLPrettyPrint());
-		} finally {
-			// parser.fmlHasChanged();
-			// isUpdatingText = false;
-			// documentModified = false;
-		}
+		getTextArea().setText(fmlResource.getCompilationUnit().getFMLPrettyPrint());
 	}
 
 	private boolean modelWillChange = false;
@@ -336,29 +332,9 @@ public class FMLEditor extends JPanel implements PropertyChangeListener, Documen
 		modelWillChange = true;
 	}
 
-	/*protected void modelHasChanged(boolean successfullParsing) {
-		String fmlPrettyPrint = fmlResource.getCompilationUnit().getFMLPrettyPrint().trim();
-		modelWillChange = false;
-		if (successfullParsing) {
-			if (!getTextArea().getText().trim().equals(fmlPrettyPrint)) {
-				// Found different FML
-				SwingUtilities.invokeLater(new Runnable() {
-					@Override
-					public void run() {
-						System.out.println("Updating FML....");
-						parser.fmlWillChange();
-						getTextArea().setText(fmlPrettyPrint);
-						parser.fmlHasChanged();
-						documentModified = false;
-					}
-				});
-			}
-		}
-		documentModified = false;
-	}*/
-
 	protected void modelHasChanged(boolean requiresNewPrettyPrint) {
 		modelWillChange = false;
+		validationPanel.setDataObject(getValidationReport());
 		if (requiresNewPrettyPrint) {
 			SwingUtilities.invokeLater(new Runnable() {
 				@Override
@@ -367,7 +343,6 @@ public class FMLEditor extends JPanel implements PropertyChangeListener, Documen
 				}
 			});
 		}
-		// documentModified = false;
 	}
 
 	private boolean documentModified = false;
