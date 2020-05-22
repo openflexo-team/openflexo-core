@@ -278,6 +278,7 @@ public interface FMLRTModelSlot<VMI extends VirtualModelInstance<VMI, TA>, TA ex
 				setAccessedVirtualModelResource(null);
 			}
 			else {
+				type = aVirtualModel.getVirtualModelInstanceType();
 				setAccessedVirtualModelResource(aVirtualModel.getCompilationUnitResource());
 			}
 		}
