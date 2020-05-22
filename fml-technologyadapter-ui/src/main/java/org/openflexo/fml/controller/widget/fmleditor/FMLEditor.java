@@ -58,6 +58,7 @@ import javax.swing.event.DocumentListener;
 
 import org.fife.ui.rsyntaxtextarea.AbstractTokenMakerFactory;
 import org.fife.ui.rsyntaxtextarea.ErrorStrip;
+import org.fife.ui.rsyntaxtextarea.RSyntaxDocument;
 import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
 import org.fife.ui.rsyntaxtextarea.SyntaxConstants;
 import org.fife.ui.rsyntaxtextarea.Theme;
@@ -320,6 +321,10 @@ public class FMLEditor extends JPanel implements PropertyChangeListener, Documen
 				});
 			}
 		}
+	}
+
+	public void parseImmediately() {
+		parser.parse((RSyntaxDocument) textArea.getDocument(), textArea.getSyntaxEditingStyle());
 	}
 
 	private void updateFMLAsText() {

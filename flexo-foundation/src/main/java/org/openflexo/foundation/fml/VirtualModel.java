@@ -432,7 +432,8 @@ public interface VirtualModel extends FlexoConcept {
 		// Used during deserialization, do not use it
 		public VirtualModelImpl() {
 			super();
-			// virtualModels = new ArrayList<>();
+			// System.out.println("Creating VirtualModel " + Integer.toHexString(hashCode()));
+			// Thread.dumpStack();
 		}
 
 		@Override
