@@ -181,6 +181,9 @@ public interface FlexoConceptInstanceRole extends FlexoRole<FlexoConceptInstance
 				String oldValue = _getFlexoConceptTypeURI();
 				FlexoConcept oldConceptType = this.flexoConceptType;
 				this.flexoConceptType = flexoConceptType;
+				/*if (flexoConceptType != null) {
+					type = flexoConceptType.getInstanceType();
+				}*/
 				if (getCreationScheme() != null && getCreationScheme().getFlexoConcept() != flexoConceptType) {
 					setCreationScheme(null);
 				}
