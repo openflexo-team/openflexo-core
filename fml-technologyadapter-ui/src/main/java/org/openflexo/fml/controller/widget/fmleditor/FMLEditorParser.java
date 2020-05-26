@@ -50,6 +50,7 @@ import org.fife.ui.rsyntaxtextarea.parser.AbstractParser;
 import org.fife.ui.rsyntaxtextarea.parser.ParseResult;
 import org.fife.ui.rsyntaxtextarea.parser.ParserNotice;
 import org.openflexo.fml.controller.FMLTechnologyAdapterController;
+import org.openflexo.foundation.fml.ElementImportDeclaration;
 import org.openflexo.foundation.fml.FMLCompilationUnit;
 import org.openflexo.foundation.fml.FMLPrettyPrintDelegate.SemanticAnalysisIssue;
 import org.openflexo.foundation.fml.FMLValidationReport;
@@ -120,11 +121,15 @@ public class FMLEditorParser extends AbstractParser {
 			editor.modelWillChange();
 
 			FMLCompilationUnit returned = getFMLParser().parse(editor.getTextArea().getText(), editor.getFactory(), (modelSlotClasses) -> {
-				//System.out.println("Parsing: " + editor.getTextArea().getText());
-				//System.out.println("Uses model slot classes : " + modelSlotClasses);
+				// System.out.println("Parsing: " + editor.getTextArea().getText());
+				// System.out.println("Uses model slot classes : " + modelSlotClasses);
 				return editor.getFMLResource().updateFMLModelFactory(modelSlotClasses);
 			});
 			// System.out.println("Parsing succeeded");
+
+			for (ElementImportDeclaration elementImportDeclaration : returned.getElementImports()) {
+				elementImportDeclaration.clearReferencedObject();
+			}
 
 			// This is the update process
 			FMLCompilationUnit existingData = editor.getFMLResource().getCompilationUnit();

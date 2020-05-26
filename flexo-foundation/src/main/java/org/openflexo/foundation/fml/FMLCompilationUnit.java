@@ -892,9 +892,27 @@ public interface FMLCompilationUnit extends FMLObject, FMLPrettyPrintable, Resou
 
 		private ElementImportDeclaration retrieveImportDeclaration(FlexoObject object) {
 			for (ElementImportDeclaration elementImportDeclaration : getElementImports()) {
-				// System.out.println("> J'ai deja: " + elementImportDeclaration.getReferencedObject());
 				if (elementImportDeclaration.getReferencedObject() == object) {
 					return elementImportDeclaration;
+				}
+				if (elementImportDeclaration.getReferencedObject().equalsObject(object)) {
+					return elementImportDeclaration;
+				}
+				// For FMLCompilationUnit, look at URI
+				if (object instanceof FMLCompilationUnit && ((FMLCompilationUnit) object).getVirtualModel() != null
+						&& elementImportDeclaration.getReferencedObject() instanceof FMLCompilationUnit
+						&& ((FMLCompilationUnit) elementImportDeclaration.getReferencedObject()).getVirtualModel() != null) {
+					if ((((FMLCompilationUnit) object).getVirtualModel().getURI()
+							.equals(((FMLCompilationUnit) elementImportDeclaration.getReferencedObject()).getVirtualModel().getURI()))) {
+						return elementImportDeclaration;
+					}
+				}
+				// For concepts, look at URI too
+				if (object instanceof FlexoConcept && elementImportDeclaration.getReferencedObject() instanceof FlexoConcept) {
+					if ((((FlexoConcept) object).getURI()
+							.equals(((FlexoConcept) elementImportDeclaration.getReferencedObject()).getURI()))) {
+						return elementImportDeclaration;
+					}
 				}
 			}
 			return null;
@@ -992,6 +1010,9 @@ public interface FMLCompilationUnit extends FMLObject, FMLPrettyPrintable, Resou
 				String abbrev = findUniqueAbbrev(resourceData);
 				importDeclaration.setAbbrev(abbrev);
 				getDeclaringCompilationUnit().addToElementImports(importDeclaration);
+
+				Thread.dumpStack();
+
 			}
 			return importDeclaration;
 		}
@@ -1002,7 +1023,6 @@ public interface FMLCompilationUnit extends FMLObject, FMLPrettyPrintable, Resou
 			ElementImportDeclaration elementDeclaration = retrieveImportDeclaration(element);
 			if (elementDeclaration == null) {
 				String resourceAbbrev = ensureResourceImport(element.getResourceData()).getAbbrev();
-
 				elementDeclaration = getFMLModelFactory().newElementImportDeclaration();
 				elementDeclaration.setResourceReference(new DataBinding<>(resourceAbbrev));
 				elementDeclaration

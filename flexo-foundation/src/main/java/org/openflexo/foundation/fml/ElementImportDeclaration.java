@@ -120,6 +120,11 @@ public interface ElementImportDeclaration extends FMLPrettyPrintable {
 	 */
 	public FlexoObject getReferencedObject();
 
+	/**
+	 * Clear referenced object
+	 */
+	public void clearReferencedObject();
+
 	public boolean isReferencedObjectLoaded();
 
 	public static abstract class ElementImportDeclarationImpl extends FMLObjectImpl implements ElementImportDeclaration {
@@ -128,6 +133,7 @@ public interface ElementImportDeclaration extends FMLPrettyPrintable {
 
 		private DataBinding<String> resourceReference;
 		private DataBinding<String> objectReference;
+		private FlexoObject referencedObject;
 
 		@Override
 		public FMLCompilationUnit getResourceData() {
@@ -199,8 +205,6 @@ public interface ElementImportDeclaration extends FMLPrettyPrintable {
 			}
 			notifiedBindingChanged(objectReference);
 		}
-
-		private FlexoObject referencedObject;
 
 		@Override
 		public boolean isReferencedObjectLoaded() {
@@ -335,6 +339,14 @@ public interface ElementImportDeclaration extends FMLPrettyPrintable {
 			}
 			logger.warning("Cannot find object " + userIdentifier + "_" + objectIdentifier + " in resource " + resource);
 			return null;
+		}
+
+		/**
+		 * Clear referenced object
+		 */
+		@Override
+		public void clearReferencedObject() {
+			referencedObject = null;
 		}
 
 	}
