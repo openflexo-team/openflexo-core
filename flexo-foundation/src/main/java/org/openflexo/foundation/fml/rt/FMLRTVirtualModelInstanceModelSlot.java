@@ -40,6 +40,7 @@ package org.openflexo.foundation.fml.rt;
 
 import java.util.logging.Logger;
 
+import org.openflexo.foundation.fml.FMLCompilationUnit;
 import org.openflexo.foundation.fml.FlexoConceptInstanceRole;
 import org.openflexo.foundation.fml.PrimitiveRole;
 import org.openflexo.foundation.fml.annotations.DeclareEditionActions;
@@ -92,14 +93,13 @@ public interface FMLRTVirtualModelInstanceModelSlot extends FMLRTModelSlot<FMLRT
 			return "FMLRTVirtualModelInstanceModelSlot";
 		}
 
-		/*@Override
-		public boolean hasFMLProperties() {
-			return true;
-		}
-		
 		@Override
-		public String encodeFMLProperties() {
-			return "isRequired=" + getIsRequired() + "";
-		}*/
+		public void handleRequiredImports(FMLCompilationUnit compilationUnit) {
+			super.handleRequiredImports(compilationUnit);
+			if (compilationUnit != null) {
+				compilationUnit.ensureUse(FMLRTVirtualModelInstanceModelSlot.class);
+			}
+		}
+
 	}
 }

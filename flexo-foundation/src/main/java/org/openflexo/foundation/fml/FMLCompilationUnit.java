@@ -318,6 +318,14 @@ public interface FMLCompilationUnit extends FMLObject, FMLPrettyPrintable, Resou
 	public void manageImports();
 
 	/**
+	 * Ensures that supplied modelSlotClass is present in use declarations
+	 * 
+	 * @param modelSlotClass
+	 * @return
+	 */
+	public UseModelSlotDeclaration ensureUse(Class<? extends ModelSlot<?>> modelSlotClass);
+
+	/**
 	 * Ensures that the supplied RC will be referenced in element import of this {@link FMLCompilationUnit}
 	 * 
 	 * @param rc
@@ -1010,6 +1018,7 @@ public interface FMLCompilationUnit extends FMLObject, FMLPrettyPrintable, Resou
 				String abbrev = findUniqueAbbrev(resourceData);
 				importDeclaration.setAbbrev(abbrev);
 				getDeclaringCompilationUnit().addToElementImports(importDeclaration);
+				Thread.dumpStack();
 			}
 			return importDeclaration;
 		}
@@ -1059,6 +1068,31 @@ public interface FMLCompilationUnit extends FMLObject, FMLPrettyPrintable, Resou
 				newJavaImportDeclaration.setFullQualifiedClassName(javaClass.getName());
 				addToJavaImports(newJavaImportDeclaration);
 			}
+		}
+
+		/**
+		 * Ensures that supplied modelSlotClass is present in use declarations
+		 * 
+		 * @param modelSlotClass
+		 * @return
+		 */
+		@Override
+		public UseModelSlotDeclaration ensureUse(Class<? extends ModelSlot<?>> modelSlotClass) {
+			for (UseModelSlotDeclaration useModelSlotDeclaration : getUseDeclarations()) {
+				if (useModelSlotDeclaration.getModelSlotClass().equals(modelSlotClass)) {
+					return useModelSlotDeclaration;
+				}
+			}
+			// Not found
+			if (getFMLModelFactory() != null) {
+				// Adding import
+				UseModelSlotDeclaration newUseDeclaration = getFMLModelFactory().newUseModelSlotDeclaration(modelSlotClass);
+				TechnologyAdapter ta = getServiceManager().getTechnologyAdapterService().getTechnologyAdapterForModelSlot(modelSlotClass);
+				newUseDeclaration.setAbbrev(JavaUtils.getConstantJavaName(ta.getIdentifier()));
+				addToUseDeclarations(newUseDeclaration);
+				return newUseDeclaration;
+			}
+			return null;
 		}
 
 		// TODO remove this

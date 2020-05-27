@@ -49,6 +49,7 @@ import org.openflexo.foundation.fml.annotations.FMLAttribute;
 import org.openflexo.foundation.fml.rt.ActorReference;
 import org.openflexo.foundation.fml.rt.FMLRTTechnologyAdapter;
 import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstance;
+import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstanceModelSlot;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
@@ -380,6 +381,7 @@ public interface FlexoConceptInstanceRole extends FlexoRole<FlexoConceptInstance
 		public void handleRequiredImports(FMLCompilationUnit compilationUnit) {
 			super.handleRequiredImports(compilationUnit);
 			if (compilationUnit != null) {
+				compilationUnit.ensureUse(FMLRTVirtualModelInstanceModelSlot.class);
 				if (getFlexoConceptType() != null) {
 					compilationUnit.ensureResourceImport(getFlexoConceptType().getDeclaringCompilationUnit());
 				}
@@ -475,6 +477,7 @@ public interface FlexoConceptInstanceRole extends FlexoRole<FlexoConceptInstance
 			}
 			return customTypeFactory;
 		}
+
 	}
 
 	@DefineValidationRule

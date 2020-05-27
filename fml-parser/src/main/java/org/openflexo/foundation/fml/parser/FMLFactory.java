@@ -42,11 +42,13 @@ import java.util.logging.Logger;
 
 import org.openflexo.foundation.fml.FMLObject;
 import org.openflexo.foundation.fml.FlexoBehaviour;
+import org.openflexo.foundation.fml.FlexoConceptInstanceRole;
 import org.openflexo.foundation.fml.FlexoRole;
 import org.openflexo.foundation.fml.UseModelSlotDeclaration;
 import org.openflexo.foundation.fml.editionaction.EditionAction;
 import org.openflexo.foundation.fml.editionaction.TechnologySpecificAction;
 import org.openflexo.foundation.fml.parser.node.TIdentifier;
+import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstanceModelSlot;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 
@@ -72,6 +74,12 @@ public class FMLFactory extends SemanticsAnalyzerFactory {
 	}
 
 	public Class<? extends FlexoRole<?>> getRoleClass(TIdentifier roleIdentifier) {
+		if (roleIdentifier.getText().equals("ModelInstance")) {
+			return FMLRTVirtualModelInstanceModelSlot.class;
+		}
+		if (roleIdentifier.getText().equals("ConceptInstance")) {
+			return FlexoConceptInstanceRole.class;
+		}
 		for (UseModelSlotDeclaration useModelSlotDeclaration : getAnalyzer().getCompilationUnit().getUseDeclarations()) {
 			Class<? extends FlexoRole<?>> roleClass = getRoleClass(roleIdentifier, useModelSlotDeclaration.getModelSlotClass());
 			if (roleClass != null) {
