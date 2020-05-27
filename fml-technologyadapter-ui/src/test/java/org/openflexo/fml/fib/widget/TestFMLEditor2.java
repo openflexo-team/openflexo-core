@@ -168,7 +168,7 @@ public class TestFMLEditor2 extends OpenflexoFIBTestCase {
 	@Category(UITest.class)
 	public void testAddFLMRTVirtualModelInstanceModelSlotFromText() {
 
-		String fml = "use org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstanceModelSlot as FMLRT;\n"
+		String fml = "use org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstanceModelSlot as FMLRT;\n\n"
 				+ "@URI(\"http://openflexo.org/test/TestResourceCenter/TestViewPointA.fml\")\n" + "@Version(\"0.1\")\n"
 				+ "model TestViewPointA {\n" + "	TestViewPointA myModel with ModelInstance();\n" + "}\n";
 
