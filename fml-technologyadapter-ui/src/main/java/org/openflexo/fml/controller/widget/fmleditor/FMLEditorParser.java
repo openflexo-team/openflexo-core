@@ -142,12 +142,11 @@ public class FMLEditorParser extends AbstractParser {
 			existingData.setResource(editor.getFMLResource());
 			// System.out.println("Check also: " + (editor.getFMLResource().getResourceData() == existingData));
 
-			System.out.println(">>>>>>> On regarde les imports maintenant");
+			// Checking imports
 			existingData.getPropertyChangeSupport().addPropertyChangeListener(pcListener);
 			existingData.manageImports();
 			existingData.getPropertyChangeSupport().removePropertyChangeListener(pcListener);
 			requiresNewPrettyPrint = pcListener.requiresNewPrettyPrint();
-			System.out.println("<<<<<<< On a fini de regarder les imports maintenant");
 
 			// We perform a full validation to detect validation issues
 			FMLValidationReport validationReport = validate(existingData);
