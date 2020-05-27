@@ -24,9 +24,26 @@
 				icon="controller.iconForObject(compilationUnit)"
 				label="compilationUnit.name" editableLabel="compilationUnit.name"
 				isEditable="false" name="compilationUnit">
-				<Children data="compilationUnit.virtualModel"
-					name="virtuaModel" />
+				<Children data="compilationUnit.useDeclarations" name="useDeclarations" />
+				<Children data="compilationUnit.javaImports" name="javaImports" />
+				<Children data="compilationUnit.elementImports" name="elementImports" />
+				<Children data="compilationUnit.virtualModel" name="virtuaModel" />
 			</BrowserElement>
+			<BrowserElement
+				dataClassName="org.openflexo.foundation.fml.UseModelSlotDeclaration"
+				label="useDeclaration.abbrev" 
+				icon="controller.iconForObject(useDeclaration)"
+				isEditable="false" name="useDeclaration" />
+			<BrowserElement
+				dataClassName="org.openflexo.foundation.fml.JavaImportDeclaration"
+				label="javaImport.fullQualifiedClassName" 
+				icon="controller.iconForObject(javaImport)"
+				isEditable="false" name="javaImport" />
+			<BrowserElement
+				dataClassName="org.openflexo.foundation.fml.ElementImportDeclaration"
+				label="elementImport.abbrev" 
+				icon="controller.iconForObject(elementImport)"
+				isEditable="false" name="elementImport" />
 			<BrowserElement id="7"
 				dataClassName="org.openflexo.foundation.fml.VirtualModel"
 				icon="controller.iconForObject(virtualModel)"

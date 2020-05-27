@@ -119,6 +119,18 @@ public interface JavaImportDeclaration extends FMLPrettyPrintable {
 		}
 
 		@Override
+		public void setAbbrev(String abbrev) {
+			performSuperSetter(ABBREV_KEY, abbrev);
+			getPropertyChangeSupport().firePropertyChange("className", null, getClassName());
+		}
+
+		@Override
+		public void setFullQualifiedClassName(String fullQualifiedClassName) {
+			performSuperSetter(FULL_QUALIFIED_CLASS_NAME_KEY, fullQualifiedClassName);
+			getPropertyChangeSupport().firePropertyChange("className", null, getClassName());
+		}
+
+		@Override
 		public BindingModel getBindingModel() {
 			// TODO Auto-generated method stub
 			return null;

@@ -106,9 +106,11 @@ import org.openflexo.foundation.PamelaResourceModelFactory;
 import org.openflexo.foundation.action.FlexoAction;
 import org.openflexo.foundation.action.FlexoUndoManager.FlexoActionCompoundEdit;
 import org.openflexo.foundation.action.LoadResourceAction;
+import org.openflexo.foundation.fml.ElementImportDeclaration;
 import org.openflexo.foundation.fml.FMLObject;
 import org.openflexo.foundation.fml.FMLTechnologyAdapter;
 import org.openflexo.foundation.fml.FlexoFacet;
+import org.openflexo.foundation.fml.JavaImportDeclaration;
 import org.openflexo.foundation.fml.UseModelSlotDeclaration;
 import org.openflexo.foundation.fml.VirtualModelLibrary;
 import org.openflexo.foundation.fml.action.AbstractCreateFlexoConcept.ParentFlexoConceptEntry;
@@ -116,9 +118,11 @@ import org.openflexo.foundation.fml.action.AbstractCreateVirtualModel.ModelSlotE
 import org.openflexo.foundation.fml.action.CreateFlexoBehaviour.BehaviourParameterEntry;
 import org.openflexo.foundation.fml.rm.CompilationUnitResource;
 import org.openflexo.foundation.fml.rt.FMLRTTechnologyAdapter;
+import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstanceModelSlot;
 import org.openflexo.foundation.fml.rt.VirtualModelInstanceObject;
 import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
 import org.openflexo.foundation.fml.rt.rm.FMLRTVirtualModelInstanceResource;
+import org.openflexo.foundation.fml.ta.FMLModelSlot;
 import org.openflexo.foundation.nature.FlexoNature;
 import org.openflexo.foundation.project.FlexoProjectReference;
 import org.openflexo.foundation.project.FlexoProjectResource;
@@ -150,6 +154,7 @@ import org.openflexo.gina.controller.FIBController.Status;
 import org.openflexo.gina.model.FIBMouseEvent;
 import org.openflexo.gina.swing.editor.validation.ComponentValidationWindow;
 import org.openflexo.gina.swing.utils.localization.LocalizedEditor;
+import org.openflexo.gina.utils.FIBIconLibrary;
 import org.openflexo.gina.utils.InspectorGroup;
 import org.openflexo.icon.FMLIconLibrary;
 import org.openflexo.icon.FMLRTIconLibrary;
@@ -1981,9 +1986,6 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 		else if (object instanceof VirtualModelLibrary) {
 			return FMLIconLibrary.VIRTUAL_MODEL_LIBRARY_ICON;
 		}
-		else if (object instanceof FMLObject) {
-			return FMLIconLibrary.iconForObject((FMLObject) object);
-		}
 		else if (object instanceof UseModelSlotDeclaration) {
 			UseModelSlotDeclaration useDeclaration = (UseModelSlotDeclaration) object;
 			if (useDeclaration.getCompilationUnit() != null) {
@@ -1995,8 +1997,27 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 				}
 				else {
 					logger.warning("Could not find TechnologyAdapterController for technology " + object);
+					if (useDeclaration.getModelSlotClass().equals(FMLModelSlot.class)) {
+						return IconFactory.getImageIcon(FMLIconLibrary.VIRTUAL_MODEL_ICON, IconLibrary.IMPORT);
+					}
+					if (useDeclaration.getModelSlotClass().equals(FMLRTVirtualModelInstanceModelSlot.class)) {
+						return IconFactory.getImageIcon(FMLRTIconLibrary.VIRTUAL_MODEL_INSTANCE_ICON, IconLibrary.IMPORT);
+					}
 				}
 			}
+		}
+		else if (object instanceof ElementImportDeclaration) {
+			if (((ElementImportDeclaration) object).getReferencedObject() != null) {
+				return IconFactory.getImageIcon(statelessIconForObject(((ElementImportDeclaration) object).getReferencedObject()),
+						IconLibrary.IMPORT);
+			}
+			return IconFactory.getImageIcon(FMLIconLibrary.UNKNOWN_ICON, IconLibrary.IMPORT);
+		}
+		else if (object instanceof JavaImportDeclaration) {
+			return FIBIconLibrary.PACKAGE_ICON;
+		}
+		else if (object instanceof FMLObject) {
+			return FMLIconLibrary.iconForObject((FMLObject) object);
 		}
 		else if (object instanceof CompilationUnitResource) {
 			return FMLIconLibrary.iconForObject((CompilationUnitResource) object);
