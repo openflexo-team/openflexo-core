@@ -1010,9 +1010,6 @@ public interface FMLCompilationUnit extends FMLObject, FMLPrettyPrintable, Resou
 				String abbrev = findUniqueAbbrev(resourceData);
 				importDeclaration.setAbbrev(abbrev);
 				getDeclaringCompilationUnit().addToElementImports(importDeclaration);
-
-				Thread.dumpStack();
-
 			}
 			return importDeclaration;
 		}
