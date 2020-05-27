@@ -103,7 +103,7 @@ public class ValidationIssueNotice extends FMLNotice {
 			// System.out.println("For " + issue.getMessage() + " line: " + getFragment().getStartPosition().getLine());
 			return getFragment().getStartPosition().getLine();
 		}
-		return 0;
+		return -1;
 	}
 
 	@Override
