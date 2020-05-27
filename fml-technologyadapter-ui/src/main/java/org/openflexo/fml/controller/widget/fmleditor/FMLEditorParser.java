@@ -217,16 +217,6 @@ public class FMLEditorParser extends AbstractParser {
 		return virtualModelReport;
 	}
 
-	/*private boolean fmlWillChange = false;
-	
-	protected void fmlWillChange() {
-		fmlWillChange = true;
-	}
-	
-	protected void fmlHasChanged() {
-		fmlWillChange = false;
-	}*/
-
 	/**
 	 * A {@link PropertyChangeListener} tracking needs to rebuild new pretty-print
 	 * 
