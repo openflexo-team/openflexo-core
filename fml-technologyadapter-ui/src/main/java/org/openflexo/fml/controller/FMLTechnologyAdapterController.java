@@ -713,7 +713,9 @@ public class FMLTechnologyAdapterController extends TechnologyAdapterController<
 			}
 			Progress.progress(getLocales().localizedForKey("validating_virtual_model..."));
 			validationReport = (FMLValidationReport) getFMLValidationModel().validate(cu);
-			validationReports.put(cu, validationReport);
+			if (cu != null) {
+				validationReports.put(cu, validationReport);
+			}
 			if (logger.isLoggable(Level.INFO)) {
 				logger.info("End validating virtual model " + cu);
 				logger.info("Errors=" + validationReport.getAllErrors().size());
@@ -737,7 +739,7 @@ public class FMLTechnologyAdapterController extends TechnologyAdapterController<
 			}
 			return returned;
 		}
-		return null;
+		return buildFMLValidationReport(null);
 	}
 
 	public FIBCompilationUnitBrowser getCompilationUnitBrowser() {
