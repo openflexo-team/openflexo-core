@@ -148,17 +148,23 @@ public class FMLEditorParser extends AbstractParser {
 			existingData.getPropertyChangeSupport().removePropertyChangeListener(pcListener);
 			requiresNewPrettyPrint = pcListener.requiresNewPrettyPrint();
 
-			// We perform a full validation to detect validation issues
-			FMLValidationReport validationReport = validate(existingData);
-			result.setValidationReport(validationReport);
-			for (ValidationIssue<?, ?> validationIssue : validationReport.getAllIssues()) {
-				result.addNotice(new ValidationIssueNotice(this, validationIssue));
-			}
-
 			// Then we browse SemanticAnalysisIssue as raised by semantics analyzing
 			for (SemanticAnalysisIssue semanticAnalysisIssue : existingData.getPrettyPrintDelegate().getSemanticAnalysisIssues()) {
 				result.addNotice(new SemanticAnalyzerNotice(this, semanticAnalysisIssue));
 				result.addSemanticAnalysisIssue(semanticAnalysisIssue);
+			}
+
+			// We perform a full validation to detect validation issues
+			FMLValidationReport validationReport = validate(existingData);
+			result.setValidationReport(validationReport);
+			for (ValidationIssue<?, ?> validationIssue : validationReport.getAllErrors()) {
+				result.addNotice(new ValidationIssueNotice(this, validationIssue));
+			}
+			for (ValidationIssue<?, ?> validationIssue : validationReport.getAllWarnings()) {
+				result.addNotice(new ValidationIssueNotice(this, validationIssue));
+			}
+			for (ValidationIssue<?, ?> validationIssue : validationReport.getAllInfoIssues()) {
+				result.addNotice(new ValidationIssueNotice(this, validationIssue));
 			}
 
 		} catch (ParseException e) {
