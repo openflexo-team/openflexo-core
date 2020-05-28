@@ -903,7 +903,8 @@ public interface FMLCompilationUnit extends FMLObject, FMLPrettyPrintable, Resou
 				if (elementImportDeclaration.getReferencedObject() == object) {
 					return elementImportDeclaration;
 				}
-				if (elementImportDeclaration.getReferencedObject().equalsObject(object)) {
+				if (elementImportDeclaration.getReferencedObject() != null
+						&& elementImportDeclaration.getReferencedObject().equalsObject(object)) {
 					return elementImportDeclaration;
 				}
 				// For FMLCompilationUnit, look at URI
