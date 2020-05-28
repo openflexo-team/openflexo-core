@@ -148,15 +148,17 @@ public class FMLEditorParser extends AbstractParser {
 			existingData.getPropertyChangeSupport().removePropertyChangeListener(pcListener);
 			requiresNewPrettyPrint = pcListener.requiresNewPrettyPrint();
 
+			// We perform a full validation to detect validation issues
+			FMLValidationReport validationReport = validate(existingData);
+			result.setValidationReport(validationReport);
+
 			// Then we browse SemanticAnalysisIssue as raised by semantics analyzing
 			for (SemanticAnalysisIssue semanticAnalysisIssue : existingData.getPrettyPrintDelegate().getSemanticAnalysisIssues()) {
 				result.addNotice(new SemanticAnalyzerNotice(this, semanticAnalysisIssue));
 				result.addSemanticAnalysisIssue(semanticAnalysisIssue);
 			}
 
-			// We perform a full validation to detect validation issues
-			FMLValidationReport validationReport = validate(existingData);
-			result.setValidationReport(validationReport);
+			// Adding notices from validation
 			for (ValidationIssue<?, ?> validationIssue : validationReport.getAllErrors()) {
 				result.addNotice(new ValidationIssueNotice(this, validationIssue));
 			}
@@ -170,6 +172,10 @@ public class FMLEditorParser extends AbstractParser {
 		} catch (ParseException e) {
 			// Parse error: cannot do more than display position when parsing failed
 			// TODO: handle errors during parsing
+			if (result.getValidationReport() == null) {
+				FMLValidationReport validationReport = validate(null);
+				result.setValidationReport(validationReport);
+			}
 			result.addNotice(new ParseErrorNotice(this, e));
 			result.addParseError(e);
 		} catch (Exception e) {
@@ -183,13 +189,14 @@ public class FMLEditorParser extends AbstractParser {
 		for (ParserNotice parserNotice : result.getNotices()) {
 			try {
 				// System.out.println("Adding line " + parserNotice.getLine() + " message: " + parserNotice.getMessage());
-				if (parserNotice.getLine() > 0) {
+				if (parserNotice.getLine() > 0 && parserNotice.getLine() <= editor.getTextArea().getLineCount()) {
 					editor.getGutter().addLineTrackingIcon(parserNotice.getLine() - 1, ((FMLNotice) parserNotice).getIcon());
 				}
 				else {
 					logger.warning("Unexpected notice at line:" + parserNotice.getLength() + " " + parserNotice);
 				}
 			} catch (BadLocationException e) {
+				System.out.println("BadLocationException when trying to add at line: " + (parserNotice.getLine() - 1));
 				e.printStackTrace();
 			}
 		}
