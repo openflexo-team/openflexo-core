@@ -187,7 +187,8 @@ public class FIBFlexoConceptSelector extends FIBFlexoObjectSelector<FlexoConcept
 		boolean returned = super.isAcceptableValue(o);
 		if (returned && isRestrictToContext()) {
 			if (getInheritingContext() == null) {
-				return o instanceof VirtualModel && ((VirtualModel) o).getContainerVirtualModel() == null;
+				return true;
+				// return o instanceof VirtualModel && ((VirtualModel) o).getContainerVirtualModel() == null;
 			}
 			else {
 				if (o instanceof VirtualModel) {
