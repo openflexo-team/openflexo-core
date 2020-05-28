@@ -1163,7 +1163,9 @@ public interface VirtualModel extends FlexoConcept {
 		@Override
 		public Collection<Validable> getEmbeddedValidableObjects() {
 			Collection<Validable> returned = super.getEmbeddedValidableObjects();
-			returned.addAll(getVirtualModels());
+			/*if (getVirtualModels() != null) {
+				returned.addAll(getVirtualModels());
+			}*/
 			return returned;
 		}
 
