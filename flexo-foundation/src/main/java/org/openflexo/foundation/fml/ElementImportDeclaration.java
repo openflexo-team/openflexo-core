@@ -181,6 +181,7 @@ public interface ElementImportDeclaration extends FMLPrettyPrintable {
 				this.resourceReference.setBindingName("resourceReference");
 				this.resourceReference.setMandatory(true);
 			}
+			referencedObject = null;
 			notifiedBindingChanged(resourceReference);
 		}
 
@@ -203,6 +204,7 @@ public interface ElementImportDeclaration extends FMLPrettyPrintable {
 				this.objectReference.setBindingName("objectReference");
 				this.objectReference.setMandatory(true);
 			}
+			referencedObject = null;
 			notifiedBindingChanged(objectReference);
 		}
 
