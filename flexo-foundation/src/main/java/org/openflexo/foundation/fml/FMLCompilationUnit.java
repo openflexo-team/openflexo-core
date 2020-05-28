@@ -1001,6 +1001,9 @@ public interface FMLCompilationUnit extends FMLObject, FMLPrettyPrintable, Resou
 			if (getFMLModelFactory() == null) {
 				return importDeclaration;
 			}
+			if (resourceData == this) {
+				return importDeclaration;
+			}
 			if (importDeclaration == null && resourceData.getResource() != null) {
 				FlexoResourceCenter<?> resourceCenter = resourceData.getResource().getResourceCenter();
 				// System.out.println("rc=" + resourceCenter.getDefaultBaseURI());
