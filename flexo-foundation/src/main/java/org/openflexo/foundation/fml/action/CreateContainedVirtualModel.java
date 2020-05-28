@@ -47,6 +47,7 @@ import org.openflexo.foundation.FlexoObject.FlexoObjectImpl;
 import org.openflexo.foundation.IOFlexoException;
 import org.openflexo.foundation.action.FlexoActionFactory;
 import org.openflexo.foundation.action.TechnologySpecificFlexoAction;
+import org.openflexo.foundation.fml.FMLCompilationUnit;
 import org.openflexo.foundation.fml.FMLObject;
 import org.openflexo.foundation.fml.FMLTechnologyAdapter;
 import org.openflexo.foundation.fml.VirtualModel;
@@ -64,13 +65,13 @@ import org.openflexo.toolbox.StringUtils;
  * @author sylvain
  * 
  */
-public class CreateContainedVirtualModel extends AbstractCreateVirtualModel<CreateContainedVirtualModel, VirtualModel, FMLObject>
+public class CreateContainedVirtualModel extends AbstractCreateVirtualModel<CreateContainedVirtualModel, FMLCompilationUnit, FMLObject>
 		implements TechnologySpecificFlexoAction<FMLTechnologyAdapter> {
 
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(CreateContainedVirtualModel.class.getPackage().getName());
 
-	public static FlexoActionFactory<CreateContainedVirtualModel, VirtualModel, FMLObject> actionType = new FlexoActionFactory<CreateContainedVirtualModel, VirtualModel, FMLObject>(
+	public static FlexoActionFactory<CreateContainedVirtualModel, FMLCompilationUnit, FMLObject> actionType = new FlexoActionFactory<CreateContainedVirtualModel, FMLCompilationUnit, FMLObject>(
 			"create_basic_virtual_model", FlexoActionFactory.newVirtualModelMenu, FlexoActionFactory.defaultGroup,
 			FlexoActionFactory.ADD_ACTION_TYPE) {
 
@@ -78,25 +79,25 @@ public class CreateContainedVirtualModel extends AbstractCreateVirtualModel<Crea
 		 * Factory method
 		 */
 		@Override
-		public CreateContainedVirtualModel makeNewAction(VirtualModel focusedObject, Vector<FMLObject> globalSelection,
+		public CreateContainedVirtualModel makeNewAction(FMLCompilationUnit focusedObject, Vector<FMLObject> globalSelection,
 				FlexoEditor editor) {
 			return new CreateContainedVirtualModel(focusedObject, globalSelection, editor);
 		}
 
 		@Override
-		public boolean isVisibleForSelection(VirtualModel object, Vector<FMLObject> globalSelection) {
+		public boolean isVisibleForSelection(FMLCompilationUnit object, Vector<FMLObject> globalSelection) {
 			return true;
 		}
 
 		@Override
-		public boolean isEnabledForSelection(VirtualModel object, Vector<FMLObject> globalSelection) {
+		public boolean isEnabledForSelection(FMLCompilationUnit object, Vector<FMLObject> globalSelection) {
 			return object != null;
 		}
 
 	};
 
 	static {
-		FlexoObjectImpl.addActionForClass(CreateContainedVirtualModel.actionType, VirtualModel.class);
+		FlexoObjectImpl.addActionForClass(CreateContainedVirtualModel.actionType, FMLCompilationUnit.class);
 	}
 
 	private String newVirtualModelName;
@@ -107,7 +108,7 @@ public class CreateContainedVirtualModel extends AbstractCreateVirtualModel<Crea
 
 	// private boolean createsOntology = false;
 
-	private CreateContainedVirtualModel(VirtualModel focusedObject, Vector<FMLObject> globalSelection, FlexoEditor editor) {
+	private CreateContainedVirtualModel(FMLCompilationUnit focusedObject, Vector<FMLObject> globalSelection, FlexoEditor editor) {
 		super(actionType, focusedObject, globalSelection, editor);
 	}
 
@@ -127,7 +128,7 @@ public class CreateContainedVirtualModel extends AbstractCreateVirtualModel<Crea
 
 		try {
 			CompilationUnitResource vmResource = factory.makeContainedCompilationUnitResource(getNewVirtualModelName(),
-					getFocusedObject().getResource(), null, true);
+					(CompilationUnitResource) getFocusedObject().getResource(), null, true);
 			newVirtualModel = vmResource.getLoadedResourceData().getVirtualModel();
 			newVirtualModel.setDescription(newVirtualModelDescription);
 			newVirtualModel.setVisibility(getVisibility());
@@ -194,7 +195,7 @@ public class CreateContainedVirtualModel extends AbstractCreateVirtualModel<Crea
 	}
 
 	public String getNewVirtualModelURI() {
-		String baseURI = getFocusedObject().getURI();
+		String baseURI = getFocusedObject().getVirtualModel().getURI();
 		if (!baseURI.endsWith("/")) {
 			baseURI = baseURI + "/";
 		}

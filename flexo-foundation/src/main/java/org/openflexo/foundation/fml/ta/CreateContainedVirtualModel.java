@@ -183,7 +183,7 @@ public interface CreateContainedVirtualModel extends TechnologySpecificActionDef
 				logger.info("on cree un VirtualModel " + virtualModelName + " dans " + container);
 
 				org.openflexo.foundation.fml.action.CreateContainedVirtualModel action = org.openflexo.foundation.fml.action.CreateContainedVirtualModel.actionType
-						.makeNewEmbeddedAction(container, null, (FlexoBehaviourAction<?, ?, ?>) evaluationContext);
+						.makeNewEmbeddedAction(container.getCompilationUnit(), null, (FlexoBehaviourAction<?, ?, ?>) evaluationContext);
 				action.setNewVirtualModelName(virtualModelName);
 				action.setForceExecuteConfirmationPanel(getForceExecuteConfirmationPanel());
 				action.doAction();

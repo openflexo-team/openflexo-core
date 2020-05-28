@@ -129,7 +129,8 @@ public class TestCreateVirtualModelInstance extends OpenflexoProjectAtRunTimeTes
 		assertTrue(newViewPoint.getResource().getDirectory() != null);
 		assertTrue(newViewPoint.getResource().getIODelegate().exists());
 
-		CreateContainedVirtualModel action = CreateContainedVirtualModel.actionType.makeNewAction(newViewPoint, null, editor);
+		CreateContainedVirtualModel action = CreateContainedVirtualModel.actionType.makeNewAction(newViewPoint.getCompilationUnit(), null,
+				editor);
 		action.setNewVirtualModelName("TestVirtualModel");
 		action.doAction();
 		assertTrue(action.hasActionExecutionSucceeded());

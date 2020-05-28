@@ -83,7 +83,7 @@ public class CreateContainedVirtualModelWizard extends AbstractCreateVirtualMode
 
 	@Override
 	public VirtualModel getContainerVirtualModel() {
-		return getAction().getFocusedObject();
+		return getAction().getFocusedObject().getVirtualModel();
 	}
 
 	/**

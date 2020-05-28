@@ -80,7 +80,7 @@ public class CreateTopLevelVirtualModelInitializer
 	protected FlexoActionRunnable<CreateTopLevelVirtualModel, RepositoryFolder<CompilationUnitResource, ?>, FMLObject> getDefaultFinalizer() {
 		return (e, action) -> {
 			action.getNewVirtualModel().setAuthor(getController().getApplicationContext().getGeneralPreferences().getUserName());
-			getController().selectAndFocusObject(action.getNewVirtualModel());
+			getController().selectAndFocusObject(action.getNewVirtualModel().getCompilationUnit());
 			return true;
 		};
 	}

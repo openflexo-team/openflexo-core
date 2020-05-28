@@ -125,8 +125,8 @@ public class TestTypeSelector extends OpenflexoTestCaseWithGUI {
 		// newViewPointResource = (ViewPointResource)
 		// newViewPoint.getResource();
 
-		CreateContainedVirtualModel addVirtualModelAction = CreateContainedVirtualModel.actionType.makeNewAction(newViewPoint, null,
-				editor);
+		CreateContainedVirtualModel addVirtualModelAction = CreateContainedVirtualModel.actionType
+				.makeNewAction(newViewPoint.getCompilationUnit(), null, editor);
 		addVirtualModelAction.setNewVirtualModelName("TestVirtualModel");
 		addVirtualModelAction.doAction();
 		assertTrue(addVirtualModelAction.hasActionExecutionSucceeded());

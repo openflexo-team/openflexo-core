@@ -44,8 +44,8 @@ import org.openflexo.components.wizard.Wizard;
 import org.openflexo.components.wizard.WizardDialog;
 import org.openflexo.foundation.action.FlexoActionFactory;
 import org.openflexo.foundation.action.FlexoActionRunnable;
+import org.openflexo.foundation.fml.FMLCompilationUnit;
 import org.openflexo.foundation.fml.FMLObject;
-import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.action.CreateContainedVirtualModel;
 import org.openflexo.gina.controller.FIBController.Status;
 import org.openflexo.icon.FMLIconLibrary;
@@ -54,13 +54,13 @@ import org.openflexo.icon.IconLibrary;
 import org.openflexo.view.controller.ActionInitializer;
 import org.openflexo.view.controller.ControllerActionInitializer;
 
-public class CreateContainedVirtualModelInitializer extends ActionInitializer<CreateContainedVirtualModel, VirtualModel, FMLObject> {
+public class CreateContainedVirtualModelInitializer extends ActionInitializer<CreateContainedVirtualModel, FMLCompilationUnit, FMLObject> {
 	public CreateContainedVirtualModelInitializer(ControllerActionInitializer actionInitializer) {
 		super(CreateContainedVirtualModel.actionType, actionInitializer);
 	}
 
 	@Override
-	protected FlexoActionRunnable<CreateContainedVirtualModel, VirtualModel, FMLObject> getDefaultInitializer() {
+	protected FlexoActionRunnable<CreateContainedVirtualModel, FMLCompilationUnit, FMLObject> getDefaultInitializer() {
 		return (e, action) -> {
 			Wizard wizard = new CreateContainedVirtualModelWizard(action, getController());
 			WizardDialog dialog = new WizardDialog(wizard, getController());
@@ -75,16 +75,16 @@ public class CreateContainedVirtualModelInitializer extends ActionInitializer<Cr
 	}
 
 	@Override
-	protected FlexoActionRunnable<CreateContainedVirtualModel, VirtualModel, FMLObject> getDefaultFinalizer() {
+	protected FlexoActionRunnable<CreateContainedVirtualModel, FMLCompilationUnit, FMLObject> getDefaultFinalizer() {
 		return (e, action) -> {
 			action.getNewVirtualModel().setAuthor(getController().getApplicationContext().getGeneralPreferences().getUserName());
-			getController().selectAndFocusObject(action.getNewVirtualModel());
+			getController().selectAndFocusObject(action.getNewVirtualModel().getCompilationUnit());
 			return true;
 		};
 	}
 
 	@Override
-	protected Icon getEnabledIcon(FlexoActionFactory<CreateContainedVirtualModel, VirtualModel, FMLObject> actionType) {
+	protected Icon getEnabledIcon(FlexoActionFactory<CreateContainedVirtualModel, FMLCompilationUnit, FMLObject> actionType) {
 		return IconFactory.getImageIcon(FMLIconLibrary.VIRTUAL_MODEL_ICON, IconLibrary.NEW_MARKER);
 	}
 
