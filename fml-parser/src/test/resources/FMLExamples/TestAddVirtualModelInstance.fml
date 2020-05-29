@@ -1,0 +1,20 @@
+/**
+ * Testing VM instantiation
+ */
+
+use org.openflexo.foundation.fml.rt.FMLRTModelSlot as FMLRT;
+
+import ["http://some/uri"] as VM;
+
+model MyModel {
+
+	VM myModel with ModelInstance();
+
+	testInstanciateVirtualModel() {
+		myModel = new VM() with (virtualModelInstanceName="toto");
+		myModel = new VM::constructor1(1,"foo") with (virtualModelInstanceName="tutu");
+		myModel = this.new VM() with (virtualModelInstanceName="toto");
+		myModel = this.new VM::constructor1(1,"foo") with (virtualModelInstanceName="tutu");
+	}
+
+}
