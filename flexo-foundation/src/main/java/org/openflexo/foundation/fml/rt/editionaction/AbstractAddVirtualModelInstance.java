@@ -49,6 +49,7 @@ import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoConceptInstanceType;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.VirtualModelInstanceType;
+import org.openflexo.foundation.fml.annotations.FMLAttribute;
 import org.openflexo.foundation.fml.rm.CompilationUnitResource;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
@@ -85,6 +86,7 @@ public interface AbstractAddVirtualModelInstance<FCI extends FlexoConceptInstanc
 
 	@Getter(value = VIRTUAL_MODEL_INSTANCE_NAME_KEY, ignoreForEquality = true)
 	@XMLAttribute
+	@FMLAttribute(value = VIRTUAL_MODEL_INSTANCE_NAME_KEY, required = true)
 	public DataBinding<String> getVirtualModelInstanceName();
 
 	@Setter(VIRTUAL_MODEL_INSTANCE_NAME_KEY)
@@ -92,6 +94,7 @@ public interface AbstractAddVirtualModelInstance<FCI extends FlexoConceptInstanc
 
 	@Getter(value = VIRTUAL_MODEL_INSTANCE_TITLE_KEY, ignoreForEquality = true)
 	@XMLAttribute
+	@FMLAttribute(value = VIRTUAL_MODEL_INSTANCE_TITLE_KEY, required = false)
 	public DataBinding<String> getVirtualModelInstanceTitle();
 
 	@Setter(VIRTUAL_MODEL_INSTANCE_TITLE_KEY)
