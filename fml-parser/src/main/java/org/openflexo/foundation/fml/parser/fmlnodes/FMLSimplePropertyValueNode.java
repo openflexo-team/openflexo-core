@@ -78,15 +78,21 @@ public class FMLSimplePropertyValueNode<M extends FMLObject, T>
 	public FMLSimplePropertyValueNode<M, T> deserialize() {
 
 		String propertyName = getASTNode().getArgName().getText();
-		//System.out.println("Node: " + getASTNode());
-		//System.out.println("Pour la propriete: " + propertyName);
-		//System.out.println("parent: " + getParent().getModelObject());
+		// System.out.println("Node: " + getASTNode());
+		// System.out.println("Pour la propriete: " + propertyName);
+		// System.out.println("parent: " + getParent().getModelObject());
 		FMLProperty fmlProperty = ((FMLObject) getParent().getModelObject()).getFMLProperty(propertyName, getFactory());
-		//System.out.println("fmlProperty: " + fmlProperty);
+		// System.out.println("fmlProperty: " + fmlProperty);
+
+		if (fmlProperty == null) {
+			logger.warning("Cannot find FML property " + propertyName + " in " + getParent().getModelObject());
+			return this;
+		}
+
 		getModelObject().setProperty(fmlProperty);
 
 		DataBinding<Object> value = makeBinding(getASTNode().getExpression(), modelObject);
-		//System.out.println("value=" + value);
+		// System.out.println("value=" + value);
 
 		if (DataBinding.class.equals(TypeUtils.getBaseClass(fmlProperty.getType()))) {
 			// logger.info("Set " + fmlProperty.getName() + " = " + value);
