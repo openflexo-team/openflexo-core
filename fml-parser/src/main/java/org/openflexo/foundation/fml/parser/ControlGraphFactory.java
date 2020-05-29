@@ -227,7 +227,7 @@ public class ControlGraphFactory extends FMLSemanticsAnalyzer {
 		}
 
 		void finalizeBlockStatements() {
-			// System.out.println("IL faut maintenant gerer " + currentSequenceNodes);
+			System.out.println("IL faut maintenant gerer " + currentSequenceNodes);
 			SequenceNode builtSequenceNode = null;
 			SequenceNode rootSequenceNode = null;
 			if (currentSequenceNodes.size() == initialBlockStatements.size()) {
@@ -348,6 +348,10 @@ public class ControlGraphFactory extends FMLSemanticsAnalyzer {
 
 	@Override
 	protected <N extends FMLObjectNode<?, ?, ?>> N pop() {
+		FMLObjectNode<?, ?, ?> peek = peek();
+		if (peek != null && !(peek instanceof ControlGraphNode)) {
+			return super.pop();
+		}
 		if (blocks.isEmpty()) {
 			// if (currentBlockNode == null) {
 			return super.pop();
