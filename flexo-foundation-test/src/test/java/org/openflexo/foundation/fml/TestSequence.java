@@ -183,19 +183,14 @@ public class TestSequence extends FMLParserTestCase {
 		// CreateEditionActionChoice.BuiltInAction;
 		createDeclaration4.setEditionActionClass(ExpressionAction.class);
 		createDeclaration4.setDeclarationVariableName("variable4");
-
-		System.out.println("--------------> OK, je rajoute la declaration");
 		createDeclaration4.doAction();
-		System.out.println("<-------------- C'est fait");
 
 		declaration4 = (DeclarationAction<?>) createDeclaration4.getNewEditionAction();
 		((ExpressionAction<?>) declaration4.getAssignableAction()).setExpression(new DataBinding<>("4"));
 
 		debug(rootNode, 0);
 
-		System.out.println("Done.");
-
-		System.out.println("FML=" + behaviour.getFMLPrettyPrint());
+		System.out.println("FML=" + behaviour.getResourceData().getFMLPrettyPrint());
 
 		assertTrue(behaviour.getControlGraph() instanceof Sequence);
 		Sequence sequence1 = (Sequence) behaviour.getControlGraph();
@@ -211,7 +206,7 @@ public class TestSequence extends FMLParserTestCase {
 		assertSame(declaration3, sequence3.getControlGraph2());
 
 		System.out.println("declaration1.BM=" + declaration1.getBindingModel());
-		System.out.println("declaration4.BM=" + declaration2.getBindingModel());
+		System.out.println("declaration4.BM=" + declaration4.getBindingModel());
 		System.out.println("declaration2.BM=" + declaration2.getBindingModel());
 		System.out.println("declaration3.BM=" + declaration3.getBindingModel());
 
