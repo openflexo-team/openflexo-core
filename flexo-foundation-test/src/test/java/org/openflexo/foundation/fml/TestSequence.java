@@ -57,8 +57,9 @@ import org.openflexo.foundation.fml.binding.FlexoConceptBindingModel;
 import org.openflexo.foundation.fml.controlgraph.Sequence;
 import org.openflexo.foundation.fml.editionaction.DeclarationAction;
 import org.openflexo.foundation.fml.editionaction.ExpressionAction;
+import org.openflexo.foundation.fml.parser.FMLParserTestCase;
+import org.openflexo.foundation.fml.parser.fmlnodes.FMLCompilationUnitNode;
 import org.openflexo.foundation.resource.ResourceLoadingCancelledException;
-import org.openflexo.foundation.test.OpenflexoTestCase;
 import org.openflexo.test.OrderedRunner;
 import org.openflexo.test.TestOrder;
 
@@ -69,7 +70,7 @@ import org.openflexo.test.TestOrder;
  * 
  */
 @RunWith(OrderedRunner.class)
-public class TestSequence extends OpenflexoTestCase {
+public class TestSequence extends FMLParserTestCase {
 
 	static FlexoEditor editor;
 
@@ -163,11 +164,19 @@ public class TestSequence extends OpenflexoTestCase {
 		assertNotNull(declaration3.getBindingModel().bindingVariableNamed(FlexoBehaviourBindingModel.PARAMETERS_PROPERTY));
 		assertNotNull(declaration3.getBindingModel().bindingVariableNamed("variable1"));
 		assertNotNull(declaration3.getBindingModel().bindingVariableNamed("variable2"));
+
 	}
+
+	private FMLCompilationUnitNode rootNode;
 
 	@Test
 	@TestOrder(3)
 	public void testAppendDeclaration() {
+
+		assertNotNull(rootNode = (FMLCompilationUnitNode) behaviour.getResourceData().getPrettyPrintDelegate());
+		debug(rootNode, 0);
+
+		System.out.println("FML=" + behaviour.getResourceData().getFMLPrettyPrint());
 
 		CreateEditionAction createDeclaration4 = CreateEditionAction.actionType.makeNewAction(declaration1, null, editor);
 		// createDeclarePatternRoleInCondition1.actionChoice =
@@ -181,6 +190,10 @@ public class TestSequence extends OpenflexoTestCase {
 
 		declaration4 = (DeclarationAction<?>) createDeclaration4.getNewEditionAction();
 		((ExpressionAction<?>) declaration4.getAssignableAction()).setExpression(new DataBinding<>("4"));
+
+		debug(rootNode, 0);
+
+		System.out.println("Done.");
 
 		System.out.println("FML=" + behaviour.getFMLPrettyPrint());
 
