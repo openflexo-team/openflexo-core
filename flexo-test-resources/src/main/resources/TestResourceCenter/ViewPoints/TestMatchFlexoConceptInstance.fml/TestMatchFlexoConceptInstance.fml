@@ -1,19 +1,19 @@
+import ["http://openflexo.org/test/TestResourceCenter/TestMatchFlexoConceptInstance.fml/MatchingVM2.fml"] as MatchingVM2;
+import ["http://openflexo.org/test/TestResourceCenter/TestMatchFlexoConceptInstance.fml/VM2.fml"] as VM2;
+import ["http://openflexo.org/test/TestResourceCenter/TestMatchFlexoConceptInstance.fml/MatchingVM.fml"] as MatchingVM;
+import ["http://openflexo.org/test/TestResourceCenter/TestMatchFlexoConceptInstance.fml/VM.fml"] as VM;
 
-/**
- * 
- * @version 0.1
- */
-@VirtualModel(uri="http://openflexo.org/test/TestResourceCenter/TestMatchFlexoConceptInstance.fml")
-public class TestMatchFlexoConceptInstance {
+@URI("http://openflexo.org/test/TestResourceCenter/TestMatchFlexoConceptInstance.fml")
+@Version("0.1")
+@description("")
+model TestMatchFlexoConceptInstance {
 
-  @CreationScheme  
-  TestMatchFlexoConceptInstance:create() {  
-    log "on cree le model"    
-    VirtualModelInstanceType<VM> model = VM.create();    
-    log "On a cree le modele"    
-    VirtualModelInstanceType<MatchingVM> matchingModel = MatchingVM.create(model);    
-    VirtualModelInstanceType<VM2> model2 = VM2.create();    
-    VirtualModelInstanceType<MatchingVM2> matchingModel2 = MatchingVM2.create(model2);  
-  }  
-
+	create::_create () {
+		log("on cree le model");
+		VM aModel = new VM();
+		log("On a cree le modele");
+		MatchingVM matchingModel = new MatchingVM(aModel)aModel;
+		VM2 model2 = new VM2();
+		MatchingVM2 matchingModel2 = new MatchingVM2(model2)model2;
+	}
 }

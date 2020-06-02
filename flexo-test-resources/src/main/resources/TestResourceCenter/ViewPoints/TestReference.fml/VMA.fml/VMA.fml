@@ -1,14 +1,13 @@
-use org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstanceModelSlot;
+use org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstanceModelSlot as FMLRT;
 
-/**
- * 
- * @author sylvain
- * @version 0.1
- */
-@VirtualModel(uri="http://openflexo.org/test/flexo-test-resources/TestResourceCenter/ViewPoints/TestReference.fml/VMA.fml")
-public class VMA {
+import ["http://openflexo.org/test/flexo-test-resources/TestResourceCenter/ViewPoints/TestReference.fml/VMB.fml"] as VMB;
+import ["http://openflexo.org/test/flexo-test-resources/TestResourceCenter/ViewPoints/TestReference.fml/VMC.fml"] as VMC;
 
-  public VMB vmB;
-  public ConceptInB conceptInB;
-  public ConceptInC conceptInC;
+@URI("http://openflexo.org/test/flexo-test-resources/TestResourceCenter/ViewPoints/TestReference.fml/VMA.fml")
+@Version("0.1")
+@Author("sylvain")
+public model VMA {
+	VMB vmB with ModelInstance();
+	ConceptInB conceptInB with ConceptInstance(virtualModelInstance = vmB);
+	ConceptInC conceptInC with ConceptInstance(virtualModelInstance = container.vmC);
 }

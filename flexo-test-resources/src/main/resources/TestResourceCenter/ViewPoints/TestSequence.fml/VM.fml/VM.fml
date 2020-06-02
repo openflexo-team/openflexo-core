@@ -3,8 +3,8 @@
 model VM {
 
 	testBehaviour () {
-		int variable1 = 1;
-		int variable2 = 2;
-		int variable3 = 3;
+		Long variable1 = 1;
+		Long variable2 = 2;
+		Long variable3 = 3;
 	}
 }

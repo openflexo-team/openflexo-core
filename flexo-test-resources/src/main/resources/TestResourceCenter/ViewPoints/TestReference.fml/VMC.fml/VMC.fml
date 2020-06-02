@@ -1,25 +1,13 @@
+@URI("http://openflexo.org/test/flexo-test-resources/TestResourceCenter/ViewPoints/TestReference.fml/VMC.fml")
+@Version("0.1")
+@Author("sylvain")
+public model VMC {
 
-/**
- * 
- * @author sylvain
- * @version 0.1
- */
-@VirtualModel(uri="http://openflexo.org/test/flexo-test-resources/TestResourceCenter/ViewPoints/TestReference.fml/VMC.fml")
-public class VMC {
-
-  @FlexoConcept  
-  public class ConceptInC {  
-  
-    @CreationScheme    
-    ConceptInC:create() {    
-      
-    }    
-  
-    @DeletionScheme    
-    Void delete() {    
-      
-    }    
-  
-  }  
-
+	@Author("sylvain")
+	public concept ConceptInC {
+		create::_create () {
+		}
+		delete::_delete () {
+		}
+	}
 }

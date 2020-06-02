@@ -1,33 +1,21 @@
+import java.lang.String;
 
-/**
- * 
- * @version 0.1
- */
-@VirtualModel(uri="http://openflexo.org/test/TestResourceCenter/TestMatchFlexoConceptInstance.fml/VM.fml")
-public class VM {
+@URI("http://openflexo.org/test/TestResourceCenter/TestMatchFlexoConceptInstance.fml/VM.fml")
+@Version("0.1")
+model VM {
 
-  @CreationScheme  
-  VM:create() {  
-  
-  }  
+	create::_create () {
+	}
 
-
-  @FlexoConcept  
-  public class Concept {  
-  
-    @PrimitiveRole(cardinality=ZeroOne,readOnly=false)    
-    public String p;  
-  
-    @CreationScheme    
-    Concept:create(String aP) {    
-      p = parameters.aP;    
-    }    
-  
-    @DeletionScheme    
-    Void delete() {    
-      
-    }    
-  
-  }  
-
+	concept Concept {
+		String p;
+		@UI(
+			@TextField(value="aP")
+		)
+		create::_create (required String aP) {
+			p = parameters.aP;
+		}
+		delete::_delete () {
+		}
+	}
 }

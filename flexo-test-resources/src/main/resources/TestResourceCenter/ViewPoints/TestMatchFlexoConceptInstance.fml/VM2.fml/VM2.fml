@@ -1,70 +1,32 @@
+import java.lang.String;
 
-/**
- * 
- * @version 0.1
- */
-@VirtualModel(uri="http://openflexo.org/test/TestResourceCenter/TestMatchFlexoConceptInstance.fml/VM2.fml")
-public class VM2 {
+@URI("http://openflexo.org/test/TestResourceCenter/TestMatchFlexoConceptInstance.fml/VM2.fml")
+@Version("0.1")
+model VM2 {
 
-  @CreationScheme  
-  VM2:create() {  
-  
-  }  
+	create::_create () {
+	}
 
-
-  @FlexoConcept  
-  public class ConceptA {  
-  
-    @PrimitiveRole(cardinality=ZeroOne,readOnly=false)    
-    public String nameA;  
-  
-    @CreationScheme    
-    ConceptA:create(String aNameA) {    
-      nameA = parameters.aNameA;    
-    }    
-  
-    @DeletionScheme    
-    Void delete() {    
-      
-    }    
-  
-  
-    @FlexoConcept    
-    public class ConceptB {    
-      
-      @PrimitiveRole(cardinality=ZeroOne,readOnly=false)      
-      public String nameB;    
-      
-      @CreationScheme      
-      ConceptB:create(String aNameB) {      
-        nameB = parameters.aNameB;      
-      }      
-      
-      @DeletionScheme      
-      Void delete() {      
-          
-      }      
-      
-    }    
-  
-  }  
-
-  @FlexoConcept  
-  public class ConceptB {  
-  
-    @PrimitiveRole(cardinality=ZeroOne,readOnly=false)    
-    public String nameB;  
-  
-    @CreationScheme    
-    ConceptB:create(String aNameB) {    
-      nameB = parameters.aNameB;    
-    }    
-  
-    @DeletionScheme    
-    Void delete() {    
-      
-    }    
-  
-  }  
-
+	concept ConceptA {
+		String nameA;
+		@UI(
+			@TextField(value="aNameA")
+		)
+		create::_create (required String aNameA) {
+			nameA = parameters.aNameA;
+		}
+		delete::_delete () {
+		}
+		concept ConceptB {
+			String nameB;
+			@UI(
+				@TextField(value="aNameB")
+			)
+			create::_create (required String aNameB) {
+				nameB = parameters.aNameB;
+			}
+			delete::_delete () {
+			}
+		}
+	}
 }

@@ -1,154 +1,64 @@
+import java.lang.String;
 
-/**
- * In this virtual model we test embedding features
- * 
- * @version 0.1
- */
-@VirtualModel(uri="http://openflexo.org/test/TestResourceCenter/TestViewPointB.fml/VM1.fml")
-public class VM1 {
+@URI("http://openflexo.org/test/TestResourceCenter/TestViewPointB.fml/VM1.fml")
+@Version("0.1")
+@description("In this virtual model we test embedding features")
+model VM1 {
 
-  @CreationScheme  
-  VM1:create() {  
-  
-  }  
+	create::_create () {
+	}
 
-  @ActionScheme  
-  Void generateSomeInstances(String instanceName) {  
-    FlexoConceptInstanceType<ConceptA> instanceA = ConceptA.create(parameters.instanceName,8);    
-    FlexoConceptInstanceType<ConceptB> instanceB1 = ConceptB.create("b1",1.1);    
-    FlexoConceptInstanceType<ConceptB> instanceB2 = ConceptB.create("b2",1.2);    
-    FlexoConceptInstanceType<ConceptC> instanceC1 = ConceptC.create("c1",true);    
-    FlexoConceptInstanceType<ConceptC> instanceC2 = ConceptC.create("c2",false);  
-  }  
+	@UI(
+		@TextField(value="instanceName")
+	)
+	generateSomeInstances (required String instanceName) {
+		ConceptA instanceA = new ConceptA(parameters.instanceName,8);
+		ConceptB instanceB1 = instanceA.new ConceptB("b1",1.1);
+		ConceptB instanceB2 = instanceA.new ConceptB("b2",1.2);
+		ConceptC instanceC1 = instanceB1.new ConceptC("c1",true);
+		ConceptC instanceC2 = instanceB2.new ConceptC("c2",false);
+	}
 
-
-  @FlexoConcept  
-  public class ConceptA {  
-  
-    @PrimitiveRole(cardinality=ZeroOne,readOnly=false)    
-    public String a1;  
-    @PrimitiveRole(cardinality=ZeroOne,readOnly=false)    
-    public Integer a2;  
-  
-    @CreationScheme    
-    ConceptA:create(String anA1, Integer anA2) {    
-      a1 = parameters.anA1;      
-      a2 = parameters.anA2;    
-    }    
-  
-    @DeletionScheme    
-    Void delete() {    
-      
-    }    
-  
-  
-    @FlexoConcept    
-    public class ConceptB {    
-      
-      @PrimitiveRole(cardinality=ZeroOne,readOnly=false)      
-      public String b1;    
-      @PrimitiveRole(cardinality=ZeroOne,readOnly=false)      
-      public Float b2;    
-      
-      @CreationScheme      
-      ConceptB:create(String aB1, Float aB2) {      
-        b1 = parameters.aB1;        
-        b2 = parameters.aB2;      
-      }      
-      
-      @DeletionScheme      
-      Void delete() {      
-          
-      }      
-      
-      
-      @FlexoConcept      
-      public class ConceptC {      
-          
-        @PrimitiveRole(cardinality=ZeroOne,readOnly=false)        
-        public String c1;      
-        @PrimitiveRole(cardinality=ZeroOne,readOnly=false)        
-        public Boolean c2;      
-          
-        @CreationScheme        
-        ConceptC:create(String aC1, Boolean aC2) {        
-          c1 = parameters.aC1;          
-          c2 = parameters.aC2;        
-        }        
-          
-        @DeletionScheme        
-        Void delete() {        
-              
-        }        
-          
-      }      
-      
-    }    
-  
-  }  
-
-  @FlexoConcept  
-  public class ConceptB {  
-  
-    @PrimitiveRole(cardinality=ZeroOne,readOnly=false)    
-    public String b1;  
-    @PrimitiveRole(cardinality=ZeroOne,readOnly=false)    
-    public Float b2;  
-  
-    @CreationScheme    
-    ConceptB:create(String aB1, Float aB2) {    
-      b1 = parameters.aB1;      
-      b2 = parameters.aB2;    
-    }    
-  
-    @DeletionScheme    
-    Void delete() {    
-      
-    }    
-  
-  
-    @FlexoConcept    
-    public class ConceptC {    
-      
-      @PrimitiveRole(cardinality=ZeroOne,readOnly=false)      
-      public String c1;    
-      @PrimitiveRole(cardinality=ZeroOne,readOnly=false)      
-      public Boolean c2;    
-      
-      @CreationScheme      
-      ConceptC:create(String aC1, Boolean aC2) {      
-        c1 = parameters.aC1;        
-        c2 = parameters.aC2;      
-      }      
-      
-      @DeletionScheme      
-      Void delete() {      
-          
-      }      
-      
-    }    
-  
-  }  
-
-  @FlexoConcept  
-  public class ConceptC {  
-  
-    @PrimitiveRole(cardinality=ZeroOne,readOnly=false)    
-    public String c1;  
-    @PrimitiveRole(cardinality=ZeroOne,readOnly=false)    
-    public Boolean c2;  
-  
-    @CreationScheme    
-    ConceptC:create(String aC1, Boolean aC2) {    
-      c1 = parameters.aC1;      
-      c2 = parameters.aC2;    
-    }    
-  
-    @DeletionScheme    
-    Void delete() {    
-      
-    }    
-  
-  }  
-
+	concept ConceptA {
+		String a1;
+		int a2;
+		@UI(
+			@TextField(value="anA1")
+			@IntegerWidget(value="anA2")
+		)
+		create::_create (required String anA1, required int anA2=7) {
+			a1 = parameters.anA1;
+			a2 = parameters.anA2;
+		}
+		delete::_delete () {
+		}
+		concept ConceptB {
+			String b1;
+			float b2;
+			@UI(
+				@TextField(value="aB1")
+				@FloatWidget(value="aB2")
+			)
+			create::_create (required String aB1, required float aB2=3.141592654) {
+				b1 = parameters.aB1;
+				b2 = parameters.aB2;
+			}
+			delete::_delete () {
+			}
+			concept ConceptC {
+				String c1;
+				boolean c2;
+				@UI(
+					@TextField(value="aC1")
+					@Checkbox(value="aC2")
+				)
+				create::_create (required String aC1, required boolean aC2=false) {
+					c1 = parameters.aC1;
+					c2 = parameters.aC2;
+				}
+				delete::_delete () {
+				}
+			}
+		}
+	}
 }
