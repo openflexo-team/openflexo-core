@@ -111,10 +111,10 @@ public abstract class CompilationUnitResourceImpl extends PamelaResourceImpl<FML
 	private static final Logger logger = Logger.getLogger(CompilationUnitResourceImpl.class.getPackage().getName());
 
 	public enum PersistencyStrategy {
-		XML, FML
+		XML, XML2FML, FML
 	}
 
-	private static final PersistencyStrategy DEFAULT_PERSISTENCY_STRATEGY = PersistencyStrategy.XML;
+	private static final PersistencyStrategy DEFAULT_PERSISTENCY_STRATEGY = PersistencyStrategy.FML;
 	private PersistencyStrategy persistencyStrategy = DEFAULT_PERSISTENCY_STRATEGY;
 
 	// public PersistencyStrategy getPersistencyStrategy();
@@ -620,6 +620,7 @@ public abstract class CompilationUnitResourceImpl extends PamelaResourceImpl<FML
 	protected FMLCompilationUnit performLoad() throws IOException, ParseException {
 		switch (getPersistencyStrategy()) {
 			case XML:
+			case XML2FML:
 				return loadFromXML();
 			case FML:
 				return loadFromFML();
