@@ -1,8 +1,4 @@
-
-/**
- * 
- * @version 0.1
- */
-@VirtualModel(uri="http://openflexo.org/test/TestResourceCenter/TestSequence.fml")
-public class TestSequence {
+@URI("http://openflexo.org/test/TestResourceCenter/TestSequence.fml")
+@Version("0.1")
+model TestSequence { 
 }
