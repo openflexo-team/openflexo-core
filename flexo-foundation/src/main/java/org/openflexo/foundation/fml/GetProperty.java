@@ -46,6 +46,7 @@ import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.type.TypeUtils;
 import org.openflexo.foundation.fml.controlgraph.FMLControlGraph;
 import org.openflexo.foundation.fml.controlgraph.FMLControlGraphOwner;
+import org.openflexo.foundation.fml.controlgraph.FMLControlGraphVisitor;
 import org.openflexo.pamela.annotations.CloningStrategy;
 import org.openflexo.pamela.annotations.CloningStrategy.StrategyType;
 import org.openflexo.pamela.annotations.DefineValidationRule;
@@ -196,6 +197,22 @@ public abstract interface GetProperty<T> extends FlexoProperty<T>, FMLControlGra
 		@Override
 		public boolean isNotificationSafe() {
 			return false;
+		}
+
+		@Override
+		public void finalizeDeserialization() {
+
+			if (getGetControlGraph() != null) {
+				getGetControlGraph().accept(new FMLControlGraphVisitor() {
+					@Override
+					public void visit(FMLControlGraph controlGraph) {
+						controlGraph.finalizeDeserialization();
+					}
+				});
+			}
+
+			super.finalizeDeserialization();
+
 		}
 
 		/*@Override

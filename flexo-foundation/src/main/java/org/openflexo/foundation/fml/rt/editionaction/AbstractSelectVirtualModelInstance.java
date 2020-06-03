@@ -172,6 +172,13 @@ public interface AbstractSelectVirtualModelInstance<VMI extends VirtualModelInst
 		private boolean isFetching = false;
 
 		@Override
+		public void finalizeDeserialization() {
+			super.finalizeDeserialization();
+			getContainer().forceRevalidate();
+			getVirtualModelType();
+		}
+
+		@Override
 		public VirtualModelInstanceType getFetchedType() {
 			if (getVirtualModelType() != null) {
 				return getVirtualModelType().getVirtualModelInstanceType();

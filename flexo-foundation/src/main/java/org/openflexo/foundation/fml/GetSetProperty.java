@@ -40,6 +40,7 @@ package org.openflexo.foundation.fml;
 
 import org.openflexo.foundation.fml.controlgraph.FMLControlGraph;
 import org.openflexo.foundation.fml.controlgraph.FMLControlGraphOwner;
+import org.openflexo.foundation.fml.controlgraph.FMLControlGraphVisitor;
 import org.openflexo.pamela.annotations.CloningStrategy;
 import org.openflexo.pamela.annotations.CloningStrategy.StrategyType;
 import org.openflexo.pamela.annotations.Embedded;
@@ -130,6 +131,22 @@ public abstract interface GetSetProperty<T> extends GetProperty<T> {
 			if (getSetControlGraph() instanceof FMLControlGraphOwner) {
 				((FMLControlGraphOwner) getSetControlGraph()).reduce();
 			}
+		}
+
+		@Override
+		public void finalizeDeserialization() {
+
+			if (getSetControlGraph() != null) {
+				getSetControlGraph().accept(new FMLControlGraphVisitor() {
+					@Override
+					public void visit(FMLControlGraph controlGraph) {
+						controlGraph.finalizeDeserialization();
+					}
+				});
+			}
+
+			super.finalizeDeserialization();
+
 		}
 
 	}
