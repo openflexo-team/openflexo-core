@@ -70,6 +70,7 @@ import org.openflexo.foundation.resource.DirectoryResourceCenter;
 import org.openflexo.foundation.resource.SaveResourceException;
 import org.openflexo.foundation.test.OpenflexoProjectAtRunTimeTestCase;
 import org.openflexo.pamela.exceptions.ModelDefinitionException;
+import org.openflexo.pamela.validation.ValidationReport;
 import org.openflexo.rm.ResourceLocator;
 import org.openflexo.test.OrderedRunner;
 import org.openflexo.test.TestOrder;
@@ -347,6 +348,8 @@ public class TestDeleteFlexoConceptObjects extends OpenflexoProjectAtRunTimeTest
 
 		log("testDelete5");
 
+		System.out.println("Avant: " + virtualModel.getFMLPrettyPrint());
+
 		Vector<FlexoConceptObject> sel = new Vector<>();
 		sel.add(aStringInA);
 		sel.add(someBooleanInA);
@@ -355,11 +358,14 @@ public class TestDeleteFlexoConceptObjects extends OpenflexoProjectAtRunTimeTest
 		deleteAction.doAction();
 		assertTrue(deleteAction.hasActionExecutionSucceeded());
 
+		System.out.println("Apres: " + virtualModel.getFMLPrettyPrint());
+
 		assertEquals(2, flexoConcept1.getFlexoProperties().size());
 		assertTrue(flexoConcept1.getFlexoProperties().contains(someIntegerInA));
 		assertTrue(flexoConcept1.getFlexoProperties().contains(someFlexoConcept2));
 
-		assertEquals(1, validate(viewPoint).getErrorsCount());
+		ValidationReport validationReport = validate(virtualModel);
+		assertEquals(1, validationReport.getErrorsCount());
 	}
 
 	@Test
