@@ -99,7 +99,10 @@ public abstract class SemanticsAnalyzerFactory {
 	}
 
 	public FMLTechnologyAdapter getFMLTechnologyAdapter() {
-		return getServiceManager().getTechnologyAdapterService().getTechnologyAdapter(FMLTechnologyAdapter.class);
+		if (getServiceManager() != null) {
+			return getServiceManager().getTechnologyAdapterService().getTechnologyAdapter(FMLTechnologyAdapter.class);
+		}
+		return null;
 	}
 
 	/**

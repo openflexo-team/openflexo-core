@@ -97,7 +97,10 @@ public abstract class FMLSemanticsAnalyzer extends DepthFirstAdapter {
 	}
 
 	public final FlexoServiceManager getServiceManager() {
-		return getFactory().getServiceManager();
+		if (getFactory() != null) {
+			return getFactory().getServiceManager();
+		}
+		return null;
 	}
 
 	protected final void finalizeDeserialization(FMLObjectNode<?, ?, ?> node) {
