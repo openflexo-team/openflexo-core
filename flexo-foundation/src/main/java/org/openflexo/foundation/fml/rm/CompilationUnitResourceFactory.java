@@ -278,7 +278,7 @@ public class CompilationUnitResourceFactory
 		// VirtualModelInfo vpi = findVirtualModelInfo(returned, resourceCenter);
 		VirtualModelInfo vpi = returned.findVirtualModelInfo(resourceCenter);
 
-		logger.fine("Found " + vpi.name + " uri=" + vpi.uri + " version=" + vpi.version + " " + vpi.requiredModelSlotList);
+		// logger.fine("Found " + vpi.name + " uri=" + vpi.uri + " version=" + vpi.version + " " + vpi.requiredModelSlotList);
 
 		if (vpi != null) {
 			returned.setURI(vpi.uri);
