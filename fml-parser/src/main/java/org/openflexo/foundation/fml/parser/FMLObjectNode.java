@@ -65,6 +65,7 @@ import org.openflexo.foundation.fml.FMLSimplePropertyValue;
 import org.openflexo.foundation.fml.FlexoBehaviour;
 import org.openflexo.foundation.fml.FlexoBehaviourParameter;
 import org.openflexo.foundation.fml.FlexoConcept;
+import org.openflexo.foundation.fml.FlexoConceptInstanceType;
 import org.openflexo.foundation.fml.FlexoRole;
 import org.openflexo.foundation.fml.GetSetProperty;
 import org.openflexo.foundation.fml.JavaImportDeclaration;
@@ -74,6 +75,7 @@ import org.openflexo.foundation.fml.PrimitiveRole;
 import org.openflexo.foundation.fml.PropertyCardinality;
 import org.openflexo.foundation.fml.UseModelSlotDeclaration;
 import org.openflexo.foundation.fml.VirtualModel;
+import org.openflexo.foundation.fml.VirtualModelInstanceType;
 import org.openflexo.foundation.fml.Visibility;
 import org.openflexo.foundation.fml.WrappedFMLObject;
 import org.openflexo.foundation.fml.controlgraph.ConditionalAction;
@@ -745,6 +747,15 @@ public abstract class FMLObjectNode<N extends Node, T extends FMLPrettyPrintable
 				((CustomType) type).resolve();
 			}
 		}
+
+		if (type instanceof VirtualModelInstanceType && ((VirtualModelInstanceType) type).getVirtualModel() == null) {
+			return "ModelInstance";
+		}
+
+		if (type instanceof FlexoConceptInstanceType && ((FlexoConceptInstanceType) type).getFlexoConcept() == null) {
+			return "ConceptInstance";
+		}
+
 		String returned = TypeUtils.simpleRepresentation(type);
 		/*if (returned.startsWith("#")) {
 			System.out.println("Nimporte quoi: " + type);

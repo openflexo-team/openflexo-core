@@ -397,13 +397,58 @@ public class TypeFactory extends SemanticsAnalyzerFactory {
 	public Type makeType(TIdentifier identifier, List<PAdditionalIdentifier> additionalIdentifiers, FlexoRole<?> role) {
 		String typeName = makeFullQualifiedIdentifier(identifier, additionalIdentifiers);
 
-		try {
-			return Class.forName(typeName);
-		} catch (ClassNotFoundException e) {
-			// OK, continue
-		}
-
 		// Handle some basic types
+		if (typeName.equals("boolean")) {
+			return Boolean.TYPE;
+		}
+		if (typeName.equals("char")) {
+			return Character.TYPE;
+		}
+		if (typeName.equals("byte")) {
+			return Byte.TYPE;
+		}
+		if (typeName.equals("short")) {
+			return Short.TYPE;
+		}
+		if (typeName.equals("int")) {
+			return Integer.TYPE;
+		}
+		if (typeName.equals("long")) {
+			return Long.TYPE;
+		}
+		if (typeName.equals("float")) {
+			return Float.TYPE;
+		}
+		if (typeName.equals("double")) {
+			return Double.TYPE;
+		}
+		/*if (typeName.equals("Boolean")) {
+			return Boolean.class;
+		}
+		if (typeName.equals("Character")) {
+			return Character.class;
+		}
+		if (typeName.equals("Byte")) {
+			return Byte.class;
+		}
+		if (typeName.equals("Short")) {
+			return Short.class;
+		}
+		if (typeName.equals("Integer")) {
+			return Integer.class;
+		}
+		if (typeName.equals("Long")) {
+			return Long.class;
+		}
+		if (typeName.equals("Float")) {
+			return Float.class;
+		}
+		if (typeName.equals("Double")) {
+			return Double.class;
+		}
+		if (typeName.equals("Number")) {
+			return Number.class;
+		}*/
 		if (typeName.equals("String")) {
 			return String.class;
 		}
@@ -412,6 +457,24 @@ public class TypeFactory extends SemanticsAnalyzerFactory {
 		}
 		if (typeName.equals("MatchingSet")) {
 			return MatchingSet.class;
+		}
+		if (typeName.equals("ConceptInstance")) {
+			return FlexoConceptInstanceType.UNDEFINED_FLEXO_CONCEPT_INSTANCE_TYPE;
+		}
+		if (typeName.equals("ModelInstance")) {
+			return VirtualModelInstanceType.UNDEFINED_VIRTUAL_MODEL_INSTANCE_TYPE;
+		}
+
+		try {
+			return Class.forName(typeName);
+		} catch (ClassNotFoundException e) {
+			// OK, continue
+		}
+
+		try {
+			return Class.forName("java.lang." + typeName);
+		} catch (ClassNotFoundException e) {
+			// OK, continue
 		}
 
 		for (JavaImportDeclaration javaImportDeclaration : getAnalyzer().getCompilationUnit().getJavaImports()) {
