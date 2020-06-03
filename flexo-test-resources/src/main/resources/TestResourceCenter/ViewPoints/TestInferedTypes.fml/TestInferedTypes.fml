@@ -1,20 +1,20 @@
-use org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstanceModelSlot;
+use org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstanceModelSlot as FMLRT;
 
-/**
- * 
- * @author sylvain
- * @version 0.1
- */
-@VirtualModel(uri="http://openflexo.org/test/TestResourceCenter/TestInferedTypes.fml")
-public class TestInferedTypes {
-
-  @GetSetProperty(value="property", access=get)  
-  public VirtualModelInstanceType<TestInferedTypes> getProperty {  
-    VirtualModelInstanceType<TestInferedTypes> returned = this.FML@RT::SelectUniqueVirtualModelInstance();    
-    if true {    
-      return returned;    
-    } else {    
-      return returned.property;    
-    }  
-  }
+@URI("http://openflexo.org/test/TestResourceCenter/TestInferedTypes.fml")
+@Version("0.1")
+@Author("sylvain")
+model TestInferedTypes {
+	TestInferedTypes property  {
+	  TestInferedTypes get() {
+		TestInferedTypes returned = select unique TestInferedTypes from (this);
+		if (true) {
+			return returned;
+		}
+		else {
+			return returned.property;
+		}
+	  }
+	  set(TestInferedTypes value) {
+	  }
+	};
 }
