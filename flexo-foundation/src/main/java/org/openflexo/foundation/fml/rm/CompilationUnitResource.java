@@ -183,10 +183,10 @@ public interface CompilationUnitResource extends PamelaResource<FMLCompilationUn
 		public String requiredModelSlotList;
 		public String virtualModelClassName;
 
-		VirtualModelInfo() {
+		public VirtualModelInfo() {
 		}
 
-		VirtualModelInfo(String uri, String version, String name/*, String modelVersion*/, String requiredModelSlotList,
+		public VirtualModelInfo(String uri, String version, String name/*, String modelVersion*/, String requiredModelSlotList,
 				String virtualModelClassName) {
 			super();
 			this.uri = uri;

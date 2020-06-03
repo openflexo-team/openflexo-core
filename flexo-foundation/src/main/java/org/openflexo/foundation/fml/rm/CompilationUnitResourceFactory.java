@@ -278,6 +278,8 @@ public class CompilationUnitResourceFactory
 		// VirtualModelInfo vpi = findVirtualModelInfo(returned, resourceCenter);
 		VirtualModelInfo vpi = returned.findVirtualModelInfo(resourceCenter);
 
+		logger.fine("Found " + vpi.name + " uri=" + vpi.uri + " version=" + vpi.version + " " + vpi.requiredModelSlotList);
+
 		if (vpi != null) {
 			returned.setURI(vpi.uri);
 			if (StringUtils.isNotEmpty(vpi.version)) {
@@ -409,11 +411,25 @@ public class CompilationUnitResourceFactory
 		for (I child : resourceCenter.getContents(serializationArtefact)) {
 			String childName = resourceCenter.retrieveName(child);
 			if (isValidArtefact(child, resourceCenter)) {
+				// Following code is deprecated, as it is based on XML version
 				I xmlFile = resourceCenter.getEntry(childName + ".xml", child);
 				if (resourceCenter.exists(xmlFile)) {
 					XMLRootElementInfo result = resourceCenter.getXMLRootElementInfo(xmlFile, true, "UseModelSlotDeclaration");
 					if (result != null && (result.getName().equals("VirtualModel")
 							|| StringUtils.isNotEmpty(result.getAttribute("virtualModelClass")))) {
+						try {
+							// Unused CompilationUnitResource childCompilationUnitResource =
+							retrieveContainedVirtualModelResource(child, virtualModelResource);
+						} catch (ModelDefinitionException e) {
+							e.printStackTrace();
+						} catch (IOException e) {
+							e.printStackTrace();
+						}
+					}
+				}
+				else { // Handle as FML
+					I fmlFile = resourceCenter.getEntry(childName, child);
+					if (resourceCenter.exists(fmlFile)) {
 						try {
 							// Unused CompilationUnitResource childCompilationUnitResource =
 							retrieveContainedVirtualModelResource(child, virtualModelResource);

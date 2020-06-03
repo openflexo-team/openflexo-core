@@ -761,8 +761,9 @@ public abstract class CompilationUnitResourceImpl extends PamelaResourceImpl<FML
 	}
 
 	private FMLCompilationUnit loadFromFML() throws ParseException, IOException {
+		InputStream inputStream = getInputStream();
 		try {
-			FMLCompilationUnit returned = getFMLParser().parse(getInputStream(), getFactory(), (modelSlotClasses) -> {
+			FMLCompilationUnit returned = getFMLParser().parse(inputStream, getFactory(), (modelSlotClasses) -> {
 				return updateFMLModelFactory(modelSlotClasses);
 			});
 			returned.setResource(this);
@@ -770,6 +771,8 @@ public abstract class CompilationUnitResourceImpl extends PamelaResourceImpl<FML
 		} catch (ParseException e) {
 			System.out.println("ParseException while reading " + getIODelegate().getSerializationArtefact());
 			throw e;
+		} finally {
+			inputStream.close();
 		}
 
 		/*
@@ -1103,9 +1106,22 @@ public abstract class CompilationUnitResourceImpl extends PamelaResourceImpl<FML
 		}
 
 		VirtualModelInfo returned = null;
-		// TODO: inverse order !
 
-		try {
+		switch (getPersistencyStrategy()) {
+			case XML:
+			case XML2FML:
+				if (getXMLArtefact() != null) {
+					returned = retrieveInfoFromXML(resourceCenter);
+					break;
+				}
+			case FML:
+				returned = retrieveInfoFromFML(resourceCenter);
+				break;
+			default:
+				break;
+		}
+
+		/*try {
 			if (getXMLArtefact() != null) {
 				returned = retrieveInfoFromXML(resourceCenter);
 			}
@@ -1114,10 +1130,10 @@ public abstract class CompilationUnitResourceImpl extends PamelaResourceImpl<FML
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
-			returned = retrieveInfoFromFML(resourceCenter);
-		}
+				returned = retrieveInfoFromFML(resourceCenter);
+		}*/
 
-		if (resourceCenter instanceof FileSystemBasedResourceCenter) {
+		if (resourceCenter instanceof FileSystemBasedResourceCenter && returned != null) {
 			// Save metadata !!!
 			FileSystemMetaDataManager metaDataManager = ((FileSystemBasedResourceCenter) resourceCenter).getMetaDataManager();
 			File file = (File) getIODelegate().getSerializationArtefact();
@@ -1179,9 +1195,24 @@ public abstract class CompilationUnitResourceImpl extends PamelaResourceImpl<FML
 	}
 
 	private <I> VirtualModelInfo retrieveInfoFromFML(FlexoResourceCenter<I> resourceCenter) {
-		VirtualModelInfo returned = new VirtualModelInfo();
-		logger.warning("Please implement retrieveInfoFromFML()");
-		return returned;
+
+		InputStream inputStream = getInputStream();
+		try {
+			return getFMLParser().findVirtualModelInfo(inputStream, getFactory());
+		} catch (ParseException e) {
+			System.out.println("ParseException while reading " + getIODelegate().getSerializationArtefact());
+			return null;
+		} catch (IOException e) {
+			e.printStackTrace();
+			return null;
+		} finally {
+			try {
+				inputStream.close();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
 	}
 
 	@Override

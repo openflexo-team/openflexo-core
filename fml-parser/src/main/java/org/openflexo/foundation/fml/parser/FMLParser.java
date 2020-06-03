@@ -60,6 +60,7 @@ import org.openflexo.foundation.fml.parser.lexer.LexerException;
 import org.openflexo.foundation.fml.parser.node.Start;
 import org.openflexo.foundation.fml.parser.parser.Parser;
 import org.openflexo.foundation.fml.parser.parser.ParserException;
+import org.openflexo.foundation.fml.rm.CompilationUnitResource.VirtualModelInfo;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.p2pp.RawSource;
 
@@ -175,6 +176,51 @@ public class FMLParser {
 			}
 
 			return analyzer.getCompilationUnit();
+		} catch (ParserException e) {
+			// e.printStackTrace();
+			System.out.println("Nouvelle exception token:" + e.getToken() + " line:" + e.getToken().getLine() + " length:"
+					+ e.getToken().getText().length());
+			throw new ParseException(e.getMessage(), e.getToken().getLine(), e.getToken().getPos(), e.getToken().getText().length());
+		} catch (LexerException e) {
+			throw new ParseException(e.getMessage(), e.getToken().getLine(), e.getToken().getPos(), e.getToken().getText().length());
+		}
+	}
+
+	public VirtualModelInfo findVirtualModelInfo(InputStream inputStream, FMLModelFactory modelFactory) throws ParseException, IOException {
+		byte[] buf = IOUtils.toByteArray(inputStream);
+		InputStream inputStream1 = new ByteArrayInputStream(buf);
+		InputStream inputStream2 = new ByteArrayInputStream(buf);
+
+		return extractVirtualModelInfo(new InputStreamReader(inputStream1), new InputStreamReader(inputStream2), modelFactory);
+
+	}
+
+	private static VirtualModelInfo extractVirtualModelInfo(Reader reader, Reader rawSourceReader, FMLModelFactory modelFactory)
+			throws ParseException, IOException {
+		try {
+			// System.out.println("Parsing: " + anExpression);
+
+			RawSource rawSource = readRawSource(rawSourceReader);
+
+			// Create a Parser instance.
+			Parser p = new Parser(new Lexer(new PushbackReader(reader)));
+			// Parser p = new Parser(new CustomLexer(new PushbackReader(reader), entryPointKind));
+
+			// Parse the input.
+			Start tree;
+			tree = p.parse();
+
+			// Print the AST
+			// new ASTDebugger(tree);
+
+			// Creates the semantics analyzer.
+			MainSemanticsAnalyzer analyzer = new MainSemanticsAnalyzer(modelFactory, tree, rawSource);
+
+			// Find infos
+			VirtualModelInfoExplorer e = new VirtualModelInfoExplorer(analyzer);
+			tree.apply(e);
+
+			return e.getVirtualModelInfo();
 		} catch (ParserException e) {
 			// e.printStackTrace();
 			System.out.println("Nouvelle exception token:" + e.getToken() + " line:" + e.getToken().getLine() + " length:"
