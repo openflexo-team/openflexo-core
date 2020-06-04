@@ -328,12 +328,12 @@ public interface FMLObject extends FlexoObject, Bindable, InnerResourceData<FMLC
 
 		@Override
 		public String getDescription() {
-			return getSingleMetaData(DESCRIPTION_KEY, String.class);
+			return getSingleMetaData("Description", String.class);
 		}
 
 		@Override
 		public void setDescription(String description) {
-			setSingleMetaData(DESCRIPTION_KEY, description, String.class);
+			setSingleMetaData("Description", description, String.class);
 		}
 
 		@Override
