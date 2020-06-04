@@ -366,7 +366,7 @@ public interface FlexoBehaviourParameter extends FlexoBehaviourObject, FunctionA
 		}
 
 		@Override
-		public MultiValuedMetaData getParameterMetaData(boolean ensureExistence) {
+		public synchronized MultiValuedMetaData getParameterMetaData(boolean ensureExistence) {
 			if (getFlexoBehaviour() != null) {
 				if (parameterMetaData != null) {
 					MultiValuedMetaData returned = parameterMetaData;
