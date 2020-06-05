@@ -146,11 +146,15 @@ public class FlexoConceptInstanceType implements TechnologySpecificType<FMLTechn
 
 	public FlexoConceptInstanceType(FlexoConcept anFlexoConcept) {
 		this.flexoConcept = anFlexoConcept;
+		// System.out.println("Created: FlexoConceptInstanceType-[" + Integer.toHexString(super.hashCode()) + "]");
+		// Thread.dumpStack();
 	}
 
 	public FlexoConceptInstanceType(String flexoConceptURI, CustomTypeFactory<?> customTypeFactory) {
 		this.conceptURI = flexoConceptURI;
 		this.customTypeFactory = customTypeFactory;
+		// System.out.println("Created: FlexoConceptInstanceType-[" + Integer.toHexString(super.hashCode()) + "] for " + flexoConceptURI);
+		// Thread.dumpStack();
 	}
 
 	public CustomTypeFactory<?> getCustomTypeFactory() {
@@ -236,7 +240,7 @@ public class FlexoConceptInstanceType implements TechnologySpecificType<FMLTechn
 
 	@Override
 	public String toString() {
-		return simpleRepresentation();
+		return simpleRepresentation() /*+ "-[" + Integer.toHexString(super.hashCode()) + "]"*/;
 	}
 
 	@Override
