@@ -42,7 +42,9 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Stack;
 import java.util.StringTokenizer;
 import java.util.logging.Logger;
@@ -116,6 +118,7 @@ public class TypeFactory extends SemanticsAnalyzerFactory {
 	private VirtualModelInstanceTypeFactory<VirtualModelInstanceType> VIRTUAL_MODEL_INSTANCE_TYPE_FACTORY;
 
 	private List<UnresolvedTypeReference> unresolvedTypes;
+	private Map<String, Type> resolvedTypes = new HashMap<>();
 
 	class UnresolvedTypeReference {
 		RawSourceFragment fragment;
@@ -242,21 +245,15 @@ public class TypeFactory extends SemanticsAnalyzerFactory {
 
 			}
 		};
-		unresolvedTypes = new ArrayList<UnresolvedTypeReference>() {
-			@Override
-			public boolean add(UnresolvedTypeReference ref) {
-				if (!contains(ref)) {
-					return super.add(ref);
-				}
-				return false;
-			}
-		};
+		unresolvedTypes = new ArrayList<UnresolvedTypeReference>();
 	}
 
 	public void resolveUnresovedTypes() {
 
+		// System.out.println("-----------> resolveUnresovedTypes()");
+
 		for (UnresolvedTypeReference unresolvedTypeReference : new ArrayList<>(unresolvedTypes)) {
-			// System.out.println(" **** " + unresolvedType);
+			// System.out.println(" **** " + unresolvedTypeReference.type);
 
 			CustomType unresolvedType = unresolvedTypeReference.type;
 
@@ -264,11 +261,13 @@ public class TypeFactory extends SemanticsAnalyzerFactory {
 			if (unresolvedType.isResolved()) {
 				unresolvedTypes.remove(unresolvedTypeReference);
 			}
-			// System.out.println("resolved: " + unresolvedType.isResolved());
+			/*System.out.println("resolved: " + unresolvedType.isResolved());
+			if (unresolvedType instanceof FlexoConceptInstanceType) {
+				System.out.println("concept: " + ((FlexoConceptInstanceType) unresolvedType).getFlexoConcept());
+			}*/
 		}
 
-		// System.out.println("Done");
-		// Thread.dumpStack();
+		//System.out.println("Done");
 	}
 
 	public List<UnresolvedTypeReference> getUnresolvedTypes() {
@@ -397,6 +396,53 @@ public class TypeFactory extends SemanticsAnalyzerFactory {
 	public Type makeType(TIdentifier identifier, List<PAdditionalIdentifier> additionalIdentifiers, FlexoRole<?> role) {
 		String typeName = makeFullQualifiedIdentifier(identifier, additionalIdentifiers);
 
+		Type returned = resolvedTypes.get(typeName);
+
+		if (returned == null) {
+			returned = makeType(typeName, role);
+			if (returned != null) {
+				resolvedTypes.put(typeName, returned);
+			}
+		}
+
+		if (returned != null) {
+			return returned;
+		}
+
+		RawSourceFragment fragment = getFragment(identifier, additionalIdentifiers);
+
+		Type conceptType = lookupConceptNamed(typeName, fragment);
+		if (conceptType != null) {
+			resolvedTypes.put(typeName, conceptType);
+			return conceptType;
+		}
+		else if (role != null) {
+			Type type = role.buildType(typeName);
+			if (type instanceof CustomType && !((CustomType) type).isResolved()) {
+				unresolvedTypes.add(new UnresolvedTypeReference((CustomType) type, fragment));
+			}
+			return type;
+		}
+		else {
+			returned = new FlexoConceptInstanceType(typeName, FLEXO_CONCEPT_INSTANCE_TYPE_FACTORY);
+			if (!((FlexoConceptInstanceType) returned).isResolved()) {
+				unresolvedTypes.add(new UnresolvedTypeReference((FlexoConceptInstanceType) returned, fragment));
+			}
+			return returned;
+
+			/*logger.warning("Not found type: " + typeName);
+			Thread.dumpStack();
+			return new UnresolvedType(typeName);*/
+		}
+	}
+
+	/**
+	 * Build type encoded as String, asserting context given by supplied role
+	 * 
+	 * @param typeName
+	 * @return
+	 */
+	private Type makeType(String typeName, FlexoRole<?> role) {
 		// Handle some basic types
 		if (typeName.equals("boolean")) {
 			return Boolean.TYPE;
@@ -422,33 +468,6 @@ public class TypeFactory extends SemanticsAnalyzerFactory {
 		if (typeName.equals("double")) {
 			return Double.TYPE;
 		}
-		/*if (typeName.equals("Boolean")) {
-			return Boolean.class;
-		}
-		if (typeName.equals("Character")) {
-			return Character.class;
-		}
-		if (typeName.equals("Byte")) {
-			return Byte.class;
-		}
-		if (typeName.equals("Short")) {
-			return Short.class;
-		}
-		if (typeName.equals("Integer")) {
-			return Integer.class;
-		}
-		if (typeName.equals("Long")) {
-			return Long.class;
-		}
-		if (typeName.equals("Float")) {
-			return Float.class;
-		}
-		if (typeName.equals("Double")) {
-			return Double.class;
-		}
-		if (typeName.equals("Number")) {
-			return Number.class;
-		}*/
 		if (typeName.equals("String")) {
 			return String.class;
 		}
@@ -487,30 +506,7 @@ public class TypeFactory extends SemanticsAnalyzerFactory {
 			}
 		}
 
-		RawSourceFragment fragment = getFragment(identifier, additionalIdentifiers);
-
-		Type conceptType = lookupConceptNamed(typeName, fragment);
-		if (conceptType != null) {
-			return conceptType;
-		}
-		else if (role != null) {
-			Type type = role.buildType(typeName);
-			if (type instanceof CustomType && !((CustomType) type).isResolved()) {
-				unresolvedTypes.add(new UnresolvedTypeReference((CustomType) type, fragment));
-			}
-			return type;
-		}
-		else {
-			FlexoConceptInstanceType returned = new FlexoConceptInstanceType(typeName, FLEXO_CONCEPT_INSTANCE_TYPE_FACTORY);
-			if (!returned.isResolved()) {
-				unresolvedTypes.add(new UnresolvedTypeReference(returned, fragment));
-			}
-			return returned;
-
-			/*logger.warning("Not found type: " + typeName);
-			Thread.dumpStack();
-			return new UnresolvedType(typeName);*/
-		}
+		return null;
 	}
 
 	/**
