@@ -109,6 +109,7 @@ public class TestEmbeddedFlexoConceptInstances extends OpenflexoProjectAtRunTime
 		assertNotNull(conceptC = vm1.getFlexoConcept("ConceptC"));
 
 		assertVirtualModelIsValid(viewPoint);
+		assertVirtualModelIsValid(vm1);
 
 	}
 
