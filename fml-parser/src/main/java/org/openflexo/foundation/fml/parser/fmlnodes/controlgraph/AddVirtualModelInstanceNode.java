@@ -120,11 +120,16 @@ public class AddVirtualModelInstanceNode extends AssignableActionNode<PFmlAction
 							BehaviourCallArgumentNode callArgNode = (BehaviourCallArgumentNode) p2ppNode;
 							AddFlexoConceptInstanceParameter argument = (AddFlexoConceptInstanceParameter) ((BehaviourCallArgumentNode) p2ppNode)
 									.getModelObject();
-							FlexoBehaviourParameter parameter = getModelObject().getCreationScheme().getParameters().get(index);
-							argument.setParam(parameter);
-							if (!TypeUtils.isTypeAssignableFrom(parameter.getType(), argument.getValue().getAnalyzedType())) {
-								throwIssue("Invalid type " + argument.getValue().getAnalyzedType() + " (expected: " + parameter.getType()
-										+ ")", callArgNode.getLastParsedFragment());
+							if (index < getModelObject().getCreationScheme().getParameters().size()) {
+								FlexoBehaviourParameter parameter = getModelObject().getCreationScheme().getParameters().get(index);
+								argument.setParam(parameter);
+								if (!TypeUtils.isTypeAssignableFrom(parameter.getType(), argument.getValue().getAnalyzedType(), true)) {
+									throwIssue("Invalid type " + argument.getValue().getAnalyzedType() + " (expected: "
+											+ parameter.getType() + ")", callArgNode.getLastParsedFragment());
+								}
+							}
+							else {
+								throwIssue("Invalid argument " + argument.getValue(), callArgNode.getLastParsedFragment());
 							}
 							index++;
 						}

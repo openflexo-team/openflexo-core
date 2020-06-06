@@ -120,11 +120,21 @@ public class AddFlexoConceptInstanceNode extends AssignableActionNode<PFmlAction
 							BehaviourCallArgumentNode callArgNode = (BehaviourCallArgumentNode) p2ppNode;
 							AddFlexoConceptInstanceParameter argument = (AddFlexoConceptInstanceParameter) ((BehaviourCallArgumentNode) p2ppNode)
 									.getModelObject();
-							FlexoBehaviourParameter parameter = getModelObject().getCreationScheme().getParameters().get(index);
-							argument.setParam(parameter);
-							if (!TypeUtils.isTypeAssignableFrom(parameter.getType(), argument.getValue().getAnalyzedType())) {
-								throwIssue("Invalid type " + argument.getValue().getAnalyzedType() + " (expected: " + parameter.getType()
-										+ ")", callArgNode.getLastParsedFragment());
+							if (index < getModelObject().getCreationScheme().getParameters().size()) {
+								FlexoBehaviourParameter parameter = getModelObject().getCreationScheme().getParameters().get(index);
+								argument.setParam(parameter);
+								// System.out.println(parameter.getName() + " = " + argument.getValue());
+								if (!TypeUtils.isTypeAssignableFrom(parameter.getType(), argument.getValue().getAnalyzedType(), true)) {
+									throwIssue("Invalid type " + argument.getValue().getAnalyzedType() + " (expected: "
+											+ parameter.getType() + ")", callArgNode.getLastParsedFragment());
+								}
+								/*else {
+									System.out.println(
+											"types: " + parameter.getType() + " et " + argument.getValue().getAnalyzedType());
+								}*/
+							}
+							else {
+								throwIssue("Invalid argument " + argument.getValue(), callArgNode.getLastParsedFragment());
 							}
 							index++;
 						}
@@ -208,8 +218,8 @@ public class AddFlexoConceptInstanceNode extends AssignableActionNode<PFmlAction
 		append(staticContents("", "new", SPACE), getNewFragment());
 		append(dynamicContents(() -> serializeType(getModelObject().getFlexoConceptType())), getConceptNameFragment());
 		when(() -> isFullQualified())
-			.thenAppend(staticContents("::"), getColonColonFragment())
-			.thenAppend(dynamicContents(() -> serializeFlexoBehaviour(getModelObject().getCreationScheme())), getConstructorNameFragment());
+		.thenAppend(staticContents("::"), getColonColonFragment())
+		.thenAppend(dynamicContents(() -> serializeFlexoBehaviour(getModelObject().getCreationScheme())), getConstructorNameFragment());
 		append(staticContents("("), getLParFragment());
 		append(childrenContents("", "", () -> getModelObject().getParameters(), ",", "", Indentation.DoNotIndent,
 				AddFlexoConceptInstanceParameter.class));
