@@ -47,6 +47,7 @@ import org.openflexo.foundation.fml.parser.MainSemanticsAnalyzer;
 import org.openflexo.foundation.fml.parser.node.PExpression;
 import org.openflexo.foundation.fml.rt.editionaction.AddFlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.editionaction.AddFlexoConceptInstanceParameter;
+import org.openflexo.foundation.fml.rt.editionaction.AddVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.editionaction.BehaviourCallArgument;
 
 /**
@@ -71,11 +72,22 @@ public class BehaviourCallArgumentNode extends FMLObjectNode<PExpression, Behavi
 		if (getParent() instanceof AddFlexoConceptInstanceNode) {
 			AddFlexoConceptInstance<?> action = ((AddFlexoConceptInstanceNode) getParent()).getModelObject();
 			int currentIndex = action.getParameters().size();
-			FlexoBehaviourParameter parameter = action.getCreationScheme().getParameters().get(currentIndex);
-			getModelObject().setParam(parameter);
+			if (action.getCreationScheme() != null) {
+				FlexoBehaviourParameter parameter = action.getCreationScheme().getParameters().get(currentIndex);
+				getModelObject().setParam(parameter);
+			}
 			((AddFlexoConceptInstanceNode) getParent()).getModelObject()
 					.addToParameters((AddFlexoConceptInstanceParameter) getModelObject());
-			System.out.println("Hop: " + getModelObject().getParam().getName() + "=" + getModelObject().getValue());
+		}
+		if (getParent() instanceof AddVirtualModelInstanceNode) {
+			AddVirtualModelInstance action = ((AddVirtualModelInstanceNode) getParent()).getModelObject();
+			int currentIndex = action.getParameters().size();
+			if (action.getCreationScheme() != null) {
+				FlexoBehaviourParameter parameter = action.getCreationScheme().getParameters().get(currentIndex);
+				getModelObject().setParam(parameter);
+			}
+			((AddVirtualModelInstanceNode) getParent()).getModelObject()
+					.addToParameters((AddFlexoConceptInstanceParameter) getModelObject());
 		}
 		return this;
 	}
@@ -101,6 +113,7 @@ public class BehaviourCallArgumentNode extends FMLObjectNode<PExpression, Behavi
 		}*/
 
 		returned.setValue(ExpressionFactory.makeExpression(astNode, getAnalyser(), returned));
+
 		return returned;
 	}
 

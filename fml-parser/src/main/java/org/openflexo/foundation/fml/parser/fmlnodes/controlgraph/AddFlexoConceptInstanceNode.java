@@ -38,17 +38,15 @@
 
 package org.openflexo.foundation.fml.parser.fmlnodes.controlgraph;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.logging.Logger;
 
 import org.openflexo.connie.DataBinding;
+import org.openflexo.connie.type.TypeUtils;
 import org.openflexo.foundation.fml.CreationScheme;
 import org.openflexo.foundation.fml.FlexoBehaviourParameter;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoConceptInstanceType;
 import org.openflexo.foundation.fml.binding.FlexoConceptBindingModel;
-import org.openflexo.foundation.fml.parser.ExpressionFactory;
 import org.openflexo.foundation.fml.parser.MainSemanticsAnalyzer;
 import org.openflexo.foundation.fml.parser.node.AFmlInstanceCreationFmlActionExp;
 import org.openflexo.foundation.fml.parser.node.AJavaInstanceCreationFmlActionExp;
@@ -61,6 +59,7 @@ import org.openflexo.foundation.fml.parser.node.PExpression;
 import org.openflexo.foundation.fml.parser.node.PFmlActionExp;
 import org.openflexo.foundation.fml.rt.editionaction.AddFlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.editionaction.AddFlexoConceptInstanceParameter;
+import org.openflexo.p2pp.P2PPNode;
 import org.openflexo.p2pp.PrettyPrintContext.Indentation;
 import org.openflexo.p2pp.RawSource.RawSourceFragment;
 import org.openflexo.toolbox.StringUtils;
@@ -112,18 +111,31 @@ public class AddFlexoConceptInstanceNode extends AssignableActionNode<PFmlAction
 				}
 
 				if (getModelObject().getCreationScheme() != null) {
+
+					int requiredArgumentsCount = getModelObject().getCreationScheme().getParameters().size();
+
 					int index = 0;
-					for (FlexoBehaviourParameter flexoBehaviourParameter : getModelObject().getCreationScheme().getParameters()) {
-						AddFlexoConceptInstanceParameter arg = getModelObject().getParameter(flexoBehaviourParameter);
-						if (index < args.size()) {
-							arg.setValue((DataBinding) args.get(index));
+					for (P2PPNode<?, ?> p2ppNode : getChildren()) {
+						if (p2ppNode instanceof BehaviourCallArgumentNode) {
+							BehaviourCallArgumentNode callArgNode = (BehaviourCallArgumentNode) p2ppNode;
+							AddFlexoConceptInstanceParameter argument = (AddFlexoConceptInstanceParameter) ((BehaviourCallArgumentNode) p2ppNode)
+									.getModelObject();
+							FlexoBehaviourParameter parameter = getModelObject().getCreationScheme().getParameters().get(index);
+							argument.setParam(parameter);
+							if (!TypeUtils.isTypeAssignableFrom(parameter.getType(), argument.getValue().getAnalyzedType())) {
+								throwIssue("Invalid type " + argument.getValue().getAnalyzedType() + " (expected: " + parameter.getType()
+										+ ")", callArgNode.getLastParsedFragment());
+							}
 							index++;
 						}
-						else {
-							throwIssue("Missing argument value for parameter " + flexoBehaviourParameter, getConceptNameFragment());
-							break;
-						}
 					}
+
+					if (index != requiredArgumentsCount) {
+						throwIssue("Invalid number of arguments ", getArgsFragment());
+					}
+				}
+				else {
+					throwIssue("No creation scheme for concept " + flexoConceptType.getName(), getConceptNameFragment());
 				}
 			}
 			else {
@@ -144,29 +156,10 @@ public class AddFlexoConceptInstanceNode extends AssignableActionNode<PFmlAction
 		}
 	}
 
-	private List<DataBinding<?>> args;
-
 	private void handleArgument(PExpression expression, AddFlexoConceptInstance<?> modelObject) {
-		DataBinding<?> argValue = ExpressionFactory.makeExpression(expression, getAnalyser(), modelObject);
-
-		if (args == null) {
-			args = new ArrayList<>();
-		}
-
-		args.add(argValue);
-
-		/*ControlGraphNode<?, ?> assignableActionNode = ControlGraphFactory.makeControlGraphNode(astNode.getRight(), getAnalyser());
-		if (assignableActionNode != null) {
-			if (assignableActionNode.getModelObject() instanceof AssignableAction) {
-				returned.setAssignableAction((AssignableAction) assignableActionNode.getModelObject());
-				addToChildren(assignableActionNode);
-			}
-			else {
-				System.err.println("Unexpected " + assignableActionNode.getModelObject());
-				Thread.dumpStack();
-			}
-		}*/
-
+		BehaviourCallArgumentNode callArgNode = new BehaviourCallArgumentNode(expression, getAnalyser());
+		addToChildren(callArgNode);
+		callArgNode.deserialize();
 	}
 
 	@Override
@@ -189,6 +182,9 @@ public class AddFlexoConceptInstanceNode extends AssignableActionNode<PFmlAction
 			// returned.setContainer(new DataBinding<>(FlexoConceptBindingModel.THIS_PROPERTY));
 		}
 		returned.setReceiver(new DataBinding<>(FlexoConceptBindingModel.THIS_PROPERTY));
+
+		// Tricky area: we have to set model object now, otherwise NPE is raised during handleArguments()
+		setModelObject(returned);
 
 		if (astNode instanceof AFmlInstanceCreationFmlActionExp) {
 			handleArguments(((AFmlInstanceCreationFmlActionExp) astNode).getArgumentList(), returned);
@@ -336,6 +332,18 @@ public class AddFlexoConceptInstanceNode extends AssignableActionNode<PFmlAction
 		}
 		if (getASTNode() instanceof AJavaInstanceCreationFmlActionExp) {
 			return getFragment(((AJavaInstanceCreationFmlActionExp) getASTNode()).getRPar());
+		}
+		return null;
+	}
+
+	private RawSourceFragment getArgsFragment() {
+		if (getASTNode() instanceof AFmlInstanceCreationFmlActionExp) {
+			return getFragment(((AFmlInstanceCreationFmlActionExp) getASTNode()).getLPar(),
+					((AFmlInstanceCreationFmlActionExp) getASTNode()).getRPar());
+		}
+		if (getASTNode() instanceof AJavaInstanceCreationFmlActionExp) {
+			return getFragment(((AJavaInstanceCreationFmlActionExp) getASTNode()).getLPar(),
+					((AJavaInstanceCreationFmlActionExp) getASTNode()).getRPar());
 		}
 		return null;
 	}

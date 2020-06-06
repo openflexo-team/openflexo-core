@@ -150,20 +150,28 @@ public interface AbstractAddFlexoConceptInstance<FCI extends FlexoConceptInstanc
 	@XMLElement
 	@Embedded
 	@CloningStrategy(StrategyType.CLONE)
+	// TODO: rename "parameter" to "argument"
 	public List<AddFlexoConceptInstanceParameter> getParameters();
 
 	@Setter(PARAMETERS_KEY)
+	// TODO: rename "parameter" to "argument"
 	public void setParameters(List<AddFlexoConceptInstanceParameter> parameters);
 
 	@Adder(PARAMETERS_KEY)
+	// TODO: rename "parameter" to "argument"
 	public void addToParameters(AddFlexoConceptInstanceParameter aParameter);
 
 	@Remover(PARAMETERS_KEY)
+	// TODO: rename "parameter" to "argument"
 	public void removeFromParameters(AddFlexoConceptInstanceParameter aParameter);
 
+	// TODO: rename "parameter" to "argument"
 	public AddFlexoConceptInstanceParameter getParameter(String paramName);
 
+	// TODO: rename "parameter" to "argument"
 	public AddFlexoConceptInstanceParameter getParameter(FlexoBehaviourParameter p);
+
+	// public void setArgument(AddFlexoConceptInstanceParameter argument, FlexoBehaviourParameter parameter);
 
 	@Getter(value = FLEXO_CONCEPT_TYPE_URI_KEY)
 	@XMLAttribute
@@ -415,7 +423,7 @@ public interface AbstractAddFlexoConceptInstance<FCI extends FlexoConceptInstanc
 					creationScheme.getPropertyChangeSupport().addPropertyChangeListener(this);
 					creationScheme.getFlexoConcept().getPropertyChangeSupport().addPropertyChangeListener(this);
 				}
-				updateParameters();
+				// updateParameters();
 			}
 		}
 
@@ -428,7 +436,7 @@ public interface AbstractAddFlexoConceptInstance<FCI extends FlexoConceptInstanc
 					creationScheme.getPropertyChangeSupport().addPropertyChangeListener(this);
 					creationScheme.getFlexoConcept().getPropertyChangeSupport().addPropertyChangeListener(this);
 				}
-				updateParameters();
+				// updateParameters();
 			}
 			if (creationScheme == null && getAssignedFlexoProperty() instanceof FlexoConceptInstanceRole) {
 				creationScheme = ((FlexoConceptInstanceRole) getAssignedFlexoProperty()).getCreationScheme();
@@ -436,7 +444,7 @@ public interface AbstractAddFlexoConceptInstance<FCI extends FlexoConceptInstanc
 					creationScheme.getPropertyChangeSupport().addPropertyChangeListener(this);
 					creationScheme.getFlexoConcept().getPropertyChangeSupport().addPropertyChangeListener(this);
 				}
-				updateParameters();
+				// updateParameters();
 			}
 			return creationScheme;
 		}
@@ -455,7 +463,7 @@ public interface AbstractAddFlexoConceptInstance<FCI extends FlexoConceptInstanc
 				else {
 					_creationSchemeURI = null;
 				}
-				updateParameters();
+				// updateParameters();
 				getPropertyChangeSupport().firePropertyChange(CREATION_SCHEME_KEY, oldValue, creationScheme);
 				getPropertyChangeSupport().firePropertyChange(FLEXO_CONCEPT_TYPE_KEY, null, getFlexoConceptType());
 				if (creationScheme != null) {
@@ -480,14 +488,14 @@ public interface AbstractAddFlexoConceptInstance<FCI extends FlexoConceptInstanc
 			// Comment this because of an infinite loop with updateParameters() method
 			if (parameters == null) {
 				parameters = new ArrayList<>();
-				updateParameters();
+				// updateParameters();
 			}
 			return parameters;
 		}
 
-		public void setParameters(Vector<AddFlexoConceptInstanceParameter> parameters) {
+		/*public void setParameters(Vector<AddFlexoConceptInstanceParameter> parameters) {
 			this.parameters = parameters;
-		}
+		}*/
 
 		@Override
 		public void addToParameters(AddFlexoConceptInstanceParameter parameter) {
@@ -506,6 +514,20 @@ public interface AbstractAddFlexoConceptInstance<FCI extends FlexoConceptInstanc
 			}
 			parameters.remove(parameter);
 		}
+
+		/*@Override
+		public void setArgument(AddFlexoConceptInstanceParameter argument, FlexoBehaviourParameter parameter) {
+			AddFlexoConceptInstanceParameter existing = getParameter(parameter);
+			if (existing != null) {
+				int index = parameters.indexOf(existing);
+				parameters.remove(existing);
+				argument.setOwner(this);
+				parameters.add(index, argument);
+			}
+			else {
+				addToParameters(argument);
+			}
+		}*/
 
 		@Override
 		public AddFlexoConceptInstanceParameter getParameter(String paramName) {
