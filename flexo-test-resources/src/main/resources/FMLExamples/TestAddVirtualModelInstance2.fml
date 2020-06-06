@@ -1,0 +1,18 @@
+/**
+ * Testing AddVirtualModelInstance
+ */
+
+use org.openflexo.foundation.fml.rt.FMLRTModelSlot as FMLRT;
+
+model MyModel {
+
+	create(String aString, int anInt) {  
+		// Dont care
+	}
+
+	testNewInstance() {
+		myModel = new MyModel("test",3);
+	}
+	
+	
+}

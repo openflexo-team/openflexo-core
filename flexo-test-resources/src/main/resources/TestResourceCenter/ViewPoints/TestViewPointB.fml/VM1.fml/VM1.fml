@@ -7,12 +7,9 @@ import java.lang.String;
 @Description("In this virtual model we test embedding features")
 model VM1 {
 
-	create::_create () {
+	create() {
 	}
 
-	@UI(
-		@TextField(value="instanceName")
-	)
 	generateSomeInstances (required String instanceName) {
 		ConceptA instanceA = new ConceptA(parameters.instanceName,8);
 		ConceptB instanceB1 = instanceA.new ConceptB("b1",1.1);
@@ -24,41 +21,37 @@ model VM1 {
 	concept ConceptA {
 		String a1;
 		int a2;
-		@UI(
-			@TextField(value="anA1")
-			@IntegerWidget(value="anA2")
-		)
-		create::_create (required String anA1, required int anA2=7) {
+
+		create(required String anA1, required int anA2=7) {
 			a1 = parameters.anA1;
 			a2 = parameters.anA2;
 		}
-		delete::_delete () {
+		
+		delete () {
 		}
+		
 		concept ConceptB {
 			String b1;
 			float b2;
-			@UI(
-				@TextField(value="aB1")
-				@FloatWidget(value="aB2")
-			)
-			create::_create (required String aB1, required float aB2=3.141592654) {
+
+			create(required String aB1, required float aB2=3.141592654) {
 				b1 = parameters.aB1;
 				b2 = parameters.aB2;
 			}
-			delete::_delete () {
+			
+			delete() {
 			}
+			
 			concept ConceptC {
 				String c1;
 				boolean c2;
-				@UI(
-					@TextField(value="aC1")
-					@Checkbox(value="aC2")
-				)
-				create::_create (required String aC1, required boolean aC2=false) {
+				
+				create(required String aC1, required boolean aC2=false) {
 					c1 = parameters.aC1;
 					c2 = parameters.aC2;
 				}
-				delete::_delete () {
+				
+				delete() {
 				}
 			}
 		}

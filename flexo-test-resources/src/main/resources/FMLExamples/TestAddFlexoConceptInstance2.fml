@@ -1,0 +1,22 @@
+/**
+ * Testing AddFlexoConceptInstance
+ */
+
+use org.openflexo.foundation.fml.rt.FMLRTModelSlot as FMLRT;
+
+model MyModel {
+
+	testNewInstance() {
+		aConcept = new ConceptA("test",3);
+	}
+	
+	concept ConceptA {
+
+		create(String aString, int anInt) {  
+			// Dont care
+		}
+
+	
+	}
+	
+}
