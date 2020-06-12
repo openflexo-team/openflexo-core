@@ -1,40 +1,21 @@
+@URI("http://www.openflexo.org/projects/2020/4/TestSingleInheritance_1585907148412.prj/Vm.fml")
+@Version("0.1")
+@Author("sylvain")
+model Vm {
 
-/**
- * 
- * @author sylvain
- * @version 0.1
- */
-@VirtualModel(uri="http://www.openflexo.org/projects/2020/4/TestSingleInheritance_1585907148412.prj/Vm.fml")
-public class Vm {
+	@Author("sylvain")
+	concept A {
+		create::_create () {
+		}
+		delete::_delete () {
+		}
+	}
 
-  @FlexoConcept  
-  public class A {  
-  
-    @CreationScheme    
-    A:create() {    
-      
-    }    
-  
-    @DeletionScheme    
-    Void delete() {    
-      
-    }    
-  
-  }  
-
-  @FlexoConcept  
-  public class B extends A  {  
-  
-    @CreationScheme    
-    B:create() {    
-      
-    }    
-  
-    @DeletionScheme    
-    Void delete() {    
-      
-    }    
-  
-  }  
-
+	@Author("sylvain")
+	concept B extends A {
+		create::_create () {
+		}
+		delete::_delete () {
+		}
+	}
 }
