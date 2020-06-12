@@ -168,6 +168,7 @@ import org.openflexo.foundation.fml.parser.node.PVisibility;
 import org.openflexo.foundation.fml.parser.node.TIdentifier;
 import org.openflexo.foundation.fml.parser.node.TLitInteger;
 import org.openflexo.foundation.fml.parser.node.Token;
+import org.openflexo.foundation.fml.rm.CompilationUnitResourceFactory;
 import org.openflexo.foundation.fml.rt.editionaction.AddFlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.editionaction.AddVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.editionaction.BehaviourCallArgument;
@@ -181,6 +182,7 @@ import org.openflexo.p2pp.RawSource;
 import org.openflexo.p2pp.RawSource.RawSourceFragment;
 import org.openflexo.p2pp.RawSource.RawSourcePosition;
 import org.openflexo.toolbox.ChainedCollection;
+import org.openflexo.toolbox.StringUtils;
 
 /**
  * Maintains consistency between the model (represented by an {@link FMLObject}) and source code represented in FML language
@@ -749,10 +751,27 @@ public abstract class FMLObjectNode<N extends Node, T extends FMLPrettyPrintable
 		}
 
 		if (type instanceof VirtualModelInstanceType && ((VirtualModelInstanceType) type).getVirtualModel() == null) {
+			String uri = ((VirtualModelInstanceType) type).getConceptURI();
+			if (StringUtils.isNotEmpty(uri)) {
+				if (uri.contains("/")) {
+					uri = uri.substring(uri.lastIndexOf("/") + 1);
+				}
+				if (uri.endsWith(CompilationUnitResourceFactory.FML_SUFFIX)) {
+					uri = uri.substring(0, uri.length() - CompilationUnitResourceFactory.FML_SUFFIX.length());
+				}
+				return uri;
+			}
 			return "ModelInstance";
 		}
 
 		if (type instanceof FlexoConceptInstanceType && ((FlexoConceptInstanceType) type).getFlexoConcept() == null) {
+			String uri = ((FlexoConceptInstanceType) type).getConceptURI();
+			if (StringUtils.isNotEmpty(uri)) {
+				if (uri.contains("/")) {
+					uri = uri.substring(uri.lastIndexOf("/") + 1);
+				}
+				return uri;
+			}
 			return "ConceptInstance";
 		}
 
