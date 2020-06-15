@@ -47,6 +47,8 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.net.MalformedURLException;
+import java.nio.file.Files;
+import java.nio.file.attribute.FileTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
@@ -114,7 +116,7 @@ public abstract class CompilationUnitResourceImpl extends PamelaResourceImpl<FML
 		XML, XML2FML, FML
 	}
 
-	private static final PersistencyStrategy DEFAULT_PERSISTENCY_STRATEGY = PersistencyStrategy.FML;
+	private static final PersistencyStrategy DEFAULT_PERSISTENCY_STRATEGY = PersistencyStrategy.XML2FML;
 	private PersistencyStrategy persistencyStrategy = DEFAULT_PERSISTENCY_STRATEGY;
 
 	// public PersistencyStrategy getPersistencyStrategy();
@@ -620,7 +622,53 @@ public abstract class CompilationUnitResourceImpl extends PamelaResourceImpl<FML
 	protected FMLCompilationUnit performLoad() throws IOException, ParseException {
 		switch (getPersistencyStrategy()) {
 			case XML:
+				return loadFromXML();
 			case XML2FML:
+				if (getIODelegate().getSerializationArtefact() instanceof File) {
+					File fmlArtefact = (File) getIODelegate().getSerializationArtefact();
+					File xmlArtefact = (File) getXMLArtefact();
+
+					if (fmlArtefact.exists()) {
+						FileTime fmlLastModified = Files.getLastModifiedTime(fmlArtefact.toPath());
+						if (xmlArtefact.exists()) {
+							FileTime xmlLastModified = Files.getLastModifiedTime(xmlArtefact.toPath());
+							System.out.println("Dir: " + fmlArtefact.getParent());
+							System.out.println("FML: " + fmlArtefact.getName() + " lastModified: " + fmlLastModified);
+							System.out.println("XML: " + xmlArtefact.getName() + " lastModified: " + xmlLastModified);
+							if (xmlLastModified.compareTo(fmlLastModified) >= 0) {
+								// Loading using XML file
+								System.out.println("Loading as XML " + xmlArtefact.getName());
+								return loadFromXML();
+							}
+							else {
+								// Loading using FML file
+								try {
+									System.out.println("Loading as FML " + fmlArtefact.getName());
+									return loadFromFML();
+								} catch (ParseException e) {
+									logger.warning("ParseException raised while loading " + fmlArtefact);
+									logger.warning("Try to load using XML version: " + xmlArtefact);
+									return loadFromXML();
+								}
+							}
+						}
+						else {
+							return loadFromFML();
+						}
+					}
+					else {
+						return loadFromXML();
+					}
+
+					/*System.out.println("FML=" + fmlArtefact);
+					System.out.println("lastModified=" + fmlArtefact.lastModified());
+					System.out.println("lastModified2=" + Files.getLastModifiedTime(fmlArtefact.toPath()));
+					FileTime fmlLastModified = Files.getLastModifiedTime(fmlArtefact.toPath());
+					System.out.println("XML=" + xmlArtefact);
+					System.out.println("lastModified=" + xmlArtefact.lastModified());
+					System.out.println("lastModified2=" + Files.getLastModifiedTime(xmlArtefact.toPath()));
+					FileTime xmlLastModified = Files.getLastModifiedTime(xmlArtefact.toPath());*/
+				}
 				return loadFromXML();
 			case FML:
 				return loadFromFML();
