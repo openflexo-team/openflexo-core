@@ -194,6 +194,10 @@ public interface MatchFlexoConceptInstance extends FMLRTAction<FlexoConceptInsta
 
 	public void setMatchedType(FlexoConceptInstanceType matchedType);
 
+	public FMLRTVirtualModelInstance getVirtualModelInstance(RunTimeEvaluationContext evaluationContext);
+
+	public FlexoConceptInstance getContainer(RunTimeEvaluationContext evaluationContext);
+
 	public static abstract class MatchFlexoConceptInstanceImpl extends FMLRTActionImpl<FlexoConceptInstance, FMLRTVirtualModelInstance>
 			implements MatchFlexoConceptInstance, PropertyChangeListener {
 
@@ -268,6 +272,7 @@ public interface MatchFlexoConceptInstance extends FMLRTAction<FlexoConceptInsta
 			return null;
 		}
 
+		@Override
 		public FMLRTVirtualModelInstance getVirtualModelInstance(RunTimeEvaluationContext evaluationContext) {
 			try {
 				return getReceiver().getBindingValue(evaluationContext);
@@ -294,6 +299,7 @@ public interface MatchFlexoConceptInstance extends FMLRTAction<FlexoConceptInsta
 			return null;
 		}
 
+		@Override
 		public FlexoConceptInstance getContainer(RunTimeEvaluationContext evaluationContext) {
 			try {
 				return getContainer().getBindingValue(evaluationContext);

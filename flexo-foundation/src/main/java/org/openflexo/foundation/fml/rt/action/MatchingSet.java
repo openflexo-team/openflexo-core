@@ -40,8 +40,10 @@ package org.openflexo.foundation.fml.rt.action;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Hashtable;
 import java.util.List;
+import java.util.logging.Logger;
 
 import org.openflexo.connie.exception.NullReferenceException;
 import org.openflexo.connie.exception.TypeMismatchException;
@@ -73,6 +75,8 @@ import org.openflexo.foundation.fml.rt.editionaction.MatchFlexoConceptInstance;
  *
  */
 public class MatchingSet {
+
+	private static final Logger logger = Logger.getLogger(MatchingSet.class.getPackage().getName());
 
 	private FlexoConceptInstance container = null;
 	private FlexoConcept flexoConceptType;
@@ -165,7 +169,22 @@ public class MatchingSet {
 		this.flexoConceptType = null;
 
 		try {
-			container = matchRequest.getReceiver().getBindingValue(evaluationContext);
+
+			/*FMLRTVirtualModelInstance vmInstance = matchRequest.getVirtualModelInstance(evaluationContext);
+			FlexoConceptInstance container = matchRequest.getContainer(evaluationContext);
+			
+			if (vmInstance == null) {
+				if (container instanceof FMLRTVirtualModelInstance) {
+					vmInstance = (FMLRTVirtualModelInstance) container;
+				}
+				else {
+					if (container.getVirtualModelInstance() instanceof FMLRTVirtualModelInstance) {
+						vmInstance = (FMLRTVirtualModelInstance) container.getVirtualModelInstance();
+					}
+				}
+			}*/
+
+			container = matchRequest.getContainer().getBindingValue(evaluationContext);
 
 			// If container is defined, use container
 			if (matchRequest.getContainer() != null && matchRequest.getContainer().isSet()) {
@@ -176,8 +195,12 @@ public class MatchingSet {
 			if (container instanceof VirtualModelInstance) {
 				allInstances = ((VirtualModelInstance<?, ?>) container).getFlexoConceptInstances();
 			}
-			else {
+			else if (container != null) {
 				allInstances = container.getEmbeddedFlexoConceptInstances();
+			}
+			else {
+				logger.warning("No container for " + matchRequest);
+				allInstances = Collections.emptyList();
 			}
 		} catch (TypeMismatchException e) {
 			e.printStackTrace();
