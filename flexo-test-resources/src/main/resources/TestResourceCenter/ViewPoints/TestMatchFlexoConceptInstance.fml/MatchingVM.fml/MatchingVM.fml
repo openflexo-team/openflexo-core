@@ -1,57 +1,42 @@
-use org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstanceModelSlot;
+use org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstanceModelSlot as FMLRT;
 
-/**
- * 
- * @version 0.1
- */
-@VirtualModel(uri="http://openflexo.org/test/TestResourceCenter/TestMatchFlexoConceptInstance.fml/MatchingVM.fml")
-public class MatchingVM {
+import java.lang.String;
 
-  @FMLRTVirtualModelInstanceModelSlot(cardinality=ZeroOne,readOnly=false)  
-  public VirtualModelInstanceType<VM> model;
+import ["http://openflexo.org/test/TestResourceCenter/TestMatchFlexoConceptInstance.fml/VM.fml"] as VM;
 
-  @CreationScheme  
-  MatchingVM:create(VirtualModelInstanceType<NotFound:http://openflexo.org/test/TestResourceCenter/TestMatchFlexoConceptInstance.fml/VM> model) {  
-    model = parameters.model;    
-    log (">>>> Parametre model : " + parameters.model)  
-  }  
+@URI("http://openflexo.org/test/TestResourceCenter/TestMatchFlexoConceptInstance.fml/MatchingVM.fml")
+@Version("0.1")
+model MatchingVM {
+	VM _model with ModelInstance(isRequired = true);
 
-  @ActionScheme  
-  Void synchronizeUsingMatchingSet() {  
-    MatchingSet matchingSet = this.initiateMatching(MatchedConcept);    
-    for (concept : model.SelectFlexoConceptInstance(type=Concept)) {    
-      FML@RT::MatchFlexoConceptInstance as MatchedConcept match=(concept=concept) using MatchedConcept:create(concept,(concept.p + "-matched"))    
-    }    
-    matchingSet.finalizeMatching()  
-  }  
+	create::_create (required VM _model) {
+		_model = parameters._model;
+		log((">>>> Parametre model : " + parameters._model));
+	}
 
-  @ActionScheme  
-  Void defaultSynchronize() {  
-    for (concept : model.SelectFlexoConceptInstance(type=Concept)) {    
-      FML@RT::MatchFlexoConceptInstance as MatchedConcept match=(concept=concept) using MatchedConcept:create(concept,(concept.p + "-default"))    
-    }  
-  }  
+	synchronizeUsingMatchingSet () {
+		MatchingSet matchingSet = begin match MatchedConcept from (this);
+		for (Concept _concept : select Concept from (_model)) {
+			match MatchedConcept in (matchingSet) from (this) where (_concept=_concept) create::_create((_concept.p + "-matched"),_concept);
+		}
+		end match MatchedConcept in (matchingSet) delete::_delete();
+	}
 
+	defaultSynchronize () {
+		for (Concept _concept : select Concept from (_model)) {
+			match MatchedConcept from (this) where (_concept=_concept) create::_create((_concept.p + "-default"),_concept);
+		}
+	}
 
-  @FlexoConcept  
-  public class MatchedConcept {  
-  
-    @FlexoConceptInstanceRole(cardinality=ZeroOne,readOnly=false)    
-    public FlexoConceptInstanceType<Concept> concept;  
-    @PrimitiveRole(cardinality=ZeroOne,readOnly=false)    
-    public String p2;  
-  
-    @CreationScheme    
-    MatchedConcept:create(FlexoConceptInstanceType<Concept> aConcept, String aP2) {    
-      concept = parameters.aConcept;      
-      p2 = parameters.aP2;    
-    }    
-  
-    @DeletionScheme    
-    Void delete() {    
-      
-    }    
-  
-  }  
+	concept MatchedConcept {
+		Concept _concept with ConceptInstance();
+		String p2;
 
+		create::_create (required String aP2,required Concept aConcept) {
+			_concept = parameters.aConcept;
+			p2 = parameters.aP2;
+		}
+		delete::_delete () {
+		}
+	}
 }

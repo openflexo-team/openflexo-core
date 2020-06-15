@@ -138,7 +138,6 @@ public interface InitiateMatching extends AssignableAction<MatchingSet> {
 
 		private DataBinding<FlexoConceptInstance> container;
 		private String flexoConceptTypeURI;
-		private FlexoConcept flexoConceptType;
 
 		private FlexoConceptInstanceType matchedType;
 
@@ -146,9 +145,6 @@ public interface InitiateMatching extends AssignableAction<MatchingSet> {
 		@XMLAttribute
 		@Override
 		public String _getFlexoConceptTypeURI() {
-			if (flexoConceptType != null) {
-				return flexoConceptType.getURI();
-			}
 			if (matchedType != null) {
 				if (matchedType.isResolved()) {
 					return matchedType.getFlexoConcept().getURI();
@@ -161,24 +157,40 @@ public interface InitiateMatching extends AssignableAction<MatchingSet> {
 		@Override
 		public void _setFlexoConceptTypeURI(String uri) {
 			if (getVirtualModelLibrary() != null) {
-				flexoConceptType = getVirtualModelLibrary().getFlexoConcept(uri);
+				FlexoConcept flexoConceptType = getVirtualModelLibrary().getFlexoConcept(uri);
+				if (flexoConceptType != null) {
+					matchedType = flexoConceptType.getInstanceType();
+				}
 			}
 			flexoConceptTypeURI = uri;
 		}
 
 		@Override
 		public FlexoConcept getFlexoConceptType() {
-			if (flexoConceptType == null && StringUtils.isNotEmpty(flexoConceptTypeURI) && getVirtualModelLibrary() != null) {
-				flexoConceptType = getVirtualModelLibrary().getFlexoConcept(flexoConceptTypeURI, false);
+			if (matchedType != null && matchedType.isResolved()) {
+				return matchedType.getFlexoConcept();
 			}
-			return flexoConceptType;
+
+			if (StringUtils.isNotEmpty(flexoConceptTypeURI) && getVirtualModelLibrary() != null) {
+				FlexoConcept flexoConceptType = getVirtualModelLibrary().getFlexoConcept(flexoConceptTypeURI, false);
+				if (flexoConceptType != null) {
+					matchedType = flexoConceptType.getInstanceType();
+					return matchedType.getFlexoConcept();
+				}
+			}
+			return null;
 		}
 
 		@Override
 		public void setFlexoConceptType(FlexoConcept flexoConceptType) {
-			if (flexoConceptType != this.flexoConceptType) {
-				FlexoConcept oldValue = this.flexoConceptType;
-				this.flexoConceptType = flexoConceptType;
+			if (flexoConceptType != getFlexoConceptType()) {
+				FlexoConcept oldValue = getFlexoConceptType();
+				if (flexoConceptType != null) {
+					matchedType = flexoConceptType.getInstanceType();
+				}
+				else {
+					matchedType = FlexoConceptInstanceType.UNDEFINED_FLEXO_CONCEPT_INSTANCE_TYPE;
+				}
 				getPropertyChangeSupport().firePropertyChange("flexoConceptType", oldValue, flexoConceptType);
 			}
 		}
@@ -257,9 +269,6 @@ public interface InitiateMatching extends AssignableAction<MatchingSet> {
 		@Override
 		public void setMatchedType(FlexoConceptInstanceType matchedType) {
 			this.matchedType = matchedType;
-			if (matchedType.isResolved()) {
-				flexoConceptType = matchedType.getFlexoConcept();
-			}
 		}
 
 		@Override

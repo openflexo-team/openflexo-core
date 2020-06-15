@@ -61,7 +61,6 @@ import org.openflexo.foundation.fml.FlexoProperty;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.VirtualModelInstanceType;
 import org.openflexo.foundation.fml.annotations.FML;
-import org.openflexo.foundation.fml.rt.FMLRTModelSlot;
 import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
@@ -84,7 +83,6 @@ import org.openflexo.pamela.annotations.Setter;
 import org.openflexo.pamela.annotations.XMLAttribute;
 import org.openflexo.pamela.annotations.XMLElement;
 import org.openflexo.pamela.validation.CompoundIssue;
-import org.openflexo.pamela.validation.FixProposal;
 import org.openflexo.pamela.validation.ValidationError;
 import org.openflexo.pamela.validation.ValidationIssue;
 import org.openflexo.pamela.validation.ValidationRule;
@@ -602,6 +600,19 @@ public interface MatchFlexoConceptInstance extends FMLRTAction<FlexoConceptInsta
 				// time1 = System.currentTimeMillis();
 
 				FMLRTVirtualModelInstance vmInstance = getVirtualModelInstance(evaluationContext);
+				FlexoConceptInstance container = getContainer(evaluationContext);
+
+				if (vmInstance == null) {
+					if (container instanceof FMLRTVirtualModelInstance) {
+						vmInstance = (FMLRTVirtualModelInstance) container;
+					}
+					else {
+						if (container.getVirtualModelInstance() instanceof FMLRTVirtualModelInstance) {
+							vmInstance = (FMLRTVirtualModelInstance) container.getVirtualModelInstance();
+						}
+					}
+				}
+
 				Hashtable<FlexoProperty<?>, Object> criterias = new Hashtable<>();
 				for (MatchingCriteria mc : getMatchingCriterias()) {
 					Object value = mc.evaluateCriteriaValue(evaluationContext);
@@ -616,8 +627,8 @@ public interface MatchFlexoConceptInstance extends FMLRTAction<FlexoConceptInsta
 					logger.fine(">>>>>>>> Matching FCI with following criterias");
 					logger.fine("Type=" + getFlexoConceptType());
 					for (MatchingCriteria mc : getMatchingCriterias()) {
-						logger.fine("Criteria: " + mc.getFlexoProperty().getPropertyName() + "=" + mc.getValue() + " valid="
-								+ mc.getValue().isValid());
+						logger.fine("Criteria: " + mc.getFlexoProperty().getPropertyName() + "=" + criterias.get(mc.getFlexoProperty())
+								+ " valid=" + mc.getValue().isValid());
 					}
 				}
 
@@ -656,7 +667,6 @@ public interface MatchFlexoConceptInstance extends FMLRTAction<FlexoConceptInsta
 
 					CreationSchemeAction creationSchemeAction = new CreationSchemeAction(getCreationScheme(), vmInstance, null,
 							((FlexoBehaviourAction<?, ?, ?>) evaluationContext));
-					FlexoConceptInstance container = getContainer(evaluationContext);
 					if (container != null) {
 						creationSchemeAction.setContainer(container);
 					}
@@ -794,6 +804,11 @@ public interface MatchFlexoConceptInstance extends FMLRTAction<FlexoConceptInsta
 			return null;
 		}
 
+		@Override
+		public boolean isReceiverMandatory() {
+			return false;
+		}
+
 	}
 
 	@DefineValidationRule
@@ -876,18 +891,18 @@ public interface MatchFlexoConceptInstance extends FMLRTAction<FlexoConceptInsta
 	
 	}*/
 
-	@DefineValidationRule
+	/*@DefineValidationRule
 	public static class VirtualModelInstanceBindingIsRequiredAndMustBeValid
 			extends BindingIsRequiredAndMustBeValid<MatchFlexoConceptInstance> {
 		public VirtualModelInstanceBindingIsRequiredAndMustBeValid() {
 			super("'virtual_model_instance'_binding_is_not_valid", MatchFlexoConceptInstance.class);
 		}
-
+	
 		@Override
 		public DataBinding<FMLRTVirtualModelInstance> getBinding(MatchFlexoConceptInstance object) {
 			return object.getReceiver();
 		}
-
+	
 		@Override
 		public ValidationIssue<BindingIsRequiredAndMustBeValid<MatchFlexoConceptInstance>, MatchFlexoConceptInstance> applyValidation(
 				MatchFlexoConceptInstance object) {
@@ -908,21 +923,16 @@ public interface MatchFlexoConceptInstance extends FMLRTAction<FlexoConceptInsta
 						// + Integer.toHexString(((VirtualModelInstanceType) binding.getAnalyzedType()).getVirtualModel().hashCode()));
 						returned = new ValidationError<>(this, object, "incompatible_virtual_model_type avec "
 								+ object.getFlexoConceptType() + " et " + binding.getAnalyzedType());
-
-						/*System.out.println(object.getRootOwner().getFMLRepresentation());
-						System.out.println("FC=" + object.getRootOwner().getFlexoConcept());
-						System.out.println("VM=" + object.getOwningVirtualModel());
-						System.out.println("modelSlots=" + object.getOwningVirtualModel().getModelSlots(FMLRTModelSlot.class));*/
-
+	
 						// Attempt to find some solutions...
-
+	
 						for (FMLRTModelSlot<?, ?> ms : object.getOwningVirtualModel().getModelSlots(FMLRTModelSlot.class)) {
 							// System.out.println("modelSlot " + ms + " vm=" + ms.getAddressedVirtualModel());
 							if (object.getFlexoConceptType().getOwner().isAssignableFrom(ms.getAccessedVirtualModel())) {
 								((ValidationError) returned).addToFixProposals(new UseFMLRTModelSlot(ms));
 							}
 						}
-
+	
 						if (object.getRootOwner().getFlexoConcept() instanceof VirtualModel) {
 							for (FMLRTModelSlot<?, ?> ms : ((VirtualModel) object.getRootOwner().getFlexoConcept())
 									.getModelSlots(FMLRTModelSlot.class)) {
@@ -932,44 +942,44 @@ public interface MatchFlexoConceptInstance extends FMLRTAction<FlexoConceptInsta
 								}
 							}
 						}
-
+	
 					}
 				}
 			}
 			return returned;
 		}
-
+	
 		protected static class UseLocalVirtualModelInstance
 				extends FixProposal<BindingIsRequiredAndMustBeValid<MatchFlexoConceptInstance>, MatchFlexoConceptInstance> {
-
+	
 			public UseLocalVirtualModelInstance() {
 				super("sets_virtual_model_instance_to_'virtualModelInstance'_(local_virtual_model_instance)");
 			}
-
+	
 			@Override
 			protected void fixAction() {
 				MatchFlexoConceptInstance action = getValidable();
 				action.setReceiver(new DataBinding<FMLRTVirtualModelInstance>("virtualModelInstance"));
 			}
 		}
-
+	
 		protected static class UseFMLRTModelSlot
 				extends FixProposal<BindingIsRequiredAndMustBeValid<MatchFlexoConceptInstance>, MatchFlexoConceptInstance> {
-
+	
 			private final FMLRTModelSlot<?, ?> modelSlot;
-
+	
 			public UseFMLRTModelSlot(FMLRTModelSlot<?, ?> modelSlot) {
 				super("sets_virtual_model_instance_to_'" + modelSlot.getName() + "'");
 				this.modelSlot = modelSlot;
 			}
-
+	
 			@Override
 			protected void fixAction() {
 				MatchFlexoConceptInstance action = getValidable();
 				action.setReceiver(new DataBinding<FMLRTVirtualModelInstance>(modelSlot.getName()));
 			}
 		}
-
-	}
+	
+	}*/
 
 }

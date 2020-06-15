@@ -10,10 +10,10 @@ model TestMatchFlexoConceptInstance {
 
 	create::_create () {
 		log("on cree le model");
-		VM aModel = new VM();
+		VM aModel = new VM() with (virtualModelInstanceName = "model");
 		log("On a cree le modele");
-		MatchingVM matchingModel = new MatchingVM(aModel)aModel;
-		VM2 model2 = new VM2();
-		MatchingVM2 matchingModel2 = new MatchingVM2(model2)model2;
+		MatchingVM matchingModel = new MatchingVM(aModel) with (virtualModelInstanceName = "matchingModel");
+		VM2 model2 = new VM2() with (virtualModelInstanceName = "model2");
+		MatchingVM2 matchingModel2 = new MatchingVM2(model2) with (virtualModelInstanceName = "matchingModel2");
 	}
 }
