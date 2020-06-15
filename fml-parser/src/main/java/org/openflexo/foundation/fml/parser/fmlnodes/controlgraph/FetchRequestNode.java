@@ -101,7 +101,7 @@ public class FetchRequestNode<FR extends AbstractFetchRequest<?, ?, ?, ?>> exten
 				PExpression fromExpression = ((AFromClause) astNode.getFromClause()).getExpression();
 				DataBinding<?> container = ExpressionFactory.makeExpression(fromExpression, getAnalyser(), selectAction);
 				selectAction.setContainer(container);
-				// selectAction.setReceiver(container);
+				selectAction.setReceiver(container);
 			}
 			returned = (FR) selectAction;
 		}
@@ -121,7 +121,7 @@ public class FetchRequestNode<FR extends AbstractFetchRequest<?, ?, ?, ?>> exten
 				PExpression fromExpression = ((AFromClause) astNode.getFromClause()).getExpression();
 				DataBinding<?> container = ExpressionFactory.makeExpression(fromExpression, getAnalyser(), selectAction);
 				selectAction.setContainer(container);
-				// selectAction.setReceiver(container);
+				selectAction.setReceiver(container);
 				System.out.println("Hop pour " + selectAction);
 				System.out.println("container " + selectAction.getContainer());
 
