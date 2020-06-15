@@ -1,102 +1,58 @@
-use org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstanceModelSlot;
+use org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstanceModelSlot as FMLRT;
 
-/**
- * 
- * @version 0.1
- */
-@VirtualModel(uri="http://openflexo.org/test/TestResourceCenter/TestMatchFlexoConceptInstance.fml/MatchingVM2.fml")
-public class MatchingVM2 {
+import java.lang.String;
 
-  @FMLRTVirtualModelInstanceModelSlot(cardinality=ZeroOne,readOnly=false)  
-  public VirtualModelInstanceType<VM2> model;
+import ["http://openflexo.org/test/TestResourceCenter/TestMatchFlexoConceptInstance.fml/VM2.fml"] as VM2;
 
-  @CreationScheme  
-  MatchingVM2:create(VirtualModelInstanceType<NotFound:http://openflexo.org/test/TestResourceCenter/TestMatchFlexoConceptInstance.fml/VM2> model) {  
-    model = parameters.model;  
-  }  
+@URI("http://openflexo.org/test/TestResourceCenter/TestMatchFlexoConceptInstance.fml/MatchingVM2.fml")
+@Version("0.1")
+model MatchingVM2 {
+	VM2 _model with ModelInstance(isRequired = true);
 
-  @ActionScheme  
-  Void synchronize() {  
-    MatchingSet matchingSet = this.initiateMatching(MatchedConceptA);    
-    for (conceptA : model.SelectFlexoConceptInstance(type=ConceptA)) {    
-      FlexoConceptInstanceType<MatchedConceptA> matchedA = FML@RT::MatchFlexoConceptInstance as MatchedConceptA match=(conceptA=conceptA) using MatchedConceptA:create(conceptA,(conceptA.nameA + "-matched"));      
-      matchedA.synchronize()    
-    }    
-    matchingSet.finalizeMatching()  
-  }  
+	create::_create (required VM2 _model) {
+		_model = parameters._model;
+	}
 
+	synchronize () {
+		MatchingSet matchingSet = begin match MatchedConceptA from (this);
+		for (ConceptA conceptA : select ConceptA from (_model)) {
+			MatchedConceptA matchedA = match MatchedConceptA in (matchingSet) from (this) where (conceptA=conceptA) create::_create((conceptA.nameA + "-matched"),conceptA);
+			matchedA.synchronize();
+		}
+		end match MatchedConceptA in (matchingSet) delete::_delete();
+	}
 
-  @FlexoConcept  
-  public class MatchedConceptA {  
-  
-    @FlexoConceptInstanceRole(cardinality=ZeroOne,readOnly=false)    
-    public FlexoConceptInstanceType<ConceptA> conceptA;  
-    @PrimitiveRole(cardinality=ZeroOne,readOnly=false)    
-    public String name;  
-  
-    @CreationScheme    
-    MatchedConceptA:create(FlexoConceptInstanceType<ConceptA> aConceptA, String aName) {    
-      conceptA = parameters.aConceptA;      
-      name = parameters.aName;    
-    }    
-  
-    @DeletionScheme    
-    Void delete() {    
-      
-    }    
-  
-    @ActionScheme    
-    Void synchronize() {    
-      MatchingSet matchingSet = this.initiateMatching(MatchedConceptB);      
-      for (conceptB : model.SelectFlexoConceptInstance(type=ConceptB)) {      
-        FlexoConceptInstanceType<MatchedConceptB> matchedConceptB = FML@RT::MatchFlexoConceptInstance as MatchedConceptB match=(conceptB=conceptB) using MatchedConceptB:create(conceptB,(conceptB.nameB + "-matched"));      
-      }      
-      matchingSet.finalizeMatching()    
-    }    
-  
-  
-    @FlexoConcept    
-    public class MatchedConceptB {    
-      
-      @FlexoConceptInstanceRole(cardinality=ZeroOne,readOnly=false)      
-      public FlexoConceptInstanceType<ConceptB> conceptB;    
-      @PrimitiveRole(cardinality=ZeroOne,readOnly=false)      
-      public String name;    
-      
-      @CreationScheme      
-      MatchedConceptB:create(FlexoConceptInstanceType<ConceptB> aConceptB, String aName) {      
-        conceptB = parameters.aConceptB;        
-        name = parameters.aName;      
-      }      
-      
-      @DeletionScheme      
-      Void delete() {      
-          
-      }      
-      
-    }    
-  
-  }  
-
-  @FlexoConcept  
-  public class MatchedConceptB {  
-  
-    @FlexoConceptInstanceRole(cardinality=ZeroOne,readOnly=false)    
-    public FlexoConceptInstanceType<ConceptB> conceptB;  
-    @PrimitiveRole(cardinality=ZeroOne,readOnly=false)    
-    public String name;  
-  
-    @CreationScheme    
-    MatchedConceptB:create(FlexoConceptInstanceType<ConceptB> aConceptB, String aName) {    
-      conceptB = parameters.aConceptB;      
-      name = parameters.aName;    
-    }    
-  
-    @DeletionScheme    
-    Void delete() {    
-      
-    }    
-  
-  }  
-
+	concept MatchedConceptA {
+		ConceptA conceptA with ConceptInstance(virtualModelInstance = _model);
+		String name;
+		@UI(
+			@TextField(value="aName")
+		)
+		create::_create (required ConceptA aConceptA, required String aName) {
+			conceptA = parameters.aConceptA;
+			name = parameters.aName;
+		}
+		delete::_delete () {
+		}
+		synchronize () {
+			MatchingSet matchingSet = begin match MatchedConceptB from (this);
+			for (ConceptB conceptB : select ConceptB from (conceptA)) {
+				MatchedConceptB matchedConceptB = match MatchedConceptB in (matchingSet) from (this) where (conceptB=conceptB) create::_create((conceptB.nameB + "-matched"),conceptB);
+			}
+			end match MatchedConceptB in (matchingSet) delete::_delete();
+		}
+		concept MatchedConceptB {
+			ConceptB conceptB with ConceptInstance(virtualModelInstance = _model);
+			String name;
+			@UI(
+				@TextField(value="aName")
+			)
+			create::_create (required String aName, required ConceptB aConceptB) {
+				conceptB = parameters.aConceptB;
+				name = parameters.aName;
+			}
+			delete::_delete () {
+			}
+		}
+	}
 }
