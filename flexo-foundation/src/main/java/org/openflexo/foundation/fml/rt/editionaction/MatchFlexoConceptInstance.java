@@ -78,6 +78,7 @@ import org.openflexo.pamela.annotations.Getter.Cardinality;
 import org.openflexo.pamela.annotations.ImplementationClass;
 import org.openflexo.pamela.annotations.ModelEntity;
 import org.openflexo.pamela.annotations.PropertyIdentifier;
+import org.openflexo.pamela.annotations.Reindexer;
 import org.openflexo.pamela.annotations.Remover;
 import org.openflexo.pamela.annotations.Setter;
 import org.openflexo.pamela.annotations.XMLAttribute;
@@ -168,6 +169,9 @@ public interface MatchFlexoConceptInstance extends FMLRTAction<FlexoConceptInsta
 
 	@Remover(PARAMETERS_KEY)
 	public void removeFromParameters(CreateFlexoConceptInstanceParameter aParameter);
+
+	@Reindexer(PARAMETERS_KEY)
+	public void moveParameterToIndex(CreateFlexoConceptInstanceParameter aParameter, int index);
 
 	public CreationScheme getCreationScheme();
 
