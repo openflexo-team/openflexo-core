@@ -131,18 +131,18 @@ public class TestAddVirtualModelInstance extends FMLParserTestCase {
 		BehaviourCallArgumentNode arg2Node = (BehaviourCallArgumentNode) (P2PPNode) rootNode
 				.getObjectNode(addAction.getParameters().get(1));
 
-		assertEquals("new MyModel(\"test\",3)", addAction.getFMLPrettyPrint());
-		assertEquals("new MyModel(\"test\",3)", addAction.getNormalizedFML());
+		assertEquals("new MyModel(\"test\",3) with (virtualModelInstanceName=\"foo\")", addAction.getFMLPrettyPrint());
+		assertEquals("new MyModel(\"test\",3) with (virtualModelInstanceName = \"foo\")", addAction.getNormalizedFML());
 
 		assertEquals("(13:1)-(15:2)", behaviourNode.getLastParsedFragment().toString());
 		assertEquals("(12:0)-(13:0)", behaviourNode.getPrelude().toString());
 		assertEquals("(15:2)-(16:0)", behaviourNode.getPostlude().toString());
 
-		assertEquals("(14:2)-(14:34)", assignationNode.getLastParsedFragment().toString());
+		assertEquals("(14:2)-(14:72)", assignationNode.getLastParsedFragment().toString());
 		assertEquals(null, assignationNode.getPrelude());
 		assertEquals(null, assignationNode.getPostlude());
 
-		assertEquals("(14:12)-(14:33)", addActionNode.getLastParsedFragment().toString());
+		assertEquals("(14:12)-(14:71)", addActionNode.getLastParsedFragment().toString());
 		assertEquals(null, addActionNode.getPrelude());
 		assertEquals(null, addActionNode.getPostlude());
 
