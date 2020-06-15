@@ -76,7 +76,6 @@ import org.openflexo.pamela.annotations.ModelEntity;
 import org.openflexo.pamela.annotations.PropertyIdentifier;
 import org.openflexo.pamela.annotations.Setter;
 import org.openflexo.pamela.annotations.XMLAttribute;
-import org.openflexo.pamela.validation.FixProposal;
 import org.openflexo.pamela.validation.ValidationError;
 import org.openflexo.pamela.validation.ValidationIssue;
 import org.openflexo.pamela.validation.ValidationRule;
@@ -456,6 +455,11 @@ public interface AbstractSelectFlexoConceptInstance<VMI extends VirtualModelInst
 				getPropertyChangeSupport().firePropertyChange("addressedVirtualModel", null, getAddressedVirtualModel());
 			}
 		}
+
+		@Override
+		public boolean isReceiverMandatory() {
+			return false;
+		}
 	}
 
 	@DefineValidationRule
@@ -476,19 +480,19 @@ public interface AbstractSelectFlexoConceptInstance<VMI extends VirtualModelInst
 		}
 	}
 
-	@DefineValidationRule
+	/*@DefineValidationRule
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public static class VirtualModelInstanceBindingIsRequiredAndMustBeValid
 			extends BindingIsRequiredAndMustBeValid<AbstractSelectFlexoConceptInstance> {
 		public VirtualModelInstanceBindingIsRequiredAndMustBeValid() {
 			super("'receiver'_binding_is_not_valid", AbstractSelectFlexoConceptInstance.class);
 		}
-
+	
 		@Override
 		public DataBinding<VirtualModelInstance<?, ?>> getBinding(AbstractSelectFlexoConceptInstance object) {
 			return object.getReceiver();
 		}
-
+	
 		@Override
 		public ValidationIssue<BindingIsRequiredAndMustBeValid<AbstractSelectFlexoConceptInstance>, AbstractSelectFlexoConceptInstance> applyValidation(
 				AbstractSelectFlexoConceptInstance object) {
@@ -503,14 +507,8 @@ public interface AbstractSelectFlexoConceptInstance<VMI extends VirtualModelInst
 					if (object.getFlexoConceptType().getOwner() != ((VirtualModelInstanceType) binding.getAnalyzedType())
 							.getVirtualModel()) {
 						returned = new ValidationError(this, object, "incompatible_virtual_model_type");
-
-						/*System.out.println(object.getRootOwner().getFMLRepresentation());
-						System.out.println("FC=" + object.getRootOwner().getFlexoConcept());
-						System.out.println("VM=" + object.getOwningVirtualModel());
-						System.out.println("modelSlots=" + object.getOwningVirtualModel().getModelSlots(FMLRTModelSlot.class));*/
-
 						// Attempt to find some solutions...
-
+	
 						if (object.getOwningVirtualModel() != null) {
 							for (FMLRTModelSlot ms : object.getOwningVirtualModel().getModelSlots(FMLRTModelSlot.class)) {
 								// System.out.println("modelSlot " + ms + " vm=" + ms.getAddressedVirtualModel());
@@ -519,7 +517,7 @@ public interface AbstractSelectFlexoConceptInstance<VMI extends VirtualModelInst
 								}
 							}
 						}
-
+	
 						if (object.getRootOwner().getFlexoConcept() instanceof VirtualModel) {
 							for (FMLRTModelSlot ms : ((VirtualModel) object.getRootOwner().getFlexoConcept())
 									.getModelSlots(FMLRTModelSlot.class)) {
@@ -529,44 +527,44 @@ public interface AbstractSelectFlexoConceptInstance<VMI extends VirtualModelInst
 								}
 							}
 						}
-
+	
 					}
 				}
 			}
 			return returned;
 		}
-
+	
 		protected static class UseLocalVirtualModelInstance extends
 				FixProposal<BindingIsRequiredAndMustBeValid<AbstractSelectFlexoConceptInstance>, AbstractSelectFlexoConceptInstance> {
-
+	
 			public UseLocalVirtualModelInstance() {
 				super("sets_virtual_model_instance_to_'virtualModelInstance'_(local_virtual_model_instance)");
 			}
-
+	
 			@Override
 			protected void fixAction() {
 				AbstractSelectFlexoConceptInstance action = getValidable();
 				action.setReceiver(new DataBinding<>("virtualModelInstance"));
 			}
 		}
-
+	
 		protected static class UseFMLRTModelSlot extends
 				FixProposal<BindingIsRequiredAndMustBeValid<AbstractSelectFlexoConceptInstance>, AbstractSelectFlexoConceptInstance> {
-
+	
 			private final FMLRTModelSlot modelSlot;
-
+	
 			public UseFMLRTModelSlot(FMLRTModelSlot modelSlot) {
 				super("sets_virtual_model_instance_to_'" + modelSlot.getName() + "'");
 				this.modelSlot = modelSlot;
 			}
-
+	
 			@Override
 			protected void fixAction() {
 				AbstractSelectFlexoConceptInstance action = getValidable();
 				action.setReceiver(new DataBinding<>(modelSlot.getName()));
 			}
 		}
-
-	}
+	
+	}*/
 
 }
