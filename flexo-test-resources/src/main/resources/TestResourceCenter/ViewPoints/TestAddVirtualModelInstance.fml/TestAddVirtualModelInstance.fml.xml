@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<VirtualModel id="SYL-2"
+	virtualModelClass="org.openflexo.foundation.fml.VirtualModel"
+	uri="http://openflexo.org/test/TestResourceCenter/TestAddVirtualModelInstance.fml"
+	version="0.1" visibility="Public" name="TestAddVirtualModelInstance"
+	author="sylvain" userID="SYL" flexoID="2">
+	<UseModelSlotDeclaration id="SYL--1"
+		modelSlotClass="org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstanceModelSlot"
+		abbrev="FMLRT" userID="SYL" flexoID="-1" />
+	<Inspector id="SYL-3"
+		inspectorTitle="TestAddVirtualModelInstance" userID="SYL" flexoID="3" />
+	<FMLRTVirtualModelInstanceModelSlot
+		id="SYL-9"
+		virtualModelURI="http://openflexo.org/test/TestResourceCenter/TestAddVirtualModelInstance.fml/VM.fml"
+		cloningStrategy="Reference" cardinality="ZeroOne" name="vm"
+		userID="SYL" flexoID="9" />
+	<CreationScheme id="SYL-10" name="createInstance"
+		width="800" height="600" userID="SYL" flexoID="10">
+		<BehaviourControlGraph_AssignationAction
+			id="SYL-12" assign="vm" userID="SYL" flexoID="12">
+			<AssignableAction_AddVirtualModelInstance
+				id="SYL-11" virtualModelInstanceName="&quot;myVMInstance&quot;"
+				creationSchemeURI="http://openflexo.org/test/TestResourceCenter/TestAddVirtualModelInstance.fml/VM.fml.createInstance(aString)"
+				flexoConceptTypeURI="http://openflexo.org/test/TestResourceCenter/TestAddVirtualModelInstance.fml/VM.fml"
+				receiver="vm" userID="SYL" flexoID="11" />
+		</BehaviourControlGraph_AssignationAction>
+	</CreationScheme>
+</VirtualModel>

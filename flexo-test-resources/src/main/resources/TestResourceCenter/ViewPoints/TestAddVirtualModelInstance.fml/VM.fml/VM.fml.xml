@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<VirtualModel id="SYL-2"
+	virtualModelClass="org.openflexo.foundation.fml.VirtualModel"
+	uri="http://openflexo.org/test/TestResourceCenter/TestAddVirtualModelInstance.fml/VM.fml"
+	version="0.1" visibility="Public" name="VM" author="sylvain"
+	userID="SYL" flexoID="2">
+	<Inspector id="SYL-3" inspectorTitle="VM" userID="SYL"
+		flexoID="3" />
+	<CreationScheme id="SYL-8" name="createInstance"
+		width="800" height="600" userID="SYL" flexoID="8">
+		<BehaviourControlGraph_EmptyControlGraph
+			id="SYL-9" userID="SYL" flexoID="9" />
+		<GenericBehaviourParameter id="SYL-10"
+			widget="TEXT_FIELD" name="aString" type="java.lang.String"
+			userID="SYL" flexoID="10" />
+	</CreationScheme>
+</VirtualModel>

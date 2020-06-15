@@ -43,16 +43,19 @@ import java.util.logging.Logger;
 import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.type.TypeUtils;
 import org.openflexo.foundation.fml.CreationScheme;
+import org.openflexo.foundation.fml.FMLPropertyValue;
 import org.openflexo.foundation.fml.FlexoBehaviourParameter;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoConceptInstanceType;
 import org.openflexo.foundation.fml.binding.FlexoConceptBindingModel;
 import org.openflexo.foundation.fml.parser.MainSemanticsAnalyzer;
 import org.openflexo.foundation.fml.parser.node.AFmlInstanceCreationFmlActionExp;
+import org.openflexo.foundation.fml.parser.node.AFullQualifiedFmlParameters;
 import org.openflexo.foundation.fml.parser.node.AJavaInstanceCreationFmlActionExp;
 import org.openflexo.foundation.fml.parser.node.AManyArgumentList;
 import org.openflexo.foundation.fml.parser.node.ANewContainmentClause;
 import org.openflexo.foundation.fml.parser.node.AOneArgumentList;
+import org.openflexo.foundation.fml.parser.node.APreciseFmlParametersClause;
 import org.openflexo.foundation.fml.parser.node.Node;
 import org.openflexo.foundation.fml.parser.node.PArgumentList;
 import org.openflexo.foundation.fml.parser.node.PExpression;
@@ -206,9 +209,6 @@ public class AddVirtualModelInstanceNode extends AssignableActionNode<PFmlAction
 	public void preparePrettyPrint(boolean hasParsedVersion) {
 		super.preparePrettyPrint(hasParsedVersion);
 
-		System.out.println("Ici pour le AddVirtualModelInstanceNode");
-		Thread.dumpStack();
-
 		// @formatter:off	
 		when(() -> isContainerFullQualified())
 		.thenAppend(dynamicContents(() -> getModelObject().getContainer().toString()), getContainerFragment())
@@ -216,15 +216,34 @@ public class AddVirtualModelInstanceNode extends AssignableActionNode<PFmlAction
 		append(staticContents("", "new", SPACE), getNewFragment());
 		append(dynamicContents(() -> serializeType(getModelObject().getFlexoConceptType())), getConceptNameFragment());
 		when(() -> isFullQualified())
-			.thenAppend(staticContents("::"), getColonColonFragment())
-			.thenAppend(dynamicContents(() -> serializeFlexoBehaviour(getModelObject().getCreationScheme())), getConstructorNameFragment());
+		.thenAppend(staticContents("::"), getColonColonFragment())
+		.thenAppend(dynamicContents(() -> serializeFlexoBehaviour(getModelObject().getCreationScheme())), getConstructorNameFragment());
 		append(staticContents("("), getLParFragment());
 		append(childrenContents("", "", () -> getModelObject().getParameters(), ",", "", Indentation.DoNotIndent,
 				AddFlexoConceptInstanceParameter.class));
 		append(staticContents(")"), getRParFragment());
+
+
+		when(() -> hasFMLProperties())
+		.thenAppend(staticContents(SPACE, "with", SPACE), getFMLParametersWithFragment())
+		.thenAppend(staticContents("("), getFMLParametersLParFragment())
+		.thenAppend(childrenContents("","", () -> getModelObject().getFMLPropertyValues(getFactory()), ", ","", Indentation.DoNotIndent,
+				FMLPropertyValue.class))
+		.thenAppend(staticContents(")"), getFMLParametersRParFragment());
+
 		// Append semi only when required
 		when(() -> requiresSemi()).thenAppend(staticContents(";"), getSemiFragment());
 		// @formatter:on	
+	}
+
+	protected boolean hasFMLProperties() {
+		if (getFMLParametersClause() != null) {
+			return true;
+		}
+		if (getModelObject() != null) {
+			return getModelObject().hasFMLProperties(getFactory());
+		}
+		return false;
 	}
 
 	private boolean isFullQualified() {
@@ -352,6 +371,40 @@ public class AddVirtualModelInstanceNode extends AssignableActionNode<PFmlAction
 		if (getASTNode() instanceof AJavaInstanceCreationFmlActionExp) {
 			return getFragment(((AJavaInstanceCreationFmlActionExp) getASTNode()).getLPar(),
 					((AJavaInstanceCreationFmlActionExp) getASTNode()).getRPar());
+		}
+		return null;
+	}
+
+	private APreciseFmlParametersClause getFMLParametersClause() {
+		if (getASTNode() instanceof AFmlInstanceCreationFmlActionExp) {
+			return (APreciseFmlParametersClause) ((AFmlInstanceCreationFmlActionExp) getASTNode()).getPreciseFmlParametersClause();
+		}
+		if (getASTNode() instanceof AJavaInstanceCreationFmlActionExp) {
+			return (APreciseFmlParametersClause) ((AJavaInstanceCreationFmlActionExp) getASTNode()).getPreciseFmlParametersClause();
+		}
+		return null;
+	}
+
+	protected RawSourceFragment getFMLParametersWithFragment() {
+		if (getFMLParametersClause() != null) {
+			return getFragment(getFMLParametersClause().getKwWith());
+
+		}
+		return null;
+	}
+
+	protected RawSourceFragment getFMLParametersLParFragment() {
+		if (getFMLParametersClause() != null) {
+			return getFragment(((AFullQualifiedFmlParameters) getFMLParametersClause().getFmlParameters()).getLPar());
+
+		}
+		return null;
+	}
+
+	protected RawSourceFragment getFMLParametersRParFragment() {
+		if (getFMLParametersClause() != null) {
+			return getFragment(((AFullQualifiedFmlParameters) getFMLParametersClause().getFmlParameters()).getRPar());
+
 		}
 		return null;
 	}
