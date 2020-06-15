@@ -96,6 +96,7 @@ public abstract interface TechnologySpecificActionDefiningReceiver<MS extends Mo
 
 	public Type getReceiverType();
 
+	@Deprecated
 	public boolean isReceiverMandatory();
 
 	/**
@@ -204,6 +205,7 @@ public abstract interface TechnologySpecificActionDefiningReceiver<MS extends Mo
 			return TypeUtils.getTypeArgument(getClass(), TechnologySpecificActionDefiningReceiver.class, 1);
 		}
 
+		@Deprecated
 		@Override
 		public boolean isReceiverMandatory() {
 			return true;
@@ -213,7 +215,7 @@ public abstract interface TechnologySpecificActionDefiningReceiver<MS extends Mo
 
 	@DefineValidationRule
 	public static class ReceiverBindingIsRequiredAndMustBeValid
-			extends BindingIsRequiredAndMustBeValid<TechnologySpecificActionDefiningReceiver> {
+			extends BindingIsRecommandedAndShouldBeValid<TechnologySpecificActionDefiningReceiver> {
 		public ReceiverBindingIsRequiredAndMustBeValid() {
 			super("'receiver'_binding_is_required_and_must_be_valid", TechnologySpecificActionDefiningReceiver.class);
 		}
@@ -224,7 +226,7 @@ public abstract interface TechnologySpecificActionDefiningReceiver<MS extends Mo
 		}
 
 		@Override
-		public ValidationIssue<BindingIsRequiredAndMustBeValid<TechnologySpecificActionDefiningReceiver>, TechnologySpecificActionDefiningReceiver> applyValidation(
+		public ValidationIssue<BindingIsRecommandedAndShouldBeValid<TechnologySpecificActionDefiningReceiver>, TechnologySpecificActionDefiningReceiver> applyValidation(
 				TechnologySpecificActionDefiningReceiver action) {
 
 			if (!action.isReceiverMandatory()) {
