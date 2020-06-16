@@ -28,7 +28,7 @@ model MatchingVM2 {
 		@UI(
 			@TextField(value="aName")
 		)
-		create::_create (required ConceptA aConceptA, required String aName) {
+		create::_create (required String aName, required ConceptA aConceptA) {
 			conceptA = parameters.aConceptA;
 			name = parameters.aName;
 		}
