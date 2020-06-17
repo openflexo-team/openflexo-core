@@ -1996,11 +1996,13 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 					return IconFactory.getImageIcon(tac.getIconForModelSlot(useDeclaration.getModelSlotClass()), IconLibrary.IMPORT);
 				}
 			}
-			if (useDeclaration.getModelSlotClass().equals(FMLModelSlot.class)) {
-				return IconFactory.getImageIcon(FMLIconLibrary.VIRTUAL_MODEL_ICON, IconLibrary.IMPORT);
-			}
-			if (useDeclaration.getModelSlotClass().equals(FMLRTVirtualModelInstanceModelSlot.class)) {
-				return IconFactory.getImageIcon(FMLRTIconLibrary.VIRTUAL_MODEL_INSTANCE_ICON, IconLibrary.IMPORT);
+			if (useDeclaration.getModelSlotClass() != null) {
+				if (useDeclaration.getModelSlotClass().equals(FMLModelSlot.class)) {
+					return IconFactory.getImageIcon(FMLIconLibrary.VIRTUAL_MODEL_ICON, IconLibrary.IMPORT);
+				}
+				if (useDeclaration.getModelSlotClass().equals(FMLRTVirtualModelInstanceModelSlot.class)) {
+					return IconFactory.getImageIcon(FMLRTIconLibrary.VIRTUAL_MODEL_INSTANCE_ICON, IconLibrary.IMPORT);
+				}
 			}
 			logger.warning("Could not find TechnologyAdapterController for technology " + object);
 		}
