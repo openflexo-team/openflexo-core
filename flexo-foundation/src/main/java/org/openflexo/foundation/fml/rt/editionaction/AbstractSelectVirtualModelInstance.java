@@ -111,14 +111,19 @@ public interface AbstractSelectVirtualModelInstance<VMI extends VirtualModelInst
 
 	public VirtualModel getAddressedVirtualModel();
 
+	public VirtualModelInstanceType getType();
+
+	public void setType(VirtualModelInstanceType type);
+
 	public static abstract class AbstractSelectVirtualModelInstanceImpl<VMI extends VirtualModelInstance<VMI, FMLRTTechnologyAdapter>, AT>
 			extends AbstractFetchRequestImpl<FMLRTModelSlot<VMI, FMLRTTechnologyAdapter>, VMI, VirtualModelInstance<?, ?>, AT>
 			implements AbstractSelectVirtualModelInstance<VMI, AT> {
 
 		protected static final Logger logger = FlexoLogger.getLogger(AbstractSelectVirtualModelInstance.class.getPackage().getName());
 
-		private VirtualModel virtualModelType;
+		// private VirtualModel virtualModelType;
 		private String virtualModelTypeURI;
+		private VirtualModelInstanceType type;
 
 		@Override
 		public TechnologyAdapter getModelSlotTechnologyAdapter() {
@@ -211,9 +216,12 @@ public interface AbstractSelectVirtualModelInstance<VMI extends VirtualModelInst
 
 		@Override
 		public String _getVirtualModelTypeURI() {
-			if (virtualModelType != null) {
-				return virtualModelType.getURI();
+			if (type != null) {
+				return type.getConceptURI();
 			}
+			/*if (virtualModelType != null) {
+				return virtualModelType.getURI();
+			}*/
 			return virtualModelTypeURI;
 		}
 
@@ -224,46 +232,68 @@ public interface AbstractSelectVirtualModelInstance<VMI extends VirtualModelInst
 
 		@Override
 		public VirtualModel getVirtualModelType() {
-			if (virtualModelType != null) {
+
+			if (type != null) {
+				if (!type.isResolved()) {
+					type.resolve();
+				}
+				return type.getVirtualModel();
+			}
+			else {
+				if (!isFetching && virtualModelTypeURI != null) {
+					isFetching = true;
+					VirtualModel virtualModelType = getAddressedVirtualModel().getVirtualModelNamed(virtualModelTypeURI);
+					if (virtualModelType != null) {
+						type = virtualModelType.getVirtualModelInstanceType();
+					}
+					isFetching = false;
+				}
+			}
+
+			/*if (virtualModelType != null) {
 				return virtualModelType;
 			}
 			if (isFetching) {
 				return null;
 			}
-
+			
 			if (virtualModelType == null && virtualModelTypeURI != null && getAddressedVirtualModel() != null) {
 				isFetching = true;
 				virtualModelType = getAddressedVirtualModel().getVirtualModelNamed(virtualModelTypeURI);
 				isFetching = false;
-				/*if (vm != null) {
-					virtualModelType = vm.getResource();
-				}*/
-				/*else {
-					logger.warning("?????????????????? je trouve pas " + virtualModelTypeURI);
-					try {
-						if (getAddressedVirtualModel() != null && getAddressedVirtualModel().getVirtualModelLibrary() != null) {
-							System.out.println("Et: "
-									+ getAddressedVirtualModel().getVirtualModelLibrary().getVirtualModel(virtualModelTypeURI, true));
-						}
-					} catch (FileNotFoundException e) {
-						e.printStackTrace();
-					} catch (ResourceLoadingCancelledException e) {
-						e.printStackTrace();
-					} catch (FlexoException e) {
-						e.printStackTrace();
-					}
-				}*/
 			}
+			
+			return virtualModelType;*/
 
-			return virtualModelType;
+			return null;
 		}
 
 		@Override
 		public void setVirtualModelType(VirtualModel virtualModelType) {
-			if (virtualModelType != this.virtualModelType) {
-				VirtualModel oldValue = this.virtualModelType;
-				this.virtualModelType = virtualModelType;
+			if (virtualModelType != getVirtualModelType()) {
+				VirtualModel oldValue = getVirtualModelType();
+				if (virtualModelType != null) {
+					type = virtualModelType.getVirtualModelInstanceType();
+				}
+				else {
+					type = null;
+				}
+
 				getPropertyChangeSupport().firePropertyChange("virtualModelType", oldValue, virtualModelType);
+			}
+		}
+
+		@Override
+		public VirtualModelInstanceType getType() {
+			return type;
+		}
+
+		@Override
+		public void setType(VirtualModelInstanceType type) {
+			if ((type == null && this.type != null) || (type != null && !type.equals(this.type))) {
+				VirtualModelInstanceType oldValue = this.type;
+				this.type = type;
+				getPropertyChangeSupport().firePropertyChange("type", oldValue, type);
 			}
 		}
 

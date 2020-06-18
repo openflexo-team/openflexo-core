@@ -122,14 +122,19 @@ public interface AbstractSelectFlexoConceptInstance<VMI extends VirtualModelInst
 	 */
 	public VirtualModel getAddressedVirtualModel();
 
+	public FlexoConceptInstanceType getType();
+
+	public void setType(FlexoConceptInstanceType type);
+
 	public static abstract class AbstractSelectFlexoConceptInstanceImpl<VMI extends VirtualModelInstance<VMI, FMLRTTechnologyAdapter>, AT>
 			extends AbstractFetchRequestImpl<FMLRTModelSlot<VMI, FMLRTTechnologyAdapter>, VMI, FlexoConceptInstance, AT>
 			implements AbstractSelectFlexoConceptInstance<VMI, AT> {
 
 		protected static final Logger logger = FlexoLogger.getLogger(AbstractSelectFlexoConceptInstance.class.getPackage().getName());
 
-		private FlexoConcept flexoConceptType;
+		// private FlexoConcept flexoConceptType;
 		private String flexoConceptTypeURI;
+		private FlexoConceptInstanceType type;
 
 		@Override
 		public TechnologyAdapter getModelSlotTechnologyAdapter() {
@@ -171,14 +176,18 @@ public interface AbstractSelectFlexoConceptInstance<VMI extends VirtualModelInst
 		@Override
 		public FlexoConceptInstanceType getFetchedType() {
 			// TODO: consider put same code here as in AbstractSelectVirtualModelInstance ???
-			return FlexoConceptInstanceType.getFlexoConceptInstanceType(getFlexoConceptType());
+			// return FlexoConceptInstanceType.getFlexoConceptInstanceType(getFlexoConceptType());
+			return type;
 		}
 
 		@Override
 		public String _getFlexoConceptTypeURI() {
-			if (flexoConceptType != null) {
-				return flexoConceptType.getURI();
+			if (type != null) {
+				return type.getConceptURI();
 			}
+			/*if (flexoConceptType != null) {
+				return flexoConceptType.getURI();
+			}*/
 			return flexoConceptTypeURI;
 		}
 
@@ -192,15 +201,65 @@ public interface AbstractSelectFlexoConceptInstance<VMI extends VirtualModelInst
 		@Override
 		public FlexoConcept getFlexoConceptType() {
 
-			if (!isComputingFlexoConceptType && flexoConceptType == null && flexoConceptTypeURI != null) {
+			if (type != null) {
+				if (!type.isResolved()) {
+					type.resolve();
+				}
+				return type.getFlexoConcept();
+			}
+			else {
+				if (!isComputingFlexoConceptType && flexoConceptTypeURI != null) {
+					isComputingFlexoConceptType = true;
+					if (getAddressedVirtualModel() != null) {
+						FlexoConcept flexoConceptType = getAddressedVirtualModel().getFlexoConcept(flexoConceptTypeURI);
+						if (flexoConceptType != null) {
+							type = flexoConceptType.getInstanceType();
+						}
+					}
+					isComputingFlexoConceptType = false;
+				}
+			}
+
+			/*if (!isComputingFlexoConceptType && flexoConceptType == null && flexoConceptTypeURI != null) {
 				isComputingFlexoConceptType = true;
 				if (getAddressedVirtualModel() != null) {
 					flexoConceptType = getAddressedVirtualModel().getFlexoConcept(flexoConceptTypeURI);
 				}
 				isComputingFlexoConceptType = false;
 			}
+			
+			return flexoConceptType;*/
 
-			return flexoConceptType;
+			return null;
+		}
+
+		@Override
+		public void setFlexoConceptType(FlexoConcept flexoConceptType) {
+			if (flexoConceptType != getFlexoConceptType()) {
+				FlexoConcept oldValue = getFlexoConceptType();
+				if (flexoConceptType != null) {
+					type = flexoConceptType.getInstanceType();
+				}
+				else {
+					type = null;
+				}
+				// this.flexoConceptType = flexoConceptType;
+				getPropertyChangeSupport().firePropertyChange("flexoConceptType", oldValue, flexoConceptType);
+			}
+		}
+
+		@Override
+		public FlexoConceptInstanceType getType() {
+			return type;
+		}
+
+		@Override
+		public void setType(FlexoConceptInstanceType type) {
+			if ((type == null && this.type != null) || (type != null && !type.equals(this.type))) {
+				FlexoConceptInstanceType oldValue = this.type;
+				this.type = type;
+				getPropertyChangeSupport().firePropertyChange("type", oldValue, type);
+			}
 		}
 
 		private boolean isAnalyzingContainer = false;
@@ -233,15 +292,6 @@ public interface AbstractSelectFlexoConceptInstance<VMI extends VirtualModelInst
 				return getInferedModelSlot().getAccessedVirtualModel();
 			}
 			return getOwningVirtualModel();
-		}
-
-		@Override
-		public void setFlexoConceptType(FlexoConcept flexoConceptType) {
-			if (flexoConceptType != this.flexoConceptType) {
-				FlexoConcept oldValue = this.flexoConceptType;
-				this.flexoConceptType = flexoConceptType;
-				getPropertyChangeSupport().firePropertyChange("flexoConceptType", oldValue, oldValue);
-			}
 		}
 
 		public VMI getVirtualModelInstance(RunTimeEvaluationContext evaluationContext) {
@@ -314,6 +364,15 @@ public interface AbstractSelectFlexoConceptInstance<VMI extends VirtualModelInst
 			VirtualModelInstance<?, ?> vmi = getVirtualModelInstance(evaluationContext);
 			FlexoConceptInstance container = getContainer(evaluationContext);
 
+			if (vmi == null) {
+				if (container instanceof VirtualModelInstance) {
+					vmi = (VirtualModelInstance<?, ?>) container;
+				}
+				else if (container != null) {
+					vmi = container.getOwningVirtualModelInstance();
+				}
+			}
+
 			if (container == null) {
 				container = vmi;
 			}
@@ -365,14 +424,13 @@ public interface AbstractSelectFlexoConceptInstance<VMI extends VirtualModelInst
 			}
 			logger.warning(
 					getStringRepresentation() + " : Cannot find virtual model instance on which to apply SelectFlexoConceptInstance");
-			logger.warning("getReceiver()=" + getReceiver());
 			/*
 			logger.warning("evaluationContext=" + evaluationContext);
 			logger.warning("isSet=" + getVirtualModelInstance().isSet());
 			logger.warning("isValid=" + getVirtualModelInstance().isValid());
 			logger.warning("fci=" + evaluationContext.getFlexoConceptInstance());
 			logger.warning("vmi=" + evaluationContext.getVirtualModelInstance());
-			*/
+			 */
 			// logger.warning(getOwner().getFMLRepresentation());
 			return null;
 		}
