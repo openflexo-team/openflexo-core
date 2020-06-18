@@ -145,7 +145,6 @@ public class TestMatchFlexoConceptInstances extends OpenflexoProjectAtRunTimeTes
 	@Test
 	@TestOrder(2)
 	public void testCreateProject() {
-
 		editor = createStandaloneProject("TestProject");
 		project = (FlexoProject<File>) editor.getProject();
 		System.out.println("Created project " + project.getProjectDirectory());
@@ -235,8 +234,8 @@ public class TestMatchFlexoConceptInstances extends OpenflexoProjectAtRunTimeTes
 		assertEquals(c1, matchedC1.getFlexoPropertyValue("_concept"));
 		assertEquals("c1-matched", matchedC1.getFlexoPropertyValue("p2"));
 
-		FlexoConceptInstance matchedC4 = createInstance(matchedConcept, matchingModel, null, "c4-matched");
-		FlexoConceptInstance matchedC5 = createInstance(matchedConcept, matchingModel, null, "c5-matched");
+		FlexoConceptInstance matchedC4 = createInstance(matchedConcept, matchingModel, "c4-matched", null);
+		FlexoConceptInstance matchedC5 = createInstance(matchedConcept, matchingModel, "c5-matched", null);
 
 		assertEquals(5, matchingModel.getFlexoConceptInstances().size());
 
@@ -311,8 +310,8 @@ public class TestMatchFlexoConceptInstances extends OpenflexoProjectAtRunTimeTes
 		assertEquals(c1, matchedC1.getFlexoPropertyValue("_concept"));
 		assertEquals("c1-default", matchedC1.getFlexoPropertyValue("p2"));
 
-		FlexoConceptInstance matchedC4 = createInstance(matchedConcept, matchingModel, null, "c4-default");
-		FlexoConceptInstance matchedC5 = createInstance(matchedConcept, matchingModel, null, "c5-default");
+		FlexoConceptInstance matchedC4 = createInstance(matchedConcept, matchingModel, "c4-default", null);
+		FlexoConceptInstance matchedC5 = createInstance(matchedConcept, matchingModel, "c5-default", null);
 
 		assertEquals(5, matchingModel.getFlexoConceptInstances().size());
 

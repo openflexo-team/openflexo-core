@@ -1,0 +1,23 @@
+@URI("http://openflexo.org/test/TestResourceCenter/TestSequenceInIteration.fml")
+@Author("sylvain")
+public model TestSequenceInIteration {
+
+	public int a;
+
+	public anAction() {
+		for (ConceptInstance foo : select Foo from (this)) {
+			foo.foo(1);
+			foo.foo(2);
+		}
+	}
+
+	public concept Foo {
+		create() {
+		}
+		delete () {
+		}
+		public foo(int i) {
+		}
+	}
+
+}
