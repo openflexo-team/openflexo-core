@@ -41,9 +41,7 @@ package org.openflexo.foundation.fml.parser.fmlnodes.controlgraph;
 import java.util.logging.Logger;
 
 import org.openflexo.connie.DataBinding;
-import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoConceptInstanceType;
-import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.VirtualModelInstanceType;
 import org.openflexo.foundation.fml.editionaction.AbstractFetchRequest;
 import org.openflexo.foundation.fml.parser.ExpressionFactory;
@@ -93,10 +91,11 @@ public class FetchRequestNode<FR extends AbstractFetchRequest<?, ?, ?, ?>> exten
 			else {
 				selectAction = getFactory().newSelectVirtualModelInstance();
 			}
-			VirtualModel vm = ((VirtualModelInstanceType) type).getVirtualModel();
+			/*VirtualModel vm = ((VirtualModelInstanceType) type).getVirtualModel();
 			if (vm != null && selectAction != null) {
 				selectAction.setVirtualModelType(vm);
-			}
+			}*/
+			selectAction.setType((VirtualModelInstanceType) type);
 			if (astNode.getFromClause() instanceof AFromClause) {
 				PExpression fromExpression = ((AFromClause) astNode.getFromClause()).getExpression();
 				DataBinding<?> container = ExpressionFactory.makeExpression(fromExpression, getAnalyser(), selectAction);
@@ -113,10 +112,11 @@ public class FetchRequestNode<FR extends AbstractFetchRequest<?, ?, ?, ?>> exten
 			else {
 				selectAction = getFactory().newSelectFlexoConceptInstance();
 			}
-			FlexoConcept concept = type.getFlexoConcept();
+			/*FlexoConcept concept = type.getFlexoConcept();
 			if (concept != null && selectAction != null) {
 				selectAction.setFlexoConceptType(concept);
-			}
+			}*/
+			selectAction.setType(type);
 			if (astNode.getFromClause() instanceof AFromClause) {
 				PExpression fromExpression = ((AFromClause) astNode.getFromClause()).getExpression();
 				DataBinding<?> container = ExpressionFactory.makeExpression(fromExpression, getAnalyser(), selectAction);
