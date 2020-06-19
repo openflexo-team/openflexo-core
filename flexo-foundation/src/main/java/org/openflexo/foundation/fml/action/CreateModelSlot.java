@@ -120,6 +120,8 @@ public class CreateModelSlot extends AbstractCreateFlexoProperty<CreateModelSlot
 
 		if (technologyAdapter != null && getModelSlotClass() != null) {
 
+			getVirtualModel().getCompilationUnit().ensureUse(getModelSlotClass());
+
 			if (getVirtualModel() != null && !getVirtualModel().uses(getModelSlotClass())) {
 				getVirtualModel().declareUse(getModelSlotClass());
 			}
