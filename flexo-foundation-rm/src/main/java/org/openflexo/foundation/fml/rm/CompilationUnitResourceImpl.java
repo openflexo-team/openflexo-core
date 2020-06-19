@@ -563,6 +563,9 @@ public abstract class CompilationUnitResourceImpl extends PamelaResourceImpl<FML
 		try {
 			FMLModelFactory modelFactory = new FMLModelFactory(this, getServiceManager());
 			setFactory(modelFactory);
+			if (fmlParser.getSemanticsAnalyzer() != null) {
+				fmlParser.getSemanticsAnalyzer().setFactory(modelFactory);
+			}
 			return modelFactory;
 		} catch (ModelDefinitionException e) {
 			e.printStackTrace();

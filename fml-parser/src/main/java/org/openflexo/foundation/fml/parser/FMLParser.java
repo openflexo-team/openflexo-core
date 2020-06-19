@@ -81,6 +81,8 @@ public class FMLParser {
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(FMLParser.class.getPackage().getName());
 
+	private MainSemanticsAnalyzer semanticsAnalyzer;
+
 	/**
 	 * This is the method to invoke to perform a parsing.<br>
 	 * Syntactic and semantics analyzer are performed and returned value is a {@link FMLCompilationUnit}
@@ -138,7 +140,7 @@ public class FMLParser {
 		return parse(new FileInputStream(file), modelFactory, modelFactoryUpdater);
 	}
 
-	private static FMLCompilationUnit parse(Reader reader, Reader rawSourceReader, FMLModelFactory modelFactory,
+	private FMLCompilationUnit parse(Reader reader, Reader rawSourceReader, FMLModelFactory modelFactory,
 			Function<List<Class<? extends ModelSlot<?>>>, FMLModelFactory> modelFactoryUpdater/*,
 																								EntryPointKind entryPointKind*/)
 			throws ParseException, IOException {
@@ -159,23 +161,23 @@ public class FMLParser {
 			// new ASTDebugger(tree);
 
 			// Creates the semantics analyzer.
-			MainSemanticsAnalyzer analyzer = new MainSemanticsAnalyzer(modelFactory, tree, rawSource);
+			semanticsAnalyzer = new MainSemanticsAnalyzer(modelFactory, tree, rawSource);
 
 			// Find uses declarations
-			UseDeclarationsExplorer e = new UseDeclarationsExplorer(analyzer);
+			UseDeclarationsExplorer e = new UseDeclarationsExplorer(semanticsAnalyzer);
 			tree.apply(e);
 			FMLModelFactory updatedModelFactory = modelFactoryUpdater.apply(e.getModelSlotClasses());
 			if (updatedModelFactory != null) {
-				analyzer.setFactory(updatedModelFactory);
+				semanticsAnalyzer.setFactory(updatedModelFactory);
 			}
 
 			// Apply the semantics analyzer.
 			if (tree != null) {
-				tree.apply(analyzer);
-				analyzer.finalizeDeserialization();
+				tree.apply(semanticsAnalyzer);
+				semanticsAnalyzer.finalizeDeserialization();
 			}
 
-			return analyzer.getCompilationUnit();
+			return semanticsAnalyzer.getCompilationUnit();
 		} catch (ParserException e) {
 			// e.printStackTrace();
 			System.out.println("Nouvelle exception token:" + e.getToken() + " line:" + e.getToken().getLine() + " length:"
@@ -241,53 +243,20 @@ public class FMLParser {
 		return new RawSource(reader);
 	}
 
-	/**
-	 * 
-	 * 
-	 * 
-	 * @param inputFile
-	 * @param modelFactory
-	 * @return
-	 * @throws ParseException
-	 */
-	/*public static FMLCompilationUnit parse(File inputFile, FMLModelFactory modelFactory) throws ParseException {
-	
-		// TODO: handle close of all streams !!!!
-	
-		try (FileReader in = new FileReader(inputFile)) {
-			System.out.println("Parsing: " + inputFile);
-	
-			// Create a Parser instance.
-			Parser p = new Parser(new Lexer(new PushbackReader(new BufferedReader(in), 1024)));
-	
-			// Parse the input.
-			Start tree = p.parse();
-	
-			// Apply the semantics analyzer.
-			FMLSemanticsAnalyzer t = new FMLSemanticsAnalyzer(modelFactory, tree, readRawSource(new FileInputStream(inputFile)));
-	
-			return t.getCompilationUnit();
-		} catch (Exception e) {
-			e.printStackTrace();
-			throw new ParseException(e.getMessage() + " while parsing " + inputFile);
-		}
-	}*/
-
-	/**
-	 * Read raw source of the file
-	 * 
-	 * @param ioDelegate
-	 * @throws IOException
-	 */
-	/*private static RawSource readRawSource(InputStream inputStream) throws IOException {
-		return new RawSource(inputStream);
-	}*/
-
 	public void initPrettyPrint(FMLCompilationUnit fmlCompilationUnit) {
-		// System.out.println("fmlCompilationUnit=" + fmlCompilationUnit);
-		MainSemanticsAnalyzer semanticsAnalyzer = new MainSemanticsAnalyzer(fmlCompilationUnit);
+		semanticsAnalyzer = new MainSemanticsAnalyzer(fmlCompilationUnit);
 		FMLCompilationUnitNode fmlCompilationUnitNode = new FMLCompilationUnitNode(fmlCompilationUnit, semanticsAnalyzer);
 		// fmlCompilationUnitNode.finalizeDeserialization();
 	}
 
+	public MainSemanticsAnalyzer getSemanticsAnalyzer() {
+		return semanticsAnalyzer;
+	}
+
+	public FMLCompilationUnitNode getFMLCompilationUnitNode() {
+		if (semanticsAnalyzer != null) {
+			return semanticsAnalyzer.getCompilationUnitNode();
+		}
+		return null;
+	}
 }
