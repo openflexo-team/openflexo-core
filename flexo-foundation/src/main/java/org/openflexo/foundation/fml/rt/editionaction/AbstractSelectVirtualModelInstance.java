@@ -122,8 +122,6 @@ public interface AbstractSelectVirtualModelInstance<VMI extends VirtualModelInst
 
 		protected static final Logger logger = FlexoLogger.getLogger(AbstractSelectVirtualModelInstance.class.getPackage().getName());
 
-		// private VirtualModel virtualModelType;
-		// private String virtualModelTypeURI;
 		private VirtualModelInstanceType type;
 
 		@Override
@@ -175,8 +173,6 @@ public interface AbstractSelectVirtualModelInstance<VMI extends VirtualModelInst
 			return null;
 		}
 
-		private boolean isFetching = false;
-
 		@Override
 		public void finalizeDeserialization() {
 			super.finalizeDeserialization();
@@ -188,34 +184,6 @@ public interface AbstractSelectVirtualModelInstance<VMI extends VirtualModelInst
 		public VirtualModelInstanceType getFetchedType() {
 
 			return getType();
-
-			/*if (getVirtualModelType() != null) {
-				return getVirtualModelType().getVirtualModelInstanceType();
-			}
-			return VirtualModelInstanceType.UNDEFINED_VIRTUAL_MODEL_INSTANCE_TYPE;*/
-
-			/*if (isFetching) {
-				return VirtualModelInstanceType.UNDEFINED_VIRTUAL_MODEL_INSTANCE_TYPE;
-			}
-			isFetching = true;
-			try {
-			
-				if (getVirtualModelType() != null) {
-			
-					if (getVirtualModelType().isLoaded()) {
-						return VirtualModelInstanceType.getVirtualModelInstanceType(
-								getVirtualModelType() != null ? getVirtualModelType().getLoadedResourceData().getVirtualModel() : null);
-					}
-					return new VirtualModelInstanceType(_getVirtualModelTypeURI(),
-							getTechnologyAdapter().getVirtualModelInstanceTypeFactory());
-				}
-			} finally {
-				isFetching = false;
-			}
-			if (getTechnologyAdapter() != null && StringUtils.isNotEmpty(_getVirtualModelTypeURI())) {
-				return new VirtualModelInstanceType(_getVirtualModelTypeURI(), getTechnologyAdapter().getVirtualModelInstanceTypeFactory());
-			}
-			return VirtualModelInstanceType.UNDEFINED_VIRTUAL_MODEL_INSTANCE_TYPE;*/
 		}
 
 		@Override
@@ -223,12 +191,10 @@ public interface AbstractSelectVirtualModelInstance<VMI extends VirtualModelInst
 			if (type != null) {
 				return type.getConceptURI();
 			}
-			/*if (virtualModelType != null) {
-				return virtualModelType.getURI();
-			}*/
-			// return virtualModelTypeURI;
 			return null;
 		}
+
+		private boolean isFetching = false;
 
 		@Override
 		public void _setVirtualModelTypeURI(String virtualModelTypeURI) {
@@ -238,10 +204,8 @@ public interface AbstractSelectVirtualModelInstance<VMI extends VirtualModelInst
 				public VirtualModel resolveVirtualModel(VirtualModelInstanceType typeToResolve) {
 					if (!isFetching && getAddressedVirtualModel() != null) {
 						isFetching = true;
-						System.out.println("On cherche " + typeToResolve.getConceptURI() + " dans " + getAddressedVirtualModel());
 						VirtualModel virtualModelType = getAddressedVirtualModel().getVirtualModelNamed(typeToResolve.getConceptURI());
 						isFetching = false;
-						System.out.println("On retourne " + virtualModelType);
 						return virtualModelType;
 					}
 					return null;
@@ -260,31 +224,6 @@ public interface AbstractSelectVirtualModelInstance<VMI extends VirtualModelInst
 					return type.getVirtualModel();
 				}
 			}
-			/*if (!isFetching && virtualModelTypeURI != null) {
-				isFetching = true;
-				VirtualModel virtualModelType = getAddressedVirtualModel().getVirtualModelNamed(virtualModelTypeURI);
-				if (virtualModelType != null) {
-					type = virtualModelType.getVirtualModelInstanceType();
-				}
-				isFetching = false;
-				return virtualModelType;
-			}*/
-
-			/*if (virtualModelType != null) {
-				return virtualModelType;
-			}
-			if (isFetching) {
-				return null;
-			}
-			
-			if (virtualModelType == null && virtualModelTypeURI != null && getAddressedVirtualModel() != null) {
-				isFetching = true;
-				virtualModelType = getAddressedVirtualModel().getVirtualModelNamed(virtualModelTypeURI);
-				isFetching = false;
-			}
-			
-			return virtualModelType;*/
-
 			return null;
 		}
 

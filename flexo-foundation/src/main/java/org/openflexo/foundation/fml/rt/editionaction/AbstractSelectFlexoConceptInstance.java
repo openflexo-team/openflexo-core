@@ -133,8 +133,6 @@ public interface AbstractSelectFlexoConceptInstance<VMI extends VirtualModelInst
 
 		protected static final Logger logger = FlexoLogger.getLogger(AbstractSelectFlexoConceptInstance.class.getPackage().getName());
 
-		// private FlexoConcept flexoConceptType;
-		// private String flexoConceptTypeURI;
 		private FlexoConceptInstanceType type;
 
 		@Override
@@ -176,8 +174,6 @@ public interface AbstractSelectFlexoConceptInstance<VMI extends VirtualModelInst
 
 		@Override
 		public FlexoConceptInstanceType getFetchedType() {
-			// TODO: consider put same code here as in AbstractSelectVirtualModelInstance ???
-			// return FlexoConceptInstanceType.getFlexoConceptInstanceType(getFlexoConceptType());
 			return getType();
 		}
 
@@ -186,33 +182,26 @@ public interface AbstractSelectFlexoConceptInstance<VMI extends VirtualModelInst
 			if (type != null) {
 				return type.getConceptURI();
 			}
-			/*if (flexoConceptType != null) {
-				return flexoConceptType.getURI();
-			}*/
-			// return flexoConceptTypeURI;
 			return null;
 		}
 
+		private boolean isFetching = false;
+
 		@Override
 		public void _setFlexoConceptTypeURI(String flexoConceptURI) {
-			// this.flexoConceptTypeURI = flexoConceptURI;
 			type = new FlexoConceptInstanceType(flexoConceptURI, new DefaultFlexoConceptInstanceTypeFactory(getTechnologyAdapter()) {
 				@Override
 				public FlexoConcept resolveFlexoConcept(FlexoConceptInstanceType typeToResolve) {
-					if (!isComputingFlexoConceptType && getAddressedVirtualModel() != null) {
-						isComputingFlexoConceptType = true;
-						System.out.println("On cherche " + typeToResolve.getConceptURI() + " dans " + getAddressedVirtualModel());
+					if (!isFetching && getAddressedVirtualModel() != null) {
+						isFetching = true;
 						FlexoConcept flexoConceptType = getAddressedVirtualModel().getFlexoConcept(typeToResolve.getConceptURI());
-						isComputingFlexoConceptType = false;
-						System.out.println("On retourne " + flexoConceptType);
+						isFetching = false;
 						return flexoConceptType;
 					}
 					return null;
 				}
 			});
 		}
-
-		private boolean isComputingFlexoConceptType = false;
 
 		@Override
 		public FlexoConcept getFlexoConceptType() {
@@ -225,30 +214,6 @@ public interface AbstractSelectFlexoConceptInstance<VMI extends VirtualModelInst
 					return type.getFlexoConcept();
 				}
 			}
-			/*if (!isComputingFlexoConceptType && flexoConceptTypeURI != null) {
-				if (getAddressedVirtualModel() != null) {
-					isComputingFlexoConceptType = true;
-					System.out.println("On cherche " + flexoConceptTypeURI + " dans " + getAddressedVirtualModel());
-					FlexoConcept flexoConceptType = getAddressedVirtualModel().getFlexoConcept(flexoConceptTypeURI);
-					if (flexoConceptType != null) {
-						type = flexoConceptType.getInstanceType();
-					}
-					isComputingFlexoConceptType = false;
-					System.out.println("On retourne " + flexoConceptType);
-					return flexoConceptType;
-				}
-			}*/
-
-			/*if (!isComputingFlexoConceptType && flexoConceptType == null && flexoConceptTypeURI != null) {
-				isComputingFlexoConceptType = true;
-				if (getAddressedVirtualModel() != null) {
-					flexoConceptType = getAddressedVirtualModel().getFlexoConcept(flexoConceptTypeURI);
-				}
-				isComputingFlexoConceptType = false;
-			}
-			
-			return flexoConceptType;*/
-
 			return null;
 		}
 
@@ -262,7 +227,6 @@ public interface AbstractSelectFlexoConceptInstance<VMI extends VirtualModelInst
 				else {
 					type = null;
 				}
-				// this.flexoConceptType = flexoConceptType;
 				getPropertyChangeSupport().firePropertyChange("flexoConceptType", oldValue, flexoConceptType);
 			}
 		}
