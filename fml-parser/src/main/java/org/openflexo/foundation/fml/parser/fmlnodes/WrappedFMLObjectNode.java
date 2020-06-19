@@ -88,7 +88,6 @@ public class WrappedFMLObjectNode<T extends FMLObject> extends FMLObjectNode<Nod
 		WrappedFMLObject<T> returned = getFactory().newWrappedFMLObject(null);
 
 		Class<T> objectClass = null;
-		System.out.println("Prout, je dois construire l'objet MAINTENANT !!!");
 		if (astNode instanceof ASimpleQualifiedInstance) {
 			objectClass = (Class<T>) getFMLFactory().getFMLObjectClass(((ASimpleQualifiedInstance) astNode).getArgType());
 			if (objectClass == null) {
@@ -105,7 +104,6 @@ public class WrappedFMLObjectNode<T extends FMLObject> extends FMLObjectNode<Nod
 			}
 		}
 
-		System.out.println("objectClass=" + objectClass);
 		T object = getFactory().newInstance(objectClass);
 		returned.setObject(object);
 
