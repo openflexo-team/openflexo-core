@@ -151,13 +151,21 @@ public class MainSemanticsAnalyzer extends FMLSemanticsAnalyzer {
 
 	private Map<Node, FMLObjectNode> nodesForAST = new HashMap<>();
 
-	public <N extends Node, FMLN extends FMLObjectNode> FMLN retrieveFMLNode(N node, Function<N, FMLN> function) {
-		FMLN returned = (FMLN) nodesForAST.get(node);
+	/*public Map<Node, FMLObjectNode> getNodesForAST() {
+		return nodesForAST;
+	}*/
+
+	public <N extends Node, FMLN extends FMLObjectNode> FMLN retrieveFMLNode(N astNode, Function<N, FMLN> function) {
+		FMLN returned = (FMLN) nodesForAST.get(astNode);
 		if (returned == null) {
-			returned = function.apply(node);
-			nodesForAST.put(node, returned);
+			returned = function.apply(astNode);
+			nodesForAST.put(astNode, returned);
 		}
 		return returned;
+	}
+
+	public <N extends Node, FMLN extends FMLObjectNode> void registerFMLNode(N astNode, FMLN node) {
+		nodesForAST.put(astNode, node);
 	}
 
 	@Override
@@ -374,7 +382,6 @@ public class MainSemanticsAnalyzer extends FMLSemanticsAnalyzer {
 	public void inAJavaInnerConceptDecl(AJavaInnerConceptDecl node) {
 		super.inAJavaInnerConceptDecl(node);
 		// TODO handle short version of FlexoConceptInstanceRole declaration
-		System.out.println("Ici avec " + node);
 		push(retrieveFMLNode(node, n -> getPropertyFactory().makeBasicPropertyNode(n)));
 	}
 

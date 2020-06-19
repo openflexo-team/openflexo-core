@@ -46,6 +46,7 @@ import org.openflexo.foundation.fml.parser.node.AJavaInstanceCreationFmlActionEx
 import org.openflexo.foundation.fml.parser.node.ALogActionFmlActionExp;
 import org.openflexo.foundation.fml.parser.node.AMatchActionFmlActionExp;
 import org.openflexo.foundation.fml.parser.node.AMethodInvocationStatementExpression;
+import org.openflexo.foundation.fml.parser.node.ANoTrailStatement;
 import org.openflexo.foundation.fml.parser.node.AReturnEmptyStatementWithoutTrailingSubstatement;
 import org.openflexo.foundation.fml.parser.node.AReturnStatementWithoutTrailingSubstatement;
 import org.openflexo.foundation.fml.parser.node.ASelectActionFmlActionExp;
@@ -93,13 +94,27 @@ public class ControlGraphFactory extends FMLSemanticsAnalyzer {
 	}
 
 	private static ControlGraphNode<?, ?> _makeControlGraphNode(Node cgNode, MainSemanticsAnalyzer analyzer) {
+
+		// Dont rebuild a new ControlGraphNode when already existing
+		ControlGraphNode<?, ?> alreadyExistingNode = (ControlGraphNode<?, ?>) analyzer.getFMLNode(cgNode);
+		if (alreadyExistingNode != null) {
+			return alreadyExistingNode;
+		}
+
+		// OK, we have to build it
 		ControlGraphFactory f = new ControlGraphFactory(cgNode, analyzer);
 		cgNode.apply(f);
-		// System.out.println("J'essaie de faire un graphe de controle avec " + cgNode);
 		if (f.rootControlGraphNode == null) {
-			// System.out.println("---------> Mais la ca marche pas");
 			f.rootControlGraphNode = new ExpressionActionNode(cgNode, analyzer);
 		}
+
+		// Register this new node
+		analyzer.registerFMLNode(cgNode, f.rootControlGraphNode);
+		// A special case to register both for ANoTrailStatement and AStatementWithoutTrailingSubstatement
+		if (cgNode instanceof ANoTrailStatement) {
+			analyzer.registerFMLNode(((ANoTrailStatement) cgNode).getStatementWithoutTrailingSubstatement(), f.rootControlGraphNode);
+		}
+
 		return f.rootControlGraphNode;
 	}
 
@@ -227,7 +242,7 @@ public class ControlGraphFactory extends FMLSemanticsAnalyzer {
 		}
 
 		void finalizeBlockStatements() {
-			System.out.println("IL faut maintenant gerer " + currentSequenceNodes);
+			// System.out.println("finalizeBlockStatements() for " + currentSequenceNodes);
 			SequenceNode builtSequenceNode = null;
 			SequenceNode rootSequenceNode = null;
 			if (currentSequenceNodes.size() == initialBlockStatements.size()) {
@@ -240,6 +255,7 @@ public class ControlGraphFactory extends FMLSemanticsAnalyzer {
 					}
 					else {
 						SequenceNode newSequenceNode = new SequenceNode(currentBlockNode, n, lastNode, getMainAnalyzer());
+
 						newSequenceNode.addToChildren(n);
 						newSequenceNode.getModelObject().setControlGraph1(n.getModelObject());
 						if (builtSequenceNode == null) {
@@ -270,23 +286,31 @@ public class ControlGraphFactory extends FMLSemanticsAnalyzer {
 	public void inABlock(ABlock node) {
 		super.inABlock(node);
 		// System.out.println("Nouveau block de " + node.getBlockStatements().size() + " statements " + " avec " + node);
-		if (node.getBlockStatements().size() > 1) {
-			BlockSequenceInfo bsInfo = new BlockSequenceInfo(node);
-			blocks.push(bsInfo);
-		}
-		if (node.getBlockStatements().size() == 0) {
-			push(getMainAnalyzer().retrieveFMLNode(node, n -> new EmptyControlGraphNode(n, getMainAnalyzer())));
+		FMLObjectNode<?, ?, ?> alreadyExisting = getMainAnalyzer().getFMLNode(node);
+		// Don't handle again, this is already registered
+		if (alreadyExisting == null) {
+			// This block was not handled yet, initialize its computing
+			if (node.getBlockStatements().size() > 1) {
+				BlockSequenceInfo bsInfo = new BlockSequenceInfo(node);
+				blocks.push(bsInfo);
+			}
+			if (node.getBlockStatements().size() == 0) {
+				push(getMainAnalyzer().retrieveFMLNode(node, n -> new EmptyControlGraphNode(n, getMainAnalyzer())));
+			}
 		}
 	}
 
 	@Override
 	public void outABlock(ABlock node) {
 		super.outABlock(node);
-		if (node.getBlockStatements().size() > 1) {
-			blocks.pop().finalizeBlockStatements();
-		}
-		if (node.getBlockStatements().size() == 0) {
-			pop();
+		if (!blocks.isEmpty() && blocks.peek().currentBlockNode == node) {
+			// This block was handled during this visit, finalizes it now
+			if (node.getBlockStatements().size() > 1) {
+				blocks.pop().finalizeBlockStatements();
+			}
+			if (node.getBlockStatements().size() == 0) {
+				pop();
+			}
 		}
 	}
 
@@ -294,23 +318,32 @@ public class ControlGraphFactory extends FMLSemanticsAnalyzer {
 	public void inABlockStatementWithoutTrailingSubstatement(ABlockStatementWithoutTrailingSubstatement node) {
 		super.inABlockStatementWithoutTrailingSubstatement(node);
 		// System.out.println("2 -Nouveau block de " + node.getBlockStatements().size() + " statements " + " avec " + node);
-		if (node.getBlockStatements().size() > 1) {
-			BlockSequenceInfo bsInfo = new BlockSequenceInfo(node);
-			blocks.push(bsInfo);
+		FMLObjectNode<?, ?, ?> alreadyExisting = getMainAnalyzer().getFMLNode(node);
+		// Don't handle again, this is already registered
+		if (alreadyExisting == null) {
+			// This block was not handled yet, initialize its computing
+			if (node.getBlockStatements().size() > 1) {
+				BlockSequenceInfo bsInfo = new BlockSequenceInfo(node);
+				blocks.push(bsInfo);
+			}
+			if (node.getBlockStatements().size() == 0) {
+				push(getMainAnalyzer().retrieveFMLNode(node, n -> new EmptyControlGraphNode(n, getMainAnalyzer())));
+			}
 		}
-		if (node.getBlockStatements().size() == 0) {
-			push(getMainAnalyzer().retrieveFMLNode(node, n -> new EmptyControlGraphNode(n, getMainAnalyzer())));
-		}
+
 	}
 
 	@Override
 	public void outABlockStatementWithoutTrailingSubstatement(ABlockStatementWithoutTrailingSubstatement node) {
 		super.outABlockStatementWithoutTrailingSubstatement(node);
-		if (node.getBlockStatements().size() > 1) {
-			blocks.pop().finalizeBlockStatements();
-		}
-		if (node.getBlockStatements().size() == 0) {
-			pop();
+		if (!blocks.isEmpty() && blocks.peek().currentBlockNode == node) {
+			// This block was handled during this visit, finalizes it now
+			if (node.getBlockStatements().size() > 1) {
+				blocks.pop().finalizeBlockStatements();
+			}
+			if (node.getBlockStatements().size() == 0) {
+				pop();
+			}
 		}
 	}
 
