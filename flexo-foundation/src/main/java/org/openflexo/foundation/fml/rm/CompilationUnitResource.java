@@ -59,7 +59,7 @@ import org.openflexo.pamela.annotations.Remover;
 import org.openflexo.pamela.annotations.Setter;
 
 /**
- * The resource storing a {@link VirtualModel}
+ * The resource storing a {@link FMLCompilationUnit}
  * 
  * @author sylvain
  *

@@ -107,6 +107,15 @@ import org.openflexo.toolbox.StringUtils;
 import org.openflexo.xml.XMLElementInfo;
 import org.openflexo.xml.XMLRootElementInfo;
 
+/**
+ * Implementation for {@link CompilationUnitResource}
+ * 
+ * This resource stores a {@link FMLCompilationUnit} using a {@link FMLParser} instance
+ * 
+ * 
+ * @author sylvain
+ *
+ */
 public abstract class CompilationUnitResourceImpl extends PamelaResourceImpl<FMLCompilationUnit, FMLModelFactory>
 		implements CompilationUnitResource {
 
@@ -118,10 +127,6 @@ public abstract class CompilationUnitResourceImpl extends PamelaResourceImpl<FML
 
 	private static final PersistencyStrategy DEFAULT_PERSISTENCY_STRATEGY = PersistencyStrategy.XML2FML;
 	private PersistencyStrategy persistencyStrategy = DEFAULT_PERSISTENCY_STRATEGY;
-
-	// public PersistencyStrategy getPersistencyStrategy();
-
-	// public void setPersistencyStrategy(PersistencyStrategy strategy);
 
 	public PersistencyStrategy getPersistencyStrategy() {
 		return persistencyStrategy;
@@ -603,13 +608,6 @@ public abstract class CompilationUnitResourceImpl extends PamelaResourceImpl<FML
 		}
 	}
 
-	/*public class FMLAndXMLDontMatchException extends Exception {
-	
-		public FMLAndXMLDontMatchException(String message) {
-			super(message);
-		}
-	}*/
-
 	@Override
 	public String getRawSource() {
 		if (getLoadedResourceData() != null) {
@@ -659,15 +657,6 @@ public abstract class CompilationUnitResourceImpl extends PamelaResourceImpl<FML
 					else {
 						return loadFromXML();
 					}
-
-					/*System.out.println("FML=" + fmlArtefact);
-					System.out.println("lastModified=" + fmlArtefact.lastModified());
-					System.out.println("lastModified2=" + Files.getLastModifiedTime(fmlArtefact.toPath()));
-					FileTime fmlLastModified = Files.getLastModifiedTime(fmlArtefact.toPath());
-					System.out.println("XML=" + xmlArtefact);
-					System.out.println("lastModified=" + xmlArtefact.lastModified());
-					System.out.println("lastModified2=" + Files.getLastModifiedTime(xmlArtefact.toPath()));
-					FileTime xmlLastModified = Files.getLastModifiedTime(xmlArtefact.toPath());*/
 				}
 				return loadFromXML();
 			case FML:
@@ -677,111 +666,6 @@ public abstract class CompilationUnitResourceImpl extends PamelaResourceImpl<FML
 				return null;
 		}
 
-		/*switch (PERSISTENCY_STRATEGY) {
-			case XML_SAVE_FML:
-				returned = loadFromXML();
-				try {
-					saveToFML(returned);
-				} catch (SaveResourceException e1) {
-					e1.printStackTrace();
-					throw new FMLAndXMLDontMatchException("Cannot serialize FML version: " + getIODelegate().getSerializationArtefact());
-				}
-				break;
-			case XML_SAVE_FML_AND_CHECK:
-		
-				FlexoConceptImpl.PREVENT_PARENT_CONCEPTS_DECODING = true;
-		
-				returned = loadFromXML();
-		
-				System.out.println("Ce que je lis dans le XML: ");
-				System.out.println("Concepts: " + returned.getVirtualModel().getFlexoConcepts());
-		
-				try {
-					saveToFML(returned);
-				} catch (SaveResourceException e1) {
-					e1.printStackTrace();
-					throw new FMLAndXMLDontMatchException("Cannot serialize FML version: " + getIODelegate().getSerializationArtefact());
-				}
-				FMLCompilationUnit reload = null;
-				try {
-					reload = loadFromFML();
-				} catch (ParseException e) {
-					throw new FMLAndXMLDontMatchException("Re-serialized FML version do not match initial XML version: " + getXMLFile()
-							+ " and " + getIODelegate().getSerializationArtefact());
-				}
-				// System.out.println("PP: " + returned.getFMLPrettyPrint());
-				// System.out.println("PP2: " + reload.getFMLPrettyPrint());
-				// System.out.println("N: " + returned.getNormalizedFML());
-				// System.out.println("N2: " + reload.getNormalizedFML());
-		
-				if (!reload.equalsObject(returned)) {
-		
-					System.out.println("Probleme avec: ");
-					System.out.println(reload.getFMLPrettyPrint());
-		
-					throw new FMLAndXMLDontMatchException("Re-serialized FML version do not match initial XML version: " + getXMLFile()
-							+ " and " + getIODelegate().getSerializationArtefact());
-				}
-		
-				FlexoConceptImpl.PREVENT_PARENT_CONCEPTS_DECODING = false;
-		
-				break;
-			case CHECK_BOTH_VERSIONS:
-				FMLCompilationUnit xmlVersion = loadFromXML();
-				FMLCompilationUnit fmlVersion;
-				fmlVersion = loadFromFML();
-				if (!xmlVersion.equalsObject(fmlVersion)) {
-					throw new FMLAndXMLDontMatchException(
-							"Serialized versions do not match: " + getXMLFile() + " and " + getIODelegate().getSerializationArtefact());
-				}
-				return xmlVersion;
-			case FML_ONLY:
-				return loadFromFML();
-			default:
-				break;
-		}*/
-
-		/*boolean requiresFMLPrettyPrintInitialization = false;
-		if (getIODelegate() instanceof DirectoryBasedIODelegate && getFMLParser() != null) {
-			DirectoryBasedIODelegate ioDelegate = (DirectoryBasedIODelegate) getIODelegate();
-			File fmlFile = new File(ioDelegate.getDirectory(), ioDelegate.getDirectory().getName());
-			System.out.println("Tiens faudrait aussi charger le fichier " + fmlFile);
-			if (fmlFile.exists()) {
-				try {
-					FMLCompilationUnit parsedCompilationUnit = getFMLParser().parse(fmlFile, getFactory());
-				} catch (ParseException e) {
-					logger.warning("Failed to parse " + fmlFile);
-					requiresFMLPrettyPrintInitialization = true;
-				}
-			}
-			else {
-				requiresFMLPrettyPrintInitialization = true;
-			}
-		}
-		// TODO: XML Loading
-		FMLCompilationUnit returned = performXMLDeserialization();
-		returned.setResource(this);
-		
-		System.out.println("OK, j'ai " + returned);
-		System.out.println("factory: " + getFactory());
-		System.out.println("sm: " + getFactory().getServiceManager());
-		getFMLParser().initPrettyPrint(returned);
-		
-		System.out.println("Hop:>>>>>>>>>");
-		System.out.println(returned.getFMLPrettyPrint());
-		System.out.println("<<<<<<<<<<<<");
-		 */
-
-		/*if (requiresFMLPrettyPrintInitialization && getFMLParser() != null) {
-			FMLCompilationUnit compilationUnit = returned.getCompilationUnit();
-			if (compilationUnit == null) {
-				compilationUnit = returned.getFMLModelFactory().newCompilationUnit();
-				compilationUnit.setVirtualModel(returned);
-			}
-			getFMLParser().initPrettyPrint(compilationUnit);
-			System.out.println(returned.getFMLPrettyPrint());
-		}*/
-		// return returned;
 	}
 
 	/**
