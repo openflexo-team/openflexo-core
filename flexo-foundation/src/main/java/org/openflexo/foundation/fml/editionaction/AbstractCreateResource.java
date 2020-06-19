@@ -302,11 +302,13 @@ public interface AbstractCreateResource<MS extends ModelSlot<?>, RD extends Reso
 		@Override
 		@Deprecated
 		public void setRelativePath(String relativePath) {
-			if (relativePath.startsWith("/")) {
+			if (relativePath != null && relativePath.startsWith("/")) {
 				relativePath = relativePath.substring(1);
 			}
 			performSuperSetter(RELATIVE_PATH_KEY, relativePath);
-			setDynamicRelativePath(new DataBinding("\"" + relativePath + "\""));
+			if (relativePath != null) {
+				setDynamicRelativePath(new DataBinding("\"" + relativePath + "\""));
+			}
 		}
 
 	}
