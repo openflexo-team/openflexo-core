@@ -56,6 +56,7 @@ import org.openflexo.connie.expr.BooleanBinaryOperator;
 import org.openflexo.connie.expr.Expression;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoConceptInstanceType;
+import org.openflexo.foundation.fml.FlexoConceptInstanceType.DefaultFlexoConceptInstanceTypeFactory;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.VirtualModelInstanceType;
 import org.openflexo.foundation.fml.binding.FetchRequestConditionSelectedBindingVariable;
@@ -133,7 +134,7 @@ public interface AbstractSelectFlexoConceptInstance<VMI extends VirtualModelInst
 		protected static final Logger logger = FlexoLogger.getLogger(AbstractSelectFlexoConceptInstance.class.getPackage().getName());
 
 		// private FlexoConcept flexoConceptType;
-		private String flexoConceptTypeURI;
+		// private String flexoConceptTypeURI;
 		private FlexoConceptInstanceType type;
 
 		@Override
@@ -177,7 +178,7 @@ public interface AbstractSelectFlexoConceptInstance<VMI extends VirtualModelInst
 		public FlexoConceptInstanceType getFetchedType() {
 			// TODO: consider put same code here as in AbstractSelectVirtualModelInstance ???
 			// return FlexoConceptInstanceType.getFlexoConceptInstanceType(getFlexoConceptType());
-			return type;
+			return getType();
 		}
 
 		@Override
@@ -188,12 +189,27 @@ public interface AbstractSelectFlexoConceptInstance<VMI extends VirtualModelInst
 			/*if (flexoConceptType != null) {
 				return flexoConceptType.getURI();
 			}*/
-			return flexoConceptTypeURI;
+			// return flexoConceptTypeURI;
+			return null;
 		}
 
 		@Override
 		public void _setFlexoConceptTypeURI(String flexoConceptURI) {
-			this.flexoConceptTypeURI = flexoConceptURI;
+			// this.flexoConceptTypeURI = flexoConceptURI;
+			type = new FlexoConceptInstanceType(flexoConceptURI, new DefaultFlexoConceptInstanceTypeFactory(getTechnologyAdapter()) {
+				@Override
+				public FlexoConcept resolveFlexoConcept(FlexoConceptInstanceType typeToResolve) {
+					if (!isComputingFlexoConceptType && getAddressedVirtualModel() != null) {
+						isComputingFlexoConceptType = true;
+						System.out.println("On cherche " + typeToResolve.getConceptURI() + " dans " + getAddressedVirtualModel());
+						FlexoConcept flexoConceptType = getAddressedVirtualModel().getFlexoConcept(typeToResolve.getConceptURI());
+						isComputingFlexoConceptType = false;
+						System.out.println("On retourne " + flexoConceptType);
+						return flexoConceptType;
+					}
+					return null;
+				}
+			});
 		}
 
 		private boolean isComputingFlexoConceptType = false;
@@ -205,20 +221,23 @@ public interface AbstractSelectFlexoConceptInstance<VMI extends VirtualModelInst
 				if (!type.isResolved()) {
 					type.resolve();
 				}
-				return type.getFlexoConcept();
-			}
-			else {
-				if (!isComputingFlexoConceptType && flexoConceptTypeURI != null) {
-					isComputingFlexoConceptType = true;
-					if (getAddressedVirtualModel() != null) {
-						FlexoConcept flexoConceptType = getAddressedVirtualModel().getFlexoConcept(flexoConceptTypeURI);
-						if (flexoConceptType != null) {
-							type = flexoConceptType.getInstanceType();
-						}
-					}
-					isComputingFlexoConceptType = false;
+				if (type.getFlexoConcept() != null) {
+					return type.getFlexoConcept();
 				}
 			}
+			/*if (!isComputingFlexoConceptType && flexoConceptTypeURI != null) {
+				if (getAddressedVirtualModel() != null) {
+					isComputingFlexoConceptType = true;
+					System.out.println("On cherche " + flexoConceptTypeURI + " dans " + getAddressedVirtualModel());
+					FlexoConcept flexoConceptType = getAddressedVirtualModel().getFlexoConcept(flexoConceptTypeURI);
+					if (flexoConceptType != null) {
+						type = flexoConceptType.getInstanceType();
+					}
+					isComputingFlexoConceptType = false;
+					System.out.println("On retourne " + flexoConceptType);
+					return flexoConceptType;
+				}
+			}*/
 
 			/*if (!isComputingFlexoConceptType && flexoConceptType == null && flexoConceptTypeURI != null) {
 				isComputingFlexoConceptType = true;
