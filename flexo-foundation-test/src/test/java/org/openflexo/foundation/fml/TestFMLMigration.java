@@ -63,7 +63,9 @@ import org.openflexo.foundation.test.OpenflexoTestCase;
 import org.openflexo.pamela.exceptions.ModelDefinitionException;
 
 /**
- * This unit test is intended to test ViewPoint loading
+ * This unit test is intended to test XML to FML format migration
+ * 
+ * VERY IMPORTANT: uncomment "ignoreForEquality = true" in {@link FMLPrettyPrintable} to run that tests
  * 
  * @author sylvain
  * 
