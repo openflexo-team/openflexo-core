@@ -40,7 +40,10 @@ package org.openflexo.foundation.resource;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Stack;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -295,7 +298,122 @@ public class ResourceManager extends FlexoServiceImpl implements ReferenceOwner 
 
 			setChanged();
 			notifyObservers(new DataModification<>(((ResourceCenterRemoved) notification).getRemovedResourceCenter(), null));
+		}
+	}
 
+	private Map<Thread, Stack<FlexoResource<?>>> resourceLoadingCausality = new HashMap<>();
+	private List<CrossReferenceDependency> crossReferenceDependencies = new ArrayList<>();
+
+	public void crossReferencesLoadingSchemeDetected(FlexoResource<?> resource) {
+		Stack<FlexoResource<?>> stack = resourceLoadingCausality.get(Thread.currentThread());
+		if (stack != null && !stack.isEmpty()) {
+			/*System.out.println("Detected cycle while requesting resource " + resource + " while loading " + stack.peek());
+			System.out.println(" > " + resource.getName());
+			for (int i = stack.size() - 1; i >= 0; i--) {
+				System.out.println(" > " + stack.get(i).getName());
+			}*/
+			CrossReferenceDependency crossReferenceDependency = new CrossReferenceDependency(resource, stack.peek());
+			if (!crossReferenceDependencies.contains(crossReferenceDependency)) {
+				crossReferenceDependencies.add(crossReferenceDependency);
+			}
+		}
+	}
+
+	public class CrossReferenceDependency {
+		private final FlexoResource<?> requestedResource;
+		private final FlexoResource<?> requestingResource;
+
+		public CrossReferenceDependency(FlexoResource<?> requestedResource, FlexoResource<?> requestingResource) {
+			super();
+			this.requestedResource = requestedResource;
+			this.requestingResource = requestingResource;
+		}
+
+		@Override
+		public int hashCode() {
+			final int prime = 31;
+			int result = 1;
+			result = prime * result + getEnclosingInstance().hashCode();
+			result = prime * result + ((requestedResource == null) ? 0 : requestedResource.hashCode());
+			result = prime * result + ((requestingResource == null) ? 0 : requestingResource.hashCode());
+			return result;
+		}
+
+		@Override
+		public boolean equals(Object obj) {
+			if (this == obj)
+				return true;
+			if (obj == null)
+				return false;
+			if (getClass() != obj.getClass())
+				return false;
+			CrossReferenceDependency other = (CrossReferenceDependency) obj;
+			if (!getEnclosingInstance().equals(other.getEnclosingInstance()))
+				return false;
+			if (requestedResource == null) {
+				if (other.requestedResource != null)
+					return false;
+			}
+			else if (!requestedResource.equals(other.requestedResource))
+				return false;
+			if (requestingResource == null) {
+				if (other.requestingResource != null)
+					return false;
+			}
+			else if (!requestingResource.equals(other.requestingResource))
+				return false;
+			return true;
+		}
+
+		private ResourceManager getEnclosingInstance() {
+			return ResourceManager.this;
+		}
+	}
+
+	public void resourceWillLoad(FlexoResource<?> resource, ResourceWillLoad notification) {
+		Stack<FlexoResource<?>> stack = resourceLoadingCausality.get(Thread.currentThread());
+		if (stack == null) {
+			stack = new Stack<>();
+			resourceLoadingCausality.put(Thread.currentThread(), stack);
+		}
+		/*if (!stack.isEmpty()) {
+			System.out.println(
+					"################### Loading " + resource.getName() + " as requested by " + stack.peek().getName() + " loading");
+		}
+		else {
+			System.out.println("################### Loading " + resource.getName());
+		}*/
+		stack.push(resource);
+
+		if (getServiceManager() != null) {
+			getServiceManager().notify(this, notification);
+		}
+	}
+
+	public void resourceLoaded(FlexoResource<?> resource, ResourceLoaded<?> notification) {
+		Stack<FlexoResource<?>> stack = resourceLoadingCausality.get(Thread.currentThread());
+		if (stack != null) {
+			// System.out.println("################### Finished loading " + resource.getName());
+			stack.pop();
+		}
+		for (CrossReferenceDependency crossReferenceDependency : crossReferenceDependencies) {
+			if (crossReferenceDependency.requestedResource == resource) {
+				crossReferenceDependency.requestingResource.resolvedCrossReferenceDependency(crossReferenceDependency.requestedResource);
+				if (getServiceManager() != null) {
+					// Notify ResourceLoaded again
+					// The validation will be performed later, causing chance for resource to be fully validated
+					getServiceManager().notify(this, new ResourceLoaded<>(crossReferenceDependency.requestingResource));
+				}
+			}
+		}
+		if (getServiceManager() != null) {
+			getServiceManager().notify(this, notification);
+		}
+	}
+
+	public void resourceUnloaded(FlexoResource<?> resource, ResourceUnloaded<?> notification) {
+		if (getServiceManager() != null) {
+			getServiceManager().notify(this, notification);
 		}
 	}
 

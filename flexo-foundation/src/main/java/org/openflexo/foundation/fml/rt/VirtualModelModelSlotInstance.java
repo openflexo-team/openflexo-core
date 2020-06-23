@@ -96,7 +96,7 @@ public interface VirtualModelModelSlotInstance<VMI extends VirtualModelInstance<
 			}
 
 			if (resource == null && StringUtils.isNotEmpty(virtualModelInstanceURI)) {
-				logger.warning("Cannot find virtual model instance " + virtualModelInstanceURI);
+				// logger.warning("Cannot find virtual model instance " + virtualModelInstanceURI);
 			}
 			return (AbstractVirtualModelInstanceResource<VMI, TA>) resource;
 		}

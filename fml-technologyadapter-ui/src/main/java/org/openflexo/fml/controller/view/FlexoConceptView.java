@@ -42,6 +42,8 @@ import java.util.logging.Logger;
 
 import javax.swing.SwingUtilities;
 
+import org.openflexo.fml.controller.FMLTechnologyAdapterController;
+import org.openflexo.fml.controller.widget.FIBVirtualModelBrowser;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.fml.FMLObject;
 import org.openflexo.foundation.fml.FMLTechnologyAdapter;
@@ -129,9 +131,17 @@ public abstract class FlexoConceptView<EP extends FlexoConcept> extends FIBModul
 		super.fireObjectDeselected(object);
 	}
 
+	public FIBVirtualModelBrowser getVirtualModelBrowser() {
+		FMLTechnologyAdapterController technologyAdapterController = (FMLTechnologyAdapterController) getFlexoController()
+				.getTechnologyAdapterController(FMLTechnologyAdapter.class);
+		return technologyAdapterController.getVirtualModelBrowser();
+	}
+
 	@Override
 	public void willShow() {
 		super.willShow();
+		getVirtualModelBrowser().setVirtualModel(getRepresentedObject().getDeclaringVirtualModel());
+		getPerspective().setBottomLeftView(getVirtualModelBrowser());
 		SwingUtilities.invokeLater(() -> {
 			if (getFIBView("FlexoConceptBrowser") instanceof JFIBBrowserWidget) {
 				JFIBBrowserWidget<FMLObject> browser = (JFIBBrowserWidget<FMLObject>) getFIBView("FlexoConceptBrowser");
@@ -140,6 +150,12 @@ public abstract class FlexoConceptView<EP extends FlexoConcept> extends FIBModul
 				browser.performExpand(getRepresentedObject().getInnerConceptsFacet());
 			}
 		});
+	}
+
+	@Override
+	public void willHide() {
+		super.willHide();
+		getPerspective().setBottomLeftView(null);
 	}
 
 }

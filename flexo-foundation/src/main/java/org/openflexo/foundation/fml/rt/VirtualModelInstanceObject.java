@@ -41,6 +41,7 @@ package org.openflexo.foundation.fml.rt;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.FlexoObject;
+import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.InnerResourceData;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.rt.rm.AbstractVirtualModelInstanceResource;
@@ -77,6 +78,8 @@ public interface VirtualModelInstanceObject extends InnerResourceData<VirtualMod
 	 */
 	public FlexoResourceCenter<?> getResourceCenter();
 
+	public void setLocalFactory(AbstractVirtualModelInstanceModelFactory<?> localFactory);
+
 	public abstract class VirtualModelInstanceObjectImpl extends FlexoObjectImpl implements VirtualModelInstanceObject {
 
 		private static final Logger logger = Logger.getLogger(VirtualModelInstanceObject.class.getPackage().getName());
@@ -105,6 +108,15 @@ public interface VirtualModelInstanceObject extends InnerResourceData<VirtualMod
 			return resource.getResourceCenter();
 		}
 
+		@Override
+		public FlexoServiceManager getServiceManager() {
+			VirtualModelInstance<?, ?> virtualModelInstance = getVirtualModelInstance();
+			if (virtualModelInstance != null && virtualModelInstance != this) {
+				return virtualModelInstance.getServiceManager();
+			}
+			return super.getServiceManager();
+		}
+
 		/**
 		 * Return the {@link ResourceData} where this object is defined (the global functional root object giving access to the
 		 * {@link FlexoResource}): this object is here the {@link FMLRTVirtualModelInstance}
@@ -121,7 +133,15 @@ public interface VirtualModelInstanceObject extends InnerResourceData<VirtualMod
 			if (getVirtualModelInstance() != null && getVirtualModelInstance().getResource() != null) {
 				return ((AbstractVirtualModelInstanceResource<?, ?>) getVirtualModelInstance().getResource()).getFactory();
 			}
-			return null;
+			return localFactory;
 		}
+
+		private AbstractVirtualModelInstanceModelFactory<?> localFactory;
+
+		@Override
+		public void setLocalFactory(AbstractVirtualModelInstanceModelFactory<?> localFactory) {
+			this.localFactory = localFactory;
+		}
+
 	}
 }

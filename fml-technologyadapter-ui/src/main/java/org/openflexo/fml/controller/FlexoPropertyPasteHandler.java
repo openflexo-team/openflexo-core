@@ -100,11 +100,6 @@ public class FlexoPropertyPasteHandler extends FlexoPasteHandler<FlexoProperty> 
 		}
 	}
 
-	@Override
-	public void finalizePasting(FlexoClipboard clipboard, PastingContext<FlexoProperty> pastingContext) {
-		// nothing to do
-	}
-
 	private static String translateName(FlexoProperty<?> object) {
 		String oldName = object.getName();
 		if (StringUtils.isEmpty(oldName)) {

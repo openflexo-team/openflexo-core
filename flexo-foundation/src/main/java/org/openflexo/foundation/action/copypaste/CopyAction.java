@@ -116,7 +116,7 @@ public class CopyAction extends AbstractCopyAction<CopyAction> {
 	 */
 	private FlexoClipboard copy() throws CopyException, InvalidSelectionException {
 
-		clipboard = FlexoClipboard.copy(objectsToBeCopied, getFocusedObject(), null);
+		clipboard = FlexoClipboard.copy(objectsToBeCopied, getFocusedObject(), null, getEditor());
 		return clipboard;
 	}
 

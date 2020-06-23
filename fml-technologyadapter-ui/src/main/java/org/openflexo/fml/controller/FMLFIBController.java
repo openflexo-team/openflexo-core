@@ -678,10 +678,15 @@ public class FMLFIBController extends FlexoFIBController {
 	}
 
 	public void moveControlGraph(FMLControlGraph controlGraph, FMLControlGraph receiver) {
-		System.out.println("On veut bouger le graphe de controle");
+
+		if (controlGraph == receiver) {
+			return;
+		}
+
+		/*System.out.println("On veut bouger le graphe de controle");
 		System.out.println(controlGraph.getFMLRepresentation());
 		System.out.println("Juste apres:");
-		System.out.println(receiver.getFMLRepresentation());
+		System.out.println(receiver.getFMLRepresentation());*/
 
 		controlGraph.moveWhileSequentiallyAppendingTo(receiver);
 	}
@@ -850,6 +855,18 @@ public class FMLFIBController extends FlexoFIBController {
 		// && concept.getDeclaringVirtualModel() != container));
 		return concept != null && concept != container && concept.getContainerFlexoConcept() != container
 				&& concept.getDeclaringVirtualModel() != container;
+	}
+
+	@Override
+	public void moveVirtualModelInFolder(VirtualModelResource vmResource, RepositoryFolder receiver) {
+		super.moveVirtualModelInFolder(vmResource, receiver);
+		revalidate(vmResource.getVirtualModel());
+	}
+
+	@Override
+	public void moveVirtualModelInVirtualModel(VirtualModelResource vmResource, VirtualModelResource container) {
+		super.moveVirtualModelInVirtualModel(vmResource, container);
+		revalidate(vmResource.getVirtualModel());
 	}
 
 }

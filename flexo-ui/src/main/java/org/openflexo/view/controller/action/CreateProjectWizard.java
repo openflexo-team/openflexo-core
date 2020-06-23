@@ -83,7 +83,7 @@ public class CreateProjectWizard extends FlexoActionWizard<CreateProject> {
 
 	@Override
 	public Image getDefaultPageImage() {
-		return IconFactory.getImageIcon(FMLIconLibrary.OPENFLEXO_NOTEXT_64, IconLibrary.NEW_32_32).getImage();
+		return IconFactory.getImageIcon(FMLIconLibrary.OPENFLEXO_NOTEXT_64, IconLibrary.BIG_NEW_MARKER).getImage();
 	}
 
 	public ConfigureNewProject getConfigureFormoseProject() {

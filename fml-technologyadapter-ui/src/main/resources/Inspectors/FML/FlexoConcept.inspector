@@ -21,7 +21,7 @@
 				localize="true" />
 			<CheckBox name="AbstractCB" selected="true" index="11" data="data.isAbstract"
 				constraints="twocols(expandHorizontally=true;expandVertically=false;location=right)"
-				localize="true" enable="!data.abstractRequired" />
+				localize="true"/>
 
 			<Label index="12" name="VisibilityLabel" localize="true" align="left"
 				constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=left)"
@@ -172,9 +172,9 @@
 		<Localized key="name" lang="English" value="Name" />
 		<Localized key="name" lang="French" value="Nom" />
 		<Localized key="name" lang="Dutch" value="Name" />
-		<Localized key="abstract_concept" lang="English" value="abstract_concept" />
-		<Localized key="abstract_concept" lang="French" value="concept_abstrait" />
-		<Localized key="abstract_concept" lang="Dutch" value="abstract_concept" />
+		<Localized key="abstract_concept" lang="English" value="Abstract concept" />
+		<Localized key="abstract_concept" lang="French" value="Concept abstrait" />
+		<Localized key="abstract_concept" lang="Dutch" value="Abstract concept" />
 	</LocalizedDictionary>
 	<Parameter name="title" value="FlexoConcept" />
 </Panel>

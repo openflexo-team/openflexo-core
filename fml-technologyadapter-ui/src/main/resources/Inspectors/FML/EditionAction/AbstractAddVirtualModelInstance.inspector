@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Panel className="org.openflexo.gina.utils.FIBInspector" layout="border"
 	titleFont="SansSerif,0,12" darkLevel="0"
-	dataClassName="org.openflexo.foundation.fml.rt.editionaction.AddVirtualModelInstance"
+	dataClassName="org.openflexo.foundation.fml.rt.editionaction.AbstractAddVirtualModelInstance"
 	controllerClassName="org.openflexo.fml.controller.FMLFIBInspectorController"
 	font="SansSerif,0,12" name="Inspector">
 	<TabPanel name="Tab" constraints="border(location=center)">
@@ -9,17 +9,17 @@
 			darkLevel="0" index="0" font="SansSerif,0,11" useScrollBar="true"
 			horizontalScrollbarPolicy="HORIZONTAL_SCROLLBAR_AS_NEEDED"
 			verticalScrollbarPolicy="VERTICAL_SCROLLBAR_AS_NEEDED" name="BasicTab">
-			<Label label="virtual_model" index="12" visible="!data.dynamicInstantiation"
+			<Label label="type" index="12" 
 				constraints="twocols(anchor=east;expandHorizontally=false;expandVertically=false;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=8;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=5;location=left;padX=0;padY=0;weightX=0.0;weightY=0.0)"
 				localize="true" />
 			<Custom componentClassName="org.openflexo.fml.controller.widget.FIBVirtualModelSelector"
-				localize="true" visible="!data.dynamicInstantiation"
+				localize="true"
 				manageDynamicModel="true" opaque="false"
 				name="AddFlexoConceptActionPanel" index="13" data="data.virtualModelType"
 				constraints="twocols(anchor=west;expandHorizontally=true;expandVertically=false;fill=horizontal;gridHeight=1;gridWidth=0;gridX=-1;gridY=-1;index=9;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right;padX=0;padY=0;weightX=0.0;weightY=0.0)"
 				minWidth="200" minHeight="25">
 				<Assignment variable="component.virtualModelLibrary" value="data.virtualModelLibrary" />
-				<Assignment variable="component.containerVirtualModel" value="data.ownerVirtualModelResource" />
+				<!--  <Assignment variable="component.containerVirtualModel" value="data.ownerVirtualModelResource" /> -->
 			</Custom>
 			<Label label="virtual_model" align="right" index="14" visible="data.dynamicInstantiation"
 				constraints="twocols(expandHorizontally=true;expandVertically=false;index=12;insetsBottom=0;insetsLeft=2;insetsRight=4;insetsTop=5;location=left)"

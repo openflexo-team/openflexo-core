@@ -103,11 +103,6 @@ public class FlexoBehaviourPasteHandler extends FlexoPasteHandler<FlexoBehaviour
 		}
 	}
 
-	@Override
-	public void finalizePasting(FlexoClipboard clipboard, PastingContext<FlexoBehaviour> pastingContext) {
-		// nothing to do
-	}
-
 	private static String translateName(FlexoBehaviour object) {
 		String oldName = object.getName();
 		if (StringUtils.isEmpty(oldName)) {

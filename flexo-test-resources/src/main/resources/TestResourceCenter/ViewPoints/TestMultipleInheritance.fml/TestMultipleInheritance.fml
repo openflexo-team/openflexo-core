@@ -1,0 +1,106 @@
+
+/**
+ * 
+ * @author sylvain
+ * @version 0.1
+ */
+@VirtualModel(uri="http://openflexo.org/test/TestResourceCenter/TestMultipleInheritance.fml")
+public class TestMultipleInheritance {
+
+  @FlexoConcept  
+  public class A {  
+  
+    public String foo;  
+  
+    @CreationScheme    
+    A:create() {    
+      log "CreationScheme in A"      
+      if (foo = null) {      
+        foo = "A";      
+      }    
+    }    
+  
+    @DeletionScheme    
+    Void delete() {    
+      
+    }    
+  
+    @ActionScheme    
+    Long doSomething() {    
+      log "Do something in A"      
+      return 42;    
+    }    
+  
+  }  
+
+  @FlexoConcept  
+  public class B extends A  {  
+  
+    @CreationScheme    
+    B:create() {    
+      super.create()      
+      log "CreationScheme in B"      
+      foo = (foo + "B");    
+    }    
+  
+    @DeletionScheme    
+    Void delete() {    
+      
+    }    
+  
+    @ActionScheme    
+    Long doSomething() {    
+      log "Do something in B"      
+      return (super.doSomething() * 2);    
+    }    
+  
+  }  
+
+  @FlexoConcept  
+  public class C extends A  {  
+  
+    @DeletionScheme    
+    Void delete() {    
+      
+    }    
+  
+    @CreationScheme    
+    C:create() {    
+      super.create()      
+      log "CreationScheme in C"      
+      foo = (foo + "C");    
+    }    
+  
+    @ActionScheme    
+    Long doSomething() {    
+      log "Do something in C"      
+      return (super.doSomething() * 3);    
+    }    
+  
+  }  
+
+  @FlexoConcept  
+  public class D extends B,C  {  
+  
+    @CreationScheme    
+    D:create() {    
+      super_B.create()      
+      super_C.create()      
+      log "CreationScheme in D"      
+      foo = (foo + "D");    
+    }    
+  
+    @DeletionScheme    
+    Void delete() {    
+      
+    }    
+  
+    @ActionScheme    
+    Long doSomething() {    
+      log "Do something in D"      
+      return (super_B.doSomething() + super_C.doSomething());    
+    }    
+  
+  }  
+
+}

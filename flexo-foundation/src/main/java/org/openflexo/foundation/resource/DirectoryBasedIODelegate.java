@@ -91,6 +91,8 @@ public interface DirectoryBasedIODelegate extends FileIODelegate {
 	@Override
 	public File getFile();
 
+	public void moveToDirectory(File newDirectory);
+
 	/*@Getter(FILE_EXTENSION)
 	@XMLAttribute
 	public String getFileExtension();
@@ -140,6 +142,7 @@ public interface DirectoryBasedIODelegate extends FileIODelegate {
 		public void rename(String newName) throws CannotRenameException {
 			System.out.println("OK, c'est parti pour un renommage dans DirectoryBasedFlexoIODelegate");
 			System.out.println("le nouveau nom c'est " + newName);
+			Thread.dumpStack();
 
 			String directoryExtension = getDirectoryName().substring(getDirectoryName().indexOf("."));
 			String fileExtension = getFileName().substring(getFileName().indexOf("."));
@@ -192,6 +195,14 @@ public interface DirectoryBasedIODelegate extends FileIODelegate {
 
 			resetDiskLastModifiedDate();
 
+		}
+
+		@Override
+		public void moveToDirectory(File newDirectory) {
+			String filename = getFileName();
+			setDirectory(newDirectory);
+			setFile(new File(newDirectory, filename));
+			resetDiskLastModifiedDate();
 		}
 
 		@Override

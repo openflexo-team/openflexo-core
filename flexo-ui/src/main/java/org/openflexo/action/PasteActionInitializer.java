@@ -80,7 +80,12 @@ public class PasteActionInitializer extends ActionInitializer<PasteAction, Flexo
 		return (e, action) -> {
 			logger.info("Paste finalizer");
 			if (action.getPastedObjects() != null) {
-				getControllerActionInitializer().getController().getSelectionManager().setSelectedObjects(action.getPastedObjects());
+				if (action.getPastedObjects().size() == 1) {
+					getControllerActionInitializer().getController().selectAndFocusObject(action.getPastedObjects().get(0));
+				}
+				else {
+					getControllerActionInitializer().getController().getSelectionManager().setSelectedObjects(action.getPastedObjects());
+				}
 				getControllerActionInitializer().getController().setInfoMessage("Pasted " + action.getPastedObjects().size() + " objects",
 						true);
 			}

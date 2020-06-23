@@ -231,10 +231,12 @@ public abstract interface TechnologySpecificActionDefiningReceiver<MS extends Mo
 		public ValidationIssue<BindingIsRequiredAndMustBeValid<TechnologySpecificActionDefiningReceiver>, TechnologySpecificActionDefiningReceiver> applyValidation(
 				TechnologySpecificActionDefiningReceiver action) {
 
-			if (action.isReceiverMandatory()) {
-				return super.applyValidation(action);
+			if (!action.isReceiverMandatory()) {
+				return null;
 			}
-			return null;
+
+			return super.applyValidation(action);
+
 		}
 
 	}

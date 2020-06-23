@@ -169,6 +169,13 @@ public abstract interface FlexoProperty<T> extends FlexoConceptObject, FMLPretty
 	public List<? extends FlexoProperty<?>> getAllSuperProperties();
 
 	/**
+	 * Return boolean indicating if this property overrides at least one property
+	 * 
+	 * @return
+	 */
+	public boolean overrides();
+
+	/**
 	 * Return flag indicating whether data accessed though this property is read-only
 	 * 
 	 * @return
@@ -464,6 +471,11 @@ public abstract interface FlexoProperty<T> extends FlexoConceptObject, FMLPretty
 				}
 			}
 			return false;
+		}
+
+		@Override
+		public boolean overrides() {
+			return getAllSuperProperties().size() > 0;
 		}
 
 		@Override

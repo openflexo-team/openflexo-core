@@ -325,7 +325,13 @@ public class VirtualModelResourceFactory
 	}
 
 	@Override
-	protected <I> VirtualModelResource registerResource(VirtualModelResource resource, FlexoResourceCenter<I> resourceCenter) {
+	public <I> VirtualModelResource registerResource(VirtualModelResource resource, FlexoResourceCenter<I> resourceCenter) {
+		return registerResource(resource, resourceCenter, true);
+
+	}
+
+	public <I> VirtualModelResource registerResource(VirtualModelResource resource, FlexoResourceCenter<I> resourceCenter,
+			boolean exploreVirtualModels) {
 		super.registerResource(resource, resourceCenter);
 
 		// Register the resource in the VirtualModelRepository of supplied resource center
@@ -339,8 +345,10 @@ public class VirtualModelResourceFactory
 			resourceCenter.getServiceManager().getVirtualModelLibrary().registerVirtualModel(resource);
 		}
 
-		// Now look for virtual models
-		exploreVirtualModels(resource);
+		if (exploreVirtualModels) {
+			// Now look for virtual models
+			exploreVirtualModels(resource);
+		}
 
 		return resource;
 

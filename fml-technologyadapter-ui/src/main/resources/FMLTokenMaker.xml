@@ -14,24 +14,57 @@
     <docComments enabled="true" end="*/" start="/**"/>
   </comments>
   <keywords>
+    <keyword>abstract</keyword>
     <keyword>as</keyword>
+    <keyword>begin</keyword>
     <keyword>concept</keyword>
     <keyword>define</keyword>
+    <keyword>do</keyword>
+    <keyword>else</keyword>
+    <keyword>end</keyword>
     <keyword>extends</keyword>
+    <keyword>extends</keyword>
+    <keyword>for</keyword>
+    <keyword>from</keyword>
+    <keyword>get</keyword>
+    <keyword>if</keyword>
     <keyword>import</keyword>
+    <keyword>in</keyword>
+    <keyword>instanceof</keyword>
+    <keyword>listen</keyword>
+    <keyword>log</keyword>
+    <keyword>match</keyword>
     <keyword>model</keyword>
+    <keyword>namespace</keyword>
+    <keyword>receive</keyword>
+    <keyword>required</keyword>
+    <keyword>return</keyword>
+    <keyword>select</keyword>
+    <keyword>set</keyword>
+    <keyword>super</keyword>
+    <keyword>then</keyword>
+    <keyword>unique</keyword>
     <keyword>use</keyword>
+    <keyword>values</keyword>
+    <keyword>where</keyword>
+    <keyword>while</keyword>
+    <keyword>with</keyword>
   </keywords>
   <keywords2>
+    <keyword>default</keyword>
+    <keyword>new</keyword>
     <keyword>private</keyword>
+    <keyword>protected</keyword>
     <keyword>public</keyword>
-    <keyword>with</keyword>
   </keywords2>
   <dataTypes>
     <dataType>@Author</dataType>
     <dataType>@Description</dataType>
     <dataType>@URI</dataType>
     <dataType>@Version</dataType>
+    <dataType>boolean</dataType>
+    <dataType>float</dataType>
+    <dataType>int</dataType>
     <dataType>void</dataType>
   </dataTypes>
   <functions>

@@ -419,6 +419,10 @@ public abstract class SelectionManager extends Observable {
 	 *            : the object to add to selection
 	 */
 	protected void internallyAddToSelected(FlexoObject object, boolean isNewFocusedObject) {
+		if (_controller == null) {
+			logger.warning("Null controller");
+			return;
+		}
 		object = _controller.getRelevantObject(object);
 		if (!isSelectable(object)) {
 			return;

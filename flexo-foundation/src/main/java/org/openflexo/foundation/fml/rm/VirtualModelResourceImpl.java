@@ -99,8 +99,8 @@ public abstract class VirtualModelResourceImpl extends PamelaResourceImpl<Virtua
 					.forName("org.openflexo.foundation.fml.parser.DefaultFMLParserFactory");
 			FML_PARSER_FACTORY = FACTORY_CLASS.newInstance();
 		} catch (ClassNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.warning("Cannot find class org.openflexo.foundation.fml.parser.DefaultFMLParserFactory");
+			// e.printStackTrace();
 		} catch (InstantiationException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -268,7 +268,7 @@ public abstract class VirtualModelResourceImpl extends PamelaResourceImpl<Virtua
 	public VirtualModel loadResourceData() throws FlexoFileNotFoundException, IOFlexoException, InvalidXMLException,
 			InconsistentDataException, InvalidModelDefinitionException {
 
-		logger.info("*************** Loading " + this);
+		logger.info("*************** Loading " + this + " from: " + getIODelegate().getSerializationArtefact());
 
 		// Now we have to activate all required technologies
 		activateRequiredTechnologies();
@@ -543,4 +543,9 @@ public abstract class VirtualModelResourceImpl extends PamelaResourceImpl<Virtua
 		return returned;
 	}
 
+	@Override
+	public void resolvedCrossReferenceDependency(FlexoResource<?> requestedResource) {
+		super.resolvedCrossReferenceDependency(requestedResource);
+		//System.out.println("resolvedCrossReferenceDependancy for " + getName());
+	}
 }

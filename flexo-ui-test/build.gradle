@@ -7,7 +7,7 @@ dependencies {
   // external dep
 
   // testing dep
-  testCompile ginaTest()
+  // testCompile ginaTest()
   testCompile ginaSwingEditorTest()
   testCompile project(':flexo-test-resources')
 }

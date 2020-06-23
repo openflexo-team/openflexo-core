@@ -70,6 +70,12 @@ public abstract class VirtualModelView extends FlexoConceptView<VirtualModel> {
 		getPerspective().setBottomLeftView(getVirtualModelBrowser());
 	}
 
+	@Override
+	public void willHide() {
+		super.willHide();
+		getPerspective().setBottomLeftView(null);
+	}
+
 	public FIBVirtualModelBrowser getVirtualModelBrowser() {
 		FMLTechnologyAdapterController technologyAdapterController = (FMLTechnologyAdapterController) getFlexoController()
 				.getTechnologyAdapterController(FMLTechnologyAdapter.class);

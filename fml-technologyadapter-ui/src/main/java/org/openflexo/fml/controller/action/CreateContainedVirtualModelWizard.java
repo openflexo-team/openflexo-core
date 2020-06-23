@@ -44,6 +44,7 @@ import java.util.logging.Logger;
 import org.openflexo.ApplicationContext;
 import org.openflexo.components.wizard.WizardStep;
 import org.openflexo.foundation.fml.VirtualModel;
+import org.openflexo.foundation.fml.Visibility;
 import org.openflexo.foundation.fml.action.CreateContainedVirtualModel;
 import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstance;
 import org.openflexo.gina.annotation.FIBPanel;
@@ -73,7 +74,7 @@ public class CreateContainedVirtualModelWizard extends AbstractCreateVirtualMode
 
 	@Override
 	public Image getDefaultPageImage() {
-		return IconFactory.getImageIcon(FMLIconLibrary.VIRTUAL_MODEL_BIG_ICON, IconLibrary.NEW_32_32).getImage();
+		return IconFactory.getImageIcon(FMLIconLibrary.VIRTUAL_MODEL_BIG_ICON, IconLibrary.BIG_NEW_MARKER).getImage();
 	}
 
 	public DescribeVirtualModel getDescribeVirtualModel() {
@@ -153,6 +154,31 @@ public class CreateContainedVirtualModelWizard extends AbstractCreateVirtualMode
 				String oldValue = getNewVirtualModelDescription();
 				getAction().setNewVirtualModelDescription(newViewPointDescription);
 				getPropertyChangeSupport().firePropertyChange("newVirtualModelDescription", oldValue, newViewPointDescription);
+				checkValidity();
+			}
+		}
+
+		public boolean getIsAbstract() {
+			return getAction().getIsAbstract();
+		}
+
+		public void setIsAbstract(boolean isAbstract) {
+			if (isAbstract != getIsAbstract()) {
+				getAction().setIsAbstract(isAbstract);
+				getPropertyChangeSupport().firePropertyChange("isAbstract", !isAbstract, isAbstract);
+				checkValidity();
+			}
+		}
+
+		public Visibility getVisibility() {
+			return getAction().getVisibility();
+		}
+
+		public void setVisibility(Visibility visibility) {
+			if ((visibility == null && getVisibility() != null) || (visibility != null && !visibility.equals(getVisibility()))) {
+				Visibility oldValue = getVisibility();
+				getAction().setVisibility(visibility);
+				getPropertyChangeSupport().firePropertyChange("visibility", oldValue, visibility);
 				checkValidity();
 			}
 		}

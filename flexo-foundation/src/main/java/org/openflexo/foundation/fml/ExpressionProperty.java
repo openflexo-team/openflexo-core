@@ -229,6 +229,10 @@ public abstract interface ExpressionProperty<T> extends FlexoProperty<T> {
 		@Override
 		public ValidationIssue<DeclaredTypeShouldBeCompatibleWithAnalyzedType, ExpressionProperty<?>> applyValidation(
 				ExpressionProperty<?> anExpressionProperty) {
+
+			// We must be sure
+			anExpressionProperty.getExpression().forceRevalidate();
+
 			if (anExpressionProperty.getDeclaredType() != null && anExpressionProperty.getAnalyzedType() != null) {
 				if (!TypeUtils.isTypeAssignableFrom(anExpressionProperty.getDeclaredType(), anExpressionProperty.getAnalyzedType())
 						&& !TypeUtils.isTypeAssignableFrom(anExpressionProperty.getAnalyzedType(),

@@ -348,10 +348,6 @@ public abstract class FlexoBehaviourAction<A extends FlexoBehaviourAction<A, FB,
 		}*/
 	}
 
-	public FB getApplicableFlexoBehaviour() {
-		return getFlexoBehaviour();
-	}
-
 	/**
 	 * This is the internal code performing execution of the control graph of {@link FlexoBehaviour}
 	 */
@@ -421,6 +417,43 @@ public abstract class FlexoBehaviourAction<A extends FlexoBehaviourAction<A, FB,
 	 * @param action
 	 */
 	public <T> void hasPerformedAction(EditionAction action, T object) {
+	}
+
+	private FlexoConcept declaredConceptualLevel;
+
+	/**
+	 * Return declared conceptual level, if any
+	 * 
+	 * This is the {@link FlexoConcept} which should be considered for {@link FlexoBehaviour} lookup resolution.<br>
+	 * When null (undefined), choose the declared {@link FlexoConcept} of considered {@link FlexoConceptInstance}
+	 * 
+	 * @return
+	 */
+	public FlexoConcept getDeclaredConceptualLevel() {
+		return declaredConceptualLevel;
+	}
+
+	/**
+	 * Sets declared conceptual level, if any
+	 * 
+	 * This is the {@link FlexoConcept} which should be considered for {@link FlexoBehaviour} lookup resolution.<br>
+	 * When null (undefined), choose the declared {@link FlexoConcept} of considered {@link FlexoConceptInstance}
+	 * 
+	 * @param declaredConceptualLevel
+	 */
+	public void setDeclaredConceptualLevel(FlexoConcept declaredConceptualLevel) {
+		this.declaredConceptualLevel = declaredConceptualLevel;
+	}
+
+	/**
+	 * Return applicable
+	 * 
+	 * @return
+	 */
+	@SuppressWarnings("unchecked")
+	public final FB getApplicableFlexoBehaviour() {
+		return (FB) getFlexoBehaviour().getMostSpecializedBehaviour(
+				getDeclaredConceptualLevel() == null ? getFlexoConceptInstance().getFlexoConcept() : getDeclaredConceptualLevel());
 	}
 
 	@Override

@@ -124,6 +124,9 @@ public class GenericPerspective extends FlexoPerspective {
 			TechnologyAdapterControllerService tacService = getController().getApplicationContext().getTechnologyAdapterControllerService();
 			TechnologyAdapterController<?> tac = tacService
 					.getTechnologyAdapterController(((TechnologyObject) object).getTechnologyAdapter());
+			if (tac == null) {
+				return false;
+			}
 			return tac.hasModuleViewForObject((TechnologyObject) object, getController());
 		}
 		return super.hasModuleViewForObject(object);

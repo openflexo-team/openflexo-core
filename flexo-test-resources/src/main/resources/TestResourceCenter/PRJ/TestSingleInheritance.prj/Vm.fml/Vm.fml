@@ -1,0 +1,40 @@
+
+/**
+ * 
+ * @author sylvain
+ * @version 0.1
+ */
+@VirtualModel(uri="http://www.openflexo.org/projects/2020/4/TestSingleInheritance_1585907148412.prj/Vm.fml")
+public class Vm {
+
+  @FlexoConcept  
+  public class A {  
+  
+    @CreationScheme    
+    A:create() {    
+      
+    }    
+  
+    @DeletionScheme    
+    Void delete() {    
+      
+    }    
+  
+  }  
+
+  @FlexoConcept  
+  public class B extends A  {  
+  
+    @CreationScheme    
+    B:create() {    
+      
+    }    
+  
+    @DeletionScheme    
+    Void delete() {    
+      
+    }    
+  
+  }  
+
+}

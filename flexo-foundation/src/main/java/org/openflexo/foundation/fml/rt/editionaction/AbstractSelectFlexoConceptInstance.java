@@ -519,10 +519,12 @@ public interface AbstractSelectFlexoConceptInstance<VMI extends VirtualModelInst
 
 						// Attempt to find some solutions...
 
-						for (FMLRTModelSlot ms : object.getOwningVirtualModel().getModelSlots(FMLRTModelSlot.class)) {
-							// System.out.println("modelSlot " + ms + " vm=" + ms.getAddressedVirtualModel());
-							if (object.getFlexoConceptType().getOwner().isAssignableFrom(ms.getAccessedVirtualModel())) {
-								((ValidationError) returned).addToFixProposals(new UseFMLRTModelSlot(ms));
+						if (object.getOwningVirtualModel() != null) {
+							for (FMLRTModelSlot ms : object.getOwningVirtualModel().getModelSlots(FMLRTModelSlot.class)) {
+								// System.out.println("modelSlot " + ms + " vm=" + ms.getAddressedVirtualModel());
+								if (object.getFlexoConceptType().getOwner().isAssignableFrom(ms.getAccessedVirtualModel())) {
+									((ValidationError) returned).addToFixProposals(new UseFMLRTModelSlot(ms));
+								}
 							}
 						}
 

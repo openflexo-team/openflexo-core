@@ -230,7 +230,7 @@ public class FMLRTVirtualModelInstanceResourceFactory extends
 	}
 
 	@Override
-	protected <I> FMLRTVirtualModelInstanceResource registerResource(FMLRTVirtualModelInstanceResource resource,
+	public <I> FMLRTVirtualModelInstanceResource registerResource(FMLRTVirtualModelInstanceResource resource,
 			FlexoResourceCenter<I> resourceCenter) {
 		super.registerResource(resource, resourceCenter);
 
