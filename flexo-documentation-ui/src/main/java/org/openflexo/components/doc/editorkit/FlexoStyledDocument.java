@@ -87,7 +87,7 @@ import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
  * @see DefaultStyledDocument
  */
 @SuppressWarnings("serial")
-public class FlexoStyledDocument<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter> extends DefaultStyledDocument {
+public class FlexoStyledDocument<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter<TA>> extends DefaultStyledDocument {
 
 	static final Logger logger = Logger.getLogger(FlexoStyledDocument.class.getPackage().getName());
 

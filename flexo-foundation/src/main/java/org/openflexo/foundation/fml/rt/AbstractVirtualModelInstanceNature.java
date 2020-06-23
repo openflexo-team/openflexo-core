@@ -49,7 +49,7 @@ import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
  * @author sylvain
  * 
  */
-public interface AbstractVirtualModelInstanceNature<VMI extends VirtualModelInstance<VMI, TA>, TA extends TechnologyAdapter>
+public interface AbstractVirtualModelInstanceNature<VMI extends VirtualModelInstance<VMI, TA>, TA extends TechnologyAdapter<TA>>
 		extends FlexoNature<VMI> {
 
 }

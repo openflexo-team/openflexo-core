@@ -38,6 +38,8 @@
 
 package org.openflexo.foundation.fml.rt.editionaction;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -66,31 +68,32 @@ import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.foundation.fml.rt.action.CreationSchemeAction;
 import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
 import org.openflexo.foundation.fml.rt.editionaction.AddFlexoConceptInstance.AddFlexoConceptInstanceImpl;
-import org.openflexo.model.annotations.Adder;
-import org.openflexo.model.annotations.CloningStrategy;
-import org.openflexo.model.annotations.CloningStrategy.StrategyType;
-import org.openflexo.model.annotations.DefineValidationRule;
-import org.openflexo.model.annotations.Embedded;
-import org.openflexo.model.annotations.Getter;
-import org.openflexo.model.annotations.Getter.Cardinality;
-import org.openflexo.model.annotations.ImplementationClass;
-import org.openflexo.model.annotations.ModelEntity;
-import org.openflexo.model.annotations.PropertyIdentifier;
-import org.openflexo.model.annotations.Remover;
-import org.openflexo.model.annotations.Setter;
-import org.openflexo.model.annotations.XMLAttribute;
-import org.openflexo.model.annotations.XMLElement;
-import org.openflexo.model.validation.CompoundIssue;
-import org.openflexo.model.validation.FixProposal;
-import org.openflexo.model.validation.ValidationError;
-import org.openflexo.model.validation.ValidationIssue;
-import org.openflexo.model.validation.ValidationRule;
+import org.openflexo.pamela.annotations.Adder;
+import org.openflexo.pamela.annotations.CloningStrategy;
+import org.openflexo.pamela.annotations.CloningStrategy.StrategyType;
+import org.openflexo.pamela.annotations.DefineValidationRule;
+import org.openflexo.pamela.annotations.Embedded;
+import org.openflexo.pamela.annotations.Getter;
+import org.openflexo.pamela.annotations.Getter.Cardinality;
+import org.openflexo.pamela.annotations.ImplementationClass;
+import org.openflexo.pamela.annotations.ModelEntity;
+import org.openflexo.pamela.annotations.PropertyIdentifier;
+import org.openflexo.pamela.annotations.Remover;
+import org.openflexo.pamela.annotations.Setter;
+import org.openflexo.pamela.annotations.XMLAttribute;
+import org.openflexo.pamela.annotations.XMLElement;
+import org.openflexo.pamela.validation.CompoundIssue;
+import org.openflexo.pamela.validation.FixProposal;
+import org.openflexo.pamela.validation.ValidationError;
+import org.openflexo.pamela.validation.ValidationIssue;
+import org.openflexo.pamela.validation.ValidationRule;
+import org.openflexo.toolbox.StringUtils;
 
 /**
  * Generic base action used to instanciate a {@link FlexoConceptInstance} in a given {@link FMLRTVirtualModelInstance}.
  * 
- * Note that this is also the base implementation for adding of a {@link FMLRTVirtualModelInstance} in a {@link View}, or a {@link View} in
- * its parent {@link View}
+ * Note that this is also the base implementation for adding of a {@link FMLRTVirtualModelInstance} in a {@link VirtualModelInstance}, or a
+ * {@link VirtualModelInstance} in its parent {@link VirtualModelInstance}
  * 
  * 
  * @author sylvain
@@ -108,6 +111,8 @@ public interface AbstractAddFlexoConceptInstance<FCI extends FlexoConceptInstanc
 
 	@PropertyIdentifier(type = String.class)
 	public static final String CREATION_SCHEME_URI_KEY = "creationSchemeURI";
+	@PropertyIdentifier(type = String.class)
+	public static final String FLEXO_CONCEPT_TYPE_URI_KEY = "flexoConceptTypeURI";
 	@PropertyIdentifier(type = List.class)
 	public static final String PARAMETERS_KEY = "parameters";
 
@@ -116,6 +121,11 @@ public interface AbstractAddFlexoConceptInstance<FCI extends FlexoConceptInstanc
 
 	@PropertyIdentifier(type = DataBinding.class)
 	public static final String CONTAINER_KEY = "container";
+
+	@PropertyIdentifier(type = Boolean.class)
+	public static final String DYNAMIC_INSTANTIATION_KEY = "dynamicInstantiation";
+	@PropertyIdentifier(type = DataBinding.class)
+	public static final String DYNAMIC_FLEXO_CONCEPT_TYPE_KEY = "dynamicFlexoConceptType";
 
 	@Getter(value = CONTAINER_KEY)
 	@XMLAttribute
@@ -154,6 +164,13 @@ public interface AbstractAddFlexoConceptInstance<FCI extends FlexoConceptInstanc
 
 	public AddFlexoConceptInstanceParameter getParameter(FlexoBehaviourParameter p);
 
+	@Getter(value = FLEXO_CONCEPT_TYPE_URI_KEY)
+	@XMLAttribute
+	public String _getFlexoConceptTypeURI();
+
+	@Setter(FLEXO_CONCEPT_TYPE_URI_KEY)
+	public void _setFlexoConceptTypeURI(String conceptTypeURI);
+
 	/**
 	 * Get concept as type to be created by this action
 	 * 
@@ -175,8 +192,24 @@ public interface AbstractAddFlexoConceptInstance<FCI extends FlexoConceptInstanc
 	 */
 	public List<CreationScheme> getAvailableCreationSchemes();
 
+	@Getter(value = DYNAMIC_INSTANTIATION_KEY, defaultValue = "false")
+	@XMLAttribute
+	public boolean getDynamicInstantiation();
+
+	@Setter(DYNAMIC_INSTANTIATION_KEY)
+	public void setDynamicInstantiation(boolean dynamicInstanciation);
+
+	@Getter(value = DYNAMIC_FLEXO_CONCEPT_TYPE_KEY)
+	@XMLAttribute
+	public DataBinding<FlexoConcept> getDynamicFlexoConceptType();
+
+	@Setter(DYNAMIC_FLEXO_CONCEPT_TYPE_KEY)
+	public void setDynamicFlexoConceptType(DataBinding<FlexoConcept> dynamicFlexoConceptType);
+
+	public boolean requiresContainer();
+
 	public static abstract class AbstractAddFlexoConceptInstanceImpl<FCI extends FlexoConceptInstance, VMI extends VirtualModelInstance<VMI, ?>>
-			extends FMLRTActionImpl<FCI, VMI> implements AbstractAddFlexoConceptInstance<FCI, VMI> {
+			extends FMLRTActionImpl<FCI, VMI> implements AbstractAddFlexoConceptInstance<FCI, VMI>, PropertyChangeListener {
 
 		static final Logger logger = Logger.getLogger(AbstractAddFlexoConceptInstance.class.getPackage().getName());
 
@@ -186,6 +219,57 @@ public interface AbstractAddFlexoConceptInstance<FCI extends FlexoConceptInstanc
 		private List<AddFlexoConceptInstanceParameter> parameters = null;
 
 		private DataBinding<FlexoConceptInstance> container;
+		private DataBinding<FlexoConcept> dynamicFlexoConceptType;
+
+		@Override
+		public boolean delete(Object... context) {
+			if (flexoConceptType != null) {
+				flexoConceptType.getPropertyChangeSupport().removePropertyChangeListener(this);
+			}
+			if (creationScheme != null) {
+				creationScheme.getPropertyChangeSupport().removePropertyChangeListener(this);
+			}
+			return super.delete(context);
+		}
+
+		@Override
+		public void setDynamicInstantiation(boolean dynamicInstanciation) {
+			performSuperSetter(DYNAMIC_INSTANTIATION_KEY, dynamicInstanciation);
+			getPropertyChangeSupport().firePropertyChange("requiresContainer", !requiresContainer(), requiresContainer());
+		}
+
+		@Override
+		public boolean requiresContainer() {
+			if (getDynamicInstantiation()) {
+				return true;
+			}
+			if (getFlexoConceptType() != null) {
+				return getFlexoConceptType().getContainerFlexoConcept() != null;
+			}
+			return false;
+		}
+
+		protected abstract Class<? extends FlexoConcept> getDynamicFlexoConceptTypeType();
+
+		@Override
+		public DataBinding<FlexoConcept> getDynamicFlexoConceptType() {
+			if (dynamicFlexoConceptType == null) {
+				dynamicFlexoConceptType = new DataBinding<>(this, getDynamicFlexoConceptTypeType(), DataBinding.BindingDefinitionType.GET);
+				dynamicFlexoConceptType.setBindingName("dynamicFlexoConceptType");
+			}
+			return dynamicFlexoConceptType;
+		}
+
+		@Override
+		public void setDynamicFlexoConceptType(DataBinding<FlexoConcept> dynamicFlexoConceptType) {
+			if (dynamicFlexoConceptType != null) {
+				dynamicFlexoConceptType.setOwner(this);
+				dynamicFlexoConceptType.setBindingName("dynamicFlexoConceptType");
+				dynamicFlexoConceptType.setDeclaredType(getDynamicFlexoConceptTypeType());
+				dynamicFlexoConceptType.setBindingDefinitionType(DataBinding.BindingDefinitionType.GET);
+			}
+			this.dynamicFlexoConceptType = dynamicFlexoConceptType;
+		}
 
 		@Override
 		public DataBinding<FlexoConceptInstance> getContainer() {
@@ -248,6 +332,9 @@ public interface AbstractAddFlexoConceptInstance<FCI extends FlexoConceptInstanc
 			if (getCreationScheme() != null) {
 				return getCreationScheme().getFlexoConcept();
 			}
+			if (flexoConceptType == null && StringUtils.isNotEmpty(_flexoConceptTypeURI) && getVirtualModelLibrary() != null) {
+				flexoConceptType = getVirtualModelLibrary().getFlexoConcept(_flexoConceptTypeURI, false);
+			}
 			return flexoConceptType;
 		}
 
@@ -255,6 +342,9 @@ public interface AbstractAddFlexoConceptInstance<FCI extends FlexoConceptInstanc
 		public void setFlexoConceptType(FlexoConcept flexoConceptType) {
 			if (this.flexoConceptType != flexoConceptType) {
 				FlexoConcept oldValue = this.flexoConceptType;
+				if (oldValue != null) {
+					oldValue.getPropertyChangeSupport().removePropertyChangeListener(this);
+				}
 				this.flexoConceptType = flexoConceptType;
 				if (getCreationScheme() != null && getCreationScheme().getFlexoConcept() != flexoConceptType) {
 					if (flexoConceptType.getCreationSchemes().size() > 0) {
@@ -272,6 +362,10 @@ public interface AbstractAddFlexoConceptInstance<FCI extends FlexoConceptInstanc
 				}
 				getPropertyChangeSupport().firePropertyChange(FLEXO_CONCEPT_TYPE_KEY, oldValue, flexoConceptType);
 				getPropertyChangeSupport().firePropertyChange("availableCreationSchemes", null, getAvailableCreationSchemes());
+				getPropertyChangeSupport().firePropertyChange("requiresContainer", !requiresContainer(), requiresContainer());
+				if (flexoConceptType != null) {
+					flexoConceptType.getPropertyChangeSupport().addPropertyChangeListener(this);
+				}
 			}
 		}
 
@@ -287,13 +381,39 @@ public interface AbstractAddFlexoConceptInstance<FCI extends FlexoConceptInstanc
 		public void _setCreationSchemeURI(String uri) {
 			if (getVirtualModelLibrary() != null) {
 				creationScheme = (CreationScheme) getVirtualModelLibrary().getFlexoBehaviour(uri, true);
+				if (creationScheme != null) {
+					creationScheme.getPropertyChangeSupport().addPropertyChangeListener(this);
+					creationScheme.getFlexoConcept().getPropertyChangeSupport().addPropertyChangeListener(this);
+				}
 			}
 			_creationSchemeURI = uri;
 		}
 
-		private void loadMetaModelWhenRequired() {
+		private String _flexoConceptTypeURI;
+
+		@Override
+		public String _getFlexoConceptTypeURI() {
+			if (getFlexoConceptType() != null) {
+				return getFlexoConceptType().getURI();
+			}
+			return _flexoConceptTypeURI;
+		}
+
+		@Override
+		public void _setFlexoConceptTypeURI(String uri) {
+			if (getVirtualModelLibrary() != null) {
+				flexoConceptType = getVirtualModelLibrary().getFlexoConcept(uri, true);
+			}
+			_flexoConceptTypeURI = uri;
+		}
+
+		protected void loadMetaModelWhenRequired() {
 			if (creationScheme == null && _creationSchemeURI != null && getVirtualModelLibrary() != null) {
 				creationScheme = (CreationScheme) getVirtualModelLibrary().getFlexoBehaviour(_creationSchemeURI, true);
+				if (creationScheme != null) {
+					creationScheme.getPropertyChangeSupport().addPropertyChangeListener(this);
+					creationScheme.getFlexoConcept().getPropertyChangeSupport().addPropertyChangeListener(this);
+				}
 				updateParameters();
 			}
 		}
@@ -303,10 +423,18 @@ public interface AbstractAddFlexoConceptInstance<FCI extends FlexoConceptInstanc
 
 			if (creationScheme == null && _creationSchemeURI != null && getVirtualModelLibrary() != null) {
 				creationScheme = (CreationScheme) getVirtualModelLibrary().getFlexoBehaviour(_creationSchemeURI, false);
+				if (creationScheme != null) {
+					creationScheme.getPropertyChangeSupport().addPropertyChangeListener(this);
+					creationScheme.getFlexoConcept().getPropertyChangeSupport().addPropertyChangeListener(this);
+				}
 				updateParameters();
 			}
 			if (creationScheme == null && getAssignedFlexoProperty() instanceof FlexoConceptInstanceRole) {
 				creationScheme = ((FlexoConceptInstanceRole) getAssignedFlexoProperty()).getCreationScheme();
+				if (creationScheme != null) {
+					creationScheme.getPropertyChangeSupport().addPropertyChangeListener(this);
+					creationScheme.getFlexoConcept().getPropertyChangeSupport().addPropertyChangeListener(this);
+				}
 				updateParameters();
 			}
 			return creationScheme;
@@ -316,6 +444,9 @@ public interface AbstractAddFlexoConceptInstance<FCI extends FlexoConceptInstanc
 		public void setCreationScheme(CreationScheme creationScheme) {
 			if (this.creationScheme != creationScheme) {
 				CreationScheme oldValue = this.creationScheme;
+				if (oldValue != null) {
+					oldValue.getPropertyChangeSupport().removePropertyChangeListener(this);
+				}
 				this.creationScheme = creationScheme;
 				if (creationScheme != null) {
 					_creationSchemeURI = creationScheme.getURI();
@@ -326,6 +457,9 @@ public interface AbstractAddFlexoConceptInstance<FCI extends FlexoConceptInstanc
 				updateParameters();
 				getPropertyChangeSupport().firePropertyChange(CREATION_SCHEME_KEY, oldValue, creationScheme);
 				getPropertyChangeSupport().firePropertyChange(FLEXO_CONCEPT_TYPE_KEY, null, getFlexoConceptType());
+				if (creationScheme != null) {
+					creationScheme.getPropertyChangeSupport().addPropertyChangeListener(this);
+				}
 			}
 		}
 
@@ -391,6 +525,19 @@ public interface AbstractAddFlexoConceptInstance<FCI extends FlexoConceptInstanc
 			return null;
 		}
 
+		@Override
+		public void propertyChange(PropertyChangeEvent evt) {
+			if (evt.getSource() == getFlexoConceptType()) {
+				// System.out.println("Tiens je recois l'event du Concept " + evt.getPropertyName() + " evt=" + evt);
+			}
+			if (evt.getSource() == getCreationScheme()) {
+				// System.out.println("Tiens je recois l'event du CreationScheme " + evt.getPropertyName() + " evt=" + evt);
+				if (evt.getPropertyName().equals(CreationScheme.PARAMETERS_KEY)) {
+					updateParameters();
+				}
+			}
+		}
+
 		private void updateParameters() {
 			if (parameters == null) {
 				parameters = new ArrayList<>();
@@ -415,9 +562,10 @@ public interface AbstractAddFlexoConceptInstance<FCI extends FlexoConceptInstanc
 						}
 					}
 				}
-			}
-			for (AddFlexoConceptInstanceParameter removeThis : parametersToRemove) {
-				removeFromParameters(removeThis);
+				for (AddFlexoConceptInstanceParameter removeThis : parametersToRemove) {
+					removeFromParameters(removeThis);
+					removeThis.delete();
+				}
 			}
 			getPropertyChangeSupport().firePropertyChange(PARAMETERS_KEY, oldValue, parameters);
 		}
@@ -438,12 +586,19 @@ public interface AbstractAddFlexoConceptInstance<FCI extends FlexoConceptInstanc
 
 			FlexoConceptInstance container = null;
 
-			if (getFlexoConceptType() == null) {
+			if (getDynamicInstantiation() && !getDynamicFlexoConceptType().isValid()) {
+				logger.warning("undefined or invalid dynamic concept type while creating new concept");
+				return null;
+			}
+
+			if (!getDynamicInstantiation() && getFlexoConceptType() == null) {
 				logger.warning("null concept type while creating new concept");
 				return null;
 			}
 
-			if (getFlexoConceptType().getContainerFlexoConcept() != null) {
+			FlexoConcept instantiatedFlexoConcept = retrieveFlexoConcept(evaluationContext);
+
+			if (instantiatedFlexoConcept.getContainerFlexoConcept() != null) {
 				container = getContainer(evaluationContext);
 				if (container == null) {
 					logger.warning("null container while creating new concept " + getFlexoConceptType());
@@ -459,23 +614,64 @@ public interface AbstractAddFlexoConceptInstance<FCI extends FlexoConceptInstanc
 			}
 
 			FCI newFCI = makeNewFlexoConceptInstance(evaluationContext);
-			if (executeCreationScheme(newFCI, vmInstance, evaluationContext)) {
-				if (getFlexoConceptType().getContainerFlexoConcept() != null) {
-					container.addToEmbeddedFlexoConceptInstances(newFCI);
+
+			if (instantiatedFlexoConcept.getContainerFlexoConcept() != null) {
+				container.addToEmbeddedFlexoConceptInstances(newFCI);
+			}
+
+			if (!getDynamicInstantiation()) {
+				if (executeCreationScheme(newFCI, vmInstance, evaluationContext)) {
+					if (logger.isLoggable(Level.FINE)) {
+						logger.fine("Successfully performed performAddFlexoConcept " + evaluationContext);
+					}
+					return newFCI;
 				}
-				if (logger.isLoggable(Level.FINE)) {
-					logger.fine("Successfully performed performAddFlexoConcept " + evaluationContext);
+				else {
+					logger.warning("Failing execution of creationScheme: " + getCreationScheme());
 				}
-				return newFCI;
+			}
+			else {
+				logger.warning("I should find default creationScheme for dynamic instantiation");
+				CreationScheme applicableCreationScheme = findBestCreationSchemeForDynamicInstantiation(evaluationContext);
+				System.out.println("Found: " + applicableCreationScheme);
+				if (applicableCreationScheme != null) {
+					if (_performExecuteCreationScheme(applicableCreationScheme, newFCI, vmInstance, evaluationContext)) {
+						if (logger.isLoggable(Level.FINE)) {
+							logger.fine("Successfully performed performAddFlexoConcept " + evaluationContext);
+						}
+						return newFCI;
+					}
+					else {
+						logger.warning("Failing execution of creationScheme: " + applicableCreationScheme);
+					}
+				}
 			}
 
 			return null;
 		}
 
+		protected CreationScheme findBestCreationSchemeForDynamicInstantiation(RunTimeEvaluationContext evaluationContext)
+				throws FlexoException {
+			FlexoConcept instantiatedFlexoConcept = retrieveFlexoConcept(evaluationContext);
+			if (instantiatedFlexoConcept != null) {
+				for (CreationScheme creationScheme : instantiatedFlexoConcept.getAccessibleCreationSchemes()) {
+					if (creationScheme.getParameters().size() == getParameters().size()) {
+						return creationScheme;
+					}
+				}
+			}
+			return null;
+		}
+
 		protected boolean executeCreationScheme(FCI newInstance, VirtualModelInstance<?, ?> vmInstance,
 				RunTimeEvaluationContext evaluationContext) {
+			return _performExecuteCreationScheme(getCreationScheme(), newInstance, vmInstance, evaluationContext);
+		}
+
+		protected boolean _performExecuteCreationScheme(CreationScheme creationScheme, FCI newInstance,
+				VirtualModelInstance<?, ?> vmInstance, RunTimeEvaluationContext evaluationContext) {
 			if (evaluationContext instanceof FlexoBehaviourAction) {
-				CreationSchemeAction creationSchemeAction = new CreationSchemeAction(getCreationScheme(), vmInstance, null,
+				CreationSchemeAction creationSchemeAction = new CreationSchemeAction(creationScheme, vmInstance, null,
 						(FlexoBehaviourAction<?, ?, ?>) evaluationContext);
 				creationSchemeAction.initWithFlexoConceptInstance(newInstance);
 				for (AddFlexoConceptInstanceParameter p : getParameters()) {
@@ -496,14 +692,27 @@ public interface AbstractAddFlexoConceptInstance<FCI extends FlexoConceptInstanc
 
 			}
 			logger.warning("Unexpected: " + evaluationContext);
+			Thread.dumpStack();
 			return false;
 		}
 
 		protected abstract FCI makeNewFlexoConceptInstance(RunTimeEvaluationContext evaluationContext) throws FlexoException;
 
+		protected FlexoConcept retrieveFlexoConcept(RunTimeEvaluationContext evaluationContext) throws FlexoException {
+			if (getDynamicInstantiation() && getDynamicFlexoConceptType().isValid()) {
+				try {
+					return getDynamicFlexoConceptType().getBindingValue(evaluationContext);
+				} catch (TypeMismatchException | NullReferenceException | InvocationTargetException e) {
+					e.printStackTrace();
+					throw new FlexoException(e);
+				}
+			}
+			return getFlexoConceptType();
+		}
+
 		@Override
 		public Type getAssignableType() {
-			if (getFlexoConcept() != null) {
+			if (getFlexoConceptType() != null) {
 				return FlexoConceptInstanceType.getFlexoConceptInstanceType(getFlexoConceptType());
 			}
 			return FlexoConceptInstanceType.UNDEFINED_FLEXO_CONCEPT_INSTANCE_TYPE;
@@ -599,6 +808,11 @@ public interface AbstractAddFlexoConceptInstance<FCI extends FlexoConceptInstanc
 		@Override
 		public ValidationIssue<BindingIsRequiredAndMustBeValid<AbstractAddFlexoConceptInstance>, AbstractAddFlexoConceptInstance> applyValidation(
 				AbstractAddFlexoConceptInstance object) {
+
+			if (!object.isReceiverMandatory()) {
+				return null;
+			}
+
 			ValidationIssue<BindingIsRequiredAndMustBeValid<AbstractAddFlexoConceptInstance>, AbstractAddFlexoConceptInstance> returned = super.applyValidation(
 					object);
 			if (returned instanceof UndefinedRequiredBindingIssue) {
@@ -621,18 +835,18 @@ public interface AbstractAddFlexoConceptInstance<FCI extends FlexoConceptInstanc
 
 						// Attempt to find some solutions...
 
-						for (FMLRTModelSlot ms : object.getOwningVirtualModel().getModelSlots(FMLRTModelSlot.class)) {
+						for (FMLRTModelSlot<?, ?> ms : object.getOwningVirtualModel().getModelSlots(FMLRTModelSlot.class)) {
 							// System.out.println("modelSlot " + ms + " vm=" + ms.getAddressedVirtualModel());
-							if (object.getFlexoConceptType().getVirtualModel().isAssignableFrom(ms.getAccessedVirtualModel())) {
+							if (object.getFlexoConceptType().getOwner().isAssignableFrom(ms.getAccessedVirtualModel())) {
 								((ValidationError) returned).addToFixProposals(new UseFMLRTModelSlot(ms));
 							}
 						}
 
 						if (object.getRootOwner().getFlexoConcept() instanceof VirtualModel) {
-							for (FMLRTModelSlot ms : ((VirtualModel) object.getRootOwner().getFlexoConcept())
+							for (FMLRTModelSlot<?, ?> ms : ((VirtualModel) object.getRootOwner().getFlexoConcept())
 									.getModelSlots(FMLRTModelSlot.class)) {
 								// System.out.println("modelSlot " + ms + " vm=" + ms.getAddressedVirtualModel());
-								if (object.getFlexoConceptType().getVirtualModel().isAssignableFrom(ms.getAccessedVirtualModel())) {
+								if (object.getFlexoConceptType().getOwner().isAssignableFrom(ms.getAccessedVirtualModel())) {
 									((ValidationError) returned).addToFixProposals(new UseFMLRTModelSlot(ms));
 								}
 							}
@@ -644,8 +858,8 @@ public interface AbstractAddFlexoConceptInstance<FCI extends FlexoConceptInstanc
 			return returned;
 		}
 
-		protected static class UseLocalVirtualModelInstance
-				extends FixProposal<BindingIsRequiredAndMustBeValid<AbstractAddFlexoConceptInstance>, AbstractAddFlexoConceptInstance> {
+		protected static class UseLocalVirtualModelInstance extends
+				FixProposal<BindingIsRequiredAndMustBeValid<AbstractAddFlexoConceptInstance<?, ?>>, AbstractAddFlexoConceptInstance<?, ?>> {
 
 			public UseLocalVirtualModelInstance() {
 				super("sets_virtual_model_instance_to_'virtualModelInstance'_(local_virtual_model_instance)");
@@ -658,8 +872,8 @@ public interface AbstractAddFlexoConceptInstance<FCI extends FlexoConceptInstanc
 			}
 		}
 
-		protected static class UseFMLRTModelSlot
-				extends FixProposal<BindingIsRequiredAndMustBeValid<AbstractAddFlexoConceptInstance>, AbstractAddFlexoConceptInstance> {
+		protected static class UseFMLRTModelSlot extends
+				FixProposal<BindingIsRequiredAndMustBeValid<AbstractAddFlexoConceptInstance<?, ?>>, AbstractAddFlexoConceptInstance<?, ?>> {
 
 			private final FMLRTModelSlot<?, ?> modelSlot;
 

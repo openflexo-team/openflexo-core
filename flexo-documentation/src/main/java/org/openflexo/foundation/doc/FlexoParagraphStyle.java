@@ -23,14 +23,14 @@ package org.openflexo.foundation.doc;
 import java.util.List;
 
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
-import org.openflexo.model.annotations.Adder;
-import org.openflexo.model.annotations.Embedded;
-import org.openflexo.model.annotations.Getter;
-import org.openflexo.model.annotations.Getter.Cardinality;
-import org.openflexo.model.annotations.ModelEntity;
-import org.openflexo.model.annotations.PropertyIdentifier;
-import org.openflexo.model.annotations.Remover;
-import org.openflexo.model.annotations.Setter;
+import org.openflexo.pamela.annotations.Adder;
+import org.openflexo.pamela.annotations.Embedded;
+import org.openflexo.pamela.annotations.Getter;
+import org.openflexo.pamela.annotations.ModelEntity;
+import org.openflexo.pamela.annotations.PropertyIdentifier;
+import org.openflexo.pamela.annotations.Remover;
+import org.openflexo.pamela.annotations.Setter;
+import org.openflexo.pamela.annotations.Getter.Cardinality;
 
 /**
  * Generic abstract concept representing style information of a paragraph
@@ -43,7 +43,7 @@ import org.openflexo.model.annotations.Setter;
  *            {@link TechnologyAdapter} of current implementation
  */
 @ModelEntity(isAbstract = true)
-public interface FlexoParagraphStyle<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter> extends FlexoDocStyle<D, TA> {
+public interface FlexoParagraphStyle<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter<TA>> extends FlexoDocStyle<D, TA> {
 
 	public enum ParagraphAlignment {
 		Right, Left, Center, Justify
@@ -219,7 +219,7 @@ public interface FlexoParagraphStyle<D extends FlexoDocument<D, TA>, TA extends 
 	@Override
 	public String getStringRepresentation();
 
-	public static abstract class FlexoParagraphStyleImpl<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter>
+	public static abstract class FlexoParagraphStyleImpl<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter<TA>>
 			extends FlexoDocStyleImpl<D, TA> implements FlexoParagraphStyle<D, TA> {
 
 		@Override

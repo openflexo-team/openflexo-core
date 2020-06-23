@@ -67,7 +67,7 @@ import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
  * @author Sylvain Guerin
  */
 @SuppressWarnings("serial")
-public class TableElement<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter> extends BranchElement
+public class TableElement<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter<TA>> extends BranchElement
 		implements AbstractDocumentElement<FlexoDocTable<D, TA>, D, TA> {
 
 	static final Logger logger = Logger.getLogger(TableElement.class.getPackage().getName());

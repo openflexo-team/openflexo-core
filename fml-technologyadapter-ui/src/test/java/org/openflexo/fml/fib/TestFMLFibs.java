@@ -75,11 +75,6 @@ public class TestFMLFibs extends GenericFIBTestCase {
 	}
 
 	@Test
-	public void testLocalizedDictionaryPanel() {
-		validateFIB("Fib/FML/LocalizedDictionaryPanel.fib");
-	}
-
-	@Test
 	public void testStandardFlexoConceptView() {
 		validateFIB("Fib/FML/StandardFlexoConceptView.fib");
 	}

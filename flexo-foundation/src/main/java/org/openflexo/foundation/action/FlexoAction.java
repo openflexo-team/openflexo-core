@@ -52,7 +52,6 @@ import org.openflexo.foundation.FlexoObservable;
 import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.action.FlexoUndoManager.FlexoActionCompoundEdit;
 import org.openflexo.foundation.fml.FlexoConcept;
-import org.openflexo.foundation.fml.editionaction.TechnologySpecificAction;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.technologyadapter.TechnologyObject;
@@ -74,7 +73,8 @@ import org.openflexo.logging.FlexoLogger;
  * @param <T1>
  *            type of object such {@link FlexoAction} is to be applied as focused object
  * @param <T2>
- *            type of additional object such {@link FlexoAction} is to be applied as global selection
+ *            type of additional object such {@link FlexoAction} is to be applied as global selection Beware that getFocusedObject cast a T2
+ *            in T1 but changing T2 extends FlexoObject to T2 extends T1 seems to break a lot of things...
  *
  */
 public abstract class FlexoAction<A extends FlexoAction<A, T1, T2>, T1 extends FlexoObject, T2 extends FlexoObject>
@@ -102,7 +102,8 @@ public abstract class FlexoAction<A extends FlexoAction<A, T1, T2>, T1 extends F
 		FAILED_UNDO_EXECUTION,
 		EXECUTING_REDO_CORE,
 		HAS_SUCCESSFULLY_REDONE,
-		FAILED_REDO_EXECUTION;
+		FAILED_REDO_EXECUTION,
+		HAS_BEEN_CANCELLED;
 
 		public boolean hasActionExecutionSucceeded() {
 			return this == ExecutionStatus.HAS_SUCCESSFULLY_EXECUTED;
@@ -136,7 +137,7 @@ public abstract class FlexoAction<A extends FlexoAction<A, T1, T2>, T1 extends F
 	 * @param globalSelection
 	 * @param editor
 	 */
-	public FlexoAction(FlexoActionFactory<A, T1, T2> actionFactory, T1 focusedObject, List<T2> globalSelection, FlexoEditor editor) {
+	protected FlexoAction(FlexoActionFactory<A, T1, T2> actionFactory, T1 focusedObject, List<T2> globalSelection, FlexoEditor editor) {
 		super();
 		this.editor = editor;
 		this.actionFactory = actionFactory;
@@ -158,7 +159,7 @@ public abstract class FlexoAction<A extends FlexoAction<A, T1, T2>, T1 extends F
 	 * @param globalSelection
 	 * @param editor
 	 */
-	public FlexoAction(T1 focusedObject, List<T2> globalSelection, FlexoEditor editor) {
+	protected FlexoAction(T1 focusedObject, List<T2> globalSelection, FlexoEditor editor) {
 		this(null, focusedObject, globalSelection, editor);
 	}
 
@@ -252,6 +253,14 @@ public abstract class FlexoAction<A extends FlexoAction<A, T1, T2>, T1 extends F
 		return thrownException;
 	}
 
+	public void cancelExecution() {
+		executionStatus = ExecutionStatus.HAS_BEEN_CANCELLED;
+	}
+
+	public boolean hasBeenCancelled() {
+		return getExecutionStatus() == ExecutionStatus.HAS_BEEN_CANCELLED;
+	}
+
 	public A doActionInContext() throws FlexoException {
 		// If the factory is not null, check that factory allows execution in its context
 		if (getActionFactory() != null && !getActionFactory().isEnabled(getFocusedObject(), getGlobalSelection())) {
@@ -291,9 +300,9 @@ public abstract class FlexoAction<A extends FlexoAction<A, T1, T2>, T1 extends F
 		return getGlobalSelectionAndFocusedObject(getFocusedObject(), getGlobalSelection());
 	}
 
-	public static Vector<FlexoObject> getGlobalSelectionAndFocusedObject(FlexoObject focusedObject,
-			Vector<? extends FlexoObject> globalSelection) {
-		Vector<FlexoObject> v = globalSelection != null ? new Vector<>(globalSelection.size() + 1) : new Vector<>(1);
+	public static <T extends FlexoObject> Vector<T> getGlobalSelectionAndFocusedObject(T focusedObject,
+			Vector<? extends T> globalSelection) {
+		Vector<T> v = globalSelection != null ? new Vector<>(globalSelection.size() + 1) : new Vector<>(1);
 		if (globalSelection != null) {
 			v.addAll(globalSelection);
 		}
@@ -365,6 +374,20 @@ public abstract class FlexoAction<A extends FlexoAction<A, T1, T2>, T1 extends F
 
 	public boolean isEmbedded() {
 		return getOwnerAction() != null;
+	}
+
+	private boolean forceExecuteConfirmationPanel = false;
+
+	public boolean getForceExecuteConfirmationPanel() {
+		return forceExecuteConfirmationPanel;
+	}
+
+	public void setForceExecuteConfirmationPanel(boolean forceExecuteConfirmationPanel) {
+		if (forceExecuteConfirmationPanel != this.forceExecuteConfirmationPanel) {
+			this.forceExecuteConfirmationPanel = forceExecuteConfirmationPanel;
+			getPropertyChangeSupport().firePropertyChange("forceExecuteConfirmationPanel", !forceExecuteConfirmationPanel,
+					forceExecuteConfirmationPanel);
+		}
 	}
 
 	public String toSimpleString() {
@@ -443,19 +466,18 @@ public abstract class FlexoAction<A extends FlexoAction<A, T1, T2>, T1 extends F
 	}
 
 	public LocalizedDelegate getLocales() {
-		if (this instanceof TechnologySpecificAction) {
+		if (this instanceof TechnologySpecificFlexoAction) {
 			Class<? extends TechnologyAdapter> taClass = (Class<? extends TechnologyAdapter>) TypeUtils
 					.getBaseClass(TypeUtils.getTypeArgument(getClass(), TechnologySpecificFlexoAction.class, 0));
 			if (taClass != null) {
-				TechnologyAdapter ta = getServiceManager().getTechnologyAdapterService().getTechnologyAdapter(taClass);
+				TechnologyAdapter<?> ta = getServiceManager().getTechnologyAdapterService().getTechnologyAdapter(taClass);
 				return ta.getLocales();
 			}
 		}
 		if (getFocusedObject() instanceof TechnologyObject) {
-			TechnologyAdapter ta = ((TechnologyObject) getFocusedObject()).getTechnologyAdapter();
-			if (ta != null) {
+			TechnologyAdapter<?> ta = ((TechnologyObject<?>) getFocusedObject()).getTechnologyAdapter();
+			if (ta != null)
 				return ta.getLocales();
-			}
 		}
 		return getDefaultLocales(getServiceManager());
 	}

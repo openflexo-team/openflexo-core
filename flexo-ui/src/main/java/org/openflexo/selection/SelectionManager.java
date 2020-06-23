@@ -419,6 +419,11 @@ public abstract class SelectionManager extends Observable {
 	 *            : the object to add to selection
 	 */
 	protected void internallyAddToSelected(FlexoObject object, boolean isNewFocusedObject) {
+		if (_controller == null) {
+			logger.warning("Null controller");
+			return;
+		}
+		object = _controller.getRelevantObject(object);
 		if (!isSelectable(object)) {
 			return;
 		}
@@ -523,74 +528,14 @@ public abstract class SelectionManager extends Observable {
 		return returned;
 	}
 
-	// ==========================================================================
-	// ============================= Cut&Paste Management
-	// =======================
-	// ==========================================================================
-
-	/*public boolean performSelectionCopy() {
-		if (logger.isLoggable(Level.FINE)) {
-			logger.fine("performSelectionCopy in " + getClass().getName());
-		}
-		return _clipboard.performSelectionCopy(getSelection());
-	}
-	
-	public boolean performSelectionPaste() {
-		if (logger.isLoggable(Level.FINE)) {
-			logger.fine("performSelectionPaste in " + getClass().getName());
-		}
-		return _clipboard.performSelectionPaste();
-	}
-	
-	public boolean performSelectionCut() {
-		if (logger.isLoggable(Level.WARNING)) {
-			logger.warning("Perform selection cut is not implemented");
-		}
-		return false;
-	}
-	
-	public boolean hasCopiedData() {
-		return _clipboard.hasCopiedData();
-	}*/
-
-	// public abstract boolean performSelectionSelectAll();
-
-	// public abstract FlexoObject getPasteContext();
-
-	/*public PastingGraphicalContext getPastingGraphicalContext() {
-		return null;
-	}*/
-
 	// ============================================================
 	// ======================= Inspector ==========================
 	// ============================================================
 
 	@Deprecated
-	public Hashtable<String, Object> getInspectionContext() {
+	private Hashtable<String, Object> getInspectionContext() {
 		return inspectionContext;
 	}
-
-	@Deprecated
-	public Object setInspectionContext(String key, Object value) {
-		Object returned = inspectionContext.get(key);
-		inspectionContext.put(key, value);
-		return returned;
-	}
-
-	@Deprecated
-	public Object removeInspectionContext(String key) {
-		Object returned = inspectionContext.get(key);
-		inspectionContext.remove(key);
-		return returned;
-	}
-
-	/**
-	 * override this method in your Module's selectionManager if you want to specify another inspector for an object.
-	 */
-	/*
-	 * protected String getInspectorNameForObject(InspectableObject inspectable)
-	 * { return null; }
-	 */
 
 	private void setCurrentInspectedObject(FlexoObject inspectable) {
 		if (!isInspectable(inspectable)) {

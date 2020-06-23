@@ -41,17 +41,15 @@ package org.openflexo.foundation.resource;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Collection;
 import java.util.logging.Logger;
 
-import org.openflexo.model.annotations.Implementation;
-import org.openflexo.model.annotations.ImplementationClass;
-import org.openflexo.model.annotations.ModelEntity;
-import org.openflexo.model.annotations.XMLElement;
-import org.openflexo.model.exceptions.ModelDefinitionException;
-import org.openflexo.model.factory.ModelFactory;
+import org.openflexo.pamela.annotations.Implementation;
+import org.openflexo.pamela.annotations.ImplementationClass;
+import org.openflexo.pamela.annotations.ModelEntity;
+import org.openflexo.pamela.annotations.XMLElement;
+import org.openflexo.pamela.exceptions.ModelDefinitionException;
+import org.openflexo.pamela.factory.ModelFactory;
 import org.openflexo.toolbox.FlexoVersion;
-import org.openflexo.toolbox.IProgress;
 
 /**
  * Default implementation for a {@link FlexoResourceCenter} bound to a directory on the file system
@@ -107,13 +105,7 @@ public interface DirectoryResourceCenter extends FileSystemBasedResourceCenter {
 		}*/
 
 		@Override
-		public Collection<FlexoResource<?>> getAllResources(IProgress progress) {
-			return getAllResources();
-		}
-
-		@Override
-		public void publishResource(FlexoResource<?> resource, FlexoVersion newVersion, IProgress progress) throws Exception {
-			// TODO Auto-generated method stub
+		public void publishResource(FlexoResource<?> resource, FlexoVersion newVersion) throws Exception {
 		}
 
 		@Override

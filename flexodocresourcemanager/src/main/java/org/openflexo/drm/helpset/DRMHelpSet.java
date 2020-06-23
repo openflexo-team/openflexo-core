@@ -49,7 +49,6 @@ import org.jdom2.DocType;
 import org.openflexo.drm.DocItemFolder;
 import org.openflexo.drm.DocResourceCenter;
 import org.openflexo.foundation.KVCFlexoObject;
-import org.openflexo.foundation.utils.FlexoProgress;
 import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.localization.Language;
 import org.openflexo.rm.ResourceLocator;
@@ -283,40 +282,22 @@ public class DRMHelpSet extends KVCFlexoObject {
 		return _mapFile;
 	}
 
-	public void generate(FlexoProgress progress) {
+	public void generate() {
 		if (logger.isLoggable(Level.FINE)) {
 			for (DocItemFolder docItemFolder : configuration.getDocItemFolders()) {
 				logger.fine("Consider DocItemFolder: " + docItemFolder.getIdentifier());
 			}
 		}
 
-		if (progress != null) {
-			progress.resetSecondaryProgress(9);
-		}
-
-		if (progress != null) {
-			progress.setSecondaryProgress(FlexoLocalization.getMainLocalizer().localizedForKey("creating_directory"));
-		}
+		// progress.setSecondaryProgress(FlexoLocalization.getMainLocalizer().localizedForKey("creating_directory"));
 		helpSetDirectory.mkdirs();
-
-		if (progress != null) {
-			progress.setSecondaryProgress(FlexoLocalization.getMainLocalizer().localizedForKey("generate_helpset_file"));
-		}
+		// progress.setSecondaryProgress(FlexoLocalization.getMainLocalizer().localizedForKey("generate_helpset_file"));
 		generateHSFile();
-
-		if (progress != null) {
-			progress.setSecondaryProgress(FlexoLocalization.getMainLocalizer().localizedForKey("generate_table_of_contents"));
-		}
+		// progress.setSecondaryProgress(FlexoLocalization.getMainLocalizer().localizedForKey("generate_table_of_contents"));
 		_hsToc.generate();
-
-		if (progress != null) {
-			progress.setSecondaryProgress(FlexoLocalization.getMainLocalizer().localizedForKey("generate_index"));
-		}
+		// progress.setSecondaryProgress(FlexoLocalization.getMainLocalizer().localizedForKey("generate_index"));
 		_hsIndex.generate();
-
-		if (progress != null) {
-			progress.setSecondaryProgress(FlexoLocalization.getMainLocalizer().localizedForKey("generate_map"));
-		}
+		// progress.setSecondaryProgress(FlexoLocalization.getMainLocalizer().localizedForKey("generate_map"));
 		_hsMap.generate();// This will create HTML file also!
 		try {
 			FileUtils.copyResourceToDir(ResourceLocator.locateResource("Resources/FlexoHelpMasterStyle.css"),
@@ -324,13 +305,9 @@ public class DRMHelpSet extends KVCFlexoObject {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		if (progress != null) {
-			progress.setSecondaryProgress(FlexoLocalization.getMainLocalizer().localizedForKey("indexing_helpset"));
-		}
+		// progress.setSecondaryProgress(FlexoLocalization.getMainLocalizer().localizedForKey("indexing_helpset"));
 		new JHIndexer(helpSetDirectory).generate();
-		if (progress != null) {
-			progress.setSecondaryProgress(FlexoLocalization.getMainLocalizer().localizedForKey("copying_images"));
-		}
+		// progress.setSecondaryProgress(FlexoLocalization.getMainLocalizer().localizedForKey("copying_images"));
 		copyImages();
 	}
 
@@ -392,10 +369,6 @@ public class DRMHelpSet extends KVCFlexoObject {
 				}
 			}
 		}
-	}
-
-	public void generate() {
-		generate(null);
 	}
 
 	protected void generateHSFile() {

@@ -127,12 +127,7 @@ public class TaskManagerPanel extends JDialog implements PropertyChangeListener 
 	@Override
 	public void propertyChange(final PropertyChangeEvent evt) {
 		if (!SwingUtilities.isEventDispatchThread()) {
-			SwingUtilities.invokeLater(new Runnable() {
-				@Override
-				public void run() {
-					propertyChange(evt);
-				}
-			});
+			SwingUtilities.invokeLater(() -> propertyChange(evt));
 			return;
 		}
 		if (evt.getSource() == taskManager) {
@@ -142,12 +137,7 @@ public class TaskManagerPanel extends JDialog implements PropertyChangeListener 
 
 	private void updatePanel() {
 		if (!SwingUtilities.isEventDispatchThread()) {
-			SwingUtilities.invokeLater(new Runnable() {
-				@Override
-				public void run() {
-					updatePanel();
-				}
-			});
+			SwingUtilities.invokeLater(() -> updatePanel());
 			return;
 		}
 		for (FlexoTask task : new ArrayList<>(taskManager.getScheduledTasks())) {
@@ -169,12 +159,7 @@ public class TaskManagerPanel extends JDialog implements PropertyChangeListener 
 	private synchronized void updateSizeAndCenter() {
 
 		if (!SwingUtilities.isEventDispatchThread()) {
-			SwingUtilities.invokeLater(new Runnable() {
-				@Override
-				public void run() {
-					updateSizeAndCenter();
-				}
-			});
+			SwingUtilities.invokeLater(() -> updateSizeAndCenter());
 			return;
 		}
 
@@ -189,16 +174,12 @@ public class TaskManagerPanel extends JDialog implements PropertyChangeListener 
 		if (taskManager.getScheduledTasks().size() == 0) {
 			// System.out.println("Hidding TaskManagerPanel " + Integer.toHexString(TaskManagerPanel.this.hashCode()) + "...");
 			setVisible(false);
-			SwingUtilities.invokeLater(new Runnable() {
-				@Override
-				public void run() {
-					// System.out.println("Hidding Again TaskManagerPanel " + Integer.toHexString(TaskManagerPanel.this.hashCode()) +
-					// "...");
-					setVisible(false);
-				}
+			SwingUtilities.invokeLater(() -> {
+				// System.out.println("Hidding Again TaskManagerPanel " + Integer.toHexString(TaskManagerPanel.this.hashCode()) +
+				// "...");
+				setVisible(false);
 			});
 		}
-
 	}
 
 	public boolean getForceHide() {
@@ -223,14 +204,11 @@ public class TaskManagerPanel extends JDialog implements PropertyChangeListener 
 	private void performShowTaskManagerPanel() {
 		// System.out.println("Showing TaskManagerPanel " + Integer.toHexString(TaskManagerPanel.this.hashCode()) + "...");
 		setVisible(true);
-		SwingUtilities.invokeLater(new Runnable() {
-			@Override
-			public void run() {
-				if (isVisible()) {
-					// System.out.println("Perform Show TaskManagerPanel " + Integer.toHexString(TaskManagerPanel.this.hashCode()) + "...");
-					requestFocusInWindow();
-					requestFocus();
-				}
+		SwingUtilities.invokeLater(() -> {
+			if (isVisible()) {
+				// System.out.println("Perform Show TaskManagerPanel " + Integer.toHexString(TaskManagerPanel.this.hashCode()) + "...");
+				requestFocusInWindow();
+				requestFocus();
 			}
 		});
 	}
@@ -240,12 +218,7 @@ public class TaskManagerPanel extends JDialog implements PropertyChangeListener 
 	 */
 	public void center() {
 		if (!SwingUtilities.isEventDispatchThread()) {
-			SwingUtilities.invokeLater(new Runnable() {
-				@Override
-				public void run() {
-					center();
-				}
-			});
+			SwingUtilities.invokeLater(() -> center());
 			return;
 		}
 
@@ -308,6 +281,7 @@ public class TaskManagerPanel extends JDialog implements PropertyChangeListener 
 				}
 			});
 			cancelButton.setBorder(BorderFactory.createEmptyBorder(0, 5, 0, 5));
+			cancelButton.setContentAreaFilled(false);
 			cancelButton.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
@@ -337,12 +311,7 @@ public class TaskManagerPanel extends JDialog implements PropertyChangeListener 
 		@Override
 		public void propertyChange(final PropertyChangeEvent evt) {
 			if (!SwingUtilities.isEventDispatchThread()) {
-				SwingUtilities.invokeLater(new Runnable() {
-					@Override
-					public void run() {
-						propertyChange(evt);
-					}
-				});
+				SwingUtilities.invokeLater(() -> propertyChange(evt));
 				return;
 			}
 			if (evt.getSource() == task) {

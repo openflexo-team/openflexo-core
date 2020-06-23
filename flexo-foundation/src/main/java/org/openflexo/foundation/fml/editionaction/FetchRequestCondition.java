@@ -52,14 +52,14 @@ import org.openflexo.foundation.fml.FlexoConceptObject;
 import org.openflexo.foundation.fml.binding.FetchRequestConditionBindingModel;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
 import org.openflexo.logging.FlexoLogger;
-import org.openflexo.model.annotations.DefineValidationRule;
-import org.openflexo.model.annotations.Getter;
-import org.openflexo.model.annotations.ImplementationClass;
-import org.openflexo.model.annotations.ModelEntity;
-import org.openflexo.model.annotations.PropertyIdentifier;
-import org.openflexo.model.annotations.Setter;
-import org.openflexo.model.annotations.XMLAttribute;
-import org.openflexo.model.annotations.XMLElement;
+import org.openflexo.pamela.annotations.DefineValidationRule;
+import org.openflexo.pamela.annotations.Getter;
+import org.openflexo.pamela.annotations.ImplementationClass;
+import org.openflexo.pamela.annotations.ModelEntity;
+import org.openflexo.pamela.annotations.PropertyIdentifier;
+import org.openflexo.pamela.annotations.Setter;
+import org.openflexo.pamela.annotations.XMLAttribute;
+import org.openflexo.pamela.annotations.XMLElement;
 
 /**
  * An FlexoConceptConstraint represents a structural constraint attached to an FlexoConcept
@@ -74,17 +74,17 @@ public interface FetchRequestCondition extends FlexoConceptObject {
 
 	public static final String SELECTED = "selected";
 
-	@PropertyIdentifier(type = FetchRequest.class)
+	@PropertyIdentifier(type = AbstractFetchRequest.class)
 	public static final String ACTION_KEY = "action";
 
 	@PropertyIdentifier(type = DataBinding.class)
 	public static final String CONDITION_KEY = "condition";
 
 	@Getter(value = ACTION_KEY /*, inverse = FetchRequest.CONDITIONS_KEY*/)
-	public FetchRequest<?, ?, ?> getAction();
+	public AbstractFetchRequest<?, ?, ?, ?> getAction();
 
 	@Setter(ACTION_KEY)
-	public void setAction(FetchRequest<?, ?, ?> action);
+	public void setAction(AbstractFetchRequest<?, ?, ?, ?> action);
 
 	@Getter(value = CONDITION_KEY)
 	@XMLAttribute

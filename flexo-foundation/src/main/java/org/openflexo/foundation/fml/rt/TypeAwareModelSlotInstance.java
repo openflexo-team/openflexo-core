@@ -47,13 +47,13 @@ import org.openflexo.foundation.technologyadapter.FlexoModelResource;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.foundation.technologyadapter.TechnologyObject;
 import org.openflexo.foundation.technologyadapter.TypeAwareModelSlot;
-import org.openflexo.model.annotations.Getter;
-import org.openflexo.model.annotations.ImplementationClass;
-import org.openflexo.model.annotations.ModelEntity;
-import org.openflexo.model.annotations.PropertyIdentifier;
-import org.openflexo.model.annotations.Setter;
-import org.openflexo.model.annotations.XMLAttribute;
-import org.openflexo.model.annotations.XMLElement;
+import org.openflexo.pamela.annotations.Getter;
+import org.openflexo.pamela.annotations.ImplementationClass;
+import org.openflexo.pamela.annotations.ModelEntity;
+import org.openflexo.pamela.annotations.PropertyIdentifier;
+import org.openflexo.pamela.annotations.Setter;
+import org.openflexo.pamela.annotations.XMLAttribute;
+import org.openflexo.pamela.annotations.XMLElement;
 import org.openflexo.toolbox.StringUtils;
 
 /**
@@ -83,7 +83,7 @@ public interface TypeAwareModelSlotInstance<M extends FlexoModel<M, MM> & Techno
 	public M getModel();
 
 	public static abstract class TypeAwareModelSlotInstanceImpl<M extends FlexoModel<M, MM> & TechnologyObject<?>, MM extends FlexoMetaModel<MM> & TechnologyObject<?>, MS extends TypeAwareModelSlot<M, MM>>
-			extends ModelSlotInstanceImpl<MS, M>implements TypeAwareModelSlotInstance<M, MM, MS> {
+			extends ModelSlotInstanceImpl<MS, M> implements TypeAwareModelSlotInstance<M, MM, MS> {
 
 		private static final Logger logger = Logger.getLogger(TypeAwareModelSlotInstance.class.getPackage().getName());
 
@@ -126,6 +126,12 @@ public interface TypeAwareModelSlotInstance<M extends FlexoModel<M, MM> & Techno
 			}
 			if (accessedResourceData == null && StringUtils.isNotEmpty(modelURI)) {
 				logger.warning("cannot find model " + modelURI);
+				/*for (FlexoResourceCenter<?> rc : svcManager.getResourceCenterService().getResourceCenters()) {
+					System.out.println("--------------- RC: " + rc);
+					for (FlexoResource<?> resource : rc.getAllResources()) {
+						System.out.println(" > " + resource.getURI());
+					}
+				}*/
 			}
 			return accessedResourceData;
 		}

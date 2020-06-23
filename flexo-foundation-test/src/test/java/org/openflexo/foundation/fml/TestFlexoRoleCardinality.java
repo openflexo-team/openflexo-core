@@ -78,7 +78,7 @@ import org.openflexo.foundation.resource.PamelaResource;
 import org.openflexo.foundation.resource.ResourceLoadingCancelledException;
 import org.openflexo.foundation.resource.SaveResourceException;
 import org.openflexo.foundation.test.OpenflexoProjectAtRunTimeTestCase;
-import org.openflexo.model.exceptions.ModelDefinitionException;
+import org.openflexo.pamela.exceptions.ModelDefinitionException;
 import org.openflexo.rm.ResourceLocator;
 import org.openflexo.test.OrderedRunner;
 import org.openflexo.test.TestOrder;
@@ -135,7 +135,7 @@ public class TestFlexoRoleCardinality extends OpenflexoProjectAtRunTimeTestCase 
 	}
 
 	/**
-	 * Test {@link ViewPoint} creation, check {@link BindingModel}
+	 * Test {@link VirtualModel} creation, check {@link BindingModel}
 	 * 
 	 * @throws ModelDefinitionException
 	 * @throws SaveResourceException
@@ -216,7 +216,7 @@ public class TestFlexoRoleCardinality extends OpenflexoProjectAtRunTimeTestCase 
 		System.out.println("flexoConcept2 = " + flexoConcept2);
 		assertNotNull(flexoConcept2);
 
-		((VirtualModelResource) virtualModel.getResource()).save(null);
+		((VirtualModelResource) virtualModel.getResource()).save();
 
 		CreatePrimitiveRole createPR1 = CreatePrimitiveRole.actionType.makeNewAction(flexoConcept1, null, editor);
 		createPR1.setRoleName("aStringInA");
@@ -254,12 +254,12 @@ public class TestFlexoRoleCardinality extends OpenflexoProjectAtRunTimeTestCase 
 		assertEquals(String.class, aStringInA.getResultingType());
 		someBooleanInA = (PrimitiveRole<Boolean>) flexoConcept1.getAccessibleProperty("someBooleanInA");
 		assertNotNull(someBooleanInA);
-		assertEquals(Boolean.class, someBooleanInA.getType());
-		assertEquals(new ParameterizedTypeImpl(List.class, Boolean.class), someBooleanInA.getResultingType());
+		assertEquals(Boolean.TYPE, someBooleanInA.getType());
+		assertEquals(new ParameterizedTypeImpl(List.class, Boolean.TYPE), someBooleanInA.getResultingType());
 		someIntegerInA = (PrimitiveRole<Integer>) flexoConcept1.getAccessibleProperty("someIntegerInA");
 		assertNotNull(someIntegerInA);
-		assertEquals(Integer.class, someIntegerInA.getType());
-		assertEquals(new ParameterizedTypeImpl(List.class, Integer.class), someIntegerInA.getResultingType());
+		assertEquals(Integer.TYPE, someIntegerInA.getType());
+		assertEquals(new ParameterizedTypeImpl(List.class, Integer.TYPE), someIntegerInA.getResultingType());
 		someFlexoConcept2 = (FlexoConceptInstanceRole) flexoConcept1.getAccessibleProperty("someFlexoConcept2");
 		assertNotNull(someFlexoConcept2);
 
@@ -333,7 +333,7 @@ public class TestFlexoRoleCardinality extends OpenflexoProjectAtRunTimeTestCase 
 		assertNotNull(newView);
 		assertNotNull(newView.getResource());
 		try {
-			newView.getResource().save(null);
+			newView.getResource().save();
 		} catch (SaveResourceException e) {
 			e.printStackTrace();
 		}
@@ -538,7 +538,7 @@ public class TestFlexoRoleCardinality extends OpenflexoProjectAtRunTimeTestCase 
 		System.out.println(((PamelaResource<?, ?>) vmi.getResource()).getFactory().stringRepresentation(vmi));
 
 		try {
-			vmi.getResource().save(null);
+			vmi.getResource().save();
 		} catch (SaveResourceException e) {
 			e.printStackTrace();
 			fail(e.getMessage());
@@ -568,7 +568,7 @@ public class TestFlexoRoleCardinality extends OpenflexoProjectAtRunTimeTestCase 
 		assertNotNull(project);
 		FMLRTVirtualModelInstanceResource newViewResource = project.getVirtualModelInstanceRepository().getVirtualModelInstance(oldViewURI);
 		assertNotNull(newViewResource);
-		newViewResource.loadResourceData(null);
+		newViewResource.loadResourceData();
 		assertNotNull(newViewResource.getLoadedResourceData());
 		newView = newViewResource.getLoadedResourceData();
 

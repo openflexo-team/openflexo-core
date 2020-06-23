@@ -49,7 +49,7 @@ import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
  * @param <TA>
  *            Type of TechnologyAdapter
  */
-public interface TechnologySpecificFlexoAction<TA extends TechnologyAdapter> {
+public interface TechnologySpecificFlexoAction<TA extends TechnologyAdapter<TA>> {
 	/**
 	 * Return the {@link TechnologyAdapter} class were this {@link FlexoAction} is defined
 	 * 

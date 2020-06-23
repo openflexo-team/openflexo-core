@@ -46,9 +46,8 @@ import org.openflexo.connie.BindingVariable;
 import org.openflexo.connie.DataBinding;
 import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.fml.FMLModelFactory;
+import org.openflexo.foundation.fml.FMLPrettyPrintable;
 import org.openflexo.foundation.fml.FMLRepresentationContext;
-import org.openflexo.foundation.fml.FlexoBehaviour;
-import org.openflexo.foundation.fml.FlexoBehaviourObject;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoConceptObject;
 import org.openflexo.foundation.fml.binding.ControlGraphBindingModel;
@@ -57,16 +56,16 @@ import org.openflexo.foundation.fml.editionaction.ReturnStatement;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext.ReturnException;
 import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
-import org.openflexo.model.annotations.CloningStrategy;
-import org.openflexo.model.annotations.CloningStrategy.StrategyType;
-import org.openflexo.model.annotations.Getter;
-import org.openflexo.model.annotations.ImplementationClass;
-import org.openflexo.model.annotations.Import;
-import org.openflexo.model.annotations.Imports;
-import org.openflexo.model.annotations.ModelEntity;
-import org.openflexo.model.annotations.PropertyIdentifier;
-import org.openflexo.model.annotations.Setter;
-import org.openflexo.model.annotations.XMLAttribute;
+import org.openflexo.pamela.annotations.CloningStrategy;
+import org.openflexo.pamela.annotations.CloningStrategy.StrategyType;
+import org.openflexo.pamela.annotations.Getter;
+import org.openflexo.pamela.annotations.ImplementationClass;
+import org.openflexo.pamela.annotations.Import;
+import org.openflexo.pamela.annotations.Imports;
+import org.openflexo.pamela.annotations.ModelEntity;
+import org.openflexo.pamela.annotations.PropertyIdentifier;
+import org.openflexo.pamela.annotations.Setter;
+import org.openflexo.pamela.annotations.XMLAttribute;
 
 /**
  * Abstract definition of a control graph node in control flow graph paradigm.<br>
@@ -83,7 +82,7 @@ import org.openflexo.model.annotations.XMLAttribute;
 @ModelEntity(isAbstract = true)
 @ImplementationClass(FMLControlGraph.FMLControlGraphImpl.class)
 @Imports({ @Import(EditionAction.class), @Import(EmptyControlGraph.class), @Import(Sequence.class) })
-public abstract interface FMLControlGraph extends FlexoConceptObject {
+public abstract interface FMLControlGraph extends FlexoConceptObject, FMLPrettyPrintable {
 
 	@PropertyIdentifier(type = FMLControlGraphOwner.class)
 	public static final String OWNER_KEY = "owner";
@@ -390,14 +389,6 @@ public abstract interface FMLControlGraph extends FlexoConceptObject {
 			return getOwner();
 		}
 
-		@Deprecated
-		public FlexoBehaviour getFlexoBehaviour() {
-			if (getRootOwner() instanceof FlexoBehaviourObject) {
-				return ((FlexoBehaviourObject) getRootOwner()).getFlexoBehaviour();
-			}
-			return null;
-		}
-
 		@Override
 		public Sequence getParentFlattenedSequence() {
 			Sequence returned = null;
@@ -421,7 +412,12 @@ public abstract interface FMLControlGraph extends FlexoConceptObject {
 		public void setOwner(FMLControlGraphOwner owner) {
 			performSuperSetter(OWNER_KEY, owner);
 			// We should recursively call #notifiedScopeChanged() on all contained control graphs
-			accept(controlGraph -> controlGraph.notifiedScopeChanged());
+			accept(new FMLControlGraphVisitor() {
+				@Override
+				public void visit(FMLControlGraph controlGraph) {
+					controlGraph.notifiedScopeChanged();
+				}
+			});
 		}
 
 	}

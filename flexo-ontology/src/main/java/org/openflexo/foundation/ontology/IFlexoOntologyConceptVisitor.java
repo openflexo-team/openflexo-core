@@ -59,7 +59,7 @@ public interface IFlexoOntologyConceptVisitor<T> {
 	 * @param aConstraint
 	 * @return
 	 */
-	<TA extends TechnologyAdapter> T visit(IFlexoOntologyConstraint<TA> aConstraint);
+	<TA extends TechnologyAdapter<TA>> T visit(IFlexoOntologyConstraint<TA> aConstraint);
 
 	/**
 	 * Visit a DataType.
@@ -67,7 +67,7 @@ public interface IFlexoOntologyConceptVisitor<T> {
 	 * @param aDataType
 	 * @return
 	 */
-	<TA extends TechnologyAdapter> T visit(IFlexoOntologyDataType<TA> aDataType);
+	<TA extends TechnologyAdapter<TA>> T visit(IFlexoOntologyDataType<TA> aDataType);
 
 	/**
 	 * Visit an Individual.
@@ -75,7 +75,7 @@ public interface IFlexoOntologyConceptVisitor<T> {
 	 * @param aIndividual
 	 * @return
 	 */
-	<TA extends TechnologyAdapter> T visit(IFlexoOntologyIndividual<TA> aIndividual);
+	<TA extends TechnologyAdapter<TA>> T visit(IFlexoOntologyIndividual<TA> aIndividual);
 
 	/**
 	 * Visit a Class.
@@ -83,7 +83,7 @@ public interface IFlexoOntologyConceptVisitor<T> {
 	 * @param aClass
 	 * @return
 	 */
-	<TA extends TechnologyAdapter> T visit(IFlexoOntologyClass<TA> aClass);
+	<TA extends TechnologyAdapter<TA>> T visit(IFlexoOntologyClass<TA> aClass);
 
 	/**
 	 * Visit a Clabject.
@@ -91,7 +91,7 @@ public interface IFlexoOntologyConceptVisitor<T> {
 	 * @param aClabject
 	 * @return
 	 */
-	<TA extends TechnologyAdapter> T visit(IFlexoOntologyClabject<TA> aClabject);
+	<TA extends TechnologyAdapter<TA>> T visit(IFlexoOntologyClabject<TA> aClabject);
 
 	/**
 	 * Visit a Data Property.
@@ -99,7 +99,7 @@ public interface IFlexoOntologyConceptVisitor<T> {
 	 * @param aDataProperty
 	 * @return
 	 */
-	<TA extends TechnologyAdapter> T visit(IFlexoOntologyDataProperty<TA> aDataProperty);
+	<TA extends TechnologyAdapter<TA>> T visit(IFlexoOntologyDataProperty<TA> aDataProperty);
 
 	/**
 	 * Visit an Object Property.
@@ -107,7 +107,7 @@ public interface IFlexoOntologyConceptVisitor<T> {
 	 * @param aObjectProperty
 	 * @return
 	 */
-	<TA extends TechnologyAdapter> T visit(IFlexoOntologyObjectProperty<TA> aObjectProperty);
+	<TA extends TechnologyAdapter<TA>> T visit(IFlexoOntologyObjectProperty<TA> aObjectProperty);
 
 	/**
 	 * Visit a Behavioural Property.
@@ -115,5 +115,5 @@ public interface IFlexoOntologyConceptVisitor<T> {
 	 * @param aBehaviouralProperty
 	 * @return
 	 */
-	<TA extends TechnologyAdapter> T visit(IFlexoOntologyBehaviouralProperty<TA> aBehaviouralProperty);
+	<TA extends TechnologyAdapter<TA>> T visit(IFlexoOntologyBehaviouralProperty<TA> aBehaviouralProperty);
 }

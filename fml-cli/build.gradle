@@ -5,6 +5,7 @@ dependencies {
   compile group: 'org.jboss.jreadline', name: 'jreadline', version: '0.20'
 
   // testing dep
+  testCompile testUtils()
   testCompile project(':flexo-foundation-test')
   testCompile project(':flexo-test-resources')
 }
@@ -27,9 +28,6 @@ sourceSets {
      includes = [ "**/*.dat" ]
    }
  }
-}
-tasks.withType(Test) {
-	jvmArgs += ["-Djava.awt.headless=true"]
 }
 
 // use with gradle --no-daemon --console plain fml-cli:run -q

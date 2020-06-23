@@ -67,7 +67,7 @@ public class FlexoOntologyUtility {
 	 * @param flexoOntology
 	 * @return
 	 */
-	public static <TA extends TechnologyAdapter> String toString(IFlexoOntology<TA> flexoOntology) {
+	public static <TA extends TechnologyAdapter<TA>> String toString(IFlexoOntology<TA> flexoOntology) {
 		StringBuilder builder = new StringBuilder();
 		try {
 			builder.append("Ontology : ");
@@ -100,7 +100,7 @@ public class FlexoOntologyUtility {
 	 * @param container
 	 * @return
 	 */
-	protected static <TA extends TechnologyAdapter> String toString(IFlexoOntologyContainer<TA> container) {
+	protected static <TA extends TechnologyAdapter<TA>> String toString(IFlexoOntologyContainer<TA> container) {
 		StringBuilder builder = new StringBuilder();
 		builder.append("Container : ");
 		builder.append(container.getName());
@@ -127,7 +127,7 @@ public class FlexoOntologyUtility {
 	 * @param container
 	 * @return
 	 */
-	public static <TA extends TechnologyAdapter> List<IFlexoOntologyConcept<TA>> getAllConcepts(
+	public static <TA extends TechnologyAdapter<TA>> List<IFlexoOntologyConcept<TA>> getAllConcepts(
 			IFlexoOntologyConceptContainer<TA> container) {
 		List<IFlexoOntologyConcept<TA>> result = new ArrayList<>();
 		result.addAll(container.getConcepts());
@@ -144,7 +144,7 @@ public class FlexoOntologyUtility {
 	 * @param uri
 	 * @return
 	 */
-	public static <TA extends TechnologyAdapter> IFlexoOntologyClass<TA> getClass(IFlexoOntology<TA> flexoOntology, String uri) {
+	public static <TA extends TechnologyAdapter<TA>> IFlexoOntologyClass<TA> getClass(IFlexoOntology<TA> flexoOntology, String uri) {
 		IFlexoOntologyClass<TA> result = null;
 		for (IFlexoOntologyConcept<TA> concept : getAllConcepts(flexoOntology)) {
 			if (concept instanceof IFlexoOntologyClass) {
@@ -163,7 +163,8 @@ public class FlexoOntologyUtility {
 	 * @param uri
 	 * @return
 	 */
-	public static <TA extends TechnologyAdapter> IFlexoOntologyIndividual<TA> getIndividual(IFlexoOntology<TA> flexoOntology, String uri) {
+	public static <TA extends TechnologyAdapter<TA>> IFlexoOntologyIndividual<TA> getIndividual(IFlexoOntology<TA> flexoOntology,
+			String uri) {
 		IFlexoOntologyIndividual<TA> result = null;
 		for (IFlexoOntologyConcept<TA> concept : getAllConcepts(flexoOntology)) {
 			if (concept instanceof IFlexoOntologyIndividual) {
@@ -182,8 +183,8 @@ public class FlexoOntologyUtility {
 	 * @param uri
 	 * @return
 	 */
-	public static <TA extends TechnologyAdapter> List<IFlexoOntologyIndividual<TA>> getIndividualOfType(IFlexoOntology<TA> flexoOntology,
-			IFlexoOntologyClass<TA> emfClass) {
+	public static <TA extends TechnologyAdapter<TA>> List<IFlexoOntologyIndividual<TA>> getIndividualOfType(
+			IFlexoOntology<TA> flexoOntology, IFlexoOntologyClass<TA> emfClass) {
 		List<IFlexoOntologyIndividual<TA>> result = new ArrayList<>();
 		for (IFlexoOntologyConcept<TA> concept : getAllConcepts(flexoOntology)) {
 			if (concept instanceof IFlexoOntologyIndividual) {
@@ -202,7 +203,7 @@ public class FlexoOntologyUtility {
 	 * @param uri
 	 * @return
 	 */
-	public static <TA extends TechnologyAdapter> IFlexoOntologyFeature<TA> getFeature(IFlexoOntology<TA> flexoOntology, String uri) {
+	public static <TA extends TechnologyAdapter<TA>> IFlexoOntologyFeature<TA> getFeature(IFlexoOntology<TA> flexoOntology, String uri) {
 		IFlexoOntologyFeature<TA> result = null;
 		for (IFlexoOntologyConcept<TA> concept : getAllConcepts(flexoOntology)) {
 			if (concept instanceof IFlexoOntologyFeature) {

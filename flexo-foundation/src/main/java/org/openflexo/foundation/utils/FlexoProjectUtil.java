@@ -46,7 +46,6 @@ import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.toolbox.FlexoVersion;
 
 public class FlexoProjectUtil {
@@ -60,12 +59,10 @@ public class FlexoProjectUtil {
 	public static boolean isProjectOpenable(File projectDirectory) throws UnreadableProjectException {
 		FlexoVersion version = getVersion(projectDirectory);
 		if (version != null && version.major == 1 && version.minor < 3) {
-			throw new UnreadableProjectException(
-					FlexoLocalization.getMainLocalizer().localizedForKey("project_is_too_old_please_use_intermediary_versions"));
+			throw new UnreadableProjectException("project_is_too_old_please_use_intermediary_versions");
 		}
 		if (currentFlexoVersionIsSmallerThanLastVersion(projectDirectory)) {
-			throw new UnreadableProjectException(FlexoLocalization.getMainLocalizer()
-					.localizedForKey("current_flexo_version_is_smaller_than_last_used_to_open_this_project"));
+			throw new UnreadableProjectException("current_flexo_version_is_smaller_than_last_used_to_open_this_project");
 		}
 		return true;
 	}

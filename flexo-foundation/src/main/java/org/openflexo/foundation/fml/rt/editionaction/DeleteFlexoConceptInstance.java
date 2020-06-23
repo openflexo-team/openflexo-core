@@ -53,7 +53,6 @@ import org.openflexo.foundation.fml.FMLRepresentationContext.FMLRepresentationOu
 import org.openflexo.foundation.fml.FlexoBehaviourParameter;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoConceptInstanceType;
-import org.openflexo.foundation.fml.FlexoProperty;
 import org.openflexo.foundation.fml.annotations.FML;
 import org.openflexo.foundation.fml.editionaction.DeleteAction;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
@@ -62,24 +61,24 @@ import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.foundation.fml.rt.action.DeletionSchemeAction;
 import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
 import org.openflexo.foundation.fml.rt.rm.AbstractVirtualModelInstanceResource;
-import org.openflexo.model.annotations.Adder;
-import org.openflexo.model.annotations.CloningStrategy;
-import org.openflexo.model.annotations.CloningStrategy.StrategyType;
-import org.openflexo.model.annotations.DefineValidationRule;
-import org.openflexo.model.annotations.Embedded;
-import org.openflexo.model.annotations.Getter;
-import org.openflexo.model.annotations.Getter.Cardinality;
-import org.openflexo.model.annotations.ImplementationClass;
-import org.openflexo.model.annotations.ModelEntity;
-import org.openflexo.model.annotations.PropertyIdentifier;
-import org.openflexo.model.annotations.Remover;
-import org.openflexo.model.annotations.Setter;
-import org.openflexo.model.annotations.XMLAttribute;
-import org.openflexo.model.annotations.XMLElement;
-import org.openflexo.model.validation.CompoundIssue;
-import org.openflexo.model.validation.ValidationError;
-import org.openflexo.model.validation.ValidationIssue;
-import org.openflexo.model.validation.ValidationRule;
+import org.openflexo.pamela.annotations.Adder;
+import org.openflexo.pamela.annotations.CloningStrategy;
+import org.openflexo.pamela.annotations.CloningStrategy.StrategyType;
+import org.openflexo.pamela.annotations.DefineValidationRule;
+import org.openflexo.pamela.annotations.Embedded;
+import org.openflexo.pamela.annotations.Getter;
+import org.openflexo.pamela.annotations.Getter.Cardinality;
+import org.openflexo.pamela.annotations.ImplementationClass;
+import org.openflexo.pamela.annotations.ModelEntity;
+import org.openflexo.pamela.annotations.PropertyIdentifier;
+import org.openflexo.pamela.annotations.Remover;
+import org.openflexo.pamela.annotations.Setter;
+import org.openflexo.pamela.annotations.XMLAttribute;
+import org.openflexo.pamela.annotations.XMLElement;
+import org.openflexo.pamela.validation.CompoundIssue;
+import org.openflexo.pamela.validation.ValidationError;
+import org.openflexo.pamela.validation.ValidationIssue;
+import org.openflexo.pamela.validation.ValidationRule;
 
 /**
  * This action is used to explicitely delete a new {@link FlexoConceptInstance}<br>
@@ -97,19 +96,10 @@ import org.openflexo.model.validation.ValidationRule;
 @FML("DeleteFlexoConceptInstance")
 public interface DeleteFlexoConceptInstance<VMI extends VirtualModelInstance<VMI, ?>> extends DeleteAction<FlexoConceptInstance> {
 
-	// @PropertyIdentifier(type = DataBinding.class)
-	// public static final String VIRTUAL_MODEL_INSTANCE_KEY = "virtualModelInstance";
 	@PropertyIdentifier(type = String.class)
 	public static final String DELETION_SCHEME_URI_KEY = "deletionSchemeURI";
 	@PropertyIdentifier(type = List.class)
 	public static final String PARAMETERS_KEY = "parameters";
-
-	/*@Getter(value = VIRTUAL_MODEL_INSTANCE_KEY)
-	@XMLAttribute
-	public DataBinding<VirtualModelInstance<?, ?>> getVirtualModelInstance();
-	
-	@Setter(VIRTUAL_MODEL_INSTANCE_KEY)
-	public void setVirtualModelInstance(DataBinding<VirtualModelInstance<?, ?>> virtualModelInstance);*/
 
 	@Getter(value = DELETION_SCHEME_URI_KEY)
 	@XMLAttribute
@@ -144,56 +134,9 @@ public interface DeleteFlexoConceptInstance<VMI extends VirtualModelInstance<VMI
 
 		private static final Logger logger = Logger.getLogger(DeleteFlexoConceptInstance.class.getPackage().getName());
 
-		// private FlexoConcept flexoConceptType;
 		private DeletionScheme deletionScheme;
 		private String _deletionSchemeURI;
 		private boolean isUpdating = false;
-
-		// I don't understand ? why this code is required by the compiler ?
-		@Override
-		public FlexoProperty getAssignedFlexoProperty() {
-			// TODO Auto-generated method stub
-			return super.getAssignedFlexoProperty();
-		}
-
-		/*public VirtualModelInstance<?, ?> getVirtualModelInstance(RunTimeEvaluationContext evaluationContext) {
-			try {
-				return getVirtualModelInstance().getBindingValue(evaluationContext);
-			} catch (TypeMismatchException e) {
-				e.printStackTrace();
-			} catch (NullReferenceException e) {
-				e.printStackTrace();
-			} catch (InvocationTargetException e) {
-				e.printStackTrace();
-			}
-			return null;
-		}*/
-
-		/*private DataBinding<VirtualModelInstance<?, ?>> virtualModelInstance;
-		
-		@Override
-		public DataBinding<VirtualModelInstance<?, ?>> getVirtualModelInstance() {
-			if (virtualModelInstance == null) {
-				virtualModelInstance = new DataBinding<VirtualModelInstance<?, ?>>(this, FMLRTVirtualModelInstance.class,
-						DataBinding.BindingDefinitionType.GET);
-			}
-			return virtualModelInstance;
-		}
-		
-		@Override
-		public void setVirtualModelInstance(DataBinding<VirtualModelInstance<?, ?>> aVirtualModelInstance) {
-			if (aVirtualModelInstance != null) {
-				aVirtualModelInstance.setOwner(this);
-				aVirtualModelInstance.setBindingName("virtualModelInstance");
-				aVirtualModelInstance.setDeclaredType(FMLRTVirtualModelInstance.class);
-				aVirtualModelInstance.setBindingDefinitionType(DataBinding.BindingDefinitionType.GET);
-			}
-			if (this.virtualModelInstance != aVirtualModelInstance) {
-				this.getPropertyChangeSupport().firePropertyChange("virtualModelInstance", this.virtualModelInstance,
-						aVirtualModelInstance);
-				this.virtualModelInstance = aVirtualModelInstance;
-			}
-		}*/
 
 		@Override
 		public FlexoConcept getFlexoConceptType() {
@@ -252,8 +195,6 @@ public interface DeleteFlexoConceptInstance<VMI extends VirtualModelInstance<VMI
 				_deletionSchemeURI = deletionScheme.getURI();
 			}
 		}
-
-		// private Vector<AddFlexoConceptInstanceParameter> parameters = new Vector<AddFlexoConceptInstanceParameter>();
 
 		@Override
 		public List<DeleteFlexoConceptInstanceParameter> getParameters() {
@@ -384,18 +325,28 @@ public interface DeleteFlexoConceptInstance<VMI extends VirtualModelInstance<VMI
 			}
 			return out.toString();
 		}
+
+		@Override
+		public String getStringRepresentation() {
+			if (getDeletionScheme() != null) {
+				return getObject().toString() + "." + getDeletionScheme().getName() + "()";
+			}
+			else {
+				return super.getStringRepresentation();
+			}
+		}
 	}
 
 	@DefineValidationRule
 	public static class DeleteFlexoConceptInstanceMustAddressADeletionScheme
-			extends ValidationRule<DeleteFlexoConceptInstanceMustAddressADeletionScheme, DeleteFlexoConceptInstance> {
+			extends ValidationRule<DeleteFlexoConceptInstanceMustAddressADeletionScheme, DeleteFlexoConceptInstance<?>> {
 		public DeleteFlexoConceptInstanceMustAddressADeletionScheme() {
 			super(DeleteFlexoConceptInstance.class, "delete_flexo_concept_action_must_address_a_valid_creation_scheme");
 		}
 
 		@Override
-		public ValidationIssue<DeleteFlexoConceptInstanceMustAddressADeletionScheme, DeleteFlexoConceptInstance> applyValidation(
-				DeleteFlexoConceptInstance action) {
+		public ValidationIssue<DeleteFlexoConceptInstanceMustAddressADeletionScheme, DeleteFlexoConceptInstance<?>> applyValidation(
+				DeleteFlexoConceptInstance<?> action) {
 			if (action.getDeletionScheme() == null) {
 				if (action.getFlexoConceptType() == null) {
 					return new ValidationError<>(this, action, "delete_flexo_concept_action_doesn't_define_any_flexo_concept");

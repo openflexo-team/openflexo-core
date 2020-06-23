@@ -39,12 +39,12 @@
 
 package org.openflexo.prefs;
 
-import org.openflexo.model.annotations.Getter;
-import org.openflexo.model.annotations.ModelEntity;
-import org.openflexo.model.annotations.PropertyIdentifier;
-import org.openflexo.model.annotations.Setter;
 import org.openflexo.module.FlexoModule;
 import org.openflexo.module.Module;
+import org.openflexo.pamela.annotations.Getter;
+import org.openflexo.pamela.annotations.ModelEntity;
+import org.openflexo.pamela.annotations.PropertyIdentifier;
+import org.openflexo.pamela.annotations.Setter;
 
 /**
  * Preferences relative to a module

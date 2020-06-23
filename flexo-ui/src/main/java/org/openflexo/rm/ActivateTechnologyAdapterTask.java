@@ -52,12 +52,12 @@ import org.openflexo.task.FlexoApplicationTask;
  * @author sylvain
  *
  */
-public class ActivateTechnologyAdapterTask extends FlexoApplicationTask {
+public class ActivateTechnologyAdapterTask<TA extends TechnologyAdapter<TA>> extends FlexoApplicationTask {
 
 	private final TechnologyAdapterService taService;
-	private final TechnologyAdapter technologyAdapter;
+	private final TA technologyAdapter;
 
-	public ActivateTechnologyAdapterTask(TechnologyAdapterService taService, TechnologyAdapter technologyAdapter) {
+	public ActivateTechnologyAdapterTask(TechnologyAdapterService taService, TA technologyAdapter) {
 		super(FlexoLocalization.getMainLocalizer().localizedForKey("activation_of_technology") + " " + technologyAdapter.getName(),
 				taService.getServiceManager());
 		this.taService = taService;
@@ -77,11 +77,11 @@ public class ActivateTechnologyAdapterTask extends FlexoApplicationTask {
 
 		technologyAdapter.activate();
 		taService.getServiceManager().notify(taService,
-				taService.getServiceManager().new TechnologyAdapterHasBeenActivated(technologyAdapter));
+				taService.getServiceManager().new TechnologyAdapterHasBeenActivated<>(technologyAdapter));
 
 	}
 
-	public TechnologyAdapter getTechnologyAdapter() {
+	public TA getTechnologyAdapter() {
 		return technologyAdapter;
 	}
 
@@ -92,7 +92,6 @@ public class ActivateTechnologyAdapterTask extends FlexoApplicationTask {
 
 	@Override
 	protected synchronized void finishedExecution() {
-		// TODO Auto-generated method stub
 		super.finishedExecution();
 	}
 }

@@ -5,8 +5,8 @@ import java.util.Collection;
 import java.util.Enumeration;
 
 import org.openflexo.foundation.FlexoObject;
-import org.openflexo.model.annotations.ImplementationClass;
-import org.openflexo.model.annotations.ModelEntity;
+import org.openflexo.pamela.annotations.ImplementationClass;
+import org.openflexo.pamela.annotations.ModelEntity;
 
 /**
  * A {@link ResourceRepository} stores all resources of a particular type.<br>
@@ -86,6 +86,14 @@ public interface ResourceRepository<R extends FlexoResource<?>, I> {
 	 * @return
 	 */
 	R getResource(String resourceURI);
+
+	/**
+	 * Return first found resource matching supplied serialization artefact
+	 * 
+	 * @param serializationArtefact
+	 * @return
+	 */
+	R getResource(I serializationArtefact);
 
 	/**
 	 * Register supplied resource in default root folder

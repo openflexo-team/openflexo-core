@@ -49,12 +49,12 @@ import org.openflexo.foundation.fml.rt.rm.FMLRTVirtualModelInstanceResource;
 import org.openflexo.foundation.resource.ResourceLoadingCancelledException;
 import org.openflexo.foundation.resource.ResourceManager;
 import org.openflexo.logging.FlexoLogger;
-import org.openflexo.model.annotations.Getter;
-import org.openflexo.model.annotations.ImplementationClass;
-import org.openflexo.model.annotations.ModelEntity;
-import org.openflexo.model.annotations.PropertyIdentifier;
-import org.openflexo.model.annotations.Setter;
-import org.openflexo.model.annotations.XMLAttribute;
+import org.openflexo.pamela.annotations.Getter;
+import org.openflexo.pamela.annotations.ImplementationClass;
+import org.openflexo.pamela.annotations.ModelEntity;
+import org.openflexo.pamela.annotations.PropertyIdentifier;
+import org.openflexo.pamela.annotations.Setter;
+import org.openflexo.pamela.annotations.XMLAttribute;
 import org.openflexo.toolbox.StringUtils;
 
 /**
@@ -159,19 +159,16 @@ public interface VirtualModelInstanceBasedNatureObject<N extends ProjectNature<N
 				// Do not load virtual model when unloaded
 				// return getAccessedVirtualModelResource().getLoadedResourceData();
 				try {
-					FMLRTVirtualModelInstance returned = getAccessedVirtualModelInstanceResource().getResourceData(null);
+					FMLRTVirtualModelInstance returned = getAccessedVirtualModelInstanceResource().getResourceData();
 					if (returned != null) {
 						fireVirtualModelInstanceConnected(returned);
 					}
 					return returned;
 				} catch (FileNotFoundException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				} catch (ResourceLoadingCancelledException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				} catch (FlexoException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			}

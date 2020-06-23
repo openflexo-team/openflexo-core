@@ -220,7 +220,7 @@ public class WizardPanelController extends FlexoFIBController {
 
 	private void setKeyAdapter(FIBWidget tf, FIBController controller) {
 		JFIBView<?, ?> widget = (JFIBView<?, ?>) controller.viewForComponent(tf);
-		widget.getJComponent().addKeyListener(new KeyAdapter() {
+		KeyAdapter ka = new KeyAdapter() {
 			@Override
 			public void keyPressed(KeyEvent e) {
 				super.keyPressed(e);
@@ -234,13 +234,27 @@ public class WizardPanelController extends FlexoFIBController {
 					}
 				}
 			}
-		});
+		};
+
+		recursivelyAddKeyAdapter(widget.getJComponent(), ka);
+	}
+
+	private void recursivelyAddKeyAdapter(JComponent component, KeyAdapter ka) {
+		component.addKeyListener(ka);
+		if (component instanceof Container) {
+			for (Component subComponent : ((Container) component).getComponents()) {
+				if (subComponent instanceof JComponent) {
+					recursivelyAddKeyAdapter((JComponent) subComponent, ka);
+				}
+			}
+		}
 	}
 
 	private boolean knownNextEnabled = false;
 	private boolean knownCanFinish = false;
 
 	private void trackNextAndFinish() {
+
 		if (!knownCanFinish && getDataObject().canFinish()) {
 			((JButton) finishButtonWidget.getJComponent()).setSelected(true);
 		}

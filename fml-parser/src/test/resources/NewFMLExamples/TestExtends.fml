@@ -1,0 +1,11 @@
+/**
+ * Test extends declarations
+ */
+
+import ["http://www.openflexo.org/test/AnOtherModel.fml"];
+import ["http://www.openflexo.org/test/AThirdModel.fml"];
+
+// This is the main declaration
+model MyModel extends AnOtherModel,AThirdModel {
+	
+}

@@ -116,10 +116,12 @@ public abstract class ApplicationContext extends DefaultFlexoServiceManager {
 
 		registerApplicationFIBLibraryService();
 		registerModuleLoaderService();
-		registerPreferencesService();
 
 		TechnologyAdapterControllerService technologyAdapterControllerService = createTechnologyAdapterControllerService();
 		registerService(technologyAdapterControllerService);
+
+		registerPreferencesService();
+
 		// BugReportService bugReportService = createBugReportService();
 		// registerService(bugReportService);
 		DocResourceManager docResourceManager = createDocResourceManager();
@@ -145,7 +147,6 @@ public abstract class ApplicationContext extends DefaultFlexoServiceManager {
 	}
 
 	private void registerPreferencesService() {
-		registerModuleLoaderService();
 		if (getPreferencesService() == null) {
 			PreferencesService preferencesService = createPreferencesService();
 			registerService(preferencesService);
@@ -278,9 +279,8 @@ public abstract class ApplicationContext extends DefaultFlexoServiceManager {
 
 	@Override
 	protected FlexoResourceCenterService createResourceCenterService() {
-		registerPreferencesService();
 		FlexoResourceCenterService returned = DefaultResourceCenterService
-				.getNewInstance(getPreferencesService().getResourceCenterPreferences().getResourceCenterEntries(), Flexo.isDev);
+				.getNewInstance(Flexo.isDev);
 		return returned;
 	}
 
@@ -321,10 +321,23 @@ public abstract class ApplicationContext extends DefaultFlexoServiceManager {
 		return removeRCTask;
 	}
 
-	private Map<TechnologyAdapter, ActivateTechnologyAdapterTask> activatingTechnologyAdapters;
+	private Map<TechnologyAdapter<?>, ActivateTechnologyAdapterTask<?>> activatingTechnologyAdapters;
 
 	@Override
-	public ActivateTechnologyAdapterTask activateTechnologyAdapter(TechnologyAdapter technologyAdapter, boolean performNowInThisThread) {
+	public <TA extends TechnologyAdapter<TA>> ActivateTechnologyAdapterTask<TA> activateTechnologyAdapter(TA technologyAdapter,
+			boolean performNowInThisThread) {
+
+		if (technologyAdapter.isActivated()) {
+			// Already activated
+			return null;
+		}
+
+		if (technologyAdapter.isActivating()) {
+			// Already activating
+			return null;
+		}
+
+		logger.fine("********** Activating technology adapter " + technologyAdapter);
 
 		if (performNowInThisThread) {
 			super.activateTechnologyAdapter(technologyAdapter, true);
@@ -333,10 +346,6 @@ public abstract class ApplicationContext extends DefaultFlexoServiceManager {
 
 		// We try here to prevent activate all TA concurrently
 
-		if (technologyAdapter.isActivated()) {
-			// Already activated
-			return null;
-		}
 		if (activatingTechnologyAdapters == null) {
 			activatingTechnologyAdapters = new HashMap<>();
 		}
@@ -344,8 +353,9 @@ public abstract class ApplicationContext extends DefaultFlexoServiceManager {
 			// About to be activated. No need to go further
 			return null;
 		}
-		ActivateTechnologyAdapterTask activateTATask = new ActivateTechnologyAdapterTask(getTechnologyAdapterService(), technologyAdapter);
-		for (TechnologyAdapter ta : activatingTechnologyAdapters.keySet()) {
+		ActivateTechnologyAdapterTask<TA> activateTATask = new ActivateTechnologyAdapterTask<>(getTechnologyAdapterService(),
+				technologyAdapter);
+		for (TechnologyAdapter<?> ta : activatingTechnologyAdapters.keySet()) {
 			activateTATask.addToDependantTasks(activatingTechnologyAdapters.get(ta));
 			// System.out.println("> Waiting " + ta);
 		}
@@ -357,17 +367,17 @@ public abstract class ApplicationContext extends DefaultFlexoServiceManager {
 	}
 
 	@Override
-	public void hasActivated(TechnologyAdapter technologyAdapter) {
+	public void hasActivated(TechnologyAdapter<?> technologyAdapter) {
 		super.hasActivated(technologyAdapter);
 		activatingTechnologyAdapters.remove(technologyAdapter);
 	}
 
 	@Override
-	public DisactivateTechnologyAdapterTask disactivateTechnologyAdapter(TechnologyAdapter technologyAdapter) {
+	public <TA extends TechnologyAdapter<TA>> DisactivateTechnologyAdapterTask<TA> disactivateTechnologyAdapter(TA technologyAdapter) {
 		if (!technologyAdapter.isActivated()) {
 			return null;
 		}
-		DisactivateTechnologyAdapterTask disactivateTATask = new DisactivateTechnologyAdapterTask(getTechnologyAdapterService(),
+		DisactivateTechnologyAdapterTask<TA> disactivateTATask = new DisactivateTechnologyAdapterTask<>(getTechnologyAdapterService(),
 				technologyAdapter);
 		getTaskManager().scheduleExecution(disactivateTATask);
 		return disactivateTATask;

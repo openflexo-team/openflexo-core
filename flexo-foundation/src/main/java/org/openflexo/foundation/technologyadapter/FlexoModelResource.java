@@ -40,9 +40,9 @@
 package org.openflexo.foundation.technologyadapter;
 
 import org.openflexo.foundation.resource.FlexoResource;
-import org.openflexo.model.annotations.Getter;
-import org.openflexo.model.annotations.ModelEntity;
-import org.openflexo.model.annotations.Setter;
+import org.openflexo.pamela.annotations.Getter;
+import org.openflexo.pamela.annotations.ModelEntity;
+import org.openflexo.pamela.annotations.Setter;
 
 /**
  * A {@link FlexoModelResource} is a {@link FlexoResource} specific to a technology and storing a model conform to a metamodel
@@ -58,7 +58,7 @@ import org.openflexo.model.annotations.Setter;
  *            type of {@link TechnologyAdapter} handling this conforming pattern
  */
 @ModelEntity(isAbstract = true)
-public interface FlexoModelResource<M extends FlexoModel<M, MM> & TechnologyObject<TA>, MM extends FlexoMetaModel<MM> & TechnologyObject<TAMM>, TA extends TechnologyAdapter, TAMM extends TechnologyAdapter>
+public interface FlexoModelResource<M extends FlexoModel<M, MM> & TechnologyObject<TA>, MM extends FlexoMetaModel<MM> & TechnologyObject<TAMM>, TA extends TechnologyAdapter<TA>, TAMM extends TechnologyAdapter<TAMM>>
 		extends TechnologyAdapterResource<M, TA> {
 
 	public static final String META_MODEL_RESOURCE = "metaModelResource";

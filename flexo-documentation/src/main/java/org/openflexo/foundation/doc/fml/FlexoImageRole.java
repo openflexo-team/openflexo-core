@@ -36,17 +36,17 @@ import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.VirtualModelInstanceNature;
 import org.openflexo.foundation.nature.ScreenshotableNature;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
-import org.openflexo.model.annotations.Getter;
-import org.openflexo.model.annotations.ImplementationClass;
-import org.openflexo.model.annotations.ModelEntity;
-import org.openflexo.model.annotations.PropertyIdentifier;
-import org.openflexo.model.annotations.Setter;
-import org.openflexo.model.annotations.XMLAttribute;
+import org.openflexo.pamela.annotations.Getter;
+import org.openflexo.pamela.annotations.ImplementationClass;
+import org.openflexo.pamela.annotations.ModelEntity;
+import org.openflexo.pamela.annotations.PropertyIdentifier;
+import org.openflexo.pamela.annotations.Setter;
+import org.openflexo.pamela.annotations.XMLAttribute;
 import org.openflexo.toolbox.StringUtils;
 
 @ModelEntity(isAbstract = true)
 @ImplementationClass(FlexoImageRole.FlexoImageRoleImpl.class)
-public interface FlexoImageRole<R extends FlexoDrawingRun<D, TA>, D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter>
+public interface FlexoImageRole<R extends FlexoDrawingRun<D, TA>, D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter<TA>>
 		extends FlexoRole<R> {
 
 	@PropertyIdentifier(type = FlexoDrawingRun.class)
@@ -148,7 +148,7 @@ public interface FlexoImageRole<R extends FlexoDrawingRun<D, TA>, D extends Flex
 
 	public List<Class<? extends ScreenshotableNature<?>>> getAvailableNatures();
 
-	public static abstract class FlexoImageRoleImpl<R extends FlexoDrawingRun<D, TA>, D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter>
+	public static abstract class FlexoImageRoleImpl<R extends FlexoDrawingRun<D, TA>, D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter<TA>>
 			extends FlexoRoleImpl<R> implements FlexoImageRole<R, D, TA> {
 
 		private R drawingRun;
@@ -280,7 +280,7 @@ public interface FlexoImageRole<R extends FlexoDrawingRun<D, TA>, D extends Flex
 		public List<Class<? extends ScreenshotableNature<?>>> getAvailableNatures() {
 			if (availableNatures == null && getServiceManager() != null) {
 				availableNatures = new ArrayList<>();
-				for (TechnologyAdapter ta : getServiceManager().getTechnologyAdapterService().getTechnologyAdapters()) {
+				for (TechnologyAdapter<?> ta : getServiceManager().getTechnologyAdapterService().getTechnologyAdapters()) {
 					for (Class<? extends VirtualModelInstanceNature> natureClass : ta.getAvailableVirtualModelInstanceNatures()) {
 						if (ScreenshotableNature.class.isAssignableFrom(natureClass)) {
 							availableNatures.add((Class<? extends ScreenshotableNature<?>>) natureClass);

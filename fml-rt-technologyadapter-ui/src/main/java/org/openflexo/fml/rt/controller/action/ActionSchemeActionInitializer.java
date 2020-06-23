@@ -38,16 +38,11 @@
 
 package org.openflexo.fml.rt.controller.action;
 
-import java.util.EventObject;
-import java.util.logging.Logger;
-
 import javax.swing.Icon;
 
 import org.openflexo.components.wizard.WizardDialog;
-import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.action.FlexoActionFactory;
-import org.openflexo.foundation.action.FlexoActionFinalizer;
-import org.openflexo.foundation.action.FlexoActionInitializer;
+import org.openflexo.foundation.action.FlexoActionRunnable;
 import org.openflexo.foundation.action.FlexoExceptionHandler;
 import org.openflexo.foundation.action.NotImplementedException;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
@@ -60,68 +55,56 @@ import org.openflexo.view.controller.ControllerActionInitializer;
 import org.openflexo.view.controller.FlexoController;
 
 public class ActionSchemeActionInitializer extends ActionInitializer<ActionSchemeAction, FlexoConceptInstance, VirtualModelInstanceObject> {
-
-	private static final Logger logger = Logger.getLogger(ControllerActionInitializer.class.getPackage().getName());
-
 	public ActionSchemeActionInitializer(ControllerActionInitializer actionInitializer) {
 		super(ActionSchemeAction.class, actionInitializer);
 	}
 
 	@Override
-	protected FlexoActionInitializer<ActionSchemeAction> getDefaultInitializer() {
-		return new FlexoActionInitializer<ActionSchemeAction>() {
-			@Override
-			public boolean run(EventObject e, ActionSchemeAction action) {
-				getController().willExecute(action);
+	protected FlexoActionRunnable<ActionSchemeAction, FlexoConceptInstance, VirtualModelInstanceObject> getDefaultInitializer() {
+		return (e, action) -> {
+			getController().willExecute(action);
 
-				ActionSchemeActionWizard wizard = new ActionSchemeActionWizard(action, getController());
-				if (!wizard.isSkipable()) {
-					WizardDialog dialog = new WizardDialog(wizard, getController());
-					dialog.showDialog();
-					if (dialog.getStatus() != Status.VALIDATED) {
-						// Operation cancelled
-						return false;
-					}
+			ActionSchemeActionWizard wizard = new ActionSchemeActionWizard(action, getController());
+			if (!wizard.isSkipable()) {
+				WizardDialog dialog = new WizardDialog(wizard, getController());
+				dialog.showDialog();
+				if (dialog.getStatus() != Status.VALIDATED) {
+					// Operation cancelled
+					return false;
 				}
-				return true;
-
-				/*ParametersRetriever<ActionScheme> parameterRetriever = new ParametersRetriever<ActionScheme>(action,
-						getController() != null ? getController().getApplicationContext() : null);
-				if (action.escapeParameterRetrievingWhenValid && parameterRetriever.isSkipable()) {
-					return true;
-				}
-				return parameterRetriever.retrieveParameters();*/
 			}
-		};
-	}
+			return true;
 
-	@Override
-	protected FlexoActionFinalizer<ActionSchemeAction> getDefaultFinalizer() {
-		return new FlexoActionFinalizer<ActionSchemeAction>() {
-			@Override
-			public boolean run(EventObject e, ActionSchemeAction action) {
-				getController().hasExecuted(action);
+			/*ParametersRetriever<ActionScheme> parameterRetriever = new ParametersRetriever<ActionScheme>(action,
+					getController() != null ? getController().getApplicationContext() : null);
+			if (action.escapeParameterRetrievingWhenValid && parameterRetriever.isSkipable()) {
 				return true;
 			}
+			return parameterRetriever.retrieveParameters();*/
 		};
 	}
 
 	@Override
-	protected FlexoExceptionHandler<ActionSchemeAction> getDefaultExceptionHandler() {
-		return new FlexoExceptionHandler<ActionSchemeAction>() {
-			@Override
-			public boolean handleException(FlexoException exception, ActionSchemeAction action) {
-				if (exception instanceof NotImplementedException) {
-					FlexoController.notify(action.getLocales().localizedForKey("not_implemented_yet"));
-					return true;
-				}
-				return false;
+	protected FlexoActionRunnable<ActionSchemeAction, FlexoConceptInstance, VirtualModelInstanceObject> getDefaultFinalizer() {
+		return (e, action) -> {
+			getController().hasExecuted(action);
+			return true;
+		};
+	}
+
+	@Override
+	protected FlexoExceptionHandler<ActionSchemeAction, FlexoConceptInstance, VirtualModelInstanceObject> getDefaultExceptionHandler() {
+		return (exception, action) -> {
+			if (exception instanceof NotImplementedException) {
+				FlexoController.notify(action.getLocales().localizedForKey("not_implemented_yet"));
+				return true;
 			}
+			return false;
 		};
 	}
 
 	@Override
-	protected Icon getEnabledIcon(FlexoActionFactory actionType) {
+	protected Icon getEnabledIcon(FlexoActionFactory<ActionSchemeAction, FlexoConceptInstance, VirtualModelInstanceObject> actionType) {
 		return FMLIconLibrary.ACTION_SCHEME_ICON;
 	}
 

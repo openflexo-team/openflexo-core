@@ -41,22 +41,20 @@ package org.openflexo.foundation.technologyadapter;
 import java.util.logging.Logger;
 
 import org.apache.commons.lang3.reflect.TypeUtils;
-import org.openflexo.foundation.fml.FMLRepresentationContext;
-import org.openflexo.foundation.fml.FMLRepresentationContext.FMLRepresentationOutput;
 import org.openflexo.foundation.fml.rt.AbstractVirtualModelInstanceModelFactory;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.TypeAwareModelSlotInstance;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
-import org.openflexo.model.annotations.DefineValidationRule;
-import org.openflexo.model.annotations.Getter;
-import org.openflexo.model.annotations.ImplementationClass;
-import org.openflexo.model.annotations.ModelEntity;
-import org.openflexo.model.annotations.PropertyIdentifier;
-import org.openflexo.model.annotations.Setter;
-import org.openflexo.model.annotations.XMLAttribute;
-import org.openflexo.model.validation.ValidationError;
-import org.openflexo.model.validation.ValidationIssue;
-import org.openflexo.model.validation.ValidationRule;
+import org.openflexo.pamela.annotations.DefineValidationRule;
+import org.openflexo.pamela.annotations.Getter;
+import org.openflexo.pamela.annotations.ImplementationClass;
+import org.openflexo.pamela.annotations.ModelEntity;
+import org.openflexo.pamela.annotations.PropertyIdentifier;
+import org.openflexo.pamela.annotations.Setter;
+import org.openflexo.pamela.annotations.XMLAttribute;
+import org.openflexo.pamela.validation.ValidationError;
+import org.openflexo.pamela.validation.ValidationIssue;
+import org.openflexo.pamela.validation.ValidationRule;
 import org.openflexo.toolbox.JavaUtils;
 import org.openflexo.toolbox.StringUtils;
 
@@ -232,7 +230,7 @@ public interface TypeAwareModelSlot<M extends FlexoModel<M, MM> & TechnologyObje
 			return out.toString();
 		}*/
 
-		@Override
+		/*@Override
 		protected String getFMLAnnotation(FMLRepresentationContext context) {
 			FMLRepresentationOutput out = new FMLRepresentationOutput(context);
 			out.append("@" + getImplementedInterface().getSimpleName() + "(metamodel=" + '"' + getMetaModelURI() + '"' + ",cardinality="
@@ -242,7 +240,7 @@ public interface TypeAwareModelSlot<M extends FlexoModel<M, MM> & TechnologyObje
 				out.append("@Key", context);
 			}
 			return out.toString();
-		}
+		}*/
 
 		@Override
 		public abstract String getURIForObject(M model, Object o);

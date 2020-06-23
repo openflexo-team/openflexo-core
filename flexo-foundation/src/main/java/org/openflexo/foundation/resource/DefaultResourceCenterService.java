@@ -41,17 +41,18 @@ package org.openflexo.foundation.resource;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.PrintStream;
 import java.io.StringWriter;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLDecoder;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.jar.JarFile;
 
 import javax.swing.SwingUtilities;
@@ -71,8 +72,8 @@ import org.openflexo.foundation.resource.FileIODelegate.WillRenameFileOnDiskNoti
 import org.openflexo.foundation.resource.FileIODelegate.WillWriteFileOnDiskNotification;
 import org.openflexo.foundation.resource.FlexoResourceCenter.ResourceCenterEntry;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterService;
-import org.openflexo.model.exceptions.ModelDefinitionException;
-import org.openflexo.model.factory.ModelFactory;
+import org.openflexo.pamela.exceptions.ModelDefinitionException;
+import org.openflexo.pamela.factory.ModelFactory;
 import org.openflexo.toolbox.FileUtils;
 
 /**
@@ -163,7 +164,7 @@ public abstract class DefaultResourceCenterService extends FlexoServiceImpl impl
 				boolean rcExists = false;
 				while (urlList.hasMoreElements()) {
 					URL url = urlList.nextElement();
-
+					logger.info("Loading ResourceCenter " + url);
 					StringWriter writer = new StringWriter();
 					IOUtils.copy(url.openStream(), writer, "UTF-8");
 					String rcBaseUri = writer.toString().trim();
@@ -183,9 +184,6 @@ public abstract class DefaultResourceCenterService extends FlexoServiceImpl impl
 							String dirPath = URLDecoder.decode(url.getPath().substring(0, url.getPath().indexOf("META-INF")), "UTF-8");
 
 							if (isDevMode()) {
-								// Was like this with 1.8.0 infrastructure with Maven
-								dirPath = dirPath.replace("target/classes", "src/main/resources");
-								// Is now like this with 1.8.1+ infrastructure with Gradle
 								dirPath = dirPath.replace("/bin/main", "/src/main/resources/");
 								dirPath = dirPath.replace("build/resources/main", "/src/main/resources/");
 							}
@@ -321,16 +319,6 @@ public abstract class DefaultResourceCenterService extends FlexoServiceImpl impl
 				return ((FlexoProjectResourceFactory) getFlexoProjectResourceFactory()).retrieveResource(serializationArtefact,
 						resourceCenter);
 			}
-			else {
-				// Attempt to convert it from older format
-				// TODO ??? Any needs ?
-				/*I convertedSerializationArtefact = resourceFactory.getConvertableArtefact(serializationArtefact, resourceCenter);
-				if (convertedSerializationArtefact != null) {
-					R returned = resourceFactory.retrieveResource(convertedSerializationArtefact, resourceCenter);
-					returned.setNeedsConversion();
-					return returned;
-				}*/
-			}
 		} catch (ModelDefinitionException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
@@ -355,13 +343,8 @@ public abstract class DefaultResourceCenterService extends FlexoServiceImpl impl
 	protected void resourceCenterHasBeenInitialized(FlexoResourceCenter<?> rc) {
 		// Call it to update the current repositories
 		if (!SwingUtilities.isEventDispatchThread()) {
-			SwingUtilities.invokeLater(new Runnable() {
-				@Override
-				public void run() {
-					// Call it to update the current repositories
-					notifyRepositoryStructureChanged();
-				}
-			});
+			SwingUtilities.invokeLater(() -> notifyRepositoryStructureChanged());
+			// Call it to update the current repositories
 		}
 		else {
 			// Call it to update the current repositories
@@ -387,7 +370,7 @@ public abstract class DefaultResourceCenterService extends FlexoServiceImpl impl
 		}
 
 		// unload resources from resource center
-		for (FlexoResource<?> resource : resourceCenter.getAllResources(null)) {
+		for (FlexoResource<?> resource : resourceCenter.getAllResources()) {
 			if (resource.isLoaded()) {
 				resource.unloadResourceData(true);
 			}
@@ -470,9 +453,8 @@ public abstract class DefaultResourceCenterService extends FlexoServiceImpl impl
 	public void initialize() {
 
 		try {
-			flexoProjectResourceFactory = new FlexoProjectResourceFactory<Object>(getServiceManager());
+			flexoProjectResourceFactory = new FlexoProjectResourceFactory<>(getServiceManager());
 		} catch (ModelDefinitionException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
@@ -654,14 +636,14 @@ public abstract class DefaultResourceCenterService extends FlexoServiceImpl impl
 				ArrayList<FlexoResourceCenter<?>> listRC = new ArrayList<>(getResourceCenters());
 				for (FlexoResourceCenter<?> rc : listRC) {
 					if (rc != null) {
-						rc.activateTechnology(((TechnologyAdapterHasBeenActivated) notification).getTechnologyAdapter());
+						rc.activateTechnology(((TechnologyAdapterHasBeenActivated<?>) notification).getTechnologyAdapter());
 					}
 				}
 			}
 			else if (notification instanceof TechnologyAdapterHasBeenDisactivated) {
 				for (FlexoResourceCenter<?> rc : getResourceCenters()) {
 					if (rc != null) {
-						rc.disactivateTechnology(((TechnologyAdapterHasBeenDisactivated) notification).getTechnologyAdapter());
+						rc.disactivateTechnology(((TechnologyAdapterHasBeenDisactivated<?>) notification).getTechnologyAdapter());
 					}
 				}
 			}
@@ -746,25 +728,35 @@ public abstract class DefaultResourceCenterService extends FlexoServiceImpl impl
 		}
 
 		@Override
-		public List<String> getOptions() {
-			return Arrays.asList("<path>");
+		public String getArgument() {
+			return "<path>";
 		}
 
 		@Override
-		public void execute(FlexoResourceCenterService service, Object... options) {
-			if (options.length > 0) {
-				File directory = (File) options[0];
-				System.out.println("Add ResourceCenter from directory " + directory);
+		public List<ServiceOperationOption> getOptions() {
+			return null;
+		}
+
+		@Override
+		public void execute(FlexoResourceCenterService service, PrintStream out, PrintStream err, Object argument, Map<String, ?> options) {
+			if (argument instanceof File) {
+				File directory = (File) argument;
+				out.println("Add ResourceCenter from directory " + directory);
 				DirectoryResourceCenter newRC;
 				try {
 					newRC = DirectoryResourceCenter.instanciateNewDirectoryResourceCenter(directory, service);
 					service.addToResourceCenters(newRC);
+					out.println("ResourceCenter has been registered");
 				} catch (IOException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			}
 		}
+	}
+
+	@Override
+	public String toString() {
+		return getClass().getSimpleName() + "@" + Integer.toHexString(hashCode());
 	}
 
 }

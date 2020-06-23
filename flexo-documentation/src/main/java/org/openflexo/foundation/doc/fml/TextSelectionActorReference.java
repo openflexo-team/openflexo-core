@@ -50,13 +50,13 @@ import org.openflexo.foundation.fml.rt.ActorReference;
 import org.openflexo.foundation.fml.rt.ModelSlotInstance;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.logging.FlexoLogger;
-import org.openflexo.model.annotations.Getter;
-import org.openflexo.model.annotations.ImplementationClass;
-import org.openflexo.model.annotations.ModelEntity;
-import org.openflexo.model.annotations.PropertyIdentifier;
-import org.openflexo.model.annotations.Setter;
-import org.openflexo.model.annotations.XMLAttribute;
-import org.openflexo.model.annotations.XMLElement;
+import org.openflexo.pamela.annotations.Getter;
+import org.openflexo.pamela.annotations.ImplementationClass;
+import org.openflexo.pamela.annotations.ModelEntity;
+import org.openflexo.pamela.annotations.PropertyIdentifier;
+import org.openflexo.pamela.annotations.Setter;
+import org.openflexo.pamela.annotations.XMLAttribute;
+import org.openflexo.pamela.annotations.XMLElement;
 
 /**
  * Implements {@link ActorReference} for {@link FlexoDocFragment}.<br>
@@ -72,7 +72,7 @@ import org.openflexo.model.annotations.XMLElement;
 @ImplementationClass(TextSelectionActorReference.TextSelectionActorReferenceImpl.class)
 @XMLElement
 @FML("FragmentActorReference")
-public interface TextSelectionActorReference<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter>
+public interface TextSelectionActorReference<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter<TA>>
 		extends ActorReference<TextSelection<D, TA>> {
 
 	@PropertyIdentifier(type = String.class)
@@ -130,7 +130,7 @@ public interface TextSelectionActorReference<D extends FlexoDocument<D, TA>, TA 
 	@Setter(END_CHARACTER_INDEX_KEY)
 	public void setEndCharacterIndex(int endRunIndex);
 
-	public abstract static class TextSelectionActorReferenceImpl<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter>
+	public abstract static class TextSelectionActorReferenceImpl<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter<TA>>
 			extends ActorReferenceImpl<TextSelection<D, TA>> implements TextSelectionActorReference<D, TA> {
 
 		private static final Logger logger = FlexoLogger.getLogger(TextSelectionActorReference.class.getPackage().toString());
@@ -163,7 +163,6 @@ public interface TextSelectionActorReference<D extends FlexoDocument<D, TA>, TA 
 						textSelection = document.getFactory().makeTextSelection(startElement, getStartRunIndex(), getStartCharacterIndex(),
 								endElement, getEndRunIndex(), getEndCharacterIndex());
 					} catch (FragmentConsistencyException e) {
-						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
 				}

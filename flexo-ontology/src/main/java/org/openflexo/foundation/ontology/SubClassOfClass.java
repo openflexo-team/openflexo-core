@@ -41,7 +41,6 @@ package org.openflexo.foundation.ontology;
 
 import java.lang.reflect.Type;
 
-import org.openflexo.connie.type.CustomTypeFactory;
 import org.openflexo.foundation.fml.TechnologyAdapterTypeFactory;
 import org.openflexo.foundation.fml.TechnologySpecificType;
 import org.openflexo.foundation.fml.rt.FMLRTTechnologyAdapter;
@@ -50,7 +49,7 @@ import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.utils.FlexoObjectReference;
 import org.openflexo.foundation.utils.FlexoObjectReference.ReferenceOwner;
 
-public class SubClassOfClass<TA extends TechnologyAdapter> implements TechnologySpecificType<TA> {
+public class SubClassOfClass<TA extends TechnologyAdapter<TA>> implements TechnologySpecificType<TA> {
 
 	/**
 	 * Factory for SubClassOfClass instances
@@ -58,7 +57,8 @@ public class SubClassOfClass<TA extends TechnologyAdapter> implements Technology
 	 * @author sylvain
 	 * 
 	 */
-	public static class SubClassOfClassTypeFactory extends TechnologyAdapterTypeFactory<SubClassOfClass<?>> implements ReferenceOwner {
+	public static class SubClassOfClassTypeFactory extends TechnologyAdapterTypeFactory<SubClassOfClass<?>, FMLRTTechnologyAdapter>
+			implements ReferenceOwner {
 
 		public SubClassOfClassTypeFactory(FMLRTTechnologyAdapter technologyAdapter) {
 			super(technologyAdapter);
@@ -85,7 +85,6 @@ public class SubClassOfClass<TA extends TechnologyAdapter> implements Technology
 
 		@Override
 		public void configureFactory(SubClassOfClass<?> type) {
-			// TODO Auto-generated method stub
 		}
 
 		@Override
@@ -106,7 +105,7 @@ public class SubClassOfClass<TA extends TechnologyAdapter> implements Technology
 
 	}
 
-	public static <TA extends TechnologyAdapter> SubClassOfClass<TA> getSubClassOfClass(IFlexoOntologyClass<TA> anOntologyClass) {
+	public static <TA extends TechnologyAdapter<TA>> SubClassOfClass<TA> getSubClassOfClass(IFlexoOntologyClass<TA> anOntologyClass) {
 		if (anOntologyClass == null) {
 			return null;
 		}
@@ -179,7 +178,7 @@ public class SubClassOfClass<TA extends TechnologyAdapter> implements Technology
 	}
 
 	@Override
-	public void resolve(CustomTypeFactory<?> factory) {
+	public void resolve() {
 	}
 
 	@Override

@@ -45,31 +45,32 @@ import java.util.logging.Logger;
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoProject;
 import org.openflexo.foundation.FlexoProjectObject;
-import org.openflexo.model.validation.ValidationReport;
+import org.openflexo.pamela.validation.ValidationReport;
 
-public class ValidateProject extends FlexoAction<ValidateProject, FlexoProjectObject, FlexoProjectObject> {
+public class ValidateProject extends FlexoAction<ValidateProject, FlexoProjectObject<?>, FlexoProjectObject<?>> {
 
 	static final Logger logger = Logger.getLogger(ValidateProject.class.getPackage().getName());
 
-	public static FlexoActionFactory<ValidateProject, FlexoProjectObject, FlexoProjectObject> actionType = new FlexoActionFactory<ValidateProject, FlexoProjectObject, FlexoProjectObject>(
+	public static FlexoActionFactory<ValidateProject, FlexoProjectObject<?>, FlexoProjectObject<?>> actionType = new FlexoActionFactory<ValidateProject, FlexoProjectObject<?>, FlexoProjectObject<?>>(
 			"validate_project") {
 
 		/**
 		 * Factory method
 		 */
 		@Override
-		public ValidateProject makeNewAction(FlexoProjectObject object, Vector<FlexoProjectObject> globalSelection, FlexoEditor editor) {
+		public ValidateProject makeNewAction(FlexoProjectObject<?> object, Vector<FlexoProjectObject<?>> globalSelection,
+				FlexoEditor editor) {
 			return new ValidateProject(object, globalSelection, editor);
 		}
 
 		// TODO: revalidated action when FlexoProject will be refactored
 		@Override
-		public boolean isVisibleForSelection(FlexoProjectObject focusedObject, Vector<FlexoProjectObject> globalSelection) {
+		public boolean isVisibleForSelection(FlexoProjectObject<?> focusedObject, Vector<FlexoProjectObject<?>> globalSelection) {
 			return false;
 		}
 
 		@Override
-		public boolean isEnabledForSelection(FlexoProjectObject focusedObject, Vector<FlexoProjectObject> globalSelection) {
+		public boolean isEnabledForSelection(FlexoProjectObject<?> focusedObject, Vector<FlexoProjectObject<?>> globalSelection) {
 			return false;
 		}
 
@@ -79,7 +80,7 @@ public class ValidateProject extends FlexoAction<ValidateProject, FlexoProjectOb
 		// FlexoObject.addActionForClass(ValidateProject.actionType, FlexoProject.class);
 	}
 
-	private ValidateProject(FlexoProjectObject focusedObject, Vector<FlexoProjectObject> globalSelection, FlexoEditor editor) {
+	private ValidateProject(FlexoProjectObject<?> focusedObject, Vector<FlexoProjectObject<?>> globalSelection, FlexoEditor editor) {
 		super(actionType, focusedObject, globalSelection, editor);
 	}
 

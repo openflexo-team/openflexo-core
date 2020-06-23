@@ -39,7 +39,6 @@ package org.openflexo.foundation.resource;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Collection;
 import java.util.logging.Logger;
 
 import org.eclipse.jgit.api.Git;
@@ -48,13 +47,12 @@ import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
 import org.openflexo.foundation.resource.DirectoryBasedGitIODelegate.DirectoryBasedGitIODelegateImpl;
 import org.openflexo.foundation.resource.GitIODelegate.GitIODelegateImpl;
-import org.openflexo.model.annotations.ImplementationClass;
-import org.openflexo.model.annotations.ModelEntity;
-import org.openflexo.model.exceptions.ModelDefinitionException;
-import org.openflexo.model.factory.ModelFactory;
+import org.openflexo.pamela.annotations.ImplementationClass;
+import org.openflexo.pamela.annotations.ModelEntity;
+import org.openflexo.pamela.exceptions.ModelDefinitionException;
+import org.openflexo.pamela.factory.ModelFactory;
 import org.openflexo.toolbox.FileUtils;
 import org.openflexo.toolbox.FlexoVersion;
-import org.openflexo.toolbox.IProgress;
 
 @ModelEntity
 @ImplementationClass(GitResourceCenter.GitResourceCenterImpl.class)
@@ -158,12 +156,7 @@ public interface GitResourceCenter extends FileSystemBasedResourceCenter {
 		}
 
 		@Override
-		public Collection<? extends FlexoResource<?>> getAllResources(IProgress progress) {
-			return getAllResources();
-		}
-
-		@Override
-		public void publishResource(FlexoResource<?> resource, FlexoVersion newVersion, IProgress progress) throws Exception {
+		public void publishResource(FlexoResource<?> resource, FlexoVersion newVersion) throws Exception {
 			// TODO Not yet implemented
 		}
 
@@ -208,12 +201,8 @@ public interface GitResourceCenter extends FileSystemBasedResourceCenter {
 					return resourceRepository.getRootFolder();
 				}
 			}
-			else {
-				logger.warning("Could not retrieve File for ioDelegate=" + ioDelegate);
-				return null;
-			}
-
+			logger.warning("Could not retrieve File for ioDelegate=" + ioDelegate);
+			return null;
 		}
-
 	}
 }

@@ -60,7 +60,7 @@ import org.openflexo.foundation.project.FlexoProjectResourceImpl;
 import org.openflexo.foundation.resource.RepositoryFolder;
 import org.openflexo.foundation.resource.SaveResourceException;
 import org.openflexo.foundation.task.FlexoTask;
-import org.openflexo.model.exceptions.ModelDefinitionException;
+import org.openflexo.pamela.exceptions.ModelDefinitionException;
 import org.openflexo.rm.InJarResourceImpl;
 import org.openflexo.toolbox.JavaUtils;
 import org.openflexo.toolbox.StringUtils;
@@ -76,7 +76,7 @@ public class CreateProject extends FlexoAction<CreateProject, RepositoryFolder<F
 	private static final Logger logger = Logger.getLogger(CreateProject.class.getPackage().getName());
 
 	public static FlexoActionFactory<CreateProject, RepositoryFolder<FlexoProjectResource<?>, ?>, FlexoObject> actionType = new FlexoActionFactory<CreateProject, RepositoryFolder<FlexoProjectResource<?>, ?>, FlexoObject>(
-			"create_project", FlexoActionFactory.newMenu, FlexoActionFactory.defaultGroup, FlexoActionFactory.ADD_ACTION_TYPE) {
+			"project", FlexoActionFactory.newMenu, FlexoActionFactory.defaultGroup, FlexoActionFactory.ADD_ACTION_TYPE) {
 
 		/**
 		 * Factory method
@@ -144,7 +144,7 @@ public class CreateProject extends FlexoAction<CreateProject, RepositoryFolder<F
 			newFlexoProject.setLastUniqueID(0);
 			newFlexoProject.setCreationUserId(FlexoObjectImpl.getCurrentUserIdentifier());
 			newFlexoProject.setCreationDate(new Date());
-			newProjectResource.save(null);
+			newProjectResource.save();
 
 			// We add the newly created project as a ResourceCenter
 			// Maybe this will be done now, but it may also be done in a task

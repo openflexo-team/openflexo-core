@@ -43,13 +43,13 @@ import java.util.logging.Logger;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.doc.FlexoDocFragment.FragmentConsistencyException;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
-import org.openflexo.model.annotations.Getter;
-import org.openflexo.model.annotations.ImplementationClass;
-import org.openflexo.model.annotations.ModelEntity;
-import org.openflexo.model.annotations.PropertyIdentifier;
-import org.openflexo.model.annotations.Setter;
-import org.openflexo.model.annotations.XMLAttribute;
-import org.openflexo.model.annotations.XMLElement;
+import org.openflexo.pamela.annotations.Getter;
+import org.openflexo.pamela.annotations.ImplementationClass;
+import org.openflexo.pamela.annotations.ModelEntity;
+import org.openflexo.pamela.annotations.PropertyIdentifier;
+import org.openflexo.pamela.annotations.Setter;
+import org.openflexo.pamela.annotations.XMLAttribute;
+import org.openflexo.pamela.annotations.XMLElement;
 import org.openflexo.toolbox.StringUtils;
 
 /**
@@ -77,7 +77,7 @@ import org.openflexo.toolbox.StringUtils;
 @ModelEntity
 @ImplementationClass(TextSelection.TextSelectionImpl.class)
 @XMLElement
-public interface TextSelection<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter> extends FlexoObject {
+public interface TextSelection<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter<TA>> extends FlexoObject {
 
 	@PropertyIdentifier(type = FlexoDocFragment.class)
 	public static final String FRAGMENT_KEY = "fragment";
@@ -200,7 +200,7 @@ public interface TextSelection<D extends FlexoDocument<D, TA>, TA extends Techno
 	 */
 	public boolean isSingleRun();
 
-	public static abstract class TextSelectionImpl<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter> extends FlexoObjectImpl
+	public static abstract class TextSelectionImpl<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter<TA>> extends FlexoObjectImpl
 			implements TextSelection<D, TA> {
 
 		@SuppressWarnings("unused")
@@ -306,7 +306,7 @@ public interface TextSelection<D extends FlexoDocument<D, TA>, TA extends Techno
 					return (FlexoTextRun<D, TA>) returned;
 				}
 			}
-			if (getStartElement() instanceof FlexoDocParagraph
+			if (getStartElement() instanceof FlexoDocParagraph && (getStartRunIndex() >= 0)
 					&& (getStartRunIndex() < ((FlexoDocParagraph<D, TA>) getStartElement()).getRuns().size())) {
 				FlexoDocRun<D, TA> returned = ((FlexoDocParagraph<D, TA>) getStartElement()).getRuns().get(getStartRunIndex());
 				if (returned instanceof FlexoTextRun) {
@@ -331,7 +331,7 @@ public interface TextSelection<D extends FlexoDocument<D, TA>, TA extends Techno
 					return (FlexoTextRun<D, TA>) returned;
 				}
 			}
-			if (getEndElement() instanceof FlexoDocParagraph
+			if (getEndElement() instanceof FlexoDocParagraph && (getEndRunIndex() >= 0)
 					&& (getEndRunIndex() < ((FlexoDocParagraph<D, TA>) getEndElement()).getRuns().size())) {
 				FlexoDocRun<D, TA> returned = ((FlexoDocParagraph<D, TA>) getEndElement()).getRuns().get(getEndRunIndex());
 				if (returned instanceof FlexoTextRun) {
@@ -484,9 +484,11 @@ public interface TextSelection<D extends FlexoDocument<D, TA>, TA extends Techno
 		public String toString() {
 			return getStartElementIdentifier()
 					+ (getStartRunIndex() > -1
-							? ":" + getStartRunIndex() + (getStartCharacterIndex() > -1 ? ":" + getStartCharacterIndex() : "") : "")
-					+ "-" + getEndElementIdentifier() + (getEndRunIndex() > -1
-							? ":" + getEndRunIndex() + (getEndCharacterIndex() > -1 ? ":" + getEndCharacterIndex() : "") : "");
+							? ":" + getStartRunIndex() + (getStartCharacterIndex() > -1 ? ":" + getStartCharacterIndex() : "")
+							: "")
+					+ "-" + getEndElementIdentifier()
+					+ (getEndRunIndex() > -1 ? ":" + getEndRunIndex() + (getEndCharacterIndex() > -1 ? ":" + getEndCharacterIndex() : "")
+							: "");
 		}
 	}
 

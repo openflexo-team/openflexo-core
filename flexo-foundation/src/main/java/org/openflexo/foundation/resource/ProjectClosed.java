@@ -47,15 +47,15 @@ import org.openflexo.foundation.FlexoService.ServiceNotification;
  * @author sylvain
  *
  */
-public final class ProjectClosed implements ServiceNotification {
+public final class ProjectClosed<I> implements ServiceNotification {
 
-	private final FlexoProject project;
+	private final FlexoProject<I> project;
 
-	public ProjectClosed(FlexoProject project) {
+	public ProjectClosed(FlexoProject<I> project) {
 		this.project = project;
 	}
 
-	public FlexoProject getProject() {
+	public FlexoProject<I> getProject() {
 		return project;
 	}
 }

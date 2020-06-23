@@ -47,6 +47,6 @@ import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
  * 
  * @author gbesancon
  */
-public interface IFlexoOntologyConstraint<TA extends TechnologyAdapter> extends IFlexoOntologyConcept<TA> {
+public interface IFlexoOntologyConstraint<TA extends TechnologyAdapter<TA>> extends IFlexoOntologyConcept<TA> {
 
 }

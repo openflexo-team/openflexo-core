@@ -50,15 +50,15 @@ import java.util.logging.Logger;
 
 import org.openflexo.foundation.FlexoService.ServiceNotification;
 import org.openflexo.foundation.action.NotImplementedException;
-import org.openflexo.model.annotations.Getter;
-import org.openflexo.model.annotations.ImplementationClass;
-import org.openflexo.model.annotations.Import;
-import org.openflexo.model.annotations.Imports;
-import org.openflexo.model.annotations.ModelEntity;
-import org.openflexo.model.annotations.Setter;
-import org.openflexo.model.annotations.XMLAttribute;
-import org.openflexo.model.annotations.XMLElement;
-import org.openflexo.model.factory.ModelFactory;
+import org.openflexo.pamela.annotations.Getter;
+import org.openflexo.pamela.annotations.ImplementationClass;
+import org.openflexo.pamela.annotations.Import;
+import org.openflexo.pamela.annotations.Imports;
+import org.openflexo.pamela.annotations.ModelEntity;
+import org.openflexo.pamela.annotations.Setter;
+import org.openflexo.pamela.annotations.XMLAttribute;
+import org.openflexo.pamela.annotations.XMLElement;
+import org.openflexo.pamela.factory.ModelFactory;
 import org.openflexo.rm.FileSystemResourceLocatorImpl;
 import org.openflexo.rm.Resource;
 import org.openflexo.toolbox.FileUtils;
@@ -142,8 +142,7 @@ public interface FileIODelegate extends StreamIODelegate<File> {
 				}
 				return true;
 			}
-			else
-				return false;
+			return false;
 		}
 
 		/**
@@ -154,10 +153,8 @@ public interface FileIODelegate extends StreamIODelegate<File> {
 			if (hasWritePermission()) {
 				return delete(true);
 			}
-			else {
-				logger.warning("Delete requested for READ-ONLY file resource " + this);
-				return false;
-			}
+			logger.warning("Delete requested for READ-ONLY file resource " + this);
+			return false;
 		}
 
 		@Override
@@ -211,10 +208,8 @@ public interface FileIODelegate extends StreamIODelegate<File> {
 				}
 				return true;
 			}
-			else {
-				logger.warning("Delete requested for READ-ONLY file resource " + this);
-				return false;
-			}
+			logger.warning("Delete requested for READ-ONLY file resource " + this);
+			return false;
 		}
 
 		@Override
@@ -258,9 +253,7 @@ public interface FileIODelegate extends StreamIODelegate<File> {
 					System.out.println("Using " + getSourceResource());
 					return new FileOutputStream(getSourceResource().getFile());
 				}
-				else {
-					return new FileOutputStream(getFile());
-				}
+				return new FileOutputStream(getFile());
 			} catch (FileNotFoundException e) {
 				e.printStackTrace();
 				return null;
@@ -272,24 +265,19 @@ public interface FileIODelegate extends StreamIODelegate<File> {
 			if (getFile().isDirectory()) {
 				return getFile().getAbsolutePath();
 			}
-			else {
-				return getFile().getParent();
-			}
+			return getFile().getParent();
 		}
 
 		@Override
 		public void setOutputStream(OutputStream outsputStream) {
-			// TODO Auto-generated method stub
 		}
 
 		@Override
 		public void setInputStream(InputStream inputStream) {
-			// TODO Auto-generated method stub
 		}
 
 		@Override
 		public boolean isReadOnly() {
-			// TODO Auto-generated method stub
 			return false;
 		}
 
@@ -309,7 +297,6 @@ public interface FileIODelegate extends StreamIODelegate<File> {
 
 		@Override
 		public void save(FlexoResource<?> resource) throws NotImplementedException {
-			// TODO Auto-generated method stub
 		}
 
 		/*

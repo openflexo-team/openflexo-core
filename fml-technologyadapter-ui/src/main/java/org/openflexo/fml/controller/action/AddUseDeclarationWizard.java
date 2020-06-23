@@ -44,7 +44,7 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import org.openflexo.ApplicationContext;
-import org.openflexo.components.wizard.FlexoWizard;
+import org.openflexo.components.wizard.FlexoActionWizard;
 import org.openflexo.components.wizard.WizardStep;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.action.AddUseDeclaration;
@@ -57,7 +57,7 @@ import org.openflexo.icon.IconFactory;
 import org.openflexo.icon.IconLibrary;
 import org.openflexo.view.controller.FlexoController;
 
-public class AddUseDeclarationWizard extends FlexoWizard {
+public class AddUseDeclarationWizard extends FlexoActionWizard<AddUseDeclaration> {
 
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(AddUseDeclarationWizard.class.getPackage().getName());
@@ -69,16 +69,9 @@ public class AddUseDeclarationWizard extends FlexoWizard {
 
 	private static final Dimension DIMENSIONS = new Dimension(600, 500);
 
-	private AddUseDeclaration action;
-
 	public AddUseDeclarationWizard(AddUseDeclaration action, FlexoController controller) {
-		super(controller);
-		this.action = action;
+		super(action, controller);
 		addStep(describeUseDeclaration = new DescribeUseDeclaration());
-	}
-
-	public AddUseDeclaration getAction() {
-		return action;
 	}
 
 	@Override
@@ -88,7 +81,7 @@ public class AddUseDeclarationWizard extends FlexoWizard {
 
 	@Override
 	public Image getDefaultPageImage() {
-		return IconFactory.getImageIcon(FMLIconLibrary.MODEL_SLOT_BIG_ICON, IconLibrary.NEW_32_32).getImage();
+		return IconFactory.getImageIcon(FMLIconLibrary.MODEL_SLOT_BIG_ICON, IconLibrary.BIG_NEW_MARKER).getImage();
 	}
 
 	public DescribeUseDeclaration getDescribeModelSlot() {
@@ -137,13 +130,13 @@ public class AddUseDeclarationWizard extends FlexoWizard {
 			return true;
 		}
 
-		public TechnologyAdapter getTechnologyAdapter() {
+		public TechnologyAdapter<?> getTechnologyAdapter() {
 			return getAction().getModelSlotTechnologyAdapter();
 		}
 
-		public void setTechnologyAdapter(TechnologyAdapter technologyAdapter) {
+		public void setTechnologyAdapter(TechnologyAdapter<?> technologyAdapter) {
 			if (getTechnologyAdapter() != technologyAdapter) {
-				TechnologyAdapter oldValue = getTechnologyAdapter();
+				TechnologyAdapter<?> oldValue = getTechnologyAdapter();
 				getAction().setModelSlotTechnologyAdapter(technologyAdapter);
 				getPropertyChangeSupport().firePropertyChange("technologyAdapter", oldValue, technologyAdapter);
 				getPropertyChangeSupport().firePropertyChange("modelSlotClass", null, getModelSlotClass());

@@ -57,7 +57,7 @@ import org.openflexo.foundation.fml.rm.VirtualModelResourceFactory;
 import org.openflexo.foundation.resource.DirectoryResourceCenter;
 import org.openflexo.foundation.resource.SaveResourceException;
 import org.openflexo.foundation.test.OpenflexoProjectAtRunTimeTestCase;
-import org.openflexo.model.exceptions.ModelDefinitionException;
+import org.openflexo.pamela.exceptions.ModelDefinitionException;
 import org.openflexo.rm.ResourceLocator;
 import org.openflexo.test.OrderedRunner;
 import org.openflexo.test.TestOrder;
@@ -120,7 +120,7 @@ public class TestDeleteAction extends OpenflexoProjectAtRunTimeTestCase {
 		assertTrue(((VirtualModelResource) virtualModel.getResource()).getIODelegate().exists());
 
 		assertEquals(viewPoint, virtualModel.getContainerVirtualModel());
-		assertEquals(virtualModel, virtualModel.getVirtualModel());
+		assertEquals(virtualModel, virtualModel.getDeclaringVirtualModel());
 		assertEquals(virtualModel, virtualModel.getFlexoConcept());
 		assertEquals(virtualModel, virtualModel.getResourceData());
 
@@ -132,13 +132,13 @@ public class TestDeleteAction extends OpenflexoProjectAtRunTimeTestCase {
 
 		assertNotNull(flexoConcept);
 
-		assertEquals(virtualModel, flexoConcept.getVirtualModel());
+		assertEquals(virtualModel, flexoConcept.getOwner());
 		assertEquals(virtualModel, flexoConcept.getOwningVirtualModel());
 		assertEquals(flexoConcept, flexoConcept.getFlexoConcept());
 		assertEquals(virtualModel, flexoConcept.getResourceData());
 
 		try {
-			((VirtualModelResource) virtualModel.getResource()).save(null);
+			((VirtualModelResource) virtualModel.getResource()).save();
 		} catch (SaveResourceException e) {
 			e.printStackTrace();
 		}

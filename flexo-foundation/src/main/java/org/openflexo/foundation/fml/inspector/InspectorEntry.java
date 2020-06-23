@@ -43,7 +43,6 @@ import java.lang.reflect.Type;
 import java.util.List;
 import java.util.logging.Logger;
 
-import org.openflexo.connie.Bindable;
 import org.openflexo.connie.BindingEvaluationContext;
 import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.DataBinding.BindingDefinitionType;
@@ -58,14 +57,14 @@ import org.openflexo.foundation.fml.FlexoConceptObject;
 import org.openflexo.foundation.fml.FlexoEnumType;
 import org.openflexo.foundation.fml.WidgetContext;
 import org.openflexo.foundation.fml.binding.InspectorEntryBindingModel;
-import org.openflexo.model.annotations.DefineValidationRule;
-import org.openflexo.model.annotations.Getter;
-import org.openflexo.model.annotations.ImplementationClass;
-import org.openflexo.model.annotations.ModelEntity;
-import org.openflexo.model.annotations.PropertyIdentifier;
-import org.openflexo.model.annotations.Setter;
-import org.openflexo.model.annotations.XMLAttribute;
-import org.openflexo.model.annotations.XMLElement;
+import org.openflexo.pamela.annotations.DefineValidationRule;
+import org.openflexo.pamela.annotations.Getter;
+import org.openflexo.pamela.annotations.ImplementationClass;
+import org.openflexo.pamela.annotations.ModelEntity;
+import org.openflexo.pamela.annotations.PropertyIdentifier;
+import org.openflexo.pamela.annotations.Setter;
+import org.openflexo.pamela.annotations.XMLAttribute;
+import org.openflexo.pamela.annotations.XMLElement;
 import org.openflexo.toolbox.StringUtils;
 
 /**
@@ -77,7 +76,7 @@ import org.openflexo.toolbox.StringUtils;
 @ModelEntity()
 @ImplementationClass(InspectorEntry.InspectorEntryImpl.class)
 @XMLElement(xmlTag = "InspectorEntry", deprecatedXMLTags = "GenericInspectorEntry")
-public interface InspectorEntry extends FlexoConceptObject, Bindable, WidgetContext {
+public interface InspectorEntry extends FlexoConceptObject, WidgetContext {
 
 	@PropertyIdentifier(type = FlexoConceptInspector.class)
 	public static final String INSPECTOR_KEY = "inspector";

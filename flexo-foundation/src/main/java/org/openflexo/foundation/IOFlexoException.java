@@ -39,8 +39,6 @@
 
 package org.openflexo.foundation;
 
-import java.io.IOException;
-
 /**
  * Thrown when an IOException occurs
  * 
@@ -49,24 +47,24 @@ import java.io.IOException;
  */
 @SuppressWarnings("serial")
 public class IOFlexoException extends FlexoException {
-	private final IOException _targetException;
+	private final Exception _targetException;
 
 	public IOFlexoException(String message) {
 		super(message);
 		_targetException = null;
 	}
 
-	public IOFlexoException(IOException targetException) {
+	public IOFlexoException(Exception targetException) {
 		super("I/O exception", "io_exception");
 		_targetException = targetException;
 	}
 
-	public IOException getTargetException() {
+	public Exception getTargetException() {
 		return _targetException;
 	}
 
 	@Override
-	public synchronized IOException getCause() {
+	public synchronized Exception getCause() {
 		return getTargetException();
 	}
 

@@ -84,7 +84,7 @@ import org.openflexo.view.controller.TechnologyAdapterControllerService;
  * 
  */
 @SuppressWarnings("serial")
-public class FIBPropertySelector<TA extends TechnologyAdapter> extends FIBFlexoObjectSelector<IFlexoOntologyStructuralProperty<TA>> {
+public class FIBPropertySelector<TA extends TechnologyAdapter<TA>> extends FIBFlexoObjectSelector<IFlexoOntologyStructuralProperty<TA>> {
 
 	static final Logger logger = Logger.getLogger(FIBPropertySelector.class.getPackage().getName());
 

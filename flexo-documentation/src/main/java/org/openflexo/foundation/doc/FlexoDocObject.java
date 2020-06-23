@@ -24,11 +24,11 @@ import org.openflexo.foundation.InnerResourceData;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.technologyadapter.TechnologyObject;
 import org.openflexo.localization.LocalizedDelegate;
-import org.openflexo.model.annotations.Getter;
-import org.openflexo.model.annotations.ImplementationClass;
-import org.openflexo.model.annotations.ModelEntity;
-import org.openflexo.model.annotations.PropertyIdentifier;
-import org.openflexo.model.annotations.Setter;
+import org.openflexo.pamela.annotations.Getter;
+import org.openflexo.pamela.annotations.ImplementationClass;
+import org.openflexo.pamela.annotations.ModelEntity;
+import org.openflexo.pamela.annotations.PropertyIdentifier;
+import org.openflexo.pamela.annotations.Setter;
 
 /**
  * This concept provides abstraction for an object involved in generic FlexoDocumentation A.P.I
@@ -43,7 +43,7 @@ import org.openflexo.model.annotations.Setter;
  */
 @ModelEntity(isAbstract = true)
 @ImplementationClass(FlexoDocObject.FlexoDocObjectImpl.class)
-public interface FlexoDocObject<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter>
+public interface FlexoDocObject<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter<TA>>
 		extends TechnologyObject<TA>, InnerResourceData<D> {
 
 	@PropertyIdentifier(type = FlexoDocument.class)
@@ -55,8 +55,8 @@ public interface FlexoDocObject<D extends FlexoDocument<D, TA>, TA extends Techn
 	@Setter(DOCUMENT_KEY)
 	public void setFlexoDocument(D flexoDocument);
 
-	public static abstract class FlexoDocObjectImpl<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter> extends FlexoObjectImpl
-			implements FlexoDocObject<D, TA> {
+	public static abstract class FlexoDocObjectImpl<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter<TA>>
+			extends FlexoObjectImpl implements FlexoDocObject<D, TA> {
 
 		public FlexoDocObjectImpl() {
 			super();

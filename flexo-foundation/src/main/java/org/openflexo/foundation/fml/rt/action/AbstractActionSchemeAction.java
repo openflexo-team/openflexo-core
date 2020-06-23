@@ -115,8 +115,8 @@ public abstract class AbstractActionSchemeAction<A extends AbstractActionSchemeA
 		return (AbstractActionSchemeActionFactory<A, FB, O>) super.getActionFactory();
 	}
 
-	public FB getActionScheme() {
-		return getFlexoBehaviour();
+	public final FB getApplicableActionScheme() {
+		return getApplicableFlexoBehaviour();
 	}
 
 }

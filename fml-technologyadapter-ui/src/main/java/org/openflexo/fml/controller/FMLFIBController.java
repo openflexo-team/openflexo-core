@@ -38,6 +38,7 @@
 
 package org.openflexo.fml.controller;
 
+import java.io.FileNotFoundException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Logger;
@@ -46,6 +47,7 @@ import org.openflexo.components.validation.RevalidationTask;
 import org.openflexo.connie.annotations.NotificationUnsafe;
 import org.openflexo.fml.controller.validation.FixIssueDialog;
 import org.openflexo.fml.controller.validation.IssueFixing;
+import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.action.DeleteRepositoryFolder;
 import org.openflexo.foundation.fml.AbstractProperty;
@@ -73,9 +75,11 @@ import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.action.AddParentFlexoConcept;
 import org.openflexo.foundation.fml.action.AddUseDeclaration;
 import org.openflexo.foundation.fml.action.CreateAbstractProperty;
+import org.openflexo.foundation.fml.action.CreateContainedVirtualModel;
 import org.openflexo.foundation.fml.action.CreateEditionAction;
 import org.openflexo.foundation.fml.action.CreateExpressionProperty;
 import org.openflexo.foundation.fml.action.CreateFlexoBehaviour;
+import org.openflexo.foundation.fml.action.CreateFlexoConcept;
 import org.openflexo.foundation.fml.action.CreateFlexoConceptInstanceRole;
 import org.openflexo.foundation.fml.action.CreateFlexoEnumValue;
 import org.openflexo.foundation.fml.action.CreateGenericBehaviourParameter;
@@ -84,7 +88,9 @@ import org.openflexo.foundation.fml.action.CreateInspectorEntry;
 import org.openflexo.foundation.fml.action.CreateModelSlot;
 import org.openflexo.foundation.fml.action.CreatePrimitiveRole;
 import org.openflexo.foundation.fml.action.CreateTechnologyRole;
+import org.openflexo.foundation.fml.action.CreateTopLevelVirtualModel;
 import org.openflexo.foundation.fml.action.DeleteFlexoConceptObjects;
+import org.openflexo.foundation.fml.action.DeleteVirtualModel;
 import org.openflexo.foundation.fml.controlgraph.ConditionalAction;
 import org.openflexo.foundation.fml.controlgraph.EmptyControlGraph;
 import org.openflexo.foundation.fml.controlgraph.FMLControlGraph;
@@ -95,7 +101,11 @@ import org.openflexo.foundation.fml.editionaction.EditionAction;
 import org.openflexo.foundation.fml.editionaction.TechnologySpecificAction;
 import org.openflexo.foundation.fml.inspector.FlexoConceptInspector;
 import org.openflexo.foundation.fml.inspector.InspectorEntry;
+import org.openflexo.foundation.fml.rm.VirtualModelResource;
+import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
+import org.openflexo.foundation.resource.FlexoResource;
 import org.openflexo.foundation.resource.RepositoryFolder;
+import org.openflexo.foundation.resource.ResourceLoadingCancelledException;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.technologyadapter.UseModelSlotDeclaration;
@@ -105,9 +115,9 @@ import org.openflexo.gina.utils.FIBInspector;
 import org.openflexo.gina.utils.InspectorGroup;
 import org.openflexo.gina.view.GinaViewFactory;
 import org.openflexo.logging.FlexoLogger;
-import org.openflexo.model.validation.ProblemIssue;
-import org.openflexo.model.validation.Validable;
-import org.openflexo.model.validation.ValidationIssue;
+import org.openflexo.pamela.validation.ProblemIssue;
+import org.openflexo.pamela.validation.Validable;
+import org.openflexo.pamela.validation.ValidationIssue;
 import org.openflexo.rm.Resource;
 import org.openflexo.view.controller.FlexoController;
 import org.openflexo.view.controller.FlexoFIBController;
@@ -218,6 +228,14 @@ public class FMLFIBController extends FlexoFIBController {
 		CreateFlexoEnumValue createFlexoBehaviourParameter = CreateFlexoEnumValue.actionType.makeNewAction(flexoEnum, null, getEditor());
 		createFlexoBehaviourParameter.doAction();
 		return createFlexoBehaviourParameter.getNewValue();
+	}
+
+	public FlexoEnumValue deleteFlexoEnumValue(FlexoEnumValue enumValue) {
+		if (enumValue.getFlexoEnum() != null) {
+			enumValue.getFlexoEnum().removeFromValues(enumValue);
+		}
+		enumValue.delete();
+		return enumValue;
 	}
 
 	public FlexoEnumValue deleteFlexoEnumValue(FlexoEnum flexoEnum, FlexoEnumValue enumValue) {
@@ -624,7 +642,7 @@ public class FMLFIBController extends FlexoFIBController {
 					// We have here to clone the component, because original component refers to a root container
 					// that we don't want to be displayed. So we clone the component, and define a clean API on it using setDataClass()
 					returned = (FIBTab) originalBasicTab.cloneObject();
-					returned.setControllerClass(FMLFIBInspectorController.class);
+					returned.setControllerClass(getInspectorControllerClass());
 					returned.setDataType(originalBasicTab.getRootComponent().getVariable(FIBComponent.DEFAULT_DATA_VARIABLE).getType());
 					basicInspectorTabs.put(inspector, returned);
 				}
@@ -632,6 +650,18 @@ public class FMLFIBController extends FlexoFIBController {
 			return returned;
 		}
 		return null;
+	}
+
+	public FIBComponent inspectorForFlexoConceptInstance(FlexoConceptInstance fci) {
+		if (getFlexoController() != null && getFlexoController().getModuleInspectorController() != null && fci != null) {
+			return getFlexoController().getModuleInspectorController().getFIBInspectorPanel(fci.getFlexoConcept(),
+					getInspectorControllerClass());
+		}
+		return null;
+	}
+
+	public Class<? extends FlexoFIBController> getInspectorControllerClass() {
+		return FMLFIBInspectorController.class;
 	}
 
 	// Debug
@@ -648,10 +678,15 @@ public class FMLFIBController extends FlexoFIBController {
 	}
 
 	public void moveControlGraph(FMLControlGraph controlGraph, FMLControlGraph receiver) {
-		System.out.println("On veut bouger le graphe de controle");
+
+		if (controlGraph == receiver) {
+			return;
+		}
+
+		/*System.out.println("On veut bouger le graphe de controle");
 		System.out.println(controlGraph.getFMLRepresentation());
 		System.out.println("Juste apres:");
-		System.out.println(receiver.getFMLRepresentation());
+		System.out.println(receiver.getFMLRepresentation());*/
 
 		controlGraph.moveWhileSequentiallyAppendingTo(receiver);
 	}
@@ -712,11 +747,126 @@ public class FMLFIBController extends FlexoFIBController {
 		}
 	}
 
-	@Override
+	public FlexoConcept createFlexoConcept(FlexoConcept flexoConcept) {
+		if (flexoConcept instanceof VirtualModel) {
+			return createFlexoConceptInVirtualModel((VirtualModel) flexoConcept);
+		}
+		else if (flexoConcept != null) {
+			return createFlexoConceptInContainer(flexoConcept);
+		}
+		logger.warning("Unexpected null flexo concept");
+		return null;
+	}
+
+	public FlexoConcept createFlexoConceptInVirtualModel(VirtualModel virtualModel) {
+		CreateFlexoConcept createFlexoConcept = CreateFlexoConcept.actionType.makeNewAction(virtualModel, null, getEditor());
+		createFlexoConcept.switchNewlyCreatedFlexoConcept = false;
+		createFlexoConcept.doAction();
+		return createFlexoConcept.getNewFlexoConcept();
+	}
+
+	public FlexoConcept createFlexoConceptInContainer(FlexoConcept containerConcept) {
+		CreateFlexoConcept createFlexoConcept = CreateFlexoConcept.actionType.makeNewAction(containerConcept.getOwningVirtualModel(), null,
+				getEditor());
+		createFlexoConcept.setContainerFlexoConcept(containerConcept);
+		createFlexoConcept.switchNewlyCreatedFlexoConcept = false;
+		createFlexoConcept.doAction();
+		return createFlexoConcept.getNewFlexoConcept();
+	}
+
+	public FlexoConcept createFlexoConceptChildOf(FlexoConcept parentConcept) {
+		CreateFlexoConcept createFlexoConcept = CreateFlexoConcept.actionType.makeNewAction(parentConcept.getOwningVirtualModel(), null,
+				getEditor());
+		createFlexoConcept.addToParentConcepts(parentConcept);
+		createFlexoConcept.switchNewlyCreatedFlexoConcept = false;
+		createFlexoConcept.doAction();
+		return createFlexoConcept.getNewFlexoConcept();
+	}
+
+	public FlexoConcept deleteFlexoConcept(FlexoConcept flexoConcept) {
+		if (flexoConcept instanceof VirtualModel) {
+			DeleteVirtualModel deleteVirtualModel = DeleteVirtualModel.actionType.makeNewAction((VirtualModel) flexoConcept, null,
+					getEditor());
+			deleteVirtualModel.doAction();
+		}
+		else if (flexoConcept != null) {
+			DeleteFlexoConceptObjects deleteFlexoConcept = DeleteFlexoConceptObjects.actionType.makeNewAction(flexoConcept, null,
+					getEditor());
+			deleteFlexoConcept.doAction();
+		}
+		return flexoConcept;
+	}
+
+	// Should be above to be available from everywhere
+	// TODO: refactor this (generic perspective should be adapted to FML in OpenflexoModeller)
+	public VirtualModel createTopLevelVirtualModel(RepositoryFolder<VirtualModelResource, ?> folder) {
+		CreateTopLevelVirtualModel createTopLevelVirtualModel = CreateTopLevelVirtualModel.actionType.makeNewAction(folder, null,
+				getEditor());
+		createTopLevelVirtualModel.doAction();
+		return createTopLevelVirtualModel.getNewVirtualModel();
+	}
+
+	// Should be above to be available from everywhere
+	// TODO: refactor this (generic perspective should be adapted to FML in OpenflexoModeller)
+	public VirtualModel createContainedVirtualModel(FlexoResource<VirtualModel> containerVirtualModelResource)
+			throws FileNotFoundException, ResourceLoadingCancelledException, FlexoException {
+		CreateContainedVirtualModel createContainedVirtualModel = CreateContainedVirtualModel.actionType
+				.makeNewAction(containerVirtualModelResource.getResourceData(), null, getEditor());
+		createContainedVirtualModel.doAction();
+		return createContainedVirtualModel.getNewVirtualModel();
+	}
+
+	// Should be above to be available from everywhere
+	// TODO: refactor this (generic perspective should be adapted to FML in OpenflexoModeller)
+	public void deleteVirtualModel(FlexoResource<VirtualModel> virtualModelResource)
+			throws FileNotFoundException, ResourceLoadingCancelledException, FlexoException {
+		DeleteVirtualModel deleteVirtualModel = DeleteVirtualModel.actionType.makeNewAction(virtualModelResource.getResourceData(), null,
+				getEditor());
+		deleteVirtualModel.doAction();
+	}
+
 	@NotificationUnsafe
 	public void moveFlexoConcept(FlexoConcept concept, FlexoConcept container) {
-		super.moveFlexoConcept(concept, container);
+		logger.info("Moving concept " + concept + " into " + container);
+		// Disconnect from former container concept (if any)
+		if (concept.getContainerFlexoConcept() != null) {
+			concept.getContainerFlexoConcept().removeFromEmbeddedFlexoConcepts(concept);
+		}
+		// Disconnect from owner VirtualModel
+		if (concept.getOwner() != null) {
+			concept.getOwner().removeFromFlexoConcepts(concept);
+		}
+		if (container instanceof VirtualModel) {
+			// Normal case
+			((VirtualModel) container).addToFlexoConcepts(concept);
+		}
+		else {
+			// Move in a container FlexoConcept
+			container.getOwner().addToFlexoConcepts(concept);
+			container.addToEmbeddedFlexoConcepts(concept);
+		}
 		revalidate(concept.getOwner());
+	}
+
+	@NotificationUnsafe
+	public boolean canMoveFlexoConcept(FlexoConcept concept, FlexoConcept container) {
+		// System.out.println("on peut bouger " + concept + " dans " + container + " ?");
+		// System.out.println("alors: " + (concept != null && concept != container && concept.getContainerFlexoConcept() != container
+		// && concept.getDeclaringVirtualModel() != container));
+		return concept != null && concept != container && concept.getContainerFlexoConcept() != container
+				&& concept.getDeclaringVirtualModel() != container;
+	}
+
+	@Override
+	public void moveVirtualModelInFolder(VirtualModelResource vmResource, RepositoryFolder receiver) {
+		super.moveVirtualModelInFolder(vmResource, receiver);
+		revalidate(vmResource.getVirtualModel());
+	}
+
+	@Override
+	public void moveVirtualModelInVirtualModel(VirtualModelResource vmResource, VirtualModelResource container) {
+		super.moveVirtualModelInVirtualModel(vmResource, container);
+		revalidate(vmResource.getVirtualModel());
 	}
 
 }

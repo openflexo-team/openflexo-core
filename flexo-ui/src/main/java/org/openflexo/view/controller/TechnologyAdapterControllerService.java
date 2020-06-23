@@ -40,6 +40,7 @@
 package org.openflexo.view.controller;
 
 import java.util.Collection;
+import java.util.List;
 
 import org.openflexo.connie.type.CustomType;
 import org.openflexo.foundation.FlexoService;
@@ -49,8 +50,8 @@ import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.technologyadapter.TechnologyObject;
 import org.openflexo.gina.controller.CustomTypeEditor;
 import org.openflexo.gina.controller.CustomTypeEditorProvider;
-import org.openflexo.model.annotations.ImplementationClass;
-import org.openflexo.model.annotations.ModelEntity;
+import org.openflexo.pamela.annotations.ImplementationClass;
+import org.openflexo.pamela.annotations.ModelEntity;
 import org.openflexo.view.ModuleView;
 import org.openflexo.view.controller.model.FlexoPerspective;
 
@@ -78,7 +79,7 @@ public interface TechnologyAdapterControllerService extends FlexoService, Custom
 	 * @param technologyAdapterClass
 	 * @return
 	 */
-	public <TAC extends TechnologyAdapterController<TA>, TA extends TechnologyAdapter> TAC getTechnologyAdapterController(
+	public <TAC extends TechnologyAdapterController<TA>, TA extends TechnologyAdapter<TA>> TAC getTechnologyAdapterController(
 			Class<TAC> technologyAdapterControllerClass);
 
 	/**
@@ -88,7 +89,7 @@ public interface TechnologyAdapterControllerService extends FlexoService, Custom
 	 * @param technologyAdapterClass
 	 * @return
 	 */
-	public <TAC extends TechnologyAdapterController<TA>, TA extends TechnologyAdapter> TAC getTechnologyAdapterController(
+	public <TAC extends TechnologyAdapterController<TA>, TA extends TechnologyAdapter<TA>> TAC getTechnologyAdapterController(
 			TA technologyAdapter);
 
 	/**
@@ -97,7 +98,7 @@ public interface TechnologyAdapterControllerService extends FlexoService, Custom
 	 * @param object
 	 * @return
 	 */
-	public <TA extends TechnologyAdapter> boolean hasModuleViewForObject(TechnologyObject<TA> object, FlexoController controller);
+	public <TA extends TechnologyAdapter<TA>> boolean hasModuleViewForObject(TechnologyObject<TA> object, FlexoController controller);
 
 	/**
 	 * Return a newly created ModuleView for supplied technology object, if this TechnologyAdapter controller service support ModuleView
@@ -106,8 +107,8 @@ public interface TechnologyAdapterControllerService extends FlexoService, Custom
 	 * @param object
 	 * @return
 	 */
-	public <TA extends TechnologyAdapter> ModuleView<?> createModuleViewForObject(TechnologyObject<TA> object, FlexoController controller,
-			FlexoPerspective perspective);
+	public <TA extends TechnologyAdapter<TA>> ModuleView<?> createModuleViewForObject(TechnologyObject<TA> object,
+			FlexoController controller, FlexoPerspective perspective);
 
 	public Collection<TechnologyAdapterController<?>> getLoadedAdapterControllers();
 
@@ -117,7 +118,7 @@ public interface TechnologyAdapterControllerService extends FlexoService, Custom
 	 * 
 	 * @param technologyAdapter
 	 */
-	public void activateTechnology(TechnologyAdapter technologyAdapter);
+	public void activateTechnology(TechnologyAdapter<?> technologyAdapter);
 
 	/**
 	 * Disable a {@link TechnologyAdapter}<br>
@@ -125,7 +126,7 @@ public interface TechnologyAdapterControllerService extends FlexoService, Custom
 	 * 
 	 * @param technologyAdapter
 	 */
-	public void disactivateTechnology(TechnologyAdapter technologyAdapter);
+	public void disactivateTechnology(TechnologyAdapter<?> technologyAdapter);
 
 	/**
 	 * Return editor for supplied custom type
@@ -135,5 +136,21 @@ public interface TechnologyAdapterControllerService extends FlexoService, Custom
 	 */
 	@Override
 	public <T extends CustomType> CustomTypeEditor<T> getCustomTypeEditor(Class<T> typeClass);
+
+	/**
+	 * Return singleton instance of supplied Plugin class
+	 * 
+	 * @param <P>
+	 * @param pluginClass
+	 * @return
+	 */
+	public <P extends TechnologyAdapterPluginController<?>> P getPlugin(Class<P> pluginClass);
+
+	/**
+	 * Return the list of all activated {@link TechnologyAdapterPluginController}
+	 * 
+	 * @return
+	 */
+	public List<TechnologyAdapterPluginController<?>> getActivatedPlugins();
 
 }

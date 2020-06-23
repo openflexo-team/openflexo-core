@@ -64,7 +64,7 @@ import org.openflexo.swing.CustomPopup.ApplyCancelListener;
  *
  */
 @SuppressWarnings("serial")
-public class FlexoDocumentEditorWidget<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter> extends JPanel
+public class FlexoDocumentEditorWidget<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter<TA>> extends JPanel
 		implements FIBCustomComponent<D> {
 
 	private static final Logger logger = Logger.getLogger(FlexoDocumentEditorWidget.class.getPackage().getName());
@@ -101,7 +101,6 @@ public class FlexoDocumentEditorWidget<D extends FlexoDocument<D, TA>, TA extend
 
 	@Override
 	public void setRevertValue(D object) {
-		// TODO Auto-generated method stub
 	}
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
@@ -155,8 +154,6 @@ public class FlexoDocumentEditorWidget<D extends FlexoDocument<D, TA>, TA extend
 
 	@Override
 	public void delete() {
-		// TODO Auto-generated method stub
-
 	}
 
 	public TextSelection<D, TA> getTextSelection() {

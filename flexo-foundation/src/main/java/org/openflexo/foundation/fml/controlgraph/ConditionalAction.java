@@ -49,26 +49,27 @@ import org.openflexo.connie.exception.NullReferenceException;
 import org.openflexo.connie.exception.TypeMismatchException;
 import org.openflexo.connie.type.ExplicitNullType;
 import org.openflexo.connie.type.TypeUtils;
+import org.openflexo.connie.type.UndefinedType;
 import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.fml.FMLRepresentationContext;
 import org.openflexo.foundation.fml.FMLRepresentationContext.FMLRepresentationOutput;
 import org.openflexo.foundation.fml.binding.ControlGraphBindingModel;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext.ReturnException;
-import org.openflexo.model.annotations.CloningStrategy;
-import org.openflexo.model.annotations.CloningStrategy.StrategyType;
-import org.openflexo.model.annotations.DefineValidationRule;
-import org.openflexo.model.annotations.Embedded;
-import org.openflexo.model.annotations.Getter;
-import org.openflexo.model.annotations.ImplementationClass;
-import org.openflexo.model.annotations.ModelEntity;
-import org.openflexo.model.annotations.PropertyIdentifier;
-import org.openflexo.model.annotations.Setter;
-import org.openflexo.model.annotations.XMLAttribute;
-import org.openflexo.model.annotations.XMLElement;
-import org.openflexo.model.validation.ValidationError;
-import org.openflexo.model.validation.ValidationIssue;
-import org.openflexo.model.validation.ValidationRule;
+import org.openflexo.pamela.annotations.CloningStrategy;
+import org.openflexo.pamela.annotations.CloningStrategy.StrategyType;
+import org.openflexo.pamela.annotations.DefineValidationRule;
+import org.openflexo.pamela.annotations.Embedded;
+import org.openflexo.pamela.annotations.Getter;
+import org.openflexo.pamela.annotations.ImplementationClass;
+import org.openflexo.pamela.annotations.ModelEntity;
+import org.openflexo.pamela.annotations.PropertyIdentifier;
+import org.openflexo.pamela.annotations.Setter;
+import org.openflexo.pamela.annotations.XMLAttribute;
+import org.openflexo.pamela.annotations.XMLElement;
+import org.openflexo.pamela.validation.ValidationError;
+import org.openflexo.pamela.validation.ValidationIssue;
+import org.openflexo.pamela.validation.ValidationRule;
 import org.openflexo.toolbox.StringUtils;
 
 @ModelEntity
@@ -249,14 +250,10 @@ public interface ConditionalAction extends ControlStructureAction, FMLControlGra
 
 		@Override
 		public Object execute(RunTimeEvaluationContext evaluationContext) throws ReturnException, FlexoException {
-			if (evaluateCondition(evaluationContext)) {
+			if (evaluateCondition(evaluationContext))
 				return getThenControlGraph().execute(evaluationContext);
-			}
-			else {
-				if (getElseControlGraph() != null) {
-					return getElseControlGraph().execute(evaluationContext);
-				}
-			}
+			if (getElseControlGraph() != null)
+				return getElseControlGraph().execute(evaluationContext);
 			return null;
 		}
 
@@ -306,7 +303,14 @@ public interface ConditionalAction extends ControlStructureAction, FMLControlGra
 						return inferedType2;
 					}
 
-					if (inferedType2 instanceof ExplicitNullType) {
+					if (inferedType1 instanceof UndefinedType) {
+						if (inferedType2 instanceof UndefinedType) {
+							return UndefinedType.INSTANCE;
+						}
+						return inferedType2;
+					}
+
+					if (inferedType2 instanceof ExplicitNullType || inferedType2 instanceof UndefinedType) {
 						return inferedType1;
 					}
 

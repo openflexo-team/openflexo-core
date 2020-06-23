@@ -50,6 +50,7 @@ import org.openflexo.foundation.fml.FMLModelFactory;
 import org.openflexo.foundation.fml.FlexoBehaviour;
 import org.openflexo.foundation.fml.FlexoRole;
 import org.openflexo.foundation.fml.VirtualModel;
+import org.openflexo.foundation.fml.editionaction.AbstractFetchRequest;
 import org.openflexo.foundation.fml.editionaction.EditionAction;
 import org.openflexo.foundation.fml.editionaction.FetchRequest;
 import org.openflexo.foundation.fml.editionaction.TechnologySpecificAction;
@@ -57,14 +58,14 @@ import org.openflexo.foundation.fml.rt.FMLRTModelSlot;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.ModelSlotInstance;
 import org.openflexo.foundation.resource.ResourceData;
-import org.openflexo.model.annotations.Getter;
-import org.openflexo.model.annotations.ImplementationClass;
-import org.openflexo.model.annotations.Import;
-import org.openflexo.model.annotations.Imports;
-import org.openflexo.model.annotations.ModelEntity;
-import org.openflexo.model.annotations.PropertyIdentifier;
-import org.openflexo.model.annotations.Setter;
-import org.openflexo.model.annotations.XMLAttribute;
+import org.openflexo.pamela.annotations.Getter;
+import org.openflexo.pamela.annotations.ImplementationClass;
+import org.openflexo.pamela.annotations.Import;
+import org.openflexo.pamela.annotations.Imports;
+import org.openflexo.pamela.annotations.ModelEntity;
+import org.openflexo.pamela.annotations.PropertyIdentifier;
+import org.openflexo.pamela.annotations.Setter;
+import org.openflexo.pamela.annotations.XMLAttribute;
 
 /**
  * A model slot is a named object providing access to a particular data encoded in a given technology<br>
@@ -126,7 +127,7 @@ public interface ModelSlot<RD extends ResourceData<RD> & TechnologyObject<?>> ex
 	@Override
 	public TechnologyAdapter getModelSlotTechnologyAdapter();
 
-	public void setModelSlotTechnologyAdapter(TechnologyAdapter technologyAdapter);
+	public void setModelSlotTechnologyAdapter(TechnologyAdapter<?> technologyAdapter);
 
 	@Override
 	public Type getType();
@@ -135,13 +136,15 @@ public interface ModelSlot<RD extends ResourceData<RD> & TechnologyObject<?>> ex
 
 	public List<Class<? extends EditionAction>> getAvailableEditionActionTypes();
 
+	public List<Class<? extends AbstractFetchRequest<?, ?, ?, ?>>> getAvailableAbstractFetchRequestActionTypes();
+
 	public List<Class<? extends FetchRequest<?, ?, ?>>> getAvailableFetchRequestActionTypes();
 
 	public List<Class<? extends FlexoBehaviour>> getAvailableFlexoBehaviourTypes();
 
 	/**
 	 * Creates and return a new {@link FlexoRole} of supplied class.<br>
-	 * This responsability is delegated to the technology-specific {@link ModelSlot} which manages with introspection its own
+	 * This responsibility is delegated to the technology-specific {@link ModelSlot} which manages with introspection its own
 	 * {@link FlexoRole} types
 	 * 
 	 * @param flexoRoleClass
@@ -151,7 +154,7 @@ public interface ModelSlot<RD extends ResourceData<RD> & TechnologyObject<?>> ex
 
 	/**
 	 * Creates and return a new {@link EditionAction} of supplied class.<br>
-	 * This responsability is delegated to the technology-specific {@link ModelSlot} which manages with introspection its own
+	 * This responsibility is delegated to the technology-specific {@link ModelSlot} which manages with introspection its own
 	 * {@link EditionAction} types
 	 * 
 	 * @param editionActionClass
@@ -160,14 +163,14 @@ public interface ModelSlot<RD extends ResourceData<RD> & TechnologyObject<?>> ex
 	public abstract <EA extends TechnologySpecificAction<?, ?>> EA makeEditionAction(Class<EA> editionActionClass);
 
 	/**
-	 * Creates and return a new {@link FetchRequest} of supplied class.<br>
-	 * This responsability is delegated to the technology-specific {@link ModelSlot} which manages with introspection its own
-	 * {@link FetchRequest} types
+	 * Creates and return a new {@link AbstractFetchRequest} of supplied class.<br>
+	 * This responsibility is delegated to the technology-specific {@link ModelSlot} which manages with introspection its own
+	 * {@link AbstractFetchRequest} types
 	 * 
 	 * @param fetchRequestClass
 	 * @return
 	 */
-	public abstract <FR extends FetchRequest<?, ?, ?>> FR makeFetchRequest(Class<FR> fetchRequestClass);
+	public abstract <FR extends AbstractFetchRequest<?, ?, ?, ?>> FR makeFetchRequest(Class<FR> fetchRequestClass);
 
 	/**
 	 * Return default name for supplied pattern property class
@@ -213,7 +216,7 @@ public interface ModelSlot<RD extends ResourceData<RD> & TechnologyObject<?>> ex
 
 		private boolean isRequired;
 		private boolean isReadOnly;
-		private TechnologyAdapter technologyAdapter;
+		private TechnologyAdapter<?> technologyAdapter;
 
 		/*private List<Class<? extends FlexoRole<?>>> availableFlexoRoleTypes;
 		private List<Class<? extends FlexoBehaviour>> availableFlexoBehaviourTypes;
@@ -223,32 +226,13 @@ public interface ModelSlot<RD extends ResourceData<RD> & TechnologyObject<?>> ex
 		private List<Class<? extends InspectorEntry>> availableInspectorEntryTypes;*/
 
 		@Override
-		public VirtualModel getVirtualModel() {
-			if (getFlexoConcept() instanceof VirtualModel) {
-				return (VirtualModel) getFlexoConcept();
-			}
-			if (getFlexoConcept() != null) {
-				return getFlexoConcept().getOwner();
-			}
-			return null;
-		}
-
-		@Override
 		public ModelSlot<RD> getModelSlot() {
 			return this;
 		}
 
-		@Override
-		public String getURI() {
-			if (getVirtualModel() != null) {
-				return getVirtualModel().getURI() + "." + getName();
-			}
-			return null;
-		}
-
 		/**
 		 * Creates and return a new {@link FlexoRole} of supplied class.<br>
-		 * This responsability is delegated to the technology-specific {@link ModelSlot} which manages with introspection its own
+		 * This responsibility is delegated to the technology-specific {@link ModelSlot} which manages with introspection its own
 		 * {@link FlexoRole} types
 		 * 
 		 * @param flexoRoleClass
@@ -258,11 +242,6 @@ public interface ModelSlot<RD extends ResourceData<RD> & TechnologyObject<?>> ex
 		public <PR extends FlexoRole<?>> PR makeFlexoRole(Class<PR> flexoRoleClass) {
 			FMLModelFactory factory = getFMLModelFactory();
 			return factory.newInstance(flexoRoleClass);
-		}
-
-		@Override
-		public VirtualModel getOwningVirtualModel() {
-			return getVirtualModel();
 		}
 
 		@Override
@@ -299,7 +278,7 @@ public interface ModelSlot<RD extends ResourceData<RD> & TechnologyObject<?>> ex
 				e.printStackTrace();
 				return null;
 			} catch (IllegalAccessException e) {
-				logger.warning("Unexpected InvocationTargetException " + e);
+				logger.warning("Unexpected IllegalAccessException " + e);
 				e.printStackTrace();
 				return null;
 			} catch (InvocationTargetException e) {
@@ -354,7 +333,7 @@ public interface ModelSlot<RD extends ResourceData<RD> & TechnologyObject<?>> ex
 		}
 
 		@Override
-		public void setModelSlotTechnologyAdapter(TechnologyAdapter technologyAdapter) {
+		public void setModelSlotTechnologyAdapter(TechnologyAdapter<?> technologyAdapter) {
 			this.technologyAdapter = technologyAdapter;
 		}
 
@@ -385,6 +364,14 @@ public interface ModelSlot<RD extends ResourceData<RD> & TechnologyObject<?>> ex
 		}
 
 		@Override
+		public List<Class<? extends AbstractFetchRequest<?, ?, ?, ?>>> getAvailableAbstractFetchRequestActionTypes() {
+			if (getTechnologyAdapterService() != null) {
+				return getTechnologyAdapterService().getAvailableAbstractFetchRequestActionTypes(getClass());
+			}
+			return Collections.emptyList();
+		}
+
+		@Override
 		public List<Class<? extends FetchRequest<?, ?, ?>>> getAvailableFetchRequestActionTypes() {
 			if (getTechnologyAdapterService() != null) {
 				return getTechnologyAdapterService().getAvailableFetchRequestActionTypes(getClass());
@@ -394,7 +381,7 @@ public interface ModelSlot<RD extends ResourceData<RD> & TechnologyObject<?>> ex
 
 		/**
 		 * Creates and return a new {@link EditionAction} of supplied class.<br>
-		 * This responsability is delegated to the technology-specific {@link ModelSlot} which manages with introspection its own
+		 * This responsibility is delegated to the technology-specific {@link ModelSlot} which manages with introspection its own
 		 * {@link EditionAction} types
 		 * 
 		 * @param editionActionClass
@@ -407,15 +394,15 @@ public interface ModelSlot<RD extends ResourceData<RD> & TechnologyObject<?>> ex
 		}
 
 		/**
-		 * Creates and return a new {@link FetchRequest} of supplied class.<br>
-		 * This responsability is delegated to the technology-specific {@link ModelSlot} which manages with introspection its own
-		 * {@link FetchRequest} types
+		 * Creates and return a new {@link AbstractFetchRequest} of supplied class.<br>
+		 * This responsibility is delegated to the technology-specific {@link ModelSlot} which manages with introspection its own
+		 * {@link AbstractFetchRequest} types
 		 * 
 		 * @param fetchRequestClass
 		 * @return
 		 */
 		@Override
-		public final <FR extends FetchRequest<?, ?, ?>> FR makeFetchRequest(Class<FR> fetchRequestClass) {
+		public final <FR extends AbstractFetchRequest<?, ?, ?, ?>> FR makeFetchRequest(Class<FR> fetchRequestClass) {
 			FMLModelFactory factory = getFMLModelFactory();
 			return factory.newInstance(fetchRequestClass);
 		}
@@ -518,6 +505,16 @@ public interface ModelSlot<RD extends ResourceData<RD> & TechnologyObject<?>> ex
 		@Override
 		public boolean isReadOnly() {
 			return false;
+		}
+
+		private VirtualModel getVirtualModel() {
+			if (getFlexoConcept() instanceof VirtualModel) {
+				return (VirtualModel) getFlexoConcept();
+			}
+			if (getFlexoConcept() != null) {
+				return getFlexoConcept().getOwner();
+			}
+			return null;
 		}
 
 		@Override

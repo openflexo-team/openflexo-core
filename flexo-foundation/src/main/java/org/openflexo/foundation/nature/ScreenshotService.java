@@ -43,7 +43,7 @@ import java.awt.image.BufferedImage;
 import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.FlexoService;
-import org.openflexo.model.annotations.ModelEntity;
+import org.openflexo.pamela.annotations.ModelEntity;
 
 /**
  * Implemented by a service that provides screenshot generation features<br>

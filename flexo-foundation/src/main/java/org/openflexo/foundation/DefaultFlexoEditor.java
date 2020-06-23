@@ -54,7 +54,6 @@ import org.openflexo.foundation.fml.rt.logging.FMLConsole;
 import org.openflexo.foundation.nature.FlexoNature;
 import org.openflexo.foundation.resource.FlexoResource;
 import org.openflexo.foundation.resource.ResourceUpdateHandler;
-import org.openflexo.foundation.utils.FlexoProgressFactory;
 
 /**
  * Default implementation of {@link FlexoEditor}
@@ -64,10 +63,6 @@ import org.openflexo.foundation.utils.FlexoProgressFactory;
  *
  */
 public class DefaultFlexoEditor implements FlexoEditor {
-
-	private static final java.util.logging.Logger logger = org.openflexo.logging.FlexoLogger
-			.getLogger(DefaultFlexoEditor.class.getPackage().getName());
-
 	private final FlexoProject<?> project;
 	private final FlexoServiceManager serviceManager;
 	private final ResourceUpdateHandler resourceUpdateHandler;
@@ -82,8 +77,6 @@ public class DefaultFlexoEditor implements FlexoEditor {
 		resourceUpdateHandler = new ResourceUpdateHandler() {
 			@Override
 			public void resourceChanged(FlexoResource<?> resource) {
-				// TODO Auto-generated method stub
-
 			}
 		};
 		console = new FMLConsole(this);
@@ -119,12 +112,6 @@ public class DefaultFlexoEditor implements FlexoEditor {
 		return true;
 	}
 
-	@Override
-	public FlexoProgressFactory getFlexoProgressFactory() {
-		// Only interactive editor have a progress window
-		return null;
-	}
-
 	/**
 	 * Focus on supplied object, trying to display a view adapted to supplied displayNature
 	 * 
@@ -148,7 +135,6 @@ public class DefaultFlexoEditor implements FlexoEditor {
 
 	@Override
 	public FlexoUndoManager getUndoManager() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -213,7 +199,8 @@ public class DefaultFlexoEditor implements FlexoEditor {
 	 * @return
 	 */
 	@Override
-	public <A extends FlexoAction<A, ?, ?>> Icon getEnabledIconFor(FlexoActionFactory<A, ?, ?> action) {
+	public <A extends FlexoAction<A, T1, T2>, T1 extends FlexoObject, T2 extends FlexoObject> Icon getEnabledIconFor(
+			FlexoActionFactory<A, T1, T2> action) {
 		return null;
 	}
 
@@ -224,7 +211,8 @@ public class DefaultFlexoEditor implements FlexoEditor {
 	 * @return
 	 */
 	@Override
-	public <A extends FlexoAction<A, ?, ?>> Icon getDisabledIconFor(FlexoActionFactory<A, ?, ?> action) {
+	public <A extends FlexoAction<A, T1, T2>, T1 extends FlexoObject, T2 extends FlexoObject> Icon getDisabledIconFor(
+			FlexoActionFactory<A, T1, T2> action) {
 		return null;
 	}
 
@@ -237,7 +225,7 @@ public class DefaultFlexoEditor implements FlexoEditor {
 	 * @return
 	 */
 	@Override
-	public <A extends FlexoAction<A, ?, ?>> KeyStroke getKeyStrokeFor(FlexoActionFactory<A, ?, ?> actionFactory) {
+	public KeyStroke getKeyStrokeFor(FlexoActionFactory<?, ?, ?> actionFactory) {
 		return null;
 	}
 

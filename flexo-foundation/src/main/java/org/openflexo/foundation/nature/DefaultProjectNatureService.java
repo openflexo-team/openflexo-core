@@ -46,8 +46,8 @@ import java.util.logging.Logger;
 
 import org.openflexo.foundation.FlexoService;
 import org.openflexo.foundation.FlexoServiceImpl;
-import org.openflexo.model.exceptions.ModelDefinitionException;
-import org.openflexo.model.factory.ModelFactory;
+import org.openflexo.pamela.exceptions.ModelDefinitionException;
+import org.openflexo.pamela.factory.ModelFactory;
 
 /**
  * Default implementation for {@link ProjectNatureService}
@@ -116,7 +116,7 @@ public abstract class DefaultProjectNatureService extends FlexoServiceImpl imple
 	 * @return
 	 */
 	@Override
-	public <F extends ProjectNatureFactory<N>, N extends ProjectNature> F getProjectNatureFactory(Class<N> projectNatureClass) {
+	public <F extends ProjectNatureFactory<N>, N extends ProjectNature<N>> F getProjectNatureFactory(Class<N> projectNatureClass) {
 		return (F) loadedProjectNatureFactories.get(projectNatureClass);
 	}
 

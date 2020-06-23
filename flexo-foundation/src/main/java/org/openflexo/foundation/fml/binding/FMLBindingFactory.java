@@ -56,7 +56,6 @@ import org.openflexo.connie.binding.IBindingPathElement;
 import org.openflexo.connie.binding.SimplePathElement;
 import org.openflexo.connie.expr.Constant.ObjectConstant;
 import org.openflexo.connie.java.JavaBindingFactory;
-import org.openflexo.foundation.fml.AbstractActionScheme;
 import org.openflexo.foundation.fml.CreationScheme;
 import org.openflexo.foundation.fml.FlexoBehaviour;
 import org.openflexo.foundation.fml.FlexoBehaviourActionType;
@@ -121,10 +120,10 @@ public class FMLBindingFactory extends JavaBindingFactory {
 
 	protected SimplePathElement makeSimplePathElement(Object object, IBindingPathElement parent) {
 		if (object instanceof ModelSlot) {
-			return new VirtualModelModelSlotPathElement<ModelSlot<?>>(parent, (ModelSlot<?>) object);
+			return new ModelSlotPathElement<ModelSlot<?>>(parent, (ModelSlot<?>) object);
 		}
 		if (object instanceof FlexoProperty) {
-			return new FlexoConceptFlexoPropertyPathElement<FlexoProperty<?>>(parent, (FlexoProperty<?>) object);
+			return new FlexoPropertyPathElement<FlexoProperty<?>>(parent, (FlexoProperty<?>) object);
 		}
 		if (object instanceof FlexoBehaviourParameter) {
 			if (parent.getType() instanceof FlexoBehaviourParametersType) {
@@ -163,7 +162,7 @@ public class FMLBindingFactory extends JavaBindingFactory {
 
 			if (pType instanceof TechnologySpecificType) {
 				TechnologySpecificType<?> parentType = (TechnologySpecificType<?>) pType;
-				TechnologyAdapter ta = parentType.getSpecificTechnologyAdapter();
+				TechnologyAdapter<?> ta = parentType.getSpecificTechnologyAdapter();
 				if (ta != null) {
 					TechnologyAdapterBindingFactory bf = ta.getTechnologyAdapterBindingFactory();
 					if (bf != null && bf.handleType(parentType)) {
@@ -244,7 +243,12 @@ public class FMLBindingFactory extends JavaBindingFactory {
 				if (!(flexoBehaviour instanceof CreationScheme)) {
 					returned.add(new FlexoConceptInstancePathElement(parent, FLEXO_CONCEPT_INSTANCE, flexoBehaviour.getFlexoConcept()));
 				}
-				returned.add(new ContainerPathElement(parent, flexoBehaviour.getFlexoConcept().getOwningVirtualModel()));
+				if (flexoBehaviour.getFlexoConcept().getOwningVirtualModel() != null) {
+					returned.add(new ContainerPathElement(parent, flexoBehaviour.getFlexoConcept().getOwningVirtualModel()));
+				}
+				else {
+					logger.warning("No owning virtual model declared for behaviour: " + flexoBehaviour);
+				}
 				returned.add(new ResourceCenterPathElement(parent));
 				return returned;
 			}
@@ -253,7 +257,7 @@ public class FMLBindingFactory extends JavaBindingFactory {
 			return super.getAccessibleSimplePathElements(parent);
 		}
 		logger.warning("Trying to find accessible path elements for a NULL parent");
-		return Collections.EMPTY_LIST;
+		return Collections.emptyList();
 	}
 
 	@Override
@@ -333,8 +337,8 @@ public class FMLBindingFactory extends JavaBindingFactory {
 		if (returned == null || forceUpdate) {
 			returned = new ArrayList<>();
 			if (concept != null) {
-				for (AbstractActionScheme as : concept.getAccessibleAbstractActionSchemes()) {
-					returned.add(new FlexoBehaviourPathElement(parent, as, null));
+				for (FlexoBehaviour behaviour : concept.getAccessibleFlexoBehaviours(true)) {
+					returned.add(new FlexoBehaviourPathElement(parent, behaviour, null));
 				}
 				map.put(concept, returned);
 			}
@@ -417,7 +421,10 @@ public class FMLBindingFactory extends JavaBindingFactory {
 					// System.out.println("> " + args.get(i) + " of " + paramsTypes[i]);
 				}
 				// System.out.println("Returned: " + conceptType.getFlexoBehaviour(functionName, paramsTypes));
-				return conceptType.getFlexoBehaviour(functionName, paramsTypes);
+				Function returned = conceptType.getFlexoBehaviour(functionName, paramsTypes);
+				if (returned != null) {
+					return returned;
+				}
 			}
 		}
 		return super.retrieveFunction(parentType, functionName, args);

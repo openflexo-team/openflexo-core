@@ -39,7 +39,7 @@
 
 package org.openflexo.drm.dm;
 
-public class DocResourceCenterIsModified extends DRMDataModification {
+public class DocResourceCenterIsModified extends DRMDataModification<Object> {
 	public DocResourceCenterIsModified() {
 		super(null, null);
 	}

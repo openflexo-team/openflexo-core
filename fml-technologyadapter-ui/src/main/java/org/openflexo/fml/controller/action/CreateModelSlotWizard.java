@@ -93,7 +93,7 @@ public class CreateModelSlotWizard extends AbstractCreateFMLElementWizard<Create
 
 	@Override
 	public Image getDefaultPageImage() {
-		return IconFactory.getImageIcon(FMLIconLibrary.MODEL_SLOT_BIG_ICON, IconLibrary.NEW_32_32).getImage();
+		return IconFactory.getImageIcon(FMLIconLibrary.MODEL_SLOT_BIG_ICON, IconLibrary.BIG_NEW_MARKER).getImage();
 	}
 
 	public DescribeModelSlot getDescribeModelSlot() {
@@ -200,13 +200,13 @@ public class CreateModelSlotWizard extends AbstractCreateFMLElementWizard<Create
 			}
 		}
 
-		public TechnologyAdapter getTechnologyAdapter() {
+		public TechnologyAdapter<?> getTechnologyAdapter() {
 			return getAction().getTechnologyAdapter();
 		}
 
-		public void setTechnologyAdapter(TechnologyAdapter technologyAdapter) {
+		public void setTechnologyAdapter(TechnologyAdapter<?> technologyAdapter) {
 			if (getTechnologyAdapter() != technologyAdapter) {
-				TechnologyAdapter oldValue = getTechnologyAdapter();
+				TechnologyAdapter<?> oldValue = getTechnologyAdapter();
 				getAction().setTechnologyAdapter(technologyAdapter);
 				getPropertyChangeSupport().firePropertyChange("technologyAdapter", oldValue, technologyAdapter);
 				getPropertyChangeSupport().firePropertyChange("availableModelSlotTypes", false, getAvailableModelSlotTypes());

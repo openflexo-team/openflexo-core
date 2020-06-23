@@ -69,25 +69,25 @@ import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
 import org.openflexo.foundation.fml.rt.action.CreationSchemeAction;
 import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
 import org.openflexo.foundation.fml.rt.action.MatchingSet;
-import org.openflexo.model.annotations.Adder;
-import org.openflexo.model.annotations.CloningStrategy;
-import org.openflexo.model.annotations.CloningStrategy.StrategyType;
-import org.openflexo.model.annotations.DefineValidationRule;
-import org.openflexo.model.annotations.Embedded;
-import org.openflexo.model.annotations.Getter;
-import org.openflexo.model.annotations.Getter.Cardinality;
-import org.openflexo.model.annotations.ImplementationClass;
-import org.openflexo.model.annotations.ModelEntity;
-import org.openflexo.model.annotations.PropertyIdentifier;
-import org.openflexo.model.annotations.Remover;
-import org.openflexo.model.annotations.Setter;
-import org.openflexo.model.annotations.XMLAttribute;
-import org.openflexo.model.annotations.XMLElement;
-import org.openflexo.model.validation.CompoundIssue;
-import org.openflexo.model.validation.FixProposal;
-import org.openflexo.model.validation.ValidationError;
-import org.openflexo.model.validation.ValidationIssue;
-import org.openflexo.model.validation.ValidationRule;
+import org.openflexo.pamela.annotations.Adder;
+import org.openflexo.pamela.annotations.CloningStrategy;
+import org.openflexo.pamela.annotations.CloningStrategy.StrategyType;
+import org.openflexo.pamela.annotations.DefineValidationRule;
+import org.openflexo.pamela.annotations.Embedded;
+import org.openflexo.pamela.annotations.Getter;
+import org.openflexo.pamela.annotations.Getter.Cardinality;
+import org.openflexo.pamela.annotations.ImplementationClass;
+import org.openflexo.pamela.annotations.ModelEntity;
+import org.openflexo.pamela.annotations.PropertyIdentifier;
+import org.openflexo.pamela.annotations.Remover;
+import org.openflexo.pamela.annotations.Setter;
+import org.openflexo.pamela.annotations.XMLAttribute;
+import org.openflexo.pamela.annotations.XMLElement;
+import org.openflexo.pamela.validation.CompoundIssue;
+import org.openflexo.pamela.validation.FixProposal;
+import org.openflexo.pamela.validation.ValidationError;
+import org.openflexo.pamela.validation.ValidationIssue;
+import org.openflexo.pamela.validation.ValidationRule;
 
 /**
  * This action is used to perform synchronization regarding an {@link FlexoConceptInstance} in a given
@@ -183,6 +183,8 @@ public interface MatchFlexoConceptInstance extends FMLRTAction<FlexoConceptInsta
 	public void setFlexoConceptType(FlexoConcept flexoConceptType);
 
 	public CreateFlexoConceptInstanceParameter getParameter(FlexoBehaviourParameter p);
+
+	public VirtualModel getAddressedVirtualModel();
 
 	public static abstract class MatchFlexoConceptInstanceImpl extends FMLRTActionImpl<FlexoConceptInstance, FMLRTVirtualModelInstance>
 			implements MatchFlexoConceptInstance, PropertyChangeListener {
@@ -718,8 +720,7 @@ public interface MatchFlexoConceptInstance extends FMLRTAction<FlexoConceptInsta
 				container = new DataBinding<>(this, FlexoConceptInstance.class, DataBinding.BindingDefinitionType.GET);
 				container.setBindingName("container");
 				container.setDeclaredType(getFlexoConceptType() != null && getFlexoConceptType().getContainerFlexoConcept() != null
-						? getFlexoConceptType().getContainerFlexoConcept().getInstanceType()
-						: FlexoConceptInstance.class);
+						? getFlexoConceptType().getContainerFlexoConcept().getInstanceType() : FlexoConceptInstance.class);
 			}
 			return container;
 		}
@@ -730,11 +731,43 @@ public interface MatchFlexoConceptInstance extends FMLRTAction<FlexoConceptInsta
 				aContainer.setOwner(this);
 				aContainer.setBindingName("container");
 				aContainer.setDeclaredType(getFlexoConceptType() != null && getFlexoConceptType().getContainerFlexoConcept() != null
-						? getFlexoConceptType().getContainerFlexoConcept().getInstanceType()
-						: FlexoConceptInstance.class);
+						? getFlexoConceptType().getContainerFlexoConcept().getInstanceType() : FlexoConceptInstance.class);
 				aContainer.setBindingDefinitionType(DataBinding.BindingDefinitionType.GET);
 			}
 			this.container = aContainer;
+		}
+
+		private boolean isAnalyzingContainer = false;
+
+		/**
+		 * Return the {@link VirtualModel} beeing addressed by this action, according to the {@link #getVirtualModelInstance()} binding
+		 * 
+		 * @return
+		 */
+		@Override
+		public VirtualModel getAddressedVirtualModel() {
+
+			if (getReceiver() != null && getReceiver().isSet()) {
+				if (isAnalyzingContainer) {
+					return null;
+				}
+				if (getReceiver().isValid()) {
+					isAnalyzingContainer = true;
+					Type vmiType = getReceiver().getAnalyzedType();
+					isAnalyzingContainer = false;
+					if (vmiType instanceof VirtualModelInstanceType) {
+						return ((VirtualModelInstanceType) vmiType).getVirtualModel();
+					}
+				}
+			}
+			// I could not find VM, trying to "guess" (TODO: remove this hack ?)
+			if (getFlexoConcept() instanceof VirtualModel) {
+				return (VirtualModel) getFlexoConcept();
+			}
+			if (getInferedModelSlot() != null) {
+				return getInferedModelSlot().getAccessedVirtualModel();
+			}
+			return getOwningVirtualModel();
 		}
 
 	}
@@ -842,7 +875,7 @@ public interface MatchFlexoConceptInstance extends FMLRTAction<FlexoConceptInsta
 			else {
 				DataBinding<FMLRTVirtualModelInstance> binding = getBinding(object);
 				if (binding.getAnalyzedType() instanceof VirtualModelInstanceType && object.getFlexoConceptType() != null) {
-					if (object.getFlexoConceptType().getVirtualModel() != ((VirtualModelInstanceType) binding.getAnalyzedType())
+					if (object.getFlexoConceptType().getOwner() != ((VirtualModelInstanceType) binding.getAnalyzedType())
 							.getVirtualModel()) {
 						// System.out.println("VM1=" + object.getFlexoConceptType().getVirtualModel());
 						// System.out.println("VM1=" + Integer.toHexString(object.getFlexoConceptType().getVirtualModel().hashCode()));
@@ -861,7 +894,7 @@ public interface MatchFlexoConceptInstance extends FMLRTAction<FlexoConceptInsta
 
 						for (FMLRTModelSlot<?, ?> ms : object.getOwningVirtualModel().getModelSlots(FMLRTModelSlot.class)) {
 							// System.out.println("modelSlot " + ms + " vm=" + ms.getAddressedVirtualModel());
-							if (object.getFlexoConceptType().getVirtualModel().isAssignableFrom(ms.getAccessedVirtualModel())) {
+							if (object.getFlexoConceptType().getOwner().isAssignableFrom(ms.getAccessedVirtualModel())) {
 								((ValidationError) returned).addToFixProposals(new UseFMLRTModelSlot(ms));
 							}
 						}
@@ -870,7 +903,7 @@ public interface MatchFlexoConceptInstance extends FMLRTAction<FlexoConceptInsta
 							for (FMLRTModelSlot<?, ?> ms : ((VirtualModel) object.getRootOwner().getFlexoConcept())
 									.getModelSlots(FMLRTModelSlot.class)) {
 								// System.out.println("modelSlot " + ms + " vm=" + ms.getAddressedVirtualModel());
-								if (object.getFlexoConceptType().getVirtualModel().isAssignableFrom(ms.getAccessedVirtualModel())) {
+								if (object.getFlexoConceptType().getOwner().isAssignableFrom(ms.getAccessedVirtualModel())) {
 									((ValidationError) returned).addToFixProposals(new UseFMLRTModelSlot(ms));
 								}
 							}

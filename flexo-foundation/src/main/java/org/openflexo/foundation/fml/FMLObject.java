@@ -51,19 +51,19 @@ import org.openflexo.foundation.resource.ResourceData;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterService;
 import org.openflexo.foundation.technologyadapter.TechnologyObject;
 import org.openflexo.localization.LocalizedDelegate;
-import org.openflexo.model.annotations.DeserializationInitializer;
-import org.openflexo.model.annotations.Getter;
-import org.openflexo.model.annotations.ImplementationClass;
-import org.openflexo.model.annotations.ModelEntity;
-import org.openflexo.model.annotations.PropertyIdentifier;
-import org.openflexo.model.annotations.Setter;
-import org.openflexo.model.annotations.XMLAttribute;
-import org.openflexo.model.annotations.XMLElement;
-import org.openflexo.model.validation.FixProposal;
-import org.openflexo.model.validation.ValidationError;
-import org.openflexo.model.validation.ValidationIssue;
-import org.openflexo.model.validation.ValidationRule;
-import org.openflexo.model.validation.ValidationWarning;
+import org.openflexo.pamela.annotations.DeserializationInitializer;
+import org.openflexo.pamela.annotations.Getter;
+import org.openflexo.pamela.annotations.ImplementationClass;
+import org.openflexo.pamela.annotations.ModelEntity;
+import org.openflexo.pamela.annotations.PropertyIdentifier;
+import org.openflexo.pamela.annotations.Setter;
+import org.openflexo.pamela.annotations.XMLAttribute;
+import org.openflexo.pamela.annotations.XMLElement;
+import org.openflexo.pamela.validation.FixProposal;
+import org.openflexo.pamela.validation.ValidationError;
+import org.openflexo.pamela.validation.ValidationIssue;
+import org.openflexo.pamela.validation.ValidationRule;
+import org.openflexo.pamela.validation.ValidationWarning;
 import org.openflexo.toolbox.StringUtils;
 
 /**
@@ -151,6 +151,7 @@ public interface FMLObject extends FlexoObject, Bindable, InnerResourceData/*<Vi
 	 * @param context
 	 * @return
 	 */
+	@Deprecated
 	public String getFMLRepresentation(FMLRepresentationContext context);
 
 	/**
@@ -158,8 +159,10 @@ public interface FMLObject extends FlexoObject, Bindable, InnerResourceData/*<Vi
 	 * 
 	 * @return
 	 */
+	@Deprecated
 	public String getFMLRepresentation();
 
+	@Deprecated
 	public void clearFMLRepresentation();
 
 	/**
@@ -170,7 +173,7 @@ public interface FMLObject extends FlexoObject, Bindable, InnerResourceData/*<Vi
 
 	// public void notifyBindingModelChanged();
 
-	public FMLLocalizedDictionary getLocalizedDictionary();
+	// public FMLLocalizedDictionary getLocalizedDictionary();
 
 	@DeserializationInitializer
 	public void initializeDeserialization(FMLModelFactory factory);
@@ -182,7 +185,7 @@ public interface FMLObject extends FlexoObject, Bindable, InnerResourceData/*<Vi
 	/**
 	 * Return the {@link ResourceData} (the "container") of this {@link FMLObject}.<br>
 	 * The container is the {@link ResourceData} of this object.<br>
-	 * It is an instance of {@link VirtualModel} (a {@link VirtualModel} or a {@link ViewPoint})
+	 * It is an instance of {@link VirtualModel} (a {@link VirtualModel} or a {@link VirtualModel})
 	 * 
 	 * @return
 	 */
@@ -192,8 +195,8 @@ public interface FMLObject extends FlexoObject, Bindable, InnerResourceData/*<Vi
 	/**
 	 * Hook called when scope of a FMLObject changed.<br>
 	 * 
-	 * It happens for example when a {@link VirtualModel} is declared to be contained in a {@link ViewPoint}<br>
-	 * On that example {@link #getBindingFactory()} rely on {@link ViewPoint} enclosing, we must provide this hook to give a chance to
+	 * It happens for example when a {@link VirtualModel} is declared to be contained in a {@link VirtualModel}<br>
+	 * On that example {@link #getBindingFactory()} rely on {@link VirtualModel} enclosing, we must provide this hook to give a chance to
 	 * objects that rely on ViewPoint instanciation context to update their bindings (some bindings might becomes valid)<br>
 	 * 
 	 * It may also happen if an EditionAction is moved from a control graph to another control graph, etc...
@@ -243,7 +246,7 @@ public interface FMLObject extends FlexoObject, Bindable, InnerResourceData/*<Vi
 		}
 
 		@Override
-		public LocalizedDelegate getLocales() {
+		public final LocalizedDelegate getLocales() {
 			if (getDeclaringVirtualModel() != null) {
 				return getDeclaringVirtualModel().getLocalizedDictionary();
 			}
@@ -254,6 +257,9 @@ public interface FMLObject extends FlexoObject, Bindable, InnerResourceData/*<Vi
 		public FlexoServiceManager getServiceManager() {
 			if (getVirtualModelLibrary() != null) {
 				return getDeclaringVirtualModel().getVirtualModelLibrary().getServiceManager();
+			}
+			if (getDeserializationFactory() != null) {
+				return getDeserializationFactory().getServiceManager();
 			}
 			return null;
 		}
@@ -285,7 +291,7 @@ public interface FMLObject extends FlexoObject, Bindable, InnerResourceData/*<Vi
 		/**
 		 * Return the {@link ResourceData} (the "container") of this {@link FMLObject}.<br>
 		 * The container is the {@link ResourceData} of this object.<br>
-		 * It is an instance of {@link VirtualModel} (a {@link VirtualModel} or a {@link ViewPoint})
+		 * It is an instance of {@link VirtualModel} (a {@link VirtualModel} or a {@link VirtualModel})
 		 * 
 		 * @return
 		 */
@@ -294,7 +300,7 @@ public interface FMLObject extends FlexoObject, Bindable, InnerResourceData/*<Vi
 
 		/**
 		 * Return the ViewPoint in which this {@link FMLObject} is defined<br>
-		 * If container of this object is a {@link ViewPoint}, return this ViewPoint<br>
+		 * If container of this object is a {@link VirtualModel}, return this ViewPoint<br>
 		 * Otherwise, container of this object is a {@link VirtualModel}, return ViewPoint of VirtualModel
 		 * 
 		 */
@@ -362,9 +368,9 @@ public interface FMLObject extends FlexoObject, Bindable, InnerResourceData/*<Vi
 		/**
 		 * Hook called when scope of a FMLObject changed.<br>
 		 * 
-		 * It happens for example when a {@link VirtualModel} is declared to be contained in a {@link ViewPoint}<br>
-		 * On that example {@link #getBindingFactory()} rely on {@link ViewPoint} enclosing, we must provide this hook to give a chance to
-		 * objects that rely on ViewPoint instanciation context to update their bindings (some bindings might becomes valid)<br>
+		 * It happens for example when a {@link VirtualModel} is declared to be contained in a {@link VirtualModel}<br>
+		 * On that example {@link #getBindingFactory()} rely on {@link VirtualModel} enclosing, we must provide this hook to give a chance
+		 * to objects that rely on ViewPoint instanciation context to update their bindings (some bindings might becomes valid)<br>
 		 * 
 		 * It may also happen if an EditionAction is moved from a control graph to another control graph, etc...<br>
 		 * 
@@ -379,18 +385,20 @@ public interface FMLObject extends FlexoObject, Bindable, InnerResourceData/*<Vi
 			getPropertyChangeSupport().firePropertyChange(BindingModelChanged.BINDING_MODEL_CHANGED, null, null);
 		}*/
 
-		@Override
-		public FMLLocalizedDictionary getLocalizedDictionary() {
+		/*public LocalizedDelegate getLocalizedDictionary() {
 			return getDeclaringVirtualModel().getLocalizedDictionary();
-		}
+		}*/
 
 		// Voir du cote de GeneratorFormatter pour formatter tout ca
 		@Override
+		@Deprecated
 		public abstract String getFMLRepresentation(FMLRepresentationContext context);
 
+		@Deprecated
 		private String fmlRepresentation;
 
 		@Override
+		@Deprecated
 		public final String getFMLRepresentation() {
 			if (fmlRepresentation == null) {
 				fmlRepresentation = getFMLRepresentation(new FMLRepresentationContext());
@@ -428,6 +436,28 @@ public interface FMLObject extends FlexoObject, Bindable, InnerResourceData/*<Vi
 		public FMLModelFactory getDeserializationFactory() {
 			return deserializationFactory;
 		}
+
+		public String getFMLPrettyPrint() {
+			if (this instanceof FMLPrettyPrintable) {
+				FMLPrettyPrintDelegate<?> ppDelegate = ((FMLPrettyPrintable) this).getPrettyPrintDelegate();
+				return ppDelegate.getRepresentation(ppDelegate.makePrettyPrintContext());
+			}
+			return getFMLRepresentation();
+		}
+
+		public String getNormalizedFML() {
+			if (this instanceof FMLPrettyPrintable) {
+				FMLPrettyPrintDelegate<?> ppDelegate = ((FMLPrettyPrintable) this).getPrettyPrintDelegate();
+				return ppDelegate.getNormalizedRepresentation(ppDelegate.makePrettyPrintContext());
+			}
+			return getFMLRepresentation();
+		}
+
+		@Override
+		public String render() {
+			return getFMLRepresentation();
+		}
+
 	}
 
 	public static abstract class BindingIsRecommandedAndShouldBeValid<C extends FMLObject>

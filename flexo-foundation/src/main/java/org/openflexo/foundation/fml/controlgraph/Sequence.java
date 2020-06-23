@@ -45,25 +45,29 @@ import java.util.List;
 import org.openflexo.connie.BindingModel;
 import org.openflexo.connie.type.ExplicitNullType;
 import org.openflexo.connie.type.TypeUtils;
+import org.openflexo.connie.type.UndefinedType;
 import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.fml.FMLRepresentationContext;
 import org.openflexo.foundation.fml.FMLRepresentationContext.FMLRepresentationOutput;
+import org.openflexo.foundation.fml.FMLUtils;
+import org.openflexo.foundation.fml.FlexoConcept;
+import org.openflexo.foundation.fml.FlexoConceptInstanceType;
 import org.openflexo.foundation.fml.editionaction.AssignableAction;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext.ReturnException;
-import org.openflexo.model.annotations.CloningStrategy;
-import org.openflexo.model.annotations.CloningStrategy.StrategyType;
-import org.openflexo.model.annotations.DefineValidationRule;
-import org.openflexo.model.annotations.Embedded;
-import org.openflexo.model.annotations.Getter;
-import org.openflexo.model.annotations.ImplementationClass;
-import org.openflexo.model.annotations.ModelEntity;
-import org.openflexo.model.annotations.PropertyIdentifier;
-import org.openflexo.model.annotations.Setter;
-import org.openflexo.model.annotations.XMLElement;
-import org.openflexo.model.validation.ValidationError;
-import org.openflexo.model.validation.ValidationIssue;
-import org.openflexo.model.validation.ValidationRule;
+import org.openflexo.pamela.annotations.CloningStrategy;
+import org.openflexo.pamela.annotations.CloningStrategy.StrategyType;
+import org.openflexo.pamela.annotations.DefineValidationRule;
+import org.openflexo.pamela.annotations.Embedded;
+import org.openflexo.pamela.annotations.Getter;
+import org.openflexo.pamela.annotations.ImplementationClass;
+import org.openflexo.pamela.annotations.ModelEntity;
+import org.openflexo.pamela.annotations.PropertyIdentifier;
+import org.openflexo.pamela.annotations.Setter;
+import org.openflexo.pamela.annotations.XMLElement;
+import org.openflexo.pamela.validation.ValidationError;
+import org.openflexo.pamela.validation.ValidationIssue;
+import org.openflexo.pamela.validation.ValidationRule;
 import org.openflexo.toolbox.StringUtils;
 
 /**
@@ -113,7 +117,6 @@ public interface Sequence extends FMLControlGraph, FMLControlGraphOwner {
 
 		@Override
 		public String getURI() {
-			// TODO Auto-generated method stub
 			return null;
 		}
 
@@ -195,10 +198,7 @@ public interface Sequence extends FMLControlGraph, FMLControlGraphOwner {
 				if (getControlGraph1() instanceof AssignableAction) {
 					return getControlGraph1().getInferedBindingModel();
 				}
-				else {
-					return getBindingModel();
-				}
-
+				return getBindingModel();
 				// return getControlGraph1().getInferedBindingModel();
 			}
 			return null;
@@ -295,12 +295,19 @@ public interface Sequence extends FMLControlGraph, FMLControlGraphOwner {
 
 			if (inferedType1 instanceof ExplicitNullType) {
 				if (inferedType2 instanceof ExplicitNullType) {
-					return ExplicitNullType.INSTANCE;
+					return Object.class;
 				}
 				return inferedType2;
 			}
 
-			if (inferedType2 instanceof ExplicitNullType) {
+			if (inferedType1 instanceof UndefinedType) {
+				if (inferedType2 instanceof UndefinedType) {
+					return UndefinedType.INSTANCE;
+				}
+				return inferedType2;
+			}
+
+			if (inferedType2 instanceof ExplicitNullType || inferedType2 instanceof UndefinedType) {
 				return inferedType1;
 			}
 
@@ -310,6 +317,19 @@ public interface Sequence extends FMLControlGraph, FMLControlGraphOwner {
 
 			if (TypeUtils.isTypeAssignableFrom(inferedType2, inferedType1)) {
 				return inferedType2;
+			}
+
+			if (inferedType1 instanceof FlexoConceptInstanceType && ((FlexoConceptInstanceType) inferedType1).getFlexoConcept() != null
+					&& inferedType2 instanceof FlexoConceptInstanceType
+					&& ((FlexoConceptInstanceType) inferedType2).getFlexoConcept() != null) {
+				// Both types are FCI, but not in the same hierarchy
+				FlexoConcept mostSpecializedAncestor = FMLUtils.getMostSpecializedAncestor(
+						((FlexoConceptInstanceType) inferedType1).getFlexoConcept(),
+						((FlexoConceptInstanceType) inferedType2).getFlexoConcept());
+				if (mostSpecializedAncestor != null) {
+					return mostSpecializedAncestor.getInstanceType();
+				}
+
 			}
 
 			return Void.class;
@@ -382,7 +402,8 @@ public interface Sequence extends FMLControlGraph, FMLControlGraphOwner {
 
 			if (!(inferedType1.equals(Void.class)) && !(inferedType2.equals(Void.class))
 					&& !TypeUtils.isTypeAssignableFrom(inferedType1, inferedType2)
-					&& !TypeUtils.isTypeAssignableFrom(inferedType2, inferedType1)) {
+					&& !TypeUtils.isTypeAssignableFrom(inferedType2, inferedType1)
+					&& !(inferedType1 instanceof FlexoConceptInstanceType && inferedType2 instanceof FlexoConceptInstanceType)) {
 				System.out.println("Types are not compatible in:");
 				System.out.println(sequence.getFMLRepresentation());
 				return new ValidationError<>(this, sequence, "types_are_not_compatible (" + TypeUtils.simpleRepresentation(inferedType1)

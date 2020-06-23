@@ -47,8 +47,8 @@ import org.openflexo.foundation.fml.rt.editionaction.SelectFlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.editionaction.SelectVirtualModelInstance;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
-import org.openflexo.model.annotations.ImplementationClass;
-import org.openflexo.model.annotations.ModelEntity;
+import org.openflexo.pamela.annotations.ImplementationClass;
+import org.openflexo.pamela.annotations.ModelEntity;
 
 /**
  * A {@link ModelSlot} provided by an alternative technology which allows to access data through a general {@link VirtualModel} contract
@@ -66,10 +66,10 @@ import org.openflexo.model.annotations.ModelEntity;
 @DeclareFetchRequests({ SelectFlexoConceptInstance.class, SelectVirtualModelInstance.class })
 @ModelEntity(isAbstract = true)
 @ImplementationClass(InferedFMLRTModelSlot.InferedFMLRTModelSlotImpl.class)
-public interface InferedFMLRTModelSlot<VMI extends VirtualModelInstance<VMI, TA>, TA extends TechnologyAdapter>
+public interface InferedFMLRTModelSlot<VMI extends VirtualModelInstance<VMI, TA>, TA extends TechnologyAdapter<TA>>
 		extends FMLRTModelSlot<VMI, TA> {
 
-	public static abstract class InferedFMLRTModelSlotImpl<VMI extends VirtualModelInstance<VMI, TA>, TA extends TechnologyAdapter>
+	public static abstract class InferedFMLRTModelSlotImpl<VMI extends VirtualModelInstance<VMI, TA>, TA extends TechnologyAdapter<TA>>
 			extends FMLRTModelSlotImpl<VMI, TA> implements InferedFMLRTModelSlot<VMI, TA> {
 
 		private static final Logger logger = Logger.getLogger(InferedFMLRTModelSlot.class.getPackage().getName());

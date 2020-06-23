@@ -44,30 +44,24 @@ import java.awt.Robot;
 import javax.swing.SwingUtilities;
 
 public class ScenarioPlayer {
-
 	private Robot robot;
 
 	public ScenarioPlayer() {
-
 		try {
 			robot = new Robot();
 		} catch (AWTException e) {
 			e.printStackTrace();
 		}
 
-		SwingUtilities.invokeLater(new Runnable() {
-			@Override
-			public void run() {
-				for (int i = 0; i < 1000; i++) {
-					robot.mouseMove(i, 200);
-					try {
-						Thread.sleep(5);
-					} catch (InterruptedException e) {
-						e.printStackTrace();
-					}
+		SwingUtilities.invokeLater(() -> {
+			for (int i = 0; i < 1000; i++) {
+				robot.mouseMove(i, 200);
+				try {
+					Thread.sleep(5);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
 				}
 			}
 		});
-
 	}
 }

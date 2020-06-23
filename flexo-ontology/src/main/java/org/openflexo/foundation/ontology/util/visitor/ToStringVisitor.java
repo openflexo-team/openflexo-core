@@ -74,8 +74,7 @@ public class ToStringVisitor implements IFlexoOntologyConceptVisitor<String> {
 	 * @see org.openflexo.foundation.ontology.IFlexoOntologyConceptVisitor#visit(org.openflexo.foundation.ontology.IFlexoOntologyConstraint)
 	 */
 	@Override
-	public <TA extends TechnologyAdapter> String visit(IFlexoOntologyConstraint<TA> aConstraint) {
-		// TODO Auto-generated method stub
+	public <TA extends TechnologyAdapter<TA>> String visit(IFlexoOntologyConstraint<TA> aConstraint) {
 		return null;
 	}
 
@@ -85,7 +84,7 @@ public class ToStringVisitor implements IFlexoOntologyConceptVisitor<String> {
 	 * @see org.openflexo.foundation.ontology.IFlexoOntologyConceptVisitor#visit(org.openflexo.foundation.ontology.IFlexoOntologyDataType)
 	 */
 	@Override
-	public <TA extends TechnologyAdapter> String visit(IFlexoOntologyDataType<TA> aDataType) {
+	public <TA extends TechnologyAdapter<TA>> String visit(IFlexoOntologyDataType<TA> aDataType) {
 		StringBuilder builder = new StringBuilder();
 		builder.append("DataType - ");
 		builder.append(aDataType.getName());
@@ -98,7 +97,7 @@ public class ToStringVisitor implements IFlexoOntologyConceptVisitor<String> {
 	 * @see org.openflexo.foundation.ontology.IFlexoOntologyConceptVisitor#visit(org.openflexo.foundation.ontology.IFlexoOntologyIndividual)
 	 */
 	@Override
-	public <TA extends TechnologyAdapter> String visit(IFlexoOntologyIndividual<TA> aIndividual) {
+	public <TA extends TechnologyAdapter<TA>> String visit(IFlexoOntologyIndividual<TA> aIndividual) {
 		StringBuilder builder = new StringBuilder();
 		builder.append("Individual - ");
 		builder.append(aIndividual.getName());
@@ -127,7 +126,8 @@ public class ToStringVisitor implements IFlexoOntologyConceptVisitor<String> {
 					builder.setLength(builder.length() - 2);
 					builder.append(")\n");
 				}
-			} else if (propertyValue instanceof IFlexoOntologyObjectPropertyValue) {
+			}
+			else if (propertyValue instanceof IFlexoOntologyObjectPropertyValue) {
 				if (((IFlexoOntologyObjectPropertyValue<TA>) propertyValue).getValues() != null
 						&& ((IFlexoOntologyObjectPropertyValue<TA>) propertyValue).getValues().size() != 0) {
 					builder.append("\t PropertyValue - (");
@@ -151,7 +151,7 @@ public class ToStringVisitor implements IFlexoOntologyConceptVisitor<String> {
 	 * @see org.openflexo.foundation.ontology.IFlexoOntologyConceptVisitor#visit(org.openflexo.foundation.ontology.IFlexoOntologyClass)
 	 */
 	@Override
-	public <TA extends TechnologyAdapter> String visit(IFlexoOntologyClass<TA> aClass) {
+	public <TA extends TechnologyAdapter<TA>> String visit(IFlexoOntologyClass<TA> aClass) {
 		StringBuilder builder = new StringBuilder();
 		builder.append("Class - ");
 		builder.append(aClass.getName());
@@ -201,8 +201,7 @@ public class ToStringVisitor implements IFlexoOntologyConceptVisitor<String> {
 	 * @see org.openflexo.foundation.ontology.IFlexoOntologyConceptVisitor#visit(org.openflexo.foundation.ontology.IFlexoOntologyClabject)
 	 */
 	@Override
-	public <TA extends TechnologyAdapter> String visit(IFlexoOntologyClabject<TA> aClabject) {
-		// TODO Auto-generated method stub
+	public <TA extends TechnologyAdapter<TA>> String visit(IFlexoOntologyClabject<TA> aClabject) {
 		return null;
 	}
 
@@ -212,7 +211,7 @@ public class ToStringVisitor implements IFlexoOntologyConceptVisitor<String> {
 	 * @see org.openflexo.foundation.ontology.IFlexoOntologyConceptVisitor#visit(org.openflexo.foundation.ontology.IFlexoOntologyDataProperty)
 	 */
 	@Override
-	public <TA extends TechnologyAdapter> String visit(IFlexoOntologyDataProperty<TA> aDataProperty) {
+	public <TA extends TechnologyAdapter<TA>> String visit(IFlexoOntologyDataProperty<TA> aDataProperty) {
 		StringBuilder builder = new StringBuilder();
 		builder.append("Data Property - ");
 		builder.append(aDataProperty.getName());
@@ -230,7 +229,7 @@ public class ToStringVisitor implements IFlexoOntologyConceptVisitor<String> {
 	 * @see org.openflexo.foundation.ontology.IFlexoOntologyConceptVisitor#visit(org.openflexo.foundation.ontology.IFlexoOntologyObjectProperty)
 	 */
 	@Override
-	public <TA extends TechnologyAdapter> String visit(IFlexoOntologyObjectProperty<TA> aObjectProperty) {
+	public <TA extends TechnologyAdapter<TA>> String visit(IFlexoOntologyObjectProperty<TA> aObjectProperty) {
 		StringBuilder builder = new StringBuilder();
 		builder.append("Object Property - ");
 		builder.append(aObjectProperty.getName());
@@ -248,8 +247,7 @@ public class ToStringVisitor implements IFlexoOntologyConceptVisitor<String> {
 	 * @see org.openflexo.foundation.ontology.IFlexoOntologyConceptVisitor#visit(org.openflexo.foundation.ontology.IFlexoOntologyBehaviouralProperty)
 	 */
 	@Override
-	public <TA extends TechnologyAdapter> String visit(IFlexoOntologyBehaviouralProperty<TA> aBehaviouralProperty) {
-		// TODO Auto-generated method stub
+	public <TA extends TechnologyAdapter<TA>> String visit(IFlexoOntologyBehaviouralProperty<TA> aBehaviouralProperty) {
 		return null;
 	}
 }

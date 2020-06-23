@@ -56,16 +56,16 @@ import org.openflexo.foundation.action.FlexoActionSource;
 import org.openflexo.localization.LocalizedDelegate;
 import org.openflexo.view.controller.FlexoController;
 
-public class FlexoActionButton extends JButton {
+public class FlexoActionButton<A extends FlexoAction<A, T1, T2>, T1 extends FlexoObject, T2 extends FlexoObject> extends JButton {
 	private final ButtonAction action;
-	private final FlexoActionSource actionSource;
+	private final FlexoActionSource<T1, T2> actionSource;
 	private final FlexoController controller;
 
-	public FlexoActionButton(FlexoActionFactory<?, ?, ?> actionType, FlexoActionSource source, FlexoController controller) {
+	public FlexoActionButton(FlexoActionFactory<A, T1, T2> actionType, FlexoActionSource<T1, T2> source, FlexoController controller) {
 		this(actionType, null, source, controller);
 	}
 
-	public FlexoActionButton(FlexoActionFactory<?, ?, ?> actionType, String unlocalizedActionName, FlexoActionSource source,
+	public FlexoActionButton(FlexoActionFactory<A, T1, T2> actionType, String unlocalizedActionName, FlexoActionSource<T1, T2> source,
 			FlexoController controller) {
 		super();
 		actionSource = source;
@@ -106,7 +106,7 @@ public class FlexoActionButton extends JButton {
 		return actionSource.getFocusedObject();
 	}
 
-	public class ButtonAction<A extends FlexoAction<A, T1, T2>, T1 extends FlexoObject, T2 extends FlexoObject> implements ActionListener {
+	public class ButtonAction implements ActionListener {
 
 		private final FlexoActionFactory<A, T1, T2> actionType;
 		private String _unlocalizedName = null;
@@ -121,6 +121,7 @@ public class FlexoActionButton extends JButton {
 			_unlocalizedName = actionName;
 		}
 
+		@SuppressWarnings("unchecked")
 		@Override
 		public void actionPerformed(ActionEvent event) {
 			List<? extends FlexoObject> globalSelection = getGlobalSelection();
@@ -130,6 +131,7 @@ public class FlexoActionButton extends JButton {
 			}
 		}
 
+		@SuppressWarnings("unchecked")
 		public boolean isEnabled() {
 			List<? extends FlexoObject> globalSelection = getGlobalSelection();
 			if (TypeUtils.isAssignableTo(getFocusedObject(), actionType.getFocusedObjectType())

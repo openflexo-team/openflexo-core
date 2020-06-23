@@ -38,7 +38,6 @@
 
 package org.openflexo.foundation.action.copypaste;
 
-import java.awt.Event;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
@@ -50,10 +49,10 @@ import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.action.FlexoAction;
 import org.openflexo.foundation.action.FlexoActionFactory;
-import org.openflexo.model.exceptions.ModelDefinitionException;
-import org.openflexo.model.exceptions.ModelExecutionException;
-import org.openflexo.model.factory.Clipboard;
-import org.openflexo.model.factory.ModelFactory;
+import org.openflexo.pamela.exceptions.ModelDefinitionException;
+import org.openflexo.pamela.exceptions.ModelExecutionException;
+import org.openflexo.pamela.factory.Clipboard;
+import org.openflexo.pamela.factory.ModelFactory;
 
 public class PasteAction extends FlexoAction<PasteAction, FlexoObject, FlexoObject> {
 
@@ -113,7 +112,7 @@ public class PasteAction extends FlexoAction<PasteAction, FlexoObject, FlexoObje
 				return false;
 			}
 
-			PasteHandler<?> handler = editingContext.getPasteHandler(focusedObject, globalSelection, null);
+			PasteHandler<?> handler = editingContext.getPasteHandler(focusedObject, globalSelection);
 
 			if (handler == null) {
 				System.out.println("Could not find any PasteHandler for focused=" + focusedObject + " and clipboard type: "
@@ -123,8 +122,7 @@ public class PasteAction extends FlexoAction<PasteAction, FlexoObject, FlexoObje
 
 			// The checks are performed ONLY on leader clipboard (others clipboards are ignored)
 
-			PastingContext pastingContext = handler.retrievePastingContext(focusedObject, globalSelection, editingContext.getClipboard(),
-					null);
+			PastingContext pastingContext = handler.retrievePastingContext(focusedObject, globalSelection, editingContext.getClipboard());
 
 			if (pastingContext == null) {
 				return false;
@@ -151,7 +149,6 @@ public class PasteAction extends FlexoAction<PasteAction, FlexoObject, FlexoObje
 
 	private FlexoEditingContext editingContext;
 	private List<FlexoObject> pastedObjects = null;
-	private Event event;
 
 	private PasteAction(PasteActionType actionType, FlexoObject focusedObject, Vector<FlexoObject> globalSelection, FlexoEditor editor) {
 		super(actionType, focusedObject, globalSelection, editor);
@@ -161,10 +158,6 @@ public class PasteAction extends FlexoAction<PasteAction, FlexoObject, FlexoObje
 	protected void doAction(Object context) {
 		// TODO
 		logger.info("Perform PASTE");
-
-		if (context instanceof Event) {
-			this.event = (Event) context;
-		}
 
 		try {
 			// System.out.println("--------- START PASTE");
@@ -201,10 +194,6 @@ public class PasteAction extends FlexoAction<PasteAction, FlexoObject, FlexoObje
 		return (PasteActionType) super.getActionFactory();
 	}
 
-	public Event getEvent() {
-		return event;
-	}
-
 	/**
 	 * Paste current Clipboard in supplied context and position
 	 * 
@@ -236,12 +225,12 @@ public class PasteAction extends FlexoAction<PasteAction, FlexoObject, FlexoObje
 		}
 
 		PasteHandler<FlexoObject> handler = (PasteHandler<FlexoObject>) editingContext.getPasteHandler(getFocusedObject(),
-				getGlobalSelection(), getEvent());
+				getGlobalSelection());
 
 		System.out.println("PasteHandler=" + handler);
 
 		PastingContext<FlexoObject> pastingContext = handler.retrievePastingContext(getFocusedObject(), getGlobalSelection(),
-				editingContext.getClipboard(), getEvent());
+				editingContext.getClipboard());
 
 		System.out.println("PastingContext=" + pastingContext);
 

@@ -39,7 +39,6 @@
 package org.openflexo.action;
 
 import java.awt.event.KeyEvent;
-import java.util.EventObject;
 import java.util.logging.Logger;
 
 import javax.swing.Icon;
@@ -47,9 +46,8 @@ import javax.swing.KeyStroke;
 
 import org.openflexo.FlexoCst;
 import org.openflexo.foundation.FlexoObject;
-import org.openflexo.foundation.action.FlexoActionFinalizer;
-import org.openflexo.foundation.action.FlexoActionInitializer;
 import org.openflexo.foundation.action.FlexoActionFactory;
+import org.openflexo.foundation.action.FlexoActionRunnable;
 import org.openflexo.foundation.action.copypaste.CopyAction;
 import org.openflexo.icon.IconLibrary;
 import org.openflexo.view.controller.ActionInitializer;
@@ -66,31 +64,25 @@ public class CopyActionInitializer extends ActionInitializer<CopyAction, FlexoOb
 	}
 
 	@Override
-	protected FlexoActionInitializer<CopyAction> getDefaultInitializer() {
-		return new FlexoActionInitializer<CopyAction>() {
-			@Override
-			public boolean run(EventObject e, CopyAction action) {
-				logger.info("Copy initializer");
-				return true;
-			}
+	protected FlexoActionRunnable<CopyAction, FlexoObject, FlexoObject> getDefaultInitializer() {
+		return (e, action) -> {
+			logger.info("Copy initializer");
+			return true;
 		};
 	}
 
 	@Override
-	protected FlexoActionFinalizer<CopyAction> getDefaultFinalizer() {
-		return new FlexoActionFinalizer<CopyAction>() {
-			@Override
-			public boolean run(EventObject e, CopyAction action) {
-				logger.info("Copy finalizer");
-				getControllerActionInitializer().getController().setInfoMessage(
-						"Copied " + action.getClipboard().getLeaderClipboard().getOriginalContents().length + " objects", true);
-				return true;
-			}
+	protected FlexoActionRunnable<CopyAction, FlexoObject, FlexoObject> getDefaultFinalizer() {
+		return (e, action) -> {
+			logger.info("Copy finalizer");
+			getControllerActionInitializer().getController()
+					.setInfoMessage("Copied " + action.getClipboard().getLeaderClipboard().getOriginalContents().length + " objects", true);
+			return true;
 		};
 	}
 
 	@Override
-	protected Icon getEnabledIcon(FlexoActionFactory actionType) {
+	protected Icon getEnabledIcon(FlexoActionFactory<CopyAction, FlexoObject, FlexoObject> actionType) {
 		return IconLibrary.COPY_ICON;
 	}
 

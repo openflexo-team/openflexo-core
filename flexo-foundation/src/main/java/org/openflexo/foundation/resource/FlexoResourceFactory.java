@@ -25,9 +25,9 @@ import java.util.logging.Logger;
 
 import org.openflexo.connie.type.TypeUtils;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterResource;
-import org.openflexo.model.ModelContextLibrary;
-import org.openflexo.model.exceptions.ModelDefinitionException;
-import org.openflexo.model.factory.ModelFactory;
+import org.openflexo.pamela.ModelContextLibrary;
+import org.openflexo.pamela.exceptions.ModelDefinitionException;
+import org.openflexo.pamela.factory.ModelFactory;
 
 /**
  * Abstract implementation a factory that manages the life-cycle of a given type of {@link FlexoResource}
@@ -157,7 +157,7 @@ public abstract class FlexoResourceFactory<R extends FlexoResource<RD>, RD exten
 
 		if (createEmptyContents) {
 			createEmptyContents(returned);
-			returned.save(null);
+			returned.save();
 		}
 
 		return returned;
@@ -171,7 +171,10 @@ public abstract class FlexoResourceFactory<R extends FlexoResource<RD>, RD exten
 		return resourceData;
 	}
 
-	// Beware the exceptions are needed in the children
+	/**
+	 * @throws ModelDefinitionException
+	 *             raised by children
+	 */
 	protected <I> R initResourceForCreation(I serializationArtefact, FlexoResourceCenter<I> resourceCenter, String name, String uri)
 			throws ModelDefinitionException {
 		R returned = newInstance(resourceClass);
@@ -193,7 +196,12 @@ public abstract class FlexoResourceFactory<R extends FlexoResource<RD>, RD exten
 		return returned;
 	}
 
-	// Beware the exceptions are needed in the children
+	/**
+	 * @throws ModelDefinitionException
+	 *             raised by children
+	 * @throws IOException
+	 *             raised by children
+	 */
 	protected <I> R initResourceForRetrieving(I serializationArtefact, FlexoResourceCenter<I> resourceCenter)
 			throws ModelDefinitionException, IOException {
 		R returned = newInstance(resourceClass);
@@ -223,7 +231,7 @@ public abstract class FlexoResourceFactory<R extends FlexoResource<RD>, RD exten
 	 * @param technologyContextManager
 	 * @return
 	 */
-	protected <I> R registerResource(R resource, FlexoResourceCenter<I> resourceCenter) {
+	public <I> R registerResource(R resource, FlexoResourceCenter<I> resourceCenter) {
 
 		resource.setResourceCenter(resourceCenter);
 
@@ -251,7 +259,11 @@ public abstract class FlexoResourceFactory<R extends FlexoResource<RD>, RD exten
 	 * @param technologyContextManager
 	 * @return
 	 */
-	protected <I> R unregisterResource(R resource, FlexoResourceCenter<I> resourceCenter) {
+	public <I> R unregisterResource(R resource, FlexoResourceCenter<I> resourceCenter) {
+
+		if (resourceCenter.getServiceManager() != null && resourceCenter.getServiceManager().getResourceManager() != null) {
+			resourceCenter.getServiceManager().getResourceManager().unregisterResource(resource);
+		}
 
 		if (resourceCenter != null && resource != null && resource.getIODelegate() != null) {
 			resourceCenter.unregisterResource(resource, (I) resource.getIODelegate().getSerializationArtefact());
@@ -287,6 +299,10 @@ public abstract class FlexoResourceFactory<R extends FlexoResource<RD>, RD exten
 		}
 	}
 
+	protected <I> void unregisterResourceInResourceRepository(R resource, ResourceRepository<R, I> resourceRepository) {
+		resourceRepository.unregisterResource(resource);
+	}
+
 	/* (non-Javadoc)
 	 * @see org.openflexo.foundation.resource.IFlexoResourceFactory#makeEmptyResourceData(R)
 	 */
@@ -298,11 +314,4 @@ public abstract class FlexoResourceFactory<R extends FlexoResource<RD>, RD exten
 	 */
 	@Override
 	public abstract <I> boolean isValidArtefact(I serializationArtefact, FlexoResourceCenter<I> resourceCenter);
-
-	/* (non-Javadoc)
-	 * @see org.openflexo.foundation.resource.IFlexoResourceFactory#getConvertableArtefact(I, org.openflexo.foundation.resource.FlexoResourceCenter)
-	 */
-	@Override
-	public abstract <I> I getConvertableArtefact(I serializationArtefact, FlexoResourceCenter<I> resourceCenter);
-
 }

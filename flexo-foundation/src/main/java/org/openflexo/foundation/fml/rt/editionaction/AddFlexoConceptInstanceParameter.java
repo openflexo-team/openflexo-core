@@ -44,11 +44,11 @@ import org.openflexo.connie.DataBinding;
 import org.openflexo.foundation.fml.FlexoBehaviour;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.VirtualModelInstance;
-import org.openflexo.model.annotations.DefineValidationRule;
-import org.openflexo.model.annotations.ImplementationClass;
-import org.openflexo.model.annotations.ModelEntity;
-import org.openflexo.model.annotations.XMLElement;
-import org.openflexo.model.validation.ValidationIssue;
+import org.openflexo.pamela.annotations.DefineValidationRule;
+import org.openflexo.pamela.annotations.ImplementationClass;
+import org.openflexo.pamela.annotations.ModelEntity;
+import org.openflexo.pamela.annotations.XMLElement;
+import org.openflexo.pamela.validation.ValidationIssue;
 
 /**
  * A parameter used to instanciate a new {@link FlexoConceptInstance} or a new {@link VirtualModelInstance}
@@ -92,35 +92,11 @@ public interface AddFlexoConceptInstanceParameter extends BehaviourParameter<Abs
 			if (b == null || !b.isSet()) {
 				return new UndefinedRequiredBindingIssue<>(this, object);
 			}
-			/*else if (!b.isValid()) {
-				// FMLObjectImpl.logger.info(getClass().getName() + ": Binding NOT valid: " + b + " for " + object.getStringRepresentation()
-				// + ". Reason: " + b.invalidBindingReason());
-				// Thread.dumpStack();
-			
-				System.out.println("Un pb de binding pour l'object " + object + " of " + object.getImplementedInterface());
-				System.out.println("FML=" + object.getFMLRepresentation());
-				System.out.println("binding=" + b + " " + Integer.toHexString(b.hashCode()));
-				System.out.println("reason=" + b.invalidBindingReason());
-				System.out.println("bindable=" + b.getOwner());
-				System.out.println("bindingModel=" + b.getOwner().getBindingModel());
-				System.out.println("bindingFactory=" + b.getOwner().getBindingFactory());
-				if (b.isBindingValue()) {
-					BindingValue bindingValue = (BindingValue) b.getExpression();
-					System.out.println("bindingValue=" + bindingValue);
-					System.out.println("valid=" + bindingValue.isValid());
-					System.out.println("reason=" + bindingValue.invalidBindingReason());
-					System.out.println("referenced db= " + bindingValue.getDataBinding() + " "
-							+ Integer.toHexString(bindingValue.getDataBinding().hashCode()));
-					System.out.println("referenced db owner = " + bindingValue.getDataBinding().getOwner());
-					System.out.println("referenced db owner bf = " + bindingValue.getDataBinding().getOwner().getBindingFactory());
-				}
-			}*/
 
-			if (object.getParam().getIsRequired()) {
+			if (object.getParam() != null && object.getParam().getIsRequired()) {
 				return super.applyValidation(object);
 			}
-			else
-				return null;
+			return null;
 		}
 
 	}

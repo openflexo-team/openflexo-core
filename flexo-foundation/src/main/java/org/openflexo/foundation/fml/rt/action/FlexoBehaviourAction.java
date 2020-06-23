@@ -55,6 +55,7 @@ import org.openflexo.foundation.fml.binding.DeclarationBindingVariable;
 import org.openflexo.foundation.fml.binding.FMLBindingFactory;
 import org.openflexo.foundation.fml.binding.FlexoBehaviourBindingModel;
 import org.openflexo.foundation.fml.editionaction.EditionAction;
+import org.openflexo.foundation.fml.rt.ActionExecutionCancelledException;
 import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.FMLRunTimeEngine;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
@@ -152,11 +153,27 @@ public abstract class FlexoBehaviourAction<A extends FlexoBehaviourAction<A, FB,
 	}
 
 	@Override
-	public LocalizedDelegate getLocales() {
+	public final LocalizedDelegate getLocales() {
 		if (getFlexoBehaviour() != null) {
 			return getFlexoBehaviour().getLocales();
 		}
 		return super.getLocales();
+	}
+
+	@Override
+	public String getLocalizedName() {
+		if (getLocales() != null) {
+			return getLocales().localizedForKey(getFlexoBehaviour().getLabel());
+		}
+		return super.getLocalizedName();
+	}
+
+	@Override
+	public String getLocalizedDescription() {
+		if (getLocales() != null) {
+			return getLocales().localizedForKey(getFlexoBehaviour().getDescription());
+		}
+		return super.getLocalizedName();
 	}
 
 	public final FB getFlexoBehaviour() {
@@ -336,21 +353,29 @@ public abstract class FlexoBehaviourAction<A extends FlexoBehaviourAction<A, FB,
 	 */
 	protected void executeControlGraph() throws OperationCancelledException, FlexoException {
 
-		if (getFlexoBehaviour() != null && getFlexoBehaviour().getControlGraph() != null) {
+		if (getApplicableFlexoBehaviour() != null && getApplicableFlexoBehaviour().getControlGraph() != null) {
 			try {
-				getFlexoBehaviour().getControlGraph().execute(this);
+				getApplicableFlexoBehaviour().getControlGraph().execute(this);
 			} catch (ReturnException e) {
 				returnedValue = e.getReturnedValue();
 			} catch (OperationCancelledException e) {
-				throw e;
+				compensateCancelledExecution();
+				// TODO: let the UndoManager do the compensation job: too buggy yet
+				// throw e;
+				return;
+			} catch (ActionExecutionCancelledException e) {
+				compensateCancelledExecution();
+				// TODO: let the UndoManager do the compensation job: too buggy yet
+				// throw e;
+				return;
 			} catch (FlexoException e) {
 				logger.warning("Unexpected exception while executing FML control graph: " + e);
-				System.err.println(getFlexoBehaviour().getFMLRepresentation());
+				System.err.println(getApplicableFlexoBehaviour().getFMLRepresentation());
 				e.printStackTrace();
 				throw e;
 			} catch (Exception e) {
 				logger.warning("Unexpected exception while executing FML control graph: " + e);
-				System.err.println(getFlexoBehaviour().getFMLRepresentation());
+				System.err.println(getApplicableFlexoBehaviour().getFMLRepresentation());
 				e.printStackTrace();
 				throw new FlexoException(e);
 			}
@@ -359,6 +384,11 @@ public abstract class FlexoBehaviourAction<A extends FlexoBehaviourAction<A, FB,
 			}
 		}
 
+	}
+
+	protected void compensateCancelledExecution() {
+		logger.info("compensateCancelledExecution hook");
+		Thread.dumpStack();
 	}
 
 	public Object getReturnedValue() {
@@ -387,6 +417,43 @@ public abstract class FlexoBehaviourAction<A extends FlexoBehaviourAction<A, FB,
 	 * @param action
 	 */
 	public <T> void hasPerformedAction(EditionAction action, T object) {
+	}
+
+	private FlexoConcept declaredConceptualLevel;
+
+	/**
+	 * Return declared conceptual level, if any
+	 * 
+	 * This is the {@link FlexoConcept} which should be considered for {@link FlexoBehaviour} lookup resolution.<br>
+	 * When null (undefined), choose the declared {@link FlexoConcept} of considered {@link FlexoConceptInstance}
+	 * 
+	 * @return
+	 */
+	public FlexoConcept getDeclaredConceptualLevel() {
+		return declaredConceptualLevel;
+	}
+
+	/**
+	 * Sets declared conceptual level, if any
+	 * 
+	 * This is the {@link FlexoConcept} which should be considered for {@link FlexoBehaviour} lookup resolution.<br>
+	 * When null (undefined), choose the declared {@link FlexoConcept} of considered {@link FlexoConceptInstance}
+	 * 
+	 * @param declaredConceptualLevel
+	 */
+	public void setDeclaredConceptualLevel(FlexoConcept declaredConceptualLevel) {
+		this.declaredConceptualLevel = declaredConceptualLevel;
+	}
+
+	/**
+	 * Return applicable
+	 * 
+	 * @return
+	 */
+	@SuppressWarnings("unchecked")
+	public final FB getApplicableFlexoBehaviour() {
+		return (FB) getFlexoBehaviour().getMostSpecializedBehaviour(
+				getDeclaredConceptualLevel() == null ? getFlexoConceptInstance().getFlexoConcept() : getDeclaredConceptualLevel());
 	}
 
 	@Override
@@ -432,7 +499,12 @@ public abstract class FlexoBehaviourAction<A extends FlexoBehaviourAction<A, FB,
 	public void setValue(Object value, BindingVariable variable) {
 
 		if (variable instanceof DeclarationBindingVariable) {
-			variables.put(variable.getVariableName(), value);
+			if (value != null) {
+				variables.put(variable.getVariableName(), value);
+			}
+			else {
+				variables.remove(variable.getVariableName());
+			}
 			return;
 		}
 
@@ -478,7 +550,7 @@ public abstract class FlexoBehaviourAction<A extends FlexoBehaviourAction<A, FB,
 
 	public boolean parameterValueChanged() {
 		setChanged();
-		notifyObservers(new DataModification(PARAMETER_VALUE_CHANGED, null, getParametersValues()));
+		notifyObservers(new DataModification<>(PARAMETER_VALUE_CHANGED, null, getParametersValues()));
 		return true;
 	}
 

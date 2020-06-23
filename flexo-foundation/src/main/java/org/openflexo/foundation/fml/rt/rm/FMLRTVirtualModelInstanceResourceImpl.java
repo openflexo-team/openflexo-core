@@ -62,6 +62,22 @@ public abstract class FMLRTVirtualModelInstanceResourceImpl
 
 	static final Logger logger = Logger.getLogger(FMLRTVirtualModelInstanceResourceImpl.class.getPackage().getName());
 
+	/**
+	 * Return displayable name for this FlexoResource<br>
+	 * Overrides default dehaviour by using renderer of represented data when loaded
+	 * 
+	 * @return
+	 */
+	@Override
+	public String getDisplayName() {
+		if (isLoaded() && getLoadedResourceData().getFlexoConcept() != null
+				&& getLoadedResourceData().getFlexoConcept().getInspector() != null
+				&& getLoadedResourceData().getFlexoConcept().getInspector().getRenderer().isValid()) {
+			return getLoadedResourceData().getStringRepresentation();
+		}
+		return super.getDisplayName();
+	}
+
 	@Override
 	public Class<FMLRTVirtualModelInstance> getResourceDataClass() {
 		return FMLRTVirtualModelInstance.class;

@@ -56,18 +56,18 @@ import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterResource;
 import org.openflexo.foundation.technologyadapter.TechnologyObject;
-import org.openflexo.model.annotations.DefineValidationRule;
-import org.openflexo.model.annotations.Getter;
-import org.openflexo.model.annotations.ImplementationClass;
-import org.openflexo.model.annotations.ModelEntity;
-import org.openflexo.model.annotations.PropertyIdentifier;
-import org.openflexo.model.annotations.Setter;
-import org.openflexo.model.annotations.XMLAttribute;
-import org.openflexo.model.exceptions.ModelDefinitionException;
-import org.openflexo.model.validation.FixProposal;
-import org.openflexo.model.validation.ValidationIssue;
-import org.openflexo.model.validation.ValidationRule;
-import org.openflexo.model.validation.ValidationWarning;
+import org.openflexo.pamela.annotations.DefineValidationRule;
+import org.openflexo.pamela.annotations.Getter;
+import org.openflexo.pamela.annotations.ImplementationClass;
+import org.openflexo.pamela.annotations.ModelEntity;
+import org.openflexo.pamela.annotations.PropertyIdentifier;
+import org.openflexo.pamela.annotations.Setter;
+import org.openflexo.pamela.annotations.XMLAttribute;
+import org.openflexo.pamela.exceptions.ModelDefinitionException;
+import org.openflexo.pamela.validation.FixProposal;
+import org.openflexo.pamela.validation.ValidationError;
+import org.openflexo.pamela.validation.ValidationIssue;
+import org.openflexo.pamela.validation.ValidationRule;
 
 /**
  * Abstract edition action allowing to create an empty resource in a {@link FlexoResourceCenter}, at a specified relative path<br>
@@ -83,7 +83,7 @@ import org.openflexo.model.validation.ValidationWarning;
  */
 @ModelEntity(isAbstract = true)
 @ImplementationClass(AbstractCreateResource.AbstractCreateResourceImpl.class)
-public interface AbstractCreateResource<MS extends ModelSlot<?>, RD extends ResourceData<RD> & TechnologyObject<TA>, TA extends TechnologyAdapter>
+public interface AbstractCreateResource<MS extends ModelSlot<?>, RD extends ResourceData<RD> & TechnologyObject<TA>, TA extends TechnologyAdapter<TA>>
 		extends TechnologySpecificAction<MS, RD> {
 
 	@PropertyIdentifier(type = DataBinding.class)
@@ -94,6 +94,8 @@ public interface AbstractCreateResource<MS extends ModelSlot<?>, RD extends Reso
 	public static final String RESOURCE_CENTER_KEY = "resourceCenter";
 	@PropertyIdentifier(type = String.class)
 	public static final String RELATIVE_PATH_KEY = "relativePath";
+	@PropertyIdentifier(type = String.class)
+	public static final String DYNAMIC_RELATIVE_PATH_KEY = "dynamicRelativePath";
 
 	@Getter(value = RESOURCE_NAME_KEY)
 	@XMLAttribute
@@ -118,16 +120,26 @@ public interface AbstractCreateResource<MS extends ModelSlot<?>, RD extends Reso
 
 	@Getter(value = RELATIVE_PATH_KEY)
 	@XMLAttribute
+	@Deprecated // Use getDynamicRelativePath() instead
 	public String getRelativePath();
 
 	@Setter(RELATIVE_PATH_KEY)
+	@Deprecated // Use setDynamicRelativePath(DataBinding) instead
 	public void setRelativePath(String relativePath);
 
-	public static abstract class AbstractCreateResourceImpl<MS extends ModelSlot<RD>, RD extends ResourceData<RD> & TechnologyObject<TA>, TA extends TechnologyAdapter>
+	@Getter(value = DYNAMIC_RELATIVE_PATH_KEY)
+	@XMLAttribute
+	public DataBinding<String> getDynamicRelativePath();
+
+	@Setter(DYNAMIC_RELATIVE_PATH_KEY)
+	public void setDynamicRelativePath(DataBinding<String> relativePath);
+
+	public static abstract class AbstractCreateResourceImpl<MS extends ModelSlot<RD>, RD extends ResourceData<RD> & TechnologyObject<TA>, TA extends TechnologyAdapter<TA>>
 			extends TechnologySpecificActionImpl<MS, RD> implements AbstractCreateResource<MS, RD, TA> {
 
 		private static final Logger logger = Logger.getLogger(AbstractCreateResource.class.getPackage().getName());
 
+		private DataBinding<String> dynamicRelativePath;
 		private DataBinding<String> resourceName;
 		private DataBinding<String> resourceURI;
 
@@ -158,6 +170,13 @@ public interface AbstractCreateResource<MS extends ModelSlot<?>, RD extends Reso
 
 		public FlexoResourceCenter<?> getResourceCenter(RunTimeEvaluationContext evaluationContext) {
 			return evaluateDataBinding(getResourceCenter(), evaluationContext);
+		}
+
+		public String getRelativePath(RunTimeEvaluationContext evaluationContext) {
+			if (getDynamicRelativePath().isSet()) {
+				return evaluateDataBinding(getDynamicRelativePath(), evaluationContext);
+			}
+			return getRelativePath();
 		}
 
 		@Override
@@ -200,6 +219,26 @@ public interface AbstractCreateResource<MS extends ModelSlot<?>, RD extends Reso
 			this.resourceURI = resourceURI;
 		}
 
+		@Override
+		public DataBinding<String> getDynamicRelativePath() {
+			if (dynamicRelativePath == null) {
+				dynamicRelativePath = new DataBinding<>(this, String.class, DataBinding.BindingDefinitionType.GET);
+				dynamicRelativePath.setBindingName("dynamicRelativePath");
+			}
+			return dynamicRelativePath;
+		}
+
+		@Override
+		public void setDynamicRelativePath(DataBinding<String> dynamicRelativePath) {
+			if (dynamicRelativePath != null) {
+				dynamicRelativePath.setOwner(this);
+				dynamicRelativePath.setDeclaredType(String.class);
+				dynamicRelativePath.setBindingDefinitionType(DataBinding.BindingDefinitionType.GET);
+				dynamicRelativePath.setBindingName("dynamicRelativePath");
+			}
+			this.dynamicRelativePath = dynamicRelativePath;
+		}
+
 		private DataBinding<FlexoResourceCenter<?>> resourceCenter;
 
 		@Override
@@ -226,9 +265,8 @@ public interface AbstractCreateResource<MS extends ModelSlot<?>, RD extends Reso
 		public abstract Type getAssignableType();
 
 		protected <I, R extends TechnologyAdapterResource<RD, TA>, RF extends ITechnologySpecificFlexoResourceFactory<R, RD, TA>> R createResource(
-				TA technologyAdapter, Class<RF> resourceFactoryClass, FlexoResourceCenter<I> resourceCenter, String resourceName,
-				String resourceURI, String relativePath, String extension, boolean createEmptyContents)
-				throws SaveResourceException, ModelDefinitionException {
+				TA technologyAdapter, Class<RF> resourceFactoryClass, RunTimeEvaluationContext evaluationContext, String extension,
+				boolean createEmptyContents) throws SaveResourceException, ModelDefinitionException {
 
 			System.out.println("Creating resource from " + resourceFactoryClass);
 
@@ -237,17 +275,30 @@ public interface AbstractCreateResource<MS extends ModelSlot<?>, RD extends Reso
 				return null;
 			}
 
-			return technologyAdapter.createResource(resourceFactoryClass, resourceCenter, resourceName, resourceURI, relativePath,
-					extension, createEmptyContents);
+			String resourceName = getResourceName(evaluationContext);
+			String resourceURI = getResourceURI(evaluationContext);
+			FlexoResourceCenter<?> rc = getResourceCenter(evaluationContext);
+			String relativePath = getRelativePath(evaluationContext);
+
+			return technologyAdapter.createResource(resourceFactoryClass, rc, resourceName, resourceURI, relativePath, extension,
+					createEmptyContents);
 		}
 
 		@Override
+		@Deprecated
 		public String getRelativePath() {
 			String returned = (String) performSuperGetter(AbstractCreateResource.RELATIVE_PATH_KEY);
 			if (returned == null) {
 				return "";
 			}
 			return returned;
+		}
+
+		@Override
+		@Deprecated
+		public void setRelativePath(String relativePath) {
+			performSuperSetter(RELATIVE_PATH_KEY, relativePath);
+			setDynamicRelativePath(new DataBinding("'" + relativePath + "'"));
 		}
 
 	}
@@ -280,26 +331,27 @@ public interface AbstractCreateResource<MS extends ModelSlot<?>, RD extends Reso
 				TechnologySpecificAction<?, ?> anAction) {
 			DataBinding<?> rcbinding = ((AbstractCreateResource<?, ?, ?>) anAction).getResourceCenter();
 			if (rcbinding == null || rcbinding.isNull() || rcbinding.getExpression() == null) {
-				SetResourceCenterBeingProjectByDefault fixProposal = new SetResourceCenterBeingProjectByDefault(anAction);
-				return new ValidationWarning<>(this, anAction, "CreateResource_should_not_have_null_RC", fixProposal);
+				SetResourceCenterBeingCurrentResourceCenterByDefault fixProposal = new SetResourceCenterBeingCurrentResourceCenterByDefault(
+						anAction);
+				return new ValidationError<>(this, anAction, "CreateResource_should_not_have_null_resource_center", fixProposal);
 
 			}
 			return null;
 		}
 
-		protected static class SetResourceCenterBeingProjectByDefault
+		protected static class SetResourceCenterBeingCurrentResourceCenterByDefault
 				extends FixProposal<ResourceCenterShouldNotBeNull, TechnologySpecificAction<?, ?>> {
 
 			private final TechnologySpecificAction<?, ?> action;
 
-			public SetResourceCenterBeingProjectByDefault(TechnologySpecificAction<?, ?> anAction) {
-				super("set_rc_defaulting_to_project");
+			public SetResourceCenterBeingCurrentResourceCenterByDefault(TechnologySpecificAction<?, ?> anAction) {
+				super("set_resource_center_to_'this.resourceCenter'");
 				this.action = anAction;
 			}
 
 			@Override
 			protected void fixAction() {
-				((AbstractCreateResource<?, ?, ?>) action).getResourceCenter().setUnparsedBinding("project");
+				((AbstractCreateResource<?, ?, ?>) action).getResourceCenter().setUnparsedBinding("this.resourceCenter");
 			}
 		}
 

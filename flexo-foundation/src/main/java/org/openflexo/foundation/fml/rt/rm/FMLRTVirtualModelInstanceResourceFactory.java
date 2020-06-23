@@ -23,16 +23,20 @@ package org.openflexo.foundation.fml.rt.rm;
 import java.io.IOException;
 import java.util.logging.Logger;
 
+import org.openflexo.foundation.fml.FMLTechnologyAdapter;
+import org.openflexo.foundation.fml.VirtualModelRepository;
 import org.openflexo.foundation.fml.rm.VirtualModelResource;
+import org.openflexo.foundation.fml.rm.VirtualModelResourceFactory;
 import org.openflexo.foundation.fml.rt.FMLRTTechnologyAdapter;
 import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstanceModelFactory;
 import org.openflexo.foundation.resource.FlexoIODelegate;
+import org.openflexo.foundation.resource.FlexoResource;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.resource.RepositoryFolder;
 import org.openflexo.foundation.resource.SaveResourceException;
 import org.openflexo.foundation.technologyadapter.TechnologyContextManager;
-import org.openflexo.model.exceptions.ModelDefinitionException;
+import org.openflexo.pamela.exceptions.ModelDefinitionException;
 import org.openflexo.toolbox.FlexoVersion;
 import org.openflexo.toolbox.StringUtils;
 import org.openflexo.xml.XMLRootElementInfo;
@@ -90,7 +94,7 @@ public class FMLRTVirtualModelInstanceResourceFactory extends
 		if (createEmptyContents) {
 			FMLRTVirtualModelInstance resourceData = createEmptyContents(returned);
 			resourceData.setVirtualModel(virtualModelResource.getVirtualModel());
-			returned.save(null);
+			returned.save();
 			if (resourceData.getFMLRunTimeEngine() != null) {
 				// TODO: today FMLRTVirtualModelInstance is a RunTimeEvaluationContext
 				// TODO: design issue, we should separate FlexoConceptInstance from RunTimeEvaluationContext
@@ -134,7 +138,7 @@ public class FMLRTVirtualModelInstanceResourceFactory extends
 		if (createEmptyContents) {
 			FMLRTVirtualModelInstance resourceData = createEmptyContents(returned);
 			resourceData.setVirtualModel(virtualModelResource.getVirtualModel());
-			returned.save(null);
+			returned.save();
 			if (resourceData.getFMLRunTimeEngine() != null) {
 				// TODO: today FMLRTVirtualModelInstance is a RunTimeEvaluationContext
 				// TODO: design issue, we should separate FlexoConceptInstance from RunTimeEvaluationContext
@@ -209,27 +213,16 @@ public class FMLRTVirtualModelInstanceResourceFactory extends
 		if (resourceCenter.exists(serializationArtefact) && resourceCenter.isDirectory(serializationArtefact)
 				&& resourceCenter.canRead(serializationArtefact)
 				&& resourceCenter.retrieveName(serializationArtefact).endsWith(FML_RT_SUFFIX)) {
-			/*final String baseName = candidateFile.getName().substring(0,
-					candidateFile.getName().length() - ViewPointResource.VIEW_SUFFIX.length());
-			final File xmlFile = new File(candidateFile, baseName + ".xml");
-			return xmlFile.exists();*/
-
 			return true;
 		}
 		return false;
-	}
-
-	@Override
-	public <I> I getConvertableArtefact(I serializationArtefact, FlexoResourceCenter<I> resourceCenter) {
-		// TODO Auto-generated method stub
-		return null;
 	}
 
 	/**
 	 * Build and return model factory to use for resource data managing
 	 */
 	@Override
-	public FMLRTVirtualModelInstanceModelFactory makeResourceDataFactory(FMLRTVirtualModelInstanceResource resource,
+	public FMLRTVirtualModelInstanceModelFactory makeModelFactory(FMLRTVirtualModelInstanceResource resource,
 			TechnologyContextManager<FMLRTTechnologyAdapter> technologyContextManager) throws ModelDefinitionException {
 		return new FMLRTVirtualModelInstanceModelFactory(resource,
 				technologyContextManager.getTechnologyAdapter().getServiceManager().getEditingContext(),
@@ -237,7 +230,7 @@ public class FMLRTVirtualModelInstanceResourceFactory extends
 	}
 
 	@Override
-	protected <I> FMLRTVirtualModelInstanceResource registerResource(FMLRTVirtualModelInstanceResource resource,
+	public <I> FMLRTVirtualModelInstanceResource registerResource(FMLRTVirtualModelInstanceResource resource,
 			FlexoResourceCenter<I> resourceCenter) {
 		super.registerResource(resource, resourceCenter);
 
@@ -247,6 +240,24 @@ public class FMLRTVirtualModelInstanceResourceFactory extends
 
 		// Now look for virtual model instances and sub-views
 		exploreViewContents(resource);
+
+		// We lookup here resources with a null container which are defined inside a .fml directory
+		// This means that VirtualModelInstance inside are declared as ContainedVMI of the corresponding VirtualModel
+		if (resource.getContainer() == null) {
+			RepositoryFolder<FlexoResource<?>, I> parentFolder = resourceCenter.getParentFolder(resource);
+			if (parentFolder.getName().endsWith(VirtualModelResourceFactory.FML_SUFFIX)) {
+				FMLTechnologyAdapter fmlTA = resource.getServiceManager().getTechnologyAdapterService()
+						.getTechnologyAdapter(FMLTechnologyAdapter.class);
+				VirtualModelRepository<I> virtualModelRepository = fmlTA.getVirtualModelRepository(resourceCenter);
+				for (VirtualModelResource virtualModelResource : virtualModelRepository.getAllResources()) {
+					I serializationArtefact = (I) virtualModelResource.getIODelegate().getSerializationArtefact();
+					I parentSerializationArtefact = resourceCenter.getContainer(serializationArtefact);
+					if (parentSerializationArtefact.equals(parentFolder.getSerializationArtefact())) {
+						virtualModelResource.addToContainedVMI(resource);
+					}
+				}
+			}
+		}
 
 		return resource;
 	}
@@ -347,7 +358,7 @@ public class FMLRTVirtualModelInstanceResourceFactory extends
 		public String virtualModelURI;
 		@SuppressWarnings("unused")
 		public String virtualModelVersion;
-		public String name;
+		// Unused public String name;
 		public String uri;
 		public String version;
 		public String modelVersion;
@@ -364,7 +375,7 @@ public class FMLRTVirtualModelInstanceResourceFactory extends
 		}
 
 		if (xmlRootElementInfo.getName().equals("FMLRTVirtualModelInstance")) {
-			returned.name = xmlRootElementInfo.getAttribute("name");
+			// Unused returned.name = xmlRootElementInfo.getAttribute("name");
 			returned.uri = xmlRootElementInfo.getAttribute("uri");
 			returned.virtualModelURI = xmlRootElementInfo.getAttribute("virtualModelURI");
 			returned.virtualModelVersion = xmlRootElementInfo.getAttribute("virtualModelVersion");

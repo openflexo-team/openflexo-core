@@ -45,6 +45,8 @@ import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.FlexoObject.FlexoObjectImpl;
 import org.openflexo.foundation.action.FlexoActionFactory;
+import org.openflexo.foundation.action.TechnologySpecificFlexoAction;
+import org.openflexo.foundation.fml.rt.FMLRTTechnologyAdapter;
 import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.foundation.resource.RepositoryFolder;
@@ -58,12 +60,13 @@ import org.openflexo.foundation.resource.RepositoryFolder;
  * @param <T>
  *            type of container (a repository folder or a container FMLRTVirtualModelInstance)
  */
-public class CreateBasicVirtualModelInstance extends CreateFMLRTVirtualModelInstance<CreateBasicVirtualModelInstance> {
+public class CreateBasicVirtualModelInstance extends CreateFMLRTVirtualModelInstance<CreateBasicVirtualModelInstance>
+		implements TechnologySpecificFlexoAction<FMLRTTechnologyAdapter> {
 
 	private static final Logger logger = Logger.getLogger(CreateBasicVirtualModelInstance.class.getPackage().getName());
 
 	public static FlexoActionFactory<CreateBasicVirtualModelInstance, FlexoObject, FlexoObject> actionType = new FlexoActionFactory<CreateBasicVirtualModelInstance, FlexoObject, FlexoObject>(
-			"instantiate_virtual_model", FlexoActionFactory.newMenu, FlexoActionFactory.defaultGroup, FlexoActionFactory.ADD_ACTION_TYPE) {
+			"virtual_model_instance", FlexoActionFactory.newMenu, FlexoActionFactory.defaultGroup, FlexoActionFactory.ADD_ACTION_TYPE) {
 
 		/**
 		 * Factory method
@@ -96,6 +99,11 @@ public class CreateBasicVirtualModelInstance extends CreateFMLRTVirtualModelInst
 
 	protected CreateBasicVirtualModelInstance(FlexoObject focusedObject, Vector<FlexoObject> globalSelection, FlexoEditor editor) {
 		super(actionType, focusedObject, globalSelection, editor);
+	}
+
+	@Override
+	public Class<? extends FMLRTTechnologyAdapter> getTechnologyAdapterClass() {
+		return FMLRTTechnologyAdapter.class;
 	}
 
 }

@@ -48,7 +48,7 @@ import org.openflexo.foundation.technologyadapter.TechnologyObject;
  * 
  * @author gbesancon
  */
-public interface IFlexoOntologyObject<TA extends TechnologyAdapter> extends TechnologyObject<TA> {
+public interface IFlexoOntologyObject<TA extends TechnologyAdapter<TA>> extends TechnologyObject<TA> {
 
 	/**
 	 * Name of Object.

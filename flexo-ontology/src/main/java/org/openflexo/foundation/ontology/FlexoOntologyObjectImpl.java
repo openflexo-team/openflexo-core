@@ -51,7 +51,8 @@ import org.openflexo.localization.LocalizedDelegate;
  * @author sylvain
  * 
  */
-public abstract class FlexoOntologyObjectImpl<TA extends TechnologyAdapter> extends DefaultFlexoObject implements IFlexoOntologyObject<TA> {
+public abstract class FlexoOntologyObjectImpl<TA extends TechnologyAdapter<TA>> extends DefaultFlexoObject
+		implements IFlexoOntologyObject<TA> {
 
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(FlexoOntologyObjectImpl.class.getPackage().getName());

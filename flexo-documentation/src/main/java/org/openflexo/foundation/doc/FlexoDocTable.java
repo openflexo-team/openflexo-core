@@ -23,18 +23,18 @@ package org.openflexo.foundation.doc;
 import java.util.List;
 
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
-import org.openflexo.model.annotations.Adder;
-import org.openflexo.model.annotations.CloningStrategy;
-import org.openflexo.model.annotations.CloningStrategy.StrategyType;
-import org.openflexo.model.annotations.Embedded;
-import org.openflexo.model.annotations.Getter;
-import org.openflexo.model.annotations.Getter.Cardinality;
-import org.openflexo.model.annotations.ModelEntity;
-import org.openflexo.model.annotations.PastingPoint;
-import org.openflexo.model.annotations.PropertyIdentifier;
-import org.openflexo.model.annotations.Remover;
-import org.openflexo.model.annotations.Setter;
-import org.openflexo.model.annotations.XMLElement;
+import org.openflexo.pamela.annotations.Adder;
+import org.openflexo.pamela.annotations.CloningStrategy;
+import org.openflexo.pamela.annotations.Embedded;
+import org.openflexo.pamela.annotations.Getter;
+import org.openflexo.pamela.annotations.ModelEntity;
+import org.openflexo.pamela.annotations.PastingPoint;
+import org.openflexo.pamela.annotations.PropertyIdentifier;
+import org.openflexo.pamela.annotations.Remover;
+import org.openflexo.pamela.annotations.Setter;
+import org.openflexo.pamela.annotations.XMLElement;
+import org.openflexo.pamela.annotations.CloningStrategy.StrategyType;
+import org.openflexo.pamela.annotations.Getter.Cardinality;
 
 /**
  * Generic abstract concept representing a table of a text-based document (eg .docx, .odt, etc...)
@@ -47,7 +47,7 @@ import org.openflexo.model.annotations.XMLElement;
  *            {@link TechnologyAdapter} of current implementation
  */
 @ModelEntity(isAbstract = true)
-public interface FlexoDocTable<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter> extends FlexoDocElement<D, TA> {
+public interface FlexoDocTable<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter<TA>> extends FlexoDocElement<D, TA> {
 
 	@PropertyIdentifier(type = FlexoDocTableRow.class, cardinality = Cardinality.LIST)
 	public static final String TABLE_ROWS_KEY = "tableRows";
@@ -115,7 +115,7 @@ public interface FlexoDocTable<D extends FlexoDocument<D, TA>, TA extends Techno
 
 	public int getColumnWidth(int colIndex);
 
-	public static abstract class FlexoTableImpl<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter>
+	public static abstract class FlexoTableImpl<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter<TA>>
 			extends FlexoDocumentElementImpl<D, TA> implements FlexoDocTable<D, TA> {
 
 		/**

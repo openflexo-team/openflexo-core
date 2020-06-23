@@ -21,7 +21,7 @@
 package org.openflexo.foundation.doc;
 
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
-import org.openflexo.model.annotations.ModelEntity;
+import org.openflexo.pamela.annotations.ModelEntity;
 
 /**
  * Generic abstract concept representing style information of a portion of a text-based document (eg .docx, .odt, etc...)
@@ -34,11 +34,11 @@ import org.openflexo.model.annotations.ModelEntity;
  *            {@link TechnologyAdapter} of current implementation
  */
 @ModelEntity(isAbstract = true)
-public interface FlexoDocStyle<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter> extends FlexoDocObject<D, TA> {
+public interface FlexoDocStyle<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter<TA>> extends FlexoDocObject<D, TA> {
 
 	public String getStringRepresentation();
 
-	public static abstract class FlexoDocStyleImpl<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter>
+	public static abstract class FlexoDocStyleImpl<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter<TA>>
 			extends FlexoDocObjectImpl<D, TA> implements FlexoDocStyle<D, TA> {
 
 	}

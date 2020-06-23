@@ -39,14 +39,17 @@
 
 package org.openflexo.view.controller;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Map;
 import java.util.ServiceLoader;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.openflexo.connie.type.CustomType;
+import org.openflexo.connie.type.TypeUtils;
 import org.openflexo.foundation.FlexoService;
 import org.openflexo.foundation.FlexoServiceImpl;
 import org.openflexo.foundation.FlexoServiceManager.ServiceRegistered;
@@ -65,9 +68,9 @@ import org.openflexo.foundation.technologyadapter.TechnologyAdapterResource;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterService;
 import org.openflexo.foundation.technologyadapter.TechnologyObject;
 import org.openflexo.gina.controller.CustomTypeEditor;
-import org.openflexo.model.exceptions.ModelDefinitionException;
-import org.openflexo.model.factory.ModelFactory;
 import org.openflexo.module.ModuleLoader.ModuleLoaded;
+import org.openflexo.pamela.exceptions.ModelDefinitionException;
+import org.openflexo.pamela.factory.ModelFactory;
 import org.openflexo.view.ModuleView;
 import org.openflexo.view.controller.model.FlexoPerspective;
 
@@ -99,8 +102,6 @@ public abstract class DefaultTechnologyAdapterControllerService extends FlexoSer
 	 * Load all available technology adapters<br>
 	 * Retrieve all {@link TechnologyAdapter} available from classpath. <br>
 	 * Map contains the TechnologyAdapter class name as key and the TechnologyAdapter itself as value.
-	 * 
-	 * @return the retrieved TechnologyModuleDefinition map.
 	 */
 	private void loadAvailableTechnologyAdapterControllers() {
 		if (loadedAdapters == null) {
@@ -129,6 +130,25 @@ public abstract class DefaultTechnologyAdapterControllerService extends FlexoSer
 	}
 
 	/**
+	 * Load all available technology adapters plugins<br>
+	 * Retrieve all {@link TechnologyAdapterPluginController} available from classpath. <br>
+	 * 
+	 */
+	private void loadAvailableTechnologyAdapterPlugins() {
+		logger.info("Loading available technology adapter plugins...");
+		for (TechnologyAdapterPluginController<?> plugin : ServiceLoader.load(TechnologyAdapterPluginController.class)) {
+			registerTechnologyAdapterPlugin(plugin);
+		}
+		logger.info("Loading available technology adapter plugins. Done.");
+	}
+
+	private void registerTechnologyAdapterPlugin(TechnologyAdapterPluginController<?> technologyAdapterPlugin) {
+		logger.fine("Loading plugin " + technologyAdapterPlugin.getClass());
+		technologyAdapterPlugin.setServiceManager(getServiceManager());
+		technologyAdapterPlugin.getTargetTechnologyAdapterController().addToTechnologyAdapterPlugins(technologyAdapterPlugin);
+	}
+
+	/**
 	 * Return loaded technology adapter controller mapping supplied class<br>
 	 * If adapter is not loaded, return null
 	 * 
@@ -136,7 +156,7 @@ public abstract class DefaultTechnologyAdapterControllerService extends FlexoSer
 	 * @return
 	 */
 	@Override
-	public <TAC extends TechnologyAdapterController<TA>, TA extends TechnologyAdapter> TAC getTechnologyAdapterController(
+	public <TAC extends TechnologyAdapterController<TA>, TA extends TechnologyAdapter<TA>> TAC getTechnologyAdapterController(
 			Class<TAC> technologyAdapterControllerClass) {
 		return (TAC) loadedAdapters.get(technologyAdapterControllerClass);
 	}
@@ -149,7 +169,7 @@ public abstract class DefaultTechnologyAdapterControllerService extends FlexoSer
 	 * @return
 	 */
 	@Override
-	public <TAC extends TechnologyAdapterController<TA>, TA extends TechnologyAdapter> TAC getTechnologyAdapterController(
+	public <TAC extends TechnologyAdapterController<TA>, TA extends TechnologyAdapter<TA>> TAC getTechnologyAdapterController(
 			TA technologyAdapter) {
 		for (TechnologyAdapterController<?> tac : loadedAdapters.values()) {
 			if (tac.getTechnologyAdapter() == technologyAdapter) {
@@ -181,7 +201,7 @@ public abstract class DefaultTechnologyAdapterControllerService extends FlexoSer
 		return loadedAdapters.values();
 	}
 
-	private <RD extends ResourceData<RD> & TechnologyObject<TA>, TA extends TechnologyAdapter> void resourceLoaded(
+	private <RD extends ResourceData<RD> & TechnologyObject<TA>, TA extends TechnologyAdapter<TA>> void resourceLoaded(
 			TechnologyAdapterResource<RD, TA> r) {
 		TA ta = r.getTechnologyAdapter();
 		// System.out.println("Loaded resource " + r + " for TA " + ta);
@@ -191,7 +211,7 @@ public abstract class DefaultTechnologyAdapterControllerService extends FlexoSer
 		}
 	}
 
-	private <RD extends ResourceData<RD> & TechnologyObject<TA>, TA extends TechnologyAdapter> void resourceUnloaded(
+	private <RD extends ResourceData<RD> & TechnologyObject<TA>, TA extends TechnologyAdapter<TA>> void resourceUnloaded(
 			TechnologyAdapterResource<RD, TA> r) {
 		TA ta = r.getTechnologyAdapter();
 		// System.out.println("Unloaded resource " + r + " for TA " + ta);
@@ -227,7 +247,7 @@ public abstract class DefaultTechnologyAdapterControllerService extends FlexoSer
 			// We have to start with the FMLTechnologyAdapter, if it exists
 			TechnologyAdapter ta = getServiceManager().getTechnologyAdapterService().getTechnologyAdapter(FMLTechnologyAdapter.class);
 			if (ta != null) {
-				TechnologyAdapterController<TechnologyAdapter> adapterController = this.getTechnologyAdapterController(ta);
+				TechnologyAdapterController<?> adapterController = this.getTechnologyAdapterController(ta);
 				// System.out.println("Activated " + adapterController.getTechnologyAdapter() + " ? " +
 				// adapterController.isActivated());
 				if (ta.isActivated()) {
@@ -258,10 +278,10 @@ public abstract class DefaultTechnologyAdapterControllerService extends FlexoSer
 				}*/
 			}
 			else if (notification instanceof TechnologyAdapterHasBeenActivated) {
-				activateTechnology(((TechnologyAdapterHasBeenActivated) notification).getTechnologyAdapter());
+				activateTechnology(((TechnologyAdapterHasBeenActivated<?>) notification).getTechnologyAdapter());
 			}
 			else if (notification instanceof TechnologyAdapterHasBeenDisactivated) {
-				disactivateTechnology(((TechnologyAdapterHasBeenActivated) notification).getTechnologyAdapter());
+				disactivateTechnology(((TechnologyAdapterHasBeenActivated<?>) notification).getTechnologyAdapter());
 			}
 		}
 
@@ -283,6 +303,7 @@ public abstract class DefaultTechnologyAdapterControllerService extends FlexoSer
 				}
 			}
 		}
+		loadAvailableTechnologyAdapterPlugins();
 		status = Status.Started;
 	}
 
@@ -293,13 +314,17 @@ public abstract class DefaultTechnologyAdapterControllerService extends FlexoSer
 	 * @param technologyAdapter
 	 */
 	@Override
-	public void activateTechnology(TechnologyAdapter technologyAdapter) {
-
-		TechnologyAdapterController<?> tac = getTechnologyAdapterController(technologyAdapter);
-
+	public void activateTechnology(TechnologyAdapter<?> technologyAdapter) {
+		TechnologyAdapterController<?> tac = getTechnologyAdapterController((TechnologyAdapter) technologyAdapter);
 		if (tac != null) {
 			tac.activate();
 		}
+
+		for (TechnologyAdapterController<?> technologyAdapterController : loadedAdapters.values()) {
+			technologyAdapterController.activateActivablePlugins();
+		}
+
+		getServiceManager().notify(this, getServiceManager().new TechnologyAdapterHasBeenActivated<>(technologyAdapter));
 	}
 
 	/**
@@ -309,8 +334,9 @@ public abstract class DefaultTechnologyAdapterControllerService extends FlexoSer
 	 * @param technologyAdapter
 	 */
 	@Override
-	public void disactivateTechnology(TechnologyAdapter technologyAdapter) {
-		getTechnologyAdapterController(technologyAdapter).disactivate();
+	public void disactivateTechnology(TechnologyAdapter<?> technologyAdapter) {
+		getTechnologyAdapterController((TechnologyAdapter) technologyAdapter).disactivate();
+		getServiceManager().notify(this, getServiceManager().new TechnologyAdapterHasBeenDisactivated<>(technologyAdapter));
 	}
 
 	/**
@@ -320,21 +346,21 @@ public abstract class DefaultTechnologyAdapterControllerService extends FlexoSer
 	 * @return
 	 */
 	@Override
-	public <TA extends TechnologyAdapter> boolean hasModuleViewForObject(TechnologyObject<TA> object, FlexoController controller) {
+	public <TA extends TechnologyAdapter<TA>> boolean hasModuleViewForObject(TechnologyObject<TA> object, FlexoController controller) {
 		TA technologyAdapter = object.getTechnologyAdapter();
 		TechnologyAdapterController<TA> taController = getTechnologyAdapterController(technologyAdapter);
 		return taController.hasModuleViewForObject(object, controller);
 	}
 
 	@Override
-	public <TA extends TechnologyAdapter> ModuleView<?> createModuleViewForObject(TechnologyObject<TA> object, FlexoController controller,
-			FlexoPerspective perspective) {
+	public <TA extends TechnologyAdapter<TA>> ModuleView<?> createModuleViewForObject(TechnologyObject<TA> object,
+			FlexoController controller, FlexoPerspective perspective) {
 		TA technologyAdapter = object.getTechnologyAdapter();
 		TechnologyAdapterController<TA> taController = getTechnologyAdapterController(technologyAdapter);
 		return taController.createModuleViewForObject(object, controller, perspective);
 	}
 
-	public <TA extends TechnologyAdapter> String getWindowTitleforObject(TechnologyObject<TA> object, FlexoController controller) {
+	public <TA extends TechnologyAdapter<TA>> String getWindowTitleforObject(TechnologyObject<TA> object, FlexoController controller) {
 		TA technologyAdapter = object.getTechnologyAdapter();
 		TechnologyAdapterController<TA> taController = getTechnologyAdapterController(technologyAdapter);
 		return taController.getWindowTitleforObject(object, controller);
@@ -343,9 +369,9 @@ public abstract class DefaultTechnologyAdapterControllerService extends FlexoSer
 	@Override
 	public <T extends CustomType> CustomTypeEditor<T> getCustomTypeEditor(Class<T> typeClass) {
 
-		for (TechnologyAdapter ta : getServiceManager().getTechnologyAdapterService().getTechnologyAdapters()) {
+		for (TechnologyAdapter<?> ta : getServiceManager().getTechnologyAdapterService().getTechnologyAdapters()) {
 			if (ta.isActivated()) {
-				TechnologyAdapterController<?> tac = getTechnologyAdapterController(ta);
+				TechnologyAdapterController<?> tac = getTechnologyAdapterController((TechnologyAdapter) ta);
 				CustomTypeEditor<T> returned = tac.getCustomTypeEditor(typeClass);
 				if (returned != null) {
 					return returned;
@@ -353,6 +379,38 @@ public abstract class DefaultTechnologyAdapterControllerService extends FlexoSer
 			}
 		}
 		return null;
+	}
+
+	/**
+	 * Return singleton instance of supplied Plugin class
+	 * 
+	 * @param <P>
+	 * @param pluginClass
+	 * @return
+	 */
+	@Override
+	public <P extends TechnologyAdapterPluginController<?>> P getPlugin(Class<P> pluginClass) {
+		Class<? extends TechnologyAdapter> taClass = (Class<? extends TechnologyAdapter>) TypeUtils
+				.getBaseClass(TypeUtils.getTypeArgument(pluginClass, TechnologyAdapterPluginController.class, 0));
+		if (taClass != null) {
+			TechnologyAdapter ta = getServiceManager().getTechnologyAdapterService().getTechnologyAdapter(taClass);
+			return (P) getTechnologyAdapterController(ta).getPlugin(pluginClass);
+		}
+		return null;
+	}
+
+	/**
+	 * Return the list of all activated {@link TechnologyAdapterPluginController}
+	 * 
+	 * @return
+	 */
+	@Override
+	public List<TechnologyAdapterPluginController<?>> getActivatedPlugins() {
+		List<TechnologyAdapterPluginController<?>> returned = new ArrayList<>();
+		for (TechnologyAdapterController<?> technologyAdapterController : loadedAdapters.values()) {
+			returned.addAll(technologyAdapterController.getPlugins());
+		}
+		return returned;
 	}
 
 }

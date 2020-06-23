@@ -1,0 +1,36 @@
+/**
+ * Testing concept behaviours
+ */
+
+use org.openflexo.foundation.fml.rt.FMLRTModelSlot as FMLRT;
+
+model MyModel {
+
+	/**
+	 * Some default behaviours
+	 */
+	concept ConceptA {
+
+		int i;
+
+		// This is the default constructor for that concept
+		// We don't need to supply a name (forbidden if multiple constructors)
+		create () {  
+			int j=2;
+			i = 1;
+			i = j;
+			if (i>0) {
+				i=3;
+			}
+		}
+
+		// Another constructor for that concept with a parameter
+		// This is not permitted
+		/*create (int init) {  
+			i = init;
+		}*/
+
+
+	}
+
+}

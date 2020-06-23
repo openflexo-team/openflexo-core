@@ -41,6 +41,8 @@ package org.openflexo.foundation.fml.rt;
 import java.io.FileNotFoundException;
 import java.util.logging.Logger;
 
+import javax.swing.text.View;
+
 import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.fml.FlexoProperty;
 import org.openflexo.foundation.fml.FlexoRole;
@@ -50,21 +52,21 @@ import org.openflexo.foundation.technologyadapter.FlexoModel;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterResource;
 import org.openflexo.foundation.technologyadapter.TechnologyObject;
-import org.openflexo.model.annotations.Getter;
-import org.openflexo.model.annotations.ImplementationClass;
-import org.openflexo.model.annotations.Import;
-import org.openflexo.model.annotations.Imports;
-import org.openflexo.model.annotations.ModelEntity;
-import org.openflexo.model.annotations.PropertyIdentifier;
-import org.openflexo.model.annotations.Setter;
-import org.openflexo.model.annotations.XMLAttribute;
+import org.openflexo.pamela.annotations.Getter;
+import org.openflexo.pamela.annotations.ImplementationClass;
+import org.openflexo.pamela.annotations.Import;
+import org.openflexo.pamela.annotations.Imports;
+import org.openflexo.pamela.annotations.ModelEntity;
+import org.openflexo.pamela.annotations.PropertyIdentifier;
+import org.openflexo.pamela.annotations.Setter;
+import org.openflexo.pamela.annotations.XMLAttribute;
 import org.openflexo.toolbox.StringUtils;
 
 /**
  * Concretize the binding of a {@link ModelSlot} to a concrete {@link FlexoModel}<br>
  * This is the binding point between a {@link ModelSlot} and its concretization in a {@link FMLRTVirtualModelInstance}
  * 
- * The {@link ModelSlotInstance} are instantiated inside a {@link View}
+ * The {@link ModelSlotInstance} are instantiated inside a {@link VirtualModelInstance}
  * 
  * @author Luka Le Roux, Sylvain Guerin
  * @see ModelSlot
@@ -236,7 +238,7 @@ public abstract interface ModelSlotInstance<MS extends ModelSlot<? extends RD>, 
 		public RD getAccessedResourceData() {
 			if (accessedResourceData == null && getResource() != null) {
 				try {
-					accessedResourceData = getResource().getResourceData(null);
+					accessedResourceData = getResource().getResourceData();
 				} catch (FileNotFoundException e) {
 					e.printStackTrace();
 				} catch (ResourceLoadingCancelledException e) {
@@ -338,7 +340,8 @@ public abstract interface ModelSlotInstance<MS extends ModelSlot<? extends RD>, 
 		@Override
 		public String toString() {
 			return "ModelSlotInstance:" + (getModelSlot() != null
-					? getModelSlot().getName() + ":" + getModelSlot().getClass().getSimpleName() + "_" + getFlexoID() : "null");
+					? getModelSlot().getName() + ":" + getModelSlot().getClass().getSimpleName() + "_" + getFlexoID()
+					: "null");
 		}
 
 		/**

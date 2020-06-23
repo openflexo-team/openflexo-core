@@ -38,7 +38,6 @@
 
 package org.openflexo.fml.rt.controller;
 
-import java.awt.Event;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -59,10 +58,10 @@ import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.ModelSlotInstance;
 import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.foundation.resource.PamelaResource;
-import org.openflexo.model.exceptions.ModelDefinitionException;
-import org.openflexo.model.exceptions.ModelExecutionException;
-import org.openflexo.model.factory.Clipboard;
-import org.openflexo.model.factory.ModelFactory;
+import org.openflexo.pamela.exceptions.ModelDefinitionException;
+import org.openflexo.pamela.exceptions.ModelExecutionException;
+import org.openflexo.pamela.factory.Clipboard;
+import org.openflexo.pamela.factory.ModelFactory;
 import org.openflexo.toolbox.HasPropertyChangeSupport;
 
 /**
@@ -76,8 +75,6 @@ public class VirtualModelInstancePasteHandler extends FlexoPasteHandler<VirtualM
 
 	private static final Logger logger = Logger.getLogger(VirtualModelInstancePasteHandler.class.getPackage().getName());
 
-	public static final String COPY_SUFFIX = "-copy";
-
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
 	public Class<VirtualModelInstance<?, ?>> getPastingPointHolderType() {
@@ -86,15 +83,15 @@ public class VirtualModelInstancePasteHandler extends FlexoPasteHandler<VirtualM
 
 	@Override
 	public PastingContext<VirtualModelInstance<?, ?>> retrievePastingContext(FlexoObject focusedObject, List<FlexoObject> globalSelection,
-			FlexoClipboard clipboard, Event event) {
+			FlexoClipboard clipboard) {
 
 		if (focusedObject instanceof FMLRTVirtualModelInstance) {
-			return new HeterogeneousPastingContext((VirtualModelInstance<?, ?>) focusedObject, event);
+			return new HeterogeneousPastingContext((VirtualModelInstance<?, ?>) focusedObject);
 
 		}
 
 		if (focusedObject instanceof FlexoConceptInstance) {
-			return new HeterogeneousPastingContext(((FlexoConceptInstance) focusedObject).getVirtualModelInstance(), event);
+			return new HeterogeneousPastingContext(((FlexoConceptInstance) focusedObject).getVirtualModelInstance());
 
 		}
 
@@ -134,6 +131,8 @@ public class VirtualModelInstancePasteHandler extends FlexoPasteHandler<VirtualM
 		}
 
 		System.out.println("Done notify.........");
+
+		super.finalizePasting(clipboard, pastingContext);
 	}
 
 	public Object getModelSlotSpecificPastingPointHolder(ModelSlotInstance<?, ?> modelSlotInstance,
@@ -157,8 +156,8 @@ public class VirtualModelInstancePasteHandler extends FlexoPasteHandler<VirtualM
 
 		private FlexoClipboard clipboard;
 
-		public HeterogeneousPastingContext(VirtualModelInstance<?, ?> holder, Event event) {
-			super(holder, event);
+		public HeterogeneousPastingContext(VirtualModelInstance<?, ?> holder) {
+			super(holder);
 			// modelSlotClipboards = new HashMap<ModelSlotInstance<?, ?>, Clipboard>();
 		}
 
@@ -253,13 +252,10 @@ public class VirtualModelInstancePasteHandler extends FlexoPasteHandler<VirtualM
 				}
 
 			} catch (ModelExecutionException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			} catch (ModelDefinitionException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			} catch (CloneNotSupportedException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}

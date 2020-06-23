@@ -38,8 +38,13 @@
 
 package org.openflexo.fml.controller.view;
 
+import org.fife.ui.rsyntaxtextarea.AbstractTokenMakerFactory;
+import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
+import org.fife.ui.rsyntaxtextarea.TokenMakerFactory;
+import org.fife.ui.rtextarea.RTextScrollPane;
 import org.openflexo.fml.controller.CommonFIB;
 import org.openflexo.foundation.fml.VirtualModel;
+import org.openflexo.gina.swing.view.widget.JFIBEditorWidget;
 import org.openflexo.rm.Resource;
 import org.openflexo.view.controller.FlexoController;
 import org.openflexo.view.controller.model.FlexoPerspective;
@@ -50,14 +55,34 @@ import org.openflexo.view.controller.model.FlexoPerspective;
  * @author sguerin
  * 
  */
+@SuppressWarnings("serial")
 public class FMLVirtualModelView extends FlexoConceptView<VirtualModel> {
+
+	static {
+		AbstractTokenMakerFactory atmf = (AbstractTokenMakerFactory) TokenMakerFactory.getDefaultInstance();
+		atmf.putMapping("text/fml", "org.openflexo.fml.controller.view.FMLTokenMaker");
+	}
 
 	public FMLVirtualModelView(VirtualModel virtualModel, FlexoController controller, FlexoPerspective perspective) {
 		super(virtualModel, CommonFIB.FML_VIRTUAL_MODEL_VIEW_FIB, controller, perspective);
+		updateFMLStyle();
 	}
 
 	public FMLVirtualModelView(VirtualModel virtualModel, Resource fibFile, FlexoController controller, FlexoPerspective perspective) {
 		super(virtualModel, fibFile, controller, perspective);
+		updateFMLStyle();
+	}
+
+	private void updateFMLStyle() {
+		JFIBEditorWidget editor = (JFIBEditorWidget) getFIBView("FMLEditor");
+		RTextScrollPane rTextScrollPane = editor.getTechnologyComponent();
+		((RSyntaxTextArea) rTextScrollPane.getTextArea()).setSyntaxEditingStyle("text/fml");
+	}
+
+	@Override
+	public void willShow() {
+		super.willShow();
+		getFlexoController().getControllerModel().setRightViewVisible(false);
 	}
 
 }

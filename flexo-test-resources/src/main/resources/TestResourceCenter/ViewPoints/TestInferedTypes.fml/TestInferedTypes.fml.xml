@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<VirtualModel id="SYL-5" virtualModelClass="org.openflexo.foundation.fml.VirtualModel" modelVersion="2.0" uri="http://openflexo.org/test/TestResourceCenter/TestInferedTypes.fml" version="0.1" name="TestInferedTypes" author="sylvain" userID="SYL" flexoID="5">
+  <UseModelSlotDeclaration id="0" modelSlotClass="org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstanceModelSlot" userID="SYL" flexoID="-1" />
+  <Inspector id="SYL-1" inspectorTitle="TestVM" userID="SYL" flexoID="1" />
+  <GetSetProperty id="SYL-34" name="property" userID="SYL" flexoID="34">
+    <SetControlGraph_EmptyControlGraph id="SYL-42" ownerContext="setControlGraph" userID="SYL" flexoID="42" />
+    <GetControlGraph_Sequence id="SYL-49" ownerContext="getControlGraph" userID="SYL" flexoID="49">
+      <ControlGraph2_ConditionalAction id="SYL-36" condition="true" ownerContext="controlGraph2" userID="SYL" flexoID="36">
+        <ElseControlGraph_ReturnStatement id="SYL-40" ownerContext="elseControlGraph" userID="SYL" flexoID="40">
+          <AssignableAction_ExpressionAction id="SYL-39" expression="returned.property" userID="SYL" flexoID="39" />
+        </ElseControlGraph_ReturnStatement>
+        <ThenControlGraph_ReturnStatement id="SYL-38" ownerContext="thenControlGraph" userID="SYL" flexoID="38">
+          <AssignableAction_ExpressionAction id="SYL-37" expression="returned" userID="SYL" flexoID="37" />
+        </ThenControlGraph_ReturnStatement>
+      </ControlGraph2_ConditionalAction>
+      <ControlGraph1_DeclarationAction id="SYL-48" variable="returned" ownerContext="controlGraph1" userID="SYL" flexoID="48">
+        <AssignableAction_SelectUniqueVirtualModelInstance id="SYL-47" container="this" virtualModelTypeURI="http://openflexo.org/test/TestResourceCenter/TestInferedTypes.fml" receiver="this" userID="SYL" flexoID="47" />
+      </ControlGraph1_DeclarationAction>
+    </GetControlGraph_Sequence>
+  </GetSetProperty>
+</VirtualModel>

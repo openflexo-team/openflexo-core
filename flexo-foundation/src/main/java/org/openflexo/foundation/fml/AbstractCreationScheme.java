@@ -39,8 +39,8 @@
 package org.openflexo.foundation.fml;
 
 import org.openflexo.foundation.fml.FMLRepresentationContext.FMLRepresentationOutput;
-import org.openflexo.model.annotations.ImplementationClass;
-import org.openflexo.model.annotations.ModelEntity;
+import org.openflexo.pamela.annotations.ImplementationClass;
+import org.openflexo.pamela.annotations.ModelEntity;
 import org.openflexo.toolbox.StringUtils;
 
 @ModelEntity(isAbstract = true)

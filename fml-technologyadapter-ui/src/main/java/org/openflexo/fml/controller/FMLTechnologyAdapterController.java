@@ -57,6 +57,7 @@ import org.openflexo.fml.controller.action.AddUseDeclarationInitializer;
 import org.openflexo.fml.controller.action.AssignActionInitializer;
 import org.openflexo.fml.controller.action.CreateAbstractPropertyInitializer;
 import org.openflexo.fml.controller.action.CreateContainedVirtualModelInitializer;
+import org.openflexo.fml.controller.action.CreateContextualEditionActionInitializer;
 import org.openflexo.fml.controller.action.CreateEditionActionInitializer;
 import org.openflexo.fml.controller.action.CreateExpressionPropertyInitializer;
 import org.openflexo.fml.controller.action.CreateFlexoBehaviourInitializer;
@@ -76,11 +77,17 @@ import org.openflexo.fml.controller.action.CreateTopLevelVirtualModelInitializer
 import org.openflexo.fml.controller.action.DeclareNewVariableActionInitializer;
 import org.openflexo.fml.controller.action.DeleteFlexoConceptObjectsInitializer;
 import org.openflexo.fml.controller.action.DeleteVirtualModelInitializer;
-import org.openflexo.fml.controller.action.ShowFMLRepresentationInitializer;
+import org.openflexo.fml.controller.action.DuplicateVirtualModelInitializer;
+import org.openflexo.fml.controller.action.GenerateCreationSchemeInitializer;
+import org.openflexo.fml.controller.action.GenerateUnimplementedPropertiesAndBehavioursInitializer;
+import org.openflexo.fml.controller.action.MoveVirtualModelToContainerVirtualModelInitializer;
+import org.openflexo.fml.controller.action.MoveVirtualModelToDirectoryInitializer;
+import org.openflexo.fml.controller.action.RenameFlexoConceptInitializer;
+import org.openflexo.fml.controller.action.RenameVirtualModelInitializer;
 import org.openflexo.fml.controller.validation.ValidateActionizer;
-import org.openflexo.fml.controller.view.FMLLocalizedDictionaryView;
 import org.openflexo.fml.controller.view.StandardFlexoConceptView;
-import org.openflexo.fml.controller.view.VirtualModelView;
+import org.openflexo.fml.controller.view.StandardVirtualModelView;
+import org.openflexo.fml.controller.widget.FIBVirtualModelBrowser;
 import org.openflexo.fml.controller.widget.FIBVirtualModelLibraryBrowser;
 import org.openflexo.fml.controller.widget.FlexoConceptInstanceTypeEditor;
 import org.openflexo.fml.controller.widget.FlexoEnumTypeEditor;
@@ -92,14 +99,12 @@ import org.openflexo.foundation.fml.CloningScheme;
 import org.openflexo.foundation.fml.CreationScheme;
 import org.openflexo.foundation.fml.DeletionScheme;
 import org.openflexo.foundation.fml.EventListener;
-import org.openflexo.foundation.fml.FMLLocalizedDictionary;
 import org.openflexo.foundation.fml.FMLTechnologyAdapter;
 import org.openflexo.foundation.fml.FMLValidationModel;
 import org.openflexo.foundation.fml.FMLValidationReport;
 import org.openflexo.foundation.fml.FlexoBehaviour;
 import org.openflexo.foundation.fml.FlexoBehaviourParameter.WidgetType;
 import org.openflexo.foundation.fml.FlexoConcept;
-import org.openflexo.foundation.fml.FlexoConceptInstanceRole;
 import org.openflexo.foundation.fml.FlexoConceptInstanceType;
 import org.openflexo.foundation.fml.FlexoEnum;
 import org.openflexo.foundation.fml.FlexoEnumType;
@@ -112,16 +117,22 @@ import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.VirtualModelInstanceType;
 import org.openflexo.foundation.fml.WidgetContext;
 import org.openflexo.foundation.fml.action.DeleteFlexoConceptObjects;
-import org.openflexo.foundation.fml.editionaction.DeleteAction;
 import org.openflexo.foundation.fml.editionaction.EditionAction;
 import org.openflexo.foundation.fml.rm.VirtualModelResource;
 import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstanceModelSlot;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
-import org.openflexo.foundation.fml.rt.editionaction.AddFlexoConceptInstance;
-import org.openflexo.foundation.fml.rt.editionaction.SelectFlexoConceptInstance;
-import org.openflexo.foundation.fml.rt.editionaction.SelectVirtualModelInstance;
+import org.openflexo.foundation.fml.ta.CreateContainedVirtualModel;
+import org.openflexo.foundation.fml.ta.CreateFlexoBehaviour;
+import org.openflexo.foundation.fml.ta.CreateFlexoConcept;
+import org.openflexo.foundation.fml.ta.CreateFlexoConceptInstanceRole;
+import org.openflexo.foundation.fml.ta.CreatePrimitiveRole;
+import org.openflexo.foundation.fml.ta.CreateTopLevelVirtualModel;
+import org.openflexo.foundation.fml.ta.FlexoBehaviourRole;
+import org.openflexo.foundation.fml.ta.FlexoConceptInstanceRoleRole;
+import org.openflexo.foundation.fml.ta.FlexoConceptRole;
+import org.openflexo.foundation.fml.ta.FlexoPropertyRole;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.resource.FlexoResourceType;
 import org.openflexo.foundation.resource.ResourceData;
@@ -139,9 +150,9 @@ import org.openflexo.icon.FMLIconLibrary;
 import org.openflexo.icon.FMLRTIconLibrary;
 import org.openflexo.icon.IconFactory;
 import org.openflexo.icon.IconLibrary;
-import org.openflexo.model.validation.ValidationError;
-import org.openflexo.model.validation.ValidationModel;
-import org.openflexo.model.validation.ValidationReport;
+import org.openflexo.pamela.validation.ValidationError;
+import org.openflexo.pamela.validation.ValidationModel;
+import org.openflexo.pamela.validation.ValidationReport;
 import org.openflexo.toolbox.StringUtils;
 import org.openflexo.view.EmptyPanel;
 import org.openflexo.view.ModuleView;
@@ -164,6 +175,8 @@ public class FMLTechnologyAdapterController extends TechnologyAdapterController<
 
 	private FMLValidationModel validationModel;
 	private Map<VirtualModel, FMLValidationReport> validationReports = new HashMap<>();
+
+	private FIBVirtualModelBrowser virtualModelBrowser;
 
 	@Override
 	public Class<FMLTechnologyAdapter> getTechnologyAdapterClass() {
@@ -201,12 +214,15 @@ public class FMLTechnologyAdapterController extends TechnologyAdapterController<
 	protected void initializeActions(ControllerActionInitializer actionInitializer) {
 
 		// Add paste handlers
+		actionInitializer.getEditingContext().registerPasteHandler(new RepositoryFolderPasteHandler());
 		actionInitializer.getEditingContext().registerPasteHandler(new VirtualModelPasteHandler());
 		actionInitializer.getEditingContext().registerPasteHandler(new FlexoConceptPasteHandler());
 		actionInitializer.getEditingContext().registerPasteHandler(new FlexoPropertyPasteHandler());
 		actionInitializer.getEditingContext().registerPasteHandler(new FlexoBehaviourPasteHandler());
 		actionInitializer.getEditingContext().registerPasteHandler(new FMLControlGraphPasteHandler());
 		actionInitializer.getEditingContext().registerPasteHandler(new BehaviorPasteHandler());
+
+		virtualModelBrowser = new FIBVirtualModelBrowser(null, actionInitializer.getController());
 
 	}
 
@@ -238,7 +254,8 @@ public class FMLTechnologyAdapterController extends TechnologyAdapterController<
 		new CreateFlexoEnumValueInitializer(actionInitializer);
 		new CreateGenericBehaviourParameterInitializer(actionInitializer);
 		new CreateInspectorEntryInitializer(actionInitializer);
-		new ShowFMLRepresentationInitializer(actionInitializer);
+
+		new CreateContextualEditionActionInitializer(actionInitializer);
 
 		new DeclareNewVariableActionInitializer(actionInitializer);
 		new AssignActionInitializer(actionInitializer);
@@ -254,6 +271,15 @@ public class FMLTechnologyAdapterController extends TechnologyAdapterController<
 
 		new AddParentFlexoConceptInitializer(actionInitializer);
 
+		new MoveVirtualModelToDirectoryInitializer(actionInitializer);
+		new MoveVirtualModelToContainerVirtualModelInitializer(actionInitializer);
+		new RenameVirtualModelInitializer(actionInitializer);
+		new DuplicateVirtualModelInitializer(actionInitializer);
+
+		new RenameFlexoConceptInitializer(actionInitializer);
+		new GenerateCreationSchemeInitializer(actionInitializer);
+		new GenerateUnimplementedPropertiesAndBehavioursInitializer(actionInitializer);
+
 		FlexoActionFactory.newVirtualModelMenu.setSmallIcon(FMLIconLibrary.VIRTUAL_MODEL_ICON);
 		FlexoActionFactory.newPropertyMenu.setSmallIcon(FMLIconLibrary.FLEXO_ROLE_ICON);
 		FlexoActionFactory.newBehaviourMenu.setSmallIcon(FMLIconLibrary.FLEXO_BEHAVIOUR_ICON);
@@ -261,7 +287,7 @@ public class FMLTechnologyAdapterController extends TechnologyAdapterController<
 
 	@Override
 	public ImageIcon getTechnologyBigIcon() {
-		return FMLIconLibrary.VIRTUAL_MODEL_MEDIUM_ICON;
+		return FMLIconLibrary.VIRTUAL_MODEL_BIG_ICON;
 	}
 
 	/**
@@ -344,15 +370,24 @@ public class FMLTechnologyAdapterController extends TechnologyAdapterController<
 	}
 
 	/**
-	 * Return icon representing supplied pattern property
+	 * Return icon representing supplied role class
 	 * 
 	 * @param patternRoleClass
-	 * @return icon representing supplied pattern property
+	 * @return icon representing supplied role class
 	 */
 	@Override
 	public ImageIcon getIconForFlexoRole(Class<? extends FlexoRole<?>> flexoRoleClass) {
-		if (FlexoConceptInstanceRole.class.isAssignableFrom(flexoRoleClass)) {
+		if (FlexoConceptRole.class.isAssignableFrom(flexoRoleClass)) {
+			return FMLIconLibrary.FLEXO_CONCEPT_ICON;
+		}
+		if (FlexoConceptInstanceRoleRole.class.isAssignableFrom(flexoRoleClass)) {
 			return FMLRTIconLibrary.FLEXO_CONCEPT_INSTANCE_ICON;
+		}
+		if (FlexoPropertyRole.class.isAssignableFrom(flexoRoleClass)) {
+			return FMLIconLibrary.FLEXO_ROLE_ICON;
+		}
+		if (FlexoBehaviourRole.class.isAssignableFrom(flexoRoleClass)) {
+			return FMLIconLibrary.FLEXO_BEHAVIOUR_ICON;
 		}
 		return null;
 	}
@@ -360,17 +395,23 @@ public class FMLTechnologyAdapterController extends TechnologyAdapterController<
 	@Override
 	public ImageIcon getIconForEditionAction(Class<? extends EditionAction> editionActionClass) {
 
-		if (AddFlexoConceptInstance.class.isAssignableFrom(editionActionClass)) {
+		if (CreateFlexoConcept.class.isAssignableFrom(editionActionClass)) {
+			return IconFactory.getImageIcon(FMLIconLibrary.FLEXO_CONCEPT_ICON, IconLibrary.DUPLICATE);
+		}
+		if (CreateTopLevelVirtualModel.class.isAssignableFrom(editionActionClass)) {
+			return IconFactory.getImageIcon(FMLIconLibrary.VIRTUAL_MODEL_ICON, IconLibrary.DUPLICATE);
+		}
+		if (CreateContainedVirtualModel.class.isAssignableFrom(editionActionClass)) {
+			return IconFactory.getImageIcon(FMLIconLibrary.VIRTUAL_MODEL_ICON, IconLibrary.DUPLICATE);
+		}
+		if (CreatePrimitiveRole.class.isAssignableFrom(editionActionClass)) {
+			return IconFactory.getImageIcon(FMLIconLibrary.FLEXO_ROLE_ICON, IconLibrary.DUPLICATE);
+		}
+		if (CreateFlexoConceptInstanceRole.class.isAssignableFrom(editionActionClass)) {
 			return IconFactory.getImageIcon(FMLRTIconLibrary.FLEXO_CONCEPT_INSTANCE_ICON, IconLibrary.DUPLICATE);
 		}
-		else if (SelectFlexoConceptInstance.class.isAssignableFrom(editionActionClass)) {
-			return IconFactory.getImageIcon(FMLRTIconLibrary.FLEXO_CONCEPT_INSTANCE_ICON, IconLibrary.IMPORT);
-		}
-		else if (SelectVirtualModelInstance.class.isAssignableFrom(editionActionClass)) {
-			return IconFactory.getImageIcon(FMLRTIconLibrary.VIRTUAL_MODEL_INSTANCE_ICON, IconLibrary.IMPORT);
-		}
-		else if (DeleteAction.class.isAssignableFrom(editionActionClass)) {
-			return IconFactory.getImageIcon(FMLRTIconLibrary.FLEXO_CONCEPT_INSTANCE_ICON, IconLibrary.DELETE);
+		if (CreateFlexoBehaviour.class.isAssignableFrom(editionActionClass)) {
+			return IconFactory.getImageIcon(FMLIconLibrary.ACTION_SCHEME_ICON, IconLibrary.DUPLICATE);
 		}
 		return super.getIconForEditionAction(editionActionClass);
 	}
@@ -404,7 +445,7 @@ public class FMLTechnologyAdapterController extends TechnologyAdapterController<
 	@Override
 	public boolean hasModuleViewForObject(TechnologyObject<FMLTechnologyAdapter> object, FlexoController controller) {
 
-		if (object instanceof FlexoConcept || object instanceof FMLLocalizedDictionary) {
+		if (object instanceof FlexoConcept) {
 			return true;
 		}
 		// TODO not applicable
@@ -418,9 +459,6 @@ public class FMLTechnologyAdapterController extends TechnologyAdapterController<
 		}
 		if (object instanceof FlexoConcept) {
 			return ((FlexoConcept) object).getName();
-		}
-		if (object instanceof FMLLocalizedDictionary) {
-			return getLocales().localizedForKey("localized_dictionary_for") + " " + ((FMLLocalizedDictionary) object).getOwner().getName();
 		}
 		if (object != null) {
 			return object.toString();
@@ -438,13 +476,10 @@ public class FMLTechnologyAdapterController extends TechnologyAdapterController<
 	@Override
 	public ModuleView<?> createModuleViewForObject(TechnologyObject<FMLTechnologyAdapter> object, FlexoController controller,
 			FlexoPerspective perspective) {
-		if (object instanceof FMLLocalizedDictionary) {
-			return new FMLLocalizedDictionaryView((FMLLocalizedDictionary) object, controller, perspective);
-		}
 		if (object instanceof FlexoConcept) {
 			FlexoConcept ep = (FlexoConcept) object;
 			if (ep instanceof VirtualModel) {
-				return new VirtualModelView((VirtualModel) ep, controller, perspective);
+				return new StandardVirtualModelView((VirtualModel) ep, controller, perspective);
 			}
 			return new StandardFlexoConceptView(ep, controller, perspective);
 		}
@@ -497,11 +532,10 @@ public class FMLTechnologyAdapterController extends TechnologyAdapterController<
 			resourceSelectorClass = Class.forName("org.openflexo.components.widget.FIBResourceSelector");
 			resourceSelector.setComponentClass(resourceSelectorClass);
 		} catch (ClassNotFoundException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		resourceSelector.addToAssignments(fibModelFactory.newFIBCustomAssignment(resourceSelector, new DataBinding<>("component.project"),
-				new DataBinding<>("controller.editor.project"), true));
+		resourceSelector.addToAssignments(fibModelFactory.newFIBCustomAssignment(resourceSelector,
+				new DataBinding<>("component.resourceCenter"), new DataBinding<>("controller.editor.project"), true));
 		resourceSelector.addToAssignments(fibModelFactory.newFIBCustomAssignment(resourceSelector,
 				new DataBinding<>("component.serviceManager"), new DataBinding<>("controller.flexoController.applicationContext"), true));
 		resourceSelector
@@ -521,7 +555,6 @@ public class FMLTechnologyAdapterController extends TechnologyAdapterController<
 			fciSelectorClass = Class.forName("org.openflexo.fml.rt.controller.widget.FIBFlexoConceptInstanceSelector");
 			fciSelector.setComponentClass(fciSelectorClass);
 		} catch (ClassNotFoundException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		fciSelector.addToAssignments(fibModelFactory.newFIBCustomAssignment(fciSelector, new DataBinding<>("component.project"),
@@ -563,7 +596,6 @@ public class FMLTechnologyAdapterController extends TechnologyAdapterController<
 			fciSelectorClass = Class.forName("org.openflexo.fml.rt.controller.widget.FIBVirtualModelInstanceSelector");
 			vmiSelector.setComponentClass(fciSelectorClass);
 		} catch (ClassNotFoundException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		vmiSelector.addToAssignments(fibModelFactory.newFIBCustomAssignment(vmiSelector, new DataBinding<>("component.project"),
@@ -584,11 +616,11 @@ public class FMLTechnologyAdapterController extends TechnologyAdapterController<
 						new DataBinding<>("component.resourceCenter"), new DataBinding<>(containerBinding), true));
 			}
 		}
-		else {
-			// No container defined, set service manager
-			vmiSelector.addToAssignments(fibModelFactory.newFIBCustomAssignment(vmiSelector, new DataBinding<>("component.serviceManager"),
-					new DataBinding<>("controller.flexoController.applicationContext"), true));
-		}
+		// else {
+		// No container defined, set service manager
+		vmiSelector.addToAssignments(fibModelFactory.newFIBCustomAssignment(vmiSelector, new DataBinding<>("component.serviceManager"),
+				new DataBinding<>("controller.flexoController.applicationContext"), true));
+		// }
 
 		// vmiSelector.addToAssignments(fibModelFactory.newFIBCustomAssignment(vmiSelector, new DataBinding<Object>("component.view"),
 		// new DataBinding<Object>(containerBinding), true));
@@ -598,6 +630,7 @@ public class FMLTechnologyAdapterController extends TechnologyAdapterController<
 		return vmiSelector;
 	}
 
+	/* Unused 
 	private static FIBWidget makeViewSelector(final WidgetContext widgetContext, FIBModelFactory fibModelFactory, String variableName) {
 		FIBCustom viewSelector = fibModelFactory.newFIBCustom();
 		viewSelector.setBindingFactory(widgetContext.getBindingFactory());
@@ -606,17 +639,16 @@ public class FMLTechnologyAdapterController extends TechnologyAdapterController<
 			fciSelectorClass = Class.forName("org.openflexo.fml.rt.controller.widget.FIBViewSelector");
 			viewSelector.setComponentClass(fciSelectorClass);
 		} catch (ClassNotFoundException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		viewSelector.addToAssignments(fibModelFactory.newFIBCustomAssignment(viewSelector, new DataBinding<>("component.project"),
 				new DataBinding<>("controller.editor.project"), true));
-
+	
 		String containerBinding = getContainerBinding(widgetContext, variableName);
 		DataBinding<?> container = widgetContext.getContainer();
 		if (container != null && container.isSet() && container.isValid()) {
 			Type containerType = container.getAnalyzedType();
-
+	
 			if (TypeUtils.isTypeAssignableFrom(FlexoResourceCenter.class, containerType)) {
 				viewSelector.addToAssignments(fibModelFactory.newFIBCustomAssignment(viewSelector,
 						new DataBinding<>("component.resourceCenter"), new DataBinding<>(containerBinding), true));
@@ -628,14 +660,15 @@ public class FMLTechnologyAdapterController extends TechnologyAdapterController<
 					.addToAssignments(fibModelFactory.newFIBCustomAssignment(viewSelector, new DataBinding<>("component.serviceManager"),
 							new DataBinding<>("controller.flexoController.applicationContext"), true));
 		}
-
+	
 		// viewSelector.addToAssignments(fibModelFactory.newFIBCustomAssignment(viewSelector, new DataBinding<Object>("component.view"),
 		// new DataBinding<Object>(containerBinding), true));
-
+	
 		viewSelector.addToAssignments(fibModelFactory.newFIBCustomAssignment(viewSelector, new DataBinding<>("component.expectedType"),
 				new DataBinding<>(variableName + "." + widgetContext.getWidgetDefinitionAccess() + ".type"), true));
 		return viewSelector;
 	}
+	*/
 
 	@Override
 	public void resourceLoading(TechnologyAdapterResource<?, FMLTechnologyAdapter> resource) {
@@ -659,7 +692,6 @@ public class FMLTechnologyAdapterController extends TechnologyAdapterController<
 					}
 				}
 			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
@@ -692,6 +724,15 @@ public class FMLTechnologyAdapterController extends TechnologyAdapterController<
 			return validationReports.get(resourceData);
 		}
 		return null;
+	}
+
+	public FIBVirtualModelBrowser getVirtualModelBrowser() {
+		return virtualModelBrowser;
+	}
+
+	@Override
+	public Class<FMLPreferences> getPreferencesClass() {
+		return FMLPreferences.class;
 	}
 
 }

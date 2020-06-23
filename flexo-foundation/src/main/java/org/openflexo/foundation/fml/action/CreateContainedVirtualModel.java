@@ -46,6 +46,7 @@ import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.FlexoObject.FlexoObjectImpl;
 import org.openflexo.foundation.IOFlexoException;
 import org.openflexo.foundation.action.FlexoActionFactory;
+import org.openflexo.foundation.action.TechnologySpecificFlexoAction;
 import org.openflexo.foundation.fml.FMLObject;
 import org.openflexo.foundation.fml.FMLTechnologyAdapter;
 import org.openflexo.foundation.fml.VirtualModel;
@@ -53,7 +54,7 @@ import org.openflexo.foundation.fml.rm.VirtualModelResource;
 import org.openflexo.foundation.fml.rm.VirtualModelResourceFactory;
 import org.openflexo.foundation.resource.SaveResourceException;
 import org.openflexo.foundation.task.Progress;
-import org.openflexo.model.exceptions.ModelDefinitionException;
+import org.openflexo.pamela.exceptions.ModelDefinitionException;
 import org.openflexo.toolbox.StringUtils;
 
 /**
@@ -63,7 +64,8 @@ import org.openflexo.toolbox.StringUtils;
  * @author sylvain
  * 
  */
-public class CreateContainedVirtualModel extends AbstractCreateVirtualModel<CreateContainedVirtualModel, VirtualModel, FMLObject> {
+public class CreateContainedVirtualModel extends AbstractCreateVirtualModel<CreateContainedVirtualModel, VirtualModel, FMLObject>
+		implements TechnologySpecificFlexoAction<FMLTechnologyAdapter> {
 
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(CreateContainedVirtualModel.class.getPackage().getName());
@@ -110,6 +112,11 @@ public class CreateContainedVirtualModel extends AbstractCreateVirtualModel<Crea
 	}
 
 	@Override
+	public Class<? extends FMLTechnologyAdapter> getTechnologyAdapterClass() {
+		return FMLTechnologyAdapter.class;
+	}
+
+	@Override
 	protected void doAction(Object context) throws IOFlexoException, SaveResourceException, FlexoException {
 
 		Progress.progress(getLocales().localizedForKey("create_virtual_model"));
@@ -123,6 +130,8 @@ public class CreateContainedVirtualModel extends AbstractCreateVirtualModel<Crea
 					(VirtualModelResource) getFocusedObject().getResource(), null, true);
 			newVirtualModel = vmResource.getLoadedResourceData();
 			newVirtualModel.setDescription(newVirtualModelDescription);
+			newVirtualModel.setVisibility(getVisibility());
+			newVirtualModel.setAbstract(getIsAbstract());
 		} catch (SaveResourceException e) {
 			throw new SaveResourceException(null);
 		} catch (ModelDefinitionException e) {

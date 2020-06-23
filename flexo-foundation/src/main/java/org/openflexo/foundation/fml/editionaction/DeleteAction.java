@@ -50,23 +50,24 @@ import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.fml.FMLRepresentationContext;
 import org.openflexo.foundation.fml.FMLRepresentationContext.FMLRepresentationOutput;
 import org.openflexo.foundation.fml.FlexoProperty;
+import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
 import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
 import org.openflexo.foundation.resource.FlexoResource;
 import org.openflexo.foundation.resource.ResourceData;
-import org.openflexo.model.annotations.DefineValidationRule;
-import org.openflexo.model.annotations.Getter;
-import org.openflexo.model.annotations.ImplementationClass;
-import org.openflexo.model.annotations.ModelEntity;
-import org.openflexo.model.annotations.PropertyIdentifier;
-import org.openflexo.model.annotations.Setter;
-import org.openflexo.model.annotations.XMLAttribute;
-import org.openflexo.model.annotations.XMLElement;
+import org.openflexo.pamela.annotations.DefineValidationRule;
+import org.openflexo.pamela.annotations.Getter;
+import org.openflexo.pamela.annotations.ImplementationClass;
+import org.openflexo.pamela.annotations.ModelEntity;
+import org.openflexo.pamela.annotations.PropertyIdentifier;
+import org.openflexo.pamela.annotations.Setter;
+import org.openflexo.pamela.annotations.XMLAttribute;
+import org.openflexo.pamela.annotations.XMLElement;
 
 @ModelEntity
 @ImplementationClass(DeleteAction.DeleteActionImpl.class)
 @XMLElement
-public interface DeleteAction<T extends FlexoObject> extends EditionAction, AssignableAction<T> {
+public interface DeleteAction<T extends FlexoObject> extends AssignableAction<T> {
 
 	@PropertyIdentifier(type = DataBinding.class)
 	public static final String OBJECT_KEY = "object";
@@ -88,9 +89,14 @@ public interface DeleteAction<T extends FlexoObject> extends EditionAction, Assi
 		private DataBinding<T> object;
 
 		@Override
+		public String getStringRepresentation() {
+			return "delete " + getObject().toString();
+		}
+
+		@Override
 		public String getFMLRepresentation(FMLRepresentationContext context) {
 			FMLRepresentationOutput out = new FMLRepresentationOutput(context);
-			out.append(getObject().toString() + ".delete()" + ";", context);
+			out.append("delete " + getObject().toString() + ";", context);
 			return out.toString();
 		}
 
@@ -150,6 +156,12 @@ public interface DeleteAction<T extends FlexoObject> extends EditionAction, Assi
 				e1.printStackTrace();
 			}
 
+			// Handle special case of explicit call to super delete
+			if (objectToDelete instanceof FlexoConceptInstance && getObject() != null && getObject().toString().equals("this")) {
+				((FlexoConceptInstance) objectToDelete).performCoreDeletion();
+				return objectToDelete;
+			}
+
 			if (objectToDelete == null) {
 				return null;
 			}
@@ -161,7 +173,15 @@ public interface DeleteAction<T extends FlexoObject> extends EditionAction, Assi
 				}
 
 				logger.info("Delete object " + objectToDelete + " for object " + getObject() + " this=" + this);
+				if (objectToDelete instanceof FlexoConceptInstance) {
+					logger.info("On supprime " + objectToDelete + " of " + ((FlexoConceptInstance) objectToDelete).getFlexoConcept());
+				}
 				objectToDelete.delete();
+				logger.info("END Deleting object " + objectToDelete + " for object " + getObject() + " this=" + this);
+				if (objectToDelete instanceof FlexoConceptInstance) {
+					logger.info("END On vient de supprimer " + objectToDelete + " of "
+							+ ((FlexoConceptInstance) objectToDelete).getFlexoConcept());
+				}
 
 				if (resourceToDelete != null) {
 					logger.info("Also delete resource " + resourceToDelete);

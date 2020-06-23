@@ -123,7 +123,7 @@ public class TestSequence extends OpenflexoTestCase {
 		System.out.println("virtualModel=" + virtualModel);
 		assertNotNull(virtualModel);
 
-		behaviour = virtualModel.getDeclaredFlexoBehaviour("testBehaviour");
+		behaviour = virtualModel.getDeclaredFlexoBehaviour("testBehaviour()");
 		System.out.println("behaviour=" + behaviour);
 		assertNotNull(behaviour);
 

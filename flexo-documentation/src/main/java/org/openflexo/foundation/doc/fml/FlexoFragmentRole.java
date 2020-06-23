@@ -30,21 +30,21 @@ import org.openflexo.foundation.fml.FlexoRole;
 import org.openflexo.foundation.fml.rt.AbstractVirtualModelInstanceModelFactory;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
-import org.openflexo.model.annotations.Adder;
-import org.openflexo.model.annotations.DefineValidationRule;
-import org.openflexo.model.annotations.Embedded;
-import org.openflexo.model.annotations.Getter;
-import org.openflexo.model.annotations.Getter.Cardinality;
-import org.openflexo.model.annotations.ImplementationClass;
-import org.openflexo.model.annotations.ModelEntity;
-import org.openflexo.model.annotations.PropertyIdentifier;
-import org.openflexo.model.annotations.Remover;
-import org.openflexo.model.annotations.Setter;
-import org.openflexo.model.annotations.XMLAttribute;
-import org.openflexo.model.annotations.XMLElement;
-import org.openflexo.model.validation.ValidationError;
-import org.openflexo.model.validation.ValidationIssue;
-import org.openflexo.model.validation.ValidationRule;
+import org.openflexo.pamela.annotations.Adder;
+import org.openflexo.pamela.annotations.DefineValidationRule;
+import org.openflexo.pamela.annotations.Embedded;
+import org.openflexo.pamela.annotations.Getter;
+import org.openflexo.pamela.annotations.ImplementationClass;
+import org.openflexo.pamela.annotations.ModelEntity;
+import org.openflexo.pamela.annotations.PropertyIdentifier;
+import org.openflexo.pamela.annotations.Remover;
+import org.openflexo.pamela.annotations.Setter;
+import org.openflexo.pamela.annotations.XMLAttribute;
+import org.openflexo.pamela.annotations.XMLElement;
+import org.openflexo.pamela.annotations.Getter.Cardinality;
+import org.openflexo.pamela.validation.ValidationError;
+import org.openflexo.pamela.validation.ValidationIssue;
+import org.openflexo.pamela.validation.ValidationRule;
 
 /**
  * A role that allows to point on a given {@link FlexoDocFragment} in a {@link FlexoDocument}
@@ -60,7 +60,7 @@ import org.openflexo.model.validation.ValidationRule;
  */
 @ModelEntity(isAbstract = true)
 @ImplementationClass(FlexoFragmentRole.FlexoDocumentFragmentRoleImpl.class)
-public interface FlexoFragmentRole<F extends FlexoDocFragment<D, TA>, D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter>
+public interface FlexoFragmentRole<F extends FlexoDocFragment<D, TA>, D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter<TA>>
 		extends FlexoRole<F> {
 
 	@PropertyIdentifier(type = TextBinding.class, cardinality = Cardinality.LIST)
@@ -106,7 +106,7 @@ public interface FlexoFragmentRole<F extends FlexoDocFragment<D, TA>, D extends 
 
 	public TextBinding<D, TA> makeTextBinding(TextSelection<D, TA> textSelection, DataBinding<String> binding, boolean isMultiline);
 
-	public static abstract class FlexoDocumentFragmentRoleImpl<F extends FlexoDocFragment<D, TA>, D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter>
+	public static abstract class FlexoDocumentFragmentRoleImpl<F extends FlexoDocFragment<D, TA>, D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter<TA>>
 			extends FlexoRoleImpl<F> implements FlexoFragmentRole<F, D, TA> {
 
 		@Override
@@ -148,13 +148,14 @@ public interface FlexoFragmentRole<F extends FlexoDocFragment<D, TA>, D extends 
 
 	@DefineValidationRule
 	public static class FragmentRoleMustAddressATemplateFragment
-			extends ValidationRule<FragmentRoleMustAddressATemplateFragment, FlexoFragmentRole> {
+			extends ValidationRule<FragmentRoleMustAddressATemplateFragment, FlexoFragmentRole<?, ?, ?>> {
 		public FragmentRoleMustAddressATemplateFragment() {
 			super(FlexoFragmentRole.class, "fragment_role_must_reference_a_template_fragment");
 		}
 
 		@Override
-		public ValidationIssue<FragmentRoleMustAddressATemplateFragment, FlexoFragmentRole> applyValidation(FlexoFragmentRole role) {
+		public ValidationIssue<FragmentRoleMustAddressATemplateFragment, FlexoFragmentRole<?, ?, ?>> applyValidation(
+				FlexoFragmentRole<?, ?, ?> role) {
 			if (role.getModelSlot() instanceof FlexoDocumentModelSlot
 					&& ((FlexoDocumentModelSlot<?>) role.getModelSlot()).getTemplateResource() != null) {
 				if (role.getFragment() == null) {

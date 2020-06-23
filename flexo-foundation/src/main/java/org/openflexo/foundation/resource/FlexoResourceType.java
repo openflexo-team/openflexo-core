@@ -79,7 +79,7 @@ public class FlexoResourceType implements JavaCustomType {
 	 * @author sylvain
 	 * 
 	 */
-	public static class FlexoResourceTypeFactory extends TechnologyAdapterTypeFactory<FlexoResourceType> {
+	public static class FlexoResourceTypeFactory extends TechnologyAdapterTypeFactory<FlexoResourceType, FMLTechnologyAdapter> {
 
 		@Override
 		public Class<FlexoResourceType> getCustomType() {
@@ -110,11 +110,9 @@ public class FlexoResourceType implements JavaCustomType {
 			if (resourceFactory != null) {
 				return resourceFactory.getResourceType();
 			}
-			else {
-				// We don't return UNDEFINED_FLEXO_CONCEPT_INSTANCE_TYPE because we want here a mutable type
-				// if FlexoConcept might be resolved later
-				return new FlexoResourceType(configuration);
-			}
+			// We don't return UNDEFINED_FLEXO_CONCEPT_INSTANCE_TYPE because we want here a mutable type
+			// if FlexoConcept might be resolved later
+			return new FlexoResourceType(configuration);
 		}
 
 		private ITechnologySpecificFlexoResourceFactory<?, ?, ?> resourceFactory;
@@ -227,7 +225,13 @@ public class FlexoResourceType implements JavaCustomType {
 	}
 
 	@Override
-	public void resolve(CustomTypeFactory<?> factory) {
+	public void resolve() {
+		if (customTypeFactory != null) {
+			resolve(customTypeFactory);
+		}
+	}
+
+	private void resolve(CustomTypeFactory<?> factory) {
 		if (factory instanceof FlexoResourceTypeFactory) {
 
 			try {
@@ -273,9 +277,9 @@ public class FlexoResourceType implements JavaCustomType {
 		return true;
 	}
 
-	private static <R extends TechnologyAdapterResource<RD, TA>, RD extends ResourceData<RD> & TechnologyObject<TA>, TA extends TechnologyAdapter> ITechnologySpecificFlexoResourceFactory<R, RD, TA> getFlexoResourceFactoryForClass(
+	private static <R extends TechnologyAdapterResource<RD, TA>, RD extends ResourceData<RD> & TechnologyObject<TA>, TA extends TechnologyAdapter<TA>> ITechnologySpecificFlexoResourceFactory<R, RD, TA> getFlexoResourceFactoryForClass(
 			Class<? extends RD> resourceOrResourceDataClass, TechnologyAdapterService taService) {
-		for (TechnologyAdapter ta : taService.getTechnologyAdapters()) {
+		for (TechnologyAdapter<?> ta : taService.getTechnologyAdapters()) {
 			List<ITechnologySpecificFlexoResourceFactory<?, ?, ?>> resourceFactories = ta.getResourceFactories();
 			for (ITechnologySpecificFlexoResourceFactory<?, ?, ?> f : resourceFactories) {
 				if (f.getResourceClass().equals(resourceOrResourceDataClass)) {
@@ -290,22 +294,16 @@ public class FlexoResourceType implements JavaCustomType {
 
 	}
 
-	public static <R extends TechnologyAdapterResource<RD, TA>, RD extends ResourceData<RD> & TechnologyObject<TA>, TA extends TechnologyAdapter> FlexoResourceType getFlexoResourceType(
+	public static <R extends TechnologyAdapterResource<RD, TA>, RD extends ResourceData<RD> & TechnologyObject<TA>, TA extends TechnologyAdapter<TA>> FlexoResourceType getFlexoResourceType(
 			Class<RD> resourceDataClass, TechnologyAdapterService taService) {
-
 		ITechnologySpecificFlexoResourceFactory<R, RD, TA> resourceFactory = getFlexoResourceFactoryForClass(resourceDataClass, taService);
 		return getFlexoResourceType(resourceFactory);
 	}
 
-	public static <R extends TechnologyAdapterResource<RD, TA>, RD extends ResourceData<RD> & TechnologyObject<TA>, TA extends TechnologyAdapter> FlexoResourceType getFlexoResourceType(
+	public static <R extends TechnologyAdapterResource<RD, TA>, RD extends ResourceData<RD> & TechnologyObject<TA>, TA extends TechnologyAdapter<TA>> FlexoResourceType getFlexoResourceType(
 			ITechnologySpecificFlexoResourceFactory<R, RD, TA> resourceFactory) {
-
-		if (resourceFactory != null) {
+		if (resourceFactory != null)
 			return resourceFactory.getResourceType();
-		}
-		else {
-			return UNDEFINED_RESOURCE_TYPE;
-		}
+		return UNDEFINED_RESOURCE_TYPE;
 	}
-
 }

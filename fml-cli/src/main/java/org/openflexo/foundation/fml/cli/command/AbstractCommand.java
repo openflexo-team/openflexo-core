@@ -39,9 +39,11 @@
 
 package org.openflexo.foundation.fml.cli.command;
 
+import java.io.PrintStream;
 import java.util.logging.Logger;
 
-import org.openflexo.foundation.fml.cli.CommandInterpreter;
+import org.openflexo.foundation.fml.cli.AbstractCommandInterpreter;
+import org.openflexo.foundation.fml.cli.CommandSemanticsAnalyzer;
 import org.openflexo.foundation.fml.cli.parser.node.Node;
 
 /**
@@ -56,19 +58,31 @@ public abstract class AbstractCommand {
 	private static final Logger logger = Logger.getLogger(AbstractCommand.class.getPackage().getName());
 
 	private Node node;
-	private CommandInterpreter commandInterpreter;
+	private CommandSemanticsAnalyzer commandSemanticsAnalyzer;
 
-	public AbstractCommand(Node node, CommandInterpreter commandInterpreter) {
+	public AbstractCommand(Node node, CommandSemanticsAnalyzer commandSemanticsAnalyzer) {
 		this.node = node;
-		this.commandInterpreter = commandInterpreter;
+		this.commandSemanticsAnalyzer = commandSemanticsAnalyzer;
 	}
 
 	public Node getNode() {
 		return node;
 	}
 
-	public CommandInterpreter getCommandInterpreter() {
-		return commandInterpreter;
+	public CommandSemanticsAnalyzer getCommandSemanticsAnalyzer() {
+		return commandSemanticsAnalyzer;
+	}
+
+	public AbstractCommandInterpreter getCommandInterpreter() {
+		return getCommandSemanticsAnalyzer().getCommandInterpreter();
+	}
+
+	public PrintStream getOutStream() {
+		return getCommandInterpreter().getOutStream();
+	}
+
+	public PrintStream getErrStream() {
+		return getCommandInterpreter().getErrStream();
 	}
 
 	/**
@@ -90,4 +104,67 @@ public abstract class AbstractCommand {
 	 * @return
 	 */
 	public abstract String invalidCommandReason();
+
+	public enum CommandTokenType {
+		Expression {
+			@Override
+			public String syntaxKeyword() {
+				return "<expression>";
+			}
+		},
+		LocalReference {
+			@Override
+			public String syntaxKeyword() {
+				return "<reference>";
+			}
+		},
+		Path {
+			@Override
+			public String syntaxKeyword() {
+				return "<path>";
+			}
+		},
+		TA {
+			@Override
+			public String syntaxKeyword() {
+				return "<ta>";
+			}
+		},
+		RC {
+			@Override
+			public String syntaxKeyword() {
+				return "<rc>";
+			}
+		},
+		Resource {
+			@Override
+			public String syntaxKeyword() {
+				return "<resource>";
+			}
+		},
+		Service {
+			@Override
+			public String syntaxKeyword() {
+				return "<service>";
+			}
+		},
+		Operation {
+			@Override
+			public String syntaxKeyword() {
+				return "<operation>";
+			}
+		};
+
+		public abstract String syntaxKeyword();
+
+		public static CommandTokenType getType(String syntaxKeyword) {
+			for (CommandTokenType commandTokenType : values()) {
+				if (commandTokenType.syntaxKeyword().equals(syntaxKeyword)) {
+					return commandTokenType;
+				}
+			}
+			logger.warning("Unexpected CommandTokenType: " + syntaxKeyword);
+			return null;
+		}
+	}
 }

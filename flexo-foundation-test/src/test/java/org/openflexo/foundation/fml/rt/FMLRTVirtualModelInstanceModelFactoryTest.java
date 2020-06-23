@@ -46,9 +46,9 @@ import java.util.logging.Logger;
 import org.junit.Test;
 import org.openflexo.foundation.test.OpenflexoTestCase;
 import org.openflexo.logging.FlexoLogger;
-import org.openflexo.model.ModelContext;
-import org.openflexo.model.ModelEntity;
-import org.openflexo.model.exceptions.ModelDefinitionException;
+import org.openflexo.pamela.ModelContext;
+import org.openflexo.pamela.ModelEntity;
+import org.openflexo.pamela.exceptions.ModelDefinitionException;
 
 /**
  * Test instanciation of VirtualModelInstanceModelFactory<br>

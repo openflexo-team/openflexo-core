@@ -45,8 +45,8 @@ import org.openflexo.foundation.resource.FlexoResource;
 import org.openflexo.foundation.resource.ResourceData;
 import org.openflexo.foundation.resource.ResourceRepository;
 import org.openflexo.foundation.resource.ResourceRepositoryImpl;
-import org.openflexo.model.annotations.ImplementationClass;
-import org.openflexo.model.annotations.ModelEntity;
+import org.openflexo.pamela.annotations.ImplementationClass;
+import org.openflexo.pamela.annotations.ModelEntity;
 
 /**
  * A {@link TechnologyAdapterResourceRepository} stores all resources storing resources relative to a given technology<br>
@@ -59,14 +59,14 @@ import org.openflexo.model.annotations.ModelEntity;
  */
 @ModelEntity(isAbstract = true)
 @ImplementationClass(TechnologyAdapterResourceRepository.TechnologyAdapterResourceRepositoryImpl.class)
-public interface TechnologyAdapterResourceRepository<R extends TechnologyAdapterResource<RD, TA> & FlexoResource<RD>, TA extends TechnologyAdapter, RD extends ResourceData<RD> & TechnologyObject<TA>, I>
+public interface TechnologyAdapterResourceRepository<R extends TechnologyAdapterResource<RD, TA> & FlexoResource<RD>, TA extends TechnologyAdapter<TA>, RD extends ResourceData<RD> & TechnologyObject<TA>, I>
 		extends ResourceRepository<R, I> {
 
 	public TA getTechnologyAdapter();
 
 	public void setTechnologyAdapter(TA technologyAdapter);
 
-	public static abstract class TechnologyAdapterResourceRepositoryImpl<R extends TechnologyAdapterResource<RD, TA> & FlexoResource<RD>, TA extends TechnologyAdapter, RD extends ResourceData<RD> & TechnologyObject<TA>, I>
+	public static abstract class TechnologyAdapterResourceRepositoryImpl<R extends TechnologyAdapterResource<RD, TA> & FlexoResource<RD>, TA extends TechnologyAdapter<TA>, RD extends ResourceData<RD> & TechnologyObject<TA>, I>
 			extends ResourceRepositoryImpl<R, I> implements TechnologyAdapterResourceRepository<R, TA, RD, I> {
 
 		@SuppressWarnings("unused")

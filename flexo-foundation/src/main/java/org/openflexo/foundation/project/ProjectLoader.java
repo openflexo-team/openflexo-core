@@ -73,7 +73,7 @@ import org.openflexo.foundation.utils.ProjectInitializerException;
 import org.openflexo.foundation.utils.ProjectLoadingCancelledException;
 import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.localization.LocalizedDelegate;
-import org.openflexo.model.exceptions.ModelDefinitionException;
+import org.openflexo.pamela.exceptions.ModelDefinitionException;
 import org.openflexo.toolbox.FileUtils;
 
 /**
@@ -94,7 +94,7 @@ public class ProjectLoader extends FlexoServiceImpl {
 	public static final String ROOT_PROJECTS = "rootProjects";
 
 	private final Map<FlexoProject<?>, FlexoEditor> editors;
-	private Map<Object, FlexoProjectResource> projectResourcesForSerializationArtefacts = new HashMap<>();
+	private Map<Object, FlexoProjectResource<?>> projectResourcesForSerializationArtefacts = new HashMap<>();
 
 	private final List<FlexoProject<?>> rootProjects;
 	// private ModelFactory modelFactory;
@@ -228,24 +228,11 @@ public class ProjectLoader extends FlexoServiceImpl {
 		action.doAction();
 		newProject = action.getNewProject();
 
-		if (newProject == null) {
+		if (newProject == null)
 			return null;
-		}
 
-		projectResourcesForSerializationArtefacts.put(projectDirectory, (FlexoProjectResource) (FlexoResource) newProject.getResource());
-
-		/*try {
-			editor = FlexoProject.newProject(projectDirectory, new FlexoEditor.FlexoEditorFactory() {
-				@Override
-				public FlexoEditor makeFlexoEditor(FlexoProject project, FlexoServiceManager serviceManager) {
-					return new DefaultFlexoEditor(project, serviceManager);
-				}
-			}, getServiceManager(), null);
-		} catch (ProjectInitializerException e) {
-			throw e;
-		}*/
-
-		// newEditor(editor);
+		projectResourcesForSerializationArtefacts.put(projectDirectory,
+				(FlexoProjectResource<?>) (FlexoResource<?>) newProject.getResource());
 		addToRootProjects(newProject);
 
 		// Notify project just loaded
@@ -353,7 +340,7 @@ public class ProjectLoader extends FlexoServiceImpl {
 
 		try {
 			// Retrieve project resource
-			FlexoProjectResource projectResource = retrieveFlexoProjectResource(projectDirectory);
+			FlexoProjectResource<?> projectResource = retrieveFlexoProjectResource(projectDirectory);
 
 			// Load project
 			Progress.progress(FlexoLocalization.getMainLocalizer().localizedForKey("loading_project") + " " + projectResource.getName());
@@ -369,10 +356,8 @@ public class ProjectLoader extends FlexoServiceImpl {
 		} catch (ModelDefinitionException e) {
 			throw new ProjectInitializerException(e, projectDirectory);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (FlexoException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return null;
@@ -464,7 +449,7 @@ public class ProjectLoader extends FlexoServiceImpl {
 			}
 		}*/
 
-		FlexoProject<I> loadedProject = projectResource.getResourceData(null);
+		FlexoProject<I> loadedProject = projectResource.getResourceData();
 
 		/*if (editor == null) {
 			try {
@@ -500,26 +485,6 @@ public class ProjectLoader extends FlexoServiceImpl {
 		return loadProject(projectDirectory);
 	}
 
-	/*protected void newEditor(FlexoEditor editor) {
-		editors.put(editor.getProject(), editor);
-		getPropertyChangeSupport().firePropertyChange(EDITOR_ADDED, null, editor);
-		try {
-			FlexoProjectReference ref = modelFactory.newInstance(FlexoProjectReference.class);
-			ref.init(editor.getProject());
-			// applicationContext.getResourceCenterService().getUserResourceCenter()
-			// .publishResource(ref, editor.getProject().getVersion(), null);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		for (FlexoProject project : new ArrayList<>(editors.keySet())) {
-			if (project.getProjectData() != null) {
-				for (FlexoProjectReference reference : project.getProjectData().getImportedProjects()) {
-					reference.getReferredProject(false);
-				}
-			}
-		}
-	}*/
-
 	public void closeProject(FlexoProject<?> project) {
 		FlexoEditor editor = editors.remove(project);
 		if (project != null) {
@@ -527,7 +492,7 @@ public class ProjectLoader extends FlexoServiceImpl {
 			removeFromRootProjects(project);
 			getPropertyChangeSupport().firePropertyChange(EDITOR_REMOVED, editor, null);
 		}
-		getServiceManager().notify(this, new ProjectClosed(project));
+		getServiceManager().notify(this, new ProjectClosed<>(project));
 	}
 
 	public <I> FlexoEditor saveAsProject(I projectDirectory, FlexoProject<I> project) throws Exception {
@@ -625,7 +590,7 @@ public class ProjectLoader extends FlexoServiceImpl {
 		});
 		for (FlexoProject<?> project : projects) {
 			try {
-				project.getResource().save(null);
+				project.getResource().save();
 			} catch (SaveResourceException e) {
 				e.printStackTrace();
 				exceptions.add(e);
@@ -640,7 +605,7 @@ public class ProjectLoader extends FlexoServiceImpl {
 	}
 
 	public boolean someProjectsAreModified() {
-		for (FlexoProject project : getRootProjects()) {
+		for (FlexoProject<?> project : getRootProjects()) {
 			if (project.hasUnsavedResources()) {
 				return true;
 			}

@@ -39,7 +39,7 @@
 				enabled="flexoAction.isActive">
 				<Children data="flexoAction.embeddedFlexoActionCompoundEdits" name="embeddedActions" />
 			</BrowserElement>
-			<BrowserElement dataClassName="org.openflexo.model.undo.CompoundEdit"
+			<BrowserElement dataClassName="org.openflexo.pamela.undo.CompoundEdit"
 				label="compoundEdit.presentationName" icon="controller.iconForObject(compoundEdit)"
 				isEditable="false" filtered="false" defaultVisible="true" name="compoundEdit">
 			</BrowserElement>
@@ -48,7 +48,7 @@
 				isEditable="false" filtered="false" defaultVisible="true" name="undoableEdit">
 			</BrowserElement>
 		</Browser>
-		<Table iteratorClassName="org.openflexo.model.undo.AtomicEdit"
+		<Table iteratorClassName="org.openflexo.pamela.undo.AtomicEdit"
 			visibleRowCount="3" rowHeight="18" autoSelectFirstRow="true"
 			createNewRowOnClick="false" boundToSelectionManager="false"
 			showFooter="true" selectionMode="SingleSelection" textSelectionColor="255,255,255"

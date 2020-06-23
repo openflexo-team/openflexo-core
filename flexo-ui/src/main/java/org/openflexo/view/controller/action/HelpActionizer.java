@@ -39,7 +39,7 @@
 
 package org.openflexo.view.controller.action;
 
-import java.util.EventObject;
+import java.util.logging.Logger;
 
 import javax.help.BadIDException;
 import javax.swing.Icon;
@@ -47,61 +47,45 @@ import javax.swing.Icon;
 import org.openflexo.action.HelpAction;
 import org.openflexo.drm.DocItem;
 import org.openflexo.foundation.FlexoObject;
-import org.openflexo.foundation.action.FlexoActionFinalizer;
-import org.openflexo.foundation.action.FlexoActionInitializer;
 import org.openflexo.foundation.action.FlexoActionFactory;
+import org.openflexo.foundation.action.FlexoActionRunnable;
 import org.openflexo.help.FlexoHelp;
 import org.openflexo.icon.IconLibrary;
 import org.openflexo.localization.FlexoLocalization;
+import org.openflexo.logging.FlexoLogger;
 import org.openflexo.view.controller.ActionInitializer;
 import org.openflexo.view.controller.ControllerActionInitializer;
 import org.openflexo.view.controller.FlexoController;
 
 public class HelpActionizer extends ActionInitializer<HelpAction, FlexoObject, FlexoObject> {
-
-	private static final java.util.logging.Logger logger = org.openflexo.logging.FlexoLogger
-			.getLogger(HelpActionizer.class.getPackage().getName());
+	private static final Logger logger = FlexoLogger.getLogger(HelpActionizer.class.getPackage().getName());
 
 	public HelpActionizer(ControllerActionInitializer actionInitializer) {
 		super(HelpAction.actionType, actionInitializer);
 	}
 
 	@Override
-	protected FlexoActionInitializer<HelpAction> getDefaultInitializer() {
-		return new FlexoActionInitializer<HelpAction>() {
-			@Override
-			public boolean run(EventObject e, HelpAction action) {
+	protected FlexoActionRunnable<HelpAction, FlexoObject, FlexoObject> getDefaultFinalizer() {
+		return (e, action) -> {
+			DocItem item = getController().getApplicationContext().getDocResourceManager().getDocItemFor(action.getFocusedObject());
+			if (item != null) {
+				try {
+					logger.info("Trying to display help for " + item.getIdentifier());
+					FlexoHelp.getHelpBroker().setCurrentID(item.getIdentifier());
+					FlexoHelp.getHelpBroker().setDisplayed(true);
+				} catch (BadIDException exception) {
+					FlexoController.showError(FlexoLocalization.getMainLocalizer().localizedForKey("sorry_no_help_available_for") + " "
+							+ item.getIdentifier());
+					return false;
+				}
 				return true;
 			}
+			return false;
 		};
 	}
 
 	@Override
-	protected FlexoActionFinalizer<HelpAction> getDefaultFinalizer() {
-		return new FlexoActionFinalizer<HelpAction>() {
-			@Override
-			public boolean run(EventObject e, HelpAction action) {
-				DocItem item = getController().getApplicationContext().getDocResourceManager().getDocItemFor(action.getFocusedObject());
-				if (item != null) {
-					try {
-						logger.info("Trying to display help for " + item.getIdentifier());
-						FlexoHelp.getHelpBroker().setCurrentID(item.getIdentifier());
-						FlexoHelp.getHelpBroker().setDisplayed(true);
-					} catch (BadIDException exception) {
-						FlexoController.showError(FlexoLocalization.getMainLocalizer().localizedForKey("sorry_no_help_available_for") + " "
-								+ item.getIdentifier());
-						return false;
-					}
-					return true;
-				}
-
-				return false;
-			}
-		};
-	}
-
-	@Override
-	protected Icon getEnabledIcon(FlexoActionFactory actionType) {
+	protected Icon getEnabledIcon(FlexoActionFactory<HelpAction, FlexoObject, FlexoObject> actionType) {
 		return IconLibrary.HELP_ICON;
 	}
 }

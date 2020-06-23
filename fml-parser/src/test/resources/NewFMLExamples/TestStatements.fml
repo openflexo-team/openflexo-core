@@ -1,0 +1,121 @@
+/**
+ * Testing statements
+ */
+
+use org.openflexo.foundation.fml.rt.FMLRTModelSlot as FMLRT;
+
+model MyModel {
+	
+	// Testing assignments
+	testAssignment() {
+		test1 = a.path.to.something;
+		test2 = a+b*c-9;
+		test3 = call(1,"aString",3+3);
+		test4 = a.path.to.something();
+		test5 = a.path.to.something().b;
+		test6 = a.path.to.something().wiz.some.paths.after;
+		test7 = a.path.to.something().wiz.some.calls(1,2);
+	}
+	
+	// Testing return
+	// Well, there is here a problem of semantics, we juste test here syntax and parsing...
+	/*testReturn() {
+		return;
+		return 0;
+		return 1+3;
+		return null;
+	}
+	
+	testNewVariable() {
+		boolean aFlag;
+		int i = 0;
+		List<String> list;
+		List<String> list2 = new ArrayList<String>();
+	}
+	
+	testNewJavaInstance() {
+		new ArrayList<String>();
+		new ArrayList<>();
+		new HashMap<String,Date>();
+		new ArrayList<>((new List<>()).size(),7);
+
+		List<String> l1 = new ArrayList<String>();
+		List<String> l2 = new ArrayList<>();
+		Map<?,?> m1 = new HashMap<String,Date>();
+		List<String> l3 = new ArrayList<>((new List<>()).size(),7);
+    }
+	
+	testConditionalNoElse() {
+		if (some.condition) {
+			something_todo();
+		}
+	}
+	
+	testConditionalWithElse() {
+		if (some.condition) {
+			something_todo();
+		}
+		else {
+			something_else_todo();
+		}
+	}
+	
+	testWhile() {
+		while (some.condition) {
+			something_todo();
+		}
+	}
+
+	testDo() {
+		do {
+			something_todo();
+		}
+		while (some.condition);
+	}
+
+	testFor() {
+		for (int i=0; i<10; i++) {
+			something_todo(i);
+		}
+	}
+
+	testEnhancedFor() {
+		List<String> someItems;
+		for (String item : someItems) {
+			something_todo(item);
+		}
+	}
+
+	testEnhancedFor2() {
+		List<String> someItems;
+		for (String item : new ArrayList(someItems)) {
+			something_todo(item);
+		}
+	}
+	
+	testNewConceptInstance() {
+		new MyConcept::init(name);
+		MyConcept myConcept = new MyConcept::init(name);
+   }
+
+	testTAEditionAction() {
+		DIAGRAM::AddShape(container=topLevel) in (diagram);
+		shape = DIAGRAM::AddShape(container=topLevel) in (diagram);
+   }
+
+	testDelete() {
+		delete (anObject);
+		Object deletedObject = delete (anObject);
+		Object objectBeeingDelete = delete (path_to_an_object_to_delete(1,2));
+   }
+
+	testSelect() {
+		// A basic selection
+		select MyConcept from (container) where (selected.index > 0, selected.name != null);
+		// A selection embedded in a loop
+		for (MyConcept myConcept : select MyConcept from (container) where (selected.index > 0, selected.name != null)) {
+			myConcept.doSomething();
+		}
+   }*/
+
+}

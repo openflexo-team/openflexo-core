@@ -64,7 +64,7 @@ import org.openflexo.view.ModuleView;
  * 
  * @param <TA>
  */
-public abstract class SpecificNaturePerspective<TA extends TechnologyAdapter> extends GenericPerspective {
+public abstract class SpecificNaturePerspective<TA extends TechnologyAdapter<TA>> extends GenericPerspective {
 
 	static final Logger logger = Logger.getLogger(SpecificNaturePerspective.class.getPackage().getName());
 
@@ -133,6 +133,14 @@ public abstract class SpecificNaturePerspective<TA extends TechnologyAdapter> ex
 
 	@Override
 	public boolean hasModuleViewForObject(FlexoObject object) {
+
+		TechnologyAdapterControllerService tacService = getController().getApplicationContext().getTechnologyAdapterControllerService();
+		for (TechnologyAdapterPluginController<?> plugin : tacService.getActivatedPlugins()) {
+			if (plugin.hasModuleViewForObject(object)) {
+				return true;
+			}
+		}
+
 		if (object instanceof VirtualModel && virtualModelNature != null && virtualModelNature.hasNature((VirtualModel) object)) {
 			return true;
 		}
@@ -152,6 +160,13 @@ public abstract class SpecificNaturePerspective<TA extends TechnologyAdapter> ex
 
 	@Override
 	public final ModuleView<?> createModuleViewForObject(FlexoObject object) {
+
+		TechnologyAdapterControllerService tacService = getController().getApplicationContext().getTechnologyAdapterControllerService();
+		for (TechnologyAdapterPluginController<?> plugin : tacService.getActivatedPlugins()) {
+			if (plugin.hasModuleViewForObject(object)) {
+				return plugin.createModuleViewForObject(object, getController(), this);
+			}
+		}
 
 		if (object instanceof VirtualModel) {
 			return createModuleViewForVirtualModel((VirtualModel) object);

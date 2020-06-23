@@ -40,9 +40,10 @@
 package org.openflexo.foundation.ontology.dm;
 
 import org.openflexo.foundation.ontology.IFlexoOntologyClass;
+import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 
-public class OntologyClassInserted extends OntologyDataModification {
-	public OntologyClassInserted(IFlexoOntologyClass aClass) {
+public class OntologyClassInserted<TA extends TechnologyAdapter<TA>> extends OntologyDataModification<IFlexoOntologyClass<TA>> {
+	public OntologyClassInserted(IFlexoOntologyClass<TA> aClass) {
 		super(null, aClass);
 	}
 }

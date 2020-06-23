@@ -47,18 +47,18 @@ package org.openflexo.foundation;
  */
 
 /**
- * A DataModification encapsulates a modification that has been done on the datastructure. This object is sent to the datastructure
+ * A DataModification encapsulates a modification that has been done on the data structure. This object is sent to the data structure
  * observers.
  * 
  * @author benoit
  */
-public class DataModification {
+public class DataModification<T> {
 
 	private String _propertyName;
 
-	private final Object _newValue;
+	private final T _newValue;
 
-	private final Object _oldValue;
+	private final T _oldValue;
 
 	// ==========================================================================
 	// ============================= Constructor
@@ -71,24 +71,22 @@ public class DataModification {
 	 * @param oldValue
 	 * @param newValue
 	 */
-	public DataModification(Object oldValue, Object newValue) {
-		super();
+	public DataModification(T oldValue, T newValue) {
 		_oldValue = oldValue;
 		_newValue = newValue;
 	}
 
-	public DataModification(String propertyName, Object oldValue, Object newValue) {
-		super();
+	public DataModification(String propertyName, T oldValue, T newValue) {
 		_oldValue = oldValue;
 		_newValue = newValue;
 		_propertyName = propertyName;
 	}
 
-	public Object oldValue() {
+	public T oldValue() {
 		return _oldValue;
 	}
 
-	public Object newValue() {
+	public T newValue() {
 		return _newValue;
 	}
 
@@ -100,15 +98,5 @@ public class DataModification {
 	public String toString() {
 		return getClass().getSimpleName() + "/" + _propertyName + "\nold Value: " + (_oldValue != null ? _oldValue : "null")
 				+ "\nnew Value: " + (_newValue != null ? _newValue : "null");
-	}
-
-	private boolean _isReentrant = false;
-
-	public boolean isReentrant() {
-		return _isReentrant;
-	}
-
-	public void setReentrant(boolean isReentrant) {
-		_isReentrant = isReentrant;
 	}
 }

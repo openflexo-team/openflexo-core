@@ -50,6 +50,7 @@ import org.openflexo.connie.exception.NullReferenceException;
 import org.openflexo.connie.exception.TypeMismatchException;
 import org.openflexo.connie.type.ParameterizedTypeImpl;
 import org.openflexo.connie.type.TypeUtils;
+import org.openflexo.connie.type.WilcardTypeImpl;
 import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.fml.FMLRepresentationContext;
 import org.openflexo.foundation.fml.FMLRepresentationContext.FMLRepresentationOutput;
@@ -57,20 +58,20 @@ import org.openflexo.foundation.fml.controlgraph.FMLControlGraph;
 import org.openflexo.foundation.fml.controlgraph.FMLControlGraphOwner;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext.ReturnException;
-import org.openflexo.model.annotations.CloningStrategy;
-import org.openflexo.model.annotations.CloningStrategy.StrategyType;
-import org.openflexo.model.annotations.DefineValidationRule;
-import org.openflexo.model.annotations.Embedded;
-import org.openflexo.model.annotations.Getter;
-import org.openflexo.model.annotations.ImplementationClass;
-import org.openflexo.model.annotations.ModelEntity;
-import org.openflexo.model.annotations.PropertyIdentifier;
-import org.openflexo.model.annotations.Setter;
-import org.openflexo.model.annotations.XMLAttribute;
-import org.openflexo.model.annotations.XMLElement;
-import org.openflexo.model.validation.ValidationError;
-import org.openflexo.model.validation.ValidationIssue;
-import org.openflexo.model.validation.ValidationRule;
+import org.openflexo.pamela.annotations.CloningStrategy;
+import org.openflexo.pamela.annotations.CloningStrategy.StrategyType;
+import org.openflexo.pamela.annotations.DefineValidationRule;
+import org.openflexo.pamela.annotations.Embedded;
+import org.openflexo.pamela.annotations.Getter;
+import org.openflexo.pamela.annotations.ImplementationClass;
+import org.openflexo.pamela.annotations.ModelEntity;
+import org.openflexo.pamela.annotations.PropertyIdentifier;
+import org.openflexo.pamela.annotations.Setter;
+import org.openflexo.pamela.annotations.XMLAttribute;
+import org.openflexo.pamela.annotations.XMLElement;
+import org.openflexo.pamela.validation.ValidationError;
+import org.openflexo.pamela.validation.ValidationIssue;
+import org.openflexo.pamela.validation.ValidationRule;
 
 @ModelEntity
 @ImplementationClass(AddToListAction.AddToListActionImpl.class)
@@ -149,7 +150,8 @@ public interface AddToListAction<T> extends AssignableAction<T>, FMLControlGraph
 		public DataBinding<? extends List<T>> getList() {
 
 			if (list == null) {
-				list = new DataBinding<>(this, new ParameterizedTypeImpl(List.class, Object.class), BindingDefinitionType.GET);
+				list = new DataBinding<>(this, new ParameterizedTypeImpl(List.class, new WilcardTypeImpl(Object.class)),
+						BindingDefinitionType.GET);
 				list.setBindingName("list");
 			}
 			return list;
@@ -161,32 +163,10 @@ public interface AddToListAction<T> extends AssignableAction<T>, FMLControlGraph
 			if (list != null) {
 				list.setOwner(this);
 				list.setBindingName("list");
-				list.setDeclaredType(new ParameterizedTypeImpl(List.class, Object.class));
+				list.setDeclaredType(new ParameterizedTypeImpl(List.class, new WilcardTypeImpl(Object.class)));
 				list.setBindingDefinitionType(BindingDefinitionType.GET);
 			}
 			this.list = list;
-		}
-
-		@Override
-		@Deprecated
-		public DataBinding<T> getValue() {
-			if (value == null) {
-				value = new DataBinding<>(this, Object.class, BindingDefinitionType.GET);
-				value.setBindingName("value");
-			}
-			return value;
-		}
-
-		@Override
-		@Deprecated
-		public void setValue(DataBinding<T> value) {
-			if (value != null) {
-				value.setOwner(this);
-				value.setBindingName("value");
-				value.setDeclaredType(Object.class);
-				value.setBindingDefinitionType(BindingDefinitionType.GET);
-			}
-			this.value = value;
 		}
 
 		@Override
@@ -298,13 +278,13 @@ public interface AddToListAction<T> extends AssignableAction<T>, FMLControlGraph
 	// TODO: a rule that check that assignableAction is not null
 
 	@DefineValidationRule
-	public static class AssignableTypeMustBeCompatible extends ValidationRule<AssignableTypeMustBeCompatible, AddToListAction> {
+	public static class AssignableTypeMustBeCompatible extends ValidationRule<AssignableTypeMustBeCompatible, AddToListAction<?>> {
 		public AssignableTypeMustBeCompatible() {
 			super(AddToListAction.class, "assignable_type_must_be_compatible_with_list_type");
 		}
 
 		@Override
-		public ValidationIssue<AssignableTypeMustBeCompatible, AddToListAction> applyValidation(AddToListAction action) {
+		public ValidationIssue<AssignableTypeMustBeCompatible, AddToListAction<?>> applyValidation(AddToListAction<?> action) {
 
 			if (action.getAssignableAction() == null) {
 				return new ValidationError<>(this, action, "item_to_add_is_not_defined");

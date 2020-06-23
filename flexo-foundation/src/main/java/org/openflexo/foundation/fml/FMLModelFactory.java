@@ -38,23 +38,20 @@
 
 package org.openflexo.foundation.fml;
 
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
 import org.openflexo.connie.DataBinding;
-import org.openflexo.fge.FGEModelFactoryImpl;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.PamelaResourceModelFactory;
 import org.openflexo.foundation.action.FlexoUndoManager;
+import org.openflexo.foundation.fml.VirtualModel.VirtualModelImpl;
 import org.openflexo.foundation.fml.annotations.DeclareEditionActions;
 import org.openflexo.foundation.fml.annotations.DeclareFetchRequests;
-import org.openflexo.foundation.fml.annotations.DeclareFlexoBehaviourParameters;
 import org.openflexo.foundation.fml.annotations.DeclareFlexoBehaviours;
 import org.openflexo.foundation.fml.annotations.DeclareFlexoRoles;
-import org.openflexo.foundation.fml.annotations.DeclareInspectorEntries;
 import org.openflexo.foundation.fml.controlgraph.ConditionalAction;
 import org.openflexo.foundation.fml.controlgraph.EmptyControlGraph;
 import org.openflexo.foundation.fml.controlgraph.FMLControlGraph;
@@ -62,6 +59,7 @@ import org.openflexo.foundation.fml.controlgraph.IncrementalIterationAction;
 import org.openflexo.foundation.fml.controlgraph.IterationAction;
 import org.openflexo.foundation.fml.controlgraph.Sequence;
 import org.openflexo.foundation.fml.controlgraph.WhileAction;
+import org.openflexo.foundation.fml.editionaction.AbstractFetchRequest;
 import org.openflexo.foundation.fml.editionaction.AddClassInstance;
 import org.openflexo.foundation.fml.editionaction.AddToListAction;
 import org.openflexo.foundation.fml.editionaction.AssignableAction;
@@ -70,7 +68,6 @@ import org.openflexo.foundation.fml.editionaction.DeclarationAction;
 import org.openflexo.foundation.fml.editionaction.DeleteAction;
 import org.openflexo.foundation.fml.editionaction.EditionAction;
 import org.openflexo.foundation.fml.editionaction.ExpressionAction;
-import org.openflexo.foundation.fml.editionaction.FetchRequest;
 import org.openflexo.foundation.fml.editionaction.FetchRequestCondition;
 import org.openflexo.foundation.fml.editionaction.LogAction;
 import org.openflexo.foundation.fml.editionaction.NotifyProgressAction;
@@ -84,6 +81,7 @@ import org.openflexo.foundation.fml.rt.editionaction.AddFlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.editionaction.AddFlexoConceptInstanceParameter;
 import org.openflexo.foundation.fml.rt.editionaction.AddVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.editionaction.CreateFlexoConceptInstanceParameter;
+import org.openflexo.foundation.fml.rt.editionaction.CreateTopLevelVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.editionaction.DeleteFlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.editionaction.DeleteFlexoConceptInstanceParameter;
 import org.openflexo.foundation.fml.rt.editionaction.ExecuteBehaviourParameter;
@@ -101,14 +99,14 @@ import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterService;
 import org.openflexo.foundation.technologyadapter.UseModelSlotDeclaration;
 import org.openflexo.foundation.utils.FlexoObjectReferenceConverter;
-import org.openflexo.model.converter.DataBindingConverter;
-import org.openflexo.model.converter.FlexoVersionConverter;
-import org.openflexo.model.converter.RelativePathResourceConverter;
-import org.openflexo.model.converter.TypeConverter;
-import org.openflexo.model.exceptions.ModelDefinitionException;
-import org.openflexo.model.factory.DeserializationPolicy;
-import org.openflexo.model.factory.EditingContext;
-import org.openflexo.model.factory.ModelFactory;
+import org.openflexo.pamela.ModelContextLibrary;
+import org.openflexo.pamela.converter.DataBindingConverter;
+import org.openflexo.pamela.converter.FlexoVersionConverter;
+import org.openflexo.pamela.converter.RelativePathResourceConverter;
+import org.openflexo.pamela.converter.TypeConverter;
+import org.openflexo.pamela.exceptions.ModelDefinitionException;
+import org.openflexo.pamela.factory.EditingContext;
+import org.openflexo.pamela.factory.ModelFactory;
 
 /**
  * {@link ModelFactory} used to handle VirtualModel models<br>
@@ -117,11 +115,7 @@ import org.openflexo.model.factory.ModelFactory;
  * @author sylvain
  * 
  */
-// TODO (sylvain), i don't like this design, but we have here to extends FGEModelFactoryImpl,
-// because this is required for the FlexoConceptPreviewComponent to retrieve a FMLModelFactory
-// which extends FGEModelFactory interface (required by DIANA).
-// A better solution would be to implements composition in ModelFactory, instead of classic java inheritance
-public class FMLModelFactory extends FGEModelFactoryImpl implements PamelaResourceModelFactory<VirtualModelResource> {
+public class FMLModelFactory extends ModelFactory implements PamelaResourceModelFactory<VirtualModelResource> {
 
 	protected static final Logger logger = Logger.getLogger(FMLModelFactory.class.getPackage().getName());
 
@@ -143,20 +137,11 @@ public class FMLModelFactory extends FGEModelFactoryImpl implements PamelaResour
 		this(virtualModelResource, serviceManager, serviceManager.getTechnologyAdapterService());
 	}
 
-	@Override
-	public Object deserialize(InputStream is, DeserializationPolicy policy) throws Exception {
-		// System.out.println("******** deserialize FMLModelFactory " + Integer.toHexString(hashCode()) + " for " + virtualModelResource
-		// + " in thread " + Thread.currentThread() + " is=" + is);
-		return super.deserialize(is, policy);
-	}
-
 	public FMLModelFactory(VirtualModelResource virtualModelResource, FlexoServiceManager serviceManager,
 			TechnologyAdapterService taService) throws ModelDefinitionException {
-
-		super(virtualModelResource != null
+		super(ModelContextLibrary.getCompoundModelContext(virtualModelResource != null
 				? retrieveTechnologySpecificClasses(virtualModelResource.getResourceDataClass(), virtualModelResource.getUsedModelSlots())
-				: retrieveTechnologySpecificClasses(taService != null ? taService : serviceManager.getTechnologyAdapterService()));
-
+				: retrieveTechnologySpecificClasses(taService != null ? taService : serviceManager.getTechnologyAdapterService())));
 		// System.out.println("******** Initialize FMLModelFactory " + Integer.toHexString(hashCode()) + " for " + virtualModelResource
 		// + " in thread " + Thread.currentThread());
 		this.serviceManager = serviceManager;
@@ -175,7 +160,7 @@ public class FMLModelFactory extends FGEModelFactoryImpl implements PamelaResour
 			relativePathResourceConverter
 					.setContainerResource(virtualModelResource.getIODelegate().getSerializationArtefactAsResource().getContainer());
 		}
-		for (TechnologyAdapter ta : taService.getTechnologyAdapters()) {
+		for (TechnologyAdapter<?> ta : taService.getTechnologyAdapters()) {
 			ta.initFMLModelFactory(this);
 		}
 
@@ -222,8 +207,8 @@ public class FMLModelFactory extends FGEModelFactoryImpl implements PamelaResour
 	 */
 	public static List<Class<?>> retrieveTechnologySpecificClasses(TechnologyAdapterService taService) throws ModelDefinitionException {
 		List<Class<?>> classes = new ArrayList<>();
-		classes.add(VirtualModel.class);
-		for (TechnologyAdapter ta : taService.getTechnologyAdapters()) {
+		classes.add(FMLCompilationUnit.class);
+		for (TechnologyAdapter<?> ta : taService.getTechnologyAdapters()) {
 			for (Class<? extends ModelSlot<?>> modelSlotClass : new ArrayList<>(ta.getAvailableModelSlotTypes())) {
 				retrieveTechnologySpecificClassesForModelSlot(modelSlotClass, classes);
 			}
@@ -243,6 +228,7 @@ public class FMLModelFactory extends FGEModelFactoryImpl implements PamelaResour
 	public static List<Class<?>> retrieveTechnologySpecificClasses(Class<? extends VirtualModel> baseClass,
 			List<Class<? extends ModelSlot<?>>> usedModelSlots) throws ModelDefinitionException {
 		List<Class<?>> classes = new ArrayList<>();
+		classes.add(FMLCompilationUnit.class);
 		classes.add(baseClass);
 		for (Class<? extends ModelSlot<?>> modelSlotClass : usedModelSlots) {
 			retrieveTechnologySpecificClassesForModelSlot(modelSlotClass, classes);
@@ -266,12 +252,6 @@ public class FMLModelFactory extends FGEModelFactoryImpl implements PamelaResour
 				classes.add(behaviourClass);
 			}
 		}
-		DeclareFlexoBehaviourParameters fbpDeclarations = modelSlotClass.getAnnotation(DeclareFlexoBehaviourParameters.class);
-		if (fbpDeclarations != null) {
-			for (Class<? extends FlexoBehaviourParameter> behaviourParameterClass : fbpDeclarations.value()) {
-				classes.add(behaviourParameterClass);
-			}
-		}
 		DeclareEditionActions eaDeclarations = modelSlotClass.getAnnotation(DeclareEditionActions.class);
 		if (eaDeclarations != null) {
 			for (Class<? extends EditionAction> editionActionClass : eaDeclarations.value()) {
@@ -280,30 +260,19 @@ public class FMLModelFactory extends FGEModelFactoryImpl implements PamelaResour
 		}
 		DeclareFetchRequests frDeclarations = modelSlotClass.getAnnotation(DeclareFetchRequests.class);
 		if (frDeclarations != null) {
-			for (Class<? extends FetchRequest> fetchRequestClass : frDeclarations.value()) {
+			for (Class<? extends AbstractFetchRequest> fetchRequestClass : frDeclarations.value()) {
 				classes.add(fetchRequestClass);
-			}
-		}
-		DeclareInspectorEntries ieDeclarations = modelSlotClass.getAnnotation(DeclareInspectorEntries.class);
-		if (ieDeclarations != null) {
-			for (Class<? extends InspectorEntry> entryClass : ieDeclarations.value()) {
-				classes.add(entryClass);
 			}
 		}
 	}
 
-	/**
-	 * Iterate on all defined {@link TechnologyAdapter} to extract classes to expose being involved in technology adapter as VirtualModel
-	 * parts, and return a newly created ModelContext dedicated to {@link VirtualModel} manipulations
-	 * 
-	 * @param taService
-	 * @return
-	 * @throws ModelDefinitionException
-	 */
-	/*private static ModelContext computeModelContext(TechnologyAdapterService taService) throws ModelDefinitionException {
-		List<Class<?>> classes = retrieveTechnologySpecificClasses(taService);
-		return ModelContextLibrary.getCompoundModelContext(classes.toArray(new Class<?>[classes.size()]));
-	}*/
+	public FMLCompilationUnit newCompilationUnit() {
+		return newInstance(FMLCompilationUnit.class);
+	}
+
+	public JavaImportDeclaration newJavaImportDeclaration() {
+		return newInstance(JavaImportDeclaration.class);
+	}
 
 	public VirtualModel newVirtualModel() {
 		return newInstance(VirtualModel.class);
@@ -347,6 +316,14 @@ public class FMLModelFactory extends FGEModelFactoryImpl implements PamelaResour
 		return newInstance(AbstractProperty.class);
 	}
 
+	public PrimitiveRole<?> newPrimitiveRole() {
+		return newInstance(PrimitiveRole.class);
+	}
+
+	public JavaRole<?> newJavaRole() {
+		return newInstance(JavaRole.class);
+	}
+
 	public ExpressionProperty<?> newExpressionProperty() {
 		return newInstance(ExpressionProperty.class);
 	}
@@ -361,6 +338,11 @@ public class FMLModelFactory extends FGEModelFactoryImpl implements PamelaResour
 		GetSetProperty<?> returned = newInstance(GetSetProperty.class);
 		returned.setGetControlGraph(newEmptyControlGraph());
 		returned.setSetControlGraph(newEmptyControlGraph());
+		return returned;
+	}
+
+	public Sequence newSequence() {
+		Sequence returned = newInstance(Sequence.class);
 		return returned;
 	}
 
@@ -467,6 +449,10 @@ public class FMLModelFactory extends FGEModelFactoryImpl implements PamelaResour
 
 	public AddVirtualModelInstance newAddVirtualModelInstance() {
 		return newInstance(AddVirtualModelInstance.class);
+	}
+
+	public CreateTopLevelVirtualModelInstance newCreateTopLevelVirtualModelInstance() {
+		return newInstance(CreateTopLevelVirtualModelInstance.class);
 	}
 
 	public SelectFlexoConceptInstance<?> newSelectFlexoConceptInstance() {
@@ -662,20 +648,18 @@ public class FMLModelFactory extends FGEModelFactoryImpl implements PamelaResour
 		else {
 			logger.warning("Could not access resource beeing deserialized");
 		}
-		if (newlyCreatedObject instanceof VirtualModel && ((VirtualModel) newlyCreatedObject).getLocalizedDictionary() == null) {
-			// Always set a FMLLocalizedDictionary for a ViewPoint
-			FMLLocalizedDictionary localizedDictionary = newInstance(FMLLocalizedDictionary.class);
-			((VirtualModel) newlyCreatedObject).setLocalizedDictionary(localizedDictionary);
+		if (newlyCreatedObject instanceof VirtualModelImpl) {
+			// Always create a LocalizedDictionary for a VirtualModel
+			((VirtualModelImpl) newlyCreatedObject).createLocalizedDictionaryWhenNonExistant();
 		}
 	}
 
 	@Override
 	public <I> void objectHasBeenCreated(final I newlyCreatedObject, final Class<I> implementedInterface) {
 		super.objectHasBeenCreated(newlyCreatedObject, implementedInterface);
-		if (newlyCreatedObject instanceof VirtualModel && ((VirtualModel) newlyCreatedObject).getLocalizedDictionary() == null) {
-			// Always set a FMLLocalizedDictionary for a ViewPoint
-			FMLLocalizedDictionary localizedDictionary = newInstance(FMLLocalizedDictionary.class);
-			((VirtualModel) newlyCreatedObject).setLocalizedDictionary(localizedDictionary);
+		if (newlyCreatedObject instanceof VirtualModelImpl) {
+			// Always create a LocalizedDictionary for a VirtualModel
+			((VirtualModelImpl) newlyCreatedObject).createLocalizedDictionaryWhenNonExistant();
 		}
 	}
 

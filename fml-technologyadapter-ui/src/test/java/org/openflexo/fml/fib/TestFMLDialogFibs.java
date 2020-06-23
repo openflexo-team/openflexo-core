@@ -51,8 +51,8 @@ public class TestFMLDialogFibs extends GenericFIBTestCase {
 	}
 
 	@Test
-	public void testShowFMLRepresentationDialog() {
-		validateFIB("Fib/Dialog/ShowFMLRepresentationDialog.fib");
+	public void testFixIssuePanel() {
+		validateFIB("Fib/Dialog/FixIssuePanel.fib");
 	}
 
 }

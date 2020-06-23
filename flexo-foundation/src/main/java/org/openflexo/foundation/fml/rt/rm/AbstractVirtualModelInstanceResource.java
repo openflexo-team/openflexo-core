@@ -42,17 +42,17 @@ import java.util.List;
 
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.rm.VirtualModelResource;
-import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.foundation.fml.rt.AbstractVirtualModelInstanceModelFactory;
+import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.foundation.resource.DirectoryContainerResource;
 import org.openflexo.foundation.resource.FlexoResource;
 import org.openflexo.foundation.resource.PamelaResource;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterResource;
-import org.openflexo.model.annotations.Getter;
-import org.openflexo.model.annotations.ImplementationClass;
-import org.openflexo.model.annotations.ModelEntity;
-import org.openflexo.model.annotations.Setter;
+import org.openflexo.pamela.annotations.Getter;
+import org.openflexo.pamela.annotations.ImplementationClass;
+import org.openflexo.pamela.annotations.ModelEntity;
+import org.openflexo.pamela.annotations.Setter;
 
 /**
  * Base API for a {@link FlexoResource} encoding a {@link VirtualModelInstance}
@@ -62,7 +62,7 @@ import org.openflexo.model.annotations.Setter;
  */
 @ModelEntity(isAbstract = true)
 @ImplementationClass(AbstractVirtualModelInstanceResourceImpl.class)
-public interface AbstractVirtualModelInstanceResource<VMI extends VirtualModelInstance<VMI, TA>, TA extends TechnologyAdapter>
+public interface AbstractVirtualModelInstanceResource<VMI extends VirtualModelInstance<VMI, TA>, TA extends TechnologyAdapter<TA>>
 		extends PamelaResource<VMI, AbstractVirtualModelInstanceModelFactory<?>>, TechnologyAdapterResource<VMI, TA>,
 		DirectoryContainerResource<VMI> {
 

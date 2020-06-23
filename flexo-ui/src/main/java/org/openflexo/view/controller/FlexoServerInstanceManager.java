@@ -49,9 +49,9 @@ import org.jdom2.JDOMException;
 import org.openflexo.ApplicationContext;
 import org.openflexo.foundation.FlexoServiceImpl;
 import org.openflexo.localization.FlexoLocalization;
-import org.openflexo.model.exceptions.InvalidDataException;
-import org.openflexo.model.exceptions.ModelDefinitionException;
-import org.openflexo.model.factory.ModelFactory;
+import org.openflexo.pamela.exceptions.InvalidDataException;
+import org.openflexo.pamela.exceptions.ModelDefinitionException;
+import org.openflexo.pamela.factory.ModelFactory;
 import org.openflexo.toolbox.FileUtils;
 
 public class FlexoServerInstanceManager extends FlexoServiceImpl {
@@ -141,16 +141,12 @@ public class FlexoServerInstanceManager extends FlexoServiceImpl {
 						try {
 							addressBook = (FlexoServerAddressBook) factory.deserialize(fileContent);
 						} catch (IOException e) {
-							// TODO Auto-generated catch block
 							e.printStackTrace();
 						} catch (JDOMException e) {
-							// TODO Auto-generated catch block
 							e.printStackTrace();
 						} catch (InvalidDataException e) {
-							// TODO Auto-generated catch block
 							e.printStackTrace();
 						} catch (ModelDefinitionException e) {
-							// TODO Auto-generated catch block
 							e.printStackTrace();
 						} catch (Exception e) {
 							e.printStackTrace();

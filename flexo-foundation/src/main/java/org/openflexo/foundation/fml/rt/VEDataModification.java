@@ -45,13 +45,13 @@ import org.openflexo.foundation.DataModification;
  * 
  * @author sguerin
  */
-public class VEDataModification extends DataModification {
+public class VEDataModification extends DataModification<String> {
 
-	public VEDataModification(Object oldValue, Object newValue) {
+	public VEDataModification(String oldValue, String newValue) {
 		super(oldValue, newValue);
 	}
 
-	public VEDataModification(String propertyName, Object oldValue, Object newValue) {
+	public VEDataModification(String propertyName, String oldValue, String newValue) {
 		super(propertyName, oldValue, newValue);
 	}
 

@@ -49,6 +49,7 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 import org.openflexo.connie.type.PrimitiveType;
 import org.openflexo.foundation.DefaultFlexoEditor;
@@ -67,6 +68,7 @@ import org.openflexo.gina.test.OpenflexoTestCaseWithGUI;
 import org.openflexo.gina.test.SwingGraphicalContextDelegate;
 import org.openflexo.test.OrderedRunner;
 import org.openflexo.test.TestOrder;
+import org.openflexo.test.UITest;
 
 /**
  * Test the structural and behavioural features of {@link TypeSelector}
@@ -79,9 +81,8 @@ public class TestTypeSelector extends OpenflexoTestCaseWithGUI {
 
 	private static SwingGraphicalContextDelegate gcDelegate;
 
-	public static final String VIEWPOINT_NAME = "TestViewPoint";
-	public static final String VIEWPOINT_URI = "http://openflexo.org/test/TestViewPoint";
-	public static final String VIRTUAL_MODEL_NAME = "TestVirtualModel";
+	private static final String VIEWPOINT_NAME = "TestViewPoint";
+	private static final String VIEWPOINT_URI = "http://openflexo.org/test/TestViewPoint";
 
 	static VirtualModel newVirtualModel;
 	// static ViewPointResource newViewPointResource;
@@ -107,6 +108,7 @@ public class TestTypeSelector extends OpenflexoTestCaseWithGUI {
 	 */
 	@Test
 	@TestOrder(1)
+	@Category(UITest.class)
 	public void testSomeConcepts() throws SaveResourceException {
 
 		CreateTopLevelVirtualModel addViewPointAction = CreateTopLevelVirtualModel.actionType
@@ -142,6 +144,7 @@ public class TestTypeSelector extends OpenflexoTestCaseWithGUI {
 
 	@Test
 	@TestOrder(2)
+	@Category(UITest.class)
 	public void testInstanciateWidgetWithString() {
 
 		typeSelector = new TypeSelector(String.class);
@@ -153,6 +156,7 @@ public class TestTypeSelector extends OpenflexoTestCaseWithGUI {
 
 	@Test
 	@TestOrder(3)
+	@Category(UITest.class)
 	public void checkCustomTypes() {
 		typeSelector.setCustomTypeManager(serviceManager.getTechnologyAdapterService());
 		typeSelector.setCustomTypeEditorProvider(serviceManager.getTechnologyAdapterControllerService());
@@ -162,6 +166,7 @@ public class TestTypeSelector extends OpenflexoTestCaseWithGUI {
 
 	@Test
 	@TestOrder(4)
+	@Category(UITest.class)
 	public void testInstanciateWidgetWithFlexoConceptInstanceType() {
 
 		FlexoConceptInstanceType type = FlexoConceptInstanceType.getFlexoConceptInstanceType(flexoConceptA);

@@ -41,7 +41,6 @@ package org.openflexo.foundation.ontology;
 
 import java.lang.reflect.Type;
 
-import org.openflexo.connie.type.CustomTypeFactory;
 import org.openflexo.foundation.fml.TechnologyAdapterTypeFactory;
 import org.openflexo.foundation.fml.TechnologySpecificType;
 import org.openflexo.foundation.fml.rt.FMLRTTechnologyAdapter;
@@ -50,7 +49,7 @@ import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.utils.FlexoObjectReference;
 import org.openflexo.foundation.utils.FlexoObjectReference.ReferenceOwner;
 
-public class IndividualOfClass<TA extends TechnologyAdapter> implements TechnologySpecificType<TA> {
+public class IndividualOfClass<TA extends TechnologyAdapter<TA>> implements TechnologySpecificType<TA> {
 
 	/**
 	 * Factory for IndividualOfClass instances
@@ -58,7 +57,8 @@ public class IndividualOfClass<TA extends TechnologyAdapter> implements Technolo
 	 * @author sylvain
 	 * 
 	 */
-	public static class IndividualOfClassTypeFactory extends TechnologyAdapterTypeFactory<IndividualOfClass<?>> implements ReferenceOwner {
+	public static class IndividualOfClassTypeFactory extends TechnologyAdapterTypeFactory<IndividualOfClass<?>, FMLRTTechnologyAdapter>
+			implements ReferenceOwner {
 
 		public IndividualOfClassTypeFactory(FMLRTTechnologyAdapter technologyAdapter) {
 			super(technologyAdapter);
@@ -85,7 +85,6 @@ public class IndividualOfClass<TA extends TechnologyAdapter> implements Technolo
 
 		@Override
 		public void configureFactory(IndividualOfClass<?> type) {
-			// TODO Auto-generated method stub
 		}
 
 		@Override
@@ -106,7 +105,7 @@ public class IndividualOfClass<TA extends TechnologyAdapter> implements Technolo
 
 	}
 
-	public static <TA extends TechnologyAdapter> IndividualOfClass<TA> getIndividualOfClass(IFlexoOntologyClass<TA> anOntologyClass) {
+	public static <TA extends TechnologyAdapter<TA>> IndividualOfClass<TA> getIndividualOfClass(IFlexoOntologyClass<TA> anOntologyClass) {
 		if (anOntologyClass == null) {
 			return null;
 		}
@@ -179,7 +178,7 @@ public class IndividualOfClass<TA extends TechnologyAdapter> implements Technolo
 	}
 
 	@Override
-	public void resolve(CustomTypeFactory<?> factory) {
+	public void resolve() {
 	}
 
 	@Override

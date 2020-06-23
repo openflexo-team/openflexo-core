@@ -100,7 +100,6 @@ public abstract class FlexoServiceImpl extends FlexoObservable implements FlexoS
 
 	@Override
 	public String getDeletedProperty() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 

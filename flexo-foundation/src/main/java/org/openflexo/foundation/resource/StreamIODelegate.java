@@ -46,9 +46,9 @@ import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.openflexo.model.annotations.Import;
-import org.openflexo.model.annotations.Imports;
-import org.openflexo.model.annotations.ModelEntity;
+import org.openflexo.pamela.annotations.Import;
+import org.openflexo.pamela.annotations.Imports;
+import org.openflexo.pamela.annotations.ModelEntity;
 import org.openflexo.rm.FileResourceImpl;
 import org.openflexo.rm.ResourceLocator;
 import org.openflexo.toolbox.FileUtils;
@@ -209,19 +209,16 @@ public interface StreamIODelegate<I> extends FlexoIODelegate<I> {
 
 		@Override
 		public FileWritingLock willWriteOnDisk() {
-			// TODO Auto-generated method stub
 			return null;
 		}
 
 		@Override
 		public void hasWrittenOnDisk(FileWritingLock lock) {
-			// TODO Auto-generated method stub
 
 		}
 
 		@Override
 		public String getDeletedProperty() {
-			// TODO Auto-generated method stub
 			return null;
 		}
 

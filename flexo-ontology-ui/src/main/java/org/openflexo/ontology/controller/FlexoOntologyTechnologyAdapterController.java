@@ -55,7 +55,7 @@ import org.openflexo.view.controller.TechnologyAdapterController;
  * @author sylvain
  * 
  */
-public abstract class FlexoOntologyTechnologyAdapterController<TA extends TechnologyAdapter> extends TechnologyAdapterController<TA> {
+public abstract class FlexoOntologyTechnologyAdapterController<TA extends TechnologyAdapter<TA>> extends TechnologyAdapterController<TA> {
 
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(FlexoOntologyTechnologyAdapterController.class.getPackage().getName());

@@ -40,12 +40,14 @@ package org.openflexo.foundation.fml.rt.action;
 
 import java.util.Vector;
 
+import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.action.ActionGroup;
 import org.openflexo.foundation.action.FlexoAction;
 import org.openflexo.foundation.action.FlexoActionFactory;
 import org.openflexo.foundation.fml.FlexoBehaviour;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.VirtualModelInstanceObject;
+import org.openflexo.localization.LocalizedDelegate;
 
 /**
  * Factory for {@link FlexoBehaviourAction} (an execution environment of a {@link FlexoBehaviour} on a given {@link FlexoConceptInstance} as
@@ -90,4 +92,11 @@ public abstract class FlexoBehaviourActionFactory<A extends FlexoBehaviourAction
 		return flexoConceptInstance;
 	}
 
+	@Override
+	public LocalizedDelegate getLocales(FlexoServiceManager serviceManager) {
+		if (getBehaviour() != null) {
+			return getBehaviour().getLocales();
+		}
+		return super.getLocales(serviceManager);
+	}
 }

@@ -45,7 +45,6 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Logger;
 
 import javax.swing.ImageIcon;
 
@@ -76,11 +75,15 @@ import org.openflexo.foundation.fml.editionaction.RemoveFromListAction;
 import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
 import org.openflexo.foundation.fml.rt.editionaction.AddFlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.editionaction.AddVirtualModelInstance;
+import org.openflexo.foundation.fml.rt.editionaction.CreateTopLevelVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.editionaction.FinalizeMatching;
 import org.openflexo.foundation.fml.rt.editionaction.FireEventAction;
 import org.openflexo.foundation.fml.rt.editionaction.InitiateMatching;
 import org.openflexo.foundation.fml.rt.editionaction.MatchFlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.editionaction.SelectFlexoConceptInstance;
+import org.openflexo.foundation.fml.rt.editionaction.SelectUniqueFlexoConceptInstance;
+import org.openflexo.foundation.fml.rt.editionaction.SelectUniqueVirtualModelInstance;
+import org.openflexo.foundation.fml.rt.editionaction.SelectVirtualModelInstance;
 import org.openflexo.foundation.nature.ProjectNature;
 import org.openflexo.foundation.nature.ProjectNatureService;
 import org.openflexo.foundation.resource.ResourceData;
@@ -110,10 +113,11 @@ import org.openflexo.icon.FMLRTIconLibrary;
 import org.openflexo.icon.IconFactory;
 import org.openflexo.icon.IconLibrary;
 import org.openflexo.localization.LocalizedDelegate;
-import org.openflexo.model.validation.ValidationModel;
-import org.openflexo.model.validation.ValidationReport;
 import org.openflexo.module.FlexoModule;
 import org.openflexo.module.ModuleLoader;
+import org.openflexo.pamela.validation.ValidationModel;
+import org.openflexo.pamela.validation.ValidationReport;
+import org.openflexo.prefs.TechnologyAdapterPreferences;
 import org.openflexo.rm.Resource;
 import org.openflexo.rm.ResourceLocator;
 import org.openflexo.view.ModuleView;
@@ -128,13 +132,12 @@ import org.openflexo.view.controller.model.FlexoPerspective;
  * @author sylvain
  * 
  */
-public abstract class TechnologyAdapterController<TA extends TechnologyAdapter> {
-
-	private static final Logger logger = Logger.getLogger(TechnologyAdapterController.class.getPackage().getName());
-
+public abstract class TechnologyAdapterController<TA extends TechnologyAdapter<TA>> {
 	private TechnologyAdapterControllerService technologyAdapterControllerService;
 
 	private final Map<Class<? extends CustomType>, CustomTypeEditor> customTypeEditors = new LinkedHashMap<>();
+
+	private List<TechnologyAdapterPluginController<TA>> plugins = new ArrayList<>();
 
 	/**
 	 * Returns applicable {@link ProjectNatureService}
@@ -226,6 +229,7 @@ public abstract class TechnologyAdapterController<TA extends TechnologyAdapter> 
 			if (module.activateAdvancedActions(getTechnologyAdapter())) {
 				initializeAdvancedActions(controller.getControllerActionInitializer());
 			}
+			activateActivablePlugins(module);
 		}
 	}
 
@@ -366,6 +370,9 @@ public abstract class TechnologyAdapterController<TA extends TechnologyAdapter> 
 		if (AddFlexoConceptInstance.class.isAssignableFrom(editionActionClass)) {
 			return IconFactory.getImageIcon(FMLRTIconLibrary.FLEXO_CONCEPT_INSTANCE_ICON, IconLibrary.DUPLICATE);
 		}
+		else if (CreateTopLevelVirtualModelInstance.class.isAssignableFrom(editionActionClass)) {
+			return IconFactory.getImageIcon(FMLRTIconLibrary.VIRTUAL_MODEL_INSTANCE_ICON, IconLibrary.DUPLICATE);
+		}
 		else if (AddVirtualModelInstance.class.isAssignableFrom(editionActionClass)) {
 			return IconFactory.getImageIcon(FMLRTIconLibrary.VIRTUAL_MODEL_INSTANCE_ICON, IconLibrary.DUPLICATE);
 		}
@@ -374,6 +381,15 @@ public abstract class TechnologyAdapterController<TA extends TechnologyAdapter> 
 		}
 		else if (SelectFlexoConceptInstance.class.isAssignableFrom(editionActionClass)) {
 			return IconFactory.getImageIcon(FMLRTIconLibrary.FLEXO_CONCEPT_INSTANCE_ICON, IconLibrary.IMPORT);
+		}
+		else if (SelectUniqueFlexoConceptInstance.class.isAssignableFrom(editionActionClass)) {
+			return IconFactory.getImageIcon(FMLRTIconLibrary.FLEXO_CONCEPT_INSTANCE_ICON, IconLibrary.IMPORT);
+		}
+		else if (SelectVirtualModelInstance.class.isAssignableFrom(editionActionClass)) {
+			return IconFactory.getImageIcon(FMLRTIconLibrary.VIRTUAL_MODEL_INSTANCE_ICON, IconLibrary.IMPORT);
+		}
+		else if (SelectUniqueVirtualModelInstance.class.isAssignableFrom(editionActionClass)) {
+			return IconFactory.getImageIcon(FMLRTIconLibrary.VIRTUAL_MODEL_INSTANCE_ICON, IconLibrary.IMPORT);
 		}
 		else if (InitiateMatching.class.isAssignableFrom(editionActionClass)) {
 			return IconFactory.getImageIcon(FMLRTIconLibrary.FLEXO_CONCEPT_INSTANCE_ICON, IconLibrary.SYNC);
@@ -635,6 +651,14 @@ public abstract class TechnologyAdapterController<TA extends TechnologyAdapter> 
 		return returned;
 	}
 
+	public void addToTechnologyAdapterPlugins(TechnologyAdapterPluginController plugin) {
+		plugins.add(plugin);
+	}
+
+	public void removeFromTechnologyAdapterPlugins(TechnologyAdapterPluginController plugin) {
+		plugins.remove(plugin);
+	}
+
 	public void resourceLoading(TechnologyAdapterResource<?, TA> resource) {
 	}
 
@@ -646,6 +670,47 @@ public abstract class TechnologyAdapterController<TA extends TechnologyAdapter> 
 	}
 
 	public ValidationReport getValidationReport(ResourceData<?> resourceData) {
+		return null;
+	}
+
+	public void activateActivablePlugins() {
+		for (FlexoModule<?> flexoModule : getServiceManager().getModuleLoader().getLoadedModuleInstances()) {
+			if (flexoModule.isActive()) {
+				activateActivablePlugins(flexoModule);
+			}
+		}
+	}
+
+	public void activateActivablePlugins(FlexoModule<?> module) {
+		FlexoController controller = module.getFlexoController();
+		if (controller != null) {
+			for (TechnologyAdapterPluginController<TA> plugin : plugins) {
+				if (plugin.isActivable(module)) {
+					plugin.activate(module);
+				}
+			}
+		}
+	}
+
+	public <P extends TechnologyAdapterPluginController<?>> P getPlugin(Class<P> pluginClass) {
+		for (TechnologyAdapterPluginController<TA> plugin : plugins) {
+			if (pluginClass.isAssignableFrom(plugin.getClass())) {
+				return (P) plugin;
+			}
+		}
+		return null;
+	}
+
+	/**
+	 * Return list of all activated TechnologyAdapter Plugins
+	 * 
+	 * @return
+	 */
+	public List<TechnologyAdapterPluginController<TA>> getPlugins() {
+		return plugins;
+	}
+
+	public Class<? extends TechnologyAdapterPreferences<TA>> getPreferencesClass() {
 		return null;
 	}
 

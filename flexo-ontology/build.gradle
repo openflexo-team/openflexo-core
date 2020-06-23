@@ -6,7 +6,5 @@ dependencies {
   // external dep
 
   // testing dep
-}
-tasks.withType(Test) {
-	jvmArgs += ["-Djava.awt.headless=true"]
+  testCompile testUtils()
 }

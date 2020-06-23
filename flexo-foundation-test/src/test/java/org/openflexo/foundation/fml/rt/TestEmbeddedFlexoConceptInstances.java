@@ -231,7 +231,7 @@ public class TestEmbeddedFlexoConceptInstances extends OpenflexoProjectAtRunTime
 		assertEquals("NewNameForConceptInstanceA1", conceptInstanceC1.getFlexoPropertyValue("a1"));
 		assertEquals("NewNameForConceptInstanceA1", conceptInstanceC1.getFlexoActor("a1"));
 
-		vmi1.getResource().save(null);
+		vmi1.getResource().save();
 
 	}
 
@@ -278,7 +278,7 @@ public class TestEmbeddedFlexoConceptInstances extends OpenflexoProjectAtRunTime
 
 		assertTrue(actionSchemeCreationAction.hasActionExecutionSucceeded());
 
-		vmi2.getResource().save(null);
+		vmi2.getResource().save();
 
 		System.out.println("FML=" + actionScheme.getFMLRepresentation());
 

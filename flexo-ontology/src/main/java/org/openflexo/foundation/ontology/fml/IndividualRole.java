@@ -50,16 +50,16 @@ import org.openflexo.foundation.ontology.IFlexoOntologyIndividual;
 import org.openflexo.foundation.ontology.IndividualOfClass;
 import org.openflexo.foundation.ontology.fml.rt.ConceptActorReference;
 import org.openflexo.foundation.ontology.nature.FlexoOntologyVirtualModelNature;
-import org.openflexo.model.annotations.DefineValidationRule;
-import org.openflexo.model.annotations.Getter;
-import org.openflexo.model.annotations.ImplementationClass;
-import org.openflexo.model.annotations.ModelEntity;
-import org.openflexo.model.annotations.PropertyIdentifier;
-import org.openflexo.model.annotations.Setter;
-import org.openflexo.model.annotations.XMLAttribute;
-import org.openflexo.model.validation.ValidationIssue;
-import org.openflexo.model.validation.ValidationRule;
-import org.openflexo.model.validation.ValidationWarning;
+import org.openflexo.pamela.annotations.DefineValidationRule;
+import org.openflexo.pamela.annotations.Getter;
+import org.openflexo.pamela.annotations.ImplementationClass;
+import org.openflexo.pamela.annotations.ModelEntity;
+import org.openflexo.pamela.annotations.PropertyIdentifier;
+import org.openflexo.pamela.annotations.Setter;
+import org.openflexo.pamela.annotations.XMLAttribute;
+import org.openflexo.pamela.validation.ValidationIssue;
+import org.openflexo.pamela.validation.ValidationRule;
+import org.openflexo.pamela.validation.ValidationWarning;
 
 @ModelEntity(isAbstract = true)
 @ImplementationClass(IndividualRole.IndividualRoleImpl.class)
@@ -177,14 +177,13 @@ public interface IndividualRole<I extends IFlexoOntologyIndividual<?>> extends O
 
 	@DefineValidationRule
 	public static class IndividualFlexoRoleMustDefineAValidConceptClass
-			extends ValidationRule<IndividualFlexoRoleMustDefineAValidConceptClass, IndividualRole> {
+			extends ValidationRule<IndividualFlexoRoleMustDefineAValidConceptClass, IndividualRole<?>> {
 		public IndividualFlexoRoleMustDefineAValidConceptClass() {
 			super(IndividualRole.class, "individual_role_must_define_a_valid_concept_class");
 		}
 
 		@Override
-		public ValidationIssue<IndividualFlexoRoleMustDefineAValidConceptClass, IndividualRole> applyValidation(
-				IndividualRole role) {
+		public ValidationIssue<IndividualFlexoRoleMustDefineAValidConceptClass, IndividualRole<?>> applyValidation(IndividualRole<?> role) {
 			if (role.getOntologicType() == null) {
 				return new ValidationWarning<>(this, role, "individual_role_does_not_define_any_concept_class");
 			}

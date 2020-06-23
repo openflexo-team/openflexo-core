@@ -1,0 +1,93 @@
+/**
+ * Testing structural properties
+ */
+
+use org.openflexo.foundation.fml.rt.FMLRTModelSlot as FMLRT;
+
+import java.lang.String;
+import java.util.List;
+import java.util.Map;
+
+model MyModel {
+	
+	// Testing PrimitiveRole properties
+	concept ConceptA {
+		
+	    String unStringQuiPeutEtreNull;
+	    String[1,1] projectName; // A non-null String
+	    String[1,*] atLeastAValue;
+	    String[0,*] yEnAPlusieurs;
+	    String... equivalentToPrevious;
+	    String[2,8] auMoins2AuPlus8;
+	    int titi = 2+3;
+	    List<ConceptB>[0,*] aJavaListOfConceptB;
+	    List<List<ConceptB>>[0,*] aJavaListOfListOfConceptB;
+	    List<List<List<ConceptB>>>[0,*] aJavaListOfListOfListOfConceptB;
+	    
+	    // With a visibility identifier
+	    // Default visibility is public
+	    private String thisPropertyIsPrivate;
+	    protected String thisOneIsProtected;
+	    public String thisOneIsPublic; // Same as no visibility
+	}
+
+	// Testing FlexoConceptInstanceRole
+	concept ConceptB {
+
+		ConceptB aConceptB;
+	    ConceptB[0,*] someConceptB;
+
+	}
+
+	// Test ExpressionProperty
+	concept ConceptC {
+		
+		int aComputedValue = 0; // This is not an expression property, but a primitive with an init value
+		int aComputedValue is 1+1; // Always return 2
+		int aComputedValue is a.path.to.a.computed.value; // Compute that path
+		int anOtherComputedValue is a.path().to.a.computed.value(1,2,"foo"); // Compute that path
+	}
+
+	// Test AbstractProperty
+	concept ConceptD {
+		
+		abstract int aValue;
+		public abstract String aString;
+		abstract Map<String,ConceptA> aMap;
+		abstract ConceptB aConceptB;
+	}
+
+	// Test GetSetProperty
+	/*concept ConceptE {
+		
+		private int internalValue;
+		
+		// A GetProperty
+		int value {
+			int get() {
+				return internalValue;
+			}		
+		};
+		
+		// A GetSetProperty
+		int settable_value {
+			int get() {
+				return internalValue;
+			}
+		
+			set(int aValue) {
+				internalValue = aValue;
+			}
+		};
+		
+		// More compact syntax
+		int settable_value {
+			int get() { return internalValue; }		
+			set(int aValue) { internalValue = aValue; }
+		};
+		
+	}*/
+
+
+
+}

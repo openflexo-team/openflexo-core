@@ -46,17 +46,17 @@ import java.util.List;
 import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.FlexoServiceManager;
+import org.openflexo.foundation.InnerResourceData;
 import org.openflexo.foundation.utils.FlexoObjectReference.ReferenceOwner;
-import org.openflexo.model.annotations.Adder;
-import org.openflexo.model.annotations.Getter;
-import org.openflexo.model.annotations.Getter.Cardinality;
-import org.openflexo.model.annotations.ImplementationClass;
-import org.openflexo.model.annotations.ModelEntity;
-import org.openflexo.model.annotations.Remover;
-import org.openflexo.model.annotations.Setter;
-import org.openflexo.model.annotations.XMLAttribute;
+import org.openflexo.pamela.annotations.Adder;
+import org.openflexo.pamela.annotations.Getter;
+import org.openflexo.pamela.annotations.Getter.Cardinality;
+import org.openflexo.pamela.annotations.ImplementationClass;
+import org.openflexo.pamela.annotations.ModelEntity;
+import org.openflexo.pamela.annotations.Remover;
+import org.openflexo.pamela.annotations.Setter;
+import org.openflexo.pamela.annotations.XMLAttribute;
 import org.openflexo.toolbox.FlexoVersion;
-import org.openflexo.toolbox.IProgress;
 
 /**
  * A FlexoResource is a resource that can be managed by OpenFlexo.
@@ -129,6 +129,8 @@ public interface FlexoResource<RD extends ResourceData<RD>> extends FlexoObject,
 	@Setter(URI)
 	public void setURI(String anURI);
 
+	public String computeDefaultURI();
+
 	/**
 	 * Returns a displayable version that the end-user will understand.
 	 * 
@@ -178,6 +180,12 @@ public interface FlexoResource<RD extends ResourceData<RD>> extends FlexoObject,
 	@Getter(REVISION)
 	@XMLAttribute
 	public Long getRevision();
+
+	/**
+	 * Sets the revision of this resource.
+	 */
+	@Setter(REVISION)
+	public void setRevision(Long revision);
 
 	/**
 	 * Returns the FlexoServiceManager where this resource is registered
@@ -366,7 +374,7 @@ public interface FlexoResource<RD extends ResourceData<RD>> extends FlexoObject,
 	 * @return the resource data.
 	 * @throws ResourceLoadingCancelledException
 	 */
-	public RD getResourceData(IProgress progress) throws ResourceLoadingCancelledException, FileNotFoundException, FlexoException;
+	public RD getResourceData() throws ResourceLoadingCancelledException, FileNotFoundException, FlexoException;
 
 	/**
 	 * Sets {@link ResourceData} for this resource
@@ -386,7 +394,7 @@ public interface FlexoResource<RD extends ResourceData<RD>> extends FlexoObject,
 	 * @throws FileNotFoundException
 	 * @throws FlexoException
 	 */
-	public RD loadResourceData(IProgress progress) throws ResourceLoadingCancelledException, FileNotFoundException, FlexoException;
+	public RD loadResourceData() throws ResourceLoadingCancelledException, FileNotFoundException, FlexoException;
 
 	/**
 	 * Delete (dereference) resource data if resource data is loaded<br>
@@ -408,13 +416,12 @@ public interface FlexoResource<RD extends ResourceData<RD>> extends FlexoObject,
 	 * 
 	 * @throws SaveResourceException
 	 */
-	public void save(IProgress progress) throws SaveResourceException;
+	public void save() throws SaveResourceException;
 
 	/**
-	 * This method updates the resource.
+	 * Called to notify that a resource is beeing loading
 	 */
-	/*public FlexoResourceTree update() throws ResourceDependencyLoopException, LoadResourceException, FileNotFoundException,
-			ProjectLoadingCancelledException, FlexoException;*/
+	public void notifyResourceWillLoad();
 
 	/**
 	 * Called to notify that a resource has successfully been loaded
@@ -479,9 +486,35 @@ public interface FlexoResource<RD extends ResourceData<RD>> extends FlexoObject,
 	public boolean isDeleting();
 	// public Date getLastUpdate();
 
-	default FlexoObject findObject(String objectIdentifier, String userIdentifier, String typeIdentifier) {
-		return null;
-	}
+	/**
+	 * Generic method used to retrieve in this resource an object with supplied objectIdentifier, userIdentifier, and type identifier<br>
+	 * 
+	 * Note that for certain resources, some parameters might not be used (for example userIdentifier or typeIdentifier)
+	 * 
+	 * @param objectIdentifier
+	 * @param userIdentifier
+	 * @param typeIdentifier
+	 * @return
+	 */
+	public Object findObject(String objectIdentifier, String userIdentifier, String typeIdentifier);
+
+	/**
+	 * Used to compute identifier of an object asserting this object is the {@link ResourceData} itself, or a {@link InnerResourceData}
+	 * object stored inside this resource
+	 * 
+	 * @param object
+	 * @return a String identifying supplied object (semantics is composite key using userIdentifier and typeIdentifier)
+	 */
+	public String getObjectIdentifier(Object object);
+
+	/**
+	 * Used to compute user identifier of an object asserting this object is the {@link ResourceData} itself, or a {@link InnerResourceData}
+	 * object stored inside this resource
+	 * 
+	 * @param object
+	 * @return a String identifying author (user) of supplied object
+	 */
+	public String getUserIdentifier(Object object);
 
 	public boolean needsConversion();
 
@@ -493,4 +526,28 @@ public interface FlexoResource<RD extends ResourceData<RD>> extends FlexoObject,
 	@Setter(SPECIALIZED_VIRTUAL_MODEL_CLASS)
 	public void setSpecializedResourceDataClass(Class<? extends RD> specializedResourceDataClass);
 
+	/**
+	 * Return relative path of underlying serialization artefact, relatively to base artefact of supplied resource center
+	 * 
+	 * @param <I>
+	 * @param rc
+	 * @return
+	 */
+	public <I> String pathRelativeToResourceCenter(FlexoResourceCenter<I> rc);
+
+	/**
+	 * Return relative path of parent of underlying serialization artefact, relatively to base artefact of supplied resource center
+	 * 
+	 * @param <I>
+	 * @param rc
+	 * @return
+	 */
+	public <I> String parentPathRelativeToResourceCenter(FlexoResourceCenter<I> rc);
+
+	/**
+	 * Callback called when a cycle was detected in Resource Loading Scheme, and when the resource beeing requested has finally been loaded.
+	 * 
+	 * @param requestedResource
+	 */
+	public void resolvedCrossReferenceDependency(FlexoResource<?> requestedResource);
 }

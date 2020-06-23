@@ -42,25 +42,26 @@ package org.openflexo.selection;
 import java.awt.Component;
 import java.awt.Point;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.logging.Logger;
 
 import javax.swing.SwingUtilities;
 
-import org.openflexo.fge.Drawing;
-import org.openflexo.fge.Drawing.DrawingTreeNode;
-import org.openflexo.fge.FGEModelFactory;
-import org.openflexo.fge.FGEUtils;
-import org.openflexo.fge.control.MouseClickControlAction;
-import org.openflexo.fge.control.MouseControlContext;
-import org.openflexo.fge.control.actions.MouseClickControlActionImpl;
-import org.openflexo.fge.control.actions.MouseClickControlImpl;
-import org.openflexo.fge.geom.FGEPoint;
-import org.openflexo.fge.swing.JDianaInteractiveEditor;
-import org.openflexo.fge.swing.control.SwingToolFactory;
-import org.openflexo.fge.swing.view.JFGEView;
+import org.openflexo.diana.DianaModelFactory;
+import org.openflexo.diana.DianaUtils;
+import org.openflexo.diana.Drawing;
+import org.openflexo.diana.Drawing.DrawingTreeNode;
+import org.openflexo.diana.control.MouseClickControlAction;
+import org.openflexo.diana.control.MouseControlContext;
+import org.openflexo.diana.control.actions.MouseClickControlActionImpl;
+import org.openflexo.diana.control.actions.MouseClickControlImpl;
+import org.openflexo.diana.geom.DianaPoint;
+import org.openflexo.diana.swing.JDianaInteractiveEditor;
+import org.openflexo.diana.swing.control.SwingToolFactory;
+import org.openflexo.diana.swing.view.JDianaView;
 import org.openflexo.foundation.FlexoObject;
-import org.openflexo.model.factory.EditingContext;
+import org.openflexo.pamela.factory.EditingContext;
 import org.openflexo.toolbox.ToolBox;
 
 /**
@@ -76,7 +77,7 @@ public class SelectionManagingDianaEditor<M extends FlexoObject> extends JDianaI
 
 	private SelectionManager _selectionManager;
 
-	public SelectionManagingDianaEditor(Drawing<M> drawing, SelectionManager selectionManager, FGEModelFactory factory,
+	public SelectionManagingDianaEditor(Drawing<M> drawing, SelectionManager selectionManager, DianaModelFactory factory,
 			SwingToolFactory toolFactory) {
 		super(drawing, factory, toolFactory);
 		_selectionManager = selectionManager;
@@ -110,6 +111,13 @@ public class SelectionManagingDianaEditor<M extends FlexoObject> extends JDianaI
 
 	@Override
 	public void setSelectedObjects(List<? extends DrawingTreeNode<?, ?>> someSelectedObjects) {
+		if (someSelectedObjects == null) {
+			someSelectedObjects = Collections.emptyList();
+		}
+		// If the current selection is the same as requested, just return
+		if (someSelectedObjects.equals(getSelectedObjects())) {
+			return;
+		}
 		if (_selectionManager != null) {
 			_selectionManager.resetSelection(true);
 		}
@@ -215,7 +223,7 @@ public class SelectionManagingDianaEditor<M extends FlexoObject> extends JDianaI
 				public boolean handleClick(DrawingTreeNode<?, ?> node, SelectionManagingDianaEditor<?> controller,
 						MouseControlContext context) {
 
-					JFGEView<?, ?> view = controller.getDrawingView().viewForNode(node);
+					JDianaView<?, ?> view = controller.getDrawingView().viewForNode(node);
 
 					Point newPoint = getPointInView(node, controller, context);
 					controller.setLastSelectedNode(node);
@@ -256,7 +264,8 @@ public class SelectionManagingDianaEditor<M extends FlexoObject> extends JDianaI
 							}
 						}
 					}
-					selectionManager.getContextualMenuManager().showPopupMenuForObject(o, (Component) view, newPoint);
+					selectionManager.getContextualMenuManager().showPopupMenuForObject(selectionManager.getFocusedObject(),
+							(Component) view, newPoint);
 					return true;
 				}
 			};
@@ -268,13 +277,11 @@ public class SelectionManagingDianaEditor<M extends FlexoObject> extends JDianaI
 
 	@Override
 	public void fireBeginMultipleSelection() {
-		// TODO Auto-generated method stub
 
 	}
 
 	@Override
 	public void fireEndMultipleSelection() {
-		// TODO Auto-generated method stub
 
 	}
 
@@ -302,9 +309,9 @@ public class SelectionManagingDianaEditor<M extends FlexoObject> extends JDianaI
 	}
 
 	@Override
-	public void setLastClickedPoint(FGEPoint lastClickedPoint, DrawingTreeNode<?, ?> node) {
+	public void setLastClickedPoint(DianaPoint lastClickedPoint, DrawingTreeNode<?, ?> node) {
 		super.setLastClickedPoint(lastClickedPoint, node);
-		FGEPoint unnormalizedPoint = FGEUtils.convertNormalizedPoint(node, lastClickedPoint, getDrawing().getRoot());
+		DianaPoint unnormalizedPoint = DianaUtils.convertNormalizedPoint(node, lastClickedPoint, getDrawing().getRoot());
 		if (_selectionManager instanceof MouseSelectionManager) {
 			((MouseSelectionManager) _selectionManager)
 					.setLastClickedPoint(new Point((int) unnormalizedPoint.getX(), (int) unnormalizedPoint.getY()));
@@ -314,13 +321,9 @@ public class SelectionManagingDianaEditor<M extends FlexoObject> extends JDianaI
 		}
 		// SGU: Following code is used to force request focus when a click has been performed
 		// We do this to get keyboard accelerators to work again after having switched to an other component getting the focus
-		SwingUtilities.invokeLater(new Runnable() {
-			@Override
-			public void run() {
-				getDrawingView().requestFocus();
-				getDrawingView().requestFocusInWindow();
-			}
+		SwingUtilities.invokeLater(() -> {
+			getDrawingView().requestFocus();
+			getDrawingView().requestFocusInWindow();
 		});
 	}
-
 }

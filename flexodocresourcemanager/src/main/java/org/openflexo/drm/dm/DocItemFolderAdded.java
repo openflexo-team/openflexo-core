@@ -41,7 +41,7 @@ package org.openflexo.drm.dm;
 
 import org.openflexo.drm.DocItemFolder;
 
-public class DocItemFolderAdded extends DRMDataModification {
+public class DocItemFolderAdded extends DRMDataModification<DocItemFolder> {
 	public DocItemFolderAdded(DocItemFolder newItemFolder) {
 		super(null, newItemFolder);
 	}

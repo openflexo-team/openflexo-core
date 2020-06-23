@@ -49,7 +49,7 @@ import org.openflexo.foundation.FlexoServiceManager;
  * @author sylvain
  * 
  */
-public interface ProjectNatureFactory<N extends ProjectNature> {
+public interface ProjectNatureFactory<N extends ProjectNature<N>> {
 
 	/**
 	 * Gives to supplied {@link FlexoProject} related {@link ProjectNature}

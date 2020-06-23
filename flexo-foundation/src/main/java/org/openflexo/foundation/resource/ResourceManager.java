@@ -40,7 +40,10 @@ package org.openflexo.foundation.resource;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Stack;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -129,11 +132,15 @@ public class ResourceManager extends FlexoServiceImpl implements ReferenceOwner 
 	}
 
 	// It should be synchronized has the same resource could be registered several times in different threads
-	public synchronized void registerResource(FlexoResource<?> resource) {
+	public synchronized void registerResource(FlexoResource<?> resource) throws DuplicateURIException {
 
 		if (resource.getResourceCenter() == null) {
 			logger.warning("Resource belonging to no ResourceCenter: " + resource);
 			// Thread.dumpStack();
+		}
+
+		if (getResource(resource.getURI()) != null) {
+			throw new DuplicateURIException(resource);
 		}
 
 		if (!resources.contains(resource)) {
@@ -212,7 +219,7 @@ public class ResourceManager extends FlexoServiceImpl implements ReferenceOwner 
 		if (StringUtils.isEmpty(resourceURI)) {
 			return null;
 		}
-		for (FlexoResource r : new ArrayList<>(resources)) {
+		for (FlexoResource<?> r : new ArrayList<>(resources)) {
 			if (resourceURI.equals(r.getURI())) {
 				return r;
 			}
@@ -272,13 +279,13 @@ public class ResourceManager extends FlexoServiceImpl implements ReferenceOwner 
 		super.receiveNotification(caller, notification);
 		if (notification instanceof ResourceCenterAdded) {
 			setChanged();
-			notifyObservers(new DataModification(null, ((ResourceCenterAdded) notification).getAddedResourceCenter()));
+			notifyObservers(new DataModification<>(null, ((ResourceCenterAdded) notification).getAddedResourceCenter()));
 		}
 		if (notification instanceof ResourceCenterRemoved) {
 			// In this case, we MUST unregister all resources contained in removed ResourceCenter
 			FlexoResourceCenter<?> removedRC = ((ResourceCenterRemoved) notification).getRemovedResourceCenter();
 
-			for (FlexoResource<?> r : removedRC.getAllResources(null)) {
+			for (FlexoResource<?> r : removedRC.getAllResources()) {
 				unregisterResource(r);
 			}
 
@@ -290,8 +297,123 @@ public class ResourceManager extends FlexoServiceImpl implements ReferenceOwner 
 			}
 
 			setChanged();
-			notifyObservers(new DataModification(((ResourceCenterRemoved) notification).getRemovedResourceCenter(), null));
+			notifyObservers(new DataModification<>(((ResourceCenterRemoved) notification).getRemovedResourceCenter(), null));
+		}
+	}
 
+	private Map<Thread, Stack<FlexoResource<?>>> resourceLoadingCausality = new HashMap<>();
+	private List<CrossReferenceDependency> crossReferenceDependencies = new ArrayList<>();
+
+	public void crossReferencesLoadingSchemeDetected(FlexoResource<?> resource) {
+		Stack<FlexoResource<?>> stack = resourceLoadingCausality.get(Thread.currentThread());
+		if (stack != null && !stack.isEmpty()) {
+			/*System.out.println("Detected cycle while requesting resource " + resource + " while loading " + stack.peek());
+			System.out.println(" > " + resource.getName());
+			for (int i = stack.size() - 1; i >= 0; i--) {
+				System.out.println(" > " + stack.get(i).getName());
+			}*/
+			CrossReferenceDependency crossReferenceDependency = new CrossReferenceDependency(resource, stack.peek());
+			if (!crossReferenceDependencies.contains(crossReferenceDependency)) {
+				crossReferenceDependencies.add(crossReferenceDependency);
+			}
+		}
+	}
+
+	public class CrossReferenceDependency {
+		private final FlexoResource<?> requestedResource;
+		private final FlexoResource<?> requestingResource;
+
+		public CrossReferenceDependency(FlexoResource<?> requestedResource, FlexoResource<?> requestingResource) {
+			super();
+			this.requestedResource = requestedResource;
+			this.requestingResource = requestingResource;
+		}
+
+		@Override
+		public int hashCode() {
+			final int prime = 31;
+			int result = 1;
+			result = prime * result + getEnclosingInstance().hashCode();
+			result = prime * result + ((requestedResource == null) ? 0 : requestedResource.hashCode());
+			result = prime * result + ((requestingResource == null) ? 0 : requestingResource.hashCode());
+			return result;
+		}
+
+		@Override
+		public boolean equals(Object obj) {
+			if (this == obj)
+				return true;
+			if (obj == null)
+				return false;
+			if (getClass() != obj.getClass())
+				return false;
+			CrossReferenceDependency other = (CrossReferenceDependency) obj;
+			if (!getEnclosingInstance().equals(other.getEnclosingInstance()))
+				return false;
+			if (requestedResource == null) {
+				if (other.requestedResource != null)
+					return false;
+			}
+			else if (!requestedResource.equals(other.requestedResource))
+				return false;
+			if (requestingResource == null) {
+				if (other.requestingResource != null)
+					return false;
+			}
+			else if (!requestingResource.equals(other.requestingResource))
+				return false;
+			return true;
+		}
+
+		private ResourceManager getEnclosingInstance() {
+			return ResourceManager.this;
+		}
+	}
+
+	public void resourceWillLoad(FlexoResource<?> resource, ResourceWillLoad notification) {
+		Stack<FlexoResource<?>> stack = resourceLoadingCausality.get(Thread.currentThread());
+		if (stack == null) {
+			stack = new Stack<>();
+			resourceLoadingCausality.put(Thread.currentThread(), stack);
+		}
+		/*if (!stack.isEmpty()) {
+			System.out.println(
+					"################### Loading " + resource.getName() + " as requested by " + stack.peek().getName() + " loading");
+		}
+		else {
+			System.out.println("################### Loading " + resource.getName());
+		}*/
+		stack.push(resource);
+
+		if (getServiceManager() != null) {
+			getServiceManager().notify(this, notification);
+		}
+	}
+
+	public void resourceLoaded(FlexoResource<?> resource, ResourceLoaded<?> notification) {
+		Stack<FlexoResource<?>> stack = resourceLoadingCausality.get(Thread.currentThread());
+		if (stack != null) {
+			// System.out.println("################### Finished loading " + resource.getName());
+			stack.pop();
+		}
+		for (CrossReferenceDependency crossReferenceDependency : crossReferenceDependencies) {
+			if (crossReferenceDependency.requestedResource == resource) {
+				crossReferenceDependency.requestingResource.resolvedCrossReferenceDependency(crossReferenceDependency.requestedResource);
+				if (getServiceManager() != null) {
+					// Notify ResourceLoaded again
+					// The validation will be performed later, causing chance for resource to be fully validated
+					getServiceManager().notify(this, new ResourceLoaded<>(crossReferenceDependency.requestingResource));
+				}
+			}
+		}
+		if (getServiceManager() != null) {
+			getServiceManager().notify(this, notification);
+		}
+	}
+
+	public void resourceUnloaded(FlexoResource<?> resource, ResourceUnloaded<?> notification) {
+		if (getServiceManager() != null) {
+			getServiceManager().notify(this, notification);
 		}
 	}
 
@@ -309,7 +431,7 @@ public class ResourceManager extends FlexoServiceImpl implements ReferenceOwner 
 	 * @param technologyAdapter
 	 * @return
 	 */
-	public List<ResourceRepository<?, ?>> getAllRepositories(TechnologyAdapter technologyAdapter) {
+	public List<ResourceRepository<?, ?>> getAllRepositories(TechnologyAdapter<?> technologyAdapter) {
 		if (getServiceManager() != null) {
 			return getServiceManager().getTechnologyAdapterService().getAllRepositories(technologyAdapter);
 		}
@@ -324,7 +446,7 @@ public class ResourceManager extends FlexoServiceImpl implements ReferenceOwner 
 	 * @param technologyAdapter
 	 * @return
 	 */
-	public <TA extends TechnologyAdapter> List<TechnologyAdapterResourceRepository<?, TA, ?, ?>> getGlobalRepositories(
+	public <TA extends TechnologyAdapter<TA>> List<TechnologyAdapterResourceRepository<?, TA, ?, ?>> getGlobalRepositories(
 			TA technologyAdapter) {
 		if (getServiceManager() != null) {
 			return getServiceManager().getTechnologyAdapterService().getGlobalRepositories(technologyAdapter);
@@ -340,7 +462,7 @@ public class ResourceManager extends FlexoServiceImpl implements ReferenceOwner 
 	 * @return
 	 */
 	public <RD extends ResourceData<RD>> List<ResourceRepository<? extends FlexoResource<RD>, ?>> getAllRepositories(
-			TechnologyAdapter technologyAdapter, Class<RD> resourceDataClass) {
+			TechnologyAdapter<?> technologyAdapter, Class<RD> resourceDataClass) {
 		if (getServiceManager() != null) {
 			return getServiceManager().getTechnologyAdapterService().getAllRepositories(technologyAdapter, resourceDataClass);
 		}
@@ -357,7 +479,7 @@ public class ResourceManager extends FlexoServiceImpl implements ReferenceOwner 
 	public @Nullable FlexoResource<?> getResource(@Nonnull String uri, FlexoVersion version) {
 		if (getServiceManager() != null) {
 			for (FlexoResourceCenter<?> rc : getServiceManager().getResourceCenterService().getResourceCenters()) {
-				FlexoResource<?> res = rc.retrieveResource(uri, null);
+				FlexoResource<?> res = rc.retrieveResource(uri);
 				if (res != null) {
 					return res;
 				}
@@ -385,7 +507,7 @@ public class ResourceManager extends FlexoServiceImpl implements ReferenceOwner 
 
 	// TODO: also handle version parameter
 	public FlexoMetaModelResource<?, ?, ?> getMetaModelWithURI(String uri) {
-		for (TechnologyAdapter ta : getServiceManager().getTechnologyAdapterService().getTechnologyAdapters()) {
+		for (TechnologyAdapter<?> ta : getServiceManager().getTechnologyAdapterService().getTechnologyAdapters()) {
 			FlexoMetaModelResource<?, ?, ?> returned = getMetaModelWithURI(uri, ta);
 			if (returned != null) {
 				return returned;
@@ -395,7 +517,7 @@ public class ResourceManager extends FlexoServiceImpl implements ReferenceOwner 
 	}
 
 	// TODO: also handle version parameter
-	public FlexoMetaModelResource<?, ?, ?> getMetaModelWithURI(String uri, TechnologyAdapter technologyAdapter) {
+	public FlexoMetaModelResource<?, ?, ?> getMetaModelWithURI(String uri, TechnologyAdapter<?> technologyAdapter) {
 		if (technologyAdapter != null && technologyAdapter.getTechnologyContextManager() != null) {
 			return (FlexoMetaModelResource<?, ?, ?>) technologyAdapter.getTechnologyContextManager().getResourceWithURI(uri);
 		}
@@ -404,7 +526,7 @@ public class ResourceManager extends FlexoServiceImpl implements ReferenceOwner 
 
 	// TODO: also handle version parameter
 	public FlexoModelResource<?, ?, ?, ?> getModelWithURI(String uri) {
-		for (TechnologyAdapter ta : getServiceManager().getTechnologyAdapterService().getTechnologyAdapters()) {
+		for (TechnologyAdapter<?> ta : getServiceManager().getTechnologyAdapterService().getTechnologyAdapters()) {
 			FlexoModelResource<?, ?, ?, ?> returned = getModelWithURI(uri, ta);
 			if (returned != null) {
 				return returned;
@@ -414,7 +536,7 @@ public class ResourceManager extends FlexoServiceImpl implements ReferenceOwner 
 	}
 
 	// TODO: also handle version parameter
-	public FlexoModelResource<?, ?, ?, ?> getModelWithURI(String uri, TechnologyAdapter technologyAdapter) {
+	public FlexoModelResource<?, ?, ?, ?> getModelWithURI(String uri, TechnologyAdapter<?> technologyAdapter) {
 		if (technologyAdapter == null) {
 			logger.warning("Unexpected null " + technologyAdapter);
 			return null;
@@ -433,7 +555,7 @@ public class ResourceManager extends FlexoServiceImpl implements ReferenceOwner 
 	 * @param technologyAdapter
 	 * @return
 	 */
-	public List<ModelRepository<?, ?, ?, ?, ?, ?>> getAllModelRepositories(TechnologyAdapter technologyAdapter) {
+	public List<ModelRepository<?, ?, ?, ?, ?, ?>> getAllModelRepositories(TechnologyAdapter<?> technologyAdapter) {
 		if (getServiceManager() != null) {
 			return getServiceManager().getTechnologyAdapterService().getAllModelRepositories(technologyAdapter);
 		}
@@ -447,7 +569,7 @@ public class ResourceManager extends FlexoServiceImpl implements ReferenceOwner 
 	 * @param technologyAdapter
 	 * @return
 	 */
-	public List<MetaModelRepository<?, ?, ?, ?, ?>> getAllMetaModelRepositories(TechnologyAdapter technologyAdapter) {
+	public List<MetaModelRepository<?, ?, ?, ?, ?>> getAllMetaModelRepositories(TechnologyAdapter<?> technologyAdapter) {
 		if (getServiceManager() != null) {
 			return getServiceManager().getTechnologyAdapterService().getAllMetaModelRepositories(technologyAdapter);
 		}
@@ -456,26 +578,49 @@ public class ResourceManager extends FlexoServiceImpl implements ReferenceOwner 
 
 	@Override
 	public void notifyObjectLoaded(FlexoObjectReference<?> reference) {
-		// TODO Auto-generated method stub
 
 	}
 
 	@Override
 	public void objectCantBeFound(FlexoObjectReference<?> reference) {
-		// TODO Auto-generated method stub
 
 	}
 
 	@Override
 	public void objectDeleted(FlexoObjectReference<?> reference) {
-		// TODO Auto-generated method stub
 
 	}
 
 	@Override
 	public void objectSerializationIdChanged(FlexoObjectReference<?> reference) {
-		// TODO Auto-generated method stub
 
+	}
+
+	public List<FlexoResource<?>> getResources(Object serializationArtefact) {
+		List<FlexoResource<?>> returned = new ArrayList<>();
+		System.out.println("On cherche " + serializationArtefact);
+		for (FlexoResource<?> flexoResource : resources) {
+			System.out.println(" > " + flexoResource + " io=" + flexoResource.getIODelegate().getSerializationArtefact());
+			if (flexoResource.getIODelegate().getSerializationArtefact().equals(serializationArtefact)) {
+				returned.add(flexoResource);
+			}
+			else if (flexoResource.getIODelegate() instanceof DirectoryBasedIODelegate) {
+				if (((DirectoryBasedIODelegate) flexoResource.getIODelegate()).getDirectory().equals(serializationArtefact)) {
+					returned.add(flexoResource);
+				}
+			}
+			else if (flexoResource.getIODelegate() instanceof DirectoryBasedJarIODelegate) {
+				if (((DirectoryBasedJarIODelegate) flexoResource.getIODelegate()).getDirectory().equals(serializationArtefact)) {
+					returned.add(flexoResource);
+				}
+			}
+		}
+		return returned;
+	}
+
+	@Override
+	public String toString() {
+		return getClass().getSimpleName() + "@" + Integer.toHexString(hashCode());
 	}
 
 }

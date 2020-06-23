@@ -40,9 +40,9 @@
 package org.openflexo.foundation.validation;
 
 import org.openflexo.foundation.FlexoProject;
-import org.openflexo.model.ModelContextLibrary;
-import org.openflexo.model.exceptions.ModelDefinitionException;
-import org.openflexo.model.validation.Validable;
+import org.openflexo.pamela.ModelContextLibrary;
+import org.openflexo.pamela.exceptions.ModelDefinitionException;
+import org.openflexo.pamela.validation.Validable;
 
 /**
  * @author gpolet, sylvain
@@ -74,7 +74,7 @@ public class FlexoProjectValidationModel extends FlexoValidationModel {
 	/**
 	 * Overrides shouldNotifyValidation
 	 * 
-	 * @see org.openflexo.model.validation.ValidationModel#shouldNotifyValidation(org.openflexo.model.validation.Validable)
+	 * @see org.openflexo.pamela.validation.ValidationModel#shouldNotifyValidation(org.openflexo.pamela.validation.Validable)
 	 */
 	@Override
 	protected boolean shouldNotifyValidation(Validable next) {
@@ -95,7 +95,7 @@ public class FlexoProjectValidationModel extends FlexoValidationModel {
 	/**
 	 * Overrides fixAutomaticallyIfOneFixProposal
 	 * 
-	 * @see org.openflexo.model.validation.ValidationModel#fixAutomaticallyIfOneFixProposal()
+	 * @see org.openflexo.pamela.validation.ValidationModel#fixAutomaticallyIfOneFixProposal()
 	 */
 	@Override
 	public boolean fixAutomaticallyIfOneFixProposal() {

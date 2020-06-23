@@ -48,6 +48,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Properties;
 import java.util.StringTokenizer;
@@ -65,23 +66,23 @@ import org.openflexo.foundation.project.FlexoProjectResource;
 import org.openflexo.foundation.resource.DirectoryBasedJarIODelegate.DirectoryBasedJarIODelegateImpl;
 import org.openflexo.foundation.resource.InJarIODelegate.InJarIODelegateImpl;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
-import org.openflexo.model.annotations.Getter;
-import org.openflexo.model.annotations.Implementation;
-import org.openflexo.model.annotations.ImplementationClass;
-import org.openflexo.model.annotations.ModelEntity;
-import org.openflexo.model.annotations.PropertyIdentifier;
-import org.openflexo.model.annotations.Setter;
-import org.openflexo.model.annotations.XMLAttribute;
-import org.openflexo.model.annotations.XMLElement;
-import org.openflexo.model.exceptions.ModelDefinitionException;
-import org.openflexo.model.factory.ModelFactory;
+import org.openflexo.pamela.annotations.Getter;
+import org.openflexo.pamela.annotations.Implementation;
+import org.openflexo.pamela.annotations.ImplementationClass;
+import org.openflexo.pamela.annotations.ModelEntity;
+import org.openflexo.pamela.annotations.PropertyIdentifier;
+import org.openflexo.pamela.annotations.Setter;
+import org.openflexo.pamela.annotations.XMLAttribute;
+import org.openflexo.pamela.annotations.XMLElement;
+import org.openflexo.pamela.exceptions.ModelDefinitionException;
+import org.openflexo.pamela.factory.ModelFactory;
 import org.openflexo.rm.ClasspathResourceLocatorImpl;
 import org.openflexo.rm.InJarResourceImpl;
 import org.openflexo.rm.JarResourceImpl;
 import org.openflexo.rm.Resource;
 import org.openflexo.rm.ResourceLocator;
 import org.openflexo.toolbox.FlexoVersion;
-import org.openflexo.toolbox.IProgress;
+import org.openflexo.toolbox.JarUtils;
 import org.openflexo.xml.XMLRootElementInfo;
 import org.openflexo.xml.XMLRootElementReader;
 
@@ -93,7 +94,7 @@ import org.openflexo.xml.XMLRootElementReader;
  */
 @ModelEntity
 @ImplementationClass(JarResourceCenter.JarResourceCenterImpl.class)
-public interface JarResourceCenter extends ResourceRepository<FlexoResource<?>, InJarResourceImpl>, FlexoResourceCenter<InJarResourceImpl> {
+public interface JarResourceCenter extends FlexoResourceCenter<InJarResourceImpl> {
 
 	public static JarResourceCenter instanciateNewJarResourceCenter(JarFile jarFile, FlexoResourceCenterService rcService)
 			throws IOException {
@@ -314,10 +315,10 @@ public interface JarResourceCenter extends ResourceRepository<FlexoResource<?>, 
 			return "unset";
 		}
 
-		private final HashMap<TechnologyAdapter, HashMap<Class<? extends ResourceRepository<?, InJarResourceImpl>>, ResourceRepository<?, InJarResourceImpl>>> repositories = new HashMap<>();
+		private final Map<TechnologyAdapter<?>, HashMap<Class<? extends ResourceRepository<?, InJarResourceImpl>>, ResourceRepository<?, InJarResourceImpl>>> repositories = new HashMap<>();
 
 		private HashMap<Class<? extends ResourceRepository<?, InJarResourceImpl>>, ResourceRepository<?, InJarResourceImpl>> getRepositoriesForAdapter(
-				TechnologyAdapter technologyAdapter, boolean considerEmptyRepositories) {
+				TechnologyAdapter<?> technologyAdapter, boolean considerEmptyRepositories) {
 			if (considerEmptyRepositories) {
 				technologyAdapter.ensureAllRepositoriesAreCreated(this);
 			}
@@ -333,7 +334,7 @@ public interface JarResourceCenter extends ResourceRepository<FlexoResource<?>, 
 		@SuppressWarnings("unchecked")
 		@Override
 		public final <R extends ResourceRepository<?, InJarResourceImpl>> R retrieveRepository(Class<? extends R> repositoryType,
-				TechnologyAdapter technologyAdapter) {
+				TechnologyAdapter<?> technologyAdapter) {
 			HashMap<Class<? extends ResourceRepository<?, InJarResourceImpl>>, ResourceRepository<?, InJarResourceImpl>> map = getRepositoriesForAdapter(
 					technologyAdapter, false);
 			return (R) map.get(repositoryType);
@@ -341,7 +342,7 @@ public interface JarResourceCenter extends ResourceRepository<FlexoResource<?>, 
 
 		@Override
 		public final <R extends ResourceRepository<?, InJarResourceImpl>> void registerRepository(R repository,
-				Class<? extends R> repositoryType, TechnologyAdapter technologyAdapter) {
+				Class<? extends R> repositoryType, TechnologyAdapter<?> technologyAdapter) {
 			HashMap<Class<? extends ResourceRepository<?, InJarResourceImpl>>, ResourceRepository<?, InJarResourceImpl>> map = getRepositoriesForAdapter(
 					technologyAdapter, false);
 			if (map.get(repositoryType) == null) {
@@ -353,7 +354,7 @@ public interface JarResourceCenter extends ResourceRepository<FlexoResource<?>, 
 		}
 
 		@Override
-		public Collection<ResourceRepository<?, InJarResourceImpl>> getRegistedRepositories(TechnologyAdapter technologyAdapter,
+		public Collection<ResourceRepository<?, InJarResourceImpl>> getRegistedRepositories(TechnologyAdapter<?> technologyAdapter,
 				boolean considerEmptyRepositories) {
 			return getRepositoriesForAdapter(technologyAdapter, considerEmptyRepositories).values();
 		}
@@ -394,22 +395,21 @@ public interface JarResourceCenter extends ResourceRepository<FlexoResource<?>, 
 		}*/
 
 		@Override
-		public <T extends ResourceData<T>> List<FlexoResource<T>> retrieveResource(String uri, Class<T> type, IProgress progress) {
+		public <T extends ResourceData<T>> List<FlexoResource<T>> retrieveResource(String uri, Class<T> type) {
 			// TODO: provide support for class and version
-			FlexoResource<T> uniqueResource = retrieveResource(uri, null, null, progress);
+			FlexoResource<T> uniqueResource = retrieveResource(uri, null, null);
 			return Collections.singletonList(uniqueResource);
 		}
 
 		@SuppressWarnings("unchecked")
 		@Override
-		public <T extends ResourceData<T>> FlexoResource<T> retrieveResource(String uri, FlexoVersion version, Class<T> type,
-				IProgress progress) {
+		public <T extends ResourceData<T>> FlexoResource<T> retrieveResource(String uri, FlexoVersion version, Class<T> type) {
 			// TODO: provide support for class and version
-			return (FlexoResource<T>) retrieveResource(uri, progress);
+			return (FlexoResource<T>) retrieveResource(uri);
 		}
 
 		@Override
-		public FlexoResource<?> retrieveResource(String uri, IProgress progress) {
+		public FlexoResource<?> retrieveResource(String uri) {
 			return getResource(uri);
 		}
 
@@ -450,12 +450,7 @@ public interface JarResourceCenter extends ResourceRepository<FlexoResource<?>, 
 		}
 
 		@Override
-		public Collection<? extends FlexoResource<?>> getAllResources(IProgress progress) {
-			return getAllResources();
-		}
-
-		@Override
-		public void publishResource(FlexoResource<?> resource, FlexoVersion newVersion, IProgress progress) throws Exception {
+		public void publishResource(FlexoResource<?> resource, FlexoVersion newVersion) throws Exception {
 			// TODO Not yet implemented
 		}
 
@@ -476,7 +471,7 @@ public interface JarResourceCenter extends ResourceRepository<FlexoResource<?>, 
 		}
 
 		@Override
-		public boolean isIgnorable(InJarResourceImpl artefact, TechnologyAdapter technologyAdapter) {
+		public boolean isIgnorable(InJarResourceImpl artefact, TechnologyAdapter<?> technologyAdapter) {
 			// Trivial implementation
 			return false;
 		}
@@ -795,6 +790,8 @@ public interface JarResourceCenter extends ResourceRepository<FlexoResource<?>, 
 		 */
 		@Override
 		public List<String> getPathTo(InJarResourceImpl resource) {
+			// TODO FD4SG la ligne ci-dessous est vraiment bizarre (getChildren renvoie une liste de RepositoryFolder alors que resource est
+			// une ressource
 			if (!getRootFolder().getChildren().contains(resource)) {
 				List<String> pathTo = new ArrayList<>();
 				StringTokenizer string = new StringTokenizer(/*resource.getURI()*/resource.getEntry().getName(),
@@ -867,6 +864,11 @@ public interface JarResourceCenter extends ResourceRepository<FlexoResource<?>, 
 		public boolean containsArtefact(InJarResourceImpl serializationArtefact) {
 			// TODO
 			return false;
+		}
+
+		@Override
+		public String relativePath(InJarResourceImpl serializationArtefact) {
+			return JarUtils.makePathRelativeTo(serializationArtefact, getBaseArtefact());
 		}
 
 	}

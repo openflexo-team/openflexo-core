@@ -45,9 +45,9 @@ package org.openflexo.foundation;
  * @author sguerin
  * 
  */
-public class NameChanged extends AttributeDataModification {
+public class NameChanged extends DataModification<String> {
 
-	public NameChanged(Object oldValue, Object newValue) {
+	public NameChanged(String oldValue, String newValue) {
 		super("name", oldValue, newValue);
 	}
 

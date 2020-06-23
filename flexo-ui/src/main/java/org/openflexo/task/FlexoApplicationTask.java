@@ -44,7 +44,7 @@ import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.task.FlexoTask;
 import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.localization.LocalizedDelegate;
-import org.openflexo.model.undo.CompoundEdit;
+import org.openflexo.pamela.undo.CompoundEdit;
 import org.openflexo.view.controller.FlexoController;
 
 /**
@@ -104,14 +104,8 @@ public abstract class FlexoApplicationTask extends FlexoTask {
 	protected synchronized void finishedExecution() {
 		super.finishedExecution();
 
-		if (getTaskStatus() == TaskStatus.EXCEPTION_THROWN) {
-			SwingUtilities.invokeLater(new Runnable() {
-				@Override
-				public void run() {
-					notifyThrownException(getThrownException());
-				}
-			});
-		}
+		if (getTaskStatus() == TaskStatus.EXCEPTION_THROWN)
+			SwingUtilities.invokeLater(() -> notifyThrownException(getThrownException()));
 	}
 
 	// Please override to get better user feedback

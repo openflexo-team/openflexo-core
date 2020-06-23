@@ -31,21 +31,21 @@ import org.openflexo.foundation.resource.PamelaResource;
 import org.openflexo.foundation.resource.ResourceData;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterResource;
-import org.openflexo.model.annotations.Adder;
-import org.openflexo.model.annotations.CloningStrategy;
-import org.openflexo.model.annotations.CloningStrategy.StrategyType;
-import org.openflexo.model.annotations.Embedded;
-import org.openflexo.model.annotations.Finder;
-import org.openflexo.model.annotations.Getter;
-import org.openflexo.model.annotations.Getter.Cardinality;
-import org.openflexo.model.annotations.ImplementationClass;
-import org.openflexo.model.annotations.ModelEntity;
-import org.openflexo.model.annotations.PastingPoint;
-import org.openflexo.model.annotations.PropertyIdentifier;
-import org.openflexo.model.annotations.Remover;
-import org.openflexo.model.annotations.Setter;
-import org.openflexo.model.annotations.XMLAttribute;
-import org.openflexo.model.annotations.XMLElement;
+import org.openflexo.pamela.annotations.Adder;
+import org.openflexo.pamela.annotations.CloningStrategy;
+import org.openflexo.pamela.annotations.Embedded;
+import org.openflexo.pamela.annotations.Finder;
+import org.openflexo.pamela.annotations.Getter;
+import org.openflexo.pamela.annotations.ImplementationClass;
+import org.openflexo.pamela.annotations.ModelEntity;
+import org.openflexo.pamela.annotations.PastingPoint;
+import org.openflexo.pamela.annotations.PropertyIdentifier;
+import org.openflexo.pamela.annotations.Remover;
+import org.openflexo.pamela.annotations.Setter;
+import org.openflexo.pamela.annotations.XMLAttribute;
+import org.openflexo.pamela.annotations.XMLElement;
+import org.openflexo.pamela.annotations.CloningStrategy.StrategyType;
+import org.openflexo.pamela.annotations.Getter.Cardinality;
 
 /**
  * Generic abstract concept representing a text-based document (eg .docx, .odt, etc...)<br>
@@ -62,7 +62,7 @@ import org.openflexo.model.annotations.XMLElement;
  */
 @ModelEntity(isAbstract = true)
 @ImplementationClass(FlexoDocument.FlexoDocumentImpl.class)
-public interface FlexoDocument<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter>
+public interface FlexoDocument<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter<TA>>
 		extends FlexoDocObject<D, TA>, ResourceData<D>, FlexoDocElementContainer<D, TA> {
 
 	public static final String ROOT_ELEMENTS_KEY = "rootElements";
@@ -239,7 +239,7 @@ public interface FlexoDocument<D extends FlexoDocument<D, TA>, TA extends Techno
 
 	public String debugStructuredContents();
 
-	public static abstract class FlexoDocumentImpl<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter>
+	public static abstract class FlexoDocumentImpl<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter<TA>>
 			extends FlexoDocObjectImpl<D, TA> implements FlexoDocument<D, TA> {
 
 		@Override

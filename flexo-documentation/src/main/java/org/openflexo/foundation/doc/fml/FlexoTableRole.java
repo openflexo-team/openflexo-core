@@ -35,21 +35,21 @@ import org.openflexo.foundation.fml.FlexoRole;
 import org.openflexo.foundation.fml.rt.AbstractVirtualModelInstanceModelFactory;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
-import org.openflexo.model.annotations.Adder;
-import org.openflexo.model.annotations.Getter;
-import org.openflexo.model.annotations.Getter.Cardinality;
-import org.openflexo.model.annotations.ImplementationClass;
-import org.openflexo.model.annotations.ModelEntity;
-import org.openflexo.model.annotations.PropertyIdentifier;
-import org.openflexo.model.annotations.Remover;
-import org.openflexo.model.annotations.Setter;
-import org.openflexo.model.annotations.XMLAttribute;
-import org.openflexo.model.annotations.XMLElement;
+import org.openflexo.pamela.annotations.Adder;
+import org.openflexo.pamela.annotations.Getter;
+import org.openflexo.pamela.annotations.ImplementationClass;
+import org.openflexo.pamela.annotations.ModelEntity;
+import org.openflexo.pamela.annotations.PropertyIdentifier;
+import org.openflexo.pamela.annotations.Remover;
+import org.openflexo.pamela.annotations.Setter;
+import org.openflexo.pamela.annotations.XMLAttribute;
+import org.openflexo.pamela.annotations.XMLElement;
+import org.openflexo.pamela.annotations.Getter.Cardinality;
 import org.openflexo.toolbox.StringUtils;
 
 @ModelEntity(isAbstract = true)
 @ImplementationClass(FlexoTableRole.FlexoTableRoleImpl.class)
-public interface FlexoTableRole<T extends FlexoDocTable<D, TA>, D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter>
+public interface FlexoTableRole<T extends FlexoDocTable<D, TA>, D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter<TA>>
 		extends FlexoRole<T> {
 
 	@PropertyIdentifier(type = FlexoDocFragment.class)
@@ -158,7 +158,7 @@ public interface FlexoTableRole<T extends FlexoDocTable<D, TA>, D extends FlexoD
 
 	public BindingModel getTableBindingModel();
 
-	public static abstract class FlexoTableRoleImpl<T extends FlexoDocTable<D, TA>, D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter>
+	public static abstract class FlexoTableRoleImpl<T extends FlexoDocTable<D, TA>, D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter<TA>>
 			extends FlexoRoleImpl<T> implements FlexoTableRole<T, D, TA> {
 
 		private BindingModel tableBindingModel;

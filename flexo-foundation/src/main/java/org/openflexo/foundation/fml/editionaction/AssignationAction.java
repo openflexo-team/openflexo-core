@@ -38,25 +38,23 @@
 
 package org.openflexo.foundation.fml.editionaction;
 
-import java.lang.reflect.Type;
 import java.util.logging.Logger;
 
 import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.expr.BindingValue;
-import org.openflexo.connie.type.ExplicitNullType;
 import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.fml.FMLRepresentationContext;
 import org.openflexo.foundation.fml.FMLRepresentationContext.FMLRepresentationOutput;
 import org.openflexo.foundation.fml.FlexoProperty;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
-import org.openflexo.model.annotations.DefineValidationRule;
-import org.openflexo.model.annotations.Getter;
-import org.openflexo.model.annotations.ImplementationClass;
-import org.openflexo.model.annotations.ModelEntity;
-import org.openflexo.model.annotations.PropertyIdentifier;
-import org.openflexo.model.annotations.Setter;
-import org.openflexo.model.annotations.XMLAttribute;
-import org.openflexo.model.annotations.XMLElement;
+import org.openflexo.pamela.annotations.DefineValidationRule;
+import org.openflexo.pamela.annotations.Getter;
+import org.openflexo.pamela.annotations.ImplementationClass;
+import org.openflexo.pamela.annotations.ModelEntity;
+import org.openflexo.pamela.annotations.PropertyIdentifier;
+import org.openflexo.pamela.annotations.Setter;
+import org.openflexo.pamela.annotations.XMLAttribute;
+import org.openflexo.pamela.annotations.XMLElement;
 
 @ModelEntity
 @ImplementationClass(AssignationAction.AssignationActionImpl.class)
@@ -65,9 +63,6 @@ public interface AssignationAction<T> extends AbstractAssignationAction<T> {
 
 	@PropertyIdentifier(type = DataBinding.class)
 	public static final String ASSIGNATION_KEY = "assignation";
-	@Deprecated
-	@PropertyIdentifier(type = DataBinding.class)
-	public static final String DEPRECATED_VALUE_KEY = "value";
 
 	@Getter(value = ASSIGNATION_KEY)
 	@XMLAttribute(xmlTag = "assign")
@@ -75,15 +70,6 @@ public interface AssignationAction<T> extends AbstractAssignationAction<T> {
 
 	@Setter(ASSIGNATION_KEY)
 	public void setAssignation(DataBinding<? super T> assignation);
-
-	@Deprecated
-	@Getter(value = DEPRECATED_VALUE_KEY)
-	@XMLAttribute
-	public DataBinding<T> getDeprecatedValue();
-
-	@Deprecated
-	@Setter(DEPRECATED_VALUE_KEY)
-	public void setDeprecatedValue(DataBinding<T> value);
 
 	@Override
 	public FlexoProperty<T> getAssignedFlexoProperty();
@@ -94,29 +80,14 @@ public interface AssignationAction<T> extends AbstractAssignationAction<T> {
 
 		private DataBinding<? super T> assignation;
 
-		private Type getAssignableNotNullType() {
-			Type returned = getAssignableType();
-			if (returned instanceof ExplicitNullType) {
-				return Object.class;
-			}
-			return returned;
-		}
-
 		@Override
 		public DataBinding<? super T> getAssignation() {
 			if (assignation == null) {
-				assignation = new DataBinding<Object>(this, Object.class, DataBinding.BindingDefinitionType.GET_SET)/*{
-																													@Override
-																													public Type getDeclaredType() {
-																													return getAssignableNotNullType();
-																													}
-																													}*/;
-				// assignation.setDeclaredType(getAssignableNotNullType());
+				assignation = new DataBinding<Object>(this, Object.class, DataBinding.BindingDefinitionType.GET_SET);
 				assignation.setBindingName("assignation");
 				assignation.setMandatory(true);
 
 			}
-			// assignation.setDeclaredType(getAssignableNotNullType());
 			return assignation;
 		}
 
@@ -124,13 +95,7 @@ public interface AssignationAction<T> extends AbstractAssignationAction<T> {
 		public void setAssignation(DataBinding<? super T> assignation) {
 			if (assignation != null) {
 				this.assignation = new DataBinding<Object>(assignation.toString(), this, Object.class,
-						DataBinding.BindingDefinitionType.GET_SET) /*{
-																	@Override
-																	public Type getDeclaredType() {
-																	return getAssignableNotNullType();
-																	}
-																	}*/;
-				// assignation.setDeclaredType(getAssignableNotNullType());
+						DataBinding.BindingDefinitionType.GET_SET);
 				assignation.setBindingName("assignation");
 				assignation.setMandatory(true);
 			}
@@ -161,31 +126,6 @@ public interface AssignationAction<T> extends AbstractAssignationAction<T> {
 				e.printStackTrace();
 				throw new FlexoException(e);
 			}
-
-			// TODO: check if following statements are necessary (i think it should not)
-			/*if (getFlexoRole() != null && value instanceof FlexoObject) {
-				if (action instanceof ActionSchemeAction) {
-					((ActionSchemeAction) action).getFlexoConceptInstance().setObjectForFlexoRole((FlexoObject) value,
-							(FlexoRole) getFlexoRole());
-				}
-				if (action instanceof CreationSchemeAction) {
-					((CreationSchemeAction) action).getFlexoConceptInstance().setObjectForFlexoRole((FlexoObject) value,
-							(FlexoRole) getFlexoRole());
-				}
-				if (action instanceof DeletionSchemeAction) {
-					((DeletionSchemeAction) action).getFlexoConceptInstance().setObjectForFlexoRole((FlexoObject) value,
-							(FlexoRole) getFlexoRole());
-				}
-				if (action instanceof NavigationSchemeAction) {
-					((NavigationSchemeAction) action).getFlexoConceptInstance().setObjectForFlexoRole((FlexoObject) value,
-							(FlexoRole) getFlexoRole());
-				}
-				if (action instanceof SynchronizationSchemeAction) {
-					((SynchronizationSchemeAction) action).getFlexoConceptInstance().setObjectForFlexoRole((FlexoObject) value,
-							(FlexoRole) getFlexoRole());
-				}
-			*/
-
 			return value;
 		}
 

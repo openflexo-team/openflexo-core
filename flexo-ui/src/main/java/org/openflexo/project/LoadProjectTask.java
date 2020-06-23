@@ -147,7 +147,6 @@ public class LoadProjectTask extends FlexoApplicationTask {
 
 	@Override
 	public void throwException(Exception e) {
-		// TODO Auto-generated method stub
 		super.throwException(e);
 
 		FlexoController.notify(FlexoLocalization.getMainLocalizer().localizedForKey("could_not_open_project_located_at")

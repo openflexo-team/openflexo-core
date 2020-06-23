@@ -1,10 +1,9 @@
 package org.openflexo.foundation.action.copypaste;
 
-import java.awt.Event;
 import java.util.List;
 
 import org.openflexo.foundation.FlexoObject;
-import org.openflexo.model.factory.Clipboard;
+import org.openflexo.pamela.factory.Clipboard;
 
 /**
  * An handler which is used to intercept and translate paste actions from/to the right pasting context<br>
@@ -50,8 +49,7 @@ public interface PasteHandler<T extends FlexoObject> {
 	 * @param clipboard
 	 * @return
 	 */
-	public PastingContext<T> retrievePastingContext(FlexoObject focusedObject, List<FlexoObject> globalSelection, FlexoClipboard clipboard,
-			Event event);
+	public PastingContext<T> retrievePastingContext(FlexoObject focusedObject, List<FlexoObject> globalSelection, FlexoClipboard clipboard);
 
 	/**
 	 * This is a hook to set and/or translate some properties of clipboard beeing pasted

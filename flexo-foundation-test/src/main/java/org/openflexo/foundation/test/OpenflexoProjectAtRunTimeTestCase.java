@@ -63,8 +63,8 @@ import org.openflexo.foundation.utils.ProjectInitializerException;
 import org.openflexo.foundation.utils.ProjectLoadingCancelledException;
 import org.openflexo.logging.FlexoLogger;
 import org.openflexo.logging.FlexoLoggingManager;
-import org.openflexo.model.exceptions.ModelDefinitionException;
-import org.openflexo.model.factory.ModelFactory;
+import org.openflexo.pamela.exceptions.ModelDefinitionException;
+import org.openflexo.pamela.factory.ModelFactory;
 import org.openflexo.toolbox.FileUtils;
 
 /**
@@ -183,7 +183,7 @@ public abstract class OpenflexoProjectAtRunTimeTestCase extends OpenflexoTestCas
 		logger.info("Project has been SUCCESSFULLY created");
 		try {
 			// reply.getProject().setProjectName(_projectIdentifier/* projectName */);
-			reply.getProject().saveModifiedResources(null);
+			reply.getProject().saveModifiedResources();
 			reply.getProject().save();
 		} catch (SaveResourceException e) {
 			e.printStackTrace();
@@ -242,7 +242,7 @@ public abstract class OpenflexoProjectAtRunTimeTestCase extends OpenflexoTestCas
 		}
 		logger.info("Project has been SUCCESSFULLY created");
 		try {
-			reply.getProject().saveModifiedResources(null);
+			reply.getProject().saveModifiedResources();
 			reply.getProject().save();
 		} catch (SaveResourceException e) {
 			e.printStackTrace();

@@ -39,14 +39,14 @@
 package org.openflexo.action;
 
 import java.awt.event.KeyEvent;
-import java.util.EventObject;
-import java.util.logging.Logger;
-import javax.swing.*;
+
+import javax.swing.Icon;
+import javax.swing.KeyStroke;
+
 import org.openflexo.FlexoCst;
 import org.openflexo.foundation.FlexoObject;
-import org.openflexo.foundation.action.FlexoActionFinalizer;
-import org.openflexo.foundation.action.FlexoActionInitializer;
 import org.openflexo.foundation.action.FlexoActionFactory;
+import org.openflexo.foundation.action.FlexoActionRunnable;
 import org.openflexo.foundation.action.copypaste.CutAction;
 import org.openflexo.icon.IconLibrary;
 import org.openflexo.view.controller.ActionInitializer;
@@ -54,9 +54,6 @@ import org.openflexo.view.controller.ControllerActionInitializer;
 import org.openflexo.view.controller.FlexoController;
 
 public class CutActionInitializer extends ActionInitializer<CutAction, FlexoObject, FlexoObject> {
-
-	private static final Logger logger = Logger.getLogger(ControllerActionInitializer.class.getPackage().getName());
-
 	public static KeyStroke ACCELERATOR = KeyStroke.getKeyStroke(KeyEvent.VK_X, FlexoCst.META_MASK);
 
 	public CutActionInitializer(ControllerActionInitializer actionInitializer) {
@@ -64,27 +61,12 @@ public class CutActionInitializer extends ActionInitializer<CutAction, FlexoObje
 	}
 
 	@Override
-	protected FlexoActionInitializer<CutAction> getDefaultInitializer() {
-		return new FlexoActionInitializer<CutAction>() {
-			@Override
-			public boolean run(EventObject e, CutAction action) {
-				return FlexoController.confirm(action.getLocales().localizedForKey("would_you_like_to_cut_those_objects"));
-			}
-		};
+	protected FlexoActionRunnable<CutAction, FlexoObject, FlexoObject> getDefaultInitializer() {
+		return (e, action) -> FlexoController.confirm(action.getLocales().localizedForKey("would_you_like_to_cut_those_objects"));
 	}
 
 	@Override
-	protected FlexoActionFinalizer<CutAction> getDefaultFinalizer() {
-		return new FlexoActionFinalizer<CutAction>() {
-			@Override
-			public boolean run(EventObject e, CutAction action) {
-				return true;
-			}
-		};
-	}
-
-	@Override
-	protected Icon getEnabledIcon(FlexoActionFactory actionType) {
+	protected Icon getEnabledIcon(FlexoActionFactory<CutAction, FlexoObject, FlexoObject> actionType) {
 		return IconLibrary.CUT_ICON;
 	}
 

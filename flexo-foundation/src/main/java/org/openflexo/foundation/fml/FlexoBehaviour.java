@@ -51,27 +51,32 @@ import org.openflexo.connie.type.TypeUtils;
 import org.openflexo.foundation.DataModification;
 import org.openflexo.foundation.fml.FMLRepresentationContext.FMLRepresentationOutput;
 import org.openflexo.foundation.fml.binding.FlexoBehaviourBindingModel;
+import org.openflexo.foundation.fml.controlgraph.EmptyControlGraph;
 import org.openflexo.foundation.fml.controlgraph.FMLControlGraph;
 import org.openflexo.foundation.fml.controlgraph.FMLControlGraphOwner;
 import org.openflexo.foundation.fml.controlgraph.FMLControlGraphVisitor;
 import org.openflexo.logging.FlexoLogger;
-import org.openflexo.model.annotations.Adder;
-import org.openflexo.model.annotations.CloningStrategy;
-import org.openflexo.model.annotations.CloningStrategy.StrategyType;
-import org.openflexo.model.annotations.Embedded;
-import org.openflexo.model.annotations.Finder;
-import org.openflexo.model.annotations.Getter;
-import org.openflexo.model.annotations.Getter.Cardinality;
-import org.openflexo.model.annotations.ImplementationClass;
-import org.openflexo.model.annotations.Import;
-import org.openflexo.model.annotations.Imports;
-import org.openflexo.model.annotations.ModelEntity;
-import org.openflexo.model.annotations.PastingPoint;
-import org.openflexo.model.annotations.PropertyIdentifier;
-import org.openflexo.model.annotations.Remover;
-import org.openflexo.model.annotations.Setter;
-import org.openflexo.model.annotations.XMLAttribute;
-import org.openflexo.model.annotations.XMLElement;
+import org.openflexo.pamela.annotations.Adder;
+import org.openflexo.pamela.annotations.CloningStrategy;
+import org.openflexo.pamela.annotations.CloningStrategy.StrategyType;
+import org.openflexo.pamela.annotations.DefineValidationRule;
+import org.openflexo.pamela.annotations.Embedded;
+import org.openflexo.pamela.annotations.Finder;
+import org.openflexo.pamela.annotations.Getter;
+import org.openflexo.pamela.annotations.Getter.Cardinality;
+import org.openflexo.pamela.annotations.ImplementationClass;
+import org.openflexo.pamela.annotations.Import;
+import org.openflexo.pamela.annotations.Imports;
+import org.openflexo.pamela.annotations.ModelEntity;
+import org.openflexo.pamela.annotations.PastingPoint;
+import org.openflexo.pamela.annotations.PropertyIdentifier;
+import org.openflexo.pamela.annotations.Remover;
+import org.openflexo.pamela.annotations.Setter;
+import org.openflexo.pamela.annotations.XMLAttribute;
+import org.openflexo.pamela.annotations.XMLElement;
+import org.openflexo.pamela.validation.ValidationError;
+import org.openflexo.pamela.validation.ValidationIssue;
+import org.openflexo.pamela.validation.ValidationRule;
 import org.openflexo.toolbox.StringUtils;
 
 /**
@@ -84,55 +89,7 @@ import org.openflexo.toolbox.StringUtils;
 @ImplementationClass(FlexoBehaviour.FlexoBehaviourImpl.class)
 @Imports({ @Import(ActionScheme.class), @Import(DeletionScheme.class), @Import(NavigationScheme.class),
 		@Import(SynchronizationScheme.class), @Import(CreationScheme.class), @Import(CloningScheme.class), @Import(EventListener.class) })
-public interface FlexoBehaviour extends FlexoBehaviourObject, Function, FMLControlGraphOwner {
-
-	/**
-	 * Visibility for a behaviour
-	 * 
-	 * @author sylvain
-	 *
-	 */
-	public enum Visibility {
-		/**
-		 * Default visibility: limited to FML scope, not available from public API
-		 */
-		Default {
-			@Override
-			public String getFMLRepresentation() {
-				return "";
-			}
-		},
-		/**
-		 * Public visibility: behaviours are accessible from everywhere. In the whole tooling, it means that for example behaviours are
-		 * available through right-clicking on instances
-		 */
-		Public {
-			@Override
-			public String getFMLRepresentation() {
-				return "public ";
-			}
-		},
-		/**
-		 * Visibility restricted to current FlexoConcept hierarchy and current ViewPoint
-		 */
-		Protected {
-			@Override
-			public String getFMLRepresentation() {
-				return "protected ";
-			}
-		},
-		/**
-		 * Visibility restricted to current FlexoConcept
-		 */
-		Private {
-			@Override
-			public String getFMLRepresentation() {
-				return "private ";
-			}
-		};
-
-		public abstract String getFMLRepresentation();
-	}
+public interface FlexoBehaviour extends FlexoBehaviourObject, Function, FMLControlGraphOwner, FMLPrettyPrintable {
 
 	@PropertyIdentifier(type = FlexoConcept.class)
 	public static final String FLEXO_CONCEPT_KEY = "flexoConcept";
@@ -160,6 +117,10 @@ public interface FlexoBehaviour extends FlexoBehaviourObject, Function, FMLContr
 	public static final String STEPS_NUMBER_KEY = "stepsNumber";
 	@PropertyIdentifier(type = FMLControlGraph.class)
 	public static final String CONTROL_GRAPH_KEY = "controlGraph";
+	@PropertyIdentifier(type = boolean.class)
+	public static final String IS_ABSTRACT_KEY = "isAbstract";
+	@PropertyIdentifier(type = Type.class)
+	public static final String DECLARED_TYPE_KEY = "declaredType";
 
 	@Getter(value = CONTROL_GRAPH_KEY, inverse = FMLControlGraph.OWNER_KEY)
 	@CloningStrategy(StrategyType.CLONE)
@@ -170,6 +131,13 @@ public interface FlexoBehaviour extends FlexoBehaviourObject, Function, FMLContr
 	@Setter(CONTROL_GRAPH_KEY)
 	public void setControlGraph(FMLControlGraph aControlGraph);
 
+	@Getter(value = IS_ABSTRACT_KEY, defaultValue = "false")
+	@XMLAttribute
+	public boolean isAbstract();
+
+	@Setter(IS_ABSTRACT_KEY)
+	public void setAbstract(boolean isAbstract);
+
 	@Override
 	@Getter(value = FLEXO_CONCEPT_KEY, inverse = FlexoConcept.FLEXO_BEHAVIOURS_KEY)
 	@CloningStrategy(StrategyType.IGNORE)
@@ -178,8 +146,17 @@ public interface FlexoBehaviour extends FlexoBehaviourObject, Function, FMLContr
 	@Setter(FLEXO_CONCEPT_KEY)
 	public void setFlexoConcept(FlexoConcept flexoConcept);
 
+	@Getter(value = DECLARED_TYPE_KEY, isStringConvertable = true)
+	@XMLAttribute
+	public Type getDeclaredType();
+
+	@Setter(DECLARED_TYPE_KEY)
+	public void setDeclaredType(Type type);
+
 	@Override
 	public Type getReturnType();
+
+	public Type getAnalyzedReturnType();
 
 	@Override
 	@Getter(value = NAME_KEY)
@@ -284,6 +261,8 @@ public interface FlexoBehaviour extends FlexoBehaviourObject, Function, FMLContr
 
 	public String getSignature();
 
+	public Type[] getParameterTypes();
+
 	@Override
 	public List<FlexoBehaviourParameter> getArguments();
 
@@ -336,6 +315,13 @@ public interface FlexoBehaviour extends FlexoBehaviourObject, Function, FMLContr
 	 */
 	public boolean supportParameters();
 
+	/**
+	 * Return boolean indicating if this property overrides at least one property
+	 * 
+	 * @return
+	 */
+	public boolean overrides();
+
 	public static abstract class FlexoBehaviourImpl extends FlexoBehaviourObjectImpl implements FlexoBehaviour {
 
 		protected FlexoBehaviourBindingModel bindingModel;
@@ -357,10 +343,21 @@ public interface FlexoBehaviour extends FlexoBehaviourObject, Function, FMLContr
 
 		@Override
 		public Type getReturnType() {
+			if (getDeclaredType() != null) {
+				return getDeclaredType();
+			}
+			if (getControlGraph() != null) {
+				return getAnalyzedReturnType();
+			}
+			return Void.TYPE;
+		}
+
+		@Override
+		public Type getAnalyzedReturnType() {
 			if (getControlGraph() != null) {
 				return getControlGraph().getInferedType();
 			}
-			return Void.TYPE;
+			return null;
 		}
 
 		@Override
@@ -437,7 +434,7 @@ public interface FlexoBehaviour extends FlexoBehaviourObject, Function, FMLContr
 		@Override
 		public String getURI() {
 			if (getFlexoConcept() != null) {
-				return getFlexoConcept().getURI() + "." + getName();
+				return getFlexoConcept().getURI() + "." + getSignature();
 			}
 			return "null." + getName();
 		}
@@ -487,7 +484,7 @@ public interface FlexoBehaviour extends FlexoBehaviourObject, Function, FMLContr
 			getParameters().remove(p);
 			getParameters().add(0, p);
 			setChanged();
-			notifyObservers(new DataModification("parameters", null, getParameters()));
+			notifyObservers(new DataModification<>("parameters", null, getParameters()));
 			updateSignature(oldSignature);
 		}
 
@@ -499,7 +496,7 @@ public interface FlexoBehaviour extends FlexoBehaviourObject, Function, FMLContr
 				getParameters().remove(p);
 				getParameters().add(index - 1, p);
 				setChanged();
-				notifyObservers(new DataModification("parameters", null, getParameters()));
+				notifyObservers(new DataModification<>("parameters", null, getParameters()));
 				updateSignature(oldSignature);
 			}
 		}
@@ -512,7 +509,7 @@ public interface FlexoBehaviour extends FlexoBehaviourObject, Function, FMLContr
 				getParameters().remove(p);
 				getParameters().add(index + 1, p);
 				setChanged();
-				notifyObservers(new DataModification("parameters", null, getParameters()));
+				notifyObservers(new DataModification<>("parameters", null, getParameters()));
 				updateSignature(oldSignature);
 			}
 		}
@@ -523,7 +520,7 @@ public interface FlexoBehaviour extends FlexoBehaviourObject, Function, FMLContr
 			getParameters().remove(p);
 			getParameters().add(p);
 			setChanged();
-			notifyObservers(new DataModification("parameters", null, getParameters()));
+			notifyObservers(new DataModification<>("parameters", null, getParameters()));
 			updateSignature(oldSignature);
 		}
 
@@ -723,20 +720,40 @@ public interface FlexoBehaviour extends FlexoBehaviourObject, Function, FMLContr
 		 */
 		@Override
 		public FlexoBehaviour getMostSpecializedBehaviour(FlexoConcept context) {
-			Type[] signature = new Type[getParameters().size()];
-			for (int i = 0; i < getParameters().size(); i++) {
-				signature[i] = getParameters().get(i).getType();
-			}
-			return context.getFlexoBehaviour(getName(), signature);
+			return context.getFlexoBehaviour(getName(), getParameterTypes());
 
+		}
+
+		@Override
+		public Type[] getParameterTypes() {
+			Type[] returned = new Type[getParameters().size()];
+			for (int i = 0; i < getParameters().size(); i++) {
+				returned[i] = getParameters().get(i).getArgumentType();
+			}
+			return returned;
+		}
+
+		// TODO: perfs issues
+		@Override
+		public boolean overrides() {
+			if (getFlexoConcept() != null) {
+				if (getFlexoConcept().getParentFlexoConcepts().size() > 0) {
+					for (FlexoConcept parent : getFlexoConcept().getParentFlexoConcepts()) {
+						if (getMostSpecializedBehaviour(parent) != null) {
+							return true;
+						}
+					}
+				}
+			}
+			return false;
 		}
 
 		/**
 		 * Hook called when scope of a FMLObject changed.<br>
 		 * 
-		 * It happens for example when a {@link VirtualModel} is declared to be contained in a {@link ViewPoint}<br>
-		 * On that example {@link #getBindingFactory()} rely on {@link ViewPoint} enclosing, we must provide this hook to give a chance to
-		 * objects that rely on ViewPoint instanciation context to update their bindings (some bindings might becomes valid)<br>
+		 * It happens for example when a {@link VirtualModel} is declared to be contained in a {@link VirtualModel}<br>
+		 * On that example {@link #getBindingFactory()} rely on {@link VirtualModel} enclosing, we must provide this hook to give a chance
+		 * to objects that rely on ViewPoint instanciation context to update their bindings (some bindings might becomes valid)<br>
 		 * 
 		 * It may also happen if an EditionAction is moved from a control graph to another control graph, etc...<br>
 		 * 
@@ -745,7 +762,12 @@ public interface FlexoBehaviour extends FlexoBehaviourObject, Function, FMLContr
 		public void notifiedScopeChanged() {
 			super.notifiedScopeChanged();
 			if (getControlGraph() != null) {
-				getControlGraph().accept(controlGraph -> controlGraph.notifiedScopeChanged());
+				getControlGraph().accept(new FMLControlGraphVisitor() {
+					@Override
+					public void visit(FMLControlGraph controlGraph) {
+						controlGraph.notifiedScopeChanged();
+					}
+				});
 			}
 		}
 
@@ -782,4 +804,62 @@ public interface FlexoBehaviour extends FlexoBehaviourObject, Function, FMLContr
 		}
 
 	}
+
+	@DefineValidationRule
+	public static class DeclaredTypeShouldBeCompatibleWithAnalyzedType
+			extends ValidationRule<DeclaredTypeShouldBeCompatibleWithAnalyzedType, FlexoBehaviour> {
+
+		public DeclaredTypeShouldBeCompatibleWithAnalyzedType() {
+			super(FlexoBehaviour.class, "declared_types_and_analyzed_types_must_be_compatible");
+		}
+
+		@Override
+		public ValidationIssue<DeclaredTypeShouldBeCompatibleWithAnalyzedType, FlexoBehaviour> applyValidation(FlexoBehaviour behaviour) {
+			if (behaviour.getDeclaredType() != null && behaviour.getAnalyzedReturnType() != null && !(behaviour.isAbstract())) {
+				if (!TypeUtils.isTypeAssignableFrom(behaviour.getDeclaredType(), behaviour.getAnalyzedReturnType())) {
+					return new ValidationError<>(this, behaviour, "types_are_not_compatibles");
+				}
+			}
+			return null;
+		}
+
+	}
+
+	@DefineValidationRule
+	public static class AbstractBehaviourCannotHaveControlGraph
+			extends ValidationRule<AbstractBehaviourCannotHaveControlGraph, FlexoBehaviour> {
+
+		public AbstractBehaviourCannotHaveControlGraph() {
+			super(FlexoBehaviour.class, "abstract_behaviour_cannot_have_control_graph");
+		}
+
+		@Override
+		public ValidationIssue<AbstractBehaviourCannotHaveControlGraph, FlexoBehaviour> applyValidation(FlexoBehaviour behaviour) {
+			if (behaviour.isAbstract() && behaviour.getControlGraph() != null
+					&& !(behaviour.getControlGraph() instanceof EmptyControlGraph)) {
+				return new ValidationError<>(this, behaviour, "control_graph_declared_for_abstract_behaviour");
+			}
+			return null;
+		}
+
+	}
+
+	@DefineValidationRule
+	public static class NonAbstractConceptCannotDeclareAbstractBehaviour
+			extends ValidationRule<NonAbstractConceptCannotDeclareAbstractBehaviour, FlexoBehaviour> {
+
+		public NonAbstractConceptCannotDeclareAbstractBehaviour() {
+			super(FlexoBehaviour.class, "non_abstract_concept_cannot_declare_abstract_behaviour");
+		}
+
+		@Override
+		public ValidationIssue<NonAbstractConceptCannotDeclareAbstractBehaviour, FlexoBehaviour> applyValidation(FlexoBehaviour behaviour) {
+			if (behaviour.getFlexoConcept() != null && !behaviour.getFlexoConcept().isAbstract() && behaviour.isAbstract()) {
+				return new ValidationError<>(this, behaviour, "non_abstract_concept_declares_abstract_behaviour");
+			}
+			return null;
+		}
+
+	}
+
 }

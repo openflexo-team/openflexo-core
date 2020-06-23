@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Panel layout="border" darkLevel="0" data=""
-	dataClassName="org.openflexo.foundation.fml.FMLLocalizedDictionary"
+	dataClassName="org.openflexo.foundation.fml.VirtualModel"
 	controllerClassName="org.openflexo.view.controller.FlexoFIBController"
 	visible="" name="main" opaque="false">
 
-	<FIBReferencedComponent componentFile="Fib/LocalizedPanel.fib"
+	<FIBReferencedComponent componentFile="LocalizedPanel.fib"
 		localize="true" manageDynamicModel="true" name="LocalizedDictionaryWidget"
-		data="data" constraints="border(location=center)" opaque="false" />
+		data="data.localizedDictionary" constraints="border(location=center)" opaque="false" />
 
 	<LocalizedDictionary>
 	</LocalizedDictionary>

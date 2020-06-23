@@ -45,14 +45,14 @@ import org.openflexo.foundation.DataModification;
  * 
  * @author sguerin
  */
-public class ExternalRepositorySet extends DataModification {
+public class ExternalRepositorySet extends DataModification<ProjectExternalRepository<?>> {
 
-	public ExternalRepositorySet(ProjectExternalRepository repository) {
+	public ExternalRepositorySet(ProjectExternalRepository<?> repository) {
 		super(null, repository);
 	}
 
-	public ProjectExternalRepository getProjectExternalRepository() {
-		return (ProjectExternalRepository) newValue();
+	public ProjectExternalRepository<?> getProjectExternalRepository() {
+		return newValue();
 	}
 
 }

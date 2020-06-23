@@ -38,7 +38,6 @@
 
 package org.openflexo.fml.controller;
 
-import java.awt.Event;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -47,7 +46,7 @@ import org.openflexo.foundation.action.copypaste.FlexoClipboard;
 import org.openflexo.foundation.action.copypaste.FlexoPasteHandler;
 import org.openflexo.foundation.action.copypaste.PastingContext;
 import org.openflexo.foundation.fml.FlexoProperty;
-import org.openflexo.model.factory.Clipboard;
+import org.openflexo.pamela.factory.Clipboard;
 import org.openflexo.toolbox.StringUtils;
 
 /**
@@ -60,8 +59,6 @@ public class FlexoPropertyPasteHandler extends FlexoPasteHandler<FlexoProperty> 
 
 	private static final Logger logger = Logger.getLogger(FlexoPropertyPasteHandler.class.getPackage().getName());
 
-	public static final String COPY_SUFFIX = "-copy";
-
 	@Override
 	public Class<FlexoProperty> getPastingPointHolderType() {
 		return FlexoProperty.class;
@@ -69,7 +66,7 @@ public class FlexoPropertyPasteHandler extends FlexoPasteHandler<FlexoProperty> 
 
 	@Override
 	public PastingContext<FlexoProperty> retrievePastingContext(FlexoObject focusedObject, List<FlexoObject> globalSelection,
-			FlexoClipboard clipboard, Event event) {
+			FlexoClipboard clipboard) {
 
 		// Wrong focused type
 		if (!(focusedObject instanceof FlexoProperty)) {
@@ -101,11 +98,6 @@ public class FlexoPropertyPasteHandler extends FlexoPasteHandler<FlexoProperty> 
 				}
 			}
 		}
-	}
-
-	@Override
-	public void finalizePasting(FlexoClipboard clipboard, PastingContext<FlexoProperty> pastingContext) {
-		// nothing to do
 	}
 
 	private static String translateName(FlexoProperty<?> object) {

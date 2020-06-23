@@ -95,16 +95,6 @@ public class ThreadPoolFlexoTaskManager extends FlexoServiceImpl implements Flex
 					launchReadyToExecuteTasks();
 				}
 			}
-
-			/*@Override
-			protected <V> RunnableFuture<V> newTaskFor(final Runnable runnable, V v) {
-				return new FutureTask<V>(runnable, v) {
-					@Override
-					public String toString() {
-						return runnable.toString();
-					}
-				};
-			};*/
 		};
 
 		scheduledTasks = new ArrayList<>();
@@ -193,15 +183,6 @@ public class ThreadPoolFlexoTaskManager extends FlexoServiceImpl implements Flex
 	}
 
 	@Override
-	@Deprecated
-	public void forceStopExecution(FlexoTask task) {
-		task.forceStopExecution();
-		// task.getThread().stop();
-		// task.finishedExecution();
-		scheduledTasks.remove(task);
-	}
-
-	@Override
 	public boolean isTerminated() {
 		return (executor.isTerminated() && scheduledTasks.size() == 0);
 	}
@@ -227,12 +208,9 @@ public class ThreadPoolFlexoTaskManager extends FlexoServiceImpl implements Flex
 
 	@Override
 	public void shutdownAndExecute(final Runnable r) {
-		Thread t = new Thread(new Runnable() {
-			@Override
-			public void run() {
-				shutdownAndWait();
-				r.run();
-			}
+		Thread t = new Thread(() -> {
+			shutdownAndWait();
+			r.run();
 		}, "Shutdown");
 		t.start();
 	}

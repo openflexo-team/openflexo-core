@@ -50,13 +50,13 @@ import javax.swing.undo.UndoableEdit;
 import org.openflexo.foundation.FlexoEditingContext;
 import org.openflexo.foundation.PamelaResourceModelFactory;
 import org.openflexo.foundation.resource.PamelaResource;
-import org.openflexo.model.ModelProperty;
-import org.openflexo.model.undo.AddCommand;
-import org.openflexo.model.undo.AtomicEdit;
-import org.openflexo.model.undo.CompoundEdit;
-import org.openflexo.model.undo.RemoveCommand;
-import org.openflexo.model.undo.SetCommand;
-import org.openflexo.model.undo.UndoManager;
+import org.openflexo.pamela.ModelProperty;
+import org.openflexo.pamela.undo.AddCommand;
+import org.openflexo.pamela.undo.AtomicEdit;
+import org.openflexo.pamela.undo.CompoundEdit;
+import org.openflexo.pamela.undo.RemoveCommand;
+import org.openflexo.pamela.undo.SetCommand;
+import org.openflexo.pamela.undo.UndoManager;
 import org.openflexo.toolbox.HasPropertyChangeSupport;
 import org.openflexo.toolbox.StringUtils;
 
@@ -545,14 +545,5 @@ public class FlexoUndoManager extends UndoManager {
 	 */
 	public static interface IgnoreHandler {
 		public boolean isIgnorable(UndoableEdit edit);
-	}
-
-	// Try to avoid using it, since this might be really dangerous
-	@Deprecated
-	public static class IgnoreAll implements IgnoreHandler {
-		@Override
-		public boolean isIgnorable(UndoableEdit edit) {
-			return true;
-		}
 	}
 }

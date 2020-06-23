@@ -85,7 +85,7 @@ import org.openflexo.toolbox.HasPropertyChangeSupport;
  *
  */
 @SuppressWarnings("serial")
-public class FlexoDocumentEditor<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter>
+public class FlexoDocumentEditor<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter<TA>>
 		implements HasPropertyChangeSupport, DocumentListener, CaretListener {
 
 	private static final Logger logger = Logger.getLogger(FlexoDocumentEditor.class.getPackage().getName());
@@ -140,7 +140,6 @@ public class FlexoDocumentEditor<D extends FlexoDocument<D, TA>, TA extends Tech
 
 	@Override
 	public String getDeletedProperty() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -159,7 +158,6 @@ public class FlexoDocumentEditor<D extends FlexoDocument<D, TA>, TA extends Tech
 				jEditorPane.getDocument().addDocumentListener(this);
 				jEditorPane.addCaretListener(this);
 			} catch (BadLocationException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			getPropertyChangeSupport().firePropertyChange("flexoDocument", oldValue, flexoDocument);
@@ -205,7 +203,6 @@ public class FlexoDocumentEditor<D extends FlexoDocument<D, TA>, TA extends Tech
 				// e.document.insert(insertedText, offset - length);
 				System.out.println("On doit inserer " + insertedText + " offset=" + offset + " length=" + length);
 			} catch (BadLocationException e1) {
-				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
 		}
@@ -318,7 +315,6 @@ public class FlexoDocumentEditor<D extends FlexoDocument<D, TA>, TA extends Tech
 		try {
 			highlighter.addHighlight(startIndex, endIndex, highlighterPainter);
 		} catch (BadLocationException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -336,7 +332,6 @@ public class FlexoDocumentEditor<D extends FlexoDocument<D, TA>, TA extends Tech
 				highlighter.addHighlight(docElement.getStartOffset(), docElement.getEndOffset(), highlighterPainter);
 				scrollToElement(docElement);
 			} catch (BadLocationException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
@@ -355,7 +350,6 @@ public class FlexoDocumentEditor<D extends FlexoDocument<D, TA>, TA extends Tech
 					highlighter.addHighlight(docElement.getStartOffset(), docElement.getEndOffset(), highlighterPainter);
 					scrollToElement(docElement);
 				} catch (BadLocationException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			}

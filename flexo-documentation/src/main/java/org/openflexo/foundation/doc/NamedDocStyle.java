@@ -21,10 +21,10 @@
 package org.openflexo.foundation.doc;
 
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
-import org.openflexo.model.annotations.Getter;
-import org.openflexo.model.annotations.ModelEntity;
-import org.openflexo.model.annotations.PropertyIdentifier;
-import org.openflexo.model.annotations.Setter;
+import org.openflexo.pamela.annotations.Getter;
+import org.openflexo.pamela.annotations.ModelEntity;
+import org.openflexo.pamela.annotations.PropertyIdentifier;
+import org.openflexo.pamela.annotations.Setter;
 
 /**
  * Named style of a text-based document (eg .docx, .odt, etc...)<br>
@@ -39,7 +39,7 @@ import org.openflexo.model.annotations.Setter;
  *            {@link TechnologyAdapter} of current implementation
  */
 @ModelEntity(isAbstract = true)
-public interface NamedDocStyle<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter> extends FlexoDocStyle<D, TA> {
+public interface NamedDocStyle<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter<TA>> extends FlexoDocStyle<D, TA> {
 
 	@PropertyIdentifier(type = String.class)
 	public static final String NAME_KEY = "name";
@@ -107,7 +107,7 @@ public interface NamedDocStyle<D extends FlexoDocument<D, TA>, TA extends Techno
 	@Setter(RUN_STYLE_KEY)
 	public void setRunStyle(FlexoRunStyle<D, TA> run);
 
-	public static abstract class NamedDocStyleImpl<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter>
+	public static abstract class NamedDocStyleImpl<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter<TA>>
 			extends FlexoDocStyleImpl<D, TA> implements NamedDocStyle<D, TA> {
 
 		@Override
@@ -128,8 +128,6 @@ public interface NamedDocStyle<D extends FlexoDocument<D, TA>, TA extends Techno
 
 		@Override
 		public void setLevel(Integer level) {
-			// TODO Auto-generated method stub
 		}
 	}
-
 }

@@ -67,30 +67,31 @@ import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.resource.SaveResourceException;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.logging.FlexoLogger;
-import org.openflexo.model.annotations.Adder;
-import org.openflexo.model.annotations.CloningStrategy;
-import org.openflexo.model.annotations.CloningStrategy.StrategyType;
-import org.openflexo.model.annotations.DefineValidationRule;
-import org.openflexo.model.annotations.Embedded;
-import org.openflexo.model.annotations.Finder;
-import org.openflexo.model.annotations.Getter;
-import org.openflexo.model.annotations.Getter.Cardinality;
-import org.openflexo.model.annotations.ImplementationClass;
-import org.openflexo.model.annotations.Import;
-import org.openflexo.model.annotations.Imports;
-import org.openflexo.model.annotations.ModelEntity;
-import org.openflexo.model.annotations.PastingPoint;
-import org.openflexo.model.annotations.PropertyIdentifier;
-import org.openflexo.model.annotations.Remover;
-import org.openflexo.model.annotations.Setter;
-import org.openflexo.model.annotations.XMLAttribute;
-import org.openflexo.model.annotations.XMLElement;
-import org.openflexo.model.undo.CompoundEdit;
-import org.openflexo.model.validation.FixProposal;
-import org.openflexo.model.validation.Validable;
-import org.openflexo.model.validation.ValidationIssue;
-import org.openflexo.model.validation.ValidationRule;
-import org.openflexo.model.validation.ValidationWarning;
+import org.openflexo.pamela.annotations.Adder;
+import org.openflexo.pamela.annotations.CloningStrategy;
+import org.openflexo.pamela.annotations.CloningStrategy.StrategyType;
+import org.openflexo.pamela.annotations.DefineValidationRule;
+import org.openflexo.pamela.annotations.Embedded;
+import org.openflexo.pamela.annotations.Finder;
+import org.openflexo.pamela.annotations.Getter;
+import org.openflexo.pamela.annotations.Getter.Cardinality;
+import org.openflexo.pamela.annotations.ImplementationClass;
+import org.openflexo.pamela.annotations.Import;
+import org.openflexo.pamela.annotations.Imports;
+import org.openflexo.pamela.annotations.ModelEntity;
+import org.openflexo.pamela.annotations.PastingPoint;
+import org.openflexo.pamela.annotations.PropertyIdentifier;
+import org.openflexo.pamela.annotations.Remover;
+import org.openflexo.pamela.annotations.Setter;
+import org.openflexo.pamela.annotations.XMLAttribute;
+import org.openflexo.pamela.annotations.XMLElement;
+import org.openflexo.pamela.undo.CompoundEdit;
+import org.openflexo.pamela.validation.FixProposal;
+import org.openflexo.pamela.validation.Validable;
+import org.openflexo.pamela.validation.ValidationError;
+import org.openflexo.pamela.validation.ValidationIssue;
+import org.openflexo.pamela.validation.ValidationRule;
+import org.openflexo.pamela.validation.ValidationWarning;
 import org.openflexo.rm.BasicResourceImpl.LocatorNotFoundException;
 import org.openflexo.rm.FileResourceImpl;
 import org.openflexo.rm.Resource;
@@ -115,12 +116,14 @@ import org.openflexo.toolbox.StringUtils;
 @ImplementationClass(FlexoConcept.FlexoConceptImpl.class)
 @XMLElement
 @Imports({ @Import(FlexoEvent.class), @Import(FlexoEnum.class) })
-public interface FlexoConcept extends VirtualModelObject {
+public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 
 	@PropertyIdentifier(type = VirtualModel.class)
 	public static final String OWNER_KEY = "owner";
 	@PropertyIdentifier(type = String.class)
 	public static final String NAME_KEY = "name";
+	@PropertyIdentifier(type = Visibility.class)
+	public static final String VISIBILITY_KEY = "visibility";
 	@PropertyIdentifier(type = FlexoConcept.class)
 	public static final String CONTAINER_FLEXO_CONCEPT_KEY = "containerFlexoConcept";
 	@PropertyIdentifier(type = List.class)
@@ -161,6 +164,13 @@ public interface FlexoConcept extends VirtualModelObject {
 	@Setter(NAME_KEY)
 	public void setName(String name);
 
+	@Getter(value = VISIBILITY_KEY, defaultValue = "Default")
+	@XMLAttribute
+	public Visibility getVisibility();
+
+	@Setter(VISIBILITY_KEY)
+	public void setVisibility(Visibility visibility);
+
 	@Getter(value = CONTAINER_FLEXO_CONCEPT_KEY, inverse = EMBEDDED_FLEXO_CONCEPT_KEY)
 	@CloningStrategy(StrategyType.IGNORE)
 	public FlexoConcept getContainerFlexoConcept();
@@ -189,9 +199,19 @@ public interface FlexoConcept extends VirtualModelObject {
 	@Remover(EMBEDDED_FLEXO_CONCEPT_KEY)
 	public void removeFromEmbeddedFlexoConcepts(FlexoConcept aFlexoConcept);
 
+	@Finder(collection = EMBEDDED_FLEXO_CONCEPT_KEY, attribute = FlexoConcept.NAME_KEY)
+	public FlexoConcept getEmbeddedFlexoConcept(String conceptName);
+
+	/**
+	 * Return all accessible embedded FlexoConcept (those which are declared, and those accessed through inheritance)
+	 * 
+	 * @return
+	 */
+	public List<FlexoConcept> getAccessibleEmbeddedFlexoConcepts();
+
 	public List<FlexoBehaviour> getDeclaredFlexoBehaviours();
 
-	public List<FlexoBehaviour> getAccessibleFlexoBehaviours();
+	public List<FlexoBehaviour> getAccessibleFlexoBehaviours(boolean considerContainment);
 
 	@Getter(value = FLEXO_BEHAVIOURS_KEY, cardinality = Cardinality.LIST, inverse = FlexoBehaviour.FLEXO_CONCEPT_KEY)
 	@XMLElement(primary = true)
@@ -231,6 +251,16 @@ public interface FlexoConcept extends VirtualModelObject {
 	public FlexoBehaviour getFlexoBehaviour(String behaviourName, Type... parameters);
 
 	/**
+	 * Return {@link FlexoBehaviour} matching supplied signature (expressed with types), which are declared for this concept. Result does
+	 * not include inherited behaviours.
+	 * 
+	 * @param behaviourName
+	 * @param parameters
+	 * @return
+	 */
+	public FlexoBehaviour getDeclaredFlexoBehaviour(String signature);
+
+	/**
 	 * Return {@link FlexoBehaviour} matching supplied name and signature (expressed with types), which are declared for this concept.
 	 * Result does not include inherited behaviours.
 	 * 
@@ -241,7 +271,7 @@ public interface FlexoConcept extends VirtualModelObject {
 	public FlexoBehaviour getDeclaredFlexoBehaviour(String behaviourName, Type... parameters);
 
 	/**
-	 * Return {@link FlexoProperty}'s explicitely declared in this {@link FlexoConcept}
+	 * Return {@link FlexoProperty}'s explicitly declared in this {@link FlexoConcept}
 	 * 
 	 * @return
 	 */
@@ -252,7 +282,7 @@ public interface FlexoConcept extends VirtualModelObject {
 	public List<FlexoProperty<?>> getFlexoProperties();
 
 	/**
-	 * Sets {@link FlexoProperty}'s explicitely declared in this {@link FlexoConcept}
+	 * Sets {@link FlexoProperty}'s explicitly declared in this {@link FlexoConcept}
 	 * 
 	 * @param properties
 	 */
@@ -260,7 +290,7 @@ public interface FlexoConcept extends VirtualModelObject {
 	public void setFlexoProperties(List<FlexoProperty<?>> properties);
 
 	/**
-	 * Add to {@link FlexoProperty}'s explicitely declared in this {@link FlexoConcept}
+	 * Add to {@link FlexoProperty}'s explicitly declared in this {@link FlexoConcept}
 	 * 
 	 * @param aProperty
 	 */
@@ -269,7 +299,7 @@ public interface FlexoConcept extends VirtualModelObject {
 	public void addToFlexoProperties(FlexoProperty<?> aProperty);
 
 	/**
-	 * Remove from {@link FlexoProperty}'s explicitely declared in this {@link FlexoConcept}
+	 * Remove from {@link FlexoProperty}'s explicitly declared in this {@link FlexoConcept}
 	 * 
 	 * @param aProperty
 	 */
@@ -338,13 +368,26 @@ public interface FlexoConcept extends VirtualModelObject {
 	 * 
 	 * This returned {@link List} includes all declared properties for this FlexoConcept, augmented with all properties of parent
 	 * {@link FlexoConcept} which are not parent properties of this concept declared properties.<br>
-	 * This means that only leaf nodes of inheritance graph infered by this {@link FlexoConcept} hierarchy will be returned.
+	 * This means that only leaf nodes of inheritance graph inferred by this {@link FlexoConcept} hierarchy will be returned.
 	 * 
 	 * Note that this method is not efficient (perf issue: the list is rebuilt for each call)
 	 * 
 	 * @return
 	 */
 	public List<FlexoProperty<?>> getAccessibleProperties();
+
+	/**
+	 * Build and return all end-properties for this {@link FlexoConcept}<br>
+	 * Such properties are those that are available in the most specialized context<br>
+	 * Some properties may be shadowed by a more specialized property and are not retrieved here.
+	 * 
+	 * This returned {@link List} includes all declared properties for this FlexoConcept, augmented with all properties of parent
+	 * {@link FlexoConcept} which are not parent properties of this concept declared properties.<br>
+	 * This means that only leaf nodes of inheritance graph inferred by this {@link FlexoConcept} hierarchy will be returned.
+	 * 
+	 * @return
+	 */
+	public List<FlexoProperty<?>> retrieveAccessibleProperties(boolean considerContainment);
 
 	/**
 	 * Return {@link FlexoProperty} identified by supplied name, which is to be retrieved in all accessible properties<br>
@@ -420,7 +463,7 @@ public interface FlexoConcept extends VirtualModelObject {
 	 */
 	public FlexoRole<?> getAccessibleRole(String roleName);
 
-	// ModelSlot are also FlexoRole instances, but it's usefull to be able to access them
+	// ModelSlot are also FlexoRole instances, but it's useful to be able to access them
 	public List<ModelSlot<?>> getModelSlots();
 
 	public void addToModelSlots(ModelSlot<?> aModelSlot);
@@ -498,21 +541,24 @@ public interface FlexoConcept extends VirtualModelObject {
 	public boolean isRoot();
 
 	/**
-	 * Return boolean indicating whether this concept has no parent in this VirtualModel (inheritance semantics)
+	 * Return boolean indicating whether this concept has no parent in this VirtualModel (inheritance semantics), or have parents
+	 * exclusively outside container {@link VirtualModel}
 	 * 
 	 * @return
 	 */
-	public boolean isSuperConcept();
+	public boolean isSuperConceptOfContainerVirtualModel();
 
 	public <ES extends FlexoBehaviour> List<ES> getFlexoBehaviours(Class<ES> editionSchemeClass);
 
-	public <ES extends FlexoBehaviour> List<ES> getAccessibleFlexoBehaviours(Class<ES> editionSchemeClass);
+	public <ES extends FlexoBehaviour> List<ES> getAccessibleFlexoBehaviours(Class<ES> editionSchemeClass, boolean considerContainment);
 
 	public List<AbstractActionScheme> getAbstractActionSchemes();
 
 	public List<ActionScheme> getActionSchemes();
 
 	public List<AbstractActionScheme> getAccessibleAbstractActionSchemes();
+
+	public List<CreationScheme> getAccessibleCreationSchemes();
 
 	public List<ActionScheme> getAccessibleActionSchemes();
 
@@ -699,11 +745,6 @@ public interface FlexoConcept extends VirtualModelObject {
 		private ImageIcon smallIcon;
 
 		@Override
-		public VirtualModel getVirtualModel() {
-			return getOwner();
-		}
-
-		@Override
 		public final boolean hasNature(FlexoConceptNature nature) {
 			return nature.hasNature(this);
 		}
@@ -809,9 +850,7 @@ public interface FlexoConcept extends VirtualModelObject {
 			if (getOwningVirtualModel() != null) {
 				return getOwningVirtualModel().getURI() + "#" + getName();
 			}
-			else {
-				return "null#" + getName();
-			}
+			return "null#" + getName();
 		}
 
 		@Override
@@ -824,9 +863,9 @@ public interface FlexoConcept extends VirtualModelObject {
 
 		@Override
 		public boolean isAbstract() {
-			if (abstractRequired()) {
+			/*if (abstractRequired()) {
 				return true;
-			}
+			}*/
 			return (Boolean) performSuperGetter(IS_ABSTRACT_KEY);
 		}
 
@@ -872,70 +911,69 @@ public interface FlexoConcept extends VirtualModelObject {
 			// Do not recompute accessible properties when not required
 
 			if (accessibleProperties == null) {
+				accessibleProperties = retrieveAccessibleProperties(true);
+			}
+			return accessibleProperties;
+		}
 
-				List<FlexoProperty<?>> computedAccessibleProperties = new ArrayList<>();
-				Map<String, FlexoProperty<?>> inheritedProperties = new HashMap<>();
+		/**
+		 * Build and return all end-properties for this {@link FlexoConcept}<br>
+		 * Such properties are those that are available in the most specialized context<br>
+		 * Some properties may be shadowed by a more specialized property and are not retrieved here.
+		 * 
+		 * This returned {@link List} includes all declared properties for this FlexoConcept, augmented with all properties of parent
+		 * {@link FlexoConcept} which are not parent properties of this concept declared properties.<br>
+		 * This means that only leaf nodes of inheritance graph infered by this {@link FlexoConcept} hierarchy will be returned.
+		 * 
+		 * 
+		 * @return
+		 */
+		@Override
+		public List<FlexoProperty<?>> retrieveAccessibleProperties(boolean considerContainment) {
 
-				// First take declared properties
-				computedAccessibleProperties.addAll(getDeclaredProperties());
+			List<FlexoProperty<?>> computedAccessibleProperties = new ArrayList<>();
+			Map<String, FlexoProperty<?>> inheritedProperties = new HashMap<>();
 
-				// Take properties obtained by containment
-				if (getContainerFlexoConcept() != null) {
-					computedAccessibleProperties.addAll(getContainerFlexoConcept().getAccessibleProperties());
-				}
+			// First take declared properties
+			computedAccessibleProperties.addAll(getDeclaredProperties());
 
-				// Take inherited properties
-				for (FlexoConcept parentConcept : getParentFlexoConcepts()) {
-					for (FlexoProperty<?> p : parentConcept.getAccessibleProperties()) {
-						if (getDeclaredProperty(p.getPropertyName()) == null) {
-							// This property is inherited but not overriden
-							// We check that we don't have this property yet
-							if (inheritedProperties.get(p.getName()) == null) {
-								inheritedProperties.put(p.getName(), p);
-							}
-							else if (inheritedProperties.get(p.getName()).isSuperPropertyOf(p)) {
-								inheritedProperties.put(p.getName(), p);
-							}
-						}
-					}
-				}
-
-				if (getVirtualModel() != null && getVirtualModel() != this) {
-					for (FlexoProperty<?> p : getVirtualModel().getAccessibleProperties()) {
-						if (getDeclaredProperty(p.getPropertyName()) == null) {
-							// This property is inherited but not overriden
-							// We check that we don't have this property yet
-							if (inheritedProperties.get(p.getName()) == null) {
-								inheritedProperties.put(p.getName(), p);
-							}
-						}
-					}
-				}
-
-				// Now, we have to suppress all extra references
-				List<FlexoProperty<?>> unnecessaryProperty = new ArrayList<>();
-				for (FlexoProperty<?> p : inheritedProperties.values()) {
-					for (FlexoProperty<?> superP : p.getAllSuperProperties()) {
-						if (inheritedProperties.get(superP.getName()) != null) {
-							unnecessaryProperty.add(superP);
-						}
-					}
-				}
-
-				for (FlexoProperty<?> removeThis : unnecessaryProperty) {
-					inheritedProperties.remove(removeThis);
-				}
-
-				try {
-					computedAccessibleProperties.addAll(inheritedProperties.values());
-				} catch (NullPointerException e) {
-					logger.warning("Something wrong in getAccessibleProperty() evaluation for " + this);
-				}
-
-				accessibleProperties = computedAccessibleProperties;
+			// Take properties obtained by containment
+			if (getContainerFlexoConcept() != null && considerContainment) {
+				computedAccessibleProperties.addAll(getContainerFlexoConcept().retrieveAccessibleProperties(considerContainment));
 			}
 
-			return accessibleProperties;
+			// Take inherited properties
+			for (FlexoConcept parentConcept : getParentFlexoConcepts()) {
+				for (FlexoProperty<?> p : parentConcept.retrieveAccessibleProperties(considerContainment)) {
+					if (getDeclaredProperty(p.getPropertyName()) == null) {
+						// This property is inherited but not overriden
+						// We check that we don't have this property yet
+						if (inheritedProperties.get(p.getName()) == null) {
+							inheritedProperties.put(p.getName(), p);
+						}
+						else if (inheritedProperties.get(p.getName()).isSuperPropertyOf(p)) {
+							inheritedProperties.put(p.getName(), p);
+						}
+					}
+				}
+			}
+
+			VirtualModel owner = getOwner();
+			if (owner != null && owner != this && considerContainment) {
+				for (FlexoProperty<?> p : owner.getAccessibleProperties()) {
+					if (getDeclaredProperty(p.getPropertyName()) == null) {
+						// This property is inherited but not overridden
+						// We check that we don't have this property yet
+						if (inheritedProperties.get(p.getName()) == null) {
+							inheritedProperties.put(p.getName(), p);
+						}
+					}
+				}
+			}
+
+			computedAccessibleProperties.addAll(inheritedProperties.values());
+
+			return computedAccessibleProperties;
 		}
 
 		/**
@@ -971,6 +1009,7 @@ public interface FlexoConcept extends VirtualModelObject {
 			availablePropertiesNames = null;
 			performSuperAdder(FLEXO_PROPERTIES_KEY, aProperty);
 			notifiedPropertiesChanged(null, aProperty);
+			aProperty.handleTypeDeclarationInImports();
 		}
 
 		@Override
@@ -1171,6 +1210,24 @@ public interface FlexoConcept extends VirtualModelObject {
 			return requiredModelSlots;
 		}
 
+		/**
+		 * Return all accessible embedded FlexoConcept (those which are declared, and those accessed through inheritance)
+		 * 
+		 * @return
+		 */
+		@Override
+		public List<FlexoConcept> getAccessibleEmbeddedFlexoConcepts() {
+
+			// Implements a cache
+
+			List<FlexoConcept> returned = new ArrayList<>();
+			returned.addAll(getEmbeddedFlexoConcepts());
+			for (FlexoConcept parentConcept : getParentFlexoConcepts()) {
+				returned.addAll(parentConcept.getEmbeddedFlexoConcepts());
+			}
+			return returned;
+		}
+
 		@Override
 		public String getAvailableFlexoBehaviourName(String baseName) {
 			String testName = baseName;
@@ -1204,7 +1261,7 @@ public interface FlexoConcept extends VirtualModelObject {
 					if (b.getParameters().size() == parameters.length) {
 						boolean allParametersMatch = true;
 						for (int i = 0; i < b.getParameters().size(); i++) {
-							if (!TypeUtils.isTypeAssignableFrom(parameters[i], b.getParameters().get(i).getType(), true)) {
+							if (!TypeUtils.isTypeAssignableFrom(b.getParameters().get(i).getType(), parameters[i], true)) {
 								allParametersMatch = false;
 								break;
 							}
@@ -1213,6 +1270,16 @@ public interface FlexoConcept extends VirtualModelObject {
 							return b;
 						}
 					}
+				}
+			}
+			return null;
+		}
+
+		@Override
+		public FlexoBehaviour getDeclaredFlexoBehaviour(String signature) {
+			for (FlexoBehaviour b : getDeclaredFlexoBehaviours()) {
+				if (b.getSignature().equals(signature)) {
+					return b;
 				}
 			}
 			return null;
@@ -1242,7 +1309,7 @@ public interface FlexoConcept extends VirtualModelObject {
 		 * @return
 		 */
 		@Override
-		public List<FlexoBehaviour> getAccessibleFlexoBehaviours() {
+		public List<FlexoBehaviour> getAccessibleFlexoBehaviours(boolean considerContainment) {
 
 			if (getParentFlexoConcepts().size() == 0) {
 				return getDeclaredFlexoBehaviours();
@@ -1254,13 +1321,12 @@ public interface FlexoConcept extends VirtualModelObject {
 			returned.addAll(getDeclaredFlexoBehaviours());
 
 			// Take behaviours obtained by containment
-			if (getContainerFlexoConcept() != null) {
-				returned.addAll(getContainerFlexoConcept().getAccessibleFlexoBehaviours());
+			if (considerContainment && getContainerFlexoConcept() != null) {
+				returned.addAll(getContainerFlexoConcept().getAccessibleFlexoBehaviours(considerContainment));
 			}
 
 			for (FlexoConcept parentConcept : getParentFlexoConcepts()) {
-				for (FlexoBehaviour behaviour : parentConcept.getAccessibleFlexoBehaviours()) {
-
+				for (FlexoBehaviour behaviour : parentConcept.getAccessibleFlexoBehaviours(considerContainment)) {
 					if (!behaviour.isOverridenInContext(this)) {
 						returned.add(behaviour);
 					}
@@ -1273,9 +1339,10 @@ public interface FlexoConcept extends VirtualModelObject {
 
 		@Override
 		@SuppressWarnings("unchecked")
-		public <ES extends FlexoBehaviour> List<ES> getAccessibleFlexoBehaviours(Class<ES> editionSchemeClass) {
+		public <ES extends FlexoBehaviour> List<ES> getAccessibleFlexoBehaviours(Class<ES> editionSchemeClass,
+				boolean considerContainment) {
 			List<ES> returned = new ArrayList<>();
-			for (FlexoBehaviour es : getAccessibleFlexoBehaviours()) {
+			for (FlexoBehaviour es : getAccessibleFlexoBehaviours(considerContainment)) {
 				if (editionSchemeClass.isAssignableFrom(es.getClass())) {
 					returned.add((ES) es);
 				}
@@ -1321,12 +1388,17 @@ public interface FlexoConcept extends VirtualModelObject {
 
 		@Override
 		public List<AbstractActionScheme> getAccessibleAbstractActionSchemes() {
-			return getAccessibleFlexoBehaviours(AbstractActionScheme.class);
+			return getAccessibleFlexoBehaviours(AbstractActionScheme.class, true);
+		}
+
+		@Override
+		public List<CreationScheme> getAccessibleCreationSchemes() {
+			return getAccessibleFlexoBehaviours(CreationScheme.class, false);
 		}
 
 		@Override
 		public List<ActionScheme> getAccessibleActionSchemes() {
-			return getAccessibleFlexoBehaviours(ActionScheme.class);
+			return getAccessibleFlexoBehaviours(ActionScheme.class, true);
 		}
 
 		@Override
@@ -1341,7 +1413,7 @@ public interface FlexoConcept extends VirtualModelObject {
 		 */
 		@Override
 		public SynchronizationScheme getSynchronizationScheme() {
-			for (FlexoBehaviour es : getAccessibleFlexoBehaviours()) {
+			for (FlexoBehaviour es : getAccessibleFlexoBehaviours(false)) {
 				if (es instanceof SynchronizationScheme) {
 					return (SynchronizationScheme) es;
 				}
@@ -1356,7 +1428,7 @@ public interface FlexoConcept extends VirtualModelObject {
 
 		@Override
 		public List<DeletionScheme> getAccessibleDeletionSchemes() {
-			return getAccessibleFlexoBehaviours(DeletionScheme.class);
+			return getAccessibleFlexoBehaviours(DeletionScheme.class, false);
 		}
 
 		@Override
@@ -1376,7 +1448,7 @@ public interface FlexoConcept extends VirtualModelObject {
 
 		@Override
 		public boolean hasActionScheme() {
-			for (FlexoBehaviour es : getAccessibleFlexoBehaviours()) {
+			for (FlexoBehaviour es : getAccessibleFlexoBehaviours(true)) {
 				if (es instanceof ActionScheme) {
 					return true;
 				}
@@ -1386,7 +1458,7 @@ public interface FlexoConcept extends VirtualModelObject {
 
 		@Override
 		public boolean hasCreationScheme() {
-			for (FlexoBehaviour es : getAccessibleFlexoBehaviours()) {
+			for (FlexoBehaviour es : getAccessibleFlexoBehaviours(false)) {
 				if (es instanceof CreationScheme) {
 					return true;
 				}
@@ -1396,7 +1468,7 @@ public interface FlexoConcept extends VirtualModelObject {
 
 		@Override
 		public boolean hasDeletionScheme() {
-			for (FlexoBehaviour es : getAccessibleFlexoBehaviours()) {
+			for (FlexoBehaviour es : getAccessibleFlexoBehaviours(false)) {
 				if (es instanceof DeletionScheme) {
 					return true;
 				}
@@ -1406,7 +1478,7 @@ public interface FlexoConcept extends VirtualModelObject {
 
 		@Override
 		public boolean hasSynchronizationScheme() {
-			for (FlexoBehaviour es : getAccessibleFlexoBehaviours()) {
+			for (FlexoBehaviour es : getAccessibleFlexoBehaviours(false)) {
 				if (es instanceof SynchronizationScheme) {
 					return true;
 				}
@@ -1416,7 +1488,7 @@ public interface FlexoConcept extends VirtualModelObject {
 
 		@Override
 		public boolean hasNavigationScheme() {
-			for (FlexoBehaviour es : getAccessibleFlexoBehaviours()) {
+			for (FlexoBehaviour es : getAccessibleFlexoBehaviours(false)) {
 				if (es instanceof NavigationScheme) {
 					return true;
 				}
@@ -1505,7 +1577,7 @@ public interface FlexoConcept extends VirtualModelObject {
 		@Deprecated
 		public void save() {
 			try {
-				getOwningVirtualModel().getResource().save(null);
+				getOwningVirtualModel().getResource().save();
 			} catch (SaveResourceException e) {
 				e.printStackTrace();
 			}
@@ -1522,8 +1594,16 @@ public interface FlexoConcept extends VirtualModelObject {
 		}
 
 		@Override
-		public boolean isSuperConcept() {
-			return getParentFlexoConcepts().size() == 0;
+		public boolean isSuperConceptOfContainerVirtualModel() {
+			if (getParentFlexoConcepts().size() == 0) {
+				return true;
+			}
+			for (FlexoConcept flexoConcept : getParentFlexoConcepts()) {
+				if (flexoConcept.getOwner() == getOwner()) {
+					return false;
+				}
+			}
+			return true;
 		}
 
 		@Override
@@ -1559,10 +1639,11 @@ public interface FlexoConcept extends VirtualModelObject {
 		public void setContainerFlexoConcept(FlexoConcept aConcept) {
 			performSuperSetter(CONTAINER_FLEXO_CONCEPT_KEY, aConcept);
 			clearAccessiblePropertiesCache();
-			if (getOwningVirtualModel() != null) {
-				getOwningVirtualModel().getInnerConceptsFacet().notifiedConceptsChanged();
-				getOwningVirtualModel().getPropertyChangeSupport().firePropertyChange("allRootFlexoConcepts", null,
-						getOwningVirtualModel().getAllRootFlexoConcepts());
+			VirtualModel owningVirtualModel = getOwningVirtualModel();
+			if (owningVirtualModel != null) {
+				owningVirtualModel.getInnerConceptsFacet().notifiedConceptsChanged();
+				owningVirtualModel.getPropertyChangeSupport().firePropertyChange("allRootFlexoConcepts", null,
+						owningVirtualModel.getAllRootFlexoConcepts());
 			}
 		}
 
@@ -1570,10 +1651,11 @@ public interface FlexoConcept extends VirtualModelObject {
 		public void addToEmbeddedFlexoConcepts(FlexoConcept aFlexoConcept) {
 			performSuperAdder(EMBEDDED_FLEXO_CONCEPT_KEY, aFlexoConcept);
 			getInnerConceptsFacet().notifiedConceptsChanged();
-			if (getOwningVirtualModel() != null) {
-				getOwningVirtualModel().getInnerConceptsFacet().notifiedConceptsChanged();
-				getOwningVirtualModel().getPropertyChangeSupport().firePropertyChange("allRootFlexoConcepts", null,
-						getOwningVirtualModel().getAllRootFlexoConcepts());
+			VirtualModel owningVirtualModel = getOwningVirtualModel();
+			if (owningVirtualModel != null) {
+				owningVirtualModel.getInnerConceptsFacet().notifiedConceptsChanged();
+				owningVirtualModel.getPropertyChangeSupport().firePropertyChange("allRootFlexoConcepts", null,
+						owningVirtualModel.getAllRootFlexoConcepts());
 			}
 		}
 
@@ -1581,10 +1663,11 @@ public interface FlexoConcept extends VirtualModelObject {
 		public void removeFromEmbeddedFlexoConcepts(FlexoConcept aFlexoConcept) {
 			performSuperRemover(EMBEDDED_FLEXO_CONCEPT_KEY, aFlexoConcept);
 			getInnerConceptsFacet().notifiedConceptsChanged();
-			if (getOwningVirtualModel() != null) {
-				getOwningVirtualModel().getInnerConceptsFacet().notifiedConceptsChanged();
-				getOwningVirtualModel().getPropertyChangeSupport().firePropertyChange("allRootFlexoConcepts", null,
-						getOwningVirtualModel().getAllRootFlexoConcepts());
+			VirtualModel owningVirtualModel = getOwningVirtualModel();
+			if (owningVirtualModel != null) {
+				owningVirtualModel.getInnerConceptsFacet().notifiedConceptsChanged();
+				owningVirtualModel.getPropertyChangeSupport().firePropertyChange("allRootFlexoConcepts", null,
+						owningVirtualModel.getAllRootFlexoConcepts());
 			}
 		}
 
@@ -1639,7 +1722,6 @@ public interface FlexoConcept extends VirtualModelObject {
 						try {
 							addToParentFlexoConcepts(parent);
 						} catch (InconsistentFlexoConceptHierarchyException e) {
-							// TODO Auto-generated catch block
 							e.printStackTrace();
 						}
 					}
@@ -1679,10 +1761,11 @@ public interface FlexoConcept extends VirtualModelObject {
 				getPropertyChangeSupport().firePropertyChange("parentFlexoConcepts", null, parentFlexoConcept);
 				parentFlexoConceptList = null;
 				accessibleProperties = null;
-				if (getOwningVirtualModel() != null) {
-					getOwningVirtualModel().getInnerConceptsFacet().notifiedConceptsChanged();
-					getOwningVirtualModel().getPropertyChangeSupport().firePropertyChange("allSuperFlexoConcepts", null,
-							getOwningVirtualModel().getAllSuperFlexoConcepts());
+				VirtualModel owningVirtualModel = getOwningVirtualModel();
+				if (owningVirtualModel != null) {
+					owningVirtualModel.getInnerConceptsFacet().notifiedConceptsChanged();
+					owningVirtualModel.getPropertyChangeSupport().firePropertyChange("allSuperFlexoConcepts", null,
+							owningVirtualModel.getAllSuperFlexoConcepts());
 				}
 				setIsModified();
 			}
@@ -1699,10 +1782,11 @@ public interface FlexoConcept extends VirtualModelObject {
 			getPropertyChangeSupport().firePropertyChange("parentFlexoConcepts", parentFlexoConcept, null);
 			parentFlexoConceptList = null;
 			accessibleProperties = null;
-			if (getOwningVirtualModel() != null) {
-				getOwningVirtualModel().getInnerConceptsFacet().notifiedConceptsChanged();
-				getOwningVirtualModel().getPropertyChangeSupport().firePropertyChange("allSuperFlexoConcepts", null,
-						getOwningVirtualModel().getAllSuperFlexoConcepts());
+			VirtualModel owningVirtualModel = getOwningVirtualModel();
+			if (owningVirtualModel != null) {
+				owningVirtualModel.getInnerConceptsFacet().notifiedConceptsChanged();
+				owningVirtualModel.getPropertyChangeSupport().firePropertyChange("allSuperFlexoConcepts", null,
+						owningVirtualModel.getAllSuperFlexoConcepts());
 			}
 		}
 
@@ -1862,9 +1946,9 @@ public interface FlexoConcept extends VirtualModelObject {
 		/**
 		 * Hook called when scope of a FMLObject changed.<br>
 		 * 
-		 * It happens for example when a {@link VirtualModel} is declared to be contained in a {@link ViewPoint}<br>
-		 * On that example {@link #getBindingFactory()} rely on {@link ViewPoint} enclosing, we must provide this hook to give a chance to
-		 * objects that rely on ViewPoint instanciation context to update their bindings (some bindings might becomes valid)<br>
+		 * It happens for example when a {@link VirtualModel} is declared to be contained in a {@link VirtualModel}<br>
+		 * On that example {@link #getBindingFactory()} rely on {@link VirtualModel} enclosing, we must provide this hook to give a chance
+		 * to objects that rely on ViewPoint instantiation context to update their bindings (some bindings might becomes valid)<br>
 		 * 
 		 * It may also happen if an EditionAction is moved from a control graph to another control graph, etc...<br>
 		 * 
@@ -1897,8 +1981,7 @@ public interface FlexoConcept extends VirtualModelObject {
 			if (getBigIconResource() instanceof FileResourceImpl) {
 				return ((FileResourceImpl) getBigIconResource()).getFile();
 			}
-			else
-				return null;
+			return null;
 		}
 
 		// TODO : this is a Workaround for Fib File selector...It has to be fixed in a more efficient way
@@ -1972,6 +2055,24 @@ public interface FlexoConcept extends VirtualModelObject {
 	}
 
 	@DefineValidationRule
+	public static class NonAbstractFlexoConceptMustImplementAllPropertiesAndbehaviours
+			extends ValidationRule<NonAbstractFlexoConceptMustImplementAllPropertiesAndbehaviours, FlexoConcept> {
+		public NonAbstractFlexoConceptMustImplementAllPropertiesAndbehaviours() {
+			super(FlexoConcept.class, "non_abstract_flexo_concept_must_implement_all_properties_and_behaviours");
+		}
+
+		@Override
+		public ValidationIssue<NonAbstractFlexoConceptMustImplementAllPropertiesAndbehaviours, FlexoConcept> applyValidation(
+				FlexoConcept flexoConcept) {
+			if (!(flexoConcept.isAbstract()) && flexoConcept.abstractRequired()) {
+				return new ValidationError<>(this, flexoConcept,
+						"non_abstract_flexo_concept_does_not_implement_all_properties_and_behaviours");
+			}
+			return null;
+		}
+	}
+
+	@DefineValidationRule
 	public static class NonAbstractFlexoConceptShouldHaveProperties
 			extends ValidationRule<NonAbstractFlexoConceptShouldHaveProperties, FlexoConcept> {
 		public NonAbstractFlexoConceptShouldHaveProperties() {
@@ -2040,7 +2141,8 @@ public interface FlexoConcept extends VirtualModelObject {
 
 			@Override
 			protected void fixAction() {
-				CreateFlexoBehaviour action = CreateFlexoBehaviour.actionType.makeNewAction(flexoConcept, null);
+				// TODO : FD4SG was the only call to a deprecated method (added the null third parameter)
+				CreateFlexoBehaviour action = CreateFlexoBehaviour.actionType.makeNewAction(flexoConcept, null, null);
 				action.setFlexoBehaviourClass(DeletionScheme.class);
 				action.doAction();
 				// newDefaultDeletionScheme = flexoConcept.createDeletionScheme();

@@ -1,0 +1,13 @@
+/**
+ * Testing PrettyPrint
+ */
+
+import java.lang.String;
+import java.util.List;
+
+// Comment
+model MyModel {
+
+	int i; /* Some comments here */
+	private String foo;
+}

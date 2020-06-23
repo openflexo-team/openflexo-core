@@ -50,9 +50,9 @@ import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.FlexoEventInstance;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
 import org.openflexo.foundation.fml.rt.VirtualModelInstance;
-import org.openflexo.model.annotations.ImplementationClass;
-import org.openflexo.model.annotations.ModelEntity;
-import org.openflexo.model.annotations.XMLElement;
+import org.openflexo.pamela.annotations.ImplementationClass;
+import org.openflexo.pamela.annotations.ModelEntity;
+import org.openflexo.pamela.annotations.XMLElement;
 
 /**
  * Primitive used to fire a new {@link FlexoEvent}.<br>
@@ -94,6 +94,11 @@ public interface FireEventAction<VMI extends VirtualModelInstance<VMI, ?>>
 			return null;
 		}
 
+		@Override
+		protected Class<? extends FlexoConcept> getDynamicFlexoConceptTypeType() {
+			return FlexoEvent.class;
+		}
+
 		@SuppressWarnings("unchecked")
 		@Override
 		public Class<VMI> getVirtualModelInstanceClass() {
@@ -101,9 +106,10 @@ public interface FireEventAction<VMI extends VirtualModelInstance<VMI, ?>>
 		}
 
 		@Override
-		protected FlexoEventInstance makeNewFlexoConceptInstance(RunTimeEvaluationContext evaluationContext) {
+		protected FlexoEventInstance makeNewFlexoConceptInstance(RunTimeEvaluationContext evaluationContext) throws FlexoException {
 			VMI vmi = getVirtualModelInstance(evaluationContext);
-			return vmi.makeNewEvent(getEventType());
+			FlexoEvent instantiatedFlexoConcept = (FlexoEvent) retrieveFlexoConcept(evaluationContext);
+			return vmi.makeNewEvent(instantiatedFlexoConcept);
 		}
 
 		@Override
@@ -112,7 +118,9 @@ public interface FireEventAction<VMI extends VirtualModelInstance<VMI, ?>>
 			FlexoEventInstance returned = (FlexoEventInstance) super.execute(evaluationContext);
 
 			// And we fire the new event to the listening FMLRunTimeEngine(s)
-			vmi.getPropertyChangeSupport().firePropertyChange(FMLRTVirtualModelInstance.EVENT_FIRED, null, returned);
+			if (vmi != null) {
+				vmi.getPropertyChangeSupport().firePropertyChange(FMLRTVirtualModelInstance.EVENT_FIRED, null, returned);
+			}
 
 			return returned;
 		}

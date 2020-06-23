@@ -50,9 +50,9 @@ import org.openflexo.gina.model.FIBModelFactory;
 import org.openflexo.gina.swing.utils.FIBJPanel;
 import org.openflexo.gina.utils.FIBInspector;
 import org.openflexo.localization.FlexoLocalization;
-import org.openflexo.model.exceptions.ModelDefinitionException;
-import org.openflexo.model.validation.ValidationError;
-import org.openflexo.model.validation.ValidationReport;
+import org.openflexo.pamela.exceptions.ModelDefinitionException;
+import org.openflexo.pamela.validation.ValidationError;
+import org.openflexo.pamela.validation.ValidationReport;
 import org.openflexo.rm.Resource;
 import org.openflexo.test.OrderedRunner;
 

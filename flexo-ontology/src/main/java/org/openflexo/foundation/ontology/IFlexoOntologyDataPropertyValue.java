@@ -49,7 +49,7 @@ import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
  * 
  * @author gbesancon
  */
-public interface IFlexoOntologyDataPropertyValue<TA extends TechnologyAdapter> extends IFlexoOntologyPropertyValue<TA> {
+public interface IFlexoOntologyDataPropertyValue<TA extends TechnologyAdapter<TA>> extends IFlexoOntologyPropertyValue<TA> {
 
 	/**
 	 * Data Property.

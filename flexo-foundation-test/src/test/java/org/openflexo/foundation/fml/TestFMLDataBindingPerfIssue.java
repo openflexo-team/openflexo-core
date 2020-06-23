@@ -64,7 +64,7 @@ import org.openflexo.foundation.fml.rm.VirtualModelResourceFactory;
 import org.openflexo.foundation.resource.DirectoryResourceCenter;
 import org.openflexo.foundation.resource.SaveResourceException;
 import org.openflexo.foundation.test.OpenflexoTestCase;
-import org.openflexo.model.exceptions.ModelDefinitionException;
+import org.openflexo.pamela.exceptions.ModelDefinitionException;
 import org.openflexo.rm.ResourceLocator;
 import org.openflexo.test.OrderedRunner;
 import org.openflexo.test.TestOrder;
@@ -148,7 +148,7 @@ public class TestFMLDataBindingPerfIssue extends OpenflexoTestCase {
 		assertTrue(((VirtualModelResource) topVirtualModel.getResource()).getDirectory() != null);
 		assertTrue(((VirtualModelResource) topVirtualModel.getResource()).getIODelegate().exists());
 
-		assertEquals(topVirtualModel, topVirtualModel.getVirtualModel());
+		assertEquals(topVirtualModel, topVirtualModel.getDeclaringVirtualModel());
 		assertEquals(null, topVirtualModel.getContainerVirtualModel());
 		assertEquals(topVirtualModel, topVirtualModel.getFlexoConcept());
 		assertEquals(topVirtualModel, topVirtualModel.getResourceData());

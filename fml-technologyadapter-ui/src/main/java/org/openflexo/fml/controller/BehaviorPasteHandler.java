@@ -42,8 +42,8 @@ import org.openflexo.foundation.action.copypaste.FlexoPasteHandler;
 import org.openflexo.foundation.action.copypaste.PastingContext;
 import org.openflexo.foundation.fml.FlexoBehaviour;
 import org.openflexo.foundation.fml.controlgraph.FMLControlGraph;
-import org.openflexo.model.exceptions.ModelDefinitionException;
-import org.openflexo.model.exceptions.ModelExecutionException;
+import org.openflexo.pamela.exceptions.ModelDefinitionException;
+import org.openflexo.pamela.exceptions.ModelExecutionException;
 
 /**
  * Paste Handler suitable for pasting a FMLControlGraph

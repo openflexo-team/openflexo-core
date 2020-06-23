@@ -97,7 +97,7 @@ public class LoadResourceAction extends FlexoAction<LoadResourceAction, FlexoObj
 		if (getFocusedObject() instanceof FlexoResource) {
 
 			if (getFocusedObject() instanceof FlexoProjectResource) {
-				FlexoProjectResource<Object> prjResource = (FlexoProjectResource) getFocusedObject();
+				FlexoProjectResource<Object> prjResource = (FlexoProjectResource<Object>) getFocusedObject();
 				Object serializationArtefact = prjResource.getIODelegate().getSerializationArtefact();
 				Object projectDirectory = prjResource.getDelegateResourceCenter().getContainer(serializationArtefact);
 				try {
@@ -110,7 +110,7 @@ public class LoadResourceAction extends FlexoAction<LoadResourceAction, FlexoObj
 				// FlexoProgress progress = getEditor().getFlexoProgressFactory().makeFlexoProgress("loading_resource", 3);
 				Progress.progress("loading_resource");
 				try {
-					((FlexoResource<?>) getFocusedObject()).getResourceData(null);
+					((FlexoResource<?>) getFocusedObject()).getResourceData();
 				} catch (Exception e) {
 					e.printStackTrace();
 					throw new FlexoException(e);

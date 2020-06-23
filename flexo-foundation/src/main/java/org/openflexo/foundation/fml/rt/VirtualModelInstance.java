@@ -44,6 +44,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Hashtable;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Map;
 import java.util.WeakHashMap;
 import java.util.logging.Level;
@@ -57,8 +58,11 @@ import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.binding.BindingValueChangeListener;
 import org.openflexo.connie.exception.NullReferenceException;
 import org.openflexo.connie.exception.TypeMismatchException;
+import org.openflexo.connie.type.TypeUtils;
 import org.openflexo.foundation.FlexoEditor;
+import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.IndexableContainer;
+import org.openflexo.foundation.InnerResourceData;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoConceptInstanceType;
 import org.openflexo.foundation.fml.FlexoEvent;
@@ -74,25 +78,28 @@ import org.openflexo.foundation.fml.rt.rm.AbstractVirtualModelInstanceResource;
 import org.openflexo.foundation.fml.rt.rm.FMLRTVirtualModelInstanceResourceFactory;
 import org.openflexo.foundation.resource.CannotRenameException;
 import org.openflexo.foundation.resource.FlexoResource;
+import org.openflexo.foundation.resource.PamelaResource;
+import org.openflexo.foundation.resource.ResourceData;
 import org.openflexo.foundation.technologyadapter.FlexoModel;
 import org.openflexo.foundation.technologyadapter.ModelRepository;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.technologyadapter.TechnologyObject;
-import org.openflexo.model.annotations.Adder;
-import org.openflexo.model.annotations.CloningStrategy;
-import org.openflexo.model.annotations.CloningStrategy.StrategyType;
-import org.openflexo.model.annotations.Embedded;
-import org.openflexo.model.annotations.Getter;
-import org.openflexo.model.annotations.Getter.Cardinality;
-import org.openflexo.model.annotations.ImplementationClass;
-import org.openflexo.model.annotations.ModelEntity;
-import org.openflexo.model.annotations.PastingPoint;
-import org.openflexo.model.annotations.PropertyIdentifier;
-import org.openflexo.model.annotations.Remover;
-import org.openflexo.model.annotations.Setter;
-import org.openflexo.model.annotations.XMLAttribute;
-import org.openflexo.model.annotations.XMLElement;
+import org.openflexo.pamela.annotations.Adder;
+import org.openflexo.pamela.annotations.CloningStrategy;
+import org.openflexo.pamela.annotations.CloningStrategy.StrategyType;
+import org.openflexo.pamela.annotations.Embedded;
+import org.openflexo.pamela.annotations.Getter;
+import org.openflexo.pamela.annotations.Getter.Cardinality;
+import org.openflexo.pamela.annotations.ImplementationClass;
+import org.openflexo.pamela.annotations.ModelEntity;
+import org.openflexo.pamela.annotations.PastingPoint;
+import org.openflexo.pamela.annotations.PropertyIdentifier;
+import org.openflexo.pamela.annotations.Remover;
+import org.openflexo.pamela.annotations.Setter;
+import org.openflexo.pamela.annotations.XMLAttribute;
+import org.openflexo.pamela.annotations.XMLElement;
+import org.openflexo.pamela.factory.ModelFactory;
 import org.openflexo.toolbox.FlexoVersion;
 import org.openflexo.toolbox.StringUtils;
 
@@ -114,7 +121,7 @@ import org.openflexo.toolbox.StringUtils;
  */
 @ModelEntity(isAbstract = true)
 @ImplementationClass(VirtualModelInstance.VirtualModelInstanceImpl.class)
-public interface VirtualModelInstance<VMI extends VirtualModelInstance<VMI, TA>, TA extends TechnologyAdapter>
+public interface VirtualModelInstance<VMI extends VirtualModelInstance<VMI, TA>, TA extends TechnologyAdapter<TA>>
 		extends FlexoConceptInstance, FlexoModel<VMI, VirtualModel>, TechnologyObject<TA>, IndexableContainer<FlexoConceptInstance> {
 
 	public static final String EVENT_FIRED = "EventFired";
@@ -131,6 +138,7 @@ public interface VirtualModelInstance<VMI extends VirtualModelInstance<VMI, TA>,
 	public static final String VIRTUAL_MODEL_URI_KEY = "virtualModelURI";
 	@PropertyIdentifier(type = FlexoConceptInstance.class, cardinality = Cardinality.LIST)
 	public static final String FLEXO_CONCEPT_INSTANCES_KEY = "flexoConceptInstances";
+	public static final String FINALIZE_FLEXO_CONCEPT_INSTANCE_ADDING_KEY = "finalizeFlexoConceptInstanceAdding";
 
 	@PropertyIdentifier(type = VirtualModelInstance.class)
 	public static final String CONTAINER_VIRTUAL_MODEL_INSTANCE_KEY = "containerVirtualModelInstance";
@@ -241,6 +249,14 @@ public interface VirtualModelInstance<VMI extends VirtualModelInstance<VMI, TA>,
 	public void setName(String name);
 
 	/**
+	 * Build a new FlexoConceptInstance<br>
+	 * Just instantiate, do not register yet
+	 * 
+	 * @return
+	 */
+	public FlexoConceptInstance buildNewFlexoConceptInstance(FlexoConcept concept);
+
+	/**
 	 * Instantiate and register a new {@link FlexoConceptInstance}
 	 * 
 	 * @param pattern
@@ -339,7 +355,7 @@ public interface VirtualModelInstance<VMI extends VirtualModelInstance<VMI, TA>,
 	public void setContainerVirtualModelInstance(VirtualModelInstance<?, ?> containerVMI);
 
 	/**
-	 * Return all {@link FMLRTVirtualModelInstance} defined in this {@link View}
+	 * Return all {@link FMLRTVirtualModelInstance} defined in this {@link VirtualModelInstance}
 	 * 
 	 * @return
 	 */
@@ -373,7 +389,7 @@ public interface VirtualModelInstance<VMI extends VirtualModelInstance<VMI, TA>,
 	public boolean isValidVirtualModelInstanceName(String virtualModelName);
 
 	/**
-	 * Return the list of {@link TechnologyAdapter} used in the context of this {@link View}
+	 * Return the list of {@link TechnologyAdapter} used in the context of this {@link VirtualModelInstance}
 	 * 
 	 * @return
 	 */
@@ -387,6 +403,21 @@ public interface VirtualModelInstance<VMI extends VirtualModelInstance<VMI, TA>,
 	public void notifyAllRootFlexoConceptInstancesMayHaveChanged();
 
 	/**
+	 * Clone this {@link FlexoConceptInstance} given supplied factory.<br>
+	 * Clone is computed using roles, where property values are kept references<br>
+	 * Inside {@link FlexoConceptInstance} are cloned using same semantics
+	 * 
+	 * @param factory
+	 * @return
+	 */
+	@Override
+	public VirtualModelInstance<VMI, TA> cloneUsingRoles(AbstractVirtualModelInstanceModelFactory<?> factory);
+
+	public void setLocalServiceManager(FlexoServiceManager localServiceManager);
+
+	public Class<VMI> getInferedImplementedInterface();
+
+	/**
 	 * Base implementation for VirtualModelInstance
 	 * 
 	 * @author sylvain
@@ -394,7 +425,7 @@ public interface VirtualModelInstance<VMI extends VirtualModelInstance<VMI, TA>,
 	 * @param <VMI>
 	 * @param <TA>
 	 */
-	public static abstract class VirtualModelInstanceImpl<VMI extends VirtualModelInstance<VMI, TA>, TA extends TechnologyAdapter>
+	public static abstract class VirtualModelInstanceImpl<VMI extends VirtualModelInstance<VMI, TA>, TA extends TechnologyAdapter<TA>>
 			extends FlexoConceptInstanceImpl implements VirtualModelInstance<VMI, TA> {
 
 		private static final Logger logger = Logger.getLogger(FMLRTVirtualModelInstance.class.getPackage().getName());
@@ -420,6 +451,46 @@ public interface VirtualModelInstance<VMI extends VirtualModelInstance<VMI, TA>,
 			flexoConceptInstances = new Hashtable<>();
 		}
 
+		private FlexoServiceManager localServiceManager = null;
+
+		@Override
+		public Class<VMI> getInferedImplementedInterface() {
+			return (Class<VMI>) TypeUtils.getTypeArgument(getClass(), VirtualModelInstance.class, 0);
+		}
+
+		@Override
+		public Class<?> getImplementedInterface() {
+			Class<?> returned = super.getImplementedInterface();
+			if (returned == getClass()) {
+				return getInferedImplementedInterface();
+			}
+			return returned;
+		}
+
+		@Override
+		public FlexoServiceManager getServiceManager() {
+			FlexoServiceManager returned = super.getServiceManager();
+			if (returned != null) {
+				return returned;
+			}
+			return localServiceManager;
+		}
+
+		@Override
+		public void setLocalServiceManager(FlexoServiceManager localServiceManager) {
+			this.localServiceManager = localServiceManager;
+		}
+
+		/**
+		 * Overrides identifier for this VirtualModelInstance under the form 'ConceptName'+ID+':name'
+		 * 
+		 * @return
+		 */
+		@Override
+		public String getUserFriendlyIdentifier() {
+			return (getFlexoConcept() != null ? getFlexoConcept().getName() : "?VirtualModelInstance?") + getFlexoID() + ":" + getName();
+		}
+
 		@Override
 		public String getStringRepresentation() {
 			return getName();
@@ -430,7 +501,7 @@ public interface VirtualModelInstance<VMI extends VirtualModelInstance<VMI, TA>,
 			if (getResource() != null) {
 				return getResource().getFactory();
 			}
-			return null;
+			return super.getFactory();
 		}
 
 		@Override
@@ -504,7 +575,8 @@ public interface VirtualModelInstance<VMI extends VirtualModelInstance<VMI, TA>,
 			}
 			if (flexoConcept == null && getResource() != null) {
 				// We can sometimes arrive here: flexoConcept is still not set
-				// But we have another chance to retrieve the VirtualModel while requesting it to the resource
+				// But we have another chance to retrieve the VirtualModel while requesting it
+				// to the resource
 				// Then set the FlexoConcept
 				flexoConcept = getResource().getVirtualModel();
 			}
@@ -593,17 +665,13 @@ public interface VirtualModelInstance<VMI extends VirtualModelInstance<VMI, TA>,
 				return;
 			}
 			willNotifyAllRootFlexoConceptInstancesMayHaveChanged = true;
-			SwingUtilities.invokeLater(new Runnable() {
-				@Override
-				public void run() {
-					if (!isDeleted()) {
-						getPropertyChangeSupport().firePropertyChange("allRootFlexoConceptInstances",
-								(lastNotifiedRootFlexoConceptInstances != null ? new ArrayList<>(lastNotifiedRootFlexoConceptInstances)
-										: null),
-								new ArrayList<>(getAllRootFlexoConceptInstances()));
-						lastNotifiedRootFlexoConceptInstances = new ArrayList<>(getAllRootFlexoConceptInstances());
-						willNotifyAllRootFlexoConceptInstancesMayHaveChanged = false;
-					}
+			SwingUtilities.invokeLater(() -> {
+				if (!isDeleted()) {
+					getPropertyChangeSupport().firePropertyChange("allRootFlexoConceptInstances",
+							(lastNotifiedRootFlexoConceptInstances != null ? new ArrayList<>(lastNotifiedRootFlexoConceptInstances) : null),
+							new ArrayList<>(getAllRootFlexoConceptInstances()));
+					lastNotifiedRootFlexoConceptInstances = new ArrayList<>(getAllRootFlexoConceptInstances());
+					willNotifyAllRootFlexoConceptInstancesMayHaveChanged = false;
 				}
 			});
 		}
@@ -643,7 +711,8 @@ public interface VirtualModelInstance<VMI extends VirtualModelInstance<VMI, TA>,
 		 * 
 		 * @return
 		 */
-		protected FlexoConceptInstance buildNewFlexoConceptInstance(FlexoConcept concept) {
+		@Override
+		public FlexoConceptInstance buildNewFlexoConceptInstance(FlexoConcept concept) {
 			FlexoConceptInstance returned = getResource().getFactory().newInstance(FlexoConceptInstance.class);
 			returned.setFlexoConcept(concept);
 			return returned;
@@ -730,12 +799,19 @@ public interface VirtualModelInstance<VMI extends VirtualModelInstance<VMI, TA>,
 			// time3 = System.currentTimeMillis();
 
 			notifyAllRootFlexoConceptInstancesMayHaveChanged();
-			// getPropertyChangeSupport().firePropertyChange("allRootFlexoConceptInstances", false, true);
+			// getPropertyChangeSupport().firePropertyChange("allRootFlexoConceptInstances",
+			// false, true);
 
 			// long end = System.currentTimeMillis();
 
-			// System.out.println("Adding instance took " + (end - start) + " ms start=" + start + " t1=" + time1 + " t2=" + time2 + " t3="
+			// System.out.println("Adding instance took " + (end - start) + " ms start=" +
+			// start + " t1=" + time1 + " t2=" + time2 + " t3="
 			// + time3 + " end=" + end);
+
+			// We notify this now, because the inverse property wasn't set during adding
+			// notifying
+			// So we renotify it now
+			getPropertyChangeSupport().firePropertyChange(FINALIZE_FLEXO_CONCEPT_INSTANCE_ADDING_KEY, null, fci);
 		}
 
 		/**
@@ -761,7 +837,8 @@ public interface VirtualModelInstance<VMI extends VirtualModelInstance<VMI, TA>,
 
 			// System.out.println("**** ensure register FCI " + fci + " in " + concept);
 			if (fci.isRoot()) {
-				// Prevent when ensureRegisterFCIInConcept method is invoked twice, in case an instance has a parent.
+				// Prevent when ensureRegisterFCIInConcept method is invoked twice, in case an
+				// instance has a parent.
 				if (!rootFlexoConceptInstances.contains(fci)) {
 					rootFlexoConceptInstances.add(fci);
 				}
@@ -792,9 +869,10 @@ public interface VirtualModelInstance<VMI extends VirtualModelInstance<VMI, TA>,
 
 		private void ensureUnregisterFCIFromConcept(FlexoConceptInstance fci, FlexoConcept concept) {
 
-			if (fci.isRoot()) {
-				rootFlexoConceptInstances.remove(fci);
-			}
+			// remove inconditionnaly from roots
+			// if (fci.isRoot()) {
+			rootFlexoConceptInstances.remove(fci);
+			// }
 
 			List<FlexoConceptInstance> list = flexoConceptInstances.get(concept);
 			if (list != null && list.contains(fci)) {
@@ -811,6 +889,21 @@ public interface VirtualModelInstance<VMI extends VirtualModelInstance<VMI, TA>,
 
 		}
 
+		private void ensureUnregisterFCI(FlexoConceptInstance fci) {
+			if (rootFlexoConceptInstances.contains(fci)) {
+				rootFlexoConceptInstances.remove(fci);
+			}
+
+			for (FlexoConcept concept : flexoConceptInstances.keySet()) {
+				List<FlexoConceptInstance> list = flexoConceptInstances.get(concept);
+				if (list != null && list.contains(fci)) {
+					list.remove(fci);
+					contentsRemoved(fci, concept);
+				}
+			}
+
+		}
+
 		/**
 		 * Remove a {@link FlexoConceptInstance}
 		 * 
@@ -821,7 +914,10 @@ public interface VirtualModelInstance<VMI extends VirtualModelInstance<VMI, TA>,
 		public void removeFromFlexoConceptInstances(FlexoConceptInstance fci) {
 
 			if (fci.getFlexoConcept() == null) {
-				logger.warning("Could not remove FlexoConceptInstance with null FlexoConcept: " + fci);
+				// Special computing
+				ensureUnregisterFCI(fci);
+				// logger.warning("Could not remove FlexoConceptInstance with null FlexoConcept:
+				// " + fci);
 			}
 			else {
 				ensureUnregisterFCIFromConcept(fci, fci.getFlexoConcept());
@@ -830,7 +926,8 @@ public interface VirtualModelInstance<VMI extends VirtualModelInstance<VMI, TA>,
 			performSuperRemover(FLEXO_CONCEPT_INSTANCES_KEY, fci);
 
 			notifyAllRootFlexoConceptInstancesMayHaveChanged();
-			// getPropertyChangeSupport().firePropertyChange("allRootFlexoConceptInstances", false, true);
+			// getPropertyChangeSupport().firePropertyChange("allRootFlexoConceptInstances",
+			// false, true);
 		}
 
 		@Override
@@ -857,13 +954,13 @@ public interface VirtualModelInstance<VMI extends VirtualModelInstance<VMI, TA>,
 			List<FlexoConceptInstance> returned = flexoConceptInstances.get(flexoConcept);
 
 			if (returned == null) {
-				/*System.out.println("Bizarre, pourtant j'ai ca: ");
-				for (FlexoConceptInstance fci : getFlexoConceptInstances()) {
-					System.out.println(" > " + fci);
-				}
-				for (FlexoConcept concept : flexoConceptInstances.keySet()) {
-					System.out.println("Key: " + concept + " list: " + flexoConceptInstances.get(concept));
-				}*/
+				/*
+				 * System.out.println("Bizarre, pourtant j'ai ca: "); for (FlexoConceptInstance
+				 * fci : getFlexoConceptInstances()) { System.out.println(" > " + fci); } for
+				 * (FlexoConcept concept : flexoConceptInstances.keySet()) {
+				 * System.out.println("Key: " + concept + " list: " +
+				 * flexoConceptInstances.get(concept)); }
+				 */
 				return Collections.emptyList();
 			}
 			return returned;
@@ -898,20 +995,6 @@ public interface VirtualModelInstance<VMI extends VirtualModelInstance<VMI, TA>,
 			}
 			return returned;
 		}
-
-		// TODO: refactor this
-		/*@Deprecated
-		public List<FlexoConceptInstance> getEPInstancesWithPropertyEqualsTo(String epName, String epProperty, Object value) {
-			List<FlexoConceptInstance> returned = new ArrayList<FlexoConceptInstance>();
-			Collection<FlexoConceptInstance> epis = getEPInstances(epName);
-			for (FlexoConceptInstance epi : epis) {
-				Object evaluate = epi.evaluate(epProperty);
-				if (value == null && evaluate == value || value != null && value.equals(evaluate)) {
-					returned.add(epi);
-				}
-			}
-			return returned;
-		}*/
 
 		@Override
 		public AbstractVirtualModelInstanceResource<VMI, TA> getResource() {
@@ -962,6 +1045,7 @@ public interface VirtualModelInstance<VMI extends VirtualModelInstance<VMI, TA>,
 			return (VMI) this;
 		}
 
+		// TODO: this implemenation should disappear
 		@Override
 		public <T> T getFlexoActor(FlexoRole<T> flexoRole) {
 			if (flexoRole instanceof ModelSlot) {
@@ -1017,11 +1101,12 @@ public interface VirtualModelInstance<VMI extends VirtualModelInstance<VMI, TA>,
 
 		@Override
 		public boolean isSynchronizable() {
-			// is synchronizable if virtualModel is not null, it has SynchronizationScheme and all needed TA are activated
+			// is synchronizable if virtualModel is not null, it has SynchronizationScheme
+			// and all needed TA are activated
 			VirtualModel vm = getVirtualModel();
 			boolean synchronizable = vm != null && vm.hasSynchronizationScheme();
 			if (synchronizable) {
-				for (TechnologyAdapter neededTA : vm.getRequiredTechnologyAdapters()) {
+				for (TechnologyAdapter<?> neededTA : vm.getRequiredTechnologyAdapters()) {
 					synchronizable = synchronizable && neededTA.isActivated();
 				}
 			}
@@ -1030,7 +1115,6 @@ public interface VirtualModelInstance<VMI extends VirtualModelInstance<VMI, TA>,
 
 		@Override
 		public Object getObject(String objectURI) {
-			// TODO Auto-generated method stub
 			return null;
 		}
 
@@ -1055,7 +1139,7 @@ public interface VirtualModelInstance<VMI extends VirtualModelInstance<VMI, TA>,
 				return null;
 			for (FlexoConceptInstance flexoConceptInstance : getFlexoConceptInstances()) {
 				if (flexoConceptInstance.getFlexoConcept() != null) {
-					for (FlexoRole<?> fr : flexoConceptInstance.getFlexoConcept().getDeclaredProperties(FlexoRole.class)) {
+					for (FlexoRole<?> fr : flexoConceptInstance.getFlexoConcept().getAccessibleProperties(FlexoRole.class)) {
 						if (flexoConceptInstance.getFlexoActor(fr) == object) {
 							ObjectLookupResult answer = new ObjectLookupResult();
 							answer.flexoConceptInstance = flexoConceptInstance;
@@ -1071,7 +1155,7 @@ public interface VirtualModelInstance<VMI extends VirtualModelInstance<VMI, TA>,
 		@Override
 		public Object getValue(BindingVariable variable) {
 
-			if (variable.getVariableName().equals(FlexoConceptBindingModel.CONTAINER_PROPERTY)
+			if (variable.getVariableName().equals(FlexoConceptBindingModel.CONTAINER_PROPERTY) && getVirtualModel() != null
 					&& getVirtualModel().getContainerVirtualModel() != null) {
 				return getContainerVirtualModelInstance();
 			}
@@ -1088,7 +1172,8 @@ public interface VirtualModelInstance<VMI extends VirtualModelInstance<VMI, TA>,
 			}
 
 			// Warning is not required, since it will will warn each time a value is null !
-			// logger.warning("Unexpected variable requested in FMLRTVirtualModelInstance: " + variable + " of " + variable.getClass());
+			// logger.warning("Unexpected variable requested in FMLRTVirtualModelInstance: "
+			// + variable + " of " + variable.getClass());
 			return null;
 		}
 
@@ -1217,9 +1302,10 @@ public interface VirtualModelInstance<VMI extends VirtualModelInstance<VMI, TA>,
 					logger.fine("contentsRemoved() for " + objectBeeingRemoved + " indexableTerm=" + indexableTerm);
 				}
 				needsReindex = true;
-				/*for (List<FlexoConceptInstance> l : values()) {
-					l.remove(objectBeeingRemoved);
-				}*/
+				/*
+				 * for (List<FlexoConceptInstance> l : values()) {
+				 * l.remove(objectBeeingRemoved); }
+				 */
 			}
 		}
 
@@ -1229,25 +1315,20 @@ public interface VirtualModelInstance<VMI extends VirtualModelInstance<VMI, TA>,
 				logger.fine("Retrieving index for " + type + " and " + indexableTerm);
 			}
 
-			/*System.out.println("Retrieving index for " + type + " and " + indexableTerm);
-			
-			System.out.println("Les FCI par type:");
-			
-			for (FlexoConcept c : flexoConceptInstances.keySet()) {
-				System.out.println("Concept " + c);
-				for (FlexoConceptInstance fci : flexoConceptInstances.get(c)) {
-					System.out.println(" > " + fci);
-				}
-			}
-			
-			System.out.println("Les indexes:");
-			for (Type t : indexes.keySet()) {
-				System.out.println("Index for " + t);
-				Map<String, FlexoConceptInstanceIndex> map = indexes.get(t);
-				for (String s : map.keySet()) {
-					System.out.println(" > " + s + " : " + map.get(s));
-				}
-			}*/
+			/*
+			 * System.out.println("Retrieving index for " + type + " and " + indexableTerm);
+			 * 
+			 * System.out.println("Les FCI par type:");
+			 * 
+			 * for (FlexoConcept c : flexoConceptInstances.keySet()) {
+			 * System.out.println("Concept " + c); for (FlexoConceptInstance fci :
+			 * flexoConceptInstances.get(c)) { System.out.println(" > " + fci); } }
+			 * 
+			 * System.out.println("Les indexes:"); for (Type t : indexes.keySet()) {
+			 * System.out.println("Index for " + t); Map<String, FlexoConceptInstanceIndex>
+			 * map = indexes.get(t); for (String s : map.keySet()) {
+			 * System.out.println(" > " + s + " : " + map.get(s)); } }
+			 */
 
 			if (type instanceof FlexoConceptInstanceType) {
 				Map<String, FlexoConceptInstanceIndex<?>> mapForType = indexes.get(type);
@@ -1368,27 +1449,8 @@ public interface VirtualModelInstance<VMI extends VirtualModelInstance<VMI, TA>,
 			return getVirtualModelInstance(virtualModelName) == null;
 		}
 
-		/*@Deprecated
-		@Override
-		public ViewLibrary<?> getViewLibrary() {
-		
-			FlexoResourceCenter<?> rc = getResourceCenter();
-			FMLRTTechnologyAdapter rtTA = rc.getServiceManager().getTechnologyAdapterService()
-					.getTechnologyAdapter(FMLRTTechnologyAdapter.class);
-			return rtTA.getViewRepository(rc);
-		}*/
-
-		/*@Deprecated
-		@Override
-		public RepositoryFolder<AbstractVirtualModelInstanceResource<VMI, TA>, ?> getFolder() {
-			if (getResource() != null) {
-				return ((ViewLibrary) getViewLibrary()).getParentFolder(getResource());
-			}
-			return null;
-		}*/
-
 		/**
-		 * Return the list of {@link TechnologyAdapter} used in the context of this {@link View}
+		 * Return the list of {@link TechnologyAdapter} used in the context of this {@link VirtualModelInstance}
 		 * 
 		 * @return
 		 */
@@ -1402,6 +1464,163 @@ public interface VirtualModelInstance<VMI extends VirtualModelInstance<VMI, TA>,
 				return returned;
 			}
 			return Collections.singletonList((TechnologyAdapter) getTechnologyAdapter());
+		}
+
+		@Override
+		public void addToVirtualModelInstances(VirtualModelInstance<?, ?> virtualModelInstance) {
+			performSuperAdder(VIRTUAL_MODEL_INSTANCES_KEY, virtualModelInstance);
+			// We notify now all properties from container
+			if (getVirtualModel() != null) {
+				for (FlexoProperty<?> property : getVirtualModel().getAccessibleProperties()) {
+					virtualModelInstance.getPropertyChangeSupport().firePropertyChange(property.getName(), null,
+							getFlexoPropertyValue(property));
+				}
+			}
+		}
+
+		@Override
+		public void removeFromVirtualModelInstances(VirtualModelInstance<?, ?> virtualModelInstance) {
+			performSuperRemover(VIRTUAL_MODEL_INSTANCES_KEY, virtualModelInstance);
+			// We notify now all properties from container
+			if (getVirtualModel() != null) {
+				for (FlexoProperty<?> property : getVirtualModel().getAccessibleProperties()) {
+					virtualModelInstance.getPropertyChangeSupport().firePropertyChange(property.getName(), new Object(), null);
+				}
+			}
+		}
+
+		@Override
+		public String render() {
+			StringBuffer sb = new StringBuffer();
+			String line = StringUtils.buildString('-', 80) + "\n";
+			sb.append(line);
+			sb.append("VirtualModelInstance : " + getUserFriendlyIdentifier() + "\n");
+			if (hasValidRenderer()) {
+				sb.append("Renderer             : " + getStringRepresentation() + "\n");
+			}
+			sb.append("VirtualModel         : " + getVirtualModel().getName() + "\n");
+			sb.append("Instances            : " + getFlexoConceptInstances().size() + "\n");
+			sb.append(line);
+			List<FlexoRole> roles = getFlexoConcept().getAccessibleProperties(FlexoRole.class);
+			if (roles.size() > 0) {
+				for (FlexoRole<?> role : roles) {
+					if (role.getFlexoConcept().isAssignableFrom(getVirtualModel())) {
+						sb.append(role.getName() + " = " + getFlexoPropertyValue(role) + "\n");
+					}
+				}
+			}
+			else {
+				sb.append("No values" + "\n");
+			}
+			sb.append(line);
+			if (getAllRootFlexoConceptInstances().size() > 0) {
+				for (FlexoConceptInstance child : getAllRootFlexoConceptInstances()) {
+					appendFCI(child, sb, 0);
+				}
+			}
+			else {
+				sb.append("No contents" + "\n");
+			}
+			sb.append(line);
+			return sb.toString();
+		}
+
+		/**
+		 * Clone this {@link VirtualModelInstance} given supplied factory.<br>
+		 * Clone is computed using roles, where property values are kept references<br>
+		 * Inside {@link FlexoConceptInstance} are cloned using same semantics
+		 * 
+		 * @param factory
+		 * @return
+		 */
+		@Override
+		public VirtualModelInstance<VMI, TA> cloneUsingRoles(AbstractVirtualModelInstanceModelFactory<?> factory) {
+
+			VirtualModelInstance<VMI, TA> clone = (VirtualModelInstance<VMI, TA>) factory.newInstance(getImplementedInterface());
+			clone.setVirtualModel(getVirtualModel());
+			clone.setLocalFactory(factory);
+			clone.setLocalServiceManager(getServiceManager());
+			for (FlexoRole flexoRole : getVirtualModel().getAccessibleRoles()) {
+				Object value = getFlexoPropertyValue(flexoRole);
+				clone.setFlexoPropertyValue(flexoRole, value);
+			}
+			for (FlexoConceptInstance fci : getFlexoConceptInstances()) {
+				FlexoConceptInstance clonedFCI = fci.cloneUsingRoles(factory);
+				clone.addToFlexoConceptInstances(clonedFCI);
+			}
+			return clone;
+		}
+
+		/**
+		 * An {@link #equals(Object)} implementation for {@link FlexoConceptInstance}, focused on roles
+		 * 
+		 * @param obj
+		 * @return
+		 */
+		@Override
+		public boolean equalsUsingRoles(Object obj) {
+
+			if (this == obj) {
+				return true;
+			}
+			if (obj == null) {
+				return false;
+			}
+			if (!(obj instanceof VirtualModelInstance)) {
+				return false;
+			}
+			VirtualModelInstance<?, ?> other = (VirtualModelInstance<?, ?>) obj;
+			if (getVirtualModel() != other.getVirtualModel()) {
+				return false;
+			}
+			for (FlexoRole<?> flexoRole : getFlexoConcept().getAccessibleRoles()) {
+				Object value = getFlexoPropertyValue(flexoRole);
+				Object otherValue = other.getFlexoPropertyValue(flexoRole);
+				if (value == null) {
+					if (otherValue != null) {
+						return false;
+					}
+				}
+				else if (!value.equals(otherValue)) {
+					return false;
+				}
+			}
+
+			ListIterator<FlexoConceptInstance> e1 = getFlexoConceptInstances().listIterator();
+			ListIterator<FlexoConceptInstance> e2 = other.getFlexoConceptInstances().listIterator();
+
+			while (e1.hasNext() && e2.hasNext()) {
+				FlexoConceptInstance o1 = e1.next();
+				FlexoConceptInstance o2 = e2.next();
+				if (!(o1 == null ? o2 == null : o1.equalsUsingRoles(o2))) {
+					return false;
+				}
+			}
+			if (e1.hasNext() || e2.hasNext()) {
+				return false;
+			}
+
+			return true;
+		}
+
+		/**
+		 * A {@link #hashCode()} implementation for {@link FlexoConceptInstance}, focused on roles
+		 * 
+		 * @return
+		 */
+		@Override
+		public int hashCodeUsingRoles() {
+			final int prime = 31;
+			int result = 1;
+			result = prime * result + ((getVirtualModel() == null) ? 0 : getVirtualModel().hashCode());
+			for (FlexoRole<?> flexoRole : getFlexoConcept().getAccessibleRoles()) {
+				Object value = getFlexoPropertyValue(flexoRole);
+				result = prime * result + ((value == null) ? 0 : value.hashCode());
+			}
+			for (FlexoConceptInstance flexoConceptInstance : getFlexoConceptInstances()) {
+				result = prime * result + ((flexoConceptInstance == null) ? 0 : flexoConceptInstance.hashCodeUsingRoles());
+			}
+			return result;
 		}
 
 	}

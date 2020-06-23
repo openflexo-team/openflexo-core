@@ -38,19 +38,48 @@
 
 package org.openflexo.foundation.fml;
 
-import org.openflexo.model.annotations.ImplementationClass;
-import org.openflexo.model.annotations.ModelEntity;
-import org.openflexo.model.annotations.XMLElement;
+import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
+import org.openflexo.foundation.fml.rt.action.SuperCreationSchemeActionFactory;
+import org.openflexo.pamela.annotations.Getter;
+import org.openflexo.pamela.annotations.ImplementationClass;
+import org.openflexo.pamela.annotations.ModelEntity;
+import org.openflexo.pamela.annotations.PropertyIdentifier;
+import org.openflexo.pamela.annotations.Setter;
+import org.openflexo.pamela.annotations.XMLAttribute;
+import org.openflexo.pamela.annotations.XMLElement;
 
 @ModelEntity
 @ImplementationClass(CreationScheme.CreationSchemeImpl.class)
 @XMLElement
 public interface CreationScheme extends AbstractCreationScheme {
 
+	public static final String DEFAULT_CREATION_SCHEME_NAME = "DefaultCreationScheme";
+
+	@PropertyIdentifier(type = boolean.class)
+	public static final String IS_ANONYMOUS_KEY = "isAnonymous";
+
+	@Getter(value = IS_ANONYMOUS_KEY, defaultValue = "false")
+	@XMLAttribute
+	public boolean isAnonymous();
+
+	@Setter(IS_ANONYMOUS_KEY)
+	public void setAnonymous(boolean isAnonymous);
+
+	SuperCreationSchemeActionFactory getSuperCreationSchemeActionFactory(FlexoConceptInstance fci);
+
 	public static abstract class CreationSchemeImpl extends AbstractCreationSchemeImpl implements CreationScheme {
 
-		public CreationSchemeImpl() {
-			super();
+		@Override
+		public String getName() {
+			if (isAnonymous()) {
+				return DEFAULT_CREATION_SCHEME_NAME;
+			}
+			return super.getName();
+		}
+
+		@Override
+		public SuperCreationSchemeActionFactory getSuperCreationSchemeActionFactory(FlexoConceptInstance fci) {
+			return new SuperCreationSchemeActionFactory(this, fci);
 		}
 
 	}

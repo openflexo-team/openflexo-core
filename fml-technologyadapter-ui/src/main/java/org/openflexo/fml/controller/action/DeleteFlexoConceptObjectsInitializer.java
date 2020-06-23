@@ -40,14 +40,12 @@ package org.openflexo.fml.controller.action;
 
 import java.awt.HeadlessException;
 import java.awt.event.KeyEvent;
-import java.util.EventObject;
-import java.util.logging.Logger;
 
 import javax.swing.Icon;
 import javax.swing.KeyStroke;
 
-import org.openflexo.foundation.action.FlexoActionInitializer;
 import org.openflexo.foundation.action.FlexoActionFactory;
+import org.openflexo.foundation.action.FlexoActionRunnable;
 import org.openflexo.foundation.action.copypaste.AbstractCopyAction.InvalidSelectionException;
 import org.openflexo.foundation.fml.FlexoConceptObject;
 import org.openflexo.foundation.fml.action.DeleteFlexoConceptObjects;
@@ -58,40 +56,30 @@ import org.openflexo.view.controller.FlexoController;
 
 public class DeleteFlexoConceptObjectsInitializer
 		extends ActionInitializer<DeleteFlexoConceptObjects, FlexoConceptObject, FlexoConceptObject> {
-
-	private static final Logger logger = Logger.getLogger(ControllerActionInitializer.class.getPackage().getName());
-
 	public DeleteFlexoConceptObjectsInitializer(ControllerActionInitializer actionInitializer) {
 		super(DeleteFlexoConceptObjects.actionType, actionInitializer);
 	}
 
 	@Override
-	protected FlexoActionInitializer<DeleteFlexoConceptObjects> getDefaultInitializer() {
-		return new FlexoActionInitializer<DeleteFlexoConceptObjects>() {
-			@Override
-			public boolean run(EventObject e, DeleteFlexoConceptObjects action) {
-				try {
-					if (action.getObjectsToDelete().size() > 1) {
-						return FlexoController
-								.confirm(action.getLocales().localizedForKey("would_you_really_like_to_delete_those_objects_?"));
-					}
-					else {
-						return FlexoController
-								.confirm(action.getLocales().localizedForKey("would_you_really_like_to_delete_this_object_?"));
-					}
-				} catch (HeadlessException e1) {
-					e1.printStackTrace();
-					return false;
-				} catch (InvalidSelectionException e1) {
-					e1.printStackTrace();
-					return false;
+	protected FlexoActionRunnable<DeleteFlexoConceptObjects, FlexoConceptObject, FlexoConceptObject> getDefaultInitializer() {
+		return (e, action) -> {
+			try {
+				if (action.getObjectsToDelete().size() > 1) {
+					return FlexoController.confirm(action.getLocales().localizedForKey("would_you_really_like_to_delete_those_objects_?"));
 				}
+				return FlexoController.confirm(action.getLocales().localizedForKey("would_you_really_like_to_delete_this_object_?"));
+			} catch (HeadlessException e1) {
+				e1.printStackTrace();
+				return false;
+			} catch (InvalidSelectionException e1) {
+				e1.printStackTrace();
+				return false;
 			}
 		};
 	}
 
 	@Override
-	protected Icon getEnabledIcon(FlexoActionFactory actionType) {
+	protected Icon getEnabledIcon(FlexoActionFactory<DeleteFlexoConceptObjects, FlexoConceptObject, FlexoConceptObject> actionType) {
 		return IconLibrary.DELETE_ICON;
 	}
 

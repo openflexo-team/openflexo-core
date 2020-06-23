@@ -46,7 +46,7 @@ import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.localization.LocalizedDelegate;
-import org.openflexo.model.undo.CompoundEdit;
+import org.openflexo.pamela.undo.CompoundEdit;
 
 /**
  * An abstract task used in the context of application.<br>
@@ -111,14 +111,8 @@ public abstract class CoreFlexoTask extends FlexoTask {
 	protected synchronized void finishedExecution() {
 		super.finishedExecution();
 
-		if (getTaskStatus() == TaskStatus.EXCEPTION_THROWN) {
-			SwingUtilities.invokeLater(new Runnable() {
-				@Override
-				public void run() {
-					notifyThrownException(getThrownException());
-				}
-			});
-		}
+		if (getTaskStatus() == TaskStatus.EXCEPTION_THROWN)
+			SwingUtilities.invokeLater(() -> notifyThrownException(getThrownException()));
 	}
 
 	// Please override to get better user feedback
@@ -127,7 +121,7 @@ public abstract class CoreFlexoTask extends FlexoTask {
 		e.printStackTrace();
 	}
 
-	protected void showException(String title, String message, Exception e) {
+	protected static void showException(String title, String message, Exception e) {
 		logger.severe(message);
 	}
 

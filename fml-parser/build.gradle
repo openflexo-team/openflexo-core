@@ -1,9 +1,11 @@
 dependencies {
   // openflexo dep
+  compile flexoP2PP();
   compile project(':flexo-foundation')
   // external dep
 
   // testing dep
+  testCompile testUtils()
   testCompile project(':flexo-foundation-test')
   testCompile project(':flexo-test-resources')
 }
@@ -26,7 +28,4 @@ sourceSets {
      includes = [ "**/*.dat" ]
    }
  }
-}
-tasks.withType(Test) {
-	jvmArgs += ["-Djava.awt.headless=true"]
 }

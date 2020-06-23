@@ -50,32 +50,27 @@ import org.openflexo.foundation.project.FlexoProjectImpl;
 import org.openflexo.foundation.project.FlexoProjectReference;
 import org.openflexo.foundation.project.FlexoProjectResource;
 import org.openflexo.foundation.resource.CannotRenameException;
-import org.openflexo.foundation.resource.FlexoResource;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.resource.FlexoResourceCenterService;
 import org.openflexo.foundation.resource.ProjectImportLoopException;
 import org.openflexo.foundation.resource.ResourceData;
-import org.openflexo.foundation.resource.ResourceRepository;
 import org.openflexo.foundation.resource.SaveResourceException;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
-import org.openflexo.foundation.utils.FlexoObjectIDManager;
 import org.openflexo.foundation.utils.FlexoObjectReference;
-import org.openflexo.foundation.utils.FlexoProgress;
 import org.openflexo.foundation.utils.ProjectLoadingCancelledException;
-import org.openflexo.model.annotations.Adder;
-import org.openflexo.model.annotations.Embedded;
-import org.openflexo.model.annotations.Finder;
-import org.openflexo.model.annotations.Getter;
-import org.openflexo.model.annotations.Getter.Cardinality;
-import org.openflexo.model.annotations.ImplementationClass;
-import org.openflexo.model.annotations.ModelEntity;
-import org.openflexo.model.annotations.PropertyIdentifier;
-import org.openflexo.model.annotations.Remover;
-import org.openflexo.model.annotations.Setter;
-import org.openflexo.model.annotations.XMLAttribute;
-import org.openflexo.model.annotations.XMLElement;
-import org.openflexo.model.validation.Validable;
-import org.openflexo.model.validation.ValidationModel;
+import org.openflexo.pamela.annotations.Adder;
+import org.openflexo.pamela.annotations.Embedded;
+import org.openflexo.pamela.annotations.Finder;
+import org.openflexo.pamela.annotations.Getter;
+import org.openflexo.pamela.annotations.ImplementationClass;
+import org.openflexo.pamela.annotations.ModelEntity;
+import org.openflexo.pamela.annotations.PropertyIdentifier;
+import org.openflexo.pamela.annotations.Remover;
+import org.openflexo.pamela.annotations.Setter;
+import org.openflexo.pamela.annotations.XMLAttribute;
+import org.openflexo.pamela.annotations.XMLElement;
+import org.openflexo.pamela.annotations.Getter.Cardinality;
+import org.openflexo.pamela.validation.ValidationModel;
 import org.openflexo.toolbox.FlexoVersion;
 
 /**
@@ -92,8 +87,7 @@ import org.openflexo.toolbox.FlexoVersion;
 @ModelEntity
 @ImplementationClass(FlexoProjectImpl.class)
 @XMLElement(deprecatedXMLTags = "ProjectData")
-public interface FlexoProject<I> extends ResourceRepository<FlexoResource<?>, I>, FlexoResourceCenter<I>, Validable, FlexoProjectObject,
-		ResourceData<FlexoProject<I>> {
+public interface FlexoProject<I> extends FlexoResourceCenter<I>, FlexoProjectObject<I>, ResourceData<FlexoProject<I>> {
 
 	@PropertyIdentifier(type = String.class)
 	public static final String PROJECT_NAME_KEY = "projectName";
@@ -167,28 +161,28 @@ public interface FlexoProject<I> extends ResourceRepository<FlexoResource<?>, I>
 	public I getProjectDirectory();
 
 	@Finder(collection = IMPORTED_PROJECTS, attribute = FlexoProjectReference.URI, isMultiValued = false)
-	public FlexoProjectReference getProjectReferenceWithURI(String uri);
+	public FlexoProjectReference<?> getProjectReferenceWithURI(String uri);
 
-	public FlexoProjectReference getProjectReferenceWithURI(String projectURI, boolean searchRecursively);
+	public FlexoProjectReference<?> getProjectReferenceWithURI(String projectURI, boolean searchRecursively);
 
 	@Getter(value = IMPORTED_PROJECTS, cardinality = Cardinality.LIST, inverse = FlexoProjectReference.OWNER)
 	@XMLElement(xmlTag = "ImportedProjects")
 	@Embedded
-	public List<FlexoProjectReference> getImportedProjects();
+	public List<FlexoProjectReference<?>> getImportedProjects();
 
 	@Setter(value = IMPORTED_PROJECTS)
-	public void setImportedProjects(List<FlexoProjectReference> importedProjects);
+	public void setImportedProjects(List<FlexoProjectReference<?>> importedProjects);
 
 	@Adder(IMPORTED_PROJECTS)
-	public void addToImportedProjects(FlexoProjectReference projectReference)
+	public void addToImportedProjects(FlexoProjectReference<?> projectReference)
 			throws ProjectImportLoopException, ProjectLoadingCancelledException;
 
 	@Remover(value = IMPORTED_PROJECTS)
-	public void removeFromImportedProjects(FlexoProjectReference projectReference);
+	public void removeFromImportedProjects(FlexoProjectReference<?> projectReference);
 
-	public String canImportProject(FlexoProject project);
+	public String canImportProject(FlexoProject<?> project);
 
-	public void removeFromImportedProjects(FlexoProject project);
+	public void removeFromImportedProjects(FlexoProject<?> project);
 
 	@Getter(value = EDITORS, cardinality = Cardinality.LIST, ignoreType = true)
 	public List<FlexoEditor> getEditors();
@@ -207,7 +201,7 @@ public interface FlexoProject<I> extends ResourceRepository<FlexoResource<?>, I>
 	 * 
 	 * @return
 	 */
-	public List<TechnologyAdapter> getRequiredTechnologyAdapters();
+	public List<TechnologyAdapter<?>> getRequiredTechnologyAdapters();
 
 	public FlexoProjectFactory getModelFactory();
 
@@ -253,13 +247,11 @@ public interface FlexoProject<I> extends ResourceRepository<FlexoResource<?>, I>
 	 */
 	public void save() throws SaveResourceException;
 
-	public void save(FlexoProgress progress) throws SaveResourceException;
-
 	/**
 	 * Save this project using FlexoEditingContext scheme<br>
 	 * Additionnaly save all known resources related to this project
 	 */
-	public void saveModifiedResources(FlexoProgress progress) throws SaveResourceException;
+	public void saveModifiedResources() throws SaveResourceException;
 
 	/**
 	 * Save this project<br>
@@ -269,7 +261,7 @@ public interface FlexoProject<I> extends ResourceRepository<FlexoResource<?>, I>
 	 * 
 	 * @param clearModifiedStatus
 	 */
-	public void saveModifiedResources(FlexoProgress progress, boolean clearModifiedStatus) throws SaveResourceException;
+	public void saveModifiedResources(boolean clearModifiedStatus) throws SaveResourceException;
 
 	/**
 	 * Close this project by de-referencing all contents of that project and removing it from {@link FlexoResourceCenterService}<br>
@@ -303,21 +295,19 @@ public interface FlexoProject<I> extends ResourceRepository<FlexoResource<?>, I>
 
 	public ValidationModel getProjectValidationModel();
 
-	public FlexoObjectIDManager getObjectIDManager();
-
 	@Getter(value = PROJECT_NATURES, cardinality = Cardinality.LIST, inverse = ProjectNature.OWNER)
 	@XMLElement
 	@Embedded
-	public List<ProjectNature> getProjectNatures();
+	public List<ProjectNature<?>> getProjectNatures();
 
 	@Setter(value = PROJECT_NATURES)
-	public void setProjectNatures(List<ProjectNature> projectNatures);
+	public void setProjectNatures(List<ProjectNature<?>> projectNatures);
 
 	@Adder(PROJECT_NATURES)
-	public void addToProjectNatures(ProjectNature projectNature);
+	public void addToProjectNatures(ProjectNature<?> projectNature);
 
 	@Remover(value = PROJECT_NATURES)
-	public void removeFromProjectNatures(ProjectNature projectNature);
+	public void removeFromProjectNatures(ProjectNature<?> projectNature);
 
 	/**
 	 * Return boolean indicating if this project might be interpreted according to this project nature
@@ -345,7 +335,7 @@ public interface FlexoProject<I> extends ResourceRepository<FlexoResource<?>, I>
 	 * @return
 	 */
 	@NotificationUnsafe
-	public <N extends ProjectNature> N getNature(Class<N> projectNatureClass);
+	public <N extends ProjectNature<N>> N getNature(Class<N> projectNatureClass);
 
 	/**
 	 * Return nature of supplied class when existing.<br>
@@ -354,6 +344,6 @@ public interface FlexoProject<I> extends ResourceRepository<FlexoResource<?>, I>
 	 * @return
 	 */
 	@NotificationUnsafe
-	public <N extends ProjectNature> N getNature(String projectNatureClassName);
+	public <N extends ProjectNature<N>> N getNature(String projectNatureClassName);
 
 }

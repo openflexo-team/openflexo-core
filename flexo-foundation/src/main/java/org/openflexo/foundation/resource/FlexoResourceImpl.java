@@ -39,7 +39,9 @@
 
 package org.openflexo.foundation.resource;
 
+import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
@@ -52,8 +54,8 @@ import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterResource;
 import org.openflexo.foundation.utils.FlexoObjectReference;
 import org.openflexo.localization.LocalizedDelegate;
-import org.openflexo.model.factory.AccessibleProxyObject;
-import org.openflexo.toolbox.IProgress;
+import org.openflexo.pamela.factory.AccessibleProxyObject;
+import org.openflexo.toolbox.FileUtils;
 import org.openflexo.toolbox.StringUtils;
 
 /**
@@ -108,7 +110,7 @@ public abstract class FlexoResourceImpl<RD extends ResourceData<RD>> extends Fle
 	 * @throws ResourceLoadingCancelledException
 	 */
 	@Override
-	public RD getResourceData(IProgress progress)
+	public RD getResourceData()
 			throws ResourceLoadingCancelledException, ResourceLoadingCancelledException, FileNotFoundException, FlexoException {
 
 		if (isDeleted()) {
@@ -118,18 +120,20 @@ public abstract class FlexoResourceImpl<RD extends ResourceData<RD>> extends Fle
 			return null;
 		}
 		if (isLoading()) {
-			// logger.warning("trying to load a resource data from itself,
-			// please investigate");
+			if (getServiceManager() != null) {
+				getServiceManager().getResourceManager().crossReferencesLoadingSchemeDetected(this);
+			}
+			else {
+				logger.warning("Resource " + this + " does not refer to any ServiceManager. Please investigate...");
+			}
 			return resourceData;
+			// throw new CrossReferencesResourceLoadingException(this);
 		}
 		if (resourceData == null && isLoadable() && !isLoading()) {
 			// The resourceData is null, we try to load it
 			setLoading(true);
-			resourceData = loadResourceData(progress);
+			resourceData = loadResourceData();
 			setLoading(false);
-			// That's fine, resource is loaded, now let's notify the loading of
-			// the resources
-			notifyResourceLoaded();
 		}
 		return resourceData;
 	}
@@ -173,7 +177,7 @@ public abstract class FlexoResourceImpl<RD extends ResourceData<RD>> extends Fle
 	@Override
 	public void setResourceData(RD resourceData) {
 		this.resourceData = resourceData;
-		notifyResourceLoaded();
+		// notifyResourceLoaded();
 	}
 
 	/**
@@ -219,6 +223,19 @@ public abstract class FlexoResourceImpl<RD extends ResourceData<RD>> extends Fle
 		performSuperSetter(NAME, aName);
 	}
 
+	@Override
+	public void notifyResourceWillLoad() {
+		ResourceWillLoad notification = new ResourceWillLoad(this);
+		setChanged();
+		notifyObservers(notification);
+		if (getServiceManager() != null) {
+			getServiceManager().getResourceManager().resourceWillLoad(this, notification);
+		}
+		else {
+			logger.warning("Resource " + this + " does not refer to any ServiceManager. Please investigate...");
+		}
+	}
+
 	/**
 	 * Called to notify that a resource has successfully been loaded
 	 */
@@ -231,9 +248,9 @@ public abstract class FlexoResourceImpl<RD extends ResourceData<RD>> extends Fle
 		notifyObservers(notification);
 		// Also notify that the contents of the resource may also have changed
 		setChanged();
-		notifyObservers(new DataModification("contents", null, getContents()));
+		notifyObservers(new DataModification<>("contents", null, getContents()));
 		if (getServiceManager() != null) {
-			getServiceManager().notify(getServiceManager().getResourceManager(), notification);
+			getServiceManager().getResourceManager().resourceLoaded(this, notification);
 		}
 		else {
 			logger.warning("Resource " + this + " does not refer to any ServiceManager. Please investigate...");
@@ -252,9 +269,9 @@ public abstract class FlexoResourceImpl<RD extends ResourceData<RD>> extends Fle
 		notifyObservers(notification);
 		// Also notify that the contents of the resource may also have changed
 		setChanged();
-		notifyObservers(new DataModification("contents", null, null));
+		notifyObservers(new DataModification<>("contents", null, null));
 		if (getServiceManager() != null) {
-			getServiceManager().notify(getServiceManager().getResourceManager(), notification);
+			getServiceManager().getResourceManager().resourceUnloaded(this, notification);
 		}
 		else {
 			logger.warning("Resource " + this + " does not refer to any ServiceManager. Please investigate...");
@@ -269,7 +286,7 @@ public abstract class FlexoResourceImpl<RD extends ResourceData<RD>> extends Fle
 	public void notifyResourceSaved() {
 		logger.fine("notifyResourceSaved(), resource=" + this);
 
-		ResourceSaved notification = new ResourceSaved(this, resourceData);
+		ResourceSaved<RD> notification = new ResourceSaved<>(this, resourceData);
 		setChanged();
 		notifyObservers(notification);
 		getServiceManager().notify(getServiceManager().getResourceManager(), notification);
@@ -282,7 +299,7 @@ public abstract class FlexoResourceImpl<RD extends ResourceData<RD>> extends Fle
 	public void notifyResourceModified() {
 		// logger.info("notifyResourceModified(), resource=" + this);
 
-		ResourceModified notification = new ResourceModified(this, resourceData);
+		ResourceModified<RD> notification = new ResourceModified<>(this, resourceData);
 		setChanged();
 		notifyObservers(notification);
 		getServiceManager().notify(getServiceManager().getResourceManager(), notification);
@@ -343,7 +360,6 @@ public abstract class FlexoResourceImpl<RD extends ResourceData<RD>> extends Fle
 
 	/*@Override
 	public List<FlexoResource<?>> getContents() {
-		// TODO Auto-generated method stub
 		return null;
 	}*/
 
@@ -391,7 +407,12 @@ public abstract class FlexoResourceImpl<RD extends ResourceData<RD>> extends Fle
 	public void setServiceManager(FlexoServiceManager serviceManager) {
 		this.serviceManager = serviceManager;
 		if (getServiceManager() != null) {
-			getServiceManager().getResourceManager().registerResource(this);
+			try {
+				getServiceManager().getResourceManager().registerResource(this);
+			} catch (DuplicateURIException e) {
+				logger.warning(e.getMessage());
+				e.printStackTrace();
+			}
 		}
 	}
 
@@ -427,36 +448,34 @@ public abstract class FlexoResourceImpl<RD extends ResourceData<RD>> extends Fle
 			logger.warning("Delete requested for READ-ONLY resource " + this);
 			return false;
 		}
-		else {
-			isDeleting = true;
-			logger.info("Deleting resource " + this);
+		isDeleting = true;
+		logger.info("Deleting resource " + this);
 
-			if (getResourceCenter() instanceof ResourceRepositoryImpl) {
-				((ResourceRepository) getResourceCenter()).unregisterResource(this);
-			}
-
-			if (getContainer() != null) {
-				FlexoResource<?> container = getContainer();
-				container.removeFromContents(this);
-				container.notifyContentsRemoved(this);
-			}
-			for (org.openflexo.foundation.resource.FlexoResource<?> r : new ArrayList<>(getContents())) {
-				r.delete();
-			}
-
-			if (isLoaded()) {
-				unloadResourceData(true);
-			}
-
-			// Handle Flexo IO delegate deletion
-			getIODelegate().delete();
-
-			performSuperDelete(context);
-
-			isDeleting = false;
-
-			return true;
+		if (getResourceCenter() instanceof ResourceRepositoryImpl) {
+			((ResourceRepository) getResourceCenter()).unregisterResource(this);
 		}
+
+		if (getContainer() != null) {
+			FlexoResource<?> container = getContainer();
+			container.removeFromContents(this);
+			container.notifyContentsRemoved(this);
+		}
+		for (org.openflexo.foundation.resource.FlexoResource<?> r : new ArrayList<>(getContents())) {
+			r.delete();
+		}
+
+		if (isLoaded()) {
+			unloadResourceData(true);
+		}
+
+		// Handle Flexo IO delegate deletion
+		getIODelegate().delete();
+
+		performSuperDelete(context);
+
+		isDeleting = false;
+
+		return true;
 	}
 
 	/**
@@ -476,6 +495,16 @@ public abstract class FlexoResourceImpl<RD extends ResourceData<RD>> extends Fle
 			notifyResourceUnloaded();
 			isUnloading = false;
 		}
+	}
+
+	/**
+	 * Callback called when a cycle was detected in Resource Loading Scheme, and when the resource beeing requested has finally been loaded.
+	 * 
+	 * @param requestedResource
+	 */
+	@Override
+	public void resolvedCrossReferenceDependency(FlexoResource<?> requestedResource) {
+		// Override when required
 	}
 
 	/**
@@ -534,14 +563,12 @@ public abstract class FlexoResourceImpl<RD extends ResourceData<RD>> extends Fle
 	// TODO: check this
 	/*@Override
 	public List<? extends Resource> getContents(Pattern pattern, boolean deep) {
-		// TODO Auto-generated method stub
 		return null;
 	}*/
 
 	// TODO: check this
 	/*@Override
 	public ResourceLocatorDelegate getLocator() {
-		// TODO Auto-generated method stub
 		return null;
 	}*/
 
@@ -571,13 +598,11 @@ public abstract class FlexoResourceImpl<RD extends ResourceData<RD>> extends Fle
 
 	/*@Override
 	public String computeRelativePath(Resource resource) {
-		// TODO Auto-generated method stub
 		return null;
 	}*/
 
 	/*@Override
 	public Resource locateResource(String relativePathName) {
-		// TODO Auto-generated method stub
 		return null;
 	}*/
 
@@ -615,7 +640,7 @@ public abstract class FlexoResourceImpl<RD extends ResourceData<RD>> extends Fle
 	@Override
 	public LocalizedDelegate getLocales() {
 		if (this instanceof TechnologyAdapterResource) {
-			return ((TechnologyAdapterResource) this).getTechnologyAdapter().getLocales();
+			return ((TechnologyAdapterResource<?, ?>) this).getTechnologyAdapter().getLocales();
 		}
 		return super.getLocales();
 	}
@@ -658,6 +683,25 @@ public abstract class FlexoResourceImpl<RD extends ResourceData<RD>> extends Fle
 			return getIODelegate().getDisplayName();
 		}
 		return getName();
+	}
+
+	protected static void makeLocalCopy(File file) throws IOException {
+		if (file != null && file.exists()) {
+			String localCopyName = file.getName() + "~";
+			File localCopy = new File(file.getParentFile(), localCopyName);
+			FileUtils.copyFileToFile(file, localCopy);
+		}
+	}
+
+	@Override
+	public <I> String pathRelativeToResourceCenter(FlexoResourceCenter<I> rc) {
+		return rc.relativePath((I) getIODelegate().getSerializationArtefact());
+	}
+
+	@Override
+	public <I> String parentPathRelativeToResourceCenter(FlexoResourceCenter<I> rc) {
+		I parent = rc.getContainer((I) getIODelegate().getSerializationArtefact());
+		return rc.relativePath(parent);
 	}
 
 }

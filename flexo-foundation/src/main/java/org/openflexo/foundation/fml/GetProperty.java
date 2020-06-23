@@ -48,15 +48,20 @@ import org.openflexo.foundation.fml.FMLRepresentationContext.FMLRepresentationOu
 import org.openflexo.foundation.fml.controlgraph.EmptyControlGraph;
 import org.openflexo.foundation.fml.controlgraph.FMLControlGraph;
 import org.openflexo.foundation.fml.controlgraph.FMLControlGraphOwner;
-import org.openflexo.model.annotations.CloningStrategy;
-import org.openflexo.model.annotations.CloningStrategy.StrategyType;
-import org.openflexo.model.annotations.Embedded;
-import org.openflexo.model.annotations.Getter;
-import org.openflexo.model.annotations.ImplementationClass;
-import org.openflexo.model.annotations.ModelEntity;
-import org.openflexo.model.annotations.PropertyIdentifier;
-import org.openflexo.model.annotations.Setter;
-import org.openflexo.model.annotations.XMLElement;
+import org.openflexo.pamela.annotations.CloningStrategy;
+import org.openflexo.pamela.annotations.CloningStrategy.StrategyType;
+import org.openflexo.pamela.annotations.DefineValidationRule;
+import org.openflexo.pamela.annotations.Embedded;
+import org.openflexo.pamela.annotations.Getter;
+import org.openflexo.pamela.annotations.ImplementationClass;
+import org.openflexo.pamela.annotations.ModelEntity;
+import org.openflexo.pamela.annotations.PropertyIdentifier;
+import org.openflexo.pamela.annotations.Setter;
+import org.openflexo.pamela.annotations.XMLAttribute;
+import org.openflexo.pamela.annotations.XMLElement;
+import org.openflexo.pamela.validation.ValidationError;
+import org.openflexo.pamela.validation.ValidationIssue;
+import org.openflexo.pamela.validation.ValidationRule;
 import org.openflexo.toolbox.StringUtils;
 
 /**
@@ -73,8 +78,8 @@ import org.openflexo.toolbox.StringUtils;
 @XMLElement
 public abstract interface GetProperty<T> extends FlexoProperty<T>, FMLControlGraphOwner {
 
-	// @PropertyIdentifier(type = Type.class)
-	// public static final String TYPE_KEY = "type";
+	@PropertyIdentifier(type = Type.class)
+	public static final String DECLARED_TYPE_KEY = "declaredType";
 
 	@PropertyIdentifier(type = FMLControlGraph.class)
 	public static final String GET_CONTROL_GRAPH_KEY = "getControlGraph";
@@ -88,13 +93,14 @@ public abstract interface GetProperty<T> extends FlexoProperty<T>, FMLControlGra
 	@Setter(GET_CONTROL_GRAPH_KEY)
 	public void setGetControlGraph(FMLControlGraph aControlGraph);
 
-	/*@Override
-	@Getter(value = TYPE_KEY, ignoreType = true)
+	@Getter(value = DECLARED_TYPE_KEY, isStringConvertable = true)
 	@XMLAttribute
-	public Type getType();
-	
-	@Setter(TYPE_KEY)
-	public void setType(Type type);*/
+	public Type getDeclaredType();
+
+	@Setter(DECLARED_TYPE_KEY)
+	public void setDeclaredType(Type type);
+
+	public Type getAnalyzedType();
 
 	public static abstract class GetPropertyImpl<T> extends FlexoPropertyImpl<T> implements GetProperty<T> {
 
@@ -116,11 +122,19 @@ public abstract interface GetProperty<T> extends FlexoProperty<T>, FMLControlGra
 		}
 
 		@Override
-		public Type getType() {
+		public Type getAnalyzedType() {
 			if (getGetControlGraph() != null) {
 				return getGetControlGraph().getInferedType();
 			}
 			return Void.class;
+		}
+
+		@Override
+		public Type getType() {
+			if (getDeclaredType() != null) {
+				return getDeclaredType();
+			}
+			return getAnalyzedType();
 		}
 
 		@Override
@@ -219,6 +233,28 @@ public abstract interface GetProperty<T> extends FlexoProperty<T>, FMLControlGra
 		
 			return out.toString();
 		}*/
+
+	}
+
+	@DefineValidationRule
+	public static class DeclaredTypeShouldBeCompatibleWithAnalyzedType
+			extends ValidationRule<DeclaredTypeShouldBeCompatibleWithAnalyzedType, GetProperty<?>> {
+
+		public DeclaredTypeShouldBeCompatibleWithAnalyzedType() {
+			super(GetProperty.class, "declared_types_and_analyzed_types_must_be_compatible");
+		}
+
+		@Override
+		public ValidationIssue<DeclaredTypeShouldBeCompatibleWithAnalyzedType, GetProperty<?>> applyValidation(
+				GetProperty<?> aGetProperty) {
+			if (aGetProperty.getDeclaredType() != null && aGetProperty.getAnalyzedType() != null) {
+				if (!TypeUtils.isTypeAssignableFrom(aGetProperty.getDeclaredType(), aGetProperty.getAnalyzedType())
+						&& !TypeUtils.isTypeAssignableFrom(aGetProperty.getAnalyzedType(), aGetProperty.getDeclaredType())) {
+					return new ValidationError<>(this, aGetProperty, "types_are_not_compatibles");
+				}
+			}
+			return null;
+		}
 
 	}
 

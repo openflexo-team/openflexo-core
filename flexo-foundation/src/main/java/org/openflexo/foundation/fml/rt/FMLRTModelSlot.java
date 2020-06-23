@@ -49,22 +49,23 @@ import org.openflexo.foundation.fml.FlexoConceptInstanceType;
 import org.openflexo.foundation.fml.FlexoRole;
 import org.openflexo.foundation.fml.PrimitiveRole;
 import org.openflexo.foundation.fml.VirtualModel;
+import org.openflexo.foundation.fml.VirtualModelInstanceType;
 import org.openflexo.foundation.fml.rm.VirtualModelResource;
 import org.openflexo.foundation.resource.ResourceLoadingCancelledException;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
-import org.openflexo.model.annotations.DefineValidationRule;
-import org.openflexo.model.annotations.Getter;
-import org.openflexo.model.annotations.ImplementationClass;
-import org.openflexo.model.annotations.Import;
-import org.openflexo.model.annotations.Imports;
-import org.openflexo.model.annotations.ModelEntity;
-import org.openflexo.model.annotations.PropertyIdentifier;
-import org.openflexo.model.annotations.Setter;
-import org.openflexo.model.annotations.XMLAttribute;
-import org.openflexo.model.validation.ValidationError;
-import org.openflexo.model.validation.ValidationIssue;
-import org.openflexo.model.validation.ValidationRule;
+import org.openflexo.pamela.annotations.DefineValidationRule;
+import org.openflexo.pamela.annotations.Getter;
+import org.openflexo.pamela.annotations.ImplementationClass;
+import org.openflexo.pamela.annotations.Import;
+import org.openflexo.pamela.annotations.Imports;
+import org.openflexo.pamela.annotations.ModelEntity;
+import org.openflexo.pamela.annotations.PropertyIdentifier;
+import org.openflexo.pamela.annotations.Setter;
+import org.openflexo.pamela.annotations.XMLAttribute;
+import org.openflexo.pamela.validation.ValidationError;
+import org.openflexo.pamela.validation.ValidationIssue;
+import org.openflexo.pamela.validation.ValidationRule;
 import org.openflexo.toolbox.StringUtils;
 
 /**
@@ -89,7 +90,7 @@ import org.openflexo.toolbox.StringUtils;
 @ModelEntity(isAbstract = true)
 @Imports({ @Import(FMLRTVirtualModelInstanceModelSlot.class) })
 @ImplementationClass(FMLRTModelSlot.FMLRTModelSlotImpl.class)
-public interface FMLRTModelSlot<VMI extends VirtualModelInstance<VMI, TA>, TA extends TechnologyAdapter> extends ModelSlot<VMI> {
+public interface FMLRTModelSlot<VMI extends VirtualModelInstance<VMI, TA>, TA extends TechnologyAdapter<TA>> extends ModelSlot<VMI> {
 
 	@PropertyIdentifier(type = String.class)
 	public static final String VIRTUAL_MODEL_URI_KEY = "virtualModelURI";
@@ -113,7 +114,7 @@ public interface FMLRTModelSlot<VMI extends VirtualModelInstance<VMI, TA>, TA ex
 
 	public Class<TA> getTechnologyAdapterClass();
 
-	public static abstract class FMLRTModelSlotImpl<VMI extends VirtualModelInstance<VMI, TA>, TA extends TechnologyAdapter>
+	public static abstract class FMLRTModelSlotImpl<VMI extends VirtualModelInstance<VMI, TA>, TA extends TechnologyAdapter<TA>>
 			extends ModelSlotImpl<VMI> implements FMLRTModelSlot<VMI, TA> {
 
 		private static final Logger logger = Logger.getLogger(FMLRTModelSlot.class.getPackage().getName());
@@ -168,6 +169,15 @@ public interface FMLRTModelSlot<VMI extends VirtualModelInstance<VMI, TA>, TA ex
 
 		@Override
 		public Type getType() {
+			if (getAccessedVirtualModel() == null) {
+				if (StringUtils.isNotEmpty(getAccessedVirtualModelURI()) && getTechnologyAdapter() != null
+						&& getTechnologyAdapter().getVirtualModelInstanceTypeFactory() != null) {
+					return getTechnologyAdapter().getVirtualModelInstanceTypeFactory().makeCustomType(getAccessedVirtualModelURI());
+				}
+				else {
+					return VirtualModelInstanceType.UNDEFINED_VIRTUAL_MODEL_INSTANCE_TYPE;
+				}
+			}
 			return FlexoConceptInstanceType.getFlexoConceptInstanceType(getAccessedVirtualModel());
 		}
 
@@ -200,15 +210,12 @@ public interface FMLRTModelSlot<VMI extends VirtualModelInstance<VMI, TA>, TA ex
 				// Do not load virtual model when unloaded
 				// return getAccessedVirtualModelResource().getLoadedResourceData();
 				try {
-					return getAccessedVirtualModelResource().getResourceData(null);
+					return getAccessedVirtualModelResource().getResourceData();
 				} catch (FileNotFoundException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				} catch (ResourceLoadingCancelledException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				} catch (FlexoException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			}

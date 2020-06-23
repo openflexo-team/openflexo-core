@@ -50,8 +50,7 @@ import org.openflexo.foundation.FlexoProject;
 import org.openflexo.foundation.action.FlexoAction;
 import org.openflexo.foundation.action.FlexoActionEnableCondition;
 import org.openflexo.foundation.action.FlexoActionFactory;
-import org.openflexo.foundation.action.FlexoActionFinalizer;
-import org.openflexo.foundation.action.FlexoActionInitializer;
+import org.openflexo.foundation.action.FlexoActionRunnable;
 import org.openflexo.foundation.action.FlexoActionVisibleCondition;
 import org.openflexo.foundation.action.FlexoExceptionHandler;
 import org.openflexo.gina.ApplicationFIBLibrary;
@@ -166,8 +165,8 @@ public abstract class ActionInitializer<A extends FlexoAction<A, T1, T2>, T1 ext
 	 * 
 	 * @return null
 	 */
-	protected FlexoActionInitializer<A> getDefaultInitializer() {
-		return null;
+	protected FlexoActionRunnable<A, T1, T2> getDefaultInitializer() {
+		return (e, action) -> true;
 	}
 
 	/**
@@ -176,8 +175,8 @@ public abstract class ActionInitializer<A extends FlexoAction<A, T1, T2>, T1 ext
 	 * 
 	 * @return null
 	 */
-	protected FlexoActionFinalizer<A> getDefaultFinalizer() {
-		return null;
+	protected FlexoActionRunnable<A, T1, T2> getDefaultFinalizer() {
+		return (e, action) -> true;
 	}
 
 	/**
@@ -186,7 +185,7 @@ public abstract class ActionInitializer<A extends FlexoAction<A, T1, T2>, T1 ext
 	 * 
 	 * @return null
 	 */
-	protected FlexoExceptionHandler<A> getDefaultExceptionHandler() {
+	protected FlexoExceptionHandler<A, T1, T2> getDefaultExceptionHandler() {
 		return null;
 	}
 
@@ -228,7 +227,7 @@ public abstract class ActionInitializer<A extends FlexoAction<A, T1, T2>, T1 ext
 	 * 
 	 * @return null
 	 */
-	protected Icon getEnabledIcon(FlexoActionFactory<?, ?, ?> actionFactory) {
+	protected Icon getEnabledIcon(FlexoActionFactory<A, T1, T2> actionFactory) {
 		return null;
 	}
 
@@ -240,11 +239,11 @@ public abstract class ActionInitializer<A extends FlexoAction<A, T1, T2>, T1 ext
 	 * 
 	 * @return null
 	 */
-	protected Icon getDisabledIcon(FlexoActionFactory<?, ?, ?> actionFactory) {
+	protected Icon getDisabledIcon(FlexoActionFactory<A, T1, T2> actionFactory) {
 		return null;
 	}
 
-	public LocalizedDelegate getModuleLocales(FlexoAction<?, ?, ?> action) {
+	public LocalizedDelegate getModuleLocales(FlexoAction<A, T1, T2> action) {
 		if (action != null) {
 			if (action.getServiceManager() instanceof ApplicationContext) {
 				return ((ApplicationContext) action.getServiceManager()).getModuleLoader().getActiveModule().getLocales();
@@ -256,7 +255,7 @@ public abstract class ActionInitializer<A extends FlexoAction<A, T1, T2>, T1 ext
 		return FlexoLocalization.getMainLocalizer();
 	}
 
-	public LocalizedDelegate getActionLocales(FlexoAction<?, ?, ?> action) {
+	public LocalizedDelegate getActionLocales(FlexoAction<A, T1, T2> action) {
 		if (action != null) {
 			return action.getLocales();
 		}

@@ -21,37 +21,22 @@
 package org.openflexo.foundation.fml.rm;
 
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.logging.Logger;
 
-import org.jdom2.Content;
-import org.jdom2.Document;
-import org.jdom2.Element;
-import org.jdom2.JDOMException;
-import org.jdom2.input.SAXBuilder;
-import org.jdom2.output.Format;
-import org.jdom2.output.XMLOutputter;
 import org.openflexo.foundation.FlexoProject;
-import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.fml.FMLModelFactory;
 import org.openflexo.foundation.fml.FMLTechnologyAdapter;
 import org.openflexo.foundation.fml.VirtualModel;
-import org.openflexo.foundation.resource.FileIODelegate.WillRenameFileOnDiskNotification;
 import org.openflexo.foundation.resource.FileSystemBasedResourceCenter;
 import org.openflexo.foundation.resource.FlexoIODelegate;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.resource.RepositoryFolder;
 import org.openflexo.foundation.resource.SaveResourceException;
 import org.openflexo.foundation.resource.TechnologySpecificPamelaResourceFactory;
-import org.openflexo.foundation.technologyadapter.ModelSlot;
-import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.technologyadapter.TechnologyContextManager;
-import org.openflexo.model.exceptions.ModelDefinitionException;
+import org.openflexo.pamela.exceptions.ModelDefinitionException;
 import org.openflexo.toolbox.FileSystemMetaDataManager;
-import org.openflexo.toolbox.FileUtils;
 import org.openflexo.toolbox.FlexoVersion;
 import org.openflexo.toolbox.StringUtils;
 import org.openflexo.xml.XMLElementInfo;
@@ -88,7 +73,7 @@ public class VirtualModelResourceFactory
 	 * Build and return model factory to use for resource data managing
 	 */
 	@Override
-	public FMLModelFactory makeResourceDataFactory(VirtualModelResource resource,
+	public FMLModelFactory makeModelFactory(VirtualModelResource resource,
 			TechnologyContextManager<FMLTechnologyAdapter> technologyContextManager) throws ModelDefinitionException {
 		return new FMLModelFactory(resource, technologyContextManager.getServiceManager());
 	}
@@ -101,12 +86,10 @@ public class VirtualModelResourceFactory
 	@Override
 	public VirtualModel makeEmptyResourceData(VirtualModelResource resource) {
 		if (resource.getSpecializedResourceDataClass() != null) {
-			System.out.println("Plutot que de creer un VirtualModel, je cree un " + resource.getSpecializedResourceDataClass());
+			// System.out.println("Plutot que de creer un VirtualModel, je cree un " + resource.getSpecializedResourceDataClass());
 			return resource.getFactory().newInstance(resource.getSpecializedResourceDataClass());
 		}
-		else {
-			return resource.getFactory().newVirtualModel();
-		}
+		return resource.getFactory().newVirtualModel();
 	}
 
 	@Override
@@ -209,7 +192,7 @@ public class VirtualModelResourceFactory
 
 		if (createEmptyContents) {
 			createEmptyContents(returned);
-			returned.save(null);
+			returned.save();
 		}
 
 		return returned;
@@ -245,6 +228,11 @@ public class VirtualModelResourceFactory
 	@Override
 	protected <I> VirtualModelResource initResourceForCreation(I serializationArtefact, FlexoResourceCenter<I> resourceCenter, String name,
 			String uri) throws ModelDefinitionException {
+
+		if (name.endsWith(FML_SUFFIX)) {
+			name = name.substring(0, name.length() - FML_SUFFIX.length());
+		}
+
 		VirtualModelResource returned = super.initResourceForCreation(serializationArtefact, resourceCenter, name, uri);
 
 		returned.setVersion(INITIAL_REVISION);
@@ -287,7 +275,7 @@ public class VirtualModelResourceFactory
 			}
 			// We set a new factory because of required model slots
 			if (StringUtils.isNotEmpty(vpi.requiredModelSlotList)) {
-				returned.setFactory(makeResourceDataFactory(returned, getTechnologyContextManager(resourceCenter.getServiceManager())));
+				returned.setFactory(makeModelFactory(returned, getTechnologyContextManager(resourceCenter.getServiceManager())));
 			}
 			if (StringUtils.isNotEmpty(vpi.virtualModelClassName)) {
 				Class<? extends VirtualModel> virtualModelClass = null;
@@ -336,150 +324,14 @@ public class VirtualModelResourceFactory
 		return false;
 	}
 
-	@Deprecated
-	private static void convertFMLXMLFrom1_8_1_to_1_9(File xmlFile, FlexoServiceManager sm) throws JDOMException, IOException {
-
-		SAXBuilder builder = new SAXBuilder();
-
-		Document document = builder.build(xmlFile);
-		Element rootNode = document.getRootElement();
-
-		System.out.println("root node= " + rootNode);
-
-		rootNode.setName("VirtualModel");
-
-		XMLOutputter xmlOutput = new XMLOutputter();
-
-		System.out.println("convertFMLXMLFrom1_8_1_to_1_9 for " + xmlFile);
-		// System.out.println(FileUtils.fileContents(xmlFile));
-
-		List<Class<? extends ModelSlot<?>>> msClasses = new ArrayList<>();
-		for (Content content : rootNode.getContent()) {
-			if (content instanceof Element) {
-				Element element = (Element) content;
-				if (element.getName().contains("ModelSlot")) {
-					String msName = element.getName().substring(10);
-					for (TechnologyAdapter ta : sm.getTechnologyAdapterService().getTechnologyAdapters()) {
-						for (Class<? extends ModelSlot<?>> msClass : ta.getAvailableModelSlotTypes()) {
-							if (msClass.getSimpleName().equals(msName)) {
-								// System.out.println("Found model slot: " + element.getName() + " msClass=" + msClass);
-								msClasses.add(msClass);
-							}
-						}
-					}
-					if (element.getName().equals("ModelSlot_FMLRTModelSlot")) {
-						element.setName("ModelSlot_FMLRTVirtualModelInstanceModelSlot");
-					}
-				}
-			}
-		}
-		for (Class<? extends ModelSlot<?>> msClass : msClasses) {
-			Element newUseDecl = new Element("UseModelSlotDeclaration");
-			newUseDecl.setAttribute("modelSlotClass", msClass.getName());
-			rootNode.addContent(newUseDecl);
-		}
-
-		// display nice nice
-		xmlOutput.setFormat(Format.getPrettyFormat());
-		try (FileWriter fw = new FileWriter(xmlFile)) {
-			xmlOutput.output(document, fw);
-		}
-		System.out.println("File Saved!");
-	}
-
 	@Override
-	public <I> I getConvertableArtefact(I serializationArtefact, FlexoResourceCenter<I> resourceCenter) {
-		if (serializationArtefact instanceof File && resourceCenter.exists(serializationArtefact)
-				&& resourceCenter.isDirectory(serializationArtefact) && resourceCenter.canRead(serializationArtefact)
-				&& (resourceCenter.retrieveName(serializationArtefact).endsWith(".viewpoint"))) {
-			File initialFile = (File) serializationArtefact;
-			System.out.println("Tiens faudrait convertir: " + initialFile);
-			String name = resourceCenter.retrieveName(serializationArtefact).substring(0,
-					resourceCenter.retrieveName(serializationArtefact).lastIndexOf(".viewpoint"));
-			File convertedFile = new File(initialFile.getParentFile(), name + ".fml");
-			File oldXmlFile = new File(initialFile, name + ".xml");
-			File newXmlFile = new File(initialFile, name + FML_XML_SUFFIX);
-			// try {
-
-			resourceCenter.getServiceManager().notify(null, new WillRenameFileOnDiskNotification(oldXmlFile, newXmlFile));
-			resourceCenter.getServiceManager().notify(null, new WillRenameFileOnDiskNotification(initialFile, convertedFile));
-
-			try {
-
-				FileUtils.rename(oldXmlFile, newXmlFile);
-				FileUtils.rename(initialFile, convertedFile);
-				newXmlFile = new File(convertedFile, name + FML_XML_SUFFIX);
-
-				convertFMLXMLFrom1_8_1_to_1_9(newXmlFile, resourceCenter.getServiceManager());
-
-				/*SAXBuilder builder = new SAXBuilder();
-				
-					try {
-				
-						Document document = builder.build(newXmlFile);
-						Element rootNode = document.getRootElement();
-				
-						System.out.println("root node= " + rootNode);
-				
-						rootNode.setName("VirtualModel");
-				
-						XMLOutputter xmlOutput = new XMLOutputter();
-				
-						// display nice nice
-						xmlOutput.setFormat(Format.getPrettyFormat());
-						xmlOutput.output(document, new FileWriter(newXmlFile));
-				
-						System.out.println("La il faut trouver tous les model slots dans:");
-						System.out.println(FileUtils.fileContents(newXmlFile));
-				
-						for (Content content : rootNode.getContent()) {
-							if (content instanceof Element) {
-								Element element = (Element) content;
-								if (element.getName().contains("ModelSlot")) {
-									System.out.println("J'en ai trouve un: " + element.getName() + " msClass="
-											+ element.getAttributeValue("modelSlotClass"));
-								}
-							}
-						}
-				
-						// System.exit(-1);
-				
-						System.out.println("File Saved!");*/
-
-				// Then handle contained VirtualModel(s)
-
-				for (File vmDir : convertedFile.listFiles()) {
-					if (vmDir.isDirectory()) {
-						File vmXMLFile = new File(vmDir, vmDir.getName() + ".xml");
-						if (vmXMLFile.exists()) {
-							File newVMDir = new File(vmDir.getParentFile(), vmDir.getName() + FML_SUFFIX);
-							File newVMXMLFile = new File(vmDir, vmDir.getName() + FML_XML_SUFFIX);
-							resourceCenter.getServiceManager().notify(null, new WillRenameFileOnDiskNotification(vmXMLFile, newVMXMLFile));
-							resourceCenter.getServiceManager().notify(null, new WillRenameFileOnDiskNotification(vmDir, newVMDir));
-							FileUtils.rename(vmXMLFile, newVMXMLFile);
-							FileUtils.rename(vmDir, newVMDir);
-							newVMXMLFile = new File(newVMDir, vmDir.getName() + FML_XML_SUFFIX);
-
-							convertFMLXMLFrom1_8_1_to_1_9(newVMXMLFile, resourceCenter.getServiceManager());
-						}
-					}
-				}
-
-				return (I) convertedFile;
-			} catch (IOException e) {
-				logger.warning("Unexpected exception while converting file " + initialFile + " " + e.getMessage());
-				e.printStackTrace();
-			} catch (JDOMException e) {
-				logger.warning("Unexpected exception while converting file " + initialFile + " " + e.getMessage());
-				e.printStackTrace();
-			}
-		}
-		return null;
+	public <I> VirtualModelResource registerResource(VirtualModelResource resource, FlexoResourceCenter<I> resourceCenter) {
+		return registerResource(resource, resourceCenter, true);
 
 	}
 
-	@Override
-	protected <I> VirtualModelResource registerResource(VirtualModelResource resource, FlexoResourceCenter<I> resourceCenter) {
+	public <I> VirtualModelResource registerResource(VirtualModelResource resource, FlexoResourceCenter<I> resourceCenter,
+			boolean exploreVirtualModels) {
 		super.registerResource(resource, resourceCenter);
 
 		// Register the resource in the VirtualModelRepository of supplied resource center
@@ -493,8 +345,10 @@ public class VirtualModelResourceFactory
 			resourceCenter.getServiceManager().getVirtualModelLibrary().registerVirtualModel(resource);
 		}
 
-		// Now look for virtual models
-		exploreVirtualModels(resource);
+		if (exploreVirtualModels) {
+			// Now look for virtual models
+			exploreVirtualModels(resource);
+		}
 
 		return resource;
 

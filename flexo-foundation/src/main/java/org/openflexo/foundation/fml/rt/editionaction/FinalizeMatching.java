@@ -68,20 +68,20 @@ import org.openflexo.foundation.fml.rt.action.ActionSchemeActionFactory;
 import org.openflexo.foundation.fml.rt.action.DeletionSchemeActionFactory;
 import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
 import org.openflexo.foundation.fml.rt.action.MatchingSet;
-import org.openflexo.model.annotations.Adder;
-import org.openflexo.model.annotations.CloningStrategy;
-import org.openflexo.model.annotations.CloningStrategy.StrategyType;
-import org.openflexo.model.annotations.DefineValidationRule;
-import org.openflexo.model.annotations.Embedded;
-import org.openflexo.model.annotations.Getter;
-import org.openflexo.model.annotations.Getter.Cardinality;
-import org.openflexo.model.annotations.ImplementationClass;
-import org.openflexo.model.annotations.ModelEntity;
-import org.openflexo.model.annotations.PropertyIdentifier;
-import org.openflexo.model.annotations.Remover;
-import org.openflexo.model.annotations.Setter;
-import org.openflexo.model.annotations.XMLAttribute;
-import org.openflexo.model.annotations.XMLElement;
+import org.openflexo.pamela.annotations.Adder;
+import org.openflexo.pamela.annotations.CloningStrategy;
+import org.openflexo.pamela.annotations.DefineValidationRule;
+import org.openflexo.pamela.annotations.Embedded;
+import org.openflexo.pamela.annotations.Getter;
+import org.openflexo.pamela.annotations.ImplementationClass;
+import org.openflexo.pamela.annotations.ModelEntity;
+import org.openflexo.pamela.annotations.PropertyIdentifier;
+import org.openflexo.pamela.annotations.Remover;
+import org.openflexo.pamela.annotations.Setter;
+import org.openflexo.pamela.annotations.XMLAttribute;
+import org.openflexo.pamela.annotations.XMLElement;
+import org.openflexo.pamela.annotations.CloningStrategy.StrategyType;
+import org.openflexo.pamela.annotations.Getter.Cardinality;
 import org.openflexo.toolbox.StringUtils;
 
 /**
@@ -270,12 +270,9 @@ public interface FinalizeMatching extends EditionAction {
 		public List<FlexoConcept> getAvailableFlexoConceptTypes() {
 			FlexoConcept containerConcept = getOwnerConcept();
 			if (containerConcept != null) {
-				if (containerConcept instanceof VirtualModel) {
+				if (containerConcept instanceof VirtualModel)
 					return ((VirtualModel) containerConcept).getAllRootFlexoConcepts();
-				}
-				else {
-					return containerConcept.getEmbeddedFlexoConcepts();
-				}
+				return containerConcept.getEmbeddedFlexoConcepts();
 			}
 			return Collections.emptyList();
 		}
@@ -421,13 +418,10 @@ public interface FinalizeMatching extends EditionAction {
 				System.out.println("Finalizing MatchingSet " + getMatchingSet() + " pour " + getFlexoConceptType() + " dans "
 						+ getContainer().getBindingValue(evaluationContext));
 			} catch (TypeMismatchException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			} catch (NullReferenceException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			} catch (InvocationTargetException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}*/
 

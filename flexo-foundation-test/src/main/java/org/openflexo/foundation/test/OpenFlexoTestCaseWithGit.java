@@ -149,7 +149,7 @@ public class OpenFlexoTestCaseWithGit extends OpenflexoProjectAtRunTimeTestCase 
 		taService.activateTechnologyAdapter(taService.getTechnologyAdapter(FMLRTTechnologyAdapter.class), true);
 
 		for (Class<? extends TechnologyAdapter> technologyAdapterClass : taClasses) {
-			serviceManager.activateTechnologyAdapter(
+			serviceManager.activateTechnologyAdapter((TechnologyAdapter)
 					serviceManager.getTechnologyAdapterService().getTechnologyAdapter(technologyAdapterClass), true);
 		}
 

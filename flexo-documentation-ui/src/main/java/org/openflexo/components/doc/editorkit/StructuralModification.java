@@ -59,7 +59,7 @@ import org.openflexo.foundation.doc.FlexoTextRun;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.toolbox.StringUtils;
 
-class StructuralModification<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter> {
+class StructuralModification<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter<TA>> {
 
 	private final FlexoStyledDocument<D, TA> flexoStyledDocument;
 	FragmentStructure previous;
@@ -308,7 +308,6 @@ class StructuralModification<D extends FlexoDocument<D, TA>, TA extends Technolo
 					try {
 						return flexoStyledDocument.getText(startIndex, endIndex - startIndex);
 					} catch (BadLocationException e) {
-						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
 					return null;

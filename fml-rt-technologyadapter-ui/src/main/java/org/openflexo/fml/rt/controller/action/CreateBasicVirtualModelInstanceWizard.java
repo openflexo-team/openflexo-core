@@ -62,12 +62,12 @@ public class CreateBasicVirtualModelInstanceWizard extends AbstractCreateVirtual
 
 	@Override
 	public String getWizardTitle() {
-		return action.getLocales().localizedForKey("create_virtual_model_instance");
+		return getAction().getLocales().localizedForKey("create_virtual_model_instance");
 	}
 
 	@Override
 	public Image getDefaultPageImage() {
-		return IconFactory.getImageIcon(FMLRTIconLibrary.VIRTUAL_MODEL_INSTANCE_BIG_ICON, IconLibrary.NEW_32_32).getImage();
+		return IconFactory.getImageIcon(FMLRTIconLibrary.VIRTUAL_MODEL_INSTANCE_BIG_ICON, IconLibrary.BIG_NEW_MARKER).getImage();
 	}
 
 	@Override
@@ -91,7 +91,7 @@ public class CreateBasicVirtualModelInstanceWizard extends AbstractCreateVirtual
 
 		@Override
 		public String getTitle() {
-			return action.getLocales().localizedForKey("choose_virtual_model");
+			return getAction().getLocales().localizedForKey("choose_virtual_model");
 		}
 	}
 
@@ -99,7 +99,7 @@ public class CreateBasicVirtualModelInstanceWizard extends AbstractCreateVirtual
 	public class ChooseAndConfigureCreationSchemeForVirtualModel extends AbstractChooseAndConfigureCreationScheme {
 
 		public ChooseAndConfigureCreationSchemeForVirtualModel() {
-			super(action.getCreationSchemeAction());
+			super(CreateBasicVirtualModelInstanceWizard.this.getAction().getCreationSchemeAction());
 		}
 
 	}

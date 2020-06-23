@@ -68,7 +68,7 @@ import org.openflexo.foundation.fml.rm.VirtualModelResourceFactory;
 import org.openflexo.foundation.resource.DirectoryResourceCenter;
 import org.openflexo.foundation.resource.SaveResourceException;
 import org.openflexo.foundation.test.OpenflexoProjectAtRunTimeTestCase;
-import org.openflexo.model.exceptions.ModelDefinitionException;
+import org.openflexo.pamela.exceptions.ModelDefinitionException;
 import org.openflexo.rm.ResourceLocator;
 import org.openflexo.test.OrderedRunner;
 import org.openflexo.test.TestOrder;
@@ -122,7 +122,7 @@ public class TestDeleteFlexoConceptObjects extends OpenflexoProjectAtRunTimeTest
 	}
 
 	/**
-	 * Test {@link ViewPoint} creation, check {@link BindingModel}
+	 * Test {@link VirtualModel} creation, check {@link BindingModel}
 	 * 
 	 * @throws ModelDefinitionException
 	 * @throws SaveResourceException
@@ -196,7 +196,7 @@ public class TestDeleteFlexoConceptObjects extends OpenflexoProjectAtRunTimeTest
 		System.out.println("flexoConcept2 = " + flexoConcept2);
 		assertNotNull(flexoConcept2);
 
-		((VirtualModelResource) virtualModel.getResource()).save(null);
+		((VirtualModelResource) virtualModel.getResource()).save();
 
 		CreatePrimitiveRole createPR1 = CreatePrimitiveRole.actionType.makeNewAction(flexoConcept1, null, editor);
 		createPR1.setRoleName("aStringInA");
@@ -234,12 +234,12 @@ public class TestDeleteFlexoConceptObjects extends OpenflexoProjectAtRunTimeTest
 		assertEquals(String.class, aStringInA.getResultingType());
 		someBooleanInA = (PrimitiveRole<Boolean>) flexoConcept1.getAccessibleProperty("someBooleanInA");
 		assertNotNull(someBooleanInA);
-		assertEquals(Boolean.class, someBooleanInA.getType());
-		assertEquals(new ParameterizedTypeImpl(List.class, Boolean.class), someBooleanInA.getResultingType());
+		assertEquals(Boolean.TYPE, someBooleanInA.getType());
+		assertEquals(new ParameterizedTypeImpl(List.class, Boolean.TYPE), someBooleanInA.getResultingType());
 		someIntegerInA = (PrimitiveRole<Integer>) flexoConcept1.getAccessibleProperty("someIntegerInA");
 		assertNotNull(someIntegerInA);
-		assertEquals(Integer.class, someIntegerInA.getType());
-		assertEquals(new ParameterizedTypeImpl(List.class, Integer.class), someIntegerInA.getResultingType());
+		assertEquals(Integer.TYPE, someIntegerInA.getType());
+		assertEquals(new ParameterizedTypeImpl(List.class, Integer.TYPE), someIntegerInA.getResultingType());
 		someFlexoConcept2 = (FlexoConceptInstanceRole) flexoConcept1.getAccessibleProperty("someFlexoConcept2");
 		assertNotNull(someFlexoConcept2);
 

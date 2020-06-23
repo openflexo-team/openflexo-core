@@ -30,8 +30,8 @@ import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterResource;
 import org.openflexo.foundation.technologyadapter.TechnologyContextManager;
 import org.openflexo.foundation.technologyadapter.TechnologyObject;
-import org.openflexo.model.exceptions.ModelDefinitionException;
-import org.openflexo.model.factory.ModelFactory;
+import org.openflexo.pamela.exceptions.ModelDefinitionException;
+import org.openflexo.pamela.factory.ModelFactory;
 
 /**
  * Abstract implementation a factory that manages the creation of a given type of {@link FlexoResource} and a given
@@ -49,7 +49,7 @@ import org.openflexo.model.factory.ModelFactory;
  * @param <F>
  *            type of {@link PamelaResourceModelFactory} managing contents of resources
  */
-public abstract class TechnologySpecificPamelaResourceFactory<R extends TechnologyAdapterResource<RD, TA> & PamelaResource<RD, F>, RD extends ResourceData<RD> & TechnologyObject<TA>, TA extends TechnologyAdapter, F extends ModelFactory & PamelaResourceModelFactory>
+public abstract class TechnologySpecificPamelaResourceFactory<R extends TechnologyAdapterResource<RD, TA> & PamelaResource<RD, F>, RD extends ResourceData<RD> & TechnologyObject<TA>, TA extends TechnologyAdapter<TA>, F extends ModelFactory & PamelaResourceModelFactory>
 		extends PamelaResourceFactory<R, RD, F> implements ITechnologySpecificFlexoResourceFactory<R, RD, TA> {
 
 	@SuppressWarnings("unused")
@@ -86,7 +86,7 @@ public abstract class TechnologySpecificPamelaResourceFactory<R extends Technolo
 	@Override
 	public TechnologyContextManager<TA> getTechnologyContextManager(FlexoServiceManager sm) {
 		TA technologyAdapter = sm.getTechnologyAdapterService().getTechnologyAdapter(getTechnologyAdapterClass());
-		return (TechnologyContextManager<TA>) technologyAdapter.getTechnologyContextManager();
+		return technologyAdapter.getTechnologyContextManager();
 	}
 
 	/**
@@ -98,7 +98,8 @@ public abstract class TechnologySpecificPamelaResourceFactory<R extends Technolo
 	 * @return
 	 */
 	@Override
-	protected <I> R registerResource(R resource, FlexoResourceCenter<I> resourceCenter) {
+	public <I> R registerResource(R resource, FlexoResourceCenter<I> resourceCenter) { // I must be used cause it is needed in the super
+																						// class
 		R returned = super.registerResource(resource, resourceCenter);
 		// Register the resource in the global repository of technology adapter
 		if (resourceCenter != null) {
@@ -117,7 +118,7 @@ public abstract class TechnologySpecificPamelaResourceFactory<R extends Technolo
 			throws ModelDefinitionException, IOException {
 		R returned = super.initResourceForRetrieving(serializationArtefact, resourceCenter);
 		TechnologyContextManager<TA> technologyContextManager = getTechnologyContextManager(resourceCenter.getServiceManager());
-		returned.setFactory(makeResourceDataFactory(returned, technologyContextManager));
+		returned.setFactory(makeModelFactory(returned, technologyContextManager));
 		return returned;
 	}
 
@@ -126,7 +127,7 @@ public abstract class TechnologySpecificPamelaResourceFactory<R extends Technolo
 			throws ModelDefinitionException {
 		R returned = super.initResourceForCreation(serializationArtefact, resourceCenter, name, uri);
 		TechnologyContextManager<TA> technologyContextManager = getTechnologyContextManager(resourceCenter.getServiceManager());
-		returned.setFactory(makeResourceDataFactory(returned, technologyContextManager));
+		returned.setFactory(makeModelFactory(returned, technologyContextManager));
 		return returned;
 	}
 
@@ -137,7 +138,6 @@ public abstract class TechnologySpecificPamelaResourceFactory<R extends Technolo
 	 * @param technologyContextManager
 	 * @return
 	 */
-	public abstract F makeResourceDataFactory(R resource, TechnologyContextManager<TA> technologyContextManager)
-			throws ModelDefinitionException;
+	public abstract F makeModelFactory(R resource, TechnologyContextManager<TA> technologyContextManager) throws ModelDefinitionException;
 
 }

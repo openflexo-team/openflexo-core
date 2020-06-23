@@ -106,19 +106,19 @@ public class LongRunningActionSchemeAction extends ActionSchemeAction implements
 
 	@Override
 	public int getExpectedProgressSteps() {
-		if (getActionScheme().getStepsNumber().isValid()) {
+
+		ActionScheme applicableActionScheme = getApplicableActionScheme();
+
+		if (applicableActionScheme.getStepsNumber().isValid()) {
 			try {
-				int stepsNumber = getActionScheme().getStepsNumber().getBindingValue(getFocusedObject());
+				int stepsNumber = applicableActionScheme.getStepsNumber().getBindingValue(getFocusedObject());
 				System.out.println("Found steps: " + stepsNumber);
 				return stepsNumber;
 			} catch (TypeMismatchException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			} catch (NullReferenceException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			} catch (InvocationTargetException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}

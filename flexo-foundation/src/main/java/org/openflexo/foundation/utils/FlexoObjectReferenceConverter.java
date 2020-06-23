@@ -39,8 +39,8 @@
 package org.openflexo.foundation.utils;
 
 import org.openflexo.foundation.resource.ResourceManager;
-import org.openflexo.model.StringConverterLibrary.Converter;
-import org.openflexo.model.factory.ModelFactory;
+import org.openflexo.pamela.StringConverterLibrary.Converter;
+import org.openflexo.pamela.factory.ModelFactory;
 
 /**
  * String converter from/to {@link FlexoObjectReference} objects<br>

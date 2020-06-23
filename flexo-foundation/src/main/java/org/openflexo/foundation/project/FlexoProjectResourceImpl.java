@@ -54,7 +54,6 @@ import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.resource.PamelaResourceImpl;
 import org.openflexo.foundation.resource.ResourceLoadingCancelledException;
 import org.openflexo.foundation.task.FlexoTask;
-import org.openflexo.toolbox.IProgress;
 
 /**
  * Default implementation for {@link FlexoProjectResource}
@@ -95,7 +94,7 @@ public abstract class FlexoProjectResourceImpl<I> extends PamelaResourceImpl<Fle
 	@Override
 	public FlexoProject<I> getFlexoProject() {
 		try {
-			return getResourceData(null);
+			return getResourceData();
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		} catch (ResourceLoadingCancelledException e) {
@@ -122,9 +121,9 @@ public abstract class FlexoProjectResourceImpl<I> extends PamelaResourceImpl<Fle
 	}
 
 	@Override
-	public FlexoProject<I> loadResourceData(IProgress progress) throws FlexoFileNotFoundException, IOFlexoException, InvalidXMLException,
+	public FlexoProject<I> loadResourceData() throws FlexoFileNotFoundException, IOFlexoException, InvalidXMLException,
 			InconsistentDataException, InvalidModelDefinitionException {
-		FlexoProject<I> returned = super.loadResourceData(progress);
+		FlexoProject<I> returned = super.loadResourceData();
 		returned.setLastUniqueID(0);
 
 		// We add the newly created project as a ResourceCenter

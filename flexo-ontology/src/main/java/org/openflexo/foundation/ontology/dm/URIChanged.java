@@ -45,11 +45,11 @@ package org.openflexo.foundation.ontology.dm;
  * @author sguerin
  * 
  */
-public class URIChanged extends OntologyDataModification {
+public class URIChanged extends OntologyDataModification<String> {
 
 	public static final String URI_KEY = "uri";
 
-	public URIChanged(Object oldValue, Object newValue) {
+	public URIChanged(String oldValue, String newValue) {
 		super(URI_KEY, oldValue, newValue);
 	}
 

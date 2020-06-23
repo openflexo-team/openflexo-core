@@ -63,7 +63,7 @@ import org.openflexo.foundation.resource.DirectoryResourceCenter;
 import org.openflexo.foundation.resource.ResourceLoadingCancelledException;
 import org.openflexo.foundation.resource.SaveResourceException;
 import org.openflexo.foundation.test.OpenflexoProjectAtRunTimeTestCase;
-import org.openflexo.model.exceptions.ModelDefinitionException;
+import org.openflexo.pamela.exceptions.ModelDefinitionException;
 import org.openflexo.rm.ResourceLocator;
 import org.openflexo.test.OrderedRunner;
 import org.openflexo.test.TestOrder;
@@ -139,8 +139,8 @@ public class TestCreateVirtualModelInstance extends OpenflexoProjectAtRunTimeTes
 		assertTrue(ResourceLocator.retrieveResourceAsFile(((VirtualModelResource) newVirtualModel.getResource()).getDirectory()).exists());
 		assertTrue(((VirtualModelResource) newVirtualModel.getResource()).getIODelegate().exists());
 
-		newViewPoint.getResource().save(null);
-		newVirtualModel.getResource().save(null);
+		newViewPoint.getResource().save();
+		newVirtualModel.getResource().save();
 	}
 
 	@Test
@@ -175,7 +175,7 @@ public class TestCreateVirtualModelInstance extends OpenflexoProjectAtRunTimeTes
 		assertNotNull(newView);
 		assertNotNull(newView.getResource());
 		try {
-			newView.getResource().save(null);
+			newView.getResource().save();
 		} catch (SaveResourceException e) {
 			e.printStackTrace();
 		}
@@ -246,7 +246,7 @@ public class TestCreateVirtualModelInstance extends OpenflexoProjectAtRunTimeTes
 				.getVirtualModelInstance(newView.getURI());
 		assertNotNull(newViewResource);
 		assertNull(newViewResource.getLoadedResourceData());
-		newViewResource.loadResourceData(null);
+		newViewResource.loadResourceData();
 		assertNotNull(newViewResource.getLoadedResourceData());
 		newView = newViewResource.getLoadedResourceData();
 

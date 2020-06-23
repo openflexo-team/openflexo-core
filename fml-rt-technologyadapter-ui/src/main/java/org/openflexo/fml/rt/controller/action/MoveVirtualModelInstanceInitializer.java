@@ -38,11 +38,6 @@
 
 package org.openflexo.fml.rt.controller.action;
 
-import java.util.EventObject;
-import java.util.logging.Logger;
-
-import org.openflexo.foundation.action.FlexoActionFinalizer;
-import org.openflexo.foundation.action.FlexoActionInitializer;
 import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.foundation.fml.rt.action.MoveVirtualModelInstance;
 import org.openflexo.view.controller.ActionInitializer;
@@ -50,31 +45,7 @@ import org.openflexo.view.controller.ControllerActionInitializer;
 
 public class MoveVirtualModelInstanceInitializer
 		extends ActionInitializer<MoveVirtualModelInstance, VirtualModelInstance<?, ?>, VirtualModelInstance<?, ?>> {
-
-	private static final Logger logger = Logger.getLogger(ControllerActionInitializer.class.getPackage().getName());
-
 	public MoveVirtualModelInstanceInitializer(ControllerActionInitializer actionInitializer) {
 		super(MoveVirtualModelInstance.actionType, actionInitializer);
 	}
-
-	@Override
-	protected FlexoActionInitializer<MoveVirtualModelInstance> getDefaultInitializer() {
-		return new FlexoActionInitializer<MoveVirtualModelInstance>() {
-			@Override
-			public boolean run(EventObject e, MoveVirtualModelInstance action) {
-				return true;
-			}
-		};
-	}
-
-	@Override
-	protected FlexoActionFinalizer<MoveVirtualModelInstance> getDefaultFinalizer() {
-		return new FlexoActionFinalizer<MoveVirtualModelInstance>() {
-			@Override
-			public boolean run(EventObject e, MoveVirtualModelInstance action) {
-				return true;
-			}
-		};
-	}
-
 }

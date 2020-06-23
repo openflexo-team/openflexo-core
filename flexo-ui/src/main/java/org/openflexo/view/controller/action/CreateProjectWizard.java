@@ -43,7 +43,7 @@ import java.awt.Image;
 import java.util.logging.Logger;
 
 import org.openflexo.ApplicationContext;
-import org.openflexo.components.wizard.FlexoWizard;
+import org.openflexo.components.wizard.FlexoActionWizard;
 import org.openflexo.components.wizard.WizardStep;
 import org.openflexo.foundation.action.CreateProject;
 import org.openflexo.foundation.fml.VirtualModel;
@@ -57,20 +57,17 @@ import org.openflexo.icon.IconLibrary;
 import org.openflexo.toolbox.StringUtils;
 import org.openflexo.view.controller.FlexoController;
 
-public class CreateProjectWizard extends FlexoWizard {
+public class CreateProjectWizard extends FlexoActionWizard<CreateProject> {
 
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(CreateProjectWizard.class.getPackage().getName());
-
-	private final CreateProject action;
 
 	private final ConfigureNewProject configureNewProject;
 
 	private static final Dimension DIMENSIONS = new Dimension(700, 450);
 
 	public CreateProjectWizard(CreateProject action, FlexoController controller) {
-		super(controller);
-		this.action = action;
+		super(action, controller);
 		addStep(configureNewProject = new ConfigureNewProject());
 	}
 
@@ -81,12 +78,12 @@ public class CreateProjectWizard extends FlexoWizard {
 
 	@Override
 	public String getWizardTitle() {
-		return action.getLocales().localizedForKey("create_openflexo_project");
+		return getAction().getLocales().localizedForKey("create_openflexo_project");
 	}
 
 	@Override
 	public Image getDefaultPageImage() {
-		return IconFactory.getImageIcon(FMLIconLibrary.OPENFLEXO_NOTEXT_64, IconLibrary.NEW_32_32).getImage();
+		return IconFactory.getImageIcon(FMLIconLibrary.OPENFLEXO_NOTEXT_64, IconLibrary.BIG_NEW_MARKER).getImage();
 	}
 
 	public ConfigureNewProject getConfigureFormoseProject() {
@@ -107,7 +104,7 @@ public class CreateProjectWizard extends FlexoWizard {
 		}
 
 		public CreateProject getAction() {
-			return action;
+			return CreateProjectWizard.this.getAction();
 		}
 
 		public RepositoryFolder<FlexoProjectResource<?>, ?> getRepositoryFolder() {
@@ -116,22 +113,22 @@ public class CreateProjectWizard extends FlexoWizard {
 
 		@Override
 		public String getTitle() {
-			return action.getLocales().localizedForKey("configure_new_project");
+			return getAction().getLocales().localizedForKey("configure_new_project");
 		}
 
 		@Override
 		public boolean isValid() {
 
 			if (StringUtils.isEmpty(getProjectName())) {
-				setIssueMessage(action.getLocales().localizedForKey("you_must_define_project_name"), IssueMessageType.ERROR);
+				setIssueMessage(getAction().getLocales().localizedForKey("you_must_define_project_name"), IssueMessageType.ERROR);
 				return false;
 			}
 			if (StringUtils.isEmpty(getProjectURI())) {
-				setIssueMessage(action.getLocales().localizedForKey("you_must_define_project_uri"), IssueMessageType.ERROR);
+				setIssueMessage(getAction().getLocales().localizedForKey("you_must_define_project_uri"), IssueMessageType.ERROR);
 				return false;
 			}
 			if (getAction().isDefaultProjectURI()) {
-				setIssueMessage(action.getLocales().localizedForKey("don't_you_want_to_set_a_more_user_friendly_uri_for_your_project"),
+				setIssueMessage(getAction().getLocales().localizedForKey("don't_you_want_to_set_a_more_user_friendly_uri_for_your_project"),
 						IssueMessageType.WARNING);
 			}
 
@@ -140,13 +137,13 @@ public class CreateProjectWizard extends FlexoWizard {
 		}
 
 		public String getProjectName() {
-			return action.getNewProjectName();
+			return getAction().getNewProjectName();
 		}
 
 		public void setProjectName(String projectName) {
 			if (!projectName.equals(getProjectName())) {
 				String oldValue = getProjectName();
-				action.setNewProjectName(projectName);
+				getAction().setNewProjectName(projectName);
 				getPropertyChangeSupport().firePropertyChange("projectName", oldValue, projectName);
 				getPropertyChangeSupport().firePropertyChange("projectURI", null, getProjectURI());
 				checkValidity();
@@ -154,26 +151,26 @@ public class CreateProjectWizard extends FlexoWizard {
 		}
 
 		public String getProjectURI() {
-			return action.getNewProjectURI();
+			return getAction().getNewProjectURI();
 		}
 
 		public void setProjectURI(String projectURI) {
 			if (!projectURI.equals(getProjectURI())) {
 				String oldValue = getProjectURI();
-				action.setNewProjectURI(projectURI);
+				getAction().setNewProjectURI(projectURI);
 				getPropertyChangeSupport().firePropertyChange("projectURI", oldValue, projectURI);
 				checkValidity();
 			}
 		}
 
 		public String getDescription() {
-			return action.getNewProjectDescription();
+			return getAction().getNewProjectDescription();
 		}
 
 		public void setDescription(String newDescription) {
 			if (!newDescription.equals(getDescription())) {
 				String oldValue = getDescription();
-				action.setNewProjectDescription(newDescription);
+				getAction().setNewProjectDescription(newDescription);
 				getPropertyChangeSupport().firePropertyChange("newDescription", oldValue, newDescription);
 				checkValidity();
 			}

@@ -70,7 +70,6 @@ public abstract class NaturePerspective<N extends ProjectNature<N>> extends Flex
 				N nature = project.getNature(getNatureClass());
 				return getModuleViewForProject(project, nature);
 			}
-			System.out.println("je cree la vue projet ");
 			return getController().makeDefaultProjectView((FlexoProject<?>) object, this);
 		}
 		return super.createModuleViewForObject(object);

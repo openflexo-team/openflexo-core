@@ -44,7 +44,7 @@ import java.util.logging.Logger;
 import org.openflexo.ApplicationContext;
 import org.openflexo.gina.swing.utils.JFIBDialog;
 import org.openflexo.localization.FlexoLocalization;
-import org.openflexo.model.undo.UndoManager;
+import org.openflexo.pamela.undo.UndoManager;
 import org.openflexo.rm.Resource;
 import org.openflexo.rm.ResourceLocator;
 

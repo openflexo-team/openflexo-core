@@ -48,10 +48,10 @@ import org.openflexo.connie.exception.TypeMismatchException;
 import org.openflexo.foundation.FlexoObject.FlexoObjectImpl;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoProperty;
-import org.openflexo.foundation.fml.rt.VirtualModelInstance;
+import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
-import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstance;
+import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.foundation.fml.rt.editionaction.FinalizeMatching;
 import org.openflexo.foundation.fml.rt.editionaction.InitiateMatching;
 import org.openflexo.foundation.fml.rt.editionaction.MatchCondition;
@@ -143,13 +143,10 @@ public class MatchingSet {
 			}
 
 		} catch (TypeMismatchException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (NullReferenceException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (InvocationTargetException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
@@ -169,25 +166,24 @@ public class MatchingSet {
 
 		try {
 			container = matchRequest.getReceiver().getBindingValue(evaluationContext);
-			// System.out.println("container=" + container);
-			if (container != null) {
-				/*if (flexoConceptType != null) {
-					allInstances = ((VirtualModelInstance<?, ?>) container).getFlexoConceptInstances(flexoConceptType);
-				}
-				else {*/
-				// allInstances = ((VirtualModelInstance<?, ?>) container).getAllRootFlexoConceptInstances();
+
+			// If container is defined, use container
+			if (matchRequest.getContainer() != null && matchRequest.getContainer().isSet()) {
+				container = matchRequest.getContainer().getBindingValue(evaluationContext);
+			}
+
+			// Still this problem with double API: please fix this one day
+			if (container instanceof VirtualModelInstance) {
 				allInstances = ((VirtualModelInstance<?, ?>) container).getFlexoConceptInstances();
-				// }
-				// System.out.println("Toutes les instances: " + allInstances);
+			}
+			else {
+				allInstances = container.getEmbeddedFlexoConceptInstances();
 			}
 		} catch (TypeMismatchException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (NullReferenceException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (InvocationTargetException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 

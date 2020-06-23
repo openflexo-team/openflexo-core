@@ -46,13 +46,13 @@ import org.openflexo.foundation.DataModification;
  * 
  * @author sguerin
  */
-public class OntologyDataModification extends DataModification {
+public class OntologyDataModification<T> extends DataModification<T> {
 
-	public OntologyDataModification(Object oldValue, Object newValue) {
+	public OntologyDataModification(T oldValue, T newValue) {
 		super(oldValue, newValue);
 	}
 
-	public OntologyDataModification(String propertyName, Object oldValue, Object newValue) {
+	public OntologyDataModification(String propertyName, T oldValue, T newValue) {
 		super(propertyName, oldValue, newValue);
 	}
 

@@ -50,9 +50,11 @@ import org.openflexo.foundation.FlexoObservable;
 import org.openflexo.foundation.FlexoObserver;
 import org.openflexo.foundation.action.FlexoAction;
 import org.openflexo.foundation.action.FlexoActionFactory;
+import org.openflexo.foundation.action.TechnologySpecificFlexoAction;
 import org.openflexo.foundation.fml.CreationScheme;
 import org.openflexo.foundation.fml.FlexoBehaviourParameter;
 import org.openflexo.foundation.fml.FlexoConcept;
+import org.openflexo.foundation.fml.rt.FMLRTTechnologyAdapter;
 import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 
@@ -63,7 +65,7 @@ import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
  * 
  */
 public class CreateFlexoConceptInstance extends FlexoAction<CreateFlexoConceptInstance, FlexoConceptInstance, FlexoObject>
-		implements FlexoObserver {
+		implements FlexoObserver, TechnologySpecificFlexoAction<FMLRTTechnologyAdapter> {
 
 	private static final Logger logger = Logger.getLogger(CreateFlexoConceptInstance.class.getPackage().getName());
 
@@ -117,11 +119,25 @@ public class CreateFlexoConceptInstance extends FlexoAction<CreateFlexoConceptIn
 	}
 
 	@Override
+	public Class<? extends FMLRTTechnologyAdapter> getTechnologyAdapterClass() {
+		return FMLRTTechnologyAdapter.class;
+	}
+
+	@Override
 	protected void doAction(Object context) throws FlexoException {
 		logger.info("Add flexo concept instance in container " + getFocusedObject() + " creationSchemeAction=" + creationSchemeAction);
 
 		// We create the FCI
 		fciBeingCreated = getFocusedObject().getVirtualModelInstance().makeNewFlexoConceptInstance(getFlexoConcept());
+
+		// We add the FlexoConceptInstance to the container BEFORE to execute creation scheme
+		if (getContainer() instanceof FMLRTVirtualModelInstance) {
+			// ((FMLRTVirtualModelInstance) getContainer()).addToFlexoConceptInstances(fciBeingCreated);
+		}
+		else {
+			getContainer().addToEmbeddedFlexoConceptInstances(fciBeingCreated);
+			// getFocusedObject().getVirtualModelInstance().removeFromFlexoConceptInstances(fciBeingCreated);
+		}
 
 		// We init the new FCI using a creation scheme
 		if (creationSchemeAction != null) {
@@ -135,13 +151,6 @@ public class CreateFlexoConceptInstance extends FlexoAction<CreateFlexoConceptIn
 			fciBeingCreated = creationSchemeAction.getFlexoConceptInstance();
 		}
 
-		// We add the FlexoConceptInstance to the container
-		if (getContainer() instanceof FMLRTVirtualModelInstance) {
-			// Nothing to do
-		}
-		else {
-			getContainer().addToEmbeddedFlexoConceptInstances(fciBeingCreated);
-		}
 	}
 
 	@Override
@@ -180,7 +189,7 @@ public class CreateFlexoConceptInstance extends FlexoAction<CreateFlexoConceptIn
 			this.container = container;
 			getPropertyChangeSupport().firePropertyChange("container", oldValue, container);
 			setChanged();
-			notifyObservers(new DataModification("isActionValidable", false, true));
+			notifyObservers(new DataModification<>("isActionValidable", false, true));
 		}
 	}
 
@@ -194,7 +203,7 @@ public class CreateFlexoConceptInstance extends FlexoAction<CreateFlexoConceptIn
 			this.concept = concept;
 			getPropertyChangeSupport().firePropertyChange("flexoConcept", oldValue, concept);
 			setChanged();
-			notifyObservers(new DataModification("isActionValidable", false, true));
+			notifyObservers(new DataModification<>("isActionValidable", false, true));
 		}
 	}
 
@@ -204,7 +213,7 @@ public class CreateFlexoConceptInstance extends FlexoAction<CreateFlexoConceptIn
 	 * @return
 	 */
 	@Deprecated
-	public boolean isActionValidable() {
+	private boolean isActionValidable() {
 
 		if (!isValid()) {
 			return false;
@@ -255,10 +264,10 @@ public class CreateFlexoConceptInstance extends FlexoAction<CreateFlexoConceptIn
 	}
 
 	@Override
-	public void update(FlexoObservable observable, DataModification dataModification) {
+	public void update(FlexoObservable observable, DataModification<?> dataModification) {
 		if (dataModification.propertyName().equals(FlexoBehaviourAction.PARAMETER_VALUE_CHANGED)) {
 			setChanged();
-			notifyObservers(new DataModification("isActionValidable", false, true));
+			notifyObservers(new DataModification<>("isActionValidable", false, true));
 		}
 	}
 

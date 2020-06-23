@@ -42,6 +42,8 @@ import java.util.logging.Logger;
 
 import org.openflexo.foundation.fml.FMLTechnologyAdapter;
 import org.openflexo.foundation.fml.VirtualModel;
+import org.openflexo.gina.model.FIBContainer;
+import org.openflexo.gina.swing.view.widget.JFIBBrowserWidget;
 import org.openflexo.rm.Resource;
 import org.openflexo.rm.ResourceLocator;
 import org.openflexo.view.FIBBrowserView;
@@ -63,6 +65,20 @@ public class FIBVirtualModelBrowser extends FIBBrowserView<VirtualModel> {
 		super(virtualModel, controller, FIB_FILE, controller.getTechnologyAdapter(FMLTechnologyAdapter.class).getLocales());
 	}
 
+	public void setVirtualModel(VirtualModel virtualModel) {
+		setRootObject(virtualModel);
+		getFIBController().setViewMode(getFIBController().getViewMode(), true);
+	}
+
+	@Override
+	public FIBVirtualModelBrowserFIBController getFIBController() {
+		return (FIBVirtualModelBrowserFIBController) super.getFIBController();
+	}
+
+	public JFIBBrowserWidget<?> getFIBBrowserWidget() {
+		return (JFIBBrowserWidget<?>) getFIBController().viewForComponent(retrieveFIBBrowser((FIBContainer) getFIBComponent()));
+	}
+
 	// Please uncomment this for a live test
 	// Never commit this uncommented since it will not compile on continuous build
 	// To have icon, you need to choose "Test interface" in the editor (otherwise, flexo controller is not insanciated in EDIT mode)
@@ -71,10 +87,8 @@ public class FIBVirtualModelBrowser extends FIBBrowserView<VirtualModel> {
 		try {
 			FlexoLoggingManager.initialize(-1, true, null, Level.INFO, null);
 		} catch (SecurityException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	

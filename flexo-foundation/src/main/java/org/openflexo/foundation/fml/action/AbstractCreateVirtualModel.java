@@ -142,12 +142,12 @@ public abstract class AbstractCreateVirtualModel<A extends AbstractCreateVirtual
 		return returned;
 	}
 
-	public static class ModelSlotEntry extends PropertyChangedSupportDefaultImplementation {
+	public static class ModelSlotEntry<TA extends TechnologyAdapter<TA>> extends PropertyChangedSupportDefaultImplementation {
 
 		private final String defaultModelSlotName;
 		private String modelSlotName;
 		private String description;
-		private TechnologyAdapter technologyAdapter;
+		private TA technologyAdapter;
 		private boolean required = true;
 		private boolean readOnly = false;
 		private Class<? extends ModelSlot<?>> modelSlotClass;
@@ -207,11 +207,11 @@ public abstract class AbstractCreateVirtualModel<A extends AbstractCreateVirtual
 			getPropertyChangeSupport().firePropertyChange("modelSlotDescription", null, description);
 		}
 
-		public TechnologyAdapter getTechnologyAdapter() {
+		public TA getTechnologyAdapter() {
 			return technologyAdapter;
 		}
 
-		public void setTechnologyAdapter(TechnologyAdapter technologyAdapter) {
+		public void setTechnologyAdapter(TA technologyAdapter) {
 			this.technologyAdapter = technologyAdapter;
 			getPropertyChangeSupport().firePropertyChange("technologyAdapter", null, technologyAdapter);
 			if (getModelSlotClass() != null && !technologyAdapter.getAvailableModelSlotTypes().contains(getModelSlotClass())) {

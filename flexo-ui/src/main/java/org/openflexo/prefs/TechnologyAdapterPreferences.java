@@ -1,6 +1,7 @@
 /**
  * 
- * Copyright (c) 2014, Openflexo
+ * Copyright (c) 2013-2014, Openflexo
+ * Copyright (c) 2011-2012, AgileBirds
  * 
  * This file is part of Flexo-ui, a component of the software infrastructure 
  * developed at Openflexo.
@@ -38,34 +39,28 @@
 
 package org.openflexo.prefs;
 
-import java.util.logging.Logger;
-
-import org.openflexo.foundation.technologyadapter.TechnologyAdapterService;
-import org.openflexo.model.annotations.ImplementationClass;
-import org.openflexo.model.annotations.ModelEntity;
-import org.openflexo.model.annotations.XMLElement;
+import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
+import org.openflexo.pamela.annotations.Getter;
+import org.openflexo.pamela.annotations.ModelEntity;
+import org.openflexo.pamela.annotations.PropertyIdentifier;
+import org.openflexo.pamela.annotations.Setter;
 
 /**
- * Preferences for the {@link TechnologyAdapterService}
+ * Preferences relative to a technology adapter
  * 
  * @author sguerin
  * 
  */
-@ModelEntity
-@ImplementationClass(TechnologyAdapterPreferences.TechnologyAdapterPreferencesImpl.class)
-@XMLElement
-@Preferences(
-		shortName = "Technology adapters",
-		longName = "Technology adapters Preferences",
-		FIBPanel = "Fib/Prefs/TechnologyAdapterPrefs.fib",
-		smallIcon = "Icons/Common/TechnologyAdapter.png",
-		bigIcon = "Icons/Common/TechnologyAdapter_64x64.png")
-public interface TechnologyAdapterPreferences extends ServicePreferences<TechnologyAdapterService> {
+@ModelEntity(isAbstract = true)
+public interface TechnologyAdapterPreferences<TA extends TechnologyAdapter<TA>> extends PreferencesContainer {
 
-	public abstract class TechnologyAdapterPreferencesImpl extends PreferencesContainerImpl implements TechnologyAdapterPreferences {
+	@PropertyIdentifier(type = TechnologyAdapter.class)
+	public static final String TECHNOLOGY_ADAPTER_KEY = "technologyAdapter";
 
-		private static final Logger logger = Logger.getLogger(TechnologyAdapterPreferences.class.getPackage().getName());
+	@Getter(value = TECHNOLOGY_ADAPTER_KEY, ignoreType = true)
+	public TA getTechnologyAdapter();
 
-	}
+	@Setter(TECHNOLOGY_ADAPTER_KEY)
+	public void setTechnologyAdapter(TA technologyAdapter);
 
 }

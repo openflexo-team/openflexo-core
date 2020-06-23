@@ -46,10 +46,10 @@ import org.openflexo.foundation.fml.rm.VirtualModelResource;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.resource.RepositoryFolder;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterResourceRepository;
-import org.openflexo.model.annotations.ImplementationClass;
-import org.openflexo.model.annotations.ModelEntity;
-import org.openflexo.model.exceptions.ModelDefinitionException;
-import org.openflexo.model.factory.ModelFactory;
+import org.openflexo.pamela.annotations.ImplementationClass;
+import org.openflexo.pamela.annotations.ModelEntity;
+import org.openflexo.pamela.exceptions.ModelDefinitionException;
+import org.openflexo.pamela.factory.ModelFactory;
 
 /**
  * A {@link VirtualModelRepository} references {@link VirtualModelResource} stored in a given {@link FlexoResourceCenter}

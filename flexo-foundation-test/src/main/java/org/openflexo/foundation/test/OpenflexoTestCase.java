@@ -78,17 +78,16 @@ import org.openflexo.foundation.resource.FlexoResource;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.resource.FlexoResourceCenter.ResourceCenterEntry;
 import org.openflexo.foundation.resource.FlexoResourceCenterService;
-import org.openflexo.foundation.resource.GitResourceCenter;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterService;
 import org.openflexo.kvc.KeyValueLibrary;
 import org.openflexo.logging.FlexoLogger;
 import org.openflexo.logging.FlexoLoggingManager;
-import org.openflexo.model.exceptions.ModelDefinitionException;
-import org.openflexo.model.factory.ModelFactory;
-import org.openflexo.model.validation.ValidationError;
-import org.openflexo.model.validation.ValidationModel;
-import org.openflexo.model.validation.ValidationReport;
+import org.openflexo.pamela.exceptions.ModelDefinitionException;
+import org.openflexo.pamela.factory.ModelFactory;
+import org.openflexo.pamela.validation.ValidationError;
+import org.openflexo.pamela.validation.ValidationModel;
+import org.openflexo.pamela.validation.ValidationReport;
 import org.openflexo.rm.FileResourceImpl;
 import org.openflexo.rm.Resource;
 import org.openflexo.toolbox.FileUtils;
@@ -117,12 +116,9 @@ public abstract class OpenflexoTestCase {
 	protected static final String RESOURCE_CENTER_URI = "http://openflexo.org/test/TestResourceCenter";
 
 	/**
-	 * ResourceCenter beeing statically referenced while using makeNewDirectoryResourceCenter() methods
+	 * ResourceCenter being statically referenced while using makeNewDirectoryResourceCenter() methods
 	 */
 	private static DirectoryResourceCenter resourceCenter;
-
-	@Deprecated
-	private static GitResourceCenter gitResourceCenter;
 
 	protected static FlexoServiceManager serviceManager;
 
@@ -165,9 +161,6 @@ public abstract class OpenflexoTestCase {
 			if (resourceCenter != null) {
 				RCService.removeFromResourceCenters(resourceCenter);
 			}
-			if (gitResourceCenter != null) {
-				RCService.removeFromResourceCenters(gitResourceCenter);
-			}
 			RCService.stop();
 		}
 
@@ -183,7 +176,6 @@ public abstract class OpenflexoTestCase {
 			}
 		}
 		resourceCenter = null;
-		gitResourceCenter = null;
 	}
 
 	public static class FlexoTestEditor extends DefaultFlexoEditor {
@@ -283,11 +275,15 @@ public abstract class OpenflexoTestCase {
 		}
 
 		for (Class<? extends TechnologyAdapter> technologyAdapterClass : taClasses) {
-			serviceManager.activateTechnologyAdapter(
-					serviceManager.getTechnologyAdapterService().getTechnologyAdapter(technologyAdapterClass), true);
+			TechnologyAdapter ta = serviceManager.getTechnologyAdapterService().getTechnologyAdapter(technologyAdapterClass);
+			serviceManager.activateTechnologyAdapter(ta, true);
 		}
 
 		return serviceManager;
+	}
+
+	public static DirectoryResourceCenter getResourceCenter() {
+		return resourceCenter;
 	}
 
 	protected static FlexoResourceCenterService getNewResourceCenter(String name) {
@@ -494,7 +490,7 @@ public abstract class OpenflexoTestCase {
 		}
 	}
 
-	protected <T extends TechnologyAdapter> T getTA(Class<T> type) {
+	protected <T extends TechnologyAdapter<T>> T getTA(Class<T> type) {
 		return serviceManager.getTechnologyAdapterService().getTechnologyAdapter(type);
 	}
 
@@ -506,7 +502,7 @@ public abstract class OpenflexoTestCase {
 		VirtualModelResource viewPointResource = factory.makeTopLevelVirtualModelResource(vmName, vmURI,
 				viewPointRepository.getRootFolder(), true);
 
-		viewPointResource.save(null);
+		viewPointResource.save();
 		return viewPointResource.getLoadedResourceData();
 	}
 

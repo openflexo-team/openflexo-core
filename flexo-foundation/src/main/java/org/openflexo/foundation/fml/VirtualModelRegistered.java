@@ -47,7 +47,7 @@ import org.openflexo.foundation.fml.rm.VirtualModelResource;
  * @author sylvain
  * 
  */
-public class VirtualModelRegistered extends DataModification {
+public class VirtualModelRegistered extends DataModification<VirtualModelResource> {
 
 	public VirtualModelRegistered(VirtualModelResource newVirtualModelResource) {
 		super(null, newVirtualModelResource);

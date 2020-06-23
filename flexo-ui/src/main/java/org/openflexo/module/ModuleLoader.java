@@ -55,7 +55,6 @@ import javax.swing.SwingUtilities;
 
 import org.openflexo.ApplicationContext;
 import org.openflexo.action.SubmitDocumentationAction;
-import org.openflexo.components.ProgressWindow;
 import org.openflexo.components.SaveProjectsDialog;
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoService;
@@ -414,7 +413,6 @@ public class ModuleLoader extends FlexoServiceImpl implements FlexoService, HasP
 				return null;
 			}
 		} catch (Exception e) {
-			ProgressWindow.hideProgressWindow();
 			e.printStackTrace();
 			throw new ModuleLoadingException(module);
 		}
@@ -426,14 +424,11 @@ public class ModuleLoader extends FlexoServiceImpl implements FlexoService, HasP
 
 		if (!SwingUtilities.isEventDispatchThread()) {
 			// System.out.println("DELAYED: switch to module: " + module);
-			SwingUtilities.invokeLater(new Runnable() {
-				@Override
-				public void run() {
-					try {
-						switchToModule(module);
-					} catch (ModuleLoadingException e) {
-						e.printStackTrace();
-					}
+			SwingUtilities.invokeLater(() -> {
+				try {
+					switchToModule(module);
+				} catch (ModuleLoadingException e) {
+					e.printStackTrace();
 				}
 			});
 			return null;
@@ -489,14 +484,11 @@ public class ModuleLoader extends FlexoServiceImpl implements FlexoService, HasP
 			throw new ModuleLoadingException(module);
 		} finally {
 			activatingModule = null;
-			SwingUtilities.invokeLater(new Runnable() {
-				@Override
-				public void run() {
-					if (isLoaded(module)) {
-						module.getLoadedModuleInstance().getFlexoFrame().toFront();
-					}
-					ModuleLoader.this.ignoreSwitch = false;
+			SwingUtilities.invokeLater(() -> {
+				if (isLoaded(module)) {
+					module.getLoadedModuleInstance().getFlexoFrame().toFront();
 				}
+				ModuleLoader.this.ignoreSwitch = false;
 			});
 		}
 	}

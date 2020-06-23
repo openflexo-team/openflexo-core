@@ -96,7 +96,7 @@ public class CreateModelSlot extends AbstractCreateFlexoProperty<CreateModelSlot
 
 	private String modelSlotName;
 	private String description;
-	private TechnologyAdapter technologyAdapter;
+	private TechnologyAdapter<?> technologyAdapter;
 	private FlexoMetaModelResource<?, ?, ?> mmRes;
 	private VirtualModelResource vmRes;
 	private boolean required = true;
@@ -261,11 +261,11 @@ public class CreateModelSlot extends AbstractCreateFlexoProperty<CreateModelSlot
 		getPropertyChangeSupport().firePropertyChange("description", null, description);
 	}
 
-	public TechnologyAdapter getTechnologyAdapter() {
+	public TechnologyAdapter<?> getTechnologyAdapter() {
 		return technologyAdapter;
 	}
 
-	public void setTechnologyAdapter(TechnologyAdapter technologyAdapter) {
+	public void setTechnologyAdapter(TechnologyAdapter<?> technologyAdapter) {
 		this.technologyAdapter = technologyAdapter;
 		getPropertyChangeSupport().firePropertyChange("technologyAdapter", null, technologyAdapter);
 		if (getModelSlotClass() != null && !technologyAdapter.getAvailableModelSlotTypes().contains(getModelSlotClass())) {

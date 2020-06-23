@@ -1,0 +1,10 @@
+import java.lang.String;
+import java.util.ArrayList;
+import java.util.Date;
+
+model MyModel {
+	int i;
+	private String foo;
+	String newString;
+	Date newDate;
+}

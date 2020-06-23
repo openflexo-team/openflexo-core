@@ -49,8 +49,8 @@ import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterService;
 import org.openflexo.foundation.test.OpenflexoTestCase;
 import org.openflexo.logging.FlexoLogger;
-import org.openflexo.model.exceptions.MissingImplementationException;
-import org.openflexo.model.exceptions.ModelDefinitionException;
+import org.openflexo.pamela.exceptions.MissingImplementationException;
+import org.openflexo.pamela.exceptions.ModelDefinitionException;
 
 /**
  * Abstract test case for FMLModelFactory<br>
@@ -60,7 +60,7 @@ public class AbstractModelFactoryIntegrationTestCase extends OpenflexoTestCase {
 
 	private static final Logger logger = FlexoLogger.getLogger(AbstractModelFactoryIntegrationTestCase.class.getPackage().getName());
 
-	protected void testVirtualModelModelFactoryWithTechnologyAdapter(TechnologyAdapter ta) {
+	protected void testVirtualModelModelFactoryWithTechnologyAdapter(TechnologyAdapter<?> ta) {
 		assertNotNull(ta);
 		try {
 			System.out.println("Instanciating FMLModelFactory integrating technology adapter " + ta);

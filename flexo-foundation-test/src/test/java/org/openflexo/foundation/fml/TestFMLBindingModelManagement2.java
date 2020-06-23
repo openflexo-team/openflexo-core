@@ -51,6 +51,7 @@ import org.junit.runner.RunWith;
 import org.openflexo.connie.BindingModel;
 import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.type.PrimitiveType;
+import org.openflexo.connie.type.UndefinedType;
 import org.openflexo.foundation.DefaultFlexoEditor;
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.fml.action.CreateEditionAction;
@@ -74,7 +75,7 @@ import org.openflexo.foundation.fml.rt.editionaction.SelectFlexoConceptInstance;
 import org.openflexo.foundation.resource.DirectoryResourceCenter;
 import org.openflexo.foundation.resource.SaveResourceException;
 import org.openflexo.foundation.test.OpenflexoProjectAtRunTimeTestCase;
-import org.openflexo.model.exceptions.ModelDefinitionException;
+import org.openflexo.pamela.exceptions.ModelDefinitionException;
 import org.openflexo.rm.ResourceLocator;
 import org.openflexo.test.OrderedRunner;
 import org.openflexo.test.TestOrder;
@@ -130,7 +131,7 @@ public class TestFMLBindingModelManagement2 extends OpenflexoProjectAtRunTimeTes
 	}
 
 	/**
-	 * Test {@link ViewPoint} creation, check {@link BindingModel}
+	 * Test {@link VirtualModel} creation, check {@link BindingModel}
 	 * 
 	 * @throws ModelDefinitionException
 	 * @throws SaveResourceException
@@ -210,7 +211,7 @@ public class TestFMLBindingModelManagement2 extends OpenflexoProjectAtRunTimeTes
 		System.out.println("FlexoConcept A = " + flexoConcept);
 		assertNotNull(flexoConcept);
 
-		((VirtualModelResource) virtualModel.getResource()).save(null);
+		((VirtualModelResource) virtualModel.getResource()).save();
 
 		System.out.println("Saved: " + ((VirtualModelResource) virtualModel.getResource()).getIODelegate());
 
@@ -256,9 +257,9 @@ public class TestFMLBindingModelManagement2 extends OpenflexoProjectAtRunTimeTes
 		assertNotNull(flexoConcept.getBindingModel().bindingVariableNamed("aStringInA"));
 		assertEquals(String.class, flexoConcept.getBindingModel().bindingVariableNamed("aStringInA").getType());
 		assertNotNull(flexoConcept.getBindingModel().bindingVariableNamed("aBooleanInA"));
-		assertEquals(Boolean.class, flexoConcept.getBindingModel().bindingVariableNamed("aBooleanInA").getType());
+		assertEquals(Boolean.TYPE, flexoConcept.getBindingModel().bindingVariableNamed("aBooleanInA").getType());
 		assertNotNull(flexoConcept.getBindingModel().bindingVariableNamed("anIntegerInA"));
-		assertEquals(Integer.class, flexoConcept.getBindingModel().bindingVariableNamed("anIntegerInA").getType());
+		assertEquals(Integer.TYPE, flexoConcept.getBindingModel().bindingVariableNamed("anIntegerInA").getType());
 
 		PrimitiveRole<?> aStringInA = (PrimitiveRole<?>) flexoConcept.getAccessibleProperty("aStringInA");
 		assertNotNull(aStringInA);
@@ -327,11 +328,11 @@ public class TestFMLBindingModelManagement2 extends OpenflexoProjectAtRunTimeTes
 		assertNotNull(actionScheme.getBindingModel().bindingVariableNamed("aStringInA"));
 		assertEquals(String.class, actionScheme.getBindingModel().bindingVariableNamed("aStringInA").getType());
 		assertNotNull(actionScheme.getBindingModel().bindingVariableNamed("aBooleanInA"));
-		assertEquals(Boolean.class, actionScheme.getBindingModel().bindingVariableNamed("aBooleanInA").getType());
+		assertEquals(Boolean.TYPE, actionScheme.getBindingModel().bindingVariableNamed("aBooleanInA").getType());
 		assertNotNull(actionScheme.getBindingModel().bindingVariableNamed("anIntegerInA"));
-		assertEquals(Integer.class, actionScheme.getBindingModel().bindingVariableNamed("anIntegerInA").getType());
+		assertEquals(Integer.TYPE, actionScheme.getBindingModel().bindingVariableNamed("anIntegerInA").getType());
 		assertNotNull(actionScheme.getBindingModel().bindingVariableNamed("anOtherBooleanInA"));
-		assertEquals(Boolean.class, actionScheme.getBindingModel().bindingVariableNamed("anOtherBooleanInA").getType());
+		assertEquals(Boolean.TYPE, actionScheme.getBindingModel().bindingVariableNamed("anOtherBooleanInA").getType());
 		assertNotNull(actionScheme.getBindingModel().bindingVariableNamed(FlexoBehaviourBindingModel.PARAMETERS_PROPERTY));
 
 		CreateEditionAction createIterationAction = CreateEditionAction.actionType.makeNewAction(actionScheme.getControlGraph(), null,
@@ -499,7 +500,7 @@ public class TestFMLBindingModelManagement2 extends OpenflexoProjectAtRunTimeTes
 
 		// Type is undefined (Object) because
 		System.out.println("Type=" + assignation1.getAssignableType());
-		assertEquals(Object.class, assignation1.getAssignableType());
+		assertTrue(assignation1.getAssignableType() instanceof UndefinedType);
 
 		ExpressionAction<String> expression1 = (ExpressionAction<String>) assignation1.getAssignableAction();
 		assertFalse(expression1.getExpression().isValid());

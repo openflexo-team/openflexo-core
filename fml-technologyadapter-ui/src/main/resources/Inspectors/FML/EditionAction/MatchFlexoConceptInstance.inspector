@@ -18,6 +18,15 @@
 				constraints="twocols(expandHorizontally=true;expandVertically=false;index=7;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)">
 				<Assignment variable="component.bindable" value="data" />
 			</Custom>
+			<Label label="container" align="right" index="10"
+				constraints="twocols(expandHorizontally=true;expandVertically=false;index=6;insetsBottom=0;insetsLeft=2;insetsRight=4;insetsTop=5;location=left)"
+				localize="true" visible="data.flexoConceptType.containerFlexoConcept != null"/>
+			<Custom componentClassName="org.openflexo.gina.swing.utils.BindingSelector"
+				localize="true" manageDynamicModel="true" opaque="false" index="11"
+				data="data.container" visible="data.flexoConceptType.containerFlexoConcept != null"
+				constraints="twocols(expandHorizontally=true;expandVertically=false;index=7;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)">
+				<Assignment variable="component.bindable" value="data" />
+			</Custom>
 			<Label label="flexo_concept" index="12" data=""
 				constraints="twocols(anchor=east;expandHorizontally=false;expandVertically=false;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=8;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=5;location=left;padX=0;padY=0;weightX=0.0;weightY=0.0)"
 				localize="true" />
@@ -27,8 +36,8 @@
 				constraints="twocols(anchor=west;expandHorizontally=true;expandVertically=false;fill=horizontal;gridHeight=1;gridWidth=0;gridX=-1;gridY=-1;index=9;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right;padX=0;padY=0;weightX=0.0;weightY=0.0)"
 				minWidth="200" minHeight="25">
 				<Assignment variable="component.virtualModelLibrary" value="data.virtualModelLibrary" />
-				<Assignment variable="component.virtualModel" value="data.declaringVirtualModel" />
-				<Dependancy componentName="AddFlexoConceptPatternRoleDropDown" />
+				<!--  <Assignment variable="component.virtualModel" value="data.declaringVirtualModel" /> -->
+				<Assignment variable="component.virtualModel" value="data.addressedVirtualModel" />
 			</Custom>
 			<Label label="matching_criterias" index="14" data=""
 				constraints="twocols(expandHorizontally=true;expandVertically=false;index=10;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=5;location=left)"
@@ -87,15 +96,6 @@
 				<Dependancy componentName="AddFlexoConceptActionPanel" />
 				<Dependancy componentName="AddFlexoConceptPatternRoleDropDown" />
 			</DropDown>
-			<Label label="container" align="right" index="18"
-				constraints="twocols(expandHorizontally=true;expandVertically=false;index=6;insetsBottom=0;insetsLeft=2;insetsRight=4;insetsTop=5;location=left)"
-				localize="true" visible="data.flexoConceptType.containerFlexoConcept != null"/>
-			<Custom componentClassName="org.openflexo.gina.swing.utils.BindingSelector"
-				localize="true" manageDynamicModel="true" opaque="false" index="19"
-				data="data.container" visible="data.flexoConceptType.containerFlexoConcept != null"
-				constraints="twocols(expandHorizontally=true;expandVertically=false;index=7;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)">
-				<Assignment variable="component.bindable" value="data" />
-			</Custom>
 			<Label label="parameters" index="20"
 				constraints="twocols(expandHorizontally=true;expandVertically=false;index=14;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=5;location=left)"
 				visible="" format="" icon="" tooltip="" localize="true" enable=""

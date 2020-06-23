@@ -48,11 +48,11 @@ public class SelectAllAction extends FlexoGUIAction<SelectAllAction, FlexoObject
 
 	public static class SelectAllActionType extends FlexoActionFactory<SelectAllAction, FlexoObject, FlexoObject> {
 
-		private final FlexoEditingContext editingContext;
+		// Unused private final FlexoEditingContext editingContext;
 
 		public SelectAllActionType(FlexoEditingContext editingContext) {
 			super("select_all", FlexoActionFactory.editGroup);
-			this.editingContext = editingContext;
+			// Unused this.editingContext = editingContext;
 		}
 
 		/**

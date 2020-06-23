@@ -46,11 +46,11 @@ import java.util.logging.Logger;
 import org.openflexo.foundation.action.FlexoUndoManager;
 import org.openflexo.foundation.resource.PamelaResource;
 import org.openflexo.foundation.resource.PamelaResourceImpl.IgnoreLoadingEdits;
-import org.openflexo.model.ModelContext;
-import org.openflexo.model.ModelContextLibrary;
-import org.openflexo.model.exceptions.ModelDefinitionException;
-import org.openflexo.model.factory.EditingContext;
-import org.openflexo.model.factory.ModelFactory;
+import org.openflexo.pamela.ModelContext;
+import org.openflexo.pamela.ModelContextLibrary;
+import org.openflexo.pamela.exceptions.ModelDefinitionException;
+import org.openflexo.pamela.factory.EditingContext;
+import org.openflexo.pamela.factory.ModelFactory;
 
 /**
  * Default implementation for {@link PamelaResourceModelFactory} A {@link DefaultPamelaResourceModelFactory} provides automatic FlexoId

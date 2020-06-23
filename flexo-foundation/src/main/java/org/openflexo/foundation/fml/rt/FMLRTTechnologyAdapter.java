@@ -40,14 +40,13 @@ package org.openflexo.foundation.fml.rt;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Logger;
 
 import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.fml.FlexoConceptInstanceType;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.VirtualModelInstanceType;
 import org.openflexo.foundation.fml.annotations.DeclareModelSlots;
-import org.openflexo.foundation.fml.annotations.DeclareResourceTypes;
+import org.openflexo.foundation.fml.annotations.DeclareResourceFactories;
 import org.openflexo.foundation.fml.annotations.DeclareTechnologySpecificTypes;
 import org.openflexo.foundation.fml.rt.rm.FMLRTVirtualModelInstanceResource;
 import org.openflexo.foundation.fml.rt.rm.FMLRTVirtualModelInstanceResourceFactory;
@@ -60,18 +59,15 @@ import org.openflexo.foundation.technologyadapter.TechnologyAdapterInitializatio
 /**
  * This class defines and implements the Openflexo built-in FML@runtime technology adapter<br>
  * 
- * This adapter allows to manage {@link View} and {@link FMLRTVirtualModelInstance} resources in Openflexo infrastructure.
+ * This adapter allows to manage {@link VirtualModelInstance} and {@link FMLRTVirtualModelInstance} resources in Openflexo infrastructure.
  * 
  * @author sylvain
  * 
  */
 @DeclareModelSlots({ FMLRTVirtualModelInstanceModelSlot.class })
 @DeclareTechnologySpecificTypes({ FlexoConceptInstanceType.class, VirtualModelInstanceType.class })
-@DeclareResourceTypes({ FMLRTVirtualModelInstanceResourceFactory.class })
-public class FMLRTTechnologyAdapter extends TechnologyAdapter {
-
-	private static final Logger logger = Logger.getLogger(FMLRTTechnologyAdapter.class.getPackage().getName());
-
+@DeclareResourceFactories({ FMLRTVirtualModelInstanceResourceFactory.class })
+public class FMLRTTechnologyAdapter extends TechnologyAdapter<FMLRTTechnologyAdapter> {
 	public FMLRTTechnologyAdapter() throws TechnologyAdapterInitializationException {
 	}
 
@@ -87,7 +83,7 @@ public class FMLRTTechnologyAdapter extends TechnologyAdapter {
 	}
 
 	@Override
-	public String getLocalizationDirectory() {
+	protected String getLocalizationDirectory() {
 		return "FlexoLocalization/FMLRTTechnologyAdapter";
 	}
 
@@ -237,7 +233,7 @@ public class FMLRTTechnologyAdapter extends TechnologyAdapter {
 	}
 
 	@Override
-	public <I> boolean isFolderIgnorable(FlexoResourceCenter<I> resourceCenter, I contents) {
+	protected <I> boolean isFolderIgnorable(FlexoResourceCenter<I> resourceCenter, I contents) {
 		if (resourceCenter.isDirectory(contents)) {
 			if (FlexoResourceCenter.isContainedInDirectoryWithSuffix(resourceCenter, contents,
 					FMLRTVirtualModelInstanceResourceFactory.FML_RT_SUFFIX)) {

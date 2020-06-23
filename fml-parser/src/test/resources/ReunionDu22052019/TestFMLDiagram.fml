@@ -1,0 +1,75 @@
+/**
+ * Testing FML-controlled diagram
+ */
+
+use org.openflexo.foundation.fml.rt.FMLRTModelSlot as FMLRT;
+use org.openflexo.technologyadapter.diagram.TypedDiagramModelSlot as DIAGRAM;
+
+import ["http://some_uri/ADiagSpecification.diagramspecification"] as DIAGRAM_SPECIFICATION;
+import [DIAGRAM_SPECIFICATION+"/ExampleDiagram.diagram"] as EXAMPLE_DIAGRAM;
+import [EXAMPLE_DIAGRAM:"SYL_56"] as RED_SHAPE;
+import [EXAMPLE_DIAGRAM:"SYL_78"] as BLUE_ARC;
+
+model MyModel {
+	
+	Diagram diagram with DIAGRAM::TypedDiagramModelSlot(templateDiagram = DIAGRAM_SPECIFICATION);	
+	//Diagram diagram2 with DIAGRAM::TypedDiagramModelSlot(templateDiagram = DIAGRAM_SPECIFICATION);	
+
+	/* Proposition de Fabien */
+	slot bidule = DIAGRAM::TypedDiagramModelSlot(templateDiagram = DIAGRAM_SPECIFICATION);
+	Diagram diagram with bidule;
+	Diagram diagram2 with bidule;
+	
+	
+	ConceptualModel conceptualModel;
+	
+	concept MyConceptGR {
+		
+		MyConcept myConcept;
+		DiagramShape shape with DIAGRAM::ShapeRole (
+			metaModelElement = RED_SHAPE,
+			label = myConcept.name
+		);
+		
+		// DropScheme
+		dropNewConcept(String name) with drop(target=topLevel) {
+			myConcept = new MyConcept::init(name);
+			shape = DIAGRAM::AddShape(container=topLevel) in (diagram);
+		}
+		
+		delete::deleteConcept() {
+			delete (myConcept);
+			delete (shape);
+		}
+		
+		delete::removeFromDiagram() {
+			myConcept = null;
+			delete (shape);
+		}
+	}
+	
+	concept LinkGR {
+		
+		MyConceptGR fromGR;
+		MyConceptGR toGR;
+		DiagramConnector connector with DIAGRAM::ConnectorRole (
+			metaModelElement = BLUE_ARC,
+			label = "connected with"
+		);
+		
+		// LinkScheme
+		linkConcepts() with link(fromTarget=MyConceptGR,toTarget=MyConceptGR) {
+			fromGR = fromTarget;
+			toGR = toTarget;
+			performLink(fromTarget.myConcept,toTarget.myConcept);
+			connector = DIAGRAM::AddConnector(fromShape=fromGR.shape,toShape=toGR.shape) in (diagram);
+		}
+		
+		performLink(MyConcept fromConcept, MyConcept toConcept) {
+			fromConcept.connectedWith = toConcept;			
+		}
+		
+	}
+
+
+}

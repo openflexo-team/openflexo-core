@@ -52,6 +52,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 import java.util.WeakHashMap;
+import java.util.function.Consumer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -68,19 +69,19 @@ import org.openflexo.foundation.fml.inspector.InspectorEntry;
 import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.localization.Language;
 import org.openflexo.localization.LocalizedDelegate;
-import org.openflexo.model.annotations.Adder;
-import org.openflexo.model.annotations.CloningStrategy;
-import org.openflexo.model.annotations.CloningStrategy.StrategyType;
-import org.openflexo.model.annotations.Embedded;
-import org.openflexo.model.annotations.Getter;
-import org.openflexo.model.annotations.Getter.Cardinality;
-import org.openflexo.model.annotations.ImplementationClass;
-import org.openflexo.model.annotations.ModelEntity;
-import org.openflexo.model.annotations.PropertyIdentifier;
-import org.openflexo.model.annotations.Remover;
-import org.openflexo.model.annotations.Setter;
-import org.openflexo.model.annotations.XMLElement;
-import org.openflexo.model.undo.CompoundEdit;
+import org.openflexo.pamela.annotations.Adder;
+import org.openflexo.pamela.annotations.CloningStrategy;
+import org.openflexo.pamela.annotations.CloningStrategy.StrategyType;
+import org.openflexo.pamela.annotations.Embedded;
+import org.openflexo.pamela.annotations.Getter;
+import org.openflexo.pamela.annotations.Getter.Cardinality;
+import org.openflexo.pamela.annotations.ImplementationClass;
+import org.openflexo.pamela.annotations.ModelEntity;
+import org.openflexo.pamela.annotations.PropertyIdentifier;
+import org.openflexo.pamela.annotations.Remover;
+import org.openflexo.pamela.annotations.Setter;
+import org.openflexo.pamela.annotations.XMLElement;
+import org.openflexo.pamela.undo.CompoundEdit;
 import org.openflexo.toolbox.HTMLUtils;
 import org.openflexo.toolbox.StringUtils;
 
@@ -93,6 +94,7 @@ import org.openflexo.toolbox.StringUtils;
 @ModelEntity
 @ImplementationClass(FMLLocalizedDictionary.FMLLocalizedDictionaryImpl.class)
 @XMLElement(xmlTag = "FMLLocalizedDictionary", deprecatedXMLTags = "FMLLocalizedDictionary")
+@Deprecated
 public interface FMLLocalizedDictionary extends FMLObject, org.openflexo.localization.LocalizedDelegate {
 
 	@PropertyIdentifier(type = VirtualModel.class)
@@ -153,7 +155,6 @@ public interface FMLLocalizedDictionary extends FMLObject, org.openflexo.localiz
 
 		@Override
 		public String getURI() {
-			// TODO Auto-generated method stub
 			return null;
 		}
 
@@ -264,14 +265,12 @@ public interface FMLLocalizedDictionary extends FMLObject, org.openflexo.localiz
 						return getParent().localizedForKeyAndLanguage(key, language, createsNewEntryInFirstEditableParent);
 					}
 				}
-				else {
-					// parent is null
-					if (createsNewEntryInFirstEditableParent && handleNewEntry(key, language)) {
-						addEntry(key);
-						return getDictForLang(language).get(key);
-					}
-					return key;
+				// parent is null
+				if (createsNewEntryInFirstEditableParent && handleNewEntry(key, language)) {
+					addEntry(key);
+					return getDictForLang(language).get(key);
 				}
+				return key;
 			}
 
 			return localized;
@@ -556,11 +555,16 @@ public interface FMLLocalizedDictionary extends FMLObject, org.openflexo.localiz
 				_values.get(l).remove(entry.getKey());
 				FMLLocalizedEntry e = getLocalizedEntry(l, entry.getKey());
 				if (e != null) {
+					System.out.println("On vire " + e);
+					e.delete();
 					removeFromLocalizedEntries(e);
 					// _entries.remove(e);
 				}
 			}
 			refresh();
+			System.out.println("Et on notifie les entries");
+			getPropertyChangeSupport().firePropertyChange("entries", null, getEntries());
+			System.out.println("Reste: " + getEntries());
 		}
 
 		@Override
@@ -583,15 +587,15 @@ public interface FMLLocalizedDictionary extends FMLObject, org.openflexo.localiz
 			getOwner().loadContainedVirtualModelsWhenUnloaded();
 			for (VirtualModel vm : getOwner().getVirtualModels()) {
 				for (FlexoConcept concept : vm.getFlexoConcepts()) {
-					checkAndRegisterLocalized(concept.getName());
+					// checkAndRegisterLocalized(concept.getName());
 					for (FlexoBehaviour es : concept.getFlexoBehaviours()) {
-						checkAndRegisterLocalized(es.getLabel());
-						checkAndRegisterLocalized(es.getDescription());
-						for (FlexoBehaviourParameter p : es.getParameters()) {
+						checkAndRegisterLocalized(es.getLabel(), normalizedKey -> es.setLabel(normalizedKey));
+						// checkAndRegisterLocalized(es.getDescription());
+						/*for (FlexoBehaviourParameter p : es.getParameters()) {
 							checkAndRegisterLocalized(p.getName());
-						}
+						}*/
 						for (InspectorEntry entry : concept.getInspector().getEntries()) {
-							checkAndRegisterLocalized(entry.getLabel());
+							checkAndRegisterLocalized(entry.getLabel(), normalizedKey -> entry.setLabel(normalizedKey));
 						}
 					}
 				}
@@ -613,18 +617,25 @@ public interface FMLLocalizedDictionary extends FMLObject, org.openflexo.localiz
 			// getViewPoint().notifyObservers();
 		}
 
-		private void checkAndRegisterLocalized(String key) {
+		private String checkAndRegisterLocalized(String key, Consumer<String> updateKey) {
+
 			// System.out.println("checkAndRegisterLocalized for " + key);
 			if (StringUtils.isEmpty(key)) {
-				return;
+				return null;
 			}
-			if (getEntry(key, false) != null) {
-				searchTranslation(getEntry(key, false));
-				return;
+
+			String normalizedKey = StringUtils.toLocalizedKey(key.trim());
+
+			if (!key.equals(normalizedKey)) {
+				updateKey.accept(normalizedKey);
 			}
-			else {
-				addEntry(key);
+
+			if (getEntry(normalizedKey, false) != null) {
+				searchTranslation(getEntry(normalizedKey, false));
+				return normalizedKey;
 			}
+			addEntry(normalizedKey);
+			return normalizedKey;
 		}
 
 		@Override
@@ -736,6 +747,9 @@ public interface FMLLocalizedDictionary extends FMLObject, org.openflexo.localiz
 
 			@Override
 			public void delete() {
+
+				System.out.println("C'est bien ca qu'on supprime: " + this);
+
 				deleteEntry(this);
 
 				/*System.out.println("Suppression de l'entree " + getKey());

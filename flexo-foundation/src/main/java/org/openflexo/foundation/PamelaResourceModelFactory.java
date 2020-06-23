@@ -39,7 +39,7 @@
 package org.openflexo.foundation;
 
 import org.openflexo.foundation.resource.PamelaResource;
-import org.openflexo.model.factory.ModelFactory;
+import org.openflexo.pamela.factory.ModelFactory;
 
 /**
  * Interface implemented by any {@link ModelFactory} managed by a {@link PamelaResource}<br>

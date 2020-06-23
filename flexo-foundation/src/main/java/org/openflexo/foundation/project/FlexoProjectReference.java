@@ -40,14 +40,14 @@ package org.openflexo.foundation.project;
 
 import org.openflexo.foundation.FlexoProject;
 import org.openflexo.foundation.FlexoProjectObject;
-import org.openflexo.model.annotations.Getter;
-import org.openflexo.model.annotations.ImplementationClass;
-import org.openflexo.model.annotations.Initializer;
-import org.openflexo.model.annotations.ModelEntity;
-import org.openflexo.model.annotations.Parameter;
-import org.openflexo.model.annotations.Setter;
-import org.openflexo.model.annotations.XMLAttribute;
-import org.openflexo.model.annotations.XMLElement;
+import org.openflexo.pamela.annotations.Getter;
+import org.openflexo.pamela.annotations.ImplementationClass;
+import org.openflexo.pamela.annotations.Initializer;
+import org.openflexo.pamela.annotations.ModelEntity;
+import org.openflexo.pamela.annotations.Parameter;
+import org.openflexo.pamela.annotations.Setter;
+import org.openflexo.pamela.annotations.XMLAttribute;
+import org.openflexo.pamela.annotations.XMLElement;
 import org.openflexo.toolbox.FlexoVersion;
 
 /**
@@ -59,7 +59,7 @@ import org.openflexo.toolbox.FlexoVersion;
 @ModelEntity
 @XMLElement
 @ImplementationClass(FlexoProjectReferenceImpl.class)
-public interface FlexoProjectReference extends FlexoProjectObject {
+public interface FlexoProjectReference<I> extends FlexoProjectObject<I> {
 
 	public static final String OWNER = "owner";
 	public static final String REFERENCED_PROJECT = "referencedProject";
@@ -68,7 +68,7 @@ public interface FlexoProjectReference extends FlexoProjectObject {
 	public static final String REVISION_KEY = "revision";
 
 	@Initializer
-	public FlexoProjectReference init(@Parameter(REFERENCED_PROJECT) FlexoProject<?> referencedProject);
+	public FlexoProjectReference<I> init(@Parameter(REFERENCED_PROJECT) FlexoProject<I> referencedProject);
 
 	/**
 	 * Return owner for this reference (the project where this reference is declared)
@@ -92,13 +92,13 @@ public interface FlexoProjectReference extends FlexoProjectObject {
 	 * @return the referenced project.
 	 */
 	@Getter(value = REFERENCED_PROJECT)
-	public FlexoProject<?> getReferencedProject();
+	public FlexoProject<I> getReferencedProject();
 
 	/**
 	 * Sets the referred project.
 	 */
 	@Setter(value = REFERENCED_PROJECT)
-	public void setReferencedProject(FlexoProject<?> project);
+	public void setReferencedProject(FlexoProject<I> project);
 
 	/**
 	 * Returns URI of referenced project

@@ -39,58 +39,39 @@
 package org.openflexo.action;
 
 import java.awt.event.KeyEvent;
-import java.util.EventObject;
-import java.util.logging.Logger;
 
 import javax.swing.KeyStroke;
 
 import org.openflexo.FlexoCst;
 import org.openflexo.foundation.FlexoObject;
-import org.openflexo.foundation.action.FlexoActionFinalizer;
-import org.openflexo.foundation.action.FlexoActionInitializer;
+import org.openflexo.foundation.action.FlexoActionRunnable;
 import org.openflexo.foundation.action.SelectAllAction;
 import org.openflexo.view.controller.ActionInitializer;
 import org.openflexo.view.controller.ControllerActionInitializer;
 
 public class SelectAllActionInitializer extends ActionInitializer<SelectAllAction, FlexoObject, FlexoObject> {
-
-	private static final Logger logger = Logger.getLogger(ControllerActionInitializer.class.getPackage().getName());
-
 	public SelectAllActionInitializer(ControllerActionInitializer actionInitializer) {
 		super(actionInitializer.getEditingContext().getSelectAllActionType(), actionInitializer);
 	}
 
 	@Override
-	protected FlexoActionInitializer<SelectAllAction> getDefaultInitializer() {
-		return new FlexoActionInitializer<SelectAllAction>() {
-			@Override
-			public boolean run(EventObject e, SelectAllAction action) {
+	protected FlexoActionRunnable<SelectAllAction, FlexoObject, FlexoObject> getDefaultFinalizer() {
+		return (e, action) -> {
+			System.out.println("Select all with " + action.getFocusedObject());
+			/*DiagramElement<?> container = action.getFocusedObject();
+			if (action.getFocusedObject() instanceof DiagramConnector) {
+				container = ((DiagramConnector) action.getFocusedObject()).getParent();
+			} else if (action.getFocusedObject() instanceof DiagramShape
+					&& ((DiagramShape) action.getFocusedObject()).getChilds().size() == 0) {
+				container = ((DiagramShape) action.getFocusedObject()).getParent();
+			}
+			if (container != null) {
+				getControllerActionInitializer().getVESelectionManager().setSelectedObjects(container.getChilds());
 				return true;
-			}
-		};
-	}
-
-	@Override
-	protected FlexoActionFinalizer<SelectAllAction> getDefaultFinalizer() {
-		return new FlexoActionFinalizer<SelectAllAction>() {
-			@Override
-			public boolean run(EventObject e, SelectAllAction action) {
-				System.out.println("Select all with " + action.getFocusedObject());
-				/*DiagramElement<?> container = action.getFocusedObject();
-				if (action.getFocusedObject() instanceof DiagramConnector) {
-					container = ((DiagramConnector) action.getFocusedObject()).getParent();
-				} else if (action.getFocusedObject() instanceof DiagramShape
-						&& ((DiagramShape) action.getFocusedObject()).getChilds().size() == 0) {
-					container = ((DiagramShape) action.getFocusedObject()).getParent();
-				}
-				if (container != null) {
-					getControllerActionInitializer().getVESelectionManager().setSelectedObjects(container.getChilds());
-					return true;
-				} else {
-					return false;
-				}*/
+			} else {
 				return false;
-			}
+			}*/
+			return false;
 		};
 	}
 

@@ -44,7 +44,7 @@ import java.lang.reflect.Type;
 import java.util.logging.Logger;
 
 import org.openflexo.connie.BindingVariable;
-import org.openflexo.foundation.fml.editionaction.FetchRequest;
+import org.openflexo.foundation.fml.editionaction.AbstractFetchRequest;
 import org.openflexo.foundation.fml.editionaction.FetchRequestCondition;
 
 /**
@@ -65,7 +65,7 @@ public class FetchRequestConditionSelectedBindingVariable extends BindingVariabl
 		if (condition.getPropertyChangeSupport() != null) {
 			condition.getPropertyChangeSupport().addPropertyChangeListener(this);
 		}
-		FetchRequest<?, ?, ?> action = condition.getAction();
+		AbstractFetchRequest<?, ?, ?, ?> action = condition.getAction();
 		lastKnownType = action != null ? condition.getAction().getFetchedType() : Object.class;
 		if (action != null && action.getPropertyChangeSupport() != null) {
 			action.getPropertyChangeSupport().addPropertyChangeListener(this);
@@ -79,7 +79,7 @@ public class FetchRequestConditionSelectedBindingVariable extends BindingVariabl
 			if (condition.getPropertyChangeSupport() != null) {
 				condition.getPropertyChangeSupport().removePropertyChangeListener(this);
 			}
-			FetchRequest<?, ?, ?> action = condition.getAction();
+			AbstractFetchRequest<?, ?, ?, ?> action = condition.getAction();
 			if (action != null && action.getPropertyChangeSupport() != null) {
 				action.getPropertyChangeSupport().removePropertyChangeListener(this);
 			}

@@ -57,21 +57,14 @@ import org.openflexo.foundation.resource.ProjectLoaded;
 import org.openflexo.foundation.resource.ResourceManager;
 import org.openflexo.foundation.task.FlexoTask;
 import org.openflexo.foundation.task.FlexoTaskManager;
-import org.openflexo.foundation.technologyadapter.FlexoMetaModel;
-import org.openflexo.foundation.technologyadapter.FlexoModel;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterService;
 
 /**
- * Default implementation of a manager of {@link FlexoService}<br>
+ * The {@link FlexoServiceManager} provides Run-Time environment for executing Openflexo infrastructure.
+ * 
+ * Implementation of a manager of {@link FlexoService}<br>
  * All {@link FlexoService} are registered in the {@link FlexoServiceManager} which broadcast all service events to all services<br>
- * 
- * Please note that this class provides the basic support for Information Space<br>
- * The Information Space is obtained through two services from the {@link FlexoServiceManager}, and results from the merging of the
- * {@link FlexoResourceCenterService} and the {@link ProjectNatureService}.<br>
- * For each {@link FlexoResourceCenter} and for each {@link TechnologyAdapter}, a repository of {@link FlexoModel} and
- * {@link FlexoMetaModel} are managed.
- * 
  * 
  * @author sylvain
  * 
@@ -85,11 +78,6 @@ public abstract class FlexoServiceManager {
 	public FlexoServiceManager() {
 		registeredServices = new ArrayList<>();
 	}
-
-	/*@Override
-	public String getFullyQualifiedName() {
-		return "FlexoServiceManager";
-	}*/
 
 	/**
 	 * Register the supplied service, by adding it in the list of all services managed by this {@link FlexoServiceManager} instance<br>
@@ -124,7 +112,7 @@ public abstract class FlexoServiceManager {
 			}
 		}
 		if (notification instanceof ProjectClosed) {
-			resourceCenterRemoved(((ProjectClosed) notification).getProject());
+			resourceCenterRemoved(((ProjectClosed<?>) notification).getProject());
 		}
 	}
 
@@ -144,16 +132,12 @@ public abstract class FlexoServiceManager {
 	 * 
 	 * @param technologyAdapter
 	 */
-	public FlexoTask activateTechnologyAdapter(TechnologyAdapter technologyAdapter, boolean performNowInThisThread) {
-
+	public <TA extends TechnologyAdapter<TA>> FlexoTask activateTechnologyAdapter(TA technologyAdapter, boolean performNowInThisThread) {
 		if (technologyAdapter.isActivated()) {
 			return null;
 		}
-
 		technologyAdapter.activate();
-
-		notify(getTechnologyAdapterService(), new TechnologyAdapterHasBeenActivated(technologyAdapter));
-
+		notify(getTechnologyAdapterService(), new TechnologyAdapterHasBeenActivated<>(technologyAdapter));
 		return null;
 	}
 
@@ -163,15 +147,12 @@ public abstract class FlexoServiceManager {
 	 * 
 	 * @param technologyAdapter
 	 */
-	public FlexoTask disactivateTechnologyAdapter(TechnologyAdapter technologyAdapter) {
-
+	public <TA extends TechnologyAdapter<TA>> FlexoTask disactivateTechnologyAdapter(TA technologyAdapter) {
 		if (!technologyAdapter.isActivated()) {
 			return null;
 		}
-
 		technologyAdapter.disactivate();
-		notify(getTechnologyAdapterService(), new TechnologyAdapterHasBeenDisactivated(technologyAdapter));
-
+		notify(getTechnologyAdapterService(), new TechnologyAdapterHasBeenDisactivated<>(technologyAdapter));
 		return null;
 	}
 
@@ -180,7 +161,7 @@ public abstract class FlexoServiceManager {
 	 * 
 	 * @param technologyAdapter
 	 */
-	public void hasActivated(TechnologyAdapter technologyAdapter) {
+	public void hasActivated(TechnologyAdapter<?> technologyAdapter) {
 	}
 
 	@SuppressWarnings("unchecked")
@@ -266,14 +247,14 @@ public abstract class FlexoServiceManager {
 	 * @author sylvain
 	 * 
 	 */
-	public class TechnologyAdapterHasBeenActivated implements ServiceNotification {
-		private final TechnologyAdapter technologyAdapter;
+	public class TechnologyAdapterHasBeenActivated<TA extends TechnologyAdapter<TA>> implements ServiceNotification {
+		private final TechnologyAdapter<TA> technologyAdapter;
 
-		public TechnologyAdapterHasBeenActivated(TechnologyAdapter technologyAdapter) {
+		public TechnologyAdapterHasBeenActivated(TechnologyAdapter<TA> technologyAdapter) {
 			this.technologyAdapter = technologyAdapter;
 		}
 
-		public TechnologyAdapter getTechnologyAdapter() {
+		public TechnologyAdapter<TA> getTechnologyAdapter() {
 			return technologyAdapter;
 		}
 	}
@@ -284,14 +265,14 @@ public abstract class FlexoServiceManager {
 	 * @author sylvain
 	 * 
 	 */
-	public class TechnologyAdapterHasBeenDisactivated implements ServiceNotification {
-		private final TechnologyAdapter technologyAdapter;
+	public class TechnologyAdapterHasBeenDisactivated<TA extends TechnologyAdapter<TA>> implements ServiceNotification {
+		private final TechnologyAdapter<TA> technologyAdapter;
 
-		public TechnologyAdapterHasBeenDisactivated(TechnologyAdapter technologyAdapter) {
+		public TechnologyAdapterHasBeenDisactivated(TechnologyAdapter<TA> technologyAdapter) {
 			this.technologyAdapter = technologyAdapter;
 		}
 
-		public TechnologyAdapter getTechnologyAdapter() {
+		public TechnologyAdapter<TA> getTechnologyAdapter() {
 			return technologyAdapter;
 		}
 	}

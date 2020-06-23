@@ -55,5 +55,5 @@ public interface FlexoObserver {
 	 * @param arg
 	 *            an argument passed to the <code>notifyObservers</code> method.
 	 */
-	public void update(FlexoObservable observable, DataModification dataModification);
+	public void update(FlexoObservable observable, DataModification<?> dataModification);
 }

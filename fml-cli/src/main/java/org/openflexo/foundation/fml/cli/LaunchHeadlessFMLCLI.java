@@ -151,7 +151,11 @@ public class LaunchHeadlessFMLCLI {
 		// Settings.getInstance().setHistoryDisabled(true);
 		// Settings.getInstance().setHistoryPersistent(false);
 
-		CommandInterpreter ci = new CommandInterpreter(serviceManager, System.in, System.out, new File(System.getProperty("user.dir")));
+		// System.out.println("IS=" + Settings.getInstance().getInputStream());
+		// Settings.getInstance().setInputStream(System.in);
+
+		CommandInterpreter ci = new CommandInterpreter(serviceManager, System.in, System.out, System.err,
+				new File(System.getProperty("user.dir")));
 
 		// try {
 		ci.start();

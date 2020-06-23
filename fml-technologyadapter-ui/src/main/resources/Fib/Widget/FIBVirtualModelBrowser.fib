@@ -1,96 +1,301 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Panel layout="twocols" darkLevel="0" data=""
-	dataClassName="org.openflexo.foundation.fml.VirtualModel"
-	controllerClassName="org.openflexo.view.controller.FlexoFIBController"
-	visible="">
-	<Browser root="data" iteratorClassName="java.lang.Object"
-		visibleRowCount="5" rowHeight="18" boundToSelectionManager="true"
-		selectionMode="DiscontiguousTreeSelection" selected="" showFooter="true"
-		rootVisible="true" showRootsHandle="true" format="" icon="" tooltip=""
-		localize="true" enable="" manageDynamicModel="true"
-		clickAction="controller.singleClick(VirtualModelBrowser.selected)"
-		doubleClickAction="controller.doubleClick(VirtualModelBrowser.selected)"
-		rightClickAction="controller.rightClick(VirtualModelBrowser.selected,event)"
-		enterPressedAction="" valueChangedAction="" valueTransform=""
-		valueValidator="" name="VirtualModelBrowser" index="0" data=""
+<Panel id="0" align="left" borderTop="0" borderLeft="0"
+	trackViewPortHeight="true" trackViewPortWidth="true" borderBottom="0"
+	border="empty" sizeAdjustment="OriginalSize" layout="twocols"
+	borderRight="0"
+	controllerClassName="org.openflexo.fml.controller.widget.FIBVirtualModelBrowserFIBController"
+	name="Panel">
+	<Panel id="1" align="left" borderTop="0" flowAlignment="TRAILING"
+		borderLeft="0" trackViewPortHeight="true" trackViewPortWidth="true"
+		borderBottom="0" border="empty" sizeAdjustment="OriginalSize"
+		layout="flow" vGap="1" borderRight="0" hGap="5"
+		constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=right)"
+		name="Panel2">
+		<Image id="2" localize="true"  imageWidth="80" sizeAdjustment="OriginalSize"
+			imageFile="../../Icons/Utils/Flat_20x20.png" align="left" tooltipText="flat_mode"
+			imageHeight="46" constraints="flow()" name="FlatIcon" clickAction="controller.setViewModeToFlat()"/>
+		<Image id="3" localize="true"  imageWidth="80" sizeAdjustment="OriginalSize"
+			imageFile="../../Icons/Utils/HierarchicalModel_20x20.png" tooltipText="hierarchical_mode"
+			align="left" imageHeight="46" constraints="flow()" name="HierarchicalIcon" clickAction="controller.setViewModeToHierarchical()"/>
+		<Image id="4" localize="true"  imageWidth="80" sizeAdjustment="OriginalSize"
+			imageFile="../../Icons/Utils/Embedding_20x20.png" align="left" tooltipText="embedding_mode"
+			imageHeight="46" constraints="flow()" name="EmbeddingIcon" clickAction="controller.setViewModeToEmbedding()"/>
+	</Panel>
+    <Browser backgroundSelectionColor="7,73,217"
+		visibleRowCount="5" boundToSelectionManager="true"
+		backgroundNonSelectionColor="255,255,255"
+		iteratorClassName="java.lang.Object" textSelectionColor="255,255,255"
+		backgroundSecondarySelectionColor="178,215,255" showRootsHandle="true"
+		showFooter="true" allowsDragAndDrop="true" allowsExternalDragAndDrop="true"
+		textNonSelectionColor="0,0,0" root="data.resource"
+		selectionMode="DiscontiguousTreeSelection" rowHeight="18"
+		localize="true" manageDynamicModel="true"
+		rightClickAction="controller.rightClick(EmbeddingVirtualModelBrowser.selected,event)"
+		doubleClickAction="controller.doubleClick(EmbeddingVirtualModelBrowser.selected)"
+		clickAction="controller.singleClick(EmbeddingVirtualModelBrowser.selected)"
 		constraints="twocols(expandHorizontally=true;expandVertically=true;index=0;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=center)"
-		visible="">
-		<BrowserElement dataClassName="org.openflexo.foundation.fml.VirtualModel"
-			label="virtualModel.name" icon="controller.iconForObject(virtualModel)"
-			tooltip="" enabled="" visible="" isEditable="false" editableLabel=""
-			filtered="false" defaultVisible="true" dynamicFont="" name="virtualModel">
- 			<Children data="virtualModel.allRootFlexoConcepts" visible=""
-				cast="" name="flexoConcepts" />
+		index="0" name="EmbeddingVirtualModelBrowser" visible="controller.viewMode.name='Embedding'">
+		<BrowserElement 
+			dataClassName="org.openflexo.foundation.fml.rm.VirtualModelResource"
+			icon="controller.iconForObject(virtualModelResource)"
+			label="(virtualModelResource.name + &quot;.fml&quot;)"
+			enabled="virtualModelResource.isLoaded"
+			editableLabel="virtualModelResource.name" isEditable="false"
+			name="virtualModelResource">
+			<DragOperation
+				isAvailable="controller.canMoveVirtualModelInVirtualModel(dragged,target)"
+				targetElementName="virtualModelResource"
+				action="controller.moveVirtualModelInVirtualModel(dragged,target)"
+				name="drag_to_virtual_model" />
+			<Children visible="virtualModelResource.isLoaded"
+				data="virtualModelResource.containedVirtualModelResources" name="subresources" />
+			<Children visible="virtualModelResource.isLoaded"
+				data="virtualModelResource.loadedVirtualModel.allRootFlexoConcepts"
+				name="rootFlexoConcepts" />
+			<BrowserRemoveAction 
+				method="controller.deleteVirtualModel(selected)"
+				name="delete_virtual_model" />
+			<BrowserAddAction 
+				method="controller.createFlexoConceptInVirtualModel(selected.virtualModel)"
+				name="create_flexo_concept" />
 		</BrowserElement>
-		<BrowserElement dataClassName="org.openflexo.foundation.fml.FlexoConcept"
-			label="flexoConcept.name" icon="controller.iconForObject(flexoConcept)"
-			tooltip="" enabled="" visible="" isEditable="false" editableLabel=""
-			filtered="false" defaultVisible="true" dynamicFont="" name="flexoConcept">
-			<Children data="flexoConcept.embeddedFlexoConcepts" visible=""
-				cast="" name="children" />
-			<Children data="flexoConcept.inspector" visible="" cast=""
-				name="inspector" />
-			<Children data="flexoConcept.structuralFacet" visible=""
-				cast="" name="structural" />
-			<Children data="flexoConcept.behaviouralFacet" visible=""
-				cast="" name="behavioural" />
+		<BrowserElement 
+			dataClassName="org.openflexo.foundation.fml.FlexoEnum"
+			icon="controller.iconForObject(flexoEnum)" label="flexoEnum.name"
+			editableLabel="flexoEnum.name" isEditable="false" name="flexoEnum">
+			<Children data="flexoEnum.values" name="children" />
+			<BrowserAddAction 
+				method="controller.createFlexoEnumValue(selected)"
+				name="create_flexo_enum_value" />
 		</BrowserElement>
-		<BrowserElement dataClassName="org.openflexo.foundation.fml.FlexoProperty"
-			label="flexoProperty.name" icon="controller.iconForObject(flexoProperty)"
-			tooltip="" enabled="" visible="" isEditable="false" editableLabel=""
-			filtered="false" defaultVisible="true" dynamicFont="" name="flexoProperty" />
-		<BrowserElement dataClassName="org.openflexo.foundation.fml.FlexoBehaviour"
-			label="flexoBehaviour.signature" icon="controller.iconForObject(flexoBehaviour)"
-			tooltip="" enabled="" visible="" isEditable="false" editableLabel=""
-			filtered="false" defaultVisible="true" dynamicFont="" name="flexoBehaviour">
-			<Children data="flexoBehaviour.parameters" visible="(flexoBehaviour.parameters.size &gt; 0)"
-				cast="" name="parameters" />
+		<BrowserElement 
+			dataClassName="org.openflexo.foundation.fml.FlexoEnumValue"
+			icon="controller.iconForObject(flexoEnumValue)"
+			label="flexoEnumValue.name" editableLabel="flexoEnumValue.name"
+			isEditable="false" name="flexoEnumValue">
+			<BrowserRemoveAction 
+				method="controller.deleteFlexoEnumValue(selected)"
+				name="delete_flexo_enum_value" />
 		</BrowserElement>
-		<BrowserElement
-			dataClassName="org.openflexo.foundation.fml.inspector.FlexoConceptInspector"
-			label="&quot;Inspector&quot;" icon="controller.iconForObject(inspector)"
-			tooltip="" enabled="" visible="" isEditable="false" editableLabel=""
-			filtered="false" defaultVisible="true" dynamicFont="" name="inspector">
-			<Children data="inspector.entries" name="entries" />
+		<BrowserElement 
+			dataClassName="org.openflexo.foundation.fml.FlexoConcept"
+			icon="controller.iconForObject(flexoConcept)"
+			label="flexoConcept.name" editableLabel="flexoConcept.name"
+			isEditable="false" name="flexoConcept">
+			<DragOperation 
+				isAvailable="controller.canMoveFlexoConcept(dragged,target)"
+				targetElementName="flexoConcept"
+				action="controller.moveFlexoConcept(dragged,target)"
+				name="drag_concept_into_concept" />
+			<DragOperation 
+				isAvailable="controller.canMoveFlexoConcept(dragged,target.virtualModel)"
+				targetElementName="virtualModelResource"
+				action="controller.moveFlexoConcept(dragged,target.virtualModel)"
+				name="drag_concept_into_virtual_model" />
+			<Children data="flexoConcept.embeddedFlexoConcepts"
+				name="children" />
+			<BrowserRemoveAction 
+				method="controller.deleteFlexoConcept(selected)"
+				name="delete_flexo_concept" />
+			<BrowserAddAction 
+				method="controller.createFlexoConceptInContainer(selected)"
+				name="create_flexo_concept" />
 		</BrowserElement>
-		<BrowserElement
-			dataClassName="org.openflexo.foundation.fml.inspector.InspectorEntry"
-			label="inspectorEntry.name" icon="controller.iconForObject(inspectorEntry)"
-			tooltip="" enabled="" visible="" isEditable="false" editableLabel=""
-			filtered="false" defaultVisible="true" dynamicFont="" name="inspectorEntry" />
-		<BrowserElement dataClassName="org.openflexo.foundation.fml.FlexoBehaviourParameter"
-			icon="controller.iconForObject(flexoBehaviourParameter)" tooltip=""
-			enabled="" visible="" isEditable="false" editableLabel="" filtered="false"
-			defaultVisible="true" dynamicFont="" name="flexoBehaviourParameter" />
-		<BrowserElement
-			dataClassName="org.openflexo.foundation.fml.editionaction.EditionAction"
-			icon="controller.iconForObject(editionAction)" tooltip="" enabled=""
-			visible="" isEditable="false" editableLabel="" filtered="false"
-			defaultVisible="true" dynamicFont="" name="editionAction" />
-		<BrowserElement
-			dataClassName="org.openflexo.foundation.fml.controlgraph.ControlStructureAction"
-			icon="controller.iconForObject(controlStructureAction)" tooltip=""
-			enabled="" visible="" isEditable="false" editableLabel="" filtered="false"
-			defaultVisible="true" dynamicFont="" name="controlStructureAction">
-		</BrowserElement>
-		<BrowserElement
-			dataClassName="org.openflexo.foundation.fml.FlexoConceptStructuralFacet"
-			label="&quot;Structural&quot;" icon="controller.iconForObject(flexoConceptStructuralFacet)"
-			tooltip="" enabled="" visible="" isEditable="false" editableLabel=""
-			filtered="false" defaultVisible="true" dynamicFont=""
-			name="flexoConceptStructuralFacet">
-			<Children data="flexoConceptStructuralFacet.flexoConcept.flexoProperties"
-				name="flexoProperties" />
-		</BrowserElement>
-		<BrowserElement
-			dataClassName="org.openflexo.foundation.fml.FlexoConceptBehaviouralFacet"
-			label="&quot;Behavioural&quot;" icon="controller.iconForObject(flexoConceptBehaviouralFacet)"
-			tooltip="" enabled="" visible="" isEditable="false" editableLabel=""
-			filtered="false" defaultVisible="true" dynamicFont=""
-			name="flexoConceptBehaviouralFacet">
-			<Children data="flexoConceptBehaviouralFacet.flexoConcept.flexoBehaviours"
-				name="flexoBehaviours" />
+		<BrowserElement 
+			dataClassName="org.openflexo.foundation.fml.FlexoProperty"
+			icon="controller.iconForObject(flexoProperty)"
+			label="flexoProperty.name" isEditable="false" name="flexoProperty" />
+		<BrowserElement 
+			dataClassName="org.openflexo.foundation.fml.FlexoBehaviour"
+			icon="controller.iconForObject(flexoBehaviour)"
+			label="flexoBehaviour.signature" isEditable="false"
+			name="flexoBehaviour">
 		</BrowserElement>
 	</Browser>
-	<LocalizedDictionary />
+
+	<Browser backgroundSelectionColor="7,73,217"
+		visibleRowCount="5" boundToSelectionManager="true"
+		backgroundNonSelectionColor="255,255,255"
+		iteratorClassName="java.lang.Object" textSelectionColor="255,255,255"
+		backgroundSecondarySelectionColor="178,215,255" showRootsHandle="true"
+		showFooter="true" allowsDragAndDrop="true"
+		textNonSelectionColor="0,0,0" root="data.resource"
+		selectionMode="DiscontiguousTreeSelection" rowHeight="18"
+		localize="true" manageDynamicModel="true"
+		rightClickAction="controller.rightClick(HierarchicalVirtualModelBrowser.selected,event)"
+		doubleClickAction="controller.doubleClick(HierarchicalVirtualModelBrowser.selected)"
+		clickAction="controller.singleClick(HierarchicalVirtualModelBrowser.selected)"
+		constraints="twocols(expandHorizontally=true;expandVertically=true;index=0;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=center)"
+		index="0" name="HierarchicalVirtualModelBrowser" visible="controller.viewMode.name='Hierarchical'">
+		<BrowserElement 
+			dataClassName="org.openflexo.foundation.fml.rm.VirtualModelResource"
+			icon="controller.iconForObject(virtualModelResource)"
+			label="(virtualModelResource.name + &quot;.fml&quot;)"
+			enabled="virtualModelResource.isLoaded"
+			editableLabel="virtualModelResource.name" isEditable="false"
+			name="virtualModelResource">
+			<DragOperation
+				isAvailable="controller.canMoveVirtualModelInVirtualModel(dragged,target)"
+				targetElementName="virtualModelResource"
+				action="controller.moveVirtualModelInVirtualModel(dragged,target)"
+				name="drag_to_virtual_model" />
+			<Children visible="virtualModelResource.isLoaded"
+				data="virtualModelResource.containedVirtualModelResources" name="subresources" />
+			<Children visible="virtualModelResource.isLoaded"
+				data="virtualModelResource.loadedVirtualModel.allSuperFlexoConcepts"
+				name="rootFlexoConcepts" />
+			<BrowserRemoveAction 
+				method="controller.deleteVirtualModel(selected)"
+				name="delete_virtual_model" />
+			<BrowserAddAction 
+				method="controller.createFlexoConceptInVirtualModel(selected.virtualModel)"
+				name="create_flexo_concept" />
+		</BrowserElement>
+		<BrowserElement 
+			dataClassName="org.openflexo.foundation.fml.FlexoEnum"
+			icon="controller.iconForObject(flexoEnum)" label="flexoEnum.name"
+			editableLabel="flexoEnum.name" isEditable="false" name="flexoEnum">
+			<Children data="flexoEnum.values" name="children" />
+			<BrowserAddAction 
+				method="controller.createFlexoEnumValue(selected)"
+				name="create_flexo_enum_value" />
+		</BrowserElement>
+		<BrowserElement 
+			dataClassName="org.openflexo.foundation.fml.FlexoEnumValue"
+			icon="controller.iconForObject(flexoEnumValue)"
+			label="flexoEnumValue.name" editableLabel="flexoEnumValue.name"
+			isEditable="false" name="flexoEnumValue">
+			<BrowserRemoveAction 
+				method="controller.deleteFlexoEnumValue(selected)"
+				name="delete_flexo_enum_value" />
+		</BrowserElement>
+		<BrowserElement 
+			dataClassName="org.openflexo.foundation.fml.FlexoConcept"
+			icon="controller.iconForObject(flexoConcept)"
+			label="flexoConcept.name" editableLabel="flexoConcept.name"
+			isEditable="false" name="flexoConcept">
+			<DragOperation 
+				isAvailable="controller.canMoveFlexoConcept(dragged,target)"
+				targetElementName="flexoConcept"
+				action="controller.moveFlexoConcept(dragged,target)"
+				name="drag_concept_into_concept" />
+			<DragOperation 
+				isAvailable="controller.canMoveFlexoConcept(dragged,target.virtualModel)"
+				targetElementName="virtualModelResource"
+				action="controller.moveFlexoConcept(dragged,target.virtualModel)"
+				name="drag_concept_into_virtual_model" />
+			<Children data="flexoConcept.childFlexoConcepts"
+				name="children" />
+			<BrowserRemoveAction 
+				method="controller.deleteFlexoConcept(selected)"
+				name="delete_flexo_concept" />
+			<BrowserAddAction 
+				method="controller.createFlexoConceptChildOf(selected)"
+				name="create_flexo_concept" />
+		</BrowserElement>
+		<BrowserElement 
+			dataClassName="org.openflexo.foundation.fml.FlexoProperty"
+			icon="controller.iconForObject(flexoProperty)"
+			label="flexoProperty.name" isEditable="false" name="flexoProperty" />
+		<BrowserElement 
+			dataClassName="org.openflexo.foundation.fml.FlexoBehaviour"
+			icon="controller.iconForObject(flexoBehaviour)"
+			label="flexoBehaviour.signature" isEditable="false"
+			name="flexoBehaviour">
+		</BrowserElement>
+	</Browser>
+
+	<Browser backgroundSelectionColor="7,73,217"
+		visibleRowCount="5" boundToSelectionManager="true"
+		backgroundNonSelectionColor="255,255,255"
+		iteratorClassName="java.lang.Object" textSelectionColor="255,255,255"
+		backgroundSecondarySelectionColor="178,215,255" showRootsHandle="true"
+		showFooter="true" allowsDragAndDrop="true"
+		textNonSelectionColor="0,0,0" root="data.resource"
+		selectionMode="DiscontiguousTreeSelection" rowHeight="18"
+		localize="true" manageDynamicModel="true"
+		rightClickAction="controller.rightClick(FlatVirtualModelBrowser.selected,event)"
+		doubleClickAction="controller.doubleClick(FlatVirtualModelBrowser.selected)"
+		clickAction="controller.singleClick(FlatVirtualModelBrowser.selected)"
+		constraints="twocols(expandHorizontally=true;expandVertically=true;index=0;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=center)"
+		index="0" name="FlatVirtualModelBrowser" visible="controller.viewMode.name='Flat'">
+		<BrowserElement 
+			dataClassName="org.openflexo.foundation.fml.rm.VirtualModelResource"
+			icon="controller.iconForObject(virtualModelResource)"
+			label="(virtualModelResource.name + &quot;.fml&quot;)"
+			enabled="virtualModelResource.isLoaded"
+			editableLabel="virtualModelResource.name" isEditable="false"
+			name="virtualModelResource">
+			<DragOperation
+				isAvailable="controller.canMoveVirtualModelInVirtualModel(dragged,target)"
+				targetElementName="virtualModelResource"
+				action="controller.moveVirtualModelInVirtualModel(dragged,target)"
+				name="drag_to_virtual_model" />
+			<Children visible="virtualModelResource.isLoaded"
+				data="virtualModelResource.containedVirtualModelResources" name="subresources" />
+			<Children visible="virtualModelResource.isLoaded"
+				data="virtualModelResource.loadedVirtualModel.flexoConcepts"
+				name="flexoConcepts" />
+			<BrowserRemoveAction 
+				method="controller.deleteVirtualModel(selected)"
+				name="delete_virtual_model" />
+			<BrowserAddAction 
+				method="controller.createFlexoConceptInVirtualModel(selected.virtualModel)"
+				name="create_flexo_concept" />
+		</BrowserElement>
+		<BrowserElement 
+			dataClassName="org.openflexo.foundation.fml.FlexoEnum"
+			icon="controller.iconForObject(flexoEnum)" label="flexoEnum.name"
+			editableLabel="flexoEnum.name" isEditable="false" name="flexoEnum">
+			<Children data="flexoEnum.values" name="children" />
+			<BrowserAddAction 
+				method="controller.createFlexoEnumValue(selected)"
+				name="create_flexo_enum_value" />
+		</BrowserElement>
+		<BrowserElement 
+			dataClassName="org.openflexo.foundation.fml.FlexoEnumValue"
+			icon="controller.iconForObject(flexoEnumValue)"
+			label="flexoEnumValue.name" editableLabel="flexoEnumValue.name"
+			isEditable="false" name="flexoEnumValue">
+			<BrowserRemoveAction 
+				method="controller.deleteFlexoEnumValue(selected)"
+				name="delete_flexo_enum_value" />
+		</BrowserElement>
+		<BrowserElement 
+			dataClassName="org.openflexo.foundation.fml.FlexoConcept"
+			icon="controller.iconForObject(flexoConcept)"
+			label="flexoConcept.name" editableLabel="flexoConcept.name"
+			isEditable="false" name="flexoConcept">
+			<DragOperation 
+				isAvailable="controller.canMoveFlexoConcept(dragged,target)"
+				targetElementName="flexoConcept"
+				action="controller.moveFlexoConcept(dragged,target)"
+				name="drag_concept_into_concept" />
+			<DragOperation 
+				isAvailable="controller.canMoveFlexoConcept(dragged,target.virtualModel)"
+				targetElementName="virtualModelResource"
+				action="controller.moveFlexoConcept(dragged,target.virtualModel)"
+				name="drag_concept_into_virtual_model" />
+			<BrowserRemoveAction 
+				method="controller.deleteFlexoConcept(selected)"
+				name="delete_flexo_concept" />
+			<BrowserAddAction 
+				method="controller.createFlexoConcept(selected.declaringVirtualModel)"
+				name="create_flexo_concept" />
+		</BrowserElement>
+		<BrowserElement 
+			dataClassName="org.openflexo.foundation.fml.FlexoProperty"
+			icon="controller.iconForObject(flexoProperty)"
+			label="flexoProperty.name" isEditable="false" name="flexoProperty" />
+		<BrowserElement 
+			dataClassName="org.openflexo.foundation.fml.FlexoBehaviour"
+			icon="controller.iconForObject(flexoBehaviour)"
+			label="flexoBehaviour.signature" isEditable="false"
+			name="flexoBehaviour">
+		</BrowserElement>
+	</Browser>
+
+	<LocalizedDictionary  />
+	<FIBVariable 
+		type="org.openflexo.foundation.fml.VirtualModel" name="data" />
 </Panel>

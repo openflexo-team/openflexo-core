@@ -68,7 +68,7 @@ import org.openflexo.foundation.fml.rm.VirtualModelResourceFactory;
 import org.openflexo.foundation.resource.DirectoryResourceCenter;
 import org.openflexo.foundation.resource.SaveResourceException;
 import org.openflexo.foundation.test.OpenflexoTestCase;
-import org.openflexo.model.exceptions.ModelDefinitionException;
+import org.openflexo.pamela.exceptions.ModelDefinitionException;
 import org.openflexo.rm.ResourceLocator;
 import org.openflexo.test.OrderedRunner;
 import org.openflexo.test.TestOrder;
@@ -160,7 +160,7 @@ public class TestFMLDataBindingAnalysing extends OpenflexoTestCase {
 		assertTrue(((VirtualModelResource) topVirtualModel.getResource()).getDirectory() != null);
 		assertTrue(((VirtualModelResource) topVirtualModel.getResource()).getIODelegate().exists());
 
-		assertEquals(topVirtualModel, topVirtualModel.getVirtualModel());
+		assertEquals(topVirtualModel, topVirtualModel.getDeclaringVirtualModel());
 		assertEquals(null, topVirtualModel.getContainerVirtualModel());
 		assertEquals(topVirtualModel, topVirtualModel.getFlexoConcept());
 		assertEquals(topVirtualModel, topVirtualModel.getResourceData());
@@ -224,13 +224,13 @@ public class TestFMLDataBindingAnalysing extends OpenflexoTestCase {
 
 		assertNotNull(flexoConceptA);
 
-		assertEquals(topVirtualModel, flexoConceptA.getVirtualModel().getContainerVirtualModel());
-		assertEquals(virtualModel, flexoConceptA.getVirtualModel());
+		assertEquals(topVirtualModel, flexoConceptA.getOwner().getContainerVirtualModel());
+		assertEquals(virtualModel, flexoConceptA.getOwner());
 		assertEquals(virtualModel, flexoConceptA.getOwningVirtualModel());
 		assertEquals(flexoConceptA, flexoConceptA.getFlexoConcept());
 		assertEquals(virtualModel, flexoConceptA.getResourceData());
 
-		((VirtualModelResource) virtualModel.getResource()).save(null);
+		((VirtualModelResource) virtualModel.getResource()).save();
 
 		// System.out.println("Saved: " + ((VirtualModelResource)
 		// virtualModel.getResource()).getFile());
@@ -254,7 +254,7 @@ public class TestFMLDataBindingAnalysing extends OpenflexoTestCase {
 		System.out.println("FlexoConcept B = " + flexoConceptB);
 		assertNotNull(flexoConceptB);
 
-		((VirtualModelResource) virtualModel.getResource()).save(null);
+		((VirtualModelResource) virtualModel.getResource()).save();
 
 		System.out.println("Saved: " + ((VirtualModelResource) virtualModel.getResource()).getIODelegate().toString());
 

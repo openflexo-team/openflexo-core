@@ -42,13 +42,12 @@ import java.lang.reflect.Type;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.fml.editionaction.TechnologySpecificActionDefiningReceiver;
-import org.openflexo.foundation.ontology.IFlexoOntologyClass;
 import org.openflexo.foundation.technologyadapter.FlexoModel;
 import org.openflexo.foundation.technologyadapter.TechnologyObject;
 import org.openflexo.foundation.technologyadapter.TypeAwareModelSlot;
 import org.openflexo.logging.FlexoLogger;
-import org.openflexo.model.annotations.ImplementationClass;
-import org.openflexo.model.annotations.ModelEntity;
+import org.openflexo.pamela.annotations.ImplementationClass;
+import org.openflexo.pamela.annotations.ModelEntity;
 
 @ModelEntity(isAbstract = true)
 @ImplementationClass(AddConcept.AddConceptImpl.class)
@@ -63,10 +62,6 @@ public abstract interface AddConcept<MS extends TypeAwareModelSlot<M, ?>, M exte
 		public AddConceptImpl() {
 			super();
 		}
-
-		public abstract IFlexoOntologyClass<?> getOntologyClass();
-
-		public abstract void setOntologyClass(IFlexoOntologyClass<?> ontologyClass);
 
 		@Override
 		public abstract Type getAssignableType();

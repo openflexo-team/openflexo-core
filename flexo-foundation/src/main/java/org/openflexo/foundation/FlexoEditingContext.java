@@ -38,7 +38,6 @@
 
 package org.openflexo.foundation;
 
-import java.awt.Event;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -56,14 +55,14 @@ import org.openflexo.foundation.action.copypaste.CutAction.CutActionType;
 import org.openflexo.foundation.action.copypaste.DefaultPasteHandler;
 import org.openflexo.foundation.action.copypaste.FlexoClipboard;
 import org.openflexo.foundation.action.copypaste.PasteAction.PasteActionType;
+import org.openflexo.pamela.ModelEntity;
+import org.openflexo.pamela.factory.Clipboard;
+import org.openflexo.pamela.factory.EditingContext;
+import org.openflexo.pamela.factory.EditingContextImpl;
+import org.openflexo.pamela.factory.ModelFactory;
+import org.openflexo.pamela.factory.ProxyMethodHandler;
 import org.openflexo.foundation.action.copypaste.PasteHandler;
 import org.openflexo.foundation.action.copypaste.PastingContext;
-import org.openflexo.model.ModelEntity;
-import org.openflexo.model.factory.Clipboard;
-import org.openflexo.model.factory.EditingContext;
-import org.openflexo.model.factory.EditingContextImpl;
-import org.openflexo.model.factory.ModelFactory;
-import org.openflexo.model.factory.ProxyMethodHandler;
 import org.openflexo.toolbox.StringUtils;
 
 /**
@@ -218,7 +217,7 @@ public class FlexoEditingContext extends EditingContextImpl implements FlexoServ
 	 * @param event
 	 * @return
 	 */
-	public PasteHandler<?> getPasteHandler(FlexoObject focusedObject, List<FlexoObject> globalSelection, Event event) {
+	public PasteHandler<?> getPasteHandler(FlexoObject focusedObject, List<FlexoObject> globalSelection) {
 
 		// System.out.println("********* Requesting PasteHandler for " + focusedObject);
 
@@ -247,7 +246,7 @@ public class FlexoEditingContext extends EditingContextImpl implements FlexoServ
 
 				// System.out.println("Examining Paste handler: " + h + " pastingPointHolderType=" + h.getPastingPointHolderType());
 
-				PastingContext potentialPastingContext = h.retrievePastingContext(focusedObject, globalSelection, getClipboard(), event);
+				PastingContext potentialPastingContext = h.retrievePastingContext(focusedObject, globalSelection, getClipboard());
 
 				boolean correctlyTyped = potentialPastingContext == null
 						|| h.getPastingPointHolderType().isInstance(potentialPastingContext.getPastingPointHolder());
@@ -307,8 +306,7 @@ public class FlexoEditingContext extends EditingContextImpl implements FlexoServ
 		if (pastingPointHolderEntity != null) {
 			// Entity was found in this ModelFactory, we can proceed
 			if (ProxyMethodHandler.isPastable(masterClipboard, pastingPointHolderEntity)) {
-				Object potentialPastingContext = defaultPasteHandler.retrievePastingContext(focusedObject, globalSelection, getClipboard(),
-						event);
+				Object potentialPastingContext = defaultPasteHandler.retrievePastingContext(focusedObject, globalSelection, getClipboard());
 				if (potentialPastingContext != null) {
 					// System.out.println("Returning default paste handler");
 					return defaultPasteHandler;

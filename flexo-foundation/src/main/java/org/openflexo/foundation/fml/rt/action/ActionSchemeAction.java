@@ -44,6 +44,7 @@ import java.util.logging.Logger;
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.action.FlexoAction;
+import org.openflexo.foundation.action.InvalidParametersException;
 import org.openflexo.foundation.fml.ActionScheme;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.VirtualModelInstanceObject;
@@ -103,8 +104,35 @@ public class ActionSchemeAction extends AbstractActionSchemeAction<ActionSchemeA
 
 	@Override
 	protected void doAction(Object context) throws FlexoException {
-		if (getActionScheme() != null && getActionScheme().evaluateCondition(getFlexoConceptInstance())) {
-			executeControlGraph();
+
+		if (getFlexoConceptInstance() == null) {
+			throw new InvalidParametersException("Cannot execute a null FlexoConceptInstance");
 		}
+		if (getFlexoConceptInstance().getFlexoConcept() == null) {
+			throw new InvalidParametersException("Cannot execute a FlexoConceptInstance with null concept: " + getFlexoConceptInstance());
+		}
+
+		ActionScheme applicableActionScheme = getApplicableActionScheme();
+
+		if (applicableActionScheme != null) {
+
+			if (applicableActionScheme.getFlexoConcept() == null) {
+				throw new InvalidParametersException(
+						"Inconsistent data: ActionScheme is not defined in any FlexoConcept: " + applicableActionScheme);
+			}
+			if (applicableActionScheme.getFlexoConcept().isAssignableFrom(getFlexoConceptInstance().getFlexoConcept())) {
+				if (applicableActionScheme != null && applicableActionScheme.evaluateCondition(getFlexoConceptInstance())) {
+					executeControlGraph();
+				}
+			}
+			else {
+				throw new InvalidParametersException("ActionScheme " + applicableActionScheme + " is not a behaviour defined for "
+						+ getFlexoConceptInstance().getFlexoConcept());
+			}
+		}
+		else {
+			throw new InvalidParametersException("Cannot execute a null ActionScheme for " + getFlexoConceptInstance());
+		}
+
 	}
 }

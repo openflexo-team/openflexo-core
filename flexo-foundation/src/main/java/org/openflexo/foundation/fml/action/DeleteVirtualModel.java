@@ -48,11 +48,14 @@ import org.openflexo.foundation.FlexoObject.FlexoObjectImpl;
 import org.openflexo.foundation.action.FlexoAction;
 import org.openflexo.foundation.action.FlexoActionFactory;
 import org.openflexo.foundation.action.NotImplementedException;
+import org.openflexo.foundation.action.TechnologySpecificFlexoAction;
 import org.openflexo.foundation.fml.FMLObject;
+import org.openflexo.foundation.fml.FMLTechnologyAdapter;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.rm.VirtualModelResource;
 
-public class DeleteVirtualModel extends FlexoAction<DeleteVirtualModel, VirtualModel, FMLObject> {
+public class DeleteVirtualModel extends FlexoAction<DeleteVirtualModel, VirtualModel, FMLObject>
+		implements TechnologySpecificFlexoAction<FMLTechnologyAdapter> {
 
 	private static final Logger logger = Logger.getLogger(DeleteVirtualModel.class.getPackage().getName());
 
@@ -85,6 +88,11 @@ public class DeleteVirtualModel extends FlexoAction<DeleteVirtualModel, VirtualM
 
 	private DeleteVirtualModel(VirtualModel focusedObject, Vector<FMLObject> globalSelection, FlexoEditor editor) {
 		super(actionType, focusedObject, globalSelection, editor);
+	}
+
+	@Override
+	public Class<? extends FMLTechnologyAdapter> getTechnologyAdapterClass() {
+		return FMLTechnologyAdapter.class;
 	}
 
 	@Override

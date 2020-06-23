@@ -24,13 +24,13 @@ import java.util.Collections;
 import java.util.List;
 
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
-import org.openflexo.model.annotations.CloningStrategy;
-import org.openflexo.model.annotations.CloningStrategy.StrategyType;
-import org.openflexo.model.annotations.Getter;
-import org.openflexo.model.annotations.ImplementationClass;
-import org.openflexo.model.annotations.ModelEntity;
-import org.openflexo.model.annotations.PropertyIdentifier;
-import org.openflexo.model.annotations.Setter;
+import org.openflexo.pamela.annotations.CloningStrategy;
+import org.openflexo.pamela.annotations.Getter;
+import org.openflexo.pamela.annotations.ImplementationClass;
+import org.openflexo.pamela.annotations.ModelEntity;
+import org.openflexo.pamela.annotations.PropertyIdentifier;
+import org.openflexo.pamela.annotations.Setter;
+import org.openflexo.pamela.annotations.CloningStrategy.StrategyType;
 
 /**
  * Generic abstract concept representing an object beeing part of a text-based document at root level<br>
@@ -47,7 +47,7 @@ import org.openflexo.model.annotations.Setter;
  */
 @ModelEntity(isAbstract = true)
 @ImplementationClass(FlexoDocElement.FlexoDocumentElementImpl.class)
-public interface FlexoDocElement<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter> extends FlexoDocObject<D, TA> {
+public interface FlexoDocElement<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter<TA>> extends FlexoDocObject<D, TA> {
 
 	@PropertyIdentifier(type = String.class)
 	public static final String IDENTIFIER_KEY = "identifier";
@@ -131,7 +131,7 @@ public interface FlexoDocElement<D extends FlexoDocument<D, TA>, TA extends Tech
 	 */
 	public int getIndex();
 
-	public static abstract class FlexoDocumentElementImpl<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter>
+	public static abstract class FlexoDocumentElementImpl<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter<TA>>
 			extends FlexoDocObjectImpl<D, TA> implements FlexoDocElement<D, TA> {
 
 		private List<FlexoDocElement<D, TA>> childrenElements = null;

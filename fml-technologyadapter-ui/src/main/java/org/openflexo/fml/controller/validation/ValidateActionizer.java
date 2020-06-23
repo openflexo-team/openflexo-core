@@ -40,7 +40,6 @@
 package org.openflexo.fml.controller.validation;
 
 import java.awt.event.KeyEvent;
-import java.util.EventObject;
 
 import javax.swing.Icon;
 import javax.swing.KeyStroke;
@@ -49,7 +48,7 @@ import org.openflexo.FlexoCst;
 import org.openflexo.fml.controller.FMLTechnologyAdapterController;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.action.FlexoActionFactory;
-import org.openflexo.foundation.action.FlexoActionFinalizer;
+import org.openflexo.foundation.action.FlexoActionRunnable;
 import org.openflexo.foundation.fml.FMLObject;
 import org.openflexo.foundation.fml.FMLValidationReport;
 import org.openflexo.icon.IconLibrary;
@@ -69,20 +68,16 @@ public class ValidateActionizer extends ActionInitializer<ValidateAction, FMLObj
 	}
 
 	@Override
-	protected FlexoActionFinalizer<ValidateAction> getDefaultFinalizer() {
-		return new FlexoActionFinalizer<ValidateAction>() {
-			@Override
-			public boolean run(EventObject e, ValidateAction action) {
-				FMLValidationReport virtualModelReport = (FMLValidationReport) fmlTAController
-						.getValidationReport(action.getFocusedObject().getDeclaringVirtualModel());
-				try {
-					virtualModelReport.revalidate(action.getFocusedObject());
-				} catch (InterruptedException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
-				return true;
+	protected FlexoActionRunnable<ValidateAction, FMLObject, FlexoObject> getDefaultFinalizer() {
+		return (e, action) -> {
+			FMLValidationReport virtualModelReport = (FMLValidationReport) fmlTAController
+					.getValidationReport(action.getFocusedObject().getDeclaringVirtualModel());
+			try {
+				virtualModelReport.revalidate(action.getFocusedObject());
+			} catch (InterruptedException e1) {
+				e1.printStackTrace();
 			}
+			return true;
 		};
 	}
 
@@ -92,7 +87,7 @@ public class ValidateActionizer extends ActionInitializer<ValidateAction, FMLObj
 	}
 
 	@Override
-	protected Icon getEnabledIcon(FlexoActionFactory actionType) {
+	protected Icon getEnabledIcon(FlexoActionFactory<ValidateAction, FMLObject, FlexoObject> actionType) {
 		return IconLibrary.VALID_ICON;
 	}
 }

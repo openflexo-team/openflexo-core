@@ -53,14 +53,14 @@ import org.openflexo.drm.dm.StructureModified;
 import org.openflexo.drm.helpset.HelpSetConfiguration;
 import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.localization.Language;
-import org.openflexo.model.annotations.DefineValidationRule;
-import org.openflexo.model.validation.FixProposal;
-import org.openflexo.model.validation.ProblemIssue;
-import org.openflexo.model.validation.Validable;
-import org.openflexo.model.validation.ValidationError;
-import org.openflexo.model.validation.ValidationIssue;
-import org.openflexo.model.validation.ValidationRule;
-import org.openflexo.model.validation.ValidationWarning;
+import org.openflexo.pamela.annotations.DefineValidationRule;
+import org.openflexo.pamela.validation.FixProposal;
+import org.openflexo.pamela.validation.ProblemIssue;
+import org.openflexo.pamela.validation.Validable;
+import org.openflexo.pamela.validation.ValidationError;
+import org.openflexo.pamela.validation.ValidationIssue;
+import org.openflexo.pamela.validation.ValidationRule;
+import org.openflexo.pamela.validation.ValidationWarning;
 
 public class DocItem extends DRMObject {
 
@@ -662,7 +662,7 @@ public class DocItem extends DRMObject {
 				logger.warning("This implementation is not correct: you should not use FlexoAction primitive from the model !");
 				// TODO: Please implement this better later
 				// Used editor will be null
-				ApproveVersion approveAction = ApproveVersion.actionType.makeNewAction(version.getDocItem(), null);
+				ApproveVersion approveAction = ApproveVersion.actionType.makeNewAction(version.getDocItem(), null, null);
 				approveAction.setVersion(version);
 				approveAction.doAction();
 			}

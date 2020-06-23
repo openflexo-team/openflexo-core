@@ -49,10 +49,10 @@ import org.openflexo.gina.swing.editor.validation.ComponentValidationWindow;
 import org.openflexo.gina.swing.editor.validation.ValidationDialogPanel;
 import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.localization.LocalizedDelegate;
-import org.openflexo.model.validation.Validable;
-import org.openflexo.model.validation.ValidationIssue;
-import org.openflexo.model.validation.ValidationModel;
-import org.openflexo.model.validation.ValidationReport;
+import org.openflexo.pamela.validation.Validable;
+import org.openflexo.pamela.validation.ValidationIssue;
+import org.openflexo.pamela.validation.ValidationModel;
+import org.openflexo.pamela.validation.ValidationReport;
 import org.openflexo.selection.SelectionManager;
 import org.openflexo.view.controller.FlexoController;
 

@@ -46,7 +46,7 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import org.openflexo.ApplicationContext;
-import org.openflexo.components.wizard.FlexoWizard;
+import org.openflexo.components.wizard.FlexoActionWizard;
 import org.openflexo.components.wizard.WizardStep;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.VirtualModelLibrary;
@@ -59,7 +59,7 @@ import org.openflexo.icon.IconFactory;
 import org.openflexo.icon.IconLibrary;
 import org.openflexo.view.controller.FlexoController;
 
-public class AddParentFlexoConceptWizard extends FlexoWizard {
+public class AddParentFlexoConceptWizard extends FlexoActionWizard<AddParentFlexoConcept> {
 
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(AddParentFlexoConceptWizard.class.getPackage().getName());
@@ -68,13 +68,7 @@ public class AddParentFlexoConceptWizard extends FlexoWizard {
 
 	private DescribeNewParentConcepts describeNewParentConcepts;
 
-	private final AddParentFlexoConcept action;
-
 	private static final Dimension DIMENSIONS = new Dimension(600, 400);
-
-	public AddParentFlexoConcept getAction() {
-		return action;
-	}
 
 	@Override
 	public Dimension getPreferredSize() {
@@ -82,8 +76,7 @@ public class AddParentFlexoConceptWizard extends FlexoWizard {
 	}
 
 	public AddParentFlexoConceptWizard(AddParentFlexoConcept action, FlexoController controller) {
-		super(controller);
-		this.action = action;
+		super(action, controller);
 		addStep(describeNewParentConcepts = new DescribeNewParentConcepts());
 	}
 
@@ -94,7 +87,7 @@ public class AddParentFlexoConceptWizard extends FlexoWizard {
 
 	@Override
 	public Image getDefaultPageImage() {
-		return IconFactory.getImageIcon(FMLIconLibrary.FLEXO_CONCEPT_BIG_ICON, IconLibrary.NEW_32_32).getImage();
+		return IconFactory.getImageIcon(FMLIconLibrary.FLEXO_CONCEPT_BIG_ICON, IconLibrary.BIG_NEW_MARKER).getImage();
 	}
 
 	public DescribeNewParentConcepts getDescribeNewParentConcepts() {

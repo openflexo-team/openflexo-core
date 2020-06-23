@@ -41,7 +41,6 @@ package org.openflexo.foundation.localization;
 
 import java.util.logging.Logger;
 
-import org.openflexo.localization.LocalizedDelegate;
 import org.openflexo.localization.LocalizedDelegateImpl;
 import org.openflexo.rm.Resource;
 import org.openflexo.rm.ResourceLocator;
@@ -59,15 +58,10 @@ public class FlexoMainLocalizer extends LocalizedDelegateImpl {
 
 	private static final Logger logger = Logger.getLogger(FlexoMainLocalizer.class.getPackage().getName());
 
-	public static final String DEPRECATED_LOCALIZATION_DIRNAME = "FlexoLocalization/Deprecated";
 	public static final String FLEXO_LOCALIZATION_DIRNAME = "FlexoLocalization/General";
 
-	private static LocalizedDelegate makeDeprecatedLocalizer() {
-		return new LocalizedDelegateImpl(ResourceLocator.locateResource(DEPRECATED_LOCALIZATION_DIRNAME), null, false, false);
-	}
-
 	public FlexoMainLocalizer(boolean isDev, boolean automaticSaving) {
-		super(ResourceLocator.locateResource(FLEXO_LOCALIZATION_DIRNAME), makeDeprecatedLocalizer(), automaticSaving, isDev);
+		super(ResourceLocator.locateResource(FLEXO_LOCALIZATION_DIRNAME), null, automaticSaving, isDev);
 		// If we want to update locales, we have to retrieve source code dictionaries
 		if (isDev) {
 			// Get Localized from flexolocalization here because we need main Localized support to come from gina project
@@ -78,9 +72,4 @@ public class FlexoMainLocalizer extends LocalizedDelegateImpl {
 			}
 		}
 	}
-
-	public LocalizedDelegate getDeprecatedLocalizer() {
-		return getParent();
-	}
-
 }

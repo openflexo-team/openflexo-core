@@ -51,7 +51,6 @@ import java.util.logging.Logger;
 import org.openflexo.ApplicationContext;
 import org.openflexo.Flexo;
 import org.openflexo.br.SendBugReportServiceTask;
-import org.openflexo.components.ProgressWindow;
 import org.openflexo.drm.DefaultHelpRetriever;
 import org.openflexo.foundation.FlexoObject.FlexoObjectImpl;
 import org.openflexo.foundation.action.InvalidParametersException;
@@ -161,9 +160,6 @@ public class FlexoApplication {
 				 */
 			} catch (Throwable exception) {
 				// logger.info("ProgressWindow.hasInstance()="+ProgressWindow.hasInstance());
-				if (ProgressWindow.hasInstance()) {
-					ProgressWindow.hideProgressWindow();
-				}
 				if (exception instanceof OutOfMemoryError) {
 					if (mem != null) {
 						mem = null;

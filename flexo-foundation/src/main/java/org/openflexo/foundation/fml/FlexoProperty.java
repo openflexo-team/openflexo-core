@@ -50,26 +50,26 @@ import org.openflexo.connie.BindingModel;
 import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.type.ParameterizedTypeImpl;
 import org.openflexo.connie.type.TypeUtils;
-import org.openflexo.foundation.fml.FMLRepresentationContext.FMLRepresentationOutput;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
-import org.openflexo.model.annotations.CloningStrategy;
-import org.openflexo.model.annotations.CloningStrategy.StrategyType;
-import org.openflexo.model.annotations.DefineValidationRule;
-import org.openflexo.model.annotations.Getter;
-import org.openflexo.model.annotations.ImplementationClass;
-import org.openflexo.model.annotations.Import;
-import org.openflexo.model.annotations.Imports;
-import org.openflexo.model.annotations.ModelEntity;
-import org.openflexo.model.annotations.PropertyIdentifier;
-import org.openflexo.model.annotations.Setter;
-import org.openflexo.model.validation.ValidationError;
-import org.openflexo.model.validation.ValidationIssue;
-import org.openflexo.model.validation.ValidationRule;
-import org.openflexo.model.validation.ValidationWarning;
+import org.openflexo.pamela.annotations.CloningStrategy;
+import org.openflexo.pamela.annotations.CloningStrategy.StrategyType;
+import org.openflexo.pamela.annotations.DefineValidationRule;
+import org.openflexo.pamela.annotations.Getter;
+import org.openflexo.pamela.annotations.ImplementationClass;
+import org.openflexo.pamela.annotations.Import;
+import org.openflexo.pamela.annotations.Imports;
+import org.openflexo.pamela.annotations.ModelEntity;
+import org.openflexo.pamela.annotations.PropertyIdentifier;
+import org.openflexo.pamela.annotations.Setter;
+import org.openflexo.pamela.annotations.XMLAttribute;
+import org.openflexo.pamela.validation.ValidationError;
+import org.openflexo.pamela.validation.ValidationIssue;
+import org.openflexo.pamela.validation.ValidationRule;
+import org.openflexo.pamela.validation.ValidationWarning;
 import org.openflexo.toolbox.StringUtils;
 
 /**
- * A {@link FlexoProperty} is a structural element of an FlexoConcept, which contractualize the access to a typed data<br>
+ * A {@link FlexoProperty} is a structural element of a FlexoConcept, which contractualize the access to a typed data<br>
  * More formerly, a {@link FlexoProperty} is the specification of a data accessed at run-time (inside an {@link FlexoConcept} instance)<br>
  * A {@link FlexoProperty} formalizes a contract for accessing to a data.<br>
  * A {@link FlexoProperty} is abstract and might be implemented by a sub-class of {@link FlexoProperty} (a {@link FlexoRole} is for instance
@@ -83,7 +83,7 @@ import org.openflexo.toolbox.StringUtils;
 @ImplementationClass(FlexoProperty.FlexoPropertyImpl.class)
 @Imports({ @Import(AbstractProperty.class), @Import(FlexoRole.class), @Import(ExpressionProperty.class), @Import(GetProperty.class),
 		@Import(GetSetProperty.class) })
-public abstract interface FlexoProperty<T> extends FlexoConceptObject {
+public abstract interface FlexoProperty<T> extends FlexoConceptObject, FMLPrettyPrintable {
 
 	public static final String RESULTING_TYPE_PROPERTY = "resultingType";
 
@@ -91,6 +91,8 @@ public abstract interface FlexoProperty<T> extends FlexoConceptObject {
 	public static final String FLEXO_CONCEPT_KEY = "flexoConcept";
 	@PropertyIdentifier(type = String.class)
 	public static final String PROPERTY_NAME_KEY = "propertyName";
+	@PropertyIdentifier(type = Visibility.class)
+	public static final String VISIBILITY_KEY = "visibility";
 	@PropertyIdentifier(type = String.class)
 	public static final String DESCRIPTION_KEY = "description";
 
@@ -107,6 +109,13 @@ public abstract interface FlexoProperty<T> extends FlexoConceptObject {
 
 	@Setter(PROPERTY_NAME_KEY)
 	public void setPropertyName(String propertyName);
+
+	@Getter(value = VISIBILITY_KEY, defaultValue = "Default")
+	@XMLAttribute
+	public Visibility getVisibility();
+
+	@Setter(VISIBILITY_KEY)
+	public void setVisibility(Visibility visibility);
 
 	/**
 	 * Return cardinality of this property
@@ -152,12 +161,19 @@ public abstract interface FlexoProperty<T> extends FlexoConceptObject {
 	public List<? extends FlexoProperty<?>> getSuperProperties();
 
 	/**
-	 * Return the full hiearchy of properties of this property<br>
+	 * Return the full hierarchy of properties of this property<br>
 	 * A super property is a {@link FlexoProperty} declared in any ancestor {@link FlexoConcept}, which is overriden by this property
 	 * 
 	 * @return
 	 */
 	public List<? extends FlexoProperty<?>> getAllSuperProperties();
+
+	/**
+	 * Return boolean indicating if this property overrides at least one property
+	 * 
+	 * @return
+	 */
+	public boolean overrides();
 
 	/**
 	 * Return flag indicating whether data accessed though this property is read-only
@@ -185,6 +201,8 @@ public abstract interface FlexoProperty<T> extends FlexoConceptObject {
 	 */
 	public boolean isNotificationSafe();
 
+	public void handleTypeDeclarationInImports();
+
 	/**
 	 * Return boolean indicating if this {@link FlexoProperty} is a key property (declared in key properties of its declaring FlexoConcept)
 	 * 
@@ -196,9 +214,9 @@ public abstract interface FlexoProperty<T> extends FlexoConceptObject {
 
 		// private static final Logger logger = Logger.getLogger(FlexoRole.class.getPackage().getName());
 
-		private PropertyChangeSupport pcSupport;
+		// Unused private PropertyChangeSupport pcSupport;
 
-		private ModelSlot<?> modelSlot;
+		// Unused private ModelSlot<?> modelSlot;
 
 		private Type resultingType;
 
@@ -259,9 +277,7 @@ public abstract interface FlexoProperty<T> extends FlexoConceptObject {
 			if (getFlexoConcept() != null) {
 				return getFlexoConcept().getURI() + "." + getPropertyName();
 			}
-			else {
-				return null;
-			}
+			return null;
 		}
 
 		@Override
@@ -269,20 +285,54 @@ public abstract interface FlexoProperty<T> extends FlexoConceptObject {
 			return PropertyCardinality.ZeroOne;
 		}
 
+		@Override
+		public void handleTypeDeclarationInImports() {
+
+			if (getDeclaringVirtualModel() == null || getDeclaringVirtualModel().getCompilationUnit() == null) {
+				return;
+			}
+
+			Class<?> rawType = TypeUtils.getRawType(getType());
+
+			if (!TypeUtils.isPrimitive(rawType)) {
+
+				boolean typeWasFound = false;
+				for (JavaImportDeclaration importDeclaration : getDeclaringVirtualModel().getCompilationUnit().getJavaImports()) {
+					if (importDeclaration.getFullQualifiedClassName().equals(rawType.getName())) {
+						typeWasFound = true;
+						break;
+					}
+				}
+				if (!typeWasFound) {
+					// Adding import
+					JavaImportDeclaration newJavaImportDeclaration = getDeclaringVirtualModel().getFMLModelFactory()
+							.newJavaImportDeclaration();
+					newJavaImportDeclaration.setFullQualifiedClassName(rawType.getName());
+					getDeclaringVirtualModel().getCompilationUnit().addToJavaImports(newJavaImportDeclaration);
+				}
+			}
+
+		}
+
 		protected void notifyResultingTypeChanged() {
+
+			handleTypeDeclarationInImports();
+
 			resultingType = null;
 			getPropertyChangeSupport().firePropertyChange(RESULTING_TYPE_PROPERTY, null, getResultingType());
 		}
 
 		@Override
 		public String toString() {
-			return getClass().getSimpleName() + ":" + getPropertyName() + "[container="
-					+ (getFlexoConcept() != null
-							? getFlexoConcept().getName() + "/"
-									+ (getFlexoConcept().getOwningVirtualModel() != null
-											? getFlexoConcept().getOwningVirtualModel().getName() : "null")
-							: "null")
-					+ "][" + Integer.toHexString(hashCode()) + "]";
+			return getClass().getSimpleName() + ":" + getPropertyName() /*+ "[container="
+																		+ (getFlexoConcept() != null
+																		? getFlexoConcept().getName() + "/"
+																		+ (getFlexoConcept().getOwningVirtualModel() != null
+																		? getFlexoConcept().getOwningVirtualModel().getName()
+																		: "null")
+																		: "null")
+																		+ "]*/
+					+ " [" + Integer.toHexString(hashCode()) + "]";
 		}
 
 		/**
@@ -333,9 +383,7 @@ public abstract interface FlexoProperty<T> extends FlexoConceptObject {
 			if (getCardinality().isMultipleCardinality()) {
 				return new ParameterizedTypeImpl(List.class, getType());
 			}
-			else {
-				return getType();
-			}
+			return getType();
 		}
 
 		@Override
@@ -346,6 +394,7 @@ public abstract interface FlexoProperty<T> extends FlexoConceptObject {
 		@Override
 		public void finalizeDeserialization() {
 			super.finalizeDeserialization();
+			handleTypeDeclarationInImports();
 		}
 
 		@Override
@@ -425,6 +474,11 @@ public abstract interface FlexoProperty<T> extends FlexoConceptObject {
 		}
 
 		@Override
+		public boolean overrides() {
+			return getAllSuperProperties().size() > 0;
+		}
+
+		@Override
 		public boolean delete(Object... context) {
 			if (getFlexoConcept() != null) {
 				getFlexoConcept().removeFromFlexoProperties(this);
@@ -436,7 +490,7 @@ public abstract interface FlexoProperty<T> extends FlexoConceptObject {
 			return getFlexoConcept() != null && getFlexoConcept().getKeyProperties().contains(this);
 		}
 
-		protected String getFMLAnnotation(FMLRepresentationContext context) {
+		/*protected String getFMLAnnotation(FMLRepresentationContext context) {
 			FMLRepresentationOutput out = new FMLRepresentationOutput(context);
 			out.append("@" + getImplementedInterface().getSimpleName(), context);
 			if (isKey()) {
@@ -444,29 +498,28 @@ public abstract interface FlexoProperty<T> extends FlexoConceptObject {
 				out.append("@Key", context);
 			}
 			return out.toString();
-		}
+		}*/
 
-		@Override
+		/*@Override
 		public String getFMLRepresentation(FMLRepresentationContext context) {
 			FMLRepresentationOutput out = new FMLRepresentationOutput(context);
-			out.append(getFMLAnnotation(context), context);
-			out.append(StringUtils.LINE_SEPARATOR, context);
+			// out.append(getFMLAnnotation(context), context);
+			// out.append(StringUtils.LINE_SEPARATOR, context);
 			if (detailedFMLSpecifications(context) == null) {
 				out.append("public " + TypeUtils.simpleRepresentation(getResultingType()) + " " + getName() + ";", context);
 			}
 			else {
 				out.append("public " + TypeUtils.simpleRepresentation(getResultingType()) + " " + getName() + " {", context);
 				out.append(StringUtils.LINE_SEPARATOR, context);
-				out.append(detailedFMLSpecifications(context), context, 1);
+				// out.append(detailedFMLSpecifications(context), context, 1);
 				// out.append(StringUtils.LINE_SEPARATOR, context);
 				out.append("}", context);
 			}
 			return out.toString();
-		}
+		}*/
 
-		public String detailedFMLSpecifications(FMLRepresentationContext context) {
-			return null;
-		}
+		@Override
+		public abstract String getFMLRepresentation(FMLRepresentationContext context);
 
 		/**
 		 * Return boolean indicating if this {@link FlexoProperty} is a key property (declared in key properties of its declaring
@@ -485,13 +538,13 @@ public abstract interface FlexoProperty<T> extends FlexoConceptObject {
 	}
 
 	@DefineValidationRule
-	public static class FlexoPropertyMustHaveAName extends ValidationRule<FlexoPropertyMustHaveAName, FlexoProperty> {
+	public static class FlexoPropertyMustHaveAName extends ValidationRule<FlexoPropertyMustHaveAName, FlexoProperty<?>> {
 		public FlexoPropertyMustHaveAName() {
 			super(FlexoProperty.class, "flexo_property_must_have_a_name");
 		}
 
 		@Override
-		public ValidationIssue<FlexoPropertyMustHaveAName, FlexoProperty> applyValidation(FlexoProperty flexoRole) {
+		public ValidationIssue<FlexoPropertyMustHaveAName, FlexoProperty<?>> applyValidation(FlexoProperty<?> flexoRole) {
 			if (StringUtils.isEmpty(flexoRole.getPropertyName())) {
 				return new ValidationError<>(this, flexoRole, "flexo_property_has_no_name");
 			}
@@ -566,9 +619,9 @@ public abstract interface FlexoProperty<T> extends FlexoConceptObject {
 					return new ValidationWarning<>(this, property, "property_($validable.propertyName)_shadows_an_other_property");
 				}
 			}
-			if (property.getFlexoConcept().getVirtualModel() != null
-					&& property.getFlexoConcept().getVirtualModel() != property.getFlexoConcept()) {
-				if (property.getFlexoConcept().getVirtualModel().getAccessibleProperty(property.getName()) != null) {
+			VirtualModel vm = property.getFlexoConcept().getOwner();
+			if (vm != null && vm != property.getFlexoConcept()) {
+				if (vm.getAccessibleProperty(property.getName()) != null) {
 					return new ValidationWarning<>(this, property, "property_($validable.propertyName)_shadows_an_other_property");
 				}
 			}

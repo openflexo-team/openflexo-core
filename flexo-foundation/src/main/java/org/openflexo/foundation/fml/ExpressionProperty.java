@@ -44,13 +44,17 @@ import java.lang.reflect.Type;
 import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.type.TypeUtils;
 import org.openflexo.foundation.fml.FMLRepresentationContext.FMLRepresentationOutput;
-import org.openflexo.model.annotations.Getter;
-import org.openflexo.model.annotations.ImplementationClass;
-import org.openflexo.model.annotations.ModelEntity;
-import org.openflexo.model.annotations.PropertyIdentifier;
-import org.openflexo.model.annotations.Setter;
-import org.openflexo.model.annotations.XMLAttribute;
-import org.openflexo.model.annotations.XMLElement;
+import org.openflexo.pamela.annotations.DefineValidationRule;
+import org.openflexo.pamela.annotations.Getter;
+import org.openflexo.pamela.annotations.ImplementationClass;
+import org.openflexo.pamela.annotations.ModelEntity;
+import org.openflexo.pamela.annotations.PropertyIdentifier;
+import org.openflexo.pamela.annotations.Setter;
+import org.openflexo.pamela.annotations.XMLAttribute;
+import org.openflexo.pamela.annotations.XMLElement;
+import org.openflexo.pamela.validation.ValidationError;
+import org.openflexo.pamela.validation.ValidationIssue;
+import org.openflexo.pamela.validation.ValidationRule;
 import org.openflexo.toolbox.StringUtils;
 
 /**
@@ -67,8 +71,20 @@ import org.openflexo.toolbox.StringUtils;
 @XMLElement
 public abstract interface ExpressionProperty<T> extends FlexoProperty<T> {
 
+	@PropertyIdentifier(type = Type.class)
+	public static final String DECLARED_TYPE_KEY = "declaredType";
+
 	@PropertyIdentifier(type = DataBinding.class)
 	public static final String EXPRESSION_KEY = "expression";
+
+	@Getter(value = DECLARED_TYPE_KEY, isStringConvertable = true)
+	@XMLAttribute
+	public Type getDeclaredType();
+
+	@Setter(DECLARED_TYPE_KEY)
+	public void setDeclaredType(Type type);
+
+	public Type getAnalyzedType();
 
 	@Getter(value = EXPRESSION_KEY)
 	@XMLAttribute
@@ -128,7 +144,7 @@ public abstract interface ExpressionProperty<T> extends FlexoProperty<T> {
 		private Type lastKnownType = Object.class;
 
 		@Override
-		public Type getType() {
+		public Type getAnalyzedType() {
 
 			// TODO: i think following code is no more necessary, since DataBinding now handle this
 			// Just do something like:
@@ -140,44 +156,47 @@ public abstract interface ExpressionProperty<T> extends FlexoProperty<T> {
 			if (isAnalysingType) {
 				return lastKnownType;
 			}
-			else {
+			// TODO: we should cache the result of analyzed type
+			// Because it takes too much time
+			// We need to explore the conditions for an analyzed type to change
+			// See https://bugs.openflexo.org/browse/CONNIE-18
 
-				// TODO: we should cache the result of analyzed type
-				// Because it takes too much time
-				// We need to explore the conditions for an analyzed type to change
-				// See https://bugs.openflexo.org/browse/CONNIE-18
+			// if (lastKnownType == null) {
 
-				// if (lastKnownType == null) {
+			try {
 
-				try {
+				isAnalysingType = true;
 
-					isAnalysingType = true;
+				/*System.out.println("Le type de " + getExpression() + " c'est quoi ?");
+				System.out.println("BM=" + getBindingModel());
+				System.out.println("valid=" + getExpression().isValid());
+				System.out.println("return: " + getExpression().getAnalyzedType());*/
 
-					/*System.out.println("Le type de " + getExpression() + " c'est quoi ?");
-					System.out.println("BM=" + getBindingModel());
-					System.out.println("valid=" + getExpression().isValid());
-					System.out.println("return: " + getExpression().getAnalyzedType());*/
-
-					if (getExpression() != null && getExpression().isValid()) {
-						lastKnownType = getExpression().getAnalyzedType();
-						// System.out.println("je retourne " + returned);
-						// System.out.println("valid=" + getExpression().isValid());
-						isAnalysingType = false;
-					}
-				} finally {
+				if (getExpression() != null && getExpression().isValid()) {
+					lastKnownType = getExpression().getAnalyzedType();
+					// System.out.println("je retourne " + returned);
+					// System.out.println("valid=" + getExpression().isValid());
 					isAnalysingType = false;
 				}
-				// }
-
+			} finally {
+				isAnalysingType = false;
 			}
-
+			// }
 			return lastKnownType;
+		}
+
+		@Override
+		public Type getType() {
+			if (getDeclaredType() != null) {
+				return getDeclaredType();
+			}
+			return getAnalyzedType();
 		}
 
 		@Override
 		public String getFMLRepresentation(FMLRepresentationContext context) {
 			FMLRepresentationOutput out = new FMLRepresentationOutput(context);
-			out.append(getFMLAnnotation(context), context);
+			// out.append(getFMLAnnotation(context), context);
 			out.append(StringUtils.LINE_SEPARATOR, context);
 			out.append("public " + TypeUtils.simpleRepresentation(getResultingType()) + " " + getName() + " = " + getExpression() + ";",
 					context);
@@ -195,6 +214,33 @@ public abstract interface ExpressionProperty<T> extends FlexoProperty<T> {
 		@Override
 		public boolean isNotificationSafe() {
 			return true;
+		}
+
+	}
+
+	@DefineValidationRule
+	public static class DeclaredTypeShouldBeCompatibleWithAnalyzedType
+			extends ValidationRule<DeclaredTypeShouldBeCompatibleWithAnalyzedType, ExpressionProperty<?>> {
+
+		public DeclaredTypeShouldBeCompatibleWithAnalyzedType() {
+			super(ExpressionProperty.class, "declared_types_and_analyzed_types_must_be_compatible");
+		}
+
+		@Override
+		public ValidationIssue<DeclaredTypeShouldBeCompatibleWithAnalyzedType, ExpressionProperty<?>> applyValidation(
+				ExpressionProperty<?> anExpressionProperty) {
+
+			// We must be sure
+			anExpressionProperty.getExpression().forceRevalidate();
+
+			if (anExpressionProperty.getDeclaredType() != null && anExpressionProperty.getAnalyzedType() != null) {
+				if (!TypeUtils.isTypeAssignableFrom(anExpressionProperty.getDeclaredType(), anExpressionProperty.getAnalyzedType())
+						&& !TypeUtils.isTypeAssignableFrom(anExpressionProperty.getAnalyzedType(),
+								anExpressionProperty.getDeclaredType())) {
+					return new ValidationError<>(this, anExpressionProperty, "types_are_not_compatibles");
+				}
+			}
+			return null;
 		}
 
 	}

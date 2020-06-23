@@ -74,6 +74,7 @@ import org.openflexo.logging.FlexoLoggingManager;
 import org.openflexo.module.Module;
 import org.openflexo.project.AutoSaveService;
 import org.openflexo.project.InteractiveProjectLoader;
+import org.openflexo.terminal.FMLTerminal;
 import org.openflexo.view.FMLConsoleViewer;
 import org.openflexo.view.controller.FlexoController;
 import org.openflexo.view.controller.model.ControllerModel;
@@ -96,6 +97,7 @@ public class ToolsMenu extends FlexoMenu {
 	public JMenuItem manageResourceCenterItem;
 	public JMenuItem manageTechnologiesItem;
 
+	public JMenuItem fmlTerminalItem;
 	public JMenuItem fmlConsoleItem;
 	public JMenuItem loggingItem;
 
@@ -121,6 +123,7 @@ public class ToolsMenu extends FlexoMenu {
 		addSpecificItems();
 		add(manageResourceCenterItem = new ManageResourceCenterItem());
 		add(manageTechnologiesItem = new TechnologiesMenu(getController()));
+		add(fmlTerminalItem = new FMLTerminalItem());
 		add(fmlConsoleItem = new FMLConsoleItem());
 		add(loggingItem = new LoggingItem());
 		if (Flexo.isDev) {
@@ -187,7 +190,7 @@ public class ToolsMenu extends FlexoMenu {
 			addSeparator();
 
 			for (TechnologyAdapter ta : controller.getApplicationContext().getTechnologyAdapterService().getTechnologyAdapters()) {
-				JMenuItem item = new TechnologyAdapterItem(ta);
+				JMenuItem item = new TechnologyAdapterItem<>(ta);
 				if (controller.getApplicationContext().getTechnologyAdapterControllerService() != null && controller.getApplicationContext()
 						.getTechnologyAdapterControllerService().getTechnologyAdapterController(ta) != null) {
 					item.setIcon(controller.getApplicationContext().getTechnologyAdapterControllerService()
@@ -200,12 +203,12 @@ public class ToolsMenu extends FlexoMenu {
 
 	}
 
-	public class TechnologyAdapterItem extends JCheckBoxMenuItem implements PropertyChangeListener {
+	public class TechnologyAdapterItem<TA extends TechnologyAdapter<TA>> extends JCheckBoxMenuItem implements PropertyChangeListener {
 
-		private final TechnologyAdapter technologyAdapter;
+		private final TA technologyAdapter;
 
-		public TechnologyAdapterItem(TechnologyAdapter technologyAdapter) {
-			super(new TechnologyAdapterAction(technologyAdapter)/*, technologyAdapter.getName(), null, getController(), true*/);
+		public TechnologyAdapterItem(TA technologyAdapter) {
+			super(new TechnologyAdapterAction<>(technologyAdapter)/*, technologyAdapter.getName(), null, getController(), true*/);
 			this.technologyAdapter = technologyAdapter;
 			if (technologyAdapter != null) {
 				technologyAdapter.getPropertyChangeSupport().addPropertyChangeListener(this);
@@ -225,11 +228,11 @@ public class ToolsMenu extends FlexoMenu {
 
 	}
 
-	public class TechnologyAdapterAction extends AbstractAction {
+	public class TechnologyAdapterAction<TA extends TechnologyAdapter<TA>> extends AbstractAction {
 
-		private final TechnologyAdapter technologyAdapter;
+		private final TA technologyAdapter;
 
-		public TechnologyAdapterAction(TechnologyAdapter technologyAdapter) {
+		public TechnologyAdapterAction(TA technologyAdapter) {
 			super(technologyAdapter.getName(), null);
 			this.technologyAdapter = technologyAdapter;
 		}
@@ -240,6 +243,39 @@ public class ToolsMenu extends FlexoMenu {
 			getController().getApplicationContext().activateTechnologyAdapter(technologyAdapter, false);
 		}
 
+	}
+
+	// ===================================================================
+	// ========================== FML Terminal ============================
+	// ===================================================================
+
+	public class FMLTerminalItem extends FlexoMenuItem {
+
+		public FMLTerminalItem() {
+			super(new FMLTerminalAction(), "fml_terminal", KeyStroke.getKeyStroke(KeyEvent.VK_T, FlexoCst.META_MASK), getController(),
+					true);
+		}
+
+	}
+
+	public class FMLTerminalAction extends AbstractAction {
+		public FMLTerminalAction() {
+			super();
+		}
+
+		@Override
+		public void actionPerformed(ActionEvent arg0) {
+			File currentDir;
+			if (getController().getProjectDirectory() instanceof File) {
+				currentDir = (File)getController().getProjectDirectory();
+			}
+			else {
+				currentDir = new File(System.getProperty("user.dir"));
+			}
+			
+			FMLTerminal terminal = new FMLTerminal(getController().getApplicationContext(), currentDir);
+			terminal.open(0, 0, 700, 700);
+		}
 	}
 
 	// ===================================================================
@@ -355,7 +391,7 @@ public class ToolsMenu extends FlexoMenu {
 			addSeparator();
 
 			for (TechnologyAdapter ta : controller.getApplicationContext().getTechnologyAdapterService().getTechnologyAdapters()) {
-				JMenuItem item = new TechnologyLocalizedItem(ta);
+				JMenuItem item = new TechnologyLocalizedItem<>(ta);
 				if (controller.getApplicationContext().getTechnologyAdapterControllerService() != null && controller.getApplicationContext()
 						.getTechnologyAdapterControllerService().getTechnologyAdapterController(ta) != null) {
 					item.setIcon(controller.getApplicationContext().getTechnologyAdapterControllerService()
@@ -400,10 +436,10 @@ public class ToolsMenu extends FlexoMenu {
 
 	}
 
-	public class TechnologyLocalizedItem extends FlexoMenuItem {
+	public class TechnologyLocalizedItem<TA extends TechnologyAdapter<TA>> extends FlexoMenuItem {
 
-		public TechnologyLocalizedItem(TechnologyAdapter technologyAdapter) {
-			super(new TechnologyLocalizedEditorAction(technologyAdapter), technologyAdapter.getName(), null, getController(), false);
+		public TechnologyLocalizedItem(TA technologyAdapter) {
+			super(new TechnologyLocalizedEditorAction<>(technologyAdapter), technologyAdapter.getName(), null, getController(), false);
 		}
 
 	}
@@ -416,11 +452,12 @@ public class ToolsMenu extends FlexoMenu {
 
 	}
 
-	public class TechnologyLocalizedEditorAction extends LocalizedEditorAction implements PropertyChangeListener {
+	public class TechnologyLocalizedEditorAction<TA extends TechnologyAdapter<TA>> extends LocalizedEditorAction
+			implements PropertyChangeListener {
 
-		private final TechnologyAdapter technologyAdapter;
+		private final TA technologyAdapter;
 
-		public TechnologyLocalizedEditorAction(TechnologyAdapter technologyAdapter) {
+		public TechnologyLocalizedEditorAction(TA technologyAdapter) {
 			super(technologyAdapter.getName(), null);
 			this.technologyAdapter = technologyAdapter;
 			if (technologyAdapter != null) {
@@ -585,17 +622,13 @@ public class ToolsMenu extends FlexoMenu {
 			if (getController().getApplicationContext().getBugReportService() == null
 					|| !getController().getApplicationContext().getBugReportService().isInitialized()) {
 				// not loaded yet, wait for the BugReportService to be activated
-				SwingUtilities.invokeLater(new Runnable() {
-					@Override
-					public void run() {
-						try {
-							Thread.sleep(100);
-						} catch (InterruptedException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
-						actionPerformed(null);
+				SwingUtilities.invokeLater(() -> {
+					try {
+						Thread.sleep(100);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
 					}
+					actionPerformed(null);
 				});
 			}
 			else {

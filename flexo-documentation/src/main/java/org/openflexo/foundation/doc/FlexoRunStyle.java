@@ -24,10 +24,10 @@ import java.awt.Color;
 import java.awt.Font;
 
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
-import org.openflexo.model.annotations.Getter;
-import org.openflexo.model.annotations.ModelEntity;
-import org.openflexo.model.annotations.PropertyIdentifier;
-import org.openflexo.model.annotations.Setter;
+import org.openflexo.pamela.annotations.Getter;
+import org.openflexo.pamela.annotations.ModelEntity;
+import org.openflexo.pamela.annotations.PropertyIdentifier;
+import org.openflexo.pamela.annotations.Setter;
 
 /**
  * Generic abstract concept representing style information of a run
@@ -40,7 +40,7 @@ import org.openflexo.model.annotations.Setter;
  *            {@link TechnologyAdapter} of current implementation
  */
 @ModelEntity(isAbstract = true)
-public interface FlexoRunStyle<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter> extends FlexoDocStyle<D, TA> {
+public interface FlexoRunStyle<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter<TA>> extends FlexoDocStyle<D, TA> {
 
 	@PropertyIdentifier(type = FlexoRunStyle.class)
 	public static final String BASED_ON_KEY = "basedOn";
@@ -111,7 +111,7 @@ public interface FlexoRunStyle<D extends FlexoDocument<D, TA>, TA extends Techno
 	@Override
 	public String getStringRepresentation();
 
-	public static abstract class FlexoRunStyleImpl<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter>
+	public static abstract class FlexoRunStyleImpl<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter<TA>>
 			extends FlexoDocStyleImpl<D, TA> implements FlexoRunStyle<D, TA> {
 
 		@Override

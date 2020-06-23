@@ -55,8 +55,8 @@ import org.openflexo.foundation.KVCFlexoObject;
  * @author sguerin
  * 
  */
-public class ProjectExternalRepository extends KVCFlexoObject {
-	private final FlexoProject _project;
+public class ProjectExternalRepository<I> extends KVCFlexoObject {
+	private final FlexoProject<I> _project;
 	private String _identifier;
 	private File _directory;
 	private Map<String, String> directoriesForUser = new TreeMap<>();
@@ -65,18 +65,17 @@ public class ProjectExternalRepository extends KVCFlexoObject {
 		return System.getProperty("user.name");
 	}
 
-	public ProjectExternalRepository(FlexoProject aProject, String identifier) {
+	public ProjectExternalRepository(FlexoProject<I> aProject, String identifier) {
 		this(aProject);
 		setIdentifier(identifier);
 	}
 
-	public ProjectExternalRepository(FlexoProject aProject, String identifier, File directory) {
+	public ProjectExternalRepository(FlexoProject<I> aProject, String identifier, File directory) {
 		this(aProject, identifier);
 		setDirectory(directory);
 	}
 
-	public ProjectExternalRepository(FlexoProject aProject) {
-		super();
+	public ProjectExternalRepository(FlexoProject<I> aProject) {
 		_project = aProject;
 	}
 
@@ -116,7 +115,7 @@ public class ProjectExternalRepository extends KVCFlexoObject {
 		// getProject().notifyResourceChanged(null);
 	}
 
-	public FlexoProject getProject() {
+	public FlexoProject<I> getProject() {
 		return _project;
 	}
 

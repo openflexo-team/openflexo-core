@@ -41,13 +41,13 @@ package org.openflexo.foundation.nature;
 import java.util.List;
 
 import org.openflexo.foundation.FlexoService;
-import org.openflexo.model.annotations.Adder;
-import org.openflexo.model.annotations.Getter;
-import org.openflexo.model.annotations.Getter.Cardinality;
-import org.openflexo.model.annotations.ImplementationClass;
-import org.openflexo.model.annotations.ModelEntity;
-import org.openflexo.model.annotations.Remover;
-import org.openflexo.model.annotations.Setter;
+import org.openflexo.pamela.annotations.Adder;
+import org.openflexo.pamela.annotations.Getter;
+import org.openflexo.pamela.annotations.ImplementationClass;
+import org.openflexo.pamela.annotations.ModelEntity;
+import org.openflexo.pamela.annotations.Remover;
+import org.openflexo.pamela.annotations.Setter;
+import org.openflexo.pamela.annotations.Getter.Cardinality;
 
 /**
  * This service provides management layer for {@link ProjectNature}<br>
@@ -78,7 +78,7 @@ public interface ProjectNatureService extends FlexoService {
 	 * @param projectNatureClass
 	 * @return
 	 */
-	public <F extends ProjectNatureFactory<N>, N extends ProjectNature> F getProjectNatureFactory(Class<N> projectNatureClass);
+	public <F extends ProjectNatureFactory<N>, N extends ProjectNature<N>> F getProjectNatureFactory(Class<N> projectNatureClass);
 
 	/**
 	 * Return project nature mapping supplied class<br>

@@ -140,27 +140,19 @@ public class RepositoryFolder<R extends FlexoResource<?>, I> extends DefaultFlex
 	}
 
 	public String getFullQualifiedPath() {
-		if (resourceRepository == null || getResourceRepository().getBaseArtefact() == null) {
+		if (resourceRepository == null || getResourceRepository().getBaseArtefact() == null)
 			return null;
-		}
-		if (isRootFolder()) {
+		if (isRootFolder())
 			return getResourceRepository().getBaseArtefact().toString();
-		}
-		else {
-			return getResourceRepository().getBaseArtefact().toString() + "/" + getPathRelativeToRepository();
-		}
+		return getResourceRepository().getBaseArtefact().toString() + "/" + getPathRelativeToRepository();
 	}
 
 	public String getDefaultBaseURI() {
-		if (resourceRepository == null) {
+		if (resourceRepository == null)
 			return null;
-		}
-		if (isRootFolder()) {
+		if (isRootFolder())
 			return getResourceRepository().getDefaultBaseURI();
-		}
-		else {
-			return getResourceRepository().getDefaultBaseURI() + "/" + getPathRelativeToRepository();
-		}
+		return getResourceRepository().getDefaultBaseURI() + "/" + getPathRelativeToRepository();
 	}
 
 	@NotificationUnsafe
@@ -242,9 +234,15 @@ public class RepositoryFolder<R extends FlexoResource<?>, I> extends DefaultFlex
 	}
 
 	public boolean isFatherOf(RepositoryFolder<R, I> folder) {
+		if (folder == null) {
+			return false;
+		}
 		RepositoryFolder<R, I> f = folder.getParentFolder();
 		while (f != null) {
 			if (f.equals(this)) {
+				return true;
+			}
+			if (f.getSerializationArtefact().equals(getSerializationArtefact())) {
 				return true;
 			}
 			f = f.getParentFolder();

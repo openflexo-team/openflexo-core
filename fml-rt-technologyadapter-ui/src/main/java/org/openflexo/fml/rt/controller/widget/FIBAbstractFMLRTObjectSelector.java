@@ -64,7 +64,7 @@ import org.openflexo.foundation.resource.RepositoryFolder;
  * <ul>
  * <li>the whole environment (all is foundable in all resource centers), if {@link FlexoServiceManager} has been set</li>
  * <li>a resource center, if {@link FlexoResourceCenter} has been set</li>
- * <li>a view, if {@link View} has been set</li>
+ * <li>a view, if {@link VirtualModelInstance} has been set</li>
  * <li>a virtual model instance, if {@link FMLRTVirtualModelInstance} has been set</li>
  * </ul>
  * 
@@ -288,13 +288,24 @@ public abstract class FIBAbstractFMLRTObjectSelector<T extends FlexoConceptInsta
 					return true;
 				}
 			}
-			// System.out.println("excluding folder " + view);
+			for (RepositoryFolder<?, ?> childFolder : folder.getChildren()) {
+				if (isFolderVisible(childFolder)) {
+					return true;
+				}
+			}
 			return false;
 		}
 		return true;
 	}
 
 	public boolean isVirtualModelInstanceVisible(VirtualModelInstance<?, ?> virtualModelInstance) {
+		if (virtualModelInstance.getVirtualModelInstances() != null && virtualModelInstance.getVirtualModelInstances().size() > 0) {
+			for (VirtualModelInstance<?, ?> containedVMI : virtualModelInstance.getVirtualModelInstances()) {
+				if (isVirtualModelInstanceVisible(containedVMI)) {
+					return true;
+				}
+			}
+		}
 		if (getExpectedType() instanceof VirtualModelInstanceType) {
 			// We are expecting a VMI of following type
 			VirtualModel vmType = ((VirtualModelInstanceType) getExpectedType()).getVirtualModel();

@@ -44,11 +44,11 @@ import java.util.logging.Logger;
 import org.openflexo.connie.BindingVariable;
 import org.openflexo.connie.type.TypeUtils;
 import org.openflexo.foundation.fml.cli.CLIUtils;
-import org.openflexo.foundation.fml.cli.CommandInterpreter;
 import org.openflexo.foundation.fml.cli.CommandSemanticsAnalyzer;
 import org.openflexo.foundation.fml.cli.command.FMLCommand;
 import org.openflexo.foundation.fml.cli.command.FMLCommandDeclaration;
 import org.openflexo.foundation.fml.cli.parser.node.AContextFmlCommand;
+import org.openflexo.toolbox.StringUtils;
 
 /**
  * Represents context command in FML command-line interpreter<br>
@@ -64,16 +64,40 @@ public class FMLContextCommand extends FMLCommand {
 
 	private static final Logger logger = Logger.getLogger(FMLContextCommand.class.getPackage().getName());
 
-	public FMLContextCommand(AContextFmlCommand node, CommandInterpreter commandInterpreter, CommandSemanticsAnalyzer analyser) {
-		super(node, commandInterpreter, null);
+	public FMLContextCommand(AContextFmlCommand node, CommandSemanticsAnalyzer commandSemanticsAnalyzer) {
+		super(node, commandSemanticsAnalyzer, null);
 	}
 
 	@Override
 	public void execute() {
+
+		if (getCommandInterpreter().getFocusedObject() != null) {
+			getOutStream().println(CLIUtils.denoteObjectPath(getCommandInterpreter().getFocusedObject()));
+		}
+
+		int maxTypeCols = -1;
+		int maxNameCols = -1;
+
 		for (int i = 0; i < getCommandInterpreter().getBindingModel().getBindingVariablesCount(); i++) {
 			BindingVariable bv = getCommandInterpreter().getBindingModel().getBindingVariableAt(i);
-			System.out.println("[" + TypeUtils.simpleRepresentation(bv.getType()) + "] " + bv.getVariableName() + "="
-					+ CLIUtils.renderObject(getCommandInterpreter().getValue(bv)));
+			String type = "[" + TypeUtils.simpleRepresentation(bv.getType()) + "]";
+			String name = bv.getVariableName();
+			if (type.length() > maxTypeCols) {
+				maxTypeCols = type.length();
+			}
+			if (name.length() > maxNameCols) {
+				maxNameCols = name.length();
+			}
+		}
+
+		for (int i = 0; i < getCommandInterpreter().getBindingModel().getBindingVariablesCount(); i++) {
+			BindingVariable bv = getCommandInterpreter().getBindingModel().getBindingVariableAt(i);
+			String type = "[" + TypeUtils.simpleRepresentation(bv.getType()) + "]";
+			String name = bv.getVariableName();
+
+			getOutStream().println(type + StringUtils.buildWhiteSpaceIndentation(maxTypeCols - type.length()) + " "
+					+ StringUtils.buildWhiteSpaceIndentation(maxNameCols - name.length()) + name + " = "
+					+ CLIUtils.denoteObject(getCommandInterpreter().getValue(bv)));
 		}
 	}
 }

@@ -49,6 +49,7 @@ import org.openflexo.foundation.FlexoService;
 import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.fml.FlexoBehaviour;
 import org.openflexo.foundation.fml.FlexoRole;
+import org.openflexo.foundation.fml.editionaction.AbstractFetchRequest;
 import org.openflexo.foundation.fml.editionaction.EditionAction;
 import org.openflexo.foundation.fml.editionaction.FetchRequest;
 import org.openflexo.foundation.fml.editionaction.TechnologySpecificAction;
@@ -59,13 +60,13 @@ import org.openflexo.foundation.resource.ResourceData;
 import org.openflexo.foundation.resource.ResourceRepository;
 import org.openflexo.foundation.resource.ResourceRepositoryImpl;
 import org.openflexo.foundation.task.FlexoTask;
-import org.openflexo.model.annotations.Adder;
-import org.openflexo.model.annotations.Getter;
-import org.openflexo.model.annotations.Getter.Cardinality;
-import org.openflexo.model.annotations.ImplementationClass;
-import org.openflexo.model.annotations.ModelEntity;
-import org.openflexo.model.annotations.Remover;
-import org.openflexo.model.annotations.Setter;
+import org.openflexo.pamela.annotations.Adder;
+import org.openflexo.pamela.annotations.Getter;
+import org.openflexo.pamela.annotations.Getter.Cardinality;
+import org.openflexo.pamela.annotations.ImplementationClass;
+import org.openflexo.pamela.annotations.ModelEntity;
+import org.openflexo.pamela.annotations.Remover;
+import org.openflexo.pamela.annotations.Setter;
 
 /**
  * This service provides access to all technology adapters available in a given environment.
@@ -93,10 +94,10 @@ public interface TechnologyAdapterService extends FlexoService, CustomTypeManage
 	public void setTechnologyAdapters(List<TechnologyAdapter> technologyAdapters);
 
 	@Adder(TECHNOLOGY_ADAPTERS)
-	public void addToTechnologyAdapters(TechnologyAdapter technologyAdapters);
+	public void addToTechnologyAdapters(TechnologyAdapter<?> technologyAdapters);
 
 	@Remover(TECHNOLOGY_ADAPTERS)
-	public void removeFromTechnologyAdapters(TechnologyAdapter technologyAdapters);
+	public void removeFromTechnologyAdapters(TechnologyAdapter<?> technologyAdapters);
 
 	@Getter(value = RESOURCE_CENTER_SERVICE, ignoreType = true)
 	public FlexoResourceCenterService getFlexoResourceCenterService();
@@ -111,7 +112,7 @@ public interface TechnologyAdapterService extends FlexoService, CustomTypeManage
 	 * @param technologyAdapterClass
 	 * @return
 	 */
-	public <TA extends TechnologyAdapter> TA getTechnologyAdapter(Class<TA> technologyAdapterClass);
+	public <TA extends TechnologyAdapter<TA>> TA getTechnologyAdapter(Class<TA> technologyAdapterClass);
 
 	/**
 	 * Return the {@link TechnologyContextManager} for this technology shared by all {@link FlexoResourceCenter} declared in the scope of
@@ -119,7 +120,7 @@ public interface TechnologyAdapterService extends FlexoService, CustomTypeManage
 	 * 
 	 * @return
 	 */
-	public <TA extends TechnologyAdapter> TechnologyContextManager<TA> getTechnologyContextManager(TA technologyAdapter);
+	public <TA extends TechnologyAdapter<TA>> TechnologyContextManager<TA> getTechnologyContextManager(TA technologyAdapter);
 
 	/**
 	 * Return the list of all non-empty {@link ModelRepository} discovered in the scope of {@link FlexoServiceManager}, related to
@@ -128,7 +129,7 @@ public interface TechnologyAdapterService extends FlexoService, CustomTypeManage
 	 * @param technologyAdapter
 	 * @return
 	 */
-	public List<ModelRepository<?, ?, ?, ?, ?, ?>> getAllModelRepositories(TechnologyAdapter technologyAdapter);
+	public List<ModelRepository<?, ?, ?, ?, ?, ?>> getAllModelRepositories(TechnologyAdapter<?> technologyAdapter);
 
 	/**
 	 * Return the list of all non-empty {@link MetaModelRepository} discovered in the scope of {@link FlexoServiceManager}, related to
@@ -137,7 +138,7 @@ public interface TechnologyAdapterService extends FlexoService, CustomTypeManage
 	 * @param technologyAdapter
 	 * @return
 	 */
-	public List<MetaModelRepository<?, ?, ?, ?, ?>> getAllMetaModelRepositories(TechnologyAdapter technologyAdapter);
+	public List<MetaModelRepository<?, ?, ?, ?, ?>> getAllMetaModelRepositories(TechnologyAdapter<?> technologyAdapter);
 
 	/**
 	 * Return the list of all non-empty {@link ResourceRepositoryImpl} discovered in the scope of {@link FlexoServiceManager}, related to
@@ -146,7 +147,7 @@ public interface TechnologyAdapterService extends FlexoService, CustomTypeManage
 	 * @param technologyAdapter
 	 * @return
 	 */
-	public List<ResourceRepository<?, ?>> getAllRepositories(TechnologyAdapter technologyAdapter);
+	public List<ResourceRepository<?, ?>> getAllRepositories(TechnologyAdapter<?> technologyAdapter);
 
 	/**
 	 * Return the list of all global {@link ResourceRepositoryImpl} discovered in this {@link InformationSpace}, related to technology as
@@ -156,7 +157,7 @@ public interface TechnologyAdapterService extends FlexoService, CustomTypeManage
 	 * @param technologyAdapter
 	 * @return
 	 */
-	public <TA extends TechnologyAdapter> List<TechnologyAdapterResourceRepository<?, TA, ?, ?>> getGlobalRepositories(
+	public <TA extends TechnologyAdapter<TA>> List<TechnologyAdapterResourceRepository<?, TA, ?, ?>> getGlobalRepositories(
 			TA technologyAdapter);
 
 	/**
@@ -167,7 +168,7 @@ public interface TechnologyAdapterService extends FlexoService, CustomTypeManage
 	 * @return
 	 */
 	public <RD extends ResourceData<RD>> List<ResourceRepository<? extends FlexoResource<RD>, ?>> getAllRepositories(
-			TechnologyAdapter technologyAdapter, Class<RD> resourceDataClass);
+			TechnologyAdapter<?> technologyAdapter, Class<RD> resourceDataClass);
 
 	/**
 	 * Return all {@link CustomType} factories defined for all known technologies
@@ -191,7 +192,7 @@ public interface TechnologyAdapterService extends FlexoService, CustomTypeManage
 	 * 
 	 * @param technologyAdapter
 	 */
-	public FlexoTask activateTechnologyAdapter(TechnologyAdapter technologyAdapter, boolean now);
+	public <TA extends TechnologyAdapter<TA>> FlexoTask activateTechnologyAdapter(TA technologyAdapter, boolean now);
 
 	/**
 	 * Disable a {@link TechnologyAdapter}<br>
@@ -199,7 +200,7 @@ public interface TechnologyAdapterService extends FlexoService, CustomTypeManage
 	 * 
 	 * @param technologyAdapter
 	 */
-	public FlexoTask disactivateTechnologyAdapter(TechnologyAdapter technologyAdapter);
+	public <TA extends TechnologyAdapter<TA>> FlexoTask disactivateTechnologyAdapter(TA technologyAdapter);
 
 	/**
 	 * Return {@link TechnologyAdapter} where supplied modelSlotClass has been declared
@@ -224,6 +225,15 @@ public interface TechnologyAdapterService extends FlexoService, CustomTypeManage
 	 * @return
 	 */
 	public <MS extends ModelSlot<?>> List<Class<? extends EditionAction>> getAvailableEditionActionTypes(Class<MS> modelSlotClass);
+
+	/**
+	 * Return the list of {@link AbstractFetchRequest} class available for supplied modelSlotClass
+	 * 
+	 * @param modelSlotClass
+	 * @return
+	 */
+	public <MS extends ModelSlot<?>> List<Class<? extends AbstractFetchRequest<?, ?, ?, ?>>> getAvailableAbstractFetchRequestActionTypes(
+			Class<MS> modelSlotClass);
 
 	/**
 	 * Return the list of {@link FetchRequest} class available for supplied modelSlotClass

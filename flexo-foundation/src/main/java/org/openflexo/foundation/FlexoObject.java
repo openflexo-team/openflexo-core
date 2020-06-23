@@ -57,20 +57,20 @@ import org.openflexo.foundation.technologyadapter.TechnologyObject;
 import org.openflexo.foundation.utils.FlexoObjectReference;
 import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.localization.LocalizedDelegate;
-import org.openflexo.model.annotations.CloningStrategy;
-import org.openflexo.model.annotations.CloningStrategy.StrategyType;
-import org.openflexo.model.annotations.Getter;
-import org.openflexo.model.annotations.ImplementationClass;
-import org.openflexo.model.annotations.ModelEntity;
-import org.openflexo.model.annotations.PropertyIdentifier;
-import org.openflexo.model.annotations.Setter;
-import org.openflexo.model.annotations.XMLAttribute;
-import org.openflexo.model.factory.AccessibleProxyObject;
-import org.openflexo.model.factory.CloneableProxyObject;
-import org.openflexo.model.factory.DeletableProxyObject;
-import org.openflexo.model.factory.EmbeddingType;
-import org.openflexo.model.factory.ModelFactory;
-import org.openflexo.model.validation.Validable;
+import org.openflexo.pamela.annotations.CloningStrategy;
+import org.openflexo.pamela.annotations.CloningStrategy.StrategyType;
+import org.openflexo.pamela.annotations.Getter;
+import org.openflexo.pamela.annotations.ImplementationClass;
+import org.openflexo.pamela.annotations.ModelEntity;
+import org.openflexo.pamela.annotations.PropertyIdentifier;
+import org.openflexo.pamela.annotations.Setter;
+import org.openflexo.pamela.annotations.XMLAttribute;
+import org.openflexo.pamela.factory.AccessibleProxyObject;
+import org.openflexo.pamela.factory.CloneableProxyObject;
+import org.openflexo.pamela.factory.DeletableProxyObject;
+import org.openflexo.pamela.factory.EmbeddingType;
+import org.openflexo.pamela.factory.ModelFactory;
+import org.openflexo.pamela.validation.Validable;
 
 /**
  * Super class for any object involved in Openflexo-Core (model layer)<br>
@@ -98,7 +98,7 @@ public interface FlexoObject extends AccessibleProxyObject, DeletableProxyObject
 	@Setter(USER_IDENTIFIER_KEY)
 	public void setUserIdentifier(String userIdentifier);
 
-	@Getter(value = FLEXO_ID_KEY, defaultValue = "0")
+	@Getter(value = FLEXO_ID_KEY, defaultValue = "0", ignoreForEquality = true)
 	@XMLAttribute
 	// Here, we dont want to have the FlexoID duplicated (never a good idea for
 	// an ID !!!)
@@ -189,15 +189,6 @@ public interface FlexoObject extends AccessibleProxyObject, DeletableProxyObject
 
 	public Class<?> getImplementedInterface();
 
-	@Deprecated
-	public void setChanged();
-
-	@Deprecated
-	public void notifyObservers();
-
-	@Deprecated
-	public void notifyObservers(DataModification arg);
-
 	public FlexoServiceManager getServiceManager();
 
 	/**
@@ -215,17 +206,12 @@ public interface FlexoObject extends AccessibleProxyObject, DeletableProxyObject
 	 */
 	public LocalizedDelegate getLocales();
 
-	default String getReferenceForSerialization(boolean serializeClassName) {
-		if (this instanceof InnerResourceData) {
-			ResourceData<?> resourceData = ((InnerResourceData<?>) this).getResourceData();
-			if (resourceData != null && resourceData.getResource() != null) {
-				FlexoResource<?> resource = resourceData.getResource();
-				return FlexoObjectReference.constructSerializationRepresentation(resource.getURI(), getUserIdentifier(),
-						Long.toString(getFlexoID()), serializeClassName ? getClass().getName() : null);
-			}
-		}
-		return null;
-	}
+	/**
+	 * Return a String rendering user-friendly informations on a {@link FlexoObject}
+	 * 
+	 * @return
+	 */
+	public String render();
 
 	public static abstract class FlexoObjectImpl extends FlexoObservable implements FlexoObject {
 
@@ -861,7 +847,9 @@ public interface FlexoObject extends AccessibleProxyObject, DeletableProxyObject
 		public Class<?> getImplementedInterface() {
 			if (this instanceof ResourceData && ((ResourceData<?>) this).getResource() instanceof PamelaResource) {
 				ModelFactory f = ((PamelaResource<?, ?>) ((ResourceData<?>) this).getResource()).getFactory();
-				return f.getModelEntityForInstance(this).getImplementedInterface();
+				if (f != null) {
+					return f.getModelEntityForInstance(this).getImplementedInterface();
+				}
 			}
 			if (this instanceof InnerResourceData && ((InnerResourceData<?>) this).getResourceData() != null
 					&& ((InnerResourceData<?>) this).getResourceData().getResource() instanceof PamelaResource) {
@@ -886,6 +874,15 @@ public interface FlexoObject extends AccessibleProxyObject, DeletableProxyObject
 			return getImplementedInterface().getSimpleName() + "[ID=" + getFlexoID() + "]" + "@" + hash();
 		}
 
+		/**
+		 * Default implementation for rendering
+		 * 
+		 * @return
+		 */
+		@Override
+		public String render() {
+			return toString();
+		}
 	}
 
 }

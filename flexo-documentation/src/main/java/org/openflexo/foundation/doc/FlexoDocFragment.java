@@ -27,13 +27,13 @@ import java.util.logging.Logger;
 
 import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
-import org.openflexo.model.annotations.Getter;
-import org.openflexo.model.annotations.ImplementationClass;
-import org.openflexo.model.annotations.Import;
-import org.openflexo.model.annotations.Imports;
-import org.openflexo.model.annotations.ModelEntity;
-import org.openflexo.model.annotations.PropertyIdentifier;
-import org.openflexo.model.annotations.Setter;
+import org.openflexo.pamela.annotations.Getter;
+import org.openflexo.pamela.annotations.ImplementationClass;
+import org.openflexo.pamela.annotations.Import;
+import org.openflexo.pamela.annotations.Imports;
+import org.openflexo.pamela.annotations.ModelEntity;
+import org.openflexo.pamela.annotations.PropertyIdentifier;
+import org.openflexo.pamela.annotations.Setter;
 import org.openflexo.toolbox.StringUtils;
 
 /**
@@ -49,7 +49,7 @@ import org.openflexo.toolbox.StringUtils;
 @ModelEntity(isAbstract = true)
 @ImplementationClass(FlexoDocFragment.FlexoDocumentFragmentImpl.class)
 @Imports({ @Import(TextSelection.class) })
-public interface FlexoDocFragment<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter> extends FlexoDocObject<D, TA> {
+public interface FlexoDocFragment<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter<TA>> extends FlexoDocObject<D, TA> {
 
 	@PropertyIdentifier(type = String.class)
 	public static final String START_ELEMENT_KEY = "startElement";
@@ -123,7 +123,7 @@ public interface FlexoDocFragment<D extends FlexoDocument<D, TA>, TA extends Tec
 
 	public TextSelection<D, TA> makeTextSelection(FlexoDocElement<D, TA> element) throws FragmentConsistencyException;
 
-	public static abstract class FlexoDocumentFragmentImpl<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter>
+	public static abstract class FlexoDocumentFragmentImpl<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter<TA>>
 			extends FlexoDocObjectImpl<D, TA> implements FlexoDocFragment<D, TA> {
 
 		private static final Logger logger = Logger.getLogger(FlexoDocumentFragmentImpl.class.getPackage().getName());

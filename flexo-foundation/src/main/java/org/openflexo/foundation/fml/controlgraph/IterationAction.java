@@ -45,48 +45,34 @@ import java.util.logging.Logger;
 
 import org.openflexo.connie.BindingModel;
 import org.openflexo.connie.DataBinding;
-import org.openflexo.connie.DataBinding.BindingDefinitionType;
 import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.fml.FMLRepresentationContext;
 import org.openflexo.foundation.fml.FMLRepresentationContext.FMLRepresentationOutput;
 import org.openflexo.foundation.fml.editionaction.AssignableAction;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext.ReturnException;
-import org.openflexo.model.annotations.CloningStrategy;
-import org.openflexo.model.annotations.CloningStrategy.StrategyType;
-import org.openflexo.model.annotations.DefineValidationRule;
-import org.openflexo.model.annotations.Embedded;
-import org.openflexo.model.annotations.Getter;
-import org.openflexo.model.annotations.ImplementationClass;
-import org.openflexo.model.annotations.ModelEntity;
-import org.openflexo.model.annotations.PropertyIdentifier;
-import org.openflexo.model.annotations.Setter;
-import org.openflexo.model.annotations.XMLAttribute;
-import org.openflexo.model.annotations.XMLElement;
-import org.openflexo.model.validation.ValidationError;
-import org.openflexo.model.validation.ValidationIssue;
-import org.openflexo.model.validation.ValidationRule;
+import org.openflexo.pamela.annotations.CloningStrategy;
+import org.openflexo.pamela.annotations.DefineValidationRule;
+import org.openflexo.pamela.annotations.Embedded;
+import org.openflexo.pamela.annotations.Getter;
+import org.openflexo.pamela.annotations.ImplementationClass;
+import org.openflexo.pamela.annotations.ModelEntity;
+import org.openflexo.pamela.annotations.PropertyIdentifier;
+import org.openflexo.pamela.annotations.Setter;
+import org.openflexo.pamela.annotations.XMLAttribute;
+import org.openflexo.pamela.annotations.XMLElement;
+import org.openflexo.pamela.annotations.CloningStrategy.StrategyType;
+import org.openflexo.pamela.validation.ValidationError;
+import org.openflexo.pamela.validation.ValidationIssue;
+import org.openflexo.pamela.validation.ValidationRule;
 import org.openflexo.toolbox.StringUtils;
 
 @ModelEntity
 @ImplementationClass(IterationAction.IterationActionImpl.class)
 @XMLElement
 public interface IterationAction extends AbstractIterationAction {
-
-	@Deprecated
-	@PropertyIdentifier(type = DataBinding.class)
-	public static final String ITERATION_KEY = "iteration";
 	@PropertyIdentifier(type = DataBinding.class)
 	public static final String ITERATION_CONTROL_GRAPH_KEY = "iterationControlGraph";
-
-	@Deprecated
-	@Getter(value = ITERATION_KEY)
-	@XMLAttribute
-	public DataBinding<List<?>> getIteration();
-
-	@Deprecated
-	@Setter(ITERATION_KEY)
-	public void setIteration(DataBinding<List<?>> iteration);
 
 	@Getter(value = ITERATION_CONTROL_GRAPH_KEY, inverse = FMLControlGraph.OWNER_KEY)
 	@XMLElement(context = "Iteration_")
@@ -122,28 +108,6 @@ public interface IterationAction extends AbstractIterationAction {
 		}
 
 		private DataBinding<List<?>> iteration;
-
-		@Deprecated
-		@Override
-		public DataBinding<List<?>> getIteration() {
-			if (iteration == null) {
-				iteration = new DataBinding<>(this, List.class, BindingDefinitionType.GET);
-			}
-			return iteration;
-		}
-
-		@Deprecated
-		@Override
-		public void setIteration(DataBinding<List<?>> iteration) {
-			if (iteration != null) {
-				iteration.setOwner(this);
-				iteration.setBindingName("iteration");
-				iteration.setDeclaredType(List.class);
-				iteration.setBindingDefinitionType(BindingDefinitionType.GET);
-			}
-			this.iteration = iteration;
-			// rebuildInferedBindingModel();
-		}
 
 		@Override
 		public Type getItemType() {
@@ -192,8 +156,7 @@ public interface IterationAction extends AbstractIterationAction {
 			if (getIterationAction() != null) {
 				return getHeaderContext() + " for (" + getIteratorName() + " : " + getIterationAction().getStringRepresentation() + ")";
 			}
-			else
-				return "NULL ITERATION ACTION";
+			return "NULL ITERATION ACTION";
 		}
 
 		@Override
@@ -242,14 +205,6 @@ public interface IterationAction extends AbstractIterationAction {
 			}
 			logger.warning("Unexpected control graph: " + controlGraph);
 			return null;
-		}
-
-		@Override
-		public void notifiedBindingChanged(DataBinding<?> dataBinding) {
-			if (dataBinding == getIteration()) {
-				getPropertyChangeSupport().firePropertyChange(ITERATION_KEY, null, getIteration());
-			}
-			super.notifiedBindingChanged(dataBinding);
 		}
 
 		@Override

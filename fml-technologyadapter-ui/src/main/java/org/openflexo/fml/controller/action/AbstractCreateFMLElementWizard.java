@@ -40,7 +40,7 @@ package org.openflexo.fml.controller.action;
 
 import java.util.logging.Logger;
 
-import org.openflexo.components.wizard.FlexoWizard;
+import org.openflexo.components.wizard.FlexoActionWizard;
 import org.openflexo.foundation.action.FlexoAction;
 import org.openflexo.foundation.fml.FMLObject;
 import org.openflexo.foundation.fml.FlexoConcept;
@@ -63,24 +63,17 @@ import org.openflexo.view.controller.FlexoController;
  * @see CreateTopLevelVirtualModel
  */
 public abstract class AbstractCreateFMLElementWizard<A extends FlexoAction<A, T1, T2>, T1 extends FlexoConceptObject, T2 extends FMLObject>
-		extends FlexoWizard {
+		extends FlexoActionWizard<A> {
 
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(AbstractCreateFMLElementWizard.class.getPackage().getName());
 
-	private final A action;
-
 	public AbstractCreateFMLElementWizard(A action, FlexoController controller) {
-		super(controller);
-		this.action = action;
-	}
-
-	public A getAction() {
-		return action;
+		super(action, controller);
 	}
 
 	public T1 getFocusedObject() {
-		return action.getFocusedObject();
+		return getAction().getFocusedObject();
 	}
 
 	public VirtualModel getVirtualModel() {

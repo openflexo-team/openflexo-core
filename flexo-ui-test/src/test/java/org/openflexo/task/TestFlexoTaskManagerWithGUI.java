@@ -104,12 +104,9 @@ public class TestFlexoTaskManagerWithGUI {
 		exitButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				taskManager.shutdownAndExecute(new Runnable() {
-					@Override
-					public void run() {
-						System.out.println("OK now i quit");
-						System.exit(0);
-					}
+				taskManager.shutdownAndExecute(() -> {
+					System.out.println("OK now i quit");
+					System.exit(0);
 				});
 				/*taskManager.scheduleExecution(new FlexoTask("Exiting") {
 					@Override

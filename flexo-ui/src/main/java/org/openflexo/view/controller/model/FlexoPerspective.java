@@ -60,7 +60,7 @@ import org.openflexo.view.controller.TechnologyAdapterControllerService;
 
 public abstract class FlexoPerspective extends ControllerModelObject {
 
-	static final Logger logger = Logger.getLogger(FlexoPerspective.class.getPackage().getName());
+	private static final Logger logger = Logger.getLogger(FlexoPerspective.class.getPackage().getName());
 
 	private final String name;
 
@@ -176,7 +176,7 @@ public abstract class FlexoPerspective extends ControllerModelObject {
 	 * @param object
 	 * @return
 	 */
-	public final <TA extends TechnologyAdapter> boolean hasModuleViewForTechnologyObject(TechnologyObject<TA> object) {
+	public final <TA extends TechnologyAdapter<TA>> boolean hasModuleViewForTechnologyObject(TechnologyObject<TA> object) {
 		TechnologyAdapterControllerService tacService = controller.getApplicationContext().getTechnologyAdapterControllerService();
 		TechnologyAdapterController<TA> tac = tacService.getTechnologyAdapterController(object.getTechnologyAdapter());
 		return tac.hasModuleViewForObject(object, controller);
@@ -189,7 +189,7 @@ public abstract class FlexoPerspective extends ControllerModelObject {
 	 * @param object
 	 * @return
 	 */
-	public final <TA extends TechnologyAdapter> ModuleView<?> getModuleViewForTechnologyObject(TechnologyObject<TA> object) {
+	public final <TA extends TechnologyAdapter<TA>> ModuleView<?> getModuleViewForTechnologyObject(TechnologyObject<TA> object) {
 		TechnologyAdapterControllerService tacService = controller.getApplicationContext().getTechnologyAdapterControllerService();
 		TechnologyAdapterController<TA> tac = tacService.getTechnologyAdapterController(object.getTechnologyAdapter());
 		if (tac != null) {

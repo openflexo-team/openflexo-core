@@ -74,7 +74,7 @@ import org.openflexo.toolbox.StringUtils;
  * @param <T>
  *            type of container of newly created FMLRTVirtualModelInstance
  */
-public abstract class AbstractCreateVirtualModelInstance<A extends AbstractCreateVirtualModelInstance<A, T, VMI, TA>, T extends FlexoObject, VMI extends VirtualModelInstance<VMI, TA>, TA extends TechnologyAdapter>
+public abstract class AbstractCreateVirtualModelInstance<A extends AbstractCreateVirtualModelInstance<A, T, VMI, TA>, T extends FlexoObject, VMI extends VirtualModelInstance<VMI, TA>, TA extends TechnologyAdapter<TA>>
 		extends FlexoAction<A, T, FlexoObject> implements FlexoObserver {
 
 	private static final Logger logger = Logger.getLogger(AbstractCreateVirtualModelInstance.class.getPackage().getName());
@@ -160,7 +160,7 @@ public abstract class AbstractCreateVirtualModelInstance<A extends AbstractCreat
 		}
 
 		// System.out.println("Saving file again...");
-		newVirtualModelInstanceResource.save(null);
+		newVirtualModelInstanceResource.save();
 	}
 
 	public int getStepsNumber() {
@@ -207,7 +207,7 @@ public abstract class AbstractCreateVirtualModelInstance<A extends AbstractCreat
 		if (virtualModel != this.virtualModel) {
 			this.virtualModel = virtualModel;
 			setChanged();
-			notifyObservers(new DataModification("isActionValidable", false, true));
+			notifyObservers(new DataModification<>("isActionValidable", false, true));
 		}
 	}
 
@@ -306,10 +306,10 @@ public abstract class AbstractCreateVirtualModelInstance<A extends AbstractCreat
 	}
 
 	@Override
-	public void update(FlexoObservable observable, DataModification dataModification) {
+	public void update(FlexoObservable observable, DataModification<?> dataModification) {
 		if (dataModification.propertyName().equals(FlexoBehaviourAction.PARAMETER_VALUE_CHANGED)) {
 			setChanged();
-			notifyObservers(new DataModification("isActionValidable", false, true));
+			notifyObservers(new DataModification<>("isActionValidable", false, true));
 		}
 	}
 

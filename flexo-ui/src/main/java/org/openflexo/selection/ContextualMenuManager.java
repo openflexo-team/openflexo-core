@@ -46,7 +46,6 @@ import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Vector;
@@ -67,9 +66,9 @@ import org.openflexo.foundation.action.FlexoAction;
 import org.openflexo.foundation.action.FlexoActionFactory;
 import org.openflexo.foundation.fml.ActionScheme;
 import org.openflexo.foundation.fml.DeletionScheme;
-import org.openflexo.foundation.fml.FlexoBehaviour.Visibility;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.NavigationScheme;
+import org.openflexo.foundation.fml.Visibility;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.foundation.fml.rt.action.ActionSchemeActionFactory;
@@ -243,7 +242,8 @@ public class ContextualMenuManager {
 	public JPopupMenu makePopupMenu(FlexoObject focusedObject, MenuFilter filter) {
 		if (focusedObject != null) {
 			ContextualMenu contextualMenu = new ContextualMenu();
-			for (FlexoActionFactory next : focusedObject.getActionList()) {
+			for (@SuppressWarnings("rawtypes")
+			FlexoActionFactory next : focusedObject.getActionList()) {
 				if (filter.acceptActionType(next) && getEditor().isActionVisible(next, focusedObject,
 						_selectionManager != null ? _selectionManager.getSelection() : null)) {
 					contextualMenu.putAction(next);
@@ -314,7 +314,7 @@ public class ContextualMenuManager {
 	protected class ContextualMenu extends Hashtable<ActionGroup, ContextualMenuGroup> {
 		final Hashtable<ActionMenu, ContextualSubMenu> _subMenus = new Hashtable<>();
 
-		public Enumeration<ContextualMenuGroup> orderedGroups() {
+		public Vector<ContextualMenuGroup> orderedGroups() {
 			Vector<ContextualMenuGroup> orderedGroups = new Vector<>(values());
 			Collections.sort(orderedGroups, new Comparator<ContextualMenuGroup>() {
 				@Override
@@ -322,7 +322,7 @@ public class ContextualMenuManager {
 					return o1.getActionGroup().getIndex() - o2.getActionGroup().getIndex();
 				}
 			});
-			return orderedGroups.elements();
+			return orderedGroups;
 		}
 
 		public void putAction(FlexoActionFactory<?, ?, ?> actionType) {
@@ -387,11 +387,9 @@ public class ContextualMenuManager {
 		}
 
 		public JPopupMenu makePopupMenu(FlexoObject focusedObject) {
-
 			boolean addSeparator = false;
 			JPopupMenu returned = new JPopupMenu();
-			for (Enumeration<ContextualMenuGroup> en = orderedGroups(); en.hasMoreElements();) {
-				ContextualMenuGroup menuGroup = en.nextElement();
+			for (ContextualMenuGroup menuGroup : orderedGroups()) {
 				if (addSeparator) {
 					returned.addSeparator();
 					// System.out.println("------- Ajout de separator -------");
@@ -399,18 +397,12 @@ public class ContextualMenuManager {
 				addSeparator = true;
 				// System.out.println("============= Groupe
 				// "+menuGroup._actionGroup.getLocalizedName());
-				for (Enumeration<?> en2 = menuGroup.elements(); en2.hasMoreElements();) {
-					Object nextElement = en2.nextElement();
-
-					if (nextElement instanceof FlexoActionFactory) {
-						// System.out.println("Ajout de " + nextElement);
-						makeMenuItem((FlexoActionFactory) nextElement, focusedObject, returned);
-					}
-					else if (nextElement instanceof ContextualSubMenu) {
-						// System.out.println("Ajout de " + nextElement);
-						JMenuItem item = ((ContextualSubMenu) nextElement).makeMenu(focusedObject);
-						returned.add(item);
-					}
+				for (ContextualSubMenu contextualSubMenu : menuGroup.orderedSubMenus()) {
+					JMenuItem item = contextualSubMenu.makeMenu(focusedObject);
+					returned.add(item);
+				}
+				for (FlexoActionFactory<?, ?, ?> flexoActionFactory : menuGroup.orderedActions()) {
+					makeMenuItem(flexoActionFactory, focusedObject, returned);
 				}
 			}
 			return returned;
@@ -418,27 +410,54 @@ public class ContextualMenuManager {
 
 	}
 
-	protected class ContextualMenuGroup extends Vector<Object> {
+	protected class ContextualMenuGroup {
 		private final ActionGroup _actionGroup;
+		private List<FlexoActionFactory<?, ?, ?>> actions;
+		private List<ContextualSubMenu> subMenus;
 
 		public ContextualMenuGroup(ActionGroup actionGroup) {
 			_actionGroup = actionGroup;
+			actions = new ArrayList<>();
+			subMenus = new ArrayList<>();
 		}
 
 		public void addAction(FlexoActionFactory<?, ?, ?> actionType) {
 			// should have already been checked, but it's more secure.
 			if (acceptAction(actionType)) {
-				add(actionType);
+				actions.add(actionType);
 			}
 		}
 
 		public void addSubMenu(ContextualSubMenu subMenu) {
-			add(subMenu);
+			subMenus.add(subMenu);
 		}
 
 		public ActionGroup getActionGroup() {
 			return _actionGroup;
 		}
+
+		public List<ContextualSubMenu> orderedSubMenus() {
+			Collections.sort(subMenus, new Comparator<ContextualSubMenu>() {
+				@Override
+				public int compare(ContextualSubMenu o1, ContextualSubMenu o2) {
+					return o1.getActionMenu().getIndex() - o2.getActionMenu().getIndex();
+				}
+			});
+			return subMenus;
+		}
+
+		public List<FlexoActionFactory<?, ?, ?>> orderedActions() {
+			// Let initial order
+			/*Collections.sort(actions, new Comparator<FlexoActionFactory<?, ?, ?>>() {
+				@Override
+				public int compare(FlexoActionFactory<?, ?, ?> o1, FlexoActionFactory<?, ?, ?> o2) {
+					return o1.getLocalizedName(getEditor().getServiceManager())
+							.compareTo(o2.getLocalizedName(getEditor().getServiceManager()));
+				}
+			});*/
+			return actions;
+		}
+
 	}
 
 	protected class ContextualSubMenu extends ContextualMenu {
@@ -461,25 +480,22 @@ public class ContextualMenuManager {
 		public JMenu makeMenu(FlexoObject focusedObject) {
 			boolean addSeparator = false;
 			JMenu returned = new JMenu();
-			returned.setText(getActionMenu().getLocalizedName(focusedObject.getLocales()));
+			returned.setText(getActionMenu().getLocalizedName(controller.getModuleLocales()));
 			if (getActionMenu().getSmallIcon() != null) {
 				returned.setIcon(getActionMenu().getSmallIcon());
 			}
-			for (Enumeration<?> en = orderedGroups(); en.hasMoreElements();) {
-				ContextualMenuGroup menuGroup = (ContextualMenuGroup) en.nextElement();
+			for (ContextualMenuGroup menuGroup : orderedGroups()) {
 				if (addSeparator) {
 					returned.addSeparator();
 				}
 				addSeparator = true;
-				for (Enumeration<?> en2 = menuGroup.elements(); en2.hasMoreElements();) {
-					Object nextElement = en2.nextElement();
-					if (nextElement instanceof FlexoActionFactory) {
-						makeMenuItem((FlexoActionFactory) nextElement, focusedObject, returned);
-					}
-					else if (nextElement instanceof ContextualSubMenu) {
-						JMenuItem item = ((ContextualSubMenu) nextElement).makeMenu(focusedObject);
-						returned.add(item);
-					}
+
+				for (ContextualSubMenu contextualSubMenu : menuGroup.orderedSubMenus()) {
+					JMenuItem item = contextualSubMenu.makeMenu(focusedObject);
+					returned.add(item);
+				}
+				for (FlexoActionFactory<?, ?, ?> flexoActionFactory : menuGroup.orderedActions()) {
+					makeMenuItem(flexoActionFactory, focusedObject, returned);
 				}
 			}
 			return returned;
@@ -528,9 +544,9 @@ public class ContextualMenuManager {
 	}
 
 	<A extends FlexoAction<A, T1, T2>, T1 extends FlexoObject, T2 extends FlexoObject> JMenuItem makeMenuItem(
-			FlexoActionFactory<A, T1, T2> actionType, T1 focusedObject, JMenu menu) {
+			FlexoActionFactory<A, T1, T2> actionType, FlexoObject focusedObject, JMenu menu) {
 		try {
-			MenuItemAction<A, T1, T2> action = new MenuItemAction<>(actionType, focusedObject,
+			MenuItemAction<A, T1, T2> action = new MenuItemAction<>(actionType, (T1) focusedObject,
 					_selectionManager != null ? (Vector<T2>) _selectionManager.getSelection() : null, getEditor());
 			JMenuItem item = menu.add(action);
 

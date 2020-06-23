@@ -52,7 +52,6 @@ import org.openflexo.foundation.fml.rt.FMLRunTimeEngine;
 import org.openflexo.foundation.fml.rt.logging.FMLConsole;
 import org.openflexo.foundation.nature.FlexoNature;
 import org.openflexo.foundation.resource.ResourceUpdateHandler;
-import org.openflexo.foundation.utils.FlexoProgressFactory;
 
 /**
  * A {@link FlexoEditor} represents the run-time environment where a user is interacting with a {@link FlexoProject}<br>
@@ -82,7 +81,7 @@ public interface FlexoEditor {
 	}*/
 
 	/**
-	 * Return project beeing edited/executed
+	 * Return project being edited/executed
 	 * 
 	 * @return
 	 */
@@ -94,14 +93,6 @@ public interface FlexoEditor {
 	 * @return
 	 */
 	public FlexoServiceManager getServiceManager();
-
-	/**
-	 * Return progress factory for this {@link FlexoEditor}<br>
-	 * (deprecated)
-	 * 
-	 * @return
-	 */
-	public FlexoProgressFactory getFlexoProgressFactory();
 
 	/**
 	 * Return {@link ResourceUpdateHandler} for this {@link FlexoEditor}<br>
@@ -142,7 +133,7 @@ public interface FlexoEditor {
 	 * Execute a {@link FlexoActionFactory}<br>
 	 * 
 	 * More precisely, instantiate and execute a {@link FlexoAction} using supplied {@link FlexoActionFactory}, with supplied focused object
-	 * and global selection, and forword the eventual supplied {@link EventObject}
+	 * and global selection, and forward the eventual supplied {@link EventObject}
 	 * 
 	 * @param actionFactory
 	 * @param focusedObject
@@ -154,7 +145,7 @@ public interface FlexoEditor {
 			FlexoActionFactory<A, T1, T2> actionFactory, T1 focusedObject, Vector<T2> globalSelection, EventObject e);
 
 	/**
-	 * Execute suppliued {@link FlexoAction} (forword the eventual supplied {@link EventObject})<br>
+	 * Execute supplied {@link FlexoAction} (forward the eventual supplied {@link EventObject})<br>
 	 * 
 	 * @param action
 	 * @param e
@@ -192,7 +183,8 @@ public interface FlexoEditor {
 	 * @param actionFactory
 	 * @return
 	 */
-	public <A extends FlexoAction<A, ?, ?>> Icon getEnabledIconFor(FlexoActionFactory<A, ?, ?> actionFactory);
+	public <A extends FlexoAction<A, T1, T2>, T1 extends FlexoObject, T2 extends FlexoObject> Icon getEnabledIconFor(
+			FlexoActionFactory<A, T1, T2> actionFactory);
 
 	/**
 	 * Return 'disabled' icon for supplied {@link FlexoActionFactory}
@@ -200,7 +192,8 @@ public interface FlexoEditor {
 	 * @param actionFactory
 	 * @return
 	 */
-	public <A extends FlexoAction<A, ?, ?>> Icon getDisabledIconFor(FlexoActionFactory<A, ?, ?> actionFactory);
+	public <A extends FlexoAction<A, T1, T2>, T1 extends FlexoObject, T2 extends FlexoObject> Icon getDisabledIconFor(
+			FlexoActionFactory<A, T1, T2> actionFactory);
 
 	/**
 	 * Return eventual {@link KeyStroke} for supplied {@link FlexoActionFactory}
@@ -208,6 +201,6 @@ public interface FlexoEditor {
 	 * @param actionFactory
 	 * @return
 	 */
-	public <A extends FlexoAction<A, ?, ?>> KeyStroke getKeyStrokeFor(FlexoActionFactory<A, ?, ?> actionFactory);
+	public KeyStroke getKeyStrokeFor(FlexoActionFactory<?, ?, ?> actionFactory);
 
 }

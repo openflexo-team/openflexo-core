@@ -57,6 +57,7 @@ import org.openflexo.view.controller.ParametersRetriever.ParametersRetrieverCont
  * 
  * @author sguerin
  */
+// TODO : is only used in flexo-diagram-ui, move it there ?
 public class FIBParametersRetrieverWidget extends FIBJPanel<FlexoBehaviourAction> {
 
 	static final Logger logger = Logger.getLogger(FIBParametersRetrieverWidget.class.getPackage().getName());
@@ -112,7 +113,6 @@ public class FIBParametersRetrieverWidget extends FIBJPanel<FlexoBehaviourAction
 
 	@Override
 	public void delete() {
-		// TODO Auto-generated method stub
 
 	}
 

@@ -72,12 +72,12 @@ import org.openflexo.foundation.utils.ProjectLoadingCancelledException;
 import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.localization.LocalizedDelegate;
 import org.openflexo.localization.LocalizedDelegateImpl;
-import org.openflexo.model.annotations.Getter;
-import org.openflexo.model.annotations.ImplementationClass;
-import org.openflexo.model.annotations.ModelEntity;
-import org.openflexo.model.annotations.Setter;
-import org.openflexo.model.exceptions.ModelDefinitionException;
-import org.openflexo.model.factory.ModelFactory;
+import org.openflexo.pamela.annotations.Getter;
+import org.openflexo.pamela.annotations.ImplementationClass;
+import org.openflexo.pamela.annotations.ModelEntity;
+import org.openflexo.pamela.annotations.Setter;
+import org.openflexo.pamela.exceptions.ModelDefinitionException;
+import org.openflexo.pamela.factory.ModelFactory;
 import org.openflexo.prefs.ModulePreferences;
 import org.openflexo.rm.ResourceLocator;
 import org.openflexo.view.FlexoFrame;
@@ -98,7 +98,7 @@ public abstract class FlexoModule<M extends FlexoModule<M>> implements DataFlexo
 	private FlexoController controller;
 
 	private final ApplicationContext applicationContext;
-	private final ModulePreferences<M> preferences = null;
+	// Unused private final ModulePreferences<M> preferences = null;
 
 	public FlexoModule(ApplicationContext applicationContext) {
 		super();
@@ -244,10 +244,8 @@ public abstract class FlexoModule<M extends FlexoModule<M>> implements DataFlexo
 						try {
 							getModule().getProjectLoader().newStandaloneProject(projectDirectory, projectNatureClass);
 						} catch (IOException e) {
-							// TODO Auto-generated catch block
 							e.printStackTrace();
 						} catch (ProjectInitializerException e) {
-							// TODO Auto-generated catch block
 							e.printStackTrace();
 						}
 					}
@@ -255,10 +253,8 @@ public abstract class FlexoModule<M extends FlexoModule<M>> implements DataFlexo
 						try {
 							getModule().getProjectLoader().newStandaloneProject(projectDirectory);
 						} catch (IOException e) {
-							// TODO Auto-generated catch block
 							e.printStackTrace();
 						} catch (ProjectInitializerException e) {
-							// TODO Auto-generated catch block
 							e.printStackTrace();
 						}
 					}
@@ -275,7 +271,6 @@ public abstract class FlexoModule<M extends FlexoModule<M>> implements DataFlexo
 			returned.setModule((M) this);
 			return returned;
 		} catch (ModelDefinitionException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return null;
@@ -493,7 +488,7 @@ public abstract class FlexoModule<M extends FlexoModule<M>> implements DataFlexo
 	 * @param technologyAdapter
 	 * @return
 	 */
-	public boolean activateAdvancedActions(TechnologyAdapter technologyAdapter) {
+	public boolean activateAdvancedActions(TechnologyAdapter<?> technologyAdapter) {
 		return false;
 	}
 }

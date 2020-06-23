@@ -41,18 +41,18 @@ package org.openflexo.foundation.ontology.fml.rt;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.fml.rt.ActorReference;
+import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.TypeAwareModelSlotInstance;
-import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstance;
 import org.openflexo.foundation.ontology.IFlexoOntology;
 import org.openflexo.foundation.ontology.technologyadapter.FlexoOntologyModelSlot;
 import org.openflexo.foundation.technologyadapter.FlexoMetaModel;
 import org.openflexo.foundation.technologyadapter.FlexoModel;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.technologyadapter.TypeAwareModelSlot;
-import org.openflexo.model.annotations.ImplementationClass;
-import org.openflexo.model.annotations.ModelEntity;
-import org.openflexo.model.annotations.XMLElement;
+import org.openflexo.pamela.annotations.ImplementationClass;
+import org.openflexo.pamela.annotations.ModelEntity;
+import org.openflexo.pamela.annotations.XMLElement;
 
 /**
  * Concretize the binding of a {@link FlexoOntologyModelSlot} to a concrete {@link FlexoModel} conform to a given {@link FlexoMetaModel}
@@ -66,10 +66,10 @@ import org.openflexo.model.annotations.XMLElement;
 @ModelEntity
 @ImplementationClass(FlexoOntologyModelSlotInstance.FlexoOntologyModelSlotInstanceImpl.class)
 @XMLElement
-public interface FlexoOntologyModelSlotInstance<M extends FlexoModel<M, MM> & IFlexoOntology<TA>, MM extends FlexoMetaModel<MM> & IFlexoOntology<TA>, MS extends FlexoOntologyModelSlot<M, MM, TA>, TA extends TechnologyAdapter>
+public interface FlexoOntologyModelSlotInstance<M extends FlexoModel<M, MM> & IFlexoOntology<TA>, MM extends FlexoMetaModel<MM> & IFlexoOntology<TA>, MS extends FlexoOntologyModelSlot<M, MM, TA>, TA extends TechnologyAdapter<TA>>
 		extends TypeAwareModelSlotInstance<M, MM, MS> {
 
-	public static abstract class FlexoOntologyModelSlotInstanceImpl<M extends FlexoModel<M, MM> & IFlexoOntology<TA>, MM extends FlexoMetaModel<MM> & IFlexoOntology<TA>, MS extends FlexoOntologyModelSlot<M, MM, TA>, TA extends TechnologyAdapter>
+	public static abstract class FlexoOntologyModelSlotInstanceImpl<M extends FlexoModel<M, MM> & IFlexoOntology<TA>, MM extends FlexoMetaModel<MM> & IFlexoOntology<TA>, MS extends FlexoOntologyModelSlot<M, MM, TA>, TA extends TechnologyAdapter<TA>>
 			extends TypeAwareModelSlotInstanceImpl<M, MM, MS> implements FlexoOntologyModelSlotInstance<M, MM, MS, TA> {
 
 		private static final Logger logger = Logger.getLogger(FlexoOntologyModelSlotInstance.class.getPackage().getName());

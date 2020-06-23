@@ -38,16 +38,12 @@
 
 package org.openflexo.fml.controller.action;
 
-import java.util.EventObject;
-import java.util.logging.Logger;
-
 import javax.swing.Icon;
 
 import org.openflexo.components.wizard.Wizard;
 import org.openflexo.components.wizard.WizardDialog;
 import org.openflexo.foundation.action.FlexoActionFactory;
-import org.openflexo.foundation.action.FlexoActionFinalizer;
-import org.openflexo.foundation.action.FlexoActionInitializer;
+import org.openflexo.foundation.action.FlexoActionRunnable;
 import org.openflexo.foundation.fml.FMLObject;
 import org.openflexo.foundation.fml.FlexoEnum;
 import org.openflexo.foundation.fml.action.CreateFlexoEnumValue;
@@ -59,43 +55,34 @@ import org.openflexo.view.controller.ActionInitializer;
 import org.openflexo.view.controller.ControllerActionInitializer;
 
 public class CreateFlexoEnumValueInitializer extends ActionInitializer<CreateFlexoEnumValue, FlexoEnum, FMLObject> {
-
-	private static final Logger logger = Logger.getLogger(ControllerActionInitializer.class.getPackage().getName());
-
 	public CreateFlexoEnumValueInitializer(ControllerActionInitializer actionInitializer) {
 		super(CreateFlexoEnumValue.actionType, actionInitializer);
 	}
 
 	@Override
-	protected FlexoActionInitializer<CreateFlexoEnumValue> getDefaultInitializer() {
-		return new FlexoActionInitializer<CreateFlexoEnumValue>() {
-			@Override
-			public boolean run(EventObject e, CreateFlexoEnumValue action) {
-				Wizard wizard = new CreateFlexoEnumValueWizard(action, getController());
-				WizardDialog dialog = new WizardDialog(wizard, getController());
-				dialog.showDialog();
-				if (dialog.getStatus() != Status.VALIDATED) {
-					// Operation cancelled
-					return false;
-				}
-				return true;
+	protected FlexoActionRunnable<CreateFlexoEnumValue, FlexoEnum, FMLObject> getDefaultInitializer() {
+		return (e, action) -> {
+			Wizard wizard = new CreateFlexoEnumValueWizard(action, getController());
+			WizardDialog dialog = new WizardDialog(wizard, getController());
+			dialog.showDialog();
+			if (dialog.getStatus() != Status.VALIDATED) {
+				// Operation cancelled
+				return false;
 			}
+			return true;
 		};
 	}
 
 	@Override
-	protected FlexoActionFinalizer<CreateFlexoEnumValue> getDefaultFinalizer() {
-		return new FlexoActionFinalizer<CreateFlexoEnumValue>() {
-			@Override
-			public boolean run(EventObject e, CreateFlexoEnumValue action) {
-				// getController().setCurrentEditedObjectAsModuleView(action.getNewModelSlot(), getController().VIEW_POINT_PERSPECTIVE);
-				return true;
-			}
+	protected FlexoActionRunnable<CreateFlexoEnumValue, FlexoEnum, FMLObject> getDefaultFinalizer() {
+		return (e, action) -> {
+			// getController().setCurrentEditedObjectAsModuleView(action.getNewModelSlot(), getController().VIEW_POINT_PERSPECTIVE);
+			return true;
 		};
 	}
 
 	@Override
-	protected Icon getEnabledIcon(FlexoActionFactory actionType) {
+	protected Icon getEnabledIcon(FlexoActionFactory<CreateFlexoEnumValue, FlexoEnum, FMLObject> actionType) {
 		return IconFactory.getImageIcon(FMLIconLibrary.FLEXO_ENUM_VALUE_ICON, IconLibrary.NEW_MARKER);
 	}
 

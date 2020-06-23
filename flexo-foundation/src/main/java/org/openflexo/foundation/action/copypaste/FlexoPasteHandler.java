@@ -1,14 +1,13 @@
 package org.openflexo.foundation.action.copypaste;
 
-import java.awt.Event;
 import java.util.List;
 
 import org.openflexo.foundation.FlexoObject;
-import org.openflexo.model.ModelEntity;
-import org.openflexo.model.annotations.PastingPoint;
-import org.openflexo.model.exceptions.ModelDefinitionException;
-import org.openflexo.model.exceptions.ModelExecutionException;
-import org.openflexo.model.factory.ProxyMethodHandler;
+import org.openflexo.pamela.ModelEntity;
+import org.openflexo.pamela.annotations.PastingPoint;
+import org.openflexo.pamela.exceptions.ModelDefinitionException;
+import org.openflexo.pamela.exceptions.ModelExecutionException;
+import org.openflexo.pamela.factory.ProxyMethodHandler;
 
 /**
  * This is the abstract default implementation of {@link PasteHandler} in Openflexo context<br>
@@ -23,6 +22,8 @@ import org.openflexo.model.factory.ProxyMethodHandler;
  * 
  */
 public abstract class FlexoPasteHandler<T extends FlexoObject> implements PasteHandler<T> {
+
+	public static final String COPY_SUFFIX = "-copy";
 
 	/**
 	 * Default implementation of isPastable(), using PAMELA framwork directives
@@ -52,9 +53,9 @@ public abstract class FlexoPasteHandler<T extends FlexoObject> implements PasteH
 	 * Default implementation of {@link PastingContext} retrieving
 	 */
 	@Override
-	public PastingContext<T> retrievePastingContext(FlexoObject focusedObject, List<FlexoObject> globalSelection, FlexoClipboard clipboard,
-			Event event) {
-		return new DefaultPastingContext(focusedObject, event);
+	public PastingContext<T> retrievePastingContext(FlexoObject focusedObject, List<FlexoObject> globalSelection,
+			FlexoClipboard clipboard) {
+		return new DefaultPastingContext(focusedObject);
 	}
 
 	/**
@@ -78,13 +79,10 @@ public abstract class FlexoPasteHandler<T extends FlexoObject> implements PasteH
 			return clipboard.getLeaderClipboard().getModelFactory().paste(clipboard.getLeaderClipboard(),
 					pastingContext.getPastingPointHolder());
 		} catch (ModelExecutionException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (ModelDefinitionException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (CloneNotSupportedException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return null;
@@ -96,6 +94,18 @@ public abstract class FlexoPasteHandler<T extends FlexoObject> implements PasteH
 	@Override
 	public void finalizePasting(FlexoClipboard clipboard, PastingContext<T> pastingContext) {
 		PasteAction.logger.info("finalizePasting() called in DefaultPasteHandler");
+		try {
+			clipboard.getLeaderClipboard().consume();
+		} catch (ModelExecutionException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ModelDefinitionException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (CloneNotSupportedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 }

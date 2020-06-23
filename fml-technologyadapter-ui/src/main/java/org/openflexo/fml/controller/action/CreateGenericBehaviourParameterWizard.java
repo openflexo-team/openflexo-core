@@ -88,7 +88,7 @@ public class CreateGenericBehaviourParameterWizard
 
 	@Override
 	public Image getDefaultPageImage() {
-		return IconFactory.getImageIcon(FMLIconLibrary.FLEXO_CONCEPT_PARAMETER_BIG_ICON, IconLibrary.NEW_32_32).getImage();
+		return IconFactory.getImageIcon(FMLIconLibrary.FLEXO_CONCEPT_PARAMETER_BIG_ICON, IconLibrary.BIG_NEW_MARKER).getImage();
 	}
 
 	public DescribeGenericBehaviourParameter getDescribeFlexoBehaviourParameter() {
@@ -176,7 +176,9 @@ public class CreateGenericBehaviourParameterWizard
 				getPropertyChangeSupport().firePropertyChange("parameterType", oldValue, parameterType);
 				getPropertyChangeSupport().firePropertyChange("parameterName", oldParameterName, getParameterName());
 				getPropertyChangeSupport().firePropertyChange("availableWidgetTypes", null, getAvailableWidgetTypes());
-				getPropertyChangeSupport().firePropertyChange("widgetType", oldValue, getWidgetType());
+				if (getAvailableWidgetTypes().size() > 0) {
+					setWidgetType(getAvailableWidgetTypes().get(0));
+				}
 				checkValidity();
 			}
 		}

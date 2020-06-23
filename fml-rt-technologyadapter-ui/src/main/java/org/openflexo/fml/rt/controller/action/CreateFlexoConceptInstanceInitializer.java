@@ -38,17 +38,13 @@
 
 package org.openflexo.fml.rt.controller.action;
 
-import java.util.EventObject;
-import java.util.logging.Logger;
-
 import javax.swing.Icon;
 
 import org.openflexo.components.wizard.Wizard;
 import org.openflexo.components.wizard.WizardDialog;
 import org.openflexo.foundation.FlexoObject;
-import org.openflexo.foundation.action.FlexoActionFinalizer;
-import org.openflexo.foundation.action.FlexoActionInitializer;
 import org.openflexo.foundation.action.FlexoActionFactory;
+import org.openflexo.foundation.action.FlexoActionRunnable;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.action.CreateFlexoConceptInstance;
 import org.openflexo.gina.controller.FIBController.Status;
@@ -60,42 +56,26 @@ import org.openflexo.view.controller.ControllerActionInitializer;
 
 public class CreateFlexoConceptInstanceInitializer
 		extends ActionInitializer<CreateFlexoConceptInstance, FlexoConceptInstance, FlexoObject> {
-
-	private static final Logger logger = Logger.getLogger(ControllerActionInitializer.class.getPackage().getName());
-
 	public CreateFlexoConceptInstanceInitializer(ControllerActionInitializer actionInitializer) {
 		super(CreateFlexoConceptInstance.actionType, actionInitializer);
 	}
 
 	@Override
-	protected FlexoActionInitializer<CreateFlexoConceptInstance> getDefaultInitializer() {
-		return new FlexoActionInitializer<CreateFlexoConceptInstance>() {
-			@Override
-			public boolean run(EventObject e, CreateFlexoConceptInstance action) {
-				Wizard wizard = new CreateFlexoConceptInstanceWizard(action, getController());
-				WizardDialog dialog = new WizardDialog(wizard, getController());
-				dialog.showDialog();
-				if (dialog.getStatus() != Status.VALIDATED) {
-					// Operation cancelled
-					return false;
-				}
-				return true;
+	protected FlexoActionRunnable<CreateFlexoConceptInstance, FlexoConceptInstance, FlexoObject> getDefaultInitializer() {
+		return (e, action) -> {
+			Wizard wizard = new CreateFlexoConceptInstanceWizard(action, getController());
+			WizardDialog dialog = new WizardDialog(wizard, getController());
+			dialog.showDialog();
+			if (dialog.getStatus() != Status.VALIDATED) {
+				// Operation cancelled
+				return false;
 			}
+			return true;
 		};
 	}
 
 	@Override
-	protected FlexoActionFinalizer<CreateFlexoConceptInstance> getDefaultFinalizer() {
-		return new FlexoActionFinalizer<CreateFlexoConceptInstance>() {
-			@Override
-			public boolean run(EventObject e, CreateFlexoConceptInstance action) {
-				return true;
-			}
-		};
-	}
-
-	@Override
-	protected Icon getEnabledIcon(FlexoActionFactory actionType) {
+	protected Icon getEnabledIcon(FlexoActionFactory<CreateFlexoConceptInstance, FlexoConceptInstance, FlexoObject> actionType) {
 		return IconFactory.getImageIcon(FMLRTIconLibrary.FLEXO_CONCEPT_INSTANCE_ICON, IconLibrary.NEW_MARKER);
 	}
 

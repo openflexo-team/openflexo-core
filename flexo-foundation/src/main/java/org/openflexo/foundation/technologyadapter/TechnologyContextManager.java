@@ -43,7 +43,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Logger;
 
-import org.openflexo.foundation.DefaultFlexoObject;
 import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.resource.FlexoResourceCenterService;
@@ -59,7 +58,7 @@ import org.openflexo.foundation.resource.FlexoResourceCenterService;
  * @author sylvain
  * 
  */
-public abstract class TechnologyContextManager<TA extends TechnologyAdapter> extends DefaultFlexoObject {
+public class TechnologyContextManager<TA extends TechnologyAdapter<TA>> {
 
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(TechnologyContextManager.class.getPackage().getName());
@@ -83,7 +82,7 @@ public abstract class TechnologyContextManager<TA extends TechnologyAdapter> ext
 		return adapter;
 	}
 
-	public FlexoResourceCenterService getResourceCenterService() {
+	private FlexoResourceCenterService getResourceCenterService() {
 		return resourceCenterService;
 	}
 

@@ -21,7 +21,7 @@
 package org.openflexo.foundation.doc;
 
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
-import org.openflexo.model.annotations.ModelEntity;
+import org.openflexo.pamela.annotations.ModelEntity;
 
 /**
  * Generic abstract concept representing a block-level structured document content in a text-based document (eg .docx, .odt, etc...)
@@ -34,10 +34,10 @@ import org.openflexo.model.annotations.ModelEntity;
  *            {@link TechnologyAdapter} of current implementation
  */
 @ModelEntity(isAbstract = true)
-public interface FlexoDocSdtBlock<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter> extends FlexoDocElement<D, TA> {
+public interface FlexoDocSdtBlock<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter<TA>> extends FlexoDocElement<D, TA> {
 
-	public static abstract class FlexoDocSdtBlockImpl<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter>
-			extends FlexoDocumentElementImpl<D, TA>implements FlexoDocSdtBlock<D, TA> {
+	public static abstract class FlexoDocSdtBlockImpl<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter<TA>>
+			extends FlexoDocumentElementImpl<D, TA> implements FlexoDocSdtBlock<D, TA> {
 
 		@Override
 		public String toString() {

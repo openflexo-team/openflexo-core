@@ -38,7 +38,7 @@
 
 package org.openflexo.foundation;
 
-import org.openflexo.model.exceptions.InvalidDataException;
+import org.openflexo.pamela.exceptions.InvalidDataException;
 
 /**
  * Thrown when managed data is not consistent with model definition

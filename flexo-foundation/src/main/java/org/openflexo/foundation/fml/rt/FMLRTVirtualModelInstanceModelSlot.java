@@ -48,11 +48,16 @@ import org.openflexo.foundation.fml.annotations.DeclareFlexoRoles;
 import org.openflexo.foundation.fml.annotations.FML;
 import org.openflexo.foundation.fml.rt.editionaction.AddFlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.editionaction.AddVirtualModelInstance;
+import org.openflexo.foundation.fml.rt.editionaction.CreateTopLevelVirtualModelInstance;
+import org.openflexo.foundation.fml.rt.editionaction.ExecuteFML;
+import org.openflexo.foundation.fml.rt.editionaction.ExecuteFlexoBehaviour;
 import org.openflexo.foundation.fml.rt.editionaction.SelectFlexoConceptInstance;
+import org.openflexo.foundation.fml.rt.editionaction.SelectUniqueFlexoConceptInstance;
+import org.openflexo.foundation.fml.rt.editionaction.SelectUniqueVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.editionaction.SelectVirtualModelInstance;
-import org.openflexo.model.annotations.ImplementationClass;
-import org.openflexo.model.annotations.ModelEntity;
-import org.openflexo.model.annotations.XMLElement;
+import org.openflexo.pamela.annotations.ImplementationClass;
+import org.openflexo.pamela.annotations.ModelEntity;
+import org.openflexo.pamela.annotations.XMLElement;
 
 /**
  * Model slot allowing to access a {@link FMLRTVirtualModelInstance} (native implementation of a VirtualModel instance in Openflexo
@@ -62,8 +67,10 @@ import org.openflexo.model.annotations.XMLElement;
  * 
  */
 @DeclareFlexoRoles({ FlexoConceptInstanceRole.class, PrimitiveRole.class })
-@DeclareEditionActions({ AddFlexoConceptInstance.class, AddVirtualModelInstance.class })
-@DeclareFetchRequests({ SelectFlexoConceptInstance.class, SelectVirtualModelInstance.class })
+@DeclareEditionActions({ AddFlexoConceptInstance.class, CreateTopLevelVirtualModelInstance.class, AddVirtualModelInstance.class,
+		ExecuteFlexoBehaviour.class, ExecuteFML.class })
+@DeclareFetchRequests({ SelectFlexoConceptInstance.class, SelectVirtualModelInstance.class, SelectUniqueFlexoConceptInstance.class,
+		SelectUniqueVirtualModelInstance.class })
 @ModelEntity
 @ImplementationClass(FMLRTVirtualModelInstanceModelSlot.FMLRTVirtualModelInstanceModelSlotImpl.class)
 @XMLElement(xmlTag = "FMLRTVirtualModelInstanceModelSlot", deprecatedXMLTags = "ViewModelSlot,VirtualModelInstanceModelSlot")

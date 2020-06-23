@@ -38,30 +38,18 @@
 
 package org.openflexo.foundation.ontology.fml.editionaction;
 
-import java.lang.reflect.Type;
-import java.util.logging.Logger;
+import java.util.List;
 
-import org.openflexo.foundation.fml.FMLRepresentationContext;
-import org.openflexo.foundation.fml.FMLRepresentationContext.FMLRepresentationOutput;
 import org.openflexo.foundation.fml.editionaction.FetchRequest;
-import org.openflexo.foundation.ontology.IFlexoOntology;
 import org.openflexo.foundation.ontology.IFlexoOntologyClass;
-import org.openflexo.foundation.ontology.SubClassOfClass;
-import org.openflexo.foundation.technologyadapter.FlexoMetaModel;
 import org.openflexo.foundation.technologyadapter.FlexoModel;
 import org.openflexo.foundation.technologyadapter.TechnologyObject;
 import org.openflexo.foundation.technologyadapter.TypeAwareModelSlot;
-import org.openflexo.logging.FlexoLogger;
-import org.openflexo.model.annotations.Getter;
-import org.openflexo.model.annotations.ImplementationClass;
-import org.openflexo.model.annotations.ModelEntity;
-import org.openflexo.model.annotations.PropertyIdentifier;
-import org.openflexo.model.annotations.Setter;
-import org.openflexo.model.annotations.XMLAttribute;
-import org.openflexo.toolbox.StringUtils;
+import org.openflexo.pamela.annotations.ImplementationClass;
+import org.openflexo.pamela.annotations.ModelEntity;
 
 /**
- * Generic {@link FetchRequest} allowing to retrieve a selection of some individuals matching some conditions and a given type.<br>
+ * A {@link FetchRequest} allowing to retrieve a selection of some classes matching some conditions and a given type.<br>
  * This action is technology-specific and must be redefined in a given technology
  * 
  * @author sylvain
@@ -71,115 +59,8 @@ import org.openflexo.toolbox.StringUtils;
  * @param <T>
  */
 @ModelEntity(isAbstract = true)
-@ImplementationClass(SelectClass.SelectClassImpl.class)
+@ImplementationClass(SelectClass.AbstractSelectClassImpl.class)
 public abstract interface SelectClass<MS extends TypeAwareModelSlot<M, ?>, M extends FlexoModel<M, ?> & TechnologyObject<?>, T extends IFlexoOntologyClass>
-		extends FetchRequest<MS, M, T> {
+		extends AbstractSelectClass<MS, M, T, List<T>>, FetchRequest<MS, M, T> {
 
-	@PropertyIdentifier(type = String.class)
-	public static final String PARENT_CLASS_URI_KEY = "parentClassURI";
-
-	@Getter(value = PARENT_CLASS_URI_KEY)
-	@XMLAttribute
-	public String _getParentClassURI();
-
-	@Setter(PARENT_CLASS_URI_KEY)
-	public void _setParentClassURI(String parentClassURI);
-
-	public IFlexoOntologyClass getParentClass();
-
-	public void setParentClass(IFlexoOntologyClass ontologyClass);
-
-	public FlexoMetaModel getMetaModelData();
-
-	public IFlexoOntology<?> getMetaModelAsOntology();
-
-	public static abstract class SelectClassImpl<MS extends TypeAwareModelSlot<M, ?>, M extends FlexoModel<M, ?> & TechnologyObject<?>, T extends IFlexoOntologyClass>
-			extends FetchRequestImpl<MS, M, T> implements SelectClass<MS, M, T> {
-
-		protected static final Logger logger = FlexoLogger.getLogger(SelectClass.class.getPackage().getName());
-
-		private String parentTypeURI = null;
-
-		@Override
-		public Type getFetchedType() {
-			return SubClassOfClass.getSubClassOfClass(getParentClass());
-		}
-
-		@Override
-		public IFlexoOntologyClass getParentClass() {
-
-			if (StringUtils.isNotEmpty(parentTypeURI) && getInferedModelSlot() != null
-					&& getInferedModelSlot().getMetaModelResource() != null
-					&& getInferedModelSlot().getMetaModelResource().getMetaModelData() != null) {
-				return (IFlexoOntologyClass) getInferedModelSlot().getMetaModelResource().getMetaModelData().getObject(parentTypeURI);
-			}
-			return null;
-		}
-
-		@Override
-		public void setParentClass(IFlexoOntologyClass ontologyClass) {
-			if (ontologyClass != null) {
-				parentTypeURI = ontologyClass.getURI();
-			}
-			else {
-				parentTypeURI = null;
-			}
-		}
-
-		@Override
-		public FlexoMetaModel getMetaModelData() {
-			/*if (StringUtils.isNotEmpty(parentTypeURI) && getModelSlot() != null && getModelSlot().getMetaModelResource() != null
-					&& getModelSlot().getMetaModelResource().getMetaModelData() != null) {
-				return getModelSlot().getMetaModelResource().getMetaModelData();
-			}*/
-			if (getInferedModelSlot() != null && getInferedModelSlot().getMetaModelResource() != null
-					&& getInferedModelSlot().getMetaModelResource().getMetaModelData() != null) {
-				return getInferedModelSlot().getMetaModelResource().getMetaModelData();
-			}
-			return null;
-		}
-
-		@Override
-		public IFlexoOntology<?> getMetaModelAsOntology() {
-			if (getMetaModelData() instanceof IFlexoOntology) {
-				return (IFlexoOntology<?>) getMetaModelData();
-			}
-			return null;
-		}
-
-		@Override
-		public String _getParentClassURI() {
-			if (getParentClass() != null) {
-				return getParentClass().getURI();
-			}
-			return parentTypeURI;
-		}
-
-		@Override
-		public void _setParentClassURI(String ontologyClassURI) {
-			this.parentTypeURI = ontologyClassURI;
-		}
-
-		/*@Override
-		public String getStringRepresentation() {
-			return getClass().getSimpleName() + (getType() != null ? " : " + getType().getName() : "")
-					+ (StringUtils.isNotEmpty(getAssignation().toString()) ? " (" + getAssignation().toString() + ")" : "");
-		}*/
-
-		/*@Override
-		public String getStringRepresentation() {
-			return getImplementedInterface().getSimpleName() + (getType() != null ? " : " + getType().getName() : "")
-					+ (StringUtils.isNotEmpty(getAssignation().toString()) ? " (" + getAssignation().toString() + ")" : "");
-		}*/
-
-		@Override
-		public String getFMLRepresentation(FMLRepresentationContext context) {
-			FMLRepresentationOutput out = new FMLRepresentationOutput(context);
-			out.append(getImplementedInterface().getSimpleName() + (getReceiver().isValid() ? " from " + getReceiver().toString() : " ")
-					+ " as " + (getParentClass() != null ? getParentClass().getName() : "No Type Specified")
-					+ (getConditions().size() > 0 ? " " + getWhereClausesFMLRepresentation(context) : ""), context);
-			return out.toString();
-		}
-
-	}
 }

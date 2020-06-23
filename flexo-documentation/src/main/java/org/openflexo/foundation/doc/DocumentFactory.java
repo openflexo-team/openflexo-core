@@ -59,10 +59,10 @@ import org.openflexo.foundation.doc.TextSelection.TextMarker;
 import org.openflexo.foundation.doc.rm.FlexoDocumentResource;
 import org.openflexo.foundation.resource.PamelaResourceImpl.IgnoreLoadingEdits;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
-import org.openflexo.model.ModelContext;
-import org.openflexo.model.converter.RelativePathResourceConverter;
-import org.openflexo.model.factory.EditingContext;
-import org.openflexo.model.factory.ModelFactory;
+import org.openflexo.pamela.ModelContext;
+import org.openflexo.pamela.converter.RelativePathResourceConverter;
+import org.openflexo.pamela.factory.EditingContext;
+import org.openflexo.pamela.factory.ModelFactory;
 
 /**
  * DocX factory for managing {@link DocXDocument}<br>
@@ -71,7 +71,7 @@ import org.openflexo.model.factory.ModelFactory;
  * @author sylvain
  * 
  */
-public abstract class DocumentFactory<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter> extends ModelFactory
+public abstract class DocumentFactory<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter<TA>> extends ModelFactory
 		implements PamelaResourceModelFactory<FlexoDocumentResource<D, TA, ?>> {
 
 	private static final Logger logger = Logger.getLogger(DocumentFactory.class.getPackage().getName());

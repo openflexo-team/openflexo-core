@@ -38,12 +38,10 @@
 
 package org.openflexo.fml.controller.widget;
 
-import java.util.logging.Logger;
-
 import org.openflexo.components.widget.FIBTechnologyBrowser;
 import org.openflexo.foundation.FlexoObject;
-import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.FMLTechnologyAdapter;
+import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.rm.Resource;
 import org.openflexo.rm.ResourceLocator;
 import org.openflexo.view.controller.FlexoController;
@@ -56,9 +54,7 @@ import org.openflexo.view.controller.FlexoController;
  */
 @SuppressWarnings("serial")
 public class FIBVirtualModelLibraryBrowser extends FIBTechnologyBrowser<FMLTechnologyAdapter> {
-	static final Logger logger = Logger.getLogger(FIBVirtualModelLibraryBrowser.class.getPackage().getName());
-
-	public static final Resource FIB_FILE = ResourceLocator.locateResource("Fib/Widget/FIBVirtualModelLibraryBrowser.fib");
+	private static final Resource FIB_FILE = ResourceLocator.locateResource("Fib/Widget/FIBVirtualModelLibraryBrowser.fib");
 
 	public FIBVirtualModelLibraryBrowser(FMLTechnologyAdapter technologyAdapter, FlexoController controller) {
 		super(technologyAdapter, controller, FIB_FILE, controller.getTechnologyAdapter(FMLTechnologyAdapter.class).getLocales());
@@ -66,7 +62,7 @@ public class FIBVirtualModelLibraryBrowser extends FIBTechnologyBrowser<FMLTechn
 
 	@Override
 	public void fireObjectSelected(FlexoObject object) {
-		//System.out.println("FIBVirtualModelLibraryBrowser / fireObjectSelected: " + object);
+		// System.out.println("FIBVirtualModelLibraryBrowser / fireObjectSelected: " + object);
 		if (object instanceof VirtualModel) {
 			getFIBView().getController().objectAddedToSelection(((VirtualModel) object).getResource());
 		}
@@ -83,10 +79,8 @@ public class FIBVirtualModelLibraryBrowser extends FIBTechnologyBrowser<FMLTechn
 		try {
 			FlexoLoggingManager.initialize(-1, true, null, Level.INFO, null);
 		} catch (SecurityException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	

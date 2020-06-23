@@ -2,6 +2,7 @@ dependencies {
   // openflexo dep
   compile project(':flexo-foundation')
   compile project(':flexodocresourcemanager')
+  compile project(':fml-cli')
   compile connie()
   compile dianaApi()
   compile diana()
@@ -19,11 +20,14 @@ dependencies {
 }
 
 // To be able to use private apple api
-compileJava {
-    options.compilerArgs << "-XDignore.symbol.file=true"
-    options.fork = true
-    options.forkOptions.executable = 'javac'
-}
+if (!JavaVersion.current().isJava9Compatible()) {
+	tasks.withType(JavaCompile) {
+	    options.compilerArgs << "-XDignore.symbol.file=true"
+    	options.fork = true
+	    options.forkOptions.executable = 'javac'
+    }
+}  
+
 if (JavaVersion.current().isJava9Compatible()) {
 	tasks.withType(JavaCompile) {
 		options.compilerArgs.addAll(['--add-modules', 'java.xml.ws'])

@@ -45,19 +45,18 @@ import org.openflexo.connie.BindingModel;
 import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.DataBinding.BindingDefinitionType;
 import org.openflexo.foundation.doc.FlexoDocument;
-import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoConceptObject;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.foundation.technologyadapter.ModelSlotObject;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
-import org.openflexo.model.annotations.Getter;
-import org.openflexo.model.annotations.ImplementationClass;
-import org.openflexo.model.annotations.ModelEntity;
-import org.openflexo.model.annotations.PropertyIdentifier;
-import org.openflexo.model.annotations.Setter;
-import org.openflexo.model.annotations.XMLAttribute;
-import org.openflexo.model.annotations.XMLElement;
+import org.openflexo.pamela.annotations.Getter;
+import org.openflexo.pamela.annotations.ImplementationClass;
+import org.openflexo.pamela.annotations.ModelEntity;
+import org.openflexo.pamela.annotations.PropertyIdentifier;
+import org.openflexo.pamela.annotations.Setter;
+import org.openflexo.pamela.annotations.XMLAttribute;
+import org.openflexo.pamela.annotations.XMLElement;
 
 /**
  * This class represent a column (or a row in inversed layout) in a {@link FlexoTableRole} when an iteration was set
@@ -69,7 +68,7 @@ import org.openflexo.model.annotations.XMLElement;
 @ModelEntity
 @ImplementationClass(ColumnTableBinding.ColumnTableBindingImpl.class)
 @XMLElement
-public interface ColumnTableBinding<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter>
+public interface ColumnTableBinding<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter<TA>>
 		extends ModelSlotObject<D>, FlexoConceptObject {
 
 	@PropertyIdentifier(type = String.class)
@@ -115,7 +114,7 @@ public interface ColumnTableBinding<D extends FlexoDocument<D, TA>, TA extends T
 	@Setter(TABLE_ROLE_KEY)
 	public void setTableRole(FlexoTableRole<?, D, TA> tableRole);
 
-	public static abstract class ColumnTableBindingImpl<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter>
+	public static abstract class ColumnTableBindingImpl<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter<TA>>
 			extends FlexoConceptObjectImpl implements ColumnTableBinding<D, TA> {
 
 		@SuppressWarnings("unused")
@@ -184,14 +183,5 @@ public interface ColumnTableBinding<D extends FlexoDocument<D, TA>, TA extends T
 			}
 			return null;
 		}
-
-		@Override
-		public VirtualModel getVirtualModel() {
-			if (getFlexoConcept() != null) {
-				return getFlexoConcept().getVirtualModel();
-			}
-			return null;
-		}
-
 	}
 }

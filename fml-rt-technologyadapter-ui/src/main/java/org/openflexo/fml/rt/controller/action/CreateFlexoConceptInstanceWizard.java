@@ -46,7 +46,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.openflexo.ApplicationContext;
-import org.openflexo.components.wizard.FlexoWizard;
+import org.openflexo.components.wizard.FlexoActionWizard;
 import org.openflexo.components.wizard.WizardStep;
 import org.openflexo.foundation.DataModification;
 import org.openflexo.foundation.FlexoObservable;
@@ -66,7 +66,7 @@ import org.openflexo.icon.IconFactory;
 import org.openflexo.icon.IconLibrary;
 import org.openflexo.view.controller.FlexoController;
 
-public class CreateFlexoConceptInstanceWizard extends FlexoWizard {
+public class CreateFlexoConceptInstanceWizard extends FlexoActionWizard<CreateFlexoConceptInstance> {
 
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(CreateFlexoConceptInstanceWizard.class.getPackage().getName());
@@ -78,13 +78,7 @@ public class CreateFlexoConceptInstanceWizard extends FlexoWizard {
 
 	private DescribeFlexoConceptInstance describeFlexoConceptInstance;
 
-	private final CreateFlexoConceptInstance action;
-
 	private static final Dimension DIMENSIONS = new Dimension(600, 400);
-
-	public CreateFlexoConceptInstance getAction() {
-		return action;
-	}
 
 	@Override
 	public Dimension getPreferredSize() {
@@ -92,8 +86,7 @@ public class CreateFlexoConceptInstanceWizard extends FlexoWizard {
 	}
 
 	public CreateFlexoConceptInstanceWizard(CreateFlexoConceptInstance action, FlexoController controller) {
-		super(controller);
-		this.action = action;
+		super(action, controller);
 		addStep(describeFlexoConceptInstance = new DescribeFlexoConceptInstance());
 	}
 
@@ -104,7 +97,7 @@ public class CreateFlexoConceptInstanceWizard extends FlexoWizard {
 
 	@Override
 	public Image getDefaultPageImage() {
-		return IconFactory.getImageIcon(FMLRTIconLibrary.FLEXO_CONCEPT_INSTANCE_BIG_ICON, IconLibrary.NEW_32_32).getImage();
+		return IconFactory.getImageIcon(FMLRTIconLibrary.FLEXO_CONCEPT_INSTANCE_BIG_ICON, IconLibrary.BIG_NEW_MARKER).getImage();
 	}
 
 	public DescribeFlexoConceptInstance getDescribeNewParentConcepts() {
@@ -171,7 +164,7 @@ public class CreateFlexoConceptInstanceWizard extends FlexoWizard {
 				concepts = ((FMLRTVirtualModelInstance) getContainer()).getVirtualModel().getAllRootFlexoConcepts().stream();
 			}
 			else {
-				concepts = getContainer().getFlexoConcept().getEmbeddedFlexoConcepts().stream();
+				concepts = getContainer().getFlexoConcept().getAccessibleEmbeddedFlexoConcepts().stream();
 			}
 			return concepts.filter((flexoConcept) -> !flexoConcept.isAbstract()).collect(Collectors.toList());
 		}
@@ -290,7 +283,7 @@ public class CreateFlexoConceptInstanceWizard extends FlexoWizard {
 		}
 
 		public CreateFlexoConceptInstance getAction() {
-			return action;
+			return CreateFlexoConceptInstanceWizard.this.getAction();
 		}
 
 		@Override
@@ -305,11 +298,12 @@ public class CreateFlexoConceptInstanceWizard extends FlexoWizard {
 				return false;
 			}
 
-			for (FlexoBehaviourParameter parameter : action.getCreationScheme().getParameters()) {
+			for (FlexoBehaviourParameter parameter : getAction().getCreationScheme().getParameters()) {
 
-				if (!parameter.isValid(action.getCreationSchemeAction(), action.getCreationSchemeAction().getParameterValue(parameter))) {
+				if (!parameter.isValid(getAction().getCreationSchemeAction(),
+						getAction().getCreationSchemeAction().getParameterValue(parameter))) {
 					// System.out.println(
-					// "Invalid parameter: " + parameter + " value=" + action.getCreationSchemeAction().getParameterValue(parameter));
+					// "Invalid parameter: " + parameter + " value=" + getAction().getCreationSchemeAction().getParameterValue(parameter));
 					setIssueMessage(getAction().getLocales().localizedForKey("invalid_parameter") + " : " + parameter.getName(),
 							IssueMessageType.ERROR);
 					return false;
@@ -320,14 +314,14 @@ public class CreateFlexoConceptInstanceWizard extends FlexoWizard {
 		}
 
 		public CreationScheme getCreationScheme() {
-			return action.getCreationScheme();
+			return getAction().getCreationScheme();
 		}
 
 		public void setCreationScheme(CreationScheme creationScheme) {
 
 			if (creationScheme != getCreationScheme()) {
 				CreationScheme oldValue = getCreationScheme();
-				action.setCreationScheme(creationScheme);
+				getAction().setCreationScheme(creationScheme);
 				getPropertyChangeSupport().firePropertyChange("creationScheme", oldValue, creationScheme);
 				checkValidity();
 			}

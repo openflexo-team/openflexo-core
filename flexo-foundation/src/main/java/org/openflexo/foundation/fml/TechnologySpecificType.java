@@ -47,7 +47,7 @@ import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
  * @author sylvain
  * 
  */
-public interface TechnologySpecificType<TA extends TechnologyAdapter> extends CustomType {
+public interface TechnologySpecificType<TA extends TechnologyAdapter<TA>> extends CustomType {
 
 	public TA getSpecificTechnologyAdapter();
 

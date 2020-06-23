@@ -38,6 +38,7 @@
 
 package org.openflexo.foundation.fml;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -47,7 +48,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.Vector;
+import java.util.function.Consumer;
 import java.util.logging.Logger;
+import java.util.regex.Pattern;
 
 import org.openflexo.connie.Bindable;
 import org.openflexo.connie.BindingFactory;
@@ -55,6 +58,7 @@ import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.fml.FMLRepresentationContext.FMLRepresentationOutput;
 import org.openflexo.foundation.fml.binding.FMLBindingFactory;
 import org.openflexo.foundation.fml.binding.VirtualModelBindingModel;
+import org.openflexo.foundation.fml.inspector.InspectorEntry;
 import org.openflexo.foundation.fml.rm.VirtualModelResource;
 import org.openflexo.foundation.fml.rm.VirtualModelResourceFactory;
 import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstance;
@@ -70,37 +74,42 @@ import org.openflexo.foundation.technologyadapter.FlexoMetaModel;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterService;
-import org.openflexo.foundation.technologyadapter.TechnologyObject;
 import org.openflexo.foundation.technologyadapter.TypeAwareModelSlot;
 import org.openflexo.foundation.technologyadapter.UseModelSlotDeclaration;
-import org.openflexo.model.annotations.Adder;
-import org.openflexo.model.annotations.CloningStrategy;
-import org.openflexo.model.annotations.CloningStrategy.StrategyType;
-import org.openflexo.model.annotations.DefineValidationRule;
-import org.openflexo.model.annotations.Embedded;
-import org.openflexo.model.annotations.Getter;
-import org.openflexo.model.annotations.Getter.Cardinality;
-import org.openflexo.model.annotations.ImplementationClass;
-import org.openflexo.model.annotations.Import;
-import org.openflexo.model.annotations.Imports;
-import org.openflexo.model.annotations.ModelEntity;
-import org.openflexo.model.annotations.PastingPoint;
-import org.openflexo.model.annotations.PropertyIdentifier;
-import org.openflexo.model.annotations.Remover;
-import org.openflexo.model.annotations.Setter;
-import org.openflexo.model.annotations.XMLAttribute;
-import org.openflexo.model.annotations.XMLElement;
-import org.openflexo.model.validation.Validable;
-import org.openflexo.model.validation.ValidationError;
-import org.openflexo.model.validation.ValidationIssue;
-import org.openflexo.model.validation.ValidationRule;
+import org.openflexo.localization.Language;
+import org.openflexo.localization.LocalizedDelegate;
+import org.openflexo.localization.LocalizedDelegateImpl;
+import org.openflexo.pamela.annotations.Adder;
+import org.openflexo.pamela.annotations.CloningStrategy;
+import org.openflexo.pamela.annotations.CloningStrategy.StrategyType;
+import org.openflexo.pamela.annotations.DefineValidationRule;
+import org.openflexo.pamela.annotations.Embedded;
+import org.openflexo.pamela.annotations.Getter;
+import org.openflexo.pamela.annotations.Getter.Cardinality;
+import org.openflexo.pamela.annotations.ImplementationClass;
+import org.openflexo.pamela.annotations.Import;
+import org.openflexo.pamela.annotations.Imports;
+import org.openflexo.pamela.annotations.ModelEntity;
+import org.openflexo.pamela.annotations.PastingPoint;
+import org.openflexo.pamela.annotations.PropertyIdentifier;
+import org.openflexo.pamela.annotations.Remover;
+import org.openflexo.pamela.annotations.Setter;
+import org.openflexo.pamela.annotations.XMLAttribute;
+import org.openflexo.pamela.annotations.XMLElement;
+import org.openflexo.pamela.undo.CompoundEdit;
+import org.openflexo.pamela.validation.Validable;
+import org.openflexo.pamela.validation.ValidationError;
+import org.openflexo.pamela.validation.ValidationIssue;
+import org.openflexo.pamela.validation.ValidationRule;
+import org.openflexo.rm.BasicResourceImpl.LocatorNotFoundException;
+import org.openflexo.rm.FileResourceImpl;
+import org.openflexo.rm.Resource;
 import org.openflexo.toolbox.FlexoVersion;
 import org.openflexo.toolbox.JavaUtils;
 import org.openflexo.toolbox.StringUtils;
 
 /**
- * An {@link VirtualModel} is the specification of a model which will be instantied in a {@link View} as a set of federated models. An
- * {@link VirtualModel} is either a {@link VirtualModel} of a {@link ViewPoint}
+ * An {@link VirtualModel} is the specification of a model which will be instantied as a set of federated models.
  * 
  * The base modelling element of a {@link VirtualModel} is provided by {@link FlexoConcept} concept.
  * 
@@ -116,8 +125,7 @@ import org.openflexo.toolbox.StringUtils;
 @Imports({ @Import(FlexoConceptStructuralFacet.class), @Import(FlexoConceptBehaviouralFacet.class), @Import(InnerConceptsFacet.class),
 		@Import(DeleteFlexoConceptInstanceParameter.class) })
 @XMLElement
-public interface VirtualModel extends FlexoConcept, VirtualModelObject, FlexoMetaModel<VirtualModel>, ResourceData<VirtualModel>,
-		TechnologyObject<FMLTechnologyAdapter>, Validable {
+public interface VirtualModel extends FlexoConcept, FlexoMetaModel<VirtualModel>, ResourceData<VirtualModel> {
 
 	public static final String RESOURCE = "resource";
 
@@ -139,6 +147,20 @@ public interface VirtualModel extends FlexoConcept, VirtualModelObject, FlexoMet
 
 	@PropertyIdentifier(type = Class.class)
 	public static final String MODEL_SLOT_NATURE_CLASS_KEY = "modelSlotNatureClass";
+
+	@PropertyIdentifier(type = FMLCompilationUnit.class)
+	public static final String COMPILATION_UNIT_KEY = "compilationUnit";
+
+	/**
+	 * Return the {@link FMLCompilationUnit} where this {@link VirtualModel} is defined
+	 * 
+	 * @return
+	 */
+	@Getter(value = COMPILATION_UNIT_KEY, ignoreType = true)
+	public FMLCompilationUnit getCompilationUnit();
+
+	@Setter(COMPILATION_UNIT_KEY)
+	public void setCompilationUnit(FMLCompilationUnit virtualModel);
 
 	@Getter(value = MODEL_SLOT_NATURE_CLASS_KEY)
 	@XMLAttribute
@@ -207,13 +229,14 @@ public interface VirtualModel extends FlexoConcept, VirtualModelObject, FlexoMet
 	@Setter(MODEL_VERSION_KEY)
 	public void setModelVersion(FlexoVersion modelVersion);
 
-	@Override
 	@Getter(value = LOCALIZED_DICTIONARY_KEY, inverse = FMLLocalizedDictionary.OWNER_KEY)
 	@XMLElement
-	FMLLocalizedDictionary getLocalizedDictionary();
+	FMLLocalizedDictionary getDeprecatedLocalizedDictionary();
 
 	@Setter(LOCALIZED_DICTIONARY_KEY)
-	void setLocalizedDictionary(FMLLocalizedDictionary localizedDictionary);
+	void setDeprecatedLocalizedDictionary(FMLLocalizedDictionary localizedDictionary);
+
+	public LocalizedDelegate getLocalizedDictionary();
 
 	/**
 	 * Return list of {@link UseModelSlotDeclaration} accessible from this {@link VirtualModel}<br>
@@ -373,6 +396,7 @@ public interface VirtualModel extends FlexoConcept, VirtualModelObject, FlexoMet
 	 */
 	@Override
 	@Getter(value = URI_KEY)
+	@CloningStrategy(value = StrategyType.IGNORE)
 	@XMLAttribute
 	public abstract String getURI();
 
@@ -391,7 +415,7 @@ public interface VirtualModel extends FlexoConcept, VirtualModelObject, FlexoMet
 	VirtualModelInstanceType getVirtualModelInstanceType();
 
 	/**
-	 * Return all loaded {@link VirtualModel} defined in this {@link ViewPoint}<br>
+	 * Return all loaded {@link VirtualModel} defined in this {@link VirtualModel}<br>
 	 * Warning: if a VirtualModel was not loaded, it wont be added to the returned list<br>
 	 * See {@link #getVirtualModels(boolean)} to force the loading of unloaded virtual models
 	 * 
@@ -529,9 +553,7 @@ public interface VirtualModel extends FlexoConcept, VirtualModelObject, FlexoMet
 			if (getResource() != null) {
 				return getResource().getFactory();
 			}
-			else {
-				return getDeserializationFactory();
-			}
+			return getDeserializationFactory();
 		}
 
 		@Override
@@ -547,10 +569,10 @@ public interface VirtualModel extends FlexoConcept, VirtualModelObject, FlexoMet
 			return nature.hasNature(this);
 		}
 
-		@Override
+		/*@Override
 		public FMLLocalizedDictionary getLocalizedDictionary() {
 			return (FMLLocalizedDictionary) performSuperGetter(LOCALIZED_DICTIONARY_KEY);
-		}
+		}*/
 
 		/**
 		 * Returns URI for this {@link VirtualModel}.<br>
@@ -663,7 +685,8 @@ public interface VirtualModel extends FlexoConcept, VirtualModelObject, FlexoMet
 		}
 
 		/**
-		 * Return all {@link FlexoConcept} defined in this {@link VirtualModel} which have no parent (inheritance semantics)
+		 * Return all {@link FlexoConcept} defined in this {@link VirtualModel} which have no parent (inheritance semantics), or have
+		 * parents exclusively outside this {@link VirtualModel}
 		 * 
 		 * @return
 		 */
@@ -671,7 +694,7 @@ public interface VirtualModel extends FlexoConcept, VirtualModelObject, FlexoMet
 		public List<FlexoConcept> getAllSuperFlexoConcepts() {
 			ArrayList<FlexoConcept> returned = new ArrayList<>();
 			for (FlexoConcept fc : getFlexoConcepts()) {
-				if (fc.isSuperConcept()) {
+				if (fc.isSuperConceptOfContainerVirtualModel()) {
 					returned.add(fc);
 				}
 			}
@@ -749,10 +772,8 @@ public interface VirtualModel extends FlexoConcept, VirtualModelObject, FlexoMet
 			if (getVirtualModelLibrary() == null) {
 				return null;
 			}
-			else {
-				// Delegate this to the VirtualModelLibrary
-				return getVirtualModelLibrary().getFlexoConcept(flexoConceptNameOrURI);
-			}
+			// Delegate this to the VirtualModelLibrary
+			return getVirtualModelLibrary().getFlexoConcept(flexoConceptNameOrURI);
 
 			// logger.warning("Not found FlexoConcept:" + flexoConceptId);
 			// return null;
@@ -886,7 +907,7 @@ public interface VirtualModel extends FlexoConcept, VirtualModelObject, FlexoMet
 			logger.info("Saving ViewPoint to " + getResource().getIODelegate().toString() + "...");
 
 			try {
-				getResource().save(null);
+				getResource().save();
 			} catch (SaveResourceException e) {
 				e.printStackTrace();
 			}
@@ -952,15 +973,16 @@ public interface VirtualModel extends FlexoConcept, VirtualModelObject, FlexoMet
 
 		// Developper's note: we implement here VirtualModelObject API
 		// Do not consider getOwningVirtualModel()
+		/*
 		@Override
 		public VirtualModel getVirtualModel() {
 			return this;
 		}
+		 */
 
 		@Override
 		public Object getObject(String objectURI) {
-			// TODO Auto-generated method stub
-			return null;
+			return getVirtualModelLibrary().getFMLObject(objectURI, true);
 		}
 
 		/**
@@ -979,7 +1001,7 @@ public interface VirtualModel extends FlexoConcept, VirtualModelObject, FlexoMet
 			}
 			loadContainedVirtualModelsWhenUnloaded();
 			for (VirtualModel vm : getVirtualModels()) {
-				for (TechnologyAdapter ta : vm.getRequiredTechnologyAdapters()) {
+				for (TechnologyAdapter<?> ta : vm.getRequiredTechnologyAdapters()) {
 					if (!returned.contains(ta)) {
 						returned.add(ta);
 					}
@@ -1104,15 +1126,17 @@ public interface VirtualModel extends FlexoConcept, VirtualModelObject, FlexoMet
 
 		@Override
 		public VirtualModel getOwner() {
-			return getDeclaringVirtualModel();
+			// Fixed CORE-293
+			// return getDeclaringVirtualModel();
+			return getContainerVirtualModel();
 		}
 
 		/**
 		 * Hook called when scope of a FMLObject changed.<br>
 		 * 
-		 * It happens for example when a {@link VirtualModel} is declared to be contained in a {@link ViewPoint}<br>
-		 * On that example {@link #getBindingFactory()} rely on {@link ViewPoint} enclosing, we must provide this hook to give a chance to
-		 * objects that rely on ViewPoint instanciation context to update their bindings (some bindings might becomes valid)<br>
+		 * It happens for example when a {@link VirtualModel} is declared to be contained in a {@link VirtualModel}<br>
+		 * On that example {@link #getBindingFactory()} rely on {@link VirtualModel} enclosing, we must provide this hook to give a chance
+		 * to objects that rely on ViewPoint instanciation context to update their bindings (some bindings might becomes valid)<br>
 		 * 
 		 * It may also happen if an EditionAction is moved from a control graph to another control graph, etc...<br>
 		 * 
@@ -1233,7 +1257,7 @@ public interface VirtualModel extends FlexoConcept, VirtualModelObject, FlexoMet
 		}
 
 		/**
-		 * Return all loaded {@link VirtualModel} defined in this {@link ViewPoint}<br>
+		 * Return all loaded {@link VirtualModel} defined in this {@link VirtualModel}<br>
 		 * Warning: if a VirtualModel was not loaded, it wont be added to the returned list<br>
 		 * See {@link #getVirtualModels(boolean)} to force the loading of unloaded virtual models
 		 * 
@@ -1245,7 +1269,7 @@ public interface VirtualModel extends FlexoConcept, VirtualModelObject, FlexoMet
 		}
 
 		/**
-		 * Return all {@link VirtualModel} defined in this {@link ViewPoint}<br>
+		 * Return all {@link VirtualModel} defined in this {@link VirtualModel}<br>
 		 * When forceLoad set to true, force the loading of all virtual models
 		 * 
 		 * @return
@@ -1301,13 +1325,10 @@ public interface VirtualModel extends FlexoConcept, VirtualModelObject, FlexoMet
 				try {
 					return getVirtualModelLibrary().getVirtualModel(virtualModelNameOrURI);
 				} catch (FileNotFoundException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				} catch (ResourceLoadingCancelledException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				} catch (FlexoException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			}
@@ -1335,14 +1356,6 @@ public interface VirtualModel extends FlexoConcept, VirtualModelObject, FlexoMet
 
 			// Not found
 			return null;
-		}
-
-		@Deprecated
-		// TODO: is this still used ?
-		public void init(String baseName, VirtualModelLibrary library) {
-			logger.info("Registering virtual model " + baseName + " URI=" + getURI());
-
-			setName(baseName);
 		}
 
 		@Override
@@ -1381,6 +1394,169 @@ public interface VirtualModel extends FlexoConcept, VirtualModelObject, FlexoMet
 		public Class<? extends VirtualModel> getVirtualModelClass() {
 			return (Class<? extends VirtualModel>) getImplementedInterface();
 		}
+
+		private LocalizedDelegateImpl localized;
+
+		private Resource getLocalizedDirectoryResource() {
+			Resource virtualModelDirectory = getResource().getIODelegate().getSerializationArtefactAsResource().getContainer();
+			List<? extends Resource> localizedDirs = virtualModelDirectory.getContents(Pattern.compile(".*/Localized"), false);
+			if (localizedDirs.size() > 0) {
+				return localizedDirs.get(0);
+			}
+			if (virtualModelDirectory instanceof FileResourceImpl) {
+				try {
+					return new FileResourceImpl(virtualModelDirectory.getLocator(),
+							new File(((FileResourceImpl) virtualModelDirectory).getFile(), "Localized"));
+				} catch (MalformedURLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (LocatorNotFoundException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+			logger.warning("Cannot find localized directory for " + this);
+			return null;
+		}
+
+		private LocalizedDelegateImpl instantiateOrLoadLocales() {
+			if (getResource() != null) {
+				Resource localizedDirectoryResource = getLocalizedDirectoryResource();
+				if (localizedDirectoryResource == null) {
+					return null;
+				}
+				boolean editSupport = getResource().getIODelegate().getSerializationArtefactAsResource() instanceof FileResourceImpl;
+				logger.info("Reading locales from " + localizedDirectoryResource);
+				LocalizedDelegateImpl returned = new LocalizedDelegateImpl(localizedDirectoryResource,
+						getContainerVirtualModel() != null ? getContainerVirtualModel().getLocales()
+								: getServiceManager().getLocalizationService().getFlexoLocalizer(),
+						editSupport, editSupport);
+				returned.setLocalizationRetriever(new Runnable() {
+					@Override
+					public void run() {
+						searchNewLocalizedEntries();
+					}
+				});
+				return returned;
+
+			}
+			return null;
+		}
+
+		@Override
+		public LocalizedDelegate getLocalizedDictionary() {
+			if (localized == null) {
+				localized = instantiateOrLoadLocales();
+				if (localized == null) {
+					// Cannot load locales
+					if (getServiceManager() != null) {
+						return getServiceManager().getLocalizationService().getFlexoLocalizer();
+					}
+					return null;
+				}
+				// Converting old dictionaries
+				if (getDeprecatedLocalizedDictionary() != null) {
+					for (FMLLocalizedEntry fmlLocalizedEntry : getDeprecatedLocalizedDictionary().getLocalizedEntries()) {
+						localized.registerNewEntry(fmlLocalizedEntry.getKey(), Language.get(fmlLocalizedEntry.getLanguage()),
+								fmlLocalizedEntry.getValue());
+					}
+				}
+			}
+			return localized;
+		}
+
+		public void createLocalizedDictionaryWhenNonExistant() {
+			if (localized == null) {
+				logger.info("createLocalizedDictionary");
+				localized = instantiateOrLoadLocales();
+			}
+		}
+
+		@Override
+		public FMLLocalizedDictionary getDeprecatedLocalizedDictionary() {
+			if (isSerializing()) {
+				return null;
+			}
+			return (FMLLocalizedDictionary) performSuperGetter(LOCALIZED_DICTIONARY_KEY);
+		}
+
+		private void searchNewEntriesForConcept(FlexoConcept concept) {
+			// checkAndRegisterLocalized(concept.getName());
+			for (FlexoBehaviour es : concept.getFlexoBehaviours()) {
+				checkAndRegisterLocalized(es.getLabel(), normalizedKey -> es.setLabel(normalizedKey));
+				// checkAndRegisterLocalized(es.getDescription());
+				for (FlexoBehaviourParameter p : es.getParameters()) {
+					checkAndRegisterLocalized(p.getName());
+				}
+				for (InspectorEntry entry : concept.getInspector().getEntries()) {
+					checkAndRegisterLocalized(entry.getLabel(), normalizedKey -> entry.setLabel(normalizedKey));
+				}
+			}
+		}
+
+		private void searchNewLocalizedEntries() {
+			logger.info("Search new entries for " + this);
+
+			CompoundEdit ce = null;
+			FMLModelFactory factory = null;
+
+			if (getOwner() != null) {
+				factory = getFMLModelFactory();
+				if (factory != null) {
+					if (!factory.getEditingContext().getUndoManager().isBeeingRecording()) {
+						ce = factory.getEditingContext().getUndoManager().startRecording("localize_virtual_model");
+					}
+				}
+			}
+
+			searchNewEntriesForConcept(this);
+
+			for (FlexoConcept concept : getFlexoConcepts()) {
+				searchNewEntriesForConcept(concept);
+			}
+
+			if (factory != null) {
+				if (ce != null) {
+					factory.getEditingContext().getUndoManager().stopRecording(ce);
+				}
+				else if (factory.getEditingContext().getUndoManager().isBeeingRecording()) {
+					factory.getEditingContext().getUndoManager()
+							.stopRecording(factory.getEditingContext().getUndoManager().getCurrentEdition());
+				}
+			}
+
+			// getViewPoint().setChanged();
+			// getViewPoint().notifyObservers();
+		}
+
+		private String checkAndRegisterLocalized(String key, Consumer<String> updateKey) {
+
+			// System.out.println("checkAndRegisterLocalized for " + key);
+			if (StringUtils.isEmpty(key)) {
+				return null;
+			}
+
+			String normalizedKey = StringUtils.toLocalizedKey(key.trim());
+
+			if (!key.equals(normalizedKey)) {
+				updateKey.accept(normalizedKey);
+			}
+
+			getLocalizedDictionary().addEntry(normalizedKey);
+			return normalizedKey;
+		}
+
+		private String checkAndRegisterLocalized(String key) {
+
+			// System.out.println("checkAndRegisterLocalized for " + key);
+			if (StringUtils.isEmpty(key)) {
+				return null;
+			}
+
+			getLocalizedDictionary().addEntry(key);
+			return key;
+		}
+
 	}
 
 	// FIN: provient de VirtualModel
@@ -1411,12 +1587,10 @@ public interface VirtualModel extends FlexoConcept, VirtualModelObject, FlexoMet
 			if (StringUtils.isEmpty(vm.getURI())) {
 				return new ValidationError<>(this, vm, "virtual_model_has_no_uri");
 			}
-			else {
-				try {
-					new URL(vm.getURI());
-				} catch (MalformedURLException e) {
-					return new ValidationError<>(this, vm, "virtual_model_uri_is_not_valid");
-				}
+			try {
+				new URL(vm.getURI());
+			} catch (MalformedURLException e) {
+				return new ValidationError<>(this, vm, "virtual_model_uri_is_not_valid");
 			}
 			return null;
 		}

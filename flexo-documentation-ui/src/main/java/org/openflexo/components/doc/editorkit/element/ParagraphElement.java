@@ -66,7 +66,7 @@ import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
  *            {@link TechnologyAdapter} of current implementation
  */
 @SuppressWarnings("serial")
-public class ParagraphElement<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter> extends BranchElement
+public class ParagraphElement<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter<TA>> extends BranchElement
 		implements AbstractDocumentElement<FlexoDocParagraph<D, TA>, D, TA> {
 
 	static final Logger logger = Logger.getLogger(ParagraphElement.class.getPackage().getName());

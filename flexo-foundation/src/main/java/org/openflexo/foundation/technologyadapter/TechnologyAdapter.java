@@ -52,7 +52,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Enumeration;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
@@ -63,6 +62,7 @@ import java.util.logging.Logger;
 import javax.swing.SwingUtilities;
 
 import org.apache.commons.io.IOUtils;
+import org.openflexo.connie.annotations.NotificationUnsafe;
 import org.openflexo.foundation.DataModification;
 import org.openflexo.foundation.FlexoObservable;
 import org.openflexo.foundation.FlexoServiceManager;
@@ -71,7 +71,7 @@ import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.VirtualModelInstanceType;
 import org.openflexo.foundation.fml.annotations.DeclareModelSlots;
-import org.openflexo.foundation.fml.annotations.DeclareResourceTypes;
+import org.openflexo.foundation.fml.annotations.DeclareResourceFactories;
 import org.openflexo.foundation.fml.annotations.DeclareVirtualModelInstanceNatures;
 import org.openflexo.foundation.fml.rt.InferedFMLRTModelSlot;
 import org.openflexo.foundation.fml.rt.VirtualModelInstanceNature;
@@ -83,7 +83,6 @@ import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.resource.FlexoResourceCenterService;
 import org.openflexo.foundation.resource.ITechnologySpecificFlexoResourceFactory;
 import org.openflexo.foundation.resource.JarResourceCenter;
-import org.openflexo.foundation.resource.RepositoryFolder;
 import org.openflexo.foundation.resource.ResourceData;
 import org.openflexo.foundation.resource.ResourceRepository;
 import org.openflexo.foundation.resource.ResourceRepositoryImpl;
@@ -92,7 +91,7 @@ import org.openflexo.foundation.resource.TechnologySpecificFlexoResourceFactory;
 import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.localization.LocalizedDelegate;
 import org.openflexo.localization.LocalizedDelegateImpl;
-import org.openflexo.model.exceptions.ModelDefinitionException;
+import org.openflexo.pamela.exceptions.ModelDefinitionException;
 import org.openflexo.rm.ResourceLocator;
 import org.openflexo.toolbox.StringUtils;
 
@@ -106,12 +105,12 @@ import org.openflexo.toolbox.StringUtils;
  * @author sylvain
  * 
  */
-public abstract class TechnologyAdapter extends FlexoObservable {
+public abstract class TechnologyAdapter<TA extends TechnologyAdapter<TA>> extends FlexoObservable {
 
 	private static final Logger logger = Logger.getLogger(TechnologyAdapter.class.getPackage().getName());
 
 	private TechnologyAdapterService technologyAdapterService;
-	private TechnologyContextManager<?> technologyContextManager;
+	private TechnologyContextManager<TA> technologyContextManager;
 
 	private final List<ITechnologySpecificFlexoResourceFactory<?, ?, ?>> resourceFactories;
 
@@ -162,7 +161,9 @@ public abstract class TechnologyAdapter extends FlexoObservable {
 	 * 
 	 * @return
 	 */
-	public abstract TechnologyContextManager<?> createTechnologyContextManager(FlexoResourceCenterService service);
+	protected TechnologyContextManager<TA> createTechnologyContextManager(FlexoResourceCenterService service) {
+		return new TechnologyContextManager<>((TA) this, service);
+	}
 
 	/**
 	 * Return the {@link TechnologyContextManager} for this technology shared by all {@link FlexoResourceCenter} declared in the scope of
@@ -170,7 +171,7 @@ public abstract class TechnologyAdapter extends FlexoObservable {
 	 * 
 	 * @return
 	 */
-	public TechnologyContextManager<?> getTechnologyContextManager() {
+	public TechnologyContextManager<TA> getTechnologyContextManager() {
 		return technologyContextManager;
 	}
 
@@ -186,15 +187,20 @@ public abstract class TechnologyAdapter extends FlexoObservable {
 	 */
 	public void activate() {
 		if (!isActivated()) {
-			technologyContextManager = createTechnologyContextManager(getTechnologyAdapterService().getFlexoResourceCenterService());
-			initResourceFactories();
-			initTechnologySpecificTypes(getTechnologyAdapterService());
-			locales = new LocalizedDelegateImpl(ResourceLocator.locateResource(getLocalizationDirectory()),
-					getTechnologyAdapterService().getServiceManager().getLocalizationService().getFlexoLocalizer(),
-					getTechnologyAdapterService().getServiceManager().getLocalizationService().getAutomaticSaving(), true);
-			loadPrivateResourceCenters();
-			isActivated = true;
-			getPropertyChangeSupport().firePropertyChange("activated", false, true);
+			try {
+				isActivating = true;
+				technologyContextManager = createTechnologyContextManager(getTechnologyAdapterService().getFlexoResourceCenterService());
+				initResourceFactories();
+				initTechnologySpecificTypes(getTechnologyAdapterService());
+				locales = new LocalizedDelegateImpl(ResourceLocator.locateResource(getLocalizationDirectory()),
+						getTechnologyAdapterService().getServiceManager().getLocalizationService().getFlexoLocalizer(),
+						getTechnologyAdapterService().getServiceManager().getLocalizationService().getAutomaticSaving(), true);
+				loadPrivateResourceCenters();
+				isActivated = true;
+				getPropertyChangeSupport().firePropertyChange("activated", false, true);
+			} finally {
+				isActivating = false;
+			}
 		}
 	}
 
@@ -206,9 +212,15 @@ public abstract class TechnologyAdapter extends FlexoObservable {
 	}
 
 	private boolean isActivated = false;
+	private boolean isActivating = false;
 
+	@NotificationUnsafe
 	public boolean isActivated() {
 		return isActivated;
+	}
+
+	public boolean isActivating() {
+		return isActivating;
 	}
 
 	public List<ITechnologySpecificFlexoResourceFactory<?, ?, ?>> getResourceFactories() {
@@ -257,17 +269,12 @@ public abstract class TechnologyAdapter extends FlexoObservable {
 			logger.fine("--------> performInitializeResourceCenter " + getName() + " for " + resourceCenter);
 		}
 
-		Iterator<I> it;
-
 		// We iterate on FlexoResourceFactory in the same order as they are declared in TechnologyAdapter
 		// (metamodels BEFORE models), so that retrieving of models might find their respective metamodels
 		for (ITechnologySpecificFlexoResourceFactory<?, ?, ?> resourceFactory : getResourceFactories()) {
 
 			// Then we iterate on all resources found in the resource factory
-			it = resourceCenter.iterator();
-
-			while (it.hasNext()) {
-				I serializationArtefact = it.next();
+			for (I serializationArtefact : resourceCenter) {
 				if (!isSerializationArtefactIgnorable(resourceCenter, serializationArtefact)) {
 					FlexoResource<?> r = tryToLookupResource(resourceFactory, resourceCenter, serializationArtefact);
 					if (r != null) {
@@ -287,12 +294,11 @@ public abstract class TechnologyAdapter extends FlexoObservable {
 		}
 
 		resourceCenterHasBeenInitialized(resourceCenter);
-
 	}
 
 	protected final <I> void foundFolder(FlexoResourceCenter<I> resourceCenter, I folder) throws IOException {
 		if (resourceCenter.isDirectory(folder) && !isFolderIgnorable(resourceCenter, folder)) {
-			TechnologyAdapterGlobalRepository<?, ?> globalRepository = getGlobalRepository(resourceCenter);
+			ResourceRepository<?, I> globalRepository = getGlobalRepository(resourceCenter);
 			// Unused RepositoryFolder newRepositoryFolder =
 			globalRepository.getRepositoryFolder(folder, true);
 			for (ResourceRepository<?, ?> repository : getAllRepositories()) {
@@ -302,16 +308,11 @@ public abstract class TechnologyAdapter extends FlexoObservable {
 		}
 	}
 
-	protected void resourceCenterHasBeenInitialized(FlexoResourceCenter<?> rc) {
+	private void updateRepository(FlexoResourceCenter<?> rc) {
 		// Call it to update the current repositories
 		if (!SwingUtilities.isEventDispatchThread()) {
-			SwingUtilities.invokeLater(new Runnable() {
-				@Override
-				public void run() {
-					// Call it to update the current repositories
-					notifyRepositoryStructureChanged();
-				}
-			});
+			SwingUtilities.invokeLater(() -> notifyRepositoryStructureChanged());
+			// Call it to update the current repositories
 		}
 		else {
 			// Call it to update the current repositories
@@ -319,21 +320,12 @@ public abstract class TechnologyAdapter extends FlexoObservable {
 		}
 	}
 
+	protected void resourceCenterHasBeenInitialized(FlexoResourceCenter<?> rc) {
+		updateRepository(rc);
+	}
+
 	private void resourceCenterHasBeenRemoved(FlexoResourceCenter<?> rc) {
-		// Call it to update the current repositories
-		if (!SwingUtilities.isEventDispatchThread()) {
-			SwingUtilities.invokeLater(new Runnable() {
-				@Override
-				public void run() {
-					// Call it to update the current repositories
-					notifyRepositoryStructureChanged();
-				}
-			});
-		}
-		else {
-			// Call it to update the current repositories
-			notifyRepositoryStructureChanged();
-		}
+		updateRepository(rc);
 	}
 
 	/**
@@ -344,7 +336,7 @@ public abstract class TechnologyAdapter extends FlexoObservable {
 	 * @param serializationArtefact
 	 * @return
 	 */
-	private static <RF extends ITechnologySpecificFlexoResourceFactory<R, RD, TA>, R extends TechnologyAdapterResource<RD, TA>, RD extends ResourceData<RD> & TechnologyObject<TA>, TA extends TechnologyAdapter, I> R tryToLookupResource(
+	private static <RF extends ITechnologySpecificFlexoResourceFactory<R, RD, TA>, R extends TechnologyAdapterResource<RD, TA>, RD extends ResourceData<RD> & TechnologyObject<TA>, TA extends TechnologyAdapter<TA>, I> R tryToLookupResource(
 			RF resourceFactory, FlexoResourceCenter<I> resourceCenter, I serializationArtefact) {
 
 		try {
@@ -366,7 +358,7 @@ public abstract class TechnologyAdapter extends FlexoObservable {
 		return null;
 	}
 
-	public <I> boolean isSerializationArtefactIgnorable(final FlexoResourceCenter<I> resourceCenter, final I contents) {
+	private <I> boolean isSerializationArtefactIgnorable(final FlexoResourceCenter<I> resourceCenter, final I contents) {
 		// This allows to ignore all resources contained in prj, that will be explored from their prj resource
 		if (resourceCenter.isDirectory(contents)) {
 			if (FlexoResourceCenter.isContainedInDirectoryWithSuffix(resourceCenter, contents,
@@ -379,7 +371,7 @@ public abstract class TechnologyAdapter extends FlexoObservable {
 
 	public abstract <I> boolean isIgnorable(FlexoResourceCenter<I> resourceCenter, I contents);
 
-	public <I> boolean isFolderIgnorable(FlexoResourceCenter<I> resourceCenter, I contents) {
+	protected <I> boolean isFolderIgnorable(FlexoResourceCenter<I> resourceCenter, I contents) {
 		return isSerializationArtefactIgnorable(resourceCenter, contents);
 	}
 
@@ -462,7 +454,7 @@ public abstract class TechnologyAdapter extends FlexoObservable {
 	public void resourceCenterAdded(FlexoResourceCenter<?> newResourceCenter) {
 		initializeResourceCenter(newResourceCenter);
 		setChanged();
-		notifyObservers(new DataModification(null, newResourceCenter));
+		notifyObservers(new DataModification<>(null, newResourceCenter));
 	}
 
 	/**
@@ -472,7 +464,7 @@ public abstract class TechnologyAdapter extends FlexoObservable {
 	 */
 	public void resourceCenterRemoved(FlexoResourceCenter<?> removedResourceCenter) {
 		setChanged();
-		notifyObservers(new DataModification(removedResourceCenter, null));
+		notifyObservers(new DataModification<>(removedResourceCenter, null));
 		resourceCenterHasBeenRemoved(removedResourceCenter);
 	}
 
@@ -527,8 +519,8 @@ public abstract class TechnologyAdapter extends FlexoObservable {
 		resourceFactories.clear();
 		availableResourceTypes.clear();
 		Class<?> cl = getClass();
-		if (cl.isAnnotationPresent(DeclareResourceTypes.class)) {
-			DeclareResourceTypes allResourceTypes = cl.getAnnotation(DeclareResourceTypes.class);
+		if (cl.isAnnotationPresent(DeclareResourceFactories.class)) {
+			DeclareResourceFactories allResourceTypes = cl.getAnnotation(DeclareResourceFactories.class);
 			for (Class<? extends ITechnologySpecificFlexoResourceFactory<?, ?, ?>> resourceFactoryClass : allResourceTypes.value()) {
 				Constructor<? extends ITechnologySpecificFlexoResourceFactory<?, ?, ?>> constructor;
 				try {
@@ -594,12 +586,13 @@ public abstract class TechnologyAdapter extends FlexoObservable {
 	}
 
 	/**
-	 * Retrieve (creates it when not existant) folder containing supplied file
+	 * Retrieve (creates it when not existing) folder containing supplied file
 	 * 
 	 * @param repository
 	 * @param aFile
 	 * @return
 	 */
+	/* Unused
 	protected <R extends FlexoResource<?>, I> RepositoryFolder<R, I> retrieveRepositoryFolder(ResourceRepository<R, I> repository,
 			I serializationArtefact) {
 		try {
@@ -609,6 +602,7 @@ public abstract class TechnologyAdapter extends FlexoObservable {
 			return repository.getRootFolder();
 		}
 	}
+	*/
 
 	// Override when required
 	public void initFMLModelFactory(FMLModelFactory fMLModelFactory) {
@@ -650,7 +644,7 @@ public abstract class TechnologyAdapter extends FlexoObservable {
 	public <I> TechnologyAdapterGlobalRepository<?, I> getGlobalRepository(FlexoResourceCenter<I> rc) {
 		TechnologyAdapterGlobalRepository<?, I> returned = globalRepositories.get(rc);
 		if (returned == null) {
-			returned = TechnologyAdapterGlobalRepository.instanciateNewRepository(this, rc);
+			returned = TechnologyAdapterGlobalRepository.instanciateNewRepository((TA) this, rc);
 			globalRepositories.put(rc, returned);
 		}
 		return returned;
@@ -779,7 +773,6 @@ public abstract class TechnologyAdapter extends FlexoObservable {
 
 	@Override
 	public String getDeletedProperty() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -814,7 +807,7 @@ public abstract class TechnologyAdapter extends FlexoObservable {
 		return locales;
 	}
 
-	public abstract String getLocalizationDirectory();
+	protected abstract String getLocalizationDirectory();
 
 	/**
 	 * Add all the RCs that contain an identification of a FlexoResourceCenter in META-INF<br>
@@ -859,6 +852,10 @@ public abstract class TechnologyAdapter extends FlexoObservable {
 							// replace with directory from source code (development mode)
 							String dirPath = URLDecoder.decode(url.getPath().substring(0, url.getPath().indexOf("META-INF")), "UTF-8")
 									.replace("target/classes", "src/main/resources");
+							if (getServiceManager().getResourceCenterService().isDevMode()) {
+								dirPath = dirPath.replace("/bin/main", "/src/main/resources/");
+								dirPath = dirPath.replace("build/resources/main", "/src/main/resources/");
+							}
 							File rcDir = new File(dirPath);
 							if (rcDir.exists()) {
 								rc = DirectoryResourceCenter.instanciateNewDirectoryResourceCenter(rcDir,

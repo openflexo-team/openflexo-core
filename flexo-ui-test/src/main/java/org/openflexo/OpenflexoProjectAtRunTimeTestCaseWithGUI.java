@@ -70,7 +70,7 @@ public abstract class OpenflexoProjectAtRunTimeTestCaseWithGUI extends Openflexo
 	protected static ApplicationContext instanciateTestServiceManager(Class<? extends TechnologyAdapter>... taClasses) {
 		serviceManager = new TestApplicationContext();
 		for (Class<? extends TechnologyAdapter> technologyAdapterClass : taClasses) {
-			serviceManager.activateTechnologyAdapter(
+			serviceManager.activateTechnologyAdapter((TechnologyAdapter)
 					serviceManager.getTechnologyAdapterService().getTechnologyAdapter(technologyAdapterClass), true);
 		}
 		return (ApplicationContext) serviceManager;

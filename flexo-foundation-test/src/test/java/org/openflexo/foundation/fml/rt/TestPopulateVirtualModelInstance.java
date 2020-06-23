@@ -76,7 +76,7 @@ import org.openflexo.foundation.resource.DirectoryResourceCenter;
 import org.openflexo.foundation.resource.ResourceLoadingCancelledException;
 import org.openflexo.foundation.resource.SaveResourceException;
 import org.openflexo.foundation.test.OpenflexoProjectAtRunTimeTestCase;
-import org.openflexo.model.exceptions.ModelDefinitionException;
+import org.openflexo.pamela.exceptions.ModelDefinitionException;
 import org.openflexo.rm.ResourceLocator;
 import org.openflexo.test.OrderedRunner;
 import org.openflexo.test.TestOrder;
@@ -191,7 +191,7 @@ public class TestPopulateVirtualModelInstance extends OpenflexoProjectAtRunTimeT
 
 		assertNotNull(flexoConceptA);
 
-		assertEquals(virtualModel, flexoConceptA.getVirtualModel());
+		assertEquals(virtualModel, flexoConceptA.getOwner());
 		assertEquals(virtualModel, flexoConceptA.getOwningVirtualModel());
 		assertEquals(flexoConceptA, flexoConceptA.getFlexoConcept());
 		assertEquals(virtualModel, flexoConceptA.getResourceData());
@@ -208,7 +208,7 @@ public class TestPopulateVirtualModelInstance extends OpenflexoProjectAtRunTimeT
 		DeletionScheme deletionScheme = (DeletionScheme) createDeletionScheme.getNewFlexoBehaviour();
 		assertTrue(deletionScheme.getControlGraph() instanceof EmptyControlGraph);
 
-		((VirtualModelResource) virtualModel.getResource()).save(null);
+		((VirtualModelResource) virtualModel.getResource()).save();
 
 		// System.out.println("Saved: " + ((VirtualModelResource)
 		// newVirtualModel.getResource()).getFile());
@@ -248,7 +248,7 @@ public class TestPopulateVirtualModelInstance extends OpenflexoProjectAtRunTimeT
 		DeletionScheme deletionScheme = (DeletionScheme) createDeletionScheme.getNewFlexoBehaviour();
 		assertTrue(deletionScheme.getControlGraph() instanceof EmptyControlGraph);
 
-		((VirtualModelResource) virtualModel.getResource()).save(null);
+		((VirtualModelResource) virtualModel.getResource()).save();
 
 		System.out.println("Saved: " + ((VirtualModelResource) virtualModel.getResource()).getIODelegate().toString());
 
@@ -291,7 +291,7 @@ public class TestPopulateVirtualModelInstance extends OpenflexoProjectAtRunTimeT
 
 		System.out.println("FML=\n" + virtualModel.getFMLRepresentation());
 
-		((VirtualModelResource) virtualModel.getResource()).save(null);
+		((VirtualModelResource) virtualModel.getResource()).save();
 
 		// System.out.println("les unsaved: " + serviceManager.getResourceManager().getUnsavedResources());
 		/*virtualModel.getPropertyChangeSupport().addPropertyChangeListener(new PropertyChangeListener() {
@@ -402,7 +402,7 @@ public class TestPopulateVirtualModelInstance extends OpenflexoProjectAtRunTimeT
 
 		assertTrue(serviceManager.getResourceManager().getUnsavedResources().contains(newVirtualModelInstance.getResource()));
 
-		newVirtualModelInstance.getResource().save(null);
+		newVirtualModelInstance.getResource().save();
 		assertTrue(((FMLRTVirtualModelInstanceResource) newVirtualModelInstance.getResource()).getIODelegate().exists());
 		assertFalse(newVirtualModelInstance.isModified());
 
@@ -487,14 +487,14 @@ public class TestPopulateVirtualModelInstance extends OpenflexoProjectAtRunTimeT
 
 		FMLRTVirtualModelInstanceResource newViewResource = project.getVirtualModelInstanceRepository().getVirtualModelInstance(oldViewURI);
 		assertNotNull(newViewResource);
-		newViewResource.loadResourceData(null);
+		newViewResource.loadResourceData();
 		assertNotNull(newView = newViewResource.getVirtualModelInstance());
 
 		assertEquals(1, newViewResource.getVirtualModelInstanceResources().size());
 		FMLRTVirtualModelInstanceResource vmiResource = newViewResource.getVirtualModelInstanceResources().get(0);
 		assertNotNull(vmiResource);
 		assertNull(vmiResource.getLoadedResourceData());
-		vmiResource.loadResourceData(null);
+		vmiResource.loadResourceData();
 		assertNotNull(newVirtualModelInstance = vmiResource.getVirtualModelInstance());
 
 		assertEquals(9, newVirtualModelInstance.getFlexoConceptInstances().size());

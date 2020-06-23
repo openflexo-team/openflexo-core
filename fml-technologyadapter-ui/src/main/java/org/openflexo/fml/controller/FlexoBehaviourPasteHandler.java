@@ -38,7 +38,6 @@
 
 package org.openflexo.fml.controller;
 
-import java.awt.Event;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -50,7 +49,7 @@ import org.openflexo.foundation.action.copypaste.PastingContext;
 import org.openflexo.foundation.fml.FlexoBehaviour;
 import org.openflexo.foundation.fml.FlexoBehaviourObject;
 import org.openflexo.foundation.fml.FlexoBehaviourParameter;
-import org.openflexo.model.factory.Clipboard;
+import org.openflexo.pamela.factory.Clipboard;
 import org.openflexo.toolbox.StringUtils;
 
 /**
@@ -63,8 +62,6 @@ public class FlexoBehaviourPasteHandler extends FlexoPasteHandler<FlexoBehaviour
 
 	private static final Logger logger = Logger.getLogger(FlexoBehaviourPasteHandler.class.getPackage().getName());
 
-	public static final String COPY_SUFFIX = "-copy";
-
 	@Override
 	public Class<FlexoBehaviour> getPastingPointHolderType() {
 		return FlexoBehaviour.class;
@@ -72,7 +69,7 @@ public class FlexoBehaviourPasteHandler extends FlexoPasteHandler<FlexoBehaviour
 
 	@Override
 	public PastingContext<FlexoBehaviour> retrievePastingContext(FlexoObject focusedObject, List<FlexoObject> globalSelection,
-			FlexoClipboard clipboard, Event event) {
+			FlexoClipboard clipboard) {
 
 		// Wrong focused type
 		if (!(focusedObject instanceof FlexoBehaviourObject)) {
@@ -80,7 +77,7 @@ public class FlexoBehaviourPasteHandler extends FlexoPasteHandler<FlexoBehaviour
 		}
 		// Paste a FlexoBehaviourParameter from a FlexoBehaviourParameter
 		if (focusedObject instanceof FlexoBehaviourParameter) {
-			return new DefaultPastingContext<>(((FlexoBehaviourParameter) focusedObject).getFlexoBehaviour(), event);
+			return new DefaultPastingContext<>(((FlexoBehaviourParameter) focusedObject).getFlexoBehaviour());
 		}
 
 		return null;
@@ -104,11 +101,6 @@ public class FlexoBehaviourPasteHandler extends FlexoPasteHandler<FlexoBehaviour
 				}
 			}
 		}
-	}
-
-	@Override
-	public void finalizePasting(FlexoClipboard clipboard, PastingContext<FlexoBehaviour> pastingContext) {
-		// nothing to do
 	}
 
 	private static String translateName(FlexoBehaviour object) {

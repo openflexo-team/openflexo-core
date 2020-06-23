@@ -52,7 +52,7 @@ import org.openflexo.gina.annotation.FIBPanel;
  * 
  */
 @FIBPanel("Fib/FIBOntologyClassEditor.fib")
-public interface IFlexoOntologyClass<TA extends TechnologyAdapter> extends IFlexoOntologyConcept<TA> {
+public interface IFlexoOntologyClass<TA extends TechnologyAdapter<TA>> extends IFlexoOntologyConcept<TA> {
 	/**
 	 * Super Classes of Class.
 	 * 

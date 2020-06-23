@@ -39,24 +39,13 @@
 package org.openflexo.foundation.project;
 
 import java.beans.PropertyChangeListener;
-import java.util.logging.Logger;
 
 import org.openflexo.foundation.FlexoProjectObject.FlexoProjectObjectImpl;
-import org.openflexo.foundation.utils.FlexoObjectReference;
-import org.openflexo.logging.FlexoLogger;
-import org.openflexo.model.annotations.Setter;
+import org.openflexo.pamela.annotations.Setter;
 
-public abstract class FlexoProjectReferenceImpl extends FlexoProjectObjectImpl implements FlexoProjectReference, PropertyChangeListener {
-
-	private static final Logger logger = FlexoLogger.getLogger(FlexoObjectReference.class.getPackage().getName());
-
+public abstract class FlexoProjectReferenceImpl<I> extends FlexoProjectObjectImpl<I>
+		implements FlexoProjectReference<I>, PropertyChangeListener {
 	private String _projectURI = null;
-
-	public static interface ReferenceOwner {
-
-		public void projectDeleted(FlexoProjectReference reference);
-
-	}
 
 	/**
 	 * Returns URI of referenced project
@@ -81,116 +70,4 @@ public abstract class FlexoProjectReferenceImpl extends FlexoProjectObjectImpl i
 	public void setURI(String uri) {
 		_projectURI = uri;
 	}
-
-	/*@Override
-	public FlexoProject getReferredProject(boolean force) {
-		FlexoProject project = getInternalReferredProject();
-		if (project == null && getReferencedProject() != null) {
-			project = getReferencedProject().loadProjectReference(this, !force);
-			if (project != null) {
-				setReferredProject(project);
-			}
-		}
-		return project;
-	}
-	
-	private FlexoProject getInternalReferredProject() {
-		return (FlexoProject) performSuperGetter(REFERRED_PROJECT);
-	}
-	
-	@Override
-	public void setReferredProject(FlexoProject project) {
-		if (project != null) {
-			String knownURI = (String) performSuperGetter(URI);
-			if (knownURI != null && !knownURI.equals(project.getURI())) {
-				throw new RuntimeException("Expecting a project with URI " + knownURI + " but received a project with URI "
-						+ project.getURI());
-			}
-		}
-		performSuperSetter(REFERRED_PROJECT, project);
-	}
-	
-	private void firePropertyChange(String name, Object old, Object value) {
-		if (old == null && value == old) {
-			return;
-		}
-		if (old != null && old.equals(value)) {
-			return;
-		}
-		setModified(true);
-		getPropertyChangeSupport().firePropertyChange(name, old, value);
-	}
-	
-	@Override
-	public void propertyChange(PropertyChangeEvent evt) {
-		if (evt.getSource() == getReferredProject()) {
-			setModified(true);
-		}
-	}
-	
-	@Override
-	public boolean delete(Object... context) {
-		return performSuperDelete(context);
-	}
-	
-	@Override
-	public String toString() {
-		return "FlexoProjectReference " + getName() + " " + getRevision() + " " + getURI();
-	}
-	
-	@Override
-	public String getName() {
-		if (getReferredProject() != null) {
-			return getReferredProject().getDisplayName();
-		}
-		return getInternalName();
-	}
-	
-	private String getInternalName() {
-		return (String) performSuperGetter(NAME);
-	}
-	
-	@Override
-	public String getURI() {
-		if (getReferredProject() != null) {
-			return getReferredProject().getProjectURI();
-		}
-		return (String) performSuperGetter(URI);
-	}
-	
-	@Override
-	public FlexoVersion getVersion() {
-		if (getReferredProject() != null) {
-			return getReferredProject().getVersion();
-		}
-		return (FlexoVersion) performSuperGetter(VERSION);
-	}
-	
-	@Override
-	public Long getRevision() {
-		if (getReferredProject() != null) {
-			return getReferredProject().getRevision();
-		}
-		return getInternalRevision();
-	}
-	
-	private Long getInternalRevision() {
-		return (Long) performSuperGetter(REVISION);
-	}
-	
-	public File getFile() {
-		if (getReferredProject() != null) {
-			return getReferredProject().getProjectDirectory();
-		} else {
-			return ((FileIODelegate) getIODelegate()).getFile();
-		}
-	
-		// return (File) performSuperGetter(FILE);
-	}
-	
-	@Override
-	public Class<FlexoProject> getResourceDataClass() {
-		return FlexoProject.class;
-	}
-	*/
 }

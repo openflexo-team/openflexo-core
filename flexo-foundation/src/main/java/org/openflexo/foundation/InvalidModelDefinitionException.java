@@ -38,7 +38,7 @@
 
 package org.openflexo.foundation;
 
-import org.openflexo.model.exceptions.ModelDefinitionException;
+import org.openflexo.pamela.exceptions.ModelDefinitionException;
 
 /**
  * Thrown when model definition is inconsistent.<br>

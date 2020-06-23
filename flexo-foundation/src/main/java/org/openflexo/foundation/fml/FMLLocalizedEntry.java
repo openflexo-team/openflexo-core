@@ -39,22 +39,23 @@
 package org.openflexo.foundation.fml;
 
 import org.openflexo.connie.BindingModel;
-import org.openflexo.model.annotations.DefineValidationRule;
-import org.openflexo.model.annotations.Getter;
-import org.openflexo.model.annotations.ImplementationClass;
-import org.openflexo.model.annotations.ModelEntity;
-import org.openflexo.model.annotations.PropertyIdentifier;
-import org.openflexo.model.annotations.Setter;
-import org.openflexo.model.annotations.XMLAttribute;
-import org.openflexo.model.annotations.XMLElement;
-import org.openflexo.model.validation.FixProposal;
-import org.openflexo.model.validation.ValidationIssue;
-import org.openflexo.model.validation.ValidationRule;
-import org.openflexo.model.validation.ValidationWarning;
+import org.openflexo.pamela.annotations.DefineValidationRule;
+import org.openflexo.pamela.annotations.Getter;
+import org.openflexo.pamela.annotations.ImplementationClass;
+import org.openflexo.pamela.annotations.ModelEntity;
+import org.openflexo.pamela.annotations.PropertyIdentifier;
+import org.openflexo.pamela.annotations.Setter;
+import org.openflexo.pamela.annotations.XMLAttribute;
+import org.openflexo.pamela.annotations.XMLElement;
+import org.openflexo.pamela.validation.FixProposal;
+import org.openflexo.pamela.validation.ValidationIssue;
+import org.openflexo.pamela.validation.ValidationRule;
+import org.openflexo.pamela.validation.ValidationWarning;
 
 @ModelEntity
 @ImplementationClass(FMLLocalizedEntry.FMLLocalizedEntryImpl.class)
 @XMLElement(xmlTag = "Localized")
+@Deprecated
 public interface FMLLocalizedEntry extends FMLObject {
 
 	@PropertyIdentifier(type = FMLLocalizedDictionary.class)
@@ -87,7 +88,6 @@ public interface FMLLocalizedEntry extends FMLObject {
 	@Setter(VALUE_KEY)
 	public void setValue(String value);
 
-	@Override
 	@Getter(value = LOCALIZED_DICTIONARY_KEY /*, inverse = FMLLocalizedDictionary.ENTRIES_KEY*/)
 	public FMLLocalizedDictionary getLocalizedDictionary();
 
@@ -117,23 +117,11 @@ public interface FMLLocalizedEntry extends FMLObject {
 			if (getLocalizedDictionary() != null) {
 				return getLocalizedDictionary().getOwner();
 			}
-			else {
-				return null;
-			}
+			return null;
 		}
-
-		/*@Override
-		public ViewPoint getViewPoint() {
-			if (getLocalizedDictionary() != null) {
-				return getLocalizedDictionary().getViewPoint();
-			} else {
-				return null;
-			}
-		}*/
 
 		@Override
 		public String getURI() {
-			// TODO Auto-generated method stub
 			return null;
 		}
 

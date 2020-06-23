@@ -42,9 +42,9 @@ import java.io.IOException;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.action.NotImplementedException;
-import org.openflexo.model.annotations.Implementation;
-import org.openflexo.model.annotations.ModelEntity;
-import org.openflexo.model.annotations.XMLElement;
+import org.openflexo.pamela.annotations.Implementation;
+import org.openflexo.pamela.annotations.ModelEntity;
+import org.openflexo.pamela.annotations.XMLElement;
 import org.openflexo.rm.Resource;
 
 /**
@@ -103,13 +103,11 @@ public interface ClassLoaderIODelegate extends FlexoIODelegate<ClassLoader> {
 
 		@Override
 		public String getDeletedProperty() {
-			// TODO Auto-generated method stub
 			return null;
 		}
 
 		@Override
 		public String getParentPath() {
-			// TODO Auto-generated method stub
 			return null;
 		}
 

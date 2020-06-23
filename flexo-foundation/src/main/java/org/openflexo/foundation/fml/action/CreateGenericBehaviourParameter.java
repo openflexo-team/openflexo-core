@@ -56,8 +56,10 @@ import org.openflexo.foundation.FlexoObject.FlexoObjectImpl;
 import org.openflexo.foundation.action.FlexoAction;
 import org.openflexo.foundation.action.FlexoActionFactory;
 import org.openflexo.foundation.action.NotImplementedException;
+import org.openflexo.foundation.action.TechnologySpecificFlexoAction;
 import org.openflexo.foundation.fml.FMLModelFactory;
 import org.openflexo.foundation.fml.FMLObject;
+import org.openflexo.foundation.fml.FMLTechnologyAdapter;
 import org.openflexo.foundation.fml.FlexoBehaviour;
 import org.openflexo.foundation.fml.FlexoBehaviourObject;
 import org.openflexo.foundation.fml.FlexoBehaviourParameter;
@@ -65,12 +67,12 @@ import org.openflexo.foundation.fml.FlexoBehaviourParameter.WidgetType;
 import org.openflexo.toolbox.StringUtils;
 
 public class CreateGenericBehaviourParameter extends FlexoAction<CreateGenericBehaviourParameter, FlexoBehaviourObject, FMLObject>
-		implements Bindable {
+		implements Bindable, TechnologySpecificFlexoAction<FMLTechnologyAdapter> {
 
 	private static final Logger logger = Logger.getLogger(CreateGenericBehaviourParameter.class.getPackage().getName());
 
 	public static FlexoActionFactory<CreateGenericBehaviourParameter, FlexoBehaviourObject, FMLObject> actionType = new FlexoActionFactory<CreateGenericBehaviourParameter, FlexoBehaviourObject, FMLObject>(
-			"create_behaviour_parameter", FlexoActionFactory.newMenu, FlexoActionFactory.defaultGroup, FlexoActionFactory.ADD_ACTION_TYPE) {
+			"behaviour_parameter", FlexoActionFactory.newMenu, FlexoActionFactory.defaultGroup, FlexoActionFactory.ADD_ACTION_TYPE) {
 
 		/**
 		 * Factory method
@@ -112,6 +114,11 @@ public class CreateGenericBehaviourParameter extends FlexoAction<CreateGenericBe
 	private CreateGenericBehaviourParameter(FlexoBehaviourObject focusedObject, Vector<FMLObject> globalSelection, FlexoEditor editor) {
 		super(actionType, focusedObject, globalSelection, editor);
 
+	}
+
+	@Override
+	public Class<? extends FMLTechnologyAdapter> getTechnologyAdapterClass() {
+		return FMLTechnologyAdapter.class;
 	}
 
 	public FlexoBehaviour getFlexoBehaviour() {
@@ -192,6 +199,7 @@ public class CreateGenericBehaviourParameter extends FlexoAction<CreateGenericBe
 		newParameter = factory.newParameter(getFlexoBehaviour());
 		newParameter.setName(getParameterName());
 		newParameter.setType(getParameterType());
+		newParameter.setWidget(getWidgetType());
 		newParameter.setContainer(getContainer());
 		newParameter.setDefaultValue(getDefaultValue());
 		newParameter.setList(getList());
@@ -206,19 +214,15 @@ public class CreateGenericBehaviourParameter extends FlexoAction<CreateGenericBe
 	@Override
 	public boolean isValid() {
 		if (StringUtils.isEmpty(getParameterName())) {
-			System.out.println("hop1 " + getParameterName());
 			return false;
 		}
 		else if (getFlexoBehaviour().getParameter(getParameterName()) != null) {
-			System.out.println("hop2 " + getParameterName());
 			return false;
 		}
 		if (getParameterType() == null) {
-			System.out.println("hop3 " + getParameterType());
 			return false;
 		}
 		if (getWidgetType() == null) {
-			System.out.println("hop4 " + getWidgetType());
 			return false;
 		}
 		return true;
@@ -311,13 +315,11 @@ public class CreateGenericBehaviourParameter extends FlexoAction<CreateGenericBe
 
 	@Override
 	public void notifiedBindingChanged(DataBinding<?> dataBinding) {
-		// TODO Auto-generated method stub
 
 	}
 
 	@Override
 	public void notifiedBindingDecoded(DataBinding<?> dataBinding) {
-		// TODO Auto-generated method stub
 
 	}
 

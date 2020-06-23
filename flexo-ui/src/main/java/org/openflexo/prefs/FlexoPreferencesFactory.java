@@ -40,8 +40,8 @@ package org.openflexo.prefs;
 
 import org.openflexo.foundation.DefaultPamelaResourceModelFactory;
 import org.openflexo.localization.converter.LanguageConverter;
-import org.openflexo.model.ModelContext;
-import org.openflexo.model.exceptions.ModelDefinitionException;
+import org.openflexo.pamela.ModelContext;
+import org.openflexo.pamela.exceptions.ModelDefinitionException;
 import org.openflexo.swing.converter.FlexoFontConverter;
 import org.openflexo.swing.converter.LookAndFeelConverter;
 

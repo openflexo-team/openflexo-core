@@ -58,6 +58,7 @@ import org.openflexo.foundation.FlexoObject.FlexoObjectImpl;
 import org.openflexo.foundation.action.FlexoAction;
 import org.openflexo.foundation.action.FlexoActionFactory;
 import org.openflexo.foundation.action.NotImplementedException;
+import org.openflexo.foundation.action.TechnologySpecificFlexoAction;
 import org.openflexo.foundation.fml.FMLModelFactory;
 import org.openflexo.foundation.fml.FMLObject;
 import org.openflexo.foundation.fml.FMLTechnologyAdapter;
@@ -69,6 +70,7 @@ import org.openflexo.foundation.fml.controlgraph.FMLControlGraph;
 import org.openflexo.foundation.fml.controlgraph.IncrementalIterationAction;
 import org.openflexo.foundation.fml.controlgraph.IterationAction;
 import org.openflexo.foundation.fml.controlgraph.WhileAction;
+import org.openflexo.foundation.fml.editionaction.AbstractFetchRequest;
 import org.openflexo.foundation.fml.editionaction.AddClassInstance;
 import org.openflexo.foundation.fml.editionaction.AddToListAction;
 import org.openflexo.foundation.fml.editionaction.AssignableAction;
@@ -88,24 +90,27 @@ import org.openflexo.foundation.fml.editionaction.TechnologySpecificAction;
 import org.openflexo.foundation.fml.editionaction.TechnologySpecificActionDefiningReceiver;
 import org.openflexo.foundation.fml.rt.editionaction.AddFlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.editionaction.AddVirtualModelInstance;
+import org.openflexo.foundation.fml.rt.editionaction.CreateTopLevelVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.editionaction.DeleteFlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.editionaction.FinalizeMatching;
 import org.openflexo.foundation.fml.rt.editionaction.FireEventAction;
 import org.openflexo.foundation.fml.rt.editionaction.InitiateMatching;
 import org.openflexo.foundation.fml.rt.editionaction.MatchFlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.editionaction.SelectFlexoConceptInstance;
+import org.openflexo.foundation.fml.rt.editionaction.SelectUniqueFlexoConceptInstance;
+import org.openflexo.foundation.fml.rt.editionaction.SelectUniqueVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.editionaction.SelectVirtualModelInstance;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.technologyadapter.UseModelSlotDeclaration;
 
 public class CreateEditionAction extends FlexoAction<CreateEditionAction, FMLControlGraph, FMLObject>
-		implements Bindable, PropertyChangeListener {
+		implements Bindable, PropertyChangeListener, TechnologySpecificFlexoAction<FMLTechnologyAdapter> {
 
 	private static final Logger logger = Logger.getLogger(CreateEditionAction.class.getPackage().getName());
 
 	public static FlexoActionFactory<CreateEditionAction, FMLControlGraph, FMLObject> actionType = new FlexoActionFactory<CreateEditionAction, FMLControlGraph, FMLObject>(
-			"create_edition_action", FlexoActionFactory.newMenu, FlexoActionFactory.defaultGroup, FlexoActionFactory.ADD_ACTION_TYPE) {
+			"add_edition_action", FlexoActionFactory.newMenu, FlexoActionFactory.defaultGroup, FlexoActionFactory.ADD_ACTION_TYPE) {
 
 		/**
 		 * Factory method
@@ -141,7 +146,7 @@ public class CreateEditionAction extends FlexoAction<CreateEditionAction, FMLCon
 	private final List<Class<? extends EditionAction>> availableActions;
 	private final List<Class<? extends FetchRequest<?, ?, ?>>> availableFetchRequests;
 
-	private final HashMap<Class<? extends EditionAction>, TechnologyAdapter> editionActionForTechnologyAdapterMap;
+	private final HashMap<Class<? extends EditionAction>, TechnologyAdapter<?>> editionActionForTechnologyAdapterMap;
 	private final HashMap<Class<? extends EditionAction>, EditionAction> editionActionMap;
 
 	private boolean isVariableDeclaration = false;
@@ -150,7 +155,7 @@ public class CreateEditionAction extends FlexoAction<CreateEditionAction, FMLCon
 	private boolean isAddToListAction = false;
 	private IterationType iterationType = IterationType.Expression;
 
-	private void addToAvailableActions(Class<? extends EditionAction> availableActionClass, TechnologyAdapter ta) {
+	private void addToAvailableActions(Class<? extends EditionAction> availableActionClass, TechnologyAdapter<?> ta) {
 		if (!availableActions.contains(availableActionClass)) {
 			availableActions.add(availableActionClass);
 			editionActionForTechnologyAdapterMap.put(availableActionClass, ta);
@@ -158,6 +163,11 @@ public class CreateEditionAction extends FlexoAction<CreateEditionAction, FMLCon
 				availableFetchRequests.add((Class<FetchRequest<?, ?, ?>>) availableActionClass);
 			}
 		}
+	}
+
+	@Override
+	public Class<? extends FMLTechnologyAdapter> getTechnologyAdapterClass() {
+		return FMLTechnologyAdapter.class;
 	}
 
 	private CreateEditionAction(FMLControlGraph focusedObject, Vector<FMLObject> globalSelection, FlexoEditor editor) {
@@ -182,11 +192,14 @@ public class CreateEditionAction extends FlexoAction<CreateEditionAction, FMLCon
 		addToAvailableActions(IncrementalIterationAction.class, fmlTA);
 		addToAvailableActions(RemoveFromListAction.class, fmlTA);
 		addToAvailableActions(AddFlexoConceptInstance.class, fmlTA);
+		addToAvailableActions(CreateTopLevelVirtualModelInstance.class, fmlTA);
 		addToAvailableActions(AddVirtualModelInstance.class, fmlTA);
 		addToAvailableActions(InitiateMatching.class, fmlTA);
 		addToAvailableActions(MatchFlexoConceptInstance.class, fmlTA);
 		addToAvailableActions(FinalizeMatching.class, fmlTA);
+		addToAvailableActions(SelectUniqueFlexoConceptInstance.class, fmlTA);
 		addToAvailableActions(SelectFlexoConceptInstance.class, fmlTA);
+		addToAvailableActions(SelectUniqueVirtualModelInstance.class, fmlTA);
 		addToAvailableActions(SelectVirtualModelInstance.class, fmlTA);
 		addToAvailableActions(DeleteAction.class, fmlTA);
 		addToAvailableActions(DeleteFlexoConceptInstance.class, fmlTA);
@@ -195,7 +208,7 @@ public class CreateEditionAction extends FlexoAction<CreateEditionAction, FMLCon
 
 		for (UseModelSlotDeclaration useDecl : getVirtualModel().getAccessibleUseDeclarations()) {
 			Class<? extends ModelSlot<?>> modelSlotClass = useDecl.getModelSlotClass();
-			TechnologyAdapter modelSlotTA = getServiceManager().getTechnologyAdapterService()
+			TechnologyAdapter<?> modelSlotTA = getServiceManager().getTechnologyAdapterService()
 					.getTechnologyAdapterForModelSlot(modelSlotClass);
 			for (Class<? extends EditionAction> eaClass : getServiceManager().getTechnologyAdapterService()
 					.getAvailableEditionActionTypes(modelSlotClass)) {
@@ -265,7 +278,7 @@ public class CreateEditionAction extends FlexoAction<CreateEditionAction, FMLCon
 	}
 
 	public TechnologyAdapter getTechnologyAdapter(Class<? extends EditionAction> editionActionClass) {
-		TechnologyAdapter returned = editionActionForTechnologyAdapterMap.get(editionActionClass);
+		TechnologyAdapter<?> returned = editionActionForTechnologyAdapterMap.get(editionActionClass);
 		if (returned != null) {
 			return returned;
 		}
@@ -326,11 +339,11 @@ public class CreateEditionAction extends FlexoAction<CreateEditionAction, FMLCon
 		return returned;
 	}
 
-	public FetchRequest<?, ?, ?> getFetchRequestAction() {
+	public AbstractFetchRequest<?, ?, ?, ?> getFetchRequestAction() {
 		if (isIterationAction()) {
 			if (getIterationType() == IterationType.FetchRequest
-					&& ((IterationAction) getBaseEditionAction()).getIterationAction() instanceof FetchRequest) {
-				return (FetchRequest<?, ?, ?>) ((IterationAction) getBaseEditionAction()).getIterationAction();
+					&& ((IterationAction) getBaseEditionAction()).getIterationAction() instanceof AbstractFetchRequest) {
+				return (AbstractFetchRequest<?, ?, ?, ?>) ((IterationAction) getBaseEditionAction()).getIterationAction();
 			}
 		}
 		return null;
@@ -479,6 +492,9 @@ public class CreateEditionAction extends FlexoAction<CreateEditionAction, FMLCon
 		else if (AddClassInstance.class.isAssignableFrom(editionActionClass)) {
 			returned = factory.newAddClassInstance();
 		}
+		else if (CreateTopLevelVirtualModelInstance.class.isAssignableFrom(editionActionClass)) {
+			returned = factory.newCreateTopLevelVirtualModelInstance();
+		}
 		else if (AddVirtualModelInstance.class.isAssignableFrom(editionActionClass)) {
 			returned = factory.newAddVirtualModelInstance();
 		}
@@ -516,8 +532,8 @@ public class CreateEditionAction extends FlexoAction<CreateEditionAction, FMLCon
 			returned = factory.newIterationAction();
 			updateIteration((IterationAction) returned);
 		}
-		else if (FetchRequest.class.isAssignableFrom(editionActionClass) && getModelSlot() != null) {
-			returned = getModelSlot().makeFetchRequest((Class<FetchRequest<?, ?, ?>>) editionActionClass);
+		else if (AbstractFetchRequest.class.isAssignableFrom(editionActionClass) && getModelSlot() != null) {
+			returned = getModelSlot().makeFetchRequest((Class<AbstractFetchRequest<?, ?, ?, ?>>) editionActionClass);
 		}
 		else if (TechnologySpecificAction.class.isAssignableFrom(editionActionClass) && getModelSlot() != null) {
 			returned = getModelSlot().makeEditionAction((Class<TechnologySpecificAction<?, ?>>) editionActionClass);
@@ -536,7 +552,9 @@ public class CreateEditionAction extends FlexoAction<CreateEditionAction, FMLCon
 			((RoleSpecificAction<?, ?, ?>) returned).getReceiver().setUnparsedBinding(getFlexoRole().getName());
 		}
 		else if (TechnologySpecificActionDefiningReceiver.class.isAssignableFrom(editionActionClass) && getModelSlot() != null) {
-			((TechnologySpecificActionDefiningReceiver<?, ?, ?>) returned).getReceiver().setUnparsedBinding(getModelSlot().getName());
+			if (!editionActionClass.equals(CreateTopLevelVirtualModelInstance.class)) {
+				((TechnologySpecificActionDefiningReceiver<?, ?, ?>) returned).getReceiver().setUnparsedBinding(getModelSlot().getName());
+			}
 		}
 
 		if (returned != null) {

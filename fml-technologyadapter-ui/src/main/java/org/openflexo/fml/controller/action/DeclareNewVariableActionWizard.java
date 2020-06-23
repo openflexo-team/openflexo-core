@@ -42,7 +42,7 @@ import java.awt.Image;
 import java.util.logging.Logger;
 
 import org.openflexo.ApplicationContext;
-import org.openflexo.components.wizard.FlexoWizard;
+import org.openflexo.components.wizard.FlexoActionWizard;
 import org.openflexo.components.wizard.WizardStep;
 import org.openflexo.foundation.fml.action.DeclareNewVariableAction;
 import org.openflexo.gina.annotation.FIBPanel;
@@ -52,22 +52,16 @@ import org.openflexo.icon.IconLibrary;
 import org.openflexo.toolbox.StringUtils;
 import org.openflexo.view.controller.FlexoController;
 
-public class DeclareNewVariableActionWizard extends FlexoWizard {
+public class DeclareNewVariableActionWizard extends FlexoActionWizard<DeclareNewVariableAction> {
 
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(DeclareNewVariableActionWizard.class.getPackage().getName());
 
 	private final DescribeNewVariable describeNewVariable;
-	private final DeclareNewVariableAction action;
 
 	public DeclareNewVariableActionWizard(DeclareNewVariableAction action, FlexoController controller) {
-		super(controller);
-		this.action = action;
+		super(action, controller);
 		addStep(describeNewVariable = new DescribeNewVariable());
-	}
-
-	public DeclareNewVariableAction getAction() {
-		return action;
 	}
 
 	@Override
@@ -77,7 +71,7 @@ public class DeclareNewVariableActionWizard extends FlexoWizard {
 
 	@Override
 	public Image getDefaultPageImage() {
-		return IconFactory.getImageIcon(FMLIconLibrary.FLEXO_BEHAVIOUR_BIG_ICON, IconLibrary.NEW_32_32).getImage();
+		return IconFactory.getImageIcon(FMLIconLibrary.FLEXO_BEHAVIOUR_BIG_ICON, IconLibrary.BIG_NEW_MARKER).getImage();
 	}
 
 	public DescribeNewVariable getDescribeNewVariable() {

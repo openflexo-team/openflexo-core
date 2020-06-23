@@ -42,11 +42,11 @@ package org.openflexo.foundation;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
-import org.openflexo.model.annotations.Getter;
-import org.openflexo.model.annotations.ImplementationClass;
-import org.openflexo.model.annotations.ModelEntity;
-import org.openflexo.model.annotations.PropertyIdentifier;
-import org.openflexo.model.annotations.Setter;
+import org.openflexo.pamela.annotations.Getter;
+import org.openflexo.pamela.annotations.ImplementationClass;
+import org.openflexo.pamela.annotations.ModelEntity;
+import org.openflexo.pamela.annotations.PropertyIdentifier;
+import org.openflexo.pamela.annotations.Setter;
 
 /**
  * Super class for any object involved in Openflexo and beeing part of a {@link FlexoProject}<br>
@@ -58,32 +58,31 @@ import org.openflexo.model.annotations.Setter;
  */
 @ModelEntity(isAbstract = true)
 @ImplementationClass(FlexoProjectObject.FlexoProjectObjectImpl.class)
-public interface FlexoProjectObject extends FlexoObject {
+public interface FlexoProjectObject<I> extends FlexoObject {
 
 	@PropertyIdentifier(type = FlexoProject.class)
 	public static final String PROJECT = "project";
 
 	@Getter(value = PROJECT, ignoreType = true)
-	public FlexoProject<?> getProject();
+	public FlexoProject<I> getProject();
 
 	@Setter(PROJECT)
-	public void setProject(FlexoProject<?> project);
+	public void setProject(FlexoProject<I> project);
 
 	@Override
 	public FlexoServiceManager getServiceManager();
 
-	public abstract class FlexoProjectObjectImpl extends FlexoObjectImpl implements FlexoProjectObject {
+	public abstract class FlexoProjectObjectImpl<I> extends FlexoObjectImpl implements FlexoProjectObject<I> {
 
 		@SuppressWarnings("unused")
 		private static final Logger logger = Logger.getLogger(FlexoProjectObject.class.getPackage().getName());
 
-		private FlexoProject<?> project;
+		private FlexoProject<I> project;
 
 		public FlexoProjectObjectImpl() {
-			super();
 		}
 
-		public FlexoProjectObjectImpl(FlexoProject<?> project) {
+		public FlexoProjectObjectImpl(FlexoProject<I> project) {
 			this();
 			this.project = project;
 		}
@@ -95,12 +94,12 @@ public interface FlexoProjectObject extends FlexoObject {
 		}
 
 		@Override
-		public FlexoProject<?> getProject() {
+		public FlexoProject<I> getProject() {
 			return project;
 		}
 
 		@Override
-		public void setProject(FlexoProject<?> project) {
+		public void setProject(FlexoProject<I> project) {
 			this.project = project;
 		}
 

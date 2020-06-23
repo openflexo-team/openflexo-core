@@ -39,27 +39,26 @@
 package org.openflexo.fml.controller.view;
 
 import org.openflexo.fml.controller.CommonFIB;
-import org.openflexo.foundation.fml.FMLLocalizedDictionary;
 import org.openflexo.foundation.fml.FMLTechnologyAdapter;
+import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.view.FIBModuleView;
 import org.openflexo.view.ModuleView;
 import org.openflexo.view.controller.FlexoController;
 import org.openflexo.view.controller.model.FlexoPerspective;
 
 /**
- * This is the {@link ModuleView} representing a {@link ViewPoint}
+ * This is the {@link ModuleView} representing a {@link VirtualModel}
  * 
  * @author sguerin
  * 
  */
 @SuppressWarnings("serial")
-public class FMLLocalizedDictionaryView extends FIBModuleView<FMLLocalizedDictionary> {
+public class FMLLocalizedDictionaryView extends FIBModuleView<VirtualModel> {
 
 	private final FlexoPerspective perspective;
 
-	public FMLLocalizedDictionaryView(FMLLocalizedDictionary fMLLocalizedDictionary, FlexoController controller,
-			FlexoPerspective perspective) {
-		super(fMLLocalizedDictionary, controller, CommonFIB.FML_LOCALIZED_DICTIONARY_VIEW_FIB,
+	public FMLLocalizedDictionaryView(VirtualModel virtualModel, FlexoController controller, FlexoPerspective perspective) {
+		super(virtualModel, controller, CommonFIB.FML_LOCALIZED_DICTIONARY_VIEW_FIB,
 				controller.getTechnologyAdapter(FMLTechnologyAdapter.class).getLocales());
 		this.perspective = perspective;
 	}

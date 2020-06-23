@@ -1,8 +1,8 @@
 /**
  * 
- * Copyright (c) 2014-2015, Openflexo
+ * Copyright (c) 2014, Openflexo
  * 
- * This file is part of Fml-parser, a component of the software infrastructure 
+ * This file is part of Cartoeditor, a component of the software infrastructure 
  * developed at Openflexo.
  * 
  * 
@@ -38,43 +38,50 @@
 
 package org.openflexo.foundation.fml.parser;
 
-import static org.junit.Assert.fail;
+import java.io.IOException;
+import java.util.Collection;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.openflexo.foundation.test.OpenflexoTestCase;
-import org.openflexo.rm.FileResourceImpl;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.openflexo.foundation.fml.rm.FMLParser.ParseException;
+import org.openflexo.pamela.exceptions.ModelDefinitionException;
 import org.openflexo.rm.Resource;
 import org.openflexo.rm.ResourceLocator;
+import org.openflexo.rm.Resources;
 
-public class TestFMLParser extends OpenflexoTestCase {
+/**
+ * A parameterized suite of unit tests iterating on FML files.
+ * 
+ * For each FML file, parse it.
+ * 
+ * @author sylvain
+ *
+ */
+@RunWith(Parameterized.class)
+public class TestFMLParser extends FMLParserTestCase {
+
+	@Parameterized.Parameters(name = "{1}")
+	public static Collection<Object[]> generateData() {
+		return Resources.getMatchingResource(ResourceLocator.locateResource("NewFMLExamples"), ".fml");
+	}
+
+	private final Resource fmlResource;
+
+	public TestFMLParser(Resource fmlResource, String name) {
+		System.out.println("********* TestFMLParser " + fmlResource + " name=" + name);
+		this.fmlResource = fmlResource;
+	}
+
+	@Test
+	public void testResource() throws ModelDefinitionException, ParseException, IOException {
+		testFMLCompilationUnit(fmlResource);
+	}
 
 	@BeforeClass
 	public static void initServiceManager() {
 		instanciateTestServiceManager();
 	}
 
-	@Test
-	public void test0() {
-		testFMLCompilationUnit(ResourceLocator.locateResource("FMLExamples/Test0.fml"));
-	}
-
-	/*@Test
-	public void test1() {
-		testFMLCompilationUnit(ResourceLocator.locateResource("FMLExamples/Test1.fml"));
-	}*/
-
-	/*@Test
-	public void test2() {
-		testFMLCompilationUnit(ResourceLocator.locateResource("FMLExamples/Test2.fml"));
-	}*/
-
-	private static void testFMLCompilationUnit(Resource fileResource) {
-		try {
-			FMLParser.parse(((FileResourceImpl) fileResource).getFile(), serviceManager);
-		} catch (ParseException e) {
-			e.printStackTrace();
-			fail();
-		}
-	}
 }

@@ -60,8 +60,8 @@ import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.resource.FlexoResourceCenterService;
 import org.openflexo.foundation.resource.ResourceLoadingCancelledException;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterService;
-import org.openflexo.model.exceptions.ModelDefinitionException;
-import org.openflexo.model.validation.Validable;
+import org.openflexo.pamela.exceptions.ModelDefinitionException;
+import org.openflexo.pamela.validation.Validable;
 import org.openflexo.toolbox.StringUtils;
 
 /**
@@ -128,11 +128,9 @@ public class VirtualModelLibrary extends DefaultFlexoObject implements FlexoServ
 		}
 		if (returned != null) {
 			if (loadWhenRequired) {
-				return returned.getResourceData(null);
+				return returned.getResourceData();
 			}
-			else {
-				return returned.getLoadedResourceData();
-			}
+			return returned.getLoadedResourceData();
 		}
 		/*if (returned == null) {
 			logger.warning("Cannot find virtual model:" + virtualModelURI);
@@ -232,8 +230,119 @@ public class VirtualModelLibrary extends DefaultFlexoObject implements FlexoServ
 	}
 
 	/**
+	 * Lookup and return {@link FMLObject} identified by supplied objectURI<br>
+	 * Use of this method triggers required virtual models to be loaded when loadWhenRequired set to true
+	 * 
+	 * @param objectURI
+	 * @param loadWhenRequired
+	 * @return
+	 */
+	public <O extends FMLObject> O getFMLObject(String objectURI, boolean loadWhenRequired) {
+
+		if (objectURI == null) {
+			return null;
+		}
+
+		VirtualModelResource vmRes = getVirtualModelResource(objectURI);
+
+		if (vmRes != null) {
+			return (loadWhenRequired ? (O) vmRes.getVirtualModel() : (O) vmRes.getLoadedVirtualModel());
+		}
+
+		if (objectURI.indexOf("#") > -1) {
+			String virtualModelURI = objectURI.substring(0, objectURI.indexOf("#"));
+			String uriRemains = objectURI.substring(objectURI.indexOf("#") + 1);
+			vmRes = getVirtualModelResource(virtualModelURI);
+			if (vmRes == null) {
+				vmRes = getVirtualModelResource(virtualModelURI + ".fml");
+				if (vmRes == null && virtualModelURI.contains("/")) {
+					String vpURI = virtualModelURI.substring(0, virtualModelURI.lastIndexOf("/"));
+					if (vpURI.endsWith(".viewpoint")) {
+						vpURI = vpURI.substring(0, vpURI.length() - 10);
+					}
+					if (!vpURI.endsWith(".fml")) {
+						vpURI = vpURI + ".fml";
+					}
+					String vmName = virtualModelURI.substring(virtualModelURI.lastIndexOf("/") + 1);
+					if (!vmName.endsWith(".fml")) {
+						vmName = vmName + ".fml";
+					}
+					vmRes = getVirtualModelResource(vpURI + "/" + vmName);
+				}
+				logger.info("Attempt to retrieve VirtualModel from former URI form. Searched " + virtualModelURI + " Found: " + vmRes);
+			}
+			if (vmRes != null) {
+				VirtualModel vm;
+				if (loadWhenRequired) {
+					vm = vmRes.getVirtualModel();
+				}
+				else {
+					vm = vmRes.getLoadedResourceData();
+				}
+				if (vm == null) {
+					// VirtualModel is not loaded, return null
+					return null;
+				}
+
+				if (uriRemains.lastIndexOf(".") > -1) {
+					String flexoConceptName = uriRemains.substring(0, uriRemains.lastIndexOf("."));
+					FlexoConcept concept = vm.getFlexoConcept(flexoConceptName);
+					uriRemains = uriRemains.substring(uriRemains.lastIndexOf(".") + 1);
+					if (concept != null) {
+						return getFMLObject(uriRemains, concept);
+					}
+					else {
+						logger.warning("Cannot find concept " + flexoConceptName + " in " + vm);
+						return null;
+					}
+				}
+				else {
+					return (O) vm.getFlexoConcept(uriRemains);
+				}
+			}
+		}
+		else {
+			if (objectURI.lastIndexOf(".") > -1) {
+				String flexoConceptURI = objectURI.substring(0, objectURI.lastIndexOf("."));
+				FlexoConcept concept = getFlexoConcept(flexoConceptURI, loadWhenRequired);
+				String uriRemains = objectURI.substring(objectURI.lastIndexOf(".") + 1);
+				if (concept != null) {
+					return getFMLObject(uriRemains, concept);
+				}
+				else {
+					logger.warning("Cannot find concept " + flexoConceptURI);
+					return null;
+				}
+			}
+
+		}
+		return null;
+	}
+
+	private <O extends FMLObject> O getFMLObject(String uriRemains, FlexoConcept expectedConcept) {
+		FlexoProperty<?> property = expectedConcept.getDeclaredProperty(uriRemains);
+		if (property != null) {
+			return (O) property;
+		}
+		if (uriRemains.contains("(")) {
+			FlexoBehaviour behaviour = expectedConcept.getDeclaredFlexoBehaviour(uriRemains);
+			if (behaviour != null) {
+				return (O) behaviour;
+			}
+		}
+		else {
+			FlexoBehaviour behaviour = expectedConcept.getFlexoBehaviour(uriRemains);
+			if (behaviour != null) {
+				return (O) behaviour;
+			}
+		}
+		logger.warning("Cannot find property or behaviour " + uriRemains + " in " + expectedConcept);
+		return null;
+	}
+
+	/**
 	 * Lookup and return {@link FlexoConcept} identified by supplied flexoConceptURI<br>
-	 * Return concept might be a {@link ViewPoint}, a {@link VirtualModel} or a simple {@link FlexoConcept}<br>
+	 * Return concept might be a {@link VirtualModel}, a {@link VirtualModel} or a simple {@link FlexoConcept}<br>
 	 * Use of this method triggers required virtual models to be loaded
 	 * 
 	 * @param flexoConceptURI
@@ -243,57 +352,34 @@ public class VirtualModelLibrary extends DefaultFlexoObject implements FlexoServ
 		return getFlexoConcept(flexoConceptURI, true);
 	}
 
-	/*private List<String> notFoundVirtualModels = new ArrayList();
-	private List<String> notFoundFlexoConcepts = new ArrayList();
-	private List<String> notFoundProperties = new ArrayList();
-	private List<String> notFoundBehaviours = new ArrayList();
-	
-	private void clearNotFoundObjects() {
-		notFoundVirtualModels = new ArrayList();
-		notFoundFlexoConcepts = new ArrayList();
-		notFoundProperties = new ArrayList();
-		notFoundBehaviours = new ArrayList();
-	}*/
-
 	/**
 	 * Lookup and return {@link FlexoConcept} identified by supplied flexoConceptURI<br>
-	 * Return concept might be a {@link ViewPoint}, a {@link VirtualModel} or a simple {@link FlexoConcept}<br>
+	 * Return concept might be a {@link VirtualModel}, a {@link VirtualModel} or a simple {@link FlexoConcept}<br>
 	 * If the flag loadWhenRequired is set to true, load required virtual models
 	 * 
 	 * @param flexoConceptURI
 	 * @return
 	 */
 	public FlexoConcept getFlexoConcept(String flexoConceptURI, boolean loadWhenRequired) {
-		FlexoConcept returned = null;
 
+		return (FlexoConcept) getFMLObject(flexoConceptURI, loadWhenRequired);
+
+		/*FlexoConcept returned = null;
+		
 		// Is that a virtual model ?
 		try {
 			returned = getVirtualModel(flexoConceptURI, loadWhenRequired);
 		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (ResourceLoadingCancelledException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (FlexoException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		if (returned != null) {
 			return returned;
 		}
-
-		// Is that a virtual model ?
-		/*VirtualModelResource vmRes = getVirtualModelResource(flexoConceptURI);
-		if (vmRes != null) {
-			if (loadWhenRequired) {
-				return vmRes.getVirtualModel();
-			}
-			else {
-				return vmRes.getLoadedResourceData();
-			}
-		}*/
-
+		
 		// May be a simple concept ?
 		if (flexoConceptURI.indexOf("#") > -1) {
 			String virtualModelURI = flexoConceptURI.substring(0, flexoConceptURI.indexOf("#"));
@@ -328,26 +414,23 @@ public class VirtualModelLibrary extends DefaultFlexoObject implements FlexoServ
 				if (vm != null) {
 					return vm.getFlexoConcept(flexoConceptName);
 				}
-				else {
-					// It is possible to come here, because this can be called during deserialization of VirtualModel itself
-					// In this case, the resource cannot be loaded yet (because already loading)
-					// Concept will be looked up later
-				}
+				// It is possible to come here, because this can be called during deserialization of VirtualModel itself
+				// In this case, the resource cannot be loaded yet (because already loading)
+				// Concept will be looked up later
 			}
 			// logger.warning("Cannot find virtual model " + virtualModelURI + " while searching flexo concept:" + flexoConceptURI + " ("
 			// + flexoConceptName + ")");
 		}
-
+		
 		// logger.warning("Cannot find flexo concept:" + flexoConceptURI);
-		/*String viewPointURI = flexoConceptURI.substring(0, flexoConceptURI.lastIndexOf("/"));
-		for (VirtualModelResource r : getViewPointResource(viewPointURI).getVirtualModelResources()) {
-			System.out.println("> VM " + r.getURI());
-		}*/
-		return null;
+		return null;*/
 	}
 
 	public FlexoProperty<?> getFlexoProperty(String propertyURI, boolean loadWhenRequired) {
-		if (propertyURI == null)
+
+		return (FlexoProperty<?>) getFMLObject(propertyURI, loadWhenRequired);
+
+		/*if (propertyURI == null)
 			return null;
 		if (propertyURI.lastIndexOf(".") > -1) {
 			String flexoConceptURI = propertyURI.substring(0, propertyURI.lastIndexOf("."));
@@ -357,17 +440,25 @@ public class VirtualModelLibrary extends DefaultFlexoObject implements FlexoServ
 			}
 		}
 		logger.warning("Cannot find property:" + propertyURI);
-		return null;
+		return null;*/
 	}
 
 	public FlexoBehaviour getFlexoBehaviour(String behaviourURI, boolean loadWhenRequired) {
-		if (behaviourURI == null)
+
+		return (FlexoBehaviour) getFMLObject(behaviourURI, loadWhenRequired);
+
+		/*if (behaviourURI == null)
 			return null;
 		if (behaviourURI.lastIndexOf(".") > -1) {
 			String flexoConceptURI = behaviourURI.substring(0, behaviourURI.lastIndexOf("."));
-			FlexoConcept ep = getFlexoConcept(flexoConceptURI, loadWhenRequired);
-			if (ep != null) {
-				return ep.getFlexoBehaviour(behaviourURI.substring(behaviourURI.lastIndexOf(".") + 1));
+			FlexoConcept flexoConcept = getFlexoConcept(flexoConceptURI, loadWhenRequired);
+			String remaining = behaviourURI.substring(behaviourURI.lastIndexOf(".") + 1);
+			if (flexoConcept != null) {
+				FlexoBehaviour returned = flexoConcept.getDeclaredFlexoBehaviour(remaining);
+				if (returned != null) {
+					return returned;
+				}
+				return flexoConcept.getFlexoBehaviour(remaining);
 			}
 		}
 		if (loadWhenRequired) {
@@ -376,7 +467,7 @@ public class VirtualModelLibrary extends DefaultFlexoObject implements FlexoServ
 		else {
 			logger.info("Cannot find behaviour yet:" + behaviourURI);
 		}
-		return null;
+		return null;*/
 	}
 
 	@Override
@@ -483,7 +574,6 @@ public class VirtualModelLibrary extends DefaultFlexoObject implements FlexoServ
 
 	@Override
 	public void stop() {
-		// TODO Auto-generated method stub
 		logger.warning("STOP Method for service should be overriden in each service [" + this.getClass().getCanonicalName() + "]");
 		status = Status.Stopped;
 	}

@@ -21,10 +21,10 @@
 package org.openflexo.foundation.doc;
 
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
-import org.openflexo.model.annotations.Getter;
-import org.openflexo.model.annotations.ModelEntity;
-import org.openflexo.model.annotations.PropertyIdentifier;
-import org.openflexo.model.annotations.Setter;
+import org.openflexo.pamela.annotations.Getter;
+import org.openflexo.pamela.annotations.ModelEntity;
+import org.openflexo.pamela.annotations.PropertyIdentifier;
+import org.openflexo.pamela.annotations.Setter;
 
 /**
  * Generic abstract concept representing a run in a paragraph of a text-based document (eg .docx, .odt, etc...)
@@ -37,7 +37,7 @@ import org.openflexo.model.annotations.Setter;
  *            {@link TechnologyAdapter} of current implementation
  */
 @ModelEntity(isAbstract = true)
-public interface FlexoDocRun<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter> extends FlexoDocObject<D, TA> {
+public interface FlexoDocRun<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter<TA>> extends FlexoDocObject<D, TA> {
 
 	@PropertyIdentifier(type = FlexoDocParagraph.class)
 	public static final String PARAGRAPH_KEY = "paragraph";
@@ -64,7 +64,7 @@ public interface FlexoDocRun<D extends FlexoDocument<D, TA>, TA extends Technolo
 	 */
 	public int getIndex();
 
-	public static abstract class FlexoRunImpl<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter>
+	public static abstract class FlexoRunImpl<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter<TA>>
 			extends FlexoDocObjectImpl<D, TA> implements FlexoDocRun<D, TA> {
 
 		@Override

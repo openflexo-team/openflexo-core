@@ -44,12 +44,12 @@ import org.openflexo.connie.binding.IBindingPathElement;
 import org.openflexo.connie.expr.BindingValue;
 import org.openflexo.connie.type.TypeUtils;
 import org.openflexo.foundation.fml.FlexoRole;
-import org.openflexo.foundation.fml.binding.FlexoConceptFlexoPropertyPathElement;
+import org.openflexo.foundation.fml.binding.FlexoPropertyPathElement;
 import org.openflexo.foundation.fml.binding.FlexoRoleBindingVariable;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.foundation.technologyadapter.TechnologyObject;
-import org.openflexo.model.annotations.ImplementationClass;
-import org.openflexo.model.annotations.ModelEntity;
+import org.openflexo.pamela.annotations.ImplementationClass;
+import org.openflexo.pamela.annotations.ModelEntity;
 
 /**
  * Represents an {@link TechnologySpecificAction} which address a specific technology object accessible as a {@link FlexoRole}
@@ -116,9 +116,9 @@ public abstract interface RoleSpecificAction<R extends FlexoRole<T>, MS extends 
 				if (lastPathElement instanceof FlexoRoleBindingVariable) {
 					return (R) ((FlexoRoleBindingVariable) lastPathElement).getFlexoRole();
 				}
-				else if (lastPathElement instanceof FlexoConceptFlexoPropertyPathElement
-						&& ((FlexoConceptFlexoPropertyPathElement) lastPathElement).getFlexoProperty() instanceof FlexoRole) {
-					return (R) ((FlexoConceptFlexoPropertyPathElement) lastPathElement).getFlexoProperty();
+				else if (lastPathElement instanceof FlexoPropertyPathElement
+						&& ((FlexoPropertyPathElement) lastPathElement).getFlexoProperty() instanceof FlexoRole) {
+					return (R) ((FlexoPropertyPathElement) lastPathElement).getFlexoProperty();
 				}
 			}
 			return null;

@@ -155,8 +155,8 @@ public abstract class FlexoMenu extends JMenu implements MouseListener, MenuList
 	public void refreshMenu() {
 		for (int i = 0; i < getItemCount(); i++) {
 			JMenuItem item = getItem(i);
-			if (item instanceof FlexoMenuItem) {
-				((FlexoMenuItem) item).itemWillShow();
+			if (item instanceof FlexoMenuItemWithFactory) {
+				((FlexoMenuItemWithFactory<?>) item).itemWillShow();
 			}
 			else if (item instanceof FlexoMenu) {
 				((FlexoMenu) item).refreshMenu();

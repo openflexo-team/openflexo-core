@@ -58,7 +58,7 @@ import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.openflexo.utils.DrawUtils;
+import org.openflexo.diana.swing.graphics.DrawUtils;
 
 public class FlexoPrintableDelegate implements Printable, Pageable {
 
@@ -164,7 +164,8 @@ public class FlexoPrintableDelegate implements Printable, Pageable {
 		PaintParameters returned = new PaintParameters();
 		if (_paintMode == PaintMode.PREVIEW) {
 			g2.scale(previewScale, previewScale);
-		} else if (_paintMode == PaintMode.PRINTING) {
+		}
+		else if (_paintMode == PaintMode.PRINTING) {
 			returned.j = _pageIndex / widthPageNb;
 			returned.i = _pageIndex - widthPageNb * returned.j;
 			if (logger.isLoggable(Level.FINE)) {
@@ -211,7 +212,8 @@ public class FlexoPrintableDelegate implements Printable, Pageable {
 		}
 		if (_paintMode == PaintMode.PREVIEW) {
 			g2.scale(1 / previewScale, 1 / previewScale);
-		} else if (_paintMode == PaintMode.PRINTING) {
+		}
+		else if (_paintMode == PaintMode.PRINTING) {
 			g2.translate(-params.tx, -params.ty);
 			g2.scale(1 / params.marginScale, 1 / params.marginScale);
 		}
@@ -223,7 +225,7 @@ public class FlexoPrintableDelegate implements Printable, Pageable {
 	     double tx = 0.0;
 	     double ty = 0.0;
 	     double marginScale = 1.0;
-
+	
 	     if (_paintMode == PaintMode.PREVIEW) {
 	         ((Graphics2D)graphics).scale(previewScale, previewScale);
 	     }
@@ -282,11 +284,13 @@ public class FlexoPrintableDelegate implements Printable, Pageable {
 		for (int i = 0; i < widthPageNb; i++) {
 			for (int j = 0; j < heightPageNb; j++) {
 				int pageIndex = j * widthPageNb + i;
-				// logger.info("Print page "+(pageIndex+1)+" scaleX="+g2.getTransform().getScaleX()+" scaleY="+g2.getTransform().getScaleY());
+				// logger.info("Print page "+(pageIndex+1)+" scaleX="+g2.getTransform().getScaleX()+"
+				// scaleY="+g2.getTransform().getScaleY());
 				if (_paintMode == PaintMode.PREVIEW) {
 					g2.drawString("Page: " + (pageIndex + 1) + "/" + getNumberOfPages(), pageBounds.width / 2 - 35 + i * pageBounds.width,
 							pageBounds.height - fontHeight - fontDesent - bottomMargin + j * pageBounds.height);
-				} else if (_paintMode == PaintMode.PRINTING) {
+				}
+				else if (_paintMode == PaintMode.PRINTING) {
 					g2.drawString("Page: " + (pageIndex + 1) + "/" + getNumberOfPages(), pageBounds.width / 2 - 35 + i * pageBounds.width,
 							pageBounds.height - fontHeight - fontDesent + j * pageBounds.height);
 				}
@@ -308,9 +312,10 @@ public class FlexoPrintableDelegate implements Printable, Pageable {
 				if (_paintMode == PaintMode.PREVIEW) {
 					g2.drawString(getPrintTitle(), (int) (pageBounds.width / 2 - titleBounds.getWidth() / 2) + i * pageBounds.width,
 							imageablePageBounds.y + 15 + j * pageBounds.height);
-				} else if (_paintMode == PaintMode.PRINTING) {
-					g2.drawString(getPrintTitle(), (int) (pageBounds.width / 2 - titleBounds.getWidth() / 2) + i * pageBounds.width, 15 + j
-							* pageBounds.height);
+				}
+				else if (_paintMode == PaintMode.PRINTING) {
+					g2.drawString(getPrintTitle(), (int) (pageBounds.width / 2 - titleBounds.getWidth() / 2) + i * pageBounds.width,
+							15 + j * pageBounds.height);
 				}
 			}
 		}
@@ -421,7 +426,8 @@ public class FlexoPrintableDelegate implements Printable, Pageable {
 			double scaleY = (double) pageBounds.height / (double) (optimalBounds.y + optimalBounds.height + 1);
 			if (scaleX < scaleY) {
 				setScale(scaleX);
-			} else {
+			}
+			else {
 				setScale(scaleY);
 			}
 		}

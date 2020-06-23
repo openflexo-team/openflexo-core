@@ -42,11 +42,11 @@ package org.openflexo.foundation.resource;
 import org.openflexo.foundation.DataModification;
 import org.openflexo.foundation.FlexoService.ServiceNotification;
 
-public class ResourceRegistered extends DataModification implements ServiceNotification {
+public class ResourceRegistered<RD extends ResourceData<RD>> extends DataModification<FlexoResource<RD>> implements ServiceNotification {
 
 	private RepositoryFolder<?, ?> folder;
 
-	public ResourceRegistered(FlexoResource<?> resource, RepositoryFolder<?, ?> folder) {
+	public ResourceRegistered(FlexoResource<RD> resource, RepositoryFolder<?, ?> folder) {
 		super("resources", null, resource);
 		this.folder = folder;
 	}

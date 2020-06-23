@@ -47,11 +47,11 @@ import org.junit.Test;
 import org.openflexo.foundation.fml.rm.VirtualModelResource;
 import org.openflexo.foundation.fml.rt.rm.FMLRTVirtualModelInstanceResource;
 import org.openflexo.logging.FlexoLogger;
-import org.openflexo.model.ModelContext;
-import org.openflexo.model.ModelEntity;
-import org.openflexo.model.exceptions.MissingImplementationException;
-import org.openflexo.model.exceptions.ModelDefinitionException;
-import org.openflexo.model.factory.ModelFactory;
+import org.openflexo.pamela.ModelContext;
+import org.openflexo.pamela.ModelEntity;
+import org.openflexo.pamela.exceptions.MissingImplementationException;
+import org.openflexo.pamela.exceptions.ModelDefinitionException;
+import org.openflexo.pamela.factory.ModelFactory;
 
 /**
  * Test PAMELA model for all resources

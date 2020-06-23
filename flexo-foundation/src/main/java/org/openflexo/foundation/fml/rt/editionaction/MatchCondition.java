@@ -50,18 +50,17 @@ import org.openflexo.connie.exception.TypeMismatchException;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoConceptObject;
 import org.openflexo.foundation.fml.binding.MatchConditionBindingModel;
-import org.openflexo.foundation.fml.editionaction.FetchRequestCondition;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
 import org.openflexo.logging.FlexoLogger;
-import org.openflexo.model.annotations.DefineValidationRule;
-import org.openflexo.model.annotations.Getter;
-import org.openflexo.model.annotations.ImplementationClass;
-import org.openflexo.model.annotations.ModelEntity;
-import org.openflexo.model.annotations.PropertyIdentifier;
-import org.openflexo.model.annotations.Setter;
-import org.openflexo.model.annotations.XMLAttribute;
-import org.openflexo.model.annotations.XMLElement;
+import org.openflexo.pamela.annotations.DefineValidationRule;
+import org.openflexo.pamela.annotations.Getter;
+import org.openflexo.pamela.annotations.ImplementationClass;
+import org.openflexo.pamela.annotations.ModelEntity;
+import org.openflexo.pamela.annotations.PropertyIdentifier;
+import org.openflexo.pamela.annotations.Setter;
+import org.openflexo.pamela.annotations.XMLAttribute;
+import org.openflexo.pamela.annotations.XMLElement;
 
 /**
  * A condition applied when matching FlexoConceptInstances
@@ -174,13 +173,13 @@ public interface MatchCondition extends FlexoConceptObject {
 	}
 
 	@DefineValidationRule
-	public static class ConditionBindingIsRequiredAndMustBeValid extends BindingIsRequiredAndMustBeValid<FetchRequestCondition> {
+	public static class ConditionBindingIsRequiredAndMustBeValid extends BindingIsRequiredAndMustBeValid<MatchCondition> {
 		public ConditionBindingIsRequiredAndMustBeValid() {
-			super("'condition'_binding_is_not_valid", FetchRequestCondition.class);
+			super("'condition'_binding_is_not_valid", MatchCondition.class);
 		}
 
 		@Override
-		public DataBinding<Boolean> getBinding(FetchRequestCondition object) {
+		public DataBinding<Boolean> getBinding(MatchCondition object) {
 			return object.getCondition();
 		}
 	}

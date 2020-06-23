@@ -1,0 +1,8 @@
+model MyModel {
+
+	create::newConstructorName () {
+		int j;
+		i = 1;
+		i = j;
+	}
+}

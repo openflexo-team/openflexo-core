@@ -60,6 +60,7 @@ import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.VirtualModelLibrary;
 import org.openflexo.foundation.fml.rt.FMLRTTechnologyAdapter;
+import org.openflexo.foundation.fml.rt.rm.FMLRTVirtualModelInstanceResource;
 import org.openflexo.foundation.resource.CannotRenameException;
 import org.openflexo.foundation.resource.DirectoryBasedIODelegate;
 import org.openflexo.foundation.resource.FileIODelegate;
@@ -75,18 +76,51 @@ import org.openflexo.foundation.resource.SaveResourcePermissionDeniedException;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterService;
-import org.openflexo.model.exceptions.ModelDefinitionException;
-import org.openflexo.model.validation.ValidationIssue;
-import org.openflexo.model.validation.ValidationReport;
+import org.openflexo.localization.LocalizedDelegateImpl;
+import org.openflexo.pamela.exceptions.ModelDefinitionException;
+import org.openflexo.pamela.validation.ValidationIssue;
+import org.openflexo.pamela.validation.ValidationReport;
 import org.openflexo.rm.Resource;
 import org.openflexo.rm.ResourceLocator;
 import org.openflexo.toolbox.FileSystemMetaDataManager;
 import org.openflexo.toolbox.FileUtils;
-import org.openflexo.toolbox.IProgress;
 
 public abstract class VirtualModelResourceImpl extends PamelaResourceImpl<VirtualModel, FMLModelFactory> implements VirtualModelResource {
 
-	static final Logger logger = Logger.getLogger(VirtualModelResourceImpl.class.getPackage().getName());
+	private static final Logger logger = Logger.getLogger(VirtualModelResourceImpl.class.getPackage().getName());
+
+	public static FMLParserFactory FML_PARSER_FACTORY = null;
+	private FMLParser fmlParser;
+
+	static {
+
+		try {
+			Class<? extends FMLParserFactory> FACTORY_CLASS = (Class<? extends FMLParserFactory>) Class
+					.forName("org.openflexo.foundation.fml.parser.DefaultFMLParserFactory");
+			FML_PARSER_FACTORY = FACTORY_CLASS.newInstance();
+		} catch (ClassNotFoundException e) {
+			logger.warning("Cannot find class org.openflexo.foundation.fml.parser.DefaultFMLParserFactory");
+			// e.printStackTrace();
+		} catch (InstantiationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	public FMLParser getFMLParser() {
+		if (fmlParser == null) {
+			if (FML_PARSER_FACTORY != null) {
+				fmlParser = FML_PARSER_FACTORY.makeFMLParser();
+			}
+			else {
+				logger.severe("FMLParserFactory not installed");
+			}
+		}
+		return fmlParser;
+	}
 
 	@Override
 	public String computeDefaultURI() {
@@ -121,7 +155,7 @@ public abstract class VirtualModelResourceImpl extends PamelaResourceImpl<Virtua
 	@Override
 	public VirtualModel getVirtualModel() {
 		try {
-			return getResourceData(null);
+			return getResourceData();
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		} catch (ResourceLoadingCancelledException e) {
@@ -167,21 +201,6 @@ public abstract class VirtualModelResourceImpl extends PamelaResourceImpl<Virtua
 			return getIODelegate().getSerializationArtefactAsResource().getContainer();
 		}
 		return null;
-
-		/*if (getFlexoIODelegate() instanceof FileFlexoIODelegate) {
-			String parentPath = getDirectoryPath();
-			if (ResourceLocator.locateResource(parentPath) == null) {
-				FileSystemResourceLocatorImpl.appendDirectoryToFileSystemResourceLocator(parentPath);
-			}
-			return ResourceLocator.locateResource(parentPath);
-		}
-		else if (getFlexoIODelegate() instanceof InJarFlexoIODelegate) {
-			InJarResourceImpl resource = ((InJarFlexoIODelegate) getFlexoIODelegate()).getInJarResource();
-			String parentPath = FilenameUtils.getFullPath(resource.getRelativePath());
-			BasicResourceImpl parent = ((ClasspathResourceLocatorImpl) (resource.getLocator())).getJarResourcesList().get(parentPath);
-			return parent;
-		}
-		return null;*/
 	}
 
 	public String getDirectoryPath() {
@@ -198,32 +217,21 @@ public abstract class VirtualModelResourceImpl extends PamelaResourceImpl<Virtua
 	 * Activate all required technologies, while exploring declared model slots
 	 */
 	protected void activateRequiredTechnologies() {
-
 		logger.info("activateRequiredTechnologies() for " + this + " used: " + getUsedModelSlots());
 
 		TechnologyAdapterService taService = getServiceManager().getTechnologyAdapterService();
-		List<TechnologyAdapter> requiredTAList = new ArrayList<>();
+		List<TechnologyAdapter<?>> requiredTAList = new ArrayList<>();
 		requiredTAList.add(taService.getTechnologyAdapter(FMLRTTechnologyAdapter.class));
 		for (Class<? extends ModelSlot<?>> msClass : getUsedModelSlots()) {
-			TechnologyAdapter requiredTA = taService.getTechnologyAdapterForModelSlot(msClass);
+			TechnologyAdapter<?> requiredTA = taService.getTechnologyAdapterForModelSlot(msClass);
 			if (!requiredTAList.contains(requiredTA)) {
 				requiredTAList.add(requiredTA);
 			}
 		}
-
-		// List<FlexoTask> waitingTasks = new ArrayList<>();
 		for (TechnologyAdapter requiredTA : requiredTAList) {
 			logger.info("Activating " + requiredTA);
-			/*FlexoTask t =*/ taService.activateTechnologyAdapter(requiredTA, true);
-			/*if (t != null) {
-				waitingTasks.add(t);
-			}*/
+			taService.activateTechnologyAdapter(requiredTA, true);
 		}
-
-		/*for (FlexoTask waitingTask : waitingTasks) {
-			getServiceManager().getTaskManager().waitTask(waitingTask);
-		}*/
-
 	}
 
 	/**
@@ -257,15 +265,15 @@ public abstract class VirtualModelResourceImpl extends PamelaResourceImpl<Virtua
 	 * @throws FileNotFoundException
 	 */
 	@Override
-	public VirtualModel loadResourceData(IProgress progress) throws FlexoFileNotFoundException, IOFlexoException, InvalidXMLException,
+	public VirtualModel loadResourceData() throws FlexoFileNotFoundException, IOFlexoException, InvalidXMLException,
 			InconsistentDataException, InvalidModelDefinitionException {
 
-		logger.info("*************** Loading " + this);
+		logger.info("*************** Loading " + this + " from: " + getIODelegate().getSerializationArtefact());
 
 		// Now we have to activate all required technologies
 		activateRequiredTechnologies();
 
-		VirtualModel returned = super.loadResourceData(progress);
+		VirtualModel returned = super.loadResourceData();
 		// We notify a deserialization start on ViewPoint AND VirtualModel, to avoid addToVirtualModel() and setViewPoint() to notify
 		// UndoManager
 		boolean containerWasDeserializing = getContainer() != null ? getContainer().isDeserializing() : true;
@@ -300,16 +308,26 @@ public abstract class VirtualModelResourceImpl extends PamelaResourceImpl<Virtua
 				}
 				saveResourceData(true);
 			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			} catch (SaveResourcePermissionDeniedException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			} catch (SaveResourceException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 
+		}
+
+		try {
+			// When some contained VMI are declared for this resource, load them now
+			for (FMLRTVirtualModelInstanceResource containedVMIResource : getContainedVMI()) {
+				containedVMIResource.loadResourceData();
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+			throw new IOFlexoException(e);
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.warning("Unhandled Exception");
 		}
 
 		return returned;
@@ -381,6 +399,11 @@ public abstract class VirtualModelResourceImpl extends PamelaResourceImpl<Virtua
 				}
 			}
 		}
+		// Save locales
+		if (getLoadedResourceData().getLocalizedDictionary() instanceof LocalizedDelegateImpl) {
+			((LocalizedDelegateImpl) getLoadedResourceData().getLocalizedDictionary()).save();
+		}
+		// Save meta data
 		saveMetaData();
 	}
 
@@ -470,9 +493,9 @@ public abstract class VirtualModelResourceImpl extends PamelaResourceImpl<Virtua
 				e.printStackTrace();
 			}
 		}
-		else {
+		/*else {
 			logger.warning("Could not access to ServiceManager");
-		}
+		}*/
 	}
 
 	@Override
@@ -488,4 +511,41 @@ public abstract class VirtualModelResourceImpl extends PamelaResourceImpl<Virtua
 		}
 	}
 
+	@Override
+	protected VirtualModel performLoad() throws IOException, Exception {
+		// boolean requiresFMLPrettyPrintInitialization = false;
+		/*if (getIODelegate() instanceof DirectoryBasedIODelegate && getFMLParser() != null) {
+			DirectoryBasedIODelegate ioDelegate = (DirectoryBasedIODelegate) getIODelegate();
+			File fmlFile = new File(ioDelegate.getDirectory(), ioDelegate.getDirectory().getName());
+			System.out.println("Tiens faudrait aussi charger le fichier " + fmlFile);
+			if (fmlFile.exists()) {
+				try {
+					FMLCompilationUnit parsedCompilationUnit = getFMLParser().parse(fmlFile, getFactory());
+				} catch (ParseException e) {
+					logger.warning("Failed to parse " + fmlFile);
+					requiresFMLPrettyPrintInitialization = true;
+				}
+			}
+			else {
+				requiresFMLPrettyPrintInitialization = true;
+			}
+		}*/
+		VirtualModel returned = super.performLoad();
+		/*if (requiresFMLPrettyPrintInitialization && getFMLParser() != null) {
+			FMLCompilationUnit compilationUnit = returned.getCompilationUnit();
+			if (compilationUnit == null) {
+				compilationUnit = returned.getFMLModelFactory().newCompilationUnit();
+				compilationUnit.setVirtualModel(returned);
+			}
+			//getFMLParser().initPrettyPrint(compilationUnit);
+			//System.out.println(returned.getFMLPrettyPrint());
+		}*/
+		return returned;
+	}
+
+	@Override
+	public void resolvedCrossReferenceDependency(FlexoResource<?> requestedResource) {
+		super.resolvedCrossReferenceDependency(requestedResource);
+		//System.out.println("resolvedCrossReferenceDependancy for " + getName());
+	}
 }

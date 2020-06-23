@@ -56,14 +56,17 @@ import org.openflexo.foundation.FlexoObject.FlexoObjectImpl;
 import org.openflexo.foundation.action.FlexoAction;
 import org.openflexo.foundation.action.FlexoActionFactory;
 import org.openflexo.foundation.action.NotImplementedException;
+import org.openflexo.foundation.action.TechnologySpecificFlexoAction;
 import org.openflexo.foundation.fml.FMLModelFactory;
 import org.openflexo.foundation.fml.FMLObject;
+import org.openflexo.foundation.fml.FMLTechnologyAdapter;
 import org.openflexo.foundation.fml.FlexoBehaviourParameter.WidgetType;
 import org.openflexo.foundation.fml.inspector.FlexoConceptInspector;
 import org.openflexo.foundation.fml.inspector.InspectorEntry;
 import org.openflexo.toolbox.StringUtils;
 
-public class CreateInspectorEntry extends FlexoAction<CreateInspectorEntry, FlexoConceptInspector, FMLObject> implements Bindable {
+public class CreateInspectorEntry extends FlexoAction<CreateInspectorEntry, FlexoConceptInspector, FMLObject>
+		implements Bindable, TechnologySpecificFlexoAction<FMLTechnologyAdapter> {
 
 	private static final Logger logger = Logger.getLogger(CreateInspectorEntry.class.getPackage().getName());
 
@@ -114,6 +117,11 @@ public class CreateInspectorEntry extends FlexoAction<CreateInspectorEntry, Flex
 	private CreateInspectorEntry(FlexoConceptInspector focusedObject, Vector<FMLObject> globalSelection, FlexoEditor editor) {
 		super(actionType, focusedObject, globalSelection, editor);
 
+	}
+
+	@Override
+	public Class<? extends FMLTechnologyAdapter> getTechnologyAdapterClass() {
+		return FMLTechnologyAdapter.class;
 	}
 
 	public String getEntryName() {
@@ -325,7 +333,6 @@ public class CreateInspectorEntry extends FlexoAction<CreateInspectorEntry, Flex
 
 	@Override
 	public void notifiedBindingDecoded(DataBinding<?> dataBinding) {
-		// TODO Auto-generated method stub
 
 	}
 

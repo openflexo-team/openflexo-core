@@ -38,8 +38,8 @@
 
 package org.openflexo.foundation.fml;
 
-import org.openflexo.model.annotations.ImplementationClass;
-import org.openflexo.model.annotations.ModelEntity;
+import org.openflexo.pamela.annotations.ImplementationClass;
+import org.openflexo.pamela.annotations.ModelEntity;
 
 /**
  * Root class for any object which is part of the model of an {@link FlexoConcept}<br>
@@ -85,9 +85,12 @@ public interface FlexoConceptObject extends FMLObject {
 
 		@Override
 		public FMLModelFactory getFMLModelFactory() {
-			if (getOwningVirtualModel() != null && getOwningVirtualModel().getFMLModelFactory() != null) {
-				return getOwningVirtualModel().getFMLModelFactory();
+			if (getDeclaringVirtualModel() != null && getDeclaringVirtualModel().getFMLModelFactory() != null) {
+				return getDeclaringVirtualModel().getFMLModelFactory();
 			}
+			/*if (getOwningVirtualModel() != null && getOwningVirtualModel().getFMLModelFactory() != null) {
+				return getOwningVirtualModel().getFMLModelFactory();
+			}*/
 			if (getFlexoConcept() instanceof VirtualModel && ((VirtualModel) getFlexoConcept()).getFMLModelFactory() != null) {
 				return getFlexoConcept().getFMLModelFactory();
 			}
@@ -104,11 +107,14 @@ public interface FlexoConceptObject extends FMLObject {
 
 		@Override
 		public VirtualModel getResourceData() {
-			if (this instanceof VirtualModelObject) {
-				return ((VirtualModelObject) this).getVirtualModel();
+			if (getFlexoConcept() instanceof VirtualModel) {
+				return (VirtualModel) getFlexoConcept();
 			}
 			if (getFlexoConcept() != null && getFlexoConcept().getOwner() != null) {
 				return getFlexoConcept().getOwner();
+			}
+			if (getFlexoConcept() != null && getFlexoConcept().getContainerFlexoConcept() != null) {
+				return getFlexoConcept().getContainerFlexoConcept().getResourceData();
 			}
 			return null;
 		}

@@ -53,8 +53,8 @@ public class InstallDefaultPackagedResourceCenterDirectory {
 
 	public static final Resource FIB_FILE = ResourceLocator.locateResource("Fib/InstallDefaultPackagedResourceCenterDirectory.fib");
 
-	private static final Resource ONTOLOGIES_DIR = ResourceLocator.locateResource("Ontologies");
-	private static final Resource VIEWPOINT_LIBRARY_DIR = ResourceLocator.locateResource("ViewPoints");
+	// private static final Resource ONTOLOGIES_DIR = ResourceLocator.locateResource("Ontologies");
+	// private static final Resource VIEWPOINT_LIBRARY_DIR = ResourceLocator.locateResource("ViewPoints");
 
 	private File resourceCenterDirectory;
 
@@ -77,8 +77,8 @@ public class InstallDefaultPackagedResourceCenterDirectory {
 
 	public void installDefaultPackagedResourceCenter(FlexoResourceCenterService rcService) throws IOException {
 		getResourceCenterDirectory().mkdirs();
-		copyViewPoints(VIEWPOINT_LIBRARY_DIR, getResourceCenterDirectory(), CopyStrategy.REPLACE_OLD_ONLY);
-		copyOntologies(ONTOLOGIES_DIR, getResourceCenterDirectory(), CopyStrategy.REPLACE_OLD_ONLY);
+		// copyViewPoints(VIEWPOINT_LIBRARY_DIR, getResourceCenterDirectory(), CopyStrategy.REPLACE_OLD_ONLY);
+		// copyOntologies(ONTOLOGIES_DIR, getResourceCenterDirectory(), CopyStrategy.REPLACE_OLD_ONLY);
 		DirectoryResourceCenter newRC = DirectoryResourceCenter.instanciateNewDirectoryResourceCenter(getResourceCenterDirectory(),
 				rcService);
 		rcService.addToResourceCenters(newRC);
@@ -92,11 +92,13 @@ public class InstallDefaultPackagedResourceCenterDirectory {
 				return;
 			}
 		}
+		/*
 		try {
 			FileUtils.copyResourceToDir(VIEWPOINT_LIBRARY_DIR, resourceCenterDirectory, copyStrategy);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		*/
 	}
 
 	private static void copyOntologies(Resource initialDirectory, File resourceCenterDirectory, CopyStrategy copyStrategy) {

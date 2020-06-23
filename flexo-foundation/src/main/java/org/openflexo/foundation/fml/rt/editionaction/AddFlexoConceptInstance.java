@@ -41,18 +41,19 @@ package org.openflexo.foundation.fml.rt.editionaction;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.FlexoException;
+import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.annotations.FML;
 import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
 import org.openflexo.foundation.fml.rt.VirtualModelInstance;
-import org.openflexo.model.annotations.DefineValidationRule;
-import org.openflexo.model.annotations.ImplementationClass;
-import org.openflexo.model.annotations.ModelEntity;
-import org.openflexo.model.annotations.XMLElement;
-import org.openflexo.model.validation.ValidationError;
-import org.openflexo.model.validation.ValidationIssue;
-import org.openflexo.model.validation.ValidationRule;
+import org.openflexo.pamela.annotations.DefineValidationRule;
+import org.openflexo.pamela.annotations.ImplementationClass;
+import org.openflexo.pamela.annotations.ModelEntity;
+import org.openflexo.pamela.annotations.XMLElement;
+import org.openflexo.pamela.validation.ValidationError;
+import org.openflexo.pamela.validation.ValidationIssue;
+import org.openflexo.pamela.validation.ValidationRule;
 
 /**
  * This action is used to explicitely instanciate a new {@link FlexoConceptInstance} in a given {@link FMLRTVirtualModelInstance} with some
@@ -88,39 +89,42 @@ public interface AddFlexoConceptInstance<VMI extends VirtualModelInstance<VMI, ?
 		}
 
 		@Override
-		protected FlexoConceptInstance makeNewFlexoConceptInstance(RunTimeEvaluationContext evaluationContext) {
+		protected Class<? extends FlexoConcept> getDynamicFlexoConceptTypeType() {
+			return FlexoConcept.class;
+		}
+
+		@Override
+		protected FlexoConceptInstance makeNewFlexoConceptInstance(RunTimeEvaluationContext evaluationContext) throws FlexoException {
 			FlexoConceptInstance container = null;
 			VMI vmi = getVirtualModelInstance(evaluationContext);
-
-			if (getFlexoConceptType().getContainerFlexoConcept() != null) {
+			FlexoConcept instantiatedFlexoConcept = retrieveFlexoConcept(evaluationContext);
+			if (instantiatedFlexoConcept.getContainerFlexoConcept() != null) {
 				container = getContainer(evaluationContext);
 				if (container == null) {
-					logger.warning("null container while creating new concept " + getFlexoConceptType());
+					logger.warning("null container while creating new concept " + instantiatedFlexoConcept);
 					return null;
 				}
 			}
 
-			return vmi.makeNewFlexoConceptInstance(getFlexoConceptType(), container);
+			return vmi.makeNewFlexoConceptInstance(instantiatedFlexoConcept, container);
 		}
 	}
 
 	@DefineValidationRule
 	public static class AddFlexoConceptInstanceMustAddressACreationScheme
-			extends ValidationRule<AddFlexoConceptInstanceMustAddressACreationScheme, AddFlexoConceptInstance> {
+			extends ValidationRule<AddFlexoConceptInstanceMustAddressACreationScheme, AddFlexoConceptInstance<?>> {
 		public AddFlexoConceptInstanceMustAddressACreationScheme() {
 			super(AddFlexoConceptInstance.class, "add_flexo_concept_action_must_address_a_valid_creation_scheme");
 		}
 
 		@Override
-		public ValidationIssue<AddFlexoConceptInstanceMustAddressACreationScheme, AddFlexoConceptInstance> applyValidation(
-				AddFlexoConceptInstance action) {
-			if (action.getCreationScheme() == null) {
+		public ValidationIssue<AddFlexoConceptInstanceMustAddressACreationScheme, AddFlexoConceptInstance<?>> applyValidation(
+				AddFlexoConceptInstance<?> action) {
+			if (!action.getDynamicInstantiation() && action.getCreationScheme() == null) {
 				if (action.getFlexoConceptType() == null) {
 					return new ValidationError<>(this, action, "add_flexo_concept_action_doesn't_define_any_flexo_concept");
 				}
-				else {
-					return new ValidationError<>(this, action, "add_flexo_concept_action_doesn't_define_any_creation_scheme");
-				}
+				return new ValidationError<>(this, action, "add_flexo_concept_action_doesn't_define_any_creation_scheme");
 			}
 			return null;
 		}

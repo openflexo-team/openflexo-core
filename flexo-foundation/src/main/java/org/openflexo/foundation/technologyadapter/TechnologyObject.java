@@ -47,7 +47,7 @@ import org.openflexo.foundation.FlexoObject;
  * @author sylvain
  * 
  */
-public interface TechnologyObject<TA extends TechnologyAdapter> extends FlexoObject {
+public interface TechnologyObject<TA extends TechnologyAdapter<TA>> extends FlexoObject {
 
 	/**
 	 * Return the {@link TechnologyAdapter} of technical space where this concept exists

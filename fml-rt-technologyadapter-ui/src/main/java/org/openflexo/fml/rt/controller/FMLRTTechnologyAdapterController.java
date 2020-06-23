@@ -72,6 +72,9 @@ import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstanceRepository;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.editionaction.AddFlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.editionaction.AddVirtualModelInstance;
+import org.openflexo.foundation.fml.rt.editionaction.CreateTopLevelVirtualModelInstance;
+import org.openflexo.foundation.fml.rt.editionaction.ExecuteFML;
+import org.openflexo.foundation.fml.rt.editionaction.ExecuteFlexoBehaviour;
 import org.openflexo.foundation.fml.rt.editionaction.SelectFlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.editionaction.SelectVirtualModelInstance;
 import org.openflexo.foundation.technologyadapter.TechnologyObject;
@@ -85,6 +88,7 @@ import org.openflexo.view.ModuleView;
 import org.openflexo.view.controller.ControllerActionInitializer;
 import org.openflexo.view.controller.FlexoController;
 import org.openflexo.view.controller.TechnologyAdapterController;
+import org.openflexo.view.controller.TechnologyAdapterPluginController;
 import org.openflexo.view.controller.model.FlexoPerspective;
 
 /**
@@ -151,7 +155,7 @@ public class FMLRTTechnologyAdapterController extends TechnologyAdapterControlle
 
 	@Override
 	public ImageIcon getTechnologyBigIcon() {
-		return FMLRTIconLibrary.VIRTUAL_MODEL_INSTANCE_MEDIUM_ICON;
+		return FMLRTIconLibrary.VIRTUAL_MODEL_INSTANCE_BIG_ICON;
 	}
 
 	/**
@@ -220,7 +224,10 @@ public class FMLRTTechnologyAdapterController extends TechnologyAdapterControlle
 		if (AddFlexoConceptInstance.class.isAssignableFrom(editionActionClass)) {
 			return IconFactory.getImageIcon(FMLRTIconLibrary.FLEXO_CONCEPT_INSTANCE_ICON, IconLibrary.DUPLICATE);
 		}
-		if (AddVirtualModelInstance.class.isAssignableFrom(editionActionClass)) {
+		else if (CreateTopLevelVirtualModelInstance.class.isAssignableFrom(editionActionClass)) {
+			return IconFactory.getImageIcon(FMLRTIconLibrary.VIRTUAL_MODEL_INSTANCE_ICON, IconLibrary.DUPLICATE);
+		}
+		else if (AddVirtualModelInstance.class.isAssignableFrom(editionActionClass)) {
 			return IconFactory.getImageIcon(FMLRTIconLibrary.VIRTUAL_MODEL_INSTANCE_ICON, IconLibrary.DUPLICATE);
 		}
 		else if (AddClassInstance.class.isAssignableFrom(editionActionClass)) {
@@ -234,6 +241,12 @@ public class FMLRTTechnologyAdapterController extends TechnologyAdapterControlle
 		}
 		else if (DeleteAction.class.isAssignableFrom(editionActionClass)) {
 			return IconFactory.getImageIcon(FMLRTIconLibrary.FLEXO_CONCEPT_INSTANCE_ICON, IconLibrary.DELETE);
+		}
+		else if (ExecuteFlexoBehaviour.class.isAssignableFrom(editionActionClass)) {
+			return FMLIconLibrary.FLEXO_BEHAVIOUR_ICON;
+		}
+		else if (ExecuteFML.class.isAssignableFrom(editionActionClass)) {
+			return FMLIconLibrary.FLEXO_BEHAVIOUR_ICON;
 		}
 
 		return super.getIconForEditionAction(editionActionClass);
@@ -268,6 +281,12 @@ public class FMLRTTechnologyAdapterController extends TechnologyAdapterControlle
 	@Override
 	public boolean hasModuleViewForObject(TechnologyObject<FMLRTTechnologyAdapter> object, FlexoController controller) {
 
+		for (TechnologyAdapterPluginController<?> plugin : getTechnologyAdapterControllerService().getActivatedPlugins()) {
+			if (plugin.hasModuleViewForObject(object)) {
+				return true;
+			}
+		}
+
 		if (object instanceof FMLRTVirtualModelInstance) {
 			return true;
 		}
@@ -296,6 +315,12 @@ public class FMLRTTechnologyAdapterController extends TechnologyAdapterControlle
 	public ModuleView<?> createModuleViewForObject(TechnologyObject<FMLRTTechnologyAdapter> object, FlexoController controller,
 			FlexoPerspective perspective) {
 
+		for (TechnologyAdapterPluginController<?> plugin : getTechnologyAdapterControllerService().getActivatedPlugins()) {
+			if (plugin.hasModuleViewForObject(object)) {
+				return plugin.createModuleViewForObject(object, controller, perspective);
+			}
+		}
+
 		if (object instanceof FMLRTVirtualModelInstance) {
 			FMLRTVirtualModelInstance vmi = (FMLRTVirtualModelInstance) object;
 			return new VirtualModelInstanceView(vmi, controller, perspective);
@@ -310,5 +335,10 @@ public class FMLRTTechnologyAdapterController extends TechnologyAdapterControlle
 	@Override
 	protected FIBTechnologyBrowser<FMLRTTechnologyAdapter> buildTechnologyBrowser(FlexoController controller) {
 		return new FIBVirtualModelInstanceRepositoriesBrowser(getTechnologyAdapter(), controller);
+	}
+
+	@Override
+	public Class<FMLRTPreferences> getPreferencesClass() {
+		return FMLRTPreferences.class;
 	}
 }

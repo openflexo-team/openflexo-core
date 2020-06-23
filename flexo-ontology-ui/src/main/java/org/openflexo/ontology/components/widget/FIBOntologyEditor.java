@@ -79,7 +79,7 @@ import org.openflexo.view.controller.TechnologyAdapterControllerService;
  *            type of {@link TechnologyAdapter}
  */
 @SuppressWarnings("serial")
-public abstract class FIBOntologyEditor<TA extends TechnologyAdapter> extends SelectionSynchronizedFIBView {
+public abstract class FIBOntologyEditor<TA extends TechnologyAdapter<TA>> extends SelectionSynchronizedFIBView {
 	static final Logger logger = Logger.getLogger(FIBOntologyEditor.class.getPackage().getName());
 
 	public static final Resource FIB_FILE = ResourceLocator.locateResource("Fib/FIBOntologyEditor.fib");

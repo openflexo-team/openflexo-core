@@ -38,37 +38,78 @@
 
 package org.openflexo.foundation.fml;
 
-import java.util.HashMap;
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.StringTokenizer;
+import java.util.logging.Logger;
 
+import org.openflexo.connie.type.CustomType;
+import org.openflexo.connie.type.TypeUtils;
 import org.openflexo.toolbox.StringUtils;
 
+/**
+ * Used to compute a FML representation of a graph of FlexoObject
+ * 
+ * @author sylvain
+ *
+ */
 public class FMLRepresentationContext {
 
+	private static final Logger logger = Logger.getLogger(FMLRepresentationContext.class.getPackage().getName());
+
 	private static int INDENTATION = 2;
-	// private int currentIndentation = 0;
-	private final HashMap<String, FMLObject> nameSpaces;
+
+	/**
+	 * References all {@link VirtualModel} involved in serialization of {@link FMLObject} graph
+	 */
+	private List<VirtualModel> fmlImports;
+
+	/**
+	 * References all java packages involved in serialization of {@link FMLObject} graph
+	 */
+	private List<Package> javaImports;
 
 	public FMLRepresentationContext() {
-		// currentIndentation = 0;
-		nameSpaces = new HashMap<>();
+		fmlImports = new ArrayList<>();
+		javaImports = new ArrayList<>();
 	}
 
-	public void addToNameSpaces(FMLObject object) {
-		nameSpaces.put(object.getURI(), object);
-	}
-
-	/*public int getCurrentIndentation() {
-		return currentIndentation;
-	}*/
-
-	public FMLRepresentationContext makeSubContext() {
-		FMLRepresentationContext returned = new FMLRepresentationContext();
-		for (String uri : nameSpaces.keySet()) {
-			returned.nameSpaces.put(uri, nameSpaces.get(uri));
+	public String serializeType(Type type) {
+		if (type instanceof CustomType) {
+			if (type instanceof FlexoConceptInstanceType) {
+				FlexoConcept concept = ((FlexoConceptInstanceType) type).getFlexoConcept();
+				if (concept != null) {
+					ensureReferenceInImport(concept);
+					return concept.getName();
+				}
+			}
+			logger.warning("FMLSerialization: cannot serialize CustomType " + type);
+			return serializeType(((CustomType) type).getBaseClass());
 		}
-		// returned.currentIndentation = currentIndentation + 1;
-		return returned;
+		Class<?> baseClass = TypeUtils.getBaseClass(type);
+		ensureReferenceInImport(baseClass);
+		return baseClass.getSimpleName();
+	}
+
+	private void ensureReferenceInImport(FlexoConcept concept) {
+		if (concept == null) {
+			return;
+		}
+		VirtualModel virtualModel = concept.getDeclaringVirtualModel();
+		if (!fmlImports.contains(virtualModel)) {
+			fmlImports.add(virtualModel);
+		}
+	}
+
+	private void ensureReferenceInImport(Class<?> usedClass) {
+		if (usedClass == null) {
+			return;
+		}
+		Package classPackage = usedClass.getPackage();
+		if (!javaImports.contains(classPackage)) {
+			javaImports.add(classPackage);
+		}
 	}
 
 	public static class FMLRepresentationOutput {

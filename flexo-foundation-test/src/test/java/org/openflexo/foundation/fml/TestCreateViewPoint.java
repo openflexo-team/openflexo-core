@@ -52,7 +52,7 @@ import org.openflexo.foundation.fml.rm.VirtualModelResourceFactory;
 import org.openflexo.foundation.resource.DirectoryResourceCenter;
 import org.openflexo.foundation.resource.SaveResourceException;
 import org.openflexo.foundation.test.OpenflexoTestCase;
-import org.openflexo.model.exceptions.ModelDefinitionException;
+import org.openflexo.pamela.exceptions.ModelDefinitionException;
 import org.openflexo.test.OrderedRunner;
 import org.openflexo.test.TestOrder;
 
@@ -104,7 +104,7 @@ public class TestCreateViewPoint extends OpenflexoTestCase {
 
 		assertNotNull(newViewPoint.getLocalizedDictionary());
 
-		assertEquals(newViewPoint, newViewPoint.getVirtualModel());
+		assertEquals(newViewPoint, newViewPoint.getDeclaringVirtualModel());
 		assertEquals(null, newViewPoint.getContainerVirtualModel());
 		assertEquals(newViewPoint, newViewPoint.getFlexoConcept());
 		assertEquals(newViewPoint, newViewPoint.getResourceData());
@@ -143,7 +143,7 @@ public class TestCreateViewPoint extends OpenflexoTestCase {
 		assertSame(retrievedVPResource1, retrievedVPResource2);
 
 		VirtualModel reloadedViewPoint = retrievedVPResource1.getVirtualModel();
-		assertEquals(reloadedViewPoint, reloadedViewPoint.getVirtualModel());
+		assertEquals(reloadedViewPoint, reloadedViewPoint.getDeclaringVirtualModel());
 		assertEquals(null, reloadedViewPoint.getContainerVirtualModel());
 		assertEquals(reloadedViewPoint, reloadedViewPoint.getFlexoConcept());
 		assertEquals(reloadedViewPoint, reloadedViewPoint.getResourceData());

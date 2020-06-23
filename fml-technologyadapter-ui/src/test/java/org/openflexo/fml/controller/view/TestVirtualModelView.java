@@ -49,6 +49,7 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.type.PrimitiveType;
@@ -81,6 +82,7 @@ import org.openflexo.rm.Resource;
 import org.openflexo.rm.ResourceLocator;
 import org.openflexo.test.OrderedRunner;
 import org.openflexo.test.TestOrder;
+import org.openflexo.test.UITest;
 
 /**
  * Test FlexoConceptPanel fib
@@ -115,6 +117,7 @@ public class TestVirtualModelView extends OpenflexoFIBTestCase {
 
 	@Test
 	@TestOrder(1)
+	@Category(UITest.class)
 	public void testLoadWidget() {
 
 		fibResource = ResourceLocator.locateResource("Fib/FML/VirtualModelView.fib");
@@ -123,6 +126,7 @@ public class TestVirtualModelView extends OpenflexoFIBTestCase {
 
 	@Test
 	@TestOrder(2)
+	@Category(UITest.class)
 	public void testValidateWidget() throws InterruptedException {
 
 		validateFIB(fibResource);
@@ -130,6 +134,7 @@ public class TestVirtualModelView extends OpenflexoFIBTestCase {
 
 	@Test
 	@TestOrder(3)
+	@Category(UITest.class)
 	public void loadConcepts() throws FileNotFoundException, ResourceLoadingCancelledException, FlexoException {
 
 		VirtualModelLibrary vpLib = serviceManager.getVirtualModelLibrary();
@@ -260,6 +265,7 @@ public class TestVirtualModelView extends OpenflexoFIBTestCase {
 
 	@Test
 	@TestOrder(4)
+	@Category(UITest.class)
 	public void testInstanciateWidget() {
 
 		FIBJPanel<VirtualModel> widget = instanciateFIB(fibResource, virtualModel, VirtualModel.class);

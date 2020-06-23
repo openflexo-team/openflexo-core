@@ -51,7 +51,7 @@ import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
  * This is the {@link BindingModel} exposed by a {@link VirtualModel}<br>
  * This {@link BindingModel} is based on ViewPoint's (owner of this VirtualModel) {@link BindingModel}
  * 
- * Provides access to the {@link View}<br>
+ * Provides access to the {@link VirtualModelInstance}<br>
  * Allows reflexive access to the {@link VirtualModel} itself<br>
  * 
  * Note that default {@link RunTimeEvaluationContext} corresponding to this {@link BindingModel} is a {@link FMLRTVirtualModelInstance}
@@ -62,22 +62,6 @@ import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
  */
 public class VirtualModelBindingModel extends FlexoConceptBindingModel {
 
-	// private final VirtualModel virtualModel;
-
-	// private BindingVariable reflexiveAccessBindingVariable;
-	// private BindingVariable virtualModelInstanceBindingVariable;
-
-	// public static final String REFLEXIVE_ACCESS_PROPERTY = "virtualModelDefinition";
-	// public static final String VIRTUAL_MODEL_INSTANCE_PROPERTY = "virtualModelInstance";
-
-	/*@Deprecated
-	public static final String PROJECT_PROPERTY = "project";
-	public static final String RC_PROPERTY = "resourceCenter";
-	
-	@Deprecated
-	private final BindingVariable projectBindingVariable;
-	private final BindingVariable rcBindingVariable;*/
-
 	/**
 	 * Build a new {@link BindingModel} dedicated to a VirtualModel
 	 * 
@@ -87,44 +71,11 @@ public class VirtualModelBindingModel extends FlexoConceptBindingModel {
 		super(virtualModel.getContainerVirtualModel() != null && virtualModel != virtualModel.getContainerVirtualModel()
 				? virtualModel.getContainerVirtualModel().getBindingModel()
 				: null, virtualModel);
-		// this.virtualModel = virtualModel;
-		// virtualModelInstanceBindingVariable = new BindingVariable(VIRTUAL_MODEL_INSTANCE_PROPERTY,
-		// VirtualModelInstanceType.getVirtualModelInstanceType(virtualModel));
-		// addToBindingVariables(virtualModelInstanceBindingVariable);
-		// reflexiveAccessBindingVariable = new BindingVariable(REFLEXIVE_ACCESS_PROPERTY, VirtualModel.class);
-		// addToBindingVariables(reflexiveAccessBindingVariable);
-
-		/*if (virtualModel.getContainerVirtualModel() != null) {
-			containerBindingVariable = new BindingVariable(CONTAINER_PROPERTY, virtualModel.getContainerVirtualModel().getInstanceType());
-			addToBindingVariables(containerBindingVariable);
-		}*/
-
-		/*projectBindingVariable = new BindingVariable(PROJECT_PROPERTY, FlexoProject.class);
-		addToBindingVariables(projectBindingVariable);
-		
-		rcBindingVariable = new BindingVariable(RC_PROPERTY, FlexoResourceCenter.class);
-		addToBindingVariables(rcBindingVariable);*/
-
 	}
 
 	public VirtualModel getVirtualModel() {
 		return (VirtualModel) getFlexoConcept();
 	}
-
-	/*public BindingVariable getVirtualModelInstanceBindingVariable() {
-		return virtualModelInstanceBindingVariable;
-	}*/
-
-	/**
-	 * Return the reflexive access {@link BindingVariable}<br>
-	 * (Allows reflexive access to the {@link VirtualModel} itself)
-	 * 
-	 * @return
-	 */
-	/*@Override
-	public BindingVariable getReflexiveAccessBindingVariable() {
-		return reflexiveAccessBindingVariable;
-	}*/
 
 	@Override
 	protected void updateContainerBindingVariable() {
@@ -189,9 +140,4 @@ public class VirtualModelBindingModel extends FlexoConceptBindingModel {
 		}
 
 	}
-
-	/*protected VirtualModelInstanceType getVirtualModelInstanceType() {
-		return VirtualModelInstanceType.getVirtualModelInstanceType(virtualModel);
-	}*/
-
 }

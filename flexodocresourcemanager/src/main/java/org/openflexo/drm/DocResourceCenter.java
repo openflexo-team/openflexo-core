@@ -48,9 +48,9 @@ import org.openflexo.drm.dm.DocResourceCenterIsModified;
 import org.openflexo.foundation.resource.FlexoResource;
 import org.openflexo.foundation.resource.ResourceData;
 import org.openflexo.localization.Language;
-import org.openflexo.model.annotations.ModelEntity;
-import org.openflexo.model.exceptions.ModelDefinitionException;
-import org.openflexo.model.validation.ValidationModel;
+import org.openflexo.pamela.annotations.ModelEntity;
+import org.openflexo.pamela.exceptions.ModelDefinitionException;
+import org.openflexo.pamela.validation.ValidationModel;
 
 // TODO: this model should be migrated to PAMELA
 @ModelEntity
@@ -101,7 +101,6 @@ public class DocResourceCenter extends DocItemFolder implements ResourceData<Doc
 			try {
 				_drmValidationModel = new DRMValidationModel();
 			} catch (ModelDefinitionException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}

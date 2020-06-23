@@ -88,6 +88,7 @@ public interface FlexoTaskManager extends FlexoService, HasPropertyChangeSupport
 	/**
 	 * Shutdown the task manager, let all running and scheduled tasks been executed
 	 */
+	@Override
 	public void stop();
 
 	/**
@@ -106,15 +107,4 @@ public interface FlexoTaskManager extends FlexoService, HasPropertyChangeSupport
 	 * @return
 	 */
 	public boolean isTerminated();
-
-	/**
-	 * Should not be used as it uses {@link #Thread.stop()} to force interruption of task<br>
-	 * Consistency is no more guaranteed<br>
-	 * Use this only as rescue service
-	 * 
-	 * @param task
-	 */
-	@Deprecated
-	public void forceStopExecution(FlexoTask task);
-
 }

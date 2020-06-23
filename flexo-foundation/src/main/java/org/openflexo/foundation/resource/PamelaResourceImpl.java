@@ -43,6 +43,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -61,6 +62,7 @@ import org.jdom2.input.SAXBuilder;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.IOFlexoException;
 import org.openflexo.foundation.InconsistentDataException;
+import org.openflexo.foundation.InnerResourceData;
 import org.openflexo.foundation.InvalidModelDefinitionException;
 import org.openflexo.foundation.InvalidXMLException;
 import org.openflexo.foundation.PamelaResourceModelFactory;
@@ -68,16 +70,15 @@ import org.openflexo.foundation.action.FlexoUndoManager;
 import org.openflexo.foundation.action.FlexoUndoManager.IgnoreHandler;
 import org.openflexo.foundation.utils.ProjectLoadingCancelledException;
 import org.openflexo.kvc.AccessorInvocationException;
-import org.openflexo.model.exceptions.InvalidDataException;
-import org.openflexo.model.exceptions.ModelDefinitionException;
-import org.openflexo.model.factory.AccessibleProxyObject;
-import org.openflexo.model.factory.EditingContext;
-import org.openflexo.model.factory.EmbeddingType;
-import org.openflexo.model.factory.ModelFactory;
-import org.openflexo.model.undo.AtomicEdit;
+import org.openflexo.pamela.exceptions.InvalidDataException;
+import org.openflexo.pamela.exceptions.ModelDefinitionException;
+import org.openflexo.pamela.factory.AccessibleProxyObject;
+import org.openflexo.pamela.factory.EditingContext;
+import org.openflexo.pamela.factory.EmbeddingType;
+import org.openflexo.pamela.factory.ModelFactory;
+import org.openflexo.pamela.undo.AtomicEdit;
 import org.openflexo.toolbox.FileUtils;
 import org.openflexo.toolbox.FlexoVersion;
-import org.openflexo.toolbox.IProgress;
 
 import com.google.common.base.Throwables;
 
@@ -106,10 +107,8 @@ public abstract class PamelaResourceImpl<RD extends ResourceData<RD> & Accessibl
 	 * @throws SaveResourceException
 	 */
 	@Override
-	public final void save(IProgress progress) throws SaveResourceException {
-		if (progress != null) {
-			progress.setProgress(getLocales().localizedForKey("saving") + " " + this.getName());
-		}
+	public final void save() throws SaveResourceException {
+		// progress.setProgress(getLocales().localizedForKey("saving") + " " + this.getName());
 		if (!isLoaded()) {
 			return;
 		}
@@ -182,21 +181,21 @@ public abstract class PamelaResourceImpl<RD extends ResourceData<RD> & Accessibl
 	 * @see org.openflexo.foundation.rm.FlexoResource#loadResourceData()
 	 */
 	@Override
-	public RD loadResourceData(IProgress progress) throws FlexoFileNotFoundException, IOFlexoException, InvalidXMLException,
-			InconsistentDataException, InvalidModelDefinitionException {
+	public RD loadResourceData() throws FlexoFileNotFoundException, IOFlexoException, InvalidXMLException, InconsistentDataException,
+			InvalidModelDefinitionException {
 		if (resourceData != null) {
 			// already loaded
 			return resourceData;
 		}
 
+		notifyResourceWillLoad();
+
 		startDeserializing();
 
 		isLoading = true;
-		if (progress != null) {
-			progress.setProgress(getLocales().localizedForKey("loading") + " " + this.getName());
-			progress.resetSecondaryProgress(4);
-			progress.setProgress(getLocales().localizedForKey("loading_from_disk"));
-		}
+		// progress.setProgress(getLocales().localizedForKey("loading") + " " + this.getName());
+		// progress.resetSecondaryProgress(4);
+		// progress.setProgress(getLocales().localizedForKey("loading_from_disk"));
 
 		if (logger.isLoggable(Level.FINE)) {
 			logger.fine("Load resource data for " + this);
@@ -247,7 +246,6 @@ public abstract class PamelaResourceImpl<RD extends ResourceData<RD> & Accessibl
 			e.printStackTrace();
 			logger.warning("Unhandled Exception");
 		} finally {
-			isLoading = false;
 			/*
 			 * if (ignoreHandler != null) {
 			 * undoManager.removeFromIgnoreHandlers(ignoreHandler); //
@@ -255,6 +253,10 @@ public abstract class PamelaResourceImpl<RD extends ResourceData<RD> & Accessibl
 			 * getURI()); }
 			 */
 			stopDeserializing();
+			isLoading = false;
+			// That's fine, resource is loaded, now let's notify the loading of
+			// the resources
+			notifyResourceLoaded();
 
 		}
 		return null;
@@ -357,9 +359,23 @@ public abstract class PamelaResourceImpl<RD extends ResourceData<RD> & Accessibl
 	 * 
 	 * @return
 	 */
-	public StreamIODelegate<?> getFlexoIOStreamDelegate() {
+	public final StreamIODelegate<?> getFlexoIOStreamDelegate() {
 		if (getIODelegate() instanceof StreamIODelegate) {
 			return (StreamIODelegate<?>) getIODelegate();
+		}
+		return null;
+	}
+
+	public final InputStream getInputStream() {
+		if (getFlexoIOStreamDelegate() != null) {
+			return getFlexoIOStreamDelegate().getInputStream();
+		}
+		return null;
+	}
+
+	public final OutputStream getOutputStream() {
+		if (getFlexoIOStreamDelegate() != null) {
+			return getFlexoIOStreamDelegate().getOutputStream();
 		}
 		return null;
 	}
@@ -387,7 +403,7 @@ public abstract class PamelaResourceImpl<RD extends ResourceData<RD> & Accessibl
 		}
 		if (clearIsModified) {
 			try {
-				getResourceData(null).clearIsModified(false);
+				getResourceData().clearIsModified(false);
 				// No need to reset the last memory update since it is valid
 				notifyResourceSaved();
 			} catch (Exception e) {
@@ -550,7 +566,6 @@ public abstract class PamelaResourceImpl<RD extends ResourceData<RD> & Accessibl
 
 	@Override
 	public FlexoVersion latestVersion() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -610,6 +625,53 @@ public abstract class PamelaResourceImpl<RD extends ResourceData<RD> & Accessibl
 			objects.put(object.getUserIdentifier(), objectsForUserIdentifier);
 		}
 		objectsForUserIdentifier.put(object.getFlexoID(), object);
+	}
+
+	/**
+	 * Generic method used to retrieve in this resource an object with supplied objectIdentifier, userIdentifier, and type identifier<br>
+	 * 
+	 * Note that for certain resources, some parameters might not be used (for example userIdentifier or typeIdentifier)
+	 * 
+	 * @param objectIdentifier
+	 * @param userIdentifier
+	 * @param typeIdentifier
+	 * @return
+	 */
+	@Override
+	public FlexoObject findObject(String objectIdentifier, String userIdentifier, String typeIdentifier) {
+		return getFlexoObject(Long.parseLong(objectIdentifier), userIdentifier);
+	}
+
+	/**
+	 * Used to compute identifier of an object asserting this object is the {@link ResourceData} itself, or a {@link InnerResourceData}
+	 * object stored inside this resource
+	 * 
+	 * @param object
+	 * @return a String identifying supplied object (semantics is composite key using userIdentifier and typeIdentifier)
+	 */
+	@Override
+	public String getObjectIdentifier(Object object) {
+		if (object instanceof FlexoObject) {
+			return Long.toString(((FlexoObject) object).getFlexoID());
+		}
+		logger.warning("Object " + object + " is not a FlexoObject");
+		return "???";
+	}
+
+	/**
+	 * Used to compute user identifier of an object asserting this object is the {@link ResourceData} itself, or a {@link InnerResourceData}
+	 * object stored inside this resource
+	 * 
+	 * @param object
+	 * @return a String identifying author (user) of supplied object
+	 */
+	@Override
+	public String getUserIdentifier(Object object) {
+		if (object instanceof FlexoObject) {
+			return ((FlexoObject) object).getUserIdentifier();
+		}
+		logger.warning("Object " + object + " is not a FlexoObject");
+		return "FLX";
 	}
 
 	/**

@@ -76,7 +76,7 @@ import org.openflexo.rm.ResourceLocator;
  * 
  */
 @SuppressWarnings("serial")
-public class FIBDocFragmentSelector<F extends FlexoDocFragment<D, TA>, D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter>
+public class FIBDocFragmentSelector<F extends FlexoDocFragment<D, TA>, D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter<TA>>
 		extends FIBFlexoObjectSelector<F> {
 
 	static final Logger logger = Logger.getLogger(FIBDocFragmentSelector.class.getPackage().getName());

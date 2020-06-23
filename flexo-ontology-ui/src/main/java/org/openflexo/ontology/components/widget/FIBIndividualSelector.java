@@ -89,7 +89,7 @@ import org.openflexo.view.controller.TechnologyAdapterControllerService;
  *            type of {@link TechnologyAdapter}
  */
 @SuppressWarnings("serial")
-public class FIBIndividualSelector<TA extends TechnologyAdapter> extends FIBFlexoObjectSelector<IFlexoOntologyIndividual<TA>>
+public class FIBIndividualSelector<TA extends TechnologyAdapter<TA>> extends FIBFlexoObjectSelector<IFlexoOntologyIndividual<TA>>
 		implements Bindable {
 	static final Logger logger = Logger.getLogger(FIBIndividualSelector.class.getPackage().getName());
 
@@ -240,7 +240,6 @@ public class FIBIndividualSelector<TA extends TechnologyAdapter> extends FIBFlex
 
 		@Override
 		public Object getValue(BindingVariable variable) {
-			// TODO Auto-generated method stub
 			return null;
 		}
 	}

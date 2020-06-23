@@ -39,9 +39,9 @@
 
 package org.openflexo.foundation.technologyadapter;
 
-import org.openflexo.foundation.fml.VirtualModelObject;
+import org.openflexo.foundation.fml.FlexoConceptObject;
 import org.openflexo.foundation.resource.ResourceData;
-import org.openflexo.model.annotations.ModelEntity;
+import org.openflexo.pamela.annotations.ModelEntity;
 
 /**
  * Implemented by all objects taking part of {@link ModelSlot} definition
@@ -50,7 +50,7 @@ import org.openflexo.model.annotations.ModelEntity;
  *
  */
 @ModelEntity(isAbstract = true)
-public interface ModelSlotObject<RD extends ResourceData<RD> & TechnologyObject<?>> extends VirtualModelObject {
+public interface ModelSlotObject<RD extends ResourceData<RD> & TechnologyObject<?>> extends FlexoConceptObject {
 
 	public ModelSlot<RD> getModelSlot();
 

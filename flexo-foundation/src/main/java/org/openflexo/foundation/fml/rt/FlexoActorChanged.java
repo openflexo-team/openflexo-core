@@ -41,12 +41,12 @@ package org.openflexo.foundation.fml.rt;
 import org.openflexo.foundation.DataModification;
 import org.openflexo.foundation.fml.FlexoProperty;
 
-public class FlexoActorChanged extends DataModification {
+public class FlexoActorChanged<T> extends DataModification<T> {
 
 	private final FlexoConceptInstance flexoConceptInstance;
-	private final FlexoProperty<?> property;
+	private final FlexoProperty<T> property;
 
-	public <T> FlexoActorChanged(FlexoConceptInstance flexoConceptInstance, FlexoProperty<T> property, T oldActor, T newActor) {
+	public FlexoActorChanged(FlexoConceptInstance flexoConceptInstance, FlexoProperty<T> property, T oldActor, T newActor) {
 		super(oldActor, newActor);
 		this.flexoConceptInstance = flexoConceptInstance;
 		this.property = property;
@@ -56,7 +56,7 @@ public class FlexoActorChanged extends DataModification {
 		return flexoConceptInstance;
 	}
 
-	public FlexoProperty<?> getFlexoProperty() {
+	public FlexoProperty<T> getFlexoProperty() {
 		return property;
 	}
 }

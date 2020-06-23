@@ -39,9 +39,6 @@
 
 package org.openflexo.view.controller.action;
 
-import java.util.EventObject;
-import java.util.logging.Logger;
-
 import javax.swing.Icon;
 
 import org.openflexo.components.wizard.Wizard;
@@ -49,8 +46,7 @@ import org.openflexo.components.wizard.WizardDialog;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.action.CreateProject;
 import org.openflexo.foundation.action.FlexoActionFactory;
-import org.openflexo.foundation.action.FlexoActionFinalizer;
-import org.openflexo.foundation.action.FlexoActionInitializer;
+import org.openflexo.foundation.action.FlexoActionRunnable;
 import org.openflexo.foundation.project.FlexoProjectResource;
 import org.openflexo.foundation.resource.RepositoryFolder;
 import org.openflexo.foundation.task.Progress;
@@ -61,44 +57,28 @@ import org.openflexo.view.controller.ActionInitializer;
 import org.openflexo.view.controller.ControllerActionInitializer;
 
 public class CreateProjectInitializer extends ActionInitializer<CreateProject, RepositoryFolder<FlexoProjectResource<?>, ?>, FlexoObject> {
-
-	private static final Logger logger = Logger.getLogger(ControllerActionInitializer.class.getPackage().getName());
-
 	public CreateProjectInitializer(ControllerActionInitializer actionInitializer) {
 		super(CreateProject.actionType, actionInitializer);
 	}
 
 	@Override
-	protected FlexoActionInitializer<CreateProject> getDefaultInitializer() {
-		return new FlexoActionInitializer<CreateProject>() {
-			@Override
-			public boolean run(EventObject e, CreateProject action) {
-				Progress.forceHideTaskBar();
-				Wizard wizard = new CreateProjectWizard(action, getController());
-				WizardDialog dialog = new WizardDialog(wizard, getController());
-				dialog.showDialog();
-				Progress.stopForceHideTaskBar();
-				if (dialog.getStatus() != Status.VALIDATED) {
-					// Operation cancelled
-					return false;
-				}
-				return true;
+	protected FlexoActionRunnable<CreateProject, RepositoryFolder<FlexoProjectResource<?>, ?>, FlexoObject> getDefaultInitializer() {
+		return (e, action) -> {
+			Progress.forceHideTaskBar();
+			Wizard wizard = new CreateProjectWizard(action, getController());
+			WizardDialog dialog = new WizardDialog(wizard, getController());
+			dialog.showDialog();
+			Progress.stopForceHideTaskBar();
+			if (dialog.getStatus() != Status.VALIDATED) {
+				// Operation cancelled
+				return false;
 			}
+			return true;
 		};
 	}
 
 	@Override
-	protected FlexoActionFinalizer<CreateProject> getDefaultFinalizer() {
-		return new FlexoActionFinalizer<CreateProject>() {
-			@Override
-			public boolean run(EventObject e, CreateProject action) {
-				return true;
-			}
-		};
-	}
-
-	@Override
-	protected Icon getEnabledIcon(FlexoActionFactory actionType) {
+	protected Icon getEnabledIcon(FlexoActionFactory<CreateProject, RepositoryFolder<FlexoProjectResource<?>, ?>, FlexoObject> actionType) {
 		return IconFactory.getImageIcon(IconLibrary.OPENFLEXO_NOTEXT_16, IconLibrary.NEW_MARKER);
 	}
 

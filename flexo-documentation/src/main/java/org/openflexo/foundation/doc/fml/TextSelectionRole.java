@@ -26,8 +26,8 @@ import org.openflexo.foundation.fml.FlexoRole;
 import org.openflexo.foundation.fml.rt.AbstractVirtualModelInstanceModelFactory;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
-import org.openflexo.model.annotations.ImplementationClass;
-import org.openflexo.model.annotations.ModelEntity;
+import org.openflexo.pamela.annotations.ImplementationClass;
+import org.openflexo.pamela.annotations.ModelEntity;
 
 /**
  * A role that allows to point on a given {@link TextSelection} in a {@link FlexoDocument}
@@ -40,11 +40,12 @@ import org.openflexo.model.annotations.ModelEntity;
  */
 @ModelEntity(isAbstract = true)
 @ImplementationClass(TextSelectionRole.TextSelectionRoleImpl.class)
-public interface TextSelectionRole<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter> extends FlexoRole<TextSelection<D, TA>> {
+public interface TextSelectionRole<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter<TA>>
+		extends FlexoRole<TextSelection<D, TA>> {
 
 	public FlexoDocument<D, TA> getDocument();
 
-	public static abstract class TextSelectionRoleImpl<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter>
+	public static abstract class TextSelectionRoleImpl<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter<TA>>
 			extends FlexoRoleImpl<TextSelection<D, TA>> implements TextSelectionRole<D, TA> {
 
 		@Override

@@ -1,0 +1,343 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Panel id="0" align="left" borderTop="5" borderLeft="0" trackViewPortHeight="true" trackViewPortWidth="true" borderBottom="0" border="empty" sizeAdjustment="OriginalSize" titleFont="Lucida Grande,0,13" layout="gridbag" borderRight="0" height="500" width="600" controllerClassName="org.openflexo.gina.swing.utils.localization.FIBLocalizedEditorController" name="LocalizedEditor">
+  <Label id="1" label="parent_locales" align="left" localize="true" constraints="gridbag(anchor=east;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=0;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;padX=0;padY=0;weightX=0.0;weightY=0.0)" visible="(data.parent != null)" index="0" name="ParentLocalesLabel" />
+  <TextField id="2" columns="7" text="TextField" localize="true" readOnly="true" data="((data.parent != null) ? data.parent.toString : &quot;none&quot;)" constraints="gridbag(anchor=west;fill=horizontal;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=1;insetsBottom=0;insetsLeft=0;insetsRight=10;insetsTop=0;padX=0;padY=0;weightX=1.0;weightY=0.0)" visible="(data.parent != null)" index="1" name="TextField" />
+  <Label id="3" label="open_parent_locales_link" align="left" localize="true" clickAction="controller.showParentLocalizedEditor()" constraints="gridbag(anchor=center;fill=none;gridHeight=1;gridWidth=0;gridX=-1;gridY=-1;index=2;insetsBottom=0;insetsLeft=0;insetsRight=15;insetsTop=0;padX=0;padY=0;weightX=0.0;weightY=0.0)" visible="(data.parent != null)" index="2" font="LucidaGrande,0,10" name="ParentLocalesLink" />
+  <Label id="4" label="" align="left" constraints="gridbag(anchor=center;fill=none;gridHeight=1;gridWidth=0;gridX=-1;gridY=-1;index=3;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;padX=0;padY=0;weightX=0.0;weightY=0.0)" visible="(data.parent = null)" index="3" name="Label" />
+  <Label id="5" label="directory" align="left" localize="true" constraints="gridbag(anchor=east;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=4;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;padX=0;padY=0;weightX=0.0;weightY=0.0)" visible="(data.localizedDirectory != null)" index="4" name="DirectoryLabel" />
+  <File id="6" localize="true" data="data.localizedDirectory" constraints="gridbag(anchor=center;fill=horizontal;gridHeight=1;gridWidth=0;gridX=-1;gridY=-1;index=5;insetsBottom=5;insetsLeft=0;insetsRight=10;insetsTop=0;padX=0;padY=0;weightX=0.0;weightY=0.0)" visible="(data.localizedDirectory != null)" index="5" name="FileSelector" />
+  <TabPanel id="7" constraints="gridbag(anchor=center;fill=both;gridHeight=1;gridWidth=0;gridX=-1;gridY=-1;index=6;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;padX=0;padY=0;weightX=1.0;weightY=1.0)" index="6" name="FIBTabPanel2">
+    <Tab id="8" title="all_entries" align="left" borderTop="0" borderLeft="0" trackViewPortHeight="true" trackViewPortWidth="true" borderBottom="0" border="empty" sizeAdjustment="OriginalSize" titleFont="Lucida Grande,0,13" layout="gridbag" borderRight="0" index="1" name="FIBTab4">
+      <Table id="9" backgroundSelectionColor="41,90,209" boundToSelectionManager="true" backgroundNonSelectionColor="255,255,255" iteratorClassName="org.openflexo.localization.LocalizedDelegate$LocalizedEntry" textSelectionColor="255,255,255" backgroundSecondarySelectionColor="173,215,255" lookAndFeel="Classic" textNonSelectionColor="0,0,0" selected="controller.selectedEntry" selectionMode="MultipleIntervalSelection" localize="true" manageDynamicModel="true" data="data.entries" constraints="gridbag(anchor=center;fill=both;gridHeight=1;gridWidth=0;gridX=-1;gridY=-1;index=0;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=center;padX=0;padY=0;weightX=1.0;weightY=3.0;x=0;y=0)" index="0" font="Lucida Grande,0,11" name="EntryTable">
+        <IconColumn id="10" data="controller.getIconForEntry(iterator)" resizable="false" title="icon" displayTitle="false" columnWidth="20" showIcon="false" name="icon" />
+        <TextFieldColumn id="11" data="iterator.key" resizable="true" title="key" displayTitle="true" columnWidth="100" showIcon="false" font="LucidaGrande-Bold,1,11" name="textfield" />
+        <TextFieldColumn id="12" color="controller.getColorForFrenchValue(iterator)" data="iterator.french" resizable="true" title="French" displayTitle="true" columnWidth="100" showIcon="false" name="textfield" />
+        <TextFieldColumn id="13" color="controller.getColorForEnglishValue(iterator)" data="iterator.english" resizable="true" title="English" displayTitle="true" columnWidth="100" showIcon="false" name="textfield" />
+        <TextFieldColumn id="14" color="controller.getColorForDutchValue(iterator)" data="iterator.dutch" resizable="true" title="Dutch" displayTitle="true" columnWidth="100" showIcon="false" name="textfield" />
+        <CheckBoxColumn id="15" data="iterator.isHTML" resizable="false" title="HTML" displayTitle="true" columnWidth="40" showIcon="false" name="checkbox" />
+        <AddAction id="16" method="controller.addEntry" name="add" />
+        <RemoveAction id="17" method="controller.removeEntry(selected)" name="remove" />
+        <CustomAction id="18" method="controller.refresh()" name="refresh" />
+        <CustomAction id="19" method="controller.searchLocalized()" name="search_localized" />
+        <CustomAction id="20" method="controller.removeUnecessaryLocalized()" name="remove_unecessary_localized" />
+        <CustomAction id="21" method="controller.apply()" name="apply_localized" />
+      </Table>
+      <TabPanel id="22" constraints="gridbag(anchor=center;fill=both;gridHeight=1;gridWidth=0;gridX=-1;gridY=-1;index=1;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;padX=0;padY=0;weightX=1.0;weightY=1.0)" visible="((EntryTable.selected != null) &amp; EntryTable.selected.isHTML)" index="1" name="FIBTabPanel">
+        <Tab id="23" title="french" align="left" borderTop="0" borderTitle="Panel" borderLeft="0" trackViewPortHeight="true" trackViewPortWidth="true" borderBottom="0" border="empty" sizeAdjustment="OriginalSize" titleFont="Lucida Grande,0,13" layout="border" borderRight="0" constraints="gridbag(anchor=center;fill=both;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=1;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;padX=0;padY=0;weightX=1.0;weightY=1.0)" index="0" name="FIBTab">
+          <HTMLEditor id="24" localize="true" data="EntryTable.selected.french" constraints="border(anchor=center;fill=both;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=1;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=center;padX=0;padY=0;weightX=1.0;weightY=1.0)" index="1" name="HTMLEditor">
+            <Line1Option id="25" name="EditPanel" />
+            <Line1Option id="26" index="1" name="EditPanel.CutButton" />
+            <Line1Option id="27" index="2" name="EditPanel.CopyButton" />
+            <Line1Option id="28" index="3" name="EditPanel.PasteButton" />
+            <Line1Option id="29" index="4" name="EditPanel.PasteAsTextButton" />
+            <Line1Option id="30" index="1" name="UndoRedoPanel" />
+            <Line1Option id="31" index="6" name="UndoRedoPanel.UndoButton" />
+            <Line1Option id="32" index="7" name="UndoRedoPanel.RedoButton" />
+            <Line1Option id="33" index="2" name="ListPanel" />
+            <Line1Option id="34" index="9" name="ListPanel.InsertRemoveNumberedListButton" />
+            <Line1Option id="35" index="10" name="ListPanel.InsertRemoveBulletedListButton" />
+            <Line1Option id="36" index="3" name="JustificationPanel" />
+            <Line1Option id="37" index="12" name="JustificationPanel.LeftJustifyButton" />
+            <Line1Option id="38" index="13" name="JustificationPanel.CenterJustifyButton" />
+            <Line1Option id="39" index="14" name="JustificationPanel.RightJustifyButton" />
+            <Line1Option id="40" index="15" name="JustificationPanel.BlockJustifyButton" />
+            <Line1Option id="41" index="4" name="LinkPanel" />
+            <Line1Option id="42" index="17" name="LinkPanel.LinkButton" />
+            <Line1Option id="43" index="18" name="LinkPanel.UnlinkButton" />
+            <Line1Option id="44" index="19" name="LinkPanel.AnchorButton" />
+            <Line2Option id="45" name="TextEffectPanel" />
+            <Line2Option id="46" index="1" name="TextEffectPanel.BoldButton" />
+            <Line2Option id="47" index="2" name="TextEffectPanel.ItalicButton" />
+            <Line2Option id="48" index="3" name="TextEffectPanel.UnderlineButton" />
+            <Line2Option id="49" index="4" name="TextEffectPanel.StrikethroughButton" />
+            <Line2Option id="50" index="1" name="ParagraphFormatComboBox" />
+            <Line2Option id="51" index="2" name="FontComboBox" />
+            <Line2Option id="52" index="3" name="FontSizeComboBox" />
+            <Line2Option id="53" index="4" name="ColorPanel" />
+            <Line2Option id="54" index="9" name="ColorPanel.TextColorButton" />
+            <Line2Option id="55" index="10" name="ColorPanel.BackgroundColorButton" />
+          </HTMLEditor>
+        </Tab>
+        <Tab id="56" title="english" align="left" borderTop="0" borderLeft="0" trackViewPortHeight="true" trackViewPortWidth="true" borderBottom="0" border="empty" sizeAdjustment="OriginalSize" titleFont="Lucida Grande,0,13" layout="border" borderRight="0" index="1" name="FIBTab2">
+          <HTMLEditor id="57" localize="true" data="EntryTable.selected.english" constraints="border(location=center)" height="100" width="200" name="HTMLEditor">
+            <Line1Option id="58" name="EditPanel" />
+            <Line1Option id="59" index="1" name="EditPanel.CutButton" />
+            <Line1Option id="60" index="2" name="EditPanel.CopyButton" />
+            <Line1Option id="61" index="3" name="EditPanel.PasteButton" />
+            <Line1Option id="62" index="4" name="EditPanel.PasteAsTextButton" />
+            <Line1Option id="63" index="1" name="UndoRedoPanel" />
+            <Line1Option id="64" index="6" name="UndoRedoPanel.UndoButton" />
+            <Line1Option id="65" index="7" name="UndoRedoPanel.RedoButton" />
+            <Line1Option id="66" index="2" name="ListPanel" />
+            <Line1Option id="67" index="9" name="ListPanel.InsertRemoveNumberedListButton" />
+            <Line1Option id="68" index="10" name="ListPanel.InsertRemoveBulletedListButton" />
+            <Line1Option id="69" index="3" name="JustificationPanel" />
+            <Line1Option id="70" index="12" name="JustificationPanel.LeftJustifyButton" />
+            <Line1Option id="71" index="13" name="JustificationPanel.CenterJustifyButton" />
+            <Line1Option id="72" index="14" name="JustificationPanel.RightJustifyButton" />
+            <Line1Option id="73" index="15" name="JustificationPanel.BlockJustifyButton" />
+            <Line1Option id="74" index="4" name="LinkPanel" />
+            <Line1Option id="75" index="17" name="LinkPanel.LinkButton" />
+            <Line1Option id="76" index="18" name="LinkPanel.UnlinkButton" />
+            <Line1Option id="77" index="19" name="LinkPanel.AnchorButton" />
+            <Line2Option id="78" name="TextEffectPanel" />
+            <Line2Option id="79" index="1" name="TextEffectPanel.BoldButton" />
+            <Line2Option id="80" index="2" name="TextEffectPanel.ItalicButton" />
+            <Line2Option id="81" index="3" name="TextEffectPanel.UnderlineButton" />
+            <Line2Option id="82" index="4" name="TextEffectPanel.StrikethroughButton" />
+            <Line2Option id="83" index="1" name="ParagraphFormatComboBox" />
+            <Line2Option id="84" index="2" name="FontComboBox" />
+            <Line2Option id="85" index="3" name="FontSizeComboBox" />
+            <Line2Option id="86" index="4" name="ColorPanel" />
+            <Line2Option id="87" index="9" name="ColorPanel.TextColorButton" />
+            <Line2Option id="88" index="10" name="ColorPanel.BackgroundColorButton" />
+          </HTMLEditor>
+        </Tab>
+        <Tab id="89" title="dutch" align="left" borderTop="0" borderLeft="0" trackViewPortHeight="true" trackViewPortWidth="true" borderBottom="0" border="empty" sizeAdjustment="OriginalSize" titleFont="Lucida Grande,0,13" layout="border" borderRight="0" index="2" name="FIBTab3">
+          <HTMLEditor id="90" localize="true" data="EntryTable.selected.dutch" constraints="border(location=center)" height="100" width="200" name="HTMLEditor">
+            <Line1Option id="91" name="EditPanel" />
+            <Line1Option id="92" index="1" name="EditPanel.CutButton" />
+            <Line1Option id="93" index="2" name="EditPanel.CopyButton" />
+            <Line1Option id="94" index="3" name="EditPanel.PasteButton" />
+            <Line1Option id="95" index="4" name="EditPanel.PasteAsTextButton" />
+            <Line1Option id="96" index="1" name="UndoRedoPanel" />
+            <Line1Option id="97" index="6" name="UndoRedoPanel.UndoButton" />
+            <Line1Option id="98" index="7" name="UndoRedoPanel.RedoButton" />
+            <Line1Option id="99" index="2" name="ListPanel" />
+            <Line1Option id="100" index="9" name="ListPanel.InsertRemoveNumberedListButton" />
+            <Line1Option id="101" index="10" name="ListPanel.InsertRemoveBulletedListButton" />
+            <Line1Option id="102" index="3" name="JustificationPanel" />
+            <Line1Option id="103" index="12" name="JustificationPanel.LeftJustifyButton" />
+            <Line1Option id="104" index="13" name="JustificationPanel.CenterJustifyButton" />
+            <Line1Option id="105" index="14" name="JustificationPanel.RightJustifyButton" />
+            <Line1Option id="106" index="15" name="JustificationPanel.BlockJustifyButton" />
+            <Line1Option id="107" index="4" name="LinkPanel" />
+            <Line1Option id="108" index="17" name="LinkPanel.LinkButton" />
+            <Line1Option id="109" index="18" name="LinkPanel.UnlinkButton" />
+            <Line1Option id="110" index="19" name="LinkPanel.AnchorButton" />
+            <Line2Option id="111" name="TextEffectPanel" />
+            <Line2Option id="112" index="1" name="TextEffectPanel.BoldButton" />
+            <Line2Option id="113" index="2" name="TextEffectPanel.ItalicButton" />
+            <Line2Option id="114" index="3" name="TextEffectPanel.UnderlineButton" />
+            <Line2Option id="115" index="4" name="TextEffectPanel.StrikethroughButton" />
+            <Line2Option id="116" index="1" name="ParagraphFormatComboBox" />
+            <Line2Option id="117" index="2" name="FontComboBox" />
+            <Line2Option id="118" index="3" name="FontSizeComboBox" />
+            <Line2Option id="119" index="4" name="ColorPanel" />
+            <Line2Option id="120" index="9" name="ColorPanel.TextColorButton" />
+            <Line2Option id="121" index="10" name="ColorPanel.BackgroundColorButton" />
+          </HTMLEditor>
+        </Tab>
+      </TabPanel>
+      <Panel id="122" align="left" borderTop="2" borderTitle="" borderLeft="2" trackViewPortHeight="true" trackViewPortWidth="true" borderBottom="2" border="empty" sizeAdjustment="OriginalSize" layout="gridbag" borderRight="2" constraints="gridbag(anchor=center;fill=horizontal;gridHeight=1;gridWidth=0;gridX=-1;gridY=-1;index=2;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;padX=0;padY=0;weightX=0.0;weightY=0.0)" visible="((EntryTable.selected = null) | (!(EntryTable.selected.isHTML)))" index="2" name="FIBPanel">
+        <Label id="123" label="french" align="left" localize="true" constraints="gridbag(anchor=center;expandHorizontally=true;expandVertically=false;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=0;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=5;location=left;padX=0;padY=0;weightX=0.0;weightY=0.0)" index="0" font="LucidaGrande-Bold,1,11" name="FrenchLabel" />
+        <Image id="124" imageWidth="32" sizeAdjustment="OriginalSize" align="left" imageHeight="32" localize="true" data="controller.frenchIconImage" constraints="gridbag(anchor=center;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=1;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;padX=0;padY=0;weightX=0.0;weightY=0.0)" index="1" name="Image" />
+        <TextField id="125" columns="7" text="TextField" localize="true" enable="(EntryTable.selected != null)" data="EntryTable.selected.french" constraints="gridbag(anchor=center;expandHorizontally=true;expandVertically=false;fill=horizontal;gridHeight=1;gridWidth=0;gridX=-1;gridY=-1;index=2;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right;padX=0;padY=0;weightX=1.0;weightY=0.0)" index="2" name="TextField" />
+        <Label id="126" label="english" align="left" localize="true" constraints="gridbag(anchor=center;expandHorizontally=true;expandVertically=false;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=3;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=5;location=left;padX=0;padY=0;weightX=0.0;weightY=0.0)" index="3" font="Dialog,1,11" name="EnglishLabel" />
+        <Image id="127" imageWidth="32" sizeAdjustment="OriginalSize" align="left" imageHeight="32" localize="true" data="controller.englishIconImage" constraints="gridbag(anchor=center;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=4;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;padX=0;padY=0;weightX=0.0;weightY=0.0)" index="4" name="Image2" />
+        <TextField id="128" columns="7" text="TextField" localize="true" enable="(EntryTable.selected != null)" data="EntryTable.selected.english" constraints="gridbag(anchor=center;expandHorizontally=true;expandVertically=false;fill=horizontal;gridHeight=1;gridWidth=0;gridX=-1;gridY=-1;index=5;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right;padX=0;padY=0;weightX=1.0;weightY=0.0)" index="5" name="TextField2" />
+        <Label id="129" label="dutch" align="left" localize="true" constraints="gridbag(anchor=center;expandHorizontally=true;expandVertically=false;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=6;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=5;location=left;padX=0;padY=0;weightX=0.0;weightY=0.0)" index="6" font="Dialog,1,11" name="DutchLabel" />
+        <Image id="130" imageWidth="32" sizeAdjustment="OriginalSize" align="left" imageHeight="32" localize="true" data="controller.dutchIconImage" constraints="gridbag(anchor=center;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=7;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;padX=0;padY=0;weightX=0.0;weightY=0.0)" index="7" name="Image3" />
+        <TextField id="131" columns="7" text="TextField" localize="true" enable="(EntryTable.selected != null)" data="EntryTable.selected.dutch" constraints="gridbag(anchor=center;expandHorizontally=true;expandVertically=false;fill=horizontal;gridHeight=1;gridWidth=0;gridX=-1;gridY=-1;index=8;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right;padX=0;padY=0;weightX=1.0;weightY=0.0)" index="8" name="TextField3" />
+      </Panel>
+      <Panel id="132" align="left" borderTop="2" borderTitle="" borderLeft="2" trackViewPortHeight="true" trackViewPortWidth="true" borderBottom="2" border="empty" sizeAdjustment="OriginalSize" titleFont="LucidaGrande,0,10" layout="gridbag" borderRight="2" constraints="gridbag(anchor=center;fill=horizontal;gridHeight=1;gridWidth=0;gridX=-1;gridY=-1;index=3;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;padX=0;padY=0;weightX=0.0;weightY=0.0)" index="3" font="LucidaGrande,0,10" name="FIBPanel2">
+        <Label id="133" align="right" data="data.entries.size.toString" constraints="gridbag(anchor=east;fill=horizontal;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=0;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=east;padX=0;padY=0;weightX=1.0;weightY=0.0)" index="0" name="Label" />
+        <Label id="134" label="entries" align="left" localize="true" constraints="gridbag(anchor=center;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=1;insetsBottom=0;insetsLeft=-5;insetsRight=0;insetsTop=0;location=south;padX=0;padY=0;weightX=0.0;weightY=0.0)" index="1" name="EntriesLabel" />
+      </Panel>
+    </Tab>
+    <Tab id="135" title="issues" align="left" borderTop="0" borderLeft="0" trackViewPortHeight="true" trackViewPortWidth="true" borderBottom="0" border="empty" sizeAdjustment="OriginalSize" titleFont="Lucida Grande,0,13" layout="gridbag" borderRight="0" index="1" name="FIBTab5">
+      <Table id="136" backgroundSelectionColor="41,90,209" boundToSelectionManager="true" backgroundNonSelectionColor="255,255,255" iteratorClassName="org.openflexo.localization.LocalizedDelegate$LocalizedEntry" textSelectionColor="255,255,255" backgroundSecondarySelectionColor="173,215,255" textNonSelectionColor="0,0,0" selected="controller.selectedEntry" selectionMode="MultipleIntervalSelection" localize="true" manageDynamicModel="true" data="controller.issuesEntries" constraints="gridbag(anchor=center;fill=both;gridHeight=1;gridWidth=0;gridX=-1;gridY=-1;index=0;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=center;padX=0;padY=0;weightX=1.0;weightY=3.0;x=0;y=0)" index="0" font="Lucida Grande,0,11" name="IssuesTable">
+        <IconColumn id="137" data="controller.getIconForEntry(iterator)" resizable="false" title="icon" displayTitle="false" columnWidth="20" showIcon="false" name="icon" />
+        <TextFieldColumn id="138" data="iterator.key" resizable="true" title="key" displayTitle="true" columnWidth="100" showIcon="false" font="LucidaGrande-Bold,1,11" name="textfield" />
+        <TextFieldColumn id="139" color="controller.getColorForFrenchValue(iterator)" data="iterator.french" resizable="true" title="French" displayTitle="true" columnWidth="100" showIcon="false" name="textfield" />
+        <TextFieldColumn id="140" color="controller.getColorForEnglishValue(iterator)" data="iterator.english" resizable="true" title="English" displayTitle="true" columnWidth="100" showIcon="false" name="textfield" />
+        <TextFieldColumn id="141" color="controller.getColorForDutchValue(iterator)" data="iterator.dutch" resizable="true" title="Dutch" displayTitle="true" columnWidth="100" showIcon="false" name="textfield" />
+        <CheckBoxColumn id="142" data="iterator.isHTML" resizable="false" title="HTML" displayTitle="true" columnWidth="40" showIcon="false" name="checkbox" />
+        <CustomAction id="143" method="controller.refresh()" name="refresh" />
+        <AddAction id="144" method="controller.addEntry" name="add_action" />
+        <RemoveAction id="145" method="controller.removeEntry(selected)" name="delete_action" />
+      </Table>
+      <TabPanel id="146" constraints="gridbag(anchor=center;fill=both;gridHeight=1;gridWidth=0;gridX=-1;gridY=-1;index=1;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;padX=0;padY=0;weightX=1.0;weightY=1.0;x=0;y=0)" visible="((IssuesTable.selected != null) &amp; IssuesTable.selected.isHTML)" index="1" name="FIBTabPanel">
+        <Tab id="147" title="french" align="left" borderTop="0" borderTitle="Panel" borderLeft="0" trackViewPortHeight="true" trackViewPortWidth="true" borderBottom="0" border="empty" sizeAdjustment="OriginalSize" titleFont="Lucida Grande,0,13" layout="border" borderRight="0" constraints="gridbag(anchor=center;fill=both;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=1;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;padX=0;padY=0;weightX=1.0;weightY=1.0)" index="0" name="FIBTab">
+          <HTMLEditor id="148" localize="true" data="IssuesTable.selected.french" constraints="border(anchor=center;fill=both;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=1;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=center;padX=0;padY=0;weightX=1.0;weightY=1.0)" index="1" name="HTMLEditor" />
+        </Tab>
+        <Tab id="149" title="english" align="left" borderTop="0" borderLeft="0" trackViewPortHeight="true" trackViewPortWidth="true" borderBottom="0" border="empty" sizeAdjustment="OriginalSize" titleFont="Lucida Grande,0,13" layout="border" borderRight="0" index="1" name="FIBTab2">
+          <HTMLEditor id="150" localize="true" data="IssuesTable.selected.english" constraints="border(location=center)" height="100" width="200" name="HTMLEditor" />
+        </Tab>
+        <Tab id="151" title="dutch" align="left" borderTop="0" borderLeft="0" trackViewPortHeight="true" trackViewPortWidth="true" borderBottom="0" border="empty" sizeAdjustment="OriginalSize" titleFont="Lucida Grande,0,13" layout="border" borderRight="0" index="2" name="FIBTab3">
+          <HTMLEditor id="152" localize="true" data="IssuesTable.selected.dutch" constraints="border(location=center)" height="100" width="200" name="HTMLEditor" />
+        </Tab>
+      </TabPanel>
+      <Panel id="153" align="left" borderTop="2" borderTitle="" borderLeft="2" trackViewPortHeight="true" trackViewPortWidth="true" borderBottom="2" border="empty" sizeAdjustment="OriginalSize" layout="gridbag" borderRight="2" constraints="gridbag(anchor=center;fill=horizontal;gridHeight=1;gridWidth=0;gridX=-1;gridY=-1;index=2;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;padX=0;padY=0;weightX=0.0;weightY=0.0;x=0;y=0)" visible="((IssuesTable.selected = null) | (!(IssuesTable.selected.isHTML)))" index="2" name="FIBPanel">
+        <Label id="154" label="french" align="left" localize="true" constraints="gridbag(anchor=center;expandHorizontally=true;expandVertically=false;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=0;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=5;location=left;padX=0;padY=0;weightX=0.0;weightY=0.0)" index="0" font="LucidaGrande-Bold,1,11" name="FrenchLabel" />
+        <Image id="155" imageWidth="32" sizeAdjustment="OriginalSize" align="left" imageHeight="32" localize="true" data="controller.frenchIconImage" constraints="gridbag(anchor=center;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=1;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;padX=0;padY=0;weightX=0.0;weightY=0.0)" index="1" name="Image" />
+        <TextField id="156" columns="7" text="TextField" localize="true" enable="(IssuesTable.selected != null)" data="IssuesTable.selected.french" constraints="gridbag(anchor=center;expandHorizontally=true;expandVertically=false;fill=horizontal;gridHeight=1;gridWidth=0;gridX=-1;gridY=-1;index=2;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right;padX=0;padY=0;weightX=1.0;weightY=0.0)" index="2" name="TextField" />
+        <Label id="157" label="english" align="left" localize="true" constraints="gridbag(anchor=center;expandHorizontally=true;expandVertically=false;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=3;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=5;location=left;padX=0;padY=0;weightX=0.0;weightY=0.0)" index="3" font="Dialog,1,11" name="EnglishLabel" />
+        <Image id="158" imageWidth="32" sizeAdjustment="OriginalSize" align="left" imageHeight="32" localize="true" data="controller.englishIconImage" constraints="gridbag(anchor=center;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=4;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;padX=0;padY=0;weightX=0.0;weightY=0.0)" index="4" name="Image2" />
+        <TextField id="159" columns="7" text="TextField" localize="true" enable="(IssuesTable.selected != null)" data="IssuesTable.selected.english" constraints="gridbag(anchor=center;expandHorizontally=true;expandVertically=false;fill=horizontal;gridHeight=1;gridWidth=0;gridX=-1;gridY=-1;index=5;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right;padX=0;padY=0;weightX=1.0;weightY=0.0)" index="5" name="TextField2" />
+        <Label id="160" label="dutch" align="left" localize="true" constraints="gridbag(anchor=center;expandHorizontally=true;expandVertically=false;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=6;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=5;location=left;padX=0;padY=0;weightX=0.0;weightY=0.0)" index="6" font="Dialog,1,11" name="DutchLabel" />
+        <Image id="161" imageWidth="32" sizeAdjustment="OriginalSize" align="left" imageHeight="32" localize="true" data="controller.dutchIconImage" constraints="gridbag(anchor=center;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=7;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;padX=0;padY=0;weightX=0.0;weightY=0.0)" index="7" name="Image3" />
+        <TextField id="162" columns="7" text="TextField" localize="true" enable="(IssuesTable.selected != null)" data="IssuesTable.selected.dutch" constraints="gridbag(anchor=center;expandHorizontally=true;expandVertically=false;fill=horizontal;gridHeight=1;gridWidth=0;gridX=-1;gridY=-1;index=8;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right;padX=0;padY=0;weightX=1.0;weightY=0.0)" index="8" name="TextField3" />
+      </Panel>
+      <Panel id="163" align="left" borderTop="2" borderTitle="" borderLeft="2" trackViewPortHeight="true" trackViewPortWidth="true" borderBottom="2" border="empty" sizeAdjustment="OriginalSize" titleFont="LucidaGrande,0,10" layout="gridbag" borderRight="2" constraints="gridbag(anchor=center;fill=horizontal;gridHeight=1;gridWidth=0;gridX=-1;gridY=-1;index=3;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;padX=0;padY=0;weightX=0.0;weightY=0.0;x=0;y=0)" index="3" font="LucidaGrande,0,10" name="FIBPanel2">
+        <Label id="164" label="" align="right" data="controller.issuesEntries.size.toString" constraints="gridbag(anchor=east;fill=horizontal;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=0;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=east;padX=0;padY=0;weightX=1.0;weightY=0.0)" index="0" name="Label" />
+        <Label id="165" label="issues" align="left" localize="true" constraints="gridbag(anchor=center;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=1;insetsBottom=0;insetsLeft=-5;insetsRight=0;insetsTop=0;location=south;padX=0;padY=0;weightX=0.0;weightY=0.0)" index="1" name="IssuesLabel" />
+      </Panel>
+    </Tab>
+    <Tab id="166" title="search" align="left" borderTop="0" borderLeft="0" trackViewPortHeight="true" trackViewPortWidth="true" borderBottom="0" border="empty" sizeAdjustment="OriginalSize" titleFont="Lucida Grande,0,13" layout="gridbag" borderRight="0" index="2" name="FIBTab6">
+      <Panel id="167" align="left" borderTop="2" borderTitle="" borderLeft="2" trackViewPortHeight="true" trackViewPortWidth="true" borderBottom="2" border="empty" sizeAdjustment="OriginalSize" layout="gridbag" borderRight="2" constraints="gridbag(anchor=center;fill=horizontal;gridHeight=1;gridWidth=0;gridX=-1;gridY=-1;index=0;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;padX=0;padY=0;weightX=1.0;weightY=0.0)" index="0" name="FIBPanel">
+        <Label id="168" label="search_entries" align="left" localize="true" constraints="gridbag(anchor=center;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=0;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;padX=0;padY=0;weightX=0.0;weightY=0.0)" index="0" name="SearchEntriesLabel" />
+        <DropDown id="169" autoSelectFirstRow="true" staticList="" iteratorClassName="org.openflexo.localization.LocalizedDelegateImpl$SearchMode" showText="true" showIcon="false" localize="true" valueChangedAction="controller.searchMatchingEntries()" format="object.name" data="controller.searchMode" constraints="gridbag(anchor=center;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=1;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;padX=0;padY=0;weightX=0.0;weightY=0.0)" index="1" name="SearchMode" />
+        <TextField id="170" columns="7" validateOnReturn="true" text="TextField" localize="true" valueChangedAction="controller.searchMatchingEntries()" data="controller.searchedString" constraints="gridbag(anchor=center;fill=horizontal;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=2;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;padX=0;padY=0;weightX=1.0;weightY=0.0)" index="2" name="SearchedString" />
+        <Button id="171" buttonType="Trigger" action="controller.searchMatchingEntries()" label="search" localize="true" constraints="gridbag(anchor=center;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=3;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;padX=0;padY=0;weightX=0.0;weightY=0.0)" index="3" name="SearchButton" />
+      </Panel>
+      <Table id="172" backgroundSelectionColor="41,90,209" backgroundNonSelectionColor="255,255,255" iteratorClassName="org.openflexo.localization.LocalizedDelegate$LocalizedEntry" textSelectionColor="255,255,255" backgroundSecondarySelectionColor="173,215,255" textNonSelectionColor="0,0,0" selectionMode="MultipleIntervalSelection" localize="true" manageDynamicModel="true" data="controller.matchingEntries" constraints="gridbag(anchor=center;fill=both;gridHeight=1;gridWidth=0;gridX=-1;gridY=-1;index=1;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=center;padX=0;padY=0;weightX=1.0;weightY=3.0;x=0;y=0)" index="1" font="Lucida Grande,0,11" name="SearchTable">
+        <IconColumn id="173" data="controller.getIconForEntry(iterator)" resizable="false" title="icon" displayTitle="false" columnWidth="20" showIcon="false" name="icon" />
+        <TextFieldColumn id="174" data="iterator.key" resizable="true" title="key" displayTitle="true" columnWidth="100" showIcon="false" font="LucidaGrande-Bold,1,11" name="textfield" />
+        <TextFieldColumn id="175" color="controller.getColorForFrenchValue(iterator)" data="iterator.french" resizable="true" title="French" displayTitle="true" columnWidth="100" showIcon="false" name="textfield" />
+        <TextFieldColumn id="176" color="controller.getColorForEnglishValue(iterator)" data="iterator.english" resizable="true" title="English" displayTitle="true" columnWidth="100" showIcon="false" name="textfield" />
+        <TextFieldColumn id="177" color="controller.getColorForDutchValue(iterator)" data="iterator.dutch" resizable="true" title="Dutch" displayTitle="true" columnWidth="100" showIcon="false" name="textfield" />
+        <CheckBoxColumn id="178" data="iterator.isHTML" resizable="false" title="HTML" displayTitle="true" columnWidth="40" showIcon="false" name="checkbox" />
+        <CustomAction id="179" method="controller.refresh()" name="refresh" />
+        <RemoveAction id="180" method="controller.removeEntry(selected)" name="delete_action" />
+      </Table>
+      <TabPanel id="181" constraints="gridbag(anchor=center;fill=both;gridHeight=1;gridWidth=0;gridX=-1;gridY=-1;index=2;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=center;padX=0;padY=0;weightX=1.0;weightY=1.0;x=0;y=0)" visible="((SearchTable.selected != null) &amp; SearchTable.selected.isHTML)" index="2" name="FIBTabPanel">
+        <Tab id="182" title="french" align="left" borderTop="0" borderTitle="Panel" borderLeft="0" trackViewPortHeight="true" trackViewPortWidth="true" borderBottom="0" border="empty" sizeAdjustment="OriginalSize" titleFont="Lucida Grande,0,13" layout="border" borderRight="0" constraints="gridbag(anchor=center;fill=both;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=1;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;padX=0;padY=0;weightX=1.0;weightY=1.0)" index="0" name="FIBTab">
+          <HTMLEditor id="183" localize="true" data="SearchTable.selected.french" constraints="border(anchor=center;fill=both;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=1;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=center;padX=0;padY=0;weightX=1.0;weightY=1.0)" index="1" name="HTMLEditor" />
+        </Tab>
+        <Tab id="184" title="english" align="left" borderTop="0" borderLeft="0" trackViewPortHeight="true" trackViewPortWidth="true" borderBottom="0" border="empty" sizeAdjustment="OriginalSize" titleFont="Lucida Grande,0,13" layout="border" borderRight="0" index="1" name="FIBTab2">
+          <HTMLEditor id="185" localize="true" data="SearchTable.selected.english" constraints="border(location=center)" height="100" width="200" name="HTMLEditor" />
+        </Tab>
+        <Tab id="186" title="dutch" align="left" borderTop="0" borderLeft="0" trackViewPortHeight="true" trackViewPortWidth="true" borderBottom="0" border="empty" sizeAdjustment="OriginalSize" titleFont="Lucida Grande,0,13" layout="border" borderRight="0" index="2" name="FIBTab3">
+          <HTMLEditor id="187" localize="true" data="SearchTable.selected.dutch" constraints="border(location=center)" height="100" width="200" name="HTMLEditor" />
+        </Tab>
+      </TabPanel>
+      <Panel id="188" align="left" borderTop="2" borderTitle="" borderLeft="2" trackViewPortHeight="true" trackViewPortWidth="true" borderBottom="2" border="empty" sizeAdjustment="OriginalSize" layout="gridbag" borderRight="2" constraints="gridbag(anchor=center;fill=horizontal;gridHeight=1;gridWidth=0;gridX=-1;gridY=-1;index=3;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=center;padX=0;padY=0;weightX=0.0;weightY=0.0;x=0;y=0)" visible="((SearchTable.selected = null) | (!(SearchTable.selected.isHTML)))" index="3" name="FIBPanel2">
+        <Label id="189" label="french" align="left" localize="true" constraints="gridbag(anchor=center;expandHorizontally=true;expandVertically=false;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=0;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=5;location=left;padX=0;padY=0;weightX=0.0;weightY=0.0)" index="0" font="LucidaGrande-Bold,1,11" name="FrenchLabel" />
+        <Image id="190" imageWidth="32" sizeAdjustment="OriginalSize" align="left" imageHeight="32" localize="true" data="controller.frenchIconImage" constraints="gridbag(anchor=center;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=1;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;padX=0;padY=0;weightX=0.0;weightY=0.0)" index="1" name="Image" />
+        <TextField id="191" columns="7" text="TextField" localize="true" enable="(SearchTable.selected != null)" data="SearchTable.selected.french" constraints="gridbag(anchor=center;expandHorizontally=true;expandVertically=false;fill=horizontal;gridHeight=1;gridWidth=0;gridX=-1;gridY=-1;index=2;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right;padX=0;padY=0;weightX=1.0;weightY=0.0)" index="2" name="TextField" />
+        <Label id="192" label="english" align="left" localize="true" constraints="gridbag(anchor=center;expandHorizontally=true;expandVertically=false;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=3;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=5;location=left;padX=0;padY=0;weightX=0.0;weightY=0.0)" index="3" font="Dialog,1,11" name="EnglishLabel" />
+        <Image id="193" imageWidth="32" sizeAdjustment="OriginalSize" align="left" imageHeight="32" localize="true" data="controller.englishIconImage" constraints="gridbag(anchor=center;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=4;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;padX=0;padY=0;weightX=0.0;weightY=0.0)" index="4" name="Image2" />
+        <TextField id="194" columns="7" text="TextField" localize="true" enable="(SearchTable.selected != null)" data="SearchTable.selected.english" constraints="gridbag(anchor=center;expandHorizontally=true;expandVertically=false;fill=horizontal;gridHeight=1;gridWidth=0;gridX=-1;gridY=-1;index=5;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right;padX=0;padY=0;weightX=1.0;weightY=0.0)" index="5" name="TextField2" />
+        <Label id="195" label="dutch" align="left" localize="true" constraints="gridbag(anchor=center;expandHorizontally=true;expandVertically=false;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=6;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=5;location=left;padX=0;padY=0;weightX=0.0;weightY=0.0)" index="6" font="Dialog,1,11" name="DutchLabel" />
+        <Image id="196" imageWidth="32" sizeAdjustment="OriginalSize" align="left" imageHeight="32" localize="true" data="controller.dutchIconImage" constraints="gridbag(anchor=center;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=7;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;padX=0;padY=0;weightX=0.0;weightY=0.0)" index="7" name="Image3" />
+        <TextField id="197" columns="7" text="TextField" localize="true" enable="(SearchTable.selected != null)" data="SearchTable.selected.dutch" constraints="gridbag(anchor=center;expandHorizontally=true;expandVertically=false;fill=horizontal;gridHeight=1;gridWidth=0;gridX=-1;gridY=-1;index=8;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right;padX=0;padY=0;weightX=1.0;weightY=0.0)" index="8" name="TextField3" />
+      </Panel>
+      <Panel id="198" align="left" borderTop="2" borderTitle="" borderLeft="2" trackViewPortHeight="true" trackViewPortWidth="true" borderBottom="2" border="empty" sizeAdjustment="OriginalSize" titleFont="LucidaGrande,0,10" layout="gridbag" borderRight="2" constraints="gridbag(anchor=center;fill=horizontal;gridHeight=1;gridWidth=0;gridX=-1;gridY=-1;index=4;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=center;padX=0;padY=0;weightX=0.0;weightY=0.0;x=0;y=0)" index="4" font="LucidaGrande,0,10" name="FIBPanel3">
+        <Label id="199" label="" align="right" data="controller.matchingEntries.size.toString" constraints="gridbag(anchor=east;fill=horizontal;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=0;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=east;padX=0;padY=0;weightX=1.0;weightY=0.0)" index="0" name="Label" />
+        <Label id="200" label="matches" align="left" localize="true" constraints="gridbag(anchor=center;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=1;insetsBottom=0;insetsLeft=-5;insetsRight=0;insetsTop=0;location=south;padX=0;padY=0;weightX=0.0;weightY=0.0)" index="1" name="MatchesLabel" />
+      </Panel>
+    </Tab>
+  </TabPanel>
+  <Panel id="201" align="left" borderTop="0" borderTitle="Panel" flowAlignment="CENTER" borderLeft="0" trackViewPortHeight="true" trackViewPortWidth="true" borderBottom="0" border="empty" sizeAdjustment="OriginalSize" layout="flow" vGap="5" borderRight="0" hGap="5" constraints="gridbag(anchor=center;fill=horizontal;gridHeight=1;gridWidth=0;gridX=-1;gridY=-1;index=7;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;padX=0;padY=0;weightX=1.0;weightY=0.0)" index="7" name="FIBPanel4">
+    <Panel id="202" align="left" borderTop="0" borderTitle="Panel" flowAlignment="CENTER" borderLeft="0" trackViewPortHeight="true" trackViewPortWidth="true" cols="6" borderBottom="0" border="empty" sizeAdjustment="OriginalSize" titleFont="Lucida Grande,0,13" rows="1" layout="flow" vGap="5" borderRight="0" hGap="5" constraints="flow(anchor=center;fill=horizontal;gridHeight=1;gridWidth=0;gridX=-1;gridY=-1;index=7;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=center;padX=0;padY=0;weightX=1.0;weightY=0.0)" index="7" name="FIBPanel">
+      <Button id="203" buttonType="Trigger" action="controller.refresh()" label="refresh" localize="true" constraints="flow()" index="0" name="Button" />
+      <Button id="204" buttonType="Trigger" action="controller.save()" label="save" localize="true" constraints="flow()" index="2" name="Button2" />
+      <Button id="205" buttonType="Trigger" action="controller.translateAll()" label="translate_all" localize="true" constraints="flow()" index="4" name="Button3" />
+      <Button id="206" buttonType="Trigger" action="controller.searchTranslation(controller.selectedEntry)" label="translate" localize="true" enable="(controller.selectedEntry != null)" constraints="flow()" index="5" name="TranslateButton" />
+      <Button id="207" buttonType="Trigger" action="controller.searchLocalized()" label="search_localized" localize="true" constraints="flow()" visible="controller.displaySearchLocalizedButton" index="6" name="Button4" />
+    </Panel>
+  </Panel>
+  <LocalizedDictionary id="208">
+    <Localized id="209" lang="French" value="Editeur de locales" key="localized_editor" />
+    <Localized id="210" lang="English" value="Localized editor" key="localized_editor" />
+    <Localized id="211" lang="English" value="Add" key="add" />
+    <Localized id="212" lang="English" value="Remove" key="remove" />
+    <Localized id="213" lang="English" value="Refresh" key="refresh" />
+    <Localized id="214" lang="French" value="Ajouter" key="add" />
+    <Localized id="215" lang="French" value="Supprimer" key="remove" />
+    <Localized id="216" lang="French" value="Rafraichir" key="refresh" />
+    <Localized id="217" lang="Dutch" value="Localization Editor" key="localized_editor" />
+    <Localized id="218" lang="Dutch" value="Voeg toe" key="add" />
+    <Localized id="219" lang="Dutch" value="Remove" key="remove" />
+    <Localized id="220" lang="Dutch" value="Refresh" key="refresh" />
+    <Localized id="221" lang="English" value="Parent" key="parent" />
+    <Localized id="222" lang="French" value="Parent" key="parent" />
+    <Localized id="223" lang="Dutch" value="Parent" key="parent" />
+    <Localized id="224" lang="English" value="Directory" key="directory" />
+    <Localized id="225" lang="French" value="Répertoire" key="directory" />
+    <Localized id="226" lang="Dutch" value="Directory" key="directory" />
+    <Localized id="227" lang="English" value="All entries" key="all_entries" />
+    <Localized id="228" lang="French" value="Toutes les entrées" key="all_entries" />
+    <Localized id="229" lang="Dutch" value="All entries" key="all_entries" />
+    <Localized id="230" lang="English" value="Issues" key="issues" />
+    <Localized id="231" lang="French" value="Problèmes" key="issues" />
+    <Localized id="232" lang="Dutch" value="Issues" key="issues" />
+    <Localized id="233" lang="English" value="Search" key="search" />
+    <Localized id="234" lang="French" value="Rechercher" key="search" />
+    <Localized id="235" lang="Dutch" value="Search" key="search" />
+    <Localized id="236" lang="English" value="HTML" key="HTML" />
+    <Localized id="237" lang="French" value="HTML" key="HTML" />
+    <Localized id="238" lang="Dutch" value="HTML" key="HTML" />
+    <Localized id="239" lang="English" value="Translate all" key="translate_all" />
+    <Localized id="240" lang="French" value="Traduire tout" key="translate_all" />
+    <Localized id="241" lang="Dutch" value="Translate all" key="translate_all" />
+    <Localized id="242" lang="English" value="&lt;html&gt;&#xA;  &lt;head&gt;&#xA;    &#xA;  &lt;/head&gt;&#xA;  &lt;body&gt;&#xA;    &lt;a href=&quot;_blank&quot;&gt;Open&lt;/a&gt;&#xA;  &lt;/body&gt;&#xA;&lt;/html&gt;&#xA;" key="open_parent_locales_link" />
+    <Localized id="243" lang="French" value="&lt;html&gt;&#xA;  &lt;head&gt;&#xA;    &#xA;  &lt;/head&gt;&#xA;  &lt;body&gt;&#xA;    &lt;a href=&quot;_blank&quot;&gt;Ouvrir&lt;/a&gt;&#xA;  &lt;/body&gt;&#xA;&lt;/html&gt;&#xA;" key="open_parent_locales_link" />
+    <Localized id="244" lang="Dutch" value="&lt;html&gt;&#xA;  &lt;head&gt;&#xA;    &#xA;  &lt;/head&gt;&#xA;  &lt;body&gt;&#xA;    &lt;a href=&quot;_blank&quot;&gt;Open&lt;/a&gt;&#xA;  &lt;/body&gt;&#xA;&lt;/html&gt;&#xA;" key="open_parent_locales_link" />
+    <Localized id="245" lang="English" value="Entries" key="entries" />
+    <Localized id="246" lang="French" value="Entrées" key="entries" />
+    <Localized id="247" lang="Dutch" value="entries" key="entries" />
+    <Localized id="248" lang="English" value="Search entries" key="search_entries" />
+    <Localized id="249" lang="French" value="Rechercher les entrées" key="search_entries" />
+    <Localized id="250" lang="Dutch" value="Search entries" key="search_entries" />
+    <Localized id="251" lang="English" value="matches" key="matches" />
+    <Localized id="252" lang="French" value="correspondances" key="matches" />
+    <Localized id="253" lang="Dutch" value="matches" key="matches" />
+    <Localized id="254" lang="English" value="Parent locales" key="parent_locales" />
+    <Localized id="255" lang="French" value="Locales parentes" key="parent_locales" />
+    <Localized id="256" lang="Dutch" value="Parent locales" key="parent_locales" />
+    <Localized id="257" lang="English" value="Apply" key="apply" />
+    <Localized id="258" lang="French" value="Appliquer" key="apply" />
+    <Localized id="259" lang="Dutch" value="Apply" key="apply" />
+    <Localized id="260" lang="English" value="Containing" key="Contains" />
+    <Localized id="261" lang="French" value="Contenant" key="Contains" />
+    <Localized id="262" lang="Dutch" value="Containing" key="Contains" />
+    <Localized id="263" lang="English" value="Beginning with" key="BeginsWith" />
+    <Localized id="264" lang="French" value="Commencant par" key="BeginsWith" />
+    <Localized id="265" lang="Dutch" value="Beginning with" key="BeginsWith" />
+    <Localized id="266" lang="English" value="Ending with" key="EndsWith" />
+    <Localized id="267" lang="French" value="Terminant par" key="EndsWith" />
+    <Localized id="268" lang="Dutch" value="Ending with" key="EndsWith" />
+    <Localized id="269" lang="English" value="Delete action" key="delete_action" />
+    <Localized id="270" lang="French" value="Supprimer l'action" key="delete_action" />
+    <Localized id="271" lang="Dutch" value="Verwijder actie" key="delete_action" />
+    <Localized id="272" lang="English" value="Icon" key="icon" />
+    <Localized id="273" lang="Dutch" value="icoon" key="icon" />
+    <Localized id="274" lang="French" value="icône" key="icon" />
+    <Localized id="275" lang="English" value="Key" key="key" />
+    <Localized id="276" lang="Dutch" value="key" key="key" />
+    <Localized id="277" lang="French" value="Clef" key="key" />
+    <Localized id="278" lang="English" value="English" key="english" />
+    <Localized id="279" lang="Dutch" value="Engels" key="english" />
+    <Localized id="280" lang="French" value="Anglais" key="english" />
+    <Localized id="281" lang="English" value="Add action" key="add_action" />
+    <Localized id="282" lang="Dutch" value="add_action" key="add_action" />
+    <Localized id="283" lang="French" value="add_action" key="add_action" />
+    <Localized id="284" lang="English" value="Close" key="close" />
+    <Localized id="285" lang="Dutch" value="Sluiten" key="close" />
+    <Localized id="286" lang="French" value="Fermer" key="close" />
+    <Localized id="287" lang="English" value="Save" key="save" />
+    <Localized id="288" lang="Dutch" value="Opslaan" key="save" />
+    <Localized id="289" lang="French" value="Sauver" key="save" />
+    <Localized id="290" lang="English" value="Translate" key="translate" />
+    <Localized id="291" lang="Dutch" value="translate" key="translate" />
+    <Localized id="292" lang="French" value="Traduire" key="translate" />
+    <Localized id="293" lang="English" value="Search localized" key="search_localized" />
+    <Localized id="294" lang="Dutch" value="search_localized" key="search_localized" />
+    <Localized id="295" lang="French" value="Rechercher les locales" key="search_localized" />
+    <Localized id="296" lang="English" value="Remove unecessary localized" key="remove_unecessary_localized" />
+    <Localized id="297" lang="Dutch" value="remove_unecessary_localized" key="remove_unecessary_localized" />
+    <Localized id="298" lang="French" value="Supprimer les entrées inutiles" key="remove_unecessary_localized" />
+    <Localized id="299" lang="English" value="Apply localized" key="apply_localized" />
+    <Localized id="300" lang="Dutch" value="apply_localized" key="apply_localized" />
+    <Localized id="301" lang="French" value="apply_localized" key="apply_localized" />
+    <Localized id="302" lang="English" value="French" key="french" />
+    <Localized id="303" lang="Dutch" value="Frans" key="french" />
+    <Localized id="304" lang="French" value="Francais" key="french" />
+    <Localized id="305" lang="English" value="Dutch" key="dutch" />
+    <Localized id="306" lang="Dutch" value="dutch" key="dutch" />
+    <Localized id="307" lang="French" value="dutch" key="dutch" />
+  </LocalizedDictionary>
+  <FIBVariable id="308" type="org.openflexo.localization.LocalizedDelegate" name="data" />
+</Panel>

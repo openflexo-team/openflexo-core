@@ -44,10 +44,10 @@ import org.openflexo.connie.BindingEvaluator;
 import org.openflexo.connie.type.ParameterizedTypeImpl;
 import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.localization.LocalizedDelegate;
-import org.openflexo.model.ModelContext;
-import org.openflexo.model.validation.Validable;
-import org.openflexo.model.validation.ValidationIssue;
-import org.openflexo.model.validation.ValidationModel;
+import org.openflexo.pamela.ModelContext;
+import org.openflexo.pamela.validation.Validable;
+import org.openflexo.pamela.validation.ValidationIssue;
+import org.openflexo.pamela.validation.ValidationModel;
 
 /**
  * This is the ValidationModel managed in Openflexo context
@@ -78,7 +78,7 @@ public class FlexoValidationModel extends ValidationModel {
 	/**
 	 * Overrides fixAutomaticallyIfOneFixProposal
 	 * 
-	 * @see org.openflexo.model.validation.ValidationModel#fixAutomaticallyIfOneFixProposal()
+	 * @see org.openflexo.pamela.validation.ValidationModel#fixAutomaticallyIfOneFixProposal()
 	 */
 	@Override
 	public boolean fixAutomaticallyIfOneFixProposal() {

@@ -1,6 +1,5 @@
 package org.openflexo.foundation.action.copypaste;
 
-import java.awt.Event;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -16,12 +15,10 @@ import org.openflexo.foundation.FlexoObject;
 public class DefaultPastingContext<T extends FlexoObject> implements PastingContext<T> {
 
 	private final T pastingPointHolder;
-	private final Event event;
 	private final Map<String, String> pasteProperties = new HashMap<>();
 
-	public DefaultPastingContext(T holder, Event event) {
+	public DefaultPastingContext(T holder) {
 		this.pastingPointHolder = holder;
-		this.event = event;
 	}
 
 	/**
@@ -32,17 +29,6 @@ public class DefaultPastingContext<T extends FlexoObject> implements PastingCont
 	@Override
 	public T getPastingPointHolder() {
 		return pastingPointHolder;
-	}
-
-	/**
-	 * Return the (not required) {@link java.awt.Event} from which originate the paste operation<br>
-	 * (might be null)
-	 * 
-	 * @return
-	 */
-	@Override
-	public Event getEvent() {
-		return event;
 	}
 
 	@Override

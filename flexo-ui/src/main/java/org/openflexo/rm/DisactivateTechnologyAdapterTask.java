@@ -50,12 +50,12 @@ import org.openflexo.task.FlexoApplicationTask;
  * @author sylvain
  *
  */
-public class DisactivateTechnologyAdapterTask extends FlexoApplicationTask {
+public class DisactivateTechnologyAdapterTask<TA extends TechnologyAdapter<TA>> extends FlexoApplicationTask {
 
 	private final TechnologyAdapterService taService;
-	private final TechnologyAdapter technologyAdapter;
+	private final TA technologyAdapter;
 
-	public DisactivateTechnologyAdapterTask(TechnologyAdapterService taService, TechnologyAdapter technologyAdapter) {
+	public DisactivateTechnologyAdapterTask(TechnologyAdapterService taService, TA technologyAdapter) {
 		super(FlexoLocalization.getMainLocalizer().localizedForKey("disactivate_technology") + " " + technologyAdapter.getName(),
 				taService.getServiceManager());
 		this.taService = taService;
@@ -68,10 +68,10 @@ public class DisactivateTechnologyAdapterTask extends FlexoApplicationTask {
 		Progress.setExpectedProgressSteps(getServiceManager().getResourceCenterService().getResourceCenters().size() + 2);
 		technologyAdapter.disactivate();
 		taService.getServiceManager().notify(taService,
-				taService.getServiceManager().new TechnologyAdapterHasBeenDisactivated(technologyAdapter));
+				taService.getServiceManager().new TechnologyAdapterHasBeenDisactivated<>(technologyAdapter));
 	}
 
-	public TechnologyAdapter getTechnologyAdapter() {
+	public TA getTechnologyAdapter() {
 		return technologyAdapter;
 	}
 

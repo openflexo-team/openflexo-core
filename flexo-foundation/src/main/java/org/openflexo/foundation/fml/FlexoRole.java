@@ -52,30 +52,29 @@ import org.openflexo.connie.exception.TypeMismatchException;
 import org.openflexo.connie.expr.BindingValue;
 import org.openflexo.foundation.DataModification;
 import org.openflexo.foundation.fml.FMLRepresentationContext.FMLRepresentationOutput;
-import org.openflexo.foundation.fml.binding.FlexoConceptFlexoPropertyPathElement;
+import org.openflexo.foundation.fml.binding.FlexoPropertyPathElement;
 import org.openflexo.foundation.fml.binding.ModelSlotBindingVariable;
-import org.openflexo.foundation.fml.binding.VirtualModelModelSlotPathElement;
+import org.openflexo.foundation.fml.binding.ModelSlotPathElement;
 import org.openflexo.foundation.fml.rt.ActorReference;
 import org.openflexo.foundation.fml.rt.FMLRTModelSlot;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
-import org.openflexo.localization.LocalizedDelegate;
-import org.openflexo.model.annotations.DefineValidationRule;
-import org.openflexo.model.annotations.Embedded;
-import org.openflexo.model.annotations.Getter;
-import org.openflexo.model.annotations.ImplementationClass;
-import org.openflexo.model.annotations.Import;
-import org.openflexo.model.annotations.Imports;
-import org.openflexo.model.annotations.ModelEntity;
-import org.openflexo.model.annotations.PropertyIdentifier;
-import org.openflexo.model.annotations.Setter;
-import org.openflexo.model.annotations.XMLAttribute;
-import org.openflexo.model.validation.FixProposal;
-import org.openflexo.model.validation.ValidationError;
-import org.openflexo.model.validation.ValidationIssue;
-import org.openflexo.model.validation.ValidationRule;
-import org.openflexo.model.validation.ValidationWarning;
+import org.openflexo.pamela.annotations.DefineValidationRule;
+import org.openflexo.pamela.annotations.Embedded;
+import org.openflexo.pamela.annotations.Getter;
+import org.openflexo.pamela.annotations.ImplementationClass;
+import org.openflexo.pamela.annotations.Import;
+import org.openflexo.pamela.annotations.Imports;
+import org.openflexo.pamela.annotations.ModelEntity;
+import org.openflexo.pamela.annotations.PropertyIdentifier;
+import org.openflexo.pamela.annotations.Setter;
+import org.openflexo.pamela.annotations.XMLAttribute;
+import org.openflexo.pamela.validation.FixProposal;
+import org.openflexo.pamela.validation.ValidationError;
+import org.openflexo.pamela.validation.ValidationIssue;
+import org.openflexo.pamela.validation.ValidationRule;
+import org.openflexo.pamela.validation.ValidationWarning;
 import org.openflexo.toolbox.StringUtils;
 
 /**
@@ -91,7 +90,7 @@ import org.openflexo.toolbox.StringUtils;
  */
 @ModelEntity(isAbstract = true)
 @ImplementationClass(FlexoRole.FlexoRoleImpl.class)
-@Imports({ @Import(FlexoConceptInstanceRole.class), @Import(PrimitiveRole.class) })
+@Imports({ @Import(FlexoConceptInstanceRole.class), @Import(PrimitiveRole.class), @Import(JavaRole.class) })
 public interface FlexoRole<T> extends FlexoProperty<T> {
 
 	@PropertyIdentifier(type = String.class)
@@ -212,7 +211,7 @@ public interface FlexoRole<T> extends FlexoProperty<T> {
 	RoleCloningStrategy defaultCloningStrategy();
 
 	/**
-	 * Instanciate run-time-level object encoding reference to object (see {@link ActorReference})
+	 * Instantiate run-time-level object encoding reference to object (see {@link ActorReference})
 	 * 
 	 * @param object
 	 *            the object which are pointing to
@@ -261,7 +260,7 @@ public interface FlexoRole<T> extends FlexoProperty<T> {
 		}
 
 		/**
-		 * Compute infered model slot from getContainer() binding
+		 * Compute inferred model slot from getContainer() binding
 		 * 
 		 * @return
 		 */
@@ -274,12 +273,12 @@ public interface FlexoRole<T> extends FlexoProperty<T> {
 				if (lastPathElement instanceof ModelSlotBindingVariable) {
 					return ((ModelSlotBindingVariable) lastPathElement).getModelSlot();
 				}
-				else if (lastPathElement instanceof FlexoConceptFlexoPropertyPathElement
-						&& ((FlexoConceptFlexoPropertyPathElement<?>) lastPathElement).getFlexoProperty() instanceof ModelSlot) {
-					return (ModelSlot<?>) ((FlexoConceptFlexoPropertyPathElement<?>) lastPathElement).getFlexoProperty();
+				else if (lastPathElement instanceof FlexoPropertyPathElement
+						&& ((FlexoPropertyPathElement<?>) lastPathElement).getFlexoProperty() instanceof ModelSlot) {
+					return (ModelSlot<?>) ((FlexoPropertyPathElement<?>) lastPathElement).getFlexoProperty();
 				}
-				else if (lastPathElement instanceof VirtualModelModelSlotPathElement) {
-					return ((VirtualModelModelSlotPathElement<?>) lastPathElement).getModelSlot();
+				else if (lastPathElement instanceof ModelSlotPathElement) {
+					return ((ModelSlotPathElement<?>) lastPathElement).getModelSlot();
 				}
 
 			}
@@ -298,7 +297,7 @@ public interface FlexoRole<T> extends FlexoProperty<T> {
 		public void setModelSlot(ModelSlot<?> modelSlot) {
 			this.modelSlot = modelSlot;
 			setChanged();
-			notifyObservers(new DataModification("modelSlot", null, modelSlot));
+			notifyObservers(new DataModification<>("modelSlot", null, modelSlot));
 		}
 
 		@Override
@@ -312,17 +311,6 @@ public interface FlexoRole<T> extends FlexoProperty<T> {
 		}
 
 		/**
-		 * Return the type of any instance of modelling element handled by this property.<br>
-		 * Note that if the cardinality of this property is multiple, this method will return the type of each modelling element.<br>
-		 * Getting type of the list of all modelling elements for a multiple cardinality property is obtained by {@link #getResultingType()}
-		 * method.
-		 * 
-		 * @return
-		 */
-		@Override
-		public abstract Type getType();
-
-		/**
 		 * Return cloning strategy to be applied for this property
 		 * 
 		 * @return
@@ -333,9 +321,7 @@ public interface FlexoRole<T> extends FlexoProperty<T> {
 			if (returned == null) {
 				return defaultCloningStrategy();
 			}
-			else {
-				return returned;
-			}
+			return returned;
 		}
 
 		@Override
@@ -437,13 +423,13 @@ public interface FlexoRole<T> extends FlexoProperty<T> {
 			return out.toString();
 		}*/
 
-		@Override
+		/*@Override
 		public LocalizedDelegate getLocales() {
 			if (getModelSlot() != null && getModelSlot().getModelSlotTechnologyAdapter() != null) {
 				return getModelSlot().getModelSlotTechnologyAdapter().getLocales();
 			}
 			return super.getLocales();
-		}
+		}*/
 
 		/**
 		 * Return the {@link TechnologyAdapter} managing this kind of role
@@ -468,7 +454,7 @@ public interface FlexoRole<T> extends FlexoProperty<T> {
 			}
 		}
 
-		@Override
+		/*@Override
 		protected String getFMLAnnotation(FMLRepresentationContext context) {
 			FMLRepresentationOutput out = new FMLRepresentationOutput(context);
 			out.append("@" + getImplementedInterface().getSimpleName() + "(cardinality=" + getCardinality() + ",readOnly=" + isReadOnly()
@@ -478,6 +464,36 @@ public interface FlexoRole<T> extends FlexoProperty<T> {
 				out.append("@Key", context);
 			}
 			return out.toString();
+		}*/
+
+		/**
+		 * Computes and return canonical FML representation of a role
+		 * 
+		 * <pre>
+		 * [public|private] [key] <ReturnType>[..] roleName with [TA::]RoleType(p1=v1,...,pn=vn);
+		 * </pre>
+		 * 
+		 */
+		@Override
+		public String getFMLRepresentation(FMLRepresentationContext context) {
+			FMLRepresentationOutput out = new FMLRepresentationOutput(context);
+			// out.append(getFMLAnnotation(context), context);
+			// out.append(StringUtils.LINE_SEPARATOR, context);
+			// if (detailedFMLSpecifications(context) == null) {
+			out.append("public " + context.serializeType(getResultingType()) + " " + getName() + ";", context);
+			/*}
+			else {
+				out.append("public " + TypeUtils.simpleRepresentation(getResultingType()) + " " + getName() + " {", context);
+				out.append(StringUtils.LINE_SEPARATOR, context);
+				// out.append(detailedFMLSpecifications(context), context, 1);
+				// out.append(StringUtils.LINE_SEPARATOR, context);
+				out.append("}", context);
+			}*/
+			return out.toString();
+		}
+
+		public String detailedFMLSpecifications(FMLRepresentationContext context) {
+			return null;
 		}
 
 		/**
@@ -521,13 +537,13 @@ public interface FlexoRole<T> extends FlexoProperty<T> {
 	}
 
 	@DefineValidationRule
-	public static class FlexoRoleMustHaveAName extends ValidationRule<FlexoRoleMustHaveAName, FlexoRole> {
+	public static class FlexoRoleMustHaveAName extends ValidationRule<FlexoRoleMustHaveAName, FlexoRole<?>> {
 		public FlexoRoleMustHaveAName() {
 			super(FlexoRole.class, "flexo_role_must_have_a_name");
 		}
 
 		@Override
-		public ValidationIssue<FlexoRoleMustHaveAName, FlexoRole> applyValidation(FlexoRole flexoRole) {
+		public ValidationIssue<FlexoRoleMustHaveAName, FlexoRole<?>> applyValidation(FlexoRole<?> flexoRole) {
 			if (StringUtils.isEmpty(flexoRole.getRoleName())) {
 				return new ValidationError<>(this, flexoRole, "flexo_role_has_no_name");
 			}
@@ -537,14 +553,14 @@ public interface FlexoRole<T> extends FlexoProperty<T> {
 
 	@DefineValidationRule
 	public static class ShouldNotHaveReflexiveVirtualModelModelSlot
-			extends ValidationRule<ShouldNotHaveReflexiveVirtualModelModelSlot, FlexoRole> {
+			extends ValidationRule<ShouldNotHaveReflexiveVirtualModelModelSlot, FlexoRole<?>> {
 
 		public ShouldNotHaveReflexiveVirtualModelModelSlot() {
 			super(FlexoRole.class, "FlexoRole_should_not_have_reflexive_model_slot_no_more");
 		}
 
 		@Override
-		public ValidationIssue<ShouldNotHaveReflexiveVirtualModelModelSlot, FlexoRole> applyValidation(FlexoRole aRole) {
+		public ValidationIssue<ShouldNotHaveReflexiveVirtualModelModelSlot, FlexoRole<?>> applyValidation(FlexoRole<?> aRole) {
 			ModelSlot<?> ms = aRole.getModelSlot();
 			if (ms instanceof FMLRTModelSlot && "virtualModelInstance".equals(ms.getName())) {
 				RemoveReflexiveVirtualModelModelSlot fixProposal = new RemoveReflexiveVirtualModelModelSlot(aRole);
@@ -555,11 +571,11 @@ public interface FlexoRole<T> extends FlexoProperty<T> {
 		}
 
 		protected static class RemoveReflexiveVirtualModelModelSlot
-				extends FixProposal<ShouldNotHaveReflexiveVirtualModelModelSlot, FlexoRole> {
+				extends FixProposal<ShouldNotHaveReflexiveVirtualModelModelSlot, FlexoRole<?>> {
 
 			private final FlexoRole<?> role;
 
-			public RemoveReflexiveVirtualModelModelSlot(FlexoRole aRole) {
+			public RemoveReflexiveVirtualModelModelSlot(FlexoRole<?> aRole) {
 				super("remove_reflexive_modelslot");
 				this.role = aRole;
 			}

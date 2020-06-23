@@ -46,8 +46,10 @@ import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoObject.FlexoObjectImpl;
 import org.openflexo.foundation.action.FlexoActionFactory;
 import org.openflexo.foundation.action.NotImplementedException;
+import org.openflexo.foundation.action.TechnologySpecificFlexoAction;
 import org.openflexo.foundation.fml.FMLModelFactory;
 import org.openflexo.foundation.fml.FMLObject;
+import org.openflexo.foundation.fml.FMLTechnologyAdapter;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoConceptObject;
 import org.openflexo.foundation.fml.InconsistentFlexoConceptHierarchyException;
@@ -55,7 +57,8 @@ import org.openflexo.foundation.fml.InnerConceptsFacet;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.toolbox.StringUtils;
 
-public class CreateFlexoConcept extends AbstractCreateFlexoConcept<CreateFlexoConcept, FlexoConceptObject, FMLObject> {
+public class CreateFlexoConcept extends AbstractCreateFlexoConcept<CreateFlexoConcept, FlexoConceptObject, FMLObject>
+		implements TechnologySpecificFlexoAction<FMLTechnologyAdapter> {
 
 	private static final Logger logger = Logger.getLogger(CreateFlexoConcept.class.getPackage().getName());
 
@@ -98,6 +101,11 @@ public class CreateFlexoConcept extends AbstractCreateFlexoConcept<CreateFlexoCo
 	}
 
 	@Override
+	public Class<? extends FMLTechnologyAdapter> getTechnologyAdapterClass() {
+		return FMLTechnologyAdapter.class;
+	}
+
+	@Override
 	protected void doAction(Object context)
 			throws NotImplementedException, InvalidParameterException, InconsistentFlexoConceptHierarchyException {
 
@@ -111,6 +119,8 @@ public class CreateFlexoConcept extends AbstractCreateFlexoConcept<CreateFlexoCo
 		}
 		newFlexoConcept.setName(getNewFlexoConceptName());
 		newFlexoConcept.setDescription(getNewFlexoConceptDescription());
+		newFlexoConcept.setVisibility(getVisibility());
+		newFlexoConcept.setAbstract(getIsAbstract());
 
 		// Unused FlexoConcept addressedConcept =
 		// getFocusedObject().getFlexoConcept();

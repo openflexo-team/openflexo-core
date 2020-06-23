@@ -76,8 +76,6 @@ public class DefaultLocalizationService extends FlexoServiceImpl implements Loca
 
 		mainLocalizer = new FlexoMainLocalizer(true, getAutomaticSaving());
 		logger.info("Main localization directory: " + mainLocalizer.getLocalizedDirectoryResource());
-		logger.info("Deprecated localization directory: "
-				+ ((LocalizedDelegateImpl) mainLocalizer.getDeprecatedLocalizer()).getLocalizedDirectoryResource());
 
 		if (StringUtils.isNotEmpty(getGeneralLocalizerRelativePath())) {
 			flexoLocalizer = new LocalizedDelegateImpl(ResourceLocator.locateResource(getGeneralLocalizerRelativePath()), mainLocalizer,

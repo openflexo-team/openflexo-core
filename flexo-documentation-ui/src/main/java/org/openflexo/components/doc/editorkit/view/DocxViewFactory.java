@@ -56,6 +56,7 @@ import javax.swing.text.ViewFactory;
  *
  * @author Stanislav Lapitsky
  */
+// TODO: FD4SG why a Docx in flexo-documentation?
 public class DocxViewFactory implements ViewFactory {
 
 	/**

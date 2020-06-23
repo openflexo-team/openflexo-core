@@ -1,0 +1,13 @@
+/**
+ * Testing dynamic contents
+ */
+model MyModel {
+
+	// An anonymous constructor
+	create::newConstructorName () {  
+		int j;
+		i = 1;
+		i = j;
+	}
+
+}

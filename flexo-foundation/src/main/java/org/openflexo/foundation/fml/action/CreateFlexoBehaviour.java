@@ -59,6 +59,7 @@ import org.openflexo.foundation.FlexoObject.FlexoObjectImpl;
 import org.openflexo.foundation.action.FlexoAction;
 import org.openflexo.foundation.action.FlexoActionFactory;
 import org.openflexo.foundation.action.NotImplementedException;
+import org.openflexo.foundation.action.TechnologySpecificFlexoAction;
 import org.openflexo.foundation.fml.ActionScheme;
 import org.openflexo.foundation.fml.CloningScheme;
 import org.openflexo.foundation.fml.CreationScheme;
@@ -66,6 +67,7 @@ import org.openflexo.foundation.fml.DeletionScheme;
 import org.openflexo.foundation.fml.EventListener;
 import org.openflexo.foundation.fml.FMLModelFactory;
 import org.openflexo.foundation.fml.FMLObject;
+import org.openflexo.foundation.fml.FMLTechnologyAdapter;
 import org.openflexo.foundation.fml.FlexoBehaviour;
 import org.openflexo.foundation.fml.FlexoBehaviourParameter.FlexoBehaviourParameterImpl;
 import org.openflexo.foundation.fml.FlexoBehaviourParameter.WidgetType;
@@ -74,6 +76,7 @@ import org.openflexo.foundation.fml.FlexoConceptBehaviouralFacet;
 import org.openflexo.foundation.fml.FlexoConceptObject;
 import org.openflexo.foundation.fml.NavigationScheme;
 import org.openflexo.foundation.fml.SynchronizationScheme;
+import org.openflexo.foundation.fml.Visibility;
 import org.openflexo.foundation.task.Progress;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
@@ -82,7 +85,8 @@ import org.openflexo.localization.LocalizedDelegate;
 import org.openflexo.toolbox.PropertyChangedSupportDefaultImplementation;
 import org.openflexo.toolbox.StringUtils;
 
-public class CreateFlexoBehaviour extends FlexoAction<CreateFlexoBehaviour, FlexoConceptObject, FMLObject> {
+public class CreateFlexoBehaviour extends FlexoAction<CreateFlexoBehaviour, FlexoConceptObject, FMLObject>
+		implements TechnologySpecificFlexoAction<FMLTechnologyAdapter> {
 
 	private static final Logger logger = Logger.getLogger(CreateFlexoBehaviour.class.getPackage().getName());
 
@@ -240,6 +244,11 @@ public class CreateFlexoBehaviour extends FlexoAction<CreateFlexoBehaviour, Flex
 		}
 	};
 
+	@Override
+	public Class<? extends FMLTechnologyAdapter> getTechnologyAdapterClass() {
+		return FMLTechnologyAdapter.class;
+	}
+
 	static {
 		FlexoObjectImpl.addActionForClass(CreateFlexoBehaviour.actionType, FlexoConcept.class);
 		FlexoObjectImpl.addActionForClass(CreateFlexoBehaviour.actionType, FlexoConceptBehaviouralFacet.class);
@@ -285,6 +294,8 @@ public class CreateFlexoBehaviour extends FlexoAction<CreateFlexoBehaviour, Flex
 	private String description;
 	private Class<? extends FlexoBehaviour> flexoBehaviourClass;
 	private final HashMap<Class<? extends FlexoBehaviour>, TechnologyAdapter> behaviourClassMap;
+	private boolean isAbstract = false;
+	private Visibility visibility = Visibility.Default;
 
 	private List<Class<? extends FlexoBehaviour>> behaviours;
 
@@ -475,6 +486,8 @@ public class CreateFlexoBehaviour extends FlexoAction<CreateFlexoBehaviour, Flex
 			FMLModelFactory factory = getFocusedObject().getFMLModelFactory();
 			newFlexoBehaviour = factory.newInstance(getFlexoBehaviourClass());
 			newFlexoBehaviour.setName(getFlexoBehaviourName());
+			newFlexoBehaviour.setVisibility(getVisibility());
+			newFlexoBehaviour.setAbstract(getIsAbstract());
 			newFlexoBehaviour.setDescription(getDescription());
 			newFlexoBehaviour.setFlexoConcept(getFlexoConcept());
 			performCreateParameters();
@@ -527,6 +540,28 @@ public class CreateFlexoBehaviour extends FlexoAction<CreateFlexoBehaviour, Flex
 		this.flexoBehaviourClass = flexoBehaviourClass;
 		getPropertyChangeSupport().firePropertyChange("flexoBehaviourClass", null, flexoBehaviourClass);
 		getPropertyChangeSupport().firePropertyChange("flexoBehaviourName", null, getFlexoBehaviourName());
+		getPropertyChangeSupport().firePropertyChange("isValid", wasValid, isValid());
+	}
+
+	public boolean getIsAbstract() {
+		return isAbstract;
+	}
+
+	public void setIsAbstract(boolean isAbstract) {
+		boolean wasValid = isValid();
+		this.isAbstract = isAbstract;
+		getPropertyChangeSupport().firePropertyChange("isAbstract", null, isAbstract);
+		getPropertyChangeSupport().firePropertyChange("isValid", wasValid, isValid());
+	}
+
+	public Visibility getVisibility() {
+		return visibility;
+	}
+
+	public void setVisibility(Visibility visibility) {
+		boolean wasValid = isValid();
+		this.visibility = visibility;
+		getPropertyChangeSupport().firePropertyChange("visibility", null, visibility);
 		getPropertyChangeSupport().firePropertyChange("isValid", wasValid, isValid());
 	}
 

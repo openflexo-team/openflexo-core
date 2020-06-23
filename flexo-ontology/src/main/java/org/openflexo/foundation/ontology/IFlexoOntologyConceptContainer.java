@@ -49,7 +49,7 @@ import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
  * 
  * @author gbesancon
  */
-public interface IFlexoOntologyConceptContainer<TA extends TechnologyAdapter> {
+public interface IFlexoOntologyConceptContainer<TA extends TechnologyAdapter<TA>> {
 
 	/**
 	 * Sub container of container.

@@ -48,9 +48,16 @@ import org.openflexo.foundation.FlexoService.ServiceNotification;
  * @author sylvain
  * 
  */
-public class ResourceLoaded<RD extends ResourceData<RD>> extends DataModification implements ServiceNotification {
+public class ResourceLoaded<RD extends ResourceData<RD>> extends DataModification<RD> implements ServiceNotification {
 
 	private FlexoResource<RD> resource;
+
+	/**
+	 * @param resource
+	 */
+	public ResourceLoaded(FlexoResource<RD> resource) {
+		this(resource, resource.getLoadedResourceData());
+	}
 
 	/**
 	 * @param resource

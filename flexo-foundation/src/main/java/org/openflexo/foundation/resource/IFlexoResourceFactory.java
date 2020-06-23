@@ -2,7 +2,7 @@ package org.openflexo.foundation.resource;
 
 import java.io.IOException;
 
-import org.openflexo.model.exceptions.ModelDefinitionException;
+import org.openflexo.pamela.exceptions.ModelDefinitionException;
 
 public interface IFlexoResourceFactory<R extends FlexoResource<RD>, RD extends ResourceData<RD>> {
 
@@ -93,7 +93,7 @@ public interface IFlexoResourceFactory<R extends FlexoResource<RD>, RD extends R
 	RD makeEmptyResourceData(R resource);
 
 	/**
-	 * Return boolean indicating is supplied serialization artefact seems to be a good candidate to be wrapped in considered
+	 * Return boolean indicating if supplied serialization artefact seems to be a good candidate to be wrapped in considered
 	 * {@link FlexoResource}
 	 * 
 	 * @param serializationArtefact
@@ -114,6 +114,7 @@ public interface IFlexoResourceFactory<R extends FlexoResource<RD>, RD extends R
 	 * @param resourceCenter
 	 * @return
 	 */
-	<I> I getConvertableArtefact(I serializationArtefact, FlexoResourceCenter<I> resourceCenter);
-
+	default <I> I getConvertableArtefact(I serializationArtefact, FlexoResourceCenter<I> resourceCenter) {
+		return null;
+	}
 }

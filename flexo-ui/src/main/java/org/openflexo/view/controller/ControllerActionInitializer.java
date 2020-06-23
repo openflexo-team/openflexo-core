@@ -39,9 +39,6 @@
 
 package org.openflexo.view.controller;
 
-import java.util.Hashtable;
-import java.util.Map;
-
 import org.openflexo.action.CopyActionInitializer;
 import org.openflexo.action.CutActionInitializer;
 import org.openflexo.action.ImportProjectInitializer;
@@ -51,6 +48,7 @@ import org.openflexo.action.SelectAllActionInitializer;
 import org.openflexo.connie.type.TypeUtils;
 import org.openflexo.foundation.FlexoEditingContext;
 import org.openflexo.foundation.FlexoEditor;
+import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.action.FlexoAction;
 import org.openflexo.foundation.action.FlexoActionFactory;
 import org.openflexo.foundation.action.FlexoActionizer.EditorProvider;
@@ -92,8 +90,7 @@ public class ControllerActionInitializer implements EditorProvider {
 
 	private final FlexoController _controller;
 
-	private final Map<FlexoActionFactory<?, ?, ?>, ActionInitializer<?, ?, ?>> initializers;
-	private final Map<Class<?>, ActionInitializer<?, ?, ?>> initializersByActionClass;
+	private final InitializersMap initializers = new InitializersMap();
 
 	/**
 	 * Create a {@link ControllerActionInitializer} for a {@link FlexoController}
@@ -101,9 +98,6 @@ public class ControllerActionInitializer implements EditorProvider {
 	 * @param controller
 	 */
 	protected ControllerActionInitializer(FlexoController controller) {
-		super();
-		initializers = new Hashtable<>();
-		initializersByActionClass = new Hashtable<>();
 		_controller = controller;
 		initializeActions();
 	}
@@ -113,7 +107,7 @@ public class ControllerActionInitializer implements EditorProvider {
 	 * 
 	 * @return
 	 */
-	public Map<FlexoActionFactory<?, ?, ?>, ActionInitializer<?, ?, ?>> getActionInitializers() {
+	public InitializersMap getActionInitializers() {
 		return initializers;
 	}
 
@@ -132,8 +126,8 @@ public class ControllerActionInitializer implements EditorProvider {
 	 * @param actionFactory
 	 * @param initializer
 	 */
-	public <A extends FlexoAction<A, ?, ?>> void registerInitializer(FlexoActionFactory<A, ?, ?> actionFactory,
-			ActionInitializer<A, ?, ?> initializer) {
+	public <A extends FlexoAction<A, T1, T2>, T1 extends FlexoObject, T2 extends FlexoObject> void registerInitializer(
+			FlexoActionFactory<A, T1, T2> actionFactory, ActionInitializer<A, T1, T2> initializer) {
 		if (actionFactory != null) {
 			initializers.put(actionFactory, initializer);
 		}
@@ -148,26 +142,28 @@ public class ControllerActionInitializer implements EditorProvider {
 	 * @param actionType
 	 * @param initializer
 	 */
-	public <A extends FlexoAction<A, ?, ?>> void registerInitializer(Class<A> actionType, ActionInitializer<A, ?, ?> initializer) {
+	public <A extends FlexoAction<A, T1, T2>, T1 extends FlexoObject, T2 extends FlexoObject> void registerInitializer(Class<A> actionType,
+			ActionInitializer<A, T1, T2> initializer) {
 		if (actionType != null) {
-			initializersByActionClass.put(actionType, initializer);
+			initializers.put(actionType, initializer);
 		}
 		else {
 			logger.severe("Registered an action initializer without providing an action type");
 		}
 	}
 
-	public <A extends FlexoAction<A, ?, ?>> void clearInitializer(FlexoActionFactory<A, ?, ?> actionFactory) {
+	public <A extends FlexoAction<A, T1, T2>, T1 extends FlexoObject, T2 extends FlexoObject> void clearInitializer(
+			FlexoActionFactory<A, T1, T2> actionFactory) {
 		if (actionFactory != null) {
 			System.out.println("Clear initializer for " + actionFactory);
 			initializers.remove(actionFactory);
 		}
 	}
 
-	public <A extends FlexoAction<A, ?, ?>> void clearInitializer(Class<A> actionType) {
+	public void clearInitializer(Class<?> actionType) {
 		if (actionType != null) {
 			System.out.println("Clear initializer for " + actionType);
-			initializersByActionClass.remove(actionType);
+			initializers.remove(actionType);
 		}
 	}
 
@@ -214,7 +210,7 @@ public class ControllerActionInitializer implements EditorProvider {
 		// new SubmitDocumentationActionizer(this);
 		// new UploadProjectInitializer(this);
 
-		// Remove sinc it is unused now
+		// Remove since it is unused now
 		// new ProjectExcelExportInitializer(this);
 
 		new LoadAllImportedProjectInitializer(this);
@@ -226,24 +222,26 @@ public class ControllerActionInitializer implements EditorProvider {
 	}
 
 	@SuppressWarnings("unchecked")
-	public <A extends FlexoAction<A, ?, ?>> ActionInitializer<A, ?, ?> getActionInitializer(A action) {
+	public <A extends FlexoAction<A, T1, T2>, T1 extends FlexoObject, T2 extends FlexoObject> ActionInitializer<A, T1, T2> getActionInitializer(
+			A action) {
 		if (action == null) {
 			return null;
 		}
-		if (action.getActionFactory() != null) {
-			return getActionInitializer(action.getActionFactory());
+		FlexoActionFactory<A, T1, T2> af = action.getActionFactory();
+		if (af != null) {
+			return getActionInitializer(af);
 		}
 		else {
 			return getActionInitializer((Class<A>) action.getClass());
 		}
 	}
 
-	@SuppressWarnings("unchecked")
-	public <A extends FlexoAction<A, ?, ?>> ActionInitializer<A, ?, ?> getActionInitializer(FlexoActionFactory<A, ?, ?> actionFactory) {
+	public <A extends FlexoAction<A, T1, T2>, T1 extends FlexoObject, T2 extends FlexoObject> ActionInitializer<A, T1, T2> getActionInitializer(
+			FlexoActionFactory<A, T1, T2> actionFactory) {
 		if (actionFactory == null) {
 			return null;
 		}
-		ActionInitializer<A, ?, ?> actionInitializer = (ActionInitializer<A, ?, ?>) initializers.get(actionFactory);
+		ActionInitializer<A, T1, T2> actionInitializer = initializers.get(actionFactory);
 		if (actionInitializer == null) {
 			// Attempt to use class
 			actionInitializer = getActionInitializer(getActionClass(actionFactory));
@@ -251,20 +249,21 @@ public class ControllerActionInitializer implements EditorProvider {
 		return actionInitializer;
 	}
 
-	@SuppressWarnings("unchecked")
-	public <A extends FlexoAction<A, ?, ?>> ActionInitializer<A, ?, ?> getActionInitializer(Class<A> actionType) {
+	public <A extends FlexoAction<A, T1, T2>, T1 extends FlexoObject, T2 extends FlexoObject> ActionInitializer<A, T1, T2> getActionInitializer(
+			Class<A> actionType) {
 		if (actionType == null) {
 			return null;
 		}
-		return (ActionInitializer<A, ?, ?>) TypeUtils.objectForClass(actionType, initializersByActionClass);
+		return initializers.get(actionType);
 	}
 
 	@SuppressWarnings("unchecked")
-	private <A extends FlexoAction<A, ?, ?>> Class<A> getActionClass(FlexoActionFactory<A, ?, ?> actionFactory) {
+	private static <A extends FlexoAction<A, T, T2>, T extends FlexoObject, T2 extends FlexoObject> Class<A> getActionClass(
+			FlexoActionFactory<A, T, T2> actionFactory) {
 		return (Class<A>) TypeUtils.getTypeArgument(actionFactory.getClass(), FlexoActionFactory.class, 0);
 	}
 
-	/*public <A extends FlexoAction<A, T1, T2>, T1 extends FlexoObject, T2 extends FlexoObject> FlexoActionFinalizer<A> getFinalizerFor(
+	/*public <A extends FlexoAction<A, T, T2>, T1 extends FlexoObject, T2 extends FlexoObject> FlexoActionFinalizer<A> getFinalizerFor(
 			FlexoActionFactory<A, T1, T2> actionFactory) {
 		ActionInitializer<A, T1, T2> initializer = getActionInitializer(actionFactory);
 		if (initializer != null) {

@@ -41,7 +41,7 @@ package org.openflexo.foundation.technologyadapter;
 
 import org.openflexo.foundation.resource.FlexoResource;
 import org.openflexo.foundation.resource.ResourceRepositoryImpl;
-import org.openflexo.model.annotations.ModelEntity;
+import org.openflexo.pamela.annotations.ModelEntity;
 
 /**
  * A {@link MetaModelRepository} stores all resources storing metamodels relative to a given technology<br>
@@ -53,7 +53,7 @@ import org.openflexo.model.annotations.ModelEntity;
  * @param <TA>
  */
 @ModelEntity(isAbstract = true)
-public interface MetaModelRepository<R extends FlexoMetaModelResource<M, MM, TA> & FlexoResource<MM>, M extends FlexoModel<M, MM> & TechnologyObject<TA>, MM extends FlexoMetaModel<MM> & TechnologyObject<TA>, TA extends TechnologyAdapter, I>
+public interface MetaModelRepository<R extends FlexoMetaModelResource<M, MM, TA> & FlexoResource<MM>, M extends FlexoModel<M, MM> & TechnologyObject<TA>, MM extends FlexoMetaModel<MM> & TechnologyObject<TA>, TA extends TechnologyAdapter<TA>, I>
 		extends TechnologyAdapterResourceRepository<R, TA, MM, I> {
 
 	/**

@@ -44,10 +44,10 @@ import java.util.Collections;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.openflexo.model.annotations.ImplementationClass;
-import org.openflexo.model.annotations.ModelEntity;
-import org.openflexo.model.annotations.XMLElement;
-import org.openflexo.model.factory.ModelFactory;
+import org.openflexo.pamela.annotations.ImplementationClass;
+import org.openflexo.pamela.annotations.ModelEntity;
+import org.openflexo.pamela.annotations.XMLElement;
+import org.openflexo.pamela.factory.ModelFactory;
 import org.openflexo.toolbox.FileUtils;
 import org.openflexo.toolbox.JarInDirClassLoader;
 
@@ -90,6 +90,8 @@ public interface DirectoryBasedIODelegate extends FileIODelegate {
 	 */
 	@Override
 	public File getFile();
+
+	public void moveToDirectory(File newDirectory);
 
 	/*@Getter(FILE_EXTENSION)
 	@XMLAttribute
@@ -140,6 +142,7 @@ public interface DirectoryBasedIODelegate extends FileIODelegate {
 		public void rename(String newName) throws CannotRenameException {
 			System.out.println("OK, c'est parti pour un renommage dans DirectoryBasedFlexoIODelegate");
 			System.out.println("le nouveau nom c'est " + newName);
+			Thread.dumpStack();
 
 			String directoryExtension = getDirectoryName().substring(getDirectoryName().indexOf("."));
 			String fileExtension = getFileName().substring(getFileName().indexOf("."));
@@ -195,6 +198,14 @@ public interface DirectoryBasedIODelegate extends FileIODelegate {
 		}
 
 		@Override
+		public void moveToDirectory(File newDirectory) {
+			String filename = getFileName();
+			setDirectory(newDirectory);
+			setFile(new File(newDirectory, filename));
+			resetDiskLastModifiedDate();
+		}
+
+		@Override
 		public String getFileName() {
 			return getFile().getName();
 		}
@@ -218,10 +229,8 @@ public interface DirectoryBasedIODelegate extends FileIODelegate {
 				}
 				return returned;
 			}
-			else {
-				logger.warning("Delete requested for READ-ONLY file resource " + this);
-				return false;
-			}
+			logger.warning("Delete requested for READ-ONLY file resource " + this);
+			return false;
 		}
 
 		@Override

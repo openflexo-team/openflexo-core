@@ -39,7 +39,6 @@
 package org.openflexo.action;
 
 import java.awt.event.KeyEvent;
-import java.util.EventObject;
 import java.util.Vector;
 import java.util.logging.Logger;
 
@@ -49,9 +48,8 @@ import javax.swing.KeyStroke;
 import org.openflexo.FlexoCst;
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoObject;
-import org.openflexo.foundation.action.FlexoActionFinalizer;
-import org.openflexo.foundation.action.FlexoActionInitializer;
 import org.openflexo.foundation.action.FlexoActionFactory;
+import org.openflexo.foundation.action.FlexoActionRunnable;
 import org.openflexo.foundation.action.FlexoActionVisibleCondition;
 import org.openflexo.foundation.action.copypaste.PasteAction;
 import org.openflexo.icon.IconLibrary;
@@ -69,35 +67,34 @@ public class PasteActionInitializer extends ActionInitializer<PasteAction, Flexo
 	}
 
 	@Override
-	protected FlexoActionInitializer<PasteAction> getDefaultInitializer() {
-		return new FlexoActionInitializer<PasteAction>() {
-			@Override
-			public boolean run(EventObject e, PasteAction action) {
-				logger.info("Paste initializer");
-				// getControllerActionInitializer().getController().getSelectionManager().setSelectedObjects(null);
-				return true;
-			}
+	protected FlexoActionRunnable<PasteAction, FlexoObject, FlexoObject> getDefaultInitializer() {
+		return (e, action) -> {
+			logger.info("Paste initializer");
+			// getControllerActionInitializer().getController().getSelectionManager().setSelectedObjects(null);
+			return true;
 		};
 	}
 
 	@Override
-	protected FlexoActionFinalizer<PasteAction> getDefaultFinalizer() {
-		return new FlexoActionFinalizer<PasteAction>() {
-			@Override
-			public boolean run(EventObject e, PasteAction action) {
-				logger.info("Paste finalizer");
-				if (action.getPastedObjects() != null) {
-					getControllerActionInitializer().getController().getSelectionManager().setSelectedObjects(action.getPastedObjects());
-					getControllerActionInitializer().getController().setInfoMessage(
-							"Pasted " + action.getPastedObjects().size() + " objects", true);
+	protected FlexoActionRunnable<PasteAction, FlexoObject, FlexoObject> getDefaultFinalizer() {
+		return (e, action) -> {
+			logger.info("Paste finalizer");
+			if (action.getPastedObjects() != null) {
+				if (action.getPastedObjects().size() == 1) {
+					getControllerActionInitializer().getController().selectAndFocusObject(action.getPastedObjects().get(0));
 				}
-				return true;
+				else {
+					getControllerActionInitializer().getController().getSelectionManager().setSelectedObjects(action.getPastedObjects());
+				}
+				getControllerActionInitializer().getController().setInfoMessage("Pasted " + action.getPastedObjects().size() + " objects",
+						true);
 			}
+			return true;
 		};
 	}
 
 	@Override
-	protected Icon getEnabledIcon(FlexoActionFactory actionType) {
+	protected Icon getEnabledIcon(FlexoActionFactory<PasteAction, FlexoObject, FlexoObject> actionType) {
 		return IconLibrary.PASTE_ICON;
 	}
 
@@ -109,7 +106,6 @@ public class PasteActionInitializer extends ActionInitializer<PasteAction, Flexo
 	@Override
 	protected FlexoActionVisibleCondition<PasteAction, FlexoObject, FlexoObject> getVisibleCondition() {
 		return new FlexoActionVisibleCondition<PasteAction, FlexoObject, FlexoObject>() {
-
 			@Override
 			public boolean isVisible(FlexoActionFactory<PasteAction, FlexoObject, FlexoObject> actionType, FlexoObject object,
 					Vector<FlexoObject> globalSelection, FlexoEditor editor) {

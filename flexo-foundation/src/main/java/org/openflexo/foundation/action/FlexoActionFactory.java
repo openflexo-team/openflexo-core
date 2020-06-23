@@ -51,7 +51,6 @@ import org.openflexo.connie.type.TypeUtils;
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.FlexoServiceManager;
-import org.openflexo.foundation.fml.editionaction.TechnologySpecificAction;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.localization.LocalizedDelegate;
@@ -77,27 +76,32 @@ public abstract class FlexoActionFactory<A extends FlexoAction<A, T1, T2>, T1 ex
 
 	public static final ActionGroup inspectGroup = new ActionGroup("inspect", 0);
 	public static final ActionGroup defaultGroup = new ActionGroup("default", 1);
-	public static final ActionGroup editGroup = new ActionGroup("edit", 2);
-	// 3 to 9 are reserved for custom groups
+	public static final ActionGroup advancedGroup = new ActionGroup("advanced", 2);
+	public static final ActionGroup editGroup = new ActionGroup("edit", 3);
+	// 4 to 9 are reserved for custom groups
 	public static final ActionGroup printGroup = new ActionGroup("print", 10);
 	public static final ActionGroup helpGroup = new ActionGroup("help", 11);
 	public static final ActionGroup docGroup = new ActionGroup("documentation", 12);
 
-	public static final ActionMenu newMenu = new ActionMenu("new", defaultGroup);
-	public static final ActionGroup newMenuGroup1 = new ActionGroup("new_group_1", 0);
-	public static final ActionGroup newMenuGroup2 = new ActionGroup("new_group_2", 1);
-	public static final ActionGroup newMenuGroup3 = new ActionGroup("new_group_3", 2);
-	public static final ActionGroup newMenuGroup4 = new ActionGroup("new_group_4", 2);
+	public static final ActionMenu newMenu = new ActionMenu("new", 0, defaultGroup);
+	public static final ActionGroup newMenuGroup1 = new ActionGroup("new_group_1", 1);
+	public static final ActionGroup newMenuGroup2 = new ActionGroup("new_group_2", 2);
+	public static final ActionGroup newMenuGroup3 = new ActionGroup("new_group_3", 3);
+	public static final ActionGroup newMenuGroup4 = new ActionGroup("new_group_4", 4);
+	public static final ActionMenu newVirtualModelMenu = new ActionMenu("virtual_model", 1, newMenuGroup1, newMenu);
+	public static final ActionMenu newPropertyMenu = new ActionMenu("property", 2, newMenuGroup1, newMenu);
+	public static final ActionMenu newBehaviourMenu = new ActionMenu("behaviour", 3, newMenuGroup1, newMenu);
 
-	public static final ActionMenu newVirtualModelMenu = new ActionMenu("virtual_model", defaultGroup, newMenu);
-	public static final ActionMenu newPropertyMenu = new ActionMenu("property", defaultGroup, newMenu);
-	public static final ActionMenu newBehaviourMenu = new ActionMenu("behaviour", defaultGroup, newMenu);
+	public static final ActionMenu refactorMenu = new ActionMenu("refactor", 5, defaultGroup);
+	public static final ActionMenu moveToMenu = new ActionMenu("move_to", 2, defaultGroup, refactorMenu);
 
-	public static final ActionMenu importMenu = new ActionMenu("import", defaultGroup);
-	public static final ActionMenu exportMenu = new ActionMenu("export", defaultGroup);
-	public static final ActionMenu convertMenu = new ActionMenu("convert_to", defaultGroup);
+	public static final ActionMenu generateMenu = new ActionMenu("generate", 6, defaultGroup);
 
-	public static final ActionMenu executionModelMenu = new ActionMenu("execution_model", defaultGroup);
+	public static final ActionMenu importMenu = new ActionMenu("import", 7, defaultGroup);
+	public static final ActionMenu exportMenu = new ActionMenu("export", 8, defaultGroup);
+	public static final ActionMenu convertMenu = new ActionMenu("convert_to", 9, defaultGroup);
+
+	public static final ActionMenu executionModelMenu = new ActionMenu("execution_model", 10, defaultGroup);
 
 	public static final int NORMAL_ACTION_TYPE = 0;
 	public static final int ADD_ACTION_TYPE = 1;
@@ -224,6 +228,13 @@ public abstract class FlexoActionFactory<A extends FlexoAction<A, T1, T2>, T1 ex
 		return _actionName;
 	}
 
+	public String getLocalizedName(FlexoServiceManager serviceManager) {
+		if (getLocales(serviceManager) != null) {
+			return getLocales(serviceManager).localizedForKey(getUnlocalizedName());
+		}
+		return getUnlocalizedName();
+	}
+
 	/*
 	public LocalizedDelegate getLocales() {
 		return FlexoLocalization.getMainLocalizer();
@@ -240,23 +251,6 @@ public abstract class FlexoActionFactory<A extends FlexoAction<A, T1, T2>, T1 ex
 	public String getLocalizedDescription() {
 		return getLocales().localizedForKey(_actionName + "_description");
 	}*/
-
-	/**
-	 * Deprecated call to an action building outside the context of a FlexoEditor Please DON'T use it anymore !!!
-	 * 
-	 * All old implementations using this method must be rewritten
-	 * 
-	 * @deprecated
-	 * @param focusedObject
-	 *            the focused object
-	 * @param globalSelection
-	 *            a vector of FlexoModelObject, which represent all the selected objects
-	 * @return
-	 */
-	@Deprecated
-	public A makeNewAction(T1 focusedObject, Vector<T2> globalSelection) {
-		return makeNewAction(focusedObject, globalSelection, null);
-	}
 
 	/**
 	 * 
@@ -370,11 +364,11 @@ public abstract class FlexoActionFactory<A extends FlexoAction<A, T1, T2>, T1 ex
 
 	@SuppressWarnings("unchecked")
 	public LocalizedDelegate getLocales(FlexoServiceManager serviceManager) {
-		if (TechnologySpecificAction.class.isAssignableFrom(getFlexoActionClass())) {
+		if (TechnologySpecificFlexoAction.class.isAssignableFrom(getFlexoActionClass())) {
 			Class<? extends TechnologyAdapter> taClass = (Class<? extends TechnologyAdapter>) TypeUtils
 					.getBaseClass(TypeUtils.getTypeArgument(getFlexoActionClass(), TechnologySpecificFlexoAction.class, 0));
 			if (taClass != null) {
-				TechnologyAdapter ta = serviceManager.getTechnologyAdapterService().getTechnologyAdapter(taClass);
+				TechnologyAdapter<?> ta = serviceManager.getTechnologyAdapterService().getTechnologyAdapter(taClass);
 				return ta.getLocales();
 			}
 		}

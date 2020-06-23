@@ -47,12 +47,11 @@ import org.openflexo.foundation.fml.rm.VirtualModelResource;
 import org.openflexo.foundation.project.FlexoProjectResource;
 import org.openflexo.foundation.resource.FlexoResource;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
-import org.openflexo.model.validation.InformationIssue;
-import org.openflexo.model.validation.ValidationError;
-import org.openflexo.model.validation.ValidationIssue;
-import org.openflexo.model.validation.ValidationWarning;
+import org.openflexo.pamela.validation.InformationIssue;
+import org.openflexo.pamela.validation.ValidationError;
+import org.openflexo.pamela.validation.ValidationIssue;
+import org.openflexo.pamela.validation.ValidationWarning;
 import org.openflexo.rm.ResourceLocator;
-import org.openflexo.swing.AnimatedIcon;
 import org.openflexo.view.controller.TechnologyAdapterController;
 import org.openflexo.view.controller.TechnologyAdapterControllerService;
 
@@ -103,8 +102,7 @@ public class IconLibrary {
 	public static final ImageIcon RESOURCE_CENTER_ICON = new ImageIconResource(
 			ResourceLocator.locateResource("Icons/Common/ResourceCenter.png"));
 
-	public static final Icon IN_PROGRESS_ICON = new AnimatedIcon(
-			new ImageIconResource(ResourceLocator.locateResource("Icons/Common/Progress.gif")));
+	public static final ImageIcon IN_PROGRESS_ICON = new ImageIconResource(ResourceLocator.locateResource("Icons/Common/Progress.gif"));
 	public static final ImageIcon VALID_ICON = new ImageIconResource(ResourceLocator.locateResource("Icons/Common/Valid.png"));
 	public static final ImageIcon INVALID_ICON = new ImageIconResource(ResourceLocator.locateResource("Icons/Common/Invalid.png"));
 
@@ -151,6 +149,8 @@ public class IconLibrary {
 			ResourceLocator.locateResource("Icons/Actions/Refresh-disabled.png"));
 	public static final ImageIcon TIME_TRAVEL_ICON = new ImageIconResource(
 			ResourceLocator.locateResource("Icons/Actions/AutoSaveRestore.gif"));
+	public static final ImageIcon CLEAR_ICON = new ImageIconResource(ResourceLocator.locateResource("Icons/Actions/Clear.png"));
+	public static final ImageIcon CLOSE_ICON = new ImageIconResource(ResourceLocator.locateResource("Icons/Actions/Close.png"));
 
 	// GUI icons
 
@@ -244,12 +244,15 @@ public class IconLibrary {
 	public static final IconMarker SYNC = new IconMarker(
 			new ImageIconResource(ResourceLocator.locateResource("Icons/Utils/Markers/Sync.png")), 10, 7);
 	public static final ImageIcon QUESTION_ICON = new ImageIconResource(ResourceLocator.locateResource("Icons/Utils/Markers/Question.gif"));
-	public static final IconMarker NEW_32_32 = new IconMarker(
-			new ImageIconResource(ResourceLocator.locateResource("Icons/Utils/Markers/Plus16x16.png")), 45, 0);
 	public static final IconMarker NEW_MARKER = new IconMarker(
 			new ImageIconResource(ResourceLocator.locateResource("Icons/Utils/Markers/Plus.png")), 8, 0);
 	public static final IconMarker NOTIFY_MARKER = new IconMarker(
 			new ImageIconResource(ResourceLocator.locateResource("Icons/Utils/Markers/Notify.png")), 6, 0);
+
+	public static final IconMarker BIG_NEW_MARKER = new IconMarker(
+			new ImageIconResource(ResourceLocator.locateResource("Icons/Utils/Markers/Plus16x16.png")), 45, 0);
+	public static final IconMarker BIG_GENERATE_MARKER = new IconMarker(
+			new ImageIconResource(ResourceLocator.locateResource("Icons/Utils/Markers/GenerateBig.gif")), 45, 0);
 
 	// Cursors
 	public static final ImageIcon DROP_OK_CURSOR = new ImageIconResource(
@@ -336,7 +339,7 @@ public class IconLibrary {
 	 * @param technologyAdapter
 	 * @return
 	 */
-	public static <TA extends TechnologyAdapter> TechnologyAdapterController<TA> getTechnologyAdapterController(TA technologyAdapter) {
+	public static <TA extends TechnologyAdapter<TA>> TechnologyAdapterController<TA> getTechnologyAdapterController(TA technologyAdapter) {
 		if (technologyAdapter != null) {
 			try {
 				FlexoServiceManager sm = technologyAdapter.getTechnologyAdapterService().getServiceManager();

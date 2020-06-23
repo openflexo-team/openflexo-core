@@ -9,9 +9,17 @@
 			darkLevel="0" index="0" font="SansSerif,0,11" useScrollBar="true"
 			horizontalScrollbarPolicy="HORIZONTAL_SCROLLBAR_AS_NEEDED"
 			verticalScrollbarPolicy="VERTICAL_SCROLLBAR_AS_NEEDED" name="BasicTab">
-			<Label label="creation_scheme" index="20"
+			
+			<Label label="dynamic_instantiation" index="10"
+				constraints="twocols(anchor=east;expandHorizontally=false;expandVertically=false;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=10;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=5;location=left;padX=0;padY=0;weightX=0.0;weightY=0.0)"
+				localize="true" />
+			<CheckBox selected="true" index="11" data="data.dynamicInstantiation"
+				constraints="twocols(expandHorizontally=false;expandVertically=false;index=3;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)"
+				name="DynamicInstantiationCB" localize="true" />
+			
+			<Label label="creation_scheme" index="30" name="creationSchemeDropDown" visible="!data.dynamicInstantiation"
 				constraints="twocols(anchor=east;expandHorizontally=false;expandVertically=false;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=10;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=5;location=left;padX=0;padY=0;weightX=0.0;weightY=0.0)"/>
-			<DropDown index="21" data="data.creationScheme"  
+			<DropDown index="31" data="data.creationScheme" visible="!data.dynamicInstantiation"
 				constraints="twocols(anchor=west;expandHorizontally=false;expandVertically=false;fill=none;gridHeight=1;gridWidth=0;gridX=-1;gridY=-1;index=11;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=right;padX=0;padY=0;weightX=0.0;weightY=0.0)"
 				name="CreationSchemeDropDown" format="object.signature"
 				icon="controller.iconForObject(object)" localize="false"
@@ -19,7 +27,7 @@
 				showIcon="true" iteratorClassName="org.openflexo.foundation.fml.CreationScheme"
 				autoSelectFirstRow="false">
 			</DropDown>
-			<Label label="parameters" index="22" data=""
+			<Label label="parameters" index="32" 
 				constraints="twocols(expandHorizontally=true;expandVertically=false;index=12;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=5;location=left)"
 				/>
 			<Table
@@ -34,9 +42,8 @@
 				localize="true" enable="" manageDynamicModel="true" opaque="false"
 				clickAction="" doubleClickAction="" rightClickAction=""
 				enterPressedAction="" valueChangedAction="" valueTransform=""
-				valueValidator="" index="23" data="data.parameters"
-				constraints="twocols(expandHorizontally=true;expandVertically=true;index=13;insetsBottom=0;insetsLeft=5;insetsRight=5;insetsTop=0;location=right)"
-				visible="">
+				valueValidator="" index="33" data="data.parameters"
+				constraints="twocols(expandHorizontally=true;expandVertically=true;index=13;insetsBottom=0;insetsLeft=5;insetsRight=5;insetsTop=0;location=right)">
 				<IconColumn data="controller.iconForObject(iterator.param)"
 					format="" title="icon" columnWidth="25" resizable="false"
 					displayTitle="false" color="" bgColor="" tooltip=""

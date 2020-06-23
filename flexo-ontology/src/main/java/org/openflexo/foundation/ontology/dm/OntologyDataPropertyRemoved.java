@@ -40,9 +40,11 @@
 package org.openflexo.foundation.ontology.dm;
 
 import org.openflexo.foundation.ontology.IFlexoOntologyDataProperty;
+import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 
-public class OntologyDataPropertyRemoved extends OntologyDataModification {
-	public OntologyDataPropertyRemoved(IFlexoOntologyDataProperty property) {
+public class OntologyDataPropertyRemoved<TA extends TechnologyAdapter<TA>>
+		extends OntologyDataModification<IFlexoOntologyDataProperty<TA>> {
+	public OntologyDataPropertyRemoved(IFlexoOntologyDataProperty<TA> property) {
 		super(property, null);
 	}
 }

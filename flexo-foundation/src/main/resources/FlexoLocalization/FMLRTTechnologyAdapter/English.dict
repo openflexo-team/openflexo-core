@@ -1,13 +1,25 @@
-Capteur\ [ID\=2]=Capteur [ID\=2]
-Capteur\ [ID\=7]=Capteur [ID\=7]
-Culture\ [ID\=1]=Culture [ID\=1]
-Type\ [ID\=1]=Type [ID\=1]
-TypeSouche\ [ID\=10]=TypeSouche [ID\=10]
+a_virtual_model_instance_with_that_name_already_exists=A virtual model instance with that name already exists
 cannot_instantiate_enum=Cannot instantiate enum
+choose_fml_controlled_diagram_virtual_model=Choose fml controlled diagram virtual model
+choose_virtual_model=Choose virtual model
+configure_creation_scheme_to_use=Configure creation scheme to use
+create_virtual_model_instance=Create virtual model instance
 define_new_concept_instance=Define new concept instance
+delete_virtual_model_instance=Delete virtual model instance
 describe_flexo_concept_instance=Describe flexo concept instance
 discouraged_name_for_new_virtual_model_instance=Discouraged name for new virtual model instance
 initializing_adapter=Initializing adapter
+instantiate_flexo_concept=Instantiate flexo concept
+instantiate_virtual_model=Instantiate virtual model
+invalid_parameter=Invalid parameter
+new=New
+no_virtual_model_instance_name_defined=No virtual model instance name defined
+no_virtual_model_instance_title_defined=No virtual model instance title defined
+no_virtual_model_type_selected=No virtual model type selected
+open_virtual_model_instance=Open virtual model instance
 please_supply_a_valid_type_for_instance_beeing_created=Please supply a valid type for instance beeing created
+property=Property
+really_delete_this_virtual_model_instance_?=Really delete this virtual model instance ?
 saving=Saving
 select_a_creation_scheme=Select a creation scheme
+value=Value

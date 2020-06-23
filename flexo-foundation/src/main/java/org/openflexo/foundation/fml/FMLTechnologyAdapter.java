@@ -40,17 +40,18 @@ package org.openflexo.foundation.fml;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Logger;
 
 import org.openflexo.connie.annotations.NotificationUnsafe;
 import org.openflexo.foundation.FlexoServiceManager;
-import org.openflexo.foundation.fml.FlexoConceptInstanceType.FlexoConceptInstanceTypeFactory;
+import org.openflexo.foundation.fml.FlexoConceptInstanceType.DefaultFlexoConceptInstanceTypeFactory;
 import org.openflexo.foundation.fml.FlexoEnumType.FlexoEnumTypeFactory;
-import org.openflexo.foundation.fml.VirtualModelInstanceType.VirtualModelInstanceTypeFactory;
+import org.openflexo.foundation.fml.VirtualModelInstanceType.DefaultVirtualModelInstanceTypeFactory;
 import org.openflexo.foundation.fml.annotations.DeclareModelSlots;
-import org.openflexo.foundation.fml.annotations.DeclareResourceTypes;
+import org.openflexo.foundation.fml.annotations.DeclareResourceFactories;
 import org.openflexo.foundation.fml.rm.VirtualModelResource;
 import org.openflexo.foundation.fml.rm.VirtualModelResourceFactory;
+import org.openflexo.foundation.fml.ta.FMLModelSlot;
+import org.openflexo.foundation.fml.ta.FMLTechnologyContextManager;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.resource.FlexoResourceCenterService;
 import org.openflexo.foundation.resource.FlexoResourceType;
@@ -67,11 +68,8 @@ import org.openflexo.foundation.technologyadapter.TechnologyAdapterService;
  * 
  */
 @DeclareModelSlots({ FMLModelSlot.class })
-@DeclareResourceTypes({ VirtualModelResourceFactory.class })
-public class FMLTechnologyAdapter extends TechnologyAdapter {
-
-	private static final Logger logger = Logger.getLogger(FMLTechnologyAdapter.class.getPackage().getName());
-
+@DeclareResourceFactories({ VirtualModelResourceFactory.class })
+public class FMLTechnologyAdapter extends TechnologyAdapter<FMLTechnologyAdapter> {
 	public FMLTechnologyAdapter() throws TechnologyAdapterInitializationException {
 	}
 
@@ -87,7 +85,7 @@ public class FMLTechnologyAdapter extends TechnologyAdapter {
 	}
 
 	@Override
-	public String getLocalizationDirectory() {
+	protected String getLocalizationDirectory() {
 		return "FlexoLocalization/FMLTechnologyAdapter";
 	}
 
@@ -113,9 +111,9 @@ public class FMLTechnologyAdapter extends TechnologyAdapter {
 	}
 
 	private FlexoResourceTypeFactory resourceTypeFactory;
-	private FlexoConceptInstanceTypeFactory fciFactory;
+	private DefaultFlexoConceptInstanceTypeFactory fciFactory;
 	private FlexoEnumTypeFactory enumFactory;
-	private VirtualModelInstanceTypeFactory vmiFactory;
+	private DefaultVirtualModelInstanceTypeFactory vmiFactory;
 
 	@Override
 	public void initTechnologySpecificTypes(TechnologyAdapterService taService) {
@@ -139,16 +137,16 @@ public class FMLTechnologyAdapter extends TechnologyAdapter {
 		return enumFactory;
 	}
 
-	public FlexoConceptInstanceTypeFactory getFlexoConceptInstanceTypeFactory() {
+	public DefaultFlexoConceptInstanceTypeFactory getFlexoConceptInstanceTypeFactory() {
 		if (fciFactory == null) {
-			fciFactory = new FlexoConceptInstanceTypeFactory(this);
+			fciFactory = new DefaultFlexoConceptInstanceTypeFactory(this);
 		}
 		return fciFactory;
 	}
 
-	public VirtualModelInstanceTypeFactory getVirtualModelInstanceTypeFactory() {
+	public DefaultVirtualModelInstanceTypeFactory getVirtualModelInstanceTypeFactory() {
 		if (vmiFactory == null) {
-			vmiFactory = new VirtualModelInstanceTypeFactory(this);
+			vmiFactory = new DefaultVirtualModelInstanceTypeFactory(this);
 		}
 		return vmiFactory;
 	}
@@ -213,7 +211,7 @@ public class FMLTechnologyAdapter extends TechnologyAdapter {
 	}
 
 	@Override
-	public <I> boolean isFolderIgnorable(FlexoResourceCenter<I> resourceCenter, I contents) {
+	protected <I> boolean isFolderIgnorable(FlexoResourceCenter<I> resourceCenter, I contents) {
 		if (resourceCenter.isDirectory(contents)) {
 			if (FlexoResourceCenter.isContainedInDirectoryWithSuffix(resourceCenter, contents, VirtualModelResourceFactory.FML_SUFFIX)) {
 				return true;

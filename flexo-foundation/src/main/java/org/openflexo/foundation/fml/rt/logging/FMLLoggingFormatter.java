@@ -75,9 +75,6 @@ public class FMLLoggingFormatter {
 			}
 			return aString + new String(blank);
 		}
-		else {
-			return aString;
-		}
+		return aString;
 	}
-
 }

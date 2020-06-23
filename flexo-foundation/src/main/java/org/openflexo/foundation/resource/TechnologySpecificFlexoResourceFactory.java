@@ -28,7 +28,7 @@ import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterResource;
 import org.openflexo.foundation.technologyadapter.TechnologyContextManager;
 import org.openflexo.foundation.technologyadapter.TechnologyObject;
-import org.openflexo.model.exceptions.ModelDefinitionException;
+import org.openflexo.pamela.exceptions.ModelDefinitionException;
 
 /**
  * Abstract implementation a factory that manages the life-cycle of a given type of {@link TechnologyAdapterResource} managed by a given
@@ -44,7 +44,7 @@ import org.openflexo.model.exceptions.ModelDefinitionException;
  * @param <TA>
  *            type of {@link TechnologyAdapter}
  */
-public abstract class TechnologySpecificFlexoResourceFactory<R extends TechnologyAdapterResource<RD, TA>, RD extends ResourceData<RD> & TechnologyObject<TA>, TA extends TechnologyAdapter>
+public abstract class TechnologySpecificFlexoResourceFactory<R extends TechnologyAdapterResource<RD, TA>, RD extends ResourceData<RD> & TechnologyObject<TA>, TA extends TechnologyAdapter<TA>>
 		extends FlexoResourceFactory<R, RD> implements ITechnologySpecificFlexoResourceFactory<R, RD, TA> {
 
 	private static final Logger logger = Logger.getLogger(TechnologySpecificFlexoResourceFactory.class.getPackage().getName());
@@ -91,7 +91,7 @@ public abstract class TechnologySpecificFlexoResourceFactory<R extends Technolog
 	@Override
 	public TechnologyContextManager<TA> getTechnologyContextManager(FlexoServiceManager sm) {
 		TA technologyAdapter = sm.getTechnologyAdapterService().getTechnologyAdapter(getTechnologyAdapterClass());
-		return (TechnologyContextManager<TA>) technologyAdapter.getTechnologyContextManager();
+		return technologyAdapter.getTechnologyContextManager();
 	}
 
 	/**
@@ -103,7 +103,7 @@ public abstract class TechnologySpecificFlexoResourceFactory<R extends Technolog
 	 * @return
 	 */
 	@Override
-	protected <I> R registerResource(R resource, FlexoResourceCenter<I> resourceCenter) {
+	public <I> R registerResource(R resource, FlexoResourceCenter<I> resourceCenter) {
 
 		R returned = super.registerResource(resource, resourceCenter);
 

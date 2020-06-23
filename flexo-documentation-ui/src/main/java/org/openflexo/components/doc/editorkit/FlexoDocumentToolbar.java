@@ -133,7 +133,6 @@ public class FlexoDocumentToolbar extends SelectionSynchronizedFIBView {
 			try {
 				text = toolbar.documentEditor.getStyledDocument().getText(selectionStart, selectionEnd - selectionStart);
 			} catch (BadLocationException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			System.out.println("OK on met en bold la selection " + selectionStart + "-" + selectionEnd + " soit: " + text);
@@ -151,7 +150,6 @@ public class FlexoDocumentToolbar extends SelectionSynchronizedFIBView {
 			try {
 				text = toolbar.documentEditor.getStyledDocument().getText(selectionStart, selectionEnd - selectionStart);
 			} catch (BadLocationException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			System.out.println("OK on met en italic la selection " + selectionStart + "-" + selectionEnd + " soit: " + text);
@@ -169,7 +167,6 @@ public class FlexoDocumentToolbar extends SelectionSynchronizedFIBView {
 			try {
 				text = toolbar.documentEditor.getStyledDocument().getText(selectionStart, selectionEnd - selectionStart);
 			} catch (BadLocationException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			System.out.println("OK on met en underline la selection " + selectionStart + "-" + selectionEnd + " soit: " + text);

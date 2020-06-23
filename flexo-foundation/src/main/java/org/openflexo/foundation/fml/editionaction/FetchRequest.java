@@ -38,166 +38,29 @@
 
 package org.openflexo.foundation.fml.editionaction;
 
-import java.lang.reflect.Type;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Vector;
-import java.util.logging.Logger;
 
-import org.openflexo.connie.type.ParameterizedTypeImpl;
-import org.openflexo.foundation.fml.FMLRepresentationContext;
-import org.openflexo.foundation.fml.FMLRepresentationContext.FMLRepresentationOutput;
-import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
 import org.openflexo.foundation.resource.ResourceData;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.foundation.technologyadapter.TechnologyObject;
-import org.openflexo.model.annotations.Adder;
-import org.openflexo.model.annotations.CloningStrategy;
-import org.openflexo.model.annotations.CloningStrategy.StrategyType;
-import org.openflexo.model.annotations.Embedded;
-import org.openflexo.model.annotations.Getter;
-import org.openflexo.model.annotations.Getter.Cardinality;
-import org.openflexo.model.annotations.ImplementationClass;
-import org.openflexo.model.annotations.ModelEntity;
-import org.openflexo.model.annotations.PropertyIdentifier;
-import org.openflexo.model.annotations.Remover;
-import org.openflexo.model.annotations.Setter;
-import org.openflexo.model.annotations.XMLElement;
+import org.openflexo.pamela.annotations.ModelEntity;
 
 /**
  * Abstract class representing a fetch request, which is a primitive allowing to browse in the model while configuring requests
  * 
- * @author sylvain
+ * This request manage a collection (a {@link List}) of fetched type
  * 
+ * @author sylvain
+ *
+ * @param <MS>
+ *            Type of model slot which contractualize access to a given technology resource on which this action applies
+ * @param <R>
+ *            Type of receiver on this action (the precise technology object on which this action apply)
+ * @param <T>
+ *            Type of fetched value
  */
 @ModelEntity(isAbstract = true)
-@ImplementationClass(FetchRequest.FetchRequestImpl.class)
 public abstract interface FetchRequest<MS extends ModelSlot<RD>, RD extends ResourceData<RD> & TechnologyObject<?>, T>
-		extends TechnologySpecificActionDefiningReceiver<MS, RD, List<T>> {
+		extends AbstractFetchRequest<MS, RD, T, List<T>> {
 
-	@PropertyIdentifier(type = Vector.class)
-	public static final String CONDITIONS_KEY = "conditions";
-
-	@Getter(value = CONDITIONS_KEY, cardinality = Cardinality.LIST, inverse = FetchRequestCondition.ACTION_KEY)
-	@XMLElement
-	@Embedded
-	@CloningStrategy(StrategyType.CLONE)
-	public List<FetchRequestCondition> getConditions();
-
-	@Setter(CONDITIONS_KEY)
-	public void setConditions(List<FetchRequestCondition> conditions);
-
-	@Adder(CONDITIONS_KEY)
-	public void addToConditions(FetchRequestCondition aCondition);
-
-	@Remover(CONDITIONS_KEY)
-	public void removeFromConditions(FetchRequestCondition aCondition);
-
-	public FetchRequestCondition createCondition();
-
-	public void deleteCondition(FetchRequestCondition aCondition);
-
-	public Type getFetchedType();
-
-	public static abstract class FetchRequestImpl<MS extends ModelSlot<RD>, RD extends ResourceData<RD> & TechnologyObject<?>, T>
-			extends TechnologySpecificActionDefiningReceiverImpl<MS, RD, List<T>> implements FetchRequest<MS, RD, T> {
-
-		private static final Logger logger = Logger.getLogger(FetchRequest.class.getPackage().getName());
-
-		protected String getWhereClausesFMLRepresentation(FMLRepresentationContext context) {
-			if (getConditions().size() > 0) {
-				StringBuffer sb = new StringBuffer();
-				sb.append("where=");
-				if (getConditions().size() > 1) {
-					sb.append("(");
-				}
-				boolean isFirst = true;
-				for (FetchRequestCondition c : getConditions()) {
-					sb.append(c.getCondition().toString() + (isFirst ? "" : " and "));
-				}
-				if (getConditions().size() > 1) {
-					sb.append(")");
-				}
-				return sb.toString();
-			}
-			return null;
-		}
-
-		@Override
-		public Type getIteratorType() {
-			return getFetchedType();
-		}
-
-		@Override
-		public abstract Type getFetchedType();
-
-		@Override
-		public Type getAssignableType() {
-			return new ParameterizedTypeImpl(List.class, getFetchedType());
-		}
-
-		@Override
-		public FetchRequestCondition createCondition() {
-			FetchRequestCondition newCondition = getFMLModelFactory().newFetchRequestCondition();
-			addToConditions(newCondition);
-			return newCondition;
-		}
-
-		@Override
-		public void deleteCondition(FetchRequestCondition aCondition) {
-			removeFromConditions(aCondition);
-		}
-
-		public List<T> filterWithConditions(List<T> fetchResult, final RunTimeEvaluationContext evaluationContext) {
-			if (getConditions().size() == 0) {
-				return fetchResult;
-			}
-			else {
-				// System.out
-				// .println("Filtering with " + getConditions() + " fetchResult=" + fetchResult + " evalContext=" + evaluationContext);
-
-				/*if (getConditions().size() > 0) {
-					System.out.println("condition " + getConditions().get(0).getCondition());
-					System.out.println("evalContext=" + evaluationContext + " hash=" + Integer.toHexString(evaluationContext.hashCode()));
-					System.out.println("Je dois evaluer ");
-				}*/
-				// if (true)
-				// return fetchResult;
-				List<T> returned = new ArrayList<>();
-				for (final T proposedFetchResult : fetchResult) {
-					boolean takeIt = true;
-					for (FetchRequestCondition condition : getConditions()) {
-						if (!condition.evaluateCondition(proposedFetchResult, evaluationContext)) {
-							takeIt = false;
-							// System.out.println("I dismiss " + proposedFetchResult + " because of " + condition.getCondition() + " valid="
-							// + condition.getCondition().isValid());
-							break;
-						}
-					}
-					if (takeIt) {
-						returned.add(proposedFetchResult);
-						// System.out.println("I take " + proposedFetchResult);
-					}
-					else {
-					}
-				}
-				return returned;
-			}
-		}
-
-		@Override
-		public String getParametersStringRepresentation() {
-			return "(" + getWhereClausesFMLRepresentation(null) + ")";
-		}
-
-		@Override
-		public String getFMLRepresentation(FMLRepresentationContext context) {
-			FMLRepresentationOutput out = new FMLRepresentationOutput(context);
-			out.append((getReceiver().isValid() ? getReceiver().toString() + "." : "") + getTechnologyAdapterIdentifier() + "::"
-					+ getImplementedInterface().getSimpleName()
-					+ (getConditions().size() > 0 ? " " + getWhereClausesFMLRepresentation(context) : "()"), context);
-			return out.toString();
-		}
-
-	}
 }

@@ -56,7 +56,6 @@ import org.openflexo.foundation.resource.FileIODelegate;
 import org.openflexo.foundation.resource.FlexoResource;
 import org.openflexo.foundation.resource.PamelaResource;
 import org.openflexo.foundation.resource.ResourceLoadingCancelledException;
-import org.openflexo.foundation.utils.FlexoProgress;
 import org.openflexo.foundation.utils.ProjectLoadingHandler;
 import org.openflexo.icon.IconLibrary;
 import org.openflexo.localization.FlexoLocalization;
@@ -66,10 +65,6 @@ public abstract class InteractiveProjectLoadingHandler implements ProjectLoading
 	private static final Logger logger = Logger.getLogger(InteractiveProjectLoadingHandler.class.getPackage().getName());
 
 	private boolean performingAutomaticConversion = false;
-
-	public InteractiveProjectLoadingHandler() {
-		super();
-	}
 
 	protected boolean isPerformingAutomaticConversion() {
 		return performingAutomaticConversion;
@@ -92,25 +87,25 @@ public abstract class InteractiveProjectLoadingHandler implements ProjectLoading
 		return resourcesToConvert;
 	}
 
-	protected void performConversion(FlexoProject project, Vector<ResourceToConvert> resourcesToConvert, FlexoProgress progress) {
+	protected void performConversion(FlexoProject<?> project, Vector<ResourceToConvert> resourcesToConvert) {
 		List<PamelaResource<?, ?>> resources = new ArrayList<>();
 		for (ResourceToConvert resourceToConvert : resourcesToConvert) {
 			resources.add(resourceToConvert.getResource());
 		}
-		progress.setProgress(FlexoLocalization.getMainLocalizer().localizedForKey("converting_project"));
-		progress.resetSecondaryProgress(resourcesToConvert.size());
+		// progress.setProgress(FlexoLocalization.getMainLocalizer().localizedForKey("converting_project"));
+		// progress.resetSecondaryProgress(resourcesToConvert.size());
 		performingAutomaticConversion = true;
 		// DependencyAlgorithmScheme scheme = project.getDependancyScheme();
 		// Pessimistic dependancy scheme is cheaper and optimistic is not intended for this situation
 		// project.setDependancyScheme(DependencyAlgorithmScheme.Pessimistic);
 		// FlexoResource.sortResourcesWithDependancies(resources);
 		for (PamelaResource<?, ?> res : resources) {
-			progress.setSecondaryProgress(FlexoLocalization.getMainLocalizer().localizedForKey("converting") + " " + res.getURI() + " "
-					+ FlexoLocalization.getMainLocalizer().localizedForKey("from") + " " + res.getModelVersion() + " "
-					+ FlexoLocalization.getMainLocalizer().localizedForKey("to") + " " + res.latestVersion());
+			// progress.setSecondaryProgress(FlexoLocalization.getMainLocalizer().localizedForKey("converting") + " " + res.getURI() + " "
+			// + FlexoLocalization.getMainLocalizer().localizedForKey("from") + " " + res.getModelVersion() + " "
+			// + FlexoLocalization.getMainLocalizer().localizedForKey("to") + " " + res.latestVersion());
 			if (!res.isDeleted()) {
 				try {
-					res.getResourceData(null);
+					res.getResourceData();
 				} catch (FileNotFoundException e) {
 					e.printStackTrace();
 				} catch (ResourceLoadingCancelledException e) {
@@ -181,7 +176,7 @@ public abstract class InteractiveProjectLoadingHandler implements ProjectLoading
 
 		protected void convert() {
 			try {
-				resource.getResourceData(null);
+				resource.getResourceData();
 			} catch (FileNotFoundException e) {
 				e.printStackTrace();
 			} catch (ResourceLoadingCancelledException e) {

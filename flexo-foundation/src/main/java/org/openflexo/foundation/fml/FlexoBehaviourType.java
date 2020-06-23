@@ -41,7 +41,6 @@ package org.openflexo.foundation.fml;
 import java.lang.reflect.Type;
 
 import org.openflexo.connie.type.CustomType;
-import org.openflexo.connie.type.CustomTypeFactory;
 
 /**
  * Represent the type of a FlexoBehaviour
@@ -109,7 +108,6 @@ public class FlexoBehaviourType implements CustomType {
 
 	@Override
 	public String getSerializationRepresentation() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -119,7 +117,7 @@ public class FlexoBehaviourType implements CustomType {
 	}
 
 	@Override
-	public void resolve(CustomTypeFactory<?> factory) {
+	public void resolve() {
 	}
 
 }

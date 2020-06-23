@@ -85,7 +85,7 @@ import org.openflexo.foundation.fml.rt.rm.FMLRTVirtualModelInstanceResource;
 import org.openflexo.foundation.resource.DirectoryResourceCenter;
 import org.openflexo.foundation.resource.SaveResourceException;
 import org.openflexo.foundation.test.OpenflexoProjectAtRunTimeTestCase;
-import org.openflexo.model.exceptions.ModelDefinitionException;
+import org.openflexo.pamela.exceptions.ModelDefinitionException;
 import org.openflexo.rm.ResourceLocator;
 import org.openflexo.test.OrderedRunner;
 import org.openflexo.test.TestOrder;
@@ -173,7 +173,7 @@ public class TestVirtualModelInstanceIndexes extends OpenflexoProjectAtRunTimeTe
 		assertTrue(((VirtualModelResource) virtualModel.getResource()).getIODelegate().exists());
 
 		assertEquals(viewPoint, virtualModel.getContainerVirtualModel());
-		assertEquals(virtualModel, virtualModel.getVirtualModel());
+		assertEquals(virtualModel, virtualModel.getDeclaringVirtualModel());
 		// assertEquals(null, newVirtualModel.getOwningVirtualModel());
 
 		assertEquals(viewPoint, virtualModel.getContainerVirtualModel());
@@ -207,7 +207,7 @@ public class TestVirtualModelInstanceIndexes extends OpenflexoProjectAtRunTimeTe
 
 		assertNotNull(flexoConcept);
 
-		assertEquals(virtualModel, flexoConcept.getVirtualModel());
+		assertEquals(virtualModel, flexoConcept.getOwner());
 		assertEquals(virtualModel, flexoConcept.getOwningVirtualModel());
 		assertEquals(flexoConcept, flexoConcept.getFlexoConcept());
 		assertEquals(virtualModel, flexoConcept.getResourceData());
@@ -292,7 +292,7 @@ public class TestVirtualModelInstanceIndexes extends OpenflexoProjectAtRunTimeTe
 		DeletionScheme deletionScheme = (DeletionScheme) createDeletionScheme.getNewFlexoBehaviour();
 		assertTrue(deletionScheme.getControlGraph() instanceof EmptyControlGraph);
 
-		((VirtualModelResource) virtualModel.getResource()).save(null);
+		((VirtualModelResource) virtualModel.getResource()).save();
 
 		// System.out.println("Saved: " + ((VirtualModelResource)
 		// newVirtualModel.getResource()).getFile());
@@ -316,7 +316,7 @@ public class TestVirtualModelInstanceIndexes extends OpenflexoProjectAtRunTimeTe
 
 		assertNotNull(flexoConceptA);
 
-		assertEquals(virtualModel, flexoConceptA.getVirtualModel());
+		assertEquals(virtualModel, flexoConceptA.getOwner());
 		assertEquals(virtualModel, flexoConceptA.getOwningVirtualModel());
 		assertEquals(flexoConceptA, flexoConceptA.getFlexoConcept());
 		assertEquals(virtualModel, flexoConceptA.getResourceData());
@@ -333,7 +333,7 @@ public class TestVirtualModelInstanceIndexes extends OpenflexoProjectAtRunTimeTe
 		DeletionScheme deletionScheme = (DeletionScheme) createDeletionScheme.getNewFlexoBehaviour();
 		assertTrue(deletionScheme.getControlGraph() instanceof EmptyControlGraph);
 
-		((VirtualModelResource) virtualModel.getResource()).save(null);
+		((VirtualModelResource) virtualModel.getResource()).save();
 
 		// System.out.println("Saved: " + ((VirtualModelResource)
 		// newVirtualModel.getResource()).getFile());
@@ -341,21 +341,15 @@ public class TestVirtualModelInstanceIndexes extends OpenflexoProjectAtRunTimeTe
 
 	}
 
-	private static ActionScheme selectLastName;
-	private static ActionScheme selectFirstName;
-	private static ActionScheme selectAge;
-	private static ActionScheme selectLastNamePlusAge;
-	private static ActionScheme selectLastNameAndAge;
-
 	@Test
 	@TestOrder(6)
 	public void testCreateRequests() {
 
-		selectLastName = makeRequest("selectLastName", "selected.lastName = 'Smith'");
-		selectFirstName = makeRequest("selectFirstName", "'John' = selected.firstName");
-		selectAge = makeRequest("selectAge", "selected.age = 11");
-		selectLastNamePlusAge = makeRequest("selectLastNamePlusAge", "selected.lastName+'-'+selected.age = 'Smith-43'");
-		selectLastNameAndAge = makeRequest("selectLastNameAndAge", "selected.lastName = 'Smith'", "selected.age=43");
+		makeRequest("selectLastName", "selected.lastName = 'Smith'");
+		makeRequest("selectFirstName", "'John' = selected.firstName");
+		makeRequest("selectAge", "selected.age = 11");
+		makeRequest("selectLastNamePlusAge", "selected.lastName+'-'+selected.age = 'Smith-43'");
+		makeRequest("selectLastNameAndAge", "selected.lastName = 'Smith'", "selected.age=43");
 
 		System.out.println("FML=\n" + virtualModel.getFMLRepresentation());
 
@@ -481,7 +475,7 @@ public class TestVirtualModelInstanceIndexes extends OpenflexoProjectAtRunTimeTe
 
 		assertTrue(serviceManager.getResourceManager().getUnsavedResources().contains(newVirtualModelInstance.getResource()));
 
-		newVirtualModelInstance.getResource().save(null);
+		newVirtualModelInstance.getResource().save();
 		assertTrue(((FMLRTVirtualModelInstanceResource) newVirtualModelInstance.getResource()).getIODelegate().exists());
 		assertFalse(newVirtualModelInstance.isModified());
 

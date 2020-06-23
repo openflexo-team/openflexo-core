@@ -55,6 +55,10 @@ import org.openflexo.action.PasteActionInitializer;
 import org.openflexo.foundation.FlexoEditingContext;
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.action.FlexoUndoManager;
+import org.openflexo.foundation.action.SelectAllAction;
+import org.openflexo.foundation.action.copypaste.CopyAction;
+import org.openflexo.foundation.action.copypaste.CutAction;
+import org.openflexo.foundation.action.copypaste.PasteAction;
 import org.openflexo.icon.IconLibrary;
 import org.openflexo.view.controller.FlexoController;
 import org.openflexo.view.controller.model.ControllerModel;
@@ -164,12 +168,7 @@ public class EditMenu extends FlexoMenu {
 			// This make a call to Swing (to enable/disable undo/redo item), and might lead to a DeadLock
 			// The solution is here to delay this update in the event dispatch thread
 			if (!SwingUtilities.isEventDispatchThread()) {
-				SwingUtilities.invokeLater(new Runnable() {
-					@Override
-					public void run() {
-						updateWithUndoManagerState();
-					}
-				});
+				SwingUtilities.invokeLater(() -> updateWithUndoManagerState());
 				return;
 			}
 			if (getUndoManager() != null) {
@@ -186,11 +185,6 @@ public class EditMenu extends FlexoMenu {
 				setText(_controller.getFlexoLocales().localizedForKey("undo"));
 				setEnabled(false);
 			}
-		}
-
-		@Override
-		public void itemWillShow() {
-
 		}
 	}
 
@@ -280,12 +274,7 @@ public class EditMenu extends FlexoMenu {
 			// This make a call to Swing (to enable/disable undo/redo item), and might lead to a DeadLock
 			// The solution is here to delay this update in the event dispatch thread
 			if (!SwingUtilities.isEventDispatchThread()) {
-				SwingUtilities.invokeLater(new Runnable() {
-					@Override
-					public void run() {
-						updateWithUndoManagerState();
-					}
-				});
+				SwingUtilities.invokeLater(() -> updateWithUndoManagerState());
 				return;
 			}
 			if (getUndoManager() != null) {
@@ -330,7 +319,7 @@ public class EditMenu extends FlexoMenu {
 	// ================== Copy ======================
 	// ==============================================
 
-	public class CopyItem extends FlexoMenuItem {
+	public class CopyItem extends FlexoMenuItemWithFactory<CopyAction> {
 
 		public CopyItem() {
 			super(_controller.getEditingContext().getCopyActionType(), CopyActionInitializer.ACCELERATOR, IconLibrary.COPY_ICON,
@@ -342,7 +331,7 @@ public class EditMenu extends FlexoMenu {
 	// ================== Paste ======================
 	// ==============================================
 
-	public class PasteItem extends FlexoMenuItem {
+	public class PasteItem extends FlexoMenuItemWithFactory<PasteAction> {
 
 		public PasteItem() {
 			super(_controller.getEditingContext().getPasteActionType(), PasteActionInitializer.ACCELERATOR, IconLibrary.PASTE_ICON,
@@ -354,7 +343,7 @@ public class EditMenu extends FlexoMenu {
 	// ================== Cut ======================
 	// ==============================================
 
-	public class CutItem extends FlexoMenuItem {
+	public class CutItem extends FlexoMenuItemWithFactory<CutAction> {
 
 		public CutItem() {
 			super(_controller.getEditingContext().getCutActionType(), CutActionInitializer.ACCELERATOR, IconLibrary.CUT_ICON, _controller);
@@ -365,7 +354,7 @@ public class EditMenu extends FlexoMenu {
 	// ================== SelectAll ======================
 	// ==============================================
 
-	public class SelectAllItem extends FlexoMenuItem {
+	public class SelectAllItem extends FlexoMenuItemWithFactory<SelectAllAction> {
 
 		public SelectAllItem() {
 			super(_controller.getEditingContext().getSelectAllActionType(), _controller);

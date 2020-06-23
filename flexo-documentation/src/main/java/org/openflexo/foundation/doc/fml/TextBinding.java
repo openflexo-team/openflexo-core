@@ -60,19 +60,18 @@ import org.openflexo.foundation.doc.FlexoTextRun;
 import org.openflexo.foundation.doc.TextSelection;
 import org.openflexo.foundation.doc.fml.FragmentActorReference.ElementReference;
 import org.openflexo.foundation.fml.FlexoConcept;
-import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.foundation.technologyadapter.ModelSlotObject;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
-import org.openflexo.model.annotations.DefineValidationRule;
-import org.openflexo.model.annotations.Getter;
-import org.openflexo.model.annotations.ImplementationClass;
-import org.openflexo.model.annotations.ModelEntity;
-import org.openflexo.model.annotations.PropertyIdentifier;
-import org.openflexo.model.annotations.Setter;
-import org.openflexo.model.annotations.XMLAttribute;
-import org.openflexo.model.annotations.XMLElement;
+import org.openflexo.pamela.annotations.DefineValidationRule;
+import org.openflexo.pamela.annotations.Getter;
+import org.openflexo.pamela.annotations.ImplementationClass;
+import org.openflexo.pamela.annotations.ModelEntity;
+import org.openflexo.pamela.annotations.PropertyIdentifier;
+import org.openflexo.pamela.annotations.Setter;
+import org.openflexo.pamela.annotations.XMLAttribute;
+import org.openflexo.pamela.annotations.XMLElement;
 import org.openflexo.toolbox.StringUtils;
 
 /**
@@ -88,7 +87,7 @@ import org.openflexo.toolbox.StringUtils;
 @ModelEntity
 @ImplementationClass(TextBinding.TextBindingImpl.class)
 @XMLElement
-public interface TextBinding<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter> extends ModelSlotObject<D> {
+public interface TextBinding<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter<TA>> extends ModelSlotObject<D> {
 
 	@PropertyIdentifier(type = TextSelection.class)
 	public static final String TEXT_SELECTION_KEY = "textSelection";
@@ -146,7 +145,7 @@ public interface TextBinding<D extends FlexoDocument<D, TA>, TA extends Technolo
 	 */
 	public String extractFromFragment(FlexoConceptInstance fci);
 
-	public static abstract class TextBindingImpl<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter>
+	public static abstract class TextBindingImpl<D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter<TA>>
 			extends FlexoConceptObjectImpl implements TextBinding<D, TA> {
 
 		@SuppressWarnings("unused")
@@ -175,13 +174,15 @@ public interface TextBinding<D extends FlexoDocument<D, TA>, TA extends Technolo
 			return null;
 		}
 
+		/*
 		@Override
 		public VirtualModel getVirtualModel() {
 			if (getFragmentRole() != null) {
-				return getFragmentRole().getFlexoConcept().getVirtualModel();
+				return getFragmentRole().getFlexoConcept().getOwner();
 			}
 			return null;
 		}
+		*/
 
 		@Override
 		public TextSelection<D, TA> getTextSelection() {

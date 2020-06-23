@@ -75,16 +75,17 @@ public class FlexoConceptBindingModel extends BindingModel {
 
 	private final FlexoConcept flexoConcept;
 
-	// private BindingVariable reflexiveAccessBindingVariable;
 	private final Map<FlexoProperty<?>, FlexoPropertyBindingVariable> propertyVariablesMap;
 	private final List<FlexoConcept> knownParentConcepts = new ArrayList<>();
 	private FlexoConcept lastKnownContainer = null;
 
-	private BindingVariable flexoConceptInstanceBindingVariable;
+	private BindingVariable thisBindingVariable;
 	protected BindingVariable containerBindingVariable;
+	protected SuperBindingVariable superBindingVariable;
+	private final Map<FlexoConcept, SuperBindingVariable> superVariablesMap;
 
-	// public static final String REFLEXIVE_ACCESS_PROPERTY = "conceptDefinition";
 	public static final String THIS_PROPERTY = "this";
+	public static final String SUPER_PROPERTY = "super";
 	public static final String CONTAINER_PROPERTY = "container";
 
 	/**
@@ -106,38 +107,29 @@ public class FlexoConceptBindingModel extends BindingModel {
 	 */
 	protected FlexoConceptBindingModel(BindingModel baseBindingModel, FlexoConcept flexoConcept) {
 		super(baseBindingModel);
+
+		propertyVariablesMap = new HashMap<>();
+		superVariablesMap = new HashMap<>();
+
 		this.flexoConcept = flexoConcept;
 		if (flexoConcept != null && flexoConcept.getPropertyChangeSupport() != null) {
 			flexoConcept.getPropertyChangeSupport().addPropertyChangeListener(this);
 		}
 
-		flexoConceptInstanceBindingVariable = new FlexoConceptBindingVariable(THIS_PROPERTY, flexoConcept);
-		addToBindingVariables(flexoConceptInstanceBindingVariable);
-		/*if (flexoConcept.getContainerFlexoConcept() != null) {
-			containerBindingVariable = new BindingVariable(CONTAINER_PROPERTY, flexoConcept.getContainerFlexoConcept().getInstanceType());
-			addToBindingVariables(containerBindingVariable);
-		}*/
+		thisBindingVariable = new FlexoConceptBindingVariable(THIS_PROPERTY, flexoConcept);
+		addToBindingVariables(thisBindingVariable);
+
+		updateSuperBindingVariables();
 
 		updateContainerBindingVariable();
 
-		propertyVariablesMap = new HashMap<>();
 		updatePropertyVariables();
 		updateContainerFlexoConceptListener();
 		updateParentFlexoConceptListeners();
 	}
 
-	/**
-	 * Return the reflexive access {@link BindingVariable}<br>
-	 * (Allows reflexive access to the {@link FlexoConcept} itself)
-	 * 
-	 * @return
-	 */
-	/*public BindingVariable getReflexiveAccessBindingVariable() {
-		return reflexiveAccessBindingVariable;
-	}*/
-
-	public BindingVariable getFlexoConceptInstanceBindingVariable() {
-		return flexoConceptInstanceBindingVariable;
+	public BindingVariable getThisBindingVariable() {
+		return thisBindingVariable;
 	}
 
 	public FlexoConcept getFlexoConcept() {
@@ -154,8 +146,8 @@ public class FlexoConceptBindingModel extends BindingModel {
 			if (evt.getPropertyName().equals(FlexoConcept.OWNER_KEY)) {
 				// The FlexoConcept changes it's VirtualModel
 				setBaseBindingModel(flexoConcept.getOwner() != null ? flexoConcept.getOwner().getBindingModel() : null);
-				if (flexoConceptInstanceBindingVariable != null) {
-					flexoConceptInstanceBindingVariable.setType(FlexoConceptInstanceType.getFlexoConceptInstanceType(flexoConcept));
+				if (thisBindingVariable != null) {
+					thisBindingVariable.setType(FlexoConceptInstanceType.getFlexoConceptInstanceType(flexoConcept));
 				}
 				updateContainerBindingVariable();
 				// virtualModelInstanceBindingVariable.setType(flexoConcept.getVirtualModel() != null ? VirtualModelInstanceType
@@ -167,6 +159,7 @@ public class FlexoConceptBindingModel extends BindingModel {
 			}
 			else if (evt.getPropertyName().equals(FlexoConcept.PARENT_FLEXO_CONCEPTS_KEY)) {
 				updateParentFlexoConceptListeners();
+				updateSuperBindingVariables();
 				updatePropertyVariables();
 			}
 			else if (evt.getPropertyName().equals(FlexoConcept.CONTAINER_FLEXO_CONCEPT_KEY)) {
@@ -215,6 +208,66 @@ public class FlexoConceptBindingModel extends BindingModel {
 				}
 			}
 		}
+	}
+
+	protected void updateSuperBindingVariables() {
+
+		if (flexoConcept.getParentFlexoConcepts().size() == 1) {
+			if (superBindingVariable == null) {
+				superBindingVariable = new SuperBindingVariable(flexoConcept.getParentFlexoConcepts().get(0), true);
+				addToBindingVariables(superBindingVariable);
+			}
+			superBindingVariable.setType(flexoConcept.getParentFlexoConcepts().get(0).getInstanceType());
+			clearSuperVariablesForMultipleInheritance();
+		}
+		else if (flexoConcept.getParentFlexoConcepts().size() > 1) {
+			if (superBindingVariable != null) {
+				removeFromBindingVariables(superBindingVariable);
+				superBindingVariable = null;
+			}
+			updateSuperVariablesForMultipleInheritance();
+		}
+		else { // No parent
+			if (superBindingVariable != null) {
+				removeFromBindingVariables(superBindingVariable);
+				superBindingVariable = null;
+			}
+			clearSuperVariablesForMultipleInheritance();
+		}
+	}
+
+	private void clearSuperVariablesForMultipleInheritance() {
+		if (!superVariablesMap.isEmpty()) {
+			List<FlexoConcept> superVariablesToBeDeleted = new ArrayList<>(superVariablesMap.keySet());
+			for (FlexoConcept concept : superVariablesToBeDeleted) {
+				removeFromBindingVariables(superVariablesMap.get(concept));
+				superVariablesMap.remove(concept);
+			}
+		}
+	}
+
+	private void updateSuperVariablesForMultipleInheritance() {
+
+		List<FlexoConcept> superVariableToBeDeleted = new ArrayList<>(superVariablesMap.keySet());
+
+		for (FlexoConcept superConcept : flexoConcept.getParentFlexoConcepts()) {
+			if (superVariableToBeDeleted.contains(superConcept)) {
+				superVariableToBeDeleted.remove(superConcept);
+			}
+			else if (superVariablesMap.get(superConcept) == null) {
+				SuperBindingVariable bv = new SuperBindingVariable(superConcept, false);
+				addToBindingVariables(bv);
+				superVariablesMap.put(superConcept, bv);
+			}
+		}
+
+		for (FlexoConcept superConcept : superVariableToBeDeleted) {
+			SuperBindingVariable bvToRemove = superVariablesMap.get(superConcept);
+			removeFromBindingVariables(bvToRemove);
+			superVariablesMap.remove(superConcept);
+			bvToRemove.delete();
+		}
+
 	}
 
 	protected void updatePropertyVariables() {

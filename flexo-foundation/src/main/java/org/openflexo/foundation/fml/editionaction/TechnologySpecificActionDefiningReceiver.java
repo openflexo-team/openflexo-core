@@ -40,7 +40,6 @@ package org.openflexo.foundation.fml.editionaction;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Type;
-import java.util.logging.Logger;
 
 import org.openflexo.connie.BindingEvaluationContext;
 import org.openflexo.connie.DataBinding;
@@ -51,18 +50,17 @@ import org.openflexo.connie.exception.TypeMismatchException;
 import org.openflexo.connie.expr.BindingValue;
 import org.openflexo.connie.type.TypeUtils;
 import org.openflexo.foundation.fml.FMLRepresentationContext;
-import org.openflexo.foundation.fml.binding.FlexoConceptFlexoPropertyPathElement;
+import org.openflexo.foundation.fml.binding.FlexoPropertyPathElement;
 import org.openflexo.foundation.fml.binding.ModelSlotBindingVariable;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
-import org.openflexo.foundation.technologyadapter.TechnologyObject;
-import org.openflexo.model.annotations.DefineValidationRule;
-import org.openflexo.model.annotations.Getter;
-import org.openflexo.model.annotations.ImplementationClass;
-import org.openflexo.model.annotations.ModelEntity;
-import org.openflexo.model.annotations.PropertyIdentifier;
-import org.openflexo.model.annotations.Setter;
-import org.openflexo.model.annotations.XMLAttribute;
-import org.openflexo.model.validation.ValidationIssue;
+import org.openflexo.pamela.annotations.DefineValidationRule;
+import org.openflexo.pamela.annotations.Getter;
+import org.openflexo.pamela.annotations.ImplementationClass;
+import org.openflexo.pamela.annotations.ModelEntity;
+import org.openflexo.pamela.annotations.PropertyIdentifier;
+import org.openflexo.pamela.annotations.Setter;
+import org.openflexo.pamela.annotations.XMLAttribute;
+import org.openflexo.pamela.validation.ValidationIssue;
 
 /**
  * 
@@ -80,7 +78,7 @@ import org.openflexo.model.validation.ValidationIssue;
  */
 @ModelEntity(isAbstract = true)
 @ImplementationClass(TechnologySpecificActionDefiningReceiver.TechnologySpecificActionImpl.class)
-public abstract interface TechnologySpecificActionDefiningReceiver<MS extends ModelSlot<?>, R extends TechnologyObject<?>, T>
+public abstract interface TechnologySpecificActionDefiningReceiver<MS extends ModelSlot<?>, R /*extends TechnologyObject<?>*/, T>
 		extends TechnologySpecificAction<MS, T> {
 
 	@PropertyIdentifier(type = DataBinding.class)
@@ -115,14 +113,8 @@ public abstract interface TechnologySpecificActionDefiningReceiver<MS extends Mo
 	 */
 	public R getReceiver(BindingEvaluationContext evaluationContext);
 
-	// @Deprecated
-	// public ModelSlotInstance<MS, ?> getModelSlotInstance(RunTimeEvaluationContext action);
-
-	public static abstract class TechnologySpecificActionDefiningReceiverImpl<MS extends ModelSlot<?>, R extends TechnologyObject<?>, T>
+	public static abstract class TechnologySpecificActionDefiningReceiverImpl<MS extends ModelSlot<?>, R /*extends TechnologyObject<?>*/, T>
 			extends TechnologySpecificActionImpl<MS, T> implements TechnologySpecificActionDefiningReceiver<MS, R, T> {
-
-		private static final Logger logger = Logger.getLogger(TechnologySpecificActionDefiningReceiver.class.getPackage().getName());
-
 		private DataBinding<R> receiver;
 
 		/**
@@ -139,37 +131,13 @@ public abstract interface TechnologySpecificActionDefiningReceiver<MS extends Mo
 				if (lastPathElement instanceof ModelSlotBindingVariable) {
 					return (MS) ((ModelSlotBindingVariable) lastPathElement).getModelSlot();
 				}
-				else if (lastPathElement instanceof FlexoConceptFlexoPropertyPathElement
-						&& ((FlexoConceptFlexoPropertyPathElement) lastPathElement).getFlexoProperty() instanceof ModelSlot) {
-					return (MS) ((FlexoConceptFlexoPropertyPathElement) lastPathElement).getFlexoProperty();
+				else if (lastPathElement instanceof FlexoPropertyPathElement
+						&& ((FlexoPropertyPathElement) lastPathElement).getFlexoProperty() instanceof ModelSlot) {
+					return (MS) ((FlexoPropertyPathElement) lastPathElement).getFlexoProperty();
 				}
 			}
 			return null;
 		}
-
-		/*@Deprecated
-		@Override
-		public ModelSlotInstance<MS, ?> getModelSlotInstance(RunTimeEvaluationContext action) {
-			FlexoConceptInstance fci = action.getFlexoConceptInstance();
-			VirtualModelInstance<?, ?> vmi = null;
-			if (fci != null && fci instanceof VirtualModelInstance<?, ?>) {
-				vmi = (VirtualModelInstance<?, ?>) fci;
-			}
-			else if (action.getVirtualModelInstance() != null) {
-				vmi = action.getVirtualModelInstance();
-			}
-			if (vmi != null) {
-				// Following line does not compile with Java7 (don't understand why)
-				// That's the reason i tried to fix that compile issue with getGenericModelSlot() method (see below)
-				// FD, in Java 8 return vmi.getModelSlotInstance(getModelSlot()); does not compile hence the cast
-				return vmi.getModelSlotInstance((ModelSlot) getInferedModelSlot());
-				// return (ModelSlotInstance<MS, ?>) vmi.getModelSlotInstance(getGenericModelSlot
-			}
-			else {
-				logger.severe("Could not access virtual model instance for action " + action);
-				return null;
-			}
-		}*/
 
 		/**
 		 * Return a string representation suitable for a common user<br>
@@ -193,13 +161,6 @@ public abstract interface TechnologySpecificActionDefiningReceiver<MS extends Mo
 				receiver.setBindingName("receiver");
 				receiver.setMandatory(isReceiverMandatory());
 			}
-
-			// TODO: this code should be removed from future release (after 1.8.1)
-			/*if (!receiver.isSet() && getModelSlot() != null) {
-				receiver.setUnparsedBinding(getModelSlot().getName());
-				receiver.isValid();
-			}*/
-
 			return receiver;
 		}
 
@@ -270,10 +231,12 @@ public abstract interface TechnologySpecificActionDefiningReceiver<MS extends Mo
 		public ValidationIssue<BindingIsRequiredAndMustBeValid<TechnologySpecificActionDefiningReceiver>, TechnologySpecificActionDefiningReceiver> applyValidation(
 				TechnologySpecificActionDefiningReceiver action) {
 
-			if (action.isReceiverMandatory()) {
-				return super.applyValidation(action);
+			if (!action.isReceiverMandatory()) {
+				return null;
 			}
-			return null;
+
+			return super.applyValidation(action);
+
 		}
 
 	}

@@ -70,7 +70,6 @@ public class JIRAObject<J extends JIRAObject<J>> extends HashMap<String, Object>
 
 	@Override
 	public String getDeletedProperty() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 

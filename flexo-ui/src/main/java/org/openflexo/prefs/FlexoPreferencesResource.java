@@ -47,19 +47,18 @@ import org.openflexo.foundation.InvalidModelDefinitionException;
 import org.openflexo.foundation.InvalidXMLException;
 import org.openflexo.foundation.resource.FileIODelegate;
 import org.openflexo.foundation.resource.FileIODelegate.FileIODelegateImpl;
+import org.openflexo.pamela.ModelContextLibrary;
+import org.openflexo.pamela.annotations.ImplementationClass;
+import org.openflexo.pamela.annotations.ModelEntity;
+import org.openflexo.pamela.annotations.XMLElement;
+import org.openflexo.pamela.exceptions.ModelDefinitionException;
+import org.openflexo.pamela.factory.ModelFactory;
 import org.openflexo.foundation.resource.FlexoFileNotFoundException;
 import org.openflexo.foundation.resource.FlexoResource;
 import org.openflexo.foundation.resource.PamelaResource;
 import org.openflexo.foundation.resource.PamelaResourceImpl;
 import org.openflexo.foundation.resource.SaveResourceException;
-import org.openflexo.model.ModelContextLibrary;
-import org.openflexo.model.annotations.ImplementationClass;
-import org.openflexo.model.annotations.ModelEntity;
-import org.openflexo.model.annotations.XMLElement;
-import org.openflexo.model.exceptions.ModelDefinitionException;
-import org.openflexo.model.factory.ModelFactory;
 import org.openflexo.toolbox.FileUtils;
-import org.openflexo.toolbox.IProgress;
 
 /**
  * This is the {@link FlexoResource} encoding the preferences of the application (see {@link FlexoPreferences})
@@ -105,12 +104,12 @@ public interface FlexoPreferencesResource extends PamelaResource<FlexoPreference
 				returned.setServiceManager(applicationContext);
 
 				if (preferencesFile.exists()) {
-					returned.loadResourceData(null);
+					returned.loadResourceData();
 				}
 				else {
 					FlexoPreferences newFlexoPreferences = returned.getFactory().newInstance(FlexoPreferences.class);
 					returned.setResourceData(newFlexoPreferences);
-					returned.save(null);
+					returned.save();
 				}
 				return returned;
 			} catch (ModelDefinitionException e) {
@@ -137,10 +136,10 @@ public interface FlexoPreferencesResource extends PamelaResource<FlexoPreference
 		}
 
 		@Override
-		public FlexoPreferences loadResourceData(IProgress progress) throws FlexoFileNotFoundException, IOFlexoException,
-				InvalidXMLException, InconsistentDataException, InvalidModelDefinitionException {
+		public FlexoPreferences loadResourceData() throws FlexoFileNotFoundException, IOFlexoException, InvalidXMLException,
+				InconsistentDataException, InvalidModelDefinitionException {
 			try {
-				return super.loadResourceData(progress);
+				return super.loadResourceData();
 			} catch (InvalidXMLException e) {
 
 				// Preferences file is not readable, perhaps this is because it is an old version of Openflexo
@@ -156,7 +155,7 @@ public interface FlexoPreferencesResource extends PamelaResource<FlexoPreference
 				setResourceData(prefs);
 
 				try {
-					save(null);
+					save();
 				} catch (SaveResourceException e2) {
 					e2.printStackTrace();
 				}

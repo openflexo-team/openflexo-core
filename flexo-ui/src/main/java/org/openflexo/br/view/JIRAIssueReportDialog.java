@@ -73,7 +73,6 @@ import org.openflexo.swing.ImageUtils;
 import org.openflexo.swing.ImageUtils.ImageType;
 import org.openflexo.toolbox.FileUtils;
 import org.openflexo.toolbox.FlexoVersion;
-import org.openflexo.toolbox.IProgress;
 import org.openflexo.toolbox.PropertyChangedSupportDefaultImplementation;
 import org.openflexo.toolbox.StringUtils;
 import org.openflexo.toolbox.ToolBox;
@@ -325,7 +324,7 @@ public class JIRAIssueReportDialog extends PropertyChangedSupportDefaultImplemen
 				}
 				else if (target.getException() instanceof UnknownHostException) {
 					submit = FlexoController
-							.confirm(getLocales().localizedForKey("could_not_send_to_host_check_internet_connexion_and_try_again") + "? ");
+							.confirm(getLocales().localizedForKey("could_not_send_to_host_check_internet_connection_and_try_again") + "? ");
 					// If the user want to stop, quit, otherwise clean the exception and try again
 					if (submit == false) {
 						throw target.getException();
@@ -477,26 +476,7 @@ public class JIRAIssueReportDialog extends PropertyChangedSupportDefaultImplemen
 							};
 							Progress.progress(getLocales().localizedForKey("compressing_project"));
 							try {
-								ZipUtils.makeZip(zipFile, projectDirectory, new IProgress() {
-
-									@Override
-									public void setSecondaryProgress(String stepName) {
-									}
-
-									@Override
-									public void setProgress(String stepName) {
-										Progress.progress(stepName);
-									}
-
-									@Override
-									public void resetSecondaryProgress(int steps) {
-									}
-
-									@Override
-									public void hideWindow() {
-
-									}
-								}, filter, Deflater.BEST_COMPRESSION);
+								ZipUtils.makeZip(zipFile, projectDirectory, filter, Deflater.BEST_COMPRESSION);
 								try {
 									Progress.progress(getLocales().localizedForKey("sending_project"));
 									client.attachFilesToIssue(result, zipFile);

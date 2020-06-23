@@ -48,7 +48,7 @@ import org.openflexo.foundation.doc.FlexoDocument;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.toolbox.StringUtils;
 
-public interface AbstractDocumentElement<E extends FlexoDocObject<D, TA>, D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter> {
+public interface AbstractDocumentElement<E extends FlexoDocObject<D, TA>, D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter<TA>> {
 
 	/**
 	 * Return conceptual document beeing represented by this {@link FlexoStyledDocument}
@@ -107,7 +107,7 @@ public interface AbstractDocumentElement<E extends FlexoDocObject<D, TA>, D exte
 	public int getEndOffset();
 
 	@SuppressWarnings("unchecked")
-	public static <O extends FlexoDocObject<D, TA>, D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter> AbstractDocumentElement<O, D, TA> retrieveElement(
+	public static <O extends FlexoDocObject<D, TA>, D extends FlexoDocument<D, TA>, TA extends TechnologyAdapter<TA>> AbstractDocumentElement<O, D, TA> retrieveElement(
 			AbstractDocumentElement<O, D, TA> element, O docObject) {
 
 		if (element.getDocObject() == null) {

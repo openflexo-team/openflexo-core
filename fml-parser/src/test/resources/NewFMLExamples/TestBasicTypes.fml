@@ -1,0 +1,31 @@
+/**
+ * Testing abstract properties
+ */
+
+use org.openflexo.foundation.fml.rt.FMLRTModelSlot as FMLRT;
+
+import java.lang.String;
+import java.util.List;
+import java.util.Map as MyJavaMap;
+
+model MyModel {
+
+	// Testing primitive and java properties
+	concept ConceptA {
+		int aValue;
+		float aFloatValue;
+		public String aString;
+		public java.lang.String aString;
+		public MyJavaMap aMap;
+		public List<String> aList;
+		public abstract List<java.lang.String> aList2;
+	}
+
+	// Testing FlexoConceptInstance roles
+	concept ConceptB {
+		ConceptA aConceptA;
+		ConceptA... someConceptsA;
+		ConceptA[2,*] otherConceptsA;
+	}
+
+}

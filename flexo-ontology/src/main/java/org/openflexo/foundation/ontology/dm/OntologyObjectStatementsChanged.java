@@ -40,9 +40,10 @@
 package org.openflexo.foundation.ontology.dm;
 
 import org.openflexo.foundation.ontology.IFlexoOntologyConcept;
+import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 
-public class OntologyObjectStatementsChanged extends OntologyDataModification {
-	public OntologyObjectStatementsChanged(IFlexoOntologyConcept object) {
+public class OntologyObjectStatementsChanged<TA extends TechnologyAdapter<TA>> extends OntologyDataModification<IFlexoOntologyConcept<TA>> {
+	public OntologyObjectStatementsChanged(IFlexoOntologyConcept<TA> object) {
 		super(null, object);
 	}
 }
