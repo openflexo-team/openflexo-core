@@ -39,15 +39,21 @@
 
 package org.openflexo.foundation.utils;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
+import org.junit.Test;
 import org.openflexo.toolbox.FlexoVersion;
 
-import junit.framework.TestCase;
-
-public class FlexoProjectUtilTest extends TestCase {
+public class FlexoProjectUtilTest {
 
 	/*public void testIsProjectOpenableWhenThereIsNoVersionFile() {
 		try {
@@ -57,11 +63,13 @@ public class FlexoProjectUtilTest extends TestCase {
 		}
 	}*/
 
+	@Test
 	public void testGetVersionWhenThereIsNoVersionFile() {
 		FlexoVersion version = FlexoProjectUtil.getVersion(getDirectoryPrjWitoutVersion());
 		assertNull("FlexoVersion must be null when there is no version file.", version);
 	}
 
+	@Test
 	public void testCurrentFlexoVersionIsSmallerThanLastVersionWhenThereIsNoVersionFile() {
 		assertFalse(
 				"No version file in a prj must be considered as not smaller than last version. "
@@ -69,6 +77,7 @@ public class FlexoProjectUtilTest extends TestCase {
 				FlexoProjectUtil.currentFlexoVersionIsSmallerThanLastVersion(getDirectoryPrjWitoutVersion()));
 	}
 
+	@Test
 	public void testIsProjectNotOpenable113() {
 		try {
 			FlexoProjectUtil.isProjectOpenable(getPrjDirectory113());
@@ -78,17 +87,20 @@ public class FlexoProjectUtilTest extends TestCase {
 		}
 	}
 
+	@Test
 	public void testGetVersion113() {
 		FlexoVersion version = FlexoProjectUtil.getVersion(getPrjDirectory113());
 		assertNotNull("FlexoVersion cannot be null for version 1.1.3", version);
 		assertVersion(1, 1, 3, false, false, version);
 	}
 
+	@Test
 	public void test999IsSmallerThanLastVersion() {
 		assertTrue("Current version must be smaller than 9.9.9 (note that it may change when flexo will reach major 9) ",
 				FlexoProjectUtil.currentFlexoVersionIsSmallerThanLastVersion(getPrjDirectory999()));
 	}
 
+	@Test
 	public void testIsProjectNotOpenable125() {
 		try {
 			FlexoProjectUtil.isProjectOpenable(getPrjDirectory125());
@@ -98,12 +110,14 @@ public class FlexoProjectUtilTest extends TestCase {
 		}
 	}
 
+	@Test
 	public void testGetVersion125() {
 		FlexoVersion version = FlexoProjectUtil.getVersion(getPrjDirectory125());
 		assertNotNull("FlexoVersion cannot be null for version 1.2.5", version);
 		assertVersion(1, 2, 5, false, false, version);
 	}
 
+	@Test
 	public void testIsProjectOpenable13() {
 		try {
 			assertTrue("Project 1.3 must be openable.", FlexoProjectUtil.isProjectOpenable(getPrjDirectory13()));
@@ -112,6 +126,7 @@ public class FlexoProjectUtilTest extends TestCase {
 		}
 	}
 
+	@Test
 	public void testGetVersion13() {
 		FlexoVersion version = FlexoProjectUtil.getVersion(getPrjDirectory13());
 		assertNotNull("FlexoVersion cannot be null for version 1.3", version);
@@ -126,6 +141,7 @@ public class FlexoProjectUtilTest extends TestCase {
 		assertEquals("Is beta version missmatch.", isBeta, version.isBeta);
 	}
 
+	@Test
 	public void testIsProjectOpenable14() {
 		try {
 			assertTrue("Project 1.4 must be openable.", FlexoProjectUtil.isProjectOpenable(getPrjDirectory14()));
@@ -134,18 +150,21 @@ public class FlexoProjectUtilTest extends TestCase {
 		}
 	}
 
+	@Test
 	public void testGetVersion14() {
 		FlexoVersion version = FlexoProjectUtil.getVersion(getPrjDirectory14());
 		assertNotNull("FlexoVersion cannot be null for version 1.4", version);
 		assertVersion(1, 4, 0, false, false, version);
 	}
 
+	@Test
 	public void testGetVersion999() {
 		FlexoVersion version = FlexoProjectUtil.getVersion(getPrjDirectory999());
 		assertNotNull("FlexoVersion cannot be null for version 9.9.9", version);
 		assertVersion(9, 9, 9, false, false, version);
 	}
 
+	@Test
 	public void testVersion999IsNotOpenable() {
 		try {
 			FlexoProjectUtil.isProjectOpenable(getPrjDirectory999());
