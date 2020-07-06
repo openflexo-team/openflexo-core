@@ -3,11 +3,11 @@ package org.openflexo.foundation.action.copypaste;
 import java.util.List;
 
 import org.openflexo.foundation.FlexoObject;
-import org.openflexo.pamela.ModelEntity;
 import org.openflexo.pamela.annotations.PastingPoint;
 import org.openflexo.pamela.exceptions.ModelDefinitionException;
 import org.openflexo.pamela.exceptions.ModelExecutionException;
 import org.openflexo.pamela.factory.ProxyMethodHandler;
+import org.openflexo.pamela.model.ModelEntity;
 
 /**
  * This is the abstract default implementation of {@link PasteHandler} in Openflexo context<br>

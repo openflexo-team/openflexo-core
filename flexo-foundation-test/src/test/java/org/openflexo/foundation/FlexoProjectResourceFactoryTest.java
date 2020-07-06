@@ -49,9 +49,9 @@ import org.openflexo.foundation.project.FlexoProjectResourceFactory;
 import org.openflexo.foundation.test.OpenflexoTestCase;
 import org.openflexo.logging.FlexoLogger;
 import org.openflexo.pamela.ModelContext;
-import org.openflexo.pamela.ModelEntity;
 import org.openflexo.pamela.exceptions.MissingImplementationException;
 import org.openflexo.pamela.exceptions.ModelDefinitionException;
+import org.openflexo.pamela.model.ModelEntity;
 
 /**
  * Test instanciation of {@link FlexoProjectFactory}<br>

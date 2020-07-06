@@ -42,9 +42,9 @@ import java.lang.reflect.Type;
 import java.util.List;
 
 import org.openflexo.foundation.FlexoObject.FlexoObjectImpl;
-import org.openflexo.pamela.factory.AccessibleProxyObject;
-import org.openflexo.pamela.factory.PAMELAVisitor;
-import org.openflexo.pamela.factory.PAMELAVisitor.VisitingStrategy;
+import org.openflexo.pamela.AccessibleProxyObject;
+import org.openflexo.pamela.model.PAMELAVisitor;
+import org.openflexo.pamela.model.PAMELAVisitor.VisitingStrategy;
 
 /**
  * This is the default non-abstract implementation of {@link FlexoObject}.<br>

@@ -188,7 +188,7 @@ public interface PreferencesContainer extends FlexoObject {
 
 		@Override
 		public String getName() {
-			org.openflexo.pamela.ModelEntity e = getFlexoPreferencesFactory().getModelEntityForInstance(this);
+			org.openflexo.pamela.model.ModelEntity e = getFlexoPreferencesFactory().getModelEntityForInstance(this);
 			return e.getImplementedInterface().getSimpleName();
 		}
 

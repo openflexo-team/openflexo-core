@@ -50,7 +50,7 @@ import javax.swing.undo.UndoableEdit;
 import org.openflexo.foundation.FlexoEditingContext;
 import org.openflexo.foundation.PamelaResourceModelFactory;
 import org.openflexo.foundation.resource.PamelaResource;
-import org.openflexo.pamela.ModelProperty;
+import org.openflexo.pamela.model.ModelProperty;
 import org.openflexo.pamela.undo.AddCommand;
 import org.openflexo.pamela.undo.AtomicEdit;
 import org.openflexo.pamela.undo.CompoundEdit;

@@ -45,11 +45,11 @@ import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.exception.NullReferenceException;
 import org.openflexo.connie.exception.TypeMismatchException;
 import org.openflexo.foundation.fml.md.FMLMetaData.FMLMetaDataImpl;
-import org.openflexo.pamela.StringConverterLibrary.Converter;
 import org.openflexo.pamela.annotations.ImplementationClass;
 import org.openflexo.pamela.annotations.ModelEntity;
 import org.openflexo.pamela.annotations.XMLElement;
 import org.openflexo.pamela.exceptions.InvalidDataException;
+import org.openflexo.pamela.model.StringConverterLibrary.Converter;
 
 /**
  * A {@link SingleMetaData} is a key-value data storing a <T> value <br>

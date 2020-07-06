@@ -54,7 +54,7 @@ import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterResource;
 import org.openflexo.foundation.utils.FlexoObjectReference;
 import org.openflexo.localization.LocalizedDelegate;
-import org.openflexo.pamela.factory.AccessibleProxyObject;
+import org.openflexo.pamela.AccessibleProxyObject;
 import org.openflexo.toolbox.FileUtils;
 import org.openflexo.toolbox.StringUtils;
 

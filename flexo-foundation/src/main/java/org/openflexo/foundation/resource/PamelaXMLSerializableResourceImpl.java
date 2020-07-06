@@ -55,7 +55,7 @@ import org.jdom2.filter.ElementFilter;
 import org.jdom2.input.SAXBuilder;
 import org.openflexo.foundation.PamelaResourceModelFactory;
 import org.openflexo.kvc.AccessorInvocationException;
-import org.openflexo.pamela.factory.AccessibleProxyObject;
+import org.openflexo.pamela.AccessibleProxyObject;
 import org.openflexo.pamela.factory.ModelFactory;
 import org.openflexo.toolbox.FileUtils;
 import org.openflexo.toolbox.FlexoVersion;
