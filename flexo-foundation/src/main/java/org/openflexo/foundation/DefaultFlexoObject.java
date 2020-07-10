@@ -40,9 +40,11 @@ package org.openflexo.foundation;
 
 import java.lang.reflect.Type;
 import java.util.List;
+import java.util.function.Function;
 
 import org.openflexo.foundation.FlexoObject.FlexoObjectImpl;
 import org.openflexo.pamela.AccessibleProxyObject;
+import org.openflexo.pamela.model.ModelProperty;
 import org.openflexo.pamela.model.PAMELAVisitor;
 import org.openflexo.pamela.model.PAMELAVisitor.VisitingStrategy;
 
@@ -139,6 +141,11 @@ public class DefaultFlexoObject extends FlexoObjectImpl {
 
 	@Override
 	public boolean equalsObject(Object obj) {
+		return false;
+	}
+
+	@Override
+	public boolean equalsObject(Object obj, Function<ModelProperty, Boolean> considerProperty) {
 		return false;
 	}
 
