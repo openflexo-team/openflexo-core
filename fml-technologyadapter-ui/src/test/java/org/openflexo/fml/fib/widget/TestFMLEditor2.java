@@ -98,6 +98,7 @@ public class TestFMLEditor2 extends OpenflexoFIBTestCase {
 
 	@Test
 	@TestOrder(3)
+	@Category(UITest.class)
 	public void loadFMLResource() throws FileNotFoundException, ResourceLoadingCancelledException, FlexoException {
 
 		VirtualModelLibrary vpLib = serviceManager.getVirtualModelLibrary();
