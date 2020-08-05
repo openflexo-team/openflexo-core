@@ -1,20 +1,20 @@
 dependencies {
   // openflexo dep
-  compile flexoP2PP();
-  compile flexoLocalization()
+  api flexoP2PP()
+  api flexoLocalization()
+  api pamela()
   // Still to be removed
-  compile flexoGraphicUtils() // used for icon mgt in FlexoConcept
-  //compile diana() // used by FMLModelFactory which inherit from DianaModelFactoryImpl
-  
+  implementation flexoGraphicUtils() // used for icon mgt in FlexoConcept
+
   // external dep
-  compile group: 'org.eclipse.jgit', name: 'org.eclipse.jgit', version: '4.3.1.201605051710-r'
-  compile group: 'com.google.inject', name: 'guice', version: '4.1.0'
-  compile group: 'findbugs', name: 'annotations', version: '1.0.0'
-  compile group: 'xerces', name: 'xercesImpl', version: '2.11.0'
+  api group: 'org.eclipse.jgit', name: 'org.eclipse.jgit', version: '4.3.1.201605051710-r'
+  api group: 'com.google.inject', name: 'guice', version: '4.1.0'
+  api group: 'findbugs', name: 'annotations', version: '1.0.0'
+  implementation group: 'xerces', name: 'xercesImpl', version: '2.11.0'
 }
 
 if (JavaVersion.current().isJava9Compatible()) {
 	tasks.withType(JavaCompile) {
 		options.compilerArgs.addAll(['--add-modules', 'java.xml.bind'])
     }
-}  
+}

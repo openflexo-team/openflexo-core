@@ -1,13 +1,13 @@
 dependencies {
   // openflexo dep
-  compile project(':flexo-ui')
-  compile project(':flexo-foundation-test')
-  compile ginaTest()
-  compile testUtils()
+  implementation project(':flexo-ui')
+  implementation project(':flexo-foundation-test')
+  api ginaTest()
+  implementation testUtils()
   // external dep
 
   // testing dep
   // testCompile ginaTest()
-  testCompile ginaSwingEditorTest()
-  testCompile project(':flexo-test-resources')
+  testImplementation ginaSwingEditorTest()
+  testImplementation project(':flexo-test-resources')
 }

@@ -1,16 +1,18 @@
 dependencies {
   // openflexo dep
-  compile project(':flexo-foundation')
-  compile project(':fml-parser')
-  compile project(':flexo-ui')
-  compile project(':flexo-ontology')
-  compile project(':flexo-ontology-ui')
+  implementation project(':flexo-foundation')
+  implementation project(':fml-parser')
+  implementation project(':flexo-ui')
+  implementation project(':flexo-ontology')
+  implementation project(':flexo-ontology-ui')
+  implementation flexoP2PP();
   // external dep
 
   // testing dep
-  testCompile testUtils()
-  testCompile ginaTest()
-  testCompile project(':flexo-ui-test')
-  testCompile project(':flexo-ontology-ui')
-  testCompile project(':flexo-test-resources')
+//  testCompile testUtils()
+  testImplementation ginaTest()
+  testImplementation project(':flexo-ui-test')
+  testImplementation project(':flexo-ontology-ui')
+  testImplementation project(':flexo-test-resources')
+  testImplementation project(':flexo-foundation-test')
 }

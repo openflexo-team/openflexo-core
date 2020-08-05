@@ -1,8 +1,8 @@
 dependencies {
   // openflexo dep
-  compile project(':flexo-foundation')
-  compile project(':fml-parser')
-  compile ginaApi()
+  implementation project(':flexo-foundation')
+  api project(':fml-parser')
+  implementation ginaApi()
 
   // external dep
 

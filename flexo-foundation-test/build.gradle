@@ -1,12 +1,12 @@
 dependencies {
   // openflexo dep
-  compile group: 'junit', name: 'junit', version: '4.+'
-  compile project(':flexo-foundation')
-  compile project(':flexo-foundation-rm')
+  implementation group: 'junit', name: 'junit', version: '4.13'
+  implementation project(':flexo-foundation')
+  implementation project(':flexo-foundation-rm')
   // external dep
 
   // testing dep
-  testCompile testUtils()
-  testCompile project(':flexo-test-resources')
-  testRuntime group: "org.openflexo", name: "testViewpoint2", version: "1.0"
+//  testCompile testUtils()
+  testImplementation project(':flexo-test-resources')
+  testRuntimeOnly group: "org.openflexo", name: "testViewpoint2", version: "1.0"
 }

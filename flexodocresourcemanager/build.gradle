@@ -1,5 +1,5 @@
 dependencies {
-  compile project(':flexo-foundation')
+  implementation project(':flexo-foundation')
 
-  compile 'javax.help:javahelp:2.0.05'
+  api 'javax.help:javahelp:2.0.05'
 }

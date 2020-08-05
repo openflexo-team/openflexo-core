@@ -1,13 +1,13 @@
 dependencies {
   // openflexo dep
-  compile flexoP2PP();
-  compile project(':flexo-foundation')
+  implementation flexoP2PP();
+  implementation project(':flexo-foundation')
   // external dep
 
   // testing dep
-  testCompile testUtils()
- // testCompile project(':flexo-foundation-test')
-  testCompile project(':flexo-test-resources')
+  testImplementation testUtils()
+ // testImplementation project(':flexo-foundation-test')
+  testImplementation project(':flexo-test-resources')
 }
 
 apply plugin: 'sablecc'

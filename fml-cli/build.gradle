@@ -1,13 +1,13 @@
 dependencies {
   // openflexo dep
-  compile project(':flexo-foundation')
+  implementation project(':flexo-foundation')
   // external dep
-  compile group: 'org.jboss.jreadline', name: 'jreadline', version: '0.20'
+  api group: 'org.jboss.jreadline', name: 'jreadline', version: '0.20'
 
   // testing dep
-  testCompile testUtils()
-  testCompile project(':flexo-foundation-test')
-  testCompile project(':flexo-test-resources')
+//  testCompile testUtils()
+  testImplementation project(':flexo-foundation-test')
+  testImplementation project(':flexo-test-resources')
 }
 
 apply plugin: 'sablecc'

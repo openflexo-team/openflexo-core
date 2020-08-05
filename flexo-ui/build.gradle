@@ -1,22 +1,22 @@
 dependencies {
   // openflexo dep
-  compile project(':flexo-foundation')
-  compile project(':flexo-foundation-rm')
-  compile project(':flexodocresourcemanager')
-  compile project(':fml-cli')
-  compile connie()
-  compile dianaApi()
-  compile diana()
+  api project(':flexo-foundation')
+  implementation project(':flexo-foundation-rm')
+  api project(':flexodocresourcemanager')
+  implementation project(':fml-cli')
+  implementation connie()
+  implementation dianaApi()
+  implementation diana()
 
-  compile ginaApi()
-  compile ginaSwing()
-  compile ginaSwingEditor()
-  compile dianaSwing()
-  compile flexoHelp()
+  implementation ginaApi()
+  api ginaSwing()
+  api ginaSwingEditor()
+  implementation dianaSwing()
+  implementation flexoHelp()
 
   // external dep
   if (!JavaVersion.current().isJava9Compatible()) {
-  	compile group: "org.openflexo.utils", name: "macos_ui_simulation", version: "1.1"
+  	implementation group: "org.openflexo.utils", name: "macos_ui_simulation", version: "1.1"
   }
 }
 
@@ -27,10 +27,10 @@ if (!JavaVersion.current().isJava9Compatible()) {
     	options.fork = true
 	    options.forkOptions.executable = 'javac'
     }
-}  
+}
 
 if (JavaVersion.current().isJava9Compatible()) {
 	tasks.withType(JavaCompile) {
 		options.compilerArgs.addAll(['--add-modules', 'java.xml.ws'])
     }
-}  
+}

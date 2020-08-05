@@ -1,11 +1,11 @@
 dependencies {
   // openflexo dep
-  compile project(':flexo-foundation')
-  compile project(':flexo-ui')
+  implementation project(':flexo-foundation')
+  implementation project(':flexo-ui')
   // external dep
 
   // testing dep
-  testCompile ginaTest()
-  testCompile project(':flexo-ui-test')
-  testRuntime project(':fml-technologyadapter-ui')
+  testImplementation ginaTest()
+  testImplementation project(':flexo-ui-test')
+  testRuntimeOnly project(':fml-technologyadapter-ui')
 }
