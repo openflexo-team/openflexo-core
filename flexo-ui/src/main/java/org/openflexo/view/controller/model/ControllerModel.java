@@ -50,7 +50,6 @@ import java.util.Stack;
 import java.util.Vector;
 import java.util.logging.Level;
 
-import org.apache.commons.collections15.ListUtils;
 import org.openflexo.ApplicationContext;
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoObject;
@@ -379,16 +378,16 @@ public class ControllerModel extends ControllerModelObject implements PropertyCh
 
 	public boolean removeFromLocations(Location location) {
 
-		//System.out.println("On supprime la location pour " + location.getEditor().getProject() + " object=" + location.getObject()
-		//		+ " perspective=" + location.getPerspective());
+		// System.out.println("On supprime la location pour " + location.getEditor().getProject() + " object=" + location.getObject()
+		// + " perspective=" + location.getPerspective());
 
 		boolean removed = locations.remove(location);
 		if (removed) {
 			if (location != null && location.equals(currentLocation)) {
 				Location lastLocationForEditor = getLastLocationForEditor(getCurrentEditor(), getCurrentPerspective());
-				//System.out.println("Et on passe a la location pour "
-				//		+ (lastLocationForEditor.getEditor() != null ? lastLocationForEditor.getEditor().getProject() : null) + " object="
-				//		+ lastLocationForEditor.getObject() + " perspective=" + lastLocationForEditor.getPerspective());
+				// System.out.println("Et on passe a la location pour "
+				// + (lastLocationForEditor.getEditor() != null ? lastLocationForEditor.getEditor().getProject() : null) + " object="
+				// + lastLocationForEditor.getObject() + " perspective=" + lastLocationForEditor.getPerspective());
 				setCurrentLocation(lastLocationForEditor);
 			}
 			getPropertyChangeSupport().firePropertyChange(LOCATIONS, location, null);
@@ -464,8 +463,15 @@ public class ControllerModel extends ControllerModelObject implements PropertyCh
 		return getCurrentObject() != null && getParent(getCurrentObject()) != null;
 	}
 
+	private static <E> List<E> union(final List<? extends E> list1, final List<? extends E> list2) {
+		final ArrayList<E> result = new ArrayList<>(list1.size() + list2.size());
+		result.addAll(list1);
+		result.addAll(list2);
+		return result;
+	}
+
 	private Location getLastLocationForEditor(FlexoEditor editor, FlexoPerspective perspective) {
-		List<Location> allLocations = ListUtils.union(previousHistory, nextHistory);
+		List<Location> allLocations = union(previousHistory, nextHistory);
 		if (perspective != null) {
 			// avoid empty perspective if there is one to select
 			for (Location location : allLocations) {
