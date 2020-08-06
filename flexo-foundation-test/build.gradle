@@ -2,7 +2,7 @@ dependencies {
   // openflexo dep
   implementation group: 'junit', name: 'junit', version: '4.13'
   implementation project(':flexo-foundation')
-  implementation project(':flexo-foundation-rm')
+  api project(':flexo-foundation-rm')
   // external dep
 
   // testing dep
