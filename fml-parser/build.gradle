@@ -5,7 +5,6 @@ dependencies {
   // external dep
 
   // testing dep
-  testImplementation testUtils()
  // testImplementation project(':flexo-foundation-test')
   testImplementation project(':flexo-test-resources')
 }
