@@ -7,8 +7,8 @@ dependencies {
   implementation flexoGraphicUtils() // used for icon mgt in FlexoConcept
 
   // external dep
-  api group: 'org.eclipse.jgit', name: 'org.eclipse.jgit', version: '4.3.1.201605051710-r'
-  api group: 'com.google.inject', name: 'guice', version: '4.1.0'
+  api group: 'org.eclipse.jgit', name: 'org.eclipse.jgit', version: '5.8.0.202006091008-r'
+  api group: 'com.google.inject', name: 'guice', version: '4.2.3'
   api group: 'findbugs', name: 'annotations', version: '1.0.0'
   implementation group: 'xerces', name: 'xercesImpl', version: '2.11.0'
 }
