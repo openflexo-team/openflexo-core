@@ -16,6 +16,8 @@ dependencies {
 
   implementation 'commons-codec:commons-codec:1.10'
 
+  implementation 'javax.activation:javax.activation-api:1.2.0'
+
   // javax.xml.ws has been removed from jdk since java 11
   // still commented still not really usefull yet
   // see FlexoController.java
