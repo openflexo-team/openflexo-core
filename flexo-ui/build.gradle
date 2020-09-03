@@ -16,6 +16,11 @@ dependencies {
 
   implementation 'commons-codec:commons-codec:1.10'
 
+  // javax.xml.ws has been removed from jdk since java 11
+  // still commented still not really usefull yet
+  // see FlexoController.java
+  // implementation group: 'javax.xml.ws', name: 'jaxws-api', version: '2.3.1'
+
   // external dep
   if (!JavaVersion.current().isJava9Compatible()) {
   	implementation group: "org.openflexo.utils", name: "macos_ui_simulation", version: "1.1"
@@ -31,8 +36,8 @@ if (!JavaVersion.current().isJava9Compatible()) {
     }
 }
 
-if (JavaVersion.current().isJava9Compatible()) {
-	tasks.withType(JavaCompile) {
-		options.compilerArgs.addAll(['--add-modules', 'java.xml.ws'])
-    }
-}
+//if (JavaVersion.current().isJava9Compatible()) {
+//	tasks.withType(JavaCompile) {
+//		options.compilerArgs.addAll(['--add-modules', 'java.xml.ws'])
+//    }
+//}

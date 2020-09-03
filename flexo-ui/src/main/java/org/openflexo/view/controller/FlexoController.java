@@ -55,7 +55,6 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
 import java.net.ConnectException;
 import java.net.SocketTimeoutException;
 import java.util.ArrayList;
@@ -87,7 +86,6 @@ import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
-import javax.xml.ws.Holder;
 
 import org.openflexo.ApplicationContext;
 import org.openflexo.FlexoCst;
@@ -1445,7 +1443,7 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 	}
 
 	public boolean handleWSException(final Exception e) throws InterruptedException {
-		if (!SwingUtilities.isEventDispatchThread()) {
+		/*if (!SwingUtilities.isEventDispatchThread()) {
 			final Holder<Boolean> returned = new Holder<>();
 			try {
 				SwingUtilities.invokeAndWait(() -> returned.value = _handleWSException(e));
@@ -1454,7 +1452,7 @@ public abstract class FlexoController implements PropertyChangeListener, HasProp
 				return false;
 			}
 			return returned.value != null && returned.value;
-		}
+		}*/
 		return _handleWSException(e);
 	}
 
