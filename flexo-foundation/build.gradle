@@ -10,7 +10,9 @@ dependencies {
   api group: 'org.eclipse.jgit', name: 'org.eclipse.jgit', version: '5.8.0.202006091008-r'
   api group: 'com.google.inject', name: 'guice', version: '4.2.3'
   api group: 'findbugs', name: 'annotations', version: '1.0.0'
-  implementation group: 'xerces', name: 'xercesImpl', version: '2.11.0'
+  implementation group: 'xerces', name: 'xercesImpl', version: '2.11.0', {
+       exclude group: "xml-apis", module: "xml-apis"
+  }
 
   // java.xml.bind has been removed from jdk since java 11
   implementation "jakarta.xml.bind:jakarta.xml.bind-api:2.3.3"
