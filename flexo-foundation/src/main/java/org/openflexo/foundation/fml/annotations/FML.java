@@ -61,4 +61,10 @@ public @interface FML {
 	 */
 	public String value();
 
+	public String description() default "";
+
+	UsageExample[] examples() default {};
+
+	SeeAlso[] references() default {};
+
 }
