@@ -49,6 +49,11 @@
 			<item name="FAQ" href="faq.html" />
 		</menu>
 
+<!-- BEGIN GENERATED -->
+
+<menu name="to be automatically generated"></menu> 
+
+<!-- END GENERATED -->
 
 		<menu ref="modules" />
 		<menu ref="reports" />
