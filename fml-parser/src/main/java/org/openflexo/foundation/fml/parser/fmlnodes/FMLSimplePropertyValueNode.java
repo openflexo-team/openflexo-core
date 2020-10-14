@@ -108,7 +108,7 @@ public class FMLSimplePropertyValueNode<M extends FMLObject, T>
 					getModelObject().setValue((T) constantValue);
 				}
 				else {
-					logger.warning("Invalid value for property " + fmlProperty.getName() + " expected type: " + fmlProperty.getType()
+					logger.warning("Invalid value for property " + fmlProperty.getLabel() + " expected type: " + fmlProperty.getType()
 							+ " value: " + constantValue + " of " + constantValue.getClass());
 				}
 			}
@@ -129,7 +129,7 @@ public class FMLSimplePropertyValueNode<M extends FMLObject, T>
 			}
 
 			if (!found) {
-				logger.warning("Unexpected value for property " + fmlProperty.getName() + " expected type: " + fmlProperty.getType()
+				logger.warning("Unexpected value for property " + fmlProperty.getLabel() + " expected type: " + fmlProperty.getType()
 						+ " value: " + value);
 			}
 		}
@@ -148,7 +148,7 @@ public class FMLSimplePropertyValueNode<M extends FMLObject, T>
 	public void preparePrettyPrint(boolean hasParsedVersion) {
 		super.preparePrettyPrint(hasParsedVersion);
 
-		append(dynamicContents(() -> getModelObject().getProperty().getName(), SPACE), getArgNameFragment());
+		append(dynamicContents(() -> getModelObject().getProperty().getLabel(), SPACE), getArgNameFragment());
 		append(staticContents("", "=", SPACE), getAssignFragment());
 		append(dynamicContents(() -> encodeFMLProperty(getModelObject().getValue())), getValueFragment());
 	}

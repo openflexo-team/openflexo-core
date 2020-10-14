@@ -48,7 +48,6 @@ import org.openflexo.foundation.fml.FlexoBehaviour;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoProperty;
 import org.openflexo.foundation.fml.VirtualModel;
-import org.openflexo.foundation.fml.annotations.FML;
 import org.openflexo.foundation.fml.rt.ActorReference;
 import org.openflexo.foundation.resource.ResourceLoadingCancelledException;
 import org.openflexo.logging.FlexoLogger;
@@ -71,7 +70,6 @@ import org.openflexo.pamela.annotations.XMLElement;
 @ModelEntity
 @ImplementationClass(FMLObjectActorReference.FMLObjectActorReferenceImpl.class)
 @XMLElement
-@FML("ExcelActorReference")
 public interface FMLObjectActorReference<T extends FMLObject> extends ActorReference<T> {
 
 	@PropertyIdentifier(type = String.class)

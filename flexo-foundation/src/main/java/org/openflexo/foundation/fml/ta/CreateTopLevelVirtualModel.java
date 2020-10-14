@@ -46,6 +46,7 @@ import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.fml.FMLCompilationUnit;
 import org.openflexo.foundation.fml.FMLTechnologyAdapter;
 import org.openflexo.foundation.fml.VirtualModel;
+import org.openflexo.foundation.fml.annotations.FML;
 import org.openflexo.foundation.fml.editionaction.AbstractCreateResource;
 import org.openflexo.foundation.fml.rm.CompilationUnitResource;
 import org.openflexo.foundation.fml.rm.CompilationUnitResourceFactory;
@@ -63,6 +64,7 @@ import org.openflexo.pamela.exceptions.ModelDefinitionException;
 @ModelEntity
 @ImplementationClass(CreateTopLevelVirtualModel.CreateTopLevelVirtualModelImpl.class)
 @XMLElement
+@FML("CreateTopLevelVirtualModel")
 public interface CreateTopLevelVirtualModel extends AbstractCreateResource<FMLModelSlot, FMLCompilationUnit, FMLTechnologyAdapter> {
 
 	@PropertyIdentifier(type = String.class)

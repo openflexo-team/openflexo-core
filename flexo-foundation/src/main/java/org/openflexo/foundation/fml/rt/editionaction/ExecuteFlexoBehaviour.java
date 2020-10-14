@@ -53,6 +53,7 @@ import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.FlexoProject;
 import org.openflexo.foundation.fml.AbstractActionScheme;
+import org.openflexo.foundation.fml.annotations.FML;
 import org.openflexo.foundation.fml.editionaction.TechnologySpecificActionDefiningReceiver;
 import org.openflexo.foundation.fml.rt.FMLRTModelSlot;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
@@ -82,6 +83,7 @@ import org.openflexo.pamela.annotations.XMLElement;
 @ModelEntity
 @ImplementationClass(ExecuteFlexoBehaviour.ExecuteFlexoBehaviourImpl.class)
 @XMLElement
+@FML("ExecuteFlexoBehaviour")
 public interface ExecuteFlexoBehaviour<T> extends TechnologySpecificActionDefiningReceiver<FMLRTModelSlot<?, ?>, FlexoConceptInstance, T> {
 
 	// <FCI extends FlexoConceptInstance, VMI extends VirtualModelInstance<VMI, ?>>

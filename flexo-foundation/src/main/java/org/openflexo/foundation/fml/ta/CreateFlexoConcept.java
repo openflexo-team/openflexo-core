@@ -49,6 +49,7 @@ import org.openflexo.connie.exception.TypeMismatchException;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.InconsistentFlexoConceptHierarchyException;
 import org.openflexo.foundation.fml.VirtualModel;
+import org.openflexo.foundation.fml.annotations.FML;
 import org.openflexo.foundation.fml.editionaction.TechnologySpecificActionDefiningReceiver;
 import org.openflexo.foundation.fml.rt.ActionExecutionCancelledException;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
@@ -65,6 +66,7 @@ import org.openflexo.pamela.annotations.XMLElement;
 @ModelEntity
 @ImplementationClass(CreateFlexoConcept.CreateFlexoConceptImpl.class)
 @XMLElement(xmlTag = "CreateFlexoConcept")
+@FML("CreateFlexoConcept")
 public interface CreateFlexoConcept extends TechnologySpecificActionDefiningReceiver<FMLModelSlot, VirtualModel, FlexoConcept> {
 
 	@PropertyIdentifier(type = DataBinding.class)

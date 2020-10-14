@@ -47,6 +47,7 @@ import org.openflexo.connie.DataBinding.BindingDefinitionType;
 import org.openflexo.connie.exception.NullReferenceException;
 import org.openflexo.connie.exception.TypeMismatchException;
 import org.openflexo.foundation.fml.VirtualModel;
+import org.openflexo.foundation.fml.annotations.FML;
 import org.openflexo.foundation.fml.editionaction.TechnologySpecificActionDefiningReceiver;
 import org.openflexo.foundation.fml.rt.ActionExecutionCancelledException;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
@@ -63,6 +64,7 @@ import org.openflexo.pamela.annotations.XMLElement;
 @ModelEntity
 @ImplementationClass(CreateContainedVirtualModel.CreateContainedVirtualModelImpl.class)
 @XMLElement
+@FML("CreateContainedVirtualModel")
 public interface CreateContainedVirtualModel extends TechnologySpecificActionDefiningReceiver<FMLModelSlot, VirtualModel, VirtualModel> {
 
 	@PropertyIdentifier(type = DataBinding.class)

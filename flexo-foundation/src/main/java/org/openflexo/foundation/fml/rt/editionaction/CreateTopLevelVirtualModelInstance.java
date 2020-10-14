@@ -49,7 +49,7 @@ import org.openflexo.connie.exception.TypeMismatchException;
 import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.fml.CreationScheme;
 import org.openflexo.foundation.fml.VirtualModel;
-import org.openflexo.foundation.fml.rm.CompilationUnitResource;
+import org.openflexo.foundation.fml.annotations.FML;
 import org.openflexo.foundation.fml.rt.FMLRTTechnologyAdapter;
 import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
@@ -81,6 +81,7 @@ import org.openflexo.pamela.validation.ValidationRule;
 @ModelEntity
 @ImplementationClass(CreateTopLevelVirtualModelInstance.CreateTopLevelVirtualModelInstanceImpl.class)
 @XMLElement
+@FML("CreateTopLevelVirtualModelInstance")
 public interface CreateTopLevelVirtualModelInstance extends AbstractAddFMLRTVirtualModelInstance {
 
 	@PropertyIdentifier(type = DataBinding.class)
@@ -256,7 +257,7 @@ public interface CreateTopLevelVirtualModelInstance extends AbstractAddFMLRTVirt
 
 				FMLRTVirtualModelInstanceResource returned = null;
 				returned = factory.makeTopLevelFMLRTVirtualModelInstanceResource(resourceName, resourceURI,
-						(CompilationUnitResource) instantiatedVirtualModel.getResource(), folder, true);
+						instantiatedVirtualModel.getResource(), folder, true);
 				if (returned != null) {
 					returned.getLoadedResourceData().setTitle(resourceTitle);
 				}

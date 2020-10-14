@@ -100,7 +100,7 @@ public interface AbstractCreateResource<MS extends ModelSlot<?>, RD extends Reso
 
 	@Getter(value = RESOURCE_NAME_KEY)
 	@XMLAttribute
-	@FMLAttribute(RESOURCE_NAME_KEY)
+	@FMLAttribute(value = RESOURCE_NAME_KEY, index = 0, required = true, description = "<html>name for the resource to be created</html>")
 	public DataBinding<String> getResourceName();
 
 	@Setter(RESOURCE_NAME_KEY)
@@ -108,7 +108,7 @@ public interface AbstractCreateResource<MS extends ModelSlot<?>, RD extends Reso
 
 	@Getter(value = RESOURCE_URI_KEY)
 	@XMLAttribute
-	@FMLAttribute(RESOURCE_URI_KEY)
+	@FMLAttribute(value = RESOURCE_URI_KEY, index = 1, required = false, description = "<html>URI for the resource to be created</html>")
 	public DataBinding<String> getResourceURI();
 
 	@Setter(RESOURCE_URI_KEY)
@@ -116,7 +116,11 @@ public interface AbstractCreateResource<MS extends ModelSlot<?>, RD extends Reso
 
 	@Getter(value = RESOURCE_CENTER_KEY)
 	@XMLAttribute
-	@FMLAttribute(RESOURCE_CENTER_KEY)
+	@FMLAttribute(
+			value = RESOURCE_CENTER_KEY,
+			index = 2,
+			required = true,
+			description = "<html>ResourceCenter where the resource should be registered</html>")
 	public DataBinding<FlexoResourceCenter<?>> getResourceCenter();
 
 	@Setter(RESOURCE_CENTER_KEY)
@@ -133,7 +137,11 @@ public interface AbstractCreateResource<MS extends ModelSlot<?>, RD extends Reso
 
 	@Getter(value = DYNAMIC_RELATIVE_PATH_KEY)
 	@XMLAttribute
-	@FMLAttribute(DYNAMIC_RELATIVE_PATH_KEY)
+	@FMLAttribute(
+			value = "relativePath",
+			index = 3,
+			required = true,
+			description = "<html>relative path (relative to the resource center) where the resource should be created</html>")
 	public DataBinding<String> getDynamicRelativePath();
 
 	@Setter(DYNAMIC_RELATIVE_PATH_KEY)

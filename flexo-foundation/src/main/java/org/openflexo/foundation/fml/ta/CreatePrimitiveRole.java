@@ -51,6 +51,7 @@ import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.PrimitiveRole;
 import org.openflexo.foundation.fml.PropertyCardinality;
 import org.openflexo.foundation.fml.VirtualModel;
+import org.openflexo.foundation.fml.annotations.FML;
 import org.openflexo.foundation.fml.editionaction.TechnologySpecificActionDefiningReceiver;
 import org.openflexo.foundation.fml.rt.ActionExecutionCancelledException;
 import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
@@ -67,6 +68,7 @@ import org.openflexo.pamela.annotations.XMLElement;
 @ModelEntity
 @ImplementationClass(CreatePrimitiveRole.CreatePrimitiveRoleImpl.class)
 @XMLElement
+@FML("CreatePrimitiveRole")
 public interface CreatePrimitiveRole extends TechnologySpecificActionDefiningReceiver<FMLModelSlot, VirtualModel, PrimitiveRole<?>> {
 
 	@PropertyIdentifier(type = DataBinding.class)

@@ -42,6 +42,7 @@ import java.lang.reflect.Type;
 import java.util.List;
 import java.util.Vector;
 
+import org.openflexo.foundation.fml.annotations.FML;
 import org.openflexo.foundation.fml.editionaction.TechnologySpecificActionDefiningReceiver;
 import org.openflexo.foundation.fml.rt.FMLRTModelSlot;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
@@ -68,6 +69,7 @@ import org.openflexo.pamela.annotations.XMLElement;
 @ModelEntity
 @ImplementationClass(ExecuteFML.ExecuteFMLImpl.class)
 @XMLElement
+@FML("ExecuteFML")
 public interface ExecuteFML<T, VMI extends VirtualModelInstance<VMI, ?>>
 		extends TechnologySpecificActionDefiningReceiver<FMLRTModelSlot<VMI, ?>, VMI, T> {
 
