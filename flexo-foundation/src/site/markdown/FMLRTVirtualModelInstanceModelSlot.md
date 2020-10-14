@@ -4,20 +4,19 @@
 
 No documentation yet
 
+
 ---
 
 ## Usage
 
 ```java
-[visibility] [cardinality] FMLRTVirtualModelInstance  <identifier>
-with ModelInstance([options]);
+[visibility] [cardinality] FMLRTVirtualModelInstance <identifier> with ModelInstance([options]);
 ```
 
 or
 
 ```java
-[visibility] [cardinality] FMLRTVirtualModelInstance  <identifier>
-with FML@RT::ModelInstance([options]);
+[visibility] [cardinality] FMLRTVirtualModelInstance <identifier> with FML@RT::ModelInstance([options]);
 ```
 
 where

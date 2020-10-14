@@ -4,20 +4,19 @@
 
 No documentation yet
 
+
 ---
 
 ## Usage
 
 ```java
-[visibility] [cardinality] VirtualModel  <identifier>
-with FMLModelSlot([options]);
+[visibility] [cardinality] VirtualModel <identifier> with FMLModelSlot([options]);
 ```
 
 or
 
 ```java
-[visibility] [cardinality] VirtualModel  <identifier>
-with FML::FMLModelSlot([options]);
+[visibility] [cardinality] VirtualModel <identifier> with FML::FMLModelSlot([options]);
 ```
 
 where
