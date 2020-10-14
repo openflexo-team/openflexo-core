@@ -51,25 +51,25 @@
 
 <!-- BEGIN GENERATED -->
 <menu name="FML / Usage">
+    <item name="ModelInstance" href="flexo-foundation/FMLRTVirtualModelInstanceModelSlot.html"/>
     <item name="FMLModelSlot" href="flexo-foundation/FMLModelSlot.html"/>
 </menu>
 
-<menu name="FMLModelSlot">
-    <item name="Roles" href="flexo-foundation/FMLModelSlot_roles.html">
-        <item name="FlexoConceptRole" href="flexo-foundation/FlexoConceptRole.html"/>
-        <item name="FlexoPropertyRole" href="flexo-foundation/FlexoPropertyRole.html"/>
-        <item name="PrimitiveRoleRole" href="flexo-foundation/PrimitiveRoleRole.html"/>
-        <item name="FlexoConceptInstanceRoleRole" href="flexo-foundation/FlexoConceptInstanceRoleRole.html"/>
-        <item name="FlexoBehaviourRole" href="flexo-foundation/FlexoBehaviourRole.html"/>
-        <item name="ActionSchemeRole" href="flexo-foundation/ActionSchemeRole.html"/>
+<menu name="ModelInstance">
+    <item name="Roles" href="flexo-foundation/FMLRTVirtualModelInstanceModelSlot_roles.html">
+        <item name="FlexoConceptInstanceRole" href="flexo-foundation/FlexoConceptInstanceRole.html"/>
+        <item name="PrimitiveRole" href="flexo-foundation/PrimitiveRole.html"/>
     </item>
-    <item name="Edition actions" href="flexo-foundation/FMLModelSlot_edition_actions.html">
-        <item name="CreateFlexoConcept" href="flexo-foundation/CreateFlexoConcept.html"/>
-        <item name="CreateTopLevelVirtualModel" href="flexo-foundation/CreateTopLevelVirtualModel.html"/>
-        <item name="CreateContainedVirtualModel" href="flexo-foundation/CreateContainedVirtualModel.html"/>
-        <item name="CreatePrimitiveRole" href="flexo-foundation/CreatePrimitiveRole.html"/>
-        <item name="CreateFlexoConceptInstanceRole" href="flexo-foundation/CreateFlexoConceptInstanceRole.html"/>
-        <item name="CreateFlexoBehaviour" href="flexo-foundation/CreateFlexoBehaviour.html"/>
+    <item name="Edition actions" href="flexo-foundation/FMLRTVirtualModelInstanceModelSlot_edition_actions.html">
+        <item name="AddFlexoConceptInstance" href="flexo-foundation/AddFlexoConceptInstance.html"/>
+        <item name="CreateTopLevelVirtualModelInstance" href="flexo-foundation/CreateTopLevelVirtualModelInstance.html"/>
+        <item name="AddVirtualModelInstance" href="flexo-foundation/AddVirtualModelInstance.html"/>
+        <item name="ExecuteFlexoBehaviour" href="flexo-foundation/ExecuteFlexoBehaviour.html"/>
+        <item name="ExecuteFML" href="flexo-foundation/ExecuteFML.html"/>
+    </item>
+    <item name="Fetch requests" href="flexo-foundation/FMLRTVirtualModelInstanceModelSlot_fetch_requests.html">
+        <item name="SelectFlexoConceptInstance" href="flexo-foundation/SelectFlexoConceptInstance.html"/>
+        <item name="SelectVirtualModelInstance" href="flexo-foundation/SelectVirtualModelInstance.html"/>
     </item>
 </menu>
 

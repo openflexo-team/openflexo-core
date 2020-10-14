@@ -33,6 +33,33 @@
       <item name="Home" 		href="index.html" />
       <item name="Javadoc"    	href="./apidocs/index.html" />
     </menu>
+    
+<!-- BEGIN GENERATED -->
+<menu name="FML / Usage">
+    <item name="ModelInstance" href="./FMLRTVirtualModelInstanceModelSlot.html"/>
+    <item name="FMLModelSlot" href="./FMLModelSlot.html"/>
+</menu>
+
+<menu name="ModelInstance">
+    <item name="Roles" href="flexo-foundation/FMLRTVirtualModelInstanceModelSlot_roles.html">
+        <item name="FlexoConceptInstanceRole" href="./FlexoConceptInstanceRole.html"/>
+        <item name="PrimitiveRole" href="./PrimitiveRole.html"/>
+    </item>
+    <item name="Edition actions" href="flexo-foundation/FMLRTVirtualModelInstanceModelSlot_edition_actions.html">
+        <item name="AddFlexoConceptInstance" href="./AddFlexoConceptInstance.html"/>
+        <item name="CreateTopLevelVirtualModelInstance" href="./CreateTopLevelVirtualModelInstance.html"/>
+        <item name="AddVirtualModelInstance" href="./AddVirtualModelInstance.html"/>
+        <item name="ExecuteFlexoBehaviour" href="./ExecuteFlexoBehaviour.html"/>
+        <item name="ExecuteFML" href="./ExecuteFML.html"/>
+    </item>
+    <item name="Fetch requests" href="flexo-foundation/FMLRTVirtualModelInstanceModelSlot_fetch_requests.html">
+        <item name="SelectFlexoConceptInstance" href="./SelectFlexoConceptInstance.html"/>
+        <item name="SelectVirtualModelInstance" href="./SelectVirtualModelInstance.html"/>
+    </item>
+</menu>
+
+<!-- END GENERATED -->
+
     <menu ref="parent" />
     <menu ref="modules" />
     <menu ref="reports" />
