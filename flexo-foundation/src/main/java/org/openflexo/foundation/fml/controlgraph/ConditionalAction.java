@@ -233,6 +233,7 @@ public interface ConditionalAction extends ControlStructureAction, FMLControlGra
 					e.printStackTrace();
 				} catch (NullReferenceException e) {
 					e.printStackTrace();
+					return false;
 				} catch (InvocationTargetException e) {
 					e.printStackTrace();
 				}
