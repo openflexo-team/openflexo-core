@@ -822,16 +822,18 @@ public interface AbstractAddFlexoConceptInstance<FCI extends FlexoConceptInstanc
 				DataBinding<FMLRTVirtualModelInstance> binding = getBinding(object);
 
 				if (binding.getAnalyzedType() instanceof VirtualModelInstanceType && object.getFlexoConceptType() != null) {
-					if (!(object.getFlexoConceptType() instanceof VirtualModel) && object.getFlexoConceptType()
-							.getOwningVirtualModel() != ((VirtualModelInstanceType) binding.getAnalyzedType()).getVirtualModel()) {
+					if (!(object.getFlexoConceptType() instanceof VirtualModel) && !object.getFlexoConceptType().getOwningVirtualModel()
+							.isAssignableFrom(((VirtualModelInstanceType) binding.getAnalyzedType()).getVirtualModel())) {
 						returned = new ValidationError<>(this, object, "incompatible_virtual_model_type");
 
-						/*System.out.println(object.getRootOwner().getFMLRepresentation());
+						System.out.println(object.getRootOwner().getFMLRepresentation());
 						System.out.println("binding=" + binding);
 						System.out.println("binding.getAnalyzedType()=" + binding.getAnalyzedType());
+						System.out.println("binding.getAnalyzedType().getVirtualModel()="
+								+ ((VirtualModelInstanceType) binding.getAnalyzedType()).getVirtualModel());
 						System.out.println("object.getFlexoConceptType()=" + object.getFlexoConceptType());
 						System.out.println("object.getFlexoConceptType().getOwningVirtualModel()="
-								+ object.getFlexoConceptType().getOwningVirtualModel());*/
+								+ object.getFlexoConceptType().getOwningVirtualModel());
 
 						// Attempt to find some solutions...
 
