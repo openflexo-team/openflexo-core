@@ -346,6 +346,18 @@ public interface VirtualModel extends FlexoConcept, FlexoMetaModel<VirtualModel>
 	public List<FlexoConcept> getAllRootFlexoConcepts();
 
 	/**
+	 * Return all {@link FlexoConcept} defined in this {@link VirtualModel} which have no container (contaiment semantics)<br>
+	 * (where container is the virtual model itself).
+	 * 
+	 * @param includeParents
+	 *            When 'includeParents' is true, also include root FlexoConcept from super {@link VirtualModel}
+	 * @param includeAbstractConcepts
+	 *            When 'includeAbstractConcepts' is false, do not return abstract {@link FlexoConcept}
+	 * @return
+	 */
+	public List<FlexoConcept> getAllRootFlexoConcepts(boolean includeParents, boolean includeAbstractConcepts);
+
+	/**
 	 * Return all {@link FlexoConcept} defined in this {@link VirtualModel} which have no parent (inheritance semantics)
 	 * 
 	 * @return
@@ -675,13 +687,40 @@ public interface VirtualModel extends FlexoConcept, FlexoMetaModel<VirtualModel>
 		@Override
 		public List<FlexoConcept> getAllRootFlexoConcepts() {
 
+			return getAllRootFlexoConcepts(false, true);
+		}
+
+		/**
+		 * Return all {@link FlexoConcept} defined in this {@link VirtualModel} which have no container (contaiment semantics)<br>
+		 * (where container is the virtual model itself).
+		 * 
+		 * @param includeParents
+		 *            When 'includeParents' is true, also include root FlexoConcept from super {@link VirtualModel}
+		 * @param includeAbstractConcepts
+		 *            When 'includeAbstractConcepts' is false, do not return abstract {@link FlexoConcept}
+		 * @return
+		 */
+		@Override
+		public List<FlexoConcept> getAllRootFlexoConcepts(boolean includeParents, boolean includeAbstractConcepts) {
+
 			Vector<FlexoConcept> returned = new Vector<>();
 			for (FlexoConcept ep : getFlexoConcepts()) {
-				if (ep.isRoot()) {
+				if (ep.isRoot() && (includeAbstractConcepts || (!ep.isAbstract()))) {
 					returned.add(ep);
 				}
 			}
+			if (includeParents) {
+				for (FlexoConcept parent : getParentFlexoConcepts()) {
+					if (parent instanceof VirtualModel) {
+						returned.addAll(((VirtualModel) parent).getAllRootFlexoConcepts(includeParents, includeAbstractConcepts));
+					}
+					else {
+						logger.warning("Inconsistent data : " + parent + " is not a VirtualModel");
+					}
+				}
+			}
 			return returned;
+
 		}
 
 		/**
