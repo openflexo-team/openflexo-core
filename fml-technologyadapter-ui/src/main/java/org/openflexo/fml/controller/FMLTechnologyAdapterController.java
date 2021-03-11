@@ -505,6 +505,9 @@ public class FMLTechnologyAdapterController extends TechnologyAdapterController<
 			else if (widgetContext.getType() instanceof FlexoResourceType) {
 				return makeFlexoResourceSelector(widgetContext, fibModelFactory, variableName);
 			}
+			else if (widgetContext.getType().equals(FlexoConcept.class)) {
+				return makeFlexoConceptSelector(widgetContext, fibModelFactory, variableName);
+			}
 
 		}
 		return super.makeWidget(widgetContext, action, fibModelFactory, variableName, expand);
@@ -628,6 +631,50 @@ public class FMLTechnologyAdapterController extends TechnologyAdapterController<
 		vmiSelector.addToAssignments(fibModelFactory.newFIBCustomAssignment(vmiSelector, new DataBinding<>("component.expectedType"),
 				new DataBinding<>(variableName + "." + widgetContext.getWidgetDefinitionAccess() + ".type"), true));
 		return vmiSelector;
+	}
+
+	private static FIBWidget makeFlexoConceptSelector(final WidgetContext widgetContext, FIBModelFactory fibModelFactory,
+			String variableName) {
+
+		FIBCustom flexoConceptSelector = fibModelFactory.newFIBCustom();
+		flexoConceptSelector.setBindingFactory(widgetContext.getBindingFactory());
+		Class<?> fciSelectorClass;
+		try {
+			fciSelectorClass = Class.forName("org.openflexo.fml.controller.widget.FIBFlexoConceptSelector");
+			flexoConceptSelector.setComponentClass(fciSelectorClass);
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		}
+		flexoConceptSelector.addToAssignments(fibModelFactory.newFIBCustomAssignment(flexoConceptSelector,
+				new DataBinding<>("component.project"), new DataBinding<>("controller.editor.project"), true));
+
+		String containerBinding = getContainerBinding(widgetContext, variableName);
+		DataBinding<?> container = widgetContext.getContainer();
+		if (container != null && container.isSet() && container.isValid()) {
+			Type containerType = container.getAnalyzedType();
+			if (TypeUtils.isTypeAssignableFrom(VirtualModel.class, containerType)) {
+				flexoConceptSelector.addToAssignments(fibModelFactory.newFIBCustomAssignment(flexoConceptSelector,
+						new DataBinding<>("component.virtualModel"), new DataBinding<>(containerBinding), true));
+			}
+			else if (TypeUtils.isTypeAssignableFrom(FlexoResourceCenter.class, containerType)) {
+				flexoConceptSelector.addToAssignments(fibModelFactory.newFIBCustomAssignment(flexoConceptSelector,
+						new DataBinding<>("component.resourceCenter"), new DataBinding<>(containerBinding), true));
+			}
+		}
+		else {
+
+			// No container defined, set service manager
+			flexoConceptSelector.addToAssignments(
+					fibModelFactory.newFIBCustomAssignment(flexoConceptSelector, new DataBinding<>("component.virtualModelLibrary"),
+							new DataBinding<>("controller.flexoController.applicationContext.virtualModelLibrary"), true));
+		}
+
+		// flexoConceptSelector.addToAssignments(fibModelFactory.newFIBCustomAssignment(flexoConceptSelector, new
+		// DataBinding<>("component.expectedType"),
+		// new DataBinding<>(variableName + "." + widgetContext.getWidgetDefinitionAccess() + ".type"), true));
+
+		return flexoConceptSelector;
+
 	}
 
 	/* Unused 
