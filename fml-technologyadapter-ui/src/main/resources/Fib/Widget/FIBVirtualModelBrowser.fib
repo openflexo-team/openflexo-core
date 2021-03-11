@@ -79,7 +79,7 @@
 		</BrowserElement>
 		<BrowserElement 
 			dataClassName="org.openflexo.foundation.fml.FlexoConcept"
-			icon="controller.iconForObject(flexoConcept)"
+			icon="controller.iconForObject(flexoConcept)" visible="(flexoConcept.declaringVirtualModel = data)"
 			label="flexoConcept.name" editableLabel="flexoConcept.name"
 			isEditable="false" name="flexoConcept">
 			<DragOperation 
@@ -171,7 +171,7 @@
 		</BrowserElement>
 		<BrowserElement 
 			dataClassName="org.openflexo.foundation.fml.FlexoConcept"
-			icon="controller.iconForObject(flexoConcept)"
+			icon="controller.iconForObject(flexoConcept)" visible="(flexoConcept.declaringVirtualModel = data)"
 			label="flexoConcept.name" editableLabel="flexoConcept.name"
 			isEditable="false" name="flexoConcept">
 			<DragOperation 
@@ -263,7 +263,7 @@
 		</BrowserElement>
 		<BrowserElement 
 			dataClassName="org.openflexo.foundation.fml.FlexoConcept"
-			icon="controller.iconForObject(flexoConcept)"
+			icon="controller.iconForObject(flexoConcept)" visible="(flexoConcept.declaringVirtualModel = data)"
 			label="flexoConcept.name" editableLabel="flexoConcept.name"
 			isEditable="false" name="flexoConcept">
 			<DragOperation 
