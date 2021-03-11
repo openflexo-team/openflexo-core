@@ -43,6 +43,7 @@ import java.lang.reflect.Type;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -632,6 +633,8 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 	 * @return
 	 */
 	public List<FlexoConcept> getAllParentFlexoConcepts();
+
+	public List<FlexoConcept> getTopLevelSuperConcepts();
 
 	@PropertyIdentifier(type = Resource.class)
 	public static final String BIG_ICON_RESOURCE_KEY = "bigIconResource";
@@ -1822,6 +1825,23 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 				returned.addAll(concept.getAllParentFlexoConcepts());
 			}
 
+			return returned;
+		}
+
+		@Override
+		public List<FlexoConcept> getTopLevelSuperConcepts() {
+			if (getParentFlexoConcepts().size() == 0) {
+				return Collections.singletonList(this);
+			}
+			List<FlexoConcept> returned = new ArrayList<>();
+			for (FlexoConcept parentConcept : getParentFlexoConcepts()) {
+				List<FlexoConcept> l = parentConcept.getTopLevelSuperConcepts();
+				for (FlexoConcept concept : l) {
+					if (!returned.contains(concept)) {
+						returned.add(concept);
+					}
+				}
+			}
 			return returned;
 		}
 

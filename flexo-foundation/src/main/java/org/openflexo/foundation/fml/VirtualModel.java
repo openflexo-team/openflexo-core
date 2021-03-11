@@ -364,6 +364,15 @@ public interface VirtualModel extends FlexoConcept, FlexoMetaModel<VirtualModel>
 	 */
 	public List<FlexoConcept> getAllSuperFlexoConcepts();
 
+	/**
+	 * Return all {@link FlexoConcept} defined in this {@link VirtualModel} which have no parent (inheritance semantics)
+	 * 
+	 * @param includeParents
+	 *            When 'includeParents' is true, also include root FlexoConcept from super {@link VirtualModel}
+	 * @return
+	 */
+	public List<FlexoConcept> getAllSuperFlexoConcepts(boolean includeParents);
+
 	public boolean hasNature(VirtualModelNature nature);
 
 	@Override
@@ -738,6 +747,33 @@ public interface VirtualModel extends FlexoConcept, FlexoMetaModel<VirtualModel>
 				}
 			}
 			return returned;
+		}
+
+		/**
+		 * Return all {@link FlexoConcept} defined in this {@link VirtualModel} which have no parent (inheritance semantics)
+		 * 
+		 * @param includeParents
+		 *            When 'includeParents' is true, also include root FlexoConcept from super {@link VirtualModel}
+		 * @return
+		 */
+		@Override
+		public List<FlexoConcept> getAllSuperFlexoConcepts(boolean includeParents) {
+			if (!includeParents) {
+				return getAllSuperFlexoConcepts();
+			}
+			else {
+				List<FlexoConcept> returned = new ArrayList<>();
+				for (FlexoConcept concept : getFlexoConcepts()) {
+					List<FlexoConcept> l = concept.getTopLevelSuperConcepts();
+					for (FlexoConcept c : l) {
+						if (!returned.contains(c)) {
+							returned.add(c);
+						}
+					}
+				}
+				return returned;
+
+			}
 		}
 
 		// Override PAMELA internal call by providing custom notification support

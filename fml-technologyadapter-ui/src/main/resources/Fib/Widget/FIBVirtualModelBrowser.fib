@@ -142,7 +142,7 @@
 			<Children visible="virtualModelResource.isLoaded"
 				data="virtualModelResource.containedVirtualModelResources" name="subresources" />
 			<Children visible="virtualModelResource.isLoaded"
-				data="virtualModelResource.loadedVirtualModel.allSuperFlexoConcepts"
+				data="virtualModelResource.loadedVirtualModel.getAllSuperFlexoConcepts(true)"
 				name="rootFlexoConcepts" />
 			<BrowserRemoveAction 
 				method="controller.deleteVirtualModel(selected)"
@@ -171,9 +171,9 @@
 		</BrowserElement>
 		<BrowserElement 
 			dataClassName="org.openflexo.foundation.fml.FlexoConcept"
-			icon="controller.iconForObject(flexoConcept)" visible="(flexoConcept.declaringVirtualModel = data)"
+			icon="controller.iconForObject(flexoConcept)"  enabled="flexoConcept.declaringVirtualModel == data"
 			label="flexoConcept.name" editableLabel="flexoConcept.name"
-			isEditable="false" name="flexoConcept">
+			isEditable="false" name="flexoConcept"> <!-- visible="flexoConcept.declaringVirtualModel.isAssignableFrom(data)"  -->
 			<DragOperation 
 				isAvailable="controller.canMoveFlexoConcept(dragged,target)"
 				targetElementName="flexoConcept"
