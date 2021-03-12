@@ -737,7 +737,11 @@ public class ModuleInspectorController extends Observable implements Observer {
 						BindingValue bv = (BindingValue) e;
 						if (bv.getParsedBindingPath().size() > 0) {
 							AbstractBindingPathElement firstPathElement = bv.getParsedBindingPath().get(0);
-							if (!(firstPathElement instanceof NormalBindingPathElement)
+							if ((firstPathElement instanceof NormalBindingPathElement)
+									&& ((NormalBindingPathElement) firstPathElement).property.equals("this")) {
+								((NormalBindingPathElement) firstPathElement).property = "fci";
+							}
+							else if (!(firstPathElement instanceof NormalBindingPathElement)
 									|| !((NormalBindingPathElement) firstPathElement).property.equals("fci")) {
 								bv.getParsedBindingPath().add(0, new NormalBindingPathElement("fci"));
 								bv.clearSerializationRepresentation();
