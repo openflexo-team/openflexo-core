@@ -87,7 +87,7 @@ public class FMLRTFIBController extends FlexoFIBController {
 
 	public FIBComponent inspectorForFlexoConceptInstance(FlexoConceptInstance fci) {
 		if (getFlexoController() != null && getFlexoController().getModuleInspectorController() != null && fci != null) {
-			return getFlexoController().getModuleInspectorController().getFIBInspectorPanel(fci.getFlexoConcept());
+			return getFlexoController().getModuleInspectorController().getFIBInspectorPanel(fci.getInspectedObject().getFlexoConcept());
 		}
 		return null;
 	}

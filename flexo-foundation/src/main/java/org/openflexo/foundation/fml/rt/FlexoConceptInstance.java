@@ -532,6 +532,11 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 	 */
 	public int hashCodeUsingRoles();
 
+	/**
+	 * Return applicable inspected object, which is the delegated object in related concept has delegated inspector, otherwise this
+	 */
+	public FlexoConceptInstance getInspectedObject();
+
 	public static abstract class FlexoConceptInstanceImpl extends VirtualModelInstanceObjectImpl implements FlexoConceptInstance {
 
 		private static final Logger logger = FlexoLogger.getLogger(FlexoConceptInstance.class.getPackage().toString());
@@ -2262,6 +2267,29 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 				result = prime * result + ((flexoConceptInstance == null) ? 0 : flexoConceptInstance.hashCodeUsingRoles());
 			}
 			return result;
+		}
+
+		/**
+		 * Return applicable inspected object, which is the delegated object in related concept has delegated inspector, otherwise this
+		 */
+		@Override
+		public FlexoConceptInstance getInspectedObject() {
+			if (getFlexoConcept().hasDelegatedInspector()) {
+				try {
+					FlexoConceptInstance delegate = getFlexoConcept().getInspector().getDelegateConceptInstance().getBindingValue(this);
+					return delegate;
+				} catch (TypeMismatchException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (NullReferenceException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (InvocationTargetException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+			return this;
 		}
 
 	}

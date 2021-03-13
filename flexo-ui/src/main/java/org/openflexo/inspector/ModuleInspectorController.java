@@ -355,7 +355,8 @@ public class ModuleInspectorController extends Observable implements Observer {
 			return null;
 		}
 		if (object instanceof FlexoConceptInstance) {
-			return inspectorForFlexoConceptInstance((FlexoConceptInstance) object);
+			FlexoConceptInstance fci = ((FlexoConceptInstance) object);
+			return inspectorForFlexoConceptInstance(fci.getInspectedObject());
 		}
 
 		return inspectorForClass(object.getClass());
@@ -464,8 +465,15 @@ public class ModuleInspectorController extends Observable implements Observer {
 	}
 
 	private void displayObject(Object object) {
-		setChanged();
-		notifyObservers(new InspectedObjectChanged(object));
+
+		if (object instanceof FlexoConceptInstance) {
+			setChanged();
+			notifyObservers(new InspectedObjectChanged(((FlexoConceptInstance) object).getInspectedObject()));
+		}
+		else {
+			setChanged();
+			notifyObservers(new InspectedObjectChanged(object));
+		}
 	}
 
 	/**

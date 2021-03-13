@@ -24,7 +24,6 @@
 			</Custom>
 			<Label label="entries" index="4" 
 				constraints="twocols(expandHorizontally=true;expandVertically=false;location=left)" />
-
 			<Panel id="9" darkLevel="1" borderLeft="0" sizeAdjustment="OriginalSize"
 				opaque="false" border="empty" borderRight="2" trackViewPortWidth="true"
 				index="5" align="left"
@@ -181,6 +180,14 @@
 						rows="3" validateOnReturn="true" horizontalScrollbarPolicy="HORIZONTAL_SCROLLBAR_AS_NEEDED" />
 				</Panel>
 			</Panel>
+
+			<Label label="delegate" index="6" 
+				constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=5;location=left)" />
+			<Custom componentClassName="org.openflexo.gina.swing.utils.BindingSelector"
+				index="7" data="data.delegateConceptInstance"
+				constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)">
+				<Assignment variable="component.bindable" value="data.formatter" />
+			</Custom>
 
 		</Tab>
 		<Tab title="Advanced" layout="twocols" titleFont="SansSerif,0,11"

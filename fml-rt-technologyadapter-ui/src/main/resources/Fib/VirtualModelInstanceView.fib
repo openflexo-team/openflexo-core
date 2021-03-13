@@ -26,7 +26,7 @@
         <BrowserRemoveAction id="20" method="controller.deleteFlexoConceptInstance(selected)" name="delete_action" />
       </BrowserElement>
     </Browser>
-    <FIBReferencedComponent id="21" dynamicComponent="controller.inspectorForFlexoConceptInstance(FlexoConceptInstanceBrowser.selected)" localize="true" manageDynamicModel="true" data="FlexoConceptInstanceBrowser.selected" opaque="false" index="15" constraints="split(splitIdentifier=top)" width="200" height="200" name="FCIInspector">
+    <FIBReferencedComponent id="21" dynamicComponent="controller.inspectorForFlexoConceptInstance(FlexoConceptInstanceBrowser.selected)" localize="true" manageDynamicModel="true" data="FlexoConceptInstanceBrowser.selected.inspectedObject" opaque="false" index="15" constraints="split(splitIdentifier=top)" width="200" height="200" name="FCIInspector">
       <ReferenceAssignment id="22" variable="controller.flexoController" value="controller.flexoController" mandatory="true" />
     </FIBReferencedComponent>
     <Panel id="23" align="left" borderTop="0" borderTitle="Panel" borderLeft="0" trackViewPortHeight="true" trackViewPortWidth="true" borderBottom="0" border="empty" sizeAdjustment="OriginalSize" layout="border" borderRight="0" data="FlexoConceptInstanceBrowser.selected" index="1" constraints="split(anchor=center;expandHorizontally=true;expandVertically=true;fill=both;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=1;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=center;padX=0;padY=0;splitIdentifier=bottom;weightX=1.0;weightY=1.0)" name="FlexoConceptInstanceDetails">

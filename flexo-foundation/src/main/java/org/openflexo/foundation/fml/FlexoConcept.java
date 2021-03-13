@@ -718,6 +718,20 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 	 */
 	public ImageIcon getSmallIcon();
 
+	/**
+	 * Return boolean indicating if this concept defines a delegated inspector
+	 * 
+	 * @return
+	 */
+	public boolean hasDelegatedInspector();
+
+	/**
+	 * Return applicable inspector, while returning delegate inspector when relevant, or current concept inspector
+	 * 
+	 * @return
+	 */
+	public FlexoConceptInspector getApplicableInspector();
+
 	public static abstract class FlexoConceptImpl extends FlexoConceptObjectImpl implements FlexoConcept {
 
 		protected static final Logger logger = FlexoLogger.getLogger(FlexoConcept.class.getPackage().getName());
@@ -2072,6 +2086,37 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 			}
 			return smallIcon;
 		}
+
+		/**
+		 * Return boolean indicating if this concept defines a delegated inspector
+		 * 
+		 * @return
+		 */
+		@Override
+		public boolean hasDelegatedInspector() {
+			if (getInspector().getDelegateConceptInstance() != null && getInspector().getDelegateConceptInstance().isSet()
+					&& getInspector().getDelegateConceptInstance().isSet()) {
+				return true;
+			}
+			return false;
+		}
+
+		/**
+		 * Return applicable inspector, while returning delegate inspector when relevant, or current concept inspector
+		 * 
+		 * @return
+		 */
+		@Override
+		public FlexoConceptInspector getApplicableInspector() {
+			if (hasDelegatedInspector()) {
+				Type analyzedType = getInspector().getDelegateConceptInstance().getAnalyzedType();
+				if (analyzedType instanceof FlexoConceptInstanceType) {
+					return ((FlexoConceptInstanceType) analyzedType).getFlexoConcept().getApplicableInspector();
+				}
+			}
+			return getInspector();
+		}
+
 	}
 
 	@DefineValidationRule
