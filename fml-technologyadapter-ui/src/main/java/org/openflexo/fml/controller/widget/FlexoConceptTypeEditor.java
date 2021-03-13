@@ -39,54 +39,50 @@
 package org.openflexo.fml.controller.widget;
 
 import org.openflexo.foundation.FlexoServiceManager;
-import org.openflexo.foundation.fml.VirtualModelInstanceType;
-import org.openflexo.foundation.fml.rm.VirtualModelResource;
+import org.openflexo.foundation.fml.FlexoConcept;
+import org.openflexo.foundation.fml.FlexoConceptType;
 import org.openflexo.gina.annotation.FIBPanel;
 
 /**
- * An editor to edit a {@link VirtualModelInstanceType}
+ * An editor to edit a {@link FlexoConceptType}
  * 
  * @author sylvain
  * 
  */
-@FIBPanel("Fib/CustomType/VirtualModelInstanceTypeEditor.fib")
-public class VirtualModelInstanceTypeEditor extends FMLCustomTypeEditor<VirtualModelInstanceType> {
+@FIBPanel("Fib/CustomType/FlexoConceptTypeEditor.fib")
+public class FlexoConceptTypeEditor extends FMLCustomTypeEditor<FlexoConceptType> {
 
-	private VirtualModelResource selectedVirtualModel = null;
+	private FlexoConcept selectedFlexoConcept = null;
 
-	public VirtualModelInstanceTypeEditor(FlexoServiceManager serviceManager) {
+	public FlexoConceptTypeEditor(FlexoServiceManager serviceManager) {
 		super(serviceManager);
 	}
 
 	@Override
 	public String getPresentationName() {
-		return "Model instance";
+		return "FML concept";
 	}
 
 	@Override
-	public Class<VirtualModelInstanceType> getCustomType() {
-		return VirtualModelInstanceType.class;
+	public Class<FlexoConceptType> getCustomType() {
+		return FlexoConceptType.class;
 	}
 
-	public VirtualModelResource getSelectedVirtualModel() {
-		return selectedVirtualModel;
+	public FlexoConcept getSelectedFlexoConcept() {
+		return selectedFlexoConcept;
 	}
 
-	public void setSelectedVirtualModel(VirtualModelResource selectedVirtualModel) {
-		if ((selectedVirtualModel == null && this.selectedVirtualModel != null)
-				|| (selectedVirtualModel != null && !selectedVirtualModel.equals(this.selectedVirtualModel))) {
-			VirtualModelResource oldValue = this.selectedVirtualModel;
-			this.selectedVirtualModel = selectedVirtualModel;
-			getPropertyChangeSupport().firePropertyChange("selectedVirtualModel", oldValue, selectedVirtualModel);
-			System.out.println("on selectionne " + selectedVirtualModel);
+	public void setSelectedFlexoConcept(FlexoConcept selectedFlexoConcept) {
+		if ((selectedFlexoConcept == null && this.selectedFlexoConcept != null)
+				|| (selectedFlexoConcept != null && !selectedFlexoConcept.equals(this.selectedFlexoConcept))) {
+			FlexoConcept oldValue = this.selectedFlexoConcept;
+			this.selectedFlexoConcept = selectedFlexoConcept;
+			getPropertyChangeSupport().firePropertyChange("selectedFlexoConcept", oldValue, selectedFlexoConcept);
 		}
 	}
 
 	@Override
-	public VirtualModelInstanceType getEditedType() {
-		if (getSelectedVirtualModel() != null) {
-			return VirtualModelInstanceType.getVirtualModelInstanceType(getSelectedVirtualModel().getVirtualModel());
-		}
-		return VirtualModelInstanceType.UNDEFINED_VIRTUAL_MODEL_INSTANCE_TYPE;
+	public FlexoConceptType getEditedType() {
+		return FlexoConceptType.retrieveFlexoConceptType(getSelectedFlexoConcept());
 	}
 }

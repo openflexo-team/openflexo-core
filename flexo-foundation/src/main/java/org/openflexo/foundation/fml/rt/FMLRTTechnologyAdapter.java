@@ -43,6 +43,7 @@ import java.util.List;
 
 import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.fml.FlexoConceptInstanceType;
+import org.openflexo.foundation.fml.FlexoConceptType;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.VirtualModelInstanceType;
 import org.openflexo.foundation.fml.annotations.DeclareModelSlots;
@@ -65,7 +66,7 @@ import org.openflexo.foundation.technologyadapter.TechnologyAdapterInitializatio
  * 
  */
 @DeclareModelSlots({ FMLRTVirtualModelInstanceModelSlot.class })
-@DeclareTechnologySpecificTypes({ FlexoConceptInstanceType.class, VirtualModelInstanceType.class })
+@DeclareTechnologySpecificTypes({ FlexoConceptType.class, FlexoConceptInstanceType.class, VirtualModelInstanceType.class })
 @DeclareResourceFactories({ FMLRTVirtualModelInstanceResourceFactory.class })
 public class FMLRTTechnologyAdapter extends TechnologyAdapter<FMLRTTechnologyAdapter> {
 	public FMLRTTechnologyAdapter() throws TechnologyAdapterInitializationException {

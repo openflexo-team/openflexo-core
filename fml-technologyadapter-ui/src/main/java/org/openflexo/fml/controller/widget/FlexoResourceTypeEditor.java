@@ -74,7 +74,7 @@ public class FlexoResourceTypeEditor extends DefaultCustomTypeEditorImpl<FlexoRe
 
 	@Override
 	public String getPresentationName() {
-		return "FlexoResource";
+		return "Resource";
 	}
 
 	@Override

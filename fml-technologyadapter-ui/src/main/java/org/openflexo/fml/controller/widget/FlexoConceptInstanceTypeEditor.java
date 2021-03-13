@@ -50,7 +50,7 @@ import org.openflexo.gina.annotation.FIBPanel;
  * 
  */
 @FIBPanel("Fib/CustomType/FlexoConceptInstanceTypeEditor.fib")
-public class FlexoConceptInstanceTypeEditor extends AbstractFlexoConceptInstanceTypeEditor<FlexoConceptInstanceType> {
+public class FlexoConceptInstanceTypeEditor extends FMLCustomTypeEditor<FlexoConceptInstanceType> {
 
 	private FlexoConcept selectedFlexoConcept = null;
 
@@ -60,7 +60,7 @@ public class FlexoConceptInstanceTypeEditor extends AbstractFlexoConceptInstance
 
 	@Override
 	public String getPresentationName() {
-		return "FlexoConcept inst.";
+		return "FML instance";
 	}
 
 	@Override

@@ -594,7 +594,19 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 
 	public DeletionScheme generateDefaultDeletionScheme();
 
+	/**
+	 * Return type representing an instance of this concept
+	 * 
+	 * @return
+	 */
 	public FlexoConceptInstanceType getInstanceType();
+
+	/**
+	 * Return type representing this concept or a sub-concept of this concept
+	 * 
+	 * @return
+	 */
+	public FlexoConceptType getConceptType();
 
 	public FlexoConceptStructuralFacet getStructuralFacet();
 
@@ -743,6 +755,7 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 		private InnerConceptsFacet innerConceptsFacet;
 
 		private final FlexoConceptInstanceType instanceType = new FlexoConceptInstanceType(this);
+		private final FlexoConceptType conceptType = new FlexoConceptType(this);
 
 		private FlexoConceptBindingModel bindingModel;
 
@@ -766,9 +779,24 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 			return nature.hasNature(this);
 		}
 
+		/**
+		 * Return type representing an instance of this concept
+		 * 
+		 * @return
+		 */
 		@Override
 		public FlexoConceptInstanceType getInstanceType() {
 			return instanceType;
+		}
+
+		/**
+		 * Return type representing this concept or a sub-concept of this concept
+		 * 
+		 * @return
+		 */
+		@Override
+		public FlexoConceptType getConceptType() {
+			return conceptType;
 		}
 
 		@Override

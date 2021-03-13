@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Panel layout="twocols" darkLevel="0" data=""
+	dataClassName="org.openflexo.fml.controller.widget.FlexoConceptTypeEditor"
+	controllerClassName="org.openflexo.components.widget.DefaultCustomTypeEditorImpl$SelectorFIBController"
+	opaque="false">
+	<List visibleRowCount="4" rowHeight="18" createNewRowOnClick="false"
+		boundToSelectionManager="true" selectionMode="MultipleIntervalSelection"
+		selected="data.selectedFlexoConcept" layoutOrientation="vertical" index="0"
+		data=""
+		constraints="twocols(expandHorizontally=true;expandVertically=true;index=0;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=center)"
+		visible="(data.matchingValues.size &gt; 1)" useScrollBar="true"
+		horizontalScrollbarPolicy="HORIZONTAL_SCROLLBAR_AS_NEEDED"
+		verticalScrollbarPolicy="VERTICAL_SCROLLBAR_AS_NEEDED" name="PotentialMatches"
+		format="object.name" icon="controller.iconForObject(object)" tooltip=""
+		localize="true" enable="" manageDynamicModel="true"
+		clickAction="controller.selectedObjectChanged()" doubleClickAction="controller.apply()"
+		rightClickAction="" enterPressedAction="controller.apply()"
+		valueChangedAction="" list="data.matchingValues" array="" showIcon="true"
+		iteratorClassName="org.openflexo.foundation.fml.FlexoConcept"
+		autoSelectFirstRow="true" />
+	<Panel layout="gridbag" borderTitle="Panel" darkLevel="0" index="1"
+		constraints="twocols(expandHorizontally=true;expandVertically=false;index=1;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=center)"
+		visible="" name="Matches" opaque="false">
+		<Label label="dsffdsmksdfmkfdsmkfdsmkdfskmsdf" align="right"
+			index="0"
+			data="((&quot;Found &quot; + data.matchingValues.size) + &quot; matches&quot;)"
+			constraints="gridbag(anchor=east;fill=horizontal;gridHeight=1;gridWidth=0;gridX=-1;gridY=-1;index=0;insetsBottom=0;insetsLeft=0;insetsRight=5;insetsTop=0;padX=0;padY=0;weightX=1.0;weightY=0.0)"
+			visible="((data.matchingValues.size != 1) &amp; data.isFiltered)"
+			name="MatchesLabel" localize="false" />
+	</Panel>
+	<Browser root="data.rootObject" iteratorClassName="org.openflexo.foundation.fml.FlexoConcept" deepExploration="true"
+		visibleRowCount="5" rowHeight="18" boundToSelectionManager="false"
+		selectionMode="DiscontiguousTreeSelection" selected="data.selectedFlexoConcept"
+		showFooter="true" rootVisible="true" showRootsHandle="true" format=""
+		localize="true" manageDynamicModel="true"
+		clickAction="controller.selectedObjectChanged()" doubleClickAction="controller.apply()"
+		enterPressedAction="controller.apply()"
+		name="ViewPointBrowser" index="2" 
+		constraints="twocols(expandHorizontally=true;expandVertically=true;index=2;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=center)">
+		<BrowserElement dataClassName="org.openflexo.foundation.fml.VirtualModelLibrary"
+			label="&quot;Viewpoint Library&quot;" icon="controller.iconForObject(viewPointLibrary)"
+			isEditable="false" filtered="false" defaultVisible="true" name="viewPointLibrary">
+			<Children data="viewPointLibrary.resourceCenterService.resourceCenters"
+				cast="child.virtualModelRepository.rootFolder" name="resourceCenters" />
+		</BrowserElement>
+		<BrowserElement dataClassName="org.openflexo.foundation.resource.RepositoryFolder"
+			label="folder.displayableName" icon="controller.iconForObject(folder)"
+			isEditable="false" filtered="false" defaultVisible="true" name="folder" visible="(folder.resources.size &gt; 0) || (folder.children.size &gt; 0)">
+			<Children data="folder.children" name="subFolders" />
+			<Children data="folder.resources" name="resources" />
+		</BrowserElement>
+		<BrowserElement dataClassName="org.openflexo.foundation.fml.rm.VirtualModelResource"
+			label="virtualModel.name" icon="controller.iconForObject(virtualModel)"
+			enabled="virtualModel.isLoaded" isEditable="false"
+			filtered="false" defaultVisible="true" dynamicFont=""
+			name="virtualModel">
+			<Children data="virtualModel.contents" visible="virtualModel.isLoaded"
+				cast="" name="subresources" />
+			<Children data="virtualModel.loadedVirtualModel.allRootFlexoConcepts"
+				visible="virtualModel.isLoaded" cast="" name="rootFlexoConcepts" />
+		</BrowserElement>
+
+		<BrowserElement dataClassName="org.openflexo.foundation.fml.FlexoConcept"
+			label="flexoConcept.name" icon="controller.iconForObject(flexoConcept)"
+			tooltip="" enabled="" visible="" isEditable="false" editableLabel=""
+			filtered="false" defaultVisible="true" dynamicFont="" name="flexoConcept">
+			<Children data="flexoConcept.embeddedFlexoConcepts" visible=""
+				cast="" name="children" />
+		</BrowserElement>
+		<BrowserElement dataClassName="org.openflexo.foundation.fml.VirtualModel"
+			label="virtualModel.name" icon="controller.iconForObject(virtualModel)"
+			tooltip="" enabled="" visible="" isEditable="false" editableLabel=""
+			filtered="false" defaultVisible="true" dynamicFont="" name="virtualModel">
+			<Children data="virtualModel.allRootFlexoConcepts" visible=""
+				cast="" name="children" />
+		</BrowserElement>
+	</Browser>
+	<LocalizedDictionary />
+</Panel>

@@ -52,7 +52,7 @@ import org.openflexo.gina.annotation.FIBPanel;
  * 
  */
 @FIBPanel("Fib/CustomType/FlexoEnumTypeEditor.fib")
-public class FlexoEnumTypeEditor extends AbstractFlexoConceptInstanceTypeEditor<FlexoEnumType> {
+public class FlexoEnumTypeEditor extends FMLCustomTypeEditor<FlexoEnumType> {
 
 	private FlexoEnum selectedFlexoEnum = null;
 
@@ -62,7 +62,7 @@ public class FlexoEnumTypeEditor extends AbstractFlexoConceptInstanceTypeEditor<
 
 	@Override
 	public String getPresentationName() {
-		return "Flexo Enumeration";
+		return "FML enum";
 	}
 
 	@Override
