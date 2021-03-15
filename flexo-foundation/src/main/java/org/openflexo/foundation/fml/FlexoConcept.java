@@ -744,6 +744,8 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 	 */
 	public FlexoConceptInspector getApplicableInspector();
 
+	public String getPresentationName();
+
 	public static abstract class FlexoConceptImpl extends FlexoConceptObjectImpl implements FlexoConcept {
 
 		protected static final Logger logger = FlexoLogger.getLogger(FlexoConcept.class.getPackage().getName());
@@ -2143,6 +2145,17 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 				}
 			}
 			return getInspector();
+		}
+
+		@Override
+		public String getPresentationName() {
+			if (getApplicableInspector() != null && StringUtils.isNotEmpty(getApplicableInspector().getInspectorTitle())) {
+				return getApplicableInspector().getInspectorTitle();
+			}
+			else {
+				return getName();
+			}
+
 		}
 
 	}
