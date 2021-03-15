@@ -54,6 +54,7 @@ import java.util.regex.Pattern;
 
 import org.openflexo.connie.Bindable;
 import org.openflexo.connie.BindingFactory;
+import org.openflexo.connie.annotations.NotificationUnsafe;
 import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.fml.FMLRepresentationContext.FMLRepresentationOutput;
 import org.openflexo.foundation.fml.binding.FMLBindingFactory;
@@ -343,6 +344,7 @@ public interface VirtualModel extends FlexoConcept, FlexoMetaModel<VirtualModel>
 	 * 
 	 * @return
 	 */
+	@NotificationUnsafe
 	public List<FlexoConcept> getAllRootFlexoConcepts();
 
 	/**
@@ -355,6 +357,7 @@ public interface VirtualModel extends FlexoConcept, FlexoMetaModel<VirtualModel>
 	 *            When 'includeAbstractConcepts' is false, do not return abstract {@link FlexoConcept}
 	 * @return
 	 */
+	@NotificationUnsafe
 	public List<FlexoConcept> getAllRootFlexoConcepts(boolean includeParents, boolean includeAbstractConcepts);
 
 	/**
@@ -362,6 +365,7 @@ public interface VirtualModel extends FlexoConcept, FlexoMetaModel<VirtualModel>
 	 * 
 	 * @return
 	 */
+	@NotificationUnsafe
 	public List<FlexoConcept> getAllSuperFlexoConcepts();
 
 	/**
@@ -371,6 +375,7 @@ public interface VirtualModel extends FlexoConcept, FlexoMetaModel<VirtualModel>
 	 *            When 'includeParents' is true, also include root FlexoConcept from super {@link VirtualModel}
 	 * @return
 	 */
+	@NotificationUnsafe
 	public List<FlexoConcept> getAllSuperFlexoConcepts(boolean includeParents);
 
 	public boolean hasNature(VirtualModelNature nature);
@@ -694,6 +699,7 @@ public interface VirtualModel extends FlexoConcept, FlexoMetaModel<VirtualModel>
 		 * @return
 		 */
 		@Override
+		@NotificationUnsafe
 		public List<FlexoConcept> getAllRootFlexoConcepts() {
 
 			return getAllRootFlexoConcepts(false, true);
@@ -710,6 +716,7 @@ public interface VirtualModel extends FlexoConcept, FlexoMetaModel<VirtualModel>
 		 * @return
 		 */
 		@Override
+		@NotificationUnsafe
 		public List<FlexoConcept> getAllRootFlexoConcepts(boolean includeParents, boolean includeAbstractConcepts) {
 
 			Vector<FlexoConcept> returned = new Vector<>();
@@ -739,6 +746,7 @@ public interface VirtualModel extends FlexoConcept, FlexoMetaModel<VirtualModel>
 		 * @return
 		 */
 		@Override
+		@NotificationUnsafe
 		public List<FlexoConcept> getAllSuperFlexoConcepts() {
 			ArrayList<FlexoConcept> returned = new ArrayList<>();
 			for (FlexoConcept fc : getFlexoConcepts()) {
@@ -757,6 +765,7 @@ public interface VirtualModel extends FlexoConcept, FlexoMetaModel<VirtualModel>
 		 * @return
 		 */
 		@Override
+		@NotificationUnsafe
 		public List<FlexoConcept> getAllSuperFlexoConcepts(boolean includeParents) {
 			if (!includeParents) {
 				return getAllSuperFlexoConcepts();
@@ -782,6 +791,8 @@ public interface VirtualModel extends FlexoConcept, FlexoMetaModel<VirtualModel>
 			performSuperAdder(FLEXO_CONCEPTS_KEY, aFlexoConcept);
 			getPropertyChangeSupport().firePropertyChange("allRootFlexoConcepts", null, aFlexoConcept);
 			getPropertyChangeSupport().firePropertyChange("allSuperFlexoConcepts", null, aFlexoConcept);
+			getPropertyChangeSupport().firePropertyChange("getAllSuperFlexoConcepts(boolean)", null, aFlexoConcept);
+			getPropertyChangeSupport().firePropertyChange("getAllRootFlexoConcepts(boolean,boolean)", null, aFlexoConcept);
 			if (aFlexoConcept.getParentFlexoConcepts() != null) {
 				for (FlexoConcept parent : aFlexoConcept.getParentFlexoConcepts()) {
 					parent.getPropertyChangeSupport().firePropertyChange(FlexoConcept.CHILD_FLEXO_CONCEPTS_KEY, null, aFlexoConcept);
