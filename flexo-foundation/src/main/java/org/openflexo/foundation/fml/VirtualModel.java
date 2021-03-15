@@ -807,6 +807,8 @@ public interface VirtualModel extends FlexoConcept, FlexoMetaModel<VirtualModel>
 			performSuperRemover(FLEXO_CONCEPTS_KEY, aFlexoConcept);
 			getPropertyChangeSupport().firePropertyChange("allRootFlexoConcepts", aFlexoConcept, null);
 			getPropertyChangeSupport().firePropertyChange("allSuperFlexoConcepts", aFlexoConcept, null);
+			getPropertyChangeSupport().firePropertyChange("getAllSuperFlexoConcepts(boolean)", aFlexoConcept, null);
+			getPropertyChangeSupport().firePropertyChange("getAllRootFlexoConcepts(boolean,boolean)", aFlexoConcept, null);
 			if (aFlexoConcept.getParentFlexoConcepts() != null) {
 				for (FlexoConcept parent : aFlexoConcept.getParentFlexoConcepts()) {
 					parent.getPropertyChangeSupport().firePropertyChange(FlexoConcept.CHILD_FLEXO_CONCEPTS_KEY, aFlexoConcept, null);
