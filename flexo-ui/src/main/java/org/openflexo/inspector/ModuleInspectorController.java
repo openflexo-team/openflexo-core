@@ -356,7 +356,9 @@ public class ModuleInspectorController extends Observable implements Observer {
 		}
 		if (object instanceof FlexoConceptInstance) {
 			FlexoConceptInstance fci = ((FlexoConceptInstance) object);
-			return inspectorForFlexoConceptInstance(fci.getInspectedObject());
+			if (fci.getInspectedObject() != null) {
+				return inspectorForFlexoConceptInstance(fci.getInspectedObject());
+			}
 		}
 
 		return inspectorForClass(object.getClass());
@@ -371,6 +373,9 @@ public class ModuleInspectorController extends Observable implements Observer {
 	 * @return
 	 */
 	private FIBInspector inspectorForFlexoConceptInstance(FlexoConceptInstance conceptInstance) {
+		if (conceptInstance == null) {
+			return null;
+		}
 		FlexoConcept concept = conceptInstance.getFlexoConcept();
 		if (concept == null) {
 			return null;
