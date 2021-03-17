@@ -2274,7 +2274,7 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 		 */
 		@Override
 		public FlexoConceptInstance getInspectedObject() {
-			if (getFlexoConcept().hasDelegatedInspector()) {
+			if (getFlexoConcept() != null && getFlexoConcept().hasDelegatedInspector()) {
 				try {
 					FlexoConceptInstance delegate = getFlexoConcept().getInspector().getDelegateConceptInstance().getBindingValue(this);
 					return delegate;
