@@ -42,6 +42,7 @@ import java.util.logging.Logger;
 
 import org.openflexo.foundation.fml.SynchronizationScheme;
 import org.openflexo.foundation.fml.VirtualModel;
+import org.openflexo.foundation.fml.rt.ActorReference;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.foundation.fml.rt.action.CreateFlexoConceptInstance;
@@ -86,7 +87,8 @@ public class FMLRTFIBController extends FlexoFIBController {
 	}
 
 	public FIBComponent inspectorForFlexoConceptInstance(FlexoConceptInstance fci) {
-		if (getFlexoController() != null && getFlexoController().getModuleInspectorController() != null && fci != null) {
+		if (getFlexoController() != null && getFlexoController().getModuleInspectorController() != null && fci != null
+				&& fci.getInspectedObject() != null) {
 			return getFlexoController().getModuleInspectorController().getFIBInspectorPanel(fci.getInspectedObject().getFlexoConcept());
 		}
 		return null;
@@ -102,6 +104,13 @@ public class FMLRTFIBController extends FlexoFIBController {
 	public void deleteFlexoConceptInstance(FlexoConceptInstance conceptInstance) {
 		System.out.println("delete FCI, container=" + conceptInstance);
 		conceptInstance.delete();
+	}
+
+	public void deleteActorReference(FlexoConceptInstance fci, ActorReference<?> actorReference) {
+		System.out.println("deleteActorReference with " + fci + " et " + actorReference);
+		if (fci != null) {
+			fci.removeFromActors(actorReference);
+		}
 	}
 
 }
