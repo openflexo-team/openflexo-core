@@ -172,12 +172,38 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 	@Setter(VISIBILITY_KEY)
 	public void setVisibility(Visibility visibility);
 
+	/**
+	 * Return container {@link FlexoConcept} relative to containment. This is the {@link FlexoConcept} in which lives this concept
+	 * 
+	 * @return
+	 */
 	@Getter(value = CONTAINER_FLEXO_CONCEPT_KEY, inverse = EMBEDDED_FLEXO_CONCEPT_KEY)
 	@CloningStrategy(StrategyType.IGNORE)
 	public FlexoConcept getContainerFlexoConcept();
 
+	/**
+	 * Sets container {@link FlexoConcept} (relative to containment).
+	 * 
+	 * Note that this is an explicit declaration. When unspecified (let to null), this containment is inherited from its parent concepts
+	 * 
+	 * @param name
+	 */
 	@Setter(CONTAINER_FLEXO_CONCEPT_KEY)
-	public void setContainerFlexoConcept(FlexoConcept name);
+	public void setContainerFlexoConcept(FlexoConcept container);
+
+	/**
+	 * Return applicable container {@link FlexoConcept} (relative to containment). When no explicit declaration was defined for this
+	 * concept, this containment is inherited from its parent concepts
+	 */
+	public FlexoConcept getApplicableContainerFlexoConcept();
+
+	/**
+	 * Sets applicable container {@link FlexoConcept} (relative to containment).
+	 * 
+	 * 
+	 * @param name
+	 */
+	public void setApplicableContainerFlexoConcept(FlexoConcept concept);
 
 	/**
 	 * Return all {@link FlexoConcept} contained in this {@link FlexoConcept}
@@ -202,6 +228,13 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 
 	@Finder(collection = EMBEDDED_FLEXO_CONCEPT_KEY, attribute = FlexoConcept.NAME_KEY)
 	public FlexoConcept getEmbeddedFlexoConcept(String conceptName);
+
+	/**
+	 * Return FlexoConcept in the same {@link VirtualModel} declaring this concept as its container {@link FlexoConcept}
+	 * 
+	 * @return
+	 */
+	public List<FlexoConcept> getAllEmbeddedFlexoConceptsDeclaringThisConceptAsContainer();
 
 	/**
 	 * Return all accessible embedded FlexoConcept (those which are declared, and those accessed through inheritance)
@@ -1275,6 +1308,25 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 			return returned;
 		}
 
+		/**
+		 * Return FlexoConcept in the same {@link VirtualModel} declaring this concept as its container {@link FlexoConcept}
+		 * 
+		 * @return
+		 */
+		@Override
+		public List<FlexoConcept> getAllEmbeddedFlexoConceptsDeclaringThisConceptAsContainer() {
+
+			// Implements a cache
+
+			List<FlexoConcept> returned = new ArrayList<>();
+			for (FlexoConcept flexoConcept : getDeclaringVirtualModel().getFlexoConcepts()) {
+				if (flexoConcept.getApplicableContainerFlexoConcept() == this) {
+					returned.add(flexoConcept);
+				}
+			}
+			return returned;
+		}
+
 		@Override
 		public String getAvailableFlexoBehaviourName(String baseName) {
 			String testName = baseName;
@@ -2158,6 +2210,75 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 
 		}
 
+		/**
+		 * Return applicable container {@link FlexoConcept} (relative to containment). When no explicit declaration was defined for this
+		 * concept, this containment is inherited from its parent concepts
+		 */
+		@Override
+		public FlexoConcept getApplicableContainerFlexoConcept() {
+			if (getContainerFlexoConcept() != null) {
+				return getContainerFlexoConcept();
+			}
+			return getApplicableContainerFlexoConceptInheritedFromParents();
+		}
+
+		private FlexoConcept getApplicableContainerFlexoConceptInheritedFromParents() {
+			List<FlexoConcept> parentContainers = new ArrayList<>();
+			for (FlexoConcept parent : getParentFlexoConcepts()) {
+				if (parent.getApplicableContainerFlexoConcept() != null) {
+					parentContainers.add(parent.getApplicableContainerFlexoConcept());
+				}
+			}
+			if (parentContainers.size() > 0) {
+				return FMLUtils.getMostSpecializedConcept(parentContainers);
+			}
+			return null;
+		}
+
+		/**
+		 * Sets applicable container {@link FlexoConcept} (relative to containment).
+		 * 
+		 * 
+		 * @param name
+		 */
+		@Override
+		public void setApplicableContainerFlexoConcept(FlexoConcept concept) {
+			if (getApplicableContainerFlexoConcept() != concept) {
+				if (concept == getApplicableContainerFlexoConceptInheritedFromParents()) {
+					// No need to redefine
+					setContainerFlexoConcept(null);
+				}
+				else {
+					setContainerFlexoConcept(concept);
+				}
+				notifyContainerChanges();
+			}
+		}
+
+		private void notifyContainerChanges() {
+			getPropertyChangeSupport().firePropertyChange("applicableContainerFlexoConcept", false, true);
+			getPropertyChangeSupport().firePropertyChange("allEmbeddedFlexoConceptsDeclaringThisConceptAsContainer", false, true);
+		}
+
+	}
+
+	@DefineValidationRule
+	public static class ContainerFlexoConceptMustBeConsistentWithParents
+			extends ValidationRule<ContainerFlexoConceptMustBeConsistentWithParents, FlexoConcept> {
+		public ContainerFlexoConceptMustBeConsistentWithParents() {
+			super(FlexoConcept.class, "container_flexo_concept_must_be_consistent_with_parents");
+		}
+
+		@Override
+		public ValidationIssue<ContainerFlexoConceptMustBeConsistentWithParents, FlexoConcept> applyValidation(FlexoConcept flexoConcept) {
+			if (flexoConcept.getContainerFlexoConcept() != null && flexoConcept.getParentFlexoConcepts().size() > 0) {
+				FlexoConcept applicableParent = ((FlexoConceptImpl) flexoConcept).getApplicableContainerFlexoConceptInheritedFromParents();
+				if (applicableParent != null && !applicableParent.isSuperConceptOf(flexoConcept.getContainerFlexoConcept())) {
+					return new ValidationError<>(this, flexoConcept, "container_declaration_is_not_compatible_with_parents_definition");
+				}
+			}
+			return null;
+		}
 	}
 
 	@DefineValidationRule

@@ -721,7 +721,7 @@ public interface VirtualModel extends FlexoConcept, FlexoMetaModel<VirtualModel>
 
 			Vector<FlexoConcept> returned = new Vector<>();
 			for (FlexoConcept ep : getFlexoConcepts()) {
-				if (ep.isRoot() && (includeAbstractConcepts || (!ep.isAbstract()))) {
+				if (ep.isRoot() && ep.getApplicableContainerFlexoConcept() == null && (includeAbstractConcepts || (!ep.isAbstract()))) {
 					returned.add(ep);
 				}
 			}

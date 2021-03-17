@@ -92,7 +92,7 @@
 				targetElementName="virtualModelResource"
 				action="controller.moveFlexoConcept(dragged,target.virtualModel)"
 				name="drag_concept_into_virtual_model" />
-			<Children data="flexoConcept.embeddedFlexoConcepts"
+			<Children data="flexoConcept.allEmbeddedFlexoConceptsDeclaringThisConceptAsContainer"
 				name="children" />
 			<BrowserRemoveAction 
 				method="controller.deleteFlexoConcept(selected)"
