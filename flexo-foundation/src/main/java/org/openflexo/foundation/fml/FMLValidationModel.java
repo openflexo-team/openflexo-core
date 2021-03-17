@@ -108,6 +108,8 @@ public class FMLValidationModel extends FlexoValidationModel {
 	public ValidationReport validate(Validable object) throws InterruptedException {
 		if (object instanceof VirtualModel)
 			return new FMLValidationReport(this, (VirtualModel) object);
-		return super.validate(object);
+		if (object != null)
+			return super.validate(object);
+		return null;
 	}
 }
