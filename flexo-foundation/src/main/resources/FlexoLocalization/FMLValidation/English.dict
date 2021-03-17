@@ -61,6 +61,7 @@ binding_'($binding.bindingName)'_is_required_but_set_value_is_invalid\:\ ($bindi
 binding_'($binding.bindingName)'_is_required_but_value_is_invalid\:\ ($binding)=Binding '($binding.bindingName)' is required but value is invalid\: ($binding)
 binding_'($binding.bindingName)'_is_required_but_was_not_set=Binding '($binding.bindingName)' is required but was not set
 consistency_check_ok=Consistency check ok
+container_declaration_is_not_compatible_with_parents_definition=Container declaration is not compatible with parents definition
 control_graph_declared_for_abstract_behaviour=Control graph declared for abstract behaviour
 controlling_property_shadowing=Controlling property shadowing
 controlling_property_shadowing_description=Controlling property shadowing description

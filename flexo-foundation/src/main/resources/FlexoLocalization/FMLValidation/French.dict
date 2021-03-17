@@ -61,6 +61,7 @@ binding_'($binding.bindingName)'_is_required_but_set_value_is_invalid\:\ ($bindi
 binding_'($binding.bindingName)'_is_required_but_value_is_invalid\:\ ($binding)=binding_'($binding.bindingName)'_is_required_but_value_is_invalid\: ($binding)
 binding_'($binding.bindingName)'_is_required_but_was_not_set=binding_'($binding.bindingName)'_is_required_but_was_not_set
 consistency_check_ok=consistency_check_ok
+container_declaration_is_not_compatible_with_parents_definition=container_declaration_is_not_compatible_with_parents_definition
 control_graph_declared_for_abstract_behaviour=control_graph_declared_for_abstract_behaviour
 controlling_property_shadowing=controlling_property_shadowing
 controlling_property_shadowing_description=controlling_property_shadowing_description
