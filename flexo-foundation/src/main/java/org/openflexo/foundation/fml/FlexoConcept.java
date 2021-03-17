@@ -777,6 +777,13 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 	 */
 	public FlexoConceptInspector getApplicableInspector();
 
+	/**
+	 * Return applicable renderer, exploiting concept hierarchy and finding most specialized one
+	 * 
+	 * @return
+	 */
+	public DataBinding<String> getApplicableRenderer();
+
 	public String getPresentationName();
 
 	public static abstract class FlexoConceptImpl extends FlexoConceptObjectImpl implements FlexoConcept {
@@ -2197,6 +2204,30 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 				}
 			}
 			return getInspector();
+		}
+
+		/**
+		 * Return applicable renderer, exploiting concept hierarchy and finding most specialized one
+		 * 
+		 * @return
+		 */
+		@Override
+		public DataBinding<String> getApplicableRenderer() {
+			if (getInspector().getRenderer().isSet() && getInspector().getRenderer().isValid()) {
+				return getInspector().getRenderer();
+			}
+			else if (getParentFlexoConcepts().size() > 0) {
+				List<FlexoConcept> parentConceptsWithARenderer = new ArrayList<>();
+				for (FlexoConcept parent : getParentFlexoConcepts()) {
+					if (parent.getApplicableRenderer() != null) {
+						parentConceptsWithARenderer.add(parent);
+					}
+				}
+				if (parentConceptsWithARenderer.size() > 0) {
+					return FMLUtils.getMostSpecializedConcept(parentConceptsWithARenderer).getApplicableRenderer();
+				}
+			}
+			return null;
 		}
 
 		@Override

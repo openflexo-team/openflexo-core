@@ -120,7 +120,7 @@
 				<LabelColumn id="26" data="iterator.roleName"
 					resizable="true" title="property" displayTitle="true"
 					columnWidth="100" showIcon="false" name="property" />
-				<LabelColumn id="27" data="iterator.modellingElement"
+				<LabelColumn id="27" data="iterator.stringRepresentation"
 					resizable="true" title="value" displayTitle="true"
 					columnWidth="300" showIcon="false" name="value" />
 				<LocalizedDictionary id="28" />

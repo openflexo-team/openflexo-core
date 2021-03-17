@@ -124,7 +124,7 @@ import org.openflexo.toolbox.StringUtils;
 public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindable, RunTimeEvaluationContext {
 
 	public static final String DELETED_PROPERTY = "deleted";
-	public static final String EMPTY_STRING = "<empty>";
+	public static final String EMPTY_STRING = "<null>";
 
 	@PropertyIdentifier(type = String.class)
 	public static final String FLEXO_CONCEPT_URI_KEY = "flexoConceptURI";
@@ -390,6 +390,8 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 	public <T> List<ActorReference<T>> getActorReferenceList(FlexoRole<T> flexoRole);
 
 	public String getStringRepresentation();
+
+	public String getStringRepresentationWithID();
 
 	public boolean hasValidRenderer();
 
@@ -1909,7 +1911,7 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 			if (getFlexoConcept() != null && getFlexoConcept().getInspector() != null
 					&& getFlexoConcept().getInspector().getRenderer() != null) {
 				if (!getFlexoConcept().getInspector().getRenderer().isValid()) {
-					// Quick and dirty hasck to force revalidate
+					// Quick and dirty hack to force revalidate
 					if (!rendererWasForceRevalidated) {
 						String invalidReason = getFlexoConcept().getInspector().getRenderer().invalidBindingReason();
 						getFlexoConcept().getInspector().getRenderer().forceRevalidate();
@@ -1920,7 +1922,11 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 						}
 					}
 				}
-				return getFlexoConcept().getInspector().getRenderer().isValid();
+				// return getFlexoConcept().getInspector().getRenderer().isValid();
+			}
+
+			if (getFlexoConcept() != null) {
+				return getFlexoConcept().getApplicableRenderer() != null;
 			}
 
 			return false;
@@ -1929,6 +1935,11 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 		private BindingValueChangeListener<String> rendererChangeListener = null;
 
 		private boolean isComputingRenderer = false;
+
+		@Override
+		public String getStringRepresentationWithID() {
+			return getStringRepresentation() + " [ID=" + getFlexoID() + "]";
+		}
 
 		@Override
 		public String getStringRepresentation() {
@@ -1946,11 +1957,10 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 			if (hasValidRenderer() && !isComputingRenderer) {
 				try {
 					isComputingRenderer = true;
-					Object obj = getFlexoConcept().getInspector().getRenderer().getBindingValue(this);
+					Object obj = getFlexoConcept().getApplicableRenderer().getBindingValue(this);
 
 					if (rendererChangeListener == null) {
-						rendererChangeListener = new BindingValueChangeListener<String>(getFlexoConcept().getInspector().getRenderer(),
-								this) {
+						rendererChangeListener = new BindingValueChangeListener<String>(getFlexoConcept().getApplicableRenderer(), this) {
 							@Override
 							public void bindingValueChanged(Object source, String newValue) {
 								/*System.out.println(" bindingValueChanged() detected for string representation of "
@@ -1990,6 +2000,7 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 		public String extendedStringRepresentation() {
 			StringBuffer sb = new StringBuffer();
 			sb.append((getFlexoConcept() != null ? getFlexoConcept().getName() : "null"));
+			sb.append("[ID=" + getFlexoID() + "]");
 			boolean isFirst = true;
 			for (List<ActorReference<?>> refList : actors.values()) {
 				for (ActorReference<?> ref : refList) {

@@ -42,6 +42,7 @@ import org.openflexo.connie.type.TypeUtils;
 import org.openflexo.foundation.fml.FlexoRole;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.pamela.annotations.CloningStrategy;
+import org.openflexo.pamela.annotations.CloningStrategy.StrategyType;
 import org.openflexo.pamela.annotations.Getter;
 import org.openflexo.pamela.annotations.ImplementationClass;
 import org.openflexo.pamela.annotations.Import;
@@ -50,7 +51,6 @@ import org.openflexo.pamela.annotations.ModelEntity;
 import org.openflexo.pamela.annotations.PropertyIdentifier;
 import org.openflexo.pamela.annotations.Setter;
 import org.openflexo.pamela.annotations.XMLAttribute;
-import org.openflexo.pamela.annotations.CloningStrategy.StrategyType;
 import org.openflexo.toolbox.StringUtils;
 
 /**
@@ -127,6 +127,8 @@ public abstract interface ActorReference<T> extends VirtualModelInstanceObject {
 	public ModelSlotInstance<?, ?> getModelSlotInstance();
 
 	public Class<? extends T> getActorClass();
+
+	public String getStringRepresentation();
 
 	public static abstract class ActorReferenceImpl<T> extends VirtualModelInstanceObjectImpl implements ActorReference<T> {
 		private FlexoRole<? super T> flexoRole;
@@ -225,5 +227,12 @@ public abstract interface ActorReference<T> extends VirtualModelInstanceObject {
 			return (Class<? extends T>) TypeUtils.getBaseClass(TypeUtils.getTypeArgument(getClass(), ActorReference.class, 0));
 		}
 
+		@Override
+		public String getStringRepresentation() {
+			if (getModellingElement() != null) {
+				return getModellingElement().toString();
+			}
+			return "<null>";
+		}
 	}
 }
