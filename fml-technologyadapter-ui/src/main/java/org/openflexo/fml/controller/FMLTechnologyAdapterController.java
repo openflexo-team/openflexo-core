@@ -765,7 +765,7 @@ public class FMLTechnologyAdapterController extends TechnologyAdapterController<
 				new DataBinding<>(variableName + "." + widgetContext.getWidgetDefinitionAccess() + ".type"), true));
 		return viewSelector;
 	}
-	*/
+	 */
 
 	@Override
 	public void resourceLoading(TechnologyAdapterResource<?, FMLTechnologyAdapter> resource) {
@@ -773,23 +773,25 @@ public class FMLTechnologyAdapterController extends TechnologyAdapterController<
 
 		if (resource instanceof VirtualModelResource) {
 			VirtualModel vm = ((VirtualModelResource) resource).getLoadedVirtualModel();
-			try {
-				if (logger.isLoggable(Level.INFO)) {
-					logger.info("Validating virtual model " + vm);
-				}
-				Progress.progress(getLocales().localizedForKey("validating_virtual_model..."));
-				FMLValidationReport validationReport = (FMLValidationReport) getFMLValidationModel().validate(vm);
-				validationReports.put(vm, validationReport);
-				if (logger.isLoggable(Level.INFO)) {
-					logger.info("End validating virtual model " + vm);
-					logger.info("Errors=" + validationReport.getAllErrors().size());
-					for (ValidationError<?, ?> e : validationReport.getAllErrors()) {
-						logger.info(" > " + validationReport.getValidationModel().localizedIssueMessage(e) + " details="
-								+ validationReport.getValidationModel().localizedIssueDetailedInformations(e));
+			if (vm != null) {
+				try {
+					if (logger.isLoggable(Level.INFO)) {
+						logger.info("Validating virtual model " + vm);
 					}
+					Progress.progress(getLocales().localizedForKey("validating_virtual_model..."));
+					FMLValidationReport validationReport = (FMLValidationReport) getFMLValidationModel().validate(vm);
+					validationReports.put(vm, validationReport);
+					if (logger.isLoggable(Level.INFO)) {
+						logger.info("End validating virtual model " + vm);
+						logger.info("Errors=" + validationReport.getAllErrors().size());
+						for (ValidationError<?, ?> e : validationReport.getAllErrors()) {
+							logger.info(" > " + validationReport.getValidationModel().localizedIssueMessage(e) + " details="
+									+ validationReport.getValidationModel().localizedIssueDetailedInformations(e));
+						}
+					}
+				} catch (InterruptedException e) {
+					e.printStackTrace();
 				}
-			} catch (InterruptedException e) {
-				e.printStackTrace();
 			}
 		}
 	}
