@@ -1622,7 +1622,7 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 				return getSuperReference(((SuperBindingVariable) variable).getSuperConcept());
 			}
 			else if (variable.getVariableName().equals(FlexoConceptBindingModel.CONTAINER_PROPERTY) && getFlexoConcept() != null) {
-				if (getFlexoConcept().getContainerFlexoConcept() != null) {
+				if (getFlexoConcept().getApplicableContainerFlexoConcept() != null) {
 					return getContainerFlexoConceptInstance();
 				}
 				return getOwningVirtualModelInstance();

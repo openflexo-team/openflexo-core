@@ -719,8 +719,10 @@ public interface MatchFlexoConceptInstance extends FMLRTAction<FlexoConceptInsta
 			if (container == null) {
 				container = new DataBinding<>(this, FlexoConceptInstance.class, DataBinding.BindingDefinitionType.GET);
 				container.setBindingName("container");
-				container.setDeclaredType(getFlexoConceptType() != null && getFlexoConceptType().getContainerFlexoConcept() != null
-						? getFlexoConceptType().getContainerFlexoConcept().getInstanceType() : FlexoConceptInstance.class);
+				container
+						.setDeclaredType(getFlexoConceptType() != null && getFlexoConceptType().getApplicableContainerFlexoConcept() != null
+								? getFlexoConceptType().getApplicableContainerFlexoConcept().getInstanceType()
+								: FlexoConceptInstance.class);
 			}
 			return container;
 		}
@@ -730,8 +732,10 @@ public interface MatchFlexoConceptInstance extends FMLRTAction<FlexoConceptInsta
 			if (aContainer != null) {
 				aContainer.setOwner(this);
 				aContainer.setBindingName("container");
-				aContainer.setDeclaredType(getFlexoConceptType() != null && getFlexoConceptType().getContainerFlexoConcept() != null
-						? getFlexoConceptType().getContainerFlexoConcept().getInstanceType() : FlexoConceptInstance.class);
+				aContainer
+						.setDeclaredType(getFlexoConceptType() != null && getFlexoConceptType().getApplicableContainerFlexoConcept() != null
+								? getFlexoConceptType().getApplicableContainerFlexoConcept().getInstanceType()
+								: FlexoConceptInstance.class);
 				aContainer.setBindingDefinitionType(DataBinding.BindingDefinitionType.GET);
 			}
 			this.container = aContainer;

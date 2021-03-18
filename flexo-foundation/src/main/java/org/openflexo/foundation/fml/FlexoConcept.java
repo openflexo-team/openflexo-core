@@ -148,6 +148,8 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 	@PropertyIdentifier(type = Boolean.class)
 	public static final String IS_ABSTRACT_KEY = "isAbstract";
 
+	public static final String APPLICABLE_CONTAINER_FLEXO_CONCEPT_KEY = "applicableContainerFlexoConcept";
+
 	// TODO: (SGU) i think we have to remove inverse property here
 	@Getter(value = OWNER_KEY, inverse = VirtualModel.FLEXO_CONCEPTS_KEY)
 	@CloningStrategy(StrategyType.IGNORE)
@@ -1743,6 +1745,7 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 
 		@Override
 		public void setContainerFlexoConcept(FlexoConcept aConcept) {
+			FlexoConcept oldApplicableContainerFlexoConcept = getApplicableContainerFlexoConcept();
 			performSuperSetter(CONTAINER_FLEXO_CONCEPT_KEY, aConcept);
 			clearAccessiblePropertiesCache();
 			VirtualModel owningVirtualModel = getOwningVirtualModel();
@@ -1751,6 +1754,8 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 				owningVirtualModel.getPropertyChangeSupport().firePropertyChange("allRootFlexoConcepts", null,
 						owningVirtualModel.getAllRootFlexoConcepts());
 			}
+			getPropertyChangeSupport().firePropertyChange(APPLICABLE_CONTAINER_FLEXO_CONCEPT_KEY, oldApplicableContainerFlexoConcept,
+					getApplicableContainerFlexoConcept());
 		}
 
 		@Override
@@ -1862,6 +1867,7 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 		@Override
 		public void addToParentFlexoConcepts(FlexoConcept parentFlexoConcept) throws InconsistentFlexoConceptHierarchyException {
 			if (!isSuperConceptOf(parentFlexoConcept)) {
+				FlexoConcept oldApplicableContainerFlexoConcept = getApplicableContainerFlexoConcept();
 				parentFlexoConcepts.add(parentFlexoConcept);
 				parentFlexoConcept.addToChildFlexoConcepts(this);
 				getPropertyChangeSupport().firePropertyChange("parentFlexoConcepts", null, parentFlexoConcept);
@@ -1873,6 +1879,8 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 					owningVirtualModel.getPropertyChangeSupport().firePropertyChange("allSuperFlexoConcepts", null,
 							owningVirtualModel.getAllSuperFlexoConcepts());
 				}
+				getPropertyChangeSupport().firePropertyChange(APPLICABLE_CONTAINER_FLEXO_CONCEPT_KEY, oldApplicableContainerFlexoConcept,
+						getApplicableContainerFlexoConcept());
 				setIsModified();
 			}
 			else {

@@ -829,8 +829,8 @@ public class FMLFIBController extends FlexoFIBController {
 	public void moveFlexoConcept(FlexoConcept concept, FlexoConcept container) {
 		logger.info("Moving concept " + concept + " into " + container);
 		// Disconnect from former container concept (if any)
-		if (concept.getContainerFlexoConcept() != null) {
-			concept.getContainerFlexoConcept().removeFromEmbeddedFlexoConcepts(concept);
+		if (concept.getApplicableContainerFlexoConcept() != null) {
+			concept.getApplicableContainerFlexoConcept().removeFromEmbeddedFlexoConcepts(concept);
 		}
 		// Disconnect from owner VirtualModel
 		if (concept.getOwner() != null) {
@@ -853,7 +853,7 @@ public class FMLFIBController extends FlexoFIBController {
 		// System.out.println("on peut bouger " + concept + " dans " + container + " ?");
 		// System.out.println("alors: " + (concept != null && concept != container && concept.getContainerFlexoConcept() != container
 		// && concept.getDeclaringVirtualModel() != container));
-		return concept != null && concept != container && concept.getContainerFlexoConcept() != container
+		return concept != null && concept != container && concept.getApplicableContainerFlexoConcept() != container
 				&& concept.getDeclaringVirtualModel() != container;
 	}
 
