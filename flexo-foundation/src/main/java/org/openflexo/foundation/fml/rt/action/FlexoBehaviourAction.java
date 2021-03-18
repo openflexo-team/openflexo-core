@@ -247,7 +247,7 @@ public abstract class FlexoBehaviourAction<A extends FlexoBehaviourAction<A, FB,
 		FlexoBehaviour flexoBehaviour = getFlexoBehaviour();
 		// logger.info("BEGIN retrieveDefaultParameters() for " + flexoBehaviour);
 		for (final FlexoBehaviourParameter parameter : flexoBehaviour.getParameters()) {
-			Object value = parameterValues.get(parameter);
+			Object value = parameterValues.get(parameter.getArgumentName());
 			if (value == null) {
 				value = parameter.getDefaultValue(this);
 				// logger.info("Parameter " + parameter.getName() + " default value = " + defaultValue);
@@ -555,6 +555,15 @@ public abstract class FlexoBehaviourAction<A extends FlexoBehaviourAction<A, FB,
 	}
 
 	public class ParameterValues extends Hashtable<String, Object> {
+
+		@Override
+		public synchronized Object get(Object key) {
+			if (!(key instanceof String)) {
+				System.out.println("C'est tout pourri, c'est pas un String : " + key);
+				Thread.dumpStack();
+			}
+			return super.get(key);
+		}
 
 		@Override
 		public synchronized Object put(String name, Object value) {
