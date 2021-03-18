@@ -312,6 +312,7 @@ widget=widget
 width=width
 window=Fen\u00EAtres
 with_new=with_new
+would_you_like_to_cut_those_objects=would_you_like_to_cut_those_objects
 would_you_like_to_send_a_report=Souhaitez-vous soumettre un rapport afin de nous aider \u00E0 am\u00E9liorer OpenFlexo?
 x=x
 y=y

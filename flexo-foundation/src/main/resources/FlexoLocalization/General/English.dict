@@ -312,6 +312,7 @@ widget=Widget
 width=Width
 window=Window
 with_new=With new
+would_you_like_to_cut_those_objects=Would you like to cut those objects
 would_you_like_to_send_a_report=Would you like to send a report to help us improve OpenFlexo?
 x=X
 y=Y
