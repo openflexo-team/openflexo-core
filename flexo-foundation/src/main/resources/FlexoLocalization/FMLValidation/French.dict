@@ -145,6 +145,7 @@ types_are_not_compatible\ (FlexoConceptInstanceType<ReponseIndicateur>\ and\ Obj
 types_are_not_compatible\ (VirtualModelInstanceType<Phase>\ and\ Object)=types_are_not_compatible (VirtualModelInstanceType<Phase> and Object)
 types_are_not_compatible\ (Void\ and\ VirtualModelInstanceType<DiagrammeOrganigrammePublication>)=types_are_not_compatible (Void and VirtualModelInstanceType<DiagrammeOrganigrammePublication>)
 types_are_not_compatibles=types_are_not_compatibles
+unguaranteed_virtual_model_type=unguaranteed_virtual_model_type
 validating=validating
 virtual_model_is_required=virtual_model_is_required
 virtual_model_is_required_description=virtual_model_is_required_description
