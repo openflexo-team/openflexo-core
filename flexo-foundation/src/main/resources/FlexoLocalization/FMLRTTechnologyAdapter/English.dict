@@ -22,4 +22,5 @@ property=Property
 really_delete_this_virtual_model_instance_?=Really delete this virtual model instance ?
 saving=Saving
 select_a_creation_scheme=Select a creation scheme
+title=Title
 value=Value
