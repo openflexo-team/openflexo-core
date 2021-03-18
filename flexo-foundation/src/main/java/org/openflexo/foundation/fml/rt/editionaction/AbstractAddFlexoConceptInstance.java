@@ -87,6 +87,7 @@ import org.openflexo.pamela.validation.FixProposal;
 import org.openflexo.pamela.validation.ValidationError;
 import org.openflexo.pamela.validation.ValidationIssue;
 import org.openflexo.pamela.validation.ValidationRule;
+import org.openflexo.pamela.validation.ValidationWarning;
 import org.openflexo.toolbox.StringUtils;
 
 /**
@@ -826,18 +827,26 @@ public interface AbstractAddFlexoConceptInstance<FCI extends FlexoConceptInstanc
 				DataBinding<FMLRTVirtualModelInstance> binding = getBinding(object);
 
 				if (binding.getAnalyzedType() instanceof VirtualModelInstanceType && object.getFlexoConceptType() != null) {
-					if (!(object.getFlexoConceptType() instanceof VirtualModel) && !object.getFlexoConceptType().getOwningVirtualModel()
-							.isAssignableFrom(((VirtualModelInstanceType) binding.getAnalyzedType()).getVirtualModel())) {
-						returned = new ValidationError<>(this, object, "incompatible_virtual_model_type");
+					VirtualModel analyzedVirtualModelType = ((VirtualModelInstanceType) binding.getAnalyzedType()).getVirtualModel();
+					VirtualModel requiredVirtualModelType = object.getFlexoConceptType().getOwningVirtualModel();
+
+					if (!(object.getFlexoConceptType() instanceof VirtualModel)
+							&& !requiredVirtualModelType.isAssignableFrom(analyzedVirtualModelType)) {
+
+						if (analyzedVirtualModelType.isAssignableFrom(requiredVirtualModelType)) {
+							// In this case, this is possible, but no guaranty offered
+							returned = new ValidationWarning<>(this, object, "unguaranteed_virtual_model_type");
+						}
+						else {
+							returned = new ValidationError<>(this, object, "incompatible_virtual_model_type");
+						}
 
 						System.out.println(object.getRootOwner().getFMLRepresentation());
 						System.out.println("binding=" + binding);
 						System.out.println("binding.getAnalyzedType()=" + binding.getAnalyzedType());
-						System.out.println("binding.getAnalyzedType().getVirtualModel()="
-								+ ((VirtualModelInstanceType) binding.getAnalyzedType()).getVirtualModel());
+						System.out.println("analyzedVirtualModelType=" + analyzedVirtualModelType);
 						System.out.println("object.getFlexoConceptType()=" + object.getFlexoConceptType());
-						System.out.println("object.getFlexoConceptType().getOwningVirtualModel()="
-								+ object.getFlexoConceptType().getOwningVirtualModel());
+						System.out.println("requiredVirtualModelType=" + requiredVirtualModelType);
 
 						// Attempt to find some solutions...
 
