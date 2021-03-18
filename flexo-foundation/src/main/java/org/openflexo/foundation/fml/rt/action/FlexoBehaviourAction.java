@@ -335,7 +335,7 @@ public abstract class FlexoBehaviourAction<A extends FlexoBehaviourAction<A, FB,
 				return ((URIParameter) parameter).getDefaultValue(this);
 			}
 		}*/
-		return parameterValues.get(parameter);
+		return parameterValues.get(parameter.getArgumentName());
 	}
 
 	public void setParameterValue(FlexoBehaviourParameter parameter, Object value) {
