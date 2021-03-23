@@ -215,6 +215,7 @@ public class FMLFIBController extends FlexoFIBController {
 
 	public void createConstraint(FlexoConcept flexoConcept) {
 		FlexoConceptConstraint constraint = flexoConcept.getFMLModelFactory().newFlexoConceptConstraint();
+		constraint.setName("New constraint");
 		flexoConcept.addToFlexoConceptConstraints(constraint);
 	}
 
