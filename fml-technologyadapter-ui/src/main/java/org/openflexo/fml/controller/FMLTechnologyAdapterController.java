@@ -774,32 +774,44 @@ public class FMLTechnologyAdapterController extends TechnologyAdapterController<
 		if (resource instanceof VirtualModelResource) {
 			VirtualModel vm = ((VirtualModelResource) resource).getLoadedVirtualModel();
 			if (vm != null) {
-				try {
-					if (logger.isLoggable(Level.INFO)) {
-						logger.info("Validating virtual model " + vm);
-					}
-					Progress.progress(getLocales().localizedForKey("validating_virtual_model..."));
-					FMLValidationReport validationReport = (FMLValidationReport) getFMLValidationModel().validate(vm);
-					validationReports.put(vm, validationReport);
-					if (logger.isLoggable(Level.INFO)) {
-						logger.info("End validating virtual model " + vm);
-						logger.info("Errors=" + validationReport.getAllErrors().size());
-						for (ValidationError<?, ?> e : validationReport.getAllErrors()) {
-							logger.info(" > " + validationReport.getValidationModel().localizedIssueMessage(e) + " details="
-									+ validationReport.getValidationModel().localizedIssueDetailedInformations(e));
-						}
-					}
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
+				makeValidationReport(vm);
 			}
 		}
 	}
 
+	private FMLValidationReport makeValidationReport(VirtualModel vm) {
+		FMLValidationReport validationReport = null;
+		try {
+			if (logger.isLoggable(Level.INFO)) {
+				logger.info("Validating virtual model " + vm);
+			}
+			Progress.progress(getLocales().localizedForKey("validating_virtual_model..."));
+			validationReport = (FMLValidationReport) getFMLValidationModel().validate(vm);
+			validationReports.put(vm, validationReport);
+			if (logger.isLoggable(Level.INFO)) {
+				logger.info("End validating virtual model " + vm);
+				logger.info("Errors=" + validationReport.getAllErrors().size());
+				for (ValidationError<?, ?> e : validationReport.getAllErrors()) {
+					logger.info(" > " + validationReport.getValidationModel().localizedIssueMessage(e) + " details="
+							+ validationReport.getValidationModel().localizedIssueDetailedInformations(e));
+				}
+			}
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		return validationReport;
+	}
+
 	@Override
 	public void resourceUnloaded(TechnologyAdapterResource<?, FMLTechnologyAdapter> resource) {
-		logger.warning("RESOURCE UNLOADED not implemented: " + resource);
-		// TODO: unload validation report
+		logger.warning("RESOURCE UNLOADED not fully implemented: " + resource);
+
+		if (resource instanceof VirtualModelResource) {
+			VirtualModel vm = ((VirtualModelResource) resource).getLoadedVirtualModel();
+			if (vm != null) {
+				validationReports.remove(vm);
+			}
+		}
 	}
 
 	public FMLValidationModel getFMLValidationModel() {
@@ -818,9 +830,13 @@ public class FMLTechnologyAdapterController extends TechnologyAdapterController<
 	}
 
 	@Override
-	public ValidationReport getValidationReport(ResourceData<?> resourceData) {
+	public ValidationReport getValidationReport(ResourceData<?> resourceData, boolean createWhenNotExistent) {
 		if (resourceData instanceof VirtualModel) {
-			return validationReports.get(resourceData);
+			ValidationReport returned = validationReports.get(resourceData);
+			if (returned == null && createWhenNotExistent) {
+				return makeValidationReport((VirtualModel) resourceData);
+			}
+			return returned;
 		}
 		return null;
 	}

@@ -669,7 +669,7 @@ public abstract class TechnologyAdapterController<TA extends TechnologyAdapter<T
 		return null;
 	}
 
-	public ValidationReport getValidationReport(ResourceData<?> resourceData) {
+	public ValidationReport getValidationReport(ResourceData<?> resourceData, boolean createWhenNotExistent) {
 		return null;
 	}
 

@@ -89,6 +89,7 @@ import org.openflexo.logging.FlexoLogger;
 import org.openflexo.pamela.annotations.Adder;
 import org.openflexo.pamela.annotations.CloningStrategy;
 import org.openflexo.pamela.annotations.CloningStrategy.StrategyType;
+import org.openflexo.pamela.annotations.DefineValidationRule;
 import org.openflexo.pamela.annotations.DeserializationFinalizer;
 import org.openflexo.pamela.annotations.DeserializationInitializer;
 import org.openflexo.pamela.annotations.Embedded;
@@ -104,6 +105,11 @@ import org.openflexo.pamela.annotations.Remover;
 import org.openflexo.pamela.annotations.Setter;
 import org.openflexo.pamela.annotations.XMLAttribute;
 import org.openflexo.pamela.annotations.XMLElement;
+import org.openflexo.pamela.validation.CompoundIssue;
+import org.openflexo.pamela.validation.FixProposal;
+import org.openflexo.pamela.validation.ValidationError;
+import org.openflexo.pamela.validation.ValidationIssue;
+import org.openflexo.pamela.validation.ValidationRule;
 import org.openflexo.toolbox.StringUtils;
 
 /**
@@ -2301,6 +2307,122 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 				}
 			}
 			return this;
+		}
+
+	}
+
+	@DefineValidationRule
+	public static class FlexoConceptInstanceMustHaveType extends ValidationRule<FlexoConceptInstanceMustHaveType, FlexoConceptInstance> {
+		public FlexoConceptInstanceMustHaveType() {
+			super(FlexoConceptInstance.class, "flexo_concept_instance_must_have_a_type");
+		}
+
+		@Override
+		public ValidationIssue<FlexoConceptInstanceMustHaveType, FlexoConceptInstance> applyValidation(
+				FlexoConceptInstance flexoConceptInstance) {
+
+			if (flexoConceptInstance.getFlexoConcept() == null) {
+				DeleteThisInstance fixProposal = new DeleteThisInstance(flexoConceptInstance);
+				return new ValidationError<>(this, flexoConceptInstance, "instance_has_no_type", fixProposal);
+				// return new ValidationWarning<>(this, flexoConcept, "non_abstract_flexo_concept_($validable.name)_has_no_behaviours");
+			}
+
+			// return new CompoundIssue<>(flexoConceptInstance,
+			// new ValidationError<>(this, flexoConceptInstance, "moi j'aime pas les frites"),
+			// new ValidationWarning<>(this, flexoConceptInstance, "et pas trop les saucisses"));
+			return null;
+		}
+
+		protected static class DeleteThisInstance extends FixProposal<FlexoConceptInstanceMustHaveType, FlexoConceptInstance> {
+
+			private final FlexoConceptInstance flexoConceptInstance;
+
+			public DeleteThisInstance(FlexoConceptInstance flexoConceptInstance) {
+				super("create_default_deletion_scheme");
+				this.flexoConceptInstance = flexoConceptInstance;
+			}
+
+			public FlexoConceptInstance getFlexoConceptInstance() {
+				return flexoConceptInstance;
+			}
+
+			@Override
+			protected void fixAction() {
+				getFlexoConceptInstance().delete();
+			}
+
+		}
+
+	}
+
+	@DefineValidationRule
+	public static class RoleCardinalitiesMustBeValid extends ValidationRule<RoleCardinalitiesMustBeValid, FlexoConceptInstance> {
+		public RoleCardinalitiesMustBeValid() {
+			super(FlexoConceptInstance.class, "role_cardinalities_must_be_valid");
+		}
+
+		@Override
+		public ValidationIssue<RoleCardinalitiesMustBeValid, FlexoConceptInstance> applyValidation(
+				FlexoConceptInstance flexoConceptInstance) {
+
+			if (flexoConceptInstance.getFlexoConcept() != null) {
+
+				List<ValidationIssue<RoleCardinalitiesMustBeValid, FlexoConceptInstance>> issues = new ArrayList<>();
+
+				for (FlexoRole<?> flexoRole : flexoConceptInstance.getFlexoConcept().getAccessibleRoles()) {
+					List<?> actorReferenceList = flexoConceptInstance.getActorReferenceList(flexoRole);
+					switch (flexoRole.getCardinality()) {
+						case One:
+							if (actorReferenceList == null || actorReferenceList.size() == 0) {
+								issues.add(new InvalidCardinality(flexoRole, flexoConceptInstance,
+										"missing_required_role_($role.name)_for_($flexoConceptInstance)"));
+							}
+							else if (actorReferenceList.size() > 1) {
+								issues.add(new InvalidCardinality(flexoRole, flexoConceptInstance,
+										"found_multiple_values_for_role_($role.name)_for_($flexoConceptInstance)"));
+							}
+							break;
+						case ZeroOne:
+							if (actorReferenceList != null && actorReferenceList.size() > 1) {
+								issues.add(new InvalidCardinality(flexoRole, flexoConceptInstance,
+										"found_multiple_values_for_role_($role.name)_for_($flexoConceptInstance)"));
+							}
+							break;
+						case OneMany:
+							if (actorReferenceList == null || actorReferenceList.size() == 0) {
+								issues.add(new InvalidCardinality(flexoRole, flexoConceptInstance,
+										"missing_required_role_($role.name)_for_($flexoConceptInstance)"));
+							}
+
+						default:
+							break;
+					}
+				}
+
+				return new CompoundIssue<>(flexoConceptInstance, issues);
+			}
+
+			return null;
+		}
+
+		public class InvalidCardinality extends ValidationError<RoleCardinalitiesMustBeValid, FlexoConceptInstance> {
+
+			private FlexoRole<?> role;
+			private FlexoConceptInstance flexoConceptInstance;
+
+			public InvalidCardinality(FlexoRole<?> role, FlexoConceptInstance flexoConceptInstance, String message) {
+				super(RoleCardinalitiesMustBeValid.this, flexoConceptInstance, message);
+				this.role = role;
+				this.flexoConceptInstance = flexoConceptInstance;
+			}
+
+			public FlexoRole<?> getRole() {
+				return role;
+			}
+
+			public FlexoConceptInstance getFlexoConceptInstance() {
+				return flexoConceptInstance;
+			}
 		}
 
 	}

@@ -742,7 +742,7 @@ public class FMLFIBController extends FlexoFIBController {
 		if (getServiceManager() != null) {
 			FMLTechnologyAdapterController tac = getServiceManager().getTechnologyAdapterControllerService()
 					.getTechnologyAdapterController(FMLTechnologyAdapterController.class);
-			FMLValidationReport virtualModelReport = (FMLValidationReport) tac.getValidationReport(virtualModel);
+			FMLValidationReport virtualModelReport = (FMLValidationReport) tac.getValidationReport(virtualModel, true);
 			RevalidationTask validationTask = new RevalidationTask(virtualModelReport);
 			getServiceManager().getTaskManager().scheduleExecution(validationTask);
 		}

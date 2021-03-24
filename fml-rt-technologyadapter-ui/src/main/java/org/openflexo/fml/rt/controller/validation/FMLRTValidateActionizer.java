@@ -37,7 +37,7 @@
  * 
  */
 
-package org.openflexo.fml.controller.validation;
+package org.openflexo.fml.rt.controller.validation;
 
 import java.awt.event.KeyEvent;
 
@@ -45,35 +45,40 @@ import javax.swing.Icon;
 import javax.swing.KeyStroke;
 
 import org.openflexo.FlexoCst;
-import org.openflexo.fml.controller.FMLTechnologyAdapterController;
-import org.openflexo.foundation.FlexoObject;
+import org.openflexo.fml.rt.controller.FMLRTTechnologyAdapterController;
 import org.openflexo.foundation.action.FlexoActionFactory;
 import org.openflexo.foundation.action.FlexoActionRunnable;
-import org.openflexo.foundation.fml.FMLObject;
-import org.openflexo.foundation.fml.FMLValidationReport;
+import org.openflexo.foundation.fml.rt.FMLRTValidationReport;
+import org.openflexo.foundation.fml.rt.VirtualModelInstanceObject;
 import org.openflexo.icon.IconLibrary;
 import org.openflexo.view.controller.ActionInitializer;
 import org.openflexo.view.controller.ControllerActionInitializer;
 
-public class ValidateActionizer extends ActionInitializer<ValidateAction, FMLObject, FlexoObject> {
+public class FMLRTValidateActionizer
+		extends ActionInitializer<FMLRTValidateAction, VirtualModelInstanceObject, VirtualModelInstanceObject> {
 
 	private static final java.util.logging.Logger logger = org.openflexo.logging.FlexoLogger
-			.getLogger(ValidateActionizer.class.getPackage().getName());
+			.getLogger(FMLRTValidateActionizer.class.getPackage().getName());
 
-	private FMLTechnologyAdapterController fmlTAController;
+	private FMLRTTechnologyAdapterController fmlRTTAController;
 
-	public ValidateActionizer(FMLTechnologyAdapterController fmlTAController, ControllerActionInitializer actionInitializer) {
-		super(ValidateAction.actionType, actionInitializer);
-		this.fmlTAController = fmlTAController;
+	public FMLRTValidateActionizer(FMLRTTechnologyAdapterController fmlRTTAController, ControllerActionInitializer actionInitializer) {
+		super(FMLRTValidateAction.actionType, actionInitializer);
+		this.fmlRTTAController = fmlRTTAController;
 	}
 
 	@Override
-	protected FlexoActionRunnable<ValidateAction, FMLObject, FlexoObject> getDefaultFinalizer() {
+	protected FlexoActionRunnable<FMLRTValidateAction, VirtualModelInstanceObject, VirtualModelInstanceObject> getDefaultFinalizer() {
 		return (e, action) -> {
-			FMLValidationReport virtualModelReport = (FMLValidationReport) fmlTAController
-					.getValidationReport(action.getFocusedObject().getDeclaringVirtualModel(), true);
+
+			System.out.println("Bon, on valide : " + action.getFocusedObject().getVirtualModelInstance());
+
+			FMLRTValidationReport virtualModelReport = (FMLRTValidationReport) fmlRTTAController
+					.getValidationReport(action.getFocusedObject().getVirtualModelInstance(), true);
 			try {
-				virtualModelReport.revalidate(action.getFocusedObject());
+				if (virtualModelReport != null) {
+					virtualModelReport.revalidate(action.getFocusedObject());
+				}
 			} catch (InterruptedException e1) {
 				e1.printStackTrace();
 			}
@@ -87,7 +92,8 @@ public class ValidateActionizer extends ActionInitializer<ValidateAction, FMLObj
 	}
 
 	@Override
-	protected Icon getEnabledIcon(FlexoActionFactory<ValidateAction, FMLObject, FlexoObject> actionType) {
+	protected Icon getEnabledIcon(
+			FlexoActionFactory<FMLRTValidateAction, VirtualModelInstanceObject, VirtualModelInstanceObject> actionType) {
 		return IconLibrary.VALID_ICON;
 	}
 }

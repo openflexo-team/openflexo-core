@@ -2191,8 +2191,8 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 		 */
 		@Override
 		public boolean hasDelegatedInspector() {
-			if (getInspector().getDelegateConceptInstance() != null && getInspector().getDelegateConceptInstance().isSet()
-					&& getInspector().getDelegateConceptInstance().isSet()) {
+			if (getInspector() != null && getInspector().getDelegateConceptInstance() != null
+					&& getInspector().getDelegateConceptInstance().isSet() && getInspector().getDelegateConceptInstance().isSet()) {
 				return true;
 			}
 			return false;
@@ -2221,7 +2221,8 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 		 */
 		@Override
 		public DataBinding<String> getApplicableRenderer() {
-			if (getInspector().getRenderer().isSet() && getInspector().getRenderer().isValid()) {
+			if (getInspector() != null && getInspector().getRenderer() != null && getInspector().getRenderer().isSet()
+					&& getInspector().getRenderer().isValid()) {
 				return getInspector().getRenderer();
 			}
 			else if (getParentFlexoConcepts().size() > 0) {
