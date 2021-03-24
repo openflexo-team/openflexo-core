@@ -12,7 +12,7 @@
 			<Leaf id="3" name="left" weight="0.3" />
 			<Divider id="4" />
 			<ColSplit name="ColSplit" weight="0.7">
-				<Leaf name="right" weight="1.0" />
+				<Leaf name="right" weight="0.0" />
 				<Divider />
 				<Leaf name="bottomRight" weight="0.0" />
 			</ColSplit>
