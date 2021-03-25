@@ -138,7 +138,10 @@ public class FMLRTFIBController extends FlexoFIBController {
 	public void showIssue(ValidationIssue<?, ?> issue) {
 		if (issue != null) {
 			Validable objectToSelect = issue.getValidable();
-			getFlexoController().selectAndFocusObject((FlexoObject) objectToSelect);
+			// getFlexoController().selectAndFocusObject((FlexoObject) objectToSelect);
+			if (objectToSelect instanceof FlexoObject) {
+				getFlexoController().getSelectionManager().setSelectedObject((FlexoObject) objectToSelect);
+			}
 		}
 	}
 

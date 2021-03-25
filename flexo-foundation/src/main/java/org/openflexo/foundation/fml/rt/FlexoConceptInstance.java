@@ -2460,7 +2460,23 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 					try {
 						List<?> iterationObjects = constraint.getIteration().getBindingValue(flexoConceptInstance);
 						for (Object item : iterationObjects) {
-							if (!constraint.getConstraint().getBindingValue(new BindingEvaluationContext() {
+							// System.out.println("constraint = " + constraint);
+							// System.out.println("constraint.getConstraint() = " + constraint.getConstraint());
+							// System.out.println("valid : " + constraint.getConstraint().isValid());
+							// System.out.println("reason: " + constraint.getConstraint().invalidBindingReason());
+
+							// Hack
+							// TODO: fix this
+							if (!constraint.getConstraint().isValid()) {
+								constraint.getConstraint().forceRevalidate();
+							}
+
+							if (!constraint.getConstraint().isValid()) {
+								issues.add(new ValidationError<>(this, flexoConceptInstance, "constraint_is_not_valid_for($validable)"));
+								return;
+							}
+
+							Boolean evaluateConstraint = constraint.getConstraint().getBindingValue(new BindingEvaluationContext() {
 								@Override
 								public Object getValue(BindingVariable variable) {
 									if (variable.getVariableName().equals(constraint.getIteratorName())) {
@@ -2468,7 +2484,11 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 									}
 									return flexoConceptInstance.getValue(variable);
 								}
-							})) {
+							});
+
+							// System.out.println("evaluateConstraint : " + evaluateConstraint);
+
+							if (!evaluateConstraint) {
 								issues.add(new ViolatedConstraint(constraint, flexoConceptInstance, item));
 							}
 						}
