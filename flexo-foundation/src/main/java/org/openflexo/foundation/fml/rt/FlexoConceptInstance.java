@@ -50,6 +50,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.openflexo.connie.Bindable;
+import org.openflexo.connie.BindingEvaluationContext;
 import org.openflexo.connie.BindingFactory;
 import org.openflexo.connie.BindingModel;
 import org.openflexo.connie.BindingVariable;
@@ -70,6 +71,7 @@ import org.openflexo.foundation.fml.CloningScheme;
 import org.openflexo.foundation.fml.DeletionScheme;
 import org.openflexo.foundation.fml.ExpressionProperty;
 import org.openflexo.foundation.fml.FlexoConcept;
+import org.openflexo.foundation.fml.FlexoConceptConstraint;
 import org.openflexo.foundation.fml.FlexoConceptInstanceRole;
 import org.openflexo.foundation.fml.FlexoProperty;
 import org.openflexo.foundation.fml.FlexoRole;
@@ -2399,7 +2401,10 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 					}
 				}
 
-				return new CompoundIssue<>(flexoConceptInstance, issues);
+				if (issues.size() > 0) {
+					return new CompoundIssue<>(flexoConceptInstance, issues);
+				}
+
 			}
 
 			return null;
@@ -2423,6 +2428,112 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 			public FlexoConceptInstance getFlexoConceptInstance() {
 				return flexoConceptInstance;
 			}
+		}
+
+	}
+
+	@DefineValidationRule
+	public static class ConstraintsShouldNotBeViolated extends ValidationRule<ConstraintsShouldNotBeViolated, FlexoConceptInstance> {
+		public ConstraintsShouldNotBeViolated() {
+			super(FlexoConceptInstance.class, "concept_constraints_should_not_be_violated");
+		}
+
+		@Override
+		public ValidationIssue<ConstraintsShouldNotBeViolated, FlexoConceptInstance> applyValidation(
+				FlexoConceptInstance flexoConceptInstance) {
+
+			if (flexoConceptInstance.getFlexoConcept() != null) {
+				List<ValidationIssue<ConstraintsShouldNotBeViolated, FlexoConceptInstance>> issues = new ArrayList<>();
+				applyValidationToConcept(flexoConceptInstance, flexoConceptInstance.getFlexoConcept(), issues);
+				if (issues.size() > 0) {
+					return new CompoundIssue<>(flexoConceptInstance, issues);
+				}
+			}
+
+			return null;
+		}
+
+		private void applyValidationToConcept(FlexoConceptInstance flexoConceptInstance, FlexoConcept concept,
+				List<ValidationIssue<ConstraintsShouldNotBeViolated, FlexoConceptInstance>> issues) {
+			for (FlexoConceptConstraint constraint : concept.getFlexoConceptConstraints()) {
+				if (constraint.getHasIteration()) {
+					try {
+						List<?> iterationObjects = constraint.getIteration().getBindingValue(flexoConceptInstance);
+						for (Object item : iterationObjects) {
+							if (!constraint.getConstraint().getBindingValue(new BindingEvaluationContext() {
+								@Override
+								public Object getValue(BindingVariable variable) {
+									if (variable.getVariableName().equals(constraint.getIteratorName())) {
+										return item;
+									}
+									return flexoConceptInstance.getValue(variable);
+								}
+							})) {
+								issues.add(new ViolatedConstraint(constraint, flexoConceptInstance, item));
+							}
+						}
+					} catch (TypeMismatchException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (NullReferenceException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (InvocationTargetException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+				else {
+					try {
+						if (!constraint.getConstraint().getBindingValue(flexoConceptInstance)) {
+							issues.add(new ViolatedConstraint(constraint, flexoConceptInstance));
+						}
+					} catch (TypeMismatchException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (NullReferenceException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (InvocationTargetException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+			}
+			for (FlexoConcept parentConcept : concept.getParentFlexoConcepts()) {
+				applyValidationToConcept(flexoConceptInstance, parentConcept, issues);
+			}
+		}
+
+		public class ViolatedConstraint extends ValidationError<ConstraintsShouldNotBeViolated, FlexoConceptInstance> {
+
+			private FlexoConceptConstraint constraint;
+			private FlexoConceptInstance flexoConceptInstance;
+			private Object item;
+
+			public ViolatedConstraint(FlexoConceptConstraint constraint, FlexoConceptInstance flexoConceptInstance) {
+				super(ConstraintsShouldNotBeViolated.this, flexoConceptInstance, constraint.getName());
+				this.constraint = constraint;
+				this.flexoConceptInstance = flexoConceptInstance;
+			}
+
+			public ViolatedConstraint(FlexoConceptConstraint constraint, FlexoConceptInstance flexoConceptInstance, Object item) {
+				this(constraint, flexoConceptInstance);
+				this.item = item;
+			}
+
+			public FlexoConceptConstraint getConstraint() {
+				return constraint;
+			}
+
+			public FlexoConceptInstance getFlexoConceptInstance() {
+				return flexoConceptInstance;
+			}
+
+			public Object getItem() {
+				return item;
+			}
+
 		}
 
 	}
