@@ -41,15 +41,19 @@ package org.openflexo.foundation.fml.rt;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.openflexo.connie.BindingEvaluator;
+import org.openflexo.foundation.fml.rt.FlexoConceptInstance.ConstraintsShouldNotBeViolated.ViolatedConstraint;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterService;
 import org.openflexo.foundation.validation.FlexoValidationModel;
+import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.localization.LocalizedDelegate;
 import org.openflexo.localization.LocalizedDelegateImpl;
 import org.openflexo.pamela.ModelContext;
 import org.openflexo.pamela.ModelContextLibrary;
 import org.openflexo.pamela.exceptions.ModelDefinitionException;
 import org.openflexo.pamela.validation.Validable;
+import org.openflexo.pamela.validation.ValidationIssue;
 import org.openflexo.pamela.validation.ValidationReport;
 import org.openflexo.rm.Resource;
 import org.openflexo.rm.ResourceLocator;
@@ -113,4 +117,24 @@ public class FMLRTValidationModel extends FlexoValidationModel {
 			return super.validate(object);
 		return null;
 	}
+
+	@Override
+	public String localizedIssueMessage(ValidationIssue<?, ?> issue) {
+		if (issue instanceof ViolatedConstraint) {
+			// Special case for that, we use the FML dictionary
+			ViolatedConstraint constraintIssue = (ViolatedConstraint) issue;
+			LocalizedDelegate locales = ((ViolatedConstraint) issue).getConstraint().getDeclaringVirtualModel().getLocales();
+			String localized = locales.localizedForKeyAndLanguage(constraintIssue.getMessage(), FlexoLocalization.getCurrentLanguage(),
+					true);
+			String asBindingExpression = asBindingExpression(localized);
+			try {
+				return (String) BindingEvaluator.evaluateBinding(asBindingExpression, constraintIssue, constraintIssue.getClass());
+			} catch (Exception e) {
+				e.printStackTrace();
+				return localized;
+			}
+		}
+		return super.localizedIssueMessage(issue);
+	}
+
 }
