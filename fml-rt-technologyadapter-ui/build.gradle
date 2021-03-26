@@ -2,6 +2,7 @@ dependencies {
   // openflexo dep
   compile project(':flexo-foundation')
   compile project(':flexo-ui')
+  compile project(':fml-technologyadapter-ui')
   // external dep
 
   // testing dep
