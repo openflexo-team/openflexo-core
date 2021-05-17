@@ -2372,33 +2372,40 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 				List<ValidationIssue<RoleCardinalitiesMustBeValid, FlexoConceptInstance>> issues = new ArrayList<>();
 
 				for (FlexoRole<?> flexoRole : flexoConceptInstance.getFlexoConcept().getAccessibleRoles()) {
-					List<?> actorReferenceList = flexoConceptInstance.getActorReferenceList(flexoRole);
-					switch (flexoRole.getCardinality()) {
-						case One:
-							if (actorReferenceList == null || actorReferenceList.size() == 0) {
-								issues.add(new InvalidCardinality(flexoRole, flexoConceptInstance,
-										"missing_required_role_($role.name)_for_($flexoConceptInstance)"));
-							}
-							else if (actorReferenceList.size() > 1) {
-								issues.add(new InvalidCardinality(flexoRole, flexoConceptInstance,
-										"found_multiple_values_for_role_($role.name)_for_($flexoConceptInstance)"));
-							}
-							break;
-						case ZeroOne:
-							if (actorReferenceList != null && actorReferenceList.size() > 1) {
-								issues.add(new InvalidCardinality(flexoRole, flexoConceptInstance,
-										"found_multiple_values_for_role_($role.name)_for_($flexoConceptInstance)"));
-							}
-							break;
-						case OneMany:
-							if (actorReferenceList == null || actorReferenceList.size() == 0) {
-								issues.add(new InvalidCardinality(flexoRole, flexoConceptInstance,
-										"missing_required_role_($role.name)_for_($flexoConceptInstance)"));
-							}
+					if (flexoRole.getFlexoConcept().isAssignableFrom(flexoConceptInstance.getFlexoConcept())) {
+						List<?> actorReferenceList = flexoConceptInstance.getActorReferenceList(flexoRole);
+						switch (flexoRole.getCardinality()) {
+							case One:
+								if (actorReferenceList == null || actorReferenceList.size() == 0) {
+									issues.add(new InvalidCardinality(flexoRole, flexoConceptInstance,
+											"missing_required_role_($role.name)_for_($flexoConceptInstance)"));
+								}
+								else if (actorReferenceList.size() > 1) {
+									issues.add(new InvalidCardinality(flexoRole, flexoConceptInstance,
+											"found_multiple_values_for_role_($role.name)_for_($flexoConceptInstance)"));
+								}
+								break;
+							case ZeroOne:
+								if (actorReferenceList != null && actorReferenceList.size() > 1) {
+									issues.add(new InvalidCardinality(flexoRole, flexoConceptInstance,
+											"found_multiple_values_for_role_($role.name)_for_($flexoConceptInstance)"));
+								}
+								break;
+							case OneMany:
+								System.out.println("actorReferenceList = " + actorReferenceList);
+								if (actorReferenceList == null || actorReferenceList.size() == 0) {
+									issues.add(new InvalidCardinality(flexoRole, flexoConceptInstance,
+											"missing_required_roles_($role.name)_for_($flexoConceptInstance)"));
+								}
 
-						default:
-							break;
+							default:
+								break;
+						}
 					}
+					/*else {
+						System.out.println("Do not check for " + flexoRole.getName() + " because it applies to "
+								+ flexoRole.getFlexoConcept() + " and i am a " + flexoConceptInstance.getFlexoConcept());
+					}*/
 				}
 
 				if (issues.size() > 0) {
