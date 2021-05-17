@@ -1026,11 +1026,6 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 			// First take declared properties
 			computedAccessibleProperties.addAll(getDeclaredProperties());
 
-			// Take properties obtained by containment
-			if (getContainerFlexoConcept() != null && considerContainment) {
-				computedAccessibleProperties.addAll(getContainerFlexoConcept().retrieveAccessibleProperties(considerContainment));
-			}
-
 			// Take inherited properties
 			for (FlexoConcept parentConcept : getParentFlexoConcepts()) {
 				for (FlexoProperty<?> p : parentConcept.retrieveAccessibleProperties(considerContainment)) {
@@ -1043,6 +1038,15 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 						else if (inheritedProperties.get(p.getName()).isSuperPropertyOf(p)) {
 							inheritedProperties.put(p.getName(), p);
 						}
+					}
+				}
+			}
+
+			// Take properties obtained by containment
+			if (getContainerFlexoConcept() != null && considerContainment) {
+				for (FlexoProperty<?> p : getContainerFlexoConcept().retrieveAccessibleProperties(considerContainment)) {
+					if (getDeclaredProperty(p.getPropertyName()) == null && inheritedProperties.get(p.getPropertyName()) == null) {
+						computedAccessibleProperties.add(p);
 					}
 				}
 			}
