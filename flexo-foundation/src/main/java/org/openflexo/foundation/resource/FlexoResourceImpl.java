@@ -633,6 +633,7 @@ public abstract class FlexoResourceImpl<RD extends ResourceData<RD>> extends Fle
 		return returned;
 	}
 
+	@Override
 	public String computeDefaultURI() {
 		return getResourceCenter().getDefaultResourceURI(this);
 	}
@@ -702,6 +703,13 @@ public abstract class FlexoResourceImpl<RD extends ResourceData<RD>> extends Fle
 	public <I> String parentPathRelativeToResourceCenter(FlexoResourceCenter<I> rc) {
 		I parent = rc.getContainer((I) getIODelegate().getSerializationArtefact());
 		return rc.relativePath(parent);
+	}
+
+	@Override
+	public <I> String parentParentPathRelativeToResourceCenter(FlexoResourceCenter<I> rc) {
+		I parent = rc.getContainer((I) getIODelegate().getSerializationArtefact());
+		I parentParent = rc.getContainer(parent);
+		return rc.relativePath(parentParent);
 	}
 
 }
