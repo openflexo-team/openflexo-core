@@ -214,8 +214,8 @@ public class CreateEditionAction extends FlexoAction<CreateEditionAction, FMLCon
 					.getAvailableEditionActionTypes(modelSlotClass)) {
 				addToAvailableActions(eaClass, modelSlotTA);
 			}
-			for (Class<? extends FetchRequest<?, ?, ?>> frClass : getServiceManager().getTechnologyAdapterService()
-					.getAvailableFetchRequestActionTypes(modelSlotClass)) {
+			for (Class<? extends AbstractFetchRequest<?, ?, ?, ?>> frClass : getServiceManager().getTechnologyAdapterService()
+					.getAvailableAbstractFetchRequestActionTypes(modelSlotClass)) {
 				addToAvailableActions(frClass, modelSlotTA);
 			}
 		}
