@@ -45,6 +45,7 @@ import org.openflexo.foundation.technologyadapter.FlexoMetaModel;
 import org.openflexo.foundation.technologyadapter.FlexoModel;
 import org.openflexo.foundation.technologyadapter.FlexoModelResource;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
+import org.openflexo.foundation.technologyadapter.TechnologyAdapterResource;
 import org.openflexo.foundation.technologyadapter.TechnologyObject;
 import org.openflexo.foundation.technologyadapter.TypeAwareModelSlot;
 import org.openflexo.pamela.annotations.Getter;
@@ -134,6 +135,15 @@ public interface TypeAwareModelSlotInstance<M extends FlexoModel<M, MM> & Techno
 				}*/
 			}
 			return accessedResourceData;
+		}
+
+		@Override
+		public TechnologyAdapterResource<M, ?> getResource() {
+			TechnologyAdapterResource<M, ?> returned = super.getResource();
+			if (returned == null && getAccessedResourceData() != null) {
+				return (TechnologyAdapterResource) getAccessedResourceData().getResource();
+			}
+			return returned;
 		}
 
 		// Serialization/deserialization only, do not use
