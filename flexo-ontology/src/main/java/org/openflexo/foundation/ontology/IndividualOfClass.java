@@ -137,6 +137,10 @@ public class IndividualOfClass<TA extends TechnologyAdapter<TA>> implements Tech
 		if (aType instanceof IndividualOfClass) {
 			return ontologyClass.isSuperConceptOf(((IndividualOfClass<TA>) aType).getOntologyClass());
 		}
+		if (aType instanceof IFlexoOntologyIndividual) {
+			// TODO: something better to do here !!!
+			return true;
+		}
 		return false;
 	}
 
