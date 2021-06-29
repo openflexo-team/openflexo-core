@@ -262,6 +262,7 @@ parent_shape=Parent shape
 parent_virtual_model=Parent virtual model
 perform_post_processings=Perform post processings
 please_choose_a_behaviour_type=Please choose a behaviour type
+please_choose_a_property_type=Please choose a property type
 please_choose_a_role_type=Please choose a role type
 please_choose_a_technology_adapter=Please choose a technology adapter
 please_choose_a_valid_metamodel=Please choose a valid metamodel
