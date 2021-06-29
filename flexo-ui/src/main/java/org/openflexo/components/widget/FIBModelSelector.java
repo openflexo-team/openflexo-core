@@ -85,7 +85,7 @@ public class FIBModelSelector extends FIBFlexoObjectSelector<FlexoModelResource>
 	@Override
 	public String renderedString(FlexoModelResource editedObject) {
 		if (editedObject != null) {
-			return editedObject.getURI();
+			return editedObject.getName();
 		}
 		return "";
 	}

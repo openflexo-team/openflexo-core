@@ -80,7 +80,7 @@ public class FIBMetaModelSelector extends FIBFlexoObjectSelector<FlexoMetaModelR
 	@Override
 	public String renderedString(FlexoMetaModelResource editedObject) {
 		if (editedObject != null) {
-			return editedObject.getURI();
+			return editedObject.getName();
 		}
 		return "";
 	}
