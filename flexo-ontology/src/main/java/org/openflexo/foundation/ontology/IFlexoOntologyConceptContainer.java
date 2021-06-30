@@ -81,18 +81,18 @@ public interface IFlexoOntologyConceptContainer<TA extends TechnologyAdapter<TA>
 	 * @param objectURI
 	 * @return
 	 */
-	public IFlexoOntologyConcept<TA> getOntologyObject(String objectURI);
+	public IFlexoOntologyConcept<TA> getOntologyObject(String objectNameOrURI);
 
 	/**
-	 * Retrieve an class from its URI, in the context of this container (if this container is an ontology, will lookup in ontology and
-	 * recursively on imported ontologies)<br>
+	 * Retrieve an class from its URI or name, in the context of this container (if this container is an ontology, will lookup in ontology
+	 * and recursively on imported ontologies)<br>
 	 * The current container defines the scope, in which to lookup returned object. This method does NOT try to lookup object from outer
 	 * scope ontologies.
 	 * 
 	 * @param objectURI
 	 * @return
 	 */
-	public IFlexoOntologyClass<TA> getClass(String classURI);
+	public IFlexoOntologyClass<TA> getClass(String classNameOrURI);
 
 	/**
 	 * Retrieve an individual from its URI, in the context of this container (if this container is an ontology, will lookup in ontology and
