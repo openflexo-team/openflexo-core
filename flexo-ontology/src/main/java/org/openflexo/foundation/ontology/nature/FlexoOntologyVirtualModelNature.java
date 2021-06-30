@@ -106,9 +106,12 @@ public class FlexoOntologyVirtualModelNature implements VirtualModelNature {
 	 */
 	public static Set<IFlexoOntology<?>> getAllReferencedMetaModels(VirtualModel virtualModel) {
 		HashSet<IFlexoOntology<?>> returned = new HashSet<>();
-		for (FlexoOntologyModelSlot<?, ?, ?> modelSlot : getFlexoOntologyModelSlots(virtualModel)) {
-			if (modelSlot.getMetaModelResource() != null) {
-				returned.add(modelSlot.getMetaModelResource().getMetaModelData());
+		List<? extends FlexoOntologyModelSlot<?, ?, ?>> flexoOntologyModelSlots = getFlexoOntologyModelSlots(virtualModel);
+		if (flexoOntologyModelSlots != null) {
+			for (FlexoOntologyModelSlot<?, ?, ?> modelSlot : getFlexoOntologyModelSlots(virtualModel)) {
+				if (modelSlot.getMetaModelResource() != null) {
+					returned.add(modelSlot.getMetaModelResource().getMetaModelData());
+				}
 			}
 		}
 		return returned;
