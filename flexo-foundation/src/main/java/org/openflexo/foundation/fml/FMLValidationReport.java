@@ -126,7 +126,7 @@ public class FMLValidationReport extends ValidationReport {
 
 	private static <C extends FMLObject> void reanalyzeBinding(ValidationIssue<? extends BindingIsRequiredAndMustBeValid<C>, C> issue) {
 		DataBinding<?> db = issue.getCause().getBinding(issue.getValidable());
-		db.markedAsToBeReanalized();
+		db.revalidate();
 	}
 
 	@Override

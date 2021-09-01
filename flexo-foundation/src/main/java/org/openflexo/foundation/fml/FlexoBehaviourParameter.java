@@ -483,6 +483,8 @@ public interface FlexoBehaviourParameter extends FlexoBehaviourObject, FunctionA
 					e.printStackTrace();
 				} catch (InvocationTargetException e) {
 					e.printStackTrace();
+				} catch (ReflectiveOperationException e) {
+					e.printStackTrace();
 				}
 			}
 			return null;
@@ -527,6 +529,8 @@ public interface FlexoBehaviourParameter extends FlexoBehaviourObject, FunctionA
 					e.printStackTrace();
 				} catch (InvocationTargetException e) {
 					e.printStackTrace();
+				} catch (ReflectiveOperationException e) {
+					e.printStackTrace();
 				}
 			}
 			return null;
@@ -562,6 +566,8 @@ public interface FlexoBehaviourParameter extends FlexoBehaviourObject, FunctionA
 				} catch (NullReferenceException e) {
 					e.printStackTrace();
 				} catch (InvocationTargetException e) {
+					e.printStackTrace();
+				} catch (ReflectiveOperationException e) {
 					e.printStackTrace();
 				}
 			}

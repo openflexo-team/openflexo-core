@@ -54,8 +54,8 @@ import org.openflexo.connie.binding.Function;
 import org.openflexo.connie.binding.FunctionPathElement;
 import org.openflexo.connie.binding.IBindingPathElement;
 import org.openflexo.connie.binding.SimplePathElement;
-import org.openflexo.connie.expr.Constant.ObjectConstant;
-import org.openflexo.connie.java.JavaBindingFactory;
+import org.openflexo.connie.binding.javareflect.JavaBasedBindingFactory;
+import org.openflexo.connie.java.expr.JavaConstant.ObjectConstant;
 import org.openflexo.foundation.fml.CreationScheme;
 import org.openflexo.foundation.fml.FlexoBehaviour;
 import org.openflexo.foundation.fml.FlexoBehaviourActionType;
@@ -84,7 +84,7 @@ import org.openflexo.foundation.technologyadapter.TechnologyAdapterBindingFactor
  *
  */
 // TODO: manage a map for structural properties (same as for behaviors)
-public class FMLBindingFactory extends JavaBindingFactory {
+public class FMLBindingFactory extends JavaBasedBindingFactory {
 	static final Logger logger = Logger.getLogger(FMLBindingFactory.class.getPackage().getName());
 
 	@Deprecated
@@ -261,7 +261,7 @@ public class FMLBindingFactory extends JavaBindingFactory {
 	}
 
 	@Override
-	public List<? extends FunctionPathElement> getAccessibleFunctionPathElements(IBindingPathElement parent) {
+	public List<? extends FunctionPathElement<?>> getAccessibleFunctionPathElements(IBindingPathElement parent) {
 
 		Type pType = parent.getType();
 		if (pType instanceof FlexoConceptInstanceType) {

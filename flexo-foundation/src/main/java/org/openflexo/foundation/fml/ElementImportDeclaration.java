@@ -219,22 +219,18 @@ public interface ElementImportDeclaration extends FMLPrettyPrintable {
 				try {
 					referencedObject = buildReferencedObject();
 				} catch (TypeMismatchException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				} catch (NullReferenceException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				} catch (InvocationTargetException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				} catch (FileNotFoundException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				} catch (ResourceLoadingCancelledException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				} catch (FlexoException e) {
-					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (ReflectiveOperationException e) {
 					e.printStackTrace();
 				}
 			}
@@ -243,8 +239,8 @@ public interface ElementImportDeclaration extends FMLPrettyPrintable {
 
 		private boolean isBuildingReferencedObject = false;
 
-		private FlexoObject buildReferencedObject() throws TypeMismatchException, NullReferenceException, InvocationTargetException,
-				FileNotFoundException, ResourceLoadingCancelledException, FlexoException {
+		private FlexoObject buildReferencedObject() throws TypeMismatchException, NullReferenceException, FileNotFoundException,
+				ResourceLoadingCancelledException, FlexoException, ReflectiveOperationException {
 
 			if (isBuildingReferencedObject) {
 				return null;

@@ -52,6 +52,7 @@ import org.openflexo.connie.BindingEvaluationContext;
 import org.openflexo.connie.BindingFactory;
 import org.openflexo.connie.BindingVariable;
 import org.openflexo.connie.DataBinding;
+import org.openflexo.connie.expr.ExpressionEvaluator;
 import org.openflexo.connie.java.JavaBindingFactory;
 import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.FlexoObject;
@@ -59,6 +60,7 @@ import org.openflexo.foundation.InnerResourceData;
 import org.openflexo.foundation.fml.binding.CompilationUnitBindingModel;
 import org.openflexo.foundation.fml.binding.NamedImportBindingVariable;
 import org.openflexo.foundation.fml.binding.NamespaceBindingVariable;
+import org.openflexo.foundation.fml.expr.FMLExpressionEvaluator;
 import org.openflexo.foundation.fml.inspector.InspectorEntry;
 import org.openflexo.foundation.fml.rm.CompilationUnitResource;
 import org.openflexo.foundation.fml.rm.CompilationUnitResourceFactory;
@@ -77,8 +79,6 @@ import org.openflexo.pamela.annotations.Embedded;
 import org.openflexo.pamela.annotations.Finder;
 import org.openflexo.pamela.annotations.Getter;
 import org.openflexo.pamela.annotations.Getter.Cardinality;
-import org.openflexo.pamela.model.PAMELAVisitor;
-import org.openflexo.pamela.model.PAMELAVisitor.VisitingStrategy;
 import org.openflexo.pamela.annotations.ImplementationClass;
 import org.openflexo.pamela.annotations.ModelEntity;
 import org.openflexo.pamela.annotations.PastingPoint;
@@ -88,6 +88,8 @@ import org.openflexo.pamela.annotations.Remover;
 import org.openflexo.pamela.annotations.Setter;
 import org.openflexo.pamela.annotations.XMLAttribute;
 import org.openflexo.pamela.annotations.XMLElement;
+import org.openflexo.pamela.model.PAMELAVisitor;
+import org.openflexo.pamela.model.PAMELAVisitor.VisitingStrategy;
 import org.openflexo.pamela.undo.CompoundEdit;
 import org.openflexo.rm.BasicResourceImpl.LocatorNotFoundException;
 import org.openflexo.rm.FileResourceImpl;
@@ -352,6 +354,12 @@ public interface FMLCompilationUnit extends FMLObject, FMLPrettyPrintable, Resou
 		private CompilationUnitBindingModel bindingModel;
 
 		class ReflectedBindingEvaluationContext implements BindingEvaluationContext {
+
+			@Override
+			public ExpressionEvaluator getEvaluator() {
+				return new FMLExpressionEvaluator(this);
+			}
+
 			@Override
 			public Object getValue(BindingVariable bindingVariable) {
 				// System.out.println("getValue() for " + bindingVariable + " of " + bindingVariable.getClass());
@@ -383,6 +391,7 @@ public interface FMLCompilationUnit extends FMLObject, FMLPrettyPrintable, Resou
 				}
 				return null;
 			}
+
 		}
 
 		/*public FMLCompilationUnitImpl() {
