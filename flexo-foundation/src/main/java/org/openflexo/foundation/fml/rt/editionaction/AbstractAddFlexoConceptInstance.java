@@ -319,6 +319,8 @@ public interface AbstractAddFlexoConceptInstance<FCI extends FlexoConceptInstanc
 				e.printStackTrace();
 			} catch (InvocationTargetException e) {
 				e.printStackTrace();
+			} catch (ReflectiveOperationException e) {
+				e.printStackTrace();
 			}
 			return null;
 		}
@@ -331,6 +333,8 @@ public interface AbstractAddFlexoConceptInstance<FCI extends FlexoConceptInstanc
 			} catch (NullReferenceException e) {
 				e.printStackTrace();
 			} catch (InvocationTargetException e) {
+				e.printStackTrace();
+			} catch (ReflectiveOperationException e) {
 				e.printStackTrace();
 			}
 			return null;
@@ -729,7 +733,7 @@ public interface AbstractAddFlexoConceptInstance<FCI extends FlexoConceptInstanc
 			if (getDynamicInstantiation() && getDynamicFlexoConceptType().isValid()) {
 				try {
 					return getDynamicFlexoConceptType().getBindingValue(evaluationContext);
-				} catch (TypeMismatchException | NullReferenceException | InvocationTargetException e) {
+				} catch (TypeMismatchException | NullReferenceException | ReflectiveOperationException e) {
 					e.printStackTrace();
 					throw new FlexoException(e);
 				}

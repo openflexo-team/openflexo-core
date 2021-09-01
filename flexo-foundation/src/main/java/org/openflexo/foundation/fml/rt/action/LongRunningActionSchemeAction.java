@@ -120,6 +120,8 @@ public class LongRunningActionSchemeAction extends ActionSchemeAction implements
 				e.printStackTrace();
 			} catch (InvocationTargetException e) {
 				e.printStackTrace();
+			} catch (ReflectiveOperationException e) {
+				e.printStackTrace();
 			}
 		}
 		return 0;

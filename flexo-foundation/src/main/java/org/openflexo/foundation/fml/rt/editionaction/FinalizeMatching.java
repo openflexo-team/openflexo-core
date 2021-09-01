@@ -493,6 +493,8 @@ public interface FinalizeMatching extends EditionAction {
 				e.printStackTrace();
 			} catch (InvocationTargetException e) {
 				e.printStackTrace();
+			} catch (ReflectiveOperationException e) {
+				e.printStackTrace();
 			}
 			return null;
 		}

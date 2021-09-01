@@ -126,6 +126,8 @@ public interface CreatePrimitiveRole extends TechnologySpecificActionDefiningRec
 				e.printStackTrace();
 			} catch (InvocationTargetException e) {
 				e.printStackTrace();
+			} catch (ReflectiveOperationException e) {
+				e.printStackTrace();
 			}
 			return null;
 		}
@@ -139,6 +141,8 @@ public interface CreatePrimitiveRole extends TechnologySpecificActionDefiningRec
 				e.printStackTrace();
 			} catch (InvocationTargetException e) {
 				e.printStackTrace();
+			} catch (ReflectiveOperationException e) {
+				e.printStackTrace();
 			}
 			return null;
 		}
@@ -151,6 +155,8 @@ public interface CreatePrimitiveRole extends TechnologySpecificActionDefiningRec
 			} catch (NullReferenceException e) {
 				e.printStackTrace();
 			} catch (InvocationTargetException e) {
+				e.printStackTrace();
+			} catch (ReflectiveOperationException e) {
 				e.printStackTrace();
 			}
 			return null;

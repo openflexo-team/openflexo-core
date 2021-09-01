@@ -376,6 +376,8 @@ public interface InspectorEntry extends FlexoConceptObject, WidgetContext {
 					e.printStackTrace();
 				} catch (InvocationTargetException e) {
 					e.printStackTrace();
+				} catch (ReflectiveOperationException e) {
+					e.printStackTrace();
 				}
 			}
 			return null;
@@ -419,6 +421,8 @@ public interface InspectorEntry extends FlexoConceptObject, WidgetContext {
 				} catch (NullReferenceException e) {
 					e.printStackTrace();
 				} catch (InvocationTargetException e) {
+					e.printStackTrace();
+				} catch (ReflectiveOperationException e) {
 					e.printStackTrace();
 				}
 			}

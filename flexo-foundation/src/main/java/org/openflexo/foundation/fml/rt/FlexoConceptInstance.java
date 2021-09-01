@@ -55,12 +55,12 @@ import org.openflexo.connie.BindingModel;
 import org.openflexo.connie.BindingVariable;
 import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.DataBinding.BindingDefinitionType;
-import org.openflexo.connie.MultipleParametersBindingEvaluator;
 import org.openflexo.connie.binding.BindingValueChangeListener;
 import org.openflexo.connie.exception.InvalidBindingException;
 import org.openflexo.connie.exception.NotSettableContextException;
 import org.openflexo.connie.exception.NullReferenceException;
 import org.openflexo.connie.exception.TypeMismatchException;
+import org.openflexo.connie.expr.ExpressionEvaluator;
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.FlexoObject;
@@ -81,7 +81,9 @@ import org.openflexo.foundation.fml.binding.FlexoRoleBindingVariable;
 import org.openflexo.foundation.fml.binding.SetValueBindingVariable;
 import org.openflexo.foundation.fml.binding.SuperBindingVariable;
 import org.openflexo.foundation.fml.controlgraph.FMLControlGraph;
+import org.openflexo.foundation.fml.expr.FMLExpressionEvaluator;
 import org.openflexo.foundation.fml.inspector.FlexoConceptInspector;
+import org.openflexo.foundation.fml.utils.FMLMultipleParametersBindingEvaluator;
 import org.openflexo.foundation.resource.ResourceData;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.foundation.technologyadapter.TechnologyObject;
@@ -447,7 +449,7 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 	 * @throws InvocationTargetException
 	 */
 	public <T> T execute(String expression)
-			throws TypeMismatchException, NullReferenceException, InvocationTargetException, InvalidBindingException;
+			throws TypeMismatchException, NullReferenceException, ReflectiveOperationException, InvalidBindingException;
 
 	/**
 	 * Use the current FlexoConceptInstance as the run-time context of an expression supplied<br>
@@ -474,7 +476,7 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 	 * @throws InvocationTargetException
 	 */
 	public <T> T execute(String expression, Object... parameters)
-			throws TypeMismatchException, NullReferenceException, InvocationTargetException, InvalidBindingException;
+			throws TypeMismatchException, NullReferenceException, ReflectiveOperationException, InvalidBindingException;
 
 	/**
 	 * Instantiate run-time-level object encoding reference to this {@link FlexoConceptInstance} object
@@ -632,6 +634,11 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 			protected HashMap<String, Object> localVariables = new HashMap<>();
 
 			@Override
+			public ExpressionEvaluator getEvaluator() {
+				return new FMLExpressionEvaluator(this);
+			}
+
+			@Override
 			public FlexoEditor getEditor() {
 				return getFlexoEditor();
 			}
@@ -755,6 +762,10 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 						logger.warning(
 								"Unexpected exception " + e.getTargetException() + " while executing expression property=" + flexoProperty);
 						return null;
+					} catch (ReflectiveOperationException e) {
+						e.printStackTrace();
+						logger.warning("Unexpected exception " + e + " while executing expression property=" + flexoProperty);
+						return null;
 					}
 				}
 				else if (flexoProperty instanceof GetProperty) {
@@ -847,6 +858,8 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 						} catch (InvocationTargetException e) {
 							e.printStackTrace();
 						} catch (NotSettableContextException e) {
+							e.printStackTrace();
+						} catch (ReflectiveOperationException e) {
 							e.printStackTrace();
 						}
 					}
@@ -1540,6 +1553,8 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 				e.printStackTrace();
 			} catch (InvocationTargetException e) {
 				e.printStackTrace();
+			} catch (ReflectiveOperationException e) {
+				e.printStackTrace();
 			}
 			return null;
 		}
@@ -1556,6 +1571,8 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 				} catch (InvocationTargetException e) {
 					e.printStackTrace();
 				} catch (NotSettableContextException e) {
+					e.printStackTrace();
+				} catch (ReflectiveOperationException e) {
 					e.printStackTrace();
 				}
 				return true;
@@ -1974,6 +1991,8 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 					// e.printStackTrace();
 				} catch (InvocationTargetException e) {
 					e.printStackTrace();
+				} catch (ReflectiveOperationException e) {
+					e.printStackTrace();
 				} finally {
 					isComputingRenderer = false;
 				}
@@ -2082,7 +2101,7 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 
 		@Override
 		public <T> T execute(String expression)
-				throws TypeMismatchException, NullReferenceException, InvocationTargetException, InvalidBindingException {
+				throws TypeMismatchException, NullReferenceException, ReflectiveOperationException, InvalidBindingException {
 			DataBinding<T> db = new DataBinding<>(expression, this, Object.class, BindingDefinitionType.GET);
 			if (!db.isValid()) {
 				logger.warning("Invalid binding " + db + " reason: " + db.invalidBindingReason());
@@ -2095,8 +2114,8 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 
 		@Override
 		public <T> T execute(String expression, Object... parameters)
-				throws TypeMismatchException, NullReferenceException, InvocationTargetException {
-			return (T) MultipleParametersBindingEvaluator.evaluateBinding(expression, getBindingFactory(), this, parameters);
+				throws TypeMismatchException, NullReferenceException, ReflectiveOperationException {
+			return (T) FMLMultipleParametersBindingEvaluator.evaluateBinding(expression, getBindingFactory(), this, parameters);
 		}
 
 		@Override

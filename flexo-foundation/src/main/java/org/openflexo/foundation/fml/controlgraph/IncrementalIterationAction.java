@@ -182,6 +182,8 @@ public interface IncrementalIterationAction extends AbstractIterationAction {
 					e.printStackTrace();
 				} catch (InvocationTargetException e) {
 					e.printStackTrace();
+				} catch (ReflectiveOperationException e) {
+					e.printStackTrace();
 				}
 			}
 			return 0;
@@ -197,6 +199,8 @@ public interface IncrementalIterationAction extends AbstractIterationAction {
 					e.printStackTrace();
 				} catch (InvocationTargetException e) {
 					e.printStackTrace();
+				} catch (ReflectiveOperationException e) {
+					e.printStackTrace();
 				}
 			}
 			return 0;
@@ -211,6 +215,8 @@ public interface IncrementalIterationAction extends AbstractIterationAction {
 				} catch (NullReferenceException e) {
 					e.printStackTrace();
 				} catch (InvocationTargetException e) {
+					e.printStackTrace();
+				} catch (ReflectiveOperationException e) {
 					e.printStackTrace();
 				}
 			}

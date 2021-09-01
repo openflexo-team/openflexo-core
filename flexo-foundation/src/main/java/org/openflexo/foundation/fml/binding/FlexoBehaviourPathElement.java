@@ -79,7 +79,7 @@ import org.openflexo.foundation.fml.rt.action.SuperCreationSchemeActionFactory;
  * @author sylvain
  * 
  */
-public class FlexoBehaviourPathElement extends FunctionPathElement implements PropertyChangeListener {
+public class FlexoBehaviourPathElement extends FunctionPathElement<FlexoBehaviour> implements PropertyChangeListener {
 
 	static final Logger logger = Logger.getLogger(FlexoBehaviourPathElement.class.getPackage().getName());
 
@@ -133,11 +133,6 @@ public class FlexoBehaviourPathElement extends FunctionPathElement implements Pr
 	}
 
 	@Override
-	public FlexoBehaviour getFunction() {
-		return (FlexoBehaviour) super.getFunction();
-	}
-
-	@Override
 	public String getLabel() {
 		return getFlexoBehaviour().getSignature();
 	}
@@ -145,6 +140,16 @@ public class FlexoBehaviourPathElement extends FunctionPathElement implements Pr
 	@Override
 	public String getTooltipText(Type resultingType) {
 		return getFlexoBehaviour().getDescription();
+	}
+
+	/**
+	 * Return a flag indicating if this BindingPathElement supports computation with 'null' value as entry (target)<br>
+	 * 
+	 * @return false in this case
+	 */
+	@Override
+	public boolean supportsNullValues() {
+		return false;
 	}
 
 	@Override
@@ -281,9 +286,7 @@ public class FlexoBehaviourPathElement extends FunctionPathElement implements Pr
 				logger.warning("Don't know what to do with " + target);
 			}
 			// return getMethodDefinition().getMethod().invoke(target, args);
-		} catch (
-
-		IllegalArgumentException e) {
+		} catch (IllegalArgumentException e) {
 			StringBuffer warningMessage = new StringBuffer(
 					"While evaluating edition scheme " + getFlexoBehaviour() + " exception occured: " + e.getMessage());
 			warningMessage.append(", object = " + target);
@@ -292,6 +295,8 @@ public class FlexoBehaviourPathElement extends FunctionPathElement implements Pr
 			}*/
 			logger.warning(warningMessage.toString());
 		} catch (InvocationTargetException e) {
+			e.printStackTrace();
+		} catch (ReflectiveOperationException e) {
 			e.printStackTrace();
 		}
 		return null;

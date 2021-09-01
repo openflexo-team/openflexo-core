@@ -44,17 +44,19 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import org.openflexo.connie.BindingVariable;
+import org.openflexo.connie.expr.ExpressionEvaluator;
 import org.openflexo.foundation.DataModification;
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.action.FlexoAction;
+import org.openflexo.foundation.fml.FMLBindingFactory;
 import org.openflexo.foundation.fml.FlexoBehaviour;
 import org.openflexo.foundation.fml.FlexoBehaviourParameter;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.binding.DeclarationBindingVariable;
-import org.openflexo.foundation.fml.binding.FMLBindingFactory;
 import org.openflexo.foundation.fml.binding.FlexoBehaviourBindingModel;
 import org.openflexo.foundation.fml.editionaction.EditionAction;
+import org.openflexo.foundation.fml.expr.FMLExpressionEvaluator;
 import org.openflexo.foundation.fml.rt.ActionExecutionCancelledException;
 import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.FMLRunTimeEngine;
@@ -144,6 +146,11 @@ public abstract class FlexoBehaviourAction<A extends FlexoBehaviourAction<A, FB,
 		this(flexoBehaviour, focusedObject, globalSelection, ownerAction.getEditor());
 		setOwnerAction(ownerAction);
 		ownerAction.addToEmbeddedActions(this);
+	}
+
+	@Override
+	public final ExpressionEvaluator getEvaluator() {
+		return new FMLExpressionEvaluator(this);
 	}
 
 	@SuppressWarnings("unchecked")

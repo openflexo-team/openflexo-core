@@ -39,7 +39,6 @@
 package org.openflexo.foundation.fml.rt.editionaction;
 
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -124,7 +123,7 @@ public interface CreateTopLevelVirtualModelInstance extends AbstractAddFMLRTVirt
 			if (dataBinding != null && dataBinding.isSet() && dataBinding.isValid()) {
 				try {
 					return dataBinding.getBindingValue(evaluationContext);
-				} catch (TypeMismatchException | NullReferenceException | InvocationTargetException e) {
+				} catch (TypeMismatchException | NullReferenceException | ReflectiveOperationException e) {
 					logger.log(Level.WARNING,
 							"Can't evaluate data binding " + dataBinding.getBindingName() + " (" + dataBinding.getExpression() + ")");
 				}

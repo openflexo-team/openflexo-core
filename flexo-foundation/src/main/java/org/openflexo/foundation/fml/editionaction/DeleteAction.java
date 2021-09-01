@@ -100,6 +100,8 @@ public interface DeleteAction<T extends FlexoObject> extends AssignableAction<T>
 				e.printStackTrace();
 			} catch (InvocationTargetException e) {
 				e.printStackTrace();
+			} catch (ReflectiveOperationException e) {
+				e.printStackTrace();
 			}
 			return null;
 		}
@@ -145,6 +147,8 @@ public interface DeleteAction<T extends FlexoObject> extends AssignableAction<T>
 				e1.printStackTrace();
 			} catch (InvocationTargetException e1) {
 				e1.printStackTrace();
+			} catch (ReflectiveOperationException e) {
+				e.printStackTrace();
 			}
 
 			// Handle special case of explicit call to super delete

@@ -39,7 +39,6 @@
 package org.openflexo.foundation.fml.editionaction;
 
 import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Type;
 import java.util.List;
 import java.util.logging.Level;
@@ -166,8 +165,7 @@ public interface AddClassInstance extends AssignableAction<Object> {
 				Constructor<?> constructor = typeClass.getConstructor(parameterTypes);
 				return constructor.newInstance(parameters);
 
-			} catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException
-					| TypeMismatchException | NullReferenceException e) {
+			} catch (ReflectiveOperationException | TypeMismatchException | NullReferenceException e) {
 				logger.log(Level.SEVERE, "Can't create instance " + getType(), e);
 				return null;
 			}

@@ -154,6 +154,8 @@ public interface ExecuteFlexoBehaviour<T> extends TechnologySpecificActionDefini
 				e.printStackTrace();
 			} catch (InvocationTargetException e) {
 				e.printStackTrace();
+			} catch (ReflectiveOperationException e) {
+				e.printStackTrace();
 			}
 			return null;
 		}

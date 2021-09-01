@@ -282,6 +282,8 @@ public interface MatchFlexoConceptInstance extends FMLRTAction<FlexoConceptInsta
 				e.printStackTrace();
 			} catch (InvocationTargetException e) {
 				e.printStackTrace();
+			} catch (ReflectiveOperationException e) {
+				e.printStackTrace();
 			}
 			return null;
 		}
@@ -294,6 +296,8 @@ public interface MatchFlexoConceptInstance extends FMLRTAction<FlexoConceptInsta
 			} catch (NullReferenceException e) {
 				e.printStackTrace();
 			} catch (InvocationTargetException e) {
+				e.printStackTrace();
+			} catch (ReflectiveOperationException e) {
 				e.printStackTrace();
 			}
 			return null;
@@ -308,6 +312,8 @@ public interface MatchFlexoConceptInstance extends FMLRTAction<FlexoConceptInsta
 			} catch (NullReferenceException e) {
 				e.printStackTrace();
 			} catch (InvocationTargetException e) {
+				e.printStackTrace();
+			} catch (ReflectiveOperationException e) {
 				e.printStackTrace();
 			}
 			return null;

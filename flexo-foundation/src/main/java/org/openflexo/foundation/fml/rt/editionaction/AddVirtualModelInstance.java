@@ -123,6 +123,8 @@ public interface AddVirtualModelInstance extends AbstractAddFMLRTVirtualModelIns
 					e.printStackTrace();
 				} catch (InvocationTargetException e) {
 					e.printStackTrace();
+				} catch (ReflectiveOperationException e) {
+					e.printStackTrace();
 				}
 
 				VirtualModel instantiatedVirtualModel = (VirtualModel) retrieveFlexoConcept(evaluationContext);

@@ -188,6 +188,8 @@ public interface ExecuteBehaviourParameter extends FlexoBehaviourObject {
 					e.printStackTrace();
 				} catch (InvocationTargetException e) {
 					e.printStackTrace();
+				} catch (ReflectiveOperationException e) {
+					e.printStackTrace();
 				}
 				return null;
 			}

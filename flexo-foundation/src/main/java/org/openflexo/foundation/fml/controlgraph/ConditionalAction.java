@@ -211,6 +211,8 @@ public interface ConditionalAction extends ControlStructureAction, FMLControlGra
 					e.printStackTrace();
 				} catch (InvocationTargetException e) {
 					e.printStackTrace();
+				} catch (ReflectiveOperationException e) {
+					e.printStackTrace();
 				}
 			}
 			return true;

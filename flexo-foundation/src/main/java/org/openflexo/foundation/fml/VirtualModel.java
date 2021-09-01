@@ -53,7 +53,6 @@ import org.openflexo.connie.Bindable;
 import org.openflexo.connie.BindingFactory;
 import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.InvalidNameException;
-import org.openflexo.foundation.fml.binding.FMLBindingFactory;
 import org.openflexo.foundation.fml.binding.VirtualModelBindingModel;
 import org.openflexo.foundation.fml.md.FMLMetaData;
 import org.openflexo.foundation.fml.md.SingleMetaData;

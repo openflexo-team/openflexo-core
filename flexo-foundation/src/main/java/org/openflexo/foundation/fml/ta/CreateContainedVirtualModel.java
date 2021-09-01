@@ -112,6 +112,8 @@ public interface CreateContainedVirtualModel extends TechnologySpecificActionDef
 				e.printStackTrace();
 			} catch (InvocationTargetException e) {
 				e.printStackTrace();
+			} catch (ReflectiveOperationException e) {
+				e.printStackTrace();
 			}
 			return null;
 		}
@@ -149,6 +151,8 @@ public interface CreateContainedVirtualModel extends TechnologySpecificActionDef
 			} catch (NullReferenceException e) {
 				e.printStackTrace();
 			} catch (InvocationTargetException e) {
+				e.printStackTrace();
+			} catch (ReflectiveOperationException e) {
 				e.printStackTrace();
 			}
 			return null;

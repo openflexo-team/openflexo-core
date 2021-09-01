@@ -266,6 +266,8 @@ public interface AbstractSelectVirtualModelInstance<VMI extends VirtualModelInst
 					e.printStackTrace();
 				} catch (InvocationTargetException e) {
 					e.printStackTrace();
+				} catch (ReflectiveOperationException e) {
+					e.printStackTrace();
 				}
 			}
 			return null;

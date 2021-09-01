@@ -287,6 +287,8 @@ public interface AbstractSelectFlexoConceptInstance<VMI extends VirtualModelInst
 					e.printStackTrace();
 				} catch (InvocationTargetException e) {
 					e.printStackTrace();
+				} catch (ReflectiveOperationException e) {
+					e.printStackTrace();
 				}
 			}
 			return null;
@@ -303,6 +305,8 @@ public interface AbstractSelectFlexoConceptInstance<VMI extends VirtualModelInst
 					e.printStackTrace();
 				} catch (InvocationTargetException e) {
 					e.printStackTrace();
+				} catch (ReflectiveOperationException e) {
+					e.printStackTrace();
 				}
 			}
 			return null;
@@ -310,7 +314,7 @@ public interface AbstractSelectFlexoConceptInstance<VMI extends VirtualModelInst
 
 		private List<FlexoConceptInstance> getIndexedMatchingList(FetchRequestCondition indexableCondition, VirtualModelInstance<?, ?> vmi,
 				RunTimeEvaluationContext evaluationContext)
-				throws TypeMismatchException, NullReferenceException, InvocationTargetException {
+				throws TypeMismatchException, NullReferenceException, ReflectiveOperationException {
 			Expression indexableTerm = getIndexableTerm(indexableCondition);
 			Expression oppositeTerm = getOppositeTerm(indexableCondition);
 
@@ -389,6 +393,8 @@ public interface AbstractSelectFlexoConceptInstance<VMI extends VirtualModelInst
 					} catch (NullReferenceException e) {
 						e.printStackTrace();
 					} catch (InvocationTargetException e) {
+						e.printStackTrace();
+					} catch (ReflectiveOperationException e) {
 						e.printStackTrace();
 					}
 				}

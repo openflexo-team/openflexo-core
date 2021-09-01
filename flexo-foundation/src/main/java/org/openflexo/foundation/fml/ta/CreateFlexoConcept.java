@@ -130,6 +130,8 @@ public interface CreateFlexoConcept extends TechnologySpecificActionDefiningRece
 				e.printStackTrace();
 			} catch (InvocationTargetException e) {
 				e.printStackTrace();
+			} catch (ReflectiveOperationException e) {
+				e.printStackTrace();
 			}
 			return null;
 		}
@@ -142,6 +144,8 @@ public interface CreateFlexoConcept extends TechnologySpecificActionDefiningRece
 			} catch (NullReferenceException e) {
 				e.printStackTrace();
 			} catch (InvocationTargetException e) {
+				e.printStackTrace();
+			} catch (ReflectiveOperationException e) {
 				e.printStackTrace();
 			}
 			return null;

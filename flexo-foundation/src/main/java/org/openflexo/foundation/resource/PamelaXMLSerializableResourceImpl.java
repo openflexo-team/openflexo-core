@@ -54,7 +54,6 @@ import org.jdom2.Parent;
 import org.jdom2.filter.ElementFilter;
 import org.jdom2.input.SAXBuilder;
 import org.openflexo.foundation.PamelaResourceModelFactory;
-import org.openflexo.kvc.AccessorInvocationException;
 import org.openflexo.pamela.AccessibleProxyObject;
 import org.openflexo.pamela.factory.ModelFactory;
 import org.openflexo.toolbox.FileUtils;
@@ -152,16 +151,11 @@ public abstract class PamelaXMLSerializableResourceImpl<RD extends ResourceData<
 	}
 
 	/**
-	 * @param version
-	 * @param handler
+	 * 
 	 * @param temporaryFile
-	 * @throws InvalidObjectSpecificationException
-	 * @throws InvalidModelException
-	 * @throws AccessorInvocationException
-	 * @throws DuplicateSerializationIdentifierException
 	 * @throws IOException
 	 */
-	private void performXMLSerialization(/* SerializationHandler handler, */File temporaryFile) throws IOException {
+	private void performXMLSerialization(File temporaryFile) throws IOException {
 		try (FileOutputStream out = new FileOutputStream(temporaryFile)) {
 			getFactory().serialize(resourceData, out);
 			out.flush();

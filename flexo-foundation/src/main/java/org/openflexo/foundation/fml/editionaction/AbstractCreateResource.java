@@ -38,7 +38,6 @@
 
 package org.openflexo.foundation.fml.editionaction;
 
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Type;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -165,7 +164,7 @@ public interface AbstractCreateResource<MS extends ModelSlot<?>, RD extends Reso
 			if (dataBinding != null && dataBinding.isSet() && dataBinding.isValid()) {
 				try {
 					return dataBinding.getBindingValue(evaluationContext);
-				} catch (TypeMismatchException | NullReferenceException | InvocationTargetException e) {
+				} catch (TypeMismatchException | NullReferenceException | ReflectiveOperationException e) {
 					logger.log(Level.WARNING,
 							"Can't evaluate data binding " + dataBinding.getBindingName() + " (" + dataBinding.getExpression() + ")");
 				}

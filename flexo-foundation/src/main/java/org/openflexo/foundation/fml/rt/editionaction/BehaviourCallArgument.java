@@ -197,6 +197,8 @@ public interface BehaviourCallArgument<T extends FlexoConceptObject> extends Fle
 					e.printStackTrace();
 				} catch (InvocationTargetException e) {
 					e.printStackTrace();
+				} catch (ReflectiveOperationException e) {
+					e.printStackTrace();
 				}
 				return null;
 			}

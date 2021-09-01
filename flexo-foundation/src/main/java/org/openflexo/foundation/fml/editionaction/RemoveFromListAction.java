@@ -98,6 +98,8 @@ public interface RemoveFromListAction<T> extends AssignableAction<T> {
 				e.printStackTrace();
 			} catch (InvocationTargetException e) {
 				e.printStackTrace();
+			} catch (ReflectiveOperationException e) {
+				e.printStackTrace();
 			}
 			return null;
 		}
@@ -184,6 +186,8 @@ public interface RemoveFromListAction<T> extends AssignableAction<T> {
 			} catch (NullReferenceException e) {
 				e.printStackTrace();
 			} catch (InvocationTargetException e) {
+				e.printStackTrace();
+			} catch (ReflectiveOperationException e) {
 				e.printStackTrace();
 			}
 

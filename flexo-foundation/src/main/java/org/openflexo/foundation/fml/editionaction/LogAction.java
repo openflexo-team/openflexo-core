@@ -139,6 +139,8 @@ public interface LogAction extends EditionAction {
 				e1.printStackTrace();
 			} catch (InvocationTargetException e1) {
 				e1.printStackTrace();
+			} catch (ReflectiveOperationException e) {
+				e.printStackTrace();
 			}
 
 			if (evaluationContext.getEditor() != null && evaluationContext.getEditor().getFMLConsole() != null) {

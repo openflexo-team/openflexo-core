@@ -177,6 +177,8 @@ public interface MatchingCriteria extends FlexoConceptObject {
 					e.printStackTrace();
 				} catch (InvocationTargetException e) {
 					e.printStackTrace();
+				} catch (ReflectiveOperationException e) {
+					e.printStackTrace();
 				}
 				return null;
 			}

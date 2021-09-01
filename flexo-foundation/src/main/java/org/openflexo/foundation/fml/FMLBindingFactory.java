@@ -36,7 +36,7 @@
  * 
  */
 
-package org.openflexo.foundation.fml.binding;
+package org.openflexo.foundation.fml;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -48,27 +48,32 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
+import org.openflexo.connie.Bindable;
 import org.openflexo.connie.DataBinding;
+import org.openflexo.connie.ParseException;
 import org.openflexo.connie.binding.BindingPathElement;
 import org.openflexo.connie.binding.Function;
 import org.openflexo.connie.binding.FunctionPathElement;
 import org.openflexo.connie.binding.IBindingPathElement;
 import org.openflexo.connie.binding.SimplePathElement;
 import org.openflexo.connie.binding.javareflect.JavaBasedBindingFactory;
-import org.openflexo.connie.java.expr.JavaConstant.ObjectConstant;
-import org.openflexo.foundation.fml.CreationScheme;
-import org.openflexo.foundation.fml.FlexoBehaviour;
-import org.openflexo.foundation.fml.FlexoBehaviourActionType;
-import org.openflexo.foundation.fml.FlexoBehaviourParameter;
-import org.openflexo.foundation.fml.FlexoBehaviourParametersType;
-import org.openflexo.foundation.fml.FlexoBehaviourParametersValuesType;
-import org.openflexo.foundation.fml.FlexoBehaviourType;
-import org.openflexo.foundation.fml.FlexoConcept;
-import org.openflexo.foundation.fml.FlexoConceptInstanceType;
-import org.openflexo.foundation.fml.FlexoEnum;
-import org.openflexo.foundation.fml.FlexoProperty;
-import org.openflexo.foundation.fml.TechnologySpecificType;
-import org.openflexo.foundation.fml.VirtualModel;
+import org.openflexo.connie.expr.Constant;
+import org.openflexo.connie.expr.Expression;
+import org.openflexo.foundation.fml.binding.ContainerPathElement;
+import org.openflexo.foundation.fml.binding.EPIRendererPathElement;
+import org.openflexo.foundation.fml.binding.EnumValuesPathElement;
+import org.openflexo.foundation.fml.binding.FlexoBehaviourParameterDefinitionPathElement;
+import org.openflexo.foundation.fml.binding.FlexoBehaviourParameterValuePathElement;
+import org.openflexo.foundation.fml.binding.FlexoBehaviourParametersValuesPathElement;
+import org.openflexo.foundation.fml.binding.FlexoBehaviourPathElement;
+import org.openflexo.foundation.fml.binding.FlexoConceptInstancePathElement;
+import org.openflexo.foundation.fml.binding.FlexoConceptTypePathElement;
+import org.openflexo.foundation.fml.binding.FlexoPropertyPathElement;
+import org.openflexo.foundation.fml.binding.ModelSlotPathElement;
+import org.openflexo.foundation.fml.binding.ResourceCenterPathElement;
+import org.openflexo.foundation.fml.binding.VirtualModelTypePathElement;
+import org.openflexo.foundation.fml.expr.FMLConstant;
+import org.openflexo.foundation.fml.expr.FMLConstant.ObjectConstant;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
@@ -102,6 +107,17 @@ public class FMLBindingFactory extends JavaBasedBindingFactory {
 		storedBindingPathElements = new HashMap<>();
 		flexoBehaviourPathElements = new HashMap<>();
 		// Unused this.virtualModel = virtualModel;
+	}
+
+	@Override
+	public Expression parseExpression(String expressionAsString, Bindable bindable) throws ParseException {
+		System.err.println("!!!!!!!! il faut implementer ca !!!!!! ");
+		return null;
+	}
+
+	@Override
+	public Constant<?> getNullExpression() {
+		return FMLConstant.ObjectSymbolicConstant.NULL;
 	}
 
 	protected SimplePathElement getSimplePathElement(Object object, IBindingPathElement parent) {
@@ -374,14 +390,15 @@ public class FMLBindingFactory extends JavaBasedBindingFactory {
 	}
 
 	@Override
-	public FunctionPathElement makeFunctionPathElement(IBindingPathElement parent, Function function, List<DataBinding<?>> args) {
+	public FunctionPathElement<?> makeFunctionPathElement(IBindingPathElement parent, Function function, DataBinding<?> innerAccess,
+			List<DataBinding<?>> args) {
 		if (parent.getType() == null) {
 			return null;
 		}
 		if (parent.getType() instanceof FlexoConceptInstanceType && function instanceof FlexoBehaviour) {
 			return new FlexoBehaviourPathElement(parent, (FlexoBehaviour) function, args);
 		}
-		FunctionPathElement returned = super.makeFunctionPathElement(parent, function, args);
+		return super.makeFunctionPathElement(parent, function, innerAccess, args);
 		// Hook to specialize type returned by getFlexoConceptInstance(String)
 		// This method is used while executing DiagramElement inspectors
 		/*if (function.getName().equals("getFlexoConceptInstance")) {
@@ -391,7 +408,7 @@ public class FMLBindingFactory extends JavaBasedBindingFactory {
 				returned.setType(FlexoConceptInstanceType.getFlexoConceptInstanceType(ep));
 			}
 		}*/
-		return returned;
+		// return returned;
 	}
 
 	@Override
@@ -421,7 +438,7 @@ public class FMLBindingFactory extends JavaBasedBindingFactory {
 					// System.out.println("> " + args.get(i) + " of " + paramsTypes[i]);
 				}
 				// System.out.println("Returned: " + conceptType.getFlexoBehaviour(functionName, paramsTypes));
-				Function returned = conceptType.getFlexoBehaviour(functionName, paramsTypes);
+				FlexoBehaviour returned = conceptType.getFlexoBehaviour(functionName, paramsTypes);
 				if (returned != null) {
 					return returned;
 				}
