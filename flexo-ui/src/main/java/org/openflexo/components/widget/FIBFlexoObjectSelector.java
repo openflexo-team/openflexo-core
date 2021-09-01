@@ -829,6 +829,8 @@ public abstract class FIBFlexoObjectSelector<T extends FlexoObject> extends Text
 			e.printStackTrace();
 		} catch (InvocationTargetException e) {
 			e.printStackTrace();
+		} catch (ReflectiveOperationException e) {
+			e.printStackTrace();
 		}
 		return returned;
 	}

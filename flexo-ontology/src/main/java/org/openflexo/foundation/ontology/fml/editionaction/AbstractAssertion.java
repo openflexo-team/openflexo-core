@@ -109,6 +109,8 @@ public abstract interface AbstractAssertion extends FlexoConceptObject {
 					e.printStackTrace();
 				} catch (InvocationTargetException e) {
 					e.printStackTrace();
+				} catch (ReflectiveOperationException e) {
+					e.printStackTrace();
 				}
 			}
 			return true;

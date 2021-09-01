@@ -91,7 +91,6 @@ import org.openflexo.foundation.resource.SaveResourcePermissionDeniedException;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterService;
-import org.openflexo.kvc.AccessorInvocationException;
 import org.openflexo.pamela.exceptions.ModelDefinitionException;
 import org.openflexo.pamela.validation.ValidationIssue;
 import org.openflexo.pamela.validation.ValidationReport;
@@ -991,16 +990,6 @@ public abstract class CompilationUnitResourceImpl extends PamelaResourceImpl<FML
 			}*/
 	}
 
-	/**
-	 * @param version
-	 * @param handler
-	 * @param temporaryFile
-	 * @throws InvalidObjectSpecificationException
-	 * @throws InvalidModelException
-	 * @throws AccessorInvocationException
-	 * @throws DuplicateSerializationIdentifierException
-	 * @throws IOException
-	 */
 	private void performXMLSerialization(FMLCompilationUnit toBeSaved, File temporaryFile) throws IOException {
 		try (FileOutputStream out = new FileOutputStream(temporaryFile)) {
 			getFactory().serialize(toBeSaved.getVirtualModel(), out);

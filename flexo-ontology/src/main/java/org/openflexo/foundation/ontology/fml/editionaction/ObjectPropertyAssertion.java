@@ -183,6 +183,8 @@ public interface ObjectPropertyAssertion extends AbstractAssertion {
 				e.printStackTrace();
 			} catch (InvocationTargetException e) {
 				e.printStackTrace();
+			} catch (ReflectiveOperationException e) {
+				e.printStackTrace();
 			}
 			if (value instanceof IFlexoOntologyConcept) {
 				return (IFlexoOntologyConcept) value;
@@ -199,6 +201,8 @@ public interface ObjectPropertyAssertion extends AbstractAssertion {
 			} catch (NullReferenceException e) {
 				e.printStackTrace();
 			} catch (InvocationTargetException e) {
+				e.printStackTrace();
+			} catch (ReflectiveOperationException e) {
 				e.printStackTrace();
 			}
 			return null;

@@ -22,8 +22,10 @@ import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 
+import org.openflexo.connie.expr.ExpressionEvaluator;
 import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.fml.cli.AbstractCommandInterpreter;
+import org.openflexo.foundation.fml.expr.FMLExpressionEvaluator;
 
 /**
  * FML command-line interpreter<br>
@@ -50,6 +52,11 @@ public class FMLCommandInterpreter extends AbstractCommandInterpreter {
 	@Override
 	public void displayHistory() {
 		terminal.displayHistory();
+	}
+
+	@Override
+	public ExpressionEvaluator getEvaluator() {
+		return new FMLExpressionEvaluator(this);
 	}
 
 }

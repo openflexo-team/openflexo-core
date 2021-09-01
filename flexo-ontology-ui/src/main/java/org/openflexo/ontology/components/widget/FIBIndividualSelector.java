@@ -51,7 +51,9 @@ import org.openflexo.connie.BindingFactory;
 import org.openflexo.connie.BindingModel;
 import org.openflexo.connie.BindingVariable;
 import org.openflexo.connie.DataBinding;
+import org.openflexo.connie.expr.ExpressionEvaluator;
 import org.openflexo.foundation.fml.FMLBindingFactory;
+import org.openflexo.foundation.fml.expr.FMLExpressionEvaluator;
 import org.openflexo.foundation.ontology.FlexoOntologyObjectImpl;
 import org.openflexo.foundation.ontology.IFlexoOntology;
 import org.openflexo.foundation.ontology.IFlexoOntologyClass;
@@ -239,9 +241,15 @@ public class FIBIndividualSelector<TA extends TechnologyAdapter<TA>> extends FIB
 		}
 
 		@Override
+		public ExpressionEvaluator getEvaluator() {
+			return new FMLExpressionEvaluator(this);
+		}
+
+		@Override
 		public Object getValue(BindingVariable variable) {
 			return null;
 		}
+
 	}
 
 	@Override
@@ -260,6 +268,11 @@ public class FIBIndividualSelector<TA extends TechnologyAdapter<TA>> extends FIB
 
 		try {
 			String returned = renderer.getBindingValue(new BindingEvaluationContext() {
+				@Override
+				public ExpressionEvaluator getEvaluator() {
+					return new FMLExpressionEvaluator(this);
+				}
+
 				@Override
 				public Object getValue(BindingVariable variable) {
 					return editedObject;
