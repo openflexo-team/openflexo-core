@@ -45,7 +45,6 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.logging.Logger;
 
 import org.openflexo.connie.Bindable;
@@ -262,9 +261,9 @@ public interface FMLObject extends FlexoObject, Bindable, InnerResourceData<FMLC
 
 	public boolean hasFMLProperties(FMLModelFactory modelFactory);
 
-	public Set<FMLProperty> getFMLProperties(FMLModelFactory modelFactory);
+	public List<FMLProperty<?, ?>> getFMLProperties(FMLModelFactory modelFactory);
 
-	public FMLProperty getFMLProperty(String propertyName, FMLModelFactory modelFactory);
+	public FMLProperty<?, ?> getFMLProperty(String propertyName, FMLModelFactory modelFactory);
 
 	public List<FMLPropertyValue<?, ?>> getFMLPropertyValues(FMLModelFactory modelFactory);
 
@@ -671,16 +670,16 @@ public interface FMLObject extends FlexoObject, Bindable, InnerResourceData<FMLC
 		}
 
 		@Override
-		public Set<FMLProperty> getFMLProperties(FMLModelFactory modelFactory) {
+		public List<FMLProperty<?, ?>> getFMLProperties(FMLModelFactory modelFactory) {
 			if (getFMLEntity(modelFactory) != null) {
-				return (Set) getFMLEntity(modelFactory).getProperties();
+				return (List) getFMLEntity(modelFactory).getProperties();
 			}
 			return null;
 		}
 
 		@Override
-		public FMLProperty getFMLProperty(String propertyName, FMLModelFactory modelFactory) {
-			Set<FMLProperty> fmlProperties = getFMLProperties(modelFactory);
+		public FMLProperty<?, ?> getFMLProperty(String propertyName, FMLModelFactory modelFactory) {
+			List<FMLProperty<?, ?>> fmlProperties = getFMLProperties(modelFactory);
 			if (fmlProperties != null) {
 				for (FMLProperty fmlProperty : getFMLProperties(modelFactory)) {
 					if (fmlProperty.getName().equals(propertyName)) {
