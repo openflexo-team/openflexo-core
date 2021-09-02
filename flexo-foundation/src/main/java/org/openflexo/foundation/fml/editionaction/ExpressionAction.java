@@ -246,11 +246,11 @@ public interface ExpressionAction<T> extends AssignableAction<T> {
 			}
 		}
 
-		@Override
+		/*@Override
 		public String toString() {
 			// A virer bien sur !!!
 			return "Coucou l'expression avec " + getExpression() + " valid=" + getExpression().isValid();
-		}
+		}*/
 
 	}
 
