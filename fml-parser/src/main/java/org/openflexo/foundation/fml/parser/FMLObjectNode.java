@@ -141,7 +141,6 @@ import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.MatchActionNode
 import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.ReturnStatementNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.SequenceNode;
 import org.openflexo.foundation.fml.parser.node.ACharacterLiteral;
-import org.openflexo.foundation.fml.parser.node.ACompositeIdent;
 import org.openflexo.foundation.fml.parser.node.AFalseLiteral;
 import org.openflexo.foundation.fml.parser.node.AFloatingPointLiteral;
 import org.openflexo.foundation.fml.parser.node.AIdentifierVariableDeclarator;
@@ -159,14 +158,16 @@ import org.openflexo.foundation.fml.parser.node.AWithExplicitBoundsCardinality;
 import org.openflexo.foundation.fml.parser.node.AWithLowerBoundsCardinality;
 import org.openflexo.foundation.fml.parser.node.AWithUpperBoundsCardinality;
 import org.openflexo.foundation.fml.parser.node.Node;
-import org.openflexo.foundation.fml.parser.node.PAdditionalIdentifier;
 import org.openflexo.foundation.fml.parser.node.PCardinality;
 import org.openflexo.foundation.fml.parser.node.PCompositeIdent;
+import org.openflexo.foundation.fml.parser.node.PCompositeTident;
+import org.openflexo.foundation.fml.parser.node.PIdentifierPrefix;
 import org.openflexo.foundation.fml.parser.node.PLiteral;
 import org.openflexo.foundation.fml.parser.node.PVariableDeclarator;
 import org.openflexo.foundation.fml.parser.node.PVisibility;
-import org.openflexo.foundation.fml.parser.node.TIdentifier;
+import org.openflexo.foundation.fml.parser.node.TLidentifier;
 import org.openflexo.foundation.fml.parser.node.TLitInteger;
+import org.openflexo.foundation.fml.parser.node.TUidentifier;
 import org.openflexo.foundation.fml.parser.node.Token;
 import org.openflexo.foundation.fml.rm.CompilationUnitResourceFactory;
 import org.openflexo.foundation.fml.rt.editionaction.AddFlexoConceptInstance;
@@ -533,6 +534,30 @@ public abstract class FMLObjectNode<N extends Node, T extends FMLPrettyPrintable
 		return getFragment(node).getRawText();
 	}
 
+	public List<String> makeFullQualifiedIdentifierList(List<PIdentifierPrefix> prefixes, TLidentifier identifier) {
+		return analyser.makeFullQualifiedIdentifierList(prefixes, identifier);
+	}
+
+	public String makeFullQualifiedIdentifier(List<PIdentifierPrefix> prefixes, TLidentifier identifier) {
+		return analyser.makeFullQualifiedIdentifier(prefixes, identifier);
+	}
+
+	public String makeFullQualifiedIdentifier(PCompositeIdent compositeIdentifier) {
+		return analyser.makeFullQualifiedIdentifier(compositeIdentifier);
+	}
+
+	public List<String> makeFullQualifiedIdentifierList(List<PIdentifierPrefix> prefixes, TUidentifier identifier) {
+		return analyser.makeFullQualifiedIdentifierList(prefixes, identifier);
+	}
+
+	public String makeFullQualifiedIdentifier(List<PIdentifierPrefix> prefixes, TUidentifier identifier) {
+		return analyser.makeFullQualifiedIdentifier(prefixes, identifier);
+	}
+
+	public String makeFullQualifiedIdentifier(PCompositeTident compositeIdentifier) {
+		return analyser.makeFullQualifiedIdentifier(compositeIdentifier);
+	}
+
 	public int getLiteralValue(TLitInteger node) {
 		String f = node.getText();
 		try {
@@ -583,22 +608,6 @@ public abstract class FMLObjectNode<N extends Node, T extends FMLPrettyPrintable
 		return null;
 	}
 
-	public List<String> makeFullQualifiedIdentifierList(TIdentifier identifier, List<PAdditionalIdentifier> additionalIdentifiers) {
-		return getTypeFactory().makeFullQualifiedIdentifierList(identifier, additionalIdentifiers);
-	}
-
-	public String makeFullQualifiedIdentifier(PCompositeIdent compositeIdentifier) {
-		if (compositeIdentifier instanceof ACompositeIdent) {
-			return getTypeFactory().makeFullQualifiedIdentifier(((ACompositeIdent) compositeIdentifier).getIdentifier(),
-					((ACompositeIdent) compositeIdentifier).getAdditionalIdentifiers());
-		}
-		return null;
-	}
-
-	public String makeFullQualifiedIdentifier(TIdentifier identifier, List<PAdditionalIdentifier> additionalIdentifiers) {
-		return getTypeFactory().makeFullQualifiedIdentifier(identifier, additionalIdentifiers);
-	}
-
 	// We should parse expression instead
 	@Deprecated
 	protected <T> DataBinding<T> makeBinding(Node node, Type type, BindingDefinitionType bindingType, Bindable bindable) {
@@ -615,13 +624,18 @@ public abstract class FMLObjectNode<N extends Node, T extends FMLPrettyPrintable
 	@Deprecated
 	protected <T> DataBinding<T> makeBinding(PCompositeIdent compositeIdentifier, Type type, BindingDefinitionType bindingType,
 			Bindable bindable) {
-		return new DataBinding(makeFullQualifiedIdentifier(compositeIdentifier), bindable, type, bindingType);
+		// TODO: implement this
+		logger.warning("Un truc a faire la");
+		return new DataBinding(analyser.makeFullQualifiedIdentifier(compositeIdentifier), bindable, type, bindingType);
 	}
 
 	// We should parse expression instead
 	@Deprecated
 	protected <T> DataBinding<T> makeBinding(PCompositeIdent compositeIdentifier, Bindable bindable) {
-		return new DataBinding(makeFullQualifiedIdentifier(compositeIdentifier), bindable, Object.class, BindingDefinitionType.GET);
+		// TODO: implement this
+		logger.warning("Un truc a faire la");
+		return new DataBinding(analyser.makeFullQualifiedIdentifier(compositeIdentifier), bindable, Object.class,
+				BindingDefinitionType.GET);
 	}
 
 	protected String getVisibilityAsString(Visibility visibility) {
@@ -720,12 +734,12 @@ public abstract class FMLObjectNode<N extends Node, T extends FMLPrettyPrintable
 
 	}
 
-	protected TIdentifier getName(PVariableDeclarator variableDeclarator) {
+	protected TLidentifier getName(PVariableDeclarator variableDeclarator) {
 		if (variableDeclarator instanceof AIdentifierVariableDeclarator) {
-			return ((AIdentifierVariableDeclarator) variableDeclarator).getIdentifier();
+			return ((AIdentifierVariableDeclarator) variableDeclarator).getLidentifier();
 		}
 		if (variableDeclarator instanceof AInitializerVariableDeclarator) {
-			return ((AInitializerVariableDeclarator) variableDeclarator).getIdentifier();
+			return ((AInitializerVariableDeclarator) variableDeclarator).getLidentifier();
 		}
 		return null;
 	}

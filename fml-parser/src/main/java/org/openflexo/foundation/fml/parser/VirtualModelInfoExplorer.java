@@ -80,14 +80,14 @@ public class VirtualModelInfoExplorer extends DepthFirstAdapter implements Binda
 	@Override
 	public void inAModelDecl(AModelDecl node) {
 		super.inAModelDecl(node);
-		info.name = node.getIdentifier().getText();
+		info.name = node.getUidentifier().getText();
 	}
 
 	@Override
 	public void inASingleAnnotationAnnotation(ASingleAnnotationAnnotation node) {
 		super.inASingleAnnotationAnnotation(node);
 
-		String key = analyzer.getTypeFactory().makeFullQualifiedIdentifier(node.getIdentifier());
+		String key = analyzer.makeFullQualifiedIdentifier(node.getIdentifier());
 		DataBinding<?> valueExpression = ExpressionFactory.makeExpression(node.getConditionalExp(), analyzer, this);
 		if (valueExpression.getExpression() instanceof Constant) {
 			String text = analyzer.getText(node.getConditionalExp());

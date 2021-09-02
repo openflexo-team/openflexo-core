@@ -3,18 +3,18 @@
  * Test use, import and model declaration
  */
 
-namespace "http://www.openflexo.org/an.other.namespace/" as NS; 
+namespace "http://www.openflexo.org/an.other.namespace/" as ns; 
 
 use org.openflexo.foundation.fml.rt.FMLRTModelSlot as FMLRT;
 
 import java.lang.String;
 import java.util.List as JavaFile;
-import aClass;
+import AClass;
 import ["http://some_uri/AModel.fml"]; // Import FML model addressed by specified URI
 import ["http://some_uri/AnOtherModel.fml"] as AnOtherModel; // Import FML model addressed by specified URI
 import ["http://some_uri/AResource":"Toto#13"] as aParticularObjectInResource; 
-import [NS+"AThirdModel.fml"]; // Import FML model addressed by specified URI, 'as' is implicit
-import [NS+"AThirdModel.fml":"SomeURI"] as AN_OBJECT;
+import [ns+"AThirdModel.fml"]; // Import FML model addressed by specified URI, 'as' is implicit
+import [ns+"AThirdModel.fml":"SomeURI"] as AN_OBJECT;
 
 // This is the main declaration
 model MyModel {

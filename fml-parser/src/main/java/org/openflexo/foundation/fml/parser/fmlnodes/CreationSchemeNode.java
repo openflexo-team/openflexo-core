@@ -123,21 +123,19 @@ public class CreationSchemeNode extends FlexoBehaviourNode<PBehaviourDecl, Creat
 	public void preparePrettyPrint(boolean hasParsedVersion) {
 		super.preparePrettyPrint(hasParsedVersion);
 
-		// @formatter:off	
-		//append(childrenContents("", () -> getModelObject().getMetaData(), LINE_SEPARATOR, Indentation.DoNotIndent,
-		//		FMLMetaData.class));
+		// @formatter:off
+		// append(childrenContents("", () -> getModelObject().getMetaData(), LINE_SEPARATOR, Indentation.DoNotIndent,
+		// FMLMetaData.class));
 		append(dynamicContents(() -> getVisibilityAsString(getModelObject().getVisibility()), SPACE), getVisibilityFragment());
 		append(staticContents("create"), getCreateFragment());
-		when(() -> !isAnonymous())
-				.thenAppend(staticContents("::"), getColonColonFragment())
+		when(() -> !isAnonymous()).thenAppend(staticContents("::"), getColonColonFragment())
 				.thenAppend(dynamicContents(() -> getModelObject().getName()), getNameFragment());
 		append(staticContents(SPACE, "(", ""), getLParFragment());
-		append(childrenContents("", "", () -> getModelObject().getParameters(), ","+SPACE, "", Indentation.DoNotIndent,
+		append(childrenContents("", "", () -> getModelObject().getParameters(), "," + SPACE, "", Indentation.DoNotIndent,
 				FlexoBehaviourParameter.class));
 		append(staticContents(")"), getRParFragment());
-		when(() -> isAbstract())
-				.thenAppend(staticContents(";"), getSemiFragment())
-				.elseAppend(staticContents(SPACE,"{", ""), getLBrcFragment())
+		when(() -> isAbstract()).thenAppend(staticContents(";"), getSemiFragment())
+				.elseAppend(staticContents(SPACE, "{", ""), getLBrcFragment())
 				.elseAppend(childContents(LINE_SEPARATOR, () -> getModelObject().getControlGraph(), LINE_SEPARATOR, Indentation.Indent))
 				.elseAppend(staticContents(LINE_SEPARATOR, "}", ""), getRBrcFragment());
 		// @formatter:on

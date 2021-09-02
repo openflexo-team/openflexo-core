@@ -121,10 +121,10 @@ public abstract class AbstractRolePropertyNode<N extends PInnerConceptDecl, R ex
 
 	protected RawSourceFragment getNameFragment() {
 		if (getASTNode() instanceof AFmlInnerConceptDecl) {
-			return getFragment(((AFmlInnerConceptDecl) getASTNode()).getIdentifier());
+			return getFragment(((AFmlInnerConceptDecl) getASTNode()).getLidentifier());
 		}
 		if (getASTNode() instanceof AFmlFullyQualifiedInnerConceptDecl) {
-			return getFragment(((AFmlFullyQualifiedInnerConceptDecl) getASTNode()).getIdentifier());
+			return getFragment(((AFmlFullyQualifiedInnerConceptDecl) getASTNode()).getLidentifier());
 		}
 		return null;
 	}

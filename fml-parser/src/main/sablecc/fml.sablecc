@@ -101,6 +101,10 @@ Helpers
 
    letter_or_digit = unicode_letter | unicode_digit | '$' | '_';
 
+   lowercase_letter = ['a'..'z'] | '_';
+
+   uppercase_letter = ['A'..'Z'];
+
    // --------------------------------------------------------------------------------------
    // Constructions for numeric litterals
    // --------------------------------------------------------------------------------------
@@ -243,8 +247,13 @@ Tokens
 
    // Types
    ty_boolean = 'boolean';
+   ty_char = 'char';
+   ty_short = 'short';
    ty_int = 'int';
+   ty_long = 'long';
+   ty_byte = 'byte';
    ty_float = 'float';
+   ty_double = 'double';
    ty_void = 'void';
 
    // --------------------------------------------------------------------------------------
@@ -270,7 +279,8 @@ Tokens
    // --------------------------------------------------------------------------------------
    // Identifier
    // --------------------------------------------------------------------------------------
-   identifier = letter letter_or_digit*;
+   lidentifier = lowercase_letter letter_or_digit*;
+   uidentifier = uppercase_letter letter_or_digit*;
 
    // --------------------------------------------------------------------------------------
    // White space and comments
@@ -304,8 +314,16 @@ Productions
    // --------------------------------------------------------------------------------------
    // General rules
    // --------------------------------------------------------------------------------------
-   composite_ident = [identifier]:identifier [additional_identifiers]:additional_identifier*;
-   additional_identifier = dot identifier;
+
+   identifier_prefix = lidentifier dot;
+   //   {lower_case} lidentifier dot
+   // | {upper_case} uidentifier dot;
+   
+   composite_ident = [prefixes]:identifier_prefix* [identifier]:lidentifier ;
+ 
+   composite_tident_suffix = dollar uidentifier;
+   
+   composite_tident = [prefixes]:identifier_prefix* [identifier]:uidentifier [suffixes]:composite_tident_suffix*;
 
    visibility =
        {private}      kw_private
@@ -327,10 +345,10 @@ Productions
      ;
 
    annotation =
-       {basic_annotation} at [identifier]:composite_ident
-     | {single_annotation}  at [identifier]:composite_ident l_par conditional_exp r_par
-     | {complex_annotation}  at [identifier]:composite_ident l_par annotation_key_value_pairs r_par
-     | {list_annotation}  at [identifier]:composite_ident l_par annotation* r_par
+       {basic_annotation} at [identifier]:composite_tident
+     | {single_annotation}  at [identifier]:composite_tident l_par conditional_exp r_par
+     | {complex_annotation}  at [identifier]:composite_tident l_par annotation_key_value_pairs r_par
+     | {list_annotation}  at [identifier]:composite_tident l_par annotation* r_par
      ;
    
    annotation_key_value_pairs =
@@ -344,19 +362,25 @@ Productions
    // --------------------------------------------------------------------------------------
    // Namespace declaration
    // --------------------------------------------------------------------------------------
-   namespace_decl = kw_namespace [string_literal]:lit_string kw_as [ns_id]:identifier semi;
+   
+   identifier =
+       {lower} lidentifier
+     | {upper} uidentifier
+     ;
+   
+   namespace_decl = kw_namespace [string_literal]:lit_string kw_as [ns_id]:lidentifier semi;
 
    // --------------------------------------------------------------------------------------
    // Use declaration
    // --------------------------------------------------------------------------------------
-   use_decl = kw_use [identifier]:composite_ident kw_as [ta_id]:identifier semi;
+   use_decl = kw_use [identifier]:composite_tident kw_as [ta_id]:uidentifier semi;
 
    // --------------------------------------------------------------------------------------
    // Import declaration
    // --------------------------------------------------------------------------------------
    import_decl =
-       {java_import} kw_import [identifier]:composite_ident semi
-     | {named_java_import} kw_import [identifier]:composite_ident kw_as [name]:identifier semi
+       {java_import} kw_import [identifier]:composite_tident semi
+     | {named_java_import} kw_import [identifier]:composite_tident kw_as [name]:identifier semi
      | {uri_import} kw_import [object]:reference_by_uri semi
      | {named_uri_import} kw_import [object]:reference_by_uri kw_as [name]:identifier semi
      ;
@@ -364,38 +388,38 @@ Productions
    // --------------------------------------------------------------------------------------
    // Model declaration
    // --------------------------------------------------------------------------------------
-   model_decl = [annotations]:annotation* visibility? kw_abstract? kw_model identifier super_clause? l_brc  [inner_model_declaration]:inner_concept_decl* r_brc;
+   model_decl = [annotations]:annotation* visibility? kw_abstract? kw_model uidentifier super_clause? l_brc  [inner_model_declaration]:inner_concept_decl* r_brc;
 
    super_clause = kw_extends super_type_list;
 
    super_type_list =
-       {one}  [identifier]:composite_ident
-     | {many} super_type_list comma [identifier]:composite_ident
+       {one}  [identifier]:composite_tident
+     | {many} super_type_list comma [identifier]:composite_tident
      ;
 
-   concept_decl = [annotations]:annotation* visibility? kw_abstract? kw_concept identifier super_clause? l_brc [inner_concept_declaration]:inner_concept_decl* r_brc;
+   concept_decl = [annotations]:annotation* visibility? kw_abstract? kw_concept uidentifier super_clause? l_brc [inner_concept_declaration]:inner_concept_decl* r_brc;
 
    inner_concept_decl =
       // basic role declaration
        {java} visibility? type cardinality? variable_declarator semi
-     | {fml} visibility? type cardinality? identifier kw_with [role]:identifier fml_parameters? semi
-     | {fml_fully_qualified} visibility? type cardinality? identifier kw_with [ta_id]:identifier colon_colon [role]:identifier fml_parameters? semi
+     | {fml} visibility? type cardinality? lidentifier kw_with [role]:uidentifier fml_parameters? semi
+     | {fml_fully_qualified} visibility? type cardinality? lidentifier kw_with [ta_id]:uidentifier colon_colon [role]:uidentifier fml_parameters? semi
      // abstract property declaration
      | {abstract_property} visibility? kw_abstract type variable_declarator semi
-     | {expression_property} visibility? type [identifier]:identifier kw_values [expression_value]:expression semi
+     | {expression_property} visibility? type [identifier]:lidentifier kw_values [expression_value]:expression semi
      // get set property declaration
-     | {get_set_property}    visibility? type identifier l_brc get_decl set_decl ? r_brc semi
+     | {get_set_property}    visibility? type lidentifier l_brc get_decl set_decl ? r_brc semi
      | {behaviour_declaration} behaviour_decl
      | {concept_declaration} concept_decl
      ;
 
    get_decl = type kw_get l_par r_par flexo_behaviour_body;
 
-   set_decl = kw_set l_par type identifier r_par flexo_behaviour_body;
+   set_decl = kw_set l_par type lidentifier r_par flexo_behaviour_body;
 
    variable_declarator =
-       {identifier}  identifier
-     | {initializer} identifier assign expression
+       {identifier}  lidentifier
+     | {initializer} lidentifier assign expression
      ;
 
    // --------------------------------------------------------------------------------------
@@ -403,16 +427,16 @@ Productions
    // --------------------------------------------------------------------------------------
    behaviour_decl =
        {anonymous_constructor} [annotations]:annotation* visibility? kw_create l_par formal_arguments_list? r_par flexo_behaviour_body
-     | {named_constructor} [annotations]:annotation* visibility? kw_create colon_colon [name]:identifier l_par formal_arguments_list? r_par flexo_behaviour_body
+     | {named_constructor} [annotations]:annotation* visibility? kw_create colon_colon [name]:lidentifier l_par formal_arguments_list? r_par flexo_behaviour_body
      | {anonymous_destructor} [annotations]:annotation* visibility? kw_delete l_par formal_arguments_list? r_par flexo_behaviour_body
-     | {named_destructor} [annotations]:annotation* visibility? kw_delete colon_colon [name]:identifier l_par formal_arguments_list? r_par flexo_behaviour_body
-     | {method} [annotations]:annotation* visibility? type? [name]:identifier l_par formal_arguments_list? r_par flexo_behaviour_body
-     | {listener} [annotations]:annotation* kw_listen [listened]:expression kw_receive l_par [event_type_identifier]:composite_ident [event_name]:identifier r_par flexo_behaviour_body
-     | {fml} [annotations]:annotation* visibility? type? [name]:identifier l_par formal_arguments_list? r_par kw_with [behaviour]:identifier fml_parameters? flexo_behaviour_body
-     | {fml_fully_qualified} [annotations]:annotation* visibility? type? [name]:identifier l_par formal_arguments_list? r_par kw_with [ta_id]:identifier colon_colon [behaviour]:identifier fml_parameters? flexo_behaviour_body
-     //| {protocol_only} [annotations]:annotation* visibility? type? [protocol]:identifier fml_parameters? colon l_par formal_arguments_list? r_par flexo_behaviour_body
-     //| {name_only} [annotations]:annotation* visibility? type? [name]:identifier l_par formal_arguments_list? r_par flexo_behaviour_body
-     //| {name_and_protocol} [annotations]:annotation* visibility? type? [protocol]:identifier fml_parameters? colon [name]:identifier l_par formal_arguments_list? r_par flexo_behaviour_body
+     | {named_destructor} [annotations]:annotation* visibility? kw_delete colon_colon [name]:lidentifier l_par formal_arguments_list? r_par flexo_behaviour_body
+     | {method} [annotations]:annotation* visibility? type? [name]:lidentifier l_par formal_arguments_list? r_par flexo_behaviour_body
+     | {listener} [annotations]:annotation* kw_listen [listened]:expression kw_receive l_par [event_type_identifier]:composite_ident [event_name]:lidentifier r_par flexo_behaviour_body
+     | {fml} [annotations]:annotation* visibility? type? [name]:lidentifier l_par formal_arguments_list? r_par kw_with [behaviour]:uidentifier fml_parameters? flexo_behaviour_body
+     | {fml_fully_qualified} [annotations]:annotation* visibility? type? [name]:lidentifier l_par formal_arguments_list? r_par kw_with [ta_id]:uidentifier colon_colon [behaviour]:uidentifier fml_parameters? flexo_behaviour_body
+     //| {protocol_only} [annotations]:annotation* visibility? type? [protocol]:lidentifier fml_parameters? colon l_par formal_arguments_list? r_par flexo_behaviour_body
+     //| {name_only} [annotations]:annotation* visibility? type? [name]:lidentifier l_par formal_arguments_list? r_par flexo_behaviour_body
+     //| {name_and_protocol} [annotations]:annotation* visibility? type? [protocol]:lidentifier fml_parameters? colon [name]:lidentifier l_par formal_arguments_list? r_par flexo_behaviour_body
      ;
 
    formal_arguments_list =
@@ -421,9 +445,9 @@ Productions
      ;
 
    formal_argument =
-       {primitive} kw_required? primitive_type [arg_name]:identifier default_argument_value?
-     //| {simple} [identifier]:composite_ident [arg_name]:identifier
-     | {complex} kw_required? reference_type [arg_name]:identifier default_argument_value?
+       {primitive} kw_required? primitive_type [arg_name]:lidentifier default_argument_value?
+     //| {simple} [identifier]:composite_ident [arg_name]:lidentifier
+     | {complex} kw_required? reference_type [arg_name]:lidentifier default_argument_value?
      ;
      
    //default_argument_value = kw_default assign expression;
@@ -453,7 +477,7 @@ Productions
      // for statement
      | {for_basic}      kw_for l_par for_init? [semi1]:semi [semi2]:semi statement_expression? r_par statement
      | {for_basic_expression} kw_for l_par for_init? [semi1]:semi expression [semi2]:semi statement_expression? r_par statement
-     | {for_enhanced} kw_for l_par type identifier colon expression r_par statement
+     | {for_enhanced} kw_for l_par type lidentifier colon expression r_par statement
      ;
 
    for_init =
@@ -494,16 +518,18 @@ Productions
      ;
 
    method_invocation =
-       {primary}    primary /*dot *//*non_wild_type_arguments?*//* identifier*/ l_par argument_list? r_par
-     //| {super}      super dot non_wild_type_arguments? identifier l_par argument_list? r_par
-     //| {class_name} [identifier1]:composite_ident [dot1]:dot super [dot2]:dot non_wild_type_arguments? [identifier2]:identifier l_par argument_list? r_par
-     //| {type_name}  [identifier1]:composite_ident dot non_wild_type_arguments  [identifier2]:identifier l_par argument_list? r_par
+       {primary}    primary /*dot *//*non_wild_type_arguments?*//* lidentifier*/ l_par argument_list? r_par
+       | {super}      kw_super /*dot*/ /*non_wild_type_arguments?*/ /*lidentifier*/ l_par argument_list? r_par
+     //| {class_name} [identifier1]:composite_ident [dot1]:dot super [dot2]:dot non_wild_type_arguments? [identifier2]:lidentifier l_par argument_list? r_par
+     //| {type_name}  [identifier1]:composite_ident dot non_wild_type_arguments  [identifier2]:lidentifier l_par argument_list? r_par
+ 	 | {class_method} type dot /*non_wild_type_arguments?*/ lidentifier l_par argument_list? r_par
      ;
 
    // --------------------------------------------------------------------------------------
    // Expressions
    // --------------------------------------------------------------------------------------
-   expression =
+
+  expression =
        {assignment}  [left]:left_hand_side assignment_operator [right]:expression
      | {conditional} conditional_exp
      ;
@@ -513,6 +539,7 @@ Productions
      | {field}      field_access
      ;
 
+   // Operators priority 15
    assignment_operator =
        {assign}         assign
      | {star_assign}    star_assign
@@ -528,51 +555,60 @@ Productions
      | {bar_assign}     bar_assign
      ;
 
+   // Operators priority 14
    conditional_exp =
        {simple} conditional_or_exp
      | {qmark}  conditional_or_exp qmark expression colon conditional_exp
      ;
 
+   // Operators priority 13
    conditional_or_exp =
        {simple}  conditional_and_exp
      | {bar_bar} conditional_or_exp bar_bar conditional_and_exp
      ;
 
+   // Operators priority 12
    conditional_and_exp =
        {simple}  inclusive_or_exp
      | {amp_amp} conditional_and_exp amp_amp inclusive_or_exp
      ;
 
+   // Operators priority 11
    inclusive_or_exp =
        {simple} exclusive_or_exp
      | {bar}    inclusive_or_exp bar exclusive_or_exp
      ;
 
+   // Operators priority 10
    exclusive_or_exp =
        {simple} and_exp
      | {caret}  exclusive_or_exp caret and_exp
      ;
 
+   // Operators priority 9
    and_exp =
        {simple} equality_exp
      | {amp}    and_exp amp equality_exp
      ;
 
+   // Operators priority 8
    equality_exp =
        {simple} relational_exp
      | {eq}     equality_exp eq  relational_exp
      | {neq}    equality_exp neq relational_exp
      ;
 
+  // Operators priority 7
    relational_exp =
        {simple}     shift_exp
      | {lt}         [shift_exp1]:shift_exp lt [shift_expression2]:shift_exp
      | {gt}         [shift_expression1]:shift_exp gt [shift_expression2]:shift_exp
      | {lteq}       [shift_expression1]:shift_exp lteq [shift_expression2]:shift_exp
      | {gteq}       [shift_expression1]:shift_exp gteq [shift_expression2]:shift_exp
-     | {instanceof} shift_exp kw_instanceof primitive_type [dims]:dim+
+     | {instanceof} shift_exp kw_instanceof type [dims]:dim*
      ;
 
+   // Operators priority 6
    shift_exp =
        {simple} add_exp
      | {shl}    shift_exp shl  add_exp
@@ -580,12 +616,14 @@ Productions
      | {ushr}   shift_exp ushr add_exp
      ;
 
+   // Operators priority 5
    add_exp =
        {simple} mult_exp
      | {plus}   add_exp plus mult_exp
      | {minus}  add_exp minus mult_exp
      ;
 
+   // Operators priority 4
    mult_exp =
        {simple}  unary_exp
      | {star}    mult_exp star unary_exp
@@ -593,6 +631,7 @@ Productions
      | {percent} mult_exp percent unary_exp
      ;
 
+   // Operators priority 3
    unary_exp =
        {pre_increment} pre_incr_exp
      | {pre_decrement} pre_decr_exp
@@ -604,11 +643,12 @@ Productions
    pre_incr_exp = plus_plus unary_exp;
    pre_decr_exp = minus_minus unary_exp;
 
+   // Operators priority 2
    unary_exp_not_plus_minus =
        {postfix} postfix_exp
      | {tilde}   tilde unary_exp
      | {emark}   emark unary_exp
-     | {cast}    l_par primitive_type [dims]:dim* r_par unary_exp
+     | {cast}    l_par type [dims]:dim* r_par unary_exp
      ;
 
    postfix_exp =
@@ -617,6 +657,7 @@ Productions
      | {post_decrement} post_decr_exp
      ;
 
+   // Operators priority 1
    post_incr_exp = postfix_exp plus_plus;
    post_decr_exp = postfix_exp minus_minus;
 
@@ -634,38 +675,38 @@ Productions
      ;
 
    fml_action_exp =
-       {java_instance_creation}                new_containment_clause? kw_new composite_ident type_arguments_or_diamond? l_par argument_list? r_par precise_fml_parameters_clause?
-     | {fml_instance_creation}  			   new_containment_clause? kw_new [concept_name]:identifier colon_colon [constructor_name]:identifier l_par argument_list? r_par precise_fml_parameters_clause?
-     | {ta_edition_action}                     [ta_id]:identifier colon_colon [edition_action]:identifier fml_parameters in_clause? from_clause? //FD remove ? on fml_parameters
+       {java_instance_creation}                new_containment_clause? kw_new composite_tident type_arguments_or_diamond? l_par argument_list? r_par precise_fml_parameters_clause?
+     | {fml_instance_creation}  			   new_containment_clause? kw_new [concept_name]:uidentifier colon_colon [constructor_name]:lidentifier l_par argument_list? r_par precise_fml_parameters_clause?
+     | {ta_edition_action}                     [ta_id]:uidentifier colon_colon [edition_action]:uidentifier fml_parameters in_clause? from_clause? //FD remove ? on fml_parameters
      | {delete_action}                         kw_delete l_par expression r_par from_clause?
-     | {select_action}                         kw_select kw_unique? [selected_type_name]:composite_ident from_clause where_clause?
+     | {select_action}                         kw_select kw_unique? [selected_type_name]:composite_tident from_clause where_clause?
      | {log_action}                            kw_log l_par expression r_par
-     | {begin_match_action}                    kw_begin kw_match [concept_name]:identifier from_clause where_clause?
-     | {match_action}                          kw_match [concept_name]:identifier in_clause? from_clause qualified_where_clause? create_clause
-     | {end_match_action}                      kw_end kw_match [concept_name]:identifier in_clause abstract_action_clause
+     | {begin_match_action}                    kw_begin kw_match [concept_name]:uidentifier from_clause where_clause?
+     | {match_action}                          kw_match [concept_name]:uidentifier in_clause? from_clause qualified_where_clause? create_clause
+     | {end_match_action}                      kw_end kw_match [concept_name]:uidentifier in_clause abstract_action_clause
      ;
     
    precise_fml_parameters_clause = kw_with fml_parameters;
     
-   create_clause = kw_create colon_colon [constructor_name]:identifier l_par argument_list? r_par;
+   create_clause = kw_create colon_colon [constructor_name]:lidentifier l_par argument_list? r_par;
 
-   delete_clause = kw_delete colon_colon [destructor_name]:identifier l_par argument_list? r_par;
+   delete_clause = kw_delete colon_colon [destructor_name]:lidentifier l_par argument_list? r_par;
 
-   action_clause = kw_action colon_colon [action_name]:identifier l_par argument_list? r_par;
+   action_clause = kw_action colon_colon [action_name]:lidentifier l_par argument_list? r_par;
     
    // reduce/reduce conflict
    /*create_clause = 
-     | {named_constructor}      kw_create colon_colon [constructor_name]:identifier l_par argument_list? r_par
+     | {named_constructor}      kw_create colon_colon [constructor_name]:lidentifier l_par argument_list? r_par
      | {anonymous_constructor}  kw_create l_par argument_list? r_par
      ;
 
    delete_clause = 
-     | {named_destructor}       kw_delete colon_colon [destructor_name]:identifier l_par argument_list? r_par
+     | {named_destructor}       kw_delete colon_colon [destructor_name]:lidentifier l_par argument_list? r_par
      | {anonymous_destructor}   kw_delete l_par argument_list? r_par
      ;
      
    action_clause = 
-     | {named_action}           kw_action colon_colon [action_name]:identifier l_par argument_list? r_par
+     | {named_action}           kw_action colon_colon [action_name]:lidentifier l_par argument_list? r_par
      | {anonymous_action}       kw_action l_par argument_list? r_par
      ;
     */
@@ -693,8 +734,8 @@ Productions
      ;
 
    qualified_instance =
-       {simple}         [arg_type]:identifier colon fml_parameters
-     | {full_qualified} [ta_id]:identifier colon_colon [arg_type]:identifier colon fml_parameters
+       {simple}         [arg_type]:uidentifier colon fml_parameters
+     | {full_qualified} [ta_id]:uidentifier colon_colon [arg_type]:uidentifier colon fml_parameters
       ;
 
    qualified_argument_list_instances =
@@ -703,9 +744,9 @@ Productions
      ;
 
    qualified_argument =
-       {simple}         [arg_name]:identifier assign expression
-     | {instance}       [arg_name]:identifier assign qualified_instance
-     | {list_instances} [arg_name]:identifier assign l_brc qualified_argument_list_instances? r_brc
+       {simple}         [arg_name]:lidentifier assign expression
+     | {instance}       [arg_name]:lidentifier assign qualified_instance
+     | {list_instances} [arg_name]:lidentifier assign l_brc qualified_argument_list_instances? r_brc
      ;
 
    fml_parameters =
@@ -719,9 +760,9 @@ Productions
    qualified_where_clause = kw_where l_par qualified_argument_list? r_par;
 
    field_access =
-       {super} kw_super dot identifier
-     | {reference_super} [identifier1]:composite_ident [dot1]:dot kw_super [dot2]:dot [identifier2]:identifier
-     | {primary} primary_no_id dot identifier
+       {super} kw_super dot lidentifier
+     | {reference_super} [identifier1]:composite_ident [dot1]:dot kw_super [dot2]:dot [identifier2]:lidentifier
+     | {primary} primary_no_id dot lidentifier
      ;
 
    literal =
@@ -745,13 +786,18 @@ Productions
 
    primitive_type =
        {int}   ty_int
+     | {short} ty_short
+     | {long} ty_long
      | {float} ty_float
+     | {double} ty_double
+     | {char} ty_char
+     | {byte} ty_byte
      | {boolean} ty_boolean
      ;
 
-   reference_type = [identifier]:composite_ident [args]:type_arguments?;
+   reference_type = [identifier]:composite_tident [args]:type_arguments?;
 
-   // Take care of the following lexical anomaly:
+  // Take care of the following lexical anomaly:
    //   A<B<C>>  and  A<B<C<D>>>
    // Notice the '>>' and '>>>" tokens.
    //
@@ -761,8 +807,8 @@ Productions
 
    type_arguments =
        {gt} lt type_argument_list gt
-     | {shr} [lt1]:lt type_argument_list_head* [identifier]:composite_ident [lt2]:lt type_argument_list shr
-     | {ushr} [lt1]:lt [heads1]:type_argument_list_head* [specifier1]:composite_ident [lt2]:lt [heads2]:type_argument_list_head* [specifier2]:composite_ident [lt3]:lt type_argument_list ushr
+     | {shr} [lt1]:lt type_argument_list_head* [identifier]:composite_tident [lt2]:lt type_argument_list shr
+     | {ushr} [lt1]:lt [heads1]:type_argument_list_head* [specifier1]:composite_tident [lt2]:lt [heads2]:type_argument_list_head* [specifier2]:composite_tident [lt3]:lt type_argument_list ushr
      ;
 
    type_argument_list = type_argument_list_head* type_argument;

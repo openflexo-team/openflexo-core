@@ -73,7 +73,7 @@ public class IterationActionNode extends ControlGraphNode<AForEnhancedStatement,
 	public IterationAction buildModelObjectFromAST(AForEnhancedStatement astNode) {
 		IterationAction returned = getFactory().newIterationAction();
 
-		returned.setIteratorName(astNode.getIdentifier().getText());
+		returned.setIteratorName(astNode.getLidentifier().getText());
 
 		ControlGraphNode<?, ?> iterationActionCGNode = ControlGraphFactory.makeControlGraphNode(astNode.getExpression(), getAnalyser());
 		if (iterationActionCGNode.getModelObject() instanceof AssignableAction) {
@@ -100,19 +100,19 @@ public class IterationActionNode extends ControlGraphNode<AForEnhancedStatement,
 	public void preparePrettyPrint(boolean hasParsedVersion) {
 		super.preparePrettyPrint(hasParsedVersion);
 
-		// @formatter:off	
+		// @formatter:off
 
 		append(staticContents("for"), getForFragment());
-		append(staticContents(SPACE, "(",""), getLParFragment());
-		append(dynamicContents(() -> serializeType(getModelObject().getItemType()),SPACE), getTypeFragment());
+		append(staticContents(SPACE, "(", ""), getLParFragment());
+		append(dynamicContents(() -> serializeType(getModelObject().getItemType()), SPACE), getTypeFragment());
 		append(dynamicContents(() -> getModelObject().getIteratorName()), getIteratorNameFragment());
-		append(staticContents(SPACE,":",SPACE), getColonFragment());
-		append(childContents("",() -> getModelObject().getIterationAction(),"",Indentation.DoNotIndent));
+		append(staticContents(SPACE, ":", SPACE), getColonFragment());
+		append(childContents("", () -> getModelObject().getIterationAction(), "", Indentation.DoNotIndent));
 		append(staticContents(")"), getLParFragment());
 
 		append(staticContents(SPACE, "{", ""), getLBrcFragment());
 		append(childContents(LINE_SEPARATOR, () -> getModelObject().getControlGraph(), "", Indentation.Indent));
-		append(staticContents(LINE_SEPARATOR,"}", ""), getRBrcFragment());
+		append(staticContents(LINE_SEPARATOR, "}", ""), getRBrcFragment());
 
 		// @formatter:on
 
@@ -148,7 +148,7 @@ public class IterationActionNode extends ControlGraphNode<AForEnhancedStatement,
 
 	protected RawSourceFragment getIteratorNameFragment() {
 		if (getASTNode() != null) {
-			return getFragment(getASTNode().getIdentifier());
+			return getFragment(getASTNode().getLidentifier());
 		}
 		return null;
 	}

@@ -70,14 +70,14 @@ import org.openflexo.foundation.fml.VirtualModelInstanceType.VirtualModelInstanc
 import org.openflexo.foundation.fml.parser.analysis.DepthFirstAdapter;
 import org.openflexo.foundation.fml.parser.fmlnodes.FlexoConceptNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.VirtualModelNode;
-import org.openflexo.foundation.fml.parser.node.AAdditionalIdentifier;
 import org.openflexo.foundation.fml.parser.node.ABooleanPrimitiveType;
 import org.openflexo.foundation.fml.parser.node.AComplexType;
-import org.openflexo.foundation.fml.parser.node.ACompositeIdent;
+import org.openflexo.foundation.fml.parser.node.ACompositeTident;
 import org.openflexo.foundation.fml.parser.node.AConceptDecl;
 import org.openflexo.foundation.fml.parser.node.ADiamondTypeArgumentsOrDiamond;
 import org.openflexo.foundation.fml.parser.node.AFloatPrimitiveType;
 import org.openflexo.foundation.fml.parser.node.AGtTypeArguments;
+import org.openflexo.foundation.fml.parser.node.AIdentifierPrefix;
 import org.openflexo.foundation.fml.parser.node.AIntPrimitiveType;
 import org.openflexo.foundation.fml.parser.node.AModelDecl;
 import org.openflexo.foundation.fml.parser.node.ANamedUriImportImportDecl;
@@ -91,8 +91,9 @@ import org.openflexo.foundation.fml.parser.node.ATypeArgumentsTypeArgumentsOrDia
 import org.openflexo.foundation.fml.parser.node.AUshrTypeArguments;
 import org.openflexo.foundation.fml.parser.node.AVoidType;
 import org.openflexo.foundation.fml.parser.node.Node;
-import org.openflexo.foundation.fml.parser.node.PAdditionalIdentifier;
 import org.openflexo.foundation.fml.parser.node.PCompositeIdent;
+import org.openflexo.foundation.fml.parser.node.PCompositeTident;
+import org.openflexo.foundation.fml.parser.node.PIdentifierPrefix;
 import org.openflexo.foundation.fml.parser.node.PPrimitiveType;
 import org.openflexo.foundation.fml.parser.node.PReferenceType;
 import org.openflexo.foundation.fml.parser.node.PType;
@@ -101,7 +102,7 @@ import org.openflexo.foundation.fml.parser.node.PTypeArgumentList;
 import org.openflexo.foundation.fml.parser.node.PTypeArgumentListHead;
 import org.openflexo.foundation.fml.parser.node.PTypeArguments;
 import org.openflexo.foundation.fml.parser.node.PTypeArgumentsOrDiamond;
-import org.openflexo.foundation.fml.parser.node.TIdentifier;
+import org.openflexo.foundation.fml.parser.node.TUidentifier;
 import org.openflexo.foundation.fml.rt.action.MatchingSet;
 import org.openflexo.p2pp.RawSource.RawSourceFragment;
 import org.openflexo.toolbox.StringUtils;
@@ -273,32 +274,32 @@ public class TypeFactory extends SemanticsAnalyzerFactory {
 		return unresolvedTypes;
 	}
 
-	public List<String> makeFullQualifiedIdentifierList(TIdentifier identifier, List<PAdditionalIdentifier> additionalIdentifiers) {
+	public List<String> makeFullQualifiedIdentifierList(List<PIdentifierPrefix> prefixes, TUidentifier identifier) {
 		List<String> returned = new ArrayList<>();
-		returned.add(identifier.getText());
-		for (PAdditionalIdentifier pAdditionalIdentifier : additionalIdentifiers) {
-			if (pAdditionalIdentifier instanceof AAdditionalIdentifier) {
-				returned.add(((AAdditionalIdentifier) pAdditionalIdentifier).getIdentifier().getText());
+		for (PIdentifierPrefix p : prefixes) {
+			if (p instanceof AIdentifierPrefix) {
+				returned.add(((AIdentifierPrefix) p).getLidentifier().getText());
 			}
 		}
+		returned.add(identifier.getText());
 		return returned;
 	}
 
-	public String makeFullQualifiedIdentifier(TIdentifier identifier, List<PAdditionalIdentifier> additionalIdentifiers) {
+	public String makeFullQualifiedIdentifier(List<PIdentifierPrefix> prefixes, TUidentifier identifier) {
 		StringBuffer returned = new StringBuffer();
-		returned.append(identifier.getText());
-		for (PAdditionalIdentifier pAdditionalIdentifier : additionalIdentifiers) {
-			if (pAdditionalIdentifier instanceof AAdditionalIdentifier) {
-				returned.append("." + ((AAdditionalIdentifier) pAdditionalIdentifier).getIdentifier().getText());
+		for (PIdentifierPrefix p : prefixes) {
+			if (p instanceof AIdentifierPrefix) {
+				returned.append(((AIdentifierPrefix) p).getLidentifier().getText() + ".");
 			}
 		}
+		returned.append(identifier.getText());
 		return returned.toString();
 	}
 
-	public String makeFullQualifiedIdentifier(PCompositeIdent compositeIdentifier) {
-		if (compositeIdentifier instanceof ACompositeIdent) {
-			return makeFullQualifiedIdentifier(((ACompositeIdent) compositeIdentifier).getIdentifier(),
-					((ACompositeIdent) compositeIdentifier).getAdditionalIdentifiers());
+	public String makeFullQualifiedIdentifier(PCompositeTident compositeIdentifier) {
+		if (compositeIdentifier instanceof ACompositeTident) {
+			return makeFullQualifiedIdentifier(((ACompositeTident) compositeIdentifier).getPrefixes(),
+					((ACompositeTident) compositeIdentifier).getIdentifier());
 		}
 		return null;
 	}
@@ -309,7 +310,7 @@ public class TypeFactory extends SemanticsAnalyzerFactory {
 	 * @param compositeIdentifier
 	 * @return
 	 */
-	public Type makeType(PCompositeIdent compositeIdentifier) {
+	public Type makeType(PCompositeTident compositeIdentifier) {
 		return makeType(compositeIdentifier, (FlexoRole) null);
 	}
 
@@ -320,10 +321,10 @@ public class TypeFactory extends SemanticsAnalyzerFactory {
 	 * @param role
 	 * @return
 	 */
-	public Type makeType(PCompositeIdent compositeIdentifier, FlexoRole<?> role) {
-		if (compositeIdentifier instanceof ACompositeIdent) {
-			return makeType(((ACompositeIdent) compositeIdentifier).getIdentifier(),
-					((ACompositeIdent) compositeIdentifier).getAdditionalIdentifiers(), role);
+	public Type makeType(PCompositeTident compositeIdentifier, FlexoRole<?> role) {
+		if (compositeIdentifier instanceof ACompositeTident) {
+			return makeType(((ACompositeTident) compositeIdentifier).getPrefixes(),
+					((ACompositeTident) compositeIdentifier).getIdentifier(), role);
 		}
 		else {
 			logger.warning("Unexpected " + compositeIdentifier);
@@ -331,7 +332,7 @@ public class TypeFactory extends SemanticsAnalyzerFactory {
 		}
 	}
 
-	public Type makeType(PCompositeIdent compositeIdentifier, PTypeArgumentsOrDiamond args) {
+	public Type makeType(PCompositeTident compositeIdentifier, PTypeArgumentsOrDiamond args) {
 
 		Type baseType = makeType(compositeIdentifier);
 		if (args != null) {
@@ -380,8 +381,8 @@ public class TypeFactory extends SemanticsAnalyzerFactory {
 	 * @param additionalIdentifiers
 	 * @return
 	 */
-	public Type makeType(TIdentifier identifier, List<PAdditionalIdentifier> additionalIdentifiers) {
-		return makeType(identifier, additionalIdentifiers, null);
+	public Type makeType(List<PIdentifierPrefix> prefixes, TUidentifier identifier) {
+		return makeType(prefixes, identifier, null);
 	}
 
 	/**
@@ -392,8 +393,8 @@ public class TypeFactory extends SemanticsAnalyzerFactory {
 	 * @param role
 	 * @return
 	 */
-	public Type makeType(TIdentifier identifier, List<PAdditionalIdentifier> additionalIdentifiers, FlexoRole<?> role) {
-		String typeName = makeFullQualifiedIdentifier(identifier, additionalIdentifiers);
+	public Type makeType(List<PIdentifierPrefix> prefixes, TUidentifier identifier, FlexoRole<?> role) {
+		String typeName = makeFullQualifiedIdentifier(prefixes, identifier);
 
 		Type returned = resolvedTypes.get(typeName);
 
@@ -408,7 +409,7 @@ public class TypeFactory extends SemanticsAnalyzerFactory {
 			return returned;
 		}
 
-		RawSourceFragment fragment = getFragment(identifier, additionalIdentifiers);
+		RawSourceFragment fragment = getFragment(identifier, prefixes);
 
 		Type conceptType = lookupConceptNamed(typeName, fragment);
 		if (conceptType != null) {
@@ -675,7 +676,7 @@ public class TypeFactory extends SemanticsAnalyzerFactory {
 	 * @param typeName
 	 * @return
 	 */
-	public FlexoConceptInstanceType lookupConceptNamed(PCompositeIdent compositeIdentifier) {
+	public FlexoConceptInstanceType lookupConceptNamed(PCompositeTident compositeIdentifier) {
 		return lookupConceptNamed(makeFullQualifiedIdentifier(compositeIdentifier), getFragment(compositeIdentifier));
 	}
 
@@ -687,7 +688,7 @@ public class TypeFactory extends SemanticsAnalyzerFactory {
 	 * @param typeName
 	 * @return
 	 */
-	public FlexoConceptInstanceType makeFlexoConceptType(PCompositeIdent compositeIdentifier) {
+	public FlexoConceptInstanceType makeFlexoConceptType(PCompositeTident compositeIdentifier) {
 		return makeFlexoConceptType(makeFullQualifiedIdentifier(compositeIdentifier), getFragment(compositeIdentifier));
 	}
 
@@ -996,10 +997,10 @@ public class TypeFactory extends SemanticsAnalyzerFactory {
 
 		private String getIdentifier(Node node) {
 			if (node instanceof AModelDecl) {
-				return ((AModelDecl) node).getIdentifier().getText();
+				return ((AModelDecl) node).getUidentifier().getText();
 			}
 			if (node instanceof AConceptDecl) {
-				return ((AConceptDecl) node).getIdentifier().getText();
+				return ((AConceptDecl) node).getUidentifier().getText();
 			}
 			return null;
 		}
@@ -1009,7 +1010,7 @@ public class TypeFactory extends SemanticsAnalyzerFactory {
 			super.inAModelDecl(node);
 			if (!found) {
 				nodes.push(node);
-				if (fullQualifiedConceptName.equals(node.getIdentifier().getText())) {
+				if (fullQualifiedConceptName.equals(node.getUidentifier().getText())) {
 					found();
 				}
 			}
@@ -1028,7 +1029,7 @@ public class TypeFactory extends SemanticsAnalyzerFactory {
 			super.inAConceptDecl(node);
 			if (!found) {
 				nodes.push(node);
-				if (fullQualifiedConceptName.equals(node.getIdentifier().getText())) {
+				if (fullQualifiedConceptName.equals(node.getUidentifier().getText())) {
 					found();
 				}
 			}
@@ -1045,7 +1046,7 @@ public class TypeFactory extends SemanticsAnalyzerFactory {
 		@Override
 		public void inANamedUriImportImportDecl(ANamedUriImportImportDecl node) {
 			super.inANamedUriImportImportDecl(node);
-			if (fullQualifiedConceptNamePath.size() > 0 && fullQualifiedConceptNamePath.get(0).equals(node.getName().getText())) {
+			if (fullQualifiedConceptNamePath.size() > 0 && fullQualifiedConceptNamePath.get(0).equals(getText(node.getName()))) {
 				found = true;
 				if (fullQualifiedConceptNamePath.size() == 1) {
 					type = new VirtualModelInstanceType("@" + node.getName(), VIRTUAL_MODEL_INSTANCE_TYPE_FACTORY);

@@ -40,7 +40,7 @@ package org.openflexo.foundation.fml.parser.fmlnodes;
 
 import org.openflexo.foundation.fml.JavaImportDeclaration;
 import org.openflexo.foundation.fml.parser.MainSemanticsAnalyzer;
-import org.openflexo.foundation.fml.parser.node.ACompositeIdent;
+import org.openflexo.foundation.fml.parser.node.ACompositeTident;
 import org.openflexo.foundation.fml.parser.node.AJavaImportImportDecl;
 import org.openflexo.p2pp.RawSource.RawSourceFragment;
 
@@ -61,7 +61,7 @@ public class JavaImportNode extends AbstractJavaImportNode<AJavaImportImportDecl
 	@Override
 	public JavaImportDeclaration buildModelObjectFromAST(AJavaImportImportDecl astNode) {
 		JavaImportDeclaration returned = super.buildModelObjectFromAST(astNode);
-		returned.setFullQualifiedClassName(makeFullQualifiedIdentifier((ACompositeIdent) astNode.getIdentifier()));
+		returned.setFullQualifiedClassName(makeFullQualifiedIdentifier((ACompositeTident) astNode.getIdentifier()));
 		return returned;
 	}
 

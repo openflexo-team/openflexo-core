@@ -50,7 +50,7 @@ import org.openflexo.foundation.fml.parser.node.AManySuperTypeList;
 import org.openflexo.foundation.fml.parser.node.AOneSuperTypeList;
 import org.openflexo.foundation.fml.parser.node.ASuperClause;
 import org.openflexo.foundation.fml.parser.node.Node;
-import org.openflexo.foundation.fml.parser.node.PCompositeIdent;
+import org.openflexo.foundation.fml.parser.node.PCompositeTident;
 import org.openflexo.foundation.fml.parser.node.PSuperClause;
 import org.openflexo.foundation.fml.parser.node.PSuperTypeList;
 import org.openflexo.p2pp.RawSource.RawSourceFragment;
@@ -99,25 +99,25 @@ public abstract class AbstractFlexoConceptNode<N extends Node, T extends FlexoCo
 
 	private void buildParentConcepts(FlexoConcept returned, PSuperTypeList superTypeList) {
 		parentTypes = new ArrayList<>();
-		for (PCompositeIdent pCompositeIdent : extractIdentifiers(superTypeList)) {
-			FlexoConceptInstanceType parentType = getTypeFactory().lookupConceptNamed(getText(pCompositeIdent),
-					getFragment(pCompositeIdent));
+		for (PCompositeTident pCompositeTident : extractIdentifiers(superTypeList)) {
+			FlexoConceptInstanceType parentType = getTypeFactory().lookupConceptNamed(getText(pCompositeTident),
+					getFragment(pCompositeTident));
 			if (parentType != null) {
 				parentTypes.add(parentType);
 			}
 			else {
-				throwIssue("Undefined parent concept " + getText(pCompositeIdent), getSuperTypeListFragment());
+				throwIssue("Undefined parent concept " + getText(pCompositeTident), getSuperTypeListFragment());
 			}
 		}
 	}
 
-	private List<PCompositeIdent> extractIdentifiers(PSuperTypeList superTypeList) {
-		List<PCompositeIdent> returned = new ArrayList<>();
+	private List<PCompositeTident> extractIdentifiers(PSuperTypeList superTypeList) {
+		List<PCompositeTident> returned = new ArrayList<>();
 		appendIdentifiers(superTypeList, returned);
 		return returned;
 	}
 
-	private void appendIdentifiers(PSuperTypeList superTypeList, List<PCompositeIdent> l) {
+	private void appendIdentifiers(PSuperTypeList superTypeList, List<PCompositeTident> l) {
 		if (superTypeList instanceof AOneSuperTypeList) {
 			l.add(((AOneSuperTypeList) superTypeList).getIdentifier());
 		}

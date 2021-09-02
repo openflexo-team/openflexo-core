@@ -89,9 +89,9 @@ public class ModelSlotPropertyNode<N extends PInnerConceptDecl, MS extends Model
 		if (astNode instanceof AFmlInnerConceptDecl) {
 			returned.setVisibility(getVisibility(((AFmlInnerConceptDecl) astNode).getVisibility()));
 			try {
-				returned.setName(((AFmlInnerConceptDecl) astNode).getIdentifier().getText());
+				returned.setName(((AFmlInnerConceptDecl) astNode).getLidentifier().getText());
 			} catch (InvalidNameException e) {
-				throwIssue("Invalid name: " + ((AFmlInnerConceptDecl) astNode).getIdentifier().getText());
+				throwIssue("Invalid name: " + ((AFmlInnerConceptDecl) astNode).getLidentifier().getText());
 			}
 			returned.setCardinality(getCardinality(((AFmlInnerConceptDecl) astNode).getCardinality()));
 			CustomType type = (CustomType) getTypeFactory().makeType(((AFmlInnerConceptDecl) astNode).getType(), returned);
@@ -100,9 +100,9 @@ public class ModelSlotPropertyNode<N extends PInnerConceptDecl, MS extends Model
 		if (astNode instanceof AFmlFullyQualifiedInnerConceptDecl) {
 			returned.setVisibility(getVisibility(((AFmlFullyQualifiedInnerConceptDecl) astNode).getVisibility()));
 			try {
-				returned.setName(((AFmlFullyQualifiedInnerConceptDecl) astNode).getIdentifier().getText());
+				returned.setName(((AFmlFullyQualifiedInnerConceptDecl) astNode).getLidentifier().getText());
 			} catch (InvalidNameException e) {
-				throwIssue("Invalid name: " + ((AFmlFullyQualifiedInnerConceptDecl) astNode).getIdentifier().getText());
+				throwIssue("Invalid name: " + ((AFmlFullyQualifiedInnerConceptDecl) astNode).getLidentifier().getText());
 			}
 			returned.setCardinality(getCardinality(((AFmlFullyQualifiedInnerConceptDecl) astNode).getCardinality()));
 			CustomType type = (CustomType) getTypeFactory().makeType(((AFmlFullyQualifiedInnerConceptDecl) astNode).getType(), returned);
@@ -119,23 +119,20 @@ public class ModelSlotPropertyNode<N extends PInnerConceptDecl, MS extends Model
 	public void preparePrettyPrint(boolean hasParsedVersion) {
 		super.preparePrettyPrint(hasParsedVersion);
 
-		// @formatter:off	
+		// @formatter:off
 		append(dynamicContents(() -> getVisibilityAsString(getModelObject().getVisibility()), SPACE), getVisibilityFragment());
 		append(dynamicContents(() -> serializeType(getModelObject().getType())), getTypeFragment());
 		append(dynamicContents(() -> serializeCardinality(getModelObject().getCardinality())), getCardinalityFragment());
 		append(dynamicContents(SPACE, () -> getModelObject().getName(), SPACE), getNameFragment());
 		append(staticContents("", "with", SPACE), getWithFragment());
-		when(() -> isFullQualified())
-		.thenAppend(dynamicContents(() -> getFMLFactory().serializeTAId(getModelObject())), getTaIdFragment())
-		.thenAppend(staticContents("::"), getColonColonFragment());
+		when(() -> isFullQualified()).thenAppend(dynamicContents(() -> getFMLFactory().serializeTAId(getModelObject())), getTaIdFragment())
+				.thenAppend(staticContents("::"), getColonColonFragment());
 		append(dynamicContents(() -> serializeFlexoRoleName(getModelObject())), getRoleFragment());
-		when(() -> hasFMLProperties())
-		.thenAppend(staticContents("("), getFMLParametersLParFragment())
-		.thenAppend(childrenContents("","", () -> getModelObject().getFMLPropertyValues(getFactory()), ", ","", Indentation.DoNotIndent,
-				FMLPropertyValue.class))
-		.thenAppend(staticContents(")"), getFMLParametersRParFragment());
+		when(() -> hasFMLProperties()).thenAppend(staticContents("("), getFMLParametersLParFragment()).thenAppend(childrenContents("", "",
+				() -> getModelObject().getFMLPropertyValues(getFactory()), ", ", "", Indentation.DoNotIndent, FMLPropertyValue.class))
+				.thenAppend(staticContents(")"), getFMLParametersRParFragment());
 		append(staticContents(";"), getSemiFragment());
-		// @formatter:on	
+		// @formatter:on
 	}
 
 }

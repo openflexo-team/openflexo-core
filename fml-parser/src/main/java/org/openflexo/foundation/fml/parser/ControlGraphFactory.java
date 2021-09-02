@@ -643,7 +643,7 @@ public class ControlGraphFactory extends FMLSemanticsAnalyzer {
 	public void inAJavaInstanceCreationFmlActionExp(AJavaInstanceCreationFmlActionExp node) {
 		super.inAJavaInstanceCreationFmlActionExp(node);
 
-		Type type = getTypeFactory().makeType(node.getCompositeIdent());
+		Type type = getTypeFactory().makeType(node.getCompositeTident());
 
 		// System.out.println("Found type " + type + " of " + type.getClass());
 

@@ -102,14 +102,13 @@ public class DeclarationActionNode extends AssignableActionNode<AVariableDeclara
 	public void preparePrettyPrint(boolean hasParsedVersion) {
 		super.preparePrettyPrint(hasParsedVersion);
 
-		// @formatter:off	
+		// @formatter:off
 		append(dynamicContents(() -> serializeType(getModelObject().getType()), SPACE), getTypeFragment());
 		append(dynamicContents(() -> getModelObject().getVariableName()), getNameFragment());
-		when(() -> hasInitializer())
-			.thenAppend(staticContents(SPACE,"=",SPACE), getAssignOperatorFragment())
-			.thenAppend(childContents("", () -> getModelObject().getAssignableAction(), "", Indentation.DoNotIndent));
+		when(() -> hasInitializer()).thenAppend(staticContents(SPACE, "=", SPACE), getAssignOperatorFragment())
+				.thenAppend(childContents("", () -> getModelObject().getAssignableAction(), "", Indentation.DoNotIndent));
 		append(staticContents(";"), getSemiFragment());
-		// @formatter:on	
+		// @formatter:on
 
 	}
 
@@ -124,10 +123,10 @@ public class DeclarationActionNode extends AssignableActionNode<AVariableDeclara
 		if (getASTNode() != null) {
 			PVariableDeclarator variableDeclarator = getASTNode().getVariableDeclarator();
 			if (variableDeclarator instanceof AIdentifierVariableDeclarator) {
-				return getFragment(((AIdentifierVariableDeclarator) variableDeclarator).getIdentifier());
+				return getFragment(((AIdentifierVariableDeclarator) variableDeclarator).getLidentifier());
 			}
 			else if (variableDeclarator instanceof AInitializerVariableDeclarator) {
-				return getFragment(((AInitializerVariableDeclarator) variableDeclarator).getIdentifier());
+				return getFragment(((AInitializerVariableDeclarator) variableDeclarator).getLidentifier());
 			}
 		}
 		return null;

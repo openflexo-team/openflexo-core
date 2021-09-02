@@ -134,7 +134,7 @@ public class AddClassInstanceNode extends AssignableActionNode<AJavaInstanceCrea
 	public AddClassInstance buildModelObjectFromAST(AJavaInstanceCreationFmlActionExp astNode) {
 		AddClassInstance returned = getFactory().newAddClassInstance();
 
-		Type type = getTypeFactory().makeType(astNode.getCompositeIdent(), astNode.getTypeArgumentsOrDiamond());
+		Type type = getTypeFactory().makeType(astNode.getCompositeTident(), astNode.getTypeArgumentsOrDiamond());
 		returned.setType(type);
 
 		handleArguments(astNode.getArgumentList(), returned);
@@ -151,10 +151,10 @@ public class AddClassInstanceNode extends AssignableActionNode<AJavaInstanceCrea
 	public void preparePrettyPrint(boolean hasParsedVersion) {
 		super.preparePrettyPrint(hasParsedVersion);
 
-		// @formatter:off	
+		// @formatter:off
 		when(() -> isContainerFullQualified())
-		.thenAppend(dynamicContents(() -> getModelObject().getContainer().toString()), getContainerFragment())
-		.thenAppend(staticContents("."), getContainerDotFragment());
+				.thenAppend(dynamicContents(() -> getModelObject().getContainer().toString()), getContainerFragment())
+				.thenAppend(staticContents("."), getContainerDotFragment());
 		append(staticContents("", "new", SPACE), getNewFragment());
 		append(dynamicContents(() -> serializeType(getModelObject().getType())), getTypeFragment());
 		append(staticContents("("), getLParFragment());
@@ -162,7 +162,7 @@ public class AddClassInstanceNode extends AssignableActionNode<AJavaInstanceCrea
 		append(staticContents(")"), getRParFragment());
 		// Append semi only when required
 		when(() -> requiresSemi()).thenAppend(staticContents(";"), getSemiFragment());
-		// @formatter:on	
+		// @formatter:on
 
 	}
 
@@ -208,10 +208,10 @@ public class AddClassInstanceNode extends AssignableActionNode<AJavaInstanceCrea
 
 		if (getASTNode() != null) {
 			if (getASTNode().getTypeArgumentsOrDiamond() != null) {
-				return getFragment(getASTNode().getCompositeIdent(), getASTNode().getTypeArgumentsOrDiamond());
+				return getFragment(getASTNode().getCompositeTident(), getASTNode().getTypeArgumentsOrDiamond());
 			}
 			else {
-				return getFragment(getASTNode().getCompositeIdent());
+				return getFragment(getASTNode().getCompositeTident());
 			}
 		}
 		return null;

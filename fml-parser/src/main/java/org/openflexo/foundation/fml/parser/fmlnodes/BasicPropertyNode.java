@@ -90,10 +90,10 @@ public abstract class BasicPropertyNode<T extends BasicProperty<?>> extends Flex
 		if (getASTNode() != null) {
 			PVariableDeclarator variableDeclarator = getASTNode().getVariableDeclarator();
 			if (variableDeclarator instanceof AIdentifierVariableDeclarator) {
-				return getFragment(((AIdentifierVariableDeclarator) variableDeclarator).getIdentifier());
+				return getFragment(((AIdentifierVariableDeclarator) variableDeclarator).getLidentifier());
 			}
 			else if (variableDeclarator instanceof AInitializerVariableDeclarator) {
-				return getFragment(((AInitializerVariableDeclarator) variableDeclarator).getIdentifier());
+				return getFragment(((AInitializerVariableDeclarator) variableDeclarator).getLidentifier());
 			}
 		}
 		return null;

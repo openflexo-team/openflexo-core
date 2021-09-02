@@ -209,31 +209,28 @@ public class AddVirtualModelInstanceNode extends AssignableActionNode<PFmlAction
 	public void preparePrettyPrint(boolean hasParsedVersion) {
 		super.preparePrettyPrint(hasParsedVersion);
 
-		// @formatter:off	
+		// @formatter:off
 		when(() -> isContainerFullQualified())
-		.thenAppend(dynamicContents(() -> getModelObject().getContainer().toString()), getContainerFragment())
-		.thenAppend(staticContents("."), getContainerDotFragment());
+				.thenAppend(dynamicContents(() -> getModelObject().getContainer().toString()), getContainerFragment())
+				.thenAppend(staticContents("."), getContainerDotFragment());
 		append(staticContents("", "new", SPACE), getNewFragment());
 		append(dynamicContents(() -> serializeType(getModelObject().getFlexoConceptType())), getConceptNameFragment());
-		when(() -> isFullQualified())
-		.thenAppend(staticContents("::"), getColonColonFragment())
-		.thenAppend(dynamicContents(() -> serializeFlexoBehaviour(getModelObject().getCreationScheme())), getConstructorNameFragment());
+		when(() -> isFullQualified()).thenAppend(staticContents("::"), getColonColonFragment()).thenAppend(
+				dynamicContents(() -> serializeFlexoBehaviour(getModelObject().getCreationScheme())), getConstructorNameFragment());
 		append(staticContents("("), getLParFragment());
 		append(childrenContents("", "", () -> getModelObject().getParameters(), ",", "", Indentation.DoNotIndent,
 				AddFlexoConceptInstanceParameter.class));
 		append(staticContents(")"), getRParFragment());
 
-
-		when(() -> hasFMLProperties())
-		.thenAppend(staticContents(SPACE, "with", SPACE), getFMLParametersWithFragment())
-		.thenAppend(staticContents("("), getFMLParametersLParFragment())
-		.thenAppend(childrenContents("","", () -> getModelObject().getFMLPropertyValues(getFactory()), ", ","", Indentation.DoNotIndent,
-				FMLPropertyValue.class))
-		.thenAppend(staticContents(")"), getFMLParametersRParFragment());
+		when(() -> hasFMLProperties()).thenAppend(staticContents(SPACE, "with", SPACE), getFMLParametersWithFragment())
+				.thenAppend(staticContents("("), getFMLParametersLParFragment())
+				.thenAppend(childrenContents("", "", () -> getModelObject().getFMLPropertyValues(getFactory()), ", ", "",
+						Indentation.DoNotIndent, FMLPropertyValue.class))
+				.thenAppend(staticContents(")"), getFMLParametersRParFragment());
 
 		// Append semi only when required
 		when(() -> requiresSemi()).thenAppend(staticContents(";"), getSemiFragment());
-		// @formatter:on	
+		// @formatter:on
 	}
 
 	protected boolean hasFMLProperties() {
@@ -304,7 +301,7 @@ public class AddVirtualModelInstanceNode extends AssignableActionNode<PFmlAction
 			return ((AFmlInstanceCreationFmlActionExp) getASTNode()).getConceptName().getText();
 		}
 		if (getASTNode() instanceof AJavaInstanceCreationFmlActionExp) {
-			return getText(((AJavaInstanceCreationFmlActionExp) getASTNode()).getCompositeIdent());
+			return getText(((AJavaInstanceCreationFmlActionExp) getASTNode()).getCompositeTident());
 		}
 		return null;
 	}
@@ -314,7 +311,7 @@ public class AddVirtualModelInstanceNode extends AssignableActionNode<PFmlAction
 			return ((AFmlInstanceCreationFmlActionExp) getASTNode()).getConceptName();
 		}
 		if (getASTNode() instanceof AJavaInstanceCreationFmlActionExp) {
-			return ((AJavaInstanceCreationFmlActionExp) getASTNode()).getCompositeIdent();
+			return ((AJavaInstanceCreationFmlActionExp) getASTNode()).getCompositeTident();
 		}
 		return null;
 	}
@@ -324,7 +321,7 @@ public class AddVirtualModelInstanceNode extends AssignableActionNode<PFmlAction
 			return getFragment(((AFmlInstanceCreationFmlActionExp) getASTNode()).getConceptName());
 		}
 		if (getASTNode() instanceof AJavaInstanceCreationFmlActionExp) {
-			return getFragment(((AJavaInstanceCreationFmlActionExp) getASTNode()).getCompositeIdent());
+			return getFragment(((AJavaInstanceCreationFmlActionExp) getASTNode()).getCompositeTident());
 		}
 		return null;
 	}

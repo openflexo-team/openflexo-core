@@ -5,14 +5,14 @@
 use org.openflexo.foundation.fml.rt.FMLRTModelSlot as FMLRT;
 use org.openflexo.technologyadapter.diagram.TypedDiagramModelSlot as DIAGRAM;
 
-import ["http://some_uri/ADiagSpecification.diagramspecification"] as DIAGRAM_SPECIFICATION;
-import [DIAGRAM_SPECIFICATION+"/ExampleDiagram.diagram"] as EXAMPLE_DIAGRAM;
-import [EXAMPLE_DIAGRAM:"SYL_56"] as RED_SHAPE;
-import [EXAMPLE_DIAGRAM:"SYL_78"] as BLUE_ARC;
+import ["http://some_uri/ADiagSpecification.diagramspecification"] as diagramSpecification;
+import [diagramSpecification+"/ExampleDiagram.diagram"] as exampleDiagram;
+import [exampleDiagram:"SYL_56"] as redShape;
+import [exampleDiagram:"SYL_78"] as blueArc;
 
 model TestMatch {
 	
-	//Diagram diagram with DIAGRAM::TypedDiagramModelSlot(templateDiagram = DIAGRAM_SPECIFICATION);	
+	//Diagram diagram with DIAGRAM::TypedDiagramModelSlot(templateDiagram = diagramSpecification);	
 	//ConceptualModel conceptualModel;
 	
 	public void updateDiagram () {  
@@ -32,7 +32,7 @@ model TestMatch {
 		
 		MyConcept myConcept;
 		DiagramShape shape with DIAGRAM::ShapeRole (
-			metaModelElement = RED_SHAPE,
+			metaModelElement = redShape,
 			label = myConcept.name
 		);
 		
@@ -63,7 +63,7 @@ model TestMatch {
 		MyConceptGR fromGR;
 		MyConceptGR toGR;
 		DiagramConnector connector with DIAGRAM::ConnectorRole (
-			metaModelElement = BLUE_ARC,
+			metaModelElement = blueArc,
 			label = "connected with"
 		);
 		

@@ -7,7 +7,7 @@ use some.package.name.AModelSlot as MS;
 
 import java.lang.String;
 import java.util.List;
-import aClass;
+import AClass;
 
 // We test annotations
 model MyModel {
@@ -15,8 +15,8 @@ model MyModel {
 	concept ConceptC {
 		String c1;
 		boolean c2;
-		@ui(
-			@label("create")
+		@UI(
+			@Label("create")
 			@TextField(value="aC1", label="give_a_c1")
 			@CheckBox(value="aC2", label="give_a_c2")
 			@CheckBox(value="aC3", label="give_a_c3")
@@ -28,7 +28,7 @@ model MyModel {
 			c1 = parameters.aC1;
 			c2 = parameters.aC2;
 		}
-		@label("delete")
+		@Label("delete")
 		delete::_delete () {
 		}
 	}

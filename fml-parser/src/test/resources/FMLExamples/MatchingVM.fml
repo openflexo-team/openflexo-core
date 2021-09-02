@@ -10,7 +10,7 @@ model MatchingVM {
 	VM _model with FMLRTVirtualModelInstanceModelSlot;
 
 	@UI(
-		@label("create")
+		@Label("create")
 	)
 	create::_create (required VM _model) {
 		_model = parameters._model;
@@ -18,7 +18,7 @@ model MatchingVM {
 	}
 
 	@UI(
-		@label("synchronize")
+		@Label("synchronize")
 	)
 	synchronizeUsingMatchingSet () {
 		MatchingSet matchingSet = begin match MatchedConcept from (this);;
@@ -38,7 +38,7 @@ model MatchingVM {
 		Concept _concept with FlexoConceptInstanceRole;
 		String p2;
 		@UI(
-			@label("create")
+			@Label("create")
 			@TextField(value="aP2")
 		)
 		create::_create (required Concept aConcept, required String aP2) {
@@ -46,7 +46,7 @@ model MatchingVM {
 			p2 = parameters.aP2;
 		}
 		@UI(
-			@label("delete")
+			@Label("delete")
 		)
 		delete::_delete () {
 		}

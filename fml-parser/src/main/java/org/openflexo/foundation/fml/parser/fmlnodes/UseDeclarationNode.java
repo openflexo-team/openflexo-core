@@ -1,6 +1,6 @@
 /**
  * 
- * Copyright (c) 2019, Openflexo
+∑ * Copyright (c) 2019, Openflexo
  * 
  * This file is part of FML-parser, a component of the software infrastructure 
  * developed at Openflexo.
@@ -68,7 +68,7 @@ public class UseDeclarationNode extends FMLObjectNode<AUseDecl, UseModelSlotDecl
 			e.printStackTrace();
 		}
 		UseModelSlotDeclaration returned = getFactory().newUseModelSlotDeclaration(modelSlotClass);
-		returned.setAbbrev(astNode.getTaId().getText());
+		returned.setAbbrev(getText(astNode.getTaId()));
 		return returned;
 	}
 

@@ -38,6 +38,7 @@
 
 package org.openflexo.foundation.fml.parser;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Stack;
@@ -49,13 +50,21 @@ import org.openflexo.foundation.fml.parser.fmlnodes.FMLInstancePropertyValueNode
 import org.openflexo.foundation.fml.parser.fmlnodes.FMLInstancesListPropertyValueNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.FMLSimplePropertyValueNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.WrappedFMLObjectNode;
+import org.openflexo.foundation.fml.parser.node.ACompositeIdent;
+import org.openflexo.foundation.fml.parser.node.ACompositeTident;
 import org.openflexo.foundation.fml.parser.node.AFullQualifiedQualifiedInstance;
+import org.openflexo.foundation.fml.parser.node.AIdentifierPrefix;
 import org.openflexo.foundation.fml.parser.node.AInstanceQualifiedArgument;
 import org.openflexo.foundation.fml.parser.node.AListInstancesQualifiedArgument;
 import org.openflexo.foundation.fml.parser.node.AMatchActionFmlActionExp;
 import org.openflexo.foundation.fml.parser.node.ASimpleQualifiedArgument;
 import org.openflexo.foundation.fml.parser.node.ASimpleQualifiedInstance;
 import org.openflexo.foundation.fml.parser.node.Node;
+import org.openflexo.foundation.fml.parser.node.PCompositeIdent;
+import org.openflexo.foundation.fml.parser.node.PCompositeTident;
+import org.openflexo.foundation.fml.parser.node.PIdentifierPrefix;
+import org.openflexo.foundation.fml.parser.node.TLidentifier;
+import org.openflexo.foundation.fml.parser.node.TUidentifier;
 import org.openflexo.foundation.fml.parser.node.Token;
 import org.openflexo.p2pp.P2PPNode;
 import org.openflexo.p2pp.RawSource;
@@ -191,6 +200,66 @@ public abstract class FMLSemanticsAnalyzer extends DepthFirstAdapter {
 
 	public String getText(Node node) {
 		return getFragment(node).getRawText();
+	}
+
+	public List<String> makeFullQualifiedIdentifierList(List<PIdentifierPrefix> prefixes, TLidentifier identifier) {
+		List<String> returned = new ArrayList<>();
+		for (PIdentifierPrefix p : prefixes) {
+			if (p instanceof AIdentifierPrefix) {
+				returned.add(((AIdentifierPrefix) p).getLidentifier().getText());
+			}
+		}
+		returned.add(identifier.getText());
+		return returned;
+	}
+
+	public String makeFullQualifiedIdentifier(List<PIdentifierPrefix> prefixes, TLidentifier identifier) {
+		StringBuffer returned = new StringBuffer();
+		for (PIdentifierPrefix p : prefixes) {
+			if (p instanceof AIdentifierPrefix) {
+				returned.append(((AIdentifierPrefix) p).getLidentifier().getText() + ".");
+			}
+		}
+		returned.append(identifier.getText());
+		return returned.toString();
+	}
+
+	public String makeFullQualifiedIdentifier(PCompositeIdent compositeIdentifier) {
+		if (compositeIdentifier instanceof ACompositeIdent) {
+			return makeFullQualifiedIdentifier(((ACompositeIdent) compositeIdentifier).getPrefixes(),
+					((ACompositeIdent) compositeIdentifier).getIdentifier());
+		}
+		return null;
+	}
+
+	public List<String> makeFullQualifiedIdentifierList(List<PIdentifierPrefix> prefixes, TUidentifier identifier) {
+		List<String> returned = new ArrayList<>();
+		for (PIdentifierPrefix p : prefixes) {
+			if (p instanceof AIdentifierPrefix) {
+				returned.add(((AIdentifierPrefix) p).getLidentifier().getText());
+			}
+		}
+		returned.add(identifier.getText());
+		return returned;
+	}
+
+	public String makeFullQualifiedIdentifier(List<PIdentifierPrefix> prefixes, TUidentifier identifier) {
+		StringBuffer returned = new StringBuffer();
+		for (PIdentifierPrefix p : prefixes) {
+			if (p instanceof AIdentifierPrefix) {
+				returned.append(((AIdentifierPrefix) p).getLidentifier().getText() + ".");
+			}
+		}
+		returned.append(identifier.getText());
+		return returned.toString();
+	}
+
+	public String makeFullQualifiedIdentifier(PCompositeTident compositeIdentifier) {
+		if (compositeIdentifier instanceof ACompositeTident) {
+			return makeFullQualifiedIdentifier(((ACompositeTident) compositeIdentifier).getPrefixes(),
+					((ACompositeTident) compositeIdentifier).getIdentifier());
+		}
+		return null;
 	}
 
 	// Hack used to detect that we are not deserializing FML property values but a MatchingCriteria

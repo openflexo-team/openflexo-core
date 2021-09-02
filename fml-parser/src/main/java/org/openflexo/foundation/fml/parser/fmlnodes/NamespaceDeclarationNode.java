@@ -67,7 +67,7 @@ public class NamespaceDeclarationNode extends FMLObjectNode<ANamespaceDecl, Name
 	public NamespaceDeclaration buildModelObjectFromAST(ANamespaceDecl astNode) {
 		NamespaceDeclaration returned = getFactory().newNamespaceDeclaration();
 		returned.setValue(astNode.getStringLiteral().getText().substring(1, astNode.getStringLiteral().getText().length() - 1));
-		returned.setAbbrev(astNode.getNsId().getText());
+		returned.setAbbrev(getText(astNode.getNsId()));
 		return returned;
 	}
 

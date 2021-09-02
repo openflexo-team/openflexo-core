@@ -86,7 +86,7 @@ public class ElementImportNode extends FMLObjectNode<PImportDecl, ElementImportD
 		}
 		if (astNode instanceof ANamedUriImportImportDecl) {
 			ref = ((ANamedUriImportImportDecl) astNode).getObject();
-			returned.setAbbrev(((ANamedUriImportImportDecl) astNode).getName().getText());
+			returned.setAbbrev(getText(((ANamedUriImportImportDecl) astNode).getName()));
 		}
 		if (ref instanceof AObjectInResourceReferenceByUri) {
 			returned.setResourceReference(new DataBinding(getText(((AObjectInResourceReferenceByUri) ref).getResource())));

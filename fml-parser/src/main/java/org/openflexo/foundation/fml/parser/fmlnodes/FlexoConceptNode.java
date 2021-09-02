@@ -67,9 +67,9 @@ public class FlexoConceptNode extends AbstractFlexoConceptNode<AConceptDecl, Fle
 	public FlexoConcept buildModelObjectFromAST(AConceptDecl astNode) {
 		FlexoConcept returned = getFactory().newFlexoConcept();
 		try {
-			returned.setName(astNode.getIdentifier().getText());
+			returned.setName(astNode.getUidentifier().getText());
 		} catch (InvalidNameException e) {
-			throwIssue("Invalid name: " + astNode.getIdentifier().getText());
+			throwIssue("Invalid name: " + astNode.getUidentifier().getText());
 		}
 		returned.setAbstract(astNode.getKwAbstract() != null);
 		returned.setVisibility(getVisibility(astNode.getVisibility()));
@@ -93,27 +93,25 @@ public class FlexoConceptNode extends AbstractFlexoConceptNode<AConceptDecl, Fle
 
 		super.preparePrettyPrint(hasParsedVersion);
 
-		// @formatter:off	
-		append(childrenContents("", () -> getModelObject().getMetaData(), LINE_SEPARATOR, Indentation.DoNotIndent,
-				FMLMetaData.class));
+		// @formatter:off
+		append(childrenContents("", () -> getModelObject().getMetaData(), LINE_SEPARATOR, Indentation.DoNotIndent, FMLMetaData.class));
 		append(dynamicContents(() -> getVisibilityAsString(getModelObject().getVisibility()), SPACE), getVisibilityFragment());
-		append(staticContents("","concept",SPACE), getConceptFragment());
-		append(dynamicContents(() -> getModelObject().getName()),getNameFragment());
+		append(staticContents("", "concept", SPACE), getConceptFragment());
+		append(dynamicContents(() -> getModelObject().getName()), getNameFragment());
 
-		when(() -> getModelObject().getParentFlexoConcepts().size()>0)
-		.thenAppend(staticContents(SPACE,"extends",SPACE), getExtendsFragment())
-		.thenAppend(dynamicContents(() -> getModelObject().getParentFlexoConceptsDeclaration()),getSuperTypeListFragment())
-		.elseAppend(staticContents(""), getSuperClauseFragment());
+		when(() -> getModelObject().getParentFlexoConcepts().size() > 0)
+				.thenAppend(staticContents(SPACE, "extends", SPACE), getExtendsFragment())
+				.thenAppend(dynamicContents(() -> getModelObject().getParentFlexoConceptsDeclaration()), getSuperTypeListFragment())
+				.elseAppend(staticContents(""), getSuperClauseFragment());
 
 		append(staticContents(SPACE, "{", LINE_SEPARATOR), getLBrcFragment());
-		append(childrenContents("", () -> getModelObject().getFlexoProperties(), LINE_SEPARATOR, Indentation.Indent,
-				FlexoProperty.class));
+		append(childrenContents("", () -> getModelObject().getFlexoProperties(), LINE_SEPARATOR, Indentation.Indent, FlexoProperty.class));
 		append(childrenContents(LINE_SEPARATOR, () -> getModelObject().getFlexoBehaviours(), LINE_SEPARATOR, Indentation.Indent,
 				FlexoBehaviour.class));
 		append(childrenContents(LINE_SEPARATOR, () -> getModelObject().getEmbeddedFlexoConcepts(), LINE_SEPARATOR, Indentation.Indent,
 				FlexoConcept.class));
 		append(staticContents("", "}", LINE_SEPARATOR), getRBrcFragment());
-	
+
 		// @formatter:on
 
 		/*appendDynamicContents(() -> getVisibilityAsString(getModelObject().getVisibility()), SPACE, getVisibilityFragment());
@@ -150,7 +148,7 @@ public class FlexoConceptNode extends AbstractFlexoConceptNode<AConceptDecl, Fle
 	@Override
 	protected RawSourceFragment getNameFragment() {
 		if (getASTNode() != null) {
-			return getFragment(getASTNode().getIdentifier());
+			return getFragment(getASTNode().getUidentifier());
 		}
 		return null;
 	}

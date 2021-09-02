@@ -37,7 +37,7 @@ model MyModel {
 	}
 	
 	testSelectExternalFlexoConcept() {
-		select AnOtherModel.AConcept from (instanceOfAnOtherModel);
+		select AnOtherModel$AConcept from (instanceOfAnOtherModel);
 	}
 	
 }
