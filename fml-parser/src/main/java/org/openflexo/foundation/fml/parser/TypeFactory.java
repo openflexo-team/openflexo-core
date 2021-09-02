@@ -218,13 +218,12 @@ public class TypeFactory extends SemanticsAnalyzerFactory {
 
 								return null;
 							} catch (TypeMismatchException e) {
-								// TODO Auto-generated catch block
 								e.printStackTrace();
 							} catch (NullReferenceException e) {
-								// TODO Auto-generated catch block
 								e.printStackTrace();
 							} catch (InvocationTargetException e) {
-								// TODO Auto-generated catch block
+								e.printStackTrace();
+							} catch (ReflectiveOperationException e) {
 								e.printStackTrace();
 							}
 						}
@@ -267,7 +266,7 @@ public class TypeFactory extends SemanticsAnalyzerFactory {
 			}*/
 		}
 
-		//System.out.println("Done");
+		// System.out.println("Done");
 	}
 
 	public List<UnresolvedTypeReference> getUnresolvedTypes() {

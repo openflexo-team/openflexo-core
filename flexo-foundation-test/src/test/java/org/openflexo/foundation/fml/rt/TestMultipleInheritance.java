@@ -44,7 +44,6 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.lang.reflect.InvocationTargetException;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -134,7 +133,7 @@ public class TestMultipleInheritance extends OpenflexoProjectAtRunTimeTestCase {
 
 	@Test
 	@TestOrder(4)
-	public void testCreateA() throws TypeMismatchException, NullReferenceException, InvocationTargetException, InvalidBindingException {
+	public void testCreateA() throws TypeMismatchException, NullReferenceException, InvalidBindingException, ReflectiveOperationException {
 
 		CreateFlexoConceptInstance action = CreateFlexoConceptInstance.actionType.makeNewAction(vmi, null, editor);
 		action.setFlexoConcept(conceptA);
@@ -151,7 +150,7 @@ public class TestMultipleInheritance extends OpenflexoProjectAtRunTimeTestCase {
 
 	@Test
 	@TestOrder(5)
-	public void testCreateB() throws TypeMismatchException, NullReferenceException, InvocationTargetException, InvalidBindingException {
+	public void testCreateB() throws TypeMismatchException, NullReferenceException, InvalidBindingException, ReflectiveOperationException {
 
 		CreateFlexoConceptInstance action = CreateFlexoConceptInstance.actionType.makeNewAction(vmi, null, editor);
 		action.setFlexoConcept(conceptB);
@@ -168,7 +167,7 @@ public class TestMultipleInheritance extends OpenflexoProjectAtRunTimeTestCase {
 
 	@Test
 	@TestOrder(6)
-	public void testCreateC() throws TypeMismatchException, NullReferenceException, InvocationTargetException, InvalidBindingException {
+	public void testCreateC() throws TypeMismatchException, NullReferenceException, InvalidBindingException, ReflectiveOperationException {
 
 		CreateFlexoConceptInstance action = CreateFlexoConceptInstance.actionType.makeNewAction(vmi, null, editor);
 		action.setFlexoConcept(conceptC);
@@ -185,7 +184,7 @@ public class TestMultipleInheritance extends OpenflexoProjectAtRunTimeTestCase {
 
 	@Test
 	@TestOrder(7)
-	public void testCreateD() throws TypeMismatchException, NullReferenceException, InvocationTargetException, InvalidBindingException {
+	public void testCreateD() throws TypeMismatchException, NullReferenceException, InvalidBindingException, ReflectiveOperationException {
 
 		log("Instanciation de D");
 

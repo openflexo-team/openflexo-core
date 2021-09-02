@@ -55,16 +55,17 @@ import java.util.logging.Logger;
 
 import org.junit.After;
 import org.junit.AfterClass;
+import org.openflexo.connie.binding.javareflect.KeyValueLibrary;
 import org.openflexo.foundation.DefaultFlexoEditor;
 import org.openflexo.foundation.DefaultFlexoServiceManager;
 import org.openflexo.foundation.FlexoEditingContext;
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoProject;
 import org.openflexo.foundation.FlexoServiceManager;
+import org.openflexo.foundation.fml.CompilationUnitRepository;
 import org.openflexo.foundation.fml.FMLObject;
 import org.openflexo.foundation.fml.FMLTechnologyAdapter;
 import org.openflexo.foundation.fml.VirtualModel;
-import org.openflexo.foundation.fml.CompilationUnitRepository;
 import org.openflexo.foundation.fml.rm.CompilationUnitResource;
 import org.openflexo.foundation.fml.rm.CompilationUnitResourceFactory;
 import org.openflexo.foundation.fml.rt.FMLRTTechnologyAdapter;
@@ -80,7 +81,6 @@ import org.openflexo.foundation.resource.FlexoResourceCenter.ResourceCenterEntry
 import org.openflexo.foundation.resource.FlexoResourceCenterService;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterService;
-import org.openflexo.kvc.KeyValueLibrary;
 import org.openflexo.logging.FlexoLogger;
 import org.openflexo.logging.FlexoLoggingManager;
 import org.openflexo.pamela.exceptions.ModelDefinitionException;

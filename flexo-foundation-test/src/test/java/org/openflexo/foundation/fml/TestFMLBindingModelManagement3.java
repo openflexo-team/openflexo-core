@@ -46,7 +46,6 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -392,7 +391,7 @@ public class TestFMLBindingModelManagement3 extends OpenflexoProjectAtRunTimeTes
 	@Test
 	@TestOrder(6)
 	public void testInstanciateVirtualModelInstances()
-			throws TypeMismatchException, NullReferenceException, InvocationTargetException, InvalidBindingException {
+			throws TypeMismatchException, NullReferenceException, InvalidBindingException, ReflectiveOperationException {
 
 		log("testInstanciateVirtualModelInstances()");
 
@@ -504,7 +503,7 @@ public class TestFMLBindingModelManagement3 extends OpenflexoProjectAtRunTimeTes
 	@Test
 	@TestOrder(7)
 	public void checkContainerAccess()
-			throws TypeMismatchException, NullReferenceException, InvocationTargetException, InvalidBindingException {
+			throws TypeMismatchException, NullReferenceException, InvalidBindingException, ReflectiveOperationException {
 		assertEquals(vmi3, vmi3.execute("this"));
 		assertEquals(vmi2, vmi3.execute("this.container"));
 		assertEquals(vmi2, vmi3.execute("container"));
@@ -517,7 +516,7 @@ public class TestFMLBindingModelManagement3 extends OpenflexoProjectAtRunTimeTes
 	@Test
 	@TestOrder(8)
 	public void checkIntrospectiveAccess()
-			throws TypeMismatchException, NullReferenceException, InvocationTargetException, InvalidBindingException {
+			throws TypeMismatchException, NullReferenceException, InvalidBindingException, ReflectiveOperationException {
 		assertEquals(virtualModel3, vmi3.execute("this.concept"));
 		assertEquals(virtualModel3, vmi3.execute("this.virtualModel"));
 		assertEquals(virtualModel2, vmi3.execute("this.container.concept"));
@@ -538,7 +537,7 @@ public class TestFMLBindingModelManagement3 extends OpenflexoProjectAtRunTimeTes
 	@Test
 	@TestOrder(10)
 	public void testInstanciateFlexoConceptInstance()
-			throws TypeMismatchException, NullReferenceException, InvocationTargetException, InvalidBindingException {
+			throws TypeMismatchException, NullReferenceException, InvalidBindingException, ReflectiveOperationException {
 
 		log("testInstanciateFlexoConceptInstance()");
 
@@ -607,6 +606,7 @@ public class TestFMLBindingModelManagement3 extends OpenflexoProjectAtRunTimeTes
 	 * 
 	 * @throws IOException
 	 * @throws InvalidBindingException
+	 * @throws ReflectiveOperationException
 	 */
 	/*@Test
 	@TestOrder(11)
@@ -646,7 +646,7 @@ public class TestFMLBindingModelManagement3 extends OpenflexoProjectAtRunTimeTes
 	@Test
 	@TestOrder(12)
 	public void testReloadProject() throws ResourceLoadingCancelledException, FlexoException, TypeMismatchException, NullReferenceException,
-			InvocationTargetException, IOException, InvalidBindingException {
+			IOException, InvalidBindingException, ReflectiveOperationException {
 
 		log("testReloadProject()");
 

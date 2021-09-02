@@ -1572,7 +1572,7 @@ public class TestFMLBindingModelManagement extends OpenflexoProjectAtRunTimeTest
 	@Test
 	@TestOrder(20)
 	public void testInstanciateVirtualModelInstances()
-			throws TypeMismatchException, NullReferenceException, InvocationTargetException, InvalidBindingException {
+			throws TypeMismatchException, NullReferenceException, InvalidBindingException, ReflectiveOperationException {
 
 		log("testInstanciateVirtualModelInstances()");
 
@@ -1845,6 +1845,9 @@ public class TestFMLBindingModelManagement extends OpenflexoProjectAtRunTimeTest
 		} catch (InvocationTargetException e) {
 			e.printStackTrace();
 			fail(e.getMessage());
+		} catch (ReflectiveOperationException e) {
+			e.printStackTrace();
+			fail(e.getMessage());
 		}
 	}
 
@@ -1860,6 +1863,9 @@ public class TestFMLBindingModelManagement extends OpenflexoProjectAtRunTimeTest
 			e.printStackTrace();
 			fail(e.getMessage());
 		} catch (InvocationTargetException e) {
+			e.printStackTrace();
+			fail(e.getMessage());
+		} catch (ReflectiveOperationException e) {
 			e.printStackTrace();
 			fail(e.getMessage());
 		}

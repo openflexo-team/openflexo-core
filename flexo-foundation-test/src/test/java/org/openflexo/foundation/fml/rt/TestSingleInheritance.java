@@ -44,7 +44,6 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.lang.reflect.InvocationTargetException;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -128,7 +127,7 @@ public class TestSingleInheritance extends OpenflexoProjectAtRunTimeTestCase {
 
 	@Test
 	@TestOrder(4)
-	public void testCreateA() throws TypeMismatchException, NullReferenceException, InvocationTargetException, InvalidBindingException {
+	public void testCreateA() throws TypeMismatchException, NullReferenceException, InvalidBindingException, ReflectiveOperationException {
 
 		CreateFlexoConceptInstance action = CreateFlexoConceptInstance.actionType.makeNewAction(vmi, null, editor);
 		action.setFlexoConcept(conceptA);
@@ -145,7 +144,7 @@ public class TestSingleInheritance extends OpenflexoProjectAtRunTimeTestCase {
 
 	@Test
 	@TestOrder(5)
-	public void testCreateB() throws TypeMismatchException, NullReferenceException, InvocationTargetException, InvalidBindingException {
+	public void testCreateB() throws TypeMismatchException, NullReferenceException, InvalidBindingException, ReflectiveOperationException {
 
 		CreateFlexoConceptInstance action = CreateFlexoConceptInstance.actionType.makeNewAction(vmi, null, editor);
 		action.setFlexoConcept(conceptB);

@@ -32,8 +32,10 @@ import org.jboss.jreadline.console.ConsoleCommand;
 import org.jboss.jreadline.console.ConsoleOutput;
 import org.jboss.jreadline.edit.actions.Operation;
 import org.jboss.jreadline.util.ANSI;
+import org.openflexo.connie.expr.ExpressionEvaluator;
 import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.fml.cli.command.AbstractCommand;
+import org.openflexo.foundation.fml.expr.FMLExpressionEvaluator;
 
 /**
  * FML command-line interpreter<br>
@@ -314,5 +316,10 @@ public class CommandInterpreter extends AbstractCommandInterpreter {
 	public void displayHistory() {
 		// TODO Auto-generated method stub
 		getOutStream().println("History not available");
+	}
+
+	@Override
+	public ExpressionEvaluator getEvaluator() {
+		return new FMLExpressionEvaluator(this);
 	}
 }
