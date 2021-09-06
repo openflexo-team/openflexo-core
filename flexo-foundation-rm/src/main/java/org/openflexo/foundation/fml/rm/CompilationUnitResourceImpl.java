@@ -71,7 +71,7 @@ import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.UseModelSlotDeclaration;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.VirtualModelLibrary;
-import org.openflexo.foundation.fml.parser.FMLParser;
+import org.openflexo.foundation.fml.parser.FMLCompilationUnitParser;
 import org.openflexo.foundation.fml.parser.ParseException;
 import org.openflexo.foundation.fml.rt.FMLRTTechnologyAdapter;
 import org.openflexo.foundation.fml.rt.rm.FMLRTVirtualModelInstanceResource;
@@ -109,7 +109,7 @@ import org.openflexo.xml.XMLRootElementInfo;
 /**
  * Implementation for {@link CompilationUnitResource}
  * 
- * This resource stores a {@link FMLCompilationUnit} using a {@link FMLParser} instance
+ * This resource stores a {@link FMLCompilationUnit} using a {@link FMLCompilationUnitParser} instance
  * 
  * 
  * @author sylvain
@@ -135,13 +135,13 @@ public abstract class CompilationUnitResourceImpl extends PamelaResourceImpl<FML
 		this.persistencyStrategy = persistencyStrategy;
 	}
 
-	private final FMLParser fmlParser;
+	private final FMLCompilationUnitParser fmlParser;
 
 	public CompilationUnitResourceImpl() {
-		fmlParser = new FMLParser();
+		fmlParser = new FMLCompilationUnitParser();
 	}
 
-	public FMLParser getFMLParser() {
+	public FMLCompilationUnitParser getFMLParser() {
 		return fmlParser;
 	}
 

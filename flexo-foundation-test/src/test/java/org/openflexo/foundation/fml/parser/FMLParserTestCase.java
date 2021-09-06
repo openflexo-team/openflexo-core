@@ -86,7 +86,7 @@ public abstract class FMLParserTestCase extends OpenflexoTestCase {
 			throws ModelDefinitionException, ParseException, IOException {
 
 		FMLModelFactory fmlModelFactory = new FMLModelFactory(null, serviceManager);
-		FMLParser parser = new FMLParser();
+		FMLCompilationUnitParser parser = new FMLCompilationUnitParser();
 		FMLCompilationUnit compilationUnit = parser.parse(fileResource.openInputStream(), fmlModelFactory, (modelSlotClasses) -> {
 			// We dont expect to have particular ModelSlots in this context, but be aware of that
 			return null;
@@ -175,7 +175,7 @@ public abstract class FMLParserTestCase extends OpenflexoTestCase {
 	 * @throws IOException
 	 */
 	protected static FMLCompilationUnit parseFile(Resource resource) throws ModelDefinitionException, ParseException, IOException {
-		FMLParser parser = new FMLParser();
+		FMLCompilationUnitParser parser = new FMLCompilationUnitParser();
 		return parser.parse(resource.openInputStream(), new FMLModelFactory(null, serviceManager), (modelSlotClasses) -> {
 			// We dont expect to have particular ModelSlots in this context, but be aware of that
 			return null;

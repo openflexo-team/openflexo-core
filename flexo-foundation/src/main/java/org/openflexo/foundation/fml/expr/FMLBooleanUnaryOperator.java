@@ -43,8 +43,8 @@ import org.openflexo.connie.exception.NullReferenceException;
 import org.openflexo.connie.exception.TypeMismatchException;
 import org.openflexo.connie.expr.Constant;
 import org.openflexo.connie.expr.EvaluationType;
-import org.openflexo.connie.java.expr.JavaConstant.BooleanConstant;
-import org.openflexo.connie.java.expr.JavaConstant.ObjectSymbolicConstant;
+import org.openflexo.foundation.fml.expr.FMLConstant.BooleanConstant;
+import org.openflexo.foundation.fml.expr.FMLConstant.ObjectSymbolicConstant;
 
 public abstract class FMLBooleanUnaryOperator extends FMLUnaryOperator {
 

@@ -44,12 +44,12 @@ import org.openflexo.connie.exception.TypeMismatchException;
 import org.openflexo.connie.expr.Constant;
 import org.openflexo.connie.expr.EvaluationType;
 import org.openflexo.connie.expr.Expression;
-import org.openflexo.connie.java.expr.JavaConstant.ArithmeticConstant;
-import org.openflexo.connie.java.expr.JavaConstant.BooleanConstant;
-import org.openflexo.connie.java.expr.JavaConstant.EnumConstant;
-import org.openflexo.connie.java.expr.JavaConstant.ObjectConstant;
-import org.openflexo.connie.java.expr.JavaConstant.ObjectSymbolicConstant;
-import org.openflexo.connie.java.expr.JavaConstant.StringConstant;
+import org.openflexo.foundation.fml.expr.FMLConstant.ArithmeticConstant;
+import org.openflexo.foundation.fml.expr.FMLConstant.BooleanConstant;
+import org.openflexo.foundation.fml.expr.FMLConstant.EnumConstant;
+import org.openflexo.foundation.fml.expr.FMLConstant.ObjectConstant;
+import org.openflexo.foundation.fml.expr.FMLConstant.ObjectSymbolicConstant;
+import org.openflexo.foundation.fml.expr.FMLConstant.StringConstant;
 
 public abstract class FMLBooleanBinaryOperator extends FMLBinaryOperator {
 
@@ -163,8 +163,8 @@ public abstract class FMLBooleanBinaryOperator extends FMLBinaryOperator {
 
 		@Override
 		public Constant<?> evaluate(Constant<?> leftArg, Constant<?> rightArg) throws TypeMismatchException {
-			//System.out.println("leftArg=" + leftArg + " of " + leftArg.getEvaluationType());
-			//System.out.println("rightArg=" + rightArg + " of " + rightArg.getEvaluationType());
+			// System.out.println("leftArg=" + leftArg + " of " + leftArg.getEvaluationType());
+			// System.out.println("rightArg=" + rightArg + " of " + rightArg.getEvaluationType());
 			if (leftArg instanceof ObjectConstant && rightArg instanceof ObjectConstant) {
 				return ((ObjectConstant) leftArg).getValue().equals(((ObjectConstant) rightArg).getValue()) ? BooleanConstant.TRUE
 						: BooleanConstant.FALSE;

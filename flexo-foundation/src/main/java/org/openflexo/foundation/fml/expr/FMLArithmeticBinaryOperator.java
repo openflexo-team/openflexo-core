@@ -43,17 +43,17 @@ import org.openflexo.connie.exception.NullReferenceException;
 import org.openflexo.connie.exception.TypeMismatchException;
 import org.openflexo.connie.expr.Constant;
 import org.openflexo.connie.expr.EvaluationType;
-import org.openflexo.connie.java.expr.JavaConstant.ArithmeticConstant;
-import org.openflexo.connie.java.expr.JavaConstant.BooleanConstant;
-import org.openflexo.connie.java.expr.JavaConstant.ByteConstant;
-import org.openflexo.connie.java.expr.JavaConstant.CharConstant;
-import org.openflexo.connie.java.expr.JavaConstant.FloatConstant;
-import org.openflexo.connie.java.expr.JavaConstant.IntegerConstant;
-import org.openflexo.connie.java.expr.JavaConstant.LongConstant;
-import org.openflexo.connie.java.expr.JavaConstant.ObjectConstant;
-import org.openflexo.connie.java.expr.JavaConstant.ObjectSymbolicConstant;
-import org.openflexo.connie.java.expr.JavaConstant.ShortConstant;
-import org.openflexo.connie.java.expr.JavaConstant.StringConstant;
+import org.openflexo.foundation.fml.expr.FMLConstant.ArithmeticConstant;
+import org.openflexo.foundation.fml.expr.FMLConstant.BooleanConstant;
+import org.openflexo.foundation.fml.expr.FMLConstant.ByteConstant;
+import org.openflexo.foundation.fml.expr.FMLConstant.CharConstant;
+import org.openflexo.foundation.fml.expr.FMLConstant.FloatConstant;
+import org.openflexo.foundation.fml.expr.FMLConstant.IntegerConstant;
+import org.openflexo.foundation.fml.expr.FMLConstant.LongConstant;
+import org.openflexo.foundation.fml.expr.FMLConstant.ObjectConstant;
+import org.openflexo.foundation.fml.expr.FMLConstant.ObjectSymbolicConstant;
+import org.openflexo.foundation.fml.expr.FMLConstant.ShortConstant;
+import org.openflexo.foundation.fml.expr.FMLConstant.StringConstant;
 
 public abstract class FMLArithmeticBinaryOperator extends FMLBinaryOperator {
 

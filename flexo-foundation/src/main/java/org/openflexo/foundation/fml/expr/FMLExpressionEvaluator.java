@@ -45,9 +45,9 @@ import org.openflexo.connie.expr.BindingValue;
 import org.openflexo.connie.expr.Constant;
 import org.openflexo.connie.expr.Expression;
 import org.openflexo.connie.expr.ExpressionEvaluator;
-import org.openflexo.connie.java.expr.JavaConstant.BooleanConstant;
-import org.openflexo.connie.java.expr.JavaConstant.ObjectSymbolicConstant;
 import org.openflexo.connie.type.TypeUtils;
+import org.openflexo.foundation.fml.expr.FMLConstant.BooleanConstant;
+import org.openflexo.foundation.fml.expr.FMLConstant.ObjectSymbolicConstant;
 
 /**
  * This {@link FMLExpressionEvaluator} is used to evaluate Java expressions

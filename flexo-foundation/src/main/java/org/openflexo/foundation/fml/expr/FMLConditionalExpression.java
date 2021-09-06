@@ -44,7 +44,7 @@ import org.openflexo.connie.expr.ConditionalExpression;
 import org.openflexo.connie.expr.Expression;
 import org.openflexo.connie.expr.ExpressionPrettyPrinter;
 import org.openflexo.connie.expr.ExpressionTransformer;
-import org.openflexo.connie.java.expr.JavaConstant.BooleanConstant;
+import org.openflexo.foundation.fml.expr.FMLConstant.BooleanConstant;
 
 public class FMLConditionalExpression extends ConditionalExpression {
 

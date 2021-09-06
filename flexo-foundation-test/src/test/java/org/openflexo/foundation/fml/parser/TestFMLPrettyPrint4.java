@@ -188,7 +188,7 @@ public class TestFMLPrettyPrint4 extends FMLParserTestCase {
 		fml = fml + "\nString foo;";
 		fml = fml + "\n" + "}" + "\n";
 
-		FMLParser parser = new FMLParser();
+		FMLCompilationUnitParser parser = new FMLCompilationUnitParser();
 
 		FMLCompilationUnit returned = parser.parse(fml, compilationUnit.getFMLModelFactory(), (modelSlotClasses) -> {
 			return null;

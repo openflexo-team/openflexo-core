@@ -53,21 +53,21 @@ import org.openflexo.connie.expr.ExpressionGrammar;
 import org.openflexo.connie.expr.ExpressionPrettyPrinter;
 import org.openflexo.connie.expr.OperatorNotSupportedException;
 import org.openflexo.connie.expr.UnaryOperatorExpression;
-import org.openflexo.connie.java.JavaGrammar;
-import org.openflexo.connie.java.expr.JavaConstant.BooleanConstant;
-import org.openflexo.connie.java.expr.JavaConstant.ByteConstant;
-import org.openflexo.connie.java.expr.JavaConstant.CharConstant;
-import org.openflexo.connie.java.expr.JavaConstant.DoubleConstant;
-import org.openflexo.connie.java.expr.JavaConstant.EnumConstant;
-import org.openflexo.connie.java.expr.JavaConstant.FloatConstant;
-import org.openflexo.connie.java.expr.JavaConstant.IntegerConstant;
-import org.openflexo.connie.java.expr.JavaConstant.LongConstant;
-import org.openflexo.connie.java.expr.JavaConstant.ObjectConstant;
-import org.openflexo.connie.java.expr.JavaConstant.ObjectSymbolicConstant;
-import org.openflexo.connie.java.expr.JavaConstant.ShortConstant;
-import org.openflexo.connie.java.expr.JavaConstant.StringConstant;
-import org.openflexo.connie.java.expr.JavaUnaryOperator.PostSettableUnaryOperator;
 import org.openflexo.connie.type.TypeUtils;
+import org.openflexo.foundation.fml.FMLGrammar;
+import org.openflexo.foundation.fml.expr.FMLConstant.BooleanConstant;
+import org.openflexo.foundation.fml.expr.FMLConstant.ByteConstant;
+import org.openflexo.foundation.fml.expr.FMLConstant.CharConstant;
+import org.openflexo.foundation.fml.expr.FMLConstant.DoubleConstant;
+import org.openflexo.foundation.fml.expr.FMLConstant.EnumConstant;
+import org.openflexo.foundation.fml.expr.FMLConstant.FloatConstant;
+import org.openflexo.foundation.fml.expr.FMLConstant.IntegerConstant;
+import org.openflexo.foundation.fml.expr.FMLConstant.LongConstant;
+import org.openflexo.foundation.fml.expr.FMLConstant.ObjectConstant;
+import org.openflexo.foundation.fml.expr.FMLConstant.ObjectSymbolicConstant;
+import org.openflexo.foundation.fml.expr.FMLConstant.ShortConstant;
+import org.openflexo.foundation.fml.expr.FMLConstant.StringConstant;
+import org.openflexo.foundation.fml.expr.FMLUnaryOperator.PostSettableUnaryOperator;
 
 public class FMLPrettyPrinter extends ExpressionPrettyPrinter {
 
@@ -81,7 +81,7 @@ public class FMLPrettyPrinter extends ExpressionPrettyPrinter {
 	}
 
 	public FMLPrettyPrinter() {
-		this(new JavaGrammar());
+		this(new FMLGrammar());
 	}
 
 	protected FMLPrettyPrinter(ExpressionGrammar grammar) {

@@ -42,13 +42,13 @@ package org.openflexo.foundation.fml.expr;
 import org.openflexo.connie.exception.TypeMismatchException;
 import org.openflexo.connie.expr.Constant;
 import org.openflexo.connie.expr.EvaluationType;
-import org.openflexo.connie.java.expr.JavaConstant.ArithmeticConstant;
-import org.openflexo.connie.java.expr.JavaConstant.ByteConstant;
-import org.openflexo.connie.java.expr.JavaConstant.DoubleConstant;
-import org.openflexo.connie.java.expr.JavaConstant.FloatConstant;
-import org.openflexo.connie.java.expr.JavaConstant.IntegerConstant;
-import org.openflexo.connie.java.expr.JavaConstant.LongConstant;
-import org.openflexo.connie.java.expr.JavaConstant.ShortConstant;
+import org.openflexo.foundation.fml.expr.FMLConstant.ArithmeticConstant;
+import org.openflexo.foundation.fml.expr.FMLConstant.ByteConstant;
+import org.openflexo.foundation.fml.expr.FMLConstant.DoubleConstant;
+import org.openflexo.foundation.fml.expr.FMLConstant.FloatConstant;
+import org.openflexo.foundation.fml.expr.FMLConstant.IntegerConstant;
+import org.openflexo.foundation.fml.expr.FMLConstant.LongConstant;
+import org.openflexo.foundation.fml.expr.FMLConstant.ShortConstant;
 
 public abstract class FMLArithmeticUnaryOperator extends FMLUnaryOperator {
 

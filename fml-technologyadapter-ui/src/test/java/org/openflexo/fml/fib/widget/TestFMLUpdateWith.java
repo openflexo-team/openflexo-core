@@ -51,7 +51,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
 import org.junit.runners.Parameterized;
 import org.openflexo.foundation.fml.FMLCompilationUnit;
-import org.openflexo.foundation.fml.parser.FMLParser;
+import org.openflexo.foundation.fml.parser.FMLCompilationUnitParser;
 import org.openflexo.foundation.fml.parser.ParseException;
 import org.openflexo.foundation.fml.rm.CompilationUnitResource;
 import org.openflexo.foundation.resource.SaveResourceException;
@@ -118,7 +118,7 @@ public class TestFMLUpdateWith extends OpenflexoTestCase {
 	public void step2_updateWith() throws ModelDefinitionException, ParseException, IOException, SaveResourceException {
 
 		String toParse = testInfo.fmlResource.getCompilationUnit().getFMLPrettyPrint();
-		FMLParser fmlParser = new FMLParser();
+		FMLCompilationUnitParser fmlParser = new FMLCompilationUnitParser();
 		FMLCompilationUnit returned = fmlParser.parse(toParse, testInfo.fmlResource.getFactory(), (modelSlotClasses) -> {
 			// We dont expect to have particular ModelSlots in this context, but be aware of that
 			return null;

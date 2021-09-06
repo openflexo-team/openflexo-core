@@ -55,6 +55,8 @@ import org.apache.commons.io.IOUtils;
 import org.openflexo.foundation.fml.FMLCompilationUnit;
 import org.openflexo.foundation.fml.FMLModelFactory;
 import org.openflexo.foundation.fml.parser.fmlnodes.FMLCompilationUnitNode;
+import org.openflexo.foundation.fml.parser.lexer.CustomLexer;
+import org.openflexo.foundation.fml.parser.lexer.CustomLexer.EntryPointKind;
 import org.openflexo.foundation.fml.parser.lexer.Lexer;
 import org.openflexo.foundation.fml.parser.lexer.LexerException;
 import org.openflexo.foundation.fml.parser.node.Start;
@@ -76,10 +78,10 @@ import org.openflexo.p2pp.RawSource;
  * 
  * @author sylvain
  */
-public class FMLParser {
+public class FMLCompilationUnitParser {
 
 	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(FMLParser.class.getPackage().getName());
+	private static final Logger logger = Logger.getLogger(FMLCompilationUnitParser.class.getPackage().getName());
 
 	private MainSemanticsAnalyzer semanticsAnalyzer;
 
@@ -94,9 +96,8 @@ public class FMLParser {
 	 * @throws IOException
 	 */
 	public FMLCompilationUnit parse(String data, FMLModelFactory modelFactory,
-			Function<List<Class<? extends ModelSlot<?>>>, FMLModelFactory> modelFactoryUpdater/*, EntryPointKind entryPointKind*/)
-			throws ParseException, IOException {
-		return parse(new StringReader(data), new StringReader(data), modelFactory, modelFactoryUpdater/*, entryPointKind*/);
+			Function<List<Class<? extends ModelSlot<?>>>, FMLModelFactory> modelFactoryUpdater) throws ParseException, IOException {
+		return parse(new StringReader(data), new StringReader(data), modelFactory, modelFactoryUpdater);
 	}
 
 	/**
@@ -119,9 +120,7 @@ public class FMLParser {
 		InputStream inputStream1 = new ByteArrayInputStream(buf);
 		InputStream inputStream2 = new ByteArrayInputStream(buf);
 
-		return parse(new InputStreamReader(inputStream1), new InputStreamReader(inputStream2), modelFactory,
-				modelFactoryUpdater/*,
-									EntryPointKind.CompilationUnit*/);
+		return parse(new InputStreamReader(inputStream1), new InputStreamReader(inputStream2), modelFactory, modelFactoryUpdater);
 	}
 
 	/**
@@ -141,16 +140,14 @@ public class FMLParser {
 	}
 
 	private FMLCompilationUnit parse(Reader reader, Reader rawSourceReader, FMLModelFactory modelFactory,
-			Function<List<Class<? extends ModelSlot<?>>>, FMLModelFactory> modelFactoryUpdater/*,
-																								EntryPointKind entryPointKind*/)
-			throws ParseException, IOException {
+			Function<List<Class<? extends ModelSlot<?>>>, FMLModelFactory> modelFactoryUpdater) throws ParseException, IOException {
 		try {
 			// System.out.println("Parsing: " + anExpression);
 
 			RawSource rawSource = readRawSource(rawSourceReader);
 
 			// Create a Parser instance.
-			Parser p = new Parser(new Lexer(new PushbackReader(reader)));
+			Parser p = new Parser(new CustomLexer(new PushbackReader(reader), EntryPointKind.CompilationUnit));
 			// Parser p = new Parser(new CustomLexer(new PushbackReader(reader), entryPointKind));
 
 			// Parse the input.

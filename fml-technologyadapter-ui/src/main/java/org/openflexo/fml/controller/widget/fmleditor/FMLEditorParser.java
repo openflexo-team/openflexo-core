@@ -54,7 +54,7 @@ import org.openflexo.foundation.fml.ElementImportDeclaration;
 import org.openflexo.foundation.fml.FMLCompilationUnit;
 import org.openflexo.foundation.fml.FMLPrettyPrintDelegate.SemanticAnalysisIssue;
 import org.openflexo.foundation.fml.FMLValidationReport;
-import org.openflexo.foundation.fml.parser.FMLParser;
+import org.openflexo.foundation.fml.parser.FMLCompilationUnitParser;
 import org.openflexo.foundation.fml.parser.ParseException;
 import org.openflexo.foundation.fml.rm.CompilationUnitResource;
 import org.openflexo.pamela.validation.ValidationIssue;
@@ -70,16 +70,16 @@ public class FMLEditorParser extends AbstractParser {
 	static final Logger logger = Logger.getLogger(FMLEditor.class.getPackage().getName());
 
 	private final FMLEditor editor;
-	private final FMLParser fmlParser;
+	private final FMLCompilationUnitParser fmlParser;
 	private FMLParseResult result;
 
 	public FMLEditorParser(FMLEditor editor) {
 		this.editor = editor;
-		fmlParser = new FMLParser();
+		fmlParser = new FMLCompilationUnitParser();
 		result = new FMLParseResult(this);
 	}
 
-	public FMLParser getFMLParser() {
+	public FMLCompilationUnitParser getFMLParser() {
 		return fmlParser;
 	}
 

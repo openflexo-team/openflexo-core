@@ -49,8 +49,8 @@ import org.openflexo.connie.expr.ExpressionPrettyPrinter;
 import org.openflexo.connie.expr.ExpressionTransformer;
 import org.openflexo.connie.expr.UnaryOperator;
 import org.openflexo.connie.expr.UnaryOperatorExpression;
-import org.openflexo.connie.java.expr.JavaUnaryOperator.PostSettableUnaryOperator;
-import org.openflexo.connie.java.expr.JavaUnaryOperator.PreSettableUnaryOperator;
+import org.openflexo.foundation.fml.expr.FMLUnaryOperator.PostSettableUnaryOperator;
+import org.openflexo.foundation.fml.expr.FMLUnaryOperator.PreSettableUnaryOperator;
 
 public class FMLUnaryOperatorExpression extends UnaryOperatorExpression {
 
