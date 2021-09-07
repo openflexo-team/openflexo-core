@@ -40,6 +40,8 @@ package org.openflexo.foundation.fml.parser.fmlnodes.controlgraph;
 
 import java.util.logging.Logger;
 
+import org.openflexo.connie.DataBinding;
+import org.openflexo.connie.DataBinding.BindingDefinitionType;
 import org.openflexo.foundation.fml.FlexoBehaviourParameter;
 import org.openflexo.foundation.fml.parser.ExpressionFactory;
 import org.openflexo.foundation.fml.parser.FMLObjectNode;
@@ -112,7 +114,8 @@ public class BehaviourCallArgumentNode extends FMLObjectNode<PExpression, Behavi
 			}
 		}*/
 
-		returned.setValue(ExpressionFactory.makeExpression(astNode, getAnalyser(), returned));
+		DataBinding<?> value = ExpressionFactory.makeDataBinding(astNode, returned, BindingDefinitionType.GET, Object.class, getAnalyser());
+		returned.setValue(value);
 
 		return returned;
 	}

@@ -46,6 +46,7 @@ import java.util.logging.Logger;
 
 import org.openflexo.connie.Bindable;
 import org.openflexo.connie.DataBinding;
+import org.openflexo.connie.expr.Expression;
 import org.openflexo.foundation.fml.FMLCompilationUnit;
 import org.openflexo.foundation.fml.parser.lexer.CustomLexer;
 import org.openflexo.foundation.fml.parser.lexer.CustomLexer.EntryPointKind;
@@ -66,10 +67,10 @@ import org.openflexo.foundation.fml.parser.parser.ParserException;
  * 
  * @author sylvain
  */
-public class ExpressionParser {
+public class FMLExpressionParser {
 
 	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(ExpressionParser.class.getPackage().getName());
+	private static final Logger logger = Logger.getLogger(FMLExpressionParser.class.getPackage().getName());
 
 	/**
 	 * This is the method to invoke to perform a parsing.<br>
@@ -81,11 +82,12 @@ public class ExpressionParser {
 	 * @throws ParseException
 	 * @throws IOException
 	 */
-	public DataBinding<?> parse(String data, Bindable bindable, FMLCompilationUnit compilationUnit) throws ParseException, IOException {
+	public static Expression parse(String data, Bindable bindable, FMLCompilationUnit compilationUnit) throws ParseException {
 		return parse(new StringReader(data), bindable, compilationUnit);
 	}
 
-	private DataBinding<?> parse(Reader reader, Bindable bindable, FMLCompilationUnit compilationUnit) throws ParseException, IOException {
+	// TODO: bindable not used ???
+	private static Expression parse(Reader reader, Bindable bindable, FMLCompilationUnit compilationUnit) throws ParseException {
 		try {
 			// Create a Parser instance.
 			Parser p = new Parser(new CustomLexer(new PushbackReader(reader), EntryPointKind.Binding));
@@ -107,6 +109,8 @@ public class ExpressionParser {
 			throw new ParseException(e.getMessage(), e.getToken().getLine(), e.getToken().getPos(), e.getToken().getText().length());
 		} catch (LexerException e) {
 			throw new ParseException(e.getMessage(), e.getToken().getLine(), e.getToken().getPos(), e.getToken().getText().length());
+		} catch (IOException e) {
+			throw new ParseException(e.getMessage(), -1, -1, -1);
 		}
 	}
 

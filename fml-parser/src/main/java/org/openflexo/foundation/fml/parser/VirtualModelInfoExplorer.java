@@ -44,6 +44,7 @@ import org.openflexo.connie.Bindable;
 import org.openflexo.connie.BindingFactory;
 import org.openflexo.connie.BindingModel;
 import org.openflexo.connie.DataBinding;
+import org.openflexo.connie.DataBinding.BindingDefinitionType;
 import org.openflexo.connie.expr.Constant;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.parser.analysis.DepthFirstAdapter;
@@ -88,7 +89,8 @@ public class VirtualModelInfoExplorer extends DepthFirstAdapter implements Binda
 		super.inASingleAnnotationAnnotation(node);
 
 		String key = analyzer.makeFullQualifiedIdentifier(node.getIdentifier());
-		DataBinding<?> valueExpression = ExpressionFactory.makeExpression(node.getConditionalExp(), analyzer, this);
+		DataBinding<?> valueExpression = ExpressionFactory.makeDataBinding(node.getConditionalExp(), this, BindingDefinitionType.GET,
+				Object.class, analyzer);
 		if (valueExpression.getExpression() instanceof Constant) {
 			String text = analyzer.getText(node.getConditionalExp());
 			if (text.startsWith("\"") && text.endsWith("\"")) {

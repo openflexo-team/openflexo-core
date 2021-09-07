@@ -41,6 +41,7 @@ package org.openflexo.foundation.fml.parser.fmlnodes;
 import java.util.logging.Logger;
 
 import org.openflexo.connie.DataBinding;
+import org.openflexo.connie.DataBinding.BindingDefinitionType;
 import org.openflexo.connie.type.PrimitiveType;
 import org.openflexo.foundation.InvalidNameException;
 import org.openflexo.foundation.fml.FlexoBehaviour;
@@ -60,30 +61,13 @@ import org.openflexo.p2pp.RawSource.RawSourceFragment;
  * @author sylvain
  * 
  * 
- * 	concept ConceptC {
-		String c1;
-		boolean c2;
-		@ui(
-			@label("create")
-			@TextField(value="aC1", label="give_a_c1")
-			@CheckBox(value="aC2", label="give_a_c2")
-			@CheckBox(value="aC3", label="give_a_c3")
-		)
-		create::_create (
-			required String aC1 default="toto", 
-			required Boolean aC2,
-			Boolean aC3 default=true) {
-			c1 = parameters.aC1;
-			c2 = parameters.aC2;
-		}
-		@label("delete")
-		delete::_delete () {
-		}
-	}
-
+ *         concept ConceptC { String c1; boolean c2; @ui( @label("create") @TextField(value="aC1", label="give_a_c1") @CheckBox(value="aC2",
+ *         label="give_a_c2") @CheckBox(value="aC3", label="give_a_c3") ) create::_create ( required String aC1 default="toto", required
+ *         Boolean aC2, Boolean aC3 default=true) { c1 = parameters.aC1; c2 = parameters.aC2; } @label("delete") delete::_delete () { } }
+ * 
  * 
  */
-// @formatter:on	
+// @formatter:on
 
 public class BehaviourParameterNode extends FMLObjectNode<PFormalArgument, FlexoBehaviourParameter, MainSemanticsAnalyzer> {
 
@@ -144,7 +128,8 @@ public class BehaviourParameterNode extends FMLObjectNode<PFormalArgument, Flexo
 	private void handleDefaultArgumentValue(FlexoBehaviourParameter param, PDefaultArgumentValue anArgValue) {
 		if (anArgValue instanceof ADefaultArgumentValue) {
 			ADefaultArgumentValue argValue = (ADefaultArgumentValue) anArgValue;
-			DataBinding<?> expression = ExpressionFactory.makeExpression(argValue.getExpression(), getAnalyser(), param);
+			DataBinding<?> expression = ExpressionFactory.makeDataBinding(argValue.getExpression(), param, BindingDefinitionType.GET,
+					Object.class, getAnalyser());
 			param.setDefaultValue(expression);
 		}
 	}
@@ -153,18 +138,17 @@ public class BehaviourParameterNode extends FMLObjectNode<PFormalArgument, Flexo
 	public void preparePrettyPrint(boolean hasParsedVersion) {
 		super.preparePrettyPrint(hasParsedVersion);
 
-		// @formatter:off	
-		when(() -> isRequired())
-			.thenAppend(staticContents("", "required", SPACE), getRequiredFragment());
+		// @formatter:off
+		when(() -> isRequired()).thenAppend(staticContents("", "required", SPACE), getRequiredFragment());
 
 		append(dynamicContents(() -> serializeType(getModelObject().getType())), getTypeFragment());
 		append(dynamicContents(SPACE, () -> getModelObject().getName()), getNameFragment());
 
 		when(() -> hasDefaultValue())
-//			.thenAppend(staticContents(SPACE, "default",""), getDefaultFragment())
-			.thenAppend(staticContents("="), getDefaultAssignFragment())
-			.thenAppend(dynamicContents(() -> getModelObject().getDefaultValue().toString()), getDefaultExpressionFragment());
-		// @formatter:on	
+				// .thenAppend(staticContents(SPACE, "default",""), getDefaultFragment())
+				.thenAppend(staticContents("="), getDefaultAssignFragment())
+				.thenAppend(dynamicContents(() -> getModelObject().getDefaultValue().toString()), getDefaultExpressionFragment());
+		// @formatter:on
 	}
 
 	private boolean isRequired() {

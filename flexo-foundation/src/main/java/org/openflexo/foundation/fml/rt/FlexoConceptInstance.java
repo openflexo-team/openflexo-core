@@ -561,6 +561,11 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 			variables = new HashMap<>();
 		}
 
+		@Override
+		public ExpressionEvaluator getEvaluator() {
+			return new FMLExpressionEvaluator(this);
+		}
+
 		// TODO: this is not a good idea, we should separate FlexoConceptInstance from RunTimeEvaluationContext
 		private FlexoEditor getFlexoEditor() {
 			if (getResourceCenter() != null && getResourceCenter() instanceof FlexoProject && getServiceManager() != null) {
@@ -1625,6 +1630,9 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 		@Override
 		public Object getValue(BindingVariable variable) {
 
+			if (variable == null) {
+				return null;
+			}
 			if (variable.getVariableName().equals(FlexoConceptBindingModel.THIS_PROPERTY)) {
 				return this;
 			}

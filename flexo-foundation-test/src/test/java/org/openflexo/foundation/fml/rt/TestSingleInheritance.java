@@ -90,11 +90,14 @@ public class TestSingleInheritance extends OpenflexoProjectAtRunTimeTestCase {
 		assertNotNull(vpLib);
 		virtualModel = vpLib.getVirtualModel("http://openflexo.org/test/TestResourceCenter/TestSingleInheritance.fml");
 		assertNotNull(virtualModel);
-		assertVirtualModelIsValid(virtualModel);
 		conceptA = virtualModel.getFlexoConcept("A");
 		assertNotNull(conceptA);
 		conceptB = virtualModel.getFlexoConcept("B");
 		assertNotNull(conceptB);
+
+		System.out.println(virtualModel.getCompilationUnit().getFMLPrettyPrint());
+
+		assertVirtualModelIsValid(virtualModel);
 	}
 
 	@Test
@@ -131,6 +134,7 @@ public class TestSingleInheritance extends OpenflexoProjectAtRunTimeTestCase {
 
 		CreateFlexoConceptInstance action = CreateFlexoConceptInstance.actionType.makeNewAction(vmi, null, editor);
 		action.setFlexoConcept(conceptA);
+
 		CreationScheme cs = conceptA.getCreationSchemes().get(0);
 		action.setCreationScheme(cs);
 		action.doAction();
@@ -139,7 +143,7 @@ public class TestSingleInheritance extends OpenflexoProjectAtRunTimeTestCase {
 		assertNotNull(a);
 
 		assertEquals("A", a.execute("this.foo"));
-		assertEquals(42, (long) a.execute("this.doSomething()"));
+		assertEquals(42, (int) a.execute("this.doSomething()"));
 	}
 
 	@Test

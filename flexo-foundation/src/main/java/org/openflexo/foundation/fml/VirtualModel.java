@@ -428,11 +428,12 @@ public interface VirtualModel extends FlexoConcept {
 		private VirtualModelInstanceType vmInstanceType;
 		private VirtualModelInstanceType defaultVMInstanceType = new VirtualModelInstanceType(this);
 
-		// Used during deserialization, do not use it
+		private final FMLBindingFactory bindingFactory;
+
+		// We create here the FMLBindingFactory
 		public VirtualModelImpl() {
 			super();
-			// System.out.println("Creating VirtualModel " + Integer.toHexString(hashCode()));
-			// Thread.dumpStack();
+			bindingFactory = new FMLBindingFactory(this);
 		}
 
 		@Override
@@ -1061,13 +1062,8 @@ public interface VirtualModel extends FlexoConcept {
 			return returned;
 		}
 
-		private FMLBindingFactory bindingFactory = null;
-
 		@Override
 		public BindingFactory getBindingFactory() {
-			if (bindingFactory == null) {
-				bindingFactory = new FMLBindingFactory(this);
-			}
 			return bindingFactory;
 		}
 

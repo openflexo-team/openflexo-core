@@ -43,6 +43,7 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import org.openflexo.connie.DataBinding;
+import org.openflexo.connie.DataBinding.BindingDefinitionType;
 import org.openflexo.foundation.fml.CreationScheme;
 import org.openflexo.foundation.fml.FlexoBehaviourParameter;
 import org.openflexo.foundation.fml.FlexoConcept;
@@ -118,7 +119,8 @@ public class MatchActionNode extends AssignableActionNode<AMatchActionFmlActionE
 	}
 
 	private void handleArgument(PExpression expression, MatchFlexoConceptInstance modelObject) {
-		DataBinding<?> argValue = ExpressionFactory.makeExpression(expression, getAnalyser(), modelObject);
+		DataBinding<?> argValue = ExpressionFactory.makeDataBinding(expression, modelObject, BindingDefinitionType.GET, Object.class,
+				getAnalyser());
 
 		if (constructorArgs == null) {
 			constructorArgs = new ArrayList<>();
@@ -143,7 +145,8 @@ public class MatchActionNode extends AssignableActionNode<AMatchActionFmlActionE
 		if (qualifiedArgument instanceof ASimpleQualifiedArgument) {
 			String propertyName = ((ASimpleQualifiedArgument) qualifiedArgument).getArgName().getText();
 			PExpression expression = ((ASimpleQualifiedArgument) qualifiedArgument).getExpression();
-			DataBinding<?> argValue = ExpressionFactory.makeExpression(expression, getAnalyser(), modelObject);
+			DataBinding<?> argValue = ExpressionFactory.makeDataBinding(expression, modelObject, BindingDefinitionType.GET, Object.class,
+					getAnalyser());
 
 			MatchingCriteria newMatchingCriteria = getFactory().newMatchingCriteria(null);
 			newMatchingCriteria._setPatternRoleName(propertyName);
@@ -210,13 +213,14 @@ public class MatchActionNode extends AssignableActionNode<AMatchActionFmlActionE
 		}*/
 		if (astNode.getInClause() instanceof AInClause) {
 			PExpression inExpression = ((AInClause) astNode.getInClause()).getExpression();
-			DataBinding<MatchingSet> matchingSet = (DataBinding) ExpressionFactory.makeExpression(inExpression, getAnalyser(), returned);
+			DataBinding<MatchingSet> matchingSet = (DataBinding) ExpressionFactory.makeDataBinding(inExpression, returned,
+					BindingDefinitionType.GET, MatchingSet.class, getAnalyser());
 			returned.setMatchingSet(matchingSet);
 		}
 		if (astNode.getFromClause() instanceof AFromClause) {
 			PExpression fromExpression = ((AFromClause) astNode.getFromClause()).getExpression();
-			DataBinding<FlexoConceptInstance> container = (DataBinding) ExpressionFactory.makeExpression(fromExpression, getAnalyser(),
-					returned);
+			DataBinding<FlexoConceptInstance> container = (DataBinding) ExpressionFactory.makeDataBinding(fromExpression, returned,
+					BindingDefinitionType.GET, FlexoConceptInstance.class, getAnalyser());
 			returned.setContainer(container);
 		}
 
@@ -242,33 +246,32 @@ public class MatchActionNode extends AssignableActionNode<AMatchActionFmlActionE
 	public void preparePrettyPrint(boolean hasParsedVersion) {
 		super.preparePrettyPrint(hasParsedVersion);
 
-		// @formatter:off	
+		// @formatter:off
 
 		append(staticContents("match"), getMatchFragment());
 		append(dynamicContents(SPACE, () -> serializeType(getModelObject().getMatchedType())), getConceptNameFragment());
-		when(() -> hasInClause())
-		.thenAppend(staticContents(SPACE, "in",""), getInFragment())
-		.thenAppend(staticContents(SPACE, "(",""), getLParInFragment())
-		.thenAppend(dynamicContents(() -> getInAsString()), getInExpressionFragment())
-		.thenAppend(staticContents(")"), getRParInFragment());
-		append(staticContents(SPACE, "from",""), getFromFragment());
-		append(staticContents(SPACE, "(",""), getLParFromFragment());
+		when(() -> hasInClause()).thenAppend(staticContents(SPACE, "in", ""), getInFragment())
+				.thenAppend(staticContents(SPACE, "(", ""), getLParInFragment())
+				.thenAppend(dynamicContents(() -> getInAsString()), getInExpressionFragment())
+				.thenAppend(staticContents(")"), getRParInFragment());
+		append(staticContents(SPACE, "from", ""), getFromFragment());
+		append(staticContents(SPACE, "(", ""), getLParFromFragment());
 		append(dynamicContents(() -> getFromAsString()), getFromExpressionFragment());
 		append(staticContents(")"), getRParFromFragment());
-		when(() -> hasWhereClause())
-		.thenAppend(staticContents(SPACE, "where",""), getWhereFragment())
-		.thenAppend(staticContents(SPACE, "(",""), getLParWhereFragment())
-		.thenAppend(dynamicContents(() -> getWhereAsString()), getWhereCriteriasFragment())
-		.thenAppend(staticContents(")"), getRParWhereFragment());
-		append(staticContents(SPACE,"create",""), getCreateFragment());
+		when(() -> hasWhereClause()).thenAppend(staticContents(SPACE, "where", ""), getWhereFragment())
+				.thenAppend(staticContents(SPACE, "(", ""), getLParWhereFragment())
+				.thenAppend(dynamicContents(() -> getWhereAsString()), getWhereCriteriasFragment())
+				.thenAppend(staticContents(")"), getRParWhereFragment());
+		append(staticContents(SPACE, "create", ""), getCreateFragment());
 		append(staticContents("::"), getColonColonFragment());
-		append(dynamicContents(() -> getModelObject().getCreationScheme() != null ? getModelObject().getCreationScheme().getName():""), getConstructorNameFragment());
+		append(dynamicContents(() -> getModelObject().getCreationScheme() != null ? getModelObject().getCreationScheme().getName() : ""),
+				getConstructorNameFragment());
 		append(staticContents("("), getCreateLParFragment());
 		append(dynamicContents(() -> serializeArguments(getModelObject().getParameters())), getCreateArgumentsFragment());
 		append(staticContents(")"), getCreateRParFragment());
 		// Append semi only when required
 		when(() -> requiresSemi()).thenAppend(staticContents(";"), getSemiFragment());
-		// @formatter:on	
+		// @formatter:on
 	}
 
 	/*@Override

@@ -39,6 +39,7 @@
 package org.openflexo.foundation.fml.parser.fmlnodes;
 
 import org.openflexo.connie.DataBinding;
+import org.openflexo.connie.DataBinding.BindingDefinitionType;
 import org.openflexo.connie.expr.Constant;
 import org.openflexo.foundation.fml.md.MetaDataKeyValue;
 import org.openflexo.foundation.fml.parser.ExpressionFactory;
@@ -78,7 +79,8 @@ public class MetaDataKeyValueNode extends FMLObjectNode<AAnnotationKeyValuePair,
 
 		MetaDataKeyValue<?> returned = getFactory().newMetaDataKeyValue(key);
 
-		DataBinding<?> valueExpression = ExpressionFactory.makeExpression(astNode.getConditionalExp(), getAnalyser(), returned);
+		DataBinding<?> valueExpression = ExpressionFactory.makeDataBinding(astNode.getConditionalExp(), returned, BindingDefinitionType.GET,
+				Object.class, getAnalyser());
 
 		if (valueExpression.getExpression() instanceof Constant) {
 			returned.setSerializationRepresentation(getText(astNode.getConditionalExp()));

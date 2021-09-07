@@ -41,6 +41,7 @@ package org.openflexo.foundation.fml.parser.fmlnodes.controlgraph;
 import java.util.logging.Logger;
 
 import org.openflexo.connie.DataBinding;
+import org.openflexo.connie.DataBinding.BindingDefinitionType;
 import org.openflexo.foundation.fml.FlexoConceptInstanceType;
 import org.openflexo.foundation.fml.parser.ExpressionFactory;
 import org.openflexo.foundation.fml.parser.MainSemanticsAnalyzer;
@@ -93,8 +94,8 @@ public class BeginMatchActionNode extends AssignableActionNode<ABeginMatchAction
 
 		if (astNode.getFromClause() instanceof AFromClause) {
 			PExpression fromExpression = ((AFromClause) astNode.getFromClause()).getExpression();
-			DataBinding<FlexoConceptInstance> container = (DataBinding) ExpressionFactory.makeExpression(fromExpression, getAnalyser(),
-					returned);
+			DataBinding<FlexoConceptInstance> container = (DataBinding) ExpressionFactory.makeDataBinding(fromExpression, returned,
+					BindingDefinitionType.GET, FlexoConceptInstance.class, getAnalyser());
 			returned.setContainer(container);
 		}
 
@@ -112,18 +113,18 @@ public class BeginMatchActionNode extends AssignableActionNode<ABeginMatchAction
 	public void preparePrettyPrint(boolean hasParsedVersion) {
 		super.preparePrettyPrint(hasParsedVersion);
 
-		// @formatter:off	
+		// @formatter:off
 
 		append(staticContents("begin"), getBeginFragment());
-		append(staticContents(SPACE,"match",""), getMatchFragment());
+		append(staticContents(SPACE, "match", ""), getMatchFragment());
 		append(dynamicContents(SPACE, () -> serializeType(getModelObject().getMatchedType())), getConceptNameFragment());
-		append(staticContents(SPACE, "from",""), getFromFragment());
-		append(staticContents(SPACE, "(",""), getLParFromFragment());
+		append(staticContents(SPACE, "from", ""), getFromFragment());
+		append(staticContents(SPACE, "(", ""), getLParFromFragment());
 		append(dynamicContents(() -> getFromAsString()), getFromExpressionFragment());
 		append(staticContents(")"), getRParFromFragment());
 		// Append semi only when required
 		when(() -> requiresSemi()).thenAppend(staticContents(";"), getSemiFragment());
-		// @formatter:on	
+		// @formatter:on
 	}
 
 	private String getFromAsString() {

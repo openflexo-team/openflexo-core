@@ -1,7 +1,5 @@
 package org.openflexo.foundation.fml.parser;
 
-import java.io.IOException;
-
 import org.junit.BeforeClass;
 import org.openflexo.connie.BindingEvaluationContext;
 import org.openflexo.connie.BindingFactory;
@@ -94,7 +92,7 @@ public abstract class ExpressionParserTestCase extends TestCase {
 		return typingSpace;
 	}
 
-	protected DataBinding<?> tryToParse(String anExpression, String expectedEvaluatedExpression,
+	protected Expression tryToParse(String anExpression, String expectedEvaluatedExpression,
 			Class<? extends Expression> expectedExpressionClass, Object expectedEvaluation, FlexoServiceManager serviceManager,
 			boolean shouldFail) {
 
@@ -126,10 +124,10 @@ public abstract class ExpressionParserTestCase extends TestCase {
 			};
 			System.out.println("Parsing... " + anExpression);
 
-			ExpressionParser parser = new ExpressionParser();
-			DataBinding<?> parsed = parser.parse(anExpression, bindable, null);
+			FMLExpressionParser parser = new FMLExpressionParser();
+			Expression parsed = parser.parse(anExpression, bindable, null);
 			System.out.println("parsed=" + parsed);
-			Expression evaluated = parsed.getExpression().evaluate(new BindingEvaluationContext() {
+			Expression evaluated = parsed.evaluate(new BindingEvaluationContext() {
 				@Override
 				public Object getValue(BindingVariable variable) {
 					return null;
@@ -142,14 +140,14 @@ public abstract class ExpressionParserTestCase extends TestCase {
 			});
 
 			System.out.println("evaluated=" + evaluated);
-			System.out.println("Successfully parsed as : " + parsed.getExpression().getClass().getSimpleName());
+			System.out.println("Successfully parsed as : " + parsed.getClass().getSimpleName());
 			System.out.println("prettyPrinter:" + prettyPrinter);
-			System.out.println("Normalized: " + prettyPrinter.getStringRepresentation(parsed.getExpression(), bindable));
+			System.out.println("Normalized: " + prettyPrinter.getStringRepresentation(parsed, bindable));
 			System.out.println("Evaluated: " + prettyPrinter.getStringRepresentation(evaluated, bindable));
 			if (shouldFail) {
 				fail();
 			}
-			assertTrue(expectedExpressionClass.isAssignableFrom(parsed.getExpression().getClass()));
+			assertTrue(expectedExpressionClass.isAssignableFrom(parsed.getClass()));
 			if (expectedEvaluatedExpression != null) {
 				assertEquals(expectedEvaluatedExpression, prettyPrinter.getStringRepresentation(evaluated, bindable));
 			}
@@ -203,15 +201,6 @@ public abstract class ExpressionParserTestCase extends TestCase {
 			return null;
 		} catch (ModelDefinitionException e) {
 			fail();
-			return null;
-		} catch (IOException e) {
-			if (!shouldFail) {
-				e.printStackTrace();
-				fail();
-			}
-			else {
-				System.out.println("Parsing " + anExpression + " has failed as expected: " + e.getMessage());
-			}
 			return null;
 		}
 

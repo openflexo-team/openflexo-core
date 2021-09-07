@@ -41,6 +41,7 @@ package org.openflexo.foundation.fml.parser.fmlnodes.controlgraph;
 import java.util.logging.Logger;
 
 import org.openflexo.connie.DataBinding;
+import org.openflexo.connie.DataBinding.BindingDefinitionType;
 import org.openflexo.foundation.fml.FlexoConceptInstanceType;
 import org.openflexo.foundation.fml.VirtualModelInstanceType;
 import org.openflexo.foundation.fml.editionaction.AbstractFetchRequest;
@@ -50,6 +51,7 @@ import org.openflexo.foundation.fml.parser.node.AFromClause;
 import org.openflexo.foundation.fml.parser.node.ASelectActionFmlActionExp;
 import org.openflexo.foundation.fml.parser.node.PExpression;
 import org.openflexo.foundation.fml.parser.node.PFromClause;
+import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.editionaction.AbstractSelectFlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.editionaction.AbstractSelectVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.editionaction.SelectUniqueFlexoConceptInstance;
@@ -98,7 +100,8 @@ public class FetchRequestNode<FR extends AbstractFetchRequest<?, ?, ?, ?>> exten
 			selectAction.setType((VirtualModelInstanceType) type);
 			if (astNode.getFromClause() instanceof AFromClause) {
 				PExpression fromExpression = ((AFromClause) astNode.getFromClause()).getExpression();
-				DataBinding<?> container = ExpressionFactory.makeExpression(fromExpression, getAnalyser(), selectAction);
+				DataBinding<FlexoConceptInstance> container = (DataBinding) ExpressionFactory.makeDataBinding(fromExpression, selectAction,
+						BindingDefinitionType.GET, FlexoConceptInstance.class, getAnalyser());
 				selectAction.setContainer(container);
 				// selectAction.setReceiver(container);
 			}
@@ -119,7 +122,8 @@ public class FetchRequestNode<FR extends AbstractFetchRequest<?, ?, ?, ?>> exten
 			selectAction.setType(type);
 			if (astNode.getFromClause() instanceof AFromClause) {
 				PExpression fromExpression = ((AFromClause) astNode.getFromClause()).getExpression();
-				DataBinding<?> container = ExpressionFactory.makeExpression(fromExpression, getAnalyser(), selectAction);
+				DataBinding<FlexoConceptInstance> container = (DataBinding) ExpressionFactory.makeDataBinding(fromExpression, selectAction,
+						BindingDefinitionType.GET, FlexoConceptInstance.class, getAnalyser());
 				selectAction.setContainer(container);
 				// selectAction.setReceiver(container);
 
@@ -145,22 +149,21 @@ public class FetchRequestNode<FR extends AbstractFetchRequest<?, ?, ?, ?>> exten
 	public void preparePrettyPrint(boolean hasParsedVersion) {
 		super.preparePrettyPrint(hasParsedVersion);
 
-		// @formatter:off	
+		// @formatter:off
 
 		append(staticContents("select"), getSelectFragment());
 
-		when(() -> isUnique())
-		.thenAppend(staticContents(SPACE,"unique",""), getUniqueFragment());
+		when(() -> isUnique()).thenAppend(staticContents(SPACE, "unique", ""), getUniqueFragment());
 
 		append(dynamicContents(SPACE, () -> serializeType(getModelObject().getFetchedType())), getTypeFragment());
 
-		append(staticContents(SPACE, "from",""), getFromFragment());
-		append(staticContents(SPACE, "(",""), getLParFromFragment());
+		append(staticContents(SPACE, "from", ""), getFromFragment());
+		append(staticContents(SPACE, "(", ""), getLParFromFragment());
 		append(dynamicContents(() -> getFromAsString()), getFromExpressionFragment());
 		append(staticContents(")"), getRParFromFragment());
 		// Append semi only when required
 		when(() -> requiresSemi()).thenAppend(staticContents(";"), getSemiFragment());
-		// @formatter:on	
+		// @formatter:on
 	}
 
 	private String getFromAsString() {

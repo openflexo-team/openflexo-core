@@ -141,7 +141,7 @@ public class TestExpressionWithTypesParser extends ExpressionParserTestCase {
 	@Test
 	public void testCast5() {
 		CastExpression e = (CastExpression) (tryToParse("(List<Tutu>)toto", "(List<Tutu>)toto", CastExpression.class, null, serviceManager,
-				false).getExpression());
+				false));
 		assertEquals(((ParameterizedTypeImpl) e.getCastType()).getRawType(), List.class);
 	}
 

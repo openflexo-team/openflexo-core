@@ -99,19 +99,21 @@ public class FMLBindingFactory extends JavaBasedBindingFactory {
 	public static final String RESOURCE_CENTER = "resourceCenter";
 
 	private final Map<IBindingPathElement, Map<Object, SimplePathElement>> storedBindingPathElements;
-	// Unused private final VirtualModel virtualModel;
+	private final VirtualModel virtualModel;
 
 	private final Map<IBindingPathElement, BehavioursForConcepts> flexoBehaviourPathElements;
 
 	public FMLBindingFactory(VirtualModel virtualModel) {
 		storedBindingPathElements = new HashMap<>();
 		flexoBehaviourPathElements = new HashMap<>();
-		// Unused this.virtualModel = virtualModel;
+		this.virtualModel = virtualModel;
 	}
 
 	@Override
 	public Expression parseExpression(String expressionAsString, Bindable bindable) throws ParseException {
-		System.err.println("!!!!!!!! il faut implementer ca !!!!!! ");
+		if (virtualModel.getDeclaringCompilationUnitResource() != null) {
+			return virtualModel.getDeclaringCompilationUnitResource().parseExpression(expressionAsString, bindable);
+		}
 		return null;
 	}
 

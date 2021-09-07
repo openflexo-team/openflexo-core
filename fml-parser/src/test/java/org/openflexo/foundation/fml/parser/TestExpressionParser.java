@@ -3,10 +3,10 @@ package org.openflexo.foundation.fml.parser;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
-import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.expr.BinaryOperatorExpression;
 import org.openflexo.connie.expr.BindingValue;
 import org.openflexo.connie.expr.ConditionalExpression;
+import org.openflexo.connie.expr.Expression;
 import org.openflexo.foundation.fml.expr.FMLBinaryOperatorExpression;
 import org.openflexo.foundation.fml.expr.FMLBooleanBinaryOperator;
 import org.openflexo.foundation.fml.expr.FMLConditionalExpression;
@@ -348,8 +348,8 @@ public class TestExpressionParser extends ExpressionParserTestCase {
 
 	@Test
 	public void testEquality() {
-		DataBinding<?> e = tryToParse("a==b", "a == b", BinaryOperatorExpression.class, null, serviceManager, false);
-		assertEquals(FMLBooleanBinaryOperator.EQUALS, ((BinaryOperatorExpression) e.getExpression()).getOperator());
+		Expression e = tryToParse("a==b", "a == b", BinaryOperatorExpression.class, null, serviceManager, false);
+		assertEquals(FMLBooleanBinaryOperator.EQUALS, ((BinaryOperatorExpression) e).getOperator());
 	}
 
 	@Test

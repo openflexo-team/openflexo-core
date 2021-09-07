@@ -108,24 +108,39 @@ public class ExpressionFactory extends DepthFirstAdapter {
 
 	// private MainSemanticsAnalyzer mainAnalyzer;
 
-	public static DataBinding<?> makeExpression(Node node, Bindable bindable, FMLCompilationUnit compilationUnit) {
-		return _makeExpression(node, bindable, Object.class, compilationUnit);
+	public static Expression makeExpression(Node node, Bindable bindable, FMLCompilationUnit compilationUnit) {
+		return _makeExpression(node, bindable, compilationUnit);
 	}
 
-	public static DataBinding<?> makeExpression(Node node, MainSemanticsAnalyzer mainAnalyzer, Bindable bindable) {
-		return _makeExpression(node, bindable, Object.class, null);
+	public static Expression makeExpression(Node node, Bindable bindable, MainSemanticsAnalyzer mainAnalyzer) {
+		return _makeExpression(node, bindable, null);
 	}
 
-	private static DataBinding<?> _makeExpression(Node node, Bindable bindable, Type expectedType, FMLCompilationUnit compilationUnit) {
-		// TODO
-		// Faire pour le vrai...
+	public static DataBinding<?> makeDataBinding(Node node, Bindable bindable, BindingDefinitionType bindingDefinitionType,
+			Type expectedType, FMLCompilationUnit compilationUnit) {
+		return _makeDataBinding(node, bindable, bindingDefinitionType, expectedType, compilationUnit);
+	}
+
+	public static DataBinding<?> makeDataBinding(Node node, Bindable bindable, BindingDefinitionType bindingDefinitionType,
+			Type expectedType, MainSemanticsAnalyzer mainAnalyzer) {
+		return _makeDataBinding(node, bindable, bindingDefinitionType, expectedType, null);
+	}
+
+	private static Expression _makeExpression(Node node, Bindable bindable, FMLCompilationUnit compilationUnit) {
 		// return new DataBinding(analyzer.getText(node), bindable, expectedType, BindingDefinitionType.GET);
 
 		ExpressionFactory factory = new ExpressionFactory(node, bindable);
 		node.apply(factory);
 
-		Expression expression = factory.getExpression();
-		DataBinding returned = new DataBinding(bindable, expectedType, BindingDefinitionType.GET);
+		return factory.getExpression();
+	}
+
+	@SuppressWarnings("rawtypes")
+	private static DataBinding<?> _makeDataBinding(Node node, Bindable bindable, BindingDefinitionType bindingDefinitionType,
+			Type expectedType, FMLCompilationUnit compilationUnit) {
+
+		Expression expression = _makeExpression(node, bindable, compilationUnit);
+		DataBinding returned = new DataBinding(bindable, expectedType, bindingDefinitionType);
 		returned.setExpression(expression);
 		return returned;
 	}

@@ -55,6 +55,8 @@ import java.util.StringTokenizer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.openflexo.connie.Bindable;
+import org.openflexo.connie.expr.Expression;
 import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.FlexoProject;
 import org.openflexo.foundation.FlexoServiceManager;
@@ -72,6 +74,7 @@ import org.openflexo.foundation.fml.UseModelSlotDeclaration;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.VirtualModelLibrary;
 import org.openflexo.foundation.fml.parser.FMLCompilationUnitParser;
+import org.openflexo.foundation.fml.parser.FMLExpressionParser;
 import org.openflexo.foundation.fml.parser.ParseException;
 import org.openflexo.foundation.fml.rt.FMLRTTechnologyAdapter;
 import org.openflexo.foundation.fml.rt.rm.FMLRTVirtualModelInstanceResource;
@@ -143,6 +146,11 @@ public abstract class CompilationUnitResourceImpl extends PamelaResourceImpl<FML
 
 	public FMLCompilationUnitParser getFMLParser() {
 		return fmlParser;
+	}
+
+	@Override
+	public Expression parseExpression(String expressionAsString, Bindable bindable) throws ParseException {
+		return FMLExpressionParser.parse(expressionAsString, bindable, getCompilationUnit());
 	}
 
 	@Override

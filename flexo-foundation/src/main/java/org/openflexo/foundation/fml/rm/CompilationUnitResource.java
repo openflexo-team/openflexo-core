@@ -40,6 +40,9 @@ package org.openflexo.foundation.fml.rm;
 
 import java.util.List;
 
+import org.openflexo.connie.Bindable;
+import org.openflexo.connie.ParseException;
+import org.openflexo.connie.expr.Expression;
 import org.openflexo.foundation.fml.FMLCompilationUnit;
 import org.openflexo.foundation.fml.FMLModelFactory;
 import org.openflexo.foundation.fml.FMLTechnologyAdapter;
@@ -197,5 +200,7 @@ public interface CompilationUnitResource extends PamelaResource<FMLCompilationUn
 			this.virtualModelClassName = virtualModelClassName;
 		}
 	}
+
+	public Expression parseExpression(String expressionAsString, Bindable bindable) throws ParseException;
 
 }

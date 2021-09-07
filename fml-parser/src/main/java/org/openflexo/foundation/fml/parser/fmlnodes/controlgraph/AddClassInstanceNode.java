@@ -44,6 +44,7 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import org.openflexo.connie.DataBinding;
+import org.openflexo.connie.DataBinding.BindingDefinitionType;
 import org.openflexo.foundation.fml.editionaction.AddClassInstance;
 import org.openflexo.foundation.fml.parser.ExpressionFactory;
 import org.openflexo.foundation.fml.parser.MainSemanticsAnalyzer;
@@ -108,8 +109,8 @@ public class AddClassInstanceNode extends AssignableActionNode<AJavaInstanceCrea
 	private List<DataBinding<?>> args;
 
 	private void handleArgument(PExpression expression, AddClassInstance modelObject) {
-		DataBinding<?> argValue = ExpressionFactory.makeExpression(expression, getAnalyser(), modelObject);
-
+		DataBinding<?> argValue = ExpressionFactory.makeDataBinding(expression, modelObject, BindingDefinitionType.GET, Object.class,
+				getAnalyser());
 		if (args == null) {
 			args = new ArrayList<>();
 		}
