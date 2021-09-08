@@ -29,6 +29,28 @@ public class CustomLexer extends Lexer {
 			public State getState(Lexer l) {
 				return State.BINDING;
 			}
+		},
+		Command {
+			@Override
+			public Token getToken(Lexer l) {
+				return l.new2("", 0, 0);
+			}
+
+			@Override
+			public State getState(Lexer l) {
+				return State.COMMAND;
+			}
+		},
+		Script {
+			@Override
+			public Token getToken(Lexer l) {
+				return l.new3("", 0, 0);
+			}
+
+			@Override
+			public State getState(Lexer l) {
+				return State.COMMAND;
+			}
 		};
 
 		public abstract Token getToken(Lexer l);
