@@ -84,7 +84,7 @@ import org.openflexo.foundation.fml.parser.node.PExpression;
  * @author sylvain
  * 
  */
-class BindingBindingPathFactory extends DepthFirstAdapter {
+class BindingPathFactory extends DepthFirstAdapter {
 
 	private final ExpressionFactory expressionAnalyzer;
 	private final List<AbstractBindingPathElement> path;
@@ -117,13 +117,13 @@ class BindingBindingPathFactory extends DepthFirstAdapter {
 
 	private static List<AbstractBindingPathElement> makeBindingPath(Node node, ExpressionFactory expressionAnalyzer) {
 
-		BindingBindingPathFactory bsa = new BindingBindingPathFactory(node, expressionAnalyzer);
+		BindingPathFactory bsa = new BindingPathFactory(node, expressionAnalyzer);
 		node.apply(bsa);
 
 		return bsa.getPath();
 	}
 
-	private BindingBindingPathFactory(Node node, ExpressionFactory expressionAnalyzer) {
+	private BindingPathFactory(Node node, ExpressionFactory expressionAnalyzer) {
 		this.expressionAnalyzer = expressionAnalyzer;
 		this.rootNode = node;
 		path = new ArrayList<>();

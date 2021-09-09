@@ -307,19 +307,19 @@ public class ExpressionFactory extends DepthFirstAdapter {
 	public void outAIdentifierPrimary(AIdentifierPrimary node) {
 		super.outAIdentifierPrimary(node);
 		// System.out.println("<< On sort de primary/{identifier} avec " + node + " of " + node.getClass().getSimpleName());
-		registerExpressionNode(node, BindingBindingPathFactory.makeBindingValue(node, this));
+		registerExpressionNode(node, BindingPathFactory.makeBindingValue(node, this));
 	}
 
 	@Override
 	public void outAMethodPrimaryNoId(AMethodPrimaryNoId node) {
 		super.outAMethodPrimaryNoId(node);
-		registerExpressionNode(node, BindingBindingPathFactory.makeBindingValue(node, this));
+		registerExpressionNode(node, BindingPathFactory.makeBindingValue(node, this));
 	}
 
 	@Override
 	public void outAFieldPrimaryNoId(AFieldPrimaryNoId node) {
 		super.outAFieldPrimaryNoId(node);
-		registerExpressionNode(node, BindingBindingPathFactory.makeBindingValue(node, this));
+		registerExpressionNode(node, BindingPathFactory.makeBindingValue(node, this));
 	}
 
 	/*@Override
@@ -331,7 +331,7 @@ public class ExpressionFactory extends DepthFirstAdapter {
 	@Override
 	public void outANewInstancePrimaryNoId(ANewInstancePrimaryNoId node) {
 		super.outANewInstancePrimaryNoId(node);
-		registerExpressionNode(node, BindingBindingPathFactory.makeBindingValue(node, this));
+		registerExpressionNode(node, BindingPathFactory.makeBindingValue(node, this));
 	}
 
 	@Override
