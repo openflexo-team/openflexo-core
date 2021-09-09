@@ -1,18 +1,12 @@
 package org.openflexo.foundation.fml.parser;
 
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
 import java.util.logging.Logger;
 
-import org.openflexo.foundation.fml.FlexoConceptInstanceType;
-import org.openflexo.foundation.fml.VirtualModelInstanceType;
 import org.openflexo.foundation.fml.controlgraph.FMLControlGraph;
 import org.openflexo.foundation.fml.controlgraph.Sequence;
-import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.AddClassInstanceNode;
-import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.AddFlexoConceptInstanceNode;
-import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.AddVirtualModelInstanceNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.AssignationActionNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.BeginMatchActionNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.ConditionalNode;
@@ -36,16 +30,15 @@ import org.openflexo.foundation.fml.parser.node.ABlockStatementWithoutTrailingSu
 import org.openflexo.foundation.fml.parser.node.ADoStatementStatementWithoutTrailingSubstatement;
 import org.openflexo.foundation.fml.parser.node.AEmptyStatementStatementWithoutTrailingSubstatement;
 import org.openflexo.foundation.fml.parser.node.AEndMatchActionFmlActionExp;
-import org.openflexo.foundation.fml.parser.node.AFmlInstanceCreationFmlActionExp;
 import org.openflexo.foundation.fml.parser.node.AForBasicExpressionStatement;
 import org.openflexo.foundation.fml.parser.node.AForBasicStatement;
 import org.openflexo.foundation.fml.parser.node.AForEnhancedStatement;
 import org.openflexo.foundation.fml.parser.node.AIfElseStatement;
 import org.openflexo.foundation.fml.parser.node.AIfSimpleStatement;
-import org.openflexo.foundation.fml.parser.node.AJavaInstanceCreationFmlActionExp;
 import org.openflexo.foundation.fml.parser.node.ALogActionFmlActionExp;
 import org.openflexo.foundation.fml.parser.node.AMatchActionFmlActionExp;
 import org.openflexo.foundation.fml.parser.node.AMethodInvocationStatementExpression;
+import org.openflexo.foundation.fml.parser.node.ANewInstanceStatementExpression;
 import org.openflexo.foundation.fml.parser.node.ANoTrailStatement;
 import org.openflexo.foundation.fml.parser.node.AReturnEmptyStatementWithoutTrailingSubstatement;
 import org.openflexo.foundation.fml.parser.node.AReturnStatementWithoutTrailingSubstatement;
@@ -554,6 +547,7 @@ public class ControlGraphFactory extends FMLSemanticsAnalyzer {
 	 *        {post_increment}         post_increment_expression |
 	 *        {post_decrement}         post_decrement_expression |
 	 *        {method_invocation}      method_invocation |
+	 *        {new_instance}           new_instance |
 	 *        {fml_action_expression}  fml_action_expression;
 	 * </pre>
 	 */
@@ -568,6 +562,18 @@ public class ControlGraphFactory extends FMLSemanticsAnalyzer {
 	@Override
 	public void outAAssignmentStatementExpression(AAssignmentStatementExpression node) {
 		super.outAAssignmentStatementExpression(node);
+		pop();
+	}
+
+	@Override
+	public void inANewInstanceStatementExpression(ANewInstanceStatementExpression node) {
+		super.inANewInstanceStatementExpression(node);
+		push(getMainAnalyzer().retrieveFMLNode(node, n -> new ExpressionActionNode(n, getMainAnalyzer())));
+	}
+
+	@Override
+	public void outANewInstanceStatementExpression(ANewInstanceStatementExpression node) {
+		super.outANewInstanceStatementExpression(node);
 		pop();
 	}
 
@@ -619,50 +625,51 @@ public class ControlGraphFactory extends FMLSemanticsAnalyzer {
 		pop();
 	}
 
-	@Override
-	public void inAFmlInstanceCreationFmlActionExp(AFmlInstanceCreationFmlActionExp node) {
-		super.inAFmlInstanceCreationFmlActionExp(node);
-
-		Type type = getTypeFactory().lookupConceptNamed(node.getConceptName().getText(), getFragment(node.getConceptName()));
-
-		if (type instanceof VirtualModelInstanceType) {
-			push(getMainAnalyzer().retrieveFMLNode(node, n -> new AddVirtualModelInstanceNode(n, getMainAnalyzer())));
+	/*	@Override
+		public void inAFmlInstanceCreationFmlActionExp(AFmlInstanceCreationFmlActionExp node) {
+			super.inAFmlInstanceCreationFmlActionExp(node);
+	
+			Type type = getTypeFactory().lookupConceptNamed(node.getConceptName().getText(), getFragment(node.getConceptName()));
+	
+			if (type instanceof VirtualModelInstanceType) {
+				push(getMainAnalyzer().retrieveFMLNode(node, n -> new AddVirtualModelInstanceNode(n, getMainAnalyzer())));
+			}
+			else {
+				push(getMainAnalyzer().retrieveFMLNode(node, n -> new AddFlexoConceptInstanceNode(n, getMainAnalyzer())));
+			}
 		}
-		else /*if (type instanceof FlexoConceptInstanceType)*/ {
-			push(getMainAnalyzer().retrieveFMLNode(node, n -> new AddFlexoConceptInstanceNode(n, getMainAnalyzer())));
+	
+		@Override
+		public void outAFmlInstanceCreationFmlActionExp(AFmlInstanceCreationFmlActionExp node) {
+			super.outAFmlInstanceCreationFmlActionExp(node);
+			pop();
 		}
-	}
-
-	@Override
-	public void outAFmlInstanceCreationFmlActionExp(AFmlInstanceCreationFmlActionExp node) {
-		super.outAFmlInstanceCreationFmlActionExp(node);
-		pop();
-	}
-
-	@Override
-	public void inAJavaInstanceCreationFmlActionExp(AJavaInstanceCreationFmlActionExp node) {
-		super.inAJavaInstanceCreationFmlActionExp(node);
-
-		Type type = TypeFactory.makeType(node.getType(), getMainAnalyzer().getTypingSpace());
-
-		// System.out.println("Found type " + type + " of " + type.getClass());
-
-		if (type instanceof VirtualModelInstanceType) {
-			push(getMainAnalyzer().retrieveFMLNode(node, n -> new AddVirtualModelInstanceNode(n, getMainAnalyzer())));
+	
+		@Override
+		public void inAJavaInstanceCreationFmlActionExp(AJavaInstanceCreationFmlActionExp node) {
+			super.inAJavaInstanceCreationFmlActionExp(node);
+	
+			Type type = TypeFactory.makeType(node.getType(), getMainAnalyzer().getTypingSpace());
+	
+			// System.out.println("Found type " + type + " of " + type.getClass());
+	
+			if (type instanceof VirtualModelInstanceType) {
+				push(getMainAnalyzer().retrieveFMLNode(node, n -> new AddVirtualModelInstanceNode(n, getMainAnalyzer())));
+			}
+			else if (type instanceof FlexoConceptInstanceType) {
+				push(getMainAnalyzer().retrieveFMLNode(node, n -> new AddFlexoConceptInstanceNode(n, getMainAnalyzer())));
+			}
+			else {
+				push(getMainAnalyzer().retrieveFMLNode(node, n -> new AddClassInstanceNode(n, getMainAnalyzer())));
+			}
 		}
-		else if (type instanceof FlexoConceptInstanceType) {
-			push(getMainAnalyzer().retrieveFMLNode(node, n -> new AddFlexoConceptInstanceNode(n, getMainAnalyzer())));
+	
+		@Override
+		public void outAJavaInstanceCreationFmlActionExp(AJavaInstanceCreationFmlActionExp node) {
+			super.outAJavaInstanceCreationFmlActionExp(node);
+			pop();
 		}
-		else {
-			push(getMainAnalyzer().retrieveFMLNode(node, n -> new AddClassInstanceNode(n, getMainAnalyzer())));
-		}
-	}
-
-	@Override
-	public void outAJavaInstanceCreationFmlActionExp(AJavaInstanceCreationFmlActionExp node) {
-		super.outAJavaInstanceCreationFmlActionExp(node);
-		pop();
-	}
+	*/
 
 	@Override
 	public void inABeginMatchActionFmlActionExp(ABeginMatchActionFmlActionExp node) {

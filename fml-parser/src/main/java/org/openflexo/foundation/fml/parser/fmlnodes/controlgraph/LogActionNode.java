@@ -40,7 +40,10 @@ package org.openflexo.foundation.fml.parser.fmlnodes.controlgraph;
 
 import java.util.logging.Logger;
 
+import org.openflexo.connie.DataBinding;
+import org.openflexo.connie.DataBinding.BindingDefinitionType;
 import org.openflexo.foundation.fml.editionaction.LogAction;
+import org.openflexo.foundation.fml.parser.ExpressionFactory;
 import org.openflexo.foundation.fml.parser.MainSemanticsAnalyzer;
 import org.openflexo.foundation.fml.parser.node.ALogActionFmlActionExp;
 import org.openflexo.foundation.fml.rt.logging.FMLConsole.LogLevel;
@@ -73,7 +76,10 @@ public class LogActionNode extends ControlGraphNode<ALogActionFmlActionExp, LogA
 	public LogAction buildModelObjectFromAST(ALogActionFmlActionExp astNode) {
 		LogAction returned = getFactory().newLogAction();
 
-		returned.setLogString(makeBinding(getASTNode().getExpression(), returned));
+		DataBinding<String> logString = ExpressionFactory.makeDataBinding(getASTNode().getExpression(), returned, BindingDefinitionType.GET,
+				String.class, getAnalyser());
+		// returned.setLogString(makeBinding(getASTNode().getExpression(), returned));
+		returned.setLogString(logString);
 		returned.setLogLevel(LogLevel.INFO);
 
 		return returned;

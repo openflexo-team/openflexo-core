@@ -121,12 +121,12 @@ public class ExpressionFactory extends DepthFirstAdapter {
 		return _makeExpression(node, bindable, typingSpace);
 	}
 
-	public static DataBinding<?> makeDataBinding(Node node, Bindable bindable, BindingDefinitionType bindingDefinitionType,
+	public static <T> DataBinding<T> makeDataBinding(Node node, Bindable bindable, BindingDefinitionType bindingDefinitionType,
 			Type expectedType, FMLCompilationUnit compilationUnit) {
 		return _makeDataBinding(node, bindable, bindingDefinitionType, expectedType, compilationUnit.getTypingSpace());
 	}
 
-	public static DataBinding<?> makeDataBinding(Node node, Bindable bindable, BindingDefinitionType bindingDefinitionType,
+	public static <T> DataBinding<T> makeDataBinding(Node node, Bindable bindable, BindingDefinitionType bindingDefinitionType,
 			Type expectedType, MainSemanticsAnalyzer mainAnalyzer) {
 		return _makeDataBinding(node, bindable, bindingDefinitionType, expectedType, mainAnalyzer.getTypingSpace());
 	}
@@ -141,7 +141,7 @@ public class ExpressionFactory extends DepthFirstAdapter {
 	}
 
 	@SuppressWarnings("rawtypes")
-	private static DataBinding<?> _makeDataBinding(Node node, Bindable bindable, BindingDefinitionType bindingDefinitionType,
+	private static <T> DataBinding<T> _makeDataBinding(Node node, Bindable bindable, BindingDefinitionType bindingDefinitionType,
 			Type expectedType, AbstractFMLTypingSpace typingSpace) {
 
 		Expression expression = _makeExpression(node, bindable, typingSpace);

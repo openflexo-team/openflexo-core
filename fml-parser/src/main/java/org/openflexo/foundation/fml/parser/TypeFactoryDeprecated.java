@@ -111,6 +111,7 @@ import org.openflexo.toolbox.StringUtils;
  * @author sylvain
  * 
  */
+@Deprecated
 public class TypeFactoryDeprecated extends SemanticsAnalyzerFactory {
 
 	private static final Logger logger = Logger.getLogger(TypeFactory.class.getPackage().getName());

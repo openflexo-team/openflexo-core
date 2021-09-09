@@ -41,9 +41,11 @@ package org.openflexo.foundation.fml.parser.fmlnodes.controlgraph;
 import java.util.logging.Logger;
 
 import org.openflexo.connie.DataBinding;
+import org.openflexo.connie.DataBinding.BindingDefinitionType;
 import org.openflexo.foundation.fml.editionaction.AssignableAction;
 import org.openflexo.foundation.fml.editionaction.AssignationAction;
 import org.openflexo.foundation.fml.parser.ControlGraphFactory;
+import org.openflexo.foundation.fml.parser.ExpressionFactory;
 import org.openflexo.foundation.fml.parser.MainSemanticsAnalyzer;
 import org.openflexo.foundation.fml.parser.node.AAssignmentStatementExpression;
 import org.openflexo.foundation.fml.parser.node.AFieldLeftHandSide;
@@ -126,10 +128,14 @@ public class AssignationActionNode extends AssignableActionNode<AAssignmentState
 
 	private DataBinding<?> extractLeft(AssignationAction<?> bindable) {
 		if (getLefthandSide() instanceof AFieldLeftHandSide) {
-			return makeBinding((AFieldLeftHandSide) getLefthandSide(), bindable);
+			// return makeBinding((AFieldLeftHandSide) getLefthandSide(), bindable);
+			return ExpressionFactory.makeDataBinding((AFieldLeftHandSide) getLefthandSide(), bindable, BindingDefinitionType.SET,
+					Object.class, getAnalyser());
 		}
 		else if (getLefthandSide() instanceof AIdentifierLeftHandSide) {
-			return makeBinding(((AIdentifierLeftHandSide) getLefthandSide()).getCompositeIdent(), bindable);
+			// return makeBinding(((AIdentifierLeftHandSide) getLefthandSide()).getCompositeIdent(), bindable);
+			return ExpressionFactory.makeDataBinding(((AIdentifierLeftHandSide) getLefthandSide()).getCompositeIdent(), bindable,
+					BindingDefinitionType.SET, Object.class, getAnalyser());
 		}
 		return null;
 	}

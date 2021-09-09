@@ -38,6 +38,7 @@
 
 package org.openflexo.foundation.fml.parser.fmlnodes;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -46,6 +47,7 @@ import org.openflexo.foundation.fml.FlexoConceptInstanceType;
 import org.openflexo.foundation.fml.InconsistentFlexoConceptHierarchyException;
 import org.openflexo.foundation.fml.parser.FMLObjectNode;
 import org.openflexo.foundation.fml.parser.MainSemanticsAnalyzer;
+import org.openflexo.foundation.fml.parser.TypeFactory;
 import org.openflexo.foundation.fml.parser.node.AManySuperTypeList;
 import org.openflexo.foundation.fml.parser.node.AOneSuperTypeList;
 import org.openflexo.foundation.fml.parser.node.ASuperClause;
@@ -100,13 +102,14 @@ public abstract class AbstractFlexoConceptNode<N extends Node, T extends FlexoCo
 	private void buildParentConcepts(FlexoConcept returned, PSuperTypeList superTypeList) {
 		parentTypes = new ArrayList<>();
 		for (PCompositeTident pCompositeTident : extractIdentifiers(superTypeList)) {
-			FlexoConceptInstanceType parentType = getTypeFactory().lookupConceptNamed(getText(pCompositeTident),
-					getFragment(pCompositeTident));
-			if (parentType != null) {
-				parentTypes.add(parentType);
+			Type parentType = TypeFactory.makeType(pCompositeTident, getAnalyser().getTypingSpace());
+			// FlexoConceptInstanceType parentType = getTypeFactory().lookupConceptNamed(getText(pCompositeTident),
+			// getFragment(pCompositeTident));
+			if (parentType instanceof FlexoConceptInstanceType) {
+				parentTypes.add((FlexoConceptInstanceType) parentType);
 			}
 			else {
-				throwIssue("Undefined parent concept " + getText(pCompositeTident), getSuperTypeListFragment());
+				throwIssue("Unexpected parent concept " + getText(pCompositeTident), getSuperTypeListFragment());
 			}
 		}
 	}

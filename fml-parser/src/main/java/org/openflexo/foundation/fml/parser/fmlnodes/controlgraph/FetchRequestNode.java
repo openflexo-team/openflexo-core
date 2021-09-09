@@ -38,6 +38,7 @@
 
 package org.openflexo.foundation.fml.parser.fmlnodes.controlgraph;
 
+import java.lang.reflect.Type;
 import java.util.logging.Logger;
 
 import org.openflexo.connie.DataBinding;
@@ -47,6 +48,7 @@ import org.openflexo.foundation.fml.VirtualModelInstanceType;
 import org.openflexo.foundation.fml.editionaction.AbstractFetchRequest;
 import org.openflexo.foundation.fml.parser.ExpressionFactory;
 import org.openflexo.foundation.fml.parser.MainSemanticsAnalyzer;
+import org.openflexo.foundation.fml.parser.TypeFactory;
 import org.openflexo.foundation.fml.parser.node.AFromClause;
 import org.openflexo.foundation.fml.parser.node.ASelectActionFmlActionExp;
 import org.openflexo.foundation.fml.parser.node.PExpression;
@@ -81,7 +83,17 @@ public class FetchRequestNode<FR extends AbstractFetchRequest<?, ?, ?, ?>> exten
 
 		// FlexoConceptInstanceType type = getTypeFactory().lookupConceptNamed(astNode.getSelectedTypeName());
 
-		FlexoConceptInstanceType type = getTypeFactory().makeFlexoConceptType(astNode.getSelectedTypeName());
+		FlexoConceptInstanceType selectType = null;
+
+		Type type = TypeFactory.makeType(astNode.getSelectedTypeName(), getAnalyser().getTypingSpace());
+		if (type instanceof FlexoConceptInstanceType) {
+			selectType = (FlexoConceptInstanceType) type;
+		}
+		else {
+			throwIssue("Unexpected fetch request type " + getText(astNode.getSelectedTypeName()), getTypeFragment());
+		}
+
+		// FlexoConceptInstanceType type = getTypeFactory().makeFlexoConceptType(astNode.getSelectedTypeName());
 
 		// System.out.println("Found type: " + type);
 
@@ -119,7 +131,7 @@ public class FetchRequestNode<FR extends AbstractFetchRequest<?, ?, ?, ?>> exten
 			if (concept != null && selectAction != null) {
 				selectAction.setFlexoConceptType(concept);
 			}*/
-			selectAction.setType(type);
+			selectAction.setType(selectType);
 			if (astNode.getFromClause() instanceof AFromClause) {
 				PExpression fromExpression = ((AFromClause) astNode.getFromClause()).getExpression();
 				DataBinding<FlexoConceptInstance> container = (DataBinding) ExpressionFactory.makeDataBinding(fromExpression, selectAction,

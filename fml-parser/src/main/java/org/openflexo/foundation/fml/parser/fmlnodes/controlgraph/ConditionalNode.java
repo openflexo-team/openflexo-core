@@ -41,9 +41,11 @@ package org.openflexo.foundation.fml.parser.fmlnodes.controlgraph;
 import java.util.logging.Logger;
 
 import org.openflexo.connie.DataBinding;
+import org.openflexo.connie.DataBinding.BindingDefinitionType;
 import org.openflexo.foundation.fml.controlgraph.ConditionalAction;
 import org.openflexo.foundation.fml.controlgraph.EmptyControlGraph;
 import org.openflexo.foundation.fml.parser.ControlGraphFactory;
+import org.openflexo.foundation.fml.parser.ExpressionFactory;
 import org.openflexo.foundation.fml.parser.MainSemanticsAnalyzer;
 import org.openflexo.foundation.fml.parser.node.AIfElseStatement;
 import org.openflexo.foundation.fml.parser.node.AIfSimpleStatement;
@@ -74,7 +76,10 @@ public class ConditionalNode extends ControlGraphNode<Node, ConditionalAction> {
 	@Override
 	public ConditionalAction buildModelObjectFromAST(Node astNode) {
 		ConditionalAction returned = getFactory().newConditionalAction();
-		DataBinding<Boolean> condition = makeBinding(getExpression(astNode), returned);
+		// DataBinding<Boolean> condition = makeBinding(getExpression(astNode), returned);
+		DataBinding<Boolean> condition = ExpressionFactory.makeDataBinding(getExpression(astNode), returned, BindingDefinitionType.GET,
+				Boolean.class, getAnalyser());
+
 		returned.setCondition(condition);
 		if (astNode instanceof AIfSimpleStatement) {
 			ControlGraphNode<?, ?> thenCGNode = ControlGraphFactory.makeControlGraphNode(((AIfSimpleStatement) astNode).getStatement(),
@@ -99,22 +104,21 @@ public class ConditionalNode extends ControlGraphNode<Node, ConditionalAction> {
 	public void preparePrettyPrint(boolean hasParsedVersion) {
 		super.preparePrettyPrint(hasParsedVersion);
 
-		// @formatter:off	
+		// @formatter:off
 
 		append(staticContents("if"), getIfFragment());
-		append(staticContents(SPACE, "(",""), getLParFragment());
+		append(staticContents(SPACE, "(", ""), getLParFragment());
 		append(dynamicContents(() -> getModelObject().getCondition().toString()), getConditionFragment());
 		append(staticContents(")"), getLParFragment());
 
 		append(staticContents(SPACE, "{", ""), getThenLBrcFragment());
 		append(childContents(LINE_SEPARATOR, () -> getModelObject().getThenControlGraph(), "", Indentation.Indent));
-		append(staticContents(LINE_SEPARATOR,"}", ""), getThenRBrcFragment());
+		append(staticContents(LINE_SEPARATOR, "}", ""), getThenRBrcFragment());
 
-		when(() -> hasElse())
-		.thenAppend(staticContents(LINE_SEPARATOR,"else",""), getElseFragment())
-		.thenAppend(staticContents(SPACE, "{", ""), getElseLBrcFragment())
-		.thenAppend(childContents(LINE_SEPARATOR, () -> getModelObject().getElseControlGraph(), "", Indentation.Indent))
-		.thenAppend(staticContents(LINE_SEPARATOR,"}", ""), getElseRBrcFragment());
+		when(() -> hasElse()).thenAppend(staticContents(LINE_SEPARATOR, "else", ""), getElseFragment())
+				.thenAppend(staticContents(SPACE, "{", ""), getElseLBrcFragment())
+				.thenAppend(childContents(LINE_SEPARATOR, () -> getModelObject().getElseControlGraph(), "", Indentation.Indent))
+				.thenAppend(staticContents(LINE_SEPARATOR, "}", ""), getElseRBrcFragment());
 
 		// @formatter:on
 

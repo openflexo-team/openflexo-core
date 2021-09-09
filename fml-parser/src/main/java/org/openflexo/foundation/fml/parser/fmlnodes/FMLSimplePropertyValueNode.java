@@ -41,12 +41,14 @@ package org.openflexo.foundation.fml.parser.fmlnodes;
 import java.util.logging.Logger;
 
 import org.openflexo.connie.DataBinding;
+import org.openflexo.connie.DataBinding.BindingDefinitionType;
 import org.openflexo.connie.expr.Constant;
 import org.openflexo.connie.type.TypeUtils;
 import org.openflexo.foundation.fml.ElementImportDeclaration;
 import org.openflexo.foundation.fml.FMLModelContext.FMLProperty;
 import org.openflexo.foundation.fml.FMLObject;
 import org.openflexo.foundation.fml.FMLSimplePropertyValue;
+import org.openflexo.foundation.fml.parser.ExpressionFactory;
 import org.openflexo.foundation.fml.parser.MainSemanticsAnalyzer;
 import org.openflexo.foundation.fml.parser.node.ASimpleQualifiedArgument;
 import org.openflexo.p2pp.RawSource.RawSourceFragment;
@@ -91,7 +93,10 @@ public class FMLSimplePropertyValueNode<M extends FMLObject, T>
 
 		getModelObject().setProperty(fmlProperty);
 
-		DataBinding<Object> value = makeBinding(getASTNode().getExpression(), modelObject);
+		// DataBinding<Object> value = makeBinding(getASTNode().getExpression(), modelObject);
+
+		DataBinding<Object> value = ExpressionFactory.makeDataBinding(getASTNode().getExpression(), modelObject, BindingDefinitionType.GET,
+				Object.class, getAnalyser());
 		// System.out.println("value=" + value);
 
 		if (DataBinding.class.equals(TypeUtils.getBaseClass(fmlProperty.getType()))) {

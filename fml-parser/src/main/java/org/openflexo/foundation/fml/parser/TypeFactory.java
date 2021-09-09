@@ -55,6 +55,7 @@ import org.openflexo.foundation.fml.parser.node.ABytePrimitiveType;
 import org.openflexo.foundation.fml.parser.node.ACharPrimitiveType;
 import org.openflexo.foundation.fml.parser.node.AComplexType;
 import org.openflexo.foundation.fml.parser.node.ACompositeTident;
+import org.openflexo.foundation.fml.parser.node.ACompositeTidentSuffix;
 import org.openflexo.foundation.fml.parser.node.ADoublePrimitiveType;
 import org.openflexo.foundation.fml.parser.node.AExtendsWildcardBounds;
 import org.openflexo.foundation.fml.parser.node.AFloatPrimitiveType;
@@ -75,6 +76,7 @@ import org.openflexo.foundation.fml.parser.node.AVoidType;
 import org.openflexo.foundation.fml.parser.node.AWildcardTypeArgument;
 import org.openflexo.foundation.fml.parser.node.Node;
 import org.openflexo.foundation.fml.parser.node.PCompositeTident;
+import org.openflexo.foundation.fml.parser.node.PCompositeTidentSuffix;
 import org.openflexo.foundation.fml.parser.node.PIdentifierPrefix;
 import org.openflexo.foundation.fml.parser.node.PReferenceType;
 import org.openflexo.foundation.fml.parser.node.PTypeArgumentList;
@@ -324,6 +326,9 @@ public class TypeFactory extends DepthFirstAdapter {
 				fullQualifiedName.append(((AIdentifierPrefix) identifierPrefix).getLidentifier().getText() + ".");
 			}
 			fullQualifiedName.append(node.getIdentifier().getText());
+			for (PCompositeTidentSuffix pCompositeTidentSuffix : node.getSuffixes()) {
+				fullQualifiedName.append("$" + ((ACompositeTidentSuffix) pCompositeTidentSuffix).getUidentifier().getText());
+			}
 			return makeType(fullQualifiedName.toString());
 		}
 		System.err.println("Unexpected " + aPCompositeTident + " of " + aPCompositeTident.getClass());

@@ -38,6 +38,7 @@
 
 package org.openflexo.foundation.fml.parser.fmlnodes.controlgraph;
 
+import java.lang.reflect.Type;
 import java.util.logging.Logger;
 
 import org.openflexo.connie.DataBinding;
@@ -49,6 +50,7 @@ import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoConceptInstanceType;
 import org.openflexo.foundation.fml.binding.FlexoConceptBindingModel;
 import org.openflexo.foundation.fml.parser.MainSemanticsAnalyzer;
+import org.openflexo.foundation.fml.parser.TypeFactory;
 import org.openflexo.foundation.fml.parser.node.AFmlInstanceCreationFmlActionExp;
 import org.openflexo.foundation.fml.parser.node.AFullQualifiedFmlParameters;
 import org.openflexo.foundation.fml.parser.node.AJavaInstanceCreationFmlActionExp;
@@ -175,7 +177,14 @@ public class AddVirtualModelInstanceNode extends AssignableActionNode<PFmlAction
 		AddVirtualModelInstance returned = getFactory().newAddVirtualModelInstance();
 		// System.out.println(">>>>>> New FCI " + astNode);
 
-		conceptType = getTypeFactory().lookupConceptNamed(getConceptName(), getFragment(getConceptNameNode()));
+		Type type = TypeFactory.makeType(getConceptNameNode(), getAnalyser().getTypingSpace());
+		if (type instanceof FlexoConceptInstanceType) {
+			conceptType = (FlexoConceptInstanceType) type;
+		}
+		else {
+			throwIssue("Unexpected type " + getText(getConceptNameNode()), getConceptNameFragment());
+		}
+		// conceptType = getTypeFactory().lookupConceptNamed(getConceptName(), getFragment(getConceptNameNode()));
 		if (astNode instanceof AFmlInstanceCreationFmlActionExp) {
 			creationSchemeName = ((AFmlInstanceCreationFmlActionExp) astNode).getConstructorName().getText();
 		}

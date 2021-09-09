@@ -38,6 +38,7 @@
 
 package org.openflexo.foundation.fml.parser.fmlnodes.controlgraph;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
@@ -50,6 +51,7 @@ import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoConceptInstanceType;
 import org.openflexo.foundation.fml.parser.ExpressionFactory;
 import org.openflexo.foundation.fml.parser.MainSemanticsAnalyzer;
+import org.openflexo.foundation.fml.parser.TypeFactory;
 import org.openflexo.foundation.fml.parser.node.ACreateClause;
 import org.openflexo.foundation.fml.parser.node.AFromClause;
 import org.openflexo.foundation.fml.parser.node.AInClause;
@@ -204,8 +206,17 @@ public class MatchActionNode extends AssignableActionNode<AMatchActionFmlActionE
 	public MatchFlexoConceptInstance buildModelObjectFromAST(AMatchActionFmlActionExp astNode) {
 		MatchFlexoConceptInstance returned = getFactory().newMatchFlexoConceptInstance();
 
-		conceptType = getTypeFactory().makeFlexoConceptType(astNode.getConceptName().getText(), getFragment(astNode.getConceptName()));
-		returned.setMatchedType(conceptType);
+		Type type = TypeFactory.makeType(astNode.getConceptName(), getAnalyser().getTypingSpace());
+		if (type instanceof FlexoConceptInstanceType) {
+			conceptType = (FlexoConceptInstanceType) type;
+			returned.setMatchedType((FlexoConceptInstanceType) type);
+		}
+		else {
+			throwIssue("Unexpected matched type " + getText(astNode.getConceptName()), getConceptNameFragment());
+		}
+
+		// conceptType = getTypeFactory().makeFlexoConceptType(astNode.getConceptName().getText(), getFragment(astNode.getConceptName()));
+		// returned.setMatchedType(conceptType);
 
 		/*FlexoConcept concept = conceptType.getFlexoConcept();
 		if (concept != null) {

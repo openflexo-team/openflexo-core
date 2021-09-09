@@ -43,9 +43,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.logging.Logger;
 
-import org.openflexo.connie.Bindable;
-import org.openflexo.connie.DataBinding;
-import org.openflexo.connie.DataBinding.BindingDefinitionType;
 import org.openflexo.connie.type.CustomType;
 import org.openflexo.connie.type.TypeUtils;
 import org.openflexo.foundation.fml.AbstractProperty;
@@ -83,7 +80,6 @@ import org.openflexo.foundation.fml.controlgraph.EmptyControlGraph;
 import org.openflexo.foundation.fml.controlgraph.IterationAction;
 import org.openflexo.foundation.fml.controlgraph.Sequence;
 import org.openflexo.foundation.fml.editionaction.AbstractFetchRequest;
-import org.openflexo.foundation.fml.editionaction.AddClassInstance;
 import org.openflexo.foundation.fml.editionaction.AssignationAction;
 import org.openflexo.foundation.fml.editionaction.DeclarationAction;
 import org.openflexo.foundation.fml.editionaction.ExpressionAction;
@@ -122,9 +118,6 @@ import org.openflexo.foundation.fml.parser.fmlnodes.SingleMetaDataNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.UseDeclarationNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.VirtualModelNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.WrappedFMLObjectNode;
-import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.AddClassInstanceNode;
-import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.AddFlexoConceptInstanceNode;
-import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.AddVirtualModelInstanceNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.AssignationActionNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.BeginMatchActionNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.BehaviourCallArgumentNode;
@@ -170,8 +163,6 @@ import org.openflexo.foundation.fml.parser.node.TLitInteger;
 import org.openflexo.foundation.fml.parser.node.TUidentifier;
 import org.openflexo.foundation.fml.parser.node.Token;
 import org.openflexo.foundation.fml.rm.CompilationUnitResourceFactory;
-import org.openflexo.foundation.fml.rt.editionaction.AddFlexoConceptInstance;
-import org.openflexo.foundation.fml.rt.editionaction.AddVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.editionaction.BehaviourCallArgument;
 import org.openflexo.foundation.fml.rt.editionaction.FinalizeMatching;
 import org.openflexo.foundation.fml.rt.editionaction.InitiateMatching;
@@ -433,7 +424,7 @@ public abstract class FMLObjectNode<N extends Node, T extends FMLPrettyPrintable
 		if (object instanceof IterationAction) {
 			return (P2PPNode<?, C>) new IterationActionNode((IterationAction) object, getAnalyser());
 		}
-		if (object instanceof AddFlexoConceptInstance) {
+		/*if (object instanceof AddFlexoConceptInstance) {
 			return (P2PPNode<?, C>) new AddFlexoConceptInstanceNode((AddFlexoConceptInstance) object, getAnalyser());
 		}
 		if (object instanceof AddVirtualModelInstance) {
@@ -441,7 +432,7 @@ public abstract class FMLObjectNode<N extends Node, T extends FMLPrettyPrintable
 		}
 		if (object instanceof AddClassInstance) {
 			return (P2PPNode<?, C>) new AddClassInstanceNode((AddClassInstance) object, getAnalyser());
-		}
+		}*/
 		if (object instanceof LogAction) {
 			return (P2PPNode<?, C>) new LogActionNode((LogAction) object, getAnalyser());
 		}
@@ -608,35 +599,36 @@ public abstract class FMLObjectNode<N extends Node, T extends FMLPrettyPrintable
 		return null;
 	}
 
+	/*
 	// We should parse expression instead
 	@Deprecated
 	protected <T> DataBinding<T> makeBinding(Node node, Type type, BindingDefinitionType bindingType, Bindable bindable) {
 		return new DataBinding(getText(node), bindable, type, bindingType);
 	}
-
+	
 	// We should parse expression instead
 	@Deprecated
 	protected <T> DataBinding<T> makeBinding(Node node, Bindable bindable) {
 		return new DataBinding(getText(node), bindable, Object.class, BindingDefinitionType.GET);
 	}
-
+	
 	// We should parse expression instead
 	@Deprecated
 	protected <T> DataBinding<T> makeBinding(PCompositeIdent compositeIdentifier, Type type, BindingDefinitionType bindingType,
 			Bindable bindable) {
 		// TODO: implement this
-		logger.warning("Un truc a faire la");
+		logger.warning("Un truc a faire la pour " + compositeIdentifier);
 		return new DataBinding(analyser.makeFullQualifiedIdentifier(compositeIdentifier), bindable, type, bindingType);
 	}
-
+	
 	// We should parse expression instead
 	@Deprecated
 	protected <T> DataBinding<T> makeBinding(PCompositeIdent compositeIdentifier, Bindable bindable) {
 		// TODO: implement this
-		logger.warning("Un truc a faire la");
+		logger.warning("Un truc a faire la pour " + compositeIdentifier);
 		return new DataBinding(analyser.makeFullQualifiedIdentifier(compositeIdentifier), bindable, Object.class,
 				BindingDefinitionType.GET);
-	}
+	}*/
 
 	protected String getVisibilityAsString(Visibility visibility) {
 		if (visibility != null) {

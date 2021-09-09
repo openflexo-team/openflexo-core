@@ -38,13 +38,14 @@
 
 package org.openflexo.foundation.fml.parser.fmlnodes;
 
+import java.lang.reflect.Type;
 import java.util.logging.Logger;
 
-import org.openflexo.connie.type.CustomType;
 import org.openflexo.foundation.InvalidNameException;
 import org.openflexo.foundation.fml.FMLPropertyValue;
 import org.openflexo.foundation.fml.FlexoRole;
 import org.openflexo.foundation.fml.parser.MainSemanticsAnalyzer;
+import org.openflexo.foundation.fml.parser.TypeFactory;
 import org.openflexo.foundation.fml.parser.node.AFmlFullyQualifiedInnerConceptDecl;
 import org.openflexo.foundation.fml.parser.node.AFmlInnerConceptDecl;
 import org.openflexo.foundation.fml.parser.node.PInnerConceptDecl;
@@ -93,7 +94,8 @@ public class FlexoRolePropertyNode<N extends PInnerConceptDecl, R extends FlexoR
 				throwIssue("Invalid name: " + ((AFmlInnerConceptDecl) astNode).getLidentifier().getText());
 			}
 			returned.setCardinality(getCardinality(((AFmlInnerConceptDecl) astNode).getCardinality()));
-			CustomType type = (CustomType) getTypeFactory().makeType(((AFmlInnerConceptDecl) astNode).getType(), returned);
+			Type type = TypeFactory.makeType(((AFmlInnerConceptDecl) astNode).getType(), getAnalyser().getTypingSpace());
+			// CustomType type = (CustomType) getTypeFactory().makeType(((AFmlInnerConceptDecl) astNode).getType(), returned);
 			returned.setType(type);
 		}
 		if (astNode instanceof AFmlFullyQualifiedInnerConceptDecl) {
@@ -104,7 +106,8 @@ public class FlexoRolePropertyNode<N extends PInnerConceptDecl, R extends FlexoR
 				throwIssue("Invalid name: " + ((AFmlFullyQualifiedInnerConceptDecl) astNode).getLidentifier().getText());
 			}
 			returned.setCardinality(getCardinality(((AFmlFullyQualifiedInnerConceptDecl) astNode).getCardinality()));
-			CustomType type = (CustomType) getTypeFactory().makeType(((AFmlFullyQualifiedInnerConceptDecl) astNode).getType(), returned);
+			Type type = TypeFactory.makeType(((AFmlFullyQualifiedInnerConceptDecl) astNode).getType(), getAnalyser().getTypingSpace());
+			// CustomType type = (CustomType) getTypeFactory().makeType(((AFmlFullyQualifiedInnerConceptDecl) astNode).getType(), returned);
 			returned.setType(type);
 		}
 		return returned;

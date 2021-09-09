@@ -622,6 +622,7 @@ Productions
      | {post_increment}         post_incr_exp
      | {post_decrement}         post_decr_exp
      | {method_invocation}      method_invocation
+     | {new_instance}           new_instance
      | {fml_action_expression}  fml_action_exp
      ;
 

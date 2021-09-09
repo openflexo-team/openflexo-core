@@ -75,7 +75,7 @@ public class VirtualModelNode extends AbstractFlexoConceptNode<AModelDecl, Virtu
 			throwIssue("Invalid name: " + astNode.getUidentifier().getText());
 		}
 		returned.setVisibility(getVisibility(astNode.getVisibility()));
-		getTypeFactory().setDeserializedVirtualModel(returned);
+		// getTypeFactory().setDeserializedVirtualModel(returned);
 		buildParentConcepts(returned, astNode.getSuperClause());
 		return returned;
 	}
