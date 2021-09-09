@@ -46,6 +46,7 @@ import org.openflexo.foundation.fml.GetSetProperty;
 import org.openflexo.foundation.fml.controlgraph.FMLControlGraph;
 import org.openflexo.foundation.fml.parser.ControlGraphFactory;
 import org.openflexo.foundation.fml.parser.MainSemanticsAnalyzer;
+import org.openflexo.foundation.fml.parser.TypeFactory;
 import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.ControlGraphNode;
 import org.openflexo.foundation.fml.parser.node.ABlock;
 import org.openflexo.foundation.fml.parser.node.ABlockFlexoBehaviourBody;
@@ -99,7 +100,7 @@ public class GetSetPropertyNode extends FlexoPropertyNode<AGetSetPropertyInnerCo
 		} catch (InvalidNameException e) {
 			throwIssue("Invalid name: " + astNode.getLidentifier().getText());
 		}
-		returned.setDeclaredType(getTypeFactory().makeType(astNode.getType()));
+		returned.setDeclaredType(TypeFactory.makeType(astNode.getType(), getAnalyser().getTypingSpace()));
 
 		AGetDecl getDeclaration = (AGetDecl) astNode.getGetDecl();
 		ControlGraphNode<?, ?> getCGNode = makeControlGraphNode(getDeclaration.getFlexoBehaviourBody());

@@ -17,6 +17,7 @@ import org.openflexo.foundation.DefaultFlexoEditor;
 import org.openflexo.foundation.DefaultFlexoServiceManager;
 import org.openflexo.foundation.FlexoEditingContext;
 import org.openflexo.foundation.FlexoServiceManager;
+import org.openflexo.foundation.fml.AbstractFMLTypingSpace;
 import org.openflexo.foundation.fml.FMLModelFactory;
 import org.openflexo.foundation.fml.FMLTechnologyAdapter;
 import org.openflexo.foundation.fml.FMLTypingSpace;
@@ -41,7 +42,7 @@ public abstract class ExpressionParserTestCase extends TestCase {
 	protected static FlexoServiceManager serviceManager;
 	private static FMLPrettyPrinter prettyPrinter = new FMLPrettyPrinter();
 
-	private FMLTypingSpace typingSpace;
+	private AbstractFMLTypingSpace typingSpace;
 	private ContextualizedBindable bindable;
 
 	@BeforeClass
@@ -88,7 +89,7 @@ public abstract class ExpressionParserTestCase extends TestCase {
 		return serviceManager;
 	}
 
-	public FMLTypingSpace getTypingSpace() {
+	public AbstractFMLTypingSpace getTypingSpace() {
 		return typingSpace;
 	}
 
@@ -101,7 +102,7 @@ public abstract class ExpressionParserTestCase extends TestCase {
 		try {
 			fmlModelFactory = new FMLModelFactory(null, serviceManager);
 
-			typingSpace = new FMLTypingSpace();
+			typingSpace = new FMLTypingSpace(null);
 			bindable = new DefaultContextualizedBindable(typingSpace) {
 				@Override
 				public void notifiedBindingDecoded(DataBinding<?> dataBinding) {
@@ -125,7 +126,7 @@ public abstract class ExpressionParserTestCase extends TestCase {
 			System.out.println("Parsing... " + anExpression);
 
 			FMLExpressionParser parser = new FMLExpressionParser();
-			Expression parsed = parser.parse(anExpression, bindable, null);
+			Expression parsed = parser.parse(anExpression, bindable, typingSpace);
 			System.out.println("parsed=" + parsed);
 			Expression evaluated = parsed.evaluate(new BindingEvaluationContext() {
 				@Override

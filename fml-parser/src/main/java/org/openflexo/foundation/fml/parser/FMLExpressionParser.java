@@ -47,7 +47,7 @@ import java.util.logging.Logger;
 import org.openflexo.connie.Bindable;
 import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.expr.Expression;
-import org.openflexo.foundation.fml.FMLCompilationUnit;
+import org.openflexo.foundation.fml.AbstractFMLTypingSpace;
 import org.openflexo.foundation.fml.parser.lexer.CustomLexer;
 import org.openflexo.foundation.fml.parser.lexer.CustomLexer.EntryPointKind;
 import org.openflexo.foundation.fml.parser.lexer.LexerException;
@@ -82,12 +82,12 @@ public class FMLExpressionParser {
 	 * @throws ParseException
 	 * @throws IOException
 	 */
-	public static Expression parse(String data, Bindable bindable, FMLCompilationUnit compilationUnit) throws ParseException {
-		return parse(new StringReader(data), bindable, compilationUnit);
+	public static Expression parse(String data, Bindable bindable, AbstractFMLTypingSpace typingSpace) throws ParseException {
+		return parse(new StringReader(data), bindable, typingSpace);
 	}
 
 	// TODO: bindable not used ???
-	private static Expression parse(Reader reader, Bindable bindable, FMLCompilationUnit compilationUnit) throws ParseException {
+	private static Expression parse(Reader reader, Bindable bindable, AbstractFMLTypingSpace typingSpace) throws ParseException {
 		try {
 			// Create a Parser instance.
 			Parser p = new Parser(new CustomLexer(new PushbackReader(reader), EntryPointKind.Binding));
@@ -100,7 +100,7 @@ public class FMLExpressionParser {
 			// Print the AST
 			// new ASTDebugger(tree);
 
-			return ExpressionFactory.makeExpression(tree, bindable, compilationUnit);
+			return ExpressionFactory.makeExpression(tree, bindable, typingSpace);
 
 		} catch (ParserException e) {
 			// e.printStackTrace();

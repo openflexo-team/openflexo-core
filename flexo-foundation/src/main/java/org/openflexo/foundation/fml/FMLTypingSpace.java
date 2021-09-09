@@ -41,19 +41,24 @@ package org.openflexo.foundation.fml;
 
 import java.lang.reflect.Type;
 
-import org.openflexo.connie.java.JavaTypingSpace;
-
 /**
- * FML typing space, build on top of {@link JavaTypingSpace}
+ * FML typing space, related to a {@link FMLCompilationUnit}
  * 
  * Support import of VirtualModels
  * 
  * @author sylvain
  *
  */
-public class FMLTypingSpace extends JavaTypingSpace {
+public class FMLTypingSpace extends AbstractFMLTypingSpace {
 
-	public FMLTypingSpace() {
+	private final FMLCompilationUnit compilationUnit;
+
+	public FMLTypingSpace(FMLCompilationUnit compilationUnit) {
+		this.compilationUnit = compilationUnit;
+	}
+
+	public FMLCompilationUnit getFMLCompilationUnit() {
+		return compilationUnit;
 	}
 
 	/**

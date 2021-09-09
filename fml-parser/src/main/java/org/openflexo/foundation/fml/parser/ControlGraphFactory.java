@@ -128,9 +128,9 @@ public class ControlGraphFactory extends FMLSemanticsAnalyzer {
 		return mainAnalyzer;
 	}
 
-	public TypeFactory getTypeFactory() {
+	/*public TypeFactory getTypeFactory() {
 		return getMainAnalyzer().getTypeFactory();
-	}
+	}*/
 
 	public ControlGraphNode<?, ?> getRootControlGraphNode() {
 		return rootControlGraphNode;
@@ -643,7 +643,7 @@ public class ControlGraphFactory extends FMLSemanticsAnalyzer {
 	public void inAJavaInstanceCreationFmlActionExp(AJavaInstanceCreationFmlActionExp node) {
 		super.inAJavaInstanceCreationFmlActionExp(node);
 
-		Type type = getTypeFactory().makeType(node.getCompositeTident());
+		Type type = TypeFactory.makeType(node.getType(), getMainAnalyzer().getTypingSpace());
 
 		// System.out.println("Found type " + type + " of " + type.getClass());
 

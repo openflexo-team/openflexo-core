@@ -82,9 +82,9 @@ public abstract class SemanticsAnalyzerFactory {
 		return getAnalyzer().getFragmentManager();
 	}
 
-	public TypeFactory getTypeFactory() {
+	/*public TypeFactory getTypeFactory() {
 		return getAnalyzer().getTypeFactory();
-	}
+	}*/
 
 	public FlexoServiceManager getServiceManager() {
 		return getAnalyzer().getServiceManager();

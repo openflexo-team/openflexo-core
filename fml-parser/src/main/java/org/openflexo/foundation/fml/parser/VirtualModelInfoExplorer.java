@@ -117,8 +117,7 @@ public class VirtualModelInfoExplorer extends DepthFirstAdapter implements Binda
 		super.inAUseDecl(node);
 		Class<? extends ModelSlot<?>> modelSlotClass = null;
 		try {
-			modelSlotClass = (Class<? extends ModelSlot<?>>) Class
-					.forName(analyzer.getTypeFactory().makeFullQualifiedIdentifier(node.getIdentifier()));
+			modelSlotClass = (Class<? extends ModelSlot<?>>) Class.forName(analyzer.makeFullQualifiedIdentifier(node.getIdentifier()));
 			info.requiredModelSlotList = (info.requiredModelSlotList == null ? modelSlotClass.getName()
 					: info.requiredModelSlotList + "," + modelSlotClass.getName());
 		} catch (ClassNotFoundException e) {

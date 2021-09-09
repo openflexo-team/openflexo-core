@@ -48,6 +48,7 @@ import org.openflexo.connie.DataBinding.BindingDefinitionType;
 import org.openflexo.foundation.fml.editionaction.AddClassInstance;
 import org.openflexo.foundation.fml.parser.ExpressionFactory;
 import org.openflexo.foundation.fml.parser.MainSemanticsAnalyzer;
+import org.openflexo.foundation.fml.parser.TypeFactory;
 import org.openflexo.foundation.fml.parser.node.AJavaInstanceCreationFmlActionExp;
 import org.openflexo.foundation.fml.parser.node.AManyArgumentList;
 import org.openflexo.foundation.fml.parser.node.ANewContainmentClause;
@@ -135,7 +136,7 @@ public class AddClassInstanceNode extends AssignableActionNode<AJavaInstanceCrea
 	public AddClassInstance buildModelObjectFromAST(AJavaInstanceCreationFmlActionExp astNode) {
 		AddClassInstance returned = getFactory().newAddClassInstance();
 
-		Type type = getTypeFactory().makeType(astNode.getCompositeTident(), astNode.getTypeArgumentsOrDiamond());
+		Type type = TypeFactory.makeType(astNode.getType(), getAnalyser().getTypingSpace());
 		returned.setType(type);
 
 		handleArguments(astNode.getArgumentList(), returned);
@@ -208,12 +209,7 @@ public class AddClassInstanceNode extends AssignableActionNode<AJavaInstanceCrea
 	private RawSourceFragment getTypeFragment() {
 
 		if (getASTNode() != null) {
-			if (getASTNode().getTypeArgumentsOrDiamond() != null) {
-				return getFragment(getASTNode().getCompositeTident(), getASTNode().getTypeArgumentsOrDiamond());
-			}
-			else {
-				return getFragment(getASTNode().getCompositeTident());
-			}
+			return getFragment(getASTNode().getType());
 		}
 		return null;
 	}

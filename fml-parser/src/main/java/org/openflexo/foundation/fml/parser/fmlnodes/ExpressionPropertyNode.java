@@ -43,6 +43,7 @@ import java.util.logging.Logger;
 import org.openflexo.foundation.InvalidNameException;
 import org.openflexo.foundation.fml.ExpressionProperty;
 import org.openflexo.foundation.fml.parser.MainSemanticsAnalyzer;
+import org.openflexo.foundation.fml.parser.TypeFactory;
 import org.openflexo.foundation.fml.parser.node.AExpressionPropertyInnerConceptDecl;
 import org.openflexo.p2pp.RawSource.RawSourceFragment;
 
@@ -78,7 +79,7 @@ public class ExpressionPropertyNode extends FlexoPropertyNode<AExpressionPropert
 		} catch (InvalidNameException e) {
 			throwIssue("Invalid name: " + astNode.getIdentifier().getText());
 		}
-		returned.setDeclaredType(getTypeFactory().makeType(astNode.getType()));
+		returned.setDeclaredType(TypeFactory.makeType(astNode.getType(), getAnalyser().getTypingSpace()));
 		returned.setExpression(makeBinding(astNode.getExpressionValue(), returned));
 		return returned;
 	}

@@ -38,6 +38,7 @@
 
 package org.openflexo.foundation.fml.parser.fmlnodes;
 
+import java.lang.reflect.Type;
 import java.util.logging.Logger;
 
 import org.openflexo.connie.DataBinding;
@@ -49,6 +50,7 @@ import org.openflexo.foundation.fml.FlexoBehaviourParameter;
 import org.openflexo.foundation.fml.parser.ExpressionFactory;
 import org.openflexo.foundation.fml.parser.FMLObjectNode;
 import org.openflexo.foundation.fml.parser.MainSemanticsAnalyzer;
+import org.openflexo.foundation.fml.parser.TypeFactory;
 import org.openflexo.foundation.fml.parser.node.AComplexFormalArgument;
 import org.openflexo.foundation.fml.parser.node.ADefaultArgumentValue;
 import org.openflexo.foundation.fml.parser.node.APrimitiveFormalArgument;
@@ -97,7 +99,8 @@ public class BehaviourParameterNode extends FMLObjectNode<PFormalArgument, Flexo
 		FlexoBehaviourParameter returned = getFactory().newParameter(null);
 
 		if (astNode instanceof APrimitiveFormalArgument) {
-			PrimitiveType primitiveType = getTypeFactory().makePrimitiveType(((APrimitiveFormalArgument) astNode).getPrimitiveType());
+			Type type = TypeFactory.makeType(((APrimitiveFormalArgument) astNode).getPrimitiveType(), getAnalyser().getTypingSpace());
+			PrimitiveType primitiveType = PrimitiveType.toPrimitiveType(type);
 			if (primitiveType != null) {
 				returned.setType(primitiveType.getType());
 			}
@@ -113,7 +116,7 @@ public class BehaviourParameterNode extends FMLObjectNode<PFormalArgument, Flexo
 			handleDefaultArgumentValue(returned, ((APrimitiveFormalArgument) astNode).getDefaultArgumentValue());
 		}
 		else if (astNode instanceof AComplexFormalArgument) {
-			returned.setType(getTypeFactory().makeType(((AComplexFormalArgument) astNode).getReferenceType()));
+			returned.setType(TypeFactory.makeType(((AComplexFormalArgument) astNode).getReferenceType(), getAnalyser().getTypingSpace()));
 			try {
 				returned.setName(((AComplexFormalArgument) astNode).getArgName().getText());
 			} catch (InvalidNameException e) {

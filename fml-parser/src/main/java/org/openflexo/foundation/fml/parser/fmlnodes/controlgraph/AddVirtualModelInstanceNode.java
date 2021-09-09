@@ -301,7 +301,7 @@ public class AddVirtualModelInstanceNode extends AssignableActionNode<PFmlAction
 			return ((AFmlInstanceCreationFmlActionExp) getASTNode()).getConceptName().getText();
 		}
 		if (getASTNode() instanceof AJavaInstanceCreationFmlActionExp) {
-			return getText(((AJavaInstanceCreationFmlActionExp) getASTNode()).getCompositeTident());
+			return getText(((AJavaInstanceCreationFmlActionExp) getASTNode()).getType());
 		}
 		return null;
 	}
@@ -311,7 +311,7 @@ public class AddVirtualModelInstanceNode extends AssignableActionNode<PFmlAction
 			return ((AFmlInstanceCreationFmlActionExp) getASTNode()).getConceptName();
 		}
 		if (getASTNode() instanceof AJavaInstanceCreationFmlActionExp) {
-			return ((AJavaInstanceCreationFmlActionExp) getASTNode()).getCompositeTident();
+			return ((AJavaInstanceCreationFmlActionExp) getASTNode()).getType();
 		}
 		return null;
 	}
@@ -321,7 +321,7 @@ public class AddVirtualModelInstanceNode extends AssignableActionNode<PFmlAction
 			return getFragment(((AFmlInstanceCreationFmlActionExp) getASTNode()).getConceptName());
 		}
 		if (getASTNode() instanceof AJavaInstanceCreationFmlActionExp) {
-			return getFragment(((AJavaInstanceCreationFmlActionExp) getASTNode()).getCompositeTident());
+			return getFragment(((AJavaInstanceCreationFmlActionExp) getASTNode()).getType());
 		}
 		return null;
 	}

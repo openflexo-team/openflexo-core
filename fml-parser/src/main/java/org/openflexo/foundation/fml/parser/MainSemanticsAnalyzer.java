@@ -42,11 +42,11 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 
+import org.openflexo.foundation.fml.AbstractFMLTypingSpace;
 import org.openflexo.foundation.fml.ElementImportDeclaration;
 import org.openflexo.foundation.fml.FMLCompilationUnit;
 import org.openflexo.foundation.fml.FMLModelFactory;
 import org.openflexo.foundation.fml.FlexoRole;
-import org.openflexo.foundation.fml.parser.TypeFactory.UnresolvedTypeReference;
 import org.openflexo.foundation.fml.parser.fmlnodes.BasicMetaDataNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.BehaviourParameterNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.ElementImportNode;
@@ -102,10 +102,11 @@ import org.openflexo.p2pp.RawSource;
  */
 public class MainSemanticsAnalyzer extends FMLSemanticsAnalyzer {
 
-	private final TypeFactory typeFactory;
+	// private final TypeFactory typeFactory;
 	private final FlexoPropertyFactory propertyFactory;
 	private final FlexoBehaviourFactory behaviourFactory;
 	private final FMLFactory fmlFactory;
+	private final AbstractFMLTypingSpace typingSpace;
 
 	// Raw source as when this analyzer was last parsed
 	private RawSource rawSource;
@@ -119,25 +120,31 @@ public class MainSemanticsAnalyzer extends FMLSemanticsAnalyzer {
 		super(compilationUnit.getFMLModelFactory(), null);
 		this.compilationUnit = compilationUnit;
 		fragmentManager = new FragmentManager(null);
-		typeFactory = new TypeFactory(this);
+		// typeFactory = new TypeFactory(this);
 		fmlFactory = new FMLFactory(this);
 		propertyFactory = new FlexoPropertyFactory(this);
 		behaviourFactory = new FlexoBehaviourFactory(this);
+		typingSpace = compilationUnit.getTypingSpace();
 	}
 
 	public MainSemanticsAnalyzer(FMLModelFactory factory, Start tree, RawSource rawSource) {
 		super(factory, tree);
 		this.rawSource = rawSource;
 		fragmentManager = new FragmentManager(rawSource);
-		typeFactory = new TypeFactory(this);
+		// typeFactory = new TypeFactory(this);
 		fmlFactory = new FMLFactory(this);
 		propertyFactory = new FlexoPropertyFactory(this);
 		behaviourFactory = new FlexoBehaviourFactory(this);
+		typingSpace = new FMLTypingSpaceDuringParsing(this);
 	}
 
 	@Override
 	public MainSemanticsAnalyzer getMainAnalyzer() {
 		return this;
+	}
+
+	public AbstractFMLTypingSpace getTypingSpace() {
+		return typingSpace;
 	}
 
 	@Override
@@ -173,9 +180,9 @@ public class MainSemanticsAnalyzer extends FMLSemanticsAnalyzer {
 		return fragmentManager;
 	}
 
-	public TypeFactory getTypeFactory() {
+	/*public TypeFactory getTypeFactory() {
 		return typeFactory;
-	}
+	}*/
 
 	public FMLFactory getFMLFactory() {
 		return fmlFactory;
@@ -196,7 +203,7 @@ public class MainSemanticsAnalyzer extends FMLSemanticsAnalyzer {
 			System.out.println(" > " + unresolvedType);
 		}*/
 		compilationUnitNode.initializePrettyPrint(compilationUnitNode, compilationUnitNode.makePrettyPrintContext());
-		typeFactory.resolveUnresovedTypes();
+		// typeFactory.resolveUnresovedTypes();
 		finalizeDeserialization(compilationUnitNode);
 
 		// Now ensure load of required imports, before to resolve all types
@@ -210,11 +217,11 @@ public class MainSemanticsAnalyzer extends FMLSemanticsAnalyzer {
 			}
 		}
 
-		if (typeFactory.getUnresolvedTypes().size() > 0) {
-			/*System.out.println("Some more unresolved types, trying again");
-			for (CustomType unresolvedType : typeFactory.getUnresolvedTypes()) {
-				System.out.println(" > " + unresolvedType);
-			}*/
+		/*if (typeFactory.getUnresolvedTypes().size() > 0) {
+			//System.out.println("Some more unresolved types, trying again");
+			//for (CustomType unresolvedType : typeFactory.getUnresolvedTypes()) {
+			//	System.out.println(" > " + unresolvedType);
+			//}
 			typeFactory.resolveUnresovedTypes();
 			if (typeFactory.getUnresolvedTypes().size() > 0) {
 				System.out.println("Atfer types resolution still some types unresolved");
@@ -223,7 +230,7 @@ public class MainSemanticsAnalyzer extends FMLSemanticsAnalyzer {
 					getCompilationUnitNode().throwIssue("cannot_resolve " + unresolvedTypeReference.type, unresolvedTypeReference.fragment);
 				}
 			}
-		}
+		}*/
 	}
 
 	@Override

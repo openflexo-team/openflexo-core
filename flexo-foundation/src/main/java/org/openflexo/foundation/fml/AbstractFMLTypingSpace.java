@@ -1,8 +1,9 @@
 /**
  * 
- * Copyright (c) 2019, Openflexo
+ * Copyright (c) 2013-2014, Openflexo
+ * Copyright (c) 2011-2012, AgileBirds
  * 
- * This file is part of FML-parser, a component of the software infrastructure 
+ * This file is part of Connie-core, a component of the software infrastructure 
  * developed at Openflexo.
  * 
  * 
@@ -36,47 +37,55 @@
  * 
  */
 
-package org.openflexo.foundation.fml.parser;
+package org.openflexo.foundation.fml;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.lang.reflect.Type;
 
-import org.openflexo.foundation.fml.parser.analysis.DepthFirstAdapter;
-import org.openflexo.foundation.fml.parser.node.AUseDecl;
-import org.openflexo.foundation.technologyadapter.ModelSlot;
+import org.openflexo.connie.java.JavaTypingSpace;
 
 /**
- * A visitor allowing to find uses declarations
+ * FML typing space, build on top of {@link JavaTypingSpace}
+ * 
+ * Support import of VirtualModels
  * 
  * @author sylvain
- * 
+ *
  */
-public class UseDeclarationsExplorer extends DepthFirstAdapter {
+public abstract class AbstractFMLTypingSpace extends JavaTypingSpace {
 
-	private final MainSemanticsAnalyzer analyzer;
-
-	private List<Class<? extends ModelSlot<?>>> modelSlotClasses = new ArrayList<>();
-
-	public UseDeclarationsExplorer(MainSemanticsAnalyzer analyzer) {
-		super();
-		this.analyzer = analyzer;
+	public AbstractFMLTypingSpace() {
 	}
 
-	public List<Class<? extends ModelSlot<?>>> getModelSlotClasses() {
-		return modelSlotClasses;
-	}
-
+	/**
+	 * Return boolean indicating if supplied {@link Type} is actually in current typing space
+	 * 
+	 * @param type
+	 * @return
+	 */
 	@Override
-	public void inAUseDecl(AUseDecl node) {
-		// TODO Auto-generated method stub
-		super.inAUseDecl(node);
-		Class<? extends ModelSlot<?>> modelSlotClass = null;
-		try {
-			modelSlotClass = (Class<? extends ModelSlot<?>>) Class.forName(analyzer.makeFullQualifiedIdentifier(node.getIdentifier()));
-			modelSlotClasses.add(modelSlotClass);
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
-		}
+	public boolean isTypeImported(Type type) {
+		return super.isTypeImported(type);
+	}
+
+	/**
+	 * Import supplied type in this typing space
+	 * 
+	 * @param type
+	 */
+	@Override
+	public void importType(Type type) {
+		super.importType(type);
+	}
+
+	/**
+	 * Resolve {@link Type} according to current typing space using supplied type {@link String} representation
+	 * 
+	 * @param typeAsString
+	 * @return
+	 */
+	@Override
+	public Type resolveType(String typeAsString) {
+		return super.resolveType(typeAsString);
 	}
 
 }

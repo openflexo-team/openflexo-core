@@ -44,6 +44,7 @@ import org.openflexo.foundation.fml.editionaction.AssignableAction;
 import org.openflexo.foundation.fml.editionaction.DeclarationAction;
 import org.openflexo.foundation.fml.parser.ControlGraphFactory;
 import org.openflexo.foundation.fml.parser.MainSemanticsAnalyzer;
+import org.openflexo.foundation.fml.parser.TypeFactory;
 import org.openflexo.foundation.fml.parser.node.AIdentifierVariableDeclarator;
 import org.openflexo.foundation.fml.parser.node.AInitializerVariableDeclarator;
 import org.openflexo.foundation.fml.parser.node.AVariableDeclarationBlockStatement;
@@ -74,7 +75,7 @@ public class DeclarationActionNode extends AssignableActionNode<AVariableDeclara
 		// System.out.println(">>>>>> Declaration " + astNode);
 
 		returned.setVariableName(getName(astNode.getVariableDeclarator()).getText());
-		returned.setDeclaredType(getTypeFactory().makeType(astNode.getType()));
+		returned.setDeclaredType(TypeFactory.makeType(astNode.getType(), getAnalyser().getTypingSpace()));
 
 		if (astNode.getVariableDeclarator() instanceof AInitializerVariableDeclarator) {
 

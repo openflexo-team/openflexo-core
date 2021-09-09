@@ -9,6 +9,7 @@ import org.openflexo.connie.Bindable;
 import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.DataBinding.BindingDefinitionType;
 import org.openflexo.connie.expr.Expression;
+import org.openflexo.foundation.fml.AbstractFMLTypingSpace;
 import org.openflexo.foundation.fml.FMLCompilationUnit;
 import org.openflexo.foundation.fml.controlgraph.FMLControlGraph;
 import org.openflexo.foundation.fml.expr.FMLArithmeticBinaryOperator;
@@ -52,6 +53,7 @@ import org.openflexo.foundation.fml.parser.node.AMethodPrimaryNoId;
 import org.openflexo.foundation.fml.parser.node.AMinusAddExp;
 import org.openflexo.foundation.fml.parser.node.AMinusUnaryExp;
 import org.openflexo.foundation.fml.parser.node.ANeqEqualityExp;
+import org.openflexo.foundation.fml.parser.node.ANewInstancePrimaryNoId;
 import org.openflexo.foundation.fml.parser.node.ANullLiteral;
 import org.openflexo.foundation.fml.parser.node.APercentMultExp;
 import org.openflexo.foundation.fml.parser.node.APlusAddExp;
@@ -105,31 +107,34 @@ public class ExpressionFactory extends DepthFirstAdapter {
 	private Node topLevel = null;
 
 	private Bindable bindable;
-
-	// private MainSemanticsAnalyzer mainAnalyzer;
+	private final AbstractFMLTypingSpace typingSpace;
 
 	public static Expression makeExpression(Node node, Bindable bindable, FMLCompilationUnit compilationUnit) {
-		return _makeExpression(node, bindable, compilationUnit);
+		return _makeExpression(node, bindable, compilationUnit.getTypingSpace());
 	}
 
 	public static Expression makeExpression(Node node, Bindable bindable, MainSemanticsAnalyzer mainAnalyzer) {
-		return _makeExpression(node, bindable, null);
+		return _makeExpression(node, bindable, mainAnalyzer.getTypingSpace());
+	}
+
+	public static Expression makeExpression(Node node, Bindable bindable, AbstractFMLTypingSpace typingSpace) {
+		return _makeExpression(node, bindable, typingSpace);
 	}
 
 	public static DataBinding<?> makeDataBinding(Node node, Bindable bindable, BindingDefinitionType bindingDefinitionType,
 			Type expectedType, FMLCompilationUnit compilationUnit) {
-		return _makeDataBinding(node, bindable, bindingDefinitionType, expectedType, compilationUnit);
+		return _makeDataBinding(node, bindable, bindingDefinitionType, expectedType, compilationUnit.getTypingSpace());
 	}
 
 	public static DataBinding<?> makeDataBinding(Node node, Bindable bindable, BindingDefinitionType bindingDefinitionType,
 			Type expectedType, MainSemanticsAnalyzer mainAnalyzer) {
-		return _makeDataBinding(node, bindable, bindingDefinitionType, expectedType, null);
+		return _makeDataBinding(node, bindable, bindingDefinitionType, expectedType, mainAnalyzer.getTypingSpace());
 	}
 
-	private static Expression _makeExpression(Node node, Bindable bindable, FMLCompilationUnit compilationUnit) {
+	private static Expression _makeExpression(Node node, Bindable bindable, AbstractFMLTypingSpace typingSpace) {
 		// return new DataBinding(analyzer.getText(node), bindable, expectedType, BindingDefinitionType.GET);
 
-		ExpressionFactory factory = new ExpressionFactory(node, bindable);
+		ExpressionFactory factory = new ExpressionFactory(node, bindable, typingSpace);
 		node.apply(factory);
 
 		return factory.getExpression();
@@ -137,29 +142,24 @@ public class ExpressionFactory extends DepthFirstAdapter {
 
 	@SuppressWarnings("rawtypes")
 	private static DataBinding<?> _makeDataBinding(Node node, Bindable bindable, BindingDefinitionType bindingDefinitionType,
-			Type expectedType, FMLCompilationUnit compilationUnit) {
+			Type expectedType, AbstractFMLTypingSpace typingSpace) {
 
-		Expression expression = _makeExpression(node, bindable, compilationUnit);
+		Expression expression = _makeExpression(node, bindable, typingSpace);
 		DataBinding returned = new DataBinding(bindable, expectedType, bindingDefinitionType);
 		returned.setExpression(expression);
 		return returned;
 	}
 
-	private ExpressionFactory(/*FMLModelFactory factory,*/ Node rootNode, Bindable aBindable) {
+	private ExpressionFactory(/*FMLModelFactory factory,*/ Node rootNode, Bindable aBindable, AbstractFMLTypingSpace typingSpace) {
 		super();
 		expressionNodes = new Hashtable<>();
 		this.bindable = aBindable;
+		this.typingSpace = typingSpace;
 	}
 
-	/*@Override
-	public MainSemanticsAnalyzer getMainAnalyzer() {
-		return mainAnalyzer;
-	}*/
-
-	/*public ExpressionSemanticsAnalyzer(Bindable aBindable) {
-		expressionNodes = new Hashtable<>();
-		this.bindable = aBindable;
-	}*/
+	public AbstractFMLTypingSpace getTypingSpace() {
+		return typingSpace;
+	}
 
 	public Expression getExpression() {
 		if (topLevel != null) {
@@ -307,27 +307,32 @@ public class ExpressionFactory extends DepthFirstAdapter {
 	public void outAIdentifierPrimary(AIdentifierPrimary node) {
 		super.outAIdentifierPrimary(node);
 		// System.out.println("<< On sort de primary/{identifier} avec " + node + " of " + node.getClass().getSimpleName());
-		registerExpressionNode(node, BindingValueAnalyzer.makeBindingValue(node, this));
+		registerExpressionNode(node, BindingBindingPathFactory.makeBindingValue(node, this));
 	}
 
 	@Override
 	public void outAMethodPrimaryNoId(AMethodPrimaryNoId node) {
 		super.outAMethodPrimaryNoId(node);
-		registerExpressionNode(node, BindingValueAnalyzer.makeBindingValue(node, this));
+		registerExpressionNode(node, BindingBindingPathFactory.makeBindingValue(node, this));
 	}
 
 	@Override
 	public void outAFieldPrimaryNoId(AFieldPrimaryNoId node) {
 		super.outAFieldPrimaryNoId(node);
-		registerExpressionNode(node, BindingValueAnalyzer.makeBindingValue(node, this));
+		registerExpressionNode(node, BindingBindingPathFactory.makeBindingValue(node, this));
 	}
 
-	// TODO: regarder ce que c'est devenu
 	/*@Override
-	public void outAJavaInstanceCreationPrimaryNoId(AJavaInstanceCreationPrimaryNoId node) {
-		super.outAJavaInstanceCreationPrimaryNoId(node);
+	public void outAJavaInstanceCreationFmlActionExp(AJavaInstanceCreationFmlActionExp node) {
+		super.outAJavaInstanceCreationFmlActionExp(node);
 		registerExpressionNode(node, BindingValueAnalyzer.makeBindingValue(node, this));
 	}*/
+
+	@Override
+	public void outANewInstancePrimaryNoId(ANewInstancePrimaryNoId node) {
+		super.outANewInstancePrimaryNoId(node);
+		registerExpressionNode(node, BindingBindingPathFactory.makeBindingValue(node, this));
+	}
 
 	@Override
 	public void outANullLiteral(ANullLiteral node) {
@@ -565,8 +570,7 @@ public class ExpressionFactory extends DepthFirstAdapter {
 	public void outAInstanceofRelationalExp(AInstanceofRelationalExp node) {
 		super.outAInstanceofRelationalExp(node);
 		// Type type = TypeAnalyzer.makeType(node.getType(), this);
-		Type type = null;
-		System.out.println("Ici il va falloir gerer le type " + node.getType());
+		Type type = TypeFactory.makeType(node.getType(), getTypingSpace());
 		registerExpressionNode(node, new FMLInstanceOfExpression(getExpression(node.getShiftExp()), type));
 	}
 
@@ -709,8 +713,8 @@ public class ExpressionFactory extends DepthFirstAdapter {
 	public void outACastUnaryExpNotPlusMinus(ACastUnaryExpNotPlusMinus node) {
 		super.outACastUnaryExpNotPlusMinus(node);
 		// Type type = TypeAnalyzer.makeType(node.getType(), this);
-		Type type = null;
-		System.out.println("Ici il va falloir gerer le type " + node.getType());
+		Type type = TypeFactory.makeType(node.getType(), getTypingSpace());
+		System.out.println("Found type " + type);
 		registerExpressionNode(node, new FMLCastExpression(type, getExpression(node.getUnaryExp())));
 	}
 

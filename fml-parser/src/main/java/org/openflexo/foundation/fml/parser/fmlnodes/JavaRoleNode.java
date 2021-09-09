@@ -43,6 +43,7 @@ import java.util.logging.Logger;
 import org.openflexo.foundation.InvalidNameException;
 import org.openflexo.foundation.fml.JavaRole;
 import org.openflexo.foundation.fml.parser.MainSemanticsAnalyzer;
+import org.openflexo.foundation.fml.parser.TypeFactory;
 import org.openflexo.foundation.fml.parser.node.AJavaInnerConceptDecl;
 
 /**
@@ -81,7 +82,7 @@ public class JavaRoleNode extends BasicPropertyNode<JavaRole<?>> {
 		} catch (InvalidNameException e) {
 			throwIssue("Invalid name: " + getName(astNode.getVariableDeclarator()).getText());
 		}
-		returned.setType(getTypeFactory().makeType(astNode.getType()));
+		returned.setType(TypeFactory.makeType(astNode.getType(), getAnalyser().getTypingSpace()));
 		return returned;
 	}
 

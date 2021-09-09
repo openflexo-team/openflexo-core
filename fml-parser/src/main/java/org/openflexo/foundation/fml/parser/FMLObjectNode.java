@@ -265,9 +265,9 @@ public abstract class FMLObjectNode<N extends Node, T extends FMLPrettyPrintable
 		return analyser;
 	}
 
-	public TypeFactory getTypeFactory() {
+	/*public TypeFactory getTypeFactory() {
 		return getAnalyser().getTypeFactory();
-	}
+	}*/
 
 	public FMLFactory getFMLFactory() {
 		return getAnalyser().getFMLFactory();

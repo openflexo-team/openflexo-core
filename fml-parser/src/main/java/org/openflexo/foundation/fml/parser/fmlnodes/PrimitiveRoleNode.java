@@ -40,9 +40,11 @@ package org.openflexo.foundation.fml.parser.fmlnodes;
 
 import java.util.logging.Logger;
 
+import org.openflexo.connie.type.PrimitiveType;
 import org.openflexo.foundation.InvalidNameException;
 import org.openflexo.foundation.fml.PrimitiveRole;
 import org.openflexo.foundation.fml.parser.MainSemanticsAnalyzer;
+import org.openflexo.foundation.fml.parser.TypeFactory;
 import org.openflexo.foundation.fml.parser.node.AJavaInnerConceptDecl;
 
 /**
@@ -82,7 +84,7 @@ public class PrimitiveRoleNode extends BasicPropertyNode<PrimitiveRole<?>> {
 		} catch (InvalidNameException e) {
 			throwIssue("Invalid name: " + getName(astNode.getVariableDeclarator()).getText());
 		}
-		returned.setPrimitiveType(getTypeFactory().getPrimitiveType(astNode.getType()));
+		returned.setPrimitiveType(PrimitiveType.toPrimitiveType(TypeFactory.makeType(astNode.getType(), getAnalyser().getTypingSpace())));
 		returned.setCardinality(getCardinality(astNode.getCardinality()));
 		return returned;
 	}

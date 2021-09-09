@@ -39,8 +39,10 @@
 package org.openflexo.foundation.fml.parser;
 
 import java.lang.reflect.Type;
+import java.util.Date;
 import java.util.logging.Logger;
 
+import org.openflexo.connie.type.TypeUtils;
 import org.openflexo.foundation.fml.FlexoProperty;
 import org.openflexo.foundation.fml.parser.fmlnodes.AbstractPropertyNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.BasicPropertyNode;
@@ -77,8 +79,8 @@ public class FlexoPropertyFactory extends SemanticsAnalyzerFactory {
 	}
 
 	BasicPropertyNode<?> makeBasicPropertyNode(AJavaInnerConceptDecl node) {
-		Type type = getTypeFactory().makeType(node.getType());
-		if (getTypeFactory().getPrimitiveType(type) != null) {
+		Type type = TypeFactory.makeType(node.getType(), getAnalyzer().getTypingSpace());
+		if (TypeUtils.isPrimitive(type) || type.equals(String.class) || type.equals(Date.class)) {
 			return new PrimitiveRoleNode(node, getAnalyzer());
 		}
 		else {

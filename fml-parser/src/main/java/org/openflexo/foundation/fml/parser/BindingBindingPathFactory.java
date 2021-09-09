@@ -47,6 +47,7 @@ import java.util.Stack;
 import org.openflexo.connie.expr.BindingValue;
 import org.openflexo.connie.expr.BindingValue.AbstractBindingPathElement;
 import org.openflexo.connie.expr.BindingValue.MethodCallBindingPathElement;
+import org.openflexo.connie.expr.BindingValue.NewInstanceBindingPathElement;
 import org.openflexo.connie.expr.BindingValue.NormalBindingPathElement;
 import org.openflexo.connie.expr.BindingValue.StaticMethodCallBindingPathElement;
 import org.openflexo.connie.expr.Expression;
@@ -56,14 +57,19 @@ import org.openflexo.foundation.fml.parser.node.AClassMethodMethodInvocation;
 import org.openflexo.foundation.fml.parser.node.AComplexType;
 import org.openflexo.foundation.fml.parser.node.ACompositeIdent;
 import org.openflexo.foundation.fml.parser.node.AFieldPrimaryNoId;
+import org.openflexo.foundation.fml.parser.node.AFullQualifiedNewInstance;
 import org.openflexo.foundation.fml.parser.node.AIdentifierPrefix;
 import org.openflexo.foundation.fml.parser.node.AIdentifierPrimary;
 import org.openflexo.foundation.fml.parser.node.AManyArgumentList;
 import org.openflexo.foundation.fml.parser.node.AMethodPrimaryNoId;
+import org.openflexo.foundation.fml.parser.node.ANewContainmentClause;
+import org.openflexo.foundation.fml.parser.node.ANewInstancePrimaryNoId;
 import org.openflexo.foundation.fml.parser.node.AOneArgumentList;
 import org.openflexo.foundation.fml.parser.node.APrimaryFieldAccess;
 import org.openflexo.foundation.fml.parser.node.APrimaryMethodInvocation;
 import org.openflexo.foundation.fml.parser.node.AReferenceSuperFieldAccess;
+import org.openflexo.foundation.fml.parser.node.AReferenceType;
+import org.openflexo.foundation.fml.parser.node.ASimpleNewInstance;
 import org.openflexo.foundation.fml.parser.node.ASuperFieldAccess;
 import org.openflexo.foundation.fml.parser.node.ASuperMethodInvocation;
 import org.openflexo.foundation.fml.parser.node.Node;
@@ -78,7 +84,7 @@ import org.openflexo.foundation.fml.parser.node.PExpression;
  * @author sylvain
  * 
  */
-class BindingValueAnalyzer extends DepthFirstAdapter {
+class BindingBindingPathFactory extends DepthFirstAdapter {
 
 	private final ExpressionFactory expressionAnalyzer;
 	private final List<AbstractBindingPathElement> path;
@@ -111,13 +117,13 @@ class BindingValueAnalyzer extends DepthFirstAdapter {
 
 	private static List<AbstractBindingPathElement> makeBindingPath(Node node, ExpressionFactory expressionAnalyzer) {
 
-		BindingValueAnalyzer bsa = new BindingValueAnalyzer(node, expressionAnalyzer);
+		BindingBindingPathFactory bsa = new BindingBindingPathFactory(node, expressionAnalyzer);
 		node.apply(bsa);
 
 		return bsa.getPath();
 	}
 
-	private BindingValueAnalyzer(Node node, ExpressionFactory expressionAnalyzer) {
+	private BindingBindingPathFactory(Node node, ExpressionFactory expressionAnalyzer) {
 		this.expressionAnalyzer = expressionAnalyzer;
 		this.rootNode = node;
 		path = new ArrayList<>();
@@ -185,18 +191,31 @@ class BindingValueAnalyzer extends DepthFirstAdapter {
 		depth--;
 	}
 
-	// TODO : a revoir
-	/*@Override
-	public void inAJavaInstanceCreationPrimaryNoId(AJavaInstanceCreationPrimaryNoId node) {
-		super.inAJavaInstanceCreationPrimaryNoId(node);
+	// When we enter in a type, increase level
+	@Override
+	public void inAReferenceType(AReferenceType node) {
+		super.inAReferenceType(node);
 		depth++;
 	}
-	
+
+	// When we exit out a type, decrease level
 	@Override
-	public void outAJavaInstanceCreationPrimaryNoId(AJavaInstanceCreationPrimaryNoId node) {
-		super.outAJavaInstanceCreationPrimaryNoId(node);
+	public void outAReferenceType(AReferenceType node) {
+		super.outAReferenceType(node);
 		depth--;
-	}*/
+	}
+
+	@Override
+	public void inANewInstancePrimaryNoId(ANewInstancePrimaryNoId node) {
+		super.inANewInstancePrimaryNoId(node);
+		depth++;
+	}
+
+	@Override
+	public void outANewInstancePrimaryNoId(ANewInstancePrimaryNoId node) {
+		super.outANewInstancePrimaryNoId(node);
+		depth--;
+	}
 
 	@Override
 	public void inAComplexType(AComplexType node) {
@@ -325,6 +344,45 @@ class BindingValueAnalyzer extends DepthFirstAdapter {
 		}
 	}
 
+	@Override
+	public void outASimpleNewInstance(ASimpleNewInstance node) {
+		super.outASimpleNewInstance(node);
+		if (weAreDealingWithTheRightBinding()) {
+			if (node.getNewContainmentClause() instanceof ANewContainmentClause) {
+				List<AbstractBindingPathElement> bindingPath = makeBindingPath(
+						((ANewContainmentClause) node.getNewContainmentClause()).getCompositeIdent(), expressionAnalyzer);
+				for (int i = 0; i < bindingPath.size(); i++) {
+					path.add(bindingPath.get(i));
+				}
+				// System.out.println("le containment: " + path);
+			}
+			Type type = TypeFactory.makeType(node.getType(), expressionAnalyzer.getTypingSpace());
+			// System.out.println("Type: " + type);
+			NewInstanceBindingPathElement returned = new NewInstanceBindingPathElement(type, null, // a java constructor has no name,
+					makeArgs(node.getArgumentList()));
+			path.add(returned);
+			// System.out.println("le path: " + path);
+		}
+	}
+
+	@Override
+	public void outAFullQualifiedNewInstance(AFullQualifiedNewInstance node) {
+		super.outAFullQualifiedNewInstance(node);
+		if (weAreDealingWithTheRightBinding()) {
+			if (node.getNewContainmentClause() instanceof ANewContainmentClause) {
+				List<AbstractBindingPathElement> bindingPath = makeBindingPath(
+						((ANewContainmentClause) node.getNewContainmentClause()).getCompositeIdent(), expressionAnalyzer);
+				for (int i = 0; i < bindingPath.size(); i++) {
+					path.add(bindingPath.get(i));
+				}
+			}
+			Type type = TypeFactory.makeType(node.getConceptName(), expressionAnalyzer.getTypingSpace());
+			NewInstanceBindingPathElement returned = new NewInstanceBindingPathElement(type, null, // a java constructor has no name,
+					makeArgs(node.getArgumentList()));
+			path.add(returned);
+		}
+	}
+
 	/*	@Override
 		public void outABasicJavaInstanceCreationInvokation(ABasicJavaInstanceCreationInvokation node) {
 			super.outABasicJavaInstanceCreationInvokation(node);
@@ -355,9 +413,7 @@ class BindingValueAnalyzer extends DepthFirstAdapter {
 	public void outAClassMethodMethodInvocation(AClassMethodMethodInvocation node) {
 		super.outAClassMethodMethodInvocation(node);
 		if (weAreDealingWithTheRightBinding()) {
-			Type type = null;
-			System.out.println("A cet endroit il va falloir gerer le type " + node.getType());
-			// Type type = TypeAnalyzer.makeType(node.getType(), expressionAnalyzer);
+			Type type = TypeFactory.makeType(node.getType(), expressionAnalyzer.getTypingSpace());
 			StaticMethodCallBindingPathElement returned = new StaticMethodCallBindingPathElement(type, node.getLidentifier().getText(),
 					makeArgs(node.getArgumentList()));
 			path.add(returned);

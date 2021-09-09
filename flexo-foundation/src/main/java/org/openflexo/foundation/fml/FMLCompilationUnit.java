@@ -345,6 +345,8 @@ public interface FMLCompilationUnit extends FMLObject, FMLPrettyPrintable, Resou
 
 	public void ensureJavaImport(Class<?> javaClass);
 
+	public FMLTypingSpace getTypingSpace();
+
 	public abstract class FMLCompilationUnitImpl extends FMLObjectImpl implements FMLCompilationUnit {
 
 		private static final Logger logger = Logger.getLogger(FMLCompilationUnitImpl.class.getPackage().getName());
@@ -352,6 +354,7 @@ public interface FMLCompilationUnit extends FMLObject, FMLPrettyPrintable, Resou
 		private CompilationUnitResource resource;
 		private BindingEvaluationContext reflectedBindingEvaluationContext = new ReflectedBindingEvaluationContext();
 		private CompilationUnitBindingModel bindingModel;
+		private final FMLTypingSpace typingSpace = new FMLTypingSpace(this);
 
 		class ReflectedBindingEvaluationContext implements BindingEvaluationContext {
 
@@ -430,6 +433,11 @@ public interface FMLCompilationUnit extends FMLObject, FMLPrettyPrintable, Resou
 				return getVirtualModel().getBindingFactory();
 			}*/
 			return BINDING_FACTORY;
+		}
+
+		@Override
+		public FMLTypingSpace getTypingSpace() {
+			return typingSpace;
 		}
 
 		@Override

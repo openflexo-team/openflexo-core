@@ -43,6 +43,7 @@ import java.util.logging.Logger;
 import org.openflexo.foundation.InvalidNameException;
 import org.openflexo.foundation.fml.AbstractProperty;
 import org.openflexo.foundation.fml.parser.MainSemanticsAnalyzer;
+import org.openflexo.foundation.fml.parser.TypeFactory;
 import org.openflexo.foundation.fml.parser.node.AAbstractPropertyInnerConceptDecl;
 import org.openflexo.foundation.fml.parser.node.AIdentifierVariableDeclarator;
 import org.openflexo.foundation.fml.parser.node.AInitializerVariableDeclarator;
@@ -75,7 +76,7 @@ public class AbstractPropertyNode extends FlexoPropertyNode<AAbstractPropertyInn
 		} catch (InvalidNameException e) {
 			throwIssue("Invalid name: " + getName(astNode.getVariableDeclarator()).getText());
 		}
-		returned.setType(getTypeFactory().makeType(astNode.getType()));
+		returned.setType(TypeFactory.makeType(astNode.getType(), getAnalyser().getTypingSpace()));
 		return returned;
 	}
 
