@@ -96,7 +96,7 @@ public class FMLSimplePropertyValueNode<M extends FMLObject, T>
 		// DataBinding<Object> value = makeBinding(getASTNode().getExpression(), modelObject);
 
 		DataBinding<Object> value = ExpressionFactory.makeDataBinding(getASTNode().getExpression(), modelObject, BindingDefinitionType.GET,
-				Object.class, getAnalyser());
+				Object.class, getAnalyser(), this);
 		// System.out.println("value=" + value);
 
 		if (DataBinding.class.equals(TypeUtils.getBaseClass(fmlProperty.getType()))) {

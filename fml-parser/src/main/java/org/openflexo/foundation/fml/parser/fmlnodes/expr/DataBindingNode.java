@@ -36,61 +36,41 @@
  * 
  */
 
-package org.openflexo.foundation.fml.parser.fmlnodes.controlgraph;
-
-import java.util.logging.Logger;
+package org.openflexo.foundation.fml.parser.fmlnodes.expr;
 
 import org.openflexo.connie.DataBinding;
-import org.openflexo.connie.DataBinding.BindingDefinitionType;
-import org.openflexo.foundation.fml.editionaction.ExpressionAction;
-import org.openflexo.foundation.fml.parser.ExpressionFactory;
 import org.openflexo.foundation.fml.parser.MainSemanticsAnalyzer;
+import org.openflexo.foundation.fml.parser.ObjectNode;
 import org.openflexo.foundation.fml.parser.node.Node;
-import org.openflexo.p2pp.RawSource.RawSourceFragment;
 
 /**
  * @author sylvain
  * 
  */
-public class ExpressionActionNode extends AssignableActionNode<Node, ExpressionAction<?>> {
+public class DataBindingNode extends ObjectNode<Node, DataBinding<?>, MainSemanticsAnalyzer> {
 
-	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(ExpressionActionNode.class.getPackage().getName());
-
-	public ExpressionActionNode(Node astNode, MainSemanticsAnalyzer analyser) {
+	public DataBindingNode(Node astNode, MainSemanticsAnalyzer analyser) {
 		super(astNode, analyser);
 	}
 
-	public ExpressionActionNode(ExpressionAction<?> action, MainSemanticsAnalyzer analyser) {
-		super(action, analyser);
+	public DataBindingNode(DataBinding<?> dataBinding, MainSemanticsAnalyzer analyser) {
+		super(dataBinding, analyser);
 	}
 
 	@Override
-	public ExpressionAction<?> buildModelObjectFromAST(Node astNode) {
-		ExpressionAction<?> returned = getFactory().newExpressionAction();
-		// System.out.println(">>>>>> Expression " + astNode);
+	public DataBinding<?> buildModelObjectFromAST(Node astNode) {
+		System.out.println("Je dois faire une DataBinding avec " + astNode);
+		return null;
+	}
 
-		DataBinding expression = ExpressionFactory.makeDataBinding(astNode, returned, BindingDefinitionType.GET, Object.class,
-				getAnalyser(), this);
-		returned.setExpression(expression);
-		return returned;
+	@Override
+	public DataBindingNode deserialize() {
+		return this;
 	}
 
 	@Override
 	public void preparePrettyPrint(boolean hasParsedVersion) {
 		super.preparePrettyPrint(hasParsedVersion);
-
-		append(dynamicContents(() -> getModelObject().getExpression().toString()), getExpressionFragment());
-
-		// Append semi only when required
-		when(() -> requiresSemi()).thenAppend(staticContents(";"), getSemiFragment());
-	}
-
-	private RawSourceFragment getExpressionFragment() {
-		if (getASTNode() != null) {
-			return getFragment(getASTNode());
-		}
-		return null;
 	}
 
 }

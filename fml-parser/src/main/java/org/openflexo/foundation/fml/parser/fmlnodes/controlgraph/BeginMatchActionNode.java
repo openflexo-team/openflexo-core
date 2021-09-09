@@ -106,7 +106,7 @@ public class BeginMatchActionNode extends AssignableActionNode<ABeginMatchAction
 		if (astNode.getFromClause() instanceof AFromClause) {
 			PExpression fromExpression = ((AFromClause) astNode.getFromClause()).getExpression();
 			DataBinding<FlexoConceptInstance> container = (DataBinding) ExpressionFactory.makeDataBinding(fromExpression, returned,
-					BindingDefinitionType.GET, FlexoConceptInstance.class, getAnalyser());
+					BindingDefinitionType.GET, FlexoConceptInstance.class, getAnalyser(), this);
 			returned.setContainer(container);
 		}
 

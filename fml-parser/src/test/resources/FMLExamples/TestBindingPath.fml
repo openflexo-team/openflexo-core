@@ -1,0 +1,13 @@
+/**
+ * Testing concept behaviours
+ */
+
+use org.openflexo.foundation.fml.rt.FMLRTModelSlot as FMLRT;
+
+model MyModel {
+
+	test() {
+		a = b.c;
+	}
+
+}

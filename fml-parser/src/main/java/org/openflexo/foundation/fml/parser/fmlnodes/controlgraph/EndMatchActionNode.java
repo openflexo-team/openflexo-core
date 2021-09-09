@@ -115,7 +115,7 @@ public class EndMatchActionNode extends ControlGraphNode<AEndMatchActionFmlActio
 
 	private void handleArgument(PExpression expression, FinalizeMatching modelObject) {
 		DataBinding<?> argValue = ExpressionFactory.makeDataBinding(expression, modelObject, BindingDefinitionType.GET, Object.class,
-				getAnalyser());
+				getAnalyser(), this);
 
 		if (behaviourArgs == null) {
 			behaviourArgs = new ArrayList<>();
@@ -174,7 +174,7 @@ public class EndMatchActionNode extends ControlGraphNode<AEndMatchActionFmlActio
 		if (astNode.getInClause() instanceof AInClause) {
 			PExpression inExpression = ((AInClause) astNode.getInClause()).getExpression();
 			DataBinding<MatchingSet> matchingSet = (DataBinding) ExpressionFactory.makeDataBinding(inExpression, returned,
-					BindingDefinitionType.GET, MatchingSet.class, getAnalyser());
+					BindingDefinitionType.GET, MatchingSet.class, getAnalyser(), this);
 
 			returned.setMatchingSet(matchingSet);
 		}

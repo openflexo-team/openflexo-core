@@ -86,7 +86,7 @@ public class ExpressionPropertyNode extends FlexoPropertyNode<AExpressionPropert
 		// returned.setExpression(makeBinding(astNode.getExpressionValue(), returned));
 
 		DataBinding<Object> expression = ExpressionFactory.makeDataBinding(astNode.getExpressionValue(), returned,
-				BindingDefinitionType.GET, Object.class, getAnalyser());
+				BindingDefinitionType.GET, Object.class, getAnalyser(), this);
 		returned.setExpression(expression);
 
 		return returned;

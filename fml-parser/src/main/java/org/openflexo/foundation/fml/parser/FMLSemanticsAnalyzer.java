@@ -52,11 +52,13 @@ import org.openflexo.foundation.fml.parser.fmlnodes.FMLSimplePropertyValueNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.WrappedFMLObjectNode;
 import org.openflexo.foundation.fml.parser.node.ACompositeIdent;
 import org.openflexo.foundation.fml.parser.node.ACompositeTident;
+import org.openflexo.foundation.fml.parser.node.AFullQualifiedNewInstance;
 import org.openflexo.foundation.fml.parser.node.AFullQualifiedQualifiedInstance;
 import org.openflexo.foundation.fml.parser.node.AIdentifierPrefix;
 import org.openflexo.foundation.fml.parser.node.AInstanceQualifiedArgument;
 import org.openflexo.foundation.fml.parser.node.AListInstancesQualifiedArgument;
 import org.openflexo.foundation.fml.parser.node.AMatchActionFmlActionExp;
+import org.openflexo.foundation.fml.parser.node.ASimpleNewInstance;
 import org.openflexo.foundation.fml.parser.node.ASimpleQualifiedArgument;
 import org.openflexo.foundation.fml.parser.node.ASimpleQualifiedInstance;
 import org.openflexo.foundation.fml.parser.node.Node;
@@ -82,7 +84,7 @@ public abstract class FMLSemanticsAnalyzer extends DepthFirstAdapter {
 	private FMLModelFactory factory;
 
 	// Stack of FMLObjectNode beeing build during semantics analyzing
-	protected Stack<FMLObjectNode<?, ?, ?>> fmlNodes = new Stack<>();
+	protected Stack<ObjectNode<?, ?, ?>> fmlNodes = new Stack<>();
 
 	private Node rootNode;
 
@@ -112,36 +114,36 @@ public abstract class FMLSemanticsAnalyzer extends DepthFirstAdapter {
 		return null;
 	}
 
-	protected final void finalizeDeserialization(FMLObjectNode<?, ?, ?> node) {
+	protected final void finalizeDeserialization(ObjectNode<?, ?, ?> node) {
 		node.finalizeDeserialization();
 		for (P2PPNode<?, ?> child : node.getChildren()) {
-			finalizeDeserialization((FMLObjectNode<?, ?, ?>) child);
+			finalizeDeserialization((ObjectNode<?, ?, ?>) child);
 		}
 	}
 
-	protected void push(FMLObjectNode<?, ?, ?> fmlNode) {
+	protected void push(ObjectNode<?, ?, ?> fmlNode) {
 		if (!fmlNodes.isEmpty()) {
-			FMLObjectNode<?, ?, ?> current = fmlNodes.peek();
+			ObjectNode<?, ?, ?> current = fmlNodes.peek();
 			current.addToChildren(fmlNode);
 		}
 		fmlNodes.push(fmlNode);
 	}
 
-	protected <N extends FMLObjectNode<?, ?, ?>> N pop() {
+	protected <N extends ObjectNode<?, ?, ?>> N pop() {
 		N builtFMLNode = (N) fmlNodes.pop();
 		builtFMLNode.deserialize();
 		// builtFMLNode.initializePrettyPrint();
 		return builtFMLNode;
 	}
 
-	public FMLObjectNode<?, ?, ?> peek() {
+	public ObjectNode<?, ?, ?> peek() {
 		if (!fmlNodes.isEmpty()) {
 			return fmlNodes.peek();
 		}
 		return null;
 	}
 
-	public FMLObjectNode<?, ?, ?> getCurrentNode() {
+	public ObjectNode<?, ?, ?> getCurrentNode() {
 		return peek();
 	}
 
@@ -279,8 +281,36 @@ public abstract class FMLSemanticsAnalyzer extends DepthFirstAdapter {
 		insideMatchAction = false;
 	}
 
+	// Hack used to detect that we are deserializing a new_instance
+	// TODO fix this hack
+	protected boolean insideNewInstance = false;
+
+	@Override
+	public void inASimpleNewInstance(ASimpleNewInstance node) {
+		super.inASimpleNewInstance(node);
+		insideNewInstance = true;
+	}
+
+	@Override
+	public void outASimpleNewInstance(ASimpleNewInstance node) {
+		super.outASimpleNewInstance(node);
+		insideNewInstance = false;
+	}
+
+	@Override
+	public void inAFullQualifiedNewInstance(AFullQualifiedNewInstance node) {
+		super.inAFullQualifiedNewInstance(node);
+		insideNewInstance = true;
+	}
+
+	@Override
+	public void outAFullQualifiedNewInstance(AFullQualifiedNewInstance node) {
+		super.outAFullQualifiedNewInstance(node);
+		insideNewInstance = false;
+	}
+
 	protected boolean handleFMLArgument() {
-		return !insideMatchAction;
+		return !insideMatchAction && !insideNewInstance;
 	}
 
 	@Override

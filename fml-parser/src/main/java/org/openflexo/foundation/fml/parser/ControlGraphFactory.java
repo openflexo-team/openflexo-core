@@ -279,7 +279,7 @@ public class ControlGraphFactory extends FMLSemanticsAnalyzer {
 	public void inABlock(ABlock node) {
 		super.inABlock(node);
 		// System.out.println("Nouveau block de " + node.getBlockStatements().size() + " statements " + " avec " + node);
-		FMLObjectNode<?, ?, ?> alreadyExisting = getMainAnalyzer().getFMLNode(node);
+		ObjectNode<?, ?, ?> alreadyExisting = getMainAnalyzer().getFMLNode(node);
 		// Don't handle again, this is already registered
 		if (alreadyExisting == null) {
 			// This block was not handled yet, initialize its computing
@@ -311,7 +311,7 @@ public class ControlGraphFactory extends FMLSemanticsAnalyzer {
 	public void inABlockStatementWithoutTrailingSubstatement(ABlockStatementWithoutTrailingSubstatement node) {
 		super.inABlockStatementWithoutTrailingSubstatement(node);
 		// System.out.println("2 -Nouveau block de " + node.getBlockStatements().size() + " statements " + " avec " + node);
-		FMLObjectNode<?, ?, ?> alreadyExisting = getMainAnalyzer().getFMLNode(node);
+		ObjectNode<?, ?, ?> alreadyExisting = getMainAnalyzer().getFMLNode(node);
 		// Don't handle again, this is already registered
 		if (alreadyExisting == null) {
 			// This block was not handled yet, initialize its computing
@@ -341,7 +341,7 @@ public class ControlGraphFactory extends FMLSemanticsAnalyzer {
 	}
 
 	@Override
-	protected void push(FMLObjectNode<?, ?, ?> fmlNode) {
+	protected void push(ObjectNode<?, ?, ?> fmlNode) {
 		// System.out.println("PUSH avec " + fmlNode);
 		if (fmlNode instanceof ControlGraphNode) {
 
@@ -373,8 +373,8 @@ public class ControlGraphFactory extends FMLSemanticsAnalyzer {
 	}
 
 	@Override
-	protected <N extends FMLObjectNode<?, ?, ?>> N pop() {
-		FMLObjectNode<?, ?, ?> peek = peek();
+	protected <N extends ObjectNode<?, ?, ?>> N pop() {
+		ObjectNode<?, ?, ?> peek = peek();
 		if (peek != null && !(peek instanceof ControlGraphNode)) {
 			return super.pop();
 		}

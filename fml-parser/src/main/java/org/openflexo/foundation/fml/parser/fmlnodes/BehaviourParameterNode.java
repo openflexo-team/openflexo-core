@@ -132,7 +132,7 @@ public class BehaviourParameterNode extends FMLObjectNode<PFormalArgument, Flexo
 		if (anArgValue instanceof ADefaultArgumentValue) {
 			ADefaultArgumentValue argValue = (ADefaultArgumentValue) anArgValue;
 			DataBinding<?> expression = ExpressionFactory.makeDataBinding(argValue.getExpression(), param, BindingDefinitionType.GET,
-					Object.class, getAnalyser());
+					Object.class, getAnalyser(), this);
 			param.setDefaultValue(expression);
 		}
 	}

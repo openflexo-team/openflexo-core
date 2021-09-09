@@ -152,17 +152,17 @@ public class MainSemanticsAnalyzer extends FMLSemanticsAnalyzer {
 		return (Start) super.getRootNode();
 	}
 
-	public FMLObjectNode<?, ?, ?> getFMLNode(Node astNode) {
+	public ObjectNode<?, ?, ?> getFMLNode(Node astNode) {
 		return nodesForAST.get(astNode);
 	}
 
-	private Map<Node, FMLObjectNode> nodesForAST = new HashMap<>();
+	private Map<Node, ObjectNode> nodesForAST = new HashMap<>();
 
 	/*public Map<Node, FMLObjectNode> getNodesForAST() {
 		return nodesForAST;
 	}*/
 
-	public <N extends Node, FMLN extends FMLObjectNode> FMLN retrieveFMLNode(N astNode, Function<N, FMLN> function) {
+	public <N extends Node, FMLN extends ObjectNode> FMLN retrieveFMLNode(N astNode, Function<N, FMLN> function) {
 		FMLN returned = (FMLN) nodesForAST.get(astNode);
 		if (returned == null) {
 			returned = function.apply(astNode);
@@ -171,7 +171,7 @@ public class MainSemanticsAnalyzer extends FMLSemanticsAnalyzer {
 		return returned;
 	}
 
-	public <N extends Node, FMLN extends FMLObjectNode> void registerFMLNode(N astNode, FMLN node) {
+	public <N extends Node, FMLN extends ObjectNode> void registerFMLNode(N astNode, FMLN node) {
 		nodesForAST.put(astNode, node);
 	}
 

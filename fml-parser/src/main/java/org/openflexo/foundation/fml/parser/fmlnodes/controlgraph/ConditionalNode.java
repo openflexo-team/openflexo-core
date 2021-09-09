@@ -78,7 +78,7 @@ public class ConditionalNode extends ControlGraphNode<Node, ConditionalAction> {
 		ConditionalAction returned = getFactory().newConditionalAction();
 		// DataBinding<Boolean> condition = makeBinding(getExpression(astNode), returned);
 		DataBinding<Boolean> condition = ExpressionFactory.makeDataBinding(getExpression(astNode), returned, BindingDefinitionType.GET,
-				Boolean.class, getAnalyser());
+				Boolean.class, getAnalyser(), this);
 
 		returned.setCondition(condition);
 		if (astNode instanceof AIfSimpleStatement) {

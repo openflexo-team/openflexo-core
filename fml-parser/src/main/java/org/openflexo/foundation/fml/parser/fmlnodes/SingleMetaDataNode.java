@@ -68,7 +68,7 @@ public class SingleMetaDataNode extends AbstractMetaDataNode<ASingleAnnotationAn
 		SingleMetaData<?> returned = getFactory().newSingleMetaData(key);
 
 		DataBinding<?> valueExpression = ExpressionFactory.makeDataBinding(astNode.getConditionalExp(), returned, BindingDefinitionType.GET,
-				Object.class, getAnalyser());
+				Object.class, getAnalyser(), this);
 
 		if (valueExpression.getExpression() instanceof Constant) {
 			returned.setSerializationRepresentation(getText(astNode.getConditionalExp()));

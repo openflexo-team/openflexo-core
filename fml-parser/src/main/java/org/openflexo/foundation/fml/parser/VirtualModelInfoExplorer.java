@@ -90,7 +90,7 @@ public class VirtualModelInfoExplorer extends DepthFirstAdapter implements Binda
 
 		String key = analyzer.makeFullQualifiedIdentifier(node.getIdentifier());
 		DataBinding<?> valueExpression = ExpressionFactory.makeDataBinding(node.getConditionalExp(), this, BindingDefinitionType.GET,
-				Object.class, analyzer);
+				Object.class, analyzer, null);
 		if (valueExpression.getExpression() instanceof Constant) {
 			String text = analyzer.getText(node.getConditionalExp());
 			if (text.startsWith("\"") && text.endsWith("\"")) {

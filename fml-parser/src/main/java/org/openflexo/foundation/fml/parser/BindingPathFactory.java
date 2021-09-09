@@ -53,6 +53,8 @@ import org.openflexo.connie.expr.BindingValue.StaticMethodCallBindingPathElement
 import org.openflexo.connie.expr.Expression;
 import org.openflexo.connie.java.expr.JavaPrettyPrinter;
 import org.openflexo.foundation.fml.parser.analysis.DepthFirstAdapter;
+import org.openflexo.foundation.fml.parser.fmlnodes.expr.BindingPathNode;
+import org.openflexo.foundation.fml.parser.fmlnodes.expr.DataBindingNode;
 import org.openflexo.foundation.fml.parser.node.AClassMethodMethodInvocation;
 import org.openflexo.foundation.fml.parser.node.AComplexType;
 import org.openflexo.foundation.fml.parser.node.ACompositeIdent;
@@ -105,12 +107,23 @@ class BindingPathFactory extends DepthFirstAdapter {
 	 */
 	// private boolean weAreDealingWithTheRightBinding = true;
 
-	public static BindingValue makeBindingValue(Node node, ExpressionFactory expressionAnalyzer) {
+	public static BindingValue makeBindingValue(Node node, ExpressionFactory expressionAnalyzer, DataBindingNode parentNode) {
 
 		// System.out.println("Make BindingValue for " + node);
 
+		if (expressionAnalyzer.getAnalyzer() != null && parentNode != null) {
+			// System.out.println("Prout");
+			// Thread.dumpStack();
+			BindingPathNode bindingPathNode = expressionAnalyzer.getAnalyzer().retrieveFMLNode(node,
+					n -> new BindingPathNode(n, expressionAnalyzer.getAnalyzer()));
+			parentNode.addToChildren(bindingPathNode);
+		}
+
 		List<AbstractBindingPathElement> bindingPath = makeBindingPath(node, expressionAnalyzer);
 		// System.out.println("bindingPath = " + bindingPath);
+		/*if (expressionAnalyzer.getAnalyzer() != null) {
+			expressionAnalyzer.getAnalyzer().pop();
+		}*/
 
 		return new BindingValue(bindingPath, expressionAnalyzer.getBindable(), JavaPrettyPrinter.getInstance());
 	}

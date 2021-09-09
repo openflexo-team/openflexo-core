@@ -50,7 +50,7 @@ import org.openflexo.p2pp.RawSource.RawSourcePosition;
  * @author sylvain
  * 
  */
-public interface FMLPrettyPrintDelegate<T extends FMLObject> extends PrettyPrintDelegate<T> {
+public interface FMLPrettyPrintDelegate<T> extends PrettyPrintDelegate<T> {
 
 	/**
 	 * Return fragment matching AST node

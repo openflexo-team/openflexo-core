@@ -122,7 +122,7 @@ public class MatchActionNode extends AssignableActionNode<AMatchActionFmlActionE
 
 	private void handleArgument(PExpression expression, MatchFlexoConceptInstance modelObject) {
 		DataBinding<?> argValue = ExpressionFactory.makeDataBinding(expression, modelObject, BindingDefinitionType.GET, Object.class,
-				getAnalyser());
+				getAnalyser(), this);
 
 		if (constructorArgs == null) {
 			constructorArgs = new ArrayList<>();
@@ -148,7 +148,7 @@ public class MatchActionNode extends AssignableActionNode<AMatchActionFmlActionE
 			String propertyName = ((ASimpleQualifiedArgument) qualifiedArgument).getArgName().getText();
 			PExpression expression = ((ASimpleQualifiedArgument) qualifiedArgument).getExpression();
 			DataBinding<?> argValue = ExpressionFactory.makeDataBinding(expression, modelObject, BindingDefinitionType.GET, Object.class,
-					getAnalyser());
+					getAnalyser(), this);
 
 			MatchingCriteria newMatchingCriteria = getFactory().newMatchingCriteria(null);
 			newMatchingCriteria._setPatternRoleName(propertyName);
@@ -225,13 +225,13 @@ public class MatchActionNode extends AssignableActionNode<AMatchActionFmlActionE
 		if (astNode.getInClause() instanceof AInClause) {
 			PExpression inExpression = ((AInClause) astNode.getInClause()).getExpression();
 			DataBinding<MatchingSet> matchingSet = (DataBinding) ExpressionFactory.makeDataBinding(inExpression, returned,
-					BindingDefinitionType.GET, MatchingSet.class, getAnalyser());
+					BindingDefinitionType.GET, MatchingSet.class, getAnalyser(), this);
 			returned.setMatchingSet(matchingSet);
 		}
 		if (astNode.getFromClause() instanceof AFromClause) {
 			PExpression fromExpression = ((AFromClause) astNode.getFromClause()).getExpression();
 			DataBinding<FlexoConceptInstance> container = (DataBinding) ExpressionFactory.makeDataBinding(fromExpression, returned,
-					BindingDefinitionType.GET, FlexoConceptInstance.class, getAnalyser());
+					BindingDefinitionType.GET, FlexoConceptInstance.class, getAnalyser(), this);
 			returned.setContainer(container);
 		}
 

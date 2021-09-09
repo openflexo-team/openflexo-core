@@ -113,7 +113,7 @@ public class FetchRequestNode<FR extends AbstractFetchRequest<?, ?, ?, ?>> exten
 			if (astNode.getFromClause() instanceof AFromClause) {
 				PExpression fromExpression = ((AFromClause) astNode.getFromClause()).getExpression();
 				DataBinding<FlexoConceptInstance> container = (DataBinding) ExpressionFactory.makeDataBinding(fromExpression, selectAction,
-						BindingDefinitionType.GET, FlexoConceptInstance.class, getAnalyser());
+						BindingDefinitionType.GET, FlexoConceptInstance.class, getAnalyser(), this);
 				selectAction.setContainer(container);
 				// selectAction.setReceiver(container);
 			}
@@ -135,7 +135,7 @@ public class FetchRequestNode<FR extends AbstractFetchRequest<?, ?, ?, ?>> exten
 			if (astNode.getFromClause() instanceof AFromClause) {
 				PExpression fromExpression = ((AFromClause) astNode.getFromClause()).getExpression();
 				DataBinding<FlexoConceptInstance> container = (DataBinding) ExpressionFactory.makeDataBinding(fromExpression, selectAction,
-						BindingDefinitionType.GET, FlexoConceptInstance.class, getAnalyser());
+						BindingDefinitionType.GET, FlexoConceptInstance.class, getAnalyser(), this);
 				selectAction.setContainer(container);
 				// selectAction.setReceiver(container);
 

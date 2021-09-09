@@ -114,7 +114,8 @@ public class BehaviourCallArgumentNode extends FMLObjectNode<PExpression, Behavi
 			}
 		}*/
 
-		DataBinding<?> value = ExpressionFactory.makeDataBinding(astNode, returned, BindingDefinitionType.GET, Object.class, getAnalyser());
+		DataBinding<?> value = ExpressionFactory.makeDataBinding(astNode, returned, BindingDefinitionType.GET, Object.class, getAnalyser(),
+				this);
 		returned.setValue(value);
 
 		return returned;

@@ -77,7 +77,7 @@ public class LogActionNode extends ControlGraphNode<ALogActionFmlActionExp, LogA
 		LogAction returned = getFactory().newLogAction();
 
 		DataBinding<String> logString = ExpressionFactory.makeDataBinding(getASTNode().getExpression(), returned, BindingDefinitionType.GET,
-				String.class, getAnalyser());
+				String.class, getAnalyser(), this);
 		// returned.setLogString(makeBinding(getASTNode().getExpression(), returned));
 		returned.setLogString(logString);
 		returned.setLogLevel(LogLevel.INFO);

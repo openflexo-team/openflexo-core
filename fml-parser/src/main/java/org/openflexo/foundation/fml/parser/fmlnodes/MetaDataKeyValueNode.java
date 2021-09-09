@@ -80,7 +80,7 @@ public class MetaDataKeyValueNode extends FMLObjectNode<AAnnotationKeyValuePair,
 		MetaDataKeyValue<?> returned = getFactory().newMetaDataKeyValue(key);
 
 		DataBinding<?> valueExpression = ExpressionFactory.makeDataBinding(astNode.getConditionalExp(), returned, BindingDefinitionType.GET,
-				Object.class, getAnalyser());
+				Object.class, getAnalyser(), this);
 
 		if (valueExpression.getExpression() instanceof Constant) {
 			returned.setSerializationRepresentation(getText(astNode.getConditionalExp()));

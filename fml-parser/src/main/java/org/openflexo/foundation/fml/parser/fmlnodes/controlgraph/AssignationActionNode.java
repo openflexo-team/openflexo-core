@@ -130,12 +130,12 @@ public class AssignationActionNode extends AssignableActionNode<AAssignmentState
 		if (getLefthandSide() instanceof AFieldLeftHandSide) {
 			// return makeBinding((AFieldLeftHandSide) getLefthandSide(), bindable);
 			return ExpressionFactory.makeDataBinding((AFieldLeftHandSide) getLefthandSide(), bindable, BindingDefinitionType.SET,
-					Object.class, getAnalyser());
+					Object.class, getAnalyser(), this);
 		}
 		else if (getLefthandSide() instanceof AIdentifierLeftHandSide) {
 			// return makeBinding(((AIdentifierLeftHandSide) getLefthandSide()).getCompositeIdent(), bindable);
 			return ExpressionFactory.makeDataBinding(((AIdentifierLeftHandSide) getLefthandSide()).getCompositeIdent(), bindable,
-					BindingDefinitionType.SET, Object.class, getAnalyser());
+					BindingDefinitionType.SET, Object.class, getAnalyser(), this);
 		}
 		return null;
 	}

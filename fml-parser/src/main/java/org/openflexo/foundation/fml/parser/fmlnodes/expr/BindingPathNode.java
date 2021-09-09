@@ -36,61 +36,48 @@
  * 
  */
 
-package org.openflexo.foundation.fml.parser.fmlnodes.controlgraph;
+package org.openflexo.foundation.fml.parser.fmlnodes.expr;
 
-import java.util.logging.Logger;
-
-import org.openflexo.connie.DataBinding;
-import org.openflexo.connie.DataBinding.BindingDefinitionType;
-import org.openflexo.foundation.fml.editionaction.ExpressionAction;
-import org.openflexo.foundation.fml.parser.ExpressionFactory;
+import org.openflexo.connie.expr.BindingValue;
 import org.openflexo.foundation.fml.parser.MainSemanticsAnalyzer;
+import org.openflexo.foundation.fml.parser.ObjectNode;
 import org.openflexo.foundation.fml.parser.node.Node;
-import org.openflexo.p2pp.RawSource.RawSourceFragment;
 
 /**
  * @author sylvain
  * 
  */
-public class ExpressionActionNode extends AssignableActionNode<Node, ExpressionAction<?>> {
+public class BindingPathNode extends ObjectNode<Node, BindingValue, MainSemanticsAnalyzer> {
 
-	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(ExpressionActionNode.class.getPackage().getName());
-
-	public ExpressionActionNode(Node astNode, MainSemanticsAnalyzer analyser) {
+	public BindingPathNode(Node astNode, MainSemanticsAnalyzer analyser) {
 		super(astNode, analyser);
+		System.out.println("Ici ?");
+		Thread.dumpStack();
 	}
 
-	public ExpressionActionNode(ExpressionAction<?> action, MainSemanticsAnalyzer analyser) {
-		super(action, analyser);
+	public BindingPathNode(BindingValue bindingPath, MainSemanticsAnalyzer analyser) {
+		super(bindingPath, analyser);
 	}
 
 	@Override
-	public ExpressionAction<?> buildModelObjectFromAST(Node astNode) {
-		ExpressionAction<?> returned = getFactory().newExpressionAction();
-		// System.out.println(">>>>>> Expression " + astNode);
+	public BindingValue buildModelObjectFromAST(Node astNode) {
+		System.out.println("Je dois faire une BindingValue avec " + astNode);
+		return null;
+	}
 
-		DataBinding expression = ExpressionFactory.makeDataBinding(astNode, returned, BindingDefinitionType.GET, Object.class,
-				getAnalyser(), this);
-		returned.setExpression(expression);
-		return returned;
+	@Override
+	public BindingPathNode deserialize() {
+		/*if (getParent() instanceof FMLCompilationUnitNode) {
+			((FMLCompilationUnitNode) getParent()).getModelObject().addToUseDeclarations(getModelObject());
+		}*/
+		System.out.println("Comment ajouter ce truc ????");
+
+		return this;
 	}
 
 	@Override
 	public void preparePrettyPrint(boolean hasParsedVersion) {
 		super.preparePrettyPrint(hasParsedVersion);
-
-		append(dynamicContents(() -> getModelObject().getExpression().toString()), getExpressionFragment());
-
-		// Append semi only when required
-		when(() -> requiresSemi()).thenAppend(staticContents(";"), getSemiFragment());
-	}
-
-	private RawSourceFragment getExpressionFragment() {
-		if (getASTNode() != null) {
-			return getFragment(getASTNode());
-		}
-		return null;
 	}
 
 }
