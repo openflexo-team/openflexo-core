@@ -783,7 +783,7 @@ Productions
      ;
 
    fml_action_exp =
-       {java_instance_creation}                new_containment_clause? kw_new composite_tident type_arguments_or_diamond? l_par argument_list? r_par precise_fml_parameters_clause?
+       {java_instance_creation}                new_containment_clause? kw_new [type]:reference_type l_par argument_list? r_par precise_fml_parameters_clause?
      | {fml_instance_creation}  			   new_containment_clause? kw_new [concept_name]:uidentifier colon_colon [constructor_name]:lidentifier l_par argument_list? r_par precise_fml_parameters_clause?
      | {ta_edition_action}                     [ta_id]:uidentifier colon_colon [edition_action]:uidentifier fml_parameters in_clause? from_clause? //FD remove ? on fml_parameters
      | {delete_action}                         kw_delete l_par expression r_par from_clause?
@@ -793,7 +793,7 @@ Productions
      | {match_action}                          kw_match [concept_name]:uidentifier in_clause? from_clause qualified_where_clause? create_clause
      | {end_match_action}                      kw_end kw_match [concept_name]:uidentifier in_clause abstract_action_clause
      ;
-    
+       
    precise_fml_parameters_clause = kw_with fml_parameters;
     
    create_clause = kw_create colon_colon [constructor_name]:lidentifier l_par argument_list? r_par;
@@ -825,11 +825,6 @@ Productions
      ;
     
    new_containment_clause = composite_ident dot;
-
-   type_arguments_or_diamond =
-       {type_arguments} type_arguments
-     | {diamond} lt gt
-     ;
 
    argument_list =
        {one}  expression
@@ -914,7 +909,8 @@ Productions
    //     lt type_argument_list gt;
 
    type_arguments =
-       {gt} lt type_argument_list gt
+       {diamond} lt gt
+     | {gt} lt type_argument_list gt
      | {shr} [lt1]:lt type_argument_list_head* [identifier]:composite_tident [lt2]:lt type_argument_list shr
      | {ushr} [lt1]:lt [heads1]:type_argument_list_head* [specifier1]:composite_tident [lt2]:lt [heads2]:type_argument_list_head* [specifier2]:composite_tident [lt3]:lt type_argument_list ushr
      ;
