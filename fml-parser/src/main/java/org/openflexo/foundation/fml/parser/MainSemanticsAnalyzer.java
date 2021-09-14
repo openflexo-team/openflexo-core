@@ -171,8 +171,9 @@ public class MainSemanticsAnalyzer extends FMLSemanticsAnalyzer {
 		return returned;
 	}
 
-	public <N extends Node, FMLN extends ObjectNode> void registerFMLNode(N astNode, FMLN node) {
+	public <N extends Node, FMLN extends ObjectNode> FMLN registerFMLNode(N astNode, FMLN node) {
 		nodesForAST.put(astNode, node);
+		return node;
 	}
 
 	@Override

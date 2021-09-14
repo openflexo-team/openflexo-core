@@ -52,14 +52,24 @@ import org.openflexo.connie.expr.BindingValue.NormalBindingPathElement;
 import org.openflexo.connie.expr.BindingValue.StaticMethodCallBindingPathElement;
 import org.openflexo.connie.expr.Expression;
 import org.openflexo.connie.java.expr.JavaPrettyPrinter;
+import org.openflexo.foundation.fml.FlexoConceptInstanceType;
+import org.openflexo.foundation.fml.VirtualModelInstanceType;
+import org.openflexo.foundation.fml.expr.NewVirtualModelInstanceBindingPathElement;
 import org.openflexo.foundation.fml.parser.analysis.DepthFirstAdapter;
+import org.openflexo.foundation.fml.parser.fmlnodes.expr.AddClassInstanceNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.expr.BindingPathNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.expr.DataBindingNode;
+import org.openflexo.foundation.fml.parser.fmlnodes.expr.MethodCallBindingPathElementNode;
+import org.openflexo.foundation.fml.parser.fmlnodes.expr.NormalBindingPathElementNode;
+import org.openflexo.foundation.fml.parser.fmlnodes.expr.SuperBindingPathElementNode;
+import org.openflexo.foundation.fml.parser.fmlnodes.expr.SuperMethodCallBindingPathElementNode;
 import org.openflexo.foundation.fml.parser.node.AClassMethodMethodInvocation;
 import org.openflexo.foundation.fml.parser.node.AComplexType;
 import org.openflexo.foundation.fml.parser.node.ACompositeIdent;
+import org.openflexo.foundation.fml.parser.node.AFieldLeftHandSide;
 import org.openflexo.foundation.fml.parser.node.AFieldPrimaryNoId;
 import org.openflexo.foundation.fml.parser.node.AFullQualifiedNewInstance;
+import org.openflexo.foundation.fml.parser.node.AIdentifierLeftHandSide;
 import org.openflexo.foundation.fml.parser.node.AIdentifierPrefix;
 import org.openflexo.foundation.fml.parser.node.AIdentifierPrimary;
 import org.openflexo.foundation.fml.parser.node.AManyArgumentList;
@@ -96,49 +106,50 @@ class BindingPathFactory extends DepthFirstAdapter {
 
 	int ident = 0;
 
-	private boolean weAreDealingWithTheRightBinding() {
+	private boolean weAreDealingWithTheRightBindingPath() {
 		return depth == 0;
 	}
 
 	private Stack<Boolean> isInsideTypeStack;
 
-	/**
-	 * This flag is used to escape binding processing that may happen in call args handling
-	 */
-	// private boolean weAreDealingWithTheRightBinding = true;
+	private BindingPathNode bindingPathNode = null;
 
-	public static BindingValue makeBindingValue(Node node, ExpressionFactory expressionAnalyzer, DataBindingNode parentNode) {
+	public static BindingValue makeBindingPath(Node node, ExpressionFactory expressionAnalyzer, DataBindingNode parentNode,
+			boolean appendBindingPathNode) {
 
-		// System.out.println("Make BindingValue for " + node);
+		BindingPathNode bindingPathNode = null;
 
-		if (expressionAnalyzer.getAnalyzer() != null && parentNode != null) {
-			// System.out.println("Prout");
-			// Thread.dumpStack();
-			BindingPathNode bindingPathNode = expressionAnalyzer.getAnalyzer().retrieveFMLNode(node,
-					n -> new BindingPathNode(n, expressionAnalyzer.getAnalyzer()));
+		if (expressionAnalyzer.getAnalyzer() != null && parentNode != null && appendBindingPathNode) {
+			bindingPathNode = expressionAnalyzer.getAnalyzer().registerFMLNode(node,
+					new BindingPathNode(node, expressionAnalyzer.getAnalyzer()));
+			// Otherwise, we throw a ClassCastException if same node support also DataBindingNode
+			// bindingPathNode = expressionAnalyzer.getAnalyzer().retrieveFMLNode(node,
+			// n -> new BindingPathNode(n, expressionAnalyzer.getAnalyzer()));
 			parentNode.addToChildren(bindingPathNode);
 		}
 
-		List<AbstractBindingPathElement> bindingPath = makeBindingPath(node, expressionAnalyzer);
-		// System.out.println("bindingPath = " + bindingPath);
-		/*if (expressionAnalyzer.getAnalyzer() != null) {
-			expressionAnalyzer.getAnalyzer().pop();
-		}*/
+		List<AbstractBindingPathElement> bindingPath = makeBindingPath(node, expressionAnalyzer, bindingPathNode);
 
-		return new BindingValue(bindingPath, expressionAnalyzer.getBindable(), JavaPrettyPrinter.getInstance());
+		BindingValue returned = new BindingValue(bindingPath, expressionAnalyzer.getBindable(), JavaPrettyPrinter.getInstance());
+		if (bindingPathNode != null) {
+			bindingPathNode.setModelObject(returned);
+		}
+		return returned;
 	}
 
-	private static List<AbstractBindingPathElement> makeBindingPath(Node node, ExpressionFactory expressionAnalyzer) {
+	private static List<AbstractBindingPathElement> makeBindingPath(Node node, ExpressionFactory expressionAnalyzer,
+			BindingPathNode bindingPathNode) {
 
-		BindingPathFactory bsa = new BindingPathFactory(node, expressionAnalyzer);
+		BindingPathFactory bsa = new BindingPathFactory(node, expressionAnalyzer, bindingPathNode);
 		node.apply(bsa);
 
 		return bsa.getPath();
 	}
 
-	private BindingPathFactory(Node node, ExpressionFactory expressionAnalyzer) {
+	private BindingPathFactory(Node node, ExpressionFactory expressionAnalyzer, BindingPathNode bindingPathNode) {
 		this.expressionAnalyzer = expressionAnalyzer;
 		this.rootNode = node;
+		this.bindingPathNode = bindingPathNode;
 		path = new ArrayList<>();
 		isInsideTypeStack = new Stack<>();
 		isInsideTypeStack.push(new Boolean(false));
@@ -166,6 +177,30 @@ class BindingPathFactory extends DepthFirstAdapter {
 		// TODO Auto-generated method stub
 		super.defaultOut(node);
 		ident--;
+	}
+
+	@Override
+	public void inAIdentifierLeftHandSide(AIdentifierLeftHandSide node) {
+		super.inAIdentifierLeftHandSide(node);
+		depth++;
+	}
+
+	@Override
+	public void outAIdentifierLeftHandSide(AIdentifierLeftHandSide node) {
+		super.outAIdentifierLeftHandSide(node);
+		depth--;
+	}
+
+	@Override
+	public void inAFieldLeftHandSide(AFieldLeftHandSide node) {
+		super.inAFieldLeftHandSide(node);
+		depth++;
+	}
+
+	@Override
+	public void outAFieldLeftHandSide(AFieldLeftHandSide node) {
+		super.outAFieldLeftHandSide(node);
+		depth--;
 	}
 
 	@Override
@@ -247,8 +282,17 @@ class BindingPathFactory extends DepthFirstAdapter {
 		super.outAIdentifierPrefix(node);
 		// if (DEBUG)
 		// System.out.println("outAIdentifierPrefix " + node.getLidentifier().getText());
-		if (weAreDealingWithTheRightBinding() && !isInsideTypeStack.peek()) {
-			NormalBindingPathElement pathElement = new NormalBindingPathElement(node.getLidentifier().getText());
+		if (weAreDealingWithTheRightBindingPath() && !isInsideTypeStack.peek()) {
+			NormalBindingPathElement pathElement;
+			if (expressionAnalyzer.getAnalyzer() != null && bindingPathNode != null) {
+				NormalBindingPathElementNode pathElementNode = expressionAnalyzer.getAnalyzer().retrieveFMLNode(node.getLidentifier(),
+						n -> new NormalBindingPathElementNode(n, expressionAnalyzer.getAnalyzer()));
+				bindingPathNode.addToChildren(pathElementNode);
+				pathElement = pathElementNode.buildModelObjectFromAST(node.getLidentifier());
+			}
+			else {
+				pathElement = new NormalBindingPathElement(node.getLidentifier().getText());
+			}
 			path.add(pathElement);
 		}
 	}
@@ -258,8 +302,17 @@ class BindingPathFactory extends DepthFirstAdapter {
 		super.outACompositeIdent(node);
 		// if (DEBUG)
 		// System.out.println("outACompositeIdent " + node.getIdentifier().getText());
-		if (weAreDealingWithTheRightBinding() && !isInsideTypeStack.peek()) {
-			NormalBindingPathElement pathElement = new NormalBindingPathElement(node.getIdentifier().getText());
+		if (weAreDealingWithTheRightBindingPath() && !isInsideTypeStack.peek()) {
+			NormalBindingPathElement pathElement;
+			if (expressionAnalyzer.getAnalyzer() != null && bindingPathNode != null) {
+				NormalBindingPathElementNode pathElementNode = expressionAnalyzer.getAnalyzer().retrieveFMLNode(node.getIdentifier(),
+						n -> new NormalBindingPathElementNode(n, expressionAnalyzer.getAnalyzer()));
+				bindingPathNode.addToChildren(pathElementNode);
+				pathElement = pathElementNode.buildModelObjectFromAST(node.getIdentifier());
+			}
+			else {
+				pathElement = new NormalBindingPathElement(node.getIdentifier().getText());
+			}
 			path.add(pathElement);
 		}
 	}
@@ -269,12 +322,21 @@ class BindingPathFactory extends DepthFirstAdapter {
 		super.outAPrimaryFieldAccess(node);
 		// if (DEBUG)
 		// System.out.println("outAPrimaryFieldAccess " + node + " rightbinding=" + weAreDealingWithTheRightBinding());
-		if (weAreDealingWithTheRightBinding()) {
-			List<AbstractBindingPathElement> bindingPath = makeBindingPath(node.getPrimaryNoId(), expressionAnalyzer);
+		if (weAreDealingWithTheRightBindingPath()) {
+			List<AbstractBindingPathElement> bindingPath = makeBindingPath(node.getPrimaryNoId(), expressionAnalyzer, null);
 			for (int i = 0; i < bindingPath.size(); i++) {
 				path.add(bindingPath.get(i));
 			}
-			NormalBindingPathElement pathElement = new NormalBindingPathElement(node.getLidentifier().getText());
+			NormalBindingPathElement pathElement;
+			if (expressionAnalyzer.getAnalyzer() != null && bindingPathNode != null) {
+				NormalBindingPathElementNode pathElementNode = expressionAnalyzer.getAnalyzer().retrieveFMLNode(node.getLidentifier(),
+						n -> new NormalBindingPathElementNode(n, expressionAnalyzer.getAnalyzer()));
+				bindingPathNode.addToChildren(pathElementNode);
+				pathElement = pathElementNode.buildModelObjectFromAST(node.getLidentifier());
+			}
+			else {
+				pathElement = new NormalBindingPathElement(node.getLidentifier().getText());
+			}
 			path.add(pathElement);
 		}
 	}
@@ -282,9 +344,28 @@ class BindingPathFactory extends DepthFirstAdapter {
 	@Override
 	public void outASuperFieldAccess(ASuperFieldAccess node) {
 		super.outASuperFieldAccess(node);
-		if (weAreDealingWithTheRightBinding()) {
-			path.add(new NormalBindingPathElement("super"));
-			NormalBindingPathElement pathElement = new NormalBindingPathElement(node.getLidentifier().getText());
+		if (weAreDealingWithTheRightBindingPath()) {
+			NormalBindingPathElement superElement;
+			if (expressionAnalyzer.getAnalyzer() != null && bindingPathNode != null) {
+				SuperBindingPathElementNode pathElementNode = expressionAnalyzer.getAnalyzer().retrieveFMLNode(node.getKwSuper(),
+						n -> new SuperBindingPathElementNode(n, expressionAnalyzer.getAnalyzer()));
+				bindingPathNode.addToChildren(pathElementNode);
+				superElement = pathElementNode.buildModelObjectFromAST(node.getKwSuper());
+			}
+			else {
+				superElement = new NormalBindingPathElement("super");
+			}
+			path.add(superElement);
+			NormalBindingPathElement pathElement;
+			if (expressionAnalyzer.getAnalyzer() != null && bindingPathNode != null) {
+				NormalBindingPathElementNode pathElementNode = expressionAnalyzer.getAnalyzer().retrieveFMLNode(node.getLidentifier(),
+						n -> new NormalBindingPathElementNode(n, expressionAnalyzer.getAnalyzer()));
+				bindingPathNode.addToChildren(pathElementNode);
+				pathElement = pathElementNode.buildModelObjectFromAST(node.getLidentifier());
+			}
+			else {
+				pathElement = new NormalBindingPathElement(node.getLidentifier().getText());
+			}
 			path.add(pathElement);
 		}
 	}
@@ -294,48 +375,42 @@ class BindingPathFactory extends DepthFirstAdapter {
 		// TODO Auto-generated method stub
 		super.outAReferenceSuperFieldAccess(node);
 
-		if (weAreDealingWithTheRightBinding()) {
-			List<AbstractBindingPathElement> bindingPath = makeBindingPath(node.getIdentifier1(), expressionAnalyzer);
+		if (weAreDealingWithTheRightBindingPath()) {
+			List<AbstractBindingPathElement> bindingPath = makeBindingPath(node.getIdentifier1(), expressionAnalyzer, null);
 			for (int i = 0; i < bindingPath.size(); i++) {
 				path.add(bindingPath.get(i));
 			}
-			path.add(new NormalBindingPathElement("super"));
-			NormalBindingPathElement pathElement = new NormalBindingPathElement(node.getIdentifier2().getText());
+			NormalBindingPathElement superElement;
+			if (expressionAnalyzer.getAnalyzer() != null && bindingPathNode != null) {
+				SuperBindingPathElementNode pathElementNode = expressionAnalyzer.getAnalyzer().retrieveFMLNode(node.getKwSuper(),
+						n -> new SuperBindingPathElementNode(n, expressionAnalyzer.getAnalyzer()));
+				bindingPathNode.addToChildren(pathElementNode);
+				superElement = pathElementNode.buildModelObjectFromAST(node.getKwSuper());
+			}
+			else {
+				superElement = new NormalBindingPathElement("super");
+			}
+			path.add(superElement);
+			NormalBindingPathElement pathElement;
+			if (expressionAnalyzer.getAnalyzer() != null && bindingPathNode != null) {
+				NormalBindingPathElementNode pathElementNode = expressionAnalyzer.getAnalyzer().retrieveFMLNode(node.getIdentifier2(),
+						n -> new NormalBindingPathElementNode(n, expressionAnalyzer.getAnalyzer()));
+				bindingPathNode.addToChildren(pathElementNode);
+				pathElement = pathElementNode.buildModelObjectFromAST(node.getIdentifier2());
+			}
+			else {
+				pathElement = new NormalBindingPathElement(node.getIdentifier2().getText());
+			}
 			path.add(pathElement);
 		}
-	}
-
-	private List<Expression> makeArgs(PArgumentList argumentList) {
-		List<Expression> args = new ArrayList<>();
-		if (argumentList == null) {
-			// No argument
-		}
-		else if (argumentList instanceof AOneArgumentList) {
-			// One argument
-			PExpression pExpression = ((AOneArgumentList) argumentList).getExpression();
-			// System.out.println("Tiens je cherche pour " + pExpression + " of " + pExpression.getClass().getSimpleName());
-			// System.out.println("Et je tombe sur: " + expressionAnalyzer.getExpression(pExpression) + " of "
-			// + expressionAnalyzer.getExpression(pExpression).getClass().getSimpleName());
-			args.add(expressionAnalyzer.getExpression(pExpression));
-		}
-		else if (argumentList instanceof AManyArgumentList) {
-			List<PExpression> arguments = makeArguments((AManyArgumentList) argumentList);
-			for (PExpression pExpression : arguments) {
-				// System.out.println("Tiens je cherche pour " + pExpression + " of " + pExpression.getClass().getSimpleName());
-				// System.out.println("Et je tombe sur: " + expressionAnalyzer.getExpression(pExpression) + " of "
-				// + expressionAnalyzer.getExpression(pExpression).getClass().getSimpleName());
-				args.add(expressionAnalyzer.getExpression(pExpression));
-			}
-		}
-		return args;
 	}
 
 	@Override
 	public void outAPrimaryMethodInvocation(APrimaryMethodInvocation node) {
 		super.outAPrimaryMethodInvocation(node);
-		if (weAreDealingWithTheRightBinding()) {
+		if (weAreDealingWithTheRightBindingPath()) {
 
-			List<AbstractBindingPathElement> bindingPath = makeBindingPath(node.getPrimary(), expressionAnalyzer);
+			List<AbstractBindingPathElement> bindingPath = makeBindingPath(node.getPrimary(), expressionAnalyzer, null);
 			for (int i = 0; i < bindingPath.size() - 1; i++) {
 				path.add(bindingPath.get(i));
 			}
@@ -343,6 +418,11 @@ class BindingPathFactory extends DepthFirstAdapter {
 			NormalBindingPathElement pathElement = (NormalBindingPathElement) bindingPath.get(bindingPath.size() - 1);
 			String identifier = pathElement.property;
 			MethodCallBindingPathElement returned = new MethodCallBindingPathElement(identifier, makeArgs(node.getArgumentList()));
+			if (expressionAnalyzer.getAnalyzer() != null && bindingPathNode != null) {
+				MethodCallBindingPathElementNode pathElementNode = expressionAnalyzer.getAnalyzer().retrieveFMLNode(node,
+						n -> new MethodCallBindingPathElementNode(n, expressionAnalyzer.getAnalyzer()));
+				bindingPathNode.addToChildren(pathElementNode);
+			}
 			path.add(returned);
 
 		}
@@ -351,8 +431,13 @@ class BindingPathFactory extends DepthFirstAdapter {
 	@Override
 	public void outASuperMethodInvocation(ASuperMethodInvocation node) {
 		super.outASuperMethodInvocation(node);
-		if (weAreDealingWithTheRightBinding()) {
+		if (weAreDealingWithTheRightBindingPath()) {
 			MethodCallBindingPathElement returned = new MethodCallBindingPathElement("super", makeArgs(node.getArgumentList()));
+			if (expressionAnalyzer.getAnalyzer() != null && bindingPathNode != null) {
+				SuperMethodCallBindingPathElementNode pathElementNode = expressionAnalyzer.getAnalyzer().retrieveFMLNode(node,
+						n -> new SuperMethodCallBindingPathElementNode(n, expressionAnalyzer.getAnalyzer()));
+				bindingPathNode.addToChildren(pathElementNode);
+			}
 			path.add(returned);
 		}
 	}
@@ -360,16 +445,49 @@ class BindingPathFactory extends DepthFirstAdapter {
 	@Override
 	public void outASimpleNewInstance(ASimpleNewInstance node) {
 		super.outASimpleNewInstance(node);
-		if (weAreDealingWithTheRightBinding()) {
+		if (weAreDealingWithTheRightBindingPath()) {
 			if (node.getNewContainmentClause() instanceof ANewContainmentClause) {
 				List<AbstractBindingPathElement> bindingPath = makeBindingPath(
-						((ANewContainmentClause) node.getNewContainmentClause()).getCompositeIdent(), expressionAnalyzer);
+						((ANewContainmentClause) node.getNewContainmentClause()).getCompositeIdent(), expressionAnalyzer, null);
 				for (int i = 0; i < bindingPath.size(); i++) {
 					path.add(bindingPath.get(i));
 				}
 				// System.out.println("le containment: " + path);
 			}
 			Type type = TypeFactory.makeType(node.getType(), expressionAnalyzer.getTypingSpace());
+
+			if (type instanceof VirtualModelInstanceType
+					&& ((VirtualModelInstanceType) type).getVirtualModel().getCreationSchemes().size() == 1) {
+				// Simple new instance with non ambigous creation scheme
+				NewVirtualModelInstanceBindingPathElement returned = new NewVirtualModelInstanceBindingPathElement(
+						(VirtualModelInstanceType) type, null, // default constructor,
+						makeArgs(node.getArgumentList()));
+				path.add(returned);
+			}
+			else if (type instanceof FlexoConceptInstanceType
+					&& ((FlexoConceptInstanceType) type).getFlexoConcept().getCreationSchemes().size() == 1) {
+				// Simple new instance with non ambigous creation scheme
+				NewVirtualModelInstanceBindingPathElement returned = new NewVirtualModelInstanceBindingPathElement(
+						(VirtualModelInstanceType) type, null, // default constructor,
+						makeArgs(node.getArgumentList()));
+				path.add(returned);
+			}
+			else {
+				NewInstanceBindingPathElement pathElement;
+				if (expressionAnalyzer.getAnalyzer() != null && bindingPathNode != null) {
+					AddClassInstanceNode pathElementNode = expressionAnalyzer.getAnalyzer().retrieveFMLNode(node,
+							n -> new AddClassInstanceNode(n, expressionAnalyzer.getAnalyzer(), expressionAnalyzer.getBindable()));
+					bindingPathNode.addToChildren(pathElementNode);
+					pathElement = pathElementNode.buildModelObjectFromAST(node);
+				}
+				else {
+					pathElement = new NewInstanceBindingPathElement(type, null, // a java constructor has no name,
+							makeArgs(node.getArgumentList()));
+				}
+				path.add(pathElement);
+
+			}
+
 			// System.out.println("Type: " + type);
 			NewInstanceBindingPathElement returned = new NewInstanceBindingPathElement(type, null, // a java constructor has no name,
 					makeArgs(node.getArgumentList()));
@@ -381,10 +499,10 @@ class BindingPathFactory extends DepthFirstAdapter {
 	@Override
 	public void outAFullQualifiedNewInstance(AFullQualifiedNewInstance node) {
 		super.outAFullQualifiedNewInstance(node);
-		if (weAreDealingWithTheRightBinding()) {
+		if (weAreDealingWithTheRightBindingPath()) {
 			if (node.getNewContainmentClause() instanceof ANewContainmentClause) {
 				List<AbstractBindingPathElement> bindingPath = makeBindingPath(
-						((ANewContainmentClause) node.getNewContainmentClause()).getCompositeIdent(), expressionAnalyzer);
+						((ANewContainmentClause) node.getNewContainmentClause()).getCompositeIdent(), expressionAnalyzer, null);
 				for (int i = 0; i < bindingPath.size(); i++) {
 					path.add(bindingPath.get(i));
 				}
@@ -425,12 +543,37 @@ class BindingPathFactory extends DepthFirstAdapter {
 	@Override
 	public void outAClassMethodMethodInvocation(AClassMethodMethodInvocation node) {
 		super.outAClassMethodMethodInvocation(node);
-		if (weAreDealingWithTheRightBinding()) {
+		if (weAreDealingWithTheRightBindingPath()) {
 			Type type = TypeFactory.makeType(node.getType(), expressionAnalyzer.getTypingSpace());
 			StaticMethodCallBindingPathElement returned = new StaticMethodCallBindingPathElement(type, node.getLidentifier().getText(),
 					makeArgs(node.getArgumentList()));
 			path.add(returned);
 		}
+	}
+
+	private List<Expression> makeArgs(PArgumentList argumentList) {
+		List<Expression> args = new ArrayList<>();
+		if (argumentList == null) {
+			// No argument
+		}
+		else if (argumentList instanceof AOneArgumentList) {
+			// One argument
+			PExpression pExpression = ((AOneArgumentList) argumentList).getExpression();
+			// System.out.println("Tiens je cherche pour " + pExpression + " of " + pExpression.getClass().getSimpleName());
+			// System.out.println("Et je tombe sur: " + expressionAnalyzer.getExpression(pExpression) + " of "
+			// + expressionAnalyzer.getExpression(pExpression).getClass().getSimpleName());
+			args.add(expressionAnalyzer.getExpression(pExpression));
+		}
+		else if (argumentList instanceof AManyArgumentList) {
+			List<PExpression> arguments = makeArguments((AManyArgumentList) argumentList);
+			for (PExpression pExpression : arguments) {
+				// System.out.println("Tiens je cherche pour " + pExpression + " of " + pExpression.getClass().getSimpleName());
+				// System.out.println("Et je tombe sur: " + expressionAnalyzer.getExpression(pExpression) + " of "
+				// + expressionAnalyzer.getExpression(pExpression).getClass().getSimpleName());
+				args.add(expressionAnalyzer.getExpression(pExpression));
+			}
+		}
+		return args;
 	}
 
 	private List<PExpression> makeArguments(AManyArgumentList args) {

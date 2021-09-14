@@ -8,6 +8,7 @@ import java.util.logging.Logger;
 import org.openflexo.connie.Bindable;
 import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.DataBinding.BindingDefinitionType;
+import org.openflexo.connie.expr.Constant;
 import org.openflexo.connie.expr.Expression;
 import org.openflexo.foundation.fml.AbstractFMLTypingSpace;
 import org.openflexo.foundation.fml.FMLCompilationUnit;
@@ -27,6 +28,7 @@ import org.openflexo.foundation.fml.expr.FMLConstant.StringConstant;
 import org.openflexo.foundation.fml.expr.FMLInstanceOfExpression;
 import org.openflexo.foundation.fml.expr.FMLUnaryOperatorExpression;
 import org.openflexo.foundation.fml.parser.analysis.DepthFirstAdapter;
+import org.openflexo.foundation.fml.parser.fmlnodes.expr.ConstantNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.expr.DataBindingNode;
 import org.openflexo.foundation.fml.parser.node.AAmpAmpConditionalAndExp;
 import org.openflexo.foundation.fml.parser.node.AAmpAndExp;
@@ -40,10 +42,12 @@ import org.openflexo.foundation.fml.parser.node.AEmarkUnaryExpNotPlusMinus;
 import org.openflexo.foundation.fml.parser.node.AEqEqualityExp;
 import org.openflexo.foundation.fml.parser.node.AExpressionPrimaryNoId;
 import org.openflexo.foundation.fml.parser.node.AFalseLiteral;
+import org.openflexo.foundation.fml.parser.node.AFieldLeftHandSide;
 import org.openflexo.foundation.fml.parser.node.AFieldPrimaryNoId;
 import org.openflexo.foundation.fml.parser.node.AFloatingPointLiteral;
 import org.openflexo.foundation.fml.parser.node.AGtRelationalExp;
 import org.openflexo.foundation.fml.parser.node.AGteqRelationalExp;
+import org.openflexo.foundation.fml.parser.node.AIdentifierLeftHandSide;
 import org.openflexo.foundation.fml.parser.node.AIdentifierPrimary;
 import org.openflexo.foundation.fml.parser.node.AInstanceofRelationalExp;
 import org.openflexo.foundation.fml.parser.node.AIntegerLiteral;
@@ -71,6 +75,7 @@ import org.openflexo.foundation.fml.parser.node.APreIncrementUnaryExp;
 import org.openflexo.foundation.fml.parser.node.APrimaryNoIdPrimary;
 import org.openflexo.foundation.fml.parser.node.APrimaryPostfixExp;
 import org.openflexo.foundation.fml.parser.node.AQmarkConditionalExp;
+import org.openflexo.foundation.fml.parser.node.AReferenceType;
 import org.openflexo.foundation.fml.parser.node.AShlShiftExp;
 import org.openflexo.foundation.fml.parser.node.AShrShiftExp;
 import org.openflexo.foundation.fml.parser.node.ASimpleAddExp;
@@ -112,6 +117,12 @@ public class ExpressionFactory extends DepthFirstAdapter {
 	private final MainSemanticsAnalyzer analyzer;
 	private final DataBindingNode parentNode;
 
+	private int depth = -1;
+
+	private boolean weAreDealingWithTheRightBindingPath() {
+		return depth == 0;
+	}
+
 	public static Expression makeExpression(Node node, Bindable bindable, FMLCompilationUnit compilationUnit) {
 		return _makeExpression(node, bindable, compilationUnit.getTypingSpace(), null, null);
 	}
@@ -130,7 +141,7 @@ public class ExpressionFactory extends DepthFirstAdapter {
 	}
 
 	public static <T> DataBinding<T> makeDataBinding(Node node, Bindable bindable, BindingDefinitionType bindingDefinitionType,
-			Type expectedType, MainSemanticsAnalyzer mainAnalyzer, FMLObjectNode<?, ?, ?> parentNode) {
+			Type expectedType, MainSemanticsAnalyzer mainAnalyzer, ObjectNode<?, ?, ?> parentNode) {
 		return _makeDataBinding(node, bindable, bindingDefinitionType, expectedType, mainAnalyzer.getTypingSpace(), mainAnalyzer,
 				parentNode);
 	}
@@ -147,7 +158,7 @@ public class ExpressionFactory extends DepthFirstAdapter {
 
 	@SuppressWarnings("rawtypes")
 	private static <T> DataBinding<T> _makeDataBinding(Node node, Bindable bindable, BindingDefinitionType bindingDefinitionType,
-			Type expectedType, AbstractFMLTypingSpace typingSpace, MainSemanticsAnalyzer mainAnalyzer, FMLObjectNode<?, ?, ?> parentNode) {
+			Type expectedType, AbstractFMLTypingSpace typingSpace, MainSemanticsAnalyzer mainAnalyzer, ObjectNode<?, ?, ?> parentNode) {
 
 		DataBindingNode dataBindingNode = null;
 		if (mainAnalyzer != null && parentNode != null) {
@@ -156,8 +167,12 @@ public class ExpressionFactory extends DepthFirstAdapter {
 		}
 
 		Expression expression = _makeExpression(node, bindable, typingSpace, mainAnalyzer, dataBindingNode);
+
 		DataBinding returned = new DataBinding(bindable, expectedType, bindingDefinitionType);
 		returned.setExpression(expression);
+		if (dataBindingNode != null) {
+			dataBindingNode.setModelObject(returned);
+		}
 		return returned;
 	}
 
@@ -197,6 +212,13 @@ public class ExpressionFactory extends DepthFirstAdapter {
 		/*if (n.parent() != null) {
 			registerExpressionNode(n.parent(), e);
 		}*/
+		if (e instanceof Constant) {
+			if (getAnalyzer() != null && parentNode != null) {
+				ConstantNode constantNode = getAnalyzer().registerFMLNode(n, new ConstantNode(n, getAnalyzer()));
+				constantNode.setModelObject((Constant) e);
+				parentNode.addToChildren(constantNode);
+			}
+		}
 	}
 
 	protected Expression getExpression(Node n) {
@@ -289,86 +311,100 @@ public class ExpressionFactory extends DepthFirstAdapter {
 
 	@Override
 	public void defaultOut(Node node) {
-		// TODO Auto-generated method stub
 		super.defaultOut(node);
 		ident--;
 	}
 
-	/*@Override
-	public void outAIdentifierPrefix(AIdentifierPrefix node) {
-		// TODO Auto-generated method stub
-		super.outAIdentifierPrefix(node);
-		System.out.println("Tiens on sort avec " + node + " of " + node.getClass().getSimpleName());
-	}
-	
 	@Override
-	public void outACompositeIdent(ACompositeIdent node) {
-		// TODO Auto-generated method stub
-		super.outACompositeIdent(node);
-		System.out.println("On sort de CompositeIdent avec " + node + " of " + node.getClass().getSimpleName());
+	public void inAIdentifierLeftHandSide(AIdentifierLeftHandSide node) {
+		super.inAIdentifierLeftHandSide(node);
+		depth++;
 	}
-	
-	@Override
-	public void outAPrimaryMethodInvocation(APrimaryMethodInvocation node) {
-		// TODO Auto-generated method stub
-		super.outAPrimaryMethodInvocation(node);
-		System.out.println("On sort de PrimaryMethodInvocation avec " + node + " of " + node.getClass().getSimpleName());
-	}*/
 
-	/*@Override
+	@Override
+	public void outAIdentifierLeftHandSide(AIdentifierLeftHandSide node) {
+		super.outAIdentifierLeftHandSide(node);
+		registerExpressionNode(node, BindingPathFactory.makeBindingPath(node, this, parentNode, weAreDealingWithTheRightBindingPath()));
+		depth--;
+	}
+
+	@Override
+	public void inAFieldLeftHandSide(AFieldLeftHandSide node) {
+		super.inAFieldLeftHandSide(node);
+		depth++;
+	}
+
+	@Override
+	public void outAFieldLeftHandSide(AFieldLeftHandSide node) {
+		super.outAFieldLeftHandSide(node);
+		registerExpressionNode(node, BindingPathFactory.makeBindingPath(node, this, parentNode, weAreDealingWithTheRightBindingPath()));
+		depth--;
+	}
+
+	@Override
 	public void inAIdentifierPrimary(AIdentifierPrimary node) {
 		super.inAIdentifierPrimary(node);
-		System.out.println(">> On entre dans primary/{identifier} avec " + node + " of " + node.getClass().getSimpleName());
-	}*/
-
-	/*	@Override
-		public void inAIdentifierPrimary(AIdentifierPrimary node) {
-			super.inAIdentifierPrimary(node);
-			if (getAnalyzer() != null) {
-				// System.out.println("Prout");
-				// Thread.dumpStack();
-				System.out.println("On est la avec " + getAnalyzer().peek());
-				Thread.dumpStack();
-				getAnalyzer().push(getAnalyzer().retrieveFMLNode(node, n -> new BindingPathNode(n, getAnalyzer())));
-			}
-		}*/
+		depth++;
+	}
 
 	@Override
 	public void outAIdentifierPrimary(AIdentifierPrimary node) {
 		super.outAIdentifierPrimary(node);
-		// System.out.println("<< On sort de primary/{identifier} avec " + node + " of " + node.getClass().getSimpleName());
+		registerExpressionNode(node, BindingPathFactory.makeBindingPath(node, this, parentNode, weAreDealingWithTheRightBindingPath()));
+		depth--;
+	}
 
-		/*		System.out.println("On sort de la avec analyzer=" + getAnalyzer());
-				if (getAnalyzer() != null) {
-					getAnalyzer().pop();
-				}
-				else {*/
-		registerExpressionNode(node, BindingPathFactory.makeBindingValue(node, this, parentNode));
-		// }
+	@Override
+	public void inAMethodPrimaryNoId(AMethodPrimaryNoId node) {
+		super.inAMethodPrimaryNoId(node);
+		depth++;
 	}
 
 	@Override
 	public void outAMethodPrimaryNoId(AMethodPrimaryNoId node) {
 		super.outAMethodPrimaryNoId(node);
-		registerExpressionNode(node, BindingPathFactory.makeBindingValue(node, this, parentNode));
+		registerExpressionNode(node, BindingPathFactory.makeBindingPath(node, this, parentNode, weAreDealingWithTheRightBindingPath()));
+		depth--;
+	}
+
+	@Override
+	public void inAFieldPrimaryNoId(AFieldPrimaryNoId node) {
+		super.inAFieldPrimaryNoId(node);
+		depth++;
 	}
 
 	@Override
 	public void outAFieldPrimaryNoId(AFieldPrimaryNoId node) {
 		super.outAFieldPrimaryNoId(node);
-		registerExpressionNode(node, BindingPathFactory.makeBindingValue(node, this, parentNode));
+		registerExpressionNode(node, BindingPathFactory.makeBindingPath(node, this, parentNode, weAreDealingWithTheRightBindingPath()));
+		depth--;
 	}
 
-	/*@Override
-	public void outAJavaInstanceCreationFmlActionExp(AJavaInstanceCreationFmlActionExp node) {
-		super.outAJavaInstanceCreationFmlActionExp(node);
-		registerExpressionNode(node, BindingValueAnalyzer.makeBindingValue(node, this));
-	}*/
+	// When we enter in a type, increase level
+	@Override
+	public void inAReferenceType(AReferenceType node) {
+		super.inAReferenceType(node);
+		depth++;
+	}
+
+	// When we exit out a type, decrease level
+	@Override
+	public void outAReferenceType(AReferenceType node) {
+		super.outAReferenceType(node);
+		depth--;
+	}
+
+	@Override
+	public void inANewInstancePrimaryNoId(ANewInstancePrimaryNoId node) {
+		super.inANewInstancePrimaryNoId(node);
+		depth++;
+	}
 
 	@Override
 	public void outANewInstancePrimaryNoId(ANewInstancePrimaryNoId node) {
 		super.outANewInstancePrimaryNoId(node);
-		registerExpressionNode(node, BindingPathFactory.makeBindingValue(node, this, parentNode));
+		registerExpressionNode(node, BindingPathFactory.makeBindingPath(node, this, parentNode, weAreDealingWithTheRightBindingPath()));
+		depth--;
 	}
 
 	@Override

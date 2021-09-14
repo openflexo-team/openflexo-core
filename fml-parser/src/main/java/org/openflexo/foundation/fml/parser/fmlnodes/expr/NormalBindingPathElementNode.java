@@ -38,33 +38,36 @@
 
 package org.openflexo.foundation.fml.parser.fmlnodes.expr;
 
-import org.openflexo.connie.expr.BindingValue;
+import org.openflexo.connie.expr.BindingValue.NormalBindingPathElement;
 import org.openflexo.foundation.fml.parser.MainSemanticsAnalyzer;
 import org.openflexo.foundation.fml.parser.ObjectNode;
-import org.openflexo.foundation.fml.parser.node.Node;
+import org.openflexo.foundation.fml.parser.node.TLidentifier;
 
 /**
  * @author sylvain
  * 
  */
-public class BindingPathNode extends ObjectNode<Node, BindingValue, MainSemanticsAnalyzer> {
+public class NormalBindingPathElementNode extends ObjectNode<TLidentifier, NormalBindingPathElement, MainSemanticsAnalyzer> {
 
-	public BindingPathNode(Node astNode, MainSemanticsAnalyzer analyser) {
+	public NormalBindingPathElementNode(TLidentifier astNode, MainSemanticsAnalyzer analyser) {
 		super(astNode, analyser);
+		/*if (astNode.toString().trim().equals("b")) {
+			System.out.println("make NormalBindingPathElementNode with " + astNode);
+			Thread.dumpStack();
+		}*/
 	}
 
-	public BindingPathNode(BindingValue bindingPath, MainSemanticsAnalyzer analyser) {
-		super(bindingPath, analyser);
+	public NormalBindingPathElementNode(NormalBindingPathElement bindingPathElement, MainSemanticsAnalyzer analyser) {
+		super(bindingPathElement, analyser);
 	}
 
 	@Override
-	public BindingValue buildModelObjectFromAST(Node astNode) {
-		System.out.println("Je dois faire une BindingValue avec " + astNode);
-		return null;
+	public NormalBindingPathElement buildModelObjectFromAST(TLidentifier astNode) {
+		return new NormalBindingPathElement(astNode.getText());
 	}
 
 	@Override
-	public BindingPathNode deserialize() {
+	public NormalBindingPathElementNode deserialize() {
 		return this;
 	}
 

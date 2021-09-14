@@ -38,7 +38,7 @@
 
 package org.openflexo.foundation.fml.parser.fmlnodes.expr;
 
-import org.openflexo.connie.expr.BindingValue;
+import org.openflexo.connie.expr.Constant;
 import org.openflexo.foundation.fml.parser.MainSemanticsAnalyzer;
 import org.openflexo.foundation.fml.parser.ObjectNode;
 import org.openflexo.foundation.fml.parser.node.Node;
@@ -47,24 +47,24 @@ import org.openflexo.foundation.fml.parser.node.Node;
  * @author sylvain
  * 
  */
-public class BindingPathNode extends ObjectNode<Node, BindingValue, MainSemanticsAnalyzer> {
+public class ConstantNode extends ObjectNode<Node, Constant<?>, MainSemanticsAnalyzer> {
 
-	public BindingPathNode(Node astNode, MainSemanticsAnalyzer analyser) {
+	public ConstantNode(Node astNode, MainSemanticsAnalyzer analyser) {
 		super(astNode, analyser);
 	}
 
-	public BindingPathNode(BindingValue bindingPath, MainSemanticsAnalyzer analyser) {
-		super(bindingPath, analyser);
+	public ConstantNode(Constant<?> constant, MainSemanticsAnalyzer analyser) {
+		super(constant, analyser);
 	}
 
 	@Override
-	public BindingValue buildModelObjectFromAST(Node astNode) {
-		System.out.println("Je dois faire une BindingValue avec " + astNode);
+	public Constant buildModelObjectFromAST(Node astNode) {
+		System.out.println("Je dois faire une Constant avec " + astNode);
 		return null;
 	}
 
 	@Override
-	public BindingPathNode deserialize() {
+	public ConstantNode deserialize() {
 		return this;
 	}
 

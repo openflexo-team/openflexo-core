@@ -155,8 +155,9 @@ public abstract class FMLParserTestCase extends OpenflexoTestCase {
 	 */
 	protected static void debug(P2PPNode<?, ?> node, int indent) {
 		System.out.println(StringUtils.buildWhiteSpaceIndentation(indent * 2) + " > " + node.getClass().getSimpleName() + " from "
-				+ node.getLastParsedFragment() /*+ " model:" + node.getModelObject()*/ + " pre=" + node.getPrelude() + " post="
-				+ node.getPostlude() /*+ " astNode=" + node.getASTNode() + " of " + node.getASTNode().getClass()*/);
+				+ node.getLastParsedFragment() + " pre=" + node.getPrelude() + " post="
+				+ node.getPostlude() /*+ " astNode=" + node.getASTNode() + " of " + node.getASTNode().getClass()*/
+				+ " model=" + node.getModelObject());
 		// System.err.println(node.getLastParsed());
 		// node.getLastParsed();
 		indent++;

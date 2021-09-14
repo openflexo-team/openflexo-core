@@ -127,6 +127,7 @@ public class AssignationActionNode extends AssignableActionNode<AAssignmentState
 	}
 
 	private DataBinding<?> extractLeft(AssignationAction<?> bindable) {
+
 		if (getLefthandSide() instanceof AFieldLeftHandSide) {
 			// return makeBinding((AFieldLeftHandSide) getLefthandSide(), bindable);
 			return ExpressionFactory.makeDataBinding((AFieldLeftHandSide) getLefthandSide(), bindable, BindingDefinitionType.SET,
@@ -134,8 +135,8 @@ public class AssignationActionNode extends AssignableActionNode<AAssignmentState
 		}
 		else if (getLefthandSide() instanceof AIdentifierLeftHandSide) {
 			// return makeBinding(((AIdentifierLeftHandSide) getLefthandSide()).getCompositeIdent(), bindable);
-			return ExpressionFactory.makeDataBinding(((AIdentifierLeftHandSide) getLefthandSide()).getCompositeIdent(), bindable,
-					BindingDefinitionType.SET, Object.class, getAnalyser(), this);
+			return ExpressionFactory.makeDataBinding(((AIdentifierLeftHandSide) getLefthandSide()), bindable, BindingDefinitionType.SET,
+					Object.class, getAnalyser(), this);
 		}
 		return null;
 	}

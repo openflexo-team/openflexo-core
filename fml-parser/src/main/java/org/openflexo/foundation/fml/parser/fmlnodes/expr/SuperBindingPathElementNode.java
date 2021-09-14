@@ -38,33 +38,32 @@
 
 package org.openflexo.foundation.fml.parser.fmlnodes.expr;
 
-import org.openflexo.connie.expr.BindingValue;
+import org.openflexo.connie.expr.BindingValue.NormalBindingPathElement;
 import org.openflexo.foundation.fml.parser.MainSemanticsAnalyzer;
 import org.openflexo.foundation.fml.parser.ObjectNode;
-import org.openflexo.foundation.fml.parser.node.Node;
+import org.openflexo.foundation.fml.parser.node.TKwSuper;
 
 /**
  * @author sylvain
  * 
  */
-public class BindingPathNode extends ObjectNode<Node, BindingValue, MainSemanticsAnalyzer> {
+public class SuperBindingPathElementNode extends ObjectNode<TKwSuper, NormalBindingPathElement, MainSemanticsAnalyzer> {
 
-	public BindingPathNode(Node astNode, MainSemanticsAnalyzer analyser) {
+	public SuperBindingPathElementNode(TKwSuper astNode, MainSemanticsAnalyzer analyser) {
 		super(astNode, analyser);
 	}
 
-	public BindingPathNode(BindingValue bindingPath, MainSemanticsAnalyzer analyser) {
-		super(bindingPath, analyser);
+	public SuperBindingPathElementNode(NormalBindingPathElement bindingPathElement, MainSemanticsAnalyzer analyser) {
+		super(bindingPathElement, analyser);
 	}
 
 	@Override
-	public BindingValue buildModelObjectFromAST(Node astNode) {
-		System.out.println("Je dois faire une BindingValue avec " + astNode);
-		return null;
+	public NormalBindingPathElement buildModelObjectFromAST(TKwSuper astNode) {
+		return new NormalBindingPathElement("super");
 	}
 
 	@Override
-	public BindingPathNode deserialize() {
+	public SuperBindingPathElementNode deserialize() {
 		return this;
 	}
 

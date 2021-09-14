@@ -38,33 +38,34 @@
 
 package org.openflexo.foundation.fml.parser.fmlnodes.expr;
 
-import org.openflexo.connie.expr.BindingValue;
+import org.openflexo.connie.expr.BindingValue.MethodCallBindingPathElement;
 import org.openflexo.foundation.fml.parser.MainSemanticsAnalyzer;
 import org.openflexo.foundation.fml.parser.ObjectNode;
-import org.openflexo.foundation.fml.parser.node.Node;
+import org.openflexo.foundation.fml.parser.node.APrimaryMethodInvocation;
 
 /**
  * @author sylvain
  * 
  */
-public class BindingPathNode extends ObjectNode<Node, BindingValue, MainSemanticsAnalyzer> {
+public class MethodCallBindingPathElementNode
+		extends ObjectNode<APrimaryMethodInvocation, MethodCallBindingPathElement, MainSemanticsAnalyzer> {
 
-	public BindingPathNode(Node astNode, MainSemanticsAnalyzer analyser) {
+	public MethodCallBindingPathElementNode(APrimaryMethodInvocation astNode, MainSemanticsAnalyzer analyser) {
 		super(astNode, analyser);
 	}
 
-	public BindingPathNode(BindingValue bindingPath, MainSemanticsAnalyzer analyser) {
-		super(bindingPath, analyser);
+	public MethodCallBindingPathElementNode(MethodCallBindingPathElement bindingPathElement, MainSemanticsAnalyzer analyser) {
+		super(bindingPathElement, analyser);
 	}
 
 	@Override
-	public BindingValue buildModelObjectFromAST(Node astNode) {
-		System.out.println("Je dois faire une BindingValue avec " + astNode);
+	public MethodCallBindingPathElement buildModelObjectFromAST(APrimaryMethodInvocation astNode) {
+		System.out.println("Je dois faire un MethodCallBindingPathElementNode avec " + astNode);
 		return null;
 	}
 
 	@Override
-	public BindingPathNode deserialize() {
+	public MethodCallBindingPathElementNode deserialize() {
 		return this;
 	}
 

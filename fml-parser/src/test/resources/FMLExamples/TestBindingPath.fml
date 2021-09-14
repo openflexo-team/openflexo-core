@@ -6,8 +6,34 @@ use org.openflexo.foundation.fml.rt.FMLRTModelSlot as FMLRT;
 
 model MyModel {
 
-	test() {
+    Object a;
+
+	testSimpleValue() {
+		a = 42;
+	}
+
+	testSimpleExpression() {
+		a.b = c+42;
+	}
+
+	testSimpleBindingPath() {
 		a = b.c;
 	}
+
+	testMethodCall() {
+		a = b();
+	}
+	
+	/*testMethodCallWithArguments() {
+		a = b.c.d(e,f+1);
+	}
+	
+	testNewInstance() {
+	    a = new Toto(b,c.d+e);
+	}
+
+	testInnerNewInstance() {
+	    a = f.g.new Toto(b,c.d+e);
+	}*/
 
 }
