@@ -23,12 +23,32 @@ model MyModel {
 	testMethodCall() {
 		a = b();
 	}
-	
-	/*testMethodCallWithArguments() {
-		a = b.c.d(e,f+1);
+
+	testMethodCall2() {
+		a = b.c.d();
+	}
+
+	testMethodCall3() {
+		a = b.c().d().e;
+	}
+
+	testMethodCall4() {
+		a = super();
+	}
+
+	testMethodCallWithArguments() {
+		a = b(1);
 	}
 	
-	testNewInstance() {
+	/*testMethodCallWithArguments2() {
+		a = b(c.d.e());
+	}*/
+	
+	/*testMethodCallWithArguments3() {
+		a = b.c.d(e,f+1);
+	}*/
+	
+	/*testNewInstance() {
 	    a = new Toto(b,c.d+e);
 	}
 

@@ -212,7 +212,7 @@ public class ExpressionFactory extends DepthFirstAdapter {
 		/*if (n.parent() != null) {
 			registerExpressionNode(n.parent(), e);
 		}*/
-		if (e instanceof Constant) {
+		if (e instanceof Constant && weAreDealingWithTheRightBindingPath()) {
 			if (getAnalyzer() != null && parentNode != null) {
 				ConstantNode constantNode = getAnalyzer().registerFMLNode(n, new ConstantNode(n, getAnalyzer()));
 				constantNode.setModelObject((Constant) e);
@@ -314,6 +314,18 @@ public class ExpressionFactory extends DepthFirstAdapter {
 		super.defaultOut(node);
 		ident--;
 	}
+
+	/*@Override
+	public void inAConceptDecl(AConceptDecl node) {
+		super.inAConceptDecl(node);
+		push(retrieveFMLNode(node, n -> new FlexoConceptNode(n, getMainAnalyzer())));
+	}
+	
+	@Override
+	public void outAConceptDecl(AConceptDecl node) {
+		super.outAConceptDecl(node);
+		pop();
+	}*/
 
 	@Override
 	public void inAIdentifierLeftHandSide(AIdentifierLeftHandSide node) {

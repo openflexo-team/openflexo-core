@@ -38,9 +38,9 @@
 
 package org.openflexo.foundation.fml.parser.fmlnodes.expr;
 
+import org.openflexo.connie.Bindable;
 import org.openflexo.connie.expr.BindingValue.MethodCallBindingPathElement;
 import org.openflexo.foundation.fml.parser.MainSemanticsAnalyzer;
-import org.openflexo.foundation.fml.parser.ObjectNode;
 import org.openflexo.foundation.fml.parser.node.ASuperMethodInvocation;
 
 /**
@@ -48,20 +48,22 @@ import org.openflexo.foundation.fml.parser.node.ASuperMethodInvocation;
  * 
  */
 public class SuperMethodCallBindingPathElementNode
-		extends ObjectNode<ASuperMethodInvocation, MethodCallBindingPathElement, MainSemanticsAnalyzer> {
+		extends AbstractCallBindingPathElementNode<ASuperMethodInvocation, MethodCallBindingPathElement> {
 
-	public SuperMethodCallBindingPathElementNode(ASuperMethodInvocation astNode, MainSemanticsAnalyzer analyser) {
-		super(astNode, analyser);
+	public SuperMethodCallBindingPathElementNode(ASuperMethodInvocation astNode, MainSemanticsAnalyzer analyser, Bindable bindable) {
+		super(astNode, analyser, bindable);
 	}
 
-	public SuperMethodCallBindingPathElementNode(MethodCallBindingPathElement bindingPathElement, MainSemanticsAnalyzer analyser) {
-		super(bindingPathElement, analyser);
+	public SuperMethodCallBindingPathElementNode(MethodCallBindingPathElement bindingPathElement, MainSemanticsAnalyzer analyser,
+			Bindable bindable) {
+		super(bindingPathElement, analyser, bindable);
 	}
 
 	@Override
 	public MethodCallBindingPathElement buildModelObjectFromAST(ASuperMethodInvocation astNode) {
-		System.out.println("Je dois faire un SuperMethodCallBindingPathElementNode avec " + astNode);
-		return null;
+		handleArguments(astNode.getArgumentList());
+		MethodCallBindingPathElement returned = new MethodCallBindingPathElement(astNode.getKwSuper().getText(), getArguments());
+		return returned;
 	}
 
 	@Override

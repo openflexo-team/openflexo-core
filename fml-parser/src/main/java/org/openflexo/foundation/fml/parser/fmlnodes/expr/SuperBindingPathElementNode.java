@@ -38,23 +38,23 @@
 
 package org.openflexo.foundation.fml.parser.fmlnodes.expr;
 
+import org.openflexo.connie.Bindable;
 import org.openflexo.connie.expr.BindingValue.NormalBindingPathElement;
 import org.openflexo.foundation.fml.parser.MainSemanticsAnalyzer;
-import org.openflexo.foundation.fml.parser.ObjectNode;
 import org.openflexo.foundation.fml.parser.node.TKwSuper;
 
 /**
  * @author sylvain
  * 
  */
-public class SuperBindingPathElementNode extends ObjectNode<TKwSuper, NormalBindingPathElement, MainSemanticsAnalyzer> {
+public class SuperBindingPathElementNode extends AbstractBindingPathElementNode<TKwSuper, NormalBindingPathElement> {
 
-	public SuperBindingPathElementNode(TKwSuper astNode, MainSemanticsAnalyzer analyser) {
-		super(astNode, analyser);
+	public SuperBindingPathElementNode(TKwSuper astNode, MainSemanticsAnalyzer analyser, Bindable bindable) {
+		super(astNode, analyser, bindable);
 	}
 
-	public SuperBindingPathElementNode(NormalBindingPathElement bindingPathElement, MainSemanticsAnalyzer analyser) {
-		super(bindingPathElement, analyser);
+	public SuperBindingPathElementNode(NormalBindingPathElement bindingPathElement, MainSemanticsAnalyzer analyser, Bindable bindable) {
+		super(bindingPathElement, analyser, bindable);
 	}
 
 	@Override

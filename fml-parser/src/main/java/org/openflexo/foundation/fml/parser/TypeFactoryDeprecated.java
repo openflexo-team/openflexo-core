@@ -74,7 +74,6 @@ import org.openflexo.foundation.fml.parser.node.ABooleanPrimitiveType;
 import org.openflexo.foundation.fml.parser.node.AComplexType;
 import org.openflexo.foundation.fml.parser.node.ACompositeTident;
 import org.openflexo.foundation.fml.parser.node.AConceptDecl;
-import org.openflexo.foundation.fml.parser.node.ADiamondTypeArgumentsOrDiamond;
 import org.openflexo.foundation.fml.parser.node.AFloatPrimitiveType;
 import org.openflexo.foundation.fml.parser.node.AGtTypeArguments;
 import org.openflexo.foundation.fml.parser.node.AIdentifierPrefix;
@@ -87,7 +86,6 @@ import org.openflexo.foundation.fml.parser.node.AReferenceTypeArgument;
 import org.openflexo.foundation.fml.parser.node.AShrTypeArguments;
 import org.openflexo.foundation.fml.parser.node.ATypeArgumentList;
 import org.openflexo.foundation.fml.parser.node.ATypeArgumentListHead;
-import org.openflexo.foundation.fml.parser.node.ATypeArgumentsTypeArgumentsOrDiamond;
 import org.openflexo.foundation.fml.parser.node.AUshrTypeArguments;
 import org.openflexo.foundation.fml.parser.node.AVoidType;
 import org.openflexo.foundation.fml.parser.node.Node;
@@ -101,7 +99,6 @@ import org.openflexo.foundation.fml.parser.node.PTypeArgument;
 import org.openflexo.foundation.fml.parser.node.PTypeArgumentList;
 import org.openflexo.foundation.fml.parser.node.PTypeArgumentListHead;
 import org.openflexo.foundation.fml.parser.node.PTypeArguments;
-import org.openflexo.foundation.fml.parser.node.PTypeArgumentsOrDiamond;
 import org.openflexo.foundation.fml.parser.node.TUidentifier;
 import org.openflexo.foundation.fml.rt.action.MatchingSet;
 import org.openflexo.p2pp.RawSource.RawSourceFragment;
@@ -333,8 +330,8 @@ public class TypeFactoryDeprecated extends SemanticsAnalyzerFactory {
 		}
 	}
 
-	public Type makeType(PCompositeTident compositeIdentifier, PTypeArgumentsOrDiamond args) {
-
+	/*public Type makeType(PCompositeTident compositeIdentifier, PTypeArgumentsOrDiamond args) {
+	
 		Type baseType = makeType(compositeIdentifier);
 		if (args != null) {
 			if (args instanceof ADiamondTypeArgumentsOrDiamond) {
@@ -360,7 +357,7 @@ public class TypeFactoryDeprecated extends SemanticsAnalyzerFactory {
 			logger.warning("Unimplemented " + compositeIdentifier);
 		}
 		return baseType;
-	}
+	}*/
 
 	public PrimitiveType makePrimitiveType(PPrimitiveType primitiveType) {
 		if (primitiveType instanceof ABooleanPrimitiveType) {
@@ -968,7 +965,7 @@ public class TypeFactoryDeprecated extends SemanticsAnalyzerFactory {
 				@Override
 				public FlexoConcept resolveFlexoConcept(FlexoConceptInstanceType typeToResolve) {
 					if (astNode != null) {
-						FMLObjectNode<?, ?, ?> fmlObjectNode = getAnalyzer().getFMLNode(astNode);
+						ObjectNode<?, ?, ?> fmlObjectNode = getAnalyzer().getFMLNode(astNode);
 						if (fmlObjectNode instanceof FlexoConceptNode) {
 							// System.out.println("Found inlined concept: " + fmlObjectNode.getModelObject());
 							return ((FlexoConceptNode) fmlObjectNode).getModelObject();
@@ -985,7 +982,7 @@ public class TypeFactoryDeprecated extends SemanticsAnalyzerFactory {
 				@Override
 				public VirtualModel resolveVirtualModel(VirtualModelInstanceType typeToResolve) {
 					if (astNode != null) {
-						FMLObjectNode<?, ?, ?> fmlObjectNode = getAnalyzer().getFMLNode(astNode);
+						ObjectNode<?, ?, ?> fmlObjectNode = getAnalyzer().getFMLNode(astNode);
 						if (fmlObjectNode instanceof VirtualModelNode) {
 							// System.out.println("Found inlined virtual model: " + fmlObjectNode.getModelObject());
 							return ((VirtualModelNode) fmlObjectNode).getModelObject();

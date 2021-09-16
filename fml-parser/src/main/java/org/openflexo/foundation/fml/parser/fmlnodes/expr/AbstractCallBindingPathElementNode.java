@@ -47,7 +47,6 @@ import org.openflexo.connie.expr.BindingValue.AbstractBindingPathElement;
 import org.openflexo.connie.expr.Expression;
 import org.openflexo.foundation.fml.parser.ExpressionFactory;
 import org.openflexo.foundation.fml.parser.MainSemanticsAnalyzer;
-import org.openflexo.foundation.fml.parser.ObjectNode;
 import org.openflexo.foundation.fml.parser.node.AManyArgumentList;
 import org.openflexo.foundation.fml.parser.node.AOneArgumentList;
 import org.openflexo.foundation.fml.parser.node.Node;
@@ -60,7 +59,7 @@ import org.openflexo.foundation.fml.parser.node.PExpression;
  * 
  */
 public abstract class AbstractCallBindingPathElementNode<N extends Node, BPE extends AbstractBindingPathElement>
-		extends ObjectNode<N, BPE, MainSemanticsAnalyzer> {
+		extends AbstractBindingPathElementNode<N, BPE> {
 
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(AbstractCallBindingPathElementNode.class.getPackage().getName());
@@ -69,12 +68,12 @@ public abstract class AbstractCallBindingPathElementNode<N extends Node, BPE ext
 	private List<Expression> args;
 
 	public AbstractCallBindingPathElementNode(N astNode, MainSemanticsAnalyzer analyser, Bindable bindable) {
-		super(astNode, analyser);
+		super(astNode, analyser, bindable);
 		this.bindable = bindable;
 	}
 
 	public AbstractCallBindingPathElementNode(BPE bindingPathElement, MainSemanticsAnalyzer analyser, Bindable bindable) {
-		super(bindingPathElement, analyser);
+		super(bindingPathElement, analyser, bindable);
 		this.bindable = bindable;
 	}
 

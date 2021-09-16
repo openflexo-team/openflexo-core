@@ -38,30 +38,54 @@
 
 package org.openflexo.foundation.fml.parser.fmlnodes.expr;
 
+import org.openflexo.connie.Bindable;
 import org.openflexo.connie.expr.BindingValue.MethodCallBindingPathElement;
 import org.openflexo.foundation.fml.parser.MainSemanticsAnalyzer;
-import org.openflexo.foundation.fml.parser.ObjectNode;
 import org.openflexo.foundation.fml.parser.node.APrimaryMethodInvocation;
+import org.openflexo.foundation.fml.parser.node.Node;
+import org.openflexo.p2pp.RawSource.RawSourceFragment;
+import org.openflexo.p2pp.RawSource.RawSourcePosition;
 
 /**
  * @author sylvain
  * 
  */
 public class MethodCallBindingPathElementNode
-		extends ObjectNode<APrimaryMethodInvocation, MethodCallBindingPathElement, MainSemanticsAnalyzer> {
+		extends AbstractCallBindingPathElementNode<APrimaryMethodInvocation, MethodCallBindingPathElement> {
 
-	public MethodCallBindingPathElementNode(APrimaryMethodInvocation astNode, MainSemanticsAnalyzer analyser) {
-		super(astNode, analyser);
+	private Node identifierNode;
+
+	public MethodCallBindingPathElementNode(APrimaryMethodInvocation astNode, Node identifierNode, MainSemanticsAnalyzer analyser,
+			Bindable bindable) {
+		super(astNode, analyser, bindable);
+		this.identifierNode = identifierNode;
 	}
 
-	public MethodCallBindingPathElementNode(MethodCallBindingPathElement bindingPathElement, MainSemanticsAnalyzer analyser) {
-		super(bindingPathElement, analyser);
+	public MethodCallBindingPathElementNode(MethodCallBindingPathElement bindingPathElement, MainSemanticsAnalyzer analyser,
+			Bindable bindable) {
+		super(bindingPathElement, analyser, bindable);
+	}
+
+	@Override
+	public RawSourcePosition getStartLocation() {
+		if (identifierNode != null) {
+			RawSourceFragment fragment = getFragment(identifierNode);
+			if (fragment != null) {
+				return fragment.getStartPosition();
+			}
+			return null;
+
+		}
+		return super.getStartLocation();
 	}
 
 	@Override
 	public MethodCallBindingPathElement buildModelObjectFromAST(APrimaryMethodInvocation astNode) {
-		System.out.println("Je dois faire un MethodCallBindingPathElementNode avec " + astNode);
-		return null;
+
+		handleArguments(astNode.getArgumentList());
+		String identifier = getLastPathIdentifier(astNode.getPrimary());
+		MethodCallBindingPathElement returned = new MethodCallBindingPathElement(identifier, getArguments());
+		return returned;
 	}
 
 	@Override

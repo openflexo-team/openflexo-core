@@ -38,27 +38,23 @@
 
 package org.openflexo.foundation.fml.parser.fmlnodes.expr;
 
+import org.openflexo.connie.Bindable;
 import org.openflexo.connie.expr.BindingValue.NormalBindingPathElement;
 import org.openflexo.foundation.fml.parser.MainSemanticsAnalyzer;
-import org.openflexo.foundation.fml.parser.ObjectNode;
 import org.openflexo.foundation.fml.parser.node.TLidentifier;
 
 /**
  * @author sylvain
  * 
  */
-public class NormalBindingPathElementNode extends ObjectNode<TLidentifier, NormalBindingPathElement, MainSemanticsAnalyzer> {
+public class NormalBindingPathElementNode extends AbstractBindingPathElementNode<TLidentifier, NormalBindingPathElement> {
 
-	public NormalBindingPathElementNode(TLidentifier astNode, MainSemanticsAnalyzer analyser) {
-		super(astNode, analyser);
-		/*if (astNode.toString().trim().equals("b")) {
-			System.out.println("make NormalBindingPathElementNode with " + astNode);
-			Thread.dumpStack();
-		}*/
+	public NormalBindingPathElementNode(TLidentifier astNode, MainSemanticsAnalyzer analyser, Bindable bindable) {
+		super(astNode, analyser, bindable);
 	}
 
-	public NormalBindingPathElementNode(NormalBindingPathElement bindingPathElement, MainSemanticsAnalyzer analyser) {
-		super(bindingPathElement, analyser);
+	public NormalBindingPathElementNode(NormalBindingPathElement bindingPathElement, MainSemanticsAnalyzer analyser, Bindable bindable) {
+		super(bindingPathElement, analyser, bindable);
 	}
 
 	@Override

@@ -49,6 +49,7 @@ import java.util.List;
 
 import org.openflexo.foundation.fml.FMLCompilationUnit;
 import org.openflexo.foundation.fml.FMLModelFactory;
+import org.openflexo.foundation.fml.FMLPrettyPrintDelegate;
 import org.openflexo.foundation.fml.parser.fmlnodes.FMLCompilationUnitNode;
 import org.openflexo.foundation.test.OpenflexoTestCase;
 import org.openflexo.p2pp.P2PPNode;
@@ -155,7 +156,7 @@ public abstract class FMLParserTestCase extends OpenflexoTestCase {
 	 */
 	protected static void debug(P2PPNode<?, ?> node, int indent) {
 		System.out.println(StringUtils.buildWhiteSpaceIndentation(indent * 2) + " > " + node.getClass().getSimpleName() + " from "
-				+ node.getLastParsedFragment() + " pre=" + node.getPrelude() + " post="
+				+ ((FMLPrettyPrintDelegate) node).getStartLocation() + "-" + node.getEndPosition() + " pre=" + node.getPrelude() + " post="
 				+ node.getPostlude() /*+ " astNode=" + node.getASTNode() + " of " + node.getASTNode().getClass()*/
 				+ " model=" + node.getModelObject());
 		// System.err.println(node.getLastParsed());

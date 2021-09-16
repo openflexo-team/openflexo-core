@@ -51,6 +51,7 @@ import org.openflexo.foundation.DefaultFlexoEditor;
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.fml.ActionScheme;
 import org.openflexo.foundation.fml.FMLCompilationUnit;
+import org.openflexo.foundation.fml.FMLPrettyPrintDelegate;
 import org.openflexo.foundation.fml.editionaction.AssignationAction;
 import org.openflexo.foundation.fml.editionaction.ExpressionAction;
 import org.openflexo.foundation.fml.parser.fmlnodes.FMLCompilationUnitNode;
@@ -62,6 +63,7 @@ import org.openflexo.foundation.fml.parser.fmlnodes.expr.ConstantNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.expr.DataBindingNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.expr.MethodCallBindingPathElementNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.expr.NormalBindingPathElementNode;
+import org.openflexo.foundation.fml.parser.fmlnodes.expr.SuperMethodCallBindingPathElementNode;
 import org.openflexo.p2pp.P2PPNode;
 import org.openflexo.pamela.exceptions.ModelDefinitionException;
 import org.openflexo.rm.Resource;
@@ -120,7 +122,7 @@ public class TestBindingPath extends FMLParserTestCase {
 	}
 
 	private <N extends P2PPNode, M> N checkNode(String expectedFragment, String expectedPrelude, String expectedPostlude, N node) {
-		assertEquals(expectedFragment, node.getLastParsedFragment().toString());
+		assertEquals(expectedFragment, ((FMLPrettyPrintDelegate) node).getStartLocation() + "-" + node.getEndPosition());
 		assertEquals(expectedPrelude, node.getPrelude() != null ? node.getPrelude().toString() : null);
 		assertEquals(expectedPostlude, node.getPostlude() != null ? node.getPostlude().toString() : null);
 		return node;
@@ -255,6 +257,131 @@ public class TestBindingPath extends FMLParserTestCase {
 		BindingPathNode valueNode = checkNode("(24:6)-(24:9)", (BindingPathNode) expressionValueNode.getChildren().get(0));
 		MethodCallBindingPathElementNode methodPathElementNode = checkNode("(24:6)-(24:9)",
 				(MethodCallBindingPathElementNode) valueNode.getChildren().get(0));
+	}
+
+	@Test
+	@TestOrder(7)
+	public void testMethodCall2() throws ParseException, ModelDefinitionException, IOException {
+		log("testMethodCall2()");
+
+		ActionScheme actionScheme = (ActionScheme) compilationUnit.getVirtualModel().getFlexoBehaviour("testMethodCall2");
+		assertNotNull(actionScheme);
+
+		System.out.println("PP:" + actionScheme.getFMLPrettyPrint());
+		System.out.println("Norm:" + actionScheme.getNormalizedFML());
+
+		FlexoBehaviourNode<?, ?> behaviourNode = checkNodeForObject("(27:1)-(29:2)", "(26:0)-(27:0)", "(29:2)-(30:0)", actionScheme);
+		assertSame(behaviourNode, rootNode.getObjectNode(actionScheme));
+		debug(behaviourNode, 0);
+		assertTrue(actionScheme.getControlGraph() instanceof AssignationAction);
+		AssignationAction assignationAction = (AssignationAction) actionScheme.getControlGraph();
+		assertEquals("a", assignationAction.getAssignation().toString());
+
+		assertTrue(assignationAction.getAssignableAction() instanceof ExpressionAction);
+		AssignationActionNode assignationNode = checkNodeForObject("(28:2)-(28:14)", assignationAction);
+
+		ExpressionActionNode expressionNode = checkNodeForObject("(28:6)-(28:13)", assignationAction.getAssignableAction());
+		DataBindingNode expressionValueNode = checkNode("(28:6)-(28:13)", (DataBindingNode) expressionNode.getChildren().get(0));
+		BindingPathNode valueNode = checkNode("(28:6)-(28:13)", (BindingPathNode) expressionValueNode.getChildren().get(0));
+		NormalBindingPathElementNode value1PathElementNode = checkNode("(28:6)-(28:7)",
+				(NormalBindingPathElementNode) valueNode.getChildren().get(0));
+		NormalBindingPathElementNode value2PathElementNode = checkNode("(28:8)-(28:9)",
+				(NormalBindingPathElementNode) valueNode.getChildren().get(1));
+		MethodCallBindingPathElementNode methodPathElementNode = checkNode("(28:10)-(28:13)",
+				(MethodCallBindingPathElementNode) valueNode.getChildren().get(2));
+	}
+
+	@Test
+	@TestOrder(8)
+	public void testMethodCall3() throws ParseException, ModelDefinitionException, IOException {
+		log("testMethodCall3()");
+
+		ActionScheme actionScheme = (ActionScheme) compilationUnit.getVirtualModel().getFlexoBehaviour("testMethodCall3");
+		assertNotNull(actionScheme);
+
+		System.out.println("PP:" + actionScheme.getFMLPrettyPrint());
+		System.out.println("Norm:" + actionScheme.getNormalizedFML());
+
+		FlexoBehaviourNode<?, ?> behaviourNode = checkNodeForObject("(31:1)-(33:2)", "(30:0)-(31:0)", "(33:2)-(34:0)", actionScheme);
+		assertSame(behaviourNode, rootNode.getObjectNode(actionScheme));
+		debug(behaviourNode, 0);
+		assertTrue(actionScheme.getControlGraph() instanceof AssignationAction);
+		AssignationAction assignationAction = (AssignationAction) actionScheme.getControlGraph();
+		assertEquals("a", assignationAction.getAssignation().toString());
+
+		assertTrue(assignationAction.getAssignableAction() instanceof ExpressionAction);
+		AssignationActionNode assignationNode = checkNodeForObject("(32:2)-(32:18)", assignationAction);
+
+		ExpressionActionNode expressionNode = checkNodeForObject("(32:6)-(32:17)", assignationAction.getAssignableAction());
+		DataBindingNode expressionValueNode = checkNode("(32:6)-(32:17)", (DataBindingNode) expressionNode.getChildren().get(0));
+		BindingPathNode valueNode = checkNode("(32:6)-(32:17)", (BindingPathNode) expressionValueNode.getChildren().get(0));
+
+		NormalBindingPathElementNode pathElementNode1 = checkNode("(32:6)-(32:7)",
+				(NormalBindingPathElementNode) valueNode.getChildren().get(0));
+		MethodCallBindingPathElementNode pathElementNode2 = checkNode("(32:8)-(32:11)",
+				(MethodCallBindingPathElementNode) valueNode.getChildren().get(1));
+		MethodCallBindingPathElementNode pathElementNode3 = checkNode("(32:12)-(32:15)",
+				(MethodCallBindingPathElementNode) valueNode.getChildren().get(2));
+		NormalBindingPathElementNode pathElementNode4 = checkNode("(32:16)-(32:17)",
+				(NormalBindingPathElementNode) valueNode.getChildren().get(3));
+	}
+
+	@Test
+	@TestOrder(9)
+	public void testMethodCall4() throws ParseException, ModelDefinitionException, IOException {
+		log("testMethodCall4()");
+
+		ActionScheme actionScheme = (ActionScheme) compilationUnit.getVirtualModel().getFlexoBehaviour("testMethodCall4");
+		assertNotNull(actionScheme);
+
+		System.out.println("PP:" + actionScheme.getFMLPrettyPrint());
+		System.out.println("Norm:" + actionScheme.getNormalizedFML());
+
+		FlexoBehaviourNode<?, ?> behaviourNode = checkNodeForObject("(35:1)-(37:2)", "(34:0)-(35:0)", "(37:2)-(38:0)", actionScheme);
+		assertSame(behaviourNode, rootNode.getObjectNode(actionScheme));
+		debug(behaviourNode, 0);
+		assertTrue(actionScheme.getControlGraph() instanceof AssignationAction);
+		AssignationAction assignationAction = (AssignationAction) actionScheme.getControlGraph();
+		assertEquals("a", assignationAction.getAssignation().toString());
+
+		assertTrue(assignationAction.getAssignableAction() instanceof ExpressionAction);
+		AssignationActionNode assignationNode = checkNodeForObject("(36:2)-(36:14)", assignationAction);
+
+		ExpressionActionNode expressionNode = checkNodeForObject("(36:6)-(36:13)", assignationAction.getAssignableAction());
+		DataBindingNode expressionValueNode = checkNode("(36:6)-(36:13)", (DataBindingNode) expressionNode.getChildren().get(0));
+		BindingPathNode valueNode = checkNode("(36:6)-(36:13)", (BindingPathNode) expressionValueNode.getChildren().get(0));
+
+		SuperMethodCallBindingPathElementNode pathElementNode1 = checkNode("(36:6)-(36:13)",
+				(SuperMethodCallBindingPathElementNode) valueNode.getChildren().get(0));
+	}
+
+	@Test
+	@TestOrder(9)
+	public void testMethodCallWithArguments() throws ParseException, ModelDefinitionException, IOException {
+		log("testMethodCallWithArguments()");
+
+		ActionScheme actionScheme = (ActionScheme) compilationUnit.getVirtualModel().getFlexoBehaviour("testMethodCallWithArguments");
+		assertNotNull(actionScheme);
+
+		System.out.println("PP:" + actionScheme.getFMLPrettyPrint());
+		System.out.println("Norm:" + actionScheme.getNormalizedFML());
+
+		FlexoBehaviourNode<?, ?> behaviourNode = checkNodeForObject("(39:1)-(41:2)", "(38:0)-(39:0)", "(41:2)-(42:0)", actionScheme);
+		assertSame(behaviourNode, rootNode.getObjectNode(actionScheme));
+		debug(behaviourNode, 0);
+		assertTrue(actionScheme.getControlGraph() instanceof AssignationAction);
+		AssignationAction assignationAction = (AssignationAction) actionScheme.getControlGraph();
+		assertEquals("a", assignationAction.getAssignation().toString());
+
+		assertTrue(assignationAction.getAssignableAction() instanceof ExpressionAction);
+		AssignationActionNode assignationNode = checkNodeForObject("(40:2)-(40:14)", assignationAction);
+
+		ExpressionActionNode expressionNode = checkNodeForObject("(40:6)-(40:13)", assignationAction.getAssignableAction());
+		DataBindingNode expressionValueNode = checkNode("(40:6)-(40:13)", (DataBindingNode) expressionNode.getChildren().get(0));
+		BindingPathNode valueNode = checkNode("(40:6)-(40:13)", (BindingPathNode) expressionValueNode.getChildren().get(0));
+
+		SuperMethodCallBindingPathElementNode pathElementNode1 = checkNode("(40:6)-(40:13)",
+				(SuperMethodCallBindingPathElementNode) valueNode.getChildren().get(0));
 	}
 
 }
