@@ -43,6 +43,7 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import org.openflexo.connie.Bindable;
+import org.openflexo.connie.DataBinding.BindingDefinitionType;
 import org.openflexo.connie.expr.BindingValue.AbstractBindingPathElement;
 import org.openflexo.connie.expr.Expression;
 import org.openflexo.foundation.fml.parser.ExpressionFactory;
@@ -70,6 +71,9 @@ public abstract class AbstractCallBindingPathElementNode<N extends Node, BPE ext
 	public AbstractCallBindingPathElementNode(N astNode, MainSemanticsAnalyzer analyser, Bindable bindable) {
 		super(astNode, analyser, bindable);
 		this.bindable = bindable;
+		// buildModelObjectFromAST() was already called, but too early (bindable not yet set)
+		// we do it again
+		modelObject = buildModelObjectFromAST(astNode);
 	}
 
 	public AbstractCallBindingPathElementNode(BPE bindingPathElement, MainSemanticsAnalyzer analyser, Bindable bindable) {
@@ -94,7 +98,8 @@ public abstract class AbstractCallBindingPathElementNode<N extends Node, BPE ext
 
 	protected void handleArgument(PExpression expression) {
 
-		DataBindingNode dataBindingNode = getAnalyser().retrieveFMLNode(expression, n -> new DataBindingNode(n, getAnalyser()));
+		DataBindingNode dataBindingNode = getAnalyser().retrieveFMLNode(expression,
+				n -> new DataBindingNode(n, bindable, BindingDefinitionType.GET, Object.class, getAnalyser()));
 		addToChildren(dataBindingNode);
 
 		Expression argValue = ExpressionFactory.makeExpression(expression, bindable, getAnalyser(), dataBindingNode);

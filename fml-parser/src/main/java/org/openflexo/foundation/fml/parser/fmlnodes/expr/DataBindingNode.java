@@ -38,7 +38,11 @@
 
 package org.openflexo.foundation.fml.parser.fmlnodes.expr;
 
+import java.lang.reflect.Type;
+
+import org.openflexo.connie.Bindable;
 import org.openflexo.connie.DataBinding;
+import org.openflexo.connie.DataBinding.BindingDefinitionType;
 import org.openflexo.foundation.fml.parser.MainSemanticsAnalyzer;
 import org.openflexo.foundation.fml.parser.ObjectNode;
 import org.openflexo.foundation.fml.parser.node.Node;
@@ -49,8 +53,19 @@ import org.openflexo.foundation.fml.parser.node.Node;
  */
 public class DataBindingNode extends ObjectNode<Node, DataBinding<?>, MainSemanticsAnalyzer> {
 
-	public DataBindingNode(Node astNode, MainSemanticsAnalyzer analyser) {
+	private Bindable bindable;
+	private BindingDefinitionType bindingDefinitionType;
+	private Type expectedType;
+
+	public DataBindingNode(Node astNode, Bindable bindable, BindingDefinitionType bindingDefinitionType, Type expectedType,
+			MainSemanticsAnalyzer analyser) {
 		super(astNode, analyser);
+		this.bindable = bindable;
+		this.bindingDefinitionType = bindingDefinitionType;
+		this.expectedType = expectedType;
+		// buildModelObjectFromAST() was already called, but too early (bindable not yet set)
+		// we do it again
+		modelObject = buildModelObjectFromAST(astNode);
 	}
 
 	public DataBindingNode(DataBinding<?> dataBinding, MainSemanticsAnalyzer analyser) {
@@ -59,7 +74,9 @@ public class DataBindingNode extends ObjectNode<Node, DataBinding<?>, MainSemant
 
 	@Override
 	public DataBinding<?> buildModelObjectFromAST(Node astNode) {
-		System.out.println("Je dois faire une DataBinding avec " + astNode);
+		if (bindable != null && expectedType != null && bindingDefinitionType != null) {
+			return new DataBinding(bindable, expectedType, bindingDefinitionType);
+		}
 		return null;
 	}
 

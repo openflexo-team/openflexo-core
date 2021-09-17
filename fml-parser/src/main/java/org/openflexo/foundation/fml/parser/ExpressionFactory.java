@@ -119,7 +119,7 @@ public class ExpressionFactory extends FMLSemanticsAnalyzer {
 	private Bindable bindable;
 	private final AbstractFMLTypingSpace typingSpace;
 	private final MainSemanticsAnalyzer mainAnalyzer;
-	private final DataBindingNode parentNode;
+	private final DataBindingNode dataBindingNode;
 
 	private int depth = -1;
 
@@ -162,37 +162,32 @@ public class ExpressionFactory extends FMLSemanticsAnalyzer {
 		return factory.getExpression();
 	}
 
-	@SuppressWarnings("rawtypes")
+	@SuppressWarnings({ "unchecked" })
 	private static <T> DataBinding<T> _makeDataBinding(Node node, Bindable bindable, BindingDefinitionType bindingDefinitionType,
 			Type expectedType, AbstractFMLTypingSpace typingSpace, MainSemanticsAnalyzer mainAnalyzer, ObjectNode<?, ?, ?> parentNode) {
 
-		DataBindingNode dataBindingNode = mainAnalyzer.retrieveFMLNode(node, n -> new DataBindingNode(n, mainAnalyzer));
-		DataBinding returned = new DataBinding(bindable, expectedType, bindingDefinitionType);
-		dataBindingNode.setModelObject(returned);
+		DataBindingNode dataBindingNode = mainAnalyzer.retrieveFMLNode(node,
+				n -> new DataBindingNode(n, bindable, bindingDefinitionType, expectedType, mainAnalyzer));
 
-		// if (mainAnalyzer != null && parentNode != null) {
-		// dataBindingNode = mainAnalyzer.retrieveFMLNode(node, n -> new DataBindingNode(n, mainAnalyzer));
 		parentNode.addToChildren(dataBindingNode);
-		// }
 
-		Expression expression = _makeExpression(node, bindable, typingSpace, mainAnalyzer, dataBindingNode);
+		_makeExpression(node, bindable, typingSpace, mainAnalyzer, dataBindingNode);
 
-		// DataBinding returned = new DataBinding(bindable, expectedType, bindingDefinitionType);
-		// returned.setExpression(expression);
-		// if (dataBindingNode != null) {
-		// dataBindingNode.setModelObject(returned);
-		// }
-		return returned;
+		return (DataBinding<T>) dataBindingNode.getModelObject();
 	}
 
 	private ExpressionFactory(Node rootNode, Bindable aBindable, AbstractFMLTypingSpace typingSpace, MainSemanticsAnalyzer mainAnalyzer,
-			DataBindingNode parentNode) {
+			DataBindingNode dataBindingNode) {
 		super(mainAnalyzer.getFactory(), rootNode);
 		expressionNodes = new Hashtable<>();
 		this.bindable = aBindable;
 		this.typingSpace = typingSpace;
 		this.mainAnalyzer = mainAnalyzer;
-		this.parentNode = parentNode;
+		this.dataBindingNode = dataBindingNode;
+	}
+
+	public DataBindingNode getDataBindingNode() {
+		return dataBindingNode;
 	}
 
 	public AbstractFMLTypingSpace getTypingSpace() {

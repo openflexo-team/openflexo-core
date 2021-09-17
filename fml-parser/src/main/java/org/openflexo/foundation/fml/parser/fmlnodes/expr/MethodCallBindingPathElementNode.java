@@ -82,10 +82,13 @@ public class MethodCallBindingPathElementNode
 	@Override
 	public MethodCallBindingPathElement buildModelObjectFromAST(APrimaryMethodInvocation astNode) {
 
-		handleArguments(astNode.getArgumentList());
-		String identifier = getLastPathIdentifier(astNode.getPrimary());
-		MethodCallBindingPathElement returned = new MethodCallBindingPathElement(identifier, getArguments());
-		return returned;
+		if (getBindable() != null) {
+			handleArguments(astNode.getArgumentList());
+			String identifier = getLastPathIdentifier(astNode.getPrimary());
+			MethodCallBindingPathElement returned = new MethodCallBindingPathElement(identifier, getArguments());
+			return returned;
+		}
+		return null;
 	}
 
 	@Override

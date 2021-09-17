@@ -103,16 +103,6 @@ class BindingPathFactory {
 	public static BindingValue makeBindingPath(Node node, ExpressionFactory expressionFactory, BindingPathNode bindingPathNode,
 			boolean appendBindingPathNode) {
 
-		/*BindingPathNode bindingPathNode = null;
-		
-		if (expressionFactory.getMainAnalyzer() != null && parentNode != null && appendBindingPathNode) {
-			bindingPathNode = expressionFactory.getMainAnalyzer().registerFMLNode(node, new BindingPathNode(node, expressionFactory));
-			// Otherwise, we throw a ClassCastException if same node support also DataBindingNode
-			// bindingPathNode = expressionAnalyzer.getAnalyzer().retrieveFMLNode(node,
-			// n -> new BindingPathNode(n, expressionAnalyzer.getAnalyzer()));
-			parentNode.addToChildren(bindingPathNode);
-		}*/
-
 		List<AbstractBindingPathElement> bindingPath = makeBindingPath(node, expressionFactory, bindingPathNode);
 
 		BindingValue returned = new BindingValue(bindingPath, expressionFactory.getBindable(), JavaPrettyPrinter.getInstance());
