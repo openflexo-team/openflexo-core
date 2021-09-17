@@ -50,7 +50,6 @@ import org.openflexo.connie.expr.Expression;
 import org.openflexo.connie.java.expr.JavaPrettyPrinter;
 import org.openflexo.foundation.fml.parser.fmlnodes.expr.AbstractBindingPathElementNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.expr.BindingPathNode;
-import org.openflexo.foundation.fml.parser.fmlnodes.expr.DataBindingNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.expr.MethodCallBindingPathElementNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.expr.NormalBindingPathElementNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.expr.SuperBindingPathElementNode;
@@ -94,31 +93,31 @@ import org.openflexo.foundation.fml.parser.node.TLidentifier;
  */
 class BindingPathFactory {
 
-	private final ExpressionFactory expressionAnalyzer;
+	private final ExpressionFactory expressionFactory;
 	private final List<AbstractBindingPathElement> path;
 	private final List<AbstractBindingPathElementNode<?, ?>> nodesPath;
 	private final Node rootNode;
 
 	// private BindingPathNode bindingPathNode = null;
 
-	public static BindingValue makeBindingPath(Node node, ExpressionFactory expressionAnalyzer, DataBindingNode parentNode,
+	public static BindingValue makeBindingPath(Node node, ExpressionFactory expressionFactory, BindingPathNode bindingPathNode,
 			boolean appendBindingPathNode) {
 
-		BindingPathNode bindingPathNode = null;
-
-		if (expressionAnalyzer.getAnalyzer() != null && parentNode != null && appendBindingPathNode) {
-			bindingPathNode = expressionAnalyzer.getAnalyzer().registerFMLNode(node,
-					new BindingPathNode(node, expressionAnalyzer.getAnalyzer()));
+		/*BindingPathNode bindingPathNode = null;
+		
+		if (expressionFactory.getMainAnalyzer() != null && parentNode != null && appendBindingPathNode) {
+			bindingPathNode = expressionFactory.getMainAnalyzer().registerFMLNode(node, new BindingPathNode(node, expressionFactory));
 			// Otherwise, we throw a ClassCastException if same node support also DataBindingNode
 			// bindingPathNode = expressionAnalyzer.getAnalyzer().retrieveFMLNode(node,
 			// n -> new BindingPathNode(n, expressionAnalyzer.getAnalyzer()));
 			parentNode.addToChildren(bindingPathNode);
-		}
+		}*/
 
-		List<AbstractBindingPathElement> bindingPath = makeBindingPath(node, expressionAnalyzer, bindingPathNode);
+		List<AbstractBindingPathElement> bindingPath = makeBindingPath(node, expressionFactory, bindingPathNode);
 
-		BindingValue returned = new BindingValue(bindingPath, expressionAnalyzer.getBindable(), JavaPrettyPrinter.getInstance());
+		BindingValue returned = new BindingValue(bindingPath, expressionFactory.getBindable(), JavaPrettyPrinter.getInstance());
 		if (bindingPathNode != null) {
+			System.out.println("Hop le modelObject " + returned);
 			bindingPathNode.setModelObject(returned);
 		}
 
@@ -141,7 +140,7 @@ class BindingPathFactory {
 	}
 
 	private BindingPathFactory(Node node, ExpressionFactory expressionAnalyzer) {
-		this.expressionAnalyzer = expressionAnalyzer;
+		this.expressionFactory = expressionAnalyzer;
 		this.rootNode = node;
 		path = new ArrayList<>();
 		nodesPath = new ArrayList<>();
@@ -244,9 +243,9 @@ class BindingPathFactory {
 
 	private void appendBindingPath(TLidentifier node) {
 		NormalBindingPathElement pathElement;
-		if (expressionAnalyzer.getAnalyzer() != null) {
-			NormalBindingPathElementNode pathElementNode = expressionAnalyzer.getAnalyzer().retrieveFMLNode(node,
-					n -> new NormalBindingPathElementNode(n, expressionAnalyzer.getAnalyzer(), expressionAnalyzer.getBindable()));
+		if (expressionFactory.getMainAnalyzer() != null) {
+			NormalBindingPathElementNode pathElementNode = expressionFactory.getMainAnalyzer().retrieveFMLNode(node,
+					n -> new NormalBindingPathElementNode(n, expressionFactory.getMainAnalyzer(), expressionFactory.getBindable()));
 			nodesPath.add(pathElementNode);
 			pathElement = pathElementNode.buildModelObjectFromAST(node);
 		}
@@ -258,9 +257,9 @@ class BindingPathFactory {
 
 	private void appendBindingPath(TKwSuper node) {
 		NormalBindingPathElement superElement;
-		if (expressionAnalyzer.getAnalyzer() != null) {
-			SuperBindingPathElementNode pathElementNode = expressionAnalyzer.getAnalyzer().retrieveFMLNode(node,
-					n -> new SuperBindingPathElementNode(n, expressionAnalyzer.getAnalyzer(), expressionAnalyzer.getBindable()));
+		if (expressionFactory.getMainAnalyzer() != null) {
+			SuperBindingPathElementNode pathElementNode = expressionFactory.getMainAnalyzer().retrieveFMLNode(node,
+					n -> new SuperBindingPathElementNode(n, expressionFactory.getMainAnalyzer(), expressionFactory.getBindable()));
 			nodesPath.add(pathElementNode);
 			superElement = pathElementNode.buildModelObjectFromAST(node);
 		}
@@ -273,10 +272,10 @@ class BindingPathFactory {
 	private void appendMethodInvocation(APrimaryMethodInvocation node, NormalBindingPathElementNode lastPathElementNode) {
 		String identifier = lastPathElementNode.getModelObject().property;
 		MethodCallBindingPathElement methodCallElement;
-		if (expressionAnalyzer.getAnalyzer() != null) {
-			MethodCallBindingPathElementNode pathElementNode = expressionAnalyzer.getAnalyzer().retrieveFMLNode(node,
-					n -> new MethodCallBindingPathElementNode(n, lastPathElementNode.getASTNode(), expressionAnalyzer.getAnalyzer(),
-							expressionAnalyzer.getBindable()));
+		if (expressionFactory.getMainAnalyzer() != null) {
+			MethodCallBindingPathElementNode pathElementNode = expressionFactory.getMainAnalyzer().retrieveFMLNode(node,
+					n -> new MethodCallBindingPathElementNode(n, lastPathElementNode.getASTNode(), expressionFactory.getMainAnalyzer(),
+							expressionFactory.getBindable()));
 			nodesPath.add(pathElementNode);
 			methodCallElement = pathElementNode.buildModelObjectFromAST(node);
 		}
@@ -288,9 +287,10 @@ class BindingPathFactory {
 
 	private void appendSuperMethodInvocation(ASuperMethodInvocation node) {
 		MethodCallBindingPathElement methodCallElement;
-		if (expressionAnalyzer.getAnalyzer() != null) {
-			SuperMethodCallBindingPathElementNode pathElementNode = expressionAnalyzer.getAnalyzer().retrieveFMLNode(node,
-					n -> new SuperMethodCallBindingPathElementNode(n, expressionAnalyzer.getAnalyzer(), expressionAnalyzer.getBindable()));
+		if (expressionFactory.getMainAnalyzer() != null) {
+			SuperMethodCallBindingPathElementNode pathElementNode = expressionFactory.getMainAnalyzer().retrieveFMLNode(node,
+					n -> new SuperMethodCallBindingPathElementNode(n, expressionFactory.getMainAnalyzer(),
+							expressionFactory.getBindable()));
 			nodesPath.add(pathElementNode);
 			methodCallElement = pathElementNode.buildModelObjectFromAST(node);
 		}
@@ -311,7 +311,7 @@ class BindingPathFactory {
 			// System.out.println("Tiens je cherche pour " + pExpression + " of " + pExpression.getClass().getSimpleName());
 			// System.out.println("Et je tombe sur: " + expressionAnalyzer.getExpression(pExpression) + " of "
 			// + expressionAnalyzer.getExpression(pExpression).getClass().getSimpleName());
-			args.add(expressionAnalyzer.getExpression(pExpression));
+			args.add(expressionFactory.getExpression(pExpression));
 		}
 		else if (argumentList instanceof AManyArgumentList) {
 			List<PExpression> arguments = makeArguments((AManyArgumentList) argumentList);
@@ -319,7 +319,7 @@ class BindingPathFactory {
 				// System.out.println("Tiens je cherche pour " + pExpression + " of " + pExpression.getClass().getSimpleName());
 				// System.out.println("Et je tombe sur: " + expressionAnalyzer.getExpression(pExpression) + " of "
 				// + expressionAnalyzer.getExpression(pExpression).getClass().getSimpleName());
-				args.add(expressionAnalyzer.getExpression(pExpression));
+				args.add(expressionFactory.getExpression(pExpression));
 			}
 		}
 		return args;

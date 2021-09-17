@@ -124,9 +124,8 @@ class BindingPathFactoryDeprecated extends DepthFirstAdapter {
 
 		BindingPathNode bindingPathNode = null;
 
-		if (expressionAnalyzer.getAnalyzer() != null && parentNode != null && appendBindingPathNode) {
-			bindingPathNode = expressionAnalyzer.getAnalyzer().registerFMLNode(node,
-					new BindingPathNode(node, expressionAnalyzer.getAnalyzer()));
+		if (expressionAnalyzer.getMainAnalyzer() != null && parentNode != null && appendBindingPathNode) {
+			bindingPathNode = expressionAnalyzer.getMainAnalyzer().registerFMLNode(node, new BindingPathNode(node, expressionAnalyzer));
 			// Otherwise, we throw a ClassCastException if same node support also DataBindingNode
 			// bindingPathNode = expressionAnalyzer.getAnalyzer().retrieveFMLNode(node,
 			// n -> new BindingPathNode(n, expressionAnalyzer.getAnalyzer()));
@@ -312,9 +311,9 @@ class BindingPathFactoryDeprecated extends DepthFirstAdapter {
 		// System.out.println("outAIdentifierPrefix " + node.getLidentifier().getText());
 		if (weAreDealingWithTheRightBindingPath() && !isInsideTypeStack.peek()) {
 			NormalBindingPathElement pathElement;
-			if (expressionAnalyzer.getAnalyzer() != null) {
-				NormalBindingPathElementNode pathElementNode = expressionAnalyzer.getAnalyzer().retrieveFMLNode(node.getLidentifier(),
-						n -> new NormalBindingPathElementNode(n, expressionAnalyzer.getAnalyzer(), expressionAnalyzer.getBindable()));
+			if (expressionAnalyzer.getMainAnalyzer() != null) {
+				NormalBindingPathElementNode pathElementNode = expressionAnalyzer.getMainAnalyzer().retrieveFMLNode(node.getLidentifier(),
+						n -> new NormalBindingPathElementNode(n, expressionAnalyzer.getMainAnalyzer(), expressionAnalyzer.getBindable()));
 				if (bindingPathNode != null) {
 					bindingPathNode.addToChildren(pathElementNode);
 				}
@@ -337,9 +336,9 @@ class BindingPathFactoryDeprecated extends DepthFirstAdapter {
 		// System.out.println("outACompositeIdent " + node.getIdentifier().getText());
 		if (weAreDealingWithTheRightBindingPath() && !isInsideTypeStack.peek()) {
 			NormalBindingPathElement pathElement;
-			if (expressionAnalyzer.getAnalyzer() != null) {
-				NormalBindingPathElementNode pathElementNode = expressionAnalyzer.getAnalyzer().retrieveFMLNode(node.getIdentifier(),
-						n -> new NormalBindingPathElementNode(n, expressionAnalyzer.getAnalyzer(), expressionAnalyzer.getBindable()));
+			if (expressionAnalyzer.getMainAnalyzer() != null) {
+				NormalBindingPathElementNode pathElementNode = expressionAnalyzer.getMainAnalyzer().retrieveFMLNode(node.getIdentifier(),
+						n -> new NormalBindingPathElementNode(n, expressionAnalyzer.getMainAnalyzer(), expressionAnalyzer.getBindable()));
 				if (bindingPathNode != null) {
 					bindingPathNode.addToChildren(pathElementNode);
 				}
@@ -379,9 +378,9 @@ class BindingPathFactoryDeprecated extends DepthFirstAdapter {
 				path.add(bindingPath.get(i).getModelObject());
 			}*/
 			NormalBindingPathElement pathElement;
-			if (expressionAnalyzer.getAnalyzer() != null) {
-				NormalBindingPathElementNode pathElementNode = expressionAnalyzer.getAnalyzer().retrieveFMLNode(node.getLidentifier(),
-						n -> new NormalBindingPathElementNode(n, expressionAnalyzer.getAnalyzer(), expressionAnalyzer.getBindable()));
+			if (expressionAnalyzer.getMainAnalyzer() != null) {
+				NormalBindingPathElementNode pathElementNode = expressionAnalyzer.getMainAnalyzer().retrieveFMLNode(node.getLidentifier(),
+						n -> new NormalBindingPathElementNode(n, expressionAnalyzer.getMainAnalyzer(), expressionAnalyzer.getBindable()));
 				if (bindingPathNode != null) {
 					bindingPathNode.addToChildren(pathElementNode);
 				}
@@ -402,9 +401,9 @@ class BindingPathFactoryDeprecated extends DepthFirstAdapter {
 		super.outASuperFieldAccess(node);
 		if (weAreDealingWithTheRightBindingPath()) {
 			NormalBindingPathElement superElement;
-			if (expressionAnalyzer.getAnalyzer() != null) {
-				SuperBindingPathElementNode pathElementNode = expressionAnalyzer.getAnalyzer().retrieveFMLNode(node.getKwSuper(),
-						n -> new SuperBindingPathElementNode(n, expressionAnalyzer.getAnalyzer(), expressionAnalyzer.getBindable()));
+			if (expressionAnalyzer.getMainAnalyzer() != null) {
+				SuperBindingPathElementNode pathElementNode = expressionAnalyzer.getMainAnalyzer().retrieveFMLNode(node.getKwSuper(),
+						n -> new SuperBindingPathElementNode(n, expressionAnalyzer.getMainAnalyzer(), expressionAnalyzer.getBindable()));
 				if (bindingPathNode != null) {
 					bindingPathNode.addToChildren(pathElementNode);
 				}
@@ -418,9 +417,9 @@ class BindingPathFactoryDeprecated extends DepthFirstAdapter {
 			}
 			path.add(superElement);
 			NormalBindingPathElement pathElement;
-			if (expressionAnalyzer.getAnalyzer() != null) {
-				NormalBindingPathElementNode pathElementNode = expressionAnalyzer.getAnalyzer().retrieveFMLNode(node.getLidentifier(),
-						n -> new NormalBindingPathElementNode(n, expressionAnalyzer.getAnalyzer(), expressionAnalyzer.getBindable()));
+			if (expressionAnalyzer.getMainAnalyzer() != null) {
+				NormalBindingPathElementNode pathElementNode = expressionAnalyzer.getMainAnalyzer().retrieveFMLNode(node.getLidentifier(),
+						n -> new NormalBindingPathElementNode(n, expressionAnalyzer.getMainAnalyzer(), expressionAnalyzer.getBindable()));
 				if (bindingPathNode != null) {
 					bindingPathNode.addToChildren(pathElementNode);
 				}
@@ -448,9 +447,9 @@ class BindingPathFactoryDeprecated extends DepthFirstAdapter {
 				path.add(bindingPath.get(i).getModelObject());
 			}*/
 			NormalBindingPathElement superElement;
-			if (expressionAnalyzer.getAnalyzer() != null) {
-				SuperBindingPathElementNode pathElementNode = expressionAnalyzer.getAnalyzer().retrieveFMLNode(node.getKwSuper(),
-						n -> new SuperBindingPathElementNode(n, expressionAnalyzer.getAnalyzer(), expressionAnalyzer.getBindable()));
+			if (expressionAnalyzer.getMainAnalyzer() != null) {
+				SuperBindingPathElementNode pathElementNode = expressionAnalyzer.getMainAnalyzer().retrieveFMLNode(node.getKwSuper(),
+						n -> new SuperBindingPathElementNode(n, expressionAnalyzer.getMainAnalyzer(), expressionAnalyzer.getBindable()));
 				if (bindingPathNode != null) {
 					bindingPathNode.addToChildren(pathElementNode);
 				}
@@ -464,9 +463,9 @@ class BindingPathFactoryDeprecated extends DepthFirstAdapter {
 			}
 			path.add(superElement);
 			NormalBindingPathElement pathElement;
-			if (expressionAnalyzer.getAnalyzer() != null) {
-				NormalBindingPathElementNode pathElementNode = expressionAnalyzer.getAnalyzer().retrieveFMLNode(node.getIdentifier2(),
-						n -> new NormalBindingPathElementNode(n, expressionAnalyzer.getAnalyzer(), expressionAnalyzer.getBindable()));
+			if (expressionAnalyzer.getMainAnalyzer() != null) {
+				NormalBindingPathElementNode pathElementNode = expressionAnalyzer.getMainAnalyzer().retrieveFMLNode(node.getIdentifier2(),
+						n -> new NormalBindingPathElementNode(n, expressionAnalyzer.getMainAnalyzer(), expressionAnalyzer.getBindable()));
 				if (bindingPathNode != null) {
 					bindingPathNode.addToChildren(pathElementNode);
 				}
@@ -499,9 +498,9 @@ class BindingPathFactoryDeprecated extends DepthFirstAdapter {
 			NormalBindingPathElementNode lastPathElementNode = (NormalBindingPathElementNode) bindingPath.get(bindingPath.size() - 1);
 			String identifier = lastPathElementNode.getModelObject().property;
 			MethodCallBindingPathElement methodCallElement;
-			if (expressionAnalyzer.getAnalyzer() != null && bindingPathNode != null) {
-				MethodCallBindingPathElementNode pathElementNode = expressionAnalyzer.getAnalyzer().retrieveFMLNode(node,
-						n -> new MethodCallBindingPathElementNode(n, lastPathElementNode.getASTNode(), expressionAnalyzer.getAnalyzer(),
+			if (expressionAnalyzer.getMainAnalyzer() != null && bindingPathNode != null) {
+				MethodCallBindingPathElementNode pathElementNode = expressionAnalyzer.getMainAnalyzer().retrieveFMLNode(node,
+						n -> new MethodCallBindingPathElementNode(n, lastPathElementNode.getASTNode(), expressionAnalyzer.getMainAnalyzer(),
 								expressionAnalyzer.getBindable()));
 				bindingPathNode.addToChildren(pathElementNode);
 				methodCallElement = pathElementNode.buildModelObjectFromAST(node);
@@ -520,9 +519,9 @@ class BindingPathFactoryDeprecated extends DepthFirstAdapter {
 		super.outASuperMethodInvocation(node);
 		if (weAreDealingWithTheRightBindingPath()) {
 			MethodCallBindingPathElement returned = new MethodCallBindingPathElement("super", makeArgs(node.getArgumentList()));
-			if (expressionAnalyzer.getAnalyzer() != null) {
-				SuperMethodCallBindingPathElementNode pathElementNode = expressionAnalyzer.getAnalyzer().retrieveFMLNode(node,
-						n -> new SuperMethodCallBindingPathElementNode(n, expressionAnalyzer.getAnalyzer(),
+			if (expressionAnalyzer.getMainAnalyzer() != null) {
+				SuperMethodCallBindingPathElementNode pathElementNode = expressionAnalyzer.getMainAnalyzer().retrieveFMLNode(node,
+						n -> new SuperMethodCallBindingPathElementNode(n, expressionAnalyzer.getMainAnalyzer(),
 								expressionAnalyzer.getBindable()));
 				if (bindingPathNode != null) {
 					bindingPathNode.addToChildren(pathElementNode);
@@ -568,9 +567,9 @@ class BindingPathFactoryDeprecated extends DepthFirstAdapter {
 			}
 			else {
 				NewInstanceBindingPathElement pathElement;
-				if (expressionAnalyzer.getAnalyzer() != null && bindingPathNode != null) {
-					AddClassInstanceNode pathElementNode = expressionAnalyzer.getAnalyzer().retrieveFMLNode(node,
-							n -> new AddClassInstanceNode(n, expressionAnalyzer.getAnalyzer(), expressionAnalyzer.getBindable()));
+				if (expressionAnalyzer.getMainAnalyzer() != null && bindingPathNode != null) {
+					AddClassInstanceNode pathElementNode = expressionAnalyzer.getMainAnalyzer().retrieveFMLNode(node,
+							n -> new AddClassInstanceNode(n, expressionAnalyzer.getMainAnalyzer(), expressionAnalyzer.getBindable()));
 					bindingPathNode.addToChildren(pathElementNode);
 					pathElement = pathElementNode.buildModelObjectFromAST(node);
 				}

@@ -1,14 +1,15 @@
 package org.openflexo.foundation.fml.parser;
 
 import java.lang.reflect.Type;
+import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
+import java.util.function.Function;
 import java.util.logging.Logger;
 
 import org.openflexo.connie.Bindable;
 import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.DataBinding.BindingDefinitionType;
-import org.openflexo.connie.expr.Constant;
 import org.openflexo.connie.expr.Expression;
 import org.openflexo.foundation.fml.AbstractFMLTypingSpace;
 import org.openflexo.foundation.fml.FMLCompilationUnit;
@@ -27,9 +28,10 @@ import org.openflexo.foundation.fml.expr.FMLConstant.ObjectSymbolicConstant;
 import org.openflexo.foundation.fml.expr.FMLConstant.StringConstant;
 import org.openflexo.foundation.fml.expr.FMLInstanceOfExpression;
 import org.openflexo.foundation.fml.expr.FMLUnaryOperatorExpression;
-import org.openflexo.foundation.fml.parser.analysis.DepthFirstAdapter;
-import org.openflexo.foundation.fml.parser.fmlnodes.expr.ConstantNode;
+import org.openflexo.foundation.fml.parser.fmlnodes.expr.BindingPathNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.expr.DataBindingNode;
+import org.openflexo.foundation.fml.parser.fmlnodes.expr.IntegerConstantNode;
+import org.openflexo.foundation.fml.parser.fmlnodes.expr.PlusExpressionNode;
 import org.openflexo.foundation.fml.parser.node.AAmpAmpConditionalAndExp;
 import org.openflexo.foundation.fml.parser.node.AAmpAndExp;
 import org.openflexo.foundation.fml.parser.node.ABarBarConditionalOrExp;
@@ -104,17 +106,19 @@ import org.openflexo.foundation.fml.parser.node.Node;
  * @author sylvain
  *
  */
-public class ExpressionFactory extends DepthFirstAdapter {
+public class ExpressionFactory extends FMLSemanticsAnalyzer {
 
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(ExpressionFactory.class.getPackage().getName());
 
+	@Deprecated
 	private final Map<Node, Expression> expressionNodes;
+	@Deprecated
 	private Node topLevel = null;
 
 	private Bindable bindable;
 	private final AbstractFMLTypingSpace typingSpace;
-	private final MainSemanticsAnalyzer analyzer;
+	private final MainSemanticsAnalyzer mainAnalyzer;
 	private final DataBindingNode parentNode;
 
 	private int depth = -1;
@@ -147,11 +151,13 @@ public class ExpressionFactory extends DepthFirstAdapter {
 	}
 
 	private static Expression _makeExpression(Node node, Bindable bindable, AbstractFMLTypingSpace typingSpace,
-			MainSemanticsAnalyzer mainAnalyzer, DataBindingNode parentNode) {
+			MainSemanticsAnalyzer mainAnalyzer, DataBindingNode dataBindingNode) {
 		// return new DataBinding(analyzer.getText(node), bindable, expectedType, BindingDefinitionType.GET);
 
-		ExpressionFactory factory = new ExpressionFactory(node, bindable, typingSpace, mainAnalyzer, parentNode);
+		ExpressionFactory factory = new ExpressionFactory(node, bindable, typingSpace, mainAnalyzer, dataBindingNode);
+		factory.push(dataBindingNode);
 		node.apply(factory);
+		factory.pop();
 
 		return factory.getExpression();
 	}
@@ -160,29 +166,32 @@ public class ExpressionFactory extends DepthFirstAdapter {
 	private static <T> DataBinding<T> _makeDataBinding(Node node, Bindable bindable, BindingDefinitionType bindingDefinitionType,
 			Type expectedType, AbstractFMLTypingSpace typingSpace, MainSemanticsAnalyzer mainAnalyzer, ObjectNode<?, ?, ?> parentNode) {
 
-		DataBindingNode dataBindingNode = null;
-		if (mainAnalyzer != null && parentNode != null) {
-			dataBindingNode = mainAnalyzer.retrieveFMLNode(node, n -> new DataBindingNode(n, mainAnalyzer));
-			parentNode.addToChildren(dataBindingNode);
-		}
+		DataBindingNode dataBindingNode = mainAnalyzer.retrieveFMLNode(node, n -> new DataBindingNode(n, mainAnalyzer));
+		DataBinding returned = new DataBinding(bindable, expectedType, bindingDefinitionType);
+		dataBindingNode.setModelObject(returned);
+
+		// if (mainAnalyzer != null && parentNode != null) {
+		// dataBindingNode = mainAnalyzer.retrieveFMLNode(node, n -> new DataBindingNode(n, mainAnalyzer));
+		parentNode.addToChildren(dataBindingNode);
+		// }
 
 		Expression expression = _makeExpression(node, bindable, typingSpace, mainAnalyzer, dataBindingNode);
 
-		DataBinding returned = new DataBinding(bindable, expectedType, bindingDefinitionType);
-		returned.setExpression(expression);
-		if (dataBindingNode != null) {
-			dataBindingNode.setModelObject(returned);
-		}
+		// DataBinding returned = new DataBinding(bindable, expectedType, bindingDefinitionType);
+		// returned.setExpression(expression);
+		// if (dataBindingNode != null) {
+		// dataBindingNode.setModelObject(returned);
+		// }
 		return returned;
 	}
 
 	private ExpressionFactory(Node rootNode, Bindable aBindable, AbstractFMLTypingSpace typingSpace, MainSemanticsAnalyzer mainAnalyzer,
 			DataBindingNode parentNode) {
-		super();
+		super(mainAnalyzer.getFactory(), rootNode);
 		expressionNodes = new Hashtable<>();
 		this.bindable = aBindable;
 		this.typingSpace = typingSpace;
-		this.analyzer = mainAnalyzer;
+		this.mainAnalyzer = mainAnalyzer;
 		this.parentNode = parentNode;
 	}
 
@@ -201,10 +210,20 @@ public class ExpressionFactory extends DepthFirstAdapter {
 		return bindable;
 	}
 
-	public MainSemanticsAnalyzer getAnalyzer() {
-		return analyzer;
+	@Override
+	public MainSemanticsAnalyzer getMainAnalyzer() {
+		return mainAnalyzer;
 	}
 
+	@Override
+	protected void push(ObjectNode<?, ?, ?> fmlNode) {
+		super.push(fmlNode);
+		if (fmlNode.getModelObject() instanceof Expression) {
+			expressionNodes.put(fmlNode.getASTNode(), (Expression) fmlNode.getModelObject());
+		}
+	}
+
+	@Deprecated
 	private void registerExpressionNode(Node n, Expression e) {
 		// System.out.println("REGISTER " + e + " for node " + n + " as " + n.getClass());
 		expressionNodes.put(n, e);
@@ -212,16 +231,16 @@ public class ExpressionFactory extends DepthFirstAdapter {
 		/*if (n.parent() != null) {
 			registerExpressionNode(n.parent(), e);
 		}*/
-		if (e instanceof Constant && weAreDealingWithTheRightBindingPath()) {
-			if (getAnalyzer() != null && parentNode != null) {
-				ConstantNode constantNode = getAnalyzer().registerFMLNode(n, new ConstantNode(n, getAnalyzer()));
+		/*if (e instanceof Constant && weAreDealingWithTheRightBindingPath()) {
+			if (getMainAnalyzer() != null && parentNode != null) {
+				ConstantNode constantNode = getMainAnalyzer().registerFMLNode(n, new ConstantNode(n, getMainAnalyzer()));
 				constantNode.setModelObject((Constant) e);
 				parentNode.addToChildren(constantNode);
 			}
-		}
+		}*/
 	}
 
-	protected Expression getExpression(Node n) {
+	public Expression getExpression(Node n) {
 		if (n != null) {
 			Expression returned = expressionNodes.get(n);
 
@@ -315,81 +334,90 @@ public class ExpressionFactory extends DepthFirstAdapter {
 		ident--;
 	}
 
-	/*@Override
-	public void inAConceptDecl(AConceptDecl node) {
-		super.inAConceptDecl(node);
-		push(retrieveFMLNode(node, n -> new FlexoConceptNode(n, getMainAnalyzer())));
+	private BindingPathNode pushBindingPathNode(Node node) {
+		depth++;
+		if (weAreDealingWithTheRightBindingPath()) {
+			BindingPathNode returned;
+			System.out.println("********** On construit un BindingPath pour " + node);
+			push(returned = retrieveFMLNode(node, n -> new BindingPathNode(n, this)));
+			return returned;
+		}
+		return null;
 	}
-	
-	@Override
-	public void outAConceptDecl(AConceptDecl node) {
-		super.outAConceptDecl(node);
-		pop();
-	}*/
+
+	private BindingPathNode popBindingPathNode(Node node) {
+		try {
+			if (weAreDealingWithTheRightBindingPath()) {
+				BindingPathNode bindingPathNode = peek();
+				BindingPathFactory.makeBindingPath(node, this, bindingPathNode, true);
+				pop();
+				expressionNodes.put(node, bindingPathNode.getModelObject());
+				return bindingPathNode;
+			}
+			return null;
+		} finally {
+			depth--;
+		}
+	}
 
 	@Override
 	public void inAIdentifierLeftHandSide(AIdentifierLeftHandSide node) {
 		super.inAIdentifierLeftHandSide(node);
-		depth++;
+		pushBindingPathNode(node);
 	}
 
 	@Override
 	public void outAIdentifierLeftHandSide(AIdentifierLeftHandSide node) {
 		super.outAIdentifierLeftHandSide(node);
-		registerExpressionNode(node, BindingPathFactory.makeBindingPath(node, this, parentNode, weAreDealingWithTheRightBindingPath()));
-		depth--;
+		popBindingPathNode(node);
 	}
 
 	@Override
 	public void inAFieldLeftHandSide(AFieldLeftHandSide node) {
 		super.inAFieldLeftHandSide(node);
-		depth++;
+		pushBindingPathNode(node);
 	}
 
 	@Override
 	public void outAFieldLeftHandSide(AFieldLeftHandSide node) {
 		super.outAFieldLeftHandSide(node);
-		registerExpressionNode(node, BindingPathFactory.makeBindingPath(node, this, parentNode, weAreDealingWithTheRightBindingPath()));
-		depth--;
+		popBindingPathNode(node);
 	}
 
 	@Override
 	public void inAIdentifierPrimary(AIdentifierPrimary node) {
 		super.inAIdentifierPrimary(node);
-		depth++;
+		pushBindingPathNode(node);
 	}
 
 	@Override
 	public void outAIdentifierPrimary(AIdentifierPrimary node) {
 		super.outAIdentifierPrimary(node);
-		registerExpressionNode(node, BindingPathFactory.makeBindingPath(node, this, parentNode, weAreDealingWithTheRightBindingPath()));
-		depth--;
+		popBindingPathNode(node);
 	}
 
 	@Override
 	public void inAMethodPrimaryNoId(AMethodPrimaryNoId node) {
 		super.inAMethodPrimaryNoId(node);
-		depth++;
+		pushBindingPathNode(node);
 	}
 
 	@Override
 	public void outAMethodPrimaryNoId(AMethodPrimaryNoId node) {
 		super.outAMethodPrimaryNoId(node);
-		registerExpressionNode(node, BindingPathFactory.makeBindingPath(node, this, parentNode, weAreDealingWithTheRightBindingPath()));
-		depth--;
+		popBindingPathNode(node);
 	}
 
 	@Override
 	public void inAFieldPrimaryNoId(AFieldPrimaryNoId node) {
 		super.inAFieldPrimaryNoId(node);
-		depth++;
+		pushBindingPathNode(node);
 	}
 
 	@Override
 	public void outAFieldPrimaryNoId(AFieldPrimaryNoId node) {
 		super.outAFieldPrimaryNoId(node);
-		registerExpressionNode(node, BindingPathFactory.makeBindingPath(node, this, parentNode, weAreDealingWithTheRightBindingPath()));
-		depth--;
+		popBindingPathNode(node);
 	}
 
 	// When we enter in a type, increase level
@@ -409,14 +437,13 @@ public class ExpressionFactory extends DepthFirstAdapter {
 	@Override
 	public void inANewInstancePrimaryNoId(ANewInstancePrimaryNoId node) {
 		super.inANewInstancePrimaryNoId(node);
-		depth++;
+		pushBindingPathNode(node);
 	}
 
 	@Override
 	public void outANewInstancePrimaryNoId(ANewInstancePrimaryNoId node) {
 		super.outANewInstancePrimaryNoId(node);
-		registerExpressionNode(node, BindingPathFactory.makeBindingPath(node, this, parentNode, weAreDealingWithTheRightBindingPath()));
-		depth--;
+		popBindingPathNode(node);
 	}
 
 	@Override
@@ -453,13 +480,56 @@ public class ExpressionFactory extends DepthFirstAdapter {
 		registerExpressionNode(node, new CharConstant(c));
 	}
 
+	/*@Override
+	public void inAConceptDecl(AConceptDecl node) {
+		super.inAConceptDecl(node);
+		push(retrieveFMLNode(node, n -> new FlexoConceptNode(n, getMainAnalyzer())));
+	}
+	
+	@Override
+	public void outAConceptDecl(AConceptDecl node) {
+		super.outAConceptDecl(node);
+		pop();
+	}*/
+
+	private Map<Node, ObjectNode> nodesForAST = new HashMap<>();
+
+	/*public Map<Node, FMLObjectNode> getNodesForAST() {
+		return nodesForAST;
+	}*/
+
+	public <N extends Node, FMLN extends ObjectNode> FMLN retrieveFMLNode(N astNode, Function<N, FMLN> function) {
+		FMLN returned = (FMLN) nodesForAST.get(astNode);
+		if (returned == null) {
+			returned = function.apply(astNode);
+			nodesForAST.put(astNode, returned);
+		}
+		return returned;
+	}
+
+	@Override
+	public void inAIntegerLiteral(AIntegerLiteral node) {
+		super.inAIntegerLiteral(node);
+
+		push(retrieveFMLNode(node, n -> new IntegerConstantNode(n, this)));
+
+		/*if (e instanceof Constant && weAreDealingWithTheRightBindingPath()) {
+			if (getMainAnalyzer() != null && parentNode != null) {
+				ConstantNode constantNode = getMainAnalyzer().registerFMLNode(n, new ConstantNode(n, getMainAnalyzer()));
+				constantNode.setModelObject((Constant) e);
+				parentNode.addToChildren(constantNode);
+			}
+		}*/
+
+	}
+
 	@Override
 	public void outAIntegerLiteral(AIntegerLiteral node) {
 		super.outAIntegerLiteral(node);
 
-		String valueText = node.getLitInteger().getText();
+		/*String valueText = node.getLitInteger().getText();
 		Number value;
-
+		
 		if (valueText.startsWith("0x") || valueText.startsWith("0X")) {
 			valueText = valueText.substring(2);
 			try {
@@ -485,7 +555,9 @@ public class ExpressionFactory extends DepthFirstAdapter {
 			// value = NumberFormat.getNumberInstance().parse(valueText);
 			// System.out.println("Pour " + valueText + " j'obtiens " + value + " of " + value.getClass());
 		}
-		registerExpressionNode(node, FMLConstant.makeConstant(value));
+		registerExpressionNode(node, FMLConstant.makeConstant(value));*/
+
+		pop();
 	}
 
 	@Override
@@ -694,10 +766,19 @@ public class ExpressionFactory extends DepthFirstAdapter {
 	// ;
 
 	@Override
+	public void inAPlusAddExp(APlusAddExp node) {
+		super.inAPlusAddExp(node);
+		push(retrieveFMLNode(node, n -> new PlusExpressionNode(n, this)));
+	}
+
+	@Override
 	public void outAPlusAddExp(APlusAddExp node) {
 		super.outAPlusAddExp(node);
-		registerExpressionNode(node, new FMLBinaryOperatorExpression(FMLArithmeticBinaryOperator.ADDITION, getExpression(node.getAddExp()),
-				getExpression(node.getMultExp())));
+		pop();
+
+		// registerExpressionNode(node, new FMLBinaryOperatorExpression(FMLArithmeticBinaryOperator.ADDITION,
+		// getExpression(node.getAddExp()),
+		// getExpression(node.getMultExp())));
 	}
 
 	@Override

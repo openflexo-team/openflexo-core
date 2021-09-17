@@ -136,9 +136,9 @@ public abstract class FMLSemanticsAnalyzer extends DepthFirstAdapter {
 		return builtFMLNode;
 	}
 
-	public ObjectNode<?, ?, ?> peek() {
+	public <N extends ObjectNode<?, ?, ?>> N peek() {
 		if (!fmlNodes.isEmpty()) {
-			return fmlNodes.peek();
+			return (N) fmlNodes.peek();
 		}
 		return null;
 	}

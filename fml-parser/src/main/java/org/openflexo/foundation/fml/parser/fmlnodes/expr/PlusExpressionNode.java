@@ -38,37 +38,40 @@
 
 package org.openflexo.foundation.fml.parser.fmlnodes.expr;
 
-import org.openflexo.connie.expr.BindingValue;
+import org.openflexo.connie.expr.BinaryOperator;
+import org.openflexo.foundation.fml.expr.FMLArithmeticBinaryOperator;
+import org.openflexo.foundation.fml.expr.FMLBinaryOperatorExpression;
 import org.openflexo.foundation.fml.parser.ExpressionFactory;
-import org.openflexo.foundation.fml.parser.node.Node;
+import org.openflexo.foundation.fml.parser.node.APlusAddExp;
 
 /**
  * @author sylvain
  * 
  */
-public class BindingPathNode extends ExpressionNode<Node, BindingValue> {
+public class PlusExpressionNode extends FMLBinaryOperatorExpressionNode<APlusAddExp> {
 
-	public BindingPathNode(Node astNode, ExpressionFactory expressionFactory) {
+	public PlusExpressionNode(APlusAddExp astNode, ExpressionFactory expressionFactory) {
 		super(astNode, expressionFactory);
 	}
 
-	public BindingPathNode(BindingValue bindingPath, ExpressionFactory expressionFactory) {
-		super(bindingPath, expressionFactory);
+	public PlusExpressionNode(FMLBinaryOperatorExpression expression, ExpressionFactory expressionFactory) {
+		super(expression, expressionFactory);
 	}
 
 	@Override
-	public BindingValue buildModelObjectFromAST(Node astNode) {
-		System.out.println("Je dois faire une BindingValue avec " + astNode);
-		return null;
+	public BinaryOperator getOperator() {
+		return FMLArithmeticBinaryOperator.ADDITION;
 	}
 
-	/*@Override
-	public BindingPathNode deserialize() {
-		if (getParent() instanceof DataBindingNode) {
-			System.out.println("Hop le parent recoit l'expression " + getModelObject());
-			((DataBindingNode) getParent()).getModelObject().setExpression(getModelObject());
-		}
+	@Override
+	public PlusExpressionNode deserialize() {
+		System.out.println("On deserialise un PlusExpressionNode");
+		System.out.println("Gauche: " + getExpressionFactory().getExpression(getASTNode().getAddExp()));
+		System.out.println("Droite: " + getExpressionFactory().getExpression(getASTNode().getMultExp()));
+		getModelObject().setLeftArgument(getExpressionFactory().getExpression(getASTNode().getAddExp()));
+		getModelObject().setRightArgument(getExpressionFactory().getExpression(getASTNode().getMultExp()));
+		super.deserialize();
 		return this;
-	}*/
+	}
 
 }

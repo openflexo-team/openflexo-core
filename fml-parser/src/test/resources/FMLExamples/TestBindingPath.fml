@@ -36,9 +36,9 @@ model MyModel {
 		a = super();
 	}
 
-	testMethodCallWithArguments() {
+	/*testMethodCallWithArguments() {
 		a = b(1);
-	}
+	}*/
 	
 	/*testMethodCallWithArguments2() {
 		a = b(c.d.e());

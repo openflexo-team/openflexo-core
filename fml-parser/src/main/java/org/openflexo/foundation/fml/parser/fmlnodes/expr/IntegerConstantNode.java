@@ -38,37 +38,56 @@
 
 package org.openflexo.foundation.fml.parser.fmlnodes.expr;
 
-import org.openflexo.connie.expr.BindingValue;
+import org.openflexo.foundation.fml.expr.FMLConstant;
+import org.openflexo.foundation.fml.expr.FMLConstant.ArithmeticConstant;
 import org.openflexo.foundation.fml.parser.ExpressionFactory;
-import org.openflexo.foundation.fml.parser.node.Node;
+import org.openflexo.foundation.fml.parser.node.AIntegerLiteral;
 
 /**
  * @author sylvain
  * 
  */
-public class BindingPathNode extends ExpressionNode<Node, BindingValue> {
+public class IntegerConstantNode extends ConstantNode<AIntegerLiteral, ArithmeticConstant<Integer>> {
 
-	public BindingPathNode(Node astNode, ExpressionFactory expressionFactory) {
+	public IntegerConstantNode(AIntegerLiteral astNode, ExpressionFactory expressionFactory) {
 		super(astNode, expressionFactory);
 	}
 
-	public BindingPathNode(BindingValue bindingPath, ExpressionFactory expressionFactory) {
-		super(bindingPath, expressionFactory);
+	public IntegerConstantNode(ArithmeticConstant<Integer> constant, ExpressionFactory expressionFactory) {
+		super(constant, expressionFactory);
 	}
 
 	@Override
-	public BindingValue buildModelObjectFromAST(Node astNode) {
-		System.out.println("Je dois faire une BindingValue avec " + astNode);
-		return null;
-	}
+	public ArithmeticConstant<Integer> buildModelObjectFromAST(AIntegerLiteral astNode) {
+		String valueText = astNode.getLitInteger().getText();
+		Number value;
 
-	/*@Override
-	public BindingPathNode deserialize() {
-		if (getParent() instanceof DataBindingNode) {
-			System.out.println("Hop le parent recoit l'expression " + getModelObject());
-			((DataBindingNode) getParent()).getModelObject().setExpression(getModelObject());
+		if (valueText.startsWith("0x") || valueText.startsWith("0X")) {
+			valueText = valueText.substring(2);
+			try {
+				value = Integer.parseInt(valueText, 16);
+			} catch (NumberFormatException e) {
+				value = Long.parseLong(valueText, 16);
+			}
 		}
-		return this;
-	}*/
+		else if (valueText.startsWith("0") && valueText.length() > 1) {
+			valueText = valueText.substring(1);
+			try {
+				value = Integer.parseInt(valueText, 8);
+			} catch (NumberFormatException e) {
+				value = Long.parseLong(valueText, 8);
+			}
+		}
+		else if (valueText.endsWith("L") || valueText.endsWith("l")) {
+			valueText = valueText.substring(0, valueText.length() - 1);
+			value = Long.parseLong(valueText);
+		}
+		else {
+			value = Integer.parseInt(valueText);
+			// value = NumberFormat.getNumberInstance().parse(valueText);
+			// System.out.println("Pour " + valueText + " j'obtiens " + value + " of " + value.getClass());
+		}
+		return (ArithmeticConstant) FMLConstant.makeConstant(value);
+	}
 
 }

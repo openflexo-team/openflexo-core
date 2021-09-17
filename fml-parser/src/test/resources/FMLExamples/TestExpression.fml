@@ -1,0 +1,20 @@
+/**
+ * Testing concept behaviours
+ */
+
+use org.openflexo.foundation.fml.rt.FMLRTModelSlot as FMLRT;
+
+model MyModel {
+
+    Object a;
+
+	testSimpleValue() {
+		a = 42;
+	}
+
+	testSimpleExpression() {
+		a = 42+1;
+	}
+
+
+}

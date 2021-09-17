@@ -39,33 +39,21 @@
 package org.openflexo.foundation.fml.parser.fmlnodes.expr;
 
 import org.openflexo.connie.expr.Constant;
-import org.openflexo.foundation.fml.parser.MainSemanticsAnalyzer;
-import org.openflexo.foundation.fml.parser.ObjectNode;
-import org.openflexo.foundation.fml.parser.node.Node;
+import org.openflexo.foundation.fml.parser.ExpressionFactory;
+import org.openflexo.foundation.fml.parser.node.PLiteral;
 
 /**
  * @author sylvain
  * 
  */
-public class ConstantNode extends ObjectNode<Node, Constant<?>, MainSemanticsAnalyzer> {
+public abstract class ConstantNode<N extends PLiteral, T extends Constant<?>> extends ExpressionNode<N, T> {
 
-	public ConstantNode(Node astNode, MainSemanticsAnalyzer analyser) {
-		super(astNode, analyser);
+	public ConstantNode(N astNode, ExpressionFactory expressionFactory) {
+		super(astNode, expressionFactory);
 	}
 
-	public ConstantNode(Constant<?> constant, MainSemanticsAnalyzer analyser) {
-		super(constant, analyser);
-	}
-
-	@Override
-	public Constant buildModelObjectFromAST(Node astNode) {
-		System.out.println("Je dois faire une Constant avec " + astNode);
-		return null;
-	}
-
-	@Override
-	public ConstantNode deserialize() {
-		return this;
+	public ConstantNode(T constant, ExpressionFactory expressionFactory) {
+		super(constant, expressionFactory);
 	}
 
 }
