@@ -38,7 +38,12 @@
 
 package org.openflexo.foundation.fml.parser.fmlnodes.expr;
 
+import java.util.List;
+
 import org.openflexo.connie.expr.BindingValue;
+import org.openflexo.connie.expr.BindingValue.AbstractBindingPathElement;
+import org.openflexo.connie.java.expr.JavaPrettyPrinter;
+import org.openflexo.foundation.fml.parser.BindingPathFactory;
 import org.openflexo.foundation.fml.parser.ExpressionFactory;
 import org.openflexo.foundation.fml.parser.node.Node;
 
@@ -50,6 +55,9 @@ public class BindingPathNode extends ExpressionNode<Node, BindingValue> {
 
 	public BindingPathNode(Node astNode, ExpressionFactory expressionFactory) {
 		super(astNode, expressionFactory);
+		// buildModelObjectFromAST() was already called, but too early (bindable not yet set)
+		// we do it again
+		modelObject = buildModelObjectFromAST(astNode);
 	}
 
 	public BindingPathNode(BindingValue bindingPath, ExpressionFactory expressionFactory) {
@@ -58,17 +66,12 @@ public class BindingPathNode extends ExpressionNode<Node, BindingValue> {
 
 	@Override
 	public BindingValue buildModelObjectFromAST(Node astNode) {
-		System.out.println("Je dois faire une BindingValue avec " + astNode);
+
+		if (getExpressionFactory() != null) {
+			List<AbstractBindingPathElement> bindingPath = BindingPathFactory.makeBindingPath(astNode, getExpressionFactory(), this);
+			return new BindingValue(bindingPath, getExpressionFactory().getBindable(), JavaPrettyPrinter.getInstance());
+		}
 		return null;
 	}
-
-	/*@Override
-	public BindingPathNode deserialize() {
-		if (getParent() instanceof DataBindingNode) {
-			System.out.println("Hop le parent recoit l'expression " + getModelObject());
-			((DataBindingNode) getParent()).getModelObject().setExpression(getModelObject());
-		}
-		return this;
-	}*/
 
 }

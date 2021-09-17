@@ -47,7 +47,6 @@ import org.openflexo.connie.expr.BindingValue.AbstractBindingPathElement;
 import org.openflexo.connie.expr.BindingValue.MethodCallBindingPathElement;
 import org.openflexo.connie.expr.BindingValue.NormalBindingPathElement;
 import org.openflexo.connie.expr.Expression;
-import org.openflexo.connie.java.expr.JavaPrettyPrinter;
 import org.openflexo.foundation.fml.parser.fmlnodes.expr.AbstractBindingPathElementNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.expr.BindingPathNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.expr.MethodCallBindingPathElementNode;
@@ -91,30 +90,14 @@ import org.openflexo.foundation.fml.parser.node.TLidentifier;
  * @author sylvain
  * 
  */
-class BindingPathFactory {
+public class BindingPathFactory {
 
 	private final ExpressionFactory expressionFactory;
 	private final List<AbstractBindingPathElement> path;
 	private final List<AbstractBindingPathElementNode<?, ?>> nodesPath;
 	private final Node rootNode;
 
-	// private BindingPathNode bindingPathNode = null;
-
-	public static BindingValue makeBindingPath(Node node, ExpressionFactory expressionFactory, BindingPathNode bindingPathNode,
-			boolean appendBindingPathNode) {
-
-		List<AbstractBindingPathElement> bindingPath = makeBindingPath(node, expressionFactory, bindingPathNode);
-
-		BindingValue returned = new BindingValue(bindingPath, expressionFactory.getBindable(), JavaPrettyPrinter.getInstance());
-		if (bindingPathNode != null) {
-			System.out.println("Hop le modelObject " + returned);
-			bindingPathNode.setModelObject(returned);
-		}
-
-		return returned;
-	}
-
-	private static List<AbstractBindingPathElement> makeBindingPath(Node node, ExpressionFactory expressionAnalyzer,
+	public static List<AbstractBindingPathElement> makeBindingPath(Node node, ExpressionFactory expressionAnalyzer,
 			BindingPathNode bindingPathNode) {
 
 		BindingPathFactory bindingPathFactory = new BindingPathFactory(node, expressionAnalyzer);

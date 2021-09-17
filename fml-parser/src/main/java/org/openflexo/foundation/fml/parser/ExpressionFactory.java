@@ -333,7 +333,6 @@ public class ExpressionFactory extends FMLSemanticsAnalyzer {
 		depth++;
 		if (weAreDealingWithTheRightBindingPath()) {
 			BindingPathNode returned;
-			System.out.println("********** On construit un BindingPath pour " + node);
 			push(returned = retrieveFMLNode(node, n -> new BindingPathNode(n, this)));
 			return returned;
 		}
@@ -343,9 +342,9 @@ public class ExpressionFactory extends FMLSemanticsAnalyzer {
 	private BindingPathNode popBindingPathNode(Node node) {
 		try {
 			if (weAreDealingWithTheRightBindingPath()) {
-				BindingPathNode bindingPathNode = peek();
-				BindingPathFactory.makeBindingPath(node, this, bindingPathNode, true);
-				pop();
+				// BindingPathNode bindingPathNode = peek();
+				// BindingPathFactory.makeBindingPath(node, this, bindingPathNode, true);
+				BindingPathNode bindingPathNode = pop();
 				expressionNodes.put(node, bindingPathNode.getModelObject());
 				return bindingPathNode;
 			}
