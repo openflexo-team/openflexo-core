@@ -1076,9 +1076,11 @@ public interface FMLObject extends FlexoObject, Bindable, InnerResourceData<FMLC
 
 				/*System.out.println("InvalidRequiredBindingIssue:");
 				System.out.println("object: " + anObject);
-				System.out.println(anObject.getFMLRepresentation());
 				System.out.println("binding=" + rule.getBinding(anObject));
-				System.out.println("reason=" + rule.getBinding(anObject).invalidBindingReason());*/
+				System.out.println("bindable=" + rule.getBinding(anObject).getOwner());
+				System.out.println("binding model=" + rule.getBinding(anObject).getOwner().getBindingModel());
+				System.out.println("reason=" + rule.getBinding(anObject).invalidBindingReason());
+				Thread.dumpStack();*/
 			}
 
 			public DataBinding<?> getBinding() {
