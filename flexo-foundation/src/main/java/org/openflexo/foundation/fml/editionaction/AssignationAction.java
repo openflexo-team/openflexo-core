@@ -94,8 +94,8 @@ public interface AssignationAction<T> extends AbstractAssignationAction<T> {
 			if (assignation != null) {
 				this.assignation = new DataBinding<Object>(assignation.toString(), this, Object.class,
 						DataBinding.BindingDefinitionType.GET_SET);
-				assignation.setBindingName("assignation");
-				assignation.setMandatory(true);
+				this.assignation.setBindingName("assignation");
+				this.assignation.setMandatory(true);
 			}
 			notifiedBindingChanged(this.assignation);
 		}
