@@ -69,7 +69,6 @@ public abstract class ExpressionNode<N extends Node, T extends Expression> exten
 	@Override
 	public ExpressionNode<N, T> deserialize() {
 		if (getParent() instanceof DataBindingNode) {
-			System.out.println("Hop le parent recoit l'expression " + getModelObject());
 			((DataBindingNode) getParent()).getModelObject().setExpression(getModelObject());
 		}
 		return this;

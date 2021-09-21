@@ -39,34 +39,34 @@
 package org.openflexo.foundation.fml.parser.fmlnodes.expr;
 
 import org.openflexo.connie.expr.BinaryOperator;
-import org.openflexo.foundation.fml.expr.FMLArithmeticBinaryOperator;
 import org.openflexo.foundation.fml.expr.FMLBinaryOperatorExpression;
+import org.openflexo.foundation.fml.expr.FMLBooleanBinaryOperator;
 import org.openflexo.foundation.fml.parser.ExpressionFactory;
-import org.openflexo.foundation.fml.parser.node.APlusAddExp;
+import org.openflexo.foundation.fml.parser.node.AAmpAmpConditionalAndExp;
 
 /**
  * @author sylvain
  * 
  */
-public class PlusExpressionNode extends FMLBinaryOperatorExpressionNode<APlusAddExp> {
+public class AndExpressionNode extends FMLBinaryOperatorExpressionNode<AAmpAmpConditionalAndExp> {
 
-	public PlusExpressionNode(APlusAddExp astNode, ExpressionFactory expressionFactory) {
+	public AndExpressionNode(AAmpAmpConditionalAndExp astNode, ExpressionFactory expressionFactory) {
 		super(astNode, expressionFactory);
 	}
 
-	public PlusExpressionNode(FMLBinaryOperatorExpression expression, ExpressionFactory expressionFactory) {
+	public AndExpressionNode(FMLBinaryOperatorExpression expression, ExpressionFactory expressionFactory) {
 		super(expression, expressionFactory);
 	}
 
 	@Override
 	public BinaryOperator getOperator() {
-		return FMLArithmeticBinaryOperator.ADDITION;
+		return FMLBooleanBinaryOperator.AND;
 	}
 
 	@Override
-	public PlusExpressionNode deserialize() {
-		getModelObject().setLeftArgument(getExpressionFactory().getExpression(getASTNode().getAddExp()));
-		getModelObject().setRightArgument(getExpressionFactory().getExpression(getASTNode().getMultExp()));
+	public AndExpressionNode deserialize() {
+		getModelObject().setLeftArgument(getExpressionFactory().getExpression(getASTNode().getConditionalAndExp()));
+		getModelObject().setRightArgument(getExpressionFactory().getExpression(getASTNode().getInclusiveOrExp()));
 		super.deserialize();
 		return this;
 	}

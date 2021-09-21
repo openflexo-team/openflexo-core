@@ -38,35 +38,34 @@
 
 package org.openflexo.foundation.fml.parser.fmlnodes.expr;
 
-import org.openflexo.connie.expr.BinaryOperator;
-import org.openflexo.foundation.fml.expr.FMLArithmeticBinaryOperator;
-import org.openflexo.foundation.fml.expr.FMLBinaryOperatorExpression;
+import org.openflexo.foundation.fml.expr.FMLConditionalExpression;
 import org.openflexo.foundation.fml.parser.ExpressionFactory;
-import org.openflexo.foundation.fml.parser.node.APlusAddExp;
+import org.openflexo.foundation.fml.parser.node.AQmarkConditionalExp;
 
 /**
  * @author sylvain
  * 
  */
-public class PlusExpressionNode extends FMLBinaryOperatorExpressionNode<APlusAddExp> {
+public class FMLConditionalExpressionNode extends ExpressionNode<AQmarkConditionalExp, FMLConditionalExpression> {
 
-	public PlusExpressionNode(APlusAddExp astNode, ExpressionFactory expressionFactory) {
+	public FMLConditionalExpressionNode(AQmarkConditionalExp astNode, ExpressionFactory expressionFactory) {
 		super(astNode, expressionFactory);
 	}
 
-	public PlusExpressionNode(FMLBinaryOperatorExpression expression, ExpressionFactory expressionFactory) {
+	public FMLConditionalExpressionNode(FMLConditionalExpression expression, ExpressionFactory expressionFactory) {
 		super(expression, expressionFactory);
 	}
 
 	@Override
-	public BinaryOperator getOperator() {
-		return FMLArithmeticBinaryOperator.ADDITION;
+	public FMLConditionalExpression buildModelObjectFromAST(AQmarkConditionalExp astNode) {
+		return new FMLConditionalExpression(null, null, null);
 	}
 
 	@Override
-	public PlusExpressionNode deserialize() {
-		getModelObject().setLeftArgument(getExpressionFactory().getExpression(getASTNode().getAddExp()));
-		getModelObject().setRightArgument(getExpressionFactory().getExpression(getASTNode().getMultExp()));
+	public FMLConditionalExpressionNode deserialize() {
+		getModelObject().setCondition(getExpressionFactory().getExpression(getASTNode().getConditionalOrExp()));
+		getModelObject().setThenExpression(getExpressionFactory().getExpression(getASTNode().getExpression()));
+		getModelObject().setElseExpression(getExpressionFactory().getExpression(getASTNode().getConditionalExp()));
 		super.deserialize();
 		return this;
 	}

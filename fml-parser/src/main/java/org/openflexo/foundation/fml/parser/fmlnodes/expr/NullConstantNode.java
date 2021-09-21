@@ -38,37 +38,27 @@
 
 package org.openflexo.foundation.fml.parser.fmlnodes.expr;
 
-import org.openflexo.connie.expr.BinaryOperator;
-import org.openflexo.foundation.fml.expr.FMLArithmeticBinaryOperator;
-import org.openflexo.foundation.fml.expr.FMLBinaryOperatorExpression;
+import org.openflexo.foundation.fml.expr.FMLConstant.ObjectSymbolicConstant;
 import org.openflexo.foundation.fml.parser.ExpressionFactory;
-import org.openflexo.foundation.fml.parser.node.APlusAddExp;
+import org.openflexo.foundation.fml.parser.node.ANullLiteral;
 
 /**
  * @author sylvain
  * 
  */
-public class PlusExpressionNode extends FMLBinaryOperatorExpressionNode<APlusAddExp> {
+public class NullConstantNode extends ConstantNode<ANullLiteral, ObjectSymbolicConstant> {
 
-	public PlusExpressionNode(APlusAddExp astNode, ExpressionFactory expressionFactory) {
+	public NullConstantNode(ANullLiteral astNode, ExpressionFactory expressionFactory) {
 		super(astNode, expressionFactory);
 	}
 
-	public PlusExpressionNode(FMLBinaryOperatorExpression expression, ExpressionFactory expressionFactory) {
-		super(expression, expressionFactory);
+	public NullConstantNode(ObjectSymbolicConstant constant, ExpressionFactory expressionFactory) {
+		super(constant, expressionFactory);
 	}
 
 	@Override
-	public BinaryOperator getOperator() {
-		return FMLArithmeticBinaryOperator.ADDITION;
-	}
-
-	@Override
-	public PlusExpressionNode deserialize() {
-		getModelObject().setLeftArgument(getExpressionFactory().getExpression(getASTNode().getAddExp()));
-		getModelObject().setRightArgument(getExpressionFactory().getExpression(getASTNode().getMultExp()));
-		super.deserialize();
-		return this;
+	public ObjectSymbolicConstant buildModelObjectFromAST(ANullLiteral astNode) {
+		return ObjectSymbolicConstant.NULL;
 	}
 
 }

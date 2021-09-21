@@ -98,11 +98,13 @@ public abstract class AbstractCallBindingPathElementNode<N extends Node, BPE ext
 
 	protected void handleArgument(PExpression expression) {
 
+		//System.out.println("On traite l'argument " + expression);
 		DataBindingNode dataBindingNode = getAnalyser().retrieveFMLNode(expression,
 				n -> new DataBindingNode(n, bindable, BindingDefinitionType.GET, Object.class, getAnalyser()));
 		addToChildren(dataBindingNode);
 
 		Expression argValue = ExpressionFactory.makeExpression(expression, bindable, getAnalyser(), dataBindingNode);
+		//System.out.println("On a trouve " + argValue);
 		if (args == null) {
 			args = new ArrayList<>();
 		}

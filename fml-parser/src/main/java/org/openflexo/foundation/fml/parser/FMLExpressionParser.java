@@ -48,12 +48,14 @@ import org.openflexo.connie.Bindable;
 import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.expr.Expression;
 import org.openflexo.foundation.fml.AbstractFMLTypingSpace;
+import org.openflexo.foundation.fml.FMLModelFactory;
 import org.openflexo.foundation.fml.parser.lexer.CustomLexer;
 import org.openflexo.foundation.fml.parser.lexer.CustomLexer.EntryPointKind;
 import org.openflexo.foundation.fml.parser.lexer.LexerException;
 import org.openflexo.foundation.fml.parser.node.Start;
 import org.openflexo.foundation.fml.parser.parser.Parser;
 import org.openflexo.foundation.fml.parser.parser.ParserException;
+import org.openflexo.p2pp.RawSource;
 
 /**
  * This class provides the parsing service for FML expressions<br>
@@ -82,12 +84,13 @@ public class FMLExpressionParser {
 	 * @throws ParseException
 	 * @throws IOException
 	 */
-	public static Expression parse(String data, Bindable bindable, AbstractFMLTypingSpace typingSpace) throws ParseException {
-		return parse(new StringReader(data), bindable, typingSpace);
+	public static Expression parse(String data, Bindable bindable, AbstractFMLTypingSpace typingSpace, FMLModelFactory modelFactory)
+			throws ParseException {
+		return parse(new StringReader(data), new StringReader(data), bindable, typingSpace, modelFactory);
 	}
 
-	// TODO: bindable not used ???
-	private static Expression parse(Reader reader, Bindable bindable, AbstractFMLTypingSpace typingSpace) throws ParseException {
+	private static Expression parse(Reader reader, Reader rawSourceReader, Bindable bindable, AbstractFMLTypingSpace typingSpace,
+			FMLModelFactory modelFactory) throws ParseException {
 		try {
 			// Create a Parser instance.
 			Parser p = new Parser(new CustomLexer(new PushbackReader(reader), EntryPointKind.Binding));
@@ -100,7 +103,7 @@ public class FMLExpressionParser {
 			// Print the AST
 			// new ASTDebugger(tree);
 
-			return ExpressionFactory.makeExpression(tree, bindable, typingSpace);
+			return ExpressionFactory.makeExpression(tree, bindable, typingSpace, modelFactory, readRawSource(rawSourceReader));
 
 		} catch (ParserException e) {
 			// e.printStackTrace();
@@ -112,6 +115,16 @@ public class FMLExpressionParser {
 		} catch (IOException e) {
 			throw new ParseException(e.getMessage(), -1, -1, -1);
 		}
+	}
+
+	/**
+	 * Read raw source of the file
+	 * 
+	 * @param ioDelegate
+	 * @throws IOException
+	 */
+	private static RawSource readRawSource(Reader reader) throws IOException {
+		return new RawSource(reader);
 	}
 
 }

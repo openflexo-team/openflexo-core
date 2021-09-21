@@ -192,7 +192,7 @@ public abstract class ObjectNode<N extends Node, T, A extends FMLSemanticsAnalyz
 	private final MainSemanticsAnalyzer analyser;
 
 	public ObjectNode(N astNode, MainSemanticsAnalyzer analyser) {
-		super(null, astNode, analyser.getFragmentManager());
+		super(null, astNode, analyser != null ? analyser.getFragmentManager() : null);
 		this.analyser = analyser;
 
 		modelObject = buildModelObjectFromAST(astNode);

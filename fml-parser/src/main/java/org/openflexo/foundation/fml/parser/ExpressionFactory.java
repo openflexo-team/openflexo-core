@@ -13,25 +13,47 @@ import org.openflexo.connie.DataBinding.BindingDefinitionType;
 import org.openflexo.connie.expr.Expression;
 import org.openflexo.foundation.fml.AbstractFMLTypingSpace;
 import org.openflexo.foundation.fml.FMLCompilationUnit;
+import org.openflexo.foundation.fml.FMLModelFactory;
 import org.openflexo.foundation.fml.controlgraph.FMLControlGraph;
-import org.openflexo.foundation.fml.expr.FMLArithmeticBinaryOperator;
-import org.openflexo.foundation.fml.expr.FMLArithmeticUnaryOperator;
-import org.openflexo.foundation.fml.expr.FMLBinaryOperatorExpression;
-import org.openflexo.foundation.fml.expr.FMLBooleanBinaryOperator;
-import org.openflexo.foundation.fml.expr.FMLBooleanUnaryOperator;
 import org.openflexo.foundation.fml.expr.FMLCastExpression;
-import org.openflexo.foundation.fml.expr.FMLConditionalExpression;
-import org.openflexo.foundation.fml.expr.FMLConstant;
-import org.openflexo.foundation.fml.expr.FMLConstant.BooleanConstant;
-import org.openflexo.foundation.fml.expr.FMLConstant.CharConstant;
-import org.openflexo.foundation.fml.expr.FMLConstant.ObjectSymbolicConstant;
-import org.openflexo.foundation.fml.expr.FMLConstant.StringConstant;
 import org.openflexo.foundation.fml.expr.FMLInstanceOfExpression;
-import org.openflexo.foundation.fml.expr.FMLUnaryOperatorExpression;
+import org.openflexo.foundation.fml.parser.fmlnodes.expr.AndExpressionNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.expr.BindingPathNode;
+import org.openflexo.foundation.fml.parser.fmlnodes.expr.BitwiseAndExpressionNode;
+import org.openflexo.foundation.fml.parser.fmlnodes.expr.BitwiseComplementExpressionNode;
+import org.openflexo.foundation.fml.parser.fmlnodes.expr.BitwiseOrExpressionNode;
+import org.openflexo.foundation.fml.parser.fmlnodes.expr.BitwiseXOrExpressionNode;
+import org.openflexo.foundation.fml.parser.fmlnodes.expr.CharConstantNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.expr.DataBindingNode;
+import org.openflexo.foundation.fml.parser.fmlnodes.expr.DivisionExpressionNode;
+import org.openflexo.foundation.fml.parser.fmlnodes.expr.EqualsExpressionNode;
+import org.openflexo.foundation.fml.parser.fmlnodes.expr.FMLConditionalExpressionNode;
+import org.openflexo.foundation.fml.parser.fmlnodes.expr.FalseConstantNode;
+import org.openflexo.foundation.fml.parser.fmlnodes.expr.FloatingPointConstantNode;
+import org.openflexo.foundation.fml.parser.fmlnodes.expr.GreaterThanExpressionNode;
+import org.openflexo.foundation.fml.parser.fmlnodes.expr.GreaterThanOrEqualsExpressionNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.expr.IntegerConstantNode;
+import org.openflexo.foundation.fml.parser.fmlnodes.expr.LessThanExpressionNode;
+import org.openflexo.foundation.fml.parser.fmlnodes.expr.LessThanOrEqualsExpressionNode;
+import org.openflexo.foundation.fml.parser.fmlnodes.expr.MinusExpressionNode;
+import org.openflexo.foundation.fml.parser.fmlnodes.expr.ModExpressionNode;
+import org.openflexo.foundation.fml.parser.fmlnodes.expr.MultiplicationExpressionNode;
+import org.openflexo.foundation.fml.parser.fmlnodes.expr.NotEqualsExpressionNode;
+import org.openflexo.foundation.fml.parser.fmlnodes.expr.NotExpressionNode;
+import org.openflexo.foundation.fml.parser.fmlnodes.expr.NullConstantNode;
+import org.openflexo.foundation.fml.parser.fmlnodes.expr.OrExpressionNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.expr.PlusExpressionNode;
+import org.openflexo.foundation.fml.parser.fmlnodes.expr.PostDecrementExpressionNode;
+import org.openflexo.foundation.fml.parser.fmlnodes.expr.PostIncrementExpressionNode;
+import org.openflexo.foundation.fml.parser.fmlnodes.expr.PreDecrementExpressionNode;
+import org.openflexo.foundation.fml.parser.fmlnodes.expr.PreIncrementExpressionNode;
+import org.openflexo.foundation.fml.parser.fmlnodes.expr.ShiftLeftExpressionNode;
+import org.openflexo.foundation.fml.parser.fmlnodes.expr.ShiftRight2ExpressionNode;
+import org.openflexo.foundation.fml.parser.fmlnodes.expr.ShiftRightExpressionNode;
+import org.openflexo.foundation.fml.parser.fmlnodes.expr.StringConstantNode;
+import org.openflexo.foundation.fml.parser.fmlnodes.expr.TrueConstantNode;
+import org.openflexo.foundation.fml.parser.fmlnodes.expr.UnaryMinusExpressionNode;
+import org.openflexo.foundation.fml.parser.fmlnodes.expr.UnaryPlusExpressionNode;
 import org.openflexo.foundation.fml.parser.node.AAmpAmpConditionalAndExp;
 import org.openflexo.foundation.fml.parser.node.AAmpAndExp;
 import org.openflexo.foundation.fml.parser.node.ABarBarConditionalOrExp;
@@ -99,6 +121,7 @@ import org.openflexo.foundation.fml.parser.node.ATrueLiteral;
 import org.openflexo.foundation.fml.parser.node.AUnaryUnaryExp;
 import org.openflexo.foundation.fml.parser.node.AUshrShiftExp;
 import org.openflexo.foundation.fml.parser.node.Node;
+import org.openflexo.p2pp.RawSource;
 
 /**
  * A factory based on {@link FMLSemanticsAnalyzer}, used to instantiate {@link FMLControlGraph} from AST
@@ -123,62 +146,90 @@ public class ExpressionFactory extends FMLSemanticsAnalyzer {
 
 	private int depth = -1;
 
+	private Map<Node, ObjectNode> nodesForAST = new HashMap<>();
+
+	/*public Map<Node, FMLObjectNode> getNodesForAST() {
+		return nodesForAST;
+	}*/
+
+	public <N extends Node, FMLN extends ObjectNode> FMLN retrieveFMLNode(N astNode, Function<N, FMLN> function) {
+		FMLN returned = (FMLN) nodesForAST.get(astNode);
+		if (returned == null) {
+			returned = function.apply(astNode);
+			nodesForAST.put(astNode, returned);
+		}
+		return returned;
+	}
+
 	private boolean weAreDealingWithTheRightBindingPath() {
 		return depth == 0;
 	}
 
 	public static Expression makeExpression(Node node, Bindable bindable, FMLCompilationUnit compilationUnit) {
-		return _makeExpression(node, bindable, compilationUnit.getTypingSpace(), null, null);
+		return _makeExpression(node, bindable, compilationUnit.getTypingSpace(), compilationUnit.getFMLModelFactory(), null, null);
 	}
 
 	public static Expression makeExpression(Node node, Bindable bindable, MainSemanticsAnalyzer mainAnalyzer, DataBindingNode parentNode) {
-		return _makeExpression(node, bindable, mainAnalyzer.getTypingSpace(), mainAnalyzer, parentNode);
+		return _makeExpression(node, bindable, mainAnalyzer.getTypingSpace(), mainAnalyzer.getFactory(), mainAnalyzer, parentNode);
 	}
 
-	public static Expression makeExpression(Node node, Bindable bindable, AbstractFMLTypingSpace typingSpace) {
-		return _makeExpression(node, bindable, typingSpace, null, null);
+	public static Expression makeExpression(Node node, Bindable bindable, AbstractFMLTypingSpace typingSpace, FMLModelFactory modelFactory,
+			RawSource rawSource) {
+		MainSemanticsAnalyzer localAnalyzer = new MainSemanticsAnalyzer(modelFactory, node, rawSource);
+		DataBindingNode dataBindingNode = localAnalyzer.retrieveFMLNode(node,
+				n -> new DataBindingNode(n, bindable, BindingDefinitionType.GET, Object.class, localAnalyzer));
+		return _makeExpression(node, bindable, typingSpace, modelFactory, localAnalyzer, dataBindingNode);
 	}
 
 	public static <T> DataBinding<T> makeDataBinding(Node node, Bindable bindable, BindingDefinitionType bindingDefinitionType,
 			Type expectedType, FMLCompilationUnit compilationUnit) {
-		return _makeDataBinding(node, bindable, bindingDefinitionType, expectedType, compilationUnit.getTypingSpace(), null, null);
+		return _makeDataBinding(node, bindable, bindingDefinitionType, expectedType, compilationUnit.getTypingSpace(),
+				compilationUnit.getFMLModelFactory(), null, null);
 	}
 
 	public static <T> DataBinding<T> makeDataBinding(Node node, Bindable bindable, BindingDefinitionType bindingDefinitionType,
 			Type expectedType, MainSemanticsAnalyzer mainAnalyzer, ObjectNode<?, ?, ?> parentNode) {
-		return _makeDataBinding(node, bindable, bindingDefinitionType, expectedType, mainAnalyzer.getTypingSpace(), mainAnalyzer,
-				parentNode);
+		return _makeDataBinding(node, bindable, bindingDefinitionType, expectedType, mainAnalyzer.getTypingSpace(),
+				mainAnalyzer.getFactory(), mainAnalyzer, parentNode);
 	}
 
 	private static Expression _makeExpression(Node node, Bindable bindable, AbstractFMLTypingSpace typingSpace,
-			MainSemanticsAnalyzer mainAnalyzer, DataBindingNode dataBindingNode) {
+			FMLModelFactory modelFactory, MainSemanticsAnalyzer mainAnalyzer, DataBindingNode dataBindingNode) {
 		// return new DataBinding(analyzer.getText(node), bindable, expectedType, BindingDefinitionType.GET);
 
-		ExpressionFactory factory = new ExpressionFactory(node, bindable, typingSpace, mainAnalyzer, dataBindingNode);
+		ExpressionFactory factory = new ExpressionFactory(node, bindable, typingSpace, modelFactory, mainAnalyzer, dataBindingNode);
 		factory.push(dataBindingNode);
 		node.apply(factory);
 		factory.pop();
+
+		System.out.println("Hop, on retourne " + factory.getExpression());
 
 		return factory.getExpression();
 	}
 
 	@SuppressWarnings({ "unchecked" })
 	private static <T> DataBinding<T> _makeDataBinding(Node node, Bindable bindable, BindingDefinitionType bindingDefinitionType,
-			Type expectedType, AbstractFMLTypingSpace typingSpace, MainSemanticsAnalyzer mainAnalyzer, ObjectNode<?, ?, ?> parentNode) {
+			Type expectedType, AbstractFMLTypingSpace typingSpace, FMLModelFactory modelFactory, MainSemanticsAnalyzer mainAnalyzer,
+			ObjectNode<?, ?, ?> parentNode) {
 
 		DataBindingNode dataBindingNode = mainAnalyzer.retrieveFMLNode(node,
 				n -> new DataBindingNode(n, bindable, bindingDefinitionType, expectedType, mainAnalyzer));
 
 		parentNode.addToChildren(dataBindingNode);
 
-		_makeExpression(node, bindable, typingSpace, mainAnalyzer, dataBindingNode);
+		_makeExpression(node, bindable, typingSpace, modelFactory, mainAnalyzer, dataBindingNode);
 
 		return (DataBinding<T>) dataBindingNode.getModelObject();
 	}
 
-	private ExpressionFactory(Node rootNode, Bindable aBindable, AbstractFMLTypingSpace typingSpace, MainSemanticsAnalyzer mainAnalyzer,
+	/*private ExpressionFactory(Node rootNode, Bindable aBindable, AbstractFMLTypingSpace typingSpace, MainSemanticsAnalyzer mainAnalyzer,
 			DataBindingNode dataBindingNode) {
-		super(mainAnalyzer.getFactory(), rootNode);
+		this(rootNode, aBindable, typingSpace, mainAnalyzer.getFactory(), mainAnalyzer, dataBindingNode);
+	}*/
+
+	private ExpressionFactory(Node rootNode, Bindable aBindable, AbstractFMLTypingSpace typingSpace, FMLModelFactory fmlModelFactory,
+			MainSemanticsAnalyzer mainAnalyzer, DataBindingNode dataBindingNode) {
+		super(fmlModelFactory, rootNode);
 		expressionNodes = new Hashtable<>();
 		this.bindable = aBindable;
 		this.typingSpace = typingSpace;
@@ -214,15 +265,16 @@ public class ExpressionFactory extends FMLSemanticsAnalyzer {
 	protected void push(ObjectNode<?, ?, ?> fmlNode) {
 		super.push(fmlNode);
 		if (fmlNode.getModelObject() instanceof Expression) {
-			expressionNodes.put(fmlNode.getASTNode(), (Expression) fmlNode.getModelObject());
+			registerExpressionNode(fmlNode.getASTNode(), (Expression) fmlNode.getModelObject());
 		}
 	}
 
-	@Deprecated
 	private void registerExpressionNode(Node n, Expression e) {
-		// System.out.println("REGISTER " + e + " for node " + n + " as " + n.getClass());
+		// System.out.println("REGISTER in " + this + " / " + e + " for node " + n + " as " + n.getClass());
 		expressionNodes.put(n, e);
-		topLevel = n;
+		if (topLevel == null) {
+			topLevel = n;
+		}
 		/*if (n.parent() != null) {
 			registerExpressionNode(n.parent(), e);
 		}*/
@@ -441,124 +493,97 @@ public class ExpressionFactory extends FMLSemanticsAnalyzer {
 	}
 
 	@Override
+	public void inANullLiteral(ANullLiteral node) {
+		super.inANullLiteral(node);
+		push(retrieveFMLNode(node, n -> new NullConstantNode(n, this)));
+	}
+
+	@Override
 	public void outANullLiteral(ANullLiteral node) {
 		super.outANullLiteral(node);
-		registerExpressionNode(node, ObjectSymbolicConstant.NULL);
+		pop();
+		// registerExpressionNode(node, ObjectSymbolicConstant.NULL);
+	}
+
+	@Override
+	public void inATrueLiteral(ATrueLiteral node) {
+		super.inATrueLiteral(node);
+		push(retrieveFMLNode(node, n -> new TrueConstantNode(n, this)));
 	}
 
 	@Override
 	public void outATrueLiteral(ATrueLiteral node) {
 		super.outATrueLiteral(node);
-		registerExpressionNode(node, BooleanConstant.TRUE);
+		pop();
+		// registerExpressionNode(node, BooleanConstant.TRUE);
+	}
+
+	@Override
+	public void inAFalseLiteral(AFalseLiteral node) {
+		super.inAFalseLiteral(node);
+		push(retrieveFMLNode(node, n -> new FalseConstantNode(n, this)));
 	}
 
 	@Override
 	public void outAFalseLiteral(AFalseLiteral node) {
 		super.outAFalseLiteral(node);
-		registerExpressionNode(node, BooleanConstant.FALSE);
+		pop();
+		// registerExpressionNode(node, BooleanConstant.FALSE);
+	}
+
+	@Override
+	public void inAStringLiteral(AStringLiteral node) {
+		super.inAStringLiteral(node);
+		push(retrieveFMLNode(node, n -> new StringConstantNode(n, this)));
 	}
 
 	@Override
 	public void outAStringLiteral(AStringLiteral node) {
 		super.outAStringLiteral(node);
-		String value = node.getLitString().getText();
+		/*String value = node.getLitString().getText();
 		value = value.substring(1, value.length() - 1);
-		registerExpressionNode(node, new StringConstant(value));
+		registerExpressionNode(node, new StringConstant(value));*/
+		pop();
+	}
+
+	@Override
+	public void inACharacterLiteral(ACharacterLiteral node) {
+		super.inACharacterLiteral(node);
+		push(retrieveFMLNode(node, n -> new CharConstantNode(n, this)));
 	}
 
 	@Override
 	public void outACharacterLiteral(ACharacterLiteral node) {
 		super.outACharacterLiteral(node);
-		String value = node.getLitCharacter().getText();
+		/*String value = node.getLitCharacter().getText();
 		Character c = value.charAt(1);
-		registerExpressionNode(node, new CharConstant(c));
-	}
-
-	/*@Override
-	public void inAConceptDecl(AConceptDecl node) {
-		super.inAConceptDecl(node);
-		push(retrieveFMLNode(node, n -> new FlexoConceptNode(n, getMainAnalyzer())));
-	}
-	
-	@Override
-	public void outAConceptDecl(AConceptDecl node) {
-		super.outAConceptDecl(node);
+		registerExpressionNode(node, new CharConstant(c));*/
 		pop();
-	}*/
-
-	private Map<Node, ObjectNode> nodesForAST = new HashMap<>();
-
-	/*public Map<Node, FMLObjectNode> getNodesForAST() {
-		return nodesForAST;
-	}*/
-
-	public <N extends Node, FMLN extends ObjectNode> FMLN retrieveFMLNode(N astNode, Function<N, FMLN> function) {
-		FMLN returned = (FMLN) nodesForAST.get(astNode);
-		if (returned == null) {
-			returned = function.apply(astNode);
-			nodesForAST.put(astNode, returned);
-		}
-		return returned;
 	}
 
 	@Override
 	public void inAIntegerLiteral(AIntegerLiteral node) {
 		super.inAIntegerLiteral(node);
-
 		push(retrieveFMLNode(node, n -> new IntegerConstantNode(n, this)));
-
-		/*if (e instanceof Constant && weAreDealingWithTheRightBindingPath()) {
-			if (getMainAnalyzer() != null && parentNode != null) {
-				ConstantNode constantNode = getMainAnalyzer().registerFMLNode(n, new ConstantNode(n, getMainAnalyzer()));
-				constantNode.setModelObject((Constant) e);
-				parentNode.addToChildren(constantNode);
-			}
-		}*/
-
 	}
 
 	@Override
 	public void outAIntegerLiteral(AIntegerLiteral node) {
 		super.outAIntegerLiteral(node);
-
-		/*String valueText = node.getLitInteger().getText();
-		Number value;
-		
-		if (valueText.startsWith("0x") || valueText.startsWith("0X")) {
-			valueText = valueText.substring(2);
-			try {
-				value = Integer.parseInt(valueText, 16);
-			} catch (NumberFormatException e) {
-				value = Long.parseLong(valueText, 16);
-			}
-		}
-		else if (valueText.startsWith("0") && valueText.length() > 1) {
-			valueText = valueText.substring(1);
-			try {
-				value = Integer.parseInt(valueText, 8);
-			} catch (NumberFormatException e) {
-				value = Long.parseLong(valueText, 8);
-			}
-		}
-		else if (valueText.endsWith("L") || valueText.endsWith("l")) {
-			valueText = valueText.substring(0, valueText.length() - 1);
-			value = Long.parseLong(valueText);
-		}
-		else {
-			value = Integer.parseInt(valueText);
-			// value = NumberFormat.getNumberInstance().parse(valueText);
-			// System.out.println("Pour " + valueText + " j'obtiens " + value + " of " + value.getClass());
-		}
-		registerExpressionNode(node, FMLConstant.makeConstant(value));*/
-
 		pop();
+	}
+
+	@Override
+	public void inAFloatingPointLiteral(AFloatingPointLiteral node) {
+		super.inAFloatingPointLiteral(node);
+		push(retrieveFMLNode(node, n -> new FloatingPointConstantNode(n, this)));
 	}
 
 	@Override
 	public void outAFloatingPointLiteral(AFloatingPointLiteral node) {
 		super.outAFloatingPointLiteral(node);
-
-		Number value = null;
+		pop();
+		/*Number value = null;
 		String valueText = node.getLitFloat().getText();
 		if (valueText.endsWith("F") || valueText.endsWith("f")) {
 			valueText = valueText.substring(0, valueText.length() - 1);
@@ -583,7 +608,7 @@ public class ExpressionFactory extends FMLSemanticsAnalyzer {
 				e.printStackTrace();
 			}
 		}
-		registerExpressionNode(node, FMLConstant.makeConstant(value));
+		registerExpressionNode(node, FMLConstant.makeConstant(value));*/
 
 	}
 
@@ -593,11 +618,17 @@ public class ExpressionFactory extends FMLSemanticsAnalyzer {
 	// ;
 
 	@Override
+	public void inAQmarkConditionalExp(AQmarkConditionalExp node) {
+		super.inAQmarkConditionalExp(node);
+		push(retrieveFMLNode(node, n -> new FMLConditionalExpressionNode(n, this)));
+	}
+
+	@Override
 	public void outAQmarkConditionalExp(AQmarkConditionalExp node) {
-		// TODO Auto-generated method stub
 		super.outAQmarkConditionalExp(node);
-		registerExpressionNode(node, new FMLConditionalExpression(getExpression(node.getConditionalOrExp()),
-				getExpression(node.getExpression()), getExpression(node.getConditionalExp())));
+		pop();
+		// registerExpressionNode(node, new FMLConditionalExpression(getExpression(node.getConditionalOrExp()),
+		// getExpression(node.getExpression()), getExpression(node.getConditionalExp())));
 	}
 
 	// conditional_or_exp =
@@ -606,10 +637,18 @@ public class ExpressionFactory extends FMLSemanticsAnalyzer {
 	// ;
 
 	@Override
+	public void inABarBarConditionalOrExp(ABarBarConditionalOrExp node) {
+		super.inABarBarConditionalOrExp(node);
+		push(retrieveFMLNode(node, n -> new OrExpressionNode(n, this)));
+	}
+
+	@Override
 	public void outABarBarConditionalOrExp(ABarBarConditionalOrExp node) {
 		super.outABarBarConditionalOrExp(node);
-		registerExpressionNode(node, new FMLBinaryOperatorExpression(FMLBooleanBinaryOperator.OR, getExpression(node.getConditionalOrExp()),
-				getExpression(node.getConditionalAndExp())));
+		pop();
+		// registerExpressionNode(node, new FMLBinaryOperatorExpression(FMLBooleanBinaryOperator.OR,
+		// getExpression(node.getConditionalOrExp()),
+		// getExpression(node.getConditionalAndExp())));
 	}
 
 	// conditional_and_exp =
@@ -618,10 +657,17 @@ public class ExpressionFactory extends FMLSemanticsAnalyzer {
 	// ;
 
 	@Override
+	public void inAAmpAmpConditionalAndExp(AAmpAmpConditionalAndExp node) {
+		super.inAAmpAmpConditionalAndExp(node);
+		push(retrieveFMLNode(node, n -> new AndExpressionNode(n, this)));
+	}
+
+	@Override
 	public void outAAmpAmpConditionalAndExp(AAmpAmpConditionalAndExp node) {
 		super.outAAmpAmpConditionalAndExp(node);
-		registerExpressionNode(node, new FMLBinaryOperatorExpression(FMLBooleanBinaryOperator.AND,
-				getExpression(node.getConditionalAndExp()), getExpression(node.getInclusiveOrExp())));
+		// registerExpressionNode(node, new FMLBinaryOperatorExpression(FMLBooleanBinaryOperator.AND,
+		// getExpression(node.getConditionalAndExp()), getExpression(node.getInclusiveOrExp())));
+		pop();
 	}
 
 	// inclusive_or_exp =
@@ -630,10 +676,17 @@ public class ExpressionFactory extends FMLSemanticsAnalyzer {
 	// ;
 
 	@Override
+	public void inABarInclusiveOrExp(ABarInclusiveOrExp node) {
+		super.inABarInclusiveOrExp(node);
+		push(retrieveFMLNode(node, n -> new BitwiseOrExpressionNode(n, this)));
+	}
+
+	@Override
 	public void outABarInclusiveOrExp(ABarInclusiveOrExp node) {
 		super.outABarInclusiveOrExp(node);
-		registerExpressionNode(node, new FMLBinaryOperatorExpression(FMLArithmeticBinaryOperator.BITWISE_OR,
-				getExpression(node.getInclusiveOrExp()), getExpression(node.getExclusiveOrExp())));
+		pop();
+		// registerExpressionNode(node, new FMLBinaryOperatorExpression(FMLArithmeticBinaryOperator.BITWISE_OR,
+		// getExpression(node.getInclusiveOrExp()), getExpression(node.getExclusiveOrExp())));
 	}
 
 	// exclusive_or_exp =
@@ -642,10 +695,17 @@ public class ExpressionFactory extends FMLSemanticsAnalyzer {
 	// ;
 
 	@Override
+	public void inACaretExclusiveOrExp(ACaretExclusiveOrExp node) {
+		super.inACaretExclusiveOrExp(node);
+		push(retrieveFMLNode(node, n -> new BitwiseXOrExpressionNode(n, this)));
+	}
+
+	@Override
 	public void outACaretExclusiveOrExp(ACaretExclusiveOrExp node) {
 		super.outACaretExclusiveOrExp(node);
-		registerExpressionNode(node, new FMLBinaryOperatorExpression(FMLArithmeticBinaryOperator.BITWISE_XOR,
-				getExpression(node.getExclusiveOrExp()), getExpression(node.getAndExp())));
+		pop();
+		// registerExpressionNode(node, new FMLBinaryOperatorExpression(FMLArithmeticBinaryOperator.BITWISE_XOR,
+		// getExpression(node.getExclusiveOrExp()), getExpression(node.getAndExp())));
 	}
 
 	// and_exp =
@@ -654,10 +714,17 @@ public class ExpressionFactory extends FMLSemanticsAnalyzer {
 	// ;
 
 	@Override
+	public void inAAmpAndExp(AAmpAndExp node) {
+		super.inAAmpAndExp(node);
+		push(retrieveFMLNode(node, n -> new BitwiseAndExpressionNode(n, this)));
+	}
+
+	@Override
 	public void outAAmpAndExp(AAmpAndExp node) {
 		super.outAAmpAndExp(node);
-		registerExpressionNode(node, new FMLBinaryOperatorExpression(FMLArithmeticBinaryOperator.BITWISE_AND,
-				getExpression(node.getAndExp()), getExpression(node.getEqualityExp())));
+		pop();
+		// registerExpressionNode(node, new FMLBinaryOperatorExpression(FMLArithmeticBinaryOperator.BITWISE_AND,
+		// getExpression(node.getAndExp()), getExpression(node.getEqualityExp())));
 	}
 
 	// equality_exp =
@@ -667,17 +734,32 @@ public class ExpressionFactory extends FMLSemanticsAnalyzer {
 	// ;
 
 	@Override
+	public void inAEqEqualityExp(AEqEqualityExp node) {
+		super.inAEqEqualityExp(node);
+		push(retrieveFMLNode(node, n -> new EqualsExpressionNode(n, this)));
+	}
+
+	@Override
 	public void outAEqEqualityExp(AEqEqualityExp node) {
 		super.outAEqEqualityExp(node);
-		registerExpressionNode(node, new FMLBinaryOperatorExpression(FMLBooleanBinaryOperator.EQUALS, getExpression(node.getEqualityExp()),
-				getExpression(node.getRelationalExp())));
+		pop();
+		// registerExpressionNode(node, new FMLBinaryOperatorExpression(FMLBooleanBinaryOperator.EQUALS,
+		// getExpression(node.getEqualityExp()),
+		// getExpression(node.getRelationalExp())));
+	}
+
+	@Override
+	public void inANeqEqualityExp(ANeqEqualityExp node) {
+		super.inANeqEqualityExp(node);
+		push(retrieveFMLNode(node, n -> new NotEqualsExpressionNode(n, this)));
 	}
 
 	@Override
 	public void outANeqEqualityExp(ANeqEqualityExp node) {
 		super.outANeqEqualityExp(node);
-		registerExpressionNode(node, new FMLBinaryOperatorExpression(FMLBooleanBinaryOperator.NOT_EQUALS,
-				getExpression(node.getEqualityExp()), getExpression(node.getRelationalExp())));
+		pop();
+		// registerExpressionNode(node, new FMLBinaryOperatorExpression(FMLBooleanBinaryOperator.NOT_EQUALS,
+		// getExpression(node.getEqualityExp()), getExpression(node.getRelationalExp())));
 	}
 
 	// relational_exp =
@@ -690,33 +772,63 @@ public class ExpressionFactory extends FMLSemanticsAnalyzer {
 	// ;
 
 	@Override
+	public void inALtRelationalExp(ALtRelationalExp node) {
+		super.inALtRelationalExp(node);
+		push(retrieveFMLNode(node, n -> new LessThanExpressionNode(n, this)));
+	}
+
+	@Override
 	public void outALtRelationalExp(ALtRelationalExp node) {
 		super.outALtRelationalExp(node);
-		registerExpressionNode(node, new FMLBinaryOperatorExpression(FMLBooleanBinaryOperator.LESS_THAN, getExpression(node.getShiftExp1()),
-				getExpression(node.getShiftExpression2())));
+		// registerExpressionNode(node, new FMLBinaryOperatorExpression(FMLBooleanBinaryOperator.LESS_THAN,
+		// getExpression(node.getShiftExp1()),
+		// getExpression(node.getShiftExpression2())));
+		pop();
+	}
+
+	@Override
+	public void inAGtRelationalExp(AGtRelationalExp node) {
+		super.inAGtRelationalExp(node);
+		push(retrieveFMLNode(node, n -> new GreaterThanExpressionNode(n, this)));
 	}
 
 	@Override
 	public void outAGtRelationalExp(AGtRelationalExp node) {
 		super.outAGtRelationalExp(node);
-		registerExpressionNode(node, new FMLBinaryOperatorExpression(FMLBooleanBinaryOperator.GREATER_THAN,
-				getExpression(node.getShiftExpression1()), getExpression(node.getShiftExpression2())));
+		pop();
+		// registerExpressionNode(node, new FMLBinaryOperatorExpression(FMLBooleanBinaryOperator.GREATER_THAN,
+		// getExpression(node.getShiftExpression1()), getExpression(node.getShiftExpression2())));
+	}
+
+	@Override
+	public void inALteqRelationalExp(ALteqRelationalExp node) {
+		super.inALteqRelationalExp(node);
+		push(retrieveFMLNode(node, n -> new LessThanOrEqualsExpressionNode(n, this)));
 	}
 
 	@Override
 	public void outALteqRelationalExp(ALteqRelationalExp node) {
 		super.outALteqRelationalExp(node);
-		registerExpressionNode(node, new FMLBinaryOperatorExpression(FMLBooleanBinaryOperator.LESS_THAN_OR_EQUALS,
-				getExpression(node.getShiftExpression1()), getExpression(node.getShiftExpression2())));
+		pop();
+		// registerExpressionNode(node, new FMLBinaryOperatorExpression(FMLBooleanBinaryOperator.LESS_THAN_OR_EQUALS,
+		// getExpression(node.getShiftExpression1()), getExpression(node.getShiftExpression2())));
+	}
+
+	@Override
+	public void inAGteqRelationalExp(AGteqRelationalExp node) {
+		super.inAGteqRelationalExp(node);
+		push(retrieveFMLNode(node, n -> new GreaterThanOrEqualsExpressionNode(n, this)));
 	}
 
 	@Override
 	public void outAGteqRelationalExp(AGteqRelationalExp node) {
 		super.outAGteqRelationalExp(node);
-		registerExpressionNode(node, new FMLBinaryOperatorExpression(FMLBooleanBinaryOperator.GREATER_THAN_OR_EQUALS,
-				getExpression(node.getShiftExpression1()), getExpression(node.getShiftExpression2())));
+		// registerExpressionNode(node, new FMLBinaryOperatorExpression(FMLBooleanBinaryOperator.GREATER_THAN_OR_EQUALS,
+		// getExpression(node.getShiftExpression1()), getExpression(node.getShiftExpression2())));
+		pop();
 	}
 
+	// TODO
 	@Override
 	public void outAInstanceofRelationalExp(AInstanceofRelationalExp node) {
 		super.outAInstanceofRelationalExp(node);
@@ -733,24 +845,45 @@ public class ExpressionFactory extends FMLSemanticsAnalyzer {
 	// ;
 
 	@Override
+	public void inAShlShiftExp(AShlShiftExp node) {
+		super.inAShlShiftExp(node);
+		push(retrieveFMLNode(node, n -> new ShiftLeftExpressionNode(n, this)));
+	}
+
+	@Override
 	public void outAShlShiftExp(AShlShiftExp node) {
 		super.outAShlShiftExp(node);
-		registerExpressionNode(node, new FMLBinaryOperatorExpression(FMLArithmeticBinaryOperator.SHIFT_LEFT,
-				getExpression(node.getShiftExp()), getExpression(node.getAddExp())));
+		pop();
+		// registerExpressionNode(node, new FMLBinaryOperatorExpression(FMLArithmeticBinaryOperator.SHIFT_LEFT,
+		// getExpression(node.getShiftExp()), getExpression(node.getAddExp())));
+	}
+
+	@Override
+	public void inAShrShiftExp(AShrShiftExp node) {
+		super.inAShrShiftExp(node);
+		push(retrieveFMLNode(node, n -> new ShiftRightExpressionNode(n, this)));
 	}
 
 	@Override
 	public void outAShrShiftExp(AShrShiftExp node) {
 		super.outAShrShiftExp(node);
-		registerExpressionNode(node, new FMLBinaryOperatorExpression(FMLArithmeticBinaryOperator.SHIFT_RIGHT,
-				getExpression(node.getShiftExp()), getExpression(node.getAddExp())));
+		pop();
+		// registerExpressionNode(node, new FMLBinaryOperatorExpression(FMLArithmeticBinaryOperator.SHIFT_RIGHT,
+		// getExpression(node.getShiftExp()), getExpression(node.getAddExp())));
+	}
+
+	@Override
+	public void inAUshrShiftExp(AUshrShiftExp node) {
+		super.inAUshrShiftExp(node);
+		push(retrieveFMLNode(node, n -> new ShiftRight2ExpressionNode(n, this)));
 	}
 
 	@Override
 	public void outAUshrShiftExp(AUshrShiftExp node) {
 		super.outAUshrShiftExp(node);
-		registerExpressionNode(node, new FMLBinaryOperatorExpression(FMLArithmeticBinaryOperator.SHIFT_RIGHT_2,
-				getExpression(node.getShiftExp()), getExpression(node.getAddExp())));
+		pop();
+		// registerExpressionNode(node, new FMLBinaryOperatorExpression(FMLArithmeticBinaryOperator.SHIFT_RIGHT_2,
+		// getExpression(node.getShiftExp()), getExpression(node.getAddExp())));
 	}
 
 	// add_exp =
@@ -769,17 +902,20 @@ public class ExpressionFactory extends FMLSemanticsAnalyzer {
 	public void outAPlusAddExp(APlusAddExp node) {
 		super.outAPlusAddExp(node);
 		pop();
+	}
 
-		// registerExpressionNode(node, new FMLBinaryOperatorExpression(FMLArithmeticBinaryOperator.ADDITION,
-		// getExpression(node.getAddExp()),
-		// getExpression(node.getMultExp())));
+	@Override
+	public void inAMinusAddExp(AMinusAddExp node) {
+		super.inAMinusAddExp(node);
+		push(retrieveFMLNode(node, n -> new MinusExpressionNode(n, this)));
 	}
 
 	@Override
 	public void outAMinusAddExp(AMinusAddExp node) {
 		super.outAMinusAddExp(node);
-		registerExpressionNode(node, new FMLBinaryOperatorExpression(FMLArithmeticBinaryOperator.SUBSTRACTION,
-				getExpression(node.getAddExp()), getExpression(node.getMultExp())));
+		pop();
+		// registerExpressionNode(node, new FMLBinaryOperatorExpression(FMLArithmeticBinaryOperator.SUBSTRACTION,
+		// getExpression(node.getAddExp()), getExpression(node.getMultExp())));
 	}
 
 	// mult_exp =
@@ -790,24 +926,46 @@ public class ExpressionFactory extends FMLSemanticsAnalyzer {
 	// ;
 
 	@Override
+	public void inAStarMultExp(AStarMultExp node) {
+		super.inAStarMultExp(node);
+		push(retrieveFMLNode(node, n -> new MultiplicationExpressionNode(n, this)));
+	}
+
+	@Override
 	public void outAStarMultExp(AStarMultExp node) {
 		super.outAStarMultExp(node);
-		registerExpressionNode(node, new FMLBinaryOperatorExpression(FMLArithmeticBinaryOperator.MULTIPLICATION,
-				getExpression(node.getMultExp()), getExpression(node.getUnaryExp())));
+		pop();
+		// registerExpressionNode(node, new FMLBinaryOperatorExpression(FMLArithmeticBinaryOperator.MULTIPLICATION,
+		// getExpression(node.getMultExp()), getExpression(node.getUnaryExp())));
+	}
+
+	@Override
+	public void inASlashMultExp(ASlashMultExp node) {
+		super.inASlashMultExp(node);
+		push(retrieveFMLNode(node, n -> new DivisionExpressionNode(n, this)));
 	}
 
 	@Override
 	public void outASlashMultExp(ASlashMultExp node) {
 		super.outASlashMultExp(node);
-		registerExpressionNode(node, new FMLBinaryOperatorExpression(FMLArithmeticBinaryOperator.DIVISION, getExpression(node.getMultExp()),
-				getExpression(node.getUnaryExp())));
+		pop();
+		// registerExpressionNode(node, new FMLBinaryOperatorExpression(FMLArithmeticBinaryOperator.DIVISION,
+		// getExpression(node.getMultExp()),
+		// getExpression(node.getUnaryExp())));
+	}
+
+	@Override
+	public void inAPercentMultExp(APercentMultExp node) {
+		super.inAPercentMultExp(node);
+		push(retrieveFMLNode(node, n -> new ModExpressionNode(n, this)));
 	}
 
 	@Override
 	public void outAPercentMultExp(APercentMultExp node) {
 		super.outAPercentMultExp(node);
-		registerExpressionNode(node, new FMLBinaryOperatorExpression(FMLArithmeticBinaryOperator.MOD, getExpression(node.getMultExp()),
-				getExpression(node.getUnaryExp())));
+		pop();
+		// registerExpressionNode(node, new FMLBinaryOperatorExpression(FMLArithmeticBinaryOperator.MOD, getExpression(node.getMultExp()),
+		// getExpression(node.getUnaryExp())));
 	}
 
 	// unary_exp =
@@ -819,34 +977,62 @@ public class ExpressionFactory extends FMLSemanticsAnalyzer {
 	// ;
 
 	@Override
+	public void inAPlusUnaryExp(APlusUnaryExp node) {
+		super.inAPlusUnaryExp(node);
+		push(retrieveFMLNode(node, n -> new UnaryPlusExpressionNode(n, this)));
+	}
+
+	@Override
 	public void outAPlusUnaryExp(APlusUnaryExp node) {
 		super.outAPlusUnaryExp(node);
-		registerExpressionNode(node,
-				new FMLUnaryOperatorExpression(FMLArithmeticUnaryOperator.UNARY_PLUS, getExpression(node.getUnaryExp())));
+		pop();
+		// registerExpressionNode(node,
+		// new FMLUnaryOperatorExpression(FMLArithmeticUnaryOperator.UNARY_PLUS, getExpression(node.getUnaryExp())));
+	}
+
+	@Override
+	public void inAMinusUnaryExp(AMinusUnaryExp node) {
+		super.inAMinusUnaryExp(node);
+		push(retrieveFMLNode(node, n -> new UnaryMinusExpressionNode(n, this)));
 	}
 
 	@Override
 	public void outAMinusUnaryExp(AMinusUnaryExp node) {
 		super.outAMinusUnaryExp(node);
-		registerExpressionNode(node,
-				new FMLUnaryOperatorExpression(FMLArithmeticUnaryOperator.UNARY_MINUS, getExpression(node.getUnaryExp())));
+		pop();
+		// registerExpressionNode(node,
+		// new FMLUnaryOperatorExpression(FMLArithmeticUnaryOperator.UNARY_MINUS, getExpression(node.getUnaryExp())));
 	}
 
 	// pre_incr_exp = plus_plus unary_exp;
 	// pre_decr_exp = minus_minus unary_exp;
 
 	@Override
+	public void inAPreIncrExp(APreIncrExp node) {
+		super.inAPreIncrExp(node);
+		push(retrieveFMLNode(node, n -> new PreIncrementExpressionNode(n, this)));
+	}
+
+	@Override
 	public void outAPreIncrExp(APreIncrExp node) {
 		super.outAPreIncrExp(node);
-		registerExpressionNode(node,
-				new FMLUnaryOperatorExpression(FMLArithmeticUnaryOperator.PRE_INCREMENT, getExpression(node.getUnaryExp())));
+		pop();
+		// registerExpressionNode(node,
+		// new FMLUnaryOperatorExpression(FMLArithmeticUnaryOperator.PRE_INCREMENT, getExpression(node.getUnaryExp())));
+	}
+
+	@Override
+	public void inAPreDecrExp(APreDecrExp node) {
+		super.inAPreDecrExp(node);
+		push(retrieveFMLNode(node, n -> new PreDecrementExpressionNode(n, this)));
 	}
 
 	@Override
 	public void outAPreDecrExp(APreDecrExp node) {
 		super.outAPreDecrExp(node);
-		registerExpressionNode(node,
-				new FMLUnaryOperatorExpression(FMLArithmeticUnaryOperator.PRE_DECREMENT, getExpression(node.getUnaryExp())));
+		pop();
+		// registerExpressionNode(node,
+		// new FMLUnaryOperatorExpression(FMLArithmeticUnaryOperator.PRE_DECREMENT, getExpression(node.getUnaryExp())));
 	}
 
 	// unary_exp_not_plus_minus =
@@ -857,18 +1043,33 @@ public class ExpressionFactory extends FMLSemanticsAnalyzer {
 	// ;
 
 	@Override
+	public void inATildeUnaryExpNotPlusMinus(ATildeUnaryExpNotPlusMinus node) {
+		super.inATildeUnaryExpNotPlusMinus(node);
+		push(retrieveFMLNode(node, n -> new BitwiseComplementExpressionNode(n, this)));
+	}
+
+	@Override
 	public void outATildeUnaryExpNotPlusMinus(ATildeUnaryExpNotPlusMinus node) {
 		super.outATildeUnaryExpNotPlusMinus(node);
-		registerExpressionNode(node,
-				new FMLUnaryOperatorExpression(FMLArithmeticUnaryOperator.BITWISE_COMPLEMENT, getExpression(node.getUnaryExp())));
+		pop();
+		// registerExpressionNode(node,
+		// new FMLUnaryOperatorExpression(FMLArithmeticUnaryOperator.BITWISE_COMPLEMENT, getExpression(node.getUnaryExp())));
+	}
+
+	@Override
+	public void inAEmarkUnaryExpNotPlusMinus(AEmarkUnaryExpNotPlusMinus node) {
+		super.inAEmarkUnaryExpNotPlusMinus(node);
+		push(retrieveFMLNode(node, n -> new NotExpressionNode(n, this)));
 	}
 
 	@Override
 	public void outAEmarkUnaryExpNotPlusMinus(AEmarkUnaryExpNotPlusMinus node) {
 		super.outAEmarkUnaryExpNotPlusMinus(node);
-		registerExpressionNode(node, new FMLUnaryOperatorExpression(FMLBooleanUnaryOperator.NOT, getExpression(node.getUnaryExp())));
+		pop();
+		// registerExpressionNode(node, new FMLUnaryOperatorExpression(FMLBooleanUnaryOperator.NOT, getExpression(node.getUnaryExp())));
 	}
 
+	// TODO
 	@Override
 	public void outACastUnaryExpNotPlusMinus(ACastUnaryExpNotPlusMinus node) {
 		super.outACastUnaryExpNotPlusMinus(node);
@@ -882,17 +1083,31 @@ public class ExpressionFactory extends FMLSemanticsAnalyzer {
 	// post_decr_exp = postfix_exp minus_minus;
 
 	@Override
+	public void inAPostDecrExp(APostDecrExp node) {
+		super.inAPostDecrExp(node);
+		push(retrieveFMLNode(node, n -> new PostDecrementExpressionNode(n, this)));
+	}
+
+	@Override
 	public void outAPostDecrExp(APostDecrExp node) {
 		super.outAPostDecrExp(node);
-		registerExpressionNode(node,
-				new FMLUnaryOperatorExpression(FMLArithmeticUnaryOperator.POST_DECREMENT, getExpression(node.getPostfixExp())));
+		pop();
+		// registerExpressionNode(node,
+		// new FMLUnaryOperatorExpression(FMLArithmeticUnaryOperator.POST_DECREMENT, getExpression(node.getPostfixExp())));
+	}
+
+	@Override
+	public void inAPostIncrExp(APostIncrExp node) {
+		super.inAPostIncrExp(node);
+		push(retrieveFMLNode(node, n -> new PostIncrementExpressionNode(n, this)));
 	}
 
 	@Override
 	public void outAPostIncrExp(APostIncrExp node) {
 		super.outAPostIncrExp(node);
-		registerExpressionNode(node,
-				new FMLUnaryOperatorExpression(FMLArithmeticUnaryOperator.POST_INCREMENT, getExpression(node.getPostfixExp())));
+		pop();
+		// registerExpressionNode(node,
+		// new FMLUnaryOperatorExpression(FMLArithmeticUnaryOperator.POST_INCREMENT, getExpression(node.getPostfixExp())));
 	}
 
 }

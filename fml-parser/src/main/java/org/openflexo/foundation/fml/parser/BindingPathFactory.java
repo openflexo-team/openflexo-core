@@ -250,7 +250,8 @@ public class BindingPathFactory {
 					n -> new MethodCallBindingPathElementNode(n, lastPathElementNode.getASTNode(), expressionFactory.getMainAnalyzer(),
 							expressionFactory.getBindable()));
 			nodesPath.add(pathElementNode);
-			methodCallElement = pathElementNode.buildModelObjectFromAST(node);
+			// methodCallElement = pathElementNode.buildModelObjectFromAST(node);
+			methodCallElement = pathElementNode.getModelObject();
 		}
 		else {
 			methodCallElement = new MethodCallBindingPathElement(identifier, makeArgs(node.getArgumentList()));

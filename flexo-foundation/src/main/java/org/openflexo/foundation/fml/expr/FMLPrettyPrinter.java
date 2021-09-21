@@ -183,7 +183,7 @@ public class FMLPrettyPrinter extends ExpressionPrettyPrinter {
 	protected String makeStringRepresentation(UnaryOperatorExpression expression, Bindable context) {
 
 		int currentPriority = expression.getPriority();
-		int argPriority = expression.getArgument().getPriority();
+		int argPriority = expression.getArgument() != null ? expression.getArgument().getPriority() : -1;
 		boolean parenthesisRequired = argPriority > currentPriority;
 
 		if (expression.getOperator() instanceof PostSettableUnaryOperator) {
@@ -210,8 +210,8 @@ public class FMLPrettyPrinter extends ExpressionPrettyPrinter {
 
 		try {
 			int currentPriority = expression.getPriority();
-			int leftPriority = expression.getLeftArgument().getPriority();
-			int rightPriority = expression.getRightArgument().getPriority();
+			int leftPriority = expression.getLeftArgument() != null ? expression.getLeftArgument().getPriority() : -1;
+			int rightPriority = expression.getRightArgument() != null ? expression.getRightArgument().getPriority() : -1;
 			boolean parenthesisLeftRequired = leftPriority > currentPriority;
 			boolean parenthesisRightRequired = rightPriority >= currentPriority;
 

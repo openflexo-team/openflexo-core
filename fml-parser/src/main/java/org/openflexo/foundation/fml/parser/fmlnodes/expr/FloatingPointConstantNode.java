@@ -38,37 +38,54 @@
 
 package org.openflexo.foundation.fml.parser.fmlnodes.expr;
 
-import org.openflexo.connie.expr.BinaryOperator;
-import org.openflexo.foundation.fml.expr.FMLArithmeticBinaryOperator;
-import org.openflexo.foundation.fml.expr.FMLBinaryOperatorExpression;
+import org.openflexo.foundation.fml.expr.FMLConstant;
+import org.openflexo.foundation.fml.expr.FMLConstant.ArithmeticConstant;
 import org.openflexo.foundation.fml.parser.ExpressionFactory;
-import org.openflexo.foundation.fml.parser.node.APlusAddExp;
+import org.openflexo.foundation.fml.parser.node.AFloatingPointLiteral;
 
 /**
  * @author sylvain
  * 
  */
-public class PlusExpressionNode extends FMLBinaryOperatorExpressionNode<APlusAddExp> {
+public class FloatingPointConstantNode extends ConstantNode<AFloatingPointLiteral, ArithmeticConstant<?>> {
 
-	public PlusExpressionNode(APlusAddExp astNode, ExpressionFactory expressionFactory) {
+	public FloatingPointConstantNode(AFloatingPointLiteral astNode, ExpressionFactory expressionFactory) {
 		super(astNode, expressionFactory);
 	}
 
-	public PlusExpressionNode(FMLBinaryOperatorExpression expression, ExpressionFactory expressionFactory) {
-		super(expression, expressionFactory);
+	public FloatingPointConstantNode(ArithmeticConstant<Integer> constant, ExpressionFactory expressionFactory) {
+		super(constant, expressionFactory);
 	}
 
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Override
-	public BinaryOperator getOperator() {
-		return FMLArithmeticBinaryOperator.ADDITION;
-	}
-
-	@Override
-	public PlusExpressionNode deserialize() {
-		getModelObject().setLeftArgument(getExpressionFactory().getExpression(getASTNode().getAddExp()));
-		getModelObject().setRightArgument(getExpressionFactory().getExpression(getASTNode().getMultExp()));
-		super.deserialize();
-		return this;
+	public ArithmeticConstant<?> buildModelObjectFromAST(AFloatingPointLiteral astNode) {
+		Number value = null;
+		String valueText = astNode.getLitFloat().getText();
+		if (valueText.endsWith("F") || valueText.endsWith("f")) {
+			valueText = valueText.substring(0, valueText.length() - 1);
+			try {
+				value = Float.parseFloat(valueText);
+			} catch (NumberFormatException e) {
+				e.printStackTrace();
+			}
+		}
+		else if (valueText.endsWith("D") || valueText.endsWith("d")) {
+			valueText = valueText.substring(0, valueText.length() - 1);
+			try {
+				value = Double.parseDouble(valueText);
+			} catch (NumberFormatException e) {
+				e.printStackTrace();
+			}
+		}
+		else {
+			try {
+				value = Double.parseDouble(valueText);
+			} catch (NumberFormatException e) {
+				e.printStackTrace();
+			}
+		}
+		return (ArithmeticConstant) FMLConstant.makeConstant(value);
 	}
 
 }

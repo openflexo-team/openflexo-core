@@ -38,35 +38,34 @@
 
 package org.openflexo.foundation.fml.parser.fmlnodes.expr;
 
-import org.openflexo.connie.expr.BinaryOperator;
-import org.openflexo.foundation.fml.expr.FMLArithmeticBinaryOperator;
-import org.openflexo.foundation.fml.expr.FMLBinaryOperatorExpression;
+import org.openflexo.connie.expr.UnaryOperator;
+import org.openflexo.foundation.fml.expr.FMLArithmeticUnaryOperator;
+import org.openflexo.foundation.fml.expr.FMLUnaryOperatorExpression;
 import org.openflexo.foundation.fml.parser.ExpressionFactory;
-import org.openflexo.foundation.fml.parser.node.APlusAddExp;
+import org.openflexo.foundation.fml.parser.node.ATildeUnaryExpNotPlusMinus;
 
 /**
  * @author sylvain
  * 
  */
-public class PlusExpressionNode extends FMLBinaryOperatorExpressionNode<APlusAddExp> {
+public class BitwiseComplementExpressionNode extends FMLUnaryOperatorExpressionNode<ATildeUnaryExpNotPlusMinus> {
 
-	public PlusExpressionNode(APlusAddExp astNode, ExpressionFactory expressionFactory) {
+	public BitwiseComplementExpressionNode(ATildeUnaryExpNotPlusMinus astNode, ExpressionFactory expressionFactory) {
 		super(astNode, expressionFactory);
 	}
 
-	public PlusExpressionNode(FMLBinaryOperatorExpression expression, ExpressionFactory expressionFactory) {
+	public BitwiseComplementExpressionNode(FMLUnaryOperatorExpression expression, ExpressionFactory expressionFactory) {
 		super(expression, expressionFactory);
 	}
 
 	@Override
-	public BinaryOperator getOperator() {
-		return FMLArithmeticBinaryOperator.ADDITION;
+	public UnaryOperator getOperator() {
+		return FMLArithmeticUnaryOperator.BITWISE_COMPLEMENT;
 	}
 
 	@Override
-	public PlusExpressionNode deserialize() {
-		getModelObject().setLeftArgument(getExpressionFactory().getExpression(getASTNode().getAddExp()));
-		getModelObject().setRightArgument(getExpressionFactory().getExpression(getASTNode().getMultExp()));
+	public BitwiseComplementExpressionNode deserialize() {
+		getModelObject().setArgument(getExpressionFactory().getExpression(getASTNode().getUnaryExp()));
 		super.deserialize();
 		return this;
 	}

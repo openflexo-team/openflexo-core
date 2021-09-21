@@ -50,7 +50,11 @@ import org.openflexo.toolbox.StringUtils;
  */
 public class ASTDebugger extends DepthFirstAdapter {
 
-	public ASTDebugger(Node tree) {
+	public static void debug(Node tree) {
+		new ASTDebugger(tree);
+	}
+
+	private ASTDebugger(Node tree) {
 		super();
 		tree.apply(this);
 	}

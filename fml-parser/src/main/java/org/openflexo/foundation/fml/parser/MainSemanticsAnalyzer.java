@@ -127,7 +127,7 @@ public class MainSemanticsAnalyzer extends FMLSemanticsAnalyzer {
 		typingSpace = compilationUnit.getTypingSpace();
 	}
 
-	public MainSemanticsAnalyzer(FMLModelFactory factory, Start tree, RawSource rawSource) {
+	public MainSemanticsAnalyzer(FMLModelFactory factory, Node tree, RawSource rawSource) {
 		super(factory, tree);
 		this.rawSource = rawSource;
 		fragmentManager = new FragmentManager(rawSource);

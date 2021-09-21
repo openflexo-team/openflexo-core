@@ -47,16 +47,17 @@ import org.openflexo.foundation.fml.parser.node.AIntegerLiteral;
  * @author sylvain
  * 
  */
-public class IntegerConstantNode extends ConstantNode<AIntegerLiteral, ArithmeticConstant<Integer>> {
+public class IntegerConstantNode extends ConstantNode<AIntegerLiteral, ArithmeticConstant<?>> {
 
 	public IntegerConstantNode(AIntegerLiteral astNode, ExpressionFactory expressionFactory) {
 		super(astNode, expressionFactory);
 	}
 
-	public IntegerConstantNode(ArithmeticConstant<Integer> constant, ExpressionFactory expressionFactory) {
+	public IntegerConstantNode(ArithmeticConstant<?> constant, ExpressionFactory expressionFactory) {
 		super(constant, expressionFactory);
 	}
 
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Override
 	public ArithmeticConstant<Integer> buildModelObjectFromAST(AIntegerLiteral astNode) {
 		String valueText = astNode.getLitInteger().getText();

@@ -125,9 +125,11 @@ public abstract class ExpressionParserTestCase extends TestCase {
 			};
 			System.out.println("Parsing... " + anExpression);
 
-			FMLExpressionParser parser = new FMLExpressionParser();
-			Expression parsed = parser.parse(anExpression, bindable, typingSpace);
+			Expression parsed = FMLExpressionParser.parse(anExpression, bindable, typingSpace, fmlModelFactory);
 			System.out.println("parsed=" + parsed);
+			if (parsed == null) {
+				fail("Cannot parse: " + anExpression);
+			}
 			Expression evaluated = parsed.evaluate(new BindingEvaluationContext() {
 				@Override
 				public Object getValue(BindingVariable variable) {
