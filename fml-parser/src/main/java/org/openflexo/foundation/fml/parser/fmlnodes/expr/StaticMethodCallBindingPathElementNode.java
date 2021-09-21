@@ -38,44 +38,45 @@
 
 package org.openflexo.foundation.fml.parser.fmlnodes.expr;
 
-import org.openflexo.connie.expr.Expression;
-import org.openflexo.foundation.fml.parser.ExpressionFactory;
+import java.lang.reflect.Type;
+
+import org.openflexo.connie.Bindable;
+import org.openflexo.connie.expr.BindingValue.StaticMethodCallBindingPathElement;
 import org.openflexo.foundation.fml.parser.MainSemanticsAnalyzer;
-import org.openflexo.foundation.fml.parser.ObjectNode;
-import org.openflexo.foundation.fml.parser.node.Node;
+import org.openflexo.foundation.fml.parser.TypeFactory;
+import org.openflexo.foundation.fml.parser.node.AClassMethodMethodInvocation;
 
 /**
  * @author sylvain
  * 
  */
-public abstract class ExpressionNode<N extends Node, T extends Expression> extends ObjectNode<N, T, MainSemanticsAnalyzer> {
+public class StaticMethodCallBindingPathElementNode
+		extends AbstractCallBindingPathElementNode<AClassMethodMethodInvocation, StaticMethodCallBindingPathElement> {
 
-	private ExpressionFactory expressionFactory;
-
-	public ExpressionNode(N astNode, ExpressionFactory expressionFactory) {
-		super(astNode, expressionFactory.getMainAnalyzer());
-		this.expressionFactory = expressionFactory;
+	public StaticMethodCallBindingPathElementNode(AClassMethodMethodInvocation astNode, MainSemanticsAnalyzer analyser, Bindable bindable) {
+		super(astNode, analyser, bindable);
 	}
 
-	public ExpressionNode(T constant, ExpressionFactory expressionFactory) {
-		super(constant, expressionFactory.getMainAnalyzer());
-		this.expressionFactory = expressionFactory;
-	}
-
-	public ExpressionFactory getExpressionFactory() {
-		return expressionFactory;
+	public StaticMethodCallBindingPathElementNode(StaticMethodCallBindingPathElement bindingPathElement, MainSemanticsAnalyzer analyser,
+			Bindable bindable) {
+		super(bindingPathElement, analyser, bindable);
 	}
 
 	@Override
-	public ExpressionNode<N, T> deserialize() {
-		if (getParent() instanceof DataBindingNode) {
-			if (((DataBindingNode) getParent()).getModelObject() == null) {
-				System.out.println("While processing " + getModelObject() + " for " + getASTNode());
-				System.out.println("Found DataBinding parent with null model object " + ((DataBindingNode) getParent()).getModelObject());
-				System.exit(-1);
-			}
-			((DataBindingNode) getParent()).getModelObject().setExpression(getModelObject());
+	public StaticMethodCallBindingPathElement buildModelObjectFromAST(AClassMethodMethodInvocation astNode) {
+
+		if (getBindable() != null) {
+			Type type = TypeFactory.makeType(getASTNode().getType(), getAnalyser().getTypingSpace());
+			handleArguments(astNode.getArgumentList());
+			String method = astNode.getLidentifier().getText();
+			StaticMethodCallBindingPathElement returned = new StaticMethodCallBindingPathElement(type, method, getArguments());
+			return returned;
 		}
+		return null;
+	}
+
+	@Override
+	public StaticMethodCallBindingPathElementNode deserialize() {
 		return this;
 	}
 

@@ -39,35 +39,46 @@
 
 package org.openflexo.foundation.fml.parser;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.openflexo.connie.expr.BindingValue;
 import org.openflexo.connie.expr.BindingValue.AbstractBindingPathElement;
 import org.openflexo.connie.expr.BindingValue.MethodCallBindingPathElement;
+import org.openflexo.connie.expr.BindingValue.NewInstanceBindingPathElement;
 import org.openflexo.connie.expr.BindingValue.NormalBindingPathElement;
+import org.openflexo.connie.expr.BindingValue.StaticMethodCallBindingPathElement;
 import org.openflexo.connie.expr.Expression;
+import org.openflexo.foundation.fml.FlexoConceptInstanceType;
+import org.openflexo.foundation.fml.VirtualModelInstanceType;
+import org.openflexo.foundation.fml.expr.NewVirtualModelInstanceBindingPathElement;
 import org.openflexo.foundation.fml.parser.fmlnodes.expr.AbstractBindingPathElementNode;
+import org.openflexo.foundation.fml.parser.fmlnodes.expr.AddClassInstanceNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.expr.BindingPathNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.expr.MethodCallBindingPathElementNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.expr.NormalBindingPathElementNode;
+import org.openflexo.foundation.fml.parser.fmlnodes.expr.StaticMethodCallBindingPathElementNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.expr.SuperBindingPathElementNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.expr.SuperMethodCallBindingPathElementNode;
 import org.openflexo.foundation.fml.parser.node.AClassMethodMethodInvocation;
 import org.openflexo.foundation.fml.parser.node.ACompositeIdent;
 import org.openflexo.foundation.fml.parser.node.AFieldLeftHandSide;
 import org.openflexo.foundation.fml.parser.node.AFieldPrimaryNoId;
+import org.openflexo.foundation.fml.parser.node.AFullQualifiedNewInstance;
 import org.openflexo.foundation.fml.parser.node.AIdentifierLeftHandSide;
 import org.openflexo.foundation.fml.parser.node.AIdentifierPrefix;
 import org.openflexo.foundation.fml.parser.node.AIdentifierPrimary;
 import org.openflexo.foundation.fml.parser.node.AManyArgumentList;
 import org.openflexo.foundation.fml.parser.node.AMethodPrimaryNoId;
+import org.openflexo.foundation.fml.parser.node.ANewContainmentClause;
 import org.openflexo.foundation.fml.parser.node.ANewInstancePrimaryNoId;
 import org.openflexo.foundation.fml.parser.node.AOneArgumentList;
 import org.openflexo.foundation.fml.parser.node.APrimaryFieldAccess;
 import org.openflexo.foundation.fml.parser.node.APrimaryMethodInvocation;
 import org.openflexo.foundation.fml.parser.node.APrimaryNoIdPrimary;
 import org.openflexo.foundation.fml.parser.node.AReferenceSuperFieldAccess;
+import org.openflexo.foundation.fml.parser.node.ASimpleNewInstance;
 import org.openflexo.foundation.fml.parser.node.ASuperFieldAccess;
 import org.openflexo.foundation.fml.parser.node.ASuperMethodInvocation;
 import org.openflexo.foundation.fml.parser.node.Node;
@@ -78,6 +89,8 @@ import org.openflexo.foundation.fml.parser.node.PFieldAccess;
 import org.openflexo.foundation.fml.parser.node.PIdentifierPrefix;
 import org.openflexo.foundation.fml.parser.node.PLeftHandSide;
 import org.openflexo.foundation.fml.parser.node.PMethodInvocation;
+import org.openflexo.foundation.fml.parser.node.PNewContainmentClause;
+import org.openflexo.foundation.fml.parser.node.PNewInstance;
 import org.openflexo.foundation.fml.parser.node.PPrimary;
 import org.openflexo.foundation.fml.parser.node.PPrimaryNoId;
 import org.openflexo.foundation.fml.parser.node.TKwSuper;
@@ -121,6 +134,10 @@ public class BindingPathFactory {
 	}
 
 	private void explore() {
+
+		// System.out.println("Analyzing path " + rootNode);
+		// ASTDebugger.debug(rootNode);
+
 		if (rootNode instanceof PPrimaryNoId) {
 			appendBindingPath((PPrimaryNoId) rootNode);
 		}
@@ -148,9 +165,7 @@ public class BindingPathFactory {
 			appendBindingPath(((AMethodPrimaryNoId) node).getMethodInvocation());
 		}
 		else if (node instanceof ANewInstancePrimaryNoId) {
-			System.out.println("Hop avec " + node);
-			System.exit(-1);
-			// appendBindingPath(((ANewInstancePrimaryNoId) node).getNewInstance());
+			appendBindingPath(((ANewInstancePrimaryNoId) node).getNewInstance());
 		}
 	}
 
@@ -198,7 +213,22 @@ public class BindingPathFactory {
 			appendSuperMethodInvocation((ASuperMethodInvocation) node);
 		}
 		else if (node instanceof AClassMethodMethodInvocation) {
-			// TODO: Do the stuff for class method invokation
+			appendClassMethodInvocation((AClassMethodMethodInvocation) node);
+		}
+	}
+
+	private void appendBindingPath(PNewInstance node) {
+		if (node instanceof ASimpleNewInstance) {
+			appendSimpleNewInstanceInvocation((ASimpleNewInstance) node);
+		}
+		else if (node instanceof AFullQualifiedNewInstance) {
+			// TODO: Do the stuff for full qualified new instance
+		}
+	}
+
+	private void appendBindingPath(PNewContainmentClause node) {
+		if (node instanceof ANewContainmentClause) {
+			appendBindingPath(((ANewContainmentClause) node).getCompositeIdent());
 		}
 	}
 
@@ -273,6 +303,65 @@ public class BindingPathFactory {
 		}
 		else {
 			methodCallElement = new MethodCallBindingPathElement(node.getKwSuper().getText(), makeArgs(node.getArgumentList()));
+		}
+		path.add(methodCallElement);
+	}
+
+	private void appendSimpleNewInstanceInvocation(ASimpleNewInstance node) {
+
+		appendBindingPath(node.getNewContainmentClause());
+
+		Type type = TypeFactory.makeType(node.getType(), expressionFactory.getTypingSpace());
+		System.out.println("Hop le type c'est " + type);
+
+		if (type instanceof VirtualModelInstanceType
+				&& ((VirtualModelInstanceType) type).getVirtualModel().getCreationSchemes().size() == 1) {
+			// Simple new instance with non ambigous creation scheme
+			NewVirtualModelInstanceBindingPathElement returned = new NewVirtualModelInstanceBindingPathElement(
+					(VirtualModelInstanceType) type, null, // default constructor,
+					makeArgs(node.getArgumentList()));
+			path.add(returned);
+		}
+		else if (type instanceof FlexoConceptInstanceType
+				&& ((FlexoConceptInstanceType) type).getFlexoConcept().getCreationSchemes().size() == 1) {
+			// Simple new instance with non ambigous creation scheme
+			NewVirtualModelInstanceBindingPathElement returned = new NewVirtualModelInstanceBindingPathElement(
+					(VirtualModelInstanceType) type, null, // default constructor,
+					makeArgs(node.getArgumentList()));
+			path.add(returned);
+		}
+		else {
+			NewInstanceBindingPathElement pathElement;
+			if (expressionFactory.getMainAnalyzer() != null) {
+				AddClassInstanceNode pathElementNode = expressionFactory.getMainAnalyzer().retrieveFMLNode(node,
+						n -> new AddClassInstanceNode(n, expressionFactory.getMainAnalyzer(), expressionFactory.getBindable()));
+				nodesPath.add(pathElementNode);
+				pathElement = pathElementNode.getModelObject();
+			}
+			else {
+				pathElement = new NewInstanceBindingPathElement(type, null, // a java constructor has no name,
+						makeArgs(node.getArgumentList()));
+			}
+			path.add(pathElement);
+
+		}
+
+	}
+
+	private void appendClassMethodInvocation(AClassMethodMethodInvocation node) {
+		StaticMethodCallBindingPathElement methodCallElement;
+		if (expressionFactory.getMainAnalyzer() != null) {
+			StaticMethodCallBindingPathElementNode pathElementNode = expressionFactory.getMainAnalyzer().retrieveFMLNode(node,
+					n -> new StaticMethodCallBindingPathElementNode(n, expressionFactory.getMainAnalyzer(),
+							expressionFactory.getBindable()));
+			nodesPath.add(pathElementNode);
+			// methodCallElement = pathElementNode.buildModelObjectFromAST(node);
+			methodCallElement = pathElementNode.getModelObject();
+		}
+		else {
+			Type type = TypeFactory.makeType(node.getType(), expressionFactory.getTypingSpace());
+			String method = node.getLidentifier().getText();
+			methodCallElement = new StaticMethodCallBindingPathElement(type, method, makeArgs(node.getArgumentList()));
 		}
 		path.add(methodCallElement);
 	}

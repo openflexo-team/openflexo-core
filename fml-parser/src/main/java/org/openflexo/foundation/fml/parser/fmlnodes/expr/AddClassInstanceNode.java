@@ -80,11 +80,14 @@ public class AddClassInstanceNode extends AbstractCallBindingPathElementNode<ASi
 	@Override
 	public NewInstanceBindingPathElement buildModelObjectFromAST(ASimpleNewInstance astNode) {
 
-		handleArguments(astNode.getArgumentList());
-		Type type = TypeFactory.makeType(astNode.getType(), getAnalyser().getTypingSpace());
-		NewInstanceBindingPathElement returned = new NewInstanceBindingPathElement(type, null, // a java constructor has no name,
-				getArguments());
-		return returned;
+		if (getBindable() != null) {
+			handleArguments(astNode.getArgumentList());
+			Type type = TypeFactory.makeType(astNode.getType(), getAnalyser().getTypingSpace());
+			NewInstanceBindingPathElement returned = new NewInstanceBindingPathElement(type, null, // a java constructor has no name,
+					getArguments());
+			return returned;
+		}
+		return null;
 
 	}
 

@@ -61,9 +61,12 @@ public class SuperMethodCallBindingPathElementNode
 
 	@Override
 	public MethodCallBindingPathElement buildModelObjectFromAST(ASuperMethodInvocation astNode) {
-		handleArguments(astNode.getArgumentList());
-		MethodCallBindingPathElement returned = new MethodCallBindingPathElement(astNode.getKwSuper().getText(), getArguments());
-		return returned;
+		if (getBindable() != null) {
+			handleArguments(astNode.getArgumentList());
+			MethodCallBindingPathElement returned = new MethodCallBindingPathElement(astNode.getKwSuper().getText(), getArguments());
+			return returned;
+		}
+		return null;
 	}
 
 	@Override

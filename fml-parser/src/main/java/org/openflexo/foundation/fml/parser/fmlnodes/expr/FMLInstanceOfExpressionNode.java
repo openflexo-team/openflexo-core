@@ -66,9 +66,7 @@ public class FMLInstanceOfExpressionNode extends ExpressionNode<AInstanceofRelat
 
 	@Override
 	public FMLInstanceOfExpressionNode deserialize() {
-		System.out.println("Je cherche le type: " + getASTNode().getType());
 		Type type = TypeFactory.makeType(getASTNode().getType(), getExpressionFactory().getTypingSpace());
-		System.out.println("Found " + type);
 		getModelObject().setType(type);
 		getModelObject().setArgument(getExpressionFactory().getExpression(getASTNode().getShiftExp()));
 		super.deserialize();
