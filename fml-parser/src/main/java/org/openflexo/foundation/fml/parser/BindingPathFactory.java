@@ -52,6 +52,7 @@ import org.openflexo.connie.expr.BindingValue.StaticMethodCallBindingPathElement
 import org.openflexo.connie.expr.Expression;
 import org.openflexo.foundation.fml.FlexoConceptInstanceType;
 import org.openflexo.foundation.fml.VirtualModelInstanceType;
+import org.openflexo.foundation.fml.expr.NewFlexoConceptInstanceBindingPathElement;
 import org.openflexo.foundation.fml.expr.NewVirtualModelInstanceBindingPathElement;
 import org.openflexo.foundation.fml.parser.fmlnodes.expr.AbstractBindingPathElementNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.expr.AddClassInstanceNode;
@@ -331,10 +332,11 @@ public class BindingPathFactory {
 		appendBindingPath(node.getNewContainmentClause());
 
 		Type type = TypeFactory.makeType(node.getType(), expressionFactory.getTypingSpace());
-		System.out.println("Hop le type c'est " + type);
+		// System.out.println("Found type " + type);
 
 		if (type instanceof VirtualModelInstanceType
-				&& ((VirtualModelInstanceType) type).getVirtualModel().getCreationSchemes().size() == 1) {
+		// this is too early, FlexoConcept is not yet set
+		/*&& ((VirtualModelInstanceType) type).getVirtualModel().getCreationSchemes().size() == 1*/) {
 			// Simple new instance with non ambigous creation scheme
 			NewVirtualModelInstanceBindingPathElement returned = new NewVirtualModelInstanceBindingPathElement(
 					(VirtualModelInstanceType) type, null, // default constructor,
@@ -342,10 +344,11 @@ public class BindingPathFactory {
 			path.add(returned);
 		}
 		else if (type instanceof FlexoConceptInstanceType
-				&& ((FlexoConceptInstanceType) type).getFlexoConcept().getCreationSchemes().size() == 1) {
+		// this is too early, FlexoConcept is not yet set
+		/*&& ((FlexoConceptInstanceType) type).getFlexoConcept().getCreationSchemes().size() == 1*/) {
 			// Simple new instance with non ambigous creation scheme
-			NewVirtualModelInstanceBindingPathElement returned = new NewVirtualModelInstanceBindingPathElement(
-					(VirtualModelInstanceType) type, null, // default constructor,
+			NewFlexoConceptInstanceBindingPathElement returned = new NewFlexoConceptInstanceBindingPathElement(
+					(FlexoConceptInstanceType) type, null, // default constructor,
 					makeArgs(node.getArgumentList()));
 			path.add(returned);
 		}
