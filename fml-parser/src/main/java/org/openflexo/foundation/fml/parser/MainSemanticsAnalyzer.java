@@ -232,6 +232,10 @@ public class MainSemanticsAnalyzer extends FMLSemanticsAnalyzer {
 				}
 			}
 		}*/
+
+		if (typingSpace instanceof FMLTypingSpaceDuringParsing) {
+			((FMLTypingSpaceDuringParsing) typingSpace).resolveUnresovedTypes();
+		}
 	}
 
 	@Override

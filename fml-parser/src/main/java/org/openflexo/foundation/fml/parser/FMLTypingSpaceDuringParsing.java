@@ -40,12 +40,36 @@
 package org.openflexo.foundation.fml.parser;
 
 import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.logging.Logger;
 
+import org.openflexo.connie.type.CustomType;
+import org.openflexo.connie.type.UnresolvedType;
 import org.openflexo.foundation.fml.AbstractFMLTypingSpace;
 import org.openflexo.foundation.fml.FMLCompilationUnit;
+import org.openflexo.foundation.fml.FMLTechnologyAdapter;
+import org.openflexo.foundation.fml.FlexoConcept;
+import org.openflexo.foundation.fml.FlexoConceptInstanceType;
+import org.openflexo.foundation.fml.FlexoConceptInstanceType.DefaultFlexoConceptInstanceTypeFactory;
+import org.openflexo.foundation.fml.FlexoConceptInstanceType.FlexoConceptInstanceTypeFactory;
+import org.openflexo.foundation.fml.VirtualModel;
+import org.openflexo.foundation.fml.VirtualModelInstanceType;
+import org.openflexo.foundation.fml.VirtualModelInstanceType.DefaultVirtualModelInstanceTypeFactory;
+import org.openflexo.foundation.fml.VirtualModelInstanceType.VirtualModelInstanceTypeFactory;
+import org.openflexo.foundation.fml.parser.analysis.DepthFirstAdapter;
+import org.openflexo.foundation.fml.parser.fmlnodes.FlexoConceptNode;
+import org.openflexo.foundation.fml.parser.fmlnodes.VirtualModelNode;
+import org.openflexo.foundation.fml.parser.node.AConceptDecl;
+import org.openflexo.foundation.fml.parser.node.AModelDecl;
+import org.openflexo.logging.FlexoLogger;
 
 /**
  * FML typing space, related to a {@link FMLCompilationUnit} beeing parsed
+ * 
+ * Pre-analyze {@link FMLCompilationUnit} to find references to {@link VirtualModel}s and {@link FlexoConcept}s.
  * 
  * Support import of VirtualModels
  * 
@@ -54,14 +78,66 @@ import org.openflexo.foundation.fml.FMLCompilationUnit;
  */
 public class FMLTypingSpaceDuringParsing extends AbstractFMLTypingSpace {
 
+	protected static final Logger logger = FlexoLogger.getLogger(FMLTypingSpaceDuringParsing.class.getPackage().getName());
+
 	private final MainSemanticsAnalyzer analyser;
+
+	private FlexoConceptInstanceTypeFactory FLEXO_CONCEPT_INSTANCE_TYPE_FACTORY;
+	private VirtualModelInstanceTypeFactory<VirtualModelInstanceType> VIRTUAL_MODEL_INSTANCE_TYPE_FACTORY;
+
+	private Map<String, AModelDecl> foundVirtualModels;
+	private Map<String, AConceptDecl> foundConcepts;
+	private List<CustomType> unresolvedTypes;
 
 	public FMLTypingSpaceDuringParsing(MainSemanticsAnalyzer analyser) {
 		this.analyser = analyser;
+		unresolvedTypes = new ArrayList<>();
+		FLEXO_CONCEPT_INSTANCE_TYPE_FACTORY = new DefaultFlexoConceptInstanceTypeFactory(getFMLTechnologyAdapter()) {
+			// TODO : handle concepts found in imported VirtualModel
+			@Override
+			public FlexoConcept resolveFlexoConcept(FlexoConceptInstanceType typeToResolve) {
+				// System.out.println("Resolving FlexoConcept " + typeToResolve);
+				AConceptDecl node = foundConcepts.get(typeToResolve.getConceptURI());
+				if (node != null) {
+					FlexoConceptNode conceptNode = (FlexoConceptNode) analyser.getFMLNode(node);
+					if (conceptNode != null) {
+						return conceptNode.getModelObject();
+					}
+				}
+				logger.warning("Cannot lookup concept " + typeToResolve.getConceptURI());
+				return null;
+			}
+		};
+		VIRTUAL_MODEL_INSTANCE_TYPE_FACTORY = new DefaultVirtualModelInstanceTypeFactory(getFMLTechnologyAdapter()) {
+			@Override
+			public VirtualModel resolveVirtualModel(VirtualModelInstanceType typeToResolve) {
+				// System.out.println("Resolving FlexoConcept " + typeToResolve);
+				AModelDecl node = foundVirtualModels.get(typeToResolve.getConceptURI());
+				if (node != null) {
+					VirtualModelNode virtualModelNode = (VirtualModelNode) analyser.getFMLNode(node);
+					if (virtualModelNode != null) {
+						return virtualModelNode.getModelObject();
+					}
+				}
+				logger.warning("Cannot lookup virtual model " + typeToResolve.getConceptURI());
+				return null;
+			}
+		};
+
+		foundVirtualModels = new HashMap<>();
+		foundConcepts = new HashMap<>();
+		new ConceptTypesExplorer();
 	}
 
 	public MainSemanticsAnalyzer getAnalyser() {
 		return analyser;
+	}
+
+	public FMLTechnologyAdapter getFMLTechnologyAdapter() {
+		if (analyser.getServiceManager() != null) {
+			return analyser.getServiceManager().getTechnologyAdapterService().getTechnologyAdapter(FMLTechnologyAdapter.class);
+		}
+		return null;
 	}
 
 	/**
@@ -93,12 +169,76 @@ public class FMLTypingSpaceDuringParsing extends AbstractFMLTypingSpace {
 	 */
 	@Override
 	public Type resolveType(String typeAsString) {
-		return super.resolveType(typeAsString);
+		Type returned = super.resolveType(typeAsString);
+		if (returned instanceof UnresolvedType) {
+			// Try to match a VirtualModel
+			if (foundVirtualModels.get(typeAsString) != null) {
+				VirtualModelInstanceType vmiType = new VirtualModelInstanceType(typeAsString, VIRTUAL_MODEL_INSTANCE_TYPE_FACTORY);
+				unresolvedTypes.add(vmiType);
+				return vmiType;
+			}
+			else if (foundConcepts.get(typeAsString) != null) {
+				FlexoConceptInstanceType fciType = new FlexoConceptInstanceType(typeAsString, FLEXO_CONCEPT_INSTANCE_TYPE_FACTORY);
+				unresolvedTypes.add(fciType);
+				return fciType;
+			}
+		}
+		return returned;
+	}
+
+	public void resolveUnresovedTypes() {
+
+		for (CustomType unresolvedType : new ArrayList<>(unresolvedTypes)) {
+
+			unresolvedType.resolve();
+			if (unresolvedType.isResolved()) {
+				unresolvedTypes.remove(unresolvedType);
+			}
+			/*System.out.println("resolved: " + unresolvedType.isResolved());
+			if (unresolvedType instanceof FlexoConceptInstanceType) {
+				System.out.println("concept: " + ((FlexoConceptInstanceType) unresolvedType).getFlexoConcept());
+			}*/
+		}
+
+		// System.out.println("Done");
 	}
 
 	@Override
 	public String toString() {
 		return "FMLTypingSpaceDuringParsing";
+	}
+
+	private class ConceptTypesExplorer extends DepthFirstAdapter {
+
+		public ConceptTypesExplorer() {
+			super();
+			analyser.getRootNode().apply(this);
+		}
+
+		@Override
+		public void inAModelDecl(AModelDecl node) {
+			super.inAModelDecl(node);
+			System.out.println("Trouve le VirtualModel " + node.getUidentifier());
+			foundVirtualModels.put(node.getUidentifier().getText(), node);
+		}
+
+		@Override
+		public void outAModelDecl(AModelDecl node) {
+			super.outAModelDecl(node);
+		}
+
+		@Override
+		public void inAConceptDecl(AConceptDecl node) {
+			super.inAConceptDecl(node);
+			System.out.println("Trouve le FlexoConcept " + node.getUidentifier());
+			foundConcepts.put(node.getUidentifier().getText(), node);
+		}
+
+		@Override
+		public void outAConceptDecl(AConceptDecl node) {
+			super.outAConceptDecl(node);
+		}
+
 	}
 
 }
