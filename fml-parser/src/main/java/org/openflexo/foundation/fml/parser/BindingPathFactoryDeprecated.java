@@ -357,7 +357,7 @@ class BindingPathFactoryDeprecated extends DepthFirstAdapter {
 	@Override
 	public void inAPrimaryFieldAccess(APrimaryFieldAccess node) {
 		super.inAPrimaryFieldAccess(node);
-		new ASTDebugger(node);
+		ASTDebugger.debug(node);
 		// System.exit(-1);
 	}
 

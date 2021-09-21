@@ -15,8 +15,6 @@ import org.openflexo.foundation.fml.AbstractFMLTypingSpace;
 import org.openflexo.foundation.fml.FMLCompilationUnit;
 import org.openflexo.foundation.fml.FMLModelFactory;
 import org.openflexo.foundation.fml.controlgraph.FMLControlGraph;
-import org.openflexo.foundation.fml.expr.FMLCastExpression;
-import org.openflexo.foundation.fml.expr.FMLInstanceOfExpression;
 import org.openflexo.foundation.fml.parser.fmlnodes.expr.AndExpressionNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.expr.BindingPathNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.expr.BitwiseAndExpressionNode;
@@ -27,7 +25,9 @@ import org.openflexo.foundation.fml.parser.fmlnodes.expr.CharConstantNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.expr.DataBindingNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.expr.DivisionExpressionNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.expr.EqualsExpressionNode;
+import org.openflexo.foundation.fml.parser.fmlnodes.expr.FMLCastExpressionNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.expr.FMLConditionalExpressionNode;
+import org.openflexo.foundation.fml.parser.fmlnodes.expr.FMLInstanceOfExpressionNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.expr.FalseConstantNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.expr.FloatingPointConstantNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.expr.GreaterThanExpressionNode;
@@ -828,13 +828,18 @@ public class ExpressionFactory extends FMLSemanticsAnalyzer {
 		pop();
 	}
 
-	// TODO
+	@Override
+	public void inAInstanceofRelationalExp(AInstanceofRelationalExp node) {
+		super.inAInstanceofRelationalExp(node);
+		push(retrieveFMLNode(node, n -> new FMLInstanceOfExpressionNode(n, this)));
+	}
+
 	@Override
 	public void outAInstanceofRelationalExp(AInstanceofRelationalExp node) {
 		super.outAInstanceofRelationalExp(node);
-		// Type type = TypeAnalyzer.makeType(node.getType(), this);
-		Type type = TypeFactory.makeType(node.getType(), getTypingSpace());
-		registerExpressionNode(node, new FMLInstanceOfExpression(getExpression(node.getShiftExp()), type));
+		pop();
+		// Type type = TypeFactory.makeType(node.getType(), getTypingSpace());
+		// registerExpressionNode(node, new FMLInstanceOfExpression(getExpression(node.getShiftExp()), type));
 	}
 
 	// shift_exp =
@@ -1069,14 +1074,19 @@ public class ExpressionFactory extends FMLSemanticsAnalyzer {
 		// registerExpressionNode(node, new FMLUnaryOperatorExpression(FMLBooleanUnaryOperator.NOT, getExpression(node.getUnaryExp())));
 	}
 
-	// TODO
+	@Override
+	public void inACastUnaryExpNotPlusMinus(ACastUnaryExpNotPlusMinus node) {
+		super.inACastUnaryExpNotPlusMinus(node);
+		push(retrieveFMLNode(node, n -> new FMLCastExpressionNode(n, this)));
+	}
+
 	@Override
 	public void outACastUnaryExpNotPlusMinus(ACastUnaryExpNotPlusMinus node) {
 		super.outACastUnaryExpNotPlusMinus(node);
-		// Type type = TypeAnalyzer.makeType(node.getType(), this);
-		Type type = TypeFactory.makeType(node.getType(), getTypingSpace());
-		System.out.println("Found type " + type);
-		registerExpressionNode(node, new FMLCastExpression(type, getExpression(node.getUnaryExp())));
+		pop();
+		// Type type = TypeFactory.makeType(node.getType(), getTypingSpace());
+		// System.out.println("Found type " + type);
+		// registerExpressionNode(node, new FMLCastExpression(type, getExpression(node.getUnaryExp())));
 	}
 
 	// post_incr_exp = postfix_exp plus_plus;

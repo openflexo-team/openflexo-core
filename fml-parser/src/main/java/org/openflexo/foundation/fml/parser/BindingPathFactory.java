@@ -62,6 +62,7 @@ import org.openflexo.foundation.fml.parser.node.AIdentifierPrefix;
 import org.openflexo.foundation.fml.parser.node.AIdentifierPrimary;
 import org.openflexo.foundation.fml.parser.node.AManyArgumentList;
 import org.openflexo.foundation.fml.parser.node.AMethodPrimaryNoId;
+import org.openflexo.foundation.fml.parser.node.ANewInstancePrimaryNoId;
 import org.openflexo.foundation.fml.parser.node.AOneArgumentList;
 import org.openflexo.foundation.fml.parser.node.APrimaryFieldAccess;
 import org.openflexo.foundation.fml.parser.node.APrimaryMethodInvocation;
@@ -146,9 +147,11 @@ public class BindingPathFactory {
 		else if (node instanceof AMethodPrimaryNoId) {
 			appendBindingPath(((AMethodPrimaryNoId) node).getMethodInvocation());
 		}
-		/*else if (node instanceof ANewInstancePrimaryNoId) {
-			appendBindingPath(((ANewInstancePrimaryNoId) node).getNewInstance());
-		}*/
+		else if (node instanceof ANewInstancePrimaryNoId) {
+			System.out.println("Hop avec " + node);
+			System.exit(-1);
+			// appendBindingPath(((ANewInstancePrimaryNoId) node).getNewInstance());
+		}
 	}
 
 	private void appendBindingPath(PFieldAccess node) {
