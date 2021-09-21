@@ -36,6 +36,10 @@ model MyModel {
 		a = super();
 	}
 
+	testMethodCall5() {
+		a = super.init();
+	}
+
 	/*testMethodCallWithArguments() {
 		a = b(1);
 	}*/

@@ -113,6 +113,11 @@ public class TestBindingValueParser extends ExpressionParserTestCase {
 	}
 
 	@Test
+	public void testWithSuper8() {
+		tryToParse("super.init()", "super.init()", BindingValue.class, null, serviceManager, false);
+	}
+
+	@Test
 	public void testAccentCharacter() {
 		tryToParse("flexoConcept.unité", "flexoConcept.unité", BindingValue.class, null, serviceManager, false);
 	}
