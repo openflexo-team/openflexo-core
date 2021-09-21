@@ -150,7 +150,8 @@ public abstract class CompilationUnitResourceImpl extends PamelaResourceImpl<FML
 
 	@Override
 	public Expression parseExpression(String expressionAsString, Bindable bindable) throws ParseException {
-		return FMLExpressionParser.parse(expressionAsString, bindable, getCompilationUnit().getTypingSpace());
+		return FMLExpressionParser.parse(expressionAsString, bindable, getCompilationUnit().getTypingSpace(),
+				getCompilationUnit().getFMLModelFactory());
 	}
 
 	@Override
