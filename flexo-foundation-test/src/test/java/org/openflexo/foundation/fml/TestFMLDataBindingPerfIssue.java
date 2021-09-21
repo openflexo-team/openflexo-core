@@ -225,7 +225,7 @@ public class TestFMLDataBindingPerfIssue extends OpenflexoTestCase {
 		createExpressionAction2.setEditionActionClass(ExpressionAction.class);
 		createExpressionAction2.doAction();
 		ExpressionAction<String> expression2 = (ExpressionAction) createExpressionAction2.getNewEditionAction();
-		expression2.setExpression(expr2 = new DataBinding<>("aString+'toto'"));
+		expression2.setExpression(expr2 = new DataBinding<>("aString+\"toto\""));
 
 		assertNotNull(expression2);
 		assertTrue(expr2.isValid());
@@ -248,7 +248,7 @@ public class TestFMLDataBindingPerfIssue extends OpenflexoTestCase {
 		assertTrue(expr1.isValid());
 		assertEquals("renamedProperty", expr1.toString());
 		assertTrue(expr2.isValid());
-		assertEquals("(renamedProperty + \"toto\")", expr2.toString());
+		assertEquals("renamedProperty + \"toto\"", expr2.toString());
 	}
 
 }
