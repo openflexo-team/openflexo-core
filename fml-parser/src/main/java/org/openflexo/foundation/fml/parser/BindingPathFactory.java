@@ -65,14 +65,17 @@ import org.openflexo.foundation.fml.parser.node.AClassMethodMethodInvocation;
 import org.openflexo.foundation.fml.parser.node.ACompositeIdent;
 import org.openflexo.foundation.fml.parser.node.AFieldLeftHandSide;
 import org.openflexo.foundation.fml.parser.node.AFieldPrimaryNoId;
+import org.openflexo.foundation.fml.parser.node.AFmlActionExpressionStatementExpression;
 import org.openflexo.foundation.fml.parser.node.AFullQualifiedNewInstance;
 import org.openflexo.foundation.fml.parser.node.AIdentifierLeftHandSide;
 import org.openflexo.foundation.fml.parser.node.AIdentifierPrefix;
 import org.openflexo.foundation.fml.parser.node.AIdentifierPrimary;
 import org.openflexo.foundation.fml.parser.node.AManyArgumentList;
+import org.openflexo.foundation.fml.parser.node.AMethodInvocationStatementExpression;
 import org.openflexo.foundation.fml.parser.node.AMethodPrimaryNoId;
 import org.openflexo.foundation.fml.parser.node.ANewContainmentClause;
 import org.openflexo.foundation.fml.parser.node.ANewInstancePrimaryNoId;
+import org.openflexo.foundation.fml.parser.node.ANewInstanceStatementExpression;
 import org.openflexo.foundation.fml.parser.node.AOneArgumentList;
 import org.openflexo.foundation.fml.parser.node.APrimaryFieldAccess;
 import org.openflexo.foundation.fml.parser.node.APrimaryMethodInvocation;
@@ -93,6 +96,7 @@ import org.openflexo.foundation.fml.parser.node.PNewContainmentClause;
 import org.openflexo.foundation.fml.parser.node.PNewInstance;
 import org.openflexo.foundation.fml.parser.node.PPrimary;
 import org.openflexo.foundation.fml.parser.node.PPrimaryNoId;
+import org.openflexo.foundation.fml.parser.node.PStatementExpression;
 import org.openflexo.foundation.fml.parser.node.TKwSuper;
 import org.openflexo.foundation.fml.parser.node.TLidentifier;
 
@@ -147,6 +151,9 @@ public class BindingPathFactory {
 		if (rootNode instanceof PLeftHandSide) {
 			appendBindingPath((PLeftHandSide) rootNode);
 		}
+		if (rootNode instanceof PStatementExpression) {
+			appendBindingPath((PStatementExpression) rootNode);
+		}
 	}
 
 	private AbstractBindingPathElementNode<?, ?> popBindingPath() {
@@ -200,6 +207,18 @@ public class BindingPathFactory {
 		}
 		else if (node instanceof AIdentifierLeftHandSide) {
 			appendBindingPath(((AIdentifierLeftHandSide) node).getCompositeIdent());
+		}
+	}
+
+	private void appendBindingPath(PStatementExpression node) {
+		if (node instanceof AMethodInvocationStatementExpression) {
+			appendBindingPath(((AMethodInvocationStatementExpression) node).getMethodInvocation());
+		}
+		else if (node instanceof ANewInstanceStatementExpression) {
+			appendBindingPath(((ANewInstanceStatementExpression) node).getNewInstance());
+		}
+		else if (node instanceof AFmlActionExpressionStatementExpression) {
+			// TODO
 		}
 	}
 

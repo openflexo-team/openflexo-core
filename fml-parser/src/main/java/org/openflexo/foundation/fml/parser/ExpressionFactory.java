@@ -78,11 +78,13 @@ import org.openflexo.foundation.fml.parser.node.AIntegerLiteral;
 import org.openflexo.foundation.fml.parser.node.ALiteralPrimaryNoId;
 import org.openflexo.foundation.fml.parser.node.ALtRelationalExp;
 import org.openflexo.foundation.fml.parser.node.ALteqRelationalExp;
+import org.openflexo.foundation.fml.parser.node.AMethodInvocationStatementExpression;
 import org.openflexo.foundation.fml.parser.node.AMethodPrimaryNoId;
 import org.openflexo.foundation.fml.parser.node.AMinusAddExp;
 import org.openflexo.foundation.fml.parser.node.AMinusUnaryExp;
 import org.openflexo.foundation.fml.parser.node.ANeqEqualityExp;
 import org.openflexo.foundation.fml.parser.node.ANewInstancePrimaryNoId;
+import org.openflexo.foundation.fml.parser.node.ANewInstanceStatementExpression;
 import org.openflexo.foundation.fml.parser.node.ANullLiteral;
 import org.openflexo.foundation.fml.parser.node.APercentMultExp;
 import org.openflexo.foundation.fml.parser.node.APlusAddExp;
@@ -202,7 +204,16 @@ public class ExpressionFactory extends FMLSemanticsAnalyzer {
 		node.apply(factory);
 		factory.pop();
 
-		System.out.println("Hop, on retourne " + factory.getExpression());
+		/*System.out.println("Hop, on retourne " + factory.getExpression());
+		
+		if (factory.getExpression().toString().equals("super.init")) {
+			System.out.println("J'ai mon probleme");
+			BindingValue bv = (BindingValue) factory.getExpression();
+			System.out.println("Je fais " + bv + " avec " + node);
+			ASTDebugger.debug(node);
+			Thread.dumpStack();
+			System.exit(-1);
+		}*/
 
 		return factory.getExpression();
 	}
@@ -491,6 +502,74 @@ public class ExpressionFactory extends FMLSemanticsAnalyzer {
 		super.outANewInstancePrimaryNoId(node);
 		popBindingPathNode(node);
 	}
+
+	// BEGIN Alternative 1
+
+	@Override
+	public void inAMethodInvocationStatementExpression(AMethodInvocationStatementExpression node) {
+		super.inAMethodInvocationStatementExpression(node);
+		pushBindingPathNode(node);
+	}
+
+	@Override
+	public void outAMethodInvocationStatementExpression(AMethodInvocationStatementExpression node) {
+		super.outAMethodInvocationStatementExpression(node);
+		popBindingPathNode(node);
+	}
+
+	@Override
+	public void inANewInstanceStatementExpression(ANewInstanceStatementExpression node) {
+		super.inANewInstanceStatementExpression(node);
+		pushBindingPathNode(node);
+	}
+
+	@Override
+	public void outANewInstanceStatementExpression(ANewInstanceStatementExpression node) {
+		super.outANewInstanceStatementExpression(node);
+		popBindingPathNode(node);
+	}
+
+	// END Alternative 1
+
+	// BEGIN Alternative 2
+
+	/*@Override
+	public void inAPrimaryMethodInvocation(APrimaryMethodInvocation node) {
+		super.inAPrimaryMethodInvocation(node);
+		pushBindingPathNode(node);
+	}
+	
+	@Override
+	public void outAPrimaryMethodInvocation(APrimaryMethodInvocation node) {
+		super.outAPrimaryMethodInvocation(node);
+		popBindingPathNode(node);
+	}
+	
+	@Override
+	public void inASuperMethodInvocation(ASuperMethodInvocation node) {
+		super.inASuperMethodInvocation(node);
+		pushBindingPathNode(node);
+	}
+	
+	@Override
+	public void outASuperMethodInvocation(ASuperMethodInvocation node) {
+		super.outASuperMethodInvocation(node);
+		popBindingPathNode(node);
+	}
+	
+	@Override
+	public void inAClassMethodMethodInvocation(AClassMethodMethodInvocation node) {
+		super.inAClassMethodMethodInvocation(node);
+		pushBindingPathNode(node);
+	}
+	
+	@Override
+	public void outAClassMethodMethodInvocation(AClassMethodMethodInvocation node) {
+		super.outAClassMethodMethodInvocation(node);
+		popBindingPathNode(node);
+	}*/
+
+	// END Alternative 2
 
 	@Override
 	public void inANullLiteral(ANullLiteral node) {

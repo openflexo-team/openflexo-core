@@ -95,7 +95,21 @@ public class TestSingleInheritance extends OpenflexoProjectAtRunTimeTestCase {
 		conceptB = virtualModel.getFlexoConcept("B");
 		assertNotNull(conceptB);
 
-		System.out.println(virtualModel.getCompilationUnit().getFMLPrettyPrint());
+		/*System.out.println(virtualModel.getCompilationUnit().getFMLPrettyPrint());
+		
+		System.out.println("ConceptA BindingModel = " + conceptA.getBindingModel());
+		System.out.println("ConceptB BindingModel = " + conceptB.getBindingModel());
+		
+		System.out.println("parents=" + conceptB.getParentFlexoConcepts());
+		assertSameList(conceptB.getParentFlexoConcepts(), conceptA);
+		
+		CreationScheme createB = conceptB.getCreationSchemes().get(0);
+		Sequence s1 = (Sequence) createB.getControlGraph();
+		Sequence s2 = (Sequence) s1.getControlGraph2();
+		AssignationAction<?> a = (AssignationAction<?>) s2.getControlGraph2();
+		
+		System.out.println(a.getFMLPrettyPrint());
+		System.out.println("a BindingModel = " + a.getBindingModel());*/
 
 		assertVirtualModelIsValid(virtualModel);
 	}
