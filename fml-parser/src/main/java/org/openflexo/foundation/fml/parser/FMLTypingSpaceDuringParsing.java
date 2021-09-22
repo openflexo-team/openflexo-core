@@ -186,6 +186,10 @@ public class FMLTypingSpaceDuringParsing extends AbstractFMLTypingSpace {
 		return returned;
 	}
 
+	public List<CustomType> getUnresolvedTypes() {
+		return unresolvedTypes;
+	}
+
 	public void resolveUnresovedTypes() {
 
 		for (CustomType unresolvedType : new ArrayList<>(unresolvedTypes)) {

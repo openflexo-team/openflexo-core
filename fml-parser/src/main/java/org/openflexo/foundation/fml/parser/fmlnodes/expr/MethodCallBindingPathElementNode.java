@@ -91,9 +91,4 @@ public class MethodCallBindingPathElementNode
 		return null;
 	}
 
-	@Override
-	public MethodCallBindingPathElementNode deserialize() {
-		return this;
-	}
-
 }

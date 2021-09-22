@@ -61,9 +61,10 @@ import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoProject;
 import org.openflexo.foundation.fml.AbstractActionScheme;
 import org.openflexo.foundation.fml.CreationScheme;
-import org.openflexo.foundation.fml.FlexoBehaviour;
 import org.openflexo.foundation.fml.FlexoBehaviourParameter;
 import org.openflexo.foundation.fml.FlexoConcept;
+import org.openflexo.foundation.fml.FlexoConceptInstanceType;
+import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance.FlexoConceptInstanceImpl.SuperReference;
 import org.openflexo.foundation.fml.rt.action.AbstractActionSchemeAction;
@@ -74,18 +75,18 @@ import org.openflexo.foundation.fml.rt.action.SuperCreationSchemeAction;
 import org.openflexo.foundation.fml.rt.action.SuperCreationSchemeActionFactory;
 
 /**
- * Modelize a call for execution of an FlexoBehaviour
+ * Modelize a new instance of a given FlexoConcept
  * 
  * @author sylvain
  * 
  */
-public class FlexoBehaviourPathElement extends FunctionPathElement<FlexoBehaviour> implements PropertyChangeListener {
+public class CreationSchemePathElement extends FunctionPathElement<CreationScheme> implements PropertyChangeListener {
 
-	static final Logger logger = Logger.getLogger(FlexoBehaviourPathElement.class.getPackage().getName());
+	static final Logger logger = Logger.getLogger(CreationSchemePathElement.class.getPackage().getName());
 
 	private Type lastKnownType = null;
 
-	public FlexoBehaviourPathElement(IBindingPathElement parent, FlexoBehaviour flexoBehaviour, List<DataBinding<?>> args) {
+	public CreationSchemePathElement(IBindingPathElement parent, CreationScheme flexoBehaviour, List<DataBinding<?>> args) {
 		super(parent, flexoBehaviour, args);
 
 	}
@@ -95,51 +96,51 @@ public class FlexoBehaviourPathElement extends FunctionPathElement<FlexoBehaviou
 		super.activate();
 		// Do not instanciate parameters now, we will do it later
 		// instanciateParameters(owner);
-		if (getFlexoBehaviour() != null) {
-			if (getFlexoBehaviour() != null && getFlexoBehaviour().getPropertyChangeSupport() != null) {
-				getFlexoBehaviour().getPropertyChangeSupport().addPropertyChangeListener(this);
+		if (getCreationScheme() != null) {
+			if (getCreationScheme() != null && getCreationScheme().getPropertyChangeSupport() != null) {
+				getCreationScheme().getPropertyChangeSupport().addPropertyChangeListener(this);
 			}
-			for (FunctionArgument arg : getFlexoBehaviour().getArguments()) {
+			for (FunctionArgument arg : getCreationScheme().getArguments()) {
 				DataBinding<?> argValue = getParameter(arg);
 				if (argValue != null && arg != null) {
 					argValue.setDeclaredType(arg.getArgumentType());
 				}
 			}
-			lastKnownType = getFlexoBehaviour().getReturnType();
+			lastKnownType = getCreationScheme().getReturnType();
 		}
 		else {
-			logger.warning("Inconsistent data: null FlexoBehaviour");
+			logger.warning("Inconsistent data: null CreationScheme");
 		}
 	}
 
 	@Override
 	public void desactivate() {
-		if (getFlexoBehaviour() != null && getFlexoBehaviour().getPropertyChangeSupport() != null) {
-			getFlexoBehaviour().getPropertyChangeSupport().removePropertyChangeListener(this);
+		if (getCreationScheme() != null && getCreationScheme().getPropertyChangeSupport() != null) {
+			getCreationScheme().getPropertyChangeSupport().removePropertyChangeListener(this);
 		}
 		super.desactivate();
 	}
 
 	@Override
 	public Type getType() {
-		if (getFlexoBehaviour() != null) {
-			return getFlexoBehaviour().getReturnType();
+		if (getCreationScheme() != null) {
+			return getCreationScheme().getReturnType();
 		}
 		return super.getType();
 	}
 
-	public FlexoBehaviour getFlexoBehaviour() {
+	public CreationScheme getCreationScheme() {
 		return getFunction();
 	}
 
 	@Override
 	public String getLabel() {
-		return getFlexoBehaviour().getSignature();
+		return getCreationScheme().getSignature();
 	}
 
 	@Override
 	public String getTooltipText(Type resultingType) {
-		return getFlexoBehaviour().getDescription();
+		return getCreationScheme().getDescription();
 	}
 
 	/**
@@ -154,25 +155,25 @@ public class FlexoBehaviourPathElement extends FunctionPathElement<FlexoBehaviou
 
 	@Override
 	public void propertyChange(PropertyChangeEvent evt) {
-		if (evt.getSource() == getFlexoBehaviour()) {
+		if (evt.getSource() == getCreationScheme()) {
 			if (evt.getPropertyName().equals(FlexoBehaviourParameter.NAME_KEY)) {
 				// System.out.println("Notify behaviour name changing for " + getFlexoBehaviour() + " new=" +
 				// getFlexoBehaviour().getName());
 				serializationRepresentation = null;
-				if (getFlexoBehaviour() != null && getFlexoBehaviour().getFlexoConcept() != null
-						&& getFlexoBehaviour().getFlexoConcept().getBindingModel() != null
-						&& getFlexoBehaviour().getFlexoConcept().getBindingModel().getPropertyChangeSupport() != null) {
-					getFlexoBehaviour().getFlexoConcept().getBindingModel().getPropertyChangeSupport()
+				if (getCreationScheme() != null && getCreationScheme().getFlexoConcept() != null
+						&& getCreationScheme().getFlexoConcept().getBindingModel() != null
+						&& getCreationScheme().getFlexoConcept().getBindingModel().getPropertyChangeSupport() != null) {
+					getCreationScheme().getFlexoConcept().getBindingModel().getPropertyChangeSupport()
 							.firePropertyChange(BindingModel.BINDING_PATH_ELEMENT_NAME_CHANGED, null, this);
 				}
 			}
 			if (lastKnownType != getType()) {
 				lastKnownType = getType();
 				serializationRepresentation = null;
-				if (getFlexoBehaviour() != null && getFlexoBehaviour().getFlexoConcept() != null
-						&& getFlexoBehaviour().getFlexoConcept().getBindingModel() != null
-						&& getFlexoBehaviour().getFlexoConcept().getBindingModel().getPropertyChangeSupport() != null) {
-					getFlexoBehaviour().getFlexoConcept().getBindingModel().getPropertyChangeSupport()
+				if (getCreationScheme() != null && getCreationScheme().getFlexoConcept() != null
+						&& getCreationScheme().getFlexoConcept().getBindingModel() != null
+						&& getCreationScheme().getFlexoConcept().getBindingModel().getPropertyChangeSupport() != null) {
+					getCreationScheme().getFlexoConcept().getBindingModel().getPropertyChangeSupport()
 							.firePropertyChange(BindingModel.BINDING_PATH_ELEMENT_TYPE_CHANGED, null, this);
 				}
 			}
@@ -183,6 +184,11 @@ public class FlexoBehaviourPathElement extends FunctionPathElement<FlexoBehaviou
 	@Override
 	public Object getBindingValue(Object target, BindingEvaluationContext context)
 			throws TypeMismatchException, NullReferenceException, InvocationTargetTransformException {
+
+		// TODO !!!
+		logger.warning("A revoir comment on execute un CreationSchemePathElement");
+		if (true)
+			return null;
 
 		try {
 
@@ -199,9 +205,9 @@ public class FlexoBehaviourPathElement extends FunctionPathElement<FlexoBehaviou
 				FlexoConceptInstance fci = (FlexoConceptInstance) target;
 
 				// This is "normal" execution context
-				if (getFlexoBehaviour() instanceof AbstractActionScheme) {
+				if (getCreationScheme() instanceof AbstractActionScheme) {
 
-					AbstractActionSchemeActionFactory actionType = ((AbstractActionScheme) getFlexoBehaviour()).getActionFactory(fci);
+					AbstractActionSchemeActionFactory actionType = ((AbstractActionScheme) getCreationScheme()).getActionFactory(fci);
 					AbstractActionSchemeAction<?, ?, ?> actionSchemeAction = null;
 
 					if (context instanceof FlexoBehaviourAction) {
@@ -226,7 +232,7 @@ public class FlexoBehaviourPathElement extends FunctionPathElement<FlexoBehaviou
 					}
 					actionSchemeAction.setDeclaredConceptualLevel(conceptualLevel);
 
-					for (FlexoBehaviourParameter p : getFlexoBehaviour().getParameters()) {
+					for (FlexoBehaviourParameter p : getCreationScheme().getParameters()) {
 						DataBinding<?> param = getParameter(p);
 						Object paramValue = TypeUtils.castTo(param.getBindingValue(context), p.getType());
 						// logger.fine("For parameter " + param + " value is " + paramValue);
@@ -237,7 +243,7 @@ public class FlexoBehaviourPathElement extends FunctionPathElement<FlexoBehaviou
 					actionSchemeAction.doAction();
 
 					if (actionSchemeAction.hasActionExecutionSucceeded()) {
-						logger.fine("Successfully performed FlexoBehaviour " + getFlexoBehaviour() + " for " + fci);
+						logger.fine("Successfully performed FlexoBehaviour " + getCreationScheme() + " for " + fci);
 						return actionSchemeAction.getReturnedValue();
 					}
 					if (actionSchemeAction.getThrownException() != null) {
@@ -249,15 +255,15 @@ public class FlexoBehaviourPathElement extends FunctionPathElement<FlexoBehaviou
 				// This is a special context, where we are executing a CreationScheme and where we want to
 				// call a super-concept CreationScheme
 				else if (((context instanceof CreationSchemeAction) || (context instanceof SuperCreationSchemeAction))
-						&& getFlexoBehaviour() instanceof CreationScheme) {
-					SuperCreationSchemeActionFactory actionType = ((CreationScheme) getFlexoBehaviour())
+						&& getCreationScheme() instanceof CreationScheme) {
+					SuperCreationSchemeActionFactory actionType = ((CreationScheme) getCreationScheme())
 							.getSuperCreationSchemeActionFactory(fci);
 					SuperCreationSchemeAction actionSchemeAction = actionType.makeNewEmbeddedAction(fci.getVirtualModelInstance(), null,
 							(FlexoBehaviourAction) context);
 
 					actionSchemeAction.setDeclaredConceptualLevel(conceptualLevel);
 
-					for (FlexoBehaviourParameter p : getFlexoBehaviour().getParameters()) {
+					for (FlexoBehaviourParameter p : getCreationScheme().getParameters()) {
 						DataBinding<?> param = getParameter(p);
 						Object paramValue = TypeUtils.castTo(param.getBindingValue(context), p.getType());
 						// logger.fine("For parameter " + param + " value is " + paramValue);
@@ -268,7 +274,7 @@ public class FlexoBehaviourPathElement extends FunctionPathElement<FlexoBehaviou
 					actionSchemeAction.doAction();
 
 					if (actionSchemeAction.hasActionExecutionSucceeded()) {
-						logger.fine("Successfully performed FlexoBehaviour " + getFlexoBehaviour() + " for " + fci);
+						logger.fine("Successfully performed FlexoBehaviour " + getCreationScheme() + " for " + fci);
 						return actionSchemeAction.getReturnedValue();
 					}
 					if (actionSchemeAction.getThrownException() != null) {
@@ -278,7 +284,7 @@ public class FlexoBehaviourPathElement extends FunctionPathElement<FlexoBehaviou
 				}
 
 				else {
-					logger.warning("Unexpected behaviour " + getFlexoBehaviour().getSignature() + " for context: " + context);
+					logger.warning("Unexpected behaviour " + getCreationScheme().getSignature() + " for context: " + context);
 				}
 			}
 
@@ -288,7 +294,7 @@ public class FlexoBehaviourPathElement extends FunctionPathElement<FlexoBehaviou
 			// return getMethodDefinition().getMethod().invoke(target, args);
 		} catch (IllegalArgumentException e) {
 			StringBuffer warningMessage = new StringBuffer(
-					"While evaluating edition scheme " + getFlexoBehaviour() + " exception occured: " + e.getMessage());
+					"While evaluating edition scheme " + getCreationScheme() + " exception occured: " + e.getMessage());
 			warningMessage.append(", object = " + target);
 			/*for (i = 0; i < getFunction().getArguments().size(); i++) {
 				warningMessage.append(", arg[" + i + "] = " + args[i]);
@@ -321,8 +327,59 @@ public class FlexoBehaviourPathElement extends FunctionPathElement<FlexoBehaviou
 	}
 
 	@Override
+	public BindingPathCheck checkBindingPathIsValid(IBindingPathElement parentElement, Type parentType) {
+
+		BindingPathCheck check = super.checkBindingPathIsValid(parentElement, parentType);
+
+		if (parentType != null) {
+			if (getParent() == null) {
+				check.invalidBindingReason = "No parent for: " + this;
+				check.valid = false;
+				return check;
+			}
+
+			if (getParent() != parentElement) {
+				check.invalidBindingReason = "Inconsistent parent for: " + this;
+				check.valid = false;
+				return check;
+			}
+
+			if (!TypeUtils.isTypeAssignableFrom(parentElement.getType(), getParent().getType(), true)) {
+				check.invalidBindingReason = "Mismatched: " + parentElement.getType() + " and " + getParent().getType();
+				check.valid = false;
+				return check;
+			}
+
+			if (parentType instanceof FlexoConceptInstanceType) {
+				FlexoConcept parentContext = ((FlexoConceptInstanceType) parentType).getFlexoConcept();
+				if (parentContext instanceof VirtualModel) {
+					VirtualModel vm = (VirtualModel) parentContext;
+					if (!vm.getAllRootFlexoConcepts().contains(getCreationScheme().getFlexoConcept())) {
+						check.invalidBindingReason = "cannot instantiate " + getCreationScheme().getFlexoConcept().getName() + " in "
+								+ parentContext.getName();
+						check.valid = false;
+						return check;
+					}
+				}
+				else if (parentContext instanceof FlexoConcept) {
+					if (!parentContext.getEmbeddedFlexoConcepts().contains(getCreationScheme().getFlexoConcept())) {
+						check.invalidBindingReason = "cannot instantiate " + getCreationScheme().getFlexoConcept().getName() + " in "
+								+ parentContext.getName();
+						check.valid = false;
+						return check;
+					}
+				}
+			}
+		}
+
+		check.returnedType = getType();
+		check.valid = true;
+		return check;
+	}
+
+	@Override
 	public boolean requiresContext() {
-		return true;
+		return false;
 	}
 
 }

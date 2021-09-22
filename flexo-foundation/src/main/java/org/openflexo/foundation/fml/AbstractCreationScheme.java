@@ -38,12 +38,13 @@
 
 package org.openflexo.foundation.fml;
 
+import org.openflexo.connie.binding.AbstractConstructor;
 import org.openflexo.pamela.annotations.ImplementationClass;
 import org.openflexo.pamela.annotations.ModelEntity;
 
 @ModelEntity(isAbstract = true)
 @ImplementationClass(AbstractCreationScheme.AbstractCreationSchemeImpl.class)
-public abstract interface AbstractCreationScheme extends FlexoBehaviour {
+public abstract interface AbstractCreationScheme extends FlexoBehaviour, AbstractConstructor {
 
 	public static abstract class AbstractCreationSchemeImpl extends FlexoBehaviourImpl implements AbstractCreationScheme {
 

@@ -85,6 +85,12 @@ public abstract class AbstractBindingPathElementNode<N extends Node, BPE extends
 		return bindable;
 	}
 
+	// Take care that this method is never called !
+	@Override
+	public final AbstractBindingPathElementNode<N, BPE> deserialize() {
+		return this;
+	}
+
 	protected String getLastPathIdentifier(PPrimary primary) {
 		if (primary instanceof AIdentifierPrimary) {
 			String fullQualifiedIdentifier = getAnalyser().makeFullQualifiedIdentifier(((AIdentifierPrimary) primary).getCompositeIdent());

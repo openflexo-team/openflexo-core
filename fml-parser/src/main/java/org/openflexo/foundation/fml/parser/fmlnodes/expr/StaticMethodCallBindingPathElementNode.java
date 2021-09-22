@@ -75,9 +75,4 @@ public class StaticMethodCallBindingPathElementNode
 		return null;
 	}
 
-	@Override
-	public StaticMethodCallBindingPathElementNode deserialize() {
-		return this;
-	}
-
 }

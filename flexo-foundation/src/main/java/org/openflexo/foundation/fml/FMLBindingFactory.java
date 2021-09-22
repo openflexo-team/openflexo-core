@@ -51,6 +51,7 @@ import java.util.logging.Logger;
 import org.openflexo.connie.Bindable;
 import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.ParseException;
+import org.openflexo.connie.binding.AbstractConstructor;
 import org.openflexo.connie.binding.BindingPathElement;
 import org.openflexo.connie.binding.Function;
 import org.openflexo.connie.binding.FunctionPathElement;
@@ -60,6 +61,7 @@ import org.openflexo.connie.binding.javareflect.JavaBasedBindingFactory;
 import org.openflexo.connie.expr.Constant;
 import org.openflexo.connie.expr.Expression;
 import org.openflexo.foundation.fml.binding.ContainerPathElement;
+import org.openflexo.foundation.fml.binding.CreationSchemePathElement;
 import org.openflexo.foundation.fml.binding.EPIRendererPathElement;
 import org.openflexo.foundation.fml.binding.EnumValuesPathElement;
 import org.openflexo.foundation.fml.binding.FlexoBehaviourParameterDefinitionPathElement;
@@ -71,6 +73,7 @@ import org.openflexo.foundation.fml.binding.FlexoConceptTypePathElement;
 import org.openflexo.foundation.fml.binding.FlexoPropertyPathElement;
 import org.openflexo.foundation.fml.binding.ModelSlotPathElement;
 import org.openflexo.foundation.fml.binding.ResourceCenterPathElement;
+import org.openflexo.foundation.fml.binding.SuperBindingVariable;
 import org.openflexo.foundation.fml.binding.VirtualModelTypePathElement;
 import org.openflexo.foundation.fml.expr.FMLConstant;
 import org.openflexo.foundation.fml.expr.FMLConstant.ObjectConstant;
@@ -394,11 +397,16 @@ public class FMLBindingFactory extends JavaBasedBindingFactory {
 	@Override
 	public FunctionPathElement<?> makeFunctionPathElement(IBindingPathElement parent, Function function, DataBinding<?> innerAccess,
 			List<DataBinding<?>> args) {
-		if (parent.getType() == null) {
-			return null;
+		if (function instanceof CreationScheme && !(parent instanceof SuperBindingVariable)) {
+			return new CreationSchemePathElement(parent, (CreationScheme) function, args);
 		}
-		if (parent.getType() instanceof FlexoConceptInstanceType && function instanceof FlexoBehaviour) {
-			return new FlexoBehaviourPathElement(parent, (FlexoBehaviour) function, args);
+		if (parent != null) {
+			if (parent.getType() == null) {
+				return null;
+			}
+			if (parent.getType() instanceof FlexoConceptInstanceType && function instanceof FlexoBehaviour) {
+				return new FlexoBehaviourPathElement(parent, (FlexoBehaviour) function, args);
+			}
 		}
 		return super.makeFunctionPathElement(parent, function, innerAccess, args);
 		// Hook to specialize type returned by getFlexoConceptInstance(String)
@@ -414,13 +422,49 @@ public class FMLBindingFactory extends JavaBasedBindingFactory {
 	}
 
 	@Override
+	public AbstractConstructor retrieveConstructor(Type declaringType, DataBinding<?> innerAccess, String functionName,
+			List<DataBinding<?>> args) {
+		if (declaringType instanceof FlexoConceptInstanceType) {
+			FlexoConcept concept = ((FlexoConceptInstanceType) declaringType).getFlexoConcept();
+			System.out.println("On cherche un constructeur " + functionName + " pour " + declaringType);
+			CreationScheme returned = (CreationScheme) concept.getFlexoBehaviour(functionName, buildArgumentList(args));
+			System.out.println("Return " + returned);
+			return returned;
+		}
+		return super.retrieveConstructor(declaringType, innerAccess, functionName, args);
+	}
+
+	private Type[] buildArgumentList(List<DataBinding<?>> args) {
+		Type[] paramsTypes = new Type[args.size()];
+		for (int i = 0; i < args.size(); i++) {
+			if (args.get(i).getExpression() instanceof ObjectConstant) {
+				Object value = ((ObjectConstant) args.get(i).getExpression()).getValue();
+				if (value instanceof VirtualModelInstance) {
+					paramsTypes[i] = ((VirtualModelInstance<?, ?>) value).getVirtualModel().getInstanceType();
+				}
+				else if (value instanceof FlexoConceptInstance) {
+					paramsTypes[i] = ((FlexoConceptInstance) value).getFlexoConcept().getInstanceType();
+				}
+				else {
+					paramsTypes[i] = value.getClass();
+				}
+			}
+			else {
+				paramsTypes[i] = args.get(i).getAnalyzedType();
+			}
+			// System.out.println("> " + args.get(i) + " of " + paramsTypes[i]);
+		}
+		return paramsTypes;
+	}
+
+	@Override
 	public Function retrieveFunction(Type parentType, String functionName, List<DataBinding<?>> args) {
 		if (parentType instanceof FlexoConceptInstanceType) {
 			FlexoConcept conceptType = ((FlexoConceptInstanceType) parentType).getFlexoConcept();
 			// System.out.println("Looking for behaviour " + functionName + " avec " + args);
 			// System.out.println("conceptType=" + conceptType);
 			if (conceptType != null) {
-				Type[] paramsTypes = new Type[args.size()];
+				/*Type[] paramsTypes = new Type[args.size()];
 				for (int i = 0; i < args.size(); i++) {
 					if (args.get(i).getExpression() instanceof ObjectConstant) {
 						Object value = ((ObjectConstant) args.get(i).getExpression()).getValue();
@@ -438,9 +482,9 @@ public class FMLBindingFactory extends JavaBasedBindingFactory {
 						paramsTypes[i] = args.get(i).getAnalyzedType();
 					}
 					// System.out.println("> " + args.get(i) + " of " + paramsTypes[i]);
-				}
+				}*/
 				// System.out.println("Returned: " + conceptType.getFlexoBehaviour(functionName, paramsTypes));
-				FlexoBehaviour returned = conceptType.getFlexoBehaviour(functionName, paramsTypes);
+				FlexoBehaviour returned = conceptType.getFlexoBehaviour(functionName, buildArgumentList(args));
 				if (returned != null) {
 					return returned;
 				}

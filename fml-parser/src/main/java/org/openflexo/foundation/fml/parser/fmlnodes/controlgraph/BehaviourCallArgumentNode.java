@@ -42,14 +42,10 @@ import java.util.logging.Logger;
 
 import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.DataBinding.BindingDefinitionType;
-import org.openflexo.foundation.fml.FlexoBehaviourParameter;
 import org.openflexo.foundation.fml.parser.ExpressionFactory;
 import org.openflexo.foundation.fml.parser.FMLObjectNode;
 import org.openflexo.foundation.fml.parser.MainSemanticsAnalyzer;
 import org.openflexo.foundation.fml.parser.node.PExpression;
-import org.openflexo.foundation.fml.rt.editionaction.AddFlexoConceptInstance;
-import org.openflexo.foundation.fml.rt.editionaction.AddFlexoConceptInstanceParameter;
-import org.openflexo.foundation.fml.rt.editionaction.AddVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.editionaction.BehaviourCallArgument;
 
 /**
@@ -71,7 +67,7 @@ public class BehaviourCallArgumentNode extends FMLObjectNode<PExpression, Behavi
 
 	@Override
 	public BehaviourCallArgumentNode deserialize() {
-		if (getParent() instanceof AddFlexoConceptInstanceNode) {
+		/*if (getParent() instanceof AddFlexoConceptInstanceNode) {
 			AddFlexoConceptInstance<?> action = ((AddFlexoConceptInstanceNode) getParent()).getModelObject();
 			int currentIndex = action.getParameters().size();
 			if (action.getCreationScheme() != null) {
@@ -90,7 +86,7 @@ public class BehaviourCallArgumentNode extends FMLObjectNode<PExpression, Behavi
 			}
 			((AddVirtualModelInstanceNode) getParent()).getModelObject()
 					.addToParameters((AddFlexoConceptInstanceParameter) getModelObject());
-		}
+		}*/
 		return this;
 	}
 

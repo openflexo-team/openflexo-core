@@ -370,7 +370,8 @@ public class ExpressionFactory extends FMLSemanticsAnalyzer {
 					return getExpression(((APostDecrementPostfixExp) n).getPostDecrExp());
 				}
 
-				System.out.println("No expression registered for " + n + " of  " + n.getClass());
+				logger.warning("ExpressionFactory: No expression registered for " + n + " of  " + n.getClass());
+				Thread.dumpStack();
 			}
 			return returned;
 		}

@@ -73,11 +73,6 @@ public class AddClassInstanceNode extends AbstractCallBindingPathElementNode<ASi
 	}
 
 	@Override
-	public AddClassInstanceNode deserialize() {
-		return this;
-	}
-
-	@Override
 	public NewInstanceBindingPathElement buildModelObjectFromAST(ASimpleNewInstance astNode) {
 
 		if (getBindable() != null) {

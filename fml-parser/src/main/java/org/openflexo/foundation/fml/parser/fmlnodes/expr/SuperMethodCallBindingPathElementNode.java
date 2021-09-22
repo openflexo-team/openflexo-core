@@ -69,9 +69,4 @@ public class SuperMethodCallBindingPathElementNode
 		return null;
 	}
 
-	@Override
-	public SuperMethodCallBindingPathElementNode deserialize() {
-		return this;
-	}
-
 }

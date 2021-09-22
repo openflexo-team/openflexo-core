@@ -62,9 +62,4 @@ public class NormalBindingPathElementNode extends AbstractBindingPathElementNode
 		return new NormalBindingPathElement(astNode.getText());
 	}
 
-	@Override
-	public NormalBindingPathElementNode deserialize() {
-		return this;
-	}
-
 }

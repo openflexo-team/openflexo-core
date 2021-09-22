@@ -41,7 +41,9 @@ package org.openflexo.foundation.fml.parser;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
+import java.util.logging.Logger;
 
+import org.openflexo.connie.type.CustomType;
 import org.openflexo.foundation.fml.AbstractFMLTypingSpace;
 import org.openflexo.foundation.fml.ElementImportDeclaration;
 import org.openflexo.foundation.fml.FMLCompilationUnit;
@@ -101,6 +103,8 @@ import org.openflexo.p2pp.RawSource;
  * 
  */
 public class MainSemanticsAnalyzer extends FMLSemanticsAnalyzer {
+
+	private static final Logger logger = Logger.getLogger(MainSemanticsAnalyzer.class.getPackage().getName());
 
 	// private final TypeFactory typeFactory;
 	private final FlexoPropertyFactory propertyFactory;
@@ -205,7 +209,6 @@ public class MainSemanticsAnalyzer extends FMLSemanticsAnalyzer {
 		}*/
 		compilationUnitNode.initializePrettyPrint(compilationUnitNode, compilationUnitNode.makePrettyPrintContext());
 		// typeFactory.resolveUnresovedTypes();
-		finalizeDeserialization(compilationUnitNode);
 
 		// Now ensure load of required imports, before to resolve all types
 		for (ElementImportDeclaration elementImportDeclaration : getCompilationUnit().getElementImports()) {
@@ -218,24 +221,16 @@ public class MainSemanticsAnalyzer extends FMLSemanticsAnalyzer {
 			}
 		}
 
-		/*if (typeFactory.getUnresolvedTypes().size() > 0) {
-			//System.out.println("Some more unresolved types, trying again");
-			//for (CustomType unresolvedType : typeFactory.getUnresolvedTypes()) {
-			//	System.out.println(" > " + unresolvedType);
-			//}
-			typeFactory.resolveUnresovedTypes();
-			if (typeFactory.getUnresolvedTypes().size() > 0) {
-				System.out.println("Atfer types resolution still some types unresolved");
-				for (UnresolvedTypeReference unresolvedTypeReference : typeFactory.getUnresolvedTypes()) {
-					// System.out.println(" > " + unresolvedType);
-					getCompilationUnitNode().throwIssue("cannot_resolve " + unresolvedTypeReference.type, unresolvedTypeReference.fragment);
-				}
-			}
-		}*/
-
 		if (typingSpace instanceof FMLTypingSpaceDuringParsing) {
-			((FMLTypingSpaceDuringParsing) typingSpace).resolveUnresovedTypes();
+			FMLTypingSpaceDuringParsing fmlTypingSpaceDuringParsing = (FMLTypingSpaceDuringParsing) typingSpace;
+			fmlTypingSpaceDuringParsing.resolveUnresovedTypes();
+			for (CustomType unresolvedType : fmlTypingSpaceDuringParsing.getUnresolvedTypes()) {
+				logger.warning("Unresolved type: " + unresolvedType);
+			}
 		}
+
+		finalizeDeserialization(compilationUnitNode);
+
 	}
 
 	@Override

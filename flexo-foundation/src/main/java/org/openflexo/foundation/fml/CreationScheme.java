@@ -38,6 +38,8 @@
 
 package org.openflexo.foundation.fml;
 
+import java.lang.reflect.Type;
+
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.action.SuperCreationSchemeActionFactory;
 import org.openflexo.pamela.annotations.Getter;
@@ -80,6 +82,16 @@ public interface CreationScheme extends AbstractCreationScheme {
 		@Override
 		public SuperCreationSchemeActionFactory getSuperCreationSchemeActionFactory(FlexoConceptInstance fci) {
 			return new SuperCreationSchemeActionFactory(this, fci);
+		}
+
+		@Override
+		public Type getDeclaredType() {
+			return getFlexoConcept().getInstanceType();
+		}
+
+		@Override
+		public Type getAnalyzedReturnType() {
+			return getFlexoConcept().getInstanceType();
 		}
 
 	}

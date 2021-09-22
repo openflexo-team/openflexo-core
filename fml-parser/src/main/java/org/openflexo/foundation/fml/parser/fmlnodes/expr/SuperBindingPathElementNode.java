@@ -62,9 +62,4 @@ public class SuperBindingPathElementNode extends AbstractBindingPathElementNode<
 		return new NormalBindingPathElement("super");
 	}
 
-	@Override
-	public SuperBindingPathElementNode deserialize() {
-		return this;
-	}
-
 }
