@@ -33,9 +33,11 @@ public class NewFlexoConceptInstanceBindingPathElement extends NewInstanceBindin
 		StringBuffer sb = new StringBuffer();
 		sb.append("new " + TypeUtils.simpleRepresentation(type) + "(");
 		boolean isFirst = true;
-		for (Expression arg : args) {
-			sb.append((isFirst ? "" : ",") + arg);
-			isFirst = false;
+		if (args != null) {
+			for (Expression arg : args) {
+				sb.append((isFirst ? "" : ",") + arg);
+				isFirst = false;
+			}
 		}
 		sb.append(")");
 		return sb.toString();
