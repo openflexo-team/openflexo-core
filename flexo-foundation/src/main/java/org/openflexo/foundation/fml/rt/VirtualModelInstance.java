@@ -1166,6 +1166,9 @@ public interface VirtualModelInstance<VMI extends VirtualModelInstance<VMI, TA>,
 		@Override
 		public Object getValue(BindingVariable variable) {
 
+			if (variable == null) {
+				return null;
+			}
 			if (variable.getVariableName().equals(FlexoConceptBindingModel.CONTAINER_PROPERTY) && getVirtualModel() != null
 					&& getVirtualModel().getContainerVirtualModel() != null) {
 				return getContainerVirtualModelInstance();
