@@ -54,9 +54,9 @@ import org.openflexo.foundation.fml.FMLCompilationUnit;
 import org.openflexo.foundation.fml.editionaction.AssignationAction;
 import org.openflexo.foundation.fml.parser.fmlnodes.FMLCompilationUnitNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.FlexoBehaviourNode;
-import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.AddFlexoConceptInstanceNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.AssignationActionNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.BehaviourCallArgumentNode;
+import org.openflexo.foundation.fml.parser.fmlnodes.expr.AddFlexoConceptInstanceNode;
 import org.openflexo.foundation.fml.rt.editionaction.AddFlexoConceptInstance;
 import org.openflexo.p2pp.P2PPNode;
 import org.openflexo.pamela.exceptions.ModelDefinitionException;
@@ -100,6 +100,7 @@ public class TestAddFlexoConceptInstance2 extends FMLParserTestCase {
 		assertNotNull(rootNode = (FMLCompilationUnitNode) compilationUnit.getPrettyPrintDelegate());
 	}
 
+	@SuppressWarnings("rawtypes")
 	@Test
 	@TestOrder(3)
 	public void testNewSimpleInstance() throws ParseException, ModelDefinitionException, IOException {

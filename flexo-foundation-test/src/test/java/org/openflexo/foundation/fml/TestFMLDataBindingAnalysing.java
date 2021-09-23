@@ -511,12 +511,12 @@ public class TestFMLDataBindingAnalysing extends OpenflexoTestCase {
 
 		System.out.println("Et maintenant le db vaut: " + db);
 
-		assertEquals("(nameHasChanged + aString)", db.toString());
+		assertEquals("nameHasChanged + aString", db.toString());
 		assertTrue(db.isValid());
 
 		stringProperty1.setName("aStringInVirtualModel");
 
-		assertEquals("(aStringInVirtualModel + aString)", db.toString());
+		assertEquals("aStringInVirtualModel + aString", db.toString());
 		assertTrue(db.isValid());
 
 	}
@@ -559,11 +559,11 @@ public class TestFMLDataBindingAnalysing extends OpenflexoTestCase {
 
 		actionScheme.getParameters().get(0).setName("aRenamedParameter");
 
-		assertEquals("((aStringInVirtualModel + aString) + parameters.aRenamedParameter)", db.toString());
+		assertEquals("aStringInVirtualModel + aString + parameters.aRenamedParameter", db.toString());
 		assertTrue(db.isValid());
 
 		actionScheme.getParameters().get(0).setName("aFlag");
-		assertEquals("((aStringInVirtualModel + aString) + parameters.aFlag)", db.toString());
+		assertEquals("aStringInVirtualModel + aString + parameters.aFlag", db.toString());
 		assertTrue(db.isValid());
 
 		db.delete();
