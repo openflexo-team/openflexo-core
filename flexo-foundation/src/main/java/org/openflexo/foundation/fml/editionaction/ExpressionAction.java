@@ -239,6 +239,7 @@ public interface ExpressionAction<T> extends AssignableAction<T> {
 				throw new FlexoException(e);
 			} catch (NullReferenceException e) {
 				System.out.println("Unexpected NullReferenceException while executing " + getExpression());
+				e.printStackTrace();
 				return null;
 			} catch (Exception e) {
 				e.printStackTrace();

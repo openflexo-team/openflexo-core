@@ -705,7 +705,7 @@ public interface VirtualModelInstance<VMI extends VirtualModelInstance<VMI, TA>,
 		public FlexoConceptInstance makeNewFlexoConceptInstance(FlexoConcept concept, FlexoConceptInstance container) {
 
 			FlexoConceptInstance returned = buildNewFlexoConceptInstance(concept);
-			if (container != null) {
+			if (container != null && container != this) {
 				container.addToEmbeddedFlexoConceptInstances(returned);
 			}
 			addToFlexoConceptInstances(returned);
