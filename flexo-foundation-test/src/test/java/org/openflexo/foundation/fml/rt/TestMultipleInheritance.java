@@ -145,7 +145,7 @@ public class TestMultipleInheritance extends OpenflexoProjectAtRunTimeTestCase {
 		assertNotNull(a);
 
 		assertEquals("A", a.execute("this.foo"));
-		assertEquals(42, (long) a.execute("this.doSomething()"));
+		assertEquals(42, (int) a.execute("this.doSomething()"));
 	}
 
 	@Test

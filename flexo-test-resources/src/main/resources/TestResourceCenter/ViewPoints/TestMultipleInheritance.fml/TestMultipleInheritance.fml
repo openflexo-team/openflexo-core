@@ -10,7 +10,7 @@ model TestMultipleInheritance {
 		String foo;
 		create::init () {
 			log("CreationScheme in A");
-			if ((foo = null)) {
+			if ((foo == null)) {
 				foo = "A";
 			}
 		}

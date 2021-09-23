@@ -154,7 +154,7 @@ public class TestAssignations extends FMLParserTestCase {
 		assertEquals("i", assignationAction.getAssignation().toString());
 		assertTrue(assignationAction.getAssignableAction() instanceof ExpressionAction);
 		ExpressionAction<?> expAction = (ExpressionAction) assignationAction.getAssignableAction();
-		assertEquals("(1 + 2)", expAction.getExpression().toString());
+		assertEquals("1 + 2", expAction.getExpression().toString());
 
 		AssignationActionNode assignationNode = (AssignationActionNode) (P2PPNode) rootNode.getObjectNode(assignationAction);
 		ExpressionActionNode expressionNode = (ExpressionActionNode) (P2PPNode) rootNode.getObjectNode(expAction);
@@ -190,7 +190,7 @@ public class TestAssignations extends FMLParserTestCase {
 		assertEquals("i", assignationAction.getAssignation().toString());
 		assertTrue(assignationAction.getAssignableAction() instanceof ExpressionAction);
 		ExpressionAction<?> expAction = (ExpressionAction) assignationAction.getAssignableAction();
-		assertEquals("(j = 1)", expAction.getExpression().toString());
+		assertEquals("j = 1", expAction.getExpression().toString());
 
 		AssignationActionNode assignationNode = (AssignationActionNode) (P2PPNode) rootNode.getObjectNode(assignationAction);
 		ExpressionActionNode expressionNode = (ExpressionActionNode) (P2PPNode) rootNode.getObjectNode(expAction);
@@ -229,7 +229,7 @@ public class TestAssignations extends FMLParserTestCase {
 		assertEquals("i", assignationAction.getAssignation().toString());
 		assertTrue(assignationAction.getAssignableAction() instanceof ExpressionAction);
 		ExpressionAction<?> expAction = (ExpressionAction) assignationAction.getAssignableAction();
-		assertEquals("((j > 0) ? 1 : 2)", expAction.getExpression().toString());
+		assertEquals("(j > 0 ? 1 : 2)", expAction.getExpression().toString());
 
 		AssignationActionNode assignationNode = (AssignationActionNode) (P2PPNode) rootNode.getObjectNode(assignationAction);
 		ExpressionActionNode expressionNode = (ExpressionActionNode) (P2PPNode) rootNode.getObjectNode(expAction);
@@ -385,7 +385,7 @@ public class TestAssignations extends FMLParserTestCase {
 		assertEquals("i", assignationAction.getAssignation().toString());
 		assertTrue(assignationAction.getAssignableAction() instanceof ExpressionAction);
 		ExpressionAction<?> expAction = (ExpressionAction) assignationAction.getAssignableAction();
-		assertEquals("(((this.isa.another.binding(1,2) * 8) / 4) - (2 * foo(2)))", expAction.getExpression().toString());
+		assertEquals("this.isa.another.binding(1,2) * 8 / 4 - 2 * foo(2)", expAction.getExpression().toString());
 
 		AssignationActionNode assignationNode = (AssignationActionNode) (P2PPNode) rootNode.getObjectNode(assignationAction);
 		ExpressionActionNode expressionNode = (ExpressionActionNode) (P2PPNode) rootNode.getObjectNode(expAction);

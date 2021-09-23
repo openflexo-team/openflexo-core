@@ -284,7 +284,7 @@ public class TestFlexoRoleCardinality extends OpenflexoProjectAtRunTimeTestCase 
 		createEditionAction1.setAssignation(new DataBinding<>("aStringInA"));
 		createEditionAction1.doAction();
 		AssignationAction<?> action1 = (AssignationAction<?>) createEditionAction1.getNewEditionAction();
-		((ExpressionAction<?>) action1.getAssignableAction()).setExpression(new DataBinding<>("'foo'"));
+		((ExpressionAction<?>) action1.getAssignableAction()).setExpression(new DataBinding<>("\"foo\""));
 		action1.setName("action1");
 
 		assertTrue(action1.getAssignation().isValid());

@@ -335,7 +335,7 @@ public class TestFMLBindingModelManagement3 extends OpenflexoProjectAtRunTimeTes
 		createEditionAction1.setAssignation(new DataBinding<>("aStringInA"));
 		createEditionAction1.doAction();
 		AssignationAction<?> action1 = (AssignationAction<?>) createEditionAction1.getNewEditionAction();
-		((ExpressionAction<?>) action1.getAssignableAction()).setExpression(new DataBinding<>("'foo'"));
+		((ExpressionAction<?>) action1.getAssignableAction()).setExpression(new DataBinding<>("\"foo\""));
 		action1.setName("action1");
 
 		assertTrue(action1.getAssignation().isValid());
@@ -559,7 +559,7 @@ public class TestFMLBindingModelManagement3 extends OpenflexoProjectAtRunTimeTes
 
 		assertEquals("foo", fci.getFlexoActor("aStringInA"));
 		assertEquals(true, fci.getFlexoActor("aBooleanInA"));
-		assertEquals(8, (long) fci.getFlexoActor("anIntegerInA"));
+		assertEquals(8, (int) fci.getFlexoActor("anIntegerInA"));
 
 		fci.setFlexoActor(false, (FlexoRole<Boolean>) flexoConceptA.getAccessibleProperty("anOtherBooleanInA"));
 
@@ -584,7 +584,7 @@ public class TestFMLBindingModelManagement3 extends OpenflexoProjectAtRunTimeTes
 
 		assertNotNull(flexoConceptA.getBindingModel().bindingVariableNamed("anIntegerInA"));
 		assertEquals(Integer.TYPE, flexoConceptA.getBindingModel().bindingVariableNamed("anIntegerInA").getType());
-		assertEquals(8, (long) fci.execute("anIntegerInA"));
+		assertEquals(8, (int) fci.execute("anIntegerInA"));
 
 		assertNotNull(flexoConceptA.getBindingModel().bindingVariableNamed("anOtherBooleanInA"));
 		assertEquals(Boolean.TYPE, flexoConceptA.getBindingModel().bindingVariableNamed("anOtherBooleanInA").getType());
@@ -595,7 +595,7 @@ public class TestFMLBindingModelManagement3 extends OpenflexoProjectAtRunTimeTes
 		assertEquals(vmi2, vmi3.execute("vm2"));
 		assertEquals(vmi1, vmi3.execute("this.vm1"));
 		assertEquals(vmi2, vmi3.execute("this.vm2"));
-		assertEquals(1, (long) vmi3.execute("this.vm1.flexoConceptInstances.size"));
+		assertEquals(1, (int) vmi3.execute("this.vm1.flexoConceptInstances.size"));
 		assertSame(fci, vmi3.execute("this.vm1.flexoConceptInstances.get(0)"));
 	}
 
