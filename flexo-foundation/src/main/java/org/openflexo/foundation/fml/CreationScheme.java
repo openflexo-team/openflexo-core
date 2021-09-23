@@ -86,12 +86,16 @@ public interface CreationScheme extends AbstractCreationScheme {
 
 		@Override
 		public Type getDeclaredType() {
-			return getFlexoConcept().getInstanceType();
+			if (getFlexoConcept() != null)
+				return getFlexoConcept().getInstanceType();
+			return null;
 		}
 
 		@Override
 		public Type getAnalyzedReturnType() {
-			return getFlexoConcept().getInstanceType();
+			if (getFlexoConcept() != null)
+				return getFlexoConcept().getInstanceType();
+			return null;
 		}
 
 	}
