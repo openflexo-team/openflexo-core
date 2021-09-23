@@ -53,9 +53,11 @@ import org.openflexo.connie.expr.BindingValue.StaticMethodCallBindingPathElement
 import org.openflexo.foundation.fml.FlexoConceptInstanceType;
 import org.openflexo.foundation.fml.VirtualModelInstanceType;
 import org.openflexo.foundation.fml.expr.NewFlexoConceptInstanceBindingPathElement;
+import org.openflexo.foundation.fml.expr.NewVirtualModelInstanceBindingPathElement;
 import org.openflexo.foundation.fml.parser.fmlnodes.expr.AbstractBindingPathElementNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.expr.AddClassInstanceNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.expr.AddFlexoConceptInstanceNode;
+import org.openflexo.foundation.fml.parser.fmlnodes.expr.AddVirtualModelInstanceNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.expr.BindingPathNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.expr.MethodCallBindingPathElementNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.expr.NormalBindingPathElementNode;
@@ -308,10 +310,11 @@ public class BindingPathFactory {
 		// this is too early, FlexoConcept is not yet set
 		/*&& ((VirtualModelInstanceType) type).getVirtualModel().getCreationSchemes().size() == 1*/) {
 			// Simple new instance with non ambigous creation scheme
-			/*NewVirtualModelInstanceBindingPathElement returned = new NewVirtualModelInstanceBindingPathElement(
-					(VirtualModelInstanceType) type, null, // default constructor,
-					makeArgs(node.getArgumentList()));
-			path.add(returned);*/
+			AddVirtualModelInstanceNode pathElementNode = expressionFactory.getMainAnalyzer().retrieveFMLNode(node,
+					n -> new AddVirtualModelInstanceNode(n, expressionFactory.getMainAnalyzer(), expressionFactory.getBindable()));
+			nodesPath.add(pathElementNode);
+			NewVirtualModelInstanceBindingPathElement pathElement = pathElementNode.getModelObject();
+			path.add(pathElement);
 		}
 		else if (type instanceof FlexoConceptInstanceType
 		// this is too early, FlexoConcept is not yet set

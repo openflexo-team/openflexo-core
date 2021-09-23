@@ -25,7 +25,7 @@ public class NewVirtualModelInstanceBindingPathElement extends NewInstanceBindin
 
 	@Override
 	public String toString() {
-		return "NewFlexoConceptInstance[" + type + "(" + args + ")" + "]";
+		return "NewVirtualModelInstance[" + type + "(" + args + ")" + "]";
 	}
 
 	@Override

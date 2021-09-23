@@ -42,9 +42,9 @@ import java.lang.reflect.Type;
 import java.util.logging.Logger;
 
 import org.openflexo.connie.Bindable;
-import org.openflexo.foundation.fml.FlexoConcept;
-import org.openflexo.foundation.fml.FlexoConceptInstanceType;
-import org.openflexo.foundation.fml.expr.NewFlexoConceptInstanceBindingPathElement;
+import org.openflexo.foundation.fml.VirtualModel;
+import org.openflexo.foundation.fml.VirtualModelInstanceType;
+import org.openflexo.foundation.fml.expr.NewVirtualModelInstanceBindingPathElement;
 import org.openflexo.foundation.fml.parser.MainSemanticsAnalyzer;
 import org.openflexo.foundation.fml.parser.TypeFactory;
 import org.openflexo.foundation.fml.parser.node.AFullQualifiedNewInstance;
@@ -52,32 +52,29 @@ import org.openflexo.foundation.fml.parser.node.ASimpleNewInstance;
 import org.openflexo.foundation.fml.parser.node.Node;
 
 /**
- * A PathElement representing a new FlexoConcept instance
+ * A PathElement representing a new VirtualModel instance
  * 
  * Handle both {@link ASimpleNewInstance} or {@link AFullQualifiedNewInstance}
  * 
  * @author sylvain
  * 
  */
-public class AddFlexoConceptInstanceNode extends AbstractAddFlexoConceptInstanceNode<NewFlexoConceptInstanceBindingPathElement> {
+public class AddVirtualModelInstanceNode extends AbstractAddFlexoConceptInstanceNode<NewVirtualModelInstanceBindingPathElement> {
 
 	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(AddFlexoConceptInstanceNode.class.getPackage().getName());
+	private static final Logger logger = Logger.getLogger(AddVirtualModelInstanceNode.class.getPackage().getName());
 
-	// private FlexoConceptInstanceType conceptType;
-	// private String creationSchemeName;
-
-	public AddFlexoConceptInstanceNode(ASimpleNewInstance astNode, MainSemanticsAnalyzer analyser, Bindable bindable) {
+	public AddVirtualModelInstanceNode(ASimpleNewInstance astNode, MainSemanticsAnalyzer analyser, Bindable bindable) {
 		super(astNode, analyser, bindable);
 	}
 
-	public AddFlexoConceptInstanceNode(AFullQualifiedNewInstance astNode, MainSemanticsAnalyzer analyser, Bindable bindable) {
+	public AddVirtualModelInstanceNode(AFullQualifiedNewInstance astNode, MainSemanticsAnalyzer analyser, Bindable bindable) {
 		super(astNode, analyser, bindable);
 	}
 
-	public AddFlexoConceptInstanceNode(NewFlexoConceptInstanceBindingPathElement bindingPathElement, MainSemanticsAnalyzer analyser,
+	public AddVirtualModelInstanceNode(NewVirtualModelInstanceBindingPathElement action, MainSemanticsAnalyzer analyser,
 			Bindable bindable) {
-		super(bindingPathElement, analyser, bindable);
+		super(action, analyser, bindable);
 	}
 
 	/*@Override
@@ -86,7 +83,7 @@ public class AddFlexoConceptInstanceNode extends AbstractAddFlexoConceptInstance
 		if (conceptType != null && conceptType.isResolved()) {
 			FlexoConcept flexoConceptType = conceptType.getFlexoConcept();
 			if (flexoConceptType != null) {
-				getModelObject().setType(conceptType);
+				getModelObject().setFlexoConceptType(flexoConceptType);
 				if (flexoConceptType.getCreationSchemes().size() == 0) {
 					// No constructor: !! problem
 					throwIssue("No constructor for concept " + flexoConceptType, getConceptNameFragment());
@@ -94,7 +91,7 @@ public class AddFlexoConceptInstanceNode extends AbstractAddFlexoConceptInstance
 				else if (flexoConceptType.getCreationSchemes().size() == 1) {
 					getModelObject().setCreationScheme(flexoConceptType.getCreationSchemes().get(0));
 				}
-				else  {
+				else {
 					// TODO
 					getModelObject().setCreationScheme((CreationScheme) flexoConceptType.getFlexoBehaviour(creationSchemeName));
 				}
@@ -112,7 +109,6 @@ public class AddFlexoConceptInstanceNode extends AbstractAddFlexoConceptInstance
 							if (index < getModelObject().getCreationScheme().getParameters().size()) {
 								FlexoBehaviourParameter parameter = getModelObject().getCreationScheme().getParameters().get(index);
 								argument.setParam(parameter);
-								// System.out.println(parameter.getName() + " = " + argument.getValue());
 								if (!TypeUtils.isTypeAssignableFrom(parameter.getType(), argument.getValue().getAnalyzedType(), true)) {
 									throwIssue("Invalid type " + argument.getValue().getAnalyzedType() + " (expected: "
 											+ parameter.getType() + ")", callArgNode.getLastParsedFragment());
@@ -140,7 +136,7 @@ public class AddFlexoConceptInstanceNode extends AbstractAddFlexoConceptInstance
 		}
 	}*/
 
-	/*private void handleArguments(PArgumentList argumentList, AddFlexoConceptInstance<?> modelObject) {
+	/*private void handleArguments(PArgumentList argumentList, AddVirtualModelInstance modelObject) {
 		if (argumentList instanceof AManyArgumentList) {
 			AManyArgumentList l = (AManyArgumentList) argumentList;
 			handleArguments(l.getArgumentList(), modelObject);
@@ -151,27 +147,26 @@ public class AddFlexoConceptInstanceNode extends AbstractAddFlexoConceptInstance
 		}
 	}
 	
-	private void handleArgument(PExpression expression, AddFlexoConceptInstance<?> modelObject) {
+	private void handleArgument(PExpression expression, AddVirtualModelInstance modelObject) {
 		BehaviourCallArgumentNode callArgNode = new BehaviourCallArgumentNode(expression, getAnalyser());
 		addToChildren(callArgNode);
 		callArgNode.deserialize();
-	}
-	 */
+	}*/
 
 	@Override
 	public void finalizeDeserialization() {
 		super.finalizeDeserialization();
-		if (getModelObject().getType() instanceof FlexoConceptInstanceType) {
-			FlexoConcept typeConcept = ((FlexoConceptInstanceType) getModelObject().getType()).getFlexoConcept();
-			if (typeConcept == null) {
-				throwIssue("Cannot find FlexoConcept " + getModelObject().getType(), getTypeFragment());
+		if (getModelObject().getType() instanceof VirtualModelInstanceType) {
+			VirtualModel typeVirtualModel = ((VirtualModelInstanceType) getModelObject().getType()).getVirtualModel();
+			if (typeVirtualModel == null) {
+				throwIssue("Cannot find VirtualModel " + getModelObject().getType(), getTypeFragment());
 			}
 			else {
-				if (typeConcept.getCreationSchemes().size() == 0) {
-					throwIssue("Cannot find any CreationScheme for FlexoConcept " + getModelObject().getType(), getTypeFragment());
+				if (typeVirtualModel.getCreationSchemes().size() == 0) {
+					throwIssue("Cannot find any CreationScheme for VirtualModel " + getModelObject().getType(), getTypeFragment());
 				}
-				else if (typeConcept.getCreationSchemes().size() == 1) {
-					getModelObject().constructorName = typeConcept.getCreationSchemes().get(0).getName();
+				else if (typeVirtualModel.getCreationSchemes().size() == 1) {
+					getModelObject().constructorName = typeVirtualModel.getCreationSchemes().get(0).getName();
 					System.out.println("Set constructor name to " + getModelObject().constructorName);
 				}
 				else {
@@ -185,7 +180,7 @@ public class AddFlexoConceptInstanceNode extends AbstractAddFlexoConceptInstance
 	}
 
 	@Override
-	public NewFlexoConceptInstanceBindingPathElement buildModelObjectFromAST(Node astNode) {
+	public NewVirtualModelInstanceBindingPathElement buildModelObjectFromAST(Node astNode) {
 
 		if (getBindable() != null) {
 			Type type = null;
@@ -197,15 +192,16 @@ public class AddFlexoConceptInstanceNode extends AbstractAddFlexoConceptInstance
 				handleArguments(((AFullQualifiedNewInstance) astNode).getArgumentList());
 				type = TypeFactory.makeType(((AFullQualifiedNewInstance) astNode).getConceptName(), getAnalyser().getTypingSpace());
 			}
-			NewFlexoConceptInstanceBindingPathElement returned = new NewFlexoConceptInstanceBindingPathElement(
-					(FlexoConceptInstanceType) type, null, // default constructor,
+
+			NewVirtualModelInstanceBindingPathElement returned = new NewVirtualModelInstanceBindingPathElement(
+					(VirtualModelInstanceType) type, null, // default constructor,
 					getArguments());
 
 			return returned;
 		}
 		return null;
 
-		/*AddFlexoConceptInstance<?> returned = getFactory().newAddFlexoConceptInstance();
+		/*AddVirtualModelInstance returned = getFactory().newAddVirtualModelInstance();
 		// System.out.println(">>>>>> New FCI " + astNode);
 		
 		Type type = TypeFactory.makeType(getConceptNameNode(), getAnalyser().getTypingSpace());
@@ -261,6 +257,13 @@ public class AddFlexoConceptInstanceNode extends AbstractAddFlexoConceptInstance
 		append(childrenContents("", "", () -> getModelObject().getParameters(), ",", "", Indentation.DoNotIndent,
 				AddFlexoConceptInstanceParameter.class));
 		append(staticContents(")"), getRParFragment());
+		
+		when(() -> hasFMLProperties()).thenAppend(staticContents(SPACE, "with", SPACE), getFMLParametersWithFragment())
+				.thenAppend(staticContents("("), getFMLParametersLParFragment())
+				.thenAppend(childrenContents("", "", () -> getModelObject().getFMLPropertyValues(getFactory()), ", ", "",
+						Indentation.DoNotIndent, FMLPropertyValue.class))
+				.thenAppend(staticContents(")"), getFMLParametersRParFragment());
+		
 		// Append semi only when required
 		when(() -> requiresSemi()).thenAppend(staticContents(";"), getSemiFragment());*/
 		// @formatter:on
