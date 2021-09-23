@@ -170,6 +170,9 @@ public class TestEmbeddedFlexoConceptInstances extends OpenflexoProjectAtRunTime
 	@Test
 	@TestOrder(5)
 	public void testPopulateVMI1() {
+
+		// Programmaticaly create new instances, default arguments values are used
+
 		assertNotNull(conceptInstanceA1 = createInstance(conceptA, vmi1, "ConceptInstanceA1"));
 		assertNotNull(conceptInstanceA2 = createInstance(conceptA, vmi1, "ConceptInstanceA2"));
 		assertNotNull(conceptInstanceB1 = createInstance(conceptB, conceptInstanceA1, "ConceptInstanceB1"));
@@ -189,8 +192,8 @@ public class TestEmbeddedFlexoConceptInstances extends OpenflexoProjectAtRunTime
 
 		assertEquals("ConceptInstanceA1", conceptInstanceA1.getFlexoPropertyValue("a1"));
 		assertEquals("ConceptInstanceA1", conceptInstanceA1.getFlexoActor("a1"));
-		assertEquals(7, (long) conceptInstanceA1.getFlexoPropertyValue("a2"));
-		assertEquals(7, (long) conceptInstanceA1.getFlexoActor("a2"));
+		assertEquals(7, (int) conceptInstanceA1.getFlexoPropertyValue("a2"));
+		assertEquals(7, (int) conceptInstanceA1.getFlexoActor("a2"));
 
 		assertEquals("ConceptInstanceB1", conceptInstanceB1.getFlexoPropertyValue("b1"));
 		assertEquals("ConceptInstanceB1", conceptInstanceB1.getFlexoActor("b1"));
