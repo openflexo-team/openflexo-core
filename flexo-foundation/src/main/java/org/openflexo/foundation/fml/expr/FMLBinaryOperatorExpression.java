@@ -39,9 +39,13 @@
 
 package org.openflexo.foundation.fml.expr;
 
+import org.openflexo.connie.BindingEvaluationContext;
+import org.openflexo.connie.exception.NotSettableContextException;
 import org.openflexo.connie.exception.TransformException;
 import org.openflexo.connie.expr.BinaryOperator;
 import org.openflexo.connie.expr.BinaryOperatorExpression;
+import org.openflexo.connie.expr.BindingValue;
+import org.openflexo.connie.expr.Constant;
 import org.openflexo.connie.expr.Expression;
 import org.openflexo.connie.expr.ExpressionPrettyPrinter;
 import org.openflexo.connie.expr.ExpressionTransformer;
@@ -68,7 +72,34 @@ public class FMLBinaryOperatorExpression extends BinaryOperatorExpression {
 			expression = new FMLBinaryOperatorExpression(getOperator(), transformedLeftArgument, transformedRightArgument);
 		}
 
-		return transformer.performTransformation(expression);
+		Expression returned = transformer.performTransformation(expression);
+
+		// In case of assign operator, assign the resulted value
+		if (getOperator() instanceof FMLAssignOperator && returned instanceof Constant) {
+			if (transformer instanceof FMLExpressionEvaluator) {
+				BindingEvaluationContext context = ((FMLExpressionEvaluator) transformer).getContext();
+				if (!getLeftArgument().isSettable()) {
+					throw new NotSettableContextException(
+							"Invalid context for PostSettableUnaryOperator, not settable argument : " + getLeftArgument());
+				}
+				else {
+					Object value = ((Constant<?>) returned).getValue();
+					if (getLeftArgument() instanceof BindingValue) {
+						((BindingValue) getLeftArgument()).setBindingValue(value, context);
+					}
+					else {
+						throw new NotSettableContextException(
+								"Invalid context for PostSettableUnaryOperator, don't know how to set for argument : " + getLeftArgument());
+					}
+				}
+			}
+			else {
+				throw new NotSettableContextException("Invalid context for PostSettableUnaryOperator : " + transformer);
+			}
+		}
+
+		return returned;
+
 	}
 
 }

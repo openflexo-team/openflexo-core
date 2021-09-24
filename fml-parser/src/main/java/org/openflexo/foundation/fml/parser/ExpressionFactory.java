@@ -16,6 +16,7 @@ import org.openflexo.foundation.fml.FMLCompilationUnit;
 import org.openflexo.foundation.fml.FMLModelFactory;
 import org.openflexo.foundation.fml.controlgraph.FMLControlGraph;
 import org.openflexo.foundation.fml.parser.fmlnodes.expr.AndExpressionNode;
+import org.openflexo.foundation.fml.parser.fmlnodes.expr.AssignmentExpressionNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.expr.BindingPathNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.expr.BitwiseAndExpressionNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.expr.BitwiseComplementExpressionNode;
@@ -56,6 +57,7 @@ import org.openflexo.foundation.fml.parser.fmlnodes.expr.UnaryMinusExpressionNod
 import org.openflexo.foundation.fml.parser.fmlnodes.expr.UnaryPlusExpressionNode;
 import org.openflexo.foundation.fml.parser.node.AAmpAmpConditionalAndExp;
 import org.openflexo.foundation.fml.parser.node.AAmpAndExp;
+import org.openflexo.foundation.fml.parser.node.AAssignmentExpression;
 import org.openflexo.foundation.fml.parser.node.ABarBarConditionalOrExp;
 import org.openflexo.foundation.fml.parser.node.ABarInclusiveOrExp;
 import org.openflexo.foundation.fml.parser.node.ACaretExclusiveOrExp;
@@ -226,7 +228,9 @@ public class ExpressionFactory extends FMLSemanticsAnalyzer {
 		DataBindingNode dataBindingNode = mainAnalyzer.retrieveFMLNode(node,
 				n -> new DataBindingNode(n, bindable, bindingDefinitionType, expectedType, mainAnalyzer));
 
-		parentNode.addToChildren(dataBindingNode);
+		if (parentNode != null) {
+			parentNode.addToChildren(dataBindingNode);
+		}
 
 		_makeExpression(node, bindable, typingSpace, modelFactory, mainAnalyzer, dataBindingNode);
 
@@ -1198,6 +1202,18 @@ public class ExpressionFactory extends FMLSemanticsAnalyzer {
 		pop();
 		// registerExpressionNode(node,
 		// new FMLUnaryOperatorExpression(FMLArithmeticUnaryOperator.POST_INCREMENT, getExpression(node.getPostfixExp())));
+	}
+
+	@Override
+	public void inAAssignmentExpression(AAssignmentExpression node) {
+		super.inAAssignmentExpression(node);
+		push(retrieveFMLNode(node, n -> new AssignmentExpressionNode(n, this)));
+	}
+
+	@Override
+	public void outAAssignmentExpression(AAssignmentExpression node) {
+		super.outAAssignmentExpression(node);
+		pop();
 	}
 
 }

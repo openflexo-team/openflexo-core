@@ -48,6 +48,7 @@ import org.openflexo.connie.expr.OperatorNotSupportedException;
 import org.openflexo.connie.expr.UnaryOperator;
 import org.openflexo.foundation.fml.expr.FMLArithmeticBinaryOperator;
 import org.openflexo.foundation.fml.expr.FMLArithmeticUnaryOperator;
+import org.openflexo.foundation.fml.expr.FMLAssignOperator;
 import org.openflexo.foundation.fml.expr.FMLBinaryOperatorExpression;
 import org.openflexo.foundation.fml.expr.FMLBooleanBinaryOperator;
 import org.openflexo.foundation.fml.expr.FMLBooleanUnaryOperator;
@@ -69,7 +70,8 @@ public class FMLGrammar implements ExpressionGrammar {
 			FMLBooleanBinaryOperator.GREATER_THAN_OR_EQUALS, FMLArithmeticBinaryOperator.ADDITION, FMLArithmeticBinaryOperator.SUBSTRACTION,
 			FMLArithmeticBinaryOperator.MULTIPLICATION, FMLArithmeticBinaryOperator.DIVISION, FMLArithmeticBinaryOperator.MOD,
 			FMLArithmeticBinaryOperator.SHIFT_LEFT, FMLArithmeticBinaryOperator.SHIFT_RIGHT, FMLArithmeticBinaryOperator.SHIFT_RIGHT_2,
-			FMLArithmeticBinaryOperator.BITWISE_AND, FMLArithmeticBinaryOperator.BITWISE_OR, FMLArithmeticBinaryOperator.BITWISE_XOR };
+			FMLArithmeticBinaryOperator.BITWISE_AND, FMLArithmeticBinaryOperator.BITWISE_OR, FMLArithmeticBinaryOperator.BITWISE_XOR,
+			FMLAssignOperator.ASSIGN, FMLAssignOperator.PLUS_ASSIGN };
 
 	private static final UnaryOperator[] ALL_SUPPORTED_UNARY_OPERATORS = { FMLBooleanUnaryOperator.NOT,
 			FMLArithmeticUnaryOperator.UNARY_PLUS, FMLArithmeticUnaryOperator.UNARY_MINUS, FMLArithmeticUnaryOperator.PRE_INCREMENT,
@@ -176,6 +178,9 @@ public class FMLGrammar implements ExpressionGrammar {
 		}
 		if (operator == FMLArithmeticBinaryOperator.BITWISE_XOR) {
 			return "^";
+		}
+		if (operator == FMLAssignOperator.ASSIGN) {
+			return "=";
 		}
 		throw new OperatorNotSupportedException();
 	}

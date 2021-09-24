@@ -556,13 +556,17 @@ public class ControlGraphFactory extends FMLSemanticsAnalyzer {
 	public void inAAssignmentStatementExpression(AAssignmentStatementExpression node) {
 		// TODO Auto-generated method stub
 		super.inAAssignmentStatementExpression(node);
+		// if (node.getAssignmentOperator() instanceof AAssignAssignmentOperator) {
 		push(getMainAnalyzer().retrieveFMLNode(node, n -> new AssignationActionNode(n, getMainAnalyzer())));
+		// }
 	}
 
 	@Override
 	public void outAAssignmentStatementExpression(AAssignmentStatementExpression node) {
 		super.outAAssignmentStatementExpression(node);
+		// if (node.getAssignmentOperator() instanceof AAssignAssignmentOperator) {
 		pop();
+		// }
 	}
 
 	@Override
@@ -669,7 +673,7 @@ public class ControlGraphFactory extends FMLSemanticsAnalyzer {
 			super.outAJavaInstanceCreationFmlActionExp(node);
 			pop();
 		}
-	*/
+	 */
 
 	@Override
 	public void inABeginMatchActionFmlActionExp(ABeginMatchActionFmlActionExp node) {

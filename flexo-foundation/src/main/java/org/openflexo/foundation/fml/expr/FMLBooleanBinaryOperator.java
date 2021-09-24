@@ -82,7 +82,7 @@ public abstract class FMLBooleanBinaryOperator extends FMLBinaryOperator {
 		}
 
 		@Override
-		public Expression evaluate(Expression leftArg, Constant<?> rightArg) {
+		public Expression evaluate(Expression leftArg, Constant<?> rightArg) throws TypeMismatchException, NullReferenceException {
 			if (rightArg == BooleanConstant.FALSE) {
 				return BooleanConstant.FALSE;
 			}
@@ -93,7 +93,7 @@ public abstract class FMLBooleanBinaryOperator extends FMLBinaryOperator {
 		}
 
 		@Override
-		public Expression evaluate(Constant<?> leftArg, Expression rightArg) {
+		public Expression evaluate(Constant<?> leftArg, Expression rightArg) throws TypeMismatchException, NullReferenceException {
 			if (leftArg == BooleanConstant.FALSE) {
 				return BooleanConstant.FALSE;
 			}
@@ -133,7 +133,7 @@ public abstract class FMLBooleanBinaryOperator extends FMLBinaryOperator {
 		}
 
 		@Override
-		public Expression evaluate(Expression leftArg, Constant<?> rightArg) {
+		public Expression evaluate(Expression leftArg, Constant<?> rightArg) throws TypeMismatchException, NullReferenceException {
 			if (rightArg == BooleanConstant.FALSE) {
 				return leftArg;
 			}
@@ -144,7 +144,7 @@ public abstract class FMLBooleanBinaryOperator extends FMLBinaryOperator {
 		}
 
 		@Override
-		public Expression evaluate(Constant<?> leftArg, Expression rightArg) {
+		public Expression evaluate(Constant<?> leftArg, Expression rightArg) throws TypeMismatchException, NullReferenceException {
 			if (leftArg == BooleanConstant.FALSE) {
 				return rightArg;
 			}

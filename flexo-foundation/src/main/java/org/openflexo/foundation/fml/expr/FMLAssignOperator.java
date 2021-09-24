@@ -41,26 +41,64 @@ package org.openflexo.foundation.fml.expr;
 
 import org.openflexo.connie.exception.NullReferenceException;
 import org.openflexo.connie.exception.TypeMismatchException;
-import org.openflexo.connie.expr.BinaryOperator;
 import org.openflexo.connie.expr.Constant;
+import org.openflexo.connie.expr.EvaluationType;
 import org.openflexo.connie.expr.Expression;
 
-/**
- * Represents an binary operator (an operator with two operands)
- * 
- * @author sylvain
- * 
- */
-public abstract class FMLBinaryOperator extends BinaryOperator {
+// TODO: do other assign operators
+public abstract class FMLAssignOperator extends FMLBooleanBinaryOperator {
 
 	@Override
-	public Expression evaluate(Expression leftArg, Constant<?> rightArg) throws TypeMismatchException, NullReferenceException {
-		return new FMLBinaryOperatorExpression(this, leftArg, rightArg);
+	public int getPriority() {
+		return 15;
 	}
 
-	@Override
-	public Expression evaluate(Constant<?> leftArg, Expression rightArg) throws TypeMismatchException, NullReferenceException {
-		return new FMLBinaryOperatorExpression(this, leftArg, rightArg);
-	}
+	public static final FMLAssignOperator ASSIGN = new FMLAssignOperator() {
+		@Override
+		public Constant<?> evaluate(Constant<?> leftArg, Constant<?> rightArg) throws TypeMismatchException, NullReferenceException {
+			return rightArg;
+		}
+
+		@Override
+		public String getName() {
+			return "assign";
+		}
+
+		@Override
+		public Expression evaluate(Expression leftArg, Constant<?> rightArg) {
+			return rightArg;
+		}
+
+		@Override
+		public EvaluationType getEvaluationType(EvaluationType leftOperandType, EvaluationType rightOperandType)
+				throws TypeMismatchException {
+			return rightOperandType;
+		}
+
+	};
+
+	public static final FMLAssignOperator PLUS_ASSIGN = new FMLAssignOperator() {
+		@Override
+		public Constant<?> evaluate(Constant<?> leftArg, Constant<?> rightArg) throws TypeMismatchException, NullReferenceException {
+			return FMLArithmeticBinaryOperator.ADDITION.evaluate(leftArg, rightArg);
+		}
+
+		@Override
+		public String getName() {
+			return "plus_assign";
+		}
+
+		@Override
+		public Expression evaluate(Expression leftArg, Constant<?> rightArg) throws TypeMismatchException, NullReferenceException {
+			return FMLArithmeticBinaryOperator.ADDITION.evaluate(leftArg, rightArg);
+		}
+
+		@Override
+		public EvaluationType getEvaluationType(EvaluationType leftOperandType, EvaluationType rightOperandType)
+				throws TypeMismatchException {
+			return FMLArithmeticBinaryOperator.ADDITION.getEvaluationType(leftOperandType, rightOperandType);
+		}
+
+	};
 
 }
