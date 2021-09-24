@@ -80,7 +80,7 @@ public class FMLBinaryOperatorExpression extends BinaryOperatorExpression {
 				BindingEvaluationContext context = ((FMLExpressionEvaluator) transformer).getContext();
 				if (!getLeftArgument().isSettable()) {
 					throw new NotSettableContextException(
-							"Invalid context for PostSettableUnaryOperator, not settable argument : " + getLeftArgument());
+							"Invalid context for FMLAssignOperator, not settable argument : " + getLeftArgument());
 				}
 				else {
 					Object value = ((Constant<?>) returned).getValue();
@@ -89,7 +89,7 @@ public class FMLBinaryOperatorExpression extends BinaryOperatorExpression {
 					}
 					else {
 						throw new NotSettableContextException(
-								"Invalid context for PostSettableUnaryOperator, don't know how to set for argument : " + getLeftArgument());
+								"Invalid context for FMLAssignOperator, don't know how to set for argument : " + getLeftArgument());
 					}
 				}
 			}
