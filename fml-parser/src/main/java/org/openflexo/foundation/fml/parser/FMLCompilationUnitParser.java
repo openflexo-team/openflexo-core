@@ -57,7 +57,6 @@ import org.openflexo.foundation.fml.FMLModelFactory;
 import org.openflexo.foundation.fml.parser.fmlnodes.FMLCompilationUnitNode;
 import org.openflexo.foundation.fml.parser.lexer.CustomLexer;
 import org.openflexo.foundation.fml.parser.lexer.CustomLexer.EntryPointKind;
-import org.openflexo.foundation.fml.parser.lexer.Lexer;
 import org.openflexo.foundation.fml.parser.lexer.LexerException;
 import org.openflexo.foundation.fml.parser.node.Start;
 import org.openflexo.foundation.fml.parser.parser.Parser;
@@ -202,7 +201,8 @@ public class FMLCompilationUnitParser {
 			RawSource rawSource = readRawSource(rawSourceReader);
 
 			// Create a Parser instance.
-			Parser p = new Parser(new Lexer(new PushbackReader(reader)));
+			Parser p = new Parser(new CustomLexer(new PushbackReader(reader), EntryPointKind.CompilationUnit));
+			// Parser p = new Parser(new Lexer(new PushbackReader(reader)));
 			// Parser p = new Parser(new CustomLexer(new PushbackReader(reader), entryPointKind));
 
 			// Parse the input.

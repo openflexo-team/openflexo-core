@@ -1043,9 +1043,13 @@ public abstract class CompilationUnitResourceImpl extends PamelaResourceImpl<FML
 		switch (getPersistencyStrategy()) {
 			case XML:
 			case XML2FML:
-				if (getXMLArtefact() != null) {
+				if (getXMLArtefact() != null && resourceCenter.exists(getXMLArtefact())) {
 					returned = retrieveInfoFromXML(resourceCenter);
 					break;
+				}
+				else {
+					// Retrieve infos from FML file
+					returned = retrieveInfoFromFML(resourceCenter);
 				}
 			case FML:
 				returned = retrieveInfoFromFML(resourceCenter);
