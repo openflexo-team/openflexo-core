@@ -49,6 +49,7 @@ import java.util.logging.Logger;
 import org.openflexo.connie.BindingEvaluationContext;
 import org.openflexo.connie.BindingModel;
 import org.openflexo.connie.DataBinding;
+import org.openflexo.connie.binding.Function;
 import org.openflexo.connie.binding.Function.FunctionArgument;
 import org.openflexo.connie.binding.FunctionPathElement;
 import org.openflexo.connie.binding.IBindingPathElement;
@@ -246,7 +247,23 @@ public class CreationSchemePathElement extends FunctionPathElement<CreationSchem
 
 	@Override
 	public String getSerializationRepresentation() {
-		return super.getSerializationRepresentation();
+		if (serializationRepresentation == null) {
+			StringBuffer returned = new StringBuffer();
+			if (getFunction() != null) {
+				returned.append("new " + TypeUtils.simpleRepresentation(getType()) + "(");
+				boolean isFirst = true;
+				for (Function.FunctionArgument a : getFunction().getArguments()) {
+					returned.append((isFirst ? "" : ",") + getParameter(a));
+					isFirst = false;
+				}
+				returned.append(")");
+			}
+			else {
+				returned.append("unknown_new()");
+			}
+			serializationRepresentation = returned.toString();
+		}
+		return serializationRepresentation;
 	}
 
 	@Override
