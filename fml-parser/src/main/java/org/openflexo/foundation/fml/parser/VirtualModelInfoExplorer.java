@@ -71,7 +71,7 @@ public class VirtualModelInfoExplorer extends DepthFirstAdapter implements Binda
 		this.analyzer = analyzer;
 		info = new VirtualModelInfo();
 
-		System.out.println(analyzer.getRawSource().debug());
+		// System.out.println(analyzer.getRawSource().debug());
 	}
 
 	public VirtualModelInfo getVirtualModelInfo() {
