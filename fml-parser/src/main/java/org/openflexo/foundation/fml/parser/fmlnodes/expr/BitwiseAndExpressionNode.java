@@ -41,9 +41,8 @@ package org.openflexo.foundation.fml.parser.fmlnodes.expr;
 import org.openflexo.connie.expr.BinaryOperator;
 import org.openflexo.foundation.fml.expr.FMLArithmeticBinaryOperator;
 import org.openflexo.foundation.fml.expr.FMLBinaryOperatorExpression;
-import org.openflexo.foundation.fml.parser.ExpressionFactory;
+import org.openflexo.foundation.fml.parser.AbstractExpressionFactory;
 import org.openflexo.foundation.fml.parser.node.AAmpAndExp;
-import org.openflexo.foundation.fml.parser.node.ABarInclusiveOrExp;
 
 /**
  * @author sylvain
@@ -51,11 +50,11 @@ import org.openflexo.foundation.fml.parser.node.ABarInclusiveOrExp;
  */
 public class BitwiseAndExpressionNode extends FMLBinaryOperatorExpressionNode<AAmpAndExp> {
 
-	public BitwiseAndExpressionNode(AAmpAndExp astNode, ExpressionFactory expressionFactory) {
+	public BitwiseAndExpressionNode(AAmpAndExp astNode, AbstractExpressionFactory expressionFactory) {
 		super(astNode, expressionFactory);
 	}
 
-	public BitwiseAndExpressionNode(FMLBinaryOperatorExpression expression, ExpressionFactory expressionFactory) {
+	public BitwiseAndExpressionNode(FMLBinaryOperatorExpression expression, AbstractExpressionFactory expressionFactory) {
 		super(expression, expressionFactory);
 	}
 

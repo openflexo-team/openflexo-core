@@ -41,7 +41,7 @@ package org.openflexo.foundation.fml.parser.fmlnodes.expr;
 import org.openflexo.connie.expr.BinaryOperator;
 import org.openflexo.foundation.fml.expr.FMLArithmeticBinaryOperator;
 import org.openflexo.foundation.fml.expr.FMLBinaryOperatorExpression;
-import org.openflexo.foundation.fml.parser.ExpressionFactory;
+import org.openflexo.foundation.fml.parser.AbstractExpressionFactory;
 import org.openflexo.foundation.fml.parser.node.ASlashMultExp;
 
 /**
@@ -50,11 +50,11 @@ import org.openflexo.foundation.fml.parser.node.ASlashMultExp;
  */
 public class DivisionExpressionNode extends FMLBinaryOperatorExpressionNode<ASlashMultExp> {
 
-	public DivisionExpressionNode(ASlashMultExp astNode, ExpressionFactory expressionFactory) {
+	public DivisionExpressionNode(ASlashMultExp astNode, AbstractExpressionFactory expressionFactory) {
 		super(astNode, expressionFactory);
 	}
 
-	public DivisionExpressionNode(FMLBinaryOperatorExpression expression, ExpressionFactory expressionFactory) {
+	public DivisionExpressionNode(FMLBinaryOperatorExpression expression, AbstractExpressionFactory expressionFactory) {
 		super(expression, expressionFactory);
 	}
 

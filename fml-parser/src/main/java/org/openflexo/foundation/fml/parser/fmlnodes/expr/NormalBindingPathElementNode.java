@@ -42,14 +42,18 @@ import org.openflexo.connie.Bindable;
 import org.openflexo.connie.expr.BindingValue.NormalBindingPathElement;
 import org.openflexo.foundation.fml.parser.MainSemanticsAnalyzer;
 import org.openflexo.foundation.fml.parser.node.TLidentifier;
+import org.openflexo.foundation.fml.parser.node.TUidentifier;
+import org.openflexo.foundation.fml.parser.node.Token;
 
 /**
+ * Either a {@link TLidentifier} or a {@link TUidentifier}
+ * 
  * @author sylvain
  * 
  */
-public class NormalBindingPathElementNode extends AbstractBindingPathElementNode<TLidentifier, NormalBindingPathElement> {
+public class NormalBindingPathElementNode extends AbstractBindingPathElementNode<Token, NormalBindingPathElement> {
 
-	public NormalBindingPathElementNode(TLidentifier astNode, MainSemanticsAnalyzer analyser, Bindable bindable) {
+	public NormalBindingPathElementNode(Token astNode, MainSemanticsAnalyzer analyser, Bindable bindable) {
 		super(astNode, analyser, bindable);
 	}
 
@@ -58,7 +62,7 @@ public class NormalBindingPathElementNode extends AbstractBindingPathElementNode
 	}
 
 	@Override
-	public NormalBindingPathElement buildModelObjectFromAST(TLidentifier astNode) {
+	public NormalBindingPathElement buildModelObjectFromAST(Token astNode) {
 		return new NormalBindingPathElement(astNode.getText());
 	}
 

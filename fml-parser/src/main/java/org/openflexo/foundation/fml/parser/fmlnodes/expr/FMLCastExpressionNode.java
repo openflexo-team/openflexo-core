@@ -41,7 +41,7 @@ package org.openflexo.foundation.fml.parser.fmlnodes.expr;
 import java.lang.reflect.Type;
 
 import org.openflexo.foundation.fml.expr.FMLCastExpression;
-import org.openflexo.foundation.fml.parser.ExpressionFactory;
+import org.openflexo.foundation.fml.parser.AbstractExpressionFactory;
 import org.openflexo.foundation.fml.parser.TypeFactory;
 import org.openflexo.foundation.fml.parser.node.ACastUnaryExpNotPlusMinus;
 
@@ -51,11 +51,11 @@ import org.openflexo.foundation.fml.parser.node.ACastUnaryExpNotPlusMinus;
  */
 public class FMLCastExpressionNode extends ExpressionNode<ACastUnaryExpNotPlusMinus, FMLCastExpression> {
 
-	public FMLCastExpressionNode(ACastUnaryExpNotPlusMinus astNode, ExpressionFactory expressionFactory) {
+	public FMLCastExpressionNode(ACastUnaryExpNotPlusMinus astNode, AbstractExpressionFactory expressionFactory) {
 		super(astNode, expressionFactory);
 	}
 
-	public FMLCastExpressionNode(FMLCastExpression expression, ExpressionFactory expressionFactory) {
+	public FMLCastExpressionNode(FMLCastExpression expression, AbstractExpressionFactory expressionFactory) {
 		super(expression, expressionFactory);
 	}
 

@@ -41,7 +41,7 @@ package org.openflexo.foundation.fml.parser.fmlnodes.expr;
 import org.openflexo.connie.expr.UnaryOperator;
 import org.openflexo.foundation.fml.expr.FMLArithmeticUnaryOperator;
 import org.openflexo.foundation.fml.expr.FMLUnaryOperatorExpression;
-import org.openflexo.foundation.fml.parser.ExpressionFactory;
+import org.openflexo.foundation.fml.parser.AbstractExpressionFactory;
 import org.openflexo.foundation.fml.parser.node.APreDecrExp;
 
 /**
@@ -50,11 +50,11 @@ import org.openflexo.foundation.fml.parser.node.APreDecrExp;
  */
 public class PreDecrementExpressionNode extends FMLUnaryOperatorExpressionNode<APreDecrExp> {
 
-	public PreDecrementExpressionNode(APreDecrExp astNode, ExpressionFactory expressionFactory) {
+	public PreDecrementExpressionNode(APreDecrExp astNode, AbstractExpressionFactory expressionFactory) {
 		super(astNode, expressionFactory);
 	}
 
-	public PreDecrementExpressionNode(FMLUnaryOperatorExpression expression, ExpressionFactory expressionFactory) {
+	public PreDecrementExpressionNode(FMLUnaryOperatorExpression expression, AbstractExpressionFactory expressionFactory) {
 		super(expression, expressionFactory);
 	}
 

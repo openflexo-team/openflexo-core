@@ -1,10 +1,6 @@
 package org.openflexo.foundation.fml.parser;
 
 import java.lang.reflect.Type;
-import java.util.HashMap;
-import java.util.Hashtable;
-import java.util.Map;
-import java.util.function.Function;
 import java.util.logging.Logger;
 
 import org.openflexo.connie.Bindable;
@@ -14,10 +10,8 @@ import org.openflexo.connie.expr.Expression;
 import org.openflexo.foundation.fml.AbstractFMLTypingSpace;
 import org.openflexo.foundation.fml.FMLCompilationUnit;
 import org.openflexo.foundation.fml.FMLModelFactory;
-import org.openflexo.foundation.fml.controlgraph.FMLControlGraph;
 import org.openflexo.foundation.fml.parser.fmlnodes.expr.AndExpressionNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.expr.AssignmentExpressionNode;
-import org.openflexo.foundation.fml.parser.fmlnodes.expr.BindingPathNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.expr.BitwiseAndExpressionNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.expr.BitwiseComplementExpressionNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.expr.BitwiseOrExpressionNode;
@@ -63,10 +57,8 @@ import org.openflexo.foundation.fml.parser.node.ABarInclusiveOrExp;
 import org.openflexo.foundation.fml.parser.node.ACaretExclusiveOrExp;
 import org.openflexo.foundation.fml.parser.node.ACastUnaryExpNotPlusMinus;
 import org.openflexo.foundation.fml.parser.node.ACharacterLiteral;
-import org.openflexo.foundation.fml.parser.node.AConditionalExpression;
 import org.openflexo.foundation.fml.parser.node.AEmarkUnaryExpNotPlusMinus;
 import org.openflexo.foundation.fml.parser.node.AEqEqualityExp;
-import org.openflexo.foundation.fml.parser.node.AExpressionPrimaryNoId;
 import org.openflexo.foundation.fml.parser.node.AFalseLiteral;
 import org.openflexo.foundation.fml.parser.node.AFieldLeftHandSide;
 import org.openflexo.foundation.fml.parser.node.AFieldPrimaryNoId;
@@ -77,7 +69,6 @@ import org.openflexo.foundation.fml.parser.node.AIdentifierLeftHandSide;
 import org.openflexo.foundation.fml.parser.node.AIdentifierPrimary;
 import org.openflexo.foundation.fml.parser.node.AInstanceofRelationalExp;
 import org.openflexo.foundation.fml.parser.node.AIntegerLiteral;
-import org.openflexo.foundation.fml.parser.node.ALiteralPrimaryNoId;
 import org.openflexo.foundation.fml.parser.node.ALtRelationalExp;
 import org.openflexo.foundation.fml.parser.node.ALteqRelationalExp;
 import org.openflexo.foundation.fml.parser.node.AMethodInvocationStatementExpression;
@@ -92,82 +83,32 @@ import org.openflexo.foundation.fml.parser.node.APercentMultExp;
 import org.openflexo.foundation.fml.parser.node.APlusAddExp;
 import org.openflexo.foundation.fml.parser.node.APlusUnaryExp;
 import org.openflexo.foundation.fml.parser.node.APostDecrExp;
-import org.openflexo.foundation.fml.parser.node.APostDecrementPostfixExp;
 import org.openflexo.foundation.fml.parser.node.APostIncrExp;
-import org.openflexo.foundation.fml.parser.node.APostIncrementPostfixExp;
-import org.openflexo.foundation.fml.parser.node.APostfixUnaryExpNotPlusMinus;
 import org.openflexo.foundation.fml.parser.node.APreDecrExp;
-import org.openflexo.foundation.fml.parser.node.APreDecrementUnaryExp;
 import org.openflexo.foundation.fml.parser.node.APreIncrExp;
-import org.openflexo.foundation.fml.parser.node.APreIncrementUnaryExp;
-import org.openflexo.foundation.fml.parser.node.APrimaryNoIdPrimary;
-import org.openflexo.foundation.fml.parser.node.APrimaryPostfixExp;
 import org.openflexo.foundation.fml.parser.node.AQmarkConditionalExp;
 import org.openflexo.foundation.fml.parser.node.AReferenceType;
 import org.openflexo.foundation.fml.parser.node.AShlShiftExp;
 import org.openflexo.foundation.fml.parser.node.AShrShiftExp;
-import org.openflexo.foundation.fml.parser.node.ASimpleAddExp;
-import org.openflexo.foundation.fml.parser.node.ASimpleAndExp;
-import org.openflexo.foundation.fml.parser.node.ASimpleConditionalAndExp;
-import org.openflexo.foundation.fml.parser.node.ASimpleConditionalExp;
-import org.openflexo.foundation.fml.parser.node.ASimpleConditionalOrExp;
-import org.openflexo.foundation.fml.parser.node.ASimpleEqualityExp;
-import org.openflexo.foundation.fml.parser.node.ASimpleExclusiveOrExp;
-import org.openflexo.foundation.fml.parser.node.ASimpleInclusiveOrExp;
-import org.openflexo.foundation.fml.parser.node.ASimpleMultExp;
-import org.openflexo.foundation.fml.parser.node.ASimpleRelationalExp;
-import org.openflexo.foundation.fml.parser.node.ASimpleShiftExp;
 import org.openflexo.foundation.fml.parser.node.ASlashMultExp;
 import org.openflexo.foundation.fml.parser.node.AStarMultExp;
 import org.openflexo.foundation.fml.parser.node.AStringLiteral;
 import org.openflexo.foundation.fml.parser.node.ATildeUnaryExpNotPlusMinus;
 import org.openflexo.foundation.fml.parser.node.ATrueLiteral;
-import org.openflexo.foundation.fml.parser.node.AUnaryUnaryExp;
 import org.openflexo.foundation.fml.parser.node.AUshrShiftExp;
 import org.openflexo.foundation.fml.parser.node.Node;
 import org.openflexo.p2pp.RawSource;
 
 /**
- * A factory based on {@link FMLSemanticsAnalyzer}, used to instantiate {@link FMLControlGraph} from AST
+ * A factory based on {@link FMLSemanticsAnalyzer}, used to instantiate a {@link DataBinding} or an {@link Expression} from AST
  * 
  * @author sylvain
  *
  */
-public class ExpressionFactory extends FMLSemanticsAnalyzer {
+public class ExpressionFactory extends AbstractExpressionFactory {
 
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(ExpressionFactory.class.getPackage().getName());
-
-	@Deprecated
-	private final Map<Node, Expression> expressionNodes;
-	@Deprecated
-	private Node topLevel = null;
-
-	private Bindable bindable;
-	private final AbstractFMLTypingSpace typingSpace;
-	private final MainSemanticsAnalyzer mainAnalyzer;
-	private final DataBindingNode dataBindingNode;
-
-	private int depth = -1;
-
-	private Map<Node, ObjectNode> nodesForAST = new HashMap<>();
-
-	/*public Map<Node, FMLObjectNode> getNodesForAST() {
-		return nodesForAST;
-	}*/
-
-	public <N extends Node, FMLN extends ObjectNode> FMLN retrieveFMLNode(N astNode, Function<N, FMLN> function) {
-		FMLN returned = (FMLN) nodesForAST.get(astNode);
-		if (returned == null) {
-			returned = function.apply(astNode);
-			nodesForAST.put(astNode, returned);
-		}
-		return returned;
-	}
-
-	private boolean weAreDealingWithTheRightBindingPath() {
-		return depth == 0;
-	}
 
 	public static Expression makeExpression(Node node, Bindable bindable, FMLCompilationUnit compilationUnit) {
 		return _makeExpression(node, bindable, compilationUnit.getTypingSpace(), compilationUnit.getFMLModelFactory(), null, null);
@@ -237,189 +178,9 @@ public class ExpressionFactory extends FMLSemanticsAnalyzer {
 		return (DataBinding<T>) dataBindingNode.getModelObject();
 	}
 
-	/*private ExpressionFactory(Node rootNode, Bindable aBindable, AbstractFMLTypingSpace typingSpace, MainSemanticsAnalyzer mainAnalyzer,
-			DataBindingNode dataBindingNode) {
-		this(rootNode, aBindable, typingSpace, mainAnalyzer.getFactory(), mainAnalyzer, dataBindingNode);
-	}*/
-
 	private ExpressionFactory(Node rootNode, Bindable aBindable, AbstractFMLTypingSpace typingSpace, FMLModelFactory fmlModelFactory,
 			MainSemanticsAnalyzer mainAnalyzer, DataBindingNode dataBindingNode) {
-		super(fmlModelFactory, rootNode);
-		expressionNodes = new Hashtable<>();
-		this.bindable = aBindable;
-		this.typingSpace = typingSpace;
-		this.mainAnalyzer = mainAnalyzer;
-		this.dataBindingNode = dataBindingNode;
-	}
-
-	public DataBindingNode getDataBindingNode() {
-		return dataBindingNode;
-	}
-
-	public AbstractFMLTypingSpace getTypingSpace() {
-		return typingSpace;
-	}
-
-	public Expression getExpression() {
-		if (topLevel != null) {
-			return expressionNodes.get(topLevel);
-		}
-		return null;
-	}
-
-	public Bindable getBindable() {
-		return bindable;
-	}
-
-	@Override
-	public MainSemanticsAnalyzer getMainAnalyzer() {
-		return mainAnalyzer;
-	}
-
-	@Override
-	protected void push(ObjectNode<?, ?, ?> fmlNode) {
-		super.push(fmlNode);
-		if (fmlNode.getModelObject() instanceof Expression) {
-			registerExpressionNode(fmlNode.getASTNode(), (Expression) fmlNode.getModelObject());
-		}
-	}
-
-	private void registerExpressionNode(Node n, Expression e) {
-		// System.out.println("REGISTER in " + this + " / " + e + " for node " + n + " as " + n.getClass());
-		expressionNodes.put(n, e);
-		if (topLevel == null) {
-			topLevel = n;
-		}
-		/*if (n.parent() != null) {
-			registerExpressionNode(n.parent(), e);
-		}*/
-		/*if (e instanceof Constant && weAreDealingWithTheRightBindingPath()) {
-			if (getMainAnalyzer() != null && parentNode != null) {
-				ConstantNode constantNode = getMainAnalyzer().registerFMLNode(n, new ConstantNode(n, getMainAnalyzer()));
-				constantNode.setModelObject((Constant) e);
-				parentNode.addToChildren(constantNode);
-			}
-		}*/
-	}
-
-	public Expression getExpression(Node n) {
-		if (n != null) {
-			Expression returned = expressionNodes.get(n);
-
-			if (returned == null) {
-				if (n instanceof AConditionalExpression) {
-					return getExpression(((AConditionalExpression) n).getConditionalExp());
-				}
-				if (n instanceof ASimpleConditionalExp) {
-					return getExpression(((ASimpleConditionalExp) n).getConditionalOrExp());
-				}
-				if (n instanceof ASimpleConditionalOrExp) {
-					return getExpression(((ASimpleConditionalOrExp) n).getConditionalAndExp());
-				}
-				if (n instanceof ASimpleConditionalAndExp) {
-					return getExpression(((ASimpleConditionalAndExp) n).getInclusiveOrExp());
-				}
-				if (n instanceof ASimpleInclusiveOrExp) {
-					return getExpression(((ASimpleInclusiveOrExp) n).getExclusiveOrExp());
-				}
-				if (n instanceof ASimpleExclusiveOrExp) {
-					return getExpression(((ASimpleExclusiveOrExp) n).getAndExp());
-				}
-				if (n instanceof ASimpleAndExp) {
-					return getExpression(((ASimpleAndExp) n).getEqualityExp());
-				}
-				if (n instanceof ASimpleEqualityExp) {
-					return getExpression(((ASimpleEqualityExp) n).getRelationalExp());
-				}
-				if (n instanceof ASimpleRelationalExp) {
-					return getExpression(((ASimpleRelationalExp) n).getShiftExp());
-				}
-				if (n instanceof ASimpleShiftExp) {
-					return getExpression(((ASimpleShiftExp) n).getAddExp());
-				}
-				if (n instanceof ASimpleAddExp) {
-					return getExpression(((ASimpleAddExp) n).getMultExp());
-				}
-				if (n instanceof ASimpleMultExp) {
-					return getExpression(((ASimpleMultExp) n).getUnaryExp());
-				}
-				if (n instanceof AUnaryUnaryExp) {
-					return getExpression(((AUnaryUnaryExp) n).getUnaryExpNotPlusMinus());
-				}
-				if (n instanceof APostfixUnaryExpNotPlusMinus) {
-					return getExpression(((APostfixUnaryExpNotPlusMinus) n).getPostfixExp());
-				}
-				if (n instanceof APrimaryPostfixExp) {
-					return getExpression(((APrimaryPostfixExp) n).getPrimary());
-				}
-				if (n instanceof APrimaryNoIdPrimary) {
-					return getExpression(((APrimaryNoIdPrimary) n).getPrimaryNoId());
-				}
-				if (n instanceof ALiteralPrimaryNoId) {
-					return getExpression(((ALiteralPrimaryNoId) n).getLiteral());
-				}
-				if (n instanceof AExpressionPrimaryNoId) {
-					return getExpression(((AExpressionPrimaryNoId) n).getExpression());
-				}
-				if (n instanceof APreIncrementUnaryExp) {
-					return getExpression(((APreIncrementUnaryExp) n).getPreIncrExp());
-				}
-				if (n instanceof APreDecrementUnaryExp) {
-					return getExpression(((APreDecrementUnaryExp) n).getPreDecrExp());
-				}
-				if (n instanceof APostIncrementPostfixExp) {
-					return getExpression(((APostIncrementPostfixExp) n).getPostIncrExp());
-				}
-				if (n instanceof APostDecrementPostfixExp) {
-					return getExpression(((APostDecrementPostfixExp) n).getPostDecrExp());
-				}
-
-				logger.warning("ExpressionFactory: No expression registered for " + n + " of  " + n.getClass());
-				Thread.dumpStack();
-			}
-			return returned;
-		}
-		return null;
-	}
-
-	int ident = 0;
-
-	@Override
-	public void defaultIn(Node node) {
-		super.defaultIn(node);
-		ident++;
-		// System.out.println(StringUtils.buildWhiteSpaceIndentation(ident) + " > " + node.getClass().getSimpleName() + " : " + node);
-	}
-
-	@Override
-	public void defaultOut(Node node) {
-		super.defaultOut(node);
-		ident--;
-	}
-
-	private BindingPathNode pushBindingPathNode(Node node) {
-		depth++;
-		if (weAreDealingWithTheRightBindingPath()) {
-			BindingPathNode returned;
-			push(returned = retrieveFMLNode(node, n -> new BindingPathNode(n, this)));
-			return returned;
-		}
-		return null;
-	}
-
-	private BindingPathNode popBindingPathNode(Node node) {
-		try {
-			if (weAreDealingWithTheRightBindingPath()) {
-				// BindingPathNode bindingPathNode = peek();
-				// BindingPathFactory.makeBindingPath(node, this, bindingPathNode, true);
-				BindingPathNode bindingPathNode = pop();
-				expressionNodes.put(node, bindingPathNode.getModelObject());
-				return bindingPathNode;
-			}
-			return null;
-		} finally {
-			depth--;
-		}
+		super(rootNode, aBindable, typingSpace, fmlModelFactory, mainAnalyzer, dataBindingNode);
 	}
 
 	@Override

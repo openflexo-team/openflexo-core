@@ -39,7 +39,7 @@
 package org.openflexo.foundation.fml.parser.fmlnodes.expr;
 
 import org.openflexo.foundation.fml.expr.FMLConstant.ObjectSymbolicConstant;
-import org.openflexo.foundation.fml.parser.ExpressionFactory;
+import org.openflexo.foundation.fml.parser.AbstractExpressionFactory;
 import org.openflexo.foundation.fml.parser.node.ANullLiteral;
 
 /**
@@ -48,11 +48,11 @@ import org.openflexo.foundation.fml.parser.node.ANullLiteral;
  */
 public class NullConstantNode extends ConstantNode<ANullLiteral, ObjectSymbolicConstant> {
 
-	public NullConstantNode(ANullLiteral astNode, ExpressionFactory expressionFactory) {
+	public NullConstantNode(ANullLiteral astNode, AbstractExpressionFactory expressionFactory) {
 		super(astNode, expressionFactory);
 	}
 
-	public NullConstantNode(ObjectSymbolicConstant constant, ExpressionFactory expressionFactory) {
+	public NullConstantNode(ObjectSymbolicConstant constant, AbstractExpressionFactory expressionFactory) {
 		super(constant, expressionFactory);
 	}
 

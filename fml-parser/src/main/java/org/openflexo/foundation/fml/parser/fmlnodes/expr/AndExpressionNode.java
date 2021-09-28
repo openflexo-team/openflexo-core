@@ -41,7 +41,7 @@ package org.openflexo.foundation.fml.parser.fmlnodes.expr;
 import org.openflexo.connie.expr.BinaryOperator;
 import org.openflexo.foundation.fml.expr.FMLBinaryOperatorExpression;
 import org.openflexo.foundation.fml.expr.FMLBooleanBinaryOperator;
-import org.openflexo.foundation.fml.parser.ExpressionFactory;
+import org.openflexo.foundation.fml.parser.AbstractExpressionFactory;
 import org.openflexo.foundation.fml.parser.node.AAmpAmpConditionalAndExp;
 
 /**
@@ -50,11 +50,11 @@ import org.openflexo.foundation.fml.parser.node.AAmpAmpConditionalAndExp;
  */
 public class AndExpressionNode extends FMLBinaryOperatorExpressionNode<AAmpAmpConditionalAndExp> {
 
-	public AndExpressionNode(AAmpAmpConditionalAndExp astNode, ExpressionFactory expressionFactory) {
+	public AndExpressionNode(AAmpAmpConditionalAndExp astNode, AbstractExpressionFactory expressionFactory) {
 		super(astNode, expressionFactory);
 	}
 
-	public AndExpressionNode(FMLBinaryOperatorExpression expression, ExpressionFactory expressionFactory) {
+	public AndExpressionNode(FMLBinaryOperatorExpression expression, AbstractExpressionFactory expressionFactory) {
 		super(expression, expressionFactory);
 	}
 

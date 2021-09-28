@@ -39,7 +39,7 @@
 package org.openflexo.foundation.fml.parser.fmlnodes.expr;
 
 import org.openflexo.connie.expr.Constant;
-import org.openflexo.foundation.fml.parser.ExpressionFactory;
+import org.openflexo.foundation.fml.parser.AbstractExpressionFactory;
 import org.openflexo.foundation.fml.parser.node.PLiteral;
 
 /**
@@ -48,11 +48,11 @@ import org.openflexo.foundation.fml.parser.node.PLiteral;
  */
 public abstract class ConstantNode<N extends PLiteral, T extends Constant<?>> extends ExpressionNode<N, T> {
 
-	public ConstantNode(N astNode, ExpressionFactory expressionFactory) {
+	public ConstantNode(N astNode, AbstractExpressionFactory expressionFactory) {
 		super(astNode, expressionFactory);
 	}
 
-	public ConstantNode(T constant, ExpressionFactory expressionFactory) {
+	public ConstantNode(T constant, AbstractExpressionFactory expressionFactory) {
 		super(constant, expressionFactory);
 	}
 

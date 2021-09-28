@@ -41,7 +41,7 @@ package org.openflexo.foundation.fml.parser.fmlnodes.expr;
 import org.openflexo.connie.expr.UnaryOperator;
 import org.openflexo.foundation.fml.expr.FMLArithmeticUnaryOperator;
 import org.openflexo.foundation.fml.expr.FMLUnaryOperatorExpression;
-import org.openflexo.foundation.fml.parser.ExpressionFactory;
+import org.openflexo.foundation.fml.parser.AbstractExpressionFactory;
 import org.openflexo.foundation.fml.parser.node.APostIncrExp;
 
 /**
@@ -50,11 +50,11 @@ import org.openflexo.foundation.fml.parser.node.APostIncrExp;
  */
 public class PostIncrementExpressionNode extends FMLUnaryOperatorExpressionNode<APostIncrExp> {
 
-	public PostIncrementExpressionNode(APostIncrExp astNode, ExpressionFactory expressionFactory) {
+	public PostIncrementExpressionNode(APostIncrExp astNode, AbstractExpressionFactory expressionFactory) {
 		super(astNode, expressionFactory);
 	}
 
-	public PostIncrementExpressionNode(FMLUnaryOperatorExpression expression, ExpressionFactory expressionFactory) {
+	public PostIncrementExpressionNode(FMLUnaryOperatorExpression expression, AbstractExpressionFactory expressionFactory) {
 		super(expression, expressionFactory);
 	}
 

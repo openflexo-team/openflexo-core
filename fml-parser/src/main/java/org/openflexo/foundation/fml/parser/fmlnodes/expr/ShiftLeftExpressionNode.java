@@ -41,7 +41,7 @@ package org.openflexo.foundation.fml.parser.fmlnodes.expr;
 import org.openflexo.connie.expr.BinaryOperator;
 import org.openflexo.foundation.fml.expr.FMLArithmeticBinaryOperator;
 import org.openflexo.foundation.fml.expr.FMLBinaryOperatorExpression;
-import org.openflexo.foundation.fml.parser.ExpressionFactory;
+import org.openflexo.foundation.fml.parser.AbstractExpressionFactory;
 import org.openflexo.foundation.fml.parser.node.AShlShiftExp;
 
 /**
@@ -50,11 +50,11 @@ import org.openflexo.foundation.fml.parser.node.AShlShiftExp;
  */
 public class ShiftLeftExpressionNode extends FMLBinaryOperatorExpressionNode<AShlShiftExp> {
 
-	public ShiftLeftExpressionNode(AShlShiftExp astNode, ExpressionFactory expressionFactory) {
+	public ShiftLeftExpressionNode(AShlShiftExp astNode, AbstractExpressionFactory expressionFactory) {
 		super(astNode, expressionFactory);
 	}
 
-	public ShiftLeftExpressionNode(FMLBinaryOperatorExpression expression, ExpressionFactory expressionFactory) {
+	public ShiftLeftExpressionNode(FMLBinaryOperatorExpression expression, AbstractExpressionFactory expressionFactory) {
 		super(expression, expressionFactory);
 	}
 

@@ -40,7 +40,7 @@ package org.openflexo.foundation.fml.parser.fmlnodes.expr;
 
 import org.openflexo.foundation.fml.expr.FMLConstant;
 import org.openflexo.foundation.fml.expr.FMLConstant.ArithmeticConstant;
-import org.openflexo.foundation.fml.parser.ExpressionFactory;
+import org.openflexo.foundation.fml.parser.AbstractExpressionFactory;
 import org.openflexo.foundation.fml.parser.node.AIntegerLiteral;
 
 /**
@@ -49,11 +49,11 @@ import org.openflexo.foundation.fml.parser.node.AIntegerLiteral;
  */
 public class IntegerConstantNode extends ConstantNode<AIntegerLiteral, ArithmeticConstant<?>> {
 
-	public IntegerConstantNode(AIntegerLiteral astNode, ExpressionFactory expressionFactory) {
+	public IntegerConstantNode(AIntegerLiteral astNode, AbstractExpressionFactory expressionFactory) {
 		super(astNode, expressionFactory);
 	}
 
-	public IntegerConstantNode(ArithmeticConstant<?> constant, ExpressionFactory expressionFactory) {
+	public IntegerConstantNode(ArithmeticConstant<?> constant, AbstractExpressionFactory expressionFactory) {
 		super(constant, expressionFactory);
 	}
 

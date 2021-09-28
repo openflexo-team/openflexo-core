@@ -39,7 +39,7 @@
 package org.openflexo.foundation.fml.parser.fmlnodes.expr;
 
 import org.openflexo.foundation.fml.expr.FMLConstant.CharConstant;
-import org.openflexo.foundation.fml.parser.ExpressionFactory;
+import org.openflexo.foundation.fml.parser.AbstractExpressionFactory;
 import org.openflexo.foundation.fml.parser.node.ACharacterLiteral;
 
 /**
@@ -48,11 +48,11 @@ import org.openflexo.foundation.fml.parser.node.ACharacterLiteral;
  */
 public class CharConstantNode extends ConstantNode<ACharacterLiteral, CharConstant> {
 
-	public CharConstantNode(ACharacterLiteral astNode, ExpressionFactory expressionFactory) {
+	public CharConstantNode(ACharacterLiteral astNode, AbstractExpressionFactory expressionFactory) {
 		super(astNode, expressionFactory);
 	}
 
-	public CharConstantNode(CharConstant constant, ExpressionFactory expressionFactory) {
+	public CharConstantNode(CharConstant constant, AbstractExpressionFactory expressionFactory) {
 		super(constant, expressionFactory);
 	}
 

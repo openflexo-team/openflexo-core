@@ -41,7 +41,7 @@ package org.openflexo.foundation.fml.parser.fmlnodes.expr;
 import org.openflexo.connie.expr.BinaryOperator;
 import org.openflexo.foundation.fml.expr.FMLArithmeticBinaryOperator;
 import org.openflexo.foundation.fml.expr.FMLBinaryOperatorExpression;
-import org.openflexo.foundation.fml.parser.ExpressionFactory;
+import org.openflexo.foundation.fml.parser.AbstractExpressionFactory;
 import org.openflexo.foundation.fml.parser.node.AMinusAddExp;
 
 /**
@@ -50,11 +50,11 @@ import org.openflexo.foundation.fml.parser.node.AMinusAddExp;
  */
 public class MinusExpressionNode extends FMLBinaryOperatorExpressionNode<AMinusAddExp> {
 
-	public MinusExpressionNode(AMinusAddExp astNode, ExpressionFactory expressionFactory) {
+	public MinusExpressionNode(AMinusAddExp astNode, AbstractExpressionFactory expressionFactory) {
 		super(astNode, expressionFactory);
 	}
 
-	public MinusExpressionNode(FMLBinaryOperatorExpression expression, ExpressionFactory expressionFactory) {
+	public MinusExpressionNode(FMLBinaryOperatorExpression expression, AbstractExpressionFactory expressionFactory) {
 		super(expression, expressionFactory);
 	}
 

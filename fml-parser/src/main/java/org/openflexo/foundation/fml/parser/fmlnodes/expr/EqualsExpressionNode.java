@@ -41,7 +41,7 @@ package org.openflexo.foundation.fml.parser.fmlnodes.expr;
 import org.openflexo.connie.expr.BinaryOperator;
 import org.openflexo.foundation.fml.expr.FMLBinaryOperatorExpression;
 import org.openflexo.foundation.fml.expr.FMLBooleanBinaryOperator;
-import org.openflexo.foundation.fml.parser.ExpressionFactory;
+import org.openflexo.foundation.fml.parser.AbstractExpressionFactory;
 import org.openflexo.foundation.fml.parser.node.AEqEqualityExp;
 
 /**
@@ -50,11 +50,11 @@ import org.openflexo.foundation.fml.parser.node.AEqEqualityExp;
  */
 public class EqualsExpressionNode extends FMLBinaryOperatorExpressionNode<AEqEqualityExp> {
 
-	public EqualsExpressionNode(AEqEqualityExp astNode, ExpressionFactory expressionFactory) {
+	public EqualsExpressionNode(AEqEqualityExp astNode, AbstractExpressionFactory expressionFactory) {
 		super(astNode, expressionFactory);
 	}
 
-	public EqualsExpressionNode(FMLBinaryOperatorExpression expression, ExpressionFactory expressionFactory) {
+	public EqualsExpressionNode(FMLBinaryOperatorExpression expression, AbstractExpressionFactory expressionFactory) {
 		super(expression, expressionFactory);
 	}
 

@@ -41,7 +41,7 @@ package org.openflexo.foundation.fml.parser.fmlnodes.expr;
 import org.openflexo.connie.expr.UnaryOperator;
 import org.openflexo.foundation.fml.expr.FMLBooleanUnaryOperator;
 import org.openflexo.foundation.fml.expr.FMLUnaryOperatorExpression;
-import org.openflexo.foundation.fml.parser.ExpressionFactory;
+import org.openflexo.foundation.fml.parser.AbstractExpressionFactory;
 import org.openflexo.foundation.fml.parser.node.AEmarkUnaryExpNotPlusMinus;
 
 /**
@@ -50,11 +50,11 @@ import org.openflexo.foundation.fml.parser.node.AEmarkUnaryExpNotPlusMinus;
  */
 public class NotExpressionNode extends FMLUnaryOperatorExpressionNode<AEmarkUnaryExpNotPlusMinus> {
 
-	public NotExpressionNode(AEmarkUnaryExpNotPlusMinus astNode, ExpressionFactory expressionFactory) {
+	public NotExpressionNode(AEmarkUnaryExpNotPlusMinus astNode, AbstractExpressionFactory expressionFactory) {
 		super(astNode, expressionFactory);
 	}
 
-	public NotExpressionNode(FMLUnaryOperatorExpression expression, ExpressionFactory expressionFactory) {
+	public NotExpressionNode(FMLUnaryOperatorExpression expression, AbstractExpressionFactory expressionFactory) {
 		super(expression, expressionFactory);
 	}
 

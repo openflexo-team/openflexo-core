@@ -41,7 +41,7 @@ package org.openflexo.foundation.fml.parser.fmlnodes.expr;
 import org.openflexo.connie.expr.UnaryOperator;
 import org.openflexo.foundation.fml.expr.FMLArithmeticUnaryOperator;
 import org.openflexo.foundation.fml.expr.FMLUnaryOperatorExpression;
-import org.openflexo.foundation.fml.parser.ExpressionFactory;
+import org.openflexo.foundation.fml.parser.AbstractExpressionFactory;
 import org.openflexo.foundation.fml.parser.node.AMinusUnaryExp;
 
 /**
@@ -50,11 +50,11 @@ import org.openflexo.foundation.fml.parser.node.AMinusUnaryExp;
  */
 public class UnaryMinusExpressionNode extends FMLUnaryOperatorExpressionNode<AMinusUnaryExp> {
 
-	public UnaryMinusExpressionNode(AMinusUnaryExp astNode, ExpressionFactory expressionFactory) {
+	public UnaryMinusExpressionNode(AMinusUnaryExp astNode, AbstractExpressionFactory expressionFactory) {
 		super(astNode, expressionFactory);
 	}
 
-	public UnaryMinusExpressionNode(FMLUnaryOperatorExpression expression, ExpressionFactory expressionFactory) {
+	public UnaryMinusExpressionNode(FMLUnaryOperatorExpression expression, AbstractExpressionFactory expressionFactory) {
 		super(expression, expressionFactory);
 	}
 

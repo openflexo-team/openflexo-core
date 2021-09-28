@@ -39,7 +39,7 @@
 package org.openflexo.foundation.fml.parser.fmlnodes.expr;
 
 import org.openflexo.foundation.fml.expr.FMLConditionalExpression;
-import org.openflexo.foundation.fml.parser.ExpressionFactory;
+import org.openflexo.foundation.fml.parser.AbstractExpressionFactory;
 import org.openflexo.foundation.fml.parser.node.AQmarkConditionalExp;
 
 /**
@@ -48,11 +48,11 @@ import org.openflexo.foundation.fml.parser.node.AQmarkConditionalExp;
  */
 public class FMLConditionalExpressionNode extends ExpressionNode<AQmarkConditionalExp, FMLConditionalExpression> {
 
-	public FMLConditionalExpressionNode(AQmarkConditionalExp astNode, ExpressionFactory expressionFactory) {
+	public FMLConditionalExpressionNode(AQmarkConditionalExp astNode, AbstractExpressionFactory expressionFactory) {
 		super(astNode, expressionFactory);
 	}
 
-	public FMLConditionalExpressionNode(FMLConditionalExpression expression, ExpressionFactory expressionFactory) {
+	public FMLConditionalExpressionNode(FMLConditionalExpression expression, AbstractExpressionFactory expressionFactory) {
 		super(expression, expressionFactory);
 	}
 

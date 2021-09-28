@@ -43,8 +43,8 @@ import java.util.List;
 import org.openflexo.connie.expr.BindingValue;
 import org.openflexo.connie.expr.BindingValue.AbstractBindingPathElement;
 import org.openflexo.connie.java.expr.JavaPrettyPrinter;
+import org.openflexo.foundation.fml.parser.AbstractExpressionFactory;
 import org.openflexo.foundation.fml.parser.BindingPathFactory;
-import org.openflexo.foundation.fml.parser.ExpressionFactory;
 import org.openflexo.foundation.fml.parser.node.Node;
 
 /**
@@ -53,14 +53,14 @@ import org.openflexo.foundation.fml.parser.node.Node;
  */
 public class BindingPathNode extends ExpressionNode<Node, BindingValue> {
 
-	public BindingPathNode(Node astNode, ExpressionFactory expressionFactory) {
+	public BindingPathNode(Node astNode, AbstractExpressionFactory expressionFactory) {
 		super(astNode, expressionFactory);
 		// buildModelObjectFromAST() was already called, but too early (bindable not yet set)
 		// we do it again
 		modelObject = buildModelObjectFromAST(astNode);
 	}
 
-	public BindingPathNode(BindingValue bindingPath, ExpressionFactory expressionFactory) {
+	public BindingPathNode(BindingValue bindingPath, AbstractExpressionFactory expressionFactory) {
 		super(bindingPath, expressionFactory);
 	}
 

@@ -40,7 +40,7 @@ package org.openflexo.foundation.fml.parser.fmlnodes.expr;
 
 import org.openflexo.connie.expr.UnaryOperator;
 import org.openflexo.foundation.fml.expr.FMLUnaryOperatorExpression;
-import org.openflexo.foundation.fml.parser.ExpressionFactory;
+import org.openflexo.foundation.fml.parser.AbstractExpressionFactory;
 import org.openflexo.foundation.fml.parser.node.Node;
 
 /**
@@ -49,11 +49,11 @@ import org.openflexo.foundation.fml.parser.node.Node;
  */
 public abstract class FMLUnaryOperatorExpressionNode<N extends Node> extends ExpressionNode<N, FMLUnaryOperatorExpression> {
 
-	public FMLUnaryOperatorExpressionNode(N astNode, ExpressionFactory expressionFactory) {
+	public FMLUnaryOperatorExpressionNode(N astNode, AbstractExpressionFactory expressionFactory) {
 		super(astNode, expressionFactory);
 	}
 
-	public FMLUnaryOperatorExpressionNode(FMLUnaryOperatorExpression expression, ExpressionFactory expressionFactory) {
+	public FMLUnaryOperatorExpressionNode(FMLUnaryOperatorExpression expression, AbstractExpressionFactory expressionFactory) {
 		super(expression, expressionFactory);
 	}
 

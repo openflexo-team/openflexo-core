@@ -39,34 +39,34 @@
 package org.openflexo.foundation.fml.parser.fmlnodes.expr;
 
 import org.openflexo.connie.expr.BinaryOperator;
+import org.openflexo.foundation.fml.expr.FMLArithmeticBinaryOperator;
 import org.openflexo.foundation.fml.expr.FMLBinaryOperatorExpression;
-import org.openflexo.foundation.fml.expr.FMLBooleanBinaryOperator;
 import org.openflexo.foundation.fml.parser.AbstractExpressionFactory;
-import org.openflexo.foundation.fml.parser.node.ALteqRelationalExp;
+import org.openflexo.foundation.fml.parser.node.AConcatenationUriExpression;
 
 /**
  * @author sylvain
  * 
  */
-public class LessThanOrEqualsExpressionNode extends FMLBinaryOperatorExpressionNode<ALteqRelationalExp> {
+public class ConcatenationExpressionNode extends FMLBinaryOperatorExpressionNode<AConcatenationUriExpression> {
 
-	public LessThanOrEqualsExpressionNode(ALteqRelationalExp astNode, AbstractExpressionFactory expressionFactory) {
+	public ConcatenationExpressionNode(AConcatenationUriExpression astNode, AbstractExpressionFactory expressionFactory) {
 		super(astNode, expressionFactory);
 	}
 
-	public LessThanOrEqualsExpressionNode(FMLBinaryOperatorExpression expression, AbstractExpressionFactory expressionFactory) {
+	public ConcatenationExpressionNode(FMLBinaryOperatorExpression expression, AbstractExpressionFactory expressionFactory) {
 		super(expression, expressionFactory);
 	}
 
 	@Override
 	public BinaryOperator getOperator() {
-		return FMLBooleanBinaryOperator.LESS_THAN_OR_EQUALS;
+		return FMLArithmeticBinaryOperator.ADDITION;
 	}
 
 	@Override
-	public LessThanOrEqualsExpressionNode deserialize() {
-		getModelObject().setLeftArgument(getExpressionFactory().getExpression(getASTNode().getShiftExpression1()));
-		getModelObject().setRightArgument(getExpressionFactory().getExpression(getASTNode().getShiftExpression2()));
+	public ConcatenationExpressionNode deserialize() {
+		getModelObject().setLeftArgument(getExpressionFactory().getExpression(getASTNode().getLeft()));
+		getModelObject().setRightArgument(getExpressionFactory().getExpression(getASTNode().getRight()));
 		super.deserialize();
 		return this;
 	}

@@ -41,7 +41,7 @@ package org.openflexo.foundation.fml.parser.fmlnodes.expr;
 import java.lang.reflect.Type;
 
 import org.openflexo.foundation.fml.expr.FMLInstanceOfExpression;
-import org.openflexo.foundation.fml.parser.ExpressionFactory;
+import org.openflexo.foundation.fml.parser.AbstractExpressionFactory;
 import org.openflexo.foundation.fml.parser.TypeFactory;
 import org.openflexo.foundation.fml.parser.node.AInstanceofRelationalExp;
 
@@ -51,11 +51,11 @@ import org.openflexo.foundation.fml.parser.node.AInstanceofRelationalExp;
  */
 public class FMLInstanceOfExpressionNode extends ExpressionNode<AInstanceofRelationalExp, FMLInstanceOfExpression> {
 
-	public FMLInstanceOfExpressionNode(AInstanceofRelationalExp astNode, ExpressionFactory expressionFactory) {
+	public FMLInstanceOfExpressionNode(AInstanceofRelationalExp astNode, AbstractExpressionFactory expressionFactory) {
 		super(astNode, expressionFactory);
 	}
 
-	public FMLInstanceOfExpressionNode(FMLInstanceOfExpression expression, ExpressionFactory expressionFactory) {
+	public FMLInstanceOfExpressionNode(FMLInstanceOfExpression expression, AbstractExpressionFactory expressionFactory) {
 		super(expression, expressionFactory);
 	}
 

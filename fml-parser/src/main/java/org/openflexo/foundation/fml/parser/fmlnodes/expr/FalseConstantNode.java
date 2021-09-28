@@ -39,7 +39,7 @@
 package org.openflexo.foundation.fml.parser.fmlnodes.expr;
 
 import org.openflexo.foundation.fml.expr.FMLConstant.BooleanConstant;
-import org.openflexo.foundation.fml.parser.ExpressionFactory;
+import org.openflexo.foundation.fml.parser.AbstractExpressionFactory;
 import org.openflexo.foundation.fml.parser.node.AFalseLiteral;
 
 /**
@@ -48,11 +48,11 @@ import org.openflexo.foundation.fml.parser.node.AFalseLiteral;
  */
 public class FalseConstantNode extends ConstantNode<AFalseLiteral, BooleanConstant> {
 
-	public FalseConstantNode(AFalseLiteral astNode, ExpressionFactory expressionFactory) {
+	public FalseConstantNode(AFalseLiteral astNode, AbstractExpressionFactory expressionFactory) {
 		super(astNode, expressionFactory);
 	}
 
-	public FalseConstantNode(BooleanConstant constant, ExpressionFactory expressionFactory) {
+	public FalseConstantNode(BooleanConstant constant, AbstractExpressionFactory expressionFactory) {
 		super(constant, expressionFactory);
 	}
 

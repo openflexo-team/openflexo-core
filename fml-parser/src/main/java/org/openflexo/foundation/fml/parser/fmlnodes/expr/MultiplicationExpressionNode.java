@@ -41,7 +41,7 @@ package org.openflexo.foundation.fml.parser.fmlnodes.expr;
 import org.openflexo.connie.expr.BinaryOperator;
 import org.openflexo.foundation.fml.expr.FMLArithmeticBinaryOperator;
 import org.openflexo.foundation.fml.expr.FMLBinaryOperatorExpression;
-import org.openflexo.foundation.fml.parser.ExpressionFactory;
+import org.openflexo.foundation.fml.parser.AbstractExpressionFactory;
 import org.openflexo.foundation.fml.parser.node.AStarMultExp;
 
 /**
@@ -50,11 +50,11 @@ import org.openflexo.foundation.fml.parser.node.AStarMultExp;
  */
 public class MultiplicationExpressionNode extends FMLBinaryOperatorExpressionNode<AStarMultExp> {
 
-	public MultiplicationExpressionNode(AStarMultExp astNode, ExpressionFactory expressionFactory) {
+	public MultiplicationExpressionNode(AStarMultExp astNode, AbstractExpressionFactory expressionFactory) {
 		super(astNode, expressionFactory);
 	}
 
-	public MultiplicationExpressionNode(FMLBinaryOperatorExpression expression, ExpressionFactory expressionFactory) {
+	public MultiplicationExpressionNode(FMLBinaryOperatorExpression expression, AbstractExpressionFactory expressionFactory) {
 		super(expression, expressionFactory);
 	}
 
