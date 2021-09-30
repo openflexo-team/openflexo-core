@@ -117,7 +117,7 @@ public abstract class AbstractExpressionFactory extends FMLSemanticsAnalyzer {
 	}
 
 	private void registerExpressionNode(Node n, Expression e) {
-		System.out.println("REGISTER in " + this + " / " + e + " for node " + n + " as " + n.getClass());
+		// System.out.println("REGISTER in " + this + " / " + e + " for node " + n + " as " + n.getClass());
 		expressionNodes.put(n, e);
 		if (topLevel == null) {
 			topLevel = n;
