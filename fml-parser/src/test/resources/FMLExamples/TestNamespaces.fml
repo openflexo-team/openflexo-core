@@ -2,8 +2,8 @@
  * Some tests regarding namespaces
  */
 
-namespace "http://www.openflexo.org/test/" as local; 
-namespace "http://www.openflexo.org/an.other.namespace/" as ns; 
+namespace "http://www.openflexo.org/test/" as LOCAL; 
+namespace "http://www.openflexo.org/an.other.namespace/" as NS; 
 
 use org.openflexo.foundation.fml.rt.FMLRTModelSlot as FMLRT;
 use some.package.name.AModelSlot as MS;
@@ -11,9 +11,9 @@ use some.package.name.AModelSlot as MS;
 import java.lang.String as JavaString; // import java String definition as 'JavaString'
 import java.util.List; // otherwise 'as' is implicit and values last path component, here 'List'
 
-import [ns+"AnOtherModel.fml"] as AnOtherModel; // Import FML model addressed by specified URI
-import [ns+"AThirdModel.fml"]; // Import FML model addressed by specified URI, 'as' is implicit
-import [ns+"AResource":"Toto#13"] as aParticularObjectInResource; 
+import [NS+"AnOtherModel.fml"] as AnOtherModel; // Import FML model addressed by specified URI
+import [NS+"AThirdModel.fml"]; // Import FML model addressed by specified URI, 'as' is implicit
+import [NS+"AResource":"Toto#13"] as aParticularObjectInResource; 
 // Import object with id "Toto#13" in resource identified by its URI, call it 'aParticularObjectInResource'
 
 // This is the main declaration

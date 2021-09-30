@@ -191,40 +191,42 @@ public class FMLTypingSpaceDuringParsing extends AbstractFMLTypingSpace {
 			}
 			// Not found
 			// Look in imported VirtualModels
-			for (ElementImportDeclaration importDeclaration : analyser.getCompilationUnit().getElementImports()) {
-				try {
-					String resourceURI = importDeclaration.getResourceReference().getBindingValue(analyser.getCompilationUnit());
-					FlexoResource resource = analyser.getServiceManager().getResourceManager().getResource(resourceURI);
-					if (resource instanceof CompilationUnitResource) {
-						VirtualModelInfo info = ((CompilationUnitResource) resource).getVirtualModelInfo(resource.getResourceCenter());
-						if (info != null) {
-							if (info.name.equals(typeAsString)) {
-								// Found type as a VirtualModel
-								VirtualModelInstanceType vmiType = new VirtualModelInstanceType(typeAsString,
-										new VirtualModelInImportedVirtualModelFactory(getFMLTechnologyAdapter(),
-												(CompilationUnitResource) resource));
-								unresolvedTypes.add(vmiType);
-								return vmiType;
-							}
-							if (info.flexoConcepts.contains(typeAsString)) {
-								// Found type as a FlexoConcept
-								FlexoConceptInstanceType fciType = new FlexoConceptInstanceType(typeAsString,
-										new FlexoConceptInImportedVirtualModelFactory(getFMLTechnologyAdapter(),
-												(CompilationUnitResource) resource));
-								unresolvedTypes.add(fciType);
-								return fciType;
+			if (analyser.getCompilationUnit() != null) {
+				for (ElementImportDeclaration importDeclaration : analyser.getCompilationUnit().getElementImports()) {
+					try {
+						String resourceURI = importDeclaration.getResourceReference().getBindingValue(analyser.getCompilationUnit());
+						FlexoResource resource = analyser.getServiceManager().getResourceManager().getResource(resourceURI);
+						if (resource instanceof CompilationUnitResource) {
+							VirtualModelInfo info = ((CompilationUnitResource) resource).getVirtualModelInfo(resource.getResourceCenter());
+							if (info != null) {
+								if (info.name.equals(typeAsString)) {
+									// Found type as a VirtualModel
+									VirtualModelInstanceType vmiType = new VirtualModelInstanceType(typeAsString,
+											new VirtualModelInImportedVirtualModelFactory(getFMLTechnologyAdapter(),
+													(CompilationUnitResource) resource));
+									unresolvedTypes.add(vmiType);
+									return vmiType;
+								}
+								if (info.flexoConcepts.contains(typeAsString)) {
+									// Found type as a FlexoConcept
+									FlexoConceptInstanceType fciType = new FlexoConceptInstanceType(typeAsString,
+											new FlexoConceptInImportedVirtualModelFactory(getFMLTechnologyAdapter(),
+													(CompilationUnitResource) resource));
+									unresolvedTypes.add(fciType);
+									return fciType;
+								}
 							}
 						}
+					} catch (TypeMismatchException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (NullReferenceException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (ReflectiveOperationException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
 					}
-				} catch (TypeMismatchException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (NullReferenceException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (ReflectiveOperationException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
 				}
 			}
 		}
