@@ -73,6 +73,7 @@ import org.openflexo.foundation.fml.parser.node.AFullQualifiedNewInstance;
 import org.openflexo.foundation.fml.parser.node.AIdentifierLeftHandSide;
 import org.openflexo.foundation.fml.parser.node.AIdentifierPrefix;
 import org.openflexo.foundation.fml.parser.node.AIdentifierPrimary;
+import org.openflexo.foundation.fml.parser.node.ALidentifierUriExpressionPrimary;
 import org.openflexo.foundation.fml.parser.node.AMethodInvocationStatementExpression;
 import org.openflexo.foundation.fml.parser.node.AMethodPrimaryNoId;
 import org.openflexo.foundation.fml.parser.node.ANewContainmentClause;
@@ -85,6 +86,7 @@ import org.openflexo.foundation.fml.parser.node.AReferenceSuperFieldAccess;
 import org.openflexo.foundation.fml.parser.node.ASimpleNewInstance;
 import org.openflexo.foundation.fml.parser.node.ASuperFieldAccess;
 import org.openflexo.foundation.fml.parser.node.ASuperMethodInvocation;
+import org.openflexo.foundation.fml.parser.node.AUidentifierUriExpressionPrimary;
 import org.openflexo.foundation.fml.parser.node.Node;
 import org.openflexo.foundation.fml.parser.node.PCompositeIdent;
 import org.openflexo.foundation.fml.parser.node.PFieldAccess;
@@ -98,6 +100,7 @@ import org.openflexo.foundation.fml.parser.node.PPrimaryNoId;
 import org.openflexo.foundation.fml.parser.node.PStatementExpression;
 import org.openflexo.foundation.fml.parser.node.TKwSuper;
 import org.openflexo.foundation.fml.parser.node.TLidentifier;
+import org.openflexo.foundation.fml.parser.node.TUidentifier;
 
 /**
  * This class implements the semantics analyzer for a parsed {@link BindingValue}<br>
@@ -110,15 +113,15 @@ import org.openflexo.foundation.fml.parser.node.TLidentifier;
  */
 public class BindingPathFactory {
 
-	private final ExpressionFactory expressionFactory;
+	private final AbstractExpressionFactory expressionFactory;
 	private final List<AbstractBindingPathElement> path;
 	private final List<AbstractBindingPathElementNode<?, ?>> nodesPath;
 	private final Node rootNode;
 
-	public static List<AbstractBindingPathElement> makeBindingPath(Node node, ExpressionFactory expressionAnalyzer,
+	public static List<AbstractBindingPathElement> makeBindingPath(Node node, AbstractExpressionFactory expressionFactory,
 			BindingPathNode bindingPathNode) {
 
-		BindingPathFactory bindingPathFactory = new BindingPathFactory(node, expressionAnalyzer);
+		BindingPathFactory bindingPathFactory = new BindingPathFactory(node, expressionFactory);
 		bindingPathFactory.explore();
 
 		if (bindingPathNode != null) {
@@ -130,8 +133,8 @@ public class BindingPathFactory {
 		return bindingPathFactory.path;
 	}
 
-	private BindingPathFactory(Node node, ExpressionFactory expressionAnalyzer) {
-		this.expressionFactory = expressionAnalyzer;
+	private BindingPathFactory(Node node, AbstractExpressionFactory expressionFactory) {
+		this.expressionFactory = expressionFactory;
 		this.rootNode = node;
 		path = new ArrayList<>();
 		nodesPath = new ArrayList<>();
@@ -153,6 +156,12 @@ public class BindingPathFactory {
 		}
 		if (rootNode instanceof PStatementExpression) {
 			appendBindingPath((PStatementExpression) rootNode);
+		}
+		if (rootNode instanceof AUidentifierUriExpressionPrimary) {
+			appendBindingPath(((AUidentifierUriExpressionPrimary) rootNode).getUidentifier());
+		}
+		if (rootNode instanceof ALidentifierUriExpressionPrimary) {
+			appendBindingPath(((ALidentifierUriExpressionPrimary) rootNode).getLidentifier());
 		}
 	}
 
@@ -267,6 +276,14 @@ public class BindingPathFactory {
 	}
 
 	private void appendBindingPath(TLidentifier node) {
+		NormalBindingPathElementNode pathElementNode = expressionFactory.getMainAnalyzer().retrieveFMLNode(node,
+				n -> new NormalBindingPathElementNode(n, expressionFactory.getMainAnalyzer(), expressionFactory.getBindable()));
+		nodesPath.add(pathElementNode);
+		NormalBindingPathElement pathElement = pathElementNode.buildModelObjectFromAST(node);
+		path.add(pathElement);
+	}
+
+	private void appendBindingPath(TUidentifier node) {
 		NormalBindingPathElementNode pathElementNode = expressionFactory.getMainAnalyzer().retrieveFMLNode(node,
 				n -> new NormalBindingPathElementNode(n, expressionFactory.getMainAnalyzer(), expressionFactory.getBindable()));
 		nodesPath.add(pathElementNode);

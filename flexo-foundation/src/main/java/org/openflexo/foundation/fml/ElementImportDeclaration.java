@@ -176,8 +176,7 @@ public interface ElementImportDeclaration extends FMLPrettyPrintable {
 		@Override
 		public void setResourceReference(DataBinding<String> resourceReference) {
 			if (resourceReference != null) {
-				this.resourceReference = new DataBinding<String>(resourceReference.toString(), this, String.class,
-						DataBinding.BindingDefinitionType.GET);
+				this.resourceReference = resourceReference;
 				this.resourceReference.setBindingName("resourceReference");
 				this.resourceReference.setMandatory(true);
 			}
@@ -199,8 +198,7 @@ public interface ElementImportDeclaration extends FMLPrettyPrintable {
 		@Override
 		public void setObjectReference(DataBinding<String> objectReference) {
 			if (objectReference != null) {
-				this.objectReference = new DataBinding<String>(objectReference.toString(), this, String.class,
-						DataBinding.BindingDefinitionType.GET);
+				this.objectReference = objectReference;
 				this.objectReference.setBindingName("objectReference");
 				this.objectReference.setMandatory(true);
 			}
@@ -296,7 +294,8 @@ public interface ElementImportDeclaration extends FMLPrettyPrintable {
 					FlexoResource<?> resource = serviceManager.getResourceManager().getResource(resourceURI);
 					if (resource != null) {
 
-						ResourceData<?> resourceData = resource.getResourceData();
+						// We should have already loaded this resource, otherwise it means that this resource was a cross reference
+						ResourceData<?> resourceData = resource.getLoadedResourceData();
 
 						/*if (resourceData instanceof FMLCompilationUnit) {
 							return ((FMLCompilationUnit) resourceData).getVirtualModel();

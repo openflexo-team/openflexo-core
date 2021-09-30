@@ -38,6 +38,7 @@
 
 package org.openflexo.foundation.fml.rm;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.openflexo.connie.Bindable;
@@ -52,6 +53,7 @@ import org.openflexo.foundation.fml.rt.rm.FMLRTVirtualModelInstanceResource;
 import org.openflexo.foundation.resource.DirectoryContainerResource;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.resource.PamelaResource;
+import org.openflexo.foundation.resource.ResourceWithPotentialCrossReferences;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterResource;
 import org.openflexo.pamela.annotations.Adder;
@@ -69,8 +71,9 @@ import org.openflexo.pamela.annotations.Setter;
  */
 @ModelEntity
 // @ImplementationClass(CompilationUnitResourceImpl.class)
-public interface CompilationUnitResource extends PamelaResource<FMLCompilationUnit, FMLModelFactory>,
-		DirectoryContainerResource<FMLCompilationUnit>, TechnologyAdapterResource<FMLCompilationUnit, FMLTechnologyAdapter> {
+public interface CompilationUnitResource
+		extends PamelaResource<FMLCompilationUnit, FMLModelFactory>, DirectoryContainerResource<FMLCompilationUnit>,
+		TechnologyAdapterResource<FMLCompilationUnit, FMLTechnologyAdapter>, ResourceWithPotentialCrossReferences<FMLCompilationUnit> {
 
 	public static final String VIRTUAL_MODEL_LIBRARY = "virtualModelLibrary";
 	public static final String CONTAINED_VMI = "containedVMI";
@@ -176,17 +179,20 @@ public interface CompilationUnitResource extends PamelaResource<FMLCompilationUn
 
 	public String getRawSource();
 
-	public <I> VirtualModelInfo findVirtualModelInfo(FlexoResourceCenter<I> resourceCenter);
+	public <I> VirtualModelInfo getVirtualModelInfo(FlexoResourceCenter<I> resourceCenter);
 
 	public static class VirtualModelInfo {
 		public String uri;
 		public String version;
 		public String name;
-		// public String modelVersion;
+		public List<String> dependencies;
+		public List<String> flexoConcepts;
 		public String requiredModelSlotList;
 		public String virtualModelClassName;
 
 		public VirtualModelInfo() {
+			dependencies = new ArrayList<>();
+			flexoConcepts = new ArrayList<>();
 		}
 
 		public VirtualModelInfo(String uri, String version, String name/*, String modelVersion*/, String requiredModelSlotList,

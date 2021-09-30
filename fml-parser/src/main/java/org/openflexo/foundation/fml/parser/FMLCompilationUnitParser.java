@@ -170,7 +170,8 @@ public class FMLCompilationUnitParser {
 			// Apply the semantics analyzer.
 			if (tree != null) {
 				tree.apply(semanticsAnalyzer);
-				semanticsAnalyzer.finalizeDeserialization();
+				// Do it in second pass
+				// semanticsAnalyzer.finalizeDeserialization();
 			}
 
 			return semanticsAnalyzer.getCompilationUnit();
@@ -216,8 +217,7 @@ public class FMLCompilationUnitParser {
 			MainSemanticsAnalyzer analyzer = new MainSemanticsAnalyzer(modelFactory, tree, rawSource);
 
 			// Find infos
-			VirtualModelInfoExplorer e = new VirtualModelInfoExplorer(analyzer);
-			tree.apply(e);
+			VirtualModelInfoExplorer e = new VirtualModelInfoExplorer(tree, analyzer);
 
 			return e.getVirtualModelInfo();
 		} catch (ParserException e) {

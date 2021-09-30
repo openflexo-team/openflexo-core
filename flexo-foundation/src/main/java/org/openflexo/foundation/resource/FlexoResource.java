@@ -383,10 +383,8 @@ public interface FlexoResource<RD extends ResourceData<RD>> extends FlexoObject,
 	public void setResourceData(RD resourceData);
 
 	/**
-	 * Load the &quot;real&quot; load resource data of this resource.
+	 * Load resource data of this resource.
 	 * 
-	 * @param progress
-	 *            a progress monitor in case the resource data is not immediately available.
 	 * @return the resource data.
 	 * @throws ResourceLoadingCancelledException
 	 * @throws ResourceDependencyLoopException

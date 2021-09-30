@@ -101,11 +101,36 @@ public abstract class FlexoResourceImpl<RD extends ResourceData<RD>> extends Fle
 		return getIODelegate() != null && getIODelegate().exists();
 	}
 
+	protected List<ResourceWithPotentialCrossReferences<?>> getCrossReferenceDependencies() {
+		List<ResourceWithPotentialCrossReferences<?>> returned = new ArrayList<>();
+		for (FlexoResource<?> dependency : getDependencies()) {
+			appendCrossReferenceDependencies(dependency, returned);
+		}
+		return returned;
+	}
+
+	protected void appendCrossReferenceDependencies(FlexoResource<?> dependency, List<ResourceWithPotentialCrossReferences<?>> l) {
+		if (!l.contains(dependency) && dependency instanceof ResourceWithPotentialCrossReferences && dependency != this) {
+			l.add((ResourceWithPotentialCrossReferences) dependency);
+			for (FlexoResource<?> d2 : dependency.getDependencies()) {
+				appendCrossReferenceDependencies(d2, l);
+			}
+		}
+	}
+
+	protected List<FlexoResource<?>> getNonCrossReferenceDependencies() {
+		List<FlexoResource<?>> returned = new ArrayList<>();
+		for (FlexoResource<?> dependency : getDependencies()) {
+			if (!(dependency instanceof ResourceWithPotentialCrossReferences)) {
+				returned.add(dependency);
+			}
+		}
+		return returned;
+	}
+
 	/**
 	 * Returns the &quot;real&quot; resource data of this resource. This may cause the loading of the resource data.
 	 * 
-	 * @param progress
-	 *            a progress monitor in case the resource data is not immediately available.
 	 * @return the resource data.
 	 * @throws ResourceLoadingCancelledException
 	 */
@@ -120,17 +145,21 @@ public abstract class FlexoResourceImpl<RD extends ResourceData<RD>> extends Fle
 			return null;
 		}
 		if (isLoading()) {
-			if (getServiceManager() != null) {
-				getServiceManager().getResourceManager().crossReferencesLoadingSchemeDetected(this);
-			}
-			else {
-				logger.warning("Resource " + this + " does not refer to any ServiceManager. Please investigate...");
-			}
+			// Avoid stack overflow, but this should never happen
+			logger.warning("Preventing StackOverflow while loading resource " + this);
+			Thread.dumpStack();
 			return resourceData;
-			// throw new CrossReferencesResourceLoadingException(this);
 		}
+
 		if (resourceData == null && isLoadable() && !isLoading()) {
 			// The resourceData is null, we try to load it
+
+			// Now load the non cross-reference dependencies
+			for (FlexoResource<?> dependency : getNonCrossReferenceDependencies()) {
+				dependency.loadResourceData();
+			}
+
+			// Then really load
 			setLoading(true);
 			resourceData = loadResourceData();
 			setLoading(false);
@@ -633,6 +662,7 @@ public abstract class FlexoResourceImpl<RD extends ResourceData<RD>> extends Fle
 		return returned;
 	}
 
+	@Override
 	public String computeDefaultURI() {
 		return getResourceCenter().getDefaultResourceURI(this);
 	}

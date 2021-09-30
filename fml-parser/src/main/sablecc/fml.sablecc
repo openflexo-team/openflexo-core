@@ -448,9 +448,20 @@ Productions
      ;
 
    reference_by_uri =
-       {resource} l_bkt [resource]:expression r_bkt
-     | {object_in_resource} l_bkt [resource]:expression colon [object]:expression r_bkt
+       {resource} l_bkt [resource]:uri_expression r_bkt
+     | {object_in_resource} l_bkt [resource]:uri_expression colon [object]:uri_expression r_bkt
      ;
+ 
+   uri_expression_primary =
+       {lidentifier} lidentifier 
+     | {uidentifier} uidentifier 
+     | {litteral} lit_string
+     ; 
+
+   uri_expression =
+       {primary} uri_expression_primary 
+     | {concatenation} [left]:uri_expression plus [right]:uri_expression_primary
+     ; 
 
    annotation =
        {basic_annotation} at [identifier]:composite_tident
@@ -476,7 +487,7 @@ Productions
      | {upper} uidentifier
      ;
    
-   namespace_decl = kw_namespace [string_literal]:lit_string kw_as [ns_id]:lidentifier semi;
+   namespace_decl = kw_namespace [string_literal]:lit_string kw_as [ns_id]:uidentifier semi;
 
    // --------------------------------------------------------------------------------------
    // Use declaration

@@ -76,6 +76,7 @@ import org.openflexo.foundation.fml.VirtualModelLibrary;
 import org.openflexo.foundation.fml.parser.FMLCompilationUnitParser;
 import org.openflexo.foundation.fml.parser.FMLExpressionParser;
 import org.openflexo.foundation.fml.parser.ParseException;
+import org.openflexo.foundation.fml.parser.fmlnodes.FMLCompilationUnitNode;
 import org.openflexo.foundation.fml.rt.FMLRTTechnologyAdapter;
 import org.openflexo.foundation.fml.rt.rm.FMLRTVirtualModelInstanceResource;
 import org.openflexo.foundation.resource.CannotRenameException;
@@ -87,7 +88,7 @@ import org.openflexo.foundation.resource.FileWritingLock;
 import org.openflexo.foundation.resource.FlexoFileNotFoundException;
 import org.openflexo.foundation.resource.FlexoResource;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
-import org.openflexo.foundation.resource.PamelaResourceImpl;
+import org.openflexo.foundation.resource.PamelaResourceWithPotentialCrossReferencesImpl;
 import org.openflexo.foundation.resource.ResourceLoadingCancelledException;
 import org.openflexo.foundation.resource.SaveResourceException;
 import org.openflexo.foundation.resource.SaveResourcePermissionDeniedException;
@@ -118,8 +119,8 @@ import org.openflexo.xml.XMLRootElementInfo;
  * @author sylvain
  *
  */
-public abstract class CompilationUnitResourceImpl extends PamelaResourceImpl<FMLCompilationUnit, FMLModelFactory>
-		implements CompilationUnitResource {
+public abstract class CompilationUnitResourceImpl
+		extends PamelaResourceWithPotentialCrossReferencesImpl<FMLCompilationUnit, FMLModelFactory> implements CompilationUnitResource {
 
 	private static final Logger logger = Logger.getLogger(CompilationUnitResourceImpl.class.getPackage().getName());
 
@@ -307,6 +308,12 @@ public abstract class CompilationUnitResourceImpl extends PamelaResourceImpl<FML
 
 	private boolean isLoading;
 
+	@Override
+	public void finalizeLoadResourceData() throws ResourceLoadingCancelledException, FileNotFoundException, FlexoException {
+		FMLCompilationUnitNode cuNode = (FMLCompilationUnitNode) getLoadedResourceData().getPrettyPrintDelegate();
+		cuNode.getAnalyser().finalizeDeserialization();
+	}
+
 	/**
 	 * Load the &quot;real&quot; load resource data of this resource.
 	 * 
@@ -318,16 +325,12 @@ public abstract class CompilationUnitResourceImpl extends PamelaResourceImpl<FML
 	 * @throws FileNotFoundException
 	 */
 	@Override
-	public FMLCompilationUnit loadResourceData() throws FlexoFileNotFoundException, IOFlexoException, InvalidXMLException,
+	public FMLCompilationUnit initializeLoadResourceData() throws FlexoFileNotFoundException, IOFlexoException, InvalidXMLException,
 			InconsistentDataException, InvalidModelDefinitionException {
 
 		if (isLoaded()) {
 			return resourceData;
 		}
-
-		logger.info("*************** Loading " + getName() + " uri=" + getURI());
-
-		// System.out.println("File: " + getIODelegate().getSerializationArtefact());
 
 		setLoading(true);
 
@@ -1009,8 +1012,17 @@ public abstract class CompilationUnitResourceImpl extends PamelaResourceImpl<FML
 		}
 	}
 
+	private VirtualModelInfo virtualModelInfo;
+
 	@Override
-	public <I> VirtualModelInfo findVirtualModelInfo(FlexoResourceCenter<I> resourceCenter) {
+	public <I> VirtualModelInfo getVirtualModelInfo(FlexoResourceCenter<I> resourceCenter) {
+		if (virtualModelInfo == null) {
+			virtualModelInfo = findVirtualModelInfo(resourceCenter);
+		}
+		return virtualModelInfo;
+	}
+
+	private <I> VirtualModelInfo findVirtualModelInfo(FlexoResourceCenter<I> resourceCenter) {
 		if (resourceCenter instanceof FlexoProject) {
 			resourceCenter = ((FlexoProject<I>) resourceCenter).getDelegateResourceCenter();
 		}
@@ -1050,6 +1062,7 @@ public abstract class CompilationUnitResourceImpl extends PamelaResourceImpl<FML
 				else {
 					// Retrieve infos from FML file
 					returned = retrieveInfoFromFML(resourceCenter);
+					break;
 				}
 			case FML:
 				returned = retrieveInfoFromFML(resourceCenter);
@@ -1083,6 +1096,7 @@ public abstract class CompilationUnitResourceImpl extends PamelaResourceImpl<FML
 			metaDataManager.setProperty("virtualModelClassName", returned.virtualModelClassName, file, false);
 
 			metaDataManager.saveMetaDataProperties(file);
+			System.out.println("********* On sauve les infos pour " + this);
 		}
 
 		return returned;
@@ -1133,10 +1147,12 @@ public abstract class CompilationUnitResourceImpl extends PamelaResourceImpl<FML
 
 	private <I> VirtualModelInfo retrieveInfoFromFML(FlexoResourceCenter<I> resourceCenter) {
 
+		System.out.println("***** On cherche les infos pour " + this);
 		InputStream inputStream = getInputStream();
 		try {
 			return getFMLParser().findVirtualModelInfo(inputStream, getFactory());
 		} catch (ParseException e) {
+			e.printStackTrace();
 			System.out.println("ParseException while reading " + getIODelegate().getSerializationArtefact());
 			return null;
 		} catch (IOException e) {

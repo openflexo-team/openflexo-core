@@ -100,7 +100,7 @@ import org.openflexo.toolbox.StringUtils;
 
 @ModelEntity
 @ImplementationClass(FMLCompilationUnit.FMLCompilationUnitImpl.class)
-public interface FMLCompilationUnit extends FMLObject, FMLPrettyPrintable, ResourceData<FMLCompilationUnit> {
+public interface FMLCompilationUnit extends FMLObject, FMLPrettyPrintable, ResourceData<FMLCompilationUnit>, BindingEvaluationContext {
 
 	public static final String RESOURCE = "resource";
 	@PropertyIdentifier(type = FlexoVersion.class)
@@ -1131,6 +1131,27 @@ public interface FMLCompilationUnit extends FMLObject, FMLPrettyPrintable, Resou
 			System.out.println("Added java import " + javaImportDeclaration);
 			Thread.dumpStack();
 		}*/
+
+		/**
+		 * Implements evaluator in the context of URI resolving in imports
+		 */
+		@Override
+		public ExpressionEvaluator getEvaluator() {
+			return new FMLExpressionEvaluator(this);
+		}
+
+		/**
+		 * Implements BindingEvaluationContext in the context of URI resolving in imports
+		 */
+		@Override
+		public Object getValue(BindingVariable variable) {
+			if (variable instanceof NamespaceBindingVariable) {
+				return ((NamespaceBindingVariable) variable).getNamespaceDeclaration().getValue();
+			}
+
+			logger.warning("Unexpected BindingVariable " + variable + " of " + variable.getClass());
+			return null;
+		}
 
 	}
 

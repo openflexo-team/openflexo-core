@@ -39,9 +39,11 @@
 package org.openflexo.foundation.fml.parser.fmlnodes;
 
 import org.openflexo.connie.DataBinding;
+import org.openflexo.connie.DataBinding.BindingDefinitionType;
 import org.openflexo.foundation.fml.ElementImportDeclaration;
 import org.openflexo.foundation.fml.parser.FMLObjectNode;
 import org.openflexo.foundation.fml.parser.MainSemanticsAnalyzer;
+import org.openflexo.foundation.fml.parser.URIExpressionFactory;
 import org.openflexo.foundation.fml.parser.node.ANamedUriImportImportDecl;
 import org.openflexo.foundation.fml.parser.node.AObjectInResourceReferenceByUri;
 import org.openflexo.foundation.fml.parser.node.AResourceReferenceByUri;
@@ -89,11 +91,18 @@ public class ElementImportNode extends FMLObjectNode<PImportDecl, ElementImportD
 			returned.setAbbrev(getText(((ANamedUriImportImportDecl) astNode).getName()));
 		}
 		if (ref instanceof AObjectInResourceReferenceByUri) {
-			returned.setResourceReference(new DataBinding(getText(((AObjectInResourceReferenceByUri) ref).getResource())));
-			returned.setObjectReference(new DataBinding(getText(((AObjectInResourceReferenceByUri) ref).getObject())));
+			DataBinding<String> resourceReference = URIExpressionFactory.makeDataBinding(
+					((AObjectInResourceReferenceByUri) ref).getResource(), returned, BindingDefinitionType.GET, Object.class, getAnalyser(),
+					this);
+			returned.setResourceReference(resourceReference);
+			DataBinding<String> objectReference = URIExpressionFactory.makeDataBinding(((AObjectInResourceReferenceByUri) ref).getObject(),
+					returned, BindingDefinitionType.GET, Object.class, getAnalyser(), this);
+			returned.setObjectReference(objectReference);
 		}
 		if (ref instanceof AResourceReferenceByUri) {
-			returned.setResourceReference(new DataBinding(getText(((AResourceReferenceByUri) ref).getResource())));
+			DataBinding<String> resourceReference = URIExpressionFactory.makeDataBinding(((AResourceReferenceByUri) ref).getResource(),
+					returned, BindingDefinitionType.GET, Object.class, getAnalyser(), this);
+			returned.setResourceReference(resourceReference);
 		}
 		return returned;
 	}

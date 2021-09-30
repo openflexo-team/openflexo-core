@@ -46,9 +46,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
+import org.openflexo.connie.exception.NullReferenceException;
+import org.openflexo.connie.exception.TypeMismatchException;
 import org.openflexo.connie.type.CustomType;
 import org.openflexo.connie.type.UnresolvedType;
 import org.openflexo.foundation.fml.AbstractFMLTypingSpace;
+import org.openflexo.foundation.fml.ElementImportDeclaration;
 import org.openflexo.foundation.fml.FMLCompilationUnit;
 import org.openflexo.foundation.fml.FMLTechnologyAdapter;
 import org.openflexo.foundation.fml.FlexoConcept;
@@ -64,6 +67,9 @@ import org.openflexo.foundation.fml.parser.fmlnodes.FlexoConceptNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.VirtualModelNode;
 import org.openflexo.foundation.fml.parser.node.AConceptDecl;
 import org.openflexo.foundation.fml.parser.node.AModelDecl;
+import org.openflexo.foundation.fml.rm.CompilationUnitResource;
+import org.openflexo.foundation.fml.rm.CompilationUnitResource.VirtualModelInfo;
+import org.openflexo.foundation.resource.FlexoResource;
 import org.openflexo.logging.FlexoLogger;
 
 /**
@@ -171,16 +177,55 @@ public class FMLTypingSpaceDuringParsing extends AbstractFMLTypingSpace {
 	public Type resolveType(String typeAsString) {
 		Type returned = super.resolveType(typeAsString);
 		if (returned instanceof UnresolvedType) {
-			// Try to match a VirtualModel
+			// Try to match a VirtualModel in this ExecutionUnit
 			if (foundVirtualModels.get(typeAsString) != null) {
 				VirtualModelInstanceType vmiType = new VirtualModelInstanceType(typeAsString, VIRTUAL_MODEL_INSTANCE_TYPE_FACTORY);
 				unresolvedTypes.add(vmiType);
 				return vmiType;
 			}
+			// Or a FlexoConcept in this ExecutionUnit
 			else if (foundConcepts.get(typeAsString) != null) {
 				FlexoConceptInstanceType fciType = new FlexoConceptInstanceType(typeAsString, FLEXO_CONCEPT_INSTANCE_TYPE_FACTORY);
 				unresolvedTypes.add(fciType);
 				return fciType;
+			}
+			// Not found
+			// Look in imported VirtualModels
+			for (ElementImportDeclaration importDeclaration : analyser.getCompilationUnit().getElementImports()) {
+				try {
+					String resourceURI = importDeclaration.getResourceReference().getBindingValue(analyser.getCompilationUnit());
+					FlexoResource resource = analyser.getServiceManager().getResourceManager().getResource(resourceURI);
+					if (resource instanceof CompilationUnitResource) {
+						VirtualModelInfo info = ((CompilationUnitResource) resource).getVirtualModelInfo(resource.getResourceCenter());
+						if (info != null) {
+							if (info.name.equals(typeAsString)) {
+								// Found type as a VirtualModel
+								VirtualModelInstanceType vmiType = new VirtualModelInstanceType(typeAsString,
+										new VirtualModelInImportedVirtualModelFactory(getFMLTechnologyAdapter(),
+												(CompilationUnitResource) resource));
+								unresolvedTypes.add(vmiType);
+								return vmiType;
+							}
+							if (info.flexoConcepts.contains(typeAsString)) {
+								// Found type as a FlexoConcept
+								FlexoConceptInstanceType fciType = new FlexoConceptInstanceType(typeAsString,
+										new FlexoConceptInImportedVirtualModelFactory(getFMLTechnologyAdapter(),
+												(CompilationUnitResource) resource));
+								unresolvedTypes.add(fciType);
+								return fciType;
+							}
+						}
+					}
+				} catch (TypeMismatchException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (NullReferenceException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (ReflectiveOperationException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
 		}
 		return returned;
@@ -222,7 +267,7 @@ public class FMLTypingSpaceDuringParsing extends AbstractFMLTypingSpace {
 		@Override
 		public void inAModelDecl(AModelDecl node) {
 			super.inAModelDecl(node);
-			System.out.println("Trouve le VirtualModel " + node.getUidentifier());
+			// Found VirtualModel
 			foundVirtualModels.put(node.getUidentifier().getText(), node);
 		}
 
@@ -234,13 +279,69 @@ public class FMLTypingSpaceDuringParsing extends AbstractFMLTypingSpace {
 		@Override
 		public void inAConceptDecl(AConceptDecl node) {
 			super.inAConceptDecl(node);
-			System.out.println("Trouve le FlexoConcept " + node.getUidentifier());
+			// Found FlexoConcept
 			foundConcepts.put(node.getUidentifier().getText(), node);
 		}
 
 		@Override
 		public void outAConceptDecl(AConceptDecl node) {
 			super.outAConceptDecl(node);
+		}
+
+	}
+
+	/**
+	 * A Factory used to resolve a {@link FlexoConceptInstanceType} where {@link FlexoConcept} was found in an imported {@link VirtualModel}
+	 * 
+	 * @author sylvain
+	 *
+	 */
+	class FlexoConceptInImportedVirtualModelFactory extends DefaultFlexoConceptInstanceTypeFactory {
+
+		private CompilationUnitResource compilationUnitResource;
+
+		public FlexoConceptInImportedVirtualModelFactory(FMLTechnologyAdapter technologyAdapter,
+				CompilationUnitResource compilationUnitResource) {
+			super(technologyAdapter);
+			this.compilationUnitResource = compilationUnitResource;
+		}
+
+		@Override
+		public FlexoConcept resolveFlexoConcept(FlexoConceptInstanceType typeToResolve) {
+			// System.out.println("Resolving FlexoConcept " + typeToResolve + " in " + compilationUnitResource);
+			if (compilationUnitResource.getLoadedResourceData() != null) {
+				// System.out.println("Resolved " + typeToResolve);
+				return compilationUnitResource.getLoadedResourceData().getVirtualModel().getFlexoConcept(typeToResolve.getConceptURI());
+			}
+			return null;
+		}
+
+	}
+
+	/**
+	 * A Factory used to resolve a {@link VirtualModelInstanceType} where {@link VirtualModel} was found in an imported {@link VirtualModel}
+	 * 
+	 * @author sylvain
+	 *
+	 */
+	class VirtualModelInImportedVirtualModelFactory extends DefaultVirtualModelInstanceTypeFactory {
+
+		private CompilationUnitResource compilationUnitResource;
+
+		public VirtualModelInImportedVirtualModelFactory(FMLTechnologyAdapter technologyAdapter,
+				CompilationUnitResource compilationUnitResource) {
+			super(technologyAdapter);
+			this.compilationUnitResource = compilationUnitResource;
+		}
+
+		@Override
+		public VirtualModel resolveVirtualModel(VirtualModelInstanceType typeToResolve) {
+			// System.out.println("Resolving VirtualModel " + typeToResolve + " in " + compilationUnitResource);
+			if (compilationUnitResource.getLoadedResourceData() != null) {
+				// System.out.println("Resolved " + typeToResolve);
+				return compilationUnitResource.getLoadedResourceData().getVirtualModel();
+			}
+			return null;
 		}
 
 	}

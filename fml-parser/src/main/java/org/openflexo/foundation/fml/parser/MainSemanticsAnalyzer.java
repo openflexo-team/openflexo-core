@@ -201,7 +201,10 @@ public class MainSemanticsAnalyzer extends FMLSemanticsAnalyzer {
 		return behaviourFactory;
 	}
 
-	protected final void finalizeDeserialization() {
+	/**
+	 * Perform second pass: at this stage all dependencies are resolved and parsed as first pass
+	 */
+	public final void finalizeDeserialization() {
 
 		/*System.out.println("Bon, on resout maintenant les types a resoudre");
 		for (CustomType unresolvedType : typeFactory.getUnresolvedTypes()) {

@@ -1,0 +1,19 @@
+namespace "http://openflexo.org/test/TestResourceCenter/" as RC; 
+
+import java.lang.String;
+
+import [RC+"TestCrossReferences2.fml"];
+
+@URI("http://openflexo.org/test/TestResourceCenter/TestCrossReferences1.fml")
+model TestCrossReferences1 extends TestCrossReferences2 {
+
+	concept ConceptB extends ConceptA {
+		
+		create () {
+		}
+	}
+	
+	concept ConceptC {
+	}
+
+}
