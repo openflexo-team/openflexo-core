@@ -426,10 +426,14 @@ public class FMLBindingFactory extends JavaBasedBindingFactory {
 			List<DataBinding<?>> args) {
 		if (declaringType instanceof FlexoConceptInstanceType) {
 			FlexoConcept concept = ((FlexoConceptInstanceType) declaringType).getFlexoConcept();
-			System.out.println("On cherche un constructeur " + functionName + " pour " + declaringType);
-			CreationScheme returned = (CreationScheme) concept.getFlexoBehaviour(functionName, buildArgumentList(args));
-			System.out.println("Return " + returned);
-			return returned;
+			if (concept != null) {
+				if (concept.getCreationSchemes().size() == 1 && functionName == null) {
+					// In this case, we use default constructor
+					functionName = concept.getCreationSchemes().get(0).getName();
+				}
+				CreationScheme returned = (CreationScheme) concept.getFlexoBehaviour(functionName, buildArgumentList(args));
+				return returned;
+			}
 		}
 		return super.retrieveConstructor(declaringType, innerAccess, functionName, args);
 	}

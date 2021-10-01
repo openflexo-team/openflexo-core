@@ -38,6 +38,7 @@
 
 package org.openflexo.foundation.fml.parser;
 
+import java.util.Stack;
 import java.util.logging.Logger;
 
 import org.openflexo.connie.DataBinding;
@@ -93,7 +94,7 @@ public class VirtualModelInfoExplorer extends DepthFirstAdapter /*implements Bin
 				String importedResourceURI = importDeclaration.getResourceReference().getBindingValue(compilationUnit);
 				// System.out.println("Found import " + importedResourceURI);
 				if (StringUtils.isNotEmpty(importedResourceURI)) {
-					info.dependencies.add(importedResourceURI);
+					info.addToDependencies(importedResourceURI);
 				}
 				else {
 					logger.warning("Cannot not find resource identified by " + importDeclaration.getResourceReference());
@@ -127,13 +128,26 @@ public class VirtualModelInfoExplorer extends DepthFirstAdapter /*implements Bin
 	@Override
 	public void inAModelDecl(AModelDecl node) {
 		super.inAModelDecl(node);
-		info.name = node.getUidentifier().getText();
+		info.setName(node.getUidentifier().getText());
 	}
+
+	private Stack<String> conceptsStack = new Stack<>();
 
 	@Override
 	public void inAConceptDecl(AConceptDecl node) {
 		super.inAConceptDecl(node);
-		info.flexoConcepts.add(node.getUidentifier().getText());
+		String conceptName = node.getUidentifier().getText();
+		if (!conceptsStack.isEmpty()) {
+			conceptName = conceptsStack.peek() + "#" + conceptName;
+		}
+		conceptsStack.push(conceptName);
+		info.addToFlexoConcepts(conceptName);
+	}
+
+	@Override
+	public void outAConceptDecl(AConceptDecl node) {
+		super.outAConceptDecl(node);
+		conceptsStack.pop();
 	}
 
 	@Override
@@ -149,10 +163,10 @@ public class VirtualModelInfoExplorer extends DepthFirstAdapter /*implements Bin
 				text = text.substring(1, text.length() - 1);
 			}
 			if (key.equalsIgnoreCase(VirtualModel.URI_KEY)) {
-				info.uri = text;
+				info.setURI(text);
 			}
-			if (key.equals(VirtualModel.VERSION_KEY)) {
-				info.version = text;
+			if (key.equalsIgnoreCase(VirtualModel.VERSION_KEY)) {
+				info.setVersion(text);
 			}
 		}
 
@@ -160,13 +174,11 @@ public class VirtualModelInfoExplorer extends DepthFirstAdapter /*implements Bin
 
 	@Override
 	public void inAUseDecl(AUseDecl node) {
-		// TODO Auto-generated method stub
 		super.inAUseDecl(node);
 		Class<? extends ModelSlot<?>> modelSlotClass = null;
 		try {
 			modelSlotClass = (Class<? extends ModelSlot<?>>) Class.forName(analyzer.makeFullQualifiedIdentifier(node.getIdentifier()));
-			info.requiredModelSlotList = (info.requiredModelSlotList == null ? modelSlotClass.getName()
-					: info.requiredModelSlotList + "," + modelSlotClass.getName());
+			info.addToRequiredModelSlot(modelSlotClass.getName());
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
 		}

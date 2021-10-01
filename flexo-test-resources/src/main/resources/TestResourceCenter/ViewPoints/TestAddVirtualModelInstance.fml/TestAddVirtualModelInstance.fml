@@ -8,6 +8,6 @@ public model TestAddVirtualModelInstance {
 	VM vm with ModelInstance();
 
 	create::createInstance () {
-		vm = new VM() with (virtualModelInstanceName = "myVMInstance");
+		vm = new VM("foo") with (virtualModelInstanceName = "myVMInstance");
 	}
 }

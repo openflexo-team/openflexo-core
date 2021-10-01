@@ -165,14 +165,21 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 	public void setName(String name) throws InvalidNameException;
 
 	/**
-	 * Return the URI of the {@link NamedFMLObject}<br>
-	 * The convention for URI are following: <viewpoint_uri>/<virtual_model_name>#<flexo_concept_name>.<behaviour_name> <br>
+	 * Return the URI of this {@link FlexoConcept}<br>
+	 * The convention for URI are following: <container_virtual_model_uri>/<virtual_model_name >#<flexo_concept_name>.<behaviour_name>
 	 * eg<br>
-	 * http://www.mydomain.org/MyViewPoint/MyVirtualModel#MyFlexoConcept.MyBehaviour
+	 * http://www.mydomain.org/MyVirtuaModel1/MyVirtualModel2#MyFlexoConcept.MyProperty
+	 * http://www.mydomain.org/MyVirtuaModel1/MyVirtualModel2#MyFlexoConcept.MyBehaviour
+	 * http://www.mydomain.org/MyVirtuaModel1/MyVirtualModel2#MyFlexoConcept#AnInnerConcept.MyBehaviour
 	 * 
 	 * @return String representing unique URI of this object
 	 */
 	public String getURI();
+
+	/**
+	 * Return local URI of this {@link FlexoConcept} (URI in the context of owning {@link VirtualModel}
+	 */
+	public String getLocalURI();
 
 	@Getter(value = VISIBILITY_KEY, defaultValue = "Default")
 	@XMLAttribute
@@ -870,20 +877,35 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 		}
 
 		/**
-		 * Return the URI of the {@link FlexoConcept}<br>
+		 * Return the URI of this {@link FlexoConcept}<br>
 		 * The convention for URI are following: <container_virtual_model_uri>/<virtual_model_name >#<flexo_concept_name>.<behaviour_name>
 		 * eg<br>
 		 * http://www.mydomain.org/MyVirtuaModel1/MyVirtualModel2#MyFlexoConcept.MyProperty
 		 * http://www.mydomain.org/MyVirtuaModel1/MyVirtualModel2#MyFlexoConcept.MyBehaviour
+		 * http://www.mydomain.org/MyVirtuaModel1/MyVirtualModel2#MyFlexoConcept#AnInnerConcept.MyBehaviour
 		 * 
 		 * @return String representing unique URI of this object
 		 */
 		@Override
 		public String getURI() {
+			if (getContainerFlexoConcept() != null) {
+				return getContainerFlexoConcept().getURI() + "#" + getName();
+			}
 			if (getOwningVirtualModel() != null) {
 				return getOwningVirtualModel().getURI() + "#" + getName();
 			}
 			return "null#" + getName();
+		}
+
+		/**
+		 * Return local URI of this {@link FlexoConcept} (URI in the context of owning {@link VirtualModel}
+		 */
+		@Override
+		public String getLocalURI() {
+			if (getContainerFlexoConcept() != null) {
+				return getContainerFlexoConcept().getLocalURI() + "#" + getName();
+			}
+			return getName();
 		}
 
 		@Override

@@ -285,15 +285,15 @@ public class CompilationUnitResourceFactory
 		// logger.fine("Found " + vpi.name + " uri=" + vpi.uri + " version=" + vpi.version + " " + vpi.requiredModelSlotList);
 
 		if (vpi != null) {
-			returned.setURI(vpi.uri);
-			if (StringUtils.isNotEmpty(vpi.version)) {
-				returned.setVersion(new FlexoVersion(vpi.version));
+			returned.setURI(vpi.getURI());
+			if (StringUtils.isNotEmpty(vpi.getVersion())) {
+				returned.setVersion(new FlexoVersion(vpi.getVersion()));
 			}
 			else {
 				returned.setVersion(INITIAL_REVISION);
 			}
-			if (vpi.dependencies != null) {
-				for (String dependencyURI : vpi.dependencies) {
+			if (vpi.getDependencies() != null) {
+				for (String dependencyURI : vpi.getDependencies()) {
 					FlexoResource dependency = resourceCenter.getServiceManager().getResourceManager().getResource(dependencyURI);
 					if (dependency != null) {
 						returned.addToDependencies(dependency);
@@ -305,21 +305,21 @@ public class CompilationUnitResourceFactory
 				}
 			}
 			try {
-				returned.setUsedModelSlots(vpi.requiredModelSlotList);
+				returned.setUsedModelSlots(vpi.getRequiredModelSlotListAsString());
 			} catch (ClassNotFoundException e) {
 				logger.warning("Could not find " + e.getMessage());
 			}
 			// We set a new factory because of required model slots
-			if (StringUtils.isNotEmpty(vpi.requiredModelSlotList)) {
+			if (StringUtils.isNotEmpty(vpi.getRequiredModelSlotListAsString())) {
 				returned.setFactory(makeModelFactory(returned, getTechnologyContextManager(resourceCenter.getServiceManager())));
 			}
-			if (StringUtils.isNotEmpty(vpi.virtualModelClassName)) {
+			if (StringUtils.isNotEmpty(vpi.getVirtualModelClassName())) {
 				Class<? extends VirtualModel> virtualModelClass = null;
 				try {
-					virtualModelClass = (Class<? extends VirtualModel>) Class.forName(vpi.virtualModelClassName);
+					virtualModelClass = (Class<? extends VirtualModel>) Class.forName(vpi.getVirtualModelClassName());
 					returned.setVirtualModelClass(virtualModelClass);
 				} catch (ClassNotFoundException e) {
-					logger.warning("Cannot find class " + vpi.virtualModelClassName);
+					logger.warning("Cannot find class " + vpi.getVirtualModelClassName());
 				}
 			}
 		}

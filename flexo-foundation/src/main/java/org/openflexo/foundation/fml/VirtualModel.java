@@ -763,6 +763,9 @@ public interface VirtualModel extends FlexoConcept {
 				if (flexoConcept.getName() != null && flexoConcept.getURI().equals(flexoConceptNameOrURI)) {
 					return flexoConcept;
 				}
+				if (flexoConcept.getName() != null && flexoConcept.getLocalURI().equals(flexoConceptNameOrURI)) {
+					return flexoConcept;
+				}
 			}
 
 			VirtualModel virtualModel = getVirtualModelNamed(flexoConceptNameOrURI);

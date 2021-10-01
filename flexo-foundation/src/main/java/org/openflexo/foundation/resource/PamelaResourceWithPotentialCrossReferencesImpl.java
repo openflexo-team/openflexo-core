@@ -60,6 +60,8 @@ public abstract class PamelaResourceWithPotentialCrossReferencesImpl<RD extends 
 
 	private static final Logger logger = Logger.getLogger(PamelaResourceWithPotentialCrossReferencesImpl.class.getPackage().getName());
 
+	public abstract <I> void forceUpdateDependencies(FlexoResourceCenter<I> resourceCenter);
+
 	/**
 	 * Returns the &quot;real&quot; resource data of this resource. This may cause the loading of the resource data.
 	 * 
@@ -88,8 +90,12 @@ public abstract class PamelaResourceWithPotentialCrossReferencesImpl<RD extends 
 		if (resourceData == null && isLoadable() && !isLoading()) {
 			// The resourceData is null, we try to load it
 
+			// Make sure all the dependencies are up-to-date
+			forceUpdateDependencies(getResourceCenter());
+
 			// Now load the non cross-reference dependencies
 			for (FlexoResource<?> dependency : getNonCrossReferenceDependencies()) {
+				//System.out.println("While loaading " + this + " load non cross-referenced dependency " + dependency);
 				dependency.loadResourceData();
 			}
 
@@ -103,6 +109,7 @@ public abstract class PamelaResourceWithPotentialCrossReferencesImpl<RD extends 
 
 			// Now first pass on cross-reference dependencies
 			for (ResourceWithPotentialCrossReferences<?> dependency : getCrossReferenceDependencies()) {
+				//System.out.println("While loading " + this + " load cross-referenced dependency " + dependency);
 				dependency.initializeLoadResourceData();
 			}
 

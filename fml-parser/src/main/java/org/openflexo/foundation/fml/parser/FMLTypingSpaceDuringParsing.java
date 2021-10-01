@@ -199,21 +199,28 @@ public class FMLTypingSpaceDuringParsing extends AbstractFMLTypingSpace {
 						if (resource instanceof CompilationUnitResource) {
 							VirtualModelInfo info = ((CompilationUnitResource) resource).getVirtualModelInfo(resource.getResourceCenter());
 							if (info != null) {
-								if (info.name.equals(typeAsString)) {
+								if (info.getName().equals(typeAsString)) {
 									// Found type as a VirtualModel
-									VirtualModelInstanceType vmiType = new VirtualModelInstanceType(typeAsString,
+									VirtualModelInstanceType vmiType = new VirtualModelInstanceType(info.getURI(),
 											new VirtualModelInImportedVirtualModelFactory(getFMLTechnologyAdapter(),
 													(CompilationUnitResource) resource));
 									unresolvedTypes.add(vmiType);
 									return vmiType;
 								}
-								if (info.flexoConcepts.contains(typeAsString)) {
-									// Found type as a FlexoConcept
-									FlexoConceptInstanceType fciType = new FlexoConceptInstanceType(typeAsString,
-											new FlexoConceptInImportedVirtualModelFactory(getFMLTechnologyAdapter(),
-													(CompilationUnitResource) resource));
-									unresolvedTypes.add(fciType);
-									return fciType;
+								for (String conceptLocalURI : info.getFlexoConcepts()) {
+									String conceptName = conceptLocalURI;
+									if (conceptLocalURI.contains("#")) {
+										conceptName = conceptLocalURI.substring(conceptLocalURI.lastIndexOf("#") + 1);
+									}
+
+									if (conceptLocalURI.equals(typeAsString) || conceptName.equals(typeAsString)) {
+										FlexoConceptInstanceType fciType = new FlexoConceptInstanceType(
+												info.getURI() + "#" + conceptLocalURI, new FlexoConceptInImportedVirtualModelFactory(
+														getFMLTechnologyAdapter(), (CompilationUnitResource) resource));
+										unresolvedTypes.add(fciType);
+										return fciType;
+
+									}
 								}
 							}
 						}

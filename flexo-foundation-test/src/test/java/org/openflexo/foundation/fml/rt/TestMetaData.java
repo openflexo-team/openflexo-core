@@ -39,68 +39,52 @@
 package org.openflexo.foundation.fml.rt;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 
 import java.io.FileNotFoundException;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openflexo.foundation.FlexoException;
-import org.openflexo.foundation.fml.CreationScheme;
-import org.openflexo.foundation.fml.VirtualModel;
-import org.openflexo.foundation.fml.VirtualModelLibrary;
 import org.openflexo.foundation.fml.rm.CompilationUnitResource;
-import org.openflexo.foundation.fml.rt.editionaction.AddVirtualModelInstance;
+import org.openflexo.foundation.fml.rm.CompilationUnitResource.VirtualModelInfo;
 import org.openflexo.foundation.resource.ResourceLoadingCancelledException;
 import org.openflexo.foundation.test.OpenflexoProjectAtRunTimeTestCase;
 import org.openflexo.test.OrderedRunner;
 import org.openflexo.test.TestOrder;
 
 /**
- * This unit test is intented to {@link AddVirtualModelInstance} edition action
+ * This unit test is intented to test metadata extractions
  * 
  * @author sylvain
  * 
  */
 @RunWith(OrderedRunner.class)
-public class TestAddVirtualModelInstance extends OpenflexoProjectAtRunTimeTestCase {
-
-	private static VirtualModel virtualModel;
-	private static VirtualModel containedVM;
-	private static CreationScheme creationScheme;
+public class TestMetaData extends OpenflexoProjectAtRunTimeTestCase {
 
 	@Test
 	@TestOrder(1)
 	public void testLoadVirtualModel() throws FileNotFoundException, ResourceLoadingCancelledException, FlexoException {
-
 		instanciateTestServiceManager();
-		VirtualModelLibrary vpLib = serviceManager.getVirtualModelLibrary();
-		assertNotNull(vpLib);
-		virtualModel = vpLib.getVirtualModel("http://openflexo.org/test/TestResourceCenter/TestAddVirtualModelInstance.fml");
-		assertNotNull(virtualModel);
-		assertNotNull(containedVM = virtualModel.getVirtualModelNamed("VM"));
 
-		CompilationUnitResource virtualModelResource = virtualModel.getResource();
-		CompilationUnitResource containedVMResource = containedVM.getResource();
+		CompilationUnitResource vmRes = (CompilationUnitResource) serviceManager.getResourceManager()
+				.getResource("http://openflexo.org/test/TestResourceCenter/TestMetaData.fml");
 
-		assertTrue(virtualModelResource.getDependencies().contains(containedVMResource));
+		assertNotNull(vmRes);
 
-		assertVirtualModelIsValid(virtualModel);
-		assertVirtualModelIsValid(containedVM);
+		assertFalse(vmRes.isLoaded());
 
-		System.out.println("virtualModel: " + virtualModel.getCompilationUnit().getFMLPrettyPrint());
-		assertEquals(1, virtualModel.getCompilationUnit().getElementImports().size());
-	}
+		VirtualModelInfo virtualModelInfo = vmRes.getVirtualModelInfo(vmRes.getResourceCenter());
+		System.out.println("virtualModelInfo=" + virtualModelInfo);
 
-	@Test
-	@TestOrder(2)
-	public void testPrettyPrint() {
-		System.out.println("containedVM: " + containedVM.getCompilationUnit().getFMLPrettyPrint());
-
-		assertNotNull(creationScheme = virtualModel.getCreationSchemes().get(0));
-		assertEquals("vm = new VM() with (virtualModelInstanceName = \"myVMInstance\");",
-				creationScheme.getControlGraph().getFMLPrettyPrint());
+		assertEquals("http://openflexo.org/test/TestResourceCenter/TestMetaData.fml", virtualModelInfo.getURI());
+		assertEquals("0.1", virtualModelInfo.getVersion());
+		assertEquals("TestMetaData", virtualModelInfo.getName());
+		assertEquals(
+				"http://openflexo.org/test/TestResourceCenter/TestCrossReferences1.fml,http://openflexo.org/test/TestResourceCenter/TestCrossReferences2.fml",
+				virtualModelInfo.getDependenciesListAsString());
+		assertEquals("A,A#C,A#C#E,A#D,B", virtualModelInfo.getFlexoConceptsListAsString());
 
 	}
 

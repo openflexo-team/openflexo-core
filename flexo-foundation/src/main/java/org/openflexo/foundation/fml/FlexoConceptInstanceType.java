@@ -275,11 +275,6 @@ public class FlexoConceptInstanceType implements TechnologySpecificType<FMLTechn
 		}
 	}
 
-	/*@Override
-	public void setSerializedConfiguration(String aConfiguration, ModelFactory factory) {
-		System.out.println("Tiens, faudrait que je puisse configurer " + this + " avec " + aConfiguration + " for " + factory);
-	}*/
-
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -290,7 +285,7 @@ public class FlexoConceptInstanceType implements TechnologySpecificType<FMLTechn
 		}
 		return result;
 	}
-
+	
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)

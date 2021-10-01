@@ -40,6 +40,7 @@ package org.openflexo.foundation.fml.rm;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.StringTokenizer;
 
 import org.openflexo.connie.Bindable;
 import org.openflexo.connie.ParseException;
@@ -62,6 +63,7 @@ import org.openflexo.pamela.annotations.Getter.Cardinality;
 import org.openflexo.pamela.annotations.ModelEntity;
 import org.openflexo.pamela.annotations.Remover;
 import org.openflexo.pamela.annotations.Setter;
+import org.openflexo.toolbox.StringUtils;
 
 /**
  * The resource storing a {@link FMLCompilationUnit}
@@ -182,29 +184,157 @@ public interface CompilationUnitResource
 	public <I> VirtualModelInfo getVirtualModelInfo(FlexoResourceCenter<I> resourceCenter);
 
 	public static class VirtualModelInfo {
-		public String uri;
-		public String version;
-		public String name;
-		public List<String> dependencies;
-		public List<String> flexoConcepts;
-		public String requiredModelSlotList;
-		public String virtualModelClassName;
+		private String uri;
+		private String version;
+		private String name;
+		private String requiredModelSlotListAsString;
+		private String dependenciesListAsString;
+		private String flexoConceptsListAsString;
+		private String virtualModelClassName;
+
+		private List<String> requiredModelSlots;
+		private List<String> flexoConcepts;
+		private List<String> dependencies;
 
 		public VirtualModelInfo() {
-			dependencies = new ArrayList<>();
-			flexoConcepts = new ArrayList<>();
 		}
 
-		public VirtualModelInfo(String uri, String version, String name/*, String modelVersion*/, String requiredModelSlotList,
-				String virtualModelClassName) {
+		public VirtualModelInfo(String uri, String version, String name, String requiredModelSlotList, String dependenciesList,
+				String flexoConceptsList, String virtualModelClassName) {
 			super();
 			this.uri = uri;
 			this.version = version;
 			this.name = name;
-			// this.modelVersion = modelVersion;
-			this.requiredModelSlotList = requiredModelSlotList;
+			this.requiredModelSlotListAsString = requiredModelSlotList;
+			this.dependenciesListAsString = dependenciesList;
+			this.flexoConceptsListAsString = flexoConceptsList;
 			this.virtualModelClassName = virtualModelClassName;
 		}
+
+		@Override
+		public String toString() {
+			StringBuffer sb = new StringBuffer();
+			sb.append("MetaData for " + getURI() + "\n");
+			sb.append("URI: " + getURI() + "\n");
+			sb.append("version: " + getVersion() + "\n");
+			sb.append("name: " + getName() + "\n");
+			sb.append("requiredModelSlots: " + getRequiredModelSlot() + "\n");
+			sb.append("requiredModelSlotListAsString: " + getRequiredModelSlotListAsString() + "\n");
+			sb.append("dependencies: " + getDependencies() + "\n");
+			sb.append("dependenciesListAsString: " + getDependenciesListAsString() + "\n");
+			sb.append("flexoConcepts: " + getFlexoConcepts() + "\n");
+			sb.append("flexoConceptsListAsString: " + getFlexoConceptsListAsString() + "\n");
+			sb.append("virtualModelClassName: " + getVirtualModelClassName() + "\n");
+			return sb.toString();
+		}
+
+		public String getURI() {
+			return uri;
+		}
+
+		public void setURI(String uri) {
+			this.uri = uri;
+		}
+
+		public String getVersion() {
+			return version;
+		}
+
+		public void setVersion(String version) {
+			this.version = version;
+		}
+
+		public String getName() {
+			return name;
+		}
+
+		public void setName(String name) {
+			this.name = name;
+		}
+
+		public String getVirtualModelClassName() {
+			return virtualModelClassName;
+		}
+
+		@Deprecated
+		public String getRequiredModelSlotListAsString() {
+			return requiredModelSlotListAsString;
+		}
+
+		public List<String> getRequiredModelSlot() {
+			if (requiredModelSlots == null) {
+				requiredModelSlots = new ArrayList<>();
+				if (requiredModelSlotListAsString != null) {
+					StringTokenizer st = new StringTokenizer(requiredModelSlotListAsString, ",");
+					while (st.hasMoreTokens()) {
+						requiredModelSlots.add(st.nextToken());
+					}
+				}
+			}
+			return requiredModelSlots;
+		}
+
+		public void addToRequiredModelSlot(String modelSlot) {
+			if (requiredModelSlots == null) {
+				requiredModelSlots = new ArrayList<>();
+			}
+			requiredModelSlots.add(modelSlot);
+			requiredModelSlotListAsString = (StringUtils.isNotEmpty(requiredModelSlotListAsString) ? requiredModelSlotListAsString + ","
+					: "") + modelSlot;
+		}
+
+		public String getDependenciesListAsString() {
+			return dependenciesListAsString;
+		}
+
+		public List<String> getDependencies() {
+			if (dependencies == null) {
+				dependencies = new ArrayList<>();
+				if (dependenciesListAsString != null) {
+					StringTokenizer st = new StringTokenizer(dependenciesListAsString, ",");
+					while (st.hasMoreTokens()) {
+						dependencies.add(st.nextToken());
+					}
+				}
+			}
+			return dependencies;
+		}
+
+		public void addToDependencies(String resourceURI) {
+			if (dependencies == null) {
+				dependencies = new ArrayList<>();
+			}
+			dependencies.add(resourceURI);
+			dependenciesListAsString = (StringUtils.isNotEmpty(dependenciesListAsString) ? dependenciesListAsString + "," : "")
+					+ resourceURI;
+		}
+
+		public String getFlexoConceptsListAsString() {
+			return flexoConceptsListAsString;
+		}
+
+		public List<String> getFlexoConcepts() {
+			if (flexoConcepts == null) {
+				flexoConcepts = new ArrayList<>();
+				if (flexoConceptsListAsString != null) {
+					StringTokenizer st = new StringTokenizer(flexoConceptsListAsString, ",");
+					while (st.hasMoreTokens()) {
+						flexoConcepts.add(st.nextToken());
+					}
+				}
+			}
+			return flexoConcepts;
+		}
+
+		public void addToFlexoConcepts(String conceptLocalURI) {
+			if (flexoConcepts == null) {
+				flexoConcepts = new ArrayList<>();
+			}
+			flexoConcepts.add(conceptLocalURI);
+			flexoConceptsListAsString = (StringUtils.isNotEmpty(flexoConceptsListAsString) ? flexoConceptsListAsString + "," : "")
+					+ conceptLocalURI;
+		}
+
 	}
 
 	public Expression parseExpression(String expressionAsString, Bindable bindable) throws ParseException;
