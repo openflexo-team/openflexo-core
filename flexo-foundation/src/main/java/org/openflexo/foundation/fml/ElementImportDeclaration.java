@@ -177,6 +177,7 @@ public interface ElementImportDeclaration extends FMLPrettyPrintable {
 		public void setResourceReference(DataBinding<String> resourceReference) {
 			if (resourceReference != null) {
 				this.resourceReference = resourceReference;
+				this.resourceReference.setOwner(this);
 				this.resourceReference.setBindingName("resourceReference");
 				this.resourceReference.setMandatory(true);
 			}
@@ -199,6 +200,7 @@ public interface ElementImportDeclaration extends FMLPrettyPrintable {
 		public void setObjectReference(DataBinding<String> objectReference) {
 			if (objectReference != null) {
 				this.objectReference = objectReference;
+				this.objectReference.setOwner(this);
 				this.objectReference.setBindingName("objectReference");
 				this.objectReference.setMandatory(true);
 			}
