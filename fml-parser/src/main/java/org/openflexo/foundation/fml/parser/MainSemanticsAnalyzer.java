@@ -202,6 +202,13 @@ public class MainSemanticsAnalyzer extends FMLSemanticsAnalyzer {
 	}
 
 	/**
+	 * Called at the end of the first pass : initialize pretty print
+	 */
+	public void initializePrettyPrint() {
+		compilationUnitNode.initializePrettyPrint(compilationUnitNode, compilationUnitNode.makePrettyPrintContext());
+	}
+
+	/**
 	 * Perform second pass: at this stage all dependencies are resolved and parsed as first pass
 	 */
 	public final void finalizeDeserialization() {
@@ -210,7 +217,7 @@ public class MainSemanticsAnalyzer extends FMLSemanticsAnalyzer {
 		for (CustomType unresolvedType : typeFactory.getUnresolvedTypes()) {
 			System.out.println(" > " + unresolvedType);
 		}*/
-		compilationUnitNode.initializePrettyPrint(compilationUnitNode, compilationUnitNode.makePrettyPrintContext());
+		// compilationUnitNode.initializePrettyPrint(compilationUnitNode, compilationUnitNode.makePrettyPrintContext());
 		// typeFactory.resolveUnresovedTypes();
 
 		// Now ensure load of required imports, before to resolve all types

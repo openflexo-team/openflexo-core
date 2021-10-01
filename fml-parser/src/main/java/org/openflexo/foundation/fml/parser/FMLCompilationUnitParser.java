@@ -170,6 +170,7 @@ public class FMLCompilationUnitParser {
 			// Apply the semantics analyzer.
 			if (tree != null) {
 				tree.apply(semanticsAnalyzer);
+				semanticsAnalyzer.initializePrettyPrint();
 				// Do it in second pass
 				// semanticsAnalyzer.finalizeDeserialization();
 			}
