@@ -5,7 +5,6 @@ import ["http://openflexo.org/test/TestResourceCenter/TestMatchFlexoConceptInsta
 
 @URI("http://openflexo.org/test/TestResourceCenter/TestMatchFlexoConceptInstance.fml")
 @Version("0.1")
-@description("")
 model TestMatchFlexoConceptInstance {
 
 	create::_create () {
