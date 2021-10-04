@@ -239,7 +239,9 @@ public class MainSemanticsAnalyzer extends FMLSemanticsAnalyzer {
 			}
 		}
 
-		finalizeDeserialization(compilationUnitNode);
+		if (compilationUnitNode != null) {
+			finalizeDeserialization(compilationUnitNode);
+		}
 
 	}
 
