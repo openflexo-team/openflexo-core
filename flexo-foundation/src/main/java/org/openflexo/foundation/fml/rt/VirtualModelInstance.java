@@ -1169,7 +1169,7 @@ public interface VirtualModelInstance<VMI extends VirtualModelInstance<VMI, TA>,
 			if (variable == null) {
 				return null;
 			}
-			if (variable.getVariableName().equals(FlexoConceptBindingModel.CONTAINER_PROPERTY) && getVirtualModel() != null
+			if (variable.getVariableName().equals(FlexoConceptBindingModel.CONTAINER_PROPERTY_NAME) && getVirtualModel() != null
 					&& getVirtualModel().getContainerVirtualModel() != null) {
 				return getContainerVirtualModelInstance();
 			}

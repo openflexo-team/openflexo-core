@@ -39,7 +39,8 @@
 package org.openflexo.foundation.fml.parser.fmlnodes.expr;
 
 import org.openflexo.connie.Bindable;
-import org.openflexo.connie.expr.BindingValue.MethodCallBindingPathElement;
+import org.openflexo.connie.binding.IBindingPathElement;
+import org.openflexo.connie.binding.SimpleMethodPathElement;
 import org.openflexo.foundation.fml.parser.MainSemanticsAnalyzer;
 import org.openflexo.foundation.fml.parser.node.ASuperMethodInvocation;
 
@@ -48,23 +49,32 @@ import org.openflexo.foundation.fml.parser.node.ASuperMethodInvocation;
  * 
  */
 public class SuperMethodCallBindingPathElementNode
-		extends AbstractCallBindingPathElementNode<ASuperMethodInvocation, MethodCallBindingPathElement> {
+		extends AbstractCallBindingPathElementNode<ASuperMethodInvocation, SimpleMethodPathElement<?>> {
 
-	public SuperMethodCallBindingPathElementNode(ASuperMethodInvocation astNode, MainSemanticsAnalyzer analyser, Bindable bindable) {
+	private IBindingPathElement parent;
+
+	public SuperMethodCallBindingPathElementNode(ASuperMethodInvocation astNode, MainSemanticsAnalyzer analyser, IBindingPathElement parent,
+			Bindable bindable) {
 		super(astNode, analyser, bindable);
+		this.parent = parent;
+		// buildModelObjectFromAST() was already called, but too early (parent not yet set)
+		// we do it again
+		modelObject = buildModelObjectFromAST(astNode);
 	}
 
-	public SuperMethodCallBindingPathElementNode(MethodCallBindingPathElement bindingPathElement, MainSemanticsAnalyzer analyser,
+	public SuperMethodCallBindingPathElementNode(SimpleMethodPathElement<?> bindingPathElement, MainSemanticsAnalyzer analyser,
 			Bindable bindable) {
 		super(bindingPathElement, analyser, bindable);
 	}
 
 	@Override
-	public MethodCallBindingPathElement buildModelObjectFromAST(ASuperMethodInvocation astNode) {
-		if (getBindable() != null) {
-			handleArguments(astNode.getArgumentList());
-			MethodCallBindingPathElement returned = new MethodCallBindingPathElement(astNode.getKwSuper().getText(), getArguments());
-			return returned;
+	public SimpleMethodPathElement<?> buildModelObjectFromAST(ASuperMethodInvocation astNode) {
+
+		if (parent != null && getBindable() != null) {
+			String methodName = astNode.getKwSuper().getText();
+			SimpleMethodPathElement<?> pathElement = (SimpleMethodPathElement<?>) getBindingFactory().makeSimpleMethodPathElement(parent,
+					methodName, getArguments());
+			return pathElement;
 		}
 		return null;
 	}

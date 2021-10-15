@@ -1633,13 +1633,13 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 			if (variable == null) {
 				return null;
 			}
-			if (variable.getVariableName().equals(FlexoConceptBindingModel.THIS_PROPERTY)) {
+			if (variable.getVariableName().equals(FlexoConceptBindingModel.THIS_PROPERTY_NAME)) {
 				return this;
 			}
 			else if (variable instanceof SuperBindingVariable) {
 				return getSuperReference(((SuperBindingVariable) variable).getSuperConcept());
 			}
-			else if (variable.getVariableName().equals(FlexoConceptBindingModel.CONTAINER_PROPERTY) && getFlexoConcept() != null) {
+			else if (variable.getVariableName().equals(FlexoConceptBindingModel.CONTAINER_PROPERTY_NAME) && getFlexoConcept() != null) {
 				if (getFlexoConcept().getContainerFlexoConcept() != null) {
 					return getContainerFlexoConceptInstance();
 				}
@@ -1733,8 +1733,8 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 						+ getClass());
 				return;
 			}*/
-			else if (variable.getVariableName().equals(FlexoConceptBindingModel.THIS_PROPERTY)) {
-				logger.warning("Forbidden write access " + FlexoConceptBindingModel.THIS_PROPERTY + " in " + this + " of " + getClass());
+			else if (variable.getVariableName().equals(FlexoConceptBindingModel.THIS_PROPERTY_NAME)) {
+				logger.warning("Forbidden write access " + FlexoConceptBindingModel.THIS_PROPERTY_NAME + " in " + this + " of " + getClass());
 				return;
 			}
 

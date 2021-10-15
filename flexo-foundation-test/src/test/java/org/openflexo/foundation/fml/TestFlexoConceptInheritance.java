@@ -182,7 +182,7 @@ public class TestFlexoConceptInheritance extends OpenflexoProjectAtRunTimeTestCa
 		System.out.println("ViewPoint BindingModel = " + viewPoint.getBindingModel());
 		assertNotNull(viewPoint.getBindingModel());
 		assertEquals(1, viewPoint.getBindingModel().getBindingVariablesCount());
-		assertNotNull(viewPoint.getBindingModel().bindingVariableNamed(VirtualModelBindingModel.THIS_PROPERTY));
+		assertNotNull(viewPoint.getBindingModel().bindingVariableNamed(VirtualModelBindingModel.THIS_PROPERTY_NAME));
 
 	}
 
@@ -209,12 +209,12 @@ public class TestFlexoConceptInheritance extends OpenflexoProjectAtRunTimeTestCa
 
 		assertNotNull(virtualModel.getBindingModel());
 		assertEquals(2, virtualModel.getBindingModel().getBindingVariablesCount());
-		assertNotNull(virtualModel.getBindingModel().bindingVariableNamed(VirtualModelBindingModel.THIS_PROPERTY));
-		assertNotNull(virtualModel.getBindingModel().bindingVariableNamed(VirtualModelBindingModel.CONTAINER_PROPERTY));
+		assertNotNull(virtualModel.getBindingModel().bindingVariableNamed(VirtualModelBindingModel.THIS_PROPERTY_NAME));
+		assertNotNull(virtualModel.getBindingModel().bindingVariableNamed(VirtualModelBindingModel.CONTAINER_PROPERTY_NAME));
 		assertEquals(VirtualModelInstanceType.getVirtualModelInstanceType(viewPoint),
-				virtualModel.getBindingModel().bindingVariableNamed(VirtualModelBindingModel.CONTAINER_PROPERTY).getType());
+				virtualModel.getBindingModel().bindingVariableNamed(VirtualModelBindingModel.CONTAINER_PROPERTY_NAME).getType());
 		assertEquals(VirtualModelInstanceType.getVirtualModelInstanceType(virtualModel),
-				virtualModel.getBindingModel().bindingVariableNamed(VirtualModelBindingModel.THIS_PROPERTY).getType());
+				virtualModel.getBindingModel().bindingVariableNamed(VirtualModelBindingModel.THIS_PROPERTY_NAME).getType());
 
 	}
 

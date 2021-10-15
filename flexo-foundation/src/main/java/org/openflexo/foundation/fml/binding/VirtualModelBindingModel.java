@@ -105,7 +105,7 @@ public class VirtualModelBindingModel extends FlexoConceptBindingModel {
 	protected void updateContainerBindingVariable() {
 		if (getVirtualModel().getContainerVirtualModel() != null) {
 			if (containerBindingVariable == null) {
-				containerBindingVariable = new BindingVariable(CONTAINER_PROPERTY,
+				containerBindingVariable = new BindingVariable(CONTAINER_PROPERTY_NAME,
 						getVirtualModel().getContainerVirtualModel().getInstanceType());
 				addToBindingVariables(containerBindingVariable);
 			}

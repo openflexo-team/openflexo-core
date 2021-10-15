@@ -57,12 +57,13 @@ import org.openflexo.foundation.resource.FlexoResourceCenter;
  * @author sylvain
  *
  */
-public class ResourceCenterPathElement extends SimplePathElement {
+public class ResourceCenterPathElement extends SimplePathElement<FMLNativeProperty> {
 
 	private static final Logger logger = Logger.getLogger(ResourceCenterPathElement.class.getPackage().getName());
 
 	public ResourceCenterPathElement(IBindingPathElement parent) {
-		super(parent, FMLBindingFactory.RESOURCE_CENTER, FlexoResourceCenter.class);
+		super(parent, FMLBindingFactory.RESOURCE_CENTER_PROPERTY_NAME, FlexoResourceCenter.class);
+		setProperty(FMLBindingFactory.RESOURCE_CENTER_PROPERTY);
 	}
 
 	@Override
@@ -92,6 +93,16 @@ public class ResourceCenterPathElement extends SimplePathElement {
 	public void setBindingValue(Object value, Object target, BindingEvaluationContext context)
 			throws TypeMismatchException, NullReferenceException {
 		logger.warning("Please implement me, target=" + target + " context=" + context);
+	}
+
+	@Override
+	public boolean isResolved() {
+		return true;
+	}
+
+	@Override
+	public void resolve() {
+		// Not applicable
 	}
 
 }

@@ -46,6 +46,7 @@ import java.util.logging.Logger;
 import org.openflexo.connie.type.CustomType;
 import org.openflexo.foundation.fml.AbstractFMLTypingSpace;
 import org.openflexo.foundation.fml.ElementImportDeclaration;
+import org.openflexo.foundation.fml.FMLBindingFactory;
 import org.openflexo.foundation.fml.FMLCompilationUnit;
 import org.openflexo.foundation.fml.FMLModelFactory;
 import org.openflexo.foundation.fml.FlexoRole;
@@ -110,6 +111,7 @@ public class MainSemanticsAnalyzer extends FMLSemanticsAnalyzer {
 	private final FlexoPropertyFactory propertyFactory;
 	private final FlexoBehaviourFactory behaviourFactory;
 	private final FMLFactory fmlFactory;
+	private FMLBindingFactory fmlBindingFactoryDuringDeserialization;
 	private final AbstractFMLTypingSpace typingSpace;
 
 	// Raw source as when this analyzer was last parsed
@@ -137,6 +139,7 @@ public class MainSemanticsAnalyzer extends FMLSemanticsAnalyzer {
 		fragmentManager = new FragmentManager(rawSource);
 		// typeFactory = new TypeFactory(this);
 		fmlFactory = new FMLFactory(this);
+		fmlBindingFactoryDuringDeserialization = new FMLBindingFactory(null);
 		propertyFactory = new FlexoPropertyFactory(this);
 		behaviourFactory = new FlexoBehaviourFactory(this);
 		typingSpace = new FMLTypingSpaceDuringParsing(this);
@@ -149,6 +152,13 @@ public class MainSemanticsAnalyzer extends FMLSemanticsAnalyzer {
 
 	public AbstractFMLTypingSpace getTypingSpace() {
 		return typingSpace;
+	}
+
+	public FMLBindingFactory getFMLBindingFactory() {
+		if (compilationUnit != null && compilationUnit.getVirtualModel() != null) {
+			return (FMLBindingFactory) compilationUnit.getVirtualModel().getBindingFactory();
+		}
+		return fmlBindingFactoryDuringDeserialization;
 	}
 
 	@Override

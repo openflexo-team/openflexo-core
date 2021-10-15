@@ -66,43 +66,49 @@ import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
  *
  * @param <P>
  */
-public class FlexoPropertyPathElement<P extends FlexoProperty<?>> extends SimplePathElement implements PropertyChangeListener {
+public class FlexoPropertyPathElement<P extends FlexoProperty<?>> extends SimplePathElement<P> implements PropertyChangeListener {
 
 	private static final Logger logger = Logger.getLogger(FlexoPropertyPathElement.class.getPackage().getName());
 
 	private Type lastKnownType = null;
-	private final P flexoProperty;
 
 	public FlexoPropertyPathElement(IBindingPathElement parent, P flexoProperty) {
 		super(parent, flexoProperty.getPropertyName(), flexoProperty.getResultingType());
-		this.flexoProperty = flexoProperty;
-		lastKnownType = flexoProperty.getResultingType();
+		setProperty(flexoProperty);
+	}
+
+	@Override
+	public void setProperty(P property) {
+		super.setProperty(property);
+		if (property != null) {
+			lastKnownType = property.getResultingType();
+		}
 	}
 
 	@Override
 	public void activate() {
 		super.activate();
-		if (flexoProperty != null && flexoProperty.getPropertyChangeSupport() != null) {
-			flexoProperty.getPropertyChangeSupport().addPropertyChangeListener(this);
+		if (getProperty() != null && getProperty().getPropertyChangeSupport() != null) {
+			getProperty().getPropertyChangeSupport().addPropertyChangeListener(this);
 		}
-		if (flexoProperty instanceof FlexoConceptInstanceRole && ((FlexoConceptInstanceRole) flexoProperty).getFlexoConceptType() != null) {
-			((FlexoConceptInstanceRole) flexoProperty).getFlexoConceptType().getPropertyChangeSupport().addPropertyChangeListener(this);
+		if (getProperty() instanceof FlexoConceptInstanceRole && ((FlexoConceptInstanceRole) getProperty()).getFlexoConceptType() != null) {
+			((FlexoConceptInstanceRole) getProperty()).getFlexoConceptType().getPropertyChangeSupport().addPropertyChangeListener(this);
 		}
 	}
 
 	@Override
 	public void desactivate() {
-		if (flexoProperty instanceof FlexoConceptInstanceRole && ((FlexoConceptInstanceRole) flexoProperty).getFlexoConceptType() != null) {
-			((FlexoConceptInstanceRole) flexoProperty).getFlexoConceptType().getPropertyChangeSupport().removePropertyChangeListener(this);
+		if (getProperty() instanceof FlexoConceptInstanceRole && ((FlexoConceptInstanceRole) getProperty()).getFlexoConceptType() != null) {
+			((FlexoConceptInstanceRole) getProperty()).getFlexoConceptType().getPropertyChangeSupport().removePropertyChangeListener(this);
 		}
-		if (flexoProperty != null && flexoProperty.getPropertyChangeSupport() != null) {
-			flexoProperty.getPropertyChangeSupport().removePropertyChangeListener(this);
+		if (getProperty() != null && getProperty().getPropertyChangeSupport() != null) {
+			getProperty().getPropertyChangeSupport().removePropertyChangeListener(this);
 		}
 		super.desactivate();
 	}
 
 	public P getFlexoProperty() {
-		return flexoProperty;
+		return getProperty();
 	}
 
 	/**
@@ -129,10 +135,10 @@ public class FlexoPropertyPathElement<P extends FlexoProperty<?>> extends Simple
 			return flexoConceptInstance.getFlexoConcept().getOwner().getAccessibleProperty(flexoProperty.getName());
 		}*/
 
-		if (flexoProperty == null || flexoConceptInstance == null || flexoConceptInstance.getFlexoConcept() == null) {
+		if (getProperty() == null || flexoConceptInstance == null || flexoConceptInstance.getFlexoConcept() == null) {
 			return null;
 		}
-		return flexoConceptInstance.getFlexoConcept().getAccessibleProperty(flexoProperty.getName());
+		return flexoConceptInstance.getFlexoConcept().getAccessibleProperty(getProperty().getName());
 	}
 
 	@Override
@@ -142,7 +148,7 @@ public class FlexoPropertyPathElement<P extends FlexoProperty<?>> extends Simple
 
 	@Override
 	public String getTooltipText(Type resultingType) {
-		return flexoProperty.getDescription();
+		return getProperty().getDescription();
 	}
 
 	@Override
@@ -166,7 +172,7 @@ public class FlexoPropertyPathElement<P extends FlexoProperty<?>> extends Simple
 			FlexoProperty<?> effectiveProperty = getEffectiveProperty(flexoConceptInstance);
 
 			if (effectiveProperty == null) {
-				logger.warning("Cannot find property " + flexoProperty + " in " + flexoConceptInstance);
+				logger.warning("Cannot find property " + getProperty() + " in " + flexoConceptInstance);
 			}
 
 			if (effectiveProperty != null
@@ -266,11 +272,11 @@ public class FlexoPropertyPathElement<P extends FlexoProperty<?>> extends Simple
 
 	@Override
 	public boolean isSettable() {
-		if (flexoProperty != null) {
-			if (flexoProperty.isReadOnly()) {
-				System.out.println("Not settable because of " + flexoProperty + " readonly");
+		if (getProperty() != null) {
+			if (getProperty().isReadOnly()) {
+				System.out.println("Not settable because of " + getProperty() + " readonly");
 			}
-			return !flexoProperty.isReadOnly();
+			return !getProperty().isReadOnly();
 		}
 		return super.isSettable();
 	}
@@ -287,7 +293,17 @@ public class FlexoPropertyPathElement<P extends FlexoProperty<?>> extends Simple
 	 */
 	@Override
 	public boolean isNotificationSafe() {
-		return flexoProperty.isNotificationSafe();
+		return getProperty().isNotificationSafe();
+	}
+
+	@Override
+	public boolean isResolved() {
+		return getProperty() != null;
+	}
+
+	@Override
+	public void resolve() {
+		// TODO
 	}
 
 }

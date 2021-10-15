@@ -39,7 +39,8 @@
 package org.openflexo.foundation.fml.parser.fmlnodes.expr;
 
 import org.openflexo.connie.Bindable;
-import org.openflexo.connie.expr.BindingValue.NormalBindingPathElement;
+import org.openflexo.connie.binding.IBindingPathElement;
+import org.openflexo.connie.binding.SimplePathElement;
 import org.openflexo.foundation.fml.parser.MainSemanticsAnalyzer;
 import org.openflexo.foundation.fml.parser.node.TLidentifier;
 import org.openflexo.foundation.fml.parser.node.TUidentifier;
@@ -51,19 +52,30 @@ import org.openflexo.foundation.fml.parser.node.Token;
  * @author sylvain
  * 
  */
-public class NormalBindingPathElementNode extends AbstractBindingPathElementNode<Token, NormalBindingPathElement> {
+public class SimplePathElementNode extends AbstractBindingPathElementNode<Token, SimplePathElement<?>> {
 
-	public NormalBindingPathElementNode(Token astNode, MainSemanticsAnalyzer analyser, Bindable bindable) {
+	private IBindingPathElement parent;
+
+	public SimplePathElementNode(Token astNode, MainSemanticsAnalyzer analyser, IBindingPathElement parent, Bindable bindable) {
 		super(astNode, analyser, bindable);
+		this.parent = parent;
+		// buildModelObjectFromAST() was already called, but too early (parent not yet set)
+		// we do it again
+		modelObject = buildModelObjectFromAST(astNode);
 	}
 
-	public NormalBindingPathElementNode(NormalBindingPathElement bindingPathElement, MainSemanticsAnalyzer analyser, Bindable bindable) {
+	public SimplePathElementNode(SimplePathElement<?> bindingPathElement, MainSemanticsAnalyzer analyser, Bindable bindable) {
 		super(bindingPathElement, analyser, bindable);
 	}
 
 	@Override
-	public NormalBindingPathElement buildModelObjectFromAST(Token astNode) {
-		return new NormalBindingPathElement(astNode.getText());
+	public SimplePathElement<?> buildModelObjectFromAST(Token astNode) {
+		if (parent != null && getBindable() != null) {
+			SimplePathElement<?> pathElement = getBindingFactory().makeSimplePathElement(parent, astNode.getText());
+			return pathElement;
+		}
+		return null;
+		// return new NormalBindingPathElement(astNode.getText());
 	}
 
 }

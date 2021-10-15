@@ -49,12 +49,13 @@ import org.openflexo.connie.exception.TypeMismatchException;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.localization.FlexoLocalization;
 
-public class EPIRendererPathElement extends SimplePathElement {
+public class EPIRendererPathElement extends SimplePathElement<FMLNativeProperty> {
 
 	private static final Logger logger = Logger.getLogger(EPIRendererPathElement.class.getPackage().getName());
 
 	public EPIRendererPathElement(IBindingPathElement parent) {
-		super(parent, "render", String.class);
+		super(parent, FlexoConceptBindingModel.RENDERER_PROPERTY_NAME, String.class);
+		setProperty(FlexoConceptBindingModel.RENDERER_PROPERTY);
 	}
 
 	@Override
@@ -64,7 +65,7 @@ public class EPIRendererPathElement extends SimplePathElement {
 
 	@Override
 	public String getTooltipText(Type resultingType) {
-		return FlexoLocalization.getMainLocalizer().localizedForKey("renderer");
+		return FlexoLocalization.getMainLocalizer().localizedForKey(FlexoConceptBindingModel.RENDERER_PROPERTY_NAME);
 	}
 
 	@Override
@@ -92,6 +93,16 @@ public class EPIRendererPathElement extends SimplePathElement {
 	@Override
 	public boolean isNotificationSafe() {
 		return false;
+	}
+
+	@Override
+	public boolean isResolved() {
+		return true;
+	}
+
+	@Override
+	public void resolve() {
+		// Not applicable
 	}
 
 }

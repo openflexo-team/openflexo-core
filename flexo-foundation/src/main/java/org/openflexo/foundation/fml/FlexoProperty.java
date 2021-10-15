@@ -48,6 +48,7 @@ import java.util.List;
 import org.openflexo.connie.Bindable;
 import org.openflexo.connie.BindingModel;
 import org.openflexo.connie.DataBinding;
+import org.openflexo.connie.binding.Property;
 import org.openflexo.connie.type.ParameterizedTypeImpl;
 import org.openflexo.connie.type.TypeUtils;
 import org.openflexo.foundation.InvalidNameException;
@@ -84,7 +85,7 @@ import org.openflexo.toolbox.StringUtils;
 @ImplementationClass(FlexoProperty.FlexoPropertyImpl.class)
 @Imports({ @Import(AbstractProperty.class), @Import(FlexoRole.class), @Import(ExpressionProperty.class), @Import(GetProperty.class),
 		@Import(GetSetProperty.class) })
-public abstract interface FlexoProperty<T> extends FlexoConceptObject, FMLPrettyPrintable {
+public abstract interface FlexoProperty<T> extends FlexoConceptObject, FMLPrettyPrintable, Property {
 
 	public static final String RESULTING_TYPE_PROPERTY = "resultingType";
 
@@ -133,6 +134,7 @@ public abstract interface FlexoProperty<T> extends FlexoConceptObject, FMLPretty
 	 * 
 	 * @return
 	 */
+	@Override
 	public Type getType();
 
 	/**

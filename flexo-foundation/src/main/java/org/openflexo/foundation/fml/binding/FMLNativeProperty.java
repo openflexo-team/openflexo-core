@@ -1,8 +1,9 @@
 /**
  * 
- * Copyright (c) 2019, Openflexo
+ * Copyright (c) 2013-2014, Openflexo
+ * Copyright (c) 2012-2012, AgileBirds
  * 
- * This file is part of FML-parser, a component of the software infrastructure 
+ * This file is part of Connie-core, a component of the software infrastructure 
  * developed at Openflexo.
  * 
  * 
@@ -36,30 +37,37 @@
  * 
  */
 
-package org.openflexo.foundation.fml.parser.fmlnodes.expr;
+package org.openflexo.foundation.fml.binding;
 
-import org.openflexo.connie.Bindable;
-import org.openflexo.connie.expr.BindingValue.NormalBindingPathElement;
-import org.openflexo.foundation.fml.parser.MainSemanticsAnalyzer;
-import org.openflexo.foundation.fml.parser.node.TKwSuper;
+import java.lang.reflect.Type;
+
+import org.openflexo.connie.binding.Property;
 
 /**
+ * A native property for FML semantics
+ * 
  * @author sylvain
  * 
  */
-public class SuperBindingPathElementNode extends AbstractBindingPathElementNode<TKwSuper, NormalBindingPathElement> {
+public class FMLNativeProperty implements Property {
 
-	public SuperBindingPathElementNode(TKwSuper astNode, MainSemanticsAnalyzer analyser, Bindable bindable) {
-		super(astNode, analyser, bindable);
-	}
+	private final String name;
+	private final Type type;
 
-	public SuperBindingPathElementNode(NormalBindingPathElement bindingPathElement, MainSemanticsAnalyzer analyser, Bindable bindable) {
-		super(bindingPathElement, analyser, bindable);
+	public FMLNativeProperty(String name, Type type) {
+		super();
+		this.name = name;
+		this.type = type;
 	}
 
 	@Override
-	public NormalBindingPathElement buildModelObjectFromAST(TKwSuper astNode) {
-		return new NormalBindingPathElement("super");
+	public String getName() {
+		return name;
+	}
+
+	@Override
+	public Type getType() {
+		return type;
 	}
 
 }

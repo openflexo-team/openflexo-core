@@ -46,17 +46,19 @@ import org.openflexo.connie.binding.IBindingPathElement;
 import org.openflexo.connie.binding.SimplePathElement;
 import org.openflexo.connie.exception.NullReferenceException;
 import org.openflexo.connie.exception.TypeMismatchException;
+import org.openflexo.foundation.fml.FMLBindingFactory;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.localization.FlexoLocalization;
 
-public class VirtualModelTypePathElement extends SimplePathElement {
+public class VirtualModelTypePathElement extends SimplePathElement<FMLNativeProperty> {
 
 	private static final Logger logger = Logger.getLogger(VirtualModelTypePathElement.class.getPackage().getName());
 
 	public VirtualModelTypePathElement(IBindingPathElement parent, FlexoConcept concept) {
-		super(parent, "virtualModel", VirtualModel.class);
+		super(parent, FMLBindingFactory.VIRTUAL_MODEL_PROPERTY_NAME, VirtualModel.class);
+		setProperty(FMLBindingFactory.VIRTUAL_MODEL_PROPERTY);
 	}
 
 	@Override
@@ -86,6 +88,16 @@ public class VirtualModelTypePathElement extends SimplePathElement {
 	@Override
 	public void setBindingValue(Object value, Object target, BindingEvaluationContext context)
 			throws TypeMismatchException, NullReferenceException {
+		// Not applicable
+	}
+
+	@Override
+	public boolean isResolved() {
+		return true;
+	}
+
+	@Override
+	public void resolve() {
 		// Not applicable
 	}
 

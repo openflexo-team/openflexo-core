@@ -41,7 +41,7 @@ package org.openflexo.foundation.fml.parser.fmlnodes.expr;
 import java.lang.reflect.Type;
 
 import org.openflexo.connie.Bindable;
-import org.openflexo.connie.expr.BindingValue.StaticMethodCallBindingPathElement;
+import org.openflexo.connie.binding.StaticMethodPathElement;
 import org.openflexo.foundation.fml.parser.MainSemanticsAnalyzer;
 import org.openflexo.foundation.fml.parser.TypeFactory;
 import org.openflexo.foundation.fml.parser.node.AClassMethodMethodInvocation;
@@ -51,28 +51,40 @@ import org.openflexo.foundation.fml.parser.node.AClassMethodMethodInvocation;
  * 
  */
 public class StaticMethodCallBindingPathElementNode
-		extends AbstractCallBindingPathElementNode<AClassMethodMethodInvocation, StaticMethodCallBindingPathElement> {
+		extends AbstractCallBindingPathElementNode<AClassMethodMethodInvocation, StaticMethodPathElement<?>> {
 
 	public StaticMethodCallBindingPathElementNode(AClassMethodMethodInvocation astNode, MainSemanticsAnalyzer analyser, Bindable bindable) {
 		super(astNode, analyser, bindable);
 	}
 
-	public StaticMethodCallBindingPathElementNode(StaticMethodCallBindingPathElement bindingPathElement, MainSemanticsAnalyzer analyser,
+	public StaticMethodCallBindingPathElementNode(StaticMethodPathElement<?> bindingPathElement, MainSemanticsAnalyzer analyser,
 			Bindable bindable) {
 		super(bindingPathElement, analyser, bindable);
 	}
 
 	@Override
-	public StaticMethodCallBindingPathElement buildModelObjectFromAST(AClassMethodMethodInvocation astNode) {
+	public StaticMethodPathElement<?> buildModelObjectFromAST(AClassMethodMethodInvocation astNode) {
 
 		if (getBindable() != null) {
+			handleArguments(astNode.getArgumentList());
+			Type type = TypeFactory.makeType(getASTNode().getType(), getAnalyser().getTypingSpace());
+
+			String methodName = astNode.getLidentifier().getText();
+			StaticMethodPathElement<?> pathElement = (StaticMethodPathElement<?>) getBindingFactory().makeStaticMethodPathElement(type,
+					methodName, getArguments());
+			return pathElement;
+		}
+		return null;
+
+		/*if (getBindable() != null) {
 			Type type = TypeFactory.makeType(getASTNode().getType(), getAnalyser().getTypingSpace());
 			handleArguments(astNode.getArgumentList());
 			String method = astNode.getLidentifier().getText();
 			StaticMethodCallBindingPathElement returned = new StaticMethodCallBindingPathElement(type, method, getArguments());
 			return returned;
 		}
-		return null;
+		return null;*/
+
 	}
 
 }

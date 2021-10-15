@@ -56,6 +56,8 @@ import org.openflexo.connie.binding.BindingPathElement;
 import org.openflexo.connie.binding.Function;
 import org.openflexo.connie.binding.FunctionPathElement;
 import org.openflexo.connie.binding.IBindingPathElement;
+import org.openflexo.connie.binding.NewInstancePathElement;
+import org.openflexo.connie.binding.SimpleMethodPathElement;
 import org.openflexo.connie.binding.SimplePathElement;
 import org.openflexo.connie.binding.javareflect.JavaBasedBindingFactory;
 import org.openflexo.connie.expr.Constant;
@@ -64,6 +66,7 @@ import org.openflexo.foundation.fml.binding.ContainerPathElement;
 import org.openflexo.foundation.fml.binding.CreationSchemePathElement;
 import org.openflexo.foundation.fml.binding.EPIRendererPathElement;
 import org.openflexo.foundation.fml.binding.EnumValuesPathElement;
+import org.openflexo.foundation.fml.binding.FMLNativeProperty;
 import org.openflexo.foundation.fml.binding.FlexoBehaviourParameterDefinitionPathElement;
 import org.openflexo.foundation.fml.binding.FlexoBehaviourParameterValuePathElement;
 import org.openflexo.foundation.fml.binding.FlexoBehaviourParametersValuesPathElement;
@@ -73,7 +76,6 @@ import org.openflexo.foundation.fml.binding.FlexoConceptTypePathElement;
 import org.openflexo.foundation.fml.binding.FlexoPropertyPathElement;
 import org.openflexo.foundation.fml.binding.ModelSlotPathElement;
 import org.openflexo.foundation.fml.binding.ResourceCenterPathElement;
-import org.openflexo.foundation.fml.binding.SuperBindingVariable;
 import org.openflexo.foundation.fml.binding.VirtualModelTypePathElement;
 import org.openflexo.foundation.fml.expr.FMLConstant;
 import org.openflexo.foundation.fml.expr.FMLConstant.ObjectConstant;
@@ -99,9 +101,20 @@ public class FMLBindingFactory extends JavaBasedBindingFactory {
 	public static final String FLEXO_CONCEPT_INSTANCE = "flexoConceptInstance";
 	@Deprecated
 	public static final String VIRTUAL_MODEL_INSTANCE = "virtualModelInstance";
-	public static final String RESOURCE_CENTER = "resourceCenter";
 
-	private final Map<IBindingPathElement, Map<Object, SimplePathElement>> storedBindingPathElements;
+	public static final String RESOURCE_CENTER_PROPERTY_NAME = "resourceCenter";
+	public static final FMLNativeProperty RESOURCE_CENTER_PROPERTY = new FMLNativeProperty(RESOURCE_CENTER_PROPERTY_NAME, String.class);
+
+	public static final String VIRTUAL_MODEL_PROPERTY_NAME = "virtualModelType";
+	public static final FMLNativeProperty VIRTUAL_MODEL_PROPERTY = new FMLNativeProperty(VIRTUAL_MODEL_PROPERTY_NAME, VirtualModel.class);
+
+	public static final String FLEXO_CONCEPT_PROPERTY_NAME = "conceptType";
+	public static final FMLNativeProperty FLEXO_CONCEPT_PROPERTY = new FMLNativeProperty(FLEXO_CONCEPT_PROPERTY_NAME, FlexoConcept.class);
+
+	public static final String ENUM_VALUES_PROPERTY_NAME = "enumValues";
+	public static final FMLNativeProperty ENUM_VALUES_PROPERTY = new FMLNativeProperty(ENUM_VALUES_PROPERTY_NAME, List.class);
+
+	private final Map<IBindingPathElement, Map<Object, SimplePathElement<?>>> storedBindingPathElements;
 	private final VirtualModel virtualModel;
 
 	private final Map<IBindingPathElement, BehavioursForConcepts> flexoBehaviourPathElements;
@@ -110,6 +123,10 @@ public class FMLBindingFactory extends JavaBasedBindingFactory {
 		storedBindingPathElements = new HashMap<>();
 		flexoBehaviourPathElements = new HashMap<>();
 		this.virtualModel = virtualModel;
+	}
+
+	public VirtualModel getVirtualModel() {
+		return virtualModel;
 	}
 
 	@Override
@@ -125,13 +142,13 @@ public class FMLBindingFactory extends JavaBasedBindingFactory {
 		return FMLConstant.ObjectSymbolicConstant.NULL;
 	}
 
-	protected SimplePathElement getSimplePathElement(Object object, IBindingPathElement parent) {
-		Map<Object, SimplePathElement> storedValues = storedBindingPathElements.get(parent);
+	protected SimplePathElement<?> getSimplePathElement(Object object, IBindingPathElement parent) {
+		Map<Object, SimplePathElement<?>> storedValues = storedBindingPathElements.get(parent);
 		if (storedValues == null) {
 			storedValues = new HashMap<>();
 			storedBindingPathElements.put(parent, storedValues);
 		}
-		SimplePathElement returned = storedValues.get(object);
+		SimplePathElement<?> returned = storedValues.get(object);
 		if (returned == null) {
 			returned = makeSimplePathElement(object, parent);
 			storedValues.put(object, returned);
@@ -139,7 +156,7 @@ public class FMLBindingFactory extends JavaBasedBindingFactory {
 		return returned;
 	}
 
-	protected SimplePathElement makeSimplePathElement(Object object, IBindingPathElement parent) {
+	protected SimplePathElement<?> makeSimplePathElement(Object object, IBindingPathElement parent) {
 		if (object instanceof ModelSlot) {
 			return new ModelSlotPathElement<ModelSlot<?>>(parent, (ModelSlot<?>) object);
 		}
@@ -159,12 +176,12 @@ public class FMLBindingFactory extends JavaBasedBindingFactory {
 	}
 
 	@Override
-	public List<? extends SimplePathElement> getAccessibleSimplePathElements(IBindingPathElement parent) {
+	public List<? extends SimplePathElement<?>> getAccessibleSimplePathElements(IBindingPathElement parent) {
 
 		if (parent != null) {
 
 			if (parent instanceof FlexoBehaviourParameterValuePathElement) {
-				List<SimplePathElement> returned = new ArrayList<>(_getAccessibleSimplePathElements(parent));
+				List<SimplePathElement<?>> returned = new ArrayList<>(_getAccessibleSimplePathElements(parent));
 				FlexoBehaviourParameter p = ((FlexoBehaviourParameterValuePathElement) parent).getParameter();
 				returned.add(0, new FlexoBehaviourParameterDefinitionPathElement(parent, p));
 				return returned;
@@ -175,7 +192,7 @@ public class FMLBindingFactory extends JavaBasedBindingFactory {
 		return _getAccessibleSimplePathElements(parent);
 	}
 
-	private List<? extends SimplePathElement> _getAccessibleSimplePathElements(IBindingPathElement parent) {
+	private List<? extends SimplePathElement<?>> _getAccessibleSimplePathElements(IBindingPathElement parent) {
 
 		if (parent != null) {
 
@@ -187,7 +204,7 @@ public class FMLBindingFactory extends JavaBasedBindingFactory {
 				if (ta != null) {
 					TechnologyAdapterBindingFactory bf = ta.getTechnologyAdapterBindingFactory();
 					if (bf != null && bf.handleType(parentType)) {
-						List<? extends SimplePathElement> returned = bf.getAccessibleSimplePathElements(parent);
+						List<? extends SimplePathElement<?>> returned = bf.getAccessibleSimplePathElements(parent);
 						Collections.sort(returned, BindingPathElement.COMPARATOR);
 						return returned;
 					}
@@ -196,7 +213,7 @@ public class FMLBindingFactory extends JavaBasedBindingFactory {
 			}
 
 			if (pType instanceof FlexoBehaviourParametersType) {
-				List<SimplePathElement> returned = new ArrayList<>();
+				List<SimplePathElement<?>> returned = new ArrayList<>();
 				FlexoBehaviour es = ((FlexoBehaviourParametersType) pType).getFlexoBehaviour();
 				for (FlexoBehaviourParameter p : es.getParameters()) {
 					returned.add(getSimplePathElement(p, parent));
@@ -205,7 +222,7 @@ public class FMLBindingFactory extends JavaBasedBindingFactory {
 				return returned;
 			}
 			else if (pType instanceof FlexoBehaviourParametersValuesType) {
-				List<SimplePathElement> returned = new ArrayList<>();
+				List<SimplePathElement<?>> returned = new ArrayList<>();
 				FlexoBehaviour es = ((FlexoBehaviourParametersValuesType) pType).getFlexoBehaviour();
 				for (FlexoBehaviourParameter p : es.getParameters()) {
 					returned.add(getSimplePathElement(p, parent));
@@ -214,7 +231,7 @@ public class FMLBindingFactory extends JavaBasedBindingFactory {
 				return returned;
 			}
 			else if (pType instanceof FlexoConceptInstanceType) {
-				List<SimplePathElement> returned = new ArrayList<>();
+				List<SimplePathElement<?>> returned = new ArrayList<>();
 				FlexoConcept concept = ((FlexoConceptInstanceType) pType).getFlexoConcept();
 
 				if (concept instanceof FlexoEnum) {
@@ -246,7 +263,7 @@ public class FMLBindingFactory extends JavaBasedBindingFactory {
 				return returned;
 			}
 			else if (pType instanceof FlexoBehaviourType) {
-				List<SimplePathElement> returned = new ArrayList<>();
+				List<SimplePathElement<?>> returned = new ArrayList<>();
 				FlexoBehaviour flexoBehaviour = ((FlexoBehaviourType) pType).getFlexoBehaviour();
 				returned.add(new FlexoBehaviourParametersValuesPathElement(parent, flexoBehaviour));
 				for (FlexoProperty<?> pr : flexoBehaviour.getFlexoConcept().getAccessibleProperties()) {
@@ -255,7 +272,7 @@ public class FMLBindingFactory extends JavaBasedBindingFactory {
 				return returned;
 			}
 			else if (pType instanceof FlexoBehaviourActionType) {
-				List<SimplePathElement> returned = new ArrayList<>();
+				List<SimplePathElement<?>> returned = new ArrayList<>();
 				FlexoBehaviour flexoBehaviour = ((FlexoBehaviourActionType) pType).getFlexoBehaviour();
 				returned.add(new FlexoBehaviourParametersValuesPathElement(parent, flexoBehaviour));
 				for (FlexoProperty<?> pr : flexoBehaviour.getFlexoConcept().getAccessibleProperties()) {
@@ -359,7 +376,7 @@ public class FMLBindingFactory extends JavaBasedBindingFactory {
 			returned = new ArrayList<>();
 			if (concept != null) {
 				for (FlexoBehaviour behaviour : concept.getAccessibleFlexoBehaviours(true)) {
-					returned.add(new FlexoBehaviourPathElement(parent, behaviour, null));
+					returned.add(new FlexoBehaviourPathElement(parent, behaviour, null, this));
 				}
 				map.put(concept, returned);
 			}
@@ -368,13 +385,13 @@ public class FMLBindingFactory extends JavaBasedBindingFactory {
 	}
 
 	@Override
-	public SimplePathElement makeSimplePathElement(IBindingPathElement parent, String propertyName) {
+	public SimplePathElement<?> makeSimplePathElement(IBindingPathElement parent, String propertyName) {
 
 		// We want to avoid code duplication, so iterate on all accessible simple path element and choose the right one
-		SimplePathElement returned = null;
-		List<? extends SimplePathElement> accessibleSimplePathElements = getAccessibleSimplePathElements(parent);
+		SimplePathElement<?> returned = null;
+		List<? extends SimplePathElement<?>> accessibleSimplePathElements = getAccessibleSimplePathElements(parent);
 		if (accessibleSimplePathElements != null) {
-			for (SimplePathElement e : accessibleSimplePathElements) {
+			for (SimplePathElement<?> e : accessibleSimplePathElements) {
 				if (e.getLabel() != null && e.getLabel().equals(propertyName)) {
 					returned = e;
 				}
@@ -395,20 +412,28 @@ public class FMLBindingFactory extends JavaBasedBindingFactory {
 	}
 
 	@Override
-	public FunctionPathElement<?> makeFunctionPathElement(IBindingPathElement parent, Function function, DataBinding<?> innerAccess,
+	public SimpleMethodPathElement<?> makeSimpleMethodPathElement(IBindingPathElement parent, String methodName,
 			List<DataBinding<?>> args) {
-		if (function instanceof CreationScheme && !(parent instanceof SuperBindingVariable)) {
+		/*if (function instanceof CreationScheme && !(parent instanceof SuperBindingVariable)) {
 			return new CreationSchemePathElement(parent, (CreationScheme) function, args);
-		}
+		}*/
 		if (parent != null) {
+
+			if (parent.getLabel().equals("super")) {
+				//System.out.println("J'ai mon super: " + parent.getClass() + " en cherchant " + methodName);
+				//System.out.println("type=" + parent.getType());
+				return new FlexoBehaviourPathElement(parent, methodName, args, this);
+
+			}
+
 			if (parent.getType() == null) {
 				return null;
 			}
-			if (parent.getType() instanceof FlexoConceptInstanceType && function instanceof FlexoBehaviour) {
-				return new FlexoBehaviourPathElement(parent, (FlexoBehaviour) function, args);
+			if (parent.getType() instanceof FlexoConceptInstanceType) {
+				return new FlexoBehaviourPathElement(parent, methodName, args, this);
 			}
 		}
-		return super.makeFunctionPathElement(parent, function, innerAccess, args);
+		return super.makeSimpleMethodPathElement(parent, methodName, args);
 		// Hook to specialize type returned by getFlexoConceptInstance(String)
 		// This method is used while executing DiagramElement inspectors
 		/*if (function.getName().equals("getFlexoConceptInstance")) {
@@ -422,20 +447,29 @@ public class FMLBindingFactory extends JavaBasedBindingFactory {
 	}
 
 	@Override
-	public AbstractConstructor retrieveConstructor(Type declaringType, DataBinding<?> innerAccess, String functionName,
+	public NewInstancePathElement<?> makeNewInstancePathElement(Type type, IBindingPathElement parent, String functionName,
 			List<DataBinding<?>> args) {
+		if (type instanceof FlexoConceptInstanceType) {
+			return new CreationSchemePathElement((FlexoConceptInstanceType) type, parent, functionName, args, this);
+		}
+		return super.makeNewInstancePathElement(type, parent, functionName, args);
+	}
+
+	@Override
+	public AbstractConstructor retrieveConstructor(Type declaringType, Type innerAccessType, String constructorName,
+			List<DataBinding<?>> arguments) {
 		if (declaringType instanceof FlexoConceptInstanceType) {
 			FlexoConcept concept = ((FlexoConceptInstanceType) declaringType).getFlexoConcept();
 			if (concept != null) {
-				if (concept.getCreationSchemes().size() == 1 && functionName == null) {
+				if (concept.getCreationSchemes().size() == 1 && constructorName == null) {
 					// In this case, we use default constructor
-					functionName = concept.getCreationSchemes().get(0).getName();
+					constructorName = concept.getCreationSchemes().get(0).getName();
 				}
-				CreationScheme returned = (CreationScheme) concept.getFlexoBehaviour(functionName, buildArgumentList(args));
+				CreationScheme returned = (CreationScheme) concept.getFlexoBehaviour(constructorName, buildArgumentList(arguments));
 				return returned;
 			}
 		}
-		return super.retrieveConstructor(declaringType, innerAccess, functionName, args);
+		return super.retrieveConstructor(declaringType, innerAccessType, constructorName, arguments);
 	}
 
 	private Type[] buildArgumentList(List<DataBinding<?>> args) {
@@ -468,26 +502,6 @@ public class FMLBindingFactory extends JavaBasedBindingFactory {
 			// System.out.println("Looking for behaviour " + functionName + " avec " + args);
 			// System.out.println("conceptType=" + conceptType);
 			if (conceptType != null) {
-				/*Type[] paramsTypes = new Type[args.size()];
-				for (int i = 0; i < args.size(); i++) {
-					if (args.get(i).getExpression() instanceof ObjectConstant) {
-						Object value = ((ObjectConstant) args.get(i).getExpression()).getValue();
-						if (value instanceof VirtualModelInstance) {
-							paramsTypes[i] = ((VirtualModelInstance<?, ?>) value).getVirtualModel().getInstanceType();
-						}
-						else if (value instanceof FlexoConceptInstance) {
-							paramsTypes[i] = ((FlexoConceptInstance) value).getFlexoConcept().getInstanceType();
-						}
-						else {
-							paramsTypes[i] = value.getClass();
-						}
-					}
-					else {
-						paramsTypes[i] = args.get(i).getAnalyzedType();
-					}
-					// System.out.println("> " + args.get(i) + " of " + paramsTypes[i]);
-				}*/
-				// System.out.println("Returned: " + conceptType.getFlexoBehaviour(functionName, paramsTypes));
 				FlexoBehaviour returned = conceptType.getFlexoBehaviour(functionName, buildArgumentList(args));
 				if (returned != null) {
 					return returned;

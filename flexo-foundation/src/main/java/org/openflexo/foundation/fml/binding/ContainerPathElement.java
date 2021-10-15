@@ -71,7 +71,7 @@ import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
  * @author sylvain
  *
  */
-public class ContainerPathElement extends SimplePathElement {
+public class ContainerPathElement extends SimplePathElement<FMLNativeProperty> {
 
 	private static final Logger logger = Logger.getLogger(ContainerPathElement.class.getPackage().getName());
 
@@ -79,8 +79,9 @@ public class ContainerPathElement extends SimplePathElement {
 	private FlexoConcept containerType;
 
 	public ContainerPathElement(IBindingPathElement parent, FlexoConcept applicableFlexoConcept) {
-		super(parent, FlexoConceptBindingModel.CONTAINER_PROPERTY, Object.class);
+		super(parent, FlexoConceptBindingModel.CONTAINER_PROPERTY_NAME, Object.class);
 		this.applicableFlexoConcept = applicableFlexoConcept;
+		setProperty(FlexoConceptBindingModel.CONTAINER_PROPERTY);
 		if (applicableFlexoConcept instanceof VirtualModel) {
 			containerType = ((VirtualModel) applicableFlexoConcept).getContainerVirtualModel();
 		}
@@ -157,4 +158,13 @@ public class ContainerPathElement extends SimplePathElement {
 		logger.warning("Please implement me, target=" + target + " context=" + context);
 	}
 
+	@Override
+	public boolean isResolved() {
+		return true;
+	}
+
+	@Override
+	public void resolve() {
+		// Not applicable
+	}
 }

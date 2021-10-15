@@ -41,10 +41,9 @@ package org.openflexo.foundation.fml.parser.fmlnodes.expr;
 import java.util.logging.Logger;
 
 import org.openflexo.connie.Bindable;
-import org.openflexo.connie.expr.BindingValue.NewInstanceBindingPathElement;
-import org.openflexo.foundation.fml.FlexoConcept;
-import org.openflexo.foundation.fml.expr.NewFlexoConceptInstanceBindingPathElement;
-import org.openflexo.foundation.fml.expr.NewVirtualModelInstanceBindingPathElement;
+import org.openflexo.connie.binding.IBindingPathElement;
+import org.openflexo.foundation.fml.FlexoConceptInstanceType;
+import org.openflexo.foundation.fml.binding.CreationSchemePathElement;
 import org.openflexo.foundation.fml.parser.MainSemanticsAnalyzer;
 import org.openflexo.foundation.fml.parser.node.AFullQualifiedFmlParameters;
 import org.openflexo.foundation.fml.parser.node.AFullQualifiedNewInstance;
@@ -61,22 +60,38 @@ import org.openflexo.p2pp.RawSource.RawSourceFragment;
  * @author sylvain
  * 
  */
-public abstract class AbstractAddFlexoConceptInstanceNode<BPE extends NewInstanceBindingPathElement>
-		extends AbstractCallBindingPathElementNode<Node, BPE> {
+public abstract class AbstractAddFlexoConceptInstanceNode extends AbstractCallBindingPathElementNode<Node, CreationSchemePathElement> {
 
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(AbstractAddFlexoConceptInstanceNode.class.getPackage().getName());
 
-	public AbstractAddFlexoConceptInstanceNode(ASimpleNewInstance astNode, MainSemanticsAnalyzer analyser, Bindable bindable) {
+	private IBindingPathElement parent;
+
+	public AbstractAddFlexoConceptInstanceNode(ASimpleNewInstance astNode, MainSemanticsAnalyzer analyser, IBindingPathElement parent,
+			Bindable bindable) {
 		super(astNode, analyser, bindable);
+		this.parent = parent;
+		// buildModelObjectFromAST() was already called, but too early (parent not yet set)
+		// we do it again
+		modelObject = buildModelObjectFromAST(astNode);
 	}
 
-	public AbstractAddFlexoConceptInstanceNode(AFullQualifiedNewInstance astNode, MainSemanticsAnalyzer analyser, Bindable bindable) {
+	public AbstractAddFlexoConceptInstanceNode(AFullQualifiedNewInstance astNode, MainSemanticsAnalyzer analyser,
+			IBindingPathElement parent, Bindable bindable) {
 		super(astNode, analyser, bindable);
+		this.parent = parent;
+		// buildModelObjectFromAST() was already called, but too early (parent not yet set)
+		// we do it again
+		modelObject = buildModelObjectFromAST(astNode);
 	}
 
-	public AbstractAddFlexoConceptInstanceNode(BPE bindingPathElement, MainSemanticsAnalyzer analyser, Bindable bindable) {
+	public AbstractAddFlexoConceptInstanceNode(CreationSchemePathElement bindingPathElement, MainSemanticsAnalyzer analyser,
+			Bindable bindable) {
 		super(bindingPathElement, analyser, bindable);
+	}
+
+	public IBindingPathElement getParentPathElement() {
+		return parent;
 	}
 
 	@Override
@@ -85,14 +100,18 @@ public abstract class AbstractAddFlexoConceptInstanceNode<BPE extends NewInstanc
 	}
 
 	protected boolean isFullQualified() {
-		if (getModelObject() instanceof NewFlexoConceptInstanceBindingPathElement) {
+		FlexoConceptInstanceType type = getModelObject().getType();
+		if (type.getFlexoConcept() != null) {
+			return type.getFlexoConcept().getCreationSchemes().size() > 1;
+		}
+		/*if (getModelObject() instanceof NewFlexoConceptInstanceBindingPathElement) {
 			FlexoConcept flexoConcept = ((NewFlexoConceptInstanceBindingPathElement) getModelObject()).getFlexoConcept();
 			return flexoConcept.getCreationSchemes().size() > 1;
 		}
 		if (getModelObject() instanceof NewVirtualModelInstanceBindingPathElement) {
 			FlexoConcept virtualModel = ((NewVirtualModelInstanceBindingPathElement) getModelObject()).getVirtualModel();
 			return virtualModel.getCreationSchemes().size() > 1;
-		}
+		}*/
 		if (getASTNode() instanceof AFullQualifiedNewInstance) {
 			return true;
 		}

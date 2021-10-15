@@ -38,36 +38,43 @@
 
 package org.openflexo.foundation.fml.parser.fmlnodes.expr;
 
-import org.openflexo.connie.expr.BindingValue;
-import org.openflexo.foundation.fml.parser.AbstractExpressionFactory;
-import org.openflexo.foundation.fml.parser.BindingPathFactory;
-import org.openflexo.foundation.fml.parser.node.Node;
+import org.openflexo.connie.Bindable;
+import org.openflexo.connie.BindingVariable;
+import org.openflexo.connie.expr.UnresolvedBindingVariable;
+import org.openflexo.foundation.fml.parser.MainSemanticsAnalyzer;
+import org.openflexo.foundation.fml.parser.node.TLidentifier;
+import org.openflexo.foundation.fml.parser.node.TUidentifier;
+import org.openflexo.foundation.fml.parser.node.Token;
 
 /**
+ * Either a {@link TLidentifier} or a {@link TUidentifier}
+ * 
  * @author sylvain
  * 
  */
-public class BindingPathNode extends ExpressionNode<Node, BindingValue> {
+public class BindingVariableNode extends AbstractBindingPathElementNode<Token, BindingVariable> {
 
-	public BindingPathNode(Node astNode, AbstractExpressionFactory expressionFactory) {
-		super(astNode, expressionFactory);
-		// buildModelObjectFromAST() was already called, but too early (bindable not yet set)
-		// we do it again
-		modelObject = buildModelObjectFromAST(astNode);
+	public BindingVariableNode(Token astNode, MainSemanticsAnalyzer analyser, Bindable bindable) {
+		super(astNode, analyser, bindable);
 	}
 
-	public BindingPathNode(BindingValue bindingPath, AbstractExpressionFactory expressionFactory) {
-		super(bindingPath, expressionFactory);
+	public BindingVariableNode(BindingVariable bindingPathElement, MainSemanticsAnalyzer analyser, Bindable bindable) {
+		super(bindingPathElement, analyser, bindable);
 	}
 
 	@Override
-	public BindingValue buildModelObjectFromAST(Node astNode) {
-
-		if (getExpressionFactory() != null) {
-			return BindingPathFactory.makeBindingPath(astNode, getExpressionFactory(), this);
-
-			// List<AbstractBindingPathElement> bindingPath = BindingPathFactory.makeBindingPath(astNode, getExpressionFactory(), this);
-			// return new BindingValue(bindingPath, getExpressionFactory().getBindable(), JavaPrettyPrinter.getInstance());
+	public BindingVariable buildModelObjectFromAST(Token astNode) {
+		if (getBindable() != null) {
+			BindingVariable bindingVariable = null;
+			if (getBindable().getBindingModel() != null) {
+				bindingVariable = getBindable().getBindingModel().bindingVariableNamed(astNode.getText());
+			}
+			if (bindingVariable == null) {
+				// Unresolved
+				bindingVariable = new UnresolvedBindingVariable(astNode.getText());
+			}
+			// System.out.println(" > BV: " + bindingVariable);
+			return bindingVariable;
 		}
 		return null;
 	}

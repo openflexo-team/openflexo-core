@@ -43,26 +43,28 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.openflexo.connie.Bindable;
+import org.openflexo.connie.BindingVariable;
 import org.openflexo.connie.binding.BindingPathElement;
+import org.openflexo.connie.binding.IBindingPathElement;
+import org.openflexo.connie.binding.SimpleMethodPathElement;
+import org.openflexo.connie.binding.SimplePathElement;
+import org.openflexo.connie.binding.StaticMethodPathElement;
+import org.openflexo.connie.binding.javareflect.JavaNewInstanceMethodPathElement;
 import org.openflexo.connie.expr.BindingValue;
-import org.openflexo.connie.expr.BindingValue.AbstractBindingPathElement;
-import org.openflexo.connie.expr.BindingValue.MethodCallBindingPathElement;
-import org.openflexo.connie.expr.BindingValue.NewInstanceBindingPathElement;
-import org.openflexo.connie.expr.BindingValue.NormalBindingPathElement;
-import org.openflexo.connie.expr.BindingValue.StaticMethodCallBindingPathElement;
+import org.openflexo.connie.java.expr.JavaPrettyPrinter;
 import org.openflexo.foundation.fml.FlexoConceptInstanceType;
 import org.openflexo.foundation.fml.VirtualModelInstanceType;
-import org.openflexo.foundation.fml.expr.NewFlexoConceptInstanceBindingPathElement;
-import org.openflexo.foundation.fml.expr.NewVirtualModelInstanceBindingPathElement;
+import org.openflexo.foundation.fml.binding.CreationSchemePathElement;
 import org.openflexo.foundation.fml.parser.fmlnodes.expr.AbstractBindingPathElementNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.expr.AddClassInstanceNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.expr.AddFlexoConceptInstanceNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.expr.AddVirtualModelInstanceNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.expr.BindingPathNode;
+import org.openflexo.foundation.fml.parser.fmlnodes.expr.BindingVariableNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.expr.MethodCallBindingPathElementNode;
-import org.openflexo.foundation.fml.parser.fmlnodes.expr.NormalBindingPathElementNode;
+import org.openflexo.foundation.fml.parser.fmlnodes.expr.SimplePathElementNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.expr.StaticMethodCallBindingPathElementNode;
-import org.openflexo.foundation.fml.parser.fmlnodes.expr.SuperBindingPathElementNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.expr.SuperMethodCallBindingPathElementNode;
 import org.openflexo.foundation.fml.parser.node.AClassMethodMethodInvocation;
 import org.openflexo.foundation.fml.parser.node.ACompositeIdent;
@@ -101,6 +103,7 @@ import org.openflexo.foundation.fml.parser.node.PStatementExpression;
 import org.openflexo.foundation.fml.parser.node.TKwSuper;
 import org.openflexo.foundation.fml.parser.node.TLidentifier;
 import org.openflexo.foundation.fml.parser.node.TUidentifier;
+import org.openflexo.foundation.fml.parser.node.Token;
 
 /**
  * This class implements the semantics analyzer for a parsed {@link BindingValue}<br>
@@ -114,12 +117,14 @@ import org.openflexo.foundation.fml.parser.node.TUidentifier;
 public class BindingPathFactory {
 
 	private final AbstractExpressionFactory expressionFactory;
-	private final List<AbstractBindingPathElement> path;
+
+	private BindingVariable bindingVariable;
+	private List<BindingPathElement> bindingPathElements;
+
 	private final List<AbstractBindingPathElementNode<?, ?>> nodesPath;
 	private final Node rootNode;
 
-	public static List<AbstractBindingPathElement> makeBindingPath(Node node, AbstractExpressionFactory expressionFactory,
-			BindingPathNode bindingPathNode) {
+	public static BindingValue makeBindingPath(Node node, AbstractExpressionFactory expressionFactory, BindingPathNode bindingPathNode) {
 
 		BindingPathFactory bindingPathFactory = new BindingPathFactory(node, expressionFactory);
 		bindingPathFactory.explore();
@@ -130,14 +135,20 @@ public class BindingPathFactory {
 			}
 		}
 
-		return bindingPathFactory.path;
+		// return bindingPathFactory.path;
+		return new BindingValue(bindingPathFactory.bindingVariable, bindingPathFactory.bindingPathElements,
+				bindingPathFactory.getBindable(), JavaPrettyPrinter.getInstance());
 	}
 
 	private BindingPathFactory(Node node, AbstractExpressionFactory expressionFactory) {
 		this.expressionFactory = expressionFactory;
 		this.rootNode = node;
-		path = new ArrayList<>();
+		bindingPathElements = new ArrayList<>();
 		nodesPath = new ArrayList<>();
+	}
+
+	public Bindable getBindable() {
+		return expressionFactory.getBindable();
 	}
 
 	private void explore() {
@@ -166,7 +177,7 @@ public class BindingPathFactory {
 	}
 
 	private AbstractBindingPathElementNode<?, ?> popBindingPath() {
-		path.remove(path.size() - 1);
+		bindingPathElements.remove(bindingPathElements.size() - 1);
 		if (nodesPath.size() > 0) {
 			return nodesPath.remove(nodesPath.size() - 1);
 		}
@@ -234,7 +245,7 @@ public class BindingPathFactory {
 	private void appendBindingPath(PMethodInvocation node) {
 		if (node instanceof APrimaryMethodInvocation) {
 			appendBindingPath(((APrimaryMethodInvocation) node).getPrimary());
-			NormalBindingPathElementNode lastElementNode = (NormalBindingPathElementNode) popBindingPath();
+			SimplePathElementNode lastElementNode = (SimplePathElementNode) popBindingPath();
 			appendMethodInvocation((APrimaryMethodInvocation) node, lastElementNode);
 		}
 		else if (node instanceof ASuperMethodInvocation) {
@@ -276,44 +287,90 @@ public class BindingPathFactory {
 	}
 
 	private void appendBindingPath(TLidentifier node) {
-		NormalBindingPathElementNode pathElementNode = expressionFactory.getMainAnalyzer().retrieveFMLNode(node,
-				n -> new NormalBindingPathElementNode(n, expressionFactory.getMainAnalyzer(), expressionFactory.getBindable()));
+		/*SimplePathElementNode pathElementNode = expressionFactory.getMainAnalyzer().retrieveFMLNode(node,
+				n -> new SimplePathElementNode(n, expressionFactory.getMainAnalyzer(), expressionFactory.getBindable()));
 		nodesPath.add(pathElementNode);
 		NormalBindingPathElement pathElement = pathElementNode.buildModelObjectFromAST(node);
-		path.add(pathElement);
+		path.add(pathElement);*/
+		makeNormalBindingPathElement(node);
 	}
 
 	private void appendBindingPath(TUidentifier node) {
-		NormalBindingPathElementNode pathElementNode = expressionFactory.getMainAnalyzer().retrieveFMLNode(node,
-				n -> new NormalBindingPathElementNode(n, expressionFactory.getMainAnalyzer(), expressionFactory.getBindable()));
+		/*SimplePathElementNode pathElementNode = expressionFactory.getMainAnalyzer().retrieveFMLNode(node,
+				n -> new SimplePathElementNode(n, expressionFactory.getMainAnalyzer(), expressionFactory.getBindable()));
 		nodesPath.add(pathElementNode);
 		NormalBindingPathElement pathElement = pathElementNode.buildModelObjectFromAST(node);
-		path.add(pathElement);
+		path.add(pathElement);*/
+		makeNormalBindingPathElement(node);
 	}
 
 	private void appendBindingPath(TKwSuper node) {
-		SuperBindingPathElementNode pathElementNode = expressionFactory.getMainAnalyzer().retrieveFMLNode(node,
+		/*SuperBindingPathElementNode pathElementNode = expressionFactory.getMainAnalyzer().retrieveFMLNode(node,
 				n -> new SuperBindingPathElementNode(n, expressionFactory.getMainAnalyzer(), expressionFactory.getBindable()));
 		nodesPath.add(pathElementNode);
 		NormalBindingPathElement superElement = pathElementNode.buildModelObjectFromAST(node);
-		path.add(superElement);
+		path.add(superElement);*/
+		makeNormalBindingPathElement(node);
 	}
 
-	private void appendMethodInvocation(APrimaryMethodInvocation node, NormalBindingPathElementNode lastPathElementNode) {
+	private IBindingPathElement retrieveActualParent() {
+		if (bindingPathElements.size() == 0) {
+			return bindingVariable;
+		}
+		else {
+			return bindingPathElements.get(bindingPathElements.size() - 1);
+		}
+	}
+
+	private IBindingPathElement makeNormalBindingPathElement(Token node) {
+		if (bindingVariable == null && bindingPathElements.size() == 0) {
+			BindingVariableNode pathElementNode = expressionFactory.getMainAnalyzer().retrieveFMLNode(node,
+					n -> new BindingVariableNode(n, expressionFactory.getMainAnalyzer(), expressionFactory.getBindable()));
+			nodesPath.add(pathElementNode);
+			// bindingVariable = pathElementNode.buildModelObjectFromAST(node);
+			bindingVariable = pathElementNode.getModelObject();
+			// path.add(pathElement);
+
+			/*if (getBindable().getBindingModel() != null) {
+				bindingVariable = getBindable().getBindingModel().bindingVariableNamed(identifier);
+			}
+			if (bindingVariable == null) {
+				// Unresolved
+				bindingVariable = new UnresolvedBindingVariable(identifier);
+			}*/
+			// System.out.println(" > BV: " + bindingVariable);
+			return bindingVariable;
+		}
+		else {
+			final IBindingPathElement parent = retrieveActualParent();
+			SimplePathElementNode pathElementNode = expressionFactory.getMainAnalyzer().retrieveFMLNode(node,
+					n -> new SimplePathElementNode(n, expressionFactory.getMainAnalyzer(), parent, expressionFactory.getBindable()));
+			nodesPath.add(pathElementNode);
+			// SimplePathElement<?> pathElement = pathElementNode.buildModelObjectFromAST(node);
+			SimplePathElement<?> pathElement = pathElementNode.getModelObject();
+			bindingPathElements.add(pathElement);
+			return pathElement;
+		}
+	}
+
+	private void appendMethodInvocation(APrimaryMethodInvocation node, SimplePathElementNode lastPathElementNode) {
+		final IBindingPathElement parent = retrieveActualParent();
 		MethodCallBindingPathElementNode pathElementNode = expressionFactory.getMainAnalyzer().retrieveFMLNode(node,
-				n -> new MethodCallBindingPathElementNode(n, lastPathElementNode.getASTNode(), expressionFactory.getMainAnalyzer(),
+				n -> new MethodCallBindingPathElementNode(n, lastPathElementNode.getASTNode(), expressionFactory.getMainAnalyzer(), parent,
 						expressionFactory.getBindable()));
 		nodesPath.add(pathElementNode);
-		MethodCallBindingPathElement methodCallElement = pathElementNode.getModelObject();
-		path.add(methodCallElement);
+		SimpleMethodPathElement<?> methodCallElement = pathElementNode.getModelObject();
+		bindingPathElements.add(methodCallElement);
 	}
 
 	private void appendSuperMethodInvocation(ASuperMethodInvocation node) {
+		final IBindingPathElement parent = retrieveActualParent();
 		SuperMethodCallBindingPathElementNode pathElementNode = expressionFactory.getMainAnalyzer().retrieveFMLNode(node,
-				n -> new SuperMethodCallBindingPathElementNode(n, expressionFactory.getMainAnalyzer(), expressionFactory.getBindable()));
+				n -> new SuperMethodCallBindingPathElementNode(n, expressionFactory.getMainAnalyzer(), parent,
+						expressionFactory.getBindable()));
 		nodesPath.add(pathElementNode);
-		MethodCallBindingPathElement methodCallElement = pathElementNode.buildModelObjectFromAST(node);
-		path.add(methodCallElement);
+		SimpleMethodPathElement<?> methodCallElement = pathElementNode.getModelObject();
+		bindingPathElements.add(methodCallElement);
 	}
 
 	private void appendSimpleNewInstanceInvocation(ASimpleNewInstance node) {
@@ -323,32 +380,28 @@ public class BindingPathFactory {
 		Type type = TypeFactory.makeType(node.getType(), expressionFactory.getTypingSpace());
 		// System.out.println("Found type " + type);
 
-		if (type instanceof VirtualModelInstanceType
-		// this is too early, FlexoConcept is not yet set
-		/*&& ((VirtualModelInstanceType) type).getVirtualModel().getCreationSchemes().size() == 1*/) {
-			// Simple new instance with non ambigous creation scheme
+		final IBindingPathElement parent = retrieveActualParent();
+
+		if (type instanceof VirtualModelInstanceType) {
 			AddVirtualModelInstanceNode pathElementNode = expressionFactory.getMainAnalyzer().retrieveFMLNode(node,
-					n -> new AddVirtualModelInstanceNode(n, expressionFactory.getMainAnalyzer(), expressionFactory.getBindable()));
+					n -> new AddVirtualModelInstanceNode(n, expressionFactory.getMainAnalyzer(), parent, expressionFactory.getBindable()));
 			nodesPath.add(pathElementNode);
-			NewVirtualModelInstanceBindingPathElement pathElement = pathElementNode.getModelObject();
-			path.add(pathElement);
+			CreationSchemePathElement pathElement = pathElementNode.getModelObject();
+			bindingPathElements.add(pathElement);
 		}
-		else if (type instanceof FlexoConceptInstanceType
-		// this is too early, FlexoConcept is not yet set
-		/*&& ((FlexoConceptInstanceType) type).getFlexoConcept().getCreationSchemes().size() == 1*/) {
-			// Simple new instance with non ambigous creation scheme
+		else if (type instanceof FlexoConceptInstanceType) {
 			AddFlexoConceptInstanceNode pathElementNode = expressionFactory.getMainAnalyzer().retrieveFMLNode(node,
-					n -> new AddFlexoConceptInstanceNode(n, expressionFactory.getMainAnalyzer(), expressionFactory.getBindable()));
+					n -> new AddFlexoConceptInstanceNode(n, expressionFactory.getMainAnalyzer(), parent, expressionFactory.getBindable()));
 			nodesPath.add(pathElementNode);
-			NewFlexoConceptInstanceBindingPathElement pathElement = pathElementNode.getModelObject();
-			path.add(pathElement);
+			CreationSchemePathElement pathElement = pathElementNode.getModelObject();
+			bindingPathElements.add(pathElement);
 		}
 		else {
 			AddClassInstanceNode pathElementNode = expressionFactory.getMainAnalyzer().retrieveFMLNode(node,
-					n -> new AddClassInstanceNode(n, expressionFactory.getMainAnalyzer(), expressionFactory.getBindable()));
+					n -> new AddClassInstanceNode(n, expressionFactory.getMainAnalyzer(), parent, expressionFactory.getBindable()));
 			nodesPath.add(pathElementNode);
-			NewInstanceBindingPathElement pathElement = pathElementNode.getModelObject();
-			path.add(pathElement);
+			JavaNewInstanceMethodPathElement pathElement = pathElementNode.getModelObject();
+			bindingPathElements.add(pathElement);
 
 		}
 
@@ -358,8 +411,8 @@ public class BindingPathFactory {
 		StaticMethodCallBindingPathElementNode pathElementNode = expressionFactory.getMainAnalyzer().retrieveFMLNode(node,
 				n -> new StaticMethodCallBindingPathElementNode(n, expressionFactory.getMainAnalyzer(), expressionFactory.getBindable()));
 		nodesPath.add(pathElementNode);
-		StaticMethodCallBindingPathElement methodCallElement = pathElementNode.getModelObject();
-		path.add(methodCallElement);
+		StaticMethodPathElement<?> methodCallElement = pathElementNode.getModelObject();
+		bindingPathElements.add(methodCallElement);
 	}
 
 }

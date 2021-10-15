@@ -148,19 +148,19 @@ public class TestSequence extends FMLParserTestCase {
 		System.out.println("declaration3.BM=" + declaration3.getBindingModel());
 
 		assertEquals(3, declaration1.getBindingModel().getBindingVariablesCount());
-		assertNotNull(declaration1.getBindingModel().bindingVariableNamed(FlexoConceptBindingModel.THIS_PROPERTY));
-		assertNotNull(declaration1.getBindingModel().bindingVariableNamed(FlexoConceptBindingModel.CONTAINER_PROPERTY));
+		assertNotNull(declaration1.getBindingModel().bindingVariableNamed(FlexoConceptBindingModel.THIS_PROPERTY_NAME));
+		assertNotNull(declaration1.getBindingModel().bindingVariableNamed(FlexoConceptBindingModel.CONTAINER_PROPERTY_NAME));
 		assertNotNull(declaration1.getBindingModel().bindingVariableNamed(FlexoBehaviourBindingModel.PARAMETERS_PROPERTY));
 
 		assertEquals(4, declaration2.getBindingModel().getBindingVariablesCount());
-		assertNotNull(declaration2.getBindingModel().bindingVariableNamed(FlexoConceptBindingModel.THIS_PROPERTY));
-		assertNotNull(declaration2.getBindingModel().bindingVariableNamed(FlexoConceptBindingModel.CONTAINER_PROPERTY));
+		assertNotNull(declaration2.getBindingModel().bindingVariableNamed(FlexoConceptBindingModel.THIS_PROPERTY_NAME));
+		assertNotNull(declaration2.getBindingModel().bindingVariableNamed(FlexoConceptBindingModel.CONTAINER_PROPERTY_NAME));
 		assertNotNull(declaration2.getBindingModel().bindingVariableNamed(FlexoBehaviourBindingModel.PARAMETERS_PROPERTY));
 		assertNotNull(declaration2.getBindingModel().bindingVariableNamed("variable1"));
 
 		assertEquals(5, declaration3.getBindingModel().getBindingVariablesCount());
-		assertNotNull(declaration3.getBindingModel().bindingVariableNamed(FlexoConceptBindingModel.THIS_PROPERTY));
-		assertNotNull(declaration3.getBindingModel().bindingVariableNamed(FlexoConceptBindingModel.CONTAINER_PROPERTY));
+		assertNotNull(declaration3.getBindingModel().bindingVariableNamed(FlexoConceptBindingModel.THIS_PROPERTY_NAME));
+		assertNotNull(declaration3.getBindingModel().bindingVariableNamed(FlexoConceptBindingModel.CONTAINER_PROPERTY_NAME));
 		assertNotNull(declaration3.getBindingModel().bindingVariableNamed(FlexoBehaviourBindingModel.PARAMETERS_PROPERTY));
 		assertNotNull(declaration3.getBindingModel().bindingVariableNamed("variable1"));
 		assertNotNull(declaration3.getBindingModel().bindingVariableNamed("variable2"));
@@ -211,26 +211,26 @@ public class TestSequence extends FMLParserTestCase {
 		System.out.println("declaration3.BM=" + declaration3.getBindingModel());
 
 		assertEquals(3, declaration1.getBindingModel().getBindingVariablesCount());
-		assertNotNull(declaration1.getBindingModel().bindingVariableNamed(FlexoConceptBindingModel.THIS_PROPERTY));
-		assertNotNull(declaration1.getBindingModel().bindingVariableNamed(FlexoConceptBindingModel.CONTAINER_PROPERTY));
+		assertNotNull(declaration1.getBindingModel().bindingVariableNamed(FlexoConceptBindingModel.THIS_PROPERTY_NAME));
+		assertNotNull(declaration1.getBindingModel().bindingVariableNamed(FlexoConceptBindingModel.CONTAINER_PROPERTY_NAME));
 		assertNotNull(declaration1.getBindingModel().bindingVariableNamed(FlexoBehaviourBindingModel.PARAMETERS_PROPERTY));
 
 		assertEquals(4, declaration4.getBindingModel().getBindingVariablesCount());
-		assertNotNull(declaration4.getBindingModel().bindingVariableNamed(FlexoConceptBindingModel.THIS_PROPERTY));
-		assertNotNull(declaration4.getBindingModel().bindingVariableNamed(FlexoConceptBindingModel.CONTAINER_PROPERTY));
+		assertNotNull(declaration4.getBindingModel().bindingVariableNamed(FlexoConceptBindingModel.THIS_PROPERTY_NAME));
+		assertNotNull(declaration4.getBindingModel().bindingVariableNamed(FlexoConceptBindingModel.CONTAINER_PROPERTY_NAME));
 		assertNotNull(declaration4.getBindingModel().bindingVariableNamed(FlexoBehaviourBindingModel.PARAMETERS_PROPERTY));
 		assertNotNull(declaration4.getBindingModel().bindingVariableNamed("variable1"));
 
 		assertEquals(5, declaration2.getBindingModel().getBindingVariablesCount());
-		assertNotNull(declaration2.getBindingModel().bindingVariableNamed(FlexoConceptBindingModel.THIS_PROPERTY));
-		assertNotNull(declaration2.getBindingModel().bindingVariableNamed(FlexoConceptBindingModel.CONTAINER_PROPERTY));
+		assertNotNull(declaration2.getBindingModel().bindingVariableNamed(FlexoConceptBindingModel.THIS_PROPERTY_NAME));
+		assertNotNull(declaration2.getBindingModel().bindingVariableNamed(FlexoConceptBindingModel.CONTAINER_PROPERTY_NAME));
 		assertNotNull(declaration2.getBindingModel().bindingVariableNamed(FlexoBehaviourBindingModel.PARAMETERS_PROPERTY));
 		assertNotNull(declaration2.getBindingModel().bindingVariableNamed("variable1"));
 		assertNotNull(declaration2.getBindingModel().bindingVariableNamed("variable4"));
 
 		assertEquals(6, declaration3.getBindingModel().getBindingVariablesCount());
-		assertNotNull(declaration3.getBindingModel().bindingVariableNamed(FlexoConceptBindingModel.THIS_PROPERTY));
-		assertNotNull(declaration3.getBindingModel().bindingVariableNamed(FlexoConceptBindingModel.CONTAINER_PROPERTY));
+		assertNotNull(declaration3.getBindingModel().bindingVariableNamed(FlexoConceptBindingModel.THIS_PROPERTY_NAME));
+		assertNotNull(declaration3.getBindingModel().bindingVariableNamed(FlexoConceptBindingModel.CONTAINER_PROPERTY_NAME));
 		assertNotNull(declaration3.getBindingModel().bindingVariableNamed(FlexoBehaviourBindingModel.PARAMETERS_PROPERTY));
 		assertNotNull(declaration3.getBindingModel().bindingVariableNamed("variable1"));
 		assertNotNull(declaration3.getBindingModel().bindingVariableNamed("variable4"));

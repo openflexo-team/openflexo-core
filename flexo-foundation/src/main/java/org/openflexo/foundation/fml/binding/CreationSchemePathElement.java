@@ -53,6 +53,7 @@ import org.openflexo.connie.binding.Function;
 import org.openflexo.connie.binding.Function.FunctionArgument;
 import org.openflexo.connie.binding.FunctionPathElement;
 import org.openflexo.connie.binding.IBindingPathElement;
+import org.openflexo.connie.binding.NewInstancePathElement;
 import org.openflexo.connie.exception.InvocationTargetTransformException;
 import org.openflexo.connie.exception.NullReferenceException;
 import org.openflexo.connie.exception.TransformException;
@@ -60,6 +61,7 @@ import org.openflexo.connie.exception.TypeMismatchException;
 import org.openflexo.connie.expr.ExpressionTransformer;
 import org.openflexo.connie.type.TypeUtils;
 import org.openflexo.foundation.fml.CreationScheme;
+import org.openflexo.foundation.fml.FMLBindingFactory;
 import org.openflexo.foundation.fml.FlexoBehaviourParameter;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoConceptInstanceType;
@@ -75,15 +77,24 @@ import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
  * @author sylvain
  * 
  */
-public class CreationSchemePathElement extends FunctionPathElement<CreationScheme> implements PropertyChangeListener {
+public class CreationSchemePathElement extends NewInstancePathElement<CreationScheme> implements PropertyChangeListener {
 
 	static final Logger logger = Logger.getLogger(CreationSchemePathElement.class.getPackage().getName());
 
 	private Type lastKnownType = null;
 
-	public CreationSchemePathElement(IBindingPathElement parent, CreationScheme flexoBehaviour, List<DataBinding<?>> args) {
-		super(parent, flexoBehaviour, args);
+	private FMLBindingFactory bindingFactory;
 
+	public CreationSchemePathElement(FlexoConceptInstanceType type, IBindingPathElement parent, String constructorName,
+			List<DataBinding<?>> args, FMLBindingFactory bindingFactory) {
+		super(type, parent, constructorName, args);
+		this.bindingFactory = bindingFactory;
+	}
+
+	public CreationSchemePathElement(FlexoConceptInstanceType type, IBindingPathElement parent, CreationScheme constructor,
+			List<DataBinding<?>> args, FMLBindingFactory bindingFactory) {
+		super(type, parent, constructor, args);
+		this.bindingFactory = bindingFactory;
 	}
 
 	@Override
@@ -96,7 +107,7 @@ public class CreationSchemePathElement extends FunctionPathElement<CreationSchem
 				getCreationScheme().getPropertyChangeSupport().addPropertyChangeListener(this);
 			}
 			for (FunctionArgument arg : getCreationScheme().getArguments()) {
-				DataBinding<?> argValue = getParameter(arg);
+				DataBinding<?> argValue = getArgumentValue(arg);
 				if (argValue != null && arg != null) {
 					argValue.setDeclaredType(arg.getArgumentType());
 				}
@@ -117,11 +128,11 @@ public class CreationSchemePathElement extends FunctionPathElement<CreationSchem
 	}
 
 	@Override
-	public Type getType() {
+	public FlexoConceptInstanceType getType() {
 		if (getCreationScheme() != null) {
-			return getCreationScheme().getReturnType();
+			return (FlexoConceptInstanceType) getCreationScheme().getReturnType();
 		}
-		return super.getType();
+		return (FlexoConceptInstanceType) super.getType();
 	}
 
 	public CreationScheme getCreationScheme() {
@@ -138,23 +149,13 @@ public class CreationSchemePathElement extends FunctionPathElement<CreationSchem
 		return getCreationScheme().getDescription();
 	}
 
-	/**
-	 * Return a flag indicating if this BindingPathElement supports computation with 'null' value as entry (target)<br>
-	 * 
-	 * @return false in this case
-	 */
-	@Override
-	public boolean supportsNullValues() {
-		return true;
-	}
-
 	@Override
 	public void propertyChange(PropertyChangeEvent evt) {
 		if (evt.getSource() == getCreationScheme()) {
 			if (evt.getPropertyName().equals(FlexoBehaviourParameter.NAME_KEY)) {
 				// System.out.println("Notify behaviour name changing for " + getFlexoBehaviour() + " new=" +
 				// getFlexoBehaviour().getName());
-				serializationRepresentation = null;
+				clearSerializationRepresentation();
 				if (getCreationScheme() != null && getCreationScheme().getFlexoConcept() != null
 						&& getCreationScheme().getFlexoConcept().getBindingModel() != null
 						&& getCreationScheme().getFlexoConcept().getBindingModel().getPropertyChangeSupport() != null) {
@@ -164,7 +165,7 @@ public class CreationSchemePathElement extends FunctionPathElement<CreationSchem
 			}
 			if (lastKnownType != getType()) {
 				lastKnownType = getType();
-				serializationRepresentation = null;
+				clearSerializationRepresentation();
 				if (getCreationScheme() != null && getCreationScheme().getFlexoConcept() != null
 						&& getCreationScheme().getFlexoConcept().getBindingModel() != null
 						&& getCreationScheme().getFlexoConcept().getBindingModel().getPropertyChangeSupport() != null) {
@@ -247,30 +248,24 @@ public class CreationSchemePathElement extends FunctionPathElement<CreationSchem
 
 	@Override
 	public String getSerializationRepresentation() {
-		if (serializationRepresentation == null) {
-			StringBuffer returned = new StringBuffer();
-			if (getFunction() != null) {
-				returned.append("new " + TypeUtils.simpleRepresentation(getType()) + "(");
-				boolean isFirst = true;
-				for (Function.FunctionArgument a : getFunction().getArguments()) {
-					returned.append((isFirst ? "" : ",") + getParameter(a));
-					isFirst = false;
-				}
-				returned.append(")");
+		// if (serializationRepresentation == null) {
+		StringBuffer returned = new StringBuffer();
+		if (getFunction() != null) {
+			returned.append("new " + TypeUtils.simpleRepresentation(getType()) + "(");
+			boolean isFirst = true;
+			for (Function.FunctionArgument a : getFunction().getArguments()) {
+				returned.append((isFirst ? "" : ",") + getArgumentValue(a));
+				isFirst = false;
 			}
-			else {
-				returned.append("unknown_new()");
-			}
-			serializationRepresentation = returned.toString();
+			returned.append(")");
 		}
-		return serializationRepresentation;
-	}
-
-	@Override
-	public boolean isNotificationSafe() {
-		// By default, we assume that the result of the execution of a FlexoBehaviour is not notification-safe
-		// (we cannot rely on the fact that a notification will be thrown if the result of the execution of the behaviour change)
-		return false;
+		else {
+			returned.append("unknown_new()");
+		}
+		// serializationRepresentation = returned.toString();
+		return returned.toString();
+		// }
+		// return serializationRepresentation;
 	}
 
 	@Override
@@ -338,7 +333,7 @@ public class CreationSchemePathElement extends FunctionPathElement<CreationSchem
 			creationSchemeAction.initWithFlexoConceptInstance(newInstance);
 
 			for (FlexoBehaviourParameter p : getCreationScheme().getParameters()) {
-				DataBinding<?> param = getParameter(p);
+				DataBinding<?> param = getArgumentValue(p);
 				Object paramValue = TypeUtils.castTo(param.getBindingValue(evaluationContext), p.getType());
 				System.out.println("For parameter " + param + " value is " + paramValue);
 				if (paramValue != null) {
@@ -354,6 +349,21 @@ public class CreationSchemePathElement extends FunctionPathElement<CreationSchem
 		logger.warning("Unexpected: " + evaluationContext);
 		Thread.dumpStack();
 		return false;
+	}
+
+	@Override
+	public boolean isResolved() {
+		return getCreationScheme() != null;
+	}
+
+	@Override
+	public void resolve() {
+		CreationScheme function = (CreationScheme) bindingFactory.retrieveConstructor(getType(),
+				getParent() != null ? getParent().getType() : null, getParsed(), getArguments());
+		setFunction(function);
+		if (function == null) {
+			logger.warning("cannot find constructor " + getParsed() + " for type " + getType() + " with arguments " + getArguments());
+		}
 	}
 
 }

@@ -42,9 +42,10 @@ import java.lang.reflect.Type;
 import java.util.logging.Logger;
 
 import org.openflexo.connie.Bindable;
+import org.openflexo.connie.binding.IBindingPathElement;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.VirtualModelInstanceType;
-import org.openflexo.foundation.fml.expr.NewVirtualModelInstanceBindingPathElement;
+import org.openflexo.foundation.fml.binding.CreationSchemePathElement;
 import org.openflexo.foundation.fml.parser.MainSemanticsAnalyzer;
 import org.openflexo.foundation.fml.parser.TypeFactory;
 import org.openflexo.foundation.fml.parser.node.AFullQualifiedNewInstance;
@@ -59,21 +60,22 @@ import org.openflexo.foundation.fml.parser.node.Node;
  * @author sylvain
  * 
  */
-public class AddVirtualModelInstanceNode extends AbstractAddFlexoConceptInstanceNode<NewVirtualModelInstanceBindingPathElement> {
+public class AddVirtualModelInstanceNode extends AbstractAddFlexoConceptInstanceNode {
 
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(AddVirtualModelInstanceNode.class.getPackage().getName());
 
-	public AddVirtualModelInstanceNode(ASimpleNewInstance astNode, MainSemanticsAnalyzer analyser, Bindable bindable) {
-		super(astNode, analyser, bindable);
-	}
-
-	public AddVirtualModelInstanceNode(AFullQualifiedNewInstance astNode, MainSemanticsAnalyzer analyser, Bindable bindable) {
-		super(astNode, analyser, bindable);
-	}
-
-	public AddVirtualModelInstanceNode(NewVirtualModelInstanceBindingPathElement action, MainSemanticsAnalyzer analyser,
+	public AddVirtualModelInstanceNode(ASimpleNewInstance astNode, MainSemanticsAnalyzer analyser, IBindingPathElement parent,
 			Bindable bindable) {
+		super(astNode, analyser, parent, bindable);
+	}
+
+	public AddVirtualModelInstanceNode(AFullQualifiedNewInstance astNode, MainSemanticsAnalyzer analyser, IBindingPathElement parent,
+			Bindable bindable) {
+		super(astNode, analyser, parent, bindable);
+	}
+
+	public AddVirtualModelInstanceNode(CreationSchemePathElement action, MainSemanticsAnalyzer analyser, Bindable bindable) {
 		super(action, analyser, bindable);
 	}
 
@@ -166,8 +168,8 @@ public class AddVirtualModelInstanceNode extends AbstractAddFlexoConceptInstance
 					throwIssue("Cannot find any CreationScheme for VirtualModel " + getModelObject().getType(), getTypeFragment());
 				}
 				else if (typeVirtualModel.getCreationSchemes().size() == 1) {
-					getModelObject().constructorName = typeVirtualModel.getCreationSchemes().get(0).getName();
-					System.out.println("Set constructor name to " + getModelObject().constructorName);
+					getModelObject().setFunction(typeVirtualModel.getCreationSchemes().get(0));
+					//System.out.println("Set constructor to " + getModelObject().getFunction());
 				}
 				else {
 					throwIssue("Ambigous CreationScheme for FlexoConcept " + getModelObject().getType(), getTypeFragment());
@@ -180,7 +182,7 @@ public class AddVirtualModelInstanceNode extends AbstractAddFlexoConceptInstance
 	}
 
 	@Override
-	public NewVirtualModelInstanceBindingPathElement buildModelObjectFromAST(Node astNode) {
+	public CreationSchemePathElement buildModelObjectFromAST(Node astNode) {
 
 		if (getBindable() != null) {
 			Type type = null;
@@ -193,11 +195,13 @@ public class AddVirtualModelInstanceNode extends AbstractAddFlexoConceptInstance
 				type = TypeFactory.makeType(((AFullQualifiedNewInstance) astNode).getConceptName(), getAnalyser().getTypingSpace());
 			}
 
-			NewVirtualModelInstanceBindingPathElement returned = new NewVirtualModelInstanceBindingPathElement(
+			CreationSchemePathElement pathElement = (CreationSchemePathElement) getBindingFactory().makeNewInstancePathElement(type,
+					getParentPathElement(), null, getArguments());
+			return pathElement;
+			/*NewVirtualModelInstanceBindingPathElement returned = new NewVirtualModelInstanceBindingPathElement(
 					(VirtualModelInstanceType) type, null, // default constructor,
 					getArguments());
-
-			return returned;
+			return returned;*/
 		}
 		return null;
 

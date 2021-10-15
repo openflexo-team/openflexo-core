@@ -50,6 +50,7 @@ import org.openflexo.foundation.fml.FlexoBehaviour;
 import org.openflexo.foundation.fml.FlexoBehaviourParametersValuesType;
 import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
 
+@Deprecated
 public class FlexoBehaviourParametersValuesPathElement extends SimplePathElement {
 	static final Logger logger = Logger.getLogger(FlexoBehaviourParametersValuesPathElement.class.getPackage().getName());
 
@@ -92,6 +93,16 @@ public class FlexoBehaviourParametersValuesPathElement extends SimplePathElement
 	@Override
 	public boolean isNotificationSafe() {
 		return false;
+	}
+
+	@Override
+	public boolean isResolved() {
+		return true;
+	}
+
+	@Override
+	public void resolve() {
+		// Not applicable
 	}
 
 }

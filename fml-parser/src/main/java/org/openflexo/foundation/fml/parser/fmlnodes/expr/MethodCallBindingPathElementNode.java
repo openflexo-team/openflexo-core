@@ -39,7 +39,8 @@
 package org.openflexo.foundation.fml.parser.fmlnodes.expr;
 
 import org.openflexo.connie.Bindable;
-import org.openflexo.connie.expr.BindingValue.MethodCallBindingPathElement;
+import org.openflexo.connie.binding.IBindingPathElement;
+import org.openflexo.connie.binding.SimpleMethodPathElement;
 import org.openflexo.foundation.fml.parser.MainSemanticsAnalyzer;
 import org.openflexo.foundation.fml.parser.node.APrimaryMethodInvocation;
 import org.openflexo.foundation.fml.parser.node.Node;
@@ -51,17 +52,23 @@ import org.openflexo.p2pp.RawSource.RawSourcePosition;
  * 
  */
 public class MethodCallBindingPathElementNode
-		extends AbstractCallBindingPathElementNode<APrimaryMethodInvocation, MethodCallBindingPathElement> {
+		extends AbstractCallBindingPathElementNode<APrimaryMethodInvocation, SimpleMethodPathElement<?>> {
 
 	private Node identifierNode;
+	private IBindingPathElement parent;
 
 	public MethodCallBindingPathElementNode(APrimaryMethodInvocation astNode, Node identifierNode, MainSemanticsAnalyzer analyser,
-			Bindable bindable) {
+			IBindingPathElement parent, Bindable bindable) {
 		super(astNode, analyser, bindable);
 		this.identifierNode = identifierNode;
+		this.parent = parent;
+		// buildModelObjectFromAST() was already called, but too early (parent not yet set)
+		// we do it again
+		modelObject = buildModelObjectFromAST(astNode);
+
 	}
 
-	public MethodCallBindingPathElementNode(MethodCallBindingPathElement bindingPathElement, MainSemanticsAnalyzer analyser,
+	public MethodCallBindingPathElementNode(SimpleMethodPathElement<?> bindingPathElement, MainSemanticsAnalyzer analyser,
 			Bindable bindable) {
 		super(bindingPathElement, analyser, bindable);
 	}
@@ -80,15 +87,41 @@ public class MethodCallBindingPathElementNode
 	}
 
 	@Override
-	public MethodCallBindingPathElement buildModelObjectFromAST(APrimaryMethodInvocation astNode) {
+	public SimpleMethodPathElement<?> buildModelObjectFromAST(APrimaryMethodInvocation astNode) {
 
-		if (getBindable() != null) {
+		if (parent != null && getBindable() != null) {
+			handleArguments(astNode.getArgumentList());
+			String methodName = getLastPathIdentifier(astNode.getPrimary());
+			String methodName2 = getText(identifierNode);
+
+			SimpleMethodPathElement<?> pathElement = (SimpleMethodPathElement<?>) getBindingFactory().makeSimpleMethodPathElement(parent,
+					methodName, getArguments());
+			return pathElement;
+		}
+		return null;
+
+		/*if (getBindable() != null) {
 			handleArguments(astNode.getArgumentList());
 			String identifier = getLastPathIdentifier(astNode.getPrimary());
 			MethodCallBindingPathElement returned = new MethodCallBindingPathElement(identifier, getArguments());
 			return returned;
 		}
 		return null;
+		
+		IBindingPathElement parent = null;
+		if (bindingPathElements.size() == 0) {
+			parent = bindingVariable;
+		}
+		else {
+			parent = bindingPathElements.get(bindingPathElements.size() - 1);
+		}
+		
+		FunctionPathElement<?> pathElement = null;
+		pathElement = getBindable().getBindingFactory().makeFunctionPathElement(parent, methodName, args);
+		bindingPathElements.add(pathElement);
+		
+		return pathElement;*/
+
 	}
 
 }

@@ -61,9 +61,8 @@ import org.openflexo.foundation.fml.parser.fmlnodes.expr.BindingPathNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.expr.ConstantNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.expr.DataBindingNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.expr.MethodCallBindingPathElementNode;
-import org.openflexo.foundation.fml.parser.fmlnodes.expr.NormalBindingPathElementNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.expr.PlusExpressionNode;
-import org.openflexo.foundation.fml.parser.fmlnodes.expr.SuperBindingPathElementNode;
+import org.openflexo.foundation.fml.parser.fmlnodes.expr.SimplePathElementNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.expr.SuperMethodCallBindingPathElementNode;
 import org.openflexo.pamela.exceptions.ModelDefinitionException;
 import org.openflexo.rm.Resource;
@@ -130,8 +129,8 @@ public class TestBindingPath extends FMLParserTestCase {
 
 		DataBindingNode assignNode = checkNode("(12:2)-(12:3)", "a", (DataBindingNode) assignationNode.getChildren().get(0));
 		BindingPathNode assignBPNode = checkNode("(12:2)-(12:3)", "a", (BindingPathNode) assignNode.getChildren().get(0));
-		NormalBindingPathElementNode assignPathElementNode = checkNode("(12:2)-(12:3)", "Normal[a]",
-				(NormalBindingPathElementNode) assignBPNode.getChildren().get(0));
+		SimplePathElementNode assignPathElementNode = checkNode("(12:2)-(12:3)", "Normal[a]",
+				(SimplePathElementNode) assignBPNode.getChildren().get(0));
 
 		ExpressionActionNode expressionNode = checkNodeForObject("(12:6)-(12:8)", null, assignationAction.getAssignableAction());
 		DataBindingNode expressionValueNode = checkNode("(12:6)-(12:8)", "42", (DataBindingNode) expressionNode.getChildren().get(0));
@@ -161,10 +160,10 @@ public class TestBindingPath extends FMLParserTestCase {
 
 		DataBindingNode assignNode = checkNode("(16:2)-(16:5)", "a.b", (DataBindingNode) assignationNode.getChildren().get(0));
 		BindingPathNode assignBPNode = checkNode("(16:2)-(16:5)", "a.b", (BindingPathNode) assignNode.getChildren().get(0));
-		NormalBindingPathElementNode assignPathElementNode1 = checkNode("(16:2)-(16:3)", "Normal[a]",
-				(NormalBindingPathElementNode) assignBPNode.getChildren().get(0));
-		NormalBindingPathElementNode assignPathElementNode2 = checkNode("(16:4)-(16:5)", "Normal[b]",
-				(NormalBindingPathElementNode) assignBPNode.getChildren().get(1));
+		SimplePathElementNode assignPathElementNode1 = checkNode("(16:2)-(16:3)", "Normal[a]",
+				(SimplePathElementNode) assignBPNode.getChildren().get(0));
+		SimplePathElementNode assignPathElementNode2 = checkNode("(16:4)-(16:5)", "Normal[b]",
+				(SimplePathElementNode) assignBPNode.getChildren().get(1));
 
 		ExpressionActionNode expressionNode = checkNodeForObject("(16:8)-(16:12)", null, assignationAction.getAssignableAction());
 		DataBindingNode expressionValueNode = checkNode("(16:8)-(16:12)", "c + 42", (DataBindingNode) expressionNode.getChildren().get(0));
@@ -172,8 +171,8 @@ public class TestBindingPath extends FMLParserTestCase {
 		PlusExpressionNode plusExpressionNode = checkNode("(16:8)-(16:12)", "c + 42",
 				(PlusExpressionNode) expressionValueNode.getChildren().get(0));
 		BindingPathNode value1Node = checkNode("(16:8)-(16:9)", "c", (BindingPathNode) plusExpressionNode.getChildren().get(0));
-		NormalBindingPathElementNode value1PathElementNode = checkNode("(16:8)-(16:9)", "Normal[c]",
-				(NormalBindingPathElementNode) value1Node.getChildren().get(0));
+		SimplePathElementNode value1PathElementNode = checkNode("(16:8)-(16:9)", "Normal[c]",
+				(SimplePathElementNode) value1Node.getChildren().get(0));
 		ConstantNode value2Node = checkNode("(16:10)-(16:12)", "42", (ConstantNode) plusExpressionNode.getChildren().get(1));
 	}
 
@@ -200,16 +199,16 @@ public class TestBindingPath extends FMLParserTestCase {
 
 		DataBindingNode assignNode = checkNode("(20:2)-(20:3)", "a", (DataBindingNode) assignationNode.getChildren().get(0));
 		BindingPathNode assignBPNode = checkNode("(20:2)-(20:3)", "a", (BindingPathNode) assignNode.getChildren().get(0));
-		NormalBindingPathElementNode assignPathElementNode1 = checkNode("(20:2)-(20:3)", "Normal[a]",
-				(NormalBindingPathElementNode) assignBPNode.getChildren().get(0));
+		SimplePathElementNode assignPathElementNode1 = checkNode("(20:2)-(20:3)", "Normal[a]",
+				(SimplePathElementNode) assignBPNode.getChildren().get(0));
 
 		ExpressionActionNode expressionNode = checkNodeForObject("(20:6)-(20:9)", null, assignationAction.getAssignableAction());
 		DataBindingNode expressionValueNode = checkNode("(20:6)-(20:9)", "b.c", (DataBindingNode) expressionNode.getChildren().get(0));
 		BindingPathNode valueNode = checkNode("(20:6)-(20:9)", "b.c", (BindingPathNode) expressionValueNode.getChildren().get(0));
-		NormalBindingPathElementNode value1PathElementNode = checkNode("(20:6)-(20:7)", "Normal[b]",
-				(NormalBindingPathElementNode) valueNode.getChildren().get(0));
-		NormalBindingPathElementNode value2PathElementNode = checkNode("(20:8)-(20:9)", "Normal[c]",
-				(NormalBindingPathElementNode) valueNode.getChildren().get(1));
+		SimplePathElementNode value1PathElementNode = checkNode("(20:6)-(20:7)", "Normal[b]",
+				(SimplePathElementNode) valueNode.getChildren().get(0));
+		SimplePathElementNode value2PathElementNode = checkNode("(20:8)-(20:9)", "Normal[c]",
+				(SimplePathElementNode) valueNode.getChildren().get(1));
 	}
 
 	@Test
@@ -264,10 +263,10 @@ public class TestBindingPath extends FMLParserTestCase {
 		ExpressionActionNode expressionNode = checkNodeForObject("(28:6)-(28:13)", null, assignationAction.getAssignableAction());
 		DataBindingNode expressionValueNode = checkNode("(28:6)-(28:13)", "b.c.d()", (DataBindingNode) expressionNode.getChildren().get(0));
 		BindingPathNode valueNode = checkNode("(28:6)-(28:13)", "b.c.d()", (BindingPathNode) expressionValueNode.getChildren().get(0));
-		NormalBindingPathElementNode value1PathElementNode = checkNode("(28:6)-(28:7)", "Normal[b]",
-				(NormalBindingPathElementNode) valueNode.getChildren().get(0));
-		NormalBindingPathElementNode value2PathElementNode = checkNode("(28:8)-(28:9)", "Normal[c]",
-				(NormalBindingPathElementNode) valueNode.getChildren().get(1));
+		SimplePathElementNode value1PathElementNode = checkNode("(28:6)-(28:7)", "Normal[b]",
+				(SimplePathElementNode) valueNode.getChildren().get(0));
+		SimplePathElementNode value2PathElementNode = checkNode("(28:8)-(28:9)", "Normal[c]",
+				(SimplePathElementNode) valueNode.getChildren().get(1));
 		MethodCallBindingPathElementNode methodPathElementNode = checkNode("(28:10)-(28:13)", "Call[d()]",
 				(MethodCallBindingPathElementNode) valueNode.getChildren().get(2));
 	}
@@ -298,14 +297,14 @@ public class TestBindingPath extends FMLParserTestCase {
 				(DataBindingNode) expressionNode.getChildren().get(0));
 		BindingPathNode valueNode = checkNode("(32:6)-(32:17)", "b.c().d().e", (BindingPathNode) expressionValueNode.getChildren().get(0));
 
-		NormalBindingPathElementNode pathElementNode1 = checkNode("(32:6)-(32:7)", "Normal[b]",
-				(NormalBindingPathElementNode) valueNode.getChildren().get(0));
+		SimplePathElementNode pathElementNode1 = checkNode("(32:6)-(32:7)", "Normal[b]",
+				(SimplePathElementNode) valueNode.getChildren().get(0));
 		MethodCallBindingPathElementNode pathElementNode2 = checkNode("(32:8)-(32:11)", "Call[c()]",
 				(MethodCallBindingPathElementNode) valueNode.getChildren().get(1));
 		MethodCallBindingPathElementNode pathElementNode3 = checkNode("(32:12)-(32:15)", "Call[d()]",
 				(MethodCallBindingPathElementNode) valueNode.getChildren().get(2));
-		NormalBindingPathElementNode pathElementNode4 = checkNode("(32:16)-(32:17)", "Normal[e]",
-				(NormalBindingPathElementNode) valueNode.getChildren().get(3));
+		SimplePathElementNode pathElementNode4 = checkNode("(32:16)-(32:17)", "Normal[e]",
+				(SimplePathElementNode) valueNode.getChildren().get(3));
 	}
 
 	@Test
@@ -363,8 +362,8 @@ public class TestBindingPath extends FMLParserTestCase {
 				(DataBindingNode) expressionNode.getChildren().get(0));
 		BindingPathNode valueNode = checkNode("(40:6)-(40:18)", "super.init()", (BindingPathNode) expressionValueNode.getChildren().get(0));
 
-		SuperBindingPathElementNode pathElementNode1 = checkNode("(40:6)-(40:11)", "Normal[super]",
-				(SuperBindingPathElementNode) valueNode.getChildren().get(0));
+		SimplePathElementNode pathElementNode1 = checkNode("(40:6)-(40:11)", "Normal[super]",
+				(SimplePathElementNode) valueNode.getChildren().get(0));
 		MethodCallBindingPathElementNode pathElementNode2 = checkNode("(40:12)-(40:18)", "Call[init()]",
 				(MethodCallBindingPathElementNode) valueNode.getChildren().get(1));
 	}

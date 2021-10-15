@@ -51,6 +51,7 @@ import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.binding.Function.FunctionArgument;
 import org.openflexo.connie.binding.FunctionPathElement;
 import org.openflexo.connie.binding.IBindingPathElement;
+import org.openflexo.connie.binding.SimpleMethodPathElement;
 import org.openflexo.connie.exception.InvocationTargetTransformException;
 import org.openflexo.connie.exception.NullReferenceException;
 import org.openflexo.connie.exception.TransformException;
@@ -61,6 +62,7 @@ import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoProject;
 import org.openflexo.foundation.fml.AbstractActionScheme;
 import org.openflexo.foundation.fml.CreationScheme;
+import org.openflexo.foundation.fml.FMLBindingFactory;
 import org.openflexo.foundation.fml.FlexoBehaviour;
 import org.openflexo.foundation.fml.FlexoBehaviourParameter;
 import org.openflexo.foundation.fml.FlexoConcept;
@@ -79,15 +81,24 @@ import org.openflexo.foundation.fml.rt.action.SuperCreationSchemeActionFactory;
  * @author sylvain
  * 
  */
-public class FlexoBehaviourPathElement extends FunctionPathElement<FlexoBehaviour> implements PropertyChangeListener {
+public class FlexoBehaviourPathElement extends SimpleMethodPathElement<FlexoBehaviour> implements PropertyChangeListener {
 
 	static final Logger logger = Logger.getLogger(FlexoBehaviourPathElement.class.getPackage().getName());
 
 	private Type lastKnownType = null;
 
-	public FlexoBehaviourPathElement(IBindingPathElement parent, FlexoBehaviour flexoBehaviour, List<DataBinding<?>> args) {
-		super(parent, flexoBehaviour, args);
+	private FMLBindingFactory bindingFactory;
 
+	public FlexoBehaviourPathElement(IBindingPathElement parent, String methodName, List<DataBinding<?>> args,
+			FMLBindingFactory bindingFactory) {
+		super(parent, methodName, args);
+		this.bindingFactory = bindingFactory;
+	}
+
+	public FlexoBehaviourPathElement(IBindingPathElement parent, FlexoBehaviour behaviour, List<DataBinding<?>> args,
+			FMLBindingFactory bindingFactory) {
+		super(parent, behaviour, args);
+		this.bindingFactory = bindingFactory;
 	}
 
 	@Override
@@ -100,7 +111,7 @@ public class FlexoBehaviourPathElement extends FunctionPathElement<FlexoBehaviou
 				getFlexoBehaviour().getPropertyChangeSupport().addPropertyChangeListener(this);
 			}
 			for (FunctionArgument arg : getFlexoBehaviour().getArguments()) {
-				DataBinding<?> argValue = getParameter(arg);
+				DataBinding<?> argValue = getArgumentValue(arg);
 				if (argValue != null && arg != null) {
 					argValue.setDeclaredType(arg.getArgumentType());
 				}
@@ -142,23 +153,13 @@ public class FlexoBehaviourPathElement extends FunctionPathElement<FlexoBehaviou
 		return getFlexoBehaviour().getDescription();
 	}
 
-	/**
-	 * Return a flag indicating if this BindingPathElement supports computation with 'null' value as entry (target)<br>
-	 * 
-	 * @return false in this case
-	 */
-	@Override
-	public boolean supportsNullValues() {
-		return false;
-	}
-
 	@Override
 	public void propertyChange(PropertyChangeEvent evt) {
 		if (evt.getSource() == getFlexoBehaviour()) {
 			if (evt.getPropertyName().equals(FlexoBehaviourParameter.NAME_KEY)) {
 				// System.out.println("Notify behaviour name changing for " + getFlexoBehaviour() + " new=" +
 				// getFlexoBehaviour().getName());
-				serializationRepresentation = null;
+				clearSerializationRepresentation();
 				if (getFlexoBehaviour() != null && getFlexoBehaviour().getFlexoConcept() != null
 						&& getFlexoBehaviour().getFlexoConcept().getBindingModel() != null
 						&& getFlexoBehaviour().getFlexoConcept().getBindingModel().getPropertyChangeSupport() != null) {
@@ -168,7 +169,7 @@ public class FlexoBehaviourPathElement extends FunctionPathElement<FlexoBehaviou
 			}
 			if (lastKnownType != getType()) {
 				lastKnownType = getType();
-				serializationRepresentation = null;
+				clearSerializationRepresentation();
 				if (getFlexoBehaviour() != null && getFlexoBehaviour().getFlexoConcept() != null
 						&& getFlexoBehaviour().getFlexoConcept().getBindingModel() != null
 						&& getFlexoBehaviour().getFlexoConcept().getBindingModel().getPropertyChangeSupport() != null) {
@@ -227,7 +228,7 @@ public class FlexoBehaviourPathElement extends FunctionPathElement<FlexoBehaviou
 					actionSchemeAction.setDeclaredConceptualLevel(conceptualLevel);
 
 					for (FlexoBehaviourParameter p : getFlexoBehaviour().getParameters()) {
-						DataBinding<?> param = getParameter(p);
+						DataBinding<?> param = getArgumentValue(p);
 						Object paramValue = TypeUtils.castTo(param.getBindingValue(context), p.getType());
 						// logger.fine("For parameter " + param + " value is " + paramValue);
 						if (paramValue != null) {
@@ -258,7 +259,7 @@ public class FlexoBehaviourPathElement extends FunctionPathElement<FlexoBehaviou
 					actionSchemeAction.setDeclaredConceptualLevel(conceptualLevel);
 
 					for (FlexoBehaviourParameter p : getFlexoBehaviour().getParameters()) {
-						DataBinding<?> param = getParameter(p);
+						DataBinding<?> param = getArgumentValue(p);
 						Object paramValue = TypeUtils.castTo(param.getBindingValue(context), p.getType());
 						// logger.fine("For parameter " + param + " value is " + paramValue);
 						if (paramValue != null) {
@@ -323,6 +324,27 @@ public class FlexoBehaviourPathElement extends FunctionPathElement<FlexoBehaviou
 	@Override
 	public boolean requiresContext() {
 		return true;
+	}
+
+	@Override
+	public boolean isResolved() {
+		return getFlexoBehaviour() != null;
+	}
+
+	@Override
+	public void resolve() {
+		if (getParent() != null) {
+			FlexoBehaviour function = (FlexoBehaviour) bindingFactory.retrieveFunction(getParent().getType(), getParsed(), getArguments());
+			setFunction(function);
+			if (function == null) {
+				logger.warning("cannot find behaviour " + getParsed() + " for " + getParent() + " with arguments " + getArguments());
+			}
+		}
+		else {
+			logger.warning("cannot find parent for " + this);
+			// Thread.dumpStack();
+			// System.exit(-1);
+		}
 	}
 
 }

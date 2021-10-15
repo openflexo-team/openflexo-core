@@ -268,10 +268,10 @@ public interface FlexoConcept extends FlexoConceptObject, FMLPrettyPrintable {
 	 * Search is perform in entire scope, and includes parent concept behaviours (inherited behaviours included)
 	 * 
 	 * @param behaviourName
-	 * @param parameters
+	 * @param arguments
 	 * @return
 	 */
-	public FlexoBehaviour getFlexoBehaviour(String behaviourName, Type... parameters);
+	public FlexoBehaviour getFlexoBehaviour(String behaviourName, Type... arguments);
 
 	/**
 	 * Return {@link FlexoBehaviour} matching supplied signature (expressed with types), which are declared for this concept. Result does

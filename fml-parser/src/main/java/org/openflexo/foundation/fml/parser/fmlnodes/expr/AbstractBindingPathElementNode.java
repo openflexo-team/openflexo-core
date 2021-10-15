@@ -42,7 +42,8 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import org.openflexo.connie.Bindable;
-import org.openflexo.connie.expr.BindingValue.AbstractBindingPathElement;
+import org.openflexo.connie.BindingFactory;
+import org.openflexo.connie.binding.IBindingPathElement;
 import org.openflexo.connie.expr.Expression;
 import org.openflexo.foundation.fml.parser.MainSemanticsAnalyzer;
 import org.openflexo.foundation.fml.parser.ObjectNode;
@@ -62,7 +63,7 @@ import org.openflexo.foundation.fml.parser.node.PPrimaryNoId;
  * @author sylvain
  * 
  */
-public abstract class AbstractBindingPathElementNode<N extends Node, BPE extends AbstractBindingPathElement>
+public abstract class AbstractBindingPathElementNode<N extends Node, BPE extends IBindingPathElement>
 		extends ObjectNode<N, BPE, MainSemanticsAnalyzer> {
 
 	@SuppressWarnings("unused")
@@ -74,6 +75,9 @@ public abstract class AbstractBindingPathElementNode<N extends Node, BPE extends
 	public AbstractBindingPathElementNode(N astNode, MainSemanticsAnalyzer analyser, Bindable bindable) {
 		super(astNode, analyser);
 		this.bindable = bindable;
+		// buildModelObjectFromAST() was already called, but too early (bindable not yet set)
+		// we do it again
+		modelObject = buildModelObjectFromAST(astNode);
 	}
 
 	public AbstractBindingPathElementNode(BPE bindingPathElement, MainSemanticsAnalyzer analyser, Bindable bindable) {
@@ -83,6 +87,13 @@ public abstract class AbstractBindingPathElementNode<N extends Node, BPE extends
 
 	public Bindable getBindable() {
 		return bindable;
+	}
+
+	public BindingFactory getBindingFactory() {
+		if (getBindable() != null && getBindable().getBindingFactory() != null) {
+			return getBindable().getBindingFactory();
+		}
+		return getAnalyser().getFMLBindingFactory();
 	}
 
 	// Take care that this method is never called !

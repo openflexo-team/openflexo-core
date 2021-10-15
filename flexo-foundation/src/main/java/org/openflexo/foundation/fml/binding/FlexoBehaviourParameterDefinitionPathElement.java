@@ -48,6 +48,8 @@ import org.openflexo.connie.exception.NullReferenceException;
 import org.openflexo.connie.exception.TypeMismatchException;
 import org.openflexo.foundation.fml.FlexoBehaviourParameter;
 
+@Deprecated
+// Should be refactored
 public class FlexoBehaviourParameterDefinitionPathElement extends SimplePathElement {
 
 	private static final Logger logger = Logger.getLogger(FlexoBehaviourParameterDefinitionPathElement.class.getPackage().getName());
@@ -94,6 +96,16 @@ public class FlexoBehaviourParameterDefinitionPathElement extends SimplePathElem
 	public void setBindingValue(Object value, Object target, BindingEvaluationContext context)
 			throws TypeMismatchException, NullReferenceException {
 		logger.warning("Operation not allowed");
+	}
+
+	@Override
+	public boolean isResolved() {
+		return true;
+	}
+
+	@Override
+	public void resolve() {
+		// Not applicable
 	}
 
 }

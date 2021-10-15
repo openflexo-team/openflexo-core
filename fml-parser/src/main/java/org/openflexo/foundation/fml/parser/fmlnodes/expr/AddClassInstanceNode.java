@@ -42,7 +42,8 @@ import java.lang.reflect.Type;
 import java.util.logging.Logger;
 
 import org.openflexo.connie.Bindable;
-import org.openflexo.connie.expr.BindingValue.NewInstanceBindingPathElement;
+import org.openflexo.connie.binding.IBindingPathElement;
+import org.openflexo.connie.binding.javareflect.JavaNewInstanceMethodPathElement;
 import org.openflexo.foundation.fml.parser.MainSemanticsAnalyzer;
 import org.openflexo.foundation.fml.parser.TypeFactory;
 import org.openflexo.foundation.fml.parser.node.ASimpleNewInstance;
@@ -59,28 +60,35 @@ import org.openflexo.p2pp.RawSource.RawSourceFragment;
  * @author sylvain
  * 
  */
-public class AddClassInstanceNode extends AbstractCallBindingPathElementNode<ASimpleNewInstance, NewInstanceBindingPathElement> {
+public class AddClassInstanceNode extends AbstractCallBindingPathElementNode<ASimpleNewInstance, JavaNewInstanceMethodPathElement> {
 
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(AddClassInstanceNode.class.getPackage().getName());
 
-	public AddClassInstanceNode(ASimpleNewInstance astNode, MainSemanticsAnalyzer analyser, Bindable bindable) {
+	private IBindingPathElement parent;
+
+	public AddClassInstanceNode(ASimpleNewInstance astNode, MainSemanticsAnalyzer analyser, IBindingPathElement parent, Bindable bindable) {
 		super(astNode, analyser, bindable);
+		this.parent = parent;
+		// buildModelObjectFromAST() was already called, but too early (parent not yet set)
+		// we do it again
+		modelObject = buildModelObjectFromAST(astNode);
 	}
 
-	public AddClassInstanceNode(NewInstanceBindingPathElement bindingPathElement, MainSemanticsAnalyzer analyser, Bindable bindable) {
+	public AddClassInstanceNode(JavaNewInstanceMethodPathElement bindingPathElement, MainSemanticsAnalyzer analyser, Bindable bindable) {
 		super(bindingPathElement, analyser, bindable);
 	}
 
 	@Override
-	public NewInstanceBindingPathElement buildModelObjectFromAST(ASimpleNewInstance astNode) {
+	public JavaNewInstanceMethodPathElement buildModelObjectFromAST(ASimpleNewInstance astNode) {
 
 		if (getBindable() != null) {
 			handleArguments(astNode.getArgumentList());
 			Type type = TypeFactory.makeType(astNode.getType(), getAnalyser().getTypingSpace());
-			NewInstanceBindingPathElement returned = new NewInstanceBindingPathElement(type, null, // a java constructor has no name,
-					getArguments());
-			return returned;
+
+			JavaNewInstanceMethodPathElement pathElement = (JavaNewInstanceMethodPathElement) getBindingFactory()
+					.makeNewInstancePathElement(type, parent, null, getArguments());
+			return pathElement;
 		}
 		return null;
 
@@ -97,7 +105,7 @@ public class AddClassInstanceNode extends AbstractCallBindingPathElementNode<ASi
 		append(staticContents("", "new", SPACE), getNewFragment());
 		append(dynamicContents(() -> serializeType(getModelObject().getType())), getTypeFragment());
 		append(staticContents("("), getLParFragment());
-		append(dynamicContents(() -> serializeArguments(getModelObject().args)), getArgumentsFragment());
+		append(dynamicContents(() -> serializeArguments(getModelObject().getArguments())), getArgumentsFragment());
 		append(staticContents(")"), getRParFragment());
 		// @formatter:on
 

@@ -59,7 +59,7 @@ public class SuperBindingVariable extends BindingVariable implements PropertyCha
 	private final boolean isUnique;
 
 	public SuperBindingVariable(FlexoConcept superConcept, boolean isUnique) {
-		super(isUnique ? FlexoConceptBindingModel.SUPER_PROPERTY : FlexoConceptBindingModel.SUPER_PROPERTY + "_" + superConcept.getName(),
+		super(isUnique ? FlexoConceptBindingModel.SUPER_PROPERTY_NAME : FlexoConceptBindingModel.SUPER_PROPERTY_NAME + "_" + superConcept.getName(),
 				superConcept.getInstanceType());
 		this.superConcept = superConcept;
 		this.isUnique = isUnique;
@@ -82,7 +82,7 @@ public class SuperBindingVariable extends BindingVariable implements PropertyCha
 
 	@Override
 	public String getVariableName() {
-		return isUnique ? FlexoConceptBindingModel.SUPER_PROPERTY : FlexoConceptBindingModel.SUPER_PROPERTY + "_" + superConcept.getName();
+		return isUnique ? FlexoConceptBindingModel.SUPER_PROPERTY_NAME : FlexoConceptBindingModel.SUPER_PROPERTY_NAME + "_" + superConcept.getName();
 	}
 
 	public FlexoConcept getSuperConcept() {

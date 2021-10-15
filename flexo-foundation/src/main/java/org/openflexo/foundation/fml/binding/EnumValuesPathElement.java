@@ -48,18 +48,20 @@ import org.openflexo.connie.binding.SimplePathElement;
 import org.openflexo.connie.exception.NullReferenceException;
 import org.openflexo.connie.exception.TypeMismatchException;
 import org.openflexo.connie.type.ParameterizedTypeImpl;
+import org.openflexo.foundation.fml.FMLBindingFactory;
 import org.openflexo.foundation.fml.FlexoEnum;
 import org.openflexo.localization.FlexoLocalization;
 
-public class EnumValuesPathElement extends SimplePathElement {
+public class EnumValuesPathElement extends SimplePathElement<FMLNativeProperty> {
 
 	private static final Logger logger = Logger.getLogger(EnumValuesPathElement.class.getPackage().getName());
 
 	private FlexoEnum accessedEnum;
 
 	public EnumValuesPathElement(IBindingPathElement parent, FlexoEnum accessedEnum) {
-		super(parent, "values", new ParameterizedTypeImpl(List.class, accessedEnum.getInstanceType()));
+		super(parent, FMLBindingFactory.ENUM_VALUES_PROPERTY_NAME, new ParameterizedTypeImpl(List.class, accessedEnum.getInstanceType()));
 		this.accessedEnum = accessedEnum;
+		setProperty(FMLBindingFactory.ENUM_VALUES_PROPERTY);
 	}
 
 	@Override
@@ -85,6 +87,16 @@ public class EnumValuesPathElement extends SimplePathElement {
 	@Override
 	public void setBindingValue(Object value, Object target, BindingEvaluationContext context)
 			throws TypeMismatchException, NullReferenceException {
+		// Not applicable
+	}
+
+	@Override
+	public boolean isResolved() {
+		return true;
+	}
+
+	@Override
+	public void resolve() {
 		// Not applicable
 	}
 

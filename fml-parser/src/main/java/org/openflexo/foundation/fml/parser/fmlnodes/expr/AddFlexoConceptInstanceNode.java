@@ -42,9 +42,10 @@ import java.lang.reflect.Type;
 import java.util.logging.Logger;
 
 import org.openflexo.connie.Bindable;
+import org.openflexo.connie.binding.IBindingPathElement;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoConceptInstanceType;
-import org.openflexo.foundation.fml.expr.NewFlexoConceptInstanceBindingPathElement;
+import org.openflexo.foundation.fml.binding.CreationSchemePathElement;
 import org.openflexo.foundation.fml.parser.MainSemanticsAnalyzer;
 import org.openflexo.foundation.fml.parser.TypeFactory;
 import org.openflexo.foundation.fml.parser.node.AFullQualifiedNewInstance;
@@ -59,7 +60,7 @@ import org.openflexo.foundation.fml.parser.node.Node;
  * @author sylvain
  * 
  */
-public class AddFlexoConceptInstanceNode extends AbstractAddFlexoConceptInstanceNode<NewFlexoConceptInstanceBindingPathElement> {
+public class AddFlexoConceptInstanceNode extends AbstractAddFlexoConceptInstanceNode {
 
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(AddFlexoConceptInstanceNode.class.getPackage().getName());
@@ -67,16 +68,17 @@ public class AddFlexoConceptInstanceNode extends AbstractAddFlexoConceptInstance
 	// private FlexoConceptInstanceType conceptType;
 	// private String creationSchemeName;
 
-	public AddFlexoConceptInstanceNode(ASimpleNewInstance astNode, MainSemanticsAnalyzer analyser, Bindable bindable) {
-		super(astNode, analyser, bindable);
-	}
-
-	public AddFlexoConceptInstanceNode(AFullQualifiedNewInstance astNode, MainSemanticsAnalyzer analyser, Bindable bindable) {
-		super(astNode, analyser, bindable);
-	}
-
-	public AddFlexoConceptInstanceNode(NewFlexoConceptInstanceBindingPathElement bindingPathElement, MainSemanticsAnalyzer analyser,
+	public AddFlexoConceptInstanceNode(ASimpleNewInstance astNode, MainSemanticsAnalyzer analyser, IBindingPathElement parent,
 			Bindable bindable) {
+		super(astNode, analyser, parent, bindable);
+	}
+
+	public AddFlexoConceptInstanceNode(AFullQualifiedNewInstance astNode, MainSemanticsAnalyzer analyser, IBindingPathElement parent,
+			Bindable bindable) {
+		super(astNode, analyser, parent, bindable);
+	}
+
+	public AddFlexoConceptInstanceNode(CreationSchemePathElement bindingPathElement, MainSemanticsAnalyzer analyser, Bindable bindable) {
 		super(bindingPathElement, analyser, bindable);
 	}
 
@@ -171,8 +173,8 @@ public class AddFlexoConceptInstanceNode extends AbstractAddFlexoConceptInstance
 					throwIssue("Cannot find any CreationScheme for FlexoConcept " + getModelObject().getType(), getTypeFragment());
 				}
 				else if (typeConcept.getCreationSchemes().size() == 1) {
-					getModelObject().constructorName = typeConcept.getCreationSchemes().get(0).getName();
-					System.out.println("Set constructor name to " + getModelObject().constructorName);
+					getModelObject().setFunction(typeConcept.getCreationSchemes().get(0));
+					//System.out.println("Set constructor to " + getModelObject().getFunction());
 				}
 				else {
 					throwIssue("Ambigous CreationScheme for FlexoConcept " + getModelObject().getType(), getTypeFragment());
@@ -185,7 +187,7 @@ public class AddFlexoConceptInstanceNode extends AbstractAddFlexoConceptInstance
 	}
 
 	@Override
-	public NewFlexoConceptInstanceBindingPathElement buildModelObjectFromAST(Node astNode) {
+	public CreationSchemePathElement buildModelObjectFromAST(Node astNode) {
 
 		if (getBindable() != null) {
 			Type type = null;
@@ -197,11 +199,16 @@ public class AddFlexoConceptInstanceNode extends AbstractAddFlexoConceptInstance
 				handleArguments(((AFullQualifiedNewInstance) astNode).getArgumentList());
 				type = TypeFactory.makeType(((AFullQualifiedNewInstance) astNode).getConceptName(), getAnalyser().getTypingSpace());
 			}
-			NewFlexoConceptInstanceBindingPathElement returned = new NewFlexoConceptInstanceBindingPathElement(
-					(FlexoConceptInstanceType) type, null, // default constructor,
-					getArguments());
 
-			return returned;
+			CreationSchemePathElement pathElement = (CreationSchemePathElement) getBindingFactory().makeNewInstancePathElement(type,
+					getParentPathElement(), null, getArguments());
+			return pathElement;
+
+			/*NewFlexoConceptInstanceBindingPathElement returned = new NewFlexoConceptInstanceBindingPathElement(
+					(FlexoConceptInstanceType) type, null, // default constructor,
+					getArguments());*/
+
+			// return returned;
 		}
 		return null;
 

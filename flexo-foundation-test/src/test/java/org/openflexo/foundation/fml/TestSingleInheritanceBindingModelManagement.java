@@ -136,7 +136,7 @@ public class TestSingleInheritanceBindingModelManagement extends OpenflexoProjec
 		System.out.println("ViewPoint BindingModel = " + viewPoint.getBindingModel());
 		assertNotNull(viewPoint.getBindingModel());
 		assertEquals(1, viewPoint.getBindingModel().getBindingVariablesCount());
-		assertNotNull(viewPoint.getBindingModel().bindingVariableNamed(VirtualModelBindingModel.THIS_PROPERTY));
+		assertNotNull(viewPoint.getBindingModel().bindingVariableNamed(VirtualModelBindingModel.THIS_PROPERTY_NAME));
 
 	}
 
@@ -165,12 +165,12 @@ public class TestSingleInheritanceBindingModelManagement extends OpenflexoProjec
 		System.out.println("BM=" + virtualModel1.getBindingModel());
 
 		assertEquals(2, virtualModel1.getBindingModel().getBindingVariablesCount());
-		assertNotNull(virtualModel1.getBindingModel().bindingVariableNamed(VirtualModelBindingModel.THIS_PROPERTY));
-		assertNotNull(virtualModel1.getBindingModel().bindingVariableNamed(VirtualModelBindingModel.CONTAINER_PROPERTY));
+		assertNotNull(virtualModel1.getBindingModel().bindingVariableNamed(VirtualModelBindingModel.THIS_PROPERTY_NAME));
+		assertNotNull(virtualModel1.getBindingModel().bindingVariableNamed(VirtualModelBindingModel.CONTAINER_PROPERTY_NAME));
 		assertEquals(VirtualModelInstanceType.getVirtualModelInstanceType(viewPoint),
-				virtualModel1.getBindingModel().bindingVariableNamed(VirtualModelBindingModel.CONTAINER_PROPERTY).getType());
+				virtualModel1.getBindingModel().bindingVariableNamed(VirtualModelBindingModel.CONTAINER_PROPERTY_NAME).getType());
 		assertEquals(VirtualModelInstanceType.getVirtualModelInstanceType(virtualModel1),
-				virtualModel1.getBindingModel().bindingVariableNamed(VirtualModelBindingModel.THIS_PROPERTY).getType());
+				virtualModel1.getBindingModel().bindingVariableNamed(VirtualModelBindingModel.THIS_PROPERTY_NAME).getType());
 
 	}
 
@@ -197,12 +197,12 @@ public class TestSingleInheritanceBindingModelManagement extends OpenflexoProjec
 		System.out.println("FlexoConcept BindingModel = " + flexoConceptA.getBindingModel());
 
 		assertEquals(2, flexoConceptA.getBindingModel().getBindingVariablesCount());
-		assertNotNull(flexoConceptA.getBindingModel().bindingVariableNamed(VirtualModelBindingModel.THIS_PROPERTY));
-		assertNotNull(flexoConceptA.getBindingModel().bindingVariableNamed(VirtualModelBindingModel.CONTAINER_PROPERTY));
+		assertNotNull(flexoConceptA.getBindingModel().bindingVariableNamed(VirtualModelBindingModel.THIS_PROPERTY_NAME));
+		assertNotNull(flexoConceptA.getBindingModel().bindingVariableNamed(VirtualModelBindingModel.CONTAINER_PROPERTY_NAME));
 		assertEquals(VirtualModelInstanceType.getVirtualModelInstanceType(virtualModel1),
-				flexoConceptA.getBindingModel().bindingVariableNamed(VirtualModelBindingModel.CONTAINER_PROPERTY).getType());
+				flexoConceptA.getBindingModel().bindingVariableNamed(VirtualModelBindingModel.CONTAINER_PROPERTY_NAME).getType());
 		assertEquals(FlexoConceptInstanceType.getFlexoConceptInstanceType(flexoConceptA),
-				flexoConceptA.getBindingModel().bindingVariableNamed(VirtualModelBindingModel.THIS_PROPERTY).getType());
+				flexoConceptA.getBindingModel().bindingVariableNamed(VirtualModelBindingModel.THIS_PROPERTY_NAME).getType());
 
 	}
 
@@ -233,12 +233,12 @@ public class TestSingleInheritanceBindingModelManagement extends OpenflexoProjec
 		System.out.println("FlexoConcept BindingModel = " + flexoConceptA.getBindingModel());
 
 		assertEquals(5, flexoConceptA.getBindingModel().getBindingVariablesCount());
-		assertNotNull(flexoConceptA.getBindingModel().bindingVariableNamed(VirtualModelBindingModel.THIS_PROPERTY));
-		assertNotNull(flexoConceptA.getBindingModel().bindingVariableNamed(VirtualModelBindingModel.CONTAINER_PROPERTY));
+		assertNotNull(flexoConceptA.getBindingModel().bindingVariableNamed(VirtualModelBindingModel.THIS_PROPERTY_NAME));
+		assertNotNull(flexoConceptA.getBindingModel().bindingVariableNamed(VirtualModelBindingModel.CONTAINER_PROPERTY_NAME));
 		assertEquals(VirtualModelInstanceType.getVirtualModelInstanceType(virtualModel1),
-				flexoConceptA.getBindingModel().bindingVariableNamed(VirtualModelBindingModel.CONTAINER_PROPERTY).getType());
+				flexoConceptA.getBindingModel().bindingVariableNamed(VirtualModelBindingModel.CONTAINER_PROPERTY_NAME).getType());
 		assertEquals(FlexoConceptInstanceType.getFlexoConceptInstanceType(flexoConceptA),
-				flexoConceptA.getBindingModel().bindingVariableNamed(VirtualModelBindingModel.THIS_PROPERTY).getType());
+				flexoConceptA.getBindingModel().bindingVariableNamed(VirtualModelBindingModel.THIS_PROPERTY_NAME).getType());
 		assertNotNull(flexoConceptA.getBindingModel().bindingVariableNamed("aStringInA"));
 		assertEquals(String.class, flexoConceptA.getBindingModel().bindingVariableNamed("aStringInA").getType());
 		assertNotNull(flexoConceptA.getBindingModel().bindingVariableNamed("aBooleanInA"));
@@ -291,15 +291,15 @@ public class TestSingleInheritanceBindingModelManagement extends OpenflexoProjec
 		virtualModel1.getResource().save();
 
 		assertEquals(7, flexoConceptB.getBindingModel().getBindingVariablesCount());
-		assertNotNull(flexoConceptB.getBindingModel().bindingVariableNamed(VirtualModelBindingModel.THIS_PROPERTY));
-		assertNotNull(flexoConceptB.getBindingModel().bindingVariableNamed(VirtualModelBindingModel.SUPER_PROPERTY));
-		assertNotNull(flexoConceptB.getBindingModel().bindingVariableNamed(VirtualModelBindingModel.CONTAINER_PROPERTY));
+		assertNotNull(flexoConceptB.getBindingModel().bindingVariableNamed(VirtualModelBindingModel.THIS_PROPERTY_NAME));
+		assertNotNull(flexoConceptB.getBindingModel().bindingVariableNamed(VirtualModelBindingModel.SUPER_PROPERTY_NAME));
+		assertNotNull(flexoConceptB.getBindingModel().bindingVariableNamed(VirtualModelBindingModel.CONTAINER_PROPERTY_NAME));
 		assertEquals(VirtualModelInstanceType.getVirtualModelInstanceType(virtualModel1),
-				flexoConceptB.getBindingModel().bindingVariableNamed(VirtualModelBindingModel.CONTAINER_PROPERTY).getType());
+				flexoConceptB.getBindingModel().bindingVariableNamed(VirtualModelBindingModel.CONTAINER_PROPERTY_NAME).getType());
 		assertEquals(FlexoConceptInstanceType.getFlexoConceptInstanceType(flexoConceptB),
-				flexoConceptB.getBindingModel().bindingVariableNamed(VirtualModelBindingModel.THIS_PROPERTY).getType());
+				flexoConceptB.getBindingModel().bindingVariableNamed(VirtualModelBindingModel.THIS_PROPERTY_NAME).getType());
 		assertEquals(FlexoConceptInstanceType.getFlexoConceptInstanceType(flexoConceptA),
-				flexoConceptB.getBindingModel().bindingVariableNamed(VirtualModelBindingModel.SUPER_PROPERTY).getType());
+				flexoConceptB.getBindingModel().bindingVariableNamed(VirtualModelBindingModel.SUPER_PROPERTY_NAME).getType());
 		assertNotNull(flexoConceptB.getBindingModel().bindingVariableNamed("aStringInB"));
 		assertEquals(String.class, flexoConceptB.getBindingModel().bindingVariableNamed("aStringInB").getType());
 		assertNotNull(flexoConceptB.getBindingModel().bindingVariableNamed("aStringInA"));
@@ -312,15 +312,15 @@ public class TestSingleInheritanceBindingModelManagement extends OpenflexoProjec
 		System.out.println("FlexoConcept BindingModel = " + flexoConceptC.getBindingModel());
 
 		assertEquals(8, flexoConceptC.getBindingModel().getBindingVariablesCount());
-		assertNotNull(flexoConceptC.getBindingModel().bindingVariableNamed(VirtualModelBindingModel.THIS_PROPERTY));
-		assertNotNull(flexoConceptC.getBindingModel().bindingVariableNamed(VirtualModelBindingModel.SUPER_PROPERTY));
-		assertNotNull(flexoConceptC.getBindingModel().bindingVariableNamed(VirtualModelBindingModel.CONTAINER_PROPERTY));
+		assertNotNull(flexoConceptC.getBindingModel().bindingVariableNamed(VirtualModelBindingModel.THIS_PROPERTY_NAME));
+		assertNotNull(flexoConceptC.getBindingModel().bindingVariableNamed(VirtualModelBindingModel.SUPER_PROPERTY_NAME));
+		assertNotNull(flexoConceptC.getBindingModel().bindingVariableNamed(VirtualModelBindingModel.CONTAINER_PROPERTY_NAME));
 		assertEquals(VirtualModelInstanceType.getVirtualModelInstanceType(virtualModel1),
-				flexoConceptC.getBindingModel().bindingVariableNamed(VirtualModelBindingModel.CONTAINER_PROPERTY).getType());
+				flexoConceptC.getBindingModel().bindingVariableNamed(VirtualModelBindingModel.CONTAINER_PROPERTY_NAME).getType());
 		assertEquals(FlexoConceptInstanceType.getFlexoConceptInstanceType(flexoConceptC),
-				flexoConceptC.getBindingModel().bindingVariableNamed(VirtualModelBindingModel.THIS_PROPERTY).getType());
+				flexoConceptC.getBindingModel().bindingVariableNamed(VirtualModelBindingModel.THIS_PROPERTY_NAME).getType());
 		assertEquals(FlexoConceptInstanceType.getFlexoConceptInstanceType(flexoConceptB),
-				flexoConceptC.getBindingModel().bindingVariableNamed(VirtualModelBindingModel.SUPER_PROPERTY).getType());
+				flexoConceptC.getBindingModel().bindingVariableNamed(VirtualModelBindingModel.SUPER_PROPERTY_NAME).getType());
 
 		assertNotNull(flexoConceptC.getBindingModel().bindingVariableNamed("aStringInA"));
 		assertEquals(String.class, flexoConceptC.getBindingModel().bindingVariableNamed("aStringInA").getType());
