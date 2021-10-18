@@ -265,10 +265,10 @@ public class FlexoPropertyPathElement<P extends FlexoProperty<?>> extends Simple
 		return isNotifyingBindingPathChanged;
 	}
 
-	@Override
+	/*@Override
 	public String toString() {
 		return "FlexoPropertyPathElement " + getFlexoProperty().getName() + " (" + getBindingPath() + ")";
-	}
+	}*/
 
 	@Override
 	public boolean isSettable() {

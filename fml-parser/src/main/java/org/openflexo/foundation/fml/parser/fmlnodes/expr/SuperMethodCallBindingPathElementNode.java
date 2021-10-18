@@ -53,10 +53,13 @@ public class SuperMethodCallBindingPathElementNode
 
 	private IBindingPathElement parent;
 
+	private boolean readyToBuildModelObject = false;
+
 	public SuperMethodCallBindingPathElementNode(ASuperMethodInvocation astNode, MainSemanticsAnalyzer analyser, IBindingPathElement parent,
 			Bindable bindable) {
 		super(astNode, analyser, bindable);
 		this.parent = parent;
+		readyToBuildModelObject = true;
 		// buildModelObjectFromAST() was already called, but too early (parent not yet set)
 		// we do it again
 		modelObject = buildModelObjectFromAST(astNode);
@@ -70,7 +73,7 @@ public class SuperMethodCallBindingPathElementNode
 	@Override
 	public SimpleMethodPathElement<?> buildModelObjectFromAST(ASuperMethodInvocation astNode) {
 
-		if (parent != null && getBindable() != null) {
+		if (readyToBuildModelObject && getBindable() != null) {
 			String methodName = astNode.getKwSuper().getText();
 			SimpleMethodPathElement<?> pathElement = (SimpleMethodPathElement<?>) getBindingFactory().makeSimpleMethodPathElement(parent,
 					methodName, getArguments());

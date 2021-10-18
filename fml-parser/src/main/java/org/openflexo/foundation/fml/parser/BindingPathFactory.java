@@ -127,6 +127,10 @@ public class BindingPathFactory {
 	public static BindingValue makeBindingPath(Node node, AbstractExpressionFactory expressionFactory, BindingPathNode bindingPathNode) {
 
 		BindingPathFactory bindingPathFactory = new BindingPathFactory(node, expressionFactory);
+
+		//System.out.println("--------------> Make BindingPath for " + node);
+		//ASTDebugger.debug(node);
+
 		bindingPathFactory.explore();
 
 		if (bindingPathNode != null) {
@@ -134,6 +138,10 @@ public class BindingPathFactory {
 				bindingPathNode.addToChildren(pathElementNode);
 			}
 		}
+
+		//System.out.println("<-------------- Done BindingPath for " + node);
+		//System.out.println("bindingVariable=" + bindingPathFactory.bindingVariable);
+		//System.out.println("bindingPathElements=" + bindingPathFactory.bindingPathElements);
 
 		// return bindingPathFactory.path;
 		return new BindingValue(bindingPathFactory.bindingVariable, bindingPathFactory.bindingPathElements,
@@ -177,7 +185,12 @@ public class BindingPathFactory {
 	}
 
 	private AbstractBindingPathElementNode<?, ?> popBindingPath() {
-		bindingPathElements.remove(bindingPathElements.size() - 1);
+		if (bindingPathElements.size() > 0) {
+			bindingPathElements.remove(bindingPathElements.size() - 1);
+		}
+		else {
+			bindingVariable = null;
+		}
 		if (nodesPath.size() > 0) {
 			return nodesPath.remove(nodesPath.size() - 1);
 		}
@@ -245,7 +258,7 @@ public class BindingPathFactory {
 	private void appendBindingPath(PMethodInvocation node) {
 		if (node instanceof APrimaryMethodInvocation) {
 			appendBindingPath(((APrimaryMethodInvocation) node).getPrimary());
-			SimplePathElementNode lastElementNode = (SimplePathElementNode) popBindingPath();
+			AbstractBindingPathElementNode<?, ?> lastElementNode = (AbstractBindingPathElementNode<?, ?>) popBindingPath();
 			appendMethodInvocation((APrimaryMethodInvocation) node, lastElementNode);
 		}
 		else if (node instanceof ASuperMethodInvocation) {
@@ -353,7 +366,7 @@ public class BindingPathFactory {
 		}
 	}
 
-	private void appendMethodInvocation(APrimaryMethodInvocation node, SimplePathElementNode lastPathElementNode) {
+	private void appendMethodInvocation(APrimaryMethodInvocation node, AbstractBindingPathElementNode<?, ?> lastPathElementNode) {
 		final IBindingPathElement parent = retrieveActualParent();
 		MethodCallBindingPathElementNode pathElementNode = expressionFactory.getMainAnalyzer().retrieveFMLNode(node,
 				n -> new MethodCallBindingPathElementNode(n, lastPathElementNode.getASTNode(), expressionFactory.getMainAnalyzer(), parent,

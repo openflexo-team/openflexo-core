@@ -89,10 +89,10 @@ public class MethodCallBindingPathElementNode
 	@Override
 	public SimpleMethodPathElement<?> buildModelObjectFromAST(APrimaryMethodInvocation astNode) {
 
-		if (parent != null && getBindable() != null) {
+		if (/*parent != null &&*/ identifierNode != null && getBindable() != null) {
 			handleArguments(astNode.getArgumentList());
 			String methodName = getLastPathIdentifier(astNode.getPrimary());
-			String methodName2 = getText(identifierNode);
+			//String methodName2 = getText(identifierNode);
 
 			SimpleMethodPathElement<?> pathElement = (SimpleMethodPathElement<?>) getBindingFactory().makeSimpleMethodPathElement(parent,
 					methodName, getArguments());

@@ -420,15 +420,9 @@ public class FMLBindingFactory extends JavaBasedBindingFactory {
 		if (parent != null) {
 
 			if (parent.getLabel().equals("super")) {
-				//System.out.println("J'ai mon super: " + parent.getClass() + " en cherchant " + methodName);
-				//System.out.println("type=" + parent.getType());
 				return new FlexoBehaviourPathElement(parent, methodName, args, this);
-
 			}
 
-			if (parent.getType() == null) {
-				return null;
-			}
 			if (parent.getType() instanceof FlexoConceptInstanceType) {
 				return new FlexoBehaviourPathElement(parent, methodName, args, this);
 			}

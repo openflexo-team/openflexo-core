@@ -159,10 +159,10 @@ public class FlexoBehaviourParameterValuePathElement extends SimplePathElement i
 		logger.warning("Please implement me, target=" + target + " context=" + context);
 	}
 
-	@Override
+	/*@Override
 	public String toString() {
 		return "FlexoBehaviourParameterValuePathElement:" + getLabel();
-	}
+	}*/
 
 	@Override
 	public boolean isResolved() {
