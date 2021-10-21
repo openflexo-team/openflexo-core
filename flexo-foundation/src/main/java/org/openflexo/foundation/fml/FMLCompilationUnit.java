@@ -1027,18 +1027,18 @@ public interface FMLCompilationUnit extends FMLObject, FMLPrettyPrintable, Resou
 				// System.out.println("rc=" + resourceCenter.getDefaultBaseURI());
 				String uri = resourceData.getResource().getURI();
 				importDeclaration = getFMLModelFactory().newElementImportDeclaration();
+				getDeclaringCompilationUnit().addToElementImports(importDeclaration);
 				if (uri.startsWith(resourceCenter.getDefaultBaseURI())) {
 					String remainingURI = uri.substring(resourceCenter.getDefaultBaseURI().length());
 					String rcAbbrev = ensureResourceCenterImport(resourceCenter).getAbbrev();
-					importDeclaration.setResourceReference(new DataBinding<>(rcAbbrev + "+\"" + remainingURI + "\""));
+					importDeclaration.setResourceReference(new DataBinding<>(rcAbbrev + "+\"" + remainingURI + "\"", importDeclaration));
 					// System.out.println("---" + rcAbbrev + "+\"" + remainingURI + "\"");
 				}
 				else {
-					importDeclaration.setResourceReference(new DataBinding<>("\"" + uri + "\""));
+					importDeclaration.setResourceReference(new DataBinding<>("\"" + uri + "\"", importDeclaration));
 				}
 				String abbrev = findUniqueAbbrev(resourceData);
 				importDeclaration.setAbbrev(abbrev);
-				getDeclaringCompilationUnit().addToElementImports(importDeclaration);
 				// Thread.dumpStack();
 			}
 			return importDeclaration;
@@ -1052,8 +1052,8 @@ public interface FMLCompilationUnit extends FMLObject, FMLPrettyPrintable, Resou
 				String resourceAbbrev = ensureResourceImport(element.getResourceData()).getAbbrev();
 				elementDeclaration = getFMLModelFactory().newElementImportDeclaration();
 				elementDeclaration.setResourceReference(new DataBinding<>(resourceAbbrev));
-				elementDeclaration
-						.setObjectReference(new DataBinding<>("\"" + element.getUserIdentifier() + "-" + element.getFlexoID() + "\""));
+				elementDeclaration.setObjectReference(
+						new DataBinding<>("\"" + element.getUserIdentifier() + "-" + element.getFlexoID() + "\""));
 				String abbrev = findUniqueAbbrev(element);
 				elementDeclaration.setAbbrev(abbrev);
 				getDeclaringCompilationUnit().addToElementImports(elementDeclaration);

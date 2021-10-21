@@ -582,7 +582,7 @@ public interface AbstractAddFlexoConceptInstance<FCI extends FlexoConceptInstanc
 						parametersToRemove.remove(existingParam);
 						// Force revalidate the binding (binding factory was null)
 						if (!existingParam.getValue().isValid()) {
-							existingParam.getValue().forceRevalidate();
+							existingParam.getValue().revalidate();
 						}
 					}
 					else {
@@ -805,7 +805,7 @@ public interface AbstractAddFlexoConceptInstance<FCI extends FlexoConceptInstanc
 						if (p.getValue() == null || !p.getValue().isSet()) {
 							issues.add(new ValidationError<>(this, action, "parameter_s_value_is_not_defined: " + param.getName()));
 						}
-						else if (!p.getValue().forceRevalidate()) {
+						else if (!p.getValue().revalidate()) {
 							AddFlexoConceptInstanceImpl.logger
 									.info("Binding NOT valid: " + p.getValue() + " for " + p.getName() + " object="
 											+ p.getOwner().getStringRepresentation() + ". Reason: " + p.getValue().invalidBindingReason());
@@ -902,7 +902,7 @@ public interface AbstractAddFlexoConceptInstance<FCI extends FlexoConceptInstanc
 			@Override
 			protected void fixAction() {
 				AbstractAddFlexoConceptInstance<?, ?> action = getValidable();
-				action.setReceiver(new DataBinding<>("virtualModelInstance"));
+				action.setReceiver(new DataBinding<>("virtualModelInstance", action));
 			}
 		}
 
@@ -919,7 +919,7 @@ public interface AbstractAddFlexoConceptInstance<FCI extends FlexoConceptInstanc
 			@Override
 			protected void fixAction() {
 				AbstractAddFlexoConceptInstance<?, ?> action = getValidable();
-				action.setReceiver(new DataBinding<>(modelSlot.getName()));
+				action.setReceiver(new DataBinding<>(modelSlot.getName(), action));
 			}
 		}
 

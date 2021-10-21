@@ -58,9 +58,9 @@ import org.openflexo.foundation.fml.parser.fmlnodes.FlexoBehaviourNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.AssignationActionNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.ExpressionActionNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.expr.BindingPathNode;
+import org.openflexo.foundation.fml.parser.fmlnodes.expr.BindingVariableNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.expr.ConstantNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.expr.DataBindingNode;
-import org.openflexo.foundation.fml.parser.fmlnodes.expr.SimplePathElementNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.expr.PlusExpressionNode;
 import org.openflexo.pamela.exceptions.ModelDefinitionException;
 import org.openflexo.rm.Resource;
@@ -127,8 +127,8 @@ public class TestExpression extends FMLParserTestCase {
 
 		DataBindingNode assignNode = checkNode("(12:2)-(12:3)", "a", (DataBindingNode) assignationNode.getChildren().get(0));
 		BindingPathNode assignBPNode = checkNode("(12:2)-(12:3)", "a", (BindingPathNode) assignNode.getChildren().get(0));
-		SimplePathElementNode assignPathElementNode = checkNode("(12:2)-(12:3)", "Normal[a]",
-				(SimplePathElementNode) assignBPNode.getChildren().get(0));
+		BindingVariableNode assignPathElementNode = checkNode("(12:2)-(12:3)", "a",
+				(BindingVariableNode) assignBPNode.getChildren().get(0));
 
 		ExpressionActionNode expressionNode = checkNodeForObject("(12:6)-(12:8)", null, assignationAction.getAssignableAction());
 		DataBindingNode expressionValueNode = checkNode("(12:6)-(12:8)", "42", (DataBindingNode) expressionNode.getChildren().get(0));
@@ -158,8 +158,8 @@ public class TestExpression extends FMLParserTestCase {
 
 		DataBindingNode assignNode = checkNode("(16:2)-(16:3)", "a", (DataBindingNode) assignationNode.getChildren().get(0));
 		BindingPathNode assignBPNode = checkNode("(16:2)-(16:3)", "a", (BindingPathNode) assignNode.getChildren().get(0));
-		SimplePathElementNode assignPathElementNode1 = checkNode("(16:2)-(16:3)", "Normal[a]",
-				(SimplePathElementNode) assignBPNode.getChildren().get(0));
+		BindingVariableNode assignPathElementNode1 = checkNode("(16:2)-(16:3)", "a",
+				(BindingVariableNode) assignBPNode.getChildren().get(0));
 
 		ExpressionActionNode expressionNode = checkNodeForObject("(16:6)-(16:10)", null, assignationAction.getAssignableAction());
 		DataBindingNode expressionValueNode = checkNode("(16:6)-(16:10)", "42 + 1", (DataBindingNode) expressionNode.getChildren().get(0));

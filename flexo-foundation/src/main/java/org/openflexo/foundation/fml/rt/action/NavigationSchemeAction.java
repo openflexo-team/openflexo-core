@@ -113,7 +113,7 @@ public class NavigationSchemeAction extends AbstractActionSchemeAction<Navigatio
 			// TODO: please investigate
 			if (!getFlexoBehaviour().getTargetObject().isValid() && !forceRevalidated) {
 				forceRevalidated = true;
-				getFlexoBehaviour().getTargetObject().forceRevalidate();
+				getFlexoBehaviour().getTargetObject().revalidate();
 			}
 
 			if (getFlexoBehaviour().getTargetObject() != null && getFlexoBehaviour().getTargetObject().isSet()

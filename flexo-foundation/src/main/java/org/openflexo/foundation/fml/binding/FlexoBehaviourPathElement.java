@@ -48,7 +48,6 @@ import java.util.logging.Logger;
 import org.openflexo.connie.BindingEvaluationContext;
 import org.openflexo.connie.BindingModel;
 import org.openflexo.connie.DataBinding;
-import org.openflexo.connie.binding.Function.FunctionArgument;
 import org.openflexo.connie.binding.FunctionPathElement;
 import org.openflexo.connie.binding.IBindingPathElement;
 import org.openflexo.connie.binding.SimpleMethodPathElement;
@@ -102,14 +101,18 @@ public class FlexoBehaviourPathElement extends SimpleMethodPathElement<FlexoBeha
 	}
 
 	@Override
+	public void setFunction(FlexoBehaviour behaviour) {
+		super.setFunction(behaviour);
+		lastKnownType = behaviour != null ? behaviour.getReturnType() : null;
+	}
+
+	@Override
 	public void activate() {
 		super.activate();
+		startListenToBehaviour();
 		// Do not instanciate parameters now, we will do it later
 		// instanciateParameters(owner);
-		if (getFlexoBehaviour() != null) {
-			if (getFlexoBehaviour() != null && getFlexoBehaviour().getPropertyChangeSupport() != null) {
-				getFlexoBehaviour().getPropertyChangeSupport().addPropertyChangeListener(this);
-			}
+		/*if (getFlexoBehaviour() != null) {
 			for (FunctionArgument arg : getFlexoBehaviour().getArguments()) {
 				DataBinding<?> argValue = getArgumentValue(arg);
 				if (argValue != null && arg != null) {
@@ -117,18 +120,25 @@ public class FlexoBehaviourPathElement extends SimpleMethodPathElement<FlexoBeha
 				}
 			}
 			lastKnownType = getFlexoBehaviour().getReturnType();
-		}
-		else {
-			logger.warning("Inconsistent data: null FlexoBehaviour");
-		}
+		}*/
 	}
 
 	@Override
 	public void desactivate() {
+		stopListenToBehaviour();
+		super.desactivate();
+	}
+
+	private void startListenToBehaviour() {
+		if (getFlexoBehaviour() != null && getFlexoBehaviour().getPropertyChangeSupport() != null) {
+			getFlexoBehaviour().getPropertyChangeSupport().addPropertyChangeListener(this);
+		}
+	}
+
+	private void stopListenToBehaviour() {
 		if (getFlexoBehaviour() != null && getFlexoBehaviour().getPropertyChangeSupport() != null) {
 			getFlexoBehaviour().getPropertyChangeSupport().removePropertyChangeListener(this);
 		}
-		super.desactivate();
 	}
 
 	@Override
@@ -336,6 +346,9 @@ public class FlexoBehaviourPathElement extends SimpleMethodPathElement<FlexoBeha
 		if (getParent() != null) {
 			FlexoBehaviour function = (FlexoBehaviour) bindingFactory.retrieveFunction(getParent().getType(), getParsed(), getArguments());
 			setFunction(function);
+			if (isActivated()) {
+				startListenToBehaviour();
+			}
 			if (function == null) {
 				logger.warning("cannot find behaviour " + getParsed() + " for " + getParent() + " with arguments " + getArguments());
 			}

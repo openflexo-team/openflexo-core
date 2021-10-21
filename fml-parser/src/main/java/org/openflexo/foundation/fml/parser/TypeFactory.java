@@ -44,6 +44,7 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
 
 import org.openflexo.connie.type.ParameterizedTypeImpl;
 import org.openflexo.connie.type.UnresolvedType;
@@ -82,6 +83,7 @@ import org.openflexo.foundation.fml.parser.node.PReferenceType;
 import org.openflexo.foundation.fml.parser.node.PTypeArgumentList;
 import org.openflexo.foundation.fml.parser.node.PTypeArgumentListHead;
 import org.openflexo.foundation.fml.parser.node.PTypeArguments;
+import org.openflexo.foundation.fml.parser.node.TUidentifier;
 
 /**
  * This class implements the semantics analyzer for a parsed Type<br>
@@ -93,20 +95,13 @@ import org.openflexo.foundation.fml.parser.node.PTypeArguments;
  */
 public class TypeFactory extends DepthFirstAdapter {
 
-	// private final MainSemanticsAnalyzer mainAnalyzer;
+	@SuppressWarnings("unused")
+	private static final Logger logger = Logger.getLogger(SemanticsAnalyzerFactory.class.getPackage().getName());
 
 	private final AbstractFMLTypingSpace typingSpace;
 
 	private final Map<Node, Type> typeNodes;
 	private Node rootNode = null;
-	// private int depth = -1;
-	private String currentTypeRepresentation;
-
-	int ident = 0;
-
-	/*private boolean weAreDealingWithTheRightType() {
-		return depth == 0;
-	}*/
 
 	public static Type makeType(Node node, AbstractFMLTypingSpace typingSpace) {
 
@@ -128,19 +123,12 @@ public class TypeFactory extends DepthFirstAdapter {
 		typeNodes = new Hashtable<>();
 	}
 
-	/*public Bindable getBindable() {
-		return expressionAnalyzer.getBindable();
-	}*/
-
-	/*public ContextualizedBindable getContextualizedBindable() {
-		if (getBindable() instanceof ContextualizedBindable) {
-			return (ContextualizedBindable) getBindable();
-		}
-		return null;
-	}*/
-
 	public AbstractFMLTypingSpace getTypingSpace() {
 		return typingSpace;
+	}
+
+	public Node getRootNode() {
+		return rootNode;
 	}
 
 	private void registerTypeNode(Node n, Type t) {
@@ -152,6 +140,9 @@ public class TypeFactory extends DepthFirstAdapter {
 			Type returned = typeNodes.get(n);
 
 			if (returned == null) {
+				if (n instanceof TUidentifier) {
+					return makeType(((TUidentifier) n).getText());
+				}
 				if (n instanceof APrimitiveType) {
 					return getType(((APrimitiveType) n).getPrimitiveType());
 				}
@@ -162,6 +153,14 @@ public class TypeFactory extends DepthFirstAdapter {
 					return getType(((AReferenceTypeArgument) n).getReferenceType());
 				}
 				System.out.println("No expression registered for " + n + " of  " + n.getClass());
+				/*System.out.println("rootNode: " + rootNode + " of " + rootNode.getClass());
+				ASTDebugger.debug(rootNode);
+				Thread.dumpStack();
+				for (Iterator<Node> it = typeNodes.keySet().iterator(); it.hasNext();) {
+					Node node = it.next();
+					System.out.println(" > " + node + " -> " + typeNodes.get(node));
+				}
+				System.exit(-1);*/
 			}
 			return returned;
 		}
@@ -169,54 +168,9 @@ public class TypeFactory extends DepthFirstAdapter {
 	}
 
 	@Override
-	public void defaultIn(Node node) {
-		super.defaultIn(node);
-		ident++;
-		// System.out.println(StringUtils.buildWhiteSpaceIndentation(ident) + " > " + node.getClass().getSimpleName() + " " + node);
-	}
-
-	@Override
-	public void defaultOut(Node node) {
-		// TODO Auto-generated method stub
-		super.defaultOut(node);
-		ident--;
-	}
-
-	/*@Override
-	public void inAPrimitiveType(APrimitiveType node) {
-		super.inAPrimitiveType(node);
-		depth++;
-	}
-	
-	@Override
-	public void outAPrimitiveType(APrimitiveType node) {
-		super.outAPrimitiveType(node);
-		depth--;
-	}
-	
-	@Override
-	public void inAComplexType(AComplexType node) {
-		super.inAComplexType(node);
-		depth++;
-	}
-	
-	@Override
-	public void outAComplexType(AComplexType node) {
-		super.outAComplexType(node);
-		depth--;
-	}
-	
-	@Override
-	public void inAVoidType(AVoidType node) {
-		super.inAVoidType(node);
-		depth++;
-	}*/
-
-	@Override
 	public void outAVoidType(AVoidType node) {
 		super.outAVoidType(node);
 		registerTypeNode(node, Void.TYPE);
-		// depth--;
 	}
 
 	@Override

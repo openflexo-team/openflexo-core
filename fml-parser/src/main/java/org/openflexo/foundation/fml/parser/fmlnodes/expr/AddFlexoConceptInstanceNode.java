@@ -174,7 +174,7 @@ public class AddFlexoConceptInstanceNode extends AbstractAddFlexoConceptInstance
 				}
 				else if (typeConcept.getCreationSchemes().size() == 1) {
 					getModelObject().setFunction(typeConcept.getCreationSchemes().get(0));
-					//System.out.println("Set constructor to " + getModelObject().getFunction());
+					// System.out.println("Set constructor to " + getModelObject().getFunction());
 				}
 				else {
 					throwIssue("Ambigous CreationScheme for FlexoConcept " + getModelObject().getType(), getTypeFragment());
@@ -189,7 +189,7 @@ public class AddFlexoConceptInstanceNode extends AbstractAddFlexoConceptInstance
 	@Override
 	public CreationSchemePathElement buildModelObjectFromAST(Node astNode) {
 
-		if (getBindable() != null) {
+		if (readyToBuildModelObject()) {
 			Type type = null;
 			if (astNode instanceof ASimpleNewInstance) {
 				handleArguments(((ASimpleNewInstance) astNode).getArgumentList());

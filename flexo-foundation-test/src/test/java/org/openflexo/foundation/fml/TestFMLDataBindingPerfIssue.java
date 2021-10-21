@@ -117,7 +117,7 @@ public class TestFMLDataBindingPerfIssue extends OpenflexoTestCase {
 			return dataBinding;
 
 		}
-		System.out.println("Could not Parse " + dataBinding + " defined as " + dataBinding.getUnparsedBinding());
+		System.out.println("Could not Parse " + dataBinding + " defined as " + dataBinding);
 		fail("Unparseable binding");
 		return null;
 	}

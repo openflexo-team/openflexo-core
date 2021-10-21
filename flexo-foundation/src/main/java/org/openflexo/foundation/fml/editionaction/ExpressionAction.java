@@ -119,7 +119,7 @@ public interface ExpressionAction<T> extends AssignableAction<T> {
 
 			if (getExpression() != null && !getExpression().isValid()) {
 				isAnalyzingType = true;
-				getExpression().forceRevalidate();
+				getExpression().revalidate();
 				isAnalyzingType = false;
 				if (getExpression().isValid()) {
 					return getExpression().getAnalyzedType();
@@ -224,10 +224,10 @@ public interface ExpressionAction<T> extends AssignableAction<T> {
 		public T execute(RunTimeEvaluationContext evaluationContext) throws FlexoException {
 
 			// Quick and dirty hack because found invalid binding
-			// TODO: please investigate
+			// TODO: i think this is no more required
 			if (!getExpression().isValid() && !forceRevalidated) {
 				forceRevalidated = true;
-				getExpression().forceRevalidate();
+				getExpression().revalidate();
 			}
 
 			try {

@@ -70,6 +70,7 @@ public class AddClassInstanceNode extends AbstractCallBindingPathElementNode<ASi
 	public AddClassInstanceNode(ASimpleNewInstance astNode, MainSemanticsAnalyzer analyser, IBindingPathElement parent, Bindable bindable) {
 		super(astNode, analyser, bindable);
 		this.parent = parent;
+		setReadyToBuildModelObject(true);
 		// buildModelObjectFromAST() was already called, but too early (parent not yet set)
 		// we do it again
 		modelObject = buildModelObjectFromAST(astNode);
@@ -82,7 +83,7 @@ public class AddClassInstanceNode extends AbstractCallBindingPathElementNode<ASi
 	@Override
 	public JavaNewInstanceMethodPathElement buildModelObjectFromAST(ASimpleNewInstance astNode) {
 
-		if (getBindable() != null) {
+		if (readyToBuildModelObject()) {
 			handleArguments(astNode.getArgumentList());
 			Type type = TypeFactory.makeType(astNode.getType(), getAnalyser().getTypingSpace());
 

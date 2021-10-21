@@ -188,7 +188,7 @@ public interface BehaviourCallArgument<T extends FlexoConceptObject> extends Fle
 				}*/
 				return null;
 			}
-			else if (getValue().forceRevalidate()) {
+			else if (getValue().revalidate()) {
 				try {
 					return getValue().getBindingValue(action);
 				} catch (TypeMismatchException e) {

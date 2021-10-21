@@ -55,6 +55,7 @@ public class StaticMethodCallBindingPathElementNode
 
 	public StaticMethodCallBindingPathElementNode(AClassMethodMethodInvocation astNode, MainSemanticsAnalyzer analyser, Bindable bindable) {
 		super(astNode, analyser, bindable);
+		setReadyToBuildModelObject(true);
 	}
 
 	public StaticMethodCallBindingPathElementNode(StaticMethodPathElement<?> bindingPathElement, MainSemanticsAnalyzer analyser,
@@ -65,7 +66,7 @@ public class StaticMethodCallBindingPathElementNode
 	@Override
 	public StaticMethodPathElement<?> buildModelObjectFromAST(AClassMethodMethodInvocation astNode) {
 
-		if (getBindable() != null) {
+		if (readyToBuildModelObject()) {
 			handleArguments(astNode.getArgumentList());
 			Type type = TypeFactory.makeType(getASTNode().getType(), getAnalyser().getTypingSpace());
 

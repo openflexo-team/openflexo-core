@@ -62,6 +62,7 @@ public class MethodCallBindingPathElementNode
 		super(astNode, analyser, bindable);
 		this.identifierNode = identifierNode;
 		this.parent = parent;
+		setReadyToBuildModelObject(true);
 		// buildModelObjectFromAST() was already called, but too early (parent not yet set)
 		// we do it again
 		modelObject = buildModelObjectFromAST(astNode);
@@ -89,13 +90,14 @@ public class MethodCallBindingPathElementNode
 	@Override
 	public SimpleMethodPathElement<?> buildModelObjectFromAST(APrimaryMethodInvocation astNode) {
 
-		if (/*parent != null &&*/ identifierNode != null && getBindable() != null) {
+		if (readyToBuildModelObject()) {
 			handleArguments(astNode.getArgumentList());
 			String methodName = getLastPathIdentifier(astNode.getPrimary());
-			//String methodName2 = getText(identifierNode);
+			// String methodName2 = getText(identifierNode);
 
 			SimpleMethodPathElement<?> pathElement = (SimpleMethodPathElement<?>) getBindingFactory().makeSimpleMethodPathElement(parent,
 					methodName, getArguments());
+			pathElement.setBindingPathElementOwner(this);
 			return pathElement;
 		}
 		return null;

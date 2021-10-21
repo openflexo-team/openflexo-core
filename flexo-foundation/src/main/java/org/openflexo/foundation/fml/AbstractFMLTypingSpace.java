@@ -42,6 +42,7 @@ package org.openflexo.foundation.fml;
 import java.lang.reflect.Type;
 
 import org.openflexo.connie.java.JavaTypingSpace;
+import org.openflexo.foundation.fml.rt.action.MatchingSet;
 
 /**
  * FML typing space, build on top of {@link JavaTypingSpace}
@@ -87,6 +88,9 @@ public abstract class AbstractFMLTypingSpace extends JavaTypingSpace {
 	public Type resolveType(String typeAsString) {
 		if (typeAsString.equals("ConceptInstance")) {
 			return FlexoConceptInstanceType.UNDEFINED_FLEXO_CONCEPT_INSTANCE_TYPE;
+		}
+		if (typeAsString.equals("MatchingSet")) {
+			return MatchingSet.class;
 		}
 		return super.resolveType(typeAsString);
 	}

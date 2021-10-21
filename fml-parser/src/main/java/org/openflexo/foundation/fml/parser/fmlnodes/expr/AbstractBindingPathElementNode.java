@@ -38,13 +38,13 @@
 
 package org.openflexo.foundation.fml.parser.fmlnodes.expr;
 
-import java.util.List;
 import java.util.logging.Logger;
 
 import org.openflexo.connie.Bindable;
 import org.openflexo.connie.BindingFactory;
+import org.openflexo.connie.binding.BindingPathElement;
+import org.openflexo.connie.binding.BindingPathElement.BindingPathElementOwner;
 import org.openflexo.connie.binding.IBindingPathElement;
-import org.openflexo.connie.expr.Expression;
 import org.openflexo.foundation.fml.parser.MainSemanticsAnalyzer;
 import org.openflexo.foundation.fml.parser.ObjectNode;
 import org.openflexo.foundation.fml.parser.node.AFieldPrimaryNoId;
@@ -64,13 +64,14 @@ import org.openflexo.foundation.fml.parser.node.PPrimaryNoId;
  * 
  */
 public abstract class AbstractBindingPathElementNode<N extends Node, BPE extends IBindingPathElement>
-		extends ObjectNode<N, BPE, MainSemanticsAnalyzer> {
+		extends ObjectNode<N, BPE, MainSemanticsAnalyzer> implements BindingPathElementOwner {
 
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(AbstractBindingPathElementNode.class.getPackage().getName());
 
 	private Bindable bindable;
-	private List<Expression> args;
+
+	private boolean readyToBuildModelObject = false;
 
 	public AbstractBindingPathElementNode(N astNode, MainSemanticsAnalyzer analyser, Bindable bindable) {
 		super(astNode, analyser);
@@ -100,6 +101,22 @@ public abstract class AbstractBindingPathElementNode<N extends Node, BPE extends
 	@Override
 	public final AbstractBindingPathElementNode<N, BPE> deserialize() {
 		return this;
+	}
+
+	public boolean readyToBuildModelObject() {
+		return readyToBuildModelObject && getBindable() != null;
+	}
+
+	protected void setReadyToBuildModelObject(boolean readyToBuildModelObject) {
+		this.readyToBuildModelObject = readyToBuildModelObject;
+	}
+
+	@Override
+	public void bindingPathElementChanged(BindingPathElement newElement) {
+		// System.out.println("bindingPathElementChanged() from " + getModelObject() + " to " + newElement);
+
+		// Here, analysing of BindingPath leads to a new PathElement with different type, replace then the model object
+		setModelObject((BPE) newElement);
 	}
 
 	protected String getLastPathIdentifier(PPrimary primary) {

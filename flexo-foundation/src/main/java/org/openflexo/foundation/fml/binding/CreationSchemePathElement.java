@@ -361,8 +361,11 @@ public class CreationSchemePathElement extends NewInstancePathElement<CreationSc
 		CreationScheme function = (CreationScheme) bindingFactory.retrieveConstructor(getType(),
 				getParent() != null ? getParent().getType() : null, getParsed(), getArguments());
 		setFunction(function);
-		if (function == null) {
+		if (function == null && getType().isResolved()) {
+			// Do not warn for unresolved type
 			logger.warning("cannot find constructor " + getParsed() + " for type " + getType() + " with arguments " + getArguments());
+			// System.out.println("type: " + getType() + " resolved=" + getType().isResolved());
+			// System.out.println("arguments: " + getArguments() + " size: " + getArguments().size());
 		}
 	}
 

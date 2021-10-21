@@ -176,7 +176,7 @@ public interface AbstractSelectVirtualModelInstance<VMI extends VirtualModelInst
 		@Override
 		public void finalizeDeserialization() {
 			super.finalizeDeserialization();
-			getContainer().forceRevalidate();
+			getContainer().revalidate();
 			getVirtualModelType();
 		}
 

@@ -613,9 +613,9 @@ public class FMLModelFactory extends ModelFactory implements PamelaResourceModel
 		return returned;
 	}
 
-	public <T> AssignationAction<T> newAssignationAction(DataBinding<T> expression) {
+	public <T> AssignationAction<T> newAssignationAction(String expressionAsString) {
 		AssignationAction<T> returned = newAssignationAction();
-		returned.setAssignableAction(newExpressionAction(expression));
+		returned.setAssignableAction(newExpressionAction(expressionAsString));
 		return returned;
 	}
 
@@ -630,10 +630,10 @@ public class FMLModelFactory extends ModelFactory implements PamelaResourceModel
 		return returned;
 	}
 
-	public <T> DeclarationAction<T> newDeclarationAction(String variableName, DataBinding<T> expression) {
+	public <T> DeclarationAction<T> newDeclarationAction(String variableName, String expressionAsString) {
 		DeclarationAction<T> returned = newDeclarationAction();
 		returned.setVariableName(variableName);
-		returned.setAssignableAction(newExpressionAction(expression));
+		returned.setAssignableAction(newExpressionAction(expressionAsString));
 		return returned;
 	}
 
@@ -665,6 +665,13 @@ public class FMLModelFactory extends ModelFactory implements PamelaResourceModel
 
 	public <T> ExpressionAction<T> newExpressionAction() {
 		return newInstance(ExpressionAction.class);
+	}
+
+	public <T> ExpressionAction<T> newExpressionAction(String expressionAsString) {
+		ExpressionAction<T> returned = newExpressionAction();
+		DataBinding<T> expression = new DataBinding<>(expressionAsString, null);
+		returned.setExpression(expression);
+		return returned;
 	}
 
 	public <T> ExpressionAction<T> newExpressionAction(DataBinding<T> expression) {

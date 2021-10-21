@@ -197,6 +197,13 @@ public interface DeclarationAction<T> extends AbstractAssignationAction<T> {
 				if (!TypeUtils.isTypeAssignableFrom(anExpressionProperty.getDeclaredType(), anExpressionProperty.getAnalyzedType())
 						&& !TypeUtils.isTypeAssignableFrom(anExpressionProperty.getAnalyzedType(),
 								anExpressionProperty.getDeclaredType())) {
+
+					/*System.out.println("On a un probleme ici dans " + anExpressionProperty.getFMLPrettyPrint());
+					System.out.println("DeclaredType: " + anExpressionProperty.getDeclaredType() + " of "
+							+ anExpressionProperty.getDeclaredType().getClass());
+					System.out.println("AnalyzedType: " + anExpressionProperty.getAnalyzedType() + " of "
+							+ anExpressionProperty.getAnalyzedType().getClass());*/
+
 					return new ValidationError<>(this, anExpressionProperty, "types_are_not_compatibles");
 				}
 			}

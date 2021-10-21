@@ -829,7 +829,7 @@ public interface FMLObject extends FlexoObject, Bindable, InnerResourceData<FMLC
 		public ValidationIssue<BindingIsRecommandedAndShouldBeValid<C>, C> applyValidation(C object) {
 			if (getBinding(object) != null && getBinding(object).isSet()) {
 				// We force revalidate the binding to be sure that the binding is valid
-				if (!getBinding(object).forceRevalidate()) {
+				if (!getBinding(object).revalidate()) {
 					FMLObjectImpl.logger.info("Binding NOT valid: " + getBinding(object) + " for " + object.getStringRepresentation()
 							+ ". Reason: " + getBinding(object).invalidBindingReason());
 					DeleteBinding<C> deleteBinding = new DeleteBinding<>(this);
@@ -907,7 +907,7 @@ public interface FMLObject extends FlexoObject, Bindable, InnerResourceData<FMLC
 		public ValidationIssue<BindingMustBeValid<C>, C> applyValidation(C object) {
 			if (getBinding(object) != null && getBinding(object).isSet()) {
 				// We force revalidate the binding to be sure that the binding is valid
-				if (!getBinding(object).forceRevalidate()) {
+				if (!getBinding(object).revalidate()) {
 					FMLObjectImpl.logger.info("Binding NOT valid: " + getBinding(object) + " for " + object.getStringRepresentation()
 							+ ". Reason: " + getBinding(object).invalidBindingReason());
 					DeleteBinding<C> deleteBinding = new DeleteBinding<>(this);
@@ -972,17 +972,10 @@ public interface FMLObject extends FlexoObject, Bindable, InnerResourceData<FMLC
 				return new UndefinedRequiredBindingIssue<>(this, object);
 			}
 			// We force revalidate the binding to be sure that the binding is valid
-			else if (!b.forceRevalidate()) {
+			else if (!b.revalidate()) {
 				// FMLObjectImpl.logger.info(getClass().getName() + ": Binding NOT valid: " + b + " for " + object.getStringRepresentation()
 				// + ". Reason: " + b.invalidBindingReason());
 				// Thread.dumpStack();
-
-				/*if (b.toString().equals("donneesReferentiel.tiers")) {
-					System.out.println(
-							"C'est la que j'ai mon probleme, avec " + b + " pour " + object + " of " + object.getImplementedInterface());
-					System.out.println("reason: " + b.invalidBindingReason());
-					Thread.dumpStack();
-				}*/
 
 				InvalidRequiredBindingIssue<C> returned = new InvalidRequiredBindingIssue<>(this, object);
 

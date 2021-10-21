@@ -731,9 +731,9 @@ public class CreateEditionAction extends FlexoAction<CreateEditionAction, FMLCon
 					return getAssignableType();
 				}
 			};
-			assignation.setDeclaredType(getAssignableType());
-			assignation.setBindingName("assignation");
-			assignation.setMandatory(true);
+			this.assignation.setDeclaredType(getAssignableType());
+			this.assignation.setBindingName("assignation");
+			this.assignation.setMandatory(true);
 		}
 		notifiedBindingChanged(this.assignation);
 	}

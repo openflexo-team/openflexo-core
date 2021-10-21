@@ -419,7 +419,7 @@ public class FMLBindingFactory extends JavaBasedBindingFactory {
 		}*/
 		if (parent != null) {
 
-			if (parent.getLabel().equals("super")) {
+			if (parent.getLabel().startsWith("super")) {
 				return new FlexoBehaviourPathElement(parent, methodName, args, this);
 			}
 
@@ -462,8 +462,11 @@ public class FMLBindingFactory extends JavaBasedBindingFactory {
 				CreationScheme returned = (CreationScheme) concept.getFlexoBehaviour(constructorName, buildArgumentList(arguments));
 				return returned;
 			}
+			return null;
 		}
-		return super.retrieveConstructor(declaringType, innerAccessType, constructorName, arguments);
+		else {
+			return super.retrieveConstructor(declaringType, innerAccessType, constructorName, arguments);
+		}
 	}
 
 	private Type[] buildArgumentList(List<DataBinding<?>> args) {

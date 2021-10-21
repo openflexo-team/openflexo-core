@@ -1734,7 +1734,8 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 				return;
 			}*/
 			else if (variable.getVariableName().equals(FlexoConceptBindingModel.THIS_PROPERTY_NAME)) {
-				logger.warning("Forbidden write access " + FlexoConceptBindingModel.THIS_PROPERTY_NAME + " in " + this + " of " + getClass());
+				logger.warning(
+						"Forbidden write access " + FlexoConceptBindingModel.THIS_PROPERTY_NAME + " in " + this + " of " + getClass());
 				return;
 			}
 
@@ -1932,7 +1933,7 @@ public interface FlexoConceptInstance extends VirtualModelInstanceObject, Bindab
 					// Quick and dirty hasck to force revalidate
 					if (!rendererWasForceRevalidated) {
 						String invalidReason = getFlexoConcept().getInspector().getRenderer().invalidBindingReason();
-						getFlexoConcept().getInspector().getRenderer().forceRevalidate();
+						getFlexoConcept().getInspector().getRenderer().revalidate();
 						rendererWasForceRevalidated = true;
 						if (getFlexoConcept().getInspector().getRenderer().isValid()) {
 							logger.warning("Please investigate: i was required to force revalidate renderer: "

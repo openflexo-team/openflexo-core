@@ -172,6 +172,7 @@ public interface IterationAction extends AbstractIterationAction {
 		@Override
 		public void setIterationAction(AssignableAction<? extends List<?>> iterationControlGraph) {
 			if (iterationControlGraph != null) {
+				iterationControlGraph.setOwner(this);
 				iterationControlGraph.setOwnerContext(ITERATION_CONTROL_GRAPH_KEY);
 			}
 			performSuperSetter(ITERATION_CONTROL_GRAPH_KEY, iterationControlGraph);
@@ -185,7 +186,7 @@ public interface IterationAction extends AbstractIterationAction {
 			else if (controlGraph == getIterationAction()) {
 				return getBindingModel();
 			}
-			logger.warning("Unexpected control graph: " + controlGraph);
+			// logger.warning("Unexpected control graph: " + controlGraph);
 			return null;
 		}
 

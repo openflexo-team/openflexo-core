@@ -169,7 +169,7 @@ public class AddVirtualModelInstanceNode extends AbstractAddFlexoConceptInstance
 				}
 				else if (typeVirtualModel.getCreationSchemes().size() == 1) {
 					getModelObject().setFunction(typeVirtualModel.getCreationSchemes().get(0));
-					//System.out.println("Set constructor to " + getModelObject().getFunction());
+					// System.out.println("Set constructor to " + getModelObject().getFunction());
 				}
 				else {
 					throwIssue("Ambigous CreationScheme for FlexoConcept " + getModelObject().getType(), getTypeFragment());
@@ -184,7 +184,8 @@ public class AddVirtualModelInstanceNode extends AbstractAddFlexoConceptInstance
 	@Override
 	public CreationSchemePathElement buildModelObjectFromAST(Node astNode) {
 
-		if (getBindable() != null) {
+		if (readyToBuildModelObject()) {
+
 			Type type = null;
 			if (astNode instanceof ASimpleNewInstance) {
 				handleArguments(((ASimpleNewInstance) astNode).getArgumentList());

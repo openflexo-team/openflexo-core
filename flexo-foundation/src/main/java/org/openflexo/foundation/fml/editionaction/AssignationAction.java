@@ -41,6 +41,7 @@ package org.openflexo.foundation.fml.editionaction;
 import java.util.logging.Logger;
 
 import org.openflexo.connie.DataBinding;
+import org.openflexo.connie.DataBinding.BindingDefinitionType;
 import org.openflexo.connie.expr.BindingValue;
 import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.fml.FlexoProperty;
@@ -93,10 +94,14 @@ public interface AssignationAction<T> extends AbstractAssignationAction<T> {
 		@Override
 		public void setAssignation(DataBinding<? super T> assignation) {
 			if (assignation != null) {
-				this.assignation = new DataBinding<Object>(assignation.toString(), this, Object.class,
-						DataBinding.BindingDefinitionType.GET_SET);
+				this.assignation = assignation;
+				// this.assignation = new DataBinding<Object>(assignation.toString(), this, Object.class,
+				// DataBinding.BindingDefinitionType.GET_SET);
+				this.assignation.setOwner(this);
 				this.assignation.setBindingName("assignation");
 				this.assignation.setMandatory(true);
+				this.assignation.setDeclaredType(Object.class);
+				this.assignation.setBindingDefinitionType(BindingDefinitionType.GET_SET);
 			}
 			notifiedBindingChanged(this.assignation);
 		}

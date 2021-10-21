@@ -517,20 +517,20 @@ public class TestFMLBindingModelManagement3 extends OpenflexoProjectAtRunTimeTes
 	@TestOrder(8)
 	public void checkIntrospectiveAccess()
 			throws TypeMismatchException, NullReferenceException, InvalidBindingException, ReflectiveOperationException {
-		assertEquals(virtualModel3, vmi3.execute("this.concept"));
-		assertEquals(virtualModel3, vmi3.execute("this.virtualModel"));
-		assertEquals(virtualModel2, vmi3.execute("this.container.concept"));
-		assertEquals(virtualModel2, vmi3.execute("container.concept"));
-		assertEquals(virtualModel2, vmi3.execute("this.container.virtualModel"));
-		assertEquals(virtualModel2, vmi3.execute("container.virtualModel"));
-		assertEquals(virtualModel1, vmi3.execute("this.container.container.concept"));
-		assertEquals(virtualModel1, vmi3.execute("container.container.concept"));
-		assertEquals(virtualModel1, vmi3.execute("this.container.container.virtualModel"));
-		assertEquals(virtualModel1, vmi3.execute("container.container.virtualModel"));
-		assertEquals(viewPoint, vmi3.execute("this.container.container.container.concept"));
-		assertEquals(viewPoint, vmi3.execute("container.container.container.concept"));
-		assertEquals(viewPoint, vmi3.execute("this.container.container.container.virtualModel"));
-		assertEquals(viewPoint, vmi3.execute("container.container.container.virtualModel"));
+		assertEquals(virtualModel3, vmi3.execute("this.conceptType"));
+		assertEquals(virtualModel3, vmi3.execute("this.virtualModelType"));
+		assertEquals(virtualModel2, vmi3.execute("this.container.conceptType"));
+		assertEquals(virtualModel2, vmi3.execute("container.conceptType"));
+		assertEquals(virtualModel2, vmi3.execute("this.container.virtualModelType"));
+		assertEquals(virtualModel2, vmi3.execute("container.virtualModelType"));
+		assertEquals(virtualModel1, vmi3.execute("this.container.container.conceptType"));
+		assertEquals(virtualModel1, vmi3.execute("container.container.conceptType"));
+		assertEquals(virtualModel1, vmi3.execute("this.container.container.virtualModelType"));
+		assertEquals(virtualModel1, vmi3.execute("container.container.virtualModelType"));
+		assertEquals(viewPoint, vmi3.execute("this.container.container.container.conceptType"));
+		assertEquals(viewPoint, vmi3.execute("container.container.container.conceptType"));
+		assertEquals(viewPoint, vmi3.execute("this.container.container.container.virtualModelType"));
+		assertEquals(viewPoint, vmi3.execute("container.container.container.virtualModelType"));
 
 	}
 
@@ -572,7 +572,7 @@ public class TestFMLBindingModelManagement3 extends OpenflexoProjectAtRunTimeTes
 		assertEquals(fci, fci.execute("this"));
 		assertEquals(vmi1, fci.execute("this.container"));
 		assertEquals(vmi1, fci.execute("container"));
-		assertEquals(flexoConceptA, fci.execute("this.concept"));
+		assertEquals(flexoConceptA, fci.execute("this.conceptType"));
 
 		assertNotNull(flexoConceptA.getBindingModel().bindingVariableNamed("aStringInA"));
 		assertEquals(String.class, flexoConceptA.getBindingModel().bindingVariableNamed("aStringInA").getType());
@@ -731,20 +731,20 @@ public class TestFMLBindingModelManagement3 extends OpenflexoProjectAtRunTimeTes
 		assertEquals(newView, vmi3.execute("this.container.container.container"));
 		assertEquals(newView, vmi3.execute("container.container.container"));
 
-		assertEquals(reloadedVM3, vmi3.execute("this.concept"));
-		assertEquals(reloadedVM3, vmi3.execute("this.virtualModel"));
-		assertEquals(reloadedVM2, vmi3.execute("this.container.concept"));
-		assertEquals(reloadedVM2, vmi3.execute("container.concept"));
-		assertEquals(reloadedVM2, vmi3.execute("this.container.virtualModel"));
-		assertEquals(reloadedVM2, vmi3.execute("container.virtualModel"));
-		assertEquals(reloadedVM1, vmi3.execute("this.container.container.concept"));
-		assertEquals(reloadedVM1, vmi3.execute("container.container.concept"));
-		assertEquals(reloadedVM1, vmi3.execute("this.container.container.virtualModel"));
-		assertEquals(reloadedVM1, vmi3.execute("container.container.virtualModel"));
-		assertEquals(reloadedViewPoint, vmi3.execute("this.container.container.container.concept"));
-		assertEquals(reloadedViewPoint, vmi3.execute("container.container.container.concept"));
-		assertEquals(reloadedViewPoint, vmi3.execute("this.container.container.container.virtualModel"));
-		assertEquals(reloadedViewPoint, vmi3.execute("container.container.container.virtualModel"));
+		assertEquals(reloadedVM3, vmi3.execute("this.conceptType"));
+		assertEquals(reloadedVM3, vmi3.execute("this.virtualModelType"));
+		assertEquals(reloadedVM2, vmi3.execute("this.container.conceptType"));
+		assertEquals(reloadedVM2, vmi3.execute("container.conceptType"));
+		assertEquals(reloadedVM2, vmi3.execute("this.container.virtualModelType"));
+		assertEquals(reloadedVM2, vmi3.execute("container.virtualModelType"));
+		assertEquals(reloadedVM1, vmi3.execute("this.container.container.conceptType"));
+		assertEquals(reloadedVM1, vmi3.execute("container.container.conceptType"));
+		assertEquals(reloadedVM1, vmi3.execute("this.container.container.virtualModelType"));
+		assertEquals(reloadedVM1, vmi3.execute("container.container.virtualModelType"));
+		assertEquals(reloadedViewPoint, vmi3.execute("this.container.container.container.conceptType"));
+		assertEquals(reloadedViewPoint, vmi3.execute("container.container.container.conceptType"));
+		assertEquals(reloadedViewPoint, vmi3.execute("this.container.container.container.virtualModelType"));
+		assertEquals(reloadedViewPoint, vmi3.execute("container.container.container.virtualModelType"));
 
 	}
 

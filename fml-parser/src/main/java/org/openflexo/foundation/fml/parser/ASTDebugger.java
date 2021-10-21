@@ -56,6 +56,7 @@ public class ASTDebugger extends DepthFirstAdapter {
 
 	private ASTDebugger(Node tree) {
 		super();
+		System.out.println("ASTDebugger :: " + tree + " of " + tree.getClass());
 		tree.apply(this);
 	}
 
