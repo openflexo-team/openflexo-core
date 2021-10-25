@@ -143,6 +143,12 @@ public class ExpressionFactory extends AbstractExpressionFactory {
 		// return new DataBinding(analyzer.getText(node), bindable, expectedType, BindingDefinitionType.GET);
 
 		ExpressionFactory factory = new ExpressionFactory(node, bindable, typingSpace, modelFactory, mainAnalyzer, dataBindingNode);
+
+		// System.out.println(">>>>>>> " + Integer.toHexString(factory.hashCode()) + ": Make expression for " + node);
+		// Thread.dumpStack();
+		// System.out.println("current: " + factory.fmlNodes.peek());
+		// ASTDebugger.debug(node);
+
 		factory.push(dataBindingNode);
 		node.apply(factory);
 		factory.pop();
@@ -243,6 +249,20 @@ public class ExpressionFactory extends AbstractExpressionFactory {
 		popBindingPathNode(node);
 	}
 
+	/*@Override
+	public void inAOneArgumentList(AOneArgumentList node) {
+		// TODO Auto-generated method stub
+		super.inAOneArgumentList(node);
+		depth++;
+	}
+	
+	@Override
+	public void outAOneArgumentList(AOneArgumentList node) {
+		// TODO Auto-generated method stub
+		super.outAOneArgumentList(node);
+		depth--;
+	}*/
+
 	// When we enter in a type, increase level
 	@Override
 	public void inAReferenceType(AReferenceType node) {
@@ -340,121 +360,96 @@ public class ExpressionFactory extends AbstractExpressionFactory {
 	@Override
 	public void inANullLiteral(ANullLiteral node) {
 		super.inANullLiteral(node);
-		push(retrieveFMLNode(node, n -> new NullConstantNode(n, this)));
+		pushConstantNode(node, n -> new NullConstantNode(n, this));
 	}
 
 	@Override
 	public void outANullLiteral(ANullLiteral node) {
 		super.outANullLiteral(node);
-		pop();
-		// registerExpressionNode(node, ObjectSymbolicConstant.NULL);
+		popConstantNode(node);
 	}
 
 	@Override
 	public void inATrueLiteral(ATrueLiteral node) {
 		super.inATrueLiteral(node);
-		push(retrieveFMLNode(node, n -> new TrueConstantNode(n, this)));
+		pushConstantNode(node, n -> new TrueConstantNode(n, this));
 	}
 
 	@Override
 	public void outATrueLiteral(ATrueLiteral node) {
 		super.outATrueLiteral(node);
-		pop();
-		// registerExpressionNode(node, BooleanConstant.TRUE);
+		popConstantNode(node);
 	}
 
 	@Override
 	public void inAFalseLiteral(AFalseLiteral node) {
 		super.inAFalseLiteral(node);
-		push(retrieveFMLNode(node, n -> new FalseConstantNode(n, this)));
+		pushConstantNode(node, n -> new FalseConstantNode(n, this));
 	}
 
 	@Override
 	public void outAFalseLiteral(AFalseLiteral node) {
 		super.outAFalseLiteral(node);
-		pop();
-		// registerExpressionNode(node, BooleanConstant.FALSE);
+		popConstantNode(node);
 	}
 
 	@Override
 	public void inAStringLiteral(AStringLiteral node) {
 		super.inAStringLiteral(node);
-		push(retrieveFMLNode(node, n -> new StringConstantNode(n, this)));
+		pushConstantNode(node, n -> new StringConstantNode(n, this));
 	}
 
 	@Override
 	public void outAStringLiteral(AStringLiteral node) {
 		super.outAStringLiteral(node);
-		/*String value = node.getLitString().getText();
-		value = value.substring(1, value.length() - 1);
-		registerExpressionNode(node, new StringConstant(value));*/
-		pop();
+		popConstantNode(node);
 	}
 
 	@Override
 	public void inACharacterLiteral(ACharacterLiteral node) {
 		super.inACharacterLiteral(node);
-		push(retrieveFMLNode(node, n -> new CharConstantNode(n, this)));
+		pushConstantNode(node, n -> new CharConstantNode(n, this));
 	}
 
 	@Override
 	public void outACharacterLiteral(ACharacterLiteral node) {
 		super.outACharacterLiteral(node);
-		/*String value = node.getLitCharacter().getText();
-		Character c = value.charAt(1);
-		registerExpressionNode(node, new CharConstant(c));*/
-		pop();
+		popConstantNode(node);
 	}
 
 	@Override
 	public void inAIntegerLiteral(AIntegerLiteral node) {
 		super.inAIntegerLiteral(node);
-		push(retrieveFMLNode(node, n -> new IntegerConstantNode(n, this)));
+		pushConstantNode(node, n -> new IntegerConstantNode(n, this));
+		/*depth++;
+		if (weAreDealingWithTheRightBindingPath()) {
+			super.inAIntegerLiteral(node);
+			System.out.println("Nouveau IntegerLiteral " + node + " for " + Integer.toHexString(hashCode()) + " depth=" + depth);
+			push(retrieveFMLNode(node, n -> new IntegerConstantNode(n, this)));
+		}*/
 	}
 
 	@Override
 	public void outAIntegerLiteral(AIntegerLiteral node) {
 		super.outAIntegerLiteral(node);
-		pop();
+		popConstantNode(node);
+		/*if (weAreDealingWithTheRightBindingPath()) {
+			super.outAIntegerLiteral(node);
+			pop();
+		}
+		depth--;*/
 	}
 
 	@Override
 	public void inAFloatingPointLiteral(AFloatingPointLiteral node) {
 		super.inAFloatingPointLiteral(node);
-		push(retrieveFMLNode(node, n -> new FloatingPointConstantNode(n, this)));
+		pushConstantNode(node, n -> new FloatingPointConstantNode(n, this));
 	}
 
 	@Override
 	public void outAFloatingPointLiteral(AFloatingPointLiteral node) {
 		super.outAFloatingPointLiteral(node);
-		pop();
-		/*Number value = null;
-		String valueText = node.getLitFloat().getText();
-		if (valueText.endsWith("F") || valueText.endsWith("f")) {
-			valueText = valueText.substring(0, valueText.length() - 1);
-			try {
-				value = Float.parseFloat(valueText);
-			} catch (NumberFormatException e) {
-				e.printStackTrace();
-			}
-		}
-		else if (valueText.endsWith("D") || valueText.endsWith("d")) {
-			valueText = valueText.substring(0, valueText.length() - 1);
-			try {
-				value = Double.parseDouble(valueText);
-			} catch (NumberFormatException e) {
-				e.printStackTrace();
-			}
-		}
-		else {
-			try {
-				value = Double.parseDouble(valueText);
-			} catch (NumberFormatException e) {
-				e.printStackTrace();
-			}
-		}
-		registerExpressionNode(node, FMLConstant.makeConstant(value));*/
-
+		popConstantNode(node);
 	}
 
 	// conditional_exp =

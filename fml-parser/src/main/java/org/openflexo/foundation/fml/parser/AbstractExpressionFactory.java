@@ -12,6 +12,7 @@ import org.openflexo.connie.expr.Expression;
 import org.openflexo.foundation.fml.AbstractFMLTypingSpace;
 import org.openflexo.foundation.fml.FMLModelFactory;
 import org.openflexo.foundation.fml.parser.fmlnodes.expr.BindingPathNode;
+import org.openflexo.foundation.fml.parser.fmlnodes.expr.ConstantNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.expr.DataBindingNode;
 import org.openflexo.foundation.fml.parser.node.AConditionalExpression;
 import org.openflexo.foundation.fml.parser.node.AExpressionPrimaryNoId;
@@ -243,6 +244,27 @@ public abstract class AbstractExpressionFactory extends FMLSemanticsAnalyzer {
 				BindingPathNode bindingPathNode = pop();
 				expressionNodes.put(node, bindingPathNode.getModelObject());
 				return bindingPathNode;
+			}
+			return null;
+		} finally {
+			depth--;
+		}
+	}
+
+	protected <N extends Node, FMLN extends ConstantNode<?, ?>> FMLN pushConstantNode(N astNode, Function<N, FMLN> function) {
+		depth++;
+		if (weAreDealingWithTheRightBindingPath()) {
+			FMLN newNode = retrieveFMLNode(astNode, function);
+			push(newNode);
+			return newNode;
+		}
+		return null;
+	}
+
+	protected BindingPathNode popConstantNode(Node node) {
+		try {
+			if (weAreDealingWithTheRightBindingPath()) {
+				pop();
 			}
 			return null;
 		} finally {
