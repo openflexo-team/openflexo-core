@@ -53,6 +53,7 @@ import org.openflexo.connie.BindingVariable;
 import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.expr.ExpressionEvaluator;
 import org.openflexo.foundation.fml.FMLBindingFactory;
+import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.expr.FMLExpressionEvaluator;
 import org.openflexo.foundation.ontology.FlexoOntologyObjectImpl;
 import org.openflexo.foundation.ontology.IFlexoOntology;
@@ -106,7 +107,7 @@ public class FIBIndividualSelector<TA extends TechnologyAdapter<TA>> extends FIB
 
 	private String defaultRenderer = null;
 
-	private static FMLBindingFactory FLEXO_CONCEPT_BINDING_FACTORY = new FMLBindingFactory(null);
+	private static FMLBindingFactory FLEXO_CONCEPT_BINDING_FACTORY = new FMLBindingFactory((VirtualModel) null);
 
 	private final HashMap<IFlexoOntologyClass<TA>, DataBinding<String>> renderers;
 

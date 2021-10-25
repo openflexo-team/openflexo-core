@@ -38,7 +38,6 @@
 
 package org.openflexo.foundation.doc.fml;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
@@ -322,7 +321,7 @@ public interface TextBinding<D extends FlexoDocument<D, TA>, TA extends Technolo
 				e.printStackTrace();
 			} catch (NullReferenceException e) {
 				e.printStackTrace();
-			} catch (InvocationTargetException e) {
+			} catch (ReflectiveOperationException e) {
 				e.printStackTrace();
 			}
 		}
@@ -589,7 +588,7 @@ public interface TextBinding<D extends FlexoDocument<D, TA>, TA extends Technolo
 					e.printStackTrace();
 				} catch (NullReferenceException e) {
 					e.printStackTrace();
-				} catch (InvocationTargetException e) {
+				} catch (ReflectiveOperationException e) {
 					e.printStackTrace();
 				} catch (NotSettableContextException e) {
 					e.printStackTrace();

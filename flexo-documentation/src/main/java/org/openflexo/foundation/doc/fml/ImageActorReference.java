@@ -39,7 +39,6 @@
 package org.openflexo.foundation.doc.fml;
 
 import java.awt.image.BufferedImage;
-import java.lang.reflect.InvocationTargetException;
 import java.util.logging.Logger;
 
 import org.openflexo.connie.exception.NullReferenceException;
@@ -267,7 +266,7 @@ public interface ImageActorReference<R extends FlexoDrawingRun<?, ?>> extends Ac
 				e.printStackTrace();
 			} catch (NullReferenceException e) {
 				e.printStackTrace();
-			} catch (InvocationTargetException e) {
+			} catch (ReflectiveOperationException e) {
 				e.printStackTrace();
 			}
 		}
