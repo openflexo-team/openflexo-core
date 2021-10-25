@@ -69,8 +69,10 @@ import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.VirtualModelInstanceType;
 import org.openflexo.foundation.fml.annotations.FML;
 import org.openflexo.foundation.fml.annotations.FMLAttribute;
+import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.VirtualModelInstance;
+import org.openflexo.foundation.fml.rt.action.CreateBasicVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.action.CreationSchemeAction;
 import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
 import org.openflexo.pamela.annotations.Getter;
@@ -128,6 +130,8 @@ public interface CreationSchemePathElement extends FMLObject, NewInstancePathEle
 		private Type lastKnownType = null;
 
 		private FMLBindingFactory bindingFactory;
+
+		private DataBinding<String> virtualModelInstanceName;
 
 		public CreationSchemePathElementImpl() {
 			super();
@@ -241,6 +245,26 @@ public interface CreationSchemePathElement extends FMLObject, NewInstancePathEle
 		}
 
 		@Override
+		public DataBinding<String> getVirtualModelInstanceName() {
+			if (virtualModelInstanceName == null) {
+				virtualModelInstanceName = new DataBinding<>(this, String.class, DataBinding.BindingDefinitionType.GET);
+				virtualModelInstanceName.setBindingName("virtualModelInstanceName");
+			}
+			return virtualModelInstanceName;
+		}
+
+		@Override
+		public void setVirtualModelInstanceName(DataBinding<String> aVirtualModelInstanceName) {
+			if (aVirtualModelInstanceName != null) {
+				aVirtualModelInstanceName.setOwner(this);
+				aVirtualModelInstanceName.setBindingName("virtualModelInstanceName");
+				aVirtualModelInstanceName.setDeclaredType(String.class);
+				aVirtualModelInstanceName.setBindingDefinitionType(DataBinding.BindingDefinitionType.GET);
+			}
+			this.virtualModelInstanceName = aVirtualModelInstanceName;
+		}
+
+		@Override
 		public Object getBindingValue(Object target, BindingEvaluationContext evaluationContext)
 				throws TypeMismatchException, NullReferenceException, InvocationTargetTransformException {
 
@@ -265,10 +289,38 @@ public interface CreationSchemePathElement extends FMLObject, NewInstancePathEle
 				}
 
 				if (getCreationScheme().getFlexoConcept() instanceof VirtualModel) {
-					// TODO
-					// check code on AddVirtualModelInstance.makeNewFlexoConceptInstance
-					logger.warning("New VirtualModel instance not supported yet !!!");
-					return null;
+
+					String vmiName = getVirtualModelInstanceName().getBindingValue(evaluationContext);
+
+					/*System.out.println("getVirtualModelInstanceName()=" + getVirtualModelInstanceName());
+					System.out.println("valid=" + getVirtualModelInstanceName().isValid());
+					System.out.println("reason=" + getVirtualModelInstanceName().invalidBindingReason());
+					System.out.println("BM=" + getBindingModel());
+					System.out.println("vmiName=" + vmiName);*/
+
+					VirtualModel instantiatedVirtualModel = (VirtualModel) getCreationScheme().getFlexoConcept();
+
+					// TODO: manage container
+					logger.warning("What about the container ??? " + container);
+
+					CreateBasicVirtualModelInstance createVMIAction = CreateBasicVirtualModelInstance.actionType
+							.makeNewEmbeddedAction(container, null, (FlexoBehaviourAction<?, ?, ?>) evaluationContext);
+					createVMIAction.setSkipChoosePopup(true);
+					createVMIAction.setNewVirtualModelInstanceName(vmiName);
+					createVMIAction.setVirtualModel(instantiatedVirtualModel);
+					createVMIAction.setCreationScheme(getCreationScheme());
+
+					for (FunctionArgument functionArgument : getFunctionArguments()) {
+						// System.out.println("functionArgument:" + functionArgument + " = " + getArgumentValue(functionArgument));
+						Object v = getArgumentValue(functionArgument).getBindingValue(evaluationContext);
+						// System.out.println("values:" + v);
+						createVMIAction.setParameterValue((FlexoBehaviourParameter) functionArgument, v);
+					}
+
+					createVMIAction.doAction();
+					FMLRTVirtualModelInstance returned = createVMIAction.getNewVirtualModelInstance();
+					// System.out.println("returned=" + returned);
+					return returned;
 				}
 				else {
 					FlexoConceptInstance newFCI = container.getVirtualModelInstance()

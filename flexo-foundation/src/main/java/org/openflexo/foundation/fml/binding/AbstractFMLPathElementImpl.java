@@ -81,6 +81,7 @@ public abstract class AbstractFMLPathElementImpl extends FMLObjectImpl implement
 		return bindingPathElementOwner;
 	}
 
+	@Override
 	public void setBindingPathElementOwner(BindingPathElementOwner owner) {
 		if ((owner == null && this.bindingPathElementOwner != null) || (owner != null && !owner.equals(this.bindingPathElementOwner))) {
 			BindingPathElementOwner oldValue = this.bindingPathElementOwner;
@@ -208,10 +209,12 @@ public abstract class AbstractFMLPathElementImpl extends FMLObjectImpl implement
 		return getClass().getSimpleName() + ":" + getSerializationRepresentation();
 	}
 
+	BindingModel aVirer = new BindingModel();
+
 	@Override
 	public BindingModel getBindingModel() {
 		// Not applicable
-		return null;
+		return aVirer;
 	}
 
 	@Override
