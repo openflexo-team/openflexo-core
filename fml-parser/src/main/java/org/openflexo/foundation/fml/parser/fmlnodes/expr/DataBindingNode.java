@@ -86,6 +86,15 @@ public class DataBindingNode extends ObjectNode<Node, DataBinding<?>, MainSemant
 	}
 
 	@Override
+	public void finalizeDeserialization() {
+		if (getModelObject() != null) {
+			if (!getModelObject().isValid()) {
+				throwIssue(getModelObject().invalidBindingReason(), getFragment());
+			}
+		}
+	}
+
+	@Override
 	public void preparePrettyPrint(boolean hasParsedVersion) {
 		super.preparePrettyPrint(hasParsedVersion);
 	}
