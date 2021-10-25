@@ -43,7 +43,7 @@ import java.util.logging.Logger;
 
 import org.openflexo.connie.BindingEvaluationContext;
 import org.openflexo.connie.binding.IBindingPathElement;
-import org.openflexo.connie.binding.SimplePathElement;
+import org.openflexo.connie.binding.SimplePathElementImpl;
 import org.openflexo.connie.exception.NullReferenceException;
 import org.openflexo.connie.exception.TypeMismatchException;
 import org.openflexo.foundation.fml.FMLBindingFactory;
@@ -52,7 +52,7 @@ import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.localization.FlexoLocalization;
 
-public class VirtualModelTypePathElement extends SimplePathElement<FMLNativeProperty> {
+public class VirtualModelTypePathElement extends SimplePathElementImpl<FMLNativeProperty> {
 
 	private static final Logger logger = Logger.getLogger(VirtualModelTypePathElement.class.getPackage().getName());
 

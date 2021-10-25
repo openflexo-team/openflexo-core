@@ -134,7 +134,7 @@ public class TestAddVirtualModelInstance extends FMLParserTestCase {
 				.getObjectNode(expressionAction.getParameters().get(1));*/
 
 		assertEquals("new MyModel(\"test\",3) with (virtualModelInstanceName=\"foo\")", expressionAction.getFMLPrettyPrint());
-		assertEquals("new MyModel(\"test\",3) with (virtualModelInstanceName = \"foo\")", expressionAction.getNormalizedFML());
+		assertEquals("new MyModel(\"test\",3) with (virtualModelInstanceName=\"foo\")", expressionAction.getNormalizedFML());
 
 		assertEquals("(13:1)-(15:2)", behaviourNode.getLastParsedFragment().toString());
 		assertEquals("(12:0)-(13:0)", behaviourNode.getPrelude().toString());

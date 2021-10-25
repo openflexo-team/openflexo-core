@@ -43,7 +43,7 @@ import java.util.logging.Logger;
 
 import org.openflexo.connie.BindingEvaluationContext;
 import org.openflexo.connie.binding.IBindingPathElement;
-import org.openflexo.connie.binding.SimplePathElement;
+import org.openflexo.connie.binding.SimplePathElementImpl;
 import org.openflexo.connie.exception.NullReferenceException;
 import org.openflexo.connie.exception.TypeMismatchException;
 import org.openflexo.foundation.fml.FMLBindingFactory;
@@ -57,7 +57,7 @@ import org.openflexo.foundation.resource.FlexoResourceCenter;
  * @author sylvain
  *
  */
-public class ResourceCenterPathElement extends SimplePathElement<FMLNativeProperty> {
+public class ResourceCenterPathElement extends SimplePathElementImpl<FMLNativeProperty> {
 
 	private static final Logger logger = Logger.getLogger(ResourceCenterPathElement.class.getPackage().getName());
 

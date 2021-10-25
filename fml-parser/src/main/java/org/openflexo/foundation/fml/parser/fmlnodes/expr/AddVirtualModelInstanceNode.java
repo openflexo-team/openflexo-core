@@ -179,12 +179,16 @@ public class AddVirtualModelInstanceNode extends AbstractAddFlexoConceptInstance
 		else {
 			throwIssue("Type does not address any FlexoConcept", getTypeFragment());
 		}
+
 	}
 
 	@Override
 	public CreationSchemePathElement buildModelObjectFromAST(Node astNode) {
 
 		if (readyToBuildModelObject()) {
+
+			// System.out.println("astNode = " + astNode);
+			// System.exit(-1);
 
 			Type type = null;
 			if (astNode instanceof ASimpleNewInstance) {
@@ -198,6 +202,9 @@ public class AddVirtualModelInstanceNode extends AbstractAddFlexoConceptInstance
 
 			CreationSchemePathElement pathElement = (CreationSchemePathElement) getBindingFactory().makeNewInstancePathElement(type,
 					getParentPathElement(), null, getArguments());
+
+			decodeFMLProperties(getFMLParameters(), pathElement);
+
 			return pathElement;
 			/*NewVirtualModelInstanceBindingPathElement returned = new NewVirtualModelInstanceBindingPathElement(
 					(VirtualModelInstanceType) type, null, // default constructor,
@@ -272,6 +279,16 @@ public class AddVirtualModelInstanceNode extends AbstractAddFlexoConceptInstance
 		// Append semi only when required
 		when(() -> requiresSemi()).thenAppend(staticContents(";"), getSemiFragment());*/
 		// @formatter:on
+	}
+
+	protected boolean hasFMLProperties() {
+		if (getFMLParametersClause() != null) {
+			return true;
+		}
+		if (getModelObject() != null) {
+			return getModelObject().hasFMLProperties(getFactory());
+		}
+		return false;
 	}
 
 }

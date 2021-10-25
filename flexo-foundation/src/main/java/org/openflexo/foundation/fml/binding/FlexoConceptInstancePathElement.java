@@ -45,7 +45,7 @@ import java.util.logging.Logger;
 
 import org.openflexo.connie.BindingEvaluationContext;
 import org.openflexo.connie.binding.IBindingPathElement;
-import org.openflexo.connie.binding.SimplePathElement;
+import org.openflexo.connie.binding.SimplePathElementImpl;
 import org.openflexo.connie.exception.NullReferenceException;
 import org.openflexo.connie.exception.TypeMismatchException;
 import org.openflexo.foundation.fml.FlexoConcept;
@@ -62,7 +62,7 @@ import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
  */
 @Deprecated
 // Should be refactored
-public class FlexoConceptInstancePathElement extends SimplePathElement implements PropertyChangeListener {
+public class FlexoConceptInstancePathElement extends SimplePathElementImpl implements PropertyChangeListener {
 
 	private static final Logger logger = Logger.getLogger(FlexoConceptInstancePathElement.class.getPackage().getName());
 

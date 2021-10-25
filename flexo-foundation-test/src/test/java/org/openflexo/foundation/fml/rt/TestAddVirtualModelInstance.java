@@ -99,7 +99,7 @@ public class TestAddVirtualModelInstance extends OpenflexoProjectAtRunTimeTestCa
 		System.out.println("containedVM: " + containedVM.getCompilationUnit().getFMLPrettyPrint());
 
 		assertNotNull(creationScheme = virtualModel.getCreationSchemes().get(0));
-		assertEquals("vm = new VM() with (virtualModelInstanceName = \"myVMInstance\");",
+		assertEquals("vm = new VM(\"foo\") with (virtualModelInstanceName=\"myVMInstance\");",
 				creationScheme.getControlGraph().getFMLPrettyPrint());
 
 	}

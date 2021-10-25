@@ -44,9 +44,7 @@ import java.util.logging.Logger;
 
 import org.openflexo.connie.Bindable;
 import org.openflexo.connie.DataBinding;
-import org.openflexo.connie.DataBinding.BindingDefinitionType;
 import org.openflexo.connie.binding.FunctionPathElement;
-import org.openflexo.foundation.fml.parser.ExpressionFactory;
 import org.openflexo.foundation.fml.parser.MainSemanticsAnalyzer;
 import org.openflexo.foundation.fml.parser.node.AManyArgumentList;
 import org.openflexo.foundation.fml.parser.node.AOneArgumentList;
@@ -92,40 +90,11 @@ public abstract class AbstractCallBindingPathElementNode<N extends Node, BPE ext
 
 	protected void handleArgument(PExpression expression) {
 
-		// System.out.println("Handling argument " + expression);
-		DataBindingNode dataBindingNode = getAnalyser().retrieveFMLNode(expression,
-				n -> new DataBindingNode(n, getBindable(), BindingDefinitionType.GET, Object.class, getAnalyser()));
-		addToChildren(dataBindingNode);
-
-		/*Expression argValue =*/ ExpressionFactory.makeExpression(expression, getBindable(), getAnalyser(), dataBindingNode);
-
-		// System.out.println("On trouve " + argValue + " of " + argValue.getClass());
-		// dataBindingNode.getModelObject().setExpression(argValue);
-		// System.out.println("Found " + dataBindingNode.getModelObject().getExpression() + " of "
-		// + dataBindingNode.getModelObject().getExpression().getClass());
-
-		// DataBinding<?> argValue = ExpressionFactory.makeDataBinding(expression, getBindable(), BindingDefinitionType.GET, Object.class,
-		// getAnalyser(), dataBindingNode);
-
-		// System.out.println("On a trouve " + argValue);
+		DataBindingNode dataBindingNode = makeDataBinding(expression, getBindable());
 		if (args == null) {
 			args = new ArrayList<>();
 		}
-
-		// args.add(argValue);
-		/*if (dataBindingNode.getModelObject() == null) {
-			System.out.println("Bizarre ca c'est null pour " + expression);
-			System.exit(-1);
-		}*/
-
-		/*if (args.size() == 1 && args.get(0).toString().equals("aModel") && dataBindingNode.getModelObject().toString().equals("aModel")) {
-			System.out.println("Probleme ici");
-			Thread.dumpStack();
-			System.exit(-1);
-		}*/
-
 		args.add(dataBindingNode.getModelObject());
-
 	}
 
 	protected String serializeArguments(List<DataBinding<?>> arguments) {

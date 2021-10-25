@@ -92,6 +92,7 @@ public abstract class FMLParserTestCase extends OpenflexoTestCase {
 			// We dont expect to have particular ModelSlots in this context, but be aware of that
 			return null;
 		});
+		parser.getSemanticsAnalyzer().finalizeDeserialization();
 		FMLCompilationUnitNode rootNode = (FMLCompilationUnitNode) compilationUnit.getPrettyPrintDelegate();
 		debug(rootNode, 0);
 

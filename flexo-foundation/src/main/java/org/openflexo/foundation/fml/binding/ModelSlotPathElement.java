@@ -40,13 +40,13 @@ package org.openflexo.foundation.fml.binding;
 
 import java.util.logging.Logger;
 
-import org.openflexo.connie.binding.IBindingPathElement;
-import org.openflexo.connie.binding.SimplePathElement;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
+import org.openflexo.pamela.annotations.ImplementationClass;
+import org.openflexo.pamela.annotations.ModelEntity;
 
 /**
- * A {@link SimplePathElement} representing a {@link ModelSlot}, as a binding path applicable to an instance of a given
+ * A {@link FlexoPropertyPathElement} representing a {@link ModelSlot}, as a binding path applicable to an instance of a given
  * {@link FlexoConcept}<br>
  * Type of parent MUST be an instance of {@link FlexoConcept}
  * 
@@ -54,15 +54,27 @@ import org.openflexo.foundation.technologyadapter.ModelSlot;
  *
  * @param <P>
  */
-public class ModelSlotPathElement<MS extends ModelSlot<?>> extends FlexoPropertyPathElement<MS> {
+@ModelEntity
+@ImplementationClass(ModelSlotPathElement.ModelSlotPathElementImpl.class)
+public interface ModelSlotPathElement<MS extends ModelSlot<?>> extends FlexoPropertyPathElement<MS> {
 
-	private static final Logger logger = Logger.getLogger(ModelSlotPathElement.class.getPackage().getName());
+	public MS getModelSlot();
 
-	public ModelSlotPathElement(IBindingPathElement parent, MS modelSlot) {
-		super(parent, modelSlot);
-	}
+	public static abstract class ModelSlotPathElementImpl<MS extends ModelSlot<?>> extends FlexoPropertyPathElementImpl<MS>
+			implements FlexoPropertyPathElement<MS> {
 
-	public MS getModelSlot() {
-		return getFlexoProperty();
+		private static final Logger logger = Logger.getLogger(ModelSlotPathElement.class.getPackage().getName());
+
+		public ModelSlotPathElementImpl() {
+			super();
+		}
+
+		/*public ModelSlotPathElementImpl(IBindingPathElement parent, MS modelSlot) {
+			super(parent, modelSlot);
+		}*/
+
+		public MS getModelSlot() {
+			return getFlexoProperty();
+		}
 	}
 }

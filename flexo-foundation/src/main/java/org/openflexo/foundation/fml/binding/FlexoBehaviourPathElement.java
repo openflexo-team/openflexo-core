@@ -48,9 +48,8 @@ import java.util.logging.Logger;
 import org.openflexo.connie.BindingEvaluationContext;
 import org.openflexo.connie.BindingModel;
 import org.openflexo.connie.DataBinding;
-import org.openflexo.connie.binding.FunctionPathElement;
 import org.openflexo.connie.binding.IBindingPathElement;
-import org.openflexo.connie.binding.SimpleMethodPathElement;
+import org.openflexo.connie.binding.SimpleMethodPathElementImpl;
 import org.openflexo.connie.exception.InvocationTargetTransformException;
 import org.openflexo.connie.exception.NullReferenceException;
 import org.openflexo.connie.exception.TransformException;
@@ -80,7 +79,7 @@ import org.openflexo.foundation.fml.rt.action.SuperCreationSchemeActionFactory;
  * @author sylvain
  * 
  */
-public class FlexoBehaviourPathElement extends SimpleMethodPathElement<FlexoBehaviour> implements PropertyChangeListener {
+public class FlexoBehaviourPathElement extends SimpleMethodPathElementImpl<FlexoBehaviour> implements PropertyChangeListener {
 
 	static final Logger logger = Logger.getLogger(FlexoBehaviourPathElement.class.getPackage().getName());
 
@@ -315,7 +314,7 @@ public class FlexoBehaviourPathElement extends SimpleMethodPathElement<FlexoBeha
 	}
 
 	@Override
-	public FunctionPathElement transform(ExpressionTransformer transformer) throws TransformException {
+	public FlexoBehaviourPathElement transform(ExpressionTransformer transformer) throws TransformException {
 		return this;
 	}
 

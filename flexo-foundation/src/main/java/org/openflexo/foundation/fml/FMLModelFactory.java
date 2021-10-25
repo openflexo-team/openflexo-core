@@ -43,6 +43,7 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import org.openflexo.connie.DataBinding;
+import org.openflexo.connie.binding.IBindingPathElement;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.PamelaResourceModelFactory;
@@ -53,6 +54,9 @@ import org.openflexo.foundation.fml.annotations.DeclareEditionActions;
 import org.openflexo.foundation.fml.annotations.DeclareFetchRequests;
 import org.openflexo.foundation.fml.annotations.DeclareFlexoBehaviours;
 import org.openflexo.foundation.fml.annotations.DeclareFlexoRoles;
+import org.openflexo.foundation.fml.binding.CreationSchemePathElement;
+import org.openflexo.foundation.fml.binding.FlexoPropertyPathElement;
+import org.openflexo.foundation.fml.binding.ModelSlotPathElement;
 import org.openflexo.foundation.fml.controlgraph.ConditionalAction;
 import org.openflexo.foundation.fml.controlgraph.EmptyControlGraph;
 import org.openflexo.foundation.fml.controlgraph.FMLControlGraph;
@@ -706,6 +710,57 @@ public class FMLModelFactory extends ModelFactory implements PamelaResourceModel
 
 	public SelectFlexoConceptInstance newSelectFlexoConceptInstanceAction() {
 		return newInstance(SelectFlexoConceptInstance.class);
+	}
+
+	public <P extends FlexoProperty<?>> FlexoPropertyPathElement<P> newFlexoPropertyPathElement(IBindingPathElement parent, P property) {
+		FlexoPropertyPathElement<P> returned = newInstance(FlexoPropertyPathElement.class);
+		returned.setParent(parent);
+		returned.setProperty(property);
+		return returned;
+	}
+
+	public <P extends FlexoProperty<?>> FlexoPropertyPathElement<P> newFlexoPropertyPathElement(IBindingPathElement parent,
+			String propertyName) {
+		FlexoPropertyPathElement<P> returned = newInstance(FlexoPropertyPathElement.class);
+		returned.setParent(parent);
+		returned.setPropertyName(propertyName);
+		return returned;
+	}
+
+	public <MS extends ModelSlot<?>> ModelSlotPathElement<MS> newModelSlotPathElement(IBindingPathElement parent, MS modelSlot) {
+		ModelSlotPathElement<MS> returned = newInstance(ModelSlotPathElement.class);
+		returned.setParent(parent);
+		returned.setProperty(modelSlot);
+		return returned;
+	}
+
+	public <MS extends ModelSlot<?>> ModelSlotPathElement<MS> newModelSlotPathElement(IBindingPathElement parent, String modelSlotName) {
+		ModelSlotPathElement<MS> returned = newInstance(ModelSlotPathElement.class);
+		returned.setParent(parent);
+		returned.setPropertyName(modelSlotName);
+		return returned;
+	}
+
+	public CreationSchemePathElement newCreationSchemePathElement(FlexoConceptInstanceType type, IBindingPathElement parent,
+			String constructorName, List<DataBinding<?>> args, FMLBindingFactory bindingFactory) {
+		CreationSchemePathElement returned = newInstance(CreationSchemePathElement.class);
+		returned.setType(type);
+		returned.setParent(parent);
+		returned.setMethodName(constructorName);
+		returned.setArguments(args);
+		returned.setBindingFactory(bindingFactory);
+		return returned;
+	}
+
+	public CreationSchemePathElement newCreationSchemePathElement(FlexoConceptInstanceType type, IBindingPathElement parent,
+			CreationScheme creationScheme, List<DataBinding<?>> args, FMLBindingFactory bindingFactory) {
+		CreationSchemePathElement returned = newInstance(CreationSchemePathElement.class);
+		returned.setType(type);
+		returned.setParent(parent);
+		returned.setFunction(creationScheme);
+		returned.setArguments(args);
+		returned.setBindingFactory(bindingFactory);
+		return returned;
 	}
 
 	public <M extends FMLObject, T> FMLSimplePropertyValue<M, T> newSimplePropertyValue() {

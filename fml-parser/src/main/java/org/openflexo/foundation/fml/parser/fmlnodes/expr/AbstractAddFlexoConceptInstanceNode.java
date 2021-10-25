@@ -50,6 +50,7 @@ import org.openflexo.foundation.fml.parser.node.AFullQualifiedNewInstance;
 import org.openflexo.foundation.fml.parser.node.APreciseFmlParametersClause;
 import org.openflexo.foundation.fml.parser.node.ASimpleNewInstance;
 import org.openflexo.foundation.fml.parser.node.Node;
+import org.openflexo.foundation.fml.parser.node.PFmlParameters;
 import org.openflexo.p2pp.RawSource.RawSourceFragment;
 
 /**
@@ -279,6 +280,20 @@ public abstract class AbstractAddFlexoConceptInstanceNode extends AbstractCallBi
 		if (getFMLParametersClause() != null) {
 			return getFragment(((AFullQualifiedFmlParameters) getFMLParametersClause().getFmlParameters()).getRPar());
 
+		}
+		return null;
+	}
+
+	protected PFmlParameters getFMLParameters() {
+		if (getFMLParametersClause() != null) {
+			return getFMLParametersClause().getFmlParameters();
+		}
+		return null;
+	}
+
+	protected RawSourceFragment getFMLParametersFragment() {
+		if (getFMLParameters() != null) {
+			return getFragment(getFMLParameters());
 		}
 		return null;
 	}

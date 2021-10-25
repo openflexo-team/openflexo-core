@@ -128,8 +128,8 @@ public class BindingPathFactory {
 
 		BindingPathFactory bindingPathFactory = new BindingPathFactory(node, expressionFactory);
 
-		//System.out.println("--------------> Make BindingPath for " + node);
-		//ASTDebugger.debug(node);
+		// System.out.println("--------------> Make BindingPath for " + node);
+		// ASTDebugger.debug(node);
 
 		bindingPathFactory.explore();
 
@@ -139,9 +139,9 @@ public class BindingPathFactory {
 			}
 		}
 
-		//System.out.println("<-------------- Done BindingPath for " + node);
-		//System.out.println("bindingVariable=" + bindingPathFactory.bindingVariable);
-		//System.out.println("bindingPathElements=" + bindingPathFactory.bindingPathElements);
+		// System.out.println("<-------------- Done BindingPath for " + node);
+		// System.out.println("bindingVariable=" + bindingPathFactory.bindingVariable);
+		// System.out.println("bindingPathElements=" + bindingPathFactory.bindingPathElements);
 
 		// return bindingPathFactory.path;
 		return new BindingValue(bindingPathFactory.bindingVariable, bindingPathFactory.bindingPathElements,

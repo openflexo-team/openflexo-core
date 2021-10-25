@@ -133,13 +133,13 @@ public class MainSemanticsAnalyzer extends FMLSemanticsAnalyzer {
 		typingSpace = compilationUnit.getTypingSpace();
 	}
 
-	public MainSemanticsAnalyzer(FMLModelFactory factory, Node tree, RawSource rawSource) {
-		super(factory, tree);
+	public MainSemanticsAnalyzer(FMLModelFactory modelFactory, Node tree, RawSource rawSource) {
+		super(modelFactory, tree);
 		this.rawSource = rawSource;
 		fragmentManager = new FragmentManager(rawSource);
 		// typeFactory = new TypeFactory(this);
 		fmlFactory = new FMLFactory(this);
-		fmlBindingFactoryDuringDeserialization = new FMLBindingFactory(null);
+		fmlBindingFactoryDuringDeserialization = new FMLBindingFactory(modelFactory);
 		propertyFactory = new FlexoPropertyFactory(this);
 		behaviourFactory = new FlexoBehaviourFactory(this);
 		typingSpace = new FMLTypingSpaceDuringParsing(this);

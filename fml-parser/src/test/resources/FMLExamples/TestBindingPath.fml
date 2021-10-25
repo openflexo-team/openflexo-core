@@ -40,9 +40,9 @@ model MyModel {
 		a = super.init();
 	}
 
-	/*testMethodCallWithArguments() {
-		a = b(1);
-	}*/
+	testMethodCallWithArguments() {
+		a = b.c(1);
+	}
 	
 	/*testMethodCallWithArguments2() {
 		a = b(c.d.e());

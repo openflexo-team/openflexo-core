@@ -63,7 +63,6 @@ import org.openflexo.connie.binding.javareflect.JavaBasedBindingFactory;
 import org.openflexo.connie.expr.Constant;
 import org.openflexo.connie.expr.Expression;
 import org.openflexo.foundation.fml.binding.ContainerPathElement;
-import org.openflexo.foundation.fml.binding.CreationSchemePathElement;
 import org.openflexo.foundation.fml.binding.EPIRendererPathElement;
 import org.openflexo.foundation.fml.binding.EnumValuesPathElement;
 import org.openflexo.foundation.fml.binding.FMLNativeProperty;
@@ -73,8 +72,6 @@ import org.openflexo.foundation.fml.binding.FlexoBehaviourParametersValuesPathEl
 import org.openflexo.foundation.fml.binding.FlexoBehaviourPathElement;
 import org.openflexo.foundation.fml.binding.FlexoConceptInstancePathElement;
 import org.openflexo.foundation.fml.binding.FlexoConceptTypePathElement;
-import org.openflexo.foundation.fml.binding.FlexoPropertyPathElement;
-import org.openflexo.foundation.fml.binding.ModelSlotPathElement;
 import org.openflexo.foundation.fml.binding.ResourceCenterPathElement;
 import org.openflexo.foundation.fml.binding.VirtualModelTypePathElement;
 import org.openflexo.foundation.fml.expr.FMLConstant;
@@ -115,18 +112,36 @@ public class FMLBindingFactory extends JavaBasedBindingFactory {
 	public static final FMLNativeProperty ENUM_VALUES_PROPERTY = new FMLNativeProperty(ENUM_VALUES_PROPERTY_NAME, List.class);
 
 	private final Map<IBindingPathElement, Map<Object, SimplePathElement<?>>> storedBindingPathElements;
-	private final VirtualModel virtualModel;
+	private VirtualModel virtualModel;
 
 	private final Map<IBindingPathElement, BehavioursForConcepts> flexoBehaviourPathElements;
 
-	public FMLBindingFactory(VirtualModel virtualModel) {
+	private FMLModelFactory fmlModelFactory;
+
+	private FMLBindingFactory() {
 		storedBindingPathElements = new HashMap<>();
 		flexoBehaviourPathElements = new HashMap<>();
+	}
+
+	public FMLBindingFactory(VirtualModel virtualModel) {
+		this();
 		this.virtualModel = virtualModel;
+	}
+
+	public FMLBindingFactory(FMLModelFactory modelFactory) {
+		this();
+		this.fmlModelFactory = modelFactory;
 	}
 
 	public VirtualModel getVirtualModel() {
 		return virtualModel;
+	}
+
+	public FMLModelFactory getFMLModelFactory() {
+		if (virtualModel != null) {
+			return virtualModel.getFMLModelFactory();
+		}
+		return fmlModelFactory;
 	}
 
 	@Override
@@ -157,11 +172,14 @@ public class FMLBindingFactory extends JavaBasedBindingFactory {
 	}
 
 	protected SimplePathElement<?> makeSimplePathElement(Object object, IBindingPathElement parent) {
+		// TODO: attention ici prout !!!!!
 		if (object instanceof ModelSlot) {
-			return new ModelSlotPathElement<ModelSlot<?>>(parent, (ModelSlot<?>) object);
+			return getFMLModelFactory().newModelSlotPathElement(parent, (ModelSlot<?>) object);
+			// return new ModelSlotPathElement<ModelSlot<?>>(parent, (ModelSlot<?>) object);
 		}
 		if (object instanceof FlexoProperty) {
-			return new FlexoPropertyPathElement<FlexoProperty<?>>(parent, (FlexoProperty<?>) object);
+			return getFMLModelFactory().newFlexoPropertyPathElement(parent, (FlexoProperty<?>) object);
+			// return new FlexoPropertyPathElement<FlexoProperty<?>>(parent, (FlexoProperty<?>) object);
 		}
 		if (object instanceof FlexoBehaviourParameter) {
 			if (parent.getType() instanceof FlexoBehaviourParametersType) {
@@ -444,7 +462,7 @@ public class FMLBindingFactory extends JavaBasedBindingFactory {
 	public NewInstancePathElement<?> makeNewInstancePathElement(Type type, IBindingPathElement parent, String functionName,
 			List<DataBinding<?>> args) {
 		if (type instanceof FlexoConceptInstanceType) {
-			return new CreationSchemePathElement((FlexoConceptInstanceType) type, parent, functionName, args, this);
+			return getFMLModelFactory().newCreationSchemePathElement((FlexoConceptInstanceType) type, parent, functionName, args, this);
 		}
 		return super.makeNewInstancePathElement(type, parent, functionName, args);
 	}

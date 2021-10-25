@@ -57,6 +57,9 @@ import org.openflexo.foundation.InnerResourceData;
 import org.openflexo.foundation.InvalidNameException;
 import org.openflexo.foundation.fml.FMLModelContext.FMLEntity;
 import org.openflexo.foundation.fml.FMLModelContext.FMLProperty;
+import org.openflexo.foundation.fml.binding.CreationSchemePathElement;
+import org.openflexo.foundation.fml.binding.FlexoPropertyPathElement;
+import org.openflexo.foundation.fml.binding.ModelSlotPathElement;
 import org.openflexo.foundation.fml.md.BasicMetaData;
 import org.openflexo.foundation.fml.md.FMLMetaData;
 import org.openflexo.foundation.fml.md.ListMetaData;
@@ -106,7 +109,8 @@ import org.openflexo.toolbox.StringUtils;
 @ModelEntity(isAbstract = true)
 @ImplementationClass(FMLObject.FMLObjectImpl.class)
 @XMLElement(idFactory = "userIdentifier+'-'+flexoID")
-@Imports({ @Import(FMLPropertyValue.class) })
+@Imports({ @Import(FMLPropertyValue.class), @Import(FlexoPropertyPathElement.class), @Import(ModelSlotPathElement.class),
+		@Import(CreationSchemePathElement.class) })
 public interface FMLObject extends FlexoObject, Bindable, InnerResourceData<FMLCompilationUnit>, TechnologyObject<FMLTechnologyAdapter> {
 
 	@PropertyIdentifier(type = String.class)

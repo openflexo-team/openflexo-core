@@ -43,14 +43,14 @@ import java.util.logging.Logger;
 
 import org.openflexo.connie.BindingEvaluationContext;
 import org.openflexo.connie.binding.IBindingPathElement;
-import org.openflexo.connie.binding.SimplePathElement;
+import org.openflexo.connie.binding.SimplePathElementImpl;
 import org.openflexo.connie.exception.NullReferenceException;
 import org.openflexo.connie.exception.TypeMismatchException;
 import org.openflexo.foundation.fml.FlexoBehaviourParameter;
 
 @Deprecated
 // Should be refactored
-public class FlexoBehaviourParameterDefinitionPathElement extends SimplePathElement {
+public class FlexoBehaviourParameterDefinitionPathElement extends SimplePathElementImpl {
 
 	private static final Logger logger = Logger.getLogger(FlexoBehaviourParameterDefinitionPathElement.class.getPackage().getName());
 
