@@ -56,6 +56,9 @@ public class StaticMethodCallBindingPathElementNode
 	public StaticMethodCallBindingPathElementNode(AClassMethodMethodInvocation astNode, MainSemanticsAnalyzer analyser, Bindable bindable) {
 		super(astNode, analyser, bindable);
 		setReadyToBuildModelObject(true);
+		// buildModelObjectFromAST() was already called, but too early (parent not yet set)
+		// we do it again
+		modelObject = buildModelObjectFromAST(astNode);
 	}
 
 	public StaticMethodCallBindingPathElementNode(StaticMethodPathElement<?> bindingPathElement, MainSemanticsAnalyzer analyser,
