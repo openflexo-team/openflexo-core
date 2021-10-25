@@ -96,6 +96,7 @@ public class FMLTypingSpaceDuringParsing extends AbstractFMLTypingSpace {
 	private List<CustomType> unresolvedTypes;
 
 	public FMLTypingSpaceDuringParsing(MainSemanticsAnalyzer analyser) {
+		super(analyser.getServiceManager());
 		this.analyser = analyser;
 		unresolvedTypes = new ArrayList<>();
 		FLEXO_CONCEPT_INSTANCE_TYPE_FACTORY = new DefaultFlexoConceptInstanceTypeFactory(getFMLTechnologyAdapter()) {

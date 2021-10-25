@@ -41,6 +41,7 @@ package org.openflexo.foundation.fml.parser.fmlnodes;
 import java.lang.reflect.Type;
 import java.util.logging.Logger;
 
+import org.openflexo.connie.type.CustomType;
 import org.openflexo.foundation.InvalidNameException;
 import org.openflexo.foundation.fml.FMLPropertyValue;
 import org.openflexo.foundation.fml.FlexoRole;
@@ -95,7 +96,8 @@ public class ModelSlotPropertyNode<N extends PInnerConceptDecl, MS extends Model
 				throwIssue("Invalid name: " + ((AFmlInnerConceptDecl) astNode).getLidentifier().getText());
 			}
 			returned.setCardinality(getCardinality(((AFmlInnerConceptDecl) astNode).getCardinality()));
-			Type type = TypeFactory.makeType(((AFmlInnerConceptDecl) astNode).getType(), getAnalyser().getTypingSpace());
+			Type type = TypeFactory.makeVirtualModelInstanceType(((AFmlInnerConceptDecl) astNode).getType(),
+					getAnalyser().getTypingSpace());
 			// CustomType type = (CustomType) getTypeFactory().makeType(((AFmlInnerConceptDecl) astNode).getType(), returned);
 			returned.setType(type);
 		}
@@ -107,7 +109,8 @@ public class ModelSlotPropertyNode<N extends PInnerConceptDecl, MS extends Model
 				throwIssue("Invalid name: " + ((AFmlFullyQualifiedInnerConceptDecl) astNode).getLidentifier().getText());
 			}
 			returned.setCardinality(getCardinality(((AFmlFullyQualifiedInnerConceptDecl) astNode).getCardinality()));
-			Type type = TypeFactory.makeType(((AFmlFullyQualifiedInnerConceptDecl) astNode).getType(), getAnalyser().getTypingSpace());
+			Type type = TypeFactory.makeVirtualModelInstanceType(((AFmlFullyQualifiedInnerConceptDecl) astNode).getType(),
+					getAnalyser().getTypingSpace());
 			// CustomType type = (CustomType) getTypeFactory().makeType(((AFmlFullyQualifiedInnerConceptDecl) astNode).getType(), returned);
 			returned.setType(type);
 		}

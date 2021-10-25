@@ -50,6 +50,8 @@ import org.openflexo.connie.type.ParameterizedTypeImpl;
 import org.openflexo.connie.type.UnresolvedType;
 import org.openflexo.connie.type.WildcardTypeImpl;
 import org.openflexo.foundation.fml.AbstractFMLTypingSpace;
+import org.openflexo.foundation.fml.FMLTechnologyAdapter;
+import org.openflexo.foundation.fml.VirtualModelInstanceType;
 import org.openflexo.foundation.fml.parser.analysis.DepthFirstAdapter;
 import org.openflexo.foundation.fml.parser.node.ABooleanPrimitiveType;
 import org.openflexo.foundation.fml.parser.node.ABytePrimitiveType;
@@ -115,6 +117,21 @@ public class TypeFactory extends DepthFirstAdapter {
 
 		// System.out.println("Returning: " + bsa.getType(node) + " of " + bsa.getType(node).getClass());
 		return bsa.getType(node);
+	}
+
+	public static VirtualModelInstanceType makeVirtualModelInstanceType(Node node, AbstractFMLTypingSpace typingSpace) {
+		Type type = makeType(node, typingSpace);
+		if (type instanceof VirtualModelInstanceType) {
+			return (VirtualModelInstanceType) type;
+		}
+		if (type instanceof UnresolvedType) {
+			FMLTechnologyAdapter fmlTechnologyAdapter = typingSpace.getServiceManager().getTechnologyAdapterService()
+					.getTechnologyAdapter(FMLTechnologyAdapter.class);
+			return new VirtualModelInstanceType(((UnresolvedType) type).getUnresolvedTypeName(),
+					fmlTechnologyAdapter.getVirtualModelInstanceTypeFactory());
+		}
+		logger.warning("Unexpected type");
+		return null;
 	}
 
 	private TypeFactory(Node node, AbstractFMLTypingSpace typingSpace) {

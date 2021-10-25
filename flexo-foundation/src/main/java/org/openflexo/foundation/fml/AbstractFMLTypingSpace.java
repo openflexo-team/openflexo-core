@@ -42,6 +42,7 @@ package org.openflexo.foundation.fml;
 import java.lang.reflect.Type;
 
 import org.openflexo.connie.java.JavaTypingSpace;
+import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.fml.rt.action.MatchingSet;
 
 /**
@@ -54,7 +55,14 @@ import org.openflexo.foundation.fml.rt.action.MatchingSet;
  */
 public abstract class AbstractFMLTypingSpace extends JavaTypingSpace {
 
-	public AbstractFMLTypingSpace() {
+	private FlexoServiceManager serviceManager;
+
+	public AbstractFMLTypingSpace(FlexoServiceManager serviceManager) {
+		this.serviceManager = serviceManager;
+	}
+
+	public FlexoServiceManager getServiceManager() {
+		return serviceManager;
 	}
 
 	/**

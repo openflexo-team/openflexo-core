@@ -54,6 +54,7 @@ public class FMLTypingSpace extends AbstractFMLTypingSpace {
 	private final FMLCompilationUnit compilationUnit;
 
 	public FMLTypingSpace(FMLCompilationUnit compilationUnit) {
+		super(compilationUnit.getServiceManager());
 		this.compilationUnit = compilationUnit;
 	}
 
