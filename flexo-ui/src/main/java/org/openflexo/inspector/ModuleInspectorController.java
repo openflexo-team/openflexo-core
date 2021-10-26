@@ -52,15 +52,15 @@ import java.util.Observable;
 import java.util.Observer;
 import java.util.logging.Logger;
 
+import org.openflexo.connie.Bindable;
 import org.openflexo.connie.DataBinding;
+import org.openflexo.connie.ParseException;
+import org.openflexo.connie.binding.BindingPathElement;
 import org.openflexo.connie.exception.TransformException;
 import org.openflexo.connie.expr.BindingValue;
-import org.openflexo.connie.expr.BindingValue.AbstractBindingPathElement;
-import org.openflexo.connie.expr.BindingValue.NormalBindingPathElement;
 import org.openflexo.connie.expr.Expression;
 import org.openflexo.connie.expr.ExpressionTransformer;
-import org.openflexo.connie.expr.parser.ExpressionParser;
-import org.openflexo.connie.expr.parser.ParseException;
+import org.openflexo.connie.expr.UnresolvedBindingVariable;
 import org.openflexo.connie.type.TypeUtils;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.inspector.FlexoConceptInspector;
@@ -702,7 +702,7 @@ public class ModuleInspectorController extends Observable implements Observer {
 			if (widget != null) {
 				widget.setBindingFactory(entry.getBindingFactory());
 				String bindingPath = entry.getData().toString();
-				String normalizedBindingPath = normalizeBindingPath(bindingPath);
+				String normalizedBindingPath = normalizeBindingPath(bindingPath, widget);
 				widget.setData(new DataBinding<>(normalizedBindingPath));
 				widget.setReadOnly(entry.getIsReadOnly());
 			}
@@ -725,25 +725,31 @@ public class ModuleInspectorController extends Observable implements Observer {
 	 * @param bindingPath
 	 * @return
 	 */
-	private static String normalizeBindingPath(String bindingPath) {
+	private static String normalizeBindingPath(String bindingPath, Bindable bindable) {
 		Expression expression = null;
 		try {
-			expression = ExpressionParser.parse(bindingPath);
+
+			expression = bindable.getBindingFactory().parseExpression(bindingPath, bindable);
 
 			expression = expression.transform(new ExpressionTransformer() {
 				@Override
 				public Expression performTransformation(Expression e) throws TransformException {
 					if (e instanceof BindingValue) {
-						BindingValue bv = (BindingValue) e;
-						if (bv.getParsedBindingPath().size() > 0) {
-							AbstractBindingPathElement firstPathElement = bv.getParsedBindingPath().get(0);
-							if (!(firstPathElement instanceof NormalBindingPathElement)
-									|| !((NormalBindingPathElement) firstPathElement).property.equals("fci")) {
-								bv.getParsedBindingPath().add(0, new NormalBindingPathElement("fci"));
-								bv.clearSerializationRepresentation();
-							}
+						BindingValue bindingPath = (BindingValue) e;
+						if (bindingPath.getBindingVariable() == null) {
+							UnresolvedBindingVariable objectBV = new UnresolvedBindingVariable("fci");
+							bindingPath.setBindingVariable(objectBV);
+							return bindingPath;
 						}
-						return bv;
+						else if (!bindingPath.getBindingVariable().getVariableName().equals("fci")) {
+							UnresolvedBindingVariable objectBV = new UnresolvedBindingVariable("fci");
+							List<BindingPathElement> bp2 = new ArrayList<>(bindingPath.getBindingPath());
+							bp2.add(0, bindable.getBindingFactory().makeSimplePathElement(objectBV,
+									bindingPath.getBindingVariable().getVariableName(), bindable));
+							bindingPath.setBindingVariable(objectBV);
+							bindingPath.setBindingPath(bp2);
+						}
+						return bindingPath;
 					}
 					return e;
 				}
