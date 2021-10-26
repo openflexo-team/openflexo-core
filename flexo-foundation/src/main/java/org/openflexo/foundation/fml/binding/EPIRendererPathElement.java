@@ -41,6 +41,7 @@ package org.openflexo.foundation.fml.binding;
 import java.lang.reflect.Type;
 import java.util.logging.Logger;
 
+import org.openflexo.connie.Bindable;
 import org.openflexo.connie.BindingEvaluationContext;
 import org.openflexo.connie.binding.IBindingPathElement;
 import org.openflexo.connie.binding.SimplePathElementImpl;
@@ -53,8 +54,8 @@ public class EPIRendererPathElement extends SimplePathElementImpl<FMLNativePrope
 
 	private static final Logger logger = Logger.getLogger(EPIRendererPathElement.class.getPackage().getName());
 
-	public EPIRendererPathElement(IBindingPathElement parent) {
-		super(parent, FlexoConceptBindingModel.RENDERER_PROPERTY_NAME, String.class);
+	public EPIRendererPathElement(IBindingPathElement parent, Bindable bindable) {
+		super(parent, FlexoConceptBindingModel.RENDERER_PROPERTY_NAME, String.class, bindable);
 		setProperty(FlexoConceptBindingModel.RENDERER_PROPERTY);
 	}
 

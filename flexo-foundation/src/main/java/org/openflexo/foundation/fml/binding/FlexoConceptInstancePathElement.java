@@ -43,6 +43,7 @@ import java.beans.PropertyChangeListener;
 import java.lang.reflect.Type;
 import java.util.logging.Logger;
 
+import org.openflexo.connie.Bindable;
 import org.openflexo.connie.BindingEvaluationContext;
 import org.openflexo.connie.binding.IBindingPathElement;
 import org.openflexo.connie.binding.SimplePathElementImpl;
@@ -68,8 +69,9 @@ public class FlexoConceptInstancePathElement extends SimplePathElementImpl imple
 
 	private final FlexoConcept flexoConcept;
 
-	public FlexoConceptInstancePathElement(IBindingPathElement parent, String pathElementName, FlexoConcept flexoConcept) {
-		super(parent, pathElementName, FlexoConceptInstanceType.getFlexoConceptInstanceType(flexoConcept));
+	public FlexoConceptInstancePathElement(IBindingPathElement parent, String pathElementName, FlexoConcept flexoConcept,
+			Bindable bindable) {
+		super(parent, pathElementName, FlexoConceptInstanceType.getFlexoConceptInstanceType(flexoConcept), bindable);
 		this.flexoConcept = flexoConcept;
 	}
 

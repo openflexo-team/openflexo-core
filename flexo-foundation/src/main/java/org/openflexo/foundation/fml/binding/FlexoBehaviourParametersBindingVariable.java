@@ -82,7 +82,8 @@ public class FlexoBehaviourParametersBindingVariable extends BindingVariable {
 				&& getType() instanceof FlexoBehaviourParametersValuesType) {
 			FlexoBehaviour b = ((FlexoBehaviourParametersValuesType) getType()).getFlexoBehaviour();
 			FlexoBehaviourParameterValuePathElement newPathElement = new FlexoBehaviourParameterValuePathElement(this,
-					b.getParameter(((JavaPropertyPathElement) bindingValue.getBindingPathElementAtIndex(0)).getLabel()));
+					b.getParameter(((JavaPropertyPathElement) bindingValue.getBindingPathElementAtIndex(0)).getLabel()),
+					bindingValue.getOwner());
 			bindingValue.replaceBindingPathElementAtIndex(newPathElement, 0);
 		}
 	}

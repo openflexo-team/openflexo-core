@@ -75,7 +75,7 @@ public class StaticMethodCallBindingPathElementNode
 
 			String methodName = astNode.getLidentifier().getText();
 			StaticMethodPathElement<?> pathElement = (StaticMethodPathElement<?>) getBindingFactory().makeStaticMethodPathElement(type,
-					methodName, getArguments());
+					methodName, getArguments(), getBindable());
 			return pathElement;
 		}
 		return null;

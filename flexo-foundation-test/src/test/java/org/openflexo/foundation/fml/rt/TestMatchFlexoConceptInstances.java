@@ -181,6 +181,7 @@ public class TestMatchFlexoConceptInstances extends OpenflexoProjectAtRunTimeTes
 	@Test
 	@TestOrder(5)
 	public void testPopulateModel() {
+
 		assertNotNull(c1 = createInstance(concept, model, "c1"));
 		assertNotNull(c2 = createInstance(concept, model, "c2"));
 		assertNotNull(c3 = createInstance(concept, model, "c3"));

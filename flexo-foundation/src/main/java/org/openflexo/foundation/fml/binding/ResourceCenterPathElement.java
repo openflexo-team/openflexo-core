@@ -41,6 +41,7 @@ package org.openflexo.foundation.fml.binding;
 import java.lang.reflect.Type;
 import java.util.logging.Logger;
 
+import org.openflexo.connie.Bindable;
 import org.openflexo.connie.BindingEvaluationContext;
 import org.openflexo.connie.binding.IBindingPathElement;
 import org.openflexo.connie.binding.SimplePathElementImpl;
@@ -61,8 +62,8 @@ public class ResourceCenterPathElement extends SimplePathElementImpl<FMLNativePr
 
 	private static final Logger logger = Logger.getLogger(ResourceCenterPathElement.class.getPackage().getName());
 
-	public ResourceCenterPathElement(IBindingPathElement parent) {
-		super(parent, FMLBindingFactory.RESOURCE_CENTER_PROPERTY_NAME, FlexoResourceCenter.class);
+	public ResourceCenterPathElement(IBindingPathElement parent, Bindable bindable) {
+		super(parent, FMLBindingFactory.RESOURCE_CENTER_PROPERTY_NAME, FlexoResourceCenter.class, bindable);
 		setProperty(FMLBindingFactory.RESOURCE_CENTER_PROPERTY);
 	}
 

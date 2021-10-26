@@ -41,6 +41,7 @@ package org.openflexo.foundation.fml.binding;
 import java.lang.reflect.Type;
 import java.util.logging.Logger;
 
+import org.openflexo.connie.Bindable;
 import org.openflexo.connie.BindingEvaluationContext;
 import org.openflexo.connie.binding.IBindingPathElement;
 import org.openflexo.connie.binding.SimplePathElementImpl;
@@ -56,9 +57,9 @@ public class FlexoConceptTypePathElement extends SimplePathElementImpl<FMLNative
 
 	private static final Logger logger = Logger.getLogger(FlexoConceptTypePathElement.class.getPackage().getName());
 
-	public FlexoConceptTypePathElement(IBindingPathElement parent, FlexoConcept concept) {
+	public FlexoConceptTypePathElement(IBindingPathElement parent, FlexoConcept concept, Bindable bindable) {
 		super(parent, FMLBindingFactory.FLEXO_CONCEPT_PROPERTY_NAME,
-				concept instanceof VirtualModel ? VirtualModel.class : FlexoConcept.class);
+				concept instanceof VirtualModel ? VirtualModel.class : FlexoConcept.class, bindable);
 		setProperty(FMLBindingFactory.FLEXO_CONCEPT_PROPERTY);
 	}
 

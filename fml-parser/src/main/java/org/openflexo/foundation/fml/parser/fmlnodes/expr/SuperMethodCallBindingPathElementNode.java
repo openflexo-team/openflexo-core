@@ -74,7 +74,7 @@ public class SuperMethodCallBindingPathElementNode
 		if (readyToBuildModelObject()) {
 			String methodName = astNode.getKwSuper().getText();
 			SimpleMethodPathElement<?> pathElement = (SimpleMethodPathElement<?>) getBindingFactory().makeSimpleMethodPathElement(parent,
-					methodName, getArguments());
+					methodName, getArguments(), getBindable());
 			return pathElement;
 		}
 		return null;

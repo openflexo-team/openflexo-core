@@ -42,6 +42,7 @@ import java.lang.reflect.Type;
 import java.util.List;
 import java.util.logging.Logger;
 
+import org.openflexo.connie.Bindable;
 import org.openflexo.connie.BindingEvaluationContext;
 import org.openflexo.connie.binding.IBindingPathElement;
 import org.openflexo.connie.binding.SimplePathElementImpl;
@@ -58,8 +59,9 @@ public class EnumValuesPathElement extends SimplePathElementImpl<FMLNativeProper
 
 	private FlexoEnum accessedEnum;
 
-	public EnumValuesPathElement(IBindingPathElement parent, FlexoEnum accessedEnum) {
-		super(parent, FMLBindingFactory.ENUM_VALUES_PROPERTY_NAME, new ParameterizedTypeImpl(List.class, accessedEnum.getInstanceType()));
+	public EnumValuesPathElement(IBindingPathElement parent, FlexoEnum accessedEnum, Bindable bindable) {
+		super(parent, FMLBindingFactory.ENUM_VALUES_PROPERTY_NAME, new ParameterizedTypeImpl(List.class, accessedEnum.getInstanceType()),
+				bindable);
 		this.accessedEnum = accessedEnum;
 		setProperty(FMLBindingFactory.ENUM_VALUES_PROPERTY);
 	}

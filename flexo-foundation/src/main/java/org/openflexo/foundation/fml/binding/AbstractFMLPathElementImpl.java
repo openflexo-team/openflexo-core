@@ -41,6 +41,8 @@ package org.openflexo.foundation.fml.binding;
 
 import java.lang.reflect.Type;
 
+import org.openflexo.connie.Bindable;
+import org.openflexo.connie.BindingFactory;
 import org.openflexo.connie.BindingModel;
 import org.openflexo.connie.binding.BindingPathElement;
 import org.openflexo.connie.binding.IBindingPathElement;
@@ -59,6 +61,7 @@ public abstract class AbstractFMLPathElementImpl extends FMLObjectImpl implement
 
 	private IBindingPathElement parent;
 	private boolean activated = false;
+	private Bindable bindable;
 
 	private String parsed;
 
@@ -70,10 +73,25 @@ public abstract class AbstractFMLPathElementImpl extends FMLObjectImpl implement
 	public AbstractFMLPathElementImpl() {
 	}
 
-	public AbstractFMLPathElementImpl(IBindingPathElement parent, String parsed) {
+	/*public AbstractFMLPathElementImpl(IBindingPathElement parent, String parsed, Bindable bindable) {
 		this();
 		setParent(parent);
 		setParsed(parsed);
+		setBindable(bindable);
+	}*/
+
+	@Override
+	public Bindable getBindable() {
+		return bindable;
+	}
+
+	@Override
+	public void setBindable(Bindable bindable) {
+		if ((bindable == null && this.bindable != null) || (bindable != null && !bindable.equals(this.bindable))) {
+			Bindable oldValue = this.bindable;
+			this.bindable = bindable;
+			getPropertyChangeSupport().firePropertyChange("bindable", oldValue, bindable);
+		}
 	}
 
 	@Override
@@ -209,12 +227,20 @@ public abstract class AbstractFMLPathElementImpl extends FMLObjectImpl implement
 		return getClass().getSimpleName() + ":" + getSerializationRepresentation();
 	}
 
-	BindingModel aVirer = new BindingModel();
+	@Override
+	public BindingFactory getBindingFactory() {
+		if (getBindable() != null) {
+			return getBindable().getBindingFactory();
+		}
+		return super.getBindingFactory();
+	}
 
 	@Override
 	public BindingModel getBindingModel() {
-		// Not applicable
-		return aVirer;
+		if (getBindable() != null) {
+			return getBindable().getBindingModel();
+		}
+		return null;
 	}
 
 	@Override

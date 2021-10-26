@@ -45,6 +45,7 @@ import java.lang.reflect.Type;
 import java.util.List;
 import java.util.logging.Logger;
 
+import org.openflexo.connie.Bindable;
 import org.openflexo.connie.BindingEvaluationContext;
 import org.openflexo.connie.BindingModel;
 import org.openflexo.connie.DataBinding;
@@ -85,18 +86,20 @@ public class FlexoBehaviourPathElement extends SimpleMethodPathElementImpl<Flexo
 
 	private Type lastKnownType = null;
 
-	private FMLBindingFactory bindingFactory;
+	// private FMLBindingFactory bindingFactory;
 
-	public FlexoBehaviourPathElement(IBindingPathElement parent, String methodName, List<DataBinding<?>> args,
-			FMLBindingFactory bindingFactory) {
-		super(parent, methodName, args);
-		this.bindingFactory = bindingFactory;
+	public FlexoBehaviourPathElement(IBindingPathElement parent, String methodName, List<DataBinding<?>> args, Bindable bindable) {
+		super(parent, methodName, args, bindable);
+		// this.bindingFactory = (FMLBindingFactory) bindable.getBindingFactory();
 	}
 
-	public FlexoBehaviourPathElement(IBindingPathElement parent, FlexoBehaviour behaviour, List<DataBinding<?>> args,
-			FMLBindingFactory bindingFactory) {
-		super(parent, behaviour, args);
-		this.bindingFactory = bindingFactory;
+	public FlexoBehaviourPathElement(IBindingPathElement parent, FlexoBehaviour behaviour, List<DataBinding<?>> args, Bindable bindable) {
+		super(parent, behaviour, args, bindable);
+		// this.bindingFactory = (FMLBindingFactory) bindable.getBindingFactory();
+	}
+
+	public FMLBindingFactory getBindingFactory() {
+		return (FMLBindingFactory) getBindable().getBindingFactory();
 	}
 
 	@Override
@@ -343,7 +346,8 @@ public class FlexoBehaviourPathElement extends SimpleMethodPathElementImpl<Flexo
 	@Override
 	public void resolve() {
 		if (getParent() != null) {
-			FlexoBehaviour function = (FlexoBehaviour) bindingFactory.retrieveFunction(getParent().getType(), getParsed(), getArguments());
+			FlexoBehaviour function = (FlexoBehaviour) getBindingFactory().retrieveFunction(getParent().getType(), getParsed(),
+					getArguments());
 			setFunction(function);
 			if (isActivated()) {
 				startListenToBehaviour();

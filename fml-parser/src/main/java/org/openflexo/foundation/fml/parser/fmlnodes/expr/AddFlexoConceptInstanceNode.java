@@ -201,7 +201,7 @@ public class AddFlexoConceptInstanceNode extends AbstractAddFlexoConceptInstance
 			}
 
 			CreationSchemePathElement pathElement = (CreationSchemePathElement) getBindingFactory().makeNewInstancePathElement(type,
-					getParentPathElement(), null, getArguments());
+					getParentPathElement(), null, getArguments(), getBindable());
 			return pathElement;
 
 			/*NewFlexoConceptInstanceBindingPathElement returned = new NewFlexoConceptInstanceBindingPathElement(

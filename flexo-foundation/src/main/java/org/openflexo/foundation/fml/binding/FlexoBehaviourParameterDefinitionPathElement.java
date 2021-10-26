@@ -41,6 +41,7 @@ package org.openflexo.foundation.fml.binding;
 import java.lang.reflect.Type;
 import java.util.logging.Logger;
 
+import org.openflexo.connie.Bindable;
 import org.openflexo.connie.BindingEvaluationContext;
 import org.openflexo.connie.binding.IBindingPathElement;
 import org.openflexo.connie.binding.SimplePathElementImpl;
@@ -58,8 +59,8 @@ public class FlexoBehaviourParameterDefinitionPathElement extends SimplePathElem
 
 	private static final String PARAMETER_DEFINITION = "definition";
 
-	public FlexoBehaviourParameterDefinitionPathElement(IBindingPathElement parent, FlexoBehaviourParameter parameter) {
-		super(parent, PARAMETER_DEFINITION, parameter.getImplementedInterface());
+	public FlexoBehaviourParameterDefinitionPathElement(IBindingPathElement parent, FlexoBehaviourParameter parameter, Bindable bindable) {
+		super(parent, PARAMETER_DEFINITION, parameter.getImplementedInterface(), bindable);
 		this.parameter = parameter;
 	}
 

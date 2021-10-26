@@ -42,6 +42,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
+import org.openflexo.connie.Bindable;
 import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.binding.IBindingPathElement;
 import org.openflexo.foundation.FlexoObject;
@@ -712,54 +713,61 @@ public class FMLModelFactory extends ModelFactory implements PamelaResourceModel
 		return newInstance(SelectFlexoConceptInstance.class);
 	}
 
-	public <P extends FlexoProperty<?>> FlexoPropertyPathElement<P> newFlexoPropertyPathElement(IBindingPathElement parent, P property) {
+	public <P extends FlexoProperty<?>> FlexoPropertyPathElement<P> newFlexoPropertyPathElement(IBindingPathElement parent, P property,
+			Bindable bindable) {
 		FlexoPropertyPathElement<P> returned = newInstance(FlexoPropertyPathElement.class);
 		returned.setParent(parent);
 		returned.setProperty(property);
+		returned.setBindable(bindable);
 		return returned;
 	}
 
 	public <P extends FlexoProperty<?>> FlexoPropertyPathElement<P> newFlexoPropertyPathElement(IBindingPathElement parent,
-			String propertyName) {
+			String propertyName, Bindable bindable) {
 		FlexoPropertyPathElement<P> returned = newInstance(FlexoPropertyPathElement.class);
 		returned.setParent(parent);
 		returned.setPropertyName(propertyName);
+		returned.setBindable(bindable);
 		return returned;
 	}
 
-	public <MS extends ModelSlot<?>> ModelSlotPathElement<MS> newModelSlotPathElement(IBindingPathElement parent, MS modelSlot) {
+	public <MS extends ModelSlot<?>> ModelSlotPathElement<MS> newModelSlotPathElement(IBindingPathElement parent, MS modelSlot,
+			Bindable bindable) {
 		ModelSlotPathElement<MS> returned = newInstance(ModelSlotPathElement.class);
 		returned.setParent(parent);
 		returned.setProperty(modelSlot);
+		returned.setBindable(bindable);
 		return returned;
 	}
 
-	public <MS extends ModelSlot<?>> ModelSlotPathElement<MS> newModelSlotPathElement(IBindingPathElement parent, String modelSlotName) {
+	public <MS extends ModelSlot<?>> ModelSlotPathElement<MS> newModelSlotPathElement(IBindingPathElement parent, String modelSlotName,
+			Bindable bindable) {
 		ModelSlotPathElement<MS> returned = newInstance(ModelSlotPathElement.class);
 		returned.setParent(parent);
 		returned.setPropertyName(modelSlotName);
+		returned.setBindable(bindable);
 		return returned;
 	}
 
 	public CreationSchemePathElement newCreationSchemePathElement(FlexoConceptInstanceType type, IBindingPathElement parent,
-			String constructorName, List<DataBinding<?>> args, FMLBindingFactory bindingFactory) {
+			String constructorName, List<DataBinding<?>> args, Bindable bindable) {
 		CreationSchemePathElement returned = newInstance(CreationSchemePathElement.class);
 		returned.setType(type);
 		returned.setParent(parent);
 		returned.setMethodName(constructorName);
 		returned.setArguments(args);
-		returned.setBindingFactory(bindingFactory);
+		returned.setBindable(bindable);
 		return returned;
 	}
 
 	public CreationSchemePathElement newCreationSchemePathElement(FlexoConceptInstanceType type, IBindingPathElement parent,
-			CreationScheme creationScheme, List<DataBinding<?>> args, FMLBindingFactory bindingFactory) {
+			CreationScheme creationScheme, List<DataBinding<?>> args, Bindable bindable) {
 		CreationSchemePathElement returned = newInstance(CreationSchemePathElement.class);
 		returned.setType(type);
 		returned.setParent(parent);
 		returned.setFunction(creationScheme);
 		returned.setArguments(args);
-		returned.setBindingFactory(bindingFactory);
+		returned.setBindable(bindable);
 		return returned;
 	}
 

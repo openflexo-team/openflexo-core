@@ -96,7 +96,7 @@ public class MethodCallBindingPathElementNode
 			// String methodName2 = getText(identifierNode);
 
 			SimpleMethodPathElement<?> pathElement = (SimpleMethodPathElement<?>) getBindingFactory().makeSimpleMethodPathElement(parent,
-					methodName, getArguments());
+					methodName, getArguments(), getBindable());
 			pathElement.setBindingPathElementOwner(this);
 			return pathElement;
 		}

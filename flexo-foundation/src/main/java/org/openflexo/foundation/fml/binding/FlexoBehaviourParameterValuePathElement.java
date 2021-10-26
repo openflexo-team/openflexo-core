@@ -44,6 +44,7 @@ import java.lang.reflect.Type;
 import java.util.Hashtable;
 import java.util.logging.Logger;
 
+import org.openflexo.connie.Bindable;
 import org.openflexo.connie.BindingEvaluationContext;
 import org.openflexo.connie.BindingModel;
 import org.openflexo.connie.binding.IBindingPathElement;
@@ -62,8 +63,8 @@ public class FlexoBehaviourParameterValuePathElement extends SimplePathElementIm
 	private final FlexoBehaviourParameter parameter;
 	private Type lastKnownType = null;
 
-	public FlexoBehaviourParameterValuePathElement(IBindingPathElement parent, FlexoBehaviourParameter parameter) {
-		super(parent, parameter.getName(), parameter.getType());
+	public FlexoBehaviourParameterValuePathElement(IBindingPathElement parent, FlexoBehaviourParameter parameter, Bindable bindable) {
+		super(parent, parameter.getName(), parameter.getType(), bindable);
 		this.parameter = parameter;
 		lastKnownType = parameter.getType();
 	}

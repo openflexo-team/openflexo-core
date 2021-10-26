@@ -201,7 +201,7 @@ public class AddVirtualModelInstanceNode extends AbstractAddFlexoConceptInstance
 			}
 
 			CreationSchemePathElement pathElement = (CreationSchemePathElement) getBindingFactory().makeNewInstancePathElement(type,
-					getParentPathElement(), null, getArguments());
+					getParentPathElement(), null, getArguments(), getBindable());
 
 			decodeFMLProperties(getFMLParameters(), pathElement);
 

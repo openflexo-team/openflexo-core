@@ -71,7 +71,7 @@ public class SimplePathElementNode extends AbstractBindingPathElementNode<Token,
 	@Override
 	public SimplePathElement<?> buildModelObjectFromAST(Token astNode) {
 		if (parent != null && getBindable() != null) {
-			SimplePathElement<?> pathElement = getBindingFactory().makeSimplePathElement(parent, astNode.getText());
+			SimplePathElement<?> pathElement = getBindingFactory().makeSimplePathElement(parent, astNode.getText(), getBindable());
 			return pathElement;
 		}
 		return null;

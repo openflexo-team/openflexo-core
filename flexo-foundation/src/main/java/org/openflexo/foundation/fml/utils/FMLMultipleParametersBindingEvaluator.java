@@ -117,7 +117,7 @@ final public class FMLMultipleParametersBindingEvaluator extends MultipleParamet
 
 		FMLMultipleParametersBindingEvaluator evaluator = new FMLMultipleParametersBindingEvaluator(objects, bindingFactory);
 
-		String normalizedBindingPath = evaluator.normalizeBindingPath(extractedBindingPath, parameters, bindingFactory);
+		String normalizedBindingPath = evaluator.normalizeBindingPath(extractedBindingPath, parameters);
 		// System.out.println("normalizedBindingPath=" + normalizedBindingPath);
 
 		Object returned = evaluator.evaluate(normalizedBindingPath);

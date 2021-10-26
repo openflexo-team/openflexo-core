@@ -46,7 +46,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.openflexo.connie.BindingEvaluationContext;
-import org.openflexo.connie.BindingFactory;
 import org.openflexo.connie.BindingModel;
 import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.binding.Function;
@@ -117,19 +116,12 @@ public interface CreationSchemePathElement extends FMLObject, NewInstancePathEle
 	@Override
 	public FlexoConceptInstanceType getType();
 
-	@Override
-	public BindingFactory getBindingFactory();
-
-	public void setBindingFactory(FMLBindingFactory bindingFactory);
-
 	public abstract class CreationSchemePathElementImpl extends FMLNewInstancePathElementImpl<CreationScheme>
 			implements CreationSchemePathElement {
 
 		static final Logger logger = Logger.getLogger(CreationSchemePathElement.class.getPackage().getName());
 
 		private Type lastKnownType = null;
-
-		private FMLBindingFactory bindingFactory;
 
 		private DataBinding<String> virtualModelInstanceName;
 
@@ -148,21 +140,6 @@ public interface CreationSchemePathElement extends FMLObject, NewInstancePathEle
 			super(type, parent, constructor, args);
 			this.bindingFactory = bindingFactory;
 		}*/
-
-		@Override
-		public BindingFactory getBindingFactory() {
-			return bindingFactory;
-		}
-
-		@Override
-		public void setBindingFactory(FMLBindingFactory bindingFactory) {
-			if ((bindingFactory == null && this.bindingFactory != null)
-					|| (bindingFactory != null && !bindingFactory.equals(this.bindingFactory))) {
-				FMLBindingFactory oldValue = this.bindingFactory;
-				this.bindingFactory = bindingFactory;
-				getPropertyChangeSupport().firePropertyChange("bindingFactory", oldValue, bindingFactory);
-			}
-		}
 
 		@Override
 		public void activate() {
@@ -487,8 +464,8 @@ public interface CreationSchemePathElement extends FMLObject, NewInstancePathEle
 			System.out.println("name=" + getParsed());
 			System.out.println("args=" + getArguments());
 
-			CreationScheme function = (CreationScheme) bindingFactory.retrieveConstructor(getType(),
-					getParent() != null ? getParent().getType() : null, getParsed(), getArguments());
+			CreationScheme function = (CreationScheme) ((FMLBindingFactory) getBindable().getBindingFactory())
+					.retrieveConstructor(getType(), getParent() != null ? getParent().getType() : null, getParsed(), getArguments());
 			setFunction(function);
 			if (function == null && getType().isResolved()) {
 				// Do not warn for unresolved type
