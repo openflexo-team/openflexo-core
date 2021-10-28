@@ -46,7 +46,7 @@ import java.util.logging.Logger;
 import org.openflexo.foundation.fml.cli.CommandSemanticsAnalyzer;
 import org.openflexo.foundation.fml.cli.command.Directive;
 import org.openflexo.foundation.fml.cli.command.DirectiveDeclaration;
-import org.openflexo.foundation.fml.cli.parser.node.ACdDirective;
+import org.openflexo.foundation.fml.parser.node.ACdDirective;
 
 /**
  * Represents #cd directive in FML command-line interpreter
@@ -70,9 +70,19 @@ public class CdDirective extends Directive {
 		path = retrievePath(node.getPath());
 	}
 
+	@Override
+	public String toString() {
+		return "cd " + path;
+	}
+
 	public File getNewDirectory() {
 		if (newDirectory == null) {
-			newDirectory = new File(getCommandInterpreter().getWorkingDirectory(), path);
+			if (path.startsWith("/")) {
+				newDirectory = new File(path);
+			}
+			else {
+				newDirectory = new File(getCommandInterpreter().getWorkingDirectory(), path);
+			}
 			try {
 				newDirectory = new File(newDirectory.getCanonicalPath());
 			} catch (IOException e) {
@@ -103,6 +113,7 @@ public class CdDirective extends Directive {
 
 	@Override
 	public void execute() {
+		super.execute();
 		if (isValid()) {
 			getCommandInterpreter().setWorkingDirectory(newDirectory);
 		}

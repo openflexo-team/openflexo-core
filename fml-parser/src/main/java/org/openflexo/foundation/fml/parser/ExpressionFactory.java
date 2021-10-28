@@ -132,6 +132,11 @@ public class ExpressionFactory extends AbstractExpressionFactory {
 				compilationUnit.getFMLModelFactory(), null, null);
 	}
 
+	/*public static <T> DataBinding<T> makeDataBinding(Node node, Bindable bindable, BindingDefinitionType bindingDefinitionType,
+			Type expectedType, AbstractFMLTypingSpace typingSpace, FMLModelFactory modelFactory) {
+		return _makeDataBinding(node, bindable, bindingDefinitionType, expectedType, typingSpace, modelFactory, null, null);
+	}*/
+
 	public static <T> DataBinding<T> makeDataBinding(Node node, Bindable bindable, BindingDefinitionType bindingDefinitionType,
 			Type expectedType, MainSemanticsAnalyzer mainAnalyzer, ObjectNode<?, ?, ?> parentNode) {
 		return _makeDataBinding(node, bindable, bindingDefinitionType, expectedType, mainAnalyzer.getTypingSpace(),

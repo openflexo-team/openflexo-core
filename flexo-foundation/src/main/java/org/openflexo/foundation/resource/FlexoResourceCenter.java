@@ -50,8 +50,8 @@ import javax.annotation.Nullable;
 
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.FlexoProject;
-import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.CompilationUnitRepository;
+import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstanceRepository;
 import org.openflexo.foundation.project.FlexoProjectResource;
@@ -571,4 +571,6 @@ public interface FlexoResourceCenter<I> extends Iterable<I>, ResourceRepository<
 	public boolean containsArtefact(I serializationArtefact);
 
 	public String relativePath(I serializationArtefact);
+
+	public String getDisplayableStatus();
 }

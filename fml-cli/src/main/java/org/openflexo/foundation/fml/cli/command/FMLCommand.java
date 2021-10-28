@@ -45,7 +45,7 @@ import org.openflexo.foundation.fml.cli.CommandSemanticsAnalyzer;
 import org.openflexo.foundation.fml.cli.command.fml.FMLAssignation;
 import org.openflexo.foundation.fml.cli.command.fml.FMLContextCommand;
 import org.openflexo.foundation.fml.cli.command.fml.FMLExpression;
-import org.openflexo.foundation.fml.cli.parser.node.Node;
+import org.openflexo.foundation.fml.parser.node.Node;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 
 /**

@@ -1,8 +1,9 @@
 /**
  * 
- * Copyright (c) 2014, Openflexo
+ * Copyright (c) 2013-2014, Openflexo
+ * Copyright (c) 2011-2012, AgileBirds
  * 
- * This file is part of Cartoeditor, a component of the software infrastructure 
+ * This file is part of Connie-core, a component of the software infrastructure 
  * developed at Openflexo.
  * 
  * 
@@ -38,35 +39,60 @@
 
 package org.openflexo.foundation.fml.cli;
 
-import java.io.File;
-import java.io.IOException;
+import java.lang.reflect.Type;
 
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.openflexo.foundation.fml.cli.command.AbstractCommand;
-import org.openflexo.foundation.test.OpenflexoTestCase;
+import org.openflexo.foundation.fml.AbstractFMLTypingSpace;
+import org.openflexo.foundation.fml.FMLCompilationUnit;
 
 /**
- * Test command parser
+ * FML typing space, related to a {@link FMLCompilationUnit}
+ * 
+ * Support import of VirtualModels
  * 
  * @author sylvain
  *
  */
-public class TestCLI1 extends OpenflexoTestCase {
+public class CLIFMLTypingSpace extends AbstractFMLTypingSpace {
 
-	private static CommandInterpreter commandInterpreter;
-
-	@BeforeClass
-	public static void initialize() throws IOException {
-		instanciateTestServiceManager();
-		commandInterpreter = new CommandInterpreter(serviceManager, System.in, System.out, System.err,
-				new File(System.getProperty("user.dir")));
+	public CLIFMLTypingSpace(CommandSemanticsAnalyzer csa) {
+		super(csa.getServiceManager());
 	}
 
-	@Test
-	public void testHelp() throws ParseException {
-		AbstractCommand help = CommandParser.parse("help", commandInterpreter);
-		help.execute();
+	/**
+	 * Return boolean indicating if supplied {@link Type} is actually in current typing space
+	 * 
+	 * @param type
+	 * @return
+	 */
+	@Override
+	public boolean isTypeImported(Type type) {
+		return super.isTypeImported(type);
+	}
+
+	/**
+	 * Import supplied type in this typing space
+	 * 
+	 * @param type
+	 */
+	@Override
+	public void importType(Type type) {
+		super.importType(type);
+	}
+
+	/**
+	 * Resolve {@link Type} according to current typing space using supplied type {@link String} representation
+	 * 
+	 * @param typeAsString
+	 * @return
+	 */
+	@Override
+	public Type resolveType(String typeAsString) {
+		return super.resolveType(typeAsString);
+	}
+
+	@Override
+	public String toString() {
+		return "CLIFMLTypingSpace";
 	}
 
 }

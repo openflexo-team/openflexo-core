@@ -48,13 +48,12 @@ import org.openflexo.connie.exception.NotSettableContextException;
 import org.openflexo.connie.exception.NullReferenceException;
 import org.openflexo.connie.exception.TypeMismatchException;
 import org.openflexo.connie.expr.BinaryOperatorExpression;
-import org.openflexo.connie.expr.BindingValue;
-import org.openflexo.connie.expr.BooleanBinaryOperator;
 import org.openflexo.connie.expr.Expression;
 import org.openflexo.foundation.fml.cli.CommandSemanticsAnalyzer;
 import org.openflexo.foundation.fml.cli.command.FMLCommand;
 import org.openflexo.foundation.fml.cli.command.FMLCommandDeclaration;
-import org.openflexo.foundation.fml.cli.parser.node.AExprFmlCommand;
+import org.openflexo.foundation.fml.expr.FMLAssignOperator;
+import org.openflexo.foundation.fml.parser.node.AExprFmlCommand;
 import org.openflexo.toolbox.StringUtils;
 
 /**
@@ -74,8 +73,8 @@ public class FMLExpression extends FMLCommand {
 
 	public FMLExpression(AExprFmlCommand node, CommandSemanticsAnalyzer commandSemanticsAnalyzer) {
 		super(node, commandSemanticsAnalyzer, null);
-		Expression exp = commandSemanticsAnalyzer.getExpression(node.getExpr());
-		expression = new DataBinding<>(exp.toString(), getCommandInterpreter(), Object.class, BindingDefinitionType.GET);
+		// Expression exp = commandSemanticsAnalyzer.getExpression(node.getExpression());
+		// expression = new DataBinding<>(exp.toString(), getCommandInterpreter(), Object.class, BindingDefinitionType.GET);
 	}
 
 	@Override
@@ -90,9 +89,12 @@ public class FMLExpression extends FMLCommand {
 
 	@Override
 	public void execute() {
+
+		super.execute();
+
 		try {
 			if (expression.getExpression() != null && expression.getExpression() instanceof BinaryOperatorExpression
-					&& ((BinaryOperatorExpression) expression.getExpression()).getOperator() == BooleanBinaryOperator.EQUALS) {
+					&& ((BinaryOperatorExpression) expression.getExpression()).getOperator() == FMLAssignOperator.ASSIGN) {
 				// Special case for an expression declared as EQUALS
 				// Interpret it as an assignation
 				BinaryOperatorExpression equalsExp = (BinaryOperatorExpression) expression.getExpression();
@@ -116,8 +118,10 @@ public class FMLExpression extends FMLCommand {
 						}
 					}
 					else {
+						// TODO faire un truc la
+
 						// getOutStream().println("Ca va pas avec " + left + " of " + left.getClass());
-						if (left.getExpression() instanceof BindingValue
+						/*if (left.getExpression() instanceof BindingValue
 								&& ((BindingValue) left.getExpression()).getParsedBindingPath().size() == 1) {
 							String variableName = ((BindingValue) left.getExpression()).getParsedBindingPath().get(0)
 									.getSerializationRepresentation();
@@ -127,7 +131,7 @@ public class FMLExpression extends FMLCommand {
 						}
 						else {
 							getErrStream().println("Cannot execute " + left + " : " + left.invalidBindingReason());
-						}
+						}*/
 					}
 				}
 				else {
@@ -150,6 +154,8 @@ public class FMLExpression extends FMLCommand {
 		} catch (InvocationTargetException e) {
 			getErrStream().println("Unexpected exception: " + e.getTargetException()
 					+ (StringUtils.isNotEmpty(e.getTargetException().getMessage()) ? " : " + e.getTargetException().getMessage() : ""));
+		} catch (ReflectiveOperationException e) {
+			getErrStream().println("Unexpected exception: " + e + (StringUtils.isNotEmpty(e.getMessage()) ? " : " + e.getMessage() : ""));
 		} catch (NotSettableContextException e) {
 			getErrStream().println("Cannot execute " + expression + " : " + e.getMessage());
 		}

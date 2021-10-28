@@ -44,7 +44,7 @@ import java.util.logging.Logger;
 import org.openflexo.foundation.fml.cli.CommandSemanticsAnalyzer;
 import org.openflexo.foundation.fml.cli.command.Directive;
 import org.openflexo.foundation.fml.cli.command.DirectiveDeclaration;
-import org.openflexo.foundation.fml.cli.parser.node.AHistoryDirective;
+import org.openflexo.foundation.fml.parser.node.AHistoryDirective;
 
 /**
  * Represents #history directive in FML command-line interpreter
@@ -62,6 +62,11 @@ public class HistoryDirective extends Directive {
 
 	public HistoryDirective(AHistoryDirective node, CommandSemanticsAnalyzer commandSemanticsAnalyzer) {
 		super(node, commandSemanticsAnalyzer);
+	}
+
+	@Override
+	public String toString() {
+		return "history";
 	}
 
 	@Override

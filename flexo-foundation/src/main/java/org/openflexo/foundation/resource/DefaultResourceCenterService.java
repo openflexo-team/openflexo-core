@@ -707,7 +707,7 @@ public abstract class DefaultResourceCenterService extends FlexoServiceImpl impl
 		StringBuffer sb = new StringBuffer();
 		sb.append(super.getDisplayableStatus() + " with " + getResourceCenters().size() + " resource centers");
 		for (FlexoResourceCenter<?> rc : getResourceCenters()) {
-			sb.append("\n[" + rc.getDefaultBaseURI() + "] with " + rc.getAllResources().size() + " resources");
+			sb.append("\n" + rc.getDisplayableStatus());
 		}
 		return sb.toString();
 	}
@@ -732,7 +732,7 @@ public abstract class DefaultResourceCenterService extends FlexoServiceImpl impl
 
 		@Override
 		public String usage(FlexoResourceCenterService service) {
-			return "service " + service.getServiceName() + " add_rc <path>";
+			return "service " + service.getServiceName() + " add_rc -d <path>";
 		}
 
 		@Override
@@ -765,6 +765,12 @@ public abstract class DefaultResourceCenterService extends FlexoServiceImpl impl
 				}
 			}
 		}
+
+		@Override
+		public String getStringRepresentation(Object argumentValue) {
+			return getOperationName() + " -d " + ((File) argumentValue).getAbsolutePath();
+		}
+
 	}
 
 	@Override

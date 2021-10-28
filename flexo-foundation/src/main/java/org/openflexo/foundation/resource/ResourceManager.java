@@ -144,7 +144,7 @@ public class ResourceManager extends FlexoServiceImpl implements ReferenceOwner 
 	}
 
 	public void registerPendingDependencyResource(FlexoResource<?> resource, String dependencyURI) {
-		//System.out.println("registerPendingDependencyResource " + dependencyURI + " for " + resource);
+		// System.out.println("registerPendingDependencyResource " + dependencyURI + " for " + resource);
 		List<PendingResourceDependency> l = pendingResourceDependencies.get(dependencyURI);
 		if (l == null) {
 			l = new ArrayList<PendingResourceDependency>();
@@ -622,9 +622,8 @@ public class ResourceManager extends FlexoServiceImpl implements ReferenceOwner 
 
 	public List<FlexoResource<?>> getResources(Object serializationArtefact) {
 		List<FlexoResource<?>> returned = new ArrayList<>();
-		System.out.println("On cherche " + serializationArtefact);
 		for (FlexoResource<?> flexoResource : resources) {
-			System.out.println(" > " + flexoResource + " io=" + flexoResource.getIODelegate().getSerializationArtefact());
+			// System.out.println(" > " + flexoResource + " io=" + flexoResource.getIODelegate().getSerializationArtefact());
 			if (flexoResource.getIODelegate().getSerializationArtefact().equals(serializationArtefact)) {
 				returned.add(flexoResource);
 			}

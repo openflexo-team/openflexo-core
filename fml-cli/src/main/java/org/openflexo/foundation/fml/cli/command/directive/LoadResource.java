@@ -39,16 +39,23 @@
 
 package org.openflexo.foundation.fml.cli.command.directive;
 
+import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.List;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.fml.cli.CommandSemanticsAnalyzer;
 import org.openflexo.foundation.fml.cli.command.Directive;
 import org.openflexo.foundation.fml.cli.command.DirectiveDeclaration;
-import org.openflexo.foundation.fml.cli.parser.node.ALoadDirective;
+import org.openflexo.foundation.fml.parser.node.ALoadDirective;
+import org.openflexo.foundation.fml.parser.node.APathLoadDirective;
+import org.openflexo.foundation.fml.parser.node.AResourceLoadDirective;
+import org.openflexo.foundation.fml.parser.node.PLoadDirective;
 import org.openflexo.foundation.resource.FlexoResource;
 import org.openflexo.foundation.resource.ResourceLoadingCancelledException;
+import org.openflexo.toolbox.StringUtils;
 
 /**
  * Represents load resource directive in FML command-line interpreter
@@ -60,39 +67,90 @@ import org.openflexo.foundation.resource.ResourceLoadingCancelledException;
  */
 @DirectiveDeclaration(
 		keyword = "load",
-		usage = "load <resource>",
+		usage = "load <file> | -r <resource>",
 		description = "Load resource denoted by supplied resource uri",
-		syntax = "load <resource>")
+		syntax = "load <path> | -r <resource>")
 public class LoadResource extends Directive {
 
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(LoadResource.class.getPackage().getName());
 
 	private FlexoResource<?> resource;
+	private String resourcePath;
 
 	public LoadResource(ALoadDirective node, CommandSemanticsAnalyzer commandSemanticsAnalyzer) {
 		super(node, commandSemanticsAnalyzer);
-		resource = getResource(node.getResourceUri().getText());
+
+		PLoadDirective loadDirective = node.getLoadDirective();
+
+		if (loadDirective instanceof AResourceLoadDirective) {
+			resource = retrieveResource(((AResourceLoadDirective) loadDirective).getReferenceByUri());
+		}
+		else if (loadDirective instanceof APathLoadDirective) {
+			resourcePath = retrievePath(((APathLoadDirective) loadDirective).getPath());
+		}
+
 	}
 
-	public FlexoResource<?> getResource() {
-		return resource;
+	@Override
+	public String toString() {
+		if (StringUtils.isNotEmpty(resourcePath)) {
+			return "load " + resourcePath;
+		}
+		else if (resource != null) {
+			return "load -r [\"" + resource.getURI() + "\"]";
+		}
+		return "load";
+	}
+
+	public FlexoResource<?> getResultingResource() {
+		if (StringUtils.isNotEmpty(resourcePath)) {
+			File resourceFile;
+			if (resourcePath.startsWith("/")) {
+				resourceFile = new File(resourcePath);
+			}
+			else {
+				resourceFile = new File(getCommandInterpreter().getWorkingDirectory(), resourcePath);
+			}
+			try {
+				resourceFile = new File(resourceFile.getCanonicalPath());
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			List<FlexoResource<?>> resources = getCommandInterpreter().getServiceManager().getResourceManager().getResources(resourceFile);
+			if (resources.size() == 0) {
+				getErrStream().println("Cannot load as a resource " + resourceFile);
+			}
+			else if (resources.size() > 1) {
+				getErrStream().println("Multiple resources for " + resourceFile);
+				return resources.get(0);
+			}
+			else {
+				return resources.get(0);
+			}
+
+		}
+		else if (resource != null) {
+			return resource;
+		}
+		return null;
 	}
 
 	@Override
 	public void execute() {
-		if (resource.isLoaded()) {
+		super.execute();
+		if (getResultingResource().isLoaded()) {
 			getOutStream().println("Resource " + resource.getURI() + " already loaded");
 		}
 		else {
 			try {
-				resource.loadResourceData();
-				getOutStream().println("Loaded " + resource.getURI() + ".");
+				getResultingResource().loadResourceData();
+				getOutStream().println("Loaded " + getResultingResource().getURI() + ".");
 			} catch (FileNotFoundException e) {
-				getErrStream().println("Cannot find resource " + resource.getURI());
+				getErrStream().println("Cannot find resource");
 			} catch (ResourceLoadingCancelledException e) {
 			} catch (FlexoException e) {
-				getErrStream().println("Cannot load resource " + resource.getURI() + " : " + e.getMessage());
+				getErrStream().println("Cannot load resource : " + e.getMessage());
 			}
 		}
 	}

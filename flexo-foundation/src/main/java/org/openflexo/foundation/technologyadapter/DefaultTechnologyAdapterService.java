@@ -822,6 +822,11 @@ public abstract class DefaultTechnologyAdapterService extends FlexoServiceImpl i
 				out.println("TechnologyAdapter " + ta + " has been activated");
 			}
 		}
+
+		@Override
+		public String getStringRepresentation(Object argumentValue) {
+			return getOperationName();
+		}
 	}
 
 	@Override

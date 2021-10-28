@@ -48,7 +48,7 @@ import org.openflexo.foundation.FlexoService.ServiceOperation;
 import org.openflexo.foundation.fml.cli.CommandSemanticsAnalyzer;
 import org.openflexo.foundation.fml.cli.command.Directive;
 import org.openflexo.foundation.fml.cli.command.DirectiveDeclaration;
-import org.openflexo.foundation.fml.cli.parser.node.AServiceDirective;
+import org.openflexo.foundation.fml.parser.node.AServiceDirective;
 
 /**
  * Represents #service directive in FML command-line interpreter
@@ -90,18 +90,18 @@ public class ServiceDirective<S extends FlexoService> extends Directive {
 	public ServiceDirective(AServiceDirective node, CommandSemanticsAnalyzer commandSemanticsAnalyzer) {
 		super(node, commandSemanticsAnalyzer);
 
-		service = getCommandInterpreter().getServiceManager().getService(node.getServiceName().getText());
+		service = getCommandInterpreter().getServiceManager().getService(getText(node.getServiceName()));
 
 		if (service != null) {
 			for (ServiceOperation<?> action : service.getAvailableServiceOperations()) {
-				if (action.getOperationName().equals(node.getAction().getText())) {
+				if (action.getOperationName().equals(getText(node.getAction()))) {
 					serviceOperation = (ServiceOperation<S>) action;
 					break;
 				}
 			}
 			if (serviceOperation == null) {
 				isValid = false;
-				invalidCommandReason = "Operation " + node.getAction().getText() + " not found for service " + service.getServiceName();
+				invalidCommandReason = "Operation " + getText(node.getAction()) + " not found for service " + service.getServiceName();
 			}
 			else {
 				// argument
@@ -110,24 +110,24 @@ public class ServiceDirective<S extends FlexoService> extends Directive {
 					if (node.getArgument() != null) {
 						String argumentType = serviceOperation.getArgument();
 						CommandTokenType tokenType = CommandTokenType.getType(argumentType);
-						argumentValue = evaluate(node.getArgument(), tokenType);
+						argumentValue = evaluateArgument(node.getArgument(), tokenType);
 						if (argumentValue != null) {
 							isValid = true;
 						}
 						else {
 							isValid = false;
-							invalidCommandReason = "Operation " + node.getAction().getText() + " cannot be processed: null argument";
+							invalidCommandReason = "Operation " + getText(node.getAction()) + " cannot be processed: null argument";
 						}
 					}
 					else {
 						isValid = false;
-						invalidCommandReason = "Operation " + node.getAction().getText() + " cannot be processed: missing argument";
+						invalidCommandReason = "Operation " + getText(node.getAction()) + " cannot be processed: missing argument";
 					}
 				}
 				else {
 					if (node.getArgument() != null) {
 						isValid = false;
-						invalidCommandReason = "Operation " + node.getAction().getText() + " cannot be processed: unexpected argument";
+						invalidCommandReason = "Operation " + getText(node.getAction()) + " cannot be processed: unexpected argument";
 					}
 					else {
 						isValid = true;
@@ -163,8 +163,13 @@ public class ServiceDirective<S extends FlexoService> extends Directive {
 		}
 		else {
 			isValid = false;
-			invalidCommandReason = "Service " + node.getServiceName().getText() + " not found";
+			invalidCommandReason = "Service " + getText(node.getServiceName()) + " not found";
 		}
+	}
+
+	@Override
+	public String toString() {
+		return "service " + service.getServiceName() + " " + serviceOperation.getStringRepresentation(argumentValue);
 	}
 
 	@Override
@@ -179,6 +184,8 @@ public class ServiceDirective<S extends FlexoService> extends Directive {
 
 	@Override
 	public void execute() {
+		super.execute();
+
 		if (!isValid()) {
 			getErrStream().println(invalidCommandReason());
 		}

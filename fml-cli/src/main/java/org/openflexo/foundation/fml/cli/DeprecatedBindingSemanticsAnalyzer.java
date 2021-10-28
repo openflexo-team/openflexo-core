@@ -65,7 +65,7 @@ import org.openflexo.foundation.fml.cli.parser.node.TIdentifier;
  * @author sylvain
  * 
  */
-class BindingSemanticsAnalyzer extends CommandSemanticsAnalyzer {
+class DeprecatedBindingSemanticsAnalyzer extends CommandSemanticsAnalyzer {
 
 	private final List<BindingValue.AbstractBindingPathElement> path;
 
@@ -74,7 +74,7 @@ class BindingSemanticsAnalyzer extends CommandSemanticsAnalyzer {
 	 */
 	// private boolean weAreDealingWithTheRightBinding = true;
 
-	public BindingSemanticsAnalyzer(PBinding node, AbstractCommandInterpreter commandInterpreter) {
+	public DeprecatedBindingSemanticsAnalyzer(PBinding node, AbstractCommandInterpreter commandInterpreter) {
 		super(commandInterpreter);
 		path = new ArrayList<>();
 		// System.out.println(">>>> node=" + node + " of " + node.getClass());

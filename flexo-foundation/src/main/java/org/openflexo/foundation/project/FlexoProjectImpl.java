@@ -1470,4 +1470,9 @@ public abstract class FlexoProjectImpl<I> extends ResourceRepositoryImpl<FlexoRe
 		return null;
 	}
 
+	@Override
+	public String getDisplayableStatus() {
+		return "[uri=\"" + getProjectURI() + "\"] with " + getAllResources().size() + " resources";
+	}
+
 }

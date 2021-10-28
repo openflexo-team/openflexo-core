@@ -41,19 +41,18 @@ package org.openflexo.foundation.fml.cli.command.directive;
 
 import java.util.logging.Logger;
 
-import org.openflexo.foundation.FlexoObject;
-import org.openflexo.foundation.fml.cli.CLIUtils;
+import org.openflexo.connie.DataBinding;
 import org.openflexo.foundation.fml.cli.CommandSemanticsAnalyzer;
 import org.openflexo.foundation.fml.cli.command.Directive;
 import org.openflexo.foundation.fml.cli.command.DirectiveDeclaration;
-import org.openflexo.foundation.fml.cli.parser.node.AEnterDirective;
-import org.openflexo.foundation.fml.cli.parser.node.AObjectEnterDirective;
-import org.openflexo.foundation.fml.cli.parser.node.AResourceEnterDirective;
-import org.openflexo.foundation.fml.cli.parser.node.PBinding;
-import org.openflexo.foundation.fml.cli.parser.node.PEnterDirective;
-import org.openflexo.foundation.fml.rm.CompilationUnitResource;
-import org.openflexo.foundation.fml.rt.rm.AbstractVirtualModelInstanceResource;
+import org.openflexo.foundation.fml.parser.node.AEnterDirective;
+import org.openflexo.foundation.fml.parser.node.AObjectEnterDirective;
+import org.openflexo.foundation.fml.parser.node.APathEnterDirective;
+import org.openflexo.foundation.fml.parser.node.AResourceEnterDirective;
+import org.openflexo.foundation.fml.parser.node.PEnterDirective;
+import org.openflexo.foundation.fml.parser.node.PExpression;
 import org.openflexo.foundation.resource.FlexoResource;
+import org.openflexo.toolbox.StringUtils;
 
 /**
  * Represents enter directive in FML command-line interpreter
@@ -68,14 +67,15 @@ import org.openflexo.foundation.resource.FlexoResource;
 		keyword = "enter",
 		usage = "enter <expression> | -r <resource>",
 		description = "Enter in a given object, denoted by a resource or an expression",
-		syntax = "enter <reference> | <expression> | -r <resource>")
+		syntax = "enter <expression> | -r <resource>")
 public class EnterDirective extends Directive {
 
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(EnterDirective.class.getPackage().getName());
 
 	private FlexoResource<?> resource;
-	private Object object;
+	private String path;
+	private DataBinding<?> expression;
 
 	public EnterDirective(AEnterDirective node, CommandSemanticsAnalyzer commandSemanticsAnalyzer) {
 		super(node, commandSemanticsAnalyzer);
@@ -83,31 +83,47 @@ public class EnterDirective extends Directive {
 		PEnterDirective enterDirective = node.getEnterDirective();
 
 		if (enterDirective instanceof AResourceEnterDirective) {
-			resource = getResource(((AResourceEnterDirective) enterDirective).getResourceUri().getText());
+			resource = retrieveResource(((AResourceEnterDirective) enterDirective).getReferenceByUri());
+		}
+		else if (enterDirective instanceof APathEnterDirective) {
+			path = retrievePath(((APathEnterDirective) enterDirective).getPath());
 		}
 		else if (enterDirective instanceof AObjectEnterDirective) {
-			PBinding referencedObject = ((AObjectEnterDirective) enterDirective).getBinding();
-			// System.out.println("On entre dans l'objet: " + referencedObject);
-			object = evaluate(referencedObject, CommandTokenType.LocalReference);
-			// System.out.println("Found as local reference: " + object);
+			PExpression referencedObject = ((AObjectEnterDirective) enterDirective).getExpression();
+			/*object = evaluate(referencedObject, CommandTokenType.LocalReference);
 			if (object == null) {
 				object = evaluate(referencedObject, CommandTokenType.Expression);
-				// System.out.println("Found as expression: " + object);
-			}
+			}*/
+			expression = retrieveExpression(referencedObject);
 		}
+	}
+
+	@Override
+	public String toString() {
+		if (StringUtils.isNotEmpty(path)) {
+			return "enter -f " + path;
+		}
+		else if (resource != null) {
+			return "enter -r [\"" + resource.getURI() + "\"]";
+		}
+		else if (resource != null) {
+			return "enter " + expression;
+		}
+		return "enter ?";
 	}
 
 	public FlexoResource<?> getResource() {
 		return resource;
 	}
 
-	public Object getObject() {
+	/*public Object getObject() {
 		return object;
-	}
+	}*/
 
 	@Override
 	public void execute() {
-		if (getResource() instanceof CompilationUnitResource) {
+		super.execute();
+		/*if (getResource() instanceof CompilationUnitResource) {
 			object = ((CompilationUnitResource) getResource()).getCompilationUnit();
 		}
 		if (getResource() instanceof AbstractVirtualModelInstanceResource) {
@@ -122,6 +138,6 @@ public class EnterDirective extends Directive {
 		}
 		else {
 			getErrStream().println("Cannot access denoted context");
-		}
+		}*/
 	}
 }

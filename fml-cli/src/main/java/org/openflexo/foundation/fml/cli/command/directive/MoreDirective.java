@@ -47,12 +47,12 @@ import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.fml.cli.CommandSemanticsAnalyzer;
 import org.openflexo.foundation.fml.cli.command.Directive;
 import org.openflexo.foundation.fml.cli.command.DirectiveDeclaration;
-import org.openflexo.foundation.fml.cli.parser.node.AMoreDirective;
-import org.openflexo.foundation.fml.cli.parser.node.AObjectMoreDirective;
-import org.openflexo.foundation.fml.cli.parser.node.APlainMoreDirective;
-import org.openflexo.foundation.fml.cli.parser.node.AResourceMoreDirective;
-import org.openflexo.foundation.fml.cli.parser.node.PBinding;
-import org.openflexo.foundation.fml.cli.parser.node.PMoreDirective;
+import org.openflexo.foundation.fml.parser.node.AMoreDirective;
+import org.openflexo.foundation.fml.parser.node.AObjectMoreDirective;
+import org.openflexo.foundation.fml.parser.node.APlainMoreDirective;
+import org.openflexo.foundation.fml.parser.node.AResourceMoreDirective;
+import org.openflexo.foundation.fml.parser.node.PExpression;
+import org.openflexo.foundation.fml.parser.node.PMoreDirective;
 import org.openflexo.foundation.resource.FlexoResource;
 import org.openflexo.foundation.resource.ResourceLoadingCancelledException;
 
@@ -88,10 +88,10 @@ public class MoreDirective extends Directive {
 			isPlain = true;
 		}
 		else if (moreDirective instanceof AResourceMoreDirective) {
-			resource = getResource(((AResourceMoreDirective) moreDirective).getResourceUri().getText());
+			resource = retrieveResource(evaluate(((AResourceMoreDirective) moreDirective).getReferenceByUri()));
 		}
 		else if (moreDirective instanceof AObjectMoreDirective) {
-			PBinding referencedObject = ((AObjectMoreDirective) moreDirective).getBinding();
+			PExpression referencedObject = ((AObjectMoreDirective) moreDirective).getExpression();
 			// System.out.println("On entre dans l'objet: " + referencedObject);
 			object = evaluate(referencedObject, CommandTokenType.LocalReference);
 			// System.out.println("Found as local reference: " + object);
@@ -112,6 +112,7 @@ public class MoreDirective extends Directive {
 
 	@Override
 	public void execute() {
+		super.execute();
 		if (isPlain) {
 			if (getCommandInterpreter().getFocusedObject() == null) {
 				getErrStream().println("No focused object");

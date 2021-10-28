@@ -45,7 +45,7 @@ import org.openflexo.foundation.FlexoService;
 import org.openflexo.foundation.fml.cli.CommandSemanticsAnalyzer;
 import org.openflexo.foundation.fml.cli.command.Directive;
 import org.openflexo.foundation.fml.cli.command.DirectiveDeclaration;
-import org.openflexo.foundation.fml.cli.parser.node.AServicesDirective;
+import org.openflexo.foundation.fml.parser.node.AServicesDirective;
 import org.openflexo.toolbox.StringUtils;
 
 /**
@@ -73,7 +73,14 @@ public class ServicesDirective extends Directive {
 	}
 
 	@Override
+	public String toString() {
+		return "services";
+	}
+
+	@Override
 	public void execute() {
+		super.execute();
+
 		getOutStream().println("Active services:");
 		for (FlexoService service : getCommandInterpreter().getServiceManager().getRegisteredServices()) {
 			getOutStream().println(service.getServiceName() + StringUtils.buildWhiteSpaceIndentation(30 - service.getServiceName().length())

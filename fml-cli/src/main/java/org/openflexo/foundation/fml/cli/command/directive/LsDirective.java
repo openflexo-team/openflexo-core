@@ -45,7 +45,7 @@ import java.util.logging.Logger;
 import org.openflexo.foundation.fml.cli.CommandSemanticsAnalyzer;
 import org.openflexo.foundation.fml.cli.command.Directive;
 import org.openflexo.foundation.fml.cli.command.DirectiveDeclaration;
-import org.openflexo.foundation.fml.cli.parser.node.ALsDirective;
+import org.openflexo.foundation.fml.parser.node.ALsDirective;
 import org.openflexo.toolbox.StringUtils;
 
 /**
@@ -67,7 +67,13 @@ public class LsDirective extends Directive {
 	}
 
 	@Override
+	public String toString() {
+		return "ls";
+	}
+
+	@Override
 	public void execute() {
+		super.execute();
 		if (getCommandInterpreter().getWorkingDirectory() != null) {
 			if (getCommandInterpreter().getWorkingDirectory().isDirectory()) {
 				int maxLength = 0;

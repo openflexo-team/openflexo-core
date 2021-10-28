@@ -47,7 +47,7 @@ import org.openflexo.foundation.fml.cli.CLIUtils;
 import org.openflexo.foundation.fml.cli.CommandSemanticsAnalyzer;
 import org.openflexo.foundation.fml.cli.command.FMLCommand;
 import org.openflexo.foundation.fml.cli.command.FMLCommandDeclaration;
-import org.openflexo.foundation.fml.cli.parser.node.AContextFmlCommand;
+import org.openflexo.foundation.fml.parser.node.AContextFmlCommand;
 import org.openflexo.toolbox.StringUtils;
 
 /**
@@ -70,6 +70,8 @@ public class FMLContextCommand extends FMLCommand {
 
 	@Override
 	public void execute() {
+
+		super.execute();
 
 		if (getCommandInterpreter().getFocusedObject() != null) {
 			getOutStream().println(CLIUtils.denoteObjectPath(getCommandInterpreter().getFocusedObject()));

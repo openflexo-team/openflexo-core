@@ -47,7 +47,7 @@ import org.openflexo.foundation.fml.cli.command.Directive;
 import org.openflexo.foundation.fml.cli.command.DirectiveDeclaration;
 import org.openflexo.foundation.fml.cli.command.FMLCommand;
 import org.openflexo.foundation.fml.cli.command.FMLCommandDeclaration;
-import org.openflexo.foundation.fml.cli.parser.node.AHelpDirective;
+import org.openflexo.foundation.fml.parser.node.AHelpDirective;
 import org.openflexo.toolbox.StringUtils;
 
 /**
@@ -69,7 +69,13 @@ public class HelpDirective extends Directive {
 	}
 
 	@Override
+	public String toString() {
+		return "help";
+	}
+
+	@Override
 	public void execute() {
+		super.execute();
 		for (Class<? extends Directive> directiveClass : getCommandInterpreter().getAvailableDirectives()) {
 			String usage = directiveClass.getAnnotation(DirectiveDeclaration.class).usage();
 			String description = directiveClass.getAnnotation(DirectiveDeclaration.class).description();

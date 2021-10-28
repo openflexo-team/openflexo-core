@@ -314,8 +314,9 @@ public class CommandInterpreter extends AbstractCommandInterpreter {
 
 	@Override
 	public void displayHistory() {
-		// TODO Auto-generated method stub
-		getOutStream().println("History not available");
+		for (AbstractCommand command : getHistory()) {
+			getOutStream().println(command.toString());
+		}
 	}
 
 	@Override

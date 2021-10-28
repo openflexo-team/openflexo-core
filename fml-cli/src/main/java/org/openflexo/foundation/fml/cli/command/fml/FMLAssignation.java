@@ -39,18 +39,15 @@
 
 package org.openflexo.foundation.fml.cli.command.fml;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.logging.Logger;
 
 import org.openflexo.connie.DataBinding;
-import org.openflexo.connie.DataBinding.BindingDefinitionType;
 import org.openflexo.connie.exception.NullReferenceException;
 import org.openflexo.connie.exception.TypeMismatchException;
-import org.openflexo.connie.expr.Expression;
 import org.openflexo.foundation.fml.cli.CommandSemanticsAnalyzer;
 import org.openflexo.foundation.fml.cli.command.FMLCommand;
 import org.openflexo.foundation.fml.cli.command.FMLCommandDeclaration;
-import org.openflexo.foundation.fml.cli.parser.node.AAssignationFmlCommand;
+import org.openflexo.foundation.fml.parser.node.AAssignmentStatementExpression;
 
 /**
  * Represents an assignation in FML command-line interpreter
@@ -72,11 +69,12 @@ public class FMLAssignation extends FMLCommand {
 	private String variableName;
 	private DataBinding<Object> assignation;
 
-	public FMLAssignation(AAssignationFmlCommand node, CommandSemanticsAnalyzer commandSemanticsAnalyzer) {
+	public FMLAssignation(AAssignmentStatementExpression node, CommandSemanticsAnalyzer commandSemanticsAnalyzer) {
 		super(node, commandSemanticsAnalyzer, null);
-		variableName = node.getIdentifier().getText();
-		Expression exp = commandSemanticsAnalyzer.getExpression(node.getExpr());
-		assignation = new DataBinding<>(exp.toString(), getCommandInterpreter(), Object.class, BindingDefinitionType.GET);
+		// TODO uncomment this
+		// variableName = node.getLeft().getText();
+		// Expression exp = commandSemanticsAnalyzer.getExpression(node.getRight());
+		// assignation = new DataBinding<>(exp.toString(), getCommandInterpreter(), Object.class, BindingDefinitionType.GET);
 	}
 
 	public String getVariableName() {
@@ -99,6 +97,7 @@ public class FMLAssignation extends FMLCommand {
 
 	@Override
 	public void execute() {
+		super.execute();
 		// getOutStream().println("on assigne a " + variableName);
 		if (assignation.isValid()) {
 			try {
@@ -109,7 +108,7 @@ public class FMLAssignation extends FMLCommand {
 				getErrStream().println("Cannot execute " + assignation + " : " + e.getMessage());
 			} catch (NullReferenceException e) {
 				getErrStream().println("Cannot execute " + assignation + " : " + e.getMessage());
-			} catch (InvocationTargetException e) {
+			} catch (ReflectiveOperationException e) {
 				getErrStream().println("Cannot execute " + assignation + " : " + e.getMessage());
 			}
 		}

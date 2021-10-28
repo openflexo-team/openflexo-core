@@ -48,11 +48,16 @@ import org.openflexo.foundation.FlexoProject;
 import org.openflexo.foundation.fml.cli.CommandSemanticsAnalyzer;
 import org.openflexo.foundation.fml.cli.command.Directive;
 import org.openflexo.foundation.fml.cli.command.DirectiveDeclaration;
-import org.openflexo.foundation.fml.cli.parser.node.AOpenDirective;
+import org.openflexo.foundation.fml.parser.node.AOpenDirective;
+import org.openflexo.foundation.fml.parser.node.APathOpenDirective;
+import org.openflexo.foundation.fml.parser.node.AResourceOpenDirective;
+import org.openflexo.foundation.fml.parser.node.POpenDirective;
+import org.openflexo.foundation.project.FlexoProjectResource;
 import org.openflexo.foundation.project.FlexoProjectResourceFactory;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.utils.ProjectInitializerException;
 import org.openflexo.foundation.utils.ProjectLoadingCancelledException;
+import org.openflexo.toolbox.StringUtils;
 
 /**
  * Represents open project directive in FML command-line interpreter
@@ -64,25 +69,52 @@ import org.openflexo.foundation.utils.ProjectLoadingCancelledException;
  */
 @DirectiveDeclaration(
 		keyword = "open",
-		usage = "open <project.prj>",
+		usage = "open <project.prj> | -r <resource>",
 		description = "Open project denoted by supplied path",
-		syntax = "open <path>")
+		syntax = "open <path> | -r <resource>")
 public class OpenProject extends Directive {
 
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(OpenProject.class.getPackage().getName());
 
+	private FlexoProjectResource<?> projectResource;
 	private String projectPath;
 	private File projectDirectory;
 
 	public OpenProject(AOpenDirective node, CommandSemanticsAnalyzer commandSemanticsAnalyzer) {
 		super(node, commandSemanticsAnalyzer);
-		projectPath = retrievePath(node.getPath());
+
+		POpenDirective openDirective = node.getOpenDirective();
+
+		if (openDirective instanceof AResourceOpenDirective) {
+			projectResource = (FlexoProjectResource<?>) retrieveResource(((AResourceOpenDirective) openDirective).getReferenceByUri());
+		}
+		else if (openDirective instanceof APathOpenDirective) {
+			projectPath = retrievePath(((APathOpenDirective) openDirective).getPath());
+		}
+	}
+
+	@Override
+	public String toString() {
+		if (StringUtils.isNotEmpty(projectPath)) {
+			return "open " + projectPath;
+		}
+		else if (projectResource != null) {
+			return "open -r [\"" + projectResource.getURI() + "\"]";
+		}
+		return "open";
 	}
 
 	public File getProjectDirectory() {
 		if (projectDirectory == null) {
-			projectDirectory = new File(getCommandInterpreter().getWorkingDirectory(), projectPath);
+			if (StringUtils.isNotEmpty(projectPath)) {
+				projectDirectory = new File(getCommandInterpreter().getWorkingDirectory(), projectPath);
+			}
+			else if (projectResource != null) {
+				System.out.println("projectResource=" + projectResource);
+				projectDirectory = (File) projectResource.getDelegateResourceCenter().getBaseArtefact();
+				System.out.println("projectDirectory=" + projectDirectory);
+			}
 			try {
 				projectDirectory = new File(projectDirectory.getCanonicalPath());
 			} catch (IOException e) {
@@ -118,6 +150,8 @@ public class OpenProject extends Directive {
 
 	@Override
 	public void execute() {
+
+		super.execute();
 
 		if (isValid()) {
 

@@ -104,6 +104,8 @@ Helpers
    lowercase_letter = ['a'..'z'] | '_';
 
    uppercase_letter = ['A'..'Z'];
+   
+   // path_letter = unicode_letter | '-' | '$' | '_';
 
    // --------------------------------------------------------------------------------------
    // Constructions for numeric litterals
@@ -230,6 +232,8 @@ Tokens
  
    // options
    {command} minus_r = '-r';
+   {command} minus_d = '-d';
+   {command} minus_f = '-f';
 
    // --------------------------------------------------------------------------------------
    // Keywords
@@ -314,6 +318,7 @@ Tokens
    // --------------------------------------------------------------------------------------
    lidentifier = lowercase_letter letter_or_digit*;
    uidentifier = uppercase_letter letter_or_digit*;
+   // path_identifier = path_letter*;
 
    // --------------------------------------------------------------------------------------
    // White space and comments
@@ -367,15 +372,21 @@ Productions
      {ls} ls |
      {cd} cd path |
      {services} services |
-     {service} service [service_name]:identifier [action]:identifier [argument]:simple_path? |
+     {service} service [service_name]:identifier [action]:identifier [argument]:directive_argument? |
      {activate_ta} activate [technology_adapter]:identifier |
      {resources} resources_directive |
-     {open} open path |
-     {load} load reference_by_uri |
+     {open} open_directive |
+     {load} load_directive |
      {more} more_directive |
      {enter} enter_directive |
      {exit} exit |
      {quit} quit;
+
+   directive_argument =
+     {expression} expression |
+     {directory_path} minus_d path |
+     {file_path} minus_f path |
+     {reference_by_uri} minus_r reference_by_uri;
 
    resources_directive =
      {exhaustive} resources |
@@ -383,8 +394,17 @@ Productions
      {rc} resources star [resource_center]:reference_by_uri |
      {ta_rc} resources [technology_adapter]:identifier [resource_center]:reference_by_uri;
 
+   open_directive =
+     {resource} open minus_r reference_by_uri |
+     {path} open path;
+
+   load_directive =
+     {resource} load minus_r reference_by_uri |
+     {path} load path;
+
    enter_directive =
      {resource} enter minus_r reference_by_uri |
+     {path} enter minus_f path |
      {object} enter expression;
 
    more_directive =
@@ -392,17 +412,33 @@ Productions
      {resource} more minus_r reference_by_uri |
      {object} more expression;
 
-   simple_path_prefix = identifier dot;
+   // Put here all things that may appear in a path (dot, minus, etc...)
+   simple_path_prefix = 
+     {dot} simple_path_terminal dot |
+     {minus} simple_path_terminal minus |
+     {minusr} simple_path_terminal minus_r |
+     {minusd} simple_path_terminal minus_d |
+     {minusf} simple_path_terminal minus_f ;
    
-   simple_path = [prefixes]:simple_path_prefix* [identifier]:identifier ;
+   simple_path = 
+     {plain} simple_path_terminal |
+     {concatened} simple_path_terminal [simple_path]:simple_path |
+     {prefixed} [prefix]:simple_path_prefix [simple_path]:simple_path ;
+ 
+   // Put here all keywords that may appear in a path
+   simple_path_terminal = 
+     {plain} identifier |
+     {literal} literal |
+     {resources} resources ;
 
    path =
      {binding} simple_path |
      {dot} dot |
+     {root_path} slash path |
      {path} simple_path slash path |
      {dot_path} dot slash path |
      {double_dot} dot_dot |
-     {double_dot_path} dot_dot slash path;
+     {double_dot_path} dot_dot slash path ;
 
    fml_command =
      {context} context |
@@ -481,7 +517,7 @@ Productions
    // --------------------------------------------------------------------------------------
    // Namespace declaration
    // --------------------------------------------------------------------------------------
-   
+      
    identifier =
        {lower} lidentifier
      | {upper} uidentifier

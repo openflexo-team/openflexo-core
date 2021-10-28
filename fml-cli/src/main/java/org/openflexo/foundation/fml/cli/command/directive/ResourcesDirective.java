@@ -47,11 +47,11 @@ import java.util.logging.Logger;
 import org.openflexo.foundation.fml.cli.CommandSemanticsAnalyzer;
 import org.openflexo.foundation.fml.cli.command.Directive;
 import org.openflexo.foundation.fml.cli.command.DirectiveDeclaration;
-import org.openflexo.foundation.fml.cli.parser.node.ARcResourcesDirective;
-import org.openflexo.foundation.fml.cli.parser.node.AResourcesDirective;
-import org.openflexo.foundation.fml.cli.parser.node.ATaRcResourcesDirective;
-import org.openflexo.foundation.fml.cli.parser.node.ATaResourcesDirective;
-import org.openflexo.foundation.fml.cli.parser.node.PResourcesDirective;
+import org.openflexo.foundation.fml.parser.node.ARcResourcesDirective;
+import org.openflexo.foundation.fml.parser.node.AResourcesDirective;
+import org.openflexo.foundation.fml.parser.node.ATaRcResourcesDirective;
+import org.openflexo.foundation.fml.parser.node.ATaResourcesDirective;
+import org.openflexo.foundation.fml.parser.node.PResourcesDirective;
 import org.openflexo.foundation.resource.FlexoResource;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
@@ -88,7 +88,7 @@ public class ResourcesDirective extends Directive {
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(ResourcesDirective.class.getPackage().getName());
 
-	private TechnologyAdapter technologyAdapter;
+	private TechnologyAdapter<?> technologyAdapter;
 	private FlexoResourceCenter<?> resourceCenter;
 
 	public ResourcesDirective(AResourcesDirective node, CommandSemanticsAnalyzer commandSemanticsAnalyzer) {
@@ -97,18 +97,39 @@ public class ResourcesDirective extends Directive {
 		PResourcesDirective resourcesDirective = node.getResourcesDirective();
 
 		if (resourcesDirective instanceof ATaRcResourcesDirective) {
-			technologyAdapter = getTechnologyAdapter(((ATaRcResourcesDirective) resourcesDirective).getTechnologyAdapter().getText());
-			resourceCenter = getResourceCenter(((ATaRcResourcesDirective) resourcesDirective).getResourceCenter().getText());
+			technologyAdapter = getTechnologyAdapter(getText(((ATaRcResourcesDirective) resourcesDirective).getTechnologyAdapter()));
+			resourceCenter = retrieveResourceCenter(((ATaRcResourcesDirective) resourcesDirective).getResourceCenter());
 		}
 		else if (resourcesDirective instanceof ATaResourcesDirective) {
-			technologyAdapter = getTechnologyAdapter(((ATaResourcesDirective) resourcesDirective).getTechnologyAdapter().getText());
+			technologyAdapter = getTechnologyAdapter(getText(((ATaResourcesDirective) resourcesDirective).getTechnologyAdapter()));
 		}
 		else if (resourcesDirective instanceof ARcResourcesDirective) {
-			resourceCenter = getResourceCenter(((ARcResourcesDirective) resourcesDirective).getResourceCenter().getText());
+			resourceCenter = retrieveResourceCenter(((ARcResourcesDirective) resourcesDirective).getResourceCenter());
 		}
 	}
 
-	public TechnologyAdapter getTechnologyAdapter() {
+	@Override
+	public String toString() {
+		if (technologyAdapter != null) {
+			if (resourceCenter != null) {
+				return "resources " + getTechnologyAdapter().getIdentifier() + " [\"" + resourceCenter.getDefaultBaseURI() + "\"]";
+			}
+			else {
+				return "resources " + getTechnologyAdapter().getIdentifier();
+			}
+		}
+		else {
+			if (resourceCenter != null) {
+				return "resources * [\"" + resourceCenter.getDefaultBaseURI() + "\"]";
+			}
+			else {
+				return "resources";
+			}
+		}
+
+	}
+
+	public TechnologyAdapter<?> getTechnologyAdapter() {
 		return technologyAdapter;
 	}
 
@@ -119,6 +140,8 @@ public class ResourcesDirective extends Directive {
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Override
 	public void execute() {
+
+		super.execute();
 
 		Collection<? extends FlexoResource<?>> resourcesToDisplay = null;
 
@@ -158,7 +181,6 @@ public class ResourcesDirective extends Directive {
 				type = "VirtualModelInstance";
 			}
 			String ta = "-";
-			String uri = "[" + resource.getURI() + "]";
 			if (resource instanceof TechnologyAdapterResource) {
 				ta = ((TechnologyAdapterResource) resource).getTechnologyAdapter().getIdentifier();
 			}
@@ -177,7 +199,7 @@ public class ResourcesDirective extends Directive {
 				type = "VirtualModelInstance";
 			}
 			String ta = "-";
-			String uri = "[" + resource.getURI() + "]";
+			String uri = "[\"" + resource.getURI() + "\"]";
 			if (resource instanceof TechnologyAdapterResource) {
 				ta = ((TechnologyAdapterResource) resource).getTechnologyAdapter().getIdentifier();
 			}

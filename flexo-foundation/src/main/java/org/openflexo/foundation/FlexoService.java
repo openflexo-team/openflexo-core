@@ -158,6 +158,7 @@ public interface FlexoService {
 
 		public void execute(S service, PrintStream out, PrintStream err, Object argument, Map<String, ?> options);
 
+		public String getStringRepresentation(Object argumentValue);
 	}
 
 	public static class ServiceOperationOption {
@@ -226,6 +227,12 @@ public interface FlexoService {
 						+ serviceOperation.description());
 			}
 		}
+
+		@Override
+		public String getStringRepresentation(Object argumentValue) {
+			return getOperationName();
+		}
+
 	}
 
 	public static class DisplayServiceStatus implements ServiceOperation<FlexoService> {
@@ -261,6 +268,12 @@ public interface FlexoService {
 		public void execute(FlexoService service, PrintStream out, PrintStream err, Object argument, Map<String, ?> options) {
 			out.println(service.getDisplayableStatus());
 		}
+
+		@Override
+		public String getStringRepresentation(Object argumentValue) {
+			return getOperationName();
+		}
+
 	}
 
 	public static class StartService implements ServiceOperation<FlexoService> {
@@ -302,6 +315,12 @@ public interface FlexoService {
 				out.println("Service already started");
 			}
 		}
+
+		@Override
+		public String getStringRepresentation(Object argumentValue) {
+			return getOperationName();
+		}
+
 	}
 
 	public static class StopService implements ServiceOperation<FlexoService> {
@@ -343,5 +362,11 @@ public interface FlexoService {
 				out.println("Service not started");
 			}
 		}
+
+		@Override
+		public String getStringRepresentation(Object argumentValue) {
+			return getOperationName();
+		}
+
 	}
 }

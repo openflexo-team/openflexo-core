@@ -10,7 +10,7 @@ dependencies {
   testImplementation project(':flexo-test-resources')
 }
 
-apply plugin: 'sablecc'
+//apply plugin: 'sablecc'
 
 // use with gradle --no-daemon --console plain fml-cli:run -q
 apply plugin: 'application'

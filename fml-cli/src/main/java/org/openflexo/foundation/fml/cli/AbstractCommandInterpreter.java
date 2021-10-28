@@ -37,11 +37,12 @@ import org.openflexo.connie.BindingModel;
 import org.openflexo.connie.BindingVariable;
 import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.binding.SettableBindingEvaluationContext;
-import org.openflexo.connie.java.JavaBindingFactory;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.FlexoService;
 import org.openflexo.foundation.FlexoService.ServiceOperation;
 import org.openflexo.foundation.FlexoServiceManager;
+import org.openflexo.foundation.fml.FMLBindingFactory;
+import org.openflexo.foundation.fml.FMLModelFactory;
 import org.openflexo.foundation.fml.cli.command.AbstractCommand;
 import org.openflexo.foundation.fml.cli.command.AbstractCommand.CommandTokenType;
 import org.openflexo.foundation.fml.cli.command.DeclareCommand;
@@ -62,6 +63,7 @@ import org.openflexo.foundation.resource.ResourceData;
 import org.openflexo.foundation.resource.ResourceManager;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterService;
+import org.openflexo.pamela.exceptions.ModelDefinitionException;
 import org.openflexo.toolbox.PropertyChangedSupportDefaultImplementation;
 
 /**
@@ -86,7 +88,10 @@ public abstract class AbstractCommandInterpreter extends PropertyChangedSupportD
 	private BindingVariable focusedBindingVariable;
 	private List<BindingVariable> containedBindingVariables;
 
-	private JavaBindingFactory JAVA_BINDING_FACTORY = new JavaBindingFactory();
+	private FMLModelFactory fmlModelFactory;
+	private FMLBindingFactory bindingFactory; // = new FMLBindingFactory();
+
+	private List<AbstractCommand> history;
 
 	/**
 	 * Create a new command interpreter attached to the passed in streams.
@@ -97,6 +102,15 @@ public abstract class AbstractCommandInterpreter extends PropertyChangedSupportD
 			throws IOException {
 
 		this.serviceManager = serviceManager;
+
+		history = new ArrayList<>();
+
+		try {
+			// TODO: dynamically update when loaded TA
+			fmlModelFactory = new FMLModelFactory(null, serviceManager);
+		} catch (ModelDefinitionException e) {
+			e.printStackTrace();
+		}
 
 		focusedObjects = new Stack<>();
 		containedBindingVariables = new ArrayList<>();
@@ -128,8 +142,12 @@ public abstract class AbstractCommandInterpreter extends PropertyChangedSupportD
 		declareVariable("rcService", FlexoResourceCenterService.class, serviceManager.getResourceCenterService());
 	}
 
+	public FMLModelFactory getModelFactory() {
+		return fmlModelFactory;
+	}
+
 	protected String getWelcomeMessage() {
-		return "FML command-line interpreter, (c) 2019 Openflexo.\n" + "Ready";
+		return "FML command-line interpreter, (c) 2021 Openflexo.\n" + "Ready";
 	}
 
 	public PrintStream getOutStream() {
@@ -518,23 +536,23 @@ public abstract class AbstractCommandInterpreter extends PropertyChangedSupportD
 				}
 				return returned;
 			case RC:
-				if (utileToken.startsWith("[")) {
-					utileToken = utileToken.substring(1);
+				if (utileToken.startsWith("[\"")) {
+					utileToken = utileToken.substring(2);
 				}
 				for (FlexoResourceCenter<?> rc : serviceManager.getResourceCenterService().getResourceCenters()) {
 					if (rc.getDefaultBaseURI().startsWith(utileToken)) {
-						returned.add("[" + rc.getDefaultBaseURI() + "]");
+						returned.add("[\"" + rc.getDefaultBaseURI() + "\"]");
 					}
 				}
 				return returned;
 			case Resource:
-				if (utileToken.startsWith("[")) {
-					utileToken = utileToken.substring(1);
+				if (utileToken.startsWith("[\"")) {
+					utileToken = utileToken.substring(2);
 				}
 				for (FlexoResourceCenter<?> rc : serviceManager.getResourceCenterService().getResourceCenters()) {
 					for (FlexoResource<?> r : rc.getAllResources()) {
 						if (r.getURI().startsWith(utileToken)) {
-							returned.add("[" + r.getURI() + "]");
+							returned.add("[\"" + r.getURI() + "\"]");
 						}
 					}
 				}
@@ -551,7 +569,7 @@ public abstract class AbstractCommandInterpreter extends PropertyChangedSupportD
 		if (getFocusedObject() instanceof FlexoConceptInstance) {
 			return ((FlexoConceptInstance) getFocusedObject()).getBindingFactory();
 		}
-		return JAVA_BINDING_FACTORY;
+		return bindingFactory;
 	}
 
 	@Override
@@ -672,5 +690,13 @@ public abstract class AbstractCommandInterpreter extends PropertyChangedSupportD
 		System.out.println("Stopping CommandInterpreter");
 	}
 
+	public List<AbstractCommand> getHistory() {
+		return history;
+	}
+
 	public abstract void displayHistory();
+
+	public void willExecute(AbstractCommand command) {
+		history.add(command);
+	}
 }

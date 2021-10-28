@@ -44,7 +44,7 @@ import java.util.logging.Logger;
 import org.openflexo.foundation.fml.cli.CommandSemanticsAnalyzer;
 import org.openflexo.foundation.fml.cli.command.Directive;
 import org.openflexo.foundation.fml.cli.command.DirectiveDeclaration;
-import org.openflexo.foundation.fml.cli.parser.node.APwdDirective;
+import org.openflexo.foundation.fml.parser.node.APwdDirective;
 
 /**
  * Represents #pwd directive in FML command-line interpreter
@@ -65,7 +65,13 @@ public class PwdDirective extends Directive {
 	}
 
 	@Override
+	public String toString() {
+		return "pwd";
+	}
+
+	@Override
 	public void execute() {
+		super.execute();
 		getOutStream().println(getCommandInterpreter().getWorkingDirectory().getAbsolutePath());
 	}
 }

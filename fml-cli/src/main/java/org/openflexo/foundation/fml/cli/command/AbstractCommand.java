@@ -44,7 +44,7 @@ import java.util.logging.Logger;
 
 import org.openflexo.foundation.fml.cli.AbstractCommandInterpreter;
 import org.openflexo.foundation.fml.cli.CommandSemanticsAnalyzer;
-import org.openflexo.foundation.fml.cli.parser.node.Node;
+import org.openflexo.foundation.fml.parser.node.Node;
 
 /**
  * Represents a command in FML command-line interpreter
@@ -69,6 +69,9 @@ public abstract class AbstractCommand {
 		return node;
 	}
 
+	@Override
+	public abstract String toString();
+
 	public CommandSemanticsAnalyzer getCommandSemanticsAnalyzer() {
 		return commandSemanticsAnalyzer;
 	}
@@ -88,7 +91,9 @@ public abstract class AbstractCommand {
 	/**
 	 * Execute this {@link AbstractCommand}
 	 */
-	public abstract void execute();
+	public void execute() {
+		getCommandInterpreter().willExecute(this);
+	}
 
 	/**
 	 * Return boolean indicating if this {@link AbstractCommand} is valid relatively to semantics analysis

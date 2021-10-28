@@ -44,9 +44,10 @@ import java.io.StringReader;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.fml.cli.command.AbstractCommand;
-import org.openflexo.foundation.fml.cli.parser.lexer.Lexer;
-import org.openflexo.foundation.fml.cli.parser.node.Start;
-import org.openflexo.foundation.fml.cli.parser.parser.Parser;
+import org.openflexo.foundation.fml.parser.lexer.CustomLexer;
+import org.openflexo.foundation.fml.parser.lexer.CustomLexer.EntryPointKind;
+import org.openflexo.foundation.fml.parser.node.Start;
+import org.openflexo.foundation.fml.parser.parser.Parser;
 
 /**
  * This class provides the parsing service for Connie expressions and bindings. This includes syntactic and semantics analyzer.<br>
@@ -74,14 +75,14 @@ public class CommandParser {
 			// System.out.println("Parsing: " + anExpression);
 
 			// Create a Parser instance.
-			Parser p = new Parser(new Lexer(new PushbackReader(new StringReader(aCommand))));
+			Parser p = new Parser(new CustomLexer(new PushbackReader(new StringReader(aCommand)), EntryPointKind.Command));
 
 			// Parse the input.
 			Start tree = p.parse();
 
 			// Apply the semantics analyzer.
 			if (commandInterpreter != null) {
-				CommandSemanticsAnalyzer t = new CommandSemanticsAnalyzer(commandInterpreter);
+				CommandSemanticsAnalyzer t = new CommandSemanticsAnalyzer(commandInterpreter, tree);
 				tree.apply(t);
 				return t.getCommand();
 			}
@@ -90,7 +91,7 @@ public class CommandParser {
 			}
 
 		} catch (Exception e) {
-			// e.printStackTrace();
+			e.printStackTrace();
 			throw new ParseException(e.getMessage() + " while parsing " + aCommand);
 		}
 	}

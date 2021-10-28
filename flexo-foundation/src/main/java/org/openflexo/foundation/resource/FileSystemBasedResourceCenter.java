@@ -62,8 +62,8 @@ import java.util.logging.Logger;
 
 import org.openflexo.foundation.FlexoProject;
 import org.openflexo.foundation.FlexoServiceManager;
-import org.openflexo.foundation.fml.FMLTechnologyAdapter;
 import org.openflexo.foundation.fml.CompilationUnitRepository;
+import org.openflexo.foundation.fml.FMLTechnologyAdapter;
 import org.openflexo.foundation.fml.rt.FMLRTTechnologyAdapter;
 import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstanceRepository;
 import org.openflexo.foundation.project.FlexoProjectResource;
@@ -1168,6 +1168,12 @@ public interface FileSystemBasedResourceCenter extends FlexoResourceCenter<File>
 				e.printStackTrace();
 				return null;
 			}
+		}
+
+		@Override
+		public String getDisplayableStatus() {
+			return "[uri=\"" + getDefaultBaseURI() + "\" dir=\"" + getRootDirectory().getAbsolutePath() + "\"] with "
+					+ getAllResources().size() + " resources";
 		}
 
 	}

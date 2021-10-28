@@ -41,7 +41,7 @@ package org.openflexo.foundation.fml.cli.command;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Type;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -52,6 +52,7 @@ import org.openflexo.connie.DataBinding.BindingDefinitionType;
 import org.openflexo.connie.exception.NullReferenceException;
 import org.openflexo.connie.exception.TypeMismatchException;
 import org.openflexo.foundation.FlexoException;
+import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.fml.cli.CommandSemanticsAnalyzer;
 import org.openflexo.foundation.fml.cli.command.directive.ActivateTA;
 import org.openflexo.foundation.fml.cli.command.directive.CdDirective;
@@ -68,25 +69,53 @@ import org.openflexo.foundation.fml.cli.command.directive.QuitDirective;
 import org.openflexo.foundation.fml.cli.command.directive.ResourcesDirective;
 import org.openflexo.foundation.fml.cli.command.directive.ServiceDirective;
 import org.openflexo.foundation.fml.cli.command.directive.ServicesDirective;
-import org.openflexo.foundation.fml.cli.parser.node.ABindingPath;
-import org.openflexo.foundation.fml.cli.parser.node.ACall;
-import org.openflexo.foundation.fml.cli.parser.node.ACallBinding;
-import org.openflexo.foundation.fml.cli.parser.node.ADotPath;
-import org.openflexo.foundation.fml.cli.parser.node.ADotPathPath;
-import org.openflexo.foundation.fml.cli.parser.node.ADoubleDotPath;
-import org.openflexo.foundation.fml.cli.parser.node.ADoubleDotPathPath;
-import org.openflexo.foundation.fml.cli.parser.node.AEmptyListArgList;
-import org.openflexo.foundation.fml.cli.parser.node.AIdentifierBinding;
-import org.openflexo.foundation.fml.cli.parser.node.ANonEmptyListArgList;
-import org.openflexo.foundation.fml.cli.parser.node.APathPath;
-import org.openflexo.foundation.fml.cli.parser.node.ATail1Binding;
-import org.openflexo.foundation.fml.cli.parser.node.ATail2Binding;
-import org.openflexo.foundation.fml.cli.parser.node.Node;
-import org.openflexo.foundation.fml.cli.parser.node.PAdditionalArg;
-import org.openflexo.foundation.fml.cli.parser.node.PBinding;
-import org.openflexo.foundation.fml.cli.parser.node.PCall;
-import org.openflexo.foundation.fml.cli.parser.node.PExpr;
-import org.openflexo.foundation.fml.cli.parser.node.PPath;
+import org.openflexo.foundation.fml.parser.ExpressionFactory;
+import org.openflexo.foundation.fml.parser.node.ABindingPath;
+import org.openflexo.foundation.fml.parser.node.ACharacterLiteral;
+import org.openflexo.foundation.fml.parser.node.AConcatenedSimplePath;
+import org.openflexo.foundation.fml.parser.node.ADirectoryPathDirectiveArgument;
+import org.openflexo.foundation.fml.parser.node.ADotPath;
+import org.openflexo.foundation.fml.parser.node.ADotPathPath;
+import org.openflexo.foundation.fml.parser.node.ADotSimplePathPrefix;
+import org.openflexo.foundation.fml.parser.node.ADoubleDotPath;
+import org.openflexo.foundation.fml.parser.node.ADoubleDotPathPath;
+import org.openflexo.foundation.fml.parser.node.AExpressionDirectiveArgument;
+import org.openflexo.foundation.fml.parser.node.AFalseLiteral;
+import org.openflexo.foundation.fml.parser.node.AFilePathDirectiveArgument;
+import org.openflexo.foundation.fml.parser.node.AFloatingPointLiteral;
+import org.openflexo.foundation.fml.parser.node.AIntegerLiteral;
+import org.openflexo.foundation.fml.parser.node.ALiteralSimplePathTerminal;
+import org.openflexo.foundation.fml.parser.node.ALitteralUriExpressionPrimary;
+import org.openflexo.foundation.fml.parser.node.ALowerIdentifier;
+import org.openflexo.foundation.fml.parser.node.AMinusSimplePathPrefix;
+import org.openflexo.foundation.fml.parser.node.AMinusdSimplePathPrefix;
+import org.openflexo.foundation.fml.parser.node.AMinusfSimplePathPrefix;
+import org.openflexo.foundation.fml.parser.node.AMinusrSimplePathPrefix;
+import org.openflexo.foundation.fml.parser.node.ANullLiteral;
+import org.openflexo.foundation.fml.parser.node.AObjectInResourceReferenceByUri;
+import org.openflexo.foundation.fml.parser.node.APathPath;
+import org.openflexo.foundation.fml.parser.node.APlainSimplePath;
+import org.openflexo.foundation.fml.parser.node.APlainSimplePathTerminal;
+import org.openflexo.foundation.fml.parser.node.APrefixedSimplePath;
+import org.openflexo.foundation.fml.parser.node.APrimaryUriExpression;
+import org.openflexo.foundation.fml.parser.node.AResourceReferenceByUri;
+import org.openflexo.foundation.fml.parser.node.AResourcesSimplePathTerminal;
+import org.openflexo.foundation.fml.parser.node.ARootPathPath;
+import org.openflexo.foundation.fml.parser.node.AStringLiteral;
+import org.openflexo.foundation.fml.parser.node.ATrueLiteral;
+import org.openflexo.foundation.fml.parser.node.AUpperIdentifier;
+import org.openflexo.foundation.fml.parser.node.Node;
+import org.openflexo.foundation.fml.parser.node.PDirectiveArgument;
+import org.openflexo.foundation.fml.parser.node.PExpression;
+import org.openflexo.foundation.fml.parser.node.PIdentifier;
+import org.openflexo.foundation.fml.parser.node.PLiteral;
+import org.openflexo.foundation.fml.parser.node.PPath;
+import org.openflexo.foundation.fml.parser.node.PReferenceByUri;
+import org.openflexo.foundation.fml.parser.node.PSimplePath;
+import org.openflexo.foundation.fml.parser.node.PSimplePathPrefix;
+import org.openflexo.foundation.fml.parser.node.PSimplePathTerminal;
+import org.openflexo.foundation.fml.parser.node.PUriExpression;
+import org.openflexo.foundation.fml.parser.node.PUriExpressionPrimary;
 import org.openflexo.foundation.fml.rm.CompilationUnitResourceFactory;
 import org.openflexo.foundation.fml.rt.rm.FMLRTVirtualModelInstanceResourceFactory;
 import org.openflexo.foundation.project.FlexoProjectResourceFactory;
@@ -126,47 +155,6 @@ public abstract class Directive extends AbstractCommand {
 		}
 		return null;
 	}*/
-
-	protected String retrievePath(PPath path) {
-		System.out.println("On recherche un path avec " + path + " of " + path.getClass());
-		if (path instanceof ADoubleDotPath) {
-			return "..";
-		}
-		else if (path instanceof ADoubleDotPathPath) {
-			return ".." + File.separator + retrievePath(((ADoubleDotPathPath) path).getPath());
-		}
-		else if (path instanceof ADotPath) {
-			return ".";
-		}
-		else if (path instanceof ADotPathPath) {
-			return "." + File.separator + retrievePath(((ADotPathPath) path).getPath());
-		}
-		else if (path instanceof ABindingPath) {
-			return retrievePathFromBinding(((ABindingPath) path).getBinding());
-		}
-		else if (path instanceof APathPath) {
-			return retrievePathFromBinding(((APathPath) path).getBinding()) + File.separator + retrievePath(((APathPath) path).getPath());
-		}
-		return null;
-	}
-
-	private String retrievePathFromBinding(PBinding binding) {
-		/*if (binding instanceof AIdentifierBinding) {
-			return ((AIdentifierBinding) binding).getIdentifier().getText();
-		}
-		else if (binding instanceof ACallBinding) {
-			return retrievePathFromCall((ACall) ((ACallBinding) binding).getCall());
-		}
-		else if (binding instanceof ATail1Binding) {
-		
-		}
-		else if (binding instanceof ATail2Binding) {
-		
-		}
-		logger.warning("Unexpected: " + binding);
-		return null;*/
-		return getText(binding);
-	}
 
 	@Override
 	public boolean isValid() {
@@ -214,17 +202,35 @@ public abstract class Directive extends AbstractCommand {
 		return null;
 	}
 
-	protected FlexoResource<?> getResource(String resourceURI) {
-		if (resourceURI.startsWith("[")) {
-			resourceURI = resourceURI.substring(1);
-		}
-		if (resourceURI.endsWith("]")) {
-			resourceURI = resourceURI.substring(0, resourceURI.length() - 1);
-		}
-		return getCommandInterpreter().getServiceManager().getResourceManager().getResource(resourceURI);
+	private String getText(PExpression e) {
+		// TODO
+		logger.warning("Faire mieux que ca !");
+		return e.toString();
 	}
 
-	protected Object evaluate(PBinding value, CommandTokenType tokenType) {
+	@Deprecated
+	protected Object evaluateArgument(PDirectiveArgument value, CommandTokenType tokenType) {
+		if (value instanceof AExpressionDirectiveArgument) {
+			return evaluate(((AExpressionDirectiveArgument) value).getExpression(), tokenType);
+		}
+		else if (value instanceof ADirectoryPathDirectiveArgument) {
+			if (tokenType == CommandTokenType.Path) {
+				String pathAsString = retrievePath(((ADirectoryPathDirectiveArgument) value).getPath());
+				return new File(pathAsString);
+			}
+		}
+		else if (value instanceof AFilePathDirectiveArgument) {
+			if (tokenType == CommandTokenType.Path) {
+				String pathAsString = retrievePath(((AFilePathDirectiveArgument) value).getPath());
+				return new File(pathAsString);
+			}
+		}
+		getErrStream().println("Unexpected " + value + " in evaluateArgument() for tokenType=" + tokenType);
+		return null;
+	}
+
+	@Deprecated
+	protected Object evaluate(PExpression value, CommandTokenType tokenType) {
 
 		switch (tokenType) {
 			case Expression:
@@ -236,7 +242,7 @@ public abstract class Directive extends AbstractCommand {
 				System.out.println("Valide: " + toEvaluate.isValid());
 				try {
 					return toEvaluate.getBindingValue(getCommandInterpreter());
-				} catch (TypeMismatchException | NullReferenceException | InvocationTargetException e1) {
+				} catch (TypeMismatchException | NullReferenceException | ReflectiveOperationException e1) {
 					getErrStream().println("Error evaluating " + toEvaluate);
 					e1.printStackTrace();
 					return null;
@@ -305,55 +311,230 @@ public abstract class Directive extends AbstractCommand {
 		}
 		return pDirectiveOption.toString();*/
 
-		System.out.println("On retourne rien");
 		return null;
 	}
 
-	public String getText(PBinding binding) {
-		if (binding instanceof AIdentifierBinding) {
-			return ((AIdentifierBinding) binding).getIdentifier().getText();
+	protected String retrievePath(PPath path) {
+		if (path instanceof ADoubleDotPath) {
+			return "..";
 		}
-		else if (binding instanceof ACallBinding) {
-			return getText(((ACallBinding) binding).getCall());
+		else if (path instanceof ADoubleDotPathPath) {
+			return ".." + File.separator + retrievePath(((ADoubleDotPathPath) path).getPath());
 		}
-		else if (binding instanceof ATail1Binding) {
-			return ((ATail1Binding) binding).getIdentifier().getText() + "." + getText(((ATail1Binding) binding).getBinding());
+		else if (path instanceof ADotPath) {
+			return ".";
 		}
-		else if (binding instanceof ATail2Binding) {
-			return getText(((ATail2Binding) binding).getCall()) + "." + getText(((ATail2Binding) binding).getBinding());
+		else if (path instanceof ADotPathPath) {
+			return "." + File.separator + retrievePath(((ADotPathPath) path).getPath());
+		}
+		else if (path instanceof ABindingPath) {
+			return getText(((ABindingPath) path).getSimplePath());
+		}
+		else if (path instanceof APathPath) {
+			return getText(((APathPath) path).getSimplePath()) + File.separator + retrievePath(((APathPath) path).getPath());
+		}
+		else if (path instanceof ARootPathPath) {
+			return File.separator + retrievePath(((ARootPathPath) path).getPath());
 		}
 		return null;
 	}
 
-	public String getText(PCall call) {
-
-		if (call instanceof ACall) {
-			if (((ACall) call).getArgList() instanceof AEmptyListArgList) {
-				return ((ACall) call).getIdentifier().getText() + "()";
-			}
-			if (((ACall) call).getArgList() instanceof ANonEmptyListArgList) {
-				ANonEmptyListArgList l = (ANonEmptyListArgList) ((ACall) call).getArgList();
-				StringBuffer sb = new StringBuffer();
-				sb.append(((ACall) call).getIdentifier().getText() + "(");
-				sb.append(getText(l.getExpr()));
-				for (PAdditionalArg pAdditionalArg : l.getAdditionalArgs()) {
-					sb.append("," + pAdditionalArg);
-				}
-				sb.append(")");
-				return sb.toString();
-			}
+	private String getText(PSimplePathPrefix aSimplePathPrefix) {
+		if (aSimplePathPrefix instanceof ADotSimplePathPrefix) {
+			return getText(((ADotSimplePathPrefix) aSimplePathPrefix).getSimplePathTerminal()) + ".";
 		}
-		logger.warning("Unexpected: " + call);
+		else if (aSimplePathPrefix instanceof AMinusSimplePathPrefix) {
+			return getText(((AMinusSimplePathPrefix) aSimplePathPrefix).getSimplePathTerminal()) + "-";
+		}
+		else if (aSimplePathPrefix instanceof AMinusdSimplePathPrefix) {
+			return getText(((AMinusdSimplePathPrefix) aSimplePathPrefix).getSimplePathTerminal()) + "-d";
+		}
+		else if (aSimplePathPrefix instanceof AMinusfSimplePathPrefix) {
+			return getText(((AMinusfSimplePathPrefix) aSimplePathPrefix).getSimplePathTerminal()) + "-f";
+		}
+		else if (aSimplePathPrefix instanceof AMinusrSimplePathPrefix) {
+			return getText(((AMinusrSimplePathPrefix) aSimplePathPrefix).getSimplePathTerminal()) + "-r";
+		}
 		return null;
 	}
 
-	public String getText(PExpr expr) {
-		logger.warning("Not implemented: getText(PExpr)");
-		return expr.toString();
+	private String getText(PSimplePath aSimplePath) {
+		if (aSimplePath instanceof APlainSimplePath) {
+			return getText(((APlainSimplePath) aSimplePath).getSimplePathTerminal());
+		}
+		else if (aSimplePath instanceof AConcatenedSimplePath) {
+			return getText(((AConcatenedSimplePath) aSimplePath).getSimplePathTerminal())
+					+ getText(((AConcatenedSimplePath) aSimplePath).getSimplePath());
+		}
+		else if (aSimplePath instanceof APrefixedSimplePath) {
+			return getText(((APrefixedSimplePath) aSimplePath).getPrefix()) + getText(((APrefixedSimplePath) aSimplePath).getSimplePath());
+		}
+		return null;
 	}
 
-	public String getText(PAdditionalArg arg) {
-		logger.warning("Not implemented: getText(PAdditionalArg)");
-		return arg.toString();
+	private String getText(PSimplePathTerminal aSimplePath) {
+		if (aSimplePath instanceof APlainSimplePathTerminal) {
+			return getText(((APlainSimplePathTerminal) aSimplePath).getIdentifier());
+		}
+		else if (aSimplePath instanceof ALiteralSimplePathTerminal) {
+			return getText(((ALiteralSimplePathTerminal) aSimplePath).getLiteral());
+		}
+		else if (aSimplePath instanceof AResourcesSimplePathTerminal) {
+			return ((AResourcesSimplePathTerminal) aSimplePath).getResources().getText();
+		}
+		return null;
 	}
+
+	protected String getText(PIdentifier identifier) {
+		if (identifier instanceof ALowerIdentifier) {
+			return ((ALowerIdentifier) identifier).getLidentifier().getText();
+		}
+		else if (identifier instanceof AUpperIdentifier) {
+			return ((AUpperIdentifier) identifier).getUidentifier().getText();
+		}
+		return null;
+	}
+
+	private String getText(PLiteral literal) {
+		if (literal instanceof AIntegerLiteral) {
+			return ((AIntegerLiteral) literal).getLitInteger().getText();
+		}
+		else if (literal instanceof AFloatingPointLiteral) {
+			return ((AFloatingPointLiteral) literal).getLitFloat().getText();
+		}
+		else if (literal instanceof ACharacterLiteral) {
+			return ((ACharacterLiteral) literal).getLitCharacter().getText();
+		}
+		else if (literal instanceof AFalseLiteral) {
+			return ((AFalseLiteral) literal).getLitFalse().getText();
+		}
+		else if (literal instanceof ATrueLiteral) {
+			return ((ATrueLiteral) literal).getLitTrue().getText();
+		}
+		else if (literal instanceof ANullLiteral) {
+			return ((ANullLiteral) literal).getLitNull().getText();
+		}
+		else if (literal instanceof AStringLiteral) {
+			return ((AStringLiteral) literal).getLitString().getText();
+		}
+		return null;
+	}
+
+	protected FlexoObject retrieveObjectOrResource(PReferenceByUri pRefURI) {
+
+		if (pRefURI instanceof AResourceReferenceByUri) {
+			return retrieveResource(((AResourceReferenceByUri) pRefURI).getResource());
+		}
+		else if (pRefURI instanceof AObjectInResourceReferenceByUri) {
+			return retrieveObject(((AObjectInResourceReferenceByUri) pRefURI).getResource(),
+					((AObjectInResourceReferenceByUri) pRefURI).getObject());
+		}
+		return null;
+	}
+
+	protected FlexoResource<?> retrieveResource(PReferenceByUri pRefURI) {
+
+		if (pRefURI instanceof AResourceReferenceByUri) {
+			return retrieveResource(((AResourceReferenceByUri) pRefURI).getResource());
+		}
+		logger.warning("Unexpected " + pRefURI);
+		return null;
+	}
+
+	protected FlexoResourceCenter<?> retrieveResourceCenter(PReferenceByUri pRefURI) {
+
+		if (pRefURI instanceof AResourceReferenceByUri) {
+			return retrieveResourceCenter(((AResourceReferenceByUri) pRefURI).getResource());
+		}
+		logger.warning("Unexpected " + pRefURI);
+		return null;
+	}
+
+	protected FlexoObject retrieveObject(PReferenceByUri pRefURI) {
+
+		if (pRefURI instanceof AObjectInResourceReferenceByUri) {
+			return retrieveObject(((AObjectInResourceReferenceByUri) pRefURI).getResource(),
+					((AObjectInResourceReferenceByUri) pRefURI).getObject());
+		}
+		return null;
+	}
+
+	protected FlexoObject retrieveObject(PUriExpression resourceURIExpression, PUriExpression objectURIExpression) {
+		FlexoResource<?> resource = retrieveResource(resourceURIExpression);
+		logger.warning("On cherche un objet dans la resource avec l'uri " + objectURIExpression);
+		// TODO
+		return null;
+	}
+
+	protected FlexoResource<?> retrieveResource(PUriExpression resourceURIExpression) {
+		String uri = retrieveURI(resourceURIExpression);
+		return retrieveResource(uri);
+	}
+
+	protected FlexoResourceCenter<?> retrieveResourceCenter(PUriExpression resourceURIExpression) {
+		String uri = retrieveURI(resourceURIExpression);
+		return retrieveResourceCenter(uri);
+	}
+
+	protected String retrieveURI(PUriExpression uriExpression) {
+		if (uriExpression instanceof APrimaryUriExpression) {
+			return retrieveURI(((APrimaryUriExpression) uriExpression).getUriExpressionPrimary());
+		}
+		return null;
+	}
+
+	protected String retrieveURI(PUriExpressionPrimary uriExpressionPrimary) {
+		if (uriExpressionPrimary instanceof ALitteralUriExpressionPrimary) {
+			return ((ALitteralUriExpressionPrimary) uriExpressionPrimary).getLitString().getText();
+		}
+		return null;
+	}
+
+	protected FlexoResource<?> retrieveResource(String resourceURI) {
+		if (resourceURI.startsWith("[\"")) {
+			resourceURI = resourceURI.substring(2);
+		}
+		if (resourceURI.endsWith("\"]")) {
+			resourceURI = resourceURI.substring(0, resourceURI.length() - 2);
+		}
+		if (resourceURI.startsWith("\"")) {
+			resourceURI = resourceURI.substring(1);
+		}
+		if (resourceURI.endsWith("\"")) {
+			resourceURI = resourceURI.substring(0, resourceURI.length() - 1);
+		}
+		return getCommandInterpreter().getServiceManager().getResourceManager().getResource(resourceURI);
+	}
+
+	protected FlexoResourceCenter<?> retrieveResourceCenter(String rcURI) {
+		if (rcURI.startsWith("[\"")) {
+			rcURI = rcURI.substring(2);
+		}
+		if (rcURI.endsWith("\"]")) {
+			rcURI = rcURI.substring(0, rcURI.length() - 2);
+		}
+		if (rcURI.startsWith("\"")) {
+			rcURI = rcURI.substring(1);
+		}
+		if (rcURI.endsWith("\"")) {
+			rcURI = rcURI.substring(0, rcURI.length() - 1);
+		}
+		return getCommandInterpreter().getServiceManager().getResourceCenterService().getFlexoResourceCenter(rcURI);
+	}
+
+	protected DataBinding<?> retrieveExpression(PExpression expression) {
+		return retrieveExpression(expression, Object.class, BindingDefinitionType.GET);
+	}
+
+	protected DataBinding<?> retrieveExpression(PExpression expression, Type type, BindingDefinitionType bdType) {
+
+		/*DataBinding<?> returned = new DataBinding<>(getText(value), getCommandInterpreter(), Object.class,
+				BindingDefinitionType.GET);
+		return returned;*/
+
+		DataBinding<Object> returned = ExpressionFactory.makeDataBinding(expression, getCommandInterpreter(), bdType, type,
+				getCommandSemanticsAnalyzer().getTypingSpace(), getCommandSemanticsAnalyzer().getFactory());
+		return returned;
+	}
+
 }
