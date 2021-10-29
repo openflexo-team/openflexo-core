@@ -64,8 +64,8 @@ public class AssignationActionNode extends AssignableActionNode<AAssignmentState
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(AssignationActionNode.class.getPackage().getName());
 
-	public AssignationActionNode(AAssignmentStatementExpression astNode, FMLCompilationUnitSemanticsAnalyzer analyser) {
-		super(astNode, analyser);
+	public AssignationActionNode(AAssignmentStatementExpression astNode, FMLCompilationUnitSemanticsAnalyzer analyzer) {
+		super(astNode, analyzer);
 
 		if (getSemiFragment() != null) {
 			setEndPosition(getSemiFragment().getEndPosition());
@@ -73,8 +73,8 @@ public class AssignationActionNode extends AssignableActionNode<AAssignmentState
 
 	}
 
-	public AssignationActionNode(AssignationAction<?> action, FMLCompilationUnitSemanticsAnalyzer analyser) {
-		super(action, analyser);
+	public AssignationActionNode(AssignationAction<?> action, FMLCompilationUnitSemanticsAnalyzer analyzer) {
+		super(action, analyzer);
 	}
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
@@ -87,7 +87,7 @@ public class AssignationActionNode extends AssignableActionNode<AAssignmentState
 		returned.setAssignation((DataBinding) extractLeft(returned));
 
 		// Right
-		ControlGraphNode<?, ?> assignableActionNode = ControlGraphFactory.makeControlGraphNode(astNode.getRight(), getAnalyser());
+		ControlGraphNode<?, ?> assignableActionNode = ControlGraphFactory.makeControlGraphNode(astNode.getRight(), getSemanticsAnalyzer());
 		if (assignableActionNode != null) {
 			if (assignableActionNode.getModelObject() instanceof AssignableAction) {
 				returned.setAssignableAction((AssignableAction) assignableActionNode.getModelObject());
@@ -131,12 +131,12 @@ public class AssignationActionNode extends AssignableActionNode<AAssignmentState
 		if (getLefthandSide() instanceof AFieldLeftHandSide) {
 			// return makeBinding((AFieldLeftHandSide) getLefthandSide(), bindable);
 			return ExpressionFactory.makeDataBinding((AFieldLeftHandSide) getLefthandSide(), bindable, BindingDefinitionType.SET,
-					Object.class, getAnalyser(), this);
+					Object.class, getSemanticsAnalyzer(), this);
 		}
 		else if (getLefthandSide() instanceof AIdentifierLeftHandSide) {
 			// return makeBinding(((AIdentifierLeftHandSide) getLefthandSide()).getCompositeIdent(), bindable);
 			return ExpressionFactory.makeDataBinding(((AIdentifierLeftHandSide) getLefthandSide()), bindable, BindingDefinitionType.SET,
-					Object.class, getAnalyser(), this);
+					Object.class, getSemanticsAnalyzer(), this);
 		}
 		return null;
 	}

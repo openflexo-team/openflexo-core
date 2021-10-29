@@ -56,8 +56,8 @@ public class SequenceNode extends ControlGraphNode<Node, Sequence> {
 	private static final Logger logger = Logger.getLogger(SequenceNode.class.getPackage().getName());
 
 	public SequenceNode(Node astNode, ControlGraphNode<?, ?> relativeStart, ControlGraphNode<?, ?> relativeEnd,
-			FMLCompilationUnitSemanticsAnalyzer analyser) {
-		super(astNode, analyser);
+			FMLCompilationUnitSemanticsAnalyzer analyzer) {
+		super(astNode, analyzer);
 		if (relativeStart != null) {
 			setStartPosition(relativeStart.getStartPosition());
 		}
@@ -66,8 +66,8 @@ public class SequenceNode extends ControlGraphNode<Node, Sequence> {
 		}
 	}
 
-	public SequenceNode(Sequence sequence, FMLCompilationUnitSemanticsAnalyzer analyser) {
-		super(sequence, analyser);
+	public SequenceNode(Sequence sequence, FMLCompilationUnitSemanticsAnalyzer analyzer) {
+		super(sequence, analyzer);
 	}
 
 	@Override

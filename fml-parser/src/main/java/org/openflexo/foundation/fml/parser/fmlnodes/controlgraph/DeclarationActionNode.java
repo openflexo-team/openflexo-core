@@ -60,12 +60,12 @@ public class DeclarationActionNode extends AssignableActionNode<AVariableDeclara
 
 	private static final Logger logger = Logger.getLogger(DeclarationActionNode.class.getPackage().getName());
 
-	public DeclarationActionNode(AVariableDeclarationBlockStatement astNode, FMLCompilationUnitSemanticsAnalyzer analyser) {
-		super(astNode, analyser);
+	public DeclarationActionNode(AVariableDeclarationBlockStatement astNode, FMLCompilationUnitSemanticsAnalyzer analyzer) {
+		super(astNode, analyzer);
 	}
 
-	public DeclarationActionNode(DeclarationAction<?> action, FMLCompilationUnitSemanticsAnalyzer analyser) {
-		super(action, analyser);
+	public DeclarationActionNode(DeclarationAction<?> action, FMLCompilationUnitSemanticsAnalyzer analyzer) {
+		super(action, analyzer);
 	}
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
@@ -75,12 +75,12 @@ public class DeclarationActionNode extends AssignableActionNode<AVariableDeclara
 		// System.out.println(">>>>>> Declaration " + astNode);
 
 		returned.setVariableName(getName(astNode.getVariableDeclarator()).getText());
-		returned.setDeclaredType(TypeFactory.makeType(astNode.getType(), getAnalyser().getTypingSpace()));
+		returned.setDeclaredType(TypeFactory.makeType(astNode.getType(), getSemanticsAnalyzer().getTypingSpace()));
 
 		if (astNode.getVariableDeclarator() instanceof AInitializerVariableDeclarator) {
 
 			ControlGraphNode<?, ?> assignableActionNode = ControlGraphFactory.makeControlGraphNode(
-					((AInitializerVariableDeclarator) astNode.getVariableDeclarator()).getExpression(), getAnalyser());
+					((AInitializerVariableDeclarator) astNode.getVariableDeclarator()).getExpression(), getSemanticsAnalyzer());
 
 			if (assignableActionNode != null) {
 				if (assignableActionNode.getModelObject() instanceof AssignableAction) {

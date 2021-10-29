@@ -53,17 +53,17 @@ import org.openflexo.foundation.fml.parser.node.AClassMethodMethodInvocation;
 public class StaticMethodCallBindingPathElementNode
 		extends AbstractCallBindingPathElementNode<AClassMethodMethodInvocation, StaticMethodPathElement<?>> {
 
-	public StaticMethodCallBindingPathElementNode(AClassMethodMethodInvocation astNode, FMLSemanticsAnalyzer analyser, Bindable bindable) {
-		super(astNode, analyser, bindable);
+	public StaticMethodCallBindingPathElementNode(AClassMethodMethodInvocation astNode, FMLSemanticsAnalyzer analyzer, Bindable bindable) {
+		super(astNode, analyzer, bindable);
 		setReadyToBuildModelObject(true);
 		// buildModelObjectFromAST() was already called, but too early (parent not yet set)
 		// we do it again
 		modelObject = buildModelObjectFromAST(astNode);
 	}
 
-	public StaticMethodCallBindingPathElementNode(StaticMethodPathElement<?> bindingPathElement, FMLSemanticsAnalyzer analyser,
+	public StaticMethodCallBindingPathElementNode(StaticMethodPathElement<?> bindingPathElement, FMLSemanticsAnalyzer analyzer,
 			Bindable bindable) {
-		super(bindingPathElement, analyser, bindable);
+		super(bindingPathElement, analyzer, bindable);
 	}
 
 	@Override
@@ -71,7 +71,7 @@ public class StaticMethodCallBindingPathElementNode
 
 		if (readyToBuildModelObject()) {
 			handleArguments(astNode.getArgumentList());
-			Type type = TypeFactory.makeType(getASTNode().getType(), getAnalyser().getTypingSpace());
+			Type type = TypeFactory.makeType(getASTNode().getType(), getSemanticsAnalyzer().getTypingSpace());
 
 			String methodName = astNode.getLidentifier().getText();
 			StaticMethodPathElement<?> pathElement = (StaticMethodPathElement<?>) getBindingFactory().makeStaticMethodPathElement(type,
@@ -81,7 +81,7 @@ public class StaticMethodCallBindingPathElementNode
 		return null;
 
 		/*if (getBindable() != null) {
-			Type type = TypeFactory.makeType(getASTNode().getType(), getAnalyser().getTypingSpace());
+			Type type = TypeFactory.makeType(getASTNode().getType(), getanalyzer().getTypingSpace());
 			handleArguments(astNode.getArgumentList());
 			String method = astNode.getLidentifier().getText();
 			StaticMethodCallBindingPathElement returned = new StaticMethodCallBindingPathElement(type, method, getArguments());

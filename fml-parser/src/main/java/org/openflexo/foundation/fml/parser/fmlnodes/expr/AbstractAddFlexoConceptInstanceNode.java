@@ -68,9 +68,9 @@ public abstract class AbstractAddFlexoConceptInstanceNode extends AbstractCallBi
 
 	private IBindingPathElement parent;
 
-	public AbstractAddFlexoConceptInstanceNode(ASimpleNewInstance astNode, FMLSemanticsAnalyzer analyser, IBindingPathElement parent,
+	public AbstractAddFlexoConceptInstanceNode(ASimpleNewInstance astNode, FMLSemanticsAnalyzer analyzer, IBindingPathElement parent,
 			Bindable bindable) {
-		super(astNode, analyser, bindable);
+		super(astNode, analyzer, bindable);
 		this.parent = parent;
 		setReadyToBuildModelObject(true);
 		// buildModelObjectFromAST() was already called, but too early (parent not yet set)
@@ -78,18 +78,18 @@ public abstract class AbstractAddFlexoConceptInstanceNode extends AbstractCallBi
 		modelObject = buildModelObjectFromAST(astNode);
 	}
 
-	public AbstractAddFlexoConceptInstanceNode(AFullQualifiedNewInstance astNode, FMLSemanticsAnalyzer analyser, IBindingPathElement parent,
+	public AbstractAddFlexoConceptInstanceNode(AFullQualifiedNewInstance astNode, FMLSemanticsAnalyzer analyzer, IBindingPathElement parent,
 			Bindable bindable) {
-		super(astNode, analyser, bindable);
+		super(astNode, analyzer, bindable);
 		this.parent = parent;
 		// buildModelObjectFromAST() was already called, but too early (parent not yet set)
 		// we do it again
 		modelObject = buildModelObjectFromAST(astNode);
 	}
 
-	public AbstractAddFlexoConceptInstanceNode(CreationSchemePathElement bindingPathElement, FMLSemanticsAnalyzer analyser,
+	public AbstractAddFlexoConceptInstanceNode(CreationSchemePathElement bindingPathElement, FMLSemanticsAnalyzer analyzer,
 			Bindable bindable) {
-		super(bindingPathElement, analyser, bindable);
+		super(bindingPathElement, analyzer, bindable);
 	}
 
 	public IBindingPathElement getParentPathElement() {

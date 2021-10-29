@@ -58,12 +58,12 @@ import org.openflexo.p2pp.RawSource.RawSourceFragment;
  */
 public class VirtualModelNode extends AbstractFlexoConceptNode<AModelDecl, VirtualModel> {
 
-	public VirtualModelNode(AModelDecl astNode, FMLCompilationUnitSemanticsAnalyzer analyser) {
-		super(astNode, analyser);
+	public VirtualModelNode(AModelDecl astNode, FMLCompilationUnitSemanticsAnalyzer analyzer) {
+		super(astNode, analyzer);
 	}
 
-	public VirtualModelNode(VirtualModel virtualModel, FMLCompilationUnitSemanticsAnalyzer analyser) {
-		super(virtualModel, analyser);
+	public VirtualModelNode(VirtualModel virtualModel, FMLCompilationUnitSemanticsAnalyzer analyzer) {
+		super(virtualModel, analyzer);
 	}
 
 	@Override

@@ -62,12 +62,12 @@ public class FMLInstancePropertyValueNode<M extends FMLObject, T extends FMLObje
 
 	private static final Logger logger = Logger.getLogger(FMLInstancePropertyValueNode.class.getPackage().getName());
 
-	public FMLInstancePropertyValueNode(AInstanceQualifiedArgument astNode, FMLCompilationUnitSemanticsAnalyzer analyser) {
-		super(astNode, analyser);
+	public FMLInstancePropertyValueNode(AInstanceQualifiedArgument astNode, FMLCompilationUnitSemanticsAnalyzer analyzer) {
+		super(astNode, analyzer);
 	}
 
-	public FMLInstancePropertyValueNode(FMLInstancePropertyValue<M, T> propertyValue, FMLCompilationUnitSemanticsAnalyzer analyser) {
-		super(propertyValue, analyser);
+	public FMLInstancePropertyValueNode(FMLInstancePropertyValue<M, T> propertyValue, FMLCompilationUnitSemanticsAnalyzer analyzer) {
+		super(propertyValue, analyzer);
 	}
 
 	@Override

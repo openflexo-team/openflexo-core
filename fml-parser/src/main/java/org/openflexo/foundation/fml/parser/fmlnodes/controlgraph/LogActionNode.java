@@ -58,8 +58,8 @@ public class LogActionNode extends ControlGraphNode<ALogActionFmlActionExp, LogA
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(LogActionNode.class.getPackage().getName());
 
-	public LogActionNode(ALogActionFmlActionExp astNode, FMLCompilationUnitSemanticsAnalyzer analyser) {
-		super(astNode, analyser);
+	public LogActionNode(ALogActionFmlActionExp astNode, FMLCompilationUnitSemanticsAnalyzer analyzer) {
+		super(astNode, analyzer);
 
 		if (getSemiFragment() != null) {
 			setEndPosition(getSemiFragment().getEndPosition());
@@ -67,8 +67,8 @@ public class LogActionNode extends ControlGraphNode<ALogActionFmlActionExp, LogA
 
 	}
 
-	public LogActionNode(LogAction action, FMLCompilationUnitSemanticsAnalyzer analyser) {
-		super(action, analyser);
+	public LogActionNode(LogAction action, FMLCompilationUnitSemanticsAnalyzer analyzer) {
+		super(action, analyzer);
 	}
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
@@ -77,7 +77,7 @@ public class LogActionNode extends ControlGraphNode<ALogActionFmlActionExp, LogA
 		LogAction returned = getFactory().newLogAction();
 
 		DataBinding<String> logString = ExpressionFactory.makeDataBinding(getASTNode().getExpression(), returned, BindingDefinitionType.GET,
-				String.class, getAnalyser(), this);
+				String.class, getSemanticsAnalyzer(), this);
 		// returned.setLogString(makeBinding(getASTNode().getExpression(), returned));
 		returned.setLogString(logString);
 		returned.setLogLevel(LogLevel.INFO);

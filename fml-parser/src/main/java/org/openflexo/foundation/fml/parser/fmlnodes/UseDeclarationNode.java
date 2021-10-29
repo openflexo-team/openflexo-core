@@ -51,12 +51,12 @@ import org.openflexo.p2pp.RawSource.RawSourceFragment;
  */
 public class UseDeclarationNode extends FMLObjectNode<AUseDecl, UseModelSlotDeclaration, FMLCompilationUnitSemanticsAnalyzer> {
 
-	public UseDeclarationNode(AUseDecl astNode, FMLCompilationUnitSemanticsAnalyzer analyser) {
-		super(astNode, analyser);
+	public UseDeclarationNode(AUseDecl astNode, FMLCompilationUnitSemanticsAnalyzer analyzer) {
+		super(astNode, analyzer);
 	}
 
-	public UseDeclarationNode(UseModelSlotDeclaration importDeclaration, FMLCompilationUnitSemanticsAnalyzer analyser) {
-		super(importDeclaration, analyser);
+	public UseDeclarationNode(UseModelSlotDeclaration importDeclaration, FMLCompilationUnitSemanticsAnalyzer analyzer) {
+		super(importDeclaration, analyzer);
 	}
 
 	@Override

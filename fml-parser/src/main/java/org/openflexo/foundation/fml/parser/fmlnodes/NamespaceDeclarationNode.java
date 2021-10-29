@@ -55,12 +55,12 @@ import org.openflexo.p2pp.RawSource.RawSourceFragment;
  */
 public class NamespaceDeclarationNode extends FMLObjectNode<ANamespaceDecl, NamespaceDeclaration, FMLCompilationUnitSemanticsAnalyzer> {
 
-	public NamespaceDeclarationNode(ANamespaceDecl astNode, FMLCompilationUnitSemanticsAnalyzer analyser) {
-		super(astNode, analyser);
+	public NamespaceDeclarationNode(ANamespaceDecl astNode, FMLCompilationUnitSemanticsAnalyzer analyzer) {
+		super(astNode, analyzer);
 	}
 
-	public NamespaceDeclarationNode(NamespaceDeclaration importDeclaration, FMLCompilationUnitSemanticsAnalyzer analyser) {
-		super(importDeclaration, analyser);
+	public NamespaceDeclarationNode(NamespaceDeclaration importDeclaration, FMLCompilationUnitSemanticsAnalyzer analyzer) {
+		super(importDeclaration, analyzer);
 	}
 
 	@Override

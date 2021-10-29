@@ -61,12 +61,12 @@ public class WrappedFMLObjectNode<T extends FMLObject> extends FMLObjectNode<Nod
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(WrappedFMLObjectNode.class.getPackage().getName());
 
-	public WrappedFMLObjectNode(Node astNode, FMLCompilationUnitSemanticsAnalyzer analyser) {
-		super(astNode, analyser);
+	public WrappedFMLObjectNode(Node astNode, FMLCompilationUnitSemanticsAnalyzer analyzer) {
+		super(astNode, analyzer);
 	}
 
-	public WrappedFMLObjectNode(WrappedFMLObject<T> modelObject, FMLCompilationUnitSemanticsAnalyzer analyser) {
-		super(modelObject, analyser);
+	public WrappedFMLObjectNode(WrappedFMLObject<T> modelObject, FMLCompilationUnitSemanticsAnalyzer analyzer) {
+		super(modelObject, analyzer);
 	}
 
 	@Override

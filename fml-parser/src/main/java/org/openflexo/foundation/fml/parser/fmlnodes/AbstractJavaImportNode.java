@@ -49,12 +49,12 @@ import org.openflexo.foundation.fml.parser.node.Node;
  */
 public abstract class AbstractJavaImportNode<N extends Node> extends FMLObjectNode<N, JavaImportDeclaration, FMLCompilationUnitSemanticsAnalyzer> {
 
-	public AbstractJavaImportNode(N astNode, FMLCompilationUnitSemanticsAnalyzer analyser) {
-		super(astNode, analyser);
+	public AbstractJavaImportNode(N astNode, FMLCompilationUnitSemanticsAnalyzer analyzer) {
+		super(astNode, analyzer);
 	}
 
-	public AbstractJavaImportNode(JavaImportDeclaration importDeclaration, FMLCompilationUnitSemanticsAnalyzer analyser) {
-		super(importDeclaration, analyser);
+	public AbstractJavaImportNode(JavaImportDeclaration importDeclaration, FMLCompilationUnitSemanticsAnalyzer analyzer) {
+		super(importDeclaration, analyzer);
 	}
 
 	@Override

@@ -73,19 +73,19 @@ public abstract class FlexoBehaviourNode<N extends Node, T extends FlexoBehaviou
 
 	// private ControlGraphFactory controlGraphFactory;
 
-	public FlexoBehaviourNode(N astNode, FMLCompilationUnitSemanticsAnalyzer analyser) {
-		super(astNode, analyser);
+	public FlexoBehaviourNode(N astNode, FMLCompilationUnitSemanticsAnalyzer analyzer) {
+		super(astNode, analyzer);
 	}
 
-	public FlexoBehaviourNode(T property, FMLCompilationUnitSemanticsAnalyzer analyser) {
-		super(property, analyser);
-		// controlGraphFactory = new ControlGraphFactory(null, analyser);
+	public FlexoBehaviourNode(T property, FMLCompilationUnitSemanticsAnalyzer analyzer) {
+		super(property, analyzer);
+		// controlGraphFactory = new ControlGraphFactory(null, analyzer);
 	}
 
 	/*@Override
 	public ControlGraphFactory getControlGraphFactory() {
 		if (controlGraphFactory == null) {
-			controlGraphFactory = new ControlGraphFactory(getFlexoBehaviourBody(getASTNode()), getAnalyser());
+			controlGraphFactory = new ControlGraphFactory(getFlexoBehaviourBody(getASTNode()), getanalyzer());
 		}
 		return controlGraphFactory;
 	}*/
@@ -174,7 +174,7 @@ public abstract class FlexoBehaviourNode<N extends Node, T extends FlexoBehaviou
 		System.out.println("On gere le parametre " + parameter);
 		System.out.println("On gere rien en fait");
 	
-		BehaviourParameterNode paramNode = new BehaviourParameterNode(parameter, getAnalyser());
+		BehaviourParameterNode paramNode = new BehaviourParameterNode(parameter, getanalyzer());
 	}*/
 
 	protected boolean isAbstract() {

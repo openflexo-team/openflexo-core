@@ -89,8 +89,8 @@ public class EndMatchActionNode extends ControlGraphNode<AEndMatchActionFmlActio
 	private String behaviourName;
 	private List<DataBinding<?>> behaviourArgs;
 
-	public EndMatchActionNode(AEndMatchActionFmlActionExp astNode, FMLCompilationUnitSemanticsAnalyzer analyser) {
-		super(astNode, analyser);
+	public EndMatchActionNode(AEndMatchActionFmlActionExp astNode, FMLCompilationUnitSemanticsAnalyzer analyzer) {
+		super(astNode, analyzer);
 
 		if (getSemiFragment() != null) {
 			setEndPosition(getSemiFragment().getEndPosition());
@@ -98,8 +98,8 @@ public class EndMatchActionNode extends ControlGraphNode<AEndMatchActionFmlActio
 
 	}
 
-	public EndMatchActionNode(FinalizeMatching action, FMLCompilationUnitSemanticsAnalyzer analyser) {
-		super(action, analyser);
+	public EndMatchActionNode(FinalizeMatching action, FMLCompilationUnitSemanticsAnalyzer analyzer) {
+		super(action, analyzer);
 	}
 
 	private void handleArguments(PArgumentList argumentList, FinalizeMatching modelObject) {
@@ -115,7 +115,7 @@ public class EndMatchActionNode extends ControlGraphNode<AEndMatchActionFmlActio
 
 	private void handleArgument(PExpression expression, FinalizeMatching modelObject) {
 		DataBinding<?> argValue = ExpressionFactory.makeDataBinding(expression, modelObject, BindingDefinitionType.GET, Object.class,
-				getAnalyser(), this);
+				getSemanticsAnalyzer(), this);
 
 		if (behaviourArgs == null) {
 			behaviourArgs = new ArrayList<>();
@@ -159,7 +159,7 @@ public class EndMatchActionNode extends ControlGraphNode<AEndMatchActionFmlActio
 	public FinalizeMatching buildModelObjectFromAST(AEndMatchActionFmlActionExp astNode) {
 		FinalizeMatching returned = getFactory().newFinalizeMatching();
 
-		Type type = TypeFactory.makeType(astNode.getConceptName(), getAnalyser().getTypingSpace());
+		Type type = TypeFactory.makeType(astNode.getConceptName(), getSemanticsAnalyzer().getTypingSpace());
 		if (type instanceof FlexoConceptInstanceType) {
 			conceptType = (FlexoConceptInstanceType) type;
 			returned.setMatchedType((FlexoConceptInstanceType) type);
@@ -174,7 +174,7 @@ public class EndMatchActionNode extends ControlGraphNode<AEndMatchActionFmlActio
 		if (astNode.getInClause() instanceof AInClause) {
 			PExpression inExpression = ((AInClause) astNode.getInClause()).getExpression();
 			DataBinding<MatchingSet> matchingSet = (DataBinding) ExpressionFactory.makeDataBinding(inExpression, returned,
-					BindingDefinitionType.GET, MatchingSet.class, getAnalyser(), this);
+					BindingDefinitionType.GET, MatchingSet.class, getSemanticsAnalyzer(), this);
 
 			returned.setMatchingSet(matchingSet);
 		}

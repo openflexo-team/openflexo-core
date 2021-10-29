@@ -54,12 +54,12 @@ import org.openflexo.p2pp.RawSource.RawSourceFragment;
  */
 public class MetaDataKeyValueNode extends FMLObjectNode<AAnnotationKeyValuePair, MetaDataKeyValue<?>, FMLCompilationUnitSemanticsAnalyzer> {
 
-	public MetaDataKeyValueNode(AAnnotationKeyValuePair astNode, FMLCompilationUnitSemanticsAnalyzer analyser) {
-		super(astNode, analyser);
+	public MetaDataKeyValueNode(AAnnotationKeyValuePair astNode, FMLCompilationUnitSemanticsAnalyzer analyzer) {
+		super(astNode, analyzer);
 	}
 
-	public MetaDataKeyValueNode(MetaDataKeyValue<?> metaData, FMLCompilationUnitSemanticsAnalyzer analyser) {
-		super(metaData, analyser);
+	public MetaDataKeyValueNode(MetaDataKeyValue<?> metaData, FMLCompilationUnitSemanticsAnalyzer analyzer) {
+		super(metaData, analyzer);
 	}
 
 	@Override
@@ -80,7 +80,7 @@ public class MetaDataKeyValueNode extends FMLObjectNode<AAnnotationKeyValuePair,
 		MetaDataKeyValue<?> returned = getFactory().newMetaDataKeyValue(key);
 
 		DataBinding<?> valueExpression = ExpressionFactory.makeDataBinding(astNode.getConditionalExp(), returned, BindingDefinitionType.GET,
-				Object.class, getAnalyser(), this);
+				Object.class, getSemanticsAnalyzer(), this);
 
 		if (valueExpression.getExpression() instanceof Constant) {
 			returned.setSerializationRepresentation(getText(astNode.getConditionalExp()));

@@ -62,12 +62,12 @@ import org.openflexo.toolbox.StringUtils;
 // ANamedUriImportImportDecl
 public class ElementImportNode extends FMLObjectNode<PImportDecl, ElementImportDeclaration, FMLCompilationUnitSemanticsAnalyzer> {
 
-	public ElementImportNode(PImportDecl astNode, FMLCompilationUnitSemanticsAnalyzer analyser) {
-		super(astNode, analyser);
+	public ElementImportNode(PImportDecl astNode, FMLCompilationUnitSemanticsAnalyzer analyzer) {
+		super(astNode, analyzer);
 	}
 
-	public ElementImportNode(ElementImportDeclaration importDeclaration, FMLCompilationUnitSemanticsAnalyzer analyser) {
-		super(importDeclaration, analyser);
+	public ElementImportNode(ElementImportDeclaration importDeclaration, FMLCompilationUnitSemanticsAnalyzer analyzer) {
+		super(importDeclaration, analyzer);
 	}
 
 	@Override
@@ -92,16 +92,16 @@ public class ElementImportNode extends FMLObjectNode<PImportDecl, ElementImportD
 		}
 		if (ref instanceof AObjectInResourceReferenceByUri) {
 			DataBinding<String> resourceReference = URIExpressionFactory.makeDataBinding(
-					((AObjectInResourceReferenceByUri) ref).getResource(), returned, BindingDefinitionType.GET, Object.class, getAnalyser(),
+					((AObjectInResourceReferenceByUri) ref).getResource(), returned, BindingDefinitionType.GET, Object.class, getSemanticsAnalyzer(),
 					this);
 			returned.setResourceReference(resourceReference);
 			DataBinding<String> objectReference = URIExpressionFactory.makeDataBinding(((AObjectInResourceReferenceByUri) ref).getObject(),
-					returned, BindingDefinitionType.GET, Object.class, getAnalyser(), this);
+					returned, BindingDefinitionType.GET, Object.class, getSemanticsAnalyzer(), this);
 			returned.setObjectReference(objectReference);
 		}
 		if (ref instanceof AResourceReferenceByUri) {
 			DataBinding<String> resourceReference = URIExpressionFactory.makeDataBinding(((AResourceReferenceByUri) ref).getResource(),
-					returned, BindingDefinitionType.GET, Object.class, getAnalyser(), this);
+					returned, BindingDefinitionType.GET, Object.class, getSemanticsAnalyzer(), this);
 			returned.setResourceReference(resourceReference);
 		}
 		return returned;

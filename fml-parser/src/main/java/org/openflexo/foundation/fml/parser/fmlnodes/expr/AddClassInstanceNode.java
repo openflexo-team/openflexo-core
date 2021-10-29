@@ -67,8 +67,8 @@ public class AddClassInstanceNode extends AbstractCallBindingPathElementNode<ASi
 
 	private IBindingPathElement parent;
 
-	public AddClassInstanceNode(ASimpleNewInstance astNode, FMLSemanticsAnalyzer analyser, IBindingPathElement parent, Bindable bindable) {
-		super(astNode, analyser, bindable);
+	public AddClassInstanceNode(ASimpleNewInstance astNode, FMLSemanticsAnalyzer analyzer, IBindingPathElement parent, Bindable bindable) {
+		super(astNode, analyzer, bindable);
 		this.parent = parent;
 		setReadyToBuildModelObject(true);
 		// buildModelObjectFromAST() was already called, but too early (parent not yet set)
@@ -76,8 +76,8 @@ public class AddClassInstanceNode extends AbstractCallBindingPathElementNode<ASi
 		modelObject = buildModelObjectFromAST(astNode);
 	}
 
-	public AddClassInstanceNode(JavaNewInstanceMethodPathElement bindingPathElement, FMLSemanticsAnalyzer analyser, Bindable bindable) {
-		super(bindingPathElement, analyser, bindable);
+	public AddClassInstanceNode(JavaNewInstanceMethodPathElement bindingPathElement, FMLSemanticsAnalyzer analyzer, Bindable bindable) {
+		super(bindingPathElement, analyzer, bindable);
 	}
 
 	@Override
@@ -85,7 +85,7 @@ public class AddClassInstanceNode extends AbstractCallBindingPathElementNode<ASi
 
 		if (readyToBuildModelObject()) {
 			handleArguments(astNode.getArgumentList());
-			Type type = TypeFactory.makeType(astNode.getType(), getAnalyser().getTypingSpace());
+			Type type = TypeFactory.makeType(astNode.getType(), getSemanticsAnalyzer().getTypingSpace());
 
 			JavaNewInstanceMethodPathElement pathElement = (JavaNewInstanceMethodPathElement) getBindingFactory()
 					.makeNewInstancePathElement(type, parent, null, getArguments(), getBindable());

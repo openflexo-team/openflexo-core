@@ -70,8 +70,8 @@ public class BeginMatchActionNode extends AssignableActionNode<ABeginMatchAction
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(BeginMatchActionNode.class.getPackage().getName());
 
-	public BeginMatchActionNode(ABeginMatchActionFmlActionExp astNode, FMLCompilationUnitSemanticsAnalyzer analyser) {
-		super(astNode, analyser);
+	public BeginMatchActionNode(ABeginMatchActionFmlActionExp astNode, FMLCompilationUnitSemanticsAnalyzer analyzer) {
+		super(astNode, analyzer);
 
 		if (getSemiFragment() != null) {
 			setEndPosition(getSemiFragment().getEndPosition());
@@ -79,8 +79,8 @@ public class BeginMatchActionNode extends AssignableActionNode<ABeginMatchAction
 
 	}
 
-	public BeginMatchActionNode(InitiateMatching action, FMLCompilationUnitSemanticsAnalyzer analyser) {
-		super(action, analyser);
+	public BeginMatchActionNode(InitiateMatching action, FMLCompilationUnitSemanticsAnalyzer analyzer) {
+		super(action, analyzer);
 	}
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
@@ -93,7 +93,7 @@ public class BeginMatchActionNode extends AssignableActionNode<ABeginMatchAction
 		// FlexoConceptInstanceType matchedType = getTypeFactory().makeFlexoConceptType(astNode.getConceptName().getText(),
 		// getFragment(astNode.getConceptName()));
 
-		Type type = TypeFactory.makeType(astNode.getConceptName(), getAnalyser().getTypingSpace());
+		Type type = TypeFactory.makeType(astNode.getConceptName(), getSemanticsAnalyzer().getTypingSpace());
 		if (type instanceof FlexoConceptInstanceType) {
 			returned.setMatchedType((FlexoConceptInstanceType) type);
 		}
@@ -106,7 +106,7 @@ public class BeginMatchActionNode extends AssignableActionNode<ABeginMatchAction
 		if (astNode.getFromClause() instanceof AFromClause) {
 			PExpression fromExpression = ((AFromClause) astNode.getFromClause()).getExpression();
 			DataBinding<FlexoConceptInstance> container = (DataBinding) ExpressionFactory.makeDataBinding(fromExpression, returned,
-					BindingDefinitionType.GET, FlexoConceptInstance.class, getAnalyser(), this);
+					BindingDefinitionType.GET, FlexoConceptInstance.class, getSemanticsAnalyzer(), this);
 			returned.setContainer(container);
 		}
 

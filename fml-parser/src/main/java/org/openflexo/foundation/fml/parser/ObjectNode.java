@@ -210,22 +210,22 @@ public abstract class ObjectNode<N extends Node, T, A extends FMLSemanticsAnalyz
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(ObjectNode.class.getPackage().getName());
 
-	private final FMLSemanticsAnalyzer analyser;
+	private final FMLSemanticsAnalyzer semanticsAnalyzer;
 
-	public ObjectNode(N astNode, FMLSemanticsAnalyzer analyser) {
-		super(null, astNode, analyser != null ? analyser.getFragmentManager() : null);
-		this.analyser = analyser;
+	public ObjectNode(N astNode, FMLSemanticsAnalyzer analyzer) {
+		super(null, astNode, analyzer != null ? analyzer.getFragmentManager() : null);
+		this.semanticsAnalyzer = analyzer;
 
 		modelObject = buildModelObjectFromAST(astNode);
 	}
 
-	public ObjectNode(T aFMLObject, FMLSemanticsAnalyzer analyser) {
+	public ObjectNode(T aFMLObject, FMLSemanticsAnalyzer analyzer) {
 		super(aFMLObject, null, null);
-		this.analyser = analyser;
+		this.semanticsAnalyzer = analyzer;
 	}
 
 	public FMLModelFactory getFactory() {
-		return analyser.getModelFactory();
+		return semanticsAnalyzer.getModelFactory();
 	}
 
 	/**
@@ -259,23 +259,23 @@ public abstract class ObjectNode<N extends Node, T, A extends FMLSemanticsAnalyz
 		return null;
 	}
 
-	public FMLSemanticsAnalyzer getAnalyser() {
-		return analyser;
+	public FMLSemanticsAnalyzer getSemanticsAnalyzer() {
+		return semanticsAnalyzer;
 	}
 
 	/*public TypeFactory getTypeFactory() {
-		return getAnalyser().getTypeFactory();
+		return getanalyzer().getTypeFactory();
 	}*/
 
 	public FMLFactory getFMLFactory() {
-		if (getAnalyser() instanceof FMLCompilationUnitSemanticsAnalyzer) {
-			return ((FMLCompilationUnitSemanticsAnalyzer) getAnalyser()).getFMLFactory();
+		if (getSemanticsAnalyzer() instanceof FMLCompilationUnitSemanticsAnalyzer) {
+			return ((FMLCompilationUnitSemanticsAnalyzer) getSemanticsAnalyzer()).getFMLFactory();
 		}
 		return null;
 	}
 
 	protected FMLCompilationUnit getCompilationUnit() {
-		return getAnalyser().getCompilationUnit();
+		return getSemanticsAnalyzer().getCompilationUnit();
 	}
 
 	// Make this method visible
@@ -319,7 +319,7 @@ public abstract class ObjectNode<N extends Node, T, A extends FMLSemanticsAnalyz
 	 */
 	@Override
 	public RawSource getRawSource() {
-		return getAnalyser().getRawSource();
+		return getSemanticsAnalyzer().getRawSource();
 	}
 
 	@Override
@@ -335,148 +335,148 @@ public abstract class ObjectNode<N extends Node, T, A extends FMLSemanticsAnalyz
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
 	public <C> P2PPNode<?, C> makeObjectNode(C object) {
-		if (getAnalyser() instanceof FMLCompilationUnitSemanticsAnalyzer) {
+		if (getSemanticsAnalyzer() instanceof FMLCompilationUnitSemanticsAnalyzer) {
 			if (object instanceof NamespaceDeclaration) {
-				return (P2PPNode<?, C>) new NamespaceDeclarationNode((NamespaceDeclaration) object, (FMLCompilationUnitSemanticsAnalyzer) getAnalyser());
+				return (P2PPNode<?, C>) new NamespaceDeclarationNode((NamespaceDeclaration) object, (FMLCompilationUnitSemanticsAnalyzer) getSemanticsAnalyzer());
 			}
 			if (object instanceof UseModelSlotDeclaration) {
-				return (P2PPNode<?, C>) new UseDeclarationNode((UseModelSlotDeclaration) object, (FMLCompilationUnitSemanticsAnalyzer) getAnalyser());
+				return (P2PPNode<?, C>) new UseDeclarationNode((UseModelSlotDeclaration) object, (FMLCompilationUnitSemanticsAnalyzer) getSemanticsAnalyzer());
 			}
 			if (object instanceof JavaImportDeclaration) {
-				return (P2PPNode<?, C>) new JavaImportNode((JavaImportDeclaration) object, (FMLCompilationUnitSemanticsAnalyzer) getAnalyser());
+				return (P2PPNode<?, C>) new JavaImportNode((JavaImportDeclaration) object, (FMLCompilationUnitSemanticsAnalyzer) getSemanticsAnalyzer());
 			}
 			if (object instanceof ElementImportDeclaration) {
-				return (P2PPNode<?, C>) new ElementImportNode((ElementImportDeclaration) object, (FMLCompilationUnitSemanticsAnalyzer) getAnalyser());
+				return (P2PPNode<?, C>) new ElementImportNode((ElementImportDeclaration) object, (FMLCompilationUnitSemanticsAnalyzer) getSemanticsAnalyzer());
 			}
 			if (object instanceof BasicMetaData) {
-				return (P2PPNode<?, C>) new BasicMetaDataNode((BasicMetaData) object, (FMLCompilationUnitSemanticsAnalyzer) getAnalyser());
+				return (P2PPNode<?, C>) new BasicMetaDataNode((BasicMetaData) object, (FMLCompilationUnitSemanticsAnalyzer) getSemanticsAnalyzer());
 			}
 			if (object instanceof SingleMetaData) {
-				return (P2PPNode<?, C>) new SingleMetaDataNode((SingleMetaData) object, (FMLCompilationUnitSemanticsAnalyzer) getAnalyser());
+				return (P2PPNode<?, C>) new SingleMetaDataNode((SingleMetaData) object, (FMLCompilationUnitSemanticsAnalyzer) getSemanticsAnalyzer());
 			}
 			if (object instanceof MultiValuedMetaData) {
-				return (P2PPNode<?, C>) new MultiValuedMetaDataNode((MultiValuedMetaData) object, (FMLCompilationUnitSemanticsAnalyzer) getAnalyser());
+				return (P2PPNode<?, C>) new MultiValuedMetaDataNode((MultiValuedMetaData) object, (FMLCompilationUnitSemanticsAnalyzer) getSemanticsAnalyzer());
 			}
 			if (object instanceof MetaDataKeyValue) {
-				return (P2PPNode<?, C>) new MetaDataKeyValueNode((MetaDataKeyValue) object, (FMLCompilationUnitSemanticsAnalyzer) getAnalyser());
+				return (P2PPNode<?, C>) new MetaDataKeyValueNode((MetaDataKeyValue) object, (FMLCompilationUnitSemanticsAnalyzer) getSemanticsAnalyzer());
 			}
 			if (object instanceof ListMetaData) {
-				return (P2PPNode<?, C>) new ListMetaDataNode((ListMetaData) object, (FMLCompilationUnitSemanticsAnalyzer) getAnalyser());
+				return (P2PPNode<?, C>) new ListMetaDataNode((ListMetaData) object, (FMLCompilationUnitSemanticsAnalyzer) getSemanticsAnalyzer());
 			}
 			if (object instanceof VirtualModel) {
-				return (P2PPNode<?, C>) new VirtualModelNode((VirtualModel) object, (FMLCompilationUnitSemanticsAnalyzer) getAnalyser());
+				return (P2PPNode<?, C>) new VirtualModelNode((VirtualModel) object, (FMLCompilationUnitSemanticsAnalyzer) getSemanticsAnalyzer());
 			}
 			if (object instanceof FlexoConcept) {
-				return (P2PPNode<?, C>) new FlexoConceptNode((FlexoConcept) object, (FMLCompilationUnitSemanticsAnalyzer) getAnalyser());
+				return (P2PPNode<?, C>) new FlexoConceptNode((FlexoConcept) object, (FMLCompilationUnitSemanticsAnalyzer) getSemanticsAnalyzer());
 			}
 			if (object instanceof SingleMetaData) {
-				return (P2PPNode<?, C>) new SingleMetaDataNode((SingleMetaData) object, (FMLCompilationUnitSemanticsAnalyzer) getAnalyser());
+				return (P2PPNode<?, C>) new SingleMetaDataNode((SingleMetaData) object, (FMLCompilationUnitSemanticsAnalyzer) getSemanticsAnalyzer());
 			}
 			if (object instanceof PrimitiveRole) {
-				return (P2PPNode<?, C>) new PrimitiveRoleNode((PrimitiveRole) object, (FMLCompilationUnitSemanticsAnalyzer) getAnalyser());
+				return (P2PPNode<?, C>) new PrimitiveRoleNode((PrimitiveRole) object, (FMLCompilationUnitSemanticsAnalyzer) getSemanticsAnalyzer());
 			}
 			if (object instanceof JavaRole) {
-				return (P2PPNode<?, C>) new JavaRoleNode((JavaRole) object, (FMLCompilationUnitSemanticsAnalyzer) getAnalyser());
+				return (P2PPNode<?, C>) new JavaRoleNode((JavaRole) object, (FMLCompilationUnitSemanticsAnalyzer) getSemanticsAnalyzer());
 			}
 			if (object instanceof AbstractProperty) {
-				return (P2PPNode<?, C>) new AbstractPropertyNode((AbstractProperty) object, (FMLCompilationUnitSemanticsAnalyzer) getAnalyser());
+				return (P2PPNode<?, C>) new AbstractPropertyNode((AbstractProperty) object, (FMLCompilationUnitSemanticsAnalyzer) getSemanticsAnalyzer());
 			}
 			if (object instanceof ExpressionProperty) {
-				return (P2PPNode<?, C>) new ExpressionPropertyNode((ExpressionProperty) object, (FMLCompilationUnitSemanticsAnalyzer) getAnalyser());
+				return (P2PPNode<?, C>) new ExpressionPropertyNode((ExpressionProperty) object, (FMLCompilationUnitSemanticsAnalyzer) getSemanticsAnalyzer());
 			}
 			if (object instanceof GetSetProperty) {
-				return (P2PPNode<?, C>) new GetSetPropertyNode((GetSetProperty) object, (FMLCompilationUnitSemanticsAnalyzer) getAnalyser());
+				return (P2PPNode<?, C>) new GetSetPropertyNode((GetSetProperty) object, (FMLCompilationUnitSemanticsAnalyzer) getSemanticsAnalyzer());
 			}
 			if (object instanceof AbstractProperty) {
-				return (P2PPNode<?, C>) new AbstractPropertyNode((AbstractProperty) object, (FMLCompilationUnitSemanticsAnalyzer) getAnalyser());
+				return (P2PPNode<?, C>) new AbstractPropertyNode((AbstractProperty) object, (FMLCompilationUnitSemanticsAnalyzer) getSemanticsAnalyzer());
 			}
 			if (object instanceof ModelSlot) {
-				return new ModelSlotPropertyNode((ModelSlot) object, (FMLCompilationUnitSemanticsAnalyzer) getAnalyser());
+				return new ModelSlotPropertyNode((ModelSlot) object, (FMLCompilationUnitSemanticsAnalyzer) getSemanticsAnalyzer());
 			}
 			if (object instanceof FlexoRole) {
-				return new FlexoRolePropertyNode((FlexoRole) object, (FMLCompilationUnitSemanticsAnalyzer) getAnalyser());
+				return new FlexoRolePropertyNode((FlexoRole) object, (FMLCompilationUnitSemanticsAnalyzer) getSemanticsAnalyzer());
 			}
 			if (object instanceof ActionScheme) {
-				return (P2PPNode<?, C>) new ActionSchemeNode((ActionScheme) object, (FMLCompilationUnitSemanticsAnalyzer) getAnalyser());
+				return (P2PPNode<?, C>) new ActionSchemeNode((ActionScheme) object, (FMLCompilationUnitSemanticsAnalyzer) getSemanticsAnalyzer());
 			}
 			if (object instanceof CreationScheme) {
-				return (P2PPNode<?, C>) new CreationSchemeNode((CreationScheme) object, (FMLCompilationUnitSemanticsAnalyzer) getAnalyser());
+				return (P2PPNode<?, C>) new CreationSchemeNode((CreationScheme) object, (FMLCompilationUnitSemanticsAnalyzer) getSemanticsAnalyzer());
 			}
 			if (object instanceof DeletionScheme) {
-				return (P2PPNode<?, C>) new DeletionSchemeNode((DeletionScheme) object, (FMLCompilationUnitSemanticsAnalyzer) getAnalyser());
+				return (P2PPNode<?, C>) new DeletionSchemeNode((DeletionScheme) object, (FMLCompilationUnitSemanticsAnalyzer) getSemanticsAnalyzer());
 			}
 			if (object instanceof FlexoBehaviour) {
-				return new FMLBehaviourNode((FlexoBehaviour) object, (FMLCompilationUnitSemanticsAnalyzer) getAnalyser());
+				return new FMLBehaviourNode((FlexoBehaviour) object, (FMLCompilationUnitSemanticsAnalyzer) getSemanticsAnalyzer());
 			}
 			if (object instanceof FlexoBehaviourParameter) {
-				return (P2PPNode<?, C>) new BehaviourParameterNode((FlexoBehaviourParameter) object, (FMLCompilationUnitSemanticsAnalyzer) getAnalyser());
+				return (P2PPNode<?, C>) new BehaviourParameterNode((FlexoBehaviourParameter) object, (FMLCompilationUnitSemanticsAnalyzer) getSemanticsAnalyzer());
 			}
 			if (object instanceof EmptyControlGraph) {
-				return (P2PPNode<?, C>) new EmptyControlGraphNode((EmptyControlGraph) object, (FMLCompilationUnitSemanticsAnalyzer) getAnalyser());
+				return (P2PPNode<?, C>) new EmptyControlGraphNode((EmptyControlGraph) object, (FMLCompilationUnitSemanticsAnalyzer) getSemanticsAnalyzer());
 			}
 			if (object instanceof Sequence) {
-				return (P2PPNode<?, C>) new SequenceNode((Sequence) object, (FMLCompilationUnitSemanticsAnalyzer) getAnalyser());
+				return (P2PPNode<?, C>) new SequenceNode((Sequence) object, (FMLCompilationUnitSemanticsAnalyzer) getSemanticsAnalyzer());
 			}
 			if (object instanceof AssignationAction) {
-				return (P2PPNode<?, C>) new AssignationActionNode((AssignationAction) object, (FMLCompilationUnitSemanticsAnalyzer) getAnalyser());
+				return (P2PPNode<?, C>) new AssignationActionNode((AssignationAction) object, (FMLCompilationUnitSemanticsAnalyzer) getSemanticsAnalyzer());
 			}
 			if (object instanceof DeclarationAction) {
-				return (P2PPNode<?, C>) new DeclarationActionNode((DeclarationAction) object, (FMLCompilationUnitSemanticsAnalyzer) getAnalyser());
+				return (P2PPNode<?, C>) new DeclarationActionNode((DeclarationAction) object, (FMLCompilationUnitSemanticsAnalyzer) getSemanticsAnalyzer());
 			}
 			if (object instanceof ExpressionAction) {
-				return (P2PPNode<?, C>) new ExpressionActionNode((ExpressionAction) object, (FMLCompilationUnitSemanticsAnalyzer) getAnalyser());
+				return (P2PPNode<?, C>) new ExpressionActionNode((ExpressionAction) object, (FMLCompilationUnitSemanticsAnalyzer) getSemanticsAnalyzer());
 			}
 			if (object instanceof ReturnStatement) {
-				return (P2PPNode<?, C>) new ReturnStatementNode((ReturnStatement) object, (FMLCompilationUnitSemanticsAnalyzer) getAnalyser());
+				return (P2PPNode<?, C>) new ReturnStatementNode((ReturnStatement) object, (FMLCompilationUnitSemanticsAnalyzer) getSemanticsAnalyzer());
 			}
 			if (object instanceof ConditionalAction) {
-				return (P2PPNode<?, C>) new ConditionalNode((ConditionalAction) object, (FMLCompilationUnitSemanticsAnalyzer) getAnalyser());
+				return (P2PPNode<?, C>) new ConditionalNode((ConditionalAction) object, (FMLCompilationUnitSemanticsAnalyzer) getSemanticsAnalyzer());
 			}
 			if (object instanceof IterationAction) {
-				return (P2PPNode<?, C>) new IterationActionNode((IterationAction) object, (FMLCompilationUnitSemanticsAnalyzer) getAnalyser());
+				return (P2PPNode<?, C>) new IterationActionNode((IterationAction) object, (FMLCompilationUnitSemanticsAnalyzer) getSemanticsAnalyzer());
 			}
 			/*if (object instanceof AddFlexoConceptInstance) {
-			return (P2PPNode<?, C>) new AddFlexoConceptInstanceNode((AddFlexoConceptInstance) object, getAnalyser());
+			return (P2PPNode<?, C>) new AddFlexoConceptInstanceNode((AddFlexoConceptInstance) object, getanalyzer());
 			}
 			if (object instanceof AddVirtualModelInstance) {
-			return (P2PPNode<?, C>) new AddVirtualModelInstanceNode((AddVirtualModelInstance) object, getAnalyser());
+			return (P2PPNode<?, C>) new AddVirtualModelInstanceNode((AddVirtualModelInstance) object, getanalyzer());
 			}
 			if (object instanceof AddClassInstance) {
-			return (P2PPNode<?, C>) new AddClassInstanceNode((AddClassInstance) object, getAnalyser());
+			return (P2PPNode<?, C>) new AddClassInstanceNode((AddClassInstance) object, getanalyzer());
 			}*/
 			if (object instanceof LogAction) {
-				return (P2PPNode<?, C>) new LogActionNode((LogAction) object, (FMLCompilationUnitSemanticsAnalyzer) getAnalyser());
+				return (P2PPNode<?, C>) new LogActionNode((LogAction) object, (FMLCompilationUnitSemanticsAnalyzer) getSemanticsAnalyzer());
 			}
 			if (object instanceof AbstractFetchRequest) {
-				return new FetchRequestNode((AbstractFetchRequest) object, (FMLCompilationUnitSemanticsAnalyzer) getAnalyser());
+				return new FetchRequestNode((AbstractFetchRequest) object, (FMLCompilationUnitSemanticsAnalyzer) getSemanticsAnalyzer());
 			}
 			if (object instanceof BehaviourCallArgument) {
 				return (P2PPNode<?, C>) new BehaviourCallArgumentNode((BehaviourCallArgument) object,
-						(FMLCompilationUnitSemanticsAnalyzer) getAnalyser());
+						(FMLCompilationUnitSemanticsAnalyzer) getSemanticsAnalyzer());
 			}
 			if (object instanceof InitiateMatching) {
-				return (P2PPNode<?, C>) new BeginMatchActionNode((InitiateMatching) object, (FMLCompilationUnitSemanticsAnalyzer) getAnalyser());
+				return (P2PPNode<?, C>) new BeginMatchActionNode((InitiateMatching) object, (FMLCompilationUnitSemanticsAnalyzer) getSemanticsAnalyzer());
 			}
 			if (object instanceof MatchFlexoConceptInstance) {
-				return (P2PPNode<?, C>) new MatchActionNode((MatchFlexoConceptInstance) object, (FMLCompilationUnitSemanticsAnalyzer) getAnalyser());
+				return (P2PPNode<?, C>) new MatchActionNode((MatchFlexoConceptInstance) object, (FMLCompilationUnitSemanticsAnalyzer) getSemanticsAnalyzer());
 			}
 			if (object instanceof FinalizeMatching) {
-				return (P2PPNode<?, C>) new EndMatchActionNode((FinalizeMatching) object, (FMLCompilationUnitSemanticsAnalyzer) getAnalyser());
+				return (P2PPNode<?, C>) new EndMatchActionNode((FinalizeMatching) object, (FMLCompilationUnitSemanticsAnalyzer) getSemanticsAnalyzer());
 			}
 			if (object instanceof TechnologySpecificAction) {
-				return new FMLEditionActionNode((TechnologySpecificAction) object, (FMLCompilationUnitSemanticsAnalyzer) getAnalyser());
+				return new FMLEditionActionNode((TechnologySpecificAction) object, (FMLCompilationUnitSemanticsAnalyzer) getSemanticsAnalyzer());
 			}
 			if (object instanceof FMLSimplePropertyValue) {
-				return new FMLSimplePropertyValueNode((FMLSimplePropertyValue) object, (FMLCompilationUnitSemanticsAnalyzer) getAnalyser());
+				return new FMLSimplePropertyValueNode((FMLSimplePropertyValue) object, (FMLCompilationUnitSemanticsAnalyzer) getSemanticsAnalyzer());
 			}
 			if (object instanceof FMLInstancePropertyValue) {
-				return new FMLInstancePropertyValueNode((FMLInstancePropertyValue) object, (FMLCompilationUnitSemanticsAnalyzer) getAnalyser());
+				return new FMLInstancePropertyValueNode((FMLInstancePropertyValue) object, (FMLCompilationUnitSemanticsAnalyzer) getSemanticsAnalyzer());
 			}
 			if (object instanceof FMLInstancesListPropertyValue) {
-				return new FMLInstancesListPropertyValueNode((FMLInstancesListPropertyValue) object, (FMLCompilationUnitSemanticsAnalyzer) getAnalyser());
+				return new FMLInstancesListPropertyValueNode((FMLInstancesListPropertyValue) object, (FMLCompilationUnitSemanticsAnalyzer) getSemanticsAnalyzer());
 			}
 			if (object instanceof WrappedFMLObject) {
-				return new WrappedFMLObjectNode((WrappedFMLObject) object, (FMLCompilationUnitSemanticsAnalyzer) getAnalyser());
+				return new WrappedFMLObjectNode((WrappedFMLObject) object, (FMLCompilationUnitSemanticsAnalyzer) getSemanticsAnalyzer());
 			}
 		}
 		System.err.println("Not supported: " + object);
@@ -485,8 +485,8 @@ public abstract class ObjectNode<N extends Node, T, A extends FMLSemanticsAnalyz
 	}
 
 	/*public ControlGraphFactory getControlGraphFactory() {
-		if (getAbstractAnalyser() instanceof ControlGraphFactory) {
-			return (ControlGraphFactory) getAbstractAnalyser();
+		if (getAbstractanalyzer() instanceof ControlGraphFactory) {
+			return (ControlGraphFactory) getAbstractanalyzer();
 		}
 		if (getParent() instanceof FMLObjectNode) {
 			return ((FMLObjectNode) getParent()).getControlGraphFactory();
@@ -507,7 +507,7 @@ public abstract class ObjectNode<N extends Node, T, A extends FMLSemanticsAnalyz
 					getRawSource().makePositionBeforeChar(token.getLine(), token.getPos() + token.getText().length()));
 		}
 		else {
-			return getAnalyser().getFragmentManager().retrieveFragment(node);
+			return getSemanticsAnalyzer().getFragmentManager().retrieveFragment(node);
 		}
 	}
 
@@ -531,7 +531,7 @@ public abstract class ObjectNode<N extends Node, T, A extends FMLSemanticsAnalyz
 		ChainedCollection<Node> collection = new ChainedCollection<>();
 		collection.add(node);
 		collection.add(otherNodes);
-		return getAnalyser().getFragmentManager().getFragment(collection);
+		return getSemanticsAnalyzer().getFragmentManager().getFragment(collection);
 	}
 
 	public String getText(Node node) {
@@ -539,27 +539,27 @@ public abstract class ObjectNode<N extends Node, T, A extends FMLSemanticsAnalyz
 	}
 
 	public List<String> makeFullQualifiedIdentifierList(List<PIdentifierPrefix> prefixes, TLidentifier identifier) {
-		return analyser.makeFullQualifiedIdentifierList(prefixes, identifier);
+		return semanticsAnalyzer.makeFullQualifiedIdentifierList(prefixes, identifier);
 	}
 
 	public String makeFullQualifiedIdentifier(List<PIdentifierPrefix> prefixes, TLidentifier identifier) {
-		return analyser.makeFullQualifiedIdentifier(prefixes, identifier);
+		return semanticsAnalyzer.makeFullQualifiedIdentifier(prefixes, identifier);
 	}
 
 	public String makeFullQualifiedIdentifier(PCompositeIdent compositeIdentifier) {
-		return analyser.makeFullQualifiedIdentifier(compositeIdentifier);
+		return semanticsAnalyzer.makeFullQualifiedIdentifier(compositeIdentifier);
 	}
 
 	public List<String> makeFullQualifiedIdentifierList(List<PIdentifierPrefix> prefixes, TUidentifier identifier) {
-		return analyser.makeFullQualifiedIdentifierList(prefixes, identifier);
+		return semanticsAnalyzer.makeFullQualifiedIdentifierList(prefixes, identifier);
 	}
 
 	public String makeFullQualifiedIdentifier(List<PIdentifierPrefix> prefixes, TUidentifier identifier) {
-		return analyser.makeFullQualifiedIdentifier(prefixes, identifier);
+		return semanticsAnalyzer.makeFullQualifiedIdentifier(prefixes, identifier);
 	}
 
 	public String makeFullQualifiedIdentifier(PCompositeTident compositeIdentifier) {
-		return analyser.makeFullQualifiedIdentifier(compositeIdentifier);
+		return semanticsAnalyzer.makeFullQualifiedIdentifier(compositeIdentifier);
 	}
 
 	public int getLiteralValue(TLitInteger node) {
@@ -631,7 +631,7 @@ public abstract class ObjectNode<N extends Node, T, A extends FMLSemanticsAnalyz
 			Bindable bindable) {
 		// TODO: implement this
 		logger.warning("Un truc a faire la pour " + compositeIdentifier);
-		return new DataBinding(analyser.makeFullQualifiedIdentifier(compositeIdentifier), bindable, type, bindingType);
+		return new DataBinding(analyzer.makeFullQualifiedIdentifier(compositeIdentifier), bindable, type, bindingType);
 	}
 	
 	// We should parse expression instead
@@ -639,7 +639,7 @@ public abstract class ObjectNode<N extends Node, T, A extends FMLSemanticsAnalyz
 	protected <T> DataBinding<T> makeBinding(PCompositeIdent compositeIdentifier, Bindable bindable) {
 		// TODO: implement this
 		logger.warning("Un truc a faire la pour " + compositeIdentifier);
-		return new DataBinding(analyser.makeFullQualifiedIdentifier(compositeIdentifier), bindable, Object.class,
+		return new DataBinding(analyzer.makeFullQualifiedIdentifier(compositeIdentifier), bindable, Object.class,
 				BindingDefinitionType.GET);
 	}*/
 
@@ -833,11 +833,11 @@ public abstract class ObjectNode<N extends Node, T, A extends FMLSemanticsAnalyz
 
 	protected DataBindingNode makeDataBinding(PExpression expression, Bindable bindable) {
 
-		DataBindingNode dataBindingNode = getAnalyser().retrieveFMLNode(expression,
-				n -> new DataBindingNode(n, bindable, BindingDefinitionType.GET, Object.class, getAnalyser()));
+		DataBindingNode dataBindingNode = getSemanticsAnalyzer().retrieveFMLNode(expression,
+				n -> new DataBindingNode(n, bindable, BindingDefinitionType.GET, Object.class, getSemanticsAnalyzer()));
 		addToChildren(dataBindingNode);
 
-		ExpressionFactory.makeExpression(expression, bindable, getAnalyser(), dataBindingNode);
+		ExpressionFactory.makeExpression(expression, bindable, getSemanticsAnalyzer(), dataBindingNode);
 
 		return dataBindingNode;
 	}
@@ -847,12 +847,12 @@ public abstract class ObjectNode<N extends Node, T, A extends FMLSemanticsAnalyz
 	}
 
 	protected void throwIssue(String errorMessage, RawSourceFragment fragment) {
-		getAnalyser().throwIssue(errorMessage, fragment, getStartPosition());
+		getSemanticsAnalyzer().throwIssue(errorMessage, fragment, getStartPosition());
 	}
 
 	@Override
 	public List<SemanticAnalysisIssue> getSemanticAnalysisIssues() {
-		return getAnalyser().getSemanticAnalysisIssues();
+		return getSemanticsAnalyzer().getSemanticAnalysisIssues();
 	}
 
 	@Override

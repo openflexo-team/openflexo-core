@@ -65,12 +65,12 @@ public class ExpressionPropertyNode extends FlexoPropertyNode<AExpressionPropert
 
 	private static final Logger logger = Logger.getLogger(ExpressionPropertyNode.class.getPackage().getName());
 
-	public ExpressionPropertyNode(AExpressionPropertyInnerConceptDecl astNode, FMLCompilationUnitSemanticsAnalyzer analyser) {
-		super(astNode, analyser);
+	public ExpressionPropertyNode(AExpressionPropertyInnerConceptDecl astNode, FMLCompilationUnitSemanticsAnalyzer analyzer) {
+		super(astNode, analyzer);
 	}
 
-	public ExpressionPropertyNode(ExpressionProperty<?> property, FMLCompilationUnitSemanticsAnalyzer analyser) {
-		super(property, analyser);
+	public ExpressionPropertyNode(ExpressionProperty<?> property, FMLCompilationUnitSemanticsAnalyzer analyzer) {
+		super(property, analyzer);
 	}
 
 	@Override
@@ -82,11 +82,11 @@ public class ExpressionPropertyNode extends FlexoPropertyNode<AExpressionPropert
 		} catch (InvalidNameException e) {
 			throwIssue("Invalid name: " + astNode.getIdentifier().getText());
 		}
-		returned.setDeclaredType(TypeFactory.makeType(astNode.getType(), getAnalyser().getTypingSpace()));
+		returned.setDeclaredType(TypeFactory.makeType(astNode.getType(), getSemanticsAnalyzer().getTypingSpace()));
 		// returned.setExpression(makeBinding(astNode.getExpressionValue(), returned));
 
 		DataBinding<Object> expression = ExpressionFactory.makeDataBinding(astNode.getExpressionValue(), returned,
-				BindingDefinitionType.GET, Object.class, getAnalyser(), this);
+				BindingDefinitionType.GET, Object.class, getSemanticsAnalyzer(), this);
 		returned.setExpression(expression);
 
 		return returned;

@@ -73,12 +73,12 @@ public class GetSetPropertyNode extends FlexoPropertyNode<AGetSetPropertyInnerCo
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(GetSetPropertyNode.class.getPackage().getName());
 
-	public GetSetPropertyNode(AGetSetPropertyInnerConceptDecl astNode, FMLCompilationUnitSemanticsAnalyzer analyser) {
-		super(astNode, analyser);
+	public GetSetPropertyNode(AGetSetPropertyInnerConceptDecl astNode, FMLCompilationUnitSemanticsAnalyzer analyzer) {
+		super(astNode, analyzer);
 	}
 
-	public GetSetPropertyNode(GetProperty<?> property, FMLCompilationUnitSemanticsAnalyzer analyser) {
-		super(property, analyser);
+	public GetSetPropertyNode(GetProperty<?> property, FMLCompilationUnitSemanticsAnalyzer analyzer) {
+		super(property, analyzer);
 	}
 
 	@Override
@@ -100,7 +100,7 @@ public class GetSetPropertyNode extends FlexoPropertyNode<AGetSetPropertyInnerCo
 		} catch (InvalidNameException e) {
 			throwIssue("Invalid name: " + astNode.getLidentifier().getText());
 		}
-		returned.setDeclaredType(TypeFactory.makeType(astNode.getType(), getAnalyser().getTypingSpace()));
+		returned.setDeclaredType(TypeFactory.makeType(astNode.getType(), getSemanticsAnalyzer().getTypingSpace()));
 
 		AGetDecl getDeclaration = (AGetDecl) astNode.getGetDecl();
 		ControlGraphNode<?, ?> getCGNode = makeControlGraphNode(getDeclaration.getFlexoBehaviourBody());
@@ -117,7 +117,7 @@ public class GetSetPropertyNode extends FlexoPropertyNode<AGetSetPropertyInnerCo
 
 	protected ControlGraphNode<?, ?> makeControlGraphNode(PFlexoBehaviourBody body) {
 
-		return ControlGraphFactory.makeControlGraphNode(body, getAnalyser());
+		return ControlGraphFactory.makeControlGraphNode(body, getSemanticsAnalyzer());
 	}
 
 	@Override

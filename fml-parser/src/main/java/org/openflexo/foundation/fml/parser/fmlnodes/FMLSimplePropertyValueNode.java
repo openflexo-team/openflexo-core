@@ -68,12 +68,12 @@ public class FMLSimplePropertyValueNode<M extends FMLObject, T>
 
 	private static final Logger logger = Logger.getLogger(FMLSimplePropertyValueNode.class.getPackage().getName());
 
-	public FMLSimplePropertyValueNode(ASimpleQualifiedArgument astNode, FMLCompilationUnitSemanticsAnalyzer analyser) {
-		super(astNode, analyser);
+	public FMLSimplePropertyValueNode(ASimpleQualifiedArgument astNode, FMLCompilationUnitSemanticsAnalyzer analyzer) {
+		super(astNode, analyzer);
 	}
 
-	public FMLSimplePropertyValueNode(FMLSimplePropertyValue<M, T> propertyValue, FMLCompilationUnitSemanticsAnalyzer analyser) {
-		super(propertyValue, analyser);
+	public FMLSimplePropertyValueNode(FMLSimplePropertyValue<M, T> propertyValue, FMLCompilationUnitSemanticsAnalyzer analyzer) {
+		super(propertyValue, analyzer);
 	}
 
 	@Override
@@ -96,7 +96,7 @@ public class FMLSimplePropertyValueNode<M extends FMLObject, T>
 		// DataBinding<Object> value = makeBinding(getASTNode().getExpression(), modelObject);
 
 		DataBinding<Object> value = ExpressionFactory.makeDataBinding(getASTNode().getExpression(), modelObject, BindingDefinitionType.GET,
-				Object.class, getAnalyser(), this);
+				Object.class, getSemanticsAnalyzer(), this);
 		// System.out.println("value=" + value);
 
 		if (DataBinding.class.equals(TypeUtils.getBaseClass(fmlProperty.getType()))) {

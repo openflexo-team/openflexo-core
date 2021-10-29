@@ -68,18 +68,18 @@ public class AddFlexoConceptInstanceNode extends AbstractAddFlexoConceptInstance
 	// private FlexoConceptInstanceType conceptType;
 	// private String creationSchemeName;
 
-	public AddFlexoConceptInstanceNode(ASimpleNewInstance astNode, FMLSemanticsAnalyzer analyser, IBindingPathElement parent,
+	public AddFlexoConceptInstanceNode(ASimpleNewInstance astNode, FMLSemanticsAnalyzer analyzer, IBindingPathElement parent,
 			Bindable bindable) {
-		super(astNode, analyser, parent, bindable);
+		super(astNode, analyzer, parent, bindable);
 	}
 
-	public AddFlexoConceptInstanceNode(AFullQualifiedNewInstance astNode, FMLSemanticsAnalyzer analyser, IBindingPathElement parent,
+	public AddFlexoConceptInstanceNode(AFullQualifiedNewInstance astNode, FMLSemanticsAnalyzer analyzer, IBindingPathElement parent,
 			Bindable bindable) {
-		super(astNode, analyser, parent, bindable);
+		super(astNode, analyzer, parent, bindable);
 	}
 
-	public AddFlexoConceptInstanceNode(CreationSchemePathElement bindingPathElement, FMLSemanticsAnalyzer analyser, Bindable bindable) {
-		super(bindingPathElement, analyser, bindable);
+	public AddFlexoConceptInstanceNode(CreationSchemePathElement bindingPathElement, FMLSemanticsAnalyzer analyzer, Bindable bindable) {
+		super(bindingPathElement, analyzer, bindable);
 	}
 
 	/*@Override
@@ -154,7 +154,7 @@ public class AddFlexoConceptInstanceNode extends AbstractAddFlexoConceptInstance
 	}
 	
 	private void handleArgument(PExpression expression, AddFlexoConceptInstance<?> modelObject) {
-		BehaviourCallArgumentNode callArgNode = new BehaviourCallArgumentNode(expression, getAnalyser());
+		BehaviourCallArgumentNode callArgNode = new BehaviourCallArgumentNode(expression, getanalyzer());
 		addToChildren(callArgNode);
 		callArgNode.deserialize();
 	}
@@ -193,11 +193,11 @@ public class AddFlexoConceptInstanceNode extends AbstractAddFlexoConceptInstance
 			Type type = null;
 			if (astNode instanceof ASimpleNewInstance) {
 				handleArguments(((ASimpleNewInstance) astNode).getArgumentList());
-				type = TypeFactory.makeType(((ASimpleNewInstance) astNode).getType(), getAnalyser().getTypingSpace());
+				type = TypeFactory.makeType(((ASimpleNewInstance) astNode).getType(), getSemanticsAnalyzer().getTypingSpace());
 			}
 			else if (astNode instanceof AFullQualifiedNewInstance) {
 				handleArguments(((AFullQualifiedNewInstance) astNode).getArgumentList());
-				type = TypeFactory.makeType(((AFullQualifiedNewInstance) astNode).getConceptName(), getAnalyser().getTypingSpace());
+				type = TypeFactory.makeType(((AFullQualifiedNewInstance) astNode).getConceptName(), getSemanticsAnalyzer().getTypingSpace());
 			}
 
 			CreationSchemePathElement pathElement = (CreationSchemePathElement) getBindingFactory().makeNewInstancePathElement(type,
@@ -215,7 +215,7 @@ public class AddFlexoConceptInstanceNode extends AbstractAddFlexoConceptInstance
 		/*AddFlexoConceptInstance<?> returned = getFactory().newAddFlexoConceptInstance();
 		// System.out.println(">>>>>> New FCI " + astNode);
 		
-		Type type = TypeFactory.makeType(getConceptNameNode(), getAnalyser().getTypingSpace());
+		Type type = TypeFactory.makeType(getConceptNameNode(), getanalyzer().getTypingSpace());
 		if (type instanceof FlexoConceptInstanceType) {
 			conceptType = (FlexoConceptInstanceType) type;
 		}

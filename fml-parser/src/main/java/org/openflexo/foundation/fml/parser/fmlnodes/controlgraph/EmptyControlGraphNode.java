@@ -53,12 +53,12 @@ public class EmptyControlGraphNode extends ControlGraphNode<Node, EmptyControlGr
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(EmptyControlGraphNode.class.getPackage().getName());
 
-	public EmptyControlGraphNode(Node astNode, FMLCompilationUnitSemanticsAnalyzer analyser) {
-		super(astNode, analyser);
+	public EmptyControlGraphNode(Node astNode, FMLCompilationUnitSemanticsAnalyzer analyzer) {
+		super(astNode, analyzer);
 	}
 
-	public EmptyControlGraphNode(EmptyControlGraph sequence, FMLCompilationUnitSemanticsAnalyzer analyser) {
-		super(sequence, analyser);
+	public EmptyControlGraphNode(EmptyControlGraph sequence, FMLCompilationUnitSemanticsAnalyzer analyzer) {
+		super(sequence, analyzer);
 	}
 
 	@Override

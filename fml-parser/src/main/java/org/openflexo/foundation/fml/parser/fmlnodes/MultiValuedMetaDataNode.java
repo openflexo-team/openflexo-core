@@ -52,12 +52,12 @@ import org.openflexo.p2pp.RawSource.RawSourceFragment;
 public class MultiValuedMetaDataNode
 		extends AbstractMetaDataNode<AComplexAnnotationAnnotation, MultiValuedMetaData, FMLCompilationUnitSemanticsAnalyzer> {
 
-	public MultiValuedMetaDataNode(AComplexAnnotationAnnotation astNode, FMLCompilationUnitSemanticsAnalyzer analyser) {
-		super(astNode, analyser);
+	public MultiValuedMetaDataNode(AComplexAnnotationAnnotation astNode, FMLCompilationUnitSemanticsAnalyzer analyzer) {
+		super(astNode, analyzer);
 	}
 
-	public MultiValuedMetaDataNode(MultiValuedMetaData metaData, FMLCompilationUnitSemanticsAnalyzer analyser) {
-		super(metaData, analyser);
+	public MultiValuedMetaDataNode(MultiValuedMetaData metaData, FMLCompilationUnitSemanticsAnalyzer analyzer) {
+		super(metaData, analyzer);
 	}
 
 	@Override

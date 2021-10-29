@@ -320,7 +320,7 @@ public abstract class CompilationUnitResourceImpl
 	@Override
 	public void finalizeLoadResourceData() throws ResourceLoadingCancelledException, FileNotFoundException, FlexoException {
 		FMLCompilationUnitNode cuNode = (FMLCompilationUnitNode) getLoadedResourceData().getPrettyPrintDelegate();
-		cuNode.getAnalyser().finalizeDeserialization();
+		cuNode.getSemanticsAnalyzer().finalizeDeserialization();
 	}
 
 	/**

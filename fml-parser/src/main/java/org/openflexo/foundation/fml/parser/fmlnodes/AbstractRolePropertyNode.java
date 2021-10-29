@@ -59,12 +59,12 @@ public abstract class AbstractRolePropertyNode<N extends PInnerConceptDecl, R ex
 
 	private static final Logger logger = Logger.getLogger(AbstractRolePropertyNode.class.getPackage().getName());
 
-	public AbstractRolePropertyNode(N astNode, FMLCompilationUnitSemanticsAnalyzer analyser) {
-		super(astNode, analyser);
+	public AbstractRolePropertyNode(N astNode, FMLCompilationUnitSemanticsAnalyzer analyzer) {
+		super(astNode, analyzer);
 	}
 
-	public AbstractRolePropertyNode(R role, FMLCompilationUnitSemanticsAnalyzer analyser) {
-		super(role, analyser);
+	public AbstractRolePropertyNode(R role, FMLCompilationUnitSemanticsAnalyzer analyzer) {
+		super(role, analyzer);
 	}
 
 	protected String serializeFlexoRoleName(FlexoRole<?> role) {

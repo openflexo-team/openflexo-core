@@ -57,8 +57,8 @@ public class ReturnStatementNode extends AssignableActionNode<AReturnStatementWi
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(ReturnStatementNode.class.getPackage().getName());
 
-	public ReturnStatementNode(AReturnStatementWithoutTrailingSubstatement astNode, FMLCompilationUnitSemanticsAnalyzer analyser) {
-		super(astNode, analyser);
+	public ReturnStatementNode(AReturnStatementWithoutTrailingSubstatement astNode, FMLCompilationUnitSemanticsAnalyzer analyzer) {
+		super(astNode, analyzer);
 
 		if (getSemiFragment() != null) {
 			setEndPosition(getSemiFragment().getEndPosition());
@@ -66,8 +66,8 @@ public class ReturnStatementNode extends AssignableActionNode<AReturnStatementWi
 
 	}
 
-	public ReturnStatementNode(ReturnStatement<?> action, FMLCompilationUnitSemanticsAnalyzer analyser) {
-		super(action, analyser);
+	public ReturnStatementNode(ReturnStatement<?> action, FMLCompilationUnitSemanticsAnalyzer analyzer) {
+		super(action, analyzer);
 	}
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
@@ -77,7 +77,7 @@ public class ReturnStatementNode extends AssignableActionNode<AReturnStatementWi
 
 		// Right
 
-		ControlGraphNode<?, ?> assignableActionNode = ControlGraphFactory.makeControlGraphNode(astNode.getExpression(), getAnalyser());
+		ControlGraphNode<?, ?> assignableActionNode = ControlGraphFactory.makeControlGraphNode(astNode.getExpression(), getSemanticsAnalyzer());
 
 		if (assignableActionNode != null) {
 			if (assignableActionNode.getModelObject() instanceof AssignableAction) {

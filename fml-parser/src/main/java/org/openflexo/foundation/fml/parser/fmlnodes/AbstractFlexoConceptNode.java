@@ -64,12 +64,12 @@ import org.openflexo.p2pp.RawSource.RawSourceFragment;
  */
 public abstract class AbstractFlexoConceptNode<N extends Node, T extends FlexoConcept> extends FMLObjectNode<N, T, FMLCompilationUnitSemanticsAnalyzer> {
 
-	public AbstractFlexoConceptNode(N astNode, FMLCompilationUnitSemanticsAnalyzer analyser) {
-		super(astNode, analyser);
+	public AbstractFlexoConceptNode(N astNode, FMLCompilationUnitSemanticsAnalyzer analyzer) {
+		super(astNode, analyzer);
 	}
 
-	public AbstractFlexoConceptNode(T concept, FMLCompilationUnitSemanticsAnalyzer analyser) {
-		super(concept, analyser);
+	public AbstractFlexoConceptNode(T concept, FMLCompilationUnitSemanticsAnalyzer analyzer) {
+		super(concept, analyzer);
 	}
 
 	protected void buildParentConcepts(FlexoConcept returned, PSuperClause superClause) {
@@ -102,7 +102,7 @@ public abstract class AbstractFlexoConceptNode<N extends Node, T extends FlexoCo
 	private void buildParentConcepts(FlexoConcept returned, PSuperTypeList superTypeList) {
 		parentTypes = new ArrayList<>();
 		for (PCompositeTident pCompositeTident : extractIdentifiers(superTypeList)) {
-			Type parentType = TypeFactory.makeType(pCompositeTident, getAnalyser().getTypingSpace());
+			Type parentType = TypeFactory.makeType(pCompositeTident, getSemanticsAnalyzer().getTypingSpace());
 			// FlexoConceptInstanceType parentType = getTypeFactory().lookupConceptNamed(getText(pCompositeTident),
 			// getFragment(pCompositeTident));
 			if (parentType instanceof FlexoConceptInstanceType) {

@@ -65,12 +65,12 @@ public abstract class AbstractCallBindingPathElementNode<N extends Node, BPE ext
 
 	private List<DataBinding<?>> args;
 
-	public AbstractCallBindingPathElementNode(N astNode, FMLSemanticsAnalyzer analyser, Bindable bindable) {
-		super(astNode, analyser, bindable);
+	public AbstractCallBindingPathElementNode(N astNode, FMLSemanticsAnalyzer analyzer, Bindable bindable) {
+		super(astNode, analyzer, bindable);
 	}
 
-	public AbstractCallBindingPathElementNode(BPE bindingPathElement, FMLSemanticsAnalyzer analyser, Bindable bindable) {
-		super(bindingPathElement, analyser, bindable);
+	public AbstractCallBindingPathElementNode(BPE bindingPathElement, FMLSemanticsAnalyzer analyzer, Bindable bindable) {
+		super(bindingPathElement, analyzer, bindable);
 	}
 
 	public List<DataBinding<?>> getArguments() {

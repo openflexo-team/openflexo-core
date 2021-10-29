@@ -65,12 +65,12 @@ public class ConditionalNode extends ControlGraphNode<Node, ConditionalAction> {
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(ConditionalNode.class.getPackage().getName());
 
-	public ConditionalNode(Node astNode, FMLCompilationUnitSemanticsAnalyzer analyser) {
-		super(astNode, analyser);
+	public ConditionalNode(Node astNode, FMLCompilationUnitSemanticsAnalyzer analyzer) {
+		super(astNode, analyzer);
 	}
 
-	public ConditionalNode(ConditionalAction sequence, FMLCompilationUnitSemanticsAnalyzer analyser) {
-		super(sequence, analyser);
+	public ConditionalNode(ConditionalAction sequence, FMLCompilationUnitSemanticsAnalyzer analyzer) {
+		super(sequence, analyzer);
 	}
 
 	@Override
@@ -78,22 +78,22 @@ public class ConditionalNode extends ControlGraphNode<Node, ConditionalAction> {
 		ConditionalAction returned = getFactory().newConditionalAction();
 		// DataBinding<Boolean> condition = makeBinding(getExpression(astNode), returned);
 		DataBinding<Boolean> condition = ExpressionFactory.makeDataBinding(getExpression(astNode), returned, BindingDefinitionType.GET,
-				Boolean.class, getAnalyser(), this);
+				Boolean.class, getSemanticsAnalyzer(), this);
 
 		returned.setCondition(condition);
 		if (astNode instanceof AIfSimpleStatement) {
 			ControlGraphNode<?, ?> thenCGNode = ControlGraphFactory.makeControlGraphNode(((AIfSimpleStatement) astNode).getStatement(),
-					getAnalyser());
+					getSemanticsAnalyzer());
 			returned.setThenControlGraph(thenCGNode.getModelObject());
 			addToChildren(thenCGNode);
 		}
 		if (astNode instanceof AIfElseStatement) {
 			ControlGraphNode<?, ?> thenCGNode = ControlGraphFactory
-					.makeControlGraphNode(((AIfElseStatement) astNode).getStatementNoShortIf(), getAnalyser());
+					.makeControlGraphNode(((AIfElseStatement) astNode).getStatementNoShortIf(), getSemanticsAnalyzer());
 			returned.setThenControlGraph(thenCGNode.getModelObject());
 			addToChildren(thenCGNode);
 			ControlGraphNode<?, ?> elseCGNode = ControlGraphFactory.makeControlGraphNode(((AIfElseStatement) astNode).getStatement(),
-					getAnalyser());
+					getSemanticsAnalyzer());
 			returned.setElseControlGraph(elseCGNode.getModelObject());
 			addToChildren(elseCGNode);
 		}

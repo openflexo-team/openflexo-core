@@ -64,12 +64,12 @@ public class ActionSchemeNode extends FlexoBehaviourNode<AMethodBehaviourDecl, A
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(ActionSchemeNode.class.getPackage().getName());
 
-	public ActionSchemeNode(AMethodBehaviourDecl astNode, FMLCompilationUnitSemanticsAnalyzer analyser) {
-		super(astNode, analyser);
+	public ActionSchemeNode(AMethodBehaviourDecl astNode, FMLCompilationUnitSemanticsAnalyzer analyzer) {
+		super(astNode, analyzer);
 	}
 
-	public ActionSchemeNode(ActionScheme creationScheme, FMLCompilationUnitSemanticsAnalyzer analyser) {
-		super(creationScheme, analyser);
+	public ActionSchemeNode(ActionScheme creationScheme, FMLCompilationUnitSemanticsAnalyzer analyzer) {
+		super(creationScheme, analyzer);
 	}
 
 	@Override
@@ -87,7 +87,7 @@ public class ActionSchemeNode extends FlexoBehaviourNode<AMethodBehaviourDecl, A
 
 		PFlexoBehaviourBody flexoBehaviourBody = getFlexoBehaviourBody(astNode);
 		if (flexoBehaviourBody instanceof ABlockFlexoBehaviourBody) {
-			ControlGraphNode<?, ?> cgNode = ControlGraphFactory.makeControlGraphNode(getFlexoBehaviourBody(astNode), getAnalyser());
+			ControlGraphNode<?, ?> cgNode = ControlGraphFactory.makeControlGraphNode(getFlexoBehaviourBody(astNode), getSemanticsAnalyzer());
 			if (cgNode != null) {
 				returned.setControlGraph(cgNode.getModelObject());
 				addToChildren(cgNode);

@@ -61,14 +61,14 @@ public class FMLCompilationUnitNode extends FMLObjectNode<AFmlCompilationUnit, F
 	private RawSourcePosition startPosition;
 	private RawSourcePosition endPosition;
 
-	public FMLCompilationUnitNode(AFmlCompilationUnit astNode, FMLCompilationUnitSemanticsAnalyzer analyser) {
-		super(astNode, analyser);
+	public FMLCompilationUnitNode(AFmlCompilationUnit astNode, FMLCompilationUnitSemanticsAnalyzer analyzer) {
+		super(astNode, analyzer);
 		startPosition = getRawSource().getStartPosition();
 		endPosition = getRawSource().getEndPosition();
 	}
 
-	public FMLCompilationUnitNode(FMLCompilationUnit compilationUnit, FMLCompilationUnitSemanticsAnalyzer analyser) {
-		super(compilationUnit, analyser);
+	public FMLCompilationUnitNode(FMLCompilationUnit compilationUnit, FMLCompilationUnitSemanticsAnalyzer analyzer) {
+		super(compilationUnit, analyzer);
 	}
 
 	@Override

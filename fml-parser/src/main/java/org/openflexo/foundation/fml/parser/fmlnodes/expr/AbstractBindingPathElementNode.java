@@ -74,16 +74,16 @@ public abstract class AbstractBindingPathElementNode<N extends Node, BPE extends
 
 	private boolean readyToBuildModelObject = false;
 
-	public AbstractBindingPathElementNode(N astNode, FMLSemanticsAnalyzer analyser, Bindable bindable) {
-		super(astNode, analyser);
+	public AbstractBindingPathElementNode(N astNode, FMLSemanticsAnalyzer analyzer, Bindable bindable) {
+		super(astNode, analyzer);
 		this.bindable = bindable;
 		// buildModelObjectFromAST() was already called, but too early (bindable not yet set)
 		// we do it again
 		modelObject = buildModelObjectFromAST(astNode);
 	}
 
-	public AbstractBindingPathElementNode(BPE bindingPathElement, FMLSemanticsAnalyzer analyser, Bindable bindable) {
-		super(bindingPathElement, analyser);
+	public AbstractBindingPathElementNode(BPE bindingPathElement, FMLSemanticsAnalyzer analyzer, Bindable bindable) {
+		super(bindingPathElement, analyzer);
 		this.bindable = bindable;
 	}
 
@@ -95,7 +95,7 @@ public abstract class AbstractBindingPathElementNode<N extends Node, BPE extends
 		if (getBindable() != null && getBindable().getBindingFactory() != null) {
 			return getBindable().getBindingFactory();
 		}
-		return getAnalyser().getFMLBindingFactory();
+		return getSemanticsAnalyzer().getFMLBindingFactory();
 	}
 
 	// Take care that this method is never called !
@@ -122,7 +122,7 @@ public abstract class AbstractBindingPathElementNode<N extends Node, BPE extends
 
 	protected String getLastPathIdentifier(PPrimary primary) {
 		if (primary instanceof AIdentifierPrimary) {
-			String fullQualifiedIdentifier = getAnalyser().makeFullQualifiedIdentifier(((AIdentifierPrimary) primary).getCompositeIdent());
+			String fullQualifiedIdentifier = getSemanticsAnalyzer().makeFullQualifiedIdentifier(((AIdentifierPrimary) primary).getCompositeIdent());
 			if (fullQualifiedIdentifier.contains(".")) {
 				return fullQualifiedIdentifier.substring(fullQualifiedIdentifier.lastIndexOf(".") + 1);
 			}

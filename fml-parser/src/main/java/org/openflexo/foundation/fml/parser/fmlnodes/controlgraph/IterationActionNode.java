@@ -61,12 +61,12 @@ public class IterationActionNode extends ControlGraphNode<AForEnhancedStatement,
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(IterationActionNode.class.getPackage().getName());
 
-	public IterationActionNode(AForEnhancedStatement astNode, FMLCompilationUnitSemanticsAnalyzer analyser) {
-		super(astNode, analyser);
+	public IterationActionNode(AForEnhancedStatement astNode, FMLCompilationUnitSemanticsAnalyzer analyzer) {
+		super(astNode, analyzer);
 	}
 
-	public IterationActionNode(IterationAction iteration, FMLCompilationUnitSemanticsAnalyzer analyser) {
-		super(iteration, analyser);
+	public IterationActionNode(IterationAction iteration, FMLCompilationUnitSemanticsAnalyzer analyzer) {
+		super(iteration, analyzer);
 	}
 
 	@Override
@@ -75,7 +75,7 @@ public class IterationActionNode extends ControlGraphNode<AForEnhancedStatement,
 
 		returned.setIteratorName(astNode.getLidentifier().getText());
 
-		ControlGraphNode<?, ?> iterationActionCGNode = ControlGraphFactory.makeControlGraphNode(astNode.getExpression(), getAnalyser());
+		ControlGraphNode<?, ?> iterationActionCGNode = ControlGraphFactory.makeControlGraphNode(astNode.getExpression(), getSemanticsAnalyzer());
 		if (iterationActionCGNode.getModelObject() instanceof AssignableAction) {
 			returned.setIterationAction((AssignableAction) iterationActionCGNode.getModelObject());
 			addToChildren(iterationActionCGNode);
@@ -84,7 +84,7 @@ public class IterationActionNode extends ControlGraphNode<AForEnhancedStatement,
 			throwIssue("Cannot iterate on " + iterationActionCGNode.getModelObject(), getFragment(astNode.getExpression()));
 		}
 
-		ControlGraphNode<?, ?> iterationCGNode = ControlGraphFactory.makeControlGraphNode(astNode.getStatement(), getAnalyser());
+		ControlGraphNode<?, ?> iterationCGNode = ControlGraphFactory.makeControlGraphNode(astNode.getStatement(), getSemanticsAnalyzer());
 		returned.setControlGraph(iterationCGNode.getModelObject());
 		addToChildren(iterationCGNode);
 

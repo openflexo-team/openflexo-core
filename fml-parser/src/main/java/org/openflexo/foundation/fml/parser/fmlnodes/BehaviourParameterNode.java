@@ -76,12 +76,12 @@ public class BehaviourParameterNode extends FMLObjectNode<PFormalArgument, Flexo
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(BehaviourParameterNode.class.getPackage().getName());
 
-	public BehaviourParameterNode(PFormalArgument astNode, FMLCompilationUnitSemanticsAnalyzer analyser) {
-		super(astNode, analyser);
+	public BehaviourParameterNode(PFormalArgument astNode, FMLCompilationUnitSemanticsAnalyzer analyzer) {
+		super(astNode, analyzer);
 	}
 
-	public BehaviourParameterNode(FlexoBehaviourParameter modelObject, FMLCompilationUnitSemanticsAnalyzer analyser) {
-		super(modelObject, analyser);
+	public BehaviourParameterNode(FlexoBehaviourParameter modelObject, FMLCompilationUnitSemanticsAnalyzer analyzer) {
+		super(modelObject, analyzer);
 	}
 
 	@Override
@@ -99,7 +99,7 @@ public class BehaviourParameterNode extends FMLObjectNode<PFormalArgument, Flexo
 		FlexoBehaviourParameter returned = getFactory().newParameter(null);
 
 		if (astNode instanceof APrimitiveFormalArgument) {
-			Type type = TypeFactory.makeType(((APrimitiveFormalArgument) astNode).getPrimitiveType(), getAnalyser().getTypingSpace());
+			Type type = TypeFactory.makeType(((APrimitiveFormalArgument) astNode).getPrimitiveType(), getSemanticsAnalyzer().getTypingSpace());
 			PrimitiveType primitiveType = PrimitiveType.toPrimitiveType(type);
 			if (primitiveType != null) {
 				returned.setType(primitiveType.getType());
@@ -116,7 +116,7 @@ public class BehaviourParameterNode extends FMLObjectNode<PFormalArgument, Flexo
 			handleDefaultArgumentValue(returned, ((APrimitiveFormalArgument) astNode).getDefaultArgumentValue());
 		}
 		else if (astNode instanceof AComplexFormalArgument) {
-			returned.setType(TypeFactory.makeType(((AComplexFormalArgument) astNode).getReferenceType(), getAnalyser().getTypingSpace()));
+			returned.setType(TypeFactory.makeType(((AComplexFormalArgument) astNode).getReferenceType(), getSemanticsAnalyzer().getTypingSpace()));
 			try {
 				returned.setName(((AComplexFormalArgument) astNode).getArgName().getText());
 			} catch (InvalidNameException e) {
@@ -132,7 +132,7 @@ public class BehaviourParameterNode extends FMLObjectNode<PFormalArgument, Flexo
 		if (anArgValue instanceof ADefaultArgumentValue) {
 			ADefaultArgumentValue argValue = (ADefaultArgumentValue) anArgValue;
 			DataBinding<?> expression = ExpressionFactory.makeDataBinding(argValue.getExpression(), param, BindingDefinitionType.GET,
-					Object.class, getAnalyser(), this);
+					Object.class, getSemanticsAnalyzer(), this);
 			param.setDefaultValue(expression);
 		}
 	}

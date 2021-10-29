@@ -50,12 +50,12 @@ import org.openflexo.p2pp.RawSource.RawSourceFragment;
  */
 public class JavaImportNode extends AbstractJavaImportNode<AJavaImportImportDecl> {
 
-	public JavaImportNode(AJavaImportImportDecl astNode, FMLCompilationUnitSemanticsAnalyzer analyser) {
-		super(astNode, analyser);
+	public JavaImportNode(AJavaImportImportDecl astNode, FMLCompilationUnitSemanticsAnalyzer analyzer) {
+		super(astNode, analyzer);
 	}
 
-	public JavaImportNode(JavaImportDeclaration importDeclaration, FMLCompilationUnitSemanticsAnalyzer analyser) {
-		super(importDeclaration, analyser);
+	public JavaImportNode(JavaImportDeclaration importDeclaration, FMLCompilationUnitSemanticsAnalyzer analyzer) {
+		super(importDeclaration, analyzer);
 	}
 
 	@Override

@@ -59,8 +59,8 @@ public class DataBindingNode extends ObjectNode<Node, DataBinding<?>, FMLCompila
 	private Type expectedType;
 
 	public DataBindingNode(Node astNode, Bindable bindable, BindingDefinitionType bindingDefinitionType, Type expectedType,
-			FMLSemanticsAnalyzer analyser) {
-		super(astNode, analyser);
+			FMLSemanticsAnalyzer analyzer) {
+		super(astNode, analyzer);
 		this.bindable = bindable;
 		this.bindingDefinitionType = bindingDefinitionType;
 		this.expectedType = expectedType;
@@ -69,8 +69,8 @@ public class DataBindingNode extends ObjectNode<Node, DataBinding<?>, FMLCompila
 		modelObject = buildModelObjectFromAST(astNode);
 	}
 
-	public DataBindingNode(DataBinding<?> dataBinding, FMLSemanticsAnalyzer analyser) {
-		super(dataBinding, analyser);
+	public DataBindingNode(DataBinding<?> dataBinding, FMLSemanticsAnalyzer analyzer) {
+		super(dataBinding, analyzer);
 	}
 
 	@Override

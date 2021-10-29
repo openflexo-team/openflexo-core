@@ -54,12 +54,12 @@ import org.openflexo.foundation.fml.parser.node.Token;
  */
 public class BindingVariableNode extends AbstractBindingPathElementNode<Token, BindingVariable> {
 
-	public BindingVariableNode(Token astNode, FMLSemanticsAnalyzer analyser, Bindable bindable) {
-		super(astNode, analyser, bindable);
+	public BindingVariableNode(Token astNode, FMLSemanticsAnalyzer analyzer, Bindable bindable) {
+		super(astNode, analyzer, bindable);
 	}
 
-	public BindingVariableNode(BindingVariable bindingPathElement, FMLSemanticsAnalyzer analyser, Bindable bindable) {
-		super(bindingPathElement, analyser, bindable);
+	public BindingVariableNode(BindingVariable bindingPathElement, FMLSemanticsAnalyzer analyzer, Bindable bindable) {
+		super(bindingPathElement, analyzer, bindable);
 	}
 
 	@Override

@@ -56,16 +56,16 @@ public class SimplePathElementNode extends AbstractBindingPathElementNode<Token,
 
 	private IBindingPathElement parent;
 
-	public SimplePathElementNode(Token astNode, FMLSemanticsAnalyzer analyser, IBindingPathElement parent, Bindable bindable) {
-		super(astNode, analyser, bindable);
+	public SimplePathElementNode(Token astNode, FMLSemanticsAnalyzer analyzer, IBindingPathElement parent, Bindable bindable) {
+		super(astNode, analyzer, bindable);
 		this.parent = parent;
 		// buildModelObjectFromAST() was already called, but too early (parent not yet set)
 		// we do it again
 		modelObject = buildModelObjectFromAST(astNode);
 	}
 
-	public SimplePathElementNode(SimplePathElement<?> bindingPathElement, FMLSemanticsAnalyzer analyser, Bindable bindable) {
-		super(bindingPathElement, analyser, bindable);
+	public SimplePathElementNode(SimplePathElement<?> bindingPathElement, FMLSemanticsAnalyzer analyzer, Bindable bindable) {
+		super(bindingPathElement, analyzer, bindable);
 	}
 
 	@Override

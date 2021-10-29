@@ -57,9 +57,9 @@ public class MethodCallBindingPathElementNode
 	private Node identifierNode;
 	private IBindingPathElement parent;
 
-	public MethodCallBindingPathElementNode(APrimaryMethodInvocation astNode, Node identifierNode, FMLSemanticsAnalyzer analyser,
+	public MethodCallBindingPathElementNode(APrimaryMethodInvocation astNode, Node identifierNode, FMLSemanticsAnalyzer analyzer,
 			IBindingPathElement parent, Bindable bindable) {
-		super(astNode, analyser, bindable);
+		super(astNode, analyzer, bindable);
 		this.identifierNode = identifierNode;
 		this.parent = parent;
 		setReadyToBuildModelObject(true);
@@ -69,9 +69,9 @@ public class MethodCallBindingPathElementNode
 
 	}
 
-	public MethodCallBindingPathElementNode(SimpleMethodPathElement<?> bindingPathElement, FMLSemanticsAnalyzer analyser,
+	public MethodCallBindingPathElementNode(SimpleMethodPathElement<?> bindingPathElement, FMLSemanticsAnalyzer analyzer,
 			Bindable bindable) {
-		super(bindingPathElement, analyser, bindable);
+		super(bindingPathElement, analyzer, bindable);
 	}
 
 	@Override

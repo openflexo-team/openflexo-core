@@ -55,12 +55,12 @@ public class JavaRoleNode extends BasicPropertyNode<JavaRole<?>> {
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(JavaRoleNode.class.getPackage().getName());
 
-	public JavaRoleNode(AJavaInnerConceptDecl astNode, FMLCompilationUnitSemanticsAnalyzer analyser) {
-		super(astNode, analyser);
+	public JavaRoleNode(AJavaInnerConceptDecl astNode, FMLCompilationUnitSemanticsAnalyzer analyzer) {
+		super(astNode, analyzer);
 	}
 
-	public JavaRoleNode(JavaRole<?> property, FMLCompilationUnitSemanticsAnalyzer analyser) {
-		super(property, analyser);
+	public JavaRoleNode(JavaRole<?> property, FMLCompilationUnitSemanticsAnalyzer analyzer) {
+		super(property, analyzer);
 	}
 
 	@Override
@@ -82,7 +82,7 @@ public class JavaRoleNode extends BasicPropertyNode<JavaRole<?>> {
 		} catch (InvalidNameException e) {
 			throwIssue("Invalid name: " + getName(astNode.getVariableDeclarator()).getText());
 		}
-		returned.setType(TypeFactory.makeType(astNode.getType(), getAnalyser().getTypingSpace()));
+		returned.setType(TypeFactory.makeType(astNode.getType(), getSemanticsAnalyzer().getTypingSpace()));
 		return returned;
 	}
 

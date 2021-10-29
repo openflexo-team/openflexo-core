@@ -59,8 +59,8 @@ public abstract class FMLObjectNode<N extends Node, T extends FMLPrettyPrintable
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(FMLObjectNode.class.getPackage().getName());
 
-	public FMLObjectNode(N astNode, FMLCompilationUnitSemanticsAnalyzer analyser) {
-		super(astNode, analyser);
+	public FMLObjectNode(N astNode, FMLCompilationUnitSemanticsAnalyzer analyzer) {
+		super(astNode, analyzer);
 
 		if (modelObject != null) {
 			modelObject.setPrettyPrintDelegate(this);
@@ -68,16 +68,16 @@ public abstract class FMLObjectNode<N extends Node, T extends FMLPrettyPrintable
 		}
 	}
 
-	public FMLObjectNode(T aFMLObject, FMLCompilationUnitSemanticsAnalyzer analyser) {
-		super(aFMLObject, analyser);
+	public FMLObjectNode(T aFMLObject, FMLCompilationUnitSemanticsAnalyzer analyzer) {
+		super(aFMLObject, analyzer);
 
 		modelObject.setPrettyPrintDelegate(this);
 		preparePrettyPrint(false);
 	}
 
 	@Override
-	public FMLCompilationUnitSemanticsAnalyzer getAnalyser() {
-		return (FMLCompilationUnitSemanticsAnalyzer) super.getAnalyser();
+	public FMLCompilationUnitSemanticsAnalyzer getSemanticsAnalyzer() {
+		return (FMLCompilationUnitSemanticsAnalyzer) super.getSemanticsAnalyzer();
 	}
 
 	@Override

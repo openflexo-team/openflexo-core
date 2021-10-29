@@ -57,12 +57,12 @@ public class ExpressionActionNode extends AssignableActionNode<Node, ExpressionA
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(ExpressionActionNode.class.getPackage().getName());
 
-	public ExpressionActionNode(Node astNode, FMLCompilationUnitSemanticsAnalyzer analyser) {
-		super(astNode, analyser);
+	public ExpressionActionNode(Node astNode, FMLCompilationUnitSemanticsAnalyzer analyzer) {
+		super(astNode, analyzer);
 	}
 
-	public ExpressionActionNode(ExpressionAction<?> action, FMLCompilationUnitSemanticsAnalyzer analyser) {
-		super(action, analyser);
+	public ExpressionActionNode(ExpressionAction<?> action, FMLCompilationUnitSemanticsAnalyzer analyzer) {
+		super(action, analyzer);
 	}
 
 	@Override
@@ -71,7 +71,7 @@ public class ExpressionActionNode extends AssignableActionNode<Node, ExpressionA
 		// System.out.println(">>>>>> Expression " + astNode);
 
 		DataBinding expression = ExpressionFactory.makeDataBinding(astNode, returned, BindingDefinitionType.GET, Object.class,
-				getAnalyser(), this);
+				getSemanticsAnalyzer(), this);
 		returned.setExpression(expression);
 		return returned;
 	}

@@ -68,12 +68,12 @@ public class DeletionSchemeNode extends FlexoBehaviourNode<PBehaviourDecl, Delet
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(DeletionSchemeNode.class.getPackage().getName());
 
-	public DeletionSchemeNode(PBehaviourDecl astNode, FMLCompilationUnitSemanticsAnalyzer analyser) {
-		super(astNode, analyser);
+	public DeletionSchemeNode(PBehaviourDecl astNode, FMLCompilationUnitSemanticsAnalyzer analyzer) {
+		super(astNode, analyzer);
 	}
 
-	public DeletionSchemeNode(DeletionScheme DeletionScheme, FMLCompilationUnitSemanticsAnalyzer analyser) {
-		super(DeletionScheme, analyser);
+	public DeletionSchemeNode(DeletionScheme DeletionScheme, FMLCompilationUnitSemanticsAnalyzer analyzer) {
+		super(DeletionScheme, analyzer);
 	}
 
 	private boolean isAnonymous() {
@@ -105,7 +105,7 @@ public class DeletionSchemeNode extends FlexoBehaviourNode<PBehaviourDecl, Delet
 
 		PFlexoBehaviourBody flexoBehaviourBody = getFlexoBehaviourBody(astNode);
 		if (flexoBehaviourBody instanceof ABlockFlexoBehaviourBody) {
-			ControlGraphNode<?, ?> cgNode = ControlGraphFactory.makeControlGraphNode(getFlexoBehaviourBody(astNode), getAnalyser());
+			ControlGraphNode<?, ?> cgNode = ControlGraphFactory.makeControlGraphNode(getFlexoBehaviourBody(astNode), getSemanticsAnalyzer());
 			if (cgNode != null) {
 				returned.setControlGraph(cgNode.getModelObject());
 				addToChildren(cgNode);

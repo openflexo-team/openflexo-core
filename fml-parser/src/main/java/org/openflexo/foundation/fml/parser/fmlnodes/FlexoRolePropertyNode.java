@@ -66,12 +66,12 @@ public class FlexoRolePropertyNode<N extends PInnerConceptDecl, R extends FlexoR
 
 	private static final Logger logger = Logger.getLogger(FlexoRolePropertyNode.class.getPackage().getName());
 
-	public FlexoRolePropertyNode(N astNode, FMLCompilationUnitSemanticsAnalyzer analyser) {
-		super(astNode, analyser);
+	public FlexoRolePropertyNode(N astNode, FMLCompilationUnitSemanticsAnalyzer analyzer) {
+		super(astNode, analyzer);
 	}
 
-	public FlexoRolePropertyNode(R modelSlot, FMLCompilationUnitSemanticsAnalyzer analyser) {
-		super(modelSlot, analyser);
+	public FlexoRolePropertyNode(R modelSlot, FMLCompilationUnitSemanticsAnalyzer analyzer) {
+		super(modelSlot, analyzer);
 	}
 
 	@Override
@@ -94,7 +94,7 @@ public class FlexoRolePropertyNode<N extends PInnerConceptDecl, R extends FlexoR
 				throwIssue("Invalid name: " + ((AFmlInnerConceptDecl) astNode).getLidentifier().getText());
 			}
 			returned.setCardinality(getCardinality(((AFmlInnerConceptDecl) astNode).getCardinality()));
-			Type type = TypeFactory.makeType(((AFmlInnerConceptDecl) astNode).getType(), getAnalyser().getTypingSpace());
+			Type type = TypeFactory.makeType(((AFmlInnerConceptDecl) astNode).getType(), getSemanticsAnalyzer().getTypingSpace());
 			// CustomType type = (CustomType) getTypeFactory().makeType(((AFmlInnerConceptDecl) astNode).getType(), returned);
 			returned.setType(type);
 		}
@@ -106,7 +106,7 @@ public class FlexoRolePropertyNode<N extends PInnerConceptDecl, R extends FlexoR
 				throwIssue("Invalid name: " + ((AFmlFullyQualifiedInnerConceptDecl) astNode).getLidentifier().getText());
 			}
 			returned.setCardinality(getCardinality(((AFmlFullyQualifiedInnerConceptDecl) astNode).getCardinality()));
-			Type type = TypeFactory.makeType(((AFmlFullyQualifiedInnerConceptDecl) astNode).getType(), getAnalyser().getTypingSpace());
+			Type type = TypeFactory.makeType(((AFmlFullyQualifiedInnerConceptDecl) astNode).getType(), getSemanticsAnalyzer().getTypingSpace());
 			// CustomType type = (CustomType) getTypeFactory().makeType(((AFmlFullyQualifiedInnerConceptDecl) astNode).getType(), returned);
 			returned.setType(type);
 		}

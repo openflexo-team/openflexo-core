@@ -54,12 +54,12 @@ public abstract class AssignableActionNode<N extends Node, T extends AssignableA
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(AssignableActionNode.class.getPackage().getName());
 
-	public AssignableActionNode(N astNode, FMLCompilationUnitSemanticsAnalyzer analyser) {
-		super(astNode, analyser);
+	public AssignableActionNode(N astNode, FMLCompilationUnitSemanticsAnalyzer analyzer) {
+		super(astNode, analyzer);
 	}
 
-	public AssignableActionNode(T property, FMLCompilationUnitSemanticsAnalyzer analyser) {
-		super(property, analyser);
+	public AssignableActionNode(T property, FMLCompilationUnitSemanticsAnalyzer analyzer) {
+		super(property, analyzer);
 	}
 
 	/**

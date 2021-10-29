@@ -67,14 +67,14 @@ public class FMLEditionActionNode<EA extends TechnologySpecificAction<?, ?>>
 	private RawSourcePosition startPosition;
 	private RawSourcePosition endPosition;
 
-	public FMLEditionActionNode(ATaEditionActionFmlActionExp astNode, FMLCompilationUnitSemanticsAnalyzer analyser) {
-		super(astNode, analyser);
+	public FMLEditionActionNode(ATaEditionActionFmlActionExp astNode, FMLCompilationUnitSemanticsAnalyzer analyzer) {
+		super(astNode, analyzer);
 		startPosition = getRawSource().getStartPosition();
 		endPosition = getRawSource().getEndPosition();
 	}
 
-	public FMLEditionActionNode(EA editionAction, FMLCompilationUnitSemanticsAnalyzer analyser) {
-		super(editionAction, analyser);
+	public FMLEditionActionNode(EA editionAction, FMLCompilationUnitSemanticsAnalyzer analyzer) {
+		super(editionAction, analyzer);
 	}
 
 	@Override

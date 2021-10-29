@@ -74,12 +74,12 @@ public class FMLBehaviourNode<N extends Node, B extends FlexoBehaviour> extends 
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(FMLBehaviourNode.class.getPackage().getName());
 
-	public FMLBehaviourNode(N astNode, FMLCompilationUnitSemanticsAnalyzer analyser) {
-		super(astNode, analyser);
+	public FMLBehaviourNode(N astNode, FMLCompilationUnitSemanticsAnalyzer analyzer) {
+		super(astNode, analyzer);
 	}
 
-	public FMLBehaviourNode(B behaviour, FMLCompilationUnitSemanticsAnalyzer analyser) {
-		super(behaviour, analyser);
+	public FMLBehaviourNode(B behaviour, FMLCompilationUnitSemanticsAnalyzer analyzer) {
+		super(behaviour, analyzer);
 	}
 
 	@Override
@@ -116,7 +116,7 @@ public class FMLBehaviourNode<N extends Node, B extends FlexoBehaviour> extends 
 
 		PFlexoBehaviourBody flexoBehaviourBody = getFlexoBehaviourBody(astNode);
 		if (flexoBehaviourBody instanceof ABlockFlexoBehaviourBody) {
-			ControlGraphNode<?, ?> cgNode = ControlGraphFactory.makeControlGraphNode(getFlexoBehaviourBody(astNode), getAnalyser());
+			ControlGraphNode<?, ?> cgNode = ControlGraphFactory.makeControlGraphNode(getFlexoBehaviourBody(astNode), getSemanticsAnalyzer());
 			if (cgNode != null) {
 				returned.setControlGraph(cgNode.getModelObject());
 				addToChildren(cgNode);

@@ -58,12 +58,12 @@ public abstract class ControlGraphNode<N extends Node, T extends FMLControlGraph
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(ControlGraphNode.class.getPackage().getName());
 
-	public ControlGraphNode(N astNode, FMLCompilationUnitSemanticsAnalyzer analyser) {
-		super(astNode, analyser);
+	public ControlGraphNode(N astNode, FMLCompilationUnitSemanticsAnalyzer analyzer) {
+		super(astNode, analyzer);
 	}
 
-	public ControlGraphNode(T property, FMLCompilationUnitSemanticsAnalyzer analyser) {
-		super(property, analyser);
+	public ControlGraphNode(T property, FMLCompilationUnitSemanticsAnalyzer analyzer) {
+		super(property, analyzer);
 	}
 
 	@Override

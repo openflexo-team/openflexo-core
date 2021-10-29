@@ -57,12 +57,12 @@ public abstract class AbstractFMLPropertyValueNode<N extends Node, P extends FML
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(AbstractFMLPropertyValueNode.class.getPackage().getName());
 
-	public AbstractFMLPropertyValueNode(N astNode, FMLCompilationUnitSemanticsAnalyzer analyser) {
-		super(astNode, analyser);
+	public AbstractFMLPropertyValueNode(N astNode, FMLCompilationUnitSemanticsAnalyzer analyzer) {
+		super(astNode, analyzer);
 	}
 
-	public AbstractFMLPropertyValueNode(P property, FMLCompilationUnitSemanticsAnalyzer analyser) {
-		super(property, analyser);
+	public AbstractFMLPropertyValueNode(P property, FMLCompilationUnitSemanticsAnalyzer analyzer) {
+		super(property, analyzer);
 	}
 
 	@Override

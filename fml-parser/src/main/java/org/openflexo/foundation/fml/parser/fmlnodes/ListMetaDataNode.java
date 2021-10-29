@@ -51,12 +51,12 @@ import org.openflexo.p2pp.RawSource.RawSourceFragment;
  */
 public class ListMetaDataNode extends AbstractMetaDataNode<AListAnnotationAnnotation, ListMetaData, FMLCompilationUnitSemanticsAnalyzer> {
 
-	public ListMetaDataNode(AListAnnotationAnnotation astNode, FMLCompilationUnitSemanticsAnalyzer analyser) {
-		super(astNode, analyser);
+	public ListMetaDataNode(AListAnnotationAnnotation astNode, FMLCompilationUnitSemanticsAnalyzer analyzer) {
+		super(astNode, analyzer);
 	}
 
-	public ListMetaDataNode(ListMetaData metaData, FMLCompilationUnitSemanticsAnalyzer analyser) {
-		super(metaData, analyser);
+	public ListMetaDataNode(ListMetaData metaData, FMLCompilationUnitSemanticsAnalyzer analyzer) {
+		super(metaData, analyzer);
 	}
 
 	@Override

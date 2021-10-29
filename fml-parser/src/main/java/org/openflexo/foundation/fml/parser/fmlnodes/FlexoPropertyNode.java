@@ -55,12 +55,12 @@ public abstract class FlexoPropertyNode<N extends Node, T extends FlexoProperty<
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(FlexoPropertyNode.class.getPackage().getName());
 
-	public FlexoPropertyNode(N astNode, FMLCompilationUnitSemanticsAnalyzer analyser) {
-		super(astNode, analyser);
+	public FlexoPropertyNode(N astNode, FMLCompilationUnitSemanticsAnalyzer analyzer) {
+		super(astNode, analyzer);
 	}
 
-	public FlexoPropertyNode(T property, FMLCompilationUnitSemanticsAnalyzer analyser) {
-		super(property, analyser);
+	public FlexoPropertyNode(T property, FMLCompilationUnitSemanticsAnalyzer analyzer) {
+		super(property, analyzer);
 	}
 
 	@Override
@@ -76,7 +76,7 @@ public abstract class FlexoPropertyNode<N extends Node, T extends FlexoProperty<
 
 	@Override
 	protected FMLCompilationUnit getCompilationUnit() {
-		return getAnalyser().getCompilationUnit();
+		return getSemanticsAnalyzer().getCompilationUnit();
 	}
 
 }

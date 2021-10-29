@@ -68,12 +68,12 @@ public class CreationSchemeNode extends FlexoBehaviourNode<PBehaviourDecl, Creat
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(CreationSchemeNode.class.getPackage().getName());
 
-	public CreationSchemeNode(PBehaviourDecl astNode, FMLCompilationUnitSemanticsAnalyzer analyser) {
-		super(astNode, analyser);
+	public CreationSchemeNode(PBehaviourDecl astNode, FMLCompilationUnitSemanticsAnalyzer analyzer) {
+		super(astNode, analyzer);
 	}
 
-	public CreationSchemeNode(CreationScheme creationScheme, FMLCompilationUnitSemanticsAnalyzer analyser) {
-		super(creationScheme, analyser);
+	public CreationSchemeNode(CreationScheme creationScheme, FMLCompilationUnitSemanticsAnalyzer analyzer) {
+		super(creationScheme, analyzer);
 	}
 
 	private boolean isAnonymous() {
@@ -106,7 +106,7 @@ public class CreationSchemeNode extends FlexoBehaviourNode<PBehaviourDecl, Creat
 
 		PFlexoBehaviourBody flexoBehaviourBody = getFlexoBehaviourBody(astNode);
 		if (flexoBehaviourBody instanceof ABlockFlexoBehaviourBody) {
-			ControlGraphNode<?, ?> cgNode = ControlGraphFactory.makeControlGraphNode(getFlexoBehaviourBody(astNode), getAnalyser());
+			ControlGraphNode<?, ?> cgNode = ControlGraphFactory.makeControlGraphNode(getFlexoBehaviourBody(astNode), getSemanticsAnalyzer());
 			if (cgNode != null) {
 				returned.setControlGraph(cgNode.getModelObject());
 				addToChildren(cgNode);

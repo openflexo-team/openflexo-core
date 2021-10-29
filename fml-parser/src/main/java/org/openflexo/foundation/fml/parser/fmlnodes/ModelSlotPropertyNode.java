@@ -68,12 +68,12 @@ public class ModelSlotPropertyNode<N extends PInnerConceptDecl, MS extends Model
 
 	private static final Logger logger = Logger.getLogger(ModelSlotPropertyNode.class.getPackage().getName());
 
-	public ModelSlotPropertyNode(N astNode, FMLCompilationUnitSemanticsAnalyzer analyser) {
-		super(astNode, analyser);
+	public ModelSlotPropertyNode(N astNode, FMLCompilationUnitSemanticsAnalyzer analyzer) {
+		super(astNode, analyzer);
 	}
 
-	public ModelSlotPropertyNode(MS modelSlot, FMLCompilationUnitSemanticsAnalyzer analyser) {
-		super(modelSlot, analyser);
+	public ModelSlotPropertyNode(MS modelSlot, FMLCompilationUnitSemanticsAnalyzer analyzer) {
+		super(modelSlot, analyzer);
 	}
 
 	@Override
@@ -97,7 +97,7 @@ public class ModelSlotPropertyNode<N extends PInnerConceptDecl, MS extends Model
 			}
 			returned.setCardinality(getCardinality(((AFmlInnerConceptDecl) astNode).getCardinality()));
 			Type type = TypeFactory.makeVirtualModelInstanceType(((AFmlInnerConceptDecl) astNode).getType(),
-					getAnalyser().getTypingSpace());
+					getSemanticsAnalyzer().getTypingSpace());
 			// CustomType type = (CustomType) getTypeFactory().makeType(((AFmlInnerConceptDecl) astNode).getType(), returned);
 			returned.setType(type);
 		}
@@ -110,7 +110,7 @@ public class ModelSlotPropertyNode<N extends PInnerConceptDecl, MS extends Model
 			}
 			returned.setCardinality(getCardinality(((AFmlFullyQualifiedInnerConceptDecl) astNode).getCardinality()));
 			Type type = TypeFactory.makeVirtualModelInstanceType(((AFmlFullyQualifiedInnerConceptDecl) astNode).getType(),
-					getAnalyser().getTypingSpace());
+					getSemanticsAnalyzer().getTypingSpace());
 			// CustomType type = (CustomType) getTypeFactory().makeType(((AFmlFullyQualifiedInnerConceptDecl) astNode).getType(), returned);
 			returned.setType(type);
 		}

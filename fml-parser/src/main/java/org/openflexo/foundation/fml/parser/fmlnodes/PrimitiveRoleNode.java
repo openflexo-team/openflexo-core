@@ -56,12 +56,12 @@ public class PrimitiveRoleNode extends BasicPropertyNode<PrimitiveRole<?>> {
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(PrimitiveRoleNode.class.getPackage().getName());
 
-	public PrimitiveRoleNode(AJavaInnerConceptDecl astNode, FMLCompilationUnitSemanticsAnalyzer analyser) {
-		super(astNode, analyser);
+	public PrimitiveRoleNode(AJavaInnerConceptDecl astNode, FMLCompilationUnitSemanticsAnalyzer analyzer) {
+		super(astNode, analyzer);
 	}
 
-	public PrimitiveRoleNode(PrimitiveRole<?> property, FMLCompilationUnitSemanticsAnalyzer analyser) {
-		super(property, analyser);
+	public PrimitiveRoleNode(PrimitiveRole<?> property, FMLCompilationUnitSemanticsAnalyzer analyzer) {
+		super(property, analyzer);
 	}
 
 	@Override
@@ -84,7 +84,7 @@ public class PrimitiveRoleNode extends BasicPropertyNode<PrimitiveRole<?>> {
 		} catch (InvalidNameException e) {
 			throwIssue("Invalid name: " + getName(astNode.getVariableDeclarator()).getText());
 		}
-		returned.setPrimitiveType(PrimitiveType.toPrimitiveType(TypeFactory.makeType(astNode.getType(), getAnalyser().getTypingSpace())));
+		returned.setPrimitiveType(PrimitiveType.toPrimitiveType(TypeFactory.makeType(astNode.getType(), getSemanticsAnalyzer().getTypingSpace())));
 		returned.setCardinality(getCardinality(astNode.getCardinality()));
 		return returned;
 	}

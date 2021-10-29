@@ -65,18 +65,18 @@ public class AddVirtualModelInstanceNode extends AbstractAddFlexoConceptInstance
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(AddVirtualModelInstanceNode.class.getPackage().getName());
 
-	public AddVirtualModelInstanceNode(ASimpleNewInstance astNode, FMLSemanticsAnalyzer analyser, IBindingPathElement parent,
+	public AddVirtualModelInstanceNode(ASimpleNewInstance astNode, FMLSemanticsAnalyzer analyzer, IBindingPathElement parent,
 			Bindable bindable) {
-		super(astNode, analyser, parent, bindable);
+		super(astNode, analyzer, parent, bindable);
 	}
 
-	public AddVirtualModelInstanceNode(AFullQualifiedNewInstance astNode, FMLSemanticsAnalyzer analyser, IBindingPathElement parent,
+	public AddVirtualModelInstanceNode(AFullQualifiedNewInstance astNode, FMLSemanticsAnalyzer analyzer, IBindingPathElement parent,
 			Bindable bindable) {
-		super(astNode, analyser, parent, bindable);
+		super(astNode, analyzer, parent, bindable);
 	}
 
-	public AddVirtualModelInstanceNode(CreationSchemePathElement action, FMLSemanticsAnalyzer analyser, Bindable bindable) {
-		super(action, analyser, bindable);
+	public AddVirtualModelInstanceNode(CreationSchemePathElement action, FMLSemanticsAnalyzer analyzer, Bindable bindable) {
+		super(action, analyzer, bindable);
 	}
 
 	/*@Override
@@ -150,7 +150,7 @@ public class AddVirtualModelInstanceNode extends AbstractAddFlexoConceptInstance
 	}
 	
 	private void handleArgument(PExpression expression, AddVirtualModelInstance modelObject) {
-		BehaviourCallArgumentNode callArgNode = new BehaviourCallArgumentNode(expression, getAnalyser());
+		BehaviourCallArgumentNode callArgNode = new BehaviourCallArgumentNode(expression, getanalyzer());
 		addToChildren(callArgNode);
 		callArgNode.deserialize();
 	}*/
@@ -193,11 +193,11 @@ public class AddVirtualModelInstanceNode extends AbstractAddFlexoConceptInstance
 			Type type = null;
 			if (astNode instanceof ASimpleNewInstance) {
 				handleArguments(((ASimpleNewInstance) astNode).getArgumentList());
-				type = TypeFactory.makeType(((ASimpleNewInstance) astNode).getType(), getAnalyser().getTypingSpace());
+				type = TypeFactory.makeType(((ASimpleNewInstance) astNode).getType(), getSemanticsAnalyzer().getTypingSpace());
 			}
 			else if (astNode instanceof AFullQualifiedNewInstance) {
 				handleArguments(((AFullQualifiedNewInstance) astNode).getArgumentList());
-				type = TypeFactory.makeType(((AFullQualifiedNewInstance) astNode).getConceptName(), getAnalyser().getTypingSpace());
+				type = TypeFactory.makeType(((AFullQualifiedNewInstance) astNode).getConceptName(), getSemanticsAnalyzer().getTypingSpace());
 			}
 
 			CreationSchemePathElement pathElement = (CreationSchemePathElement) getBindingFactory().makeNewInstancePathElement(type,
@@ -216,7 +216,7 @@ public class AddVirtualModelInstanceNode extends AbstractAddFlexoConceptInstance
 		/*AddVirtualModelInstance returned = getFactory().newAddVirtualModelInstance();
 		// System.out.println(">>>>>> New FCI " + astNode);
 		
-		Type type = TypeFactory.makeType(getConceptNameNode(), getAnalyser().getTypingSpace());
+		Type type = TypeFactory.makeType(getConceptNameNode(), getanalyzer().getTypingSpace());
 		if (type instanceof FlexoConceptInstanceType) {
 			conceptType = (FlexoConceptInstanceType) type;
 		}

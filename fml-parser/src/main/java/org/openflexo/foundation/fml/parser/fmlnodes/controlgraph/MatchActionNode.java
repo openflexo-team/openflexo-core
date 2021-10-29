@@ -96,8 +96,8 @@ public class MatchActionNode extends AssignableActionNode<AMatchActionFmlActionE
 	private String constructorName;
 	private List<DataBinding<?>> constructorArgs;
 
-	public MatchActionNode(AMatchActionFmlActionExp astNode, FMLCompilationUnitSemanticsAnalyzer analyser) {
-		super(astNode, analyser);
+	public MatchActionNode(AMatchActionFmlActionExp astNode, FMLCompilationUnitSemanticsAnalyzer analyzer) {
+		super(astNode, analyzer);
 
 		if (getSemiFragment() != null) {
 			setEndPosition(getSemiFragment().getEndPosition());
@@ -105,8 +105,8 @@ public class MatchActionNode extends AssignableActionNode<AMatchActionFmlActionE
 
 	}
 
-	public MatchActionNode(MatchFlexoConceptInstance action, FMLCompilationUnitSemanticsAnalyzer analyser) {
-		super(action, analyser);
+	public MatchActionNode(MatchFlexoConceptInstance action, FMLCompilationUnitSemanticsAnalyzer analyzer) {
+		super(action, analyzer);
 	}
 
 	private void handleArguments(PArgumentList argumentList, MatchFlexoConceptInstance modelObject) {
@@ -122,7 +122,7 @@ public class MatchActionNode extends AssignableActionNode<AMatchActionFmlActionE
 
 	private void handleArgument(PExpression expression, MatchFlexoConceptInstance modelObject) {
 		DataBinding<?> argValue = ExpressionFactory.makeDataBinding(expression, modelObject, BindingDefinitionType.GET, Object.class,
-				getAnalyser(), this);
+				getSemanticsAnalyzer(), this);
 
 		if (constructorArgs == null) {
 			constructorArgs = new ArrayList<>();
@@ -148,7 +148,7 @@ public class MatchActionNode extends AssignableActionNode<AMatchActionFmlActionE
 			String propertyName = ((ASimpleQualifiedArgument) qualifiedArgument).getArgName().getText();
 			PExpression expression = ((ASimpleQualifiedArgument) qualifiedArgument).getExpression();
 			DataBinding<?> argValue = ExpressionFactory.makeDataBinding(expression, modelObject, BindingDefinitionType.GET, Object.class,
-					getAnalyser(), this);
+					getSemanticsAnalyzer(), this);
 
 			MatchingCriteria newMatchingCriteria = getFactory().newMatchingCriteria(null);
 			newMatchingCriteria._setPatternRoleName(propertyName);
@@ -206,7 +206,7 @@ public class MatchActionNode extends AssignableActionNode<AMatchActionFmlActionE
 	public MatchFlexoConceptInstance buildModelObjectFromAST(AMatchActionFmlActionExp astNode) {
 		MatchFlexoConceptInstance returned = getFactory().newMatchFlexoConceptInstance();
 
-		Type type = TypeFactory.makeType(astNode.getConceptName(), getAnalyser().getTypingSpace());
+		Type type = TypeFactory.makeType(astNode.getConceptName(), getSemanticsAnalyzer().getTypingSpace());
 		if (type instanceof FlexoConceptInstanceType) {
 			conceptType = (FlexoConceptInstanceType) type;
 			returned.setMatchedType((FlexoConceptInstanceType) type);
@@ -225,13 +225,13 @@ public class MatchActionNode extends AssignableActionNode<AMatchActionFmlActionE
 		if (astNode.getInClause() instanceof AInClause) {
 			PExpression inExpression = ((AInClause) astNode.getInClause()).getExpression();
 			DataBinding<MatchingSet> matchingSet = (DataBinding) ExpressionFactory.makeDataBinding(inExpression, returned,
-					BindingDefinitionType.GET, MatchingSet.class, getAnalyser(), this);
+					BindingDefinitionType.GET, MatchingSet.class, getSemanticsAnalyzer(), this);
 			returned.setMatchingSet(matchingSet);
 		}
 		if (astNode.getFromClause() instanceof AFromClause) {
 			PExpression fromExpression = ((AFromClause) astNode.getFromClause()).getExpression();
 			DataBinding<FlexoConceptInstance> container = (DataBinding) ExpressionFactory.makeDataBinding(fromExpression, returned,
-					BindingDefinitionType.GET, FlexoConceptInstance.class, getAnalyser(), this);
+					BindingDefinitionType.GET, FlexoConceptInstance.class, getSemanticsAnalyzer(), this);
 			returned.setContainer(container);
 		}
 

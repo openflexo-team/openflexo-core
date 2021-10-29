@@ -57,12 +57,12 @@ public class BehaviourCallArgumentNode extends FMLObjectNode<PExpression, Behavi
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(BehaviourCallArgumentNode.class.getPackage().getName());
 
-	public BehaviourCallArgumentNode(PExpression astNode, FMLCompilationUnitSemanticsAnalyzer analyser) {
-		super(astNode, analyser);
+	public BehaviourCallArgumentNode(PExpression astNode, FMLCompilationUnitSemanticsAnalyzer analyzer) {
+		super(astNode, analyzer);
 	}
 
-	public BehaviourCallArgumentNode(BehaviourCallArgument modelObject, FMLCompilationUnitSemanticsAnalyzer analyser) {
-		super(modelObject, analyser);
+	public BehaviourCallArgumentNode(BehaviourCallArgument modelObject, FMLCompilationUnitSemanticsAnalyzer analyzer) {
+		super(modelObject, analyzer);
 	}
 
 	@Override
@@ -96,7 +96,7 @@ public class BehaviourCallArgumentNode extends FMLObjectNode<PExpression, Behavi
 		BehaviourCallArgument returned = getFactory().newAddFlexoConceptInstanceParameter(null);
 
 		// TODO: faire plutot ca
-		/*ControlGraphNode<?, ?> assignableActionNode = ControlGraphFactory.makeControlGraphNode(astNode, getAnalyser());
+		/*ControlGraphNode<?, ?> assignableActionNode = ControlGraphFactory.makeControlGraphNode(astNode, getanalyzer());
 		
 		if (assignableActionNode != null) {
 			if (assignableActionNode.getModelObject() instanceof ExpressionAction) {
@@ -110,7 +110,7 @@ public class BehaviourCallArgumentNode extends FMLObjectNode<PExpression, Behavi
 			}
 		}*/
 
-		DataBinding<?> value = ExpressionFactory.makeDataBinding(astNode, returned, BindingDefinitionType.GET, Object.class, getAnalyser(),
+		DataBinding<?> value = ExpressionFactory.makeDataBinding(astNode, returned, BindingDefinitionType.GET, Object.class, getSemanticsAnalyzer(),
 				this);
 		returned.setValue(value);
 

@@ -57,12 +57,12 @@ public abstract class BasicPropertyNode<T extends BasicProperty<?>> extends Flex
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(BasicPropertyNode.class.getPackage().getName());
 
-	public BasicPropertyNode(AJavaInnerConceptDecl astNode, FMLCompilationUnitSemanticsAnalyzer analyser) {
-		super(astNode, analyser);
+	public BasicPropertyNode(AJavaInnerConceptDecl astNode, FMLCompilationUnitSemanticsAnalyzer analyzer) {
+		super(astNode, analyzer);
 	}
 
-	public BasicPropertyNode(T property, FMLCompilationUnitSemanticsAnalyzer analyser) {
-		super(property, analyser);
+	public BasicPropertyNode(T property, FMLCompilationUnitSemanticsAnalyzer analyzer) {
+		super(property, analyzer);
 	}
 
 	protected RawSourceFragment getVisibilityFragment() {

@@ -59,12 +59,12 @@ public class AbstractPropertyNode extends FlexoPropertyNode<AAbstractPropertyInn
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(AbstractPropertyNode.class.getPackage().getName());
 
-	public AbstractPropertyNode(AAbstractPropertyInnerConceptDecl astNode, FMLCompilationUnitSemanticsAnalyzer analyser) {
-		super(astNode, analyser);
+	public AbstractPropertyNode(AAbstractPropertyInnerConceptDecl astNode, FMLCompilationUnitSemanticsAnalyzer analyzer) {
+		super(astNode, analyzer);
 	}
 
-	public AbstractPropertyNode(AbstractProperty<?> property, FMLCompilationUnitSemanticsAnalyzer analyser) {
-		super(property, analyser);
+	public AbstractPropertyNode(AbstractProperty<?> property, FMLCompilationUnitSemanticsAnalyzer analyzer) {
+		super(property, analyzer);
 	}
 
 	@Override
@@ -76,7 +76,7 @@ public class AbstractPropertyNode extends FlexoPropertyNode<AAbstractPropertyInn
 		} catch (InvalidNameException e) {
 			throwIssue("Invalid name: " + getName(astNode.getVariableDeclarator()).getText());
 		}
-		returned.setType(TypeFactory.makeType(astNode.getType(), getAnalyser().getTypingSpace()));
+		returned.setType(TypeFactory.makeType(astNode.getType(), getSemanticsAnalyzer().getTypingSpace()));
 		return returned;
 	}
 

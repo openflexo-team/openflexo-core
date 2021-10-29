@@ -69,12 +69,12 @@ public class FetchRequestNode<FR extends AbstractFetchRequest<?, ?, ?, ?>> exten
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(FetchRequestNode.class.getPackage().getName());
 
-	public FetchRequestNode(ASelectActionFmlActionExp astNode, FMLCompilationUnitSemanticsAnalyzer analyser) {
-		super(astNode, analyser);
+	public FetchRequestNode(ASelectActionFmlActionExp astNode, FMLCompilationUnitSemanticsAnalyzer analyzer) {
+		super(astNode, analyzer);
 	}
 
-	public FetchRequestNode(FR action, FMLCompilationUnitSemanticsAnalyzer analyser) {
-		super(action, analyser);
+	public FetchRequestNode(FR action, FMLCompilationUnitSemanticsAnalyzer analyzer) {
+		super(action, analyzer);
 	}
 
 	@Override
@@ -85,7 +85,7 @@ public class FetchRequestNode<FR extends AbstractFetchRequest<?, ?, ?, ?>> exten
 
 		FlexoConceptInstanceType selectType = null;
 
-		Type type = TypeFactory.makeType(astNode.getSelectedTypeName(), getAnalyser().getTypingSpace());
+		Type type = TypeFactory.makeType(astNode.getSelectedTypeName(), getSemanticsAnalyzer().getTypingSpace());
 		if (type instanceof FlexoConceptInstanceType) {
 			selectType = (FlexoConceptInstanceType) type;
 		}
@@ -113,7 +113,7 @@ public class FetchRequestNode<FR extends AbstractFetchRequest<?, ?, ?, ?>> exten
 			if (astNode.getFromClause() instanceof AFromClause) {
 				PExpression fromExpression = ((AFromClause) astNode.getFromClause()).getExpression();
 				DataBinding<FlexoConceptInstance> container = (DataBinding) ExpressionFactory.makeDataBinding(fromExpression, selectAction,
-						BindingDefinitionType.GET, FlexoConceptInstance.class, getAnalyser(), this);
+						BindingDefinitionType.GET, FlexoConceptInstance.class, getSemanticsAnalyzer(), this);
 				selectAction.setContainer(container);
 				// selectAction.setReceiver(container);
 			}
@@ -135,7 +135,7 @@ public class FetchRequestNode<FR extends AbstractFetchRequest<?, ?, ?, ?>> exten
 			if (astNode.getFromClause() instanceof AFromClause) {
 				PExpression fromExpression = ((AFromClause) astNode.getFromClause()).getExpression();
 				DataBinding<FlexoConceptInstance> container = (DataBinding) ExpressionFactory.makeDataBinding(fromExpression, selectAction,
-						BindingDefinitionType.GET, FlexoConceptInstance.class, getAnalyser(), this);
+						BindingDefinitionType.GET, FlexoConceptInstance.class, getSemanticsAnalyzer(), this);
 				selectAction.setContainer(container);
 				// selectAction.setReceiver(container);
 

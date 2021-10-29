@@ -54,15 +54,15 @@ public class EmptyReturnStatementNode extends AssignableActionNode<AReturnEmptyS
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(EmptyReturnStatementNode.class.getPackage().getName());
 
-	public EmptyReturnStatementNode(AReturnEmptyStatementWithoutTrailingSubstatement astNode, FMLCompilationUnitSemanticsAnalyzer analyser) {
-		super(astNode, analyser);
+	public EmptyReturnStatementNode(AReturnEmptyStatementWithoutTrailingSubstatement astNode, FMLCompilationUnitSemanticsAnalyzer analyzer) {
+		super(astNode, analyzer);
 		if (getSemiFragment() != null) {
 			setEndPosition(getSemiFragment().getEndPosition());
 		}
 	}
 
-	public EmptyReturnStatementNode(ReturnStatement<?> action, FMLCompilationUnitSemanticsAnalyzer analyser) {
-		super(action, analyser);
+	public EmptyReturnStatementNode(ReturnStatement<?> action, FMLCompilationUnitSemanticsAnalyzer analyzer) {
+		super(action, analyzer);
 	}
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })

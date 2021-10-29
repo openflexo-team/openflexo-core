@@ -53,9 +53,9 @@ public class SuperMethodCallBindingPathElementNode
 
 	private IBindingPathElement parent;
 
-	public SuperMethodCallBindingPathElementNode(ASuperMethodInvocation astNode, FMLSemanticsAnalyzer analyser, IBindingPathElement parent,
+	public SuperMethodCallBindingPathElementNode(ASuperMethodInvocation astNode, FMLSemanticsAnalyzer analyzer, IBindingPathElement parent,
 			Bindable bindable) {
-		super(astNode, analyser, bindable);
+		super(astNode, analyzer, bindable);
 		this.parent = parent;
 		setReadyToBuildModelObject(true);
 		// buildModelObjectFromAST() was already called, but too early (parent not yet set)
@@ -63,9 +63,9 @@ public class SuperMethodCallBindingPathElementNode
 		modelObject = buildModelObjectFromAST(astNode);
 	}
 
-	public SuperMethodCallBindingPathElementNode(SimpleMethodPathElement<?> bindingPathElement, FMLSemanticsAnalyzer analyser,
+	public SuperMethodCallBindingPathElementNode(SimpleMethodPathElement<?> bindingPathElement, FMLSemanticsAnalyzer analyzer,
 			Bindable bindable) {
-		super(bindingPathElement, analyser, bindable);
+		super(bindingPathElement, analyzer, bindable);
 	}
 
 	@Override

@@ -55,12 +55,12 @@ import org.openflexo.p2pp.RawSource.RawSourceFragment;
  */
 public class FlexoConceptNode extends AbstractFlexoConceptNode<AConceptDecl, FlexoConcept> {
 
-	public FlexoConceptNode(AConceptDecl astNode, FMLCompilationUnitSemanticsAnalyzer analyser) {
-		super(astNode, analyser);
+	public FlexoConceptNode(AConceptDecl astNode, FMLCompilationUnitSemanticsAnalyzer analyzer) {
+		super(astNode, analyzer);
 	}
 
-	public FlexoConceptNode(FlexoConcept concept, FMLCompilationUnitSemanticsAnalyzer analyser) {
-		super(concept, analyser);
+	public FlexoConceptNode(FlexoConcept concept, FMLCompilationUnitSemanticsAnalyzer analyzer) {
+		super(concept, analyzer);
 	}
 
 	@Override

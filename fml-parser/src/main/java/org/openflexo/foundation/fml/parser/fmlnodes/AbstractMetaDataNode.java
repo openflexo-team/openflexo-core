@@ -51,12 +51,12 @@ import org.openflexo.foundation.fml.parser.node.Node;
 public abstract class AbstractMetaDataNode<N extends Node, T extends FMLMetaData, A extends FMLSemanticsAnalyzer>
 		extends FMLObjectNode<N, T, A> {
 
-	public AbstractMetaDataNode(N astNode, FMLCompilationUnitSemanticsAnalyzer analyser) {
-		super(astNode, analyser);
+	public AbstractMetaDataNode(N astNode, FMLCompilationUnitSemanticsAnalyzer analyzer) {
+		super(astNode, analyzer);
 	}
 
-	public AbstractMetaDataNode(T metaData, FMLCompilationUnitSemanticsAnalyzer analyser) {
-		super(metaData, analyser);
+	public AbstractMetaDataNode(T metaData, FMLCompilationUnitSemanticsAnalyzer analyzer) {
+		super(metaData, analyzer);
 	}
 
 	@Override

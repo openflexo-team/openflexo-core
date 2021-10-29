@@ -86,7 +86,7 @@ public class FMLTypingSpaceDuringParsing extends AbstractFMLTypingSpace {
 
 	protected static final Logger logger = FlexoLogger.getLogger(FMLTypingSpaceDuringParsing.class.getPackage().getName());
 
-	private final FMLCompilationUnitSemanticsAnalyzer analyser;
+	private final FMLCompilationUnitSemanticsAnalyzer analyzer;
 
 	private FlexoConceptInstanceTypeFactory FLEXO_CONCEPT_INSTANCE_TYPE_FACTORY;
 	private VirtualModelInstanceTypeFactory<VirtualModelInstanceType> VIRTUAL_MODEL_INSTANCE_TYPE_FACTORY;
@@ -95,9 +95,9 @@ public class FMLTypingSpaceDuringParsing extends AbstractFMLTypingSpace {
 	private Map<String, AConceptDecl> foundConcepts;
 	private List<CustomType> unresolvedTypes;
 
-	public FMLTypingSpaceDuringParsing(FMLCompilationUnitSemanticsAnalyzer analyser) {
-		super(analyser.getServiceManager());
-		this.analyser = analyser;
+	public FMLTypingSpaceDuringParsing(FMLCompilationUnitSemanticsAnalyzer analyzer) {
+		super(analyzer.getServiceManager());
+		this.analyzer = analyzer;
 		unresolvedTypes = new ArrayList<>();
 		FLEXO_CONCEPT_INSTANCE_TYPE_FACTORY = new DefaultFlexoConceptInstanceTypeFactory(getFMLTechnologyAdapter()) {
 			// TODO : handle concepts found in imported VirtualModel
@@ -106,7 +106,7 @@ public class FMLTypingSpaceDuringParsing extends AbstractFMLTypingSpace {
 				// System.out.println("Resolving FlexoConcept " + typeToResolve);
 				AConceptDecl node = foundConcepts.get(typeToResolve.getConceptURI());
 				if (node != null) {
-					FlexoConceptNode conceptNode = (FlexoConceptNode) analyser.getFMLNode(node);
+					FlexoConceptNode conceptNode = (FlexoConceptNode) analyzer.getFMLNode(node);
 					if (conceptNode != null) {
 						return conceptNode.getModelObject();
 					}
@@ -121,7 +121,7 @@ public class FMLTypingSpaceDuringParsing extends AbstractFMLTypingSpace {
 				// System.out.println("Resolving FlexoConcept " + typeToResolve);
 				AModelDecl node = foundVirtualModels.get(typeToResolve.getConceptURI());
 				if (node != null) {
-					VirtualModelNode virtualModelNode = (VirtualModelNode) analyser.getFMLNode(node);
+					VirtualModelNode virtualModelNode = (VirtualModelNode) analyzer.getFMLNode(node);
 					if (virtualModelNode != null) {
 						return virtualModelNode.getModelObject();
 					}
@@ -136,13 +136,13 @@ public class FMLTypingSpaceDuringParsing extends AbstractFMLTypingSpace {
 		new ConceptTypesExplorer();
 	}
 
-	public FMLCompilationUnitSemanticsAnalyzer getAnalyser() {
-		return analyser;
+	public FMLCompilationUnitSemanticsAnalyzer getanalyzer() {
+		return analyzer;
 	}
 
 	public FMLTechnologyAdapter getFMLTechnologyAdapter() {
-		if (analyser.getServiceManager() != null) {
-			return analyser.getServiceManager().getTechnologyAdapterService().getTechnologyAdapter(FMLTechnologyAdapter.class);
+		if (analyzer.getServiceManager() != null) {
+			return analyzer.getServiceManager().getTechnologyAdapterService().getTechnologyAdapter(FMLTechnologyAdapter.class);
 		}
 		return null;
 	}
@@ -192,11 +192,11 @@ public class FMLTypingSpaceDuringParsing extends AbstractFMLTypingSpace {
 			}
 			// Not found
 			// Look in imported VirtualModels
-			if (analyser.getCompilationUnit() != null) {
-				for (ElementImportDeclaration importDeclaration : analyser.getCompilationUnit().getElementImports()) {
+			if (analyzer.getCompilationUnit() != null) {
+				for (ElementImportDeclaration importDeclaration : analyzer.getCompilationUnit().getElementImports()) {
 					try {
-						String resourceURI = importDeclaration.getResourceReference().getBindingValue(analyser.getCompilationUnit());
-						FlexoResource resource = analyser.getServiceManager().getResourceManager().getResource(resourceURI);
+						String resourceURI = importDeclaration.getResourceReference().getBindingValue(analyzer.getCompilationUnit());
+						FlexoResource resource = analyzer.getServiceManager().getResourceManager().getResource(resourceURI);
 						if (resource instanceof CompilationUnitResource) {
 							VirtualModelInfo info = ((CompilationUnitResource) resource).getVirtualModelInfo(resource.getResourceCenter());
 							if (info != null) {
@@ -271,7 +271,7 @@ public class FMLTypingSpaceDuringParsing extends AbstractFMLTypingSpace {
 
 		public ConceptTypesExplorer() {
 			super();
-			analyser.getRootNode().apply(this);
+			analyzer.getRootNode().apply(this);
 		}
 
 		@Override
