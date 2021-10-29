@@ -49,6 +49,8 @@ import org.openflexo.p2pp.RawSource.RawSourcePosition;
 /**
  * A factory based on {@link FMLSemanticsAnalyzer}, used to instantiate a {@link DataBinding} or an {@link Expression} from AST
  * 
+ * Such a factory works with a parent {@link FMLSemanticsAnalyzer}
+ * 
  * @author sylvain
  *
  */
@@ -61,7 +63,6 @@ public abstract class AbstractExpressionFactory extends FMLSemanticsAnalyzer {
 	private Node topLevel = null;
 
 	private Bindable bindable;
-	// private final AbstractFMLTypingSpace typingSpace;
 	private final FMLSemanticsAnalyzer parentAnalyzer;
 	private final DataBindingNode dataBindingNode;
 
@@ -69,12 +70,11 @@ public abstract class AbstractExpressionFactory extends FMLSemanticsAnalyzer {
 
 	private Map<Node, ObjectNode<?, ?, ?>> nodesForAST = new HashMap<>();
 
-	protected AbstractExpressionFactory(Node rootNode, Bindable aBindable, /*AbstractFMLTypingSpace typingSpace,*/
-			FMLModelFactory fmlModelFactory, FMLSemanticsAnalyzer parentAnalyzer, DataBindingNode dataBindingNode) {
+	protected AbstractExpressionFactory(Node rootNode, Bindable aBindable, FMLModelFactory fmlModelFactory,
+			FMLSemanticsAnalyzer parentAnalyzer, DataBindingNode dataBindingNode) {
 		super(fmlModelFactory, rootNode);
 		expressionNodes = new Hashtable<>();
 		this.bindable = aBindable;
-		// this.typingSpace = typingSpace;
 		this.parentAnalyzer = parentAnalyzer;
 		this.dataBindingNode = dataBindingNode;
 	}
@@ -96,11 +96,6 @@ public abstract class AbstractExpressionFactory extends FMLSemanticsAnalyzer {
 	public DataBindingNode getDataBindingNode() {
 		return dataBindingNode;
 	}
-
-	/*@Override
-	public AbstractFMLTypingSpace getTypingSpace() {
-		return typingSpace;
-	}*/
 
 	public Expression getExpression() {
 		if (topLevel != null) {
@@ -149,11 +144,6 @@ public abstract class AbstractExpressionFactory extends FMLSemanticsAnalyzer {
 	public RawSource getRawSource() {
 		return getParentAnalyzer().getRawSource();
 	}
-
-	/*@Override
-	public <N extends Node, FMLN extends ObjectNode<?, ?, ?>> FMLN retrieveFMLNode(N astNode, Function<N, FMLN> function) {
-		return getParentAnalyzer().retrieveFMLNode(astNode, function);
-	}*/
 
 	@Override
 	public void throwIssue(String errorMessage, RawSourceFragment fragment, RawSourcePosition startPosition) {

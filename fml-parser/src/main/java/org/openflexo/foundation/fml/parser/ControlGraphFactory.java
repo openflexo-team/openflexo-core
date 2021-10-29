@@ -65,6 +65,8 @@ import org.openflexo.toolbox.StringUtils;
 /**
  * A factory based on {@link FMLSemanticsAnalyzer}, used to instantiate {@link FMLControlGraph} from AST
  * 
+ * Such a factory works with a parent {@link FMLCompilationUnitSemanticsAnalyzer}
+ * 
  * @author sylvain
  *
  */
@@ -75,7 +77,7 @@ public class ControlGraphFactory extends FMLSemanticsAnalyzer {
 
 	public boolean debug = false;
 
-	private FMLCompilationUnitSemanticsAnalyzer mainAnalyzer;
+	private FMLCompilationUnitSemanticsAnalyzer compilationUnitAnalyzer;
 	private ControlGraphNode<?, ?> rootControlGraphNode = null;
 
 	public static ControlGraphNode<?, ?> makeControlGraphNode(PFlexoBehaviourBody cgNode, FMLCompilationUnitSemanticsAnalyzer analyzer) {
@@ -121,12 +123,12 @@ public class ControlGraphFactory extends FMLSemanticsAnalyzer {
 
 	private ControlGraphFactory(Node cgNode, FMLCompilationUnitSemanticsAnalyzer analyzer) {
 		super(analyzer.getModelFactory(), cgNode);
-		this.mainAnalyzer = analyzer;
+		this.compilationUnitAnalyzer = analyzer;
 	}
 
 	@Override
 	public FMLCompilationUnitSemanticsAnalyzer getCompilationUnitAnalyzer() {
-		return mainAnalyzer;
+		return compilationUnitAnalyzer;
 	}
 
 	@Override
@@ -672,52 +674,6 @@ public class ControlGraphFactory extends FMLSemanticsAnalyzer {
 		super.outASelectActionFmlActionExp(node);
 		pop();
 	}
-
-	/*	@Override
-		public void inAFmlInstanceCreationFmlActionExp(AFmlInstanceCreationFmlActionExp node) {
-			super.inAFmlInstanceCreationFmlActionExp(node);
-	
-			Type type = getTypeFactory().lookupConceptNamed(node.getConceptName().getText(), getFragment(node.getConceptName()));
-	
-			if (type instanceof VirtualModelInstanceType) {
-				push(getMainAnalyzer().retrieveFMLNode(node, n -> new AddVirtualModelInstanceNode(n, getMainAnalyzer())));
-			}
-			else {
-				push(getMainAnalyzer().retrieveFMLNode(node, n -> new AddFlexoConceptInstanceNode(n, getMainAnalyzer())));
-			}
-		}
-	
-		@Override
-		public void outAFmlInstanceCreationFmlActionExp(AFmlInstanceCreationFmlActionExp node) {
-			super.outAFmlInstanceCreationFmlActionExp(node);
-			pop();
-		}
-	
-		@Override
-		public void inAJavaInstanceCreationFmlActionExp(AJavaInstanceCreationFmlActionExp node) {
-			super.inAJavaInstanceCreationFmlActionExp(node);
-	
-			Type type = TypeFactory.makeType(node.getType(), getMainAnalyzer().getTypingSpace());
-	
-			// System.out.println("Found type " + type + " of " + type.getClass());
-	
-			if (type instanceof VirtualModelInstanceType) {
-				push(getMainAnalyzer().retrieveFMLNode(node, n -> new AddVirtualModelInstanceNode(n, getMainAnalyzer())));
-			}
-			else if (type instanceof FlexoConceptInstanceType) {
-				push(getMainAnalyzer().retrieveFMLNode(node, n -> new AddFlexoConceptInstanceNode(n, getMainAnalyzer())));
-			}
-			else {
-				push(getMainAnalyzer().retrieveFMLNode(node, n -> new AddClassInstanceNode(n, getMainAnalyzer())));
-			}
-		}
-	
-		@Override
-		public void outAJavaInstanceCreationFmlActionExp(AJavaInstanceCreationFmlActionExp node) {
-			super.outAJavaInstanceCreationFmlActionExp(node);
-			pop();
-		}
-	 */
 
 	@Override
 	public void inABeginMatchActionFmlActionExp(ABeginMatchActionFmlActionExp node) {

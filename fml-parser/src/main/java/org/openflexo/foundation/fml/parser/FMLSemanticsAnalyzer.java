@@ -82,6 +82,14 @@ import org.openflexo.toolbox.ChainedCollection;
 /**
  * Base class implementing semantics analyzer, based on sablecc FML grammar visitor<br>
  * 
+ * A {@link FMLSemanticsAnalyzer} basically manages:
+ * <ul>
+ * <li>a {@link FMLModelFactory}</li>
+ * <li>a {@link FMLBindingFactory}</li>
+ * <li>a typing space ({@link AbstractFMLTypingSpace})</li>
+ * <li>an eventual {@link FragmentManager}</li>
+ * </ul>
+ * 
  * @author sylvain
  * 
  */
@@ -99,15 +107,33 @@ public abstract class FMLSemanticsAnalyzer extends DepthFirstAdapter {
 		this.rootNode = rootNode;
 	}
 
-	@Deprecated
-	public abstract FMLCompilationUnitSemanticsAnalyzer getCompilationUnitAnalyzer();
-
+	/**
+	 * Return {@link FMLCompilationUnit} we are dealing with, if any
+	 * 
+	 * @return
+	 */
 	public abstract FMLCompilationUnit getCompilationUnit();
 
+	/**
+	 * Return applicable {@link AbstractFMLTypingSpace} in the context of this {@link FMLSemanticsAnalyzer}
+	 * 
+	 * @return
+	 */
 	public abstract AbstractFMLTypingSpace getTypingSpace();
 
+	/**
+	 * Return applicable {@link FMLBindingFactory} in the context of this {@link FMLSemanticsAnalyzer}
+	 * 
+	 * @return
+	 */
 	public abstract FMLBindingFactory getFMLBindingFactory();
 
+	/**
+	 * Return applicable {@link FragmentManager} in the context of this {@link FMLSemanticsAnalyzer}, if any<br>
+	 * (might be null if fragment management is not applicable to this analyzer)
+	 * 
+	 * @return
+	 */
 	public abstract FragmentManager getFragmentManager();
 
 	/**
@@ -117,11 +143,41 @@ public abstract class FMLSemanticsAnalyzer extends DepthFirstAdapter {
 	 */
 	public abstract RawSource getRawSource();
 
+	/**
+	 * Retrieve (creates when required) a new {@link ObjectNode} for supplied AST node
+	 * 
+	 * @param <N>
+	 *            type of AST node
+	 * @param <FMLN>
+	 *            type of {@link ObjectNode}
+	 * @param astNode
+	 *            the AST node we are considering
+	 * @param function
+	 *            a function returning the {@link ObjectNode} to build from AST node, when required
+	 * @return
+	 */
 	public abstract <N extends Node, FMLN extends ObjectNode<?, ?, ?>> FMLN retrieveFMLNode(N astNode, Function<N, FMLN> function);
 
+	/**
+	 * Called when an issue was found, handled by the adequate FMLSemanticsManager implementation
+	 * 
+	 * @param errorMessage
+	 * @param fragment
+	 * @param startPosition
+	 */
 	public abstract void throwIssue(String errorMessage, RawSourceFragment fragment, RawSourcePosition startPosition);
 
+	/**
+	 * Return a list of all semantics analyzing issues found in the context of this {@link FMLSemanticsAnalyzer}
+	 * 
+	 * @return
+	 */
 	public abstract List<SemanticAnalysisIssue> getSemanticAnalysisIssues();
+
+	// Not sure it is still required
+	// TODO: check this
+	@Deprecated
+	public abstract FMLCompilationUnitSemanticsAnalyzer getCompilationUnitAnalyzer();
 
 	public Node getRootNode() {
 		return rootNode;
@@ -351,7 +407,8 @@ public abstract class FMLSemanticsAnalyzer extends DepthFirstAdapter {
 		super.inAInstanceQualifiedArgument(node);
 		if (handleFMLArgument()) {
 			// System.out.println("ENTER in " + peek() + " with " + node);
-			push(getCompilationUnitAnalyzer().retrieveFMLNode(node, n -> new FMLInstancePropertyValueNode(n, getCompilationUnitAnalyzer())));
+			push(getCompilationUnitAnalyzer().retrieveFMLNode(node,
+					n -> new FMLInstancePropertyValueNode(n, getCompilationUnitAnalyzer())));
 		}
 	}
 
@@ -369,7 +426,8 @@ public abstract class FMLSemanticsAnalyzer extends DepthFirstAdapter {
 		super.inAListInstancesQualifiedArgument(node);
 		if (handleFMLArgument()) {
 			// System.out.println("ENTER in " + peek() + " with " + node);
-			push(getCompilationUnitAnalyzer().retrieveFMLNode(node, n -> new FMLInstancesListPropertyValueNode(n, getCompilationUnitAnalyzer())));
+			push(getCompilationUnitAnalyzer().retrieveFMLNode(node,
+					n -> new FMLInstancesListPropertyValueNode(n, getCompilationUnitAnalyzer())));
 		}
 	}
 
