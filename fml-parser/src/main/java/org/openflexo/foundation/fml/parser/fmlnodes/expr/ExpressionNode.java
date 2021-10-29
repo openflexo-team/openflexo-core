@@ -53,12 +53,12 @@ public abstract class ExpressionNode<N extends Node, T extends Expression> exten
 	private AbstractExpressionFactory expressionFactory;
 
 	public ExpressionNode(N astNode, AbstractExpressionFactory expressionFactory) {
-		super(astNode, expressionFactory.getCompilationUnitAnalyzer());
+		super(astNode, expressionFactory);
 		this.expressionFactory = expressionFactory;
 	}
 
 	public ExpressionNode(T constant, AbstractExpressionFactory expressionFactory) {
-		super(constant, expressionFactory.getCompilationUnitAnalyzer());
+		super(constant, expressionFactory);
 		this.expressionFactory = expressionFactory;
 	}
 

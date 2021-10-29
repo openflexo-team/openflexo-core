@@ -63,20 +63,36 @@ public abstract class AbstractExpressionFactory extends FMLSemanticsAnalyzer {
 	private Node topLevel = null;
 
 	private Bindable bindable;
-	private final FMLSemanticsAnalyzer parentAnalyzer;
 	private final DataBindingNode dataBindingNode;
+
+	private final FMLSemanticsAnalyzer parentAnalyzer;
+	private final AbstractFMLTypingSpace typingSpace;
+	private final FMLBindingFactory bindingFactory;
 
 	protected int depth = -1;
 
 	private Map<Node, ObjectNode<?, ?, ?>> nodesForAST = new HashMap<>();
 
-	protected AbstractExpressionFactory(Node rootNode, Bindable aBindable, FMLModelFactory fmlModelFactory,
-			FMLSemanticsAnalyzer parentAnalyzer, DataBindingNode dataBindingNode) {
-		super(fmlModelFactory, rootNode);
+	protected AbstractExpressionFactory(Node rootNode, Bindable aBindable, FMLSemanticsAnalyzer parentAnalyzer,
+			DataBindingNode dataBindingNode) {
+		super(parentAnalyzer.getModelFactory(), rootNode);
+		expressionNodes = new Hashtable<>();
+		this.parentAnalyzer = parentAnalyzer;
+		this.bindable = aBindable;
+		this.typingSpace = parentAnalyzer.getTypingSpace();
+		this.bindingFactory = parentAnalyzer.getFMLBindingFactory();
+		this.dataBindingNode = dataBindingNode;
+	}
+
+	protected AbstractExpressionFactory(Node rootNode, Bindable aBindable, FMLModelFactory modelFactory, AbstractFMLTypingSpace typingSpace,
+			FMLBindingFactory bindingFactory, DataBindingNode dataBindingNode) {
+		super(modelFactory, rootNode);
 		expressionNodes = new Hashtable<>();
 		this.bindable = aBindable;
-		this.parentAnalyzer = parentAnalyzer;
+		this.typingSpace = typingSpace;
+		this.bindingFactory = bindingFactory;
 		this.dataBindingNode = dataBindingNode;
+		parentAnalyzer = null;
 	}
 
 	@Override
@@ -122,37 +138,57 @@ public abstract class AbstractExpressionFactory extends FMLSemanticsAnalyzer {
 
 	@Override
 	public FMLCompilationUnit getCompilationUnit() {
-		return getParentAnalyzer().getCompilationUnit();
+		if (getParentAnalyzer() != null) {
+			return getParentAnalyzer().getCompilationUnit();
+		}
+		return null;
 	}
 
 	@Override
 	public AbstractFMLTypingSpace getTypingSpace() {
-		return getParentAnalyzer().getTypingSpace();
+		if (getParentAnalyzer() != null) {
+			return getParentAnalyzer().getTypingSpace();
+		}
+		return typingSpace;
 	}
 
 	@Override
 	public FMLBindingFactory getFMLBindingFactory() {
-		return getParentAnalyzer().getFMLBindingFactory();
+		if (getParentAnalyzer() != null) {
+			return getParentAnalyzer().getFMLBindingFactory();
+		}
+		return bindingFactory;
 	}
 
 	@Override
 	public FragmentManager getFragmentManager() {
-		return getParentAnalyzer().getFragmentManager();
+		if (getParentAnalyzer() != null) {
+			return getParentAnalyzer().getFragmentManager();
+		}
+		return null;
 	}
 
 	@Override
 	public RawSource getRawSource() {
-		return getParentAnalyzer().getRawSource();
+		if (getParentAnalyzer() != null) {
+			return getParentAnalyzer().getRawSource();
+		}
+		return null;
 	}
 
 	@Override
 	public void throwIssue(String errorMessage, RawSourceFragment fragment, RawSourcePosition startPosition) {
-		getParentAnalyzer().throwIssue(errorMessage, fragment, startPosition);
+		if (getParentAnalyzer() != null) {
+			getParentAnalyzer().throwIssue(errorMessage, fragment, startPosition);
+		}
 	}
 
 	@Override
 	public List<SemanticAnalysisIssue> getSemanticAnalysisIssues() {
-		return getParentAnalyzer().getSemanticAnalysisIssues();
+		if (getParentAnalyzer() != null) {
+			return getParentAnalyzer().getSemanticAnalysisIssues();
+		}
+		return null;
 	}
 
 	@Override

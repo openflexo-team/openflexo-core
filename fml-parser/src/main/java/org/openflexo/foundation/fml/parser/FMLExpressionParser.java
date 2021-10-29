@@ -46,8 +46,10 @@ import java.util.logging.Logger;
 
 import org.openflexo.connie.Bindable;
 import org.openflexo.connie.DataBinding;
+import org.openflexo.connie.DataBinding.BindingDefinitionType;
 import org.openflexo.connie.expr.Expression;
 import org.openflexo.foundation.fml.AbstractFMLTypingSpace;
+import org.openflexo.foundation.fml.FMLBindingFactory;
 import org.openflexo.foundation.fml.FMLModelFactory;
 import org.openflexo.foundation.fml.parser.lexer.CustomLexer;
 import org.openflexo.foundation.fml.parser.lexer.CustomLexer.EntryPointKind;
@@ -55,7 +57,6 @@ import org.openflexo.foundation.fml.parser.lexer.LexerException;
 import org.openflexo.foundation.fml.parser.node.Start;
 import org.openflexo.foundation.fml.parser.parser.Parser;
 import org.openflexo.foundation.fml.parser.parser.ParserException;
-import org.openflexo.p2pp.RawSource;
 
 /**
  * This class provides the parsing service for FML expressions<br>
@@ -103,7 +104,8 @@ public class FMLExpressionParser {
 			// Print the AST
 			// new ASTDebugger(tree);
 
-			return ExpressionFactory.makeExpression(tree, bindable, typingSpace, modelFactory, readRawSource(rawSourceReader));
+			return ExpressionFactory.makeDataBinding(tree, bindable, BindingDefinitionType.GET, Object.class, modelFactory, typingSpace,
+					new FMLBindingFactory(modelFactory)).getExpression();
 
 		} catch (ParserException e) {
 			// e.printStackTrace();
@@ -123,8 +125,8 @@ public class FMLExpressionParser {
 	 * @param ioDelegate
 	 * @throws IOException
 	 */
-	private static RawSource readRawSource(Reader reader) throws IOException {
+	/*private static RawSource readRawSource(Reader reader) throws IOException {
 		return new RawSource(reader);
-	}
+	}*/
 
 }

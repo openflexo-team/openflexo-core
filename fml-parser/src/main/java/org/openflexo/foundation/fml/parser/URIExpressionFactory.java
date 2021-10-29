@@ -45,11 +45,10 @@ public class URIExpressionFactory extends AbstractExpressionFactory {
 				mainAnalyzer.getModelFactory(), mainAnalyzer, parentNode);
 	}
 
-	private static Expression _makeExpression(PUriExpression node, Bindable bindable, AbstractFMLTypingSpace typingSpace,
-			FMLModelFactory modelFactory, FMLCompilationUnitSemanticsAnalyzer mainAnalyzer, DataBindingNode dataBindingNode) {
+	private static Expression _makeExpression(PUriExpression node, Bindable bindable, FMLCompilationUnitSemanticsAnalyzer mainAnalyzer,
+			DataBindingNode dataBindingNode) {
 
-		URIExpressionFactory factory = new URIExpressionFactory(node, bindable, /*typingSpace,*/ modelFactory, mainAnalyzer,
-				dataBindingNode);
+		URIExpressionFactory factory = new URIExpressionFactory(node, bindable, mainAnalyzer, dataBindingNode);
 		factory.push(dataBindingNode);
 
 		node.apply(factory);
@@ -60,8 +59,8 @@ public class URIExpressionFactory extends AbstractExpressionFactory {
 
 	@SuppressWarnings({ "unchecked" })
 	private static DataBinding<String> _makeDataBinding(PUriExpression node, Bindable bindable, BindingDefinitionType bindingDefinitionType,
-			Type expectedType, AbstractFMLTypingSpace typingSpace, FMLModelFactory modelFactory, FMLCompilationUnitSemanticsAnalyzer mainAnalyzer,
-			ObjectNode<?, ?, ?> parentNode) {
+			Type expectedType, AbstractFMLTypingSpace typingSpace, FMLModelFactory modelFactory,
+			FMLCompilationUnitSemanticsAnalyzer mainAnalyzer, ObjectNode<?, ?, ?> parentNode) {
 
 		DataBindingNode dataBindingNode = mainAnalyzer.retrieveFMLNode(node,
 				n -> new DataBindingNode(n, bindable, bindingDefinitionType, expectedType, mainAnalyzer));
@@ -70,14 +69,14 @@ public class URIExpressionFactory extends AbstractExpressionFactory {
 			parentNode.addToChildren(dataBindingNode);
 		}
 
-		_makeExpression(node, bindable, typingSpace, modelFactory, mainAnalyzer, dataBindingNode);
+		_makeExpression(node, bindable, mainAnalyzer, dataBindingNode);
 
 		return (DataBinding<String>) dataBindingNode.getModelObject();
 	}
 
-	private URIExpressionFactory(PUriExpression rootNode, Bindable aBindable, /*AbstractFMLTypingSpace typingSpace,*/
-			FMLModelFactory fmlModelFactory, FMLCompilationUnitSemanticsAnalyzer mainAnalyzer, DataBindingNode dataBindingNode) {
-		super(rootNode, aBindable, /*typingSpace,*/ fmlModelFactory, mainAnalyzer, dataBindingNode);
+	private URIExpressionFactory(PUriExpression rootNode, Bindable aBindable, FMLCompilationUnitSemanticsAnalyzer mainAnalyzer,
+			DataBindingNode dataBindingNode) {
+		super(rootNode, aBindable, mainAnalyzer, dataBindingNode);
 	}
 
 	@Override
