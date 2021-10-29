@@ -46,7 +46,7 @@ import org.openflexo.connie.binding.IBindingPathElement;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoConceptInstanceType;
 import org.openflexo.foundation.fml.binding.CreationSchemePathElement;
-import org.openflexo.foundation.fml.parser.MainSemanticsAnalyzer;
+import org.openflexo.foundation.fml.parser.FMLSemanticsAnalyzer;
 import org.openflexo.foundation.fml.parser.TypeFactory;
 import org.openflexo.foundation.fml.parser.node.AFullQualifiedNewInstance;
 import org.openflexo.foundation.fml.parser.node.ASimpleNewInstance;
@@ -68,17 +68,17 @@ public class AddFlexoConceptInstanceNode extends AbstractAddFlexoConceptInstance
 	// private FlexoConceptInstanceType conceptType;
 	// private String creationSchemeName;
 
-	public AddFlexoConceptInstanceNode(ASimpleNewInstance astNode, MainSemanticsAnalyzer analyser, IBindingPathElement parent,
+	public AddFlexoConceptInstanceNode(ASimpleNewInstance astNode, FMLSemanticsAnalyzer analyser, IBindingPathElement parent,
 			Bindable bindable) {
 		super(astNode, analyser, parent, bindable);
 	}
 
-	public AddFlexoConceptInstanceNode(AFullQualifiedNewInstance astNode, MainSemanticsAnalyzer analyser, IBindingPathElement parent,
+	public AddFlexoConceptInstanceNode(AFullQualifiedNewInstance astNode, FMLSemanticsAnalyzer analyser, IBindingPathElement parent,
 			Bindable bindable) {
 		super(astNode, analyser, parent, bindable);
 	}
 
-	public AddFlexoConceptInstanceNode(CreationSchemePathElement bindingPathElement, MainSemanticsAnalyzer analyser, Bindable bindable) {
+	public AddFlexoConceptInstanceNode(CreationSchemePathElement bindingPathElement, FMLSemanticsAnalyzer analyser, Bindable bindable) {
 		super(bindingPathElement, analyser, bindable);
 	}
 

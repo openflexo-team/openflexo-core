@@ -41,7 +41,7 @@ package org.openflexo.foundation.fml.parser.fmlnodes.expr;
 import org.openflexo.connie.Bindable;
 import org.openflexo.connie.binding.IBindingPathElement;
 import org.openflexo.connie.binding.SimpleMethodPathElement;
-import org.openflexo.foundation.fml.parser.MainSemanticsAnalyzer;
+import org.openflexo.foundation.fml.parser.FMLSemanticsAnalyzer;
 import org.openflexo.foundation.fml.parser.node.APrimaryMethodInvocation;
 import org.openflexo.foundation.fml.parser.node.Node;
 import org.openflexo.p2pp.RawSource.RawSourceFragment;
@@ -57,7 +57,7 @@ public class MethodCallBindingPathElementNode
 	private Node identifierNode;
 	private IBindingPathElement parent;
 
-	public MethodCallBindingPathElementNode(APrimaryMethodInvocation astNode, Node identifierNode, MainSemanticsAnalyzer analyser,
+	public MethodCallBindingPathElementNode(APrimaryMethodInvocation astNode, Node identifierNode, FMLSemanticsAnalyzer analyser,
 			IBindingPathElement parent, Bindable bindable) {
 		super(astNode, analyser, bindable);
 		this.identifierNode = identifierNode;
@@ -69,7 +69,7 @@ public class MethodCallBindingPathElementNode
 
 	}
 
-	public MethodCallBindingPathElementNode(SimpleMethodPathElement<?> bindingPathElement, MainSemanticsAnalyzer analyser,
+	public MethodCallBindingPathElementNode(SimpleMethodPathElement<?> bindingPathElement, FMLSemanticsAnalyzer analyser,
 			Bindable bindable) {
 		super(bindingPathElement, analyser, bindable);
 	}

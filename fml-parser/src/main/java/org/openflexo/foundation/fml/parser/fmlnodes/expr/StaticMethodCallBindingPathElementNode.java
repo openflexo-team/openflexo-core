@@ -42,7 +42,7 @@ import java.lang.reflect.Type;
 
 import org.openflexo.connie.Bindable;
 import org.openflexo.connie.binding.StaticMethodPathElement;
-import org.openflexo.foundation.fml.parser.MainSemanticsAnalyzer;
+import org.openflexo.foundation.fml.parser.FMLSemanticsAnalyzer;
 import org.openflexo.foundation.fml.parser.TypeFactory;
 import org.openflexo.foundation.fml.parser.node.AClassMethodMethodInvocation;
 
@@ -53,7 +53,7 @@ import org.openflexo.foundation.fml.parser.node.AClassMethodMethodInvocation;
 public class StaticMethodCallBindingPathElementNode
 		extends AbstractCallBindingPathElementNode<AClassMethodMethodInvocation, StaticMethodPathElement<?>> {
 
-	public StaticMethodCallBindingPathElementNode(AClassMethodMethodInvocation astNode, MainSemanticsAnalyzer analyser, Bindable bindable) {
+	public StaticMethodCallBindingPathElementNode(AClassMethodMethodInvocation astNode, FMLSemanticsAnalyzer analyser, Bindable bindable) {
 		super(astNode, analyser, bindable);
 		setReadyToBuildModelObject(true);
 		// buildModelObjectFromAST() was already called, but too early (parent not yet set)
@@ -61,7 +61,7 @@ public class StaticMethodCallBindingPathElementNode
 		modelObject = buildModelObjectFromAST(astNode);
 	}
 
-	public StaticMethodCallBindingPathElementNode(StaticMethodPathElement<?> bindingPathElement, MainSemanticsAnalyzer analyser,
+	public StaticMethodCallBindingPathElementNode(StaticMethodPathElement<?> bindingPathElement, FMLSemanticsAnalyzer analyser,
 			Bindable bindable) {
 		super(bindingPathElement, analyser, bindable);
 	}

@@ -76,6 +76,11 @@ public abstract class FMLObjectNode<N extends Node, T extends FMLPrettyPrintable
 	}
 
 	@Override
+	public MainSemanticsAnalyzer getAnalyser() {
+		return (MainSemanticsAnalyzer) super.getAnalyser();
+	}
+
+	@Override
 	public void setModelObject(T modelObject) {
 		super.setModelObject(modelObject);
 		modelObject.setPrettyPrintDelegate(this);

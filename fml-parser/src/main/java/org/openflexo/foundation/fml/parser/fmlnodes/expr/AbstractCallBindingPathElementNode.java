@@ -45,7 +45,7 @@ import java.util.logging.Logger;
 import org.openflexo.connie.Bindable;
 import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.binding.FunctionPathElement;
-import org.openflexo.foundation.fml.parser.MainSemanticsAnalyzer;
+import org.openflexo.foundation.fml.parser.FMLSemanticsAnalyzer;
 import org.openflexo.foundation.fml.parser.node.AManyArgumentList;
 import org.openflexo.foundation.fml.parser.node.AOneArgumentList;
 import org.openflexo.foundation.fml.parser.node.Node;
@@ -65,11 +65,11 @@ public abstract class AbstractCallBindingPathElementNode<N extends Node, BPE ext
 
 	private List<DataBinding<?>> args;
 
-	public AbstractCallBindingPathElementNode(N astNode, MainSemanticsAnalyzer analyser, Bindable bindable) {
+	public AbstractCallBindingPathElementNode(N astNode, FMLSemanticsAnalyzer analyser, Bindable bindable) {
 		super(astNode, analyser, bindable);
 	}
 
-	public AbstractCallBindingPathElementNode(BPE bindingPathElement, MainSemanticsAnalyzer analyser, Bindable bindable) {
+	public AbstractCallBindingPathElementNode(BPE bindingPathElement, FMLSemanticsAnalyzer analyser, Bindable bindable) {
 		super(bindingPathElement, analyser, bindable);
 	}
 

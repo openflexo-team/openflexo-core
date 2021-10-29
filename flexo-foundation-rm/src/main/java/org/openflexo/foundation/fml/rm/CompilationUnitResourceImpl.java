@@ -584,7 +584,7 @@ public abstract class CompilationUnitResourceImpl
 			FMLModelFactory modelFactory = new FMLModelFactory(this, getServiceManager());
 			setFactory(modelFactory);
 			if (fmlParser.getSemanticsAnalyzer() != null) {
-				fmlParser.getSemanticsAnalyzer().setFactory(modelFactory);
+				fmlParser.getSemanticsAnalyzer().setModelFactory(modelFactory);
 			}
 			return modelFactory;
 		} catch (ModelDefinitionException e) {

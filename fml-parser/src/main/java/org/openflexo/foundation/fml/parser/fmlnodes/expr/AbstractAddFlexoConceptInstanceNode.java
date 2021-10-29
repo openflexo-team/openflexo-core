@@ -44,7 +44,7 @@ import org.openflexo.connie.Bindable;
 import org.openflexo.connie.binding.IBindingPathElement;
 import org.openflexo.foundation.fml.FlexoConceptInstanceType;
 import org.openflexo.foundation.fml.binding.CreationSchemePathElement;
-import org.openflexo.foundation.fml.parser.MainSemanticsAnalyzer;
+import org.openflexo.foundation.fml.parser.FMLSemanticsAnalyzer;
 import org.openflexo.foundation.fml.parser.node.AFullQualifiedFmlParameters;
 import org.openflexo.foundation.fml.parser.node.AFullQualifiedNewInstance;
 import org.openflexo.foundation.fml.parser.node.APreciseFmlParametersClause;
@@ -68,7 +68,7 @@ public abstract class AbstractAddFlexoConceptInstanceNode extends AbstractCallBi
 
 	private IBindingPathElement parent;
 
-	public AbstractAddFlexoConceptInstanceNode(ASimpleNewInstance astNode, MainSemanticsAnalyzer analyser, IBindingPathElement parent,
+	public AbstractAddFlexoConceptInstanceNode(ASimpleNewInstance astNode, FMLSemanticsAnalyzer analyser, IBindingPathElement parent,
 			Bindable bindable) {
 		super(astNode, analyser, bindable);
 		this.parent = parent;
@@ -78,8 +78,8 @@ public abstract class AbstractAddFlexoConceptInstanceNode extends AbstractCallBi
 		modelObject = buildModelObjectFromAST(astNode);
 	}
 
-	public AbstractAddFlexoConceptInstanceNode(AFullQualifiedNewInstance astNode, MainSemanticsAnalyzer analyser,
-			IBindingPathElement parent, Bindable bindable) {
+	public AbstractAddFlexoConceptInstanceNode(AFullQualifiedNewInstance astNode, FMLSemanticsAnalyzer analyser, IBindingPathElement parent,
+			Bindable bindable) {
 		super(astNode, analyser, bindable);
 		this.parent = parent;
 		// buildModelObjectFromAST() was already called, but too early (parent not yet set)
@@ -87,7 +87,7 @@ public abstract class AbstractAddFlexoConceptInstanceNode extends AbstractCallBi
 		modelObject = buildModelObjectFromAST(astNode);
 	}
 
-	public AbstractAddFlexoConceptInstanceNode(CreationSchemePathElement bindingPathElement, MainSemanticsAnalyzer analyser,
+	public AbstractAddFlexoConceptInstanceNode(CreationSchemePathElement bindingPathElement, FMLSemanticsAnalyzer analyser,
 			Bindable bindable) {
 		super(bindingPathElement, analyser, bindable);
 	}

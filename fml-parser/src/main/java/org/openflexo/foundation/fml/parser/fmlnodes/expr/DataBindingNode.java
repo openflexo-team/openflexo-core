@@ -43,6 +43,7 @@ import java.lang.reflect.Type;
 import org.openflexo.connie.Bindable;
 import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.DataBinding.BindingDefinitionType;
+import org.openflexo.foundation.fml.parser.FMLSemanticsAnalyzer;
 import org.openflexo.foundation.fml.parser.MainSemanticsAnalyzer;
 import org.openflexo.foundation.fml.parser.ObjectNode;
 import org.openflexo.foundation.fml.parser.node.Node;
@@ -58,7 +59,7 @@ public class DataBindingNode extends ObjectNode<Node, DataBinding<?>, MainSemant
 	private Type expectedType;
 
 	public DataBindingNode(Node astNode, Bindable bindable, BindingDefinitionType bindingDefinitionType, Type expectedType,
-			MainSemanticsAnalyzer analyser) {
+			FMLSemanticsAnalyzer analyser) {
 		super(astNode, analyser);
 		this.bindable = bindable;
 		this.bindingDefinitionType = bindingDefinitionType;
@@ -68,7 +69,7 @@ public class DataBindingNode extends ObjectNode<Node, DataBinding<?>, MainSemant
 		modelObject = buildModelObjectFromAST(astNode);
 	}
 
-	public DataBindingNode(DataBinding<?> dataBinding, MainSemanticsAnalyzer analyser) {
+	public DataBindingNode(DataBinding<?> dataBinding, FMLSemanticsAnalyzer analyser) {
 		super(dataBinding, analyser);
 	}
 

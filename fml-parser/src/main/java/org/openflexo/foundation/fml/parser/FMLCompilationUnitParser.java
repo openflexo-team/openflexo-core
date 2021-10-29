@@ -164,7 +164,7 @@ public class FMLCompilationUnitParser {
 			tree.apply(e);
 			FMLModelFactory updatedModelFactory = modelFactoryUpdater.apply(e.getModelSlotClasses());
 			if (updatedModelFactory != null) {
-				semanticsAnalyzer.setFactory(updatedModelFactory);
+				semanticsAnalyzer.setModelFactory(updatedModelFactory);
 			}
 
 			// Apply the semantics analyzer.

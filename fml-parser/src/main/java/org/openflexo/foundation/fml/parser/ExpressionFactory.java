@@ -111,19 +111,21 @@ public class ExpressionFactory extends AbstractExpressionFactory {
 	private static final Logger logger = Logger.getLogger(ExpressionFactory.class.getPackage().getName());
 
 	public static Expression makeExpression(Node node, Bindable bindable, FMLCompilationUnit compilationUnit) {
-		return _makeExpression(node, bindable, compilationUnit.getTypingSpace(), compilationUnit.getFMLModelFactory(), null, null);
+		return _makeExpression(node, bindable, /*compilationUnit.getTypingSpace(),*/ compilationUnit.getFMLModelFactory(), null, null);
 	}
 
-	public static Expression makeExpression(Node node, Bindable bindable, MainSemanticsAnalyzer mainAnalyzer, DataBindingNode parentNode) {
-		return _makeExpression(node, bindable, mainAnalyzer.getTypingSpace(), mainAnalyzer.getFactory(), mainAnalyzer, parentNode);
+	public static Expression makeExpression(Node node, Bindable bindable, FMLSemanticsAnalyzer parentAnalyzer, DataBindingNode parentNode) {
+		return _makeExpression(node, bindable, /*parentAnalyzer.getTypingSpace(),*/ parentAnalyzer.getModelFactory(), parentAnalyzer,
+				parentNode);
 	}
 
 	public static Expression makeExpression(Node node, Bindable bindable, AbstractFMLTypingSpace typingSpace, FMLModelFactory modelFactory,
 			RawSource rawSource) {
 		MainSemanticsAnalyzer localAnalyzer = new MainSemanticsAnalyzer(modelFactory, node, rawSource);
+		localAnalyzer.setTypingSpace(typingSpace);
 		DataBindingNode dataBindingNode = localAnalyzer.retrieveFMLNode(node,
 				n -> new DataBindingNode(n, bindable, BindingDefinitionType.GET, Object.class, localAnalyzer));
-		return _makeExpression(node, bindable, typingSpace, modelFactory, localAnalyzer, dataBindingNode);
+		return _makeExpression(node, bindable, /*typingSpace,*/ modelFactory, localAnalyzer, dataBindingNode);
 	}
 
 	public static <T> DataBinding<T> makeDataBinding(Node node, Bindable bindable, BindingDefinitionType bindingDefinitionType,
@@ -140,14 +142,14 @@ public class ExpressionFactory extends AbstractExpressionFactory {
 	public static <T> DataBinding<T> makeDataBinding(Node node, Bindable bindable, BindingDefinitionType bindingDefinitionType,
 			Type expectedType, MainSemanticsAnalyzer mainAnalyzer, ObjectNode<?, ?, ?> parentNode) {
 		return _makeDataBinding(node, bindable, bindingDefinitionType, expectedType, mainAnalyzer.getTypingSpace(),
-				mainAnalyzer.getFactory(), mainAnalyzer, parentNode);
+				mainAnalyzer.getModelFactory(), mainAnalyzer, parentNode);
 	}
 
-	private static Expression _makeExpression(Node node, Bindable bindable, AbstractFMLTypingSpace typingSpace,
-			FMLModelFactory modelFactory, MainSemanticsAnalyzer mainAnalyzer, DataBindingNode dataBindingNode) {
+	private static Expression _makeExpression(Node node, Bindable bindable, /*AbstractFMLTypingSpace typingSpace,*/
+			FMLModelFactory modelFactory, FMLSemanticsAnalyzer parentAnalyzer, DataBindingNode dataBindingNode) {
 		// return new DataBinding(analyzer.getText(node), bindable, expectedType, BindingDefinitionType.GET);
 
-		ExpressionFactory factory = new ExpressionFactory(node, bindable, typingSpace, modelFactory, mainAnalyzer, dataBindingNode);
+		ExpressionFactory factory = new ExpressionFactory(node, bindable, /*typingSpace,*/ modelFactory, parentAnalyzer, dataBindingNode);
 
 		// System.out.println(">>>>>>> " + Integer.toHexString(factory.hashCode()) + ": Make expression for " + node);
 		// Thread.dumpStack();
@@ -174,24 +176,24 @@ public class ExpressionFactory extends AbstractExpressionFactory {
 
 	@SuppressWarnings({ "unchecked" })
 	private static <T> DataBinding<T> _makeDataBinding(Node node, Bindable bindable, BindingDefinitionType bindingDefinitionType,
-			Type expectedType, AbstractFMLTypingSpace typingSpace, FMLModelFactory modelFactory, MainSemanticsAnalyzer mainAnalyzer,
+			Type expectedType, AbstractFMLTypingSpace typingSpace, FMLModelFactory modelFactory, FMLSemanticsAnalyzer parentAnalyzer,
 			ObjectNode<?, ?, ?> parentNode) {
 
-		DataBindingNode dataBindingNode = mainAnalyzer.retrieveFMLNode(node,
-				n -> new DataBindingNode(n, bindable, bindingDefinitionType, expectedType, mainAnalyzer));
+		DataBindingNode dataBindingNode = parentAnalyzer.retrieveFMLNode(node,
+				n -> new DataBindingNode(n, bindable, bindingDefinitionType, expectedType, parentAnalyzer));
 
 		if (parentNode != null) {
 			parentNode.addToChildren(dataBindingNode);
 		}
 
-		_makeExpression(node, bindable, typingSpace, modelFactory, mainAnalyzer, dataBindingNode);
+		_makeExpression(node, bindable, /*typingSpace,*/ modelFactory, parentAnalyzer, dataBindingNode);
 
 		return (DataBinding<T>) dataBindingNode.getModelObject();
 	}
 
-	private ExpressionFactory(Node rootNode, Bindable aBindable, AbstractFMLTypingSpace typingSpace, FMLModelFactory fmlModelFactory,
-			MainSemanticsAnalyzer mainAnalyzer, DataBindingNode dataBindingNode) {
-		super(rootNode, aBindable, typingSpace, fmlModelFactory, mainAnalyzer, dataBindingNode);
+	private ExpressionFactory(Node rootNode, Bindable aBindable, /*AbstractFMLTypingSpace typingSpace,*/ FMLModelFactory fmlModelFactory,
+			FMLSemanticsAnalyzer parentAnalyzer, DataBindingNode dataBindingNode) {
+		super(rootNode, aBindable, /*typingSpace,*/ fmlModelFactory, parentAnalyzer, dataBindingNode);
 	}
 
 	@Override

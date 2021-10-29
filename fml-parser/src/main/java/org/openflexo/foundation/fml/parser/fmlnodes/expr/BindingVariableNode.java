@@ -41,7 +41,7 @@ package org.openflexo.foundation.fml.parser.fmlnodes.expr;
 import org.openflexo.connie.Bindable;
 import org.openflexo.connie.BindingVariable;
 import org.openflexo.connie.expr.UnresolvedBindingVariable;
-import org.openflexo.foundation.fml.parser.MainSemanticsAnalyzer;
+import org.openflexo.foundation.fml.parser.FMLSemanticsAnalyzer;
 import org.openflexo.foundation.fml.parser.node.TLidentifier;
 import org.openflexo.foundation.fml.parser.node.TUidentifier;
 import org.openflexo.foundation.fml.parser.node.Token;
@@ -54,11 +54,11 @@ import org.openflexo.foundation.fml.parser.node.Token;
  */
 public class BindingVariableNode extends AbstractBindingPathElementNode<Token, BindingVariable> {
 
-	public BindingVariableNode(Token astNode, MainSemanticsAnalyzer analyser, Bindable bindable) {
+	public BindingVariableNode(Token astNode, FMLSemanticsAnalyzer analyser, Bindable bindable) {
 		super(astNode, analyser, bindable);
 	}
 
-	public BindingVariableNode(BindingVariable bindingPathElement, MainSemanticsAnalyzer analyser, Bindable bindable) {
+	public BindingVariableNode(BindingVariable bindingPathElement, FMLSemanticsAnalyzer analyser, Bindable bindable) {
 		super(bindingPathElement, analyser, bindable);
 	}
 

@@ -42,9 +42,14 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Stack;
+import java.util.function.Function;
 
 import org.openflexo.foundation.FlexoServiceManager;
+import org.openflexo.foundation.fml.AbstractFMLTypingSpace;
+import org.openflexo.foundation.fml.FMLBindingFactory;
+import org.openflexo.foundation.fml.FMLCompilationUnit;
 import org.openflexo.foundation.fml.FMLModelFactory;
+import org.openflexo.foundation.fml.FMLPrettyPrintDelegate.SemanticAnalysisIssue;
 import org.openflexo.foundation.fml.parser.analysis.DepthFirstAdapter;
 import org.openflexo.foundation.fml.parser.fmlnodes.FMLInstancePropertyValueNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.FMLInstancesListPropertyValueNode;
@@ -71,10 +76,11 @@ import org.openflexo.foundation.fml.parser.node.Token;
 import org.openflexo.p2pp.P2PPNode;
 import org.openflexo.p2pp.RawSource;
 import org.openflexo.p2pp.RawSource.RawSourceFragment;
+import org.openflexo.p2pp.RawSource.RawSourcePosition;
 import org.openflexo.toolbox.ChainedCollection;
 
 /**
- * Base class implementing semantics analyzer, based on sablecc grammar visitor<br>
+ * Base class implementing semantics analyzer, based on sablecc FML grammar visitor<br>
  * 
  * @author sylvain
  * 
@@ -93,23 +99,45 @@ public abstract class FMLSemanticsAnalyzer extends DepthFirstAdapter {
 		this.rootNode = rootNode;
 	}
 
-	public final FMLModelFactory getFactory() {
-		return factory;
-	}
-
-	public final void setFactory(FMLModelFactory factory) {
-		this.factory = factory;
-	}
-
+	@Deprecated
 	public abstract MainSemanticsAnalyzer getMainAnalyzer();
+
+	public abstract FMLCompilationUnit getCompilationUnit();
+
+	public abstract AbstractFMLTypingSpace getTypingSpace();
+
+	public abstract FMLBindingFactory getFMLBindingFactory();
+
+	public abstract FragmentManager getFragmentManager();
+
+	/**
+	 * Return original version of last serialized raw source, FOR THE ENTIRE compilation unit
+	 * 
+	 * @return
+	 */
+	public abstract RawSource getRawSource();
+
+	public abstract <N extends Node, FMLN extends ObjectNode<?, ?, ?>> FMLN retrieveFMLNode(N astNode, Function<N, FMLN> function);
+
+	public abstract void throwIssue(String errorMessage, RawSourceFragment fragment, RawSourcePosition startPosition);
+
+	public abstract List<SemanticAnalysisIssue> getSemanticAnalysisIssues();
 
 	public Node getRootNode() {
 		return rootNode;
 	}
 
+	public final FMLModelFactory getModelFactory() {
+		return factory;
+	}
+
+	public final void setModelFactory(FMLModelFactory factory) {
+		this.factory = factory;
+	}
+
 	public final FlexoServiceManager getServiceManager() {
-		if (getFactory() != null) {
-			return getFactory().getServiceManager();
+		if (getModelFactory() != null) {
+			return getModelFactory().getServiceManager();
 		}
 		return null;
 	}
@@ -147,19 +175,6 @@ public abstract class FMLSemanticsAnalyzer extends DepthFirstAdapter {
 		return peek();
 	}
 
-	public FragmentManager getFragmentManager() {
-		return getMainAnalyzer().getFragmentManager();
-	}
-
-	/**
-	 * Return original version of last serialized raw source, FOR THE ENTIRE compilation unit
-	 * 
-	 * @return
-	 */
-	public RawSource getRawSource() {
-		return getMainAnalyzer().getRawSource();
-	}
-
 	/**
 	 * Return fragment matching supplied node in AST
 	 * 
@@ -173,7 +188,7 @@ public abstract class FMLSemanticsAnalyzer extends DepthFirstAdapter {
 					getRawSource().makePositionBeforeChar(token.getLine(), token.getPos() + token.getText().length()));
 		}
 		else {
-			return getMainAnalyzer().getFragmentManager().retrieveFragment(node);
+			return getFragmentManager().retrieveFragment(node);
 		}
 	}
 
@@ -197,7 +212,7 @@ public abstract class FMLSemanticsAnalyzer extends DepthFirstAdapter {
 		ChainedCollection<Node> collection = new ChainedCollection<>();
 		collection.add(node);
 		collection.add(otherNodes);
-		return getMainAnalyzer().getFragmentManager().getFragment(collection);
+		return getFragmentManager().getFragment(collection);
 	}
 
 	public String getText(Node node) {

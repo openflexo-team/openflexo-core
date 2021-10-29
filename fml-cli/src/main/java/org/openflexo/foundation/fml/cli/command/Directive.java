@@ -533,7 +533,7 @@ public abstract class Directive extends AbstractCommand {
 		return returned;*/
 
 		DataBinding<Object> returned = ExpressionFactory.makeDataBinding(expression, getCommandInterpreter(), bdType, type,
-				getCommandSemanticsAnalyzer().getTypingSpace(), getCommandSemanticsAnalyzer().getFactory());
+				getCommandSemanticsAnalyzer().getTypingSpace(), getCommandSemanticsAnalyzer().getModelFactory());
 		return returned;
 	}
 

@@ -122,7 +122,7 @@ public class VirtualModelInfoExplorer extends DepthFirstAdapter /*implements Bin
 	public void inAFmlCompilationUnit(AFmlCompilationUnit node) {
 
 		super.inAFmlCompilationUnit(node);
-		compilationUnit = analyzer.getFactory().newCompilationUnit();
+		compilationUnit = analyzer.getModelFactory().newCompilationUnit();
 	}
 
 	@Override

@@ -75,7 +75,7 @@ public abstract class SemanticsAnalyzerFactory {
 	}
 
 	public FMLModelFactory getFactory() {
-		return getAnalyzer().getFactory();
+		return getAnalyzer().getModelFactory();
 	}
 
 	public FragmentManager getFragmentManager() {

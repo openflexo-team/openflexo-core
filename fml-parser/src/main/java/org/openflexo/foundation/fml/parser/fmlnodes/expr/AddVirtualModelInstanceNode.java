@@ -46,7 +46,7 @@ import org.openflexo.connie.binding.IBindingPathElement;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.VirtualModelInstanceType;
 import org.openflexo.foundation.fml.binding.CreationSchemePathElement;
-import org.openflexo.foundation.fml.parser.MainSemanticsAnalyzer;
+import org.openflexo.foundation.fml.parser.FMLSemanticsAnalyzer;
 import org.openflexo.foundation.fml.parser.TypeFactory;
 import org.openflexo.foundation.fml.parser.node.AFullQualifiedNewInstance;
 import org.openflexo.foundation.fml.parser.node.ASimpleNewInstance;
@@ -65,17 +65,17 @@ public class AddVirtualModelInstanceNode extends AbstractAddFlexoConceptInstance
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(AddVirtualModelInstanceNode.class.getPackage().getName());
 
-	public AddVirtualModelInstanceNode(ASimpleNewInstance astNode, MainSemanticsAnalyzer analyser, IBindingPathElement parent,
+	public AddVirtualModelInstanceNode(ASimpleNewInstance astNode, FMLSemanticsAnalyzer analyser, IBindingPathElement parent,
 			Bindable bindable) {
 		super(astNode, analyser, parent, bindable);
 	}
 
-	public AddVirtualModelInstanceNode(AFullQualifiedNewInstance astNode, MainSemanticsAnalyzer analyser, IBindingPathElement parent,
+	public AddVirtualModelInstanceNode(AFullQualifiedNewInstance astNode, FMLSemanticsAnalyzer analyser, IBindingPathElement parent,
 			Bindable bindable) {
 		super(astNode, analyser, parent, bindable);
 	}
 
-	public AddVirtualModelInstanceNode(CreationSchemePathElement action, MainSemanticsAnalyzer analyser, Bindable bindable) {
+	public AddVirtualModelInstanceNode(CreationSchemePathElement action, FMLSemanticsAnalyzer analyser, Bindable bindable) {
 		super(action, analyser, bindable);
 	}
 

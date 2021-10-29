@@ -44,7 +44,7 @@ import java.util.logging.Logger;
 import org.openflexo.connie.Bindable;
 import org.openflexo.connie.binding.IBindingPathElement;
 import org.openflexo.connie.binding.javareflect.JavaNewInstanceMethodPathElement;
-import org.openflexo.foundation.fml.parser.MainSemanticsAnalyzer;
+import org.openflexo.foundation.fml.parser.FMLSemanticsAnalyzer;
 import org.openflexo.foundation.fml.parser.TypeFactory;
 import org.openflexo.foundation.fml.parser.node.ASimpleNewInstance;
 import org.openflexo.p2pp.RawSource.RawSourceFragment;
@@ -67,7 +67,7 @@ public class AddClassInstanceNode extends AbstractCallBindingPathElementNode<ASi
 
 	private IBindingPathElement parent;
 
-	public AddClassInstanceNode(ASimpleNewInstance astNode, MainSemanticsAnalyzer analyser, IBindingPathElement parent, Bindable bindable) {
+	public AddClassInstanceNode(ASimpleNewInstance astNode, FMLSemanticsAnalyzer analyser, IBindingPathElement parent, Bindable bindable) {
 		super(astNode, analyser, bindable);
 		this.parent = parent;
 		setReadyToBuildModelObject(true);
@@ -76,7 +76,7 @@ public class AddClassInstanceNode extends AbstractCallBindingPathElementNode<ASi
 		modelObject = buildModelObjectFromAST(astNode);
 	}
 
-	public AddClassInstanceNode(JavaNewInstanceMethodPathElement bindingPathElement, MainSemanticsAnalyzer analyser, Bindable bindable) {
+	public AddClassInstanceNode(JavaNewInstanceMethodPathElement bindingPathElement, FMLSemanticsAnalyzer analyser, Bindable bindable) {
 		super(bindingPathElement, analyser, bindable);
 	}
 

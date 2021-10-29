@@ -39,6 +39,7 @@
 package org.openflexo.foundation.fml.parser;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.logging.Logger;
@@ -49,6 +50,7 @@ import org.openflexo.foundation.fml.ElementImportDeclaration;
 import org.openflexo.foundation.fml.FMLBindingFactory;
 import org.openflexo.foundation.fml.FMLCompilationUnit;
 import org.openflexo.foundation.fml.FMLModelFactory;
+import org.openflexo.foundation.fml.FMLPrettyPrintDelegate.SemanticAnalysisIssue;
 import org.openflexo.foundation.fml.FlexoRole;
 import org.openflexo.foundation.fml.parser.fmlnodes.BasicMetaDataNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.BehaviourParameterNode;
@@ -96,6 +98,8 @@ import org.openflexo.foundation.fml.parser.node.Node;
 import org.openflexo.foundation.fml.parser.node.Start;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.p2pp.RawSource;
+import org.openflexo.p2pp.RawSource.RawSourceFragment;
+import org.openflexo.p2pp.RawSource.RawSourcePosition;
 
 /**
  * This class implements the main semantics analyzer for a parsed FML compilation unit.<br>
@@ -112,7 +116,7 @@ public class MainSemanticsAnalyzer extends FMLSemanticsAnalyzer {
 	private final FlexoBehaviourFactory behaviourFactory;
 	private final FMLFactory fmlFactory;
 	private FMLBindingFactory fmlBindingFactoryDuringDeserialization;
-	private final AbstractFMLTypingSpace typingSpace;
+	private AbstractFMLTypingSpace typingSpace;
 
 	// Raw source as when this analyzer was last parsed
 	private RawSource rawSource;
@@ -150,10 +154,16 @@ public class MainSemanticsAnalyzer extends FMLSemanticsAnalyzer {
 		return this;
 	}
 
+	@Override
 	public AbstractFMLTypingSpace getTypingSpace() {
 		return typingSpace;
 	}
 
+	public void setTypingSpace(AbstractFMLTypingSpace typingSpace) {
+		this.typingSpace = typingSpace;
+	}
+
+	@Override
 	public FMLBindingFactory getFMLBindingFactory() {
 		if (compilationUnit != null && compilationUnit.getVirtualModel() != null) {
 			return (FMLBindingFactory) compilationUnit.getVirtualModel().getBindingFactory();
@@ -170,13 +180,14 @@ public class MainSemanticsAnalyzer extends FMLSemanticsAnalyzer {
 		return nodesForAST.get(astNode);
 	}
 
-	private Map<Node, ObjectNode> nodesForAST = new HashMap<>();
+	private Map<Node, ObjectNode<?, ?, ?>> nodesForAST = new HashMap<>();
 
 	/*public Map<Node, FMLObjectNode> getNodesForAST() {
 		return nodesForAST;
 	}*/
 
-	public <N extends Node, FMLN extends ObjectNode> FMLN retrieveFMLNode(N astNode, Function<N, FMLN> function) {
+	@Override
+	public <N extends Node, FMLN extends ObjectNode<?, ?, ?>> FMLN retrieveFMLNode(N astNode, Function<N, FMLN> function) {
 		FMLN returned = (FMLN) nodesForAST.get(astNode);
 		if (returned == null) {
 			returned = function.apply(astNode);
@@ -195,9 +206,10 @@ public class MainSemanticsAnalyzer extends FMLSemanticsAnalyzer {
 		return fragmentManager;
 	}
 
-	/*public TypeFactory getTypeFactory() {
-		return typeFactory;
-	}*/
+	@Override
+	public RawSource getRawSource() {
+		return rawSource;
+	}
 
 	public FMLFactory getFMLFactory() {
 		return fmlFactory;
@@ -209,6 +221,18 @@ public class MainSemanticsAnalyzer extends FMLSemanticsAnalyzer {
 
 	public FlexoBehaviourFactory getBehaviourFactory() {
 		return behaviourFactory;
+	}
+
+	@Override
+	public void throwIssue(String errorMessage, RawSourceFragment fragment, RawSourcePosition startPosition) {
+		logger.warning("-------->>>>> Compilation issue: " + errorMessage + " "
+				+ (fragment != null ? fragment.getStartPosition() : startPosition));
+		getCompilationUnitNode().throwIssue(errorMessage, fragment);
+	}
+
+	@Override
+	public List<SemanticAnalysisIssue> getSemanticAnalysisIssues() {
+		return getCompilationUnitNode().getSemanticAnalysisIssues();
 	}
 
 	/**
@@ -255,11 +279,6 @@ public class MainSemanticsAnalyzer extends FMLSemanticsAnalyzer {
 
 	}
 
-	@Override
-	public RawSource getRawSource() {
-		return rawSource;
-	}
-
 	/*@Override
 	public void defaultCase(Node node) {
 		super.defaultCase(node);
@@ -274,6 +293,7 @@ public class MainSemanticsAnalyzer extends FMLSemanticsAnalyzer {
 		}
 	}*/
 
+	@Override
 	public FMLCompilationUnit getCompilationUnit() {
 		if (compilationUnitNode != null) {
 			return compilationUnitNode.getModelObject();

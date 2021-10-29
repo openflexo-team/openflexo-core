@@ -41,7 +41,7 @@ package org.openflexo.foundation.fml.parser.fmlnodes.expr;
 import org.openflexo.connie.Bindable;
 import org.openflexo.connie.binding.IBindingPathElement;
 import org.openflexo.connie.binding.SimplePathElement;
-import org.openflexo.foundation.fml.parser.MainSemanticsAnalyzer;
+import org.openflexo.foundation.fml.parser.FMLSemanticsAnalyzer;
 import org.openflexo.foundation.fml.parser.node.TLidentifier;
 import org.openflexo.foundation.fml.parser.node.TUidentifier;
 import org.openflexo.foundation.fml.parser.node.Token;
@@ -56,7 +56,7 @@ public class SimplePathElementNode extends AbstractBindingPathElementNode<Token,
 
 	private IBindingPathElement parent;
 
-	public SimplePathElementNode(Token astNode, MainSemanticsAnalyzer analyser, IBindingPathElement parent, Bindable bindable) {
+	public SimplePathElementNode(Token astNode, FMLSemanticsAnalyzer analyser, IBindingPathElement parent, Bindable bindable) {
 		super(astNode, analyser, bindable);
 		this.parent = parent;
 		// buildModelObjectFromAST() was already called, but too early (parent not yet set)
@@ -64,7 +64,7 @@ public class SimplePathElementNode extends AbstractBindingPathElementNode<Token,
 		modelObject = buildModelObjectFromAST(astNode);
 	}
 
-	public SimplePathElementNode(SimplePathElement<?> bindingPathElement, MainSemanticsAnalyzer analyser, Bindable bindable) {
+	public SimplePathElementNode(SimplePathElement<?> bindingPathElement, FMLSemanticsAnalyzer analyser, Bindable bindable) {
 		super(bindingPathElement, analyser, bindable);
 	}
 

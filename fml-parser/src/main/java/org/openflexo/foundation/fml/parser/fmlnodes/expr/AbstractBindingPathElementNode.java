@@ -45,6 +45,7 @@ import org.openflexo.connie.BindingFactory;
 import org.openflexo.connie.binding.BindingPathElement;
 import org.openflexo.connie.binding.BindingPathElement.BindingPathElementOwner;
 import org.openflexo.connie.binding.IBindingPathElement;
+import org.openflexo.foundation.fml.parser.FMLSemanticsAnalyzer;
 import org.openflexo.foundation.fml.parser.MainSemanticsAnalyzer;
 import org.openflexo.foundation.fml.parser.ObjectNode;
 import org.openflexo.foundation.fml.parser.node.AFieldPrimaryNoId;
@@ -73,7 +74,7 @@ public abstract class AbstractBindingPathElementNode<N extends Node, BPE extends
 
 	private boolean readyToBuildModelObject = false;
 
-	public AbstractBindingPathElementNode(N astNode, MainSemanticsAnalyzer analyser, Bindable bindable) {
+	public AbstractBindingPathElementNode(N astNode, FMLSemanticsAnalyzer analyser, Bindable bindable) {
 		super(astNode, analyser);
 		this.bindable = bindable;
 		// buildModelObjectFromAST() was already called, but too early (bindable not yet set)
@@ -81,7 +82,7 @@ public abstract class AbstractBindingPathElementNode<N extends Node, BPE extends
 		modelObject = buildModelObjectFromAST(astNode);
 	}
 
-	public AbstractBindingPathElementNode(BPE bindingPathElement, MainSemanticsAnalyzer analyser, Bindable bindable) {
+	public AbstractBindingPathElementNode(BPE bindingPathElement, FMLSemanticsAnalyzer analyser, Bindable bindable) {
 		super(bindingPathElement, analyser);
 		this.bindable = bindable;
 	}

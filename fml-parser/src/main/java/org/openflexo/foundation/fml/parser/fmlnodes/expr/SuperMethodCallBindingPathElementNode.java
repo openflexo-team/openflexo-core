@@ -41,7 +41,7 @@ package org.openflexo.foundation.fml.parser.fmlnodes.expr;
 import org.openflexo.connie.Bindable;
 import org.openflexo.connie.binding.IBindingPathElement;
 import org.openflexo.connie.binding.SimpleMethodPathElement;
-import org.openflexo.foundation.fml.parser.MainSemanticsAnalyzer;
+import org.openflexo.foundation.fml.parser.FMLSemanticsAnalyzer;
 import org.openflexo.foundation.fml.parser.node.ASuperMethodInvocation;
 
 /**
@@ -53,7 +53,7 @@ public class SuperMethodCallBindingPathElementNode
 
 	private IBindingPathElement parent;
 
-	public SuperMethodCallBindingPathElementNode(ASuperMethodInvocation astNode, MainSemanticsAnalyzer analyser, IBindingPathElement parent,
+	public SuperMethodCallBindingPathElementNode(ASuperMethodInvocation astNode, FMLSemanticsAnalyzer analyser, IBindingPathElement parent,
 			Bindable bindable) {
 		super(astNode, analyser, bindable);
 		this.parent = parent;
@@ -63,7 +63,7 @@ public class SuperMethodCallBindingPathElementNode
 		modelObject = buildModelObjectFromAST(astNode);
 	}
 
-	public SuperMethodCallBindingPathElementNode(SimpleMethodPathElement<?> bindingPathElement, MainSemanticsAnalyzer analyser,
+	public SuperMethodCallBindingPathElementNode(SimpleMethodPathElement<?> bindingPathElement, FMLSemanticsAnalyzer analyser,
 			Bindable bindable) {
 		super(bindingPathElement, analyser, bindable);
 	}

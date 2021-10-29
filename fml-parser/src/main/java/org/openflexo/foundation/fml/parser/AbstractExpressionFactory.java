@@ -2,6 +2,7 @@ package org.openflexo.foundation.fml.parser;
 
 import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.logging.Logger;
@@ -10,7 +11,10 @@ import org.openflexo.connie.Bindable;
 import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.expr.Expression;
 import org.openflexo.foundation.fml.AbstractFMLTypingSpace;
+import org.openflexo.foundation.fml.FMLBindingFactory;
+import org.openflexo.foundation.fml.FMLCompilationUnit;
 import org.openflexo.foundation.fml.FMLModelFactory;
+import org.openflexo.foundation.fml.FMLPrettyPrintDelegate.SemanticAnalysisIssue;
 import org.openflexo.foundation.fml.parser.fmlnodes.expr.BindingPathNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.expr.ConstantNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.expr.DataBindingNode;
@@ -38,6 +42,9 @@ import org.openflexo.foundation.fml.parser.node.ASimpleRelationalExp;
 import org.openflexo.foundation.fml.parser.node.ASimpleShiftExp;
 import org.openflexo.foundation.fml.parser.node.AUnaryUnaryExp;
 import org.openflexo.foundation.fml.parser.node.Node;
+import org.openflexo.p2pp.RawSource;
+import org.openflexo.p2pp.RawSource.RawSourceFragment;
+import org.openflexo.p2pp.RawSource.RawSourcePosition;
 
 /**
  * A factory based on {@link FMLSemanticsAnalyzer}, used to instantiate a {@link DataBinding} or an {@link Expression} from AST
@@ -54,15 +61,26 @@ public abstract class AbstractExpressionFactory extends FMLSemanticsAnalyzer {
 	private Node topLevel = null;
 
 	private Bindable bindable;
-	private final AbstractFMLTypingSpace typingSpace;
-	private final MainSemanticsAnalyzer mainAnalyzer;
+	// private final AbstractFMLTypingSpace typingSpace;
+	private final FMLSemanticsAnalyzer parentAnalyzer;
 	private final DataBindingNode dataBindingNode;
 
 	protected int depth = -1;
 
-	private Map<Node, ObjectNode> nodesForAST = new HashMap<>();
+	private Map<Node, ObjectNode<?, ?, ?>> nodesForAST = new HashMap<>();
 
-	public <N extends Node, FMLN extends ObjectNode> FMLN retrieveFMLNode(N astNode, Function<N, FMLN> function) {
+	protected AbstractExpressionFactory(Node rootNode, Bindable aBindable, /*AbstractFMLTypingSpace typingSpace,*/
+			FMLModelFactory fmlModelFactory, FMLSemanticsAnalyzer parentAnalyzer, DataBindingNode dataBindingNode) {
+		super(fmlModelFactory, rootNode);
+		expressionNodes = new Hashtable<>();
+		this.bindable = aBindable;
+		// this.typingSpace = typingSpace;
+		this.parentAnalyzer = parentAnalyzer;
+		this.dataBindingNode = dataBindingNode;
+	}
+
+	@Override
+	public <N extends Node, FMLN extends ObjectNode<?, ?, ?>> FMLN retrieveFMLNode(N astNode, Function<N, FMLN> function) {
 		FMLN returned = (FMLN) nodesForAST.get(astNode);
 		if (returned == null) {
 			returned = function.apply(astNode);
@@ -75,23 +93,14 @@ public abstract class AbstractExpressionFactory extends FMLSemanticsAnalyzer {
 		return depth == 0;
 	}
 
-	protected AbstractExpressionFactory(Node rootNode, Bindable aBindable, AbstractFMLTypingSpace typingSpace,
-			FMLModelFactory fmlModelFactory, MainSemanticsAnalyzer mainAnalyzer, DataBindingNode dataBindingNode) {
-		super(fmlModelFactory, rootNode);
-		expressionNodes = new Hashtable<>();
-		this.bindable = aBindable;
-		this.typingSpace = typingSpace;
-		this.mainAnalyzer = mainAnalyzer;
-		this.dataBindingNode = dataBindingNode;
-	}
-
 	public DataBindingNode getDataBindingNode() {
 		return dataBindingNode;
 	}
 
+	/*@Override
 	public AbstractFMLTypingSpace getTypingSpace() {
 		return typingSpace;
-	}
+	}*/
 
 	public Expression getExpression() {
 		if (topLevel != null) {
@@ -106,7 +115,54 @@ public abstract class AbstractExpressionFactory extends FMLSemanticsAnalyzer {
 
 	@Override
 	public MainSemanticsAnalyzer getMainAnalyzer() {
-		return mainAnalyzer;
+		if (getParentAnalyzer() instanceof MainSemanticsAnalyzer) {
+			return (MainSemanticsAnalyzer) getParentAnalyzer();
+		}
+		return null;
+	}
+
+	public FMLSemanticsAnalyzer getParentAnalyzer() {
+		return parentAnalyzer;
+	}
+
+	@Override
+	public FMLCompilationUnit getCompilationUnit() {
+		return getParentAnalyzer().getCompilationUnit();
+	}
+
+	@Override
+	public AbstractFMLTypingSpace getTypingSpace() {
+		return getParentAnalyzer().getTypingSpace();
+	}
+
+	@Override
+	public FMLBindingFactory getFMLBindingFactory() {
+		return getParentAnalyzer().getFMLBindingFactory();
+	}
+
+	@Override
+	public FragmentManager getFragmentManager() {
+		return getParentAnalyzer().getFragmentManager();
+	}
+
+	@Override
+	public RawSource getRawSource() {
+		return getParentAnalyzer().getRawSource();
+	}
+
+	/*@Override
+	public <N extends Node, FMLN extends ObjectNode<?, ?, ?>> FMLN retrieveFMLNode(N astNode, Function<N, FMLN> function) {
+		return getParentAnalyzer().retrieveFMLNode(astNode, function);
+	}*/
+
+	@Override
+	public void throwIssue(String errorMessage, RawSourceFragment fragment, RawSourcePosition startPosition) {
+		getParentAnalyzer().throwIssue(errorMessage, fragment, startPosition);
+	}
+
+	@Override
+	public List<SemanticAnalysisIssue> getSemanticAnalysisIssues() {
+		return getParentAnalyzer().getSemanticAnalysisIssues();
 	}
 
 	@Override

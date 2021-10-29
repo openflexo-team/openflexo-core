@@ -3,8 +3,13 @@ package org.openflexo.foundation.fml.parser;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
+import java.util.function.Function;
 import java.util.logging.Logger;
 
+import org.openflexo.foundation.fml.AbstractFMLTypingSpace;
+import org.openflexo.foundation.fml.FMLBindingFactory;
+import org.openflexo.foundation.fml.FMLCompilationUnit;
+import org.openflexo.foundation.fml.FMLPrettyPrintDelegate.SemanticAnalysisIssue;
 import org.openflexo.foundation.fml.controlgraph.FMLControlGraph;
 import org.openflexo.foundation.fml.controlgraph.Sequence;
 import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.AssignationActionNode;
@@ -52,6 +57,9 @@ import org.openflexo.foundation.fml.parser.node.PExpression;
 import org.openflexo.foundation.fml.parser.node.PFlexoBehaviourBody;
 import org.openflexo.foundation.fml.parser.node.PStatement;
 import org.openflexo.foundation.fml.parser.node.PStatementNoShortIf;
+import org.openflexo.p2pp.RawSource;
+import org.openflexo.p2pp.RawSource.RawSourceFragment;
+import org.openflexo.p2pp.RawSource.RawSourcePosition;
 import org.openflexo.toolbox.StringUtils;
 
 /**
@@ -112,7 +120,7 @@ public class ControlGraphFactory extends FMLSemanticsAnalyzer {
 	}
 
 	private ControlGraphFactory(Node cgNode, MainSemanticsAnalyzer analyzer) {
-		super(analyzer.getFactory(), cgNode);
+		super(analyzer.getModelFactory(), cgNode);
 		this.mainAnalyzer = analyzer;
 	}
 
@@ -121,9 +129,45 @@ public class ControlGraphFactory extends FMLSemanticsAnalyzer {
 		return mainAnalyzer;
 	}
 
-	/*public TypeFactory getTypeFactory() {
-		return getMainAnalyzer().getTypeFactory();
-	}*/
+	@Override
+	public FMLCompilationUnit getCompilationUnit() {
+		return getMainAnalyzer().getCompilationUnit();
+	}
+
+	@Override
+	public AbstractFMLTypingSpace getTypingSpace() {
+		return getMainAnalyzer().getTypingSpace();
+	}
+
+	@Override
+	public FMLBindingFactory getFMLBindingFactory() {
+		return getMainAnalyzer().getFMLBindingFactory();
+	}
+
+	@Override
+	public FragmentManager getFragmentManager() {
+		return getMainAnalyzer().getFragmentManager();
+	}
+
+	@Override
+	public RawSource getRawSource() {
+		return getMainAnalyzer().getRawSource();
+	}
+
+	@Override
+	public <N extends Node, FMLN extends ObjectNode<?, ?, ?>> FMLN retrieveFMLNode(N astNode, Function<N, FMLN> function) {
+		return getMainAnalyzer().retrieveFMLNode(astNode, function);
+	}
+
+	@Override
+	public void throwIssue(String errorMessage, RawSourceFragment fragment, RawSourcePosition startPosition) {
+		getMainAnalyzer().throwIssue(errorMessage, fragment, startPosition);
+	}
+
+	@Override
+	public List<SemanticAnalysisIssue> getSemanticAnalysisIssues() {
+		return getMainAnalyzer().getSemanticAnalysisIssues();
+	}
 
 	public ControlGraphNode<?, ?> getRootControlGraphNode() {
 		return rootControlGraphNode;
