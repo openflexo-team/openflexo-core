@@ -39,7 +39,7 @@
 package org.openflexo.foundation.fml.parser.fmlnodes;
 
 import org.openflexo.foundation.fml.md.BasicMetaData;
-import org.openflexo.foundation.fml.parser.MainSemanticsAnalyzer;
+import org.openflexo.foundation.fml.parser.FMLCompilationUnitSemanticsAnalyzer;
 import org.openflexo.foundation.fml.parser.node.ABasicAnnotationAnnotation;
 import org.openflexo.p2pp.RawSource.RawSourceFragment;
 
@@ -47,13 +47,13 @@ import org.openflexo.p2pp.RawSource.RawSourceFragment;
  * @author sylvain
  * 
  */
-public class BasicMetaDataNode extends AbstractMetaDataNode<ABasicAnnotationAnnotation, BasicMetaData, MainSemanticsAnalyzer> {
+public class BasicMetaDataNode extends AbstractMetaDataNode<ABasicAnnotationAnnotation, BasicMetaData, FMLCompilationUnitSemanticsAnalyzer> {
 
-	public BasicMetaDataNode(ABasicAnnotationAnnotation astNode, MainSemanticsAnalyzer analyser) {
+	public BasicMetaDataNode(ABasicAnnotationAnnotation astNode, FMLCompilationUnitSemanticsAnalyzer analyser) {
 		super(astNode, analyser);
 	}
 
-	public BasicMetaDataNode(BasicMetaData metaData, MainSemanticsAnalyzer analyser) {
+	public BasicMetaDataNode(BasicMetaData metaData, FMLCompilationUnitSemanticsAnalyzer analyser) {
 		super(metaData, analyser);
 	}
 

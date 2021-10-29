@@ -61,7 +61,7 @@ import org.openflexo.foundation.fml.cli.command.directive.ServicesDirective;
 import org.openflexo.foundation.fml.cli.command.fml.FMLContextCommand;
 import org.openflexo.foundation.fml.cli.command.fml.FMLExpression;
 import org.openflexo.foundation.fml.parser.FMLSemanticsAnalyzer;
-import org.openflexo.foundation.fml.parser.MainSemanticsAnalyzer;
+import org.openflexo.foundation.fml.parser.FMLCompilationUnitSemanticsAnalyzer;
 import org.openflexo.foundation.fml.parser.node.AActivateTaDirective;
 import org.openflexo.foundation.fml.parser.node.ACdDirective;
 import org.openflexo.foundation.fml.parser.node.AContextFmlCommand;
@@ -136,7 +136,7 @@ public class CommandSemanticsAnalyzer extends FMLSemanticsAnalyzer {
 	}
 
 	@Override
-	public MainSemanticsAnalyzer getMainAnalyzer() {
+	public FMLCompilationUnitSemanticsAnalyzer getCompilationUnitAnalyzer() {
 		return null;
 	}
 

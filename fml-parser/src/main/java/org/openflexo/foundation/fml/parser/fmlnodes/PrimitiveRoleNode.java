@@ -43,7 +43,7 @@ import java.util.logging.Logger;
 import org.openflexo.connie.type.PrimitiveType;
 import org.openflexo.foundation.InvalidNameException;
 import org.openflexo.foundation.fml.PrimitiveRole;
-import org.openflexo.foundation.fml.parser.MainSemanticsAnalyzer;
+import org.openflexo.foundation.fml.parser.FMLCompilationUnitSemanticsAnalyzer;
 import org.openflexo.foundation.fml.parser.TypeFactory;
 import org.openflexo.foundation.fml.parser.node.AJavaInnerConceptDecl;
 
@@ -56,11 +56,11 @@ public class PrimitiveRoleNode extends BasicPropertyNode<PrimitiveRole<?>> {
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(PrimitiveRoleNode.class.getPackage().getName());
 
-	public PrimitiveRoleNode(AJavaInnerConceptDecl astNode, MainSemanticsAnalyzer analyser) {
+	public PrimitiveRoleNode(AJavaInnerConceptDecl astNode, FMLCompilationUnitSemanticsAnalyzer analyser) {
 		super(astNode, analyser);
 	}
 
-	public PrimitiveRoleNode(PrimitiveRole<?> property, MainSemanticsAnalyzer analyser) {
+	public PrimitiveRoleNode(PrimitiveRole<?> property, FMLCompilationUnitSemanticsAnalyzer analyser) {
 		super(property, analyser);
 	}
 

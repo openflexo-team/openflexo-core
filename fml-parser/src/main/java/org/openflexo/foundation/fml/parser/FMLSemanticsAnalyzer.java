@@ -100,7 +100,7 @@ public abstract class FMLSemanticsAnalyzer extends DepthFirstAdapter {
 	}
 
 	@Deprecated
-	public abstract MainSemanticsAnalyzer getMainAnalyzer();
+	public abstract FMLCompilationUnitSemanticsAnalyzer getCompilationUnitAnalyzer();
 
 	public abstract FMLCompilationUnit getCompilationUnit();
 
@@ -333,7 +333,7 @@ public abstract class FMLSemanticsAnalyzer extends DepthFirstAdapter {
 		super.inASimpleQualifiedArgument(node);
 		if (handleFMLArgument()) {
 			// System.out.println("ENTER in " + peek() + " with " + node);
-			push(getMainAnalyzer().retrieveFMLNode(node, n -> new FMLSimplePropertyValueNode(n, getMainAnalyzer())));
+			push(getCompilationUnitAnalyzer().retrieveFMLNode(node, n -> new FMLSimplePropertyValueNode(n, getCompilationUnitAnalyzer())));
 		}
 	}
 
@@ -351,7 +351,7 @@ public abstract class FMLSemanticsAnalyzer extends DepthFirstAdapter {
 		super.inAInstanceQualifiedArgument(node);
 		if (handleFMLArgument()) {
 			// System.out.println("ENTER in " + peek() + " with " + node);
-			push(getMainAnalyzer().retrieveFMLNode(node, n -> new FMLInstancePropertyValueNode(n, getMainAnalyzer())));
+			push(getCompilationUnitAnalyzer().retrieveFMLNode(node, n -> new FMLInstancePropertyValueNode(n, getCompilationUnitAnalyzer())));
 		}
 	}
 
@@ -369,7 +369,7 @@ public abstract class FMLSemanticsAnalyzer extends DepthFirstAdapter {
 		super.inAListInstancesQualifiedArgument(node);
 		if (handleFMLArgument()) {
 			// System.out.println("ENTER in " + peek() + " with " + node);
-			push(getMainAnalyzer().retrieveFMLNode(node, n -> new FMLInstancesListPropertyValueNode(n, getMainAnalyzer())));
+			push(getCompilationUnitAnalyzer().retrieveFMLNode(node, n -> new FMLInstancesListPropertyValueNode(n, getCompilationUnitAnalyzer())));
 		}
 	}
 
@@ -387,7 +387,7 @@ public abstract class FMLSemanticsAnalyzer extends DepthFirstAdapter {
 		super.inASimpleQualifiedInstance(node);
 		if (handleFMLArgument()) {
 			// System.out.println("ENTER in " + peek() + " with " + node);
-			push(getMainAnalyzer().retrieveFMLNode(node, n -> new WrappedFMLObjectNode(n, getMainAnalyzer())));
+			push(getCompilationUnitAnalyzer().retrieveFMLNode(node, n -> new WrappedFMLObjectNode(n, getCompilationUnitAnalyzer())));
 		}
 	}
 
@@ -405,7 +405,7 @@ public abstract class FMLSemanticsAnalyzer extends DepthFirstAdapter {
 		super.inAFullQualifiedQualifiedInstance(node);
 		if (handleFMLArgument()) {
 			// System.out.println("ENTER in " + peek() + " with " + node);
-			push(getMainAnalyzer().retrieveFMLNode(node, n -> new WrappedFMLObjectNode(n, getMainAnalyzer())));
+			push(getCompilationUnitAnalyzer().retrieveFMLNode(node, n -> new WrappedFMLObjectNode(n, getCompilationUnitAnalyzer())));
 		}
 	}
 

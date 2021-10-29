@@ -121,7 +121,7 @@ public class ExpressionFactory extends AbstractExpressionFactory {
 
 	public static Expression makeExpression(Node node, Bindable bindable, AbstractFMLTypingSpace typingSpace, FMLModelFactory modelFactory,
 			RawSource rawSource) {
-		MainSemanticsAnalyzer localAnalyzer = new MainSemanticsAnalyzer(modelFactory, node, rawSource);
+		FMLCompilationUnitSemanticsAnalyzer localAnalyzer = new FMLCompilationUnitSemanticsAnalyzer(modelFactory, node, rawSource);
 		localAnalyzer.setTypingSpace(typingSpace);
 		DataBindingNode dataBindingNode = localAnalyzer.retrieveFMLNode(node,
 				n -> new DataBindingNode(n, bindable, BindingDefinitionType.GET, Object.class, localAnalyzer));
@@ -140,7 +140,7 @@ public class ExpressionFactory extends AbstractExpressionFactory {
 	}*/
 
 	public static <T> DataBinding<T> makeDataBinding(Node node, Bindable bindable, BindingDefinitionType bindingDefinitionType,
-			Type expectedType, MainSemanticsAnalyzer mainAnalyzer, ObjectNode<?, ?, ?> parentNode) {
+			Type expectedType, FMLCompilationUnitSemanticsAnalyzer mainAnalyzer, ObjectNode<?, ?, ?> parentNode) {
 		return _makeDataBinding(node, bindable, bindingDefinitionType, expectedType, mainAnalyzer.getTypingSpace(),
 				mainAnalyzer.getModelFactory(), mainAnalyzer, parentNode);
 	}

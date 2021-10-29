@@ -46,7 +46,7 @@ import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoConceptInstanceType;
 import org.openflexo.foundation.fml.InconsistentFlexoConceptHierarchyException;
 import org.openflexo.foundation.fml.parser.FMLObjectNode;
-import org.openflexo.foundation.fml.parser.MainSemanticsAnalyzer;
+import org.openflexo.foundation.fml.parser.FMLCompilationUnitSemanticsAnalyzer;
 import org.openflexo.foundation.fml.parser.TypeFactory;
 import org.openflexo.foundation.fml.parser.node.AManySuperTypeList;
 import org.openflexo.foundation.fml.parser.node.AOneSuperTypeList;
@@ -62,13 +62,13 @@ import org.openflexo.p2pp.RawSource.RawSourceFragment;
  * 
  * @author sylvain
  */
-public abstract class AbstractFlexoConceptNode<N extends Node, T extends FlexoConcept> extends FMLObjectNode<N, T, MainSemanticsAnalyzer> {
+public abstract class AbstractFlexoConceptNode<N extends Node, T extends FlexoConcept> extends FMLObjectNode<N, T, FMLCompilationUnitSemanticsAnalyzer> {
 
-	public AbstractFlexoConceptNode(N astNode, MainSemanticsAnalyzer analyser) {
+	public AbstractFlexoConceptNode(N astNode, FMLCompilationUnitSemanticsAnalyzer analyser) {
 		super(astNode, analyser);
 	}
 
-	public AbstractFlexoConceptNode(T concept, MainSemanticsAnalyzer analyser) {
+	public AbstractFlexoConceptNode(T concept, FMLCompilationUnitSemanticsAnalyzer analyser) {
 		super(concept, analyser);
 	}
 

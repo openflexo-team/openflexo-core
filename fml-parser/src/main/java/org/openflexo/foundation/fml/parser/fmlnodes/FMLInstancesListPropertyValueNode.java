@@ -45,7 +45,7 @@ import org.openflexo.foundation.fml.FMLInstancesListPropertyValue;
 import org.openflexo.foundation.fml.FMLModelContext.FMLProperty;
 import org.openflexo.foundation.fml.FMLObject;
 import org.openflexo.foundation.fml.WrappedFMLObject;
-import org.openflexo.foundation.fml.parser.MainSemanticsAnalyzer;
+import org.openflexo.foundation.fml.parser.FMLCompilationUnitSemanticsAnalyzer;
 import org.openflexo.foundation.fml.parser.node.AListInstancesQualifiedArgument;
 import org.openflexo.p2pp.PrettyPrintContext.Indentation;
 import org.openflexo.p2pp.RawSource.RawSourceFragment;
@@ -64,11 +64,11 @@ public class FMLInstancesListPropertyValueNode<M extends FMLObject, T extends FM
 
 	private static final Logger logger = Logger.getLogger(FMLInstancesListPropertyValueNode.class.getPackage().getName());
 
-	public FMLInstancesListPropertyValueNode(AListInstancesQualifiedArgument astNode, MainSemanticsAnalyzer analyser) {
+	public FMLInstancesListPropertyValueNode(AListInstancesQualifiedArgument astNode, FMLCompilationUnitSemanticsAnalyzer analyser) {
 		super(astNode, analyser);
 	}
 
-	public FMLInstancesListPropertyValueNode(FMLInstancesListPropertyValue<M, T> propertyValue, MainSemanticsAnalyzer analyser) {
+	public FMLInstancesListPropertyValueNode(FMLInstancesListPropertyValue<M, T> propertyValue, FMLCompilationUnitSemanticsAnalyzer analyser) {
 		super(propertyValue, analyser);
 	}
 

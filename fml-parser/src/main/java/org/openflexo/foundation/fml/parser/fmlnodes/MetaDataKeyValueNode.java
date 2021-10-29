@@ -44,7 +44,7 @@ import org.openflexo.connie.expr.Constant;
 import org.openflexo.foundation.fml.md.MetaDataKeyValue;
 import org.openflexo.foundation.fml.parser.ExpressionFactory;
 import org.openflexo.foundation.fml.parser.FMLObjectNode;
-import org.openflexo.foundation.fml.parser.MainSemanticsAnalyzer;
+import org.openflexo.foundation.fml.parser.FMLCompilationUnitSemanticsAnalyzer;
 import org.openflexo.foundation.fml.parser.node.AAnnotationKeyValuePair;
 import org.openflexo.p2pp.RawSource.RawSourceFragment;
 
@@ -52,13 +52,13 @@ import org.openflexo.p2pp.RawSource.RawSourceFragment;
  * @author sylvain
  * 
  */
-public class MetaDataKeyValueNode extends FMLObjectNode<AAnnotationKeyValuePair, MetaDataKeyValue<?>, MainSemanticsAnalyzer> {
+public class MetaDataKeyValueNode extends FMLObjectNode<AAnnotationKeyValuePair, MetaDataKeyValue<?>, FMLCompilationUnitSemanticsAnalyzer> {
 
-	public MetaDataKeyValueNode(AAnnotationKeyValuePair astNode, MainSemanticsAnalyzer analyser) {
+	public MetaDataKeyValueNode(AAnnotationKeyValuePair astNode, FMLCompilationUnitSemanticsAnalyzer analyser) {
 		super(astNode, analyser);
 	}
 
-	public MetaDataKeyValueNode(MetaDataKeyValue<?> metaData, MainSemanticsAnalyzer analyser) {
+	public MetaDataKeyValueNode(MetaDataKeyValue<?> metaData, FMLCompilationUnitSemanticsAnalyzer analyser) {
 		super(metaData, analyser);
 	}
 

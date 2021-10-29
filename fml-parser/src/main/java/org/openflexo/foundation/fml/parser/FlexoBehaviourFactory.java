@@ -67,7 +67,7 @@ public class FlexoBehaviourFactory extends SemanticsAnalyzerFactory {
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(FlexoBehaviourFactory.class.getPackage().getName());
 
-	public FlexoBehaviourFactory(MainSemanticsAnalyzer analyzer) {
+	public FlexoBehaviourFactory(FMLCompilationUnitSemanticsAnalyzer analyzer) {
 		super(analyzer);
 	}
 

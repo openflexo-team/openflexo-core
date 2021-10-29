@@ -44,7 +44,7 @@ import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.DataBinding.BindingDefinitionType;
 import org.openflexo.foundation.fml.editionaction.LogAction;
 import org.openflexo.foundation.fml.parser.ExpressionFactory;
-import org.openflexo.foundation.fml.parser.MainSemanticsAnalyzer;
+import org.openflexo.foundation.fml.parser.FMLCompilationUnitSemanticsAnalyzer;
 import org.openflexo.foundation.fml.parser.node.ALogActionFmlActionExp;
 import org.openflexo.foundation.fml.rt.logging.FMLConsole.LogLevel;
 import org.openflexo.p2pp.RawSource.RawSourceFragment;
@@ -58,7 +58,7 @@ public class LogActionNode extends ControlGraphNode<ALogActionFmlActionExp, LogA
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(LogActionNode.class.getPackage().getName());
 
-	public LogActionNode(ALogActionFmlActionExp astNode, MainSemanticsAnalyzer analyser) {
+	public LogActionNode(ALogActionFmlActionExp astNode, FMLCompilationUnitSemanticsAnalyzer analyser) {
 		super(astNode, analyser);
 
 		if (getSemiFragment() != null) {
@@ -67,7 +67,7 @@ public class LogActionNode extends ControlGraphNode<ALogActionFmlActionExp, LogA
 
 	}
 
-	public LogActionNode(LogAction action, MainSemanticsAnalyzer analyser) {
+	public LogActionNode(LogAction action, FMLCompilationUnitSemanticsAnalyzer analyser) {
 		super(action, analyser);
 	}
 

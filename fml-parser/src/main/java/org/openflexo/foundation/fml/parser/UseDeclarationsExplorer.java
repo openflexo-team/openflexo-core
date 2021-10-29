@@ -53,11 +53,11 @@ import org.openflexo.foundation.technologyadapter.ModelSlot;
  */
 public class UseDeclarationsExplorer extends DepthFirstAdapter {
 
-	private final MainSemanticsAnalyzer analyzer;
+	private final FMLCompilationUnitSemanticsAnalyzer analyzer;
 
 	private List<Class<? extends ModelSlot<?>>> modelSlotClasses = new ArrayList<>();
 
-	public UseDeclarationsExplorer(MainSemanticsAnalyzer analyzer) {
+	public UseDeclarationsExplorer(FMLCompilationUnitSemanticsAnalyzer analyzer) {
 		super();
 		this.analyzer = analyzer;
 	}

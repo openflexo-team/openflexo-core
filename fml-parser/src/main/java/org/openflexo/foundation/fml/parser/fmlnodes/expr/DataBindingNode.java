@@ -44,7 +44,7 @@ import org.openflexo.connie.Bindable;
 import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.DataBinding.BindingDefinitionType;
 import org.openflexo.foundation.fml.parser.FMLSemanticsAnalyzer;
-import org.openflexo.foundation.fml.parser.MainSemanticsAnalyzer;
+import org.openflexo.foundation.fml.parser.FMLCompilationUnitSemanticsAnalyzer;
 import org.openflexo.foundation.fml.parser.ObjectNode;
 import org.openflexo.foundation.fml.parser.node.Node;
 
@@ -52,7 +52,7 @@ import org.openflexo.foundation.fml.parser.node.Node;
  * @author sylvain
  * 
  */
-public class DataBindingNode extends ObjectNode<Node, DataBinding<?>, MainSemanticsAnalyzer> {
+public class DataBindingNode extends ObjectNode<Node, DataBinding<?>, FMLCompilationUnitSemanticsAnalyzer> {
 
 	private Bindable bindable;
 	private BindingDefinitionType bindingDefinitionType;

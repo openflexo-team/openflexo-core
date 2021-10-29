@@ -43,7 +43,7 @@ import java.util.logging.Logger;
 import org.openflexo.foundation.fml.controlgraph.IterationAction;
 import org.openflexo.foundation.fml.editionaction.AssignableAction;
 import org.openflexo.foundation.fml.parser.ControlGraphFactory;
-import org.openflexo.foundation.fml.parser.MainSemanticsAnalyzer;
+import org.openflexo.foundation.fml.parser.FMLCompilationUnitSemanticsAnalyzer;
 import org.openflexo.foundation.fml.parser.node.AForEnhancedStatement;
 import org.openflexo.p2pp.PrettyPrintContext.Indentation;
 import org.openflexo.p2pp.RawSource.RawSourceFragment;
@@ -61,11 +61,11 @@ public class IterationActionNode extends ControlGraphNode<AForEnhancedStatement,
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(IterationActionNode.class.getPackage().getName());
 
-	public IterationActionNode(AForEnhancedStatement astNode, MainSemanticsAnalyzer analyser) {
+	public IterationActionNode(AForEnhancedStatement astNode, FMLCompilationUnitSemanticsAnalyzer analyser) {
 		super(astNode, analyser);
 	}
 
-	public IterationActionNode(IterationAction iteration, MainSemanticsAnalyzer analyser) {
+	public IterationActionNode(IterationAction iteration, FMLCompilationUnitSemanticsAnalyzer analyser) {
 		super(iteration, analyser);
 	}
 

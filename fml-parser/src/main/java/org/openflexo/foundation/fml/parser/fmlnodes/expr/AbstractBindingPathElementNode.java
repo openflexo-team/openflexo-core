@@ -46,7 +46,7 @@ import org.openflexo.connie.binding.BindingPathElement;
 import org.openflexo.connie.binding.BindingPathElement.BindingPathElementOwner;
 import org.openflexo.connie.binding.IBindingPathElement;
 import org.openflexo.foundation.fml.parser.FMLSemanticsAnalyzer;
-import org.openflexo.foundation.fml.parser.MainSemanticsAnalyzer;
+import org.openflexo.foundation.fml.parser.FMLCompilationUnitSemanticsAnalyzer;
 import org.openflexo.foundation.fml.parser.ObjectNode;
 import org.openflexo.foundation.fml.parser.node.AFieldPrimaryNoId;
 import org.openflexo.foundation.fml.parser.node.AIdentifierPrimary;
@@ -65,7 +65,7 @@ import org.openflexo.foundation.fml.parser.node.PPrimaryNoId;
  * 
  */
 public abstract class AbstractBindingPathElementNode<N extends Node, BPE extends IBindingPathElement>
-		extends ObjectNode<N, BPE, MainSemanticsAnalyzer> implements BindingPathElementOwner {
+		extends ObjectNode<N, BPE, FMLCompilationUnitSemanticsAnalyzer> implements BindingPathElementOwner {
 
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(AbstractBindingPathElementNode.class.getPackage().getName());

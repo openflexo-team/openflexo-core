@@ -41,7 +41,7 @@ package org.openflexo.foundation.fml.parser.fmlnodes.controlgraph;
 import org.openflexo.foundation.fml.FMLPropertyValue;
 import org.openflexo.foundation.fml.editionaction.TechnologySpecificAction;
 import org.openflexo.foundation.fml.editionaction.TechnologySpecificActionDefiningReceiver;
-import org.openflexo.foundation.fml.parser.MainSemanticsAnalyzer;
+import org.openflexo.foundation.fml.parser.FMLCompilationUnitSemanticsAnalyzer;
 import org.openflexo.foundation.fml.parser.node.AFromClause;
 import org.openflexo.foundation.fml.parser.node.AFullQualifiedFmlParameters;
 import org.openflexo.foundation.fml.parser.node.AInClause;
@@ -67,13 +67,13 @@ public class FMLEditionActionNode<EA extends TechnologySpecificAction<?, ?>>
 	private RawSourcePosition startPosition;
 	private RawSourcePosition endPosition;
 
-	public FMLEditionActionNode(ATaEditionActionFmlActionExp astNode, MainSemanticsAnalyzer analyser) {
+	public FMLEditionActionNode(ATaEditionActionFmlActionExp astNode, FMLCompilationUnitSemanticsAnalyzer analyser) {
 		super(astNode, analyser);
 		startPosition = getRawSource().getStartPosition();
 		endPosition = getRawSource().getEndPosition();
 	}
 
-	public FMLEditionActionNode(EA editionAction, MainSemanticsAnalyzer analyser) {
+	public FMLEditionActionNode(EA editionAction, FMLCompilationUnitSemanticsAnalyzer analyser) {
 		super(editionAction, analyser);
 	}
 

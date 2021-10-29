@@ -42,7 +42,7 @@ import java.util.logging.Logger;
 
 import org.openflexo.foundation.InvalidNameException;
 import org.openflexo.foundation.fml.JavaRole;
-import org.openflexo.foundation.fml.parser.MainSemanticsAnalyzer;
+import org.openflexo.foundation.fml.parser.FMLCompilationUnitSemanticsAnalyzer;
 import org.openflexo.foundation.fml.parser.TypeFactory;
 import org.openflexo.foundation.fml.parser.node.AJavaInnerConceptDecl;
 
@@ -55,11 +55,11 @@ public class JavaRoleNode extends BasicPropertyNode<JavaRole<?>> {
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(JavaRoleNode.class.getPackage().getName());
 
-	public JavaRoleNode(AJavaInnerConceptDecl astNode, MainSemanticsAnalyzer analyser) {
+	public JavaRoleNode(AJavaInnerConceptDecl astNode, FMLCompilationUnitSemanticsAnalyzer analyser) {
 		super(astNode, analyser);
 	}
 
-	public JavaRoleNode(JavaRole<?> property, MainSemanticsAnalyzer analyser) {
+	public JavaRoleNode(JavaRole<?> property, FMLCompilationUnitSemanticsAnalyzer analyser) {
 		super(property, analyser);
 	}
 

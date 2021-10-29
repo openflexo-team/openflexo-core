@@ -47,7 +47,7 @@ import org.openflexo.foundation.fml.FlexoConceptInstanceType;
 import org.openflexo.foundation.fml.VirtualModelInstanceType;
 import org.openflexo.foundation.fml.editionaction.AbstractFetchRequest;
 import org.openflexo.foundation.fml.parser.ExpressionFactory;
-import org.openflexo.foundation.fml.parser.MainSemanticsAnalyzer;
+import org.openflexo.foundation.fml.parser.FMLCompilationUnitSemanticsAnalyzer;
 import org.openflexo.foundation.fml.parser.TypeFactory;
 import org.openflexo.foundation.fml.parser.node.AFromClause;
 import org.openflexo.foundation.fml.parser.node.ASelectActionFmlActionExp;
@@ -69,11 +69,11 @@ public class FetchRequestNode<FR extends AbstractFetchRequest<?, ?, ?, ?>> exten
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(FetchRequestNode.class.getPackage().getName());
 
-	public FetchRequestNode(ASelectActionFmlActionExp astNode, MainSemanticsAnalyzer analyser) {
+	public FetchRequestNode(ASelectActionFmlActionExp astNode, FMLCompilationUnitSemanticsAnalyzer analyser) {
 		super(astNode, analyser);
 	}
 
-	public FetchRequestNode(FR action, MainSemanticsAnalyzer analyser) {
+	public FetchRequestNode(FR action, FMLCompilationUnitSemanticsAnalyzer analyser) {
 		super(action, analyser);
 	}
 

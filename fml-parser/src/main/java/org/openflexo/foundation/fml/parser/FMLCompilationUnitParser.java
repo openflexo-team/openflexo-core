@@ -82,7 +82,7 @@ public class FMLCompilationUnitParser {
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(FMLCompilationUnitParser.class.getPackage().getName());
 
-	private MainSemanticsAnalyzer semanticsAnalyzer;
+	private FMLCompilationUnitSemanticsAnalyzer semanticsAnalyzer;
 
 	/**
 	 * This is the method to invoke to perform a parsing.<br>
@@ -157,7 +157,7 @@ public class FMLCompilationUnitParser {
 			// new ASTDebugger(tree);
 
 			// Creates the semantics analyzer.
-			semanticsAnalyzer = new MainSemanticsAnalyzer(modelFactory, tree, rawSource);
+			semanticsAnalyzer = new FMLCompilationUnitSemanticsAnalyzer(modelFactory, tree, rawSource);
 
 			// Find uses declarations
 			UseDeclarationsExplorer e = new UseDeclarationsExplorer(semanticsAnalyzer);
@@ -215,7 +215,7 @@ public class FMLCompilationUnitParser {
 			// new ASTDebugger(tree);
 
 			// Creates the semantics analyzer.
-			MainSemanticsAnalyzer analyzer = new MainSemanticsAnalyzer(modelFactory, tree, rawSource);
+			FMLCompilationUnitSemanticsAnalyzer analyzer = new FMLCompilationUnitSemanticsAnalyzer(modelFactory, tree, rawSource);
 
 			// Find infos
 			VirtualModelInfoExplorer e = new VirtualModelInfoExplorer(tree, analyzer);
@@ -242,12 +242,12 @@ public class FMLCompilationUnitParser {
 	}
 
 	public void initPrettyPrint(FMLCompilationUnit fmlCompilationUnit) {
-		semanticsAnalyzer = new MainSemanticsAnalyzer(fmlCompilationUnit);
+		semanticsAnalyzer = new FMLCompilationUnitSemanticsAnalyzer(fmlCompilationUnit);
 		FMLCompilationUnitNode fmlCompilationUnitNode = new FMLCompilationUnitNode(fmlCompilationUnit, semanticsAnalyzer);
 		// fmlCompilationUnitNode.finalizeDeserialization();
 	}
 
-	public MainSemanticsAnalyzer getSemanticsAnalyzer() {
+	public FMLCompilationUnitSemanticsAnalyzer getSemanticsAnalyzer() {
 		return semanticsAnalyzer;
 	}
 

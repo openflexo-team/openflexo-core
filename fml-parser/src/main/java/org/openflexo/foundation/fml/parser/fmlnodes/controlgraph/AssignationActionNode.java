@@ -46,7 +46,7 @@ import org.openflexo.foundation.fml.editionaction.AssignableAction;
 import org.openflexo.foundation.fml.editionaction.AssignationAction;
 import org.openflexo.foundation.fml.parser.ControlGraphFactory;
 import org.openflexo.foundation.fml.parser.ExpressionFactory;
-import org.openflexo.foundation.fml.parser.MainSemanticsAnalyzer;
+import org.openflexo.foundation.fml.parser.FMLCompilationUnitSemanticsAnalyzer;
 import org.openflexo.foundation.fml.parser.node.AAssignmentStatementExpression;
 import org.openflexo.foundation.fml.parser.node.AFieldLeftHandSide;
 import org.openflexo.foundation.fml.parser.node.AIdentifierLeftHandSide;
@@ -64,7 +64,7 @@ public class AssignationActionNode extends AssignableActionNode<AAssignmentState
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(AssignationActionNode.class.getPackage().getName());
 
-	public AssignationActionNode(AAssignmentStatementExpression astNode, MainSemanticsAnalyzer analyser) {
+	public AssignationActionNode(AAssignmentStatementExpression astNode, FMLCompilationUnitSemanticsAnalyzer analyser) {
 		super(astNode, analyser);
 
 		if (getSemiFragment() != null) {
@@ -73,7 +73,7 @@ public class AssignationActionNode extends AssignableActionNode<AAssignmentState
 
 	}
 
-	public AssignationActionNode(AssignationAction<?> action, MainSemanticsAnalyzer analyser) {
+	public AssignationActionNode(AssignationAction<?> action, FMLCompilationUnitSemanticsAnalyzer analyser) {
 		super(action, analyser);
 	}
 

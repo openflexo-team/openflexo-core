@@ -44,7 +44,7 @@ import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.DataBinding.BindingDefinitionType;
 import org.openflexo.foundation.fml.parser.ExpressionFactory;
 import org.openflexo.foundation.fml.parser.FMLObjectNode;
-import org.openflexo.foundation.fml.parser.MainSemanticsAnalyzer;
+import org.openflexo.foundation.fml.parser.FMLCompilationUnitSemanticsAnalyzer;
 import org.openflexo.foundation.fml.parser.node.PExpression;
 import org.openflexo.foundation.fml.rt.editionaction.BehaviourCallArgument;
 
@@ -52,16 +52,16 @@ import org.openflexo.foundation.fml.rt.editionaction.BehaviourCallArgument;
  * @author sylvain
  * 
  */
-public class BehaviourCallArgumentNode extends FMLObjectNode<PExpression, BehaviourCallArgument, MainSemanticsAnalyzer> {
+public class BehaviourCallArgumentNode extends FMLObjectNode<PExpression, BehaviourCallArgument, FMLCompilationUnitSemanticsAnalyzer> {
 
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(BehaviourCallArgumentNode.class.getPackage().getName());
 
-	public BehaviourCallArgumentNode(PExpression astNode, MainSemanticsAnalyzer analyser) {
+	public BehaviourCallArgumentNode(PExpression astNode, FMLCompilationUnitSemanticsAnalyzer analyser) {
 		super(astNode, analyser);
 	}
 
-	public BehaviourCallArgumentNode(BehaviourCallArgument modelObject, MainSemanticsAnalyzer analyser) {
+	public BehaviourCallArgumentNode(BehaviourCallArgument modelObject, FMLCompilationUnitSemanticsAnalyzer analyser) {
 		super(modelObject, analyser);
 	}
 

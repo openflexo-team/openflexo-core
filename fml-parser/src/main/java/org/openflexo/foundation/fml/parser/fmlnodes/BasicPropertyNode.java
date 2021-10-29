@@ -41,7 +41,7 @@ package org.openflexo.foundation.fml.parser.fmlnodes;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.fml.BasicProperty;
-import org.openflexo.foundation.fml.parser.MainSemanticsAnalyzer;
+import org.openflexo.foundation.fml.parser.FMLCompilationUnitSemanticsAnalyzer;
 import org.openflexo.foundation.fml.parser.node.AIdentifierVariableDeclarator;
 import org.openflexo.foundation.fml.parser.node.AInitializerVariableDeclarator;
 import org.openflexo.foundation.fml.parser.node.AJavaInnerConceptDecl;
@@ -57,11 +57,11 @@ public abstract class BasicPropertyNode<T extends BasicProperty<?>> extends Flex
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(BasicPropertyNode.class.getPackage().getName());
 
-	public BasicPropertyNode(AJavaInnerConceptDecl astNode, MainSemanticsAnalyzer analyser) {
+	public BasicPropertyNode(AJavaInnerConceptDecl astNode, FMLCompilationUnitSemanticsAnalyzer analyser) {
 		super(astNode, analyser);
 	}
 
-	public BasicPropertyNode(T property, MainSemanticsAnalyzer analyser) {
+	public BasicPropertyNode(T property, FMLCompilationUnitSemanticsAnalyzer analyser) {
 		super(property, analyser);
 	}
 

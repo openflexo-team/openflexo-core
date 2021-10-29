@@ -44,7 +44,7 @@ import java.util.logging.Logger;
 import org.openflexo.foundation.InvalidNameException;
 import org.openflexo.foundation.fml.FMLPropertyValue;
 import org.openflexo.foundation.fml.FlexoRole;
-import org.openflexo.foundation.fml.parser.MainSemanticsAnalyzer;
+import org.openflexo.foundation.fml.parser.FMLCompilationUnitSemanticsAnalyzer;
 import org.openflexo.foundation.fml.parser.TypeFactory;
 import org.openflexo.foundation.fml.parser.node.AFmlFullyQualifiedInnerConceptDecl;
 import org.openflexo.foundation.fml.parser.node.AFmlInnerConceptDecl;
@@ -66,11 +66,11 @@ public class FlexoRolePropertyNode<N extends PInnerConceptDecl, R extends FlexoR
 
 	private static final Logger logger = Logger.getLogger(FlexoRolePropertyNode.class.getPackage().getName());
 
-	public FlexoRolePropertyNode(N astNode, MainSemanticsAnalyzer analyser) {
+	public FlexoRolePropertyNode(N astNode, FMLCompilationUnitSemanticsAnalyzer analyser) {
 		super(astNode, analyser);
 	}
 
-	public FlexoRolePropertyNode(R modelSlot, MainSemanticsAnalyzer analyser) {
+	public FlexoRolePropertyNode(R modelSlot, FMLCompilationUnitSemanticsAnalyzer analyser) {
 		super(modelSlot, analyser);
 	}
 

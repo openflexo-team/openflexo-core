@@ -42,7 +42,7 @@ import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.DataBinding.BindingDefinitionType;
 import org.openflexo.foundation.fml.ElementImportDeclaration;
 import org.openflexo.foundation.fml.parser.FMLObjectNode;
-import org.openflexo.foundation.fml.parser.MainSemanticsAnalyzer;
+import org.openflexo.foundation.fml.parser.FMLCompilationUnitSemanticsAnalyzer;
 import org.openflexo.foundation.fml.parser.URIExpressionFactory;
 import org.openflexo.foundation.fml.parser.node.ANamedUriImportImportDecl;
 import org.openflexo.foundation.fml.parser.node.AObjectInResourceReferenceByUri;
@@ -60,13 +60,13 @@ import org.openflexo.toolbox.StringUtils;
 
 // AUriImportImportDecl
 // ANamedUriImportImportDecl
-public class ElementImportNode extends FMLObjectNode<PImportDecl, ElementImportDeclaration, MainSemanticsAnalyzer> {
+public class ElementImportNode extends FMLObjectNode<PImportDecl, ElementImportDeclaration, FMLCompilationUnitSemanticsAnalyzer> {
 
-	public ElementImportNode(PImportDecl astNode, MainSemanticsAnalyzer analyser) {
+	public ElementImportNode(PImportDecl astNode, FMLCompilationUnitSemanticsAnalyzer analyser) {
 		super(astNode, analyser);
 	}
 
-	public ElementImportNode(ElementImportDeclaration importDeclaration, MainSemanticsAnalyzer analyser) {
+	public ElementImportNode(ElementImportDeclaration importDeclaration, FMLCompilationUnitSemanticsAnalyzer analyser) {
 		super(importDeclaration, analyser);
 	}
 

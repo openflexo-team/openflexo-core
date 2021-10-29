@@ -43,7 +43,7 @@ import org.openflexo.foundation.fml.FlexoBehaviour;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoProperty;
 import org.openflexo.foundation.fml.md.FMLMetaData;
-import org.openflexo.foundation.fml.parser.MainSemanticsAnalyzer;
+import org.openflexo.foundation.fml.parser.FMLCompilationUnitSemanticsAnalyzer;
 import org.openflexo.foundation.fml.parser.node.AConceptDecl;
 import org.openflexo.foundation.fml.parser.node.ASuperClause;
 import org.openflexo.p2pp.PrettyPrintContext.Indentation;
@@ -55,11 +55,11 @@ import org.openflexo.p2pp.RawSource.RawSourceFragment;
  */
 public class FlexoConceptNode extends AbstractFlexoConceptNode<AConceptDecl, FlexoConcept> {
 
-	public FlexoConceptNode(AConceptDecl astNode, MainSemanticsAnalyzer analyser) {
+	public FlexoConceptNode(AConceptDecl astNode, FMLCompilationUnitSemanticsAnalyzer analyser) {
 		super(astNode, analyser);
 	}
 
-	public FlexoConceptNode(FlexoConcept concept, MainSemanticsAnalyzer analyser) {
+	public FlexoConceptNode(FlexoConcept concept, FMLCompilationUnitSemanticsAnalyzer analyser) {
 		super(concept, analyser);
 	}
 

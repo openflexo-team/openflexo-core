@@ -44,7 +44,7 @@ import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.DataBinding.BindingDefinitionType;
 import org.openflexo.foundation.fml.editionaction.ExpressionAction;
 import org.openflexo.foundation.fml.parser.ExpressionFactory;
-import org.openflexo.foundation.fml.parser.MainSemanticsAnalyzer;
+import org.openflexo.foundation.fml.parser.FMLCompilationUnitSemanticsAnalyzer;
 import org.openflexo.foundation.fml.parser.node.Node;
 import org.openflexo.p2pp.RawSource.RawSourceFragment;
 
@@ -57,11 +57,11 @@ public class ExpressionActionNode extends AssignableActionNode<Node, ExpressionA
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(ExpressionActionNode.class.getPackage().getName());
 
-	public ExpressionActionNode(Node astNode, MainSemanticsAnalyzer analyser) {
+	public ExpressionActionNode(Node astNode, FMLCompilationUnitSemanticsAnalyzer analyser) {
 		super(astNode, analyser);
 	}
 
-	public ExpressionActionNode(ExpressionAction<?> action, MainSemanticsAnalyzer analyser) {
+	public ExpressionActionNode(ExpressionAction<?> action, FMLCompilationUnitSemanticsAnalyzer analyser) {
 		super(action, analyser);
 	}
 

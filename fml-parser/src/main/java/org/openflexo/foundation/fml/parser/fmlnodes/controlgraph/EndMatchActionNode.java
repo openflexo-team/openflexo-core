@@ -51,7 +51,7 @@ import org.openflexo.foundation.fml.FlexoBehaviourParameter;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoConceptInstanceType;
 import org.openflexo.foundation.fml.parser.ExpressionFactory;
-import org.openflexo.foundation.fml.parser.MainSemanticsAnalyzer;
+import org.openflexo.foundation.fml.parser.FMLCompilationUnitSemanticsAnalyzer;
 import org.openflexo.foundation.fml.parser.TypeFactory;
 import org.openflexo.foundation.fml.parser.node.AActionClause;
 import org.openflexo.foundation.fml.parser.node.ADeleteAbstractActionClause;
@@ -89,7 +89,7 @@ public class EndMatchActionNode extends ControlGraphNode<AEndMatchActionFmlActio
 	private String behaviourName;
 	private List<DataBinding<?>> behaviourArgs;
 
-	public EndMatchActionNode(AEndMatchActionFmlActionExp astNode, MainSemanticsAnalyzer analyser) {
+	public EndMatchActionNode(AEndMatchActionFmlActionExp astNode, FMLCompilationUnitSemanticsAnalyzer analyser) {
 		super(astNode, analyser);
 
 		if (getSemiFragment() != null) {
@@ -98,7 +98,7 @@ public class EndMatchActionNode extends ControlGraphNode<AEndMatchActionFmlActio
 
 	}
 
-	public EndMatchActionNode(FinalizeMatching action, MainSemanticsAnalyzer analyser) {
+	public EndMatchActionNode(FinalizeMatching action, FMLCompilationUnitSemanticsAnalyzer analyser) {
 		super(action, analyser);
 	}
 

@@ -107,9 +107,9 @@ import org.openflexo.p2pp.RawSource.RawSourcePosition;
  * @author sylvain
  * 
  */
-public class MainSemanticsAnalyzer extends FMLSemanticsAnalyzer {
+public class FMLCompilationUnitSemanticsAnalyzer extends FMLSemanticsAnalyzer {
 
-	private static final Logger logger = Logger.getLogger(MainSemanticsAnalyzer.class.getPackage().getName());
+	private static final Logger logger = Logger.getLogger(FMLCompilationUnitSemanticsAnalyzer.class.getPackage().getName());
 
 	// private final TypeFactory typeFactory;
 	private final FlexoPropertyFactory propertyFactory;
@@ -126,7 +126,7 @@ public class MainSemanticsAnalyzer extends FMLSemanticsAnalyzer {
 	private FMLCompilationUnitNode compilationUnitNode;
 	private FMLCompilationUnit compilationUnit;
 
-	public MainSemanticsAnalyzer(FMLCompilationUnit compilationUnit) {
+	public FMLCompilationUnitSemanticsAnalyzer(FMLCompilationUnit compilationUnit) {
 		super(compilationUnit.getFMLModelFactory(), null);
 		this.compilationUnit = compilationUnit;
 		fragmentManager = new FragmentManager(null);
@@ -137,7 +137,7 @@ public class MainSemanticsAnalyzer extends FMLSemanticsAnalyzer {
 		typingSpace = compilationUnit.getTypingSpace();
 	}
 
-	public MainSemanticsAnalyzer(FMLModelFactory modelFactory, Node tree, RawSource rawSource) {
+	public FMLCompilationUnitSemanticsAnalyzer(FMLModelFactory modelFactory, Node tree, RawSource rawSource) {
 		super(modelFactory, tree);
 		this.rawSource = rawSource;
 		fragmentManager = new FragmentManager(rawSource);
@@ -150,7 +150,7 @@ public class MainSemanticsAnalyzer extends FMLSemanticsAnalyzer {
 	}
 
 	@Override
-	public MainSemanticsAnalyzer getMainAnalyzer() {
+	public FMLCompilationUnitSemanticsAnalyzer getCompilationUnitAnalyzer() {
 		return this;
 	}
 
@@ -322,7 +322,7 @@ public class MainSemanticsAnalyzer extends FMLSemanticsAnalyzer {
 	@Override
 	public void inANamespaceDecl(ANamespaceDecl node) {
 		super.inANamespaceDecl(node);
-		push(retrieveFMLNode(node, n -> new NamespaceDeclarationNode(n, getMainAnalyzer())));
+		push(retrieveFMLNode(node, n -> new NamespaceDeclarationNode(n, getCompilationUnitAnalyzer())));
 	}
 
 	@Override
@@ -334,7 +334,7 @@ public class MainSemanticsAnalyzer extends FMLSemanticsAnalyzer {
 	@Override
 	public void inAUseDecl(AUseDecl node) {
 		super.inAUseDecl(node);
-		push(retrieveFMLNode(node, n -> new UseDeclarationNode(n, getMainAnalyzer())));
+		push(retrieveFMLNode(node, n -> new UseDeclarationNode(n, getCompilationUnitAnalyzer())));
 	}
 
 	@Override
@@ -346,7 +346,7 @@ public class MainSemanticsAnalyzer extends FMLSemanticsAnalyzer {
 	@Override
 	public void inAJavaImportImportDecl(AJavaImportImportDecl node) {
 		super.inAJavaImportImportDecl(node);
-		push(retrieveFMLNode(node, n -> new JavaImportNode(n, getMainAnalyzer())));
+		push(retrieveFMLNode(node, n -> new JavaImportNode(n, getCompilationUnitAnalyzer())));
 	}
 
 	@Override
@@ -358,7 +358,7 @@ public class MainSemanticsAnalyzer extends FMLSemanticsAnalyzer {
 	@Override
 	public void inANamedJavaImportImportDecl(ANamedJavaImportImportDecl node) {
 		super.inANamedJavaImportImportDecl(node);
-		push(retrieveFMLNode(node, n -> new NamedJavaImportNode(n, getMainAnalyzer())));
+		push(retrieveFMLNode(node, n -> new NamedJavaImportNode(n, getCompilationUnitAnalyzer())));
 	}
 
 	@Override
@@ -370,7 +370,7 @@ public class MainSemanticsAnalyzer extends FMLSemanticsAnalyzer {
 	@Override
 	public void inAUriImportImportDecl(AUriImportImportDecl node) {
 		super.inAUriImportImportDecl(node);
-		push(retrieveFMLNode(node, n -> new ElementImportNode(n, getMainAnalyzer())));
+		push(retrieveFMLNode(node, n -> new ElementImportNode(n, getCompilationUnitAnalyzer())));
 	}
 
 	@Override
@@ -382,7 +382,7 @@ public class MainSemanticsAnalyzer extends FMLSemanticsAnalyzer {
 	@Override
 	public void inANamedUriImportImportDecl(ANamedUriImportImportDecl node) {
 		super.inANamedUriImportImportDecl(node);
-		push(retrieveFMLNode(node, n -> new ElementImportNode(n, getMainAnalyzer())));
+		push(retrieveFMLNode(node, n -> new ElementImportNode(n, getCompilationUnitAnalyzer())));
 	}
 
 	@Override
@@ -394,7 +394,7 @@ public class MainSemanticsAnalyzer extends FMLSemanticsAnalyzer {
 	@Override
 	public void inAModelDecl(AModelDecl node) {
 		super.inAModelDecl(node);
-		push(retrieveFMLNode(node, n -> new VirtualModelNode(n, getMainAnalyzer())));
+		push(retrieveFMLNode(node, n -> new VirtualModelNode(n, getCompilationUnitAnalyzer())));
 	}
 
 	@Override
@@ -406,7 +406,7 @@ public class MainSemanticsAnalyzer extends FMLSemanticsAnalyzer {
 	@Override
 	public void inAConceptDecl(AConceptDecl node) {
 		super.inAConceptDecl(node);
-		push(retrieveFMLNode(node, n -> new FlexoConceptNode(n, getMainAnalyzer())));
+		push(retrieveFMLNode(node, n -> new FlexoConceptNode(n, getCompilationUnitAnalyzer())));
 	}
 
 	@Override
@@ -528,7 +528,7 @@ public class MainSemanticsAnalyzer extends FMLSemanticsAnalyzer {
 	@Override
 	public void inABasicAnnotationAnnotation(ABasicAnnotationAnnotation node) {
 		super.inABasicAnnotationAnnotation(node);
-		push(retrieveFMLNode(node, n -> new BasicMetaDataNode(n, getMainAnalyzer())));
+		push(retrieveFMLNode(node, n -> new BasicMetaDataNode(n, getCompilationUnitAnalyzer())));
 	}
 
 	@Override
@@ -540,7 +540,7 @@ public class MainSemanticsAnalyzer extends FMLSemanticsAnalyzer {
 	@Override
 	public void inASingleAnnotationAnnotation(ASingleAnnotationAnnotation node) {
 		super.inASingleAnnotationAnnotation(node);
-		push(retrieveFMLNode(node, n -> new SingleMetaDataNode(n, getMainAnalyzer())));
+		push(retrieveFMLNode(node, n -> new SingleMetaDataNode(n, getCompilationUnitAnalyzer())));
 	}
 
 	@Override
@@ -552,7 +552,7 @@ public class MainSemanticsAnalyzer extends FMLSemanticsAnalyzer {
 	@Override
 	public void inAComplexAnnotationAnnotation(AComplexAnnotationAnnotation node) {
 		super.inAComplexAnnotationAnnotation(node);
-		push(retrieveFMLNode(node, n -> new MultiValuedMetaDataNode(n, getMainAnalyzer())));
+		push(retrieveFMLNode(node, n -> new MultiValuedMetaDataNode(n, getCompilationUnitAnalyzer())));
 	}
 
 	@Override
@@ -564,7 +564,7 @@ public class MainSemanticsAnalyzer extends FMLSemanticsAnalyzer {
 	@Override
 	public void inAAnnotationKeyValuePair(AAnnotationKeyValuePair node) {
 		super.inAAnnotationKeyValuePair(node);
-		push(retrieveFMLNode(node, n -> new MetaDataKeyValueNode(n, getMainAnalyzer())));
+		push(retrieveFMLNode(node, n -> new MetaDataKeyValueNode(n, getCompilationUnitAnalyzer())));
 	}
 
 	@Override
@@ -576,7 +576,7 @@ public class MainSemanticsAnalyzer extends FMLSemanticsAnalyzer {
 	@Override
 	public void inAListAnnotationAnnotation(AListAnnotationAnnotation node) {
 		super.inAListAnnotationAnnotation(node);
-		push(retrieveFMLNode(node, n -> new ListMetaDataNode(n, getMainAnalyzer())));
+		push(retrieveFMLNode(node, n -> new ListMetaDataNode(n, getCompilationUnitAnalyzer())));
 	}
 
 	@Override
@@ -588,7 +588,7 @@ public class MainSemanticsAnalyzer extends FMLSemanticsAnalyzer {
 	@Override
 	public void inAPrimitiveFormalArgument(APrimitiveFormalArgument node) {
 		super.inAPrimitiveFormalArgument(node);
-		push(retrieveFMLNode(node, n -> new BehaviourParameterNode(n, getMainAnalyzer())));
+		push(retrieveFMLNode(node, n -> new BehaviourParameterNode(n, getCompilationUnitAnalyzer())));
 	}
 
 	@Override
@@ -600,7 +600,7 @@ public class MainSemanticsAnalyzer extends FMLSemanticsAnalyzer {
 	@Override
 	public void inAComplexFormalArgument(AComplexFormalArgument node) {
 		super.inAComplexFormalArgument(node);
-		push(retrieveFMLNode(node, n -> new BehaviourParameterNode(n, getMainAnalyzer())));
+		push(retrieveFMLNode(node, n -> new BehaviourParameterNode(n, getCompilationUnitAnalyzer())));
 	}
 
 	@Override

@@ -40,7 +40,7 @@ package org.openflexo.foundation.fml.parser.fmlnodes;
 
 import org.openflexo.foundation.fml.UseModelSlotDeclaration;
 import org.openflexo.foundation.fml.parser.FMLObjectNode;
-import org.openflexo.foundation.fml.parser.MainSemanticsAnalyzer;
+import org.openflexo.foundation.fml.parser.FMLCompilationUnitSemanticsAnalyzer;
 import org.openflexo.foundation.fml.parser.node.AUseDecl;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.p2pp.RawSource.RawSourceFragment;
@@ -49,13 +49,13 @@ import org.openflexo.p2pp.RawSource.RawSourceFragment;
  * @author sylvain
  * 
  */
-public class UseDeclarationNode extends FMLObjectNode<AUseDecl, UseModelSlotDeclaration, MainSemanticsAnalyzer> {
+public class UseDeclarationNode extends FMLObjectNode<AUseDecl, UseModelSlotDeclaration, FMLCompilationUnitSemanticsAnalyzer> {
 
-	public UseDeclarationNode(AUseDecl astNode, MainSemanticsAnalyzer analyser) {
+	public UseDeclarationNode(AUseDecl astNode, FMLCompilationUnitSemanticsAnalyzer analyser) {
 		super(astNode, analyser);
 	}
 
-	public UseDeclarationNode(UseModelSlotDeclaration importDeclaration, MainSemanticsAnalyzer analyser) {
+	public UseDeclarationNode(UseModelSlotDeclaration importDeclaration, FMLCompilationUnitSemanticsAnalyzer analyser) {
 		super(importDeclaration, analyser);
 	}
 

@@ -46,7 +46,7 @@ import org.openflexo.foundation.fml.FMLPropertyValue;
 import org.openflexo.foundation.fml.FlexoBehaviour;
 import org.openflexo.foundation.fml.FlexoBehaviourParameter;
 import org.openflexo.foundation.fml.parser.ControlGraphFactory;
-import org.openflexo.foundation.fml.parser.MainSemanticsAnalyzer;
+import org.openflexo.foundation.fml.parser.FMLCompilationUnitSemanticsAnalyzer;
 import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.ControlGraphNode;
 import org.openflexo.foundation.fml.parser.node.ABlockFlexoBehaviourBody;
 import org.openflexo.foundation.fml.parser.node.AFmlBehaviourDecl;
@@ -74,11 +74,11 @@ public class FMLBehaviourNode<N extends Node, B extends FlexoBehaviour> extends 
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(FMLBehaviourNode.class.getPackage().getName());
 
-	public FMLBehaviourNode(N astNode, MainSemanticsAnalyzer analyser) {
+	public FMLBehaviourNode(N astNode, FMLCompilationUnitSemanticsAnalyzer analyser) {
 		super(astNode, analyser);
 	}
 
-	public FMLBehaviourNode(B behaviour, MainSemanticsAnalyzer analyser) {
+	public FMLBehaviourNode(B behaviour, FMLCompilationUnitSemanticsAnalyzer analyser) {
 		super(behaviour, analyser);
 	}
 

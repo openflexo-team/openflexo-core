@@ -44,7 +44,7 @@ import org.openflexo.foundation.InvalidNameException;
 import org.openflexo.foundation.fml.ActionScheme;
 import org.openflexo.foundation.fml.FlexoBehaviourParameter;
 import org.openflexo.foundation.fml.parser.ControlGraphFactory;
-import org.openflexo.foundation.fml.parser.MainSemanticsAnalyzer;
+import org.openflexo.foundation.fml.parser.FMLCompilationUnitSemanticsAnalyzer;
 import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.ControlGraphNode;
 import org.openflexo.foundation.fml.parser.node.ABlockFlexoBehaviourBody;
 import org.openflexo.foundation.fml.parser.node.AMethodBehaviourDecl;
@@ -64,11 +64,11 @@ public class ActionSchemeNode extends FlexoBehaviourNode<AMethodBehaviourDecl, A
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(ActionSchemeNode.class.getPackage().getName());
 
-	public ActionSchemeNode(AMethodBehaviourDecl astNode, MainSemanticsAnalyzer analyser) {
+	public ActionSchemeNode(AMethodBehaviourDecl astNode, FMLCompilationUnitSemanticsAnalyzer analyser) {
 		super(astNode, analyser);
 	}
 
-	public ActionSchemeNode(ActionScheme creationScheme, MainSemanticsAnalyzer analyser) {
+	public ActionSchemeNode(ActionScheme creationScheme, FMLCompilationUnitSemanticsAnalyzer analyser) {
 		super(creationScheme, analyser);
 	}
 

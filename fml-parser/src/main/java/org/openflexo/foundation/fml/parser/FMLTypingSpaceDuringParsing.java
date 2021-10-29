@@ -86,7 +86,7 @@ public class FMLTypingSpaceDuringParsing extends AbstractFMLTypingSpace {
 
 	protected static final Logger logger = FlexoLogger.getLogger(FMLTypingSpaceDuringParsing.class.getPackage().getName());
 
-	private final MainSemanticsAnalyzer analyser;
+	private final FMLCompilationUnitSemanticsAnalyzer analyser;
 
 	private FlexoConceptInstanceTypeFactory FLEXO_CONCEPT_INSTANCE_TYPE_FACTORY;
 	private VirtualModelInstanceTypeFactory<VirtualModelInstanceType> VIRTUAL_MODEL_INSTANCE_TYPE_FACTORY;
@@ -95,7 +95,7 @@ public class FMLTypingSpaceDuringParsing extends AbstractFMLTypingSpace {
 	private Map<String, AConceptDecl> foundConcepts;
 	private List<CustomType> unresolvedTypes;
 
-	public FMLTypingSpaceDuringParsing(MainSemanticsAnalyzer analyser) {
+	public FMLTypingSpaceDuringParsing(FMLCompilationUnitSemanticsAnalyzer analyser) {
 		super(analyser.getServiceManager());
 		this.analyser = analyser;
 		unresolvedTypes = new ArrayList<>();
@@ -136,7 +136,7 @@ public class FMLTypingSpaceDuringParsing extends AbstractFMLTypingSpace {
 		new ConceptTypesExplorer();
 	}
 
-	public MainSemanticsAnalyzer getAnalyser() {
+	public FMLCompilationUnitSemanticsAnalyzer getAnalyser() {
 		return analyser;
 	}
 

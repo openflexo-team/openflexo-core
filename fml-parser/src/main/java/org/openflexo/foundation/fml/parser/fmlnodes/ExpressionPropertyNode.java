@@ -45,7 +45,7 @@ import org.openflexo.connie.DataBinding.BindingDefinitionType;
 import org.openflexo.foundation.InvalidNameException;
 import org.openflexo.foundation.fml.ExpressionProperty;
 import org.openflexo.foundation.fml.parser.ExpressionFactory;
-import org.openflexo.foundation.fml.parser.MainSemanticsAnalyzer;
+import org.openflexo.foundation.fml.parser.FMLCompilationUnitSemanticsAnalyzer;
 import org.openflexo.foundation.fml.parser.TypeFactory;
 import org.openflexo.foundation.fml.parser.node.AExpressionPropertyInnerConceptDecl;
 import org.openflexo.p2pp.RawSource.RawSourceFragment;
@@ -65,11 +65,11 @@ public class ExpressionPropertyNode extends FlexoPropertyNode<AExpressionPropert
 
 	private static final Logger logger = Logger.getLogger(ExpressionPropertyNode.class.getPackage().getName());
 
-	public ExpressionPropertyNode(AExpressionPropertyInnerConceptDecl astNode, MainSemanticsAnalyzer analyser) {
+	public ExpressionPropertyNode(AExpressionPropertyInnerConceptDecl astNode, FMLCompilationUnitSemanticsAnalyzer analyser) {
 		super(astNode, analyser);
 	}
 
-	public ExpressionPropertyNode(ExpressionProperty<?> property, MainSemanticsAnalyzer analyser) {
+	public ExpressionPropertyNode(ExpressionProperty<?> property, FMLCompilationUnitSemanticsAnalyzer analyser) {
 		super(property, analyser);
 	}
 

@@ -46,7 +46,7 @@ import org.openflexo.foundation.fml.FMLObject;
 import org.openflexo.foundation.fml.FMLPropertyValue;
 import org.openflexo.foundation.fml.WrappedFMLObject;
 import org.openflexo.foundation.fml.parser.FMLObjectNode;
-import org.openflexo.foundation.fml.parser.MainSemanticsAnalyzer;
+import org.openflexo.foundation.fml.parser.FMLCompilationUnitSemanticsAnalyzer;
 import org.openflexo.foundation.fml.parser.node.AFullQualifiedFmlParameters;
 import org.openflexo.foundation.fml.parser.node.AFullQualifiedQualifiedInstance;
 import org.openflexo.foundation.fml.parser.node.ASimpleQualifiedInstance;
@@ -56,16 +56,16 @@ import org.openflexo.p2pp.PrettyPrintContext.Indentation;
 import org.openflexo.p2pp.RawSource.RawSourceFragment;
 
 // Node is either ASimpleQualifiedInstance or AFullQualifiedQualifiedInstance
-public class WrappedFMLObjectNode<T extends FMLObject> extends FMLObjectNode<Node, WrappedFMLObject<T>, MainSemanticsAnalyzer> {
+public class WrappedFMLObjectNode<T extends FMLObject> extends FMLObjectNode<Node, WrappedFMLObject<T>, FMLCompilationUnitSemanticsAnalyzer> {
 
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(WrappedFMLObjectNode.class.getPackage().getName());
 
-	public WrappedFMLObjectNode(Node astNode, MainSemanticsAnalyzer analyser) {
+	public WrappedFMLObjectNode(Node astNode, FMLCompilationUnitSemanticsAnalyzer analyser) {
 		super(astNode, analyser);
 	}
 
-	public WrappedFMLObjectNode(WrappedFMLObject<T> modelObject, MainSemanticsAnalyzer analyser) {
+	public WrappedFMLObjectNode(WrappedFMLObject<T> modelObject, FMLCompilationUnitSemanticsAnalyzer analyser) {
 		super(modelObject, analyser);
 	}
 

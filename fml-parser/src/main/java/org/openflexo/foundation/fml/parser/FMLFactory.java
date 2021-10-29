@@ -69,7 +69,7 @@ public class FMLFactory extends SemanticsAnalyzerFactory {
 
 	private static final Logger logger = Logger.getLogger(FMLFactory.class.getPackage().getName());
 
-	public FMLFactory(MainSemanticsAnalyzer analyzer) {
+	public FMLFactory(FMLCompilationUnitSemanticsAnalyzer analyzer) {
 		super(analyzer);
 	}
 

@@ -41,7 +41,7 @@ package org.openflexo.foundation.fml.parser.fmlnodes.controlgraph;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.fml.controlgraph.Sequence;
-import org.openflexo.foundation.fml.parser.MainSemanticsAnalyzer;
+import org.openflexo.foundation.fml.parser.FMLCompilationUnitSemanticsAnalyzer;
 import org.openflexo.foundation.fml.parser.node.Node;
 import org.openflexo.p2pp.PrettyPrintContext.Indentation;
 
@@ -56,7 +56,7 @@ public class SequenceNode extends ControlGraphNode<Node, Sequence> {
 	private static final Logger logger = Logger.getLogger(SequenceNode.class.getPackage().getName());
 
 	public SequenceNode(Node astNode, ControlGraphNode<?, ?> relativeStart, ControlGraphNode<?, ?> relativeEnd,
-			MainSemanticsAnalyzer analyser) {
+			FMLCompilationUnitSemanticsAnalyzer analyser) {
 		super(astNode, analyser);
 		if (relativeStart != null) {
 			setStartPosition(relativeStart.getStartPosition());
@@ -66,7 +66,7 @@ public class SequenceNode extends ControlGraphNode<Node, Sequence> {
 		}
 	}
 
-	public SequenceNode(Sequence sequence, MainSemanticsAnalyzer analyser) {
+	public SequenceNode(Sequence sequence, FMLCompilationUnitSemanticsAnalyzer analyser) {
 		super(sequence, analyser);
 	}
 

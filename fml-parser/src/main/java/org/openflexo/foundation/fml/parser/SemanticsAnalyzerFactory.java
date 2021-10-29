@@ -63,14 +63,14 @@ public abstract class SemanticsAnalyzerFactory {
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(SemanticsAnalyzerFactory.class.getPackage().getName());
 
-	private MainSemanticsAnalyzer analyzer;
+	private FMLCompilationUnitSemanticsAnalyzer analyzer;
 
-	public SemanticsAnalyzerFactory(MainSemanticsAnalyzer analyzer) {
+	public SemanticsAnalyzerFactory(FMLCompilationUnitSemanticsAnalyzer analyzer) {
 		super();
 		this.analyzer = analyzer;
 	}
 
-	public MainSemanticsAnalyzer getAnalyzer() {
+	public FMLCompilationUnitSemanticsAnalyzer getAnalyzer() {
 		return analyzer;
 	}
 

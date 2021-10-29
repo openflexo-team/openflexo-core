@@ -45,7 +45,7 @@ import org.openflexo.foundation.fml.GetProperty;
 import org.openflexo.foundation.fml.GetSetProperty;
 import org.openflexo.foundation.fml.controlgraph.FMLControlGraph;
 import org.openflexo.foundation.fml.parser.ControlGraphFactory;
-import org.openflexo.foundation.fml.parser.MainSemanticsAnalyzer;
+import org.openflexo.foundation.fml.parser.FMLCompilationUnitSemanticsAnalyzer;
 import org.openflexo.foundation.fml.parser.TypeFactory;
 import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.ControlGraphNode;
 import org.openflexo.foundation.fml.parser.node.ABlock;
@@ -73,11 +73,11 @@ public class GetSetPropertyNode extends FlexoPropertyNode<AGetSetPropertyInnerCo
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(GetSetPropertyNode.class.getPackage().getName());
 
-	public GetSetPropertyNode(AGetSetPropertyInnerConceptDecl astNode, MainSemanticsAnalyzer analyser) {
+	public GetSetPropertyNode(AGetSetPropertyInnerConceptDecl astNode, FMLCompilationUnitSemanticsAnalyzer analyser) {
 		super(astNode, analyser);
 	}
 
-	public GetSetPropertyNode(GetProperty<?> property, MainSemanticsAnalyzer analyser) {
+	public GetSetPropertyNode(GetProperty<?> property, FMLCompilationUnitSemanticsAnalyzer analyser) {
 		super(property, analyser);
 	}
 

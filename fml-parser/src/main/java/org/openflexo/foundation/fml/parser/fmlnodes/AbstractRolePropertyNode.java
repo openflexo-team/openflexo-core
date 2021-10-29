@@ -41,7 +41,7 @@ package org.openflexo.foundation.fml.parser.fmlnodes;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.fml.FlexoRole;
-import org.openflexo.foundation.fml.parser.MainSemanticsAnalyzer;
+import org.openflexo.foundation.fml.parser.FMLCompilationUnitSemanticsAnalyzer;
 import org.openflexo.foundation.fml.parser.node.AFmlFullyQualifiedInnerConceptDecl;
 import org.openflexo.foundation.fml.parser.node.AFmlInnerConceptDecl;
 import org.openflexo.foundation.fml.parser.node.AFullQualifiedFmlParameters;
@@ -59,11 +59,11 @@ public abstract class AbstractRolePropertyNode<N extends PInnerConceptDecl, R ex
 
 	private static final Logger logger = Logger.getLogger(AbstractRolePropertyNode.class.getPackage().getName());
 
-	public AbstractRolePropertyNode(N astNode, MainSemanticsAnalyzer analyser) {
+	public AbstractRolePropertyNode(N astNode, FMLCompilationUnitSemanticsAnalyzer analyser) {
 		super(astNode, analyser);
 	}
 
-	public AbstractRolePropertyNode(R role, MainSemanticsAnalyzer analyser) {
+	public AbstractRolePropertyNode(R role, FMLCompilationUnitSemanticsAnalyzer analyser) {
 		super(role, analyser);
 	}
 

@@ -43,7 +43,7 @@ import org.openflexo.connie.DataBinding.BindingDefinitionType;
 import org.openflexo.connie.expr.Constant;
 import org.openflexo.foundation.fml.md.SingleMetaData;
 import org.openflexo.foundation.fml.parser.ExpressionFactory;
-import org.openflexo.foundation.fml.parser.MainSemanticsAnalyzer;
+import org.openflexo.foundation.fml.parser.FMLCompilationUnitSemanticsAnalyzer;
 import org.openflexo.foundation.fml.parser.node.ASingleAnnotationAnnotation;
 import org.openflexo.p2pp.RawSource.RawSourceFragment;
 
@@ -51,13 +51,13 @@ import org.openflexo.p2pp.RawSource.RawSourceFragment;
  * @author sylvain
  * 
  */
-public class SingleMetaDataNode extends AbstractMetaDataNode<ASingleAnnotationAnnotation, SingleMetaData<?>, MainSemanticsAnalyzer> {
+public class SingleMetaDataNode extends AbstractMetaDataNode<ASingleAnnotationAnnotation, SingleMetaData<?>, FMLCompilationUnitSemanticsAnalyzer> {
 
-	public SingleMetaDataNode(ASingleAnnotationAnnotation astNode, MainSemanticsAnalyzer analyser) {
+	public SingleMetaDataNode(ASingleAnnotationAnnotation astNode, FMLCompilationUnitSemanticsAnalyzer analyser) {
 		super(astNode, analyser);
 	}
 
-	public SingleMetaDataNode(SingleMetaData<?> metaData, MainSemanticsAnalyzer analyser) {
+	public SingleMetaDataNode(SingleMetaData<?> metaData, FMLCompilationUnitSemanticsAnalyzer analyser) {
 		super(metaData, analyser);
 	}
 

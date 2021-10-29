@@ -114,9 +114,9 @@ public abstract class AbstractExpressionFactory extends FMLSemanticsAnalyzer {
 	}
 
 	@Override
-	public MainSemanticsAnalyzer getMainAnalyzer() {
-		if (getParentAnalyzer() instanceof MainSemanticsAnalyzer) {
-			return (MainSemanticsAnalyzer) getParentAnalyzer();
+	public FMLCompilationUnitSemanticsAnalyzer getCompilationUnitAnalyzer() {
+		if (getParentAnalyzer() instanceof FMLCompilationUnitSemanticsAnalyzer) {
+			return (FMLCompilationUnitSemanticsAnalyzer) getParentAnalyzer();
 		}
 		return null;
 	}

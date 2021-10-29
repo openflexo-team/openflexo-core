@@ -49,7 +49,7 @@ import org.openflexo.foundation.fml.FlexoBehaviour;
 import org.openflexo.foundation.fml.FlexoBehaviourParameter;
 import org.openflexo.foundation.fml.parser.ExpressionFactory;
 import org.openflexo.foundation.fml.parser.FMLObjectNode;
-import org.openflexo.foundation.fml.parser.MainSemanticsAnalyzer;
+import org.openflexo.foundation.fml.parser.FMLCompilationUnitSemanticsAnalyzer;
 import org.openflexo.foundation.fml.parser.TypeFactory;
 import org.openflexo.foundation.fml.parser.node.AComplexFormalArgument;
 import org.openflexo.foundation.fml.parser.node.ADefaultArgumentValue;
@@ -71,16 +71,16 @@ import org.openflexo.p2pp.RawSource.RawSourceFragment;
  */
 // @formatter:on
 
-public class BehaviourParameterNode extends FMLObjectNode<PFormalArgument, FlexoBehaviourParameter, MainSemanticsAnalyzer> {
+public class BehaviourParameterNode extends FMLObjectNode<PFormalArgument, FlexoBehaviourParameter, FMLCompilationUnitSemanticsAnalyzer> {
 
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(BehaviourParameterNode.class.getPackage().getName());
 
-	public BehaviourParameterNode(PFormalArgument astNode, MainSemanticsAnalyzer analyser) {
+	public BehaviourParameterNode(PFormalArgument astNode, FMLCompilationUnitSemanticsAnalyzer analyser) {
 		super(astNode, analyser);
 	}
 
-	public BehaviourParameterNode(FlexoBehaviourParameter modelObject, MainSemanticsAnalyzer analyser) {
+	public BehaviourParameterNode(FlexoBehaviourParameter modelObject, FMLCompilationUnitSemanticsAnalyzer analyser) {
 		super(modelObject, analyser);
 	}
 

@@ -45,7 +45,7 @@ import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.DataBinding.BindingDefinitionType;
 import org.openflexo.foundation.fml.FlexoConceptInstanceType;
 import org.openflexo.foundation.fml.parser.ExpressionFactory;
-import org.openflexo.foundation.fml.parser.MainSemanticsAnalyzer;
+import org.openflexo.foundation.fml.parser.FMLCompilationUnitSemanticsAnalyzer;
 import org.openflexo.foundation.fml.parser.TypeFactory;
 import org.openflexo.foundation.fml.parser.node.ABeginMatchActionFmlActionExp;
 import org.openflexo.foundation.fml.parser.node.AFromClause;
@@ -70,7 +70,7 @@ public class BeginMatchActionNode extends AssignableActionNode<ABeginMatchAction
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(BeginMatchActionNode.class.getPackage().getName());
 
-	public BeginMatchActionNode(ABeginMatchActionFmlActionExp astNode, MainSemanticsAnalyzer analyser) {
+	public BeginMatchActionNode(ABeginMatchActionFmlActionExp astNode, FMLCompilationUnitSemanticsAnalyzer analyser) {
 		super(astNode, analyser);
 
 		if (getSemiFragment() != null) {
@@ -79,7 +79,7 @@ public class BeginMatchActionNode extends AssignableActionNode<ABeginMatchAction
 
 	}
 
-	public BeginMatchActionNode(InitiateMatching action, MainSemanticsAnalyzer analyser) {
+	public BeginMatchActionNode(InitiateMatching action, FMLCompilationUnitSemanticsAnalyzer analyser) {
 		super(action, analyser);
 	}
 

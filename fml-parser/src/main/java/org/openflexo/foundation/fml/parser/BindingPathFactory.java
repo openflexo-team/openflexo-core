@@ -337,8 +337,8 @@ public class BindingPathFactory {
 
 	private IBindingPathElement makeNormalBindingPathElement(Token node) {
 		if (bindingVariable == null && bindingPathElements.size() == 0) {
-			BindingVariableNode pathElementNode = expressionFactory.getMainAnalyzer().retrieveFMLNode(node,
-					n -> new BindingVariableNode(n, expressionFactory.getMainAnalyzer(), expressionFactory.getBindable()));
+			BindingVariableNode pathElementNode = expressionFactory.getCompilationUnitAnalyzer().retrieveFMLNode(node,
+					n -> new BindingVariableNode(n, expressionFactory.getCompilationUnitAnalyzer(), expressionFactory.getBindable()));
 			nodesPath.add(pathElementNode);
 			// bindingVariable = pathElementNode.buildModelObjectFromAST(node);
 			bindingVariable = pathElementNode.getModelObject();
@@ -356,8 +356,8 @@ public class BindingPathFactory {
 		}
 		else {
 			final IBindingPathElement parent = retrieveActualParent();
-			SimplePathElementNode pathElementNode = expressionFactory.getMainAnalyzer().retrieveFMLNode(node,
-					n -> new SimplePathElementNode(n, expressionFactory.getMainAnalyzer(), parent, expressionFactory.getBindable()));
+			SimplePathElementNode pathElementNode = expressionFactory.getCompilationUnitAnalyzer().retrieveFMLNode(node,
+					n -> new SimplePathElementNode(n, expressionFactory.getCompilationUnitAnalyzer(), parent, expressionFactory.getBindable()));
 			nodesPath.add(pathElementNode);
 			// SimplePathElement<?> pathElement = pathElementNode.buildModelObjectFromAST(node);
 			SimplePathElement<?> pathElement = pathElementNode.getModelObject();
@@ -368,8 +368,8 @@ public class BindingPathFactory {
 
 	private void appendMethodInvocation(APrimaryMethodInvocation node, AbstractBindingPathElementNode<?, ?> lastPathElementNode) {
 		final IBindingPathElement parent = retrieveActualParent();
-		MethodCallBindingPathElementNode pathElementNode = expressionFactory.getMainAnalyzer().retrieveFMLNode(node,
-				n -> new MethodCallBindingPathElementNode(n, lastPathElementNode.getASTNode(), expressionFactory.getMainAnalyzer(), parent,
+		MethodCallBindingPathElementNode pathElementNode = expressionFactory.getCompilationUnitAnalyzer().retrieveFMLNode(node,
+				n -> new MethodCallBindingPathElementNode(n, lastPathElementNode.getASTNode(), expressionFactory.getCompilationUnitAnalyzer(), parent,
 						expressionFactory.getBindable()));
 		nodesPath.add(pathElementNode);
 		SimpleMethodPathElement<?> methodCallElement = pathElementNode.getModelObject();
@@ -378,8 +378,8 @@ public class BindingPathFactory {
 
 	private void appendSuperMethodInvocation(ASuperMethodInvocation node) {
 		final IBindingPathElement parent = retrieveActualParent();
-		SuperMethodCallBindingPathElementNode pathElementNode = expressionFactory.getMainAnalyzer().retrieveFMLNode(node,
-				n -> new SuperMethodCallBindingPathElementNode(n, expressionFactory.getMainAnalyzer(), parent,
+		SuperMethodCallBindingPathElementNode pathElementNode = expressionFactory.getCompilationUnitAnalyzer().retrieveFMLNode(node,
+				n -> new SuperMethodCallBindingPathElementNode(n, expressionFactory.getCompilationUnitAnalyzer(), parent,
 						expressionFactory.getBindable()));
 		nodesPath.add(pathElementNode);
 		SimpleMethodPathElement<?> methodCallElement = pathElementNode.getModelObject();
@@ -396,22 +396,22 @@ public class BindingPathFactory {
 		final IBindingPathElement parent = retrieveActualParent();
 
 		if (type instanceof VirtualModelInstanceType) {
-			AddVirtualModelInstanceNode pathElementNode = expressionFactory.getMainAnalyzer().retrieveFMLNode(node,
-					n -> new AddVirtualModelInstanceNode(n, expressionFactory.getMainAnalyzer(), parent, expressionFactory.getBindable()));
+			AddVirtualModelInstanceNode pathElementNode = expressionFactory.getCompilationUnitAnalyzer().retrieveFMLNode(node,
+					n -> new AddVirtualModelInstanceNode(n, expressionFactory.getCompilationUnitAnalyzer(), parent, expressionFactory.getBindable()));
 			nodesPath.add(pathElementNode);
 			CreationSchemePathElement pathElement = pathElementNode.getModelObject();
 			bindingPathElements.add(pathElement);
 		}
 		else if (type instanceof FlexoConceptInstanceType) {
-			AddFlexoConceptInstanceNode pathElementNode = expressionFactory.getMainAnalyzer().retrieveFMLNode(node,
-					n -> new AddFlexoConceptInstanceNode(n, expressionFactory.getMainAnalyzer(), parent, expressionFactory.getBindable()));
+			AddFlexoConceptInstanceNode pathElementNode = expressionFactory.getCompilationUnitAnalyzer().retrieveFMLNode(node,
+					n -> new AddFlexoConceptInstanceNode(n, expressionFactory.getCompilationUnitAnalyzer(), parent, expressionFactory.getBindable()));
 			nodesPath.add(pathElementNode);
 			CreationSchemePathElement pathElement = pathElementNode.getModelObject();
 			bindingPathElements.add(pathElement);
 		}
 		else {
-			AddClassInstanceNode pathElementNode = expressionFactory.getMainAnalyzer().retrieveFMLNode(node,
-					n -> new AddClassInstanceNode(n, expressionFactory.getMainAnalyzer(), parent, expressionFactory.getBindable()));
+			AddClassInstanceNode pathElementNode = expressionFactory.getCompilationUnitAnalyzer().retrieveFMLNode(node,
+					n -> new AddClassInstanceNode(n, expressionFactory.getCompilationUnitAnalyzer(), parent, expressionFactory.getBindable()));
 			nodesPath.add(pathElementNode);
 			JavaNewInstanceMethodPathElement pathElement = pathElementNode.getModelObject();
 			bindingPathElements.add(pathElement);
@@ -421,8 +421,8 @@ public class BindingPathFactory {
 	}
 
 	private void appendClassMethodInvocation(AClassMethodMethodInvocation node) {
-		StaticMethodCallBindingPathElementNode pathElementNode = expressionFactory.getMainAnalyzer().retrieveFMLNode(node,
-				n -> new StaticMethodCallBindingPathElementNode(n, expressionFactory.getMainAnalyzer(), expressionFactory.getBindable()));
+		StaticMethodCallBindingPathElementNode pathElementNode = expressionFactory.getCompilationUnitAnalyzer().retrieveFMLNode(node,
+				n -> new StaticMethodCallBindingPathElementNode(n, expressionFactory.getCompilationUnitAnalyzer(), expressionFactory.getBindable()));
 		nodesPath.add(pathElementNode);
 		StaticMethodPathElement<?> methodCallElement = pathElementNode.getModelObject();
 		bindingPathElements.add(methodCallElement);

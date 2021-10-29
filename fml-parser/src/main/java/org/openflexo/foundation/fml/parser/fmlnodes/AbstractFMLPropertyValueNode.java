@@ -44,7 +44,7 @@ import org.openflexo.foundation.fml.FMLObject;
 import org.openflexo.foundation.fml.FMLPropertyValue;
 import org.openflexo.foundation.fml.WrappedFMLObject;
 import org.openflexo.foundation.fml.parser.FMLObjectNode;
-import org.openflexo.foundation.fml.parser.MainSemanticsAnalyzer;
+import org.openflexo.foundation.fml.parser.FMLCompilationUnitSemanticsAnalyzer;
 import org.openflexo.foundation.fml.parser.node.Node;
 
 /**
@@ -52,16 +52,16 @@ import org.openflexo.foundation.fml.parser.node.Node;
  * 
  */
 public abstract class AbstractFMLPropertyValueNode<N extends Node, P extends FMLPropertyValue<M, T>, M extends FMLObject, T>
-		extends FMLObjectNode<N, P, MainSemanticsAnalyzer> {
+		extends FMLObjectNode<N, P, FMLCompilationUnitSemanticsAnalyzer> {
 
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(AbstractFMLPropertyValueNode.class.getPackage().getName());
 
-	public AbstractFMLPropertyValueNode(N astNode, MainSemanticsAnalyzer analyser) {
+	public AbstractFMLPropertyValueNode(N astNode, FMLCompilationUnitSemanticsAnalyzer analyser) {
 		super(astNode, analyser);
 	}
 
-	public AbstractFMLPropertyValueNode(P property, MainSemanticsAnalyzer analyser) {
+	public AbstractFMLPropertyValueNode(P property, FMLCompilationUnitSemanticsAnalyzer analyser) {
 		super(property, analyser);
 	}
 

@@ -44,7 +44,7 @@ import org.openflexo.foundation.InvalidNameException;
 import org.openflexo.foundation.fml.DeletionScheme;
 import org.openflexo.foundation.fml.FlexoBehaviourParameter;
 import org.openflexo.foundation.fml.parser.ControlGraphFactory;
-import org.openflexo.foundation.fml.parser.MainSemanticsAnalyzer;
+import org.openflexo.foundation.fml.parser.FMLCompilationUnitSemanticsAnalyzer;
 import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.ControlGraphNode;
 import org.openflexo.foundation.fml.parser.node.AAnonymousDestructorBehaviourDecl;
 import org.openflexo.foundation.fml.parser.node.ABlockFlexoBehaviourBody;
@@ -68,11 +68,11 @@ public class DeletionSchemeNode extends FlexoBehaviourNode<PBehaviourDecl, Delet
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(DeletionSchemeNode.class.getPackage().getName());
 
-	public DeletionSchemeNode(PBehaviourDecl astNode, MainSemanticsAnalyzer analyser) {
+	public DeletionSchemeNode(PBehaviourDecl astNode, FMLCompilationUnitSemanticsAnalyzer analyser) {
 		super(astNode, analyser);
 	}
 
-	public DeletionSchemeNode(DeletionScheme DeletionScheme, MainSemanticsAnalyzer analyser) {
+	public DeletionSchemeNode(DeletionScheme DeletionScheme, FMLCompilationUnitSemanticsAnalyzer analyser) {
 		super(DeletionScheme, analyser);
 	}
 

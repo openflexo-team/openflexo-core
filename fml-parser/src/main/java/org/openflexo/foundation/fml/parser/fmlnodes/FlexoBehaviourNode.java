@@ -43,7 +43,7 @@ import java.util.logging.Logger;
 import org.openflexo.foundation.fml.FlexoBehaviour;
 import org.openflexo.foundation.fml.md.FMLMetaData;
 import org.openflexo.foundation.fml.parser.FMLObjectNode;
-import org.openflexo.foundation.fml.parser.MainSemanticsAnalyzer;
+import org.openflexo.foundation.fml.parser.FMLCompilationUnitSemanticsAnalyzer;
 import org.openflexo.foundation.fml.parser.node.AAnonymousConstructorBehaviourDecl;
 import org.openflexo.foundation.fml.parser.node.AAnonymousDestructorBehaviourDecl;
 import org.openflexo.foundation.fml.parser.node.ABlock;
@@ -66,18 +66,18 @@ import org.openflexo.p2pp.RawSource.RawSourceFragment;
  * @author sylvain
  * 
  */
-public abstract class FlexoBehaviourNode<N extends Node, T extends FlexoBehaviour> extends FMLObjectNode<N, T, MainSemanticsAnalyzer> {
+public abstract class FlexoBehaviourNode<N extends Node, T extends FlexoBehaviour> extends FMLObjectNode<N, T, FMLCompilationUnitSemanticsAnalyzer> {
 
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(FlexoBehaviourNode.class.getPackage().getName());
 
 	// private ControlGraphFactory controlGraphFactory;
 
-	public FlexoBehaviourNode(N astNode, MainSemanticsAnalyzer analyser) {
+	public FlexoBehaviourNode(N astNode, FMLCompilationUnitSemanticsAnalyzer analyser) {
 		super(astNode, analyser);
 	}
 
-	public FlexoBehaviourNode(T property, MainSemanticsAnalyzer analyser) {
+	public FlexoBehaviourNode(T property, FMLCompilationUnitSemanticsAnalyzer analyser) {
 		super(property, analyser);
 		// controlGraphFactory = new ControlGraphFactory(null, analyser);
 	}

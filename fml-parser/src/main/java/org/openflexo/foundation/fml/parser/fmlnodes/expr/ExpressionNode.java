@@ -40,7 +40,7 @@ package org.openflexo.foundation.fml.parser.fmlnodes.expr;
 
 import org.openflexo.connie.expr.Expression;
 import org.openflexo.foundation.fml.parser.AbstractExpressionFactory;
-import org.openflexo.foundation.fml.parser.MainSemanticsAnalyzer;
+import org.openflexo.foundation.fml.parser.FMLCompilationUnitSemanticsAnalyzer;
 import org.openflexo.foundation.fml.parser.ObjectNode;
 import org.openflexo.foundation.fml.parser.node.Node;
 
@@ -48,17 +48,17 @@ import org.openflexo.foundation.fml.parser.node.Node;
  * @author sylvain
  * 
  */
-public abstract class ExpressionNode<N extends Node, T extends Expression> extends ObjectNode<N, T, MainSemanticsAnalyzer> {
+public abstract class ExpressionNode<N extends Node, T extends Expression> extends ObjectNode<N, T, FMLCompilationUnitSemanticsAnalyzer> {
 
 	private AbstractExpressionFactory expressionFactory;
 
 	public ExpressionNode(N astNode, AbstractExpressionFactory expressionFactory) {
-		super(astNode, expressionFactory.getMainAnalyzer());
+		super(astNode, expressionFactory.getCompilationUnitAnalyzer());
 		this.expressionFactory = expressionFactory;
 	}
 
 	public ExpressionNode(T constant, AbstractExpressionFactory expressionFactory) {
-		super(constant, expressionFactory.getMainAnalyzer());
+		super(constant, expressionFactory.getCompilationUnitAnalyzer());
 		this.expressionFactory = expressionFactory;
 	}
 

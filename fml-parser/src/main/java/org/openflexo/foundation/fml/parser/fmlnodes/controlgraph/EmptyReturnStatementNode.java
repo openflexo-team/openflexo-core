@@ -41,7 +41,7 @@ package org.openflexo.foundation.fml.parser.fmlnodes.controlgraph;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.fml.editionaction.ReturnStatement;
-import org.openflexo.foundation.fml.parser.MainSemanticsAnalyzer;
+import org.openflexo.foundation.fml.parser.FMLCompilationUnitSemanticsAnalyzer;
 import org.openflexo.foundation.fml.parser.node.AReturnEmptyStatementWithoutTrailingSubstatement;
 import org.openflexo.p2pp.RawSource.RawSourceFragment;
 
@@ -54,14 +54,14 @@ public class EmptyReturnStatementNode extends AssignableActionNode<AReturnEmptyS
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(EmptyReturnStatementNode.class.getPackage().getName());
 
-	public EmptyReturnStatementNode(AReturnEmptyStatementWithoutTrailingSubstatement astNode, MainSemanticsAnalyzer analyser) {
+	public EmptyReturnStatementNode(AReturnEmptyStatementWithoutTrailingSubstatement astNode, FMLCompilationUnitSemanticsAnalyzer analyser) {
 		super(astNode, analyser);
 		if (getSemiFragment() != null) {
 			setEndPosition(getSemiFragment().getEndPosition());
 		}
 	}
 
-	public EmptyReturnStatementNode(ReturnStatement<?> action, MainSemanticsAnalyzer analyser) {
+	public EmptyReturnStatementNode(ReturnStatement<?> action, FMLCompilationUnitSemanticsAnalyzer analyser) {
 		super(action, analyser);
 	}
 

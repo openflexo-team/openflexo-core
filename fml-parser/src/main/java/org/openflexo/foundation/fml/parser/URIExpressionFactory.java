@@ -40,13 +40,13 @@ public class URIExpressionFactory extends AbstractExpressionFactory {
 	}
 
 	public static DataBinding<String> makeDataBinding(PUriExpression node, Bindable bindable, BindingDefinitionType bindingDefinitionType,
-			Type expectedType, MainSemanticsAnalyzer mainAnalyzer, ObjectNode<?, ?, ?> parentNode) {
+			Type expectedType, FMLCompilationUnitSemanticsAnalyzer mainAnalyzer, ObjectNode<?, ?, ?> parentNode) {
 		return _makeDataBinding(node, bindable, bindingDefinitionType, expectedType, mainAnalyzer.getTypingSpace(),
 				mainAnalyzer.getModelFactory(), mainAnalyzer, parentNode);
 	}
 
 	private static Expression _makeExpression(PUriExpression node, Bindable bindable, AbstractFMLTypingSpace typingSpace,
-			FMLModelFactory modelFactory, MainSemanticsAnalyzer mainAnalyzer, DataBindingNode dataBindingNode) {
+			FMLModelFactory modelFactory, FMLCompilationUnitSemanticsAnalyzer mainAnalyzer, DataBindingNode dataBindingNode) {
 
 		URIExpressionFactory factory = new URIExpressionFactory(node, bindable, /*typingSpace,*/ modelFactory, mainAnalyzer,
 				dataBindingNode);
@@ -60,7 +60,7 @@ public class URIExpressionFactory extends AbstractExpressionFactory {
 
 	@SuppressWarnings({ "unchecked" })
 	private static DataBinding<String> _makeDataBinding(PUriExpression node, Bindable bindable, BindingDefinitionType bindingDefinitionType,
-			Type expectedType, AbstractFMLTypingSpace typingSpace, FMLModelFactory modelFactory, MainSemanticsAnalyzer mainAnalyzer,
+			Type expectedType, AbstractFMLTypingSpace typingSpace, FMLModelFactory modelFactory, FMLCompilationUnitSemanticsAnalyzer mainAnalyzer,
 			ObjectNode<?, ?, ?> parentNode) {
 
 		DataBindingNode dataBindingNode = mainAnalyzer.retrieveFMLNode(node,
@@ -76,7 +76,7 @@ public class URIExpressionFactory extends AbstractExpressionFactory {
 	}
 
 	private URIExpressionFactory(PUriExpression rootNode, Bindable aBindable, /*AbstractFMLTypingSpace typingSpace,*/
-			FMLModelFactory fmlModelFactory, MainSemanticsAnalyzer mainAnalyzer, DataBindingNode dataBindingNode) {
+			FMLModelFactory fmlModelFactory, FMLCompilationUnitSemanticsAnalyzer mainAnalyzer, DataBindingNode dataBindingNode) {
 		super(rootNode, aBindable, /*typingSpace,*/ fmlModelFactory, mainAnalyzer, dataBindingNode);
 	}
 

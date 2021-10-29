@@ -40,7 +40,7 @@ package org.openflexo.foundation.fml.parser.fmlnodes;
 
 import org.openflexo.foundation.fml.md.MetaDataKeyValue;
 import org.openflexo.foundation.fml.md.MultiValuedMetaData;
-import org.openflexo.foundation.fml.parser.MainSemanticsAnalyzer;
+import org.openflexo.foundation.fml.parser.FMLCompilationUnitSemanticsAnalyzer;
 import org.openflexo.foundation.fml.parser.node.AComplexAnnotationAnnotation;
 import org.openflexo.p2pp.PrettyPrintContext.Indentation;
 import org.openflexo.p2pp.RawSource.RawSourceFragment;
@@ -50,13 +50,13 @@ import org.openflexo.p2pp.RawSource.RawSourceFragment;
  * 
  */
 public class MultiValuedMetaDataNode
-		extends AbstractMetaDataNode<AComplexAnnotationAnnotation, MultiValuedMetaData, MainSemanticsAnalyzer> {
+		extends AbstractMetaDataNode<AComplexAnnotationAnnotation, MultiValuedMetaData, FMLCompilationUnitSemanticsAnalyzer> {
 
-	public MultiValuedMetaDataNode(AComplexAnnotationAnnotation astNode, MainSemanticsAnalyzer analyser) {
+	public MultiValuedMetaDataNode(AComplexAnnotationAnnotation astNode, FMLCompilationUnitSemanticsAnalyzer analyser) {
 		super(astNode, analyser);
 	}
 
-	public MultiValuedMetaDataNode(MultiValuedMetaData metaData, MainSemanticsAnalyzer analyser) {
+	public MultiValuedMetaDataNode(MultiValuedMetaData metaData, FMLCompilationUnitSemanticsAnalyzer analyser) {
 		super(metaData, analyser);
 	}
 

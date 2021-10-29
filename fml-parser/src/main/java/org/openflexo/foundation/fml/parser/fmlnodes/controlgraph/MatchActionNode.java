@@ -50,7 +50,7 @@ import org.openflexo.foundation.fml.FlexoBehaviourParameter;
 import org.openflexo.foundation.fml.FlexoConcept;
 import org.openflexo.foundation.fml.FlexoConceptInstanceType;
 import org.openflexo.foundation.fml.parser.ExpressionFactory;
-import org.openflexo.foundation.fml.parser.MainSemanticsAnalyzer;
+import org.openflexo.foundation.fml.parser.FMLCompilationUnitSemanticsAnalyzer;
 import org.openflexo.foundation.fml.parser.TypeFactory;
 import org.openflexo.foundation.fml.parser.node.ACreateClause;
 import org.openflexo.foundation.fml.parser.node.AFromClause;
@@ -96,7 +96,7 @@ public class MatchActionNode extends AssignableActionNode<AMatchActionFmlActionE
 	private String constructorName;
 	private List<DataBinding<?>> constructorArgs;
 
-	public MatchActionNode(AMatchActionFmlActionExp astNode, MainSemanticsAnalyzer analyser) {
+	public MatchActionNode(AMatchActionFmlActionExp astNode, FMLCompilationUnitSemanticsAnalyzer analyser) {
 		super(astNode, analyser);
 
 		if (getSemiFragment() != null) {
@@ -105,7 +105,7 @@ public class MatchActionNode extends AssignableActionNode<AMatchActionFmlActionE
 
 	}
 
-	public MatchActionNode(MatchFlexoConceptInstance action, MainSemanticsAnalyzer analyser) {
+	public MatchActionNode(MatchFlexoConceptInstance action, FMLCompilationUnitSemanticsAnalyzer analyser) {
 		super(action, analyser);
 	}
 

@@ -45,7 +45,7 @@ import org.openflexo.connie.type.CustomType;
 import org.openflexo.foundation.InvalidNameException;
 import org.openflexo.foundation.fml.FMLPropertyValue;
 import org.openflexo.foundation.fml.FlexoRole;
-import org.openflexo.foundation.fml.parser.MainSemanticsAnalyzer;
+import org.openflexo.foundation.fml.parser.FMLCompilationUnitSemanticsAnalyzer;
 import org.openflexo.foundation.fml.parser.TypeFactory;
 import org.openflexo.foundation.fml.parser.node.AFmlFullyQualifiedInnerConceptDecl;
 import org.openflexo.foundation.fml.parser.node.AFmlInnerConceptDecl;
@@ -68,11 +68,11 @@ public class ModelSlotPropertyNode<N extends PInnerConceptDecl, MS extends Model
 
 	private static final Logger logger = Logger.getLogger(ModelSlotPropertyNode.class.getPackage().getName());
 
-	public ModelSlotPropertyNode(N astNode, MainSemanticsAnalyzer analyser) {
+	public ModelSlotPropertyNode(N astNode, FMLCompilationUnitSemanticsAnalyzer analyser) {
 		super(astNode, analyser);
 	}
 
-	public ModelSlotPropertyNode(MS modelSlot, MainSemanticsAnalyzer analyser) {
+	public ModelSlotPropertyNode(MS modelSlot, FMLCompilationUnitSemanticsAnalyzer analyser) {
 		super(modelSlot, analyser);
 	}
 

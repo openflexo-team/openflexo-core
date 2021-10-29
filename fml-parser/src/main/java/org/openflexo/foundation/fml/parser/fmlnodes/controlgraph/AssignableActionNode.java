@@ -42,7 +42,7 @@ import java.util.logging.Logger;
 
 import org.openflexo.foundation.fml.editionaction.AbstractAssignationAction;
 import org.openflexo.foundation.fml.editionaction.AssignableAction;
-import org.openflexo.foundation.fml.parser.MainSemanticsAnalyzer;
+import org.openflexo.foundation.fml.parser.FMLCompilationUnitSemanticsAnalyzer;
 import org.openflexo.foundation.fml.parser.node.Node;
 
 /**
@@ -54,11 +54,11 @@ public abstract class AssignableActionNode<N extends Node, T extends AssignableA
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(AssignableActionNode.class.getPackage().getName());
 
-	public AssignableActionNode(N astNode, MainSemanticsAnalyzer analyser) {
+	public AssignableActionNode(N astNode, FMLCompilationUnitSemanticsAnalyzer analyser) {
 		super(astNode, analyser);
 	}
 
-	public AssignableActionNode(T property, MainSemanticsAnalyzer analyser) {
+	public AssignableActionNode(T property, FMLCompilationUnitSemanticsAnalyzer analyser) {
 		super(property, analyser);
 	}
 

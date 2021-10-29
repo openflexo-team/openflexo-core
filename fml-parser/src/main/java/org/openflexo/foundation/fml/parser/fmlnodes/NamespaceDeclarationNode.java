@@ -40,7 +40,7 @@ package org.openflexo.foundation.fml.parser.fmlnodes;
 
 import org.openflexo.foundation.fml.NamespaceDeclaration;
 import org.openflexo.foundation.fml.parser.FMLObjectNode;
-import org.openflexo.foundation.fml.parser.MainSemanticsAnalyzer;
+import org.openflexo.foundation.fml.parser.FMLCompilationUnitSemanticsAnalyzer;
 import org.openflexo.foundation.fml.parser.node.ANamespaceDecl;
 import org.openflexo.p2pp.RawSource.RawSourceFragment;
 
@@ -53,13 +53,13 @@ import org.openflexo.p2pp.RawSource.RawSourceFragment;
  * @author sylvain
  * 
  */
-public class NamespaceDeclarationNode extends FMLObjectNode<ANamespaceDecl, NamespaceDeclaration, MainSemanticsAnalyzer> {
+public class NamespaceDeclarationNode extends FMLObjectNode<ANamespaceDecl, NamespaceDeclaration, FMLCompilationUnitSemanticsAnalyzer> {
 
-	public NamespaceDeclarationNode(ANamespaceDecl astNode, MainSemanticsAnalyzer analyser) {
+	public NamespaceDeclarationNode(ANamespaceDecl astNode, FMLCompilationUnitSemanticsAnalyzer analyser) {
 		super(astNode, analyser);
 	}
 
-	public NamespaceDeclarationNode(NamespaceDeclaration importDeclaration, MainSemanticsAnalyzer analyser) {
+	public NamespaceDeclarationNode(NamespaceDeclaration importDeclaration, FMLCompilationUnitSemanticsAnalyzer analyser) {
 		super(importDeclaration, analyser);
 	}
 

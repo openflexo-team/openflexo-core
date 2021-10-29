@@ -76,13 +76,13 @@ public class VirtualModelInfoExplorer extends DepthFirstAdapter /*implements Bin
 
 	private static final Logger logger = Logger.getLogger(VirtualModelInfoExplorer.class.getPackage().getName());
 
-	private final MainSemanticsAnalyzer analyzer;
+	private final FMLCompilationUnitSemanticsAnalyzer analyzer;
 
 	private VirtualModelInfo info;
 
 	private FMLCompilationUnit compilationUnit;
 
-	public VirtualModelInfoExplorer(Start tree, MainSemanticsAnalyzer analyzer) {
+	public VirtualModelInfoExplorer(Start tree, FMLCompilationUnitSemanticsAnalyzer analyzer) {
 		super();
 		this.analyzer = analyzer;
 		info = new VirtualModelInfo();

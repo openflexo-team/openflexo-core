@@ -42,7 +42,7 @@ import java.util.logging.Logger;
 
 import org.openflexo.foundation.InvalidNameException;
 import org.openflexo.foundation.fml.AbstractProperty;
-import org.openflexo.foundation.fml.parser.MainSemanticsAnalyzer;
+import org.openflexo.foundation.fml.parser.FMLCompilationUnitSemanticsAnalyzer;
 import org.openflexo.foundation.fml.parser.TypeFactory;
 import org.openflexo.foundation.fml.parser.node.AAbstractPropertyInnerConceptDecl;
 import org.openflexo.foundation.fml.parser.node.AIdentifierVariableDeclarator;
@@ -59,11 +59,11 @@ public class AbstractPropertyNode extends FlexoPropertyNode<AAbstractPropertyInn
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(AbstractPropertyNode.class.getPackage().getName());
 
-	public AbstractPropertyNode(AAbstractPropertyInnerConceptDecl astNode, MainSemanticsAnalyzer analyser) {
+	public AbstractPropertyNode(AAbstractPropertyInnerConceptDecl astNode, FMLCompilationUnitSemanticsAnalyzer analyser) {
 		super(astNode, analyser);
 	}
 
-	public AbstractPropertyNode(AbstractProperty<?> property, MainSemanticsAnalyzer analyser) {
+	public AbstractPropertyNode(AbstractProperty<?> property, FMLCompilationUnitSemanticsAnalyzer analyser) {
 		super(property, analyser);
 	}
 

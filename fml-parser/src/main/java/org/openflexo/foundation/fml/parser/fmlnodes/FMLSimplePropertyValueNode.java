@@ -49,7 +49,7 @@ import org.openflexo.foundation.fml.FMLModelContext.FMLProperty;
 import org.openflexo.foundation.fml.FMLObject;
 import org.openflexo.foundation.fml.FMLSimplePropertyValue;
 import org.openflexo.foundation.fml.parser.ExpressionFactory;
-import org.openflexo.foundation.fml.parser.MainSemanticsAnalyzer;
+import org.openflexo.foundation.fml.parser.FMLCompilationUnitSemanticsAnalyzer;
 import org.openflexo.foundation.fml.parser.node.ASimpleQualifiedArgument;
 import org.openflexo.p2pp.RawSource.RawSourceFragment;
 import org.openflexo.pamela.exceptions.InvalidDataException;
@@ -68,11 +68,11 @@ public class FMLSimplePropertyValueNode<M extends FMLObject, T>
 
 	private static final Logger logger = Logger.getLogger(FMLSimplePropertyValueNode.class.getPackage().getName());
 
-	public FMLSimplePropertyValueNode(ASimpleQualifiedArgument astNode, MainSemanticsAnalyzer analyser) {
+	public FMLSimplePropertyValueNode(ASimpleQualifiedArgument astNode, FMLCompilationUnitSemanticsAnalyzer analyser) {
 		super(astNode, analyser);
 	}
 
-	public FMLSimplePropertyValueNode(FMLSimplePropertyValue<M, T> propertyValue, MainSemanticsAnalyzer analyser) {
+	public FMLSimplePropertyValueNode(FMLSimplePropertyValue<M, T> propertyValue, FMLCompilationUnitSemanticsAnalyzer analyser) {
 		super(propertyValue, analyser);
 	}
 

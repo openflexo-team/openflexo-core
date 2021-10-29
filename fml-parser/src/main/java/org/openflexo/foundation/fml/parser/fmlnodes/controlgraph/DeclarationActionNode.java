@@ -43,7 +43,7 @@ import java.util.logging.Logger;
 import org.openflexo.foundation.fml.editionaction.AssignableAction;
 import org.openflexo.foundation.fml.editionaction.DeclarationAction;
 import org.openflexo.foundation.fml.parser.ControlGraphFactory;
-import org.openflexo.foundation.fml.parser.MainSemanticsAnalyzer;
+import org.openflexo.foundation.fml.parser.FMLCompilationUnitSemanticsAnalyzer;
 import org.openflexo.foundation.fml.parser.TypeFactory;
 import org.openflexo.foundation.fml.parser.node.AIdentifierVariableDeclarator;
 import org.openflexo.foundation.fml.parser.node.AInitializerVariableDeclarator;
@@ -60,11 +60,11 @@ public class DeclarationActionNode extends AssignableActionNode<AVariableDeclara
 
 	private static final Logger logger = Logger.getLogger(DeclarationActionNode.class.getPackage().getName());
 
-	public DeclarationActionNode(AVariableDeclarationBlockStatement astNode, MainSemanticsAnalyzer analyser) {
+	public DeclarationActionNode(AVariableDeclarationBlockStatement astNode, FMLCompilationUnitSemanticsAnalyzer analyser) {
 		super(astNode, analyser);
 	}
 
-	public DeclarationActionNode(DeclarationAction<?> action, MainSemanticsAnalyzer analyser) {
+	public DeclarationActionNode(DeclarationAction<?> action, FMLCompilationUnitSemanticsAnalyzer analyser) {
 		super(action, analyser);
 	}
 
