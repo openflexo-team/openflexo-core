@@ -70,7 +70,8 @@ public class HistoryDirective extends Directive {
 	}
 
 	@Override
-	public void execute() {
+	public Object execute() {
 		getCommandInterpreter().displayHistory();
+		return null;
 	}
 }

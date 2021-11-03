@@ -40,10 +40,14 @@
 package org.openflexo.foundation.fml.cli.command;
 
 import java.io.PrintStream;
+import java.lang.reflect.Type;
 import java.util.logging.Logger;
 
+import org.openflexo.connie.DataBinding;
+import org.openflexo.connie.DataBinding.BindingDefinitionType;
 import org.openflexo.foundation.fml.cli.AbstractCommandInterpreter;
 import org.openflexo.foundation.fml.cli.CommandSemanticsAnalyzer;
+import org.openflexo.foundation.fml.parser.ExpressionFactory;
 import org.openflexo.foundation.fml.parser.node.Node;
 
 /**
@@ -90,9 +94,16 @@ public abstract class AbstractCommand {
 
 	/**
 	 * Execute this {@link AbstractCommand}
+	 * 
+	 * @return (eventual) returned value after execution
 	 */
-	public void execute() {
+	public Object execute() {
+		if (!isValid()) {
+			getErrStream().println(invalidCommandReason());
+			return null;
+		}
 		getCommandInterpreter().willExecute(this);
+		return null;
 	}
 
 	/**
@@ -117,12 +128,12 @@ public abstract class AbstractCommand {
 				return "<expression>";
 			}
 		},
-		LocalReference {
+		/*LocalReference {
 			@Override
 			public String syntaxKeyword() {
 				return "<reference>";
 			}
-		},
+		},*/
 		Path {
 			@Override
 			public String syntaxKeyword() {
@@ -172,4 +183,25 @@ public abstract class AbstractCommand {
 			return null;
 		}
 	}
+
+	protected DataBinding<?> retrieveAssignation(Node expression) {
+		return retrieveExpression(expression, Object.class, BindingDefinitionType.GET_SET);
+	}
+
+	protected DataBinding<?> retrieveExpression(Node expression) {
+		return retrieveExpression(expression, Object.class, BindingDefinitionType.GET);
+	}
+
+	protected DataBinding<?> retrieveExpression(Node expression, Type type, BindingDefinitionType bdType) {
+
+		DataBinding<Object> returned = ExpressionFactory.makeDataBinding(expression, getCommandInterpreter(), bdType, type,
+				getCommandSemanticsAnalyzer().getModelFactory(), getCommandSemanticsAnalyzer().getTypingSpace(),
+				getCommandSemanticsAnalyzer().getFMLBindingFactory());
+
+		// System.out.println(
+		// "Build new binding: " + returned + " valid: " + returned.isValid() + " reason: " + returned.invalidBindingReason());
+
+		return returned;
+	}
+
 }

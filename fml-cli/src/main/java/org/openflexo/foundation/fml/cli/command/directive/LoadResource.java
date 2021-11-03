@@ -39,10 +39,7 @@
 
 package org.openflexo.foundation.fml.cli.command.directive;
 
-import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.util.List;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.FlexoException;
@@ -54,6 +51,7 @@ import org.openflexo.foundation.fml.parser.node.APathLoadDirective;
 import org.openflexo.foundation.fml.parser.node.AResourceLoadDirective;
 import org.openflexo.foundation.fml.parser.node.PLoadDirective;
 import org.openflexo.foundation.resource.FlexoResource;
+import org.openflexo.foundation.resource.ResourceData;
 import org.openflexo.foundation.resource.ResourceLoadingCancelledException;
 import org.openflexo.toolbox.StringUtils;
 
@@ -105,30 +103,7 @@ public class LoadResource extends Directive {
 
 	public FlexoResource<?> getResultingResource() {
 		if (StringUtils.isNotEmpty(resourcePath)) {
-			File resourceFile;
-			if (resourcePath.startsWith("/")) {
-				resourceFile = new File(resourcePath);
-			}
-			else {
-				resourceFile = new File(getCommandInterpreter().getWorkingDirectory(), resourcePath);
-			}
-			try {
-				resourceFile = new File(resourceFile.getCanonicalPath());
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-			List<FlexoResource<?>> resources = getCommandInterpreter().getServiceManager().getResourceManager().getResources(resourceFile);
-			if (resources.size() == 0) {
-				getErrStream().println("Cannot load as a resource " + resourceFile);
-			}
-			else if (resources.size() > 1) {
-				getErrStream().println("Multiple resources for " + resourceFile);
-				return resources.get(0);
-			}
-			else {
-				return resources.get(0);
-			}
-
+			return retrieveResourceFromPath(resourcePath);
 		}
 		else if (resource != null) {
 			return resource;
@@ -137,15 +112,17 @@ public class LoadResource extends Directive {
 	}
 
 	@Override
-	public void execute() {
+	public ResourceData<?> execute() {
 		super.execute();
 		if (getResultingResource().isLoaded()) {
 			getOutStream().println("Resource " + resource.getURI() + " already loaded");
+			return getResultingResource().getLoadedResourceData();
 		}
 		else {
 			try {
 				getResultingResource().loadResourceData();
 				getOutStream().println("Loaded " + getResultingResource().getURI() + ".");
+				return getResultingResource().getLoadedResourceData();
 			} catch (FileNotFoundException e) {
 				getErrStream().println("Cannot find resource");
 			} catch (ResourceLoadingCancelledException e) {
@@ -153,5 +130,6 @@ public class LoadResource extends Directive {
 				getErrStream().println("Cannot load resource : " + e.getMessage());
 			}
 		}
+		return null;
 	}
 }

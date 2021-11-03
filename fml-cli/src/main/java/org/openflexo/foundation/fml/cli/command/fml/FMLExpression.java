@@ -39,22 +39,15 @@
 
 package org.openflexo.foundation.fml.cli.command.fml;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.logging.Logger;
 
 import org.openflexo.connie.DataBinding;
-import org.openflexo.connie.DataBinding.BindingDefinitionType;
-import org.openflexo.connie.exception.NotSettableContextException;
 import org.openflexo.connie.exception.NullReferenceException;
 import org.openflexo.connie.exception.TypeMismatchException;
-import org.openflexo.connie.expr.BinaryOperatorExpression;
-import org.openflexo.connie.expr.Expression;
 import org.openflexo.foundation.fml.cli.CommandSemanticsAnalyzer;
 import org.openflexo.foundation.fml.cli.command.FMLCommand;
 import org.openflexo.foundation.fml.cli.command.FMLCommandDeclaration;
-import org.openflexo.foundation.fml.expr.FMLAssignOperator;
 import org.openflexo.foundation.fml.parser.node.AExprFmlCommand;
-import org.openflexo.toolbox.StringUtils;
 
 /**
  * Represents an expression in FML command-line interpreter
@@ -69,29 +62,65 @@ public class FMLExpression extends FMLCommand {
 
 	private static final Logger logger = Logger.getLogger(FMLExpression.class.getPackage().getName());
 
-	private DataBinding<Object> expression;
+	private DataBinding<?> expression;
 
 	public FMLExpression(AExprFmlCommand node, CommandSemanticsAnalyzer commandSemanticsAnalyzer) {
 		super(node, commandSemanticsAnalyzer, null);
 		// Expression exp = commandSemanticsAnalyzer.getExpression(node.getExpression());
 		// expression = new DataBinding<>(exp.toString(), getCommandInterpreter(), Object.class, BindingDefinitionType.GET);
+
+		expression = retrieveExpression(node.getExpression());
+
+	}
+
+	@Override
+	public String toString() {
+		return expression.toString();
 	}
 
 	@Override
 	public boolean isValid() {
-		return true;
+		return expression != null && expression.isValid();
 	}
 
 	@Override
 	public String invalidCommandReason() {
+		if (expression == null) {
+			return "null expression";
+		}
+		if (!expression.isValid()) {
+			return expression.invalidBindingReason();
+		}
 		return null;
 	}
 
 	@Override
-	public void execute() {
+	public Object execute() {
 
 		super.execute();
 
+		if (expression.isValid()) {
+			try {
+				Object value = expression.getBindingValue(getCommandInterpreter());
+				getOutStream().println("Executed " + expression + " <- " + value);
+				return value;
+			} catch (TypeMismatchException e) {
+				getErrStream().println("Cannot execute " + expression + " : " + e.getMessage());
+				return null;
+			} catch (NullReferenceException e) {
+				getErrStream().println("Cannot execute " + expression + " : " + e.getMessage());
+				return null;
+			} catch (ReflectiveOperationException e) {
+				getErrStream().println("Cannot execute " + expression + " : " + e.getMessage());
+				return null;
+			}
+		}
+		else {
+			getErrStream().println("Cannot execute " + expression + " : " + expression.invalidBindingReason());
+			return null;
+		}
+
+		/*
 		try {
 			if (expression.getExpression() != null && expression.getExpression() instanceof BinaryOperatorExpression
 					&& ((BinaryOperatorExpression) expression.getExpression()).getOperator() == FMLAssignOperator.ASSIGN) {
@@ -119,19 +148,8 @@ public class FMLExpression extends FMLCommand {
 					}
 					else {
 						// TODO faire un truc la
-
+		
 						// getOutStream().println("Ca va pas avec " + left + " of " + left.getClass());
-						/*if (left.getExpression() instanceof BindingValue
-								&& ((BindingValue) left.getExpression()).getParsedBindingPath().size() == 1) {
-							String variableName = ((BindingValue) left.getExpression()).getParsedBindingPath().get(0)
-									.getSerializationRepresentation();
-							// getOutStream().println("variable=" + variableName);
-							getOutStream().println("SET " + variableName + " = " + value);
-							getCommandInterpreter().declareVariable(variableName, right.getAnalyzedType(), value);
-						}
-						else {
-							getErrStream().println("Cannot execute " + left + " : " + left.invalidBindingReason());
-						}*/
 					}
 				}
 				else {
@@ -158,6 +176,6 @@ public class FMLExpression extends FMLCommand {
 			getErrStream().println("Unexpected exception: " + e + (StringUtils.isNotEmpty(e.getMessage()) ? " : " + e.getMessage() : ""));
 		} catch (NotSettableContextException e) {
 			getErrStream().println("Cannot execute " + expression + " : " + e.getMessage());
-		}
+		}*/
 	}
 }

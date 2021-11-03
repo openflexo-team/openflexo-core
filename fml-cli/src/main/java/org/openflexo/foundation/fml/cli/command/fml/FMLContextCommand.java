@@ -69,7 +69,12 @@ public class FMLContextCommand extends FMLCommand {
 	}
 
 	@Override
-	public void execute() {
+	public String toString() {
+		return "context";
+	}
+
+	@Override
+	public Object execute() {
 
 		super.execute();
 
@@ -101,5 +106,7 @@ public class FMLContextCommand extends FMLCommand {
 					+ StringUtils.buildWhiteSpaceIndentation(maxNameCols - name.length()) + name + " = "
 					+ CLIUtils.denoteObject(getCommandInterpreter().getValue(bv)));
 		}
+
+		return null;
 	}
 }

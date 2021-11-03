@@ -39,6 +39,7 @@
 
 package org.openflexo.foundation.fml.cli.command.directive;
 
+import java.io.File;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.fml.cli.CommandSemanticsAnalyzer;
@@ -70,8 +71,9 @@ public class PwdDirective extends Directive {
 	}
 
 	@Override
-	public void execute() {
+	public File execute() {
 		super.execute();
 		getOutStream().println(getCommandInterpreter().getWorkingDirectory().getAbsolutePath());
+		return getCommandInterpreter().getWorkingDirectory();
 	}
 }

@@ -72,7 +72,7 @@ public class LsDirective extends Directive {
 	}
 
 	@Override
-	public void execute() {
+	public File execute() {
 		super.execute();
 		if (getCommandInterpreter().getWorkingDirectory() != null) {
 			if (getCommandInterpreter().getWorkingDirectory().isDirectory()) {
@@ -102,5 +102,6 @@ public class LsDirective extends Directive {
 			}
 		}
 
+		return getCommandInterpreter().getWorkingDirectory();
 	}
 }

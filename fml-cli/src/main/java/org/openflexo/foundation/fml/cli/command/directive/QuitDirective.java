@@ -70,8 +70,9 @@ public class QuitDirective extends Directive {
 	}
 
 	@Override
-	public void execute() {
+	public Object execute() {
 		super.execute();
 		getCommandInterpreter().stop();
+		return null;
 	}
 }

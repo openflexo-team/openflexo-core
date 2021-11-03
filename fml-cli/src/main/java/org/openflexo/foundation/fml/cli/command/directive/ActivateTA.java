@@ -63,7 +63,7 @@ public class ActivateTA extends Directive {
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(ActivateTA.class.getPackage().getName());
 
-	private TechnologyAdapter technologyAdapter;
+	private TechnologyAdapter<?> technologyAdapter;
 
 	public ActivateTA(AActivateTaDirective node, CommandSemanticsAnalyzer commandSemanticsAnalyzer) {
 		super(node, commandSemanticsAnalyzer);
@@ -76,7 +76,7 @@ public class ActivateTA extends Directive {
 		return "activate " + technologyAdapter.getIdentifier();
 	}
 
-	public TechnologyAdapter getTechnologyAdapter() {
+	public TechnologyAdapter<?> getTechnologyAdapter() {
 		return technologyAdapter;
 	}
 
@@ -93,16 +93,18 @@ public class ActivateTA extends Directive {
 		return null;
 	}
 
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
-	public void execute() {
+	public TechnologyAdapter<?> execute() {
 		super.execute();
 		if (!getTechnologyAdapter().isActivated()) {
-			getCommandInterpreter().getServiceManager().getTechnologyAdapterService().activateTechnologyAdapter(getTechnologyAdapter(),
-					true);
+			getCommandInterpreter().getServiceManager().getTechnologyAdapterService()
+					.activateTechnologyAdapter((TechnologyAdapter) getTechnologyAdapter(), true);
 			getOutStream().println("Technology adapter " + getTechnologyAdapter().getIdentifier() + " has been activated");
 		}
 		else {
 			getOutStream().println("Technology adapter " + getTechnologyAdapter().getIdentifier() + " is already activated");
 		}
+		return getTechnologyAdapter();
 	}
 }

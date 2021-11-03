@@ -42,6 +42,7 @@ package org.openflexo.foundation.fml.cli.command.directive;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.FlexoService;
+import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.fml.cli.CommandSemanticsAnalyzer;
 import org.openflexo.foundation.fml.cli.command.Directive;
 import org.openflexo.foundation.fml.cli.command.DirectiveDeclaration;
@@ -78,7 +79,7 @@ public class ServicesDirective extends Directive {
 	}
 
 	@Override
-	public void execute() {
+	public FlexoServiceManager execute() {
 		super.execute();
 
 		getOutStream().println("Active services:");
@@ -86,5 +87,7 @@ public class ServicesDirective extends Directive {
 			getOutStream().println(service.getServiceName() + StringUtils.buildWhiteSpaceIndentation(30 - service.getServiceName().length())
 					+ service.getStatus());
 		}
+
+		return getCommandInterpreter().getServiceManager();
 	}
 }

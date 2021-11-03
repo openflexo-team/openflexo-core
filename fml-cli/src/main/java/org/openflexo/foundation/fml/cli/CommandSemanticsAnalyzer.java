@@ -38,10 +38,15 @@
 
 package org.openflexo.foundation.fml.cli;
 
+import java.io.PrintStream;
+import java.util.List;
+import java.util.function.Function;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.fml.AbstractFMLTypingSpace;
 import org.openflexo.foundation.fml.FMLBindingFactory;
+import org.openflexo.foundation.fml.FMLCompilationUnit;
+import org.openflexo.foundation.fml.FMLPrettyPrintDelegate.SemanticAnalysisIssue;
 import org.openflexo.foundation.fml.cli.command.AbstractCommand;
 import org.openflexo.foundation.fml.cli.command.directive.ActivateTA;
 import org.openflexo.foundation.fml.cli.command.directive.CdDirective;
@@ -58,11 +63,15 @@ import org.openflexo.foundation.fml.cli.command.directive.QuitDirective;
 import org.openflexo.foundation.fml.cli.command.directive.ResourcesDirective;
 import org.openflexo.foundation.fml.cli.command.directive.ServiceDirective;
 import org.openflexo.foundation.fml.cli.command.directive.ServicesDirective;
+import org.openflexo.foundation.fml.cli.command.fml.FMLAssignation;
 import org.openflexo.foundation.fml.cli.command.fml.FMLContextCommand;
 import org.openflexo.foundation.fml.cli.command.fml.FMLExpression;
-import org.openflexo.foundation.fml.parser.FMLSemanticsAnalyzer;
 import org.openflexo.foundation.fml.parser.FMLCompilationUnitSemanticsAnalyzer;
+import org.openflexo.foundation.fml.parser.FMLSemanticsAnalyzer;
+import org.openflexo.foundation.fml.parser.FragmentManager;
+import org.openflexo.foundation.fml.parser.ObjectNode;
 import org.openflexo.foundation.fml.parser.node.AActivateTaDirective;
+import org.openflexo.foundation.fml.parser.node.AAssignmentExpression;
 import org.openflexo.foundation.fml.parser.node.ACdDirective;
 import org.openflexo.foundation.fml.parser.node.AContextFmlCommand;
 import org.openflexo.foundation.fml.parser.node.AEnterDirective;
@@ -81,6 +90,9 @@ import org.openflexo.foundation.fml.parser.node.AServiceDirective;
 import org.openflexo.foundation.fml.parser.node.AServicesDirective;
 import org.openflexo.foundation.fml.parser.node.Node;
 import org.openflexo.foundation.fml.parser.node.Start;
+import org.openflexo.p2pp.RawSource;
+import org.openflexo.p2pp.RawSource.RawSourceFragment;
+import org.openflexo.p2pp.RawSource.RawSourcePosition;
 
 /**
  * This class implements the main semantics analyzer for a parsed FML compilation unit.<br>
@@ -144,12 +156,52 @@ public class CommandSemanticsAnalyzer extends FMLSemanticsAnalyzer {
 		return commandInterpreter;
 	}
 
+	public PrintStream getOutStream() {
+		return getCommandInterpreter().getOutStream();
+	}
+
+	public PrintStream getErrStream() {
+		return getCommandInterpreter().getErrStream();
+	}
+
+	@Override
 	public AbstractFMLTypingSpace getTypingSpace() {
 		return typingSpace;
 	}
 
+	@Override
 	public FMLBindingFactory getFMLBindingFactory() {
 		return bindingFactory;
+	}
+
+	@Override
+	public FMLCompilationUnit getCompilationUnit() {
+		return null;
+	}
+
+	@Override
+	public FragmentManager getFragmentManager() {
+		return null;
+	}
+
+	@Override
+	public RawSource getRawSource() {
+		return null;
+	}
+
+	@Override
+	public <N extends Node, FMLN extends ObjectNode<?, ?, ?>> FMLN retrieveFMLNode(N astNode, Function<N, FMLN> function) {
+		return null;
+	}
+
+	@Override
+	public void throwIssue(String errorMessage, RawSourceFragment fragment, RawSourcePosition startPosition) {
+		getErrStream().println(errorMessage + " at " + startPosition);
+	}
+
+	@Override
+	public List<SemanticAnalysisIssue> getSemanticAnalysisIssues() {
+		return null;
 	}
 
 	@Override
@@ -711,7 +763,15 @@ public class CommandSemanticsAnalyzer extends FMLSemanticsAnalyzer {
 	@Override
 	public void outAExprFmlCommand(AExprFmlCommand node) {
 		super.outAExprFmlCommand(node);
-		registerCommand(node, new FMLExpression(node, this));
+
+		// ASTDebugger.debug(node.getExpression());
+
+		if (node.getExpression() instanceof AAssignmentExpression) {
+			registerCommand(node, new FMLAssignation((AAssignmentExpression) node.getExpression(), this));
+		}
+		else {
+			registerCommand(node, new FMLExpression(node, this));
+		}
 	}
 
 }

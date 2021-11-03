@@ -279,11 +279,50 @@ public class TestCLICommands extends OpenflexoTestCase {
 
 	@Test
 	@TestOrder(12)
+	public void testMore() throws ParseException, IOException {
+		log("testMore()");
+		AbstractCommand command1 = CommandParser.parse("more -f Vm.fml", commandInterpreter);
+		assertEquals("more -f Vm.fml", command1.toString());
+		command1.execute();
+
+	}
+
+	@Test
+	@TestOrder(13)
 	public void testEnter() throws ParseException, IOException {
 		log("testEnter()");
-		AbstractCommand command1 = CommandParser.parse("enter sm", commandInterpreter);
-		assertEquals("enter sm", command1.toString());
+		AbstractCommand command1 = CommandParser.parse("enter -f Vm.fml", commandInterpreter);
+		assertEquals("enter -f Vm.fml", command1.toString());
 		command1.execute();
+
+	}
+
+	@Test
+	@TestOrder(14)
+	public void testContext() throws ParseException, IOException {
+		log("testContext()");
+		AbstractCommand command1 = CommandParser.parse("context", commandInterpreter);
+		assertEquals("context", command1.toString());
+		command1.execute();
+
+	}
+
+	@Test
+	@TestOrder(15)
+	public void testAssignations() throws ParseException, IOException {
+		log("testAssignations()");
+		AbstractCommand command1 = CommandParser.parse("a=1", commandInterpreter);
+		assertEquals("a = 1", command1.toString());
+		command1.execute();
+		AbstractCommand command2 = CommandParser.parse("b=2", commandInterpreter);
+		assertEquals("b = 2", command2.toString());
+		command2.execute();
+		AbstractCommand command3 = CommandParser.parse("context", commandInterpreter);
+		assertEquals("context", command3.toString());
+		command3.execute();
+		AbstractCommand command4 = CommandParser.parse("a+b", commandInterpreter);
+		assertEquals("a + b", command4.toString());
+		assertEquals((long) 3, command4.execute());
 
 	}
 

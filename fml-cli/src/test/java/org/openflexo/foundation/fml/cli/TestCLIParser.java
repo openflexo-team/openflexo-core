@@ -150,11 +150,11 @@ public class TestCLIParser extends OpenflexoTestCase {
 
 	@Test
 	public void testLoad() throws ParseException {
-		assertParsable("load [\"http://full/path/resource/uri\"]");
-		assertParsable("load [\"http://full/path/resource/uri.fml\"]");
-		assertParsable("load [\"http://ensta-bretagne.fr/cyber/cta/CTA.fml\"]");
+		assertParsable("load -r [\"http://full/path/resource/uri\"]");
+		assertParsable("load -r [\"http://full/path/resource/uri.fml\"]");
+		assertParsable("load -r [\"http://ensta-bretagne.fr/cyber/cta/CTA.fml\"]");
 		assertNotParsable("load");
-		assertNotParsable("load Foo");
+		assertParsable("load Foo");
 	}
 
 	@Test

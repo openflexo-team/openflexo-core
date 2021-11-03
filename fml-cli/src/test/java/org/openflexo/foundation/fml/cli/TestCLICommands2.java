@@ -99,4 +99,17 @@ public class TestCLICommands2 extends OpenflexoTestCase {
 
 	}
 
+	@Test
+	@TestOrder(11)
+	public void testEnter() throws ParseException, IOException {
+		log("testEnter()");
+		AbstractCommand command1 = CommandParser.parse(
+				"enter -r [\"http://www.openflexo.org/projects/2020/4/TestSingleInheritance_1585907148412.prj/Vm.fml\"]",
+				commandInterpreter);
+		assertEquals("enter -r [\"http://www.openflexo.org/projects/2020/4/TestSingleInheritance_1585907148412.prj/Vm.fml\"]",
+				command1.toString());
+		command1.execute();
+
+	}
+
 }

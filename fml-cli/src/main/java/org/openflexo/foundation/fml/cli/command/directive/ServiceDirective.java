@@ -183,14 +183,14 @@ public class ServiceDirective<S extends FlexoService> extends Directive {
 	}
 
 	@Override
-	public void execute() {
+	public S execute() {
 		super.execute();
 
-		if (!isValid()) {
-			getErrStream().println(invalidCommandReason());
-		}
-		else {
+		if (isValid()) {
 			serviceOperation.execute(service, getOutStream(), getErrStream(), argumentValue, optionValues);
+			return service;
 		}
+
+		return null;
 	}
 }

@@ -41,6 +41,7 @@ package org.openflexo.foundation.fml.cli.command.directive;
 
 import java.util.logging.Logger;
 
+import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.fml.cli.CommandSemanticsAnalyzer;
 import org.openflexo.foundation.fml.cli.command.Directive;
 import org.openflexo.foundation.fml.cli.command.DirectiveDeclaration;
@@ -76,13 +77,15 @@ public class ExitDirective extends Directive {
 	}
 
 	@Override
-	public void execute() {
+	public FlexoObject execute() {
 		super.execute();
-		if (getCommandInterpreter().getFocusedObject() == null) {
+		FlexoObject focusedObject = getCommandInterpreter().getFocusedObject();
+		if (focusedObject == null) {
 			getCommandInterpreter().stop();
 		}
 		else {
 			getCommandInterpreter().exitFocusedObject();
 		}
+		return focusedObject;
 	}
 }

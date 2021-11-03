@@ -149,7 +149,7 @@ public class OpenProject extends Directive {
 	}
 
 	@Override
-	public void execute() {
+	public FlexoProject<?> execute() {
 
 		super.execute();
 
@@ -158,7 +158,7 @@ public class OpenProject extends Directive {
 			for (FlexoResourceCenter<?> rc : getCommandInterpreter().getServiceManager().getResourceCenterService().getResourceCenters()) {
 				if (rc instanceof FlexoProject && ((FlexoProject<?>) rc).getProjectDirectory().equals(getProjectDirectory())) {
 					getOutStream().println("This project is already opened");
-					return;
+					return (FlexoProject<?>) rc;
 				}
 			}
 
@@ -169,11 +169,14 @@ public class OpenProject extends Directive {
 				FlexoProject<?> project = editor.getProject();
 				getCommandInterpreter().setWorkingDirectory(getProjectDirectory());
 				getOutStream().println("Project " + project.getName() + " successfully opened.");
+				return project;
 			} catch (ProjectInitializerException e) {
 				getErrStream().println("Project initializing exception: " + e.getMessage());
 				e.printStackTrace();
 			} catch (ProjectLoadingCancelledException e) {
 			}
 		}
+
+		return null;
 	}
 }

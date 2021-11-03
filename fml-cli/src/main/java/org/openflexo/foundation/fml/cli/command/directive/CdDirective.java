@@ -112,10 +112,12 @@ public class CdDirective extends Directive {
 	}
 
 	@Override
-	public void execute() {
+	public File execute() {
 		super.execute();
 		if (isValid()) {
 			getCommandInterpreter().setWorkingDirectory(newDirectory);
+			return newDirectory;
 		}
+		return null;
 	}
 }

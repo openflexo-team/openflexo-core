@@ -74,7 +74,7 @@ public class HelpDirective extends Directive {
 	}
 
 	@Override
-	public void execute() {
+	public Object execute() {
 		super.execute();
 		for (Class<? extends Directive> directiveClass : getCommandInterpreter().getAvailableDirectives()) {
 			String usage = directiveClass.getAnnotation(DirectiveDeclaration.class).usage();
@@ -86,6 +86,7 @@ public class HelpDirective extends Directive {
 			String description = fmlCommandClass.getAnnotation(FMLCommandDeclaration.class).description();
 			displayFMLCommandHelp(usage, description, getOutStream());
 		}
+		return null;
 	}
 
 	private static void displayDirectiveHelp(String usage, String description, PrintStream outStream) {

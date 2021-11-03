@@ -40,18 +40,14 @@
 package org.openflexo.foundation.fml.cli.command;
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.lang.reflect.Type;
+import java.io.IOException;
 import java.util.List;
 import java.util.logging.Logger;
-
-import javax.swing.SwingUtilities;
 
 import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.DataBinding.BindingDefinitionType;
 import org.openflexo.connie.exception.NullReferenceException;
 import org.openflexo.connie.exception.TypeMismatchException;
-import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.fml.cli.CommandSemanticsAnalyzer;
 import org.openflexo.foundation.fml.cli.command.directive.ActivateTA;
@@ -69,7 +65,6 @@ import org.openflexo.foundation.fml.cli.command.directive.QuitDirective;
 import org.openflexo.foundation.fml.cli.command.directive.ResourcesDirective;
 import org.openflexo.foundation.fml.cli.command.directive.ServiceDirective;
 import org.openflexo.foundation.fml.cli.command.directive.ServicesDirective;
-import org.openflexo.foundation.fml.parser.ExpressionFactory;
 import org.openflexo.foundation.fml.parser.node.ABindingPath;
 import org.openflexo.foundation.fml.parser.node.ACharacterLiteral;
 import org.openflexo.foundation.fml.parser.node.AConcatenedSimplePath;
@@ -121,9 +116,8 @@ import org.openflexo.foundation.fml.rt.rm.FMLRTVirtualModelInstanceResourceFacto
 import org.openflexo.foundation.project.FlexoProjectResourceFactory;
 import org.openflexo.foundation.resource.FlexoResource;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
-import org.openflexo.foundation.resource.ResourceLoadingCancelledException;
-import org.openflexo.foundation.resource.ResourceManager;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
+import org.openflexo.toolbox.StringUtils;
 
 /**
  * Represents a directive in FML command-line interpreter
@@ -248,41 +242,41 @@ public abstract class Directive extends AbstractCommand {
 					return null;
 				}
 
-			case LocalReference:
-				String valueAsString = getText(value);
-				// System.out.println("Hop: " + valueAsString);
-				File referencedFile = new File(getCommandInterpreter().getWorkingDirectory(), valueAsString);
-				// System.out.println("Fichier ? " + referencedFile);
-				if (referencedFile != null && referencedFile.exists()) {
-					// System.out.println("existe ? " + (referencedFile != null ? referencedFile.exists() : "???"));
-					ResourceManager rm = getCommandInterpreter().getServiceManager().getResourceManager();
-					List<FlexoResource<?>> resources = rm.getResources(referencedFile);
-					// System.out.println("found: " + resources);
-					if (resources.size() > 0) {
-						FlexoResource<?> resource = resources.get(0);
-						try {
-							if (!resource.isLoaded()) {
-								SwingUtilities.invokeLater(new Runnable() {
-									@Override
-									public void run() {
-										getOutStream().println("Loading resource " + referencedFile.getName() + "...");
-									}
-								});
+				/*case LocalReference:
+					String valueAsString = getText(value);
+					// System.out.println("Hop: " + valueAsString);
+					File referencedFile = new File(getCommandInterpreter().getWorkingDirectory(), valueAsString);
+					// System.out.println("Fichier ? " + referencedFile);
+					if (referencedFile != null && referencedFile.exists()) {
+						// System.out.println("existe ? " + (referencedFile != null ? referencedFile.exists() : "???"));
+						ResourceManager rm = getCommandInterpreter().getServiceManager().getResourceManager();
+						List<FlexoResource<?>> resources = rm.getResources(referencedFile);
+						// System.out.println("found: " + resources);
+						if (resources.size() > 0) {
+							FlexoResource<?> resource = resources.get(0);
+							try {
+								if (!resource.isLoaded()) {
+									SwingUtilities.invokeLater(new Runnable() {
+										@Override
+										public void run() {
+											getOutStream().println("Loading resource " + referencedFile.getName() + "...");
+										}
+									});
+								}
+								return resource.getResourceData();
+							} catch (FileNotFoundException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							} catch (ResourceLoadingCancelledException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							} catch (FlexoException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
 							}
-							return resource.getResourceData();
-						} catch (FileNotFoundException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						} catch (ResourceLoadingCancelledException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						} catch (FlexoException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
 						}
 					}
-				}
-				return null;
+					return null;*/
 			case Path:
 				return null;
 			case Service:
@@ -420,6 +414,36 @@ public abstract class Directive extends AbstractCommand {
 		return null;
 	}
 
+	public FlexoResource<?> retrieveResourceFromPath(String resourcePath) {
+		if (StringUtils.isNotEmpty(resourcePath)) {
+			File resourceFile;
+			if (resourcePath.startsWith("/")) {
+				resourceFile = new File(resourcePath);
+			}
+			else {
+				resourceFile = new File(getCommandInterpreter().getWorkingDirectory(), resourcePath);
+			}
+			try {
+				resourceFile = new File(resourceFile.getCanonicalPath());
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			List<FlexoResource<?>> resources = getCommandInterpreter().getServiceManager().getResourceManager().getResources(resourceFile);
+			if (resources.size() == 0) {
+				getErrStream().println("Cannot load as a resource " + resourceFile);
+			}
+			else if (resources.size() > 1) {
+				getErrStream().println("Multiple resources for " + resourceFile);
+				return resources.get(0);
+			}
+			else {
+				return resources.get(0);
+			}
+
+		}
+		return null;
+	}
+
 	protected FlexoObject retrieveObjectOrResource(PReferenceByUri pRefURI) {
 
 		if (pRefURI instanceof AResourceReferenceByUri) {
@@ -520,21 +544,6 @@ public abstract class Directive extends AbstractCommand {
 			rcURI = rcURI.substring(0, rcURI.length() - 1);
 		}
 		return getCommandInterpreter().getServiceManager().getResourceCenterService().getFlexoResourceCenter(rcURI);
-	}
-
-	protected DataBinding<?> retrieveExpression(PExpression expression) {
-		return retrieveExpression(expression, Object.class, BindingDefinitionType.GET);
-	}
-
-	protected DataBinding<?> retrieveExpression(PExpression expression, Type type, BindingDefinitionType bdType) {
-
-		/*DataBinding<?> returned = new DataBinding<>(getText(value), getCommandInterpreter(), Object.class,
-				BindingDefinitionType.GET);
-		return returned;*/
-
-		DataBinding<Object> returned = ExpressionFactory.makeDataBinding(expression, getCommandInterpreter(), bdType, type,
-				getCommandSemanticsAnalyzer().getTypingSpace(), getCommandSemanticsAnalyzer().getModelFactory());
-		return returned;
 	}
 
 }

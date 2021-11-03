@@ -42,6 +42,7 @@ import org.openflexo.foundation.FlexoService;
 import org.openflexo.foundation.FlexoService.ServiceOperation;
 import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.fml.FMLBindingFactory;
+import org.openflexo.foundation.fml.FMLCompilationUnit;
 import org.openflexo.foundation.fml.FMLModelFactory;
 import org.openflexo.foundation.fml.cli.command.AbstractCommand;
 import org.openflexo.foundation.fml.cli.command.AbstractCommand.CommandTokenType;
@@ -54,7 +55,6 @@ import org.openflexo.foundation.fml.cli.command.DirectiveDeclaration;
 import org.openflexo.foundation.fml.cli.command.FMLCommand;
 import org.openflexo.foundation.fml.cli.command.FMLCommandDeclaration;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
-import org.openflexo.foundation.fml.rt.rm.FMLRTVirtualModelInstanceResourceFactory;
 import org.openflexo.foundation.resource.DirectoryBasedIODelegate;
 import org.openflexo.foundation.resource.FlexoResource;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
@@ -108,6 +108,7 @@ public abstract class AbstractCommandInterpreter extends PropertyChangedSupportD
 		try {
 			// TODO: dynamically update when loaded TA
 			fmlModelFactory = new FMLModelFactory(null, serviceManager);
+			bindingFactory = new FMLBindingFactory(fmlModelFactory);
 		} catch (ModelDefinitionException e) {
 			e.printStackTrace();
 		}
@@ -480,7 +481,7 @@ public abstract class AbstractCommandInterpreter extends PropertyChangedSupportD
 					returned.add(completion);
 				}
 				return returned;
-			case LocalReference:
+			/*case LocalReference:
 				// if (getFocusedObject() == null) {
 				for (File f : getWorkingDirectory().listFiles()) {
 					// System.out.println("On rajoute " + f.getName());
@@ -490,14 +491,14 @@ public abstract class AbstractCommandInterpreter extends PropertyChangedSupportD
 					}
 				}
 				// }
-				/*else {
-					for (FlexoObject contained : CLIUtils.getContainedObjects(getFocusedObject())) {
-						if (CLIUtils.denoteObject(contained).startsWith(currentToken)) {
-							returned.add(CLIUtils.denoteObject(contained));
-						}
-					}
-				}*/
-				return returned;
+			//				else {
+			//					for (FlexoObject contained : CLIUtils.getContainedObjects(getFocusedObject())) {
+			//						if (CLIUtils.denoteObject(contained).startsWith(currentToken)) {
+			//							returned.add(CLIUtils.denoteObject(contained));
+			//						}
+			//					}
+			//				}
+				return returned;*/
 			case Path:
 				for (File f : getWorkingDirectory().listFiles()) {
 					// System.out.println("On rajoute " + f.getName());
@@ -628,6 +629,10 @@ public abstract class AbstractCommandInterpreter extends PropertyChangedSupportD
 	}
 
 	public void enterFocusedObject(FlexoObject focusedObject) {
+		if (focusedObject instanceof FMLCompilationUnit) {
+			focusedObject = ((FMLCompilationUnit) focusedObject).getVirtualModel();
+		}
+
 		if (focusedObject != getFocusedObject() && focusedObject != null) {
 			FlexoObject oldValue = getFocusedObject();
 			focusedObjects.push(focusedObject);
@@ -644,6 +649,13 @@ public abstract class AbstractCommandInterpreter extends PropertyChangedSupportD
 		}
 	}
 
+	private Type getTypeOfFocusedObject() {
+		if (getFocusedObject() != null) {
+			return getFocusedObject().getClass();
+		}
+		return FlexoObject.class;
+	}
+
 	private void updateFocusedBindingVariable() {
 		for (BindingVariable bv : containedBindingVariables) {
 			getBindingModel().removeFromBindingVariables(bv);
@@ -652,7 +664,7 @@ public abstract class AbstractCommandInterpreter extends PropertyChangedSupportD
 		containedBindingVariables.clear();
 		if (getFocusedObject() != null) {
 			if (focusedBindingVariable == null) {
-				focusedBindingVariable = new BindingVariable("this", FlexoObject.class);
+				focusedBindingVariable = new BindingVariable("this", getTypeOfFocusedObject());
 				getBindingModel().addToBindingVariables(focusedBindingVariable);
 			}
 			focusedBindingVariable.setType(CLIUtils.typeOf(getFocusedObject()));
@@ -675,6 +687,8 @@ public abstract class AbstractCommandInterpreter extends PropertyChangedSupportD
 				setWorkingDirectory(((DirectoryBasedIODelegate) resource.getIODelegate()).getDirectory());
 			}
 		}
+
+		// System.out.println("BM: " + getBindingModel());
 	}
 
 	/**

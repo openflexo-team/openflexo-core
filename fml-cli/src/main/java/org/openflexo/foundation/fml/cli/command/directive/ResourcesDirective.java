@@ -139,7 +139,7 @@ public class ResourcesDirective extends Directive {
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Override
-	public void execute() {
+	public Object execute() {
 
 		super.execute();
 
@@ -208,6 +208,8 @@ public class ResourcesDirective extends Directive {
 					+ StringUtils.buildWhiteSpaceIndentation(taMaxLength - ta.length() + 1)
 					+ (resource.isLoaded() ? "[LOADED]   " : "[UNLOADED] ") + uri);
 		}
+
+		return null;
 
 	}
 }
