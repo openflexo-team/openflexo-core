@@ -41,6 +41,8 @@ package org.openflexo.foundation.fml;
 
 import java.lang.reflect.Type;
 
+import org.openflexo.foundation.FlexoServiceManager;
+
 /**
  * FML typing space, related to a {@link FMLCompilationUnit}
  * 
@@ -56,6 +58,11 @@ public class FMLTypingSpace extends AbstractFMLTypingSpace {
 	public FMLTypingSpace(FMLCompilationUnit compilationUnit) {
 		super(compilationUnit.getServiceManager());
 		this.compilationUnit = compilationUnit;
+	}
+
+	public FMLTypingSpace(FlexoServiceManager serviceManager) {
+		super(serviceManager);
+		compilationUnit = null;
 	}
 
 	public FMLCompilationUnit getFMLCompilationUnit() {

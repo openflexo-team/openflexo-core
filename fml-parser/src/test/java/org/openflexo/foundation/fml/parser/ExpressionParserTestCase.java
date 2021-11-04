@@ -102,7 +102,7 @@ public abstract class ExpressionParserTestCase extends TestCase {
 		try {
 			fmlModelFactory = new FMLModelFactory(null, serviceManager);
 
-			typingSpace = new FMLTypingSpace(null);
+			typingSpace = new FMLTypingSpace(serviceManager);
 			bindable = new DefaultContextualizedBindable(typingSpace) {
 				@Override
 				public void notifiedBindingDecoded(DataBinding<?> dataBinding) {
