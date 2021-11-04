@@ -43,30 +43,40 @@ import java.util.logging.Logger;
 import org.openflexo.foundation.fml.AbstractFMLTypingSpace;
 import org.openflexo.foundation.fml.FMLBindingFactory;
 import org.openflexo.foundation.fml.cli.command.AbstractCommand;
+import org.openflexo.foundation.fml.cli.command.FMLScript;
 import org.openflexo.foundation.fml.parser.FragmentManager;
 import org.openflexo.foundation.fml.parser.node.Node;
 import org.openflexo.foundation.fml.parser.node.Start;
 import org.openflexo.p2pp.RawSource;
 
 /**
- * This class implements the main semantics analyzer for a simple parsed FML command ({@link AbstractCommand})<br>
+ * This class implements the main semantics analyzer for a parsed FML compilation unit.<br>
  * 
  * @author sylvain
  * 
  */
-public class CommandSemanticsAnalyzer extends AbstractCommandSemanticsAnalyzer {
+public class ScriptSemanticsAnalyzer extends AbstractCommandSemanticsAnalyzer {
 
-	private static final Logger logger = Logger.getLogger(CommandSemanticsAnalyzer.class.getPackage().getName());
-
-	private AbstractCommand command;
+	private static final Logger logger = Logger.getLogger(ScriptSemanticsAnalyzer.class.getPackage().getName());
 
 	private final AbstractFMLTypingSpace typingSpace;
-	private FMLBindingFactory bindingFactory;
 
-	public CommandSemanticsAnalyzer(AbstractCommandInterpreter commandInterpreter, Start tree) {
+	// Raw source as when this analyzer was last parsed
+	private RawSource rawSource;
+
+	private FragmentManager fragmentManager;
+
+	private FMLBindingFactory bindingFactory; // = new FMLBindingFactory();
+
+	private FMLScript script;
+
+	public ScriptSemanticsAnalyzer(AbstractCommandInterpreter commandInterpreter, Start tree, RawSource rawSource) {
 		super(commandInterpreter, tree);
+		this.rawSource = rawSource;
+		fragmentManager = new FragmentManager(rawSource);
 		bindingFactory = new FMLBindingFactory(commandInterpreter.getModelFactory());
-		typingSpace = new FMLCommandTypingSpace(this);
+		typingSpace = new FMLScriptTypingSpace(this);
+		script = new FMLScript(tree, this);
 	}
 
 	@Override
@@ -81,21 +91,34 @@ public class CommandSemanticsAnalyzer extends AbstractCommandSemanticsAnalyzer {
 
 	@Override
 	public FragmentManager getFragmentManager() {
-		return null;
+		return fragmentManager;
 	}
 
 	@Override
 	public RawSource getRawSource() {
-		return null;
-	}
-
-	public AbstractCommand getCommand() {
-		return command;
+		return rawSource;
 	}
 
 	@Override
+	public Start getRootNode() {
+		return (Start) super.getRootNode();
+	}
+
+	public FMLScript getScript() {
+		return script;
+	}
+
+	/*@Override
+	public void outACommandInScript(ACommandInScript node) {
+		// TODO Auto-generated method stub
+		super.outACommandInScript(node);
+		System.out.println(">>>> Found command: " + node.getCommand());
+	}*/
+
+	@Override
 	protected void registerCommand(Node n, AbstractCommand command) {
-		this.command = command;
+		System.out.println("Register new command in script: " + command);
+		script.addToCommands(command);
 	}
 
 }

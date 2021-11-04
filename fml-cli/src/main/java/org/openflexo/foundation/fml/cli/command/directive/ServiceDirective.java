@@ -45,7 +45,7 @@ import java.util.logging.Logger;
 
 import org.openflexo.foundation.FlexoService;
 import org.openflexo.foundation.FlexoService.ServiceOperation;
-import org.openflexo.foundation.fml.cli.CommandSemanticsAnalyzer;
+import org.openflexo.foundation.fml.cli.AbstractCommandSemanticsAnalyzer;
 import org.openflexo.foundation.fml.cli.command.Directive;
 import org.openflexo.foundation.fml.cli.command.DirectiveDeclaration;
 import org.openflexo.foundation.fml.parser.node.AServiceDirective;
@@ -87,7 +87,7 @@ public class ServiceDirective<S extends FlexoService> extends Directive {
 	private Map<String, Object> optionValues = new HashMap<>();
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public ServiceDirective(AServiceDirective node, CommandSemanticsAnalyzer commandSemanticsAnalyzer) {
+	public ServiceDirective(AServiceDirective node, AbstractCommandSemanticsAnalyzer commandSemanticsAnalyzer) {
 		super(node, commandSemanticsAnalyzer);
 
 		service = getCommandInterpreter().getServiceManager().getService(getText(node.getServiceName()));

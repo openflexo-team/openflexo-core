@@ -1,9 +1,8 @@
 /**
  * 
- * Copyright (c) 2013-2014, Openflexo
- * Copyright (c) 2011-2012, AgileBirds
+ * Copyright (c) 2014, Openflexo
  * 
- * This file is part of Connie-core, a component of the software infrastructure 
+ * This file is part of Cartoeditor, a component of the software infrastructure 
  * developed at Openflexo.
  * 
  * 
@@ -37,42 +36,33 @@
  * 
  */
 
-package org.openflexo.foundation.fml.cli.command.directive;
+package org.openflexo.foundation.fml.cli;
 
-import java.util.logging.Logger;
+import java.io.IOException;
 
-import org.openflexo.foundation.fml.cli.AbstractCommandSemanticsAnalyzer;
-import org.openflexo.foundation.fml.cli.command.Directive;
-import org.openflexo.foundation.fml.cli.command.DirectiveDeclaration;
-import org.openflexo.foundation.fml.parser.node.AQuitDirective;
+import org.openflexo.foundation.fml.FMLModelFactory;
+import org.openflexo.foundation.fml.cli.command.FMLScript;
+import org.openflexo.foundation.test.OpenflexoTestCase;
+import org.openflexo.pamela.exceptions.ModelDefinitionException;
+import org.openflexo.rm.Resource;
 
 /**
- * Represents quit directive in FML command-line interpreter
- * 
- * Usage: quit
+ * Provides a testing environment for testing FMLParser
  * 
  * @author sylvain
- * 
+ *
  */
-@DirectiveDeclaration(keyword = "quit", usage = "quit", description = "Quit FML command-line interpreter", syntax = "quit")
-public class QuitDirective extends Directive {
+public abstract class FMLScriptParserTestCase extends OpenflexoTestCase {
 
-	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(QuitDirective.class.getPackage().getName());
+	protected static FMLScript testFMLScript(Resource fileResource, AbstractCommandInterpreter commandInterpreter)
+			throws ModelDefinitionException, ParseException, IOException {
 
-	public QuitDirective(AQuitDirective node, AbstractCommandSemanticsAnalyzer commandSemanticsAnalyzer) {
-		super(node, commandSemanticsAnalyzer);
+		System.out.println("Load " + fileResource);
+
+		FMLModelFactory fmlModelFactory = new FMLModelFactory(null, serviceManager);
+		FMLScriptParser parser = new FMLScriptParser();
+		FMLScript script = parser.parse(fileResource.openInputStream(), fmlModelFactory, commandInterpreter);
+		return script;
 	}
 
-	@Override
-	public String toString() {
-		return "quit";
-	}
-
-	@Override
-	public Object execute() {
-		super.execute();
-		getCommandInterpreter().stop();
-		return null;
-	}
 }

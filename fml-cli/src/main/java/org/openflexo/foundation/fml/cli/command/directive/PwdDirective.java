@@ -42,7 +42,7 @@ package org.openflexo.foundation.fml.cli.command.directive;
 import java.io.File;
 import java.util.logging.Logger;
 
-import org.openflexo.foundation.fml.cli.CommandSemanticsAnalyzer;
+import org.openflexo.foundation.fml.cli.AbstractCommandSemanticsAnalyzer;
 import org.openflexo.foundation.fml.cli.command.Directive;
 import org.openflexo.foundation.fml.cli.command.DirectiveDeclaration;
 import org.openflexo.foundation.fml.parser.node.APwdDirective;
@@ -61,7 +61,7 @@ public class PwdDirective extends Directive {
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(PwdDirective.class.getPackage().getName());
 
-	public PwdDirective(APwdDirective node, CommandSemanticsAnalyzer commandSemanticsAnalyzer) {
+	public PwdDirective(APwdDirective node, AbstractCommandSemanticsAnalyzer commandSemanticsAnalyzer) {
 		super(node, commandSemanticsAnalyzer);
 	}
 

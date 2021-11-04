@@ -42,19 +42,18 @@ package org.openflexo.foundation.fml.cli;
 import java.lang.reflect.Type;
 
 import org.openflexo.foundation.fml.AbstractFMLTypingSpace;
-import org.openflexo.foundation.fml.FMLCompilationUnit;
 
 /**
- * FML typing space, related to a {@link FMLCompilationUnit}
+ * FML typing space, related to a {@link FMLScript}
  * 
  * Support import of VirtualModels
  * 
  * @author sylvain
  *
  */
-public class CLIFMLTypingSpace extends AbstractFMLTypingSpace {
+public class FMLScriptTypingSpace extends AbstractFMLTypingSpace {
 
-	public CLIFMLTypingSpace(CommandSemanticsAnalyzer csa) {
+	public FMLScriptTypingSpace(ScriptSemanticsAnalyzer csa) {
 		super(csa.getServiceManager());
 	}
 

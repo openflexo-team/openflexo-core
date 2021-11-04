@@ -47,7 +47,7 @@ import org.openflexo.connie.exception.NullReferenceException;
 import org.openflexo.connie.exception.TypeMismatchException;
 import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.FlexoObject;
-import org.openflexo.foundation.fml.cli.CommandSemanticsAnalyzer;
+import org.openflexo.foundation.fml.cli.AbstractCommandSemanticsAnalyzer;
 import org.openflexo.foundation.fml.cli.command.Directive;
 import org.openflexo.foundation.fml.cli.command.DirectiveDeclaration;
 import org.openflexo.foundation.fml.parser.node.AMoreDirective;
@@ -85,7 +85,7 @@ public class MoreDirective extends Directive {
 	private String path;
 	private DataBinding<?> expression;
 
-	public MoreDirective(AMoreDirective node, CommandSemanticsAnalyzer commandSemanticsAnalyzer) {
+	public MoreDirective(AMoreDirective node, AbstractCommandSemanticsAnalyzer commandSemanticsAnalyzer) {
 		super(node, commandSemanticsAnalyzer);
 
 		PMoreDirective moreDirective = node.getMoreDirective();

@@ -1,8 +1,9 @@
 /**
  * 
- * Copyright (c) 2019, Openflexo
+ * Copyright (c) 2013-2014, Openflexo
+ * Copyright (c) 2011-2012, AgileBirds
  * 
- * This file is part of FML-parser, a component of the software infrastructure 
+ * This file is part of Connie-core, a component of the software infrastructure 
  * developed at Openflexo.
  * 
  * 
@@ -38,64 +39,60 @@
 
 package org.openflexo.foundation.fml.cli;
 
-import java.util.logging.Logger;
+import java.lang.reflect.Type;
 
 import org.openflexo.foundation.fml.AbstractFMLTypingSpace;
-import org.openflexo.foundation.fml.FMLBindingFactory;
 import org.openflexo.foundation.fml.cli.command.AbstractCommand;
-import org.openflexo.foundation.fml.parser.FragmentManager;
-import org.openflexo.foundation.fml.parser.node.Node;
-import org.openflexo.foundation.fml.parser.node.Start;
-import org.openflexo.p2pp.RawSource;
 
 /**
- * This class implements the main semantics analyzer for a simple parsed FML command ({@link AbstractCommand})<br>
+ * FML typing space, related to a {@link AbstractCommand}
+ * 
+ * Support import of VirtualModels
  * 
  * @author sylvain
- * 
+ *
  */
-public class CommandSemanticsAnalyzer extends AbstractCommandSemanticsAnalyzer {
+public class FMLCommandTypingSpace extends AbstractFMLTypingSpace {
 
-	private static final Logger logger = Logger.getLogger(CommandSemanticsAnalyzer.class.getPackage().getName());
+	public FMLCommandTypingSpace(CommandSemanticsAnalyzer csa) {
+		super(csa.getServiceManager());
+	}
 
-	private AbstractCommand command;
+	/**
+	 * Return boolean indicating if supplied {@link Type} is actually in current typing space
+	 * 
+	 * @param type
+	 * @return
+	 */
+	@Override
+	public boolean isTypeImported(Type type) {
+		return super.isTypeImported(type);
+	}
 
-	private final AbstractFMLTypingSpace typingSpace;
-	private FMLBindingFactory bindingFactory;
+	/**
+	 * Import supplied type in this typing space
+	 * 
+	 * @param type
+	 */
+	@Override
+	public void importType(Type type) {
+		super.importType(type);
+	}
 
-	public CommandSemanticsAnalyzer(AbstractCommandInterpreter commandInterpreter, Start tree) {
-		super(commandInterpreter, tree);
-		bindingFactory = new FMLBindingFactory(commandInterpreter.getModelFactory());
-		typingSpace = new FMLCommandTypingSpace(this);
+	/**
+	 * Resolve {@link Type} according to current typing space using supplied type {@link String} representation
+	 * 
+	 * @param typeAsString
+	 * @return
+	 */
+	@Override
+	public Type resolveType(String typeAsString) {
+		return super.resolveType(typeAsString);
 	}
 
 	@Override
-	public AbstractFMLTypingSpace getTypingSpace() {
-		return typingSpace;
-	}
-
-	@Override
-	public FMLBindingFactory getFMLBindingFactory() {
-		return bindingFactory;
-	}
-
-	@Override
-	public FragmentManager getFragmentManager() {
-		return null;
-	}
-
-	@Override
-	public RawSource getRawSource() {
-		return null;
-	}
-
-	public AbstractCommand getCommand() {
-		return command;
-	}
-
-	@Override
-	protected void registerCommand(Node n, AbstractCommand command) {
-		this.command = command;
+	public String toString() {
+		return "CLIFMLTypingSpace";
 	}
 
 }

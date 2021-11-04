@@ -46,7 +46,8 @@ import java.util.logging.Logger;
 import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.DataBinding.BindingDefinitionType;
 import org.openflexo.foundation.fml.cli.AbstractCommandInterpreter;
-import org.openflexo.foundation.fml.cli.CommandSemanticsAnalyzer;
+import org.openflexo.foundation.fml.cli.AbstractCommandSemanticsAnalyzer;
+import org.openflexo.foundation.fml.cli.ScriptSemanticsAnalyzer;
 import org.openflexo.foundation.fml.parser.ExpressionFactory;
 import org.openflexo.foundation.fml.parser.node.Node;
 
@@ -62,9 +63,9 @@ public abstract class AbstractCommand {
 	private static final Logger logger = Logger.getLogger(AbstractCommand.class.getPackage().getName());
 
 	private Node node;
-	private CommandSemanticsAnalyzer commandSemanticsAnalyzer;
+	private AbstractCommandSemanticsAnalyzer commandSemanticsAnalyzer;
 
-	public AbstractCommand(Node node, CommandSemanticsAnalyzer commandSemanticsAnalyzer) {
+	public AbstractCommand(Node node, AbstractCommandSemanticsAnalyzer commandSemanticsAnalyzer) {
 		this.node = node;
 		this.commandSemanticsAnalyzer = commandSemanticsAnalyzer;
 	}
@@ -76,7 +77,7 @@ public abstract class AbstractCommand {
 	@Override
 	public abstract String toString();
 
-	public CommandSemanticsAnalyzer getCommandSemanticsAnalyzer() {
+	public AbstractCommandSemanticsAnalyzer getCommandSemanticsAnalyzer() {
 		return commandSemanticsAnalyzer;
 	}
 
@@ -104,6 +105,13 @@ public abstract class AbstractCommand {
 		}
 		getCommandInterpreter().willExecute(this);
 		return null;
+	}
+
+	public String getOriginalCommandAsString() {
+		if (getCommandSemanticsAnalyzer() instanceof ScriptSemanticsAnalyzer) {
+			return getCommandSemanticsAnalyzer().getText(getNode());
+		}
+		return getNode().toString();
 	}
 
 	/**

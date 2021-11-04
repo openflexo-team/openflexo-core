@@ -37,57 +37,76 @@
  * 
  */
 
-package org.openflexo.foundation.fml.cli.command.directive;
+package org.openflexo.foundation.fml.cli.command;
 
+import java.io.PrintStream;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Logger;
 
-import org.openflexo.foundation.FlexoService;
-import org.openflexo.foundation.FlexoServiceManager;
-import org.openflexo.foundation.fml.cli.AbstractCommandSemanticsAnalyzer;
-import org.openflexo.foundation.fml.cli.command.Directive;
-import org.openflexo.foundation.fml.cli.command.DirectiveDeclaration;
-import org.openflexo.foundation.fml.parser.node.AServicesDirective;
-import org.openflexo.toolbox.StringUtils;
+import org.openflexo.foundation.fml.cli.AbstractCommandInterpreter;
+import org.openflexo.foundation.fml.cli.ScriptSemanticsAnalyzer;
+import org.openflexo.foundation.fml.parser.node.Node;
 
 /**
- * Represents #services directive in FML command-line interpreter
- * 
- * Print list and status of all services
- * 
- * Usage: #services
+ * Represents a command in FML command-line interpreter
  * 
  * @author sylvain
  * 
  */
-@DirectiveDeclaration(
-		keyword = "services",
-		usage = "services",
-		description = "List registered services and their status",
-		syntax = "services")
-public class ServicesDirective extends Directive {
+public class FMLScript {
 
 	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(ServicesDirective.class.getPackage().getName());
+	private static final Logger logger = Logger.getLogger(FMLScript.class.getPackage().getName());
 
-	public ServicesDirective(AServicesDirective node, AbstractCommandSemanticsAnalyzer commandSemanticsAnalyzer) {
-		super(node, commandSemanticsAnalyzer);
+	private Node node;
+	private ScriptSemanticsAnalyzer scriptSemanticsAnalyzer;
+
+	private List<AbstractCommand> commands;
+
+	public FMLScript(Node node, ScriptSemanticsAnalyzer scriptSemanticsAnalyzer) {
+		this.node = node;
+		this.scriptSemanticsAnalyzer = scriptSemanticsAnalyzer;
+		commands = new ArrayList<>();
 	}
 
-	@Override
-	public String toString() {
-		return "services";
+	public Node getNode() {
+		return node;
 	}
 
-	@Override
-	public FlexoServiceManager execute() {
-		super.execute();
+	public ScriptSemanticsAnalyzer getScriptSemanticsAnalyzer() {
+		return scriptSemanticsAnalyzer;
+	}
 
-		getOutStream().println("Active services:");
-		for (FlexoService service : getCommandInterpreter().getServiceManager().getRegisteredServices()) {
-			getOutStream().println(service.getServiceName() + StringUtils.buildWhiteSpaceIndentation(30 - service.getServiceName().length())
-					+ service.getStatus());
+	public AbstractCommandInterpreter getCommandInterpreter() {
+		return getScriptSemanticsAnalyzer().getCommandInterpreter();
+	}
+
+	public PrintStream getOutStream() {
+		return getCommandInterpreter().getOutStream();
+	}
+
+	public PrintStream getErrStream() {
+		return getCommandInterpreter().getErrStream();
+	}
+
+	public List<AbstractCommand> getCommands() {
+		return commands;
+	}
+
+	public void addToCommands(AbstractCommand command) {
+		commands.add(command);
+	}
+
+	/**
+	 * Execute this {@link FMLScript}
+	 * 
+	 */
+	public void execute() {
+		for (AbstractCommand command : getCommands()) {
+			getOutStream().println(getCommandInterpreter().getPrompt() + " > " + command);
+			command.execute();
 		}
-
-		return getCommandInterpreter().getServiceManager();
 	}
+
 }

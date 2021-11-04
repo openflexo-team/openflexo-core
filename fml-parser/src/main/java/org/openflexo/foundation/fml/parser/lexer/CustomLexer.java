@@ -49,7 +49,7 @@ public class CustomLexer extends Lexer {
 
 			@Override
 			public State getState(Lexer l) {
-				return State.COMMAND;
+				return State.SCRIPT;
 			}
 		};
 
@@ -73,7 +73,23 @@ public class CustomLexer extends Lexer {
 			this.state = this.entryPoint.getState(this);
 			return this.entryPoint.getToken(this);
 		}
-		return super.getToken();
+		Token returned = super.getToken();
+		// System.out.println("Return token " + returned + " of " + returned.getClass() + " state=" + getStateAsString(state));
+		return returned;
+	}
+
+	private String getStateAsString(State state) {
+		switch (state.id()) {
+			case 0:
+				return "NORMAL";
+			case 1:
+				return "BINDING";
+			case 2:
+				return "COMMAND";
+			case 3:
+				return "SCRIPT";
+		}
+		return "?";
 	}
 
 }

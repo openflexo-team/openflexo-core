@@ -41,7 +41,7 @@ package org.openflexo.foundation.fml.cli.command;
 
 import java.util.logging.Logger;
 
-import org.openflexo.foundation.fml.cli.CommandSemanticsAnalyzer;
+import org.openflexo.foundation.fml.cli.AbstractCommandSemanticsAnalyzer;
 import org.openflexo.foundation.fml.cli.command.fml.FMLAssignation;
 import org.openflexo.foundation.fml.cli.command.fml.FMLContextCommand;
 import org.openflexo.foundation.fml.cli.command.fml.FMLExpression;
@@ -60,7 +60,7 @@ public abstract class FMLCommand extends AbstractCommand {
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(FMLCommand.class.getPackage().getName());
 
-	public FMLCommand(Node node, CommandSemanticsAnalyzer commandSemanticsAnalyzer, FlexoConceptInstance fci) {
+	public FMLCommand(Node node, AbstractCommandSemanticsAnalyzer commandSemanticsAnalyzer, FlexoConceptInstance fci) {
 		super(node, commandSemanticsAnalyzer);
 	}
 

@@ -44,7 +44,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.logging.Logger;
 
-import org.openflexo.foundation.fml.cli.CommandSemanticsAnalyzer;
+import org.openflexo.foundation.fml.cli.AbstractCommandSemanticsAnalyzer;
 import org.openflexo.foundation.fml.cli.command.Directive;
 import org.openflexo.foundation.fml.cli.command.DirectiveDeclaration;
 import org.openflexo.foundation.fml.parser.node.ARcResourcesDirective;
@@ -91,7 +91,7 @@ public class ResourcesDirective extends Directive {
 	private TechnologyAdapter<?> technologyAdapter;
 	private FlexoResourceCenter<?> resourceCenter;
 
-	public ResourcesDirective(AResourcesDirective node, CommandSemanticsAnalyzer commandSemanticsAnalyzer) {
+	public ResourcesDirective(AResourcesDirective node, AbstractCommandSemanticsAnalyzer commandSemanticsAnalyzer) {
 		super(node, commandSemanticsAnalyzer);
 
 		PResourcesDirective resourcesDirective = node.getResourcesDirective();

@@ -50,9 +50,9 @@ import org.openflexo.foundation.fml.parser.node.Start;
 import org.openflexo.foundation.fml.parser.parser.Parser;
 
 /**
- * This class provides the parsing service for Connie expressions and bindings. This includes syntactic and semantics analyzer.<br>
+ * This class provides the parsing service for FML commands. This includes syntactic and semantics analyzer.<br>
  * 
- * SableCC is used to generate the grammar located in connie-parser.<br>
+ * SableCC is used to generate the grammar located in fml-parser.<br>
  * 
  * @author sylvain
  */

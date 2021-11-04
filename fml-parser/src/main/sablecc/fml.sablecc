@@ -137,7 +137,8 @@ Helpers
 States
   normal,
   binding,
-  command;
+  command,
+  script;
 
 // *****************************************************************************************
 Tokens
@@ -147,7 +148,7 @@ Tokens
    {normal} start_compilation_unit = ;
    {normal->binding} start_binding = ;
    {normal->command} start_command = ;
-   {normal->command} start_script = ;
+   {normal->script} start_script = ;
 
    // --------------------------------------------------------------------------------------
    // Operators
@@ -200,7 +201,7 @@ Tokens
    dot = '.';
    dot_dot = '..';
    dot_dot_dot = '...';
-   {normal,binding-> normal} semi  = ';';
+   {normal,binding-> normal,script} semi  = ';';
 
    l_par = '(';
    r_par = ')';
@@ -213,27 +214,27 @@ Tokens
    // FML/Script directives and commands
    // --------------------------------------------------------------------------------------
 
-   {command} help = 'help';
-   {command} history = 'history';
-   {command} pwd = 'pwd';
-   {command} ls = 'ls';
-   {command} cd = 'cd';
-   {command} services = 'services';
-   {command} service = 'service';
-   {command} activate = 'activate';
-   {command} resources = 'resources';
-   {command} open = 'open';
-   {command} load = 'load';
-   {command} more = 'more';
-   {command} enter = 'enter';
-   {command} exit = 'exit';
-   {command} quit = 'quit';
-   {command} context = 'context';
+   {command,script} help = 'help';
+   {command,script} history = 'history';
+   {command,script} pwd = 'pwd';
+   {command,script} ls = 'ls';
+   {command,script} cd = 'cd';
+   {command,script} services = 'services';
+   {command,script} service = 'service';
+   {command,script} activate = 'activate';
+   {command,script} resources = 'resources';
+   {command,script} open = 'open';
+   {command,script} load = 'load';
+   {command,script} more = 'more';
+   {command,script} enter = 'enter';
+   {command,script} exit = 'exit';
+   {command,script} quit = 'quit';
+   {command,script} context = 'context';
  
    // options
-   {command} minus_r = '-r';
-   {command} minus_d = '-d';
-   {command} minus_f = '-f';
+   {command,script} minus_r = '-r';
+   {command,script} minus_d = '-d';
+   {command,script} minus_f = '-f';
 
    // --------------------------------------------------------------------------------------
    // Keywords

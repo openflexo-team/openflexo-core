@@ -49,7 +49,7 @@ import org.openflexo.connie.DataBinding.BindingDefinitionType;
 import org.openflexo.connie.exception.NullReferenceException;
 import org.openflexo.connie.exception.TypeMismatchException;
 import org.openflexo.foundation.FlexoObject;
-import org.openflexo.foundation.fml.cli.CommandSemanticsAnalyzer;
+import org.openflexo.foundation.fml.cli.AbstractCommandSemanticsAnalyzer;
 import org.openflexo.foundation.fml.cli.command.directive.ActivateTA;
 import org.openflexo.foundation.fml.cli.command.directive.CdDirective;
 import org.openflexo.foundation.fml.cli.command.directive.EnterDirective;
@@ -136,7 +136,7 @@ public abstract class Directive extends AbstractCommand {
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(Directive.class.getPackage().getName());
 
-	public Directive(Node node, CommandSemanticsAnalyzer commandSemanticsAnalyzer) {
+	public Directive(Node node, AbstractCommandSemanticsAnalyzer commandSemanticsAnalyzer) {
 		super(node, commandSemanticsAnalyzer);
 	}
 

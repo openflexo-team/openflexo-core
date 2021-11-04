@@ -46,7 +46,7 @@ import org.openflexo.connie.exception.NotSettableContextException;
 import org.openflexo.connie.exception.NullReferenceException;
 import org.openflexo.connie.exception.TypeMismatchException;
 import org.openflexo.connie.expr.BindingValue;
-import org.openflexo.foundation.fml.cli.CommandSemanticsAnalyzer;
+import org.openflexo.foundation.fml.cli.AbstractCommandSemanticsAnalyzer;
 import org.openflexo.foundation.fml.cli.command.FMLCommand;
 import org.openflexo.foundation.fml.cli.command.FMLCommandDeclaration;
 import org.openflexo.foundation.fml.parser.node.AAssignmentExpression;
@@ -71,7 +71,7 @@ public class FMLAssignation extends FMLCommand {
 	private DataBinding<?> assignation;
 	private DataBinding<?> expression;
 
-	public FMLAssignation(AAssignmentExpression node, CommandSemanticsAnalyzer commandSemanticsAnalyzer) {
+	public FMLAssignation(AAssignmentExpression node, AbstractCommandSemanticsAnalyzer commandSemanticsAnalyzer) {
 		super(node, commandSemanticsAnalyzer, null);
 
 		assignation = retrieveAssignation(node.getLeft());
