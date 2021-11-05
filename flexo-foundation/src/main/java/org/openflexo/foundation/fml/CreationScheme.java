@@ -98,10 +98,5 @@ public interface CreationScheme extends AbstractCreationScheme {
 			return null;
 		}
 
-		@Override
-		public Type getNewInstanceType() {
-			return getAnalyzedReturnType();
-		}
-
 	}
 }

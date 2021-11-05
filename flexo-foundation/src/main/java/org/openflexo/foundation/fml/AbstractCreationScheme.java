@@ -38,6 +38,8 @@
 
 package org.openflexo.foundation.fml;
 
+import java.lang.reflect.Type;
+
 import org.openflexo.connie.binding.AbstractConstructor;
 import org.openflexo.pamela.annotations.ImplementationClass;
 import org.openflexo.pamela.annotations.ModelEntity;
@@ -47,6 +49,11 @@ import org.openflexo.pamela.annotations.ModelEntity;
 public abstract interface AbstractCreationScheme extends FlexoBehaviour, AbstractConstructor {
 
 	public static abstract class AbstractCreationSchemeImpl extends FlexoBehaviourImpl implements AbstractCreationScheme {
+
+		@Override
+		public Type getNewInstanceType() {
+			return getAnalyzedReturnType();
+		}
 
 	}
 }
