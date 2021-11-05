@@ -1028,16 +1028,21 @@ public abstract class CompilationUnitResourceImpl
 	@Override
 	public <I> void forceUpdateDependencies(FlexoResourceCenter<I> resourceCenter) {
 		virtualModelInfo = findVirtualModelInfo(resourceCenter, true);
-		for (String dependencyURI : virtualModelInfo.getDependencies()) {
-			FlexoResource dependency = resourceCenter.getServiceManager().getResourceManager().getResource(dependencyURI);
-			if (dependency != null && !getDependencies().contains(dependency)) {
-				this.addToDependencies(dependency);
+		if (virtualModelInfo != null) {
+			for (String dependencyURI : virtualModelInfo.getDependencies()) {
+				FlexoResource dependency = resourceCenter.getServiceManager().getResourceManager().getResource(dependencyURI);
+				if (dependency != null && !getDependencies().contains(dependency)) {
+					this.addToDependencies(dependency);
+				}
+				else {
+					// Dependency not yet found, register as pending
+					resourceCenter.getServiceManager().getResourceManager().registerPendingDependencyResource(this, dependencyURI);
+				}
 			}
-			else {
-				// Dependency not yet found, register as pending
-				resourceCenter.getServiceManager().getResourceManager().registerPendingDependencyResource(this, dependencyURI);
-			}
-
+		}
+		else {
+			logger.warning("No VirtualModelInfo for " + this);
+			System.out.println(getIODelegate().getSerializationArtefact());
 		}
 	}
 
@@ -1070,7 +1075,7 @@ public abstract class CompilationUnitResourceImpl
 				String virtualModelClassName = metaDataManager.getProperty("virtualModelClassName", file);
 				if (uri != null && name != null && version != null /*&& modelVersion != null*/ && requiredModelSlotList != null) {
 					// Metadata are present, take it from cache
-					//System.out.println("Return info from cache for " + this);
+					// System.out.println("Return info from cache for " + this);
 					return new VirtualModelInfo(uri, version, name, requiredModelSlotList, dependenciesList, flexoConceptsList,
 							virtualModelClassName);
 				}
@@ -1080,7 +1085,7 @@ public abstract class CompilationUnitResourceImpl
 			}
 		}
 
-		//System.out.println("Retrieve info from file for " + this);
+		// System.out.println("Retrieve info from file for " + this);
 
 		VirtualModelInfo returned = null;
 
@@ -1129,7 +1134,7 @@ public abstract class CompilationUnitResourceImpl
 			metaDataManager.setProperty("virtualModelClassName", returned.getVirtualModelClassName(), file, false);
 
 			metaDataManager.saveMetaDataProperties(file);
-			//System.out.println("********* On sauve les infos pour " + this);
+			// System.out.println("********* On sauve les infos pour " + this);
 		}
 
 		return returned;
@@ -1175,7 +1180,7 @@ public abstract class CompilationUnitResourceImpl
 
 	private <I> VirtualModelInfo retrieveInfoFromFML(FlexoResourceCenter<I> resourceCenter) {
 
-		//System.out.println("***** On cherche les infos pour " + this);
+		// System.out.println("***** On cherche les infos pour " + this);
 		InputStream inputStream = getInputStream();
 		try {
 			return getFMLParser().findVirtualModelInfo(inputStream, getFactory());
