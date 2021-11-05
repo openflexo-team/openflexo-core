@@ -78,6 +78,7 @@ import org.openflexo.foundation.fml.expr.FMLConstant;
 import org.openflexo.foundation.fml.expr.FMLConstant.ObjectConstant;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.VirtualModelInstance;
+import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterBindingFactory;
@@ -100,7 +101,8 @@ public class FMLBindingFactory extends JavaBasedBindingFactory {
 	public static final String VIRTUAL_MODEL_INSTANCE = "virtualModelInstance";
 
 	public static final String RESOURCE_CENTER_PROPERTY_NAME = "resourceCenter";
-	public static final FMLNativeProperty RESOURCE_CENTER_PROPERTY = new FMLNativeProperty(RESOURCE_CENTER_PROPERTY_NAME, String.class);
+	public static final FMLNativeProperty RESOURCE_CENTER_PROPERTY = new FMLNativeProperty(RESOURCE_CENTER_PROPERTY_NAME,
+			FlexoResourceCenter.class);
 
 	public static final String VIRTUAL_MODEL_PROPERTY_NAME = "virtualModelType";
 	public static final FMLNativeProperty VIRTUAL_MODEL_PROPERTY = new FMLNativeProperty(VIRTUAL_MODEL_PROPERTY_NAME, VirtualModel.class);
