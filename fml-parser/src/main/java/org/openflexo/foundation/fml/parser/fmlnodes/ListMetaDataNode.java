@@ -61,7 +61,7 @@ public class ListMetaDataNode extends AbstractMetaDataNode<AListAnnotationAnnota
 
 	@Override
 	public ListMetaData buildModelObjectFromAST(AListAnnotationAnnotation astNode) {
-		String key = makeFullQualifiedIdentifier(astNode.getIdentifier());
+		String key = makeFullQualifiedIdentifier(astNode.getTag());
 
 		ListMetaData returned = getFactory().newListMetaData(key);
 		return returned;
@@ -81,7 +81,7 @@ public class ListMetaDataNode extends AbstractMetaDataNode<AListAnnotationAnnota
 
 	private RawSourceFragment getKeyFragment() {
 		if (getASTNode() != null) {
-			return getFragment(getASTNode().getIdentifier());
+			return getFragment(getASTNode().getTag());
 		}
 		return null;
 	}

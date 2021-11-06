@@ -1,8 +1,8 @@
 import java.lang.String;
 
-@URI("http://openflexo.org/test/TestResourceCenter/TestMatchFlexoConceptInstance.fml/VM.fml")
+@URI("http://openflexo.org/test/TestResourceCenter/TestMatchFlexoConceptInstance.fml/MyVM.fml")
 @Version("0.1")
-model VM {
+model MyVM {
 
 	create::_create () {
 	}

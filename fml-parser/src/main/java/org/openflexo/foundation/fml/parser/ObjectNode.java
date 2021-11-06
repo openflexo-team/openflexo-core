@@ -166,6 +166,7 @@ import org.openflexo.foundation.fml.parser.node.AWithExplicitBoundsCardinality;
 import org.openflexo.foundation.fml.parser.node.AWithLowerBoundsCardinality;
 import org.openflexo.foundation.fml.parser.node.AWithUpperBoundsCardinality;
 import org.openflexo.foundation.fml.parser.node.Node;
+import org.openflexo.foundation.fml.parser.node.PAnnotationTag;
 import org.openflexo.foundation.fml.parser.node.PCardinality;
 import org.openflexo.foundation.fml.parser.node.PCompositeIdent;
 import org.openflexo.foundation.fml.parser.node.PCompositeTident;
@@ -595,6 +596,10 @@ public abstract class ObjectNode<N extends Node, T, A extends FMLSemanticsAnalyz
 
 	public String makeFullQualifiedIdentifier(PCompositeIdent compositeIdentifier) {
 		return semanticsAnalyzer.makeFullQualifiedIdentifier(compositeIdentifier);
+	}
+
+	public String makeFullQualifiedIdentifier(PAnnotationTag annotationTag) {
+		return semanticsAnalyzer.makeFullQualifiedIdentifier(annotationTag);
 	}
 
 	public List<String> makeFullQualifiedIdentifierList(List<PIdentifierPrefix> prefixes, TUidentifier identifier) {

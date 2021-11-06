@@ -84,7 +84,8 @@ public class TestMetaData extends OpenflexoProjectAtRunTimeTestCase {
 		assertEquals(
 				"http://openflexo.org/test/TestResourceCenter/TestCrossReferences1.fml,http://openflexo.org/test/TestResourceCenter/TestCrossReferences2.fml",
 				virtualModelInfo.getDependenciesListAsString());
-		assertEquals("A,A#C,A#C#E,A#D,B", virtualModelInfo.getFlexoConceptsListAsString());
+		assertEquals("MyConceptA,MyConceptA#MyConceptC,MyConceptA#MyConceptC#MyConceptE,MyConceptA#MyConceptD,MyConceptB",
+				virtualModelInfo.getFlexoConceptsListAsString());
 
 	}
 

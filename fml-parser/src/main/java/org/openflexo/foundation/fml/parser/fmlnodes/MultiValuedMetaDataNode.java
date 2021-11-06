@@ -62,7 +62,7 @@ public class MultiValuedMetaDataNode
 
 	@Override
 	public MultiValuedMetaData buildModelObjectFromAST(AComplexAnnotationAnnotation astNode) {
-		String key = makeFullQualifiedIdentifier(astNode.getIdentifier());
+		String key = makeFullQualifiedIdentifier(astNode.getTag());
 
 		MultiValuedMetaData returned = getFactory().newMultiValuedMetaData(key);
 		return returned;
@@ -82,7 +82,7 @@ public class MultiValuedMetaDataNode
 
 	private RawSourceFragment getKeyFragment() {
 		if (getASTNode() != null) {
-			return getFragment(getASTNode().getIdentifier());
+			return getFragment(getASTNode().getTag());
 		}
 		return null;
 	}

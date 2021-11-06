@@ -93,13 +93,13 @@ public class TestMultipleInheritance extends OpenflexoProjectAtRunTimeTestCase {
 		virtualModel = vpLib.getVirtualModel("http://openflexo.org/test/TestResourceCenter/TestMultipleInheritance.fml");
 		assertNotNull(virtualModel);
 		assertVirtualModelIsValid(virtualModel);
-		conceptA = virtualModel.getFlexoConcept("A");
+		conceptA = virtualModel.getFlexoConcept("MyConceptA");
 		assertNotNull(conceptA);
-		conceptB = virtualModel.getFlexoConcept("B");
+		conceptB = virtualModel.getFlexoConcept("MyConceptB");
 		assertNotNull(conceptB);
-		conceptC = virtualModel.getFlexoConcept("C");
+		conceptC = virtualModel.getFlexoConcept("MyConceptC");
 		assertNotNull(conceptB);
-		conceptD = virtualModel.getFlexoConcept("D");
+		conceptD = virtualModel.getFlexoConcept("MyConceptD");
 		assertNotNull(conceptB);
 	}
 

@@ -179,7 +179,7 @@ public class TestFMLBindingModelManagement3 extends OpenflexoProjectAtRunTimeTes
 		FMLTechnologyAdapter fmlTechnologyAdapter = serviceManager.getTechnologyAdapterService()
 				.getTechnologyAdapter(FMLTechnologyAdapter.class);
 		CompilationUnitResourceFactory factory = fmlTechnologyAdapter.getCompilationUnitResourceFactory();
-		CompilationUnitResource newVMResource = factory.makeContainedCompilationUnitResource("VM1", viewPoint.getResource(), true);
+		CompilationUnitResource newVMResource = factory.makeContainedCompilationUnitResource("MyVM1", viewPoint.getResource(), true);
 		virtualModel1 = newVMResource.getLoadedResourceData().getVirtualModel();
 
 		assertTrue(virtualModel1.getResource().getIODelegate().exists());
@@ -196,7 +196,7 @@ public class TestFMLBindingModelManagement3 extends OpenflexoProjectAtRunTimeTes
 		assertEquals(VirtualModelInstanceType.getVirtualModelInstanceType(virtualModel1),
 				virtualModel1.getBindingModel().bindingVariableNamed(VirtualModelBindingModel.THIS_PROPERTY_NAME).getType());
 
-		CompilationUnitResource newVMResource2 = factory.makeContainedCompilationUnitResource("VM2", virtualModel1.getResource(), true);
+		CompilationUnitResource newVMResource2 = factory.makeContainedCompilationUnitResource("MyVM2", virtualModel1.getResource(), true);
 		virtualModel2 = newVMResource2.getLoadedResourceData().getVirtualModel();
 
 		assertTrue(virtualModel2.getResource().getIODelegate().exists());
@@ -210,7 +210,7 @@ public class TestFMLBindingModelManagement3 extends OpenflexoProjectAtRunTimeTes
 		assertEquals(VirtualModelInstanceType.getVirtualModelInstanceType(virtualModel2),
 				virtualModel2.getBindingModel().bindingVariableNamed(VirtualModelBindingModel.THIS_PROPERTY_NAME).getType());
 
-		CompilationUnitResource newVMResource3 = factory.makeContainedCompilationUnitResource("VM3", virtualModel2.getResource(), true);
+		CompilationUnitResource newVMResource3 = factory.makeContainedCompilationUnitResource("MyVM3", virtualModel2.getResource(), true);
 		virtualModel3 = newVMResource3.getLoadedResourceData().getVirtualModel();
 		assertTrue(ResourceLocator.retrieveResourceAsFile(virtualModel3.getResource().getDirectory()).exists());
 		assertTrue(virtualModel3.getResource().getIODelegate().exists());
@@ -671,11 +671,11 @@ public class TestFMLBindingModelManagement3 extends OpenflexoProjectAtRunTimeTes
 		assertNotNull(retrievedVPResource);
 
 		VirtualModel reloadedViewPoint = retrievedVPResource.getCompilationUnit().getVirtualModel();
-		VirtualModel reloadedVM1 = reloadedViewPoint.getVirtualModelNamed("VM1");
+		VirtualModel reloadedVM1 = reloadedViewPoint.getVirtualModelNamed("MyVM1");
 		assertNotNull(reloadedVM1);
-		VirtualModel reloadedVM2 = reloadedVM1.getVirtualModelNamed("VM2");
+		VirtualModel reloadedVM2 = reloadedVM1.getVirtualModelNamed("MyVM2");
 		assertNotNull(reloadedVM2);
-		VirtualModel reloadedVM3 = reloadedVM2.getVirtualModelNamed("VM3");
+		VirtualModel reloadedVM3 = reloadedVM2.getVirtualModelNamed("MyVM3");
 		assertNotNull(reloadedVM3);
 
 		System.out.println("Found resource " + reloadedViewPoint.getURI());

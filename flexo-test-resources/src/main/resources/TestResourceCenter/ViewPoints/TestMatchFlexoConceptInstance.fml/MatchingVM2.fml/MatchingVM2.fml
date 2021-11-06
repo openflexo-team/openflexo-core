@@ -2,14 +2,14 @@ use org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstanceModelSlot as FMLRT;
 
 import java.lang.String;
 
-import ["http://openflexo.org/test/TestResourceCenter/TestMatchFlexoConceptInstance.fml/VM2.fml"] as VM2;
+import ["http://openflexo.org/test/TestResourceCenter/TestMatchFlexoConceptInstance.fml/MyVM2.fml"] as MyVM2;
 
 @URI("http://openflexo.org/test/TestResourceCenter/TestMatchFlexoConceptInstance.fml/MatchingVM2.fml")
 @Version("0.1")
 model MatchingVM2 {
-	VM2 _model with ModelInstance(isRequired = true);
+	MyVM2 _model with ModelInstance(isRequired = true);
 
-	create::_create (required VM2 _model) {
+	create::_create (required MyVM2 _model) {
 		_model = parameters._model;
 	}
 

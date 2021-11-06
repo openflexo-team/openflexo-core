@@ -13,6 +13,7 @@ import org.openflexo.foundation.fml.FMLModelFactory;
 import org.openflexo.foundation.fml.parser.fmlnodes.expr.ConcatenationExpressionNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.expr.DataBindingNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.expr.URIStringConstantNode;
+import org.openflexo.foundation.fml.parser.node.ACidentifierUriExpressionPrimary;
 import org.openflexo.foundation.fml.parser.node.AConcatenationUriExpression;
 import org.openflexo.foundation.fml.parser.node.ALidentifierUriExpressionPrimary;
 import org.openflexo.foundation.fml.parser.node.ALitteralUriExpressionPrimary;
@@ -123,6 +124,16 @@ public class URIExpressionFactory extends AbstractExpressionFactory {
 	@Override
 	public void outALidentifierUriExpressionPrimary(ALidentifierUriExpressionPrimary node) {
 		super.outALidentifierUriExpressionPrimary(node);
+		popBindingPathNode(node);
+	}
+
+	@Override
+	public void inACidentifierUriExpressionPrimary(ACidentifierUriExpressionPrimary node) {
+		pushBindingPathNode(node);
+	}
+
+	@Override
+	public void outACidentifierUriExpressionPrimary(ACidentifierUriExpressionPrimary node) {
 		popBindingPathNode(node);
 	}
 

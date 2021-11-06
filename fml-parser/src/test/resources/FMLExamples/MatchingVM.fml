@@ -7,12 +7,12 @@ import org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstance;
 @URI("http://openflexo.org/test/TestResourceCenter/TestMatchFlexoConceptInstance.fml/MatchingVM.fml")
 @Version("0.1")
 model MatchingVM {
-	VM _model with FMLRTVirtualModelInstanceModelSlot;
+	MyVM _model with FMLRTVirtualModelInstanceModelSlot;
 
 	@UI(
 		@Label("create")
 	)
-	create::_create (required VM _model) {
+	create::_create (required MyVM _model) {
 		_model = parameters._model;
 		log((">>>> Parametre model : " + parameters._model));
 	}

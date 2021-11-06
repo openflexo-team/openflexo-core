@@ -66,8 +66,9 @@ import org.openflexo.foundation.fml.parser.fmlnodes.expr.MethodCallBindingPathEl
 import org.openflexo.foundation.fml.parser.fmlnodes.expr.SimplePathElementNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.expr.StaticMethodCallBindingPathElementNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.expr.SuperMethodCallBindingPathElementNode;
+import org.openflexo.foundation.fml.parser.node.ACidentifierUriExpressionPrimary;
 import org.openflexo.foundation.fml.parser.node.AClassMethodMethodInvocation;
-import org.openflexo.foundation.fml.parser.node.ACompositeIdent;
+import org.openflexo.foundation.fml.parser.node.AConstantCompositeIdent;
 import org.openflexo.foundation.fml.parser.node.AFieldLeftHandSide;
 import org.openflexo.foundation.fml.parser.node.AFieldPrimaryNoId;
 import org.openflexo.foundation.fml.parser.node.AFmlActionExpressionStatementExpression;
@@ -81,6 +82,7 @@ import org.openflexo.foundation.fml.parser.node.AMethodPrimaryNoId;
 import org.openflexo.foundation.fml.parser.node.ANewContainmentClause;
 import org.openflexo.foundation.fml.parser.node.ANewInstancePrimaryNoId;
 import org.openflexo.foundation.fml.parser.node.ANewInstanceStatementExpression;
+import org.openflexo.foundation.fml.parser.node.ANormalCompositeIdent;
 import org.openflexo.foundation.fml.parser.node.APrimaryFieldAccess;
 import org.openflexo.foundation.fml.parser.node.APrimaryMethodInvocation;
 import org.openflexo.foundation.fml.parser.node.APrimaryNoIdPrimary;
@@ -100,6 +102,7 @@ import org.openflexo.foundation.fml.parser.node.PNewInstance;
 import org.openflexo.foundation.fml.parser.node.PPrimary;
 import org.openflexo.foundation.fml.parser.node.PPrimaryNoId;
 import org.openflexo.foundation.fml.parser.node.PStatementExpression;
+import org.openflexo.foundation.fml.parser.node.TCidentifier;
 import org.openflexo.foundation.fml.parser.node.TKwSuper;
 import org.openflexo.foundation.fml.parser.node.TLidentifier;
 import org.openflexo.foundation.fml.parser.node.TUidentifier;
@@ -181,6 +184,9 @@ public class BindingPathFactory {
 		}
 		if (rootNode instanceof ALidentifierUriExpressionPrimary) {
 			appendBindingPath(((ALidentifierUriExpressionPrimary) rootNode).getLidentifier());
+		}
+		if (rootNode instanceof ACidentifierUriExpressionPrimary) {
+			appendBindingPath(((ACidentifierUriExpressionPrimary) rootNode).getCidentifier());
 		}
 	}
 
@@ -285,11 +291,14 @@ public class BindingPathFactory {
 	}
 
 	private void appendBindingPath(PCompositeIdent node) {
-		if (node instanceof ACompositeIdent) {
-			for (PIdentifierPrefix pIdentifierPrefix : ((ACompositeIdent) node).getPrefixes()) {
+		if (node instanceof ANormalCompositeIdent) {
+			for (PIdentifierPrefix pIdentifierPrefix : ((ANormalCompositeIdent) node).getPrefixes()) {
 				appendBindingPath(pIdentifierPrefix);
 			}
-			appendBindingPath(((ACompositeIdent) node).getIdentifier());
+			appendBindingPath(((ANormalCompositeIdent) node).getIdentifier());
+		}
+		if (node instanceof AConstantCompositeIdent) {
+			appendBindingPath(((AConstantCompositeIdent) node).getIdentifier());
 		}
 	}
 
@@ -304,6 +313,10 @@ public class BindingPathFactory {
 	}
 
 	private void appendBindingPath(TUidentifier node) {
+		makeNormalBindingPathElement(node);
+	}
+
+	private void appendBindingPath(TCidentifier node) {
 		makeNormalBindingPathElement(node);
 	}
 

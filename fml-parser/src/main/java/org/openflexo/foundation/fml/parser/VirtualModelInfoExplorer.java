@@ -154,7 +154,7 @@ public class VirtualModelInfoExplorer extends DepthFirstAdapter /*implements Bin
 	public void inASingleAnnotationAnnotation(ASingleAnnotationAnnotation node) {
 		super.inASingleAnnotationAnnotation(node);
 
-		String key = analyzer.makeFullQualifiedIdentifier(node.getIdentifier());
+		String key = analyzer.makeFullQualifiedIdentifier(node.getTag());
 		DataBinding<?> valueExpression = ExpressionFactory.makeDataBinding(node.getConditionalExp(), compilationUnit,
 				BindingDefinitionType.GET, Object.class, analyzer, null);
 		if (valueExpression.getExpression() instanceof Constant) {

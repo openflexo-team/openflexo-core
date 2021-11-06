@@ -21,6 +21,16 @@ public class TestBindingValueParser extends ExpressionParserTestCase {
 	}
 
 	@Test
+	public void testConstantIdentifier1() {
+		tryToParse("FOO", "FOO", BindingValue.class, null, serviceManager, false);
+	}
+
+	@Test
+	public void testConstantIdentifier2() {
+		tryToParse("DEFAULT_EXAMPLE_DIAGRAM", "DEFAULT_EXAMPLE_DIAGRAM", BindingValue.class, null, serviceManager, false);
+	}
+
+	@Test
 	public void testComposedIdentifier() {
 		tryToParse("foo.foo2.foo3", "foo.foo2.foo3", BindingValue.class, null, serviceManager, false);
 	}

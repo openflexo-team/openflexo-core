@@ -9,17 +9,17 @@ import [RC+"TestCrossReferences2.fml"];
 @Version("0.1")
 model TestMetaData {
 
-	concept A extends ConceptA {
+	concept MyConceptA extends ConceptA {
 	
-		concept C extends ConceptC {
-			concept E {
+		concept MyConceptC extends ConceptC {
+			concept MyConceptE {
 			}
 		}
 
-		concept D {
+		concept MyConceptD {
 		}
 	}
 
-	concept B extends A {
+	concept MyConceptB extends MyConceptA {
 	}
 }

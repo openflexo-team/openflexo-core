@@ -41,12 +41,13 @@ public class TestExpressionWithTypesParser extends ExpressionParserTestCase {
 
 	@Test
 	public void testNewInstance2() {
-		tryToParse("new a.A()", "new a.A()", BindingValue.class, null, serviceManager, false);
+		tryToParse("new a.MyA()", "new a.MyA()", BindingValue.class, null, serviceManager, false);
 	}
 
 	@Test
 	public void testNewInstance3() {
-		tryToParse("new a.A(new a.B(),new a.C())", "new a.A(new a.B(),new a.C())", BindingValue.class, null, serviceManager, false);
+		tryToParse("new a.MyA(new a.MyB(),new a.MyC())", "new a.MyA(new a.MyB(),new a.MyC())", BindingValue.class, null, serviceManager,
+				false);
 	}
 
 	@Test
@@ -67,7 +68,7 @@ public class TestExpressionWithTypesParser extends ExpressionParserTestCase {
 
 	@Test
 	public void testInnerNewInstance() {
-		tryToParse("a.b.new c.d.E()", "a.b.new c.d.E()", BindingValue.class, null, serviceManager, false);
+		tryToParse("a.b.new c.d.MyE()", "a.b.new c.d.MyE()", BindingValue.class, null, serviceManager, false);
 	}
 
 	// Test cast
@@ -172,7 +173,7 @@ public class TestExpressionWithTypesParser extends ExpressionParserTestCase {
 	@Test
 	// Test with Ushr syntax
 	public void testParameteredCast4() {
-		tryToParse("(A<B<C<D>>>)a.path", "(A<B<C<D>>>)a.path", CastExpression.class, null, serviceManager, false);
+		tryToParse("(MyA<MyB<MyC<MyD>>>)a.path", "(MyA<MyB<MyC<MyD>>>)a.path", CastExpression.class, null, serviceManager, false);
 	}
 
 	@Test

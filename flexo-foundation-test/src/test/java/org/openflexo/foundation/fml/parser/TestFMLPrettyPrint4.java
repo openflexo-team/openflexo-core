@@ -157,23 +157,23 @@ public class TestFMLPrettyPrint4 extends FMLParserTestCase {
 		assertEquals(null, useDeclNode.getPrelude());
 		assertEquals("(1:80)-(3:0)", useDeclNode.getPostlude().toString());
 
-		assertEquals("(3:0)-(3:69)", elementImportNode.getLastParsedFragment().toString());
+		assertEquals("(3:0)-(3:73)", elementImportNode.getLastParsedFragment().toString());
 		assertEquals(null, elementImportNode.getPrelude());
-		assertEquals("(3:69)-(5:0)", elementImportNode.getPostlude().toString());
+		assertEquals("(3:73)-(5:0)", elementImportNode.getPostlude().toString());
 
 		assertEquals("(5:0)-(13:1)", vmNode.getLastParsedFragment().toString());
 		assertEquals(null, vmNode.getPrelude());
 		assertEquals(null, vmNode.getPostlude());
 
-		assertEquals("(8:1)-(8:65)", modelSlotNode.getLastParsedFragment().toString());
+		assertEquals("(8:1)-(8:67)", modelSlotNode.getLastParsedFragment().toString());
 		assertEquals("(8:0)-(8:1)", modelSlotNode.getPrelude().toString());
-		assertEquals("(8:65)-(9:0)", modelSlotNode.getPostlude().toString());
+		assertEquals("(8:67)-(9:0)", modelSlotNode.getPostlude().toString());
 
-		assertEquals("(8:31)-(8:46)", modelSlotP1Node.getLastParsedFragment().toString());
+		assertEquals("(8:33)-(8:48)", modelSlotP1Node.getLastParsedFragment().toString());
 		assertEquals(null, modelSlotP1Node.getPrelude());
-		assertEquals("(8:46)-(8:47)", modelSlotP1Node.getPostlude().toString());
+		assertEquals("(8:48)-(8:49)", modelSlotP1Node.getPostlude().toString());
 
-		assertEquals("(8:47)-(8:63)", modelSlotP2Node.getLastParsedFragment().toString());
+		assertEquals("(8:49)-(8:65)", modelSlotP2Node.getLastParsedFragment().toString());
 		assertEquals(null, modelSlotP2Node.getPrelude());
 		assertEquals(null, modelSlotP2Node.getPostlude());
 

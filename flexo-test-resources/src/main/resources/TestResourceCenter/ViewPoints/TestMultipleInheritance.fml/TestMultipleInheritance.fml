@@ -6,7 +6,7 @@ import java.lang.String;
 model TestMultipleInheritance {
 
 	@Author("sylvain")
-	concept A {
+	concept MyConceptA {
 		String foo;
 		create::init () {
 			log("CreationScheme in A");
@@ -23,7 +23,7 @@ model TestMultipleInheritance {
 	}
 
 	@Author("sylvain")
-	concept B extends A {
+	concept MyConceptB extends MyConceptA {
 		create::init () {
 			super.init();
 			log("CreationScheme in B");
@@ -38,7 +38,7 @@ model TestMultipleInheritance {
 	}
 
 	@Author("sylvain")
-	concept C extends A {
+	concept MyConceptC extends MyConceptA {
 		delete::_delete () {
 		}
 		create::init () {
@@ -53,10 +53,10 @@ model TestMultipleInheritance {
 	}
 
 	@Author("sylvain")
-	concept D extends B,C {
+	concept MyConceptD extends MyConceptB,MyConceptC {
 		create::init () {
-			super_B.init();
-			super_C.init();
+			super_MyConceptB.init();
+			super_MyConceptC.init();
 			log("CreationScheme in D");
 			foo = (foo + "D");
 		}
@@ -64,7 +64,7 @@ model TestMultipleInheritance {
 		}
 		doSomething () {
 			log("Do something in D");
-			return (super_B.doSomething() + super_C.doSomething());
+			return (super_MyConceptB.doSomething() + super_MyConceptC.doSomething());
 		}
 	}
 }

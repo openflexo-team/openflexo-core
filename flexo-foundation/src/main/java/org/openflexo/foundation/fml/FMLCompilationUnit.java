@@ -53,7 +53,6 @@ import org.openflexo.connie.BindingFactory;
 import org.openflexo.connie.BindingVariable;
 import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.expr.ExpressionEvaluator;
-import org.openflexo.connie.java.JavaBindingFactory;
 import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.InnerResourceData;
@@ -425,13 +424,13 @@ public interface FMLCompilationUnit extends FMLObject, FMLPrettyPrintable, Resou
 			}
 		}
 
-		private BindingFactory BINDING_FACTORY = new JavaBindingFactory();
+		private BindingFactory BINDING_FACTORY;
 
 		@Override
 		public BindingFactory getBindingFactory() {
-			/*if (getVirtualModel() != null) {
-				return getVirtualModel().getBindingFactory();
-			}*/
+			if (BINDING_FACTORY == null) {
+				BINDING_FACTORY = new CompilationUnitBindingFactory(this);
+			}
 			return BINDING_FACTORY;
 		}
 
@@ -978,6 +977,8 @@ public interface FMLCompilationUnit extends FMLObject, FMLPrettyPrintable, Resou
 			}
 			String baseName = JavaUtils.getJavaName(initialName);
 			baseName = JavaUtils.getConstantJavaName(baseName);
+			// TODO remove this code
+			baseName = baseName.replace("_", "");
 			String returned = baseName;
 			int i = 2;
 			while (getElementImport(returned) != null) {
@@ -992,6 +993,8 @@ public interface FMLCompilationUnit extends FMLObject, FMLPrettyPrintable, Resou
 			String initialName = element.getImplementedInterface().getSimpleName();
 			String baseName = JavaUtils.getJavaName(initialName);
 			baseName = JavaUtils.getConstantJavaName(baseName);
+			// TODO remove this code
+			baseName = baseName.replace("_", "");
 			String returned = baseName;
 			int i = 2;
 			while (getElementImport(returned) != null) {
@@ -1052,8 +1055,8 @@ public interface FMLCompilationUnit extends FMLObject, FMLPrettyPrintable, Resou
 				String resourceAbbrev = ensureResourceImport(element.getResourceData()).getAbbrev();
 				elementDeclaration = getFMLModelFactory().newElementImportDeclaration();
 				elementDeclaration.setResourceReference(new DataBinding<>(resourceAbbrev));
-				elementDeclaration.setObjectReference(
-						new DataBinding<>("\"" + element.getUserIdentifier() + "-" + element.getFlexoID() + "\""));
+				elementDeclaration
+						.setObjectReference(new DataBinding<>("\"" + element.getUserIdentifier() + "-" + element.getFlexoID() + "\""));
 				String abbrev = findUniqueAbbrev(element);
 				elementDeclaration.setAbbrev(abbrev);
 				getDeclaringCompilationUnit().addToElementImports(elementDeclaration);

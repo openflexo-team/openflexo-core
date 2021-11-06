@@ -55,21 +55,28 @@ import org.openflexo.foundation.fml.parser.fmlnodes.FMLInstancePropertyValueNode
 import org.openflexo.foundation.fml.parser.fmlnodes.FMLInstancesListPropertyValueNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.FMLSimplePropertyValueNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.WrappedFMLObjectNode;
-import org.openflexo.foundation.fml.parser.node.ACompositeIdent;
+import org.openflexo.foundation.fml.parser.node.ACompositeCident;
+import org.openflexo.foundation.fml.parser.node.ACompositeCidentAnnotationTag;
 import org.openflexo.foundation.fml.parser.node.ACompositeTident;
+import org.openflexo.foundation.fml.parser.node.ACompositeTidentAnnotationTag;
+import org.openflexo.foundation.fml.parser.node.AConstantCompositeIdent;
 import org.openflexo.foundation.fml.parser.node.AFullQualifiedNewInstance;
 import org.openflexo.foundation.fml.parser.node.AFullQualifiedQualifiedInstance;
 import org.openflexo.foundation.fml.parser.node.AIdentifierPrefix;
 import org.openflexo.foundation.fml.parser.node.AInstanceQualifiedArgument;
 import org.openflexo.foundation.fml.parser.node.AListInstancesQualifiedArgument;
 import org.openflexo.foundation.fml.parser.node.AMatchActionFmlActionExp;
+import org.openflexo.foundation.fml.parser.node.ANormalCompositeIdent;
 import org.openflexo.foundation.fml.parser.node.ASimpleNewInstance;
 import org.openflexo.foundation.fml.parser.node.ASimpleQualifiedArgument;
 import org.openflexo.foundation.fml.parser.node.ASimpleQualifiedInstance;
 import org.openflexo.foundation.fml.parser.node.Node;
+import org.openflexo.foundation.fml.parser.node.PAnnotationTag;
+import org.openflexo.foundation.fml.parser.node.PCompositeCident;
 import org.openflexo.foundation.fml.parser.node.PCompositeIdent;
 import org.openflexo.foundation.fml.parser.node.PCompositeTident;
 import org.openflexo.foundation.fml.parser.node.PIdentifierPrefix;
+import org.openflexo.foundation.fml.parser.node.TCidentifier;
 import org.openflexo.foundation.fml.parser.node.TLidentifier;
 import org.openflexo.foundation.fml.parser.node.TUidentifier;
 import org.openflexo.foundation.fml.parser.node.Token;
@@ -298,9 +305,23 @@ public abstract class FMLSemanticsAnalyzer extends DepthFirstAdapter {
 	}
 
 	public String makeFullQualifiedIdentifier(PCompositeIdent compositeIdentifier) {
-		if (compositeIdentifier instanceof ACompositeIdent) {
-			return makeFullQualifiedIdentifier(((ACompositeIdent) compositeIdentifier).getPrefixes(),
-					((ACompositeIdent) compositeIdentifier).getIdentifier());
+		if (compositeIdentifier instanceof ANormalCompositeIdent) {
+			return makeFullQualifiedIdentifier(((ANormalCompositeIdent) compositeIdentifier).getPrefixes(),
+					((ANormalCompositeIdent) compositeIdentifier).getIdentifier());
+		}
+		if (compositeIdentifier instanceof AConstantCompositeIdent) {
+			return makeFullQualifiedIdentifier(((AConstantCompositeIdent) compositeIdentifier).getPrefixes(),
+					((AConstantCompositeIdent) compositeIdentifier).getIdentifier());
+		}
+		return null;
+	}
+
+	public String makeFullQualifiedIdentifier(PAnnotationTag annotationTag) {
+		if (annotationTag instanceof ACompositeCidentAnnotationTag) {
+			return makeFullQualifiedIdentifier(((ACompositeCidentAnnotationTag) annotationTag).getCompositeCident());
+		}
+		if (annotationTag instanceof ACompositeTidentAnnotationTag) {
+			return makeFullQualifiedIdentifier(((ACompositeTidentAnnotationTag) annotationTag).getCompositeTident());
 		}
 		return null;
 	}
@@ -327,10 +348,29 @@ public abstract class FMLSemanticsAnalyzer extends DepthFirstAdapter {
 		return returned.toString();
 	}
 
+	public String makeFullQualifiedIdentifier(List<PIdentifierPrefix> prefixes, TCidentifier identifier) {
+		StringBuffer returned = new StringBuffer();
+		for (PIdentifierPrefix p : prefixes) {
+			if (p instanceof AIdentifierPrefix) {
+				returned.append(((AIdentifierPrefix) p).getLidentifier().getText() + ".");
+			}
+		}
+		returned.append(identifier.getText());
+		return returned.toString();
+	}
+
 	public String makeFullQualifiedIdentifier(PCompositeTident compositeIdentifier) {
 		if (compositeIdentifier instanceof ACompositeTident) {
 			return makeFullQualifiedIdentifier(((ACompositeTident) compositeIdentifier).getPrefixes(),
 					((ACompositeTident) compositeIdentifier).getIdentifier());
+		}
+		return null;
+	}
+
+	public String makeFullQualifiedIdentifier(PCompositeCident compositeIdentifier) {
+		if (compositeIdentifier instanceof ACompositeCident) {
+			return makeFullQualifiedIdentifier(((ACompositeCident) compositeIdentifier).getPrefixes(),
+					((ACompositeCident) compositeIdentifier).getIdentifier());
 		}
 		return null;
 	}

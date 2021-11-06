@@ -68,6 +68,7 @@ import org.openflexo.foundation.fml.cli.command.directive.ServicesDirective;
 import org.openflexo.foundation.fml.parser.node.ABindingPath;
 import org.openflexo.foundation.fml.parser.node.ACharacterLiteral;
 import org.openflexo.foundation.fml.parser.node.AConcatenedSimplePath;
+import org.openflexo.foundation.fml.parser.node.AConstantIdentifier;
 import org.openflexo.foundation.fml.parser.node.ADirectoryPathDirectiveArgument;
 import org.openflexo.foundation.fml.parser.node.ADotPath;
 import org.openflexo.foundation.fml.parser.node.ADotPathPath;
@@ -385,6 +386,9 @@ public abstract class Directive extends AbstractCommand {
 		}
 		else if (identifier instanceof AUpperIdentifier) {
 			return ((AUpperIdentifier) identifier).getUidentifier().getText();
+		}
+		else if (identifier instanceof AConstantIdentifier) {
+			return ((AConstantIdentifier) identifier).getCidentifier().getText();
 		}
 		return null;
 	}

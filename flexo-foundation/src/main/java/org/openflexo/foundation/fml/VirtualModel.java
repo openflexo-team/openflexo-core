@@ -547,6 +547,8 @@ public interface VirtualModel extends FlexoConcept {
 			return (FMLLocalizedDictionary) performSuperGetter(LOCALIZED_DICTIONARY_KEY);
 		}*/
 
+		public static final String URI_ANNOTATION_NAME = "URI";
+
 		/**
 		 * Returns URI for this {@link VirtualModel}.<br>
 		 * Note that if this {@link VirtualModel} is contained in another {@link VirtualModel}, URI is computed from URI of container
@@ -566,8 +568,8 @@ public interface VirtualModel extends FlexoConcept {
 				return getContainerVirtualModel().getURI() + "/" + getName()
 						+ (getName().endsWith(CompilationUnitResourceFactory.FML_SUFFIX) ? "" : CompilationUnitResourceFactory.FML_SUFFIX);
 			}
-			if (getMetaData("URI") instanceof SingleMetaData) {
-				return ((SingleMetaData<String>) getMetaData("URI")).getValue(String.class);
+			if (getMetaData(URI_ANNOTATION_NAME) instanceof SingleMetaData) {
+				return ((SingleMetaData<String>) getMetaData(URI_ANNOTATION_NAME)).getValue(String.class);
 			}
 			if (getCompilationUnit() != null && getCompilationUnit().getResource() != null) {
 				return getCompilationUnit().getResource().getURI();
@@ -588,12 +590,12 @@ public interface VirtualModel extends FlexoConcept {
 					// We prevent ',' so that we can use it as a delimiter in tags.
 					anURI = anURI.replace(",", "");
 				}
-				if (getMetaData("URI") instanceof SingleMetaData) {
-					((SingleMetaData<String>) getMetaData("URI")).setValue(anURI, String.class);
+				if (getMetaData(URI_ANNOTATION_NAME) instanceof SingleMetaData) {
+					((SingleMetaData<String>) getMetaData(URI_ANNOTATION_NAME)).setValue(anURI, String.class);
 				}
 				else if (getCompilationUnit() == null || getCompilationUnit().getResource() == null || anURI == null
 						|| !anURI.equals(getCompilationUnit().getResource().getURI())) {
-					FMLMetaData uriMD = getFMLModelFactory().newSingleMetaData("URI", anURI, String.class);
+					FMLMetaData uriMD = getFMLModelFactory().newSingleMetaData(URI_ANNOTATION_NAME, anURI, String.class);
 					addToMetaData(uriMD);
 				}
 				if (getCompilationUnit() != null && getCompilationUnit().getResource() != null) {

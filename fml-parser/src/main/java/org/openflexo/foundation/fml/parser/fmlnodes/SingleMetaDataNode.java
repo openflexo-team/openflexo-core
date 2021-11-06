@@ -51,7 +51,8 @@ import org.openflexo.p2pp.RawSource.RawSourceFragment;
  * @author sylvain
  * 
  */
-public class SingleMetaDataNode extends AbstractMetaDataNode<ASingleAnnotationAnnotation, SingleMetaData<?>, FMLCompilationUnitSemanticsAnalyzer> {
+public class SingleMetaDataNode
+		extends AbstractMetaDataNode<ASingleAnnotationAnnotation, SingleMetaData<?>, FMLCompilationUnitSemanticsAnalyzer> {
 
 	public SingleMetaDataNode(ASingleAnnotationAnnotation astNode, FMLCompilationUnitSemanticsAnalyzer analyzer) {
 		super(astNode, analyzer);
@@ -63,7 +64,7 @@ public class SingleMetaDataNode extends AbstractMetaDataNode<ASingleAnnotationAn
 
 	@Override
 	public SingleMetaData<?> buildModelObjectFromAST(ASingleAnnotationAnnotation astNode) {
-		String key = makeFullQualifiedIdentifier(astNode.getIdentifier());
+		String key = makeFullQualifiedIdentifier(astNode.getTag());
 
 		SingleMetaData<?> returned = getFactory().newSingleMetaData(key);
 
@@ -93,7 +94,7 @@ public class SingleMetaDataNode extends AbstractMetaDataNode<ASingleAnnotationAn
 
 	private RawSourceFragment getKeyFragment() {
 		if (getASTNode() != null) {
-			return getFragment(getASTNode().getIdentifier());
+			return getFragment(getASTNode().getTag());
 		}
 		return null;
 	}

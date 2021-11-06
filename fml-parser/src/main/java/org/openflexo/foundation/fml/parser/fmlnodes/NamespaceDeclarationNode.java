@@ -39,8 +39,8 @@
 package org.openflexo.foundation.fml.parser.fmlnodes;
 
 import org.openflexo.foundation.fml.NamespaceDeclaration;
-import org.openflexo.foundation.fml.parser.FMLObjectNode;
 import org.openflexo.foundation.fml.parser.FMLCompilationUnitSemanticsAnalyzer;
+import org.openflexo.foundation.fml.parser.FMLObjectNode;
 import org.openflexo.foundation.fml.parser.node.ANamespaceDecl;
 import org.openflexo.p2pp.RawSource.RawSourceFragment;
 

@@ -79,7 +79,7 @@ public class TestAddVirtualModelInstance extends OpenflexoProjectAtRunTimeTestCa
 		assertNotNull(vpLib);
 		virtualModel = vpLib.getVirtualModel("http://openflexo.org/test/TestResourceCenter/TestAddVirtualModelInstance.fml");
 		assertNotNull(virtualModel);
-		assertNotNull(containedVM = virtualModel.getVirtualModelNamed("VM"));
+		assertNotNull(containedVM = virtualModel.getVirtualModelNamed("MyVM"));
 
 		CompilationUnitResource virtualModelResource = virtualModel.getResource();
 		CompilationUnitResource containedVMResource = containedVM.getResource();
@@ -99,7 +99,7 @@ public class TestAddVirtualModelInstance extends OpenflexoProjectAtRunTimeTestCa
 		System.out.println("containedVM: " + containedVM.getCompilationUnit().getFMLPrettyPrint());
 
 		assertNotNull(creationScheme = virtualModel.getCreationSchemes().get(0));
-		assertEquals("vm = new VM(\"foo\") with (virtualModelInstanceName=\"myVMInstance\");",
+		assertEquals("vm = new MyVM(\"foo\") with (virtualModelInstanceName=\"myVMInstance\");",
 				creationScheme.getControlGraph().getFMLPrettyPrint());
 
 	}

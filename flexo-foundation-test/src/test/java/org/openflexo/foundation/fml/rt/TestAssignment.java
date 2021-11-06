@@ -96,7 +96,7 @@ public class TestAssignment extends OpenflexoProjectAtRunTimeTestCase {
 
 		virtualModel = vpLib.getVirtualModel("http://openflexo.org/test/TestResourceCenter/TestAssignment.fml");
 		assertNotNull(virtualModel);
-		conceptA = virtualModel.getFlexoConcept("A");
+		conceptA = virtualModel.getFlexoConcept("MyConceptA");
 		assertNotNull(conceptA);
 
 		System.out.println(virtualModel.getCompilationUnit().getFMLPrettyPrint());
