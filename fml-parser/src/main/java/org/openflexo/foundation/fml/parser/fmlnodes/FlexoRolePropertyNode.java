@@ -106,7 +106,8 @@ public class FlexoRolePropertyNode<N extends PInnerConceptDecl, R extends FlexoR
 				throwIssue("Invalid name: " + ((AFmlFullyQualifiedInnerConceptDecl) astNode).getLidentifier().getText());
 			}
 			returned.setCardinality(getCardinality(((AFmlFullyQualifiedInnerConceptDecl) astNode).getCardinality()));
-			Type type = TypeFactory.makeType(((AFmlFullyQualifiedInnerConceptDecl) astNode).getType(), getSemanticsAnalyzer().getTypingSpace());
+			Type type = TypeFactory.makeType(((AFmlFullyQualifiedInnerConceptDecl) astNode).getType(),
+					getSemanticsAnalyzer().getTypingSpace());
 			// CustomType type = (CustomType) getTypeFactory().makeType(((AFmlFullyQualifiedInnerConceptDecl) astNode).getType(), returned);
 			returned.setType(type);
 		}
@@ -127,11 +128,13 @@ public class FlexoRolePropertyNode<N extends PInnerConceptDecl, R extends FlexoR
 		append(dynamicContents(() -> serializeCardinality(getModelObject().getCardinality())), getCardinalityFragment());
 		append(dynamicContents(SPACE, () -> getModelObject().getName(), SPACE), getNameFragment());
 		append(staticContents("", "with", SPACE), getWithFragment());
-		when(() -> isFullQualified()).thenAppend(dynamicContents(() -> getFMLFactory().serializeTAId(getModelObject())), getTaIdFragment())
+		when(() -> isFullQualified())
+				.thenAppend(dynamicContents(() -> getFMLFactory().serializeTAId(getModelObject())), getTaIdFragment())
 				.thenAppend(staticContents("::"), getColonColonFragment());
 		append(dynamicContents(() -> serializeFlexoRoleName(getModelObject())), getRoleFragment());
-		when(() -> hasFMLProperties()).thenAppend(staticContents("("), getFMLParametersLParFragment()).thenAppend(childrenContents("", "",
-				() -> getModelObject().getFMLPropertyValues(getFactory()), ", ", "", Indentation.DoNotIndent, FMLPropertyValue.class))
+		when(() -> hasFMLProperties())
+				.thenAppend(staticContents("("), getFMLParametersLParFragment())
+				.thenAppend(childrenContents("", "",() -> getModelObject().getFMLPropertyValues(getFactory()), ", ", "", Indentation.DoNotIndent, FMLPropertyValue.class))
 				.thenAppend(staticContents(")"), getFMLParametersRParFragment());
 		append(staticContents(";"), getSemiFragment());
 		// @formatter:on
