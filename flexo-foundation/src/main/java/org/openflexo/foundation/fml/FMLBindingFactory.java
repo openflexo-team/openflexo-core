@@ -59,8 +59,6 @@ import org.openflexo.connie.binding.IBindingPathElement;
 import org.openflexo.connie.binding.NewInstancePathElement;
 import org.openflexo.connie.binding.SimpleMethodPathElement;
 import org.openflexo.connie.binding.SimplePathElement;
-import org.openflexo.connie.binding.javareflect.JavaBasedBindingFactory;
-import org.openflexo.connie.expr.Constant;
 import org.openflexo.connie.expr.Expression;
 import org.openflexo.foundation.fml.binding.ContainerPathElement;
 import org.openflexo.foundation.fml.binding.EPIRendererPathElement;
@@ -74,7 +72,6 @@ import org.openflexo.foundation.fml.binding.FlexoConceptInstancePathElement;
 import org.openflexo.foundation.fml.binding.FlexoConceptTypePathElement;
 import org.openflexo.foundation.fml.binding.ResourceCenterPathElement;
 import org.openflexo.foundation.fml.binding.VirtualModelTypePathElement;
-import org.openflexo.foundation.fml.expr.FMLConstant;
 import org.openflexo.foundation.fml.expr.FMLConstant.ObjectConstant;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.VirtualModelInstance;
@@ -92,7 +89,7 @@ import org.openflexo.foundation.technologyadapter.TechnologyAdapterBindingFactor
  *
  */
 // TODO: manage a map for structural properties (same as for behaviors)
-public class FMLBindingFactory extends JavaBasedBindingFactory {
+public class FMLBindingFactory extends AbstractFMLBindingFactory {
 	static final Logger logger = Logger.getLogger(FMLBindingFactory.class.getPackage().getName());
 
 	@Deprecated
@@ -113,37 +110,34 @@ public class FMLBindingFactory extends JavaBasedBindingFactory {
 	public static final String ENUM_VALUES_PROPERTY_NAME = "enumValues";
 	public static final FMLNativeProperty ENUM_VALUES_PROPERTY = new FMLNativeProperty(ENUM_VALUES_PROPERTY_NAME, List.class);
 
-	private final Map<IBindingPathElement, Map<Object, SimplePathElement<?>>> storedBindingPathElements;
 	private VirtualModel virtualModel;
 
+	private final Map<IBindingPathElement, Map<Object, SimplePathElement<?>>> storedBindingPathElements;
 	private final Map<IBindingPathElement, BehavioursForConcepts> flexoBehaviourPathElements;
 
-	private FMLModelFactory fmlModelFactory;
-
-	private FMLBindingFactory() {
+	public FMLBindingFactory(VirtualModel virtualModel) {
+		super();
 		storedBindingPathElements = new HashMap<>();
 		flexoBehaviourPathElements = new HashMap<>();
-	}
-
-	public FMLBindingFactory(VirtualModel virtualModel) {
-		this();
 		this.virtualModel = virtualModel;
 	}
 
 	public FMLBindingFactory(FMLModelFactory modelFactory) {
-		this();
-		this.fmlModelFactory = modelFactory;
+		super(modelFactory);
+		storedBindingPathElements = new HashMap<>();
+		flexoBehaviourPathElements = new HashMap<>();
 	}
 
 	public VirtualModel getVirtualModel() {
 		return virtualModel;
 	}
 
+	@Override
 	public FMLModelFactory getFMLModelFactory() {
 		if (virtualModel != null) {
 			return virtualModel.getFMLModelFactory();
 		}
-		return fmlModelFactory;
+		return super.getFMLModelFactory();
 	}
 
 	@Override
@@ -152,11 +146,6 @@ public class FMLBindingFactory extends JavaBasedBindingFactory {
 			return virtualModel.getDeclaringCompilationUnitResource().parseExpression(expressionAsString, bindable);
 		}
 		return null;
-	}
-
-	@Override
-	public Constant<?> getNullExpression() {
-		return FMLConstant.ObjectSymbolicConstant.NULL;
 	}
 
 	protected SimplePathElement<?> getSimplePathElement(Object object, IBindingPathElement parent, Bindable bindable) {
@@ -174,7 +163,6 @@ public class FMLBindingFactory extends JavaBasedBindingFactory {
 	}
 
 	protected SimplePathElement<?> makeSimplePathElement(Object object, IBindingPathElement parent, Bindable bindable) {
-		// TODO: attention ici prout !!!!!
 		if (object instanceof ModelSlot) {
 			return getFMLModelFactory().newModelSlotPathElement(parent, (ModelSlot<?>) object, bindable);
 			// return new ModelSlotPathElement<ModelSlot<?>>(parent, (ModelSlot<?>) object);
@@ -536,4 +524,5 @@ public class FMLBindingFactory extends JavaBasedBindingFactory {
 		}
 		return super.getTypeForObject(object);
 	}
+
 }
