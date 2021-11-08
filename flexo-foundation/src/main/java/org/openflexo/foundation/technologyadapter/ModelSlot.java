@@ -46,6 +46,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.logging.Logger;
 
+import org.openflexo.foundation.fml.FMLCompilationUnit;
 import org.openflexo.foundation.fml.FMLModelFactory;
 import org.openflexo.foundation.fml.FlexoBehaviour;
 import org.openflexo.foundation.fml.FlexoRole;
@@ -589,6 +590,15 @@ public interface ModelSlot<RD extends ResourceData<RD> & TechnologyObject<?>> ex
 			}
 			super.finalizeDeserialization();
 		}
+
+		@Override
+		public void handleRequiredImports(FMLCompilationUnit compilationUnit) {
+			super.handleRequiredImports(compilationUnit);
+			if (compilationUnit != null) {
+				compilationUnit.ensureUse((Class<? extends ModelSlot<?>>) (Class) getImplementedInterface());
+			}
+		}
+
 	}
 
 }
