@@ -207,6 +207,8 @@ public class FMLCompilationUnitParser {
 			// Parser p = new Parser(new Lexer(new PushbackReader(reader)));
 			// Parser p = new Parser(new CustomLexer(new PushbackReader(reader), entryPointKind));
 
+			// System.out.println(rawSource.debug());
+
 			// Parse the input.
 			Start tree;
 			tree = p.parse();
