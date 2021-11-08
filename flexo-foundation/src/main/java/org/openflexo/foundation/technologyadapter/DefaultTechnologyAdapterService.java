@@ -438,7 +438,7 @@ public abstract class DefaultTechnologyAdapterService extends FlexoServiceImpl i
 			// System.out.println("ta: " + ta);
 			for (Class<? extends ModelSlot<?>> msType : ta.getAvailableModelSlotTypes()) {
 				// System.out.println("msType=" + msType + " modelSlotClass=" + modelSlotClass);
-				if (msType != null && modelSlotClass.isAssignableFrom(msType)) {
+				if (msType != null && msType.isAssignableFrom(modelSlotClass)) {
 					return ta;
 				}
 			}
