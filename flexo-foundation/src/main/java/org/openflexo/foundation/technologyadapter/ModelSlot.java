@@ -594,7 +594,7 @@ public interface ModelSlot<RD extends ResourceData<RD> & TechnologyObject<?>> ex
 		@Override
 		public void handleRequiredImports(FMLCompilationUnit compilationUnit) {
 			super.handleRequiredImports(compilationUnit);
-			if (compilationUnit != null) {
+			if (compilationUnit != null && compilationUnit.getResource() != null) {
 				compilationUnit.ensureUse((Class<? extends ModelSlot<?>>) (Class) getImplementedInterface());
 			}
 		}
