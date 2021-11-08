@@ -978,7 +978,7 @@ public interface FMLCompilationUnit extends FMLObject, FMLPrettyPrintable, Resou
 			String baseName = JavaUtils.getJavaName(initialName);
 			baseName = JavaUtils.getConstantJavaName(baseName);
 			// TODO remove this code
-			baseName = baseName.replace("_", "");
+			// baseName = baseName.replace("_", "");
 			String returned = baseName;
 			int i = 2;
 			while (getElementImport(returned) != null) {
@@ -994,7 +994,7 @@ public interface FMLCompilationUnit extends FMLObject, FMLPrettyPrintable, Resou
 			String baseName = JavaUtils.getJavaName(initialName);
 			baseName = JavaUtils.getConstantJavaName(baseName);
 			// TODO remove this code
-			baseName = baseName.replace("_", "");
+			// baseName = baseName.replace("_", "");
 			String returned = baseName;
 			int i = 2;
 			while (getElementImport(returned) != null) {
@@ -1112,7 +1112,8 @@ public interface FMLCompilationUnit extends FMLObject, FMLPrettyPrintable, Resou
 				// Adding import
 				UseModelSlotDeclaration newUseDeclaration = getFMLModelFactory().newUseModelSlotDeclaration(modelSlotClass);
 				TechnologyAdapter ta = getServiceManager().getTechnologyAdapterService().getTechnologyAdapterForModelSlot(modelSlotClass);
-				newUseDeclaration.setAbbrev(JavaUtils.getConstantJavaName(ta.getIdentifier()));
+				String identifier = JavaUtils.getConstantJavaName(ta.getIdentifier());
+				newUseDeclaration.setAbbrev(identifier);
 				addToUseDeclarations(newUseDeclaration);
 				return newUseDeclaration;
 			}
