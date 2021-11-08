@@ -179,6 +179,7 @@ import org.openflexo.foundation.fml.parser.node.PQualifiedArgumentList;
 import org.openflexo.foundation.fml.parser.node.PQualifiedInstance;
 import org.openflexo.foundation.fml.parser.node.PVariableDeclarator;
 import org.openflexo.foundation.fml.parser.node.PVisibility;
+import org.openflexo.foundation.fml.parser.node.TCidentifier;
 import org.openflexo.foundation.fml.parser.node.TLidentifier;
 import org.openflexo.foundation.fml.parser.node.TLitInteger;
 import org.openflexo.foundation.fml.parser.node.TUidentifier;
@@ -1019,7 +1020,7 @@ public abstract class ObjectNode<N extends Node, T, A extends FMLSemanticsAnalyz
 			objectClass = (Class<O>) getFMLFactory().getFMLObjectClass(instanceType);
 		}
 		else if (qualifiedInstance instanceof AFullQualifiedQualifiedInstance) {
-			TUidentifier taID = ((AFullQualifiedQualifiedInstance) qualifiedInstance).getTaId();
+			TCidentifier taID = ((AFullQualifiedQualifiedInstance) qualifiedInstance).getTaId();
 			TUidentifier instanceType = ((AFullQualifiedQualifiedInstance) qualifiedInstance).getArgType();
 			objectClass = (Class<O>) getFMLFactory().getFMLObjectClass(taID, instanceType);
 		}

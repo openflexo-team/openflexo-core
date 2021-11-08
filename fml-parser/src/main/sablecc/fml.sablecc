@@ -574,7 +574,7 @@ Productions
       // basic role declaration
        {java} visibility? type cardinality? variable_declarator semi
      | {fml} visibility? type cardinality? lidentifier kw_with [role]:uidentifier fml_parameters? semi
-     | {fml_fully_qualified} visibility? type cardinality? lidentifier kw_with [ta_id]:uidentifier colon_colon [role]:uidentifier fml_parameters? semi
+     | {fml_fully_qualified} visibility? type cardinality? lidentifier kw_with [ta_id]:cidentifier colon_colon [role]:uidentifier fml_parameters? semi
      // abstract property declaration
      | {abstract_property} visibility? kw_abstract type variable_declarator semi
      | {expression_property} visibility? type [identifier]:lidentifier kw_values [expression_value]:expression semi
@@ -604,7 +604,7 @@ Productions
      | {method} [annotations]:annotation* visibility? type? [name]:lidentifier l_par formal_arguments_list? r_par flexo_behaviour_body
      | {listener} [annotations]:annotation* kw_listen [listened]:expression kw_receive l_par [event_type_identifier]:composite_ident [event_name]:lidentifier r_par flexo_behaviour_body
      | {fml} [annotations]:annotation* visibility? type? [name]:lidentifier l_par formal_arguments_list? r_par kw_with [behaviour]:uidentifier fml_parameters? flexo_behaviour_body
-     | {fml_fully_qualified} [annotations]:annotation* visibility? type? [name]:lidentifier l_par formal_arguments_list? r_par kw_with [ta_id]:uidentifier colon_colon [behaviour]:uidentifier fml_parameters? flexo_behaviour_body
+     | {fml_fully_qualified} [annotations]:annotation* visibility? type? [name]:lidentifier l_par formal_arguments_list? r_par kw_with [ta_id]:cidentifier colon_colon [behaviour]:uidentifier fml_parameters? flexo_behaviour_body
      //| {protocol_only} [annotations]:annotation* visibility? type? [protocol]:lidentifier fml_parameters? colon l_par formal_arguments_list? r_par flexo_behaviour_body
      //| {name_only} [annotations]:annotation* visibility? type? [name]:lidentifier l_par formal_arguments_list? r_par flexo_behaviour_body
      //| {name_and_protocol} [annotations]:annotation* visibility? type? [protocol]:lidentifier fml_parameters? colon [name]:lidentifier l_par formal_arguments_list? r_par flexo_behaviour_body
@@ -863,7 +863,7 @@ Productions
    fml_action_exp =
 //       {java_instance_creation}              new_containment_clause? kw_new [type]:reference_type l_par argument_list? r_par precise_fml_parameters_clause?
 //     | {fml_instance_creation}  			   new_containment_clause? kw_new [concept_name]:uidentifier colon_colon [constructor_name]:lidentifier l_par argument_list? r_par precise_fml_parameters_clause?
-       {ta_edition_action}                     [ta_id]:uidentifier colon_colon [edition_action]:uidentifier fml_parameters in_clause? from_clause? //FD remove ? on fml_parameters
+       {ta_edition_action}                     [ta_id]:cidentifier colon_colon [edition_action]:uidentifier fml_parameters in_clause? from_clause? //FD remove ? on fml_parameters
      | {delete_action}                         kw_delete l_par expression r_par from_clause?
      | {select_action}                         kw_select kw_unique? [selected_type_name]:composite_tident from_clause where_clause?
      | {log_action}                            kw_log l_par expression r_par
@@ -916,7 +916,7 @@ Productions
 
    qualified_instance =
        {simple}         [arg_type]:uidentifier colon fml_parameters
-     | {full_qualified} [ta_id]:uidentifier colon_colon [arg_type]:uidentifier colon fml_parameters
+     | {full_qualified} [ta_id]:cidentifier colon_colon [arg_type]:uidentifier colon fml_parameters
       ;
 
    qualified_argument_list_instances =
