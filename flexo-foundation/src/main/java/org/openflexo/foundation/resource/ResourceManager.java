@@ -162,6 +162,11 @@ public class ResourceManager extends FlexoServiceImpl implements ReferenceOwner 
 		}
 
 		if (getResource(resource.getURI()) != null) {
+			// This URI seems to be already registered
+			if (getResource(resource.getURI()) == resource) {
+				// That's fine, but this resource is already registered
+				return;
+			}
 			throw new DuplicateURIException(resource);
 		}
 
