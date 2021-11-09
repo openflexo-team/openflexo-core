@@ -24,7 +24,7 @@ model MyModel {
 		);
 		
 		// DropScheme
-		dropNewConcept(String name) with drop(target=topLevel) {
+		dropNewConcept(String name) with DropScheme(target=topLevel) {
 			myConcept = new MyConcept::init(name);
 			shape = DIAGRAM::AddShape(container=topLevel) in (diagram);
 		}
@@ -50,7 +50,7 @@ model MyModel {
 		);
 		
 		// LinkScheme
-		linkConcepts() with link(fromTarget=MyConceptGR,toTarget=MyConceptGR) {
+		linkConcepts() with LinkScheme(fromTarget=MyConceptGR,toTarget=MyConceptGR) {
 			fromGR = fromTarget;
 			toGR = toTarget;
 			performLink(fromTarget.myConcept,toTarget.myConcept);

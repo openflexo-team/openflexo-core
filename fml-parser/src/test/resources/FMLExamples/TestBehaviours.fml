@@ -97,19 +97,19 @@ model MyModel {
 	/*concept ConceptD {
 
 		// Pointing DropScheme in Diagram technology adapter
-		dropNewConcept(String name) with DIAGRAM::drop(target=topLevel) {
+		dropNewConcept(String name) with DIAGRAM::DropScheme(target=topLevel) {
 		}
 
 		// No need to specify technology adapter model slot, as it is not ambigous
-		dropNewConcept(String name) with drop(target=topLevel) {
+		dropNewConcept(String name) with DropScheme(target=topLevel) {
 		}
 
 		// Pointing LinkScheme in Diagram technology adapter
-		linkConcepts() with DIAGRAM::link(fromTarget=MyConceptGR,toTarget=MyConceptGR) {
+		linkConcepts() with DIAGRAM::LinkScheme(fromTarget=MyConceptGR,toTarget=MyConceptGR) {
 		}
 		
 		// No need to specify technology adapter model slot, as it is not ambigous
-		linkConcepts() with link(fromTarget=MyConceptGR,toTarget=MyConceptGR) {
+		linkConcepts() with LinkScheme(fromTarget=MyConceptGR,toTarget=MyConceptGR) {
 		}
 		
 	}*/
