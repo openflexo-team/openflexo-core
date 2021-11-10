@@ -17,6 +17,7 @@ import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.BeginMatchActio
 import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.ConditionalNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.ControlGraphNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.DeclarationActionNode;
+import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.DeleteActionNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.EmptyControlGraphNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.EmptyReturnStatementNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.controlgraph.EndMatchActionNode;
@@ -32,6 +33,7 @@ import org.openflexo.foundation.fml.parser.node.AAssignmentStatementExpression;
 import org.openflexo.foundation.fml.parser.node.ABeginMatchActionFmlActionExp;
 import org.openflexo.foundation.fml.parser.node.ABlock;
 import org.openflexo.foundation.fml.parser.node.ABlockStatementWithoutTrailingSubstatement;
+import org.openflexo.foundation.fml.parser.node.ADeleteActionFmlActionExp;
 import org.openflexo.foundation.fml.parser.node.ADoStatementStatementWithoutTrailingSubstatement;
 import org.openflexo.foundation.fml.parser.node.AEmptyStatementStatementWithoutTrailingSubstatement;
 import org.openflexo.foundation.fml.parser.node.AEndMatchActionFmlActionExp;
@@ -648,6 +650,18 @@ public class ControlGraphFactory extends FMLSemanticsAnalyzer {
 	@Override
 	public void outATaEditionActionFmlActionExp(ATaEditionActionFmlActionExp node) {
 		super.outATaEditionActionFmlActionExp(node);
+		pop();
+	}
+
+	@Override
+	public void inADeleteActionFmlActionExp(ADeleteActionFmlActionExp node) {
+		super.inADeleteActionFmlActionExp(node);
+		push(getCompilationUnitAnalyzer().retrieveFMLNode(node, n -> new DeleteActionNode(n, getCompilationUnitAnalyzer())));
+	}
+
+	@Override
+	public void outADeleteActionFmlActionExp(ADeleteActionFmlActionExp node) {
+		super.outADeleteActionFmlActionExp(node);
 		pop();
 	}
 
