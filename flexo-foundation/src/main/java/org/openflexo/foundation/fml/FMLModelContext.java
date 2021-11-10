@@ -163,6 +163,11 @@ public class FMLModelContext {
 			this.fmlAnnotation = fmlAnnotation;
 		}
 
+		@Override
+		public String toString() {
+			return "FMLProperty[" + getName() + "/" + getType() + "/required=" + isRequired() + "]";
+		}
+
 		public String getName() {
 			return modelProperty.getPropertyIdentifier();
 		}
