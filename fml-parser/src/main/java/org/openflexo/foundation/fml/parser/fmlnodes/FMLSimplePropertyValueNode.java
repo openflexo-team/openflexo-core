@@ -88,6 +88,12 @@ public class FMLSimplePropertyValueNode<M extends FMLObject, T>
 
 		if (fmlProperty == null) {
 			logger.warning("Cannot find FML property " + propertyName + " in " + getParent().getModelObject());
+			// if (!getParent().getModelObject().toString().contains("WrappedFMLObject")) {
+			// System.out.println("Available properties");
+			// for (FMLProperty<?, ?> p : ((FMLObject) getParent().getModelObject()).getFMLProperties(getFactory())) {
+			//	System.out.println(" > " + p);
+			// }
+			// }
 			return this;
 		}
 
