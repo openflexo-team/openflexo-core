@@ -219,8 +219,8 @@ public interface ModelSlot<RD extends ResourceData<RD> & TechnologyObject<?>> ex
 
 		private static final Logger logger = Logger.getLogger(ModelSlot.class.getPackage().getName());
 
-		private boolean isRequired;
-		private boolean isReadOnly;
+		private boolean isRequired = false;
+		private boolean isReadOnly = false;
 		private TechnologyAdapter<?> technologyAdapter;
 
 		/*private List<Class<? extends FlexoRole<?>>> availableFlexoRoleTypes;
