@@ -79,7 +79,9 @@ public interface FMLSimplePropertyValue<M extends FMLObject, T> extends FMLPrope
 		@Override
 		public String toString() {
 
-			return "FMLSimplePropertyValue[" + (getProperty() != null ? getProperty().getName() : "null") + "=" + getValue() + "]";
+			return "FMLSimplePropertyValue[" + Integer.toHexString(hashCode()) + "/"
+					+ (getProperty() != null ? getProperty().getName() : "null") + "=" + getValue() + ",required="
+					+ (getProperty() != null ? getProperty().isRequired() : "?") + "]";
 		}
 
 	}
