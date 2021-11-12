@@ -254,23 +254,34 @@ public class TypeFactory extends DepthFirstAdapter {
 	public void outAWildcardTypeArgument(AWildcardTypeArgument node) {
 		super.outAWildcardTypeArgument(node);
 		if (node.getWildcardBounds() != null) {
-			registerTypeNode(node, getType(node.getWildcardBounds()));
+			if (node.getWildcardBounds() instanceof AExtendsWildcardBounds) {
+				Type upperBound = getType(((AExtendsWildcardBounds) node.getWildcardBounds()).getReferenceType());
+				registerTypeNode(node, WildcardTypeImpl.makeUpperBoundWilcard(upperBound));
+			}
+			else if (node.getWildcardBounds() instanceof ASuperWildcardBounds) {
+				Type lowerBound = getType(((ASuperWildcardBounds) node.getWildcardBounds()).getReferenceType());
+				registerTypeNode(node, WildcardTypeImpl.makeLowerBoundWilcard(lowerBound));
+			}
+			// registerTypeNode(node, getType(node.getWildcardBounds()));
+		}
+		else {
+			registerTypeNode(node, new WildcardTypeImpl());
 		}
 	}
 
-	@Override
+	/*@Override
 	public void outAExtendsWildcardBounds(AExtendsWildcardBounds node) {
 		super.outAExtendsWildcardBounds(node);
 		Type upperBound = getType(node.getReferenceType());
 		registerTypeNode(node, WildcardTypeImpl.makeUpperBoundWilcard(upperBound));
 	}
-
+	
 	@Override
 	public void outASuperWildcardBounds(ASuperWildcardBounds node) {
 		super.outASuperWildcardBounds(node);
 		Type lowerBound = getType(node.getReferenceType());
 		registerTypeNode(node, WildcardTypeImpl.makeLowerBoundWilcard(lowerBound));
-	}
+	}*/
 
 	private Type makeType(String typeName) {
 		if (getTypingSpace() != null) {
