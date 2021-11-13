@@ -41,7 +41,6 @@ package org.openflexo.foundation.fml.parser.fmlnodes;
 import java.lang.reflect.Type;
 import java.util.logging.Logger;
 
-import org.openflexo.connie.type.CustomType;
 import org.openflexo.foundation.InvalidNameException;
 import org.openflexo.foundation.fml.FMLPropertyValue;
 import org.openflexo.foundation.fml.FlexoRole;
@@ -50,6 +49,7 @@ import org.openflexo.foundation.fml.parser.TypeFactory;
 import org.openflexo.foundation.fml.parser.node.AFmlFullyQualifiedInnerConceptDecl;
 import org.openflexo.foundation.fml.parser.node.AFmlInnerConceptDecl;
 import org.openflexo.foundation.fml.parser.node.PInnerConceptDecl;
+import org.openflexo.foundation.fml.rt.FMLRTModelSlot;
 import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.p2pp.PrettyPrintContext.Indentation;
 
@@ -88,6 +88,7 @@ public class ModelSlotPropertyNode<N extends PInnerConceptDecl, MS extends Model
 					((AFmlFullyQualifiedInnerConceptDecl) astNode).getRole());
 		}
 		MS returned = (MS) getFactory().newInstance(roleClass);
+
 		if (astNode instanceof AFmlInnerConceptDecl) {
 			returned.setVisibility(getVisibility(((AFmlInnerConceptDecl) astNode).getVisibility()));
 			try {
@@ -96,10 +97,15 @@ public class ModelSlotPropertyNode<N extends PInnerConceptDecl, MS extends Model
 				throwIssue("Invalid name: " + ((AFmlInnerConceptDecl) astNode).getLidentifier().getText());
 			}
 			returned.setCardinality(getCardinality(((AFmlInnerConceptDecl) astNode).getCardinality()));
-			Type type = TypeFactory.makeVirtualModelInstanceType(((AFmlInnerConceptDecl) astNode).getType(),
-					getSemanticsAnalyzer().getTypingSpace());
-			// CustomType type = (CustomType) getTypeFactory().makeType(((AFmlInnerConceptDecl) astNode).getType(), returned);
-			returned.setType(type);
+
+			if (returned instanceof FMLRTModelSlot) {
+				Type type = TypeFactory.makeVirtualModelInstanceType(((AFmlInnerConceptDecl) astNode).getType(),
+						getSemanticsAnalyzer().getTypingSpace());
+				returned.setType(type);
+			}
+
+			// decodeFMLProperties(getFMLParameters(), returned);
+
 		}
 		if (astNode instanceof AFmlFullyQualifiedInnerConceptDecl) {
 			returned.setVisibility(getVisibility(((AFmlFullyQualifiedInnerConceptDecl) astNode).getVisibility()));
@@ -113,6 +119,9 @@ public class ModelSlotPropertyNode<N extends PInnerConceptDecl, MS extends Model
 					getSemanticsAnalyzer().getTypingSpace());
 			// CustomType type = (CustomType) getTypeFactory().makeType(((AFmlFullyQualifiedInnerConceptDecl) astNode).getType(), returned);
 			returned.setType(type);
+
+			// decodeFMLProperties(getFMLParameters(), returned);
+
 		}
 		return returned;
 	}
@@ -132,11 +141,11 @@ public class ModelSlotPropertyNode<N extends PInnerConceptDecl, MS extends Model
 		append(dynamicContents(SPACE, () -> getModelObject().getName(), SPACE), getNameFragment());
 		append(staticContents("", "with", SPACE), getWithFragment());
 		when(() -> isFullQualified()).thenAppend(dynamicContents(() -> getFMLFactory().serializeTAId(getModelObject())), getTaIdFragment())
-				.thenAppend(staticContents("::"), getColonColonFragment());
+		.thenAppend(staticContents("::"), getColonColonFragment());
 		append(dynamicContents(() -> serializeFlexoRoleName(getModelObject())), getRoleFragment());
 		when(() -> hasFMLProperties()).thenAppend(staticContents("("), getFMLParametersLParFragment()).thenAppend(childrenContents("", "",
 				() -> getModelObject().getFMLPropertyValues(getFactory()), ", ", "", Indentation.DoNotIndent, FMLPropertyValue.class))
-				.thenAppend(staticContents(")"), getFMLParametersRParFragment());
+		.thenAppend(staticContents(")"), getFMLParametersRParFragment());
 		append(staticContents(";"), getSemiFragment());
 		// @formatter:on
 	}
