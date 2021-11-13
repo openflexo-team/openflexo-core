@@ -70,6 +70,7 @@ import org.openflexo.foundation.fml.parser.node.AModelDecl;
 import org.openflexo.foundation.fml.rm.CompilationUnitResource;
 import org.openflexo.foundation.fml.rm.CompilationUnitResource.VirtualModelInfo;
 import org.openflexo.foundation.resource.FlexoResource;
+import org.openflexo.foundation.resource.ResourceData;
 import org.openflexo.logging.FlexoLogger;
 
 /**
@@ -195,7 +196,18 @@ public class FMLTypingSpaceDuringParsing extends AbstractFMLTypingSpace {
 			if (analyzer.getCompilationUnit() != null) {
 				for (ElementImportDeclaration importDeclaration : analyzer.getCompilationUnit().getElementImports()) {
 					try {
-						String resourceURI = importDeclaration.getResourceReference().getBindingValue(analyzer.getCompilationUnit());
+						String resourceURI = null;
+						Object resourceRef = importDeclaration.getResourceReference().getBindingValue(analyzer.getCompilationUnit());
+						if (resourceRef instanceof String) {
+							resourceURI = (String) resourceRef;
+						}
+						else if (resourceRef instanceof ResourceData) {
+							resourceURI = ((ResourceData) resourceRef).getResource().getURI();
+						}
+						else {
+							logger.warning("Unexpected resourceRef: " + resourceRef);
+							return null;
+						}
 						FlexoResource resource = analyzer.getServiceManager().getResourceManager().getResource(resourceURI);
 						if (resource instanceof CompilationUnitResource) {
 							VirtualModelInfo info = ((CompilationUnitResource) resource).getVirtualModelInfo(resource.getResourceCenter());
