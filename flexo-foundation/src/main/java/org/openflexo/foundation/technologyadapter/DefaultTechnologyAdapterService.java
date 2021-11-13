@@ -500,11 +500,11 @@ public abstract class DefaultTechnologyAdapterService extends FlexoServiceImpl i
 				FML annotation = editionActionClass.getAnnotation(FML.class);
 				if (annotation != null) {
 					availableEditionActionsByFMLKeyword.put(annotation.value(), editionActionClass);
-					System.out.println("store " + editionActionClass + " for " + annotation.value());
+					// System.out.println("store " + editionActionClass + " for " + annotation.value());
 				}
 				// Also store it using class name
 				availableEditionActionsByFMLKeyword.put(editionActionClass.getSimpleName(), editionActionClass);
-				System.out.println("store " + editionActionClass + " for " + editionActionClass.getSimpleName());
+				// System.out.println("store " + editionActionClass + " for " + editionActionClass.getSimpleName());
 			}
 		}
 		return returned;
@@ -531,11 +531,11 @@ public abstract class DefaultTechnologyAdapterService extends FlexoServiceImpl i
 					FML annotation = objectClass.getAnnotation(FML.class);
 					if (annotation != null) {
 						availableFMLObjectsByFMLKeyword.put(annotation.value(), objectClass);
-						System.out.println("store " + objectClass + " for " + annotation.value());
+						// System.out.println("store " + objectClass + " for " + annotation.value());
 					}
 					// Also store it using class name
 					availableFMLObjectsByFMLKeyword.put(objectClass.getSimpleName(), objectClass);
-					System.out.println("store " + objectClass + " for " + objectClass.getSimpleName());
+					// System.out.println("store " + objectClass + " for " + objectClass.getSimpleName());
 				}
 			} catch (ModelDefinitionException e) {
 				// TODO Auto-generated catch block

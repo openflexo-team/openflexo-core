@@ -154,7 +154,7 @@ public class VirtualModelBindingModel extends FlexoConceptBindingModel {
 		}
 		if (getVirtualModel() != null && evt.getSource() == getVirtualModel().getResource()) {
 			if (evt.getPropertyName().equals(FlexoResource.CONTAINER)) {
-				System.out.println("OK la resource me notifie " + evt.getPropertyName());
+				// System.out.println("OK la resource me notifie " + evt.getPropertyName());
 				// The VirtualModel changes it's container virtual model
 				setBaseBindingModel(getVirtualModel().getContainerVirtualModel() != null
 						? getVirtualModel().getContainerVirtualModel().getBindingModel()

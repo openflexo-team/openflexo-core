@@ -94,7 +94,7 @@ public class FMLBehaviourNode<N extends Node, B extends FlexoBehaviour> extends 
 					((AFmlFullyQualifiedBehaviourDecl) astNode).getBehaviour());
 		}
 
-		System.out.println("behaviourClass=" + behaviourClass);
+		// System.out.println("behaviourClass=" + behaviourClass);
 
 		B returned = getFactory().newInstance(behaviourClass);
 		if (astNode instanceof AFmlBehaviourDecl) {
@@ -116,7 +116,8 @@ public class FMLBehaviourNode<N extends Node, B extends FlexoBehaviour> extends 
 
 		PFlexoBehaviourBody flexoBehaviourBody = getFlexoBehaviourBody(astNode);
 		if (flexoBehaviourBody instanceof ABlockFlexoBehaviourBody) {
-			ControlGraphNode<?, ?> cgNode = ControlGraphFactory.makeControlGraphNode(getFlexoBehaviourBody(astNode), getSemanticsAnalyzer());
+			ControlGraphNode<?, ?> cgNode = ControlGraphFactory.makeControlGraphNode(getFlexoBehaviourBody(astNode),
+					getSemanticsAnalyzer());
 			if (cgNode != null) {
 				returned.setControlGraph(cgNode.getModelObject());
 				addToChildren(cgNode);
