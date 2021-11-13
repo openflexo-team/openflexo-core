@@ -263,6 +263,10 @@ public interface ElementImportDeclaration extends FMLPrettyPrintable {
 						objectReference = getObjectReference().getBindingValue(getReflectedBindingEvaluationContext());
 					}
 
+					// System.out.println("On cherche le referenced object pour " + this);
+					// System.out.println("ResourceReference: " + getResourceReference());
+					// System.out.println("resourceURI=" + resourceURI);
+
 					/*if (getResourceReference().isSet() && getResourceReference().isValid()) {
 						System.out.println("----> On cherche l'uri pour " + getResourceReference());
 						for (ElementImportDeclaration imp : getDeclaringCompilationUnit().getElementImports()) {
@@ -296,6 +300,9 @@ public interface ElementImportDeclaration extends FMLPrettyPrintable {
 					FlexoResource<?> resource = serviceManager.getResourceManager().getResource(resourceURI);
 					if (resource != null) {
 
+						// System.out.println("resource=" + resource);
+						// System.out.println("resource.getLoadedResourceData()=" + resource.getLoadedResourceData());
+
 						// We should have already loaded this resource, otherwise it means that this resource was a cross reference
 						ResourceData<?> resourceData = resource.getLoadedResourceData();
 
@@ -320,7 +327,17 @@ public interface ElementImportDeclaration extends FMLPrettyPrintable {
 				isBuildingReferencedObject = false;
 			}
 
-			logger.warning("Cannot access FlexoServiceManager ");
+			logger.warning("Cannot access FlexoServiceManager, resourceData=" + getResourceData());
+
+			/*if (getResourceData() instanceof FMLCompilationUnit) {
+				FMLCompilationUnitImpl cu = (FMLCompilationUnitImpl) getResourceData();
+				System.out.println("vmlib=" + cu.getVirtualModelLibrary());
+				System.out.println("dfact=" + cu.getDeserializationFactory());
+				System.out.println("sm=" + cu.getServiceManager());
+			}
+			
+			Thread.dumpStack();
+			System.exit(-1);*/
 			return null;
 
 		}

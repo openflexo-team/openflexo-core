@@ -130,7 +130,7 @@ public class TypeFactory extends DepthFirstAdapter {
 			return new VirtualModelInstanceType(((UnresolvedType) type).getUnresolvedTypeName(),
 					fmlTechnologyAdapter.getVirtualModelInstanceTypeFactory());
 		}
-		logger.warning("Unexpected type");
+		logger.warning("Unexpected type: " + type);
 		return null;
 	}
 
