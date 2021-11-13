@@ -1152,6 +1152,15 @@ public interface FMLCompilationUnit extends FMLObject, FMLPrettyPrintable, Resou
 			if (variable instanceof NamespaceBindingVariable) {
 				return ((NamespaceBindingVariable) variable).getNamespaceDeclaration().getValue();
 			}
+			if (variable instanceof NamedImportBindingVariable) {
+				FlexoObject returned = ((NamedImportBindingVariable) variable).getElementImportDeclaration().getReferencedObject();
+				/*System.out.println("For variable " + variable + " returning " + returned);
+				if (returned == null) {
+					System.out.println("Not found variable: "+variable);
+					Thread.dumpStack();
+				}*/
+				return returned;
+			}
 
 			logger.warning("Unexpected BindingVariable " + variable + " of " + variable.getClass());
 			return null;
