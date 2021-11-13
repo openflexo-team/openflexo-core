@@ -422,7 +422,7 @@ public interface FMLObject extends FlexoObject, Bindable, InnerResourceData<FMLC
 		@Override
 		public FlexoServiceManager getServiceManager() {
 			if (getVirtualModelLibrary() != null) {
-				return getDeclaringCompilationUnit().getVirtualModelLibrary().getServiceManager();
+				return getVirtualModelLibrary().getServiceManager();
 			}
 			if (getDeserializationFactory() != null) {
 				return getDeserializationFactory().getServiceManager();
