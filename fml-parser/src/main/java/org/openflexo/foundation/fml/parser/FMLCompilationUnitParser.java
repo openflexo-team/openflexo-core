@@ -145,6 +145,8 @@ public class FMLCompilationUnitParser {
 
 			RawSource rawSource = readRawSource(rawSourceReader);
 
+			//System.out.println(rawSource.debug());
+
 			// Create a Parser instance.
 			Parser p = new Parser(new CustomLexer(new PushbackReader(reader), EntryPointKind.CompilationUnit));
 			// Parser p = new Parser(new CustomLexer(new PushbackReader(reader), entryPointKind));
