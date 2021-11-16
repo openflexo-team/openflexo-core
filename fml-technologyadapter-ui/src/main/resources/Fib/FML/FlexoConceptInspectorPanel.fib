@@ -61,7 +61,7 @@
 				localize="true" enable="" manageDynamicModel="true" clickAction=""
 				doubleClickAction="" rightClickAction="" enterPressedAction=""
 				valueChangedAction="" valueTransform="" valueValidator=""
-				name="InspectorPropertyTable" index="1" data="data.entries"
+				name="inspectorPropertyTable" index="1" data="data.entries"
 				constraints="border(anchor=center;fill=both;gridHeight=0;gridWidth=1;gridX=-1;gridY=-1;index=1;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=center;padX=0;padY=0;weightX=0.0;weightY=0.0)"
 				visible="" opaque="false">
 				<TextFieldColumn isEditable="" data="iterator.name"
@@ -82,10 +82,10 @@
 				titleFont="SansSerif,0,11" darkLevel="0" index="2" 
 				constraints="border(anchor=north;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=1;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=east;padX=0;padY=0;weightX=0.0;weightY=0.0)"
 				visible="" opaque="false" name="InspectorOrderingPanel">
-				<Button action="data.entryFirst(InspectorPropertyTable.selected)"
+				<Button action="data.entryFirst(inspectorPropertyTable.selected)"
 					buttonIcon="controller.arrowTop" buttonType="Trigger" label=""
 					format="" icon="" tooltip="" localize="true"
-					enable="((InspectorPropertyTable.selected != null) &amp; (InspectorPropertyTable.selected.index &gt; 0))"
+					enable="((inspectorPropertyTable.selected != null) &amp;&amp;(inspectorPropertyTable.selected.index &gt; 0))"
 					clickAction="" doubleClickAction="" rightClickAction=""
 					enterPressedAction="" valueChangedAction="" valueTransform=""
 					valueValidator="" name="InspectorEntryFirst" index="0" data=""
@@ -93,10 +93,10 @@
 					visible="" opaque="false">
 					<LocalizedDictionary />
 				</Button>
-				<Button action="data.entryUp(InspectorPropertyTable.selected)"
+				<Button action="data.entryUp(inspectorPropertyTable.selected)"
 					buttonIcon="controller.arrowUp" buttonType="Trigger" label=""
 					format="" icon="" tooltip="" localize="true"
-					enable="((InspectorPropertyTable.selected != null) &amp; (InspectorPropertyTable.selected.index &gt; 0))"
+					enable="((inspectorPropertyTable.selected != null) &amp;&amp;(inspectorPropertyTable.selected.index &gt; 0))"
 					clickAction="" doubleClickAction="" rightClickAction=""
 					enterPressedAction="" valueChangedAction="" valueTransform=""
 					valueValidator="" name="InspectorEntryUp" index="1" data=""
@@ -104,10 +104,10 @@
 					visible="" opaque="false">
 					<LocalizedDictionary />
 				</Button>
-				<Button action="data.entryDown(InspectorPropertyTable.selected)"
+				<Button action="data.entryDown(inspectorPropertyTable.selected)"
 					buttonIcon="controller.arrowDown" buttonType="Trigger" label=""
 					format="" icon="" tooltip="" localize="true"
-					enable="((InspectorPropertyTable.selected != null) &amp; (InspectorPropertyTable.selected.index &lt; (data.entries.size - 1)))"
+					enable="((inspectorPropertyTable.selected != null) &amp;&amp;(inspectorPropertyTable.selected.index &lt; (data.entries.size - 1)))"
 					clickAction="" doubleClickAction="" rightClickAction=""
 					enterPressedAction="" valueChangedAction="" valueTransform=""
 					valueValidator="" name="InspectorEntryDown" index="2" data=""
@@ -115,10 +115,10 @@
 					visible="" opaque="false">
 					<LocalizedDictionary />
 				</Button>
-				<Button action="data.entryLast(InspectorPropertyTable.selected)"
+				<Button action="data.entryLast(inspectorPropertyTable.selected)"
 					buttonIcon="controller.arrowBottom" buttonType="Trigger" label=""
 					format="" icon="" tooltip="" localize="true"
-					enable="((InspectorPropertyTable.selected != null) &amp; (InspectorPropertyTable.selected.index &lt; (data.entries.size - 1)))"
+					enable="((inspectorPropertyTable.selected != null) &amp;&amp;(inspectorPropertyTable.selected.index &lt; (data.entries.size - 1)))"
 					clickAction="" doubleClickAction="" rightClickAction=""
 					enterPressedAction="" valueChangedAction="" valueTransform=""
 					valueValidator="" name="InspectorEntryLast" index="3" data=""
@@ -134,9 +134,9 @@
 			constraints="split(anchor=center;fill=both;gridHeight=0;gridWidth=0;gridX=-1;gridY=-1;index=1;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;padX=0;padY=0;splitIdentifier=right;weightX=1.0;weightY=1.0)"
 			visible="" opaque="false" name="InspectorPropertyDetailPanel">
 			<Panel layout="border" borderTitle="Simple property" titleFont="SansSerif,0,11"
-				darkLevel="0" index="0" data="InspectorPropertyTable.selected"
+				darkLevel="0" index="0" data="inspectorPropertyTable.selected"
 				constraints="gridbag(anchor=center;fill=both;gridHeight=0;gridWidth=0;gridX=-1;gridY=-1;index=0;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=center;padX=0;padY=0;weightX=1.0;weightY=1.0)"
-				visible="(InspectorPropertyTable.selected = null)" opaque="false"
+				visible="(inspectorPropertyTable.selected == null)" opaque="false"
 				name="EmptyPanel">
 				<Label label="please_select_an_entry" align="center" index="0"
 					constraints="border(index=0;location=center)" visible=""
@@ -153,11 +153,11 @@
 				useScrollBar="true" horizontalScrollbarPolicy="HORIZONTAL_SCROLLBAR_AS_NEEDED"
 				verticalScrollbarPolicy="VERTICAL_SCROLLBAR_AS_NEEDED" name="EntryPanel">
 				<FIBReferencedComponent
-						dynamicComponentFile="controller.inspectorForObject(InspectorPropertyTable.selected)"
+						dynamicComponentFile="controller.inspectorForObject(inspectorPropertyTable.selected)"
 						localize="true" manageDynamicModel="true" name="InspectorEntryWidget"
-						index="15" data="InspectorPropertyTable.selected"
+						index="15" data="inspectorPropertyTable.selected"
 						constraints="gridbag(anchor=center;fill=both;gridHeight=0;gridWidth=0;gridX=-1;gridY=-1;index=5;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;padX=0;padY=0;weightX=1.0;weightY=1.0)"
-						visible="(InspectorPropertyTable.selected != null)"
+						visible="(inspectorPropertyTable.selected != null)"
 						opaque="false">
 						<ReferenceAssignment mandatory="true"
 							variable="controller.flexoController" value="controller.flexoController" />
@@ -222,17 +222,17 @@
 				</Custom>
 				<Label label="concept" index="8" data=""
 					constraints="twocols(expandHorizontally=true;expandVertically=false;index=8;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=5;location=left)"
-					visible="((EntryPanel.data.class.simpleName = &quot;ClassInspectorEntry&quot;) | (EntryPanel.data.class.simpleName = &quot;IndividualInspectorEntry&quot;))"
+					visible="((EntryPanel.data.class.simpleName == &quot;ClassInspectorEntry&quot;) | (EntryPanel.data.class.simpleName == &quot;IndividualInspectorEntry&quot;))"
 					format="" icon="" tooltip="" localize="true" enable="" clickAction=""
 					doubleClickAction="" rightClickAction="" enterPressedAction=""
 					valueChangedAction="" valueTransform="" valueValidator="" />
 				<Panel layout="gridbag" borderTitle="" borderTop="0"
 					borderBottom="0" borderLeft="0" borderRight="0" titleFont="SansSerif,0,11"
 					darkLevel="0" index="9"
-					data="($org.openflexo.foundation.fml.inspector.ClassInspectorEntry)EntryPanel.data"
+					data="(org.openflexo.foundation.fml.inspector.ClassInspectorEntry)EntryPanel.data"
 					dataClassName="org.openflexo.foundation.ontology.fml.inspector.ClassInspectorEntry"
 					constraints="twocols(expandHorizontally=true;expandVertically=false;index=9;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)"
-					visible="(EntryPanel.data.class.simpleName = &quot;ClassInspectorEntry&quot;)"
+					visible="(EntryPanel.data.class.simpleName == &quot;ClassInspectorEntry&quot;)"
 					name="OntologyClassInspectorEntryPanel">
 					<Custom componentClassName="org.openflexo.ontology.components.widget.FIBClassSelector"
 						format="" icon="" tooltip="" localize="true" enable=""
@@ -273,10 +273,10 @@
 				<Panel layout="gridbag" borderTitle="" borderTop="0"
 					borderBottom="0" borderLeft="0" borderRight="0" titleFont="SansSerif,0,11"
 					darkLevel="0" index="10"
-					data="($org.openflexo.foundation.fml.inspector.IndividualInspectorEntry)EntryPanel.data"
+					data="(org.openflexo.foundation.fml.inspector.IndividualInspectorEntry)EntryPanel.data"
 					dataClassName="org.openflexo.foundation.ontology.fml.inspector.IndividualInspectorEntry"
 					constraints="twocols(expandHorizontally=true;expandVertically=false;index=10;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)"
-					visible="(EntryPanel.data.class.simpleName = &quot;IndividualInspectorEntry&quot;)"
+					visible="(EntryPanel.data.class.simpleName == &quot;IndividualInspectorEntry&quot;)"
 					name="OntologyIndividualInspectorEntryPanel">
 					<Custom componentClassName="org.openflexo.ontology.components.widget.FIBClassSelector"
 						format="" icon="" tooltip="" localize="true" enable=""
@@ -316,17 +316,17 @@
 				</Panel>
 				<Label label="parent_property" index="11" data=""
 					constraints="twocols(expandHorizontally=true;expandVertically=false;index=11;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=5;location=left)"
-					visible="(((EntryPanel.data.class.simpleName = &quot;ObjectPropertyInspectorEntry&quot;) | (EntryPanel.data.class.simpleName = &quot;DataPropertyInspectorEntry&quot;)) | (EntryPanel.data.class.simpleName = &quot;PropertyInspectorEntry&quot;))"
+					visible="(((EntryPanel.data.class.simpleName == &quot;ObjectPropertyInspectorEntry&quot;) | (EntryPanel.data.class.simpleName == &quot;DataPropertyInspectorEntry&quot;)) | (EntryPanel.data.class.simpleName == &quot;PropertyInspectorEntry&quot;))"
 					format="" icon="" tooltip="" localize="true" enable="" clickAction=""
 					doubleClickAction="" rightClickAction="" enterPressedAction=""
 					valueChangedAction="" valueTransform="" valueValidator="" />
 				<Panel layout="border" borderTitle="" borderTop="0"
 					borderBottom="0" borderLeft="0" borderRight="0" titleFont="SansSerif,0,11"
 					darkLevel="0" index="12"
-					data="($org.openflexo.foundation.fml.inspector.PropertyInspectorEntry)EntryPanel.data"
+					data="(org.openflexo.foundation.fml.inspector.PropertyInspectorEntry)EntryPanel.data"
 					dataClassName="org.openflexo.foundation.ontology.fml.inspector.PropertyInspectorEntry"
 					constraints="twocols(expandHorizontally=true;expandVertically=false;index=12;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)"
-					visible="(((EntryPanel.data.class.simpleName = &quot;ObjectPropertyInspectorEntry&quot;) | (EntryPanel.data.class.simpleName = &quot;DataPropertyInspectorEntry&quot;)) | (EntryPanel.data.class.simpleName = &quot;PropertyInspectorEntry&quot;))"
+					visible="(((EntryPanel.data.class.simpleName == &quot;ObjectPropertyInspectorEntry&quot;) | (EntryPanel.data.class.simpleName == &quot;DataPropertyInspectorEntry&quot;)) | (EntryPanel.data.class.simpleName == &quot;PropertyInspectorEntry&quot;))"
 					name="OntologyPropertyInspectorEntryPanel1">
 					<Custom componentClassName="org.openflexo.ontology.components.widget.FIBPropertySelector"
 						format="" icon="" tooltip="" localize="true" enable=""
@@ -345,17 +345,17 @@
 				</Panel>
 				<Label label="domain" index="13" data=""
 					constraints="twocols(expandHorizontally=true;expandVertically=false;index=13;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=5;location=left)"
-					visible="(((EntryPanel.data.class.simpleName = &quot;ObjectPropertyInspectorEntry&quot;) | (EntryPanel.data.class.simpleName = &quot;DataPropertyInspectorEntry&quot;)) | (EntryPanel.data.class.simpleName = &quot;PropertyInspectorEntry&quot;))"
+					visible="(((EntryPanel.data.class.simpleName == &quot;ObjectPropertyInspectorEntry&quot;) | (EntryPanel.data.class.simpleName == &quot;DataPropertyInspectorEntry&quot;)) | (EntryPanel.data.class.simpleName == &quot;PropertyInspectorEntry&quot;))"
 					format="" icon="" tooltip="" localize="true" enable="" clickAction=""
 					doubleClickAction="" rightClickAction="" enterPressedAction=""
 					valueChangedAction="" valueTransform="" valueValidator="" />
 				<Panel layout="border" borderTitle="" borderTop="0"
 					borderBottom="0" borderLeft="0" borderRight="0" titleFont="SansSerif,0,11"
 					darkLevel="0" index="14"
-					data="($org.openflexo.foundation.fml.inspector.PropertyInspectorEntry)EntryPanel.data"
+					data="(org.openflexo.foundation.fml.inspector.PropertyInspectorEntry)EntryPanel.data"
 					dataClassName="org.openflexo.foundation.ontology.fml.inspector.PropertyInspectorEntry"
 					constraints="twocols(expandHorizontally=true;expandVertically=false;index=14;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)"
-					visible="(((EntryPanel.data.class.simpleName = &quot;ObjectPropertyInspectorEntry&quot;) | (EntryPanel.data.class.simpleName = &quot;DataPropertyInspectorEntry&quot;)) | (EntryPanel.data.class.simpleName = &quot;PropertyInspectorEntry&quot;))"
+					visible="(((EntryPanel.data.class.simpleName == &quot;ObjectPropertyInspectorEntry&quot;) | (EntryPanel.data.class.simpleName == &quot;DataPropertyInspectorEntry&quot;)) | (EntryPanel.data.class.simpleName == &quot;PropertyInspectorEntry&quot;))"
 					name="OntologyPropertyInspectorEntryPanel2">
 					<Panel layout="gridbag" borderTitle="Panel" titleFont="SansSerif,0,11"
 						darkLevel="0" data="" constraints="border(location=center)"
@@ -401,17 +401,17 @@
 				</Panel>
 				<Label label="range" index="15" data=""
 					constraints="twocols(expandHorizontally=true;expandVertically=false;index=15;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=5;location=left)"
-					visible="(EntryPanel.data.class.simpleName = &quot;ObjectPropertyInspectorEntry&quot;)"
+					visible="(EntryPanel.data.class.simpleName == &quot;ObjectPropertyInspectorEntry&quot;)"
 					format="" icon="" tooltip="" localize="true" enable="" clickAction=""
 					doubleClickAction="" rightClickAction="" enterPressedAction=""
 					valueChangedAction="" valueTransform="" valueValidator="" />
 				<Panel layout="border" borderTitle="" borderTop="0"
 					borderBottom="0" borderLeft="0" borderRight="0" titleFont="SansSerif,0,11"
 					darkLevel="0" index="16"
-					data="($org.openflexo.foundation.fml.inspector.ObjectPropertyInspectorEntry)EntryPanel.data"
+					data="(org.openflexo.foundation.fml.inspector.ObjectPropertyInspectorEntry)EntryPanel.data"
 					dataClassName="org.openflexo.foundation.ontology.fml.inspector.ObjectPropertyInspectorEntry"
 					constraints="twocols(expandHorizontally=true;expandVertically=false;index=16;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)"
-					visible="(EntryPanel.data.class.simpleName = &quot;ObjectPropertyInspectorEntry&quot;)"
+					visible="(EntryPanel.data.class.simpleName == &quot;ObjectPropertyInspectorEntry&quot;)"
 					name="OntologyObjectPropertyInspectorEntryPanel">
 					<Panel layout="gridbag" borderTitle="Panel" titleFont="SansSerif,0,11"
 						darkLevel="0" data="" constraints="border(location=center)"
@@ -457,17 +457,17 @@
 				</Panel>
 				<Label label="data_type" index="17" data=""
 					constraints="twocols(expandHorizontally=true;expandVertically=false;index=17;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=5;location=left)"
-					visible="(EntryPanel.data.class.simpleName = &quot;DataPropertyInspectorEntry&quot;)"
+					visible="(EntryPanel.data.class.simpleName == &quot;DataPropertyInspectorEntry&quot;)"
 					format="" icon="" tooltip="" localize="true" enable="" clickAction=""
 					doubleClickAction="" rightClickAction="" enterPressedAction=""
 					valueChangedAction="" valueTransform="" valueValidator="" />
 				<Panel layout="border" borderTitle="" borderTop="0"
 					borderBottom="0" borderLeft="0" borderRight="0" titleFont="SansSerif,0,11"
 					darkLevel="0" index="18"
-					data="($org.openflexo.foundation.fml.inspector.DataPropertyInspectorEntry)EntryPanel.data"
+					data="(org.openflexo.foundation.fml.inspector.DataPropertyInspectorEntry)EntryPanel.data"
 					dataClassName="org.openflexo.foundation.ontology.fml.inspector.DataPropertyInspectorEntry"
 					constraints="twocols(expandHorizontally=true;expandVertically=false;index=18;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)"
-					visible="(EntryPanel.data.class.simpleName = &quot;DataPropertyInspectorEntry&quot;)"
+					visible="(EntryPanel.data.class.simpleName == &quot;DataPropertyInspectorEntry&quot;)"
 					name="OntologyDataPropertyInspectorEntryPanel">
 					<DropDown showReset="true"
 						data="OntologyDataPropertyInspectorEntryPanel.data.dataType"
@@ -496,14 +496,14 @@
 				</Custom>
 				<Label label="renderer" index="23" data=""
 					constraints="twocols(expandHorizontally=true;expandVertically=false;index=23;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=5;location=left)"
-					visible="(EntryPanel.data.class.simpleName = &quot;IndividualInspectorEntry&quot;)"
+					visible="(EntryPanel.data.class.simpleName == &quot;IndividualInspectorEntry&quot;)"
 					format="" icon="" tooltip="" localize="true" enable="" clickAction=""
 					doubleClickAction="" rightClickAction="" enterPressedAction=""
 					valueChangedAction="" valueTransform="" valueValidator="" />
 				<TextField index="24"
 					data="OntologyIndividualInspectorEntryPanel.data.renderer"
 					constraints="twocols(expandHorizontally=true;expandVertically=false;index=24;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)"
-					visible="(EntryPanel.data.class.simpleName = &quot;IndividualInspectorEntry&quot;)"
+					visible="(EntryPanel.data.class.simpleName == &quot;IndividualInspectorEntry&quot;)"
 					name="rendererLabel" format="" icon="" tooltip="" localize="true"
 					enable="" clickAction="" doubleClickAction="" rightClickAction=""
 					enterPressedAction="" valueChangedAction="" valueTransform=""

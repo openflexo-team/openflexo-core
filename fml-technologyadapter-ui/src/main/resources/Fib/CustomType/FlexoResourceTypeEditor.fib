@@ -23,7 +23,7 @@
 		borderBottom="0" borderTitle="Panel" borderTop="0"
 		trackViewPortHeight="true" layout="gridbag" name="Matches">
 		<Label id="3"
-			visible="((data.matchingValues.size != 1) &amp; data.isFiltered)"
+			visible="((data.matchingValues.size != 1) &amp;&amp;data.isFiltered)"
 			name="MatchesLabel"
 			data="((&quot;Found &quot; + data.matchingValues.size) + &quot; matches&quot;)"
 			index="0" align="right"

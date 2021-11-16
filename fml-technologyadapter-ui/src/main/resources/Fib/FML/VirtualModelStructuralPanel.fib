@@ -20,9 +20,9 @@
 			selected="" showFooter="true" rootVisible="true" showRootsHandle="true"
 			format="" icon="" tooltip="" localize="true" enable=""
 			manageDynamicModel="true" opaque="false" clickAction=""
-			doubleClickAction="controller.doubleClick(FlexoConceptBrowser.selected)"
+			doubleClickAction="controller.doubleClick(flexoConceptBrowser.selected)"
 			rightClickAction="" enterPressedAction="" valueChangedAction=""
-			valueTransform="" valueValidator="" name="FlexoConceptBrowser"
+			valueTransform="" valueValidator="" name="flexoConceptBrowser"
 			constraints="split(splitIdentifier=flexoConceptBrowser)" visible=""
 			width="200" height="76">
 			<BrowserElement dataClassName="org.openflexo.foundation.fml.VirtualModel"
@@ -98,8 +98,8 @@
 				manageDynamicModel="true" opaque="false" clickAction=""
 				doubleClickAction="" rightClickAction="" enterPressedAction=""
 				valueChangedAction="" valueTransform="" valueValidator=""
-				data="FlexoConceptBrowser.selected" constraints="border(location=center)"
-				visible="(FlexoConceptBrowser.selected != null)">
+				data="flexoConceptBrowser.selected" constraints="border(location=center)"
+				visible="(flexoConceptBrowser.selected != null)">
 				<ReferenceAssignment mandatory="true"
 					variable="controller.flexoController" value="controller.flexoController" />
 			</FIBReferencedComponent>

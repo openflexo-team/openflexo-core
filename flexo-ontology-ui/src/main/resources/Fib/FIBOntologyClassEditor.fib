@@ -20,7 +20,7 @@
         <LabelColumn data="iterator.feature.name" title="property" columnWidth="100" resizable="true" displayTitle="true" name="label" />
         <LabelColumn data="iterator.range.name" title="range" columnWidth="300" resizable="true" displayTitle="true" name="label" />
         <LabelColumn data="iterator.lowerBound.toString" title="lower" columnWidth="40" resizable="true" displayTitle="true" name="label" />
-        <LabelColumn data="((iterator.upperBound = (-(1))) ? &quot;*&quot; : iterator.upperBound.toString)" title="upper" columnWidth="40" resizable="true" displayTitle="true" name="label" />
+        <LabelColumn data="((iterator.upperBound == (-(1))) ? &quot;*&quot; : iterator.upperBound.toString)" title="upper" columnWidth="40" resizable="true" displayTitle="true" name="label" />
       </Table>
     </Tab>
     <Tab title="Annotations" layout="gridbag" titleFont="SansSerif,0,11" darkLevel="0" index="2" opaque="false">

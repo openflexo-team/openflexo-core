@@ -29,11 +29,11 @@
 		iteratorClassName="org.openflexo.foundation.fml.FlexoBehaviourParameter$WidgetType"
 		showIcon="false" autoSelectFirstRow="true" name="WidgetTypeDD"
 		list="data.availableWidgetTypes" />
-	<Label id="8" visible="(data.widgetType = &quot;CUSTOM_WIDGET&quot;)"
+	<Label id="8" visible="(data.widgetType == &quot;CUSTOM_WIDGET&quot;)"
 		name="Label4" localize="true" align="left" index="7"
 		constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=left)"
 		label="container" />
-	<Custom id="9" visible="(data.widgetType = &quot;CUSTOM_WIDGET&quot;)" index="8"
+	<Custom id="9" visible="(data.widgetType == &quot;CUSTOM_WIDGET&quot;)" index="8"
 		manageDynamicModel="true" dataClassForComponent="org.openflexo.connie.DataBinding"
 		componentClassName="org.openflexo.gina.swing.utils.BindingSelector"
 		name="CustomSelector" data="data.action.container"
@@ -51,12 +51,12 @@
 		<Assignment id="13" mandatory="true" variable="component.bindable" />
 	</Custom>
 	<Label id="14" visible="data.isList" index="11"
-		enable="(((controller.flexoController.isEditable(data) &amp; controller.flexoController.isEditable(data)) &amp; controller.flexoController.isEditable(data)) &amp; controller.flexoController.isEditable(data))"
+		enable="(((controller.flexoController.isEditable(data) &amp;&amp;controller.flexoController.isEditable(data)) &amp;&amp;controller.flexoController.isEditable(data)) &amp;&amp;controller.flexoController.isEditable(data))"
 		name="Label6" localize="true" align="left"
 		constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=left)"
 		label="list_of_values" />
 	<Custom id="15" visible="data.isList" manageDynamicModel="true" index="12"
-		enable="((controller.flexoController.isEditable(data) &amp; controller.flexoController.isEditable(data)) &amp; controller.flexoController.isEditable(data))"
+		enable="((controller.flexoController.isEditable(data) &amp;&amp;controller.flexoController.isEditable(data)) &amp;&amp;controller.flexoController.isEditable(data))"
 		dataClassForComponent="org.openflexo.connie.DataBinding"
 		componentClassName="org.openflexo.gina.swing.utils.BindingSelector"
 		name="CustomSelector3" data="data.action.list"

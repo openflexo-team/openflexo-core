@@ -8,16 +8,16 @@
       <RemoveAction id="6" method="data.action.deletePropertyEntry(selected)" name="delete_property" />
     </Table>
     <Panel id="7" align="left" borderTop="0" borderTitle="Panel" borderLeft="0" trackViewPortHeight="true" trackViewPortWidth="true" borderBottom="0" boxLayoutAxis="Y_AXIS" border="empty" sizeAdjustment="OriginalSize" titleFont="SansSerif,0,11" layout="box" borderRight="0" opaque="false" index="0" constraints="gridbag(anchor=north;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=0;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=east;padX=0;padY=0;weightX=0.0;weightY=0.0)" name="PropertiesOrderingPanel">
-      <Button id="8" buttonIcon="controller.arrowTop" buttonType="Trigger" action="data.action.propertyFirst(PropertiesTable.selected)" label="" localize="true" enable="((PropertiesTable.selected != null) &amp; (data.action.propertiesEntries.indexOf(PropertiesTable.selected) &gt; 0))" index="0" constraints="box(alignmentX=0.5;alignmentY=0.5;index=0;location=west)" name="Button">
+      <Button id="8" buttonIcon="controller.arrowTop" buttonType="Trigger" action="data.action.propertyFirst(PropertiesTable.selected)" label="" localize="true" enable="((PropertiesTable.selected != null) &amp;&amp;(data.action.propertiesEntries.indexOf(PropertiesTable.selected) &gt; 0))" index="0" constraints="box(alignmentX=0.5;alignmentY=0.5;index=0;location=west)" name="Button">
         <Dependancy id="9" componentName="PropertiesTable" />
       </Button>
-      <Button id="10" buttonIcon="controller.arrowUp" buttonType="Trigger" action="data.action.propertyUp(PropertiesTable.selected)" label="" localize="true" enable="((PropertiesTable.selected != null) &amp; (data.action.propertiesEntries.indexOf(PropertiesTable.selected) &gt; 0))" index="1" constraints="box(alignmentX=0.5;alignmentY=0.5;index=1;location=north)" name="Button2">
+      <Button id="10" buttonIcon="controller.arrowUp" buttonType="Trigger" action="data.action.propertyUp(PropertiesTable.selected)" label="" localize="true" enable="((PropertiesTable.selected != null) &amp;&amp;(data.action.propertiesEntries.indexOf(PropertiesTable.selected) &gt; 0))" index="1" constraints="box(alignmentX=0.5;alignmentY=0.5;index=1;location=north)" name="Button2">
         <Dependancy id="11" componentName="PropertiesTable" />
       </Button>
-      <Button id="12" buttonIcon="controller.arrowDown" buttonType="Trigger" action="data.action.propertyDown(PropertiesTable.selected)" label="" localize="true" enable="((PropertiesTable.selected != null) &amp; (data.action.propertiesEntries.indexOf(PropertiesTable.selected) &lt; (data.action.propertiesEntries.size - 1)))" index="2" constraints="box(alignmentX=0.5;alignmentY=0.5;index=2;location=center)" name="Button3">
+      <Button id="12" buttonIcon="controller.arrowDown" buttonType="Trigger" action="data.action.propertyDown(PropertiesTable.selected)" label="" localize="true" enable="((PropertiesTable.selected != null) &amp;&amp;(data.action.propertiesEntries.indexOf(PropertiesTable.selected) &lt; (data.action.propertiesEntries.size - 1)))" index="2" constraints="box(alignmentX=0.5;alignmentY=0.5;index=2;location=center)" name="Button3">
         <Dependancy id="13" componentName="PropertiesTable" />
       </Button>
-      <Button id="14" buttonIcon="controller.arrowBottom" buttonType="Trigger" action="data.action.propertyLast(PropertiesTable.selected)" label="" localize="true" enable="((PropertiesTable.selected != null) &amp; (data.action.propertiesEntries.indexOf(PropertiesTable.selected) &lt; (data.action.propertiesEntries.size - 1)))" index="3" constraints="box(alignmentX=0.5;alignmentY=0.5;index=3;location=east)" name="Button4">
+      <Button id="14" buttonIcon="controller.arrowBottom" buttonType="Trigger" action="data.action.propertyLast(PropertiesTable.selected)" label="" localize="true" enable="((PropertiesTable.selected != null) &amp;&amp;(data.action.propertiesEntries.indexOf(PropertiesTable.selected) &lt; (data.action.propertiesEntries.size - 1)))" index="3" constraints="box(alignmentX=0.5;alignmentY=0.5;index=3;location=east)" name="Button4">
         <Dependancy id="15" componentName="PropertiesTable" />
       </Button>
     </Panel>
@@ -25,7 +25,7 @@
       <FIBReferencedComponent id="17" componentFile="../PropertyEntryPanel.fib" localize="true" data="PropertiesTable.selected" visible="(PropertiesTable.selected != null)" index="1" constraints="twocols(expandHorizontally=true;expandVertically=true;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=right)" name="ReferencedComponent">
         <ReferenceAssignment id="18" variable="controller.flexoController" value="controller.flexoController" mandatory="true" />
       </FIBReferencedComponent>
-      <Label id="19" label="&lt;html&gt;&lt;a href=&quot;&quot;&gt;click_to_add_a_property&lt;/a&gt;&lt;/html&gt;" align="center" localize="true" clickAction="data.action.newPropertyEntry" visible="(PropertiesTable.selected = null)" constraints="twocols(expandHorizontally=true;expandVertically=true;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=right)" name="ClickToAdd" />
+      <Label id="19" label="&lt;html&gt;&lt;a href=&quot;&quot;&gt;click_to_add_a_property&lt;/a&gt;&lt;/html&gt;" align="center" localize="true" clickAction="data.action.newPropertyEntry" visible="(PropertiesTable.selected == null)" constraints="twocols(expandHorizontally=true;expandVertically=true;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=right)" name="ClickToAdd" />
     </Panel>
   </Panel>
   <FIBVariable id="20" type="org.openflexo.fml.controller.action.AbstractCreateFlexoConceptWizard$ConfigurePropertiesForNewFlexoConcept" name="data" />
