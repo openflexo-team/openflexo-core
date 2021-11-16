@@ -52,10 +52,10 @@ import org.openflexo.connie.binding.SimplePathElement;
 import org.openflexo.connie.binding.StaticMethodPathElement;
 import org.openflexo.connie.binding.javareflect.JavaNewInstanceMethodPathElement;
 import org.openflexo.connie.expr.BindingValue;
-import org.openflexo.connie.java.expr.JavaPrettyPrinter;
 import org.openflexo.foundation.fml.FlexoConceptInstanceType;
 import org.openflexo.foundation.fml.VirtualModelInstanceType;
 import org.openflexo.foundation.fml.binding.CreationSchemePathElement;
+import org.openflexo.foundation.fml.expr.FMLPrettyPrinter;
 import org.openflexo.foundation.fml.parser.fmlnodes.expr.AbstractBindingPathElementNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.expr.AddClassInstanceNode;
 import org.openflexo.foundation.fml.parser.fmlnodes.expr.AddFlexoConceptInstanceNode;
@@ -148,7 +148,7 @@ public class BindingPathFactory {
 
 		// return bindingPathFactory.path;
 		return new BindingValue(bindingPathFactory.bindingVariable, bindingPathFactory.bindingPathElements,
-				bindingPathFactory.getBindable(), JavaPrettyPrinter.getInstance());
+				bindingPathFactory.getBindable(), FMLPrettyPrinter.getInstance());
 	}
 
 	private BindingPathFactory(Node node, AbstractExpressionFactory expressionFactory) {
