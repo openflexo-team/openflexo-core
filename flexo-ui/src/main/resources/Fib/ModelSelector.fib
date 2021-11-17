@@ -61,7 +61,7 @@
 		<BrowserElement
 			dataClassName="org.openflexo.foundation.technologyadapter.FlexoModelResource"
 			label="modelResource.name" icon="controller.iconForObject(modelResource)"
-			enabled="((data.metaModelResource == null) | (modelResource.metaModelResource == data.metaModelResource))"
+			enabled="((data.metaModelResource == null) || (modelResource.metaModelResource == data.metaModelResource))"
 			isEditable="false" filtered="false" defaultVisible="true" name="modelResource" />
 	</Browser>
 	<Panel layout="flow" hGap="5" vGap="0" flowAlignment="CENTER"

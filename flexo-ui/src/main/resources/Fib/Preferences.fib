@@ -11,7 +11,7 @@
         <TextField id="8" columns="7" text="TextField" constraints="border(location=center)" name="TextField" />
         <Button id="9" buttonType="Trigger" label="search" localize="true" constraints="border(location=east)" name="Button" />
       </Panel>
-      <Browser id="10" backgroundSelectionColor="9,80,208" backgroundNonSelectionColor="255,255,255" boundToSelectionManager="true" iteratorClassName="org.openflexo.prefs.PreferencesContainer" textSelectionColor="255,255,255" backgroundSecondarySelectionColor="178,215,255" showRootsHandle="true" showFooter="true" textNonSelectionColor="0,0,0" root="data" selectionMode="DiscontiguousTreeSelection" rowHeight="18" manageDynamicModel="true" constraints="border(location=center)" name="PreferencesBrowser">
+      <Browser id="10" backgroundSelectionColor="9,80,208" backgroundNonSelectionColor="255,255,255" boundToSelectionManager="true" iteratorClassName="org.openflexo.prefs.PreferencesContainer" textSelectionColor="255,255,255" backgroundSecondarySelectionColor="178,215,255" showRootsHandle="true" showFooter="true" textNonSelectionColor="0,0,0" root="data" selectionMode="DiscontiguousTreeSelection" rowHeight="18" manageDynamicModel="true" constraints="border(location=center)" name="preferencesBrowser">
         <BrowserElement id="11" dataClassName="org.openflexo.prefs.PreferencesContainer" icon="controller.iconForPreferences(prefContainer)" label="controller.shortNameForPreferences(prefContainer)" isEditable="false" name="prefContainer">
           <Children id="12" data="prefContainer.contents" name="children" />
         </BrowserElement>
@@ -19,12 +19,12 @@
     </Panel>
     <Panel id="13" align="left" borderTop="0" borderTitle="Panel" borderLeft="0" trackViewPortHeight="true" trackViewPortWidth="true" borderBottom="0" border="empty" sizeAdjustment="OriginalSize" layout="border" borderRight="0" constraints="split(splitIdentifier=right)" name="DetailsPanel">
       <Panel id="14" align="left" borderTop="10" borderLeft="10" trackViewPortHeight="true" trackViewPortWidth="true" borderBottom="10" border="empty" sizeAdjustment="OriginalSize" layout="border" borderRight="10" constraints="border(location=north)" backgroundColor="255,255,255" opaque="true" name="Header">
-        <Image id="15" imageWidth="64" sizeAdjustment="OriginalSize" align="left" imageHeight="64" data="controller.bigIconForPreferences(PreferencesBrowser.selected).image" constraints="border(location=east)" name="Image" />
+        <Image id="15" imageWidth="64" sizeAdjustment="OriginalSize" align="left" imageHeight="64" data="controller.bigIconForPreferences(preferencesBrowser.selected).image" constraints="border(location=east)" name="Image" />
         <Panel id="16" align="left" borderTop="0" borderLeft="0" trackViewPortHeight="true" trackViewPortWidth="true" borderBottom="0" border="empty" sizeAdjustment="OriginalSize" layout="border" borderRight="0" constraints="border(location=center)" name="FIBPanel">
-          <Label id="17" label="label" align="left" data="controller.longNameForPreferences(PreferencesBrowser.selected)" constraints="border(location=center)" font="SansSerif,1,16" name="Label" />
+          <Label id="17" label="label" align="left" data="controller.longNameForPreferences(preferencesBrowser.selected)" constraints="border(location=center)" font="SansSerif,1,16" name="Label" />
         </Panel>
       </Panel>
-      <FIBReferencedComponent id="18" dynamicComponentFile="controller.fibForPreferences(PreferencesBrowser.selected)" manageDynamicModel="true" data="PreferencesBrowser.selected" constraints="border(location=center)" opaque="false" index="15" name="PreferencesDetailsWidget">
+      <FIBReferencedComponent id="18" dynamicComponentFile="controller.fibForPreferences(preferencesBrowser.selected)" manageDynamicModel="true" data="preferencesBrowser.selected" constraints="border(location=center)" opaque="false" index="15" name="PreferencesDetailsWidget">
         <ReferenceAssignment id="19" variable="controller.applicationContext" value="controller.applicationContext" mandatory="true" />
       </FIBReferencedComponent>
       <Panel id="20" align="left" borderTop="5" flowAlignment="RIGHT" borderLeft="10" trackViewPortHeight="true" trackViewPortWidth="true" borderBottom="5" border="empty" sizeAdjustment="OriginalSize" layout="flow" vGap="5" borderRight="10" hGap="5" constraints="border(location=south)" name="ControlPanel">

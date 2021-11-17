@@ -47,7 +47,7 @@
 			icon="controller.flexoController.iconForObject(projectReference)"
 			filtered="false" label="projectReference.referencedProject.projectName" defaultVisible="true"
 			dataClassName="org.openflexo.foundation.project.FlexoProjectReference"
-			name="projectReference" isEditable="false" tooltip="projectReference.URI">
+			name="projectReference" isEditable="false" tooltip="projectReference.uRI">
 			<Children id="10" name="children"
 				data="projectReference.referencedProject.importedProjects" />
 		</BrowserElement>

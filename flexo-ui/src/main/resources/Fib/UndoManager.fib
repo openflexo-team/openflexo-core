@@ -24,7 +24,7 @@
 			visibleRowCount="3" rowHeight="18" boundToSelectionManager="false"
 			selectionMode="DiscontiguousTreeSelection" showFooter="false"
 			rootVisible="false" showRootsHandle="true" localize="true"
-			manageDynamicModel="true" name="ActionsBrowser" index="3"
+			manageDynamicModel="true" name="actionsBrowser" index="3"
 			constraints="split(anchor=center;fill=both;gridHeight=2;gridWidth=1;gridX=-1;gridY=-1;index=3;insetsBottom=0;insetsLeft=10;insetsRight=10;insetsTop=0;padX=0;padY=0;splitIdentifier=actions;weightX=1.0;weightY=1.0)"
 			opaque="false">
 			<BrowserElement dataClassName="org.openflexo.foundation.action.FlexoUndoManager"
@@ -56,7 +56,7 @@
 			backgroundSecondarySelectionColor="173,215,255"
 			backgroundNonSelectionColor="255,255,255" localize="true"
 		    manageDynamicModel="true" name="AtomicEditTable"
-			index="0" data="ActionsBrowser.selected.edits" constraints="split(index=0;location=east;splitIdentifier=edits)"
+			index="0" data="actionsBrowser.selected.edits" constraints="split(index=0;location=east;splitIdentifier=edits)"
 			opaque="false">
 			<IconColumn data="controller.iconForObject(iterator)"
 				title="icon" columnWidth="25" resizable="false" displayTitle="false"
@@ -64,19 +64,19 @@
 			<LabelColumn data="iterator.type" title="edit"
 				columnWidth="60" resizable="true" displayTitle="true" name="edit" />
 			<LabelColumn
-				data="ActionsBrowser.selected.getResource(iterator).name"
+				data="actionsBrowser.selected.getResource(iterator).name"
 				title="resource" columnWidth="100" resizable="true" displayTitle="true"
 				name="resource" />
 			<LabelColumn data="iterator.object.toString" title="object"
 				columnWidth="150" resizable="true" displayTitle="true" name="object" />
 			<LabelColumn
-				data="ActionsBrowser.selected.getProperty(iterator).propertyIdentifier"
+				data="actionsBrowser.selected.getProperty(iterator).propertyIdentifier"
 				title="property" columnWidth="100" resizable="true" displayTitle="true"
 				name="property" />
-			<LabelColumn data="ActionsBrowser.selected.getOldValue(iterator).toString"
+			<LabelColumn data="actionsBrowser.selected.getOldValue(iterator).toString"
 				title="old_value" columnWidth="100" resizable="true" displayTitle="true"
 				name="oldValue" />
-			<LabelColumn data="ActionsBrowser.selected.getNewValue(iterator).toString"
+			<LabelColumn data="actionsBrowser.selected.getNewValue(iterator).toString"
 				title="new_value" columnWidth="100" resizable="true" displayTitle="true"
 				name="newValue" />
 			<LocalizedDictionary />
@@ -89,14 +89,14 @@
 			<TextField
 				constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=right)"
 				localize="true" columns="7" text="TextField"
-				data="ActionsBrowser.selected.action.class.simpleName" />
+				data="actionsBrowser.selected.action.class.simpleName" />
 			<Label label="edits number" align="center"
 				constraints="twocols(expandHorizontally=false;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=left)"
 				localize="true" />
 			<TextField
 				constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=right)"
 				localize="true" columns="7" text="TextField"
-				data="ActionsBrowser.selected.edits.size.toString" readOnly="true"/>
+				data="actionsBrowser.selected.edits.size.toString" readOnly="true"/>
 			<Label label="stacktrace"
 				constraints="twocols(expandHorizontally=false;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=left)"
 				localize="true" />
@@ -105,15 +105,15 @@
 				darkLevel="0" index="4"
 				constraints="twocols(expandHorizontally=true;expandVertically=true;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=right)">
 				<TextArea validateOnReturn="true" columns="8" rows="3"
-					text="TextArea" data="ActionsBrowser.selected.stackTraceAsString"
+					text="TextArea" data="actionsBrowser.selected.stackTraceAsString"
 					constraints="border(location=center)" font="Dialog,0,9"
 					useScrollBar="true" horizontalScrollbarPolicy="HORIZONTAL_SCROLLBAR_AS_NEEDED"
 					verticalScrollbarPolicy="VERTICAL_SCROLLBAR_AS_NEEDED" localize="true"
-					enable="(ActionsBrowser.selected != null)" />
+					enable="(actionsBrowser.selected != null)" />
 				<Label
 					label="&lt;html&gt;&lt;a href=&quot;_blank&quot;&gt;print stacktrace in console&lt;/a&gt;&lt;/html&gt;"
 					align="right" constraints="border(location=south)" font="LucidaGrande,0,9"
-					localize="false" clickAction="ActionsBrowser.selected.printStackTrace()" />
+					localize="false" clickAction="actionsBrowser.selected.printStackTrace()" />
 			</Panel>
 		</Panel>
 
