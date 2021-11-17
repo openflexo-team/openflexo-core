@@ -14,11 +14,11 @@
 			textNonSelectionColor="0,0,0" root="data" deepExploration="true"
 			selectionMode="DiscontiguousTreeSelection" rowHeight="18"
 			localize="true" manageDynamicModel="true"
-			rightClickAction="controller.rightClick(Browser.selected,event)"
-			doubleClickAction="controller.doubleClick(Browser.selected)"
-			clickAction="controller.singleClick(Browser.selected)"
+			rightClickAction="controller.rightClick(browser.selected,event)"
+			doubleClickAction="controller.doubleClick(browser.selected)"
+			clickAction="controller.singleClick(browser.selected)"
 			constraints="border(location=center)"
-			index="0" name="Browser">
+			index="0" name="browser">
 			<BrowserElement
 				dataClassName="org.openflexo.foundation.fml.FMLCompilationUnit"
 				icon="controller.iconForObject(compilationUnit)"
