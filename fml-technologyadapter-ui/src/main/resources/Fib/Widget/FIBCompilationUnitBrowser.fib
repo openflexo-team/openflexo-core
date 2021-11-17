@@ -38,12 +38,12 @@
 		allowsExternalDragAndDrop="true" textNonSelectionColor="0,0,0"
 		root="data.resource" selectionMode="DiscontiguousTreeSelection"
 		rowHeight="18" localize="true" manageDynamicModel="true"
-		rightClickAction="controller.rightClick(EmbeddingVirtualModelBrowser.selected,event)"
-		doubleClickAction="controller.doubleClick(EmbeddingVirtualModelBrowser.selected)"
-		clickAction="controller.singleClick(EmbeddingVirtualModelBrowser.selected)"
+		rightClickAction="controller.rightClick(embeddingVirtualModelBrowser.selected,event)"
+		doubleClickAction="controller.doubleClick(embeddingVirtualModelBrowser.selected)"
+		clickAction="controller.singleClick(embeddingVirtualModelBrowser.selected)"
 		constraints="twocols(expandHorizontally=true;expandVertically=true;index=0;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=center)"
-		index="0" name="EmbeddingVirtualModelBrowser"
-		visible="controller.viewMode.name='Embedding'">
+		index="0" name="embeddingVirtualModelBrowser"
+		visible="controller.viewMode.name==&quot;Embedding&quot;">
 		<BrowserElement
 			dataClassName="org.openflexo.foundation.fml.rm.CompilationUnitResource"
 			icon="controller.iconForObject(compilationUnitResource)"
@@ -138,12 +138,12 @@
 		textNonSelectionColor="0,0,0" root="data.resource"
 		selectionMode="DiscontiguousTreeSelection" rowHeight="18"
 		localize="true" manageDynamicModel="true"
-		rightClickAction="controller.rightClick(HierarchicalVirtualModelBrowser.selected,event)"
-		doubleClickAction="controller.doubleClick(HierarchicalVirtualModelBrowser.selected)"
-		clickAction="controller.singleClick(HierarchicalVirtualModelBrowser.selected)"
+		rightClickAction="controller.rightClick(hierarchicalVirtualModelBrowser.selected,event)"
+		doubleClickAction="controller.doubleClick(hierarchicalVirtualModelBrowser.selected)"
+		clickAction="controller.singleClick(hierarchicalVirtualModelBrowser.selected)"
 		constraints="twocols(expandHorizontally=true;expandVertically=true;index=0;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=center)"
-		index="0" name="HierarchicalVirtualModelBrowser"
-		visible="controller.viewMode.name='Hierarchical'">
+		index="0" name="hierarchicalVirtualModelBrowser"
+		visible="controller.viewMode.name==&quot;Hierarchical&quot;">
 		<BrowserElement
 			dataClassName="org.openflexo.foundation.fml.rm.CompilationUnitResource"
 			icon="controller.iconForObject(compilationUnitResource)"
@@ -238,12 +238,12 @@
 		textNonSelectionColor="0,0,0" root="data.resource"
 		selectionMode="DiscontiguousTreeSelection" rowHeight="18"
 		localize="true" manageDynamicModel="true"
-		rightClickAction="controller.rightClick(FlatVirtualModelBrowser.selected,event)"
-		doubleClickAction="controller.doubleClick(FlatVirtualModelBrowser.selected)"
-		clickAction="controller.singleClick(FlatVirtualModelBrowser.selected)"
+		rightClickAction="controller.rightClick(flatVirtualModelBrowser.selected,event)"
+		doubleClickAction="controller.doubleClick(flatVirtualModelBrowser.selected)"
+		clickAction="controller.singleClick(flatVirtualModelBrowser.selected)"
 		constraints="twocols(expandHorizontally=true;expandVertically=true;index=0;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=center)"
-		index="0" name="FlatVirtualModelBrowser"
-		visible="controller.viewMode.name='Flat'">
+		index="0" name="flatVirtualModelBrowser"
+		visible="controller.viewMode.name==&quot;Flat&quot;">
 		<BrowserElement
 			dataClassName="org.openflexo.foundation.fml.rm.CompilationUnitResource"
 			icon="controller.iconForObject(compilationUnitResource)"

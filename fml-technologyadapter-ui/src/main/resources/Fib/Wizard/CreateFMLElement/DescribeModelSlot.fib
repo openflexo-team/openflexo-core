@@ -12,7 +12,7 @@
 		constraints="twocols(anchor=west;expandHorizontally=true;expandVertically=false;fill=horizontal;gridHeight=1;gridWidth=0;gridX=-1;gridY=-1;index=4;insetsBottom=20;insetsLeft=20;insetsRight=20;insetsTop=20;location=right;padX=0;padY=0;weightX=0.0;weightY=0.0)"
 		format="object.name" showText="true"
 		iteratorClassName="org.openflexo.foundation.technologyadapter.TechnologyAdapter"
-		showIcon="true" autoSelectFirstRow="true" name="TechnologyAdapterDD"
+		showIcon="true" autoSelectFirstRow="true" name="technologyAdapterDD"
 		icon="controller.getTechnologyAdapterController(object).technologyIcon"
 		list="data.serviceManager.technologyAdapterService.technologyAdapters" />
 	<RadioButtonList id="3" data="data.modelSlotClass"
@@ -63,7 +63,7 @@
 			<Assignment id="19" mandatory="true"
 				value="data.serviceManager.resourceManager" variable="component.resourceManager" />
 			<Assignment id="20" mandatory="true"
-				value="TechnologyAdapterDD.selected" variable="component.technologyAdapter" />
+				value="technologyAdapterDD.selected" variable="component.technologyAdapter" />
 		</Custom>
 		<CheckBox id="21" selected="true" name="requiredCB" data="data.required"
 			index="9" localize="true"

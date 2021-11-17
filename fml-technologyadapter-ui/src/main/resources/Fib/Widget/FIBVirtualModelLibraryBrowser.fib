@@ -12,12 +12,12 @@
 		showFooter="true" textNonSelectionColor="0,0,0" root="data"
 		selectionMode="DiscontiguousTreeSelection" rootVisible="true"
 		rowHeight="18" localize="true" manageDynamicModel="true"
-		rightClickAction="controller.rightClick(ViewPointLibraryBrowser.selected,event)"
-		doubleClickAction="controller.doubleClick(ViewPointLibraryBrowser.selected)"
-		clickAction="controller.singleClick(ViewPointLibraryBrowser.selected)"
+		rightClickAction="controller.rightClick(viewPointLibraryBrowser.selected,event)"
+		doubleClickAction="controller.doubleClick(viewPointLibraryBrowser.selected)"
+		clickAction="controller.singleClick(viewPointLibraryBrowser.selected)"
 		index="0"
 		constraints="twocols(expandHorizontally=true;expandVertically=true;index=0;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=center)"
-		name="ViewPointLibraryBrowser">
+		name="viewPointLibraryBrowser">
 		<BrowserElement id="2"
 			dataClassName="org.openflexo.foundation.fml.FMLTechnologyAdapter"
 			icon="controller.iconForObject(technologyAdapter)"
