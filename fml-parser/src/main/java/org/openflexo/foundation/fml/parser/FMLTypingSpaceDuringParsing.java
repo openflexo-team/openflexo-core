@@ -205,8 +205,8 @@ public class FMLTypingSpaceDuringParsing extends AbstractFMLTypingSpace {
 							resourceURI = ((ResourceData) resourceRef).getResource().getURI();
 						}
 						else {
-							logger.warning("Unexpected resourceRef: " + resourceRef);
-							return null;
+							logger.warning("Unexpected resourceRef: " + resourceRef + " for " + importDeclaration);
+							continue;
 						}
 						FlexoResource resource = analyzer.getServiceManager().getResourceManager().getResource(resourceURI);
 						if (resource instanceof CompilationUnitResource) {
