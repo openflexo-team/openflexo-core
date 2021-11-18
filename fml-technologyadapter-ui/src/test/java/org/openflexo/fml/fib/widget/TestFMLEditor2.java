@@ -169,6 +169,8 @@ public class TestFMLEditor2 extends OpenflexoFIBTestCase {
 	@Category(UITest.class)
 	public void testAddFLMRTVirtualModelInstanceModelSlotFromText() {
 
+		log("testAddFLMRTVirtualModelInstanceModelSlotFromText");
+
 		String fml = "use org.openflexo.foundation.fml.rt.FMLRTVirtualModelInstanceModelSlot as FMLRT;\n\n"
 				+ "@URI(\"http://openflexo.org/test/TestResourceCenter/TestViewPointA.fml\")\n" + "@Version(\"0.1\")\n"
 				+ "model TestViewPointA {\n" + "	TestViewPointA myModel with ModelInstance();\n" + "}\n";
@@ -182,9 +184,13 @@ public class TestFMLEditor2 extends OpenflexoFIBTestCase {
 		assertEquals(0, cu.getVirtualModel().getFlexoBehaviours().size());
 
 		FMLRTVirtualModelInstanceModelSlot ms = (FMLRTVirtualModelInstanceModelSlot) cu.getVirtualModel().getAccessibleProperty("myModel");
+
+		System.out.println(cu.getFMLPrettyPrint());
+
 		System.out.println("cu.getVirtualModel()=" + cu.getVirtualModel());
 		System.out.println("cu.getVirtualModel().getResource()=" + cu.getVirtualModel().getResource());
 		System.out.println("ms.getAccessedVirtualModel()=" + ms.getAccessedVirtualModel());
+
 		System.out.println("ms.getAccessedVirtualModel().getResource()=" + ms.getAccessedVirtualModel().getResource());
 		assertSame(cu.getVirtualModel(), ms.getAccessedVirtualModel());
 	}
