@@ -192,7 +192,7 @@ public class TestFMLPrettyPrint4 extends FMLParserTestCase {
 
 		FMLCompilationUnit returned = parser.parse(fml, compilationUnit.getFMLModelFactory(), (modelSlotClasses) -> {
 			return null;
-		});
+		}, false);
 
 		// This is the update process
 		compilationUnit.updateWith(returned);

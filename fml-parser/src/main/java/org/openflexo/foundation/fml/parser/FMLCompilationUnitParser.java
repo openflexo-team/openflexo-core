@@ -95,8 +95,9 @@ public class FMLCompilationUnitParser {
 	 * @throws IOException
 	 */
 	public FMLCompilationUnit parse(String data, FMLModelFactory modelFactory,
-			Function<List<Class<? extends ModelSlot<?>>>, FMLModelFactory> modelFactoryUpdater) throws ParseException, IOException {
-		return parse(new StringReader(data), new StringReader(data), modelFactory, modelFactoryUpdater);
+			Function<List<Class<? extends ModelSlot<?>>>, FMLModelFactory> modelFactoryUpdater, boolean finalizeDeserialization)
+			throws ParseException, IOException {
+		return parse(new StringReader(data), new StringReader(data), modelFactory, modelFactoryUpdater, finalizeDeserialization);
 	}
 
 	/**
@@ -104,13 +105,22 @@ public class FMLCompilationUnitParser {
 	 * Syntactic and semantics analyzer are performed and returned value is a {@link FMLCompilationUnit}
 	 * 
 	 * @param inputStream
-	 *            source stream
-	 * @return
+	 *            {@link InputStream} source of data to parse
+	 * @param modelFactory
+	 *            the {@link FMLModelFactory} to be used to build {@link FMLCompilationUnit}
+	 * @param modelFactoryUpdater
+	 *            a function returning a {@link FMLModelFactory} given a {@link List} of {@link ModelSlot} classes
+	 * @param finalizeDeserialization
+	 *            a boolean indicating if deserialization finalizing should be performed now, or will be done in a future second pass
+	 * @return the newly created {@link FMLCompilationUnit}
 	 * @throws ParseException
-	 *             if parsing expression lead to an error
+	 *             if parsing expression cannot be parsed
+	 * @throws IOException
+	 *             if an IOException occurs during parsing
 	 */
 	public FMLCompilationUnit parse(InputStream inputStream, FMLModelFactory modelFactory,
-			Function<List<Class<? extends ModelSlot<?>>>, FMLModelFactory> modelFactoryUpdater) throws ParseException, IOException {
+			Function<List<Class<? extends ModelSlot<?>>>, FMLModelFactory> modelFactoryUpdater, boolean finalizeDeserialization)
+			throws ParseException, IOException {
 
 		// InputStream rawSourceInputStream = IOUtils.toBufferedInputStream(inputStream);
 		// inputStream.reset();
@@ -119,33 +129,63 @@ public class FMLCompilationUnitParser {
 		InputStream inputStream1 = new ByteArrayInputStream(buf);
 		InputStream inputStream2 = new ByteArrayInputStream(buf);
 
-		return parse(new InputStreamReader(inputStream1), new InputStreamReader(inputStream2), modelFactory, modelFactoryUpdater);
+		return parse(new InputStreamReader(inputStream1), new InputStreamReader(inputStream2), modelFactory, modelFactoryUpdater,
+				finalizeDeserialization);
 	}
 
 	/**
 	 * This is the method to invoke to perform a parsing.<br>
 	 * Syntactic and semantics analyzer are performed and returned value is a {@link FMLCompilationUnit}
 	 * 
-	 * @param inputStream
-	 *            source stream
-	 * @return
+	 * @param file
+	 *            source {@link File} of data to parse
+	 * @param modelFactory
+	 *            the {@link FMLModelFactory} to be used to build {@link FMLCompilationUnit}
+	 * @param modelFactoryUpdater
+	 *            a function returning a {@link FMLModelFactory} given a {@link List} of {@link ModelSlot} classes
+	 * @param finalizeDeserialization
+	 *            a boolean indicating if deserialization finalizing should be performed now, or will be done in a future second pass
+	 * @return the newly created {@link FMLCompilationUnit}
 	 * @throws ParseException
-	 *             if parsing expression lead to an error
+	 *             if parsing expression cannot be parsed
+	 * @throws IOException
+	 *             if an IOException occurs during parsing
 	 */
 	public FMLCompilationUnit parse(File file, FMLModelFactory modelFactory,
-			Function<List<Class<? extends ModelSlot<?>>>, FMLModelFactory> modelFactoryUpdater) throws ParseException, IOException {
+			Function<List<Class<? extends ModelSlot<?>>>, FMLModelFactory> modelFactoryUpdater, boolean finalizeDeserialization)
+			throws ParseException, IOException {
 
-		return parse(new FileInputStream(file), modelFactory, modelFactoryUpdater);
+		return parse(new FileInputStream(file), modelFactory, modelFactoryUpdater, finalizeDeserialization);
 	}
 
+	/**
+	 * Internal parsing method
+	 * 
+	 * @param reader
+	 *            a Reader for input source
+	 * @param rawSourceReader
+	 *            a duplicated Reader used to build {@link RawSource}
+	 * @param modelFactory
+	 *            the {@link FMLModelFactory} to be used to build {@link FMLCompilationUnit}
+	 * @param modelFactoryUpdater
+	 *            a function returning a {@link FMLModelFactory} given a {@link List} of {@link ModelSlot} classes
+	 * @param finalizeDeserialization
+	 *            a boolean indicating if deserialization finalizing should be performed now, or will be done in a future second pass
+	 * @return the newly created {@link FMLCompilationUnit}
+	 * @throws ParseException
+	 *             if parsing expression cannot be parsed
+	 * @throws IOException
+	 *             if an IOException occurs during parsing
+	 */
 	private FMLCompilationUnit parse(Reader reader, Reader rawSourceReader, FMLModelFactory modelFactory,
-			Function<List<Class<? extends ModelSlot<?>>>, FMLModelFactory> modelFactoryUpdater) throws ParseException, IOException {
+			Function<List<Class<? extends ModelSlot<?>>>, FMLModelFactory> modelFactoryUpdater, boolean finalizeDeserialization)
+			throws ParseException, IOException {
 		try {
 			// System.out.println("Parsing: " + anExpression);
 
 			RawSource rawSource = readRawSource(rawSourceReader);
 
-			//System.out.println(rawSource.debug());
+			// System.out.println(rawSource.debug());
 
 			// Create a Parser instance.
 			Parser p = new Parser(new CustomLexer(new PushbackReader(reader), EntryPointKind.CompilationUnit));
@@ -173,8 +213,11 @@ public class FMLCompilationUnitParser {
 			if (tree != null) {
 				tree.apply(semanticsAnalyzer);
 				semanticsAnalyzer.initializePrettyPrint();
-				// Do it in second pass
-				// semanticsAnalyzer.finalizeDeserialization();
+				if (finalizeDeserialization) {
+					// When deserialization required, do it now
+					semanticsAnalyzer.finalizeDeserialization();
+				}
+				// Otherwise, do it in a future second pass
 			}
 
 			return semanticsAnalyzer.getCompilationUnit();
@@ -188,6 +231,15 @@ public class FMLCompilationUnitParser {
 		}
 	}
 
+	/**
+	 * Extract and return {@link VirtualModelInfo} given an input stream and a {@link FMLModelFactory}
+	 * 
+	 * @param inputStream
+	 * @param modelFactory
+	 * @return
+	 * @throws ParseException
+	 * @throws IOException
+	 */
 	public VirtualModelInfo findVirtualModelInfo(InputStream inputStream, FMLModelFactory modelFactory) throws ParseException, IOException {
 		byte[] buf = IOUtils.toByteArray(inputStream);
 		InputStream inputStream1 = new ByteArrayInputStream(buf);
@@ -245,6 +297,11 @@ public class FMLCompilationUnitParser {
 		return new RawSource(reader);
 	}
 
+	/**
+	 * Initialize pretty-print of a {@link FMLCompilationUnit}, if this one has not been obtained from an input stream parsing
+	 * 
+	 * @param fmlCompilationUnit
+	 */
 	public void initPrettyPrint(FMLCompilationUnit fmlCompilationUnit) {
 		semanticsAnalyzer = new FMLCompilationUnitSemanticsAnalyzer(fmlCompilationUnit);
 		FMLCompilationUnitNode fmlCompilationUnitNode = new FMLCompilationUnitNode(fmlCompilationUnit, semanticsAnalyzer);

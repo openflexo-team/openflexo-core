@@ -91,8 +91,7 @@ public abstract class FMLParserTestCase extends OpenflexoTestCase {
 		FMLCompilationUnit compilationUnit = parser.parse(fileResource.openInputStream(), fmlModelFactory, (modelSlotClasses) -> {
 			// We dont expect to have particular ModelSlots in this context, but be aware of that
 			return null;
-		});
-		parser.getSemanticsAnalyzer().finalizeDeserialization();
+		}, true);
 		FMLCompilationUnitNode rootNode = (FMLCompilationUnitNode) compilationUnit.getPrettyPrintDelegate();
 		debug(rootNode, 0);
 
@@ -182,7 +181,7 @@ public abstract class FMLParserTestCase extends OpenflexoTestCase {
 		return parser.parse(resource.openInputStream(), new FMLModelFactory(null, serviceManager), (modelSlotClasses) -> {
 			// We dont expect to have particular ModelSlots in this context, but be aware of that
 			return null;
-		});
+		}, true);
 	}
 
 	protected static void testNormalizedFMLRepresentationEquals(FMLCompilationUnit compilationUnit, String resourceFile) {
