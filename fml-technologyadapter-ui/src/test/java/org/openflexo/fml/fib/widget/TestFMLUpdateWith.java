@@ -46,6 +46,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 import org.junit.FixMethodOrder;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
@@ -66,6 +67,7 @@ import org.openflexo.pamela.exceptions.ModelDefinitionException;
  */
 @RunWith(Parameterized.class)
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
+@Ignore
 public class TestFMLUpdateWith extends OpenflexoTestCase {
 
 	@Parameterized.Parameters(name = "{1}")
