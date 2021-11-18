@@ -1,6 +1,7 @@
 dependencies {
   // openflexo dep
   implementation project(':flexo-foundation')
+  implementation project(':fml-parser')
   // external dep
   api group: 'org.jboss.jreadline', name: 'jreadline', version: '0.20'
 
