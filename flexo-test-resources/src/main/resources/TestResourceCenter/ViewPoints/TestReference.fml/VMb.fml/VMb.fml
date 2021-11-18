@@ -1,7 +1,7 @@
-@URI("http://openflexo.org/test/flexo-test-resources/TestResourceCenter/ViewPoints/TestReference.fml/VMB.fml")
+@URI("http://openflexo.org/test/flexo-test-resources/TestResourceCenter/ViewPoints/TestReference.fml/VMb.fml")
 @Version("0.1")
 @Author("sylvain")
-public model VMB {
+public model VMb {
 
 	@Author("sylvain")
 	public concept ConceptInB {
