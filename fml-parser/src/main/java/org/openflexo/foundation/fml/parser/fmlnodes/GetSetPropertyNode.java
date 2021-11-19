@@ -105,11 +105,13 @@ public class GetSetPropertyNode extends FlexoPropertyNode<AGetSetPropertyInnerCo
 		AGetDecl getDeclaration = (AGetDecl) astNode.getGetDecl();
 		ControlGraphNode<?, ?> getCGNode = makeControlGraphNode(getDeclaration.getFlexoBehaviourBody());
 		returned.setGetControlGraph(getCGNode.getModelObject());
+		addToChildren(getCGNode);
 
 		if (astNode.getSetDecl() != null) {
 			ASetDecl setDeclaration = (ASetDecl) astNode.getSetDecl();
 			ControlGraphNode<?, ?> setCGNode = makeControlGraphNode(setDeclaration.getFlexoBehaviourBody());
 			((GetSetProperty<?>) returned).setSetControlGraph(setCGNode.getModelObject());
+			addToChildren(setCGNode);
 		}
 
 		return returned;

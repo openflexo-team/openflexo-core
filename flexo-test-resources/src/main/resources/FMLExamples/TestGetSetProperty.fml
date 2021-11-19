@@ -6,10 +6,6 @@ model TestGetSetProperty {
 
 	private String myValue;
 
-	create::createNew () {
-		myValue = "Hello world !";
-	}
-
 	String getSetProperty  {
 	  String get() {
 		return myValue;
