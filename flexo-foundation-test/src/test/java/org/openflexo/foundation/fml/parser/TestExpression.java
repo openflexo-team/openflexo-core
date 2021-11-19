@@ -96,7 +96,7 @@ public class TestExpression extends FMLParserTestCase {
 	public void loadCompilationUnit() throws ParseException, ModelDefinitionException, IOException {
 		log("Initial version");
 
-		final Resource fmlFile = ResourceLocator.locateResource("FMLExamples/TestExpression.fml");
+		final Resource fmlFile = ResourceLocator.locateResource("FMLParsingExamples/TestExpression.fml");
 
 		// System.out.println(FileUtils.fileContents(((FileResourceImpl) fmlFile).getFile()));
 

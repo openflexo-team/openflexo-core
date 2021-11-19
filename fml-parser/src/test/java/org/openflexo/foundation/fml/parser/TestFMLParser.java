@@ -77,7 +77,7 @@ public class TestFMLParser {
 
 	@Parameterized.Parameters(name = "{1}")
 	public static Collection<Object[]> generateData() {
-		return Resources.getMatchingResource(ResourceLocator.locateResource("FMLExamples"), ".fml");
+		return Resources.getMatchingResource(ResourceLocator.locateResource("FMLParsingExamples"), ".fml");
 	}
 
 	private final Resource fmlResource;

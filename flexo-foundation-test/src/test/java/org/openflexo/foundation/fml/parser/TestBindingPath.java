@@ -99,7 +99,7 @@ public class TestBindingPath extends FMLParserTestCase {
 	public void loadCompilationUnit() throws ParseException, ModelDefinitionException, IOException {
 		log("Initial version");
 
-		final Resource fmlFile = ResourceLocator.locateResource("FMLExamples/TestBindingPath.fml");
+		final Resource fmlFile = ResourceLocator.locateResource("FMLParsingExamples/TestBindingPath.fml");
 
 		// System.out.println(FileUtils.fileContents(((FileResourceImpl) fmlFile).getFile()));
 
