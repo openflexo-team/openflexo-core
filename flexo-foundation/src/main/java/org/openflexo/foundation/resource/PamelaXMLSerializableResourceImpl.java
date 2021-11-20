@@ -76,7 +76,12 @@ public abstract class PamelaXMLSerializableResourceImpl<RD extends ResourceData<
 	protected RD performLoad() throws IOException, Exception {
 		// Retrieve the data from an input stream given by the FlexoIOStream
 		// delegate of the resource
-		return (RD) getFactory().deserialize(getFlexoIOStreamDelegate().getInputStream());
+		InputStream inputStream = getFlexoIOStreamDelegate().getInputStream();
+		try {
+			return (RD) getFactory().deserialize(inputStream);
+		} finally {
+			inputStream.close();
+		}
 	}
 
 	@Override
