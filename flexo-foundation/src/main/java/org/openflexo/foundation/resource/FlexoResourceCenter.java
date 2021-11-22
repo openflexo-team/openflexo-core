@@ -64,6 +64,7 @@ import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.pamela.annotations.Import;
 import org.openflexo.pamela.annotations.Imports;
 import org.openflexo.pamela.annotations.ModelEntity;
+import org.openflexo.rm.Resource;
 import org.openflexo.toolbox.FlexoVersion;
 import org.openflexo.xml.XMLRootElementInfo;
 
@@ -340,6 +341,13 @@ public interface FlexoResourceCenter<I> extends Iterable<I>, ResourceRepository<
 	 */
 	@Override
 	I getBaseArtefact();
+
+	/**
+	 * Return base serialization artefact (top-level container) as a Resource
+	 * 
+	 * @return
+	 */
+	Resource getBaseArtefactAsResource();
 
 	/**
 	 * Return class of serialization artefact managed by this {@link FlexoResourceCenter}

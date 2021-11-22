@@ -471,6 +471,11 @@ public interface JarResourceCenter extends FlexoResourceCenter<InJarResourceImpl
 		}
 
 		@Override
+		public Resource getBaseArtefactAsResource() {
+			return getBaseArtefact();
+		}
+
+		@Override
 		public boolean isIgnorable(InJarResourceImpl artefact, TechnologyAdapter<?> technologyAdapter) {
 			// Trivial implementation
 			return false;

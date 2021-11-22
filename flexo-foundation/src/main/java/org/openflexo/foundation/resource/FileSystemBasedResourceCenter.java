@@ -81,6 +81,8 @@ import org.openflexo.pamela.annotations.PropertyIdentifier;
 import org.openflexo.pamela.annotations.Setter;
 import org.openflexo.pamela.annotations.XMLAttribute;
 import org.openflexo.pamela.annotations.XMLElement;
+import org.openflexo.rm.FileSystemResourceLocatorImpl;
+import org.openflexo.rm.Resource;
 import org.openflexo.toolbox.DirectoryWatcher;
 import org.openflexo.toolbox.FileSystemMetaDataManager;
 import org.openflexo.toolbox.FileUtils;
@@ -227,6 +229,13 @@ public interface FileSystemBasedResourceCenter extends FlexoResourceCenter<File>
 		@Override
 		public File getRootDirectory() {
 			return getBaseArtefact();
+		}
+
+		private static final FileSystemResourceLocatorImpl FS_RESOURCE_LOCATOR = new FileSystemResourceLocatorImpl();
+
+		@Override
+		public Resource getBaseArtefactAsResource() {
+			return FS_RESOURCE_LOCATOR.retrieveResource(getBaseArtefact());
 		}
 
 		/**

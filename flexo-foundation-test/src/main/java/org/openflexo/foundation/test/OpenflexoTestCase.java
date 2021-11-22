@@ -91,6 +91,7 @@ import org.openflexo.pamela.validation.ValidationReport;
 import org.openflexo.rm.FileResourceImpl;
 import org.openflexo.rm.Resource;
 import org.openflexo.toolbox.FileUtils;
+import org.openflexo.toolbox.FileUtils.CopyStrategy;
 
 import junit.framework.AssertionFailedError;
 
@@ -328,6 +329,35 @@ public abstract class OpenflexoTestCase {
 		FlexoResourceCenterService rcService = serviceManager.getResourceCenterService();
 		resourceCenter = DirectoryResourceCenter.instanciateNewDirectoryResourceCenter(testResourceCenterDirectory, rcService);
 		resourceCenter.setDefaultBaseURI(RESOURCE_CENTER_URI);
+		rcService.addToResourceCenters(resourceCenter);
+		return resourceCenter;
+	}
+
+	/**
+	 * Create a new empty {@link DirectoryResourceCenter} for supplied {@link FlexoServiceManager} while copying the contents of supplied
+	 * {@link FlexoResourceCenter}
+	 * 
+	 * Gives the same URI, remove supplied {@link FlexoResourceCenter} from the list of registered resource centers
+	 * 
+	 * @return
+	 * @throws IOException
+	 */
+	public static DirectoryResourceCenter makeNewDirectoryResourceCenterFromExistingResourceCenter(FlexoServiceManager serviceManager,
+			FlexoResourceCenter<?> existingResourcesRC) throws IOException {
+		File tempFile = File.createTempFile("Temp", "");
+		testResourceCenterDirectory = new File(tempFile.getParentFile(), tempFile.getName() + "TestResourceCenter");
+		tempFile.delete();
+		testResourceCenterDirectory.mkdirs();
+
+		System.out.println("Copying " + existingResourcesRC.getBaseArtefactAsResource() + " to " + testResourceCenterDirectory);
+
+		FileUtils.copyResourceToDir(existingResourcesRC.getBaseArtefactAsResource(), testResourceCenterDirectory, CopyStrategy.REPLACE);
+
+		FlexoResourceCenterService rcService = serviceManager.getResourceCenterService();
+		DirectoryResourceCenter resourceCenter = DirectoryResourceCenter.instanciateNewDirectoryResourceCenter(testResourceCenterDirectory,
+				rcService);
+		resourceCenter.setDefaultBaseURI(RESOURCE_CENTER_URI);
+		rcService.removeFromResourceCenters(existingResourcesRC);
 		rcService.addToResourceCenters(resourceCenter);
 		return resourceCenter;
 	}

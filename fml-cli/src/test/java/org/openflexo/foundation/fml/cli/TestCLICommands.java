@@ -86,8 +86,8 @@ public class TestCLICommands extends OpenflexoTestCase {
 		workingDirectory = new File(System.getProperty("user.dir"));
 		rcService = commandInterpreter.getServiceManager().getResourceCenterService();
 		rm = commandInterpreter.getServiceManager().getResourceManager();
-		testResourcesRC = rcService.getFlexoResourceCenter("http://openflexo.org/test/flexo-test-resources");
-		assertTrue(rcService.getResourceCenters().contains(testResourcesRC));
+		FlexoResourceCenter<?> existingResourcesRC = rcService.getFlexoResourceCenter("http://openflexo.org/test/flexo-test-resources");
+		testResourcesRC = makeNewDirectoryResourceCenterFromExistingResourceCenter(serviceManager, existingResourcesRC);
 	}
 
 	@Test
@@ -235,11 +235,6 @@ public class TestCLICommands extends OpenflexoTestCase {
 	@TestOrder(10)
 	public void testOpen() throws ParseException, IOException {
 		log("testOpen()");
-
-		if (!(testResourcesRC instanceof DirectoryResourceCenter)) {
-			// Test is not suitable for other RCs
-			return;
-		}
 
 		File rcDir = ((DirectoryResourceCenter) testResourcesRC).getRootDirectory();
 		AbstractCommand command1 = CommandParser.parse("cd " + rcDir.getAbsolutePath(), commandInterpreter);
