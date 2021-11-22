@@ -44,6 +44,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
+//import java.io.File;
 import java.io.IOException;
 
 import org.junit.BeforeClass;
@@ -234,6 +235,12 @@ public class TestCLICommands extends OpenflexoTestCase {
 	@TestOrder(10)
 	public void testOpen() throws ParseException, IOException {
 		log("testOpen()");
+
+		if (!(testResourcesRC instanceof DirectoryResourceCenter)) {
+			// Test is not suitable for other RCs
+			return;
+		}
+
 		File rcDir = ((DirectoryResourceCenter) testResourcesRC).getRootDirectory();
 		AbstractCommand command1 = CommandParser.parse("cd " + rcDir.getAbsolutePath(), commandInterpreter);
 		assertEquals("cd " + rcDir, command1.toString());
@@ -256,6 +263,7 @@ public class TestCLICommands extends OpenflexoTestCase {
 	public void testLoad() throws ParseException, IOException {
 		log("testLoad()");
 		AbstractCommand command1 = CommandParser.parse("cd TestSingleInheritance.prj", commandInterpreter);
+		System.out.println("Command: " + command1.toString());
 		assertEquals("cd TestSingleInheritance.prj", command1.toString());
 		command1.execute();
 
