@@ -129,8 +129,13 @@ public class FMLCompilationUnitParser {
 		InputStream inputStream1 = new ByteArrayInputStream(buf);
 		InputStream inputStream2 = new ByteArrayInputStream(buf);
 
-		return parse(new InputStreamReader(inputStream1), new InputStreamReader(inputStream2), modelFactory, modelFactoryUpdater,
-				finalizeDeserialization);
+		try {
+			return parse(new InputStreamReader(inputStream1), new InputStreamReader(inputStream2), modelFactory, modelFactoryUpdater,
+					finalizeDeserialization);
+		} finally {
+			inputStream1.close();
+			inputStream2.close();
+		}
 	}
 
 	/**
@@ -228,6 +233,9 @@ public class FMLCompilationUnitParser {
 			throw new ParseException(e.getMessage(), e.getToken().getLine(), e.getToken().getPos(), e.getToken().getText().length());
 		} catch (LexerException e) {
 			throw new ParseException(e.getMessage(), e.getToken().getLine(), e.getToken().getPos(), e.getToken().getText().length());
+		} finally {
+			reader.close();
+			rawSourceReader.close();
 		}
 	}
 

@@ -116,17 +116,14 @@ public class FMLExpressionParser {
 			throw new ParseException(e.getMessage(), e.getToken().getLine(), e.getToken().getPos(), e.getToken().getText().length());
 		} catch (IOException e) {
 			throw new ParseException(e.getMessage(), -1, -1, -1);
+		} finally {
+			try {
+				reader.close();
+				rawSourceReader.close();
+			} catch (IOException e) {
+				throw new ParseException(e.getMessage(), -1, -1, -1);
+			}
 		}
 	}
-
-	/**
-	 * Read raw source of the file
-	 * 
-	 * @param ioDelegate
-	 * @throws IOException
-	 */
-	/*private static RawSource readRawSource(Reader reader) throws IOException {
-		return new RawSource(reader);
-	}*/
 
 }
