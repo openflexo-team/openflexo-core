@@ -90,6 +90,11 @@ public class TestSingleInheritance extends OpenflexoProjectAtRunTimeTestCase {
 		assertNotNull(vpLib);
 		virtualModel = vpLib.getVirtualModel("http://openflexo.org/test/TestResourceCenter/TestSingleInheritance.fml");
 		assertNotNull(virtualModel);
+
+		System.out.println("Le pretty-print:");
+		System.out.println(virtualModel.getFMLPrettyPrint());
+		System.out.println("Tous les concepts: " + virtualModel.getFlexoConcepts());
+
 		conceptA = virtualModel.getFlexoConcept("ConceptA");
 		assertNotNull(conceptA);
 		conceptB = virtualModel.getFlexoConcept("ConceptB");
