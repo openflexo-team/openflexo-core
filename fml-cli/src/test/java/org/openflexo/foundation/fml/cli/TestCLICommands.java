@@ -267,6 +267,13 @@ public class TestCLICommands extends OpenflexoTestCase {
 
 		FlexoResource<?> vmResource = rm
 				.getResource("http://www.openflexo.org/projects/2020/4/TestSingleInheritance_1585907148412.prj/Vm.fml");
+
+		System.out.println("On a ca comme resources: ");
+
+		for (FlexoResource<?> resource : rm.getRegisteredResources()) {
+			System.out.println(" > " + resource.getURI());
+		}
+
 		assertNotNull(vmResource);
 		assertFalse(vmResource.isLoaded());
 
