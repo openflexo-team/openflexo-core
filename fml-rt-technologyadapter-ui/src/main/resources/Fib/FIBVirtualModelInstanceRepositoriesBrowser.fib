@@ -10,12 +10,12 @@
 		showRootsHandle="true" showFooter="true" textNonSelectionColor="0,0,0"
 		root="data" selectionMode="DiscontiguousTreeSelection" rootVisible="true"
 		rowHeight="18" localize="true" manageDynamicModel="true"
-		rightClickAction="controller.rightClick(ViewLibraryBrowser.selected,event)"
-		doubleClickAction="controller.doubleClick(ViewLibraryBrowser.selected)"
-		clickAction="controller.singleClick(ViewLibraryBrowser.selected)"
+		rightClickAction="controller.rightClick(viewLibraryBrowser.selected,event)"
+		doubleClickAction="controller.doubleClick(viewLibraryBrowser.selected)"
+		clickAction="controller.singleClick(viewLibraryBrowser.selected)"
 		index="0"
 		constraints="twocols(expandHorizontally=true;expandVertically=true;index=0;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=center)"
-		name="ViewLibraryBrowser">
+		name="viewLibraryBrowser">
 		<BrowserElement id="2"
 			dataClassName="org.openflexo.foundation.technologyadapter.TechnologyAdapter"
 			icon="controller.iconForObject(technologyAdapter)" label="technologyAdapter.name"
