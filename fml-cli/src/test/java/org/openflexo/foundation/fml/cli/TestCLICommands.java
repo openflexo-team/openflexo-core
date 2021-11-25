@@ -46,6 +46,7 @@ import static org.junit.Assert.assertTrue;
 import java.io.File;
 //import java.io.File;
 import java.io.IOException;
+import java.util.logging.Logger;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -71,6 +72,8 @@ import org.openflexo.toolbox.FileUtils;
 @RunWith(OrderedRunner.class)
 public class TestCLICommands extends OpenflexoTestCase {
 
+	private static final Logger logger = Logger.getLogger(TestCLICommands.class.getPackage().getName());
+
 	private static CommandInterpreter commandInterpreter;
 
 	private static File workingDirectory;
@@ -87,7 +90,23 @@ public class TestCLICommands extends OpenflexoTestCase {
 		rcService = commandInterpreter.getServiceManager().getResourceCenterService();
 		rm = commandInterpreter.getServiceManager().getResourceManager();
 		FlexoResourceCenter<?> existingResourcesRC = rcService.getFlexoResourceCenter("http://openflexo.org/test/flexo-test-resources");
+		logger.info("Copying all files from " + existingResourcesRC);
+		if (existingResourcesRC.getBaseArtefact() instanceof File) {
+			File f = (File) existingResourcesRC.getBaseArtefact();
+			for (File file : f.listFiles()) {
+				logger.info(" > " + file);
+			}
+		}
+
 		testResourcesRC = makeNewDirectoryResourceCenterFromExistingResourceCenter(serviceManager, existingResourcesRC);
+		logger.info("Now working with " + testResourcesRC);
+
+		if (testResourcesRC.getBaseArtefact() instanceof File) {
+			File f = (File) testResourcesRC.getBaseArtefact();
+			for (File file : f.listFiles()) {
+				logger.info(" > " + file);
+			}
+		}
 	}
 
 	@Test
@@ -258,9 +277,9 @@ public class TestCLICommands extends OpenflexoTestCase {
 	public void testLoad() throws ParseException, IOException {
 		log("testLoad()");
 
-		System.out.println("working dir=" + commandInterpreter.getWorkingDirectory());
+		logger.info("working dir=" + commandInterpreter.getWorkingDirectory());
 		for (File file : commandInterpreter.getWorkingDirectory().listFiles()) {
-			System.out.println(" > " + file);
+			logger.info(" > " + file);
 		}
 
 		AbstractCommand command1 = CommandParser.parse("cd TestSingleInheritance.prj", commandInterpreter);
