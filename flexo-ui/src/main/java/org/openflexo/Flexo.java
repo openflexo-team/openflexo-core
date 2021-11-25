@@ -261,8 +261,8 @@ public class Flexo {
 		// First init localization with default location
 		// FlexoLocalization.initWith(FlexoMainLocalizer.getInstance());
 
-		final InteractiveApplicationContext applicationContext = new InteractiveApplicationContext(localesRelativePath, isDev, recordMode,
-				playMode);
+		final InteractiveApplicationContext applicationContext = new InteractiveApplicationContext(localesRelativePath, true, isDev,
+				recordMode, playMode);
 
 		remapStandardOuputs(isDev, applicationContext);
 
@@ -625,7 +625,8 @@ public class Flexo {
 						FileLock fileLock = fos.getChannel().lock();
 						lockAcquired = true;
 						System.out.println("locked " + fileLock);
-					} catch (IOException e) {} finally {
+					} catch (IOException e) {
+					} finally {
 						if (!lockAcquired) {
 							fos.close();
 						}

@@ -109,8 +109,8 @@ public abstract class ApplicationContext extends DefaultFlexoServiceManager {
 	 * @param devMode
 	 *            true when 'developer' mode set to true (enable more services)
 	 */
-	public ApplicationContext(String localizationRelativePath, boolean devMode) {
-		super(localizationRelativePath, devMode);
+	public ApplicationContext(String localizationRelativePath, boolean enableDirectoryWatching, boolean devMode) {
+		super(localizationRelativePath, enableDirectoryWatching, devMode);
 
 		applicationData = new ApplicationData(this);
 
@@ -278,8 +278,8 @@ public abstract class ApplicationContext extends DefaultFlexoServiceManager {
 	}
 
 	@Override
-	protected FlexoResourceCenterService createResourceCenterService() {
-		FlexoResourceCenterService returned = DefaultResourceCenterService.getNewInstance(Flexo.isDev);
+	protected FlexoResourceCenterService createResourceCenterService(boolean enableDirectoryWatching) {
+		FlexoResourceCenterService returned = DefaultResourceCenterService.getNewInstance(enableDirectoryWatching, Flexo.isDev);
 		return returned;
 	}
 

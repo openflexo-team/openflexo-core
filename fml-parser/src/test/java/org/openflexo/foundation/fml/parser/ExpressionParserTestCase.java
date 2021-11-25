@@ -51,7 +51,7 @@ public abstract class ExpressionParserTestCase extends TestCase {
 	}
 
 	protected static FlexoServiceManager instanciateTestServiceManager() {
-		serviceManager = new DefaultFlexoServiceManager(null, true) {
+		serviceManager = new DefaultFlexoServiceManager(null, false, true) {
 
 			@Override
 			protected LocalizationService createLocalizationService(String relativePath) {

@@ -92,11 +92,12 @@ public abstract class DefaultResourceCenterService extends FlexoServiceImpl impl
 	 * 
 	 * @return
 	 */
-	public static FlexoResourceCenterService getNewInstance(boolean isDev) {
+	public static FlexoResourceCenterService getNewInstance(boolean enableDirectoryWatching, boolean isDev) {
 		try {
 			ModelFactory factory = new ModelFactory(FlexoResourceCenterService.class);
 			factory.setImplementingClassForInterface(DefaultResourceCenterService.class, FlexoResourceCenterService.class);
 			DefaultResourceCenterService returned = (DefaultResourceCenterService) factory.newInstance(FlexoResourceCenterService.class);
+			returned.setDirectoryWatchingEnabled(enableDirectoryWatching);
 			returned.setDevMode(isDev);
 			returned.loadAvailableRCFromClassPath();
 			return returned;
@@ -112,8 +113,9 @@ public abstract class DefaultResourceCenterService extends FlexoServiceImpl impl
 	 * 
 	 * @return
 	 */
-	public static FlexoResourceCenterService getNewInstance(List<ResourceCenterEntry<?>> resourceCenterEntries, boolean isDev) {
-		DefaultResourceCenterService returned = (DefaultResourceCenterService) getNewInstance(isDev);
+	public static FlexoResourceCenterService getNewInstance(List<ResourceCenterEntry<?>> resourceCenterEntries,
+			boolean enableDirectoryWatching, boolean isDev) {
+		DefaultResourceCenterService returned = (DefaultResourceCenterService) getNewInstance(enableDirectoryWatching, isDev);
 		for (ResourceCenterEntry<?> entry : resourceCenterEntries) {
 			FlexoResourceCenter<?> rc = entry.makeResourceCenter(returned);
 			if (rc != null) {

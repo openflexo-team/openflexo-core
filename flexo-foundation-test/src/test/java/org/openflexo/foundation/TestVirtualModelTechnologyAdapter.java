@@ -53,7 +53,7 @@ public class TestVirtualModelTechnologyAdapter {
 
 	@Test
 	public void test() {
-		FlexoResourceCenterService rcService = DefaultResourceCenterService.getNewInstance(true);
+		FlexoResourceCenterService rcService = DefaultResourceCenterService.getNewInstance(false, true);
 		TechnologyAdapterService taService = DefaultTechnologyAdapterService.getNewInstance(rcService);
 		((DefaultTechnologyAdapterService) taService).loadAvailableTechnologyAdapters();
 		for (TechnologyAdapter<?> ta : taService.getTechnologyAdapters()) {

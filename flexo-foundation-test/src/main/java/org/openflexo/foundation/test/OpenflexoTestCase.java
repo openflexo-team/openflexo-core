@@ -233,7 +233,7 @@ public abstract class OpenflexoTestCase {
 		if (testResourceCenterDirectory != null && testResourceCenterDirectory.exists()) {
 			previousResourceCenterDirectoryToRemove = testResourceCenterDirectory;
 		}
-		serviceManager = new DefaultFlexoServiceManager(null, true) {
+		serviceManager = new DefaultFlexoServiceManager(null, false, true) {
 
 			@Override
 			protected LocalizationService createLocalizationService(String relativePath) {
@@ -294,7 +294,7 @@ public abstract class OpenflexoTestCase {
 			entry.setDirectory(FileUtils.createTempDirectory(name, "ResourceCenter"));
 			List<ResourceCenterEntry<?>> rcList = new ArrayList<>();
 			rcList.add(entry);
-			return DefaultResourceCenterService.getNewInstance(rcList, true);
+			return DefaultResourceCenterService.getNewInstance(rcList, false, true);
 		} catch (IOException e) {
 			e.printStackTrace();
 			fail();

@@ -91,8 +91,9 @@ public class InteractiveApplicationContext extends ApplicationContext {
 	 * @param playMode
 	 *            true when GINA 'play' mode set to true
 	 */
-	public InteractiveApplicationContext(String localizationRelativePath, boolean devMode, boolean recordMode, boolean playMode) {
-		super(localizationRelativePath, devMode);
+	public InteractiveApplicationContext(String localizationRelativePath, boolean enableDirectoryWatching, boolean devMode,
+			boolean recordMode, boolean playMode) {
+		super(localizationRelativePath, enableDirectoryWatching, devMode);
 	}
 
 	@Override

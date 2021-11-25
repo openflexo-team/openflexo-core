@@ -129,7 +129,7 @@ public class TestFMLParser {
 	protected static FlexoServiceManager serviceManager;
 
 	protected static FlexoServiceManager instanciateTestServiceManager() {
-		serviceManager = new DefaultFlexoServiceManager(null, true) {
+		serviceManager = new DefaultFlexoServiceManager(null, false, true) {
 
 			@Override
 			protected LocalizationService createLocalizationService(String relativePath) {

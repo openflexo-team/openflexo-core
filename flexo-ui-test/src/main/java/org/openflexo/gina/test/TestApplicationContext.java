@@ -87,7 +87,7 @@ public class TestApplicationContext extends ApplicationContext {
 	}
 
 	public TestApplicationContext() {
-		super(null, true);
+		super(null, false, true);
 
 		getLocalizationService().setAutomaticSaving(false);
 

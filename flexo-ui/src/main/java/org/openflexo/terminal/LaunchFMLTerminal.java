@@ -55,6 +55,8 @@ public class LaunchFMLTerminal {
 
 		public boolean verbose = false;
 
+		public boolean enableDirectoryWatching = true;
+
 		public boolean devMode = false;
 
 		public final List<String> rcPaths = new ArrayList<>();
@@ -63,7 +65,7 @@ public class LaunchFMLTerminal {
 	}
 
 	public static FlexoServiceManager createServiceManager(Options options) {
-		FlexoServiceManager manager = new DefaultFlexoServiceManager(null, options.devMode);
+		FlexoServiceManager manager = new DefaultFlexoServiceManager(null, options.enableDirectoryWatching, options.devMode);
 		TechnologyAdapterService technologyAdapterService = manager.getTechnologyAdapterService();
 		technologyAdapterService.activateTechnologyAdapter(technologyAdapterService.getTechnologyAdapter(FMLTechnologyAdapter.class), true);
 		technologyAdapterService.activateTechnologyAdapter(technologyAdapterService.getTechnologyAdapter(FMLRTTechnologyAdapter.class),

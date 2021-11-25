@@ -213,7 +213,7 @@ public abstract class OpenflexoProjectAtRunTimeTestCase extends OpenflexoTestCas
 			entry.setDirectory(FileUtils.createTempDirectory(name, "ResourceCenter"));
 			List<ResourceCenterEntry<?>> rcList = new ArrayList<>();
 			rcList.add(entry);
-			return DefaultResourceCenterService.getNewInstance(rcList, true);
+			return DefaultResourceCenterService.getNewInstance(rcList, false, true);
 		} catch (IOException e) {
 			e.printStackTrace();
 			fail();
