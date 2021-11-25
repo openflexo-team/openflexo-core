@@ -658,7 +658,7 @@ public abstract class CompilationUnitResourceImpl
 				}
 
 				if (fmlArtefactResource != null && fmlArtefactResource.exists()) {
-					if (xmlArtefactResource.exists() && fmlArtefactResource instanceof FileResourceImpl
+					if (xmlArtefactResource != null && xmlArtefactResource.exists() && fmlArtefactResource instanceof FileResourceImpl
 							&& xmlArtefactResource instanceof FileResourceImpl) {
 						// In this case, both resources exist, take the recent one
 						FileTime fmlLastModified = Files.getLastModifiedTime(((FileResourceImpl) fmlArtefactResource).getFile().toPath());
