@@ -4,7 +4,7 @@
 model Vm {
 
 	@Author("sylvain")
-	concept A {
+	concept ConceptA {
 		create::_create () {
 		}
 		delete::_delete () {
@@ -12,7 +12,7 @@ model Vm {
 	}
 
 	@Author("sylvain")
-	concept B extends A {
+	concept ConceptB extends ConceptA {
 		create::_create () {
 		}
 		delete::_delete () {
