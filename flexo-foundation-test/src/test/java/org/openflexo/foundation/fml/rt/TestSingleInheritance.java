@@ -60,6 +60,7 @@ import org.openflexo.foundation.fml.VirtualModelLibrary;
 import org.openflexo.foundation.fml.rt.action.CreateBasicVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.action.CreateFlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.rm.FMLRTVirtualModelInstanceResource;
+import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.resource.ResourceLoadingCancelledException;
 import org.openflexo.foundation.test.OpenflexoProjectAtRunTimeTestCase;
 import org.openflexo.test.OrderedRunner;
@@ -90,6 +91,11 @@ public class TestSingleInheritance extends OpenflexoProjectAtRunTimeTestCase {
 		assertNotNull(vpLib);
 		virtualModel = vpLib.getVirtualModel("http://openflexo.org/test/TestResourceCenter/TestSingleInheritance.fml");
 		assertNotNull(virtualModel);
+
+		System.out.println("Tous les ResourceCenters:");
+		for (FlexoResourceCenter<?> resourceCenter : serviceManager.getResourceCenterService().getResourceCenters()) {
+			System.out.println(" > " + resourceCenter + " uri=" + resourceCenter);
+		}
 
 		System.out.println("Le pretty-print:");
 		System.out.println(virtualModel.getFMLPrettyPrint());
