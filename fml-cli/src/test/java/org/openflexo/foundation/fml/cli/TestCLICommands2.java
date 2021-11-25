@@ -44,6 +44,7 @@ import static org.junit.Assert.assertNull;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.logging.Logger;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -51,6 +52,7 @@ import org.junit.runner.RunWith;
 import org.openflexo.foundation.fml.cli.command.AbstractCommand;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.resource.FlexoResourceCenterService;
+import org.openflexo.foundation.resource.ResourceManager;
 import org.openflexo.foundation.test.OpenflexoTestCase;
 import org.openflexo.test.OrderedRunner;
 import org.openflexo.test.TestOrder;
@@ -64,10 +66,13 @@ import org.openflexo.test.TestOrder;
 @RunWith(OrderedRunner.class)
 public class TestCLICommands2 extends OpenflexoTestCase {
 
+	private static final Logger logger = Logger.getLogger(TestCLICommands2.class.getPackage().getName());
+
 	private static CommandInterpreter commandInterpreter;
 
 	private static File workingDirectory;
 	private static FlexoResourceCenterService rcService;
+	private static ResourceManager rm;
 	private static FlexoResourceCenter<?> testResourcesRC;
 
 	@BeforeClass
@@ -77,7 +82,17 @@ public class TestCLICommands2 extends OpenflexoTestCase {
 				new File(System.getProperty("user.dir")));
 		workingDirectory = new File(System.getProperty("user.dir"));
 		rcService = commandInterpreter.getServiceManager().getResourceCenterService();
-		testResourcesRC = rcService.getFlexoResourceCenter("http://openflexo.org/test/flexo-test-resources");
+		rm = commandInterpreter.getServiceManager().getResourceManager();
+		FlexoResourceCenter<?> existingResourcesRC = rcService.getFlexoResourceCenter("http://openflexo.org/test/flexo-test-resources");
+		logger.info("Copying all files from " + existingResourcesRC);
+		testResourcesRC = makeNewDirectoryResourceCenterFromExistingResourceCenter(serviceManager, existingResourcesRC);
+		logger.info("Now working with " + testResourcesRC);
+		/*if (testResourcesRC.getBaseArtefact() instanceof File) {
+			File f = (File) testResourcesRC.getBaseArtefact();
+			for (File file : f.listFiles()) {
+				logger.info(" > " + file);
+			}
+		}*/
 	}
 
 	@Test

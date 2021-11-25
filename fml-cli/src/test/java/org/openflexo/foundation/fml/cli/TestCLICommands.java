@@ -91,22 +91,14 @@ public class TestCLICommands extends OpenflexoTestCase {
 		rm = commandInterpreter.getServiceManager().getResourceManager();
 		FlexoResourceCenter<?> existingResourcesRC = rcService.getFlexoResourceCenter("http://openflexo.org/test/flexo-test-resources");
 		logger.info("Copying all files from " + existingResourcesRC);
-		if (existingResourcesRC.getBaseArtefact() instanceof File) {
-			File f = (File) existingResourcesRC.getBaseArtefact();
-			for (File file : f.listFiles()) {
-				logger.info(" > " + file);
-			}
-		}
-
 		testResourcesRC = makeNewDirectoryResourceCenterFromExistingResourceCenter(serviceManager, existingResourcesRC);
 		logger.info("Now working with " + testResourcesRC);
-
-		if (testResourcesRC.getBaseArtefact() instanceof File) {
+		/*if (testResourcesRC.getBaseArtefact() instanceof File) {
 			File f = (File) testResourcesRC.getBaseArtefact();
 			for (File file : f.listFiles()) {
 				logger.info(" > " + file);
 			}
-		}
+		}*/
 	}
 
 	@Test
