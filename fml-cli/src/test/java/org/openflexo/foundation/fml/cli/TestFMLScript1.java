@@ -43,6 +43,7 @@ import static org.junit.Assert.assertNotNull;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.logging.Logger;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -50,6 +51,8 @@ import org.openflexo.foundation.DefaultFlexoEditor;
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.fml.cli.command.AbstractCommand;
 import org.openflexo.foundation.fml.cli.command.FMLScript;
+import org.openflexo.foundation.resource.FlexoResourceCenter;
+import org.openflexo.foundation.resource.FlexoResourceCenterService;
 import org.openflexo.pamela.exceptions.ModelDefinitionException;
 import org.openflexo.rm.Resource;
 import org.openflexo.rm.ResourceLocator;
@@ -65,10 +68,15 @@ import org.openflexo.test.TestOrder;
 @RunWith(OrderedRunner.class)
 public class TestFMLScript1 extends FMLScriptParserTestCase {
 
+	private static final Logger logger = Logger.getLogger(TestFMLScript1.class.getPackage().getName());
+
 	static FlexoEditor editor;
 
 	static FMLScript script;
 	private static CommandInterpreter commandInterpreter;
+
+	private static FlexoResourceCenterService rcService;
+	private static FlexoResourceCenter<?> testResourcesRC;
 
 	@Test
 	@TestOrder(1)
@@ -81,6 +89,11 @@ public class TestFMLScript1 extends FMLScriptParserTestCase {
 		commandInterpreter = new CommandInterpreter(serviceManager, System.in, System.out, System.err,
 				new File(System.getProperty("user.dir")));
 
+		rcService = commandInterpreter.getServiceManager().getResourceCenterService();
+		FlexoResourceCenter<?> existingResourcesRC = rcService.getFlexoResourceCenter("http://openflexo.org/test/flexo-test-resources");
+		logger.info("Copying all files from " + existingResourcesRC);
+		testResourcesRC = makeNewDirectoryResourceCenterFromExistingResourceCenter(serviceManager, existingResourcesRC);
+		logger.info("Now working with " + testResourcesRC);
 	}
 
 	@Test
