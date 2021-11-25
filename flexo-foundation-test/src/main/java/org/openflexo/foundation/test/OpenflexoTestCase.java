@@ -349,7 +349,8 @@ public abstract class OpenflexoTestCase {
 		tempFile.delete();
 		testResourceCenterDirectory.mkdirs();
 
-		System.out.println("Copying " + existingResourcesRC.getBaseArtefactAsResource() + " to " + testResourceCenterDirectory);
+		logger.info("Copying " + existingResourcesRC.getBaseArtefactAsResource() + " to " + testResourceCenterDirectory);
+		logger.info("Resource: " + existingResourcesRC.getBaseArtefactAsResource().getClass());
 
 		FileUtils.copyResourceToDir(existingResourcesRC.getBaseArtefactAsResource(), testResourceCenterDirectory, CopyStrategy.REPLACE);
 
