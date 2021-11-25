@@ -101,6 +101,8 @@ public class TestSingleInheritance extends OpenflexoProjectAtRunTimeTestCase {
 
 		System.out.println("Le pretty-print:");
 		System.out.println(virtualModel.getFMLPrettyPrint());
+		System.out.println("Le pretty-print normalise:");
+		System.out.println(virtualModel.getNormalizedFML());
 		System.out.println("Tous les concepts: " + virtualModel.getFlexoConcepts());
 
 		conceptA = virtualModel.getFlexoConcept("ConceptA");

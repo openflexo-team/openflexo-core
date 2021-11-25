@@ -9,7 +9,8 @@ model TestSingleInheritance {
 	concept ConceptA {
 		String foo;
 		create::init () {
-			log("Creating ConceptA instance");
+			log("Creating ConceptA instance here");
+			// Is that the "good" file ?
 			foo = "ConceptA";
 		}
 		delete::_delete () {
