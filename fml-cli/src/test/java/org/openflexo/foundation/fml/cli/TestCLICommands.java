@@ -257,6 +257,12 @@ public class TestCLICommands extends OpenflexoTestCase {
 	@TestOrder(11)
 	public void testLoad() throws ParseException, IOException {
 		log("testLoad()");
+
+		System.out.println("working dir=" + commandInterpreter.getWorkingDirectory());
+		for (File file : commandInterpreter.getWorkingDirectory().listFiles()) {
+			System.out.println(" > " + file);
+		}
+
 		AbstractCommand command1 = CommandParser.parse("cd TestSingleInheritance.prj", commandInterpreter);
 		System.out.println("Command: " + command1.toString());
 		assertEquals("cd TestSingleInheritance.prj", command1.toString());
