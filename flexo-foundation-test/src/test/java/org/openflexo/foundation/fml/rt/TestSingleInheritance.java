@@ -97,6 +97,8 @@ public class TestSingleInheritance extends OpenflexoProjectAtRunTimeTestCase {
 			System.out.println(" > " + resourceCenter + " uri=" + resourceCenter);
 		}
 
+		System.out.println("Resource found in RC " + virtualModel.getDeclaringCompilationUnitResource().getResourceCenter());
+
 		System.out.println("Le pretty-print:");
 		System.out.println(virtualModel.getFMLPrettyPrint());
 		System.out.println("Tous les concepts: " + virtualModel.getFlexoConcepts());
