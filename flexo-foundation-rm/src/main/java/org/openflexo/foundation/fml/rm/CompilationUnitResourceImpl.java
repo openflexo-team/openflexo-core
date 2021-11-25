@@ -645,43 +645,54 @@ public abstract class CompilationUnitResourceImpl
 			case XML:
 				return loadFromXML();
 			case XML2FML:
-				if (getIODelegate().getSerializationArtefact() instanceof File) {
-					File fmlArtefact = (File) getIODelegate().getSerializationArtefact();
-					File xmlArtefact = (File) getXMLArtefact();
+				Resource fmlArtefactResource = getIODelegate().getSerializationArtefactAsResource();
+				Resource xmlArtefactResource = null;
+				try {
+					xmlArtefactResource = getXMLArtefactResource();
+				} catch (MalformedURLException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				} catch (LocatorNotFoundException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 
-					if (fmlArtefact.exists()) {
-						FileTime fmlLastModified = Files.getLastModifiedTime(fmlArtefact.toPath());
-						if (xmlArtefact.exists()) {
-							FileTime xmlLastModified = Files.getLastModifiedTime(xmlArtefact.toPath());
-							System.out.println("Dir: " + fmlArtefact.getParent());
-							System.out.println("FML: " + fmlArtefact.getName() + " lastModified: " + fmlLastModified);
-							System.out.println("XML: " + xmlArtefact.getName() + " lastModified: " + xmlLastModified);
-							if (xmlLastModified.compareTo(fmlLastModified) >= 0) {
-								// Loading using XML file
-								System.out.println("Loading as XML " + xmlArtefact.getName());
-								return loadFromXML();
-							}
-							else {
-								// Loading using FML file
-								try {
-									System.out.println("Loading as FML " + fmlArtefact.getName());
-									return loadFromFML();
-								} catch (ParseException e) {
-									logger.warning("ParseException raised while loading " + fmlArtefact);
-									logger.warning("Try to load using XML version: " + xmlArtefact);
-									return loadFromXML();
-								}
-							}
+				if (fmlArtefactResource != null && fmlArtefactResource.exists()) {
+					if (xmlArtefactResource.exists() && fmlArtefactResource instanceof FileResourceImpl
+							&& xmlArtefactResource instanceof FileResourceImpl) {
+						// In this case, both resources exist, take the recent one
+						FileTime fmlLastModified = Files.getLastModifiedTime(((FileResourceImpl) fmlArtefactResource).getFile().toPath());
+						FileTime xmlLastModified = Files.getLastModifiedTime(((FileResourceImpl) xmlArtefactResource).getFile().toPath());
+						System.out.println("Dir: " + fmlArtefactResource.getContainer());
+						System.out.println("FML: " + fmlArtefactResource + " lastModified: " + fmlLastModified);
+						System.out.println("XML: " + xmlArtefactResource + " lastModified: " + xmlLastModified);
+						if (xmlLastModified.compareTo(fmlLastModified) >= 0) {
+							// Loading using XML file
+							System.out.println("Loading as XML " + xmlArtefactResource);
+							return loadFromXML();
 						}
 						else {
-							return loadFromFML();
+							// Loading using FML file
+							try {
+								System.out.println("Loading as FML " + fmlArtefactResource);
+								return loadFromFML();
+							} catch (ParseException e) {
+								logger.warning("ParseException raised while loading " + fmlArtefactResource);
+								logger.warning("Try to load using XML version: " + xmlArtefactResource);
+								return loadFromXML();
+							}
 						}
 					}
 					else {
-						return loadFromXML();
+						return loadFromFML();
 					}
 				}
-				return loadFromXML();
+				if (xmlArtefactResource != null && xmlArtefactResource.exists()) {
+					return loadFromXML();
+				}
+				logger.warning("Cannot load " + this);
+				return null;
+
 			case FML:
 				return loadFromFML();
 
@@ -733,22 +744,22 @@ public abstract class CompilationUnitResourceImpl
 
 		/*
 		
-			if (getIODelegate() instanceof DirectoryBasedIODelegate && getFMLParser() != null) {
-				DirectoryBasedIODelegate ioDelegate = (DirectoryBasedIODelegate) getIODelegate();
-				File fmlFile = new File(ioDelegate.getDirectory(), ioDelegate.getDirectory().getName());
-				System.out.println("Tiens faudrait aussi charger le fichier " + fmlFile);
-				if (fmlFile.exists()) {
-					try {
-						FMLCompilationUnit parsedCompilationUnit = getFMLParser().parse(fmlFile, getFactory());
-					} catch (ParseException e) {
-						logger.warning("Failed to parse " + fmlFile);
-						requiresFMLPrettyPrintInitialization = true;
-					}
-				}
-				else {
+		if (getIODelegate() instanceof DirectoryBasedIODelegate && getFMLParser() != null) {
+			DirectoryBasedIODelegate ioDelegate = (DirectoryBasedIODelegate) getIODelegate();
+			File fmlFile = new File(ioDelegate.getDirectory(), ioDelegate.getDirectory().getName());
+			System.out.println("Tiens faudrait aussi charger le fichier " + fmlFile);
+			if (fmlFile.exists()) {
+				try {
+					FMLCompilationUnit parsedCompilationUnit = getFMLParser().parse(fmlFile, getFactory());
+				} catch (ParseException e) {
+					logger.warning("Failed to parse " + fmlFile);
 					requiresFMLPrettyPrintInitialization = true;
 				}
-			}*/
+			}
+			else {
+				requiresFMLPrettyPrintInitialization = true;
+			}
+		}*/
 
 	}
 
@@ -906,7 +917,16 @@ public abstract class CompilationUnitResourceImpl
 
 	private FMLCompilationUnit loadFromXML() {
 
-		// System.out.println("Loading from XML " + getXMLArtefact());
+		System.out.println("Loading from XML " + getXMLArtefact());
+		try {
+			System.out.println("Resource " + getXMLArtefactResource());
+		} catch (MalformedURLException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		} catch (LocatorNotFoundException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
 		VirtualModel virtualModel = null;
 		InputStream ioStream = null;
 		try {
@@ -951,15 +971,15 @@ public abstract class CompilationUnitResourceImpl
 		// FileWritingLock lock = getFlexoIOStreamDelegate().willWriteOnDisk();
 
 		/*if (getFlexoIOStreamDelegate() != null && getFlexoIOStreamDelegate().getSaveToSourceResource()
-					&& getFlexoIOStreamDelegate().getSourceResource() != null) {
-				logger.info("Saving SOURCE resource " + this + " : " + getFlexoIOStreamDelegate().getSourceResource().getFile() + " version="
-						+ getModelVersion());
+				&& getFlexoIOStreamDelegate().getSourceResource() != null) {
+			logger.info("Saving SOURCE resource " + this + " : " + getFlexoIOStreamDelegate().getSourceResource().getFile() + " version="
+					+ getModelVersion());
+		}
+		else {
+			if (logger.isLoggable(Level.INFO)) {
+				logger.info("Saving resource " + this + " : " + getFile() + " version=" + getModelVersion());
 			}
-			else {
-				if (logger.isLoggable(Level.INFO)) {
-					logger.info("Saving resource " + this + " : " + getFile() + " version=" + getModelVersion());
-				}
-			}*/
+		}*/
 		try {
 			/*
 			 * File dir = getFile().getParentFile(); willWrite(dir); if
@@ -1009,8 +1029,8 @@ public abstract class CompilationUnitResourceImpl
 		}
 		// getFlexoIOStreamDelegate().hasWrittenOnDisk(lock);
 		/*if (clearIsModified) {
-				notifyResourceStatusChanged();
-			}*/
+			notifyResourceStatusChanged();
+		}*/
 	}
 
 	private void performXMLSerialization(FMLCompilationUnit toBeSaved, File temporaryFile) throws IOException {
@@ -1109,15 +1129,15 @@ public abstract class CompilationUnitResourceImpl
 		}
 
 		/*try {
-			if (getXMLArtefact() != null) {
-				returned = retrieveInfoFromXML(resourceCenter);
-			}
-			else {
-				returned = retrieveInfoFromFML(resourceCenter);
-			}
+		if (getXMLArtefact() != null) {
+			returned = retrieveInfoFromXML(resourceCenter);
+		}
+		else {
+			returned = retrieveInfoFromFML(resourceCenter);
+		}
 		} catch (Exception e) {
-			e.printStackTrace();
-				returned = retrieveInfoFromFML(resourceCenter);
+		e.printStackTrace();
+			returned = retrieveInfoFromFML(resourceCenter);
 		}*/
 
 		if (resourceCenter instanceof FileSystemBasedResourceCenter && returned != null) {
