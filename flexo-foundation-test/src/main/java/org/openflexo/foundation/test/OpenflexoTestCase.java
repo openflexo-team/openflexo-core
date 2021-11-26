@@ -110,7 +110,7 @@ public abstract class OpenflexoTestCase {
 	 * !!!!! IMPORTANT !!!!!<br>
 	 * Do not forget to set back this flag to true when committing into a production environment
 	 */
-	public static final boolean DELETE_TEST_RESOURCE_CENTER_AFTER_TEST_EXECUTION = false;
+	public static final boolean DELETE_TEST_RESOURCE_CENTER_AFTER_TEST_EXECUTION = true;
 
 	private static final Logger logger = FlexoLogger.getLogger(OpenflexoTestCase.class.getPackage().getName());
 
