@@ -116,6 +116,7 @@ public class TestFMLScript1 extends FMLScriptParserTestCase {
 
 		assertEquals(35, script.getCommands().size());
 		for (AbstractCommand command : script.getCommands()) {
+			System.out.println("Check " + command + " with " + command.getNode() + " of " + command.getNode().getClass());
 			assertEquals(command.getOriginalCommandAsString(), command.toString());
 			System.out.println(">>> " + command.getOriginalCommandAsString());
 		}
