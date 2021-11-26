@@ -357,7 +357,7 @@ public abstract class OpenflexoTestCase {
 		FlexoResourceCenterService rcService = serviceManager.getResourceCenterService();
 		DirectoryResourceCenter resourceCenter = DirectoryResourceCenter.instanciateNewDirectoryResourceCenter(testResourceCenterDirectory,
 				rcService);
-		resourceCenter.setDefaultBaseURI(RESOURCE_CENTER_URI);
+		resourceCenter.setDefaultBaseURI(existingResourcesRC.getDefaultBaseURI());
 		rcService.removeFromResourceCenters(existingResourcesRC);
 		rcService.addToResourceCenters(resourceCenter);
 		return resourceCenter;
