@@ -112,6 +112,8 @@ public interface BehaviourCallArgument<T extends FlexoConceptObject> extends Fle
 	@Override
 	public BehaviourParameterBindingModel getBindingModel();
 
+	public FlexoBehaviourParameter getParameter();
+
 	public static abstract class BehaviourCallArgumentImpl<T extends FlexoConceptObject> extends FlexoBehaviourObjectImpl
 			implements BehaviourCallArgument<T> {
 
@@ -132,6 +134,7 @@ public interface BehaviourCallArgument<T extends FlexoConceptObject> extends Fle
 			}
 		}*/
 
+		@Override
 		public FlexoBehaviourParameter getParameter() {
 			return param;
 		}
