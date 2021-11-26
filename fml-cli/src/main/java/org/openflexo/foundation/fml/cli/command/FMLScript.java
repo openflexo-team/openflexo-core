@@ -104,6 +104,7 @@ public class FMLScript {
 	 */
 	public void execute() {
 		for (AbstractCommand command : getCommands()) {
+			logger.info(">>> Execute " + command);
 			getOutStream().println(getCommandInterpreter().getPrompt() + " > " + command);
 			command.execute();
 		}

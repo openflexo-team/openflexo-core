@@ -114,6 +114,12 @@ public class LoadResource extends Directive {
 	@Override
 	public ResourceData<?> execute() {
 		super.execute();
+		logger.info("Load resource " + getResultingResource() + " from currentPath=" + getCommandInterpreter().getWorkingDirectory());
+		if (getResultingResource() == null) {
+			logger.warning("Cannot access resource, resource=" + resource + " resourcePath=" + resourcePath);
+			return null;
+		}
+
 		if (getResultingResource().isLoaded()) {
 			getOutStream().println("Resource " + resource.getURI() + " already loaded");
 			return getResultingResource().getLoadedResourceData();

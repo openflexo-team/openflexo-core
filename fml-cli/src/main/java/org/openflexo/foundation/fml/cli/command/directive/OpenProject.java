@@ -163,6 +163,7 @@ public class OpenProject extends Directive {
 			}
 
 			try {
+				logger.info("Open project " + getProjectDirectory() + " from currentPath=" + getCommandInterpreter().getWorkingDirectory());
 				getOutStream().println("Open project " + getProjectDirectory());
 				FlexoEditor editor = getCommandInterpreter().getServiceManager().getProjectLoaderService()
 						.loadProject(getProjectDirectory());
