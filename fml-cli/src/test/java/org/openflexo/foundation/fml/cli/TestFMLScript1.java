@@ -114,7 +114,7 @@ public class TestFMLScript1 extends FMLScriptParserTestCase {
 	public void checkScript() throws ParseException, ModelDefinitionException, IOException {
 		log("Check script");
 
-		assertEquals(35, script.getCommands().size());
+		assertEquals(23, script.getCommands().size());
 		for (AbstractCommand command : script.getCommands()) {
 			System.out.println("Check " + command + " with " + command.getNode() + " of " + command.getNode().getClass());
 			assertEquals(command.getOriginalCommandAsString(), command.toString());
