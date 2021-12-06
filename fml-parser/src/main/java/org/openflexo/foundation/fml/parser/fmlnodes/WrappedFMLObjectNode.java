@@ -45,8 +45,8 @@ import org.openflexo.foundation.fml.FMLInstancesListPropertyValue;
 import org.openflexo.foundation.fml.FMLObject;
 import org.openflexo.foundation.fml.FMLPropertyValue;
 import org.openflexo.foundation.fml.WrappedFMLObject;
-import org.openflexo.foundation.fml.parser.FMLObjectNode;
 import org.openflexo.foundation.fml.parser.FMLCompilationUnitSemanticsAnalyzer;
+import org.openflexo.foundation.fml.parser.FMLObjectNode;
 import org.openflexo.foundation.fml.parser.node.AFullQualifiedFmlParameters;
 import org.openflexo.foundation.fml.parser.node.AFullQualifiedQualifiedInstance;
 import org.openflexo.foundation.fml.parser.node.ASimpleQualifiedInstance;
@@ -56,7 +56,8 @@ import org.openflexo.p2pp.PrettyPrintContext.Indentation;
 import org.openflexo.p2pp.RawSource.RawSourceFragment;
 
 // Node is either ASimpleQualifiedInstance or AFullQualifiedQualifiedInstance
-public class WrappedFMLObjectNode<T extends FMLObject> extends FMLObjectNode<Node, WrappedFMLObject<T>, FMLCompilationUnitSemanticsAnalyzer> {
+public class WrappedFMLObjectNode<T extends FMLObject>
+		extends FMLObjectNode<Node, WrappedFMLObject<T>, FMLCompilationUnitSemanticsAnalyzer> {
 
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(WrappedFMLObjectNode.class.getPackage().getName());
@@ -85,7 +86,7 @@ public class WrappedFMLObjectNode<T extends FMLObject> extends FMLObjectNode<Nod
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Override
 	public WrappedFMLObject<T> buildModelObjectFromAST(Node astNode) {
-		WrappedFMLObject<T> returned = getFactory().newWrappedFMLObject(null);
+		WrappedFMLObject<T> returned = getFactory().getWrappedFMLObject(null);
 
 		Class<T> objectClass = null;
 		if (astNode instanceof ASimpleQualifiedInstance) {

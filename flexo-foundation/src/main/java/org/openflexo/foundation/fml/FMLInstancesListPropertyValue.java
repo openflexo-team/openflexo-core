@@ -54,6 +54,7 @@ import org.openflexo.pamela.annotations.Remover;
 import org.openflexo.pamela.annotations.Setter;
 
 /**
+ * A {@link FMLPropertyValue} which has a list of {@link FMLObject} as value (wrapped in a {@link WrappedFMLObject})
  *
  * @author sylvain
  *
@@ -83,11 +84,36 @@ public interface FMLInstancesListPropertyValue<M extends FMLObject, T extends FM
 		protected static final Logger logger = FlexoLogger.getLogger(FMLInstancesListPropertyValue.class.getPackage().getName());
 
 		@Override
-		public void apply(M object) {
+		public void applyPropertyValueToModelObject(M object) {
 			for (T v : getValue()) {
 				((FMLProperty) getProperty()).addTo(v, object);
 			}
+		}
 
+		/*@Override
+		public void retrievePropertyValueFromModelObject(M object) {
+			setInstance(object.getWrappedFMLObject(getProperty().get(object)));
+		}*/
+
+		@Override
+		public void retrievePropertyValueFromModelObject(M object) {
+
+			List<WrappedFMLObject<T>> valuesToRemove = new ArrayList<>(getInstances());
+
+			List<T> valuesFromObject = getProperty().get(object);
+			for (T o : valuesFromObject) {
+				WrappedFMLObject<T> wo = object.getFMLModelFactory().getWrappedFMLObject(o);
+				if (getInstances().contains(wo)) {
+					// Already inside
+					valuesToRemove.remove(wo);
+				}
+				else {
+					addToInstances(wo);
+				}
+			}
+			for (WrappedFMLObject<T> wo : valuesToRemove) {
+				removeFromInstances(wo);
+			}
 		}
 
 		@Override

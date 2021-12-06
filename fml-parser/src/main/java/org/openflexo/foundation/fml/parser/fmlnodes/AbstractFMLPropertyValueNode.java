@@ -75,11 +75,11 @@ public abstract class AbstractFMLPropertyValueNode<N extends Node, P extends FML
 		if (getParent().getModelObject() instanceof WrappedFMLObject) {
 			WrappedFMLObject<M> wrappedObject = (WrappedFMLObject<M>) getParent().getModelObject();
 			wrappedObject.getObject().addToFMLPropertyValues(getModelObject());
-			getModelObject().apply(wrappedObject.getObject());
+			getModelObject().applyPropertyValueToModelObject(wrappedObject.getObject());
 		}
 		else {
 			((M) getParent().getModelObject()).addToFMLPropertyValues(getModelObject());
-			getModelObject().apply((M) getParent().getModelObject());
+			getModelObject().applyPropertyValueToModelObject((M) getParent().getModelObject());
 		}
 		// System.out.println("Tiens faudrait appliquer la propriete " + getModelObject() + " a " + getParent().getModelObject());
 		return this;

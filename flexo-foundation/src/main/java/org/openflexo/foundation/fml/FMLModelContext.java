@@ -278,7 +278,7 @@ public class FMLModelContext {
 					if (value instanceof FMLObject) {
 						FMLInstancePropertyValue returnedInstance = object.getFMLModelFactory()
 								.newInstancePropertyValue((FMLProperty) this);
-						returnedInstance.setInstance(object.getWrappedFMLObject((FMLObject) value));
+						returnedInstance.setInstance(object.getFMLModelFactory().getWrappedFMLObject((FMLObject) value));
 						return returnedInstance;
 					}
 					else {
@@ -290,7 +290,7 @@ public class FMLModelContext {
 						FMLInstancesListPropertyValue returnedInstancesList = object.getFMLModelFactory()
 								.newInstancesListPropertyValue((FMLProperty) this);
 						for (FMLObject o : ((List<FMLObject>) value)) {
-							returnedInstancesList.addToInstances(object.getWrappedFMLObject(o));
+							returnedInstancesList.addToInstances(object.getFMLModelFactory().getWrappedFMLObject(o));
 						}
 						return returnedInstancesList;
 					}

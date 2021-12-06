@@ -39,7 +39,9 @@
 package org.openflexo.foundation.fml;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Logger;
 
 import org.openflexo.connie.Bindable;
@@ -806,13 +808,20 @@ public class FMLModelFactory extends ModelFactory implements PamelaResourceModel
 		return returned;
 	}
 
-	public <O extends FMLObject> WrappedFMLObject<O> newWrappedFMLObject() {
-		return newInstance(WrappedFMLObject.class);
-	}
-
-	public <O extends FMLObject> WrappedFMLObject<O> newWrappedFMLObject(O object) {
+	private <O extends FMLObject> WrappedFMLObject<O> newWrappedFMLObject(O object) {
 		WrappedFMLObject<O> returned = newInstance(WrappedFMLObject.class);
 		returned.setObject(object);
+		return returned;
+	}
+
+	private Map<FMLObject, WrappedFMLObject<?>> wrappedObjects = new HashMap<>();
+
+	public <O extends FMLObject> WrappedFMLObject<O> getWrappedFMLObject(O object) {
+		WrappedFMLObject<O> returned = (WrappedFMLObject<O>) wrappedObjects.get(object);
+		if (returned == null) {
+			returned = newWrappedFMLObject(object);
+			wrappedObjects.put(object, returned);
+		}
 		return returned;
 	}
 

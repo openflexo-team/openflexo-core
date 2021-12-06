@@ -51,6 +51,8 @@ import org.openflexo.pamela.annotations.PropertyIdentifier;
 import org.openflexo.pamela.annotations.Setter;
 
 /**
+ * Abstraction used in the deserialization process, used to map a {@link FMLProperty} with some values in the context of a {@link FMLObject}
+ *
  *
  * @author sylvain
  *
@@ -68,7 +70,19 @@ public interface FMLPropertyValue<M extends FMLObject, T> extends FMLPrettyPrint
 	@Setter(PROPERTY_KEY)
 	public void setProperty(FMLProperty<? super M, T> property);
 
-	public void apply(M object);
+	/**
+	 * Applies the property value to a {@link FMLObject}
+	 * 
+	 * @param object
+	 */
+	public void applyPropertyValueToModelObject(M object);
+
+	/**
+	 * Retrieve property value from {@link FMLObject}
+	 * 
+	 * @param object
+	 */
+	public void retrievePropertyValueFromModelObject(M object);
 
 	public T getValue();
 

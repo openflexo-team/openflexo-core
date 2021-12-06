@@ -91,7 +91,7 @@ public class FMLSimplePropertyValueNode<M extends FMLObject, T>
 			// if (!getParent().getModelObject().toString().contains("WrappedFMLObject")) {
 			// System.out.println("Available properties");
 			// for (FMLProperty<?, ?> p : ((FMLObject) getParent().getModelObject()).getFMLProperties(getFactory())) {
-			//	System.out.println(" > " + p);
+			// System.out.println(" > " + p);
 			// }
 			// }
 			return this;
@@ -152,7 +152,6 @@ public class FMLSimplePropertyValueNode<M extends FMLObject, T>
 	public FMLSimplePropertyValue<M, T> buildModelObjectFromAST(ASimpleQualifiedArgument astNode) {
 
 		return (FMLSimplePropertyValue<M, T>) getFactory().newSimplePropertyValue();
-
 	}
 
 	@Override

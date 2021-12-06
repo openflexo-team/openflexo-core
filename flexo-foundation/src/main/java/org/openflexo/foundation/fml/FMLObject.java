@@ -277,7 +277,7 @@ public interface FMLObject extends FlexoObject, Bindable, InnerResourceData<FMLC
 
 	// public void decodeFMLProperties(String serializedMap);
 
-	public <O extends FMLObject> WrappedFMLObject<O> getWrappedFMLObject(O object);
+	// public <O extends FMLObject> WrappedFMLObject<O> getWrappedFMLObject(O object);
 
 	public static abstract class FMLObjectImpl extends FlexoObjectImpl implements FMLObject {
 
@@ -694,7 +694,7 @@ public interface FMLObject extends FlexoObject, Bindable, InnerResourceData<FMLC
 			return null;
 		}
 
-		private Map<FMLProperty, FMLPropertyValue> fmlPropertyValues = new HashMap<>();
+		protected Map<FMLProperty, FMLPropertyValue> fmlPropertyValues = new HashMap<>();
 
 		@Override
 		public List<FMLPropertyValue<?, ?>> getFMLPropertyValues(FMLModelFactory modelFactory) {
@@ -706,6 +706,10 @@ public interface FMLObject extends FlexoObject, Bindable, InnerResourceData<FMLC
 						if (pValue != null && pValue.isRequired(modelFactory)) {
 							fmlPropertyValues.put(fmlProperty, pValue);
 						}
+					}
+					else {
+						// The property value is existing, but we have no guarantee that its value is up-to-date
+						pValue.retrievePropertyValueFromModelObject(this);
 					}
 				}
 				List<FMLPropertyValue<?, ?>> returned = new ArrayList<>();
@@ -738,17 +742,18 @@ public interface FMLObject extends FlexoObject, Bindable, InnerResourceData<FMLC
 			fmlPropertyValues.put(propertyValue.getProperty(), propertyValue);
 		}
 
-		private Map<FMLObject, WrappedFMLObject<?>> wrappedObjects = new HashMap<>();
-
+		/*private Map<FMLObject, WrappedFMLObject<?>> wrappedObjects = new HashMap<>();
+		
 		@Override
 		public <O extends FMLObject> WrappedFMLObject<O> getWrappedFMLObject(O object) {
+			System.out.println("On cherche dans " + this + " le wrapped de " + object);
 			WrappedFMLObject<O> returned = (WrappedFMLObject<O>) wrappedObjects.get(object);
 			if (returned == null) {
 				returned = getFMLModelFactory().newWrappedFMLObject(object);
 				wrappedObjects.put(object, returned);
 			}
 			return returned;
-		}
+		}*/
 
 		/*@Override
 		public final String encodeFMLProperties(FMLModelFactory modelFactory) {
