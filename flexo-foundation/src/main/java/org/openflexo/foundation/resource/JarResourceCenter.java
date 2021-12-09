@@ -719,6 +719,9 @@ public interface JarResourceCenter extends FlexoResourceCenter<InJarResourceImpl
 		@Override
 		public XMLRootElementInfo getXMLRootElementInfo(InJarResourceImpl serializationArtefact, boolean parseFirstLevelElements,
 				String firstLevelElementName) {
+			if (serializationArtefact == null) {
+				return null;
+			}
 			XMLRootElementReader reader = new XMLRootElementReader(parseFirstLevelElements, firstLevelElementName);
 			try {
 				System.out.println("Load "+serializationArtefact+" in "+jarFile+" resource: "+getJarResourceImpl());
