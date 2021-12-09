@@ -612,6 +612,9 @@ public interface JarResourceCenter extends FlexoResourceCenter<InJarResourceImpl
 		 */
 		@Override
 		public InJarResourceImpl getContainer(InJarResourceImpl serializationArtefact) {
+			if (serializationArtefact == null) {
+				return null;
+			}
 			Resource container = serializationArtefact.getContainer();
 			if (container instanceof InJarResourceImpl) {
 				return (InJarResourceImpl) container;
