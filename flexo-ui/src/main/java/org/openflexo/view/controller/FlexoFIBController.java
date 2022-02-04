@@ -311,10 +311,10 @@ public class FlexoFIBController extends FIBController implements GraphicalFlexoO
 						.getTechnologyAdapterController(ta);
 				if (tac != null) {
 					if (object instanceof ResourceData) {
-						return tac.getValidationReport((ResourceData<?>) object, true);
+						return tac.getValidationReport((ResourceData<?>) object, !SwingUtilities.isEventDispatchThread());
 					}
 					if (object instanceof InnerResourceData) {
-						return tac.getValidationReport(((InnerResourceData<?>) object).getResourceData(), true);
+						return tac.getValidationReport(((InnerResourceData<?>) object).getResourceData(), !SwingUtilities.isEventDispatchThread());
 					}
 				}
 			}
