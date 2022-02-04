@@ -115,7 +115,7 @@ public interface FMLRTModelSlot<VMI extends VirtualModelInstance<VMI, TA>, TA ex
 	public Class<TA> getTechnologyAdapterClass();
 
 	public static abstract class FMLRTModelSlotImpl<VMI extends VirtualModelInstance<VMI, TA>, TA extends TechnologyAdapter<TA>>
-			extends ModelSlotImpl<VMI> implements FMLRTModelSlot<VMI, TA> {
+	extends ModelSlotImpl<VMI> implements FMLRTModelSlot<VMI, TA> {
 
 		private static final Logger logger = Logger.getLogger(FMLRTModelSlot.class.getPackage().getName());
 
@@ -206,10 +206,27 @@ public interface FMLRTModelSlot<VMI extends VirtualModelInstance<VMI, TA>, TA ex
 		 */
 		@Override
 		public final VirtualModel getAccessedVirtualModel() {
-			if (getAccessedVirtualModelResource() != null && !getAccessedVirtualModelResource().isLoading()) {
+			if (getAccessedVirtualModelResource() != null /*&& !getAccessedVirtualModelResource().isLoading()*/) {
+				if (getAccessedVirtualModelResource().isLoaded()) {
+					return getAccessedVirtualModelResource().getLoadedResourceData();
+				}
+				else if (!getAccessedVirtualModelResource().isLoading()) {
+					try {
+						return getAccessedVirtualModelResource().getResourceData();
+					} catch (FileNotFoundException e) {
+						e.printStackTrace();
+					} catch (ResourceLoadingCancelledException e) {
+						e.printStackTrace();
+					} catch (FlexoException e) {
+						e.printStackTrace();
+					}
+				}
+				return null;
+
+
 				// Do not load virtual model when unloaded
-				// return getAccessedVirtualModelResource().getLoadedResourceData();
-				try {
+				//return getAccessedVirtualModelResource().getLoadedResourceData();
+				/*try {
 					return getAccessedVirtualModelResource().getResourceData();
 				} catch (FileNotFoundException e) {
 					e.printStackTrace();
@@ -217,7 +234,7 @@ public interface FMLRTModelSlot<VMI extends VirtualModelInstance<VMI, TA>, TA ex
 					e.printStackTrace();
 				} catch (FlexoException e) {
 					e.printStackTrace();
-				}
+				}*/
 			}
 			return null;
 		}
