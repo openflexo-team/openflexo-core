@@ -387,14 +387,15 @@ public interface AbstractSelectFlexoConceptInstance<VMI extends VirtualModelInst
 		}
 
 		public boolean isIndexable(FlexoConceptInstance container) {
-			if (container instanceof FMLRTVirtualModelInstance && getConditions().size() > 0) {
+			// Temporary desactivate indexes caching
+			/*if (container instanceof FMLRTVirtualModelInstance && getConditions().size() > 0) {
 				for (FetchRequestCondition condition : getConditions()) {
 					if (!isIndexableCondition(condition)) {
 						return false;
 					}
 				}
 				return true;
-			}
+			}*/
 			return false;
 
 		}
