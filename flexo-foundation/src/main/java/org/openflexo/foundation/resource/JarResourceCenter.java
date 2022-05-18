@@ -612,6 +612,9 @@ public interface JarResourceCenter extends FlexoResourceCenter<InJarResourceImpl
 		 */
 		@Override
 		public InJarResourceImpl getContainer(InJarResourceImpl serializationArtefact) {
+			if (serializationArtefact == null) {
+				return null;
+			}
 			Resource container = serializationArtefact.getContainer();
 			if (container instanceof InJarResourceImpl) {
 				return (InJarResourceImpl) container;
@@ -719,8 +722,12 @@ public interface JarResourceCenter extends FlexoResourceCenter<InJarResourceImpl
 		@Override
 		public XMLRootElementInfo getXMLRootElementInfo(InJarResourceImpl serializationArtefact, boolean parseFirstLevelElements,
 				String firstLevelElementName) {
+			if (serializationArtefact == null) {
+				return null;
+			}
 			XMLRootElementReader reader = new XMLRootElementReader(parseFirstLevelElements, firstLevelElementName);
 			try {
+				System.out.println("Load "+serializationArtefact+" in "+jarFile+" resource: "+getJarResourceImpl());
 				return reader.readRootElement(serializationArtefact);
 			} catch (IOException e) {
 				e.printStackTrace();

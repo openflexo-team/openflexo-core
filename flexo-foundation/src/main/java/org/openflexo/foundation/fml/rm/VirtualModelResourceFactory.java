@@ -51,7 +51,7 @@ import org.openflexo.xml.XMLRootElementInfo;
  *
  */
 public class VirtualModelResourceFactory
-		extends TechnologySpecificPamelaResourceFactory<VirtualModelResource, VirtualModel, FMLTechnologyAdapter, FMLModelFactory> {
+extends TechnologySpecificPamelaResourceFactory<VirtualModelResource, VirtualModel, FMLTechnologyAdapter, FMLModelFactory> {
 
 	public static final FlexoVersion INITIAL_REVISION = new FlexoVersion("0.1");
 	public static final FlexoVersion CURRENT_FML_VERSION = new FlexoVersion("2.0");
@@ -117,7 +117,7 @@ public class VirtualModelResourceFactory
 	 */
 	public <I> VirtualModelResource makeTopLevelVirtualModelResource(String baseName, String virtualModelURI,
 			RepositoryFolder<VirtualModelResource, I> folder, boolean createEmptyContents)
-			throws SaveResourceException, ModelDefinitionException {
+					throws SaveResourceException, ModelDefinitionException {
 		return makeTopLevelVirtualModelResource(baseName, virtualModelURI, folder, null, createEmptyContents);
 	}
 
@@ -176,7 +176,7 @@ public class VirtualModelResourceFactory
 	 */
 	public <I> VirtualModelResource makeContainedVirtualModelResource(String baseName, VirtualModelResource containerVirtualModelResource,
 			Class<? extends VirtualModel> specializedVirtualModelClass, boolean createEmptyContents)
-			throws SaveResourceException, ModelDefinitionException {
+					throws SaveResourceException, ModelDefinitionException {
 
 		FlexoResourceCenter<I> resourceCenter = (FlexoResourceCenter<I>) containerVirtualModelResource.getResourceCenter();
 		I serializationArtefact = resourceCenter.createDirectory(baseName.endsWith(FML_SUFFIX) ? baseName : baseName + FML_SUFFIX,
@@ -314,7 +314,7 @@ public class VirtualModelResourceFactory
 
 		if (resourceCenter.exists(serializationArtefact) && resourceCenter.isDirectory(serializationArtefact)
 				&& resourceCenter.canRead(serializationArtefact) && (resourceCenter.retrieveName(serializationArtefact).endsWith(FML_SUFFIX)
-				/*|| resourceCenter.retrieveName(serializationArtefact).endsWith(VIEWPOINT_SUFFIX + "/")*/)) {
+						/*|| resourceCenter.retrieveName(serializationArtefact).endsWith(VIEWPOINT_SUFFIX + "/")*/)) {
 			/*final String baseName = candidateFile.getName().substring(0,
 					candidateFile.getName().length() - ViewPointResource.VIEWPOINT_SUFFIX.length());
 			final File xmlFile = new File(candidateFile, baseName + ".xml");
@@ -364,8 +364,9 @@ public class VirtualModelResourceFactory
 
 		FlexoResourceCenter<I> resourceCenter = (FlexoResourceCenter<I>) virtualModelResource.getResourceCenter();
 		I directory = resourceCenter.getContainer((I) virtualModelResource.getIODelegate().getSerializationArtefact());
-
-		exploreResource(directory, virtualModelResource);
+		if (directory != null) {
+			exploreResource(directory, virtualModelResource);
+		}
 	}
 
 	/**
