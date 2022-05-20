@@ -12,7 +12,7 @@
 			<Label index="6" label="conditional" align="right" 
 				constraints="twocols(expandHorizontally=false;expandVertically=false;index=8;location=left)"
 				localize="true" />
-			<Custom index="7" componentClassName="org.openflexo.gina.swing.utils.BindingSelector" name="ConditionalSelector"
+			<Custom index="7" componentClassName="org.openflexo.gina.swing.utils.JavaBindingSelector" name="ConditionalSelector"
 				localize="true" manageDynamicModel="true" data="data.conditional"
 				constraints="twocols(anchor=center;expandHorizontally=true;expandVertically=false;fill=none;gridHeight=1;gridWidth=1;gridX=-1;gridY=-1;index=5;insetsBottom=0;insetsLeft=5;insetsRight=2;insetsTop=0;location=right;padX=0;padY=0;weightX=0.0;weightY=0.0)">
 				<Assignment variable="component.bindable" value="data"/>

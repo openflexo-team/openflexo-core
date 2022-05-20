@@ -35,7 +35,7 @@
 		label="container" />
 	<Custom id="9" visible="(data.widgetType == &quot;CUSTOM_WIDGET&quot;)" index="8"
 		manageDynamicModel="true" dataClassForComponent="org.openflexo.connie.DataBinding"
-		componentClassName="org.openflexo.gina.swing.utils.BindingSelector"
+		componentClassName="org.openflexo.gina.swing.utils.JavaBindingSelector"
 		name="CustomSelector" data="data.action.container"
 		constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=2;insetsRight=20;insetsTop=0;location=right)">
 		<Assignment id="10" mandatory="true" variable="component.bindable" />
@@ -45,7 +45,7 @@
 		label="default_value" />
 	<Custom id="12" manageDynamicModel="true" index="10"
 		dataClassForComponent="org.openflexo.connie.DataBinding"
-		componentClassName="org.openflexo.gina.swing.utils.BindingSelector"
+		componentClassName="org.openflexo.gina.swing.utils.JavaBindingSelector"
 		name="CustomSelector2" data="data.action.defaultValue"
 		constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=2;insetsRight=20;insetsTop=0;location=right)">
 		<Assignment id="13" mandatory="true" variable="component.bindable" />
@@ -58,7 +58,7 @@
 	<Custom id="15" visible="data.isList" manageDynamicModel="true" index="12"
 		enable="((controller.flexoController.isEditable(data) &amp;&amp;controller.flexoController.isEditable(data)) &amp;&amp;controller.flexoController.isEditable(data))"
 		dataClassForComponent="org.openflexo.connie.DataBinding"
-		componentClassName="org.openflexo.gina.swing.utils.BindingSelector"
+		componentClassName="org.openflexo.gina.swing.utils.JavaBindingSelector"
 		name="CustomSelector3" data="data.action.list"
 		constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=2;insetsRight=20;insetsTop=0;location=right)">
 		<Assignment id="16" mandatory="true" variable="component.bindable" />

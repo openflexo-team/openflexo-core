@@ -45,7 +45,7 @@
 				label="container" />
 			<Custom manageDynamicModel="true" index="43"
 				dataClassForComponent="org.openflexo.connie.DataBinding"
-				componentClassName="org.openflexo.gina.swing.utils.BindingSelector"
+				componentClassName="org.openflexo.gina.swing.utils.JavaBindingSelector"
 				name="ContainerSelector" data="data.container"
 				constraints="twocols(expandHorizontally=true;expandVertically=false;index=3;location=right)">
 				<Assignment mandatory="true" variable="component.bindable" />
@@ -54,7 +54,7 @@
 				constraints="twocols(expandHorizontally=false;expandVertically=false;index=2;location=left)"
 				label="default_value" />
 			<Custom manageDynamicModel="true" dataClassForComponent="org.openflexo.connie.DataBinding"
-				componentClassName="org.openflexo.gina.swing.utils.BindingSelector"
+				componentClassName="org.openflexo.gina.swing.utils.JavaBindingSelector"
 				name="DefaultValueSelector" data="data.defaultValue" index="45"
 				constraints="twocols(expandHorizontally=true;expandVertically=false;index=3;location=right)">
 				<Assignment mandatory="true" variable="component.bindable" />

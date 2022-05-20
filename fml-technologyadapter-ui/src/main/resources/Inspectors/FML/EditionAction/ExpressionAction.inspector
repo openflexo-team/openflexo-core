@@ -14,7 +14,7 @@
 				constraints="twocols(expandHorizontally=true;expandVertically=false;index=2;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=5;location=left)"
 				label="Expression" readOnly="false" />
 			<Custom id="3" manageDynamicModel="true" useScrollBar="false"
-				data="data.expression" componentClassName="org.openflexo.gina.swing.utils.BindingSelector"
+				data="data.expression" componentClassName="org.openflexo.gina.swing.utils.JavaBindingSelector"
 				opaque="false" name="AssignCC"
 				index="3" localize="true"
 				constraints="twocols(expandHorizontally=true;expandVertically=false;index=2;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=5;location=right)"

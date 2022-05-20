@@ -147,7 +147,7 @@
 		visible="((((data.propertyType == &quot;TECHNOLOGY_ROLE&quot;) || (data.propertyType == &quot;MODEL_SLOT&quot;)) || (data.propertyType == &quot;FLEXO_CONCEPT_INSTANCE&quot;)))"
 		constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=left)"
 		name="Label4" />
-	<Custom id="49" componentClassName="org.openflexo.gina.swing.utils.BindingSelector"
+	<Custom id="49" componentClassName="org.openflexo.gina.swing.utils.JavaBindingSelector"
 		dataClassForComponent="org.openflexo.connie.DataBinding"
 		manageDynamicModel="true" data="data.container"
 		visible="((((data.propertyType == &quot;TECHNOLOGY_ROLE&quot;) || (data.propertyType == &quot;MODEL_SLOT&quot;)) || (data.propertyType == &quot;FLEXO_CONCEPT_INSTANCE&quot;)))"
@@ -159,7 +159,7 @@
 	<Label id="51" label="default_value" align="left" localize="true"
 		constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=0;insetsTop=0;location=left)"
 		name="Label5" />
-	<Custom id="52" componentClassName="org.openflexo.gina.swing.utils.BindingSelector"
+	<Custom id="52" componentClassName="org.openflexo.gina.swing.utils.JavaBindingSelector"
 		dataClassForComponent="org.openflexo.connie.DataBinding"
 		manageDynamicModel="true" data="data.defaultValue"
 		constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)"

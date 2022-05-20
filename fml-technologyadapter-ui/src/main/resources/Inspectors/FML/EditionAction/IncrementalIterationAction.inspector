@@ -18,7 +18,7 @@
 			<Label label="start_value" index="4"
 				constraints="twocols(expandHorizontally=true;expandVertically=false;index=4;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=5;location=left)"
 				localize="true" />
-			<Custom componentClassName="org.openflexo.gina.swing.utils.BindingSelector"
+			<Custom componentClassName="org.openflexo.gina.swing.utils.JavaBindingSelector"
 				localize="true" manageDynamicModel="true" index="5" data="data.startValue"
 				constraints="twocols(expandHorizontally=true;expandVertically=false;index=5;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)">
 				<Assignment variable="component.bindable" value="data" />
@@ -26,7 +26,7 @@
 			<Label label="end_value_(exclusive)" index="6"
 				constraints="twocols(expandHorizontally=true;expandVertically=false;index=4;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=5;location=left)"
 				localize="true" />
-			<Custom componentClassName="org.openflexo.gina.swing.utils.BindingSelector"
+			<Custom componentClassName="org.openflexo.gina.swing.utils.JavaBindingSelector"
 				localize="true" manageDynamicModel="true" index="7" data="data.exclusiveEndValue"
 				constraints="twocols(expandHorizontally=true;expandVertically=false;index=5;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)">
 				<Assignment variable="component.bindable" value="data" />
@@ -34,7 +34,7 @@
 			<Label label="increment" index="8"
 				constraints="twocols(expandHorizontally=true;expandVertically=false;index=4;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=5;location=left)"
 				localize="true" />
-			<Custom componentClassName="org.openflexo.gina.swing.utils.BindingSelector"
+			<Custom componentClassName="org.openflexo.gina.swing.utils.JavaBindingSelector"
 				localize="true" manageDynamicModel="true" index="9" data="data.increment"
 				constraints="twocols(expandHorizontally=true;expandVertically=false;index=5;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)">
 				<Assignment variable="component.bindable" value="data" />

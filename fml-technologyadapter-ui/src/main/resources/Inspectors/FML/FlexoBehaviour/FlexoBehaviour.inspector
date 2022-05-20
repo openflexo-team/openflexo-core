@@ -139,7 +139,7 @@
 					<Custom id="33"
 						visible="(parametersTable.selected.widget == &quot;CUSTOM_WIDGET&quot;)"
 						manageDynamicModel="true" dataClassForComponent="org.openflexo.connie.DataBinding"
-						componentClassName="org.openflexo.gina.swing.utils.BindingSelector"
+						componentClassName="org.openflexo.gina.swing.utils.JavaBindingSelector"
 						name="CustomSelector" data="parametersTable.selected.container"
 						constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)">
 						<Assignment id="34" mandatory="true" variable="component.bindable" />
@@ -150,7 +150,7 @@
 					<Custom id="36" manageDynamicModel="true"
 
 						dataClassForComponent="org.openflexo.connie.DataBinding"
-						componentClassName="org.openflexo.gina.swing.utils.BindingSelector"
+						componentClassName="org.openflexo.gina.swing.utils.JavaBindingSelector"
 						name="CustomSelector2" data="parametersTable.selected.defaultValue"
 						constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)">
 						<Assignment id="37" mandatory="true" variable="component.bindable" />
@@ -161,7 +161,7 @@
 						label="list_of_values" />
 					<Custom id="39" visible="parametersTable.selected.isListType"
 						manageDynamicModel="true" dataClassForComponent="org.openflexo.connie.DataBinding"
-						componentClassName="org.openflexo.gina.swing.utils.BindingSelector"
+						componentClassName="org.openflexo.gina.swing.utils.JavaBindingSelector"
 						name="CustomSelector3" data="parametersTable.selected.list"
 						constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)">
 						<Assignment id="40" mandatory="true" variable="component.bindable" />
@@ -204,7 +204,7 @@
 				constraints="twocols(expandHorizontally=true;expandVertically=false;index=2;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=5;location=left)"
 				label="steps_number" readOnly="false" />
 			<Custom index="21" manageDynamicModel="true" useScrollBar="false" visible="data.longRunningAction"
-				data="data.stepsNumber" componentClassName="org.openflexo.gina.swing.utils.BindingSelector"
+				data="data.stepsNumber" componentClassName="org.openflexo.gina.swing.utils.JavaBindingSelector"
 				opaque="false" name="StepsNumberCC"
 				localize="true" 
 				constraints="twocols(expandHorizontally=true;expandVertically=false;index=2;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=5;location=right)"

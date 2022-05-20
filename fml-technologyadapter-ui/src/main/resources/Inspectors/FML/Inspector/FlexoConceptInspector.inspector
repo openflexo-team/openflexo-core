@@ -17,7 +17,7 @@
 				columns="30" text="TextField" />
 			<Label label="renderer" index="2" 
 				constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=5;location=left)" />
-			<Custom componentClassName="org.openflexo.gina.swing.utils.BindingSelector"
+			<Custom componentClassName="org.openflexo.gina.swing.utils.JavaBindingSelector"
 				index="3" data="data.renderer"
 				constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)">
 				<Assignment variable="component.bindable" value="data.formatter" />
@@ -139,7 +139,7 @@
 					<Custom id="33"
 						visible="(entriesTable.selected.widget == &quot;CUSTOM_WIDGET&quot;)"
 						manageDynamicModel="true" dataClassForComponent="org.openflexo.connie.DataBinding"
-						componentClassName="org.openflexo.gina.swing.utils.BindingSelector"
+						componentClassName="org.openflexo.gina.swing.utils.JavaBindingSelector"
 						name="CustomSelector" data="entriesTable.selected.container"
 						constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)">
 						<Assignment id="34" mandatory="true" variable="component.bindable" />
@@ -149,7 +149,7 @@
 						label="data" />
 					<Custom id="36" manageDynamicModel="true"
 						dataClassForComponent="org.openflexo.connie.DataBinding"
-						componentClassName="org.openflexo.gina.swing.utils.BindingSelector"
+						componentClassName="org.openflexo.gina.swing.utils.JavaBindingSelector"
 						name="CustomSelector2" data="entriesTable.selected.data"
 						constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)">
 						<Assignment id="37" mandatory="true" variable="component.bindable" />
@@ -160,7 +160,7 @@
 						label="list_of_values" />
 					<Custom id="39" visible="entriesTable.selected.isListType"
 						manageDynamicModel="true" dataClassForComponent="org.openflexo.connie.DataBinding"
-						componentClassName="org.openflexo.gina.swing.utils.BindingSelector"
+						componentClassName="org.openflexo.gina.swing.utils.JavaBindingSelector"
 						name="CustomSelector3" data="entriesTable.selected.list"
 						constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)">
 						<Assignment id="40" mandatory="true" variable="component.bindable" />

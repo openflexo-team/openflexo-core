@@ -13,7 +13,7 @@
 				constraints="twocols(expandHorizontally=false;expandVertically=false;index=6;location=left)"
 				localize="true">
 			</Label>
-			<Custom componentClassName="org.openflexo.gina.swing.utils.BindingSelector"
+			<Custom componentClassName="org.openflexo.gina.swing.utils.JavaBindingSelector"
 				localize="true" manageDynamicModel="true" index="7" data="data.expression"
 				constraints="twocols(expandHorizontally=true;expandVertically=false;index=7;insetsBottom=0;insetsLeft=2;insetsRight=2;insetsTop=0;location=right)"
 				visible="">
